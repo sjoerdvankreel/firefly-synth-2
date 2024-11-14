@@ -1,4 +1,4 @@
-#include <playground-plug/plug.hpp>
+#include <playground_plug/plug.hpp>
 #include <cmath>
 #include <numbers>
 
