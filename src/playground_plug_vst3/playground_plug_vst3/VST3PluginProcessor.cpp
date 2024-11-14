@@ -1,0 +1,1 @@
+#include <playground_plug_vst3/VST3PluginProcessor.hpp>
