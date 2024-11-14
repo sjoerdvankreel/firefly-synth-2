@@ -1,0 +1,2 @@
+static link
+separate clap/vst projs
