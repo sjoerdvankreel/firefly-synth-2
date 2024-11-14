@@ -1,0 +1,1 @@
+inline int boo = 1;
