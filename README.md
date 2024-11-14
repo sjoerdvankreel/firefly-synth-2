@@ -45,3 +45,4 @@ Or, IOW, stuff that I got wrong on the first (infernal synth) and second (firefl
     * By defining [rt-state, rt-mod-state (nondestructive), ui-state, ui-mod-state (nondestructive)] should be possible to keep those in sync
     * Realtime pushes to UI *on each block* (host block not internal), UI discards depending on frame-rate
     * This solves all parameter painting but leaves realtime graphs => difficult, i dont want to exchange buffers, only scalars (so this probably still needs reconstruction on UI side)
+    * VST3 IDataExchange seems good for it
