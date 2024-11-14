@@ -38,6 +38,7 @@ Or, IOW, stuff that I got wrong on the first (infernal synth) and second (firefl
     * Might still get big but at least we know where it's happening
     
 * UI
+    * All the helper stuff like drag-to-matrix, copy-to etc is good
     * 100% declarative proves to be difficult (surprise).
     * Better to have a bunch of reusable components (in particular, auto-sizing grid)
     * And have plug GUI stitch those together
