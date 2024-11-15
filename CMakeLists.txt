@@ -1,10 +1,5 @@
 # global
 cmake_minimum_required(VERSION 3.21)
-
-# needs to be before project
-set(CMAKE_CONFIGURATION_TYPES Debug Release RelWithDebInfo CACHE TYPE INTERNAL FORCE)
-
-# project
 project(playground-plug)
 
 # build

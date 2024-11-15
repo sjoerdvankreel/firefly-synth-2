@@ -1,3 +1,4 @@
 static link
+relwithdebinfo
 separate clap/vst projs
 Linux visibility-hidden & inline-hidden et all
