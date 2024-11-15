@@ -46,4 +46,6 @@ endif()
 # vst3 to dist
 add_custom_command(TARGET playground_plug_vst3 POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:playground_plug_vst3>
-  ${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug$<$<CONFIG:Release>:Release>/PlaygroundPlug.vst3/Contents/x86_64-win/PlaygroundPlug.vst3)
+  "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug$<$<CONFIG:Release>:Release>/bla")
+#  ${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug$<$<CONFIG:Release>:Release>/PlaygroundPlug.vst3/Contents/x86_64-win/PlaygroundPlug.vst3)
+
