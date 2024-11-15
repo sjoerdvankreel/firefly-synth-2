@@ -52,7 +52,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 
 # vst3 to dist
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Windowsz")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   add_custom_command(TARGET ${PROJECT_NAME_IN_VST3} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_IN_VST3}>
     "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT}.vst3"
