@@ -2,6 +2,12 @@
 cmake_minimum_required(VERSION 3.21)
 project(playground-plug)
 
+# name
+set (PROJECT_NAME_IN playground_plug)
+set (PROJECT_NAME_IN_VST3 "${PROJECT_NAME_IN}_vst3")
+set (PROJECT_NAME_OUT PlaygroundPlug)
+set (PROJECT_NAME_OUT_VST3 "${PROJECT_NAME_OUT}VST3")
+
 # build
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
@@ -20,32 +26,31 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3/base")
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3/public.sdk")
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3/pluginterfaces")
 
-# playground
-set (SRC_DIR "${CMAKE_SOURCE_DIR}/src/playground_plug")
+# plugin
+set (SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_IN}")
 file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.*")
-add_library(playground_plug STATIC ${SRC_FILES})
-target_include_directories(playground_plug PRIVATE ${CMAKE_SOURCE_DIR}/src/playground_plug)
+add_library(${PROJECT_NAME_IN} STATIC ${SRC_FILES})
+target_include_directories(${PROJECT_NAME_IN} PRIVATE ${CMAKE_SOURCE_DIR}/src/${project_name_in})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${SRC_DIR} FILES ${SRC_FILES})
 endif()
 
-# playground vst3
-set (VST3_SRC_DIR "${CMAKE_SOURCE_DIR}/src/playground_plug_vst3")
+# plugin vst3
+set (VST3_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_IN_VST3}")
 file(GLOB_RECURSE VST3_SRC_FILES "${VST3_SRC_DIR}/*.*")
-add_library(playground_plug_vst3 SHARED ${VST3_SRC_FILES})
-target_link_libraries(playground_plug_vst3 playground_plug)
-target_link_libraries(playground_plug_vst3 base sdk sdk_common)
-target_include_directories(playground_plug_vst3 PRIVATE ${CMAKE_SOURCE_DIR}/src/playground_plug ${CMAKE_SOURCE_DIR}/src/playground_plug_vst3)
-target_include_directories(playground_plug_vst3 SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/vst3/base ${CMAKE_SOURCE_DIR}/lib/vst3/pluginterfaces ${CMAKE_SOURCE_DIR}/lib/vst3/public.sdk)
-set_target_properties(playground_plug_vst3 PROPERTIES SUFFIX ".vst3")
-set_target_properties(playground_plug_vst3 PROPERTIES OUTPUT_NAME "PlaygroundPlug")
+add_library(${PROJECT_NAME_IN_VST3} SHARED ${VST3_SRC_FILES})
+target_link_libraries(${PROJECT_NAME_IN_VST3} ${PROJECT_NAME_IN})
+target_link_libraries(${PROJECT_NAME_IN_VST3} base sdk sdk_common)
+target_include_directories(${PROJECT_NAME_IN_VST3} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_IN} ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_IN_VST3})
+target_include_directories(${PROJECT_NAME_IN_VST3} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/vst3/base ${CMAKE_SOURCE_DIR}/lib/vst3/pluginterfaces ${CMAKE_SOURCE_DIR}/lib/vst3/public.sdk)
+set_target_properties(${PROJECT_NAME_IN_VST3} PROPERTIES SUFFIX ".vst3")
+set_target_properties(${PROJECT_NAME_IN_VST3} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${VST3_SRC_DIR} FILES ${VST3_SRC_FILES})
 endif()
 
 # vst3 to dist
-add_custom_command(TARGET playground_plug_vst3 POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:playground_plug_vst3>
+add_custom_command(TARGET ${PROJECT_NAME_IN_VST3} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_IN_VST3}>
   "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>$<$<CONFIG:RelWithDebInfo>:RelWithDebInfo>/bla")
-#  ${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug$<$<CONFIG:Release>:Release>/PlaygroundPlug.vst3/Contents/x86_64-win/PlaygroundPlug.vst3)
 
