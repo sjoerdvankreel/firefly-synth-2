@@ -1,6 +1,5 @@
 # global
 cmake_minimum_required(VERSION 3.21)
-project(playground-plug)
 
 # build
 set(CMAKE_CXX_STANDARD 20)
@@ -10,6 +9,9 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithDebInfo")
 set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum macOS version")
 set_property(GLOBAL PROPERTY USE_FOLDERS YES)
+
+# project
+project(playground-plug)
 
 # name
 set (PROJECT_NAME_IN playground_plug)
