@@ -19,8 +19,6 @@ struct FBSingleBlock
   { for (int i = 0; i < Count; i++) (*this)[i] *= x; }
   void InPlaceAdd(FBSingleBlock const& rhs) 
   { for (int i = 0; i < Count; i++) (*this)[i] += rhs[i]; }
-  void CopyTo(float* destination, int count) 
-  { for (int i = 0; i < count; i++) destination[i] = (*this)[i]; }
 };
 
 template <int Count>
@@ -39,6 +37,4 @@ struct FBDualBlock
   { for (int i = 0; i < 2; i++) (*this)[i].InPlaceMultiply(x); }
   void InPlaceAdd(FBDualBlock const& rhs) 
   { for (int i = 0; i < 2; i++) (*this)[i].InPlaceAdd(rhs[i]); }
-  void CopyTo(float* const* destination, int count) 
-  { for (int i = 0; i < 2; i++) (*this)[i].CopyTo(destination[i]); }
 };
