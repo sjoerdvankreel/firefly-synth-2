@@ -1,6 +1,6 @@
 #pragma once
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
-#include <playground_plug/plug/dsp/FFOscillatorProcessor.hpp>
+#include <playground_plug/plug/shared/FFPluginTopology.hpp>
 
 #include <array>
 #include <vector>
@@ -10,9 +10,12 @@ class FFPluginProcessor
 {
   float const _sampleRate;
   int const _maxRemaining;
-  FFAudioBlock _oscillatorBlock = {};
-  FFOscillatorProcessor _oscillatorProcessor = {};
+
+  FFPluginProcessors _processors = {};
+  FFPluginProcessorBlock _processorBlock = {};
   std::array<std::vector<float>, 2> _remainingOutputBuffer = {};
+
+  void ProcessInternal();
 
 public:
   FFPluginProcessor(int maxBlockSize, float sampleRate);

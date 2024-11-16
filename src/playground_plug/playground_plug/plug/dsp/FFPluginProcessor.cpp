@@ -31,14 +31,14 @@ FFPluginProcessor::Process(FB_RAW_AUDIO_INPUT_BUFFER inputBuffer, FB_RAW_AUDIO_O
 
   while (samplesProcessed < sampleCount)
   {
-    _oscillatorProcessor.Process(_sampleRate, _oscillatorBlock);
+    ProcessInternal();
 
     // process in chunks of internal block size, may cause leftovers
     int blockSample = 0;
     for (; blockSample < FF_BLOCK_SIZE && samplesProcessed < sampleCount; blockSample++)
     {
       for (int channel = 0; channel < 2; channel++)
-        outputBuffer[channel][samplesProcessed] = _oscillatorBlock[channel][blockSample];
+        outputBuffer[channel][samplesProcessed] = _processorBlock.masterOutput[channel][blockSample];
       samplesProcessed++;
     }
 
@@ -46,9 +46,17 @@ FFPluginProcessor::Process(FB_RAW_AUDIO_INPUT_BUFFER inputBuffer, FB_RAW_AUDIO_O
     for (; blockSample < FF_BLOCK_SIZE; blockSample++)
     {
       for (int channel = 0; channel < 2; channel++)
-        _remainingOutputBuffer[channel].push_back(_oscillatorBlock[channel][blockSample]);
+        _remainingOutputBuffer[channel].push_back(_processorBlock.masterOutput[channel][blockSample]);
       samplesProcessed++;
       assert(_remainingOutputBuffer[0].size() <= _maxRemaining);
     }
   }
+}
+
+// run one round of fixed block size
+void 
+FFPluginProcessor::ProcessInternal()
+{
+  for (int osci = 0; osci < FF_OSCILLATOR_COUNT; osci++)
+    _processors.oscillator[osci].Process(osci, _sampleRate, _processorBlock);
 }

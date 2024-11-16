@@ -1,4 +1,4 @@
-#include <playground_plug/plug/shared/FFPluginTopologyAndState.hpp>
+#include <playground_plug/plug/shared/FFPluginTopology.hpp>
 
 std::unique_ptr<FBPluginStaticTopology>
 FFCreateStaticTopology()
