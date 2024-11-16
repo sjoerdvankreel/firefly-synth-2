@@ -19,13 +19,19 @@ set (PROJECT_NAME_IN_VST3 "${PROJECT_NAME_IN}_vst3")
 set (PROJECT_NAME_OUT PlaygroundPlug)
 set (PROJECT_NAME_OUT_VST3 "${PROJECT_NAME_OUT}VST3")
 
-# vst3
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/lib/vst3/cmake/modules")
+# juce
+set(JUCE_MODULES_ONLY ON)
+set(JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
+include("${CMAKE_SOURCE_DIR}/lib/JUCE/extras/Build/CMake/JUCEModuleSupport.cmake")
+juce_add_module("${CMAKE_SOURCE_DIR}/lib/JUCE/modules/juce_core")
+
+# vst3 sdk
 set(VST_SDK TRUE)
 set(SMTG_ENABLE_VSTGUI_SUPPORT OFF)
 set(SMTG_ENABLE_VST3_PLUGIN_EXAMPLES OFF)
 set(SMTG_ENABLE_VST3_HOSTING_EXAMPLES OFF)
 set(public_sdk_SOURCE_DIR "${CMAKE_SOURCE_DIR}/lib/vst3/public.sdk")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/lib/vst3/cmake/modules")
 include(SMTG_VST3_SDK)
 smtg_setup_platform_toolset()
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3/base")
