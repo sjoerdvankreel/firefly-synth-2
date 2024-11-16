@@ -7,6 +7,7 @@ struct FFPluginProcessorBlock;
 class FFOscillatorProcessor
 {
   float _phase = 0.0f;
+
 public:
-  void Process(int moduleSlot, float sampleRate, FFPluginProcessorBlock& processorBlock);
+  void Process(int moduleSlot, FFPluginProcessorBlock& processorBlock);
 };

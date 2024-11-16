@@ -33,6 +33,7 @@ typedef FFPluginParameterMemory<FFCVBlock> FFProcessorParameterMemory;
 
 struct FFPluginProcessorBlock
 {
+  float sampleRate;
   FFAudioBlock masterOutput;
   FFProcessorParameterMemory parameterMemory;
   std::array<FFAudioBlock, FF_OSCILLATOR_COUNT> oscillatorAudioOutput;

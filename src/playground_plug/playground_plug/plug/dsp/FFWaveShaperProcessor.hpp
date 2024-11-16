@@ -7,5 +7,5 @@ struct FFPluginProcessorBlock;
 class FFWaveShaperProcessor
 {
 public:
-  void Process(int moduleSlot, float sampleRate, FFPluginProcessorBlock& processorBlock);
+  void Process(int moduleSlot, FFPluginProcessorBlock& processorBlock);
 };

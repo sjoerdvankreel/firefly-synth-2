@@ -2,6 +2,6 @@
 #include <playground_plug/plug/dsp/FFWaveShaperProcessor.hpp>
 
 void 
-FFWaveShaperProcessor::Process(int moduleSlot, float sampleRate, FFPluginProcessorBlock& processorBlock)
+FFWaveShaperProcessor::Process(int moduleSlot, FFPluginProcessorBlock& processorBlock)
 {
 }

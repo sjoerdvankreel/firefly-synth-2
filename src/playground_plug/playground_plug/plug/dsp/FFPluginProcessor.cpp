@@ -7,6 +7,7 @@ FFPluginProcessor(int maxBlockSize, float sampleRate):
 _sampleRate(sampleRate),
 _maxRemaining(std::max(maxBlockSize, FF_BLOCK_SIZE))
 {
+  _processorBlock.sampleRate = sampleRate;
   _remainingOutputBuffer[0].resize(_maxRemaining);
   _remainingOutputBuffer[1].resize(_maxRemaining);
 }
@@ -58,5 +59,5 @@ void
 FFPluginProcessor::ProcessInternal()
 {
   for (int osci = 0; osci < FF_OSCILLATOR_COUNT; osci++)
-    _processors.oscillator[osci].Process(osci, _sampleRate, _processorBlock);
+    _processors.oscillator[osci].Process(osci, _processorBlock);
 }
