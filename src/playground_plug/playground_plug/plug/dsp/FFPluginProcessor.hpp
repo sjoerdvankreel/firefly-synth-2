@@ -1,5 +1,5 @@
 #pragma once
-#include <playground_plug/shared/FFDefines.hpp>
+#include <playground_plug/base/shared/FFDefines.hpp>
 #include <cstddef>
 
 class FFPluginProcessor

@@ -27,7 +27,7 @@ FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 tresult PLUGIN_API
 FFVST3PluginProcessor::process(ProcessData& data)
 {
-  if (data.numOutputs != 2) 
+  if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
     return kResultTrue;
   _processor.Process(nullptr, data.outputs->channelBuffers32, data.numSamples);
   return kResultTrue;

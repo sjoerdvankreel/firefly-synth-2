@@ -1,5 +1,5 @@
 #pragma once
-#include <playground_plug/FFPluginProcessor.hpp>
+#include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
 #include <public.sdk/source/vst/vstaudioeffect.h>
 
 using namespace Steinberg;

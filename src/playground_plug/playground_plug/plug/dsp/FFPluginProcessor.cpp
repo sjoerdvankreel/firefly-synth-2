@@ -1,4 +1,5 @@
-#include <playground_plug/FFPluginProcessor.hpp>
+#include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
+
 #include <cmath>
 #include <numbers>
 
