@@ -71,4 +71,5 @@ FFPluginProcessor::ProcessInternal()
   _processors.waveShaper[0].Process(0, _processorBlock);
   _processorBlock.waveShaperAudioInput[1] = _processorBlock.waveShaperAudioOutput[0];
   _processors.waveShaper[1].Process(1, _processorBlock);
+  _processorBlock.masterOutput = _processorBlock.waveShaperAudioOutput[1];
 }
