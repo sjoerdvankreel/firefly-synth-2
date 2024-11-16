@@ -1,4 +1,5 @@
 #include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
+#include <juce_core/juce_core.h>
 
 #include <cmath>
 #include <numbers>
@@ -7,6 +8,8 @@ FFPluginProcessor::
 FFPluginProcessor(float sampleRate) :
 _sampleRate(sampleRate)
 {
+  juce::String boo;
+  boo.substring(5);
 }
 
 void 
