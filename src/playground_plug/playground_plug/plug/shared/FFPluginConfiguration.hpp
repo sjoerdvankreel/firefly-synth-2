@@ -1,7 +1,8 @@
 #pragma once
-#include <playground_plug/base/shared/FBDefines.hpp>
+#include <playground_plug/base/shared/FBUtilityMacros.hpp>
 
-#define FF_BUFFER_SIZE 128
+#define FF_BLOCK_SIZE 128
+#define FF_OSCILLATOR_COUNT 2
 
 #define FF_VENDOR_NAME "Sjoerd van Kreel"
 #define FF_VENDOR_MAIL "sjoerdvankreel@gmail.com"

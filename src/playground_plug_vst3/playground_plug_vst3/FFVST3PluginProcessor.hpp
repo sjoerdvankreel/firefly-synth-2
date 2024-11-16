@@ -1,19 +1,19 @@
 #pragma once
-#include <playground_plug/plug/dsp/FFProcessor.hpp>
+#include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
 #include <public.sdk/source/vst/vstaudioeffect.h>
 #include <memory>
 
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-class FFVST3Processor :
+class FFVST3PluginProcessor :
 public AudioEffect
 {
-  std::unique_ptr<FFProcessor> _processor = {};
+  std::unique_ptr<FFPluginProcessor> _processor = {};
 
 public:  
 
-  FFVST3Processor(FUID const& controllerId);
+  FFVST3PluginProcessor(FUID const& controllerId);
 
   tresult PLUGIN_API 
   process(ProcessData& data) override;
