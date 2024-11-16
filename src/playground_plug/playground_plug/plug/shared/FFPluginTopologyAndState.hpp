@@ -18,7 +18,6 @@ FFCreateStaticTopology();
 template <class T>
 struct FFPluginParameterMemory
 {
-  std::array<T, 
 };
 
 template <class T>

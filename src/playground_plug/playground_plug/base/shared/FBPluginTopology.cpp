@@ -2,7 +2,7 @@
 
 static std::string
 RuntimeParameterNamePart(
-  FBPluginStaticParameter const& staticParameter, int slot)
+  FBPluginStaticParameterBase const& staticParameter, int slot)
 {
   if (staticParameter.slotCount == 1)
     return staticParameter.name;
@@ -28,7 +28,7 @@ RuntimeModuleUniqueId(
 static std::string
 RuntimeParameterName(
   FBPluginStaticModule const& staticModule, int moduleSlot,
-  FBPluginStaticParameter const& staticParameter, int parameterSlot)
+  FBPluginStaticParameterBase const& staticParameter, int parameterSlot)
 {
   return RuntimeModuleName(staticModule, moduleSlot) + " " +
     RuntimeParameterNamePart(staticParameter, parameterSlot);
@@ -37,10 +37,25 @@ RuntimeParameterName(
 static std::string
 RuntimeParameterUniqueId(
   FBPluginStaticModule const& staticModule, int moduleSlot,
-  FBPluginStaticParameter const& staticParameter, int parameterSlot)
+  FBPluginStaticParameterBase const& staticParameter, int parameterSlot)
 {
   return RuntimeModuleUniqueId(staticModule, moduleSlot) + " " +
     staticParameter.uniqueId + " " + std::to_string(parameterSlot);
+}
+
+static FBPluginRuntimeParameter
+MakeRuntimeParameter(
+  FBPluginStaticModule const& staticModule, int ms, 
+  std::shared_ptr<FBPluginStaticParameterBase> staticParameter, int ps, 
+  int index, int stepCount)
+{
+  FBPluginRuntimeParameter result;
+  result.index = index;
+  result.stepCount = stepCount;
+  result.staticTopology = staticParameter;
+  result.name = RuntimeParameterName(staticModule, ms, *staticParameter, ps);
+  result.uniqueId = RuntimeParameterUniqueId(staticModule, ms, *staticParameter, ps);
+  return result;
 }
 
 std::unique_ptr<FBPluginRuntimeTopology>
@@ -61,16 +76,27 @@ FBGenerateRuntimeTopology(
       runtimeModule.staticTopology = staticModule;
       runtimeModule.name = RuntimeModuleName(*staticModule, ms);
       runtimeModule.uniqueId = RuntimeModuleUniqueId(*staticModule, ms);      
-      for (int pi = 0; pi < staticModule->parameters.size(); pi++)
+      for (int dpi = 0; dpi < staticModule->discreteParameters.size(); dpi++)
       {
-        auto staticParameter = std::make_shared<FBPluginStaticParameter>(staticModule->parameters[pi]);
-        for (int ps = 0; ps < staticParameter->slotCount; ps++)
+        auto staticParameter = std::make_shared<FBPluginStaticDiscreteParameter>(staticModule->discreteParameters[dpi]);
+        for (int dps = 0; dps < staticParameter->slotCount; dps++)
         {
-          FBPluginRuntimeParameter runtimeParameter;
-          runtimeParameter.index = runtimeParameterIndex++;
-          runtimeParameter.staticTopology = staticParameter;
-          runtimeParameter.name = RuntimeParameterName(*staticModule, ms, *staticParameter, ps);
-          runtimeParameter.uniqueId = RuntimeParameterUniqueId(*staticModule, ms, *staticParameter, ps);
+          FBPluginRuntimeParameter runtimeParameter = MakeRuntimeParameter(
+            *staticModule, ms, 
+            staticParameter, dps, 
+            runtimeParameterIndex++, staticParameter->stepCount);
+          runtimeModule.parameters.push_back(runtimeParameter);
+        }
+      }
+      for (int cpi = 0; cpi < staticModule->continuousParameters.size(); cpi++)
+      {
+        auto staticParameter = std::make_shared<FBPluginStaticContinuousParameter>(staticModule->continuousParameters[cpi]);
+        for (int cps = 0; cps < staticParameter->slotCount; cps++)
+        {
+          FBPluginRuntimeParameter runtimeParameter = MakeRuntimeParameter(
+            *staticModule, ms,
+            staticParameter, cps,
+            runtimeParameterIndex++, 0);
           runtimeModule.parameters.push_back(runtimeParameter);
         }
       }

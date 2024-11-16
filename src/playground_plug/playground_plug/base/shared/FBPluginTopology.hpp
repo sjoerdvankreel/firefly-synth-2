@@ -11,13 +11,25 @@ std::unique_ptr<FBPluginRuntimeTopology>
 FBGenerateRuntimeTopology(
   FBPluginStaticTopology const& staticTopology);
 
-struct FBPluginStaticParameter
+struct FBPluginStaticParameterBase
 {
-  int index; // static index
+  virtual ~FBPluginStaticParameterBase() = default;
+
+  int index; // static index, discrete and continuous start at 0
   int slotCount; // multi-slot params are useful for mod matrices
-  int stepCount; // or 0 for continuous
   std::string name;
   std::string uniqueId;
+};
+
+struct FBPluginStaticDiscreteParameter :
+FBPluginStaticParameterBase
+{
+  int stepCount;
+};
+
+struct FBPluginStaticContinuousParameter :
+FBPluginStaticParameterBase
+{
 };
 
 struct FBPluginStaticModule
@@ -26,7 +38,8 @@ struct FBPluginStaticModule
   int slotCount;
   std::string name;
   std::string uniqueId;
-  std::vector<FBPluginStaticParameter> parameters;
+  std::vector<FBPluginStaticDiscreteParameter> discreteParameters;
+  std::vector<FBPluginStaticContinuousParameter> continuousParameters;
 };
 
 struct FBPluginStaticTopology
@@ -36,10 +49,11 @@ struct FBPluginStaticTopology
 
 struct FBPluginRuntimeParameter
 {
-  int index; // runtime index
+  int index; // runtime index, discrete first, continuous next
+  int stepCount; // or 0 for continuous
   std::string name;
   std::string uniqueId;
-  std::shared_ptr<FBPluginStaticParameter> staticTopology;
+  std::shared_ptr<FBPluginStaticParameterBase> staticTopology;
 };
 
 struct FBPluginRuntimeModule
