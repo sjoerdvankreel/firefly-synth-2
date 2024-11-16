@@ -7,8 +7,10 @@
 #include <array>
 
 enum { FFModuleOscillator, FFModuleWaveShaper, FFModuleCount };
-enum { FFWaveShaperDiscreteParamOn, FFWaveShaperParameterDiscreteCount, FFWaveShaperParamGain = FFWaveShaperParameterDiscreteCount, FFWaveShaperParamCount };
-enum { FFWaveShaperParameterDiscreteCountFFOscillatorParamGain, FFOscillatorParamPitch, FFOscillatorParamCount };
+enum { FFWaveShaperDiscreteParamOn, FFWaveShaperDiscreteParamCount };
+enum { FFWaveShaperContinuousParamGain, FFWaveShaperContinuousParamCount };
+enum { FFOscillatorDiscreteParamCount };
+enum { FFOscillatorContinuousParamGain, FFOscillatorContinuousParamPitch, FFOscillatorContinuousParamCount };
 
 std::unique_ptr<FBPluginStaticTopology>
 FFCreateStaticTopology();
