@@ -21,7 +21,9 @@ set (PROJECT_NAME_OUT_VST3 "${PROJECT_NAME_OUT}VST3")
 
 # juce
 set(JUCE_MODULES_DIR "${CMAKE_SOURCE_DIR}/lib/JUCE/modules")
-add_library(juce STATIC "${JUCE_MODULES_DIR}/juce_core/juce_core.cpp")
+add_library(juce STATIC 
+  "${JUCE_MODULES_DIR}/juce_core/juce_core.cpp" 
+  "${JUCE_MODULES_DIR}/juce_core/juce_core_CompilationTime.cpp")
 target_include_directories(juce PRIVATE "${JUCE_MODULES_DIR}")
 target_compile_definitions(juce PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
 
