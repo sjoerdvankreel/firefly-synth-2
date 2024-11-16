@@ -7,10 +7,8 @@
 #include <array>
 
 enum { FFModuleOscillator, FFModuleWaveShaper, FFModuleCount };
-enum { FFWaveShaperDiscreteParamOn, FFWaveShaperDiscreteParamCount };
-enum { FFWaveShaperContinuousParamGain, FFWaveShaperContinuousParamCount };
-enum { FFOscillatorDiscreteParamCount };
-enum { FFOscillatorContinuousParamGain, FFOscillatorContinuousParamPitch, FFOscillatorContinuousParamCount };
+enum { FFWaveShaperParamOn, FFWaveShaperParamGain, FFWaveShaperParamCount };
+enum { FFOscillatorParamGain, FFOscillatorParamPitch, FFOscillatorParamCount };
 
 std::unique_ptr<FBPluginStaticTopology>
 FFCreateStaticTopology();
@@ -18,21 +16,9 @@ FFCreateStaticTopology();
 template <class T>
 struct FFPluginParameterMemory
 {
-  std::array<T, 
+  std::array<std::array<T, FFOscillatorParamCount>, FF_OSCILLATOR_COUNT> oscillator;
+  std::array<std::array<T, FFWaveShaperParamCount>, FF_WAVE_SHAPER_COUNT> waveShaper;
 };
 
-template <class T>
-struct FFWaveShaperParameters
-{
-  T gain;
-};
-
-template <class T>
-struct FFPluginParameters
-{
-  std::array<FFOscillatorParameters<T>, FF_OSCILLATOR_COUNT> oscillator;
-  std::array<FFWaveShaperParameters<T>, FF_WAVE_SHAPER_COUNT> waveShaper;
-};
-
-typedef FFPluginParameters<float> FFControllerParameters;
-typedef FFPluginParameters<FFCVBlock> FFProcessorParameters;
+typedef FFPluginParameterMemory<float> FFControllerParameterMemory;
+typedef FFPluginParameterMemory<FFCVBlock> FFProcessorParameterMemory;
