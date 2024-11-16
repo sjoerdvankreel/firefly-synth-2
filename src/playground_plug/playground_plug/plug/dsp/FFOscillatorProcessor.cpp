@@ -5,10 +5,10 @@
 void 
 FFOscillatorProcessor::Process(float sampleRate, FFAudioBlock& block)
 {
-  for (std::size_t sample = 0; sample < FBBlockSize(block); sample++)
+  for (int s = 0; s < FBBlockSize(block); s++)
   {
     _phase += 440.0f / sampleRate;
     _phase -= std::floor(_phase);
-    block[0][sample] = block[1][sample] = std::sin(_phase * 2.0f * std::numbers::pi_v<float>);
+    block[0][s] = block[1][s] = std::sin(_phase * 2.0f * std::numbers::pi_v<float>);
   }
 }

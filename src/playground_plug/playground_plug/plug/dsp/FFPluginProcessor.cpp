@@ -3,31 +3,28 @@
 #include <algorithm>
 
 FFPluginProcessor::
-FFPluginProcessor(std::size_t maxBlockSize, float sampleRate):
+FFPluginProcessor(int maxBlockSize, float sampleRate):
 _sampleRate(sampleRate),
-_maxRemaining(std::max(maxBlockSize, static_cast<std::size_t>(FF_BLOCK_SIZE)))
+_maxRemaining(std::max(maxBlockSize, FF_BLOCK_SIZE))
 {
   _remainingOutputBuffer[0].resize(_maxRemaining);
   _remainingOutputBuffer[1].resize(_maxRemaining);
 }
 
 void 
-FFPluginProcessor::Process(
-  FB_RAW_AUDIO_INPUT_BUFFER inputBuffer, 
-  FB_RAW_AUDIO_OUTPUT_BUFFER outputBuffer, 
-  std::size_t sampleCount)
+FFPluginProcessor::Process(FB_RAW_AUDIO_INPUT_BUFFER inputBuffer, FB_RAW_AUDIO_OUTPUT_BUFFER outputBuffer, int sampleCount)
 {
   // handle leftover from the previous round
-  std::size_t samplesProcessed = 0;
-  for (std::size_t sample = 0; sample < sampleCount && sample < _remainingOutputBuffer[0].size(); sample++)
+  int samplesProcessed = 0;
+  for (int s = 0; s < sampleCount && s < _remainingOutputBuffer[0].size(); s++)
   {
-    for(std::size_t channel = 0; channel < 2; channel++)
-      outputBuffer[channel][samplesProcessed] = _remainingOutputBuffer[channel][sample];
+    for(int channel = 0; channel < 2; channel++)
+      outputBuffer[channel][samplesProcessed] = _remainingOutputBuffer[channel][s];
     samplesProcessed++;
   }
 
   // delete processed leftover from the remaining buffer
-  for (std::size_t channel = 0; channel < 2; channel++)
+  for (int channel = 0; channel < 2; channel++)
     _remainingOutputBuffer[channel].erase(
       _remainingOutputBuffer[channel].begin(), 
       _remainingOutputBuffer[channel].begin() + samplesProcessed);
@@ -37,10 +34,10 @@ FFPluginProcessor::Process(
     _oscillatorProcessor.Process(_sampleRate, _oscillatorBlock);
 
     // process in chunks of internal block size, may cause leftovers
-    std::size_t blockSample = 0;
+    int blockSample = 0;
     for (; blockSample < FF_BLOCK_SIZE && samplesProcessed < sampleCount; blockSample++)
     {
-      for (std::size_t channel = 0; channel < 2; channel++)
+      for (int channel = 0; channel < 2; channel++)
         outputBuffer[channel][samplesProcessed] = _oscillatorBlock[channel][blockSample];
       samplesProcessed++;
     }
@@ -48,7 +45,7 @@ FFPluginProcessor::Process(
     // if we could not process all of the last internal block, stick it in the remaining buffer
     for (; blockSample < FF_BLOCK_SIZE; blockSample++)
     {
-      for (std::size_t channel = 0; channel < 2; channel++)
+      for (int channel = 0; channel < 2; channel++)
         _remainingOutputBuffer[channel].push_back(_oscillatorBlock[channel][blockSample]);
       samplesProcessed++;
       assert(_remainingOutputBuffer[0].size() <= _maxRemaining);
