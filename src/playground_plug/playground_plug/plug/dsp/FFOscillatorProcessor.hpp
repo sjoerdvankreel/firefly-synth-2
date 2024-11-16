@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/plug/dsp/FFPluginBlocks.hpp>
+#include <playground_plug/plug/shared/FFPluginBlocks.hpp>
 
 class FFOscillatorProcessor
 {

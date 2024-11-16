@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/base/dsp/FBPluginBlocks.hpp>
+#include <playground_plug/base/shared/FBPluginBlocks.hpp>
 #include <playground_plug/plug/shared/FFPluginConfiguration.hpp>
 #include <cstddef>
 
