@@ -21,7 +21,7 @@ FFPluginProcessor::Process(
   for (std::size_t sample = 0; sample < sampleCount && sample < _remainingOutputBuffer[0].size(); sample++)
   {
     for(std::size_t channel = 0; channel < 2; channel++)
-      outputBuffer[channel][sample] = _remainingOutputBuffer[channel][sample];
+      outputBuffer[channel][samplesProcessed] = _remainingOutputBuffer[channel][sample];
     samplesProcessed++;
   }
 
@@ -40,7 +40,7 @@ FFPluginProcessor::Process(
     for (; blockSample < FF_BLOCK_SIZE && samplesProcessed < sampleCount; blockSample++)
     {
       for (std::size_t channel = 0; channel < 2; channel++)
-        outputBuffer[channel][samplesProcessed + blockSample] = _oscillatorBlock[channel][blockSample];
+        outputBuffer[channel][samplesProcessed] = _oscillatorBlock[channel][blockSample];
       samplesProcessed++;
     }
 
