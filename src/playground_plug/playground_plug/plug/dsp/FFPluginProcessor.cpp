@@ -1,13 +1,14 @@
 #include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
 #include <cassert>
+#include <algorithm>
 
 FFPluginProcessor::
 FFPluginProcessor(std::size_t maxBlockSize, float sampleRate):
-_maxBlockSize(maxBlockSize),
-_sampleRate(sampleRate)
+_sampleRate(sampleRate),
+_maxRemaining(std::max(maxBlockSize, static_cast<std::size_t>(FF_BLOCK_SIZE)))
 {
-  _remainingOutputBuffer[0].resize(maxBlockSize);
-  _remainingOutputBuffer[1].resize(maxBlockSize);
+  _remainingOutputBuffer[0].resize(_maxRemaining);
+  _remainingOutputBuffer[1].resize(_maxRemaining);
 }
 
 void 
@@ -50,7 +51,7 @@ FFPluginProcessor::Process(
       for (std::size_t channel = 0; channel < 2; channel++)
         _remainingOutputBuffer[channel].push_back(_oscillatorBlock[channel][blockSample]);
       samplesProcessed++;
-      assert(_remainingOutputBuffer[0].size() < _maxBlockSize);
+      assert(_remainingOutputBuffer[0].size() <= _maxRemaining);
     }
   }
 }

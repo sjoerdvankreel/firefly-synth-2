@@ -9,8 +9,7 @@
 class FFPluginProcessor
 {
   float const _sampleRate;
-  std::size_t const _maxBlockSize;
-
+  std::size_t const _maxRemaining;
   FFAudioBlock _oscillatorBlock = {};
   FFOscillatorProcessor _oscillatorProcessor = {};
   std::array<std::vector<float>, 2> _remainingOutputBuffer = {};
