@@ -11,23 +11,13 @@ std::unique_ptr<FBPluginRuntimeTopology>
 FBGenerateRuntimeTopology(
   FBPluginStaticTopology const& staticTopology);
 
-struct FBPluginStaticParameterBase
+struct FBPluginStaticParameter
 {
-  int index; // static index - discrete and continuous both start at 0
+  int index; // static index
   int slotCount; // multi-slot params are useful for mod matrices
+  int stepCount; // or 0 for continuous
   std::string name;
   std::string uniqueId;
-};
-
-struct FBPluginStaticDiscreteParameter:
-public FBPluginStaticParameterBase
-{
-  int stepCount;
-};
-
-struct FBPluginStaticContinuousParameter :
-public FBPluginStaticParameterBase
-{
 };
 
 struct FBPluginStaticModule
@@ -36,8 +26,7 @@ struct FBPluginStaticModule
   int slotCount;
   std::string name;
   std::string uniqueId;
-  std::vector<FBPluginStaticDiscreteParameter> discreteParameters;
-  std::vector<FBPluginStaticContinuousParameter> continuousParameters;
+  std::vector<FBPluginStaticParameter> parameters;
 };
 
 struct FBPluginStaticTopology
@@ -45,23 +34,12 @@ struct FBPluginStaticTopology
   std::vector<FBPluginStaticModule> modules;
 };
 
-struct FBPluginRuntimeParameterBase
+struct FBPluginRuntimeParameter
 {
-  int index; // runtime index - discrete first, continous next
+  int index; // runtime index
   std::string name;
   std::string uniqueId;
-};
-
-struct FBPluginRuntimeDiscreteParameter:
-public FBPluginRuntimeParameterBase
-{
-  std::shared_ptr<FBPluginStaticDiscreteParameter> staticTopology;
-};
-
-struct FBPluginRuntimeContinousParameter:
-public FBPluginRuntimeParameterBase
-{
-  std::shared_ptr<FBPluginStaticContinuousParameter> staticTopology;
+  std::shared_ptr<FBPluginStaticParameter> staticTopology;
 };
 
 struct FBPluginRuntimeModule
@@ -69,9 +47,8 @@ struct FBPluginRuntimeModule
   int index; // runtime index
   std::string name;
   std::string uniqueId;
+  std::vector<FBPluginRuntimeParameter> parameters;
   std::shared_ptr<FBPluginStaticModule> staticTopology;
-  std::vector<FBPluginRuntimeDiscreteParameter> discreteParameters;
-  std::vector<FBPluginRuntimeContinousParameter> continuousParameters;
 };
 
 struct FBPluginRuntimeTopology
