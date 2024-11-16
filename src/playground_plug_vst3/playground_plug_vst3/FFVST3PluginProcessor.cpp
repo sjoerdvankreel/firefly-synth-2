@@ -9,7 +9,7 @@ FFVST3PluginProcessor(FUID const& controllerId)
 tresult PLUGIN_API
 FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
 {
-  _processor.reset(new FFPluginProcessor(setup.sampleRate));
+  _processor.reset(new FFPluginProcessor(setup.maxSamplesPerBlock, setup.sampleRate));
   return kResultTrue;
 }
 

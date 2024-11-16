@@ -4,9 +4,6 @@
 class FFOscillatorProcessor
 {
   float _phase = 0.0f;
-
 public:
-
-  void 
-  Process(float sampleRate, FFAudioBlock& block);
+  void Process(float sampleRate, FFAudioBlock& block);
 };
