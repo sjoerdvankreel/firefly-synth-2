@@ -7,6 +7,13 @@ FFVST3PluginProcessor(FUID const& controllerId)
 }
 
 tresult PLUGIN_API
+FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
+{
+  _processor.reset(new FFPluginProcessor(setup.sampleRate));
+  return kResultTrue;
+}
+
+tresult PLUGIN_API
 FFVST3PluginProcessor::initialize(FUnknown* context)
 {
   if (AudioEffect::initialize(context) != kResultTrue)
@@ -29,7 +36,7 @@ FFVST3PluginProcessor::process(ProcessData& data)
 {
   if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
     return kResultTrue;
-  _processor.Process(nullptr, data.outputs->channelBuffers32, data.numSamples);
+  _processor->Process(nullptr, data.outputs->channelBuffers32, data.numSamples);
   return kResultTrue;
 }
 

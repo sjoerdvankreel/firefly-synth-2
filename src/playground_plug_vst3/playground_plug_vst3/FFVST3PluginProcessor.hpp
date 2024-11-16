@@ -1,6 +1,7 @@
 #pragma once
 #include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
 #include <public.sdk/source/vst/vstaudioeffect.h>
+#include <memory>
 
 using namespace Steinberg;
 using namespace Steinberg::Vst;
@@ -8,7 +9,7 @@ using namespace Steinberg::Vst;
 class FFVST3PluginProcessor :
 public AudioEffect
 {
-  FFPluginProcessor _processor;
+  std::unique_ptr<FFPluginProcessor> _processor = {};
 
 public:  
 
@@ -18,6 +19,8 @@ public:
   process(ProcessData& data) override;
   tresult PLUGIN_API 
   initialize(FUnknown* context) override;
+  tresult PLUGIN_API
+  setupProcessing(ProcessSetup& setup) override;
   tresult PLUGIN_API 
   canProcessSampleSize(int32 symbolicSize) override;
   tresult PLUGIN_API 
