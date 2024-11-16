@@ -1,6 +1,6 @@
-#include <playground_plug_vst3/FFVST3PluginProcessor.hpp>
-#include <playground_plug_vst3/FFVST3PluginController.hpp>
-#include <playground_plug/plug/shared/FFPluginConfiguration.hpp>
+#include <playground_plug_vst3/FFVST3Processor.hpp>
+#include <playground_plug_vst3/FFVST3Controller.hpp>
+#include <playground_plug/plug/shared/FFConfiguration.hpp>
 
 #include <public.sdk/source/main/pluginfactory.h>
 #include <pluginterfaces/vst/ivstcomponent.h>
@@ -33,14 +33,14 @@ ProcessorFUID()
 static FUnknown*
 ControllerFactory(void*) 
 {
-  auto result = new FFVST3PluginController;
+  auto result = new FFVST3Controller;
   return static_cast<IEditController*>(result);
 }
 
 static FUnknown*
 ProcessorFactory(void*)
 {
-  auto result = new FFVST3PluginProcessor(ControllerFUID());
+  auto result = new FFVST3Processor(ControllerFUID());
   return static_cast<IAudioProcessor*>(result);
 }
 

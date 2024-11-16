@@ -1,20 +1,20 @@
-#include <playground_plug_vst3/FFVST3PluginProcessor.hpp>
+#include <playground_plug_vst3/FFVST3Processor.hpp>
 
-FFVST3PluginProcessor::
-FFVST3PluginProcessor(FUID const& controllerId)
+FFVST3Processor::
+FFVST3Processor(FUID const& controllerId)
 {
   setControllerClass(controllerId);
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
+FFVST3Processor::setupProcessing(ProcessSetup& setup)
 {
-  _processor.reset(new FFPluginProcessor(setup.sampleRate));
+  _processor.reset(new FFProcessor(setup.sampleRate));
   return kResultTrue;
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::initialize(FUnknown* context)
+FFVST3Processor::initialize(FUnknown* context)
 {
   if (AudioEffect::initialize(context) != kResultTrue)
     return kResultFalse;
@@ -24,7 +24,7 @@ FFVST3PluginProcessor::initialize(FUnknown* context)
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
+FFVST3Processor::canProcessSampleSize(int32 symbolicSize)
 {
   if (symbolicSize == kSample32) 
     return kResultTrue;
@@ -32,7 +32,7 @@ FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::process(ProcessData& data)
+FFVST3Processor::process(ProcessData& data)
 {
   if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
     return kResultTrue;
@@ -41,7 +41,7 @@ FFVST3PluginProcessor::process(ProcessData& data)
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::setBusArrangements(SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
+FFVST3Processor::setBusArrangements(SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
   if (numIns != 0 || numOuts != 1 || outputs[0] != SpeakerArr::kStereo)
     return kResultFalse;

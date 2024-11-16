@@ -1,15 +1,15 @@
-#include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
+#include <playground_plug/plug/dsp/FFProcessor.hpp>
 #include <cmath>
 #include <numbers>
 
-FFPluginProcessor::
-FFPluginProcessor(float sampleRate) :
+FFProcessor::
+FFProcessor(float sampleRate) :
 _sampleRate(sampleRate)
 {
 }
 
 void 
-FFPluginProcessor::Process(FF_RAW_INPUT_BUFFER in, FF_RAW_OUTPUT_BUFFER out, std::size_t n)
+FFProcessor::Process(FB_RAW_INPUT_BUFFER in, FB_RAW_OUTPUT_BUFFER out, std::size_t n)
 {
   for (std::size_t i = 0; i < n; i++)
   {

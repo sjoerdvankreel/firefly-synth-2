@@ -4,7 +4,7 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-class FFVST3PluginController:
+class FFVST3Controller:
 public EditControllerEx1
 {
 };
