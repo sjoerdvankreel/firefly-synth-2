@@ -29,14 +29,14 @@ struct FFPluginParameterMemory
 };
 
 typedef FFPluginParameterMemory<float> FFControllerParameterMemory;
-typedef FFPluginParameterMemory<FFSingleBlock> FFProcessorParameterMemory;
+typedef FFPluginParameterMemory<FFMonoBlock> FFProcessorParameterMemory;
 
 struct FFPluginProcessorBlock
 {
   float sampleRate;
-  FFDualBlock masterOutput;
+  FFStereoBlock masterOutput;
   FFProcessorParameterMemory parameterMemory;
-  std::array<FFDualBlock, FF_OSCILLATOR_COUNT> oscillatorAudioOutput;
-  std::array<FFDualBlock, FF_WAVE_SHAPER_COUNT> waveShaperAudioInput;
-  std::array<FFDualBlock, FF_WAVE_SHAPER_COUNT> waveShaperAudioOutput;
+  std::array<FFStereoBlock, FF_OSCILLATOR_COUNT> oscillatorAudioOutput;
+  std::array<FFStereoBlock, FF_WAVE_SHAPER_COUNT> waveShaperAudioInput;
+  std::array<FFStereoBlock, FF_WAVE_SHAPER_COUNT> waveShaperAudioOutput;
 };

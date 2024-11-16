@@ -1,10 +1,11 @@
 #pragma once
 
+#include <playground_plug/base/shared/FBUtilityMacros.hpp>
 #include <array>
 #include <cstddef>
 
 template <int Count>
-struct FBSingleBlock
+struct FBMonoBlock
 {
   std::array<float, Count> detail_store;
 
@@ -17,24 +18,24 @@ struct FBSingleBlock
   { detail_store.fill(0.0f); }
   void InPlaceMultiply(float x) 
   { for (int i = 0; i < Count; i++) (*this)[i] *= x; }
-  void InPlaceAdd(FBSingleBlock const& rhs) 
+  void InPlaceAdd(FBMonoBlock const& rhs)
   { for (int i = 0; i < Count; i++) (*this)[i] += rhs[i]; }
 };
 
 template <int Count>
-struct FBDualBlock
+struct FBStereoBlock
 {
-  std::array<FBSingleBlock<Count>, 2> detail_store;
+  std::array<FBMonoBlock<Count>, FB_CHANNELS_STEREO> detail_store;
 
-  FBSingleBlock<Count>& operator[](int index) 
+  FBMonoBlock<Count>& operator[](int index)
   { return detail_store[index]; }
-  FBSingleBlock<Count> const& operator[](int index) const 
+  FBMonoBlock<Count> const& operator[](int index) const
   { return detail_store[index]; }
 
   void SetToZero() 
-  { for (int i = 0; i < 2; i++) (*this)[i].SetToZero(); }
+  { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].SetToZero(); }
   void InPlaceMultiply(float x) 
-  { for (int i = 0; i < 2; i++) (*this)[i].InPlaceMultiply(x); }
-  void InPlaceAdd(FBDualBlock const& rhs) 
-  { for (int i = 0; i < 2; i++) (*this)[i].InPlaceAdd(rhs[i]); }
+  { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].InPlaceMultiply(x); }
+  void InPlaceAdd(FBStereoBlock const& rhs)
+  { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].InPlaceAdd(rhs[i]); }
 };

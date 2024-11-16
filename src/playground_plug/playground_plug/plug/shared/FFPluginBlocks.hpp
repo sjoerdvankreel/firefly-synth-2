@@ -4,5 +4,5 @@
 #include <playground_plug/plug/shared/FFPluginConfiguration.hpp>
 #include <cstddef>
 
-typedef FBDualBlock<FF_BLOCK_SIZE> FFDualBlock;
-typedef FBSingleBlock<FF_BLOCK_SIZE> FFSingleBlock;
+typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
+typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
