@@ -13,7 +13,10 @@ _maxRemaining(std::max(maxBlockSize, FF_BLOCK_SIZE))
 }
 
 void 
-FFPluginProcessor::Process(FB_RAW_AUDIO_INPUT_BUFFER inputBuffer, FB_RAW_AUDIO_OUTPUT_BUFFER outputBuffer, int sampleCount)
+FFPluginProcessor::Process(
+  FB_RAW_AUDIO_INPUT_BUFFER inputBuffer, 
+  FB_RAW_AUDIO_OUTPUT_BUFFER outputBuffer, 
+  int sampleCount)
 {
   // handle leftover from the previous round
   int samplesProcessed = 0;
@@ -60,4 +63,11 @@ FFPluginProcessor::ProcessInternal()
 {
   for (int osci = 0; osci < FF_OSCILLATOR_COUNT; osci++)
     _processors.oscillator[osci].Process(osci, _processorBlock);
+  for (int channel = 0; channel < 2; channel++)
+  {
+    _processorBlock.waveShaperAudioInput[0][channel].fill(0.0f);
+    for (int osci = 0; osci < FF_OSCILLATOR_COUNT; osci++)
+      for (int s = 0; s < FF_BLOCK_SIZE; s++)
+        _processorBlock.waveShaperAudioInput[0][channel][s] += _processorBlock.oscillatorAudioOutput[osci][channel][s];
+  }
 }

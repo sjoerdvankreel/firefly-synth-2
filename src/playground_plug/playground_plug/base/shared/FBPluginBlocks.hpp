@@ -4,18 +4,18 @@
 #include <cstddef>
 
 template <int Count>
-using FBCVBlock = std::array<float, Count>;
+using FBSingleBlock = std::array<float, Count>;
 template <int Count>
-using FBAudioBlock = std::array<std::array<float, Count>, 2>;
+using FBDualBlock = std::array<FBSingleBlock<Count>, 2>;
 
 template <int Count>
-inline int constexpr FBBlockSize(FBCVBlock<Count> const& block)
+inline int constexpr FBBlockSize(FBSingleBlock<Count> const& block)
 {
   return static_cast<int>(block.size());
 }
 
 template <int Count>
-inline int constexpr FBBlockSize(FBAudioBlock<Count> const& block)
+inline int constexpr FBBlockSize(FBDualBlock<Count> const& block)
 {
-  return static_cast<int>(block[0].size());
+  return FBBlockSize(block[0]);
 }
