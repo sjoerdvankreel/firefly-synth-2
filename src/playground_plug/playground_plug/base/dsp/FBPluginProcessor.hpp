@@ -53,7 +53,8 @@ FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::ProcessHostBlock(FBHos
       _remainingOut[channel].begin(),
       _remainingOut[channel].begin() + samplesProcessed);
 
-  // non-automatable parameters only changed by ui, no need to split blocks
+  // non-automatable parameters only changed by ui, no need to split blocks 
+  // (actually there's no sample position anyway)
   for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
   {
     auto const& event = hostBlock.plugEvents[pe];
