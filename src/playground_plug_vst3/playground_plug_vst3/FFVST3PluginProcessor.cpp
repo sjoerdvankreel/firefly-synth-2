@@ -1,6 +1,17 @@
 #include <playground_plug_vst3/FFVST3PluginProcessor.hpp>
 #include <pluginterfaces/vst/ivstevents.h>
 #include <pluginterfaces/vst/ivstparameterchanges.h>
+#include <algorithm>
+
+static FBAutoEvent
+MakeAutoEvent(int tag, int position, ParamValue value)
+{
+  FBAutoEvent result;
+  result.tag = tag;
+  result.normalized = value;
+  result.position = position;
+  return result;
+}
 
 static FBNoteEvent
 MakeNoteOnEvent(Event const& event)
@@ -11,6 +22,7 @@ MakeNoteOnEvent(Event const& event)
   result.key = event.noteOn.pitch;
   result.velo = event.noteOn.velocity;
   result.channel = event.noteOn.channel;
+  result.position = event.sampleOffset;
   return result;
 }
 
@@ -23,16 +35,7 @@ MakeNoteOffEvent(Event const& event)
   result.key = event.noteOff.pitch;
   result.velo = event.noteOff.velocity;
   result.channel = event.noteOff.channel;
-  return result;
-}
-
-static FBAutoEvent
-MakeAutoEvent(int tag, int position, ParamValue value)
-{
-  FBAutoEvent result;
-  result.tag = tag;
-  result.normalized = value;
-  result.position = position;
+  result.position = event.sampleOffset;
   return result;
 }
 
@@ -81,6 +84,10 @@ FFVST3PluginProcessor::process(ProcessData& data)
   if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
     return kResultTrue;
   
+  _hostBlock.audioIn = nullptr;
+  _hostBlock.sampleCount = data.numSamples;
+  _hostBlock.audioOut = data.outputs[0].channelBuffers32;
+
   Event event;
   _hostBlock.noteEvents.clear();
   if (data.inputEvents != nullptr)
@@ -90,9 +97,6 @@ FFVST3PluginProcessor::process(ProcessData& data)
           _hostBlock.noteEvents.push_back(MakeNoteOnEvent(event));
         else if (event.type == Event::kNoteOffEvent)
           _hostBlock.noteEvents.push_back(MakeNoteOffEvent(event));
-
-  // TODO how to order the events
-  // by param or by position ?
 
   int position;
   ParamValue value;
@@ -105,9 +109,12 @@ FFVST3PluginProcessor::process(ProcessData& data)
           if (queue->getPoint(point, position, value) == kResultTrue)
             _hostBlock.autoEvents.push_back(MakeAutoEvent(queue->getParameterId(), position, value));
 
-  _hostBlock.audioIn = nullptr;
-  _hostBlock.sampleCount = data.numSamples;
-  _hostBlock.audioOut = data.outputs[0].channelBuffers32;
+  // sort by position
+  // CLAP also does it this way 
+  // and it makes the block splitting easier
+  auto compare = [](auto const& l, auto const& r) { return l.position < r.position; };
+  std::sort(_hostBlock.autoEvents.begin(), _hostBlock.autoEvents.end(), compare);
+
   _processor->ProcessHostBlock(_hostBlock);
   return kResultTrue;
 }

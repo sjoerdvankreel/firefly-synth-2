@@ -13,11 +13,13 @@ struct FBAutoEvent
 
 struct FBNoteEvent
 {
-  int id;
   bool on;
   float velo;
-  short key;
-  short channel;
+  
+  int id;
+  int key;
+  int channel;
+  int position;
 };
 
 struct FBHostBlock
@@ -27,6 +29,8 @@ struct FBHostBlock
   int sampleCount;
   float* const* audioOut;
   float const* const* audioIn;
+
+  // both must be sorted by sample position
   std::vector<FBNoteEvent> noteEvents = { 1024, FBNoteEvent() };
   std::vector<FBAutoEvent> autoEvents = { 1024, FBAutoEvent() };
 };
