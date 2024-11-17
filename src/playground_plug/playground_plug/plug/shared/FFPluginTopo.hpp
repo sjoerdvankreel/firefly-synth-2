@@ -14,7 +14,7 @@ enum { FFShaperAutoParamGain, FFShaperAutoParamCount };
 enum { FFOsciPlugParamOn, FFOsciPlugParamCount };
 enum { FFOsciAutoParamGain, FFOsciAutoParamPitch, FFOsciAutoParamCount };
 
-std::unique_ptr<FBStaticTopo>
+FBStaticTopo
 FFMakeTopo();
 
 struct FFPluginProcessors

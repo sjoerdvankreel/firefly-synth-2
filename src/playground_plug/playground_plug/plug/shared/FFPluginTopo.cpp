@@ -1,12 +1,12 @@
 #include <playground_plug/plug/shared/FFPluginTopo.hpp>
 
-std::unique_ptr<FBStaticTopo>
+FBStaticTopo
 FFMakeTopo()
 {
-  auto result = std::make_unique<FBStaticTopo>();
-  result->modules.resize(FFModuleCount);
+  FBStaticTopo result;
+  result.modules.resize(FFModuleCount);
   
-  auto& osci = result->modules[FFModuleOsci];
+  auto& osci = result.modules[FFModuleOsci];
   osci.name = "Osc";
   osci.slotCount = FF_OSCI_COUNT;
   osci.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
@@ -31,7 +31,7 @@ FFMakeTopo()
   osciPitch.stepCount = 0;
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
 
-  auto& shaper = result->modules[FFModuleShaper];
+  auto& shaper = result.modules[FFModuleShaper];
   shaper.name = "Shaper";
   shaper.slotCount = FF_SHAPER_COUNT;
   shaper.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
