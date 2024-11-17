@@ -13,7 +13,6 @@ FBGenerateRuntimeTopology(
 
 struct FBPluginStaticParameter
 {
-  int index; // static index
   int slotCount; // multi-slot params are useful for mod matrices
   int stepCount; // or 0 for continuous
   std::string name;
@@ -22,7 +21,6 @@ struct FBPluginStaticParameter
 
 struct FBPluginStaticModule
 {
-  int index; // static index
   int slotCount;
   std::string name;
   std::string uniqueId;
@@ -36,7 +34,7 @@ struct FBPluginStaticTopology
 
 struct FBPluginRuntimeParameter
 {
-  int index; // runtime index
+  int uniqueIdHash; // VST3 / CLAP param tag
   std::string name;
   std::string uniqueId;
   std::shared_ptr<FBPluginStaticParameter> staticTopology;
@@ -44,7 +42,6 @@ struct FBPluginRuntimeParameter
 
 struct FBPluginRuntimeModule
 {
-  int index; // runtime index
   std::string name;
   std::string uniqueId;
   std::vector<FBPluginRuntimeParameter> parameters;

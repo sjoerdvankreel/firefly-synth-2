@@ -1,4 +1,16 @@
 #include <playground_plug/base/shared/FBPluginTopology.hpp>
+#include <cstdint>
+
+static int
+UniqueIdStableHash(
+  std::string const& uniqueId)
+{
+  std::uint32_t result = 0;
+  int const multiplier = 33;
+  for(char c: uniqueId)
+    result = multiplier * result + static_cast<std::uint32_t>(c);
+  return std::abs(static_cast<int>(result + (result >> 5)));
+}
 
 static std::string
 RuntimeParameterNamePart(
@@ -49,15 +61,12 @@ FBGenerateRuntimeTopology(
 {
   auto result = std::make_unique<FBPluginRuntimeTopology>();
 
-  int runtimeModuleIndex = 0;
-  int runtimeParameterIndex = 0;
   for (int mi = 0; mi < staticTopology.modules.size(); mi++)
   {
     auto staticModule = std::make_shared<FBPluginStaticModule>(staticTopology.modules[mi]);
     for (int ms = 0; ms < staticModule->slotCount; ms++)
     {
       FBPluginRuntimeModule runtimeModule;
-      runtimeModule.index = runtimeModuleIndex++;
       runtimeModule.staticTopology = staticModule;
       runtimeModule.name = RuntimeModuleName(*staticModule, ms);
       runtimeModule.uniqueId = RuntimeModuleUniqueId(*staticModule, ms);      
@@ -67,10 +76,10 @@ FBGenerateRuntimeTopology(
         for (int ps = 0; ps < staticParameter->slotCount; ps++)
         {
           FBPluginRuntimeParameter runtimeParameter;
-          runtimeParameter.index = runtimeParameterIndex++;
           runtimeParameter.staticTopology = staticParameter;
           runtimeParameter.name = RuntimeParameterName(*staticModule, ms, *staticParameter, ps);
           runtimeParameter.uniqueId = RuntimeParameterUniqueId(*staticModule, ms, *staticParameter, ps);
+          runtimeParameter.uniqueIdHash = UniqueIdStableHash(runtimeParameter.uniqueId);
           runtimeModule.parameters.push_back(runtimeParameter);
         }
       }
