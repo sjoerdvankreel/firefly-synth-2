@@ -18,6 +18,8 @@ FFMakeTopo()
   osciOn.slotCount = 1;
   osciOn.stepCount = 1;
   osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
+  osciOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
+    return &block->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamOn]; };
 
   auto& osciGain = osci.autoParams[FFOsciAutoParamGain];
   osciGain.name = "Gain";
@@ -43,6 +45,16 @@ FFMakeTopo()
   shaperOn.slotCount = 1;
   shaperOn.stepCount = 1;
   shaperOn.id = "{BF67A27A-97E9-4640-9E57-B1E04D195ACC}";
+  shaperOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
+    return &block->paramMemory.shaperPlug[moduleSlot][FFShaperPlugParamOn]; };
+
+  auto& shaperClip = shaper.plugParams[FFShaperPlugParamClip];
+  shaperClip.name = "Clip";
+  shaperClip.slotCount = 1;
+  shaperClip.stepCount = 1;
+  shaperClip.id = "{81C7442E-4064-4E90-A742-FDDEA84AE1AC}";
+  shaperClip.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
+    return &block->paramMemory.shaperPlug[moduleSlot][FFShaperPlugParamClip]; };
 
   auto& shaperGain = shaper.autoParams[FFShaperAutoParamGain];
   shaperGain.name = "Gain";

@@ -61,7 +61,8 @@ FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::ProcessHostBlock(FBHos
   {
     auto const& event = hostBlock.plugEvents[pe];
     int index = _topo->tagToPlugParam.at(event.tag);
-    *(_topo->plugParams[index].staticTopo.PlugParamAddr(&_pluginBlock)) = event.normalized;
+    auto const& param = _topo->plugParams[index];
+    *(_topo->plugParams[index].staticTopo.plugParamAddr(param.moduleSlot, param.paramSlot, &_pluginBlock)) = event.normalized;
   }
 
   // deal with remainder of host block

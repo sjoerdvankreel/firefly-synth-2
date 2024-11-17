@@ -26,8 +26,10 @@ struct FBStaticParam
   std::string unit;
 
   // reason for template
-  float* (*PlugParamAddr)(PluginBlock* block);
-  std::array<float, PluginBlock::BlockSize>* (*AutoParamAddr)(PluginBlock* block);
+  float* (*plugParamAddr)(
+    int moduleSlot, int paramSlot, PluginBlock* block);
+  std::array<float, PluginBlock::BlockSize>* (*autoParamAddr)(
+    int moduleSlot, int paramSlot, PluginBlock* block);
 };
 
 template <class PluginBlock>
@@ -50,6 +52,9 @@ template <class PluginBlock>
 struct FBRuntimeParam
 {
   int tag; // VST3 / CLAP param tag
+  int moduleSlot;
+  int paramSlot;
+
   std::string id;
   std::string name;
   FBStaticParam<PluginBlock> staticTopo;
@@ -89,7 +94,10 @@ FBRuntimeParam(
   FBStaticModule<PluginBlock> const& module, int moduleSlot,
   FBStaticParam<PluginBlock> const& param, int paramSlot)
 {
+  moduleSlot = moduleSlot;
+  paramSlot = paramSlot;
   staticTopo = param;
+
   id = FBMakeId(module.id, moduleSlot);
   id += "-" + FBMakeId(param.id, paramSlot);
   name = FBMakeName(module.name, module.slotCount, moduleSlot);
