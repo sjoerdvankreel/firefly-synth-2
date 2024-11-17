@@ -12,6 +12,7 @@ struct FBStaticParam
   int slotCount; // multi-slot params are useful for mod matrices
   std::string id;
   std::string name;
+  std::string unit;
 };
 
 struct FBStaticModule
@@ -33,6 +34,7 @@ struct FBRuntimeParam
   int tag; // VST3 / CLAP param tag
   std::string id;
   std::string name;
+  FBStaticParam staticTopo;
 
   FBRuntimeParam(
     FBStaticModule const& module, int moduleSlot,

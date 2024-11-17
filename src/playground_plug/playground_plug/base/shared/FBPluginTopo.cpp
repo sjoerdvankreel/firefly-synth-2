@@ -31,6 +31,7 @@ FBRuntimeParam(
   FBStaticModule const& module, int moduleSlot,
   FBStaticParam const& param, int paramSlot)
 {
+  staticTopo = param;
   id = MakeId(module.id, moduleSlot);
   id += "-" + MakeId(param.id, paramSlot);
   name = MakeName(module.name, module.slotCount, moduleSlot);
@@ -57,6 +58,6 @@ FBRuntimeModule(
     for (int pps = 0; pps < module.plugParams[ppi].slotCount; pps++)
       plugParams.push_back(FBRuntimeParam(module, slot, module.plugParams[ppi], pps));
   for (int api = 0; api < module.autoParams.size(); api++)
-    for (int aps = 0; aps < module.plugParams[api].slotCount; aps++)
+    for (int aps = 0; aps < module.autoParams[api].slotCount; aps++)
       plugParams.push_back(FBRuntimeParam(module, slot, module.autoParams[api], aps));
 }

@@ -1,4 +1,5 @@
 static link
 relwithdebinfo
+check hash clash
 separate clap/vst projs
 Linux visibility-hidden & inline-hidden et all
