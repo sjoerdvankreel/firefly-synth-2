@@ -10,21 +10,22 @@ enum FBNoteEventType
   FBNoteEventTypeCut
 };
 
+// TODO nondestructive + per-voice
 struct FBAutoEvent
 {
-  int voice;
   int paramTag;
   int position;
   float normalized;
-  bool destructive;
 };
 
 struct FBNoteEvent
 {
-  float velo;
   short key;
   short port;
   short channel;
+
+  int id;
+  float velo;
   FBNoteEventType type;
 };
 
