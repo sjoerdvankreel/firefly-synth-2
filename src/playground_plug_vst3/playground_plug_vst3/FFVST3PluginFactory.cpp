@@ -18,18 +18,6 @@ TextToFUID(char const* text)
   return result;
 }
 
-static FUID
-ControllerFUID()
-{
-  return TextToFUID(FF_PLUGIN_CONTROLLER_ID);
-}
-
-static FUID
-ProcessorFUID()
-{
-  return TextToFUID(FF_PLUGIN_PROCESSOR_ID);
-}
-
 static FUnknown*
 ControllerFactory(void*) 
 {
@@ -40,18 +28,19 @@ ControllerFactory(void*)
 static FUnknown*
 ProcessorFactory(void*)
 {
-  auto result = new FFVST3PluginProcessor(ControllerFUID());
+  auto controllerFuid = TextToFUID(FF_PLUGIN_CONTROLLER_ID);
+  auto result = new FFVST3PluginProcessor(controllerFuid);
   return static_cast<IAudioProcessor*>(result);
 }
 
 BEGIN_FACTORY_DEF(FF_VENDOR_NAME, FF_VENDOR_URL, FF_VENDOR_MAIL)
   DEF_CLASS2(
-    INLINE_UID_FROM_FUID(ProcessorFUID()),
+    INLINE_UID_FROM_FUID(TextToFUID(FF_PLUGIN_PROCESSOR_ID)),
       PClassInfo::kManyInstances, kVstAudioEffectClass, 
       FF_PLUGIN_NAME, kDistributable, PlugType::kInstrument,
       FF_PLUGIN_VERSION, kVstVersionString, ProcessorFactory);
   DEF_CLASS2(
-    INLINE_UID_FROM_FUID(ControllerFUID()),
+    INLINE_UID_FROM_FUID(TextToFUID(FF_PLUGIN_CONTROLLER_ID)),
       PClassInfo::kManyInstances, kVstComponentControllerClass, 
       FF_PLUGIN_NAME, 0, "",
       FF_PLUGIN_VERSION, kVstVersionString, ControllerFactory)
