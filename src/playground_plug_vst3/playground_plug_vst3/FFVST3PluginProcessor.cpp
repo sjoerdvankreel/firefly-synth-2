@@ -112,6 +112,7 @@ FFVST3PluginProcessor::process(ProcessData& data)
   ParamValue value;
   IParamValueQueue* queue;
   std::map<int, int>::const_iterator iter;
+  _hostBlock.plugEvents.clear();
   _hostBlock.autoEvents.clear();
   if(data.inputParameterChanges != nullptr)
     for (int param = 0; param < data.inputParameterChanges->getParameterCount(); param++)
