@@ -59,5 +59,5 @@ FBRuntimeModule(
       plugParams.push_back(FBRuntimeParam(module, slot, module.plugParams[ppi], pps));
   for (int api = 0; api < module.autoParams.size(); api++)
     for (int aps = 0; aps < module.autoParams[api].slotCount; aps++)
-      plugParams.push_back(FBRuntimeParam(module, slot, module.autoParams[api], aps));
+      autoParams.push_back(FBRuntimeParam(module, slot, module.autoParams[api], aps));
 }
