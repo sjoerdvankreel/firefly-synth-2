@@ -11,7 +11,7 @@ FBPluginProcessor(maxBlockSize, sampleRate)
 
 // run one round of fixed block size
 void 
-FFPluginProcessor::ProcessInternal()
+FFPluginProcessor::ProcessBlock()
 {
   _block.shaperInput[0].SetToZero();
   for (int osci = 0; osci < FF_OSCI_COUNT; osci++)
@@ -23,5 +23,5 @@ FFPluginProcessor::ProcessInternal()
   _processors.shaper[0].Process(0, _block);
   _block.shaperInput[1] = _block.shaperInput[0];
   _processors.shaper[1].Process(1, _block);
-  _masterOutput = _block.shaperInput[1];
+  _blockOutput = _block.shaperInput[1];
 }

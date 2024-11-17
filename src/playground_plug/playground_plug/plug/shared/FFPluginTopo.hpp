@@ -1,9 +1,9 @@
 #pragma once
 
 #include <playground_plug/base/shared/FBPluginTopo.hpp>
+#include <playground_plug/base/shared/FBPluginBlock.hpp>
 #include <playground_plug/plug/dsp/FFOsciProcessor.hpp>
 #include <playground_plug/plug/dsp/FFShaperProcessor.hpp>
-#include <playground_plug/plug/shared/FFPluginBlocks.hpp>
 #include <playground_plug/plug/shared/FFPluginConfig.hpp>
 
 #include <array>
@@ -28,6 +28,8 @@ struct FFParamMemory
   std::array<std::array<T, FFShaperParamCount>, FF_SHAPER_COUNT> shaper;
 };
 
+typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
+typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
 typedef FFParamMemory<float> FFControllerParamMemory;
 typedef FFParamMemory<FFMonoBlock> FFProcessorParamMemory;
 

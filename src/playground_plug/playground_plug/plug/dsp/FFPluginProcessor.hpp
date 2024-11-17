@@ -15,5 +15,5 @@ public FBPluginProcessor<FFPluginProcessor, FF_BLOCK_SIZE>
 
 public:
   FFPluginProcessor(int maxBlockSize, float sampleRate);
-  void ProcessInternal();
+  void ProcessBlock();
 };
