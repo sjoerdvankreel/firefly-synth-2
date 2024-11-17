@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/base/shared/FBPluginBlocks.hpp>
+#include <playground_plug/base/shared/FBPluginBlock.hpp>
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
 
 #include <array>
@@ -8,8 +8,8 @@
 #include <cassert>
 
 // handles fixed block sizes
-// i don't know how to do this without crtp and no virtuals!
-template <int BlockSize, class Derived>
+// i don't know how to do this without crtp and no virtuals
+template <class Derived, int BlockSize>
 class FBPluginProcessor
 {
   int const _maxRemaining;
@@ -27,8 +27,8 @@ public:
     int sampleCount);
 };
 
-template <int BlockSize, class Derived>
-FBPluginProcessor<BlockSize, Derived>::
+template <class Derived, int BlockSize>
+FBPluginProcessor<Derived, BlockSize>::
 FBPluginProcessor(int maxBlockSize, float sampleRate):
 _sampleRate(sampleRate),
 _maxRemaining(std::max(maxBlockSize, BlockSize))
@@ -37,8 +37,8 @@ _maxRemaining(std::max(maxBlockSize, BlockSize))
   _remainingOutputBuffer[1].resize(_maxRemaining);
 }
 
-template <int BlockSize, class Derived> void 
-FBPluginProcessor<BlockSize, Derived>::Process(
+template <class Derived, int BlockSize> void
+FBPluginProcessor<Derived, BlockSize>::Process(
   FB_RAW_AUDIO_INPUT_BUFFER inputBuffer, 
   FB_RAW_AUDIO_OUTPUT_BUFFER outputBuffer, 
   int sampleCount)

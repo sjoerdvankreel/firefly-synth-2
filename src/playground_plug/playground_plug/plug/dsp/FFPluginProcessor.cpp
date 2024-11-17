@@ -6,22 +6,22 @@ FFPluginProcessor::
 FFPluginProcessor(int maxBlockSize, float sampleRate):
 FBPluginProcessor(maxBlockSize, sampleRate)
 {
-  _processorBlock.sampleRate = sampleRate;
+  _block.sampleRate = sampleRate;
 }
 
 // run one round of fixed block size
 void 
 FFPluginProcessor::ProcessInternal()
 {
-  _processorBlock.waveShaperAudioInput[0].SetToZero();
-  for (int osci = 0; osci < FF_OSCILLATOR_COUNT; osci++)
+  _block.shaperInput[0].SetToZero();
+  for (int osci = 0; osci < FF_OSCI_COUNT; osci++)
   {
-    _processors.oscillator[osci].Process(osci, _processorBlock);
-    _processorBlock.waveShaperAudioInput[0].InPlaceAdd(_processorBlock.oscillatorAudioOutput[osci]);
+    _processors.osci[osci].Process(osci, _block);
+    _block.shaperInput[0].InPlaceAdd(_block.osciOutput[osci]);
   }
-  _processorBlock.waveShaperAudioInput[0].InPlaceMultiply(0.5f);
-  _processors.waveShaper[0].Process(0, _processorBlock);
-  _processorBlock.waveShaperAudioInput[1] = _processorBlock.waveShaperAudioOutput[0];
-  _processors.waveShaper[1].Process(1, _processorBlock);
-  _masterOutput = _processorBlock.waveShaperAudioOutput[1];
+  _block.shaperInput[0].InPlaceMultiply(0.5f);
+  _processors.shaper[0].Process(0, _block);
+  _block.shaperInput[1] = _block.shaperInput[0];
+  _processors.shaper[1].Process(1, _block);
+  _masterOutput = _block.shaperInput[1];
 }
