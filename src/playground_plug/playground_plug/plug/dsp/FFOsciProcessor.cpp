@@ -6,7 +6,7 @@
 #include <numbers>
 
 void 
-FFOsciProcessor::Process(int moduleSlot, FFProcessorBlock& block)
+FFOsciProcessor::Process(int moduleSlot, FFPluginBlock& block)
 {
   for (int s = 0; s < FF_BLOCK_SIZE; s++)
   {
@@ -14,6 +14,6 @@ FFOsciProcessor::Process(int moduleSlot, FFProcessorBlock& block)
     _phase -= std::floor(_phase);
     float sample = std::sin(_phase * 2.0f * std::numbers::pi_v<float>);
     for(int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      block.osciOutput[moduleSlot][channel][s] = sample;
+      block.osciOut[moduleSlot][channel][s] = sample;
   }
 }

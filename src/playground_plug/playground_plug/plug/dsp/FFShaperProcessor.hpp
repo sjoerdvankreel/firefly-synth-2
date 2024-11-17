@@ -1,9 +1,9 @@
 #pragma once
 
-struct FFProcessorBlock;
+struct FFPluginBlock;
 
 class FFShaperProcessor
 {
 public:
-  void Process(int moduleSlot, FFProcessorBlock& block);
+  void Process(int moduleSlot, FFPluginBlock& block);
 };

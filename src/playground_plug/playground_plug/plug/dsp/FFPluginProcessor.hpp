@@ -8,10 +8,9 @@
 #include <vector>
 
 class FFPluginProcessor:
-public FBPluginProcessor<FFPluginProcessor, FF_BLOCK_SIZE>
+public FBPluginProcessor<FFPluginProcessor, FFPluginBlock, FF_BLOCK_SIZE>
 {
   FFPluginProcessors _processors = {};
-  FFProcessorBlock _processorBlock = {};
 
 public:
   FFPluginProcessor(int maxHostBlockSize, float sampleRate);

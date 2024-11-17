@@ -1,11 +1,11 @@
 #pragma once
 
-struct FFProcessorBlock;
+struct FFPluginBlock;
 
 class FFOsciProcessor
 {
   float _phase = 0.0f;
 
 public:
-  void Process(int moduleSlot, FFProcessorBlock& block);
+  void Process(int moduleSlot, FFPluginBlock& block);
 };

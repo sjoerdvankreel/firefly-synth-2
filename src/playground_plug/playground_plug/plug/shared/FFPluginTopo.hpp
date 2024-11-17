@@ -41,13 +41,14 @@ typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
 typedef FFParamMemory<float> FFControllerParamMemory;
 typedef FFParamMemory<FFMonoBlock> FFProcessorParamMemory;
 
-struct FFProcessorBlock
+struct FFPluginBlock
 {
-  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFProcessorBlock);
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginBlock);
 
   float sampleRate;
+  FFStereoBlock masterOut;
   FFProcessorParamMemory paramMemory;
-  std::array<FFStereoBlock, FF_OSCI_COUNT> osciOutput;
-  std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperInput;
-  std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperOutput;
+  std::array<FFStereoBlock, FF_OSCI_COUNT> osciOut;
+  std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperIn;
+  std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperOut;
 };
