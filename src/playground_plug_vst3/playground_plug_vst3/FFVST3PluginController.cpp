@@ -28,10 +28,15 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
   result.unitId = unitId;
   result.defaultNormalizedValue = 0.0; // TODO
   result.stepCount = param.staticTopo.stepCount;
-  result.flags = automate ? ParameterInfo::kCanAutomate : ParameterInfo::kIsReadOnly; // TODO isList
   CopyToString128(param.name, result.title);
   CopyToString128(param.staticTopo.unit, result.units);
   CopyToString128(param.staticTopo.name, result.shortTitle);
+
+  // TODO isList
+  if (automate)
+    result.flags = ParameterInfo::kCanAutomate;
+  else
+    result.flags = ParameterInfo::kIsReadOnly | ParameterInfo::kIsHidden;
   return result;
 }
 
