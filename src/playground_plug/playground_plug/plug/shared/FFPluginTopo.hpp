@@ -9,10 +9,13 @@
 #include <array>
 
 enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
-enum { FFOsciPlugParamOn, FFOsciPlugParamCount };
-enum { FFOsciAutoParamGain, FFOsciAutoParamPitch, FFOsciAutoParamCount };
+
 enum { FFShaperAutoParamGain, FFShaperAutoParamCount };
 enum { FFShaperPlugParamOn, FFShaperPlugParamClip, FFShaperPlugParamCount };
+
+enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
+enum { FFOsciPlugParamOn, FFOsciPlugParamType, FFOsciPlugParamCount };
+enum { FFOsciAutoParamGain, FFOsciAutoParamPitch, FFOsciAutoParamCount };
 
 struct FFPluginProcessors
 {

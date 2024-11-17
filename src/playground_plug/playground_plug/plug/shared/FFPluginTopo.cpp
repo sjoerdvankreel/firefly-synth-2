@@ -21,6 +21,14 @@ FFMakeTopo()
   osciOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
     return &block->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamOn]; };
 
+  auto& osciType = osci.plugParams[FFOsciPlugParamType];
+  osciType.name = "Type";
+  osciType.slotCount = 1;
+  osciType.stepCount = FFOsciTypeCount - 1;
+  osciType.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
+  osciType.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
+    return &block->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamType]; };
+
   auto& osciGain = osci.autoParams[FFOsciAutoParamGain];
   osciGain.name = "Gain";
   osciGain.slotCount = 1;
