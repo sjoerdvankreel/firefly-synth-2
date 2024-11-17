@@ -53,6 +53,14 @@ FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::ProcessHostBlock(FBHos
       _remainingOut[channel].begin(),
       _remainingOut[channel].begin() + samplesProcessed);
 
+  // non-automatable parameters only changed by ui, no need to split blocks
+  for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
+  {
+    auto const& event = hostBlock.plugEvents[pe];
+    (*_pluginBlock.plugParamMemoryPtrs[event.tag]) = event.normalized;
+  }
+
+  // deal with remainder of host block
   while (samplesProcessed < hostBlock.sampleCount)
   {
     static_cast<Derived*>(this)->ProcessPluginBlock();
@@ -66,7 +74,7 @@ FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::ProcessHostBlock(FBHos
       samplesProcessed++;
     }
 
-    // if we could not process all of the last internal block, stick it in the remaining buffer
+    // if we overshoot, stick it in the remaining buffer
     for (; blockSample < PluginBlockSize; blockSample++)
     {
       for (int channel = 0; channel < 2; channel++)

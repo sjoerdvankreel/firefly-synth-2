@@ -41,7 +41,8 @@ typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
 typedef FFParamMemory<float> FFControllerParamMemory;
 typedef FFParamMemory<FFMonoBlock> FFProcessorParamMemory;
 
-struct FFPluginBlock
+struct FFPluginBlock:
+public FBPluginBlockBase<FF_BLOCK_SIZE>
 {
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginBlock);
 
