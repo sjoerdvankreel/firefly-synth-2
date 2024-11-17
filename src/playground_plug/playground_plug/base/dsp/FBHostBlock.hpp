@@ -3,6 +3,12 @@
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
 #include <vector>
 
+struct FBPlugEvent
+{
+  int tag;
+  float normalized;
+};
+
 // TODO nondestructive + per-voice
 struct FBAutoEvent
 {
@@ -30,7 +36,8 @@ struct FBHostBlock
   float* const* audioOut;
   float const* const* audioIn;
 
-  // both must be sorted by sample position
+  // note and auto must be sorted by sample position
   std::vector<FBNoteEvent> noteEvents = { 1024, FBNoteEvent() };
   std::vector<FBAutoEvent> autoEvents = { 1024, FBAutoEvent() };
+  std::vector<FBPlugEvent> plugEvents = { 1024, FBPlugEvent() };
 };
