@@ -3,30 +3,21 @@
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
 #include <vector>
 
-enum FBNoteEventType
-{
-  FBNoteEventTypeOn,
-  FBNoteEventTypeOff,
-  FBNoteEventTypeCut
-};
-
 // TODO nondestructive + per-voice
 struct FBAutoEvent
 {
-  int paramTag;
+  int tag;
   int position;
   float normalized;
 };
 
 struct FBNoteEvent
 {
-  short key;
-  short port;
-  short channel;
-
   int id;
+  bool on;
   float velo;
-  FBNoteEventType type;
+  short key;
+  short channel;
 };
 
 struct FBHostBlock

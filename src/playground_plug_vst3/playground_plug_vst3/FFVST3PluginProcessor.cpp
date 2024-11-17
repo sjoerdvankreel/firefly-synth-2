@@ -1,4 +1,40 @@
 #include <playground_plug_vst3/FFVST3PluginProcessor.hpp>
+#include <pluginterfaces/vst/ivstevents.h>
+#include <pluginterfaces/vst/ivstparameterchanges.h>
+
+static FBNoteEvent
+MakeNoteOnEvent(Event const& event)
+{
+  FBNoteEvent result;
+  result.on = true;
+  result.id = event.noteOn.noteId;
+  result.key = event.noteOn.pitch;
+  result.velo = event.noteOn.velocity;
+  result.channel = event.noteOn.channel;
+  return result;
+}
+
+static FBNoteEvent
+MakeNoteOffEvent(Event const& event)
+{
+  FBNoteEvent result;
+  result.on = false;
+  result.id = event.noteOff.noteId;
+  result.key = event.noteOff.pitch;
+  result.velo = event.noteOff.velocity;
+  result.channel = event.noteOff.channel;
+  return result;
+}
+
+static FBAutoEvent
+MakeAutoEvent(int tag, int position, ParamValue value)
+{
+  FBAutoEvent result;
+  result.tag = tag;
+  result.normalized = value;
+  result.position = position;
+  return result;
+}
 
 FFVST3PluginProcessor::
 FFVST3PluginProcessor(FUID const& controllerId)
@@ -45,11 +81,33 @@ FFVST3PluginProcessor::process(ProcessData& data)
   if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
     return kResultTrue;
   
+  Event event;
+  _hostBlock.noteEvents.clear();
+  if (data.inputEvents != nullptr)
+    for (int i = 0; i < data.inputEvents->getEventCount(); i++)
+      if (data.inputEvents->getEvent(i, event) == kResultOk)
+        if (event.type == Event::kNoteOnEvent)
+          _hostBlock.noteEvents.push_back(MakeNoteOnEvent(event));
+        else if (event.type == Event::kNoteOffEvent)
+          _hostBlock.noteEvents.push_back(MakeNoteOffEvent(event));
+
+  // TODO how to order the events
+  // by param or by position ?
+
+  int position;
+  ParamValue value;
+  IParamValueQueue* queue;
+  _hostBlock.autoEvents.clear();
+  if(data.inputParameterChanges != nullptr)
+    for(int param = 0; param < data.inputParameterChanges->getParameterCount(); param++)
+      if ((queue = data.inputParameterChanges->getParameterData(param)) != nullptr)
+        for (int point = 0; point < queue->getPointCount(); point++)
+          if (queue->getPoint(point, position, value) == kResultTrue)
+            _hostBlock.autoEvents.push_back(MakeAutoEvent(queue->getParameterId(), position, value));
+
   _hostBlock.audioIn = nullptr;
   _hostBlock.sampleCount = data.numSamples;
   _hostBlock.audioOut = data.outputs[0].channelBuffers32;
-  _hostBlock.autoEvents.clear();
-  _hostBlock.noteEvents.clear();  
   _processor->ProcessHostBlock(_hostBlock);
   return kResultTrue;
 }

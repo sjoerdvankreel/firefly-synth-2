@@ -1,4 +1,5 @@
 static link
+clap note cut
 relwithdebinfo
 check hash clash
 separate clap/vst projs
