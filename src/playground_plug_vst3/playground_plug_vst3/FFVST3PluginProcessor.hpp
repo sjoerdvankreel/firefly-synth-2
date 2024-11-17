@@ -12,7 +12,7 @@ using namespace Steinberg::Vst;
 class FFVST3PluginProcessor :
 public AudioEffect
 {
-  FBRuntimeTopo const _topo;
+  FFRuntimeTopo const _topo;
   FBHostBlock _hostBlock = {};
   std::unique_ptr<FFPluginProcessor> _processor = {};
 

@@ -1,9 +1,9 @@
 #include <playground_plug/plug/shared/FFPluginTopo.hpp>
 
-FBStaticTopo
+FFStaticTopo
 FFMakeTopo()
 {
-  FBStaticTopo result;
+  FFStaticTopo result;
   result.modules.resize(FFModuleCount);
   
   auto& osci = result.modules[FFModuleOsci];

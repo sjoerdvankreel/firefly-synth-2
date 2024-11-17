@@ -3,7 +3,6 @@
 #include <playground_plug/base/shared/FBPluginBlock.hpp>
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
 
-#include <map>
 #include <array>
 #include <vector>
 
@@ -49,12 +48,4 @@ struct FBStereoBlock
   { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].InPlaceMultiply(x); }
   void InPlaceAdd(FBStereoBlock const& rhs)
   { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].InPlaceAdd(rhs[i]); }
-};
-
-template <int Count>
-struct FBPluginBlockBase
-{
-  // careful - tag to interior pointers!
-  std::map<int, float*> plugParamMemoryPtrs;
-  std::map<int, FBMonoBlock<Count>> autoParamMemoryPtrs;
 };

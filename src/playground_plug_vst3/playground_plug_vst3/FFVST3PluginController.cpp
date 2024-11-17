@@ -10,7 +10,7 @@ CopyToString128(std::string const& in, String128& out)
 }
 
 static UnitInfo
-MakeUnitInfo(FBRuntimeModule const& module, int id)
+MakeUnitInfo(FFRuntimeModule const& module, int id)
 {
   UnitInfo result;
   result.id = id;
@@ -21,7 +21,7 @@ MakeUnitInfo(FBRuntimeModule const& module, int id)
 }
 
 static ParameterInfo
-MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
+MakeParamInfo(FFRuntimeParam const& param, int unitId, bool automate)
 {
   ParameterInfo result;
   result.id = param.tag;

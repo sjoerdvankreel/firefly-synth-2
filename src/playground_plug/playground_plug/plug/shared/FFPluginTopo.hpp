@@ -14,9 +14,6 @@ enum { FFShaperAutoParamGain, FFShaperAutoParamCount };
 enum { FFOsciPlugParamOn, FFOsciPlugParamCount };
 enum { FFOsciAutoParamGain, FFOsciAutoParamPitch, FFOsciAutoParamCount };
 
-FBStaticTopo
-FFMakeTopo();
-
 struct FFPluginProcessors
 {
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginProcessors);
@@ -41,9 +38,9 @@ typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
 typedef FFParamMemory<float> FFControllerParamMemory;
 typedef FFParamMemory<FFMonoBlock> FFProcessorParamMemory;
 
-struct FFPluginBlock:
-public FBPluginBlockBase<FF_BLOCK_SIZE>
+struct FFPluginBlock
 {
+  static const int BlockSize = FF_BLOCK_SIZE;
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginBlock);
 
   float sampleRate;
@@ -53,3 +50,14 @@ public FBPluginBlockBase<FF_BLOCK_SIZE>
   std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperIn;
   std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperOut;
 };
+
+typedef FBStaticTopo<FFPluginBlock> FFStaticTopo;
+typedef FBStaticParam<FFPluginBlock> FFStaticParam;
+typedef FBStaticModule<FFPluginBlock> FFStaticModule;
+
+typedef FBRuntimeTopo<FFPluginBlock> FFRuntimeTopo;
+typedef FBRuntimeParam<FFPluginBlock> FFRuntimeParam;
+typedef FBRuntimeModule<FFPluginBlock> FFRuntimeModule;
+
+FFStaticTopo
+FFMakeTopo();

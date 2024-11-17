@@ -3,10 +3,9 @@
 #include <algorithm>
 
 FFPluginProcessor::
-FFPluginProcessor(int maxHostBlockSize, float sampleRate):
-FBPluginProcessor(maxHostBlockSize, sampleRate)
+FFPluginProcessor(FFRuntimeTopo const* topo, int maxHostBlockSize, float sampleRate):
+FBPluginProcessor(topo, maxHostBlockSize, sampleRate)
 {
-  _pluginBlock.sampleRate = sampleRate;
 }
 
 // run one round of fixed block size

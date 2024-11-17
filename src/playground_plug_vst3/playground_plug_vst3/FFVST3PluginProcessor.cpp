@@ -56,13 +56,6 @@ _topo(FFMakeTopo())
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
-{
-  _processor.reset(new FFPluginProcessor(setup.maxSamplesPerBlock, setup.sampleRate));
-  return kResultTrue;
-}
-
-tresult PLUGIN_API
 FFVST3PluginProcessor::initialize(FUnknown* context)
 {
   if (AudioEffect::initialize(context) != kResultTrue)
@@ -78,6 +71,13 @@ FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
   if (symbolicSize == kSample32) 
     return kResultTrue;
   return kResultFalse;
+}
+
+tresult PLUGIN_API
+FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
+{
+  _processor.reset(new FFPluginProcessor(&_topo, setup.maxSamplesPerBlock, setup.sampleRate));
+  return kResultTrue;
 }
 
 tresult PLUGIN_API

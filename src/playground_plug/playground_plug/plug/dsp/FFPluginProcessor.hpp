@@ -13,6 +13,6 @@ public FBPluginProcessor<FFPluginProcessor, FFPluginBlock, FF_BLOCK_SIZE>
   FFPluginProcessors _processors = {};
 
 public:
-  FFPluginProcessor(int maxHostBlockSize, float sampleRate);
+  FFPluginProcessor(FFRuntimeTopo const* topo, int maxHostBlockSize, float sampleRate);
   void ProcessPluginBlock();
 };

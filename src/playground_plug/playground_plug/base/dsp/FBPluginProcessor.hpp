@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_plug/base/dsp/FBHostBlock.hpp>
+#include <playground_plug/base/shared/FBPluginTopo.hpp>
 #include <playground_plug/base/shared/FBPluginBlock.hpp>
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
 
@@ -16,21 +17,22 @@ class FBPluginProcessor
   int const _maxRemaining;
   std::array<std::vector<float>, 2> _remainingOut = {};
 
-protected:
-  float const _sampleRate;
-  PluginBlock _pluginBlock = {};
-  FBPluginProcessor(int maxHostBlockSize, float sampleRate);
-
 public:
   void ProcessHostBlock(FBHostBlock& hostBlock);
+
+protected:
+  PluginBlock _pluginBlock = {};
+  FBRuntimeTopo<PluginBlock> const* const _topo;
+  FBPluginProcessor(FBRuntimeTopo<PluginBlock> const* topo, int maxHostBlockSize, float sampleRate);
 };
 
 template <class Derived, class PluginBlock, int PluginBlockSize>
 FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::
-FBPluginProcessor(int maxHostBlockSize, float sampleRate):
-_sampleRate(sampleRate),
+FBPluginProcessor(FBRuntimeTopo<PluginBlock> const* topo, int maxHostBlockSize, float sampleRate):
+_topo(topo),
 _maxRemaining(std::max(maxHostBlockSize, PluginBlockSize))
 {
+  _pluginBlock.sampleRate = sampleRate;
   _remainingOut[0].resize(_maxRemaining);
   _remainingOut[1].resize(_maxRemaining);
 }
@@ -58,7 +60,8 @@ FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::ProcessHostBlock(FBHos
   for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
   {
     auto const& event = hostBlock.plugEvents[pe];
-    (*_pluginBlock.plugParamMemoryPtrs[event.tag]) = event.normalized;
+    int index = _topo->tagToPlugParam.at(event.tag);
+    *(_topo->plugParams[index].staticTopo.PlugParamAddr(&_pluginBlock)) = event.normalized;
   }
 
   // deal with remainder of host block
