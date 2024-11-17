@@ -34,7 +34,6 @@ typedef FFPluginParameterMemory<FFMonoBlock> FFProcessorParameterMemory;
 struct FFPluginProcessorBlock
 {
   float sampleRate;
-  FFStereoBlock masterOutput;
   FFProcessorParameterMemory parameterMemory;
   std::array<FFStereoBlock, FF_OSCILLATOR_COUNT> oscillatorAudioOutput;
   std::array<FFStereoBlock, FF_WAVE_SHAPER_COUNT> waveShaperAudioInput;

@@ -2,7 +2,6 @@
 
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
 #include <array>
-#include <cstddef>
 
 template <int Count>
 struct FBMonoBlock
