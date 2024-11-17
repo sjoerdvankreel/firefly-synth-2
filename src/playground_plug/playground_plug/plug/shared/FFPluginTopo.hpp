@@ -9,8 +9,10 @@
 #include <array>
 
 enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
-enum { FFOsciParamGain, FFOsciParamPitch, FFOsciParamCount };
-enum { FFShaperParamOn, FFShaperParamGain, FFShaperParamCount };
+enum { FFShaperPlugParamOn, FFShaperPlugParamCount };
+enum { FFShaperAutoParamGain, FFShaperAutoParamCount };
+enum { FFOsciPlugParamOn, FFOsciPlugParamCount };
+enum { FFOsciAutoParamGain, FFOsciAutoParamPitch, FFOsciAutoParamCount };
 
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo();
@@ -24,8 +26,11 @@ struct FFPluginProcessors
 template <class T>
 struct FFParamMemory
 {
-  std::array<std::array<T, FFOsciParamCount>, FF_OSCI_COUNT> osci;
-  std::array<std::array<T, FFShaperParamCount>, FF_SHAPER_COUNT> shaper;
+  std::array<std::array<T, FFOsciAutoParamCount>, FF_OSCI_COUNT> osciAuto;
+  std::array<std::array<T, FFShaperAutoParamCount>, FF_SHAPER_COUNT> shaperAuto;
+
+  std::array<std::array<float, FFOsciPlugParamCount>, FF_OSCI_COUNT> osciPlug;
+  std::array<std::array<float, FFShaperPlugParamCount>, FF_SHAPER_COUNT> shaperPlug;
 };
 
 typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
