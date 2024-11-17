@@ -19,6 +19,8 @@ FFMakeTopo();
 
 struct FFPluginProcessors
 {
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginProcessors);
+
   std::array<FFOsciProcessor, FF_OSCI_COUNT> osci;
   std::array<FFShaperProcessor, FF_SHAPER_COUNT> shaper;
 };
@@ -26,9 +28,10 @@ struct FFPluginProcessors
 template <class T>
 struct FFParamMemory
 {
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFParamMemory);
+
   std::array<std::array<T, FFOsciAutoParamCount>, FF_OSCI_COUNT> osciAuto;
   std::array<std::array<T, FFShaperAutoParamCount>, FF_SHAPER_COUNT> shaperAuto;
-
   std::array<std::array<float, FFOsciPlugParamCount>, FF_OSCI_COUNT> osciPlug;
   std::array<std::array<float, FFShaperPlugParamCount>, FF_SHAPER_COUNT> shaperPlug;
 };
@@ -40,6 +43,8 @@ typedef FFParamMemory<FFMonoBlock> FFProcessorParamMemory;
 
 struct FFProcessorBlock
 {
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFProcessorBlock);
+
   float sampleRate;
   FFProcessorParamMemory paramMemory;
   std::array<FFStereoBlock, FF_OSCI_COUNT> osciOutput;

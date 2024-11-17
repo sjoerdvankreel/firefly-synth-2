@@ -3,25 +3,25 @@
 #include <algorithm>
 
 FFPluginProcessor::
-FFPluginProcessor(int maxBlockSize, float sampleRate):
-FBPluginProcessor(maxBlockSize, sampleRate)
+FFPluginProcessor(int maxHostBlockSize, float sampleRate):
+FBPluginProcessor(maxHostBlockSize, sampleRate)
 {
-  _block.sampleRate = sampleRate;
+  _processorBlock.sampleRate = sampleRate;
 }
 
 // run one round of fixed block size
 void 
-FFPluginProcessor::ProcessBlock()
+FFPluginProcessor::ProcessPluginBlock()
 {
-  _block.shaperInput[0].SetToZero();
+  _processorBlock.shaperInput[0].SetToZero();
   for (int osci = 0; osci < FF_OSCI_COUNT; osci++)
   {
-    _processors.osci[osci].Process(osci, _block);
-    _block.shaperInput[0].InPlaceAdd(_block.osciOutput[osci]);
+    _processors.osci[osci].Process(osci, _processorBlock);
+    _processorBlock.shaperInput[0].InPlaceAdd(_processorBlock.osciOutput[osci]);
   }
-  _block.shaperInput[0].InPlaceMultiply(0.5f);
-  _processors.shaper[0].Process(0, _block);
-  _block.shaperInput[1] = _block.shaperInput[0];
-  _processors.shaper[1].Process(1, _block);
-  _blockOutput = _block.shaperInput[1];
+  _processorBlock.shaperInput[0].InPlaceMultiply(0.5f);
+  _processors.shaper[0].Process(0, _processorBlock);
+  _processorBlock.shaperOutput[0].CopyTo(_processorBlock.shaperInput[1]);
+  _processors.shaper[1].Process(1, _processorBlock);
+  _processorBlock.shaperOutput[1].CopyTo(_pluginBlockOutput);
 }

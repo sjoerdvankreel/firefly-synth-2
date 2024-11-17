@@ -10,10 +10,10 @@
 class FFPluginProcessor:
 public FBPluginProcessor<FFPluginProcessor, FF_BLOCK_SIZE>
 {
-  FFProcessorBlock _block = {};
   FFPluginProcessors _processors = {};
+  FFProcessorBlock _processorBlock = {};
 
 public:
-  FFPluginProcessor(int maxBlockSize, float sampleRate);
-  void ProcessBlock();
+  FFPluginProcessor(int maxHostBlockSize, float sampleRate);
+  void ProcessPluginBlock();
 };

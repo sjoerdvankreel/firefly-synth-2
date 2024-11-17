@@ -32,18 +32,24 @@ FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::process(ProcessData& data)
-{
-  if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
-    return kResultTrue;
-  _processor->Process(nullptr, data.outputs->channelBuffers32, data.numSamples);
-  return kResultTrue;
-}
-
-tresult PLUGIN_API
 FFVST3PluginProcessor::setBusArrangements(SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
   if (numIns != 0 || numOuts != 1 || outputs[0] != SpeakerArr::kStereo)
     return kResultFalse;
   return AudioEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
+}
+
+tresult PLUGIN_API
+FFVST3PluginProcessor::process(ProcessData& data)
+{
+  if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
+    return kResultTrue;
+  
+  _hostBlock.audioIn = nullptr;
+  _hostBlock.sampleCount = data.numSamples;
+  _hostBlock.audioOut = data.outputs[0].channelBuffers32;
+  _hostBlock.autoEvents.clear();
+  _hostBlock.noteEvents.clear();  
+  _processor->ProcessHostBlock(_hostBlock);
+  return kResultTrue;
 }

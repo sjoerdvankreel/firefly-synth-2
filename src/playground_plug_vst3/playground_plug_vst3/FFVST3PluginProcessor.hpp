@@ -1,5 +1,8 @@
 #pragma once
+
+#include <playground_plug/base/dsp/FBHostBlock.hpp>
 #include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
+
 #include <public.sdk/source/vst/vstaudioeffect.h>
 #include <memory>
 
@@ -9,6 +12,7 @@ using namespace Steinberg::Vst;
 class FFVST3PluginProcessor :
 public AudioEffect
 {
+  FBHostBlock _hostBlock = {};
   std::unique_ptr<FFPluginProcessor> _processor = {};
 
 public:  

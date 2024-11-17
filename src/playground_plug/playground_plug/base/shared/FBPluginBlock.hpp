@@ -7,6 +7,7 @@ template <int Count>
 struct FBMonoBlock
 {
   std::array<float, Count> store;
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FBMonoBlock);
 
   float& operator[](int index) 
   { return store[index]; }
@@ -15,6 +16,9 @@ struct FBMonoBlock
 
   void SetToZero() 
   { store.fill(0.0f); }
+  void CopyTo(FBMonoBlock& rhs) const
+  { for (int i = 0; i < Count; i++) rhs[i] = (*this)[i]; }
+
   void InPlaceMultiply(float x) 
   { for (int i = 0; i < Count; i++) (*this)[i] *= x; }
   void InPlaceAdd(FBMonoBlock const& rhs)
@@ -25,6 +29,7 @@ template <int Count>
 struct FBStereoBlock
 {
   std::array<FBMonoBlock<Count>, FB_CHANNELS_STEREO> store;
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FBStereoBlock);
 
   FBMonoBlock<Count>& operator[](int index)
   { return store[index]; }
@@ -33,6 +38,9 @@ struct FBStereoBlock
 
   void SetToZero() 
   { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].SetToZero(); }
+  void CopyTo(FBStereoBlock& rhs) const
+  { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].CopyTo(rhs[i]); }
+
   void InPlaceMultiply(float x) 
   { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].InPlaceMultiply(x); }
   void InPlaceAdd(FBStereoBlock const& rhs)
