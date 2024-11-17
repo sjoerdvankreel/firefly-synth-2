@@ -39,15 +39,6 @@ FBRuntimeParam(
   tag = MakeHash(id);
 }
 
-FBRuntimeTopo::
-FBRuntimeTopo(
-  FBStaticTopo const& topo)
-{
-  for (int mi = 0; mi < topo.modules.size(); mi++)
-    for (int ms = 0; ms < topo.modules[mi].slotCount; ms++)
-      modules.push_back(FBRuntimeModule(topo.modules[mi], ms));
-}
-
 FBRuntimeModule::
 FBRuntimeModule(
   FBStaticModule const& module, int slot)
@@ -60,4 +51,23 @@ FBRuntimeModule(
   for (int api = 0; api < module.autoParams.size(); api++)
     for (int aps = 0; aps < module.autoParams[api].slotCount; aps++)
       autoParams.push_back(FBRuntimeParam(module, slot, module.autoParams[api], aps));
+}
+
+FBRuntimeTopo::
+FBRuntimeTopo(
+  FBStaticTopo const& topo)
+{
+  for (int mi = 0; mi < topo.modules.size(); mi++)
+    for (int ms = 0; ms < topo.modules[mi].slotCount; ms++)
+      modules.push_back(FBRuntimeModule(topo.modules[mi], ms));
+  for (int m = 0; m < modules.size(); m++)
+    for (int pp = 0; pp < modules[m].plugParams.size(); pp++)
+      plugParams.push_back(modules[m].plugParams[pp]);
+  for (int m = 0; m < modules.size(); m++)
+    for (int ap = 0; ap < modules[m].autoParams.size(); ap++)
+      autoParams.push_back(modules[m].autoParams[ap]);
+  for (int pp = 0; pp < plugParams.size(); pp++)
+    tagToPlugParam[plugParams[pp].tag] = pp;
+  for (int ap = 0; ap < autoParams.size(); ap++)
+    tagToAutoParam[autoParams[ap].tag] = ap;
 }

@@ -3,6 +3,15 @@
 #include <pluginterfaces/vst/ivstparameterchanges.h>
 #include <algorithm>
 
+static FBPlugEvent
+MakePlugEvent(int tag, ParamValue value)
+{
+  FBPlugEvent result;
+  result.tag = tag;
+  result.normalized = value;
+  return result;
+}
+
 static FBAutoEvent
 MakeAutoEvent(int tag, int position, ParamValue value)
 {
@@ -40,7 +49,8 @@ MakeNoteOffEvent(Event const& event)
 }
 
 FFVST3PluginProcessor::
-FFVST3PluginProcessor(FUID const& controllerId)
+FFVST3PluginProcessor(FUID const& controllerId):
+_topo(FFMakeTopo())
 {
   setControllerClass(controllerId);
 }
@@ -101,13 +111,22 @@ FFVST3PluginProcessor::process(ProcessData& data)
   int position;
   ParamValue value;
   IParamValueQueue* queue;
+  std::map<int, int>::const_iterator iter;
   _hostBlock.autoEvents.clear();
   if(data.inputParameterChanges != nullptr)
-    for(int param = 0; param < data.inputParameterChanges->getParameterCount(); param++)
+    for (int param = 0; param < data.inputParameterChanges->getParameterCount(); param++)
       if ((queue = data.inputParameterChanges->getParameterData(param)) != nullptr)
-        for (int point = 0; point < queue->getPointCount(); point++)
-          if (queue->getPoint(point, position, value) == kResultTrue)
-            _hostBlock.autoEvents.push_back(MakeAutoEvent(queue->getParameterId(), position, value));
+        if ((iter = _topo.tagToPlugParam.find(queue->getParameterId())) != _topo.tagToPlugParam.end())
+        {
+          if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
+            _hostBlock.plugEvents.push_back(MakePlugEvent(queue->getParameterId(), value));
+        }
+        else if ((iter = _topo.tagToAutoParam.find(queue->getParameterId())) != _topo.tagToAutoParam.end())
+        {
+          for (int point = 0; point < queue->getPointCount(); point++)
+            if (queue->getPoint(point, position, value) == kResultTrue)
+              _hostBlock.autoEvents.push_back(MakeAutoEvent(queue->getParameterId(), position, value));
+        }        
 
   // sort by position
   // CLAP also does it this way 

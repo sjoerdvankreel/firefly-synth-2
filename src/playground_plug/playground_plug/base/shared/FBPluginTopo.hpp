@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 #include <memory>
@@ -54,6 +55,11 @@ struct FBRuntimeModule
 
 struct FBRuntimeTopo
 {
+  std::map<int, int> tagToPlugParam;
+  std::map<int, int> tagToAutoParam;
   std::vector<FBRuntimeModule> modules;
+  std::vector<FBRuntimeParam> plugParams;
+  std::vector<FBRuntimeParam> autoParams;
+
   FBRuntimeTopo(FBStaticTopo const& topo);
 };

@@ -12,11 +12,13 @@ using namespace Steinberg::Vst;
 class FFVST3PluginProcessor :
 public AudioEffect
 {
+  FBRuntimeTopo const _topo;
   FBHostBlock _hostBlock = {};
   std::unique_ptr<FFPluginProcessor> _processor = {};
 
 public:  
   FFVST3PluginProcessor(FUID const& controllerId);
+
   tresult PLUGIN_API process(ProcessData& data) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
   tresult PLUGIN_API setupProcessing(ProcessSetup& setup) override;
