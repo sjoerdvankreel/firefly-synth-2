@@ -114,7 +114,7 @@ FBRuntimeParam(
   id = FBMakeId(module.id, moduleSlot);
   id += "-" + FBMakeId(param.id, paramSlot);
   name = FBMakeName(module.name, module.slotCount, moduleSlot);
-  name += FBMakeName(param.name, param.slotCount, paramSlot);
+  name += " " + FBMakeName(param.name, param.slotCount, paramSlot);
   tag = FBMakeHash(id);
 }
 
