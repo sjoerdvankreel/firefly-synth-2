@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 int
 FBMakeHash(std::string const& id);
@@ -12,6 +13,18 @@ std::string
 FBMakeId(std::string id, int slot);
 std::string
 FBMakeName(std::string name, int slotCount, int slot);
+
+inline double 
+FBStepToNormalized(int stepCount, int step)
+{
+  return step / (double)stepCount;
+}
+
+inline int
+FBNormalizedToStep(int stepCount, double normalized)
+{
+  return std::min(stepCount, (int)(normalized * (stepCount + 1)));
+}
 
 // all this stuff is templated for the sole reason to allow 
 // getting to the actual memory (FFPluginBlock) without void* 's

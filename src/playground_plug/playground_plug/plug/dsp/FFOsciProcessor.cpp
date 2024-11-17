@@ -8,6 +8,12 @@
 void 
 FFOsciProcessor::Process(int moduleSlot, FFPluginBlock& block)
 {
+  if (FBNormalizedToStep(1, block.paramMemory.osciPlug[moduleSlot][FFOsciPlugParamOn]) == 0)
+  {
+    block.osciOut[moduleSlot].SetToZero();
+    return;
+  }
+
   for (int s = 0; s < FF_BLOCK_SIZE; s++)
   {
     _phase += 440.0f / block.sampleRate;
