@@ -111,6 +111,11 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
         _accumulated.audioIn[channel].begin(),
         _accumulated.audioIn[channel].begin() + ProcessorMemory::BlockSize);
     std::erase_if(_accumulated.autoEvents, [](auto const& e) { return e.position < ProcessorMemory::BlockSize; });
+    for (int i = 0; i < _accumulated.autoEvents.size(); i++)
+      _accumulated.autoEvents[i].position -= ProcessorMemory::BlockSize;
+    std::erase_if(_accumulated.noteEvents, [](auto const& e) { return e.position < ProcessorMemory::BlockSize; });
+    for (int i = 0; i < _accumulated.noteEvents.size(); i++)
+      _accumulated.noteEvents[i].position -= ProcessorMemory::BlockSize;
     _accumulatedInputSampleCount -= ProcessorMemory::BlockSize;
   }
 }
