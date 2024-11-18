@@ -1,4 +1,5 @@
 static link
+handle PDC
 clap note cut
 relwithdebinfo
 check hash clash
