@@ -1,15 +1,15 @@
 #pragma once
 
-struct FFPluginBlock;
+struct FFProcessorMemory;
 
 class FFOsciProcessor
 {
   float _phase = 0.0f;
 
-  void ProcessType(int moduleSlot, FFPluginBlock& block);
+  void ProcessType(int moduleSlot, FFProcessorMemory& memory);
   template <class Calc>
-  void ProcessType(int moduleSlot, FFPluginBlock& block, Calc calc);
+  void ProcessType(int moduleSlot, FFProcessorMemory& memory, Calc calc);
 
 public:
-  void Process(int moduleSlot, FFPluginBlock& block);
+  void Process(int moduleSlot, FFProcessorMemory& memory);
 };

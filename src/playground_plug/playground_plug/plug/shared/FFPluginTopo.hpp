@@ -38,12 +38,11 @@ struct FFParamMemory
 
 typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
 typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
-typedef FFParamMemory<float> FFControllerParamMemory;
 typedef FFParamMemory<FFMonoBlock> FFProcessorParamMemory;
 
-struct FFPluginBlock
+struct FFProcessorMemory
 {
-  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginBlock);
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFProcessorMemory);
   static constexpr int BlockSize = FF_BLOCK_SIZE;
 
   // todo drop this
@@ -55,13 +54,13 @@ struct FFPluginBlock
   std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperOut;
 };
 
-typedef FBStaticTopo<FFPluginBlock> FFStaticTopo;
-typedef FBStaticParam<FFPluginBlock> FFStaticParam;
-typedef FBStaticModule<FFPluginBlock> FFStaticModule;
+typedef FBStaticTopo<FFProcessorMemory> FFStaticTopo;
+typedef FBStaticParam<FFProcessorMemory> FFStaticParam;
+typedef FBStaticModule<FFProcessorMemory> FFStaticModule;
 
-typedef FBRuntimeTopo<FFPluginBlock> FFRuntimeTopo;
-typedef FBRuntimeParam<FFPluginBlock> FFRuntimeParam;
-typedef FBRuntimeModule<FFPluginBlock> FFRuntimeModule;
+typedef FBRuntimeTopo<FFProcessorMemory> FFRuntimeTopo;
+typedef FBRuntimeParam<FFProcessorMemory> FFRuntimeParam;
+typedef FBRuntimeModule<FFProcessorMemory> FFRuntimeModule;
 
 FFStaticTopo
 FFMakeTopo();

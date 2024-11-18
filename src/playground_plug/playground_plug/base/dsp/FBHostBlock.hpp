@@ -28,6 +28,8 @@ struct FBNoteEvent
   int position;
 };
 
+// host throws 1 of these at us on each round,
+// but internally we use fixed block size
 struct FBHostBlock
 {
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FBHostBlock);

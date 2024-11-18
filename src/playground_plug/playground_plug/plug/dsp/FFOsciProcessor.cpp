@@ -20,28 +20,28 @@ CalcSine(float phase)
 }
 
 void
-FFOsciProcessor::Process(int moduleSlot, FFPluginBlock& block)
+FFOsciProcessor::Process(int moduleSlot, FFProcessorMemory& memory)
 {
-  auto const& plugState = block.paramMemory.osciPlug[moduleSlot];
+  auto const& plugState = memory.paramMemory.osciPlug[moduleSlot];
   bool on = FBNormalizedToBool(plugState[FFOsciPlugParamOn]);
   if (on)
-    ProcessType(moduleSlot, block);
+    ProcessType(moduleSlot, memory);
   else
-    block.osciOut[moduleSlot].SetToZero();
+    memory.osciOut[moduleSlot].SetToZero();
 }
 
 void 
-FFOsciProcessor::ProcessType(int moduleSlot, FFPluginBlock& block)
+FFOsciProcessor::ProcessType(int moduleSlot, FFProcessorMemory& memory)
 {
-  auto const& plugState = block.paramMemory.osciPlug[moduleSlot];
+  auto const& plugState = memory.paramMemory.osciPlug[moduleSlot];
   int type = FBNormalizedToDiscrete(FFOsciTypeCount, plugState[FFOsciPlugParamType]);
   switch (type)
   {
   case FFOsciTypeSaw: 
-    ProcessType(moduleSlot, block, CalcSaw); 
+    ProcessType(moduleSlot, memory, CalcSaw);
     break;
   case FFOsciTypeSine: 
-    ProcessType(moduleSlot, block, CalcSine); 
+    ProcessType(moduleSlot, memory, CalcSine);
     break;
   default: 
     assert(false); 
@@ -50,15 +50,15 @@ FFOsciProcessor::ProcessType(int moduleSlot, FFPluginBlock& block)
 }
 
 template <class Calc> void
-FFOsciProcessor::ProcessType(int moduleSlot, FFPluginBlock& block, Calc calc)
+FFOsciProcessor::ProcessType(int moduleSlot, FFProcessorMemory& memory, Calc calc)
 {
   for (int s = 0; s < FF_BLOCK_SIZE; s++)
   {
     // todo pitch
-    _phase += 440.0f / block.sampleRate;
+    _phase += 440.0f / memory.sampleRate;
     _phase -= std::floor(_phase);
     float sample = calc(_phase);
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      block.osciOut[moduleSlot][channel][s] = sample;
+      memory.osciOut[moduleSlot][channel][s] = sample;
   }
 }

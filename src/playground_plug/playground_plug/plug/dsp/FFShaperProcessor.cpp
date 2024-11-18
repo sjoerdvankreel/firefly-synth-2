@@ -4,9 +4,9 @@
 #include <cmath>
 
 void 
-FFShaperProcessor::Process(int moduleSlot, FFPluginBlock& block)
+FFShaperProcessor::Process(int moduleSlot, FFProcessorMemory& memory)
 {
   for(int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
     for (int s = 0; s < FF_BLOCK_SIZE; s++)
-      block.shaperOut[moduleSlot][channel][s] = std::tanh(block.shaperIn[moduleSlot][channel][s]);
+      memory.shaperOut[moduleSlot][channel][s] = std::tanh(memory.shaperIn[moduleSlot][channel][s]);
 }

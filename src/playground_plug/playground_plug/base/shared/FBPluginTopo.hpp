@@ -33,9 +33,9 @@ FBNormalizedToBool(double normalized)
 }
 
 // all this stuff is templated for the sole reason to allow 
-// getting to the actual memory (FFPluginBlock) without void* 's
+// getting to the actual memory (FFProcessorMemory) without void* 's
 
-template <class PluginBlock>
+template <class ProcessorMemory>
 struct FBStaticParam
 {
   int slotCount; // multi-slot params are useful for mod matrices
@@ -47,28 +47,28 @@ struct FBStaticParam
 
   // reason for template
   float* (*plugParamAddr)(
-    int moduleSlot, int paramSlot, PluginBlock* block);
-  std::array<float, PluginBlock::BlockSize>* (*autoParamAddr)(
-    int moduleSlot, int paramSlot, PluginBlock* block);
+    int moduleSlot, int paramSlot, ProcessorMemory* memory);
+  std::array<float, ProcessorMemory::BlockSize>* (*autoParamAddr)(
+    int moduleSlot, int paramSlot, ProcessorMemory* memory);
 };
 
-template <class PluginBlock>
+template <class ProcessorMemory>
 struct FBStaticModule
 {
   int slotCount;
   std::string id;
   std::string name;
-  std::vector<FBStaticParam<PluginBlock>> plugParams; // editable by UI only, backed by scalar
-  std::vector<FBStaticParam<PluginBlock>> autoParams; // automatable/modulatable, backed by dense buffer
+  std::vector<FBStaticParam<ProcessorMemory>> plugParams; // editable by UI only, backed by scalar
+  std::vector<FBStaticParam<ProcessorMemory>> autoParams; // automatable/modulatable, backed by dense buffer
 };
 
-template <class PluginBlock>
+template <class ProcessorMemory>
 struct FBStaticTopo
 {
-  std::vector<FBStaticModule<PluginBlock>> modules;
+  std::vector<FBStaticModule<ProcessorMemory>> modules;
 };
 
-template <class PluginBlock>
+template <class ProcessorMemory>
 struct FBRuntimeParam
 {
   int tag; // VST3 / CLAP param tag
@@ -77,42 +77,42 @@ struct FBRuntimeParam
 
   std::string id;
   std::string name;
-  FBStaticParam<PluginBlock> staticTopo;
+  FBStaticParam<ProcessorMemory> staticTopo;
 
   FBRuntimeParam(
-    FBStaticModule<PluginBlock> const& module, int moduleSlot,
-    FBStaticParam<PluginBlock> const& param, int paramSlot);
+    FBStaticModule<ProcessorMemory> const& module, int moduleSlot,
+    FBStaticParam<ProcessorMemory> const& param, int paramSlot);
 };
 
-template <class PluginBlock>
+template <class ProcessorMemory>
 struct FBRuntimeModule
 {
   std::string id;
   std::string name;
-  std::vector<FBRuntimeParam<PluginBlock>> plugParams;
-  std::vector<FBRuntimeParam<PluginBlock>> autoParams;
+  std::vector<FBRuntimeParam<ProcessorMemory>> plugParams;
+  std::vector<FBRuntimeParam<ProcessorMemory>> autoParams;
 
   FBRuntimeModule(
-    FBStaticModule<PluginBlock> const& module, int slot);
+    FBStaticModule<ProcessorMemory> const& module, int slot);
 };
 
-template <class PluginBlock>
+template <class ProcessorMemory>
 struct FBRuntimeTopo
 {
   std::map<int, int> tagToPlugParam;
   std::map<int, int> tagToAutoParam;
-  std::vector<FBRuntimeModule<PluginBlock>> modules;
-  std::vector<FBRuntimeParam<PluginBlock>> plugParams;
-  std::vector<FBRuntimeParam<PluginBlock>> autoParams;
+  std::vector<FBRuntimeModule<ProcessorMemory>> modules;
+  std::vector<FBRuntimeParam<ProcessorMemory>> plugParams;
+  std::vector<FBRuntimeParam<ProcessorMemory>> autoParams;
 
-  FBRuntimeTopo(FBStaticTopo<PluginBlock> const& topo);
+  FBRuntimeTopo(FBStaticTopo<ProcessorMemory> const& topo);
 };
 
-template <class PluginBlock>
-FBRuntimeParam<PluginBlock>::
+template <class ProcessorMemory>
+FBRuntimeParam<ProcessorMemory>::
 FBRuntimeParam(
-  FBStaticModule<PluginBlock> const& module, int moduleSlot,
-  FBStaticParam<PluginBlock> const& param, int paramSlot)
+  FBStaticModule<ProcessorMemory> const& module, int moduleSlot,
+  FBStaticParam<ProcessorMemory> const& param, int paramSlot)
 {
   moduleSlot = moduleSlot;
   paramSlot = paramSlot;
@@ -125,10 +125,10 @@ FBRuntimeParam(
   tag = FBMakeHash(id);
 }
 
-template <class PluginBlock>
-FBRuntimeModule<PluginBlock>::
+template <class ProcessorMemory>
+FBRuntimeModule<ProcessorMemory>::
 FBRuntimeModule(
-  FBStaticModule<PluginBlock> const& module, int slot)
+  FBStaticModule<ProcessorMemory> const& module, int slot)
 {
   id = FBMakeId(module.id, slot);
   name = FBMakeName(module.name, module.slotCount, slot);
@@ -140,10 +140,10 @@ FBRuntimeModule(
       autoParams.push_back(FBRuntimeParam(module, slot, module.autoParams[api], aps));
 }
 
-template <class PluginBlock>
-FBRuntimeTopo<PluginBlock>::
+template <class ProcessorMemory>
+FBRuntimeTopo<ProcessorMemory>::
 FBRuntimeTopo(
-  FBStaticTopo<PluginBlock> const& topo)
+  FBStaticTopo<ProcessorMemory> const& topo)
 {
   for (int mi = 0; mi < topo.modules.size(); mi++)
     for (int ms = 0; ms < topo.modules[mi].slotCount; ms++)

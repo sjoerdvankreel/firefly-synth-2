@@ -18,16 +18,16 @@ FFMakeTopo()
   osciOn.slotCount = 1;
   osciOn.valueCount = 2;
   osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
-  osciOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
-    return &block->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamOn]; };
+  osciOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamOn]; };
 
   auto& osciType = osci.plugParams[FFOsciPlugParamType];
   osciType.name = "Type";
   osciType.slotCount = 1;
   osciType.valueCount = FFOsciTypeCount;
   osciType.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
-  osciType.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
-    return &block->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamType]; };
+  osciType.plugParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamType]; };
 
   auto& osciGain = osci.autoParams[FFOsciAutoParamGain];
   osciGain.name = "Gain";
@@ -53,16 +53,16 @@ FFMakeTopo()
   shaperOn.slotCount = 1;
   shaperOn.valueCount = 2;
   shaperOn.id = "{BF67A27A-97E9-4640-9E57-B1E04D195ACC}";
-  shaperOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
-    return &block->paramMemory.shaperPlug[moduleSlot][FFShaperPlugParamOn]; };
+  shaperOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->paramMemory.shaperPlug[moduleSlot][FFShaperPlugParamOn]; };
 
   auto& shaperClip = shaper.plugParams[FFShaperPlugParamClip];
   shaperClip.name = "Clip";
   shaperClip.slotCount = 1;
   shaperClip.valueCount = 2;
   shaperClip.id = "{81C7442E-4064-4E90-A742-FDDEA84AE1AC}";
-  shaperClip.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginBlock* block) {
-    return &block->paramMemory.shaperPlug[moduleSlot][FFShaperPlugParamClip]; };
+  shaperClip.plugParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->paramMemory.shaperPlug[moduleSlot][FFShaperPlugParamClip]; };
 
   auto& shaperGain = shaper.autoParams[FFShaperAutoParamGain];
   shaperGain.name = "Gain";
