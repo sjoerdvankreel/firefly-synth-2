@@ -69,8 +69,11 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   }
 
   _currentRollingWindowSize += hostBlock.currentSampleCount;
-  
-  
+
+  while (_currentRollingWindowSize >= ProcessorMemory::BlockSize)
+  {
+    _currentRollingWindowSize -= ProcessorMemory::BlockSize;
+  }
 
 
 #if 0
