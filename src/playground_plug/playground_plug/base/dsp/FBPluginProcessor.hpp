@@ -11,15 +11,17 @@
 
 // handles fixed block sizes, parameter smoothing, essentially all 
 // the boring tech stuff. ProcessPluginBlock is where the interesting 
-// stuff happens, and it can deal with fixed-size buffers only. also
-// i don't know how to do this without crtp and no virtuals!
+// stuff happens, so it can deal with fixed-size buffers only. 
+// also i don't know how to do this without crtp and no virtuals.
 template <class Derived, class ProcessorMemory>
 class FBPluginProcessor
 {
   int _accumulated = 0;
   float const _sampleRate;
+
   // for dealing with fixed size buffers
   FBHostBlock _rollingHostBlock;
+  int _currentRollingWindowSize = 0;
 
 public:
   void ProcessHostBlock(FBHostBlock& hostBlock);
@@ -42,11 +44,34 @@ _rollingHostBlock(maxSampleCount)
 template <class Derived, class ProcessorMemory> void
 FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostBlock)
 {
-  // keep gathering stuff untill we hit internal block size
-  while (_accumulated < ProcessorMemory::BlockSize)
-  {
+  // TODO debug the heck out of this stuff
+  // TODO deal with non-accurate
+  
+  // gather audio in
+  for (int hostSample = 0; hostSample < hostBlock.currentSampleCount; hostSample++)
+    for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+      _rollingHostBlock.audioIn[channel].push_back(hostBlock.audioIn[channel][hostSample]);
 
+  // gather note events
+  for (int i = 0; i < hostBlock.noteEvents.size(); i++)
+  {
+    FBNoteEvent noteEvent = hostBlock.noteEvents[i];
+    noteEvent.position += _currentRollingWindowSize;
+    _rollingHostBlock.noteEvents.push_back(noteEvent);
   }
+
+  // gather automation events (sample accurate)
+  for (int i = 0; i < hostBlock.autoEvents.size(); i++)
+  {
+    FBAutoEvent autoEvent = hostBlock.autoEvents[i];
+    autoEvent.position += _currentRollingWindowSize;
+    _rollingHostBlock.autoEvents.push_back(autoEvent);
+  }
+
+  _currentRollingWindowSize += hostBlock.currentSampleCount;
+  
+  
+
 
 #if 0
   // handle leftover from the previous round
