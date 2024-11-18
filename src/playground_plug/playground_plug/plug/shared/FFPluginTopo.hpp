@@ -45,8 +45,6 @@ struct FFProcessorMemory
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFProcessorMemory);
   static constexpr int BlockSize = FF_BLOCK_SIZE;
 
-  // todo drop this
-  float sampleRate;
   FFStereoBlock masterOut;
   FFProcessorParamMemory paramMemory;
   std::array<FFStereoBlock, FF_OSCI_COUNT> osciOut;

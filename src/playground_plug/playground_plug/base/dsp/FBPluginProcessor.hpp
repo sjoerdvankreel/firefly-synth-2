@@ -14,6 +14,7 @@
 template <class Derived, class ProcessorMemory>
 class FBPluginProcessor
 {
+  float const _sampleRate;
   int const _maxRemaining;
   std::array<std::vector<float>, 2> _remainingOut = {};
 
@@ -30,9 +31,9 @@ template <class Derived, class ProcessorMemory>
 FBPluginProcessor<Derived, ProcessorMemory>::
 FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxHostBlockSize, float sampleRate):
 _topo(topo),
+_sampleRate(sampleRate),
 _maxRemaining(std::max(maxHostBlockSize, ProcessorMemory::BlockSize))
 {
-  _memory.sampleRate = sampleRate;
   _remainingOut[0].resize(_maxRemaining);
   _remainingOut[1].resize(_maxRemaining);
 }
@@ -65,10 +66,14 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     *(_topo->plugParams[index].staticTopo.plugParamAddr(param.moduleSlot, param.paramSlot, &_memory)) = event.normalized;
   }
 
+  FBProcessorContext context;
+  context.moduleSlot = -1;
+  context.sampleRate = _sampleRate;
+
   // deal with remainder of host block
   while (samplesProcessed < hostBlock.sampleCount)
   {
-    static_cast<Derived*>(this)->ProcessPluginBlock();
+    static_cast<Derived*>(this)->ProcessPluginBlock(context);
 
     // process in chunks of internal block size, may cause leftovers
     int blockSample = 0;

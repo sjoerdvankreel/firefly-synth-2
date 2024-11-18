@@ -6,6 +6,14 @@
 #include <array>
 #include <vector>
 
+// stick all info in here needed for processing
+// that is not parameter values, audio, midi etc
+struct FBProcessorContext
+{
+  int moduleSlot;
+  float sampleRate;
+};
+
 template <int Count>
 struct FBMonoBlock
 {

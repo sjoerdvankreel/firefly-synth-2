@@ -20,28 +20,28 @@ CalcSine(float phase)
 }
 
 void
-FFOsciProcessor::Process(int moduleSlot, FFProcessorMemory& memory)
+FFOsciProcessor::Process(FBProcessorContext const& context, FFProcessorMemory& memory)
 {
-  auto const& plugState = memory.paramMemory.osciPlug[moduleSlot];
+  auto const& plugState = memory.paramMemory.osciPlug[context.moduleSlot];
   bool on = FBNormalizedToBool(plugState[FFOsciPlugParamOn]);
   if (on)
-    ProcessType(moduleSlot, memory);
+    ProcessType(context, memory);
   else
-    memory.osciOut[moduleSlot].SetToZero();
+    memory.osciOut[context.moduleSlot].SetToZero();
 }
 
 void 
-FFOsciProcessor::ProcessType(int moduleSlot, FFProcessorMemory& memory)
+FFOsciProcessor::ProcessType(FBProcessorContext const& context, FFProcessorMemory& memory)
 {
-  auto const& plugState = memory.paramMemory.osciPlug[moduleSlot];
+  auto const& plugState = memory.paramMemory.osciPlug[context.moduleSlot];
   int type = FBNormalizedToDiscrete(FFOsciTypeCount, plugState[FFOsciPlugParamType]);
   switch (type)
   {
   case FFOsciTypeSaw: 
-    ProcessType(moduleSlot, memory, CalcSaw);
+    ProcessType(context, memory, CalcSaw);
     break;
   case FFOsciTypeSine: 
-    ProcessType(moduleSlot, memory, CalcSine);
+    ProcessType(context, memory, CalcSine);
     break;
   default: 
     assert(false); 
@@ -50,15 +50,15 @@ FFOsciProcessor::ProcessType(int moduleSlot, FFProcessorMemory& memory)
 }
 
 template <class Calc> void
-FFOsciProcessor::ProcessType(int moduleSlot, FFProcessorMemory& memory, Calc calc)
+FFOsciProcessor::ProcessType(FBProcessorContext const& context, FFProcessorMemory& memory, Calc calc)
 {
   for (int s = 0; s < FF_BLOCK_SIZE; s++)
   {
     // todo pitch
-    _phase += 440.0f / memory.sampleRate;
+    _phase += 440.0f / context.sampleRate;
     _phase -= std::floor(_phase);
     float sample = calc(_phase);
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      memory.osciOut[moduleSlot][channel][s] = sample;
+      memory.osciOut[context.moduleSlot][channel][s] = sample;
   }
 }

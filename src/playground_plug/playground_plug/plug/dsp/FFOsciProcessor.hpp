@@ -1,15 +1,16 @@
 #pragma once
 
 struct FFProcessorMemory;
+struct FBProcessorContext;
 
 class FFOsciProcessor
 {
   float _phase = 0.0f;
 
-  void ProcessType(int moduleSlot, FFProcessorMemory& memory);
+  void ProcessType(FBProcessorContext const& context, FFProcessorMemory& memory);
   template <class Calc>
-  void ProcessType(int moduleSlot, FFProcessorMemory& memory, Calc calc);
+  void ProcessType(FBProcessorContext const& context, FFProcessorMemory& memory, Calc calc);
 
 public:
-  void Process(int moduleSlot, FFProcessorMemory& memory);
+  void Process(FBProcessorContext const& context, FFProcessorMemory& memory);
 };

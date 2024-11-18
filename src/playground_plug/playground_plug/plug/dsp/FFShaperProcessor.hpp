@@ -1,9 +1,10 @@
 #pragma once
 
 struct FFProcessorMemory;
+struct FBProcessorContext;
 
 class FFShaperProcessor
 {
 public:
-  void Process(int moduleSlot, FFProcessorMemory& memory);
+  void Process(FBProcessorContext const& context, FFProcessorMemory& memory);
 };
