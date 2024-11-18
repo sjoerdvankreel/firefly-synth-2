@@ -35,9 +35,9 @@ struct FBNoteEvent
 struct FBHostBlock
 {
   FB_NOCOPY_NOMOVE(FBHostBlock);
-  FBHostBlock(int maxHostSampleCount);
+  FBHostBlock(int maxSampleCount);
 
-  int sampleCount;
+  int currentSampleCount;
 
   // these could be raw pointers avoiding a copy
   // but we re-use the FBHostBlock struct for block splitting

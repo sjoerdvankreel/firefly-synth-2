@@ -1,10 +1,11 @@
 #include <playground_plug/base/dsp/FBHostBlock.hpp>
 
 FBHostBlock::
-FBHostBlock(int maxHostSampleCount)
+FBHostBlock(int maxSampleCount)
 {
-  audioIn[FB_CHANNEL_L].reserve(maxHostSampleCount);
-  audioIn[FB_CHANNEL_R].reserve(maxHostSampleCount);
-  audioOut[FB_CHANNEL_L].reserve(maxHostSampleCount);
-  audioOut[FB_CHANNEL_R].reserve(maxHostSampleCount);
+  for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+  {
+    audioIn[channel].reserve(maxSampleCount);
+    audioOut[channel].reserve(maxSampleCount);
+  }
 }

@@ -24,15 +24,15 @@ public:
 protected:
   ProcessorMemory _memory = {};
   FBRuntimeTopo<ProcessorMemory> const* const _topo;
-  FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxHostSampleCount, float sampleRate);
+  FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxSampleCount, float sampleRate);
 };
 
 template <class Derived, class ProcessorMemory>
 FBPluginProcessor<Derived, ProcessorMemory>::
-FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxHostSampleCount, float sampleRate):
+FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxSampleCount, float sampleRate):
 _topo(topo),
 _sampleRate(sampleRate),
-_maxRemaining(std::max(maxHostSampleCount, ProcessorMemory::BlockSize))
+_maxRemaining(std::max(maxSampleCount, ProcessorMemory::BlockSize))
 {
   _remainingOut[FB_CHANNEL_L].resize(_maxRemaining);
   _remainingOut[FB_CHANNEL_R].resize(_maxRemaining);
@@ -43,7 +43,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
 {
   // handle leftover from the previous round
   int samplesProcessed = 0;
-  for (int s = 0; s < hostBlock.sampleCount && s < _remainingOut[FB_CHANNEL_L].size(); s++)
+  for (int s = 0; s < hostBlock.currentSampleCount && s < _remainingOut[FB_CHANNEL_L].size(); s++)
   {
     for(int channel = 0; channel < 2; channel++)
       hostBlock.audioOut[channel][samplesProcessed] = _remainingOut[channel][s];
@@ -71,13 +71,13 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   context.sampleRate = _sampleRate;
 
   // deal with remainder of host block
-  while (samplesProcessed < hostBlock.sampleCount)
+  while (samplesProcessed < hostBlock.currentSampleCount)
   {
     static_cast<Derived*>(this)->ProcessPluginBlock(context);
 
     // process in chunks of internal block size, may cause leftovers
     int blockSample = 0;
-    for (; blockSample < ProcessorMemory::BlockSize && samplesProcessed < hostBlock.sampleCount; blockSample++)
+    for (; blockSample < ProcessorMemory::BlockSize && samplesProcessed < hostBlock.currentSampleCount; blockSample++)
     {
       for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
         hostBlock.audioOut[channel][samplesProcessed] = _memory.masterOut[channel][blockSample];

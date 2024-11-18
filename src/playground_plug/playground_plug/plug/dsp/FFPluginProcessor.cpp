@@ -3,8 +3,8 @@
 #include <algorithm>
 
 FFPluginProcessor::
-FFPluginProcessor(FFRuntimeTopo const* topo, int maxHostSampleCount, float sampleRate):
-FBPluginProcessor(topo, maxHostSampleCount, sampleRate)
+FFPluginProcessor(FFRuntimeTopo const* topo, int maxSampleCount, float sampleRate):
+FBPluginProcessor(topo, maxSampleCount, sampleRate)
 {
 }
 

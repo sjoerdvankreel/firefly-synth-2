@@ -96,7 +96,7 @@ FFVST3PluginProcessor::process(ProcessData& data)
     return kResultTrue;
 
   // TODO audio input buffers
-  _hostBlock->sampleCount = data.numSamples;
+  _hostBlock->currentSampleCount = data.numSamples;
 
   Event event;
   _hostBlock->noteEvents.clear();
