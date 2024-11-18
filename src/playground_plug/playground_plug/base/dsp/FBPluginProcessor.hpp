@@ -124,7 +124,11 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   // and then shift the remainder of output buildup
   // this is where PDC comes into play!
 
+  int hostSample = 0;
+  for (; hostSample < _accumulatedOutputSampleCount; hostSample++)
+  {
 
+  }
 }
 
 

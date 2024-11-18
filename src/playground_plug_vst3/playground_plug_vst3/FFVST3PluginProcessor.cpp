@@ -95,9 +95,6 @@ FFVST3PluginProcessor::process(ProcessData& data)
   if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
     return kResultTrue;
 
-  // TODO audio input buffers
-  _hostBlock->currentSampleCount = data.numSamples;
-
   Event event;
   _hostBlock->noteEvents.clear();
   if (data.inputEvents != nullptr)
@@ -135,14 +132,19 @@ FFVST3PluginProcessor::process(ProcessData& data)
   auto compare = [](auto const& l, auto const& r) { return l.position < r.position; };
   std::sort(_hostBlock->autoEvents.begin(), _hostBlock->autoEvents.end(), compare);
 
+  // TODO audio input buffers
+  _hostBlock->currentSampleCount = data.numSamples;
+  for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+  {
+    _hostBlock->audioIn[channel].resize(data.numSamples);
+    _hostBlock->audioOut[channel].resize(data.numSamples);
+  }
   _processor->ProcessHostBlock(*_hostBlock);
-
-  // copy over audio output
-  for(int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+  for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
     std::copy(
       _hostBlock->audioOut[channel].begin(),
       _hostBlock->audioOut[channel].end(), 
       data.outputs[0].channelBuffers32[channel]);
-
+  
   return kResultTrue;
 }
