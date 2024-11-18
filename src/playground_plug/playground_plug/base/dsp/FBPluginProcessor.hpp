@@ -19,10 +19,9 @@ class FBPluginProcessor
   float const _sampleRate;
 
   // for dealing with fixed size buffers
-  FBHostBlock _accumulatedInput;
+  FBHostBlock _accumulated;
   int _accumulatedInputSampleCount = 0;
   int _accumulatedOutputSampleCount = 0;
-  std::array<std::vector<float>, FB_CHANNELS_STEREO> _accumulatedOutput;
 
 public:
   void ProcessHostBlock(FBHostBlock& hostBlock);
@@ -38,10 +37,13 @@ FBPluginProcessor<Derived, ProcessorMemory>::
 FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxSampleCount, float sampleRate):
 _topo(topo),
 _sampleRate(sampleRate),
-_accumulatedInput(maxSampleCount)
+_accumulated(maxSampleCount)
 {
-  for(int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-    _accumulatedOutput[channel].reserve(maxSampleCount);
+  for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+  {
+    _accumulated.audioIn[channel].reserve(maxSampleCount);
+    _accumulated.audioOut[channel].reserve(maxSampleCount);
+  }
 }
 
 template <class Derived, class ProcessorMemory> void
@@ -49,7 +51,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
 {
   // TODO debug the heck out of this stuff
   // TODO deal with non-accurate
-  
+
   // non-automatable parameters only changed by ui, no need to split blocks 
   // (actually there's no sample position anyway)
   for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
@@ -61,20 +63,18 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   }
 
   // now proceed with the block splitting
-  // it's not so bad with contiguous/dense buffers
-  // but kinda headache for time-stamped event streams
-  
+
   // gather audio in
   for (int hostSample = 0; hostSample < hostBlock.currentSampleCount; hostSample++)
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      _accumulatedInput.audioIn[channel].push_back(hostBlock.audioIn[channel][hostSample]);
+      _accumulated.audioIn[channel].push_back(hostBlock.audioIn[channel][hostSample]);
 
   // gather note events
   for (int i = 0; i < hostBlock.noteEvents.size(); i++)
   {
     FBNoteEvent noteEvent = hostBlock.noteEvents[i];
     noteEvent.position += _accumulatedInputSampleCount;
-    _accumulatedInput.noteEvents.push_back(noteEvent);
+    _accumulated.noteEvents.push_back(noteEvent);
   }
 
   // gather automation events (sample accurate)
@@ -82,22 +82,38 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   {
     FBAutoEvent autoEvent = hostBlock.autoEvents[i];
     autoEvent.position += _accumulatedInputSampleCount;
-    _accumulatedInput.autoEvents.push_back(autoEvent);
+    _accumulated.autoEvents.push_back(autoEvent);
   }
 
   _accumulatedInputSampleCount += hostBlock.currentSampleCount;
 
-  // if we have enough stuff accumulated, keep processing it in 
-  // chuncks of internal block size. Note that this may not necessarily 
-  // mean that we have enough to fill the requested output buffer!
-  // also there's all kinds of funky stuff to be accomodated like host
-  // comes at you with 1-sample block, then another, then 1024-sample block
-  // (fruity i look at you) in which case we have 1026 samples accumulated,
-  // process in internal size of (let's say 32), need to stick 2 remaining
+  // we can now produce whatever multiple of internal 
+  // block size fits in _accumulatedInputSampleCount
+  FBProcessorContext context;
+  context.moduleSlot = -1;
+  context.sampleRate = _sampleRate;
   while (_accumulatedInputSampleCount >= ProcessorMemory::BlockSize)
   {
+    // TODO handle the accurate automation
+
+    // run one round of internal block size and add to accumulated output
+    static_cast<Derived*>(this)->ProcessPluginBlock(context);
+    for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+      _accumulated.audioOut[channel].insert(
+        _accumulated.audioOut[channel].end(),
+        _memory.masterOut[channel].store.begin(),
+        _memory.masterOut[channel].store.end());
+    _accumulatedOutputSampleCount += ProcessorMemory::BlockSize;
+
+    // now subtract from accumulated input
+    for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+      _accumulated.audioIn[channel].erase(
+        _accumulated.audioIn[channel].begin(),
+        _accumulated.audioIn[channel].begin() + ProcessorMemory::BlockSize);
+    std::erase_if(_accumulated.autoEvents, [](auto const& e) { return e.position < ProcessorMemory::BlockSize; });
     _accumulatedInputSampleCount -= ProcessorMemory::BlockSize;
   }
+}
 
 
 #if 0
@@ -155,4 +171,3 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     }
   }
 #endif
-}
