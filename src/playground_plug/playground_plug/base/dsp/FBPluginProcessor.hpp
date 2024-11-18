@@ -118,6 +118,13 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
       _accumulated.noteEvents[i].position -= ProcessorMemory::BlockSize;
     _accumulatedInputSampleCount -= ProcessorMemory::BlockSize;
   }
+
+  // so now we have accumulated N samples, push
+  // them to host, left-zero-padding if missing,
+  // and then shift the remainder of output buildup
+  // this is where PDC comes into play!
+
+
 }
 
 
