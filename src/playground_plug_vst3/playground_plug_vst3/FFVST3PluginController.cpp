@@ -27,7 +27,8 @@ MakeParamInfo(FFRuntimeParam const& param, int unitId, bool automate)
   result.id = param.tag;
   result.unitId = unitId;
   result.defaultNormalizedValue = 0.0; // TODO
-  result.stepCount = param.staticTopo.stepCount;
+  result.stepCount = std::max(0, param.staticTopo.valueCount - 1);
+
   CopyToString128(param.name, result.title);
   CopyToString128(param.staticTopo.unit, result.units);
   CopyToString128(param.staticTopo.name, result.shortTitle);

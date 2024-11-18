@@ -46,6 +46,7 @@ struct FFPluginBlock
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginBlock);
   static constexpr int BlockSize = FF_BLOCK_SIZE;
 
+  // todo drop this
   float sampleRate;
   FFStereoBlock masterOut;
   FFProcessorParamMemory paramMemory;

@@ -15,15 +15,21 @@ std::string
 FBMakeName(std::string name, int slotCount, int slot);
 
 inline double 
-FBStepToNormalized(int stepCount, int step)
+FBDiscreteToNormalized(int count, int index)
 {
-  return step / (double)stepCount;
+  return index / (count - 1.0);
 }
 
 inline int
-FBNormalizedToStep(int stepCount, double normalized)
+FBNormalizedToDiscrete(int count, double normalized)
 {
-  return std::min(stepCount, (int)(normalized * (stepCount + 1)));
+  return std::min(count - 1, (int)(normalized * count));
+}
+
+inline bool
+FBNormalizedToBool(double normalized)
+{
+  return FBNormalizedToDiscrete(2, normalized) != 0;
 }
 
 // all this stuff is templated for the sole reason to allow 
@@ -32,8 +38,9 @@ FBNormalizedToStep(int stepCount, double normalized)
 template <class PluginBlock>
 struct FBStaticParam
 {
-  int stepCount; // or 0 for continuous [0, 1]
   int slotCount; // multi-slot params are useful for mod matrices
+  int valueCount; // 0 for continuous normalized, > 1 for discrete (so vst stepCount + 1)
+
   std::string id;
   std::string name;
   std::string unit;

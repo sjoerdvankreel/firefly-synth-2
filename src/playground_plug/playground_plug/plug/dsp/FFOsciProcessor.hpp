@@ -6,9 +6,9 @@ class FFOsciProcessor
 {
   float _phase = 0.0f;
 
-  void ProcessOff(int moduleSlot, FFPluginBlock& block);
-  template <class PhaseToOut>
-  void ProcessPhase(int moduleSlot, FFPluginBlock& block, PhaseToOut phaseToOut);
+  void ProcessType(int moduleSlot, FFPluginBlock& block);
+  template <class Calc>
+  void ProcessType(int moduleSlot, FFPluginBlock& block, Calc calc);
 
 public:
   void Process(int moduleSlot, FFPluginBlock& block);
