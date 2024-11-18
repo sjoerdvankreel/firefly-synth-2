@@ -16,12 +16,13 @@
 template <class Derived, class ProcessorMemory>
 class FBPluginProcessor
 {
-  int _accumulated = 0;
   float const _sampleRate;
 
   // for dealing with fixed size buffers
-  FBHostBlock _rollingHostBlock;
-  int _currentRollingWindowSize = 0;
+  FBHostBlock _accumulatedInput;
+  int _accumulatedInputSampleCount = 0;
+  int _accumulatedOutputSampleCount = 0;
+  std::array<std::vector<float>, FB_CHANNELS_STEREO> _accumulatedOutput;
 
 public:
   void ProcessHostBlock(FBHostBlock& hostBlock);
@@ -37,8 +38,10 @@ FBPluginProcessor<Derived, ProcessorMemory>::
 FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxSampleCount, float sampleRate):
 _topo(topo),
 _sampleRate(sampleRate),
-_rollingHostBlock(maxSampleCount)
+_accumulatedInput(maxSampleCount)
 {
+  for(int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+    _accumulatedOutput[channel].reserve(maxSampleCount);
 }
 
 template <class Derived, class ProcessorMemory> void
@@ -50,29 +53,36 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   // gather audio in
   for (int hostSample = 0; hostSample < hostBlock.currentSampleCount; hostSample++)
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      _rollingHostBlock.audioIn[channel].push_back(hostBlock.audioIn[channel][hostSample]);
+      _accumulatedInput.audioIn[channel].push_back(hostBlock.audioIn[channel][hostSample]);
 
   // gather note events
   for (int i = 0; i < hostBlock.noteEvents.size(); i++)
   {
     FBNoteEvent noteEvent = hostBlock.noteEvents[i];
-    noteEvent.position += _currentRollingWindowSize;
-    _rollingHostBlock.noteEvents.push_back(noteEvent);
+    noteEvent.position += _accumulatedInputSampleCount;
+    _accumulatedInput.noteEvents.push_back(noteEvent);
   }
 
   // gather automation events (sample accurate)
   for (int i = 0; i < hostBlock.autoEvents.size(); i++)
   {
     FBAutoEvent autoEvent = hostBlock.autoEvents[i];
-    autoEvent.position += _currentRollingWindowSize;
-    _rollingHostBlock.autoEvents.push_back(autoEvent);
+    autoEvent.position += _accumulatedInputSampleCount;
+    _accumulatedInput.autoEvents.push_back(autoEvent);
   }
 
-  _currentRollingWindowSize += hostBlock.currentSampleCount;
+  _accumulatedInputSampleCount += hostBlock.currentSampleCount;
 
-  while (_currentRollingWindowSize >= ProcessorMemory::BlockSize)
+  // if we have enough stuff accumulated, keep processing it in 
+  // chuncks of internal block size. Note that this may not necessarily 
+  // mean that we have enough to fill the requested output buffer!
+  // also there's all kinds of funky stuff to be accomodated like host
+  // comes at you with 1-sample block, then another, then 1024-sample block
+  // (fruity i look at you) in which case we have 1026 samples accumulated,
+  // process in internal size of (let's say 32), need to stick 2 remaining
+  while (_accumulatedInputSampleCount >= ProcessorMemory::BlockSize)
   {
-    _currentRollingWindowSize -= ProcessorMemory::BlockSize;
+    _accumulatedInputSampleCount -= ProcessorMemory::BlockSize;
   }
 
 
