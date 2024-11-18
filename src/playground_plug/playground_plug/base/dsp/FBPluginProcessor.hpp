@@ -24,18 +24,18 @@ public:
 protected:
   ProcessorMemory _memory = {};
   FBRuntimeTopo<ProcessorMemory> const* const _topo;
-  FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxHostBlockSize, float sampleRate);
+  FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxHostSampleCount, float sampleRate);
 };
 
 template <class Derived, class ProcessorMemory>
 FBPluginProcessor<Derived, ProcessorMemory>::
-FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxHostBlockSize, float sampleRate):
+FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxHostSampleCount, float sampleRate):
 _topo(topo),
 _sampleRate(sampleRate),
-_maxRemaining(std::max(maxHostBlockSize, ProcessorMemory::BlockSize))
+_maxRemaining(std::max(maxHostSampleCount, ProcessorMemory::BlockSize))
 {
-  _remainingOut[0].resize(_maxRemaining);
-  _remainingOut[1].resize(_maxRemaining);
+  _remainingOut[FB_CHANNEL_L].resize(_maxRemaining);
+  _remainingOut[FB_CHANNEL_R].resize(_maxRemaining);
 }
 
 template <class Derived, class ProcessorMemory> void
@@ -43,7 +43,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
 {
   // handle leftover from the previous round
   int samplesProcessed = 0;
-  for (int s = 0; s < hostBlock.sampleCount && s < _remainingOut[0].size(); s++)
+  for (int s = 0; s < hostBlock.sampleCount && s < _remainingOut[FB_CHANNEL_L].size(); s++)
   {
     for(int channel = 0; channel < 2; channel++)
       hostBlock.audioOut[channel][samplesProcessed] = _remainingOut[channel][s];
@@ -91,7 +91,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
       for (int channel = 0; channel < 2; channel++)
         _remainingOut[channel].push_back(_memory.masterOut[channel][blockSample]);
       samplesProcessed++;
-      assert(_remainingOut[0].size() <= _maxRemaining);
+      assert(_remainingOut[FB_CHANNEL_L].size() <= _maxRemaining);
     }
   }
 }

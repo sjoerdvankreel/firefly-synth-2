@@ -13,7 +13,7 @@ class FFVST3PluginProcessor :
 public AudioEffect
 {
   FFRuntimeTopo const _topo;
-  FBHostBlock _hostBlock = {};
+  std::unique_ptr<FBHostBlock> _hostBlock = {};
   std::unique_ptr<FFPluginProcessor> _processor = {};
 
 public:  

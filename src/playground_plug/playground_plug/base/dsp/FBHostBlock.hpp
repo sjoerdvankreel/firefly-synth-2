@@ -1,6 +1,8 @@
 #pragma once
 
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
+
+#include <array>
 #include <vector>
 
 struct FBPlugEvent
@@ -32,11 +34,16 @@ struct FBNoteEvent
 // but internally we use fixed block size
 struct FBHostBlock
 {
-  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FBHostBlock);
+  FB_NOCOPY_NOMOVE(FBHostBlock);
+  FBHostBlock(int maxHostSampleCount);
 
   int sampleCount;
-  float* const* audioOut;
-  float const* const* audioIn;
+
+  // these could be raw pointers avoiding a copy
+  // but we re-use the FBHostBlock struct for block splitting
+  // probably 1 in/out copy per block wont kill us
+  std::array<std::vector<float>, FB_CHANNELS_STEREO> audioIn;
+  std::array<std::vector<float>, FB_CHANNELS_STEREO> audioOut;
 
   // note and auto must be sorted by sample position
   std::vector<FBNoteEvent> noteEvents = { 1024, FBNoteEvent() };

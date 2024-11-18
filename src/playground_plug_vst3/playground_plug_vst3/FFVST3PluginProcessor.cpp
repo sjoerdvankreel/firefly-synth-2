@@ -76,6 +76,7 @@ FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 tresult PLUGIN_API
 FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
 {
+  _hostBlock.reset(new FBHostBlock(setup.maxSamplesPerBlock));
   _processor.reset(new FFPluginProcessor(&_topo, setup.maxSamplesPerBlock, setup.sampleRate));
   return kResultTrue;
 }
@@ -93,48 +94,55 @@ FFVST3PluginProcessor::process(ProcessData& data)
 {
   if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
     return kResultTrue;
-  
-  _hostBlock.audioIn = nullptr;
-  _hostBlock.sampleCount = data.numSamples;
-  _hostBlock.audioOut = data.outputs[0].channelBuffers32;
+
+  // TODO audio input buffers
+  _hostBlock->sampleCount = data.numSamples;
 
   Event event;
-  _hostBlock.noteEvents.clear();
+  _hostBlock->noteEvents.clear();
   if (data.inputEvents != nullptr)
     for (int i = 0; i < data.inputEvents->getEventCount(); i++)
       if (data.inputEvents->getEvent(i, event) == kResultOk)
         if (event.type == Event::kNoteOnEvent)
-          _hostBlock.noteEvents.push_back(MakeNoteOnEvent(event));
+          _hostBlock->noteEvents.push_back(MakeNoteOnEvent(event));
         else if (event.type == Event::kNoteOffEvent)
-          _hostBlock.noteEvents.push_back(MakeNoteOffEvent(event));
+          _hostBlock->noteEvents.push_back(MakeNoteOffEvent(event));
 
   int position;
   ParamValue value;
   IParamValueQueue* queue;
   std::map<int, int>::const_iterator iter;
-  _hostBlock.plugEvents.clear();
-  _hostBlock.autoEvents.clear();
+  _hostBlock->plugEvents.clear();
+  _hostBlock->autoEvents.clear();
   if(data.inputParameterChanges != nullptr)
     for (int param = 0; param < data.inputParameterChanges->getParameterCount(); param++)
       if ((queue = data.inputParameterChanges->getParameterData(param)) != nullptr)
         if ((iter = _topo.tagToPlugParam.find(queue->getParameterId())) != _topo.tagToPlugParam.end())
         {
           if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-            _hostBlock.plugEvents.push_back(MakePlugEvent(queue->getParameterId(), value));
+            _hostBlock->plugEvents.push_back(MakePlugEvent(queue->getParameterId(), value));
         }
         else if ((iter = _topo.tagToAutoParam.find(queue->getParameterId())) != _topo.tagToAutoParam.end())
         {
           for (int point = 0; point < queue->getPointCount(); point++)
             if (queue->getPoint(point, position, value) == kResultTrue)
-              _hostBlock.autoEvents.push_back(MakeAutoEvent(queue->getParameterId(), position, value));
+              _hostBlock->autoEvents.push_back(MakeAutoEvent(queue->getParameterId(), position, value));
         }        
 
   // sort by position
   // CLAP also does it this way 
   // and it makes the block splitting easier
   auto compare = [](auto const& l, auto const& r) { return l.position < r.position; };
-  std::sort(_hostBlock.autoEvents.begin(), _hostBlock.autoEvents.end(), compare);
+  std::sort(_hostBlock->autoEvents.begin(), _hostBlock->autoEvents.end(), compare);
 
-  _processor->ProcessHostBlock(_hostBlock);
+  _processor->ProcessHostBlock(*_hostBlock);
+
+  // copy over audio output
+  for(int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+    std::copy(
+      _hostBlock->audioOut[channel].begin(),
+      _hostBlock->audioOut[channel].end(), 
+      data.outputs[0].channelBuffers32[channel]);
+
   return kResultTrue;
 }
