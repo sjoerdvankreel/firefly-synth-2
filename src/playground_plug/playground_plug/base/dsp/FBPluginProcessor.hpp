@@ -65,8 +65,8 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   // now proceed with the block splitting
 
   // gather audio in
-  for (int hostSample = 0; hostSample < hostBlock.currentSampleCount; hostSample++)
-    for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+  for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+    for (int hostSample = 0; hostSample < hostBlock.currentSampleCount; hostSample++)
       _accumulated.audioIn[channel].push_back(hostBlock.audioIn[channel][hostSample]);
 
   // gather note events
@@ -123,12 +123,20 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   // them to host, left-zero-padding if missing,
   // and then shift the remainder of output buildup
   // this is where PDC comes into play!
+  int sample = 0;
+  for(; sample < _accumulatedOutputSampleCount && sample) // bla bla yada yada tomorrow
 
-  int hostSample = 0;
-  for (; hostSample < _accumulatedOutputSampleCount; hostSample++)
-  {
+  for (; sample < hostBlock.currentSampleCount - _accumulatedOutputSampleCount; sample++)
+    for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+      hostBlock.audioOut[channel][sample] = 0.0f;
+  for (; sample < hostBlock.currentSampleCount - _accumulatedOutputSampleCount; sample++)
+    for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+      hostBlock.audioOut[channel][sample] = 0.0f;
 
-  }
+
+  for (; sample < hostBlock.currentSampleCount && sample < _accumulatedOutputSampleCount; sample++)
+    for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+      hostBlock.audioOut[channel][sample] = _accumulated.audioOut[channel][sample];
 }
 
 
