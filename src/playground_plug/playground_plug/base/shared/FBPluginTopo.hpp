@@ -111,11 +111,11 @@ struct FBRuntimeTopo
 template <class ProcessorMemory>
 FBRuntimeParam<ProcessorMemory>::
 FBRuntimeParam(
-  FBStaticModule<ProcessorMemory> const& module, int moduleSlot,
-  FBStaticParam<ProcessorMemory> const& param, int paramSlot)
+  FBStaticModule<ProcessorMemory> const& module, int moduleSlot_,
+  FBStaticParam<ProcessorMemory> const& param, int paramSlot_)
 {
-  moduleSlot = moduleSlot;
-  paramSlot = paramSlot;
+  moduleSlot = moduleSlot_;
+  paramSlot = paramSlot_;
   staticTopo = param;
 
   id = FBMakeId(module.id, moduleSlot);
