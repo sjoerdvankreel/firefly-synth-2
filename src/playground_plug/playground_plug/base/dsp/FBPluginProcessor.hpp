@@ -11,7 +11,7 @@
 
 // handles fixed block sizes
 // i don't know how to do this without crtp and no virtuals
-template <class Derived, class PluginBlock, int PluginBlockSize>
+template <class Derived, class PluginBlock>
 class FBPluginProcessor
 {
   int const _maxRemaining;
@@ -26,19 +26,19 @@ protected:
   FBPluginProcessor(FBRuntimeTopo<PluginBlock> const* topo, int maxHostBlockSize, float sampleRate);
 };
 
-template <class Derived, class PluginBlock, int PluginBlockSize>
-FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::
+template <class Derived, class PluginBlock>
+FBPluginProcessor<Derived, PluginBlock>::
 FBPluginProcessor(FBRuntimeTopo<PluginBlock> const* topo, int maxHostBlockSize, float sampleRate):
 _topo(topo),
-_maxRemaining(std::max(maxHostBlockSize, PluginBlockSize))
+_maxRemaining(std::max(maxHostBlockSize, PluginBlock::BlockSize))
 {
   _pluginBlock.sampleRate = sampleRate;
   _remainingOut[0].resize(_maxRemaining);
   _remainingOut[1].resize(_maxRemaining);
 }
 
-template <class Derived, class PluginBlock, int PluginBlockSize> void
-FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::ProcessHostBlock(FBHostBlock& hostBlock)
+template <class Derived, class PluginBlock> void
+FBPluginProcessor<Derived, PluginBlock>::ProcessHostBlock(FBHostBlock& hostBlock)
 {
   // handle leftover from the previous round
   int samplesProcessed = 0;
@@ -72,15 +72,16 @@ FBPluginProcessor<Derived, PluginBlock, PluginBlockSize>::ProcessHostBlock(FBHos
 
     // process in chunks of internal block size, may cause leftovers
     int blockSample = 0;
-    for (; blockSample < PluginBlockSize && samplesProcessed < hostBlock.sampleCount; blockSample++)
+    for (; blockSample < PluginBlock::BlockSize && samplesProcessed < hostBlock.sampleCount; blockSample++)
     {
       for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
         hostBlock.audioOut[channel][samplesProcessed] = _pluginBlock.masterOut[channel][blockSample];
       samplesProcessed++;
     }
 
+    // TODO its not even possible to overshoot when counting in input, so necessarily introduce latency?
     // if we overshoot, stick it in the remaining buffer
-    for (; blockSample < PluginBlockSize; blockSample++)
+    for (; blockSample < PluginBlock::BlockSize; blockSample++)
     {
       for (int channel = 0; channel < 2; channel++)
         _remainingOut[channel].push_back(_pluginBlock.masterOut[channel][blockSample]);

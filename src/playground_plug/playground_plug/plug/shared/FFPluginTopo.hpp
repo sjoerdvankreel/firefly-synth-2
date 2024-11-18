@@ -43,8 +43,8 @@ typedef FFParamMemory<FFMonoBlock> FFProcessorParamMemory;
 
 struct FFPluginBlock
 {
-  static const int BlockSize = FF_BLOCK_SIZE;
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginBlock);
+  static constexpr int BlockSize = FF_BLOCK_SIZE;
 
   float sampleRate;
   FFStereoBlock masterOut;

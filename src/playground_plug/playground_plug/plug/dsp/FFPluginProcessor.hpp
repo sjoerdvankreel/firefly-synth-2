@@ -8,7 +8,7 @@
 #include <vector>
 
 class FFPluginProcessor:
-public FBPluginProcessor<FFPluginProcessor, FFPluginBlock, FF_BLOCK_SIZE>
+public FBPluginProcessor<FFPluginProcessor, FFPluginBlock>
 {
   FFPluginProcessors _processors = {};
 
