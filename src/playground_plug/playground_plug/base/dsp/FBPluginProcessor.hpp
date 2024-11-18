@@ -9,14 +9,16 @@
 #include <vector>
 #include <cassert>
 
-// handles fixed block sizes
-// i don't know how to do this without crtp and no virtuals
+// handles fixed block sizes, parameter smoothing, essentially all 
+// the boring tech stuff. ProcessPluginBlock is where the interesting 
+// stuff happens, and it can deal with fixed-size buffers only. also
+// i don't know how to do this without crtp and no virtuals!
 template <class Derived, class ProcessorMemory>
 class FBPluginProcessor
 {
   float const _sampleRate;
-  int const _maxRemaining;
-  std::array<std::vector<float>, 2> _remainingOut = {};
+  // for dealing with fixed size buffers
+  FBHostBlock _rollingHostBlock;
 
 public:
   void ProcessHostBlock(FBHostBlock& hostBlock);
@@ -32,6 +34,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::
 FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxSampleCount, float sampleRate):
 _topo(topo),
 _sampleRate(sampleRate),
+_rollingHostBlock(maxSampleCount),
 _maxRemaining(std::max(maxSampleCount, ProcessorMemory::BlockSize))
 {
   _remainingOut[FB_CHANNEL_L].resize(_maxRemaining);
