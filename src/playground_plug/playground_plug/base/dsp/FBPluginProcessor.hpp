@@ -50,6 +50,20 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   // TODO debug the heck out of this stuff
   // TODO deal with non-accurate
   
+  // non-automatable parameters only changed by ui, no need to split blocks 
+  // (actually there's no sample position anyway)
+  for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
+  {
+    auto const& event = hostBlock.plugEvents[pe];
+    int index = _topo->tagToPlugParam.at(event.tag);
+    auto const& param = _topo->plugParams[index];
+    *(_topo->plugParams[index].staticTopo.plugParamAddr(param.moduleSlot, param.paramSlot, &_memory)) = event.normalized;
+  }
+
+  // now proceed with the block splitting
+  // it's not so bad with contiguous/dense buffers
+  // but kinda headache for time-stamped event streams
+  
   // gather audio in
   for (int hostSample = 0; hostSample < hostBlock.currentSampleCount; hostSample++)
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
