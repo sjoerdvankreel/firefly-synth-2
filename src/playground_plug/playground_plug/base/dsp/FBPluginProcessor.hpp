@@ -16,6 +16,7 @@
 template <class Derived, class ProcessorMemory>
 class FBPluginProcessor
 {
+  int _accumulated = 0;
   float const _sampleRate;
   // for dealing with fixed size buffers
   FBHostBlock _rollingHostBlock;
@@ -34,16 +35,20 @@ FBPluginProcessor<Derived, ProcessorMemory>::
 FBPluginProcessor(FBRuntimeTopo<ProcessorMemory> const* topo, int maxSampleCount, float sampleRate):
 _topo(topo),
 _sampleRate(sampleRate),
-_rollingHostBlock(maxSampleCount),
-_maxRemaining(std::max(maxSampleCount, ProcessorMemory::BlockSize))
+_rollingHostBlock(maxSampleCount)
 {
-  _remainingOut[FB_CHANNEL_L].resize(_maxRemaining);
-  _remainingOut[FB_CHANNEL_R].resize(_maxRemaining);
 }
 
 template <class Derived, class ProcessorMemory> void
 FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostBlock)
 {
+  // keep gathering stuff untill we hit internal block size
+  while (_accumulated < ProcessorMemory::BlockSize)
+  {
+
+  }
+
+#if 0
   // handle leftover from the previous round
   int samplesProcessed = 0;
   for (int s = 0; s < hostBlock.currentSampleCount && s < _remainingOut[FB_CHANNEL_L].size(); s++)
@@ -97,4 +102,5 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
       assert(_remainingOut[FB_CHANNEL_L].size() <= _maxRemaining);
     }
   }
+#endif
 }
