@@ -128,8 +128,10 @@ struct FBRuntimeTopo
   std::vector<FBRuntimeParam<ProcessorMemory>> autoParams;
 
   FBRuntimeTopo(FBStaticTopo<ProcessorMemory> const& topo);
-  FBStaticParam<ProcessorMemory> const& GetStaticParamByTag(int tag) const;
-  FBRuntimeParam<ProcessorMemory> const& GetRuntimeParamByTag(int tag) const;
+  FBStaticParam<ProcessorMemory> const& GetStaticPlugParamByTag(int tag) const;
+  FBStaticParam<ProcessorMemory> const& GetStaticAutoParamByTag(int tag) const;
+  FBRuntimeParam<ProcessorMemory> const& GetRuntimePlugParamByTag(int tag) const;
+  FBRuntimeParam<ProcessorMemory> const& GetRuntimeAutoParamByTag(int tag) const;
 };
 
 template <class ProcessorMemory>
@@ -206,14 +208,28 @@ FBRuntimeTopo(
 
 template <class ProcessorMemory>
 FBRuntimeParam<ProcessorMemory> const&
-FBRuntimeTopo<ProcessorMemory>::GetRuntimeParamByTag(int tag) const
+FBRuntimeTopo<ProcessorMemory>::GetRuntimePlugParamByTag(int tag) const
 {
   return plugParams[tagToPlugParam.at(tag)];
 }
 
 template <class ProcessorMemory>
 FBStaticParam<ProcessorMemory> const&
-FBRuntimeTopo<ProcessorMemory>::GetStaticParamByTag(int tag) const
+FBRuntimeTopo<ProcessorMemory>::GetStaticPlugParamByTag(int tag) const
 {
-  return GetRuntimeParamByTag(tag).staticTopo;
+  return GetRuntimePlugParamByTag(tag).staticTopo;
+}
+
+template <class ProcessorMemory>
+FBRuntimeParam<ProcessorMemory> const&
+FBRuntimeTopo<ProcessorMemory>::GetRuntimeAutoParamByTag(int tag) const
+{
+  return autoParams[tagToAutoParam.at(tag)];
+}
+
+template <class ProcessorMemory>
+FBStaticParam<ProcessorMemory> const&
+FBRuntimeTopo<ProcessorMemory>::GetStaticAutoParamByTag(int tag) const
+{
+  return GetRuntimeAutoParamByTag(tag).staticTopo;
 }

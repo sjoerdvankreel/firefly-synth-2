@@ -39,14 +39,14 @@ struct FBHostBlock
 
   int currentSampleCount;
 
+  // note and auto must be sorted by sample position
+  std::vector<FBNoteEvent> noteEvents;
+  std::vector<FBAutoEvent> autoEvents;
+  std::vector<FBPlugEvent> plugEvents;
+
   // these could be raw pointers avoiding a copy
   // but we re-use the FBHostBlock struct for block splitting
   // probably 1 in/out copy per block wont kill us
   std::array<std::vector<float>, FB_CHANNELS_STEREO> audioIn;
   std::array<std::vector<float>, FB_CHANNELS_STEREO> audioOut;
-
-  // note and auto must be sorted by sample position
-  std::vector<FBNoteEvent> noteEvents = { 1024, FBNoteEvent() };
-  std::vector<FBAutoEvent> autoEvents = { 1024, FBAutoEvent() };
-  std::vector<FBPlugEvent> plugEvents = { 1024, FBPlugEvent() };
 };

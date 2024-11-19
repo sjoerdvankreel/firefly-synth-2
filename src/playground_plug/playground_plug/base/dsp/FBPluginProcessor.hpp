@@ -57,7 +57,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
   {
     auto const& event = hostBlock.plugEvents[pe];
-    auto const& runtimeParam = _topo->GetRuntimeParamByTag(event.tag);
+    auto const& runtimeParam = _topo->GetRuntimePlugParamByTag(event.tag);
     *runtimeParam.PlugParamAddr(&_memory) = event.normalized;
   }
 
@@ -105,7 +105,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
         eventIndex++)
       {
         auto const& event = hostBlock.autoEvents[eventIndex];
-        auto const& runtimeParam = _topo->GetRuntimeParamByTag(event.tag);
+        auto const& runtimeParam = _topo->GetRuntimeAutoParamByTag(event.tag);
         *runtimeParam.ScalarAutoParamAddr(&_memory) = event.normalized;
       }
 
