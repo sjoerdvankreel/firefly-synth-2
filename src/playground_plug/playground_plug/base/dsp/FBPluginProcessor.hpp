@@ -9,16 +9,11 @@
 #include <vector>
 #include <cassert>
 
-// handles fixed block sizes, parameter smoothing, essentially all 
-// the boring tech stuff. ProcessPluginBlock is where the interesting 
-// stuff happens, so it can deal with fixed-size buffers only. 
-// also i don't know how to do this without crtp and no virtuals.
+// handles fixed block sizes and parameter smoothing
 template <class Derived, class ProcessorMemory>
 class FBPluginProcessor
 {
   float const _sampleRate;
-
-  // for dealing with fixed size buffers
   FBHostBlock _accumulated;
   int _accumulatedInputSampleCount = 0;
   int _accumulatedOutputSampleCount = 0;
@@ -49,9 +44,6 @@ _accumulated(maxSampleCount)
 template <class Derived, class ProcessorMemory> void
 FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostBlock)
 {
-  // TODO debug the heck out of this stuff
-  // TODO deal with non-accurate
-
   // non-automatable parameters only changed by ui, no need to split blocks 
   // (actually there's no sample position anyway)
   for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
@@ -60,8 +52,6 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     auto const& runtimeParam = _topo->GetRuntimePlugParamByTag(event.tag);
     *runtimeParam.PlugParamAddr(&_memory) = event.normalized;
   }
-
-  // now proceed with the rolling window / fixed block size
 
   // gather audio in
   for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
@@ -93,11 +83,6 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   context.sampleRate = _sampleRate;
   while (_accumulatedInputSampleCount >= ProcessorMemory::BlockSize)
   {
-    // TODO lerp or filter or both?
-    // construct dense buffers from time-stamped automation events
-    // this is where the sort-by-sample first, param second comes in handy
-    // NOTE: some hosts (reaper) give you events at block boundary to allow ramping, and 
-    // some don't, instead just faking it with loads of impulses, gotta account for both
     int eventIndex = 0;
     for (int sample = 0; sample < ProcessorMemory::BlockSize; sample++)
     {
@@ -118,15 +103,6 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
         auto const& runtimeParam = _topo->autoParams[ap];
         (*runtimeParam.DenseAutoParamAddr(&_memory))[sample] = *runtimeParam.ScalarAutoParamAddr(&_memory);
       }
-    }
-
-    // reset all event positions
-    // if host does NOT provide ability to ramp
-    // we just have to deal with regular parameter smoothing
-    for (int ap = 0; ap < _topo->autoParams.size(); ap++)
-    {
-      auto const& runtimeParam = _topo->autoParams[ap];
-      (*runtimeParam.EventPosAutoParamAddr(&_memory)) = 0;
     }
 
     // run one round of internal block size and add to accumulated output
@@ -152,10 +128,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     _accumulatedInputSampleCount -= ProcessorMemory::BlockSize;
   }
 
-  // so now we have accumulated N samples, push
-  // them to host, left-zero-padding if missing,
-  // and then shift the remainder of output buildup
-  // this is where PDC comes into play!
+  // so now we have accumulated N samples, push to host, left-zero-pad if missing
   int hostOutputSample = 0;
   int samplesToPad = std::max(0, hostBlock.currentSampleCount - _accumulatedOutputSampleCount);
   int accumulatedSamplesToUse = hostBlock.currentSampleCount - samplesToPad;
