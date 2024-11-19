@@ -9,16 +9,11 @@
 #include <vector>
 #include <cassert>
 
-// handles fixed block sizes, parameter smoothing, essentially all 
-// the boring tech stuff. ProcessPluginBlock is where the interesting 
-// stuff happens, so it can deal with fixed-size buffers only. 
-// also i don't know how to do this without crtp and no virtuals.
+// handles fixed block sizes and parameter smoothing
 template <class Derived, class ProcessorMemory>
 class FBPluginProcessor
 {
   float const _sampleRate;
-
-  // for dealing with fixed size buffers
   FBHostBlock _accumulated;
   int _accumulatedInputSampleCount = 0;
   int _accumulatedOutputSampleCount = 0;
@@ -61,9 +56,6 @@ FBPluginProcessor<Derived, ProcessorMemory>::ClearAutoEventPositions()
 template <class Derived, class ProcessorMemory> void
 FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostBlock)
 {
-  // TODO debug the heck out of this stuff
-  // TODO deal with non-accurate
-
   // non-automatable parameters only changed by ui, no need to split blocks 
   // (actually there's no sample position anyway)
   for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
@@ -72,8 +64,6 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     auto const& runtimeParam = _topo->GetRuntimePlugParamByTag(event.tag);
     *runtimeParam.PlugParamAddr(&_memory) = event.normalized;
   }
-
-  // now proceed with the rolling window / fixed block size
 
   // gather audio in
   for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
@@ -89,12 +79,6 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   }
 
   // gather automation events (sample accurate)
-  // NOTE: in order to provide ramping we have
-  // to insert additional points here.
-  // Example: host block size is 256,
-  // internal block size is 128, host comes
-  // at us with P0=0 at T=0, P0=1 at T=255,
-  // we have to insert P0=0.5 at T=127
   ClearAutoEventPositions();
   for (int i = 0; i < hostBlock.autoEvents.size(); i++)
   {
@@ -102,12 +86,13 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     autoEvent.position += _accumulatedInputSampleCount;
     _accumulated.autoEvents.push_back(autoEvent);
 
-    // check if we need to split ?
+    // check if we need to split
+    FBAutoEvent splittedEvent = autoEvent;
     auto const& runtimeParam = _topo->GetRuntimeAutoParamByTag(event.tag);
-    int prevEventPosThisParam = (*runtimeParam.EventPosAutoParamAddr(&_memory));
-    if (autoEvent.position % ProcessorMemory::BlockSize != prevEventPosThisParam % ProcessorMemory::BlockSize)
+    int prevEventPosThisParam = *runtimeParam.EventPosAutoParamAddr(&_memory);
+    while(splittedEvent.position % ProcessorMemory::BlockSize != prevEventPosThisParam % ProcessorMemory::BlockSize)
     {
-
+      splittedEvent.position = // magic
     }
 
     (*runtimeParam.EventPosAutoParamAddr(&_memory)) = autoEvent.position;
@@ -154,6 +139,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
       // for now just keep on pushing static state to dense buffers (so stair-stepping)
       for (int ap = 0; ap < _topo->autoParams.size(); ap++)
       {
+        // todo this is total crap
         auto const& runtimeParam = _topo->autoParams[ap];
         (*runtimeParam.DenseAutoParamAddr(&_memory))[sample] = *runtimeParam.ScalarAutoParamAddr(&_memory);
       }
