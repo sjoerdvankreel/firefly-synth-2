@@ -1,8 +1,7 @@
 #pragma once
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
 
-// internal block size
-// we process in fixed blocks
+// internal block size, we process in fixed blocks
 // hope to have some autovectorizer gains from this!
 // however it does introduce latency so keep it small
 #define FF_BLOCK_SIZE 32

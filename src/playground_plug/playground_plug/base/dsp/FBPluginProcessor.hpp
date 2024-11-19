@@ -62,7 +62,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     *(_topo->plugParams[index].staticTopo.plugParamAddr(param.moduleSlot, param.paramSlot, &_memory)) = event.normalized;
   }
 
-  // now proceed with the block splitting
+  // now proceed with the rolling window / fixed block size
 
   // gather audio in
   for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
@@ -123,75 +123,17 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   // them to host, left-zero-padding if missing,
   // and then shift the remainder of output buildup
   // this is where PDC comes into play!
-  int sample = 0;
-  for(; sample < _accumulatedOutputSampleCount && sample) // bla bla yada yada tomorrow
-
-  for (; sample < hostBlock.currentSampleCount - _accumulatedOutputSampleCount; sample++)
+  int hostOutputSample = 0;
+  int samplesToPad = std::max(0, hostBlock.currentSampleCount - _accumulatedOutputSampleCount);
+  for (int sample = 0; sample < samplesToPad; sample++, hostOutputSample++)
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      hostBlock.audioOut[channel][sample] = 0.0f;
-  for (; sample < hostBlock.currentSampleCount - _accumulatedOutputSampleCount; sample++)
+      hostBlock.audioOut[channel][hostOutputSample] = 0.0f;
+  for (; hostOutputSample < hostBlock.currentSampleCount; hostOutputSample++)
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      hostBlock.audioOut[channel][sample] = 0.0f;
-
-
-  for (; sample < hostBlock.currentSampleCount && sample < _accumulatedOutputSampleCount; sample++)
-    for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      hostBlock.audioOut[channel][sample] = _accumulated.audioOut[channel][sample];
+      hostBlock.audioOut[channel][hostOutputSample] = 0.0f;
+  int accumulatedSamplesUsed = hostBlock.currentSampleCount - samplesToPad;
+  for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
+    _accumulated.audioOut[channel].erase(
+      _accumulated.audioOut[channel].begin(),
+      _accumulated.audioOut[channel].begin() + accumulatedSamplesUsed);
 }
-
-
-#if 0
-  // handle leftover from the previous round
-  int samplesProcessed = 0;
-  for (int s = 0; s < hostBlock.currentSampleCount && s < _remainingOut[FB_CHANNEL_L].size(); s++)
-  {
-    for(int channel = 0; channel < 2; channel++)
-      hostBlock.audioOut[channel][samplesProcessed] = _remainingOut[channel][s];
-    samplesProcessed++;
-  }
-
-  // delete processed leftover from the remaining buffer
-  for (int channel = 0; channel < 2; channel++)
-    _remainingOut[channel].erase(
-      _remainingOut[channel].begin(),
-      _remainingOut[channel].begin() + samplesProcessed);
-
-  // non-automatable parameters only changed by ui, no need to split blocks 
-  // (actually there's no sample position anyway)
-  for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
-  {
-    auto const& event = hostBlock.plugEvents[pe];
-    int index = _topo->tagToPlugParam.at(event.tag);
-    auto const& param = _topo->plugParams[index];
-    *(_topo->plugParams[index].staticTopo.plugParamAddr(param.moduleSlot, param.paramSlot, &_memory)) = event.normalized;
-  }
-
-  FBProcessorContext context;
-  context.moduleSlot = -1;
-  context.sampleRate = _sampleRate;
-
-  // deal with remainder of host block
-  while (samplesProcessed < hostBlock.currentSampleCount)
-  {
-    static_cast<Derived*>(this)->ProcessPluginBlock(context);
-
-    // process in chunks of internal block size, may cause leftovers
-    int blockSample = 0;
-    for (; blockSample < ProcessorMemory::BlockSize && samplesProcessed < hostBlock.currentSampleCount; blockSample++)
-    {
-      for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-        hostBlock.audioOut[channel][samplesProcessed] = _memory.masterOut[channel][blockSample];
-      samplesProcessed++;
-    }
-
-    // TODO its not even possible to overshoot when counting in input, so necessarily introduce latency?
-    // if we overshoot, stick it in the remaining buffer
-    for (; blockSample < ProcessorMemory::BlockSize; blockSample++)
-    {
-      for (int channel = 0; channel < 2; channel++)
-        _remainingOut[channel].push_back(_memory.masterOut[channel][blockSample]);
-      samplesProcessed++;
-      assert(_remainingOut[FB_CHANNEL_L].size() <= _maxRemaining);
-    }
-  }
-#endif
