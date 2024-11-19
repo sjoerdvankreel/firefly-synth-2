@@ -23,8 +23,6 @@ class FBPluginProcessor
   int _accumulatedInputSampleCount = 0;
   int _accumulatedOutputSampleCount = 0;
 
-  void ClearAutoEventPositions();
-
 public:
   void ProcessHostBlock(FBHostBlock& hostBlock);
 
@@ -45,16 +43,6 @@ _accumulated(maxSampleCount)
   {
     _accumulated.audioIn[channel].reserve(maxSampleCount);
     _accumulated.audioOut[channel].reserve(maxSampleCount);
-  }
-}
-
-template <class Derived, class ProcessorMemory> void
-FBPluginProcessor<Derived, ProcessorMemory>::ClearAutoEventPositions()
-{
-  for (int ap = 0; ap < _topo->autoParams.size(); ap++)
-  {
-    auto const& runtimeParam = _topo->autoParams[ap];
-    (*runtimeParam.EventPosAutoParamAddr(&_memory)) = 0;
   }
 }
 
@@ -89,30 +77,13 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   }
 
   // gather automation events (sample accurate)
-  // NOTE: in order to provide ramping we have
-  // to insert additional points here.
-  // Example: host block size is 256,
-  // internal block size is 128, host comes
-  // at us with P0=0 at T=0, P0=1 at T=255,
-  // we have to insert P0=0.5 at T=127
-  ClearAutoEventPositions();
   for (int i = 0; i < hostBlock.autoEvents.size(); i++)
   {
     FBAutoEvent autoEvent = hostBlock.autoEvents[i];
     autoEvent.position += _accumulatedInputSampleCount;
     _accumulated.autoEvents.push_back(autoEvent);
-
-    // check if we need to split ?
-    auto const& runtimeParam = _topo->GetRuntimeAutoParamByTag(event.tag);
-    int prevEventPosThisParam = (*runtimeParam.EventPosAutoParamAddr(&_memory));
-    if (autoEvent.position % ProcessorMemory::BlockSize != prevEventPosThisParam % ProcessorMemory::BlockSize)
-    {
-
-    }
-
-    (*runtimeParam.EventPosAutoParamAddr(&_memory)) = autoEvent.position;
   }
-  
+
   _accumulatedInputSampleCount += hostBlock.currentSampleCount;
 
   // we can now produce whatever multiple of internal 
@@ -137,16 +108,6 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
       {
         auto const& event = hostBlock.autoEvents[eventIndex];
         auto const& runtimeParam = _topo->GetRuntimeAutoParamByTag(event.tag);
-
-        // now we need to look backwards in time and lerp for ramping
-        float prevParamValue = *runtimeParam.ScalarAutoParamAddr(&_memory);
-        int prevParamSamplePos = *runtimeParam.EventPosAutoParamAddr(&_memory);
-        float indexRange = sample - static_cast<float>(prevParamSamplePos);
-        float valueRange = event.normalized - prevParamValue;
-        for (int paramSample = prevParamSamplePos; paramSample < sample; paramSample++)
-          *runtimeParam.ScalarAutoParamAddr(&_memory) = prevParamValue + valueRange * (paramSample - prevParamSamplePos) / indexRange;
-
-        // and keep outputting the new value
         *runtimeParam.EventPosAutoParamAddr(&_memory) = sample;
         *runtimeParam.ScalarAutoParamAddr(&_memory) = event.normalized;
       }
@@ -159,6 +120,15 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
       }
     }
 
+    // reset all event positions
+    // if host does NOT provide ability to ramp
+    // we just have to deal with regular parameter smoothing
+    for (int ap = 0; ap < _topo->autoParams.size(); ap++)
+    {
+      auto const& runtimeParam = _topo->autoParams[ap];
+      (*runtimeParam.EventPosAutoParamAddr(&_memory)) = 0;
+    }
+
     // run one round of internal block size and add to accumulated output
     static_cast<Derived*>(this)->ProcessPluginBlock(context);
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
@@ -169,7 +139,6 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     _accumulatedOutputSampleCount += ProcessorMemory::BlockSize;
 
     // now subtract from accumulated input
-    // TODO insert automation events at block boundaries
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
       _accumulated.audioIn[channel].erase(
         _accumulated.audioIn[channel].begin(),
