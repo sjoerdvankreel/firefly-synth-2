@@ -1,5 +1,7 @@
 #pragma once
 
+#include <playground_plug/base/shared/FBPluginBlock.hpp>
+
 #include <map>
 #include <array>
 #include <string>
@@ -48,7 +50,7 @@ struct FBStaticParam
   // reason for template
   float* (*plugParamAddr)(
     int moduleSlot, int paramSlot, ProcessorMemory* memory);
-  std::array<float, ProcessorMemory::BlockSize>* (*autoParamAddr)(
+  FBMonoBlock<ProcessorMemory::BlockSize>* (*autoParamAddr)(
     int moduleSlot, int paramSlot, ProcessorMemory* memory);
 };
 

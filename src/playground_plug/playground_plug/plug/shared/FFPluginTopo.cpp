@@ -34,12 +34,16 @@ FFMakeTopo()
   osciGain.slotCount = 1;
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
+  osciGain.autoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->paramMemory.osciAuto[moduleSlot][FFOsciAutoParamGain]; };
 
   auto& osciPitch = osci.autoParams[FFOsciAutoParamPitch];
   osciPitch.name = "Pitch";
   osciPitch.slotCount = 1;
   osciPitch.valueCount = 0;
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
+  osciPitch.autoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->paramMemory.osciAuto[moduleSlot][FFOsciAutoParamPitch]; };
 
   auto& shaper = result.modules[FFModuleShaper];
   shaper.name = "Shaper";
@@ -69,6 +73,8 @@ FFMakeTopo()
   shaperGain.slotCount = 1;
   shaperGain.valueCount = 2;
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
+  shaperGain.autoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->paramMemory.shaperAuto[moduleSlot][FFShaperAutoParamGain]; };
 
   return result;
 }
