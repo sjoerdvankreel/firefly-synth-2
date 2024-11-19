@@ -84,6 +84,9 @@ struct FBRuntimeParam
   FBRuntimeParam(
     FBStaticModule<ProcessorMemory> const& module, int moduleSlot,
     FBStaticParam<ProcessorMemory> const& param, int paramSlot);
+
+  float* PlugParamAddr(ProcessorMemory* memory) const;
+  FBMonoBlock<ProcessorMemory::BlockSize>* AutoParamAddr(ProcessorMemory* memory) const;
 };
 
 template <class ProcessorMemory>
@@ -108,6 +111,8 @@ struct FBRuntimeTopo
   std::vector<FBRuntimeParam<ProcessorMemory>> autoParams;
 
   FBRuntimeTopo(FBStaticTopo<ProcessorMemory> const& topo);
+  FBStaticParam<ProcessorMemory> const& GetStaticParamByTag(int tag) const;
+  FBRuntimeParam<ProcessorMemory> const& GetRuntimeParamByTag(int tag) const;
 };
 
 template <class ProcessorMemory>
@@ -125,6 +130,20 @@ FBRuntimeParam(
   name = FBMakeName(module.name, module.slotCount, moduleSlot);
   name += " " + FBMakeName(param.name, param.slotCount, paramSlot);
   tag = FBMakeHash(id);
+}
+
+template <class ProcessorMemory>
+float*
+FBRuntimeParam<ProcessorMemory>::PlugParamAddr(ProcessorMemory* memory) const
+{
+  return staticTopo.plugParamAddr(moduleSlot, paramSlot, memory);
+}
+
+template <class ProcessorMemory>
+FBMonoBlock<ProcessorMemory::BlockSize>*
+FBRuntimeParam<ProcessorMemory>::AutoParamAddr(ProcessorMemory* memory) const
+{
+  return staticTopo.autoParamAddr(moduleSlot, paramSlot, memory);
 }
 
 template <class ProcessorMemory>
@@ -160,4 +179,18 @@ FBRuntimeTopo(
     tagToPlugParam[plugParams[pp].tag] = pp;
   for (int ap = 0; ap < autoParams.size(); ap++)
     tagToAutoParam[autoParams[ap].tag] = ap;
+}
+
+template <class ProcessorMemory>
+FBRuntimeParam<ProcessorMemory> const&
+FBRuntimeTopo<ProcessorMemory>::GetRuntimeParamByTag(int tag) const
+{
+  return plugParams[tagToPlugParam.at(tag)];
+}
+
+template <class ProcessorMemory>
+FBStaticParam<ProcessorMemory> const&
+FBRuntimeTopo<ProcessorMemory>::GetStaticParamByTag(int tag) const
+{
+  return GetRuntimeParamByTag(tag).staticTopo;
 }

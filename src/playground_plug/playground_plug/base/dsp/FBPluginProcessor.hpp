@@ -57,9 +57,8 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   for (int pe = 0; pe < hostBlock.plugEvents.size(); pe++)
   {
     auto const& event = hostBlock.plugEvents[pe];
-    int index = _topo->tagToPlugParam.at(event.tag);
-    auto const& param = _topo->plugParams[index];
-    *(_topo->plugParams[index].staticTopo.plugParamAddr(param.moduleSlot, param.paramSlot, &_memory)) = event.normalized;
+    auto const& runtimeParam = _topo->GetRuntimeParamByTag(event.tag);
+    *runtimeParam.PlugParamAddr(&_memory) = event.normalized;
   }
 
   // now proceed with the rolling window / fixed block size
