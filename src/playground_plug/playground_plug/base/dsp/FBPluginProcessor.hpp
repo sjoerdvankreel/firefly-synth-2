@@ -94,12 +94,27 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   while (_accumulatedInputSampleCount >= ProcessorMemory::BlockSize)
   {
     // TODO lerp or filter or both?
-    for (int e = 0; e < _accumulated.autoEvents.size(); e++)
+    // construct dense buffers from time-stamped automation events
+    // this is where the sort-by-sample first, param second comes in handy
+    int eventIndex = 0;
+    for (int sample = 0; sample < ProcessorMemory::BlockSize; sample++)
     {
-      auto const& event = _accumulated.autoEvents[e];
-      if (event.position >= ProcessorMemory::BlockSize)
-        break;
+      // update the static state
+      for (; eventIndex < _accumulated.autoEvents.size() &&
+        _accumulated.autoEvents[eventIndex].position == sample;
+        eventIndex++)
+      {
+        auto const& event = hostBlock.autoEvents[eventIndex];
+        auto const& runtimeParam = _topo->GetRuntimeParamByTag(event.tag);
+        *runtimeParam.ScalarAutoParamAddr(&_memory) = event.normalized;
+      }
 
+      // for now just keep on pushing static state to dense buffers (so stair-stepping)
+      for (int ap = 0; ap < _topo->autoParams.size(); ap++)
+      {
+        auto const& runtimeParam = _topo->autoParams[ap];
+        (*runtimeParam.DenseAutoParamAddr(&_memory))[sample] = *runtimeParam.ScalarAutoParamAddr(&_memory);
+      }
     }
 
     // run one round of internal block size and add to accumulated output
