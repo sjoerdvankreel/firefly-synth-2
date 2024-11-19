@@ -96,6 +96,8 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
     // TODO lerp or filter or both?
     // construct dense buffers from time-stamped automation events
     // this is where the sort-by-sample first, param second comes in handy
+    // NOTE: some hosts (reaper) give you events at block boundary to allow ramping, and 
+    // some don't, instead just faking it with loads of impulses, gotta account for both
     int eventIndex = 0;
     for (int sample = 0; sample < ProcessorMemory::BlockSize; sample++)
     {
