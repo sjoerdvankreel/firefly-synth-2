@@ -40,6 +40,8 @@ FBNormalizedToBool(double normalized)
 template <class ProcessorMemory>
 struct FBStaticParam
 {
+  FB_EXPLICIT_COPY_DEFAULT_CTOR(FBStaticParam);
+
   int slotCount; // multi-slot params are useful for mod matrices
   int valueCount; // 0 for continuous normalized, > 1 for discrete (so vst stepCount + 1)
 
@@ -57,6 +59,8 @@ struct FBStaticParam
 template <class ProcessorMemory>
 struct FBStaticModule
 {
+  FB_EXPLICIT_COPY_DEFAULT_CTOR(FBStaticModule);
+
   int slotCount;
   std::string id;
   std::string name;
@@ -67,12 +71,15 @@ struct FBStaticModule
 template <class ProcessorMemory>
 struct FBStaticTopo
 {
+  FB_EXPLICIT_COPY_DEFAULT_CTOR(FBStaticTopo);
   std::vector<FBStaticModule<ProcessorMemory>> modules;
 };
 
 template <class ProcessorMemory>
 struct FBRuntimeParam
 {
+  FB_EXPLICIT_COPY(FBRuntimeParam);
+
   int tag; // VST3 / CLAP param tag
   int moduleSlot;
   int paramSlot;
@@ -92,6 +99,8 @@ struct FBRuntimeParam
 template <class ProcessorMemory>
 struct FBRuntimeModule
 {
+  FB_EXPLICIT_COPY(FBRuntimeModule);
+
   std::string id;
   std::string name;
   std::vector<FBRuntimeParam<ProcessorMemory>> plugParams;
@@ -104,6 +113,8 @@ struct FBRuntimeModule
 template <class ProcessorMemory>
 struct FBRuntimeTopo
 {
+  FB_EXPLICIT_COPY(FBRuntimeTopo);
+
   std::map<int, int> tagToPlugParam;
   std::map<int, int> tagToAutoParam;
   std::vector<FBRuntimeModule<ProcessorMemory>> modules;
@@ -119,12 +130,11 @@ template <class ProcessorMemory>
 FBRuntimeParam<ProcessorMemory>::
 FBRuntimeParam(
   FBStaticModule<ProcessorMemory> const& module, int moduleSlot_,
-  FBStaticParam<ProcessorMemory> const& param, int paramSlot_)
+  FBStaticParam<ProcessorMemory> const& param, int paramSlot_):
+moduleSlot(moduleSlot_),
+paramSlot(paramSlot_),
+staticTopo(param)
 {
-  moduleSlot = moduleSlot_;
-  paramSlot = paramSlot_;
-  staticTopo = param;
-
   id = FBMakeId(module.id, moduleSlot);
   id += "-" + FBMakeId(param.id, paramSlot);
   name = FBMakeName(module.name, module.slotCount, moduleSlot);

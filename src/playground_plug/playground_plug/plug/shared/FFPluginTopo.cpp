@@ -1,4 +1,5 @@
 #include <playground_plug/plug/shared/FFPluginTopo.hpp>
+#include <utility>
 
 FFStaticTopo
 FFMakeTopo()
@@ -76,5 +77,5 @@ FFMakeTopo()
   shaperGain.autoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
     return &memory->paramMemory.shaperAuto[moduleSlot][FFShaperAutoParamGain]; };
 
-  return result;
+  return FFStaticTopo(result);
 }
