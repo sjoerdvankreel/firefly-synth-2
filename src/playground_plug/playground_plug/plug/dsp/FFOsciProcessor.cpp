@@ -22,7 +22,7 @@ CalcSine(float phase)
 void
 FFOsciProcessor::Process(FBProcessorContext const& context, FFProcessorMemory& memory)
 {
-  auto const& plugState = memory.paramMemory.osciPlug[context.moduleSlot];
+  auto const& plugState = memory.plugParam.osci[context.moduleSlot];
   bool on = FBNormalizedToBool(plugState[FFOsciPlugParamOn]);
   if (on)
     ProcessType(context, memory);
@@ -33,7 +33,7 @@ FFOsciProcessor::Process(FBProcessorContext const& context, FFProcessorMemory& m
 void 
 FFOsciProcessor::ProcessType(FBProcessorContext const& context, FFProcessorMemory& memory)
 {
-  auto const& plugState = memory.paramMemory.osciPlug[context.moduleSlot];
+  auto const& plugState = memory.plugParam.osci[context.moduleSlot];
   int type = FBNormalizedToDiscrete(FFOsciTypeCount, plugState[FFOsciPlugParamType]);
   switch (type)
   {

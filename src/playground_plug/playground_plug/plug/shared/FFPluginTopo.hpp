@@ -23,30 +23,47 @@ struct FFPluginProcessors
 
   std::array<FFOsciProcessor, FF_OSCI_COUNT> osci;
   std::array<FFShaperProcessor, FF_SHAPER_COUNT> shaper;
+}; 
+
+struct FFPlugParamMemory
+{
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPlugParamMemory);
+
+  std::array<std::array<float, FFOsciPlugParamCount>, FF_OSCI_COUNT> osci;
+  std::array<std::array<float, FFShaperPlugParamCount>, FF_SHAPER_COUNT> shaper;
 };
 
 template <class T>
-struct FFParamMemory
+struct FFAutoParamMemory
 {
-  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFParamMemory);
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFAutoParamMemory);
 
-  std::array<std::array<T, FFOsciAutoParamCount>, FF_OSCI_COUNT> osciAuto;
-  std::array<std::array<T, FFShaperAutoParamCount>, FF_SHAPER_COUNT> shaperAuto;
-  std::array<std::array<float, FFOsciPlugParamCount>, FF_OSCI_COUNT> osciPlug;
-  std::array<std::array<float, FFShaperPlugParamCount>, FF_SHAPER_COUNT> shaperPlug;
+  std::array<std::array<T, FFOsciAutoParamCount>, FF_OSCI_COUNT> osci;
+  std::array<std::array<T, FFShaperAutoParamCount>, FF_SHAPER_COUNT> shaper;
 };
 
 typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
 typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
-typedef FFParamMemory<FFMonoBlock> FFProcessorParamMemory;
 
-struct FFProcessorMemory
+// both processor/controller
+struct FFPluginMemory
 {
-  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFProcessorMemory);
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginMemory);
+
+  FFPlugParamMemory plugParam;
+  FFAutoParamMemory<float> scalarAutoParam;
+};
+
+struct FFProcessorMemory:
+FFPluginMemory
+{
+  typedef FFPluginMemory PluginMemory;
   static constexpr int BlockSize = FF_BLOCK_SIZE;
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFProcessorMemory);
 
   FFStereoBlock masterOut;
-  FFProcessorParamMemory paramMemory;
+  FFAutoParamMemory<FFMonoBlock> denseAutoParam;
+
   std::array<FFStereoBlock, FF_OSCI_COUNT> osciOut;
   std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperIn;
   std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperOut;

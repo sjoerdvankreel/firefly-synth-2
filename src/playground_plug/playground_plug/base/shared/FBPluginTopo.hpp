@@ -50,10 +50,12 @@ struct FBStaticParam
   std::string unit;
 
   // reason for template
+  FBMonoBlock<ProcessorMemory::BlockSize>* (*denseAutoParamAddr)(
+    int moduleSlot, int paramSlot, ProcessorMemory* memory);
   float* (*plugParamAddr)(
-    int moduleSlot, int paramSlot, ProcessorMemory* memory);
-  FBMonoBlock<ProcessorMemory::BlockSize>* (*autoParamAddr)(
-    int moduleSlot, int paramSlot, ProcessorMemory* memory);
+    int moduleSlot, int paramSlot, typename ProcessorMemory::PluginMemory* memory);
+  float* (*scalarAutoParamAddr)(
+    int moduleSlot, int paramSlot, typename ProcessorMemory::PluginMemory* memory);
 };
 
 template <class ProcessorMemory>

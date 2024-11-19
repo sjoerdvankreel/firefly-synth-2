@@ -19,32 +19,36 @@ FFMakeTopo()
   osciOn.slotCount = 1;
   osciOn.valueCount = 2;
   osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
-  osciOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
-    return &memory->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamOn]; };
+  osciOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginMemory* memory) {
+    return &memory->plugParam.osci[moduleSlot][FFOsciPlugParamOn]; };
 
   auto& osciType = osci.plugParams[FFOsciPlugParamType];
   osciType.name = "Type";
   osciType.slotCount = 1;
   osciType.valueCount = FFOsciTypeCount;
   osciType.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
-  osciType.plugParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
-    return &memory->paramMemory.osciPlug[moduleSlot][FFOsciPlugParamType]; };
+  osciType.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginMemory* memory) {
+    return &memory->plugParam.osci[moduleSlot][FFOsciPlugParamType]; };
 
   auto& osciGain = osci.autoParams[FFOsciAutoParamGain];
   osciGain.name = "Gain";
   osciGain.slotCount = 1;
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
-  osciGain.autoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
-    return &memory->paramMemory.osciAuto[moduleSlot][FFOsciAutoParamGain]; };
+  osciGain.scalarAutoParamAddr = [](int moduleSlot, int paramSlot, FFPluginMemory* memory) {
+    return &memory->scalarAutoParam.osci[moduleSlot][FFOsciAutoParamGain]; };
+  osciGain.denseAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->denseAutoParam.osci[moduleSlot][FFOsciAutoParamGain]; };
 
   auto& osciPitch = osci.autoParams[FFOsciAutoParamPitch];
   osciPitch.name = "Pitch";
   osciPitch.slotCount = 1;
   osciPitch.valueCount = 0;
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
-  osciPitch.autoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
-    return &memory->paramMemory.osciAuto[moduleSlot][FFOsciAutoParamPitch]; };
+  osciPitch.scalarAutoParamAddr = [](int moduleSlot, int paramSlot, FFPluginMemory* memory) {
+    return &memory->scalarAutoParam.osci[moduleSlot][FFOsciAutoParamPitch]; };
+  osciPitch.denseAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->denseAutoParam.osci[moduleSlot][FFOsciAutoParamPitch]; };
 
   auto& shaper = result.modules[FFModuleShaper];
   shaper.name = "Shaper";
@@ -58,24 +62,26 @@ FFMakeTopo()
   shaperOn.slotCount = 1;
   shaperOn.valueCount = 2;
   shaperOn.id = "{BF67A27A-97E9-4640-9E57-B1E04D195ACC}";
-  shaperOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
-    return &memory->paramMemory.shaperPlug[moduleSlot][FFShaperPlugParamOn]; };
+  shaperOn.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginMemory* memory) {
+    return &memory->plugParam.shaper[moduleSlot][FFShaperPlugParamOn]; };
 
   auto& shaperClip = shaper.plugParams[FFShaperPlugParamClip];
   shaperClip.name = "Clip";
   shaperClip.slotCount = 1;
   shaperClip.valueCount = 2;
   shaperClip.id = "{81C7442E-4064-4E90-A742-FDDEA84AE1AC}";
-  shaperClip.plugParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
-    return &memory->paramMemory.shaperPlug[moduleSlot][FFShaperPlugParamClip]; };
+  shaperClip.plugParamAddr = [](int moduleSlot, int paramSlot, FFPluginMemory* memory) {
+    return &memory->plugParam.shaper[moduleSlot][FFShaperPlugParamClip]; };
 
   auto& shaperGain = shaper.autoParams[FFShaperAutoParamGain];
   shaperGain.name = "Gain";
   shaperGain.slotCount = 1;
   shaperGain.valueCount = 2;
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
-  shaperGain.autoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
-    return &memory->paramMemory.shaperAuto[moduleSlot][FFShaperAutoParamGain]; };
+  shaperGain.scalarAutoParamAddr = [](int moduleSlot, int paramSlot, FFPluginMemory* memory) {
+    return &memory->scalarAutoParam.shaper[moduleSlot][FFShaperAutoParamGain]; };
+  shaperGain.denseAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->denseAutoParam.shaper[moduleSlot][FFShaperAutoParamGain]; };
 
   return FFStaticTopo(result);
 }
