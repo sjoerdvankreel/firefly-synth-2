@@ -125,15 +125,16 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   // this is where PDC comes into play!
   int hostOutputSample = 0;
   int samplesToPad = std::max(0, hostBlock.currentSampleCount - _accumulatedOutputSampleCount);
+  int accumulatedSamplesToUse = hostBlock.currentSampleCount - samplesToPad;
   for (int sample = 0; sample < samplesToPad; sample++, hostOutputSample++)
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
       hostBlock.audioOut[channel][hostOutputSample] = 0.0f;
-  for (; hostOutputSample < hostBlock.currentSampleCount; hostOutputSample++)
+  for (int sample = 0; sample < accumulatedSamplesToUse; sample++, hostOutputSample++)
     for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-      hostBlock.audioOut[channel][hostOutputSample] = 0.0f;
-  int accumulatedSamplesUsed = hostBlock.currentSampleCount - samplesToPad;
+      hostBlock.audioOut[channel][hostOutputSample] = _accumulated.audioOut[channel][sample];
   for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
     _accumulated.audioOut[channel].erase(
       _accumulated.audioOut[channel].begin(),
-      _accumulated.audioOut[channel].begin() + accumulatedSamplesUsed);
+      _accumulated.audioOut[channel].begin() + accumulatedSamplesToUse);
+  _accumulatedOutputSampleCount -= accumulatedSamplesToUse;
 }
