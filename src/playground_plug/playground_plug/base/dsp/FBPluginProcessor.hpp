@@ -108,6 +108,7 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
       {
         auto const& event = hostBlock.autoEvents[eventIndex];
         auto const& runtimeParam = _topo->GetRuntimeAutoParamByTag(event.tag);
+        *runtimeParam.EventPosAutoParamAddr(&_memory) = sample;
         *runtimeParam.ScalarAutoParamAddr(&_memory) = event.normalized;
       }
 
@@ -117,6 +118,15 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
         auto const& runtimeParam = _topo->autoParams[ap];
         (*runtimeParam.DenseAutoParamAddr(&_memory))[sample] = *runtimeParam.ScalarAutoParamAddr(&_memory);
       }
+    }
+
+    // reset all event positions
+    // if host does NOT provide ability to ramp
+    // we just have to deal with regular parameter smoothing
+    for (int ap = 0; ap < _topo->autoParams.size(); ap++)
+    {
+      auto const& runtimeParam = _topo->autoParams[ap];
+      (*runtimeParam.EventPosAutoParamAddr(&_memory)) = 0;
     }
 
     // run one round of internal block size and add to accumulated output

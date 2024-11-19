@@ -50,8 +50,11 @@ struct FBStaticParam
   std::string unit;
 
   // reason for template
+  int* (*eventPosAutoParamAddr)(
+    int moduleSlot, int paramSlot, ProcessorMemory* memory);
   FBMonoBlock<ProcessorMemory::BlockSize>* (*denseAutoParamAddr)(
     int moduleSlot, int paramSlot, ProcessorMemory* memory);
+
   float* (*plugParamAddr)(
     int moduleSlot, int paramSlot, typename ProcessorMemory::PluginMemory* memory);
   float* (*scalarAutoParamAddr)(
@@ -98,6 +101,9 @@ struct FBRuntimeParam
     typename ProcessorMemory::PluginMemory* memory) const;
   float* ScalarAutoParamAddr(
     typename ProcessorMemory::PluginMemory* memory) const;
+
+  int* EventPosAutoParamAddr(
+    ProcessorMemory* memory) const;
   FBMonoBlock<ProcessorMemory::BlockSize>* DenseAutoParamAddr(
     ProcessorMemory* memory) const;
 };
@@ -151,17 +157,24 @@ staticTopo(param)
 }
 
 template <class ProcessorMemory>
-float*
-FBRuntimeParam<ProcessorMemory>::PlugParamAddr(typename ProcessorMemory::PluginMemory* memory) const
-{
-  return staticTopo.plugParamAddr(moduleSlot, paramSlot, memory);
-}
-
-template <class ProcessorMemory>
 FBMonoBlock<ProcessorMemory::BlockSize>*
 FBRuntimeParam<ProcessorMemory>::DenseAutoParamAddr(ProcessorMemory* memory) const
 {
   return staticTopo.denseAutoParamAddr(moduleSlot, paramSlot, memory);
+}
+
+template <class ProcessorMemory>
+int*
+FBRuntimeParam<ProcessorMemory>::EventPosAutoParamAddr(ProcessorMemory* memory) const
+{
+  return staticTopo.eventPosAutoParamAddr(moduleSlot, paramSlot, memory);
+}
+
+template <class ProcessorMemory>
+float*
+FBRuntimeParam<ProcessorMemory>::PlugParamAddr(typename ProcessorMemory::PluginMemory* memory) const
+{
+  return staticTopo.plugParamAddr(moduleSlot, paramSlot, memory);
 }
 
 template <class ProcessorMemory>

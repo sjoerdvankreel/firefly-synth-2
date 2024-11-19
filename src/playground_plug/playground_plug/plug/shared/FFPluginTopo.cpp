@@ -35,10 +35,14 @@ FFMakeTopo()
   osciGain.slotCount = 1;
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
+
+  // TODO template this stuff, no repeating
   osciGain.scalarAutoParamAddr = [](int moduleSlot, int paramSlot, FFPluginMemory* memory) {
     return &memory->scalarAutoParam.osci[moduleSlot][FFOsciAutoParamGain]; };
   osciGain.denseAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
     return &memory->denseAutoParam.osci[moduleSlot][FFOsciAutoParamGain]; };
+  osciGain.eventPosAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->eventPosAutoParam.osci[moduleSlot][FFOsciAutoParamGain]; };
 
   auto& osciPitch = osci.autoParams[FFOsciAutoParamPitch];
   osciPitch.name = "Pitch";
@@ -49,6 +53,8 @@ FFMakeTopo()
     return &memory->scalarAutoParam.osci[moduleSlot][FFOsciAutoParamPitch]; };
   osciPitch.denseAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
     return &memory->denseAutoParam.osci[moduleSlot][FFOsciAutoParamPitch]; };
+  osciPitch.eventPosAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->eventPosAutoParam.osci[moduleSlot][FFOsciAutoParamPitch]; };
 
   auto& shaper = result.modules[FFModuleShaper];
   shaper.name = "Shaper";
@@ -82,6 +88,8 @@ FFMakeTopo()
     return &memory->scalarAutoParam.shaper[moduleSlot][FFShaperAutoParamGain]; };
   shaperGain.denseAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
     return &memory->denseAutoParam.shaper[moduleSlot][FFShaperAutoParamGain]; };
+  shaperGain.eventPosAutoParamAddr = [](int moduleSlot, int paramSlot, FFProcessorMemory* memory) {
+    return &memory->eventPosAutoParam.shaper[moduleSlot][FFShaperAutoParamGain]; };
 
   return FFStaticTopo(result);
 }
