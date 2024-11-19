@@ -93,7 +93,14 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
   context.sampleRate = _sampleRate;
   while (_accumulatedInputSampleCount >= ProcessorMemory::BlockSize)
   {
-    // TODO handle the accurate automation
+    // TODO lerp or filter or both?
+    for (int e = 0; e < _accumulated.autoEvents.size(); e++)
+    {
+      auto const& event = _accumulated.autoEvents[e];
+      if (event.position >= ProcessorMemory::BlockSize)
+        break;
+
+    }
 
     // run one round of internal block size and add to accumulated output
     static_cast<Derived*>(this)->ProcessPluginBlock(context);
