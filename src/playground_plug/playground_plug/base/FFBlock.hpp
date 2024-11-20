@@ -42,7 +42,7 @@ public:
   FFDynamicMonoBlock(int size): _store(size, 0.0f) {}
 };
 
-class FFFixedMonoBlock:
+class alignas(FF_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
 public FFMonoBlockMixin<FFFixedMonoBlock>
 {
   std::array<float, FF_BLOCK_SIZE> _store;
