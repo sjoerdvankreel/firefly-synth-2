@@ -8,6 +8,9 @@
 
 #include <array>
 
+typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
+typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
+
 enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
 
 enum { FFShaperAutoParamGain, FFShaperAutoParamCount };
@@ -16,6 +19,15 @@ enum { FFShaperPlugParamOn, FFShaperPlugParamClip, FFShaperPlugParamCount };
 enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
 enum { FFOsciPlugParamOn, FFOsciPlugParamType, FFOsciPlugParamCount };
 enum { FFOsciAutoParamGain, FFOsciAutoParamPitch, FFOsciAutoParamCount };
+
+// TODO this is really wasteful because of the FFMonoBlock alignment
+// but it's nice to be able to group stuff for each parameter together
+struct FFProcessorAutoParamMemory
+{
+  int eventPos;
+  float scalar;
+  FFMonoBlock dense;
+};
 
 struct FFPluginProcessors
 {
@@ -41,9 +53,6 @@ struct FFPlugParamMemory
   std::array<std::array<float, FFOsciPlugParamCount>, FF_OSCI_COUNT> osci;
   std::array<std::array<float, FFShaperPlugParamCount>, FF_SHAPER_COUNT> shaper;
 };
-
-typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
-typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
 
 // both processor/controller
 struct FFPluginMemory

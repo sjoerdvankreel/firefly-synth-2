@@ -15,7 +15,7 @@ struct FBProcessorContext
 };
 
 template <int Count>
-struct FBMonoBlock
+struct alignas(Count*sizeof(float)) FBMonoBlock
 {
   std::array<float, Count> store;
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FBMonoBlock);
@@ -37,7 +37,7 @@ struct FBMonoBlock
 };
 
 template <int Count>
-struct FBStereoBlock
+struct alignas(Count * sizeof(float)) FBStereoBlock
 {
   std::array<FBMonoBlock<Count>, FB_CHANNELS_STEREO> store;
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FBStereoBlock);

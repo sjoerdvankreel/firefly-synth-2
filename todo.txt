@@ -2,6 +2,7 @@ static link
 handle PDC
 clap note cut
 relwithdebinfo
+tryout simd stuff maybe with a library?
 check hash clash
 separate clap/vst projs
 replace stepcount crap by something sensible

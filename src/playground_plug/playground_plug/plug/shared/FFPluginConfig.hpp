@@ -4,7 +4,7 @@
 // internal block size, we process in fixed blocks
 // hope to have some autovectorizer gains from this!
 // however it does introduce latency so keep it small
-#define FF_BLOCK_SIZE 32
+#define FF_BLOCK_SIZE 16
 
 #define FF_OSCI_COUNT 2
 #define FF_SHAPER_COUNT 2
