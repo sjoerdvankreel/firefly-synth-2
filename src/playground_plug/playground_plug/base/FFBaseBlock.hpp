@@ -1,7 +1,7 @@
 #pragma once
 
-#include <playground_plug/base/FFConfig.hpp>
-#include <playground_plug/base/FFUtility.hpp>
+#include <playground_plug/base/FFBaseConfig.hpp>
+#include <playground_plug/base/FFBaseUtility.hpp>
 
 #include <array>
 #include <vector>
@@ -96,7 +96,7 @@ public:
   _store({ std::vector<float>(size, 0.0f), std::vector<float>(size, 0.0f) }) {}
 };
 
-class alignas(FF_BLOCK_SIZE * sizeof(float)) FFFixedStereoBlock:
+class alignas(FF_BLOCK_SIZE * FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
 public FFStereoBlockMixin<FFFixedStereoBlock>
 {
   std::array<std::array<float, FF_BLOCK_SIZE>, FF_CHANNELS_STEREO> _store;
