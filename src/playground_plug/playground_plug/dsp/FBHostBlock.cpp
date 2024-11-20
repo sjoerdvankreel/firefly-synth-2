@@ -3,10 +3,9 @@
 FBHostBlock::
 FBHostBlock(int maxSampleCount)
 {
-  int const eventCountGuess = 1024;
-  noteEvents.reserve(eventCountGuess);
-  autoEvents.reserve(eventCountGuess);
-  plugEvents.reserve(eventCountGuess);
+  noteEvents.reserve(FB_EVENT_COUNT_GUESS);
+  blockParamEvents.reserve(FB_EVENT_COUNT_GUESS);
+  accurateParamEvents.reserve(FB_EVENT_COUNT_GUESS);
   for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
   {
     audioIn[channel].reserve(maxSampleCount);

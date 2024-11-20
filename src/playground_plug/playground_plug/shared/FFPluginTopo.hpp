@@ -12,67 +12,45 @@ typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
 typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
 
 enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
-
-enum { FFShaperAutoParamGain, FFShaperAutoParamCount };
-enum { FFShaperPlugParamOn, FFShaperPlugParamClip, FFShaperPlugParamCount };
-
 enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
 enum { FFOsciPlugParamOn, FFOsciPlugParamType, FFOsciPlugParamCount };
 enum { FFOsciAutoParamGain, FFOsciAutoParamPitch, FFOsciAutoParamCount };
-
-// TODO this is really wasteful because of the FFMonoBlock alignment
-// but it's nice to be able to group stuff for each parameter together
-struct FFProcessorAutoParamMemory
-{
-  int eventPos;
-  float scalar;
-  FFMonoBlock dense;
-};
+enum { FFShaperAutoParamGain, FFShaperAutoParamCount };
+enum { FFShaperPlugParamOn, FFShaperPlugParamClip, FFShaperPlugParamCount };
 
 struct FFPluginProcessors
 {
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginProcessors);
-
   std::array<FFOsciProcessor, FF_OSCI_COUNT> osci;
   std::array<FFShaperProcessor, FF_SHAPER_COUNT> shaper;
 };
 
-template <class T>
-struct FFAutoParamMemory
+struct FFScalarParamMemory
 {
-  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFAutoParamMemory);
-
-  std::array<std::array<T, FFOsciAutoParamCount>, FF_OSCI_COUNT> osci;
-  std::array<std::array<T, FFShaperAutoParamCount>, FF_SHAPER_COUNT> shaper;
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFScalarParamMemory);
+  std::array<std::array<float, FFOsciPlugParamCount>, FF_OSCI_COUNT> osciPlug;
+  std::array<std::array<float, FFOsciAutoParamCount>, FF_OSCI_COUNT> osciAuto;
+  std::array<std::array<float, FFShaperPlugParamCount>, FF_SHAPER_COUNT> shaperPlug;
+  std::array<std::array<float, FFShaperAutoParamCount>, FF_SHAPER_COUNT> shaperAuto;
 };
 
-struct FFPlugParamMemory
+struct FFDenseParamMemory
 {
-  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPlugParamMemory);
-
-  std::array<std::array<float, FFOsciPlugParamCount>, FF_OSCI_COUNT> osci;
-  std::array<std::array<float, FFShaperPlugParamCount>, FF_SHAPER_COUNT> shaper;
+  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFDenseParamMemory);
+  std::array<std::array<int, FFOsciAutoParamCount>, FF_OSCI_COUNT> osciEvent;
+  std::array<std::array<int, FFShaperAutoParamCount>, FF_SHAPER_COUNT> shaperEvent;
+  std::array<std::array<FFMonoBlock, FFOsciAutoParamCount>, FF_OSCI_COUNT> osciDense;
+  std::array<std::array<FFMonoBlock, FFShaperAutoParamCount>, FF_OSCI_COUNT> shaperDense;
 };
 
-// both processor/controller
-struct FFPluginMemory
+struct FFProcessorMemory
 {
-  FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFPluginMemory);
-
-  FFPlugParamMemory plugParam;
-  FFAutoParamMemory<float> scalarAutoParam;
-};
-
-struct FFProcessorMemory:
-FFPluginMemory
-{
-  typedef FFPluginMemory PluginMemory;
   static constexpr int BlockSize = FF_BLOCK_SIZE;
   FB_NOCOPY_NOMOVE_DEFAULT_CTOR(FFProcessorMemory);
 
   FFStereoBlock masterOut;
-  FFAutoParamMemory<int> eventPosAutoParam;
-  FFAutoParamMemory<FFMonoBlock> denseAutoParam;
+  FFDenseParamMemory denseParam;
+  FFScalarParamMemory scalarParam;
 
   std::array<FFStereoBlock, FF_OSCI_COUNT> osciOut;
   std::array<FFStereoBlock, FF_SHAPER_COUNT> shaperIn;

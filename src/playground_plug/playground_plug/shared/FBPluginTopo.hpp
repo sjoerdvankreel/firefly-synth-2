@@ -34,9 +34,6 @@ FBNormalizedToBool(double normalized)
   return FBNormalizedToDiscrete(2, normalized) != 0;
 }
 
-// all this stuff is templated for the sole reason to allow 
-// getting to the actual memory (FFProcessorMemory) without void* 's
-
 template <class ProcessorMemory>
 struct FBStaticParam
 {
