@@ -1,46 +1,48 @@
 #pragma once
 
-#include <playground_plug/base/shared/FBUtilityMacros.hpp>
+#include <playground_plug/base/FFConfig.hpp>
+#include <playground_plug/base/FFUtility.hpp>
+
 #include <array>
 #include <vector>
 
-struct FBNoteId
+struct FFNoteId
 {
   int id;
   int key;
   int channel;
 };
 
-struct FBNoteEvent
+struct FFNoteEvent
 {
   bool on;
   float velo;
   int position;
-  FBNoteId note;
+  FFNoteId note;
 };
 
-struct FBBlockParamEvent
+struct FFBlockParamEvent
 {
   int tag;
   float normalized;
 };
 
-struct FBAccurateParamEvent
+struct FFAccurateParamEvent
 {
   int tag;
   int position;
   float normalized;
 };
 
-struct FBHostBlock
+struct FFHostBlock
 {
-  FB_NOCOPY_NOMOVE(FBHostBlock);
-  FBHostBlock(int maxSampleCount);
+  FF_NOCOPY_NOMOVE(FFHostBlock);
+  FFHostBlock(int maxSampleCount);
 
-  int currentSampleCount = 0;
-  std::vector<FBNoteEvent> noteEvents = {};
-  std::vector<FBBlockParamEvent> blockParamEvents = {};
-  std::vector<FBAccurateParamEvent> accurateParamEvents = {};
-  std::array<std::vector<float>, FB_CHANNELS_STEREO> audioIn = {};
-  std::array<std::vector<float>, FB_CHANNELS_STEREO> audioOut = {};
+  std::vector<FFNoteEvent> noteEvents = {};
+  std::vector<FFBlockParamEvent> blockParamEvents = {};
+  std::vector<FFAccurateParamEvent> accurateParamEvents = {};
+
+  std::array<std::vector<float>, FF_CHANNELS_STEREO> audioIn = {};
+  std::array<std::vector<float>, FF_CHANNELS_STEREO> audioOut = {};
 };

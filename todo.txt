@@ -1,6 +1,7 @@
 static link
 handle PDC
 clap note cut
+warn as error
 relwithdebinfo
 tryout simd stuff maybe with a library?
 check hash clash
