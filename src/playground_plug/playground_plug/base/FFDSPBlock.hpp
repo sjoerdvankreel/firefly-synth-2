@@ -93,19 +93,19 @@ public:
 class FFDynamicStereoBlock:
 public FFStereoBlockMixin<FFDynamicStereoBlock>
 {
-  std::array<std::vector<float>, FF_CHANNELS_STEREO> _store;
+  std::array<FFDynamicMonoBlock, FF_CHANNELS_STEREO> _store;
   friend class FFStereoBlockMixin<FFDynamicStereoBlock>;
 
 public:
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFDynamicStereoBlock);
   FFDynamicStereoBlock(int size) : 
-  _store({ std::vector<float>(size, 0.0f), std::vector<float>(size, 0.0f) }) {}
+  _store({ FFDynamicMonoBlock(size), FFDynamicMonoBlock(size) }) {}
 };
 
 class alignas(FF_BLOCK_SIZE * FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
 public FFStereoBlockMixin<FFFixedStereoBlock>
 {
-  std::array<std::array<float, FF_BLOCK_SIZE>, FF_CHANNELS_STEREO> _store;
+  std::array<FFFixedMonoBlock, FF_CHANNELS_STEREO> _store;
   friend class FFStereoBlockMixin<FFFixedStereoBlock>;
 
 public:
