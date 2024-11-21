@@ -5,12 +5,12 @@ FFInputSplitter::
 FFInputSplitter(int maxHostSampleCount):
 _accumulatedBlock(std::max(FF_BLOCK_SIZE, maxHostSampleCount)) {}
 
-bool
-FFInputSplitter::GetFirstFixedBlock(
-  FFHostInputBlock const* fixedBlock) const
+FFHostInputBlock const*
+FFInputSplitter::GetFirstFixedBlock() const
 {
-  fixedBlock = &_accumulatedBlock;
-  return _accumulatedBlock.sampleCount >= FF_BLOCK_SIZE;
+  if (_accumulatedBlock.sampleCount >= FF_BLOCK_SIZE)
+    return &_accumulatedBlock;
+  return nullptr;
 }
 
 void

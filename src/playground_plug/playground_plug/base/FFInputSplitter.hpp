@@ -11,6 +11,6 @@ public:
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFInputSplitter);
 
   void RemoveFirstFixedBlock();
+  FFHostInputBlock const* GetFirstFixedBlock() const;
   void AccumulateHostBlock(FFHostInputBlock const& hostBlock);
-  bool GetFirstFixedBlock(FFHostInputBlock const* fixedBlock) const;
 };
