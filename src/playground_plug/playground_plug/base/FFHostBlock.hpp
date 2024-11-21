@@ -32,6 +32,15 @@ struct FFBlockParamEvent
   float normalized;
 };
 
+struct FFHostOutputBlock
+{
+  FFHostOutputBlock(int maxSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostOutputBlock);
+
+  int sampleCount;
+  FFDynamicStereoBlock audio;
+};
+
 struct FFHostInputBlock
 {
   FFHostInputBlock(int maxSampleCount);

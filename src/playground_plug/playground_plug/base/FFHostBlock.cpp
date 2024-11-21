@@ -1,5 +1,10 @@
 #include <playground_plug/base/FFHostBlock.hpp>
 
+FFHostOutputBlock::
+FFHostOutputBlock(int maxSampleCount):
+sampleCount(0),
+audio(maxSampleCount) {}
+
 FFHostInputBlock::
 FFHostInputBlock(int maxSampleCount):
 sampleCount(0),
