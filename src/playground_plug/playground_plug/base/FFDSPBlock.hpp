@@ -1,7 +1,7 @@
 #pragma once
 
-#include <playground_plug/base/FFBaseConfig.hpp>
-#include <playground_plug/base/FFBaseUtility.hpp>
+#include <playground_plug/base/FFUtility.hpp>
+#include <playground_plug/base/FFDSPConfig.hpp>
 
 #include <array>
 #include <vector>
