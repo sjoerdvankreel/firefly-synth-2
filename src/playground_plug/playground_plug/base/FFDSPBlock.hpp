@@ -44,7 +44,7 @@ public FFMonoBlockMixin<FFDynamicMonoBlock>
   friend class FFMonoBlockMixin<FFDynamicMonoBlock>;
 
 public:
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFDynamicMonoBlock);
+  FF_NOCOPY_MOVE_NODEFCTOR(FFDynamicMonoBlock);
   FFDynamicMonoBlock(int size): _store(size, 0.0f) {}
 };
 
@@ -55,7 +55,7 @@ public FFMonoBlockMixin<FFFixedMonoBlock>
   friend class FFMonoBlockMixin<FFFixedMonoBlock>;
 
 public:
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFFixedMonoBlock);
+  FF_NOCOPY_MOVE_DEFCTOR(FFFixedMonoBlock);
 };
 
 template <class DerivedT>

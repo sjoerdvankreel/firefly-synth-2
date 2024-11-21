@@ -12,6 +12,15 @@
   FF_NOCOPY_NOMOVE_NODEFCTOR(x); \
   x() = default
 
+#define FF_NOCOPY_MOVE_NODEFCTOR(x) \
+  x(x&&) = default; \
+  x(x const&) = delete; \
+  x& operator=(x&&) = default; \
+  x& operator=(x const&) = delete
+#define FF_NOCOPY_MOVE_DEFCTOR(x) \
+  FF_NOCOPY_MOVE_NODEFCTOR(x); \
+  x() = default
+
 #define FF_EXPLICIT_COPY_MOVE_NODEFCTOR(x) \
   x(x&&) = default; \
   explicit x(x const&) = default; \
