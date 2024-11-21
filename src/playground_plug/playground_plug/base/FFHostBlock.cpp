@@ -1,9 +1,9 @@
 #include <playground_plug/base/FFHostBlock.hpp>
 
-FFHostBlock::
-FFHostBlock(int maxSampleCount):
-audioIn(maxSampleCount),
-audioOut(maxSampleCount),
+FFHostInputBlock::
+FFHostInputBlock(int maxSampleCount):
+sampleCount(0),
+audio(maxSampleCount),
 noteEvents(),
 accParamEvents(),
 blockParamEvents() 

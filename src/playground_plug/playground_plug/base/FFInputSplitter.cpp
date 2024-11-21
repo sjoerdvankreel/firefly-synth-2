@@ -1,25 +1,24 @@
-#include <playground_plug/base/FFBlockSplitter.hpp>
+#include <playground_plug/base/FFInputSplitter.hpp>
 #include <algorithm>
 
-FFBlockSplitter::
-FFBlockSplitter(int maxHostSampleCount):
-_accumulatedSampleCount(0),
+FFInputSplitter::
+FFInputSplitter(int maxHostSampleCount):
 _accumulatedBlock(std::max(FF_BLOCK_SIZE, maxHostSampleCount)) {}
 
 bool
-FFBlockSplitter::GetCurrentFixedBlock(
-  FFHostBlock const* fixedBlock)
+FFInputSplitter::GetFirstFixedBlock(
+  FFHostInputBlock const* fixedBlock)
 {
   fixedBlock = &_accumulatedBlock;
-  return _accumulatedSampleCount >= FF_BLOCK_SIZE;
+  return _accumulatedBlock.sampleCount >= FF_BLOCK_SIZE;
 }
 
 void
-FFBlockSplitter::RemoveOneFixedBlock()
+FFInputSplitter::RemoveFirstFixedBlock()
 {
   auto compare = [](auto const& e) { 
     return e.position < FF_BLOCK_SIZE; };
-  
+
   std::erase_if(_accumulatedBlock.noteEvents, compare);
   for (auto& e : _accumulatedBlock.noteEvents)
     e.position -= FF_BLOCK_SIZE;
@@ -28,33 +27,35 @@ FFBlockSplitter::RemoveOneFixedBlock()
   for(auto& e: _accumulatedBlock.accParamEvents)
     e.position -= FF_BLOCK_SIZE;
 
-  _accumulatedBlock.audioIn.ShiftLeft(FF_BLOCK_SIZE);
-  _accumulatedSampleCount -= FF_BLOCK_SIZE;
+  _accumulatedBlock.sampleCount -= FF_BLOCK_SIZE;
+  _accumulatedBlock.audio.ShiftLeft(FF_BLOCK_SIZE);
 }
 
 void 
-FFBlockSplitter::Accumulate(
-  FFHostBlock const& hostBlock, int currentHostSampleCount)
+FFInputSplitter::AccumulateHostBlock(
+  FFHostInputBlock const& hostBlock)
 {
   for (int event = 0; event < hostBlock.noteEvents.size(); event++)
   {
     FFNoteEvent noteEvent = hostBlock.noteEvents[event];
-    noteEvent.position += _accumulatedSampleCount;
+    noteEvent.position += _accumulatedBlock.sampleCount;
     _accumulatedBlock.noteEvents.push_back(noteEvent);
   }
   
   for (int event = 0; event < hostBlock.accParamEvents.size(); event++)
   {
     FFAccParamEvent accParamEvent = hostBlock.accParamEvents[event];
-    accParamEvent.position += _accumulatedSampleCount;
+    accParamEvent.position += _accumulatedBlock.sampleCount;
     _accumulatedBlock.accParamEvents.push_back(accParamEvent);
   }
 
   for (int channel = 0; channel < FF_CHANNELS_STEREO; channel++)
-    for (int sample = 0; sample < currentHostSampleCount; sample++)
+    for (int sample = 0; sample < hostBlock.sampleCount; sample++)
     {
-      float hostSample = hostBlock.audioIn[channel][sample];
-      int accumulatedPos = _accumulatedSampleCount + sample;
-      _accumulatedBlock.audioIn[channel][accumulatedPos] = hostSample;
+      float hostSample = hostBlock.audio[channel][sample];
+      int accumulatedPos = _accumulatedBlock.sampleCount + sample;
+      _accumulatedBlock.audio[channel][accumulatedPos] = hostSample;
     }
+
+  _accumulatedBlock.sampleCount += hostBlock.sampleCount;
 }
