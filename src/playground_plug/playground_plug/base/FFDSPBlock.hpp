@@ -26,6 +26,9 @@ public:
   { for (int i = 0; i < Store().size(); i++) 
     rhs[i] = (*this)[i]; }
 
+  void ShiftLeft(int count)
+  { for (int i = 0; i < count; i++)
+      (*this)[i] = (*this)[i + count]; }
   void InPlaceMultiply(float x) 
   { for (int i = 0; i < Store().size(); i++) 
     (*this)[i] *= x; }
@@ -76,6 +79,9 @@ public:
   { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
     (*this)[ch].CopyTo(rhs[ch]); }
 
+  void ShiftLeft(int count)
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
+    (*this)[ch].ShiftLeft(count); }
   void InPlaceMultiply(float x) 
   { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
     (*this)[ch].InPlaceMultiply(x); }
