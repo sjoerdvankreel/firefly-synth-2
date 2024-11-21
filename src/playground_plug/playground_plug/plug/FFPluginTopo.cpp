@@ -1,3 +1,4 @@
+#if 0
 #include <playground_plug/base/shared/FBPluginTopo.hpp>
 #include <cstdint>
 
@@ -25,3 +26,4 @@ FBMakeHash(std::string const& id)
     result = multiplier * result + static_cast<std::uint32_t>(c);
   return std::abs(static_cast<int>(result + (result >> 5)));
 }
+#endif

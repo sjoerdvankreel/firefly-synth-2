@@ -1,3 +1,5 @@
+
+#if 0
 #pragma once
 
 #include <playground_plug/base/shared/FBPluginBlock.hpp>
@@ -55,3 +57,5 @@ struct alignas(Count * sizeof(float)) FBStereoBlock
   void InPlaceAdd(FBStereoBlock const& rhs)
   { for (int i = 0; i < FB_CHANNELS_STEREO; i++) (*this)[i].InPlaceAdd(rhs[i]); }
 };
+
+#endif

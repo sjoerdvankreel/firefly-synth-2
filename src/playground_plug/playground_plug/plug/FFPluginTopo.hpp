@@ -1,3 +1,5 @@
+#if 0
+
 #pragma once
 
 #include <playground_plug/base/shared/FBPluginBlock.hpp>
@@ -243,3 +245,5 @@ FBRuntimeTopo<ProcessorMemory>::GetStaticAutoParamByTag(int tag) const
 {
   return GetRuntimeAutoParamByTag(tag).staticTopo;
 }
+
+#endif

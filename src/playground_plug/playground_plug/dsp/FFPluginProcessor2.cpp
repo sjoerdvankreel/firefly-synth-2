@@ -1,3 +1,4 @@
+#if 0
 #include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
 #include <cassert>
 #include <algorithm>
@@ -30,3 +31,4 @@ FFPluginProcessor::ProcessPluginBlock(FBProcessorContext const& context)
   _processors.shaper[1].Process(moduleContext, _memory);
   _memory.shaperOut[1].CopyTo(_memory.masterOut);
 }
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 #pragma once
 
 #include <playground_plug/base/shared/FBPluginTopo.hpp>
@@ -67,3 +69,6 @@ typedef FBRuntimeModule<FFProcessorMemory> FFRuntimeModule;
 
 FFStaticTopo
 FFMakeTopo();
+
+
+#endif
