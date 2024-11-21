@@ -41,9 +41,51 @@ MakeRuntimeParamLongName(
   return moduleName + " " + paramName;
 }
 
+static std::map<int, int>
+MakeTagToParam(
+  std::vector<FFRuntimeParam> const& runtimeParams)
+{
+  std::map<int, int> result;
+  for (int p = 0; p < runtimeParams.size(); p++)
+    result[runtimeParams[p].tag] = p;
+  return result;
+}
+
+static std::vector<FFRuntimeParam>
+MakeRuntimeAccParams(
+  std::vector<FFRuntimeModule> const& runtimeModules)
+{
+  std::vector<FFRuntimeParam> result;
+  for (int m = 0; m < runtimeModules.size(); m++)
+    for (int ap = 0; ap < runtimeModules[m].accParams.size(); ap++)
+      result.push_back(runtimeModules[m].accParams[ap]);
+  return result;
+}
+
+static std::vector<FFRuntimeParam>
+MakeRuntimeBlockParams(
+  std::vector<FFRuntimeModule> const& runtimeModules)
+{
+  std::vector<FFRuntimeParam> result;
+  for (int m = 0; m < runtimeModules.size(); m++)
+    for (int bp = 0; bp < runtimeModules[m].blockParams.size(); bp++)
+      result.push_back(runtimeModules[m].blockParams[bp]);
+  return result;
+}
+
+static std::vector<FFRuntimeModule>
+MakeRuntimeModules(FFStaticTopo const& staticTopo)
+{
+  std::vector<FFRuntimeModule> result;
+  for (int mi = 0; mi < staticTopo.modules.size(); mi++)
+    for (int ms = 0; ms < staticTopo.modules[mi].slotCount; ms++)
+      result.push_back(FFRuntimeModule(staticTopo.modules[mi], ms));
+  return result;
+}
+
 static std::vector<FFRuntimeParam>
 MakeRuntimeParams(
-  FFStaticModule const& staticModule, int moduleSlot, 
+  FFStaticModule const& staticModule, int moduleSlot,
   std::vector<FFStaticParam> const& staticParams)
 {
   std::vector<FFRuntimeParam> result;
@@ -52,6 +94,14 @@ MakeRuntimeParams(
       result.push_back(FFRuntimeParam(staticModule, moduleSlot, staticParams[p], s));
   return result;
 }
+
+FFRuntimeTopo::
+FFRuntimeTopo(FFStaticTopo const& staticTopo):
+modules(MakeRuntimeModules(staticTopo)),
+accParams(MakeRuntimeAccParams(modules)),
+blockParams(MakeRuntimeBlockParams(modules)),
+tagToAccParam(MakeTagToParam(accParams)),
+tagToBlockParam(MakeTagToParam(blockParams)) {}
 
 FFRuntimeParam::
 FFRuntimeParam(
@@ -71,21 +121,3 @@ FFRuntimeModule(
 name(MakeRuntimeName(staticModule.name, staticModule.slotCount, moduleSlot)),
 accParams(MakeRuntimeParams(staticModule, moduleSlot, staticModule.accParams)),
 blockParams(MakeRuntimeParams(staticModule, moduleSlot, staticModule.blockParams)) {}
-
-FFRuntimeTopo::
-FFRuntimeTopo(FFStaticTopo const& staticTopo)
-{
-  for (int mi = 0; mi < topo.modules.size(); mi++)
-    for (int ms = 0; ms < topo.modules[mi].slotCount; ms++)
-      modules.push_back(FBRuntimeModule(topo.modules[mi], ms));
-  for (int m = 0; m < modules.size(); m++)
-    for (int pp = 0; pp < modules[m].plugParams.size(); pp++)
-      plugParams.push_back(modules[m].plugParams[pp]);
-  for (int m = 0; m < modules.size(); m++)
-    for (int ap = 0; ap < modules[m].autoParams.size(); ap++)
-      autoParams.push_back(modules[m].autoParams[ap]);
-  for (int pp = 0; pp < plugParams.size(); pp++)
-    tagToPlugParam[plugParams[pp].tag] = pp;
-  for (int ap = 0; ap < autoParams.size(); ap++)
-    tagToAutoParam[autoParams[ap].tag] = ap;
-}

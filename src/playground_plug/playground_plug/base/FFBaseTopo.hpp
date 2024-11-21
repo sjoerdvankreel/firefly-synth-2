@@ -80,9 +80,9 @@ struct FFRuntimeTopo
   FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FFRuntimeTopo);
   FFRuntimeTopo(FFStaticTopo const& staticTopo);
 
-  std::map<int, int> const tagToAccParam;
-  std::map<int, int> const tagToBlockParam;
   std::vector<FFRuntimeModule> const modules;
   std::vector<FFRuntimeParam> const accParams;
   std::vector<FFRuntimeParam> const blockParams;
+  std::map<int, int> const tagToAccParam;
+  std::map<int, int> const tagToBlockParam;
 };
