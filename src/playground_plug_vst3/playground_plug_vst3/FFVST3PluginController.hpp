@@ -1,7 +1,7 @@
 #pragma once
 
-#include <playground_plug/base/shared/FFUtility.hpp>
 #include <public.sdk/source/vst/vsteditcontroller.h>
+#include <playground_plug/base/shared/FFSharedUtility.hpp>
 
 using namespace Steinberg;
 using namespace Steinberg::Vst;

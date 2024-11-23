@@ -1,7 +1,7 @@
 #pragma once
 
-#include <playground_plug/base/shared/FFUtility.hpp>
 #include <playground_plug/base/shared/FFSignalBlock.hpp>
+#include <playground_plug/base/shared/FFSharedUtility.hpp>
 
 struct FFNoteId
 {

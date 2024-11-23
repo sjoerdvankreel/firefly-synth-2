@@ -1,5 +1,6 @@
 #pragma once
-#include <playground_plug/base/shared/FFUtility.hpp>
+
+#include <playground_plug/base/shared/FFSharedUtility.hpp>
 
 #define FF_OSCI_COUNT 2
 #define FF_SHAPER_COUNT 2
