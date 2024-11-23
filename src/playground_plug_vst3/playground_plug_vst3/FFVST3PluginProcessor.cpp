@@ -140,7 +140,10 @@ FFVST3PluginProcessor::process(ProcessData& data)
               _input->events.accParam.push_back(MakeAccParamEvent(queue->getParameterId(), position, value));
         }     
 
-  auto compare = [](auto const& l, auto const& r) { return l.position < r.position; };
+  auto compare = [](auto const& l, auto const& r) { 
+    if (l.position == r.position)
+      return l.tag < r.tag;
+    return l.position < r.position; };
   std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
   _processor->ProcessHost(*_input, _output);  
   return kResultTrue;
