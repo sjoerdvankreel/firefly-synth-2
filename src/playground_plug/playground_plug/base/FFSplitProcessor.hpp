@@ -7,16 +7,15 @@
 
 class FFSplitProcessor
 {
-  FFFixedStereoBlock _audioIn;
-  FFFixedStereoBlock _audioOut;
+  FFFixedInputBlock _input;
+  FFFixedStereoBlock _output;
   FFInputSplitter _inputSplitter;
   FFOutputSplitter _outputSplitter;
 
 protected:
   virtual void ProcessFixedBlock(
-    FFHostEvents const& events, 
-    FFFixedStereoBlock const& audioIn, 
-    FFFixedStereoBlock& audioOut) = 0;
+    FFFixedInputBlock const& input,
+    FFFixedStereoBlock& output) = 0;
 
 public:
   FFSplitProcessor(int maxHostSampleCount);

@@ -2,8 +2,7 @@
 
 FFSplitProcessor::
 FFSplitProcessor(int maxHostSampleCount):
-_audioIn(),
-_audioOut(),
+_output(),
 _inputSplitter(maxHostSampleCount),
 _outputSplitter(maxHostSampleCount) {}
 
@@ -13,9 +12,17 @@ FFSplitProcessor::ProcessHostBlock(
   FFRawStereoBlock& output)
 {
   _inputSplitter.AccumulateHostBlock(input);
-  FFAccumulatingInputBlock const* splittedInput = nullptr;
-  while ((splittedInput = _inputSplitter.GetFirstFixedBlock()) != nullptr)
+  FFFixedInputBlock const* splittedInput = nullptr;
+  while ((splittedInput = _inputSplitter.NextFixedBlock()) != nullptr)
   {
-    _inputSplitter.RemoveFirstFixedBlock();
+    ProcessFixedBlock(*splittedInput, _output);
+    _outputSplitter.AccumulateFixedBlock(_output);
   }
+
+  auto const& accumulatedOutput = _outputSplitter.GetAccumulatedBlock();
+  int samplesUsed = std::min(output.Count(), accumulatedOutput.sampleCount);
+  int samplesPadded = std::max(0, output.Count() - accumulatedOutput.sampleCount);
+  output.Fill(0, samplesPadded, 0.0f);
+  accumulatedOutput.audio.CopyTo(output, 0, samplesPadded, samplesUsed);
+  _outputSplitter.RemoveSamples(samplesUsed);
 }

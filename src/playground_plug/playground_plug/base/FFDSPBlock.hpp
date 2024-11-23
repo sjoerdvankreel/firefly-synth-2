@@ -18,6 +18,16 @@ public:
   FFRawBlock(float* store, int count) :
   _size(count), _store(store) {}
 
+  float* end()
+  { return _store + _size; }
+  float const* end() const
+  { return _store + _size; }
+
+  float* begin()
+  { return _store; }
+  float const* begin() const
+  { return _store; }
+
   float& operator[](int index) 
   { assert(0 <= index && index < _size); 
     return _store[index]; }
@@ -47,11 +57,13 @@ public:
   int Count() const
   { return static_cast<int>(Store().size()); }
 
-  void SetToZero() 
-  { Store().fill(0.0f); }
   void CopyTo(DerivedT& rhs) const
   { for (int i = 0; i < Count(); i++)
     rhs[i] = (*this)[i]; }
+  void Fill(int from, int to, float val) 
+  { assert(0 <= from && from <= to && to < Count());
+    std::fill(Store().begin() + from, 
+    Store().begin() + to, val); }
 
   void ShiftLeft(int count)
   { for (int i = 0; i < count; i++)
@@ -119,12 +131,12 @@ public:
   auto const& operator[](int channel) const
   { return Store()[channel]; }
 
-  void SetToZero() 
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
-    (*this)[ch].SetToZero(); }
   void CopyTo(DerivedT& rhs) const
   { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
     (*this)[ch].CopyTo(rhs[ch]); }
+  void Fill(int from, int to, float val)
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
+      (*this)[ch].Fill(from, to, val); }
 
   void ShiftLeft(int count)
   { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
