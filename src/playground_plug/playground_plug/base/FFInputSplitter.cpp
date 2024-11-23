@@ -35,6 +35,8 @@ void
 FFInputSplitter::AccumulateHostBlock(
   FFHostInputBlock const& hostBlock)
 {
+  // todo block params on first split
+
   for (int event = 0; event < hostBlock.noteEvents.size(); event++)
   {
     FFNoteEvent noteEvent = hostBlock.noteEvents[event];
