@@ -1,4 +1,5 @@
 static link
+make it a base library once again (separate lib)
 handle PDC
 clap note cut
 warn as error
