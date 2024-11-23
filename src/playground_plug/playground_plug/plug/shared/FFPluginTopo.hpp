@@ -1,3 +1,19 @@
+#pragma once
+
+#include <playground_plug/base/shared/FFBaseTopo.hpp>
+
+FFStaticTopo
+FFMakeTopo();
+
+enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
+
+enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
+enum { FFOsciAccParamGain, FFOsciAccParamPitch, FFOsciAccParamCount };
+enum { FFOsciBlockParamOn, FFOsciBlockParamType, FFOsciBlockParamCount };
+
+enum { FFShaperAccParamGain, FFShaperAccParamCount };
+enum { FFShaperBlockParamOn, FFShaperBlockParamClip, FFShaperBlockParamCount };
+
 #if 0
 
 #pragma once
@@ -12,13 +28,6 @@
 
 typedef FBMonoBlock<FF_BLOCK_SIZE> FFMonoBlock;
 typedef FBStereoBlock<FF_BLOCK_SIZE> FFStereoBlock;
-
-enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
-enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
-enum { FFOsciPlugParamOn, FFOsciPlugParamType, FFOsciPlugParamCount };
-enum { FFOsciAutoParamGain, FFOsciAutoParamPitch, FFOsciAutoParamCount };
-enum { FFShaperAutoParamGain, FFShaperAutoParamCount };
-enum { FFShaperPlugParamOn, FFShaperPlugParamClip, FFShaperPlugParamCount };
 
 struct FFPluginProcessors
 {
