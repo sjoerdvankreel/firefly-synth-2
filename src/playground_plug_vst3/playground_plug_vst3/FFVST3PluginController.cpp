@@ -1,6 +1,8 @@
 #include <playground_plug/plug/shared/FFPluginTopo.hpp>
 #include <playground_plug_vst3/FFVST3PluginController.hpp>
 
+#include <algorithm>
+
 static void
 CopyToString128(std::string const& in, String128& out)
 {
@@ -27,11 +29,11 @@ MakeParamInfo(FFRuntimeParam const& param, int unitId, bool automate)
   result.id = param.tag;
   result.unitId = unitId;
   result.defaultNormalizedValue = 0.0; // TODO
-  result.stepCount = std::max(0, param.staticTopo.valueCount - 1);
+  result.stepCount = std::max(0, param.staticParam.valueCount - 1);
 
-  CopyToString128(param.name, result.title);
-  CopyToString128(param.staticTopo.unit, result.units);
-  CopyToString128(param.staticTopo.name, result.shortTitle);
+  CopyToString128(param.longName, result.title);
+  CopyToString128(param.shortName, result.shortTitle);
+  CopyToString128(param.staticParam.unit, result.units);
 
   // TODO isList
   if (automate)
@@ -48,16 +50,16 @@ FFVST3PluginController::initialize(FUnknown* context)
     return kResultFalse;
 
   int unitId = 1;
-  auto topo = FBRuntimeTopo(FFMakeTopo());
+  auto topo = FFRuntimeTopo(FFMakeTopo());
   for (int m = 0; m < topo.modules.size(); m++)
   {
     addUnit(new Unit(MakeUnitInfo(topo.modules[m], unitId)));
-    for (int pp = 0; pp < topo.modules[m].plugParams.size(); pp++)
+    for (int bp = 0; bp < topo.modules[m].blockParams.size(); bp++)
       parameters.addParameter(new Parameter(
-        MakeParamInfo(topo.modules[m].plugParams[pp], unitId, false)));
-    for (int ap = 0; ap < topo.modules[m].autoParams.size(); ap++)
+        MakeParamInfo(topo.modules[m].blockParams[bp], unitId, false)));
+    for (int ap = 0; ap < topo.modules[m].accParams.size(); ap++)
       parameters.addParameter(new Parameter(
-        MakeParamInfo(topo.modules[m].autoParams[ap], unitId, true)));
+        MakeParamInfo(topo.modules[m].accParams[ap], unitId, true)));
     unitId++;
   }
   return kResultTrue;
