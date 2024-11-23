@@ -36,22 +36,22 @@ FFInputSplitter::Split()
 
 void 
 FFInputSplitter::Accumulate(
-  FFHostInputBlock const& host)
+  FFHostInputBlock const& input)
 {
-  for (int e = 0; e < host.events.note.size(); e++)
+  for (int e = 0; e < input.events.note.size(); e++)
   {
-    FFNoteEvent event = host.events.note[e];
+    FFNoteEvent event = input.events.note[e];
     event.position += _accumulated.sampleCount;
     _accumulated.events.note.push_back(event);
   }
 
-  for (int e = 0; e < host.events.accParam.size(); e++)
+  for (int e = 0; e < input.events.accParam.size(); e++)
   {
-    FFAccParamEvent event = host.events.accParam[e];
+    FFAccParamEvent event = input.events.accParam[e];
     event.position += _accumulated.sampleCount;
     _accumulated.events.accParam.push_back(event);
   }
 
-  host.audio.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, host.audio.Count());
-  _accumulated.sampleCount += host.audio.Count();
+  input.audio.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, input.audio.Count());
+  _accumulated.sampleCount += input.audio.Count();
 }

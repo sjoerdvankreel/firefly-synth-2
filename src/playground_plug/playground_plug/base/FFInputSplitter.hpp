@@ -12,5 +12,5 @@ public:
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFInputSplitter);
 
   FFFixedInputBlock const* Split();
-  void Accumulate(FFHostInputBlock const& host);
+  void Accumulate(FFHostInputBlock const& input);
 };
