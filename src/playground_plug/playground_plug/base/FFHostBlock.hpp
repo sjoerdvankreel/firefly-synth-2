@@ -1,8 +1,8 @@
 #pragma once
 
-#include <playground_plug/base/FFUtility.hpp>
 #include <playground_plug/base/FFDSPBlock.hpp>
 #include <playground_plug/base/FFDSPConfig.hpp>
+#include <playground_plug/base/shared/FFUtility.hpp>
 
 struct FFNoteId
 {
