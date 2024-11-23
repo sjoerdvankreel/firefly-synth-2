@@ -5,13 +5,13 @@
 
 class FFOutputSplitter
 {
-  FFHostOutputBlock _accumulatedBlock;
+  FFAccumulatingOutputBlock _accumulating;
 
 public:
   FFOutputSplitter(int maxHostSampleCount);
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFOutputSplitter);
 
   void RemoveSamples(int count);
-  FFHostOutputBlock const& GetAccumulatedBlock() const;
+  FFAccumulatingOutputBlock const& GetAccumulatedBlock() const;
   void AccumulateFixedBlock(FFFixedStereoBlock const& audioOut);
 };
