@@ -62,6 +62,12 @@ public:
   void InPlaceAdd(DerivedT const& rhs)
   { for (int i = 0; i < Count(); i++)
     (*this)[i] += rhs[i]; }
+
+  template <class T>
+  void CopyTo(T& rhs, int srcOffset, int tgtOffset, int count) const
+  { assert(srcOffset + count <= Count());
+    for (int i = 0; i < count; i++)
+      rhs[tgtOffset + i] = (*this)[srcOffset + i]; }
 };
 
 class FFRawMonoBlock:
@@ -129,6 +135,11 @@ public:
   void InPlaceAdd(DerivedT const& rhs)
   { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
     (*this)[ch].InPlaceAdd(rhs[ch]); }
+
+  template <class T>
+  void CopyTo(T& rhs, int srcOffset, int tgtOffset, int count) const
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
+    (*this)[ch].CopyTo(rhs[ch], srcOffset, tgtOffset, count); }
 };
 
 class FFRawStereoBlock:

@@ -16,15 +16,16 @@ FFAccumulatingOutputBlock(int maxSampleCount):
 sampleCount(0),
 audio(maxSampleCount) {}
 
+FFFixedInputBlock::
+FFFixedInputBlock():
+events(),
+audio() {}
+
 FFAccumulatingInputBlock::
 FFAccumulatingInputBlock(int maxSampleCount):
 sampleCount(0),
 events(),
 audio(maxSampleCount) {}
-
-FFHostOutputBlock::
-FFHostOutputBlock(float* l, float* r, int count) :
-audio(l, r, count) {}
 
 FFHostInputBlock::
 FFHostInputBlock(float* l, float* r, int count):

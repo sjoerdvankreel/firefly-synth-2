@@ -42,20 +42,21 @@ struct FFHostEvents
   std::vector<FFBlockParamEvent> blockParam;
 };
 
+struct FFFixedInputBlock
+{
+  FFFixedInputBlock();
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFFixedInputBlock);
+
+  FFHostEvents events;
+  FFFixedStereoBlock audio;
+};
+
 struct FFHostInputBlock
 {
   FFHostInputBlock(float* l, float* r, int count);
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostInputBlock);
 
   FFHostEvents events;
-  FFRawStereoBlock audio;
-};
-
-struct FFHostOutputBlock
-{
-  FFHostOutputBlock(float* l, float* r, int count);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostOutputBlock);
-
   FFRawStereoBlock audio;
 };
 

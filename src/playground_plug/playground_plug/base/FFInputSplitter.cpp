@@ -1,34 +1,39 @@
 #include <playground_plug/base/FFInputSplitter.hpp>
 #include <algorithm>
 
+template <class Event>
+static void GatherEvents(
+  std::vector<Event>& input, 
+  std::vector<Event>& output)
+{
+  // TODO handle straddle fixed boundary
+
+  int e = 0;
+  output.clear();
+  for (e = 0; e < input.size() && input[e].position < FF_BLOCK_SIZE; e++)
+    output.push_back(input[e]);
+  input.erase(input.begin(), input.begin() + e);
+  for (auto& e : input)
+    e.position -= FF_BLOCK_SIZE;
+}
+
 FFInputSplitter::
 FFInputSplitter(int maxHostSampleCount):
 _accumulating(std::max(FF_BLOCK_SIZE, maxHostSampleCount)) {}
 
-FFAccumulatingInputBlock const*
-FFInputSplitter::GetFirstFixedBlock() const
+FFFixedInputBlock const*
+FFInputSplitter::NextFixedBlock()
 {
-  if (_accumulating.sampleCount >= FF_BLOCK_SIZE)
-    return &_accumulating;
-  return nullptr;
-}
+  if (_accumulating.sampleCount < FF_BLOCK_SIZE)
+    return nullptr;
 
-void
-FFInputSplitter::RemoveFirstFixedBlock()
-{
-  auto compare = [](auto const& e) { 
-    return e.position < FF_BLOCK_SIZE; };
+  GatherEvents(_accumulating.events.note, _fixed.events.note);
+  GatherEvents(_accumulating.events.accParam, _fixed.events.accParam);
 
-  std::erase_if(_accumulating.events.note, compare);
-  for (auto& e : _accumulating.events.note)
-    e.position -= FF_BLOCK_SIZE;
-
-  std::erase_if(_accumulating.events.accParam, compare);
-  for(auto& e: _accumulating.events.accParam)
-    e.position -= FF_BLOCK_SIZE;
-
-  _accumulating.sampleCount -= FF_BLOCK_SIZE;
+  _accumulating.audio.CopyTo(_fixed.audio, 0, 0, FF_BLOCK_SIZE);
   _accumulating.audio.ShiftLeft(FF_BLOCK_SIZE);
+  _accumulating.sampleCount -= FF_BLOCK_SIZE;
+  return &_fixed;
 }
 
 void 
@@ -49,13 +54,6 @@ FFInputSplitter::AccumulateHostBlock(
     _accumulating.events.accParam.push_back(event);
   }
 
-  for (int c = 0; c < FF_CHANNELS_STEREO; c++)
-    for (int s = 0; s < host.audio.Count(); s++)
-    {
-      float sample = host.audio[c][s];
-      int accumulatedPos = _accumulating.sampleCount + s;
-      _accumulating.audio[c][accumulatedPos] = sample;
-    }
-
+  host.audio.CopyTo(_accumulating.audio, 0, _accumulating.sampleCount, host.audio.Count());
   _accumulating.sampleCount += host.audio.Count();
 }

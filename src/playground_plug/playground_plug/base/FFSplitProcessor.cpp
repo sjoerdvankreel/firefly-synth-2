@@ -10,7 +10,7 @@ _outputSplitter(maxHostSampleCount) {}
 void 
 FFSplitProcessor::ProcessHostBlock(
   FFHostInputBlock const& input,
-  FFHostOutputBlock& output)
+  FFRawStereoBlock& output)
 {
   _inputSplitter.AccumulateHostBlock(input);
   FFAccumulatingInputBlock const* splittedInput = nullptr;

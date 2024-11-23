@@ -23,5 +23,5 @@ public:
 
   void ProcessHostBlock(
     FFHostInputBlock const& input, 
-    FFHostOutputBlock& output);
+    FFRawStereoBlock& output);
 };
