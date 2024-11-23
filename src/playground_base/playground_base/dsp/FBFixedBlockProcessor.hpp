@@ -1,9 +1,9 @@
 #pragma once
 
-#include <playground_base/shared/FFHostBlock.hpp>
-#include <playground_base/shared/FFSignalBlock.hpp>
-#include <playground_base/dsp/FFInputSplitter.hpp>
-#include <playground_base/dsp/FFOutputAggregator.hpp>
+#include <playground_base/shared/FBHostBlock.hpp>
+#include <playground_base/shared/FBSignalBlock.hpp>
+#include <playground_base/dsp/FBInputSplitter.hpp>
+#include <playground_base/dsp/FBOutputAggregator.hpp>
 
 class FFFixedBlockProcessor
 {

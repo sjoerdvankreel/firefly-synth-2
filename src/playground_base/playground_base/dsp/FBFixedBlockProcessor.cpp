@@ -1,4 +1,4 @@
-#include <playground_base/dsp/FFFixedBlockProcessor.hpp>
+#include <playground_base/dsp/FBFixedBlockProcessor.hpp>
 
 FFFixedBlockProcessor::
 FFFixedBlockProcessor(int maxHostSampleCount):

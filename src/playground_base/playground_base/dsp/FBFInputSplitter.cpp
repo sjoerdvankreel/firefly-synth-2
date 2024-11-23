@@ -1,4 +1,4 @@
-#include <playground_base/dsp/FFInputSplitter.hpp>
+#include <playground_base/dsp/FBInputSplitter.hpp>
 #include <algorithm>
 
 template <class Event>
