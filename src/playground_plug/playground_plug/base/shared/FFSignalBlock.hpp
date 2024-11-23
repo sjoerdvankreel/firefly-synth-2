@@ -22,27 +22,25 @@ public:
   FFRawBlock(float* store, int count) :
   _size(count), _store(store) {}
 
-  float* end()
-  { return _store + _size; }
-  float const* end() const
-  { return _store + _size; }
-
   float* begin()
   { return _store; }
+  float* end()
+  { return _store + _size; }
+
   float const* begin() const
   { return _store; }
-
-  float& operator[](int index) 
-  { assert(0 <= index && index < _size); 
-    return _store[index]; }
-  float const& operator[](int index) const 
-  { assert(0 <= index && index < _size); 
-    return _store[index]; }
+  float const* end() const
+  { return _store + _size; }
 
   std::size_t size() const 
   { return _size; }
   void fill(float val)
   { std::fill(_store, _store + _size, val); }
+
+  float& operator[](int index) 
+  { assert(0 <= index && index < _size); return _store[index]; }
+  float const& operator[](int index) const 
+  { assert(0 <= index && index < _size); return _store[index]; }
 };
 
 template <class DerivedT>
@@ -62,28 +60,20 @@ public:
   { return static_cast<int>(Store().size()); }
 
   void CopyTo(DerivedT& rhs) const
-  { for (int i = 0; i < Count(); i++)
-    rhs[i] = (*this)[i]; }
+  { for (int i = 0; i < Count(); i++) rhs[i] = (*this)[i]; }
   void Fill(int from, int to, float val) 
-  { assert(0 <= from && from <= to && to < Count());
-    std::fill(Store().begin() + from, 
-    Store().begin() + to, val); }
+  { std::fill(Store().begin() + from, Store().begin() + to, val); }
 
-  void ShiftLeft(int count)
-  { for (int i = 0; i < count; i++)
-      (*this)[i] = (*this)[i + count]; }
   void InPlaceMultiply(float x) 
-  { for (int i = 0; i < Count(); i++)
-    (*this)[i] *= x; }
-  void InPlaceAdd(DerivedT const& rhs)
-  { for (int i = 0; i < Count(); i++)
-    (*this)[i] += rhs[i]; }
+  { for (int i = 0; i < Count(); i++) (*this)[i] *= x; }
+  void InPlaceAdd(DerivedT const& rhs) 
+  { for (int i = 0; i < Count(); i++) (*this)[i] += rhs[i]; }
+  void ShiftLeft(int count)
+  { for (int i = 0; i < count; i++) (*this)[i] = (*this)[i + count]; }
 
   template <class T>
   void CopyTo(T& rhs, int srcOffset, int tgtOffset, int count) const
-  { assert(srcOffset + count <= Count());
-    for (int i = 0; i < count; i++)
-      rhs[tgtOffset + i] = (*this)[srcOffset + i]; }
+  { for (int i = 0; i < count; i++) rhs[tgtOffset + i] = (*this)[srcOffset + i]; }
 };
 
 class FFRawMonoBlock:
@@ -106,7 +96,8 @@ public FFMonoBlockMixin<FFDynamicMonoBlock>
 
 public:
   FF_NOCOPY_MOVE_NODEFCTOR(FFDynamicMonoBlock);
-  FFDynamicMonoBlock(int count): _store(count, 0.0f) {}
+  FFDynamicMonoBlock(int count): 
+  _store(count, 0.0f) {}
 };
 
 class alignas(FF_FIXED_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
@@ -136,26 +127,20 @@ public:
   { return Store()[channel]; }
 
   void CopyTo(DerivedT& rhs) const
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
-    (*this)[ch].CopyTo(rhs[ch]); }
-  void Fill(int from, int to, float val)
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
-      (*this)[ch].Fill(from, to, val); }
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].CopyTo(rhs[ch]); }
+  void Fill(int from, int to, float val) 
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++)  (*this)[ch].Fill(from, to, val); }
 
   void ShiftLeft(int count)
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
-    (*this)[ch].ShiftLeft(count); }
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].ShiftLeft(count); }
   void InPlaceMultiply(float x) 
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
-    (*this)[ch].InPlaceMultiply(x); }
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].InPlaceMultiply(x); }
   void InPlaceAdd(DerivedT const& rhs)
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
-    (*this)[ch].InPlaceAdd(rhs[ch]); }
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].InPlaceAdd(rhs[ch]); }
 
   template <class T>
   void CopyTo(T& rhs, int srcOffset, int tgtOffset, int count) const
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) 
-    (*this)[ch].CopyTo(rhs[ch], srcOffset, tgtOffset, count); }
+  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].CopyTo(rhs[ch], srcOffset, tgtOffset, count); }
 };
 
 class FFRawStereoBlock:

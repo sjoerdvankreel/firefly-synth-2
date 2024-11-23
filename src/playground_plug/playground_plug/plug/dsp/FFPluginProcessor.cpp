@@ -10,17 +10,13 @@ _sampleRate(sampleRate),
 _fixedProcessor(maxHostSampleCount) {}
 
 void 
-FFPluginProcessor::ProcessHost(
-  FFHostInputBlock const& input,
-  FFRawStereoBlock& output)
+FFPluginProcessor::ProcessHost(FFHostInputBlock const& input, FFRawStereoBlock& output)
 {
   _fixedProcessor.Process(input, output, *this);
 }
 
 void 
-FFPluginProcessor::ProcessFixed(
-  FFFixedInputBlock const& input,
-  FFFixedStereoBlock& output)
+FFPluginProcessor::ProcessFixed(FFFixedInputBlock const& input, FFFixedStereoBlock& output)
 {
   for (int s = 0; s < FF_FIXED_BLOCK_SIZE; s++)
   {

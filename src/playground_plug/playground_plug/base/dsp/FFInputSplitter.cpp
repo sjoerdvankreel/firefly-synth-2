@@ -3,8 +3,7 @@
 
 template <class Event>
 static void GatherEvents(
-  std::vector<Event>& input, 
-  std::vector<Event>& output)
+  std::vector<Event>& input, std::vector<Event>& output)
 {
   int e = 0;
   output.clear();
@@ -35,8 +34,7 @@ FFInputSplitter::Split()
 }
 
 void 
-FFInputSplitter::Accumulate(
-  FFHostInputBlock const& input)
+FFInputSplitter::Accumulate(FFHostInputBlock const& input)
 {
   for (int e = 0; e < input.events.note.size(); e++)
   {

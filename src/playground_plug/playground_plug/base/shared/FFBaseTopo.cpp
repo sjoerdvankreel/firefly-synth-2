@@ -12,7 +12,8 @@ MakeRuntimeName(
 }
 
 int
-MakeRuntimeParamHash(std::string const& id)
+MakeRuntimeParamHash(
+  std::string const& id)
 {
   std::uint32_t result = 0;
   int const multiplier = 33;

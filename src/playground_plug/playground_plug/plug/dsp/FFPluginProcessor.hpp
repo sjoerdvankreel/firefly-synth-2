@@ -11,15 +11,10 @@ class FFPluginProcessor
   FFFixedBlockProcessor _fixedProcessor;
   friend class FFFixedBlockProcessor;
 
-  void ProcessFixed(
-    FFFixedInputBlock const& input,
-    FFFixedStereoBlock& output);
+  void ProcessFixed(FFFixedInputBlock const& input, FFFixedStereoBlock& output);
 
 public:
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);
   FFPluginProcessor(int maxHostSampleCount, float sampleRate);
-
-  void ProcessHost(
-    FFHostInputBlock const& input,
-    FFRawStereoBlock& output);
+  void ProcessHost(FFHostInputBlock const& input, FFRawStereoBlock& output);
 };
