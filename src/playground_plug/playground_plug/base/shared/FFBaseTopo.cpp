@@ -91,7 +91,7 @@ MakeRuntimeParams(
 {
   std::vector<FFRuntimeParam> result;
   for (int p = 0; p < staticParams.size(); p++)
-    for (int s = 0; s < staticParams[s].slotCount; s++)
+    for (int s = 0; s < staticParams[p].slotCount; s++)
       result.push_back(FFRuntimeParam(staticModule, moduleSlot, staticParams[p], s));
   return result;
 }

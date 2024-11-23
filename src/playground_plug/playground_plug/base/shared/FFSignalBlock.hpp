@@ -69,7 +69,7 @@ public:
   void InPlaceAdd(DerivedT const& rhs) 
   { for (int i = 0; i < Count(); i++) (*this)[i] += rhs[i]; }
   void ShiftLeft(int count)
-  { for (int i = 0; i < count; i++) (*this)[i] = (*this)[i + count]; }
+  { for (int i = 0; i < count - 1; i++) (*this)[i] = (*this)[i + 1]; }
 
   template <class T>
   void CopyTo(T& rhs, int srcOffset, int tgtOffset, int count) const
