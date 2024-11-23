@@ -1,19 +1,32 @@
 #include <playground_plug/base/FFHostBlock.hpp>
 
-FFHostOutputBlock::
-FFHostOutputBlock(int maxSampleCount):
+FFHostEvents::
+FFHostEvents():
+note(),
+accParam(),
+blockParam()
+{
+  note.reserve(FF_EVENT_COUNT_GUESS);
+  accParam.reserve(FF_EVENT_COUNT_GUESS);
+  blockParam.reserve(FF_EVENT_COUNT_GUESS);
+}
+
+FFAccumulatingOutputBlock::
+FFAccumulatingOutputBlock(int maxSampleCount):
 sampleCount(0),
 audio(maxSampleCount) {}
 
-FFHostInputBlock::
-FFHostInputBlock(int maxSampleCount):
+FFAccumulatingInputBlock::
+FFAccumulatingInputBlock(int maxSampleCount):
 sampleCount(0),
-audio(maxSampleCount),
-noteEvents(),
-accParamEvents(),
-blockParamEvents() 
-{
-  noteEvents.reserve(FF_EVENT_COUNT_GUESS);
-  accParamEvents.reserve(FF_EVENT_COUNT_GUESS);
-  blockParamEvents.reserve(FF_EVENT_COUNT_GUESS);
-}
+events(),
+audio(maxSampleCount) {}
+
+FFHostOutputBlock::
+FFHostOutputBlock(float* l, float* r, int count) :
+audio(l, r, count) {}
+
+FFHostInputBlock::
+FFHostInputBlock(float* l, float* r, int count):
+events(),
+audio(l, r, count) {}

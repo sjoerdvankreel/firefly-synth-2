@@ -4,13 +4,13 @@
 
 class FFInputSplitter
 {
-  FFHostInputBlock _accumulatedBlock;
+  FFAccumulatingInputBlock _accumulating;
 
 public:
   FFInputSplitter(int maxHostSampleCount);
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFInputSplitter);
 
   void RemoveFirstFixedBlock();
-  FFHostInputBlock const* GetFirstFixedBlock() const;
-  void AccumulateHostBlock(FFHostInputBlock const& hostBlock);
+  void AccumulateHostBlock(FFHostInputBlock const& host);
+  FFAccumulatingInputBlock const* GetFirstFixedBlock() const;
 };

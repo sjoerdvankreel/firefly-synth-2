@@ -32,23 +32,48 @@ struct FFBlockParamEvent
   float normalized;
 };
 
-struct FFHostOutputBlock
+struct FFHostEvents
 {
-  FFHostOutputBlock(int maxSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostOutputBlock);
+  FFHostEvents();
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostEvents);
 
-  int sampleCount;
-  FFDynamicStereoBlock audio;
+  std::vector<FFNoteEvent> note;
+  std::vector<FFAccParamEvent> accParam;
+  std::vector<FFBlockParamEvent> blockParam;
 };
 
 struct FFHostInputBlock
 {
-  FFHostInputBlock(int maxSampleCount);
+  FFHostInputBlock(float* l, float* r, int count);
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostInputBlock);
+
+  FFHostEvents events;
+  FFRawStereoBlock audio;
+};
+
+struct FFHostOutputBlock
+{
+  FFHostOutputBlock(float* l, float* r, int count);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostOutputBlock);
+
+  FFRawStereoBlock audio;
+};
+
+struct FFAccumulatingInputBlock
+{
+  FFAccumulatingInputBlock(int maxSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatingInputBlock);
+
+  int sampleCount;
+  FFHostEvents events;
+  FFDynamicStereoBlock audio;
+};
+
+struct FFAccumulatingOutputBlock
+{
+  FFAccumulatingOutputBlock(int maxSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatingOutputBlock);
 
   int sampleCount;
   FFDynamicStereoBlock audio;
-  std::vector<FFNoteEvent> noteEvents;
-  std::vector<FFAccParamEvent> accParamEvents;
-  std::vector<FFBlockParamEvent> blockParamEvents;
 };

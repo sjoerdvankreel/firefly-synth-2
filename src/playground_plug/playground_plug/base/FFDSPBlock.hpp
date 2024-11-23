@@ -44,21 +44,23 @@ public:
   { return Store()[index]; }
   float const operator[](int index) const 
   { return Store()[index]; }
+  int Count() const
+  { return static_cast<int>(Store().size()); }
 
   void SetToZero() 
   { Store().fill(0.0f); }
   void CopyTo(DerivedT& rhs) const
-  { for (int i = 0; i < Store().size(); i++) 
+  { for (int i = 0; i < Count(); i++)
     rhs[i] = (*this)[i]; }
 
   void ShiftLeft(int count)
   { for (int i = 0; i < count; i++)
       (*this)[i] = (*this)[i + count]; }
   void InPlaceMultiply(float x) 
-  { for (int i = 0; i < Store().size(); i++) 
+  { for (int i = 0; i < Count(); i++)
     (*this)[i] *= x; }
   void InPlaceAdd(DerivedT const& rhs)
-  { for (int i = 0; i < Store().size(); i++) 
+  { for (int i = 0; i < Count(); i++)
     (*this)[i] += rhs[i]; }
 };
 
@@ -104,6 +106,8 @@ class FFStereoBlockMixin
   { return static_cast<DerivedT const*>(this)->_store; }
 
 public:
+  int Count() const
+  { return Store()[0].Count(); }
   auto& operator[](int channel) 
   { return Store()[channel]; }
   auto const& operator[](int channel) const
