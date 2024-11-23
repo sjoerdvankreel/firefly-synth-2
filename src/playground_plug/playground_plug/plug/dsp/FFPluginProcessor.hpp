@@ -10,7 +10,7 @@ class FFPluginProcessor
 {
   FFPhase _phase;
   float const _sampleRate;
-  FFProcessorMemory _memory;
+  FFProcParamMemory _memory;
   FFFixedBlockProcessor _fixedProcessor;
 
   friend class FFFixedBlockProcessor;

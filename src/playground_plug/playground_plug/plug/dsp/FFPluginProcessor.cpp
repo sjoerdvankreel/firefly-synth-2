@@ -21,7 +21,7 @@ void
 FFPluginProcessor::ProcessFixed(
   FFFixedInputBlock const& input, FFFixedStereoBlock& output)
 {
-  bool on = FFNormalizedToBool(_memory.param.block.osci[0][FFOsciBlockParamOn]);
+  bool on = FFNormalizedToBool(_memory.scalar.block.osci[0][FFOsciBlockParamOn]);
   if (!on)
   {
     output.Fill(0, FF_FIXED_BLOCK_SIZE, 0.0f);
