@@ -1,5 +1,7 @@
 #include <playground_plug/base/FFHostBlock.hpp>
 
+#define FF_EVENT_COUNT_GUESS 1024
+
 FFHostEvents::
 FFHostEvents():
 note(),

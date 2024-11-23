@@ -1,12 +1,16 @@
 #pragma once
 
-#include <playground_plug/base/FFDSPConfig.hpp>
 #include <playground_plug/base/shared/FFUtility.hpp>
 
 #include <array>
 #include <vector>
 #include <cassert>
 #include <cstdint>
+
+#define FF_CHANNEL_L 0
+#define FF_CHANNEL_R 1
+#define FF_CHANNELS_STEREO 2
+#define FF_FIXED_BLOCK_SIZE 16
 
 class FFRawBlock
 {
