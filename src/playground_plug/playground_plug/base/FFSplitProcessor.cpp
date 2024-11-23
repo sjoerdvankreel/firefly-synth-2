@@ -11,11 +11,11 @@ FFSplitProcessor::ProcessHostBlock(
   FFHostInputBlock const& input,
   FFRawStereoBlock& output)
 {
-  _inputSplitter.AccumulateHostBlock(input);
-  FFFixedInputBlock const* splittedInput = nullptr;
-  while ((splittedInput = _inputSplitter.NextFixedBlock()) != nullptr)
+  _inputSplitter.Accumulate(input);
+  FFFixedInputBlock const* splitted = nullptr;
+  while ((splitted = _inputSplitter.Split()) != nullptr)
   {
-    ProcessFixedBlock(*splittedInput, _output);
+    ProcessFixedBlock(*splitted, _output);
     _outputSplitter.AccumulateFixedBlock(_output);
   }
 

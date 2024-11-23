@@ -6,8 +6,6 @@ static void GatherEvents(
   std::vector<Event>& input, 
   std::vector<Event>& output)
 {
-  // TODO handle straddle fixed boundary
-
   int e = 0;
   output.clear();
   for (e = 0; e < input.size() && input[e].position < FF_FIXED_BLOCK_SIZE; e++)
@@ -22,7 +20,7 @@ FFInputSplitter(int maxHostSampleCount):
 _accumulated(std::max(FF_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
 
 FFFixedInputBlock const*
-FFInputSplitter::NextFixedBlock()
+FFInputSplitter::Split()
 {
   if (_accumulated.sampleCount < FF_FIXED_BLOCK_SIZE)
     return nullptr;
@@ -37,7 +35,7 @@ FFInputSplitter::NextFixedBlock()
 }
 
 void 
-FFInputSplitter::AccumulateHostBlock(
+FFInputSplitter::Accumulate(
   FFHostInputBlock const& host)
 {
   for (int e = 0; e < host.events.note.size(); e++)
