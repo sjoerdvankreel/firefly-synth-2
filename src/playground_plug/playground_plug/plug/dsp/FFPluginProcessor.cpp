@@ -23,6 +23,8 @@ FFPluginProcessor::ProcessFixed(FFFixedInputBlock const& input, FFFixedStereoBlo
     float sample = std::sin(2.0f * std::numbers::pi_v<float> *_phase);
     output[FF_CHANNEL_L][s] = sample;
     output[FF_CHANNEL_R][s] = sample;
+
+    // TODO phaser.Next()
     _phase += 440.0f / _sampleRate;
     _phase -= std::floor(_phase);
   }
