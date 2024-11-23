@@ -1,4 +1,4 @@
-#include <playground_plug/base/FFHostBlock.hpp>
+#include <playground_plug/base/shared/FFHostBlock.hpp>
 
 #define FF_EVENT_COUNT_GUESS 1024
 

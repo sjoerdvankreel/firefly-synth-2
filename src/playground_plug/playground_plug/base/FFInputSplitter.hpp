@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/base/FFHostBlock.hpp>
+#include <playground_plug/base/shared/FFHostBlock.hpp>
 
 class FFInputSplitter
 {

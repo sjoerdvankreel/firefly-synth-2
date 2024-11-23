@@ -182,7 +182,7 @@ public:
   _store({ FFDynamicMonoBlock(count), FFDynamicMonoBlock(count) }) {}
 };
 
-class alignas(FF_FIXED_BLOCK_SIZE* FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
+class alignas(FF_FIXED_BLOCK_SIZE * FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
 public FFStereoBlockMixin<FFFixedStereoBlock>
 {
   std::array<FFFixedMonoBlock, FF_CHANNELS_STEREO> _store;

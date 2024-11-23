@@ -1,9 +1,9 @@
 #pragma once
 
-#include <playground_plug/base/FFDSPBlock.hpp>
-#include <playground_plug/base/FFHostBlock.hpp>
 #include <playground_plug/base/FFInputSplitter.hpp>
 #include <playground_plug/base/FFOutputSplitter.hpp>
+#include <playground_plug/base/shared/FFHostBlock.hpp>
+#include <playground_plug/base/shared/FFSignalBlock.hpp>
 
 class FFSplitProcessor
 {
