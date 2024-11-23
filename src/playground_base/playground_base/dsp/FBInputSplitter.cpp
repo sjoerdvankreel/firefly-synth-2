@@ -22,12 +22,12 @@ GatherBlockParamEvents(
   output.insert(output.begin(), input.begin(), input.end());
 }
 
-FFInputSplitter::
-FFInputSplitter(int maxHostSampleCount):
+FBInputSplitter::
+FBInputSplitter(int maxHostSampleCount):
 _accumulated(std::max(FF_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
 
 FFFixedInputBlock const*
-FFInputSplitter::Split()
+FBInputSplitter::Split()
 {
   if (_accumulated.sampleCount < FF_FIXED_BLOCK_SIZE)
     return nullptr;
@@ -43,7 +43,7 @@ FFInputSplitter::Split()
 }
 
 void 
-FFInputSplitter::Accumulate(FFHostInputBlock const& input)
+FBInputSplitter::Accumulate(FFHostInputBlock const& input)
 {
   for (int e = 0; e < input.events.note.size(); e++)
   {

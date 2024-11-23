@@ -2,14 +2,14 @@
 
 #include <playground_base/shared/FBHostBlock.hpp>
 
-class FFInputSplitter
+class FBInputSplitter
 {
   FFFixedInputBlock _fixed;
   FFAccumulatedInputBlock _accumulated;
 
 public:
-  FFInputSplitter(int maxHostSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFInputSplitter);
+  FBInputSplitter(int maxHostSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FBInputSplitter);
 
   FFFixedInputBlock const* Split();
   void Accumulate(FFHostInputBlock const& input);

@@ -5,15 +5,15 @@
 #include <playground_base/dsp/FBInputSplitter.hpp>
 #include <playground_base/dsp/FBOutputAggregator.hpp>
 
-class FFFixedBlockProcessor
+class FBFixedBlockProcessor
 {
   FFFixedStereoBlock _fixedOutput;
-  FFInputSplitter _inputSplitter;
-  FFOutputAggregator _outputAggregator;
+  FBInputSplitter _inputSplitter;
+  FBOutputAggregator _outputAggregator;
 
 public:
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFFixedBlockProcessor);
-  FFFixedBlockProcessor(int maxHostSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
+  FBFixedBlockProcessor(int maxHostSampleCount);
 
   template <class Processor>
   void Process(
@@ -22,7 +22,7 @@ public:
 
 template <class Processor>
 void 
-FFFixedBlockProcessor::Process(
+FBFixedBlockProcessor::Process(
   FFHostInputBlock const& input, FFRawStereoBlockView& output, Processor& processor)
 {
   _inputSplitter.Accumulate(input);

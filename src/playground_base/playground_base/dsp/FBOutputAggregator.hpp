@@ -3,13 +3,13 @@
 #include <playground_base/shared/FBHostBlock.hpp>
 #include <playground_base/shared/FBSignalBlock.hpp>
 
-class FFOutputAggregator
+class FBOutputAggregator
 {
   FFAccumulatedOutputBlock _accumulated;
 
 public:
-  FFOutputAggregator(int maxHostSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFOutputAggregator);
+  FBOutputAggregator(int maxHostSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FBOutputAggregator);
 
   void Aggregate(FFRawStereoBlockView& output);
   void Accumulate(FFFixedStereoBlock const& input);

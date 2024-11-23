@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-class FFPhase
+class FBPhase
 {
   float _current = 0.0f;
 
@@ -13,7 +13,7 @@ public:
 };
 
 inline void
-FFPhase::Next(float sampleRate, float frequency)
+FBPhase::Next(float sampleRate, float frequency)
 {
   _current += frequency / sampleRate;
   _current -= std::floor(_current);
