@@ -36,6 +36,7 @@ struct FFAccParamMemory
 
 struct alignas(alignof(FFFixedMonoBlock)) FFProcessorParamMemory
 {
+  FF_NOCOPY_NOMOVE_DEFCTOR(FFProcessorParamMemory);
   FFAccParamMemory<FFFixedMonoBlock> accParam;
   FFBlockParamMemory blockParam;
 };
