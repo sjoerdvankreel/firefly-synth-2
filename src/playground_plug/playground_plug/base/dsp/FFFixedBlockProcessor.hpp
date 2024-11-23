@@ -1,26 +1,25 @@
 #pragma once
 
-#include <playground_plug/base/FFInputSplitter.hpp>
-#include <playground_plug/base/FFOutputSplitter.hpp>
 #include <playground_plug/base/shared/FFHostBlock.hpp>
 #include <playground_plug/base/shared/FFSignalBlock.hpp>
+#include <playground_plug/base/dsp/FFInputSplitter.hpp>
+#include <playground_plug/base/dsp/FFOutputAggregator.hpp>
 
-class FFSplitProcessor
+class FFFixedBlockProcessor
 {
-  FFFixedInputBlock _input;
-  FFFixedStereoBlock _output;
+  FFFixedStereoBlock _fixedOutput;
   FFInputSplitter _inputSplitter;
-  FFOutputSplitter _outputSplitter;
+  FFOutputAggregator _outputAggregator;
 
 protected:
-  virtual void ProcessFixedBlock(
+  virtual void ProcessFixed(
     FFFixedInputBlock const& input,
     FFFixedStereoBlock& output) = 0;
 
 public:
-  FFSplitProcessor(int maxHostSampleCount);
+  FFFixedBlockProcessor(int maxHostSampleCount);
 
-  void ProcessHostBlock(
+  void Process(
     FFHostInputBlock const& input, 
     FFRawStereoBlock& output);
 };
