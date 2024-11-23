@@ -26,7 +26,7 @@ FBFixedBlockProcessor::Process(
   FFHostInputBlock const& input, FFRawStereoBlockView& output, Processor& processor)
 {
   _inputSplitter.Accumulate(input);
-  FFFixedInputBlock const* splitted = nullptr;
+  FBFixedInputBlock const* splitted = nullptr;
   while ((splitted = _inputSplitter.Split()) != nullptr)
   {
     processor.ProcessFixed(*splitted, _fixedOutput);

@@ -31,22 +31,22 @@ struct FFBlockParamEvent
   float normalized;
 };
 
-struct FFHostEvents
+struct FBHostEvents
 {
-  FFHostEvents();
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostEvents);
+  FBHostEvents();
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FBHostEvents);
 
   std::vector<FFNoteEvent> note;
   std::vector<FFAccParamEvent> accParam;
   std::vector<FFBlockParamEvent> blockParam;
 };
 
-struct FFFixedInputBlock
+struct FBFixedInputBlock
 {
-  FFFixedInputBlock();
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFFixedInputBlock);
+  FBFixedInputBlock();
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FBFixedInputBlock);
 
-  FFHostEvents events;
+  FBHostEvents events;
   FFFixedStereoBlock audio;
 };
 
@@ -55,7 +55,7 @@ struct FFHostInputBlock
   FFHostInputBlock(float* l, float* r, int count);
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostInputBlock);
 
-  FFHostEvents events;
+  FBHostEvents events;
   FFRawStereoBlockView audio;
 };
 
@@ -65,7 +65,7 @@ struct FFAccumulatedInputBlock
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatedInputBlock);
 
   int sampleCount;
-  FFHostEvents events;
+  FBHostEvents events;
   FFDynamicStereoBlock audio;
 };
 

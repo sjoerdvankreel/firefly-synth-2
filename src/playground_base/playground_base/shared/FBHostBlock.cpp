@@ -2,8 +2,8 @@
 
 #define FF_EVENT_COUNT_GUESS 1024
 
-FFHostEvents::
-FFHostEvents():
+FBHostEvents::
+FBHostEvents():
 note(),
 accParam(),
 blockParam()
@@ -13,8 +13,8 @@ blockParam()
   blockParam.reserve(FF_EVENT_COUNT_GUESS);
 }
 
-FFFixedInputBlock::
-FFFixedInputBlock():
+FBFixedInputBlock::
+FBFixedInputBlock():
 events(),
 audio() {}
 

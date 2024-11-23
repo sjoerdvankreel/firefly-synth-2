@@ -14,7 +14,7 @@ class FFPluginProcessor
   FBFixedBlockProcessor _fixedProcessor;
 
   friend class FBFixedBlockProcessor;
-  void ProcessFixed(FFFixedInputBlock const& input, FFFixedStereoBlock& output);
+  void ProcessFixed(FBFixedInputBlock const& input, FFFixedStereoBlock& output);
 
 public:
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);

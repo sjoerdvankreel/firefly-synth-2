@@ -26,7 +26,7 @@ FBInputSplitter::
 FBInputSplitter(int maxHostSampleCount):
 _accumulated(std::max(FF_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
 
-FFFixedInputBlock const*
+FBFixedInputBlock const*
 FBInputSplitter::Split()
 {
   if (_accumulated.sampleCount < FF_FIXED_BLOCK_SIZE)
