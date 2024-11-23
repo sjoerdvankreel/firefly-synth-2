@@ -2,16 +2,18 @@
 
 FFSplitProcessor::
 FFSplitProcessor(int maxHostSampleCount):
+_audioIn(),
+_audioOut(),
 _inputSplitter(maxHostSampleCount),
 _outputSplitter(maxHostSampleCount) {}
 
 void 
 FFSplitProcessor::ProcessHostBlock(
-  FFHostInputBlock const& inputBlock,
-  FFHostOutputBlock& outputBlock)
+  FFHostInputBlock const& input,
+  FFHostOutputBlock& output)
 {
-  _inputSplitter.AccumulateHostBlock(inputBlock);
-  FFHostInputBlock const* splittedInput = nullptr;
+  _inputSplitter.AccumulateHostBlock(input);
+  FFAccumulatingInputBlock const* splittedInput = nullptr;
   while ((splittedInput = _inputSplitter.GetFirstFixedBlock()) != nullptr)
   {
     _inputSplitter.RemoveFirstFixedBlock();
