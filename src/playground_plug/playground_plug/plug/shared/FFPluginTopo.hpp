@@ -1,6 +1,11 @@
 #pragma once
 
+#include <playground_plug/plug/shared/FFPluginConfig.hpp>
 #include <playground_plug/base/shared/FFBaseTopo.hpp>
+#include <playground_plug/base/shared/FFSignalBlock.hpp>
+#include <playground_plug/base/shared/FFSharedUtility.hpp>
+
+#include <array>
 
 FFStaticTopo
 FFMakeTopo();
@@ -13,6 +18,27 @@ enum { FFOsciBlockParamOn, FFOsciBlockParamType, FFOsciBlockParamCount };
 
 enum { FFShaperAccParamGain, FFShaperAccParamCount };
 enum { FFShaperBlockParamOn, FFShaperBlockParamClip, FFShaperBlockParamCount };
+
+struct FFBlockParamMemory
+{
+  FF_NOCOPY_NOMOVE_DEFCTOR(FFBlockParamMemory);
+  std::array<std::array<float, FFOsciBlockParamCount>, FF_OSCI_COUNT> osci;
+  std::array<std::array<float, FFShaperBlockParamCount>, FF_SHAPER_COUNT> shaper;
+};
+
+template <class T>
+struct FFAccParamMemory
+{
+  FF_NOCOPY_NOMOVE_DEFCTOR(FFAccParamMemory);
+  std::array<std::array<T, FFOsciAccParamCount>, FF_OSCI_COUNT> osci;
+  std::array<std::array<T, FFShaperAccParamCount>, FF_SHAPER_COUNT> shaper;
+};
+
+struct alignas(alignof(FFFixedMonoBlock)) FFProcessorParamMemory
+{
+  FFAccParamMemory<FFFixedMonoBlock> accParam;
+  FFBlockParamMemory blockParam;
+};
 
 #if 0
 
