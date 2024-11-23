@@ -11,6 +11,6 @@ public:
   FFOutputAggregator(int maxHostSampleCount);
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFOutputAggregator);
 
-  void Aggregate(FFRawStereoBlock& output);
+  void Aggregate(FFRawStereoBlockView& output);
   void Accumulate(FFFixedStereoBlock const& input);
 };

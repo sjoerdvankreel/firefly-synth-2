@@ -12,14 +12,14 @@
 #define FF_CHANNELS_STEREO 2
 #define FF_FIXED_BLOCK_SIZE 16
 
-class FFRawBlock
+class FFRawBlockView
 {
-  float* const _store;
-  std::size_t const _size;
+  float* _store;
+  std::size_t _size;
 
 public:
-  FF_NOCOPY_MOVE_NODEFCTOR(FFRawBlock);
-  FFRawBlock(float* store, int count) :
+  FF_COPY_MOVE_DEFCTOR(FFRawBlockView);
+  FFRawBlockView(float* store, int count) :
   _size(count), _store(store) {}
 
   float* begin()
@@ -76,16 +76,26 @@ public:
   { for (int i = 0; i < count; i++) rhs[tgtOffset + i] = (*this)[srcOffset + i]; }
 };
 
-class FFRawMonoBlock:
-public FFMonoBlockMixin<FFRawMonoBlock>
+class FFRawMonoBlockView:
+public FFMonoBlockMixin<FFRawMonoBlockView>
 {
-  FFRawBlock _store;
-  friend class FFMonoBlockMixin<FFRawMonoBlock>;
+  FFRawBlockView _store;
+  friend class FFMonoBlockMixin<FFRawMonoBlockView>;
 
 public:
-  FF_NOCOPY_MOVE_NODEFCTOR(FFRawMonoBlock);
-  FFRawMonoBlock(float* store, int count) : 
+  FF_COPY_MOVE_DEFCTOR(FFRawMonoBlockView);
+  FFRawMonoBlockView(float* store, int count) :
   _store(store, count) {}
+};
+
+class alignas(FF_FIXED_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
+public FFMonoBlockMixin<FFFixedMonoBlock>
+{
+  std::array<float, FF_FIXED_BLOCK_SIZE> _store;
+  friend class FFMonoBlockMixin<FFFixedMonoBlock>;
+
+public:
+  FF_NOCOPY_MOVE_DEFCTOR(FFFixedMonoBlock);
 };
 
 class FFDynamicMonoBlock:
@@ -98,16 +108,9 @@ public:
   FF_NOCOPY_MOVE_NODEFCTOR(FFDynamicMonoBlock);
   FFDynamicMonoBlock(int count): 
   _store(count, 0.0f) {}
-};
 
-class alignas(FF_FIXED_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
-public FFMonoBlockMixin<FFFixedMonoBlock>
-{
-  std::array<float, FF_FIXED_BLOCK_SIZE> _store;
-  friend class FFMonoBlockMixin<FFFixedMonoBlock>;
-
-public:
-  FF_NOCOPY_MOVE_DEFCTOR(FFFixedMonoBlock);
+  FFRawMonoBlockView GetRawBlockView()
+  { return FFRawMonoBlockView(_store.data(), static_cast<int>(_store.size())); }
 };
 
 template <class DerivedT>
@@ -143,16 +146,28 @@ public:
   { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].CopyTo(rhs[ch], srcOffset, tgtOffset, count); }
 };
 
-class FFRawStereoBlock:
-public FFStereoBlockMixin<FFRawStereoBlock>
+class FFRawStereoBlockView:
+public FFStereoBlockMixin<FFRawStereoBlockView>
 {
-  std::array<FFRawMonoBlock, FF_CHANNELS_STEREO> _store;
-  friend class FFStereoBlockMixin<FFRawStereoBlock>;
+  std::array<FFRawMonoBlockView, FF_CHANNELS_STEREO> _store;
+  friend class FFStereoBlockMixin<FFRawStereoBlockView>;
 
 public:
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFRawStereoBlock);
-  FFRawStereoBlock(float* l, float* r, int count) :
-  _store({ FFRawMonoBlock(l, count), FFRawMonoBlock(r, count) }) {}
+  FF_COPY_MOVE_DEFCTOR(FFRawStereoBlockView);
+  FFRawStereoBlockView(float* l, float* r, int count) :
+  _store({ FFRawMonoBlockView(l, count), FFRawMonoBlockView(r, count) }) {}
+  FFRawStereoBlockView(FFRawMonoBlockView const& l, FFRawMonoBlockView const& r) :
+  _store({ l, r }) {}
+};
+
+class alignas(FF_FIXED_BLOCK_SIZE * FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
+public FFStereoBlockMixin<FFFixedStereoBlock>
+{
+  std::array<FFFixedMonoBlock, FF_CHANNELS_STEREO> _store;
+  friend class FFStereoBlockMixin<FFFixedStereoBlock>;
+
+public:
+  FF_NOCOPY_NOMOVE_DEFCTOR(FFFixedStereoBlock);
 };
 
 class FFDynamicStereoBlock:
@@ -165,14 +180,7 @@ public:
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFDynamicStereoBlock);
   FFDynamicStereoBlock(int count) :
   _store({ FFDynamicMonoBlock(count), FFDynamicMonoBlock(count) }) {}
-};
 
-class alignas(FF_FIXED_BLOCK_SIZE * FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
-public FFStereoBlockMixin<FFFixedStereoBlock>
-{
-  std::array<FFFixedMonoBlock, FF_CHANNELS_STEREO> _store;
-  friend class FFStereoBlockMixin<FFFixedStereoBlock>;
-
-public:
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFFixedStereoBlock);
+  FFRawStereoBlockView GetRawBlockView()
+  { return FFRawStereoBlockView(_store[FF_CHANNEL_L].GetRawBlockView(), _store[FF_CHANNEL_R].GetRawBlockView()); }
 };

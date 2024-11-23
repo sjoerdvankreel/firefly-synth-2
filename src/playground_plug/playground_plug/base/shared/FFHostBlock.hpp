@@ -56,7 +56,7 @@ struct FFHostInputBlock
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostInputBlock);
 
   FFHostEvents events;
-  FFRawStereoBlock audio;
+  FFRawStereoBlockView audio;
 };
 
 struct FFAccumulatedInputBlock

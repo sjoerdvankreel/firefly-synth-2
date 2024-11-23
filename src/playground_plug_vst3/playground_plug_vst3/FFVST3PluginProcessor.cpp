@@ -1,50 +1,52 @@
+#include <playground_plug/plug/shared/FFPluginTopo.hpp>
 #include <playground_plug_vst3/FFVST3PluginProcessor.hpp>
+
 #include <pluginterfaces/vst/ivstevents.h>
 #include <pluginterfaces/vst/ivstparameterchanges.h>
 #include <algorithm>
 
-static FBPlugEvent
-MakePlugEvent(int tag, ParamValue value)
+static FFBlockParamEvent
+MakeBlockParamEvent(int tag, ParamValue value)
 {
-  FBPlugEvent result;
+  FFBlockParamEvent result;
   result.tag = tag;
   result.normalized = value;
   return result;
 }
 
-static FBAutoEvent
-MakeAutoEvent(int tag, int position, ParamValue value)
+static FFAccParamEvent
+MakeAccParamEvent(int tag, int position, ParamValue value)
 {
-  FBAutoEvent result;
+  FFAccParamEvent result;
   result.tag = tag;
   result.normalized = value;
   result.position = position;
   return result;
 }
 
-static FBNoteEvent
+static FFNoteEvent
 MakeNoteOnEvent(Event const& event)
 {
-  FBNoteEvent result;
+  FFNoteEvent result;
   result.on = true;
-  result.id = event.noteOn.noteId;
-  result.key = event.noteOn.pitch;
   result.velo = event.noteOn.velocity;
-  result.channel = event.noteOn.channel;
   result.position = event.sampleOffset;
+  result.note.id = event.noteOn.noteId;
+  result.note.key = event.noteOn.pitch;
+  result.note.channel = event.noteOn.channel;
   return result;
 }
 
-static FBNoteEvent
+static FFNoteEvent
 MakeNoteOffEvent(Event const& event)
 {
-  FBNoteEvent result;
+  FFNoteEvent result;
   result.on = false;
-  result.id = event.noteOff.noteId;
-  result.key = event.noteOff.pitch;
-  result.velo = event.noteOff.velocity;
-  result.channel = event.noteOff.channel;
   result.position = event.sampleOffset;
+  result.velo = event.noteOff.velocity;
+  result.note.id = event.noteOff.noteId;
+  result.note.key = event.noteOff.pitch;
+  result.note.channel = event.noteOff.channel;
   return result;
 }
 
@@ -76,13 +78,15 @@ FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 tresult PLUGIN_API
 FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
 {
-  _hostBlock.reset(new FBHostBlock(setup.maxSamplesPerBlock));
-  _processor.reset(new FFPluginProcessor(&_topo, setup.maxSamplesPerBlock, setup.sampleRate));
+  _input.reset(new FFHostInputBlock(nullptr, nullptr, 0));
+  _zeroIn.reset(new FFDynamicStereoBlock(setup.maxSamplesPerBlock));
+  _processor.reset(new FFPluginProcessor(setup.maxSamplesPerBlock, setup.sampleRate));
   return kResultTrue;
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::setBusArrangements(SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
+FFVST3PluginProcessor::setBusArrangements(
+  SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
   if (numIns != 0 || numOuts != 1 || outputs[0] != SpeakerArr::kStereo)
     return kResultFalse;
@@ -95,43 +99,47 @@ FFVST3PluginProcessor::process(ProcessData& data)
   if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
     return kResultTrue;
 
+  _input->audio = _zeroIn->GetRawBlockView();
+  if (data.numInputs == 1)
+    _input->audio = FFRawStereoBlockView(
+      data.inputs[0].channelBuffers32[FF_CHANNEL_L],
+      data.inputs[0].channelBuffers32[FF_CHANNEL_R],
+      data.numSamples);
+
   Event event;
-  _hostBlock->noteEvents.clear();
+  _input->events.note.clear();
   if (data.inputEvents != nullptr)
     for (int i = 0; i < data.inputEvents->getEventCount(); i++)
       if (data.inputEvents->getEvent(i, event) == kResultOk)
         if (event.type == Event::kNoteOnEvent)
-          _hostBlock->noteEvents.push_back(MakeNoteOnEvent(event));
+          _input->events.note.push_back(MakeNoteOnEvent(event));
         else if (event.type == Event::kNoteOffEvent)
-          _hostBlock->noteEvents.push_back(MakeNoteOffEvent(event));
+          _input->events.note.push_back(MakeNoteOffEvent(event));
 
   int position;
   ParamValue value;
   IParamValueQueue* queue;
   std::map<int, int>::const_iterator iter;
-  _hostBlock->plugEvents.clear();
-  _hostBlock->autoEvents.clear();
+  _input->events.accParam.clear();
+  _input->events.blockParam.clear();
   if(data.inputParameterChanges != nullptr)
-    for (int param = 0; param < data.inputParameterChanges->getParameterCount(); param++)
-      if ((queue = data.inputParameterChanges->getParameterData(param)) != nullptr)
-        if ((iter = _topo.tagToPlugParam.find(queue->getParameterId())) != _topo.tagToPlugParam.end())
+    for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
+      if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
+        if ((iter = _topo.tagToBlockParam.find(queue->getParameterId())) != _topo.tagToBlockParam.end())
         {
           if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-            _hostBlock->plugEvents.push_back(MakePlugEvent(queue->getParameterId(), value));
-        }
-        else if ((iter = _topo.tagToAutoParam.find(queue->getParameterId())) != _topo.tagToAutoParam.end())
+            _input->events.blockParam.push_back(MakeBlockParamEvent(queue->getParameterId(), value));
+        } else if ((iter = _topo.tagToAccParam.find(queue->getParameterId())) != _topo.tagToAccParam.end())
         {
           for (int point = 0; point < queue->getPointCount(); point++)
             if (queue->getPoint(point, position, value) == kResultTrue)
-              _hostBlock->autoEvents.push_back(MakeAutoEvent(queue->getParameterId(), position, value));
-        }        
+              _input->events.accParam.push_back(MakeAccParamEvent(queue->getParameterId(), position, value));
+        }     
 
-  // sort by position
-  // CLAP also does it this way 
-  // and it makes the block splitting easier
   auto compare = [](auto const& l, auto const& r) { return l.position < r.position; };
-  std::sort(_hostBlock->autoEvents.begin(), _hostBlock->autoEvents.end(), compare);
+  std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
 
+#if 0
   // TODO audio input buffers
   _hostBlock->currentSampleCount = data.numSamples;
   for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
@@ -145,6 +153,7 @@ FFVST3PluginProcessor::process(ProcessData& data)
       _hostBlock->audioOut[channel].begin(),
       _hostBlock->audioOut[channel].end(), 
       data.outputs[0].channelBuffers32[channel]);
+#endif
   
   return kResultTrue;
 }

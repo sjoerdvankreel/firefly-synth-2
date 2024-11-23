@@ -17,13 +17,13 @@ public:
 
   template <class Processor>
   void Process(
-    FFHostInputBlock const& input, FFRawStereoBlock& output, Processor& processor);
+    FFHostInputBlock const& input, FFRawStereoBlockView& output, Processor& processor);
 };
 
 template <class Processor>
 void 
 FFFixedBlockProcessor::Process(
-  FFHostInputBlock const& input, FFRawStereoBlock& output, Processor& processor)
+  FFHostInputBlock const& input, FFRawStereoBlockView& output, Processor& processor)
 {
   _inputSplitter.Accumulate(input);
   FFFixedInputBlock const* splitted = nullptr;

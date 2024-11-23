@@ -3,6 +3,15 @@
 #define FF_STRINGIFY_(x) #x
 #define FF_STRINGIFY(x) FF_STRINGIFY_(x)
 
+#define FF_COPY_MOVE_NODEFCTOR(x) \
+  x(x&&) = default; \
+  x(x const&) = default; \
+  x& operator=(x&&) = default; \
+  x& operator=(x const&) = default
+#define FF_COPY_MOVE_DEFCTOR(x) \
+  FF_COPY_MOVE_NODEFCTOR(x); \
+  x() = default
+
 #define FF_NOCOPY_NOMOVE_NODEFCTOR(x) \
   x(x&&) = delete; \
   x(x const&) = delete; \
