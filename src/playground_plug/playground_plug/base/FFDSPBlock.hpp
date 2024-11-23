@@ -5,6 +5,31 @@
 
 #include <array>
 #include <vector>
+#include <cassert>
+#include <cstdint>
+
+class FFRawBlock
+{
+  float* const _store;
+  std::size_t const _size;
+
+public:
+  FF_NOCOPY_MOVE_NODEFCTOR(FFRawBlock);
+  FFRawBlock(float* store, int count) :
+  _size(count), _store(store) {}
+
+  float& operator[](int index) 
+  { assert(0 <= index && index < _size); 
+    return _store[index]; }
+  float const& operator[](int index) const 
+  { assert(0 <= index && index < _size); 
+    return _store[index]; }
+
+  std::size_t size() const 
+  { return _size; }
+  void fill(float val)
+  { std::fill(_store, _store + _size, val); }
+};
 
 template <class DerivedT>
 class FFMonoBlockMixin
@@ -37,6 +62,18 @@ public:
     (*this)[i] += rhs[i]; }
 };
 
+class FFRawMonoBlock:
+public FFMonoBlockMixin<FFRawMonoBlock>
+{
+  FFRawBlock _store;
+  friend class FFMonoBlockMixin<FFRawMonoBlock>;
+
+public:
+  FF_NOCOPY_MOVE_NODEFCTOR(FFRawMonoBlock);
+  FFRawMonoBlock(float* store, int count) : 
+  _store(store, count) {}
+};
+
 class FFDynamicMonoBlock:
 public FFMonoBlockMixin<FFDynamicMonoBlock>
 {
@@ -45,7 +82,7 @@ public FFMonoBlockMixin<FFDynamicMonoBlock>
 
 public:
   FF_NOCOPY_MOVE_NODEFCTOR(FFDynamicMonoBlock);
-  FFDynamicMonoBlock(int size): _store(size, 0.0f) {}
+  FFDynamicMonoBlock(int count): _store(count, 0.0f) {}
 };
 
 class alignas(FF_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
@@ -90,6 +127,18 @@ public:
     (*this)[ch].InPlaceAdd(rhs[ch]); }
 };
 
+class FFRawStereoBlock:
+public FFStereoBlockMixin<FFRawStereoBlock>
+{
+  std::array<FFRawMonoBlock, FF_CHANNELS_STEREO> _store;
+  friend class FFStereoBlockMixin<FFRawStereoBlock>;
+
+public:
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFRawStereoBlock);
+  FFRawStereoBlock(float* l, float* r, int count) :
+  _store({ FFRawMonoBlock(l, count), FFRawMonoBlock(r, count) }) {}
+};
+
 class FFDynamicStereoBlock:
 public FFStereoBlockMixin<FFDynamicStereoBlock>
 {
@@ -98,8 +147,8 @@ public FFStereoBlockMixin<FFDynamicStereoBlock>
 
 public:
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFDynamicStereoBlock);
-  FFDynamicStereoBlock(int size) : 
-  _store({ FFDynamicMonoBlock(size), FFDynamicMonoBlock(size) }) {}
+  FFDynamicStereoBlock(int count) :
+  _store({ FFDynamicMonoBlock(count), FFDynamicMonoBlock(count) }) {}
 };
 
 class alignas(FF_BLOCK_SIZE * FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:

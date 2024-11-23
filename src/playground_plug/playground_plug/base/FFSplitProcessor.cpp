@@ -14,8 +14,6 @@ FFSplitProcessor::ProcessHostBlock(
   FFHostInputBlock const* splittedInput = nullptr;
   while ((splittedInput = _inputSplitter.GetFirstFixedBlock()) != nullptr)
   {
-    splittedInput->
     _inputSplitter.RemoveFirstFixedBlock();
   }
-  _outputSplitter.
 }
