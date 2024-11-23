@@ -5,7 +5,7 @@
 
 FFPluginProcessor::
 FFPluginProcessor(int maxHostSampleCount, float sampleRate) :
-_phase(0.0f),
+_phase(),
 _sampleRate(sampleRate),
 _fixedProcessor(maxHostSampleCount) {}
 
@@ -20,12 +20,9 @@ FFPluginProcessor::ProcessFixed(FFFixedInputBlock const& input, FFFixedStereoBlo
 {
   for (int s = 0; s < FF_FIXED_BLOCK_SIZE; s++)
   {
-    float sample = std::sin(2.0f * std::numbers::pi_v<float> *_phase);
+    float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());
     output[FF_CHANNEL_L][s] = sample;
     output[FF_CHANNEL_R][s] = sample;
-
-    // TODO phaser.Next()
-    _phase += 440.0f / _sampleRate;
-    _phase -= std::floor(_phase);
+    _phase.Next(_sampleRate, 440.0f);
   }
 }
