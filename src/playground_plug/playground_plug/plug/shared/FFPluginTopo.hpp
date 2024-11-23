@@ -19,13 +19,6 @@ enum { FFOsciBlockParamOn, FFOsciBlockParamType, FFOsciBlockParamCount };
 enum { FFShaperAccParamGain, FFShaperAccParamCount };
 enum { FFShaperBlockParamOn, FFShaperBlockParamClip, FFShaperBlockParamCount };
 
-struct FFBlockParamMemory
-{
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFBlockParamMemory);
-  std::array<std::array<float, FFOsciBlockParamCount>, FF_OSCI_COUNT> osci;
-  std::array<std::array<float, FFShaperBlockParamCount>, FF_SHAPER_COUNT> shaper;
-};
-
 template <class T>
 struct FFAccParamMemory
 {
@@ -34,14 +27,27 @@ struct FFAccParamMemory
   std::array<std::array<T, FFShaperAccParamCount>, FF_SHAPER_COUNT> shaper;
 };
 
-struct alignas(alignof(FFFixedMonoBlock)) FFProcessorParamMemory
+struct FFBlockParamMemory
 {
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFProcessorParamMemory);
-  FFAccParamMemory<FFFixedMonoBlock> accParam;
-  FFBlockParamMemory blockParam;
+  FF_NOCOPY_NOMOVE_DEFCTOR(FFBlockParamMemory);
+  std::array<std::array<float, FFOsciBlockParamCount>, FF_OSCI_COUNT> osci;
+  std::array<std::array<float, FFShaperBlockParamCount>, FF_SHAPER_COUNT> shaper;
 };
 
-#if 0
+struct alignas(alignof(FFFixedMonoBlock)) FFProcParamMemory
+{
+  FF_NOCOPY_NOMOVE_DEFCTOR(FFProcParamMemory);
+  FFAccParamMemory<FFFixedMonoBlock> acc;
+  FFBlockParamMemory block;
+};
+
+struct FFProcessorMemory
+{
+  FF_NOCOPY_MOVE_DEFCTOR(FFProcessorMemory);
+  FFProcParamMemory param;
+};
+
+#if 0 // todo search if 0
 
 #pragma once
 

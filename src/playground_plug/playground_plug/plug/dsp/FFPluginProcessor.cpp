@@ -7,6 +7,7 @@ FFPluginProcessor::
 FFPluginProcessor(int maxHostSampleCount, float sampleRate) :
 _phase(),
 _sampleRate(sampleRate),
+_memory(),
 _fixedProcessor(maxHostSampleCount) {}
 
 void 
@@ -18,6 +19,13 @@ FFPluginProcessor::ProcessHost(FFHostInputBlock const& input, FFRawStereoBlockVi
 void 
 FFPluginProcessor::ProcessFixed(FFFixedInputBlock const& input, FFFixedStereoBlock& output)
 {
+  bool on = FFNormalizedToBool(_memory.param.block.osci[0][FFOsciBlockParamOn]);
+  if (!on)
+  {
+    output.Fill(0, FF_FIXED_BLOCK_SIZE, 0.0f);
+    return;
+  }
+
   for (int s = 0; s < FF_FIXED_BLOCK_SIZE; s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());
