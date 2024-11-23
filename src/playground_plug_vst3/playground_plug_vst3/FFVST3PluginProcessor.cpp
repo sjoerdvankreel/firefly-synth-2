@@ -50,6 +50,15 @@ MakeNoteOffEvent(Event const& event)
   return result;
 }
 
+static FFRawStereoBlockView
+MakeRawStereoBlockView(AudioBusBuffers& buffers, int sampleCount)
+{
+  return FFRawStereoBlockView(
+    buffers.channelBuffers32[FF_CHANNEL_L],
+    buffers.channelBuffers32[FF_CHANNEL_R],
+    sampleCount);
+}
+
 FFVST3PluginProcessor::
 FFVST3PluginProcessor(FUID const& controllerId):
 _topo(FFMakeTopo())
@@ -96,15 +105,10 @@ FFVST3PluginProcessor::setBusArrangements(
 tresult PLUGIN_API
 FFVST3PluginProcessor::process(ProcessData& data)
 {
-  if (data.numOutputs != 1 || data.outputs[0].numChannels != 2)
-    return kResultTrue;
-
   _input->audio = _zeroIn->GetRawBlockView();
+  _output = MakeRawStereoBlockView(data.outputs[0], data.numSamples);
   if (data.numInputs == 1)
-    _input->audio = FFRawStereoBlockView(
-      data.inputs[0].channelBuffers32[FF_CHANNEL_L],
-      data.inputs[0].channelBuffers32[FF_CHANNEL_R],
-      data.numSamples);
+    MakeRawStereoBlockView(data.inputs[0], data.numSamples);
 
   Event event;
   _input->events.note.clear();
@@ -138,22 +142,6 @@ FFVST3PluginProcessor::process(ProcessData& data)
 
   auto compare = [](auto const& l, auto const& r) { return l.position < r.position; };
   std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
-
-#if 0
-  // TODO audio input buffers
-  _hostBlock->currentSampleCount = data.numSamples;
-  for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-  {
-    _hostBlock->audioIn[channel].resize(data.numSamples);
-    _hostBlock->audioOut[channel].resize(data.numSamples);
-  }
-  _processor->ProcessHostBlock(*_hostBlock);
-  for (int channel = 0; channel < FB_CHANNELS_STEREO; channel++)
-    std::copy(
-      _hostBlock->audioOut[channel].begin(),
-      _hostBlock->audioOut[channel].end(), 
-      data.outputs[0].channelBuffers32[channel]);
-#endif
-  
+  _processor->ProcessHost(*_input, _output);  
   return kResultTrue;
 }
