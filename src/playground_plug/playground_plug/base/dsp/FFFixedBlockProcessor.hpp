@@ -12,6 +12,7 @@ class FFFixedBlockProcessor
   FFOutputAggregator _outputAggregator;
 
 public:
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFFixedBlockProcessor);
   FFFixedBlockProcessor(int maxHostSampleCount);
 
   template <class Processor>
@@ -24,15 +25,15 @@ public:
 template <class Processor>
 void 
 FFFixedBlockProcessor::Process(
-  FFHostInputBlock const& input,
-  FFRawStereoBlock& output,
+  FFHostInputBlock const& input, 
+  FFRawStereoBlock& output, 
   Processor& processor)
 {
   _inputSplitter.Accumulate(input);
   FFFixedInputBlock const* splitted = nullptr;
   while ((splitted = _inputSplitter.Split()) != nullptr)
   {
-    processor.Process(*splitted, _fixedOutput);
+    processor.ProcessFixed(*splitted, _fixedOutput);
     _outputAggregator.Accumulate(_fixedOutput);
   }
   _outputAggregator.Aggregate(output);
