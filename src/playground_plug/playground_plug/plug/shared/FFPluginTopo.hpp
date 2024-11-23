@@ -44,8 +44,9 @@ struct FFScalarParamMemory
 struct alignas(alignof(FFFixedMonoBlock)) FFProcParamMemory
 {
   FF_NOCOPY_NOMOVE_DEFCTOR(FFProcParamMemory);
+  FFAccParamMemory<FFFixedMonoBlock> dense;
+  FFAccParamMemory<int> pos;
   FFScalarParamMemory scalar;
-  FFAccParamMemory<FFFixedMonoBlock> acc;
 };
 
 #if 0 // todo search if 0
