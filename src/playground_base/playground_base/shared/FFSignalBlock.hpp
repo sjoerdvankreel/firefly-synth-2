@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/base/shared/FFSharedUtility.hpp>
+#include <playground_base/shared/FFSharedUtility.hpp>
 
 #include <array>
 #include <vector>

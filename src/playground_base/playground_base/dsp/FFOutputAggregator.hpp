@@ -1,7 +1,7 @@
 # pragma once
 
-#include <playground_plug/base/shared/FFHostBlock.hpp>
-#include <playground_plug/base/shared/FFSignalBlock.hpp>
+#include <playground_base/shared/FFHostBlock.hpp>
+#include <playground_base/shared/FFSignalBlock.hpp>
 
 class FFOutputAggregator
 {

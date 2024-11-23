@@ -1,4 +1,4 @@
-#include <playground_plug/base/dsp/FFOutputAggregator.hpp>
+#include <playground_base/dsp/FFOutputAggregator.hpp>
 #include <algorithm>
 
 FFOutputAggregator::
