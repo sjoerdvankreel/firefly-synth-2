@@ -1,3 +1,5 @@
+#if 0
+
 #include <playground_plug/plug/dsp/FFShaperProcessor.hpp>
 #include <playground_plug/plug/shared/FFPluginTopo.hpp>
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
@@ -10,3 +12,5 @@ FFShaperProcessor::Process(FBProcessorContext const& context, FFProcessorMemory&
     for (int s = 0; s < FF_BLOCK_SIZE; s++)
       memory.shaperOut[context.moduleSlot][channel][s] = std::tanh(memory.shaperIn[context.moduleSlot][channel][s]);
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 #pragma once
 
 #include <playground_plug/base/dsp/FBHostBlock.hpp>
@@ -144,3 +146,5 @@ FBPluginProcessor<Derived, ProcessorMemory>::ProcessHostBlock(FBHostBlock& hostB
       _accumulated.audioOut[channel].begin() + accumulatedSamplesToUse);
   _accumulatedOutputSampleCount -= accumulatedSamplesToUse;
 }
+
+#endif

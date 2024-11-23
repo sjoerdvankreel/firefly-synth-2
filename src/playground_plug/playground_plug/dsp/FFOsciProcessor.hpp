@@ -1,3 +1,5 @@
+#if 0
+
 #pragma once
 
 struct FFProcessorMemory;
@@ -14,3 +16,5 @@ class FFOsciProcessor
 public:
   void Process(FBProcessorContext const& context, FFProcessorMemory& memory);
 };
+
+#endif

@@ -1,3 +1,5 @@
+#if 0
+
 #include <playground_plug/plug/dsp/FFOsciProcessor.hpp>
 #include <playground_plug/plug/shared/FFPluginTopo.hpp>
 #include <playground_plug/base/shared/FBUtilityMacros.hpp>
@@ -65,3 +67,5 @@ FFOsciProcessor::ProcessType(FBProcessorContext const& context, FFProcessorMemor
       memory.osciOut[context.moduleSlot][channel][s] = sample;
   }
 }
+
+#endif

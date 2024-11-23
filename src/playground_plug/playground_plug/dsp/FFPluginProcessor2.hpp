@@ -1,3 +1,5 @@
+#if 0
+
 #pragma once
 
 #include <playground_plug/plug/shared/FFPluginTopo.hpp>
@@ -16,3 +18,5 @@ public:
   FFPluginProcessor(FFRuntimeTopo const* topo, int maxSampleCount, float sampleRate);
   void ProcessPluginBlock(FBProcessorContext const& context);
 };
+
+#endif
