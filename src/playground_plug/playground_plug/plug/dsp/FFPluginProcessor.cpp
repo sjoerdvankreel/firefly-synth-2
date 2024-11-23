@@ -11,13 +11,15 @@ _memory(),
 _fixedProcessor(maxHostSampleCount) {}
 
 void 
-FFPluginProcessor::ProcessHost(FFHostInputBlock const& input, FFRawStereoBlockView& output)
+FFPluginProcessor::ProcessHost(
+  FFHostInputBlock const& input, FFRawStereoBlockView& output)
 {
   _fixedProcessor.Process(input, output, *this);
 }
 
 void 
-FFPluginProcessor::ProcessFixed(FFFixedInputBlock const& input, FFFixedStereoBlock& output)
+FFPluginProcessor::ProcessFixed(
+  FFFixedInputBlock const& input, FFFixedStereoBlock& output)
 {
   bool on = FFNormalizedToBool(_memory.param.block.osci[0][FFOsciBlockParamOn]);
   if (!on)
