@@ -3,32 +3,25 @@
 
 FFOutputSplitter::
 FFOutputSplitter(int maxHostSampleCount):
-_accumulating(std::max(FF_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
+_accumulated(std::max(FF_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
 
-FFAccumulatingOutputBlock const&
+FFAccumulatedOutputBlock const&
 FFOutputSplitter::GetAccumulatedBlock() const
 {
-  return _accumulating;
+  return _accumulated;
 }
 
 void 
 FFOutputSplitter::RemoveSamples(int count)
 {
-  _accumulating.sampleCount -= count;
-  _accumulating.audio.ShiftLeft(count);
+  _accumulated.sampleCount -= count;
+  _accumulated.audio.ShiftLeft(count);
 }
 
 void 
 FFOutputSplitter::AccumulateFixedBlock(
-  FFFixedStereoBlock const& audioOut)
+  FFFixedStereoBlock const& output)
 {
-  // todo accumulating->accumulated + copyto
-  for (int c = 0; c < FF_CHANNELS_STEREO; c++)
-    for (int s = 0; s < FF_FIXED_BLOCK_SIZE; s++)
-    {
-      float sample = audioOut[c][s];
-      int accumulatedPos = _accumulating.sampleCount + s;
-      _accumulating.audio[c][accumulatedPos] = sample;
-    }
-  _accumulating.sampleCount += FF_FIXED_BLOCK_SIZE;
+  output.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, FF_FIXED_BLOCK_SIZE);
+  _accumulated.sampleCount += FF_FIXED_BLOCK_SIZE;
 }

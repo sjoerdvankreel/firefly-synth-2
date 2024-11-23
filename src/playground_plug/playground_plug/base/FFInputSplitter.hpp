@@ -5,7 +5,7 @@
 class FFInputSplitter
 {
   FFFixedInputBlock _fixed;
-  FFAccumulatingInputBlock _accumulating;
+  FFAccumulatedInputBlock _accumulated;
 
 public:
   FFInputSplitter(int maxHostSampleCount);

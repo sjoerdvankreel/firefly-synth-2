@@ -19,20 +19,20 @@ static void GatherEvents(
 
 FFInputSplitter::
 FFInputSplitter(int maxHostSampleCount):
-_accumulating(std::max(FF_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
+_accumulated(std::max(FF_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
 
 FFFixedInputBlock const*
 FFInputSplitter::NextFixedBlock()
 {
-  if (_accumulating.sampleCount < FF_FIXED_BLOCK_SIZE)
+  if (_accumulated.sampleCount < FF_FIXED_BLOCK_SIZE)
     return nullptr;
 
-  GatherEvents(_accumulating.events.note, _fixed.events.note);
-  GatherEvents(_accumulating.events.accParam, _fixed.events.accParam);
+  GatherEvents(_accumulated.events.note, _fixed.events.note);
+  GatherEvents(_accumulated.events.accParam, _fixed.events.accParam);
 
-  _accumulating.audio.CopyTo(_fixed.audio, 0, 0, FF_FIXED_BLOCK_SIZE);
-  _accumulating.audio.ShiftLeft(FF_FIXED_BLOCK_SIZE);
-  _accumulating.sampleCount -= FF_FIXED_BLOCK_SIZE;
+  _accumulated.audio.CopyTo(_fixed.audio, 0, 0, FF_FIXED_BLOCK_SIZE);
+  _accumulated.audio.ShiftLeft(FF_FIXED_BLOCK_SIZE);
+  _accumulated.sampleCount -= FF_FIXED_BLOCK_SIZE;
   return &_fixed;
 }
 
@@ -43,17 +43,17 @@ FFInputSplitter::AccumulateHostBlock(
   for (int e = 0; e < host.events.note.size(); e++)
   {
     FFNoteEvent event = host.events.note[e];
-    event.position += _accumulating.sampleCount;
-    _accumulating.events.note.push_back(event);
+    event.position += _accumulated.sampleCount;
+    _accumulated.events.note.push_back(event);
   }
 
   for (int e = 0; e < host.events.accParam.size(); e++)
   {
     FFAccParamEvent event = host.events.accParam[e];
-    event.position += _accumulating.sampleCount;
-    _accumulating.events.accParam.push_back(event);
+    event.position += _accumulated.sampleCount;
+    _accumulated.events.accParam.push_back(event);
   }
 
-  host.audio.CopyTo(_accumulating.audio, 0, _accumulating.sampleCount, host.audio.Count());
-  _accumulating.sampleCount += host.audio.Count();
+  host.audio.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, host.audio.Count());
+  _accumulated.sampleCount += host.audio.Count();
 }

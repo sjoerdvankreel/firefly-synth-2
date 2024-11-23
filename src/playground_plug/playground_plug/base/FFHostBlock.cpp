@@ -13,18 +13,18 @@ blockParam()
   blockParam.reserve(FF_EVENT_COUNT_GUESS);
 }
 
-FFAccumulatingOutputBlock::
-FFAccumulatingOutputBlock(int maxSampleCount):
-sampleCount(0),
-audio(maxSampleCount) {}
-
 FFFixedInputBlock::
 FFFixedInputBlock():
 events(),
 audio() {}
 
-FFAccumulatingInputBlock::
-FFAccumulatingInputBlock(int maxSampleCount):
+FFAccumulatedOutputBlock::
+FFAccumulatedOutputBlock(int maxSampleCount):
+sampleCount(0),
+audio(maxSampleCount) {}
+
+FFAccumulatedInputBlock::
+FFAccumulatedInputBlock(int maxSampleCount):
 sampleCount(0),
 events(),
 audio(maxSampleCount) {}

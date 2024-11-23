@@ -59,20 +59,20 @@ struct FFHostInputBlock
   FFRawStereoBlock audio;
 };
 
-struct FFAccumulatingInputBlock
+struct FFAccumulatedInputBlock
 {
-  FFAccumulatingInputBlock(int maxSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatingInputBlock);
+  FFAccumulatedInputBlock(int maxSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatedInputBlock);
 
   int sampleCount;
   FFHostEvents events;
   FFDynamicStereoBlock audio;
 };
 
-struct FFAccumulatingOutputBlock
+struct FFAccumulatedOutputBlock
 {
-  FFAccumulatingOutputBlock(int maxSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatingOutputBlock);
+  FFAccumulatedOutputBlock(int maxSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatedOutputBlock);
 
   int sampleCount;
   FFDynamicStereoBlock audio;
