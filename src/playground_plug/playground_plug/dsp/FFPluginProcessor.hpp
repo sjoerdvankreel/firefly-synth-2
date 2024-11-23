@@ -19,5 +19,5 @@ class FFPluginProcessor
 public:
   FF_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);
   FFPluginProcessor(int maxHostSampleCount, float sampleRate);
-  void ProcessHost(FFHostInputBlock const& input, FFRawStereoBlockView& output);
+  void ProcessHost(FBHostInputBlock const& input, FFRawStereoBlockView& output);
 };

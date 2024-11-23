@@ -5,7 +5,7 @@
 
 class FBOutputAggregator
 {
-  FFAccumulatedOutputBlock _accumulated;
+  FBAccumulatedOutputBlock _accumulated;
 
 public:
   FBOutputAggregator(int maxHostSampleCount);

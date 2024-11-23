@@ -16,7 +16,7 @@ static void GatherAccEvents(
 
 static void
 GatherBlockParamEvents(
-  std::vector<FFBlockParamEvent> const& input, std::vector<FFBlockParamEvent>& output)
+  std::vector<FBBlockParamEvent> const& input, std::vector<FBBlockParamEvent>& output)
 {
   output.clear();
   output.insert(output.begin(), input.begin(), input.end());
@@ -43,18 +43,18 @@ FBInputSplitter::Split()
 }
 
 void 
-FBInputSplitter::Accumulate(FFHostInputBlock const& input)
+FBInputSplitter::Accumulate(FBHostInputBlock const& input)
 {
   for (int e = 0; e < input.events.note.size(); e++)
   {
-    FFNoteEvent event = input.events.note[e];
+    FBNoteEvent event = input.events.note[e];
     event.position += _accumulated.sampleCount;
     _accumulated.events.note.push_back(event);
   }
 
   for (int e = 0; e < input.events.accParam.size(); e++)
   {
-    FFAccParamEvent event = input.events.accParam[e];
+    FBAccParamEvent event = input.events.accParam[e];
     event.position += _accumulated.sampleCount;
     _accumulated.events.accParam.push_back(event);
   }

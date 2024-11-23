@@ -3,29 +3,29 @@
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <playground_base/shared/FBSharedUtility.hpp>
 
-struct FFNoteId
+struct FBNoteId
 {
   int id;
   int key;
   int channel;
 };
 
-struct FFNoteEvent
+struct FBNoteEvent
 {
   bool on;
   float velo;
   int position;
-  FFNoteId note;
+  FBNoteId note;
 };
 
-struct FFAccParamEvent
+struct FBAccParamEvent
 {
   int tag;
   int position;
   float normalized;
 };
 
-struct FFBlockParamEvent
+struct FBBlockParamEvent
 {
   int tag;
   float normalized;
@@ -36,9 +36,9 @@ struct FBHostEvents
   FBHostEvents();
   FF_NOCOPY_NOMOVE_NODEFCTOR(FBHostEvents);
 
-  std::vector<FFNoteEvent> note;
-  std::vector<FFAccParamEvent> accParam;
-  std::vector<FFBlockParamEvent> blockParam;
+  std::vector<FBNoteEvent> note;
+  std::vector<FBAccParamEvent> accParam;
+  std::vector<FBBlockParamEvent> blockParam;
 };
 
 struct FBFixedInputBlock
@@ -50,29 +50,29 @@ struct FBFixedInputBlock
   FFFixedStereoBlock audio;
 };
 
-struct FFHostInputBlock
+struct FBHostInputBlock
 {
-  FFHostInputBlock(float* l, float* r, int count);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFHostInputBlock);
+  FBHostInputBlock(float* l, float* r, int count);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FBHostInputBlock);
 
   FBHostEvents events;
   FFRawStereoBlockView audio;
 };
 
-struct FFAccumulatedInputBlock
+struct FBAccumulatedInputBlock
 {
-  FFAccumulatedInputBlock(int maxSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatedInputBlock);
+  FBAccumulatedInputBlock(int maxSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedInputBlock);
 
   int sampleCount;
   FBHostEvents events;
   FFDynamicStereoBlock audio;
 };
 
-struct FFAccumulatedOutputBlock
+struct FBAccumulatedOutputBlock
 {
-  FFAccumulatedOutputBlock(int maxSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFAccumulatedOutputBlock);
+  FBAccumulatedOutputBlock(int maxSampleCount);
+  FF_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedOutputBlock);
 
   int sampleCount;
   FFDynamicStereoBlock audio;

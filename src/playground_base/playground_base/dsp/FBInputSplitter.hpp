@@ -5,12 +5,12 @@
 class FBInputSplitter
 {
   FBFixedInputBlock _fixed;
-  FFAccumulatedInputBlock _accumulated;
+  FBAccumulatedInputBlock _accumulated;
 
 public:
   FBInputSplitter(int maxHostSampleCount);
   FF_NOCOPY_NOMOVE_NODEFCTOR(FBInputSplitter);
 
   FBFixedInputBlock const* Split();
-  void Accumulate(FFHostInputBlock const& input);
+  void Accumulate(FBHostInputBlock const& input);
 };

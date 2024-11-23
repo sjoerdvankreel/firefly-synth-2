@@ -18,18 +18,18 @@ FBFixedInputBlock():
 events(),
 audio() {}
 
-FFAccumulatedOutputBlock::
-FFAccumulatedOutputBlock(int maxSampleCount):
+FBAccumulatedOutputBlock::
+FBAccumulatedOutputBlock(int maxSampleCount):
 sampleCount(0),
 audio(maxSampleCount) {}
 
-FFAccumulatedInputBlock::
-FFAccumulatedInputBlock(int maxSampleCount):
+FBAccumulatedInputBlock::
+FBAccumulatedInputBlock(int maxSampleCount):
 sampleCount(0),
 events(),
 audio(maxSampleCount) {}
 
-FFHostInputBlock::
-FFHostInputBlock(float* l, float* r, int count):
+FBHostInputBlock::
+FBHostInputBlock(float* l, float* r, int count):
 events(),
 audio(l, r, count) {}
