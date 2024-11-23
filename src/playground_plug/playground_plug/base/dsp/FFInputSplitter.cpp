@@ -2,7 +2,7 @@
 #include <algorithm>
 
 template <class Event>
-static void GatherEvents(
+static void GatherAccEvents(
   std::vector<Event>& input, std::vector<Event>& output)
 {
   int e = 0;
@@ -12,6 +12,14 @@ static void GatherEvents(
   input.erase(input.begin(), input.begin() + e);
   for (auto& e : input)
     e.position -= FF_FIXED_BLOCK_SIZE;
+}
+
+static void
+GatherBlockParamEvents(
+  std::vector<FFBlockParamEvent> const& input, std::vector<FFBlockParamEvent>& output)
+{
+  output.clear();
+  output.insert(output.begin(), input.begin(), input.end());
 }
 
 FFInputSplitter::
@@ -24,8 +32,9 @@ FFInputSplitter::Split()
   if (_accumulated.sampleCount < FF_FIXED_BLOCK_SIZE)
     return nullptr;
 
-  GatherEvents(_accumulated.events.note, _fixed.events.note);
-  GatherEvents(_accumulated.events.accParam, _fixed.events.accParam);
+  GatherAccEvents(_accumulated.events.note, _fixed.events.note);
+  GatherAccEvents(_accumulated.events.accParam, _fixed.events.accParam);
+  GatherBlockParamEvents(_accumulated.events.blockParam, _fixed.events.blockParam);
 
   _accumulated.audio.CopyTo(_fixed.audio, 0, 0, FF_FIXED_BLOCK_SIZE);
   _accumulated.audio.ShiftLeft(FF_FIXED_BLOCK_SIZE);
@@ -50,6 +59,7 @@ FFInputSplitter::Accumulate(FFHostInputBlock const& input)
     _accumulated.events.accParam.push_back(event);
   }
 
+  GatherBlockParamEvents(input.events.blockParam, _accumulated.events.blockParam);
   input.audio.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, input.audio.Count());
   _accumulated.sampleCount += input.audio.Count();
 }
