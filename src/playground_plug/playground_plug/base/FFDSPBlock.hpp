@@ -105,10 +105,10 @@ public:
   FFDynamicMonoBlock(int count): _store(count, 0.0f) {}
 };
 
-class alignas(FF_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
+class alignas(FF_FIXED_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
 public FFMonoBlockMixin<FFFixedMonoBlock>
 {
-  std::array<float, FF_BLOCK_SIZE> _store;
+  std::array<float, FF_FIXED_BLOCK_SIZE> _store;
   friend class FFMonoBlockMixin<FFFixedMonoBlock>;
 
 public:
@@ -178,7 +178,7 @@ public:
   _store({ FFDynamicMonoBlock(count), FFDynamicMonoBlock(count) }) {}
 };
 
-class alignas(FF_BLOCK_SIZE * FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
+class alignas(FF_FIXED_BLOCK_SIZE* FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
 public FFStereoBlockMixin<FFFixedStereoBlock>
 {
   std::array<FFFixedMonoBlock, FF_CHANNELS_STEREO> _store;
