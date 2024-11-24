@@ -122,4 +122,7 @@ struct FBRuntimeTopo
   std::vector<FBRuntimeParam> const blockParams;
   std::map<int, int> const tagToAccParam;
   std::map<int, int> const tagToBlockParam;
+
+  void InitScalarAddr(FBScalarParamMemoryBase& mem) const;
+  void InitProcessorAddr(FBProcessorParamMemoryBase& mem) const;
 };

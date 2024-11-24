@@ -96,6 +96,32 @@ MakeRuntimeParams(
   return result;
 }
 
+void 
+FBRuntimeTopo::InitScalarAddr(FBScalarParamMemoryBase& mem) const
+{
+  mem.accAddr.clear();
+  mem.blockAddr.clear();
+  for (int bp = 0; bp < blockParams.size(); bp++)
+    mem.blockAddr.push_back(blockParams[bp].staticParam.scalarAddr(
+      blockParams[bp].moduleSlot, blockParams[bp].paramSlot, mem));
+  for (int ap = 0; ap < accParams.size(); ap++)
+    mem.accAddr.push_back(accParams[ap].staticParam.scalarAddr(
+      accParams[ap].moduleSlot, accParams[ap].paramSlot, mem));
+}
+
+void 
+FBRuntimeTopo::InitProcessorAddr(FBProcessorParamMemoryBase& mem) const
+{
+  mem.posAddr.clear();
+  mem.denseAddr.clear();
+  for (int ap = 0; ap < accParams.size(); ap++)
+    mem.posAddr.push_back(accParams[ap].staticParam.posAddr(
+      accParams[ap].moduleSlot, accParams[ap].paramSlot, mem));
+  for (int ap = 0; ap < accParams.size(); ap++)
+    mem.denseAddr.push_back(accParams[ap].staticParam.denseAddr(
+      accParams[ap].moduleSlot, accParams[ap].paramSlot, mem));
+}
+
 FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& staticTopo):
 modules(MakeRuntimeModules(staticTopo)),
