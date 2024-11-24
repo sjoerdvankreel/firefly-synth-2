@@ -1,5 +1,5 @@
-#include <playground_plug/plug/shared/FFPluginTopo.hpp>
-#include <playground_plug/plug/shared/FFPluginConfig.hpp>
+#include <playground_plug/shared/FFPluginTopo.hpp>
+#include <playground_plug/shared/FFPluginConfig.hpp>
 
 FFStaticTopo
 FFMakeTopo()

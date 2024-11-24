@@ -1,13 +1,13 @@
 #pragma once
 
-#include <playground_plug/plug/shared/FFPluginConfig.hpp>
-#include <playground_plug/base/shared/FFBaseTopo.hpp>
-#include <playground_plug/base/shared/FFSignalBlock.hpp>
-#include <playground_plug/base/shared/FFSharedUtility.hpp>
+#include <playground_plug/shared/FFPluginConfig.hpp>
+#include <playground_base/shared/FBPlugTopo.hpp>
+#include <playground_base/shared/FBSignalBlock.hpp>
+#include <playground_base/shared/FBSharedUtility.hpp>
 
 #include <array>
 
-FFStaticTopo
+FBStaticTopo
 FFMakeTopo();
 
 enum { FFModuleOsci, FFModuleShaper, FFModuleCount };

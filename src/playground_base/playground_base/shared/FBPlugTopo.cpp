@@ -25,7 +25,7 @@ MakeRuntimeParamHash(
 static std::string
 MakeRuntimeParamId(
   FFStaticModule const& staticModule, int moduleSlot, 
-  FFStaticParam const& staticParam, int paramSlot)
+  FBStaticParam const& staticParam, int paramSlot)
 {
   auto moduleId = staticModule.id + "-" + std::to_string(moduleSlot);
   auto paramId = staticParam.id + "-" + std::to_string(paramSlot);
@@ -35,7 +35,7 @@ MakeRuntimeParamId(
 static std::string
 MakeRuntimeParamLongName(
   FFStaticModule const& staticModule, int moduleSlot,
-  FFStaticParam const& staticParam, int paramSlot)
+  FBStaticParam const& staticParam, int paramSlot)
 {
   auto moduleName = MakeRuntimeName(staticModule.name, staticModule.slotCount, moduleSlot);
   auto paramName = MakeRuntimeName(staticParam.name, staticParam.slotCount, paramSlot);
@@ -87,7 +87,7 @@ MakeRuntimeModules(FFStaticTopo const& staticTopo)
 static std::vector<FFRuntimeParam>
 MakeRuntimeParams(
   FFStaticModule const& staticModule, int moduleSlot,
-  std::vector<FFStaticParam> const& staticParams)
+  std::vector<FBStaticParam> const& staticParams)
 {
   std::vector<FFRuntimeParam> result;
   for (int p = 0; p < staticParams.size(); p++)
@@ -107,7 +107,7 @@ tagToBlockParam(MakeTagToParam(blockParams)) {}
 FFRuntimeParam::
 FFRuntimeParam(
   FFStaticModule const& staticModule, int moduleSlot,
-  FFStaticParam const& staticParam, int paramSlot) :
+  FBStaticParam const& staticParam, int paramSlot) :
 moduleSlot(moduleSlot),
 paramSlot(paramSlot),
 staticParam(staticParam),

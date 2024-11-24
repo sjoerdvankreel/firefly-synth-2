@@ -7,18 +7,18 @@
 #include <vector>
 
 inline double 
-FFDiscreteToNormalized(int count, int index)
+FBDiscreteToNormalized(int count, int index)
 { return index / (count - 1.0); }
 
 inline int
-FFNormalizedToDiscrete(int count, double normalized)
+FBNormalizedToDiscrete(int count, double normalized)
 { return std::min(count - 1, (int)(normalized * count)); }
 
 inline bool
-FFNormalizedToBool(double normalized)
-{ return FFNormalizedToDiscrete(2, normalized) != 0; }
+FBNormalizedToBool(double normalized)
+{ return FBNormalizedToDiscrete(2, normalized) != 0; }
 
-struct FFStaticParam
+struct FBStaticParam
 {
   int slotCount;
   int valueCount;
@@ -26,7 +26,7 @@ struct FFStaticParam
   std::string name;
   std::string unit;
 
-  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FFStaticParam);
+  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };
 
 struct FFStaticModule
@@ -34,8 +34,8 @@ struct FFStaticModule
   int slotCount;
   std::string id;
   std::string name;
-  std::vector<FFStaticParam> accParams;
-  std::vector<FFStaticParam> blockParams;
+  std::vector<FBStaticParam> accParams;
+  std::vector<FBStaticParam> blockParams;
 
   FF_EXPLICIT_COPY_MOVE_DEFCTOR(FFStaticModule);
 };
@@ -51,7 +51,7 @@ struct FFRuntimeParam
 {
   int const moduleSlot;
   int const paramSlot;
-  FFStaticParam const staticParam;
+  FBStaticParam const staticParam;
 
   std::string const longName;
   std::string const shortName;
@@ -61,7 +61,7 @@ struct FFRuntimeParam
   FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FFRuntimeParam);
   FFRuntimeParam(
     FFStaticModule const& staticModule, int moduleSlot,
-    FFStaticParam const& staticParam, int paramSlot);
+    FBStaticParam const& staticParam, int paramSlot);
 };
 
 struct FFRuntimeModule

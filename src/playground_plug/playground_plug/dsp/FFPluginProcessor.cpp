@@ -1,4 +1,4 @@
-#include <playground_plug/plug/dsp/FBPluginProcessor.hpp>
+#include <playground_plug/dsp/FFPluginProcessor.hpp>
 
 #include <cmath>
 #include <numbers>
@@ -21,7 +21,7 @@ void
 FFPluginProcessor::ProcessFixed(
   FBFixedInputBlock const& input, FFFixedStereoBlock& output)
 {
-  bool on = FFNormalizedToBool(_memory.scalar.block.osci[0][FFOsciBlockParamOn]);
+  bool on = FBNormalizedToBool(_memory.scalar.block.osci[0][FFOsciBlockParamOn]);
   if (!on)
   {
     output.Fill(0, FF_FIXED_BLOCK_SIZE, 0.0f);

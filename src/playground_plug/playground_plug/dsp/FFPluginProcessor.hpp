@@ -1,14 +1,14 @@
 #pragma once
 
-#include <playground_plug/base/shared/FFHostBlock.hpp>
-#include <playground_plug/base/shared/FFSignalBlock.hpp>
-#include <playground_plug/base/dsp/FFDSPUtility.hpp>
-#include <playground_plug/base/dsp/FBFixedBlockProcessor.hpp>
-#include <playground_plug/plug/shared/FFPluginTopo.hpp>
+#include <playground_base/shared/FBHostBlock.hpp>
+#include <playground_base/shared/FBSignalBlock.hpp>
+#include <playground_base/dsp/FBDSPUtility.hpp>
+#include <playground_base/dsp/FBFixedBlockProcessor.hpp>
+#include <playground_plug/shared/FFPluginTopo.hpp>
 
 class FFPluginProcessor
 {
-  FFPhase _phase;
+  FBPhase _phase;
   float const _sampleRate;
   FFProcParamMemory _memory;
   FBFixedBlockProcessor _fixedProcessor;
