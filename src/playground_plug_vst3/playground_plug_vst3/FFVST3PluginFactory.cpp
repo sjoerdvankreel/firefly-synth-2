@@ -1,7 +1,7 @@
 #include <playground_plug/shared/FFPluginTopo.hpp>
 #include <playground_plug/shared/FFPluginConfig.hpp>
-#include <playground_base_vst3/FBVST3PluginProcessor.hpp>
-#include <playground_base_vst3/FBVST3PluginController.hpp>
+#include <playground_base_vst3/FBVST3AudioEffect.hpp>
+#include <playground_base_vst3/FBVST3EditController.hpp>
 
 #include <public.sdk/source/main/pluginfactory.h>
 #include <pluginterfaces/vst/ivstcomponent.h>
@@ -22,15 +22,15 @@ TextToFUID(char const* text)
 static FUnknown*
 ControllerFactory(void*) 
 {
-  auto result = new FBVST3PluginController(FFMakeTopo());
+  auto result = new FBVST3EditController(FFMakeTopo());
   return static_cast<IEditController*>(result);
 }
 
 static FUnknown*
-ProcessorFactory(void*)
+ComponentFactory(void*)
 {
   auto controllerFuid = TextToFUID(FF_PLUGIN_CONTROLLER_ID);
-  auto result = new FBVST3PluginProcessor(FFMakeTopo(), controllerFuid);
+  auto result = new FBVST3AudioEffect(FFMakeTopo(), controllerFuid);
   return static_cast<IAudioProcessor*>(result);
 }
 
@@ -39,7 +39,7 @@ BEGIN_FACTORY_DEF(FF_VENDOR_NAME, FF_VENDOR_URL, FF_VENDOR_MAIL)
     INLINE_UID_FROM_FUID(TextToFUID(FF_PLUGIN_PROCESSOR_ID)),
       PClassInfo::kManyInstances, kVstAudioEffectClass, 
       FF_PLUGIN_NAME, kDistributable, PlugType::kInstrument,
-      FF_PLUGIN_VERSION, kVstVersionString, ProcessorFactory);
+      FF_PLUGIN_VERSION, kVstVersionString, ComponentFactory);
   DEF_CLASS2(
     INLINE_UID_FROM_FUID(TextToFUID(FF_PLUGIN_CONTROLLER_ID)),
       PClassInfo::kManyInstances, kVstComponentControllerClass, 

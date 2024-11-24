@@ -1,4 +1,4 @@
-#include <playground_base_vst3/FBVST3PluginProcessor.hpp>
+#include <playground_base_vst3/FBVST3AudioEffect.hpp>
 
 #include <pluginterfaces/vst/ivstevents.h>
 #include <pluginterfaces/vst/ivstparameterchanges.h>
@@ -58,15 +58,15 @@ MakeRawStereoBlockView(AudioBusBuffers& buffers, int sampleCount)
     sampleCount);
 }
 
-FBVST3PluginProcessor::
-FBVST3PluginProcessor(FBRuntimeTopo&& topo, FUID const& controllerId):
+FBVST3AudioEffect::
+FBVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId):
 _topo(std::move(topo))
 {
   setControllerClass(controllerId);
 }
 
 tresult PLUGIN_API
-FBVST3PluginProcessor::initialize(FUnknown* context)
+FBVST3AudioEffect::initialize(FUnknown* context)
 {
   if (AudioEffect::initialize(context) != kResultTrue)
     return kResultFalse;
@@ -76,7 +76,7 @@ FBVST3PluginProcessor::initialize(FUnknown* context)
 }
 
 tresult PLUGIN_API
-FBVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
+FBVST3AudioEffect::canProcessSampleSize(int32 symbolicSize)
 {
   if (symbolicSize == kSample32) 
     return kResultTrue;
@@ -84,7 +84,7 @@ FBVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 }
 
 tresult PLUGIN_API
-FBVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
+FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
   _zeroIn.reset(new FBDynamicStereoBlock(setup.maxSamplesPerBlock));
@@ -94,7 +94,7 @@ FBVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
 }
 
 tresult PLUGIN_API
-FBVST3PluginProcessor::setBusArrangements(
+FBVST3AudioEffect::setBusArrangements(
   SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
   if (numIns != 0 || numOuts != 1 || outputs[0] != SpeakerArr::kStereo)
@@ -103,7 +103,7 @@ FBVST3PluginProcessor::setBusArrangements(
 }
 
 tresult PLUGIN_API
-FBVST3PluginProcessor::process(ProcessData& data)
+FBVST3AudioEffect::process(ProcessData& data)
 {
   _input->audio = _zeroIn->GetRawBlockView();
   _output = MakeRawStereoBlockView(data.outputs[0], data.numSamples);

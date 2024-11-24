@@ -7,13 +7,13 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-class FBVST3PluginController:
+class FBVST3EditController :
 public EditControllerEx1
 {
   FBRuntimeTopo const _topo;
 
 public:
-  FBVST3PluginController(FBRuntimeTopo&& topo);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3PluginController);
+  FBVST3EditController(FBRuntimeTopo&& topo);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
   tresult PLUGIN_API initialize(FUnknown* context) override;
 };

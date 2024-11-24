@@ -1,4 +1,4 @@
-#include <playground_base_vst3/FBVST3PluginController.hpp>
+#include <playground_base_vst3/FBVST3EditController.hpp>
 
 #include <algorithm>
 
@@ -42,12 +42,12 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
   return result;
 }
 
-FBVST3PluginController::
-FBVST3PluginController(FBRuntimeTopo&& topo) :
+FBVST3EditController::
+FBVST3EditController(FBRuntimeTopo&& topo) :
 _topo(std::move(topo)) {}
 
 tresult PLUGIN_API
-FBVST3PluginController::initialize(FUnknown* context)
+FBVST3EditController::initialize(FUnknown* context)
 {
   if (EditController::initialize(context) != kResultTrue)
     return kResultFalse;

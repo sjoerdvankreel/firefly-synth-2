@@ -9,7 +9,7 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-class FBVST3PluginProcessor :
+class FBVST3AudioEffect :
 public AudioEffect
 {
   FBRuntimeTopo const _topo;
@@ -18,8 +18,8 @@ public AudioEffect
   std::unique_ptr<FBDynamicStereoBlock> _zeroIn = {};
 
 public:  
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3PluginProcessor);
-  FBVST3PluginProcessor(FBRuntimeTopo&& topo, FUID const& controllerId);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
+  FBVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId);
 
   tresult PLUGIN_API process(ProcessData& data) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
