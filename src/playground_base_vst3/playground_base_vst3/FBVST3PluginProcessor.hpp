@@ -16,11 +16,10 @@ public AudioEffect
   FBRawStereoBlockView _output = {};
   std::unique_ptr<FBHostInputBlock> _input = {};
   std::unique_ptr<FBDynamicStereoBlock> _zeroIn = {};
-  std::unique_ptr<FBVST3PluginProcessor> _processor = {};
 
 public:  
-  FBVST3PluginProcessor(FUID const& controllerId);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3PluginProcessor);
+  FBVST3PluginProcessor(FBRuntimeTopo&& topo, FUID const& controllerId);
 
   tresult PLUGIN_API process(ProcessData& data) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;

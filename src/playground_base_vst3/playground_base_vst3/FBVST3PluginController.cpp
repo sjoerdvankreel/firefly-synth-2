@@ -42,6 +42,10 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
   return result;
 }
 
+FBVST3PluginController::
+FBVST3PluginController(FBRuntimeTopo&& topo) :
+_topo(std::move(topo)) {}
+
 tresult PLUGIN_API
 FBVST3PluginController::initialize(FUnknown* context)
 {
@@ -49,16 +53,15 @@ FBVST3PluginController::initialize(FUnknown* context)
     return kResultFalse;
 
   int unitId = 1;
-  auto topo = FBRuntimeTopo(FFMakeTopo());
-  for (int m = 0; m < topo.modules.size(); m++)
+  for (int m = 0; m < _topo.modules.size(); m++)
   {
-    addUnit(new Unit(MakeUnitInfo(topo.modules[m], unitId)));
-    for (int bp = 0; bp < topo.modules[m].blockParams.size(); bp++)
+    addUnit(new Unit(MakeUnitInfo(_topo.modules[m], unitId)));
+    for (int bp = 0; bp < _topo.modules[m].blockParams.size(); bp++)
       parameters.addParameter(new Parameter(
-        MakeParamInfo(topo.modules[m].blockParams[bp], unitId, false)));
-    for (int ap = 0; ap < topo.modules[m].accParams.size(); ap++)
+        MakeParamInfo(_topo.modules[m].blockParams[bp], unitId, false)));
+    for (int ap = 0; ap < _topo.modules[m].accParams.size(); ap++)
       parameters.addParameter(new Parameter(
-        MakeParamInfo(topo.modules[m].accParams[ap], unitId, true)));
+        MakeParamInfo(_topo.modules[m].accParams[ap], unitId, true)));
     unitId++;
   }
   return kResultTrue;

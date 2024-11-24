@@ -59,8 +59,8 @@ MakeRawStereoBlockView(AudioBusBuffers& buffers, int sampleCount)
 }
 
 FBVST3PluginProcessor::
-FBVST3PluginProcessor(FUID const& controllerId):
-_topo(FFMakeTopo())
+FBVST3PluginProcessor(FBRuntimeTopo&& topo, FUID const& controllerId):
+_topo(std::move(topo))
 {
   setControllerClass(controllerId);
 }
@@ -88,7 +88,8 @@ FBVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
 {
   _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
   _zeroIn.reset(new FBDynamicStereoBlock(setup.maxSamplesPerBlock));
-  _processor.reset(new FFPluginProcessor(setup.maxSamplesPerBlock, setup.sampleRate));
+  // TODO
+  //_processor.reset(new FFPluginProcessor(setup.maxSamplesPerBlock, setup.sampleRate));
   return kResultTrue;
 }
 
@@ -140,10 +141,10 @@ FBVST3PluginProcessor::process(ProcessData& data)
         }     
 
   auto compare = [](auto const& l, auto const& r) { 
-    if (l.position == r.position)
-      return l.tag < r.tag;
-    return l.position < r.position; };
+    return l.position == r.position ? l.tag < r.tag: l.position < r.position; };
   std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
-  _processor->ProcessHost(*_input, _output);  
+  
+  // _processor->ProcessHost(*_input, _output);  
+
   return kResultTrue;
 }
