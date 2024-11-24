@@ -15,16 +15,16 @@ public IFBHostBlockProcessor
   FBOutputAggregator _outputAggregator;
 
 public:
-  FBFixedBlockProcessor(int maxHostSampleCount);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
+  FBFixedBlockProcessor(std::vector<int*>* posAddr, int maxHostSampleCount);
   void ProcessHost(FBHostInputBlock const& input, FBRawStereoBlockView& output);
 };
 
 template <class Derived>
 FBFixedBlockProcessor<Derived>::
-FBFixedBlockProcessor(int maxHostSampleCount) :
+FBFixedBlockProcessor(std::vector<int*>* posAddr, int maxHostSampleCount) :
 _fixedOutput(),
-_inputSplitter(maxHostSampleCount),
+_inputSplitter(posAddr, maxHostSampleCount),
 _outputAggregator(maxHostSampleCount) {}
 
 template <class Derived> void 

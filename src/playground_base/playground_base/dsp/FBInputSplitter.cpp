@@ -23,7 +23,9 @@ GatherBlockParamEvents(
 }
 
 FBInputSplitter::
-FBInputSplitter(int maxHostSampleCount):
+FBInputSplitter(std::vector<int*>* posAddr, int maxHostSampleCount):
+_fixed(),
+_posAddr(posAddr),
 _accumulated(std::max(FB_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
 
 FBFixedInputBlock const*
