@@ -12,7 +12,7 @@ _fixedProcessor(maxHostSampleCount) {}
 
 void 
 FFPluginProcessor::ProcessHost(
-  FBHostInputBlock const& input, FFRawStereoBlockView& output)
+  FBHostInputBlock const& input, FBRawStereoBlockView& output)
 {
   _fixedProcessor.Process(input, output, *this);
 }

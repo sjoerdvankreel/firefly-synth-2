@@ -13,7 +13,7 @@ FBOutputAggregator::Accumulate(FFFixedStereoBlock const& input)
 }
 
 void 
-FBOutputAggregator::Aggregate(FFRawStereoBlockView& output)
+FBOutputAggregator::Aggregate(FBRawStereoBlockView& output)
 {
   int samplesUsed = std::min(output.Count(), _accumulated.sampleCount);
   int samplesPadded = std::max(0, output.Count() - _accumulated.sampleCount);
