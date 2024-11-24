@@ -1,9 +1,8 @@
 #include <playground_base/dsp/FBOutputAggregator.hpp>
-#include <algorithm>
 
 FBOutputAggregator::
 FBOutputAggregator(int maxHostSampleCount):
-_accumulated(std::max(FB_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
+_accumulated(FB_FIXED_BLOCK_SIZE + maxHostSampleCount) {}
 
 void 
 FBOutputAggregator::Accumulate(FBFixedStereoBlock const& input)

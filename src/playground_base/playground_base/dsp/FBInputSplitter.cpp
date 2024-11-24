@@ -56,7 +56,7 @@ GatherStraddledAccParamEvents(
 FBInputSplitter::
 FBInputSplitter(int maxHostSampleCount) :
 _fixed(),
-_accumulated(std::max(FB_FIXED_BLOCK_SIZE, maxHostSampleCount)),
+_accumulated(FB_FIXED_BLOCK_SIZE + maxHostSampleCount),
 _straddledAccParamEvents()
 {
   _straddledAccParamEvents.reserve(FB_EVENT_COUNT_GUESS);
