@@ -1,8 +1,8 @@
 #pragma once
 
-#include <playground_plug/base/shared/FFBaseTopo.hpp>
-#include <playground_plug/base/shared/FFHostBlock.hpp>
-#include <playground_plug/plug/dsp/FFPluginProcessor.hpp>
+#include <playground_base/shared/FFBaseTopo.hpp>
+#include <playground_base/shared/FFHostBlock.hpp>
+#include <playground_plug/dsp/FFPluginProcessor.hpp>
 
 #include <public.sdk/source/vst/vstaudioeffect.h>
 #include <memory>
