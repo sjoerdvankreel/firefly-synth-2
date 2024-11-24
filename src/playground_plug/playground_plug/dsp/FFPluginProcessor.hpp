@@ -5,12 +5,12 @@
 
 #include <playground_base/dsp/FBDSPUtility.hpp>
 #include <playground_base/dsp/FBHostBlockProcessor.hpp>
-#include <playground_base/dsp/FBFixedBlockProcessor.hpp>
+#include <playground_base/dsp/FBFixedAutomationProcessor.hpp>
 
 #include <playground_plug/shared/FFPluginTopo.hpp>
 
 class FFPluginProcessor:
-public FBFixedBlockProcessor<FFPluginProcessor>
+public FBFixedAutomationProcessor<FFPluginProcessor>
 {
   FBPhase _phase;
   float const _sampleRate;
@@ -19,5 +19,5 @@ public FBFixedBlockProcessor<FFPluginProcessor>
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);
   FFPluginProcessor(FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate);
-  void ProcessFixed(FBFixedInputBlock const& input, FBFixedStereoBlock& output);
+  void ProcessAutomation(FBFixedInputBlock const& input, FBFixedStereoBlock& output);
 };

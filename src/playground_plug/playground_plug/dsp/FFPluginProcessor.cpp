@@ -6,7 +6,7 @@
 FFPluginProcessor::
 FFPluginProcessor(
   FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate) :
-FBFixedBlockProcessor(maxHostSampleCount),
+FBFixedAutomationProcessor(maxHostSampleCount),
 _phase(),
 _sampleRate(sampleRate),
 _memory()
@@ -16,7 +16,7 @@ _memory()
 }
 
 void 
-FFPluginProcessor::ProcessFixed(
+FFPluginProcessor::ProcessAutomation(
   FBFixedInputBlock const& input, FBFixedStereoBlock& output)
 {
   bool on = FBNormalizedToBool(_memory.block.osci.on[0][FFOsciBlockParamOn]);
