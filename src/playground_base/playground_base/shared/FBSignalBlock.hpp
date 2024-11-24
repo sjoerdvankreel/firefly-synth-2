@@ -160,6 +160,21 @@ public:
   _store({ l, r }) {}
 };
 
+class FBDynamicStereoBlock:
+public FBStereoBlockMixin<FBDynamicStereoBlock>
+{
+  std::array<FBDynamicMonoBlock, FB_CHANNELS_STEREO> _store;
+  friend class FBStereoBlockMixin<FBDynamicStereoBlock>;
+
+public:
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBDynamicStereoBlock);
+  FBDynamicStereoBlock(int count) :
+  _store({ FBDynamicMonoBlock(count), FBDynamicMonoBlock(count) }) {}
+
+  FBRawStereoBlockView GetRawBlockView()
+  { return FBRawStereoBlockView(_store[FB_CHANNEL_L].GetRawBlockView(), _store[FB_CHANNEL_R].GetRawBlockView()); }
+};
+
 class alignas(FB_FIXED_BLOCK_SIZE * FB_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
 public FBStereoBlockMixin<FFFixedStereoBlock>
 {
@@ -168,19 +183,4 @@ public FBStereoBlockMixin<FFFixedStereoBlock>
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFFixedStereoBlock);
-};
-
-class FFDynamicStereoBlock:
-public FBStereoBlockMixin<FFDynamicStereoBlock>
-{
-  std::array<FBDynamicMonoBlock, FB_CHANNELS_STEREO> _store;
-  friend class FBStereoBlockMixin<FFDynamicStereoBlock>;
-
-public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFDynamicStereoBlock);
-  FFDynamicStereoBlock(int count) :
-  _store({ FBDynamicMonoBlock(count), FBDynamicMonoBlock(count) }) {}
-
-  FBRawStereoBlockView GetRawBlockView()
-  { return FBRawStereoBlockView(_store[FB_CHANNEL_L].GetRawBlockView(), _store[FB_CHANNEL_R].GetRawBlockView()); }
 };

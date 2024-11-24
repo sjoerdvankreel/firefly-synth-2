@@ -66,7 +66,7 @@ struct FBAccumulatedInputBlock
 
   int sampleCount;
   FBHostEvents events;
-  FFDynamicStereoBlock audio;
+  FBDynamicStereoBlock audio;
 };
 
 struct FBAccumulatedOutputBlock
@@ -75,5 +75,5 @@ struct FBAccumulatedOutputBlock
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedOutputBlock);
 
   int sampleCount;
-  FFDynamicStereoBlock audio;
+  FBDynamicStereoBlock audio;
 };
