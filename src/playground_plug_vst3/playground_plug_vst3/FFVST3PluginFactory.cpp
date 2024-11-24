@@ -1,3 +1,5 @@
+#include <playground_plug/shared/FFPluginTopo.hpp>
+#include <playground_plug/shared/FFPluginConfig.hpp>
 #include <playground_base_vst3/FBVST3PluginProcessor.hpp>
 #include <playground_base_vst3/FBVST3PluginController.hpp>
 
@@ -20,7 +22,7 @@ TextToFUID(char const* text)
 static FUnknown*
 ControllerFactory(void*) 
 {
-  auto result = new FBVST3PluginController;
+  auto result = new FBVST3PluginController(FFMakeTopo());
   return static_cast<IEditController*>(result);
 }
 
@@ -28,7 +30,7 @@ static FUnknown*
 ProcessorFactory(void*)
 {
   auto controllerFuid = TextToFUID(FF_PLUGIN_CONTROLLER_ID);
-  auto result = new FBVST3PluginProcessor(controllerFuid);
+  auto result = new FBVST3PluginProcessor(FFMakeTopo(), controllerFuid);
   return static_cast<IAudioProcessor*>(result);
 }
 
