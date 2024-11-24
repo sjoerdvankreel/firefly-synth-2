@@ -39,8 +39,8 @@ GatherStraddledAccParamEvents(
   FBAccParamEvent const& nextEvent, 
   std::vector<FBAccParamEvent>& output)
 {
-  int thisFixedBlock = thisEvent.position % FB_FIXED_BLOCK_SIZE;
-  int nextFixedBlock = nextEvent.position % FB_FIXED_BLOCK_SIZE;
+  int thisFixedBlock = thisEvent.position / FB_FIXED_BLOCK_SIZE;
+  int nextFixedBlock = nextEvent.position / FB_FIXED_BLOCK_SIZE;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
     FBAccParamEvent straddledEvent;
