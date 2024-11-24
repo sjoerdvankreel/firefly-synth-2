@@ -20,13 +20,6 @@ inline bool
 FBNormalizedToBool(double normalized)
 { return FBNormalizedToDiscrete(2, normalized) != 0; }
 
-struct FBProcParamAddr
-{
-  int* pos;
-  float* scalar;
-  FBFixedMonoBlock* dense;
-};
-
 struct FBStaticParam
 {
   int slotCount;
