@@ -35,23 +35,19 @@ FFMakeTopo()
   osciOn.slotCount = 1;
   osciOn.valueCount = 2;
   osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
-  osciOn.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.block.osci; });
+  osciOn.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.block.osci.on; });
 
   auto& osciType = osci.blockParams[FFOsciBlockParamType];
   osciType.name = "Type";
   osciType.slotCount = 1;
   osciType.valueCount = FFOsciTypeCount;
   osciType.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
-  osciType.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.block.osci; });
 
   auto& osciGain = osci.accParams[FFOsciAccParamGain];
   osciGain.name = "Gain";
   osciGain.slotCount = 1;
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
-  osciGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci; });
-  osciGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci; });
-  osciGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.osci; });
 
   auto& osciPitch = osci.accParams[FFOsciAccParamPitch];
   osciPitch.name = "Pitch";

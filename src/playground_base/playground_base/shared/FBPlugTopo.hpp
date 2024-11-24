@@ -7,6 +7,8 @@
 #include <vector>
 #include <functional>
 
+#define FB_SINGLE_SLOT_COUNT 1
+
 class FBFixedMonoBlock;
 
 struct FBScalarParamMemoryBase

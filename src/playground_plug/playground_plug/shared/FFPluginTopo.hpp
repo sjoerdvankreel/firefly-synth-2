@@ -20,18 +20,47 @@ enum { FFShaperAccParamGain, FFShaperAccParamCount };
 enum { FFShaperBlockParamOn, FFShaperBlockParamClip, FFShaperBlockParamCount };
 
 template <class T>
+struct alignas(alignof(T)) FFOsciAccParamMemory
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamMemory);
+  std::array<std::array<T, FF_OSCI_GAIN_COUNT>, FF_OSCI_COUNT> gain;
+  std::array<std::array<T, FB_SINGLE_SLOT_COUNT>, FF_OSCI_COUNT> pitch;
+};
+
+struct FFOsciBlockParamMemory
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamMemory);
+  std::array<std::array<float, FB_SINGLE_SLOT_COUNT>, FF_OSCI_COUNT> on;
+  std::array<std::array<float, FB_SINGLE_SLOT_COUNT>, FF_OSCI_COUNT> type;
+};
+
+template <class T>
+struct alignas(alignof(T)) FFShaperAccParamMemory
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccParamMemory);
+  std::array<std::array<T, FB_SINGLE_SLOT_COUNT>, FF_SHAPER_COUNT> gain;
+};
+
+struct FFShaperBlockParamMemory
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperBlockParamMemory);
+  std::array<std::array<float, FB_SINGLE_SLOT_COUNT>, FF_SHAPER_COUNT> on;
+  std::array<std::array<float, FB_SINGLE_SLOT_COUNT>, FF_SHAPER_COUNT> clip;
+};
+
+template <class T>
 struct alignas(alignof(T)) FFAccParamMemory
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFAccParamMemory);
-  std::array<std::array<T, FFOsciAccParamCount>, FF_OSCI_COUNT> osci;
-  std::array<std::array<T, FFShaperAccParamCount>, FF_SHAPER_COUNT> shaper;
+  FFOsciAccParamMemory<T> osci;
+  FFShaperAccParamMemory<T> shaper;
 };
 
 struct FFBlockParamMemory
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFBlockParamMemory);
-  std::array<std::array<float, FFOsciBlockParamCount>, FF_OSCI_COUNT> osci;
-  std::array<std::array<float, FFShaperBlockParamCount>, FF_SHAPER_COUNT> shaper;
+  FFOsciBlockParamMemory osci;
+  FFShaperBlockParamMemory shaper;
 };
 
 struct FFScalarParamMemory:
