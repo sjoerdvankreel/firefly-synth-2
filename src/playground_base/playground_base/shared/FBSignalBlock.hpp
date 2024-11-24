@@ -12,14 +12,14 @@
 #define FB_CHANNELS_STEREO 2
 #define FB_FIXED_BLOCK_SIZE 16
 
-class FFRawBlockView
+class FBRawBlockView
 {
   float* _store;
   std::size_t _size;
 
 public:
-  FB_COPY_MOVE_DEFCTOR(FFRawBlockView);
-  FFRawBlockView(float* store, int count) :
+  FB_COPY_MOVE_DEFCTOR(FBRawBlockView);
+  FBRawBlockView(float* store, int count) :
   _size(count), _store(store) {}
 
   float* begin()
@@ -44,7 +44,7 @@ public:
 };
 
 template <class DerivedT>
-class FFMonoBlockMixin
+class FBMonoBlockMixin
 {
   auto& Store() 
   { return static_cast<DerivedT*>(this)->_store; }
@@ -76,41 +76,41 @@ public:
   { for (int i = 0; i < count; i++) rhs[tgtOffset + i] = (*this)[srcOffset + i]; }
 };
 
-class FFRawMonoBlockView:
-public FFMonoBlockMixin<FFRawMonoBlockView>
+class FBRawMonoBlockView:
+public FBMonoBlockMixin<FBRawMonoBlockView>
 {
-  FFRawBlockView _store;
-  friend class FFMonoBlockMixin<FFRawMonoBlockView>;
+  FBRawBlockView _store;
+  friend class FBMonoBlockMixin<FBRawMonoBlockView>;
 
 public:
-  FB_COPY_MOVE_DEFCTOR(FFRawMonoBlockView);
-  FFRawMonoBlockView(float* store, int count) :
+  FB_COPY_MOVE_DEFCTOR(FBRawMonoBlockView);
+  FBRawMonoBlockView(float* store, int count) :
   _store(store, count) {}
 };
 
-class alignas(FB_FIXED_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
-public FFMonoBlockMixin<FFFixedMonoBlock>
+class alignas(FB_FIXED_BLOCK_SIZE * sizeof(float)) FBFixedMonoBlock:
+public FBMonoBlockMixin<FBFixedMonoBlock>
 {
   std::array<float, FB_FIXED_BLOCK_SIZE> _store;
-  friend class FFMonoBlockMixin<FFFixedMonoBlock>;
+  friend class FBMonoBlockMixin<FBFixedMonoBlock>;
 
 public:
-  FB_NOCOPY_MOVE_DEFCTOR(FFFixedMonoBlock);
+  FB_NOCOPY_MOVE_DEFCTOR(FBFixedMonoBlock);
 };
 
-class FFDynamicMonoBlock:
-public FFMonoBlockMixin<FFDynamicMonoBlock>
+class FBDynamicMonoBlock:
+public FBMonoBlockMixin<FBDynamicMonoBlock>
 {
   std::vector<float> _store;
-  friend class FFMonoBlockMixin<FFDynamicMonoBlock>;
+  friend class FBMonoBlockMixin<FBDynamicMonoBlock>;
 
 public:
-  FB_NOCOPY_MOVE_NODEFCTOR(FFDynamicMonoBlock);
-  FFDynamicMonoBlock(int count): 
+  FB_NOCOPY_MOVE_NODEFCTOR(FBDynamicMonoBlock);
+  FBDynamicMonoBlock(int count):
   _store(count, 0.0f) {}
 
-  FFRawMonoBlockView GetRawBlockView()
-  { return FFRawMonoBlockView(_store.data(), static_cast<int>(_store.size())); }
+  FBRawMonoBlockView GetRawBlockView()
+  { return FBRawMonoBlockView(_store.data(), static_cast<int>(_store.size())); }
 };
 
 template <class DerivedT>
@@ -149,21 +149,21 @@ public:
 class FFRawStereoBlockView:
 public FFStereoBlockMixin<FFRawStereoBlockView>
 {
-  std::array<FFRawMonoBlockView, FB_CHANNELS_STEREO> _store;
+  std::array<FBRawMonoBlockView, FB_CHANNELS_STEREO> _store;
   friend class FFStereoBlockMixin<FFRawStereoBlockView>;
 
 public:
   FB_COPY_MOVE_DEFCTOR(FFRawStereoBlockView);
   FFRawStereoBlockView(float* l, float* r, int count) :
-  _store({ FFRawMonoBlockView(l, count), FFRawMonoBlockView(r, count) }) {}
-  FFRawStereoBlockView(FFRawMonoBlockView const& l, FFRawMonoBlockView const& r) :
+  _store({ FBRawMonoBlockView(l, count), FBRawMonoBlockView(r, count) }) {}
+  FFRawStereoBlockView(FBRawMonoBlockView const& l, FBRawMonoBlockView const& r) :
   _store({ l, r }) {}
 };
 
 class alignas(FB_FIXED_BLOCK_SIZE * FB_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
 public FFStereoBlockMixin<FFFixedStereoBlock>
 {
-  std::array<FFFixedMonoBlock, FB_CHANNELS_STEREO> _store;
+  std::array<FBFixedMonoBlock, FB_CHANNELS_STEREO> _store;
   friend class FFStereoBlockMixin<FFFixedStereoBlock>;
 
 public:
@@ -173,13 +173,13 @@ public:
 class FFDynamicStereoBlock:
 public FFStereoBlockMixin<FFDynamicStereoBlock>
 {
-  std::array<FFDynamicMonoBlock, FB_CHANNELS_STEREO> _store;
+  std::array<FBDynamicMonoBlock, FB_CHANNELS_STEREO> _store;
   friend class FFStereoBlockMixin<FFDynamicStereoBlock>;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFDynamicStereoBlock);
   FFDynamicStereoBlock(int count) :
-  _store({ FFDynamicMonoBlock(count), FFDynamicMonoBlock(count) }) {}
+  _store({ FBDynamicMonoBlock(count), FBDynamicMonoBlock(count) }) {}
 
   FFRawStereoBlockView GetRawBlockView()
   { return FFRawStereoBlockView(_store[FB_CHANNEL_L].GetRawBlockView(), _store[FB_CHANNEL_R].GetRawBlockView()); }

@@ -41,10 +41,10 @@ struct FFScalarParamMemory
   FFAccParamMemory<float> acc;
 };
 
-struct alignas(alignof(FFFixedMonoBlock)) FFProcParamMemory
+struct alignas(alignof(FBFixedMonoBlock)) FFProcParamMemory
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamMemory);
-  FFAccParamMemory<FFFixedMonoBlock> dense;
+  FFAccParamMemory<FBFixedMonoBlock> dense;
   FFAccParamMemory<int> pos;
   FFScalarParamMemory scalar;
 };
