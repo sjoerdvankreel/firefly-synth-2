@@ -54,7 +54,7 @@ MakeTagToParam(
 
 static std::vector<FBRuntimeParam>
 MakeRuntimeAccParams(
-  std::vector<FFRuntimeModule> const& runtimeModules)
+  std::vector<FBRuntimeModule> const& runtimeModules)
 {
   std::vector<FBRuntimeParam> result;
   for (int m = 0; m < runtimeModules.size(); m++)
@@ -65,7 +65,7 @@ MakeRuntimeAccParams(
 
 static std::vector<FBRuntimeParam>
 MakeRuntimeBlockParams(
-  std::vector<FFRuntimeModule> const& runtimeModules)
+  std::vector<FBRuntimeModule> const& runtimeModules)
 {
   std::vector<FBRuntimeParam> result;
   for (int m = 0; m < runtimeModules.size(); m++)
@@ -74,13 +74,13 @@ MakeRuntimeBlockParams(
   return result;
 }
 
-static std::vector<FFRuntimeModule>
+static std::vector<FBRuntimeModule>
 MakeRuntimeModules(FBStaticTopo const& staticTopo)
 {
-  std::vector<FFRuntimeModule> result;
+  std::vector<FBRuntimeModule> result;
   for (int mi = 0; mi < staticTopo.modules.size(); mi++)
     for (int ms = 0; ms < staticTopo.modules[mi].slotCount; ms++)
-      result.push_back(FFRuntimeModule(staticTopo.modules[mi], ms));
+      result.push_back(FBRuntimeModule(staticTopo.modules[mi], ms));
   return result;
 }
 
@@ -116,8 +116,8 @@ shortName(MakeRuntimeName(staticParam.name, staticParam.slotCount, paramSlot)),
 id(MakeRuntimeParamId(staticModule, moduleSlot, staticParam, paramSlot)),
 tag(MakeRuntimeParamHash(id)) {}
 
-FFRuntimeModule::
-FFRuntimeModule(
+FBRuntimeModule::
+FBRuntimeModule(
   FBStaticModule const& staticModule, int moduleSlot):
 name(MakeRuntimeName(staticModule.name, staticModule.slotCount, moduleSlot)),
 accParams(MakeRuntimeParams(staticModule, moduleSlot, staticModule.accParams)),
