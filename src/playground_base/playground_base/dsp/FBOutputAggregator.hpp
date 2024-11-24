@@ -1,7 +1,8 @@
 # pragma once
 
 #include <playground_base/shared/FBHostBlock.hpp>
-#include <playground_base/shared/FBSignalBlock.hpp>
+
+class FBRawStereoBlockView;
 
 class FBOutputAggregator
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <playground_base/shared/FBHostBlock.hpp>
-#include <playground_base/shared/FBSignalBlock.hpp>
+struct FBHostInputBlock;
+class FBRawStereoBlockView;
 
 class IFBHostBlockProcessor
 {

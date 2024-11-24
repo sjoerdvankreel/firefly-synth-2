@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+class FBFixedMonoBlock;
+
 inline double 
 FBDiscreteToNormalized(int count, int index)
 { return index / (count - 1.0); }
@@ -17,6 +19,13 @@ FBNormalizedToDiscrete(int count, double normalized)
 inline bool
 FBNormalizedToBool(double normalized)
 { return FBNormalizedToDiscrete(2, normalized) != 0; }
+
+struct FBProcParamAddr
+{
+  int* pos;
+  float* scalar;
+  FBFixedMonoBlock* dense;
+};
 
 struct FBStaticParam
 {

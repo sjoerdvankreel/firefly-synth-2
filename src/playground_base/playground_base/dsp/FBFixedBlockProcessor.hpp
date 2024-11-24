@@ -1,9 +1,10 @@
 #pragma once
 
-#include <playground_base/shared/FBHostBlock.hpp>
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <playground_base/dsp/FBInputSplitter.hpp>
 #include <playground_base/dsp/FBOutputAggregator.hpp>
+
+struct FBHostInputBlock;
 
 class FBFixedBlockProcessor
 {

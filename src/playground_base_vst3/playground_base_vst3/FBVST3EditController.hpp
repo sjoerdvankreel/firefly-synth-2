@@ -2,6 +2,7 @@
 
 #include <playground_base/shared/FBPlugTopo.hpp>
 #include <playground_base/shared/FBSharedUtility.hpp>
+
 #include <public.sdk/source/vst/vsteditcontroller.h>
 
 using namespace Steinberg;
