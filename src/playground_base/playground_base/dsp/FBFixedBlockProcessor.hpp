@@ -6,31 +6,36 @@
 
 struct FBHostInputBlock;
 
-class FBFixedBlockProcessor
+template <class Derived>
+class FBFixedBlockProcessor:
+public IFBHostBlockProcessor
 {
   FBFixedStereoBlock _fixedOutput;
   FBInputSplitter _inputSplitter;
   FBOutputAggregator _outputAggregator;
 
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
   FBFixedBlockProcessor(int maxHostSampleCount);
-
-  template <class Processor>
-  void ProcessHost(
-    FBHostInputBlock const& input, FBRawStereoBlockView& output, Processor& processor);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
+  void ProcessHost(FBHostInputBlock const& input, FBRawStereoBlockView& output);
 };
 
-template <class Processor>
-void 
-FBFixedBlockProcessor::ProcessHost(
-  FBHostInputBlock const& input, FBRawStereoBlockView& output, Processor& processor)
+template <class Derived>
+FBFixedBlockProcessor<Derived>::
+FBFixedBlockProcessor(int maxHostSampleCount) :
+_fixedOutput(),
+_inputSplitter(maxHostSampleCount),
+_outputAggregator(maxHostSampleCount) {}
+
+template <class Derived> void 
+FBFixedBlockProcessor<Derived>::ProcessHost(
+  FBHostInputBlock const& input, FBRawStereoBlockView& output)
 {
   _inputSplitter.Accumulate(input);
   FBFixedInputBlock const* splitted = nullptr;
   while ((splitted = _inputSplitter.Split()) != nullptr)
   {
-    processor.ProcessFixed(*splitted, _fixedOutput);
+    static_cast<Derived*>(this)->ProcessFixed(*splitted, _fixedOutput);
     _outputAggregator.Accumulate(_fixedOutput);
   }
   _outputAggregator.Aggregate(output);

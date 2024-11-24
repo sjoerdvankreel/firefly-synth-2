@@ -6,20 +6,13 @@
 FFPluginProcessor::
 FFPluginProcessor(
   FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate) :
+FBFixedBlockProcessor(maxHostSampleCount),
 _phase(),
 _sampleRate(sampleRate),
-_memory(),
-_fixedProcessor(maxHostSampleCount)
+_memory()
 {
   topo.InitScalarAddr(_memory);
   topo.InitProcessorAddr(_memory);
-}
-
-void 
-FFPluginProcessor::ProcessHost(
-  FBHostInputBlock const& input, FBRawStereoBlockView& output)
-{
-  _fixedProcessor.ProcessHost(input, output, *this);
 }
 
 void 

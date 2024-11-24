@@ -10,18 +10,14 @@
 #include <playground_plug/shared/FFPluginTopo.hpp>
 
 class FFPluginProcessor:
-public IFBHostBlockProcessor
+public FBFixedBlockProcessor<FFPluginProcessor>
 {
   FBPhase _phase;
   float const _sampleRate;
   FFProcessorParamMemory _memory;
-  FBFixedBlockProcessor _fixedProcessor;
-
-  friend class FBFixedBlockProcessor;
-  void ProcessFixed(FBFixedInputBlock const& input, FBFixedStereoBlock& output);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);
   FFPluginProcessor(FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate);
-  void ProcessHost(FBHostInputBlock const& input, FBRawStereoBlockView& output) override;
+  void ProcessFixed(FBFixedInputBlock const& input, FBFixedStereoBlock& output);
 };
