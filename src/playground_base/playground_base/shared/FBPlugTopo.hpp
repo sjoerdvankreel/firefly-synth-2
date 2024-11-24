@@ -5,23 +5,28 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <functional>
 
 class FBFixedMonoBlock;
 
-struct FBScalarParamMemoryTag
+struct FBScalarParamMemoryBase
 {
-  virtual ~FBScalarParamMemoryTag() {}
+  // dynamic_cast just to be sure
+  virtual ~FBScalarParamMemoryBase() {}
+
+  // interior pointers to derived
+  std::vector<float*> accAddr;
+  std::vector<float*> blockAddr;
 };
 
-struct FBProcessorParamMemoryTag
+struct FBProcessorParamMemoryBase
 {
-  virtual ~FBProcessorParamMemoryTag() {}
-};
+  // dynamic_cast just to be sure
+  virtual ~FBProcessorParamMemoryBase() {}
 
-struct FBProcessorParamMemoryAddr
-{
-  int* pos;
-  FBFixedMonoBlock* dense;
+  // interior pointers to derived
+  std::vector<int*> posAddr;
+  std::vector<FBFixedMonoBlock*> denseAddr;
 };
 
 inline double 
@@ -44,8 +49,18 @@ struct FBStaticParam
   std::string name;
   std::string unit;
 
-  float* (*scalarAddr)(FBScalarParamMemoryTag* tag);
-  FBProcessorParamMemoryAddr(*processorAddr)(FBProcessorParamMemoryTag* tag);
+  std::function<float* (
+    int moduleSlot, 
+    int paramSlot, 
+    FBScalarParamMemoryBase& mem)> scalarAddr;
+  std::function<int* (
+    int moduleSlot,
+    int paramSlot, 
+    FBProcessorParamMemoryBase& mem)> posAddr;
+  std::function<FBFixedMonoBlock* (
+    int moduleSlot,
+    int paramSlot,
+    FBProcessorParamMemoryBase& mem)> denseAddr;
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };

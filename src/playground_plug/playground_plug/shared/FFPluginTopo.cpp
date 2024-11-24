@@ -1,6 +1,14 @@
 #include <playground_plug/shared/FFPluginTopo.hpp>
 #include <playground_plug/shared/FFPluginConfig.hpp>
 
+template <class Selector>
+auto ScalarAddr(Selector selector)
+{
+  return [selector](int moduleSlot, int paramSlot, FBScalarParamMemoryBase& mem) {
+    auto store = selector(dynamic_cast<FFScalarParamMemory&>(mem));
+    return &(*store)[moduleSlot][paramSlot]; };
+}
+
 FBStaticTopo
 FFMakeTopo()
 {
@@ -19,6 +27,7 @@ FFMakeTopo()
   osciOn.slotCount = 1;
   osciOn.valueCount = 2;
   osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
+  osciOn.scalarAddr = ScalarAddr([](auto& mem) { return &mem.block.osci; });
 
   auto& osciType = osci.blockParams[FFOsciBlockParamType];
   osciType.name = "Type";

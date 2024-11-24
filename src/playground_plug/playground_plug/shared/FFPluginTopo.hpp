@@ -35,7 +35,7 @@ struct FFBlockParamMemory
 };
 
 struct FFScalarParamMemory:
-public FBScalarParamMemoryTag
+public FBScalarParamMemoryBase
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamMemory);
   FFBlockParamMemory block;
@@ -44,7 +44,7 @@ public FBScalarParamMemoryTag
 
 struct alignas(alignof(FBFixedMonoBlock)) FFProcessorParamMemory:
 public FFScalarParamMemory,
-public FBProcessorParamMemoryTag
+public FBProcessorParamMemoryBase
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcessorParamMemory);
   FFAccParamMemory<FBFixedMonoBlock> dense;
