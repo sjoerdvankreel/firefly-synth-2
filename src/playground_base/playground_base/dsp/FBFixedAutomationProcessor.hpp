@@ -35,5 +35,8 @@ FBFixedAutomationProcessor<Derived>::ProcessFixed(
 {
   for (auto const& be : input.events.blockParam)
     *_scalarMemory->blockAddr[be.index] = be.normalized;
+  // TODO make it good
+  for (auto const& ae : input.events.accParam)
+    _processorMemory->denseAddr[ae.index]->Fill(0, FB_FIXED_BLOCK_SIZE, ae.normalized);
   static_cast<Derived*>(this)->ProcessAutomation(input, output);
 }
