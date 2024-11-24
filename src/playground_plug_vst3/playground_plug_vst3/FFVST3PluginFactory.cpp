@@ -33,7 +33,8 @@ std::unique_ptr<IFBHostBlockProcessor>
 FFVST3AudioEffect::CreateProcessor(
   FBRuntimeTopo const& topo, ProcessSetup const& setup) const
 {
-  return std::make_unique<FFPluginProcessor>(topo, setup.maxSamplesPerBlock, setup.sampleRate);
+  return std::make_unique<FFPluginProcessor>(
+    topo, setup.maxSamplesPerBlock, setup.sampleRate);
 }
 
 static FUID
