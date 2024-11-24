@@ -5,29 +5,29 @@
 #include <pluginterfaces/vst/ivstparameterchanges.h>
 #include <algorithm>
 
-static FFBlockParamEvent
+static FBBlockParamEvent
 MakeBlockParamEvent(int tag, ParamValue value)
 {
-  FFBlockParamEvent result;
+  FBBlockParamEvent result;
   result.tag = tag;
   result.normalized = value;
   return result;
 }
 
-static FFAccParamEvent
+static FBAccParamEvent
 MakeAccParamEvent(int tag, int position, ParamValue value)
 {
-  FFAccParamEvent result;
+  FBAccParamEvent result;
   result.tag = tag;
   result.normalized = value;
   result.position = position;
   return result;
 }
 
-static FFNoteEvent
+static FBNoteEvent
 MakeNoteOnEvent(Event const& event)
 {
-  FFNoteEvent result;
+  FBNoteEvent result;
   result.on = true;
   result.velo = event.noteOn.velocity;
   result.position = event.sampleOffset;
@@ -37,10 +37,10 @@ MakeNoteOnEvent(Event const& event)
   return result;
 }
 
-static FFNoteEvent
+static FBNoteEvent
 MakeNoteOffEvent(Event const& event)
 {
-  FFNoteEvent result;
+  FBNoteEvent result;
   result.on = false;
   result.position = event.sampleOffset;
   result.velo = event.noteOff.velocity;
@@ -50,12 +50,12 @@ MakeNoteOffEvent(Event const& event)
   return result;
 }
 
-static FFRawStereoBlockView
+static FBRawStereoBlockView
 MakeRawStereoBlockView(AudioBusBuffers& buffers, int sampleCount)
 {
-  return FFRawStereoBlockView(
-    buffers.channelBuffers32[FF_CHANNEL_L],
-    buffers.channelBuffers32[FF_CHANNEL_R],
+  return FBRawStereoBlockView(
+    buffers.channelBuffers32[FB_CHANNEL_L],
+    buffers.channelBuffers32[FB_CHANNEL_R],
     sampleCount);
 }
 
@@ -87,8 +87,8 @@ FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 tresult PLUGIN_API
 FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
 {
-  _input.reset(new FFHostInputBlock(nullptr, nullptr, 0));
-  _zeroIn.reset(new FFDynamicStereoBlock(setup.maxSamplesPerBlock));
+  _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
+  _zeroIn.reset(new FBDynamicStereoBlock(setup.maxSamplesPerBlock));
   _processor.reset(new FFPluginProcessor(setup.maxSamplesPerBlock, setup.sampleRate));
   return kResultTrue;
 }

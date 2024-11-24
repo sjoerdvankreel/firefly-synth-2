@@ -12,7 +12,7 @@ CopyToString128(std::string const& in, String128& out)
 }
 
 static UnitInfo
-MakeUnitInfo(FFRuntimeModule const& module, int id)
+MakeUnitInfo(FBRuntimeModule const& module, int id)
 {
   UnitInfo result;
   result.id = id;
@@ -23,7 +23,7 @@ MakeUnitInfo(FFRuntimeModule const& module, int id)
 }
 
 static ParameterInfo
-MakeParamInfo(FFRuntimeParam const& param, int unitId, bool automate)
+MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
 {
   ParameterInfo result;
   result.id = param.tag;
@@ -50,7 +50,7 @@ FFVST3PluginController::initialize(FUnknown* context)
     return kResultFalse;
 
   int unitId = 1;
-  auto topo = FFRuntimeTopo(FFMakeTopo());
+  auto topo = FBRuntimeTopo(FFMakeTopo());
   for (int m = 0; m < topo.modules.size(); m++)
   {
     addUnit(new Unit(MakeUnitInfo(topo.modules[m], unitId)));
