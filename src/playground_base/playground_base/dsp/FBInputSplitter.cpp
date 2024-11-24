@@ -22,6 +22,37 @@ GatherBlockParamEvents(
   output.insert(output.begin(), input.begin(), input.end());
 }
 
+static void
+GatherStraddlingAccParamEvents(
+  std::vector<FBAccParamEvent> const& input, std::vector<FBAccParamEvent>& output)
+{
+  output.clear();
+  output.insert(output.begin(), input.begin(), input.end());
+  auto compare = [](auto& l, auto& r) {
+    return l.index == r.index ? l.position < r.position : l.index < r.index; };
+  std::sort(output.begin(), output.end(), compare);
+}
+
+static void
+GatherStraddledAccParamEvents(
+  FBAccParamEvent const& thisEvent,
+  FBAccParamEvent const& nextEvent, 
+  std::vector<FBAccParamEvent>& output)
+{
+  int thisFixedBlock = thisEvent.position % FB_FIXED_BLOCK_SIZE;
+  int nextFixedBlock = nextEvent.position % FB_FIXED_BLOCK_SIZE;
+  for (int i = thisFixedBlock; i < nextFixedBlock; i++)
+  {
+    FBAccParamEvent straddledEvent;
+    straddledEvent.index = thisEvent.index;
+    straddledEvent.position = i * FB_FIXED_BLOCK_SIZE + FB_FIXED_BLOCK_SIZE - 1;
+    float valueRange = nextEvent.normalized - thisEvent.normalized;
+    float normalizedPos = straddledEvent.position / static_cast<float>(nextEvent.position);
+    straddledEvent.normalized = thisEvent.normalized + valueRange * normalizedPos;
+    output.push_back(straddledEvent);
+  }
+}
+
 FBInputSplitter::
 FBInputSplitter(int maxHostSampleCount) :
 _fixed(),
@@ -47,36 +78,8 @@ FBInputSplitter::Split()
 void 
 FBInputSplitter::Accumulate(FBHostInputBlock const& input)
 {
-  _straddledAccParamEvents.clear();
-  _straddledAccParamEvents.insert(
-    _straddledAccParamEvents.begin(),
-    input.events.accParam.begin(),
-    input.events.accParam.end());
-  auto compare = [](auto& l, auto& r) {
-    return l.index == r.index ? l.position < r.position : l.index < r.index; };
-  std::sort(_straddledAccParamEvents.begin(), _straddledAccParamEvents.end(), compare);
-  for (int e = 0; e < _straddledAccParamEvents.size(); e++)
-  {
-    FBAccParamEvent thisEvent = _straddledAccParamEvents[e];
-    thisEvent.position += _accumulated.sampleCount;
-    _accumulated.events.accParam.push_back(thisEvent);
-    if (e < _straddledAccParamEvents.size() - 1 &&
-      _straddledAccParamEvents[e + 1].index == _straddledAccParamEvents[e].index)
-    {
-      FBAccParamEvent thatEvent = _straddledAccParamEvents[e + 1];
-      thatEvent.position += _accumulated.sampleCount;
-      int thisFixedBlock = thisEvent.position % FB_FIXED_BLOCK_SIZE;
-      int thatFixedBlock = thatEvent.position % FB_FIXED_BLOCK_SIZE;
-      for (int i = thisFixedBlock; i < thatFixedBlock; i++)
-      {
-        FBAccParamEvent straddledEvent;
-        straddledEvent.index = thisEvent.index;
-        straddledEvent.position = i * FB_FIXED_BLOCK_SIZE + FB_FIXED_BLOCK_SIZE - 1;
-        straddledEvent.normalized = thisEvent.normalized + (thatEvent.normalized - thisEvent.normalized) * (straddledEvent.position / static_cast<float>(thatEvent.position));
-        _accumulated.events.accParam.push_back(straddledEvent);
-      }
-    }
-  }
+  GatherBlockParamEvents(input.events.blockParam, _accumulated.events.blockParam);
+  input.audio.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, input.audio.Count());
 
   for (int e = 0; e < input.events.note.size(); e++)
   {
@@ -85,7 +88,20 @@ FBInputSplitter::Accumulate(FBHostInputBlock const& input)
     _accumulated.events.note.push_back(event);
   }
 
-  GatherBlockParamEvents(input.events.blockParam, _accumulated.events.blockParam);
-  input.audio.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, input.audio.Count());
+  GatherStraddlingAccParamEvents(input.events.accParam, _straddledAccParamEvents);
+  for (int e = 0; e < _straddledAccParamEvents.size(); e++)
+  {
+    FBAccParamEvent thisEvent = _straddledAccParamEvents[e];
+    thisEvent.position += _accumulated.sampleCount;
+    _accumulated.events.accParam.push_back(thisEvent);
+    if (e < _straddledAccParamEvents.size() - 1 &&
+      _straddledAccParamEvents[e + 1].index == _straddledAccParamEvents[e].index)
+    {
+      FBAccParamEvent nextEvent = _straddledAccParamEvents[e + 1];
+      nextEvent.position += _accumulated.sampleCount;
+      GatherStraddledAccParamEvents(thisEvent, nextEvent, _accumulated.events.accParam);
+    }
+  }
+
   _accumulated.sampleCount += input.audio.Count();
 }
