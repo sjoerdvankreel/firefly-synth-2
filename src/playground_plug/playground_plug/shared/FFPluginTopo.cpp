@@ -58,9 +58,9 @@ FFMakeTopo()
   osciPitch.slotCount = 1;
   osciPitch.valueCount = 0;
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
-  osciGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci.pitch; });
-  osciGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci.pitch; });
-  osciGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.osci.pitch; });
+  osciPitch.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci.pitch; });
+  osciPitch.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci.pitch; });
+  osciPitch.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.osci.pitch; });
 
   auto& shaper = result.modules[FFModuleShaper];
   shaper.name = "Shaper";
