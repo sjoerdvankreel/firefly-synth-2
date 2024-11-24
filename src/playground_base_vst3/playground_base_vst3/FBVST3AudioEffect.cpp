@@ -5,19 +5,19 @@
 #include <algorithm>
 
 static FBBlockParamEvent
-MakeBlockParamEvent(int tag, ParamValue value)
+MakeBlockParamEvent(int index, ParamValue value)
 {
   FBBlockParamEvent result;
-  result.tag = tag;
+  result.index = index;
   result.normalized = value;
   return result;
 }
 
 static FBAccParamEvent
-MakeAccParamEvent(int tag, int position, ParamValue value)
+MakeAccParamEvent(int index, int position, ParamValue value)
 {
   FBAccParamEvent result;
-  result.tag = tag;
+  result.index = index;
   result.normalized = value;
   result.position = position;
   return result;
@@ -131,16 +131,16 @@ FBVST3AudioEffect::process(ProcessData& data)
         if ((iter = _topo.tagToBlockParam.find(queue->getParameterId())) != _topo.tagToBlockParam.end())
         {
           if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-            _input->events.blockParam.push_back(MakeBlockParamEvent(queue->getParameterId(), value));
+            _input->events.blockParam.push_back(MakeBlockParamEvent(iter->second, value));
         } else if ((iter = _topo.tagToAccParam.find(queue->getParameterId())) != _topo.tagToAccParam.end())
         {
           for (int point = 0; point < queue->getPointCount(); point++)
             if (queue->getPoint(point, position, value) == kResultTrue)
-              _input->events.accParam.push_back(MakeAccParamEvent(queue->getParameterId(), position, value));
+              _input->events.accParam.push_back(MakeAccParamEvent(iter->second, position, value));
         }     
 
   auto compare = [](auto const& l, auto const& r) { 
-    return l.position == r.position ? l.tag < r.tag: l.position < r.position; };
+    return l.position == r.position ? l.index < r.index : l.position < r.position; };
   std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
   _processor->ProcessHost(*_input, _output);  
   return kResultTrue;

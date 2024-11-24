@@ -20,14 +20,14 @@ struct FBNoteEvent
 
 struct FBAccParamEvent
 {
-  int tag;
+  int index;
   int position;
   float normalized;
 };
 
 struct FBBlockParamEvent
 {
-  int tag;
+  int index;
   float normalized;
 };
 
