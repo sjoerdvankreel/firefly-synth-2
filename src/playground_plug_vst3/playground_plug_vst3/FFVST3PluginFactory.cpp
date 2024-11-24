@@ -1,5 +1,7 @@
 #include <playground_plug/shared/FFPluginTopo.hpp>
 #include <playground_plug/shared/FFPluginConfig.hpp>
+#include <playground_plug/dsp/FFPluginProcessor.hpp>
+
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
@@ -10,6 +12,28 @@
 
 using namespace Steinberg;
 using namespace Steinberg::Vst;
+
+class FFVST3AudioEffect:
+public FBVST3AudioEffect
+{
+protected:
+  std::unique_ptr<IFBHostBlockProcessor> 
+  CreateProcessor(ProcessSetup const& setup) const override;
+
+public:
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3AudioEffect);
+  FFVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId);
+};
+
+FFVST3AudioEffect::
+FFVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId) :
+FBVST3AudioEffect(std::move(topo), controllerId) {}
+
+std::unique_ptr<IFBHostBlockProcessor>
+FFVST3AudioEffect::CreateProcessor(ProcessSetup const& setup) const
+{
+  return std::make_unique<FFPluginProcessor>(setup.maxSamplesPerBlock, setup.sampleRate);
+}
 
 static FUID
 TextToFUID(char const* text)
@@ -30,7 +54,7 @@ static FUnknown*
 ComponentFactory(void*)
 {
   auto controllerFuid = TextToFUID(FF_PLUGIN_CONTROLLER_ID);
-  auto result = new FBVST3AudioEffect(FFMakeTopo(), controllerFuid);
+  auto result = new FFVST3AudioEffect(FFMakeTopo(), controllerFuid);
   return static_cast<IAudioProcessor*>(result);
 }
 

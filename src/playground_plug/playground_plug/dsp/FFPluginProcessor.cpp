@@ -14,7 +14,7 @@ void
 FFPluginProcessor::ProcessHost(
   FBHostInputBlock const& input, FBRawStereoBlockView& output)
 {
-  _fixedProcessor.Process(input, output, *this);
+  _fixedProcessor.ProcessHost(input, output, *this);
 }
 
 void 

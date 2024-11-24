@@ -16,13 +16,13 @@ public:
   FBFixedBlockProcessor(int maxHostSampleCount);
 
   template <class Processor>
-  void Process(
+  void ProcessHost(
     FBHostInputBlock const& input, FBRawStereoBlockView& output, Processor& processor);
 };
 
 template <class Processor>
 void 
-FBFixedBlockProcessor::Process(
+FBFixedBlockProcessor::ProcessHost(
   FBHostInputBlock const& input, FBRawStereoBlockView& output, Processor& processor)
 {
   _inputSplitter.Accumulate(input);

@@ -3,9 +3,9 @@
 #include <playground_base/shared/FBHostBlock.hpp>
 #include <playground_base/shared/FBSignalBlock.hpp>
 
-class IFBVST3PluginProcessor
+class IFBHostBlockProcessor
 {
 public:
-  virtual ~IFBVST3PluginProcessor() {}
+  virtual ~IFBHostBlockProcessor() {}
   virtual void ProcessHost(FBHostInputBlock const& input, FBRawStereoBlockView& output) = 0;
 };
