@@ -7,11 +7,11 @@ static void GatherAccEvents(
 {
   int e = 0;
   output.clear();
-  for (e = 0; e < input.size() && input[e].position < FF_FIXED_BLOCK_SIZE; e++)
+  for (e = 0; e < input.size() && input[e].position < FB_FIXED_BLOCK_SIZE; e++)
     output.push_back(input[e]);
   input.erase(input.begin(), input.begin() + e);
   for (auto& e : input)
-    e.position -= FF_FIXED_BLOCK_SIZE;
+    e.position -= FB_FIXED_BLOCK_SIZE;
 }
 
 static void
@@ -24,21 +24,21 @@ GatherBlockParamEvents(
 
 FBInputSplitter::
 FBInputSplitter(int maxHostSampleCount):
-_accumulated(std::max(FF_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
+_accumulated(std::max(FB_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
 
 FBFixedInputBlock const*
 FBInputSplitter::Split()
 {
-  if (_accumulated.sampleCount < FF_FIXED_BLOCK_SIZE)
+  if (_accumulated.sampleCount < FB_FIXED_BLOCK_SIZE)
     return nullptr;
 
   GatherAccEvents(_accumulated.events.note, _fixed.events.note);
   GatherAccEvents(_accumulated.events.accParam, _fixed.events.accParam);
   GatherBlockParamEvents(_accumulated.events.blockParam, _fixed.events.blockParam);
 
-  _accumulated.audio.CopyTo(_fixed.audio, 0, 0, FF_FIXED_BLOCK_SIZE);
-  _accumulated.audio.ShiftLeft(FF_FIXED_BLOCK_SIZE);
-  _accumulated.sampleCount -= FF_FIXED_BLOCK_SIZE;
+  _accumulated.audio.CopyTo(_fixed.audio, 0, 0, FB_FIXED_BLOCK_SIZE);
+  _accumulated.audio.ShiftLeft(FB_FIXED_BLOCK_SIZE);
+  _accumulated.sampleCount -= FB_FIXED_BLOCK_SIZE;
   return &_fixed;
 }
 

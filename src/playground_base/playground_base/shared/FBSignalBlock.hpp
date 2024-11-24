@@ -7,10 +7,10 @@
 #include <cassert>
 #include <cstdint>
 
-#define FF_CHANNEL_L 0
-#define FF_CHANNEL_R 1
-#define FF_CHANNELS_STEREO 2
-#define FF_FIXED_BLOCK_SIZE 16
+#define FB_CHANNEL_L 0
+#define FB_CHANNEL_R 1
+#define FB_CHANNELS_STEREO 2
+#define FB_FIXED_BLOCK_SIZE 16
 
 class FFRawBlockView
 {
@@ -88,10 +88,10 @@ public:
   _store(store, count) {}
 };
 
-class alignas(FF_FIXED_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
+class alignas(FB_FIXED_BLOCK_SIZE * sizeof(float)) FFFixedMonoBlock:
 public FFMonoBlockMixin<FFFixedMonoBlock>
 {
-  std::array<float, FF_FIXED_BLOCK_SIZE> _store;
+  std::array<float, FB_FIXED_BLOCK_SIZE> _store;
   friend class FFMonoBlockMixin<FFFixedMonoBlock>;
 
 public:
@@ -130,26 +130,26 @@ public:
   { return Store()[channel]; }
 
   void CopyTo(DerivedT& rhs) const
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].CopyTo(rhs[ch]); }
+  { for(int ch = 0; ch < FB_CHANNELS_STEREO; ch++) (*this)[ch].CopyTo(rhs[ch]); }
   void Fill(int from, int to, float val) 
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++)  (*this)[ch].Fill(from, to, val); }
+  { for(int ch = 0; ch < FB_CHANNELS_STEREO; ch++)  (*this)[ch].Fill(from, to, val); }
 
   void ShiftLeft(int count)
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].ShiftLeft(count); }
+  { for(int ch = 0; ch < FB_CHANNELS_STEREO; ch++) (*this)[ch].ShiftLeft(count); }
   void InPlaceMultiply(float x) 
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].InPlaceMultiply(x); }
+  { for(int ch = 0; ch < FB_CHANNELS_STEREO; ch++) (*this)[ch].InPlaceMultiply(x); }
   void InPlaceAdd(DerivedT const& rhs)
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].InPlaceAdd(rhs[ch]); }
+  { for(int ch = 0; ch < FB_CHANNELS_STEREO; ch++) (*this)[ch].InPlaceAdd(rhs[ch]); }
 
   template <class T>
   void CopyTo(T& rhs, int srcOffset, int tgtOffset, int count) const
-  { for(int ch = 0; ch < FF_CHANNELS_STEREO; ch++) (*this)[ch].CopyTo(rhs[ch], srcOffset, tgtOffset, count); }
+  { for(int ch = 0; ch < FB_CHANNELS_STEREO; ch++) (*this)[ch].CopyTo(rhs[ch], srcOffset, tgtOffset, count); }
 };
 
 class FFRawStereoBlockView:
 public FFStereoBlockMixin<FFRawStereoBlockView>
 {
-  std::array<FFRawMonoBlockView, FF_CHANNELS_STEREO> _store;
+  std::array<FFRawMonoBlockView, FB_CHANNELS_STEREO> _store;
   friend class FFStereoBlockMixin<FFRawStereoBlockView>;
 
 public:
@@ -160,10 +160,10 @@ public:
   _store({ l, r }) {}
 };
 
-class alignas(FF_FIXED_BLOCK_SIZE * FF_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
+class alignas(FB_FIXED_BLOCK_SIZE * FB_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
 public FFStereoBlockMixin<FFFixedStereoBlock>
 {
-  std::array<FFFixedMonoBlock, FF_CHANNELS_STEREO> _store;
+  std::array<FFFixedMonoBlock, FB_CHANNELS_STEREO> _store;
   friend class FFStereoBlockMixin<FFFixedStereoBlock>;
 
 public:
@@ -173,7 +173,7 @@ public:
 class FFDynamicStereoBlock:
 public FFStereoBlockMixin<FFDynamicStereoBlock>
 {
-  std::array<FFDynamicMonoBlock, FF_CHANNELS_STEREO> _store;
+  std::array<FFDynamicMonoBlock, FB_CHANNELS_STEREO> _store;
   friend class FFStereoBlockMixin<FFDynamicStereoBlock>;
 
 public:
@@ -182,5 +182,5 @@ public:
   _store({ FFDynamicMonoBlock(count), FFDynamicMonoBlock(count) }) {}
 
   FFRawStereoBlockView GetRawBlockView()
-  { return FFRawStereoBlockView(_store[FF_CHANNEL_L].GetRawBlockView(), _store[FF_CHANNEL_R].GetRawBlockView()); }
+  { return FFRawStereoBlockView(_store[FB_CHANNEL_L].GetRawBlockView(), _store[FB_CHANNEL_R].GetRawBlockView()); }
 };

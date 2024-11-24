@@ -24,15 +24,15 @@ FFPluginProcessor::ProcessFixed(
   bool on = FBNormalizedToBool(_memory.scalar.block.osci[0][FFOsciBlockParamOn]);
   if (!on)
   {
-    output.Fill(0, FF_FIXED_BLOCK_SIZE, 0.0f);
+    output.Fill(0, FB_FIXED_BLOCK_SIZE, 0.0f);
     return;
   }
 
-  for (int s = 0; s < FF_FIXED_BLOCK_SIZE; s++)
+  for (int s = 0; s < FB_FIXED_BLOCK_SIZE; s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());
-    output[FF_CHANNEL_L][s] = sample;
-    output[FF_CHANNEL_R][s] = sample;
+    output[FB_CHANNEL_L][s] = sample;
+    output[FB_CHANNEL_R][s] = sample;
     _phase.Next(_sampleRate, 440.0f);
   }
 }
