@@ -96,8 +96,8 @@ MakeRuntimeParams(
   return result;
 }
 
-FFRuntimeTopo::
-FFRuntimeTopo(FBStaticTopo const& staticTopo):
+FBRuntimeTopo::
+FBRuntimeTopo(FBStaticTopo const& staticTopo):
 modules(MakeRuntimeModules(staticTopo)),
 accParams(MakeRuntimeAccParams(modules)),
 blockParams(MakeRuntimeBlockParams(modules)),
