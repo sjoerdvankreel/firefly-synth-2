@@ -16,13 +16,13 @@ using namespace Steinberg::Vst;
 class FFVST3AudioEffect:
 public FBVST3AudioEffect
 {
-protected:
-  std::unique_ptr<IFBHostBlockProcessor> 
-  CreateProcessor(ProcessSetup const& setup) const override;
-
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3AudioEffect);
   FFVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId);
+
+protected:
+  std::unique_ptr<IFBHostBlockProcessor> CreateProcessor(
+    FBRuntimeTopo const& topo, ProcessSetup const& setup) const override;
 };
 
 FFVST3AudioEffect::
@@ -30,9 +30,10 @@ FFVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId) :
 FBVST3AudioEffect(std::move(topo), controllerId) {}
 
 std::unique_ptr<IFBHostBlockProcessor>
-FFVST3AudioEffect::CreateProcessor(ProcessSetup const& setup) const
+FFVST3AudioEffect::CreateProcessor(
+  FBRuntimeTopo const& topo, ProcessSetup const& setup) const
 {
-  return std::make_unique<FFPluginProcessor>(setup.maxSamplesPerBlock, setup.sampleRate);
+  return std::make_unique<FFPluginProcessor>(topo, setup.maxSamplesPerBlock, setup.sampleRate);
 }
 
 static FUID

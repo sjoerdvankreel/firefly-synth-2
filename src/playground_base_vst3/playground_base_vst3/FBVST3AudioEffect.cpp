@@ -86,7 +86,7 @@ FBVST3AudioEffect::canProcessSampleSize(int32 symbolicSize)
 tresult PLUGIN_API
 FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
-  _processor = CreateProcessor(setup);
+  _processor = CreateProcessor(_topo, setup);
   _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
   _zeroIn.reset(new FBDynamicStereoBlock(setup.maxSamplesPerBlock));
   return kResultTrue;

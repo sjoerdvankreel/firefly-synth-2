@@ -20,8 +20,8 @@ public AudioEffect
   std::unique_ptr<IFBHostBlockProcessor> _processor = {};
 
 protected:
-  virtual std::unique_ptr<IFBHostBlockProcessor>
-  CreateProcessor(ProcessSetup const& setup) const = 0;
+  virtual std::unique_ptr<IFBHostBlockProcessor> CreateProcessor(
+    FBRuntimeTopo const& topo, ProcessSetup const& setup) const = 0;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);

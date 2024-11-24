@@ -4,11 +4,16 @@
 #include <numbers>
 
 FFPluginProcessor::
-FFPluginProcessor(int maxHostSampleCount, float sampleRate) :
+FFPluginProcessor(
+  FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate) :
 _phase(),
 _sampleRate(sampleRate),
 _memory(),
-_fixedProcessor(maxHostSampleCount) {}
+_fixedProcessor(maxHostSampleCount)
+{
+  topo.InitScalarAddr(_memory);
+  topo.InitProcessorAddr(_memory);
+}
 
 void 
 FFPluginProcessor::ProcessHost(
