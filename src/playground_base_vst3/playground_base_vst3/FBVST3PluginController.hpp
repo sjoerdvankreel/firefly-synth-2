@@ -6,10 +6,10 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-class FFVST3PluginController:
+class FBVST3PluginController:
 public EditControllerEx1
 {
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFVST3PluginController);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBVST3PluginController);
   tresult PLUGIN_API initialize(FUnknown* context) override;
 };
