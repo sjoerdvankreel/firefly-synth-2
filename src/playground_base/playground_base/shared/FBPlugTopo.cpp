@@ -44,7 +44,7 @@ MakeRuntimeParamLongName(
 
 static std::map<int, int>
 MakeTagToParam(
-  std::vector<FFRuntimeParam> const& runtimeParams)
+  std::vector<FBRuntimeParam> const& runtimeParams)
 {
   std::map<int, int> result;
   for (int p = 0; p < runtimeParams.size(); p++)
@@ -52,22 +52,22 @@ MakeTagToParam(
   return result;
 }
 
-static std::vector<FFRuntimeParam>
+static std::vector<FBRuntimeParam>
 MakeRuntimeAccParams(
   std::vector<FFRuntimeModule> const& runtimeModules)
 {
-  std::vector<FFRuntimeParam> result;
+  std::vector<FBRuntimeParam> result;
   for (int m = 0; m < runtimeModules.size(); m++)
     for (int ap = 0; ap < runtimeModules[m].accParams.size(); ap++)
       result.push_back(runtimeModules[m].accParams[ap]);
   return result;
 }
 
-static std::vector<FFRuntimeParam>
+static std::vector<FBRuntimeParam>
 MakeRuntimeBlockParams(
   std::vector<FFRuntimeModule> const& runtimeModules)
 {
-  std::vector<FFRuntimeParam> result;
+  std::vector<FBRuntimeParam> result;
   for (int m = 0; m < runtimeModules.size(); m++)
     for (int bp = 0; bp < runtimeModules[m].blockParams.size(); bp++)
       result.push_back(runtimeModules[m].blockParams[bp]);
@@ -84,15 +84,15 @@ MakeRuntimeModules(FBStaticTopo const& staticTopo)
   return result;
 }
 
-static std::vector<FFRuntimeParam>
+static std::vector<FBRuntimeParam>
 MakeRuntimeParams(
   FBStaticModule const& staticModule, int moduleSlot,
   std::vector<FBStaticParam> const& staticParams)
 {
-  std::vector<FFRuntimeParam> result;
+  std::vector<FBRuntimeParam> result;
   for (int p = 0; p < staticParams.size(); p++)
     for (int s = 0; s < staticParams[p].slotCount; s++)
-      result.push_back(FFRuntimeParam(staticModule, moduleSlot, staticParams[p], s));
+      result.push_back(FBRuntimeParam(staticModule, moduleSlot, staticParams[p], s));
   return result;
 }
 
@@ -104,8 +104,8 @@ blockParams(MakeRuntimeBlockParams(modules)),
 tagToAccParam(MakeTagToParam(accParams)),
 tagToBlockParam(MakeTagToParam(blockParams)) {}
 
-FFRuntimeParam::
-FFRuntimeParam(
+FBRuntimeParam::
+FBRuntimeParam(
   FBStaticModule const& staticModule, int moduleSlot,
   FBStaticParam const& staticParam, int paramSlot) :
 moduleSlot(moduleSlot),

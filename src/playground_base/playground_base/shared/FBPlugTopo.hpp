@@ -46,7 +46,7 @@ struct FBStaticTopo
   FF_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };
 
-struct FFRuntimeParam
+struct FBRuntimeParam
 {
   int const moduleSlot;
   int const paramSlot;
@@ -57,8 +57,8 @@ struct FFRuntimeParam
   std::string const id;
   int const tag;
 
-  FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FFRuntimeParam);
-  FFRuntimeParam(
+  FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
+  FBRuntimeParam(
     FBStaticModule const& staticModule, int moduleSlot,
     FBStaticParam const& staticParam, int paramSlot);
 };
@@ -66,8 +66,8 @@ struct FFRuntimeParam
 struct FFRuntimeModule
 {
   std::string const name;
-  std::vector<FFRuntimeParam> const accParams;
-  std::vector<FFRuntimeParam> const blockParams;
+  std::vector<FBRuntimeParam> const accParams;
+  std::vector<FBRuntimeParam> const blockParams;
 
   FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FFRuntimeModule);
   FFRuntimeModule(
@@ -80,8 +80,8 @@ struct FFRuntimeTopo
   FFRuntimeTopo(FBStaticTopo const& staticTopo);
 
   std::vector<FFRuntimeModule> const modules;
-  std::vector<FFRuntimeParam> const accParams;
-  std::vector<FFRuntimeParam> const blockParams;
+  std::vector<FBRuntimeParam> const accParams;
+  std::vector<FBRuntimeParam> const blockParams;
   std::map<int, int> const tagToAccParam;
   std::map<int, int> const tagToBlockParam;
 };
