@@ -57,7 +57,10 @@ FBInputSplitter::
 FBInputSplitter(int maxHostSampleCount) :
 _fixed(),
 _accumulated(std::max(FB_FIXED_BLOCK_SIZE, maxHostSampleCount)),
-_straddledAccParamEvents(FB_EVENT_COUNT_GUESS) {}
+_straddledAccParamEvents()
+{
+  _straddledAccParamEvents.reserve(FB_EVENT_COUNT_GUESS);
+}
 
 FBFixedInputBlock const*
 FBInputSplitter::Split()
