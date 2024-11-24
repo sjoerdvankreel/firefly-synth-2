@@ -12,7 +12,7 @@ public IFBHostBlockProcessor
 {
   FBPhase _phase;
   float const _sampleRate;
-  FFProcParamMemory _memory;
+  FFProcessorParamMemory _memory;
   FBFixedBlockProcessor _fixedProcessor;
 
   friend class FBFixedBlockProcessor;

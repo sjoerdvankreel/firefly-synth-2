@@ -34,19 +34,21 @@ struct FFBlockParamMemory
   std::array<std::array<float, FFShaperBlockParamCount>, FF_SHAPER_COUNT> shaper;
 };
 
-struct FFScalarParamMemory
+struct FFScalarParamMemory:
+public FBScalarParamMemoryTag
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamMemory);
   FFBlockParamMemory block;
   FFAccParamMemory<float> acc;
 };
 
-struct alignas(alignof(FBFixedMonoBlock)) FFProcParamMemory
+struct alignas(alignof(FBFixedMonoBlock)) FFProcessorParamMemory:
+public FFScalarParamMemory,
+public FBProcessorParamMemoryTag
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcessorParamMemory);
   FFAccParamMemory<FBFixedMonoBlock> dense;
   FFAccParamMemory<int> pos;
-  FFScalarParamMemory scalar;
 };
 
 #if 0 // todo search if 0

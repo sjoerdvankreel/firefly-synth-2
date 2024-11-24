@@ -8,6 +8,22 @@
 
 class FBFixedMonoBlock;
 
+struct FBScalarParamMemoryTag
+{
+  virtual ~FBScalarParamMemoryTag() {}
+};
+
+struct FBProcessorParamMemoryTag
+{
+  virtual ~FBProcessorParamMemoryTag() {}
+};
+
+struct FBProcessorParamMemoryAddr
+{
+  int* pos;
+  FBFixedMonoBlock* dense;
+};
+
 inline double 
 FBDiscreteToNormalized(int count, int index)
 { return index / (count - 1.0); }
@@ -27,6 +43,9 @@ struct FBStaticParam
   std::string id;
   std::string name;
   std::string unit;
+
+  float* (*scalarAddr)(FBScalarParamMemoryTag* tag);
+  FBProcessorParamMemoryAddr(*processorAddr)(FBProcessorParamMemoryTag* tag);
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };
