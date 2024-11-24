@@ -58,15 +58,15 @@ MakeRawStereoBlockView(AudioBusBuffers& buffers, int sampleCount)
     sampleCount);
 }
 
-FFVST3PluginProcessor::
-FFVST3PluginProcessor(FUID const& controllerId):
+FBVST3PluginProcessor::
+FBVST3PluginProcessor(FUID const& controllerId):
 _topo(FFMakeTopo())
 {
   setControllerClass(controllerId);
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::initialize(FUnknown* context)
+FBVST3PluginProcessor::initialize(FUnknown* context)
 {
   if (AudioEffect::initialize(context) != kResultTrue)
     return kResultFalse;
@@ -76,7 +76,7 @@ FFVST3PluginProcessor::initialize(FUnknown* context)
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
+FBVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 {
   if (symbolicSize == kSample32) 
     return kResultTrue;
@@ -84,7 +84,7 @@ FFVST3PluginProcessor::canProcessSampleSize(int32 symbolicSize)
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
+FBVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
 {
   _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
   _zeroIn.reset(new FBDynamicStereoBlock(setup.maxSamplesPerBlock));
@@ -93,7 +93,7 @@ FFVST3PluginProcessor::setupProcessing(ProcessSetup& setup)
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::setBusArrangements(
+FBVST3PluginProcessor::setBusArrangements(
   SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
   if (numIns != 0 || numOuts != 1 || outputs[0] != SpeakerArr::kStereo)
@@ -102,7 +102,7 @@ FFVST3PluginProcessor::setBusArrangements(
 }
 
 tresult PLUGIN_API
-FFVST3PluginProcessor::process(ProcessData& data)
+FBVST3PluginProcessor::process(ProcessData& data)
 {
   _input->audio = _zeroIn->GetRawBlockView();
   _output = MakeRawStereoBlockView(data.outputs[0], data.numSamples);

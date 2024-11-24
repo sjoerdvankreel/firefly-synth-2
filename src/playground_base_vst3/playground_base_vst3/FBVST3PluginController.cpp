@@ -43,7 +43,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
 }
 
 tresult PLUGIN_API
-FFVST3PluginController::initialize(FUnknown* context)
+FBVST3PluginController::initialize(FUnknown* context)
 {
   if (EditController::initialize(context) != kResultTrue)
     return kResultFalse;

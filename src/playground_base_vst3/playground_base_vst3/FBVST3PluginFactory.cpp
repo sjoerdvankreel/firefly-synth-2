@@ -20,7 +20,7 @@ TextToFUID(char const* text)
 static FUnknown*
 ControllerFactory(void*) 
 {
-  auto result = new FFVST3PluginController;
+  auto result = new FBVST3PluginController;
   return static_cast<IEditController*>(result);
 }
 
@@ -28,7 +28,7 @@ static FUnknown*
 ProcessorFactory(void*)
 {
   auto controllerFuid = TextToFUID(FF_PLUGIN_CONTROLLER_ID);
-  auto result = new FFVST3PluginProcessor(controllerFuid);
+  auto result = new FBVST3PluginProcessor(controllerFuid);
   return static_cast<IAudioProcessor*>(result);
 }
 
