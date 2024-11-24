@@ -86,10 +86,9 @@ FBVST3AudioEffect::canProcessSampleSize(int32 symbolicSize)
 tresult PLUGIN_API
 FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
+  _processor = CreateProcessor(setup);
   _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
   _zeroIn.reset(new FBDynamicStereoBlock(setup.maxSamplesPerBlock));
-  // TODO
-  //_processor.reset(new FFPluginProcessor(setup.maxSamplesPerBlock, setup.sampleRate));
   return kResultTrue;
 }
 
@@ -143,8 +142,6 @@ FBVST3AudioEffect::process(ProcessData& data)
   auto compare = [](auto const& l, auto const& r) { 
     return l.position == r.position ? l.tag < r.tag: l.position < r.position; };
   std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
-  
-  // _processor->ProcessHost(*_input, _output);  
-
+  _processor->ProcessHost(*_input, _output);  
   return kResultTrue;
 }

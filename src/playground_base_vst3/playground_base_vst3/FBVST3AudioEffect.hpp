@@ -2,6 +2,7 @@
 
 #include <playground_base/shared/FBPlugTopo.hpp>
 #include <playground_base/shared/FBHostBlock.hpp>
+#include <playground_base_vst3/FBVST3PluginProcessor.hpp>
 
 #include <public.sdk/source/vst/vstaudioeffect.h>
 #include <memory>
@@ -16,6 +17,10 @@ public AudioEffect
   FBRawStereoBlockView _output = {};
   std::unique_ptr<FBHostInputBlock> _input = {};
   std::unique_ptr<FBDynamicStereoBlock> _zeroIn = {};
+  std::unique_ptr<IFBVST3PluginProcessor> _processor = {};
+
+protected:
+  std::unique_ptr<IFBVST3PluginProcessor> CreateProcessor(ProcessSetup const& setup);
 
 public:  
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
