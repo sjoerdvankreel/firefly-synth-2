@@ -6,7 +6,7 @@ FBOutputAggregator(int maxHostSampleCount):
 _accumulated(std::max(FB_FIXED_BLOCK_SIZE, maxHostSampleCount)) {}
 
 void 
-FBOutputAggregator::Accumulate(FFFixedStereoBlock const& input)
+FBOutputAggregator::Accumulate(FBFixedStereoBlock const& input)
 {
   input.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, FB_FIXED_BLOCK_SIZE);
   _accumulated.sampleCount += FB_FIXED_BLOCK_SIZE;

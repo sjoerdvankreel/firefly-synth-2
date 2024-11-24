@@ -19,7 +19,7 @@ FFPluginProcessor::ProcessHost(
 
 void 
 FFPluginProcessor::ProcessFixed(
-  FBFixedInputBlock const& input, FFFixedStereoBlock& output)
+  FBFixedInputBlock const& input, FBFixedStereoBlock& output)
 {
   bool on = FBNormalizedToBool(_memory.scalar.block.osci[0][FFOsciBlockParamOn]);
   if (!on)

@@ -12,5 +12,5 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBOutputAggregator);
 
   void Aggregate(FBRawStereoBlockView& output);
-  void Accumulate(FFFixedStereoBlock const& input);
+  void Accumulate(FBFixedStereoBlock const& input);
 };

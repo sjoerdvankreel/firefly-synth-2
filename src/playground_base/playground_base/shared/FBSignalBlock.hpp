@@ -175,12 +175,12 @@ public:
   { return FBRawStereoBlockView(_store[FB_CHANNEL_L].GetRawBlockView(), _store[FB_CHANNEL_R].GetRawBlockView()); }
 };
 
-class alignas(FB_FIXED_BLOCK_SIZE * FB_CHANNELS_STEREO * sizeof(float)) FFFixedStereoBlock:
-public FBStereoBlockMixin<FFFixedStereoBlock>
+class alignas(FB_FIXED_BLOCK_SIZE * FB_CHANNELS_STEREO * sizeof(float)) FBFixedStereoBlock:
+public FBStereoBlockMixin<FBFixedStereoBlock>
 {
   std::array<FBFixedMonoBlock, FB_CHANNELS_STEREO> _store;
-  friend class FBStereoBlockMixin<FFFixedStereoBlock>;
+  friend class FBStereoBlockMixin<FBFixedStereoBlock>;
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFFixedStereoBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedStereoBlock);
 };

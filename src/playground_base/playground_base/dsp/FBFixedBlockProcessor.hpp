@@ -7,7 +7,7 @@
 
 class FBFixedBlockProcessor
 {
-  FFFixedStereoBlock _fixedOutput;
+  FBFixedStereoBlock _fixedOutput;
   FBInputSplitter _inputSplitter;
   FBOutputAggregator _outputAggregator;
 
