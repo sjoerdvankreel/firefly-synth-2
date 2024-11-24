@@ -42,18 +42,25 @@ FFMakeTopo()
   osciType.slotCount = 1;
   osciType.valueCount = FFOsciTypeCount;
   osciType.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
+  osciType.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.block.osci.type; });
 
   auto& osciGain = osci.accParams[FFOsciAccParamGain];
   osciGain.name = "Gain";
   osciGain.slotCount = 1;
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
+  osciGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci.gain; });
+  osciGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci.gain; });
+  osciGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.osci.gain; });
 
   auto& osciPitch = osci.accParams[FFOsciAccParamPitch];
   osciPitch.name = "Pitch";
   osciPitch.slotCount = 1;
   osciPitch.valueCount = 0;
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
+  osciGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci.pitch; });
+  osciGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci.pitch; });
+  osciGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.osci.pitch; });
 
   auto& shaper = result.modules[FFModuleShaper];
   shaper.name = "Shaper";
@@ -67,18 +74,23 @@ FFMakeTopo()
   shaperOn.slotCount = 1;
   shaperOn.valueCount = 2;
   shaperOn.id = "{BF67A27A-97E9-4640-9E57-B1E04D195ACC}";
+  shaperOn.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.block.shaper.on; });
 
   auto& shaperClip = shaper.blockParams[FFShaperBlockParamClip];
   shaperClip.name = "Clip";
   shaperClip.slotCount = 1;
   shaperClip.valueCount = 2;
   shaperClip.id = "{81C7442E-4064-4E90-A742-FDDEA84AE1AC}";
+  shaperClip.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.block.shaper.clip; });
 
   auto& shaperGain = shaper.accParams[FFShaperAccParamGain];
   shaperGain.name = "Gain";
   shaperGain.slotCount = 1;
   shaperGain.valueCount = 2;
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
+  shaperGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.shaper.gain; });
+  shaperGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.shaper.gain; });
+  shaperGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.shaper.gain; });
 
   return FBStaticTopo(result);
 }
