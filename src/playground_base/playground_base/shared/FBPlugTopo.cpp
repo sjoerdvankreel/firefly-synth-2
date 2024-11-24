@@ -24,7 +24,7 @@ MakeRuntimeParamHash(
 
 static std::string
 MakeRuntimeParamId(
-  FFStaticModule const& staticModule, int moduleSlot, 
+  FBStaticModule const& staticModule, int moduleSlot,
   FBStaticParam const& staticParam, int paramSlot)
 {
   auto moduleId = staticModule.id + "-" + std::to_string(moduleSlot);
@@ -34,7 +34,7 @@ MakeRuntimeParamId(
 
 static std::string
 MakeRuntimeParamLongName(
-  FFStaticModule const& staticModule, int moduleSlot,
+  FBStaticModule const& staticModule, int moduleSlot,
   FBStaticParam const& staticParam, int paramSlot)
 {
   auto moduleName = MakeRuntimeName(staticModule.name, staticModule.slotCount, moduleSlot);
@@ -75,7 +75,7 @@ MakeRuntimeBlockParams(
 }
 
 static std::vector<FFRuntimeModule>
-MakeRuntimeModules(FFStaticTopo const& staticTopo)
+MakeRuntimeModules(FBStaticTopo const& staticTopo)
 {
   std::vector<FFRuntimeModule> result;
   for (int mi = 0; mi < staticTopo.modules.size(); mi++)
@@ -86,7 +86,7 @@ MakeRuntimeModules(FFStaticTopo const& staticTopo)
 
 static std::vector<FFRuntimeParam>
 MakeRuntimeParams(
-  FFStaticModule const& staticModule, int moduleSlot,
+  FBStaticModule const& staticModule, int moduleSlot,
   std::vector<FBStaticParam> const& staticParams)
 {
   std::vector<FFRuntimeParam> result;
@@ -97,7 +97,7 @@ MakeRuntimeParams(
 }
 
 FFRuntimeTopo::
-FFRuntimeTopo(FFStaticTopo const& staticTopo):
+FFRuntimeTopo(FBStaticTopo const& staticTopo):
 modules(MakeRuntimeModules(staticTopo)),
 accParams(MakeRuntimeAccParams(modules)),
 blockParams(MakeRuntimeBlockParams(modules)),
@@ -106,7 +106,7 @@ tagToBlockParam(MakeTagToParam(blockParams)) {}
 
 FFRuntimeParam::
 FFRuntimeParam(
-  FFStaticModule const& staticModule, int moduleSlot,
+  FBStaticModule const& staticModule, int moduleSlot,
   FBStaticParam const& staticParam, int paramSlot) :
 moduleSlot(moduleSlot),
 paramSlot(paramSlot),
@@ -118,7 +118,7 @@ tag(MakeRuntimeParamHash(id)) {}
 
 FFRuntimeModule::
 FFRuntimeModule(
-  FFStaticModule const& staticModule, int moduleSlot):
+  FBStaticModule const& staticModule, int moduleSlot):
 name(MakeRuntimeName(staticModule.name, staticModule.slotCount, moduleSlot)),
 accParams(MakeRuntimeParams(staticModule, moduleSlot, staticModule.accParams)),
 blockParams(MakeRuntimeParams(staticModule, moduleSlot, staticModule.blockParams)) {}

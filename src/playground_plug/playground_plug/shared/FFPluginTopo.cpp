@@ -1,10 +1,10 @@
 #include <playground_plug/shared/FFPluginTopo.hpp>
 #include <playground_plug/shared/FFPluginConfig.hpp>
 
-FFStaticTopo
+FBStaticTopo
 FFMakeTopo()
 {
-  FFStaticTopo result;
+  FBStaticTopo result;
   result.modules.resize(FFModuleCount);
   
   auto& osci = result.modules[FFModuleOsci];
@@ -63,5 +63,5 @@ FFMakeTopo()
   shaperGain.valueCount = 2;
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
 
-  return FFStaticTopo(result);
+  return FBStaticTopo(result);
 }

@@ -29,7 +29,7 @@ struct FBStaticParam
   FF_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };
 
-struct FFStaticModule
+struct FBStaticModule
 {
   int slotCount;
   std::string id;
@@ -37,14 +37,13 @@ struct FFStaticModule
   std::vector<FBStaticParam> accParams;
   std::vector<FBStaticParam> blockParams;
 
-  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FFStaticModule);
+  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };
 
-struct FFStaticTopo
+struct FBStaticTopo
 {
-  std::vector<FFStaticModule> modules;
-
-  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FFStaticTopo);
+  std::vector<FBStaticModule> modules;
+  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };
 
 struct FFRuntimeParam
@@ -60,7 +59,7 @@ struct FFRuntimeParam
 
   FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FFRuntimeParam);
   FFRuntimeParam(
-    FFStaticModule const& staticModule, int moduleSlot,
+    FBStaticModule const& staticModule, int moduleSlot,
     FBStaticParam const& staticParam, int paramSlot);
 };
 
@@ -72,13 +71,13 @@ struct FFRuntimeModule
 
   FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FFRuntimeModule);
   FFRuntimeModule(
-    FFStaticModule const& staticModule, int moduleSlot);
+    FBStaticModule const& staticModule, int moduleSlot);
 };
 
 struct FFRuntimeTopo
 {
   FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FFRuntimeTopo);
-  FFRuntimeTopo(FFStaticTopo const& staticTopo);
+  FFRuntimeTopo(FBStaticTopo const& staticTopo);
 
   std::vector<FFRuntimeModule> const modules;
   std::vector<FFRuntimeParam> const accParams;
