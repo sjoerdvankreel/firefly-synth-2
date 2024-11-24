@@ -6,12 +6,12 @@
 class FBInputSplitter
 {
   FBFixedInputBlock _fixed;
-  std::vector<int*>* const _posAddr;
   FBAccumulatedInputBlock _accumulated;
+  std::vector<FBAccParamEvent> _straddledAccParamEvents;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBInputSplitter);
-  FBInputSplitter(std::vector<int*>* posAddr, int maxHostSampleCount);
+  FBInputSplitter(int maxHostSampleCount);
 
   FBFixedInputBlock const* Split();
   void Accumulate(FBHostInputBlock const& input);

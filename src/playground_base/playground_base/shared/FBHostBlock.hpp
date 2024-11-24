@@ -3,6 +3,8 @@
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <playground_base/shared/FBSharedUtility.hpp>
 
+#define FB_EVENT_COUNT_GUESS 1024
+
 struct FBNoteId
 {
   int id;

@@ -25,7 +25,7 @@ FBFixedAutomationProcessor(
   FBScalarParamMemoryBase* scalarMemory,
   FBProcessorParamMemoryBase* processorMemory,
   int maxHostSampleCount) :
-FBFixedBlockProcessor<FBFixedAutomationProcessor<Derived>>(&_processorMemory->posAddr, maxHostSampleCount),
+FBFixedBlockProcessor<FBFixedAutomationProcessor<Derived>>(maxHostSampleCount),
 _scalarMemory(scalarMemory),
 _processorMemory(processorMemory) {}
 

@@ -9,3 +9,4 @@ check hash clash
 separate clap/vst projs
 replace stepcount crap by something sensible
 Linux visibility-hidden & inline-hidden et all
+do we need posaddr and scalaraddr for dense?

@@ -1,16 +1,14 @@
 #include <playground_base/shared/FBHostBlock.hpp>
 
-#define FF_EVENT_COUNT_GUESS 1024
-
 FBHostEvents::
 FBHostEvents():
 note(),
 accParam(),
 blockParam()
 {
-  note.reserve(FF_EVENT_COUNT_GUESS);
-  accParam.reserve(FF_EVENT_COUNT_GUESS);
-  blockParam.reserve(FF_EVENT_COUNT_GUESS);
+  note.reserve(FB_EVENT_COUNT_GUESS);
+  accParam.reserve(FB_EVENT_COUNT_GUESS);
+  blockParam.reserve(FB_EVENT_COUNT_GUESS);
 }
 
 FBFixedInputBlock::
