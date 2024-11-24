@@ -17,7 +17,7 @@ class FFPluginProcessor
   void ProcessFixed(FBFixedInputBlock const& input, FFFixedStereoBlock& output);
 
 public:
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);
   FFPluginProcessor(int maxHostSampleCount, float sampleRate);
   void ProcessHost(FBHostInputBlock const& input, FFRawStereoBlockView& output);
 };

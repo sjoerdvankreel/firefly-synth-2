@@ -34,7 +34,7 @@ struct FBBlockParamEvent
 struct FBHostEvents
 {
   FBHostEvents();
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FBHostEvents);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostEvents);
 
   std::vector<FBNoteEvent> note;
   std::vector<FBAccParamEvent> accParam;
@@ -44,7 +44,7 @@ struct FBHostEvents
 struct FBFixedInputBlock
 {
   FBFixedInputBlock();
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FBFixedInputBlock);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedInputBlock);
 
   FBHostEvents events;
   FFFixedStereoBlock audio;
@@ -53,7 +53,7 @@ struct FBFixedInputBlock
 struct FBHostInputBlock
 {
   FBHostInputBlock(float* l, float* r, int count);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FBHostInputBlock);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostInputBlock);
 
   FBHostEvents events;
   FFRawStereoBlockView audio;
@@ -62,7 +62,7 @@ struct FBHostInputBlock
 struct FBAccumulatedInputBlock
 {
   FBAccumulatedInputBlock(int maxSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedInputBlock);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedInputBlock);
 
   int sampleCount;
   FBHostEvents events;
@@ -72,7 +72,7 @@ struct FBAccumulatedInputBlock
 struct FBAccumulatedOutputBlock
 {
   FBAccumulatedOutputBlock(int maxSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedOutputBlock);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedOutputBlock);
 
   int sampleCount;
   FFDynamicStereoBlock audio;

@@ -26,7 +26,7 @@ struct FBStaticParam
   std::string name;
   std::string unit;
 
-  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };
 
 struct FBStaticModule
@@ -37,13 +37,13 @@ struct FBStaticModule
   std::vector<FBStaticParam> accParams;
   std::vector<FBStaticParam> blockParams;
 
-  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };
 
 struct FBStaticTopo
 {
   std::vector<FBStaticModule> modules;
-  FF_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };
 
 struct FBRuntimeParam
@@ -57,7 +57,7 @@ struct FBRuntimeParam
   std::string const id;
   int const tag;
 
-  FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
+  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
   FBRuntimeParam(
     FBStaticModule const& staticModule, int moduleSlot,
     FBStaticParam const& staticParam, int paramSlot);
@@ -69,14 +69,14 @@ struct FBRuntimeModule
   std::vector<FBRuntimeParam> const accParams;
   std::vector<FBRuntimeParam> const blockParams;
 
-  FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeModule);
+  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeModule);
   FBRuntimeModule(
     FBStaticModule const& staticModule, int moduleSlot);
 };
 
 struct FBRuntimeTopo
 {
-  FF_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
+  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
   FBRuntimeTopo(FBStaticTopo const& staticTopo);
 
   std::vector<FBRuntimeModule> const modules;

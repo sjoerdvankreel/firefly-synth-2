@@ -9,7 +9,7 @@ class FBOutputAggregator
 
 public:
   FBOutputAggregator(int maxHostSampleCount);
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FBOutputAggregator);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBOutputAggregator);
 
   void Aggregate(FFRawStereoBlockView& output);
   void Accumulate(FFFixedStereoBlock const& input);

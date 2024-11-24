@@ -12,7 +12,7 @@ class FBFixedBlockProcessor
   FBOutputAggregator _outputAggregator;
 
 public:
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
   FBFixedBlockProcessor(int maxHostSampleCount);
 
   template <class Processor>

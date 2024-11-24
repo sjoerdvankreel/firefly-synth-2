@@ -18,7 +18,7 @@ class FFRawBlockView
   std::size_t _size;
 
 public:
-  FF_COPY_MOVE_DEFCTOR(FFRawBlockView);
+  FB_COPY_MOVE_DEFCTOR(FFRawBlockView);
   FFRawBlockView(float* store, int count) :
   _size(count), _store(store) {}
 
@@ -83,7 +83,7 @@ public FFMonoBlockMixin<FFRawMonoBlockView>
   friend class FFMonoBlockMixin<FFRawMonoBlockView>;
 
 public:
-  FF_COPY_MOVE_DEFCTOR(FFRawMonoBlockView);
+  FB_COPY_MOVE_DEFCTOR(FFRawMonoBlockView);
   FFRawMonoBlockView(float* store, int count) :
   _store(store, count) {}
 };
@@ -95,7 +95,7 @@ public FFMonoBlockMixin<FFFixedMonoBlock>
   friend class FFMonoBlockMixin<FFFixedMonoBlock>;
 
 public:
-  FF_NOCOPY_MOVE_DEFCTOR(FFFixedMonoBlock);
+  FB_NOCOPY_MOVE_DEFCTOR(FFFixedMonoBlock);
 };
 
 class FFDynamicMonoBlock:
@@ -105,7 +105,7 @@ public FFMonoBlockMixin<FFDynamicMonoBlock>
   friend class FFMonoBlockMixin<FFDynamicMonoBlock>;
 
 public:
-  FF_NOCOPY_MOVE_NODEFCTOR(FFDynamicMonoBlock);
+  FB_NOCOPY_MOVE_NODEFCTOR(FFDynamicMonoBlock);
   FFDynamicMonoBlock(int count): 
   _store(count, 0.0f) {}
 
@@ -153,7 +153,7 @@ public FFStereoBlockMixin<FFRawStereoBlockView>
   friend class FFStereoBlockMixin<FFRawStereoBlockView>;
 
 public:
-  FF_COPY_MOVE_DEFCTOR(FFRawStereoBlockView);
+  FB_COPY_MOVE_DEFCTOR(FFRawStereoBlockView);
   FFRawStereoBlockView(float* l, float* r, int count) :
   _store({ FFRawMonoBlockView(l, count), FFRawMonoBlockView(r, count) }) {}
   FFRawStereoBlockView(FFRawMonoBlockView const& l, FFRawMonoBlockView const& r) :
@@ -167,7 +167,7 @@ public FFStereoBlockMixin<FFFixedStereoBlock>
   friend class FFStereoBlockMixin<FFFixedStereoBlock>;
 
 public:
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFFixedStereoBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFFixedStereoBlock);
 };
 
 class FFDynamicStereoBlock:
@@ -177,7 +177,7 @@ public FFStereoBlockMixin<FFDynamicStereoBlock>
   friend class FFStereoBlockMixin<FFDynamicStereoBlock>;
 
 public:
-  FF_NOCOPY_NOMOVE_NODEFCTOR(FFDynamicStereoBlock);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFDynamicStereoBlock);
   FFDynamicStereoBlock(int count) :
   _store({ FFDynamicMonoBlock(count), FFDynamicMonoBlock(count) }) {}
 

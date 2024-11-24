@@ -22,28 +22,28 @@ enum { FFShaperBlockParamOn, FFShaperBlockParamClip, FFShaperBlockParamCount };
 template <class T>
 struct alignas(alignof(T)) FFAccParamMemory
 {
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFAccParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFAccParamMemory);
   std::array<std::array<T, FFOsciAccParamCount>, FF_OSCI_COUNT> osci;
   std::array<std::array<T, FFShaperAccParamCount>, FF_SHAPER_COUNT> shaper;
 };
 
 struct FFBlockParamMemory
 {
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFBlockParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFBlockParamMemory);
   std::array<std::array<float, FFOsciBlockParamCount>, FF_OSCI_COUNT> osci;
   std::array<std::array<float, FFShaperBlockParamCount>, FF_SHAPER_COUNT> shaper;
 };
 
 struct FFScalarParamMemory
 {
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamMemory);
   FFBlockParamMemory block;
   FFAccParamMemory<float> acc;
 };
 
 struct alignas(alignof(FFFixedMonoBlock)) FFProcParamMemory
 {
-  FF_NOCOPY_NOMOVE_DEFCTOR(FFProcParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamMemory);
   FFAccParamMemory<FFFixedMonoBlock> dense;
   FFAccParamMemory<int> pos;
   FFScalarParamMemory scalar;
