@@ -1,6 +1,6 @@
+#include <playground_plug/shared/FFPluginConfig.hpp>
 #include <playground_plug_vst3/FFVST3PluginProcessor.hpp>
 #include <playground_plug_vst3/FFVST3PluginController.hpp>
-#include <playground_plug/plug/shared/FFPluginConfig.hpp>
 
 #include <public.sdk/source/main/pluginfactory.h>
 #include <pluginterfaces/vst/ivstcomponent.h>

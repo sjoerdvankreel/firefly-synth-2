@@ -1,4 +1,4 @@
-#include <playground_plug/plug/shared/FFPluginTopo.hpp>
+#include <playground_plug/shared/FFPluginTopo.hpp>
 #include <playground_plug_vst3/FFVST3PluginProcessor.hpp>
 
 #include <pluginterfaces/vst/ivstevents.h>
