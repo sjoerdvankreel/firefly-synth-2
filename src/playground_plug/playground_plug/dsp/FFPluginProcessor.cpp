@@ -31,8 +31,8 @@ FFPluginProcessor::ProcessAutomation(
   for (int s = 0; s < FB_FIXED_BLOCK_SIZE; s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());
-    output[FB_CHANNEL_L][s] = sample * gain[s];
-    output[FB_CHANNEL_R][s] = sample * gain[s];
+    output[FB_CHANNEL_L][s] = sample;// *gain[s];
+    output[FB_CHANNEL_R][s] = sample;// *gain[s];
     _phase.Next(_sampleRate, 440.0f);
   }
 }

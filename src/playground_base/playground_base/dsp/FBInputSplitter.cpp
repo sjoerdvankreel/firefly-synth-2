@@ -1,6 +1,15 @@
 #include <playground_base/dsp/FBInputSplitter.hpp>
 #include <algorithm>
 
+static void
+GatherBlockParamEvents(
+  std::vector<FBBlockParamEvent> const& input,
+  std::vector<FBBlockParamEvent>& output)
+{
+  output.clear();
+  output.insert(output.begin(), input.begin(), input.end());
+}
+
 template <class Event>
 static void GatherAccEvents(
   std::vector<Event>& input, std::vector<Event>& output)
@@ -12,25 +21,6 @@ static void GatherAccEvents(
   input.erase(input.begin(), input.begin() + e);
   for (auto& e : input)
     e.position -= FB_FIXED_BLOCK_SIZE;
-}
-
-static void
-GatherBlockParamEvents(
-  std::vector<FBBlockParamEvent> const& input, std::vector<FBBlockParamEvent>& output)
-{
-  output.clear();
-  output.insert(output.begin(), input.begin(), input.end());
-}
-
-static void
-GatherStraddlingAccParamEvents(
-  std::vector<FBAccParamEvent> const& input, std::vector<FBAccParamEvent>& output)
-{
-  output.clear();
-  output.insert(output.begin(), input.begin(), input.end());
-  auto compare = [](auto& l, auto& r) {
-    return l.index == r.index ? l.position < r.position : l.index < r.index; };
-  std::sort(output.begin(), output.end(), compare);
 }
 
 static void
@@ -56,11 +46,7 @@ GatherStraddledAccParamEvents(
 FBInputSplitter::
 FBInputSplitter(int maxHostSampleCount) :
 _fixed(),
-_accumulated(FB_FIXED_BLOCK_SIZE + maxHostSampleCount),
-_straddledAccParamEvents()
-{
-  _straddledAccParamEvents.reserve(FB_EVENT_COUNT_GUESS);
-}
+_accumulated(FB_FIXED_BLOCK_SIZE + maxHostSampleCount) {}
 
 FBFixedInputBlock const*
 FBInputSplitter::Split()
@@ -91,16 +77,15 @@ FBInputSplitter::Accumulate(FBHostInputBlock const& input)
     _accumulated.events.note.push_back(event);
   }
 
-  GatherStraddlingAccParamEvents(input.events.accParam, _straddledAccParamEvents);
-  for (int e = 0; e < _straddledAccParamEvents.size(); e++)
+  for (int e = 0; e < input.events.accParam.size(); e++)
   {
-    FBAccParamEvent thisEvent = _straddledAccParamEvents[e];
+    FBAccParamEvent thisEvent = input.events.accParam[e];
     thisEvent.position += _accumulated.sampleCount;
     _accumulated.events.accParam.push_back(thisEvent);
-    if (e < _straddledAccParamEvents.size() - 1 &&
-      _straddledAccParamEvents[e + 1].index == _straddledAccParamEvents[e].index)
+    if (e < input.events.accParam.size() - 1 &&
+      input.events.accParam[e + 1].index == input.events.accParam[e].index)
     {
-      FBAccParamEvent nextEvent = _straddledAccParamEvents[e + 1];
+      FBAccParamEvent nextEvent = input.events.accParam[e + 1];
       nextEvent.position += _accumulated.sampleCount;
       GatherStraddledAccParamEvents(thisEvent, nextEvent, _accumulated.events.accParam);
     }

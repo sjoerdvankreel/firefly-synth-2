@@ -7,7 +7,6 @@ class FBInputSplitter
 {
   FBFixedInputBlock _fixed;
   FBAccumulatedInputBlock _accumulated;
-  std::vector<FBAccParamEvent> _straddledAccParamEvents;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBInputSplitter);

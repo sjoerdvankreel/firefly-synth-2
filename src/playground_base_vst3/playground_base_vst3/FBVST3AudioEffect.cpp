@@ -139,6 +139,9 @@ FBVST3AudioEffect::process(ProcessData& data)
               _input->events.accParam.push_back(MakeAccParamEvent(iter->second, position, value));
         }     
 
+  auto compare = [](auto& l, auto& r) {
+    return l.index == r.index ? l.position < r.position : l.index < r.index; };
+  std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
   _processor->ProcessHost(*_input, _output);  
   return kResultTrue;
 }
