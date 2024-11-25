@@ -6,6 +6,8 @@ class FBRawStereoBlockView;
 
 class FBOutputAggregator
 {
+  int _maxHostSampleCount;
+  bool _hitMaxHostSampleCount;
   FBAccumulatedOutputBlock _accumulated;
 
 public:
