@@ -9,8 +9,29 @@ _accumulated(2 * (FB_FIXED_BLOCK_SIZE + maxHostSampleCount)) {}
 void 
 FBOutputAggregator::Accumulate(FBFixedStereoBlock const& input)
 {
+
+  for (int zz = 0; zz < _accumulated.sampleCount - 1; zz++)
+  {
+    if (std::abs(_accumulated.audio[0][zz] - _accumulated.audio[0][zz + 1]) > 0.1)
+    {
+      int zzz = 0;
+      zzz++;
+      assert(false);
+    }
+  }
+
   input.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, FB_FIXED_BLOCK_SIZE);
   _accumulated.sampleCount += FB_FIXED_BLOCK_SIZE;
+
+  for (int zz = 0; zz < _accumulated.sampleCount - 1; zz++)
+  {
+    if (std::abs(_accumulated.audio[0][zz] - _accumulated.audio[0][zz + 1]) > 0.1)
+    {
+      int zzz = 0;
+      zzz++;
+      assert(false);
+    }
+  }
 }
 
 void 
@@ -25,8 +46,29 @@ FBOutputAggregator::Aggregate(FBRawStereoBlockView& output)
     return;
   }
 
+  for (int zz = 0; zz < _accumulated.sampleCount - 1; zz++)
+  {
+    if (std::abs(_accumulated.audio[0][zz] - _accumulated.audio[0][zz + 1]) > 0.1)
+    {
+      int zzz = 0;
+      zzz++;
+      assert(false);
+    }
+  }
+
   int samplesUsed = std::min(output.Count(), _accumulated.sampleCount);
+  assert(samplesUsed == output.Count());
   _accumulated.audio.CopyTo(output, 0, 0, samplesUsed);
   _accumulated.audio.ShiftLeft(samplesUsed);
   _accumulated.sampleCount -= samplesUsed;
+
+  for (int zz = 0; zz < _accumulated.sampleCount - 1; zz++)
+  {
+    if (std::abs(_accumulated.audio[0][zz] - _accumulated.audio[0][zz + 1]) > 0.1)
+    {
+      int zzz = 0;
+      zzz++;
+      assert(false);
+    }
+  }
 }
