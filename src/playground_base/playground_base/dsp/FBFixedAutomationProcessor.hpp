@@ -19,7 +19,7 @@ public:
     FBProcessorParamMemoryBase* processorMemory,
     int maxHostSampleCount);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedAutomationProcessor);
-  void ProcessFixed(FBFixedInputBlock const& input, FBFixedStereoBlock& output);
+  void ProcessFixed(FBFixedInputBlock const& input, FBFixedAudioBlock& output);
 };
 
 template <class Derived>
@@ -34,7 +34,7 @@ _processorMemory(processorMemory) {}
 
 template <class Derived> void
 FBFixedAutomationProcessor<Derived>::ProcessFixed(
-  FBFixedInputBlock const& input, FBFixedStereoBlock& output)
+  FBFixedInputBlock const& input, FBFixedAudioBlock& output)
 {
   for (auto const& be : input.events.blockParam)
     *_scalarMemory->blockAddr[be.index] = be.normalized;
@@ -50,8 +50,7 @@ FBFixedAutomationProcessor<Derived>::RampAccEvents(
   std::vector<FBAccParamEvent> const& accEvents)
 {
   for (int ae = 0; ae < _scalarMemory->accAddr.size(); ae++)
-    _processorMemory->denseAddr[ae]->Fill(
-      0, FB_FIXED_BLOCK_SIZE, *_scalarMemory->accAddr[ae]);
+    _processorMemory->denseAddr[ae]->Fill(*_scalarMemory->accAddr[ae]);
 
   for (int ae = 0; ae < accEvents.size(); ae++)
   {

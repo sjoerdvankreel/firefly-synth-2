@@ -49,7 +49,7 @@ struct FBFixedInputBlock
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedInputBlock);
 
   FBHostEvents events;
-  FBFixedStereoBlock audio;
+  FBFixedAudioBlock audio;
 };
 
 struct FBHostInputBlock

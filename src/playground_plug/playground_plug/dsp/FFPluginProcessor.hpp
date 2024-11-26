@@ -19,5 +19,5 @@ public FBFixedAutomationProcessor<FFPluginProcessor>
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);
   FFPluginProcessor(FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate);
-  void ProcessAutomation(FBFixedInputBlock const& input, FBFixedStereoBlock& output);
+  void ProcessAutomation(FBFixedInputBlock const& input, FBFixedAudioBlock& output);
 };

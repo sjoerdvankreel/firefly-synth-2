@@ -7,7 +7,7 @@ _maxHostSampleCount(maxHostSampleCount) {}
 //_accumulated(2 * (FB_FIXED_BLOCK_SIZE + maxHostSampleCount)) {}
 
 void 
-FBOutputAggregator::Accumulate(FBFixedStereoBlock const& input)
+FBOutputAggregator::Accumulate(FBFixedAudioBlock const& input)
 {
   for (int zz = 0; zz < (int)_xl.size() - 1; zz++)
   {

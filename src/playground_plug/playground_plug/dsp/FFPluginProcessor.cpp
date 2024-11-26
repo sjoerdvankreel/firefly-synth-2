@@ -17,12 +17,12 @@ _memory()
 
 void 
 FFPluginProcessor::ProcessAutomation(
-  FBFixedInputBlock const& input, FBFixedStereoBlock& output)
+  FBFixedInputBlock const& input, FBFixedAudioBlock& output)
 {
   bool on = FBNormalizedToBool(_memory.block.osci.on[0][FFOsciBlockParamOn]);
   if (!on)
   {
-    output.Fill(0, FB_FIXED_BLOCK_SIZE, 0.0f);
+    output.Fill(0.0f);
     return;
   }
 

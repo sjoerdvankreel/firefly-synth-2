@@ -11,6 +11,38 @@
 #define FB_CHANNEL_R 1
 #define FB_CHANNELS_STEREO 2
 #define FB_FIXED_BLOCK_SIZE 1024 // TODO make it good
+#define FB_FIXED_BLOCK_ALIGN (FB_FIXED_BLOCK_SIZE * sizeof(float))
+
+class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedCVBlock
+{
+  std::array<float, FB_FIXED_BLOCK_SIZE> _store;
+
+public:
+  FB_NOCOPY_MOVE_DEFCTOR(FBFixedCVBlock);
+
+  float& operator[](int index)
+  { return _store[index]; }
+  float const& operator[](int index) const
+  { return _store[index]; }
+  void Fill(float val) 
+  { std::fill(_store.begin(), _store.end(), val); }
+};
+
+class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedAudioBlock
+{
+  std::array<FBFixedCVBlock, FB_CHANNELS_STEREO> _store;
+
+public:
+  FB_NOCOPY_MOVE_DEFCTOR(FBFixedAudioBlock);
+
+  FBFixedCVBlock& operator[](int channel)
+  { return _store[channel]; }
+  FBFixedCVBlock const& operator[](int channel) const
+  { return _store[channel]; }
+  void Fill(float val) 
+  { for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++) _store[ch].Fill(val); }
+};
+
 
 class FBRawBlockView
 {
@@ -103,16 +135,6 @@ public:
   { return FBRawMonoBlockView(_store.data(), static_cast<int>(_store.size())); }
 };
 
-class alignas(FB_FIXED_BLOCK_SIZE * sizeof(float)) FBFixedMonoBlock:
-public FBMonoBlockMixin<FBFixedMonoBlock>
-{
-  std::array<float, FB_FIXED_BLOCK_SIZE> _store;
-  friend class FBMonoBlockMixin<FBFixedMonoBlock>;
-
-public:
-  FB_NOCOPY_MOVE_DEFCTOR(FBFixedMonoBlock);
-};
-
 template <class DerivedT>
 class FBStereoBlockMixin
 {
@@ -173,14 +195,4 @@ public:
 
   FBRawStereoBlockView GetRawBlockView()
   { return FBRawStereoBlockView(_store[FB_CHANNEL_L].GetRawBlockView(), _store[FB_CHANNEL_R].GetRawBlockView()); }
-};
-
-class alignas(FB_FIXED_BLOCK_SIZE * FB_CHANNELS_STEREO * sizeof(float)) FBFixedStereoBlock:
-public FBStereoBlockMixin<FBFixedStereoBlock>
-{
-  std::array<FBFixedMonoBlock, FB_CHANNELS_STEREO> _store;
-  friend class FBStereoBlockMixin<FBFixedStereoBlock>;
-
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedStereoBlock);
 };

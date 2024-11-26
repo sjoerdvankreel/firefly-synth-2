@@ -10,7 +10,7 @@ template <class Derived>
 class FBFixedBlockProcessor:
 public IFBHostBlockProcessor
 {
-  FBFixedStereoBlock _fixedOutput;
+  FBFixedAudioBlock _fixedOutput;
   FBInputSplitter _inputSplitter;
   FBOutputAggregator _outputAggregator;
 

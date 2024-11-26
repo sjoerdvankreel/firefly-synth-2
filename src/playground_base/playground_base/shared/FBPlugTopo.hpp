@@ -9,7 +9,7 @@
 
 #define FB_SINGLE_SLOT_COUNT 1
 
-class FBFixedMonoBlock;
+class FBFixedCVBlock;
 
 struct FBScalarParamMemoryBase
 {
@@ -28,7 +28,7 @@ struct FBProcessorParamMemoryBase
 
   // interior pointers to derived
   std::vector<int*> posAddr;
-  std::vector<FBFixedMonoBlock*> denseAddr;
+  std::vector<FBFixedCVBlock*> denseAddr;
 };
 
 inline double 
@@ -59,7 +59,7 @@ struct FBStaticParam
     int moduleSlot,
     int paramSlot, 
     FBProcessorParamMemoryBase& mem)> posAddr;
-  std::function<FBFixedMonoBlock* (
+  std::function<FBFixedCVBlock* (
     int moduleSlot,
     int paramSlot,
     FBProcessorParamMemoryBase& mem)> denseAddr;

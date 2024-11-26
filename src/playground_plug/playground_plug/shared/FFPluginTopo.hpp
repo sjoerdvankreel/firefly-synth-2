@@ -71,12 +71,12 @@ public FBScalarParamMemoryBase
   FFAccParamMemory<float> acc;
 };
 
-struct alignas(alignof(FBFixedMonoBlock)) FFProcessorParamMemory:
+struct alignas(alignof(FBFixedCVBlock)) FFProcessorParamMemory:
 public FFScalarParamMemory,
 public FBProcessorParamMemoryBase
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcessorParamMemory);
-  FFAccParamMemory<FBFixedMonoBlock> dense;
+  FFAccParamMemory<FBFixedCVBlock> dense;
   FFAccParamMemory<int> pos;
 };
 
