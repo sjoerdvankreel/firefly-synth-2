@@ -18,7 +18,7 @@ class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedCVBlock
   std::array<float, FB_FIXED_BLOCK_SIZE> _store;
 
 public:
-  FB_NOCOPY_MOVE_DEFCTOR(FBFixedCVBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedCVBlock);
 
   float& operator[](int index)
   { return _store[index]; }
@@ -33,7 +33,7 @@ class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedAudioBlock
   std::array<FBFixedCVBlock, FB_CHANNELS_STEREO> _store;
 
 public:
-  FB_NOCOPY_MOVE_DEFCTOR(FBFixedAudioBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
 
   FBFixedCVBlock& operator[](int channel)
   { return _store[channel]; }
