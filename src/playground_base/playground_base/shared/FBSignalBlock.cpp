@@ -12,7 +12,7 @@ _store()
 void
 FBRawAudioBlockView::SetToZero(int from, int to)
 {
-  assert(0 <= from && from <= to && to < _count);
+  assert(0 <= from && from <= to && to <= _count);
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
     for (int i = from; i < to; i++)
       _store[ch][i] = 0.0f;
