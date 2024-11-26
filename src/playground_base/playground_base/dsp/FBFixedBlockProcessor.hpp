@@ -17,7 +17,7 @@ public IFBHostBlockProcessor
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
   FBFixedBlockProcessor(int maxHostSampleCount);
-  void ProcessHost(FBHostInputBlock const& input, FBRawStereoBlockView& output);
+  void ProcessHost(FBHostInputBlock const& input, FBRawAudioBlockView& output);
 };
 
 template <class Derived>
@@ -29,7 +29,7 @@ _outputAggregator(maxHostSampleCount) {}
 
 template <class Derived> void 
 FBFixedBlockProcessor<Derived>::ProcessHost(
-  FBHostInputBlock const& input, FBRawStereoBlockView& output)
+  FBHostInputBlock const& input, FBRawAudioBlockView& output)
 {
   _inputSplitter.Accumulate(input);
   FBFixedInputBlock const* splitted = nullptr;

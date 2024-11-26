@@ -4,7 +4,7 @@
 
 #include <vector>
 
-class FBRawStereoBlockView;
+class FBRawAudioBlockView;
 
 class FBOutputAggregator
 {
@@ -18,6 +18,6 @@ public:
   FBOutputAggregator(int maxHostSampleCount);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBOutputAggregator);
 
-  void Aggregate(FBRawStereoBlockView& output);
+  void Aggregate(FBRawAudioBlockView& output);
   void Accumulate(FBFixedAudioBlock const& input);
 };

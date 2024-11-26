@@ -58,7 +58,7 @@ struct FBHostInputBlock
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostInputBlock);
 
   FBHostEvents events;
-  FBRawStereoBlockView audio;
+  FBRawAudioBlockView audio;
 };
 
 struct FBAccumulatedInputBlock

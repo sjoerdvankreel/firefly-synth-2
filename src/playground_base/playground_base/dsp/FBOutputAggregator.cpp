@@ -51,14 +51,14 @@ FBOutputAggregator::Accumulate(FBFixedAudioBlock const& input)
 }
 
 void 
-FBOutputAggregator::Aggregate(FBRawStereoBlockView& output)
+FBOutputAggregator::Aggregate(FBRawAudioBlockView& output)
 {
-  if (_xl.size() >=  FB_FIXED_BLOCK_SIZE)
+  if (_xl.size() >= FB_FIXED_BLOCK_SIZE)
     _hitFixedBlockSize = true;
   if (!_hitFixedBlockSize)
   {
     // TODO PDC
-    output.Fill(0, output.Count(), 0.0f);
+    output.SetToZero(0, output.Count());
     return;
   }
 
@@ -76,11 +76,14 @@ FBOutputAggregator::Aggregate(FBRawStereoBlockView& output)
   int samplesPadded = std::max(0, output.Count() - samplesUsed);
   assert(samplesPadded + samplesUsed == output.Count());
 
+  output.SetToZero(0, samplesPadded);
+  /*
   for (int i = 0; i < samplesPadded; i++)
   {
     output[0][i] = 0;
     output[1][i] = 0;
   }
+  */
 
   for (int i = samplesPadded; i < samplesPadded + samplesUsed; i++)
   {

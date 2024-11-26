@@ -13,6 +13,29 @@
 #define FB_FIXED_BLOCK_SIZE 1024 // TODO make it good
 #define FB_FIXED_BLOCK_ALIGN (FB_FIXED_BLOCK_SIZE * sizeof(float))
 
+class FBRawAudioBlockView
+{
+  int _count;
+  std::array<float*, FB_CHANNELS_STEREO> _store;
+
+public:
+  FB_COPY_NOMOVE_DEFCTOR(FBRawAudioBlockView);
+  FBRawAudioBlockView(float* l, float* r, int count) :
+  _count(count), _store({ l, r }) {}
+
+  void SetToZero(int from, int to);
+  int Count() const { return _count; }
+};
+
+inline void
+FBRawAudioBlockView::SetToZero(int from, int to)
+{
+  assert(0 <= from && from <= to && to < _count);
+  for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
+    for (int i = from; i < to; i++)
+      _store[ch][i] = 0.0f;
+}
+
 class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedCVBlock
 {
   std::array<float, FB_FIXED_BLOCK_SIZE> _store;

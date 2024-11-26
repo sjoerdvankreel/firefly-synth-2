@@ -49,10 +49,10 @@ MakeNoteOffEvent(Event const& event)
   return result;
 }
 
-static FBRawStereoBlockView
-MakeRawStereoBlockView(AudioBusBuffers& buffers, int sampleCount)
+static FBRawAudioBlockView
+MakeRawAudioBlockView(AudioBusBuffers& buffers, int sampleCount)
 {
-  return FBRawStereoBlockView(
+  return FBRawAudioBlockView(
     buffers.channelBuffers32[FB_CHANNEL_L],
     buffers.channelBuffers32[FB_CHANNEL_R],
     sampleCount);
