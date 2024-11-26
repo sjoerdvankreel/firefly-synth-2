@@ -2,13 +2,17 @@
 
 #include <playground_base/shared/FBHostBlock.hpp>
 
+#include <vector>
+
 class FBRawStereoBlockView;
 
 class FBOutputAggregator
 {
   int _maxHostSampleCount;
   bool _hitMaxHostSampleCount;
-  FBAccumulatedOutputBlock _accumulated;
+  
+  std::vector<float> _xl = {};
+  std::vector<float> _xr = {};
 
 public:
   FBOutputAggregator(int maxHostSampleCount);
