@@ -15,7 +15,7 @@ public AudioEffect
 {
   FBRuntimeTopo const _topo;
   std::unique_ptr<FBHostInputBlock> _input = {};
-  std::unique_ptr<FBDynamicStereoBlock> _zeroIn = {};
+  std::unique_ptr<FBDynamicAudioBlock> _zeroIn = {};
   std::unique_ptr<IFBHostBlockProcessor> _processor = {};
 
 protected:

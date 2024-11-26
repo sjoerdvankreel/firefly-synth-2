@@ -10,9 +10,7 @@ class FBOutputAggregator
 {
   bool _hitFixedBlockSize;
   int _maxHostSampleCount;
-  
-  std::vector<float> _xl = {};
-  std::vector<float> _xr = {};
+  FBDynamicAudioBlock _accumulated;
 
 public:
   FBOutputAggregator(int maxHostSampleCount);

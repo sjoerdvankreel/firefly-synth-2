@@ -23,7 +23,6 @@ audio(maxSampleCount) {}
 
 FBAccumulatedInputBlock::
 FBAccumulatedInputBlock(int maxSampleCount):
-sampleCount(0),
 events(),
 audio(maxSampleCount) {}
 

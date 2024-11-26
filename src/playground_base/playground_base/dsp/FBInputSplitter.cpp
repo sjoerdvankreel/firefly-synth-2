@@ -51,45 +51,40 @@ _accumulated(FB_FIXED_BLOCK_SIZE + maxHostSampleCount) {}
 FBFixedInputBlock const*
 FBInputSplitter::Split()
 {
-  if (_accumulated.sampleCount < FB_FIXED_BLOCK_SIZE)
+  if (_accumulated.audio.Count() < FB_FIXED_BLOCK_SIZE)
     return nullptr;
 
+  _accumulated.audio.MoveOneFixedBlockTo(_fixed.audio);
   GatherAccEvents(_accumulated.events.note, _fixed.events.note);
   GatherAccEvents(_accumulated.events.accParam, _fixed.events.accParam);
   GatherBlockParamEvents(_accumulated.events.blockParam, _fixed.events.blockParam);
-
-  _accumulated.audio.CopyTo(_fixed.audio, 0, 0, FB_FIXED_BLOCK_SIZE);
-  _accumulated.audio.ShiftLeft(FB_FIXED_BLOCK_SIZE);
-  _accumulated.sampleCount -= FB_FIXED_BLOCK_SIZE;
   return &_fixed;
 }
 
 void 
 FBInputSplitter::Accumulate(FBHostInputBlock const& input)
 {
-  GatherBlockParamEvents(input.events.blockParam, _accumulated.events.blockParam);
-  input.audio.CopyTo(_accumulated.audio, 0, _accumulated.sampleCount, input.audio.Count());
-
   for (int e = 0; e < input.events.note.size(); e++)
   {
     FBNoteEvent event = input.events.note[e];
-    event.position += _accumulated.sampleCount;
+    event.position += _accumulated.audio.Count();
     _accumulated.events.note.push_back(event);
   }
 
   for (int e = 0; e < input.events.accParam.size(); e++)
   {
     FBAccParamEvent thisEvent = input.events.accParam[e];
-    thisEvent.position += _accumulated.sampleCount;
+    thisEvent.position += _accumulated.audio.Count();
     _accumulated.events.accParam.push_back(thisEvent);
     if (e < input.events.accParam.size() - 1 &&
       input.events.accParam[e + 1].index == input.events.accParam[e].index)
     {
       FBAccParamEvent nextEvent = input.events.accParam[e + 1];
-      nextEvent.position += _accumulated.sampleCount;
+      nextEvent.position += _accumulated.audio.Count();
       GatherStraddledAccParamEvents(thisEvent, nextEvent, _accumulated.events.accParam);
     }
   }
 
-  _accumulated.sampleCount += input.audio.Count();
+  GatherBlockParamEvents(input.events.blockParam, _accumulated.events.blockParam);
+  _accumulated.audio.AppendFrom(input.audio);
 }
