@@ -104,11 +104,6 @@ FBVST3AudioEffect::setBusArrangements(
 tresult PLUGIN_API
 FBVST3AudioEffect::process(ProcessData& data)
 {
-  _input->audio = _zeroIn->GetRawBlockView();
-  _output = MakeRawStereoBlockView(data.outputs[0], data.numSamples);
-  if (data.numInputs == 1)
-    MakeRawStereoBlockView(data.inputs[0], data.numSamples);
-
   Event event;
   _input->events.note.clear();
   if (data.inputEvents != nullptr)
@@ -142,6 +137,11 @@ FBVST3AudioEffect::process(ProcessData& data)
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.position < r.position : l.index < r.index; };
   std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
-  _processor->ProcessHost(*_input, _output);  
+
+  _input->audio = _zeroIn->GetRawBlockView();
+  if (data.numInputs == 1)
+    _input->audio = MakeRawAudioBlockView(data.inputs[0], data.numSamples);
+  FBRawAudioBlockView output(MakeRawAudioBlockView(*data.outputs, data.numSamples));
+  _processor->ProcessHost(*_input, _output);
   return kResultTrue;
 }
