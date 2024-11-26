@@ -2,8 +2,8 @@
 
 FBOutputAggregator::
 FBOutputAggregator(int maxHostSampleCount) :
-  _maxHostSampleCount(maxHostSampleCount),
-  _hitMaxHostSampleCount(false) {}
+_hitFixedBlockSize(false),
+_maxHostSampleCount(maxHostSampleCount) {}
 //_accumulated(2 * (FB_FIXED_BLOCK_SIZE + maxHostSampleCount)) {}
 
 void 
@@ -15,7 +15,7 @@ FBOutputAggregator::Accumulate(FBFixedStereoBlock const& input)
     {
       int zzz = 0;
       zzz++;
-      assert(false);
+      //assert(false);
     }
   }
 
@@ -30,7 +30,7 @@ FBOutputAggregator::Accumulate(FBFixedStereoBlock const& input)
     {
       int zzz = 0;
       zzz++;
-      assert(false);
+      //assert(false);
     }
   }
 
@@ -44,7 +44,7 @@ FBOutputAggregator::Accumulate(FBFixedStereoBlock const& input)
     {
       int zzz = 0;
       zzz++;
-      assert(false);
+      //assert(false);
     }
   }
   */
@@ -53,9 +53,9 @@ FBOutputAggregator::Accumulate(FBFixedStereoBlock const& input)
 void 
 FBOutputAggregator::Aggregate(FBRawStereoBlockView& output)
 {
-  if (_xl.size() >= _maxHostSampleCount)
-    _hitMaxHostSampleCount = true;
-  if (!_hitMaxHostSampleCount)
+  if (_xl.size() >=  FB_FIXED_BLOCK_SIZE)
+    _hitFixedBlockSize = true;
+  if (!_hitFixedBlockSize)
   {
     // TODO PDC
     output.Fill(0, output.Count(), 0.0f);
@@ -68,17 +68,24 @@ FBOutputAggregator::Aggregate(FBRawStereoBlockView& output)
     {
       int zzz = 0;
       zzz++;
-      assert(false);
+      //assert(false);
     }
   }
 
   int samplesUsed = std::min(output.Count(), (int)_xl.size());
-  assert(samplesUsed == output.Count());
+  int samplesPadded = std::max(0, output.Count() - samplesUsed);
+  assert(samplesPadded + samplesUsed == output.Count());
 
-  for (int i = 0; i < samplesUsed; i++)
+  for (int i = 0; i < samplesPadded; i++)
   {
-    output[0][i] = _xl[i];
-    output[1][i] = _xr[i];
+    output[0][i] = 0;
+    output[1][i] = 0;
+  }
+
+  for (int i = samplesPadded; i < samplesPadded + samplesUsed; i++)
+  {
+    output[0][i] = _xl[i - samplesPadded];
+    output[1][i] = _xr[i - samplesPadded];
   }
 
   _xl.erase(_xl.begin(), _xl.begin() + samplesUsed);
@@ -90,7 +97,7 @@ FBOutputAggregator::Aggregate(FBRawStereoBlockView& output)
     {
       int zzz = 0;
       zzz++;
-      assert(false);
+      //assert(false);
     }
   }
 }

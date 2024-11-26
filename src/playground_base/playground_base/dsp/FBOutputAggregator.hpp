@@ -8,8 +8,8 @@ class FBRawStereoBlockView;
 
 class FBOutputAggregator
 {
+  bool _hitFixedBlockSize;
   int _maxHostSampleCount;
-  bool _hitMaxHostSampleCount;
   
   std::vector<float> _xl = {};
   std::vector<float> _xr = {};
