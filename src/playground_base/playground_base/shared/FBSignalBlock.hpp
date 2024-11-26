@@ -12,6 +12,17 @@
 #define FB_CHANNELS_STEREO 2
 #define FB_FIXED_BLOCK_SIZE 1024 // TODO make it good
 
+class FBRawAudioBlock
+{
+  int _count;
+  std::array<float*, FB_CHANNELS_STEREO> _store;
+
+public:
+  FB_COPY_NOMOVE_NODEFCTOR(FBRawAudioBlock);
+  FBRawAudioBlock(float* l, float* r, int count) :
+  _count(_count), _store({ l, r }) {}
+};
+
 class FBRawBlockView
 {
   float* _store;
