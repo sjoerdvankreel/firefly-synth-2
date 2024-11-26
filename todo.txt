@@ -1,3 +1,4 @@
+paramflush
 static link
 make it a base library once again (separate lib)
 handle PDC
