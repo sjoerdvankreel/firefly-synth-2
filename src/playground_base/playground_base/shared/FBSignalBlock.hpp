@@ -8,7 +8,7 @@
 #define FB_CHANNEL_L 0
 #define FB_CHANNEL_R 1
 #define FB_CHANNELS_STEREO 2
-#define FB_FIXED_BLOCK_SIZE 1024 // TODO make it good
+#define FB_FIXED_BLOCK_SIZE 2048 // TODO make it good
 #define FB_FIXED_BLOCK_ALIGN (FB_FIXED_BLOCK_SIZE * sizeof(float))
 
 class FBRawAudioBlockView
