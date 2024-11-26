@@ -1,15 +1,12 @@
-# pragma once
+#pragma once
 
 #include <playground_base/shared/FBHostBlock.hpp>
-
-#include <vector>
 
 class FBRawAudioBlockView;
 
 class FBOutputAggregator
 {
   bool _hitFixedBlockSize;
-  int _maxHostSampleCount;
   FBDynamicAudioBlock _accumulated;
 
 public:

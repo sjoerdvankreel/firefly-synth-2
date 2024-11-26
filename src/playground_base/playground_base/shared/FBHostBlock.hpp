@@ -69,12 +69,3 @@ struct FBAccumulatedInputBlock
   FBHostEvents events;
   FBDynamicAudioBlock audio;
 };
-
-struct FBAccumulatedOutputBlock
-{
-  FBAccumulatedOutputBlock(int maxSampleCount);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedOutputBlock);
-
-  int sampleCount; // todo noneed
-  FBDynamicAudioBlock audio;
-};

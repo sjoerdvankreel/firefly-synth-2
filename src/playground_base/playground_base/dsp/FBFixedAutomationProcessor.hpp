@@ -17,8 +17,9 @@ public:
   FBFixedAutomationProcessor(
     FBScalarParamMemoryBase* scalarMemory, 
     FBProcessorParamMemoryBase* processorMemory,
-    int maxHostSampleCount);
+    int maxHostSampleCount);  
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedAutomationProcessor);
+
   void ProcessFixed(FBFixedInputBlock const& input, FBFixedAudioBlock& output);
 };
 
@@ -32,8 +33,8 @@ FBFixedBlockProcessor<FBFixedAutomationProcessor<Derived>>(maxHostSampleCount),
 _scalarMemory(scalarMemory),
 _processorMemory(processorMemory) {}
 
-template <class Derived> void
-FBFixedAutomationProcessor<Derived>::ProcessFixed(
+template <class Derived> 
+void FBFixedAutomationProcessor<Derived>::ProcessFixed(
   FBFixedInputBlock const& input, FBFixedAudioBlock& output)
 {
   for (auto const& be : input.events.blockParam)

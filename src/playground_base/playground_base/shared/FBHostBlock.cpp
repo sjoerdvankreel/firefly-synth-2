@@ -16,11 +16,6 @@ FBFixedInputBlock():
 events(),
 audio() {}
 
-FBAccumulatedOutputBlock::
-FBAccumulatedOutputBlock(int maxSampleCount):
-sampleCount(0),
-audio(maxSampleCount) {}
-
 FBAccumulatedInputBlock::
 FBAccumulatedInputBlock(int maxSampleCount):
 events(),

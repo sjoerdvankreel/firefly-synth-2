@@ -52,16 +52,13 @@ struct FBStaticParam
   std::string unit;
 
   std::function<float* (
-    int moduleSlot, 
-    int paramSlot, 
+    int moduleSlot, int paramSlot, 
     FBScalarParamMemoryBase& mem)> scalarAddr;
   std::function<int* (
-    int moduleSlot,
-    int paramSlot, 
+    int moduleSlot, int paramSlot, 
     FBProcessorParamMemoryBase& mem)> posAddr;
   std::function<FBFixedCVBlock* (
-    int moduleSlot,
-    int paramSlot,
+    int moduleSlot, int paramSlot,
     FBProcessorParamMemoryBase& mem)> denseAddr;
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
@@ -81,6 +78,7 @@ struct FBStaticModule
 struct FBStaticTopo
 {
   std::vector<FBStaticModule> modules;
+
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };
 

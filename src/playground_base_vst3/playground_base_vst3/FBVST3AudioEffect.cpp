@@ -88,7 +88,8 @@ FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   _processor = CreateProcessor(_topo, setup);
   _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
-  _zeroIn.reset(new FBDynamicStereoBlock(setup.maxSamplesPerBlock));
+  for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
+    _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
   return kResultTrue;
 }
 
@@ -138,10 +139,15 @@ FBVST3AudioEffect::process(ProcessData& data)
     return l.index == r.index ? l.position < r.position : l.index < r.index; };
   std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
 
-  _input->audio = _zeroIn->GetRawBlockView();
   if (data.numInputs == 1)
     _input->audio = MakeRawAudioBlockView(data.inputs[0], data.numSamples);
+  else
+    _input->audio = FBRawAudioBlockView(
+      _zeroIn[FB_CHANNEL_L].data(), 
+      _zeroIn[FB_CHANNEL_R].data(), 
+      data.numSamples);
+
   FBRawAudioBlockView output(MakeRawAudioBlockView(*data.outputs, data.numSamples));
-  _processor->ProcessHost(*_input, _output);
+  _processor->ProcessHost(*_input, output);
   return kResultTrue;
 }
