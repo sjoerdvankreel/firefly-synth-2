@@ -49,6 +49,10 @@ template <class Derived> void
 FBFixedAutomationProcessor<Derived>::RampAccEvents(
   std::vector<FBAccParamEvent> const& accEvents)
 {
+  for (int ae = 0; ae < _scalarMemory->accAddr.size(); ae++)
+    _processorMemory->denseAddr[ae]->Fill(
+      0, FB_FIXED_BLOCK_SIZE, *_scalarMemory->accAddr[ae]);
+
   for (int ae = 0; ae < accEvents.size(); ae++)
   {
     auto const& event = accEvents[ae];
