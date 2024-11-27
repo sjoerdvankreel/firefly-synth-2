@@ -1,14 +1,5 @@
-#include <playground_base/dsp/FBInputSplitter.hpp>
+#include <playground_base/dsp/FBInputAccumulator.hpp>
 #include <algorithm>
-
-static void
-GatherBlockParamEvents(
-  std::vector<FBBlockParamEvent> const& input,
-  std::vector<FBBlockParamEvent>& output)
-{
-  output.clear();
-  output.insert(output.begin(), input.begin(), input.end());
-}
 
 template <class Event>
 static void GatherAccEvents(
@@ -43,26 +34,27 @@ GatherStraddledAccParamEvents(
   }
 }
 
-FBInputSplitter::
-FBInputSplitter(int maxHostSampleCount) :
+FBInputAccumulator::
+FBInputAccumulator(int maxHostSampleCount) :
 _fixed(),
 _accumulated(FB_FIXED_BLOCK_SIZE + maxHostSampleCount) {}
 
-FBFixedInputBlock const*
-FBInputSplitter::Split()
+bool
+FBInputAccumulator::SplitTo(FBFixedInputBlock const** output)
 {
+  *output = nullptr;
   if (_accumulated.audio.Count() < FB_FIXED_BLOCK_SIZE)
-    return nullptr;
+    return false;
 
+  *output = &_fixed;
   _accumulated.audio.MoveOneFixedBlockTo(_fixed.audio);
   GatherAccEvents(_accumulated.events.note, _fixed.events.note);
   GatherAccEvents(_accumulated.events.accParam, _fixed.events.accParam);
-  GatherBlockParamEvents(_accumulated.events.blockParam, _fixed.events.blockParam);
-  return &_fixed;
+  return true;
 }
 
 void 
-FBInputSplitter::Accumulate(FBHostInputBlock const& input)
+FBInputAccumulator::AccumulateFrom(FBHostInputBlock const& input)
 {
   for (int e = 0; e < input.events.note.size(); e++)
   {
@@ -85,6 +77,5 @@ FBInputSplitter::Accumulate(FBHostInputBlock const& input)
     }
   }
 
-  GatherBlockParamEvents(input.events.blockParam, _accumulated.events.blockParam);
   _accumulated.audio.AppendFrom(input.audio);
 }

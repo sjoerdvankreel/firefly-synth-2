@@ -1,18 +1,18 @@
-#include <playground_base/dsp/FBOutputAggregator.hpp>
+#include <playground_base/dsp/FBOutputAccumulator.hpp>
 
-FBOutputAggregator::
-FBOutputAggregator(int maxHostSampleCount) :
+FBOutputAccumulator::
+FBOutputAccumulator(int maxHostSampleCount) :
 _hitFixedBlockSize(false),
 _accumulated(maxHostSampleCount) {}
 
 void 
-FBOutputAggregator::Accumulate(FBFixedAudioBlock const& input)
+FBOutputAccumulator::AccumulateFrom(FBFixedAudioBlock const& input)
 {
   _accumulated.AppendFrom(input);
 }
 
 void 
-FBOutputAggregator::Aggregate(FBRawAudioBlockView& output)
+FBOutputAccumulator::AggregateTo(FBRawAudioBlockView& output)
 {
   _hitFixedBlockSize |= _accumulated.Count() >= FB_FIXED_BLOCK_SIZE;
   if (_hitFixedBlockSize)

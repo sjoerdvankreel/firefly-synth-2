@@ -1,8 +1,8 @@
 #pragma once
 
 #include <playground_base/shared/FBSignalBlock.hpp>
-#include <playground_base/dsp/FBInputSplitter.hpp>
-#include <playground_base/dsp/FBOutputAggregator.hpp>
+#include <playground_base/dsp/FBInputAccumulator.hpp>
+#include <playground_base/dsp/FBOutputAccumulator.hpp>
 #include <playground_base/dsp/FBHostBlockProcessor.hpp>
 
 struct FBHostInputBlock;
@@ -12,11 +12,14 @@ class FBFixedBlockProcessor:
 public IFBHostBlockProcessor
 {
   FBFixedAudioBlock _fixedOutput;
-  FBInputSplitter _inputSplitter;
-  FBOutputAggregator _outputAggregator;
+  FBInputAccumulator _inputAccumulator;
+  FBOutputAccumulator _outputAccumulator;
+  FBScalarParamMemoryBase* const _scalarMemory;
 
 public:
-  FBFixedBlockProcessor(int maxHostSampleCount);
+  FBFixedBlockProcessor(
+    FBScalarParamMemoryBase* scalarMemory, 
+    int maxHostSampleCount);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
 
   void ProcessHost(FBHostInputBlock const& input, FBRawAudioBlockView& output);
@@ -24,21 +27,27 @@ public:
 
 template <class Derived>
 FBFixedBlockProcessor<Derived>::
-FBFixedBlockProcessor(int maxHostSampleCount) :
+FBFixedBlockProcessor(
+  FBScalarParamMemoryBase* scalarMemory,
+  int maxHostSampleCount) :
 _fixedOutput(),
-_inputSplitter(maxHostSampleCount),
-_outputAggregator(maxHostSampleCount) {}
+_inputAccumulator(maxHostSampleCount),
+_outputAccumulator(maxHostSampleCount),
+_scalarMemory(scalarMemory) {}
 
 template <class Derived> 
 void FBFixedBlockProcessor<Derived>::ProcessHost(
   FBHostInputBlock const& input, FBRawAudioBlockView& output)
 {
-  _inputSplitter.Accumulate(input);
-  FBFixedInputBlock const* splitted = nullptr;
-  while ((splitted = _inputSplitter.Split()) != nullptr)
+  for (auto const& be : input.events.blockParam)
+    *_scalarMemory->blockAddr[be.index] = be.normalized;
+
+  FBFixedInputBlock const* splitted;
+  _inputAccumulator.AccumulateFrom(input);
+  while (_inputAccumulator.SplitTo(&splitted))
   {
     static_cast<Derived*>(this)->ProcessFixed(*splitted, _fixedOutput);
-    _outputAggregator.Accumulate(_fixedOutput);
+    _outputAccumulator.AccumulateFrom(_fixedOutput);
   }
-  _outputAggregator.Aggregate(output);
+  _outputAccumulator.AggregateTo(output);
 }

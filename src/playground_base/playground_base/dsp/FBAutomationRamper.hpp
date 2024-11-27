@@ -10,9 +10,6 @@ public FBFixedBlockProcessor<FBAutomationRamper<Derived>>
   FBScalarParamMemoryBase* const _scalarMemory;
   FBProcessorParamMemoryBase* const _processorMemory;
 
-  void RampAccEvents(
-    std::vector<FBAccParamEvent> const& accEvents);
-
 public:
   FBAutomationRamper(
     FBScalarParamMemoryBase* scalarMemory, 
@@ -29,7 +26,7 @@ FBAutomationRamper(
   FBScalarParamMemoryBase* scalarMemory,
   FBProcessorParamMemoryBase* processorMemory,
   int maxHostSampleCount) :
-FBFixedBlockProcessor<FBAutomationRamper<Derived>>(maxHostSampleCount),
+FBFixedBlockProcessor<FBAutomationRamper<Derived>>(scalarMemory, maxHostSampleCount),
 _scalarMemory(scalarMemory),
 _processorMemory(processorMemory) {}
 
@@ -37,19 +34,9 @@ template <class Derived>
 void FBAutomationRamper<Derived>::ProcessFixed(
   FBFixedInputBlock const& input, FBFixedAudioBlock& output)
 {
-  for (auto const& be : input.events.blockParam)
-    *_scalarMemory->blockAddr[be.index] = be.normalized;
+  auto& accEvents = input.events.accParam;
   for (int ap = 0; ap < _processorMemory->posAddr.size(); ap++)
     *_processorMemory->posAddr[ap] = 0;
-
-  RampAccEvents(input.events.accParam);
-  static_cast<Derived*>(this)->ProcessAutomation(input, output);
-}
-
-template <class Derived> void
-FBAutomationRamper<Derived>::RampAccEvents(
-  std::vector<FBAccParamEvent> const& accEvents)
-{
   for (int ae = 0; ae < _scalarMemory->accAddr.size(); ae++)
     _processorMemory->denseAddr[ae]->Fill(*_scalarMemory->accAddr[ae]);
 
@@ -65,9 +52,11 @@ FBAutomationRamper<Derived>::RampAccEvents(
 
     for (int p = 0; p <= posRange; p++)
       (*_processorMemory->denseAddr[event.index])[currentPos + p]
-        = currentVal + p / static_cast<float>(posRange) * valRange;
+      = currentVal + p / static_cast<float>(posRange) * valRange;
     if (ae < accEvents.size() - 1 && accEvents[ae + 1].index != event.index)
       for (int p = event.position; p < FB_FIXED_BLOCK_SIZE; p++)
         (*_processorMemory->denseAddr[event.index])[p] = event.normalized;
   }
+
+  static_cast<Derived*>(this)->ProcessAutomation(input, output);
 }
