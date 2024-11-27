@@ -2,15 +2,6 @@
 #include <cassert>
 
 void
-FBHostAudioBlock::SetToZero(int from, int to)
-{
-  assert(0 <= from && from <= to && to <= _count);
-  for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
-    for (int i = from; i < to; i++)
-      _store[ch][i] = 0.0f;
-}
-
-void
 FBPipelineAudioBlock::AppendFrom(FBHostAudioBlock const& raw)
 {
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
@@ -23,7 +14,7 @@ FBPipelineAudioBlock::MoveOneRawBlockToAndPad(FBHostAudioBlock& raw)
 {
   int samplesUsed = std::min(raw.Count(), Count());
   int samplesPadded = std::max(0, raw.Count() - samplesUsed);
-  raw.SetToZero(0, samplesPadded);
+  // TODO raw.SetToZero(0, samplesPadded);
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
   {
     for (int s = samplesPadded; s < samplesPadded + samplesUsed; s++)

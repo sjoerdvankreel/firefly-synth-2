@@ -2,6 +2,7 @@
 
 #include <playground_base/shared/FBObjectLifetime.hpp>
 
+#include <cassert>
 #include <array>
 #include <vector>
 
@@ -23,7 +24,27 @@ public:
   FBHostAudioBlock(float* l, float* r, int count) :
   _count(count), _store({ l, r }) {}
 
-  void SetToZero(int from, int to);
+  void Set(int s, float l, float r)
+  {
+    assert(0 <= s && s < _count);
+    _store[0][s] = l;
+    _store[1][s] = r;
+  }
+
+  float& At(int ch, int s)
+  {
+    assert(0 <= ch && ch < 2);
+    assert(0 <= s && s < _count);
+    return _store[ch][s];
+  }
+  
+  float const& At(int ch, int s) const
+  {
+    assert(0 <= ch && ch < 2);
+    assert(0 <= s && s < _count);
+    return _store[ch][s];
+  }
+
   int Count() const { return _count; }
 };
 
@@ -72,6 +93,26 @@ public:
     _store[1].push_back(r);
   }
 
+  void Drop(int count)
+  {
+    assert(0 <= count && count <= _store[0].size());
+    _store[0].erase(_store[0].begin(), _store[0].begin() + count);
+    _store[1].erase(_store[1].begin(), _store[1].begin() + count);
+  }
+
+  float& At(int ch, int s)
+  {
+    assert(0 <= ch && ch < 2);
+    assert(0 <= s && s < _store[0].size());
+    return _store[ch][s];
+  }
+
+  float const& At(int ch, int s) const
+  {
+    assert(0 <= ch && ch < 2);
+    assert(0 <= s && s < _store[0].size());
+    return _store[ch][s];
+  }
 
   void AppendFrom(FBHostAudioBlock const& raw);
   void MoveOneFixedBlockTo(FBPlugAudioBlock& fixed);
