@@ -1,14 +1,6 @@
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <cassert>
 
-FBPipelineAudioBlock::
-FBPipelineAudioBlock(int capacity):
-_store()
-{
-  for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
-    _store[ch].reserve(capacity);
-}
-
 void
 FBHostAudioBlock::SetToZero(int from, int to)
 {

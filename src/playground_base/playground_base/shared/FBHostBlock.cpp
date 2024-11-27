@@ -5,11 +5,6 @@ FBFixedInputBlock():
 events(),
 audio() {}
 
-FBAccumulatedInputBlock::
-FBAccumulatedInputBlock(int maxSampleCount):
-events(),
-audio(maxSampleCount) {}
-
 FBHostInputBlock::
 FBHostInputBlock(float* l, float* r, int count):
 events(),

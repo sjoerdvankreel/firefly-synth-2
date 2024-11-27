@@ -62,8 +62,7 @@ class FBPipelineAudioBlock
   std::array<std::vector<float>, FB_CHANNELS_STEREO> _store;
 
 public:
-  FBPipelineAudioBlock(int capacity);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPipelineAudioBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBPipelineAudioBlock);
   
   int Count() const 
   { return static_cast<int>(_store[FB_CHANNEL_L].size()); }

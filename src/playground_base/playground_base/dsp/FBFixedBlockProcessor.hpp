@@ -2,8 +2,8 @@
 
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <playground_base/dsp/FBHostBlockProcessor.hpp>
-#include <playground_base/pipeline/FBInputAccumulator.hpp>
-#include <playground_base/pipeline/FBOutputAccumulator.hpp>
+#include <playground_base/pipeline/FBHostToPlugProcessor.hpp>
+#include <playground_base/pipeline/FBPlugToHostProcessor.hpp>
 
 struct FBHostInputBlock;
 
@@ -12,8 +12,8 @@ class FBFixedBlockProcessor:
 public IFBHostBlockProcessor
 {
   FBPlugAudioBlock _plugAudioOut;
-  FBInputAccumulator _inputAccumulator;
-  FBOutputAccumulator _outputAccumulator;
+  FBHostToPlugProcessor _hostToPlugProcessor;
+  FBPlugToHostProcessor _plugToHostProcessor;
   FBScalarParamAddrsBase* const _scalarAddrs;
 
 public:
@@ -32,8 +32,8 @@ FBFixedBlockProcessor(
   FBScalarParamAddrsBase* scalarAddrs,
   int maxHostSampleCount) :
 _plugAudioOut(),
-_inputAccumulator(maxHostSampleCount),
-_outputAccumulator(maxHostSampleCount),
+_hostToPlugProcessor(),
+_plugToHostProcessor(),
 _scalarAddrs(scalarAddrs) {}
 
 template <class Derived> 
@@ -44,11 +44,11 @@ void FBFixedBlockProcessor<Derived>::ProcessHost(
     *_scalarAddrs->block[be.index] = be.normalized;
 
   FBFixedInputBlock const* splitted;
-  _inputAccumulator.AccumulateFrom(input);
-  while (_inputAccumulator.SplitTo(&splitted))
+  _hostToPlugProcessor.AccumulateFrom(input);
+  while (_hostToPlugProcessor.SplitTo(&splitted))
   {
     static_cast<Derived*>(this)->ProcessFixed(*splitted, _plugAudioOut);
-    _outputAccumulator.AccumulateFrom(_plugAudioOut);
+    _plugToHostProcessor.AccumulateFrom(_plugAudioOut);
   }
-  _outputAccumulator.AggregateTo(output);
+  _plugToHostProcessor.AggregateTo(output);
 }

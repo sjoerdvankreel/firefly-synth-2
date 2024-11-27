@@ -4,15 +4,13 @@
 
 class FBHostAudioBlock;
 
-class FBOutputAccumulator
+class FBPlugToHostProcessor
 {
   bool _hitFixedBlockSize;
   FBPipelineAudioBlock _pipeline;
 
 public:
-  FBOutputAccumulator(int maxHostSampleCount);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBOutputAccumulator);
-
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugToHostProcessor);
   void AggregateTo(FBHostAudioBlock& output);
   void AccumulateFrom(FBPlugAudioBlock const& input);
 };

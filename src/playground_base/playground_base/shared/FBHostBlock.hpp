@@ -71,9 +71,8 @@ struct FBHostInputBlock
 
 struct FBAccumulatedInputBlock
 {
-  FBAccumulatedInputBlock(int maxSampleCount);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedInputBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBAccumulatedInputBlock);
 
-  FBPipelineAudioBlock audio;
-  FBAccumulatedHostEvents events;
+  FBPipelineAudioBlock audio = {};
+  FBAccumulatedHostEvents events = {};
 };

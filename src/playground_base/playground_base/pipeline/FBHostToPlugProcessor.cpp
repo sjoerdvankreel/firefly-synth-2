@@ -1,4 +1,4 @@
-#include <playground_base/pipeline/FBInputAccumulator.hpp>
+#include <playground_base/pipeline/FBHostToPlugProcessor.hpp>
 #include <algorithm>
 
 template <class Event>
@@ -34,13 +34,8 @@ GatherStraddledAccParamEvents(
   }
 }
 
-FBInputAccumulator::
-FBInputAccumulator(int maxHostSampleCount) :
-_fixed(),
-_accumulated(FB_PLUG_BLOCK_SIZE + maxHostSampleCount) {}
-
 bool
-FBInputAccumulator::SplitTo(FBFixedInputBlock const** output)
+FBHostToPlugProcessor::SplitTo(FBFixedInputBlock const** output)
 {
   *output = nullptr;
   if (_accumulated.audio.Count() < FB_PLUG_BLOCK_SIZE)
@@ -54,7 +49,7 @@ FBInputAccumulator::SplitTo(FBFixedInputBlock const** output)
 }
 
 void 
-FBInputAccumulator::AccumulateFrom(FBHostInputBlock const& input)
+FBHostToPlugProcessor::AccumulateFrom(FBHostInputBlock const& input)
 {
   for (int e = 0; e < input.events.note.size(); e++)
   {
