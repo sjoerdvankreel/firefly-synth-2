@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/shared/FBSharedUtility.hpp>
+#include <playground_base/shared/FBObjectLifetime.hpp>
 
 #include <array>
 #include <vector>
@@ -67,7 +67,12 @@ public:
   int Count() const 
   { return static_cast<int>(_store[FB_CHANNEL_L].size()); }
 
-  void AppendFrom(FBPlugAudioBlock const& fixed);
+  void Append(float l, float r) {
+    _store[0].push_back(l);
+    _store[1].push_back(r);
+  }
+
+
   void AppendFrom(FBHostAudioBlock const& raw);
   void MoveOneFixedBlockTo(FBPlugAudioBlock& fixed);
   void MoveOneRawBlockToAndPad(FBHostAudioBlock& raw);

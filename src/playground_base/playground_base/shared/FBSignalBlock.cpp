@@ -10,14 +10,6 @@ FBHostAudioBlock::SetToZero(int from, int to)
       _store[ch][i] = 0.0f;
 }
 
-void 
-FBPipelineAudioBlock::AppendFrom(FBPlugAudioBlock const& fixed)
-{
-  for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
-    for (int s = 0; s < FB_PLUG_BLOCK_SIZE; s++)
-      _store[ch].push_back(fixed[ch][s]);
-}
-
 void
 FBPipelineAudioBlock::AppendFrom(FBHostAudioBlock const& raw)
 {
