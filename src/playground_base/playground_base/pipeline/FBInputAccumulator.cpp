@@ -1,4 +1,4 @@
-#include <playground_base/dsp/FBInputAccumulator.hpp>
+#include <playground_base/pipeline/FBInputAccumulator.hpp>
 #include <algorithm>
 
 template <class Event>

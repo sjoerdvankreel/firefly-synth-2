@@ -1,4 +1,4 @@
-#include <playground_base/dsp/FBOutputAccumulator.hpp>
+#include <playground_base/pipeline/FBOutputAccumulator.hpp>
 
 FBOutputAccumulator::
 FBOutputAccumulator(int maxHostSampleCount) :

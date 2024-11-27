@@ -1,9 +1,9 @@
 #pragma once
 
 #include <playground_base/shared/FBSignalBlock.hpp>
-#include <playground_base/dsp/FBInputAccumulator.hpp>
-#include <playground_base/dsp/FBOutputAccumulator.hpp>
 #include <playground_base/dsp/FBHostBlockProcessor.hpp>
+#include <playground_base/pipeline/FBInputAccumulator.hpp>
+#include <playground_base/pipeline/FBOutputAccumulator.hpp>
 
 struct FBHostInputBlock;
 
