@@ -7,7 +7,7 @@ class FBHostAudioBlock;
 class FBOutputAccumulator
 {
   bool _hitFixedBlockSize;
-  FBDynamicAudioBlock _accumulated;
+  FBPipelineAudioBlock _pipeline;
 
 public:
   FBOutputAccumulator(int maxHostSampleCount);

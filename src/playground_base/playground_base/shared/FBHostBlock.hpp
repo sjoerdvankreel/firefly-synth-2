@@ -74,6 +74,6 @@ struct FBAccumulatedInputBlock
   FBAccumulatedInputBlock(int maxSampleCount);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccumulatedInputBlock);
 
-  FBDynamicAudioBlock audio;
+  FBPipelineAudioBlock audio;
   FBAccumulatedHostEvents events;
 };

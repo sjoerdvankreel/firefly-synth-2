@@ -1,8 +1,8 @@
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <cassert>
 
-FBDynamicAudioBlock::
-FBDynamicAudioBlock(int capacity):
+FBPipelineAudioBlock::
+FBPipelineAudioBlock(int capacity):
 _store()
 {
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
@@ -19,7 +19,7 @@ FBHostAudioBlock::SetToZero(int from, int to)
 }
 
 void 
-FBDynamicAudioBlock::AppendFrom(FBPlugAudioBlock const& fixed)
+FBPipelineAudioBlock::AppendFrom(FBPlugAudioBlock const& fixed)
 {
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
     for (int s = 0; s < FB_PLUG_BLOCK_SIZE; s++)
@@ -27,7 +27,7 @@ FBDynamicAudioBlock::AppendFrom(FBPlugAudioBlock const& fixed)
 }
 
 void
-FBDynamicAudioBlock::AppendFrom(FBHostAudioBlock const& raw)
+FBPipelineAudioBlock::AppendFrom(FBHostAudioBlock const& raw)
 {
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
     for (int s = 0; s < raw.Count(); s++)
@@ -35,7 +35,7 @@ FBDynamicAudioBlock::AppendFrom(FBHostAudioBlock const& raw)
 }
 
 void 
-FBDynamicAudioBlock::MoveOneRawBlockToAndPad(FBHostAudioBlock& raw)
+FBPipelineAudioBlock::MoveOneRawBlockToAndPad(FBHostAudioBlock& raw)
 {
   int samplesUsed = std::min(raw.Count(), Count());
   int samplesPadded = std::max(0, raw.Count() - samplesUsed);
@@ -49,7 +49,7 @@ FBDynamicAudioBlock::MoveOneRawBlockToAndPad(FBHostAudioBlock& raw)
 }
 
 void
-FBDynamicAudioBlock::MoveOneFixedBlockTo(FBPlugAudioBlock& fixed)
+FBPipelineAudioBlock::MoveOneFixedBlockTo(FBPlugAudioBlock& fixed)
 {
   assert(_store[0].size() >= FB_PLUG_BLOCK_SIZE);
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)

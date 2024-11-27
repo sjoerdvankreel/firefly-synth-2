@@ -16,7 +16,7 @@ class FBHostAudioBlock
 {
   int _count;
   std::array<float*, FB_CHANNELS_STEREO> _store;
-  friend class FBDynamicAudioBlock;
+  friend class FBPipelineAudioBlock;
 
 public:
   FB_COPY_MOVE_DEFCTOR(FBHostAudioBlock);
@@ -57,13 +57,13 @@ public:
   { for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++) _store[ch].Fill(val); }
 };
 
-class FBDynamicAudioBlock
+class FBPipelineAudioBlock
 {
   std::array<std::vector<float>, FB_CHANNELS_STEREO> _store;
 
 public:
-  FBDynamicAudioBlock(int capacity);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBDynamicAudioBlock);
+  FBPipelineAudioBlock(int capacity);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPipelineAudioBlock);
   
   int Count() const 
   { return static_cast<int>(_store[FB_CHANNEL_L].size()); }
