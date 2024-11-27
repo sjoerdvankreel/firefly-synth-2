@@ -34,11 +34,11 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
   CopyToString128(param.shortName, result.shortTitle);
   CopyToString128(param.staticParam.unit, result.units);
 
-  // TODO isList
+  // TODO once we drop generic editor
   if (automate)
     result.flags = ParameterInfo::kCanAutomate;
   else
-    result.flags = ParameterInfo::kIsReadOnly | ParameterInfo::kIsHidden;
+    result.flags = ParameterInfo::kCanAutomate;
   return result;
 }
 
