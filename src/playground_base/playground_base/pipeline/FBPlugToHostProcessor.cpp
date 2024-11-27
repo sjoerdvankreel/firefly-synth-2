@@ -1,17 +1,17 @@
 #include <playground_base/pipeline/FBPlugToHostProcessor.hpp>
 
 void 
-FBPlugToHostProcessor::FromPlug(FBPlugAudioBlock const& input)
+FBPlugToHostProcessor::FromPlug(FBPlugAudioBlock const& plug)
 {
-  _pipeline.AppendFrom(input);
+  _pipeline.AppendFrom(plug);
 }
 
 void 
-FBPlugToHostProcessor::ToHost(FBHostAudioBlock& output)
+FBPlugToHostProcessor::ToHost(FBHostAudioBlock& host)
 {
-  _hitFixedBlockSize |= _pipeline.Count() >= FB_PLUG_BLOCK_SIZE;
-  if (_hitFixedBlockSize)
-    _pipeline.MoveOneRawBlockToAndPad(output);
+  _hitPlugBlockSize |= _pipeline.Count() >= FB_PLUG_BLOCK_SIZE;
+  if (_hitPlugBlockSize)
+    _pipeline.MoveOneRawBlockToAndPad(host);
   else
-    output.SetToZero(0, output.Count());
+    host.SetToZero(0, host.Count());
 }

@@ -6,11 +6,11 @@ class FBHostAudioBlock;
 
 class FBPlugToHostProcessor
 {
-  bool _hitFixedBlockSize;
-  FBPipelineAudioBlock _pipeline;
+  bool _hitPlugBlockSize = false;
+  FBPipelineAudioBlock _pipeline = {};
 
 public:
+  void ToHost(FBHostAudioBlock& host);
+  void FromPlug(FBPlugAudioBlock const& plug);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugToHostProcessor);
-  void ToHost(FBHostAudioBlock& output);
-  void FromPlug(FBPlugAudioBlock const& input);
 };

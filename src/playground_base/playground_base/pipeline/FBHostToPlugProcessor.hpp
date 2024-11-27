@@ -5,7 +5,7 @@
 class FBHostToPlugProcessor
 {
   FBFixedInputBlock _fixed = {};
-  FBAccumulatedInputBlock _accumulated = {};  
+  FBPipelineInputBlock _pipeline = {};
 
 public:
   FBFixedInputBlock const* ToPlug();

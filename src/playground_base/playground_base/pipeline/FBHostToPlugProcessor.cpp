@@ -37,11 +37,11 @@ GatherStraddledAccParamEvents(
 FBFixedInputBlock const*
 FBHostToPlugProcessor::ToPlug()
 {
-  if (_accumulated.audio.Count() < FB_PLUG_BLOCK_SIZE)
+  if (_pipeline.audio.Count() < FB_PLUG_BLOCK_SIZE)
     return nullptr;
-  _accumulated.audio.MoveOneFixedBlockTo(_fixed.audio);
-  GatherAccEvents(_accumulated.events.note, _fixed.events.note);
-  GatherAccEvents(_accumulated.events.accParam, _fixed.events.accParam);
+  _pipeline.audio.MoveOneFixedBlockTo(_fixed.audio);
+  GatherAccEvents(_pipeline.events.note, _fixed.events.note);
+  GatherAccEvents(_pipeline.events.accParam, _fixed.events.accParam);
   return &_fixed;
 }
 
@@ -51,23 +51,23 @@ FBHostToPlugProcessor::FromHost(FBHostInputBlock const& input)
   for (int e = 0; e < input.events.note.size(); e++)
   {
     FBNoteEvent event = input.events.note[e];
-    event.position += _accumulated.audio.Count();
-    _accumulated.events.note.push_back(event);
+    event.position += _pipeline.audio.Count();
+    _pipeline.events.note.push_back(event);
   }
 
   for (int e = 0; e < input.events.accParam.size(); e++)
   {
     FBAccParamEvent thisEvent = input.events.accParam[e];
-    thisEvent.position += _accumulated.audio.Count();
-    _accumulated.events.accParam.push_back(thisEvent);
+    thisEvent.position += _pipeline.audio.Count();
+    _pipeline.events.accParam.push_back(thisEvent);
     if (e < input.events.accParam.size() - 1 &&
       input.events.accParam[e + 1].index == input.events.accParam[e].index)
     {
       FBAccParamEvent nextEvent = input.events.accParam[e + 1];
-      nextEvent.position += _accumulated.audio.Count();
-      GatherStraddledAccParamEvents(thisEvent, nextEvent, _accumulated.events.accParam);
+      nextEvent.position += _pipeline.audio.Count();
+      GatherStraddledAccParamEvents(thisEvent, nextEvent, _pipeline.events.accParam);
     }
   }
 
-  _accumulated.audio.AppendFrom(input.audio);
+  _pipeline.audio.AppendFrom(input.audio);
 }
