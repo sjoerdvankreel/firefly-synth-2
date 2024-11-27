@@ -11,8 +11,8 @@ _phase(),
 _sampleRate(sampleRate),
 _memory()
 {
-  topo.InitScalarAddr(_memory);
-  topo.InitProcessorAddr(_memory);
+  topo.InitDenseAddrs(_memory);
+  topo.InitScalarAddrs(_memory);
 }
 
 void 
@@ -27,11 +27,11 @@ FFPluginProcessor::ProcessAutomation(
   }
 
   // TODO make it good -- both slots
-  auto const& gain = _memory.dense.osci.gain[0][0];
+  auto const& gain = _memory.buffer.osci.gain[0][0];
   for (int s = 0; s < FB_FIXED_BLOCK_SIZE; s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());
-    output[FB_CHANNEL_L][s] = sample *gain[s]; // TODO nogood with reaper 160 samples and blocksize 2048
+    output[FB_CHANNEL_L][s] = sample *gain[s];
     output[FB_CHANNEL_R][s] = sample *gain[s];
     _phase.Next(_sampleRate, 440.0f);
   }

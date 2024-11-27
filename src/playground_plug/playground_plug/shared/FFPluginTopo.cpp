@@ -2,18 +2,22 @@
 #include <playground_plug/shared/FFPluginConfig.hpp>
 
 template <class Selector>
-auto SelectScalarAddr(Selector selector)
+auto SelectProcessorAddr(Selector selector)
 {
-  return [selector](int moduleSlot, int paramSlot, FBScalarParamMemoryBase& mem) {
-    auto store = selector(dynamic_cast<FFScalarParamMemory&>(mem));
+  return [selector](
+    int moduleSlot, int paramSlot,
+    FBDenseParamAddrsBase& addrs) {
+    auto store = selector(dynamic_cast<FFDenseParamMemory&>(addrs));
     return &(*store)[moduleSlot][paramSlot]; };
 }
 
 template <class Selector>
-auto SelectProcessorAddr(Selector selector)
+auto SelectScalarAddr(Selector selector)
 {
-  return [selector](int moduleSlot, int paramSlot, FBProcessorParamMemoryBase& mem) {
-    auto store = selector(dynamic_cast<FFProcessorParamMemory&>(mem));
+  return [selector](
+    int moduleSlot, int paramSlot, 
+    FBScalarParamAddrsBase& addrs) {
+    auto store = selector(dynamic_cast<FFScalarParamMemory&>(addrs));
     return &(*store)[moduleSlot][paramSlot]; };
 }
 
@@ -51,7 +55,7 @@ FFMakeTopo()
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   osciGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci.gain; });
   osciGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci.gain; });
-  osciGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.osci.gain; });
+  osciGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.buffer.osci.gain; });
 
   auto& osciPitch = osci.accParams[FFOsciAccParamPitch];
   osciPitch.name = "Pitch";
@@ -60,7 +64,7 @@ FFMakeTopo()
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
   osciPitch.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci.pitch; });
   osciPitch.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci.pitch; });
-  osciPitch.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.osci.pitch; });
+  osciPitch.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.buffer.osci.pitch; });
 
   auto& shaper = result.modules[FFModuleShaper];
   shaper.name = "Shaper";
@@ -90,7 +94,7 @@ FFMakeTopo()
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
   shaperGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.shaper.gain; });
   shaperGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.shaper.gain; });
-  shaperGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.dense.shaper.gain; });
+  shaperGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.buffer.shaper.gain; });
 
   return FBStaticTopo(result);
 }

@@ -14,7 +14,7 @@ public FBAutomationRamper<FFPluginProcessor>
 {
   FBPhase _phase;
   float const _sampleRate;
-  FFProcessorParamMemory _memory;
+  FFDenseParamMemory _memory;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPluginProcessor);
