@@ -4,8 +4,8 @@
 #include <playground_base/dsp/FBFixedBlockProcessor.hpp>
 
 template <class Derived>
-class FBFixedAutomationProcessor:
-public FBFixedBlockProcessor<FBFixedAutomationProcessor<Derived>>
+class FBAutomationRamper:
+public FBFixedBlockProcessor<FBAutomationRamper<Derived>>
 {
   FBScalarParamMemoryBase* const _scalarMemory;
   FBProcessorParamMemoryBase* const _processorMemory;
@@ -14,27 +14,27 @@ public FBFixedBlockProcessor<FBFixedAutomationProcessor<Derived>>
     std::vector<FBAccParamEvent> const& accEvents);
 
 public:
-  FBFixedAutomationProcessor(
+  FBAutomationRamper(
     FBScalarParamMemoryBase* scalarMemory, 
     FBProcessorParamMemoryBase* processorMemory,
     int maxHostSampleCount);  
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedAutomationProcessor);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBAutomationRamper);
 
   void ProcessFixed(FBFixedInputBlock const& input, FBFixedAudioBlock& output);
 };
 
 template <class Derived>
-FBFixedAutomationProcessor<Derived>::
-FBFixedAutomationProcessor(
+FBAutomationRamper<Derived>::
+FBAutomationRamper(
   FBScalarParamMemoryBase* scalarMemory,
   FBProcessorParamMemoryBase* processorMemory,
   int maxHostSampleCount) :
-FBFixedBlockProcessor<FBFixedAutomationProcessor<Derived>>(maxHostSampleCount),
+FBFixedBlockProcessor<FBAutomationRamper<Derived>>(maxHostSampleCount),
 _scalarMemory(scalarMemory),
 _processorMemory(processorMemory) {}
 
 template <class Derived> 
-void FBFixedAutomationProcessor<Derived>::ProcessFixed(
+void FBAutomationRamper<Derived>::ProcessFixed(
   FBFixedInputBlock const& input, FBFixedAudioBlock& output)
 {
   for (auto const& be : input.events.blockParam)
@@ -47,7 +47,7 @@ void FBFixedAutomationProcessor<Derived>::ProcessFixed(
 }
 
 template <class Derived> void
-FBFixedAutomationProcessor<Derived>::RampAccEvents(
+FBAutomationRamper<Derived>::RampAccEvents(
   std::vector<FBAccParamEvent> const& accEvents)
 {
   for (int ae = 0; ae < _scalarMemory->accAddr.size(); ae++)

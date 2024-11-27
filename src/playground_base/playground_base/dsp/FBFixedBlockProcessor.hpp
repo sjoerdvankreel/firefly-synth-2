@@ -3,6 +3,7 @@
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <playground_base/dsp/FBInputSplitter.hpp>
 #include <playground_base/dsp/FBOutputAggregator.hpp>
+#include <playground_base/dsp/FBHostBlockProcessor.hpp>
 
 struct FBHostInputBlock;
 

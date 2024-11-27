@@ -6,7 +6,7 @@
 FFPluginProcessor::
 FFPluginProcessor(
   FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate) :
-FBFixedAutomationProcessor(&_memory, &_memory, maxHostSampleCount),
+FBAutomationRamper(&_memory, &_memory, maxHostSampleCount),
 _phase(),
 _sampleRate(sampleRate),
 _memory()
