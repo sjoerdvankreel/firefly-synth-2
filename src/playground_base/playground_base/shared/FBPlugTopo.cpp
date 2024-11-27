@@ -97,29 +97,31 @@ MakeRuntimeParams(
 }
 
 void 
-FBRuntimeTopo::InitScalarAddr(FBScalarParamMemoryBase& mem) const
+FBRuntimeTopo::InitScalarAddrs(FBScalarParamAddrsBase& addrs) const
 {
-  mem.accAddr.clear();
-  mem.blockAddr.clear();
-  for (int bp = 0; bp < blockParams.size(); bp++)
-    mem.blockAddr.push_back(blockParams[bp].staticParam.scalarAddr(
-      blockParams[bp].moduleSlot, blockParams[bp].paramSlot, mem));
+  addrs.acc.clear();
   for (int ap = 0; ap < accParams.size(); ap++)
-    mem.accAddr.push_back(accParams[ap].staticParam.scalarAddr(
-      accParams[ap].moduleSlot, accParams[ap].paramSlot, mem));
+    addrs.acc.push_back(accParams[ap].staticParam.scalarAddr(
+      accParams[ap].moduleSlot, accParams[ap].paramSlot, addrs));
+
+  addrs.block.clear();
+  for (int bp = 0; bp < blockParams.size(); bp++)
+    addrs.block.push_back(blockParams[bp].staticParam.scalarAddr(
+      blockParams[bp].moduleSlot, blockParams[bp].paramSlot, addrs));
 }
 
 void 
-FBRuntimeTopo::InitProcessorAddr(FBProcessorParamMemoryBase& mem) const
+FBRuntimeTopo::InitDenseAddrs(FBDenseParamAddrsBase& addrs) const
 {
-  mem.posAddr.clear();
-  mem.denseAddr.clear();
+  addrs.pos.clear();
   for (int ap = 0; ap < accParams.size(); ap++)
-    mem.posAddr.push_back(accParams[ap].staticParam.posAddr(
-      accParams[ap].moduleSlot, accParams[ap].paramSlot, mem));
+    addrs.pos.push_back(accParams[ap].staticParam.posAddr(
+      accParams[ap].moduleSlot, accParams[ap].paramSlot, addrs));
+
+  addrs.buffer.clear();
   for (int ap = 0; ap < accParams.size(); ap++)
-    mem.denseAddr.push_back(accParams[ap].staticParam.denseAddr(
-      accParams[ap].moduleSlot, accParams[ap].paramSlot, mem));
+    addrs.buffer.push_back(accParams[ap].staticParam.denseAddr(
+      accParams[ap].moduleSlot, accParams[ap].paramSlot, addrs));
 }
 
 FBRuntimeTopo::

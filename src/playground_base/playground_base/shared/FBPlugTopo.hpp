@@ -9,26 +9,6 @@
 
 class FBFixedCVBlock;
 
-struct FBScalarParamMemoryBase
-{
-  // dynamic_cast just to be sure
-  virtual ~FBScalarParamMemoryBase() {}
-
-  // interior pointers to derived
-  std::vector<float*> accAddr;
-  std::vector<float*> blockAddr;
-};
-
-struct FBProcessorParamMemoryBase
-{
-  // dynamic_cast just to be sure
-  virtual ~FBProcessorParamMemoryBase() {}
-
-  // interior pointers to derived
-  std::vector<int*> posAddr;
-  std::vector<FBFixedCVBlock*> denseAddr;
-};
-
 inline double 
 FBDiscreteToNormalized(int count, int index)
 { return index / (count - 1.0); }
@@ -41,6 +21,26 @@ inline bool
 FBNormalizedToBool(double normalized)
 { return FBNormalizedToDiscrete(2, normalized) != 0; }
 
+struct FBScalarParamAddrsBase
+{
+  virtual ~FBScalarParamAddrsBase() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBScalarParamAddrsBase);
+
+  // interior pointers to derived
+  std::vector<float*> acc;
+  std::vector<float*> block;
+};
+
+struct FBDenseParamAddrsBase
+{
+  virtual ~FBDenseParamAddrsBase() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBDenseParamAddrsBase);
+
+  // interior pointers to derived
+  std::vector<int*> pos;
+  std::vector<FBFixedCVBlock*> buffer;
+};
+
 struct FBStaticParam
 {
   int slotCount;
@@ -49,15 +49,15 @@ struct FBStaticParam
   std::string name;
   std::string unit;
 
-  std::function<float* (
-    int moduleSlot, int paramSlot, 
-    FBScalarParamMemoryBase& mem)> scalarAddr;
   std::function<int* (
     int moduleSlot, int paramSlot, 
-    FBProcessorParamMemoryBase& mem)> posAddr;
+    FBDenseParamAddrsBase& addrs)> posAddr;
   std::function<FBFixedCVBlock* (
     int moduleSlot, int paramSlot,
-    FBProcessorParamMemoryBase& mem)> denseAddr;
+    FBDenseParamAddrsBase& addrs)> denseAddr;
+  std::function<float* (
+    int moduleSlot, int paramSlot,
+    FBScalarParamAddrsBase& addrs)> scalarAddr;
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };
@@ -119,6 +119,6 @@ struct FBRuntimeTopo
   std::map<int, int> const tagToAccParam;
   std::map<int, int> const tagToBlockParam;
 
-  void InitScalarAddr(FBScalarParamMemoryBase& mem) const;
-  void InitProcessorAddr(FBProcessorParamMemoryBase& mem) const;
+  void InitDenseAddrs(FBDenseParamAddrsBase& addrs) const;
+  void InitScalarAddrs(FBScalarParamAddrsBase& addrs) const;
 };

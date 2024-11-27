@@ -64,20 +64,20 @@ struct FFBlockParamMemory
 };
 
 struct FFScalarParamMemory:
-public FBScalarParamMemoryBase
+public FBScalarParamAddrsBase
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamMemory);
   FFBlockParamMemory block;
   FFAccParamMemory<float> acc;
 };
 
-struct alignas(alignof(FBFixedCVBlock)) FFProcessorParamMemory:
+struct alignas(alignof(FBFixedCVBlock)) FFDenseParamMemory:
 public FFScalarParamMemory,
-public FBProcessorParamMemoryBase
+public FBDenseParamAddrsBase
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcessorParamMemory);
-  FFAccParamMemory<FBFixedCVBlock> dense;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFDenseParamMemory);
   FFAccParamMemory<int> pos;
+  FFAccParamMemory<FBFixedCVBlock> buffer;
 };
 
 #if 0 // todo search if 0
