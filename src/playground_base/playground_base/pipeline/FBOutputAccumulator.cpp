@@ -12,7 +12,7 @@ FBOutputAccumulator::AccumulateFrom(FBFixedAudioBlock const& input)
 }
 
 void 
-FBOutputAccumulator::AggregateTo(FBRawAudioBlockView& output)
+FBOutputAccumulator::AggregateTo(FBHostAudioBlock& output)
 {
   _hitFixedBlockSize |= _accumulated.Count() >= FB_PLUG_BLOCK_SIZE;
   if (_hitFixedBlockSize)

@@ -49,10 +49,10 @@ MakeNoteOffEvent(Event const& event)
   return result;
 }
 
-static FBRawAudioBlockView
-MakeRawAudioBlockView(AudioBusBuffers& buffers, int sampleCount)
+static FBHostAudioBlock
+MakeHostAudioBlock(AudioBusBuffers& buffers, int sampleCount)
 {
-  return FBRawAudioBlockView(
+  return FBHostAudioBlock(
     buffers.channelBuffers32[FB_CHANNEL_L],
     buffers.channelBuffers32[FB_CHANNEL_R],
     sampleCount);
@@ -141,14 +141,14 @@ FBVST3AudioEffect::process(ProcessData& data)
   std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
 
   if (data.numInputs == 1)
-    _input->audio = MakeRawAudioBlockView(data.inputs[0], data.numSamples);
+    _input->audio = MakeHostAudioBlock(data.inputs[0], data.numSamples);
   else
-    _input->audio = FBRawAudioBlockView(
+    _input->audio = FBHostAudioBlock(
       _zeroIn[FB_CHANNEL_L].data(), 
       _zeroIn[FB_CHANNEL_R].data(), 
       data.numSamples);
 
-  FBRawAudioBlockView output(MakeRawAudioBlockView(*data.outputs, data.numSamples));
+  FBHostAudioBlock output(MakeHostAudioBlock(*data.outputs, data.numSamples));
   _processor->ProcessHost(*_input, output);
   return kResultTrue;
 }

@@ -23,7 +23,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
 
   void ProcessHost(
-    FBHostInputBlock const& input, FBRawAudioBlockView& output);
+    FBHostInputBlock const& input, FBHostAudioBlock& output);
 };
 
 template <class Derived>
@@ -38,7 +38,7 @@ _scalarAddrs(scalarAddrs) {}
 
 template <class Derived> 
 void FBFixedBlockProcessor<Derived>::ProcessHost(
-  FBHostInputBlock const& input, FBRawAudioBlockView& output)
+  FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   for (auto const& be : input.events.blockParam)
     *_scalarAddrs->block[be.index] = be.normalized;

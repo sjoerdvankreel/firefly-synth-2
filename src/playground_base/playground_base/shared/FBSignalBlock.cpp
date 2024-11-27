@@ -10,7 +10,7 @@ _store()
 }
 
 void
-FBRawAudioBlockView::SetToZero(int from, int to)
+FBHostAudioBlock::SetToZero(int from, int to)
 {
   assert(0 <= from && from <= to && to <= _count);
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
@@ -27,7 +27,7 @@ FBDynamicAudioBlock::AppendFrom(FBFixedAudioBlock const& fixed)
 }
 
 void
-FBDynamicAudioBlock::AppendFrom(FBRawAudioBlockView const& raw)
+FBDynamicAudioBlock::AppendFrom(FBHostAudioBlock const& raw)
 {
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
     for (int s = 0; s < raw.Count(); s++)
@@ -35,7 +35,7 @@ FBDynamicAudioBlock::AppendFrom(FBRawAudioBlockView const& raw)
 }
 
 void 
-FBDynamicAudioBlock::MoveOneRawBlockToAndPad(FBRawAudioBlockView& raw)
+FBDynamicAudioBlock::MoveOneRawBlockToAndPad(FBHostAudioBlock& raw)
 {
   int samplesUsed = std::min(raw.Count(), Count());
   int samplesPadded = std::max(0, raw.Count() - samplesUsed);

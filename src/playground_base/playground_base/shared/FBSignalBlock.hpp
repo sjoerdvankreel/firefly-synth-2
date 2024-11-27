@@ -12,15 +12,15 @@
 #define FB_PLUG_BLOCK_SIZE 2048 // TODO make it good
 #define FB_PLUG_BLOCK_ALIGN (FB_PLUG_BLOCK_SIZE * sizeof(float))
 
-class FBRawAudioBlockView
+class FBHostAudioBlock
 {
   int _count;
   std::array<float*, FB_CHANNELS_STEREO> _store;
   friend class FBDynamicAudioBlock;
 
 public:
-  FB_COPY_MOVE_DEFCTOR(FBRawAudioBlockView);
-  FBRawAudioBlockView(float* l, float* r, int count) :
+  FB_COPY_MOVE_DEFCTOR(FBHostAudioBlock);
+  FBHostAudioBlock(float* l, float* r, int count) :
   _count(count), _store({ l, r }) {}
 
   void SetToZero(int from, int to);
@@ -69,7 +69,7 @@ public:
   { return static_cast<int>(_store[FB_CHANNEL_L].size()); }
 
   void AppendFrom(FBFixedAudioBlock const& fixed);
-  void AppendFrom(FBRawAudioBlockView const& raw);
+  void AppendFrom(FBHostAudioBlock const& raw);
   void MoveOneFixedBlockTo(FBFixedAudioBlock& fixed);
-  void MoveOneRawBlockToAndPad(FBRawAudioBlockView& raw);
+  void MoveOneRawBlockToAndPad(FBHostAudioBlock& raw);
 };
