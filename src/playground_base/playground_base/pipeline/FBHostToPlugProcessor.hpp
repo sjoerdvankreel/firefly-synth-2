@@ -8,7 +8,7 @@ class FBHostToPlugProcessor
   FBAccumulatedInputBlock _accumulated = {};  
 
 public:
+  FBFixedInputBlock const* ToPlug();
+  void FromHost(FBHostInputBlock const& host);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostToPlugProcessor);
-  bool SplitTo(FBFixedInputBlock const** output);
-  void AccumulateFrom(FBHostInputBlock const& input);
 };

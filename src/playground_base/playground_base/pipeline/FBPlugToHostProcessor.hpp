@@ -11,6 +11,6 @@ class FBPlugToHostProcessor
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugToHostProcessor);
-  void AggregateTo(FBHostAudioBlock& output);
-  void AccumulateFrom(FBPlugAudioBlock const& input);
+  void ToHost(FBHostAudioBlock& output);
+  void FromPlug(FBPlugAudioBlock const& input);
 };

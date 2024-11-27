@@ -34,22 +34,19 @@ GatherStraddledAccParamEvents(
   }
 }
 
-bool
-FBHostToPlugProcessor::SplitTo(FBFixedInputBlock const** output)
+FBFixedInputBlock const*
+FBHostToPlugProcessor::ToPlug()
 {
-  *output = nullptr;
   if (_accumulated.audio.Count() < FB_PLUG_BLOCK_SIZE)
-    return false;
-
-  *output = &_fixed;
+    return nullptr;
   _accumulated.audio.MoveOneFixedBlockTo(_fixed.audio);
   GatherAccEvents(_accumulated.events.note, _fixed.events.note);
   GatherAccEvents(_accumulated.events.accParam, _fixed.events.accParam);
-  return true;
+  return &_fixed;
 }
 
 void 
-FBHostToPlugProcessor::AccumulateFrom(FBHostInputBlock const& input)
+FBHostToPlugProcessor::FromHost(FBHostInputBlock const& input)
 {
   for (int e = 0; e < input.events.note.size(); e++)
   {

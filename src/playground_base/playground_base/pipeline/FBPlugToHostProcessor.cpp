@@ -1,13 +1,13 @@
 #include <playground_base/pipeline/FBPlugToHostProcessor.hpp>
 
 void 
-FBPlugToHostProcessor::AccumulateFrom(FBPlugAudioBlock const& input)
+FBPlugToHostProcessor::FromPlug(FBPlugAudioBlock const& input)
 {
   _pipeline.AppendFrom(input);
 }
 
 void 
-FBPlugToHostProcessor::AggregateTo(FBHostAudioBlock& output)
+FBPlugToHostProcessor::ToHost(FBHostAudioBlock& output)
 {
   _hitFixedBlockSize |= _pipeline.Count() >= FB_PLUG_BLOCK_SIZE;
   if (_hitFixedBlockSize)

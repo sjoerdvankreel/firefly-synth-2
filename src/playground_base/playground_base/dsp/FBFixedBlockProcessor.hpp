@@ -43,12 +43,12 @@ void FBFixedBlockProcessor<Derived>::ProcessHost(
   for (auto const& be : input.events.blockParam)
     *_scalarAddrs->block[be.index] = be.normalized;
 
-  FBFixedInputBlock const* splitted;
-  _hostToPlugProcessor.AccumulateFrom(input);
-  while (_hostToPlugProcessor.SplitTo(&splitted))
+  FBFixedInputBlock const* plugBlock;
+  _hostToPlugProcessor.FromHost(input);
+  while ((plugBlock = _hostToPlugProcessor.ToPlug()) != nullptr)
   {
-    static_cast<Derived*>(this)->ProcessFixed(*splitted, _plugAudioOut);
-    _plugToHostProcessor.AccumulateFrom(_plugAudioOut);
+    static_cast<Derived*>(this)->ProcessFixed(*plugBlock, _plugAudioOut);
+    _plugToHostProcessor.FromPlug(_plugAudioOut);
   }
-  _plugToHostProcessor.AggregateTo(output);
+  _plugToHostProcessor.ToHost(output);
 }
