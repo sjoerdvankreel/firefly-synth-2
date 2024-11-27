@@ -124,16 +124,17 @@ FBVST3AudioEffect::process(ProcessData& data)
   if(data.inputParameterChanges != nullptr)
     for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
-        if ((iter = _topo.tagToBlockParam.find(queue->getParameterId())) != _topo.tagToBlockParam.end())
-        {
-          if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-            _input->events.blockParam.push_back(MakeBlockParamEvent(iter->second, value));
-        } else if ((iter = _topo.tagToAccParam.find(queue->getParameterId())) != _topo.tagToAccParam.end())
-        {
-          for (int point = 0; point < queue->getPointCount(); point++)
-            if (queue->getPoint(point, position, value) == kResultTrue)
-              _input->events.accParam.push_back(MakeAccParamEvent(iter->second, position, value));
-        }     
+        if(queue->getPointCount() > 0)
+          if ((iter = _topo.tagToBlockParam.find(queue->getParameterId())) != _topo.tagToBlockParam.end())
+          {
+            if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
+              _input->events.blockParam.push_back(MakeBlockParamEvent(iter->second, value));
+          } else if ((iter = _topo.tagToAccParam.find(queue->getParameterId())) != _topo.tagToAccParam.end())
+          {
+            for (int point = 0; point < queue->getPointCount(); point++)
+              if (queue->getPoint(point, position, value) == kResultTrue)
+                _input->events.accParam.push_back(MakeAccParamEvent(iter->second, position, value));
+          }     
 
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.position < r.position : l.index < r.index; };

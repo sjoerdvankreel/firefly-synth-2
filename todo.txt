@@ -1,4 +1,5 @@
 paramflush
+vst3 has builtin controller param storage, lets use it
 static link
 make it a base library once again (separate lib)
 handle PDC
