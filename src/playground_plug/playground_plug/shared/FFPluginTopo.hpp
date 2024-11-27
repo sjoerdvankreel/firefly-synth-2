@@ -71,11 +71,11 @@ public FBScalarParamAddrsBase
   FFAccParamMemory<float> acc;
 };
 
-struct alignas(alignof(FBFixedCVBlock)) FFDenseParamMemory:
+struct alignas(alignof(FBPlugSignalBlock)) FFDenseParamMemory:
 public FFScalarParamMemory,
 public FBDenseParamAddrsBase
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFDenseParamMemory);
   FFAccParamMemory<int> pos;
-  FFAccParamMemory<FBFixedCVBlock> buffer;
+  FFAccParamMemory<FBPlugSignalBlock> buffer;
 };

@@ -27,12 +27,12 @@ public:
   int Count() const { return _count; }
 };
 
-class alignas(FB_PLUG_BLOCK_ALIGN) FBFixedCVBlock
+class alignas(FB_PLUG_BLOCK_ALIGN) FBPlugSignalBlock
 {
   std::array<float, FB_PLUG_BLOCK_SIZE> _store;
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedCVBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugSignalBlock);
 
   float& operator[](int index)
   { return _store[index]; }
@@ -42,16 +42,16 @@ public:
   { std::fill(_store.begin(), _store.end(), val); }
 };
 
-class alignas(FB_PLUG_BLOCK_ALIGN) FBFixedAudioBlock
+class alignas(FB_PLUG_BLOCK_ALIGN) FBPlugAudioBlock
 {
-  std::array<FBFixedCVBlock, FB_CHANNELS_STEREO> _store;
+  std::array<FBPlugSignalBlock, FB_CHANNELS_STEREO> _store;
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugAudioBlock);
 
-  FBFixedCVBlock& operator[](int channel)
+  FBPlugSignalBlock& operator[](int channel)
   { return _store[channel]; }
-  FBFixedCVBlock const& operator[](int channel) const
+  FBPlugSignalBlock const& operator[](int channel) const
   { return _store[channel]; }
   void Fill(float val) 
   { for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++) _store[ch].Fill(val); }
@@ -68,8 +68,8 @@ public:
   int Count() const 
   { return static_cast<int>(_store[FB_CHANNEL_L].size()); }
 
-  void AppendFrom(FBFixedAudioBlock const& fixed);
+  void AppendFrom(FBPlugAudioBlock const& fixed);
   void AppendFrom(FBHostAudioBlock const& raw);
-  void MoveOneFixedBlockTo(FBFixedAudioBlock& fixed);
+  void MoveOneFixedBlockTo(FBPlugAudioBlock& fixed);
   void MoveOneRawBlockToAndPad(FBHostAudioBlock& raw);
 };

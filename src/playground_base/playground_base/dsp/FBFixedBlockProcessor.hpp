@@ -11,7 +11,7 @@ template <class Derived>
 class FBFixedBlockProcessor:
 public IFBHostBlockProcessor
 {
-  FBFixedAudioBlock _fixedOutput;
+  FBPlugAudioBlock _plugAudioOut;
   FBInputAccumulator _inputAccumulator;
   FBOutputAccumulator _outputAccumulator;
   FBScalarParamAddrsBase* const _scalarAddrs;
@@ -31,7 +31,7 @@ FBFixedBlockProcessor<Derived>::
 FBFixedBlockProcessor(
   FBScalarParamAddrsBase* scalarAddrs,
   int maxHostSampleCount) :
-_fixedOutput(),
+_plugAudioOut(),
 _inputAccumulator(maxHostSampleCount),
 _outputAccumulator(maxHostSampleCount),
 _scalarAddrs(scalarAddrs) {}
@@ -47,8 +47,8 @@ void FBFixedBlockProcessor<Derived>::ProcessHost(
   _inputAccumulator.AccumulateFrom(input);
   while (_inputAccumulator.SplitTo(&splitted))
   {
-    static_cast<Derived*>(this)->ProcessFixed(*splitted, _fixedOutput);
-    _outputAccumulator.AccumulateFrom(_fixedOutput);
+    static_cast<Derived*>(this)->ProcessFixed(*splitted, _plugAudioOut);
+    _outputAccumulator.AccumulateFrom(_plugAudioOut);
   }
   _outputAccumulator.AggregateTo(output);
 }

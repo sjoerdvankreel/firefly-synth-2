@@ -56,7 +56,7 @@ struct FBFixedInputBlock
   FBFixedInputBlock();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedInputBlock);
 
-  FBFixedAudioBlock audio;
+  FBPlugAudioBlock audio;
   FBAccumulatedHostEvents events;
 };
 

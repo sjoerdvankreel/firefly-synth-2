@@ -6,7 +6,7 @@ _hitFixedBlockSize(false),
 _accumulated(maxHostSampleCount) {}
 
 void 
-FBOutputAccumulator::AccumulateFrom(FBFixedAudioBlock const& input)
+FBOutputAccumulator::AccumulateFrom(FBPlugAudioBlock const& input)
 {
   _accumulated.AppendFrom(input);
 }

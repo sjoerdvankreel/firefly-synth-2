@@ -14,5 +14,5 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBOutputAccumulator);
 
   void AggregateTo(FBHostAudioBlock& output);
-  void AccumulateFrom(FBFixedAudioBlock const& input);
+  void AccumulateFrom(FBPlugAudioBlock const& input);
 };

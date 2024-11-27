@@ -17,7 +17,7 @@ _memory()
 
 void 
 FFPluginProcessor::ProcessAutomation(
-  FBFixedInputBlock const& input, FBFixedAudioBlock& output)
+  FBFixedInputBlock const& input, FBPlugAudioBlock& output)
 {
   bool on = FBNormalizedToBool(_memory.block.osci.on[0][FFOsciBlockParamOn]);
   if (!on)
