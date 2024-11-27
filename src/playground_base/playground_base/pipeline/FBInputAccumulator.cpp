@@ -7,11 +7,11 @@ static void GatherAccEvents(
 {
   int e = 0;
   output.clear();
-  for (e = 0; e < input.size() && input[e].position < FB_FIXED_BLOCK_SIZE; e++)
+  for (e = 0; e < input.size() && input[e].position < FB_PLUG_BLOCK_SIZE; e++)
     output.push_back(input[e]);
   input.erase(input.begin(), input.begin() + e);
   for (auto& e : input)
-    e.position -= FB_FIXED_BLOCK_SIZE;
+    e.position -= FB_PLUG_BLOCK_SIZE;
 }
 
 static void
@@ -20,13 +20,13 @@ GatherStraddledAccParamEvents(
   FBAccParamEvent const& nextEvent, 
   std::vector<FBAccParamEvent>& output)
 {
-  int thisFixedBlock = thisEvent.position / FB_FIXED_BLOCK_SIZE;
-  int nextFixedBlock = nextEvent.position / FB_FIXED_BLOCK_SIZE;
+  int thisFixedBlock = thisEvent.position / FB_PLUG_BLOCK_SIZE;
+  int nextFixedBlock = nextEvent.position / FB_PLUG_BLOCK_SIZE;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
     FBAccParamEvent straddledEvent;
     straddledEvent.index = thisEvent.index;
-    straddledEvent.position = i * FB_FIXED_BLOCK_SIZE + FB_FIXED_BLOCK_SIZE - 1;
+    straddledEvent.position = i * FB_PLUG_BLOCK_SIZE + FB_PLUG_BLOCK_SIZE - 1;
     float valueRange = nextEvent.normalized - thisEvent.normalized;
     float normalizedPos = straddledEvent.position / static_cast<float>(nextEvent.position);
     straddledEvent.normalized = thisEvent.normalized + valueRange * normalizedPos;
@@ -37,13 +37,13 @@ GatherStraddledAccParamEvents(
 FBInputAccumulator::
 FBInputAccumulator(int maxHostSampleCount) :
 _fixed(),
-_accumulated(FB_FIXED_BLOCK_SIZE + maxHostSampleCount) {}
+_accumulated(FB_PLUG_BLOCK_SIZE + maxHostSampleCount) {}
 
 bool
 FBInputAccumulator::SplitTo(FBFixedInputBlock const** output)
 {
   *output = nullptr;
-  if (_accumulated.audio.Count() < FB_FIXED_BLOCK_SIZE)
+  if (_accumulated.audio.Count() < FB_PLUG_BLOCK_SIZE)
     return false;
 
   *output = &_fixed;

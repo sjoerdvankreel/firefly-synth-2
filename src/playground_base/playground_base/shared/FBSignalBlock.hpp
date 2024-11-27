@@ -8,8 +8,9 @@
 #define FB_CHANNEL_L 0
 #define FB_CHANNEL_R 1
 #define FB_CHANNELS_STEREO 2
-#define FB_FIXED_BLOCK_SIZE 2048 // TODO make it good
-#define FB_FIXED_BLOCK_ALIGN (FB_FIXED_BLOCK_SIZE * sizeof(float))
+
+#define FB_PLUG_BLOCK_SIZE 2048 // TODO make it good
+#define FB_PLUG_BLOCK_ALIGN (FB_PLUG_BLOCK_SIZE * sizeof(float))
 
 class FBRawAudioBlockView
 {
@@ -26,9 +27,9 @@ public:
   int Count() const { return _count; }
 };
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedCVBlock
+class alignas(FB_PLUG_BLOCK_ALIGN) FBFixedCVBlock
 {
-  std::array<float, FB_FIXED_BLOCK_SIZE> _store;
+  std::array<float, FB_PLUG_BLOCK_SIZE> _store;
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedCVBlock);
@@ -41,7 +42,7 @@ public:
   { std::fill(_store.begin(), _store.end(), val); }
 };
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedAudioBlock
+class alignas(FB_PLUG_BLOCK_ALIGN) FBFixedAudioBlock
 {
   std::array<FBFixedCVBlock, FB_CHANNELS_STEREO> _store;
 

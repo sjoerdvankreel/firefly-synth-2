@@ -14,7 +14,7 @@ FBOutputAccumulator::AccumulateFrom(FBFixedAudioBlock const& input)
 void 
 FBOutputAccumulator::AggregateTo(FBRawAudioBlockView& output)
 {
-  _hitFixedBlockSize |= _accumulated.Count() >= FB_FIXED_BLOCK_SIZE;
+  _hitFixedBlockSize |= _accumulated.Count() >= FB_PLUG_BLOCK_SIZE;
   if (_hitFixedBlockSize)
     _accumulated.MoveOneRawBlockToAndPad(output);
   else

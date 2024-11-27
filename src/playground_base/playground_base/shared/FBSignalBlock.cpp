@@ -22,7 +22,7 @@ void
 FBDynamicAudioBlock::AppendFrom(FBFixedAudioBlock const& fixed)
 {
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
-    for (int s = 0; s < FB_FIXED_BLOCK_SIZE; s++)
+    for (int s = 0; s < FB_PLUG_BLOCK_SIZE; s++)
       _store[ch].push_back(fixed[ch][s]);
 }
 
@@ -51,11 +51,11 @@ FBDynamicAudioBlock::MoveOneRawBlockToAndPad(FBRawAudioBlockView& raw)
 void
 FBDynamicAudioBlock::MoveOneFixedBlockTo(FBFixedAudioBlock& fixed)
 {
-  assert(_store[0].size() >= FB_FIXED_BLOCK_SIZE);
+  assert(_store[0].size() >= FB_PLUG_BLOCK_SIZE);
   for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
   {
-    for (int s = 0; s < FB_FIXED_BLOCK_SIZE; s++)
+    for (int s = 0; s < FB_PLUG_BLOCK_SIZE; s++)
       fixed[ch][s] = _store[ch][s];
-    _store[ch].erase(_store[ch].begin(), _store[ch].begin() + FB_FIXED_BLOCK_SIZE);
+    _store[ch].erase(_store[ch].begin(), _store[ch].begin() + FB_PLUG_BLOCK_SIZE);
   }
 }
