@@ -1,10 +1,5 @@
 #include <playground_base/shared/FBHostBlock.hpp>
 
-FBFixedInputBlock::
-FBFixedInputBlock():
-events(),
-audio() {}
-
 FBHostInputBlock::
 FBHostInputBlock(float* l, float* r, int count):
 events(),

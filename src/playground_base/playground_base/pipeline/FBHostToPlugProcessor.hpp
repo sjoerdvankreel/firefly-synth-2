@@ -4,11 +4,11 @@
 
 class FBHostToPlugProcessor
 {
-  FBFixedInputBlock _fixed = {};
+  FBPlugInputBlock _plug = {};
   FBPipelineInputBlock _pipeline = {};
 
 public:
-  FBFixedInputBlock const* ToPlug();
+  FBPlugInputBlock const* ToPlug();
   void FromHost(FBHostInputBlock const& host);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostToPlugProcessor);
 };

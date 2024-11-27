@@ -34,15 +34,15 @@ GatherStraddledAccParamEvents(
   }
 }
 
-FBFixedInputBlock const*
+FBPlugInputBlock const*
 FBHostToPlugProcessor::ToPlug()
 {
   if (_pipeline.audio.Count() < FB_PLUG_BLOCK_SIZE)
     return nullptr;
-  _pipeline.audio.MoveOneFixedBlockTo(_fixed.audio);
-  GatherAccEvents(_pipeline.events.note, _fixed.events.note);
-  GatherAccEvents(_pipeline.events.accParam, _fixed.events.accParam);
-  return &_fixed;
+  _pipeline.audio.MoveOneFixedBlockTo(_plug.audio);
+  GatherAccEvents(_pipeline.events.note, _plug.events.note);
+  GatherAccEvents(_pipeline.events.accParam, _plug.events.accParam);
+  return &_plug;
 }
 
 void 

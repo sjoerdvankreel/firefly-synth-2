@@ -18,7 +18,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBAutomationRamper);
 
   void ProcessFixed(
-    FBFixedInputBlock const& input, FBPlugAudioBlock& output);
+    FBPlugInputBlock const& input, FBPlugAudioBlock& output);
 };
 
 template <class Derived>
@@ -33,7 +33,7 @@ _scalarAddrs(scalarAddrs) {}
 
 template <class Derived> 
 void FBAutomationRamper<Derived>::ProcessFixed(
-  FBFixedInputBlock const& input, FBPlugAudioBlock& output)
+  FBPlugInputBlock const& input, FBPlugAudioBlock& output)
 {
   for (int ap = 0; ap < _denseAddrs->pos.size(); ap++)
     *_denseAddrs->pos[ap] = 0;

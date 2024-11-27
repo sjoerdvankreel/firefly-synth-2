@@ -43,7 +43,7 @@ void FBFixedBlockProcessor<Derived>::ProcessHost(
   for (auto const& be : input.events.blockParam)
     *_scalarAddrs->block[be.index] = be.normalized;
 
-  FBFixedInputBlock const* plugBlock;
+  FBPlugInputBlock const* plugBlock;
   _hostToPlugProcessor.FromHost(input);
   while ((plugBlock = _hostToPlugProcessor.ToPlug()) != nullptr)
   {

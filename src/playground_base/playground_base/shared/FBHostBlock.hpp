@@ -51,13 +51,11 @@ public FBPipelineHostEvents
   std::vector<FBBlockParamEvent> blockParam;
 };
 
-struct FBFixedInputBlock
+struct FBPlugInputBlock
 {
-  FBFixedInputBlock();
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedInputBlock);
-
   FBPlugAudioBlock audio;
   FBPipelineHostEvents events;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);
 };
 
 struct FBHostInputBlock
