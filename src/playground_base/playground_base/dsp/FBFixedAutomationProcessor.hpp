@@ -60,8 +60,8 @@ FBFixedAutomationProcessor<Derived>::RampAccEvents(
     int currentPos = *_processorMemory->posAddr[event.index];
     int posRange = event.position - currentPos;
     float valRange = event.normalized - currentVal;
-    *_processorMemory->posAddr[event.index] = event.index;
     *_scalarMemory->accAddr[event.index] = event.normalized;
+    *_processorMemory->posAddr[event.index] = event.position;
 
     for (int p = 0; p <= posRange; p++)
       (*_processorMemory->denseAddr[event.index])[currentPos + p]
