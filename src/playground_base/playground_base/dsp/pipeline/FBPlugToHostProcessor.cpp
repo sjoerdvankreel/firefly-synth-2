@@ -1,4 +1,5 @@
 #include <playground_base/shared/FBHostBlock.hpp>
+#include <playground_base/dsp/host/FBHostAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPlugToHostProcessor.hpp>
 #include <cassert>

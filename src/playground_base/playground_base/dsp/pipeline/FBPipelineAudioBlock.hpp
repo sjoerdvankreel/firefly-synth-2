@@ -17,6 +17,7 @@ public:
   void Append(FBHostAudioBlock const& host);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPipelineAudioBlock);
 
+  // TODO need this ?
   std::vector<float> const& 
   operator[](int channel) const { return _store[channel]; }
   int Count() const { return static_cast<int>(_store[0].size()); }

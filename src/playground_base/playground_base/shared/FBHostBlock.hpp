@@ -2,6 +2,7 @@
 
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <playground_base/shared/FBSharedUtility.hpp>
+#include <playground_base/dsp/host/FBHostAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
 
 #define FB_EVENT_COUNT_GUESS 1024
