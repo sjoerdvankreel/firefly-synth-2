@@ -1,4 +1,4 @@
-#include <playground_base/pipeline/FBHostToPlugProcessor.hpp>
+#include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
 #include <algorithm>
 
 template <class Event>
