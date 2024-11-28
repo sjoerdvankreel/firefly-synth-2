@@ -1,3 +1,9 @@
+/dsp/host
+/dsp/plug
+/dsp/pipeline
+
+
+dont repeat fixed_block_size everywhere
 paramflush
 vst3 has builtin controller param storage, lets use it
 static link

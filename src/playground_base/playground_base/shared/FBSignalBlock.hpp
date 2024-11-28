@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/shared/FBObjectLifetime.hpp>
+#include <playground_base/pipeline/FBPipelineAudioBlock.hpp>
 
 #include <cassert>
 #include <array>
@@ -85,6 +86,14 @@ class alignas(FB_PLUG_BLOCK_ALIGN) FBPlugAudioBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugAudioBlock);
 
+  void CopyFrom(FBPipelineAudioBlock const& pipeline)
+  {
+    assert(pipeline.Count() >= Count());
+    for (int ch = 0; ch < 2; ch++)
+      for (int s = 0; s < Count(); s++)
+        _store[ch][s] = pipeline[ch][s];
+  }
+
   int Count() const { return FB_PLUG_BLOCK_SIZE; }
   FBPlugSignalBlock& operator[](int channel)
   { return _store[channel]; }
@@ -92,39 +101,4 @@ public:
   { return _store[channel]; }
   void Fill(float val) 
   { for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++) _store[ch].Fill(val); }
-};
-
-class FBPipelineAudioBlock
-{
-  std::array<std::vector<float>, FB_CHANNELS_STEREO> _store;
-
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBPipelineAudioBlock);
-  
-
-  std::vector<float> const& operator[](int channel) const
-  {
-    return _store[channel];
-  }
-  int Count() const 
-  { return static_cast<int>(_store[FB_CHANNEL_L].size()); }
-
-  void Drop(int count)
-  {
-    assert(0 <= count && count <= _store[0].size());
-    _store[0].erase(_store[0].begin(), _store[0].begin() + count);
-    _store[1].erase(_store[1].begin(), _store[1].begin() + count);
-  }
-
-  float const& At(int ch, int s) const
-  {
-    assert(0 <= ch && ch < 2);
-    assert(0 <= s && s < _store[0].size());
-    return _store[ch][s];
-  }
-
-  void Append(FBPlugAudioBlock const& plug);
-  void Append(FBHostAudioBlock const& host);
-  void MoveOneFixedBlockTo(FBPlugAudioBlock& fixed);
-  void MoveOneRawBlockToAndPad(FBHostAudioBlock& raw);
 };

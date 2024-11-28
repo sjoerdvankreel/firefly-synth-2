@@ -39,7 +39,8 @@ FBHostToPlugProcessor::ToPlug()
 {
   if (_pipeline.audio.Count() < FB_PLUG_BLOCK_SIZE)
     return nullptr;
-  _pipeline.audio.MoveOneFixedBlockTo(_plug.audio);
+  _plug.audio.CopyFrom(_pipeline.audio);
+  _pipeline.audio.Drop(_plug.audio.Count());
   GatherAccEvents(_pipeline.events.note, _plug.events.note);
   GatherAccEvents(_pipeline.events.accParam, _plug.events.accParam);
   return &_plug;

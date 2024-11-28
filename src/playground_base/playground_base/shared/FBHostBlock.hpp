@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/pipeline/FBPipelineAudioBlock.hpp>
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <playground_base/shared/FBSharedUtility.hpp>
 
