@@ -2,8 +2,8 @@
 
 #include <playground_base/shared/FBSignalBlock.hpp>
 #include <playground_base/dsp/FBHostBlockProcessor.hpp>
-#include <playground_base/pipeline/FBHostToPlugProcessor.hpp>
-#include <playground_base/pipeline/FBPlugToHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
+#include <playground_base/dsp/pipeline/FBPlugToHostProcessor.hpp>
 
 struct FBHostInputBlock;
 
