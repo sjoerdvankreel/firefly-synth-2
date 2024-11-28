@@ -56,7 +56,7 @@ void FBAutomationRamper<Derived>::ProcessFixed(
       (*_denseAddrs->buffer[event.index])[currentPos + pos] = 
         currentVal + pos / static_cast<float>(posRange) * valRange;
     if (ae < accEvents.size() - 1 && accEvents[ae + 1].index != event.index)
-      for (int pos = event.position; pos < FB_PLUG_BLOCK_SIZE; pos++)
+      for (int pos = event.position; pos < input.audio.Count(); pos++)
         (*_denseAddrs->buffer[event.index])[pos] = event.normalized;
   }
 
