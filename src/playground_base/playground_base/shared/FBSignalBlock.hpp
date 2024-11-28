@@ -6,6 +6,9 @@
 #include <array>
 #include <vector>
 
+class FBPipelineAudioBlock;
+
+// TODO drop this stuff
 #define FB_CHANNEL_L 0
 #define FB_CHANNEL_R 1
 #define FB_CHANNELS_STEREO 2
@@ -24,6 +27,17 @@ public:
   FBHostAudioBlock(float* l, float* r, int count) :
   _count(count), _store({ l, r }) {}
 
+  float const* operator[](int channel) const { return _store[channel]; }
+
+  void Fill(int from, int to, float val)
+  {
+    assert(0 <= from && from <= to && to <= _count);
+    for (int ch = 0; ch < 2; ch++)
+      for (int s = from; s < to; s++)
+        _store[ch][s] = val;
+  }
+
+  void CopyFrom(FBPipelineAudioBlock const& pipeline, int srcOffset, int count);
   void Set(int s, float l, float r)
   {
     assert(0 <= s && s < _count);
@@ -55,6 +69,7 @@ class alignas(FB_PLUG_BLOCK_ALIGN) FBPlugSignalBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugSignalBlock);
 
+  int Count() const { return FB_PLUG_BLOCK_SIZE; }
   float& operator[](int index)
   { return _store[index]; }
   float const& operator[](int index) const
@@ -70,6 +85,7 @@ class alignas(FB_PLUG_BLOCK_ALIGN) FBPlugAudioBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugAudioBlock);
 
+  int Count() const { return FB_PLUG_BLOCK_SIZE; }
   FBPlugSignalBlock& operator[](int channel)
   { return _store[channel]; }
   FBPlugSignalBlock const& operator[](int channel) const
@@ -85,26 +101,19 @@ class FBPipelineAudioBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPipelineAudioBlock);
   
+
+  std::vector<float> const& operator[](int channel) const
+  {
+    return _store[channel];
+  }
   int Count() const 
   { return static_cast<int>(_store[FB_CHANNEL_L].size()); }
-
-  void Append(float l, float r) {
-    _store[0].push_back(l);
-    _store[1].push_back(r);
-  }
 
   void Drop(int count)
   {
     assert(0 <= count && count <= _store[0].size());
     _store[0].erase(_store[0].begin(), _store[0].begin() + count);
     _store[1].erase(_store[1].begin(), _store[1].begin() + count);
-  }
-
-  float& At(int ch, int s)
-  {
-    assert(0 <= ch && ch < 2);
-    assert(0 <= s && s < _store[0].size());
-    return _store[ch][s];
   }
 
   float const& At(int ch, int s) const
@@ -114,7 +123,8 @@ public:
     return _store[ch][s];
   }
 
-  void AppendFrom(FBHostAudioBlock const& raw);
+  void Append(FBPlugAudioBlock const& plug);
+  void Append(FBHostAudioBlock const& host);
   void MoveOneFixedBlockTo(FBPlugAudioBlock& fixed);
   void MoveOneRawBlockToAndPad(FBHostAudioBlock& raw);
 };

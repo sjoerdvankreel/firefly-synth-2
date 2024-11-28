@@ -2,11 +2,29 @@
 #include <cassert>
 
 void
-FBPipelineAudioBlock::AppendFrom(FBHostAudioBlock const& raw)
+FBPipelineAudioBlock::Append(FBPlugAudioBlock const& plug)
 {
-  for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
-    for (int s = 0; s < raw.Count(); s++)
-      _store[ch].push_back(raw._store[ch][s]);
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < plug.Count(); s++)
+      _store[ch].push_back(plug[ch][s]);
+}
+
+void
+FBPipelineAudioBlock::Append(FBHostAudioBlock const& host)
+{
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < host.Count(); s++)
+      _store[ch].push_back(host[ch][s]);
+}
+
+void
+FBHostAudioBlock::CopyFrom(FBPipelineAudioBlock const& pipeline, int srcOffset, int count)
+{
+  assert(srcOffset + count <= Count());
+  assert(0 <= count && count <= pipeline.Count());
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < count; s++)
+      _store[ch][s + srcOffset] = pipeline[ch][s];
 }
 
 void 

@@ -69,5 +69,5 @@ FBHostToPlugProcessor::FromHost(FBHostInputBlock const& input)
     }
   }
 
-  _pipeline.audio.AppendFrom(input.audio);
+  _pipeline.audio.Append(input.audio);
 }
