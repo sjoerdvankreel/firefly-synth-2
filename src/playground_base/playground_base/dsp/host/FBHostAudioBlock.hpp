@@ -8,8 +8,8 @@ class FBPipelineAudioBlock;
 
 class FBHostAudioBlock
 {
-  int _count = 0;
-  std::array<float*, 2> _store = {};
+  int _count;
+  std::array<float*, 2> _store;
 
 public:
   FB_COPY_MOVE_NODEFCTOR(FBHostAudioBlock);

@@ -7,14 +7,14 @@ audio(l, r, count) {}
 
 FBHostEvents::
 FBHostEvents():
-FBPipelineHostEvents(),
+FBPipelineEvents(),
 blockParam()
 {
   blockParam.reserve(FB_EVENT_COUNT_GUESS);
 }
 
-FBPipelineHostEvents::
-FBPipelineHostEvents():
+FBPipelineEvents::
+FBPipelineEvents():
 note(),
 accParam()
 {

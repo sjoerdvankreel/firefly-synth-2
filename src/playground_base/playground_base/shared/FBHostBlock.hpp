@@ -35,17 +35,17 @@ struct FBBlockParamEvent
   float normalized;
 };
 
-struct FBPipelineHostEvents
+struct FBPipelineEvents
 {
-  FBPipelineHostEvents();
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPipelineHostEvents);
+  FBPipelineEvents();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPipelineEvents);
 
   std::vector<FBNoteEvent> note;
   std::vector<FBAccParamEvent> accParam;
 };
 
 struct FBHostEvents:
-public FBPipelineHostEvents
+public FBPipelineEvents
 {
   FBHostEvents();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostEvents);
@@ -56,7 +56,7 @@ public FBPipelineHostEvents
 struct FBPlugInputBlock
 {
   FBPlugAudioBlock audio;
-  FBPipelineHostEvents events;
+  FBPipelineEvents events;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);
 };
 
@@ -74,5 +74,5 @@ struct FBPipelineInputBlock
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPipelineInputBlock);
 
   FBPipelineAudioBlock audio = {};
-  FBPipelineHostEvents events = {};
+  FBPipelineEvents events = {};
 };
