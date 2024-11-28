@@ -7,5 +7,6 @@ class IFBHostProcessor
 {
 public:
   virtual ~IFBHostProcessor() {}
-  virtual void ProcessHost(FBHostInputBlock const& input, FBHostAudioBlock& output) = 0;
+  virtual void ProcessHost(
+    FBHostInputBlock const& input, FBHostAudioBlock& output) = 0;
 };
