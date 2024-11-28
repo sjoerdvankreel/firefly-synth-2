@@ -1,4 +1,4 @@
-#include <playground_base/shared/FBSignalBlock.hpp> // TODO
+#include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
 #include <playground_base/dsp/host/FBHostAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
 #include <cassert>
