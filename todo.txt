@@ -2,7 +2,7 @@
 /dsp/plug
 /dsp/pipeline
 
-
+retest all block sizes
 dont repeat fixed_block_size everywhere
 paramflush
 vst3 has builtin controller param storage, lets use it

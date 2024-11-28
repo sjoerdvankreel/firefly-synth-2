@@ -54,8 +54,8 @@ static FBHostAudioBlock
 MakeHostAudioBlock(AudioBusBuffers& buffers, int sampleCount)
 {
   return FBHostAudioBlock(
-    buffers.channelBuffers32[FB_CHANNEL_L],
-    buffers.channelBuffers32[FB_CHANNEL_R],
+    buffers.channelBuffers32[0],
+    buffers.channelBuffers32[1],
     sampleCount);
 }
 
@@ -89,7 +89,7 @@ FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   _processor = CreateProcessor(_topo, setup);
   _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
-  for (int ch = 0; ch < FB_CHANNELS_STEREO; ch++)
+  for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
   return kResultTrue;
 }
@@ -145,8 +145,8 @@ FBVST3AudioEffect::process(ProcessData& data)
     _input->audio = MakeHostAudioBlock(data.inputs[0], data.numSamples);
   else
     _input->audio = FBHostAudioBlock(
-      _zeroIn[FB_CHANNEL_L].data(), 
-      _zeroIn[FB_CHANNEL_R].data(), 
+      _zeroIn[0].data(), 
+      _zeroIn[1].data(), 
       data.numSamples);
 
   FBHostAudioBlock output(MakeHostAudioBlock(*data.outputs, data.numSamples));
