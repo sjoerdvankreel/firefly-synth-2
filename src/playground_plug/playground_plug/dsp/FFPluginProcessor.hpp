@@ -5,7 +5,7 @@
 
 #include <playground_base/dsp/FBDSPUtility.hpp>
 #include <playground_base/dsp/FBAutomationRamper.hpp>
-#include <playground_base/dsp/FBHostBlockProcessor.hpp>
+#include <playground_base/dsp/host/FBHostProcessor.hpp>
 
 #include <playground_plug/shared/FFPluginTopo.hpp>
 

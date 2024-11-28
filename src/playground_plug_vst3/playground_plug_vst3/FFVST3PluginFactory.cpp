@@ -21,7 +21,7 @@ public:
   FFVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId);
 
 protected:
-  std::unique_ptr<IFBHostBlockProcessor> CreateProcessor(
+  std::unique_ptr<IFBHostProcessor> CreateProcessor(
     FBRuntimeTopo const& topo, ProcessSetup const& setup) const override;
 };
 
@@ -29,7 +29,7 @@ FFVST3AudioEffect::
 FFVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId) :
 FBVST3AudioEffect(std::move(topo), controllerId) {}
 
-std::unique_ptr<IFBHostBlockProcessor>
+std::unique_ptr<IFBHostProcessor>
 FFVST3AudioEffect::CreateProcessor(
   FBRuntimeTopo const& topo, ProcessSetup const& setup) const
 {

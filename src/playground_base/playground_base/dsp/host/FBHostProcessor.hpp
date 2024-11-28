@@ -1,11 +1,11 @@
 #pragma once
 
+class FBHostAudioBlock;
 struct FBHostInputBlock;
-class FBRawAudioBlockView;
 
-class IFBHostBlockProcessor
+class IFBHostProcessor
 {
 public:
-  virtual ~IFBHostBlockProcessor() {}
+  virtual ~IFBHostProcessor() {}
   virtual void ProcessHost(FBHostInputBlock const& input, FBHostAudioBlock& output) = 0;
 };

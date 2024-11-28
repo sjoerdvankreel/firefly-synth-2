@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/shared/FBSignalBlock.hpp>
-#include <playground_base/dsp/FBHostBlockProcessor.hpp>
+#include <playground_base/dsp/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
 #include <playground_base/dsp/pipeline/FBPlugToHostProcessor.hpp>
 
@@ -9,7 +9,7 @@ struct FBHostInputBlock;
 
 template <class Derived>
 class FBFixedBlockProcessor:
-public IFBHostBlockProcessor
+public IFBHostProcessor
 {
   FBPlugAudioBlock _plugAudioOut;
   FBHostToPlugProcessor _hostToPlugProcessor;
