@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/shared/FBPlugTopo.hpp>
-#include <playground_base/shared/FBPlugConfig.hpp>
+#include <playground_base/base/plug/FBPlugConfig.hpp>
 
 #include <playground_base/dsp/FBDSPUtility.hpp>
 #include <playground_base/dsp/FBAutomationRamper.hpp>

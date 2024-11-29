@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/shared/FBPlugConfig.hpp>
+#include <playground_base/base/plug/FBPlugConfig.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
 #include <playground_base/dsp/pipeline/FBPlugToHostProcessor.hpp>

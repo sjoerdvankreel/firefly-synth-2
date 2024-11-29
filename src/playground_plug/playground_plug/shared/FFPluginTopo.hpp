@@ -2,7 +2,7 @@
 
 #include <playground_plug/shared/FFPluginConfig.hpp>
 #include <playground_base/shared/FBPlugTopo.hpp>
-#include <playground_base/shared/FBPlugConfig.hpp>
+#include <playground_base/base/plug/FBPlugConfig.hpp>
 #include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
 #include <playground_base/shared/FBSharedUtility.hpp>
 

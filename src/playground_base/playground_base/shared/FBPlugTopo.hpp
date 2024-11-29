@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/shared/FBObjectLifetime.hpp>
+#include <playground_base/base/shared/FBObjectLifetime.hpp>
 
 #include <map>
 #include <string>
