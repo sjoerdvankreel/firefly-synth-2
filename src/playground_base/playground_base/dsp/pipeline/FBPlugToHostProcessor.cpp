@@ -26,6 +26,6 @@ FBPlugToHostProcessor::ToHost(FBHostAudioBlock& host)
   host.Fill(0, padded, 0.0f);
 
   int used = std::min(host.Count(), _pipeline->Count());
-  host.CopyFrom(*_pipeline, padded, used);
+  host.CopyFrom(*_pipeline, padded, 0, used);
   _pipeline->Drop(used);
 }

@@ -1,13 +1,16 @@
 #pragma once
 
+#include <playground_base/dsp/shared/FBAnyAudioBlock.hpp>
 #include <playground_base/base/shared/FBObjectLifetime.hpp>
+
 #include <array>
 #include <vector>
 
 class FBPlugAudioBlock;
 class FBHostAudioBlock;
 
-class FBPipelineAudioBlock
+class FBPipelineAudioBlock:
+public FBAnyAudioBlock<FBPipelineAudioBlock>
 {
   std::array<std::vector<float>, 2> _store = {};
 
