@@ -1,7 +1,8 @@
-#include <playground_base/shared/FBHostBlock.hpp> // TODO
 #include <playground_base/dsp/host/FBHostAudioBlock.hpp>
+#include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPlugToHostProcessor.hpp>
+
 #include <cassert>
 
 void 
@@ -13,7 +14,7 @@ FBPlugToHostProcessor::FromPlug(FBPlugAudioBlock const& plug)
 void 
 FBPlugToHostProcessor::ToHost(FBHostAudioBlock& host)
 {
-  _hitPlugBlockSize |= _pipeline->Count() >= FB_PLUG_BLOCK_SIZE;
+  _hitPlugBlockSize |= _pipeline->Count() >= FBPlugAudioBlock::Count();
   if (!_hitPlugBlockSize)
   {
     host.Fill(0, host.Count(), 0.0f);

@@ -17,5 +17,5 @@ public:
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugAudioBlock);
   FBPlugAudioBlock(): FBAnyAudioBlock({}, {}) {}
-  int Count() const { return FB_PLUG_BLOCK_SIZE; }
+  static int Count() { return FB_PLUG_BLOCK_SIZE; }
 };
