@@ -6,7 +6,7 @@
 #include <playground_base/dsp/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
 #include <playground_base/dsp/host/FBHostAudioBlock.hpp>
-#include <playground_base/dsp/host/FBHostEvents.hpp>
+#include <playground_base/dsp/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineEvents.hpp>
 
@@ -18,21 +18,4 @@ struct FBPlugInputBlock
   FBPlugAudioBlock audio;
   FBPipelineEvents events;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);
-};
-
-struct FBHostInputBlock
-{
-  FBHostInputBlock(float* l, float* r, int count);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostInputBlock);
-
-  FBHostEvents events;
-  FBHostAudioBlock audio;
-};
-
-struct FBPipelineInputBlock
-{
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBPipelineInputBlock);
-
-  FBPipelineAudioBlock audio = {};
-  FBPipelineEvents events = {};
 };
