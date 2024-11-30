@@ -1,8 +1,8 @@
 #pragma once
 
-#include <playground_base/dsp/shared/FBAnyAudioBlock.hpp>
 #include <playground_base/base/plug/FBPlugConfig.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/shared/FBAnyAudioBlock.hpp>
 
 #include <array>
 
