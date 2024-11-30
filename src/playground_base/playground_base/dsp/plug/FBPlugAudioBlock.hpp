@@ -15,6 +15,7 @@ public:
   StoreT& operator[](int channel)
   { return _store[channel]; }
 
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugAudioBlock);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugAudioBlock);
+  FBPlugAudioBlock(): FBAnyAudioBlock({}, {}) {}
   int Count() const { return FB_PLUG_BLOCK_SIZE; }
 };

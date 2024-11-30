@@ -22,7 +22,7 @@ FFPluginProcessor::ProcessAutomation(
   bool on = FBNormalizedToBool(_memory.block.osci.on[0][FFOsciBlockParamOn]);
   if (!on)
   {
-    output.Fill(0.0f);
+    output.Fill(0, output.Count(), 0.0f);
     return;
   }
 
