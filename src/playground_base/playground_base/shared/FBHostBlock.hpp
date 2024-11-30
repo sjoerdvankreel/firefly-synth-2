@@ -6,28 +6,12 @@
 #include <playground_base/dsp/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
 #include <playground_base/dsp/host/FBHostAudioBlock.hpp>
-#include <playground_base/dsp/host/FBBlockEvent.hpp>
+#include <playground_base/dsp/host/FBHostEvents.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/FBPipelineEvents.hpp>
 
 #define FB_EVENT_COUNT_GUESS 1024
 
-struct FBPipelineEvents
-{
-  FBPipelineEvents();
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPipelineEvents);
-
-  std::vector<FBNoteEvent> note;
-  std::vector<FBAccEvent> acc;
-};
-
-struct FBHostEvents:
-public FBPipelineEvents
-{
-  FBHostEvents();
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostEvents);
-
-  std::vector<FBBlockEvent> block;
-};
 
 struct FBPlugInputBlock
 {
