@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_plug/shared/FFPluginConfig.hpp>
-#include <playground_base/shared/FBPlugTopo.hpp>
+#include <playground_base/base/plug/FBPlugTopo.hpp>
 #include <playground_base/base/plug/FBPlugConfig.hpp>
 #include <playground_base/dsp/plug/FBPlugCVBlock.hpp>
 #include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>

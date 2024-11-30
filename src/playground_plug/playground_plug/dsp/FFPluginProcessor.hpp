@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/shared/FBPlugTopo.hpp>
+#include <playground_base/base/plug/FBPlugTopo.hpp>
 #include <playground_base/base/plug/FBPlugConfig.hpp>
 
 #include <playground_base/dsp/shared/FBPhase.hpp>
