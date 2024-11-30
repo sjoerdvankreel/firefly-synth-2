@@ -1,6 +1,7 @@
 /dsp/host
 /dsp/plug
 /dsp/pipeline
+plugin->plug
 
 retest all block sizes
 dont repeat fixed_block_size everywhere
