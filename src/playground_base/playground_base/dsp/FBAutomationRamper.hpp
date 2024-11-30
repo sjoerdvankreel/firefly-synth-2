@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/shared/FBPlugTopo.hpp>
-#include <playground_base/base/shared/FBObjectLifetime.hpp>
+#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/FBFixedBlockProcessor.hpp>
 
 template <class Derived>
