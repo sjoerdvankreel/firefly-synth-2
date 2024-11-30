@@ -2,6 +2,6 @@
 
 struct FBBlockEvent
 {
-  int index;
-  float normalized;
+  int index = 0;
+  float normalized = 0.0f;
 };

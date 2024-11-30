@@ -3,7 +3,7 @@
 #include <playground_base/shared/FBPlugTopo.hpp>
 #include <playground_base/base/plug/FBPlugConfig.hpp>
 
-#include <playground_base/dsp/FBDSPUtility.hpp>
+#include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/dsp/FBAutomationRamper.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
 
