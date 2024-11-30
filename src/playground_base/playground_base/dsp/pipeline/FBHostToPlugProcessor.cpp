@@ -18,16 +18,16 @@ static void GatherAccEvents(
 }
 
 static void
-GatherStraddledAccParamEvents(
-  FBAccParamEvent const& thisEvent,
-  FBAccParamEvent const& nextEvent, 
-  std::vector<FBAccParamEvent>& output)
+GatherStraddledAccEvents(
+  FBAccEvent const& thisEvent,
+  FBAccEvent const& nextEvent, 
+  std::vector<FBAccEvent>& output)
 {
   int thisFixedBlock = thisEvent.position / FB_PLUG_BLOCK_SIZE;
   int nextFixedBlock = nextEvent.position / FB_PLUG_BLOCK_SIZE;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
-    FBAccParamEvent straddledEvent;
+    FBAccEvent straddledEvent;
     straddledEvent.index = thisEvent.index;
     straddledEvent.position = i * FB_PLUG_BLOCK_SIZE + FB_PLUG_BLOCK_SIZE - 1;
     float valueRange = nextEvent.normalized - thisEvent.normalized;
@@ -45,7 +45,7 @@ FBHostToPlugProcessor::ToPlug()
   _plug.audio.CopyFrom(_pipeline.audio, 0, 0, _plug.audio.Count());
   _pipeline.audio.Drop(_plug.audio.Count());
   GatherAccEvents(_pipeline.events.note, _plug.events.note);
-  GatherAccEvents(_pipeline.events.accParam, _plug.events.accParam);
+  GatherAccEvents(_pipeline.events.acc, _plug.events.acc);
   return &_plug;
 }
 
@@ -59,17 +59,17 @@ FBHostToPlugProcessor::FromHost(FBHostInputBlock const& input)
     _pipeline.events.note.push_back(event);
   }
 
-  for (int e = 0; e < input.events.accParam.size(); e++)
+  for (int e = 0; e < input.events.acc.size(); e++)
   {
-    FBAccParamEvent thisEvent = input.events.accParam[e];
+    FBAccEvent thisEvent = input.events.acc[e];
     thisEvent.position += _pipeline.audio.Count();
-    _pipeline.events.accParam.push_back(thisEvent);
-    if (e < input.events.accParam.size() - 1 &&
-      input.events.accParam[e + 1].index == input.events.accParam[e].index)
+    _pipeline.events.acc.push_back(thisEvent);
+    if (e < input.events.acc.size() - 1 &&
+      input.events.acc[e + 1].index == input.events.acc[e].index)
     {
-      FBAccParamEvent nextEvent = input.events.accParam[e + 1];
+      FBAccEvent nextEvent = input.events.acc[e + 1];
       nextEvent.position += _pipeline.audio.Count();
-      GatherStraddledAccParamEvents(thisEvent, nextEvent, _pipeline.events.accParam);
+      GatherStraddledAccEvents(thisEvent, nextEvent, _pipeline.events.acc);
     }
   }
 

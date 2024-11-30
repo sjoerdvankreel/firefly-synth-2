@@ -8,16 +8,16 @@ audio(l, r, count) {}
 FBHostEvents::
 FBHostEvents():
 FBPipelineEvents(),
-blockParam()
+block()
 {
-  blockParam.reserve(FB_EVENT_COUNT_GUESS);
+  block.reserve(FB_EVENT_COUNT_GUESS);
 }
 
 FBPipelineEvents::
 FBPipelineEvents():
 note(),
-accParam()
+acc()
 {
   note.reserve(FB_EVENT_COUNT_GUESS);
-  accParam.reserve(FB_EVENT_COUNT_GUESS);
+  acc.reserve(FB_EVENT_COUNT_GUESS);
 }

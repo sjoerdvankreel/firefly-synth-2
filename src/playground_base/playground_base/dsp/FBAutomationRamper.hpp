@@ -8,8 +8,8 @@ template <class Derived>
 class FBAutomationRamper:
 public FBFixedBlockProcessor<FBAutomationRamper<Derived>>
 {
-  FBDenseParamAddrsBase* const _denseAddrs;
-  FBScalarParamAddrsBase* const _scalarAddrs;
+  FBAccAddrsBase* const _acc;
+  FBScalarAddrsBase* const _scalar;
 
 public:
   FBAutomationRamper(
@@ -25,12 +25,12 @@ public:
 template <class Derived>
 FBAutomationRamper<Derived>::
 FBAutomationRamper(
-  FBDenseParamAddrsBase* denseAddrs,
-  FBScalarParamAddrsBase* scalarAddrs,
+  FBAccAddrsBase* acc,
+  FBScalarAddrsBase* scalar,
   int maxHostSampleCount) :
-FBFixedBlockProcessor<FBAutomationRamper<Derived>>(scalarAddrs, maxHostSampleCount),
-_denseAddrs(denseAddrs),
-_scalarAddrs(scalarAddrs) {}
+FBFixedBlockProcessor<FBAutomationRamper<Derived>>(scalar, maxHostSampleCount),
+_acc(acc),
+_scalar(scalar) {}
 
 template <class Derived> 
 void FBAutomationRamper<Derived>::ProcessFixed(
@@ -41,7 +41,7 @@ void FBAutomationRamper<Derived>::ProcessFixed(
   for (int ap = 0; ap < _scalarAddrs->acc.size(); ap++)
     _denseAddrs->cv[ap]->Fill(0, _denseAddrs->cv[ap]->Count(), *_scalarAddrs->acc[ap]);
 
-  auto& accEvents = input.events.accParam;
+  auto& accEvents = input.events.acc;
   for (int ae = 0; ae < accEvents.size(); ae++)
   {
     auto const& event = accEvents[ae];

@@ -12,7 +12,7 @@ MakeRuntimeName(
 }
 
 int
-MakeRuntimeParamHash(
+MakeRuntimeHash(
   std::string const& id)
 {
   std::uint32_t result = 0;
@@ -53,24 +53,24 @@ MakeTagToParam(
 }
 
 static std::vector<FBRuntimeParam>
-MakeRuntimeAccParams(
+MakeRuntimeAcc(
   std::vector<FBRuntimeModule> const& runtimeModules)
 {
   std::vector<FBRuntimeParam> result;
   for (int m = 0; m < runtimeModules.size(); m++)
-    for (int ap = 0; ap < runtimeModules[m].accParams.size(); ap++)
-      result.push_back(runtimeModules[m].accParams[ap]);
+    for (int ap = 0; ap < runtimeModules[m].acc.size(); ap++)
+      result.push_back(runtimeModules[m].acc[ap]);
   return result;
 }
 
 static std::vector<FBRuntimeParam>
-MakeRuntimeBlockParams(
+MakeRuntimeBlock(
   std::vector<FBRuntimeModule> const& runtimeModules)
 {
   std::vector<FBRuntimeParam> result;
   for (int m = 0; m < runtimeModules.size(); m++)
-    for (int bp = 0; bp < runtimeModules[m].blockParams.size(); bp++)
-      result.push_back(runtimeModules[m].blockParams[bp]);
+    for (int bp = 0; bp < runtimeModules[m].block.size(); bp++)
+      result.push_back(runtimeModules[m].block[bp]);
   return result;
 }
 
@@ -97,40 +97,40 @@ MakeRuntimeParams(
 }
 
 void 
-FBRuntimeTopo::InitScalarAddrs(FBScalarParamAddrsBase& addrs) const
+FBRuntimeTopo::InitScalarAddrs(FBScalarAddrsBase& addrs) const
 {
   addrs.acc.clear();
-  for (int ap = 0; ap < accParams.size(); ap++)
-    addrs.acc.push_back(accParams[ap].staticParam.scalarAddr(
-      accParams[ap].moduleSlot, accParams[ap].paramSlot, addrs));
+  for (int a = 0; a < acc.size(); a++)
+    addrs.acc.push_back(acc[a].staticParam.scalarAddr(
+      acc[a].moduleSlot, acc[a].paramSlot, addrs));
 
   addrs.block.clear();
-  for (int bp = 0; bp < blockParams.size(); bp++)
-    addrs.block.push_back(blockParams[bp].staticParam.scalarAddr(
-      blockParams[bp].moduleSlot, blockParams[bp].paramSlot, addrs));
+  for (int b = 0; b < block.size(); b++)
+    addrs.block.push_back(block[b].staticParam.scalarAddr(
+      block[b].moduleSlot, block[b].paramSlot, addrs));
 }
 
 void 
-FBRuntimeTopo::InitDenseAddrs(FBDenseParamAddrsBase& addrs) const
+FBRuntimeTopo::InitAccAddrs(FBAccAddrsBase& addrs) const
 {
   addrs.pos.clear();
-  for (int ap = 0; ap < accParams.size(); ap++)
-    addrs.pos.push_back(accParams[ap].staticParam.posAddr(
-      accParams[ap].moduleSlot, accParams[ap].paramSlot, addrs));
+  for (int a = 0; a < acc.size(); a++)
+    addrs.pos.push_back(acc[a].staticParam.posAddr(
+      acc[a].moduleSlot, acc[a].paramSlot, addrs));
 
   addrs.cv.clear();
-  for (int ap = 0; ap < accParams.size(); ap++)
-    addrs.cv.push_back(accParams[ap].staticParam.denseAddr(
-      accParams[ap].moduleSlot, accParams[ap].paramSlot, addrs));
+  for (int a = 0; a < acc.size(); a++)
+    addrs.cv.push_back(acc[a].staticParam.denseAddr(
+      acc[a].moduleSlot, acc[a].paramSlot, addrs));
 }
 
 FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& staticTopo):
 modules(MakeRuntimeModules(staticTopo)),
-accParams(MakeRuntimeAccParams(modules)),
-blockParams(MakeRuntimeBlockParams(modules)),
-tagToAccParam(MakeTagToParam(accParams)),
-tagToBlockParam(MakeTagToParam(blockParams)) {}
+acc(MakeRuntimeAcc(modules)),
+block(MakeRuntimeBlock(modules)),
+tagToAcc(MakeTagToParam(acc)),
+tagToBlock(MakeTagToParam(block)) {}
 
 FBRuntimeParam::
 FBRuntimeParam(
@@ -142,11 +142,11 @@ staticParam(staticParam),
 longName(MakeRuntimeParamLongName(staticModule, moduleSlot, staticParam, paramSlot)),
 shortName(MakeRuntimeName(staticParam.name, staticParam.slotCount, paramSlot)),
 id(MakeRuntimeParamId(staticModule, moduleSlot, staticParam, paramSlot)),
-tag(MakeRuntimeParamHash(id)) {}
+tag(MakeRuntimeHash(id)) {}
 
 FBRuntimeModule::
 FBRuntimeModule(
   FBStaticModule const& staticModule, int moduleSlot):
 name(MakeRuntimeName(staticModule.name, staticModule.slotCount, moduleSlot)),
-accParams(MakeRuntimeParams(staticModule, moduleSlot, staticModule.accParams)),
-blockParams(MakeRuntimeParams(staticModule, moduleSlot, staticModule.blockParams)) {}
+acc(MakeRuntimeParams(staticModule, moduleSlot, staticModule.acc)),
+block(MakeRuntimeParams(staticModule, moduleSlot, staticModule.block)) {}

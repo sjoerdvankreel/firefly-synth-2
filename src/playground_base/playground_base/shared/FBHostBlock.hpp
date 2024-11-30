@@ -11,14 +11,14 @@
 
 
 
-struct FBAccParamEvent
+struct FBAccEvent
 {
   int index;
   int position;
   float normalized;
 };
 
-struct FBBlockParamEvent
+struct FBBlockEvent
 {
   int index;
   float normalized;
@@ -30,7 +30,7 @@ struct FBPipelineEvents
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPipelineEvents);
 
   std::vector<FBNoteEvent> note;
-  std::vector<FBAccParamEvent> accParam;
+  std::vector<FBAccEvent> acc;
 };
 
 struct FBHostEvents:
@@ -39,7 +39,7 @@ public FBPipelineEvents
   FBHostEvents();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostEvents);
 
-  std::vector<FBBlockParamEvent> blockParam;
+  std::vector<FBBlockEvent> block;
 };
 
 struct FBPlugInputBlock

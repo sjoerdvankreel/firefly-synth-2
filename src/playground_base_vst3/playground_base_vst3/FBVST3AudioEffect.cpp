@@ -6,19 +6,19 @@
 #include <pluginterfaces/vst/ivstparameterchanges.h>
 #include <algorithm>
 
-static FBBlockParamEvent
-MakeBlockParamEvent(int index, ParamValue value)
+static FBBlockEvent
+MakeBlockEvent(int index, ParamValue value)
 {
-  FBBlockParamEvent result;
+  FBBlockEvent result;
   result.index = index;
   result.normalized = value;
   return result;
 }
 
-static FBAccParamEvent
-MakeAccParamEvent(int index, int position, ParamValue value)
+static FBAccEvent
+MakeAccEvent(int index, int position, ParamValue value)
 {
-  FBAccParamEvent result;
+  FBAccEvent result;
   result.index = index;
   result.normalized = value;
   result.position = position;
@@ -121,26 +121,26 @@ FBVST3AudioEffect::process(ProcessData& data)
   ParamValue value;
   IParamValueQueue* queue;
   std::map<int, int>::const_iterator iter;
-  _input->events.accParam.clear();
-  _input->events.blockParam.clear();
+  _input->events.acc.clear();
+  _input->events.block.clear();
   if(data.inputParameterChanges != nullptr)
     for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
         if(queue->getPointCount() > 0)
-          if ((iter = _topo.tagToBlockParam.find(queue->getParameterId())) != _topo.tagToBlockParam.end())
+          if ((iter = _topo.tagToBlock.find(queue->getParameterId())) != _topo.tagToBlock.end())
           {
             if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-              _input->events.blockParam.push_back(MakeBlockParamEvent(iter->second, value));
-          } else if ((iter = _topo.tagToAccParam.find(queue->getParameterId())) != _topo.tagToAccParam.end())
+              _input->events.block.push_back(MakeBlockEvent(iter->second, value));
+          } else if ((iter = _topo.tagToAcc.find(queue->getParameterId())) != _topo.tagToAcc.end())
           {
             for (int point = 0; point < queue->getPointCount(); point++)
               if (queue->getPoint(point, position, value) == kResultTrue)
-                _input->events.accParam.push_back(MakeAccParamEvent(iter->second, position, value));
+                _input->events.acc.push_back(MakeAccEvent(iter->second, position, value));
           }     
 
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.position < r.position : l.index < r.index; };
-  std::sort(_input->events.accParam.begin(), _input->events.accParam.end(), compare);
+  std::sort(_input->events.acc.begin(), _input->events.acc.end(), compare);
 
   if (data.numInputs == 1)
     _input->audio = MakeHostAudioBlock(data.inputs[0], data.numSamples);

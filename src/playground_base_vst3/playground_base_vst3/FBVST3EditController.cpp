@@ -56,12 +56,12 @@ FBVST3EditController::initialize(FUnknown* context)
   for (int m = 0; m < _topo.modules.size(); m++)
   {
     addUnit(new Unit(MakeUnitInfo(_topo.modules[m], unitId)));
-    for (int bp = 0; bp < _topo.modules[m].blockParams.size(); bp++)
+    for (int b = 0; b < _topo.modules[m].block.size(); b++)
       parameters.addParameter(new Parameter(
-        MakeParamInfo(_topo.modules[m].blockParams[bp], unitId, false)));
-    for (int ap = 0; ap < _topo.modules[m].accParams.size(); ap++)
+        MakeParamInfo(_topo.modules[m].block[b], unitId, false)));
+    for (int a = 0; a < _topo.modules[m].acc.size(); a++)
       parameters.addParameter(new Parameter(
-        MakeParamInfo(_topo.modules[m].accParams[ap], unitId, true)));
+        MakeParamInfo(_topo.modules[m].acc[a], unitId, true)));
     unitId++;
   }
   return kResultTrue;

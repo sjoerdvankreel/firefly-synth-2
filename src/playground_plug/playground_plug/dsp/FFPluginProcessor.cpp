@@ -11,7 +11,7 @@ _phase(),
 _sampleRate(sampleRate),
 _memory()
 {
-  topo.InitDenseAddrs(_memory);
+  topo.InitAccAddrs(_memory);
   topo.InitScalarAddrs(_memory);
 }
 
@@ -19,7 +19,7 @@ void
 FFPluginProcessor::ProcessAutomation(
   FBPlugInputBlock const& input, FBPlugAudioBlock& output)
 {
-  bool on = FBNormalizedToBool(_memory.block.osci.on[0][FFOsciBlockParamOn]);
+  bool on = FBNormalizedToBool(_memory.block.osci.on[0][FFOsciBlockOn]);
   if (!on)
   {
     output.Fill(0, output.Count(), 0.0f);

@@ -12,13 +12,13 @@ class FBFixedBlockProcessor:
 public IFBHostProcessor
 {
   FBPlugAudioBlock _plugAudioOut;
+  FBScalarAddrsBase* const _scalar;
   FBHostToPlugProcessor _hostToPlugProcessor;
   FBPlugToHostProcessor _plugToHostProcessor;
-  FBScalarParamAddrsBase* const _scalarAddrs;
 
 public:
   FBFixedBlockProcessor(
-    FBScalarParamAddrsBase* scalarAddrs,
+    FBScalarAddrsBase* scalar,
     int maxHostSampleCount);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
 
@@ -29,19 +29,19 @@ public:
 template <class Derived>
 FBFixedBlockProcessor<Derived>::
 FBFixedBlockProcessor(
-  FBScalarParamAddrsBase* scalarAddrs,
+  FBScalarAddrsBase* scalar,
   int maxHostSampleCount) :
 _plugAudioOut(),
 _hostToPlugProcessor(),
 _plugToHostProcessor(),
-_scalarAddrs(scalarAddrs) {}
+_scalar(scalar) {}
 
 template <class Derived> 
 void FBFixedBlockProcessor<Derived>::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
-  for (auto const& be : input.events.blockParam)
-    *_scalarAddrs->block[be.index] = be.normalized;
+  for (auto const& be : input.events.block)
+    *_scalar->block[be.index] = be.normalized;
 
   FBPlugInputBlock const* plugBlock;
   _hostToPlugProcessor.FromHost(input);

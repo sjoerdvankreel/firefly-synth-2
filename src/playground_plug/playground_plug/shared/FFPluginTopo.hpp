@@ -15,69 +15,69 @@ FFMakeTopo();
 enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
 
 enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
-enum { FFOsciAccParamGain, FFOsciAccParamPitch, FFOsciAccParamCount };
-enum { FFOsciBlockParamOn, FFOsciBlockParamType, FFOsciBlockParamCount };
+enum { FFOsciAccGain, FFOsciAccPitch, FFOsciAccCount };
+enum { FFOsciBlockOn, FFOsciBlockType, FFOsciBlockCount };
 
-enum { FFShaperAccParamGain, FFShaperAccParamCount };
-enum { FFShaperBlockParamOn, FFShaperBlockParamClip, FFShaperBlockParamCount };
+enum { FFShaperAccGain, FFShaperAccCount };
+enum { FFShaperBlockOn, FFShaperBlockClip, FFShaperBlockCount };
 
 template <class T>
-struct alignas(alignof(T)) FFOsciAccParamMemory
+struct alignas(alignof(T)) FFOsciAccMemory
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccMemory);
   std::array<std::array<T, 1>, FF_OSCI_COUNT> pitch;
   std::array<std::array<T, FF_OSCI_GAIN_COUNT>, FF_OSCI_COUNT> gain;
 };
 
-struct FFOsciBlockParamMemory
+struct FFOsciBlockMemory
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockMemory);
   std::array<std::array<float, 1>, FF_OSCI_COUNT> on;
   std::array<std::array<float, 1>, FF_OSCI_COUNT> type;
 };
 
 template <class T>
-struct alignas(alignof(T)) FFShaperAccParamMemory
+struct alignas(alignof(T)) FFShaperAccMemory
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccMemory);
   std::array<std::array<T, 1>, FF_SHAPER_COUNT> gain;
 };
 
-struct FFShaperBlockParamMemory
+struct FFShaperBlockMemory
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperBlockParamMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperBlockMemory);
   std::array<std::array<float, 1>, FF_SHAPER_COUNT> on;
   std::array<std::array<float, 1>, FF_SHAPER_COUNT> clip;
 };
 
 template <class T>
-struct alignas(alignof(T)) FFAccParamMemory
+struct alignas(alignof(T)) FFAccMemory
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFAccParamMemory);
-  FFOsciAccParamMemory<T> osci;
-  FFShaperAccParamMemory<T> shaper;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFAccMemory);
+  FFOsciAccMemory<T> osci;
+  FFShaperAccMemory<T> shaper;
 };
 
-struct FFBlockParamMemory
+struct FFBlockMemory
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFBlockParamMemory);
-  FFOsciBlockParamMemory osci;
-  FFShaperBlockParamMemory shaper;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFBlockMemory);
+  FFOsciBlockMemory osci;
+  FFShaperBlockMemory shaper;
 };
 
-struct FFScalarParamMemory:
-public FBScalarParamAddrsBase
+struct FFScalarMemory:
+public FBScalarAddrsBase
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamMemory);
-  FFBlockParamMemory block;
-  FFAccParamMemory<float> acc;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarMemory);
+  FFBlockMemory block;
+  FFAccMemory<float> acc;
 };
 
-struct alignas(alignof(FBPlugCVBlock)) FFDenseParamMemory:
-public FFScalarParamMemory,
-public FBDenseParamAddrsBase
+struct alignas(alignof(FBPlugCVBlock)) FFAccMemory:
+public FFScalarMemory,
+public FBAccAddrsBase
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFDenseParamMemory);
-  FFAccParamMemory<int> pos;
-  FFAccParamMemory<FBPlugCVBlock> buffer;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFAccMemory);
+  FFAccMemory<int> pos;
+  FFAccMemory<FBPlugCVBlock> buffer;
 };

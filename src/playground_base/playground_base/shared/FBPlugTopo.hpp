@@ -21,20 +21,20 @@ inline bool
 FBNormalizedToBool(double normalized)
 { return FBNormalizedToDiscrete(2, normalized) != 0; }
 
-struct FBScalarParamAddrsBase
+struct FBScalarAddrsBase
 {
-  virtual ~FBScalarParamAddrsBase() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBScalarParamAddrsBase);
+  virtual ~FBScalarAddrsBase() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBScalarAddrsBase);
 
   // interior pointers to derived
   std::vector<float*> acc;
   std::vector<float*> block;
 };
 
-struct FBDenseParamAddrsBase
+struct FBAccAddrsBase
 {
-  virtual ~FBDenseParamAddrsBase() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBDenseParamAddrsBase);
+  virtual ~FBAccAddrsBase() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBAccAddrsBase);
 
   // interior pointers to derived
   std::vector<int*> pos;
@@ -51,13 +51,13 @@ struct FBStaticParam
 
   std::function<int* (
     int moduleSlot, int paramSlot, 
-    FBDenseParamAddrsBase& addrs)> posAddr;
+    FBAccAddrsBase& addrs)> posAddr;
   std::function<FBPlugCVBlock* (
     int moduleSlot, int paramSlot,
-    FBDenseParamAddrsBase& addrs)> denseAddr;
+    FBAccAddrsBase& addrs)> cvAddr;
   std::function<float* (
     int moduleSlot, int paramSlot,
-    FBScalarParamAddrsBase& addrs)> scalarAddr;
+    FBScalarAddrsBase& addrs)> scalarAddr;
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };
@@ -67,8 +67,8 @@ struct FBStaticModule
   int slotCount;
   std::string id;
   std::string name;
-  std::vector<FBStaticParam> accParams;
-  std::vector<FBStaticParam> blockParams;
+  std::vector<FBStaticParam> acc;
+  std::vector<FBStaticParam> block;
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };
@@ -100,8 +100,8 @@ struct FBRuntimeParam
 struct FBRuntimeModule
 {
   std::string const name;
-  std::vector<FBRuntimeParam> const accParams;
-  std::vector<FBRuntimeParam> const blockParams;
+  std::vector<FBRuntimeParam> const acc;
+  std::vector<FBRuntimeParam> const block;
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeModule);
   FBRuntimeModule(
@@ -114,11 +114,11 @@ struct FBRuntimeTopo
   FBRuntimeTopo(FBStaticTopo const& staticTopo);
 
   std::vector<FBRuntimeModule> const modules;
-  std::vector<FBRuntimeParam> const accParams;
-  std::vector<FBRuntimeParam> const blockParams;
-  std::map<int, int> const tagToAccParam;
-  std::map<int, int> const tagToBlockParam;
+  std::vector<FBRuntimeParam> const acc;
+  std::vector<FBRuntimeParam> const block;
+  std::map<int, int> const tagToAcc;
+  std::map<int, int> const tagToBlock;
 
-  void InitDenseAddrs(FBDenseParamAddrsBase& addrs) const;
-  void InitScalarAddrs(FBScalarParamAddrsBase& addrs) const;
+  void InitAccAddrs(FBAccAddrsBase& addrs) const;
+  void InitScalarAddrs(FBScalarAddrsBase& addrs) const;
 };
