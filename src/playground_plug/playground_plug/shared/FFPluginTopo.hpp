@@ -3,6 +3,7 @@
 #include <playground_plug/shared/FFPluginConfig.hpp>
 #include <playground_base/shared/FBPlugTopo.hpp>
 #include <playground_base/base/plug/FBPlugConfig.hpp>
+#include <playground_base/dsp/plug/FBPlugCVBlock.hpp>
 #include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
 #include <playground_base/shared/FBSharedUtility.hpp>
 
@@ -72,11 +73,11 @@ public FBScalarParamAddrsBase
   FFAccParamMemory<float> acc;
 };
 
-struct alignas(alignof(FBPlugSignalBlock)) FFDenseParamMemory:
+struct alignas(alignof(FBPlugCVBlock)) FFDenseParamMemory:
 public FFScalarParamMemory,
 public FBDenseParamAddrsBase
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFDenseParamMemory);
   FFAccParamMemory<int> pos;
-  FFAccParamMemory<FBPlugSignalBlock> buffer;
+  FFAccParamMemory<FBPlugCVBlock> buffer;
 };

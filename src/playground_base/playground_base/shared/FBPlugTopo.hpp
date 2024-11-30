@@ -7,7 +7,7 @@
 #include <vector>
 #include <functional>
 
-class FBPlugSignalBlock;
+class FBPlugCVBlock;
 
 inline double 
 FBDiscreteToNormalized(int count, int index)
@@ -38,7 +38,7 @@ struct FBDenseParamAddrsBase
 
   // interior pointers to derived
   std::vector<int*> pos;
-  std::vector<FBPlugSignalBlock*> buffer;
+  std::vector<FBPlugCVBlock*> cv;
 };
 
 struct FBStaticParam
@@ -52,7 +52,7 @@ struct FBStaticParam
   std::function<int* (
     int moduleSlot, int paramSlot, 
     FBDenseParamAddrsBase& addrs)> posAddr;
-  std::function<FBPlugSignalBlock* (
+  std::function<FBPlugCVBlock* (
     int moduleSlot, int paramSlot,
     FBDenseParamAddrsBase& addrs)> denseAddr;
   std::function<float* (
