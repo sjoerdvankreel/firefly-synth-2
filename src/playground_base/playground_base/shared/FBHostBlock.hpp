@@ -6,15 +6,10 @@
 #include <playground_base/dsp/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
 #include <playground_base/dsp/host/FBHostAudioBlock.hpp>
+#include <playground_base/dsp/host/FBBlockEvent.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
 
 #define FB_EVENT_COUNT_GUESS 1024
-
-struct FBBlockEvent
-{
-  int index;
-  float normalized;
-};
 
 struct FBPipelineEvents
 {
