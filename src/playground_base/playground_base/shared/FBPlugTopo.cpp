@@ -118,9 +118,9 @@ FBRuntimeTopo::InitDenseAddrs(FBDenseParamAddrsBase& addrs) const
     addrs.pos.push_back(accParams[ap].staticParam.posAddr(
       accParams[ap].moduleSlot, accParams[ap].paramSlot, addrs));
 
-  addrs.buffer.clear();
+  addrs.cv.clear();
   for (int ap = 0; ap < accParams.size(); ap++)
-    addrs.buffer.push_back(accParams[ap].staticParam.denseAddr(
+    addrs.cv.push_back(accParams[ap].staticParam.denseAddr(
       accParams[ap].moduleSlot, accParams[ap].paramSlot, addrs));
 }
 

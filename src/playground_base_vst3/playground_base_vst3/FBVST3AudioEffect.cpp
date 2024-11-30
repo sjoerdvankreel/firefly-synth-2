@@ -1,4 +1,5 @@
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
+#include <playground_base/dsp/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/host/FBHostAudioBlock.hpp>
 
 #include <pluginterfaces/vst/ivstevents.h>

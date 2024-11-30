@@ -1,3 +1,4 @@
+#include <playground_base/dsp/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
 #include <algorithm>
 

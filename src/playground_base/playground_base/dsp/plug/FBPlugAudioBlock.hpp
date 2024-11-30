@@ -12,6 +12,9 @@ public FBAnyAudioBlock<
   std::array<float, FB_PLUG_BLOCK_SIZE>>
 {
 public:
+  StoreT& operator[](int channel)
+  { return _store[channel]; }
+
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugAudioBlock);
   int Count() const { return FB_PLUG_BLOCK_SIZE; }
 };
