@@ -10,8 +10,9 @@ public FBAnyAudioBlock<FBHostAudioBlock, float*>
 
 public:
   int Count() const { return _count; }  
-  FB_COPY_MOVE_DEFCTOR(FBHostAudioBlock);
+  FB_COPY_MOVE_NODEFCTOR(FBHostAudioBlock);
 
   FBHostAudioBlock(float* l, float* r, int count):
   FBAnyAudioBlock(std::move(l), std::move(r)), _count(count) {}
+  FBHostAudioBlock() : FBAnyAudioBlock(nullptr, nullptr) {}
 };
