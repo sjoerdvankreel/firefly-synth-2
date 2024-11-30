@@ -2,8 +2,9 @@
 
 #include <playground_base/shared/FBPlugTopo.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
-
 #include <public.sdk/source/vst/vstaudioeffect.h>
+
+#include <array>
 #include <memory>
 
 using namespace Steinberg;
