@@ -1,31 +1,52 @@
 #pragma once
 
 #include <playground_base/base/shared/FBMixin.hpp>
+
+#include <array>
+#include <utility>
 #include <cassert>
 
-template <class DerivedT>
+template <class DerivedT, class StoreT>
 class FBAnyAudioBlock:
-public FBMixin<FBAnyAudioBlock<DerivedT>>
+public FBMixin<DerivedT>
 {
+protected:
+  typedef StoreT StoreT;
+  std::array<StoreT, 2> _store;
+
+  StoreT& operator[](int channel)
+  { return _store[channel]; }
+  FBAnyAudioBlock(StoreT&& l, StoreT&& r) :
+  _store({ std::move(l), std::move(r) }) {}
+
 public:
   int Count() const
-  { return This().Count(); }
-  auto& operator[](int channel)
-  { return This()[channel]; }
-  auto const& operator[](int channel) const
-  { return This()[channel]; }
+  { return this->Self().Count(); }
+  StoreT const& operator[](int channel) const
+  { return _store[channel]; }
 
-  template <class ThatDerivedT>
+  void Fill(int from, int to, float val);
+  template <class ThatDerivedT, class ThatStoreT>
   void CopyFrom(
-    FBAnyAudioBlock<ThatDerivedT> const& that,
+    FBAnyAudioBlock<ThatDerivedT, ThatStoreT> const& that,
     int thisOffset, int thatOffset, int count);
 };
 
-template <class DerivedT>
-template <class ThatDerivedT>
+template <class DerivedT, class StoreT>
+void FBAnyAudioBlock<DerivedT, StoreT>::Fill(
+  int from, int to, float val)
+{
+  assert(0 <= from && from <= to && to <= Count());
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = from; s < to; s++)
+      (*this)[ch][s] = val;
+}
+
+template <class DerivedT, class StoreT>
+template <class ThatDerivedT, class ThatStoreT>
 void 
-FBAnyAudioBlock<DerivedT>::CopyFrom(
-  FBAnyAudioBlock<ThatDerivedT> const& that,
+FBAnyAudioBlock<DerivedT, StoreT>::CopyFrom(
+  FBAnyAudioBlock<ThatDerivedT, ThatStoreT> const& that,
   int thisOffset, int thatOffset, int count)
 {
   assert(0 <= thisOffset && thisOffset + count <= Count());

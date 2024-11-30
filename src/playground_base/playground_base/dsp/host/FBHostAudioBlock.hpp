@@ -3,24 +3,14 @@
 #include <playground_base/dsp/shared/FBAnyAudioBlock.hpp>
 #include <playground_base/base/shared/FBObjectLifetime.hpp>
 
-#include <array>
-#include <vector>
-
 class FBHostAudioBlock:
-public FBAnyAudioBlock<FBHostAudioBlock>
+public FBAnyAudioBlock<FBHostAudioBlock, float*>
 {
   int _count;
-  std::array<float*, 2> _store;
 
 public:
-  int Count() const 
-  { return _count; }
-  float* operator[](int channel) 
-  { return _store[channel]; }
-  float const* operator[](int channel) const 
-  { return _store[channel]; }
-
-  void Fill(int from, int to, float val);
+  int Count() const { return _count; }
   FB_COPY_MOVE_NODEFCTOR(FBHostAudioBlock);
-  FBHostAudioBlock(float* l, float* r, int count);
+  FBHostAudioBlock(float* l, float* r, int count):
+  FBAnyAudioBlock(std::move(l), std::move(r)), _count(count) {}
 };

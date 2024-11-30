@@ -3,24 +3,38 @@
 #include <playground_base/dsp/shared/FBAnyAudioBlock.hpp>
 #include <playground_base/base/shared/FBObjectLifetime.hpp>
 
-#include <array>
 #include <vector>
 
-class FBPlugAudioBlock;
-class FBHostAudioBlock;
-
 class FBPipelineAudioBlock:
-public FBAnyAudioBlock<FBPipelineAudioBlock>
+public FBAnyAudioBlock<FBPipelineAudioBlock, std::vector<float>>
 {
-  std::array<std::vector<float>, 2> _store = {};
-
 public:
-  void Drop(int count);
-  void Append(FBPlugAudioBlock const& plug);
-  void Append(FBHostAudioBlock const& host);
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBPipelineAudioBlock);
+  FBPipelineAudioBlock(): 
+  FBAnyAudioBlock({}, {}) {}
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPipelineAudioBlock);
 
-  std::vector<float> const& 
-  operator[](int channel) const { return _store[channel]; }
-  int Count() const { return static_cast<int>(_store[0].size()); }
+  void Drop(int count);
+  int Count() const
+  { return static_cast<int>(_store[0].size()); }
+
+  template <class ThatDerivedT, class ThatStoreT>
+  void Append(
+    FBAnyAudioBlock<ThatDerivedT, ThatStoreT> const& that);
 };
+
+inline void
+FBPipelineAudioBlock::Drop(int count)
+{
+  assert(0 <= count && count <= Count());
+  for(int ch = 0; ch < 2; ch++)
+    _store[ch].erase(_store[ch].begin(), _store[ch].begin() + count);
+}
+
+template <class ThatDerivedT, class ThatStoreT>
+void FBPipelineAudioBlock::Append(
+  FBAnyAudioBlock<ThatDerivedT, ThatStoreT> const& that)
+{
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < that.Count(); s++)
+      _store[ch].push_back(that[ch][s]);
+}
