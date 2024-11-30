@@ -73,11 +73,11 @@ public FBScalarAddrsBase
   FFAccMemory<float> acc;
 };
 
-struct alignas(alignof(FBPlugCVBlock)) FFAccMemory:
+struct alignas(alignof(FBPlugCVBlock)) FFProcMemory:
 public FFScalarMemory,
-public FBAccAddrsBase
+public FBProcAddrsBase
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFAccMemory);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcMemory);
   FFAccMemory<int> pos;
-  FFAccMemory<FBPlugCVBlock> buffer;
+  FFAccMemory<FBPlugCVBlock> cv;
 };

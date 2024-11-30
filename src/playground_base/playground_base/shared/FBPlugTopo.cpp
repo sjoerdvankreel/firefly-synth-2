@@ -111,7 +111,7 @@ FBRuntimeTopo::InitScalarAddrs(FBScalarAddrsBase& addrs) const
 }
 
 void 
-FBRuntimeTopo::InitAccAddrs(FBAccAddrsBase& addrs) const
+FBRuntimeTopo::InitProcAddrs(FBProcAddrsBase& addrs) const
 {
   addrs.pos.clear();
   for (int a = 0; a < acc.size(); a++)
@@ -120,7 +120,7 @@ FBRuntimeTopo::InitAccAddrs(FBAccAddrsBase& addrs) const
 
   addrs.cv.clear();
   for (int a = 0; a < acc.size(); a++)
-    addrs.cv.push_back(acc[a].staticParam.denseAddr(
+    addrs.cv.push_back(acc[a].staticParam.cvAddr(
       acc[a].moduleSlot, acc[a].paramSlot, addrs));
 }
 

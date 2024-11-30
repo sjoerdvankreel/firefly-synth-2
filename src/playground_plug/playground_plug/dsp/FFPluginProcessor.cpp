@@ -8,10 +8,10 @@ FFPluginProcessor(
   FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate) :
 FBAutomationRamper(&_memory, &_memory, maxHostSampleCount),
 _phase(),
-_sampleRate(sampleRate),
-_memory()
+_memory(),
+_sampleRate(sampleRate)
 {
-  topo.InitAccAddrs(_memory);
+  topo.InitProcAddrs(_memory);
   topo.InitScalarAddrs(_memory);
 }
 
@@ -27,7 +27,7 @@ FFPluginProcessor::ProcessAutomation(
   }
 
   // TODO make it good -- both slots
-  auto const& gain = _memory.buffer.osci.gain[0][0];
+  auto const& gain = _memory.cv.osci.gain[0][0];
   for (int s = 0; s < FB_PLUG_BLOCK_SIZE; s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());

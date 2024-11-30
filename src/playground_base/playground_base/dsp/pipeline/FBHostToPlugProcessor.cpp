@@ -5,20 +5,20 @@
 // TODO alot
 
 template <class Event>
-static void GatherAccEvents(
+static void GatherAcc(
   std::vector<Event>& input, std::vector<Event>& output)
 {
   int e = 0;
   output.clear();
-  for (e = 0; e < input.size() && input[e].position < FB_PLUG_BLOCK_SIZE; e++)
+  for (e = 0; e < input.size() && input[e].position < FBPlugAudioBlock::Count(); e++)
     output.push_back(input[e]);
   input.erase(input.begin(), input.begin() + e);
   for (auto& e : input)
-    e.position -= FB_PLUG_BLOCK_SIZE;
+    e.position -= FBPlugAudioBlock::Count();
 }
 
 static void
-GatherStraddledAccEvents(
+GatherStraddledEvents(
   FBAccEvent const& thisEvent,
   FBAccEvent const& nextEvent, 
   std::vector<FBAccEvent>& output)
@@ -44,8 +44,8 @@ FBHostToPlugProcessor::ToPlug()
     return nullptr;
   _plug.audio.CopyFrom(_pipeline.audio, 0, 0, _plug.audio.Count());
   _pipeline.audio.Drop(_plug.audio.Count());
-  GatherAccEvents(_pipeline.events.note, _plug.events.note);
-  GatherAccEvents(_pipeline.events.acc, _plug.events.acc);
+  GatherAcc(_pipeline.events.note, _plug.events.note);
+  GatherAcc(_pipeline.events.acc, _plug.events.acc);
   return &_plug;
 }
 
@@ -69,7 +69,7 @@ FBHostToPlugProcessor::FromHost(FBHostInputBlock const& input)
     {
       FBAccEvent nextEvent = input.events.acc[e + 1];
       nextEvent.position += _pipeline.audio.Count();
-      GatherStraddledAccEvents(thisEvent, nextEvent, _pipeline.events.acc);
+      GatherStraddledEvents(thisEvent, nextEvent, _pipeline.events.acc);
     }
   }
 

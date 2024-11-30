@@ -2,23 +2,23 @@
 #include <playground_plug/shared/FFPluginConfig.hpp>
 
 template <class Selector>
-auto SelectAccAddr(Selector selector)
-{
-  return [selector](
-    int moduleSlot, int paramSlot,
-    FBAccAddrsBase& addrs) {
-    auto store = selector(dynamic_cast<FFDenseParamMemory&>(addrs));
-    return &(*store)[moduleSlot][paramSlot]; };
-}
-
-template <class Selector>
 auto SelectScalarAddr(Selector selector)
 {
   return [selector](
-    int moduleSlot, int paramSlot, 
+    int moduleSlot, int paramSlot,
     FBScalarAddrsBase& addrs) {
-    auto store = selector(dynamic_cast<FFScalarMemory&>(addrs));
-    return &(*store)[moduleSlot][paramSlot]; };
+      auto store = selector(dynamic_cast<FFScalarMemory&>(addrs));
+      return &(*store)[moduleSlot][paramSlot]; };
+}
+
+template <class Selector>
+auto SelectProcAddr(Selector selector)
+{
+  return [selector](
+    int moduleSlot, int paramSlot,
+    FBProcAddrsBase& addrs) {
+      auto store = selector(dynamic_cast<FFProcMemory&>(addrs));
+      return &(*store)[moduleSlot][paramSlot]; };
 }
 
 FBStaticTopo
@@ -54,8 +54,8 @@ FFMakeTopo()
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   osciGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci.gain; });
-  osciGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci.gain; });
-  osciGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.buffer.osci.gain; });
+  osciGain.posAddr = SelectProcAddr([](auto& mem) { return &mem.pos.osci.gain; });
+  osciGain.cvAddr = SelectProcAddr([](auto& mem) { return &mem.cv.osci.gain; });
 
   auto& osciPitch = osci.acc[FFOsciAccPitch];
   osciPitch.name = "Pitch";
@@ -63,8 +63,8 @@ FFMakeTopo()
   osciPitch.valueCount = 0;
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
   osciPitch.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.osci.pitch; });
-  osciPitch.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.osci.pitch; });
-  osciPitch.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.buffer.osci.pitch; });
+  osciPitch.posAddr = SelectProcAddr([](auto& mem) { return &mem.pos.osci.pitch; });
+  osciPitch.cvAddr = SelectProcAddr([](auto& mem) { return &mem.cv.osci.pitch; });
 
   auto& shaper = result.modules[FFModuleShaper];
   shaper.name = "Shaper";
@@ -93,8 +93,8 @@ FFMakeTopo()
   shaperGain.valueCount = 2;
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
   shaperGain.scalarAddr = SelectScalarAddr([](auto& mem) { return &mem.acc.shaper.gain; });
-  shaperGain.posAddr = SelectProcessorAddr([](auto& mem) { return &mem.pos.shaper.gain; });
-  shaperGain.denseAddr = SelectProcessorAddr([](auto& mem) { return &mem.buffer.shaper.gain; });
+  shaperGain.posAddr = SelectProcAddr([](auto& mem) { return &mem.pos.shaper.gain; });
+  shaperGain.cvAddr = SelectProcAddr([](auto& mem) { return &mem.cv.shaper.gain; });
 
   return FBStaticTopo(result);
 }

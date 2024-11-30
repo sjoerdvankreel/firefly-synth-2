@@ -8,13 +8,13 @@ template <class Derived>
 class FBAutomationRamper:
 public FBFixedBlockProcessor<FBAutomationRamper<Derived>>
 {
-  FBAccAddrsBase* const _acc;
+  FBProcAddrsBase* const _proc;
   FBScalarAddrsBase* const _scalar;
 
 public:
   FBAutomationRamper(
-    FBDenseParamAddrsBase* denseAddrs,
-    FBScalarParamAddrsBase* scalarAddrs,
+    FBProcAddrsBase* proc,
+    FBScalarAddrsBase* scalar,
     int maxHostSampleCount);  
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBAutomationRamper);
 
@@ -25,39 +25,39 @@ public:
 template <class Derived>
 FBAutomationRamper<Derived>::
 FBAutomationRamper(
-  FBAccAddrsBase* acc,
+  FBProcAddrsBase* proc,
   FBScalarAddrsBase* scalar,
   int maxHostSampleCount) :
 FBFixedBlockProcessor<FBAutomationRamper<Derived>>(scalar, maxHostSampleCount),
-_acc(acc),
+_proc(proc),
 _scalar(scalar) {}
 
 template <class Derived> 
 void FBAutomationRamper<Derived>::ProcessFixed(
   FBPlugInputBlock const& input, FBPlugAudioBlock& output)
 {
-  for (int ap = 0; ap < _denseAddrs->pos.size(); ap++)
-    *_denseAddrs->pos[ap] = 0;
-  for (int ap = 0; ap < _scalarAddrs->acc.size(); ap++)
-    _denseAddrs->cv[ap]->Fill(0, _denseAddrs->cv[ap]->Count(), *_scalarAddrs->acc[ap]);
+  for (int p = 0; p < _proc->pos.size(); p++)
+    *_proc->pos[p] = 0;
+  for (int c = 0; c < _proc->cv.size(); c++)
+    _proc->cv[c]->Fill(0, _proc->cv[c]->Count(), *_scalar->acc[c]);
 
-  auto& accEvents = input.events.acc;
-  for (int ae = 0; ae < accEvents.size(); ae++)
+  auto& acc = input.events.acc;
+  for (int a = 0; a < acc.size(); a++)
   {
-    auto const& event = accEvents[ae];
-    int currentPos = *_denseAddrs->pos[event.index];
-    float currentVal = *_scalarAddrs->acc[event.index];
+    auto const& event = acc[a];
+    int currentPos = *_proc->pos[event.index];
+    float currentVal = *_scalar->acc[event.index];
     int posRange = event.position - currentPos;
     float valRange = event.normalized - currentVal;
-    *_denseAddrs->pos[event.index] = event.position;
-    *_scalarAddrs->acc[event.index] = event.normalized;
+    *_proc->pos[event.index] = event.position;
+    *_scalar->acc[event.index] = event.normalized;
 
     for (int pos = 0; pos <= posRange; pos++)
-      (*_denseAddrs->cv[event.index])[currentPos + pos] = 
+      (*_proc->cv[event.index])[currentPos + pos] =
         currentVal + pos / static_cast<float>(posRange) * valRange;
-    if (ae < accEvents.size() - 1 && accEvents[ae + 1].index != event.index)
+    if (a < acc.size() - 1 && acc[a + 1].index != event.index)
       for (int pos = event.position; pos < input.audio.Count(); pos++)
-        (*_denseAddrs->cv[event.index])[pos] = event.normalized;
+        (*_proc->cv[event.index])[pos] = event.normalized;
   }
 
   static_cast<Derived*>(this)->ProcessAutomation(input, output);

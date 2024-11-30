@@ -31,10 +31,10 @@ struct FBScalarAddrsBase
   std::vector<float*> block;
 };
 
-struct FBAccAddrsBase
+struct FBProcAddrsBase
 {
-  virtual ~FBAccAddrsBase() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBAccAddrsBase);
+  virtual ~FBProcAddrsBase() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcAddrsBase);
 
   // interior pointers to derived
   std::vector<int*> pos;
@@ -51,10 +51,10 @@ struct FBStaticParam
 
   std::function<int* (
     int moduleSlot, int paramSlot, 
-    FBAccAddrsBase& addrs)> posAddr;
+    FBProcAddrsBase& addrs)> posAddr;
   std::function<FBPlugCVBlock* (
     int moduleSlot, int paramSlot,
-    FBAccAddrsBase& addrs)> cvAddr;
+    FBProcAddrsBase& addrs)> cvAddr;
   std::function<float* (
     int moduleSlot, int paramSlot,
     FBScalarAddrsBase& addrs)> scalarAddr;
@@ -119,6 +119,6 @@ struct FBRuntimeTopo
   std::map<int, int> const tagToAcc;
   std::map<int, int> const tagToBlock;
 
-  void InitAccAddrs(FBAccAddrsBase& addrs) const;
+  void InitProcAddrs(FBProcAddrsBase& addrs) const;
   void InitScalarAddrs(FBScalarAddrsBase& addrs) const;
 };

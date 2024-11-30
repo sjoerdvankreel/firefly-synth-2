@@ -15,7 +15,7 @@ public:
   void Fill(int from, int to, float val);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugCVBlock);
   
-  int Count() const
+  static int Count()
   { return FB_PLUG_BLOCK_SIZE; }
   float& operator[](int sample)
   { return _store[sample]; }
