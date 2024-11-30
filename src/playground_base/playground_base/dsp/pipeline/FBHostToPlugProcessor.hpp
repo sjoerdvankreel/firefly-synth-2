@@ -3,7 +3,7 @@
 #include <playground_base/dsp/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineInputBlock.hpp>
 
-class FBHostInputBlock;
+struct FBHostInputBlock;
 
 class FBHostToPlugProcessor
 {
