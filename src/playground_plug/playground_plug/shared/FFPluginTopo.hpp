@@ -5,7 +5,7 @@
 #include <playground_base/base/plug/FBPlugConfig.hpp>
 #include <playground_base/dsp/plug/FBPlugCVBlock.hpp>
 #include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
-#include <playground_base/shared/FBSharedUtility.hpp>
+#include <playground_base/base/shared/FBStringify.hpp>
 
 #include <array>
 

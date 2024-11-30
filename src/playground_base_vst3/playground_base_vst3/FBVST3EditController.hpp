@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/shared/FBPlugTopo.hpp>
-#include <playground_base/shared/FBSharedUtility.hpp>
+#include <playground_base/base/shared/FBStringify.hpp>
 
 #include <public.sdk/source/vst/vsteditcontroller.h>
 
