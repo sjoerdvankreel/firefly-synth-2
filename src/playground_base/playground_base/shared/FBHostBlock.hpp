@@ -8,14 +8,8 @@
 #include <playground_base/dsp/host/FBHostAudioBlock.hpp>
 #include <playground_base/dsp/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
-#include <playground_base/dsp/pipeline/FBPipelineEvents.hpp>
+#include <playground_base/dsp/pipeline/FBPipelineInputBlock.hpp>
 
 #define FB_EVENT_COUNT_GUESS 1024
 
 
-struct FBPlugInputBlock
-{
-  FBPlugAudioBlock audio;
-  FBPipelineEvents events;
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);
-};

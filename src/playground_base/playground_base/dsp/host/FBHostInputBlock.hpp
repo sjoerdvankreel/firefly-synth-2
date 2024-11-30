@@ -11,10 +11,9 @@
 
 struct FBHostInputBlock
 {
-  std::vector<FBAccEvent> acc;
-  std::vector<FBNoteEvent> note;
-  std::vector<FBBlockEvent> block; 
-
-  FBHostAudioBlock audio;
+  FBHostAudioBlock audio = {};
+  std::vector<FBAccEvent> acc = {};
+  std::vector<FBNoteEvent> note = {};
+  std::vector<FBBlockEvent> block = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostInputBlock);
 };

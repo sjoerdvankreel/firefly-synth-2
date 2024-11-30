@@ -1,6 +1,9 @@
 #pragma once
 
-#include <playground_base/shared/FBHostBlock.hpp> // TODO
+#include <playground_base/dsp/plug/FBPlugInputBlock.hpp>
+#include <playground_base/dsp/pipeline/FBPipelineInputBlock.hpp>
+
+class FBHostInputBlock;
 
 class FBHostToPlugProcessor
 {

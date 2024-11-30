@@ -41,10 +41,9 @@ void FBAutomationRamper<Derived>::ProcessFixed(
   for (int c = 0; c < _proc->cv.size(); c++)
     _proc->cv[c]->Fill(0, _proc->cv[c]->Count(), *_scalar->acc[c]);
 
-  auto& acc = input.events.acc;
-  for (int a = 0; a < acc.size(); a++)
+  for (int a = 0; a < input.acc.size(); a++)
   {
-    auto const& event = acc[a];
+    auto const& event = input.acc[a];
     int currentPos = *_proc->pos[event.index];
     float currentVal = *_scalar->acc[event.index];
     int posRange = event.pos - currentPos;
@@ -55,7 +54,7 @@ void FBAutomationRamper<Derived>::ProcessFixed(
     for (int pos = 0; pos <= posRange; pos++)
       (*_proc->cv[event.index])[currentPos + pos] =
         currentVal + pos / static_cast<float>(posRange) * valRange;
-    if (a < acc.size() - 1 && acc[a + 1].index != event.index)
+    if (a < input.acc.size() - 1 && input.acc[a + 1].index != event.index)
       for (int pos = event.pos; pos < input.audio.Count(); pos++)
         (*_proc->cv[event.index])[pos] = event.normalized;
   }

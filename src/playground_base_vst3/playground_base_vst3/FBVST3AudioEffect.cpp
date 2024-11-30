@@ -90,7 +90,7 @@ tresult PLUGIN_API
 FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   _processor = CreateProcessor(_topo, setup);
-  _input.reset(new FBHostInputBlock(nullptr, nullptr, 0));
+  _input.reset(new FBHostInputBlock());
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
   return kResultTrue;
@@ -109,21 +109,21 @@ tresult PLUGIN_API
 FBVST3AudioEffect::process(ProcessData& data)
 {
   Event event;
-  _input->events.note.clear();
+  _input->note.clear();
   if (data.inputEvents != nullptr)
     for (int i = 0; i < data.inputEvents->getEventCount(); i++)
       if (data.inputEvents->getEvent(i, event) == kResultOk)
         if (event.type == Event::kNoteOnEvent)
-          _input->events.note.push_back(MakeNoteOnEvent(event));
+          _input->note.push_back(MakeNoteOnEvent(event));
         else if (event.type == Event::kNoteOffEvent)
-          _input->events.note.push_back(MakeNoteOffEvent(event));
+          _input->note.push_back(MakeNoteOffEvent(event));
 
   int position;
   ParamValue value;
   IParamValueQueue* queue;
   std::map<int, int>::const_iterator iter;
-  _input->events.acc.clear();
-  _input->events.block.clear();
+  _input->acc.clear();
+  _input->block.clear();
   if(data.inputParameterChanges != nullptr)
     for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
@@ -131,17 +131,17 @@ FBVST3AudioEffect::process(ProcessData& data)
           if ((iter = _topo.tagToBlock.find(queue->getParameterId())) != _topo.tagToBlock.end())
           {
             if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-              _input->events.block.push_back(MakeBlockEvent(iter->second, value));
+              _input->block.push_back(MakeBlockEvent(iter->second, value));
           } else if ((iter = _topo.tagToAcc.find(queue->getParameterId())) != _topo.tagToAcc.end())
           {
             for (int point = 0; point < queue->getPointCount(); point++)
               if (queue->getPoint(point, position, value) == kResultTrue)
-                _input->events.acc.push_back(MakeAccEvent(iter->second, position, value));
+                _input->acc.push_back(MakeAccEvent(iter->second, position, value));
           }     
 
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
-  std::sort(_input->events.acc.begin(), _input->events.acc.end(), compare);
+  std::sort(_input->acc.begin(), _input->acc.end(), compare);
 
   if (data.numInputs == 1)
     _input->audio = MakeHostAudioBlock(data.inputs[0], data.numSamples);

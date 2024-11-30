@@ -1,4 +1,5 @@
 #include <playground_base/dsp/shared/FBNoteEvent.hpp>
+#include <playground_base/dsp/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
 #include <algorithm>
 
@@ -44,32 +45,32 @@ FBHostToPlugProcessor::ToPlug()
     return nullptr;
   _plug.audio.CopyFrom(_pipeline.audio, 0, 0, _plug.audio.Count());
   _pipeline.audio.Drop(_plug.audio.Count());
-  GatherAcc(_pipeline.events.note, _plug.events.note);
-  GatherAcc(_pipeline.events.acc, _plug.events.acc);
+  GatherAcc(_pipeline.note, _plug.note);
+  GatherAcc(_pipeline.acc, _plug.acc);
   return &_plug;
 }
 
 void 
 FBHostToPlugProcessor::FromHost(FBHostInputBlock const& input)
 {
-  for (int e = 0; e < input.events.note.size(); e++)
+  for (int e = 0; e < input.note.size(); e++)
   {
-    FBNoteEvent event = input.events.note[e];
+    FBNoteEvent event = input.note[e];
     event.pos += _pipeline.audio.Count();
-    _pipeline.events.note.push_back(event);
+    _pipeline.note.push_back(event);
   }
 
-  for (int e = 0; e < input.events.acc.size(); e++)
+  for (int e = 0; e < input.acc.size(); e++)
   {
-    FBAccEvent thisEvent = input.events.acc[e];
+    FBAccEvent thisEvent = input.acc[e];
     thisEvent.pos += _pipeline.audio.Count();
-    _pipeline.events.acc.push_back(thisEvent);
-    if (e < input.events.acc.size() - 1 &&
-      input.events.acc[e + 1].index == input.events.acc[e].index)
+    _pipeline.acc.push_back(thisEvent);
+    if (e < input.acc.size() - 1 &&
+      input.acc[e + 1].index == input.acc[e].index)
     {
-      FBAccEvent nextEvent = input.events.acc[e + 1];
+      FBAccEvent nextEvent = input.acc[e + 1];
       nextEvent.pos += _pipeline.audio.Count();
-      GatherStraddledEvents(thisEvent, nextEvent, _pipeline.events.acc);
+      GatherStraddledEvents(thisEvent, nextEvent, _pipeline.acc);
     }
   }
 
