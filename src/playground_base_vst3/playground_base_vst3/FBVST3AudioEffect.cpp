@@ -16,12 +16,12 @@ MakeBlockEvent(int index, ParamValue value)
 }
 
 static FBAccEvent
-MakeAccEvent(int index, int position, ParamValue value)
+MakeAccEvent(int index, int pos, ParamValue value)
 {
   FBAccEvent result;
+  result.pos = pos;
   result.index = index;
   result.normalized = value;
-  result.position = position;
   return result;
 }
 
@@ -30,8 +30,8 @@ MakeNoteOnEvent(Event const& event)
 {
   FBNoteEvent result;
   result.on = true;
+  result.pos = event.sampleOffset;
   result.velo = event.noteOn.velocity;
-  result.position = event.sampleOffset;
   result.note.id = event.noteOn.noteId;
   result.note.key = event.noteOn.pitch;
   result.note.channel = event.noteOn.channel;
@@ -43,7 +43,7 @@ MakeNoteOffEvent(Event const& event)
 {
   FBNoteEvent result;
   result.on = false;
-  result.position = event.sampleOffset;
+  result.pos = event.sampleOffset;
   result.velo = event.noteOff.velocity;
   result.note.id = event.noteOff.noteId;
   result.note.key = event.noteOff.pitch;
@@ -139,7 +139,7 @@ FBVST3AudioEffect::process(ProcessData& data)
           }     
 
   auto compare = [](auto& l, auto& r) {
-    return l.index == r.index ? l.position < r.position : l.index < r.index; };
+    return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
   std::sort(_input->events.acc.begin(), _input->events.acc.end(), compare);
 
   if (data.numInputs == 1)

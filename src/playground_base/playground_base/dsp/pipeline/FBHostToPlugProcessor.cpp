@@ -10,11 +10,11 @@ static void GatherAcc(
 {
   int e = 0;
   output.clear();
-  for (e = 0; e < input.size() && input[e].position < FBPlugAudioBlock::Count(); e++)
+  for (e = 0; e < input.size() && input[e].pos < FBPlugAudioBlock::Count(); e++)
     output.push_back(input[e]);
   input.erase(input.begin(), input.begin() + e);
   for (auto& e : input)
-    e.position -= FBPlugAudioBlock::Count();
+    e.pos -= FBPlugAudioBlock::Count();
 }
 
 static void
@@ -23,15 +23,15 @@ GatherStraddledEvents(
   FBAccEvent const& nextEvent, 
   std::vector<FBAccEvent>& output)
 {
-  int thisFixedBlock = thisEvent.position / FB_PLUG_BLOCK_SIZE;
-  int nextFixedBlock = nextEvent.position / FB_PLUG_BLOCK_SIZE;
+  int thisFixedBlock = thisEvent.pos / FB_PLUG_BLOCK_SIZE;
+  int nextFixedBlock = nextEvent.pos / FB_PLUG_BLOCK_SIZE;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
     FBAccEvent straddledEvent;
     straddledEvent.index = thisEvent.index;
-    straddledEvent.position = i * FB_PLUG_BLOCK_SIZE + FB_PLUG_BLOCK_SIZE - 1;
+    straddledEvent.pos = i * FB_PLUG_BLOCK_SIZE + FB_PLUG_BLOCK_SIZE - 1;
     float valueRange = nextEvent.normalized - thisEvent.normalized;
-    float normalizedPos = straddledEvent.position / static_cast<float>(nextEvent.position);
+    float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
     straddledEvent.normalized = thisEvent.normalized + valueRange * normalizedPos;
     output.push_back(straddledEvent);
   }
@@ -55,20 +55,20 @@ FBHostToPlugProcessor::FromHost(FBHostInputBlock const& input)
   for (int e = 0; e < input.events.note.size(); e++)
   {
     FBNoteEvent event = input.events.note[e];
-    event.position += _pipeline.audio.Count();
+    event.pos += _pipeline.audio.Count();
     _pipeline.events.note.push_back(event);
   }
 
   for (int e = 0; e < input.events.acc.size(); e++)
   {
     FBAccEvent thisEvent = input.events.acc[e];
-    thisEvent.position += _pipeline.audio.Count();
+    thisEvent.pos += _pipeline.audio.Count();
     _pipeline.events.acc.push_back(thisEvent);
     if (e < input.events.acc.size() - 1 &&
       input.events.acc[e + 1].index == input.events.acc[e].index)
     {
       FBAccEvent nextEvent = input.events.acc[e + 1];
-      nextEvent.position += _pipeline.audio.Count();
+      nextEvent.pos += _pipeline.audio.Count();
       GatherStraddledEvents(thisEvent, nextEvent, _pipeline.events.acc);
     }
   }

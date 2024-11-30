@@ -9,8 +9,8 @@ struct FBNoteId
 
 struct FBNoteEvent
 {
+  int pos;
   bool on;
   float velo;
-  int position;
   FBNoteId note;
 };
