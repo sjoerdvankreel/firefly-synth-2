@@ -9,7 +9,7 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-class FBRuntimeTopo;
+struct FBRuntimeTopo;
 
 class FBVST3EditController :
 public EditControllerEx1
