@@ -1,8 +1,11 @@
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
-#include <playground_base/dsp/host/FBHostInputBlock.hpp>
+#include <playground_base/base/plug/FBPlugTopo.hpp>
+#include <playground_base/dsp/host/FBHostProcessor.hpp>
 
 #include <pluginterfaces/vst/ivstevents.h>
 #include <pluginterfaces/vst/ivstparameterchanges.h>
+
+#include <map>
 #include <algorithm>
 
 static FBBlockEvent
@@ -60,7 +63,8 @@ MakeHostAudioBlock(AudioBusBuffers& buffers, int sampleCount)
 }
 
 FBVST3AudioEffect::
-FBVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId):
+FBVST3AudioEffect(
+  std::unique_ptr<FBRuntimeTopo>&& topo, FUID const& controllerId):
 _topo(std::move(topo))
 {
   setControllerClass(controllerId);
@@ -85,16 +89,6 @@ FBVST3AudioEffect::canProcessSampleSize(int32 symbolicSize)
 }
 
 tresult PLUGIN_API
-FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
-{
-  _processor = CreateProcessor(_topo, setup);
-  _input.reset(new FBHostInputBlock());
-  for (int ch = 0; ch < 2; ch++)
-    _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
-  return kResultTrue;
-}
-
-tresult PLUGIN_API
 FBVST3AudioEffect::setBusArrangements(
   SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
@@ -104,52 +98,57 @@ FBVST3AudioEffect::setBusArrangements(
 }
 
 tresult PLUGIN_API
+FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
+  _hostProcessor.reset(new FBHostProcessor(MakePlugProcessor(*_topo, setup.sampleRate)));
+  return kResultTrue;
+}
+
+tresult PLUGIN_API
 FBVST3AudioEffect::process(ProcessData& data)
 {
   Event event;
-  _input->note.clear();
+  _input.note.clear();
   if (data.inputEvents != nullptr)
     for (int i = 0; i < data.inputEvents->getEventCount(); i++)
       if (data.inputEvents->getEvent(i, event) == kResultOk)
         if (event.type == Event::kNoteOnEvent)
-          _input->note.push_back(MakeNoteOnEvent(event));
+          _input.note.push_back(MakeNoteOnEvent(event));
         else if (event.type == Event::kNoteOffEvent)
-          _input->note.push_back(MakeNoteOffEvent(event));
+          _input.note.push_back(MakeNoteOffEvent(event));
 
   int position;
   ParamValue value;
   IParamValueQueue* queue;
   std::map<int, int>::const_iterator iter;
-  _input->acc.clear();
-  _input->block.clear();
+  _input.acc.clear();
+  _input.block.clear();
   if(data.inputParameterChanges != nullptr)
     for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
         if(queue->getPointCount() > 0)
-          if ((iter = _topo.tagToBlock.find(queue->getParameterId())) != _topo.tagToBlock.end())
+          if ((iter = _topo->tagToBlock.find(queue->getParameterId())) != _topo->tagToBlock.end())
           {
             if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-              _input->block.push_back(MakeBlockEvent(iter->second, value));
-          } else if ((iter = _topo.tagToAcc.find(queue->getParameterId())) != _topo.tagToAcc.end())
+              _input.block.push_back(MakeBlockEvent(iter->second, value));
+          } else if ((iter = _topo->tagToAcc.find(queue->getParameterId())) != _topo->tagToAcc.end())
           {
             for (int point = 0; point < queue->getPointCount(); point++)
               if (queue->getPoint(point, position, value) == kResultTrue)
-                _input->acc.push_back(MakeAccEvent(iter->second, position, value));
+                _input.acc.push_back(MakeAccEvent(iter->second, position, value));
           }     
 
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
-  std::sort(_input->acc.begin(), _input->acc.end(), compare);
+  std::sort(_input.acc.begin(), _input.acc.end(), compare);
 
   if (data.numInputs == 1)
-    _input->audio = MakeHostAudioBlock(data.inputs[0], data.numSamples);
+    _input.audio = MakeHostAudioBlock(data.inputs[0], data.numSamples);
   else
-    _input->audio = FBHostAudioBlock(
-      _zeroIn[0].data(), 
-      _zeroIn[1].data(), 
-      data.numSamples);
-
+    _input.audio = FBHostAudioBlock(_zeroIn[0].data(), _zeroIn[1].data(), data.numSamples);
   FBHostAudioBlock output(MakeHostAudioBlock(*data.outputs, data.numSamples));
-  _processor->ProcessHost(*_input, output);
+  _hostProcessor->ProcessHost(_input, output);
   return kResultTrue;
 }
