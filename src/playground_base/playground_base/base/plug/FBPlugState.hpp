@@ -20,9 +20,14 @@ struct FBStateAddrs
 
 struct FBProcParamState
 {
+  friend class FBRampProcessor;
+
+private:
   int pos = 0;
-  FBOnePoleFilter smooth = {};
   FBFixedCVBlock rampedCV = {};
+
+public:
+  FBOnePoleFilter smooth = {};
   FBFixedCVBlock smoothedCV = {};
 };
 
