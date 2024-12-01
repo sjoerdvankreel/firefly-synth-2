@@ -23,7 +23,9 @@ class FBHostProcessor
   std::unique_ptr<FBFixedBufferProcessor> _fixedBuffer;
 
 public:
+  ~FBHostProcessor();
   FB_NOCOPY_MOVE_NODEFCTOR(FBHostProcessor);
+
   FBHostProcessor(std::unique_ptr<IFBPlugProcessor>&& plug);
   void ProcessHost(FBHostInputBlock const& input, FBHostAudioBlock& output);
 };

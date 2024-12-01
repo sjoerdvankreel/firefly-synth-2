@@ -8,6 +8,9 @@
 #include <utility>
 
 FBHostProcessor::
+~FBHostProcessor() {}
+
+FBHostProcessor::
 FBHostProcessor(std::unique_ptr<IFBPlugProcessor>&& plug):
 _plug(std::move(plug)),
 _ramp(std::make_unique<FBRampProcessor>()),

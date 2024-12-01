@@ -30,6 +30,7 @@ protected:
     FBRuntimeTopo const& topo, float sampleRate) const = 0;
 
 public:
+  ~FBVST3AudioEffect();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
   FBVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId);
 
