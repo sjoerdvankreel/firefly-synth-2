@@ -1,15 +1,14 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugConfig.hpp>
-#include <playground_base/base/plug/FBPlugTopo.hpp>
 #include <playground_base/base/shared/FBStateAddrs.hpp>
-#include <playground_base/dsp/fixed/FBFixedConfig.hpp>
 #include <playground_base/dsp/fixed/FBFixedCVBlock.hpp>
 
 #include <array>
+#include <memory>
 
-FBStaticTopo
-FFMakeTopo();
+struct FBStaticTopo;
+std::unique_ptr<FBStaticTopo> FFMakeTopo();
 
 enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
 enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };

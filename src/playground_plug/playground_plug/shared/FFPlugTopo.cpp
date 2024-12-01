@@ -1,4 +1,5 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
+#include <playground_base/base/plug/FBPlugTopo.hpp>
 
 template <class Selector>
 auto ScalarAddr(Selector selector)
@@ -20,13 +21,13 @@ auto ProcAddr(Selector selector)
       return &(*store)[moduleSlot][paramSlot]; };
 }
 
-FBStaticTopo
+std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
 {
-  FBStaticTopo result;
-  result.modules.resize(FFModuleCount);
+  auto result = std::make_unique<FBStaticTopo>();
+  result->modules.resize(FFModuleCount);
   
-  auto& osci = result.modules[FFModuleOsci];
+  auto& osci = result->modules[FFModuleOsci];
   osci.name = "Osc";
   osci.slotCount = FF_OSCI_COUNT;
   osci.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
@@ -65,7 +66,7 @@ FFMakeTopo()
   osciPitch.posAddr = ProcAddr([](auto& mem) { return &mem.pos.osci.pitch; });
   osciPitch.scalarAddr = ScalarAddr([](auto& mem) { return &mem.acc.osci.pitch; });
 
-  auto& shaper = result.modules[FFModuleShaper];
+  auto& shaper = result->modules[FFModuleShaper];
   shaper.name = "Shaper";
   shaper.slotCount = FF_SHAPER_COUNT;
   shaper.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
@@ -95,5 +96,5 @@ FFMakeTopo()
   shaperGain.posAddr = ProcAddr([](auto& mem) { return &mem.pos.shaper.gain; });
   shaperGain.scalarAddr = ScalarAddr([](auto& mem) { return &mem.acc.shaper.gain; });
 
-  return FBStaticTopo(result);
+  return result;
 }
