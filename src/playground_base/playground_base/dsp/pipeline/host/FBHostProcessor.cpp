@@ -23,7 +23,7 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
   _fixedOut.state = _plug->StateAddrs();
   for (int p = 0; p < _fixedOut.state.proc->param.size(); p++)
-    _fixedOut.state.proc->param[0]->smooth = 
+    _fixedOut.state.proc->param[p]->smooth = 
       FBOnePoleFilter(sampleRate, FB_PLUG_PARAM_SMOOTH_SEC);
 }
 
