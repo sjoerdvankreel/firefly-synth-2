@@ -8,20 +8,9 @@
 #include <functional>
 
 class FBFixedCVBlock;
+struct FBProcParamState;
 struct FBProcStateAddrs;
 struct FBScalarStateAddrs;
-
-inline double 
-FBDiscreteToNormalized(int count, int index)
-{ return index / (count - 1.0); }
-
-inline int
-FBNormalizedToDiscrete(int count, double normalized)
-{ return std::min(count - 1, (int)(normalized * count)); }
-
-inline bool
-FBNormalizedToBool(double normalized)
-{ return FBNormalizedToDiscrete(2, normalized) != 0; }
 
 struct FBStaticParam
 {
@@ -32,12 +21,10 @@ struct FBStaticParam
   std::string unit = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
-  std::function<int* (int moduleSlot, int paramSlot, 
-    FBProcStateAddrs& addrs)> posAddr;
-  std::function<float* (int moduleSlot, int paramSlot, 
+  std::function<float* (int moduleSlot, int paramSlot,
     FBScalarStateAddrs& addrs)> scalarAddr;
-  std::function<FBFixedCVBlock* (int moduleSlot, int paramSlot, 
-    FBProcStateAddrs& addrs)> cvAddr;
+  std::function<FBProcParamState* (int moduleSlot, int paramSlot,
+    FBProcStateAddrs& addrs)> procAddr;
 };
 
 struct FBStaticModule
@@ -94,6 +81,6 @@ struct FBRuntimeTopo
   std::map<int, int> const tagToAcc;
   std::map<int, int> const tagToBlock;
 
-  void InitProcStateAddrs(FBProcStateAddrs& addrs) const;
-  void InitScalarStateAddrs(FBScalarStateAddrs& addrs) const;
+  void InitProcAddrs(FBProcStateAddrs& addrs) const;
+  void InitScalarAddrs(FBScalarStateAddrs& addrs) const;
 };

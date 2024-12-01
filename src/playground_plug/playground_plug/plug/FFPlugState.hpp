@@ -64,8 +64,6 @@ struct alignas(alignof(FBFixedCVBlock)) FFProcState:
 public FFScalarState,
 public FBProcStateAddrs
 {
-  FFAccState<int> pos = {};
-  FFAccState<FBFixedCVBlock> cv = {};
-  FFAccState<FBOnePoleFilter> smooth = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
+  FFAccState<FBProcParamState> param = {};
 };

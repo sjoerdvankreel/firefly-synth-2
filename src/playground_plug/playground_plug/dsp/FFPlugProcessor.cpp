@@ -1,5 +1,6 @@
 #include <playground_plug/dsp/FFPlugProcessor.hpp>
 #include <playground_base/base/plug/FBPlugTopo.hpp>
+#include <playground_base/base/plug/FBTopoNormalize.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 #include <cmath>
@@ -10,8 +11,8 @@ FFPlugProcessor(
 FBRuntimeTopo const& topo, float sampleRate) :
 _sampleRate(sampleRate)
 {
-  topo.InitProcStateAddrs(_state);
-  topo.InitScalarStateAddrs(_state);
+  topo.InitProcAddrs(_state);
+  topo.InitScalarAddrs(_state);
 }
 
 FBStateAddrs 
@@ -34,7 +35,7 @@ FFPlugProcessor::ProcessPlug(
     return;
   }
 
-  auto const& gain = _state.cv.osci.gain[0][0];
+  auto const& gain = _state.param.osci.gain[0][0].cv;
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase);

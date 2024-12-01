@@ -99,21 +99,16 @@ MakeRuntimeParamLongName(
 }
 
 void
-FBRuntimeTopo::InitProcStateAddrs(FBProcStateAddrs& addrs) const
+FBRuntimeTopo::InitProcAddrs(FBProcStateAddrs& addrs) const
 {
-  addrs.pos.clear();
+  addrs.param.clear();
   for (int a = 0; a < acc.size(); a++)
-    addrs.pos.push_back(acc[a].static_.posAddr(
-      acc[a].moduleSlot, acc[a].paramSlot, addrs));
-
-  addrs.cv.clear();
-  for (int a = 0; a < acc.size(); a++)
-    addrs.cv.push_back(acc[a].static_.cvAddr(
+    addrs.param.push_back(acc[a].static_.procAddr(
       acc[a].moduleSlot, acc[a].paramSlot, addrs));
 }
 
 void 
-FBRuntimeTopo::InitScalarStateAddrs(FBScalarStateAddrs& addrs) const
+FBRuntimeTopo::InitScalarAddrs(FBScalarStateAddrs& addrs) const
 {
   addrs.acc.clear();
   for (int a = 0; a < acc.size(); a++)
