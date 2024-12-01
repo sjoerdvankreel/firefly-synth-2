@@ -1,4 +1,5 @@
-#include <playground_plug/shared/FFPlugTopo.hpp>
+#include <playground_plug/plug/FFPlugTopo.hpp>
+#include <playground_plug/plug/FFPlugState.hpp>
 #include <playground_base/base/plug/FBPlugTopo.hpp>
 
 template <class Selector>

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <playground_plug/shared/FFPlugTopo.hpp>
+#include <playground_plug/plug/FFPlugTopo.hpp>
+#include <playground_plug/plug/FFPlugState.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
 struct FBRuntimeTopo;

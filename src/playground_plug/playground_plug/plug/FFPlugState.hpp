@@ -1,22 +1,12 @@
 #pragma once
 
-#include <playground_plug/shared/FFPlugConfig.hpp>
+#include <playground_plug/plug/FFPlugConfig.hpp>
 #include <playground_base/base/plug/FBPlugState.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 
 #include <array>
 #include <memory>
-
-struct FBStaticTopo;
-std::unique_ptr<FBStaticTopo> FFMakeTopo();
-
-enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
-enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
-enum { FFOsciAccGain, FFOsciAccPitch, FFOsciAccCount };
-enum { FFOsciBlockOn, FFOsciBlockType, FFOsciBlockCount };
-enum { FFShaperAccGain, FFShaperAccCount };
-enum { FFShaperBlockOn, FFShaperBlockClip, FFShaperBlockCount };
 
 struct FFOsciBlockState
 {
