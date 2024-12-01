@@ -3,9 +3,9 @@
 
 static std::string
 MakeRuntimeName(
-  std::string const& staticName, int slotCount, int slot)
+  std::string const& name, int slotCount, int slot)
 {
-  std::string result = staticName;
+  std::string result = name;
   if (slotCount > 1)
     result += std::to_string(slot + 1);
   return result;
@@ -24,75 +24,75 @@ MakeRuntimeHash(
 
 static std::string
 MakeRuntimeParamId(
-  FBStaticModule const& staticModule, int moduleSlot,
-  FBStaticParam const& staticParam, int paramSlot)
+  FBStaticModule const& module, int moduleSlot,
+  FBStaticParam const& param, int paramSlot)
 {
-  auto moduleId = staticModule.id + "-" + std::to_string(moduleSlot);
-  auto paramId = staticParam.id + "-" + std::to_string(paramSlot);
+  auto moduleId = module.id + "-" + std::to_string(moduleSlot);
+  auto paramId = param.id + "-" + std::to_string(paramSlot);
   return moduleId + "-" + paramId;
 }
 
 static std::string
 MakeRuntimeParamLongName(
-  FBStaticModule const& staticModule, int moduleSlot,
-  FBStaticParam const& staticParam, int paramSlot)
+  FBStaticModule const& module, int moduleSlot,
+  FBStaticParam const& param, int paramSlot)
 {
-  auto moduleName = MakeRuntimeName(staticModule.name, staticModule.slotCount, moduleSlot);
-  auto paramName = MakeRuntimeName(staticParam.name, staticParam.slotCount, paramSlot);
+  auto moduleName = MakeRuntimeName(module.name, module.slotCount, moduleSlot);
+  auto paramName = MakeRuntimeName(param.name, param.slotCount, paramSlot);
   return moduleName + " " + paramName;
 }
 
 static std::map<int, int>
 MakeTagToParam(
-  std::vector<FBRuntimeParam> const& runtimeParams)
+  std::vector<FBRuntimeParam> const& params)
 {
   std::map<int, int> result;
-  for (int p = 0; p < runtimeParams.size(); p++)
-    result[runtimeParams[p].tag] = p;
+  for (int p = 0; p < params.size(); p++)
+    result[params[p].tag] = p;
   return result;
 }
 
 static std::vector<FBRuntimeParam>
 MakeRuntimeAcc(
-  std::vector<FBRuntimeModule> const& runtimeModules)
+  std::vector<FBRuntimeModule> const& modules)
 {
   std::vector<FBRuntimeParam> result;
-  for (int m = 0; m < runtimeModules.size(); m++)
-    for (int ap = 0; ap < runtimeModules[m].acc.size(); ap++)
-      result.push_back(runtimeModules[m].acc[ap]);
+  for (int m = 0; m < modules.size(); m++)
+    for (int a = 0; a < modules[m].acc.size(); a++)
+      result.push_back(modules[m].acc[a]);
   return result;
 }
 
 static std::vector<FBRuntimeParam>
 MakeRuntimeBlock(
-  std::vector<FBRuntimeModule> const& runtimeModules)
+  std::vector<FBRuntimeModule> const& modules)
 {
   std::vector<FBRuntimeParam> result;
-  for (int m = 0; m < runtimeModules.size(); m++)
-    for (int bp = 0; bp < runtimeModules[m].block.size(); bp++)
-      result.push_back(runtimeModules[m].block[bp]);
+  for (int m = 0; m < modules.size(); m++)
+    for (int b = 0; b < modules[m].block.size(); b++)
+      result.push_back(modules[m].block[b]);
   return result;
 }
 
 static std::vector<FBRuntimeModule>
-MakeRuntimeModules(FBStaticTopo const& staticTopo)
+MakeRuntimeModules(FBStaticTopo const& topo)
 {
   std::vector<FBRuntimeModule> result;
-  for (int mi = 0; mi < staticTopo.modules.size(); mi++)
-    for (int ms = 0; ms < staticTopo.modules[mi].slotCount; ms++)
-      result.push_back(FBRuntimeModule(staticTopo.modules[mi], ms));
+  for (int m = 0; m < topo.modules.size(); m++)
+    for (int s = 0; s < topo.modules[m].slotCount; s++)
+      result.push_back(FBRuntimeModule(topo.modules[m], s));
   return result;
 }
 
 static std::vector<FBRuntimeParam>
 MakeRuntimeParams(
-  FBStaticModule const& staticModule, int moduleSlot,
-  std::vector<FBStaticParam> const& staticParams)
+  FBStaticModule const& module, int slot,
+  std::vector<FBStaticParam> const& params)
 {
   std::vector<FBRuntimeParam> result;
-  for (int p = 0; p < staticParams.size(); p++)
-    for (int s = 0; s < staticParams[p].slotCount; s++)
-      result.push_back(FBRuntimeParam(staticModule, moduleSlot, staticParams[p], s));
+  for (int p = 0; p < params.size(); p++)
+    for (int s = 0; s < params[p].slotCount; s++)
+      result.push_back(FBRuntimeParam(module, slot, params[p], s));
   return result;
 }
 
@@ -101,12 +101,12 @@ FBRuntimeTopo::InitScalarAddrs(FBScalarAddrsBase& addrs) const
 {
   addrs.acc.clear();
   for (int a = 0; a < acc.size(); a++)
-    addrs.acc.push_back(acc[a].staticParam.scalarAddr(
+    addrs.acc.push_back(acc[a].static_.scalarAddr(
       acc[a].moduleSlot, acc[a].paramSlot, addrs));
 
   addrs.block.clear();
   for (int b = 0; b < block.size(); b++)
-    addrs.block.push_back(block[b].staticParam.scalarAddr(
+    addrs.block.push_back(block[b].static_.scalarAddr(
       block[b].moduleSlot, block[b].paramSlot, addrs));
 }
 
@@ -115,12 +115,12 @@ FBRuntimeTopo::InitProcAddrs(FBProcAddrsBase& addrs) const
 {
   addrs.pos.clear();
   for (int a = 0; a < acc.size(); a++)
-    addrs.pos.push_back(acc[a].staticParam.posAddr(
+    addrs.pos.push_back(acc[a].static_.posAddr(
       acc[a].moduleSlot, acc[a].paramSlot, addrs));
 
   addrs.cv.clear();
   for (int a = 0; a < acc.size(); a++)
-    addrs.cv.push_back(acc[a].staticParam.cvAddr(
+    addrs.cv.push_back(acc[a].static_.cvAddr(
       acc[a].moduleSlot, acc[a].paramSlot, addrs));
 }
 
@@ -134,19 +134,19 @@ tagToBlock(MakeTagToParam(block)) {}
 
 FBRuntimeParam::
 FBRuntimeParam(
-  FBStaticModule const& staticModule, int moduleSlot,
-  FBStaticParam const& staticParam, int paramSlot) :
+  FBStaticModule const& module, int moduleSlot,
+  FBStaticParam const& param, int paramSlot) :
 moduleSlot(moduleSlot),
 paramSlot(paramSlot),
-staticParam(staticParam),
-longName(MakeRuntimeParamLongName(staticModule, moduleSlot, staticParam, paramSlot)),
-shortName(MakeRuntimeName(staticParam.name, staticParam.slotCount, paramSlot)),
-id(MakeRuntimeParamId(staticModule, moduleSlot, staticParam, paramSlot)),
+static_(param),
+longName(MakeRuntimeParamLongName(module, moduleSlot, param, paramSlot)),
+shortName(MakeRuntimeName(param.name, param.slotCount, paramSlot)),
+id(MakeRuntimeParamId(module, moduleSlot, param, paramSlot)),
 tag(MakeRuntimeHash(id)) {}
 
 FBRuntimeModule::
 FBRuntimeModule(
-  FBStaticModule const& staticModule, int moduleSlot):
-name(MakeRuntimeName(staticModule.name, staticModule.slotCount, moduleSlot)),
-acc(MakeRuntimeParams(staticModule, moduleSlot, staticModule.acc)),
-block(MakeRuntimeParams(staticModule, moduleSlot, staticModule.block)) {}
+  FBStaticModule const& module, int moduleSlot):
+name(MakeRuntimeName(module.name, module.slotCount, moduleSlot)),
+acc(MakeRuntimeParams(module, moduleSlot, module.acc)),
+block(MakeRuntimeParams(module, moduleSlot, module.block)) {}

@@ -49,17 +49,10 @@ struct FBStaticParam
   std::string name;
   std::string unit;
 
-  std::function<int* (
-    int moduleSlot, int paramSlot, 
-    FBProcAddrsBase& addrs)> posAddr;
-  std::function<FBPlugCVBlock* (
-    int moduleSlot, int paramSlot,
-    FBProcAddrsBase& addrs)> cvAddr;
-  std::function<float* (
-    int moduleSlot, int paramSlot,
-    FBScalarAddrsBase& addrs)> scalarAddr;
-
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
+  std::function<int* (int moduleSlot, int paramSlot, FBProcAddrsBase& addrs)> posAddr;
+  std::function<float* (int moduleSlot, int paramSlot, FBScalarAddrsBase& addrs)> scalarAddr;
+  std::function<FBPlugCVBlock* (int moduleSlot, int paramSlot, FBProcAddrsBase& addrs)> cvAddr;
 };
 
 struct FBStaticModule
@@ -69,14 +62,12 @@ struct FBStaticModule
   std::string name;
   std::vector<FBStaticParam> acc;
   std::vector<FBStaticParam> block;
-
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };
 
 struct FBStaticTopo
 {
   std::vector<FBStaticModule> modules;
-
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };
 
@@ -84,7 +75,7 @@ struct FBRuntimeParam
 {
   int const moduleSlot;
   int const paramSlot;
-  FBStaticParam const staticParam;
+  FBStaticParam const static_;
 
   std::string const longName;
   std::string const shortName;
@@ -93,8 +84,8 @@ struct FBRuntimeParam
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
   FBRuntimeParam(
-    FBStaticModule const& staticModule, int moduleSlot,
-    FBStaticParam const& staticParam, int paramSlot);
+    FBStaticModule const& module, int moduleSlot,
+    FBStaticParam const& param, int paramSlot);
 };
 
 struct FBRuntimeModule
@@ -104,14 +95,13 @@ struct FBRuntimeModule
   std::vector<FBRuntimeParam> const block;
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeModule);
-  FBRuntimeModule(
-    FBStaticModule const& staticModule, int moduleSlot);
+  FBRuntimeModule(FBStaticModule const& module, int slot);
 };
 
 struct FBRuntimeTopo
 {
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
-  FBRuntimeTopo(FBStaticTopo const& staticTopo);
+  FBRuntimeTopo(FBStaticTopo const& static_);
 
   std::vector<FBRuntimeModule> const modules;
   std::vector<FBRuntimeParam> const acc;

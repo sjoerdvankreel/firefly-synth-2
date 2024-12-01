@@ -28,11 +28,11 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
   result.id = param.tag;
   result.unitId = unitId;
   result.defaultNormalizedValue = 0.0; // TODO
-  result.stepCount = std::max(0, param.staticParam.valueCount - 1);
+  result.stepCount = std::max(0, param.static_.valueCount - 1);
 
   CopyToString128(param.longName, result.title);
   CopyToString128(param.shortName, result.shortTitle);
-  CopyToString128(param.staticParam.unit, result.units);
+  CopyToString128(param.static_.unit, result.units);
 
   // TODO once we drop generic editor
   if (automate)
