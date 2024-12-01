@@ -1,10 +1,10 @@
 #pragma once
 
-#include <playground_base/dsp/shared/FBAccEvent.hpp>
-#include <playground_base/dsp/shared/FBNoteEvent.hpp>
-#include <playground_base/dsp/host/FBBlockEvent.hpp>
-#include <playground_base/dsp/host/FBHostAudioBlock.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/pipeline/shared/FBAccEvent.hpp>
+#include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
+#include <playground_base/dsp/pipeline/host/FBBlockEvent.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostAudioBlock.hpp>
 
 #include <vector>
 

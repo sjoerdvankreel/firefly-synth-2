@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBStateAddrs.hpp>
-#include <playground_base/dsp/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 struct FBFixedOutputBlock
 {

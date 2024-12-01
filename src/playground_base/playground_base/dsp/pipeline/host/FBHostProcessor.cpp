@@ -1,9 +1,9 @@
-#include <playground_base/dsp/plug/FBPlugProcessor.hpp>
-#include <playground_base/dsp/host/FBHostProcessor.hpp>
-#include <playground_base/dsp/host/FBHostInputBlock.hpp>
-#include <playground_base/dsp/fixed/FBRampProcessor.hpp>
-#include <playground_base/dsp/buffer/FBHostBufferProcessor.hpp>
-#include <playground_base/dsp/buffer/FBFixedBufferProcessor.hpp>
+#include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBRampProcessor.hpp>
+#include <playground_base/dsp/pipeline/buffer/FBHostBufferProcessor.hpp>
+#include <playground_base/dsp/pipeline/buffer/FBFixedBufferProcessor.hpp>
 
 #include <utility>
 

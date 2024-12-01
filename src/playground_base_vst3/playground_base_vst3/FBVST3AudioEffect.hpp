@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/dsp/host/FBHostInputBlock.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <public.sdk/source/vst/vstaudioeffect.h>
 
 #include <array>

@@ -1,6 +1,6 @@
 #include <playground_plug/dsp/FFPlugProcessor.hpp>
 #include <playground_base/base/plug/FBPlugTopo.hpp>
-#include <playground_base/dsp/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 #include <cmath>
 #include <numbers>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_base/dsp/plug/FBPlugProcessor.hpp>
+#include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
 struct FBRuntimeTopo;
 class FBFixedAudioBlock;

@@ -1,7 +1,7 @@
-#include <playground_base/dsp/fixed/FBRampProcessor.hpp>
-#include <playground_base/dsp/fixed/FBFixedCVBlock.hpp>
-#include <playground_base/dsp/fixed/FBFixedInputBlock.hpp>
-#include <playground_base/dsp/fixed/FBFixedOutputBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBRampProcessor.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 void 
 FBRampProcessor::ProcessRamping(

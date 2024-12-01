@@ -2,7 +2,7 @@
 
 #include <playground_plug/shared/FFPlugConfig.hpp>
 #include <playground_base/base/shared/FBStateAddrs.hpp>
-#include <playground_base/dsp/fixed/FBFixedCVBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 
 #include <array>
 #include <memory>

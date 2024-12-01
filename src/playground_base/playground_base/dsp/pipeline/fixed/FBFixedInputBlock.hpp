@@ -1,8 +1,8 @@
 #pragma once
 
-#include <playground_base/dsp/shared/FBAccEvent.hpp>
-#include <playground_base/dsp/shared/FBNoteEvent.hpp>
-#include <playground_base/dsp/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/shared/FBAccEvent.hpp>
+#include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 #include <vector>
 

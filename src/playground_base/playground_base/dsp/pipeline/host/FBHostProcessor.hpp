@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/fixed/FBFixedOutputBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 #include <memory>
 
