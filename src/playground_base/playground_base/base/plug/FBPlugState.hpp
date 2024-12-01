@@ -3,33 +3,33 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <vector>
 
-struct FBProcAddrs;
-struct FBScalarAddrs;
-
 class FBFixedCVBlock;
 class FBOnePoleFilter;
 
+struct FBProcStateAddrs;
+struct FBScalarStateAddrs;
+
 struct FBStateAddrs
 {
-  FBProcAddrs* proc = {};
-  FBScalarAddrs* scalar = {};
+  FBProcStateAddrs* proc = {};
+  FBScalarStateAddrs* scalar = {};
 }; 
 
-struct FBProcAddrs
+struct FBProcStateAddrs
 {
   std::vector<int*> pos = {};
   std::vector<FBFixedCVBlock*> cv = {};
   std::vector<FBOnePoleFilter*> smooth = {};
 
-  virtual ~FBProcAddrs() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcAddrs);
+  virtual ~FBProcStateAddrs() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcStateAddrs);
 };
 
-struct FBScalarAddrs
+struct FBScalarStateAddrs
 {
   std::vector<float*> acc = {};
   std::vector<float*> block = {};
 
-  virtual ~FBScalarAddrs() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBScalarAddrs);
+  virtual ~FBScalarStateAddrs() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBScalarStateAddrs);
 };

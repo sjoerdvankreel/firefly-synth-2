@@ -10,8 +10,8 @@ class FFPlugProcessor:
 public IFBPlugProcessor
 {
   float _phase = 0;
+  FFProcState _state = {};
   float const _sampleRate;
-  FFProcMemory _memory = {};
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);
