@@ -2,6 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/buffer/FBBufferAudioBlock.hpp>
+
 #include <memory>
 
 class FBHostAudioBlock;

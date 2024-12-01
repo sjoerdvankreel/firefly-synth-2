@@ -1,5 +1,6 @@
 #include <playground_base/dsp/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/buffer/FBHostBufferProcessor.hpp>
+
 #include <algorithm>
 
 template <class Event>
@@ -40,6 +41,7 @@ FBHostBufferProcessor::ProcessToFixed()
 {
   if (_buffer.audio.Count() < FBFixedAudioBlock::Count())
     return nullptr;
+
   _fixed.audio.CopyFrom(_buffer.audio, 0, 0, FBFixedAudioBlock::Count());
   _buffer.audio.Drop(FBFixedAudioBlock::Count());
   GatherAcc(_buffer.note, _fixed.note);
