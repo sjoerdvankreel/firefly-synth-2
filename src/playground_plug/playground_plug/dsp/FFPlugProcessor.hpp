@@ -11,7 +11,7 @@ class FFPlugProcessor:
 public IFBPlugProcessor
 {
   float _phase = 0;
-  FFProcState _state = {};
+  FFProcState _state = {}; // TODO make private and const accessor?
   float const _sampleRate;
 
 public:

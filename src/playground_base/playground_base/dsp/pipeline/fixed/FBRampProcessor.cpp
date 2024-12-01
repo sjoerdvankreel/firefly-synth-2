@@ -7,28 +7,29 @@ void
 FBRampProcessor::ProcessRamping(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-  for (int p = 0; p < output.state.proc->param.size(); p++)
+  auto& scalar = output.state.scalar;
+  auto& proc = output.state.proc->param;
+  for (int p = 0; p < proc.size(); p++)
   {
-    output.state.proc->param[p]->pos = 0;
-    output.state.proc->param[p]->rampedCV.Fill(
-      0, output.state.proc->param[p]->rampedCV.Count(), *output.state.scalar->acc[p]);
+    proc[p]->pos = 0;
+    proc[p]->rampedCV.Fill(0, proc[p]->rampedCV.Count(), *scalar->acc[p]);
   }
 
   for (int a = 0; a < input.acc.size(); a++)
   {
     auto const& event = input.acc[a];
-    float currentVal = *output.state.scalar->acc[event.index];
-    int currentPos = output.state.proc->param[event.index]->pos;
+    float currentVal = *scalar->acc[event.index];
+    int currentPos = proc[event.index]->pos;
     int posRange = event.pos - currentPos;
     float valRange = event.normalized - currentVal;
-    output.state.proc->param[event.index]->pos = event.pos;
-    *output.state.scalar->acc[event.index] = event.normalized;
+    proc[event.index]->pos = event.pos;
+    *scalar->acc[event.index] = event.normalized;
 
     for (int pos = 0; pos <= posRange; pos++)
-      output.state.proc->param[event.index]->rampedCV[currentPos + pos] =
+      proc[event.index]->rampedCV[currentPos + pos] =
       currentVal + pos / static_cast<float>(posRange) * valRange;
     if (a < input.acc.size() - 1 && input.acc[a + 1].index != event.index)
       for (int pos = event.pos; pos < input.audio.Count(); pos++)
-        output.state.proc->param[event.index]->rampedCV[pos] = event.normalized;
+        proc[event.index]->rampedCV[pos] = event.normalized;
   }
 }

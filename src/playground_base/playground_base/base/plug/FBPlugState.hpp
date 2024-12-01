@@ -22,6 +22,7 @@ struct FBProcParamState
 {
   friend class FBHostProcessor;
   friend class FBRampProcessor;
+  friend class FBSmoothProcessor;
 
 private:
   int pos = 0;
