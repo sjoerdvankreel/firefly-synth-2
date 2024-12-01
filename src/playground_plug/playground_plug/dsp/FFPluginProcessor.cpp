@@ -30,9 +30,10 @@ FFPluginProcessor::ProcessAutomation(
   auto const& gain = _memory.cv.osci.gain[0][0];
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
-    float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());
+    float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase);
     output[0][s] = sample *gain[s];
     output[1][s] = sample *gain[s];
-    _phase.Next(_sampleRate, 440.0f);
+    _phase += 440.0f / _sampleRate;
+    _phase -= std::floor(_phase);
   }
 }

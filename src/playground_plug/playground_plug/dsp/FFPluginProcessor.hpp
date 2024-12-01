@@ -3,7 +3,6 @@
 #include <playground_base/base/plug/FBPlugTopo.hpp>
 #include <playground_base/dsp/fixed/FBFixedConfig.hpp>
 
-#include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/dsp/FBAutomationRamper.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
 
@@ -12,7 +11,7 @@
 class FFPluginProcessor:
 public FBAutomationRamper<FFPluginProcessor>
 {
-  FBPhase _phase;
+  float _phase = 0;
   FFProcMemory _memory;
   float const _sampleRate;
 
