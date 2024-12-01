@@ -2,9 +2,13 @@
 
 #include <playground_base/dsp/fixed/FBFixedAudioBlock.hpp>
 
-struct FBFixedInputBlock
-{
-  FBFixedAudioBlock audio;
+struct FBProcAddrs;
+struct FBScalarAddrs;
 
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);
+struct FBFixedOutputBlock
+{
+  FBProcAddrs* proc = {};
+  FBScalarAddrs* scalar = {};
+  FBFixedAudioBlock audio = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedOutputBlock);
 };

@@ -5,8 +5,8 @@
 
 struct FBScalarAddrs
 {
-  std::vector<float*> acc;
-  std::vector<float*> block;
+  std::vector<float*> acc = {};
+  std::vector<float*> block = {};
 
   virtual ~FBScalarAddrs() {}
   FB_NOCOPY_NOMOVE_DEFCTOR(FBScalarAddrs);

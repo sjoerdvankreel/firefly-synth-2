@@ -7,8 +7,8 @@ class FBFixedCVBlock;
 
 struct FBProcAddrs
 {
-  std::vector<int*> pos;
-  std::vector<FBFixedCVBlock*> cv;
+  std::vector<int*> pos = {};
+  std::vector<FBFixedCVBlock*> cv = {};
 
   virtual ~FBProcAddrs() {}
   FB_NOCOPY_NOMOVE_DEFCTOR(FBProcAddrs);

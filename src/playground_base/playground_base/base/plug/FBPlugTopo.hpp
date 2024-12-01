@@ -25,11 +25,11 @@ FBNormalizedToBool(double normalized)
 
 struct FBStaticParam
 {
-  int slotCount;
-  int valueCount;
-  std::string id;
-  std::string name;
-  std::string unit;
+  int slotCount = {};
+  int valueCount = {};
+  std::string id = {};
+  std::string name = {};
+  std::string unit = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
   std::function<int* (int moduleSlot, int paramSlot, FBProcAddrs& addrs)> posAddr;
@@ -39,17 +39,17 @@ struct FBStaticParam
 
 struct FBStaticModule
 {
-  int slotCount;
-  std::string id;
-  std::string name;
-  std::vector<FBStaticParam> acc;
-  std::vector<FBStaticParam> block;
+  int slotCount = {};
+  std::string id = {};
+  std::string name = {};
+  std::vector<FBStaticParam> acc = {};
+  std::vector<FBStaticParam> block = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };
 
 struct FBStaticTopo
 {
-  std::vector<FBStaticModule> modules;
+  std::vector<FBStaticModule> modules = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };
 

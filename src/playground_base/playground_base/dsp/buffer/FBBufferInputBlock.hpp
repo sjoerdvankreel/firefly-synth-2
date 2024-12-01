@@ -7,8 +7,8 @@
 
 struct FBBufferInputBlock
 {
-  FBBufferAudioBlock audio;
-  std::vector<FBAccEvent> acc;
-  std::vector<FBNoteEvent> note;
+  FBBufferAudioBlock audio = {};
+  std::vector<FBAccEvent> acc = {};
+  std::vector<FBNoteEvent> note = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferInputBlock);
 };
