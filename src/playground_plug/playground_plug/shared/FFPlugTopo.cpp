@@ -2,22 +2,22 @@
 #include <playground_base/base/plug/FBPlugTopo.hpp>
 
 template <class Selector>
-auto ScalarAddr(Selector selector)
-{
-  return [selector](
-    int moduleSlot, int paramSlot,
-    FBScalarAddrs& addrs) {
-      auto store = selector(dynamic_cast<FFScalarMemory&>(addrs));
-      return &(*store)[moduleSlot][paramSlot]; };
-}
-
-template <class Selector>
 auto ProcAddr(Selector selector)
 {
   return [selector](
     int moduleSlot, int paramSlot,
     FBProcAddrs& addrs) {
       auto store = selector(dynamic_cast<FFProcMemory&>(addrs));
+      return &(*store)[moduleSlot][paramSlot]; };
+}
+
+template <class Selector>
+auto ScalarAddr(Selector selector)
+{
+  return [selector](
+    int moduleSlot, int paramSlot,
+    FBScalarAddrs& addrs) {
+      auto store = selector(dynamic_cast<FFScalarMemory&>(addrs));
       return &(*store)[moduleSlot][paramSlot]; };
 }
 
@@ -50,7 +50,7 @@ FFMakeTopo()
 
   auto& osciGain = osci.acc[FFOsciAccGain];
   osciGain.name = "Gain";
-  osciGain.slotCount = 1;
+  osciGain.slotCount = FF_OSCI_GAIN_COUNT;
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   osciGain.cvAddr = ProcAddr([](auto& mem) { return &mem.cv.osci.gain; });
