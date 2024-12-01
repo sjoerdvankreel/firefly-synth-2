@@ -5,13 +5,13 @@
 
 #include <vector>
 
-class FBPipelineAudioBlock:
-public FBAnyAudioBlock<FBPipelineAudioBlock, std::vector<float>>
+class FBBufferAudioBlock:
+public FBAnyAudioBlock<FBBufferAudioBlock, std::vector<float>>
 {
 public:
-  FBPipelineAudioBlock(): 
+  FBBufferAudioBlock():
   FBAnyAudioBlock({}, {}) {}
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPipelineAudioBlock);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBBufferAudioBlock);
 
   void Drop(int count);
   int Count() const
@@ -23,7 +23,7 @@ public:
 };
 
 inline void
-FBPipelineAudioBlock::Drop(int count)
+FBBufferAudioBlock::Drop(int count)
 {
   assert(0 <= count && count <= Count());
   for(int ch = 0; ch < 2; ch++)
@@ -31,7 +31,7 @@ FBPipelineAudioBlock::Drop(int count)
 }
 
 template <class ThatDerivedT, class ThatStoreT>
-void FBPipelineAudioBlock::Append(
+void FBBufferAudioBlock::Append(
   FBAnyAudioBlock<ThatDerivedT, ThatStoreT> const& that)
 {
   for (int ch = 0; ch < 2; ch++)

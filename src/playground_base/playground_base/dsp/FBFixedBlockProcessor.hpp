@@ -3,8 +3,8 @@
 #include <playground_base/dsp/fixed/FBFixedConfig.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/host/FBHostInputBlock.hpp>
-#include <playground_base/dsp/pipeline/FBHostToFixedProcessor.hpp>
-#include <playground_base/dsp/pipeline/FBFixedToHostProcessor.hpp>
+#include <playground_base/dsp/buffer/FBHostBufferProcessor.hpp>
+#include <playground_base/dsp/buffer/FBFixedBufferProcessor.hpp>
 
 struct FBHostInputBlock;
 
@@ -14,8 +14,8 @@ public IFBHostProcessor
 {
   FBFixedAudioBlock _audioOut;
   FBScalarAddrsBase* const _scalar;
-  FBHostToFixedProcessor _hostToFixed;
-  FBFixedToHostProcessor _fixedToHost;
+  FBHostBufferProcessor _hostBuffer;
+  FBFixedBufferProcessor _fixedBuffer;
 
 public:
   FBFixedBlockProcessor(
@@ -33,8 +33,8 @@ FBFixedBlockProcessor(
   FBScalarAddrsBase* scalar,
   int maxHostSampleCount) :
 _audioOut(),
-_hostToFixed(),
-_fixedToHost(),
+_hostBuffer(),
+_fixedBuffer(),
 _scalar(scalar) {}
 
 template <class Derived> 
@@ -45,11 +45,11 @@ void FBFixedBlockProcessor<Derived>::ProcessHost(
     *_scalar->block[be.index] = be.normalized;
 
   FBFixedInputBlock const* fixed;
-  _hostToFixed.FromHost(input);
-  while ((fixed = _hostToFixed.ToFixed()) != nullptr)
+  _hostBuffer.BufferFromHost(input);
+  while ((fixed = _hostBuffer.ProcessToFixed()) != nullptr)
   {
     static_cast<Derived*>(this)->ProcessFixed(*fixed, _audioOut);
-    _fixedToHost.FromFixed(_audioOut);
+    _fixedBuffer.BufferFromFixed(_audioOut);
   }
-  _fixedToHost.ToHost(output);
+  _fixedBuffer.ProcessToHost(output);
 }
