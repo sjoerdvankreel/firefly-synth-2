@@ -10,8 +10,8 @@ FBRampProcessor::ProcessRamping(
   for (int p = 0; p < output.state.proc->param.size(); p++)
   {
     output.state.proc->param[p]->pos = 0;
-    output.state.proc->param[p]->cv.Fill(
-      0, output.state.proc->param[p]->cv.Count(), *output.state.scalar->acc[p]);
+    output.state.proc->param[p]->rampedCV.Fill(
+      0, output.state.proc->param[p]->rampedCV.Count(), *output.state.scalar->acc[p]);
   }
 
   for (int a = 0; a < input.acc.size(); a++)
@@ -25,10 +25,10 @@ FBRampProcessor::ProcessRamping(
     *output.state.scalar->acc[event.index] = event.normalized;
 
     for (int pos = 0; pos <= posRange; pos++)
-      output.state.proc->param[event.index]->cv[currentPos + pos] =
+      output.state.proc->param[event.index]->rampedCV[currentPos + pos] =
       currentVal + pos / static_cast<float>(posRange) * valRange;
     if (a < input.acc.size() - 1 && input.acc[a + 1].index != event.index)
       for (int pos = event.pos; pos < input.audio.Count(); pos++)
-        output.state.proc->param[event.index]->cv[pos] = event.normalized;
+        output.state.proc->param[event.index]->rampedCV[pos] = event.normalized;
   }
 }

@@ -21,8 +21,9 @@ struct FBStateAddrs
 struct FBProcParamState
 {
   int pos = 0;
-  FBFixedCVBlock cv = {};
   FBOnePoleFilter smooth = {};
+  FBFixedCVBlock rampedCV = {};
+  FBFixedCVBlock smoothedCV = {};
 };
 
 struct FBScalarStateAddrs
