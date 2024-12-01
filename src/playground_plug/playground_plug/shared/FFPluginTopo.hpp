@@ -2,8 +2,7 @@
 
 #include <playground_plug/shared/FFPluginConfig.hpp>
 #include <playground_base/base/plug/FBPlugTopo.hpp>
-#include <playground_base/base/shared/FBProcAddrs.hpp>
-#include <playground_base/base/shared/FBScalarAddrs.hpp>
+#include <playground_base/base/shared/FBStateAddrs.hpp>
 #include <playground_base/dsp/fixed/FBFixedConfig.hpp>
 #include <playground_base/dsp/fixed/FBFixedCVBlock.hpp>
 #include <playground_base/dsp/fixed/FBFixedAudioBlock.hpp>

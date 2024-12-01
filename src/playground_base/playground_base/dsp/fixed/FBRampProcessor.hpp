@@ -2,8 +2,8 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 
-class FBFixedInputBlock;
-class FBFixedOutputBlock;
+struct FBFixedInputBlock;
+struct FBFixedOutputBlock;
 
 class FBRampProcessor
 {

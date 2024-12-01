@@ -2,9 +2,7 @@
 #include <playground_base/dsp/fixed/FBFixedCVBlock.hpp>
 #include <playground_base/dsp/fixed/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/fixed/FBFixedOutputBlock.hpp>
-
-#include <playground_base/base/shared/FBProcAddrs.hpp>
-#include <playground_base/base/shared/FBScalarAddrs.hpp>
+#include <playground_base/base/shared/FBStateAddrs.hpp>
 
 void 
 FBRampProcessor::ProcessRamping(
