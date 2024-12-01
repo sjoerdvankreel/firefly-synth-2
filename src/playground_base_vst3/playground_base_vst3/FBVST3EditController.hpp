@@ -18,7 +18,7 @@ public EditControllerEx1
   std::unique_ptr<FBRuntimeTopo> _topo;
 
 public:
+  FBVST3EditController(FBStaticTopo const& topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
-  FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo);
   tresult PLUGIN_API initialize(FUnknown* context) override;
 };

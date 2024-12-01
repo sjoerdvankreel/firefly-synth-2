@@ -31,7 +31,7 @@ protected:
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
-  FBVST3AudioEffect(std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId);
+  FBVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId);
 
   tresult PLUGIN_API process(ProcessData& data) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;

@@ -15,31 +15,16 @@ using namespace Steinberg::Vst;
 class FFVST3AudioEffect:
 public FBVST3AudioEffect
 {
-protected:
-  std::unique_ptr<IFBPlugProcessor>
-    MakePlugProcessor(
-      FBRuntimeTopo const& topo,
-      float sampleRate) const override;
-
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3AudioEffect);
-  FFVST3AudioEffect(
-    std::unique_ptr<FBStaticTopo>&& topo, 
-    FUID const& controllerId);
+  FFVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId):
+  FBVST3AudioEffect(std::move(topo), controllerId) {}
+
+protected:
+  std::unique_ptr<IFBPlugProcessor>
+  MakePlugProcessor(FBRuntimeTopo const& topo, float sampleRate) const override
+  { return std::make_unique<FFPlugProcessor>(topo, sampleRate); }
 };
-
-FFVST3AudioEffect::
-FFVST3AudioEffect(
-  std::unique_ptr<FBStaticTopo>&& topo,
-  FUID const& controllerId) :
-FBVST3AudioEffect(std::move(topo), controllerId) {}
-
-std::unique_ptr<IFBPlugProcessor>
-FFVST3AudioEffect::MakePlugProcessor(
-  FBRuntimeTopo const& topo, float sampleRate) const
-{
-  return std::make_unique<FFPlugProcessor>(topo, sampleRate);
-}
 
 static FUID
 TextToFUID(char const* text)
@@ -52,15 +37,17 @@ TextToFUID(char const* text)
 static FUnknown*
 ControllerFactory(void*) 
 {
-  auto result = new FBVST3EditController(FFMakeTopo());
+  auto topo = FFMakeTopo();
+  auto result = new FBVST3EditController(*topo);
   return static_cast<IEditController*>(result);
 }
 
 static FUnknown*
 ComponentFactory(void*)
 {
+  auto topo = FFMakeTopo();
   auto controllerFuid = TextToFUID(FF_PLUG_CONTROLLER_ID);
-  auto result = new FFVST3AudioEffect(FFMakeTopo(), controllerFuid);
+  auto result = new FFVST3AudioEffect(*topo, controllerFuid);
   return static_cast<IAudioProcessor*>(result);
 }
 
