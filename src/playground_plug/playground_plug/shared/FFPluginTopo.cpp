@@ -6,7 +6,7 @@ auto SelectScalarAddr(Selector selector)
 {
   return [selector](
     int moduleSlot, int paramSlot,
-    FBScalarAddrsBase& addrs) {
+    FBScalarAddrs& addrs) {
       auto store = selector(dynamic_cast<FFScalarMemory&>(addrs));
       return &(*store)[moduleSlot][paramSlot]; };
 }
@@ -16,7 +16,7 @@ auto SelectProcAddr(Selector selector)
 {
   return [selector](
     int moduleSlot, int paramSlot,
-    FBProcAddrsBase& addrs) {
+    FBProcAddrs& addrs) {
       auto store = selector(dynamic_cast<FFProcMemory&>(addrs));
       return &(*store)[moduleSlot][paramSlot]; };
 }

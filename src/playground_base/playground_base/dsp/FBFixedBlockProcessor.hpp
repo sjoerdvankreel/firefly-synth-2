@@ -13,13 +13,13 @@ class FBFixedBlockProcessor:
 public IFBHostProcessor
 {
   FBFixedAudioBlock _audioOut;
-  FBScalarAddrsBase* const _scalar;
+  FBScalarAddrs* const _scalar;
   FBHostBufferProcessor _hostBuffer;
   FBFixedBufferProcessor _fixedBuffer;
 
 public:
   FBFixedBlockProcessor(
-    FBScalarAddrsBase* scalar,
+    FBScalarAddrs* scalar,
     int maxHostSampleCount);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBlockProcessor);
 
@@ -30,7 +30,7 @@ public:
 template <class Derived>
 FBFixedBlockProcessor<Derived>::
 FBFixedBlockProcessor(
-  FBScalarAddrsBase* scalar,
+  FBScalarAddrs* scalar,
   int maxHostSampleCount) :
 _audioOut(),
 _hostBuffer(),

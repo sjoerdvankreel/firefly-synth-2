@@ -8,13 +8,13 @@ template <class Derived>
 class FBAutomationRamper:
 public FBFixedBlockProcessor<FBAutomationRamper<Derived>>
 {
-  FBProcAddrsBase* const _proc;
-  FBScalarAddrsBase* const _scalar;
+  FBProcAddrs* const _proc;
+  FBScalarAddrs* const _scalar;
 
 public:
   FBAutomationRamper(
-    FBProcAddrsBase* proc,
-    FBScalarAddrsBase* scalar,
+    FBProcAddrs* proc,
+    FBScalarAddrs* scalar,
     int maxHostSampleCount);  
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBAutomationRamper);
 
@@ -25,8 +25,8 @@ public:
 template <class Derived>
 FBAutomationRamper<Derived>::
 FBAutomationRamper(
-  FBProcAddrsBase* proc,
-  FBScalarAddrsBase* scalar,
+  FBProcAddrs* proc,
+  FBScalarAddrs* scalar,
   int maxHostSampleCount) :
 FBFixedBlockProcessor<FBAutomationRamper<Derived>>(scalar, maxHostSampleCount),
 _proc(proc),

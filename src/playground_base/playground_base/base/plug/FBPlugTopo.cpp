@@ -1,4 +1,7 @@
 #include <playground_base/base/plug/FBPlugTopo.hpp>
+#include <playground_base/base/shared/FBProcAddrs.hpp>
+#include <playground_base/base/shared/FBScalarAddrs.hpp>
+
 #include <cstdint>
 
 static std::map<int, int>
@@ -96,22 +99,8 @@ MakeRuntimeParamLongName(
   return moduleName + " " + paramName;
 }
 
-void 
-FBRuntimeTopo::InitScalarAddrs(FBScalarAddrsBase& addrs) const
-{
-  addrs.acc.clear();
-  for (int a = 0; a < acc.size(); a++)
-    addrs.acc.push_back(acc[a].static_.scalarAddr(
-      acc[a].moduleSlot, acc[a].paramSlot, addrs));
-
-  addrs.block.clear();
-  for (int b = 0; b < block.size(); b++)
-    addrs.block.push_back(block[b].static_.scalarAddr(
-      block[b].moduleSlot, block[b].paramSlot, addrs));
-}
-
-void 
-FBRuntimeTopo::InitProcAddrs(FBProcAddrsBase& addrs) const
+void
+FBRuntimeTopo::InitProcAddrs(FBProcAddrs& addrs) const
 {
   addrs.pos.clear();
   for (int a = 0; a < acc.size(); a++)
@@ -122,6 +111,20 @@ FBRuntimeTopo::InitProcAddrs(FBProcAddrsBase& addrs) const
   for (int a = 0; a < acc.size(); a++)
     addrs.cv.push_back(acc[a].static_.cvAddr(
       acc[a].moduleSlot, acc[a].paramSlot, addrs));
+}
+
+void 
+FBRuntimeTopo::InitScalarAddrs(FBScalarAddrs& addrs) const
+{
+  addrs.acc.clear();
+  for (int a = 0; a < acc.size(); a++)
+    addrs.acc.push_back(acc[a].static_.scalarAddr(
+      acc[a].moduleSlot, acc[a].paramSlot, addrs));
+
+  addrs.block.clear();
+  for (int b = 0; b < block.size(); b++)
+    addrs.block.push_back(block[b].static_.scalarAddr(
+      block[b].moduleSlot, block[b].paramSlot, addrs));
 }
 
 FBRuntimeTopo::

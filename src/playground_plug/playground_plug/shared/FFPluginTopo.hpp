@@ -2,6 +2,8 @@
 
 #include <playground_plug/shared/FFPluginConfig.hpp>
 #include <playground_base/base/plug/FBPlugTopo.hpp>
+#include <playground_base/base/shared/FBProcAddrs.hpp>
+#include <playground_base/base/shared/FBScalarAddrs.hpp>
 #include <playground_base/dsp/fixed/FBFixedConfig.hpp>
 #include <playground_base/dsp/fixed/FBFixedCVBlock.hpp>
 #include <playground_base/dsp/fixed/FBFixedAudioBlock.hpp>
@@ -66,7 +68,7 @@ struct FFBlockMemory
 };
 
 struct FFScalarMemory:
-public FBScalarAddrsBase
+public FBScalarAddrs
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarMemory);
   FFBlockMemory block;
@@ -75,7 +77,7 @@ public FBScalarAddrsBase
 
 struct alignas(alignof(FBFixedCVBlock)) FFProcMemory:
 public FFScalarMemory,
-public FBProcAddrsBase
+public FBProcAddrs
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcMemory);
   FFAccMemory<int> pos;

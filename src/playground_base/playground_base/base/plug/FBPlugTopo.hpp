@@ -7,6 +7,8 @@
 #include <vector>
 #include <functional>
 
+struct FBProcAddrs;
+struct FBScalarAddrs;
 class FBFixedCVBlock;
 
 inline double 
@@ -21,26 +23,6 @@ inline bool
 FBNormalizedToBool(double normalized)
 { return FBNormalizedToDiscrete(2, normalized) != 0; }
 
-struct FBScalarAddrsBase
-{
-  virtual ~FBScalarAddrsBase() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBScalarAddrsBase);
-
-  // interior pointers to derived
-  std::vector<float*> acc;
-  std::vector<float*> block;
-};
-
-struct FBProcAddrsBase
-{
-  virtual ~FBProcAddrsBase() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcAddrsBase);
-
-  // interior pointers to derived
-  std::vector<int*> pos;
-  std::vector<FBFixedCVBlock*> cv;
-};
-
 struct FBStaticParam
 {
   int slotCount;
@@ -50,9 +32,9 @@ struct FBStaticParam
   std::string unit;
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
-  std::function<int* (int moduleSlot, int paramSlot, FBProcAddrsBase& addrs)> posAddr;
-  std::function<float* (int moduleSlot, int paramSlot, FBScalarAddrsBase& addrs)> scalarAddr;
-  std::function<FBFixedCVBlock* (int moduleSlot, int paramSlot, FBProcAddrsBase& addrs)> cvAddr;
+  std::function<int* (int moduleSlot, int paramSlot, FBProcAddrs& addrs)> posAddr;
+  std::function<float* (int moduleSlot, int paramSlot, FBScalarAddrs& addrs)> scalarAddr;
+  std::function<FBFixedCVBlock* (int moduleSlot, int paramSlot, FBProcAddrs& addrs)> cvAddr;
 };
 
 struct FBStaticModule
@@ -109,6 +91,6 @@ struct FBRuntimeTopo
   std::map<int, int> const tagToAcc;
   std::map<int, int> const tagToBlock;
 
-  void InitProcAddrs(FBProcAddrsBase& addrs) const;
-  void InitScalarAddrs(FBScalarAddrsBase& addrs) const;
+  void InitProcAddrs(FBProcAddrs& addrs) const;
+  void InitScalarAddrs(FBScalarAddrs& addrs) const;
 };
