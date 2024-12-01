@@ -5,13 +5,25 @@
 
 struct FBProcAddrs;
 struct FBScalarAddrs;
+
 class FBFixedCVBlock;
+class FBOnePoleFilter;
 
 struct FBStateAddrs
 {
   FBProcAddrs* proc = {};
   FBScalarAddrs* scalar = {};
 }; 
+
+struct FBProcAddrs
+{
+  std::vector<int*> pos = {};
+  std::vector<FBFixedCVBlock*> cv = {};
+  std::vector<FBOnePoleFilter*> smooth = {};
+
+  virtual ~FBProcAddrs() {}
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcAddrs);
+};
 
 struct FBScalarAddrs
 {
@@ -20,13 +32,4 @@ struct FBScalarAddrs
 
   virtual ~FBScalarAddrs() {}
   FB_NOCOPY_NOMOVE_DEFCTOR(FBScalarAddrs);
-};
-
-struct FBProcAddrs
-{
-  std::vector<int*> pos = {};
-  std::vector<FBFixedCVBlock*> cv = {};
-
-  virtual ~FBProcAddrs() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcAddrs);
 };

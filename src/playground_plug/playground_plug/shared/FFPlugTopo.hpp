@@ -1,7 +1,8 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugConfig.hpp>
-#include <playground_base/base/shared/FBStateAddrs.hpp>
+#include <playground_base/base/shared/FBState.hpp>
+#include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 
 #include <array>
@@ -75,5 +76,6 @@ public FBProcAddrs
 {
   FFAccMemory<int> pos = {};
   FFAccMemory<FBFixedCVBlock> cv = {};
+  FFAccMemory<FBOnePoleFilter> smooth = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcMemory);
 };
