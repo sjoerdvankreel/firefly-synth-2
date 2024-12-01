@@ -1,14 +1,13 @@
-#include <playground_plug/dsp/FFPluginProcessor.hpp>
+#include <playground_plug/dsp/FFPlugProcessor.hpp>
+#include <playground_base/base/plug/FBPlugTopo.hpp>
+#include <playground_base/dsp/fixed/FBFixedAudioBlock.hpp>
 
 #include <cmath>
 #include <numbers>
 
-FFPluginProcessor::
-FFPluginProcessor(
-  FBRuntimeTopo const& topo, int maxHostSampleCount, float sampleRate) :
-FBAutomationRamper(&_memory, &_memory, maxHostSampleCount),
-_phase(),
-_memory(),
+FFPlugProcessor::
+FFPlugProcessor(
+FBRuntimeTopo const& topo, float sampleRate) :
 _sampleRate(sampleRate)
 {
   topo.InitProcAddrs(_memory);
@@ -16,8 +15,8 @@ _sampleRate(sampleRate)
 }
 
 void 
-FFPluginProcessor::ProcessAutomation(
-  FBFixedInputBlock const& input, FBFixedAudioBlock& output)
+FFPlugProcessor::ProcessPlug(
+  FBFixedAudioBlock const& input, FBFixedAudioBlock& output)
 {
   bool on = FBNormalizedToBool(_memory.block.osci.on[0][FFOsciBlockOn]);
   if (!on)
