@@ -10,7 +10,9 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
+struct FBStaticTopo;
 struct FBRuntimeTopo;
+
 class FBHostProcessor;
 class IFBPlugProcessor;
 
@@ -29,7 +31,7 @@ protected:
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
-  FBVST3AudioEffect(std::unique_ptr<FBRuntimeTopo>&& topo, FUID const& controllerId);
+  FBVST3AudioEffect(std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId);
 
   tresult PLUGIN_API process(ProcessData& data) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;

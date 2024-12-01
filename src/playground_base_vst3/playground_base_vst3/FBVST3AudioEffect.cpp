@@ -64,8 +64,8 @@ MakeHostAudioBlock(AudioBusBuffers& buffers, int sampleCount)
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
-  std::unique_ptr<FBRuntimeTopo>&& topo, FUID const& controllerId):
-_topo(std::move(topo))
+  std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId):
+_topo(std::make_unique<FBRuntimeTopo>(*topo))
 {
   setControllerClass(controllerId);
 }

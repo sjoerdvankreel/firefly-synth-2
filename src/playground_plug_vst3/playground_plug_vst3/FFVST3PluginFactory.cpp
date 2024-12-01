@@ -1,6 +1,5 @@
-#include <playground_plug/shared/FFPluginTopo.hpp>
-#include <playground_plug/shared/FFPluginConfig.hpp>
-#include <playground_plug/dsp/FFPluginProcessor.hpp>
+#include <playground_plug/dsp/FFPlugProcessor.hpp>
+#include <playground_plug/shared/FFPlugConfig.hpp>
 
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
@@ -16,25 +15,30 @@ using namespace Steinberg::Vst;
 class FFVST3AudioEffect:
 public FBVST3AudioEffect
 {
+protected:
+  std::unique_ptr<IFBPlugProcessor>
+    MakePlugProcessor(
+      FBRuntimeTopo const& topo,
+      float sampleRate) const override;
+
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3AudioEffect);
-  FFVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId);
-
-protected:
-  std::unique_ptr<IFBHostProcessor> CreateProcessor(
-    FBRuntimeTopo const& topo, ProcessSetup const& setup) const override;
+  FFVST3AudioEffect(
+    std::unique_ptr<FBStaticTopo>&& topo, 
+    FUID const& controllerId);
 };
 
 FFVST3AudioEffect::
-FFVST3AudioEffect(FBRuntimeTopo&& topo, FUID const& controllerId) :
+FFVST3AudioEffect(
+  std::unique_ptr<FBStaticTopo>&& topo,
+  FUID const& controllerId) :
 FBVST3AudioEffect(std::move(topo), controllerId) {}
 
-std::unique_ptr<IFBHostProcessor>
-FFVST3AudioEffect::CreateProcessor(
-  FBRuntimeTopo const& topo, ProcessSetup const& setup) const
+std::unique_ptr<IFBPlugProcessor>
+FFVST3AudioEffect::MakePlugProcessor(
+  FBRuntimeTopo const& topo, float sampleRate) const
 {
-  return std::make_unique<FFPluginProcessor>(
-    topo, setup.maxSamplesPerBlock, setup.sampleRate);
+  return std::make_unique<FFPlugProcessor>(topo, sampleRate);
 }
 
 static FUID
@@ -55,20 +59,20 @@ ControllerFactory(void*)
 static FUnknown*
 ComponentFactory(void*)
 {
-  auto controllerFuid = TextToFUID(FF_PLUGIN_CONTROLLER_ID);
+  auto controllerFuid = TextToFUID(FF_PLUG_CONTROLLER_ID);
   auto result = new FFVST3AudioEffect(FFMakeTopo(), controllerFuid);
   return static_cast<IAudioProcessor*>(result);
 }
 
 BEGIN_FACTORY_DEF(FF_VENDOR_NAME, FF_VENDOR_URL, FF_VENDOR_MAIL)
   DEF_CLASS2(
-    INLINE_UID_FROM_FUID(TextToFUID(FF_PLUGIN_PROCESSOR_ID)),
+    INLINE_UID_FROM_FUID(TextToFUID(FF_PLUG_PROCESSOR_ID)),
       PClassInfo::kManyInstances, kVstAudioEffectClass, 
-      FF_PLUGIN_NAME, kDistributable, PlugType::kInstrument,
-      FF_PLUGIN_VERSION, kVstVersionString, ComponentFactory);
+      FF_PLUG_NAME, kDistributable, PlugType::kInstrument,
+      FF_PLUG_VERSION, kVstVersionString, ComponentFactory);
   DEF_CLASS2(
-    INLINE_UID_FROM_FUID(TextToFUID(FF_PLUGIN_CONTROLLER_ID)),
+    INLINE_UID_FROM_FUID(TextToFUID(FF_PLUG_CONTROLLER_ID)),
       PClassInfo::kManyInstances, kVstComponentControllerClass, 
-      FF_PLUGIN_NAME, 0, "",
-      FF_PLUGIN_VERSION, kVstVersionString, ControllerFactory)
+      FF_PLUG_NAME, 0, "",
+      FF_PLUG_VERSION, kVstVersionString, ControllerFactory)
 END_FACTORY

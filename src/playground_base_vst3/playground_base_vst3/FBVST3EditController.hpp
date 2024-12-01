@@ -9,6 +9,7 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
+struct FBStaticTopo;
 struct FBRuntimeTopo;
 
 class FBVST3EditController :
@@ -18,6 +19,6 @@ public EditControllerEx1
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
-  FBVST3EditController(std::unique_ptr<FBRuntimeTopo>&& topo);
+  FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo);
   tresult PLUGIN_API initialize(FUnknown* context) override;
 };

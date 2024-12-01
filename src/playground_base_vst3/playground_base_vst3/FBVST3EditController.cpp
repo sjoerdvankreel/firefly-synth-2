@@ -45,8 +45,8 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
 }
 
 FBVST3EditController::
-FBVST3EditController(std::unique_ptr<FBRuntimeTopo>&& topo) :
-_topo(std::move(topo)) {}
+FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo) :
+_topo(std::make_unique<FBRuntimeTopo>(*topo)) {}
 
 tresult PLUGIN_API
 FBVST3EditController::initialize(FUnknown* context)
