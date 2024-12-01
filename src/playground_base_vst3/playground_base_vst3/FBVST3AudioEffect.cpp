@@ -1,6 +1,7 @@
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 #include <playground_base/base/plug/FBPlugTopo.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
+#include <playground_base/dsp/plug/FBPlugProcessor.hpp>
 
 #include <pluginterfaces/vst/ivstevents.h>
 #include <pluginterfaces/vst/ivstparameterchanges.h>
