@@ -14,6 +14,15 @@ _sampleRate(sampleRate)
   topo.InitScalarAddrs(_memory);
 }
 
+FBStateAddrs 
+FFPlugProcessor::StateAddrs()
+{
+  FBStateAddrs result;
+  result.proc = &_memory;
+  result.scalar = &_memory;
+  return result;
+}
+
 void 
 FFPlugProcessor::ProcessPlug(
   FBFixedAudioBlock const& input, FBFixedAudioBlock& output)
@@ -25,13 +34,12 @@ FFPlugProcessor::ProcessPlug(
     return;
   }
 
-  // TODO make it good -- both slots
   auto const& gain = _memory.cv.osci.gain[0][0];
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase);
-    output[0][s] = sample *gain[s];
-    output[1][s] = sample *gain[s];
+    output[0][s] = sample * gain[s];
+    output[1][s] = sample * gain[s];
     _phase += 440.0f / _sampleRate;
     _phase -= std::floor(_phase);
   }
