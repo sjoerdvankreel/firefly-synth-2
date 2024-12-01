@@ -1,9 +1,6 @@
-#include <playground_base/dsp/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
 #include <algorithm>
-
-// TODO alot
 
 template <class Event>
 static void GatherAcc(
@@ -24,13 +21,13 @@ GatherStraddledEvents(
   FBAccEvent const& nextEvent, 
   std::vector<FBAccEvent>& output)
 {
-  int thisFixedBlock = thisEvent.pos / FB_PLUG_BLOCK_SIZE;
-  int nextFixedBlock = nextEvent.pos / FB_PLUG_BLOCK_SIZE;
+  int thisFixedBlock = thisEvent.pos / FBPlugAudioBlock::Count();
+  int nextFixedBlock = nextEvent.pos / FBPlugAudioBlock::Count();
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
     FBAccEvent straddledEvent;
     straddledEvent.index = thisEvent.index;
-    straddledEvent.pos = i * FB_PLUG_BLOCK_SIZE + FB_PLUG_BLOCK_SIZE - 1;
+    straddledEvent.pos = i * FBPlugAudioBlock::Count() + FBPlugAudioBlock::Count() - 1;
     float valueRange = nextEvent.normalized - thisEvent.normalized;
     float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
     straddledEvent.normalized = thisEvent.normalized + valueRange * normalizedPos;
@@ -41,10 +38,10 @@ GatherStraddledEvents(
 FBPlugInputBlock const*
 FBHostToPlugProcessor::ToPlug()
 {
-  if (_pipeline.audio.Count() < FB_PLUG_BLOCK_SIZE)
+  if (_pipeline.audio.Count() < FBPlugAudioBlock::Count())
     return nullptr;
-  _plug.audio.CopyFrom(_pipeline.audio, 0, 0, _plug.audio.Count());
-  _pipeline.audio.Drop(_plug.audio.Count());
+  _plug.audio.CopyFrom(_pipeline.audio, 0, 0, FBPlugAudioBlock::Count());
+  _pipeline.audio.Drop(FBPlugAudioBlock::Count());
   GatherAcc(_pipeline.note, _plug.note);
   GatherAcc(_pipeline.acc, _plug.acc);
   return &_plug;

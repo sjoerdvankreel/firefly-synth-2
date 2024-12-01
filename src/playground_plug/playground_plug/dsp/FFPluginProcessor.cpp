@@ -28,7 +28,7 @@ FFPluginProcessor::ProcessAutomation(
 
   // TODO make it good -- both slots
   auto const& gain = _memory.cv.osci.gain[0][0];
-  for (int s = 0; s < FB_PLUG_BLOCK_SIZE; s++)
+  for (int s = 0; s < FBPlugAudioBlock::Count(); s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());
     output[0][s] = sample *gain[s];
