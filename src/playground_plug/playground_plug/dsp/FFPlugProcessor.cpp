@@ -35,7 +35,7 @@ FFPlugProcessor::ProcessPlug(
     return;
   }
 
-  auto const& gain = _state.param.osci.gain[0][0].rampedCV;
+  auto const& gain = _state.param.osci.gain[0][0].smoothedCV;
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase);

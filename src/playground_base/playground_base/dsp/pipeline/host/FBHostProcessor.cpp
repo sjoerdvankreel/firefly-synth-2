@@ -1,3 +1,4 @@
+#include <playground_base/base/plug/FBPlugConfig.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
@@ -11,13 +12,17 @@ FBHostProcessor::
 ~FBHostProcessor() {}
 
 FBHostProcessor::
-FBHostProcessor(std::unique_ptr<IFBPlugProcessor>&& plug):
+FBHostProcessor(
+  std::unique_ptr<IFBPlugProcessor>&& plug, float sampleRate):
 _plug(std::move(plug)),
 _ramp(std::make_unique<FBRampProcessor>()),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
   _fixedOut.state = _plug->StateAddrs();
+  for (int p = 0; p < _fixedOut.state.proc->param.size(); p++)
+    _fixedOut.state.proc->param[0]->smooth = 
+      FBOnePoleFilter(sampleRate, FB_PLUG_PARAM_SMOOTH_SEC);
 }
 
 void 

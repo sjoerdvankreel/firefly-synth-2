@@ -20,6 +20,7 @@ struct FBStateAddrs
 
 struct FBProcParamState
 {
+  friend class FBHostProcessor;
   friend class FBRampProcessor;
 
 private:
