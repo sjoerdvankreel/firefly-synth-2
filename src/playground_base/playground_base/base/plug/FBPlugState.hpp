@@ -24,10 +24,10 @@ struct FBProcParamState
 
 private:
   int pos = 0;
+  FBOnePoleFilter smooth = {};
   FBFixedCVBlock rampedCV = {};
 
 public:
-  FBOnePoleFilter smooth = {};
   FBFixedCVBlock smoothedCV = {};
 };
 

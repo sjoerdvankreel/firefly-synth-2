@@ -12,7 +12,7 @@ FBRuntimeTopo const& topo, float sampleRate) :
 _sampleRate(sampleRate)
 {
   topo.InitProcAddrs(_state);
-  topo.InitScalarAddrs(_state);
+  topo.InitScalarAddrs(_state);  
 }
 
 FBStateAddrs 
