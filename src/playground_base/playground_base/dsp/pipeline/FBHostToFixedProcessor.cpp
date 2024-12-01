@@ -1,5 +1,5 @@
 #include <playground_base/dsp/host/FBHostInputBlock.hpp>
-#include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
+#include <playground_base/dsp/pipeline/FBHostToFixedProcessor.hpp>
 #include <algorithm>
 
 template <class Event>
@@ -8,11 +8,11 @@ static void GatherAcc(
 {
   int e = 0;
   output.clear();
-  for (e = 0; e < input.size() && input[e].pos < FBPlugAudioBlock::Count(); e++)
+  for (e = 0; e < input.size() && input[e].pos < FBFixedAudioBlock::Count(); e++)
     output.push_back(input[e]);
   input.erase(input.begin(), input.begin() + e);
   for (auto& e : input)
-    e.pos -= FBPlugAudioBlock::Count();
+    e.pos -= FBFixedAudioBlock::Count();
 }
 
 static void
@@ -21,13 +21,13 @@ GatherStraddledEvents(
   FBAccEvent const& nextEvent, 
   std::vector<FBAccEvent>& output)
 {
-  int thisFixedBlock = thisEvent.pos / FBPlugAudioBlock::Count();
-  int nextFixedBlock = nextEvent.pos / FBPlugAudioBlock::Count();
+  int thisFixedBlock = thisEvent.pos / FBFixedAudioBlock::Count();
+  int nextFixedBlock = nextEvent.pos / FBFixedAudioBlock::Count();
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
     FBAccEvent straddledEvent;
     straddledEvent.index = thisEvent.index;
-    straddledEvent.pos = i * FBPlugAudioBlock::Count() + FBPlugAudioBlock::Count() - 1;
+    straddledEvent.pos = i * FBFixedAudioBlock::Count() + FBFixedAudioBlock::Count() - 1;
     float valueRange = nextEvent.normalized - thisEvent.normalized;
     float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
     straddledEvent.normalized = thisEvent.normalized + valueRange * normalizedPos;
@@ -35,20 +35,20 @@ GatherStraddledEvents(
   }
 }
 
-FBPlugInputBlock const*
-FBHostToPlugProcessor::ToPlug()
+FBFixedInputBlock const*
+FBHostToFixedProcessor::ToFixed()
 {
-  if (_pipeline.audio.Count() < FBPlugAudioBlock::Count())
+  if (_pipeline.audio.Count() < FBFixedAudioBlock::Count())
     return nullptr;
-  _plug.audio.CopyFrom(_pipeline.audio, 0, 0, FBPlugAudioBlock::Count());
-  _pipeline.audio.Drop(FBPlugAudioBlock::Count());
-  GatherAcc(_pipeline.note, _plug.note);
-  GatherAcc(_pipeline.acc, _plug.acc);
-  return &_plug;
+  _fixed.audio.CopyFrom(_pipeline.audio, 0, 0, FBFixedAudioBlock::Count());
+  _pipeline.audio.Drop(FBFixedAudioBlock::Count());
+  GatherAcc(_pipeline.note, _fixed.note);
+  GatherAcc(_pipeline.acc, _fixed.acc);
+  return &_fixed;
 }
 
 void 
-FBHostToPlugProcessor::FromHost(FBHostInputBlock const& input)
+FBHostToFixedProcessor::FromHost(FBHostInputBlock const& input)
 {
   for (int e = 0; e < input.note.size(); e++)
   {

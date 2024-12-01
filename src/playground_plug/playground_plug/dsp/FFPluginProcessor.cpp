@@ -17,7 +17,7 @@ _sampleRate(sampleRate)
 
 void 
 FFPluginProcessor::ProcessAutomation(
-  FBPlugInputBlock const& input, FBPlugAudioBlock& output)
+  FBFixedInputBlock const& input, FBFixedAudioBlock& output)
 {
   bool on = FBNormalizedToBool(_memory.block.osci.on[0][FFOsciBlockOn]);
   if (!on)
@@ -28,7 +28,7 @@ FFPluginProcessor::ProcessAutomation(
 
   // TODO make it good -- both slots
   auto const& gain = _memory.cv.osci.gain[0][0];
-  for (int s = 0; s < FBPlugAudioBlock::Count(); s++)
+  for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase.Current());
     output[0][s] = sample *gain[s];

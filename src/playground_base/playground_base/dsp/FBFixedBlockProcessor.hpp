@@ -1,10 +1,10 @@
 #pragma once
 
-#include <playground_base/base/plug/FBPlugConfig.hpp>
+#include <playground_base/dsp/fixed/FBFixedConfig.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/host/FBHostInputBlock.hpp>
-#include <playground_base/dsp/pipeline/FBHostToPlugProcessor.hpp>
-#include <playground_base/dsp/pipeline/FBPlugToHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/FBHostToFixedProcessor.hpp>
+#include <playground_base/dsp/pipeline/FBFixedToHostProcessor.hpp>
 
 struct FBHostInputBlock;
 
@@ -12,10 +12,10 @@ template <class Derived>
 class FBFixedBlockProcessor:
 public IFBHostProcessor
 {
-  FBPlugAudioBlock _plugAudioOut;
+  FBFixedAudioBlock _audioOut;
   FBScalarAddrsBase* const _scalar;
-  FBHostToPlugProcessor _hostToPlugProcessor;
-  FBPlugToHostProcessor _plugToHostProcessor;
+  FBHostToFixedProcessor _hostToFixed;
+  FBFixedToHostProcessor _fixedToHost;
 
 public:
   FBFixedBlockProcessor(
@@ -32,9 +32,9 @@ FBFixedBlockProcessor<Derived>::
 FBFixedBlockProcessor(
   FBScalarAddrsBase* scalar,
   int maxHostSampleCount) :
-_plugAudioOut(),
-_hostToPlugProcessor(),
-_plugToHostProcessor(),
+_audioOut(),
+_hostToFixed(),
+_fixedToHost(),
 _scalar(scalar) {}
 
 template <class Derived> 
@@ -44,12 +44,12 @@ void FBFixedBlockProcessor<Derived>::ProcessHost(
   for (auto const& be : input.block)
     *_scalar->block[be.index] = be.normalized;
 
-  FBPlugInputBlock const* plugBlock;
-  _hostToPlugProcessor.FromHost(input);
-  while ((plugBlock = _hostToPlugProcessor.ToPlug()) != nullptr)
+  FBFixedInputBlock const* fixed;
+  _hostToFixed.FromHost(input);
+  while ((fixed = _hostToFixed.ToFixed()) != nullptr)
   {
-    static_cast<Derived*>(this)->ProcessFixed(*plugBlock, _plugAudioOut);
-    _plugToHostProcessor.FromPlug(_plugAudioOut);
+    static_cast<Derived*>(this)->ProcessFixed(*fixed, _audioOut);
+    _fixedToHost.FromFixed(_audioOut);
   }
-  _plugToHostProcessor.ToHost(output);
+  _fixedToHost.ToHost(output);
 }

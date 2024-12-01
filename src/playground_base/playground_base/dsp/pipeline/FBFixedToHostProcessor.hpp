@@ -4,17 +4,17 @@
 #include <memory>
 
 class FBHostAudioBlock;
-class FBPlugAudioBlock;
+class FBFixedAudioBlock;
 class FBPipelineAudioBlock;
 
-class FBPlugToHostProcessor
+class FBFixedToHostProcessor
 {
   bool _paddedOnce = false;
-  bool _hitPlugBlockSize = false;
+  bool _hitFixedBlockSize = false;
   std::unique_ptr<FBPipelineAudioBlock> _pipeline = {};
 
 public:
   void ToHost(FBHostAudioBlock& host);
-  void FromPlug(FBPlugAudioBlock const& plug);
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugToHostProcessor);
+  void FromFixed(FBFixedAudioBlock const& fixed);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedToHostProcessor);
 };

@@ -7,7 +7,7 @@
 #include <vector>
 #include <functional>
 
-class FBPlugCVBlock;
+class FBFixedCVBlock;
 
 inline double 
 FBDiscreteToNormalized(int count, int index)
@@ -38,7 +38,7 @@ struct FBProcAddrsBase
 
   // interior pointers to derived
   std::vector<int*> pos;
-  std::vector<FBPlugCVBlock*> cv;
+  std::vector<FBFixedCVBlock*> cv;
 };
 
 struct FBStaticParam
@@ -52,7 +52,7 @@ struct FBStaticParam
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
   std::function<int* (int moduleSlot, int paramSlot, FBProcAddrsBase& addrs)> posAddr;
   std::function<float* (int moduleSlot, int paramSlot, FBScalarAddrsBase& addrs)> scalarAddr;
-  std::function<FBPlugCVBlock* (int moduleSlot, int paramSlot, FBProcAddrsBase& addrs)> cvAddr;
+  std::function<FBFixedCVBlock* (int moduleSlot, int paramSlot, FBProcAddrsBase& addrs)> cvAddr;
 };
 
 struct FBStaticModule

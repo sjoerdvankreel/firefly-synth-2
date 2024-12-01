@@ -1,21 +1,21 @@
 #include <playground_base/dsp/host/FBHostAudioBlock.hpp>
-#include <playground_base/dsp/plug/FBPlugAudioBlock.hpp>
+#include <playground_base/dsp/fixed/FBFixedAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/FBPipelineAudioBlock.hpp>
-#include <playground_base/dsp/pipeline/FBPlugToHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/FBFixedToHostProcessor.hpp>
 
 #include <cassert>
 
 void 
-FBPlugToHostProcessor::FromPlug(FBPlugAudioBlock const& plug)
+FBFixedToHostProcessor::FromFixed(FBFixedAudioBlock const& fixed)
 {
-  _pipeline->Append(plug);
+  _pipeline->Append(fixed);
 }
 
 void 
-FBPlugToHostProcessor::ToHost(FBHostAudioBlock& host)
+FBFixedToHostProcessor::ToHost(FBHostAudioBlock& host)
 {
-  _hitPlugBlockSize |= _pipeline->Count() >= FBPlugAudioBlock::Count();
-  if (!_hitPlugBlockSize)
+  _hitFixedBlockSize |= _pipeline->Count() >= FBFixedAudioBlock::Count();
+  if (!_hitFixedBlockSize)
   {
     host.Fill(0, host.Count(), 0.0f);
     return;
