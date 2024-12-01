@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBState.hpp>
+#include <playground_base/base/plug/FBPlugState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 struct FBFixedOutputBlock
