@@ -1,5 +1,6 @@
 #include <playground_plug/dsp/FFPlugProcessor.hpp>
 #include <playground_plug/shared/FFPlugConfig.hpp>
+#include <playground_base/base/plug/FBPlugTopo.hpp>
 
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
