@@ -3,7 +3,15 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <vector>
 
+struct FBProcAddrs;
+struct FBScalarAddrs;
 class FBFixedCVBlock;
+
+struct FBStateAddrs
+{
+  FBProcAddrs* proc = {};
+  FBScalarAddrs* scalar = {};
+}; 
 
 struct FBScalarAddrs
 {
