@@ -1,47 +1,6 @@
 #include <playground_base/base/plug/FBPlugTopo.hpp>
 #include <cstdint>
 
-static std::string
-MakeRuntimeName(
-  std::string const& name, int slotCount, int slot)
-{
-  std::string result = name;
-  if (slotCount > 1)
-    result += std::to_string(slot + 1);
-  return result;
-}
-
-int
-MakeRuntimeHash(
-  std::string const& id)
-{
-  std::uint32_t result = 0;
-  int const multiplier = 33;
-  for (char c : id)
-    result = multiplier * result + static_cast<std::uint32_t>(c);
-  return std::abs(static_cast<int>(result + (result >> 5)));
-}
-
-static std::string
-MakeRuntimeParamId(
-  FBStaticModule const& module, int moduleSlot,
-  FBStaticParam const& param, int paramSlot)
-{
-  auto moduleId = module.id + "-" + std::to_string(moduleSlot);
-  auto paramId = param.id + "-" + std::to_string(paramSlot);
-  return moduleId + "-" + paramId;
-}
-
-static std::string
-MakeRuntimeParamLongName(
-  FBStaticModule const& module, int moduleSlot,
-  FBStaticParam const& param, int paramSlot)
-{
-  auto moduleName = MakeRuntimeName(module.name, module.slotCount, moduleSlot);
-  auto paramName = MakeRuntimeName(param.name, param.slotCount, paramSlot);
-  return moduleName + " " + paramName;
-}
-
 static std::map<int, int>
 MakeTagToParam(
   std::vector<FBRuntimeParam> const& params)
@@ -74,6 +33,37 @@ MakeRuntimeBlock(
   return result;
 }
 
+static std::string
+MakeRuntimeName(
+  std::string const& name, int slotCount, int slot)
+{
+  std::string result = name;
+  if (slotCount > 1)
+    result += std::to_string(slot + 1);
+  return result;
+}
+
+static std::string
+MakeRuntimeParamId(
+  FBStaticModule const& module, int moduleSlot,
+  FBStaticParam const& param, int paramSlot)
+{
+  auto moduleId = module.id + "-" + std::to_string(moduleSlot);
+  auto paramId = param.id + "-" + std::to_string(paramSlot);
+  return moduleId + "-" + paramId;
+}
+
+static int
+MakeRuntimeHash(
+  std::string const& id)
+{
+  std::uint32_t result = 0;
+  int const multiplier = 33;
+  for (char c : id)
+    result = multiplier * result + static_cast<std::uint32_t>(c);
+  return std::abs(static_cast<int>(result + (result >> 5)));
+}
+
 static std::vector<FBRuntimeModule>
 MakeRuntimeModules(FBStaticTopo const& topo)
 {
@@ -94,6 +84,16 @@ MakeRuntimeParams(
     for (int s = 0; s < params[p].slotCount; s++)
       result.push_back(FBRuntimeParam(module, slot, params[p], s));
   return result;
+}
+
+static std::string
+MakeRuntimeParamLongName(
+  FBStaticModule const& module, int moduleSlot,
+  FBStaticParam const& param, int paramSlot)
+{
+  auto moduleName = MakeRuntimeName(module.name, module.slotCount, moduleSlot);
+  auto paramName = MakeRuntimeName(param.name, param.slotCount, paramSlot);
+  return moduleName + " " + paramName;
 }
 
 void 
@@ -125,28 +125,28 @@ FBRuntimeTopo::InitProcAddrs(FBProcAddrsBase& addrs) const
 }
 
 FBRuntimeTopo::
-FBRuntimeTopo(FBStaticTopo const& staticTopo):
-modules(MakeRuntimeModules(staticTopo)),
-acc(MakeRuntimeAcc(modules)),
-block(MakeRuntimeBlock(modules)),
-tagToAcc(MakeTagToParam(acc)),
-tagToBlock(MakeTagToParam(block)) {}
+FBRuntimeTopo(FBStaticTopo const& topo) :
+  modules(MakeRuntimeModules(topo)),
+  acc(MakeRuntimeAcc(modules)),
+  block(MakeRuntimeBlock(modules)),
+  tagToAcc(MakeTagToParam(acc)),
+  tagToBlock(MakeTagToParam(block)) {}
 
 FBRuntimeParam::
 FBRuntimeParam(
   FBStaticModule const& module, int moduleSlot,
   FBStaticParam const& param, int paramSlot) :
-moduleSlot(moduleSlot),
-paramSlot(paramSlot),
-static_(param),
-longName(MakeRuntimeParamLongName(module, moduleSlot, param, paramSlot)),
-shortName(MakeRuntimeName(param.name, param.slotCount, paramSlot)),
-id(MakeRuntimeParamId(module, moduleSlot, param, paramSlot)),
-tag(MakeRuntimeHash(id)) {}
+  moduleSlot(moduleSlot),
+  paramSlot(paramSlot),
+  static_(param),
+  longName(MakeRuntimeParamLongName(module, moduleSlot, param, paramSlot)),
+  shortName(MakeRuntimeName(param.name, param.slotCount, paramSlot)),
+  id(MakeRuntimeParamId(module, moduleSlot, param, paramSlot)),
+  tag(MakeRuntimeHash(id)) {}
 
 FBRuntimeModule::
 FBRuntimeModule(
-  FBStaticModule const& module, int moduleSlot):
-name(MakeRuntimeName(module.name, module.slotCount, moduleSlot)),
-acc(MakeRuntimeParams(module, moduleSlot, module.acc)),
-block(MakeRuntimeParams(module, moduleSlot, module.block)) {}
+  FBStaticModule const& module, int moduleSlot) :
+  name(MakeRuntimeName(module.name, module.slotCount, moduleSlot)),
+  acc(MakeRuntimeParams(module, moduleSlot, module.acc)),
+  block(MakeRuntimeParams(module, moduleSlot, module.block)) {}
