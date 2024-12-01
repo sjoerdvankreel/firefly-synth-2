@@ -25,7 +25,7 @@ FBRampProcessor::ProcessRamping(
     proc[event.index]->pos = event.pos;
     *scalar->acc[event.index] = event.normalized;
 
-    for (int pos = 0; pos <= posRange; pos++)
+    for (int pos = 0; pos < posRange; pos++)
       proc[event.index]->rampedCV[currentPos + pos] =
       currentVal + pos / static_cast<float>(posRange) * valRange;
     if (a < input.acc.size() - 1 && input.acc[a + 1].index != event.index)
