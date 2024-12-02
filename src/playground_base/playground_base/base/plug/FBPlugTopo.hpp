@@ -14,6 +14,12 @@ struct FBProcParamState;
 struct FBProcStateAddrs;
 struct FBScalarStateAddrs;
 
+struct FBListItem
+{
+  std::string id;
+  std::string text;
+};
+
 struct FBStaticParam
 {
   int slotCount = {};
@@ -21,18 +27,21 @@ struct FBStaticParam
   std::string id = {};
   std::string name = {};
   std::string unit = {};
+  std::vector<FBListItem> list = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
+  std::string NormalizedToText(double normalized) const;
+
   std::function<float* (int moduleSlot, int paramSlot,
     FBScalarStateAddrs& addrs)> scalarAddr;
   std::function<FBProcParamState* (int moduleSlot, int paramSlot,
     FBProcStateAddrs& addrs)> procAddr;
 
-  double DiscreteToNormalized(int index)
+  double DiscreteToNormalized(int index) const
   { return index / (valueCount - 1.0); }
-  bool NormalizedToBool(double normalized)
+  bool NormalizedToBool(double normalized) const
   { return NormalizedToDiscrete(normalized) != 0; }
-  int NormalizedToDiscrete(double normalized)
+  int NormalizedToDiscrete(double normalized) const
   { return std::min(valueCount - 1, (int)(normalized * valueCount)); }
 };
 

@@ -48,6 +48,9 @@ FFMakeTopo()
   osciType.valueCount = FFOsciTypeCount;
   osciType.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
   osciType.scalarAddr = ScalarAddr([](auto& state) { return &state.block.osci.type; });
+  osciType.list = {
+    { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
+    { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" } };
 
   auto& osciGain = osci.acc[FFOsciAccGain];
   osciGain.name = "Gain";

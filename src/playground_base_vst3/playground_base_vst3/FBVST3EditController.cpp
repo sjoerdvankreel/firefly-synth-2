@@ -1,16 +1,10 @@
-#include <playground_base_vst3/FBVST3EditController.hpp>
 #include <playground_base/base/plug/FBPlugTopo.hpp>
+#include <playground_base_vst3/FBVST3Utility.hpp>
+#include <playground_base_vst3/FBVST3Parameter.hpp>
+#include <playground_base_vst3/FBVST3EditController.hpp>
 
 #include <utility>
 #include <algorithm>
-
-static void
-CopyToString128(std::string const& in, String128& out)
-{
-  memset(out, 0, sizeof(out));
-  for (int i = 0; i < 127 && i < in.size(); i++)
-    out[i] = in[i];
-}
 
 static UnitInfo
 MakeUnitInfo(FBRuntimeModule const& module, int id)
@@ -19,7 +13,7 @@ MakeUnitInfo(FBRuntimeModule const& module, int id)
   result.id = id;
   result.parentUnitId = kRootUnitId;
   result.programListId = kNoProgramListId;
-  CopyToString128(module.name, result.name);
+  FBVST3CopyToString128(module.name, result.name);
   return result;
 }
 
@@ -32,9 +26,9 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
   result.defaultNormalizedValue = 0.0; // TODO
   result.stepCount = std::max(0, param.static_.valueCount - 1);
 
-  CopyToString128(param.longName, result.title);
-  CopyToString128(param.shortName, result.shortTitle);
-  CopyToString128(param.static_.unit, result.units);
+  FBVST3CopyToString128(param.longName, result.title);
+  FBVST3CopyToString128(param.shortName, result.shortTitle);
+  FBVST3CopyToString128(param.static_.unit, result.units);
 
   // TODO once we drop generic editor
   if (automate)
@@ -60,13 +54,15 @@ FBVST3EditController::initialize(FUnknown* context)
     addUnit(new Unit(MakeUnitInfo(_topo->modules[m], unitId)));
     for (int a = 0; a < _topo->modules[m].acc.size(); a++)
     {
-      auto info = MakeParamInfo(_topo->modules[m].acc[a], unitId, true);
-      parameters.addParameter(new Parameter(info));
+      auto const& topo = _topo->modules[m].acc[a];
+      auto info = MakeParamInfo(topo, unitId, true);
+      parameters.addParameter(new FBVST3Parameter(topo.static_, info));
     }
     for (int b = 0; b < _topo->modules[m].block.size(); b++)
     {
-      auto info = MakeParamInfo(_topo->modules[m].block[b], unitId, false);
-      parameters.addParameter(new Parameter(info));
+      auto const& topo = _topo->modules[m].block[b];
+      auto info = MakeParamInfo(topo, unitId, false);
+      parameters.addParameter(new FBVST3Parameter(topo.static_, info));
     }
     unitId++;
   }

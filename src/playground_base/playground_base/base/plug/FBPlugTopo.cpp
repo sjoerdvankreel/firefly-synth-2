@@ -121,6 +121,18 @@ FBRuntimeTopo::InitScalarAddrs(FBScalarStateAddrs& addrs) const
       block[b].moduleSlot, block[b].paramSlot, addrs));
 }
 
+std::string
+FBStaticParam::NormalizedToText(double normalized) const
+{
+  assert(valueCount != 1);
+  if (valueCount == 0)
+    return std::to_string(normalized);
+  int discrete = NormalizedToDiscrete(normalized);
+  if (list.size() != 0)
+    return list[discrete].text;
+  return std::to_string(discrete);
+}
+
 FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
