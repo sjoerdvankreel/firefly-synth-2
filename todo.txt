@@ -1,3 +1,5 @@
+voice manager
+stateload/save
 add some comments for pipeline
 paramflush
 vst3 has builtin controller param storage, lets use it
