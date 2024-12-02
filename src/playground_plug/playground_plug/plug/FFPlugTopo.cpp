@@ -7,9 +7,9 @@ auto ProcAddr(Selector selector)
 {
   return [selector](
     int moduleSlot, int paramSlot,
-    FBProcStateAddrs& addrs) {
-      auto state = selector(dynamic_cast<FFProcState&>(addrs));
-      return &(*state)[moduleSlot][paramSlot]; };
+    FBProcStateAddrs& state) {
+      auto ffState = selector(dynamic_cast<FFProcState&>(state));
+      return &(*ffState)[moduleSlot][paramSlot]; };
 }
 
 template <class Selector>
@@ -17,9 +17,9 @@ auto ScalarAddr(Selector selector)
 {
   return [selector](
     int moduleSlot, int paramSlot,
-    FBScalarStateAddrs& addrs) {
-      auto state = selector(dynamic_cast<FFScalarState&>(addrs));
-      return &(*state)[moduleSlot][paramSlot]; };
+    FBScalarStateAddrs& state) {
+      auto ffState = selector(dynamic_cast<FFScalarState&>(state));
+      return &(*ffState)[moduleSlot][paramSlot]; };
 }
 
 std::unique_ptr<FBStaticTopo>

@@ -116,26 +116,26 @@ FBStaticParam::NormalizedToText(double normalized) const
 }
 
 void
-FBRuntimeTopo::InitProcAddrs(FBProcStateAddrs& addrs) const
+FBRuntimeTopo::InitProcAddrs(FBProcStateAddrs& state) const
 {
-  addrs.param.clear();
+  state.param.clear();
   for (int a = 0; a < acc.size(); a++)
-    addrs.param.push_back(acc[a].static_.procAddr(
-      acc[a].moduleSlot, acc[a].paramSlot, addrs));
+    state.param.push_back(acc[a].static_.procAddr(
+      acc[a].moduleSlot, acc[a].paramSlot, state));
 }
 
 void 
-FBRuntimeTopo::InitScalarAddrs(FBScalarStateAddrs& addrs) const
+FBRuntimeTopo::InitScalarAddrs(FBScalarStateAddrs& state) const
 {
-  addrs.acc.clear();
+  state.acc.clear();
   for (int a = 0; a < acc.size(); a++)
-    addrs.acc.push_back(acc[a].static_.scalarAddr(
-      acc[a].moduleSlot, acc[a].paramSlot, addrs));
+    state.acc.push_back(acc[a].static_.scalarAddr(
+      acc[a].moduleSlot, acc[a].paramSlot, state));
 
-  addrs.block.clear();
+  state.block.clear();
   for (int b = 0; b < block.size(); b++)
-    addrs.block.push_back(block[b].static_.scalarAddr(
-      block[b].moduleSlot, block[b].paramSlot, addrs));
+    state.block.push_back(block[b].static_.scalarAddr(
+      block[b].moduleSlot, block[b].paramSlot, state));
 }
 
 FBRuntimeTopo::

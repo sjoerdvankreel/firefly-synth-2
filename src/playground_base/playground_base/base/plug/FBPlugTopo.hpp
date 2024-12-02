@@ -33,9 +33,9 @@ struct FBStaticParam
   std::string NormalizedToText(double normalized) const;
 
   std::function<float* (int moduleSlot, int paramSlot,
-    FBScalarStateAddrs& addrs)> scalarAddr;
+    FBScalarStateAddrs& state)> scalarAddr;
   std::function<FBProcParamState* (int moduleSlot, int paramSlot,
-    FBProcStateAddrs& addrs)> procAddr;
+    FBProcStateAddrs& state)> procAddr;
 
   double DiscreteToNormalized(int index) const
   { return index / (valueCount - 1.0); }
@@ -100,6 +100,8 @@ struct FBRuntimeTopo
   std::map<int, int> const tagToAcc;
   std::map<int, int> const tagToBlock;
 
-  void InitProcAddrs(FBProcStateAddrs& addrs) const;
-  void InitScalarAddrs(FBScalarStateAddrs& addrs) const;
+  void InitProcAddrs(FBProcStateAddrs& state) const;
+  void InitScalarAddrs(FBScalarStateAddrs& state) const;
+
+  std::string SaveState(FBScalarStateAddrs const& state);
 };
