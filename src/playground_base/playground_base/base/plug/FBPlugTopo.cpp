@@ -98,6 +98,23 @@ MakeRuntimeParamLongName(
   return moduleName + " " + paramName;
 }
 
+std::string
+FBStaticParam::NormalizedToText(double normalized) const
+{
+  assert(valueCount != 1);
+  if (valueCount == 0)
+    return std::to_string(normalized);
+  int discrete = NormalizedToDiscrete(normalized);
+  if (list.size() != 0)
+    return list[discrete].text;
+  if (valueCount == 2)
+    if (discrete == 0)
+      return "Off";
+    else
+      return "On";
+  return std::to_string(discrete);
+}
+
 void
 FBRuntimeTopo::InitProcAddrs(FBProcStateAddrs& addrs) const
 {
@@ -119,18 +136,6 @@ FBRuntimeTopo::InitScalarAddrs(FBScalarStateAddrs& addrs) const
   for (int b = 0; b < block.size(); b++)
     addrs.block.push_back(block[b].static_.scalarAddr(
       block[b].moduleSlot, block[b].paramSlot, addrs));
-}
-
-std::string
-FBStaticParam::NormalizedToText(double normalized) const
-{
-  assert(valueCount != 1);
-  if (valueCount == 0)
-    return std::to_string(normalized);
-  int discrete = NormalizedToDiscrete(normalized);
-  if (list.size() != 0)
-    return list[discrete].text;
-  return std::to_string(discrete);
 }
 
 FBRuntimeTopo::
