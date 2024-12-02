@@ -29,20 +29,17 @@ struct FBStaticParam
   std::string unit = {};
   std::vector<FBListItem> list = {};
 
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
-  std::string NormalizedToText(double normalized) const;
-
-  std::function<float* (int moduleSlot, int paramSlot,
-    FBScalarStateAddrs& state)> scalarAddr;
-  std::function<FBProcParamState* (int moduleSlot, int paramSlot,
-    FBProcStateAddrs& state)> procAddr;
-
   double DiscreteToNormalized(int index) const
   { return index / (valueCount - 1.0); }
   bool NormalizedToBool(double normalized) const
   { return NormalizedToDiscrete(normalized) != 0; }
   int NormalizedToDiscrete(double normalized) const
   { return std::min(valueCount - 1, (int)(normalized * valueCount)); }
+
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
+  std::string NormalizedToText(bool io, double normalized) const;
+  std::function<float* (int moduleSlot, int paramSlot, FBScalarStateAddrs& state)> scalarAddr;
+  std::function<FBProcParamState* (int moduleSlot, int paramSlot, FBProcStateAddrs& state)> procAddr;
 };
 
 struct FBStaticModule
@@ -102,6 +99,6 @@ struct FBRuntimeTopo
 
   void InitProcAddrs(FBProcStateAddrs& state) const;
   void InitScalarAddrs(FBScalarStateAddrs& state) const;
-
-  std::string SaveState(FBScalarStateAddrs const& state);
+  std::string SaveState(FBScalarStateAddrs const& state) const;
+  void LoadState(std::string const& stored, FBScalarStateAddrs const& state) const;
 };

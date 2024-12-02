@@ -1,7 +1,23 @@
 #include <playground_base/base/plug/FBPlugTopo.hpp>
 #include <playground_base/base/plug/FBPlugState.hpp>
+#include <juce_core/juce_core.h>
 
 #include <cstdint>
+
+using namespace juce;
+
+static var
+SaveParamState(std::vector<FBRuntimeParam> const& params)
+{
+  var result;
+  for (int a = 0; a < acc.size(); a++)
+  {
+    DynamicObject param;
+    param.setProperty("id", String(acc[a].id));
+    param.setProperty("val", String(acc[a].static_.NormalizedToText(true, *state.acc[a])));
+    accState.append(var(&param));
+  }
+}
 
 static std::map<int, int>
 MakeTagToParam(
@@ -98,23 +114,6 @@ MakeRuntimeParamLongName(
   return moduleName + " " + paramName;
 }
 
-std::string
-FBStaticParam::NormalizedToText(double normalized) const
-{
-  assert(valueCount != 1);
-  if (valueCount == 0)
-    return std::to_string(normalized);
-  int discrete = NormalizedToDiscrete(normalized);
-  if (list.size() != 0)
-    return list[discrete].text;
-  if (valueCount == 2)
-    if (discrete == 0)
-      return "Off";
-    else
-      return "On";
-  return std::to_string(discrete);
-}
-
 void
 FBRuntimeTopo::InitProcAddrs(FBProcStateAddrs& state) const
 {
@@ -136,6 +135,61 @@ FBRuntimeTopo::InitScalarAddrs(FBScalarStateAddrs& state) const
   for (int b = 0; b < block.size(); b++)
     state.block.push_back(block[b].static_.scalarAddr(
       block[b].moduleSlot, block[b].paramSlot, state));
+}
+
+std::string
+FBStaticParam::NormalizedToText(bool io, double normalized) const
+{
+  assert(valueCount != 1);
+  if (valueCount == 0)
+    return std::to_string(normalized);
+  int discrete = NormalizedToDiscrete(normalized);
+  if (list.size() != 0)
+    return io ? list[discrete].id : list[discrete].text;
+  if (valueCount == 2)
+    return discrete == 0 ? "Off" : "On";
+  return std::to_string(discrete);
+}
+
+std::string 
+FBRuntimeTopo::SaveState(FBScalarStateAddrs const& state) const
+{
+  // TODO magic and version
+
+  using juce::var;
+  using juce::String;
+  using juce::DynamicObject;
+
+  DynamicObject result;
+
+  var accState;
+  for (int a = 0; a < acc.size(); a++)
+  {
+    DynamicObject param;
+    param.setProperty("id", String(acc[a].id));
+    param.setProperty("val", String(acc[a].static_.NormalizedToText(true, *state.acc[a])));
+    accState.append(var(&param));
+  }
+  result.setProperty("acc", accState);
+  
+  var blockState;
+  for (int b = 0; b < block.size(); b++)
+  {
+    DynamicObject param;
+    param.setProperty("id", String(block[b].id));
+    param.setProperty("val", String(block[b].static_.NormalizedToText(true, *state.block[b])));
+    blockState.append(var(&param));
+  }
+  result.setProperty("block", blockState);
+
+
+}
+
+void 
+FBRuntimeTopo::LoadState(
+  std::string const& stored, FBScalarStateAddrs const& state) const
+{
+
 }
 
 FBRuntimeTopo::
