@@ -2,6 +2,7 @@
 
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFPlugState.hpp>
+#include <playground_base/base/plug/FBPlugTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
 struct FBRuntimeTopo;
@@ -11,6 +12,7 @@ class FFPlugProcessor:
 public IFBPlugProcessor
 {
   float _phase = 0;
+  FBStaticTopo _topo;
   FFProcState _state = {}; // TODO make private and const accessor?
   float const _sampleRate;
 

@@ -123,27 +123,28 @@ FBRuntimeTopo::InitScalarAddrs(FBScalarStateAddrs& addrs) const
 
 FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& topo) :
-  modules(MakeRuntimeModules(topo)),
-  acc(MakeRuntimeAcc(modules)),
-  block(MakeRuntimeBlock(modules)),
-  tagToAcc(MakeTagToParam(acc)),
-  tagToBlock(MakeTagToParam(block)) {}
+static_(topo),
+modules(MakeRuntimeModules(topo)),
+acc(MakeRuntimeAcc(modules)),
+block(MakeRuntimeBlock(modules)),
+tagToAcc(MakeTagToParam(acc)),
+tagToBlock(MakeTagToParam(block)) {}
 
 FBRuntimeParam::
 FBRuntimeParam(
-  FBStaticModule const& module, int moduleSlot,
-  FBStaticParam const& param, int paramSlot) :
-  moduleSlot(moduleSlot),
-  paramSlot(paramSlot),
-  static_(param),
-  longName(MakeRuntimeParamLongName(module, moduleSlot, param, paramSlot)),
-  shortName(MakeRuntimeName(param.name, param.slotCount, paramSlot)),
-  id(MakeRuntimeParamId(module, moduleSlot, param, paramSlot)),
-  tag(MakeRuntimeHash(id)) {}
+FBStaticModule const& module, int moduleSlot,
+FBStaticParam const& param, int paramSlot) :
+moduleSlot(moduleSlot),
+paramSlot(paramSlot),
+static_(param),
+longName(MakeRuntimeParamLongName(module, moduleSlot, param, paramSlot)),
+shortName(MakeRuntimeName(param.name, param.slotCount, paramSlot)),
+id(MakeRuntimeParamId(module, moduleSlot, param, paramSlot)),
+tag(MakeRuntimeHash(id)) {}
 
 FBRuntimeModule::
 FBRuntimeModule(
-  FBStaticModule const& module, int moduleSlot) :
-  name(MakeRuntimeName(module.name, module.slotCount, moduleSlot)),
-  acc(MakeRuntimeParams(module, moduleSlot, module.acc)),
-  block(MakeRuntimeParams(module, moduleSlot, module.block)) {}
+FBStaticModule const& module, int moduleSlot) :
+name(MakeRuntimeName(module.name, module.slotCount, moduleSlot)),
+acc(MakeRuntimeParams(module, moduleSlot, module.acc)),
+block(MakeRuntimeParams(module, moduleSlot, module.block)) {}

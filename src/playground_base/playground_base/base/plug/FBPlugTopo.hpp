@@ -5,9 +5,11 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <functional>
 
 class FBFixedCVBlock;
+
 struct FBProcParamState;
 struct FBProcStateAddrs;
 struct FBScalarStateAddrs;
@@ -25,6 +27,13 @@ struct FBStaticParam
     FBScalarStateAddrs& addrs)> scalarAddr;
   std::function<FBProcParamState* (int moduleSlot, int paramSlot,
     FBProcStateAddrs& addrs)> procAddr;
+
+  double DiscreteToNormalized(int index)
+  { return index / (valueCount - 1.0); }
+  bool NormalizedToBool(double normalized)
+  { return NormalizedToDiscrete(normalized) != 0; }
+  int NormalizedToDiscrete(double normalized)
+  { return std::min(valueCount - 1, (int)(normalized * valueCount)); }
 };
 
 struct FBStaticModule
@@ -75,6 +84,7 @@ struct FBRuntimeTopo
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
   FBRuntimeTopo(FBStaticTopo const& static_);
 
+  FBStaticTopo const static_;
   std::vector<FBRuntimeModule> const modules;
   std::vector<FBRuntimeParam> const acc;
   std::vector<FBRuntimeParam> const block;
