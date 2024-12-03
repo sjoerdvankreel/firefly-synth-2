@@ -9,6 +9,13 @@
 
 struct FBProcParamState;
 
+typedef std::function<float* (
+  int moduleSlot, int paramSlot, void* state)>
+FBFloatAddrSelector;
+typedef std::function<FBProcParamState* (
+  int moduleSlot, int paramSlot, void* state)>
+FBProcParamAddrSelector;
+
 struct FBStaticParam final
 {
   int slotCount = {};
@@ -17,6 +24,11 @@ struct FBStaticParam final
   std::string name = {};
   std::string unit = {};
   std::vector<FBListItem> list = {};
+
+  FBFloatAddrSelector procBlockAddr = {};
+  FBFloatAddrSelector scalarAccAddr = {};
+  FBFloatAddrSelector scalarBlockAddr = {};
+  FBProcParamAddrSelector procAccAddr = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
   std::string NormalizedToText(bool io, double normalized) const;
@@ -27,9 +39,4 @@ struct FBStaticParam final
   { return NormalizedToDiscrete(normalized) != 0; }
   int NormalizedToDiscrete(double normalized) const
   { return std::min(valueCount - 1, (int)(normalized * valueCount)); }
-  
-  std::function<float* (int moduleSlot, int paramSlot, void* proc)> procBlockAddr = {};
-  std::function<float* (int moduleSlot, int paramSlot, void* scalar)> scalarAccAddr = {};
-  std::function<float* (int moduleSlot, int paramSlot, void* scalar)> scalarBlockAddr = {};
-  std::function<FBProcParamState* (int moduleSlot, int paramSlot, void* proc)> procAccAddr = {};
 };

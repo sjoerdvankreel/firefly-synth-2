@@ -20,6 +20,7 @@ FFMakeTopo()
   osciOn.slotCount = 1;
   osciOn.valueCount = 2;
   osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
+  osciOn.scalarBlockAddr = ScalarBlock(a = > a.osci, b = > b.on);
 
   auto& osciType = osci.block[FFOsciBlockType];
   osciType.name = "Type";
