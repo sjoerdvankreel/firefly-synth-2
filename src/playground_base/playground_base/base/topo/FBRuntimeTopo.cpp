@@ -19,24 +19,13 @@ MakeTagToParam(
 }
 
 static std::vector<FBRuntimeParam>
-MakeRuntimeAcc(
+MakeRuntimeParams(
   std::vector<FBRuntimeModule> const& modules)
 {
   std::vector<FBRuntimeParam> result;
   for (int m = 0; m < modules.size(); m++)
-    for (int a = 0; a < modules[m].acc.size(); a++)
-      result.push_back(modules[m].acc[a]);
-  return result;
-}
-
-static std::vector<FBRuntimeParam>
-MakeRuntimeBlock(
-  std::vector<FBRuntimeModule> const& modules)
-{
-  std::vector<FBRuntimeParam> result;
-  for (int m = 0; m < modules.size(); m++)
-    for (int b = 0; b < modules[m].block.size(); b++)
-      result.push_back(modules[m].block[b]);
+    for (int a = 0; a < modules[m].params.size(); a++)
+      result.push_back(modules[m].params[a]);
   return result;
 }
 
@@ -54,38 +43,39 @@ FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
 modules(MakeRuntimeModules(topo)),
-acc(MakeRuntimeAcc(modules)),
-block(MakeRuntimeBlock(modules)),
-tagToAcc(MakeTagToParam(acc)),
-tagToBlock(MakeTagToParam(block)) {}
-
-FBProcStatePtrs
-FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
-{
-  FBProcStatePtrs result = {};
-  result.block.clear();
-  for (int b = 0; b < block.size(); b++)
-    result.block.push_back(block[b].static_.procBlockAddr(
-      block[b].moduleSlot, block[b].paramSlot, proc));
-  result.acc.clear();
-  for (int a = 0; a < acc.size(); a++)
-    result.acc.push_back(acc[a].static_.procAccAddr(
-      acc[a].moduleSlot, acc[a].paramSlot, proc));
-  return result;
-}
+params(MakeRuntimeParams(modules)),
+tagToParam(MakeTagToParam(params)) {}
 
 FBScalarStatePtrs
 FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
 {
   FBScalarStatePtrs result = {};
+  result.all.clear();
+  for (int p = 0; p < params.size(); p++)
+    result.all.push_back(params[p].static_.scalarAddr(
+      params[p].moduleSlot, params[p].paramSlot, scalar));
+  return result;
+}
+
+FBProcStatePtrs
+FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
+{
+  FBProcStatePtrs result = {};
   result.acc.clear();
-  for (int a = 0; a < acc.size(); a++)
-    result.acc.push_back(acc[a].static_.scalarAddr(
-      acc[a].moduleSlot, acc[a].paramSlot, scalar));
   result.block.clear();
-  for (int b = 0; b < block.size(); b++)
-    result.block.push_back(block[b].static_.scalarAddr(
-      block[b].moduleSlot, block[b].paramSlot, scalar));
+  result.isBlock.clear();
+  for (int p = 0; p < params.size(); p++)
+  {
+    result.acc.emplace_back();
+    result.block.emplace_back();
+    result.isBlock.push_back(params[p].static_.block);
+    if(params[p].static_.block)
+      result.block[p] = params[p].static_.procBlockAddr(
+        params[p].moduleSlot, params[p].paramSlot, proc);
+    else
+      result.acc[p] = params[p].static_.procAccAddr(
+        params[p].moduleSlot, params[p].paramSlot, proc);
+  }
   return result;
 }
 
@@ -97,22 +87,13 @@ FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
   using juce::String;
   using juce::DynamicObject;
 
-  var accState;
-  for (int a = 0; a < acc.size(); a++)
+  var state;
+  for (int p = 0; p < params.size(); p++)
   {
     DynamicObject param;
-    param.setProperty("id", String(acc[a].id));
-    param.setProperty("val", String(acc[a].static_.NormalizedToText(true, *from.acc[a])));
-    accState.append(var(&param));
-  }
-
-  var blockState;
-  for (int b = 0; b < block.size(); b++)
-  {
-    DynamicObject param;
-    param.setProperty("id", String(block[b].id));
-    param.setProperty("val", String(block[b].static_.NormalizedToText(true, *from.block[b])));
-    blockState.append(var(&param));
+    param.setProperty("id", String(params[p].id));
+    param.setProperty("val", String(params[p].static_.NormalizedToText(true, *from.all[p])));
+    state.append(var(&param));
   }
 
   DynamicObject result;
@@ -120,9 +101,7 @@ FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
   result.setProperty("version_major", static_.version.major);
   result.setProperty("version_minor", static_.version.minor);
   result.setProperty("version_patch", static_.version.patch);
-  result.setProperty("acc", accState);
-  result.setProperty("block", blockState);
-
+  result.setProperty("state", state);
   return JSON::toString(var(&result)).toStdString();
 }
 

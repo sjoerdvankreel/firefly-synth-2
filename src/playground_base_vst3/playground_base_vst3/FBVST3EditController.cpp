@@ -18,7 +18,7 @@ MakeUnitInfo(FBRuntimeModule const& module, int id)
 }
 
 static ParameterInfo
-MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
+MakeParamInfo(FBRuntimeParam const& param, int unitId)
 {
   ParameterInfo result;
   result.id = param.tag;
@@ -31,7 +31,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId, bool automate)
   FBVST3CopyToString128(param.static_.unit, result.units);
 
   // TODO once we drop generic editor
-  if (automate)
+  if (param.static_.block)
     result.flags = ParameterInfo::kCanAutomate;
   else
     result.flags = ParameterInfo::kCanAutomate;
@@ -52,16 +52,10 @@ FBVST3EditController::initialize(FUnknown* context)
   for (int m = 0; m < _topo->modules.size(); m++)
   {
     addUnit(new Unit(MakeUnitInfo(_topo->modules[m], unitId)));
-    for (int a = 0; a < _topo->modules[m].acc.size(); a++)
+    for (int p = 0; p < _topo->modules[m].params.size(); p++)
     {
-      auto const& topo = _topo->modules[m].acc[a];
-      auto info = MakeParamInfo(topo, unitId, true);
-      parameters.addParameter(new FBVST3Parameter(topo.static_, info));
-    }
-    for (int b = 0; b < _topo->modules[m].block.size(); b++)
-    {
-      auto const& topo = _topo->modules[m].block[b];
-      auto info = MakeParamInfo(topo, unitId, false);
+      auto const& topo = _topo->modules[m].params[p];
+      auto info = MakeParamInfo(topo, unitId);
       parameters.addParameter(new FBVST3Parameter(topo.static_, info));
     }
     unitId++;

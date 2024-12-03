@@ -18,6 +18,7 @@ FBProcParamAddrSelector;
 
 struct FBStaticParam final
 {
+  bool block = true;
   int slotCount = {};
   int valueCount = {};
   std::string id = {};

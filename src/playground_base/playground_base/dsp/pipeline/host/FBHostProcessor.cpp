@@ -28,9 +28,9 @@ _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
   _fixedOut.state = topo.MakeProcStatePtrs(_plug->ProcState());
-  for (int p = 0; p < _fixedOut.state.acc.size(); p++)
-    _fixedOut.state.acc[p]->smooth =
-    FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
+  for (int p = 0; p < _fixedOut.state.isBlock.size(); p++)
+    if(!_fixedOut.state.isBlock[p])
+      _fixedOut.state.acc[p]->smooth = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
 }
 
 void 

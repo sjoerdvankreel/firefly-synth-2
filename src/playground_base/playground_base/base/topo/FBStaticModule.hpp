@@ -11,7 +11,6 @@ struct FBStaticModule final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
-  std::vector<FBStaticParam> acc = {};
-  std::vector<FBStaticParam> block = {};
+  std::vector<FBStaticParam> params = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };

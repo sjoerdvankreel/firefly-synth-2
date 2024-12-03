@@ -25,10 +25,10 @@ FFMakeTopo()
   osci.name = "Osc";
   osci.slotCount = FF_OSCI_COUNT;
   osci.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
-  osci.acc.resize(FFOsciAccCount);
-  osci.block.resize(FFOsciBlockCount);
+  osci.params.resize(FFOsciParamCount);
 
-  auto& osciOn = osci.block[FFOsciBlockOn];
+  auto& osciOn = osci.params[FFOsciBlockOn];
+  osciOn.block = true;
   osciOn.name = "On";
   osciOn.slotCount = 1;
   osciOn.valueCount = 2;
@@ -37,7 +37,8 @@ FFMakeTopo()
   osciOn.scalarAddr = SelectAddr<FFScalarState>(selectOsci, selectOsciOn);
   osciOn.procBlockAddr = SelectAddr<FFProcState>(selectOsci, selectOsciOn);
 
-  auto& osciType = osci.block[FFOsciBlockType];
+  auto& osciType = osci.params[FFOsciBlockType];
+  osciType.block = true;
   osciType.name = "Type";
   osciType.slotCount = 1;
   osciType.valueCount = FFOsciTypeCount;
@@ -49,7 +50,8 @@ FFMakeTopo()
   osciType.scalarAddr = SelectAddr<FFScalarState>(selectOsci, selectOsciType);
   osciType.procBlockAddr = SelectAddr<FFProcState>(selectOsci, selectOsciType);
 
-  auto& osciGain = osci.acc[FFOsciAccGain];
+  auto& osciGain = osci.params[FFOsciAccGain];
+  osciGain.block = false;
   osciGain.name = "Gain";
   osciGain.slotCount = FF_OSCI_GAIN_COUNT;
   osciGain.valueCount = 0;
@@ -58,7 +60,8 @@ FFMakeTopo()
   osciGain.procAccAddr = SelectAddr<FFProcState>(selectOsci, selectOsciGain);
   osciGain.scalarAddr = SelectAddr<FFScalarState>(selectOsci, selectOsciGain);
 
-  auto& osciPitch = osci.acc[FFOsciAccPitch];
+  auto& osciPitch = osci.params[FFOsciAccPitch];
+  osciPitch.block = false;
   osciPitch.name = "Pitch";
   osciPitch.slotCount = 1;
   osciPitch.valueCount = 0;
@@ -72,10 +75,10 @@ FFMakeTopo()
   shaper.name = "Shaper";
   shaper.slotCount = FF_SHAPER_COUNT;
   shaper.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
-  shaper.acc.resize(FFShaperAccCount);
-  shaper.block.resize(FFShaperBlockCount);
+  shaper.params.resize(FFShaperParamCount);
 
-  auto& shaperOn = shaper.block[FFShaperBlockOn];
+  auto& shaperOn = shaper.params[FFShaperBlockOn];
+  shaperOn.block = true;
   shaperOn.name = "On";
   shaperOn.slotCount = 1;
   shaperOn.valueCount = 2;
@@ -84,7 +87,8 @@ FFMakeTopo()
   shaperOn.scalarAddr = SelectAddr<FFScalarState>(selectShaper, selectShaperOn);
   shaperOn.procBlockAddr = SelectAddr<FFProcState>(selectShaper, selectShaperOn);
 
-  auto& shaperClip = shaper.block[FFShaperBlockClip];
+  auto& shaperClip = shaper.params[FFShaperBlockClip];
+  shaperClip.block = true;
   shaperClip.name = "Clip";
   shaperClip.slotCount = 1;
   shaperClip.valueCount = 2;
@@ -93,7 +97,8 @@ FFMakeTopo()
   shaperClip.scalarAddr = SelectAddr<FFScalarState>(selectShaper, selectShaperClip);
   shaperClip.procBlockAddr = SelectAddr<FFProcState>(selectShaper, selectShaperClip);
 
-  auto& shaperGain = shaper.acc[FFShaperAccGain];
+  auto& shaperGain = shaper.params[FFShaperAccGain];
+  shaperGain.block = false;
   shaperGain.name = "Gain";
   shaperGain.slotCount = 1;
   shaperGain.valueCount = 2;

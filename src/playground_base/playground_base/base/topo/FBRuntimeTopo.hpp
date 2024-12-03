@@ -18,10 +18,8 @@ struct FBRuntimeTopo final
 {
   FBStaticTopo const static_;
   std::vector<FBRuntimeModule> const modules;
-  std::vector<FBRuntimeParam> const acc;
-  std::vector<FBRuntimeParam> const block;
-  std::map<int, int> const tagToAcc;
-  std::map<int, int> const tagToBlock;
+  std::vector<FBRuntimeParam> const params;
+  std::map<int, int> const tagToParam;
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
   FBRuntimeTopo(FBStaticTopo const& static_);

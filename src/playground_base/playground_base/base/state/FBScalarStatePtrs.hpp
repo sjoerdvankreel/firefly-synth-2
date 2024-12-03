@@ -5,7 +5,6 @@
 
 struct FBScalarStatePtrs final
 {
-  std::vector<float*> acc = {};
-  std::vector<float*> block = {};
+  std::vector<float*> all = {};
   FB_NOCOPY_MOVE_DEFCTOR(FBScalarStatePtrs);
 };

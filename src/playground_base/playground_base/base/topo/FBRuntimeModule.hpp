@@ -11,8 +11,7 @@ struct FBStaticModule;
 struct FBRuntimeModule final
 {
   std::string const name;
-  std::vector<FBRuntimeParam> const acc;
-  std::vector<FBRuntimeParam> const block;
+  std::vector<FBRuntimeParam> const params;
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeModule);
   FBRuntimeModule(FBStaticModule const& module, int slot);

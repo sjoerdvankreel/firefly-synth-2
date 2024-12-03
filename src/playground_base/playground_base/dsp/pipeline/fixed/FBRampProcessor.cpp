@@ -11,11 +11,12 @@ FBRampProcessor::ProcessRamping(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
   auto& acc = output.state.acc;
-  for (int p = 0; p < acc.size(); p++)
-  {
-    acc[p]->pos = 0;
-    acc[p]->rampedCV.Fill(0, acc[p]->rampedCV.Count(), acc[p]->scalar);
-  }
+  for (int p = 0; p < output.state.isBlock.size(); p++)
+    if(!output.state.isBlock[p])
+    {
+      acc[p]->pos = 0;
+      acc[p]->rampedCV.Fill(0, acc[p]->rampedCV.Count(), acc[p]->scalar);
+    }
 
   for (int a = 0; a < input.acc.size(); a++)
   {

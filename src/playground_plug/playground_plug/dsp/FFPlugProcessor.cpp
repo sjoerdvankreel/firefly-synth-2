@@ -19,10 +19,9 @@ FFPlugProcessor::ProcessPlug(
 {
   auto const& accState = _state.osci[0].acc;
   auto const& blockState = _state.osci[0].block;
-  auto const& accTopo = _topo.modules[FFModuleOsci].acc;
-  auto const& blockTopo = _topo.modules[FFModuleOsci].block;
+  auto const& topo = _topo.modules[FFModuleOsci];
 
-  bool on = blockTopo[FFOsciBlockOn].NormalizedToBool(blockState.on[0]);
+  bool on = topo.params[FFOsciBlockOn].NormalizedToBool(blockState.on[0]);
   if (!on)
   {
     output.Fill(0, output.Count(), 0.0f);

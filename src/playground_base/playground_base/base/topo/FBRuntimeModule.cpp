@@ -18,5 +18,4 @@ FBRuntimeModule::
 FBRuntimeModule(
 FBStaticModule const& module, int moduleSlot) :
 name(FBMakeRuntimeName(module.name, module.slotCount, moduleSlot)),
-acc(MakeRuntimeParams(module, moduleSlot, module.acc)),
-block(MakeRuntimeParams(module, moduleSlot, module.block)) {}
+params(MakeRuntimeParams(module, moduleSlot, module.params)) {}
