@@ -98,77 +98,83 @@ FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
 
   DynamicObject result;
   result.setProperty("magic", String(Magic));
-  result.setProperty("version_major", static_.version.major);
-  result.setProperty("version_minor", static_.version.minor);
-  result.setProperty("version_patch", static_.version.patch);
+  result.setProperty("major", static_.version.major);
+  result.setProperty("minor", static_.version.minor);
+  result.setProperty("patch", static_.version.patch);
   result.setProperty("state", state);
   return JSON::toString(var(&result)).toStdString();
 }
 
-void 
-FBRuntimeTopo::LoadState(std::string const& state, FBScalarStatePtrs& to) const
+bool 
+FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
 {
-
-}
-
-#if 0 // TODO
-
-
-
-static var
-SaveParamState(std::vector<FBRuntimeParam> const& params)
-{
-  var result;
-  for (int a = 0; a < acc.size(); a++)
-  {
-    DynamicObject param;
-    param.setProperty("id", String(acc[a].id));
-    param.setProperty("val", String(acc[a].static_.NormalizedToText(true, *state.acc[a])));
-    accState.append(var(&param));
-  }
-}
-
-
-
-std::string
-FBRuntimeTopo::SaveState(FBScalarStateAddrs const& state) const
-{
-  // TODO magic and version
-
   using juce::var;
+  using juce::JSON;
   using juce::String;
   using juce::DynamicObject;
+  
+  var json = JSON::fromString(from);
+  DynamicObject* obj = json.getDynamicObject();
 
-  DynamicObject result;
+  if (!obj->hasProperty("magic"))
+    return false;
+  var magic = obj->getProperty("magic");
+  if (!magic.isString())
+    return false;
+  if (magic.toString() != String(Magic))
+    return false;
 
-  var accState;
-  for (int a = 0; a < acc.size(); a++)
+  if (!obj->hasProperty("major"))
+    return false;
+  var major = obj->getProperty("major");
+  if (!major.isInt())
+    return false;
+  if (!obj->hasProperty("minor"))
+    return false;
+  var minor = obj->getProperty("minor");
+  if (!minor.isInt())
+    return false;
+  if (!obj->hasProperty("patch"))
+    return false;
+  var patch = obj->getProperty("patch");
+  if (!patch.isInt())
+    return false;
+
+  if ((int)major > static_.version.major)
+    return false;
+  if ((int)major == static_.version.major && (int)minor > static_.version.minor)
+    return false;
+  if ((int)minor == static_.version.minor && (int)patch > static_.version.patch)
+    return false;
+
+  if (!obj->hasProperty("state"))
+    return false;
+  var state = obj->getProperty("state");
+  if (!state.isArray())
+    return false;
+
+  for (int p = 0; p < to.all.size(); p++)
+    *to.all[p] = 0.0f; // TODO default
+
+  for (int sp = 0; sp < state.size(); sp++)
   {
-    DynamicObject param;
-    param.setProperty("id", String(acc[a].id));
-    param.setProperty("val", String(acc[a].static_.NormalizedToText(true, *state.acc[a])));
-    accState.append(var(&param));
+    DynamicObject* param = state[sp].getDynamicObject();
+    
+    if (!param->hasProperty("id"))
+      return false;
+    var id = param->getProperty("id");
+    if (!id.isString())
+      return false;
+
+    if (!param->hasProperty("val"))
+      return false;
+    var val = param->getProperty("val");
+    if (!val.isString())
+      return false;
+
+    std::string storedId = id.toString().toStdString();
+    for (int tp = 0; tp < params.size(); tp++)
+      if (params[tp].id == storedId)
+        *to.all[tp] = 0.0f; // TODO something useful
   }
-  result.setProperty("acc", accState);
-
-  var blockState;
-  for (int b = 0; b < block.size(); b++)
-  {
-    DynamicObject param;
-    param.setProperty("id", String(block[b].id));
-    param.setProperty("val", String(block[b].static_.NormalizedToText(true, *state.block[b])));
-    blockState.append(var(&param));
-  }
-  result.setProperty("block", blockState);
-
-
 }
-
-void
-FBRuntimeTopo::LoadState(
-  std::string const& stored, FBScalarStateAddrs const& state) const
-{
-
-}
-
-#endif
