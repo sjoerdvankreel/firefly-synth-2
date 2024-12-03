@@ -28,4 +28,6 @@ struct FBRuntimeTopo final
 
   FBProcStatePtrs MakeProcStatePtrs(void* state) const;
   FBScalarStatePtrs MakeScalarStatePtrs(void* state) const;
+  std::string SaveState(FBScalarStatePtrs const& from) const;
+  void LoadState(std::string const& state, FBScalarStatePtrs& to) const;
 };

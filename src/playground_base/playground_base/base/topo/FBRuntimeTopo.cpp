@@ -3,6 +3,11 @@
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/base/state/FBScalarStatePtrs.hpp>
 
+#include <juce_core/juce_core.h>
+
+static std::string const 
+Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
+
 static std::map<int, int>
 MakeTagToParam(
   std::vector<FBRuntimeParam> const& params)
@@ -82,6 +87,49 @@ FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
     result.block.push_back(block[b].static_.scalarAddr(
       block[b].moduleSlot, block[b].paramSlot, scalar));
   return result;
+}
+
+std::string 
+FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
+{
+  using juce::var;
+  using juce::JSON;
+  using juce::String;
+  using juce::DynamicObject;
+
+  var accState;
+  for (int a = 0; a < acc.size(); a++)
+  {
+    DynamicObject param;
+    param.setProperty("id", String(acc[a].id));
+    param.setProperty("val", String(acc[a].static_.NormalizedToText(true, *from.acc[a])));
+    accState.append(var(&param));
+  }
+
+  var blockState;
+  for (int b = 0; b < block.size(); b++)
+  {
+    DynamicObject param;
+    param.setProperty("id", String(block[b].id));
+    param.setProperty("val", String(block[b].static_.NormalizedToText(true, *from.block[b])));
+    blockState.append(var(&param));
+  }
+
+  DynamicObject result;
+  result.setProperty("magic", String(Magic));
+  result.setProperty("version_major", static_.version.major);
+  result.setProperty("version_minor", static_.version.minor);
+  result.setProperty("version_patch", static_.version.patch);
+  result.setProperty("acc", accState);
+  result.setProperty("block", blockState);
+
+  return JSON::toString(var(&result)).toStdString();
+}
+
+void 
+FBRuntimeTopo::LoadState(std::string const& state, FBScalarStatePtrs& to) const
+{
+
 }
 
 #if 0 // TODO
