@@ -8,17 +8,17 @@
 
 struct FFOsciBlockState final
 {
+  std::array<float, 1> on = {};
+  std::array<float, 1> type = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockState);
-  std::array<std::array<float, 1>, FF_OSCI_COUNT> on = {};
-  std::array<std::array<float, 1>, FF_OSCI_COUNT> type = {};
 };
 
 template <class T>
 struct alignas(alignof(T)) FFOsciAccState final
 {
+  std::array<T, 1> pitch = {};
+  std::array<T, FF_OSCI_GAIN_COUNT> gain = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccState);
-  std::array<std::array<T, 1>, FF_OSCI_COUNT> pitch = {};
-  std::array<std::array<T, FF_OSCI_GAIN_COUNT>, FF_OSCI_COUNT> gain = {};
 };
 
 template <class T>
@@ -31,16 +31,16 @@ struct FFOsciState final
 
 struct FFShaperBlockState final
 {
+  std::array<float, 1> on = {};
+  std::array<float, 1> clip = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperBlockState);
-  std::array<std::array<float, 1>, FF_SHAPER_COUNT> on = {};
-  std::array<std::array<float, 1>, FF_SHAPER_COUNT> clip = {};
 };
 
 template <class T>
 struct alignas(alignof(T)) FFShaperAccState final
 {
+  std::array<T, 1> gain = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccState);
-  std::array<std::array<T, 1>, FF_SHAPER_COUNT> gain = {};
 };
 
 template <class T>
@@ -51,16 +51,13 @@ struct alignas(alignof(T)) FFShaperState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperState);
 };
 
-struct FFScalarState final
+template <class T>
+struct alignas(alignof(T)) FFPlugState final
 {
-  FFOsciState<float> osci = {};
-  FFShaperState<float> shaper = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
+  std::array<FFOsciState<T>, FF_OSCI_COUNT> osci;
+  std::array<FFShaperState<T>, FF_SHAPER_COUNT> shaper;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugState);
 };
 
-struct alignas(alignof(FBFixedCVBlock)) FFProcState final
-{
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
-  FFOsciState<FBProcParamState> osci = {};
-  FFShaperState<FBProcParamState> shaper = {};
-};
+typedef FFPlugState<float> FFScalarState;
+typedef FFPlugState<FBProcParamState> FFProcState;

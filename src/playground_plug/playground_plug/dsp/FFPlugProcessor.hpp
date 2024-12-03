@@ -1,8 +1,7 @@
 #pragma once
 
-#include <playground_plug/plug/FFPlugTopo.hpp>
-#include <playground_plug/plug/FFPlugState.hpp>
-#include <playground_base/base/plug/FBPlugTopo.hpp>
+#include <playground_plug/shared/FFPlugState.hpp>
+#include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
 struct FBRuntimeTopo;
@@ -13,13 +12,13 @@ public IFBPlugProcessor
 {
   float _phase = 0;
   FBStaticTopo _topo;
-  FFProcState _state = {}; // TODO make private and const accessor?
+  FFProcState _state = {};
   float const _sampleRate;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);
   FFPlugProcessor(FBRuntimeTopo const& topo, float sampleRate);
 
-  FBStateAddrs StateAddrs() override;
+  void* ProcState() override { return &_state; }
   void ProcessPlug(FBFixedAudioBlock const& input, FBFixedAudioBlock& output) override;
 };
