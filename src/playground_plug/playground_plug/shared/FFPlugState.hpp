@@ -1,12 +1,10 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugConfig.hpp>
+#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
-#include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 
 #include <array>
-#include <memory>
 
 struct FFOsciBlockState final
 {
@@ -46,37 +44,23 @@ struct alignas(alignof(T)) FFShaperAccState final
 };
 
 template <class T>
-struct FFShaperState final
+struct alignas(alignof(T)) FFShaperState final
 {
   FFShaperAccState<T> acc;
   FFShaperBlockState block;
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperState);
 };
 
-template <class T>
-struct alignas(alignof(T)) FFAccState final
-{
-  FFOsciAccState<T> osci = {};
-  FFShaperAccState<T> shaper = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFAccState);
-};
-
-struct FFBlockState final
-{
-  FFOsciBlockState osci = {};
-  FFShaperBlockState shaper = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFBlockState);
-};
-
 struct FFScalarState final
 {
-  FFBlockState block = {};
-  FFAccState<float> acc = {};
+  FFOsciState<float> osci = {};
+  FFShaperState<float> shaper = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
 };
 
 struct alignas(alignof(FBFixedCVBlock)) FFProcState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
-  FFAccState<FBProcParamState> param = {};
+  FFOsciState<FBProcParamState> osci = {};
+  FFShaperState<FBProcParamState> shaper = {};
 };
