@@ -3,7 +3,8 @@
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 
 template <class State>
-static auto SelectAddr(auto selectModule, auto selectParam)
+static auto 
+SelectAddr(auto selectModule, auto selectParam)
 {
   return [selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
     auto moduleState = selectModule(*static_cast<State*>(state));
