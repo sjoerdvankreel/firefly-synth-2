@@ -1,15 +1,18 @@
 #pragma once
 
-#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeModule.hpp>
 #include <playground_base/base/topo/FBRuntimeParam.hpp>
 
+#include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/state/FBProcStatePtrs.hpp>
+#include <playground_base/base/state/FBScalarStatePtrs.hpp>
+
 #include <map>
 #include <vector>
 
-struct FBProcState;
-struct FBScalarState;
+struct FBProcStatePtrs;
+struct FBScalarStatePtrs;
 
 struct FBRuntimeTopo final
 {
@@ -23,9 +26,6 @@ struct FBRuntimeTopo final
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
   FBRuntimeTopo(FBStaticTopo const& static_);
 
-  void InitProcState(FBProcState& state) const;
-  void InitScalarState(FBScalarState& state) const;
-
-  std::string SaveState(FBScalarState const& state) const;
-  void LoadState(std::string const& stored, FBScalarState const& state) const;
+  FBProcStatePtrs MakeProcStatePtrs(void* state) const;
+  FBScalarStatePtrs MakeScalarStatePtrs(void* state) const;
 };

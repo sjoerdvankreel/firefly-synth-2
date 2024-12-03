@@ -54,27 +54,32 @@ block(MakeRuntimeBlock(modules)),
 tagToAcc(MakeTagToParam(acc)),
 tagToBlock(MakeTagToParam(block)) {}
 
-void
-FBRuntimeTopo::InitProcState(FBProcState& state) const
+FBProcStatePtrs
+FBRuntimeTopo::MakeProcStatePtrs(void* state) const
 {
-  state.dense.clear();
+  FBProcStatePtrs result = {};
+  result.dense.clear();
+  result.scalar = MakeScalarStatePtrs(state);
   for (int a = 0; a < acc.size(); a++)
-    state.dense.push_back(acc[a].static_.procAddr(
+    result.dense.push_back(acc[a].static_.procAddr(
       acc[a].moduleSlot, acc[a].paramSlot, state));
+  return result;
 }
 
-void 
-FBRuntimeTopo::InitScalarState(FBScalarState& state) const
+FBScalarStatePtrs
+FBRuntimeTopo::MakeScalarStatePtrs(void* state) const
 {
-  state.acc.clear();
-  for (int a = 0; a < acc.size(); a++)
-    state.acc.push_back(acc[a].static_.scalarAddr(
-      acc[a].moduleSlot, acc[a].paramSlot, state));
+  FBScalarStatePtrs result = {};
 
-  state.block.clear();
+  result.acc.clear();
+  for (int a = 0; a < acc.size(); a++)
+    result.acc.push_back(acc[a].static_.scalarAddr(
+      acc[a].moduleSlot, acc[a].paramSlot, state));
+  result.block.clear();
   for (int b = 0; b < block.size(); b++)
-    state.block.push_back(block[b].static_.scalarAddr(
+    result.block.push_back(block[b].static_.scalarAddr(
       block[b].moduleSlot, block[b].paramSlot, state));
+  return result;
 }
 
 #if 0 // TODO

@@ -1,17 +1,15 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBScalarState.hpp>
+#include <playground_base/base/state/FBScalarStatePtrs.hpp>
 
 #include <vector>
 
 struct FBProcParamState;
 
-struct FBProcState final
+struct FBProcStatePtrs final
 {
-  virtual ~FBProcState() {}
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcState);
-
-  FBScalarState scalar = {};
+  FBScalarStatePtrs scalar = {};
   std::vector<FBProcParamState*> dense = {};
+  FB_NOCOPY_MOVE_DEFCTOR(FBProcStatePtrs);
 };

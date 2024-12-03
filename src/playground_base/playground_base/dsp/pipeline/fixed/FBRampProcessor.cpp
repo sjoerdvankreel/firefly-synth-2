@@ -1,6 +1,6 @@
-#include <playground_base/base/state/FBProcState.hpp>
-#include <playground_base/base/state/FBScalarState.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
+#include <playground_base/base/state/FBProcStatePtrs.hpp>
+#include <playground_base/base/state/FBScalarStatePtrs.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBRampProcessor.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
@@ -10,8 +10,8 @@ void
 FBRampProcessor::ProcessRamping(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-  auto& dense = output.state->dense;
-  auto& scalar = output.state->scalar;
+  auto& dense = output.state.dense;
+  auto& scalar = output.state.scalar;
   for (int p = 0; p < dense.size(); p++)
   {
     dense[p]->pos = 0;

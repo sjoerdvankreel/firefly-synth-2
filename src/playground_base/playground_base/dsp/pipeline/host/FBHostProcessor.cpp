@@ -1,4 +1,5 @@
-#include <playground_base/base/state/FBProcState.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
@@ -17,16 +18,18 @@ FBHostProcessor::
 
 FBHostProcessor::
 FBHostProcessor(
-  std::unique_ptr<IFBPlugProcessor>&& plug, float sampleRate):
+  FBRuntimeTopo const& topo,
+  std::unique_ptr<IFBPlugProcessor>&& plug, 
+  float sampleRate):
 _plug(std::move(plug)),
 _ramp(std::make_unique<FBRampProcessor>()),
 _smooth(std::make_unique<FBSmoothProcessor>()),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
-  _fixedOut.state = _plug->State();
-  for (int p = 0; p < _fixedOut.state->dense.size(); p++)
-    _fixedOut.state->dense[p]->smooth = 
+  _fixedOut.state = topo.MakeProcStatePtrs(_plug->ProcState());
+  for (int p = 0; p < _fixedOut.state.dense.size(); p++)
+    _fixedOut.state.dense[p]->smooth = 
     FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
 }
 
@@ -35,7 +38,7 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   for (auto const& be : input.block)
-    *_fixedOut.state->scalar.block[be.index] = be.normalized;
+    *_fixedOut.state.scalar.block[be.index] = be.normalized;
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);

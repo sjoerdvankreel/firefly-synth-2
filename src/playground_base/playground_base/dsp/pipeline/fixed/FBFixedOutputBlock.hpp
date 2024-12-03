@@ -2,11 +2,11 @@
 
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
-struct FBProcState;
+struct FBProcStatePtrs;
 
 struct FBFixedOutputBlock final
 {
-  FBProcState* state = {};
+  FBProcStatePtrs state = {};
   FBFixedAudioBlock audio = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedOutputBlock);
 };
