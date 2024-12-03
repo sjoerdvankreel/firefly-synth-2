@@ -25,9 +25,8 @@ struct FBStaticParam final
   std::string unit = {};
   std::vector<FBListItem> list = {};
 
+  FBFloatAddrSelector scalarAddr = {};
   FBFloatAddrSelector procBlockAddr = {};
-  FBFloatAddrSelector scalarAccAddr = {};
-  FBFloatAddrSelector scalarBlockAddr = {};
   FBProcParamAddrSelector procAccAddr = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);

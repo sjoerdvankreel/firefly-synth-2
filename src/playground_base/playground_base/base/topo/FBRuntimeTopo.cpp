@@ -73,14 +73,14 @@ FBScalarStatePtrs
 FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
 {
   FBScalarStatePtrs result = {};
-  result.block.clear();
-  for (int b = 0; b < block.size(); b++)
-    result.block.push_back(block[b].static_.scalarBlockAddr(
-      block[b].moduleSlot, block[b].paramSlot, scalar));
   result.acc.clear();
   for (int a = 0; a < acc.size(); a++)
-    result.acc.push_back(acc[a].static_.scalarAccAddr(
+    result.acc.push_back(acc[a].static_.scalarAddr(
       acc[a].moduleSlot, acc[a].paramSlot, scalar));
+  result.block.clear();
+  for (int b = 0; b < block.size(); b++)
+    result.block.push_back(block[b].static_.scalarAddr(
+      block[b].moduleSlot, block[b].paramSlot, scalar));
   return result;
 }
 
