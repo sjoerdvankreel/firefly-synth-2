@@ -9,7 +9,7 @@ struct FBProcParamState;
 
 struct FBProcStatePtrs final
 {
-  FBScalarStatePtrs scalar = {};
-  std::vector<FBProcParamState*> dense = {};
+  std::vector<float*> block = {};
+  std::vector<FBProcParamState*> acc = {};
   FB_NOCOPY_MOVE_DEFCTOR(FBProcStatePtrs);
 };

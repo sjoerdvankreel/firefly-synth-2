@@ -8,7 +8,7 @@
 struct FBRuntimeTopo;
 class FBFixedAudioBlock;
 
-class FFPlugProcessor:
+class FFPlugProcessor final:
 public IFBPlugProcessor
 {
   float _phase = 0;

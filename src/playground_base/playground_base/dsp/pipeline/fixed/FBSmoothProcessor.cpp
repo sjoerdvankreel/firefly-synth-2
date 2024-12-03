@@ -7,8 +7,8 @@ void
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedOutputBlock& output)
 {
-  auto& dense = output.state.dense;
-  for (int p = 0; p < dense.size(); p++)
+  auto& acc = output.state.acc;
+  for (int p = 0; p < acc.size(); p++)
     for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
-      dense[p]->smoothedCV[s] = dense[p]->smooth.Next(dense[p]->rampedCV[s]);
+      acc[p]->smoothedCV[s] = acc[p]->smooth.Next(acc[p]->rampedCV[s]);
 }

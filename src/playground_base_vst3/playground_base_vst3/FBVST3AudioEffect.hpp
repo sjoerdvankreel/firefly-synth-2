@@ -16,7 +16,7 @@ struct FBRuntimeTopo;
 class FBHostProcessor;
 class IFBPlugProcessor;
 
-class FBVST3AudioEffect :
+class FBVST3AudioEffect final:
 public AudioEffect
 {
   FBHostInputBlock _input = {};

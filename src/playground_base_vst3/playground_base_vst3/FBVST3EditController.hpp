@@ -12,7 +12,7 @@ using namespace Steinberg::Vst;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
-class FBVST3EditController :
+class FBVST3EditController final:
 public EditControllerEx1
 {
   std::unique_ptr<FBRuntimeTopo> _topo;

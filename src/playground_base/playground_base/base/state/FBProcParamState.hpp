@@ -12,6 +12,7 @@ struct FBProcParamState final
 
 private:
   int pos = 0;
+  float scalar = 0.0f;
   FBOnePoleFilter smooth = {};
   FBFixedCVBlock rampedCV = {};
 

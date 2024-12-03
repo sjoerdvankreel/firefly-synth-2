@@ -5,7 +5,7 @@
 
 using namespace Steinberg::Vst;
 
-class FBVST3Parameter:
+class FBVST3Parameter final:
 public Parameter
 {
 	FBStaticParam const _topo;
