@@ -1,6 +1,6 @@
 #pragma once
 
-struct FBPlugVersion
+struct FBPlugVersion final
 {
   int major = 0;
   int minor = 0;

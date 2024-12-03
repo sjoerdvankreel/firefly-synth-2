@@ -7,7 +7,7 @@
 
 struct FBStaticModule;
 
-struct FBRuntimeParam
+struct FBRuntimeParam final
 {
   int const moduleSlot;
   int const paramSlot;

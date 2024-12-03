@@ -8,7 +8,7 @@
 
 #include <vector>
 
-struct FBHostInputBlock
+struct FBHostInputBlock final
 {
   FBHostAudioBlock audio = {};
   std::vector<FBAccEvent> acc = {};

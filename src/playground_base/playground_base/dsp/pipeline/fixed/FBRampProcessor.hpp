@@ -5,7 +5,7 @@
 struct FBFixedInputBlock;
 struct FBFixedOutputBlock;
 
-class FBRampProcessor
+class FBRampProcessor final
 {
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBRampProcessor);

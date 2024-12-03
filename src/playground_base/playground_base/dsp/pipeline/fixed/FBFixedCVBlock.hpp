@@ -7,7 +7,7 @@
 #include <cassert>
 
 class alignas(FB_FIXED_BLOCK_ALIGN)
-FBFixedCVBlock
+FBFixedCVBlock final
 {
   std::array<float, FB_FIXED_BLOCK_SIZE> _store = {};
 

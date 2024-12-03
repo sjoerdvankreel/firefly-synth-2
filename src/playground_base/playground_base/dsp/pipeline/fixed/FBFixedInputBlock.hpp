@@ -6,7 +6,7 @@
 
 #include <vector>
 
-struct FBFixedInputBlock
+struct FBFixedInputBlock final
 {
   FBFixedAudioBlock audio = {};
   std::vector<FBAccEvent> acc = {};

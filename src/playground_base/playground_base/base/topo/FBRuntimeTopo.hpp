@@ -11,7 +11,7 @@
 struct FBProcState;
 struct FBScalarState;
 
-struct FBRuntimeTopo
+struct FBRuntimeTopo final
 {
   FBStaticTopo const static_;
   std::vector<FBRuntimeModule> const modules;

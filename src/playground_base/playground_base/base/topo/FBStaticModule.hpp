@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-struct FBStaticModule
+struct FBStaticModule final
 {
   int slotCount = {};
   std::string id = {};

@@ -7,7 +7,7 @@
 
 struct FBProcParamState;
 
-struct FBProcState
+struct FBProcState final
 {
   virtual ~FBProcState() {}
   FB_NOCOPY_NOMOVE_DEFCTOR(FBProcState);

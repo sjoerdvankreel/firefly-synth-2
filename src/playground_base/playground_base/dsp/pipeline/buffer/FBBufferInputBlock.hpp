@@ -5,7 +5,7 @@
 #include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
-struct FBBufferInputBlock
+struct FBBufferInputBlock final
 {
   FBBufferAudioBlock audio = {};
   std::vector<FBAccEvent> acc = {};

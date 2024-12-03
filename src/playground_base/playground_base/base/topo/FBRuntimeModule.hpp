@@ -8,7 +8,7 @@
 
 struct FBStaticModule;
 
-struct FBRuntimeModule
+struct FBRuntimeModule final
 {
   std::string const name;
   std::vector<FBRuntimeParam> const acc;

@@ -11,7 +11,7 @@ struct FBProcParamState;
 struct FBProcStateAddrs;
 struct FBScalarStateAddrs;
 
-struct FBStaticParam
+struct FBStaticParam final
 {
   int slotCount = {};
   int valueCount = {};

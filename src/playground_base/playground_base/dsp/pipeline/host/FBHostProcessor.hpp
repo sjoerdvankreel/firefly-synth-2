@@ -14,7 +14,7 @@ class IFBPlugProcessor;
 class FBHostBufferProcessor;
 class FBFixedBufferProcessor;
 
-class FBHostProcessor
+class FBHostProcessor final
 {
   FBFixedOutputBlock _fixedOut = {};
   std::unique_ptr<IFBPlugProcessor> _plug;

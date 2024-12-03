@@ -8,7 +8,7 @@
 class FBHostAudioBlock;
 class FBFixedAudioBlock;
 
-class FBFixedBufferProcessor
+class FBFixedBufferProcessor final
 {
   bool _paddedOnce = false;
   bool _hitFixedBlockSize = false;

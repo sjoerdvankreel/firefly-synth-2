@@ -4,7 +4,7 @@
 
 struct FBProcState;
 
-struct FBFixedOutputBlock
+struct FBFixedOutputBlock final
 {
   FBProcState* state = {};
   FBFixedAudioBlock audio = {};

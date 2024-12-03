@@ -2,7 +2,7 @@
 
 #include <string>
 
-struct FBListItem
+struct FBListItem final
 {
   std::string id;
   std::string text;

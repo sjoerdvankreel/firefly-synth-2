@@ -1,7 +1,7 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBProcState.hpp>
-#include <playground_base/base/state/FBScalarState.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
+#include <playground_base/base/state/FBProcStatePtrs.hpp>
+#include <playground_base/base/state/FBScalarStatePtrs.hpp>
 
 static std::map<int, int>
 MakeTagToParam(

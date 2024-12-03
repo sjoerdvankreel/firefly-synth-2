@@ -4,7 +4,7 @@
 #include <cassert>
 #include <numbers>
 
-class FBOnePoleFilter
+class FBOnePoleFilter final
 {
   float a = 0.0f;
   float b = 0.0f;

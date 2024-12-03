@@ -4,7 +4,7 @@
 
 struct FBFixedOutputBlock;
 
-class FBSmoothProcessor
+class FBSmoothProcessor final
 {
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBSmoothProcessor);

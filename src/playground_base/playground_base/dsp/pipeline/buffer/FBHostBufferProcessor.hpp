@@ -5,7 +5,7 @@
 
 struct FBHostInputBlock;
 
-class FBHostBufferProcessor
+class FBHostBufferProcessor final
 {
   FBFixedInputBlock _fixed = {};
   FBBufferInputBlock _buffer = {};

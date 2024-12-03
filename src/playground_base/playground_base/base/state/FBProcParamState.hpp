@@ -3,7 +3,7 @@
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 
-struct FBProcParamState
+struct FBProcParamState final
 {
   friend class FBHostProcessor;
   friend class FBRampProcessor;

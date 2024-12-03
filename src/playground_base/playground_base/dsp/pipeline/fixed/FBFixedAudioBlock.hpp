@@ -6,10 +6,8 @@
 
 #include <array>
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedAudioBlock:
-public FBAnyAudioBlock<
-  FBFixedAudioBlock,
-  std::array<float, FB_FIXED_BLOCK_SIZE>>
+class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedAudioBlock final:
+public FBAnyAudioBlock<FBFixedAudioBlock, std::array<float, FB_FIXED_BLOCK_SIZE>>
 {
 public:
   StoreT& operator[](int channel)

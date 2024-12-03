@@ -5,7 +5,7 @@
 
 #include <vector>
 
-struct FBStaticTopo
+struct FBStaticTopo final
 {
   std::vector<FBStaticModule> modules = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);

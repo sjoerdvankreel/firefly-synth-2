@@ -5,7 +5,7 @@
 
 #include <vector>
 
-class FBBufferAudioBlock:
+class FBBufferAudioBlock final:
 public FBAnyAudioBlock<FBBufferAudioBlock, std::vector<float>>
 {
 public:

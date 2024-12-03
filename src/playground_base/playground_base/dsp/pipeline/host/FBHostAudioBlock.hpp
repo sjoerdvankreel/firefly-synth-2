@@ -3,7 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/shared/FBAnyAudioBlock.hpp>
 
-class FBHostAudioBlock:
+class FBHostAudioBlock final:
 public FBAnyAudioBlock<FBHostAudioBlock, float*>
 {
   int _count = 0;
