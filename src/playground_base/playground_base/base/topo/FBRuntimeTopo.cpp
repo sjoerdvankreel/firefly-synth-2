@@ -1,5 +1,7 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/shared/FBPlugState.hpp>
+#include <playground_base/base/state/FBProcState.hpp>
+#include <playground_base/base/state/FBScalarState.hpp>
+#include <playground_base/base/state/FBProcParamState.hpp>
 
 static std::map<int, int>
 MakeTagToParam(
@@ -53,16 +55,16 @@ tagToAcc(MakeTagToParam(acc)),
 tagToBlock(MakeTagToParam(block)) {}
 
 void
-FBRuntimeTopo::InitProcAddrs(FBProcStateAddrs& state) const
+FBRuntimeTopo::InitProcState(FBProcState& state) const
 {
-  state.param.clear();
+  state.dense.clear();
   for (int a = 0; a < acc.size(); a++)
-    state.param.push_back(acc[a].static_.procAddr(
+    state.dense.push_back(acc[a].static_.procAddr(
       acc[a].moduleSlot, acc[a].paramSlot, state));
 }
 
 void 
-FBRuntimeTopo::InitScalarAddrs(FBScalarStateAddrs& state) const
+FBRuntimeTopo::InitScalarState(FBScalarState& state) const
 {
   state.acc.clear();
   for (int a = 0; a < acc.size(); a++)

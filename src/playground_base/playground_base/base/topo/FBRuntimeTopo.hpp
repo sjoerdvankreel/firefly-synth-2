@@ -8,6 +8,9 @@
 #include <map>
 #include <vector>
 
+struct FBProcState;
+struct FBScalarState;
+
 struct FBRuntimeTopo
 {
   FBStaticTopo const static_;
@@ -20,9 +23,9 @@ struct FBRuntimeTopo
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
   FBRuntimeTopo(FBStaticTopo const& static_);
 
-  void InitProcAddrs(FBProcStateAddrs& state) const;
-  void InitScalarAddrs(FBScalarStateAddrs& state) const;
+  void InitProcState(FBProcState& state) const;
+  void InitScalarState(FBScalarState& state) const;
 
-  std::string SaveState(FBScalarStateAddrs const& state) const;
-  void LoadState(std::string const& stored, FBScalarStateAddrs const& state) const;
+  std::string SaveState(FBScalarState const& state) const;
+  void LoadState(std::string const& stored, FBScalarState const& state) const;
 };

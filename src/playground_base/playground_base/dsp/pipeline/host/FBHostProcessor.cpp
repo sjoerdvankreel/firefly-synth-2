@@ -1,4 +1,7 @@
-#include <playground_base/base/plug/FBPlugConfig.hpp>
+#include <playground_base/base/state/FBProcState.hpp>
+#include <playground_base/base/state/FBProcParamState.hpp>
+#include <playground_base/dsp/shared/FBDSPConfig.hpp>
+#include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
@@ -21,10 +24,10 @@ _smooth(std::make_unique<FBSmoothProcessor>()),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
-  _fixedOut.state = _plug->StateAddrs();
-  for (int p = 0; p < _fixedOut.state.proc->param.size(); p++)
-    _fixedOut.state.proc->param[p]->smooth = 
-      FBOnePoleFilter(sampleRate, FB_PLUG_PARAM_SMOOTH_SEC);
+  _fixedOut.state = _plug->State();
+  for (int p = 0; p < _fixedOut.state->dense.size(); p++)
+    _fixedOut.state->dense[p]->smooth = 
+    FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
 }
 
 void 
@@ -32,7 +35,7 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   for (auto const& be : input.block)
-    *_fixedOut.state.scalar->block[be.index] = be.normalized;
+    *_fixedOut.state->scalar.block[be.index] = be.normalized;
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);

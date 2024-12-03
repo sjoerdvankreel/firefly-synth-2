@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/plug/FBPlugTopo.hpp>
+#include <playground_base/base/topo/FBStaticParam.hpp>
 #include <public.sdk/source/vst/vstparameters.h>
 
 using namespace Steinberg::Vst;
