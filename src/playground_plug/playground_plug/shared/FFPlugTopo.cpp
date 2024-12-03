@@ -16,6 +16,9 @@ FFMakeTopo()
 {
   auto result = std::make_unique<FBStaticTopo>();
   result->modules.resize(FFModuleCount);
+  result->version.major = FF_PLUG_VERSION_MAJOR;
+  result->version.minor = FF_PLUG_VERSION_MINOR;
+  result->version.patch = FF_PLUG_VERSION_PATCH;
   
   auto& osci = result->modules[FFModuleOsci];
   auto selectOsci = [](auto& state) { return &state.osci; };
