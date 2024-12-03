@@ -5,8 +5,6 @@
 
 using namespace Steinberg::Vst;
 
-struct FBStaticParam;
-
 class FBVST3Parameter:
 public Parameter
 {
