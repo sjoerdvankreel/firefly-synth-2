@@ -12,17 +12,6 @@ MakeRuntimeParamId(
   return moduleId + "-" + paramId;
 }
 
-static int
-MakeRuntimeHash(
-  std::string const& id)
-{
-  std::uint32_t result = 0;
-  int const multiplier = 33;
-  for (char c : id)
-    result = multiplier * result + static_cast<std::uint32_t>(c);
-  return std::abs(static_cast<int>(result + (result >> 5)));
-}
-
 static std::string
 MakeRuntimeParamLongName(
   FBStaticModule const& module, int moduleSlot,
@@ -43,4 +32,4 @@ static_(param),
 longName(MakeRuntimeParamLongName(module, moduleSlot, param, paramSlot)),
 shortName(FBMakeRuntimeName(param.name, param.slotCount, paramSlot)),
 id(MakeRuntimeParamId(module, moduleSlot, param, paramSlot)),
-tag(MakeRuntimeHash(id)) {}
+tag(FBMakeStableHash(id)) {}

@@ -1,3 +1,4 @@
+#include <playground_base/base/topo/FBTopoDetail.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
@@ -154,7 +155,7 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
     return false;
 
   for (int p = 0; p < to.all.size(); p++)
-    *to.all[p] = 0.0f; // TODO default
+    *to.all[p] = static_cast<float>(params[p].static_.defaultNormalized);
 
   for (int sp = 0; sp < state.size(); sp++)
   {
@@ -172,9 +173,15 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
     if (!val.isString())
       return false;
 
-    std::string storedId = id.toString().toStdString();
-    for (int tp = 0; tp < params.size(); tp++)
-      if (params[tp].id == storedId)
-        *to.all[tp] = 0.0f; // TODO something useful
+    std::map<int, int>::const_iterator iter;
+    int tag = FBMakeStableHash(id.toString().toStdString());
+    if ((iter = tagToParam.find(tag)) == tagToParam.end())
+      continue;
+
+    auto const& topo = params[iter->second].static_;
+    auto normalized = topo.TextToNormalizedOrDefault(val.toString().toStdString(), true);
+    *to.all[iter->second] = static_cast<float>(normalized);
   }
+
+  return true;
 }
