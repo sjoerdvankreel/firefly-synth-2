@@ -24,6 +24,23 @@ FFMakeTopo()
   result->freeProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result->freeScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
 
+  auto& glfo = result->modules[FFModuleGLFO];
+  auto selectGlfo = [](auto& state) { return &state.glfo; };
+  glfo.name = "GLFO";
+  glfo.slotCount = FF_GLFO_COUNT;
+  glfo.id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
+  glfo.params.resize(FFGLFOParamCount);
+
+  auto& glfoRate = glfo.params[FFGLFOAccRate];
+  glfoRate.block = false;
+  glfoRate.name = "Rate";
+  glfoRate.slotCount = 1;
+  glfoRate.valueCount = 0;
+  glfoRate.id = "{79BFD05E-98FA-48D4-8D07-C009285EACA7}";
+  auto selectGlfoRate = [](auto& module) { return &module.acc.rate; };
+  glfoRate.procAccAddr = SelectAddr<FFProcState>(selectGlfo, selectGlfoRate);
+  glfoRate.scalarAddr = SelectAddr<FFScalarState>(selectGlfo, selectGlfoRate);
+
   auto& osci = result->modules[FFModuleOsci];
   auto selectOsci = [](auto& state) { return &state.osci; };
   osci.name = "Osc";

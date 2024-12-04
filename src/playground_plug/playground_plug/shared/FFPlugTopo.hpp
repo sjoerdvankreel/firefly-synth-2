@@ -5,7 +5,8 @@
 struct FBStaticTopo;
 std::unique_ptr<FBStaticTopo> FFMakeTopo();
 
-enum { FFModuleOsci, FFModuleShaper, FFModuleCount };
+enum { FFModuleGLFO, FFModuleOsci, FFModuleShaper, FFModuleCount };
+enum { FFGLFOAccRate, FFGLFOParamCount };
 enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
-enum { FFShaperBlockOn, FFShaperBlockClip, FFShaperAccGain, FFShaperParamCount };
 enum { FFOsciBlockOn, FFOsciBlockType, FFOsciAccGain, FFOsciAccPitch, FFOsciParamCount };
+enum { FFShaperBlockOn, FFShaperBlockClip, FFShaperAccGain, FFShaperParamCount };

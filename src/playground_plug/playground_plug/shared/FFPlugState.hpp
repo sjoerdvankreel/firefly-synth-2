@@ -6,6 +6,20 @@
 
 #include <array>
 
+template <class T>
+struct alignas(alignof(T)) FFGLFOAccState final
+{
+  std::array<T, 1> rate = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOAccState);
+};
+
+template <class T>
+struct FFGLFOState final
+{
+  FFGLFOAccState<T> acc;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOState);
+};
+
 struct FFOsciBlockState final
 {
   std::array<float, 1> on = {};
@@ -55,6 +69,7 @@ template <class T>
 struct alignas(alignof(T)) FFPlugState final
 {
   std::array<FFOsciState<T>, FF_OSCI_COUNT> osci;
+  std::array<FFGLFOState<T>, FF_GLFO_COUNT> glfo;
   std::array<FFShaperState<T>, FF_SHAPER_COUNT> shaper;
   FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugState);
 };

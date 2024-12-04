@@ -2,6 +2,7 @@
 
 #include <playground_base/base/shared/FBStringify.hpp>
 
+#define FF_GLFO_COUNT 1
 #define FF_OSCI_COUNT 2 // todo oscis - it must be a single module
 #define FF_SHAPER_COUNT 2
 #define FF_OSCI_GAIN_COUNT 2
