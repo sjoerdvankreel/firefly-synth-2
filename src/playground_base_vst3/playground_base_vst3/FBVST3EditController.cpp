@@ -43,6 +43,33 @@ FBVST3EditController(FBStaticTopo const& topo) :
 _topo(std::make_unique<FBRuntimeTopo>(topo)) {}
 
 tresult PLUGIN_API
+FBVST3EditController::setState(IBStream* state)
+{
+  void* scalar = _topo->static_.allocScalarState();
+  auto ptrs = _topo->MakeScalarStatePtrs(scalar);
+  std::string json = FBVST3LoadIBStream(state);
+  bool result = _topo->LoadState(json, ptrs);
+  if (result)
+    for (int i = 0; i < ptrs.all.size(); i++)
+      parameters.getParameterByIndex(i)->setNormalized(*ptrs.all[i]);
+  _topo->static_.freeScalarState(scalar);
+  return result? kResultOk: kResultFalse;
+}
+
+tresult PLUGIN_API
+FBVST3EditController::getState(IBStream* state)
+{
+  void* scalar = _topo->static_.allocScalarState();
+  auto ptrs = _topo->MakeScalarStatePtrs(scalar);
+  for (int i = 0; i < ptrs.all.size(); i++)
+    *ptrs.all[i] = parameters.getParameterByIndex(i)->getNormalized();
+  std::string json = _topo->SaveState(ptrs);
+  state->write(json.data(), static_cast<int32>(json.size()));
+  _topo->static_.freeScalarState(scalar);
+  return kResultOk;
+}
+
+tresult PLUGIN_API
 FBVST3EditController::initialize(FUnknown* context)
 {
   if (EditController::initialize(context) != kResultTrue)

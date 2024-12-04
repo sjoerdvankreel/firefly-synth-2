@@ -20,5 +20,8 @@ public EditControllerEx1
 public:
   FBVST3EditController(FBStaticTopo const& topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
+
+  tresult PLUGIN_API setState(IBStream* state) override;
+  tresult PLUGIN_API getState(IBStream* state) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
 };
