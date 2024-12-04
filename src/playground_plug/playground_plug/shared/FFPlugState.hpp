@@ -16,7 +16,7 @@ struct alignas(alignof(T)) FFGLFOAccState final
 template <class T>
 struct FFGLFOState final
 {
-  FFGLFOAccState<T> acc;
+  FFGLFOAccState<T> acc = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOState);
 };
 
@@ -38,8 +38,8 @@ struct alignas(alignof(T)) FFOsciAccState final
 template <class T>
 struct FFOsciState final
 {
-  FFOsciAccState<T> acc;
-  FFOsciBlockState block;
+  FFOsciAccState<T> acc = {};
+  FFOsciBlockState block = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciState);
 };
 
@@ -60,8 +60,8 @@ struct alignas(alignof(T)) FFShaperAccState final
 template <class T>
 struct alignas(alignof(T)) FFShaperState final
 {
-  FFShaperAccState<T> acc;
-  FFShaperBlockState block;
+  FFShaperAccState<T> acc = {};
+  FFShaperBlockState block = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperState);
 };
 
@@ -69,23 +69,23 @@ template <class T>
 struct alignas(alignof(T)) FFPlugVoiceState
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugVoiceState);
-  std::array<FFOsciState<T>, FF_OSCI_COUNT> osci;
-  std::array<FFShaperState<T>, FF_SHAPER_COUNT> shaper;
+  std::array<FFOsciState<T>, FF_OSCI_COUNT> osci = {};
+  std::array<FFShaperState<T>, FF_SHAPER_COUNT> shaper = {};
 };
 
 template <class T>
-struct alignas(alignof(T)) FFPlugState final:
+struct alignas(alignof(T)) FFPlugState:
 public FFPlugVoiceState<T>
 {
-  std::array<FFGLFOState<T>, FF_GLFO_COUNT> glfo;
+  std::array<FFGLFOState<T>, FF_GLFO_COUNT> glfo = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugState);
 };
 
-struct alignas(alignof(FBProcParamState)) FFPlugVoicesState final
+struct alignas(alignof(FBProcParamState)) FFProcState final:
+public FFPlugState<FBProcParamState>
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugVoicesState);
-  std::array<FFPlugVoiceState<FBProcParamState>, FB_MAX_VOICES> voices;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
+  std::array<FFPlugVoiceState<FBProcParamState>, FB_MAX_VOICES> voices = {};
 };
 
 typedef FFPlugState<float> FFScalarState;
-typedef FFPlugState<FBProcParamState> FFProcState;
