@@ -65,14 +65,35 @@ MakeHostAudioBlock(AudioBusBuffers& buffers, int sampleCount)
 }
 
 FBVST3AudioEffect::
-~FBVST3AudioEffect() {}
+~FBVST3AudioEffect()
+{
+  _topo->static_.freeProcState(_state);
+}
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
   FBStaticTopo const& topo, FUID const& controllerId):
-_topo(std::make_unique<FBRuntimeTopo>(topo))
+_topo(std::make_unique<FBRuntimeTopo>(topo)),
+_state(topo.allocProcState()),
+_statePtrs(_topo->MakeProcStatePtrs(_state))
 {
   setControllerClass(controllerId);
+}
+
+tresult PLUGIN_API
+FBVST3AudioEffect::getState(IBStream* state)
+{
+  //std::string json = _topo->SaveState();
+  return kResultOk;
+}
+
+tresult PLUGIN_API
+FBVST3AudioEffect::setState(IBStream* state)
+{
+  std::string json = FBVST3LoadIBStream(state);
+  if (_topo->LoadStateWithDryRun(json, _statePtrs))
+    return kResultOk;
+  return kResultFalse;
 }
 
 tresult PLUGIN_API
@@ -107,23 +128,9 @@ FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
-  auto plug = MakePlugProcessor(*_topo, setup.sampleRate);
-  _hostProcessor.reset(new FBHostProcessor(*_topo, std::move(plug), setup.sampleRate));
+  auto plug = MakePlugProcessor(_topo->static_, _state, setup.sampleRate);
+  _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_statePtrs, setup.sampleRate));
   return kResultTrue;
-}
-
-tresult PLUGIN_API 
-FBVST3AudioEffect::setState(IBStream* state)
-{
-  std::string json = FBVST3LoadIBStream(state);
- // return _topo->LoadStateWithDryRun(json, _
-  return kResultOk;
-}
-
-tresult PLUGIN_API 
-FBVST3AudioEffect::getState(IBStream* state)
-{
-  return kResultOk;
 }
 
 tresult PLUGIN_API

@@ -18,10 +18,8 @@ FBHostProcessor::
 
 FBHostProcessor::
 FBHostProcessor(
-  FBRuntimeTopo const& topo,
-  FBProcStatePtrs const* state,
-  std::unique_ptr<IFBPlugProcessor>&& plug, 
-  float sampleRate):
+  std::unique_ptr<IFBPlugProcessor>&& plug,
+  FBProcStatePtrs const* state, float sampleRate):
 _plug(std::move(plug)),
 _ramp(std::make_unique<FBRampProcessor>()),
 _smooth(std::make_unique<FBSmoothProcessor>()),

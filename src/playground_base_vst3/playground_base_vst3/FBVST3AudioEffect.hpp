@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <public.sdk/source/vst/vstaudioeffect.h>
 
@@ -19,14 +20,17 @@ class IFBPlugProcessor;
 class FBVST3AudioEffect:
 public AudioEffect
 {
-  FBHostInputBlock _input = {};
   std::unique_ptr<FBRuntimeTopo> _topo;
+  void* _state;
+  FBProcStatePtrs _statePtrs;
+
+  FBHostInputBlock _input = {};
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
 
 protected:
   virtual std::unique_ptr<IFBPlugProcessor> 
-  MakePlugProcessor(FBRuntimeTopo const& topo, float sampleRate) const = 0;
+  MakePlugProcessor(FBStaticTopo const& topo, void* state, float sampleRate) const = 0;
 
 public:
   ~FBVST3AudioEffect();

@@ -30,8 +30,8 @@ public:
   ~FBHostProcessor();
   FB_NOCOPY_MOVE_NODEFCTOR(FBHostProcessor);
   FBHostProcessor(
-    FBRuntimeTopo const& topo, FBProcStatePtrs const* state, 
-    std::unique_ptr<IFBPlugProcessor>&& plug, float sampleRate);
+    std::unique_ptr<IFBPlugProcessor>&& plug,
+    FBProcStatePtrs const* state, float sampleRate);
 
   void ProcessHost(FBHostInputBlock const& input, FBHostAudioBlock& output);
 };
