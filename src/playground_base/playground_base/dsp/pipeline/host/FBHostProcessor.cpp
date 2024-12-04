@@ -6,6 +6,7 @@
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBRampProcessor.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothProcessor.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBHostBufferProcessor.hpp>
@@ -23,10 +24,12 @@ FBHostProcessor(
 _plug(std::move(plug)),
 _ramp(std::make_unique<FBRampProcessor>()),
 _smooth(std::make_unique<FBSmoothProcessor>()),
+_voiceManager(std::make_unique<FBVoiceManager>()),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
   _fixedOut.state = state;
+  _plugIn.voiceManager = _voiceManager.get();
   for (int p = 0; p < state->isBlock.size(); p++)
     if(!state->isBlock[p])
       state->acc[p]->smooth = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);

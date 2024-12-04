@@ -10,6 +10,7 @@ struct FBRuntimeTopo;
 struct FBProcStatePtrs;
 struct FBHostInputBlock;
 
+class FBVoiceManager;
 class FBRampProcessor;
 class FBHostAudioBlock;
 class IFBPlugProcessor;
@@ -25,6 +26,7 @@ class FBHostProcessor final
 
   std::unique_ptr<FBRampProcessor> _ramp;
   std::unique_ptr<FBSmoothProcessor> _smooth;
+  std::unique_ptr<FBVoiceManager> _voiceManager;
   std::unique_ptr<FBHostBufferProcessor> _hostBuffer;
   std::unique_ptr<FBFixedBufferProcessor> _fixedBuffer;
 
