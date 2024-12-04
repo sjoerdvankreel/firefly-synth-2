@@ -83,7 +83,7 @@ _statePtrs(_topo->MakeProcStatePtrs(_state))
 tresult PLUGIN_API
 FBVST3AudioEffect::getState(IBStream* state)
 {
-  //std::string json = _topo->SaveState();
+  std::string json = _topo->SaveState(_statePtrs);
   return kResultOk;
 }
 

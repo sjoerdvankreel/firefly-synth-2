@@ -6,14 +6,14 @@
 
 struct FBProcParamState final
 {
-  friend struct FBProcStatePtrs;
-
   friend class FBHostProcessor;
   friend class FBRampProcessor;
   friend class FBSmoothProcessor;
 
-private:
+  friend struct FBProcStatePtrs;
+  friend struct FBScalarStatePtrs;
 
+private:
   int pos = 0;
   float scalar = 0.0f;
   FBOnePoleFilter smooth = {};

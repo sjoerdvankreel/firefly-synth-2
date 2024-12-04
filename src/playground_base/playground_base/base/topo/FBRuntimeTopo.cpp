@@ -75,6 +75,14 @@ FBRuntimeTopo::LoadStateWithDryRun(
   return ::LoadStateWithDryRun(*this, from, to);
 }
 
+std::string
+FBRuntimeTopo::SaveState(FBProcStatePtrs const& from) const
+{
+  void* scalar = static_.allocScalarState();
+  auto ptrs = MakeScalarStatePtrs(scalar);
+  return {};
+}
+
 FBScalarStatePtrs
 FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
 {
