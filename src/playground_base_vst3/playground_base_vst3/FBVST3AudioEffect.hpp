@@ -33,6 +33,8 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
   FBVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId);
 
+  tresult PLUGIN_API setState(IBStream* state) override;
+  tresult PLUGIN_API getState(IBStream* state) override;
   tresult PLUGIN_API process(ProcessData& data) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
   tresult PLUGIN_API setupProcessing(ProcessSetup& setup) override;

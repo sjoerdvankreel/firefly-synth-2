@@ -19,6 +19,8 @@ FFMakeTopo()
   result->version.major = FF_PLUG_VERSION_MAJOR;
   result->version.minor = FF_PLUG_VERSION_MINOR;
   result->version.patch = FF_PLUG_VERSION_PATCH;
+  result->allocScalarState = []() { return static_cast<void*>(new FFScalarState); };
+  result->freeScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
   
   auto& osci = result->modules[FFModuleOsci];
   auto selectOsci = [](auto& state) { return &state.osci; };

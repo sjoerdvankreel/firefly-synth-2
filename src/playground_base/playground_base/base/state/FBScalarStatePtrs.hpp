@@ -7,4 +7,5 @@ struct FBScalarStatePtrs final
 {
   std::vector<float*> all = {};
   FB_NOCOPY_MOVE_DEFCTOR(FBScalarStatePtrs);
+  void InitFrom(FBScalarStatePtrs const& scalar);
 };

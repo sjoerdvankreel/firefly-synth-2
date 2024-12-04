@@ -6,7 +6,7 @@ struct FBProcStatePtrs;
 
 struct FBFixedOutputBlock final
 {
-  FBProcStatePtrs state = {};
+  FBProcStatePtrs* state = {};
   FBFixedAudioBlock audio = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedOutputBlock);
 };

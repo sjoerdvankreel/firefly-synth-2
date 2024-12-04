@@ -28,6 +28,8 @@ class FBHostProcessor final
 public:
   ~FBHostProcessor();
   FB_NOCOPY_MOVE_NODEFCTOR(FBHostProcessor);
+
+  FBProcStatePtrs& ProcState() { return _fixedOut.state; }
   void ProcessHost(FBHostInputBlock const& input, FBHostAudioBlock& output);
   FBHostProcessor(FBRuntimeTopo const& topo, std::unique_ptr<IFBPlugProcessor>&& plug, float sampleRate);
 };

@@ -40,12 +40,40 @@ MakeRuntimeModules(FBStaticTopo const& topo)
   return result;
 }
 
+template <class State>
+static bool
+LoadStateWithDryRun(
+  FBRuntimeTopo const& topo, std::string const& from, State& to)
+{
+  auto scalar = topo.static_.allocScalarState();
+  auto ptrs = topo.MakeScalarStatePtrs(scalar);
+  bool result = topo.LoadState(from, ptrs);
+  if (result)
+    to.InitFrom(ptrs);
+  topo.static_.freeScalarState(scalar);
+  return result;
+}
+
 FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
 modules(MakeRuntimeModules(topo)),
 params(MakeRuntimeParams(modules)),
 tagToParam(MakeTagToParam(params)) {}
+
+bool
+FBRuntimeTopo::LoadStateWithDryRun(
+  std::string const& from, FBScalarStatePtrs& to) const
+{
+  return ::LoadStateWithDryRun(*this, from, to);
+}
+
+bool
+FBRuntimeTopo::LoadStateWithDryRun(
+  std::string const& from, FBProcStatePtrs& to) const
+{
+  return ::LoadStateWithDryRun(*this, from, to);
+}
 
 FBScalarStatePtrs
 FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const

@@ -6,12 +6,14 @@
 
 class FBOnePoleFilter final
 {
-  float a = 0.0f;
-  float b = 0.0f;
-  float z = 0.0f;
+  float _a = 0.0f;
+  float _b = 0.0f;
+  float _z = 0.0f;
 
 public:
   float Next(float in);
+  void Reset(float val) { _z = val; }
+
   FBOnePoleFilter() = default;
   FBOnePoleFilter(float sampleRate, float durationSecs);
 };
@@ -19,13 +21,13 @@ public:
 inline float
 FBOnePoleFilter::Next(float in)
 {
-  float out = (in * b) + (z * a);
+  float out = (in * _b) + (_z * _a);
   assert(!std::isnan(out));
-  return z = out;
+  return _z = out;
 }
 
 inline 
 FBOnePoleFilter::
 FBOnePoleFilter(float sampleRate, float durationSecs):
-a(std::exp((-2.0f * std::numbers::pi_v<float>) / (durationSecs * sampleRate))),
-b(1.0f - a), z(0.0f) {}
+_a(std::exp((-2.0f * std::numbers::pi_v<float>) / (durationSecs * sampleRate))),
+_b(1.0f - _a), _z(0.0f) {}

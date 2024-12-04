@@ -1,3 +1,4 @@
+#include <playground_base_vst3/FBVST3Utility.hpp>
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
@@ -109,6 +110,20 @@ FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
   auto plug = MakePlugProcessor(*_topo, setup.sampleRate);
   _hostProcessor.reset(new FBHostProcessor(*_topo, std::move(plug), setup.sampleRate));
   return kResultTrue;
+}
+
+tresult PLUGIN_API 
+FBVST3AudioEffect::setState(IBStream* state)
+{
+  std::string json = FBVST3LoadIBStream(state);
+ // return _topo->LoadStateWithDryRun(json, _
+  return kResultOk;
+}
+
+tresult PLUGIN_API 
+FBVST3AudioEffect::getState(IBStream* state)
+{
+  return kResultOk;
 }
 
 tresult PLUGIN_API

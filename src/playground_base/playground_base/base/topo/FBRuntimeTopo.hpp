@@ -21,11 +21,14 @@ struct FBRuntimeTopo final
   std::vector<FBRuntimeParam> const params;
   std::map<int, int> const tagToParam;
 
-  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
   FBRuntimeTopo(FBStaticTopo const& static_);
+  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
 
   FBProcStatePtrs MakeProcStatePtrs(void* state) const;
   FBScalarStatePtrs MakeScalarStatePtrs(void* state) const;
+
   std::string SaveState(FBScalarStatePtrs const& from) const;
   bool LoadState(std::string const& from, FBScalarStatePtrs& to) const;
+  bool LoadStateWithDryRun(std::string const& from, FBProcStatePtrs& to) const;
+  bool LoadStateWithDryRun(std::string const& from, FBScalarStatePtrs& to) const;
 };
