@@ -1,4 +1,5 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
+#include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/dsp/FFPlugProcessor.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
@@ -9,16 +10,17 @@
 
 FFPlugProcessor::
 FFPlugProcessor(
-FBRuntimeTopo const& topo, float sampleRate) :
-_topo(topo.static_),
+FBStaticTopo const& topo, FFProcState* state, float sampleRate) :
+_topo(topo),
+_state(state),
 _sampleRate(sampleRate) {}
 
 void 
 FFPlugProcessor::ProcessPlug(
   FBFixedAudioBlock const& input, FBFixedAudioBlock& output)
 {
-  auto const& accState = _state.osci[0].acc;
-  auto const& blockState = _state.osci[0].block;
+  auto const& accState = _state->osci[0].acc;
+  auto const& blockState = _state->osci[0].block;
   auto const& topo = _topo.modules[FFModuleOsci];
 
   bool on = topo.params[FFOsciBlockOn].NormalizedToBool(blockState.on[0]);

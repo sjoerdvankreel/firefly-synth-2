@@ -19,6 +19,7 @@ FBHostProcessor::
 FBHostProcessor::
 FBHostProcessor(
   FBRuntimeTopo const& topo,
+  FBProcStatePtrs const* state,
   std::unique_ptr<IFBPlugProcessor>&& plug, 
   float sampleRate):
 _plug(std::move(plug)),
@@ -27,10 +28,10 @@ _smooth(std::make_unique<FBSmoothProcessor>()),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
-  _fixedOut.state = topo.MakeProcStatePtrs(_plug->ProcState());
-  for (int p = 0; p < _fixedOut.state.isBlock.size(); p++)
-    if(!_fixedOut.state.isBlock[p])
-      _fixedOut.state.acc[p]->smooth = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
+  _fixedOut.state = state;
+  for (int p = 0; p < state->isBlock.size(); p++)
+    if(!state->isBlock[p])
+      state->acc[p]->smooth = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
 }
 
 void 
@@ -38,7 +39,7 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   for (auto const& be : input.block)
-    *_fixedOut.state.block[be.index] = be.normalized;
+    *_fixedOut.state->block[be.index] = be.normalized;
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);
