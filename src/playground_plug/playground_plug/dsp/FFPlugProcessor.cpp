@@ -3,6 +3,7 @@
 #include <playground_plug/dsp/FFPlugProcessor.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 #include <cmath>
@@ -15,9 +16,9 @@ _topo(topo),
 _state(state),
 _sampleRate(sampleRate) {}
 
-void 
+void
 FFPlugProcessor::ProcessPlug(
-  FBFixedAudioBlock const& input, FBFixedAudioBlock& output)
+  FBPlugInputBlock const& input, FBFixedAudioBlock& output)
 {
   auto const& accState = _state->osci[0].acc;
   auto const& blockState = _state->osci[0].block;

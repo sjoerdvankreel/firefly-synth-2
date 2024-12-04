@@ -45,7 +45,7 @@ FBHostProcessor::ProcessHost(
   {
     _ramp->ProcessRamping(*fixedIn, _fixedOut);
     _smooth->ProcessSmoothing(_fixedOut);
-    _plug->ProcessPlug(fixedIn->audio, _fixedOut.audio);
+    _plug->ProcessPlug(*fixedIn, _fixedOut.audio);
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);
   }
   _fixedBuffer->ProcessToHost(output);

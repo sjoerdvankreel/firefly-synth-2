@@ -1,15 +1,13 @@
 #pragma once
 
 #include <playground_base/dsp/pipeline/shared/FBAccEvent.hpp>
-#include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 
 #include <vector>
 
-struct FBFixedInputBlock final
+struct FBFixedInputBlock final:
+public FBPlugInputBlock
 {
-  FBFixedAudioBlock audio = {};
   std::vector<FBAccEvent> acc = {};
-  std::vector<FBNoteEvent> note = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);
 };

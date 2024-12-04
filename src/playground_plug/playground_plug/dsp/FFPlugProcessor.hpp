@@ -21,5 +21,5 @@ public IFBPlugProcessor
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);
   FFPlugProcessor(FBStaticTopo const& topo, FFProcState* state, float sampleRate);
-  void ProcessPlug(FBFixedAudioBlock const& input, FBFixedAudioBlock& output) override;
+  void ProcessPlug(FBPlugInputBlock const& input, FBFixedAudioBlock& output) override;
 };

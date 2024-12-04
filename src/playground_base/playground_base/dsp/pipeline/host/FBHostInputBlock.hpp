@@ -7,6 +7,7 @@
 #include <playground_base/dsp/pipeline/host/FBHostAudioBlock.hpp>
 
 #include <vector>
+#include <cstdint>
 
 struct FBHostInputBlock final
 {
