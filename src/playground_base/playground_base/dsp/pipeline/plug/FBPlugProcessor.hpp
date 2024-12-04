@@ -10,5 +10,8 @@ class IFBPlugProcessor
 public:
   virtual ~IFBPlugProcessor() {}
   FB_NOCOPY_MOVE_DEFCTOR(IFBPlugProcessor);
-  virtual void ProcessPlug(FBPlugInputBlock const& input, FBFixedAudioBlock& output) = 0;
+
+  virtual void ProcessVoice(int voice) = 0;
+  virtual void ProcessPostVoice(FBFixedAudioBlock& output) = 0;
+  virtual void ProcessPreVoice(FBPlugInputBlock const& input) = 0;
 };

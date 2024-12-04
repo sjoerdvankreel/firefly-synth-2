@@ -16,9 +16,18 @@ _topo(topo),
 _state(state),
 _sampleRate(sampleRate) {}
 
+void 
+FFPlugProcessor::ProcessVoice(int voice)
+{
+}
+
 void
-FFPlugProcessor::ProcessPlug(
-  FBPlugInputBlock const& input, FBFixedAudioBlock& output)
+FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
+{
+}
+
+void
+FFPlugProcessor::ProcessPostVoice(FBFixedAudioBlock& output)
 {
   auto const& accState = _state->osci[0].acc;
   auto const& blockState = _state->osci[0].block;
@@ -34,7 +43,7 @@ FFPlugProcessor::ProcessPlug(
   auto const& gain = accState.gain[0].smoothedCV;
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
-    float sample = std::sin(2.0f * std::numbers::pi_v<float> * _phase);
+    float sample = std::sin(2.0f * std::numbers::pi_v<float> *_phase);
     output[0][s] = sample * gain[s];
     output[1][s] = sample * gain[s];
     _phase += 440.0f / _sampleRate;
