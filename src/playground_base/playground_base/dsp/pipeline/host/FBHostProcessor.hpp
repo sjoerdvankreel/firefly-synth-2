@@ -30,6 +30,8 @@ class FBHostProcessor final
   std::unique_ptr<FBHostBufferProcessor> _hostBuffer;
   std::unique_ptr<FBFixedBufferProcessor> _fixedBuffer;
 
+  void ProcessVoices();
+
 public:
   ~FBHostProcessor();
   FB_NOCOPY_MOVE_NODEFCTOR(FBHostProcessor);

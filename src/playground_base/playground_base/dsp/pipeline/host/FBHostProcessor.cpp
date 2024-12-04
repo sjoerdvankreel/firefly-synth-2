@@ -36,6 +36,17 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 }
 
 void 
+FBHostProcessor::ProcessVoices()
+{
+  auto const& voices = _plugIn.voiceManager->Voices();
+  for (int v = 0; v < voices.size(); v++)
+    if (voices[v].active)
+    {
+      // TODO 
+    }
+}
+
+void 
 FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
@@ -50,7 +61,9 @@ FBHostProcessor::ProcessHost(
     _plugIn.audio = &fixedIn->audio;
     _ramp->ProcessRamping(*fixedIn, _fixedOut);
     _smooth->ProcessSmoothing(_fixedOut);
-    _plug->ProcessPlug(_plugIn, _fixedOut.audio);
+    _plug->ProcessPreVoice(_plugIn);
+    ProcessVoices();
+    _plug->ProcessPostVoice(_fixedOut.audio);
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);
   }
   _fixedBuffer->ProcessToHost(output);
