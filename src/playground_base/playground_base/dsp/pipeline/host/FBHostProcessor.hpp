@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 #include <memory>
@@ -18,6 +19,7 @@ class FBFixedBufferProcessor;
 
 class FBHostProcessor final
 {
+  FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};
   std::unique_ptr<IFBPlugProcessor> _plug;
 

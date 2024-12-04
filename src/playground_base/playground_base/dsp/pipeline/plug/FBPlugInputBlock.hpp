@@ -1,15 +1,16 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 #include <vector>
 #include <cstdint>
 
-struct FBPlugInputBlock
+struct FBNoteEvent;
+class FBFixedAudioBlock;
+
+struct FBPlugInputBlock final
 {
-  FBFixedAudioBlock audio = {};
-  std::vector<FBNoteEvent> note = {};
+  FBFixedAudioBlock const* audio = {};
+  std::vector<FBNoteEvent> const* note = {};
   FB_NOCOPY_MOVE_DEFCTOR(FBPlugInputBlock);
 };
