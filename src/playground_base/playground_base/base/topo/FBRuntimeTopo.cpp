@@ -80,7 +80,10 @@ FBRuntimeTopo::SaveState(FBProcStatePtrs const& from) const
 {
   void* scalar = static_.allocScalarState();
   auto ptrs = MakeScalarStatePtrs(scalar);
-  return {};
+  ptrs.InitFrom(from);
+  auto result = SaveState(ptrs);
+  static_.freeScalarState(scalar);
+  return result;
 }
 
 FBScalarStatePtrs
