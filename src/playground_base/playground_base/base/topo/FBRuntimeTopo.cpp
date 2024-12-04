@@ -115,19 +115,19 @@ FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
   var state;
   for (int p = 0; p < params.size(); p++)
   {
-    DynamicObject param;
-    param.setProperty("id", String(params[p].id));
-    param.setProperty("val", String(params[p].static_.NormalizedToText(true, *from.all[p])));
-    state.append(var(&param));
+    auto param = new DynamicObject;
+    param->setProperty("id", String(params[p].id));
+    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *from.all[p])));
+    state.append(var(param));
   }
 
-  DynamicObject result;
-  result.setProperty("magic", String(Magic));
-  result.setProperty("major", static_.version.major);
-  result.setProperty("minor", static_.version.minor);
-  result.setProperty("patch", static_.version.patch);
-  result.setProperty("state", state);
-  return JSON::toString(var(&result)).toStdString();
+  auto result = new DynamicObject;
+  result->setProperty("magic", String(Magic));
+  result->setProperty("major", static_.version.major);
+  result->setProperty("minor", static_.version.minor);
+  result->setProperty("patch", static_.version.patch);
+  result->setProperty("state", state);
+  return JSON::toString(var(result)).toStdString();
 }
 
 bool 
@@ -138,8 +138,11 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
   using juce::String;
   using juce::DynamicObject;
   
-  var json = JSON::fromString(from);
+  var json;
+  auto parsed = JSON::parse(from, json);
   DynamicObject* obj = json.getDynamicObject();
+  if (!parsed.wasOk() || obj == nullptr)
+    return false;
 
   if (!obj->hasProperty("magic"))
     return false;
