@@ -1,10 +1,14 @@
 #pragma once
 
 #include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/state/FBProcParamState.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
-struct FFProcState;
+template <class T>
+struct alignas(alignof(T)) FFPlugState;
+
 class FBFixedAudioBlock;
+typedef FFPlugState<FBProcParamState> FFProcState;
 
 class FFPlugProcessor final:
 public IFBPlugProcessor
