@@ -26,6 +26,7 @@ FFMakeTopo()
 
   auto& glfo = result->modules[FFModuleGLFO];
   auto selectGlfo = [](auto& state) { return &state.glfo; };
+  glfo.voice = false;
   glfo.name = "GLFO";
   glfo.slotCount = FF_GLFO_COUNT;
   glfo.id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
@@ -43,6 +44,7 @@ FFMakeTopo()
 
   auto& osci = result->modules[FFModuleOsci];
   auto selectOsci = [](auto& state) { return &state.osci; };
+  osci.voice = true;
   osci.name = "Osc";
   osci.slotCount = FF_OSCI_COUNT;
   osci.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
@@ -93,6 +95,7 @@ FFMakeTopo()
 
   auto& shaper = result->modules[FFModuleShaper];
   auto selectShaper = [](auto& state) { return &state.shaper; };
+  shaper.voice = true;
   shaper.name = "Shaper";
   shaper.slotCount = FF_SHAPER_COUNT;
   shaper.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
