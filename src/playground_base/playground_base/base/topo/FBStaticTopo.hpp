@@ -9,8 +9,11 @@
 struct FBStaticTopo final
 {
   FBPlugVersion version = {};
-  void* (*allocScalarState)() = {};
-  void (*freeScalarState)(void* state) = {};
   std::vector<FBStaticModule> modules = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
+
+  void* (*allocProcState)() = {};
+  void (*freeProcState)(void* state) = {};
+  void* (*allocScalarState)() = {};
+  void (*freeScalarState)(void* state) = {};
 };
