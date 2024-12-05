@@ -13,6 +13,7 @@ FBFixedCVBlock final
 
 public:
   void Fill(int from, int to, float val);
+  void CopyFrom(FBFixedCVBlock const& rhs);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedCVBlock);
   
   static int Count()
@@ -28,4 +29,11 @@ FBFixedCVBlock::Fill(int from, int to, float val)
 {
   assert(0 <= from && from <= to && to <= Count());
   std::fill(_store.begin() + from, _store.begin() + to, val);
+}
+
+inline void 
+FBFixedCVBlock::CopyFrom(FBFixedCVBlock const& rhs)
+{
+  for (int i = 0; i < Count(); i++)
+    (*this)[i] = rhs[i];
 }

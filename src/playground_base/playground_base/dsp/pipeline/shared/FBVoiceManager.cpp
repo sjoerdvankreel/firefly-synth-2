@@ -1,7 +1,12 @@
+#include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 #include <limits>
 #include <cassert>
+
+FBVoiceManager::
+FBVoiceManager(FBProcStatePtrs const* state):
+_state(state) {}
 
 void 
 FBVoiceManager::ReturnOldest(FBNoteEvent const& event)
@@ -49,4 +54,8 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
   _voices[slot].event = event;
   _voices[slot].active = true;
   _voices[slot].initialOffset = event.pos;
+
+  for (int p = 0; p < _state->isVoice.size(); p++)
+    if (_state->isVoice[p] && !_state->isAcc[p])
+      *_state->voice[slot].block[p] = *_state->single.block[p];
 }

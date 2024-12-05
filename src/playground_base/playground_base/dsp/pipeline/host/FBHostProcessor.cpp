@@ -24,7 +24,7 @@ FBHostProcessor(
 _plug(std::move(plug)),
 _ramp(std::make_unique<FBRampProcessor>()),
 _smooth(std::make_unique<FBSmoothProcessor>()),
-_voiceManager(std::make_unique<FBVoiceManager>()),
+_voiceManager(std::make_unique<FBVoiceManager>(state)),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
@@ -45,14 +45,16 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 void 
 FBHostProcessor::ProcessVoices()
 {
+  auto& state = *_fixedOut.state;
   auto const& voices = _plugIn.voiceManager->Voices();
   for (int v = 0; v < voices.size(); v++)
     if (voices[v].active)
     {
-      // TODO 
-      // for now just copy the single (not per voice) cv blocks
-      // also TODO
-      // block valued params should be fixed at voice start      
+      for (int p = 0; p < state.isVoice.size(); p++)
+        if (state.isVoice[p] && state.isAcc[p])
+          state.voice[v].acc[p]->smoothedCV.CopyFrom( // TODO
+            state.single.acc[p]->smoothedCV);
+      _plug->ProcessVoice(_plugIn, v);
     }
 }
 
