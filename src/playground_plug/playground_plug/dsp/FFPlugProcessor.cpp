@@ -35,8 +35,9 @@ FFPlugProcessor::ProcessPostVoice(FBPlugInputBlock const& input, FBFixedAudioBlo
 }
 
 void
-FFPlugProcessor::ProcessVoice(int voice)
+FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
 {
+#if 0
   auto const& accState = _state->osci[0].acc;
   auto const& blockState = _state->osci[0].block;
   auto const& topo = _topo.modules[FFModuleOsci];
@@ -57,4 +58,5 @@ FFPlugProcessor::ProcessVoice(int voice)
     _phase += 440.0f / _sampleRate;
     _phase -= std::floor(_phase);
   }
+#endif 
 }
