@@ -7,7 +7,7 @@ static auto
 SelectSingleAddr(auto selectModule, auto selectParam)
 {
   return [selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
-    auto moduleState = selectModule(*static_cast<State*>(state));
+    auto moduleState = selectModule(static_cast<State*>(state)->param);
     return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
 }
 
@@ -15,7 +15,7 @@ static auto
 SelectVoiceAddr(auto selectModule, auto selectParam)
 {
   return [selectModule, selectParam](int voice, int moduleSlot, int paramSlot, void* state) {
-    auto moduleState = selectModule(static_cast<FFProcState*>(state)->voices[voice]);
+    auto moduleState = selectModule(static_cast<FFProcState*>(state)->param.voices[voice]);
     return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
 }
 

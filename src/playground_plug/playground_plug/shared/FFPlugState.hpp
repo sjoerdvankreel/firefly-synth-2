@@ -7,85 +7,93 @@
 #include <array>
 
 template <class T>
-struct alignas(alignof(T)) FFGLFOAccState final
+struct alignas(alignof(T)) FFGLFOAccParamState final
 {
   std::array<T, 1> rate = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOAccState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOAccParamState);
 };
 
 template <class T>
-struct FFGLFOState final
+struct FFGLFOParamState final
 {
-  FFGLFOAccState<T> acc = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOState);
+  FFGLFOAccParamState<T> acc = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOParamState);
 };
 
-struct FFOsciBlockState final
+struct FFOsciBlockParamState final
 {
   std::array<float, 1> on = {};
   std::array<float, 1> type = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
 };
 
 template <class T>
-struct alignas(alignof(T)) FFOsciAccState final
+struct alignas(alignof(T)) FFOsciAccParamState final
 {
   std::array<T, 1> pitch = {};
   std::array<T, FF_OSCI_GAIN_COUNT> gain = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };
 
 template <class T>
-struct FFOsciState final
+struct FFOsciParamState final
 {
-  FFOsciAccState<T> acc = {};
-  FFOsciBlockState block = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciState);
+  FFOsciAccParamState<T> acc = {};
+  FFOsciBlockParamState block = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciParamState);
 };
 
-struct FFShaperBlockState final
+struct FFShaperBlockParamState final
 {
   std::array<float, 1> on = {};
   std::array<float, 1> clip = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperBlockState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperBlockParamState);
 };
 
 template <class T>
-struct alignas(alignof(T)) FFShaperAccState final
+struct alignas(alignof(T)) FFShaperAccParamState final
 {
   std::array<T, 1> gain = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccParamState);
 };
 
 template <class T>
-struct alignas(alignof(T)) FFShaperState final
+struct alignas(alignof(T)) FFShaperParamState final
 {
-  FFShaperAccState<T> acc = {};
-  FFShaperBlockState block = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperState);
+  FFShaperAccParamState<T> acc = {};
+  FFShaperBlockParamState block = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperParamState);
 };
 
 template <class T>
-struct alignas(alignof(T)) FFPlugVoiceState
+struct alignas(alignof(T)) FFPlugVoiceParamState
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugVoiceState);
-  std::array<FFOsciState<T>, FF_OSCI_COUNT> osci = {};
-  std::array<FFShaperState<T>, FF_SHAPER_COUNT> shaper = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugVoiceParamState);
+  std::array<FFOsciParamState<T>, FF_OSCI_COUNT> osci = {};
+  std::array<FFShaperParamState<T>, FF_SHAPER_COUNT> shaper = {};
 };
 
 template <class T>
-struct alignas(alignof(T)) FFPlugState:
-public FFPlugVoiceState<T>
+struct alignas(alignof(T)) FFPlugParamState:
+public FFPlugVoiceParamState<T>
 {
-  std::array<FFGLFOState<T>, FF_GLFO_COUNT> glfo = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugState);
+  std::array<FFGLFOParamState<T>, FF_GLFO_COUNT> glfo = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugParamState);
 };
 
-struct alignas(alignof(FBProcParamState)) FFProcState final:
-public FFPlugState<FBProcParamState>
+struct alignas(alignof(FBProcParamState)) FFProcParamState final:
+public FFPlugParamState<FBProcParamState>
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
-  std::array<FFPlugVoiceState<FBProcParamState>, FB_MAX_VOICES> voices = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
+  std::array<FFPlugVoiceParamState<FBProcParamState>, FB_MAX_VOICES> voices = {};
 };
 
-typedef FFPlugState<float> FFScalarState;
+struct FFScalarState final
+{
+  FFPlugParamState<float> param;
+};
+
+struct alignas(alignof(FBProcParamState)) FFProcState
+{
+  FFProcParamState param;
+};
