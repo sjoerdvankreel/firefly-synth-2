@@ -96,48 +96,49 @@ public FFPlugParamState<FBProcParamState>
 
 struct FFScalarState final
 {
-  FFPlugParamState<float> param;
+  FFPlugParamState<float> param = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFGLFODSPState final
 {
-  FBFixedCVBlock output;
-  FFGLFOProcessor processor;
+  FBFixedCVBlock output = {};
+  FFGLFOProcessor processor = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFOsciDSPState final
 {
-  FBFixedAudioBlock output;
-  FFOsciProcessor processor;
+  FBFixedAudioBlock output = {};
+  FFOsciProcessor processor = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFShaperDSPState final
 {
-  FBFixedAudioBlock output;
-  FFShaperProcessor processor;
+  FBFixedAudioBlock output = {};
+  FFShaperProcessor processor = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperDSPState);
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcVoiceDSPState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcVoiceDSPState);
-  std::array<FFOsciDSPState, FF_OSCI_COUNT> osci;
-  std::array<FFShaperDSPState, FF_SHAPER_COUNT> shaper;
+  FBFixedAudioBlock output = {};
+  std::array<FFOsciDSPState, FF_OSCI_COUNT> osci = {};
+  std::array<FFShaperDSPState, FF_SHAPER_COUNT> shaper = {};
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcDSPState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcDSPState);
-  std::array<FFGLFOProcessor, FF_GLFO_COUNT> glfo;
-  std::array<FFProcVoiceDSPState, FB_MAX_VOICES> voices;
+  std::array<FFGLFOProcessor, FF_GLFO_COUNT> glfo = {};
+  std::array<FFProcVoiceDSPState, FB_MAX_VOICES> voices = {};
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcState final
 {
-  FFProcDSPState dsp;
-  FFProcParamState param;
+  FFProcDSPState dsp = {};
+  FFProcParamState param = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
 };

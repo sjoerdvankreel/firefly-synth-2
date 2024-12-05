@@ -12,8 +12,19 @@ public FBAnyAudioBlock<FBFixedAudioBlock, std::array<float, FB_FIXED_BLOCK_SIZE>
 public:
   StoreT& operator[](int channel)
   { return _store[channel]; }
+  StoreT const& operator[](int channel) const
+  { return _store[channel]; }
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedAudioBlock);
   FBFixedAudioBlock(): FBAnyAudioBlock({}, {}) {}
+  void InPlaceAdd(FBFixedAudioBlock const& rhs);
   static int Count() { return FB_FIXED_BLOCK_SIZE; }
 };
+
+inline void 
+FBFixedAudioBlock::InPlaceAdd(FBFixedAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < Count(); s++)
+      (*this)[ch][s] += rhs[ch][s];
+}

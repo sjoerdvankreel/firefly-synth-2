@@ -25,5 +25,5 @@ public:
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBVoiceManager);
   std::array<FBVoiceInfo, FB_MAX_VOICES> const&
-  Voices() { return _voices; }
+  Voices() const { return _voices; }
 };

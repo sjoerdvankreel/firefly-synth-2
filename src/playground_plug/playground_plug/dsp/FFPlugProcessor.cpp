@@ -1,6 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/dsp/FFPlugProcessor.hpp>
+#include <playground_plug/dsp/FFModuleProcState.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
@@ -32,31 +33,30 @@ FFPlugProcessor::ProcessPostVoice(FBPlugInputBlock const& input, FBFixedAudioBlo
   for (int n = 0; n < input.note->size(); n++)
     if (!(*input.note)[n].on)
       input.voiceManager->ReturnOldest((*input.note)[n]);
+
+  output.Fill(0, output.Count(), 0.0f);
+  for (int i = 0; i < FB_MAX_VOICES; i++)
+    if (input.voiceManager->Voices()[i].active)
+      output.InPlaceAdd(_state->dsp.voices[i].output);
 }
 
 void
 FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
 {
-#if 0
-  auto const& accState = _state->osci[0].acc;
-  auto const& blockState = _state->osci[0].block;
-  auto const& topo = _topo.modules[FFModuleOsci];
+  FFModuleProcState state = {};
+  state.proc = _state;
+  state.topo = &_topo;
+  state.input = &input;
+  state.sampleRate = _sampleRate;
 
-  bool on = topo.params[FFOsciBlockOn].NormalizedToBool(blockState.on[0]);
-  if (!on)
+  auto& voiceDSP = _state->dsp.voices[voice];
+  voiceDSP.output.Fill(0, voiceDSP.output.Count(), 0.0f);
+  for (int i = 0; i < FF_OSCI_COUNT; i++)
   {
-    output.Fill(0, output.Count(), 0.0f);
-    return;
+    state.moduleSlot = i;
+    voiceDSP.osci[i].processor.Process(state, voice);
+    voiceDSP.output.InPlaceAdd(voiceDSP.osci[i].output);
   }
 
-  auto const& gain = accState.gain[0].smoothedCV;
-  for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
-  {
-    float sample = std::sin(2.0f * std::numbers::pi_v<float> *_phase);
-    output[0][s] = sample * gain[s];
-    output[1][s] = sample * gain[s];
-    _phase += 440.0f / _sampleRate;
-    _phase -= std::floor(_phase);
-  }
-#endif 
+  // todo shaper
 }
