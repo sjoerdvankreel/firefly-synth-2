@@ -4,6 +4,7 @@
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 #include <cmath>
@@ -16,18 +17,25 @@ _topo(topo),
 _state(state),
 _sampleRate(sampleRate) {}
 
-void 
-FFPlugProcessor::ProcessVoice(int voice)
-{
-}
-
 void
 FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
 {
+  // TODO glfo
+  for (int n = 0; n < input.note->size(); n++)
+    if((*input.note)[n].on)
+      input.voiceManager->Lease((*input.note)[n]);
 }
 
 void
-FFPlugProcessor::ProcessPostVoice(FBFixedAudioBlock& output)
+FFPlugProcessor::ProcessPostVoice(FBPlugInputBlock const& input, FBFixedAudioBlock& output)
+{
+  for (int n = 0; n < input.note->size(); n++)
+    if (!(*input.note)[n].on)
+      input.voiceManager->ReturnOldest((*input.note)[n]);
+}
+
+void
+FFPlugProcessor::ProcessVoice(int voice)
 {
   auto const& accState = _state->osci[0].acc;
   auto const& blockState = _state->osci[0].block;

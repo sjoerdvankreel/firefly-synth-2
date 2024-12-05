@@ -16,10 +16,10 @@ public IFBPlugProcessor
   float const _sampleRate;
 
 public:
-  void ProcessVoice(int voice) override;
-  void ProcessPostVoice(FBFixedAudioBlock& output) override;
-  void ProcessPreVoice(FBPlugInputBlock const& input) override;
-
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);
   FFPlugProcessor(FBStaticTopo const& topo, FFProcState* state, float sampleRate);
+
+  void ProcessVoice(int voice) override;
+  void ProcessPreVoice(FBPlugInputBlock const& input) override;
+  void ProcessPostVoice(FBPlugInputBlock const& input, FBFixedAudioBlock& output) override;
 };

@@ -9,6 +9,7 @@
 struct FBVoiceInfo
 {
   bool active = {};
+  int initialOffset = {};
   FBNoteEvent event = {};
 };
 
@@ -19,8 +20,8 @@ class FBVoiceManager
   std::array<FBVoiceInfo, FB_MAX_VOICES> _voices = {};
 
 public:
-  void Return(int leased);
-  int Lease(FBNoteEvent const& event);
+  void Lease(FBNoteEvent const& event);
+  void ReturnOldest(FBNoteEvent const& event);
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBVoiceManager);
   std::array<FBVoiceInfo, FB_MAX_VOICES> const&
