@@ -1,6 +1,10 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugConfig.hpp>
+#include <playground_plug/dsp/FFOsciProcessor.hpp>
+#include <playground_plug/dsp/FFGLFOProcessor.hpp>
+#include <playground_plug/dsp/FFShaperProcessor.hpp>
+
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
 
@@ -91,9 +95,31 @@ public FFPlugParamState<FBProcParamState>
 struct FFScalarState final
 {
   FFPlugParamState<float> param;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
+};
+
+struct FFProcDSPState
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcDSPState);
+  std::array<FFGLFOProcessor, FF_GLFO_COUNT> glfo;
+};
+
+struct FFProcVoiceDSPState final
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcVoiceDSPState);
+  std::array<FFOsciProcessor, FF_OSCI_COUNT> osci;
+  std::array<FFShaperProcessor, FF_SHAPER_COUNT> shaper;
+};
+
+struct FFProcVoicesDSPState final:
+public FFProcDSPState
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcVoicesDSPState);
+  std::array<FFProcVoiceDSPState, FB_MAX_VOICES> voices;
 };
 
 struct alignas(alignof(FBProcParamState)) FFProcState
 {
   FFProcParamState param;
+  FFProcVoicesDSPState dsp;
 };

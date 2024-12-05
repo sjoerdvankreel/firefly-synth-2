@@ -3,5 +3,4 @@
 void
 FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 {
-
 }
