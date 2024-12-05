@@ -31,8 +31,15 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
   _fixedOut.state = state;
   _plugIn.voiceManager = _voiceManager.get();
   for (int p = 0; p < state->isAcc.size(); p++)
-    if(state->isAcc[p]) // TODO voices
-      state->single.acc[p]->smooth = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
+    if (state->isAcc[p])
+    {
+      state->single.acc[p]->smooth = FBOnePoleFilter(
+        sampleRate, FB_PARAM_SMOOTH_SEC);
+      if(state->isVoice[p])
+        for(int v = 0; v < FB_MAX_VOICES; v++)
+          state->voice[v].acc[p]->smooth = FBOnePoleFilter(
+            sampleRate, FB_PARAM_SMOOTH_SEC);
+    }
 }
 
 void 
@@ -43,6 +50,9 @@ FBHostProcessor::ProcessVoices()
     if (voices[v].active)
     {
       // TODO 
+      // for now just copy the single (not per voice) cv blocks
+      // also TODO
+      // block valued params should be fixed at voice start      
     }
 }
 
