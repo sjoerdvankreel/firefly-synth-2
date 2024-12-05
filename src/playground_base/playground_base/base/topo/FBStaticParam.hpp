@@ -12,25 +12,35 @@ struct FBProcParamState;
 
 typedef std::function<float* (
   int moduleSlot, int paramSlot, void* state)>
-FBFloatAddrSelector;
+FBSingleFloatAddrSelector;
+typedef std::function<float* (
+  int voice, int moduleSlot, int paramSlot, void* state)>
+FBVoiceFloatAddrSelector;
+
 typedef std::function<FBProcParamState* (
   int moduleSlot, int paramSlot, void* state)>
-FBProcParamAddrSelector;
+FBSingleProcParamAddrSelector;
+typedef std::function<FBProcParamState* (
+  int voice, int moduleSlot, int paramSlot, void* state)>
+FBVoiceProcParamAddrSelector;
 
 struct FBStaticParam final
 {
-  bool block = true;
+  bool acc = false;
   int slotCount = {};
   int valueCount = {};
+  int moduleIndex = -1;
   std::string id = {};
   std::string name = {};
   std::string unit = {};
   double defaultNormalized = 0.0;
   std::vector<FBListItem> list = {};
 
-  FBFloatAddrSelector scalarAddr = {};
-  FBFloatAddrSelector procBlockAddr = {};
-  FBProcParamAddrSelector procAccAddr = {};
+  FBSingleFloatAddrSelector scalarAddr = {};
+  FBVoiceFloatAddrSelector procVoiceBlockAddr = {};
+  FBSingleFloatAddrSelector procSingleBlockAddr = {};
+  FBVoiceProcParamAddrSelector procVoiceAccAddr = {};
+  FBSingleProcParamAddrSelector procSingleAccAddr = {};
 
   double DiscreteToNormalized(int index) const
   { return index / (valueCount - 1.0); }

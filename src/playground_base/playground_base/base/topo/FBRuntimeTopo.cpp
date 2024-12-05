@@ -1,3 +1,4 @@
+#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/topo/FBTopoDetail.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
@@ -86,21 +87,40 @@ FBProcStatePtrs
 FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
 {
   FBProcStatePtrs result = {};
-  result.acc.clear();
-  result.block.clear();
-  result.isBlock.clear();
   for (int p = 0; p < params.size(); p++)
   {
-    result.acc.emplace_back();
-    result.block.emplace_back();
-    result.isBlock.push_back(params[p].static_.block);
-    if(params[p].static_.block)
-      result.block[p] = params[p].static_.procBlockAddr(
+    result.single.acc.emplace_back();
+    result.single.block.emplace_back();
+    result.isAcc.push_back(params[p].static_.acc);
+
+    bool voice = static_.modules[params[p].static_.moduleIndex].voice;
+    if(voice)
+      for (int v = 0; v < FB_MAX_VOICES; v++)
+      {
+        result.voice[v].acc.emplace_back();
+        result.voice[v].block.emplace_back();
+      }
+
+    if (params[p].static_.acc)
+    {
+      result.single.acc[p] = params[p].static_.procSingleAccAddr(
         params[p].moduleSlot, params[p].paramSlot, proc);
+      if (voice)
+        for (int v = 0; v < FB_MAX_VOICES; v++)
+          result.single.acc[p] = params[p].static_.procVoiceAccAddr(
+            v, params[p].moduleSlot, params[p].paramSlot, proc);
+    }
     else
-      result.acc[p] = params[p].static_.procAccAddr(
+    {
+      result.single.block[p] = params[p].static_.procSingleBlockAddr(
         params[p].moduleSlot, params[p].paramSlot, proc);
+      if (voice)
+        for (int v = 0; v < FB_MAX_VOICES; v++)
+          result.single.block[p] = params[p].static_.procVoiceBlockAddr(
+            v, params[p].moduleSlot, params[p].paramSlot, proc);
+    }
   }
+
   return result;
 }
 

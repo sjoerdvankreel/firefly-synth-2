@@ -30,9 +30,9 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
   _fixedOut.state = state;
   _plugIn.voiceManager = _voiceManager.get();
-  for (int p = 0; p < state->isBlock.size(); p++)
-    if(!state->isBlock[p])
-      state->acc[p]->smooth = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
+  for (int p = 0; p < state->isAcc.size(); p++)
+    if(state->isAcc[p]) // TODO voices
+      state->single.acc[p]->smooth = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
 }
 
 void 
@@ -51,7 +51,7 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   for (auto const& be : input.block)
-    *_fixedOut.state->block[be.index] = be.normalized;
+    *_fixedOut.state->single.block[be.index] = be.normalized;
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);

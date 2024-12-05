@@ -31,7 +31,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   FBVST3CopyToString128(param.static_.unit, result.units);
 
   // TODO once we drop generic editor
-  if (param.static_.block)
+  if (param.static_.acc)
     result.flags = ParameterInfo::kCanAutomate;
   else
     result.flags = ParameterInfo::kCanAutomate;

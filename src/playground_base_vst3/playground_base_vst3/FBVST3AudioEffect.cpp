@@ -158,16 +158,16 @@ FBVST3AudioEffect::process(ProcessData& data)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
         if (queue->getPointCount() > 0)
           if ((iter = _topo->tagToParam.find(queue->getParameterId())) != _topo->tagToParam.end())
-            if (_topo->params[iter->second].static_.block)
-            {
-              if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-                _input.block.push_back(MakeBlockEvent(iter->second, value));
-            }
-            else
+            if (_topo->params[iter->second].static_.acc)
             {
               for (int point = 0; point < queue->getPointCount(); point++)
                 if (queue->getPoint(point, position, value) == kResultTrue)
                   _input.acc.push_back(MakeAccEvent(iter->second, position, value));
+            }
+            else
+            {
+              if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
+                _input.block.push_back(MakeBlockEvent(iter->second, value));
             }
 
   auto compare = [](auto& l, auto& r) {

@@ -8,7 +8,7 @@
 
 struct FBStaticModule final
 {
-  bool voice = false;
+  bool voice = false; // TODO
   int slotCount = {};
   std::string id = {};
   std::string name = {};

@@ -10,8 +10,8 @@ struct FBProcParamState final
   friend class FBRampProcessor;
   friend class FBSmoothProcessor;
 
-  friend struct FBProcStatePtrs;
   friend struct FBScalarStatePtrs;
+  friend struct FBProcSingleStatePtrs;
 
 private:
   int pos = 0;
