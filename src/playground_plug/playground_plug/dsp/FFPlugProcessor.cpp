@@ -48,6 +48,7 @@ FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
   state.topo = &_topo;
   state.input = &input;
   state.sampleRate = _sampleRate;
+  state.voice = &input.voiceManager->Voices()[voice];
 
   auto& voiceDSP = _state->dsp.voices[voice];
   voiceDSP.output.Fill(0, voiceDSP.output.Count(), 0.0f);
