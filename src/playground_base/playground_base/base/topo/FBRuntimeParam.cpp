@@ -24,8 +24,9 @@ MakeRuntimeParamLongName(
 
 FBRuntimeParam::
 FBRuntimeParam(
-FBStaticModule const& module, int moduleSlot,
+FBStaticModule const& module, int moduleIndex, int moduleSlot,
 FBStaticParam const& param, int paramSlot) :
+moduleIndex(moduleIndex),
 moduleSlot(moduleSlot),
 paramSlot(paramSlot),
 static_(param),

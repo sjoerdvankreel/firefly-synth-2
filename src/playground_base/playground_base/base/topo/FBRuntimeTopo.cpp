@@ -37,7 +37,7 @@ MakeRuntimeModules(FBStaticTopo const& topo)
   std::vector<FBRuntimeModule> result;
   for (int m = 0; m < topo.modules.size(); m++)
     for (int s = 0; s < topo.modules[m].slotCount; s++)
-      result.push_back(FBRuntimeModule(topo.modules[m], s));
+      result.push_back(FBRuntimeModule(topo.modules[m], m, s));
   return result;
 }
 
@@ -91,15 +91,16 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
   {
     result.single.acc.emplace_back();
     result.single.block.emplace_back();
+
+    bool voice = static_.modules[params[p].moduleIndex].voice;
+    result.isVoice.push_back(voice);
     result.isAcc.push_back(params[p].static_.acc);
 
-    bool voice = static_.modules[params[p].static_.moduleIndex].voice;
-    if(voice)
-      for (int v = 0; v < FB_MAX_VOICES; v++)
-      {
-        result.voice[v].acc.emplace_back();
-        result.voice[v].block.emplace_back();
-      }
+    for (int v = 0; v < FB_MAX_VOICES; v++)
+    {
+      result.voice[v].acc.emplace_back();
+      result.voice[v].block.emplace_back();
+    }
 
     if (params[p].static_.acc)
     {
@@ -107,7 +108,7 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
         params[p].moduleSlot, params[p].paramSlot, proc);
       if (voice)
         for (int v = 0; v < FB_MAX_VOICES; v++)
-          result.single.acc[p] = params[p].static_.procVoiceAccAddr(
+          result.voice[v].acc[p] = params[p].static_.procVoiceAccAddr(
             v, params[p].moduleSlot, params[p].paramSlot, proc);
     }
     else
@@ -116,7 +117,7 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
         params[p].moduleSlot, params[p].paramSlot, proc);
       if (voice)
         for (int v = 0; v < FB_MAX_VOICES; v++)
-          result.single.block[p] = params[p].static_.procVoiceBlockAddr(
+          result.voice[v].block[p] = params[p].static_.procVoiceBlockAddr(
             v, params[p].moduleSlot, params[p].paramSlot, proc);
     }
   }

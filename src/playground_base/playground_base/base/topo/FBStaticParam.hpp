@@ -29,7 +29,6 @@ struct FBStaticParam final
   bool acc = false;
   int slotCount = {};
   int valueCount = {};
-  int moduleIndex = -1;
   std::string id = {};
   std::string name = {};
   std::string unit = {};

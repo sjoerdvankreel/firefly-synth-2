@@ -17,7 +17,9 @@ struct FBProcSingleStatePtrs final
   
   FB_NOCOPY_MOVE_DEFCTOR(FBProcSingleStatePtrs);
   void InitFrom(
+    bool voice,
     std::vector<bool> const& isAcc,
+    std::vector<bool> const& isVoice,
     FBScalarStatePtrs const& single);
 };
 
@@ -27,6 +29,7 @@ struct FBProcStatePtrs final
   void InitFrom(FBScalarStatePtrs const& scalar);
 
   std::vector<bool> isAcc = {};
+  std::vector<bool> isVoice = {};
   FBProcSingleStatePtrs single = {};
   std::array<FBProcSingleStatePtrs, FB_MAX_VOICES> voice = {};
 };
