@@ -7,6 +7,8 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
 #include <array>
 
@@ -18,7 +20,7 @@ struct alignas(alignof(T)) FFGLFOAccParamState final
 };
 
 template <class T>
-struct FFGLFOParamState final
+struct alignas(alignof(T)) FFGLFOParamState final
 {
   FFGLFOAccParamState<T> acc = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOParamState);
@@ -40,7 +42,7 @@ struct alignas(alignof(T)) FFOsciAccParamState final
 };
 
 template <class T>
-struct FFOsciParamState final
+struct alignas(alignof(T)) FFOsciParamState final
 {
   FFOsciAccParamState<T> acc = {};
   FFOsciBlockParamState block = {};
@@ -85,7 +87,7 @@ public FFPlugVoiceParamState<T>
   FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugParamState);
 };
 
-struct alignas(alignof(FBProcParamState)) FFProcParamState final:
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState final:
 public FFPlugParamState<FBProcParamState>
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
@@ -98,28 +100,44 @@ struct FFScalarState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
 };
 
-struct FFProcDSPState
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFGLFODSPState final
+{
+  FBFixedCVBlock output;
+  FFGLFOProcessor processor;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
+};
+
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFOsciDSPState final
+{
+  FBFixedAudioBlock output;
+  FFOsciProcessor processor;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
+};
+
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFShaperDSPState final
+{
+  FBFixedAudioBlock output;
+  FFShaperProcessor processor;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperDSPState);
+};
+
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcVoiceDSPState final
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcVoiceDSPState);
+  std::array<FFOsciDSPState, FF_OSCI_COUNT> osci;
+  std::array<FFShaperDSPState, FF_SHAPER_COUNT> shaper;
+};
+
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcDSPState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcDSPState);
   std::array<FFGLFOProcessor, FF_GLFO_COUNT> glfo;
-};
-
-struct FFProcVoiceDSPState final
-{
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcVoiceDSPState);
-  std::array<FFOsciProcessor, FF_OSCI_COUNT> osci;
-  std::array<FFShaperProcessor, FF_SHAPER_COUNT> shaper;
-};
-
-struct FFProcVoicesDSPState final:
-public FFProcDSPState
-{
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcVoicesDSPState);
   std::array<FFProcVoiceDSPState, FB_MAX_VOICES> voices;
 };
 
-struct alignas(alignof(FBProcParamState)) FFProcState
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcState final
 {
+  FFProcDSPState dsp;
   FFProcParamState param;
-  FFProcVoicesDSPState dsp;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
 };
