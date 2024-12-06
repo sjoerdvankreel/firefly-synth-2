@@ -115,6 +115,28 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${PLUG_VST3_SRC_DIR} FILES ${PLUG_VST3_SRC_FILES})
 endif()
 
+# clap plug
+set (PLUG_CLAP_SRC_DIR "${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_CLAP}")
+file(GLOB_RECURSE PLUG_CLAP_SRC_FILES "${PLUG_CLAP_SRC_DIR}/*.*")
+add_library(${PROJECT_NAME_PLUG_CLAP} SHARED ${PLUG_CLAP_SRC_FILES})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP} ${PROJECT_NAME_BASE})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP} ${PROJECT_NAME_PLUG})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP} ${PROJECT_NAME_BASE_CLAP})
+target_link_libraries(${PROJECT_NAME_PLUG_CLAP} juce)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap/include)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/lib/clap-helpers/include)
+target_include_directories(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_BASE_CLAP})
+target_include_directories(${PROJECT_NAME_PLUG_CLAP} PRIVATE ${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME_PLUG_CLAP})
+set_target_properties(${PROJECT_NAME_PLUG_CLAP} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_OUT})
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  set_target_properties(${PROJECT_NAME_PLUG_CLAP} PROPERTIES SUFFIX ".clap")
+endif ()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  source_group(TREE ${PLUG_CLAP_SRC_DIR} FILES ${PLUG_CLAP_SRC_FILES})
+endif()
+
 # vst3 to dist
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
