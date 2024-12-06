@@ -1,4 +1,5 @@
 voice manager
+handle block/acc non/destructive per/voice or not
 static link
 handle PDC
 clap note cut
