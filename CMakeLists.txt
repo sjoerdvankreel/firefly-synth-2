@@ -151,3 +151,18 @@ elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 else ()
   message(FATAL_ERROR "Unsupported platform.")
 endif()
+
+# clap to dist
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_NAME_OUT}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT}.clap"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_CLAP}>/${PROJECT_NAME_OUT}.pdb
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_NAME_OUT}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT}.pdb" || (exit 0))
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP}>
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.clap/Contents/x86_64-linux/${PROJECT_NAME_OUT}.so")
+else ()
+  message(FATAL_ERROR "Unsupported platform.")
+endif()
