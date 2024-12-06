@@ -1,5 +1,7 @@
-#include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugConfig.hpp>
+#include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base/base/topo/FBStaticTopo.hpp>
 
 #include <clap/clap.h>
 #include <cstring>
@@ -32,10 +34,11 @@ CreatePlugin(
   struct clap_plugin_factory const* factory,
   clap_host_t const* host, char const* pluginId)
 {
+  auto topo = FFMakeTopo();
   auto const* desc = GetPluginDescriptor(nullptr, 0);
   if (strcmp(desc->id, pluginId))
     return static_cast<clap_plugin_t const*>(nullptr);
-  return (new FBCLAPPlugin(desc, host))->clapPlugin();
+  return (new FBCLAPPlugin(*topo, desc, host))->clapPlugin();
 }
 
 static void const*
