@@ -25,6 +25,8 @@ FBCLAPPlugin::paramsInfo(uint32_t paramIndex, clap_param_info* info) const noexc
   if (paramIndex >= _topo->params.size())
     return false;
 
+  return false;
+#if 0 // TODO
   auto const& param = _topo->params[paramIndex];
   auto const& module = _topo->modules[param.]
 
@@ -42,11 +44,13 @@ FBCLAPPlugin::paramsInfo(uint32_t paramIndex, clap_param_info* info) const noexc
   //info->flags = clap_param_info_flags
   //info->module;
   //info->name;
+#endif
 }
 
 bool 
 FBCLAPPlugin::paramsTextToValue(clap_id paramId, const char* display, double* value) noexcept
 {
+  return false;
 }
 
 void 
@@ -57,4 +61,5 @@ FBCLAPPlugin::paramsFlush(const clap_input_events* in, const clap_output_events*
 bool 
 FBCLAPPlugin::paramsValueToText(clap_id paramId, double value, char* display, uint32_t size) noexcept
 {
+  return false;
 }
