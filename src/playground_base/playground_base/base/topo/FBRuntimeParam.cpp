@@ -24,13 +24,18 @@ MakeRuntimeParamLongName(
 
 FBRuntimeParam::
 FBRuntimeParam(
-FBStaticModule const& module, int moduleIndex, int moduleSlot,
-FBStaticParam const& param, int paramSlot) :
-moduleIndex(moduleIndex),
-moduleSlot(moduleSlot),
-paramSlot(paramSlot),
-static_(param),
-longName(MakeRuntimeParamLongName(module, moduleSlot, param, paramSlot)),
-shortName(FBMakeRuntimeName(param.name, param.slotCount, paramSlot)),
-id(MakeRuntimeParamId(module, moduleSlot, param, paramSlot)),
+  FBStaticModule const& staticModule,
+  FBStaticParam const& staticParam,
+  int runtimeModuleIndex,
+  int staticModuleIndex, int staticModuleSlot,
+  int staticIndex, int staticSlot):
+runtimeModuleIndex(runtimeModuleIndex),
+staticModuleIndex(staticModuleIndex),
+staticModuleSlot(staticModuleSlot),
+staticIndex(staticIndex),
+staticSlot(staticSlot),
+static_(staticParam),
+longName(MakeRuntimeParamLongName(staticModule, staticModuleSlot, staticParam, staticSlot)),
+shortName(FBMakeRuntimeName(staticParam.name, staticParam.slotCount, staticSlot)),
+id(MakeRuntimeParamId(staticModule, staticModuleSlot, staticParam, staticSlot)),
 tag(FBMakeStableHash(id)) {}

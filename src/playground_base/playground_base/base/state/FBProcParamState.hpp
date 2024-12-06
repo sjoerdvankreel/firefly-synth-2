@@ -15,13 +15,13 @@ struct FBProcParamState final
 
 private:
   int pos = 0;
-  float scalar = 0.0f;
   FBOnePoleFilter smooth = {};
   FBFixedCVBlock rampedCV = {};
   
   void Reset(float val);
 
 public:
+  float scalar = 0.0f;
   FBFixedCVBlock smoothedCV = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBProcParamState);
 };

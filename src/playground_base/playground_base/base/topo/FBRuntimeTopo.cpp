@@ -34,10 +34,11 @@ MakeRuntimeParams(
 static std::vector<FBRuntimeModule>
 MakeRuntimeModules(FBStaticTopo const& topo)
 {
+  int runtimeIndex = 0;
   std::vector<FBRuntimeModule> result;
   for (int m = 0; m < topo.modules.size(); m++)
     for (int s = 0; s < topo.modules[m].slotCount; s++)
-      result.push_back(FBRuntimeModule(topo.modules[m], m, s));
+      result.push_back(FBRuntimeModule(topo.modules[m], runtimeIndex++, m, s));
   return result;
 }
 
@@ -79,7 +80,7 @@ FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
   result.all.clear();
   for (int p = 0; p < params.size(); p++)
     result.all.push_back(params[p].static_.scalarAddr(
-      params[p].moduleSlot, params[p].paramSlot, scalar));
+      params[p].staticModuleSlot, params[p].staticSlot, scalar));
   return result;
 }
 
@@ -92,7 +93,7 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
     result.single.acc.emplace_back();
     result.single.block.emplace_back();
 
-    bool voice = static_.modules[params[p].moduleIndex].voice;
+    bool voice = static_.modules[params[p].staticModuleIndex].voice;
     result.isVoice.push_back(voice);
     result.isAcc.push_back(params[p].static_.acc);
 
@@ -105,20 +106,20 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
     if (params[p].static_.acc)
     {
       result.single.acc[p] = params[p].static_.procSingleAccAddr(
-        params[p].moduleSlot, params[p].paramSlot, proc);
+        params[p].staticModuleSlot, params[p].staticSlot, proc);
       if (voice)
         for (int v = 0; v < FB_MAX_VOICES; v++)
           result.voice[v].acc[p] = params[p].static_.procVoiceAccAddr(
-            v, params[p].moduleSlot, params[p].paramSlot, proc);
+            v, params[p].staticModuleSlot, params[p].staticSlot, proc);
     }
     else
     {
       result.single.block[p] = params[p].static_.procSingleBlockAddr(
-        params[p].moduleSlot, params[p].paramSlot, proc);
+        params[p].staticModuleSlot, params[p].staticSlot, proc);
       if (voice)
         for (int v = 0; v < FB_MAX_VOICES; v++)
           result.voice[v].block[p] = params[p].static_.procVoiceBlockAddr(
-            v, params[p].moduleSlot, params[p].paramSlot, proc);
+            v, params[p].staticModuleSlot, params[p].staticSlot, proc);
     }
   }
 

@@ -1,4 +1,5 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/state/FBProcStatePtrs.hpp>
 
 #include <clap/helpers/plugin.hh>
 #include <memory>
@@ -13,8 +14,11 @@ class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
+  void* _procState;
+  FBProcStatePtrs _statePtrs;
 
 public:
+  ~FBCLAPPlugin();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBCLAPPlugin);
   FBCLAPPlugin(FBStaticTopo const& topo, clap_plugin_descriptor const* desc, clap_host const* host);
 
