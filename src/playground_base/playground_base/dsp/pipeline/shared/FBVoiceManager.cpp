@@ -19,7 +19,7 @@ FBVoiceManager::ReturnOldest(FBNoteEvent const& event)
     if (event.note.id != -1 && 
       event.note.id == _voices[i].event.note.id ||
       event.note.channel == _voices[i].event.note.channel &&
-      event.note.key == _voices[i].event.note.channel)
+      event.note.key == _voices[i].event.note.key)
       if (_num[i] < oldest)
       {
         slot = i;
@@ -50,7 +50,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
       }
 
   assert(0 <= slot && slot < _voices.size());
-  _num[slot] = _counter++;
+  _num[slot] = ++_counter;
   _voices[slot].event = event;
   _voices[slot].active = true;
   _voices[slot].initialOffset = event.pos;
