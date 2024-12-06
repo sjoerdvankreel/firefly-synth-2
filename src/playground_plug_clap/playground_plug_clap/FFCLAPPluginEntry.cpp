@@ -6,7 +6,10 @@
 
 static void CLAP_ABI Deinit() {}
 static bool CLAP_ABI Init(char const*) { return true; }
-static std::uint32_t CLAP_ABI 
+
+static char const*
+Features[] = { CLAP_PLUGIN_FEATURE_INSTRUMENT, nullptr };
+static std::uint32_t CLAP_ABI
 GetPluginCount(struct clap_plugin_factory const*) { return 1; }
 
 static clap_plugin_descriptor_t const*
@@ -14,6 +17,7 @@ GetPluginDescriptor(
   clap_plugin_factory const*, std::uint32_t)
 {
   static clap_plugin_descriptor_t result = {};
+  result.features = Features;
   result.name = FF_PLUG_NAME;
   result.url = FF_VENDOR_URL;
   result.vendor = FF_VENDOR_NAME;
