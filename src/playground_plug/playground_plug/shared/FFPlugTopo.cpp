@@ -40,6 +40,16 @@ FFMakeTopo()
   glfo.id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
   glfo.params.resize(FFGLFOParamCount);
 
+  auto& glfoOn = glfo.params[FFGLFOBlockOn];
+  glfoOn.acc = false;
+  glfoOn.name = "On";
+  glfoOn.slotCount = 1;
+  glfoOn.valueCount = 2;
+  glfoOn.id = "{A9741F9B-5E07-40D9-8FC1-73F90363EF0C}";
+  auto selectGlfoOn = [](auto& module) { return &module.block.on; };
+  glfoOn.scalarAddr = SelectSingleAddr<FFScalarState>(selectGlfo, selectGlfoOn);
+  glfoOn.procSingleAccAddr = SelectSingleAddr<FFProcState>(selectGlfo, selectGlfoRate); // TODO
+
   auto& glfoRate = glfo.params[FFGLFOAccRate];
   glfoRate.acc = true;
   glfoRate.name = "Rate";

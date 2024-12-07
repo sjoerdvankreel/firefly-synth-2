@@ -14,116 +14,142 @@
 
 #include <array>
 
-template <class T>
-class alignas(alignof(T)) FFGLFOAccParamState final
+template <class TGlobalBlock>
+class alignas(alignof(TGlobalBlock)) FFGLFOBlockParamState final
 {
   friend class FFGLFOProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<T, 1> rate = {};
+  std::array<TGlobalBlock, 1> on = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOBlockParamState);
+};
+
+template <class TGlobalAcc>
+class alignas(alignof(TGlobalAcc)) FFGLFOAccParamState final
+{
+  friend class FFGLFOProcessor;
+  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
+  std::array<TGlobalAcc, 1> rate = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOAccParamState);
 };
 
-template <class T>
-class alignas(alignof(T)) FFGLFOParamState final
+template <class TGlobalBlock, class TGlobalAcc>
+class alignas(alignof(TGlobalAcc)) FFGLFOParamState final
 {
   friend class FFGLFOProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  FFGLFOAccParamState<T> acc = {};
+  FFGLFOAccParamState<TGlobalAcc> acc = {};
+  FFGLFOBlockParamState<TGlobalBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOParamState);
 };
 
-class FFOsciBlockParamState final
+template <class TVoiceBlock>
+class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<float, 1> on = {};
-  std::array<float, 1> type = {};
+  std::array<TVoiceBlock, 1> on = {};
+  std::array<TVoiceBlock, 1> type = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
 };
 
-template <class T>
-class alignas(alignof(T)) FFOsciAccParamState final
+template <class TVoiceAcc>
+class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<T, 1> pitch = {};
-  std::array<T, FF_OSCI_GAIN_COUNT> gain = {};
+  std::array<TVoiceAcc, 1> pitch = {};
+  std::array<TVoiceAcc, FF_OSCI_GAIN_COUNT> gain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };
 
-template <class T>
-class alignas(alignof(T)) FFOsciParamState final
+template <class TVoiceBlock, class TVoiceAcc>
+class alignas(alignof(TVoiceAcc)) FFOsciParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  FFOsciAccParamState<T> acc = {};
-  FFOsciBlockParamState block = {};
+  FFOsciAccParamState<TVoiceAcc> acc = {};
+  FFOsciBlockParamState<TVoiceBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciParamState);
 };
 
-class FFShaperBlockParamState final
+template <class TVoiceBlock>
+class alignas(alignof(TVoiceBlock)) FFShaperBlockParamState final
 {
   friend class FFShaperProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<float, 1> on = {};
-  std::array<float, 1> clip = {};
+  std::array<TVoiceBlock, 1> on = {};
+  std::array<TVoiceBlock, 1> clip = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperBlockParamState);
 };
 
-template <class T>
-class alignas(alignof(T)) FFShaperAccParamState final
+template <class TVoiceAcc>
+class alignas(alignof(TVoiceAcc)) FFShaperAccParamState final
 {
   friend class FFShaperProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<T, 1> gain = {};
+  std::array<TVoiceAcc, 1> gain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccParamState);
 };
 
-template <class T>
-class alignas(alignof(T)) FFShaperParamState final
+template <class TVoiceBlock, class TVoiceAcc>
+class alignas(alignof(TVoiceAcc)) FFShaperParamState final
 {
   friend class FFShaperProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  FFShaperAccParamState<T> acc = {};
-  FFShaperBlockParamState block = {};
+  FFShaperAccParamState<TVoiceAcc> acc = {};
+  FFShaperBlockParamState<TVoiceBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperParamState);
 };
 
-template <class T>
-struct alignas(alignof(T)) FFPlugVoiceParamState
+template <class TGlobalBlock, class TGlobalAcc>
+struct alignas(alignof(TGlobalAcc)) FFGlobalParamState
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugVoiceParamState);
-  std::array<FFOsciParamState<T>, FF_OSCI_COUNT> osci = {};
-  std::array<FFShaperParamState<T>, FF_SHAPER_COUNT> shaper = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
+  std::array<FFGLFOParamState<TGlobalBlock, TGlobalAcc>, FF_GLFO_COUNT> glfo = {};
 };
 
-template <class T>
-struct alignas(alignof(T)) FFPlugParamState:
-public FFPlugVoiceParamState<T>
+template <class TVoiceBlock, class TVoiceAcc>
+struct alignas(alignof(TVoiceAcc)) FFVoiceParamState
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFPlugParamState);
-  std::array<FFGLFOParamState<T>, FF_GLFO_COUNT> glfo = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
+  std::array<FFOsciParamState<TVoiceBlock, TVoiceAcc>, FF_OSCI_COUNT> osci = {};
+  std::array<FFShaperParamState<TVoiceBlock, TVoiceAcc>, FF_SHAPER_COUNT> shaper = {};
+};
+
+struct FFScalarParamState
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamState);
+  FFVoiceParamState<float, float> voice = {};
+  FFGlobalParamState<float, float> global = {};
+};
+
+/*
+std::vector<float*> globalBlock = {};
+std::vector<FBVoiceAccParamState*> voiceAcc = {};
+std::vector<FBGlobalAccParamState*> globalAcc = {};
+std::vector<FBVoiceBlockParamState> voiceBlock = {};
+*/
+
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
+  FFGlobalParamState<float, FBGlobalAccParamState> block = {};
+  FFVoiceParamState<FBVoiceBlockParamState, FBVoiceAccParamState> voice = {};
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState final:
-public FFPlugParamState<FBProcParamState>
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
   std::array<FFPlugVoiceParamState<FBProcParamState>, FB_MAX_VOICES> voices = {};
-};
-
-struct FFScalarState final
-{
-  FFPlugParamState<float> param = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
 };
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FFGLFODSPState final
