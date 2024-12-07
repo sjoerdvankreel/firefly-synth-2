@@ -6,8 +6,8 @@
 #include <vector>
 
 struct FBScalarStatePtrs;
-struct FBProcVoiceAccParamState;
-struct FBProcGlobalAccParamState;
+struct FBVoiceAccParamState;
+struct FBGlobalAccParamState;
 
 struct FBProcStatePtrs final
 {
@@ -17,6 +17,6 @@ struct FBProcStatePtrs final
   std::vector<bool> isAcc = {};
   std::vector<bool> isVoice = {};
   std::vector<float*> block = {};
-  std::vector<FBProcVoiceAccParamState*> voiceAcc = {};
-  std::vector<FBProcGlobalAccParamState*> globalAcc = {};
+  std::vector<FBVoiceAccParamState*> voiceAcc = {};
+  std::vector<FBGlobalAccParamState*> globalAcc = {};
 };

@@ -1,8 +1,8 @@
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/base/state/FBScalarStatePtrs.hpp>
-#include <playground_base/base/state/FBProcAccParamState.hpp>
-#include <playground_base/base/state/FBProcVoiceAccParamState.hpp>
-#include <playground_base/base/state/FBProcGlobalAccParamState.hpp>
+#include <playground_base/base/state/FBAccParamState.hpp>
+#include <playground_base/base/state/FBVoiceAccParamState.hpp>
+#include <playground_base/base/state/FBGlobalAccParamState.hpp>
 
 void
 FBScalarStatePtrs::InitFrom(FBProcStatePtrs const& proc)
