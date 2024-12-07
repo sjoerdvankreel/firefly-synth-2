@@ -9,7 +9,7 @@
 struct FBFixedInputBlock final
 {
   FBFixedAudioBlock audio = {};
-  std::vector<FBAccEvent> acc = {};
   std::vector<FBNoteEvent> note = {};
+  std::vector<FBAccEvent> accByParamThenSample = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);
 };

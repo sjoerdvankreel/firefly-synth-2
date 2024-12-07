@@ -45,7 +45,7 @@ FBHostBufferProcessor::ProcessToFixed()
   _fixed.audio.CopyFrom(_buffer.audio, 0, 0, FBFixedAudioBlock::Count());
   _buffer.audio.Drop(FBFixedAudioBlock::Count());
   GatherAcc(_buffer.note, _fixed.note);
-  GatherAcc(_buffer.acc, _fixed.acc);
+  GatherAcc(_buffer.accByParamThenSample, _fixed.accByParamThenSample);
   return &_fixed;
 }
 
@@ -64,13 +64,13 @@ FBHostBufferProcessor::BufferFromHost(FBHostInputBlock const& input)
   {
     FBAccEvent thisEvent = acc[e];
     thisEvent.pos += _buffer.audio.Count();
-    _buffer.acc.push_back(thisEvent);
+    _buffer.accByParamThenSample.push_back(thisEvent);
     if (e < acc.size() - 1 &&
       acc[e + 1].index == acc[e].index)
     {
       FBAccEvent nextEvent = acc[e + 1];
       nextEvent.pos += _buffer.audio.Count();
-      GatherStraddledEvents(thisEvent, nextEvent, _buffer.acc);
+      GatherStraddledEvents(thisEvent, nextEvent, _buffer.accByParamThenSample);
     }
   }
 
