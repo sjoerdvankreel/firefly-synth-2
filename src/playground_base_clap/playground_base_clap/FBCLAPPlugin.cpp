@@ -18,7 +18,7 @@ FBCLAPPlugin(
 Plugin(desc, host),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
 _procState(topo.allocProcState()),
-_statePtrs(_topo->MakeProcStatePtrs(_procState)) {}
+_procStatePtrs(_topo->MakeProcStatePtrs(_procState)) {}
 
 bool 
 FBCLAPPlugin::isValidParamId(

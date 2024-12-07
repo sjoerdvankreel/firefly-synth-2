@@ -15,7 +15,7 @@ public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
   void* _procState;
-  FBProcStatePtrs _statePtrs;
+  FBProcStatePtrs _procStatePtrs;
 
 public:
   ~FBCLAPPlugin();

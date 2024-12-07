@@ -15,10 +15,10 @@ FBCLAPPlugin::paramsValue(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  if (_statePtrs.isAcc[index])
-    *value = _statePtrs.single.acc[index]->scalar;
+  if (_procStatePtrs.isAcc[index])
+    *value = _procStatePtrs.single.acc[index]->scalar;
   else
-    *value = *_statePtrs.single.block[index];
+    *value = *_procStatePtrs.single.block[index];
   return true;
 }
 
@@ -67,10 +67,10 @@ FBCLAPPlugin::paramsFlush(
     int index = getParamIndexForParamId(event->param_id);
     if (index == -1)
       continue;
-    if (_statePtrs.isAcc[index])
-      _statePtrs.single.acc[index]->Reset(static_cast<float>(event->value)); // TODO pervoice case
+    if (_procStatePtrs.isAcc[index])
+      _procStatePtrs.single.acc[index]->Reset(static_cast<float>(event->value)); // TODO pervoice case
     else
-      *_statePtrs.single.block[index] = static_cast<float>(event->value);
+      *_procStatePtrs.single.block[index] = static_cast<float>(event->value);
   }
 }
 
