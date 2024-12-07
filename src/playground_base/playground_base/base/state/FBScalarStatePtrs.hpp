@@ -7,7 +7,7 @@ struct FBProcStatePtrs;
 
 struct FBScalarStatePtrs final
 {
-  std::vector<float*> all = {};
+  std::vector<float*> values = {};
   FB_NOCOPY_MOVE_DEFCTOR(FBScalarStatePtrs);
   
   void InitFrom(FBProcStatePtrs const& proc);

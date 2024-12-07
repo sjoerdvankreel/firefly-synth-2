@@ -4,10 +4,9 @@
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 
-struct FBProcParamState final
+struct FBProcAccParamState final
 {
-  float current = 0.0f;
   FBFixedCVBlock smoothed = {};
   FBOnePoleFilter smoother = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBProcAccParamState);
 };

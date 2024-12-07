@@ -77,9 +77,9 @@ FBScalarStatePtrs
 FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
 {
   FBScalarStatePtrs result = {};
-  result.all.clear();
+  result.value.clear();
   for (int p = 0; p < params.size(); p++)
-    result.all.push_back(params[p].static_.scalarAddr(
+    result.value.push_back(params[p].static_.scalarAddr(
       params[p].staticModuleSlot, params[p].staticSlot, scalar));
   return result;
 }
@@ -90,12 +90,13 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
   FBProcStatePtrs result = {};
   for (int p = 0; p < params.size(); p++)
   {
-    result.single.acc.emplace_back();
-    result.single.block.emplace_back();
-
     bool voice = static_.modules[params[p].staticModuleIndex].voice;
+    result.value.emplace_back();
     result.isVoice.push_back(voice);
     result.isAcc.push_back(params[p].static_.acc);
+
+    if(!params[p].static_.acc)
+
 
     for (int v = 0; v < FB_MAX_VOICES; v++)
     {
@@ -139,7 +140,7 @@ FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
   {
     auto param = new DynamicObject;
     param->setProperty("id", String(params[p].id));
-    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *from.all[p])));
+    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *from.value[p])));
     state.append(var(param));
   }
 
@@ -203,8 +204,8 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
   if (!state.isArray())
     return false;
 
-  for (int p = 0; p < to.all.size(); p++)
-    *to.all[p] = static_cast<float>(params[p].static_.defaultNormalized);
+  for (int p = 0; p < to.value.size(); p++)
+    *to.value[p] = static_cast<float>(params[p].static_.defaultNormalized);
 
   for (int sp = 0; sp < state.size(); sp++)
   {
@@ -229,7 +230,7 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
 
     auto const& topo = params[iter->second].static_;
     auto normalized = topo.TextToNormalizedOrDefault(val.toString().toStdString(), true);
-    *to.all[iter->second] = static_cast<float>(normalized);
+    *to.value[iter->second] = static_cast<float>(normalized);
   }
 
   return true;

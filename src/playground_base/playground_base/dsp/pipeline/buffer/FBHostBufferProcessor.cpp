@@ -59,15 +59,16 @@ FBHostBufferProcessor::BufferFromHost(FBHostInputBlock const& input)
     _buffer.note.push_back(event);
   }
 
-  for (int e = 0; e < input.acc.size(); e++)
+  auto const& acc = input.accByParamThenSample;
+  for (int e = 0; e < acc.size(); e++)
   {
-    FBAccEvent thisEvent = input.acc[e];
+    FBAccEvent thisEvent = acc[e];
     thisEvent.pos += _buffer.audio.Count();
     _buffer.acc.push_back(thisEvent);
-    if (e < input.acc.size() - 1 &&
-      input.acc[e + 1].index == input.acc[e].index)
+    if (e < acc.size() - 1 &&
+      acc[e + 1].index == acc[e].index)
     {
-      FBAccEvent nextEvent = input.acc[e + 1];
+      FBAccEvent nextEvent = acc[e + 1];
       nextEvent.pos += _buffer.audio.Count();
       GatherStraddledEvents(thisEvent, nextEvent, _buffer.acc);
     }

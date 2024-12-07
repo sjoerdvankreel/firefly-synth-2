@@ -151,8 +151,9 @@ FBVST3AudioEffect::process(ProcessData& data)
   ParamValue value;
   IParamValueQueue* queue;
   std::unordered_map<int, int>::const_iterator iter;
-  _input.acc.clear();
   _input.block.clear();
+  auto& acc = _input.accByParamThenSample;
+  acc.clear();
   if(data.inputParameterChanges != nullptr)
     for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
@@ -162,7 +163,7 @@ FBVST3AudioEffect::process(ProcessData& data)
             {
               for (int point = 0; point < queue->getPointCount(); point++)
                 if (queue->getPoint(point, position, value) == kResultTrue)
-                  _input.acc.push_back(MakeAccEvent(iter->second, position, value));
+                  acc.push_back(MakeAccEvent(iter->second, position, value));
             }
             else
             {
@@ -172,7 +173,7 @@ FBVST3AudioEffect::process(ProcessData& data)
 
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
-  std::sort(_input.acc.begin(), _input.acc.end(), compare);
+  std::sort(acc.begin(), acc.end(), compare);
 
   if (data.numInputs == 1)
     _input.audio = MakeHostAudioBlock(data.inputs[0], data.numSamples);
