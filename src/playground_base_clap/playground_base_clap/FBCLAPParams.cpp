@@ -25,7 +25,7 @@ FBCLAPPlugin::paramsValue(
       *value = _procStatePtrs.globalAcc[index]->value;
   else
     if (_procStatePtrs.isVoice[index])
-      *value = *_procStatePtrs.voiceBlock[index].value;
+      *value = _procStatePtrs.voiceBlock[index]->value;
     else
       *value = *_procStatePtrs.globalBlock[index];
   return true;
