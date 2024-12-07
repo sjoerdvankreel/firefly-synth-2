@@ -36,7 +36,8 @@ FBCLAPPlugin::paramsValueToText(
     return false;
   std::string text = _topo->params[index].static_.NormalizedToText(false, value);
   std::fill(display, display + size, 0);
-  strncpy(display, text.c_str(), text.size() - 1);
+  strncpy(display, text.c_str(), 
+    std::min(size - 1, static_cast<uint32_t>(text.size())));
   return true;
 }
 
@@ -72,8 +73,10 @@ FBCLAPPlugin::paramsInfo(
   info->default_value = staticParam.defaultNormalized;
   std::fill(info->name, info->name + sizeof(info->name), 0);
   std::fill(info->module, info->module + sizeof(info->module), 0);
-  strncpy(info->module, runtimeModule.name.c_str(), runtimeModule.name.size() - 1);
-  strncpy(info->name, runtimeParam.shortName.c_str(), runtimeParam.shortName.size() - 1);
+  strncpy(info->module, runtimeModule.name.c_str(), 
+    std::min(sizeof(info->module) - 1, runtimeModule.name.size()));
+  strncpy(info->name, runtimeParam.longName.c_str(), 
+    std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
 
   // TODO CLAP_PARAM_IS_HIDDEN
   // TODO CLAP_PARAM_IS_READONLY
