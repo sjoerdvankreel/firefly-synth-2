@@ -16,8 +16,10 @@ FBCLAPPlugin::paramsValue(
   if (index == -1)
     return false;
   if (_statePtrs.isAcc[index])
-    return _statePtrs.single.acc[index]->scalar;
-  return *_statePtrs.single.block[index];
+    *value = _statePtrs.single.acc[index]->scalar;
+  else
+    *value = *_statePtrs.single.block[index];
+  return true;
 }
 
 bool
@@ -52,6 +54,7 @@ void
 FBCLAPPlugin::paramsFlush(
   const clap_input_events* in, const clap_output_events* out) noexcept
 {
+  // TODO when is this even called anyway?
   // TODO handle case with gui / main thread
   for (uint32_t i = 0; i < in->size(in); i++)
   {
@@ -96,8 +99,7 @@ FBCLAPPlugin::paramsInfo(
 
   // TODO CLAP_PARAM_IS_HIDDEN
   // TODO CLAP_PARAM_IS_READONLY
-  // TODO CLAP_PARAM_REQUIRES_PROCESS when?
-  info->flags = CLAP_PARAM_REQUIRES_PROCESS;
+  info->flags = 0;
   if (staticParam.valueCount != 0)
   {
     info->flags |= CLAP_PARAM_IS_STEPPED;
