@@ -1,6 +1,8 @@
 #pragma once
 
+#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/state/FBVoiceBlockParamState.hpp>
 
 #include <array>
 #include <vector>
@@ -16,7 +18,8 @@ struct FBProcStatePtrs final
 
   std::vector<bool> isAcc = {};
   std::vector<bool> isVoice = {};
-  std::vector<float*> block = {};
+  std::vector<float*> allBlock = {};
   std::vector<FBVoiceAccParamState*> voiceAcc = {};
   std::vector<FBGlobalAccParamState*> globalAcc = {};
+  std::vector<FBVoiceBlockParamState> voiceBlock = {};
 };

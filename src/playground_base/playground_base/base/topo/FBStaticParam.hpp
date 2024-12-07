@@ -10,6 +10,7 @@
 
 struct FBVoiceAccParamState;
 struct FBGlobalAccParamState;
+struct FBVoiceBlockParamState;
 
 typedef std::function<float* (
   int moduleSlot, int paramSlot, void* state)>
@@ -17,9 +18,12 @@ FBScalarAddrSelector;
 typedef std::function<FBGlobalAccParamState* (
   int moduleSlot, int paramSlot, void* state)>
 FBGlobalAccAddrSelector;
-typedef std::function<FBGlobalAccParamState* (
+typedef std::function<FBVoiceAccParamState* (
   int voice, int moduleSlot, int paramSlot, void* state)>
 FBVoiceAccAddrSelector;
+typedef std::function<float* (
+  int voice, int moduleSlot, int paramSlot, void* state)>
+  FBVoiceBlockAddrSelector;
 
 struct FBStaticParam final
 {
@@ -32,10 +36,11 @@ struct FBStaticParam final
   double defaultNormalized = 0.0;
   std::vector<FBListItem> list = {};
 
-  FBScalarAddrSelector blockAddr = {};
   FBScalarAddrSelector scalarAddr = {};
+  FBScalarAddrSelector allBlockAddr = {};
   FBVoiceAccAddrSelector voiceAccAddr = {};
   FBGlobalAccAddrSelector globalAccAddr = {};
+  FBVoiceBlockAddrSelector voiceBlockAddr = {};
 
   double DiscreteToNormalized(int index) const
   { return index / (valueCount - 1.0); }

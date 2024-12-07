@@ -10,7 +10,7 @@ FBProcStatePtrs::InitFrom(
 {
   for (int i = 0; i < scalar.values.size(); i++)
     if (!isAcc[i])
-      *block[i] = *scalar.values[i];
+      *allBlock[i] = *scalar.values[i];
     else if(isVoice[i])
       voiceAcc[i]->value = *scalar.values[i];
     else

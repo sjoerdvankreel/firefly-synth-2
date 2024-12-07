@@ -1,6 +1,8 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
-#include <playground_base/base/state/FBProcParamState.hpp>
+#include <playground_base/base/state/FBAccParamState.hpp>
+#include <playground_base/base/state/FBVoiceAccParamState.hpp>
+#include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
@@ -20,6 +22,7 @@ FBHostProcessor::
 FBHostProcessor(
   std::unique_ptr<IFBPlugProcessor>&& plug,
   FBProcStatePtrs const* state, float sampleRate):
+_state(state),
 _plug(std::move(plug)),
 _smooth(std::make_unique<FBSmoothProcessor>()),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
@@ -30,14 +33,13 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
   _plugIn.voiceManager = _voiceManager.get();
   for (int p = 0; p < state->isAcc.size(); p++)
     if (state->isAcc[p])
-    {
-      state->single.acc[p]->smoother = FBOnePoleFilter(
-        sampleRate, FB_PARAM_SMOOTH_SEC);
-      if(state->isVoice[p])
+      if(!state->isVoice[p])
+        state->globalAcc[p]->proc.smoother = 
+          FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
+      else
         for(int v = 0; v < FB_MAX_VOICES; v++)
-          state->voice[v].acc[p]->smoother = FBOnePoleFilter(
-            sampleRate, FB_PARAM_SMOOTH_SEC);
-    }
+          state->voiceAcc[p]->proc[v].smoother = 
+            FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
 }
 
 void 
@@ -46,14 +48,8 @@ FBHostProcessor::ProcessVoices()
   auto& state = *_fixedOut.state;
   auto const& voices = _plugIn.voiceManager->Voices();
   for (int v = 0; v < voices.size(); v++)
-    if (voices[v].active)
-    {
-      for (int p = 0; p < state.isVoice.size(); p++)
-        if (state.isVoice[p] && state.isAcc[p])
-          state.voice[v].acc[p]->smoothed.CopyFrom( // TODO
-            state.single.acc[p]->smoothed);
+    if (voices[v].active) // TODO used to be copy smooth cv here
       _plug->ProcessVoice(_plugIn, v);
-    }
 }
 
 void 
@@ -61,7 +57,7 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   for (auto const& be : input.block)
-    *_fixedOut.state->single.block[be.index] = be.normalized;
+    *_fixedOut.state->allBlock[be.index] = be.normalized;
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);

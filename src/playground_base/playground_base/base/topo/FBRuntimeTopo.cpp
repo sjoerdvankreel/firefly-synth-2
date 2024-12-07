@@ -1,7 +1,6 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/topo/FBTopoDetail.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBProcParamState.hpp>
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/base/state/FBScalarStatePtrs.hpp>
 
@@ -77,9 +76,9 @@ FBScalarStatePtrs
 FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
 {
   FBScalarStatePtrs result = {};
-  result.value.clear();
+  result.values.clear();
   for (int p = 0; p < params.size(); p++)
-    result.value.push_back(params[p].static_.scalarAddr(
+    result.values.push_back(params[p].static_.scalarAddr(
       params[p].staticModuleSlot, params[p].staticSlot, scalar));
   return result;
 }
@@ -90,40 +89,32 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
   FBProcStatePtrs result = {};
   for (int p = 0; p < params.size(); p++)
   {
-    bool voice = static_.modules[params[p].staticModuleIndex].voice;
-    result.value.emplace_back();
-    result.isVoice.push_back(voice);
+    bool isAcc = params[p].static_.acc;
+    bool isVoice = static_.modules[params[p].staticModuleIndex].voice;
+    result.allBlock.emplace_back();
+    result.voiceAcc.emplace_back();
+    result.globalAcc.emplace_back();
+    result.voiceBlock.emplace_back();
+    result.isVoice.push_back(isVoice);
     result.isAcc.push_back(params[p].static_.acc);
 
-    if(!params[p].static_.acc)
-
-
-    for (int v = 0; v < FB_MAX_VOICES; v++)
+    if (!isAcc)
     {
-      result.voice[v].acc.emplace_back();
-      result.voice[v].block.emplace_back();
-    }
-
-    if (params[p].static_.acc)
-    {
-      result.single.acc[p] = params[p].static_.procSingleAccAddr(
+      result.allBlock[p] = params[p].static_.allBlockAddr(
         params[p].staticModuleSlot, params[p].staticSlot, proc);
-      if (voice)
+      if(isVoice)
         for (int v = 0; v < FB_MAX_VOICES; v++)
-          result.voice[v].acc[p] = params[p].static_.procVoiceAccAddr(
+          result.voiceBlock[p].voice[v] = params[p].static_.voiceBlockAddr(
             v, params[p].staticModuleSlot, params[p].staticSlot, proc);
     }
+    else if(!isVoice)
+      result.globalAcc[p] = params[p].static_.globalAccAddr(
+        params[p].staticModuleSlot, params[p].staticSlot, proc);
     else
-    {
-      result.single.block[p] = params[p].static_.procSingleBlockAddr(
-        params[p].staticModuleSlot, params[p].staticSlot, proc);
-      if (voice)
-        for (int v = 0; v < FB_MAX_VOICES; v++)
-          result.voice[v].block[p] = params[p].static_.procVoiceBlockAddr(
-            v, params[p].staticModuleSlot, params[p].staticSlot, proc);
-    }
+      for (int v = 0; v < FB_MAX_VOICES; v++)
+        result.voiceAcc[p] = params[p].static_.voiceAccAddr(
+          v, params[p].staticModuleSlot, params[p].staticSlot, proc);
   }
-
   return result;
 }
 
@@ -140,7 +131,7 @@ FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
   {
     auto param = new DynamicObject;
     param->setProperty("id", String(params[p].id));
-    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *from.value[p])));
+    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *from.values[p])));
     state.append(var(param));
   }
 
@@ -204,8 +195,8 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
   if (!state.isArray())
     return false;
 
-  for (int p = 0; p < to.value.size(); p++)
-    *to.value[p] = static_cast<float>(params[p].static_.defaultNormalized);
+  for (int p = 0; p < to.values.size(); p++)
+    *to.values[p] = static_cast<float>(params[p].static_.defaultNormalized);
 
   for (int sp = 0; sp < state.size(); sp++)
   {
@@ -230,7 +221,7 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
 
     auto const& topo = params[iter->second].static_;
     auto normalized = topo.TextToNormalizedOrDefault(val.toString().toStdString(), true);
-    *to.value[iter->second] = static_cast<float>(normalized);
+    *to.values[iter->second] = static_cast<float>(normalized);
   }
 
   return true;

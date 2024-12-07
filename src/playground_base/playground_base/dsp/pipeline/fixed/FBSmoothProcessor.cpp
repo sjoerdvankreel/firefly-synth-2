@@ -1,5 +1,7 @@
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
-#include <playground_base/base/state/FBProcParamState.hpp>
+#include <playground_base/base/state/FBAccParamState.hpp>
+#include <playground_base/base/state/FBVoiceAccParamState.hpp>
+#include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothProcessor.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
