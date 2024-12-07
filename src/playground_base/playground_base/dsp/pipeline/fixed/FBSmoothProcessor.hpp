@@ -5,13 +5,16 @@
 
 #include <vector>
 
+class FBVoiceManager;
 struct FBFixedInputBlock;
 struct FBFixedOutputBlock;
 
 class FBSmoothProcessor final
 {
+  FBVoiceManager* const _voiceManager ;
   std::vector<FBAccEvent> _accBySampleThenParam = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBSmoothProcessor);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBSmoothProcessor);
+  FBSmoothProcessor(FBVoiceManager* voiceManager);
   void ProcessSmoothing(FBFixedInputBlock const& input, FBFixedOutputBlock& output);
 };

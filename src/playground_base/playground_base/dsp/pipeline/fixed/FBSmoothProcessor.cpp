@@ -2,43 +2,68 @@
 #include <playground_base/base/state/FBAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothProcessor.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 #include <algorithm>
 
+FBSmoothProcessor::
+FBSmoothProcessor(FBVoiceManager* voiceManager) :
+_voiceManager(voiceManager) {}
+
 void 
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-  _accBySampleThenParam.clear();
-  _accBySampleThenParam.insert(
-    _accBySampleThenParam.begin(), 
-    input.accByParamThenSample.begin(), 
-    input.accByParamThenSample.end());
+  auto& myAcc = _accBySampleThenParam;
+  auto& thatAcc = input.accByParamThenSample;
+  myAcc.clear();
+  myAcc.insert(myAcc.begin(), thatAcc.begin(), thatAcc.end());
   auto compare = [](auto const& l, auto const& r) {
     if (l.pos < r.pos) return true;
     if (l.pos > r.pos) return false;
     return l.index < r.index; };
-  std::sort(_accBySampleThenParam.begin(), _accBySampleThenParam.end(), compare);
+  std::sort(myAcc.begin(), myAcc.end(), compare);
 
   // todo deal with nondestructive and pervoice
   int eventIndex = 0;
-  auto& acc = _accBySampleThenParam;
   for (int s = 0; s < FBFixedCVBlock::Count(); s++)
   {
-    while (eventIndex < _accBySampleThenParam.size() &&
-      _accBySampleThenParam[eventIndex].pos == s)
+    for (int eventIndex = 0; 
+      eventIndex < myAcc.size() && myAcc[eventIndex].pos == s; 
+      eventIndex++)
     {
-      auto const& event = _accBySampleThenParam[eventIndex];
-      if(!output.state->isVoice[event.index])
-        output.state->globalAcc[event.index]->proc.
+      auto const& event = myAcc[eventIndex];
+      if (!output.state->isVoice[event.index])
+      {
+        auto& global = output.state->globalAcc[event.index];
+        global->value = event.normalized;
+        global->proc.modulated = event.normalized; // TODO
+      }
+      else
+      {
+        auto& voice = output.state->voiceAcc[event.index];
+        voice->value = event.normalized;
+        for (int v = 0; v < FB_MAX_VOICES; v++)
+          voice->proc[v].modulated = event.normalized; // TODO
+      }
     }
+
+    for (int p = 0; p < output.state->isAcc.size(); p++)
+      if (!output.state->isVoice[p])
+      {
+        auto& global = output.state->globalAcc[p]->proc;
+        global.smoothed[s] = global.smoother.Next(global.modulated);
+      }
+      else
+      {
+        for (int v = 0; v < FB_MAX_VOICES; v++)
+        {
+          auto& voice = output.state->voiceAcc[p]->proc[v];
+          voice.smoothed[s] = voice.smoother.Next(voice.modulated);
+        }
+      }
   }
-
-    
-  for (int p = 0; p < output.state->isAcc.size(); p++)
-    if(output.state->isAcc[p])
-
 }

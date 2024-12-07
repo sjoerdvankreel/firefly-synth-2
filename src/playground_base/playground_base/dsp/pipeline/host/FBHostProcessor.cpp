@@ -24,8 +24,8 @@ FBHostProcessor(
   FBProcStatePtrs const* state, float sampleRate):
 _state(state),
 _plug(std::move(plug)),
-_smooth(std::make_unique<FBSmoothProcessor>()),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
+_smooth(std::make_unique<FBSmoothProcessor>(_voiceManager.get())),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {

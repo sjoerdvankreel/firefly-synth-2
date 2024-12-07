@@ -12,8 +12,6 @@ class FBOnePoleFilter final
 
 public:
   float Next(float in);
-  void Reset(float val) { _z = val; }
-
   FBOnePoleFilter() = default;
   FBOnePoleFilter(float sampleRate, float durationSecs);
 };
