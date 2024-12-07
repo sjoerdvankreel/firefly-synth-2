@@ -6,22 +6,8 @@
 
 struct FBProcParamState final
 {
-  friend class FBHostProcessor;
-  friend class FBRampProcessor;
-  friend class FBSmoothProcessor;
-
-  friend struct FBScalarStatePtrs;
-  friend struct FBProcSingleStatePtrs;
-
-private:
-  int pos = 0;
-  FBOnePoleFilter smooth = {};
-  FBFixedCVBlock rampedCV = {};
-
-public:
-  float scalar = 0.0f;
-  FBFixedCVBlock smoothedCV = {};
-
-  void Reset(float val);
+  float current = 0.0f;
+  FBFixedCVBlock smoothed = {};
+  FBOnePoleFilter smoother = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBProcParamState);
 };

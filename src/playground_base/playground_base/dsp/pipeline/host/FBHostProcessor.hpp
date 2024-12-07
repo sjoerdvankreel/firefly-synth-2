@@ -11,7 +11,6 @@ struct FBProcStatePtrs;
 struct FBHostInputBlock;
 
 class FBVoiceManager;
-class FBRampProcessor;
 class FBHostAudioBlock;
 class IFBPlugProcessor;
 class FBSmoothProcessor;
@@ -23,8 +22,6 @@ class FBHostProcessor final
   FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};
   std::unique_ptr<IFBPlugProcessor> _plug;
-
-  std::unique_ptr<FBRampProcessor> _ramp;
   std::unique_ptr<FBSmoothProcessor> _smooth;
   std::unique_ptr<FBVoiceManager> _voiceManager;
   std::unique_ptr<FBHostBufferProcessor> _hostBuffer;

@@ -7,7 +7,7 @@ FBScalarStatePtrs::InitFrom(FBProcStatePtrs const& proc)
 {
   for (int i = 0; i < all.size(); i++)
     if (proc.isAcc[i])
-      *all[i] = proc.single.acc[i]->scalar;
+      *all[i] = proc.single.acc[i]->current;
     else
       *all[i] = *proc.single.block[i];
 }

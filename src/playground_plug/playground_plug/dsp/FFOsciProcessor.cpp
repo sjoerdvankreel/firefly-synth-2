@@ -24,7 +24,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   // TODO simd lib
   int key = state.voice->event.note.key;
   float freq = FBPitchToFreq(static_cast<float>(key));
-  auto const& gain = params.acc.gain[0].smoothedCV;
+  auto const& gain = params.acc.gain[0].smoothed;
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
     float sample = std::sin(2.0f * std::numbers::pi_v<float> *_phase);

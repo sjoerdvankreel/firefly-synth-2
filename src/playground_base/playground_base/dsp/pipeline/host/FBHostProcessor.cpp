@@ -7,7 +7,6 @@
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBRampProcessor.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothProcessor.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBHostBufferProcessor.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBFixedBufferProcessor.hpp>
@@ -22,7 +21,6 @@ FBHostProcessor(
   std::unique_ptr<IFBPlugProcessor>&& plug,
   FBProcStatePtrs const* state, float sampleRate):
 _plug(std::move(plug)),
-_ramp(std::make_unique<FBRampProcessor>()),
 _smooth(std::make_unique<FBSmoothProcessor>()),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
@@ -33,11 +31,11 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
   for (int p = 0; p < state->isAcc.size(); p++)
     if (state->isAcc[p])
     {
-      state->single.acc[p]->smooth = FBOnePoleFilter(
+      state->single.acc[p]->smoother = FBOnePoleFilter(
         sampleRate, FB_PARAM_SMOOTH_SEC);
       if(state->isVoice[p])
         for(int v = 0; v < FB_MAX_VOICES; v++)
-          state->voice[v].acc[p]->smooth = FBOnePoleFilter(
+          state->voice[v].acc[p]->smoother = FBOnePoleFilter(
             sampleRate, FB_PARAM_SMOOTH_SEC);
     }
 }
@@ -52,8 +50,8 @@ FBHostProcessor::ProcessVoices()
     {
       for (int p = 0; p < state.isVoice.size(); p++)
         if (state.isVoice[p] && state.isAcc[p])
-          state.voice[v].acc[p]->smoothedCV.CopyFrom( // TODO
-            state.single.acc[p]->smoothedCV);
+          state.voice[v].acc[p]->smoothed.CopyFrom( // TODO
+            state.single.acc[p]->smoothed);
       _plug->ProcessVoice(_plugIn, v);
     }
 }
@@ -71,8 +69,7 @@ FBHostProcessor::ProcessHost(
   {
     _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
-    _ramp->ProcessRamping(*fixedIn, _fixedOut);
-    _smooth->ProcessSmoothing(_fixedOut);
+    _smooth->ProcessSmoothing(*fixedIn, _fixedOut);
     _plug->ProcessPreVoice(_plugIn);
     ProcessVoices();
     _plug->ProcessPostVoice(_plugIn, _fixedOut.audio);

@@ -1,11 +1,12 @@
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothProcessor.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 void 
 FBSmoothProcessor::ProcessSmoothing(
-  FBFixedOutputBlock& output)
+  FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
   auto& acc = output.state->single.acc;
   for (int p = 0; p < output.state->isAcc.size(); p++)

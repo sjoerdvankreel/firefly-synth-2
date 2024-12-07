@@ -16,7 +16,7 @@ FBCLAPPlugin::paramsValue(
   if (index == -1)
     return false;
   if (_procStatePtrs.isAcc[index])
-    *value = _procStatePtrs.single.acc[index]->scalar;
+    *value = _procStatePtrs.single.acc[index]->current;
   else
     *value = *_procStatePtrs.single.block[index];
   return true;
@@ -68,7 +68,7 @@ FBCLAPPlugin::paramsFlush(
     if (index == -1)
       continue;
     if (_procStatePtrs.isAcc[index])
-      _procStatePtrs.single.acc[index]->Reset(static_cast<float>(event->value)); // TODO pervoice case
+      _procStatePtrs.single.acc[index]->current = static_cast<float>(event->value);
     else
       *_procStatePtrs.single.block[index] = static_cast<float>(event->value);
   }
