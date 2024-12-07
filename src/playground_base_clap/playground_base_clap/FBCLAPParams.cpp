@@ -18,12 +18,16 @@ FBCLAPPlugin::paramsValue(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  if (!_procStatePtrs.isAcc[index])
-    *value = *_procStatePtrs.allBlock[index];
-  else if (_procStatePtrs.isVoice[index])
-    *value = _procStatePtrs.voiceAcc[index]->value;
+  if (_procStatePtrs.isAcc[index])
+    if (_procStatePtrs.isVoice[index])
+      *value = _procStatePtrs.voiceAcc[index]->value;
+    else
+      *value = _procStatePtrs.globalAcc[index]->value;
   else
-    *value = _procStatePtrs.globalAcc[index]->value;
+    if (_procStatePtrs.isVoice[index])
+      *value = *_procStatePtrs.voiceBlock[index].value;
+    else
+      *value = *_procStatePtrs.globalBlock[index];
   return true;
 }
 
