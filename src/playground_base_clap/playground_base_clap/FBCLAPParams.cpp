@@ -1,6 +1,9 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBProcParamState.hpp>
+#include <playground_base/base/state/FBProcStatePtrs.hpp>
+#include <playground_base/base/state/FBAccParamState.hpp>
+#include <playground_base/base/state/FBVoiceAccParamState.hpp>
+#include <playground_base/base/state/FBGlobalAccParamState.hpp>
 
 uint32_t 
 FBCLAPPlugin::paramsCount() const noexcept
@@ -15,10 +18,12 @@ FBCLAPPlugin::paramsValue(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  if (_procStatePtrs.isAcc[index])
-    *value = _procStatePtrs.single.acc[index]->current;
+  if (!_procStatePtrs.isAcc[index])
+    *value = *_procStatePtrs.allBlock[index];
+  else if (_procStatePtrs.isVoice[index])
+    *value = _procStatePtrs.voiceAcc[index]->value;
   else
-    *value = *_procStatePtrs.single.block[index];
+    *value = _procStatePtrs.globalAcc[index]->value;
   return true;
 }
 
@@ -54,6 +59,7 @@ void
 FBCLAPPlugin::paramsFlush(
   const clap_input_events* in, const clap_output_events* out) noexcept
 {
+#if 0 // TODO
   // TODO when is this even called anyway?
   // TODO handle case with gui / main thread
   for (uint32_t i = 0; i < in->size(in); i++)
@@ -72,6 +78,7 @@ FBCLAPPlugin::paramsFlush(
     else
       *_procStatePtrs.single.block[index] = static_cast<float>(event->value);
   }
+#endif  
 }
 
 bool 
