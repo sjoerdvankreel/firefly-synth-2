@@ -8,7 +8,7 @@
 struct alignas(FB_FIXED_BLOCK_ALIGN) FBAccParamState final
 {
   FBFixedCVBlock smoothed = {};
-  float modulated = 0.0f;
   FBOnePoleFilter smoother = {};
+  float modulated = 0.0f;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
 };

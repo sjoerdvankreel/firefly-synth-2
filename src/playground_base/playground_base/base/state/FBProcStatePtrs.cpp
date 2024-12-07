@@ -16,7 +16,7 @@ FBProcStatePtrs::InitFrom(
         globalAcc[i]->value = *scalar.values[i];
     else
       if (isVoice[i])
-        *voiceBlock[i].value = *scalar.values[i];
+        voiceBlock[i]->value = *scalar.values[i];
       else
         *globalBlock[i] = *scalar.values[i];
 }

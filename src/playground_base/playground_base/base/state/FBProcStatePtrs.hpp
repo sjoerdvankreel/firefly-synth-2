@@ -21,5 +21,5 @@ struct FBProcStatePtrs final
   std::vector<float*> globalBlock = {};
   std::vector<FBVoiceAccParamState*> voiceAcc = {};
   std::vector<FBGlobalAccParamState*> globalAcc = {};
-  std::vector<FBVoiceBlockParamState> voiceBlock = {};
+  std::vector<FBVoiceBlockParamState*> voiceBlock = {};
 };

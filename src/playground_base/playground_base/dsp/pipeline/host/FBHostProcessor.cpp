@@ -58,7 +58,7 @@ FBHostProcessor::ProcessHost(
 {
   for (auto const& be : input.block)
     if (_fixedOut.state->isVoice[be.index])
-      *_fixedOut.state->voiceBlock[be.index].value = be.normalized;
+      _fixedOut.state->voiceBlock[be.index]->value = be.normalized;
     else
       *_fixedOut.state->globalBlock[be.index] = be.normalized;
 

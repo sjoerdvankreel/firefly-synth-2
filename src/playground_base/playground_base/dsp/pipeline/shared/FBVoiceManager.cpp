@@ -58,5 +58,5 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
 
   for (int p = 0; p < _state->isVoice.size(); p++)
     if (_state->isVoice[p] && !_state->isAcc[p])
-      *_state->voiceBlock[p].voice[slot] = *_state->voiceBlock[p].value;
+      _state->voiceBlock[p]->voice[slot] = _state->voiceBlock[p]->value;
 }

@@ -21,12 +21,12 @@ FBGlobalBlockSelector;
 typedef std::function<FBGlobalAccParamState* (
   int moduleSlot, int paramSlot, void* state)>
 FBGlobalAccAddrSelector;
+typedef std::function<FBVoiceBlockParamState* (
+  int moduleSlot, int paramSlot, void* state)>
+  FBVoiceBlockAddrSelector;
 typedef std::function<FBVoiceAccParamState* (
-  int voice, int moduleSlot, int paramSlot, void* state)>
+  int moduleSlot, int paramSlot, void* state)>
 FBVoiceAccAddrSelector;
-typedef std::function<float* (
-  int voice, int moduleSlot, int paramSlot, void* state)>
-FBVoiceBlockAddrSelector;
 
 struct FBStaticParam final
 {

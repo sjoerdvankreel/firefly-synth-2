@@ -100,17 +100,15 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
 
     if(isAcc)
       if(isVoice)
-        for (int v = 0; v < FB_MAX_VOICES; v++)
-          result.voiceAcc[p] = params[p].static_.voiceAccAddr(
-            v, params[p].staticModuleSlot, params[p].staticSlot, proc);
+        result.voiceAcc[p] = params[p].static_.voiceAccAddr(
+          params[p].staticModuleSlot, params[p].staticSlot, proc);
       else
         result.globalAcc[p] = params[p].static_.globalAccAddr(
           params[p].staticModuleSlot, params[p].staticSlot, proc);
     else
       if (isVoice)
-        for (int v = 0; v < FB_MAX_VOICES; v++)
-          result.voiceBlock[p].voice[v] = params[p].static_.voiceBlockAddr(
-            v, params[p].staticModuleSlot, params[p].staticSlot, proc);
+        result.voiceBlock[p] = params[p].static_.voiceBlockAddr(
+          params[p].staticModuleSlot, params[p].staticSlot, proc);
       else
         result.globalBlock[p] = params[p].static_.globalBlockAddr(
           params[p].staticModuleSlot, params[p].staticSlot, proc);
