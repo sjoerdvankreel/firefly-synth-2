@@ -9,6 +9,7 @@
 #include <playground_base/base/state/FBAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
+#include <playground_base/base/state/FBVoiceBlockParamState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
@@ -111,45 +112,32 @@ public:
 };
 
 template <class TGlobalBlock, class TGlobalAcc>
-struct alignas(alignof(TGlobalAcc)) FFGlobalParamState
+struct alignas(alignof(TGlobalAcc)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFGLFOParamState<TGlobalBlock, TGlobalAcc>, FF_GLFO_COUNT> glfo = {};
 };
 
 template <class TVoiceBlock, class TVoiceAcc>
-struct alignas(alignof(TVoiceAcc)) FFVoiceParamState
+struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
   std::array<FFOsciParamState<TVoiceBlock, TVoiceAcc>, FF_OSCI_COUNT> osci = {};
   std::array<FFShaperParamState<TVoiceBlock, TVoiceAcc>, FF_SHAPER_COUNT> shaper = {};
 };
 
-struct FFScalarParamState
+struct FFScalarParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamState);
   FFVoiceParamState<float, float> voice = {};
   FFGlobalParamState<float, float> global = {};
 };
 
-/*
-std::vector<float*> globalBlock = {};
-std::vector<FBVoiceAccParamState*> voiceAcc = {};
-std::vector<FBGlobalAccParamState*> globalAcc = {};
-std::vector<FBVoiceBlockParamState> voiceBlock = {};
-*/
-
-struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
-  FFGlobalParamState<float, FBGlobalAccParamState> block = {};
+  FFGlobalParamState<float, FBGlobalAccParamState> global = {};
   FFVoiceParamState<FBVoiceBlockParamState, FBVoiceAccParamState> voice = {};
-};
-
-struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState final:
-{
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
-  std::array<FFPlugVoiceParamState<FBProcParamState>, FB_MAX_VOICES> voices = {};
 };
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FFGLFODSPState final
@@ -180,18 +168,23 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperDSPState);
 };
 
-struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcVoiceDSPState final
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFGlobalDSPState final
+{
+  std::array<FFGLFODSPState, FF_GLFO_COUNT> glfo;
+};
+
+struct alignas(FB_FIXED_BLOCK_ALIGN) FFVoiceDSPState final
 {
   FBFixedAudioBlock output = {};
   std::array<FFOsciDSPState, FF_OSCI_COUNT> osci = {};
   std::array<FFShaperDSPState, FF_SHAPER_COUNT> shaper = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFProcVoiceDSPState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcDSPState final
 {
-  std::array<FFGLFOProcessor, FF_GLFO_COUNT> glfo = {};
-  std::array<FFProcVoiceDSPState, FB_MAX_VOICES> voices = {};
+  FFGlobalDSPState global = {};
+  std::array<FFVoiceDSPState, FB_MAX_VOICES> voice = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcDSPState);
 };
 

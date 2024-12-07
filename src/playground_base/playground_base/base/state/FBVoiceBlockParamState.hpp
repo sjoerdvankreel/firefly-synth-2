@@ -6,7 +6,9 @@
 
 struct FBVoiceBlockParamState final
 {
+private:
   float value = {};
+public:
   std::array<float, FB_MAX_VOICES> voice = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBVoiceBlockParamState);
 };
