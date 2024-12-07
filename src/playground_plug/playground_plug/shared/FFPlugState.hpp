@@ -6,7 +6,9 @@
 #include <playground_plug/dsp/FFShaperProcessor.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBProcParamState.hpp>
+#include <playground_base/base/state/FBAccParamState.hpp>
+#include <playground_base/base/state/FBVoiceAccParamState.hpp>
+#include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
