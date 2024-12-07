@@ -57,7 +57,10 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   for (auto const& be : input.block)
-    *_fixedOut.state->allBlock[be.index] = be.normalized;
+    if (_fixedOut.state->isVoice[be.index])
+      *_fixedOut.state->voiceBlock[be.index].value = be.normalized;
+    else
+      *_fixedOut.state->globalBlock[be.index] = be.normalized;
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);

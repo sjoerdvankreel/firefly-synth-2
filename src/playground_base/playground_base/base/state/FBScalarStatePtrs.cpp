@@ -8,12 +8,16 @@ void
 FBScalarStatePtrs::InitFrom(FBProcStatePtrs const& proc)
 {
   for (int i = 0; i < values.size(); i++)
-    if (!proc.isAcc[i])
-      *values[i] = *proc.allBlock[i];
-    else if (proc.isVoice[i])
-      *values[i] = proc.voiceAcc[i]->value;
-    else
-      *values[i] = proc.globalAcc[i]->value;
+    if (proc.isAcc[i])
+      if (proc.isVoice[i])
+        *values[i] = proc.voiceAcc[i]->value;
+      else
+        *values[i] = proc.globalAcc[i]->value;
+    else 
+      if (proc.isVoice[i])
+        *values[i] = *proc.voiceBlock[i].value;
+      else
+        *values[i] = *proc.globalBlock[i];
 }
 
 void 

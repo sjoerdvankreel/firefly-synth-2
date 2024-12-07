@@ -91,29 +91,29 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
   {
     bool isAcc = params[p].static_.acc;
     bool isVoice = static_.modules[params[p].staticModuleIndex].voice;
-    result.allBlock.emplace_back();
     result.voiceAcc.emplace_back();
     result.globalAcc.emplace_back();
     result.voiceBlock.emplace_back();
+    result.globalBlock.emplace_back();
     result.isVoice.push_back(isVoice);
     result.isAcc.push_back(params[p].static_.acc);
 
-    if (!isAcc)
-    {
-      result.allBlock[p] = params[p].static_.allBlockAddr(
-        params[p].staticModuleSlot, params[p].staticSlot, proc);
+    if(isAcc)
       if(isVoice)
+        for (int v = 0; v < FB_MAX_VOICES; v++)
+          result.voiceAcc[p] = params[p].static_.voiceAccAddr(
+            v, params[p].staticModuleSlot, params[p].staticSlot, proc);
+      else
+        result.globalAcc[p] = params[p].static_.globalAccAddr(
+          params[p].staticModuleSlot, params[p].staticSlot, proc);
+    else
+      if (isVoice)
         for (int v = 0; v < FB_MAX_VOICES; v++)
           result.voiceBlock[p].voice[v] = params[p].static_.voiceBlockAddr(
             v, params[p].staticModuleSlot, params[p].staticSlot, proc);
-    }
-    else if(!isVoice)
-      result.globalAcc[p] = params[p].static_.globalAccAddr(
-        params[p].staticModuleSlot, params[p].staticSlot, proc);
-    else
-      for (int v = 0; v < FB_MAX_VOICES; v++)
-        result.voiceAcc[p] = params[p].static_.voiceAccAddr(
-          v, params[p].staticModuleSlot, params[p].staticSlot, proc);
+      else
+        result.globalBlock[p] = params[p].static_.globalBlockAddr(
+          params[p].staticModuleSlot, params[p].staticSlot, proc);
   }
   return result;
 }
