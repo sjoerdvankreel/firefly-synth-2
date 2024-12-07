@@ -5,6 +5,7 @@
 struct FBFixedInputBlock;
 struct FBFixedOutputBlock;
 
+// todo drop this - makes no sense with small blocks + smoothing
 class FBRampProcessor final
 {
 public:
