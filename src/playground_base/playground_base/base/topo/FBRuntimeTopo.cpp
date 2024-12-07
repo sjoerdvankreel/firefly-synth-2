@@ -10,11 +10,11 @@
 static std::string const 
 Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
 
-static std::map<int, int>
+static std::unordered_map<int, int>
 MakeTagToParam(
   std::vector<FBRuntimeParam> const& params)
 {
-  std::map<int, int> result;
+  std::unordered_map<int, int> result;
   for (int p = 0; p < params.size(); p++)
     result[params[p].tag] = p;
   return result;
@@ -222,7 +222,7 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
     if (!val.isString())
       return false;
 
-    std::map<int, int>::const_iterator iter;
+    std::unordered_map<int, int>::const_iterator iter;
     int tag = FBMakeStableHash(id.toString().toStdString());
     if ((iter = tagToParam.find(tag)) == tagToParam.end())
       continue;

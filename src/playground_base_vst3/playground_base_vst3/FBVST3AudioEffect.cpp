@@ -7,8 +7,8 @@
 #include <pluginterfaces/vst/ivstevents.h>
 #include <pluginterfaces/vst/ivstparameterchanges.h>
 
-#include <map>
 #include <algorithm>
+#include <unordered_map>
 
 static FBBlockEvent
 MakeBlockEvent(int index, ParamValue value)
@@ -150,7 +150,7 @@ FBVST3AudioEffect::process(ProcessData& data)
   int position;
   ParamValue value;
   IParamValueQueue* queue;
-  std::map<int, int>::const_iterator iter;
+  std::unordered_map<int, int>::const_iterator iter;
   _input.acc.clear();
   _input.block.clear();
   if(data.inputParameterChanges != nullptr)
