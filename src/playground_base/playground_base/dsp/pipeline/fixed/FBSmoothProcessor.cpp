@@ -6,17 +6,39 @@
 #include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
+#include <algorithm>
+
 void 
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-#if 0 // TODO
   _accBySampleThenParam.clear();
-  _accBySampleThenParam.insert(_accBySampleThenParam.begin(), input.acc)
-  auto& acc = output.state->single.acc;
+  _accBySampleThenParam.insert(
+    _accBySampleThenParam.begin(), 
+    input.accByParamThenSample.begin(), 
+    input.accByParamThenSample.end());
+  auto compare = [](auto const& l, auto const& r) {
+    if (l.pos < r.pos) return true;
+    if (l.pos > r.pos) return false;
+    return l.index < r.index; };
+  std::sort(_accBySampleThenParam.begin(), _accBySampleThenParam.end(), compare);
+
+  // todo deal with nondestructive and pervoice
+  int eventIndex = 0;
+  auto& acc = _accBySampleThenParam;
+  for (int s = 0; s < FBFixedCVBlock::Count(); s++)
+  {
+    while (eventIndex < _accBySampleThenParam.size() &&
+      _accBySampleThenParam[eventIndex].pos == s)
+    {
+      auto const& event = _accBySampleThenParam[eventIndex];
+      if(!output.state->isVoice[event.index])
+        output.state->globalAcc[event.index]->proc.
+    }
+  }
+
+    
   for (int p = 0; p < output.state->isAcc.size(); p++)
     if(output.state->isAcc[p])
-      for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
-        acc[p]->smoothedCV[s] = acc[p]->smooth.Next(acc[p]->rampedCV[s]);
-#endif
+
 }

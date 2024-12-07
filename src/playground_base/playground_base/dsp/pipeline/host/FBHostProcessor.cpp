@@ -48,7 +48,7 @@ FBHostProcessor::ProcessVoices()
   auto& state = *_fixedOut.state;
   auto const& voices = _plugIn.voiceManager->Voices();
   for (int v = 0; v < voices.size(); v++)
-    if (voices[v].active) // TODO used to be copy smooth cv here
+    if (voices[v].active)
       _plug->ProcessVoice(_plugIn, v);
 }
 
