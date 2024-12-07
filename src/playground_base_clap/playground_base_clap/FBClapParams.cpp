@@ -8,13 +8,6 @@ FBCLAPPlugin::paramsCount() const noexcept
   return static_cast<uint32_t>(_topo->params.size());
 }
 
-void
-FBCLAPPlugin::paramsFlush(
-  const clap_input_events* in, const clap_output_events* out) noexcept
-{
-  // TODO
-}
-
 bool 
 FBCLAPPlugin::paramsValue(
   clap_id paramId, double* value) noexcept
@@ -53,6 +46,29 @@ FBCLAPPlugin::paramsTextToValue(
     return false;
   *value = normalized.value();
   return true;
+}
+
+void
+FBCLAPPlugin::paramsFlush(
+  const clap_input_events* in, const clap_output_events* out) noexcept
+{
+  // TODO handle case with gui / main thread
+  for (uint32_t i = 0; i < in->size(in); i++)
+  {
+    clap_event_header_t const* header = in->get(in, i);
+    if (header->space_id != CLAP_CORE_EVENT_SPACE_ID)
+      continue;
+    if (header->type != CLAP_EVENT_PARAM_VALUE)
+      continue;
+    auto event = reinterpret_cast<clap_event_param_value const*>(header);
+    int index = getParamIndexForParamId(event->param_id);
+    if (index == -1)
+      continue;
+    if (_statePtrs.isAcc[index])
+      _statePtrs.single.acc[index]->Reset(static_cast<float>(event->value)); // TODO pervoice case
+    else
+      *_statePtrs.single.block[index] = static_cast<float>(event->value);
+  }
 }
 
 bool 
