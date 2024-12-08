@@ -1,6 +1,5 @@
 #pragma once
 
-#include <playground_base/dsp/shared/FBPhase.hpp>
 #include <cmath>
 
 class FBPhase

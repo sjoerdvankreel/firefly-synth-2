@@ -3,6 +3,9 @@
 #include <playground_plug/dsp/FFGLFOProcessor.hpp>
 #include <playground_plug/dsp/FFModuleProcState.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/dsp/shared/FBDSPUtility.hpp>
+
+#include <cmath>
 
 void
 FFGLFOProcessor::Process(FFModuleProcState const& state)
@@ -19,5 +22,5 @@ FFGLFOProcessor::Process(FFModuleProcState const& state)
   }
 
   for (int s = 0; s < output.Count(); s++)
-    output[s] = _phase.Next(state.sampleRate, 1.0f);
+    output[s] = FBPhaseToSine(_phase.Next(state.sampleRate, 1.0f));
 }
