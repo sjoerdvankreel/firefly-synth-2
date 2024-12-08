@@ -1,5 +1,7 @@
 voice manager
 denormals
+clap polymod
+voice block start position (fake it by amp env?)
 figure out if we can do simd for the cv blocks
 smooth filter reacts too slow
 simd lib
