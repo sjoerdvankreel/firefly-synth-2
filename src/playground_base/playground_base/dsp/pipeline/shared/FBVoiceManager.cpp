@@ -6,7 +6,7 @@
 #include <cassert>
 
 FBVoiceManager::
-FBVoiceManager(FBProcStatePtrs const* state):
+FBVoiceManager(FBProcStatePtrs* state):
 _state(state) {}
 
 void 
@@ -56,7 +56,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
   _voices[slot].active = true;
   _voices[slot].initialOffset = event.pos;
 
-  for (int p = 0; p < _state->isVoice.size(); p++)
-    if (_state->isVoice[p] && !_state->isAcc[p])
-      _state->voiceBlock[p]->voice[slot] = _state->voiceBlock[p]->value;
+  for (int p = 0; p < _state->Params().size(); p++)
+    if (_state->Params()[p].Type() == FBProcParamType::VoiceBlock)
+      _state->Params()[p].VoiceBlock().BeginVoice(slot);
 }

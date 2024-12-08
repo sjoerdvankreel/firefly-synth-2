@@ -10,7 +10,10 @@ class FBScalarStatePtrs;
 
 class FBProcStatePtrs final
 {
+  friend class FBVoiceManager;
+  
   std::vector<FBProcParamState> _params;
+  std::vector<FBProcParamState>& Params() { return _params; }
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBProcStatePtrs);

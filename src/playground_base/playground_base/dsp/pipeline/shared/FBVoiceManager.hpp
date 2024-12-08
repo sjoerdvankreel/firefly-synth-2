@@ -6,7 +6,7 @@
 
 #include <array>
 
-struct FBProcStatePtrs;
+class FBProcStatePtrs;
 
 struct FBVoiceInfo
 {
@@ -18,13 +18,13 @@ struct FBVoiceInfo
 class FBVoiceManager
 {
   std::uint64_t _counter = {};
-  FBProcStatePtrs const* const _state;
+  FBProcStatePtrs* const _state;
   std::array<std::uint64_t, FB_MAX_VOICES> _num = {};
   std::array<FBVoiceInfo, FB_MAX_VOICES> _voices = {};
 
 public:
+  FBVoiceManager(FBProcStatePtrs* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVoiceManager);
-  FBVoiceManager(FBProcStatePtrs const* state);
 
   void Lease(FBNoteEvent const& event);
   void ReturnOldest(FBNoteEvent const& event);

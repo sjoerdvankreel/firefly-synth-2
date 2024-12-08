@@ -56,7 +56,7 @@ FBRuntimeTopo::LoadStateWithDryRun(
   auto ptrs = MakeScalarStatePtrs(scalar);
   bool result = LoadState(from, ptrs);
   if (result)
-    to.InitFrom(ptrs);
+    to.CopyFrom(ptrs);
   static_.freeScalarState(scalar);
   return result;
 }
@@ -66,7 +66,7 @@ FBRuntimeTopo::SaveState(FBProcStatePtrs const& from) const
 {
   void* scalar = static_.allocScalarState();
   auto ptrs = MakeScalarStatePtrs(scalar);
-  ptrs.InitFrom(from);
+  ptrs.CopyFrom(from);
   auto result = SaveState(ptrs);
   static_.freeScalarState(scalar);
   return result;
@@ -75,45 +75,33 @@ FBRuntimeTopo::SaveState(FBProcStatePtrs const& from) const
 FBScalarStatePtrs
 FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
 {
-  FBScalarStatePtrs result = {};
-  result.values.clear();
+  std::vector<float*> ptrs = {};
   for (int p = 0; p < params.size(); p++)
-    result.values.push_back(params[p].static_.scalarAddr(
+    ptrs.push_back(params[p].static_.scalarAddr(
       params[p].staticModuleSlot, params[p].staticSlot, scalar));
-  return result;
+  return FBScalarStatePtrs(std::move(ptrs));
 }
 
 FBProcStatePtrs
 FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
 {
-  FBProcStatePtrs result = {};
+  std::vector<FBProcParamState> ptrs = {};
   for (int p = 0; p < params.size(); p++)
-  {
-    bool isAcc = params[p].static_.acc;
-    bool isVoice = static_.modules[params[p].staticModuleIndex].voice;
-    result.voiceAcc.emplace_back();
-    result.globalAcc.emplace_back();
-    result.voiceBlock.emplace_back();
-    result.globalBlock.emplace_back();
-    result.isVoice.push_back(isVoice);
-    result.isAcc.push_back(params[p].static_.acc);
-
-    if(isAcc)
-      if(isVoice)
-        result.voiceAcc[p] = params[p].static_.voiceAccAddr(
-          params[p].staticModuleSlot, params[p].staticSlot, proc);
+    if (static_.modules[params[p].staticModuleIndex].voice)
+      if (params[p].static_.acc)
+        ptrs.push_back(FBProcParamState(params[p].static_.voiceAccAddr(
+          params[p].staticModuleSlot, params[p].staticSlot, proc)));
       else
-        result.globalAcc[p] = params[p].static_.globalAccAddr(
-          params[p].staticModuleSlot, params[p].staticSlot, proc);
+        ptrs.push_back(FBProcParamState(params[p].static_.voiceBlockAddr(
+          params[p].staticModuleSlot, params[p].staticSlot, proc)));
     else
-      if (isVoice)
-        result.voiceBlock[p] = params[p].static_.voiceBlockAddr(
-          params[p].staticModuleSlot, params[p].staticSlot, proc);
+      if (params[p].static_.acc)
+        ptrs.push_back(FBProcParamState(params[p].static_.globalAccAddr(
+          params[p].staticModuleSlot, params[p].staticSlot, proc)));
       else
-        result.globalBlock[p] = params[p].static_.globalBlockAddr(
-          params[p].staticModuleSlot, params[p].staticSlot, proc);
-  }
-  return result;
+        ptrs.push_back(FBProcParamState(params[p].static_.globalBlockAddr(
+          params[p].staticModuleSlot, params[p].staticSlot, proc)));
+  return FBProcStatePtrs(std::move(ptrs));
 }
 
 std::string 
@@ -129,7 +117,7 @@ FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
   {
     auto param = new DynamicObject;
     param->setProperty("id", String(params[p].id));
-    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *from.values[p])));
+    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *from.Params()[p])));
     state.append(var(param));
   }
 
@@ -193,8 +181,8 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
   if (!state.isArray())
     return false;
 
-  for (int p = 0; p < to.values.size(); p++)
-    *to.values[p] = static_cast<float>(params[p].static_.defaultNormalized);
+  for (int p = 0; p < to.Params().size(); p++)
+    *to.Params()[p] = static_cast<float>(params[p].static_.defaultNormalized);
 
   for (int sp = 0; sp < state.size(); sp++)
   {
@@ -219,7 +207,7 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
 
     auto const& topo = params[iter->second].static_;
     auto normalized = topo.TextToNormalizedOrDefault(val.toString().toStdString(), true);
-    *to.values[iter->second] = static_cast<float>(normalized);
+    *to.Params()[iter->second] = static_cast<float>(normalized);
   }
 
   return true;

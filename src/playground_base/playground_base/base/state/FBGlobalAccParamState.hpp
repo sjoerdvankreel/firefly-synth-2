@@ -6,10 +6,11 @@
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FBGlobalAccParamState final
 {
+  friend class FBProcParamState;
+
   float _value = {};
   FBAccParamState _global = {};
 
-  friend class FBProcParamState;
   float Value() const { return _value; }
   void Value(float value) { _value = value; };
 

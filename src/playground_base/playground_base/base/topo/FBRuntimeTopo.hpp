@@ -11,8 +11,8 @@
 #include <vector>
 #include <unordered_map>
 
-struct FBProcStatePtrs;
-struct FBScalarStatePtrs;
+class FBProcStatePtrs;
+class FBScalarStatePtrs;
 
 struct FBRuntimeTopo final
 {

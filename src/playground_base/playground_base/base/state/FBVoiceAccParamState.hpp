@@ -6,10 +6,11 @@
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FBVoiceAccParamState final
 {
+  friend class FBProcParamState;
+
   float _value = {};
   std::array<FBAccParamState, FB_MAX_VOICES> _voice = {};
 
-  friend class FBProcParamState;
   float Value() const { return _value; }
   void Value(float value) { _value = value; };
 

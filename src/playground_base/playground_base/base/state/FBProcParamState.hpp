@@ -42,7 +42,9 @@ class FBProcParamState final
     FBVoiceBlockParamState* _voiceBlock;
   };
 
+  friend class FBVoiceManager;
   friend class FBProcStatePtrs;
+
   void Value(float value);
   float& GlobalBlock();
   FBVoiceAccParamState& VoiceAcc();
@@ -50,11 +52,11 @@ class FBProcParamState final
   FBVoiceBlockParamState& VoiceBlock();
 
 public:
-  FBProcParamState(float* globalBlock);
-  FBProcParamState(FBVoiceAccParamState* voiceAcc);
-  FBProcParamState(FBGlobalAccParamState* globalAcc);
-  FBProcParamState(FBVoiceBlockParamState* voiceBlock);
   FB_COPY_MOVE_DEFCTOR(FBProcParamState);
+  explicit FBProcParamState(float* globalBlock);
+  explicit FBProcParamState(FBVoiceAccParamState* voiceAcc);
+  explicit FBProcParamState(FBGlobalAccParamState* globalAcc);
+  explicit FBProcParamState(FBVoiceBlockParamState* voiceBlock);
 
   float Value() const;
   float GlobalBlock() const;

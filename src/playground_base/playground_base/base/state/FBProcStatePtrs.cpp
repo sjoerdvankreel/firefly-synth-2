@@ -5,5 +5,5 @@ void
 FBProcStatePtrs::CopyFrom(FBScalarStatePtrs const& scalar)
 {
   for (int p = 0; p < Params().size(); p++)
-    _params[p].Value(*scalar.Params()[p]);
+    Params()[p].Value(*scalar.Params()[p]);
 }

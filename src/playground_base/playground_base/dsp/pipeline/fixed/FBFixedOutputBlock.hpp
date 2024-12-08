@@ -2,7 +2,7 @@
 
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
-struct FBProcStatePtrs;
+class FBProcStatePtrs;
 
 struct FBFixedOutputBlock final
 {

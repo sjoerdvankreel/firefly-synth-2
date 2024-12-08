@@ -8,9 +8,9 @@
 #include <optional>
 #include <functional>
 
-struct FBVoiceAccParamState;
-struct FBGlobalAccParamState;
-struct FBVoiceBlockParamState;
+class FBVoiceAccParamState;
+class FBGlobalAccParamState;
+class FBVoiceBlockParamState;
 
 typedef std::function<float* (
   int moduleSlot, int paramSlot, void* state)>
@@ -23,7 +23,7 @@ typedef std::function<FBGlobalAccParamState* (
 FBGlobalAccAddrSelector;
 typedef std::function<FBVoiceBlockParamState* (
   int moduleSlot, int paramSlot, void* state)>
-  FBVoiceBlockAddrSelector;
+FBVoiceBlockAddrSelector;
 typedef std::function<FBVoiceAccParamState* (
   int moduleSlot, int paramSlot, void* state)>
 FBVoiceAccAddrSelector;
