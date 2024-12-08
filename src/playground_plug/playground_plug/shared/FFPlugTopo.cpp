@@ -11,6 +11,18 @@ SelectAddr(auto selectModule, auto selectParam)
     return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
 }
 
+static auto
+SelectScalarAddr(auto selectModule, auto selectParam)
+{
+  return SelectAddr<FFScalarState>(selectModule, selectParam);
+}
+
+static auto
+SelectProcAddr(auto selectModule, auto selectParam)
+{
+  return SelectAddr<FFProcState>(selectModule, selectParam);
+}
+
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
 {
@@ -25,7 +37,7 @@ FFMakeTopo()
   result->freeScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
 
   auto& glfo = result->modules[FFModuleGLFO];
-  auto selectGlfo = [](auto& state) { return &state.glfo; };
+  auto selectGlfo = [](auto& state) { return &state.global.glfo; };
   glfo.voice = false;
   glfo.name = "GLFO";
   glfo.slotCount = FF_GLFO_COUNT;
@@ -39,10 +51,8 @@ FFMakeTopo()
   glfoOn.valueCount = 2;
   glfoOn.id = "{A9741F9B-5E07-40D9-8FC1-73F90363EF0C}";
   auto selectGlfoOn = [](auto& module) { return &module.block.on; };
-  glfoOn.scalarAddr = [](int moduleSlot, int paramSlot, void* state) {
-    return &static_cast<FFScalarState*>(state)->param.global.glfo[moduleSlot].block.on[paramSlot]; };
-  glfoOn.globalBlockAddr = [](int moduleSlot, int paramSlot, void* state) {
-    return &static_cast<FFProcState*>(state)->param.global.glfo[moduleSlot].block.on[paramSlot]; };
+  glfoOn.scalarAddr = SelectScalarAddr(selectGlfo, selectGlfoOn);
+  glfoOn.globalBlockAddr = SelectProcAddr(selectGlfo, selectGlfoOn);
 
   auto& glfoRate = glfo.params[FFGLFOAccRate];
   glfoRate.acc = true;
@@ -51,9 +61,11 @@ FFMakeTopo()
   glfoRate.valueCount = 0;
   glfoRate.id = "{79BFD05E-98FA-48D4-8D07-C009285EACA7}";
   auto selectGlfoRate = [](auto& module) { return &module.acc.rate; };
+  glfoRate.scalarAddr = SelectScalarAddr(selectGlfo, selectGlfoOn);
+  glfoRate.globalAccAddr = SelectProcAddr(selectGlfo, selectGlfoRate);
 
   auto& osci = result->modules[FFModuleOsci];
-  auto selectOsci = [](auto& state) { return &state.osci; };
+  auto selectOsci = [](auto& state) { return &state.voice.osci; };
   osci.voice = true;
   osci.name = "Osc";
   osci.slotCount = FF_OSCI_COUNT;
@@ -67,6 +79,8 @@ FFMakeTopo()
   osciOn.valueCount = 2;
   osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
   auto selectOsciOn = [](auto& module) { return &module.block.on; };
+  osciOn.scalarAddr = SelectScalarAddr(selectOsci, selectOsciOn);
+  osciOn.voiceBlockAddr = SelectProcAddr(selectOsci, selectOsciOn);
 
   auto& osciType = osci.params[FFOsciBlockType];
   osciType.acc = false;
@@ -78,6 +92,8 @@ FFMakeTopo()
     { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
     { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" } };
   auto selectOsciType = [](auto& module) { return &module.block.type; };
+  osciType.scalarAddr = SelectScalarAddr(selectOsci, selectOsciType);
+  osciType.voiceBlockAddr = SelectProcAddr(selectOsci, selectOsciType);
 
   auto& osciGain = osci.params[FFOsciAccGain];
   osciGain.acc = true;
@@ -86,6 +102,8 @@ FFMakeTopo()
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   auto selectOsciGain = [](auto& module) { return &module.acc.gain; };
+  osciGain.scalarAddr = SelectScalarAddr(selectOsci, selectOsciGain);
+  osciGain.voiceAccAddr = SelectProcAddr(selectOsci, selectOsciGain);
 
   auto& osciPitch = osci.params[FFOsciAccPitch];
   osciPitch.acc = true;
@@ -94,9 +112,11 @@ FFMakeTopo()
   osciPitch.valueCount = 0;
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
   auto selectOsciPitch = [](auto& module) { return &module.acc.pitch; };
+  osciPitch.scalarAddr = SelectScalarAddr(selectOsci, selectOsciPitch);
+  osciPitch.voiceAccAddr = SelectProcAddr(selectOsci, selectOsciPitch);
 
   auto& shaper = result->modules[FFModuleShaper];
-  auto selectShaper = [](auto& state) { return &state.shaper; };
+  auto selectShaper = [](auto& state) { return &state.voice.shaper; };
   shaper.voice = true;
   shaper.name = "Shaper";
   shaper.slotCount = FF_SHAPER_COUNT;
@@ -110,6 +130,8 @@ FFMakeTopo()
   shaperOn.valueCount = 2;
   shaperOn.id = "{BF67A27A-97E9-4640-9E57-B1E04D195ACC}";
   auto selectShaperOn = [](auto& module) { return &module.block.on; };
+  shaperOn.scalarAddr = SelectScalarAddr(selectShaper, selectShaperOn);
+  shaperOn.voiceBlockAddr = SelectProcAddr(selectShaper, selectShaperOn);
 
   auto& shaperClip = shaper.params[FFShaperBlockClip];
   shaperClip.acc = false;
@@ -118,6 +140,8 @@ FFMakeTopo()
   shaperClip.valueCount = 2;
   shaperClip.id = "{81C7442E-4064-4E90-A742-FDDEA84AE1AC}";
   auto selectShaperClip = [](auto& module) { return &module.block.clip; };
+  shaperClip.scalarAddr = SelectScalarAddr(selectShaper, selectShaperClip);
+  shaperClip.voiceBlockAddr = SelectProcAddr(selectShaper, selectShaperClip);
 
   auto& shaperGain = shaper.params[FFShaperAccGain];
   shaperGain.acc = true;
@@ -126,6 +150,8 @@ FFMakeTopo()
   shaperGain.valueCount = 2;
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
   auto selectShaperGain = [](auto& module) { return &module.acc.gain; };
+  shaperGain.scalarAddr = SelectScalarAddr(selectShaper, selectShaperGain);
+  shaperGain.voiceAccAddr = SelectProcAddr(selectShaper, selectShaperGain);
 
   return result;
 }
