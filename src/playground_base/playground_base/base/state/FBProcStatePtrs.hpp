@@ -17,8 +17,9 @@ class FBProcStatePtrs final
   std::vector<FBProcParamState>& Params() { return _params; }
 
 public:
-  FB_NOCOPY_MOVE_NODEFCTOR(FBProcStatePtrs);
+  void Init(float sampleRate);
   void CopyFrom(FBScalarStatePtrs const& scalar);
+  FB_NOCOPY_MOVE_NODEFCTOR(FBProcStatePtrs);
 
   std::vector<FBProcParamState> const& Params() const { return _params; }
   FBProcStatePtrs(std::vector<FBProcParamState>&& params) : _params(std::move(params)) {}

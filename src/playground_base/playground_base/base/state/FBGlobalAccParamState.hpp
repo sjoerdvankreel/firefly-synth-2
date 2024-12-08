@@ -9,13 +9,13 @@ class alignas(FB_FIXED_BLOCK_ALIGN) FBGlobalAccParamState final
   friend class FBProcParamState;
 
   float _value = {};
-  FBAccParamState _global;
+  FBAccParamState _global = {};
 
   float Value() const { return _value; }
   void Value(float value) { _value = value; };
+  void Init(float sampleRate) { _global.Init(sampleRate); }
 
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBGlobalAccParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBGlobalAccParamState);
   FBAccParamState const& Global() const { return _global; }
-  FBGlobalAccParamState(float sampleRate) : _global(sampleRate) {}
 };
