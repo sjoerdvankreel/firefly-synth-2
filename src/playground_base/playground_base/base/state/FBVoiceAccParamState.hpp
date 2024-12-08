@@ -6,6 +6,7 @@
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FBVoiceAccParamState final
 {
+  friend class FBVoiceManager;
   friend class FBProcParamState;
   friend class FBSmoothProcessor;
 
@@ -16,6 +17,7 @@ class alignas(FB_FIXED_BLOCK_ALIGN) FBVoiceAccParamState final
 
   float Value() const { return _value; }
   void Value(float value) { _value = value; }
+  void BeginVoice(int slot) { Modulate(slot, _value); }
   void Modulate(int slot, float value) { _voice[slot].Modulate(value); }
   std::array<FBAccParamState, FB_MAX_VOICES>& Voice() { return _voice; }
 
