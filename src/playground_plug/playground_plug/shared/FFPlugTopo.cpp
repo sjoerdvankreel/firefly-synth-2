@@ -2,6 +2,15 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 
+template <class State>
+static auto
+SelectAddr(auto selectModule, auto selectParam)
+{
+  return [selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
+    auto moduleState = selectModule(static_cast<State*>(state)->param);
+    return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
+}
+
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
 {
@@ -30,6 +39,10 @@ FFMakeTopo()
   glfoOn.valueCount = 2;
   glfoOn.id = "{A9741F9B-5E07-40D9-8FC1-73F90363EF0C}";
   auto selectGlfoOn = [](auto& module) { return &module.block.on; };
+  glfoOn.scalarAddr = [](int moduleSlot, int paramSlot, void* state) {
+    return &static_cast<FFScalarState*>(state)->param.global.glfo[moduleSlot].block.on[paramSlot]; };
+  glfoOn.globalBlockAddr = [](int moduleSlot, int paramSlot, void* state) {
+    return &static_cast<FFProcState*>(state)->param.global.glfo[moduleSlot].block.on[paramSlot]; };
 
   auto& glfoRate = glfo.params[FFGLFOAccRate];
   glfoRate.acc = true;
