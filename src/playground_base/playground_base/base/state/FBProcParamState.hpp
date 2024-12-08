@@ -6,6 +6,7 @@
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceBlockParamState.hpp>
+#include <playground_base/base/state/FBGlobalBlockParamState.hpp>
 
 #include <cassert>
 
@@ -36,7 +37,7 @@ class FBProcParamState final
   FBProcParamType _type;
   union
   {
-    float* const _globalBlock;
+    FBGlobalBlockParamState* _globalBlock;
     FBVoiceAccParamState* _voiceAcc;
     FBGlobalAccParamState* _globalAcc;
     FBVoiceBlockParamState* _voiceBlock;
@@ -50,33 +51,28 @@ class FBProcParamState final
   void Value(float value);
   void Init(float sampleRate);
 
-  float& GlobalBlock();
   FBVoiceAccParamState& VoiceAcc();
   FBGlobalAccParamState& GlobalAcc();
   FBVoiceBlockParamState& VoiceBlock();
+  FBGlobalBlockParamState& GlobalBlock();
 
 public:
   FB_COPY_MOVE_DEFCTOR(FBProcParamState);
-  explicit FBProcParamState(float* globalBlock);
   explicit FBProcParamState(FBVoiceAccParamState* voiceAcc);
   explicit FBProcParamState(FBGlobalAccParamState* globalAcc);
   explicit FBProcParamState(FBVoiceBlockParamState* voiceBlock);
+  explicit FBProcParamState(FBGlobalBlockParamState* globalBlock);
 
   float Value() const;
-  float GlobalBlock() const;
   FBVoiceAccParamState const& VoiceAcc() const;
   FBGlobalAccParamState const& GlobalAcc() const;
   FBVoiceBlockParamState const& VoiceBlock() const;
+  FBGlobalBlockParamState const& GlobalBlock() const;
 
   FBProcParamType Type() const { return _type; }
   bool IsAcc() const { return FBProcParamTypeIsAcc(Type()); }
   bool IsVoice() const { return FBProcParamTypeIsVoice(Type()); }
 };
-
-inline FBProcParamState::
-FBProcParamState(float* globalBlock) :
-_type(FBProcParamType::GlobalBlock), 
-_globalBlock(globalBlock) {}
 
 inline FBProcParamState::
 FBProcParamState(FBVoiceAccParamState* voiceAcc) :
@@ -93,19 +89,10 @@ FBProcParamState(FBVoiceBlockParamState* voiceBlock) :
 _type(FBProcParamType::VoiceBlock),
 _voiceBlock(voiceBlock) {}
 
-inline float&
-FBProcParamState::GlobalBlock()
-{
-  assert(Type() == FBProcParamType::GlobalBlock);
-  return *_globalBlock;
-}
-
-inline float
-FBProcParamState::GlobalBlock() const
-{
-  assert(Type() == FBProcParamType::GlobalBlock);
-  return *_globalBlock;
-}
+inline FBProcParamState::
+FBProcParamState(FBGlobalBlockParamState* globalBlock) :
+_type(FBProcParamType::GlobalBlock), 
+_globalBlock(globalBlock) {}
 
 inline FBVoiceAccParamState&
 FBProcParamState::VoiceAcc()
@@ -149,15 +136,29 @@ FBProcParamState::VoiceBlock() const
   return *_voiceBlock;
 }
 
+inline FBGlobalBlockParamState&
+FBProcParamState::GlobalBlock()
+{
+  assert(Type() == FBProcParamType::GlobalBlock);
+  return *_globalBlock;
+}
+
+inline FBGlobalBlockParamState const&
+FBProcParamState::GlobalBlock() const
+{
+  assert(Type() == FBProcParamType::GlobalBlock);
+  return *_globalBlock;
+}
+
 inline float
 FBProcParamState::Value() const
 {
   switch (Type())
   {
-  case FBProcParamType::GlobalBlock: return GlobalBlock();
+  case FBProcParamType::VoiceAcc: return VoiceAcc().Value();
   case FBProcParamType::GlobalAcc: return GlobalAcc().Value();
   case FBProcParamType::VoiceBlock: return VoiceBlock().Value();
-  case FBProcParamType::VoiceAcc: return VoiceAcc().Value();
+  case FBProcParamType::GlobalBlock: return GlobalBlock().Value();
   default: assert(false); return 0.0f;
   }
 }
@@ -167,10 +168,10 @@ FBProcParamState::Value(float value)
 {
   switch (Type())
   {
-  case FBProcParamType::GlobalBlock: GlobalBlock() = value; break;
+  case FBProcParamType::VoiceAcc: VoiceAcc().Value(value); break;
   case FBProcParamType::GlobalAcc: GlobalAcc().Value(value); break;
   case FBProcParamType::VoiceBlock: VoiceBlock().Value(value); break;
-  case FBProcParamType::VoiceAcc: VoiceAcc().Value(value); break;
+  case FBProcParamType::GlobalBlock: GlobalBlock().Value(value); break;
   default: assert(false);
   }
 }

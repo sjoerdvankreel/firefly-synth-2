@@ -10,6 +10,7 @@
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceBlockParamState.hpp>
+#include <playground_base/base/state/FBGlobalBlockParamState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 
@@ -142,8 +143,8 @@ struct FFScalarState final
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
-  FFGlobalParamState<float, FBGlobalAccParamState> global = {};
   FFVoiceParamState<FBVoiceBlockParamState, FBVoiceAccParamState> voice = {};
+  FFGlobalParamState<FBGlobalBlockParamState, FBGlobalAccParamState> global = {};
 };
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FFGLFODSPState final
