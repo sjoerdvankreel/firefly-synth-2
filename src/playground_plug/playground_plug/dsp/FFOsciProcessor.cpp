@@ -7,31 +7,68 @@
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
+struct FFOsciBlock
+{
+  FFModuleProcState const& state;
+  FBFixedAudioBlock& output;
+  bool on;
+  int type;
+  FBFixedCVBlock const& gain;
+  FBFixedCVBlock const& pitch;
+  FBFixedCVBlock const& glfoToGain;
+};
+
+void
+FFOsciProcessor::ApplyGain(FFOsciBlock& block)
+{
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < block.output.Count(); s++)
+      block.output[ch][s] *= block.gain[s];
+}
+
+void
+FFOsciProcessor::ApplyGLFOToGain(FFOsciBlock& block)
+{
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < block.output.Count(); s++)
+      block.output[ch][s] *= block.gain[s];
+}
+
+void
+FFOsciProcessor::Generate(FFOsciBlock& block)
+{
+  int key = block.state.voice->event.note.key;
+  float freq = FBPitchToFreq(static_cast<float>(key));
+
+  for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
+  {
+    float sample = FBPhaseToSine(_phase.Next(block.state.sampleRate, freq));
+    block.output[0][s] = sample;
+    block.output[1][s] = sample;
+  }
+}
+
 void
 FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 {
   auto const& topo = state.topo->modules[FFModuleOsci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
-  auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
-  bool on = topo.params[FFOsciBlockOn].NormalizedToBool(params.block.on[0].Voice()[voice]);
+  FFOsciBlock block = {
+    state,
+    state.proc->dsp.voice[voice].osci[state.moduleSlot].output,
+    topo.params[FFOsciBlockOn].NormalizedToBool(params.block.on[0].Voice()[voice]),
+    topo.params[FFOsciBlockType].NormalizedToBool(params.block.type[0].Voice()[voice]),
+    params.acc.gain[0].Voice()[voice].CV(),
+    params.acc.pitch[0].Voice()[voice].CV(),
+    params.acc.glfoToGain[0].Voice()[voice].CV() };
 
-  if (!on)
+  if (!block.on)
   {
-    output.Fill(0, output.Count(), 0.0f);
+    block.output.Fill(0, block.output.Count(), 0.0f);
     return;
   }
 
-  // TODO simd lib
-  int key = state.voice->event.note.key;
-  float freq = FBPitchToFreq(static_cast<float>(key));
-  auto const& gain = params.acc.gain[0].Voice()[voice].CV();
-  for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
-  {
-    float sample = std::sin(2.0f * std::numbers::pi_v<float> *_phase);
-    output[0][s] = sample * gain[s];
-    output[1][s] = sample * gain[s];
-    // todo continuous pitch
-    _phase += freq / state.sampleRate;
-    _phase -= std::floor(_phase);
-  }
+  Generate(block);
+  ApplyGain(block);
+  ApplyGLFOToGain(block);
 }

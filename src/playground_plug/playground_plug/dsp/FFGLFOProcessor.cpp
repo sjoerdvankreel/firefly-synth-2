@@ -7,6 +7,14 @@
 
 #include <cmath>
 
+void 
+FFGLFOProcessor::ProcessOn(FFModuleProcState const& state)
+{
+  auto& output = state.proc->dsp.global.glfo[state.moduleSlot].output;
+  for (int s = 0; s < output.Count(); s++)
+    output[s] = FBPhaseToSine(_phase.Next(state.sampleRate, 1.0f));
+}
+
 void
 FFGLFOProcessor::Process(FFModuleProcState const& state)
 {
@@ -15,12 +23,8 @@ FFGLFOProcessor::Process(FFModuleProcState const& state)
   auto& output = state.proc->dsp.global.glfo[state.moduleSlot].output;
   bool on = topo.params[FFGLFOBlockOn].NormalizedToBool(params.block.on[0].Value());
 
-  if (!on)
-  {
+  if (on)
+    ProcessOn(state);
+  else
     output.Fill(0, output.Count(), 0.0f);
-    return;
-  }
-
-  for (int s = 0; s < output.Count(); s++)
-    output[s] = FBPhaseToSine(_phase.Next(state.sampleRate, 1.0f));
 }

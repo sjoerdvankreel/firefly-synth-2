@@ -64,6 +64,7 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
   std::array<TVoiceAcc, 1> pitch = {};
+  std::array<TVoiceAcc, 1> glfoToGain = {};
   std::array<TVoiceAcc, FF_OSCI_GAIN_COUNT> gain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
@@ -97,6 +98,7 @@ class alignas(alignof(TVoiceAcc)) FFShaperAccParamState final
   friend class FFShaperProcessor;
   friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
   std::array<TVoiceAcc, 1> gain = {};
+  std::array<TVoiceAcc, 1> glfoToGain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccParamState);
 };

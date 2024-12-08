@@ -1,5 +1,6 @@
 voice manager
 smooth filter reacts too slow
+simd lib
 save state as ui text
 handle block/acc non/destructive per/voice or not
 static link

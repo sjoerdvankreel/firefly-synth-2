@@ -115,6 +115,16 @@ FFMakeTopo()
   osciPitch.scalarAddr = SelectScalarAddr(selectOsci, selectOsciPitch);
   osciPitch.voiceAccAddr = SelectProcAddr(selectOsci, selectOsciPitch);
 
+  auto& osciGLFOToGain = osci.params[FFOsciAccGLFOToGain];
+  osciGLFOToGain.acc = true;
+  osciGLFOToGain.name = "GLFO To Gain";
+  osciGLFOToGain.slotCount = 1;
+  osciGLFOToGain.valueCount = 0;
+  osciGLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
+  auto selectOsciGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
+  osciGLFOToGain.scalarAddr = SelectScalarAddr(selectOsci, selectOsciGLFOToGain);
+  osciGLFOToGain.voiceAccAddr = SelectProcAddr(selectOsci, selectOsciGLFOToGain);
+
   auto& shaper = result->modules[FFModuleShaper];
   auto selectShaper = [](auto& state) { return &state.voice.shaper; };
   shaper.voice = true;
@@ -147,11 +157,21 @@ FFMakeTopo()
   shaperGain.acc = true;
   shaperGain.name = "Gain";
   shaperGain.slotCount = 1;
-  shaperGain.valueCount = 2;
+  shaperGain.valueCount = 0;
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
   auto selectShaperGain = [](auto& module) { return &module.acc.gain; };
   shaperGain.scalarAddr = SelectScalarAddr(selectShaper, selectShaperGain);
   shaperGain.voiceAccAddr = SelectProcAddr(selectShaper, selectShaperGain);
+
+  auto& shaperGLFOToGain = shaper.params[FFShaperAccGLFOToGain];
+  shaperGLFOToGain.acc = true;
+  shaperGLFOToGain.name = "GLFO To Gain";
+  shaperGLFOToGain.slotCount = 1;
+  shaperGLFOToGain.valueCount = 0;
+  shaperGLFOToGain.id = "{3AE4ACF7-C0F2-4316-A02B-76DE01BB2A75}";
+  auto selectShaperGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
+  shaperGLFOToGain.scalarAddr = SelectScalarAddr(selectShaper, selectShaperGLFOToGain);
+  shaperGLFOToGain.voiceAccAddr = SelectProcAddr(selectShaper, selectShaperGLFOToGain);
 
   return result;
 }
