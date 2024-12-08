@@ -17,6 +17,8 @@ void
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
+
+#if 0
   auto& myAcc = _accBySampleThenParam;
   auto& thatAcc = input.accByParamThenSample;
   myAcc.clear();
@@ -66,4 +68,5 @@ FBSmoothProcessor::ProcessSmoothing(
         }
       }
   }
+#endif
 }
