@@ -12,6 +12,7 @@ class alignas(FB_FIXED_BLOCK_ALIGN) FBAccParamState final
   FBOnePoleFilter _smoother = {};
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccParamState);
   FBFixedCVBlock const& CV() const { return _cv; }
+  FBAccParamState(float sampleRate) : _smoother(sampleRate, FB_PARAM_SMOOTH_SEC) {}
 };

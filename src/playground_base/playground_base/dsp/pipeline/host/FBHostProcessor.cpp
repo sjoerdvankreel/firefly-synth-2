@@ -21,7 +21,7 @@ FBHostProcessor::
 FBHostProcessor::
 FBHostProcessor(
   std::unique_ptr<IFBPlugProcessor>&& plug,
-  FBProcStatePtrs const* state, float sampleRate):
+  FBProcStatePtrs* state, float sampleRate):
 _state(state),
 _plug(std::move(plug)),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
@@ -31,15 +31,6 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
 {
   _fixedOut.state = state;
   _plugIn.voiceManager = _voiceManager.get();
-  for (int p = 0; p < state->isAcc.size(); p++)
-    if (state->isAcc[p])
-      if(!state->isVoice[p])
-        state->globalAcc[p]->proc.smoother = 
-          FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
-      else
-        for(int v = 0; v < FB_MAX_VOICES; v++)
-          state->voiceAcc[p]->proc[v].smoother = 
-            FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC);
 }
 
 void 
@@ -57,10 +48,7 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   for (auto const& be : input.block)
-    if (_fixedOut.state->isVoice[be.index])
-      _fixedOut.state->voiceBlock[be.index]->value = be.normalized;
-    else
-      *_fixedOut.state->globalBlock[be.index] = be.normalized;
+    _fixedOut.state->Params()[be.index].Value(be.normalized);
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);
@@ -69,7 +57,7 @@ FBHostProcessor::ProcessHost(
     _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
     _smooth->ProcessSmoothing(*fixedIn, _fixedOut);
-    _plug->ProcessPreVoice(_plugIn);
+    _plug->ProcessPreVoice(_plugIn); // TODO move up we need to know which voices are active to smooth them
     ProcessVoices();
     _plug->ProcessPostVoice(_plugIn, _fixedOut.audio);
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);

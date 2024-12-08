@@ -6,7 +6,7 @@ class FBProcStatePtrs;
 
 struct FBFixedOutputBlock final
 {
+  FBProcStatePtrs* state = {};
   FBFixedAudioBlock audio = {};
-  FBProcStatePtrs const* state = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedOutputBlock);
 };

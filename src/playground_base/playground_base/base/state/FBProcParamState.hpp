@@ -44,6 +44,7 @@ class FBProcParamState final
 
   friend class FBVoiceManager;
   friend class FBProcStatePtrs;
+  friend class FBHostProcessor;
 
   void Value(float value);
   float& GlobalBlock();

@@ -19,7 +19,7 @@ class FBFixedBufferProcessor;
 
 class FBHostProcessor final
 {
-  FBProcStatePtrs const* _state = {};
+  FBProcStatePtrs* _state = {};
   FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};
 
@@ -29,7 +29,7 @@ class FBHostProcessor final
   std::unique_ptr<FBHostBufferProcessor> _hostBuffer;
   std::unique_ptr<FBFixedBufferProcessor> _fixedBuffer;
 
-  void ProcessVoice(int slot);
+  void ProcessVoices();
 
 public:
   ~FBHostProcessor();  
@@ -37,6 +37,6 @@ public:
 
   FBHostProcessor(
     std::unique_ptr<IFBPlugProcessor>&& plug,
-    FBProcStatePtrs const* state, float sampleRate);
+    FBProcStatePtrs* state, float sampleRate);
   void ProcessHost(FBHostInputBlock const& input, FBHostAudioBlock& output);
 };
