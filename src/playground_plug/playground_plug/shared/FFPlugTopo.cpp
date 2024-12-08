@@ -2,23 +2,6 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 
-template <class State>
-static auto 
-SelectSingleAddr(auto selectModule, auto selectParam)
-{
-  return [selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
-    auto moduleState = selectModule(static_cast<State*>(state)->param);
-    return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
-}
-
-static auto
-SelectVoiceAddr(auto selectModule, auto selectParam)
-{
-  return [selectModule, selectParam](int voice, int moduleSlot, int paramSlot, void* state) {
-    auto moduleState = selectModule(static_cast<FFProcState*>(state)->param.voices[voice]);
-    return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
-}
-
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
 {
@@ -47,8 +30,6 @@ FFMakeTopo()
   glfoOn.valueCount = 2;
   glfoOn.id = "{A9741F9B-5E07-40D9-8FC1-73F90363EF0C}";
   auto selectGlfoOn = [](auto& module) { return &module.block.on; };
-  glfoOn.scalarAddr = SelectSingleAddr<FFScalarState>(selectGlfo, selectGlfoOn);
-  glfoOn.procSingleAccAddr = SelectSingleAddr<FFProcState>(selectGlfo, selectGlfoRate); // TODO
 
   auto& glfoRate = glfo.params[FFGLFOAccRate];
   glfoRate.acc = true;
@@ -57,8 +38,6 @@ FFMakeTopo()
   glfoRate.valueCount = 0;
   glfoRate.id = "{79BFD05E-98FA-48D4-8D07-C009285EACA7}";
   auto selectGlfoRate = [](auto& module) { return &module.acc.rate; };
-  glfoRate.scalarAddr = SelectSingleAddr<FFScalarState>(selectGlfo, selectGlfoRate);
-  glfoRate.procSingleAccAddr = SelectSingleAddr<FFProcState>(selectGlfo, selectGlfoRate);
 
   auto& osci = result->modules[FFModuleOsci];
   auto selectOsci = [](auto& state) { return &state.osci; };
@@ -75,9 +54,6 @@ FFMakeTopo()
   osciOn.valueCount = 2;
   osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
   auto selectOsciOn = [](auto& module) { return &module.block.on; };
-  osciOn.procVoiceBlockAddr = SelectVoiceAddr(selectOsci, selectOsciOn);
-  osciOn.scalarAddr = SelectSingleAddr<FFScalarState>(selectOsci, selectOsciOn);
-  osciOn.procSingleBlockAddr = SelectSingleAddr<FFProcState>(selectOsci, selectOsciOn);
 
   auto& osciType = osci.params[FFOsciBlockType];
   osciType.acc = false;
@@ -89,9 +65,6 @@ FFMakeTopo()
     { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
     { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" } };
   auto selectOsciType = [](auto& module) { return &module.block.type; };
-  osciType.procVoiceBlockAddr = SelectVoiceAddr(selectOsci, selectOsciType);
-  osciType.scalarAddr = SelectSingleAddr<FFScalarState>(selectOsci, selectOsciType);
-  osciType.procSingleBlockAddr = SelectSingleAddr<FFProcState>(selectOsci, selectOsciType);
 
   auto& osciGain = osci.params[FFOsciAccGain];
   osciGain.acc = true;
@@ -100,9 +73,6 @@ FFMakeTopo()
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   auto selectOsciGain = [](auto& module) { return &module.acc.gain; };
-  osciGain.procVoiceAccAddr = SelectVoiceAddr(selectOsci, selectOsciGain);
-  osciGain.scalarAddr = SelectSingleAddr<FFScalarState>(selectOsci, selectOsciGain);
-  osciGain.procSingleAccAddr = SelectSingleAddr<FFProcState>(selectOsci, selectOsciGain);
 
   auto& osciPitch = osci.params[FFOsciAccPitch];
   osciPitch.acc = true;
@@ -111,9 +81,6 @@ FFMakeTopo()
   osciPitch.valueCount = 0;
   osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
   auto selectOsciPitch = [](auto& module) { return &module.acc.pitch; };
-  osciPitch.procVoiceAccAddr = SelectVoiceAddr(selectOsci, selectOsciPitch);
-  osciPitch.scalarAddr = SelectSingleAddr<FFScalarState>(selectOsci, selectOsciPitch);
-  osciPitch.procSingleAccAddr = SelectSingleAddr<FFProcState>(selectOsci, selectOsciPitch);
 
   auto& shaper = result->modules[FFModuleShaper];
   auto selectShaper = [](auto& state) { return &state.shaper; };
@@ -130,9 +97,6 @@ FFMakeTopo()
   shaperOn.valueCount = 2;
   shaperOn.id = "{BF67A27A-97E9-4640-9E57-B1E04D195ACC}";
   auto selectShaperOn = [](auto& module) { return &module.block.on; };
-  shaperOn.procVoiceBlockAddr = SelectVoiceAddr(selectShaper, selectShaperOn);
-  shaperOn.scalarAddr = SelectSingleAddr<FFScalarState>(selectShaper, selectShaperOn);
-  shaperOn.procSingleBlockAddr = SelectSingleAddr<FFProcState>(selectShaper, selectShaperOn);
 
   auto& shaperClip = shaper.params[FFShaperBlockClip];
   shaperClip.acc = false;
@@ -141,9 +105,6 @@ FFMakeTopo()
   shaperClip.valueCount = 2;
   shaperClip.id = "{81C7442E-4064-4E90-A742-FDDEA84AE1AC}";
   auto selectShaperClip = [](auto& module) { return &module.block.clip; };
-  shaperClip.procVoiceBlockAddr = SelectVoiceAddr(selectShaper, selectShaperClip);
-  shaperClip.scalarAddr = SelectSingleAddr<FFScalarState>(selectShaper, selectShaperClip);
-  shaperClip.procSingleBlockAddr = SelectSingleAddr<FFProcState>(selectShaper, selectShaperClip);
 
   auto& shaperGain = shaper.params[FFShaperAccGain];
   shaperGain.acc = true;
@@ -152,9 +113,6 @@ FFMakeTopo()
   shaperGain.valueCount = 2;
   shaperGain.id = "{12989CF4-2941-4E76-B8CF-B3F4E2F73B68}";
   auto selectShaperGain = [](auto& module) { return &module.acc.gain; };
-  shaperGain.procVoiceAccAddr = SelectVoiceAddr(selectShaper, selectShaperGain);
-  shaperGain.scalarAddr = SelectSingleAddr<FFScalarState>(selectShaper, selectShaperGain);
-  shaperGain.procSingleAccAddr = SelectSingleAddr<FFProcState>(selectShaper, selectShaperGain);
 
   return result;
 }

@@ -126,9 +126,9 @@ struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
   std::array<FFShaperParamState<TVoiceBlock, TVoiceAcc>, FF_SHAPER_COUNT> shaper = {};
 };
 
-struct FFScalarParamState final
+struct FFScalarState final
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
   FFVoiceParamState<float, float> voice = {};
   FFGlobalParamState<float, float> global = {};
 };

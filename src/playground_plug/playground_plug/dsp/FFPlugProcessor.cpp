@@ -37,7 +37,7 @@ FFPlugProcessor::ProcessPostVoice(FBPlugInputBlock const& input, FBFixedAudioBlo
   output.Fill(0, output.Count(), 0.0f);
   for (int i = 0; i < FB_MAX_VOICES; i++)
     if (input.voiceManager->Voices()[i].active)
-      output.InPlaceAdd(_state->dsp.voices[i].output);
+      output.InPlaceAdd(_state->dsp.voice[i].output);
 }
 
 void
@@ -50,7 +50,7 @@ FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
   state.sampleRate = _sampleRate;
   state.voice = &input.voiceManager->Voices()[voice];
 
-  auto& voiceDSP = _state->dsp.voices[voice];
+  auto& voiceDSP = _state->dsp.voice[voice];
   voiceDSP.output.Fill(0, voiceDSP.output.Count(), 0.0f);
   for (int i = 0; i < FF_OSCI_COUNT; i++)
   {
