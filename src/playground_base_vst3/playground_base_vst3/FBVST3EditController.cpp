@@ -49,8 +49,8 @@ FBVST3EditController::setState(IBStream* state)
   std::string json = FBVST3LoadIBStream(state);
   bool result = _topo->LoadState(json, ptrs);
   if (result)
-    for (int i = 0; i < ptrs.values.size(); i++)
-      parameters.getParameterByIndex(i)->setNormalized(*ptrs.values[i]);
+    for (int i = 0; i < ptrs.Params().size(); i++)
+      parameters.getParameterByIndex(i)->setNormalized(*ptrs.Params()[i]);
   _topo->static_.freeScalarState(scalar);
   return result? kResultOk: kResultFalse;
 }
@@ -60,8 +60,8 @@ FBVST3EditController::getState(IBStream* state)
 {
   void* scalar = _topo->static_.allocScalarState();
   auto ptrs = _topo->MakeScalarStatePtrs(scalar);
-  for (int i = 0; i < ptrs.values.size(); i++)
-    *ptrs.values[i] = parameters.getParameterByIndex(i)->getNormalized();
+  for (int i = 0; i < ptrs.Params().size(); i++)
+    *ptrs.Params()[i] = parameters.getParameterByIndex(i)->getNormalized();
   std::string json = _topo->SaveState(ptrs);
   state->write(json.data(), static_cast<int32>(json.size()));
   _topo->static_.freeScalarState(scalar);
