@@ -4,9 +4,16 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
 
-struct alignas(FB_FIXED_BLOCK_ALIGN) FBGlobalAccParamState final
+class alignas(FB_FIXED_BLOCK_ALIGN) FBGlobalAccParamState final
 {
-  FBAccParamState proc = {};
-  float value = 0.0f;
+  float _value = {};
+  FBAccParamState _global = {};
+
+  friend class FBProcParamState;
+  float Value() const { return _value; }
+  void Value(float value) { _value = value; };
+
+public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBGlobalAccParamState);
+  FBAccParamState const& Global() const { return _global; }
 };

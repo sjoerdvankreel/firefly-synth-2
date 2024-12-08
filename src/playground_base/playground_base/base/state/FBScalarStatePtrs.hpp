@@ -1,15 +1,21 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+
 #include <vector>
+#include <utility>
 
-struct FBProcStatePtrs;
+class FBProcStatePtrs;
 
-struct FBScalarStatePtrs final
+class FBScalarStatePtrs final
 {
-  std::vector<float*> values = {};
-  FB_NOCOPY_MOVE_DEFCTOR(FBScalarStatePtrs);
-  
-  void InitFrom(FBProcStatePtrs const& proc);
-  void InitFrom(FBScalarStatePtrs const& scalar);
+  std::vector<float*> _params;
+
+public:
+  FB_NOCOPY_MOVE_NODEFCTOR(FBScalarStatePtrs);
+  void CopyFrom(FBProcStatePtrs const& proc);
+  void CopyFrom(FBScalarStatePtrs const& scalar);
+
+  std::vector<float*> const& Params() const { return _params; }
+  FBScalarStatePtrs(std::vector<float*>&& params) : _params(std::move(params)) {}
 };

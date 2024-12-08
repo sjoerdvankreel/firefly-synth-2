@@ -1,25 +1,21 @@
 #pragma once
 
-#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBVoiceBlockParamState.hpp>
+#include <playground_base/base/state/FBProcParamState.hpp>
 
-#include <array>
 #include <vector>
+#include <utility>
 
-struct FBScalarStatePtrs;
-struct FBVoiceAccParamState;
-struct FBGlobalAccParamState;
+class FBScalarStatePtrs;
 
-struct FBProcStatePtrs final
+class FBProcStatePtrs final
 {
-  FB_NOCOPY_MOVE_DEFCTOR(FBProcStatePtrs);
-  void InitFrom(FBScalarStatePtrs const& scalar);
+  std::vector<FBProcParamState> _params;
 
-  std::vector<bool> isAcc = {};
-  std::vector<bool> isVoice = {};
-  std::vector<float*> globalBlock = {};
-  std::vector<FBVoiceAccParamState*> voiceAcc = {};
-  std::vector<FBGlobalAccParamState*> globalAcc = {};
-  std::vector<FBVoiceBlockParamState*> voiceBlock = {};
+public:
+  FB_NOCOPY_MOVE_NODEFCTOR(FBProcStatePtrs);
+  void CopyFrom(FBScalarStatePtrs const& scalar);
+
+  std::vector<FBProcParamState> const& Params() const { return _params; }
+  FBProcStatePtrs(std::vector<FBProcParamState>&& params) : _params(std::move(params)) {}
 };

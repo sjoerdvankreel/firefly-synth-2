@@ -5,10 +5,13 @@
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 
-struct alignas(FB_FIXED_BLOCK_ALIGN) FBAccParamState final
+class alignas(FB_FIXED_BLOCK_ALIGN) FBAccParamState final
 {
-  FBFixedCVBlock smoothed = {};
-  FBOnePoleFilter smoother = {};
-  float modulated = 0.0f;
+  FBFixedCVBlock _cv = {};
+  float _modulated = {};
+  FBOnePoleFilter _smoother = {};
+
+public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
+  FBFixedCVBlock const& CV() const { return _cv; }
 };

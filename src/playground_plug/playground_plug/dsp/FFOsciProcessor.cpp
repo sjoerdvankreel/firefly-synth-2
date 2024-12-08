@@ -13,7 +13,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   auto const& topo = state.topo->modules[FFModuleOsci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
   auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
-  bool on = topo.params[FFOsciBlockOn].NormalizedToBool(block.on[0].voice[voice]);
+  bool on = topo.params[FFOsciBlockOn].NormalizedToBool(params.block.on[0].value
 
   if (!on)
   {
