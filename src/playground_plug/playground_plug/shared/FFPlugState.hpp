@@ -151,35 +151,34 @@ struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState final
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FFGLFODSPState final
 {
-  friend class FFGLFOProcessor;
-  FBFixedCVBlock output = {};
-public:
+  friend class FFPlugProcessor;
   FFGLFOProcessor processor = {};
+public:
+  FBFixedCVBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
 };
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FFOsciDSPState final
 {
-  friend class FFOsciProcessor;
-  friend class FFPlugProcessor; // TODO
-  FBFixedAudioBlock output = {};
-public:
+  friend class FFPlugProcessor;
   FFOsciProcessor processor = {};
+public:
+  FBFixedAudioBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FFShaperDSPState final
 {
-  friend class FFShaperProcessor;
-  FBFixedAudioBlock output = {};
-public:
+  friend class FFPlugProcessor;
   FFShaperProcessor processor = {};
+public:
+  FBFixedAudioBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperDSPState);
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFGlobalDSPState final
 {
-  std::array<FFGLFODSPState, FF_GLFO_COUNT> glfo;
+  std::array<FFGLFODSPState, FF_GLFO_COUNT> glfo = {};
 };
 
 struct alignas(FB_FIXED_BLOCK_ALIGN) FFVoiceDSPState final

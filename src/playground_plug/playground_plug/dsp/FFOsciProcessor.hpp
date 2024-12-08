@@ -11,7 +11,6 @@ class FFOsciProcessor
   FBPhase _phase = {};
 
   void Generate(FFOsciBlock& block);
-  void ApplyGain(FFOsciBlock& block);
   void ApplyGLFOToGain(FFOsciBlock& block);
 
 public:

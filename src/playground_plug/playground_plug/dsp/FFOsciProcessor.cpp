@@ -19,19 +19,11 @@ struct FFOsciBlock
 };
 
 void
-FFOsciProcessor::ApplyGain(FFOsciBlock& block)
-{
-  for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < block.output.Count(); s++)
-      block.output[ch][s] *= block.gain[s];
-}
-
-void
 FFOsciProcessor::ApplyGLFOToGain(FFOsciBlock& block)
 {
-  for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < block.output.Count(); s++)
-      block.output[ch][s] *= block.gain[s];
+  auto const& glfo = block.state.proc->dsp.global.glfo[0].output;
+  block.output.InPlaceMultiplyByOneMinus(block.glfoToGain);
+  block.output.InPlaceFMA(glfo, block.glfoToGain);
 }
 
 void
@@ -39,7 +31,6 @@ FFOsciProcessor::Generate(FFOsciBlock& block)
 {
   int key = block.state.voice->event.note.key;
   float freq = FBPitchToFreq(static_cast<float>(key));
-
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
     float sample = FBPhaseToSine(_phase.Next(block.state.sampleRate, freq));
@@ -69,6 +60,6 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   }
 
   Generate(block);
-  ApplyGain(block);
+  block.output.InPlaceMultiplyBy(block.gain);
   ApplyGLFOToGain(block);
 }
