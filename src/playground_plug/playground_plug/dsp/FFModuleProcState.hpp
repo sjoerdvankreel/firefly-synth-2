@@ -15,5 +15,5 @@ struct FFModuleProcState
   FBVoiceInfo const* voice = {};
   FBStaticTopo const* topo = {};
   FBPlugInputBlock const* input = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFModuleProcState);
+  FB_NOCOPY_MOVE_DEFCTOR(FFModuleProcState);
 };

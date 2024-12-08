@@ -1,7 +1,6 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/dsp/FFPlugProcessor.hpp>
-#include <playground_plug/dsp/FFModuleProcState.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
@@ -18,17 +17,36 @@ _topo(topo),
 _state(state),
 _sampleRate(sampleRate) {}
 
-void
-FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
+FFModuleProcState 
+FFPlugProcessor::MakeModuleState(FBPlugInputBlock const& input) const
 {
-  // TODO glfo
+  FFModuleProcState result = {};
+  result.proc = _state;
+  result.topo = &_topo;
+  result.input = &input;
+  result.sampleRate = _sampleRate;
+  return result;
+}
+
+void
+FFPlugProcessor::ProcessPreVoice(
+  FBPlugInputBlock const& input)
+{
+  auto moduleState = MakeModuleState(input);
+  for (int s = 0; s < FF_GLFO_COUNT; s++)
+  {
+    moduleState.moduleSlot = s;
+    _state->dsp.global.glfo[s].processor.Process(moduleState);
+  }
+
   for (int n = 0; n < input.note->size(); n++)
     if((*input.note)[n].on)
       input.voiceManager->Lease((*input.note)[n]);
 }
 
 void
-FFPlugProcessor::ProcessPostVoice(FBPlugInputBlock const& input, FBFixedAudioBlock& output)
+FFPlugProcessor::ProcessPostVoice(
+  FBPlugInputBlock const& input, FBFixedAudioBlock& output)
 {
   for (int n = 0; n < input.note->size(); n++)
     if (!(*input.note)[n].on)
@@ -43,19 +61,15 @@ FFPlugProcessor::ProcessPostVoice(FBPlugInputBlock const& input, FBFixedAudioBlo
 void
 FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
 {
-  FFModuleProcState state = {};
-  state.proc = _state;
-  state.topo = &_topo;
-  state.input = &input;
-  state.sampleRate = _sampleRate;
-  state.voice = &input.voiceManager->Voices()[voice];
+  auto moduleState = MakeModuleState(input);
+  moduleState.voice = &input.voiceManager->Voices()[voice];
 
   auto& voiceDSP = _state->dsp.voice[voice];
   voiceDSP.output.Fill(0, voiceDSP.output.Count(), 0.0f);
   for (int i = 0; i < FF_OSCI_COUNT; i++)
   {
-    state.moduleSlot = i;
-    voiceDSP.osci[i].processor.Process(state, voice);
+    moduleState.moduleSlot = i;
+    voiceDSP.osci[i].processor.Process(moduleState, voice);
     voiceDSP.output.InPlaceAdd(voiceDSP.osci[i].output);
   }
 
