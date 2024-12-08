@@ -19,7 +19,7 @@ void
 FFGLFOProcessor::Generate(FFGLFOBlock& block)
 {
   for (int s = 0; s < block.output.Count(); s++)
-    block.output[s] = FBPhaseToSine(_phase.Next(block.state.sampleRate, 1.0f));
+    block.output[s] = FBBiPolarToUnipolar(FBPhaseToSine(_phase.Next(block.state.sampleRate, 1.0f)));
 }
 
 void
