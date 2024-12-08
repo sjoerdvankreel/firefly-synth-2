@@ -17,8 +17,6 @@ void
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-#if 0 // TODO
-
   auto& myAcc = _accBySampleThenParam;
   auto& thatAcc = input.accByParamThenSample;
   myAcc.clear();
@@ -38,9 +36,9 @@ FBSmoothProcessor::ProcessSmoothing(
       eventIndex++)
     {
       auto const& event = myAcc[eventIndex];
-      if (!output.state->isVoice[event.index])
+      if (!output.state->Params()[event.index].IsVoice())
       {
-        auto& global = output.state->globalAcc[event.index];
+        auto& global = output.state->Params()[event.index].GlobalAcc().Automate()
         global->value = event.normalized;
         global->proc.modulated = event.normalized; // TODO
       }
@@ -68,6 +66,4 @@ FBSmoothProcessor::ProcessSmoothing(
         }
       }
   }
-
-#endif
 }

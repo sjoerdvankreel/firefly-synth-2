@@ -12,6 +12,7 @@ class FBProcStatePtrs final
 {
   friend class FBVoiceManager;
   friend class FBHostProcessor;
+  friend class FBSmoothProcessor;
 
   std::vector<FBProcParamState> _params;
   std::vector<FBProcParamState>& Params() { return _params; }

@@ -56,8 +56,8 @@ FBHostProcessor::ProcessHost(
   {
     _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
+    _plug->ProcessPreVoice(_plugIn);
     _smooth->ProcessSmoothing(*fixedIn, _fixedOut);
-    _plug->ProcessPreVoice(_plugIn); // TODO move up we need to know which voices are active to smooth them
     ProcessVoices();
     _plug->ProcessPostVoice(_plugIn, _fixedOut.audio);
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);

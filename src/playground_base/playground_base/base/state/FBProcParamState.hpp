@@ -45,6 +45,7 @@ class FBProcParamState final
   friend class FBVoiceManager;
   friend class FBProcStatePtrs;
   friend class FBHostProcessor;
+  friend class FBSmoothProcessor;
 
   void Value(float value);
   void Init(float sampleRate);
