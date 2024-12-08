@@ -1,4 +1,5 @@
 voice manager
+denormals
 figure out if we can do simd for the cv blocks
 smooth filter reacts too slow
 simd lib
