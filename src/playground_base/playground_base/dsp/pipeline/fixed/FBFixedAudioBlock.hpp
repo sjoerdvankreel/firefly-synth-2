@@ -24,7 +24,7 @@ public:
   void InPlaceAdd(FBFixedAudioBlock const& rhs);
   void InPlaceMultiplyBy(FBFixedCVBlock const& rhs);
   void InPlaceMultiplyByOneMinus(FBFixedCVBlock const& rhs);
-  void InPlaceFMA(FBFixedCVBlock const& b, FBFixedCVBlock const& c);
+  void InPlaceFMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c);
 };
 
 inline void
@@ -52,9 +52,9 @@ FBFixedAudioBlock::InPlaceMultiplyByOneMinus(FBFixedCVBlock const& rhs)
 }
 
 inline void 
-FBFixedAudioBlock::InPlaceFMA(FBFixedCVBlock const& b, FBFixedCVBlock const& c)
+FBFixedAudioBlock::InPlaceFMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < Count(); s++)
-      (*this)[ch][s] += b[s] * c[s];
+      (*this)[ch][s] += b[ch][s] * c[s];
 }
