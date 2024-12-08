@@ -7,12 +7,15 @@
 class alignas(FB_FIXED_BLOCK_ALIGN) FBGlobalAccParamState final
 {
   friend class FBProcParamState;
+  friend class FBSmoothProcessor;
 
   float _value = {};
   FBAccParamState _global = {};
 
   float Value() const { return _value; }
   void Value(float value) { _value = value; };
+  FBAccParamState& Global() { return _global; }
+  void Modulate(float value) { _global.Modulate(value); }
   void Init(float sampleRate) { _global.Init(sampleRate); }
 
 public:

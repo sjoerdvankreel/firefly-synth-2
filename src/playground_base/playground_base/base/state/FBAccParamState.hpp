@@ -7,6 +7,7 @@
 
 class alignas(FB_FIXED_BLOCK_ALIGN) FBAccParamState final
 {
+  friend class FBSmoothProcessor;
   friend class FBVoiceAccParamState;
   friend class FBGlobalAccParamState;
 
@@ -14,8 +15,9 @@ class alignas(FB_FIXED_BLOCK_ALIGN) FBAccParamState final
   float _modulated = {};
   FBOnePoleFilter _smoother = {};
 
-  void Init(float sampleRate) 
-  { _smoother = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC); }
+  void Modulate(float value) { _modulated = value; }
+  void SmoothNext(int sample) { _cv[sample] = _smoother.Next(_modulated); }
+  void Init(float sampleRate) { _smoother = FBOnePoleFilter(sampleRate, FB_PARAM_SMOOTH_SEC); }
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);

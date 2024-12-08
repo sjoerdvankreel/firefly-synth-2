@@ -17,8 +17,6 @@ void
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-
-#if 0
   auto& myAcc = _accBySampleThenParam;
   auto& thatAcc = input.accByParamThenSample;
   myAcc.clear();
@@ -31,6 +29,7 @@ FBSmoothProcessor::ProcessSmoothing(
 
   // todo deal with nondestructive and pervoice
   int eventIndex = 0;
+  auto& params = output.state->Params();
   for (int s = 0; s < FBFixedCVBlock::Count(); s++)
   {
     for (int eventIndex = 0; 
@@ -38,35 +37,28 @@ FBSmoothProcessor::ProcessSmoothing(
       eventIndex++)
     {
       auto const& event = myAcc[eventIndex];
-      if (!output.state->Params()[event.index].IsVoice())
+      if (!params[event.index].IsVoice())
       {
-        auto& global = output.state->Params()[event.index].GlobalAcc().Automate()
-        global->value = event.normalized;
-        global->proc.modulated = event.normalized; // TODO
+        auto& global = params[event.index].GlobalAcc();
+        global.Value(event.normalized);
+        global.Modulate(event.normalized);
       }
       else
       {
-        auto& voice = output.state->voiceAcc[event.index];
-        voice->value = event.normalized;
+        auto& voice = params[event.index].VoiceAcc();
+        voice.Value(event.normalized);
         for (int v = 0; v < FB_MAX_VOICES; v++)
-          voice->proc[v].modulated = event.normalized; // TODO
+          if (_voiceManager->Voices()[v].active)
+            voice.Modulate(v, event.normalized);
       }
     }
 
-    for (int p = 0; p < output.state->isAcc.size(); p++)
-      if (!output.state->isVoice[p])
-      {
-        auto& global = output.state->globalAcc[p]->proc;
-        global.smoothed[s] = global.smoother.Next(global.modulated);
-      }
+    for (int p = 0; p < params.size(); p++)
+      if (!params[p].IsVoice())
+        params[p].GlobalAcc().Global().SmoothNext(s);
       else
-      {
-        for (int v = 0; v < FB_MAX_VOICES; v++)
-        {
-          auto& voice = output.state->voiceAcc[p]->proc[v];
-          voice.smoothed[s] = voice.smoother.Next(voice.modulated);
-        }
-      }
+        for(int v = 0; v < FB_MAX_VOICES; v++)
+          if (_voiceManager->Voices()[v].active)
+            params[p].VoiceAcc().Voice()[v].SmoothNext(s);
   }
-#endif
 }

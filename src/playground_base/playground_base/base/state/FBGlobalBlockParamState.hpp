@@ -5,7 +5,8 @@
 class FBGlobalBlockParamState final
 {
   friend class FBProcParamState;
-  float _value = {};
+  
+  float _value = {};  
   void Value(float value) { _value = value; };
 
 public:
