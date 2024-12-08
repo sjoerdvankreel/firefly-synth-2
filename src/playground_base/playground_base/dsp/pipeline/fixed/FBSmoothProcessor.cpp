@@ -54,11 +54,12 @@ FBSmoothProcessor::ProcessSmoothing(
     }
 
     for (int p = 0; p < params.size(); p++)
-      if (!params[p].IsVoice())
-        params[p].GlobalAcc().Global().SmoothNext(s);
-      else
-        for(int v = 0; v < FB_MAX_VOICES; v++)
-          if (_voiceManager->Voices()[v].active)
-            params[p].VoiceAcc().Voice()[v].SmoothNext(s);
+      if(params[p].IsAcc())
+        if (!params[p].IsVoice())
+          params[p].GlobalAcc().Global().SmoothNext(s);
+        else
+          for(int v = 0; v < FB_MAX_VOICES; v++)
+            if (_voiceManager->Voices()[v].active)
+              params[p].VoiceAcc().Voice()[v].SmoothNext(s);
   }
 }
