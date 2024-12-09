@@ -8,7 +8,7 @@
 
 #include <array>
 
-class alignas(FB_SIMD_VECTOR_ALIGN) FBFixedAudioBlock final:
+class alignas(FBSIMDVectorAlign) FBFixedAudioBlock final:
 public FBAnyAudioBlock<FBFixedAudioBlock, std::array<float, FB_FIXED_BLOCK_SIZE>>
 {
 public:

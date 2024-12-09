@@ -3,19 +3,23 @@
 #if FB_SIMD_VECTOR_USE_AVX
 #include <immintrin.h>
 typedef __m256 FBSIMDType;
-#define FB_SIMD_VECTOR_ALIGN 32
-#define FB_SIMD_FLOAT_VECTOR_SIZE 8
 #define FB_SIMD_VECTOR_CALL __vectorcall
+
 #define FBSIMDFloatVectorAdd _mm256_add_ps
 #define FBSIMDFloatVectorSub _mm256_sub_ps
 #define FBSIMDFloatVectorMul _mm256_mul_ps
 #define FBSIMDFloatVectorDiv _mm256_div_ps
 #define FBSIMDFloatVectorInit _mm256_setzero_ps
+
+inline int constexpr FBSIMDVectorBitWidth = 256;
+inline int constexpr FBSIMDVectorByteWidth = FBSIMDVectorBitWidth / 8;
+inline int constexpr FBSIMDVectorAlign = FBSIMDVectorByteWidth;
+inline int constexpr FBSIMDVectorFloatCount = FBSIMDVectorByteWidth / sizeof(float);
 #else
 #error
 #endif
 
-class alignas(FB_SIMD_VECTOR_ALIGN) FBSIMDFloatVector
+class alignas(FBSIMDVectorAlign) FBSIMDFloatVector
 {
   FBSIMDType _store;
   explicit FBSIMDFloatVector(FBSIMDType store);

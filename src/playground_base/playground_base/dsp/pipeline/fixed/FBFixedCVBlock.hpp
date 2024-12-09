@@ -7,7 +7,7 @@
 #include <array>
 #include <cassert>
 
-class alignas(FB_SIMD_VECTOR_ALIGN)
+class alignas(FBSIMDVectorAlign)
 FBFixedCVBlock final
 {
   std::array<float, FB_FIXED_BLOCK_SIZE> _store = {};
