@@ -142,14 +142,14 @@ struct FFScalarState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
 };
 
-struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcParamState final
+struct alignas(FB_SIMD_VECTOR_ALIGN) FFProcParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
   FFVoiceParamState<FBVoiceBlockParamState, FBVoiceAccParamState> voice = {};
   FFGlobalParamState<FBGlobalBlockParamState, FBGlobalAccParamState> global = {};
 };
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FFGLFODSPState final
+class alignas(FB_SIMD_VECTOR_ALIGN) FFGLFODSPState final
 {
   friend class FFPlugProcessor;
   FFGLFOProcessor processor = {};
@@ -158,7 +158,7 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
 };
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FFOsciDSPState final
+class alignas(FB_SIMD_VECTOR_ALIGN) FFOsciDSPState final
 {
   friend class FFPlugProcessor;
   FFOsciProcessor processor = {};
@@ -167,7 +167,7 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FFShaperDSPState final
+class alignas(FB_SIMD_VECTOR_ALIGN) FFShaperDSPState final
 {
   friend class FFPlugProcessor;
   FFShaperProcessor processor = {};
@@ -176,12 +176,12 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperDSPState);
 };
 
-struct alignas(FB_FIXED_BLOCK_ALIGN) FFGlobalDSPState final
+struct alignas(FB_SIMD_VECTOR_ALIGN) FFGlobalDSPState final
 {
   std::array<FFGLFODSPState, FF_GLFO_COUNT> glfo = {};
 };
 
-struct alignas(FB_FIXED_BLOCK_ALIGN) FFVoiceDSPState final
+struct alignas(FB_SIMD_VECTOR_ALIGN) FFVoiceDSPState final
 {
   FBFixedAudioBlock output = {};
   std::array<FFOsciDSPState, FF_OSCI_COUNT> osci = {};
@@ -189,14 +189,14 @@ struct alignas(FB_FIXED_BLOCK_ALIGN) FFVoiceDSPState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
 
-struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcDSPState final
+struct alignas(FB_SIMD_VECTOR_ALIGN) FFProcDSPState final
 {
   FFGlobalDSPState global = {};
   std::array<FFVoiceDSPState, FB_MAX_VOICES> voice = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcDSPState);
 };
 
-struct alignas(FB_FIXED_BLOCK_ALIGN) FFProcState final
+struct alignas(FB_SIMD_VECTOR_ALIGN) FFProcState final
 {
   FFProcDSPState dsp = {};
   FFProcParamState param = {};
