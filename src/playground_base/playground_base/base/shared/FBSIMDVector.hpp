@@ -10,6 +10,7 @@ typedef __m256 FBSIMDType;
 #define FBSIMDFloatVectorMul _mm256_mul_ps
 #define FBSIMDFloatVectorDiv _mm256_div_ps
 #define FBSIMDFloatVectorInit _mm256_setzero_ps
+#define FBSIMDFloatVectorAddr(x, i) (x.m256_f32[i])
 
 inline int constexpr FBSIMDVectorBitWidth = 256;
 inline int constexpr FBSIMDVectorByteWidth = FBSIMDVectorBitWidth / 8;
@@ -27,15 +28,14 @@ class alignas(FBSIMDVectorAlign) FBSIMDFloatVector
 public:
   FBSIMDFloatVector();
 
-  FBSIMDFloatVector FB_SIMD_VECTOR_CALL operator+(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector FB_SIMD_VECTOR_CALL operator-(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector FB_SIMD_VECTOR_CALL operator*(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector FB_SIMD_VECTOR_CALL operator/(FBSIMDFloatVector rhs);
+  void SetToZero();
+  float& operator[](int i);
+  float operator[](int i) const;
 
-  FBSIMDFloatVector& FB_SIMD_VECTOR_CALL operator+=(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector& FB_SIMD_VECTOR_CALL operator-=(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector& FB_SIMD_VECTOR_CALL operator*=(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector& FB_SIMD_VECTOR_CALL operator/=(FBSIMDFloatVector rhs);
+  void FB_SIMD_VECTOR_CALL operator+=(FBSIMDFloatVector rhs);
+  void FB_SIMD_VECTOR_CALL operator-=(FBSIMDFloatVector rhs);
+  void FB_SIMD_VECTOR_CALL operator*=(FBSIMDFloatVector rhs);
+  void FB_SIMD_VECTOR_CALL operator/=(FBSIMDFloatVector rhs);
 };
 
 inline 
@@ -48,28 +48,26 @@ FBSIMDFloatVector::
 FBSIMDFloatVector(FBSIMDType store) :
 _store(store) {}
 
-inline FBSIMDFloatVector&
-FBSIMDFloatVector::operator+=(FBSIMDFloatVector rhs)
-{ _store = FBSIMDFloatVectorAdd(_store, rhs._store); return *this; }
-inline FBSIMDFloatVector&
-FBSIMDFloatVector::operator-=(FBSIMDFloatVector rhs)
-{ _store = FBSIMDFloatVectorSub(_store, rhs._store); return *this; }
-inline FBSIMDFloatVector&
-FBSIMDFloatVector::operator*=(FBSIMDFloatVector rhs)
-{ _store = FBSIMDFloatVectorMul(_store, rhs._store); return *this; }
-inline FBSIMDFloatVector&
-FBSIMDFloatVector::operator/=(FBSIMDFloatVector rhs)
-{ _store = FBSIMDFloatVectorDiv(_store, rhs._store); return *this; }
+inline void
+FBSIMDFloatVector::SetToZero()
+{ _store = FBSIMDFloatVectorInit(); }
 
-inline FBSIMDFloatVector
-FBSIMDFloatVector::operator+(FBSIMDFloatVector rhs)
-{ return FBSIMDFloatVector(FBSIMDFloatVectorAdd(_store, rhs._store)); }
-inline FBSIMDFloatVector
-FBSIMDFloatVector::operator-(FBSIMDFloatVector rhs)
-{ return FBSIMDFloatVector(FBSIMDFloatVectorSub(_store, rhs._store)); }
-inline FBSIMDFloatVector
-FBSIMDFloatVector::operator*(FBSIMDFloatVector rhs)
-{ return FBSIMDFloatVector(FBSIMDFloatVectorMul(_store, rhs._store)); }
-inline FBSIMDFloatVector
-FBSIMDFloatVector::operator/(FBSIMDFloatVector rhs)
-{ return FBSIMDFloatVector(FBSIMDFloatVectorDiv(_store, rhs._store)); }
+inline float& 
+FBSIMDFloatVector::operator[](int i)
+{ return FBSIMDFloatVectorAddr(_store, i); }
+inline float 
+FBSIMDFloatVector::operator[](int i) const
+{ return FBSIMDFloatVectorAddr(_store, i); }
+
+inline void
+FBSIMDFloatVector::operator+=(FBSIMDFloatVector rhs)
+{ _store = FBSIMDFloatVectorAdd(_store, rhs._store); }
+inline void
+FBSIMDFloatVector::operator-=(FBSIMDFloatVector rhs)
+{ _store = FBSIMDFloatVectorSub(_store, rhs._store); }
+inline void
+FBSIMDFloatVector::operator*=(FBSIMDFloatVector rhs)
+{ _store = FBSIMDFloatVectorMul(_store, rhs._store); }
+inline void
+FBSIMDFloatVector::operator/=(FBSIMDFloatVector rhs)
+{ _store = FBSIMDFloatVectorDiv(_store, rhs._store); }
