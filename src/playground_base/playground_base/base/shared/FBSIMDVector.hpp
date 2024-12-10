@@ -2,7 +2,7 @@
 
 #include <numbers>
 
-#ifdef FB_USE_AVX
+#if FB_USE_AVX
 #else
 #error
 #endif
