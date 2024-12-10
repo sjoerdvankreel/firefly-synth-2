@@ -4,7 +4,6 @@ clap polymod
 voice block start position (fake it by amp env?)
 save state as ui text
 handle block/acc non/destructive per/voice or not
-static link
 handle PDC
 clap note cut
 check hash clash
