@@ -1,5 +1,4 @@
 voice manager
-drop all #defines for constexpr
 denormals
 clap polymod
 voice block start position (fake it by amp env?)
