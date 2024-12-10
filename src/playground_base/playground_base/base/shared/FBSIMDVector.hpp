@@ -122,7 +122,7 @@ FBSIMDFloatVector::operator/(FBSIMDFloatVector rhs) const
 inline void
 FBSIMDFloatVector::FMA(FBSIMDFloatVector b, FBSIMDFloatVector c)
 {
-  _store = _mm256_fmadd_ps(_store, b._store, c._store);
+  _store = _mm256_fmadd_ps(b._store, c._store, _store);
 }
 
 inline void
