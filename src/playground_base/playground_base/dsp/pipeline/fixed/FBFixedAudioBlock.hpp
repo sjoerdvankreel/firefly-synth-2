@@ -20,13 +20,6 @@ public:
   void CopyFrom(FBBufferAudioBlock const& rhs);
   static int Count() { return FBFixedBlockSize; }
 
-  void FB_SIMD_CALL SetToZero();
-  void FB_SIMD_CALL SetToSineOfTwoPi();
-  void FB_SIMD_CALL SetToUnipolarSineOfTwoPi();
-  void FB_SIMD_CALL CopyFrom(FBFixedAudioBlock const& rhs);
-  void FB_SIMD_CALL MultiplyByOneMinus(FBFixedCVBlock const& rhs);
-  void FB_SIMD_CALL FMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c);
-
   FBFixedSIMDBlock& operator[](int ch) { return _store[ch]; }
   FBFixedSIMDBlock const& operator[](int ch) const { return _store[ch]; }
 
@@ -39,6 +32,14 @@ public:
   FBFixedAudioBlock& FB_SIMD_CALL operator-=(FBFixedAudioBlock const& rhs);
   FBFixedAudioBlock& FB_SIMD_CALL operator*=(FBFixedAudioBlock const& rhs);
   FBFixedAudioBlock& FB_SIMD_CALL operator/=(FBFixedAudioBlock const& rhs);
+
+  void FB_SIMD_CALL SetToZero();
+  void FB_SIMD_CALL SetToSineOfTwoPi();
+  void FB_SIMD_CALL SetToUnipolarSineOfTwoPi();
+  void FB_SIMD_CALL CopyFrom(FBFixedAudioBlock const& rhs);
+  void FB_SIMD_CALL MultiplyByOneMinus(FBFixedCVBlock const& rhs);
+  void FB_SIMD_CALL FMA1(FBFixedAudioBlock const& b, FBFixedCVBlock const& c);
+  void FB_SIMD_CALL FMA2(FBFixedAudioBlock const& b, FBFixedCVBlock const& c, FBFixedCVBlock const& d);
 };
 
 inline void 
@@ -93,10 +94,17 @@ FBFixedAudioBlock::MultiplyByOneMinus(FBFixedCVBlock const& rhs)
 }
 
 inline void
-FBFixedAudioBlock::FMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c)
+FBFixedAudioBlock::FMA1(FBFixedAudioBlock const& b, FBFixedCVBlock const& c)
 {
   for (int ch = 0; ch < 2; ch++)
-    _store[ch].FMA(b._store[ch], c._store);
+    _store[ch].FMA1(b._store[ch], c._store);
+}
+
+inline void
+FBFixedAudioBlock::FMA2(FBFixedAudioBlock const& b, FBFixedCVBlock const& c, FBFixedCVBlock const& d)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].FMA2(b._store[ch], c._store, d._store);
 }
 
 inline FBFixedAudioBlock&

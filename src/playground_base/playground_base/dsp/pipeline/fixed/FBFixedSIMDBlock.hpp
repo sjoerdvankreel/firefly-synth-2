@@ -25,7 +25,8 @@ public:
   void FB_SIMD_CALL SetToUnipolarSineOfTwoPi();
   void FB_SIMD_CALL CopyFrom(FBFixedSIMDBlock const& rhs);
   void FB_SIMD_CALL MultiplyByOneMinus(FBFixedSIMDBlock const& rhs);
-  void FB_SIMD_CALL FMA(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c);
+  void FB_SIMD_CALL FMA1(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c);
+  void FB_SIMD_CALL FMA2(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c, FBFixedSIMDBlock const& d);
 
   FBFixedSIMDBlock& FB_SIMD_CALL operator+=(FBFixedSIMDBlock const& rhs);
   FBFixedSIMDBlock& FB_SIMD_CALL operator-=(FBFixedSIMDBlock const& rhs);
@@ -81,10 +82,17 @@ FBFixedSIMDBlock::MultiplyByOneMinus(FBFixedSIMDBlock const& rhs)
 }
 
 inline void
-FBFixedSIMDBlock::FMA(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c)
+FBFixedSIMDBlock::FMA1(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c)
 {
   for (int v = 0; v < VectorCount; v++)
-    _store[v].FMA(b._store[v], c._store[v]);
+    _store[v].FMA1(b._store[v], c._store[v]);
+}
+
+inline void
+FBFixedSIMDBlock::FMA2(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c, FBFixedSIMDBlock const& d)
+{
+  for (int v = 0; v < VectorCount; v++)
+    _store[v].FMA2(b._store[v], c._store[v], d._store[v]);
 }
 
 inline FBFixedSIMDBlock& 

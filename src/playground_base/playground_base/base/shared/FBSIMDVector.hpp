@@ -23,7 +23,9 @@ public:
   void FB_SIMD_CALL SetToSineOfTwoPi();
   void FB_SIMD_CALL SetToUnipolarSineOfTwoPi();
   void FB_SIMD_CALL MultiplyByOneMinus(FBSIMDFloatVector rhs);
-  void FB_SIMD_CALL FMA(FBSIMDFloatVector b, FBSIMDFloatVector c);
+  void FB_SIMD_CALL FMA1(FBSIMDFloatVector b, FBSIMDFloatVector c);
+  void FB_SIMD_CALL FMA2(FBSIMDFloatVector b, FBSIMDFloatVector c, FBSIMDFloatVector d);
+
   FBSIMDFloatVector& FB_SIMD_CALL operator=(FBSIMDFloatVector rhs);
 
   FBSIMDFloatVector& FB_SIMD_CALL operator+=(FBSIMDFloatVector rhs);
@@ -146,7 +148,13 @@ FBSIMDFloatVector::MultiplyByOneMinus(FBSIMDFloatVector rhs)
 }
 
 inline void
-FBSIMDFloatVector::FMA(FBSIMDFloatVector b, FBSIMDFloatVector c)
+FBSIMDFloatVector::FMA1(FBSIMDFloatVector b, FBSIMDFloatVector c)
 {
   _store = _mm256_fmadd_ps(b._store, c._store, _store);
+}
+
+inline void
+FBSIMDFloatVector::FMA2(FBSIMDFloatVector b, FBSIMDFloatVector c, FBSIMDFloatVector d)
+{
+  _store = _mm256_fmadd_ps(_mm256_mul_ps(b._store, c._store), d._store, _store);
 }
