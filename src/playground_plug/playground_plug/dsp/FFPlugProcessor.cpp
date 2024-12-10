@@ -52,7 +52,7 @@ FFPlugProcessor::ProcessPostVoice(
     if (!(*input.note)[n].on)
       input.voiceManager->ReturnOldest((*input.note)[n]);
 
-  output.Fill(0, output.Count(), 0.0f);
+  output.SetToZero();
   for (int i = 0; i < FB_MAX_VOICES; i++)
     if (input.voiceManager->Voices()[i].active)
       output.InPlaceAdd(_state->dsp.voice[i].output);
@@ -65,7 +65,7 @@ FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
   moduleState.voice = &input.voiceManager->Voices()[voice];
 
   auto& voiceDSP = _state->dsp.voice[voice];
-  voiceDSP.output.Fill(0, voiceDSP.output.Count(), 0.0f);
+  voiceDSP.output.SetToZero();
   for (int i = 0; i < FF_OSCI_COUNT; i++)
   {
     moduleState.moduleSlot = i;

@@ -17,16 +17,16 @@ FBFixedBufferProcessor::ProcessToHost(FBHostAudioBlock& host)
   _hitFixedBlockSize |= _buffer.Count() >= FBFixedAudioBlock::Count();
   if (!_hitFixedBlockSize)
   {
-    host.Fill(0, host.Count(), 0.0f);
+    host.SetToZero(0, host.Count());
     return;
   }
 
   int padded = std::max(0, host.Count() - _buffer.Count());
   assert(!_paddedOnce || padded == 0);
   _paddedOnce |= padded > 0;
-  host.Fill(0, padded, 0.0f);
+  host.SetToZero(0, padded);
 
   int used = std::min(host.Count(), _buffer.Count());
-  host.CopyFrom(_buffer, padded, 0, used);
+  host.CopyFrom(_buffer, padded, used);
   _buffer.Drop(used);
 }

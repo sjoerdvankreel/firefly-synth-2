@@ -22,7 +22,7 @@ void
 FFOsciProcessor::ApplyGLFOToGain(FFOsciBlock& block)
 {
   FBFixedAudioBlock original = {};
-  original.CopyFrom(block.output, 0, 0, block.output.Count());
+  original.CopyFrom(block.output);
   auto const& glfo = block.state.proc->dsp.global.glfo[0].output;
   block.output.InPlaceMultiplyByOneMinus(block.glfoToGain);
   block.output.InPlaceFMA(original, glfo); // TODO * glfoToGain
@@ -57,7 +57,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 
   if (!block.on)
   {
-    block.output.Fill(0, block.output.Count(), 0.0f);
+    block.output.SetToZero();
     return;
   }
 

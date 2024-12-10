@@ -1,18 +1,22 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/shared/FBAnyAudioBlock.hpp>
+#include <array>
 
-class FBHostAudioBlock final:
-public FBAnyAudioBlock<FBHostAudioBlock, float*>
+class FBBufferAudioBlock;
+
+class FBHostAudioBlock final
 {
   int _count = 0;
+  std::array<float*, 2> _store = {};
 
 public:
-  int Count() const { return _count; }  
-  FB_COPY_MOVE_NODEFCTOR(FBHostAudioBlock);
+  FB_COPY_MOVE_DEFCTOR(FBHostAudioBlock);
+  FBHostAudioBlock(float** channels, int count);
 
-  FBHostAudioBlock(float* l, float* r, int count):
-  FBAnyAudioBlock(std::move(l), std::move(r)), _count(count) {}
-  FBHostAudioBlock() : FBAnyAudioBlock(nullptr, nullptr) {}
+  int Count() const { return _count; }
+  float const* operator[](int ch) const { return _store[ch]; }
+
+  void SetToZero(int from, int to);
+  void CopyFrom(FBBufferAudioBlock const& rhs, int thisStart, int thatCount);
 };

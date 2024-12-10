@@ -42,7 +42,7 @@ FBHostBufferProcessor::ProcessToFixed()
   if (_buffer.audio.Count() < FBFixedAudioBlock::Count())
     return nullptr;
 
-  _fixed.audio.CopyFrom(_buffer.audio, 0, 0, FBFixedAudioBlock::Count());
+  _fixed.audio.CopyFrom(_buffer.audio);
   _buffer.audio.Drop(FBFixedAudioBlock::Count());
   GatherAcc(_buffer.note, _fixed.note);
   GatherAcc(_buffer.accByParamThenSample, _fixed.accByParamThenSample);

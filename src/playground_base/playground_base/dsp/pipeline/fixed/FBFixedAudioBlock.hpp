@@ -3,24 +3,29 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
-#include <playground_base/dsp/pipeline/shared/FBAnyAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
 #include <array>
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedAudioBlock final:
-public FBAnyAudioBlock<FBFixedAudioBlock, std::array<float, FB_FIXED_BLOCK_SIZE>>
+class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedAudioBlock
 {
-public:
-  StoreT& operator[](int channel)
-  { return _store[channel]; }
-  StoreT const& operator[](int channel) const
-  { return _store[channel]; }
+  std::array<std::array<float, FB_FIXED_BLOCK_SIZE>, 2> _store = {};
 
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedAudioBlock);
-  FBFixedAudioBlock(): FBAnyAudioBlock({}, {}) {}
+public:
+
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
   static int Count() { return FB_FIXED_BLOCK_SIZE; }
 
+  std::array<float, FB_FIXED_BLOCK_SIZE>& 
+  operator[](int ch) { return _store[ch]; }
+  std::array<float, FB_FIXED_BLOCK_SIZE> const& 
+  operator[](int ch) const { return _store[ch]; }
+
   // TODO simd
+  void SetToZero();
+  void CopyFrom(FBFixedAudioBlock const& rhs);
+  void CopyFrom(FBBufferAudioBlock const& rhs);
+
   void InPlaceAdd(FBFixedAudioBlock const& rhs);
   void InPlaceMultiplyBy(FBFixedCVBlock const& rhs);
   void InPlaceMultiplyByOneMinus(FBFixedCVBlock const& rhs);
@@ -28,11 +33,37 @@ public:
 };
 
 inline void
+FBFixedAudioBlock::SetToZero()
+{
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < Count(); s++)
+      _store[ch][s] = 0.0f;
+}
+
+inline void
+FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
+{
+  assert(rhs.Count() >= Count());
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < Count(); s++)
+      _store[ch][s] = rhs[ch][s];
+}
+
+inline void 
+FBFixedAudioBlock::CopyFrom(FBBufferAudioBlock const& rhs)
+{
+  assert(rhs.Count() >= Count());
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < Count(); s++)
+      _store[ch][s] = rhs[ch][s];
+}
+
+inline void
 FBFixedAudioBlock::InPlaceAdd(FBFixedAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < Count(); s++)
-      (*this)[ch][s] += rhs[ch][s];
+      _store[ch][s] += rhs[ch][s];
 }
 
 inline void
@@ -40,7 +71,7 @@ FBFixedAudioBlock::InPlaceMultiplyBy(FBFixedCVBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < Count(); s++)
-      (*this)[ch][s] *= rhs[s];
+      _store[ch][s] *= rhs[s];
 }
 
 inline void
@@ -48,7 +79,7 @@ FBFixedAudioBlock::InPlaceMultiplyByOneMinus(FBFixedCVBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < Count(); s++)
-      (*this)[ch][s] *= 1.0f - rhs[s];
+      _store[ch][s] *= 1.0f - rhs[s];
 }
 
 inline void 
@@ -56,5 +87,5 @@ FBFixedAudioBlock::InPlaceFMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& 
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < Count(); s++)
-      (*this)[ch][s] += b[ch][s] * c[s];
+      _store[ch][s] += b[ch][s] * c[s];
 }

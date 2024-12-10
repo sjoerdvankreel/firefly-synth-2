@@ -55,15 +55,6 @@ MakeNoteOffEvent(Event const& event)
   return result;
 }
 
-static FBHostAudioBlock
-MakeHostAudioBlock(AudioBusBuffers& buffers, int sampleCount)
-{
-  return FBHostAudioBlock(
-    buffers.channelBuffers32[0],
-    buffers.channelBuffers32[1],
-    sampleCount);
-}
-
 FBVST3AudioEffect::
 ~FBVST3AudioEffect()
 {
@@ -176,11 +167,12 @@ FBVST3AudioEffect::process(ProcessData& data)
     return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
   std::sort(acc.begin(), acc.end(), compare);
 
-  if (data.numInputs == 1)
-    _input.audio = MakeHostAudioBlock(data.inputs[0], data.numSamples);
+  float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
+  if (data.numInputs != 1)
+    _input.audio = FBHostAudioBlock(zeroIn, data.numSamples);
   else
-    _input.audio = FBHostAudioBlock(_zeroIn[0].data(), _zeroIn[1].data(), data.numSamples);
-  FBHostAudioBlock output(MakeHostAudioBlock(*data.outputs, data.numSamples));
+    _input.audio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
+  FBHostAudioBlock output(data.outputs->channelBuffers32, data.numSamples);
   _hostProcessor->ProcessHost(_input, output);
   return kResultTrue;
 }
