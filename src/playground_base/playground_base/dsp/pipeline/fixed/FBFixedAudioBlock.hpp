@@ -4,13 +4,21 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedSIMDBlock.hpp>
+#include <playground_base/dsp/pipeline/shared/FBAnyAudioBlock.hpp>
 
-class alignas(FBSIMDVectorAlign) FBFixedAudioBlock final
+class alignas(FBSIMDVectorAlign) FBFixedAudioBlock final:
+public FBAnyAudioBlock<FBFixedAudioBlock, FBFixedSIMDBlock>
 {
-  std::array<FBFixedSIMDBlock, 2> _store = {};
-
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
+  StoreT& operator[](int channel)
+  { return _store[channel]; }
+  StoreT const& operator[](int channel) const
+  { return _store[channel]; }
+
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedAudioBlock);
+  FBFixedAudioBlock(): FBAnyAudioBlock({}, {}) {}
+  static int Count() { return FB_FIXED_BLOCK_SIZE; }
+
   void operator+=(FBFixedCVBlock const& rhs);
   void operator-=(FBFixedCVBlock const& rhs);
   void operator*=(FBFixedCVBlock const& rhs);

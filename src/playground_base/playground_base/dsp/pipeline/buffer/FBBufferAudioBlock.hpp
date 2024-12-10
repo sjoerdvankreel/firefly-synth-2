@@ -1,16 +1,17 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/pipeline/shared/FBAnyAudioBlock.hpp>
 
-#include <array>
 #include <vector>
 
-class FBBufferAudioBlock final
+class FBBufferAudioBlock final:
+public FBAnyAudioBlock<FBBufferAudioBlock, std::vector<float>>
 {
-  std::array<std::vector<float>, 2> _store = {}
-
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferAudioBlock);
+  FBBufferAudioBlock():
+  FBAnyAudioBlock({}, {}) {}
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBBufferAudioBlock);
 
   void Drop(int count);
   int Count() const
