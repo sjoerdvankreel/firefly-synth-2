@@ -10,17 +10,14 @@
 
 class alignas(FBSIMDVectorByteCount) FBFixedAudioBlock
 {
-  std::array<std::array<float, FBFixedBlockSize>, 2> _store = {};
+  std::array<FBFixedSIMDBlock, 2> _store = {};
 
 public:
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
   static int Count() { return FBFixedBlockSize; }
-
-  std::array<float, FBFixedBlockSize>&
-  operator[](int ch) { return _store[ch]; }
-  std::array<float, FBFixedBlockSize> const&
-  operator[](int ch) const { return _store[ch]; }
+  FBFixedSIMDBlock& operator[](int ch) { return _store[ch]; }
+  FBFixedSIMDBlock const& operator[](int ch) const { return _store[ch]; }
 
   // TODO simd
   void SetToZero();
