@@ -34,13 +34,13 @@ public:
 inline float& 
 FBFixedSIMDBlock::operator[](int index)
 {
-  return _store[index / VectorCount][index % VectorCount];
+  return _store[index / FBSIMDVectorFloatCount][index % FBSIMDVectorFloatCount];
 }
 
 inline float 
 FBFixedSIMDBlock::operator[](int index) const
 {
-  return _store[index / VectorCount][index % VectorCount];
+  return _store[index / FBSIMDVectorFloatCount][index % FBSIMDVectorFloatCount];
 }
 
 inline void
