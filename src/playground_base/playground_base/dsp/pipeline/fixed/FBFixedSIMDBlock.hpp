@@ -21,6 +21,8 @@ public:
   float operator[](int index) const;
   
   void FB_SIMD_CALL SetToZero();
+  void FB_SIMD_CALL SetToSineOfTwoPi();
+  void FB_SIMD_CALL SetToUnipolarSineOfTwoPi();
   void FB_SIMD_CALL CopyFrom(FBFixedSIMDBlock const& rhs);
   void FB_SIMD_CALL MultiplyByOneMinus(FBFixedSIMDBlock const& rhs);
   void FB_SIMD_CALL FMA(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c);
@@ -48,6 +50,20 @@ FBFixedSIMDBlock::SetToZero()
 {
   for (int v = 0; v < VectorCount; v++)
     _store[v].SetToZero();
+}
+
+inline void
+FBFixedSIMDBlock::SetToSineOfTwoPi()
+{
+  for (int v = 0; v < VectorCount; v++)
+    _store[v].SetToSineOfTwoPi();
+}
+
+inline void
+FBFixedSIMDBlock::SetToUnipolarSineOfTwoPi()
+{
+  for (int v = 0; v < VectorCount; v++)
+    _store[v].SetToUnipolarSineOfTwoPi();
 }
 
 inline void

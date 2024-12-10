@@ -21,5 +21,7 @@ public:
   float const& operator[](int sample) const { return _store[sample]; }
 
   void FB_SIMD_CALL SetToZero() { _store.SetToZero(); }
+  void FB_SIMD_CALL SetToSineOfTwoPi() { _store.SetToSineOfTwoPi(); }
+  void FB_SIMD_CALL SetToUnipolarSineOfTwoPi() { _store.SetToUnipolarSineOfTwoPi(); }
   void FB_SIMD_CALL CopyFrom(FBFixedCVBlock const& rhs) { _store.CopyFrom(rhs._store); }
 };

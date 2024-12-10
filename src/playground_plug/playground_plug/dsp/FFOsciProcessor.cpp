@@ -34,11 +34,8 @@ FFOsciProcessor::Generate(FFOsciBlock& block)
   int key = block.state.voice->event.note.key;
   float freq = FBPitchToFreq(static_cast<float>(key));
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
-  {
-    float sample = FBPhaseToSine(_phase.Next(block.state.sampleRate, freq));
-    block.output[0][s] = sample;
-    block.output[1][s] = sample;
-  }
+    block.output.SetLRTo(s, _phase.Next(block.state.sampleRate, freq));
+  block.output.SetToSineOfTwoPi();
 }
 
 void

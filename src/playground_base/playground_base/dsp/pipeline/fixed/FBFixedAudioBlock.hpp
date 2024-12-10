@@ -16,10 +16,13 @@ public:
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
 
+  void SetLRTo(int sample, float val);
   void CopyFrom(FBBufferAudioBlock const& rhs);
   static int Count() { return FBFixedBlockSize; }
 
   void FB_SIMD_CALL SetToZero();
+  void FB_SIMD_CALL SetToSineOfTwoPi();
+  void FB_SIMD_CALL SetToUnipolarSineOfTwoPi();
   void FB_SIMD_CALL CopyFrom(FBFixedAudioBlock const& rhs);
   void FB_SIMD_CALL MultiplyByOneMinus(FBFixedCVBlock const& rhs);
   void FB_SIMD_CALL FMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c);
@@ -38,6 +41,13 @@ public:
   FBFixedAudioBlock& FB_SIMD_CALL operator/=(FBFixedAudioBlock const& rhs);
 };
 
+inline void 
+FBFixedAudioBlock::SetLRTo(int sample, float val)
+{
+  for(int ch = 0; ch < 2; ch++)
+    _store[ch][sample] = val;
+}
+
 inline void
 FBFixedAudioBlock::CopyFrom(FBBufferAudioBlock const& rhs)
 {
@@ -52,6 +62,20 @@ FBFixedAudioBlock::SetToZero()
 {
   for (int ch = 0; ch < 2; ch++)
     _store[ch].SetToZero();
+}
+
+inline void
+FBFixedAudioBlock::SetToSineOfTwoPi()
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].SetToSineOfTwoPi();
+}
+
+inline void
+FBFixedAudioBlock::SetToUnipolarSineOfTwoPi()
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].SetToUnipolarSineOfTwoPi();
 }
 
 inline void

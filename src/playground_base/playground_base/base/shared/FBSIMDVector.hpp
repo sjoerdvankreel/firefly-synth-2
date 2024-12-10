@@ -1,5 +1,6 @@
 #pragma once
 
+#include <numbers>
 #include <immintrin.h> // todo neon
 
 #define FB_SIMD_CALL __vectorcall
@@ -19,6 +20,8 @@ public:
   float operator[](int index) const;
 
   void FB_SIMD_CALL SetToZero();
+  void FB_SIMD_CALL SetToSineOfTwoPi();
+  void FB_SIMD_CALL SetToUnipolarSineOfTwoPi();
   void FB_SIMD_CALL MultiplyByOneMinus(FBSIMDFloatVector rhs);
   void FB_SIMD_CALL FMA(FBSIMDFloatVector b, FBSIMDFloatVector c);
   FBSIMDFloatVector& FB_SIMD_CALL operator=(FBSIMDFloatVector rhs);
@@ -41,12 +44,6 @@ _store(_mm256_setzero_ps()) {}
 inline FBSIMDFloatVector::
 FBSIMDFloatVector(__m256 store) :
 _store(store) {}
-
-inline void
-FBSIMDFloatVector::SetToZero()
-{
-  _store = _mm256_setzero_ps();
-}
 
 inline float& 
 FBSIMDFloatVector::operator[](int index)
@@ -120,9 +117,24 @@ FBSIMDFloatVector::operator/(FBSIMDFloatVector rhs) const
 }
 
 inline void
-FBSIMDFloatVector::FMA(FBSIMDFloatVector b, FBSIMDFloatVector c)
+FBSIMDFloatVector::SetToZero()
 {
-  _store = _mm256_fmadd_ps(b._store, c._store, _store);
+  _store = _mm256_setzero_ps();
+}
+
+inline void
+FBSIMDFloatVector::SetToSineOfTwoPi()
+{
+  __m256 twoPi = _mm256_set1_ps(2.0f * std::numbers::pi_v<float>);
+  _store = _mm256_sin_ps(_mm256_mul_ps(_store, twoPi));
+}
+
+inline void
+FBSIMDFloatVector::SetToUnipolarSineOfTwoPi()
+{
+  SetToSineOfTwoPi();
+  __m256 zeroTwo = _mm256_add_ps(_store, _mm256_set1_ps(1.0f));
+  _store = _mm256_mul_ps(_mm256_set1_ps(0.5f), zeroTwo);
 }
 
 inline void
@@ -131,4 +143,10 @@ FBSIMDFloatVector::MultiplyByOneMinus(FBSIMDFloatVector rhs)
   __m256 one = _mm256_set1_ps(1.0f);
   __m256 oneMinus = _mm256_sub_ps(one, rhs._store);
   _store = _mm256_mul_ps(_store, oneMinus);
+}
+
+inline void
+FBSIMDFloatVector::FMA(FBSIMDFloatVector b, FBSIMDFloatVector c)
+{
+  _store = _mm256_fmadd_ps(b._store, c._store, _store);
 }
