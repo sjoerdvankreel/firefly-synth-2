@@ -1,18 +1,11 @@
 voice manager
-drop all #defines for constexpr
 denormals
 clap polymod
 voice block start position (fake it by amp env?)
-figure out if we can do simd for the cv blocks
-smooth filter reacts too slow
-simd lib
 save state as ui text
 handle block/acc non/destructive per/voice or not
 static link
 handle PDC
 clap note cut
-warn as error
-relwithdebinfo
-tryout simd stuff maybe with a library?
 check hash clash
 Linux visibility-hidden & inline-hidden et all
