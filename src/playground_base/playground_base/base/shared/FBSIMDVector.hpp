@@ -1,6 +1,11 @@
 #pragma once
 
 #include <numbers>
+
+#ifdef FB_USE_AVX
+#else
+#error
+#endif
 #include <immintrin.h> // todo neon
 
 #define FB_SIMD_CALL __vectorcall
