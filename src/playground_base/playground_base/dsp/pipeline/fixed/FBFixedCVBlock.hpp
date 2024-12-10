@@ -2,12 +2,11 @@
 
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/shared/FBSIMDVector.hpp>
 
 #include <array>
 #include <cassert>
 
-class alignas(FB_SIMD_VECTOR_ALIGN)
+class alignas(FB_FIXED_BLOCK_ALIGN)
 FBFixedCVBlock final
 {
   std::array<float, FB_FIXED_BLOCK_SIZE> _store = {};
