@@ -4,10 +4,12 @@
 
 // todo neon
 #if FB_USE_AVX
+
 #include <immintrin.h>
 typedef __m256 FBSIMDFloatStore;
 inline int constexpr FBSIMDVectorBitCount = 256;
 #define FB_SIMD_CALL __vectorcall
+
 #define FBSIMDFloatAdd _mm256_add_ps
 #define FBSIMDFloatSub _mm256_sub_ps
 #define FBSIMDFloatMul _mm256_mul_ps
@@ -16,6 +18,7 @@ inline int constexpr FBSIMDVectorBitCount = 256;
 #define FBSIMDFloatFMA _mm256_fmadd_ps
 #define FBSIMDFloatSet1 _mm256_set1_ps
 #define FBSIMDFloatZero _mm256_setzero_ps
+
 #else
 #error
 #endif
