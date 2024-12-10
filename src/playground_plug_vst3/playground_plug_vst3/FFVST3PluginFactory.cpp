@@ -47,20 +47,20 @@ static FUnknown*
 ComponentFactory(void*)
 {
   auto topo = FFMakeTopo();
-  auto controllerFuid = TextToFUID(FF_PLUG_CONTROLLER_ID);
+  auto controllerFuid = TextToFUID(FFPlugControllerId);
   auto result = new FFVST3AudioEffect(*topo, controllerFuid);
   return static_cast<IAudioProcessor*>(result);
 }
 
-BEGIN_FACTORY_DEF(FF_VENDOR_NAME, FF_VENDOR_URL, FF_VENDOR_MAIL)
+BEGIN_FACTORY_DEF(FFVendorName, FFVendorURL, FFVendorMail)
   DEF_CLASS2(
-    INLINE_UID_FROM_FUID(TextToFUID(FF_PLUG_PROCESSOR_ID)),
+    INLINE_UID_FROM_FUID(TextToFUID(FFPlugProcessorId)),
       PClassInfo::kManyInstances, kVstAudioEffectClass, 
-      FF_PLUG_NAME, kDistributable, PlugType::kInstrument,
+    FFPlugName, kDistributable, PlugType::kInstrument,
       FF_PLUG_VERSION, kVstVersionString, ComponentFactory);
   DEF_CLASS2(
-    INLINE_UID_FROM_FUID(TextToFUID(FF_PLUG_CONTROLLER_ID)),
+    INLINE_UID_FROM_FUID(TextToFUID(FFPlugControllerId)),
       PClassInfo::kManyInstances, kVstComponentControllerClass, 
-      FF_PLUG_NAME, 0, "",
+      FFPlugName, 0, "",
       FF_PLUG_VERSION, kVstVersionString, ControllerFactory)
 END_FACTORY

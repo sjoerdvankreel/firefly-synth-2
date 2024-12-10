@@ -20,11 +20,11 @@ GetPluginDescriptor(
 {
   static clap_plugin_descriptor_t result = {};
   result.features = Features;
-  result.name = FF_PLUG_NAME;
-  result.url = FF_VENDOR_URL;
-  result.vendor = FF_VENDOR_NAME;
+  result.url = FFVendorURL;
+  result.name = FFPlugName;
+  result.vendor = FFVendorName;
+  result.id = FFPlugProcessorId;
   result.version = FF_PLUG_VERSION;
-  result.id = FF_PLUG_PROCESSOR_ID;
   result.clap_version = CLAP_VERSION_INIT;
   return &result;
 }; 
