@@ -6,7 +6,7 @@
 class FBHostAudioBlock final:
 public FBAnyAudioBlock<FBHostAudioBlock, float*>
 {
-  int _count;
+  int _count = 0;
 
 public:
   int Count() const { return _count; }  

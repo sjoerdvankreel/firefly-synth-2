@@ -37,5 +37,5 @@ FFGLFOProcessor::Process(FFModuleProcState const& state)
   if (block.on)
     Generate(block);
   else
-    block.output.SetToZero();
+    block.output.Fill(0, block.output.Count(), 0.0f);
 }
