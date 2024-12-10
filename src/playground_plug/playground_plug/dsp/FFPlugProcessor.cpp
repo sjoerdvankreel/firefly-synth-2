@@ -55,7 +55,7 @@ FFPlugProcessor::ProcessPostVoice(
   output.SetToZero();
   for (int i = 0; i < FBMaxVoices; i++)
     if (input.voiceManager->Voices()[i].active)
-      output.InPlaceAdd(_state->dsp.voice[i].output);
+      output += _state->dsp.voice[i].output;
 }
 
 void
@@ -70,7 +70,7 @@ FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
   {
     moduleState.moduleSlot = i;
     voiceDSP.osci[i].processor.Process(moduleState, voice);
-    voiceDSP.output.InPlaceAdd(voiceDSP.osci[i].output);
+    voiceDSP.output += voiceDSP.osci[i].output;
   }
 
   // todo shaper

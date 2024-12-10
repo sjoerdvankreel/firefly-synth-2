@@ -15,19 +15,24 @@ class alignas(FBSIMDVectorByteCount) FBFixedAudioBlock
 public:
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
+
+  void FB_SIMD_CALL SetToZero();
+  void CopyFrom(FBBufferAudioBlock const& rhs);
+  void FB_SIMD_CALL CopyFrom(FBFixedAudioBlock const& rhs);
+
   static int Count() { return FBFixedBlockSize; }
   FBFixedSIMDBlock& operator[](int ch) { return _store[ch]; }
   FBFixedSIMDBlock const& operator[](int ch) const { return _store[ch]; }
 
-  // TODO simd
-  void FB_SIMD_CALL SetToZero();
-  void CopyFrom(FBFixedAudioBlock const& rhs);
-  void CopyFrom(FBBufferAudioBlock const& rhs);
+  FBFixedAudioBlock& FB_SIMD_CALL operator+=(FBFixedCVBlock const& rhs);
+  FBFixedAudioBlock& FB_SIMD_CALL operator-=(FBFixedCVBlock const& rhs);
+  FBFixedAudioBlock& FB_SIMD_CALL operator*=(FBFixedCVBlock const& rhs);
+  FBFixedAudioBlock& FB_SIMD_CALL operator/=(FBFixedCVBlock const& rhs);
 
-  void InPlaceAdd(FBFixedAudioBlock const& rhs);
-  void InPlaceMultiplyBy(FBFixedCVBlock const& rhs);
-  void InPlaceMultiplyByOneMinus(FBFixedCVBlock const& rhs);
-  void InPlaceFMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c);
+  FBFixedAudioBlock& FB_SIMD_CALL operator+=(FBFixedAudioBlock const& rhs);
+  FBFixedAudioBlock& FB_SIMD_CALL operator-=(FBFixedAudioBlock const& rhs);
+  FBFixedAudioBlock& FB_SIMD_CALL operator*=(FBFixedAudioBlock const& rhs);
+  FBFixedAudioBlock& FB_SIMD_CALL operator/=(FBFixedAudioBlock const& rhs);
 };
 
 inline void
@@ -53,34 +58,66 @@ FBFixedAudioBlock::CopyFrom(FBBufferAudioBlock const& rhs)
       _store[ch][s] = rhs[ch][s];
 }
 
-inline void
-FBFixedAudioBlock::InPlaceAdd(FBFixedAudioBlock const& rhs)
+inline FBFixedAudioBlock&
+FBFixedAudioBlock::operator+=(FBFixedCVBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < Count(); s++)
-      _store[ch][s] += rhs[ch][s];
+    _store[ch] += rhs._store;
+  return *this;
 }
 
-inline void
-FBFixedAudioBlock::InPlaceMultiplyBy(FBFixedCVBlock const& rhs)
+inline FBFixedAudioBlock&
+FBFixedAudioBlock::operator-=(FBFixedCVBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < Count(); s++)
-      _store[ch][s] *= rhs[s];
+    _store[ch] -= rhs._store;
+  return *this;
 }
 
-inline void
-FBFixedAudioBlock::InPlaceMultiplyByOneMinus(FBFixedCVBlock const& rhs)
+inline FBFixedAudioBlock&
+FBFixedAudioBlock::operator*=(FBFixedCVBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < Count(); s++)
-      _store[ch][s] *= 1.0f - rhs[s];
+    _store[ch] *= rhs._store;
+  return *this;
 }
 
-inline void 
-FBFixedAudioBlock::InPlaceFMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c)
+inline FBFixedAudioBlock&
+FBFixedAudioBlock::operator/=(FBFixedCVBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < Count(); s++)
-      _store[ch][s] += b[ch][s] * c[s];
+    _store[ch] /= rhs._store;
+  return *this;
+}
+
+inline FBFixedAudioBlock& 
+FBFixedAudioBlock::operator+=(FBFixedAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch] += rhs._store[ch];
+  return *this;
+}
+
+inline FBFixedAudioBlock& 
+FBFixedAudioBlock::operator-=(FBFixedAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch] -= rhs._store[ch];
+  return *this;
+}
+
+inline FBFixedAudioBlock&
+FBFixedAudioBlock::operator*=(FBFixedAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch] *= rhs._store[ch];
+  return *this;
+}
+
+inline FBFixedAudioBlock&
+FBFixedAudioBlock::operator/=(FBFixedAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch] /= rhs._store[ch];
+  return *this;
 }

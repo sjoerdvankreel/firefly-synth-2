@@ -62,6 +62,6 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   }
 
   Generate(block);
-  block.output.InPlaceMultiplyBy(block.gain);
+  block.output *= block.gain;
   ApplyGLFOToGain(block);
 }

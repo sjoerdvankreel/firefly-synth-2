@@ -11,6 +11,7 @@ class alignas(FBSIMDVectorByteCount)
 FBFixedCVBlock final
 {
   FBFixedSIMDBlock _store = {};
+  friend class FBFixedAudioBlock;
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedCVBlock);
