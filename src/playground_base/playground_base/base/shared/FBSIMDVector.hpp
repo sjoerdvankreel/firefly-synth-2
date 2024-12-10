@@ -3,12 +3,38 @@
 #include <numbers>
 
 // todo neon
+#if FB_USE_SSE
+
 #if FB_USE_AVX
+#error
+#endif
 
 #include <immintrin.h>
+
+typedef __m128 FBSIMDFloatStore;
+inline int constexpr FBSIMDVectorBitCount = 128;
+
+#define FB_SIMD_CALL __vectorcall
+#define FBSIMDFloatAddr(x) (x.m128_f32)
+
+#define FBSIMDFloatAdd _mm_add_ps
+#define FBSIMDFloatSub _mm_sub_ps
+#define FBSIMDFloatMul _mm_mul_ps
+#define FBSIMDFloatDiv _mm_div_ps
+#define FBSIMDFloatSin _mm_sin_ps
+#define FBSIMDFloatFMA _mm_fmadd_ps
+#define FBSIMDFloatSet1 _mm_set1_ps
+#define FBSIMDFloatZero _mm_setzero_ps
+
+#elif FB_USE_AVX
+
+#include <immintrin.h>
+
 typedef __m256 FBSIMDFloatStore;
 inline int constexpr FBSIMDVectorBitCount = 256;
+
 #define FB_SIMD_CALL __vectorcall
+#define FBSIMDFloatAddr(x) (x.m256_f32)
 
 #define FBSIMDFloatAdd _mm256_add_ps
 #define FBSIMDFloatSub _mm256_sub_ps
@@ -69,11 +95,11 @@ _store(store) {}
 
 inline float& 
 FBSIMDFloatVector::operator[](int index)
-{ return _store.m256_f32[index]; }
+{ return FBSIMDFloatAddr(_store)[index]; }
 
 inline float 
 FBSIMDFloatVector::operator[](int index) const
-{ return _store.m256_f32[index]; }
+{ return FBSIMDFloatAddr(_store)[index]; }
 
 inline FBSIMDFloatVector& 
 FBSIMDFloatVector::operator=(FBSIMDFloatVector rhs)
