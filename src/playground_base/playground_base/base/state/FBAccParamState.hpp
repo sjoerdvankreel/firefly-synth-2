@@ -5,7 +5,7 @@
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedCVBlock.hpp>
 
-class alignas(FBFixedBlockAlign) FBAccParamState final
+class alignas(FBSIMDVectorByteCount) FBAccParamState final
 {
   friend class FBSmoothProcessor;
   friend class FBVoiceAccParamState;

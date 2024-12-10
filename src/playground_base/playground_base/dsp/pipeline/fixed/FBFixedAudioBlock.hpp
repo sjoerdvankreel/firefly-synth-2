@@ -8,7 +8,7 @@
 
 #include <array>
 
-class alignas(FBFixedBlockAlign) FBFixedAudioBlock
+class alignas(FBSIMDVectorByteCount) FBFixedAudioBlock
 {
   std::array<std::array<float, FBFixedBlockSize>, 2> _store = {};
 
