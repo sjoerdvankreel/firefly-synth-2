@@ -23,6 +23,7 @@ public:
   void FB_SIMD_CALL SetToZero();
   void FB_SIMD_CALL CopyFrom(FBFixedSIMDBlock const& rhs);
   void FB_SIMD_CALL MultiplyByOneMinus(FBFixedSIMDBlock const& rhs);
+  void FB_SIMD_CALL FMA(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c);
 
   FBFixedSIMDBlock& FB_SIMD_CALL operator+=(FBFixedSIMDBlock const& rhs);
   FBFixedSIMDBlock& FB_SIMD_CALL operator-=(FBFixedSIMDBlock const& rhs);
@@ -45,52 +46,59 @@ FBFixedSIMDBlock::operator[](int index) const
 inline void
 FBFixedSIMDBlock::SetToZero()
 {
-  for (int b = 0; b < VectorCount; b++)
-    _store[b].SetToZero();
+  for (int v = 0; v < VectorCount; v++)
+    _store[v].SetToZero();
 }
 
 inline void
 FBFixedSIMDBlock::CopyFrom(FBFixedSIMDBlock const& rhs)
 {
-  for (int b = 0; b < VectorCount; b++)
-    _store[b] = rhs._store[b];
+  for (int v = 0; v < VectorCount; v++)
+    _store[v] = rhs._store[v];
 }
 
 inline void
 FBFixedSIMDBlock::MultiplyByOneMinus(FBFixedSIMDBlock const& rhs)
 {
-  for (int b = 0; b < VectorCount; b++)
-    _store[b].MultiplyByOneMinus(rhs._store[b]);
+  for (int v = 0; v < VectorCount; v++)
+    _store[v].MultiplyByOneMinus(rhs._store[v]);
+}
+
+inline void
+FBFixedSIMDBlock::FMA(FBFixedSIMDBlock const& b, FBFixedSIMDBlock const& c)
+{
+  for (int v = 0; v < VectorCount; v++)
+    _store[v].FMA(b._store[v], c._store[v]);
 }
 
 inline FBFixedSIMDBlock& 
 FBFixedSIMDBlock::operator+=(FBFixedSIMDBlock const& rhs)
 {
-  for (int b = 0; b < VectorCount; b++)
-    _store[b] += rhs._store[b];
+  for (int v = 0; v < VectorCount; v++)
+    _store[v] += rhs._store[v];
   return *this;
 }
 
 inline FBFixedSIMDBlock& 
 FBFixedSIMDBlock::operator-=(FBFixedSIMDBlock const& rhs)
 {
-  for (int b = 0; b < VectorCount; b++)
-    _store[b] -= rhs._store[b];
+  for (int v = 0; v < VectorCount; v++)
+    _store[v] -= rhs._store[v];
   return *this;
 }
 
 inline FBFixedSIMDBlock&
 FBFixedSIMDBlock::operator*=(FBFixedSIMDBlock const& rhs)
 {
-  for (int b = 0; b < VectorCount; b++)
-    _store[b] *= rhs._store[b];
+  for (int v = 0; v < VectorCount; v++)
+    _store[v] *= rhs._store[v];
   return *this;
 }
 
 inline FBFixedSIMDBlock&
 FBFixedSIMDBlock::operator/=(FBFixedSIMDBlock const& rhs)
 {
-  for (int b = 0; b < VectorCount; b++)
-    _store[b] /= rhs._store[b];
+  for (int v = 0; v < VectorCount; v++)
+    _store[v] /= rhs._store[v];
   return *this;
 }

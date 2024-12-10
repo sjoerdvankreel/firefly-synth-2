@@ -25,7 +25,7 @@ FFOsciProcessor::ApplyGLFOToGain(FFOsciBlock& block)
   original.CopyFrom(block.output);
   auto const& glfo = block.state.proc->dsp.global.glfo[0].output;
   block.output.MultiplyByOneMinus(block.glfoToGain);
-  block.output.InPlaceFMA(original, glfo); // TODO * glfoToGain
+  block.output.FMA(original, glfo); // TODO * glfoToGain
 }
 
 void

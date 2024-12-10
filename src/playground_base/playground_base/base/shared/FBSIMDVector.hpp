@@ -20,6 +20,7 @@ public:
 
   void FB_SIMD_CALL SetToZero();
   void FB_SIMD_CALL MultiplyByOneMinus(FBSIMDFloatVector rhs);
+  void FB_SIMD_CALL FMA(FBSIMDFloatVector b, FBSIMDFloatVector c);
   FBSIMDFloatVector& FB_SIMD_CALL operator=(FBSIMDFloatVector rhs);
 
   FBSIMDFloatVector& FB_SIMD_CALL operator+=(FBSIMDFloatVector rhs);
@@ -116,6 +117,12 @@ inline FBSIMDFloatVector
 FBSIMDFloatVector::operator/(FBSIMDFloatVector rhs) const
 {
   return FBSIMDFloatVector(_mm256_div_ps(_store, rhs._store));
+}
+
+inline void
+FBSIMDFloatVector::FMA(FBSIMDFloatVector b, FBSIMDFloatVector c)
+{
+  _store = _mm256_fmadd_ps(_store, b._store, c._store);
 }
 
 inline void

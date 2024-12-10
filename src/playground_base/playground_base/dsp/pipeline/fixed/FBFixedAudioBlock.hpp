@@ -22,6 +22,7 @@ public:
   void FB_SIMD_CALL SetToZero();
   void FB_SIMD_CALL CopyFrom(FBFixedAudioBlock const& rhs);
   void FB_SIMD_CALL MultiplyByOneMinus(FBFixedCVBlock const& rhs);
+  void FB_SIMD_CALL FMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c);
 
   FBFixedSIMDBlock& operator[](int ch) { return _store[ch]; }
   FBFixedSIMDBlock const& operator[](int ch) const { return _store[ch]; }
@@ -65,6 +66,13 @@ FBFixedAudioBlock::MultiplyByOneMinus(FBFixedCVBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     _store[ch].MultiplyByOneMinus(rhs._store);
+}
+
+inline void
+FBFixedAudioBlock::FMA(FBFixedAudioBlock const& b, FBFixedCVBlock const& c)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].FMA(b._store[ch], c._store);
 }
 
 inline FBFixedAudioBlock&
