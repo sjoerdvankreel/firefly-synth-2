@@ -25,7 +25,7 @@ FFOsciProcessor::ApplyGLFOToGain(FFOsciBlock& block)
   original.CopyFrom(block.output, 0, 0, block.output.Count());
   auto const& glfo = block.state.proc->dsp.global.glfo[0].output;
   block.output.InPlaceMultiplyByOneMinus(block.glfoToGain);
-  block.output.InPlaceFMA(original, glfo); // TODO * glfoToGain
+  block.output.InPlaceFMA(original, glfo);
 }
 
 void
@@ -35,7 +35,6 @@ FFOsciProcessor::Generate(FFOsciBlock& block)
   float freq = FBPitchToFreq(static_cast<float>(key));
   for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
   {
-    // TODO phase first, SIMD-sine next
     float sample = FBPhaseToSine(_phase.Next(block.state.sampleRate, freq));
     block.output[0][s] = sample;
     block.output[1][s] = sample;

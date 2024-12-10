@@ -18,7 +18,6 @@ struct FFGLFOBlock
 void 
 FFGLFOProcessor::Generate(FFGLFOBlock& block)
 {
-  // TODO _phase.Next<UnipolarSine>(...)
   for (int s = 0; s < block.output.Count(); s++)
     block.output[s] = FBBiPolarToUnipolar(FBPhaseToSine(_phase.Next(block.state.sampleRate, 1.0f)));
 }
