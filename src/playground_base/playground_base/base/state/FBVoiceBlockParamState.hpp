@@ -11,7 +11,7 @@ class FBVoiceBlockParamState final
   friend class FBProcParamState;
 
   float _value = {};
-  std::array<float, FB_MAX_VOICES> _voice = {};
+  std::array<float, FBMaxVoices> _voice = {};
 
   float Value() const { return _value; }
   void Value(float value) { _value = value; };
@@ -19,5 +19,5 @@ class FBVoiceBlockParamState final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBVoiceBlockParamState);
-  std::array<float, FB_MAX_VOICES> const& Voice() const { return _voice; }
+  std::array<float, FBMaxVoices> const& Voice() const { return _voice; }
 };

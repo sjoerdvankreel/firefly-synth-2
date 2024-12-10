@@ -40,7 +40,7 @@ FFMakeTopo()
   auto selectGlfo = [](auto& state) { return &state.global.glfo; };
   glfo.voice = false;
   glfo.name = "GLFO";
-  glfo.slotCount = FF_GLFO_COUNT;
+  glfo.slotCount = FFGLFOCount;
   glfo.id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
   glfo.params.resize(FFGLFOParamCount);
 
@@ -68,7 +68,7 @@ FFMakeTopo()
   auto selectOsci = [](auto& state) { return &state.voice.osci; };
   osci.voice = true;
   osci.name = "Osc";
-  osci.slotCount = FF_OSCI_COUNT;
+  osci.slotCount = FFOsciCount;
   osci.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
   osci.params.resize(FFOsciParamCount);
 
@@ -98,7 +98,7 @@ FFMakeTopo()
   auto& osciGain = osci.params[FFOsciAccGain];
   osciGain.acc = true;
   osciGain.name = "Gain";
-  osciGain.slotCount = FF_OSCI_GAIN_COUNT;
+  osciGain.slotCount = FFOsciGainCount;
   osciGain.valueCount = 0;
   osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   auto selectOsciGain = [](auto& module) { return &module.acc.gain; };
@@ -129,7 +129,7 @@ FFMakeTopo()
   auto selectShaper = [](auto& state) { return &state.voice.shaper; };
   shaper.voice = true;
   shaper.name = "Shaper";
-  shaper.slotCount = FF_SHAPER_COUNT;
+  shaper.slotCount = FFShaperCount;
   shaper.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
   shaper.params.resize(FFShaperParamCount);
 

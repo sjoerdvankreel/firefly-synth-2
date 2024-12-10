@@ -1,6 +1,6 @@
 #pragma once
 
-#define FB_MAX_VOICES 64
-#define FB_PARAM_SMOOTH_SEC 0.001f
-#define FB_FIXED_BLOCK_SIZE 16
-#define FB_FIXED_BLOCK_ALIGN (FB_FIXED_BLOCK_SIZE * sizeof(float))
+inline int constexpr FBMaxVoices = 64;
+inline int constexpr FBFixedBlockSize = 16;
+inline int constexpr FBFixedBlockAlign = FBFixedBlockSize * sizeof(float); // todo SIMD
+inline float constexpr FBParamSmoothSec = 0.001f;

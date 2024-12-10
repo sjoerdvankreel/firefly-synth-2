@@ -19,8 +19,8 @@ class FBVoiceManager
 {
   std::uint64_t _counter = {};
   FBProcStatePtrs* const _state;
-  std::array<std::uint64_t, FB_MAX_VOICES> _num = {};
-  std::array<FBVoiceInfo, FB_MAX_VOICES> _voices = {};
+  std::array<std::uint64_t, FBMaxVoices> _num = {};
+  std::array<FBVoiceInfo, FBMaxVoices> _voices = {};
 
 public:
   FBVoiceManager(FBProcStatePtrs* state);
@@ -29,6 +29,6 @@ public:
   void Lease(FBNoteEvent const& event);
   void ReturnOldest(FBNoteEvent const& event);
 
-  std::array<FBVoiceInfo, FB_MAX_VOICES> const&
+  std::array<FBVoiceInfo, FBMaxVoices> const&
   Voices() const { return _voices; }
 };

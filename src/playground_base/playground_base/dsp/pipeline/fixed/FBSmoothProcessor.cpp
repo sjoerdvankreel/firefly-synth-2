@@ -47,7 +47,7 @@ FBSmoothProcessor::ProcessSmoothing(
       {
         auto& voice = params[event.index].VoiceAcc();
         voice.Value(event.normalized);
-        for (int v = 0; v < FB_MAX_VOICES; v++)
+        for (int v = 0; v < FBMaxVoices; v++)
           if (_voiceManager->Voices()[v].active)
             voice.Modulate(v, event.normalized);
       }
@@ -58,7 +58,7 @@ FBSmoothProcessor::ProcessSmoothing(
         if (!params[p].IsVoice())
           params[p].GlobalAcc().Global().SmoothNext(s);
         else
-          for(int v = 0; v < FB_MAX_VOICES; v++)
+          for(int v = 0; v < FBMaxVoices; v++)
             if (_voiceManager->Voices()[v].active)
               params[p].VoiceAcc().Voice()[v].SmoothNext(s);
   }

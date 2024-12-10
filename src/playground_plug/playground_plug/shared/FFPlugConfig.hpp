@@ -2,10 +2,10 @@
 
 #include <playground_base/base/shared/FBStringify.hpp>
 
-#define FF_GLFO_COUNT 1
-#define FF_OSCI_COUNT 2 // todo oscis - it must be a single module
-#define FF_SHAPER_COUNT 1
-#define FF_OSCI_GAIN_COUNT 2
+inline int constexpr FFGLFOCount = 1;
+inline int constexpr FFOsciCount = 2; // todo oscis - it must be a single module
+inline int constexpr FFShaperCount = 1;
+inline int constexpr FFOsciGainCount = 2;
 
 #define FF_VENDOR_NAME "Sjoerd van Kreel"
 #define FF_VENDOR_MAIL "sjoerdvankreel@gmail.com"

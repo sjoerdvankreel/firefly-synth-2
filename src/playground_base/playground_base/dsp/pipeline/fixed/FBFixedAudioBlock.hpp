@@ -7,18 +7,18 @@
 
 #include <array>
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FBFixedAudioBlock
+class alignas(FBFixedBlockAlign) FBFixedAudioBlock
 {
-  std::array<std::array<float, FB_FIXED_BLOCK_SIZE>, 2> _store = {};
+  std::array<std::array<float, FBFixedBlockSize>, 2> _store = {};
 
 public:
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
-  static int Count() { return FB_FIXED_BLOCK_SIZE; }
+  static int Count() { return FBFixedBlockSize; }
 
-  std::array<float, FB_FIXED_BLOCK_SIZE>& 
+  std::array<float, FBFixedBlockSize>&
   operator[](int ch) { return _store[ch]; }
-  std::array<float, FB_FIXED_BLOCK_SIZE> const& 
+  std::array<float, FBFixedBlockSize> const&
   operator[](int ch) const { return _store[ch]; }
 
   // TODO simd

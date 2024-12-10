@@ -33,7 +33,7 @@ FFPlugProcessor::ProcessPreVoice(
   FBPlugInputBlock const& input)
 {
   auto moduleState = MakeModuleState(input);
-  for (int s = 0; s < FF_GLFO_COUNT; s++)
+  for (int s = 0; s < FFGLFOCount; s++)
   {
     moduleState.moduleSlot = s;
     _state->dsp.global.glfo[s].processor.Process(moduleState);
@@ -53,7 +53,7 @@ FFPlugProcessor::ProcessPostVoice(
       input.voiceManager->ReturnOldest((*input.note)[n]);
 
   output.SetToZero();
-  for (int i = 0; i < FB_MAX_VOICES; i++)
+  for (int i = 0; i < FBMaxVoices; i++)
     if (input.voiceManager->Voices()[i].active)
       output.InPlaceAdd(_state->dsp.voice[i].output);
 }
@@ -66,7 +66,7 @@ FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
 
   auto& voiceDSP = _state->dsp.voice[voice];
   voiceDSP.output.SetToZero();
-  for (int i = 0; i < FF_OSCI_COUNT; i++)
+  for (int i = 0; i < FFOsciCount; i++)
   {
     moduleState.moduleSlot = i;
     voiceDSP.osci[i].processor.Process(moduleState, voice);

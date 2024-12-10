@@ -4,14 +4,14 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
 
-class alignas(FB_FIXED_BLOCK_ALIGN) FBVoiceAccParamState final
+class alignas(FBFixedBlockAlign) FBVoiceAccParamState final
 {
   friend class FBVoiceManager;
   friend class FBProcParamState;
   friend class FBSmoothProcessor;
 
   float _value = {};
-  std::array<FBAccParamState, FB_MAX_VOICES> _voice = {};
+  std::array<FBAccParamState, FBMaxVoices> _voice = {};
 
   void Init(float sampleRate);
 
@@ -19,17 +19,17 @@ class alignas(FB_FIXED_BLOCK_ALIGN) FBVoiceAccParamState final
   void Value(float value) { _value = value; }
   void BeginVoice(int slot) { Modulate(slot, _value); }
   void Modulate(int slot, float value) { _voice[slot].Modulate(value); }
-  std::array<FBAccParamState, FB_MAX_VOICES>& Voice() { return _voice; }
+  std::array<FBAccParamState, FBMaxVoices>& Voice() { return _voice; }
 
 public:
   FBVoiceAccParamState(float sampleRate);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBVoiceAccParamState);
-  std::array<FBAccParamState, FB_MAX_VOICES> const& Voice() const { return _voice; }
+  std::array<FBAccParamState, FBMaxVoices> const& Voice() const { return _voice; }
 };
 
 inline void
 FBVoiceAccParamState::Init(float sampleRate)
 {
-  for (int v = 0; v < FB_MAX_VOICES; v++)
+  for (int v = 0; v < FBMaxVoices; v++)
     _voice[v].Init(sampleRate);
 }
