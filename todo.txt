@@ -15,4 +15,3 @@ relwithdebinfo
 tryout simd stuff maybe with a library?
 check hash clash
 Linux visibility-hidden & inline-hidden et all
-cleanup the cmake for simd stuff
