@@ -47,6 +47,8 @@ void
 FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
+  // TODO denormals 
+
   for (auto const& be : input.block)
     _fixedOut.state->Params()[be.index].Value(be.normalized);
 
