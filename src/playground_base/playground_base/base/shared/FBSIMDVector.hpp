@@ -58,6 +58,13 @@ FBSIMDFloatVector::operator[](int index) const
   return _store.m256_f32[index];
 }
 
+inline FBSIMDFloatVector& 
+FBSIMDFloatVector::operator=(FBSIMDFloatVector rhs)
+{
+  _store = rhs._store;
+  return *this;
+}
+
 inline FBSIMDFloatVector&
 FBSIMDFloatVector::operator+=(FBSIMDFloatVector rhs)
 {
