@@ -19,11 +19,14 @@ public:
 
   float& operator[](int index);
   float operator[](int index) const;
+  
+  void FB_SIMD_CALL SetToZero();
+  void FB_SIMD_CALL CopyFrom(FBFixedSIMDBlock const& rhs);
 
-  FBFixedSIMDBlock& FBSIMDCall operator+=(FBFixedSIMDBlock const& rhs);
-  FBFixedSIMDBlock& FBSIMDCall operator-=(FBFixedSIMDBlock const& rhs);
-  FBFixedSIMDBlock& FBSIMDCall operator*=(FBFixedSIMDBlock const& rhs);
-  FBFixedSIMDBlock& FBSIMDCall operator/=(FBFixedSIMDBlock const& rhs);
+  FBFixedSIMDBlock& FB_SIMD_CALL operator+=(FBFixedSIMDBlock const& rhs);
+  FBFixedSIMDBlock& FB_SIMD_CALL operator-=(FBFixedSIMDBlock const& rhs);
+  FBFixedSIMDBlock& FB_SIMD_CALL operator*=(FBFixedSIMDBlock const& rhs);
+  FBFixedSIMDBlock& FB_SIMD_CALL operator/=(FBFixedSIMDBlock const& rhs);
 };
 
 inline float& 
@@ -38,7 +41,21 @@ FBFixedSIMDBlock::operator[](int index) const
   return _store[index / VectorCount][index % VectorCount];
 }
 
-inline FBFixedSIMDBlock& FBSIMDCall 
+inline void
+FBFixedSIMDBlock::SetToZero()
+{
+  for (int b = 0; b < VectorCount; b++)
+    _store[b].SetToZero();
+}
+
+inline void
+FBFixedSIMDBlock::CopyFrom(FBFixedSIMDBlock const& rhs)
+{
+  for (int b = 0; b < VectorCount; b++)
+    _store[b] = rhs._store[b];
+}
+
+inline FBFixedSIMDBlock& 
 FBFixedSIMDBlock::operator+=(FBFixedSIMDBlock const& rhs)
 {
   for (int b = 0; b < VectorCount; b++)
@@ -46,7 +63,7 @@ FBFixedSIMDBlock::operator+=(FBFixedSIMDBlock const& rhs)
   return *this;
 }
 
-inline FBFixedSIMDBlock& FBSIMDCall 
+inline FBFixedSIMDBlock& 
 FBFixedSIMDBlock::operator-=(FBFixedSIMDBlock const& rhs)
 {
   for (int b = 0; b < VectorCount; b++)
@@ -54,7 +71,7 @@ FBFixedSIMDBlock::operator-=(FBFixedSIMDBlock const& rhs)
   return *this;
 }
 
-inline FBFixedSIMDBlock& FBSIMDCall
+inline FBFixedSIMDBlock&
 FBFixedSIMDBlock::operator*=(FBFixedSIMDBlock const& rhs)
 {
   for (int b = 0; b < VectorCount; b++)
@@ -62,7 +79,7 @@ FBFixedSIMDBlock::operator*=(FBFixedSIMDBlock const& rhs)
   return *this;
 }
 
-inline FBFixedSIMDBlock& FBSIMDCall
+inline FBFixedSIMDBlock&
 FBFixedSIMDBlock::operator/=(FBFixedSIMDBlock const& rhs)
 {
   for (int b = 0; b < VectorCount; b++)

@@ -2,7 +2,7 @@
 
 #include <immintrin.h> // todo neon
 
-#define FBSIMDCall __vectorcall
+#define FB_SIMD_CALL __vectorcall
 inline int constexpr FBSIMDVectorBitCount = 256;
 inline int constexpr FBSIMDVectorByteCount = FBSIMDVectorBitCount / 8;
 inline int constexpr FBSIMDVectorFloatCount = FBSIMDVectorByteCount / sizeof(float);
@@ -18,15 +18,18 @@ public:
   float& operator[](int index);
   float operator[](int index) const;
 
-  FBSIMDFloatVector& FBSIMDCall operator+=(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector& FBSIMDCall operator-=(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector& FBSIMDCall operator*=(FBSIMDFloatVector rhs);
-  FBSIMDFloatVector& FBSIMDCall operator/=(FBSIMDFloatVector rhs);
+  void FB_SIMD_CALL SetToZero();
+  FBSIMDFloatVector& FB_SIMD_CALL operator=(FBSIMDFloatVector rhs);
 
-  FBSIMDFloatVector FBSIMDCall operator+(FBSIMDFloatVector rhs) const;
-  FBSIMDFloatVector FBSIMDCall operator-(FBSIMDFloatVector rhs) const;
-  FBSIMDFloatVector FBSIMDCall operator*(FBSIMDFloatVector rhs) const;
-  FBSIMDFloatVector FBSIMDCall operator/(FBSIMDFloatVector rhs) const;
+  FBSIMDFloatVector& FB_SIMD_CALL operator+=(FBSIMDFloatVector rhs);
+  FBSIMDFloatVector& FB_SIMD_CALL operator-=(FBSIMDFloatVector rhs);
+  FBSIMDFloatVector& FB_SIMD_CALL operator*=(FBSIMDFloatVector rhs);
+  FBSIMDFloatVector& FB_SIMD_CALL operator/=(FBSIMDFloatVector rhs);
+
+  FBSIMDFloatVector FB_SIMD_CALL operator+(FBSIMDFloatVector rhs) const;
+  FBSIMDFloatVector FB_SIMD_CALL operator-(FBSIMDFloatVector rhs) const;
+  FBSIMDFloatVector FB_SIMD_CALL operator*(FBSIMDFloatVector rhs) const;
+  FBSIMDFloatVector FB_SIMD_CALL operator/(FBSIMDFloatVector rhs) const;
 };
 
 inline FBSIMDFloatVector::
@@ -36,6 +39,12 @@ _store(_mm256_setzero_ps()) {}
 inline FBSIMDFloatVector::
 FBSIMDFloatVector(__m256 store) :
 _store(store) {}
+
+inline void
+FBSIMDFloatVector::SetToZero()
+{
+  _store = _mm256_setzero_ps();
+}
 
 inline float& 
 FBSIMDFloatVector::operator[](int index)

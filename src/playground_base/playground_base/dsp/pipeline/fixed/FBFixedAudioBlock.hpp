@@ -20,7 +20,7 @@ public:
   FBFixedSIMDBlock const& operator[](int ch) const { return _store[ch]; }
 
   // TODO simd
-  void SetToZero();
+  void FB_SIMD_CALL SetToZero();
   void CopyFrom(FBFixedAudioBlock const& rhs);
   void CopyFrom(FBBufferAudioBlock const& rhs);
 
@@ -34,17 +34,14 @@ inline void
 FBFixedAudioBlock::SetToZero()
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < Count(); s++)
-      _store[ch][s] = 0.0f;
+    _store[ch].SetToZero();
 }
 
 inline void
 FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
 {
-  assert(rhs.Count() >= Count());
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < Count(); s++)
-      _store[ch][s] = rhs[ch][s];
+    _store[ch].CopyFrom(rhs._store[ch]);
 }
 
 inline void 
