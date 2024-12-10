@@ -1,5 +1,6 @@
 # global
 cmake_minimum_required(VERSION 3.21)
+cmake_policy(SET CMP0091 NEW)
 project(playground_plug)
 
 # build
@@ -123,6 +124,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 endif ()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${PLUG_VST3_SRC_DIR} FILES ${PLUG_VST3_SRC_FILES})
+  set_property(TARGET ${PROJECT_NAME_PLUG_VST3} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 # clap plug
@@ -147,6 +149,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 endif ()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${PLUG_CLAP_SRC_DIR} FILES ${PLUG_CLAP_SRC_FILES})
+  set_property(TARGET ${PROJECT_NAME_PLUG_CLAP} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 # vst3 to dist
