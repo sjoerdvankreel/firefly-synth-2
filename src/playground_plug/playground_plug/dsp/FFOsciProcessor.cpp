@@ -24,7 +24,7 @@ FFOsciProcessor::ApplyGLFOToGain(FFOsciBlock& block)
   FBFixedAudioBlock original = {};
   original.CopyFrom(block.output);
   auto const& glfo = block.state.proc->dsp.global.glfo[0].output;
-  block.output.InPlaceMultiplyByOneMinus(block.glfoToGain);
+  block.output.MultiplyByOneMinus(block.glfoToGain);
   block.output.InPlaceFMA(original, glfo); // TODO * glfoToGain
 }
 

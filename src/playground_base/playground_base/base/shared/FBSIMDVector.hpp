@@ -19,6 +19,7 @@ public:
   float operator[](int index) const;
 
   void FB_SIMD_CALL SetToZero();
+  void FB_SIMD_CALL MultiplyByOneMinus(FBSIMDFloatVector rhs);
   FBSIMDFloatVector& FB_SIMD_CALL operator=(FBSIMDFloatVector rhs);
 
   FBSIMDFloatVector& FB_SIMD_CALL operator+=(FBSIMDFloatVector rhs);
@@ -115,4 +116,12 @@ inline FBSIMDFloatVector
 FBSIMDFloatVector::operator/(FBSIMDFloatVector rhs) const
 {
   return FBSIMDFloatVector(_mm256_div_ps(_store, rhs._store));
+}
+
+inline void
+FBSIMDFloatVector::MultiplyByOneMinus(FBSIMDFloatVector rhs)
+{
+  __m256 one = _mm256_set1_ps(1.0f);
+  __m256 oneMinus = _mm256_sub_ps(one, rhs._store);
+  _store = _mm256_mul_ps(_store, oneMinus);
 }

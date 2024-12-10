@@ -16,11 +16,13 @@ public:
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
 
-  void FB_SIMD_CALL SetToZero();
   void CopyFrom(FBBufferAudioBlock const& rhs);
-  void FB_SIMD_CALL CopyFrom(FBFixedAudioBlock const& rhs);
-
   static int Count() { return FBFixedBlockSize; }
+
+  void FB_SIMD_CALL SetToZero();
+  void FB_SIMD_CALL CopyFrom(FBFixedAudioBlock const& rhs);
+  void FB_SIMD_CALL MultiplyByOneMinus(FBFixedCVBlock const& rhs);
+
   FBFixedSIMDBlock& operator[](int ch) { return _store[ch]; }
   FBFixedSIMDBlock const& operator[](int ch) const { return _store[ch]; }
 
@@ -34,6 +36,15 @@ public:
   FBFixedAudioBlock& FB_SIMD_CALL operator*=(FBFixedAudioBlock const& rhs);
   FBFixedAudioBlock& FB_SIMD_CALL operator/=(FBFixedAudioBlock const& rhs);
 };
+
+inline void
+FBFixedAudioBlock::CopyFrom(FBBufferAudioBlock const& rhs)
+{
+  assert(rhs.Count() >= Count());
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < Count(); s++)
+      _store[ch][s] = rhs[ch][s];
+}
 
 inline void
 FBFixedAudioBlock::SetToZero()
@@ -50,12 +61,10 @@ FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
 }
 
 inline void 
-FBFixedAudioBlock::CopyFrom(FBBufferAudioBlock const& rhs)
+FBFixedAudioBlock::MultiplyByOneMinus(FBFixedCVBlock const& rhs)
 {
-  assert(rhs.Count() >= Count());
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < Count(); s++)
-      _store[ch][s] = rhs[ch][s];
+    _store[ch].MultiplyByOneMinus(rhs._store);
 }
 
 inline FBFixedAudioBlock&

@@ -22,6 +22,7 @@ public:
   
   void FB_SIMD_CALL SetToZero();
   void FB_SIMD_CALL CopyFrom(FBFixedSIMDBlock const& rhs);
+  void FB_SIMD_CALL MultiplyByOneMinus(FBFixedSIMDBlock const& rhs);
 
   FBFixedSIMDBlock& FB_SIMD_CALL operator+=(FBFixedSIMDBlock const& rhs);
   FBFixedSIMDBlock& FB_SIMD_CALL operator-=(FBFixedSIMDBlock const& rhs);
@@ -53,6 +54,13 @@ FBFixedSIMDBlock::CopyFrom(FBFixedSIMDBlock const& rhs)
 {
   for (int b = 0; b < VectorCount; b++)
     _store[b] = rhs._store[b];
+}
+
+inline void
+FBFixedSIMDBlock::MultiplyByOneMinus(FBFixedSIMDBlock const& rhs)
+{
+  for (int b = 0; b < VectorCount; b++)
+    _store[b].MultiplyByOneMinus(rhs._store[b]);
 }
 
 inline FBFixedSIMDBlock& 
