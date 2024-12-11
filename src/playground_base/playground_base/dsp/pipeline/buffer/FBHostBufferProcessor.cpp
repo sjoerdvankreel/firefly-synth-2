@@ -5,15 +5,19 @@
 
 template <class Event>
 static void GatherAcc(
-  std::vector<Event>& input, std::vector<Event>& output)
+  std::vector<Event>& inputByParamThenSample, 
+  std::vector<Event>& outputByParamThenSample)
 {
-  int e = 0;
+  auto& input = inputByParamThenSample;
+  auto& output = outputByParamThenSample;
   output.clear();
-  for (e = 0; e < input.size() && input[e].pos < FBFixedBlockSamples; e++)
-    output.push_back(input[e]);
-  input.erase(input.begin(), input.begin() + e);
-  for (auto& e : input)
-    e.pos -= FBFixedBlockSamples;
+  for (int e = 0; e < input.size(); e++)
+  {
+    if (input[e].pos < FBFixedBlockSamples)
+      output.push_back(input[e]);
+    input[e].pos -= FBFixedBlockSamples;
+  }
+  std::erase_if(input, [](auto const& e) { return e.pos < 0; });
 }
 
 static void
