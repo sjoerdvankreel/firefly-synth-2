@@ -40,4 +40,12 @@ public:
   bool paramsTextToValue(clap_id paramId, const char* display, double* value) noexcept override;
   void paramsFlush(const clap_input_events* in, const clap_output_events* out) noexcept override;
   bool paramsValueToText(clap_id paramId, double value, char* display, uint32_t size) noexcept override;
+
+  bool implementsNotePorts() const noexcept override;
+  uint32_t notePortsCount(bool isInput) const noexcept override;
+  bool notePortsInfo(uint32_t index, bool isInput, clap_note_port_info* info) const noexcept override;
+
+  bool implementsAudioPorts() const noexcept override;
+  uint32_t audioPortsCount(bool isInput) const noexcept override;
+  bool audioPortsInfo(uint32_t index, bool isInput, clap_audio_port_info* info) const noexcept override;
 };
