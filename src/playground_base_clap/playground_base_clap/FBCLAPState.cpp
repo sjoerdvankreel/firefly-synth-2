@@ -10,6 +10,7 @@ FBCLAPPlugin::implementsState() const noexcept
 bool
 FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
 {
+  // TODO test this
   int64_t read = 0;
   char buffer[1024];
   std::string json = {};
@@ -24,6 +25,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
 bool 
 FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept 
 {
+  // TODO test this
   int64_t written = 0;
   int64_t numWritten = 0;
   std::string json = _topo->SaveState(_procStatePtrs);
