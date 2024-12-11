@@ -1,5 +1,5 @@
 voice manager
-denormals
+denormals for clap voice
 clap polymod
 voice block start position (fake it by amp env?)
 save state as ui text

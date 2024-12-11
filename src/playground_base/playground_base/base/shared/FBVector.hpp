@@ -3,7 +3,6 @@
 #include <numbers>
 
 // todo neon
-// todo avx512
 #if FB_USE_SSE
 #if FB_USE_AVX
 #error
@@ -50,7 +49,7 @@ inline int constexpr FBVectorBitCount = 256;
 inline int constexpr FBVectorByteCount = FBVectorBitCount / 8;
 inline int constexpr FBVectorFloatCount = FBVectorByteCount / sizeof(float);
 
-// todo template float / double
+// todo float / double
 class alignas(FBVectorByteCount) FBFloatVector
 {
   static inline float constexpr PiV = std::numbers::pi_v<float>;

@@ -1,3 +1,4 @@
+#include <playground_base/base/shared/FBDenormal.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
@@ -47,8 +48,7 @@ void
 FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
-  // TODO denormals 
-
+  auto denormalState = FBDisableDenormal();  
   for (auto const& be : input.block)
     _fixedOut.state->Params()[be.index].Value(be.normalized);
 
@@ -64,5 +64,6 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPostVoice(_plugIn, _fixedOut.audio);
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);
   }
-  _fixedBuffer->ProcessToHost(output);
+  _fixedBuffer->ProcessToHost(output);  
+  FBRestoreDenormal(denormalState);
 }
