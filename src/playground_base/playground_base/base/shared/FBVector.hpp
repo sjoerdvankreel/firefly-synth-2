@@ -3,6 +3,7 @@
 #include <numbers>
 
 // todo neon
+// todo avx512
 #if FB_USE_SSE
 
 #if FB_USE_AVX
@@ -54,6 +55,7 @@ FBSIMDVectorBitCount / 8;
 inline int constexpr FBSIMDVectorFloatCount = 
 FBSIMDVectorByteCount / sizeof(float);
 
+// todo template float / double
 class alignas(FBSIMDVectorByteCount) FBSIMDFloatVector
 {
   FBSIMDFloatStore _store;
