@@ -30,7 +30,7 @@ FBSmoothProcessor::ProcessSmoothing(
   // todo deal with nondestructive and pervoice
   int eventIndex = 0;
   auto& params = output.state->Params();
-  for (int s = 0; s < FBFixedCVBlock::Count(); s++)
+  for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     for (int eventIndex = 0; 
       eventIndex < myAcc.size() && myAcc[eventIndex].pos == s; 

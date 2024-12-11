@@ -2,6 +2,8 @@
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
+#include <cassert>
+
 void
 FBBufferAudioBlock::Append(FBHostAudioBlock const& rhs)
 {
@@ -10,12 +12,13 @@ FBBufferAudioBlock::Append(FBHostAudioBlock const& rhs)
       _store[ch].push_back(rhs[ch][s]);
 }
 
+// TODO SIMD
 void
 FBBufferAudioBlock::Append(FBFixedAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < rhs.Count(); s++)
-      _store[ch].push_back(rhs[ch][s]);
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      _store[ch].push_back(rhs.Sample(ch, s));
 }
 
 void

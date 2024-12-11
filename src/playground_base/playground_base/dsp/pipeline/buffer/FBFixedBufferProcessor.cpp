@@ -14,7 +14,7 @@ FBFixedBufferProcessor::BufferFromFixed(FBFixedAudioBlock const& fixed)
 void 
 FBFixedBufferProcessor::ProcessToHost(FBHostAudioBlock& host)
 {
-  _hitFixedBlockSize |= _buffer.Count() >= FBFixedAudioBlock::Count();
+  _hitFixedBlockSize |= _buffer.Count() >= FBFixedBlockSamples;
   if (!_hitFixedBlockSize)
   {
     host.SetToZero(0, host.Count());

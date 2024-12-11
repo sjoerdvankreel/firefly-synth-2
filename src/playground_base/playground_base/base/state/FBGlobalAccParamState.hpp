@@ -4,7 +4,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
 
-class alignas(FBSIMDVectorByteCount) FBGlobalAccParamState final
+class alignas(FBVectorByteCount) FBGlobalAccParamState final
 {
   friend class FBProcParamState;
   friend class FBSmoothProcessor;

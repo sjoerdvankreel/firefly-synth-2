@@ -4,7 +4,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
 
-class alignas(FBSIMDVectorByteCount) FBVoiceAccParamState final
+class alignas(FBVectorByteCount) FBVoiceAccParamState final
 {
   friend class FBVoiceManager;
   friend class FBProcParamState;

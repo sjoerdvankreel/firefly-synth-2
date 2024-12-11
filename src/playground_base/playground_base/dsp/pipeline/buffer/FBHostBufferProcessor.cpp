@@ -9,11 +9,11 @@ static void GatherAcc(
 {
   int e = 0;
   output.clear();
-  for (e = 0; e < input.size() && input[e].pos < FBFixedAudioBlock::Count(); e++)
+  for (e = 0; e < input.size() && input[e].pos < FBFixedBlockSamples; e++)
     output.push_back(input[e]);
   input.erase(input.begin(), input.begin() + e);
   for (auto& e : input)
-    e.pos -= FBFixedAudioBlock::Count();
+    e.pos -= FBFixedBlockSamples;
 }
 
 static void
@@ -22,13 +22,13 @@ GatherStraddledEvents(
   FBAccEvent const& nextEvent, 
   std::vector<FBAccEvent>& output)
 {
-  int thisFixedBlock = thisEvent.pos / FBFixedAudioBlock::Count();
-  int nextFixedBlock = nextEvent.pos / FBFixedAudioBlock::Count();
+  int thisFixedBlock = thisEvent.pos / FBFixedBlockSamples;
+  int nextFixedBlock = nextEvent.pos / FBFixedBlockSamples;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
     FBAccEvent straddledEvent;
     straddledEvent.index = thisEvent.index;
-    straddledEvent.pos = i * FBFixedAudioBlock::Count() + FBFixedAudioBlock::Count() - 1;
+    straddledEvent.pos = (i + 1) * FBFixedBlockSamples - 1;
     float valueRange = nextEvent.normalized - thisEvent.normalized;
     float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
     straddledEvent.normalized = thisEvent.normalized + valueRange * normalizedPos;
@@ -39,11 +39,11 @@ GatherStraddledEvents(
 FBFixedInputBlock const*
 FBHostBufferProcessor::ProcessToFixed()
 {
-  if (_buffer.audio.Count() < FBFixedAudioBlock::Count())
+  if (_buffer.audio.Count() < FBFixedBlockSamples)
     return nullptr;
 
   _fixed.audio.CopyFrom(_buffer.audio);
-  _buffer.audio.Drop(FBFixedAudioBlock::Count());
+  _buffer.audio.Drop(FBFixedBlockSamples);
   GatherAcc(_buffer.note, _fixed.note);
   GatherAcc(_buffer.accByParamThenSample, _fixed.accByParamThenSample);
   return &_fixed;
