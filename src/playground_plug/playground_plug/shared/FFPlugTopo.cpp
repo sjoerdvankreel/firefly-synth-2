@@ -61,7 +61,7 @@ FFMakeTopo()
   glfoRate.valueCount = 0;
   glfoRate.id = "{79BFD05E-98FA-48D4-8D07-C009285EACA7}";
   auto selectGlfoRate = [](auto& module) { return &module.acc.rate; };
-  glfoRate.scalarAddr = SelectScalarAddr(selectGlfo, selectGlfoOn);
+  glfoRate.scalarAddr = SelectScalarAddr(selectGlfo, selectGlfoRate);
   glfoRate.globalAccAddr = SelectProcAddr(selectGlfo, selectGlfoRate);
 
   auto& osci = result->modules[FFModuleOsci];

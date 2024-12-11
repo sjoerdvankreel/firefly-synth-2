@@ -43,6 +43,7 @@ class FBProcParamState final
     FBVoiceBlockParamState* _voiceBlock;
   };
 
+  friend struct FBRuntimeTopo;
   friend class FBVoiceManager;
   friend class FBProcStatePtrs;
   friend class FBHostProcessor;

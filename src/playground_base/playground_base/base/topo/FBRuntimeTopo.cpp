@@ -79,6 +79,10 @@ FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
   for (int p = 0; p < params.size(); p++)
     ptrs.push_back(params[p].static_.scalarAddr(
       params[p].staticModuleSlot, params[p].staticSlot, scalar));
+#ifndef NDEBUG
+  std::set<float*> uniquePtrs(ptrs.begin(), ptrs.end());
+  assert(uniquePtrs.size() == ptrs.size());
+#endif
   return FBScalarStatePtrs(std::move(ptrs));
 }
 
@@ -101,6 +105,19 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
       else
         ptrs.push_back(FBProcParamState(params[p].static_.globalBlockAddr(
           params[p].staticModuleSlot, params[p].staticSlot, proc)));
+#ifndef NDEBUG
+  std::set<void*> uniquePtrs = {};
+  for(int p = 0; p < ptrs.size(); p++)
+    switch (ptrs[p].Type())
+    {
+    case FBProcParamType::VoiceAcc: uniquePtrs.insert(&ptrs[p].VoiceAcc()); break;
+    case FBProcParamType::GlobalAcc: uniquePtrs.insert(&ptrs[p].GlobalAcc()); break;
+    case FBProcParamType::VoiceBlock: uniquePtrs.insert(&ptrs[p].VoiceBlock()); break;
+    case FBProcParamType::GlobalBlock: uniquePtrs.insert(&ptrs[p].GlobalBlock()); break;
+    default: assert(false); break;
+    }
+  assert(uniquePtrs.size() == ptrs.size());
+#endif
   return FBProcStatePtrs(std::move(ptrs));
 }
 
