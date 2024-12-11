@@ -9,13 +9,13 @@ FBCLAPPlugin::implementsNotePorts() const noexcept
 uint32_t 
 FBCLAPPlugin::notePortsCount(bool isInput) const noexcept
 {
-  return isInput ? 0 : 1;
+  return isInput ? 1 : 0;
 }
 
 bool
 FBCLAPPlugin::notePortsInfo(uint32_t index, bool isInput, clap_note_port_info* info) const noexcept 
 {
-  if (isInput)
+  if (!isInput)
     return false;
   if (index != 0)
     return false;
