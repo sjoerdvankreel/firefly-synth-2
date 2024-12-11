@@ -6,4 +6,5 @@ save state as ui text
 handle block/acc non/destructive per/voice or not
 clap note cut
 check hash clash
+clap threadpool
 Linux visibility-hidden & inline-hidden et all

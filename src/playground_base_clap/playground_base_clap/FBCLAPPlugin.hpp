@@ -22,15 +22,15 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBCLAPPlugin);
   FBCLAPPlugin(FBStaticTopo const& topo, clap_plugin_descriptor const* desc, clap_host const* host);
 
-  bool implementsLatency() const noexcept override { return true; }
-  uint32_t latencyGet() const noexcept override { return FBFixedBlockSamples; }
+  uint32_t latencyGet() const noexcept override;
+  bool implementsLatency() const noexcept override;
 
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;
   bool getParamInfoForParamId(clap_id paramId, clap_param_info* info) const noexcept override;
 
   uint32_t paramsCount() const noexcept override;
-  bool implementsParams() const noexcept override { return true; }
+  bool implementsParams() const noexcept override;
   bool paramsValue(clap_id paramId, double* value) noexcept override;
   bool paramsInfo(uint32_t paramIndex, clap_param_info* info) const noexcept override;
   bool paramsTextToValue(clap_id paramId, const char* display, double* value) noexcept override;

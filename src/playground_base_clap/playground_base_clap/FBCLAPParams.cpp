@@ -5,6 +5,12 @@
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 
+bool 
+FBCLAPPlugin::implementsParams() const noexcept 
+{ 
+  return true; 
+}
+
 uint32_t 
 FBCLAPPlugin::paramsCount() const noexcept
 {
