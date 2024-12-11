@@ -10,17 +10,18 @@
 struct FFGLFOBlock
 {
   FFModuleProcState const& state;
-  FBFixedCVBlock& output;
+  FBFixedVectorBlock& output;
   bool on;
-  FBFixedCVBlock const& rate;
+  FBFixedVectorBlock const& rate;
 };
 
 void 
 FFGLFOProcessor::Generate(FFGLFOBlock& block)
 {
-  for (int s = 0; s < block.output.Count(); s++)
-    block.output[s] = _phase.Next(block.state.sampleRate, 1.0f);
-  block.output.SetToUnipolarSineOfTwoPi();
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    block.output.Sample(s, _phase.Next(block.state.sampleRate, 1.0f));
+  for (int v = 0; v < FBFixedBlockVectors; v++)
+    block.output[v] = (block.output[v] * FBFloatVector::TwoPi()).Sin().Unipolar();
 }
 
 void
@@ -37,5 +38,5 @@ FFGLFOProcessor::Process(FFModuleProcState const& state)
   if (block.on)
     Generate(block);
   else
-    block.output.SetToZero();
+    block.output.Clear();
 }

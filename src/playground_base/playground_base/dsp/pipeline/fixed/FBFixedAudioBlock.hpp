@@ -14,10 +14,14 @@ class alignas(FBVectorByteCount) FBFixedAudioBlock
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
-  void CopyFrom(FBBufferAudioBlock const& rhs);
 
+  FBFixedVectorBlock& operator[](int ch) { return _store[ch]; }
+  FBFixedVectorBlock const& operator[](int ch) const { return _store[ch]; }
   float Sample(int ch, int index) const { return _store[ch].Sample(index); }
   void Sample(int ch, int index, float val) { _store[ch].Sample(index, val); }
-  FBFloatVector& Vector(int ch, int index) { return _store[ch].Vector(index); }
-  FBFloatVector const& Vector(int ch, int index) const { return _store[ch].Vector(index); }
+  void Samples(int index, float val) { _store[0].Sample(index, val); _store[1].Sample(index, val); }
+
+  void CopyFrom(FBBufferAudioBlock const& rhs);
+  void Clear() { for (int ch = 0; ch < 2; ch++) _store[ch].Clear(); }
+  void Add(FBFixedAudioBlock const& rhs) { for (int ch = 0; ch < 2; ch++) _store[ch].Add(rhs._store[ch]); }
 };

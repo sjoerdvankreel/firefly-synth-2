@@ -13,29 +13,27 @@ struct FFOsciBlock
   FBFixedAudioBlock& output;
   bool on;
   int type;
-  FBFixedCVBlock const& gain;
-  FBFixedCVBlock const& pitch;
-  FBFixedCVBlock const& glfoToGain;
+  FBFixedVectorBlock const& gain;
+  FBFixedVectorBlock const& pitch;
+  FBFixedVectorBlock const& glfoToGain;
 };
-
-void
-FFOsciProcessor::ApplyGLFOToGain(FFOsciBlock& block)
-{
-  FBFixedAudioBlock original = {};
-  original.CopyFrom(block.output);
-  auto const& glfo = block.state.proc->dsp.global.glfo[0].output;
-  block.output.MultiplyByOneMinus(block.glfoToGain);
-  block.output.FMA2(original, glfo, block.glfoToGain);
-}
 
 void
 FFOsciProcessor::Generate(FFOsciBlock& block)
 {
   int key = block.state.voice->event.note.key;
   float freq = FBPitchToFreq(static_cast<float>(key));
-  for (int s = 0; s < FBFixedAudioBlock::Count(); s++)
-    block.output.SetLRTo(s, _phase.Next(block.state.sampleRate, freq));
-  block.output.SetToSineOfTwoPi();
+  auto const& glfo = block.state.proc->dsp.global.glfo[0].output;
+
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    block.output.Samples(s, _phase.Next(block.state.sampleRate, freq));
+  for (int ch = 0; ch < 2; ch++)
+    for (int v = 0; v < FBFixedBlockVectors; v++)
+    {
+      block.output[ch][v] = (block.output[ch][v] * FBFloatVector::TwoPi()).Sin();
+      block.output[ch][v] = (FBFloatVector::One() - block.glfoToGain[v]) * block.output[ch][v] + block.output[ch][v] * block.glfoToGain[v] * glfo[v];
+      block.output[ch][v] *= block.gain[v];
+    }
 }
 
 void
@@ -52,13 +50,8 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     params.acc.pitch[0].Voice()[voice].CV(),
     params.acc.glfoToGain[0].Voice()[voice].CV() };
 
-  if (!block.on)
-  {
-    block.output.SetToZero();
-    return;
-  }
-
-  Generate(block);
-  block.output *= block.gain;
-  ApplyGLFOToGain(block);
+  if (block.on)
+    Generate(block);
+  else
+    block.output.Clear();
 }

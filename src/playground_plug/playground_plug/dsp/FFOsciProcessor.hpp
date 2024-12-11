@@ -9,9 +9,7 @@ struct FFModuleProcState;
 class FFOsciProcessor
 {
   FBPhase _phase = {};
-
   void Generate(FFOsciBlock& block);
-  void ApplyGLFOToGain(FFOsciBlock& block);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);

@@ -15,8 +15,11 @@ class alignas(FBVectorByteCount) FBFixedVectorBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedVectorBlock);
 
-  FBFloatVector& Vector(int index) { return _store[index]; }
-  FBFloatVector const& Vector(int index) const { return _store[index]; }
-  float Sample(int index) const { return Vector(index / FBVectorFloatCount)[index % FBVectorFloatCount]; }
-  void Sample(int index, float val) { Vector(index / FBVectorFloatCount)[index % FBVectorFloatCount] = val; }
+  FBFloatVector& operator[](int index) { return _store[index]; }
+  FBFloatVector const& operator[](int index) const { return _store[index]; }
+  float Sample(int index) const { return (*this)[index / FBVectorFloatCount][index % FBVectorFloatCount]; }
+  void Sample(int index, float val) { (*this)[index / FBVectorFloatCount][index % FBVectorFloatCount] = val; }
+
+  void Clear() { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v].Clear(); }
+  void Add(FBFixedVectorBlock const& rhs) { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v] += rhs._store[v]; }
 };

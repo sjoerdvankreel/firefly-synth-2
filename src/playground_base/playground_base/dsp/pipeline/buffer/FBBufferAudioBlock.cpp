@@ -12,7 +12,6 @@ FBBufferAudioBlock::Append(FBHostAudioBlock const& rhs)
       _store[ch].push_back(rhs[ch][s]);
 }
 
-// TODO SIMD
 void
 FBBufferAudioBlock::Append(FBFixedAudioBlock const& rhs)
 {
