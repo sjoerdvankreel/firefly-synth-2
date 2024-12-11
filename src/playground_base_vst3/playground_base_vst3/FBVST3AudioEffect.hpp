@@ -36,6 +36,7 @@ public:
   ~FBVST3AudioEffect();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
   FBVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId);
+  uint32 PLUGIN_API getLatencySamples() override { return FBFixedBlockSamples; }
 
   tresult PLUGIN_API setState(IBStream* state) override;
   tresult PLUGIN_API getState(IBStream* state) override;
