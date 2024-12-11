@@ -10,12 +10,20 @@ using namespace clap::helpers;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
+class FBHostProcessor;
+class IFBPlugProcessor;
+
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
   void* _procState;
   FBProcStatePtrs _procStatePtrs;
+  std::unique_ptr<FBHostProcessor> _hostProcessor = {};
+
+protected:
+  virtual std::unique_ptr<IFBPlugProcessor>
+  MakePlugProcessor(FBStaticTopo const& topo, void* state, float sampleRate) const = 0;
 
 public:
   ~FBCLAPPlugin();
@@ -32,6 +40,10 @@ public:
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;
   bool getParamInfoForParamId(clap_id paramId, clap_param_info* info) const noexcept override;
+
+  void deactivate() noexcept override;
+  clap_process_status process(const clap_process* process) noexcept override;
+  bool activate(double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept override;
 
   uint32_t paramsCount() const noexcept override;
   bool implementsParams() const noexcept override;

@@ -1,6 +1,8 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
 #include <clap/helpers/plugin.hxx>
 
@@ -43,4 +45,26 @@ FBCLAPPlugin::getParamInfoForParamId(
   if (iter == _topo->tagToParam.end())
     return false;
   return paramsInfo(iter->second, info);
+}
+
+void
+FBCLAPPlugin::deactivate() noexcept
+{
+  _hostProcessor.reset();
+}
+
+bool
+FBCLAPPlugin::activate(double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept 
+{
+  float fSampleRate = static_cast<float>(sampleRate);
+  _procStatePtrs.Init(fSampleRate);
+  auto plug = MakePlugProcessor(_topo->static_, _procState, fSampleRate);
+  _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_procStatePtrs, fSampleRate));
+  return true;
+}
+
+clap_process_status 
+FBCLAPPlugin::process(const clap_process* process) noexcept 
+{
+  return CLAP_PROCESS_SLEEP;
 }

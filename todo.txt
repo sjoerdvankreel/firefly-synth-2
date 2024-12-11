@@ -8,3 +8,5 @@ clap note cut
 check hash clash
 clap threadpool
 Linux visibility-hidden & inline-hidden et all
+vst3/clap posix fd
+context menu
