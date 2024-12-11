@@ -18,13 +18,19 @@ public FBVST3AudioEffect
 {
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3AudioEffect);
-  FFVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId):
+  FFVST3AudioEffect(
+    FBStaticTopo const& topo, 
+    FUID const& controllerId):
   FBVST3AudioEffect(topo, controllerId) {}
 
 protected:
   std::unique_ptr<IFBPlugProcessor>
-  MakePlugProcessor(FBStaticTopo const& topo, void* state, float sampleRate) const override
-  { return std::make_unique<FFPlugProcessor>(topo, static_cast<FFProcState*>(state), sampleRate); }
+  MakePlugProcessor(
+    FBStaticTopo const& topo, 
+    void* state, 
+    float sampleRate) const override
+  { return std::make_unique<FFPlugProcessor>(
+    topo, static_cast<FFProcState*>(state), sampleRate); }
 };
 
 static FUID
