@@ -44,9 +44,11 @@ _topo(std::make_unique<FBRuntimeTopo>(topo)) {}
 tresult PLUGIN_API
 FBVST3EditController::setState(IBStream* state)
 {
+  std::string json;
+  if (!FBVST3LoadIBStream(state, json))
+    return kResultFalse;
   void* scalar = _topo->static_.allocScalarState();
   auto ptrs = _topo->MakeScalarStatePtrs(scalar);
-  std::string json = FBVST3LoadIBStream(state);
   bool result = _topo->LoadState(json, ptrs);
   if (result)
     for (int i = 0; i < ptrs.Params().size(); i++)
@@ -63,9 +65,9 @@ FBVST3EditController::getState(IBStream* state)
   for (int i = 0; i < ptrs.Params().size(); i++)
     *ptrs.Params()[i] = parameters.getParameterByIndex(i)->getNormalized();
   std::string json = _topo->SaveState(ptrs);
-  state->write(json.data(), static_cast<int32>(json.size()));
+  bool result = FBVST3SaveIBStream(state, json);
   _topo->static_.freeScalarState(scalar);
-  return kResultOk;
+  return result ? kResultOk : kResultFalse;
 }
 
 tresult PLUGIN_API

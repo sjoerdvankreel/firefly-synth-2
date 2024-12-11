@@ -6,7 +6,9 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-std::string 
-FBVST3LoadIBStream(IBStream* stream);
 void
-FBVST3CopyToString128(std::string const& in, TChar* out);
+FBVST3CopyToString128(std::string const& in, TChar* out); 
+bool
+FBVST3LoadIBStream(IBStream* stream, std::string& state);
+bool
+FBVST3SaveIBStream(IBStream* stream, std::string const& state);

@@ -25,6 +25,10 @@ public:
   uint32_t latencyGet() const noexcept override;
   bool implementsLatency() const noexcept override;
 
+  bool implementsState() const noexcept override;
+  bool stateSave(const clap_ostream* stream) noexcept override;
+  bool stateLoad(const clap_istream* stream) noexcept override;
+
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;
   bool getParamInfoForParamId(clap_id paramId, clap_param_info* info) const noexcept override;
