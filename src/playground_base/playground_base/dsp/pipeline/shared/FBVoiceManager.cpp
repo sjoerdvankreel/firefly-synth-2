@@ -58,8 +58,6 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
 
   for (int p = 0; p < _state->Params().size(); p++)
     if (_state->Params()[p].IsVoice())
-      if (_state->Params()[p].IsAcc())
-        _state->Params()[p].VoiceAcc().BeginVoice(slot);
-      else
+      if (!_state->Params()[p].IsAcc())
         _state->Params()[p].VoiceBlock().BeginVoice(slot);
 }

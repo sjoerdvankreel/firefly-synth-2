@@ -14,12 +14,12 @@ class alignas(FBVectorByteCount) FBVoiceAccParamState final
   std::array<FBAccParamState, FBMaxVoices> _voice = {};
 
   void Init(float sampleRate);
-
   float Value() const { return _value; }
   void Value(float value) { _value = value; }
-  void BeginVoice(int slot) { Modulate(slot, _value); }
-  void Modulate(int slot, float value) { _voice[slot].Modulate(value); }
   std::array<FBAccParamState, FBMaxVoices>& Voice() { return _voice; }
+
+  void Modulate(int slot, float offset) { _voice[slot].Modulate(offset); }
+  void SmoothNext(int slot, int sample) { _voice[slot].SmoothNext(sample, _value); }
 
 public:
   FBVoiceAccParamState(float sampleRate);
