@@ -24,8 +24,10 @@ MakeAccEvent(int index, int pos, ParamValue value)
 {
   FBAccEvent result;
   result.pos = pos;
+  result.voice = -1;
   result.index = index;
-  result.normalized = value;
+  result.value = value;
+  result.type = FBAccEventType::Automation;
   return result;
 }
 
