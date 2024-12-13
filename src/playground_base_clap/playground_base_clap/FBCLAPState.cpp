@@ -33,6 +33,9 @@ FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
     if (numWritten == -1)
       return false;
     else
+    {
       written += numWritten;
+      numWritten = 0;
+    }
   return true;
 }

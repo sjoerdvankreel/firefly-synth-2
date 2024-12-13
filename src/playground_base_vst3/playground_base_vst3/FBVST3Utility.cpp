@@ -12,10 +12,10 @@ FBVST3CopyToString128(std::string const& in, TChar* out)
 bool
 FBVST3LoadIBStream(IBStream* stream, std::string& state)
 {
-  int32 read;
   state = {};
-  tresult result;
+  int32 read = 0;
   char buffer[1024];
+  tresult result = kResultFalse;
   while ((result = stream->read(buffer, sizeof(buffer), &read)) == kResultTrue && read > 0)
     state.append(buffer, read);
   return result == kResultTrue;
@@ -24,11 +24,14 @@ FBVST3LoadIBStream(IBStream* stream, std::string& state)
 bool
 FBVST3SaveIBStream(IBStream* stream, std::string const& state)
 {
-  tresult result;
-  int32 numWritten;
   int32 written = 0;
+  int32 numWritten = 0;
+  tresult result = kResultFalse;
   char* data = const_cast<char*>(state.data());
   while ((result = stream->write(data + written, static_cast<int32>(state.size() - written), &numWritten)) == kResultTrue && numWritten > 0)
+  {
     written += numWritten;
+    numWritten = 0;
+  }
   return result == kResultTrue;
 }
