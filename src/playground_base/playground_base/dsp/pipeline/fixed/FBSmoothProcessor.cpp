@@ -9,6 +9,21 @@
 
 #include <algorithm>
 
+template <class Event>
+static void 
+SortParamThenSampleToSampleThenParam(
+  std::vector<Event> const& input,
+  std::vector<Event>& output)
+{
+  auto compare = [](auto const& l, auto const& r) {
+    if (l.pos < r.pos) return true;
+    if (l.pos > r.pos) return false;
+    return l.index < r.index; };
+  output.clear();
+  output.insert(output.begin(), input.begin(), input.end());
+  std::sort(output.begin(), output.end(), compare);
+}
+
 FBSmoothProcessor::
 FBSmoothProcessor(FBVoiceManager* voiceManager) :
 _voiceManager(voiceManager) {}
@@ -17,23 +32,18 @@ void
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-  // TODO mod
-  auto& myAccAuto = _accAutoBySampleThenParam;
-  auto& thatAccAuto = input.accAutoByParamThenSample;
-  myAccAuto.clear();
-  myAccAuto.insert(myAccAuto.begin(), thatAccAuto.begin(), thatAccAuto.end());
-  auto compare = [](auto const& l, auto const& r) {
-    if (l.pos < r.pos) return true;
-    if (l.pos > r.pos) return false;
-    return l.index < r.index; };
-  std::sort(myAccAuto.begin(), myAccAuto.end(), compare);
+  SortParamThenSampleToSampleThenParam(
+    input.accModByParamThenSample, _accModBySampleThenParam);
+  SortParamThenSampleToSampleThenParam(
+    input.accAutoByParamThenSample, _accAutoBySampleThenParam);
 
   // todo deal with nondestructive and pervoice
-  int eventIndex = 0;
   auto& params = output.state->Params();
+  auto const& myAccMod = _accModBySampleThenParam;
+  auto const& myAccAuto = _accAutoBySampleThenParam;
   for (int s = 0; s < FBFixedBlockSamples; s++)
-  {
-    for (int eventIndex = 0; 
+  {    
+    for (int eventIndex = 0;
       eventIndex < myAccAuto.size() && myAccAuto[eventIndex].pos == s;
       eventIndex++)
     {
