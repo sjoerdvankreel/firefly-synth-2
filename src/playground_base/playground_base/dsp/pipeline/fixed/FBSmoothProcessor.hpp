@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/shared/FBAccEvent.hpp>
+#include <playground_base/dsp/pipeline/shared/FBAccAutoEvent.hpp>
 
 #include <vector>
 
@@ -12,7 +12,7 @@ struct FBFixedOutputBlock;
 class FBSmoothProcessor final
 {
   FBVoiceManager* const _voiceManager ;
-  std::vector<FBAccEvent> _accBySampleThenParam = {};
+  std::vector<FBAccAutoEvent> _accAutoBySampleThenParam = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBSmoothProcessor);
   FBSmoothProcessor(FBVoiceManager* voiceManager);

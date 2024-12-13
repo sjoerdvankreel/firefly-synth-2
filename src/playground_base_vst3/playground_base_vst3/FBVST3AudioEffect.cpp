@@ -19,10 +19,10 @@ MakeBlockEvent(int index, ParamValue value)
   return result;
 }
 
-static FBAccEvent
-MakeAccEvent(int index, int pos, ParamValue value)
+static FBAccAutoEvent
+MakeAccAutoEvent(int index, int pos, ParamValue value)
 {
-  FBAccEvent result;
+  FBAccAutoEvent result;
   result.pos = pos;
   result.index = index;
   result.normalized = value;
@@ -147,8 +147,8 @@ FBVST3AudioEffect::process(ProcessData& data)
   IParamValueQueue* queue;
   std::unordered_map<int, int>::const_iterator iter;
   _input.block.clear();
-  auto& acc = _input.accByParamThenSample;
-  acc.clear();
+  auto& accAuto = _input.accAutoByParamThenSample;
+  accAuto.clear();
   if(data.inputParameterChanges != nullptr)
     for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
@@ -158,7 +158,7 @@ FBVST3AudioEffect::process(ProcessData& data)
             {
               for (int point = 0; point < queue->getPointCount(); point++)
                 if (queue->getPoint(point, position, value) == kResultTrue)
-                  acc.push_back(MakeAccEvent(iter->second, position, value));
+                  accAuto.push_back(MakeAccAutoEvent(iter->second, position, value));
             }
             else
             {
@@ -168,7 +168,7 @@ FBVST3AudioEffect::process(ProcessData& data)
 
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
-  std::sort(acc.begin(), acc.end(), compare);
+  std::sort(accAuto.begin(), accAuto.end(), compare);
 
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
   if (data.numInputs != 1)

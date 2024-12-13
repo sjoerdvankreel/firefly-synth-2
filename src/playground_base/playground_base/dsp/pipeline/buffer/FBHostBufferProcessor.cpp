@@ -20,17 +20,18 @@ static void GatherAcc(
   std::erase_if(input, [](auto const& e) { return e.pos < 0; });
 }
 
+// TODO mod
 static void
 GatherStraddledEvents(
-  FBAccEvent const& thisEvent,
-  FBAccEvent const& nextEvent, 
-  std::vector<FBAccEvent>& output)
+  FBAccAutoEvent const& thisEvent,
+  FBAccAutoEvent const& nextEvent,
+  std::vector<FBAccAutoEvent>& output)
 {
   int thisFixedBlock = thisEvent.pos / FBFixedBlockSamples;
   int nextFixedBlock = nextEvent.pos / FBFixedBlockSamples;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
-    FBAccEvent straddledEvent;
+    FBAccAutoEvent straddledEvent;
     straddledEvent.index = thisEvent.index;
     straddledEvent.pos = (i + 1) * FBFixedBlockSamples - 1;
     float valueRange = nextEvent.normalized - thisEvent.normalized;
@@ -49,7 +50,7 @@ FBHostBufferProcessor::ProcessToFixed()
   _fixed.audio.CopyFrom(_buffer.audio);
   _buffer.audio.Drop(FBFixedBlockSamples);
   GatherAcc(_buffer.note, _fixed.note);
-  GatherAcc(_buffer.accByParamThenSample, _fixed.accByParamThenSample);
+  GatherAcc(_buffer.accAutoByParamThenSample, _fixed.accAutoByParamThenSample); // TODO mod
   return &_fixed;
 }
 
@@ -63,18 +64,19 @@ FBHostBufferProcessor::BufferFromHost(FBHostInputBlock const& input)
     _buffer.note.push_back(event);
   }
 
-  auto const& acc = input.accByParamThenSample;
-  for (int e = 0; e < acc.size(); e++)
+  // TODO mod
+  auto const& accAuto = input.accAutoByParamThenSample;
+  for (int e = 0; e < accAuto.size(); e++)
   {
-    FBAccEvent thisEvent = acc[e];
+    FBAccAutoEvent thisEvent = accAuto[e];
     thisEvent.pos += _buffer.audio.Count();
-    _buffer.accByParamThenSample.push_back(thisEvent);
-    if (e < acc.size() - 1 &&
-      acc[e + 1].index == acc[e].index)
+    _buffer.accAutoByParamThenSample.push_back(thisEvent);
+    if (e < accAuto.size() - 1 &&
+      accAuto[e + 1].index == accAuto[e].index)
     {
-      FBAccEvent nextEvent = acc[e + 1];
+      FBAccAutoEvent nextEvent = accAuto[e + 1];
       nextEvent.pos += _buffer.audio.Count();
-      GatherStraddledEvents(thisEvent, nextEvent, _buffer.accByParamThenSample);
+      GatherStraddledEvents(thisEvent, nextEvent, _buffer.accAutoByParamThenSample);
     }
   }
 

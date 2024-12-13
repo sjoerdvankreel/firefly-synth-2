@@ -1,6 +1,6 @@
 #pragma once
 
-struct FBAccEvent
+struct FBAccAutoEvent
 {
   int pos = -1;
   int index = -1;

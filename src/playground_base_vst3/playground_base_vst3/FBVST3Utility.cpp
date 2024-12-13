@@ -28,7 +28,7 @@ FBVST3SaveIBStream(IBStream* stream, std::string const& state)
   int32 numWritten;
   int32 written = 0;
   char* data = const_cast<char*>(state.data());
-  while ((result = stream->write(data + written, state.size() - written, &numWritten)) == kResultTrue && numWritten > 0)
+  while ((result = stream->write(data + written, static_cast<int32>(state.size() - written), &numWritten)) == kResultTrue && numWritten > 0)
     written += numWritten;
   return result == kResultTrue;
 }

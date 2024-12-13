@@ -17,15 +17,16 @@ void
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-  auto& myAcc = _accBySampleThenParam;
-  auto& thatAcc = input.accByParamThenSample;
-  myAcc.clear();
-  myAcc.insert(myAcc.begin(), thatAcc.begin(), thatAcc.end());
+  // TODO mod
+  auto& myAccAuto = _accAutoBySampleThenParam;
+  auto& thatAccAuto = input.accAutoByParamThenSample;
+  myAccAuto.clear();
+  myAccAuto.insert(myAccAuto.begin(), thatAccAuto.begin(), thatAccAuto.end());
   auto compare = [](auto const& l, auto const& r) {
     if (l.pos < r.pos) return true;
     if (l.pos > r.pos) return false;
     return l.index < r.index; };
-  std::sort(myAcc.begin(), myAcc.end(), compare);
+  std::sort(myAccAuto.begin(), myAccAuto.end(), compare);
 
   // todo deal with nondestructive and pervoice
   int eventIndex = 0;
@@ -33,10 +34,10 @@ FBSmoothProcessor::ProcessSmoothing(
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     for (int eventIndex = 0; 
-      eventIndex < myAcc.size() && myAcc[eventIndex].pos == s; 
+      eventIndex < myAccAuto.size() && myAccAuto[eventIndex].pos == s;
       eventIndex++)
     {
-      auto const& event = myAcc[eventIndex];
+      auto const& event = myAccAuto[eventIndex];
       if (!params[event.index].IsVoice())
         params[event.index].GlobalAcc().Value(event.normalized);
       else

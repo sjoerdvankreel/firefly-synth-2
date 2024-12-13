@@ -17,11 +17,11 @@ MakeBlockEvent(
   return result;
 }
 
-static FBAccEvent
-MakeAccEvent(
+static FBAccAutoEvent
+MakeAccAutoEvent(
   int index, clap_event_param_value const* event)
 {
-  FBAccEvent result;
+  FBAccAutoEvent result;
   result.index = index;
   result.pos = event->header.time;
   result.normalized = static_cast<float>(event->value);
@@ -105,11 +105,11 @@ FBCLAPPlugin::process(
 
   auto events = process->in_events;
   int eventCount = events->size(events);
-  auto& acc = _input.accByParamThenSample;
+  auto& accAuto = _input.accAutoByParamThenSample;
   clap_event_param_value const* value;
   std::unordered_map<int, int>::const_iterator iter;
 
-  acc.clear();
+  accAuto.clear();
   _input.note.clear();
   _input.block.clear();
 
@@ -128,9 +128,10 @@ FBCLAPPlugin::process(
       value = reinterpret_cast<clap_event_param_value const*>(header);
       if ((iter = _topo->tagToParam.find(value->param_id)) != _topo->tagToParam.end())
         if (_topo->params[iter->second].static_.acc)
-          acc.push_back(MakeAccEvent(iter->second, value));
+          accAuto.push_back(MakeAccAutoEvent(iter->second, value));
         else
           _input.block.push_back(MakeBlockEvent(iter->second, value->value));
+      break;
     default:
       break;
     }
@@ -138,7 +139,7 @@ FBCLAPPlugin::process(
 
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
-  std::sort(acc.begin(), acc.end(), compare);
+  std::sort(accAuto.begin(), accAuto.end(), compare);
 
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
   if (process->audio_inputs_count != 1)
