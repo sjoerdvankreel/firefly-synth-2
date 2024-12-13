@@ -19,7 +19,7 @@ SortParamThenSampleToSampleThenParam(
   auto compare = [](auto const& l, auto const& r) {
     if (l.pos < r.pos) return true;
     if (l.pos > r.pos) return false;
-    return l.index < r.index; };
+    return l.param < r.param; };
   output.clear();
   output.insert(output.begin(), input.begin(), input.end());
   std::sort(output.begin(), output.end(), compare);
@@ -48,14 +48,14 @@ FBSmoothProcessor::ProcessSmoothing(
       eventIndex++)
     {
       auto const& event = myAccMod[eventIndex];
-      if (!params[event.index].IsVoice())
-        params[event.index].GlobalAcc().Modulate(event.value);
+      if (!params[event.param].IsVoice())
+        params[event.param].GlobalAcc().Modulate(event.value);
       else
         for (int v = 0; v < FBMaxVoices; v++)
         {
           auto const& voice = _voiceManager->Voices()[v];
           if (voice.active && event.note.Matches(voice.event.note))
-            params[event.index].VoiceAcc().Modulate(v, event.value);
+            params[event.param].VoiceAcc().Modulate(v, event.value);
         }
     }
 
@@ -64,10 +64,10 @@ FBSmoothProcessor::ProcessSmoothing(
       eventIndex++)
     {
       auto const& event = myAccAuto[eventIndex];
-      if (!params[event.index].IsVoice())
-        params[event.index].GlobalAcc().Value(event.value);
+      if (!params[event.param].IsVoice())
+        params[event.param].GlobalAcc().Value(event.value);
       else
-        params[event.index].VoiceAcc().Value(event.value);
+        params[event.param].VoiceAcc().Value(event.value);
     }
 
     for (int p = 0; p < params.size(); p++)

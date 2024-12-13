@@ -11,20 +11,20 @@
 #include <unordered_map>
 
 static FBBlockEvent
-MakeBlockEvent(int index, ParamValue value)
+MakeBlockEvent(int param, ParamValue value)
 {
   FBBlockEvent result;
-  result.index = index;
+  result.param = param;
   result.normalized = value;
   return result;
 }
 
 static FBAccAutoEvent
-MakeAccAutoEvent(int index, int pos, ParamValue value)
+MakeAccAutoEvent(int param, int pos, ParamValue value)
 {
   FBAccAutoEvent result;
   result.pos = pos;
-  result.index = index;
+  result.param = param;
   result.value = value;
   return result;
 }
@@ -165,10 +165,7 @@ FBVST3AudioEffect::process(ProcessData& data)
               if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
                 _input.block.push_back(MakeBlockEvent(iter->second, value));
             }
-
-  auto compare = [](auto& l, auto& r) {
-    return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
-  std::sort(accAuto.begin(), accAuto.end(), compare);
+  std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
 
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
   if (data.numInputs != 1)

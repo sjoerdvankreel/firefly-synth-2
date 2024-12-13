@@ -32,7 +32,7 @@ static void GatherStraddledFromHost(
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
     Event straddledEvent;
-    straddledEvent.index = thisEvent.index;
+    straddledEvent.param = thisEvent.param;
     straddledEvent.pos = (i + 1) * FBFixedBlockSamples - 1;
     float valueRange = nextEvent.value - thisEvent.value;
     float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
@@ -55,7 +55,7 @@ static void GatherAccFromHost(
     Event thisEvent = input[e];
     thisEvent.pos += bufferOffset;
     output.push_back(thisEvent);
-    if (e < input.size() - 1 && input[e + 1].index == input[e].index)
+    if (e < input.size() - 1 && input[e + 1].param == input[e].param)
     {
       Event nextEvent = input[e + 1];
       nextEvent.pos += bufferOffset;

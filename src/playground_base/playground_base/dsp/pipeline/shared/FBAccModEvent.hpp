@@ -5,7 +5,7 @@
 struct FBAccModEvent
 {
   int pos = -1;
-  int index = -1;
+  int param = -1;
   FBNote note = {};
   float value = 0.0f; // [-1, 1]
 };

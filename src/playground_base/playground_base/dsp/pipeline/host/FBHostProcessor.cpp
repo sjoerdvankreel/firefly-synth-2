@@ -50,7 +50,7 @@ FBHostProcessor::ProcessHost(
 {
   auto denormalState = FBDisableDenormal();  
   for (auto const& be : input.block)
-    _fixedOut.state->Params()[be.index].Value(be.normalized);
+    _fixedOut.state->Params()[be.param].Value(be.normalized);
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);
