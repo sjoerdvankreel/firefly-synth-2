@@ -5,8 +5,6 @@
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedVectorBlock.hpp>
 
-#include <algorithm>
-
 class alignas(FBVectorByteCount) FBAccParamState final
 {
   friend class FBSmoothProcessor;
@@ -14,12 +12,12 @@ class alignas(FBVectorByteCount) FBAccParamState final
   friend class FBGlobalAccParamState;
 
   FBFixedVectorBlock _cv = {};
-  float _modulation = {};
+  float _modulated = {};
   FBOnePoleFilter _smoother = {};
 
-  void Modulate(float offset) { _modulation = offset; }
+  void Modulate(float value) { _modulated = value; }
+  void SmoothNext(int sample) { _cv.Sample(sample, _smoother.Next(_modulated)); }
   void Init(float sampleRate) { _smoother = FBOnePoleFilter(sampleRate, FBParamSmoothSec); }
-  void SmoothNext(int sample, float automation) { _cv.Sample(sample, _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f))); }
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);

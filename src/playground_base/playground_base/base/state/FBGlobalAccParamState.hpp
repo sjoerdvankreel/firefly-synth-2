@@ -15,9 +15,8 @@ class alignas(FBVectorByteCount) FBGlobalAccParamState final
   float Value() const { return _value; }
   void Value(float value) { _value = value; };
   FBAccParamState& Global() { return _global; }
-  void Modulate(float offset) { _global.Modulate(offset); }
+  void Modulate(float value) { _global.Modulate(value); }
   void Init(float sampleRate) { _global.Init(sampleRate); }
-  void SmoothNext(int sample) { _global.SmoothNext(sample, _value); }
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBGlobalAccParamState);
