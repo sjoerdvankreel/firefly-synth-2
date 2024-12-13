@@ -28,6 +28,20 @@ MakeAccAutoEvent(
   return result;
 }
 
+static FBAccModEvent
+MakeAccModEvent(
+  int index, clap_event_param_mod const* event)
+{
+  FBAccModEvent result;
+  result.index = index;
+  result.pos = event->header.time;
+  result.note.key = event->key;
+  result.note.id = event->note_id;
+  result.note.channel = event->channel;
+  result.offset = static_cast<float>(event->amount);
+  return result;
+}
+
 static FBNoteEvent
 MakeNoteEvent(
   clap_event_header_t const* header)

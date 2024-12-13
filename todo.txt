@@ -1,4 +1,5 @@
 voice manager
+do the clap wildcard discussion thing (see clap_event_param_mod.amount)
 denormals for clap voice
 clap polymod
 voice block start position (fake it by amp env?)

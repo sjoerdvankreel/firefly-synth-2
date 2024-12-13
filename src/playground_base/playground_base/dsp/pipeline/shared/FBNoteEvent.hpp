@@ -1,16 +1,11 @@
 #pragma once
 
-struct FBNoteId
-{
-  int id;
-  int key;
-  int channel;
-};
+#include <playground_base/dsp/pipeline/shared/FBNote.hpp>
 
 struct FBNoteEvent
 {
   int pos;
   bool on;
   float velo;
-  FBNoteId note;
+  FBNote note;
 };
