@@ -17,5 +17,5 @@ if %errorlevel% neq 0 exit /b !errorlevel!
 exit /b 0
 
 :usage
-echo "usage: Debug|Release FB_USE_SSE=0|1 FB_USE_AVX=0|1"
+echo "Usage: Debug|Release FB_USE_SSE=0|1 FB_USE_AVX=0|1. Example: build_windows Debug 1 0 builds debug binaries with SSE support."
 exit /b 1
