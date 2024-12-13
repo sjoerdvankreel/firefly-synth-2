@@ -49,8 +49,13 @@ FBSmoothProcessor::ProcessSmoothing(
       auto const& event = myAccMod[eventIndex];
       if (!params[event.index].IsVoice())
         params[event.index].GlobalAcc().Modulate(event.value);
-      else // now it gets interesting TODO
-        params[event.index].VoiceAcc().Value(event.value);
+      else
+        for (int v = 0; v < FBMaxVoices; v++)
+        {
+          auto const& voice = _voiceManager->Voices()[v];
+          if (voice.active && event.note.Matches(voice.event.note))
+            params[event.index].VoiceAcc().Modulate(v, event.value);
+        }
     }
 
     for (int eventIndex = 0;

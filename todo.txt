@@ -1,8 +1,7 @@
 voice manager
-do the clap wildcard discussion thing (see clap_event_param_mod.amount)
 denormals for clap voice
 clap polymod
-clap + vst3 note expr + midi mpe
+clap + vst3 note expr + midi mpe + polymod + mark as done somewhere
 voice block start position (fake it by amp env?)
 save state as ui text
 handle block/acc non/destructive per/voice or not
