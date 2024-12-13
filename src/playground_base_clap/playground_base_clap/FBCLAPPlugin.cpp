@@ -22,11 +22,9 @@ MakeAccEvent(
   int index, clap_event_param_value const* event)
 {
   FBAccEvent result;
-  result.voice = -1;
   result.index = index;
   result.pos = event->header.time;
-  result.type = FBAccEventType::Automation;
-  result.value = static_cast<float>(event->value);
+  result.normalized = static_cast<float>(event->value);
   return result;
 }
 

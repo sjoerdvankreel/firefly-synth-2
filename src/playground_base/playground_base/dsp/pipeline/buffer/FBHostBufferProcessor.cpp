@@ -33,9 +33,9 @@ GatherStraddledEvents(
     FBAccEvent straddledEvent;
     straddledEvent.index = thisEvent.index;
     straddledEvent.pos = (i + 1) * FBFixedBlockSamples - 1;
-    float valueRange = nextEvent.value - thisEvent.value; // TODO MOD
+    float valueRange = nextEvent.normalized - thisEvent.normalized;
     float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
-    straddledEvent.value = thisEvent.value + valueRange * normalizedPos;
+    straddledEvent.normalized = thisEvent.normalized + valueRange * normalizedPos;
     output.push_back(straddledEvent);
   }
 }
