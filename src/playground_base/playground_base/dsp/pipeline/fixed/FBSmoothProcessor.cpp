@@ -9,6 +9,7 @@
 
 #include <algorithm>
 
+// todo take note into account
 template <class Event>
 static void 
 SortParamThenSampleToSampleThenParam(
@@ -33,13 +34,13 @@ FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
   SortParamThenSampleToSampleThenParam(
-    input.accModByParamThenSample, _accModBySampleThenParam);
-  SortParamThenSampleToSampleThenParam(
     input.accAutoByParamThenSample, _accAutoBySampleThenParam);
+  SortParamThenSampleToSampleThenParam(
+    input.accModByParamThenNoteThenSample, _accModBySampleThenParamThenNote);
 
   auto& params = output.state->Params();
-  auto const& myAccMod = _accModBySampleThenParam;
   auto const& myAccAuto = _accAutoBySampleThenParam;
+  auto const& myAccMod = _accModBySampleThenParamThenNote;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     for (int eventIndex = 0;

@@ -117,9 +117,9 @@ FBCLAPPlugin::process(
 {
   auto events = process->in_events;
   int eventCount = events->size(events);
-  auto& accMod = _input.accModByParamThenSample;
   auto& accAuto = _input.accAutoByParamThenSample;
-  
+  auto& accMod = _input.accModByParamThenNoteThenSample;
+
   clap_event_param_mod const* mod;
   clap_event_param_value const* value;
   std::unordered_map<int, int>::const_iterator iter;

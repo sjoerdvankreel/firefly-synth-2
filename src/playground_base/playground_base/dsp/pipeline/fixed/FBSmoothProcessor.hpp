@@ -13,8 +13,8 @@ struct FBFixedOutputBlock;
 class FBSmoothProcessor final
 {
   FBVoiceManager* const _voiceManager ;
-  std::vector<FBAccModEvent> _accModBySampleThenParam = {};
   std::vector<FBAccAutoEvent> _accAutoBySampleThenParam = {};
+  std::vector<FBAccModEvent> _accModBySampleThenParamThenNote = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBSmoothProcessor);
   FBSmoothProcessor(FBVoiceManager* voiceManager);

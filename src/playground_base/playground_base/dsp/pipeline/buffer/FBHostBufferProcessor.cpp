@@ -26,6 +26,7 @@ static void GatherStraddledFromHost(
   Event const& nextEvent,
   std::vector<Event>& output)
 {
+  // TODO take note into account
   int thisFixedBlock = thisEvent.pos / FBFixedBlockSamples;
   int nextFixedBlock = nextEvent.pos / FBFixedBlockSamples;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
@@ -46,6 +47,7 @@ static void GatherAccFromHost(
   std::vector<Event>& outputByParamThenSample,
   int bufferOffset)
 {
+  // TODO take note into account
   auto& input = inputByParamThenSample;
   auto& output = outputByParamThenSample;
   for (int e = 0; e < input.size(); e++)
@@ -71,8 +73,8 @@ FBHostBufferProcessor::ProcessToFixed()
   _fixed.audio.CopyFrom(_buffer.audio);
   _buffer.audio.Drop(FBFixedBlockSamples);
   GatherAccToFixed(_buffer.note, _fixed.note);
-  GatherAccToFixed(_buffer.accModByParamThenSample, _fixed.accModByParamThenSample);
   GatherAccToFixed(_buffer.accAutoByParamThenSample, _fixed.accAutoByParamThenSample);
+  GatherAccToFixed(_buffer.accModByParamThenNoteThenSample, _fixed.accModByParamThenNoteThenSample);
   return &_fixed;
 }
 
@@ -86,7 +88,7 @@ FBHostBufferProcessor::BufferFromHost(FBHostInputBlock const& input)
     _buffer.note.push_back(event);
   }
 
-  GatherAccFromHost(input.accModByParamThenSample, _buffer.accModByParamThenSample, _buffer.audio.Count());
   GatherAccFromHost(input.accAutoByParamThenSample, _buffer.accAutoByParamThenSample, _buffer.audio.Count());
+  GatherAccFromHost(input.accModByParamThenNoteThenSample, _buffer.accModByParamThenNoteThenSample, _buffer.audio.Count());
   _buffer.audio.Append(input.audio);
 }
