@@ -108,7 +108,7 @@ FBCLAPPlugin::paramsInfo(
 
   // TODO CLAP_PARAM_IS_HIDDEN
   // TODO CLAP_PARAM_IS_READONLY
-  info->flags = 0;
+  info->flags = CLAP_PARAM_IS_AUTOMATABLE; // TODO need this also for vst3? bitwig requires to show host controls
   if (staticParam.valueCount != 0)
   {
     info->flags |= CLAP_PARAM_IS_STEPPED;
@@ -117,7 +117,6 @@ FBCLAPPlugin::paramsInfo(
   }
   else
   {
-    info->flags |= CLAP_PARAM_IS_AUTOMATABLE;
     info->flags |= CLAP_PARAM_IS_MODULATABLE;
     if (staticModule.voice)
     {
