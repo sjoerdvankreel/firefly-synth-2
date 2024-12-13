@@ -38,9 +38,9 @@ FBSmoothProcessor::ProcessSmoothing(
     {
       auto const& event = myAcc[eventIndex];
       if (!params[event.index].IsVoice())
-        params[event.index].GlobalAcc().Value(event.value);
+        params[event.index].GlobalAcc().Value(event.normalized);
       else
-        params[event.index].VoiceAcc().Value(event.value);
+        params[event.index].VoiceAcc().Value(event.normalized);
     }
 
     for (int p = 0; p < params.size(); p++)
