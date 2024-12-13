@@ -9,7 +9,6 @@ struct FBNote
   bool Matches(FBNote const& rhs) const;
 };
 
-// TODO this follows clap wildcard stuff but does it also apply to vst3?
 inline bool 
 FBNote::Matches(FBNote const& rhs) const
 {

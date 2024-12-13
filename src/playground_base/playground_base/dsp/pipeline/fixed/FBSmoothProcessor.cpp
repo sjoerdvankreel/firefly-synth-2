@@ -37,12 +37,22 @@ FBSmoothProcessor::ProcessSmoothing(
   SortParamThenSampleToSampleThenParam(
     input.accAutoByParamThenSample, _accAutoBySampleThenParam);
 
-  // todo deal with nondestructive and pervoice
   auto& params = output.state->Params();
   auto const& myAccMod = _accModBySampleThenParam;
   auto const& myAccAuto = _accAutoBySampleThenParam;
   for (int s = 0; s < FBFixedBlockSamples; s++)
-  {    
+  {
+    for (int eventIndex = 0;
+      eventIndex < myAccMod.size() && myAccMod[eventIndex].pos == s;
+      eventIndex++)
+    {
+      auto const& event = myAccMod[eventIndex];
+      if (!params[event.index].IsVoice())
+        params[event.index].GlobalAcc().Modulate(event.value);
+      else // now it gets interesting TODO
+        params[event.index].VoiceAcc().Value(event.value);
+    }
+
     for (int eventIndex = 0;
       eventIndex < myAccAuto.size() && myAccAuto[eventIndex].pos == s;
       eventIndex++)

@@ -115,8 +115,6 @@ clap_process_status
 FBCLAPPlugin::process(
   const clap_process* process) noexcept 
 {
-  // TODO should we account for zero block size when flushing ?
-
   auto events = process->in_events;
   int eventCount = events->size(events);
   auto& accMod = _input.accModByParamThenSample;
@@ -148,7 +146,7 @@ FBCLAPPlugin::process(
         if (_topo->params[iter->second].static_.acc)
           accMod.push_back(MakeAccModEvent(iter->second, mod));
       break;
-    case CLAP_EVENT_PARAM_VALUE: // TODO MOD
+    case CLAP_EVENT_PARAM_VALUE:
       value = reinterpret_cast<clap_event_param_value const*>(header);
       if ((iter = _topo->tagToParam.find(value->param_id)) != _topo->tagToParam.end())
         if (_topo->params[iter->second].static_.acc)
