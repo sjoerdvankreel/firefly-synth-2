@@ -17,11 +17,8 @@ FBVoiceManager::ReturnOldest(FBNoteEvent const& event)
   int slot = -1;
   std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();  
   for (int i = 0; i < _voices.size(); i++)
-    if (event.note.id != -1 && 
-      event.note.id == _voices[i].event.note.id ||
-      event.note.channel == _voices[i].event.note.channel &&
-      event.note.key == _voices[i].event.note.key)
-      if (_num[i] < oldest)
+    if (event.note.Matches(_voices[i].event.note))
+      if (_voices[i].active && _num[i] < oldest)
       {
         slot = i;
         oldest = _num[i];
