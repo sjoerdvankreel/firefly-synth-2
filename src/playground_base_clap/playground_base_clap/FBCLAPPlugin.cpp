@@ -171,5 +171,8 @@ FBCLAPPlugin::process(
     _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
   FBHostAudioBlock output(process->audio_outputs[0].data32, process->frames_count);
   _hostProcessor->ProcessHost(_input, output);
+
+  // TODO return released voices to host
+
   return true;
 }
