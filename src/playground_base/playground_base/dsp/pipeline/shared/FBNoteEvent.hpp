@@ -4,8 +4,8 @@
 
 struct FBNoteEvent
 {
-  int pos;
-  bool on;
-  float velo;
-  FBNote note;
+  int pos = -1;
+  bool on = false;
+  FBNote note = {};
+  float velo = 0.0f;
 };

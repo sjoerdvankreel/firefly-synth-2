@@ -7,5 +7,5 @@ struct FBAccModEvent
   int pos = -1;
   int index = -1;
   FBNote note = {};
-  float offset = 0.0f;
+  float value = 0.0f; // [-1, 1]
 };

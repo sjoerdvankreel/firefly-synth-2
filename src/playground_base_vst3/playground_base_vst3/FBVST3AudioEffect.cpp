@@ -25,7 +25,7 @@ MakeAccAutoEvent(int index, int pos, ParamValue value)
   FBAccAutoEvent result;
   result.pos = pos;
   result.index = index;
-  result.normalized = value;
+  result.value = value;
   return result;
 }
 

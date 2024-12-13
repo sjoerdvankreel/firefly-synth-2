@@ -4,7 +4,7 @@
 #include <algorithm>
 
 template <class Event>
-static void GatherAcc(
+static void GatherAccToFixed(
   std::vector<Event>& inputByParamThenSample, 
   std::vector<Event>& outputByParamThenSample)
 {
@@ -20,24 +20,45 @@ static void GatherAcc(
   std::erase_if(input, [](auto const& e) { return e.pos < 0; });
 }
 
-// TODO mod
-static void
-GatherStraddledEvents(
-  FBAccAutoEvent const& thisEvent,
-  FBAccAutoEvent const& nextEvent,
-  std::vector<FBAccAutoEvent>& output)
+template <class Event>
+static void GatherStraddledFromHost(
+  Event const& thisEvent,
+  Event const& nextEvent,
+  std::vector<Event>& output)
 {
   int thisFixedBlock = thisEvent.pos / FBFixedBlockSamples;
   int nextFixedBlock = nextEvent.pos / FBFixedBlockSamples;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
-    FBAccAutoEvent straddledEvent;
+    Event straddledEvent;
     straddledEvent.index = thisEvent.index;
     straddledEvent.pos = (i + 1) * FBFixedBlockSamples - 1;
-    float valueRange = nextEvent.normalized - thisEvent.normalized;
+    float valueRange = nextEvent.value - thisEvent.value;
     float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
-    straddledEvent.normalized = thisEvent.normalized + valueRange * normalizedPos;
+    straddledEvent.value = thisEvent.value + valueRange * normalizedPos;
     output.push_back(straddledEvent);
+  }
+}
+
+template <class Event>
+static void GatherAccFromHost(
+  std::vector<Event> const& inputByParamThenSample,
+  std::vector<Event>& outputByParamThenSample,
+  int bufferOffset)
+{
+  auto& input = inputByParamThenSample;
+  auto& output = outputByParamThenSample;
+  for (int e = 0; e < input.size(); e++)
+  {
+    Event thisEvent = input[e];
+    thisEvent.pos += bufferOffset;
+    output.push_back(thisEvent);
+    if (e < input.size() - 1 && input[e + 1].index == input[e].index)
+    {
+      Event nextEvent = input[e + 1];
+      nextEvent.pos += bufferOffset;
+      GatherStraddledFromHost(thisEvent, nextEvent, output);
+    }
   }
 }
 
@@ -49,8 +70,9 @@ FBHostBufferProcessor::ProcessToFixed()
 
   _fixed.audio.CopyFrom(_buffer.audio);
   _buffer.audio.Drop(FBFixedBlockSamples);
-  GatherAcc(_buffer.note, _fixed.note);
-  GatherAcc(_buffer.accAutoByParamThenSample, _fixed.accAutoByParamThenSample); // TODO mod
+  GatherAccToFixed(_buffer.note, _fixed.note);
+  GatherAccToFixed(_buffer.accModByParamThenSample, _fixed.accModByParamThenSample);
+  GatherAccToFixed(_buffer.accAutoByParamThenSample, _fixed.accAutoByParamThenSample);
   return &_fixed;
 }
 
@@ -64,21 +86,7 @@ FBHostBufferProcessor::BufferFromHost(FBHostInputBlock const& input)
     _buffer.note.push_back(event);
   }
 
-  // TODO mod
-  auto const& accAuto = input.accAutoByParamThenSample;
-  for (int e = 0; e < accAuto.size(); e++)
-  {
-    FBAccAutoEvent thisEvent = accAuto[e];
-    thisEvent.pos += _buffer.audio.Count();
-    _buffer.accAutoByParamThenSample.push_back(thisEvent);
-    if (e < accAuto.size() - 1 &&
-      accAuto[e + 1].index == accAuto[e].index)
-    {
-      FBAccAutoEvent nextEvent = accAuto[e + 1];
-      nextEvent.pos += _buffer.audio.Count();
-      GatherStraddledEvents(thisEvent, nextEvent, _buffer.accAutoByParamThenSample);
-    }
-  }
-
+  GatherAccFromHost(input.accModByParamThenSample, _buffer.accModByParamThenSample, _buffer.audio.Count());
+  GatherAccFromHost(input.accAutoByParamThenSample, _buffer.accAutoByParamThenSample, _buffer.audio.Count());
   _buffer.audio.Append(input.audio);
 }

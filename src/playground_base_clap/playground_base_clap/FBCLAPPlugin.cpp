@@ -24,7 +24,7 @@ MakeAccAutoEvent(
   FBAccAutoEvent result;
   result.index = index;
   result.pos = event->header.time;
-  result.normalized = static_cast<float>(event->value);
+  result.value = static_cast<float>(event->value);
   return result;
 }
 
@@ -38,7 +38,7 @@ MakeAccModEvent(
   result.note.key = event->key;
   result.note.id = event->note_id;
   result.note.channel = event->channel;
-  result.offset = static_cast<float>(event->amount);
+  result.value = static_cast<float>(event->amount);
   return result;
 }
 
@@ -119,10 +119,14 @@ FBCLAPPlugin::process(
 
   auto events = process->in_events;
   int eventCount = events->size(events);
+  auto& accMod = _input.accModByParamThenSample;
   auto& accAuto = _input.accAutoByParamThenSample;
+  
+  clap_event_param_mod const* mod;
   clap_event_param_value const* value;
   std::unordered_map<int, int>::const_iterator iter;
 
+  accMod.clear();
   accAuto.clear();
   _input.note.clear();
   _input.block.clear();
@@ -137,6 +141,12 @@ FBCLAPPlugin::process(
     case CLAP_EVENT_NOTE_ON: 
     case CLAP_EVENT_NOTE_OFF: 
       _input.note.push_back(MakeNoteEvent(header)); 
+      break;
+    case CLAP_EVENT_PARAM_MOD:
+      mod = reinterpret_cast<clap_event_param_mod const*>(header);
+      if ((iter = _topo->tagToParam.find(mod->param_id)) != _topo->tagToParam.end())
+        if (_topo->params[iter->second].static_.acc)
+          accMod.push_back(MakeAccModEvent(iter->second, mod));
       break;
     case CLAP_EVENT_PARAM_VALUE: // TODO MOD
       value = reinterpret_cast<clap_event_param_value const*>(header);
@@ -153,6 +163,7 @@ FBCLAPPlugin::process(
 
   auto compare = [](auto& l, auto& r) {
     return l.index == r.index ? l.pos < r.pos : l.index < r.index; };
+  std::sort(accMod.begin(), accMod.end(), compare);
   std::sort(accAuto.begin(), accAuto.end(), compare);
 
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
