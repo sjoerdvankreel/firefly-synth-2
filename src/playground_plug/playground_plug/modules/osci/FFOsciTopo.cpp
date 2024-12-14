@@ -33,8 +33,8 @@ FFMakeOsciTopo()
     { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
     { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" } };
   auto selectType = [](auto& module) { return &module.block.type; };
-  type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
-  type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
+  type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
+  type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
 
   auto& gain = result.params[FFOsciAccGain];
   gain.acc = true;
