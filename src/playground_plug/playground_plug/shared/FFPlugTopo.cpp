@@ -173,5 +173,23 @@ FFMakeTopo()
   shaperGLFOToGain.scalarAddr = SelectScalarAddr(selectShaper, selectShaperGLFOToGain);
   shaperGLFOToGain.voiceAccAddr = SelectProcAddr(selectShaper, selectShaperGLFOToGain);
 
+  auto& master = result->modules[FFModuleMaster];
+  auto selectMaster = [](auto& state) { return &state.global.master; };
+  master.voice = false;
+  master.name = "Master";
+  master.slotCount = 1;
+  master.id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
+  master.params.resize(FFMasterParamCount);
+
+  auto& masterGain = master.params[FFMasterAccGain];
+  masterGain.acc = true;
+  masterGain.name = "Gain";
+  masterGain.slotCount = 1;
+  masterGain.valueCount = 0;
+  masterGain.id = "{9CDC04BC-D0FF-43E6-A2C2-D6C822CFA3EA}";
+  auto selectMasterGain = [](auto& module) { return &module.acc.gain; };
+  masterGain.scalarAddr = SelectScalarAddr(selectMaster, selectMasterGain);
+  masterGain.globalAccAddr = SelectProcAddr(selectMaster, selectMasterGain);
+
   return result;
 }

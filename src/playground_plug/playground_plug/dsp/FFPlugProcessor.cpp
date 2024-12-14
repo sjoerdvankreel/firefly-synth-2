@@ -40,22 +40,8 @@ FFPlugProcessor::ProcessPreVoice(
   }
 
   for (int n = 0; n < input.note->size(); n++)
-    if((*input.note)[n].on)
+    if ((*input.note)[n].on)
       input.voiceManager->Lease((*input.note)[n]);
-}
-
-void
-FFPlugProcessor::ProcessPostVoice(
-  FBPlugInputBlock const& input, FBFixedAudioBlock& output)
-{
-  for (int n = 0; n < input.note->size(); n++)
-    if (!(*input.note)[n].on)
-      input.voiceManager->ReturnOldest((*input.note)[n]);
-
-  output.Clear();
-  for (int i = 0; i < FBMaxVoices; i++)
-    if (input.voiceManager->Voices()[i].active)
-      output.Add(_state->dsp.voice[i].output);
 }
 
 void
@@ -74,4 +60,24 @@ FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
   }
 
   // todo shaper
+}
+
+void
+FFPlugProcessor::ProcessPostVoice(
+  FBPlugInputBlock const& input, FBFixedAudioBlock& output)
+{
+  for (int n = 0; n < input.note->size(); n++)
+    if (!(*input.note)[n].on)
+      input.voiceManager->ReturnOldest((*input.note)[n]);
+
+  auto& masterIn = _state->dsp.global.master.input;
+  masterIn.Clear();
+  for (int i = 0; i < FBMaxVoices; i++)
+    if (input.voiceManager->Voices()[i].active)
+      masterIn.Add(_state->dsp.voice[i].output);
+
+  auto moduleState = MakeModuleState(input);
+  moduleState.moduleSlot = 0;
+  _state->dsp.global.master.processor.Process(moduleState);
+  output.CopyFrom(_state->dsp.global.master.output);
 }
