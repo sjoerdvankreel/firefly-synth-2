@@ -1,20 +1,19 @@
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFTopoDetail.hpp>
-#include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
-std::unique_ptr<FBStaticModule>
+FBStaticModule
 FFMakeGLFOTopo()
 {
-  auto result = std::make_unique<FBStaticModule>();
-  result->voice = false;
-  result->name = "GLFO";
-  result->slotCount = FFGLFOCount;
-  result->id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
-  result->params.resize(FFGLFOParamCount);
+  FBStaticModule result = {};
+  result.voice = false;
+  result.name = "GLFO";
+  result.slotCount = FFGLFOCount;
+  result.id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
+  result.params.resize(FFGLFOParamCount);
   auto selectModule = [](auto& state) { return &state.global.glfo; };
 
-  auto& on = result->params[FFGLFOBlockOn];
+  auto& on = result.params[FFGLFOBlockOn];
   on.acc = false;
   on.name = "On";
   on.slotCount = 1;
@@ -24,7 +23,7 @@ FFMakeGLFOTopo()
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
 
-  auto& rate = result->params[FFGLFOAccRate];
+  auto& rate = result.params[FFGLFOAccRate];
   rate.acc = true;
   rate.name = "Rate";
   rate.slotCount = 1;
