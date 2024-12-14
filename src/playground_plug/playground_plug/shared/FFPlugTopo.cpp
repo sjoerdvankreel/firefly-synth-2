@@ -3,6 +3,7 @@
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp> // TODO
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp> // TODO
+#include <playground_plug/modules/osci/FFOsciTopo.hpp> // TODO
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 
 std::unique_ptr<FBStaticTopo>
@@ -19,67 +20,7 @@ FFMakeTopo()
   result->freeScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
 
   result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
-
-  auto& osci = result->modules[FFModuleOsci];
-  auto selectOsci = [](auto& state) { return &state.voice.osci; };
-  osci.voice = true;
-  osci.name = "Osc";
-  osci.slotCount = FFOsciCount;
-  osci.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
-  osci.params.resize(FFOsciParamCount);
-
-  auto& osciOn = osci.params[FFOsciBlockOn];
-  osciOn.acc = false;
-  osciOn.name = "On";
-  osciOn.slotCount = 1;
-  osciOn.valueCount = 2;
-  osciOn.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
-  auto selectOsciOn = [](auto& module) { return &module.block.on; };
-  osciOn.scalarAddr = FFTopoDetailSelectScalarAddr(selectOsci, selectOsciOn);
-  osciOn.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectOsci, selectOsciOn);
-
-  auto& osciType = osci.params[FFOsciBlockType];
-  osciType.acc = false;
-  osciType.name = "Type";
-  osciType.slotCount = 1;
-  osciType.valueCount = FFOsciTypeCount;
-  osciType.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
-  osciType.list = {
-    { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
-    { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" } };
-  auto selectOsciType = [](auto& module) { return &module.block.type; };
-  osciType.scalarAddr = FFTopoDetailSelectScalarAddr(selectOsci, selectOsciType);
-  osciType.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectOsci, selectOsciType);
-
-  auto& osciGain = osci.params[FFOsciAccGain];
-  osciGain.acc = true;
-  osciGain.name = "Gain";
-  osciGain.slotCount = FFOsciGainCount;
-  osciGain.valueCount = 0;
-  osciGain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
-  auto selectOsciGain = [](auto& module) { return &module.acc.gain; };
-  osciGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectOsci, selectOsciGain);
-  osciGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectOsci, selectOsciGain);
-
-  auto& osciPitch = osci.params[FFOsciAccPitch];
-  osciPitch.acc = true;
-  osciPitch.name = "Pitch";
-  osciPitch.slotCount = 1;
-  osciPitch.valueCount = 0;
-  osciPitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
-  auto selectOsciPitch = [](auto& module) { return &module.acc.pitch; };
-  osciPitch.scalarAddr = FFTopoDetailSelectScalarAddr(selectOsci, selectOsciPitch);
-  osciPitch.voiceAccAddr = FFTopoDetailSelectProcAddr(selectOsci, selectOsciPitch);
-
-  auto& osciGLFOToGain = osci.params[FFOsciAccGLFOToGain];
-  osciGLFOToGain.acc = true;
-  osciGLFOToGain.name = "GLFO To Gain";
-  osciGLFOToGain.slotCount = 1;
-  osciGLFOToGain.valueCount = 0;
-  osciGLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
-  auto selectOsciGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
-  osciGLFOToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectOsci, selectOsciGLFOToGain);
-  osciGLFOToGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectOsci, selectOsciGLFOToGain);
+  result->modules[FFModuleOsci] = FFMakeOsciTopo();
 
   auto& shaper = result->modules[FFModuleShaper];
   auto selectShaper = [](auto& state) { return &state.voice.shaper; };

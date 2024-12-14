@@ -1,10 +1,10 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugConfig.hpp>
-#include <playground_plug/dsp/FFOsciProcessor.hpp>
 #include <playground_plug/dsp/FFMasterProcessor.hpp>
 #include <playground_plug/dsp/FFShaperProcessor.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
+#include <playground_plug/modules/osci/FFOsciState.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
@@ -37,40 +37,6 @@ class alignas(alignof(TGlobalAcc)) FFMasterParamState final
   FFMasterAccParamState<TGlobalAcc> acc = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterParamState);
-};
-
-template <class TVoiceBlock>
-class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
-{
-  friend class FFOsciProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<TVoiceBlock, 1> on = {};
-  std::array<TVoiceBlock, 1> type = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
-};
-
-template <class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
-{
-  friend class FFOsciProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<TVoiceAcc, 1> pitch = {};
-  std::array<TVoiceAcc, 1> glfoToGain = {};
-  std::array<TVoiceAcc, FFOsciGainCount> gain = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
-};
-
-template <class TVoiceBlock, class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFOsciParamState final
-{
-  friend class FFOsciProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  FFOsciAccParamState<TVoiceAcc> acc = {};
-  FFOsciBlockParamState<TVoiceBlock> block = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciParamState);
 };
 
 template <class TVoiceBlock>
@@ -150,15 +116,6 @@ public:
   FBFixedAudioBlock input = {};
   FBFixedAudioBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterDSPState);
-};
-
-class alignas(FBVectorByteCount) FFOsciDSPState final
-{
-  friend class FFPlugProcessor;
-  FFOsciProcessor processor = {};
-public:
-  FBFixedAudioBlock output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };
 
 class alignas(FBVectorByteCount) FFShaperDSPState final

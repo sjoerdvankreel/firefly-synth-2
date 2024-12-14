@@ -9,6 +9,15 @@
 
 struct FBStaticModule;
 
+class alignas(FBVectorByteCount) FFGLFODSPState final
+{
+  friend class FFPlugProcessor;
+  FFGLFOProcessor processor = {};
+public:
+  FBFixedVectorBlock output = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
+};
+
 template <class TGlobalBlock>
 class alignas(alignof(TGlobalBlock)) FFGLFOBlockParamState final
 {
@@ -38,13 +47,4 @@ class alignas(alignof(TGlobalAcc)) FFGLFOParamState final
   FFGLFOBlockParamState<TGlobalBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOParamState);
-};
-
-class alignas(FBVectorByteCount) FFGLFODSPState final
-{
-  friend class FFPlugProcessor;
-  FFGLFOProcessor processor = {};
-public:
-  FBFixedVectorBlock output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
 };

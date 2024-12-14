@@ -1,7 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/dsp/FFOsciProcessor.hpp>
-#include <playground_plug/dsp/FFModuleProcState.hpp>
+#include <playground_plug/modules/osci/FFOsciProcessor.hpp>
+#include <playground_plug/dsp/FFModuleProcState.hpp> // TODO
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
