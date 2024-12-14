@@ -4,6 +4,7 @@
 #include <playground_plug/shared/FFTopoDetail.hpp> // TODO
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp> // TODO
 #include <playground_plug/modules/osci/FFOsciTopo.hpp> // TODO
+#include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 
 std::unique_ptr<FBStaticTopo>
@@ -21,6 +22,7 @@ FFMakeTopo()
 
   result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
   result->modules[FFModuleOsci] = FFMakeOsciTopo();
+  result->modules[FFModuleMaster] = FFMakeMasterTopo();
 
   auto& shaper = result->modules[FFModuleShaper];
   auto selectShaper = [](auto& state) { return &state.voice.shaper; };
@@ -70,23 +72,7 @@ FFMakeTopo()
   shaperGLFOToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectShaper, selectShaperGLFOToGain);
   shaperGLFOToGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectShaper, selectShaperGLFOToGain);
 
-  auto& master = result->modules[FFModuleMaster];
-  auto selectMaster = [](auto& state) { return &state.global.master; };
-  master.voice = false;
-  master.name = "Master";
-  master.slotCount = 1;
-  master.id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
-  master.params.resize(FFMasterParamCount);
-
-  auto& masterGain = master.params[FFMasterAccGain];
-  masterGain.acc = true;
-  masterGain.name = "Gain";
-  masterGain.slotCount = 1;
-  masterGain.valueCount = 0;
-  masterGain.id = "{9CDC04BC-D0FF-43E6-A2C2-D6C822CFA3EA}";
-  auto selectMasterGain = [](auto& module) { return &module.acc.gain; };
-  masterGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectMaster, selectMasterGain);
-  masterGain.globalAccAddr = FFTopoDetailSelectProcAddr(selectMaster, selectMasterGain);
+  
 
   return result;
 }

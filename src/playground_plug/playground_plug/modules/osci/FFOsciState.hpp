@@ -9,6 +9,15 @@
 
 struct FBStaticModule;
 
+class alignas(FBVectorByteCount) FFOsciDSPState final
+{
+  friend class FFPlugProcessor;
+  FFOsciProcessor processor = {};
+public:
+  FBFixedAudioBlock output = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
+};
+
 template <class TVoiceBlock>
 class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
 {
@@ -41,13 +50,4 @@ class alignas(alignof(TVoiceAcc)) FFOsciParamState final
   FFOsciBlockParamState<TVoiceBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciParamState);
-};
-
-class alignas(FBVectorByteCount) FFOsciDSPState final
-{
-  friend class FFPlugProcessor;
-  FFOsciProcessor processor = {};
-public:
-  FBFixedAudioBlock output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };

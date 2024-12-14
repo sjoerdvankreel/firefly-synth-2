@@ -7,12 +7,12 @@ FBStaticModule
 FFMakeGLFOTopo()
 {
   FBStaticModule result = {};
-  auto selectModule = [](auto& state) { return &state.global.glfo; };
   result.voice = false;
   result.name = "GLFO";
   result.slotCount = FFGLFOCount;
   result.id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
   result.params.resize(FFGLFOParamCount);
+  auto selectModule = [](auto& state) { return &state.global.glfo; };
 
   auto& on = result.params[FFGLFOBlockOn];
   on.acc = false;

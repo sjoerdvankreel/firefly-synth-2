@@ -7,12 +7,12 @@ FBStaticModule
 FFMakeOsciTopo()
 {
   FBStaticModule result = {};
-  auto selectModule = [](auto& state) { return &state.voice.osci; };
   result.voice = true;
   result.name = "Osc";
   result.slotCount = FFOsciCount;
   result.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
   result.params.resize(FFOsciParamCount);
+  auto selectModule = [](auto& state) { return &state.voice.osci; };
 
   auto& on = result.params[FFOsciBlockOn];
   on.acc = false;
@@ -56,15 +56,15 @@ FFMakeOsciTopo()
   pitch.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPitch);
   pitch.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectPitch);
 
-  auto& GLFOToGain = result.params[FFOsciAccGLFOToGain];
-  GLFOToGain.acc = true;
-  GLFOToGain.name = "GLFO To Gain";
-  GLFOToGain.slotCount = 1;
-  GLFOToGain.valueCount = 0;
-  GLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
+  auto& glfoToGain = result.params[FFOsciAccGLFOToGain];
+  glfoToGain.acc = true;
+  glfoToGain.name = "GLFO To Gain";
+  glfoToGain.slotCount = 1;
+  glfoToGain.valueCount = 0;
+  glfoToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
   auto selectGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
-  GLFOToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
-  GLFOToGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGLFOToGain);
+  glfoToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
+  glfoToGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGLFOToGain);
 
   return result;
 }
