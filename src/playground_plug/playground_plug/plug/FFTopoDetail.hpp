@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/shared/FFPlugState.hpp>
+#include <playground_plug/plug/FFPlugState.hpp>
 
 template <class State>
 static auto
