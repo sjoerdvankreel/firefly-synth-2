@@ -1,11 +1,12 @@
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFPlugState.hpp>
+#include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
+#include <playground_plug/modules/master/FFMasterTopo.hpp>
+
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
-FBStaticModule FFMakeGLFOTopo();
 FBStaticModule FFMakeOsciTopo();
-FBStaticModule FFMakeMasterTopo();
 
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
@@ -19,8 +20,8 @@ FFMakeTopo()
   result->allocScalarState = []() { return static_cast<void*>(new FFScalarState); };
   result->freeProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result->freeScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
-  result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
   result->modules[FFModuleOsci] = FFMakeOsciTopo();
-  result->modules[FFModuleMaster] = FFMakeMasterTopo(); 
+  result->modules[FFModuleGLFO] = std::move(*FFMakeGLFOTopo());
+  result->modules[FFModuleMaster] = std::move(*FFMakeMasterTopo()); 
   return result;
 }
