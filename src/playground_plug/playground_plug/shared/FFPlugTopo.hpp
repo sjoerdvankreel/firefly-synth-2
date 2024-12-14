@@ -5,11 +5,12 @@
 struct FBStaticTopo;
 std::unique_ptr<FBStaticTopo> FFMakeTopo();
 
-// todo move module counts into here
+inline int constexpr FFGLFOCount = 1;
+inline int constexpr FFOsciCount = 2; // todo oscis - it must be a single module
+inline int constexpr FFOsciGainCount = 2;
 
-enum { FFModuleGLFO, FFModuleOsci, FFModuleShaper, FFModuleMaster, FFModuleCount };
+enum { FFModuleGLFO, FFModuleOsci, FFModuleMaster, FFModuleCount };
+enum { FFMasterAccGain, FFMasterParamCount };
 enum { FFGLFOBlockOn, FFGLFOAccRate, FFGLFOParamCount };
 enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
 enum { FFOsciBlockOn, FFOsciBlockType, FFOsciAccGain, FFOsciAccPitch, FFOsciAccGLFOToGain, FFOsciParamCount };
-enum { FFShaperBlockOn, FFShaperBlockClip, FFShaperAccGain, FFShaperAccGLFOToGain, FFShaperParamCount };
-enum { FFMasterAccGain, FFMasterParamCount };

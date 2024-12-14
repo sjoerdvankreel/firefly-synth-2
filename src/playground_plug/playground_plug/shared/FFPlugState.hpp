@@ -1,6 +1,5 @@
 #pragma once
 
-#include <playground_plug/shared/FFPlugConfig.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
@@ -15,8 +14,6 @@
 #include <playground_base/dsp/pipeline/fixed/FBFixedVectorBlock.hpp>
 
 #include <array>
-
-// TODO split this file
 
 template <class TGlobalBlock, class TGlobalAcc>
 struct alignas(alignof(TGlobalAcc)) FFGlobalParamState final

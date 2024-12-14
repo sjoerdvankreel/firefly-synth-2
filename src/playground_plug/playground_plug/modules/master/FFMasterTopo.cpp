@@ -1,7 +1,6 @@
-#include <playground_plug/shared/FFPlugTopo.hpp> // TODO
-#include <playground_plug/shared/FFPlugConfig.hpp> // TODO
+#include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
-#include <playground_plug/modules/master/FFMasterTopo.hpp>
+#include <playground_base/base/topo/FBStaticModule.hpp>
 
 FBStaticModule
 FFMakeMasterTopo()
@@ -23,6 +22,5 @@ FFMakeMasterTopo()
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
   gain.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
-
   return result;
 }

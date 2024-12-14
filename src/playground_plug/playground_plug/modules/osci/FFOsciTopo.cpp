@@ -1,7 +1,6 @@
-#include <playground_plug/shared/FFPlugTopo.hpp> // TODO
-#include <playground_plug/shared/FFPlugConfig.hpp> // TODO
+#include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
-#include <playground_plug/modules/osci/FFOsciTopo.hpp>
+#include <playground_base/base/topo/FBStaticModule.hpp>
 
 FBStaticModule
 FFMakeOsciTopo()
@@ -65,6 +64,5 @@ FFMakeOsciTopo()
   auto selectGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
   glfoToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
   glfoToGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGLFOToGain);
-
   return result;
 }
