@@ -6,7 +6,6 @@
 
 inline int constexpr FFGLFOCount = 1;
 inline int constexpr FFOsciCount = 2; // todo oscis - it must be a single module
-inline int constexpr FFShaperCount = 1;
 inline int constexpr FFOsciGainCount = 2;
 
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";

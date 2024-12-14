@@ -6,6 +6,7 @@
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+// TODO
 
 #include <cmath>
 #include <numbers>
@@ -58,8 +59,6 @@ FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
     voiceDSP.osci[i].processor.Process(moduleState, voice);
     voiceDSP.output.Add(voiceDSP.osci[i].output);
   }
-
-  // todo shaper
 }
 
 void

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugConfig.hpp>
-#include <playground_plug/dsp/FFShaperProcessor.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
@@ -19,39 +18,6 @@
 
 // TODO split this file
 
-template <class TVoiceBlock>
-class alignas(alignof(TVoiceBlock)) FFShaperBlockParamState final
-{
-  friend class FFShaperProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<TVoiceBlock, 1> on = {};
-  std::array<TVoiceBlock, 1> clip = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperBlockParamState);
-};
-
-template <class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFShaperAccParamState final
-{
-  friend class FFShaperProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<TVoiceAcc, 1> gain = {};
-  std::array<TVoiceAcc, 1> glfoToGain = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperAccParamState);
-};
-
-template <class TVoiceBlock, class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFShaperParamState final
-{
-  friend class FFShaperProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  FFShaperAccParamState<TVoiceAcc> acc = {};
-  FFShaperBlockParamState<TVoiceBlock> block = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperParamState);
-};
-
 template <class TGlobalBlock, class TGlobalAcc>
 struct alignas(alignof(TGlobalAcc)) FFGlobalParamState final
 {
@@ -65,7 +31,6 @@ struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
   std::array<FFOsciParamState<TVoiceBlock, TVoiceAcc>, FFOsciCount> osci = {};
-  std::array<FFShaperParamState<TVoiceBlock, TVoiceAcc>, FFShaperCount> shaper = {};
 };
 
 struct FFScalarParamState final
@@ -88,15 +53,6 @@ struct alignas(FBVectorByteCount) FFProcParamState final
   FFGlobalParamState<FBGlobalBlockParamState, FBGlobalAccParamState> global = {};
 };
 
-class alignas(FBVectorByteCount) FFShaperDSPState final
-{
-  friend class FFPlugProcessor;
-  FFShaperProcessor processor = {};
-public:
-  FBFixedAudioBlock output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFShaperDSPState);
-};
-
 struct alignas(FBVectorByteCount) FFGlobalDSPState final
 {
   FFMasterDSPState master = {};
@@ -108,7 +64,6 @@ struct alignas(FBVectorByteCount) FFVoiceDSPState final
 {
   FBFixedAudioBlock output = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
-  std::array<FFShaperDSPState, FFShaperCount> shaper = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
 
