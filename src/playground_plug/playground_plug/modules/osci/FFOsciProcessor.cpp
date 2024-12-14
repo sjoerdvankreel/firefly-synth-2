@@ -1,10 +1,10 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
+#include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
-#include <playground_plug/pipeline/FFModuleProcState.hpp> // TODO
+
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
-#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 struct FFOsciBlock

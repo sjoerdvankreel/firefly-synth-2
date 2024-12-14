@@ -1,8 +1,8 @@
 #pragma once
 
-#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedVectorBlock.hpp>
+#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
 #include <array>
 #include <memory>

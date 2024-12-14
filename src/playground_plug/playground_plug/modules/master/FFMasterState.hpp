@@ -1,8 +1,8 @@
 #pragma once
 
-#include <playground_plug/modules/master/FFMasterProcessor.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_plug/modules/master/FFMasterProcessor.hpp>
 
 #include <array>
 #include <memory>
