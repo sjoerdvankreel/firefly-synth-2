@@ -8,7 +8,6 @@ struct FFModuleProcState;
 class FFGLFOProcessor
 {
   FBPhase _phase = {};
-
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOProcessor);
   void Process(FFModuleProcState const& state);
