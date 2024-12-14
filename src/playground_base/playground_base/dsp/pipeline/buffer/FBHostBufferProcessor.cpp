@@ -26,13 +26,11 @@ static void GatherStraddledFromHost(
   Event const& nextEvent,
   std::vector<Event>& output)
 {
-  // TODO take note into account
   int thisFixedBlock = thisEvent.pos / FBFixedBlockSamples;
   int nextFixedBlock = nextEvent.pos / FBFixedBlockSamples;
   for (int i = thisFixedBlock; i < nextFixedBlock; i++)
   {
-    Event straddledEvent;
-    straddledEvent.param = thisEvent.param;
+    Event straddledEvent = thisEvent;
     straddledEvent.pos = (i + 1) * FBFixedBlockSamples - 1;
     float valueRange = nextEvent.value - thisEvent.value;
     float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
@@ -41,13 +39,13 @@ static void GatherStraddledFromHost(
   }
 }
 
-template <class Event>
+template <class Event, class IsSameStream>
 static void GatherAccFromHost(
   std::vector<Event> const& inputByParamThenSample,
   std::vector<Event>& outputByParamThenSample,
+  IsSameStream isSameStream,
   int bufferOffset)
 {
-  // TODO take note into account
   auto& input = inputByParamThenSample;
   auto& output = outputByParamThenSample;
   for (int e = 0; e < input.size(); e++)
@@ -55,7 +53,7 @@ static void GatherAccFromHost(
     Event thisEvent = input[e];
     thisEvent.pos += bufferOffset;
     output.push_back(thisEvent);
-    if (e < input.size() - 1 && input[e + 1].param == input[e].param)
+    if (e < input.size() - 1 && isSameStream(input[e], input[e + 1]))
     {
       Event nextEvent = input[e + 1];
       nextEvent.pos += bufferOffset;
@@ -88,7 +86,11 @@ FBHostBufferProcessor::BufferFromHost(FBHostInputBlock const& input)
     _buffer.note.push_back(event);
   }
 
-  GatherAccFromHost(input.accAutoByParamThenSample, _buffer.accAutoByParamThenSample, _buffer.audio.Count());
-  GatherAccFromHost(input.accModByParamThenNoteThenSample, _buffer.accModByParamThenNoteThenSample, _buffer.audio.Count());
+  GatherAccFromHost(
+    input.accAutoByParamThenSample, _buffer.accAutoByParamThenSample,
+    FBAccAutoEventIsSameStream, _buffer.audio.Count());
+  GatherAccFromHost(
+    input.accModByParamThenNoteThenSample, _buffer.accModByParamThenNoteThenSample,
+    FBAccModEventIsSameStream, _buffer.audio.Count());
   _buffer.audio.Append(input.audio);
 }

@@ -9,17 +9,13 @@
 
 #include <algorithm>
 
-// todo take note into account
-template <class Event>
+template <class Event, class Compare>
 static void 
-SortParamThenSampleToSampleThenParam(
+SortSampleLastToSampleFirst(
   std::vector<Event> const& input,
-  std::vector<Event>& output)
+  std::vector<Event>& output,
+  Compare compare)
 {
-  auto compare = [](auto const& l, auto const& r) {
-    if (l.pos < r.pos) return true;
-    if (l.pos > r.pos) return false;
-    return l.param < r.param; };
   output.clear();
   output.insert(output.begin(), input.begin(), input.end());
   std::sort(output.begin(), output.end(), compare);
@@ -33,10 +29,10 @@ void
 FBSmoothProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output)
 {
-  SortParamThenSampleToSampleThenParam(
-    input.accAutoByParamThenSample, _accAutoBySampleThenParam);
-  SortParamThenSampleToSampleThenParam(
-    input.accModByParamThenNoteThenSample, _accModBySampleThenParamThenNote);
+  SortSampleLastToSampleFirst(input.accAutoByParamThenSample, 
+    _accAutoBySampleThenParam, FBAccAutoEventOrderByPosThenParam);
+  SortSampleLastToSampleFirst(input.accModByParamThenNoteThenSample, 
+    _accModBySampleThenParamThenNote, FBAccModEventOrderByPosThenParamThenNote);
 
   auto& params = output.state->Params();
   auto const& myAccAuto = _accAutoBySampleThenParam;

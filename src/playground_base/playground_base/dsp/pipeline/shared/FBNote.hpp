@@ -7,6 +7,7 @@ struct FBNote
   int channel = -1;
 
   bool Matches(FBNote const& rhs) const;
+  auto operator<=>(FBNote const&) const = default;
 };
 
 inline bool 

@@ -160,9 +160,7 @@ FBCLAPPlugin::process(
   }
 
   std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
-  auto compareMod = [](auto& l, auto& r) { // TODO
-    return l.param == r.param ? l.pos < r.pos : l.param < r.param; };
-  std::sort(accMod.begin(), accMod.end(), compareMod);
+  std::sort(accMod.begin(), accMod.end(), FBAccModEventOrderByParamThenNoteThenPos);
 
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
   if (process->audio_inputs_count != 1)
