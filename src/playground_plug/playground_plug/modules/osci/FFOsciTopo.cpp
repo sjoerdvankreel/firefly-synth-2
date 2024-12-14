@@ -1,20 +1,19 @@
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFTopoDetail.hpp>
-#include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
-std::unique_ptr<FBStaticModule>
+FBStaticModule
 FFMakeOsciTopo()
 {
-  auto result = std::make_unique<FBStaticModule>();
-  result->voice = true;
-  result->name = "Osc";
-  result->slotCount = FFOsciCount;
-  result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
-  result->params.resize(FFOsciParamCount);
+  FBStaticModule result = {};
+  result.voice = true;
+  result.name = "Osc";
+  result.slotCount = FFOsciCount;
+  result.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
+  result.params.resize(FFOsciParamCount);
   auto selectModule = [](auto& state) { return &state.voice.osci; };
 
-  auto& on = result->params[FFOsciBlockOn];
+  auto& on = result.params[FFOsciBlockOn];
   on.acc = false;
   on.name = "On";
   on.slotCount = 1;
@@ -24,7 +23,7 @@ FFMakeOsciTopo()
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
 
-  auto& type = result->params[FFOsciBlockType];
+  auto& type = result.params[FFOsciBlockType];
   type.acc = false;
   type.name = "Type";
   type.slotCount = 1;
@@ -37,7 +36,7 @@ FFMakeOsciTopo()
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
 
-  auto& gain = result->params[FFOsciAccGain];
+  auto& gain = result.params[FFOsciAccGain];
   gain.acc = true;
   gain.slotCount = FFOsciGainCount;
   gain.valueCount = 0;
@@ -46,7 +45,7 @@ FFMakeOsciTopo()
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
   gain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
 
-  auto& pitch = result->params[FFOsciAccPitch];
+  auto& pitch = result.params[FFOsciAccPitch];
   pitch.acc = true;
   pitch.name = "Pitch";
   pitch.slotCount = 1;
@@ -56,7 +55,7 @@ FFMakeOsciTopo()
   pitch.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPitch);
   pitch.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectPitch);
 
-  auto& glfoToGain = result->params[FFOsciAccGLFOToGain];
+  auto& glfoToGain = result.params[FFOsciAccGLFOToGain];
   glfoToGain.acc = true;
   glfoToGain.name = "GLFO To Gain";
   glfoToGain.slotCount = 1;
