@@ -4,7 +4,7 @@
 #include <playground_plug/dsp/FFOsciProcessor.hpp>
 #include <playground_plug/dsp/FFMasterProcessor.hpp>
 #include <playground_plug/dsp/FFShaperProcessor.hpp>
-#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
+#include <playground_plug/modules/glfo/FFGLFOState.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
@@ -18,37 +18,6 @@
 #include <array>
 
 // TODO split this file
-
-template <class TGlobalBlock>
-class alignas(alignof(TGlobalBlock)) FFGLFOBlockParamState final
-{
-  friend class FFGLFOProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<TGlobalBlock, 1> on = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOBlockParamState);
-};
-
-template <class TGlobalAcc>
-class alignas(alignof(TGlobalAcc)) FFGLFOAccParamState final
-{
-  friend class FFGLFOProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  std::array<TGlobalAcc, 1> rate = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOAccParamState);
-};
-
-template <class TGlobalBlock, class TGlobalAcc>
-class alignas(alignof(TGlobalAcc)) FFGLFOParamState final
-{
-  friend class FFGLFOProcessor;
-  friend std::unique_ptr<FBStaticTopo> FFMakeTopo();
-  FFGLFOAccParamState<TGlobalAcc> acc = {};
-  FFGLFOBlockParamState<TGlobalBlock> block = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOParamState);
-};
 
 template <class TGlobalAcc>
 class alignas(alignof(TGlobalAcc)) FFMasterAccParamState final
@@ -171,15 +140,6 @@ struct alignas(FBVectorByteCount) FFProcParamState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
   FFVoiceParamState<FBVoiceBlockParamState, FBVoiceAccParamState> voice = {};
   FFGlobalParamState<FBGlobalBlockParamState, FBGlobalAccParamState> global = {};
-};
-
-class alignas(FBVectorByteCount) FFGLFODSPState final
-{
-  friend class FFPlugProcessor;
-  FFGLFOProcessor processor = {};
-public:
-  FBFixedVectorBlock output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
 };
 
 class alignas(FBVectorByteCount) FFMasterDSPState final
