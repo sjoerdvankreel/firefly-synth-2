@@ -37,7 +37,7 @@ struct FBStaticParam final
   std::string id = {};
   std::string name = {};
   std::string unit = {};
-  double defaultNormalized = 0.0;
+  float defaultNormalized = 0.0f;
   std::vector<FBListItem> list = {};
 
   FBScalarAddrSelector scalarAddr = {};
@@ -46,17 +46,16 @@ struct FBStaticParam final
   FBVoiceBlockAddrSelector voiceBlockAddr = {};
   FBGlobalBlockAddrSelector globalBlockAddr = {};
 
-  double DiscreteToNormalized(int index) const
-  { return index / (valueCount - 1.0); }
-  bool NormalizedToBool(double normalized) const
+  float DiscreteToNormalized(int index) const
+  { return index / (valueCount - 1.0f); }
+  bool NormalizedToBool(float normalized) const
   { return NormalizedToDiscrete(normalized) != 0; }
-  int NormalizedToDiscrete(double normalized) const
+  int NormalizedToDiscrete(float normalized) const
   { return std::min(valueCount - 1, (int)(normalized * valueCount)); }
-
-  double TextToNormalizedOrDefault(std::string const& text, bool io) const
+  float TextToNormalizedOrDefault(std::string const& text, bool io) const
   { return TextToNormalized(text, io).value_or(defaultNormalized); }
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
-  std::string NormalizedToText(bool io, double normalized) const;
-  std::optional<double> TextToNormalized(std::string const& text, bool io) const;
+  std::string NormalizedToText(bool io, float normalized) const;
+  std::optional<float> TextToNormalized(std::string const& text, bool io) const;
 };

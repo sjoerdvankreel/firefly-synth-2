@@ -30,20 +30,6 @@ FBCLAPPlugin::paramsValue(
 }
 
 bool
-FBCLAPPlugin::paramsValueToText(
-  clap_id paramId, double value, char* display, uint32_t size) noexcept
-{
-  int32_t index = getParamIndexForParamId(paramId);
-  if (index == -1)
-    return false;
-  std::string text = _topo->params[index].static_.NormalizedToText(false, value);
-  std::fill(display, display + size, 0);
-  strncpy(display, text.c_str(), 
-    std::min(size - 1, static_cast<uint32_t>(text.size())));
-  return true;
-}
-
-bool
 FBCLAPPlugin::paramsTextToValue(
   clap_id paramId, const char* display, double* value) noexcept
 {
@@ -54,6 +40,20 @@ FBCLAPPlugin::paramsTextToValue(
   if (!normalized.has_value())
     return false;
   *value = normalized.value();
+  return true;
+}
+
+bool
+FBCLAPPlugin::paramsValueToText(
+  clap_id paramId, double value, char* display, uint32_t size) noexcept
+{
+  int32_t index = getParamIndexForParamId(paramId);
+  if (index == -1)
+    return false;
+  std::string text = _topo->params[index].static_.NormalizedToText(false, static_cast<float>(value));
+  std::fill(display, display + size, 0);
+  strncpy(display, text.c_str(), 
+    std::min(size - 1, static_cast<uint32_t>(text.size())));
   return true;
 }
 

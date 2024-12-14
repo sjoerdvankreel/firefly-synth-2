@@ -49,7 +49,6 @@ inline int constexpr FBVectorBitCount = 256;
 inline int constexpr FBVectorByteCount = FBVectorBitCount / 8;
 inline int constexpr FBVectorFloatCount = FBVectorByteCount / sizeof(float);
 
-// todo float / double
 class alignas(FBVectorByteCount) FBFloatVector
 {
   static inline float constexpr PiV = std::numbers::pi_v<float>;

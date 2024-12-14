@@ -10,11 +10,11 @@ TextToDiscreteBool(std::string const& text)
   return { text == "On" ? 1 : 0 };
 }
 
-static std::optional<double>
+static std::optional<float>
 TextToNormalizedContinuous(std::string const& text)
 {
   char* end;
-  double result = std::strtod(text.c_str(), &end);
+  float result = std::strtof(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
   if (result < 0.0 || result > 1.0)
@@ -45,7 +45,7 @@ TextToDiscreteList(std::string const& text, bool io, std::vector<FBListItem> con
 }
 
 std::string
-FBStaticParam::NormalizedToText(bool io, double normalized) const
+FBStaticParam::NormalizedToText(bool io, float normalized) const
 {
   assert(valueCount != 1);
   assert(list.size() == 0 || list.size() == valueCount);
@@ -61,7 +61,7 @@ FBStaticParam::NormalizedToText(bool io, double normalized) const
   return std::to_string(discrete);
 }
 
-std::optional<double>
+std::optional<float>
 FBStaticParam::TextToNormalized(std::string const& text, bool io) const
 {
   assert(valueCount != 1);
