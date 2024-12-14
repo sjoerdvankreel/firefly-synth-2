@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/dsp/FFModuleProcState.hpp>
+#include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
