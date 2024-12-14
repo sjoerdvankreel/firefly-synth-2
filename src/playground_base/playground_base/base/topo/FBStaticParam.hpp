@@ -37,6 +37,8 @@ struct FBStaticParam final
   std::string id = {};
   std::string name = {};
   std::string unit = {};
+  float plainMin = 0.0f;
+  float plainMax = 1.0f; // TODO logmidpoint and pct
   float defaultNormalized = 0.0f;
   std::vector<FBListItem> list = {};
 
@@ -52,6 +54,8 @@ struct FBStaticParam final
   { return NormalizedToDiscrete(normalized) != 0; }
   int NormalizedToDiscrete(float normalized) const
   { return std::min(valueCount - 1, (int)(normalized * valueCount)); }
+  float NormalizedToLinearPlain(float normalized) const
+  { return plainMin + (plainMax - plainMin) * normalized; }
   float TextToNormalizedOrDefault(std::string const& text, bool io) const
   { return TextToNormalized(text, io).value_or(defaultNormalized); }
 
