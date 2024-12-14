@@ -1,9 +1,9 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/dsp/FFGLFOProcessor.hpp>
 #include <playground_plug/dsp/FFModuleProcState.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
+#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
 #include <cmath>
 

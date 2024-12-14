@@ -2,9 +2,9 @@
 
 #include <playground_plug/shared/FFPlugConfig.hpp>
 #include <playground_plug/dsp/FFOsciProcessor.hpp>
-#include <playground_plug/dsp/FFGLFOProcessor.hpp>
 #include <playground_plug/dsp/FFMasterProcessor.hpp>
 #include <playground_plug/dsp/FFShaperProcessor.hpp>
+#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>

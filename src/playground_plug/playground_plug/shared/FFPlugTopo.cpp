@@ -1,27 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
+#include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
-
-template <class State>
-static auto
-SelectAddr(auto selectModule, auto selectParam)
-{
-  return [selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
-    auto moduleState = selectModule(static_cast<State*>(state)->param);
-    return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
-}
-
-static auto
-SelectScalarAddr(auto selectModule, auto selectParam)
-{
-  return SelectAddr<FFScalarState>(selectModule, selectParam);
-}
-
-static auto
-SelectProcAddr(auto selectModule, auto selectParam)
-{
-  return SelectAddr<FFProcState>(selectModule, selectParam);
-}
 
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
