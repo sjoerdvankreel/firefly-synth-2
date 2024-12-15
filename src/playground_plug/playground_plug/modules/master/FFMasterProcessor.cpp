@@ -4,8 +4,6 @@
 #include <playground_plug/modules/master/FFMasterProcessor.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 
-#include <cmath>
-
 void
 FFMasterProcessor::Process(FFModuleProcState const& state)
 {

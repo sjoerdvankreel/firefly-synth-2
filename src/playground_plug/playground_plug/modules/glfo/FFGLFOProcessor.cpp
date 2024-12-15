@@ -4,8 +4,6 @@
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 
-#include <cmath>
-
 void
 FFGLFOProcessor::Process(FFModuleProcState const& state)
 {
