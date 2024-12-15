@@ -19,7 +19,7 @@ FFMakeMasterTopo()
   gain.name = "Gain";
   gain.slotCount = 1;
   gain.valueCount = 0;
-  gain.percentage = true;
+  gain.displayMultiplier = 100.0f;
   gain.id = "{9CDC04BC-D0FF-43E6-A2C2-D6C822CFA3EA}";
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);

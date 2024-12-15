@@ -41,6 +41,7 @@ FFMakeOsciTopo()
   gain.unit = "%";
   gain.name = "Gain";
   gain.valueCount = 0;
+  gain.displayMultiplier = 100.0f;
   gain.slotCount = FFOsciGainCount;
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   auto selectGain = [](auto& module) { return &module.acc.gain; };
@@ -66,7 +67,7 @@ FFMakeOsciTopo()
   glfoToGain.name = "GLFO To Gain";
   glfoToGain.slotCount = 1;
   glfoToGain.valueCount = 0;
-  glfoToGain.percentage = true;
+  glfoToGain.displayMultiplier = 100.0f;
   glfoToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
   auto selectGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
   glfoToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);

@@ -61,8 +61,8 @@ public:
   std::string unit = {};
   float plainMin = 0.0f;
   float plainMax = 1.0f; // TODO logmidpoint and pct
+  float displayMultiplier = 1.0f;
   float defaultNormalized = 0.0f;
-  bool percentage = false;
   std::vector<FBListItem> list = {};
 
   FBScalarAddrSelector scalarAddr = {};

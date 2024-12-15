@@ -35,12 +35,13 @@ FBStaticParam::TextToDiscreteList(std::string const& text, bool io) const
 std::optional<float>
 FBStaticParam::TextToPlain(std::string const& text) const
 {
-  if (!percentage)
+  if (displayMultiplier == 1.0f)
     return TextToPlainLinear(text, plainMin, plainMax);
-  auto plain = TextToPlainLinear(text, 0.0f, 100.0f);
+  assert(plainMin == 0.0f && plainMax == 1.0f);
+  auto plain = TextToPlainLinear(text, 0.0f, displayMultiplier);
   if (!plain)
     return {};
-  return { plain.value() / 100.0f };
+  return { plain.value() / displayMultiplier };
 }
 
 std::optional<int>
@@ -69,9 +70,10 @@ FBStaticParam::TextToPlainLinear(std::string const& text, float min, float max) 
 std::string
 FBStaticParam::PlainToText(float plain) const
 {
-  if (percentage)
-    return std::to_string(plain * 100.0f);
-  return std::to_string(plain);
+  if (displayMultiplier == 1.0f)
+    return std::to_string(plain);
+  assert(plainMin == 0.0f && plainMax == 1.0f);
+  return std::to_string(plain * displayMultiplier);
 }
 
 std::string
