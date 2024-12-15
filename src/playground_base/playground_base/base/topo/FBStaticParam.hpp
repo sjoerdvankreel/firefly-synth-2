@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include <algorithm>
 #include <functional>
 
 class FBVoiceAccParamState;
@@ -48,16 +49,20 @@ struct FBStaticParam final
   FBVoiceBlockAddrSelector voiceBlockAddr = {};
   FBGlobalBlockAddrSelector globalBlockAddr = {};
 
-  float DiscreteToNormalized(int index) const
-  { return index / (valueCount - 1.0f); }
   bool NormalizedToBool(float normalized) const
   { return NormalizedToDiscrete(normalized) != 0; }
-  int NormalizedToDiscrete(float normalized) const
-  { return std::min(valueCount - 1, (int)(normalized * valueCount)); }
-  float NormalizedToLinearPlain(float normalized) const
-  { return plainMin + (plainMax - plainMin) * normalized; }
   float TextToNormalizedOrDefault(std::string const& text, bool io) const
   { return TextToNormalized(text, io).value_or(defaultNormalized); }
+
+  float DiscreteToNormalized(int discrete) const
+  { return std::clamp(discrete / (valueCount - 1.0f), 0.0f, 1.0f); }
+  int NormalizedToDiscrete(float normalized) const
+  { return std::clamp((int)(normalized * valueCount), 0, valueCount - 1); }
+
+  float NormalizedToLinearPlain(float normalized) const
+  { return plainMin + (plainMax - plainMin) * normalized; }
+  float LinearPlainToNormalized(float plain) const
+  { return std::clamp((plain - plainMin) / (plainMax - plainMin), 0.0f, 1.0f); }
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
   std::string NormalizedToText(bool io, float normalized) const;

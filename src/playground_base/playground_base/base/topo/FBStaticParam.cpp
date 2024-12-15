@@ -10,18 +10,6 @@ TextToDiscreteBool(std::string const& text)
   return { text == "On" ? 1 : 0 };
 }
 
-static std::optional<float>
-TextToNormalizedContinuous(std::string const& text)
-{
-  char* end;
-  float result = std::strtof(text.c_str(), &end);
-  if (end != text.c_str() + text.size())
-    return {};
-  if (result < 0.0 || result > 1.0)
-    return {};
-  return { result };
-}
-
 static std::optional<int>
 TextToDiscreteInt(std::string const& text, int valueCount)
 {
@@ -44,6 +32,18 @@ TextToDiscreteList(std::string const& text, bool io, std::vector<FBListItem> con
   return {};
 }
 
+static std::optional<float>
+TextToLinearPlain(std::string const& text, float plainMin, float plainMax)
+{
+  char* end;
+  float result = std::strtof(text.c_str(), &end);
+  if (end != text.c_str() + text.size())
+    return {};
+  if (result < plainMin || result > plainMax)
+    return {};
+  return { result };
+}
+
 std::string
 FBStaticParam::NormalizedToText(bool io, float normalized) const
 {
@@ -51,7 +51,7 @@ FBStaticParam::NormalizedToText(bool io, float normalized) const
   assert(list.size() == 0 || list.size() == valueCount);
 
   if (valueCount == 0)
-    return std::to_string(normalized);
+    return std::to_string(NormalizedToLinearPlain(normalized));
 
   int discrete = NormalizedToDiscrete(normalized);
   if (list.size() != 0)
@@ -68,7 +68,12 @@ FBStaticParam::TextToNormalized(std::string const& text, bool io) const
   assert(list.size() == 0 || list.size() == valueCount);
 
   if (valueCount == 0)
-    return TextToNormalizedContinuous(text);
+  {
+    auto linearPlain = TextToLinearPlain(text, plainMin, plainMax);
+    if (!linearPlain)
+      return {};
+    return LinearPlainToNormalized(linearPlain.value());
+  }
 
   std::optional<int> discrete = {};
   if (list.size() != 0)
