@@ -106,7 +106,7 @@ FBCLAPPlugin::activate(
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
   auto plug = MakePlugProcessor(_topo->static_, _procState, fSampleRate);
-  _procStatePtrs.SetSmoothingCoeffs(fSampleRate, FBDefaultParamSmoothSec);
+  _procStatePtrs.SetSmoothingCoeffs(fSampleRate, _procStatePtrs.Special().smooth->Value());
   _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_procStatePtrs, fSampleRate));
   return true;
 }

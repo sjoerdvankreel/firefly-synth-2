@@ -19,6 +19,7 @@ class FBFixedBufferProcessor;
 
 class FBHostProcessor final
 {
+  float _sampleRate = {};
   FBProcStatePtrs* _state = {};
   FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};

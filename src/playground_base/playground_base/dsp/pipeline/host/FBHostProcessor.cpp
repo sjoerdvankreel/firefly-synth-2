@@ -23,6 +23,7 @@ FBHostProcessor::
 FBHostProcessor(
   std::unique_ptr<IFBPlugProcessor>&& plug,
   FBProcStatePtrs* state, float sampleRate):
+_sampleRate(sampleRate),
 _state(state),
 _plug(std::move(plug)),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
@@ -51,6 +52,7 @@ FBHostProcessor::ProcessHost(
   auto denormalState = FBDisableDenormal();  
   for (auto const& be : input.block)
     _fixedOut.state->Params()[be.param].Value(be.normalized);
+  _state->SetSmoothingCoeffs(_sampleRate, _state->Special().smooth->Value());
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);
