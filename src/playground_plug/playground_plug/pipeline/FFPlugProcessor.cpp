@@ -27,6 +27,22 @@ FFPlugProcessor::MakeModuleState(FBPlugInputBlock const& input) const
   return result;
 }
 
+void 
+FFPlugProcessor::LeaseVoices(FBPlugInputBlock const& input)
+{
+  for (int n = 0; n < input.note->size(); n++)
+    if ((*input.note)[n].on)
+      input.voiceManager->Lease((*input.note)[n]);
+}
+
+void 
+FFPlugProcessor::ReturnVoices(FBPlugInputBlock const& input)
+{
+  for (int n = 0; n < input.note->size(); n++)
+    if (!(*input.note)[n].on)
+      input.voiceManager->ReturnOldest((*input.note)[n]);
+}
+
 void
 FFPlugProcessor::ProcessPreVoice(
   FBPlugInputBlock const& input)
@@ -37,10 +53,22 @@ FFPlugProcessor::ProcessPreVoice(
     moduleState.moduleSlot = s;
     _state->dsp.global.glfo[s].processor.Process(moduleState);
   }
+}
 
-  for (int n = 0; n < input.note->size(); n++)
-    if ((*input.note)[n].on)
-      input.voiceManager->Lease((*input.note)[n]);
+void
+FFPlugProcessor::ProcessPostVoice(
+  FBPlugInputBlock const& input, FBFixedAudioBlock& output)
+{
+  auto& masterIn = _state->dsp.global.master.input;
+  masterIn.Clear();
+  for (int i = 0; i < FBMaxVoices; i++)
+    if (input.voiceManager->Voices()[i].active)
+      masterIn.Add(_state->dsp.voice[i].output);
+
+  auto moduleState = MakeModuleState(input);
+  moduleState.moduleSlot = 0;
+  _state->dsp.global.master.processor.Process(moduleState);
+  output.CopyFrom(_state->dsp.global.master.output);
 }
 
 void
@@ -57,24 +85,4 @@ FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
     voiceDSP.osci[i].processor.Process(moduleState, voice);
     voiceDSP.output.Add(voiceDSP.osci[i].output);
   }
-}
-
-void
-FFPlugProcessor::ProcessPostVoice(
-  FBPlugInputBlock const& input, FBFixedAudioBlock& output)
-{
-  for (int n = 0; n < input.note->size(); n++)
-    if (!(*input.note)[n].on)
-      input.voiceManager->ReturnOldest((*input.note)[n]);
-
-  auto& masterIn = _state->dsp.global.master.input;
-  masterIn.Clear();
-  for (int i = 0; i < FBMaxVoices; i++)
-    if (input.voiceManager->Voices()[i].active)
-      masterIn.Add(_state->dsp.voice[i].output);
-
-  auto moduleState = MakeModuleState(input);
-  moduleState.moduleSlot = 0;
-  _state->dsp.global.master.processor.Process(moduleState);
-  output.CopyFrom(_state->dsp.global.master.output);
 }
