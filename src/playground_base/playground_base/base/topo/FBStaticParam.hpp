@@ -56,9 +56,9 @@ public:
   std::string name = {};
   std::string unit = {};
   float plainMin = 0.0f;
-  float plainMax = 1.0f; // TODO logmidpoint and pct
+  float plainMax = 1.0f; // TODO logmidpoint
   float displayMultiplier = 1.0f;
-  float defaultNormalized = 0.0f;
+  std::string defaultText = {};
   std::vector<FBListItem> list = {};
 
   FBScalarAddrSelector scalarAddr = {};
@@ -69,14 +69,13 @@ public:
 
   bool NormalizedToBool(float normalized) const
   { return NormalizedToDiscrete(normalized) != 0; }
-  float TextToNormalizedOrDefault(std::string const& text, bool io) const
-  { return TextToNormalized(text, io).value_or(defaultNormalized); }
-
   float DiscreteToNormalized(int discrete) const
   { return std::clamp(discrete / (valueCount - 1.0f), 0.0f, 1.0f); }
   int NormalizedToDiscrete(float normalized) const
   { return std::clamp((int)(normalized * valueCount), 0, valueCount - 1); }
 
+  float DefaultNormalizedByText() const
+  { return TextToNormalized(defaultText, false).value(); }
   float NormalizedToPlainLinear(float normalized) const
   { return plainMin + (plainMax - plainMin) * normalized; }
   float PlainLinearToNormalized(float plain) const

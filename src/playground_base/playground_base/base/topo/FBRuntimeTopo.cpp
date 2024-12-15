@@ -199,7 +199,12 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
     return false;
 
   for (int p = 0; p < to.Params().size(); p++)
-    *to.Params()[p] = static_cast<float>(params[p].static_.defaultNormalized);
+  {
+    float defaultNormalized = 0.0f;
+    if(params[p].static_.defaultText.size())
+      defaultNormalized = params[p].static_.TextToNormalized(params[p].static_.defaultText, false).value();
+    *to.Params()[p] = defaultNormalized;
+  }
 
   for (int sp = 0; sp < state.size(); sp++)
   {
@@ -223,8 +228,10 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
       continue;
 
     auto const& topo = params[iter->second].static_;
-    auto normalized = topo.TextToNormalizedOrDefault(val.toString().toStdString(), true);
-    *to.Params()[iter->second] = static_cast<float>(normalized);
+    auto normalized = topo.TextToNormalized(val.toString().toStdString(), true);
+    if (!normalized)
+      normalized = topo.TextToNormalized(topo.defaultText, false);
+    *to.Params()[iter->second] = static_cast<float>(normalized.value());
   }
 
   return true;
