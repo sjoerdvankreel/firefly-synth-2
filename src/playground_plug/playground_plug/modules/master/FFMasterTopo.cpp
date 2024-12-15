@@ -24,5 +24,20 @@ FFMakeMasterTopo()
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
   gain.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
+
+  auto& smooth = result.params[FFMasterBlockSmooth];
+  smooth.acc = false;
+  smooth.unit = "Ms";
+  smooth.name = "Smooth";
+  smooth.id = "{961D1B53-9509-47EA-B646-C948C5FACA82}";
+  smooth.slotCount = 1;
+  smooth.valueCount = 0;
+  smooth.plainMin = 0.0f;
+  smooth.plainMax = 0.05f;
+  smooth.defaultNormalized = 0.5f;
+  smooth.displayMultiplier = 1000.0f;
+  auto selectSmooth = [](auto& module) { return &module.block.smooth; };
+  smooth.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmooth);
+  smooth.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectSmooth);
   return result;
 }

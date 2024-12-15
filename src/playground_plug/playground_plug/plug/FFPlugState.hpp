@@ -37,7 +37,7 @@ template <class TGlobalBlock, class TGlobalAcc>
 struct alignas(alignof(TGlobalAcc)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
-  std::array<FFMasterParamState<TGlobalAcc>, 1> master = {};
+  std::array<FFMasterParamState<TGlobalBlock, TGlobalAcc>, 1> master = {};
   std::array<FFGLFOParamState<TGlobalBlock, TGlobalAcc>, FFGLFOCount> glfo = {};
 };
 

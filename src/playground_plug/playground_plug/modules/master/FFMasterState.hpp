@@ -29,12 +29,23 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
 };
 
-template <class TGlobalAcc>
+template <class TGlobalBlock>
+class alignas(alignof(TGlobalBlock)) FFMasterBlockParamState final
+{
+  friend class FFMasterProcessor;
+  friend FBStaticModule FFMakeMasterTopo();
+  std::array<TGlobalBlock, 1> smooth = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterBlockParamState);
+};
+
+template <class TGlobalBlock, class TGlobalAcc>
 class alignas(alignof(TGlobalAcc)) FFMasterParamState final
 {
   friend class FFMasterProcessor;
   friend FBStaticModule FFMakeMasterTopo();
   FFMasterAccParamState<TGlobalAcc> acc = {};
+  FFMasterBlockParamState<TGlobalBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterParamState);
 };
