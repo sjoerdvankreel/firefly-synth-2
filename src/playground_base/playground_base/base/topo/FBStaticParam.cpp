@@ -33,13 +33,13 @@ TextToDiscreteList(std::string const& text, bool io, std::vector<FBListItem> con
 }
 
 static std::optional<float>
-TextToLinearPlain(std::string const& text, float plainMin, float plainMax)
+TextToPlainLinear(std::string const& text, float min, float max)
 {
   char* end;
   float result = std::strtof(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
-  if (result < plainMin || result > plainMax)
+  if (result < min || result > max)
     return {};
   return { result };
 }
@@ -51,7 +51,10 @@ FBStaticParam::NormalizedToText(bool io, float normalized) const
   assert(list.size() == 0 || list.size() == valueCount);
 
   if (valueCount == 0)
-    return std::to_string(NormalizedToLinearPlain(normalized));
+    if (percentage)
+      return std::to_string(normalized * 100.0f);
+    else
+      return std::to_string(NormalizedToPlainLinear(normalized));
 
   int discrete = NormalizedToDiscrete(normalized);
   if (list.size() != 0)
@@ -68,12 +71,17 @@ FBStaticParam::TextToNormalized(std::string const& text, bool io) const
   assert(list.size() == 0 || list.size() == valueCount);
 
   if (valueCount == 0)
-  {
-    auto linearPlain = TextToLinearPlain(text, plainMin, plainMax);
-    if (!linearPlain)
-      return {};
-    return LinearPlainToNormalized(linearPlain.value());
-  }
+    if (percentage)
+    {
+      auto linearPercentage = TextToPlainLinear(text, 0.0f, 100.0f);
+    }
+    else
+    {
+      auto plainLinear = TextToPlainLinear(text, plainMin, plainMax);
+      if (!plainLinear)
+        return {};
+      return PlainLinearToNormalized(plainLinear.value());
+    }
 
   std::optional<int> discrete = {};
   if (list.size() != 0)

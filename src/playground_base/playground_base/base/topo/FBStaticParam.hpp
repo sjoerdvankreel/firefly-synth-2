@@ -41,6 +41,7 @@ struct FBStaticParam final
   float plainMin = 0.0f;
   float plainMax = 1.0f; // TODO logmidpoint and pct
   float defaultNormalized = 0.0f;
+  bool percentage = false;
   std::vector<FBListItem> list = {};
 
   FBScalarAddrSelector scalarAddr = {};
@@ -59,9 +60,9 @@ struct FBStaticParam final
   int NormalizedToDiscrete(float normalized) const
   { return std::clamp((int)(normalized * valueCount), 0, valueCount - 1); }
 
-  float NormalizedToLinearPlain(float normalized) const
+  float NormalizedToPlainLinear(float normalized) const
   { return plainMin + (plainMax - plainMin) * normalized; }
-  float LinearPlainToNormalized(float plain) const
+  float PlainLinearToNormalized(float plain) const
   { return std::clamp((plain - plainMin) / (plainMax - plainMin), 0.0f, 1.0f); }
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
