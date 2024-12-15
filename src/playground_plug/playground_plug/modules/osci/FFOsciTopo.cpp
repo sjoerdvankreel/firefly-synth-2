@@ -38,8 +38,10 @@ FFMakeOsciTopo()
 
   auto& gain = result.params[FFOsciAccGain];
   gain.acc = true;
-  gain.slotCount = FFOsciGainCount;
+  gain.unit = "%";
+  gain.name = "Gain";
   gain.valueCount = 0;
+  gain.slotCount = FFOsciGainCount;
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
@@ -47,9 +49,12 @@ FFMakeOsciTopo()
 
   auto& pitch = result.params[FFOsciAccPitch];
   pitch.acc = true;
-  pitch.name = "Pitch";
   pitch.slotCount = 1;
   pitch.valueCount = 0;
+  pitch.plainMin = 0.0f;
+  pitch.plainMax = 127.0f;
+  pitch.name = "Pitch";
+  pitch.unit = "Semitones";
   pitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
   auto selectPitch = [](auto& module) { return &module.acc.pitch; };
   pitch.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPitch);
@@ -57,9 +62,11 @@ FFMakeOsciTopo()
 
   auto& glfoToGain = result.params[FFOsciAccGLFOToGain];
   glfoToGain.acc = true;
+  glfoToGain.unit = "%";
   glfoToGain.name = "GLFO To Gain";
   glfoToGain.slotCount = 1;
   glfoToGain.valueCount = 0;
+  glfoToGain.percentage = true;
   glfoToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
   auto selectGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
   glfoToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
