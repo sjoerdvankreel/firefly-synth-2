@@ -12,8 +12,7 @@ class FBOnePoleFilter final
 
 public:
   float Next(float in);
-  FBOnePoleFilter() = default;
-  FBOnePoleFilter(float sampleRate, float durationSecs);
+  void SetCoeffs(float sampleRate, float durationSecs);
 };
 
 inline float
@@ -24,8 +23,9 @@ FBOnePoleFilter::Next(float in)
   return _z = out;
 }
 
-inline 
-FBOnePoleFilter::
-FBOnePoleFilter(float sampleRate, float durationSecs):
-_a(std::exp((-2.0f * std::numbers::pi_v<float>) / (durationSecs * sampleRate))),
-_b(1.0f - _a), _z(0.0f) {}
+inline void
+FBOnePoleFilter::SetCoeffs(float sampleRate, float durationSecs)
+{
+  _a = std::exp((-2.0f * std::numbers::pi_v<float>) / (durationSecs * sampleRate));
+  _b = 1.0f - _a;
+}

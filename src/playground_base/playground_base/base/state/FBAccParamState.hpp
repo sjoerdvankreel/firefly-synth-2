@@ -18,7 +18,7 @@ class alignas(FBVectorByteCount) FBAccParamState final
   FBOnePoleFilter _smoother = {};
 
   void Modulate(float offset) { _modulation = offset; }
-  void Init(float sampleRate) { _smoother = FBOnePoleFilter(sampleRate, FBParamSmoothSec); }
+  void SetSmoothingCoeffs(float sampleRate, float durationSecs) { _smoother.SetCoeffs(sampleRate, durationSecs); }
   void SmoothNext(int sample, float automation) { _cv.Sample(sample, _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f))); }
 
 public:

@@ -103,7 +103,7 @@ FBCLAPPlugin::activate(
   double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept 
 {
   float fSampleRate = static_cast<float>(sampleRate);
-  _procStatePtrs.Init(fSampleRate);
+  _procStatePtrs.SetSmoothingCoeffs(fSampleRate, FBParamSmoothSec); // TODO
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
   auto plug = MakePlugProcessor(_topo->static_, _procState, fSampleRate);

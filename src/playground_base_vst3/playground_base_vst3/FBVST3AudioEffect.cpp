@@ -121,7 +121,7 @@ FBVST3AudioEffect::setBusArrangements(
 tresult PLUGIN_API
 FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
-  _statePtrs.Init(setup.sampleRate);
+  _statePtrs.SetSmoothingCoeffs(setup.sampleRate, FBParamSmoothSec); // TODO
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
   auto plug = MakePlugProcessor(_topo->static_, _state, setup.sampleRate);

@@ -49,13 +49,13 @@ class FBProcParamState final
   friend class FBHostProcessor;
   friend class FBSmoothProcessor;
 
-  void Value(float value);
-  void Init(float sampleRate);
-
   FBVoiceAccParamState& VoiceAcc();
   FBGlobalAccParamState& GlobalAcc();
   FBVoiceBlockParamState& VoiceBlock();
   FBGlobalBlockParamState& GlobalBlock();
+
+  void Value(float value);
+  void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 
 public:
   FB_COPY_MOVE_DEFCTOR(FBProcParamState);
