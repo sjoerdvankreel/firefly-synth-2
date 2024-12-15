@@ -25,6 +25,7 @@ FFMakeGLFOTopo()
 
   auto& rate = result.params[FFGLFOAccRate];
   rate.acc = true;
+  rate.unit = "Hz";
   rate.name = "Rate";
   rate.slotCount = 1;
   rate.valueCount = 0;
