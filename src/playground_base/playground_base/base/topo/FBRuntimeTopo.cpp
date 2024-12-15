@@ -118,7 +118,7 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
     }
   assert(uniquePtrs.size() == ptrs.size());
 #endif
-  return FBProcStatePtrs(std::move(ptrs));
+  return FBProcStatePtrs(static_.specialSelector(static_, proc), std::move(ptrs));
 }
 
 std::string 

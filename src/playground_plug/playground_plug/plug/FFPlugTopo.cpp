@@ -15,12 +15,16 @@ FFMakeTopo()
   result->version.major = FF_PLUG_VERSION_MAJOR;
   result->version.minor = FF_PLUG_VERSION_MINOR;
   result->version.patch = FF_PLUG_VERSION_PATCH;
+  result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
+  result->modules[FFModuleOsci] = FFMakeOsciTopo();
+  result->modules[FFModuleMaster] = FFMakeMasterTopo();
   result->allocProcState = []() { return static_cast<void*>(new FFProcState); };
   result->allocScalarState = []() { return static_cast<void*>(new FFScalarState); };
   result->freeProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result->freeScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
-  result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
-  result->modules[FFModuleOsci] = FFMakeOsciTopo();
-  result->modules[FFModuleMaster] = FFMakeMasterTopo(); 
+  result->specialSelector = [](FBStaticTopo const& topo, void* state) {
+    FBSpecialParams params = {};
+    params.smooth = topo.modules[FFModuleMaster].params[FFMasterBlockSmooth].globalBlockAddr(0, 0, state);
+    return params; };
   return result;
 }
