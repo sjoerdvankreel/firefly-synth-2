@@ -32,18 +32,6 @@ FBStaticParam::TextToDiscreteList(std::string const& text, bool io) const
   return {};
 }
 
-std::optional<float>
-FBStaticParam::TextToPlain(std::string const& text) const
-{
-  if (displayMultiplier == 1.0f)
-    return TextToPlainLinear(text, plainMin, plainMax);
-  assert(plainMin == 0.0f && plainMax == 1.0f);
-  auto plain = TextToPlainLinear(text, 0.0f, displayMultiplier);
-  if (!plain)
-    return {};
-  return { plain.value() / displayMultiplier };
-}
-
 std::optional<int>
 FBStaticParam::TextToDiscrete(std::string const& text, bool io) const
 {
@@ -56,24 +44,16 @@ FBStaticParam::TextToDiscrete(std::string const& text, bool io) const
 }
 
 std::optional<float>
-FBStaticParam::TextToPlainLinear(std::string const& text, float min, float max) const
+FBStaticParam::TextToPlain(std::string const& text) const
 {
   char* end;
   float result = std::strtof(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
-  if (result < min || result > max)
+  result /= displayMultiplier;
+  if (result < plainMin || result > plainMax)
     return {};
   return { result };
-}
-
-std::string
-FBStaticParam::PlainToText(float plain) const
-{
-  if (displayMultiplier == 1.0f)
-    return std::to_string(plain);
-  assert(plainMin == 0.0f && plainMax == 1.0f);
-  return std::to_string(plain * displayMultiplier);
 }
 
 std::string
@@ -90,10 +70,9 @@ std::string
 FBStaticParam::NormalizedToText(bool io, float normalized) const
 {
   assert(valueCount != 1);
-  assert(list.size() == 0 || list.size() == valueCount);
-
+  assert(list.size() == 0 || list.size() == valueCount);  
   if (valueCount == 0)
-    return PlainToText(NormalizedToPlainLinear(normalized));
+    return std::to_string(NormalizedToPlainLinear(normalized) * displayMultiplier);
   return DiscreteToText(NormalizedToDiscrete(normalized), io);
 }
 

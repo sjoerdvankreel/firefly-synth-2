@@ -34,9 +34,12 @@ struct FBStaticParam final
 {
 private:
   std::string
-  PlainToText(float plain) const;
-  std::string
   DiscreteToText(int discrete, bool io) const;
+
+  std::optional<float>
+  TextToPlain(std::string const& text) const;
+  std::optional<int>
+  TextToDiscrete(std::string const& text, bool io) const;
 
   std::optional<int>
   TextToDiscreteInt(std::string const& text) const;
@@ -44,13 +47,6 @@ private:
   TextToDiscreteBool(std::string const& text) const;
   std::optional<int>
   TextToDiscreteList(std::string const& text, bool io) const;
-
-  std::optional<float>
-  TextToPlain(std::string const& text) const;
-  std::optional<int>
-  TextToDiscrete(std::string const& text, bool io) const;
-  std::optional<float>
-  TextToPlainLinear(std::string const& text, float min, float max) const;
 
 public:
   bool acc = false;
