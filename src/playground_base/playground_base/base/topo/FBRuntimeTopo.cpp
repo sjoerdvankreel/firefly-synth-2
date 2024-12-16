@@ -2,7 +2,7 @@
 #include <playground_base/base/topo/FBTopoDetail.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcStatePtrs.hpp>
-#include <playground_base/base/state/FBScalarStatePtrs.hpp>
+#include <playground_base/base/state/FBScalarStateContainer.hpp>
 
 #include <juce_core/juce_core.h>
 
@@ -52,38 +52,19 @@ bool
 FBRuntimeTopo::LoadStateWithDryRun(
   std::string const& from, FBProcStatePtrs& to) const
 {
-  void* scalar = static_.allocRawScalarState();
-  auto ptrs = MakeScalarStatePtrs(scalar);
-  bool result = LoadState(from, ptrs);
+  FBScalarStateContainer scalar(*this);
+  bool result = LoadState(from, scalar);
   if (result)
-    to.CopyFrom(ptrs);
-  static_.freeRawScalarState(scalar);
+    to.CopyFrom(scalar);
   return result;
 }
 
 std::string
 FBRuntimeTopo::SaveState(FBProcStatePtrs const& from) const
 {
-  void* scalar = static_.allocRawScalarState();
-  auto ptrs = MakeScalarStatePtrs(scalar);
-  ptrs.CopyFrom(from);
-  auto result = SaveState(ptrs);
-  static_.freeRawScalarState(scalar);
-  return result;
-}
-
-FBScalarStatePtrs
-FBRuntimeTopo::MakeScalarStatePtrs(void* scalar) const
-{
-  std::vector<float*> ptrs = {};
-  for (int p = 0; p < params.size(); p++)
-    ptrs.push_back(params[p].static_.scalarAddr(
-      params[p].staticModuleSlot, params[p].staticSlot, scalar));
-#ifndef NDEBUG
-  std::set<float*> uniquePtrs(ptrs.begin(), ptrs.end());
-  assert(uniquePtrs.size() == ptrs.size());
-#endif
-  return FBScalarStatePtrs(std::move(ptrs));
+  FBScalarStateContainer scalar(*this);
+  scalar.CopyFrom(from);
+  return SaveState(scalar);
 }
 
 FBProcStatePtrs
@@ -122,7 +103,7 @@ FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
 }
 
 std::string 
-FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
+FBRuntimeTopo::SaveState(FBScalarStateContainer const& from) const
 {
   using juce::var;
   using juce::JSON;
@@ -148,7 +129,7 @@ FBRuntimeTopo::SaveState(FBScalarStatePtrs const& from) const
 }
 
 bool 
-FBRuntimeTopo::LoadState(std::string const& from, FBScalarStatePtrs& to) const
+FBRuntimeTopo::LoadState(std::string const& from, FBScalarStateContainer& to) const
 {
   using juce::var;
   using juce::JSON;

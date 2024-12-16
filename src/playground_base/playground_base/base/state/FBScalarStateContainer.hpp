@@ -8,17 +8,18 @@
 struct FBRuntimeTopo;
 class FBProcStatePtrs;
 
-class FBScalarStatePtrs final
+class FBScalarStateContainer final
 {
+  void* _rawState;
   std::vector<float*> _params;
+  void (*_freeRawState)(void*);
 
 public:
-  FB_NOCOPY_MOVE_NODEFCTOR(FBScalarStatePtrs);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBScalarStateContainer);
+  FBScalarStateContainer(FBRuntimeTopo const& topo);
+  ~FBScalarStateContainer() { _freeRawState(_rawState); }
 
   void CopyFrom(FBProcStatePtrs const& proc);
-  void CopyFrom(FBScalarStatePtrs const& scalar);
-  void InitDefaults(FBRuntimeTopo const& topo);
-
+  void CopyFrom(FBScalarStateContainer const& scalar);
   std::vector<float*> const& Params() const { return _params; }
-  FBScalarStatePtrs(std::vector<float*>&& params) : _params(std::move(params)) {}
 };
