@@ -19,9 +19,9 @@ struct FBStaticTopo final
   std::vector<FBStaticModule> modules = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 
-  void* (*allocProcState)() = {};
-  void* (*allocScalarState)() = {};
-  void (*freeProcState)(void* state) = {};
-  void (*freeScalarState)(void* state) = {};
+  void* (*allocRawProcState)() = {};
+  void* (*allocRawScalarState)() = {};
+  void (*freeRawProcState)(void* state) = {};
+  void (*freeRawScalarState)(void* state) = {};
   FBSpecialParamsSelector specialSelector = {};
 };

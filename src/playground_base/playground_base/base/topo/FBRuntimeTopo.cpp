@@ -52,23 +52,23 @@ bool
 FBRuntimeTopo::LoadStateWithDryRun(
   std::string const& from, FBProcStatePtrs& to) const
 {
-  void* scalar = static_.allocScalarState();
+  void* scalar = static_.allocRawScalarState();
   auto ptrs = MakeScalarStatePtrs(scalar);
   bool result = LoadState(from, ptrs);
   if (result)
     to.CopyFrom(ptrs);
-  static_.freeScalarState(scalar);
+  static_.freeRawScalarState(scalar);
   return result;
 }
 
 std::string
 FBRuntimeTopo::SaveState(FBProcStatePtrs const& from) const
 {
-  void* scalar = static_.allocScalarState();
+  void* scalar = static_.allocRawScalarState();
   auto ptrs = MakeScalarStatePtrs(scalar);
   ptrs.CopyFrom(from);
   auto result = SaveState(ptrs);
-  static_.freeScalarState(scalar);
+  static_.freeRawScalarState(scalar);
   return result;
 }
 

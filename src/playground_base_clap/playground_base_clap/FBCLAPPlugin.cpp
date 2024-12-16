@@ -60,7 +60,7 @@ MakeNoteEvent(
 FBCLAPPlugin::
 ~FBCLAPPlugin()
 { 
-  _topo->static_.freeProcState(_procState); 
+  _topo->static_.freeRawProcState(_procState);
 }
 
 FBCLAPPlugin::
@@ -70,7 +70,7 @@ FBCLAPPlugin(
   clap_host const* host):
 Plugin(desc, host),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_procState(topo.allocProcState()),
+_procState(topo.allocRawProcState()),
 _procStatePtrs(_topo->MakeProcStatePtrs(_procState)) {}
 
 bool 

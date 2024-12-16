@@ -47,26 +47,26 @@ FBVST3EditController::setState(IBStream* state)
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
-  void* scalar = _topo->static_.allocScalarState();
+  void* scalar = _topo->static_.allocRawScalarState();
   auto ptrs = _topo->MakeScalarStatePtrs(scalar);
   bool result = _topo->LoadState(json, ptrs);
   if (result)
     for (int i = 0; i < ptrs.Params().size(); i++)
       parameters.getParameterByIndex(i)->setNormalized(*ptrs.Params()[i]);
-  _topo->static_.freeScalarState(scalar);
+  _topo->static_.freeRawScalarState(scalar);
   return result? kResultOk: kResultFalse;
 }
 
 tresult PLUGIN_API
 FBVST3EditController::getState(IBStream* state)
 {
-  void* scalar = _topo->static_.allocScalarState();
+  void* scalar = _topo->static_.allocRawScalarState();
   auto ptrs = _topo->MakeScalarStatePtrs(scalar);
   for (int i = 0; i < ptrs.Params().size(); i++)
     *ptrs.Params()[i] = parameters.getParameterByIndex(i)->getNormalized();
   std::string json = _topo->SaveState(ptrs);
   bool result = FBVST3SaveIBStream(state, json);
-  _topo->static_.freeScalarState(scalar);
+  _topo->static_.freeRawScalarState(scalar);
   return result ? kResultOk : kResultFalse;
 }
 

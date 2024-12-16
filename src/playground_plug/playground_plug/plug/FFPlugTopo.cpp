@@ -18,10 +18,10 @@ FFMakeTopo()
   result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
   result->modules[FFModuleOsci] = FFMakeOsciTopo();
   result->modules[FFModuleMaster] = FFMakeMasterTopo();
-  result->allocProcState = []() { return static_cast<void*>(new FFProcState); };
-  result->allocScalarState = []() { return static_cast<void*>(new FFScalarState); };
-  result->freeProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
-  result->freeScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
+  result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
+  result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
+  result->freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
+  result->freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
   result->specialSelector = [](FBStaticTopo const& topo, void* state) {
     FBSpecialParams params = {};
     params.smooth = topo.modules[FFModuleMaster].params[FFMasterBlockSmooth].globalBlockAddr(0, 0, state);

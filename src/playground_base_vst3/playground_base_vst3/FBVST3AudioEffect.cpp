@@ -58,14 +58,14 @@ MakeNoteOffEvent(Event const& event)
 FBVST3AudioEffect::
 ~FBVST3AudioEffect()
 {
-  _topo->static_.freeProcState(_state);
+  _topo->static_.freeRawProcState(_state);
 }
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
   FBStaticTopo const& topo, FUID const& controllerId):
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_state(topo.allocProcState()),
+_state(topo.allocRawProcState()),
 _statePtrs(_topo->MakeProcStatePtrs(_state))
 {
   setControllerClass(controllerId);
