@@ -1,3 +1,4 @@
+fix the clap defaults
 clap release voice
 engine-state with param-smooth (10ms seems good for hi-freq clap mods)
 proper text formatting
