@@ -7,6 +7,7 @@
 #include <vector>
 #include <utility>
 
+struct FBRuntimeTopo;
 class FBScalarStatePtrs;
 
 class FBProcStatePtrs final
@@ -22,7 +23,7 @@ class FBProcStatePtrs final
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBProcStatePtrs);
 
-  void InitDefaults(void* state) const;
+  void InitDefaults(FBRuntimeTopo const& topo);
   void CopyFrom(FBScalarStatePtrs const& scalar);
   void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 

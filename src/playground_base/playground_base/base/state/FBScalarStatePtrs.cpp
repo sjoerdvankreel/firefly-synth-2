@@ -3,7 +3,7 @@
 #include <playground_base/base/state/FBScalarStatePtrs.hpp>
 
 void
-FBScalarStatePtrs::CopyFrom(FBProcStatePtrs const& proc) const
+FBScalarStatePtrs::CopyFrom(FBProcStatePtrs const& proc)
 {
   for (int p = 0; p < Params().size(); p++)
   {
@@ -15,14 +15,14 @@ FBScalarStatePtrs::CopyFrom(FBProcStatePtrs const& proc) const
 }
 
 void 
-FBScalarStatePtrs::CopyFrom(FBScalarStatePtrs const& scalar) const
+FBScalarStatePtrs::CopyFrom(FBScalarStatePtrs const& scalar)
 {
   for (int p = 0; p < Params().size(); p++)
     *Params()[p] = *scalar.Params()[p];
 }
 
 void
-FBScalarStatePtrs::InitDefaults(FBRuntimeTopo const& topo) const
+FBScalarStatePtrs::InitDefaults(FBRuntimeTopo const& topo)
 {
   for (int p = 0; p < Params().size(); p++)
     *Params()[p] = topo.params[p].static_.DefaultNormalizedByText();

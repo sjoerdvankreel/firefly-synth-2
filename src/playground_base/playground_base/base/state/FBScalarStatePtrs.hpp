@@ -15,9 +15,9 @@ class FBScalarStatePtrs final
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBScalarStatePtrs);
 
-  void CopyFrom(FBProcStatePtrs const& proc) const;
-  void CopyFrom(FBScalarStatePtrs const& scalar) const;
-  void InitDefaults(FBRuntimeTopo const& topo) const;
+  void CopyFrom(FBProcStatePtrs const& proc);
+  void CopyFrom(FBScalarStatePtrs const& scalar);
+  void InitDefaults(FBRuntimeTopo const& topo);
 
   std::vector<float*> const& Params() const { return _params; }
   FBScalarStatePtrs(std::vector<float*>&& params) : _params(std::move(params)) {}
