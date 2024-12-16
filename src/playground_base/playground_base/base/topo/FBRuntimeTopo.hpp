@@ -5,13 +5,13 @@
 #include <playground_base/base/topo/FBRuntimeParam.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBProcStatePtrs.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
 
 #include <vector>
 #include <unordered_map>
 
-class FBProcStatePtrs;
+class FBProcStateContainer;
 class FBScalarStateContainer;
 
 struct FBRuntimeTopo final
@@ -24,10 +24,9 @@ struct FBRuntimeTopo final
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
 
-  FBProcStatePtrs MakeProcStatePtrs(void* state) const; // TODO
-  std::string SaveState(FBProcStatePtrs const& from) const;
+  std::string SaveState(FBProcStateContainer const& from) const;
   std::string SaveState(FBScalarStateContainer const& from) const;
 
   bool LoadState(std::string const& from, FBScalarStateContainer& to) const;
-  bool LoadStateWithDryRun(std::string const& from, FBProcStatePtrs& to) const;
+  bool LoadStateWithDryRun(std::string const& from, FBProcStateContainer& to) const;
 };

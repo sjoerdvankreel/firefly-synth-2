@@ -1,7 +1,7 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/topo/FBTopoDetail.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBProcStatePtrs.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
 
 #include <juce_core/juce_core.h>
@@ -50,7 +50,7 @@ tagToParam(MakeTagToParam(params)) {}
 
 bool
 FBRuntimeTopo::LoadStateWithDryRun(
-  std::string const& from, FBProcStatePtrs& to) const
+  std::string const& from, FBProcStateContainer& to) const
 {
   FBScalarStateContainer scalar(*this);
   bool result = LoadState(from, scalar);
@@ -60,46 +60,11 @@ FBRuntimeTopo::LoadStateWithDryRun(
 }
 
 std::string
-FBRuntimeTopo::SaveState(FBProcStatePtrs const& from) const
+FBRuntimeTopo::SaveState(FBProcStateContainer const& from) const
 {
   FBScalarStateContainer scalar(*this);
   scalar.CopyFrom(from);
   return SaveState(scalar);
-}
-
-FBProcStatePtrs
-FBRuntimeTopo::MakeProcStatePtrs(void* proc) const
-{
-  std::vector<FBProcParamState> ptrs = {};
-  for (int p = 0; p < params.size(); p++)
-    if (static_.modules[params[p].staticModuleIndex].voice)
-      if (params[p].static_.acc)
-        ptrs.push_back(FBProcParamState(params[p].static_.voiceAccAddr(
-          params[p].staticModuleSlot, params[p].staticSlot, proc)));
-      else
-        ptrs.push_back(FBProcParamState(params[p].static_.voiceBlockAddr(
-          params[p].staticModuleSlot, params[p].staticSlot, proc)));
-    else
-      if (params[p].static_.acc)
-        ptrs.push_back(FBProcParamState(params[p].static_.globalAccAddr(
-          params[p].staticModuleSlot, params[p].staticSlot, proc)));
-      else
-        ptrs.push_back(FBProcParamState(params[p].static_.globalBlockAddr(
-          params[p].staticModuleSlot, params[p].staticSlot, proc)));
-#ifndef NDEBUG
-  std::set<void*> uniquePtrs = {};
-  for(int p = 0; p < ptrs.size(); p++)
-    switch (ptrs[p].Type())
-    {
-    case FBProcParamType::VoiceAcc: uniquePtrs.insert(&ptrs[p].VoiceAcc()); break;
-    case FBProcParamType::GlobalAcc: uniquePtrs.insert(&ptrs[p].GlobalAcc()); break;
-    case FBProcParamType::VoiceBlock: uniquePtrs.insert(&ptrs[p].VoiceBlock()); break;
-    case FBProcParamType::GlobalBlock: uniquePtrs.insert(&ptrs[p].GlobalBlock()); break;
-    default: assert(false); break;
-    }
-  assert(uniquePtrs.size() == ptrs.size());
-#endif
-  return FBProcStatePtrs(static_.specialSelector(static_, proc), std::move(ptrs));
 }
 
 std::string 

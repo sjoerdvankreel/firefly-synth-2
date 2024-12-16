@@ -58,10 +58,7 @@ MakeNoteEvent(
 }
 
 FBCLAPPlugin::
-~FBCLAPPlugin()
-{ 
-  _topo->static_.freeRawProcState(_procState);
-}
+~FBCLAPPlugin() {}
 
 FBCLAPPlugin::
 FBCLAPPlugin(
@@ -70,8 +67,7 @@ FBCLAPPlugin(
   clap_host const* host):
 Plugin(desc, host),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_procState(topo.allocRawProcState()),
-_procStatePtrs(_topo->MakeProcStatePtrs(_procState)) {}
+_state(*_topo) {}
 
 bool 
 FBCLAPPlugin::isValidParamId(
@@ -105,9 +101,9 @@ FBCLAPPlugin::activate(
   float fSampleRate = static_cast<float>(sampleRate);
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
-  auto plug = MakePlugProcessor(_topo->static_, _procState, fSampleRate);
-  _procStatePtrs.SetSmoothingCoeffs(fSampleRate, _procStatePtrs.Special().smooth->Value());
-  _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_procStatePtrs, fSampleRate));
+  auto plug = MakePlugProcessor(_topo->static_, _state.Raw(), fSampleRate);
+  _state.SetSmoothingCoeffs(fSampleRate, _state.Special().smooth->Value());
+  _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_state, fSampleRate));
   return true;
 }
 

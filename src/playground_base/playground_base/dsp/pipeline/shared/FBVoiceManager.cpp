@@ -1,4 +1,4 @@
-#include <playground_base/base/state/FBProcStatePtrs.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBVoiceBlockParamState.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
@@ -6,7 +6,7 @@
 #include <cassert>
 
 FBVoiceManager::
-FBVoiceManager(FBProcStatePtrs* state):
+FBVoiceManager(FBProcStateContainer* state):
 _state(state) {}
 
 void 

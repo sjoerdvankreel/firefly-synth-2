@@ -3,6 +3,8 @@
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 
 #include <clap/clap.h>
 #include <cstring>
@@ -22,10 +24,10 @@ protected:
   std::unique_ptr<IFBPlugProcessor>
   MakePlugProcessor(
     FBStaticTopo const& topo, 
-    void* state, 
+    void* rawState, 
     float sampleRate) const override
   { return std::make_unique<FFPlugProcessor>(
-    topo, static_cast<FFProcState*>(state), sampleRate); }
+    topo, static_cast<FFProcState*>(rawState), sampleRate); }
 };
 
 static void CLAP_ABI Deinit() {}

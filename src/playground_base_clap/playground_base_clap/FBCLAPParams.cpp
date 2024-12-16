@@ -1,9 +1,9 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
 
 bool 
 FBCLAPPlugin::implementsParams() const noexcept 
@@ -24,8 +24,8 @@ FBCLAPPlugin::paramsValue(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  auto const& procStatePtrs = _procStatePtrs;
-  *value = procStatePtrs.Params()[index].Value();
+  auto const& state = _state;
+  *value = state.Params()[index].Value();
   return true;
 }
 

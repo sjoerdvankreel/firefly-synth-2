@@ -6,7 +6,7 @@
 #include <utility>
 
 struct FBRuntimeTopo;
-class FBProcStatePtrs;
+class FBProcStateContainer;
 
 class FBScalarStateContainer final
 {
@@ -19,7 +19,7 @@ public:
   FBScalarStateContainer(FBRuntimeTopo const& topo);
   ~FBScalarStateContainer() { _freeRawState(_rawState); }
 
-  void CopyFrom(FBProcStatePtrs const& proc);
+  void CopyFrom(FBProcStateContainer const& proc);
   void CopyFrom(FBScalarStateContainer const& scalar);
   std::vector<float*> const& Params() const { return _params; }
 };

@@ -10,25 +10,28 @@
 struct FBRuntimeTopo;
 class FBScalarStateContainer;
 
-class FBProcStatePtrs final
+class FBProcStateContainer final
 {
   friend class FBVoiceManager;
   friend class FBHostProcessor;
   friend class FBSmoothProcessor;
 
-  FBSpecialParams _special = {};
+  void* _rawState;
+  FBSpecialParams _special;
+  void (*_freeRawState)(void*);
   std::vector<FBProcParamState> _params;
+
   std::vector<FBProcParamState>& Params() { return _params; }
 
 public:
-  FB_NOCOPY_MOVE_NODEFCTOR(FBProcStatePtrs);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBProcStateContainer);
+  FBProcStateContainer(FBRuntimeTopo const& topo);
+  ~FBProcStateContainer() { _freeRawState(_rawState); }
 
-  void InitDefaults(FBRuntimeTopo const& topo);
+  void* Raw() { return _rawState; }
   void CopyFrom(FBScalarStateContainer const& scalar);
   void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 
   FBSpecialParams const& Special() const { return _special; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
-  FBProcStatePtrs(FBSpecialParams const& special, std::vector<FBProcParamState>&& params) : 
-  _special(special), _params(std::move(params)) {}
 };

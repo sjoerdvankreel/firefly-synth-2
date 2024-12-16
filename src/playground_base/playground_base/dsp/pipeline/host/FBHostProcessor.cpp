@@ -1,9 +1,9 @@
 #include <playground_base/base/shared/FBDenormal.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBProcStatePtrs.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
@@ -22,7 +22,7 @@ FBHostProcessor::
 FBHostProcessor::
 FBHostProcessor(
   std::unique_ptr<IFBPlugProcessor>&& plug,
-  FBProcStatePtrs* state, float sampleRate):
+  FBProcStateContainer* state, float sampleRate):
 _sampleRate(sampleRate),
 _state(state),
 _plug(std::move(plug)),

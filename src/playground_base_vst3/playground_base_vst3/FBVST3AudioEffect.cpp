@@ -56,17 +56,13 @@ MakeNoteOffEvent(Event const& event)
 }
 
 FBVST3AudioEffect::
-~FBVST3AudioEffect()
-{
-  _topo->static_.freeRawProcState(_state);
-}
+~FBVST3AudioEffect() {}
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
   FBStaticTopo const& topo, FUID const& controllerId):
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_state(topo.allocRawProcState()),
-_statePtrs(_topo->MakeProcStatePtrs(_state))
+_state(*_topo)
 {
   setControllerClass(controllerId);
 }
@@ -74,7 +70,7 @@ _statePtrs(_topo->MakeProcStatePtrs(_state))
 tresult PLUGIN_API
 FBVST3AudioEffect::getState(IBStream* state)
 {
-  std::string json = _topo->SaveState(_statePtrs);
+  std::string json = _topo->SaveState(_state);
   if (!FBVST3SaveIBStream(state, json))
     return kResultFalse;
   return kResultOk;
@@ -86,7 +82,7 @@ FBVST3AudioEffect::setState(IBStream* state)
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
-  if (!_topo->LoadStateWithDryRun(json, _statePtrs))
+  if (!_topo->LoadStateWithDryRun(json, _state))
     return kResultFalse;
   return kResultOk;
 }
@@ -123,9 +119,9 @@ FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
-  auto plug = MakePlugProcessor(_topo->static_, _state, setup.sampleRate);
-  _statePtrs.SetSmoothingCoeffs(setup.sampleRate, _statePtrs.Special().smooth->Value());
-  _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_statePtrs, setup.sampleRate));
+  auto plug = MakePlugProcessor(_topo->static_, _state.Raw(), setup.sampleRate);
+  _state.SetSmoothingCoeffs(setup.sampleRate, _state.Special().smooth->Value());
+  _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_state, setup.sampleRate));
   return kResultTrue;
 }
 

@@ -45,9 +45,9 @@ class FBProcParamState final
 
   friend struct FBRuntimeTopo;
   friend class FBVoiceManager;
-  friend class FBProcStatePtrs;
   friend class FBHostProcessor;
   friend class FBSmoothProcessor;
+  friend class FBProcStateContainer;
 
   FBVoiceAccParamState& VoiceAcc();
   FBGlobalAccParamState& GlobalAcc();

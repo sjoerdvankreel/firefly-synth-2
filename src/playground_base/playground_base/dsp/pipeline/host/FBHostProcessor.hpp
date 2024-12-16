@@ -10,19 +10,19 @@ struct FBRuntimeTopo;
 struct FBHostInputBlock;
 
 class FBVoiceManager;
-class FBProcStatePtrs;
 class FBHostAudioBlock;
 class IFBPlugProcessor;
 class FBSmoothProcessor;
+class FBProcStateContainer;
 class FBHostBufferProcessor;
 class FBFixedBufferProcessor;
 
 class FBHostProcessor final
 {
   float _sampleRate = {};
-  FBProcStatePtrs* _state = {};
   FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};
+  FBProcStateContainer* _state = {};
 
   std::unique_ptr<IFBPlugProcessor> _plug;
   std::unique_ptr<FBVoiceManager> _voiceManager;
@@ -38,6 +38,6 @@ public:
 
   FBHostProcessor(
     std::unique_ptr<IFBPlugProcessor>&& plug,
-    FBProcStatePtrs* state, float sampleRate);
+    FBProcStateContainer* state, float sampleRate);
   void ProcessHost(FBHostInputBlock const& input, FBHostAudioBlock& output);
 };
