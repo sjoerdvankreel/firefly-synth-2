@@ -24,7 +24,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   result.id = param.tag;
   result.unitId = unitId;
   result.stepCount = std::max(0, param.static_.valueCount - 1);
-  result.defaultNormalizedValue = param.static_.defaultNormalized;
+  result.defaultNormalizedValue = param.static_.DefaultNormalizedByText();
 
   FBVST3CopyToString128(param.longName, result.title);
   FBVST3CopyToString128(param.shortName, result.shortTitle);

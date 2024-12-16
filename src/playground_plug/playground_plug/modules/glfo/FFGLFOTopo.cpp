@@ -31,6 +31,7 @@ FFMakeGLFOTopo()
   rate.valueCount = 0;
   rate.plainMin = 0.1f;
   rate.plainMax = 20.0f;
+  rate.defaultText = "1";
   rate.id = "{79BFD05E-98FA-48D4-8D07-C009285EACA7}";
   auto selectRate = [](auto& module) { return &module.acc.rate; };
   rate.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectRate);

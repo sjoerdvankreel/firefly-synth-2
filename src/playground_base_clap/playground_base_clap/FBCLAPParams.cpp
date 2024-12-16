@@ -98,7 +98,7 @@ FBCLAPPlugin::paramsInfo(
   info->min_value = 0.0;
   info->cookie = nullptr;
   info->id = runtimeParam.tag;
-  info->default_value = staticParam.defaultNormalized;
+  info->default_value = staticParam.DefaultNormalizedByText();
   std::fill(info->name, info->name + sizeof(info->name), 0);
   std::fill(info->module, info->module + sizeof(info->module), 0);
   strncpy(info->module, runtimeModule.name.c_str(), 

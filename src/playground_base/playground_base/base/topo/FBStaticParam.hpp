@@ -74,8 +74,6 @@ public:
   int NormalizedToDiscrete(float normalized) const
   { return std::clamp((int)(normalized * valueCount), 0, valueCount - 1); }
 
-  float DefaultNormalizedByText() const
-  { return TextToNormalized(defaultText, false).value(); }
   float NormalizedToPlainLinear(float normalized) const
   { return plainMin + (plainMax - plainMin) * normalized; }
   float PlainLinearToNormalized(float plain) const
@@ -84,4 +82,6 @@ public:
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
   std::string NormalizedToText(bool io, float normalized) const;
   std::optional<float> TextToNormalized(std::string const& text, bool io) const;
+  float DefaultNormalizedByText() const
+  { return defaultText.empty()? 0.0f: TextToNormalized(defaultText, false).value(); }
 };

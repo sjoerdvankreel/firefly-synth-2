@@ -19,6 +19,7 @@ FFMakeMasterTopo()
   gain.name = "Gain";
   gain.slotCount = 1;
   gain.valueCount = 0;
+  gain.defaultText = "100";
   gain.displayMultiplier = 100.0f;
   gain.id = "{9CDC04BC-D0FF-43E6-A2C2-D6C822CFA3EA}";
   auto selectGain = [](auto& module) { return &module.acc.gain; };
@@ -34,7 +35,7 @@ FFMakeMasterTopo()
   smooth.valueCount = 0;
   smooth.plainMin = 0.0f;
   smooth.plainMax = 0.05f;
-  smooth.defaultNormalized = 0.5f;
+  smooth.defaultText = "20";
   smooth.displayMultiplier = 1000.0f;
   auto selectSmooth = [](auto& module) { return &module.block.smooth; };
   smooth.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmooth);

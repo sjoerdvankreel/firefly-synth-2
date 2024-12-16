@@ -27,6 +27,7 @@ FFMakeOsciTopo()
   type.acc = false;
   type.name = "Type";
   type.slotCount = 1;
+  type.defaultText = "Saw";
   type.valueCount = FFOsciTypeCount;
   type.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
   type.list = {
@@ -41,6 +42,7 @@ FFMakeOsciTopo()
   gain.unit = "%";
   gain.name = "Gain";
   gain.valueCount = 0;
+  gain.defaultText = "100";
   gain.displayMultiplier = 100.0f;
   gain.slotCount = FFOsciGainCount;
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
