@@ -5,6 +5,7 @@
 #include <vector>
 #include <utility>
 
+struct FBRuntimeTopo;
 class FBProcStatePtrs;
 
 class FBScalarStatePtrs final
@@ -13,8 +14,10 @@ class FBScalarStatePtrs final
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBScalarStatePtrs);
-  void CopyFrom(FBProcStatePtrs const& proc);
-  void CopyFrom(FBScalarStatePtrs const& scalar);
+
+  void CopyFrom(FBProcStatePtrs const& proc) const;
+  void CopyFrom(FBScalarStatePtrs const& scalar) const;
+  void InitDefaults(FBRuntimeTopo const& topo) const;
 
   std::vector<float*> const& Params() const { return _params; }
   FBScalarStatePtrs(std::vector<float*>&& params) : _params(std::move(params)) {}
