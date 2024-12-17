@@ -10,22 +10,35 @@ FBVoiceManager(FBProcStateContainer* state):
 _state(state) {}
 
 void 
+FBVoiceManager::ResetReturnedVoices() 
+{
+  _returnedVoices.clear(); 
+  for (int v = 0; v < FBMaxVoices; v++)
+    if(IsReturned(v))
+      _voices[v].state = FBVoiceState::Free;
+}
+
+void 
 FBVoiceManager::ReturnOldest(FBNoteEvent const& event)
 {
   assert(!event.on);
   
   int slot = -1;
   std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();  
-  for (int i = 0; i < _voices.size(); i++)
-    if (event.note.Matches(_voices[i].event.note))
-      if (_voices[i].active && _num[i] < oldest)
+  for (int v = 0; v < _voices.size(); v++)
+    if (event.note.Matches(_voices[v].event.note))
+      if (IsActive(v) && _num[v] < oldest)
       {
-        slot = i;
-        oldest = _num[i];
+        slot = v;
+        oldest = _num[v];
       }
 
   if (slot != -1)
-    _voices[slot].active = false;
+  {
+    _voices[slot].state = FBVoiceState::Returned;
+    _returnedVoices.push_back(_voices[slot].event.note);
+    assert(_returnedVoices.size() < FBMaxVoices);
+  }
 }
 
 void 
@@ -34,24 +47,27 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
   assert(event.on);
 
   int slot = -1;
-  for (int i = 0; i < _voices.size() && slot == -1; i++)
-    if (!_voices[i].active)
-      slot = i;
+  for (int v = 0; v < _voices.size() && slot == -1; v++)
+    if (IsFree(v))
+      slot = v;
 
   std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();
   if(slot == -1)
-    for(int i = 0; i < _voices.size(); i++)
-      if (_num[i] < oldest)
+    for(int v = 0; v < _voices.size(); v++)
+      if (_num[v] < oldest)
       {
-        slot = i;
-        oldest = _num[i];
+        slot = v;
+        oldest = _num[v];
       }
 
   assert(0 <= slot && slot < _voices.size());
+  if(IsActive(slot))
+    _returnedVoices.push_back(_voices[slot].event.note);
+
   _num[slot] = ++_counter;
   _voices[slot].event = event;
-  _voices[slot].active = true;
   _voices[slot].initialOffset = event.pos;
+  _voices[slot].state = FBVoiceState::Active;
 
   for (int p = 0; p < _state->Params().size(); p++)
     if (_state->Params()[p].IsVoice())

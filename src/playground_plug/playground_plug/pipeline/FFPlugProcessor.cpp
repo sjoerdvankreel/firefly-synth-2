@@ -61,9 +61,9 @@ FFPlugProcessor::ProcessPostVoice(
 {
   auto& masterIn = _state->dsp.global.master.input;
   masterIn.Clear();
-  for (int i = 0; i < FBMaxVoices; i++)
-    if (input.voiceManager->Voices()[i].active)
-      masterIn.Add(_state->dsp.voice[i].output);
+  for (int v = 0; v < FBMaxVoices; v++)
+    if (input.voiceManager->IsActive(v))
+      masterIn.Add(_state->dsp.voice[v].output);
 
   auto moduleState = MakeModuleState(input);
   moduleState.moduleSlot = 0;

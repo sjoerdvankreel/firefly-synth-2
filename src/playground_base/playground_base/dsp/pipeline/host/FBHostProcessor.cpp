@@ -39,9 +39,8 @@ void
 FBHostProcessor::ProcessVoices()
 {
   auto& state = *_fixedOut.state;
-  auto const& voices = _plugIn.voiceManager->Voices();
-  for (int v = 0; v < voices.size(); v++)
-    if (voices[v].active)
+  for (int v = 0; v < FBMaxVoices; v++)
+    if (_plugIn.voiceManager->IsActive(v))
       _plug->ProcessVoice(_plugIn, v);
 }
 
@@ -50,6 +49,8 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostAudioBlock& output)
 {
   auto denormalState = FBDisableDenormal();  
+
+  _plugIn.voiceManager->ResetReturnedVoices();
   for (auto const& be : input.block)
     _fixedOut.state->Params()[be.param].Value(be.normalized);
   _state->SetSmoothingCoeffs(_sampleRate, _state->Special().smooth->Value());
