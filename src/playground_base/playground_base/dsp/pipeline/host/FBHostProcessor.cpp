@@ -49,7 +49,8 @@ void
 FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostOutputBlock& output)
 {
-  auto denormalState = FBDisableDenormal();  
+  auto denormalState = FBDisableDenormal(); 
+  output.returnedVoices.clear();
   for (auto const& be : input.block)
     _fixedOut.state->Params()[be.param].Value(be.normalized);
   _state->SetSmoothingCoeffs(_sampleRate, _state->Special().smooth->Value());

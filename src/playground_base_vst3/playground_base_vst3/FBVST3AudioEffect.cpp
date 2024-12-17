@@ -168,7 +168,7 @@ FBVST3AudioEffect::process(ProcessData& data)
     _input.audio = FBHostAudioBlock(zeroIn, data.numSamples);
   else
     _input.audio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
-  FBHostAudioBlock output(data.outputs->channelBuffers32, data.numSamples);
-  _hostProcessor->ProcessHost(_input, output);
+  _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
+  _hostProcessor->ProcessHost(_input, _output);
   return kResultTrue;
 }

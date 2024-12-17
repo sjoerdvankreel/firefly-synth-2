@@ -1,6 +1,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
 
 #include <clap/helpers/plugin.hh>
 #include <memory>
@@ -21,6 +22,7 @@ public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>
   FBProcStateContainer _state;
 
   FBHostInputBlock _input = {};
+  FBHostOutputBlock _output = {};
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
 
