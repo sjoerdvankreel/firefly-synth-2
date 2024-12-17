@@ -9,6 +9,7 @@
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothProcessor.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBHostBufferProcessor.hpp>
@@ -29,7 +30,7 @@ _plug(std::move(plug)),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
 _smooth(std::make_unique<FBSmoothProcessor>(_voiceManager.get())),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
-_fixedBuffer(std::make_unique<FBFixedBufferProcessor>())
+_fixedBuffer(std::make_unique<FBFixedBufferProcessor>(_voiceManager.get()))
 {
   _fixedOut.state = state;
   _plugIn.voiceManager = _voiceManager.get();
@@ -46,11 +47,9 @@ FBHostProcessor::ProcessVoices()
 
 void 
 FBHostProcessor::ProcessHost(
-  FBHostInputBlock const& input, FBHostAudioBlock& output)
+  FBHostInputBlock const& input, FBHostOutputBlock& output)
 {
   auto denormalState = FBDisableDenormal();  
-
-  _plugIn.voiceManager->ResetReturnedVoices();
   for (auto const& be : input.block)
     _fixedOut.state->Params()[be.param].Value(be.normalized);
   _state->SetSmoothingCoeffs(_sampleRate, _state->Special().smooth->Value());

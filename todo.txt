@@ -1,4 +1,5 @@
 checkout the patch json
+retest voice stealing including clap return with > 64 voices
 fix the clap defaults
 clap release voice
 engine-state with param-smooth (10ms seems good for hi-freq clap mods)
