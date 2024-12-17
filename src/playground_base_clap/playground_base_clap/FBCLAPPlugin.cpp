@@ -165,8 +165,23 @@ FBCLAPPlugin::process(
     _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
   _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
   _hostProcessor->ProcessHost(_input, _output);
-
-  // TODO return released voices to host
+  
+  auto const& rvs = _output.returnedVoices;
+  for (int rv = 0; rv < rvs.size(); rv++)
+  {
+    clap_event_note event = {};
+    event.port_index = 0;
+    event.velocity = 0.0f;
+    event.key = rvs[rv].key;
+    event.note_id = rvs[rv].id;
+    event.channel = rvs[rv].channel;
+    event.header.flags = 0;
+    event.header.type = CLAP_EVENT_NOTE_END;
+    event.header.size = sizeof(clap_event_note);
+    event.header.time = process->frames_count - 1;
+    event.header.space_id = CLAP_CORE_EVENT_SPACE_ID;
+    process->out_events->try_push(process->out_events, &(event.header));
+  }
 
   return true;
 }
