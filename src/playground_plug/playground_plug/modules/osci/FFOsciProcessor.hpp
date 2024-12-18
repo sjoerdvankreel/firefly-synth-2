@@ -3,13 +3,13 @@
 #include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
-struct FFOsciBlock;
-struct FFModuleProcState;
+class FBFixedAudioBlock;
 
 class FFOsciProcessor
 {
   FBPhase _phase = {};
-  void Generate(FFOsciBlock& block);
+
+  void GenerateSine(FBFixedAudioBlock& output);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
