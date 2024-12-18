@@ -15,6 +15,9 @@ class alignas(FBVectorByteCount) FBFixedVectorBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedVectorBlock);
 
+  template <class Op>
+  void Apply(Op op);
+
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; }
   float Sample(int index) const { return (*this)[index / FBVectorFloatCount][index % FBVectorFloatCount]; }
@@ -23,3 +26,11 @@ public:
   void Clear() { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v].Clear(); }
   void Add(FBFixedVectorBlock const& rhs) { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v] += rhs._store[v]; }
 };
+
+template <class Op>
+void 
+FBFixedVectorBlock::Apply(Op op)
+{
+  for (int v = 0; v < FBFixedBlockVectors; v++)
+    op((*this)[v]);
+}
