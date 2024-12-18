@@ -1,3 +1,4 @@
+checkout if the threadpool is actually used
 checkout the patch json
 retest voice stealing including clap return with > 64 voices
 proper text formatting
