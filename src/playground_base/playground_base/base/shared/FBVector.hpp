@@ -15,6 +15,7 @@ inline int constexpr FBVectorBitCount = 128;
 #define FBVectorCall __vectorcall
 #define FBVectorFloatAddr(x) (x.m128_f32)
 
+#define FBVectorFloatCmp _mm_cmp_ps
 #define FBVectorFloatAdd _mm_add_ps
 #define FBVectorFloatSub _mm_sub_ps
 #define FBVectorFloatMul _mm_mul_ps
@@ -33,6 +34,7 @@ inline int constexpr FBVectorBitCount = 256;
 #define FBVectorCall __vectorcall
 #define FBVectorFloatAddr(x) (x.m256_f32)
 
+#define FBVectorFloatCmp _mm256_cmp_ps
 #define FBVectorFloatAdd _mm256_add_ps
 #define FBVectorFloatSub _mm256_sub_ps
 #define FBVectorFloatMul _mm256_mul_ps
@@ -62,6 +64,11 @@ public:
   float& operator[](int index) { return FBVectorFloatAddr(_store)[index]; }
   float operator[](int index) const { return FBVectorFloatAddr(_store)[index]; }
 
+  FBFloatVector FBVectorCall Sin() { return FBVectorFloatSin(_store); }
+  FBFloatVector FBVectorCall Unipolar() { return (*this + 1.0f) * 0.5f; }
+  FBFloatVector& FBVectorCall operator=(FBFloatVector rhs) { _store = rhs._store; return *this; }
+  FBFloatVector& FBVectorCall operator=(float rhs) { _store = FBVectorFloatSet1(rhs); return *this; }
+
   friend FBFloatVector operator+(float l, FBFloatVector r);
   friend FBFloatVector operator-(float l, FBFloatVector r);
   friend FBFloatVector operator*(float l, FBFloatVector r);
@@ -84,10 +91,12 @@ public:
   FBFloatVector& FBVectorCall operator*=(FBFloatVector rhs) { return *this = *this * rhs; }
   FBFloatVector& FBVectorCall operator/=(FBFloatVector rhs) { return *this = *this / rhs; }
 
-  FBFloatVector FBVectorCall Sin() { return FBVectorFloatSin(_store); }
-  FBFloatVector FBVectorCall Unipolar() { return (*this + 1.0f) * 0.5f; }
-  FBFloatVector& FBVectorCall operator=(FBFloatVector rhs) { _store = rhs._store; return *this; }
-  FBFloatVector& FBVectorCall operator=(float rhs) { _store = FBVectorFloatSet1(rhs); return *this; }
+  FBFloatVector FBVectorCall CompareEq(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_EQ_OQ); }
+  FBFloatVector FBVectorCall CompareLt(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_LT_OQ); }
+  FBFloatVector FBVectorCall CompareGt(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_GT_OQ); }
+  FBFloatVector FBVectorCall CompareLte(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_LE_OQ); }
+  FBFloatVector FBVectorCall CompareGte(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_GE_OQ); }
+  FBFloatVector FBVectorCall CompareNeq(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_NEQ_OQ); }
 };
 
 inline FBFloatVector
