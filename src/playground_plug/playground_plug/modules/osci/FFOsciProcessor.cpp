@@ -28,6 +28,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   auto const& gain = params.acc.gain[0].Voice()[voice].CV();
   auto const& glfoToGain = params.acc.glfoToGain[0].Voice()[voice].CV();
   bool on = topo.params[FFOsciBlockOn].NormalizedToBool(params.block.on[0].Voice()[voice]);
+  bool type = topo.params[FFOsciBlockType].NormalizedToDiscrete(params.block.type[0].Voice()[voice]);
 
   if (!on)
   {
@@ -37,7 +38,12 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
     output.Samples(s, _phase.Next(state.sampleRate, freq));
-  GenerateSine(output);
+  switch (type)
+  {
+  case FFOsciTypeSaw: output.Transform([&](int ch, int v) { return (output[ch][v] * FBFloatVector::TwoPi()).Sin(); }); break;
+  case FFOsciTypeSine: output.Transform([&](int ch, int v) { return (output[ch][v] * FBFloatVector::TwoPi()).Sin(); }); break;
+  default: assert(false); break;
+  }
   output.Transform([&](int ch, int v) { return (FBFloatVector::One() - glfoToGain[v]) * output[ch][v] + output[ch][v] * glfoToGain[v] * glfo[v]; });
   output.Transform([&](int ch, int v) { return output[ch][v] * gain[v]; });
 }
