@@ -8,9 +8,6 @@ class FBFixedAudioBlock;
 class FFOsciProcessor
 {
   FBPhase _phase = {};
-
-  void GenerateSine(FBFixedAudioBlock& output);
-
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
   void Process(FFModuleProcState const& state, int voice);

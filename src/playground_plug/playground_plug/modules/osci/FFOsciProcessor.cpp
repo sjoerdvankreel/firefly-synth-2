@@ -7,12 +7,10 @@
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
-void
-FFOsciProcessor::GenerateSine(FBFixedAudioBlock& output)
+static FBFloatVector
+GenerateSine(FBFloatVector phase)
 {
-  for (int ch = 0; ch < 2; ch++)
-    for (int v = 0; v < FBFixedBlockVectors; v++)
-      output[ch][v] = (output[ch][v] * FBFloatVector::TwoPi()).Sin();
+  return (phase * FBFloatVector::TwoPi()).Sin();
 }
 
 void
@@ -40,10 +38,14 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     output.Samples(s, _phase.Next(state.sampleRate, freq));
   switch (type)
   {
-  case FFOsciTypeSaw: output.Transform([&](int ch, int v) { return (output[ch][v] * FBFloatVector::TwoPi()).Sin(); }); break;
-  case FFOsciTypeSine: output.Transform([&](int ch, int v) { return (output[ch][v] * FBFloatVector::TwoPi()).Sin(); }); break;
+  case FFOsciTypeSaw: output.Transform([&](int ch, int v) { 
+    return GenerateSine(output[ch][v]); }); break;
+  case FFOsciTypeSine: output.Transform([&](int ch, int v) { 
+    return GenerateSine(output[ch][v]); }); break;
   default: assert(false); break;
   }
-  output.Transform([&](int ch, int v) { return (FBFloatVector::One() - glfoToGain[v]) * output[ch][v] + output[ch][v] * glfoToGain[v] * glfo[v]; });
-  output.Transform([&](int ch, int v) { return output[ch][v] * gain[v]; });
+  output.Transform([&](int ch, int v) { 
+    return (FBFloatVector::One() - glfoToGain[v]) * output[ch][v] + output[ch][v] * glfoToGain[v] * glfo[v]; });
+  output.Transform([&](int ch, int v) { 
+    return output[ch][v] * gain[v]; });
 }
