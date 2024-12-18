@@ -2,7 +2,9 @@
 #include <playground_plug/plug/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
+
 #include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/dsp/shared/FBDSPUtility.hpp>
 
 void
 FFGLFOProcessor::Process(FFModuleProcState const& state)
@@ -23,5 +25,5 @@ FFGLFOProcessor::Process(FFModuleProcState const& state)
     output.Sample(s, _phase.Next(state.sampleRate, 
       topo.params[FFGLFOAccRate].NormalizedToPlainLinear(rate.Sample(s))));
   output.Transform([&](int v) { 
-    return (output[v] * FBFloatVector::TwoPi()).Sin().Unipolar(); });
+    return (output[v] * FBTwoPi).Sin().Unipolar(); });
 }

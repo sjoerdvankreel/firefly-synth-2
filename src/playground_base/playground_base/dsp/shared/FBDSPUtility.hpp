@@ -1,6 +1,10 @@
 #pragma once
 
 #include <cmath>
+#include <numbers>
+
+inline constexpr float FBPi = std::numbers::pi_v<float>;
+inline constexpr float FBTwoPi = 2.0f * FBPi;
 
 inline float 
 FBPitchToFreq(float pitch)

@@ -8,15 +8,15 @@
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 static FBFloatVector
-GenerateSine(FBFloatVector phase)
+GenerateSin(FBFloatVector phase)
 {
-  return (phase * FBFloatVector::TwoPi()).Sin();
+  return (phase * FBTwoPi).Sin();
 }
 
 static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase)
 {
-  return phase; // TODO
+  return (phase * FBTwoPi).Sin();
 }
 
 // https://www.kvraudio.com/forum/viewtopic.php?t=375517
@@ -62,7 +62,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   switch (type)
   {
   case FFOsciTypeSine: output.Transform([&](int ch, int v) { 
-    return GenerateSine(output[ch][v]); }); break;
+    return GenerateSin(output[ch][v]); }); break;
   case FFOsciTypeBLEPSaw: output.Transform([&](int ch, int v) {
     return GenerateBLEPSaw(output[ch][v]); }); break;
   default: assert(false); break;
