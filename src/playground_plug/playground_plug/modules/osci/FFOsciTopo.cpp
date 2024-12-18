@@ -27,7 +27,7 @@ FFMakeOsciTopo()
   type.acc = false;
   type.name = "Type";
   type.slotCount = 1;
-  type.defaultText = "Saw";
+  type.defaultText = "Sine";
   type.valueCount = FFOsciTypeCount;
   type.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
   type.list = {
