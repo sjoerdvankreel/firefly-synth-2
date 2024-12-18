@@ -16,7 +16,9 @@ GenerateSin(FBFloatVector phase)
 static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase)
 {
-  return (phase * FBTwoPi).Sin();
+  // f*me the increment is a vector too
+  FBFloatVector result = phase * 2.0f - 1.0f;
+  return result;
 }
 
 // https://www.kvraudio.com/forum/viewtopic.php?t=375517
