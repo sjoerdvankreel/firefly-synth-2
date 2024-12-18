@@ -16,7 +16,7 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedVectorBlock);
 
   template <class Op>
-  void Apply(Op op);
+  void Transform(Op op);
 
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; }
@@ -29,8 +29,8 @@ public:
 
 template <class Op>
 void 
-FBFixedVectorBlock::Apply(Op op)
+FBFixedVectorBlock::Transform(Op op)
 {
   for (int v = 0; v < FBFixedBlockVectors; v++)
-    op((*this)[v]);
+    (*this)[v] = op((*this)[v]);
 }
