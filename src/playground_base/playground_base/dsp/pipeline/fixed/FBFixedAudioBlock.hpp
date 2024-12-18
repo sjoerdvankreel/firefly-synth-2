@@ -30,14 +30,6 @@ public:
   void Add(FBFixedAudioBlock const& rhs) { for (int ch = 0; ch < 2; ch++) _store[ch].Add(rhs._store[ch]); }
 };
 
-inline void
-FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
-{
-  for (int ch = 0; ch < 2; ch++)
-    for (int v = 0; v < FBFixedBlockVectors; v++)
-      (*this)[ch][v] = rhs[ch][v];
-}
-
 template <class Op>
 void 
 FBFixedAudioBlock::Transform(Op op)
@@ -45,4 +37,12 @@ FBFixedAudioBlock::Transform(Op op)
   for (int ch = 0; ch < 2; ch++)
     for (int v = 0; v < FBFixedBlockVectors; v++)
       (*this)[ch][v] = op(ch, v);
+}
+
+inline void
+FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    for (int v = 0; v < FBFixedBlockVectors; v++)
+      (*this)[ch][v] = rhs[ch][v];
 }
