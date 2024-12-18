@@ -38,10 +38,6 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   for (int s = 0; s < FBFixedBlockSamples; s++)
     output.Samples(s, _phase.Next(state.sampleRate, freq));
   GenerateSine(output);
-  for (int ch = 0; ch < 2; ch++)
-    for (int v = 0; v < FBFixedBlockVectors; v++)
-    {
-      output[ch][v] = (FBFloatVector::One() - glfoToGain[v]) * output[ch][v] + output[ch][v] * glfoToGain[v] * glfo[v];
-      output[ch][v] *= gain[v];
-    }
+  output.Transform([&](int ch, int v) { return (FBFloatVector::One() - glfoToGain[v]) * output[ch][v] + output[ch][v] * glfoToGain[v] * glfo[v]; });
+  output.Transform([&](int ch, int v) { return output[ch][v] * gain[v]; });
 }

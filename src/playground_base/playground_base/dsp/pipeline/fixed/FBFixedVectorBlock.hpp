@@ -28,7 +28,7 @@ public:
 };
 
 template <class Op>
-void 
+void
 FBFixedVectorBlock::Transform(Op op)
 {
   for (int v = 0; v < FBFixedBlockVectors; v++)

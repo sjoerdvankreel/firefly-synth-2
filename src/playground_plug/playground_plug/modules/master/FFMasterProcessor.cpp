@@ -11,6 +11,5 @@ FFMasterProcessor::Process(FFModuleProcState const& state)
   auto& output = state.proc->dsp.global.master.output;
   auto const& input = state.proc->dsp.global.master.input;
   auto const& gain = params.acc.gain[0].Global().CV();
-  output.Transform([&](int ch, int v) {
-    return input[ch][v] * gain[v]; });
+  output.Transform([&](int ch, int v) { return input[ch][v] * gain[v]; });
 }
