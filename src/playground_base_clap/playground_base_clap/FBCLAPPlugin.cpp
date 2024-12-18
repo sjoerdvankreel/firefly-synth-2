@@ -69,6 +69,14 @@ Plugin(desc, host),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
 _state(*_topo) {}
 
+void 
+FBCLAPPlugin::ProcessVoices()
+{
+  if (!_host.canUseThreadPool() ||
+    !_host.threadPoolRequestExec(FBMaxVoices))
+    _hostProcessor->ProcessAllVoices();
+}
+
 bool 
 FBCLAPPlugin::isValidParamId(
   clap_id paramId) const noexcept
@@ -103,7 +111,7 @@ FBCLAPPlugin::activate(
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
   auto plug = MakePlugProcessor(_topo->static_, _state.Raw(), fSampleRate);
   _state.SetSmoothingCoeffs(fSampleRate, _state.Special().smooth->Value());
-  _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_state, fSampleRate));
+  _hostProcessor.reset(new FBHostProcessor(this, std::move(plug), &_state, fSampleRate));
   return true;
 }
 

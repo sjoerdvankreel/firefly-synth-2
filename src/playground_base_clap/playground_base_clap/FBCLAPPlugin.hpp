@@ -2,6 +2,7 @@
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostProcessContext.hpp>
 
 #include <clap/helpers/plugin.hh>
 #include <memory>
@@ -16,7 +17,8 @@ class FBHostProcessor;
 class IFBPlugProcessor;
 
 class FBCLAPPlugin:
-public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>
+public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
+public IFBHostProcessContext
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
   FBProcStateContainer _state;
@@ -38,10 +40,14 @@ public:
   uint32_t latencyGet() const noexcept override;
   bool implementsLatency() const noexcept override;
 
+  bool implementsThreadPool() const noexcept override;
+  void threadPoolExec(uint32_t taskIndex) noexcept override;
+
   bool implementsState() const noexcept override;
   bool stateSave(const clap_ostream* stream) noexcept override;
   bool stateLoad(const clap_istream* stream) noexcept override;
 
+  void ProcessVoices() override;
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;
   bool getParamInfoForParamId(clap_id paramId, clap_param_info* info) const noexcept override;

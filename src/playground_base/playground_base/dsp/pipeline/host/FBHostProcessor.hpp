@@ -10,9 +10,11 @@ struct FBRuntimeTopo;
 struct FBHostInputBlock;
 struct FBHostOutputBlock;
 
+class IFBPlugProcessor;
+class IFBHostProcessContext;
+
 class FBVoiceManager;
 class FBHostAudioBlock;
-class IFBPlugProcessor;
 class FBSmoothProcessor;
 class FBProcStateContainer;
 class FBHostBufferProcessor;
@@ -24,6 +26,7 @@ class FBHostProcessor final
   FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};
   FBProcStateContainer* _state = {};
+  IFBHostProcessContext* _hostContext = {};
 
   std::unique_ptr<IFBPlugProcessor> _plug;
   std::unique_ptr<FBVoiceManager> _voiceManager;
@@ -31,14 +34,16 @@ class FBHostProcessor final
   std::unique_ptr<FBHostBufferProcessor> _hostBuffer;
   std::unique_ptr<FBFixedBufferProcessor> _fixedBuffer;
 
-  void ProcessVoices();
-
 public:
   ~FBHostProcessor();  
   FB_NOCOPY_MOVE_NODEFCTOR(FBHostProcessor);
 
   FBHostProcessor(
+    IFBHostProcessContext* hostContext,
     std::unique_ptr<IFBPlugProcessor>&& plug,
     FBProcStateContainer* state, float sampleRate);
+
+  void ProcessAllVoices();
+  void ProcessVoice(int slot);
   void ProcessHost(FBHostInputBlock const& input, FBHostOutputBlock& output);
 };

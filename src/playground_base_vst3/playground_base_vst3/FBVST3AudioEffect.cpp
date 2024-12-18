@@ -67,6 +67,12 @@ _state(*_topo)
   setControllerClass(controllerId);
 }
 
+void
+FBVST3AudioEffect::ProcessVoices()
+{
+  _hostProcessor->ProcessAllVoices();
+}
+
 tresult PLUGIN_API
 FBVST3AudioEffect::getState(IBStream* state)
 {
@@ -121,7 +127,7 @@ FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
   auto plug = MakePlugProcessor(_topo->static_, _state.Raw(), setup.sampleRate);
   _state.SetSmoothingCoeffs(setup.sampleRate, _state.Special().smooth->Value());
-  _hostProcessor.reset(new FBHostProcessor(std::move(plug), &_state, setup.sampleRate));
+  _hostProcessor.reset(new FBHostProcessor(this, std::move(plug), &_state, setup.sampleRate));
   return kResultTrue;
 }
 
