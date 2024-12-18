@@ -22,6 +22,6 @@ FFGLFOProcessor::Process(FFModuleProcState const& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
     output.Sample(s, _phase.Next(state.sampleRate, 
       topo.params[FFGLFOAccRate].NormalizedToPlainLinear(rate.Sample(s))));
-  output.Transform([&](auto& v) {
+  output.Transform([&](int v) {
     return (output[v] * FBFloatVector::TwoPi()).Sin().Unipolar(); });
 }

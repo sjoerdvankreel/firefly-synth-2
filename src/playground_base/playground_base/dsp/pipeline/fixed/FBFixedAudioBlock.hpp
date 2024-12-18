@@ -15,6 +15,9 @@ class alignas(FBVectorByteCount) FBFixedAudioBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
 
+  template <class Op>
+  void Transform(Op op);
+
   FBFixedVectorBlock& operator[](int ch) { return _store[ch]; }
   FBFixedVectorBlock const& operator[](int ch) const { return _store[ch]; }
   float Sample(int ch, int index) const { return _store[ch].Sample(index); }
@@ -33,4 +36,13 @@ FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
   for (int ch = 0; ch < 2; ch++)
     for (int v = 0; v < FBFixedBlockVectors; v++)
       (*this)[ch][v] = rhs[ch][v];
+}
+
+template <class Op>
+void 
+FBFixedAudioBlock::Transform(Op op)
+{
+  for (int ch = 0; ch < 2; ch++)
+    for (int v = 0; v < FBFixedBlockVectors; v++)
+      (*this)[ch][v] = op(ch, v);
 }

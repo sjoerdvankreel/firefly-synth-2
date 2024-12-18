@@ -11,8 +11,6 @@ FFMasterProcessor::Process(FFModuleProcState const& state)
   auto& output = state.proc->dsp.global.master.output;
   auto const& input = state.proc->dsp.global.master.input;
   auto const& gain = params.acc.gain[0].Global().CV();
-
-  for (int ch = 0; ch < 2; ch++)
-    for (int v = 0; v < FBFixedBlockVectors; v++)
-      output[ch][v] = input[ch][v] * gain[v];
+  output.Transform([&](int ch, int v) {
+    return input[ch][v] * gain[v]; });
 }
