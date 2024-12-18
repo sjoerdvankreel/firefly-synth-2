@@ -11,6 +11,6 @@ inline int constexpr FFOsciGainCount = 2;
 
 enum { FFModuleGLFO, FFModuleOsci, FFModuleMaster, FFModuleCount };
 enum { FFGLFOBlockOn, FFGLFOAccRate, FFGLFOParamCount };
-enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypeCount };
+enum { FFOsciTypeSine, FFOsciTypeBLEPSaw, FFOsciTypeCount };
 enum { FFMasterBlockSmooth, FFMasterAccGain, FFMasterParamCount };
 enum { FFOsciBlockOn, FFOsciBlockType, FFOsciAccGain, FFOsciAccPitch, FFOsciAccGLFOToGain, FFOsciParamCount };

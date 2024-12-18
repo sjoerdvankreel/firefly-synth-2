@@ -51,36 +51,36 @@ inline int constexpr FBVectorFloatCount = FBVectorByteCount / sizeof(float);
 
 class alignas(FBVectorByteCount) FBFloatVector
 {
-  static inline float constexpr PiV = std::numbers::pi_v<float>;
-  static inline float constexpr TwoPiV = 2.0f * std::numbers::pi_v<float>;
-
   FBVectorStore _store;
   FBFloatVector(FBVectorStore store) : _store(store) {}
 
 public:
   FBFloatVector() : _store(FBVectorFloatSetZero()) {}
-  static FBFloatVector FBVectorCall Zero() { return FBFloatVector(); }
-  static FBFloatVector FBVectorCall One() { return FBVectorFloatSet1(1.0f); }
-  static FBFloatVector FBVectorCall Two() { return FBVectorFloatSet1(2.0f); }
-  static FBFloatVector FBVectorCall Half() { return FBVectorFloatSet1(0.5f); }
-  static FBFloatVector FBVectorCall Pi() { return FBVectorFloatSet1(PiV); }
-  static FBFloatVector FBVectorCall TwoPi() { return FBVectorFloatSet1(TwoPiV); }
-
   float& operator[](int index) { return FBVectorFloatAddr(_store)[index]; }
   float operator[](int index) const { return FBVectorFloatAddr(_store)[index]; }
-  FBFloatVector& FBVectorCall operator=(FBFloatVector rhs) { _store = rhs._store; return *this; }
 
+  FBFloatVector& FBVectorCall operator+=(float rhs) { return *this = *this + rhs; }
+  FBFloatVector& FBVectorCall operator-=(float rhs) { return *this = *this - rhs; }
+  FBFloatVector& FBVectorCall operator*=(float rhs) { return *this = *this * rhs; }
+  FBFloatVector& FBVectorCall operator/=(float rhs) { return *this = *this / rhs; }
   FBFloatVector& FBVectorCall operator+=(FBFloatVector rhs) { return *this = *this + rhs; }
   FBFloatVector& FBVectorCall operator-=(FBFloatVector rhs) { return *this = *this - rhs; }
   FBFloatVector& FBVectorCall operator*=(FBFloatVector rhs) { return *this = *this * rhs; }
   FBFloatVector& FBVectorCall operator/=(FBFloatVector rhs) { return *this = *this / rhs; }
+
   FBFloatVector FBVectorCall operator+(FBFloatVector rhs) const { return FBVectorFloatAdd(_store, rhs._store); }
   FBFloatVector FBVectorCall operator-(FBFloatVector rhs) const { return FBVectorFloatSub(_store, rhs._store); }
   FBFloatVector FBVectorCall operator*(FBFloatVector rhs) const { return FBVectorFloatMul(_store, rhs._store); }
   FBFloatVector FBVectorCall operator/(FBFloatVector rhs) const { return FBVectorFloatDiv(_store, rhs._store); }
+  FBFloatVector FBVectorCall operator+(float rhs) const { return FBVectorFloatAdd(_store, FBVectorFloatSet1(rhs)); }
+  FBFloatVector FBVectorCall operator-(float rhs) const { return FBVectorFloatSub(_store, FBVectorFloatSet1(rhs)); }
+  FBFloatVector FBVectorCall operator*(float rhs) const { return FBVectorFloatMul(_store, FBVectorFloatSet1(rhs)); }
+  FBFloatVector FBVectorCall operator/(float rhs) const { return FBVectorFloatDiv(_store, FBVectorFloatSet1(rhs)); }
 
-  void FBVectorCall Clear() { *this = Zero(); }
+  void FBVectorCall Clear() { *this = 0.0f; }
   FBFloatVector FBVectorCall Sin() { return FBVectorFloatSin(_store); }
-  FBFloatVector FBVectorCall Unipolar() { return (*this + One()) * Half(); }
+  FBFloatVector FBVectorCall Unipolar() { return (*this + 1.0f) * 0.5f; }
+  FBFloatVector& FBVectorCall operator=(FBFloatVector rhs) { _store = rhs._store; return *this; }
+  FBFloatVector& FBVectorCall operator=(float rhs) { _store = FBVectorFloatSet1(rhs); return *this; }
   FBFloatVector FBVectorCall FMA(FBFloatVector b, FBFloatVector c) { return FBVectorFloatFMA(b._store, c._store, _store); }
 };

@@ -13,6 +13,29 @@ GenerateSine(FBFloatVector phase)
   return (phase * FBFloatVector::TwoPi()).Sin();
 }
 
+static FBFloatVector
+GenerateBLEPSaw(FBFloatVector phase)
+{
+  return phase; // TODO
+}
+
+// https://www.kvraudio.com/forum/viewtopic.php?t=375517
+static inline float
+generate_blep(float phase, float inc)
+{
+  float b;
+  if (phase < inc) return b = phase / inc, (2.0f - b) * b - 1.0f;
+  if (phase >= 1.0f - inc) return b = (phase - 1.0f) / inc, (b + 2.0f) * b + 1.0f;
+  return 0.0f;
+}
+
+static inline float
+generate_saw(float phase, float inc)
+{
+  float saw = phase * 2 - 1;
+  return saw - generate_blep(phase, inc);
+}
+
 void
 FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 {
@@ -38,14 +61,14 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     output.Samples(s, _phase.Next(state.sampleRate, freq));
   switch (type)
   {
-  case FFOsciTypeSaw: output.Transform([&](int ch, int v) { 
-    return GenerateSine(output[ch][v]); }); break;
   case FFOsciTypeSine: output.Transform([&](int ch, int v) { 
     return GenerateSine(output[ch][v]); }); break;
+  case FFOsciTypeBLEPSaw: output.Transform([&](int ch, int v) {
+    return GenerateBLEPSaw(output[ch][v]); }); break;
   default: assert(false); break;
   }
   output.Transform([&](int ch, int v) { 
-    return (FBFloatVector::One() - glfoToGain[v]) * output[ch][v] + output[ch][v] * glfoToGain[v] * glfo[v]; });
+    return (1.0f - glfoToGain[v]) * output[ch][v] + output[ch][v] * glfoToGain[v] * glfo[v]; });
   output.Transform([&](int ch, int v) { 
     return output[ch][v] * gain[v]; });
 }
