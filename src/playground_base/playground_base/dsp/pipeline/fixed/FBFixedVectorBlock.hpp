@@ -32,5 +32,5 @@ void
 FBFixedVectorBlock::Transform(Op op)
 {
   for (int v = 0; v < FBFixedBlockVectors; v++)
-    (*this)[v] = op((*this)[v]);
+    (*this)[v] = op(v);
 }
