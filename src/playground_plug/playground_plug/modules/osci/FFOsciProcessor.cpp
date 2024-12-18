@@ -14,10 +14,21 @@ GenerateSin(FBFloatVector phase)
 }
 
 static FBFloatVector
-GenerateBLEPSaw(FBFloatVector phase)
+GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
-  // f*me the increment is a vector too
+  float b;
   FBFloatVector result = phase * 2.0f - 1.0f;
+  for (int s = 0; s < FBVectorFloatCount; s++) // TODO simd conditionals
+    if (phase[s] < incr[s])
+    {
+      float b = phase[s] / incr[s];
+      result[s] -= (2.0f - b) * b - 1.0f;
+    }
+    else if (phase[s] >= 1.0f - incr[s])
+    {
+      float b = (phase[s] - 1.0f) / incr[s];
+      result[s] -= (b + 2.0f) * b + 1.0f;
+    }
   return result;
 }
 
@@ -59,6 +70,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     return;
   }
 
+  float incr = freq / state.sampleRate; // TODO this should be dynamic
   for (int s = 0; s < FBFixedBlockSamples; s++)
     output.Samples(s, _phase.Next(state.sampleRate, freq));
   switch (type)
@@ -66,7 +78,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   case FFOsciTypeSine: output.Transform([&](int ch, int v) { 
     return GenerateSin(output[ch][v]); }); break;
   case FFOsciTypeBLEPSaw: output.Transform([&](int ch, int v) {
-    return GenerateBLEPSaw(output[ch][v]); }); break;
+    return GenerateBLEPSaw(output[ch][v], FBFloatVector(incr)); }); break;
   default: assert(false); break;
   }
   output.Transform([&](int ch, int v) { 

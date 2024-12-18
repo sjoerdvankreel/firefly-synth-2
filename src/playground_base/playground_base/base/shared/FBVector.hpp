@@ -56,6 +56,7 @@ class alignas(FBVectorByteCount) FBFloatVector
 
 public:
   FBFloatVector() : _store(FBVectorFloatSetZero()) {}
+  FBFloatVector(float x) : _store(FBVectorFloatSet1(x)) {}
 
   void FBVectorCall Clear() { *this = 0.0f; }
   float& operator[](int index) { return FBVectorFloatAddr(_store)[index]; }
