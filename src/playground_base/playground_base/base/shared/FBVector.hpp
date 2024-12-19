@@ -60,27 +60,25 @@ public:
   FBFloatVector() : _store(FBVectorFloatSetZero()) {}
   FBFloatVector(float x) : _store(FBVectorFloatSet1(x)) {}
 
-  void FBVectorCall Clear() { *this = 0.0f; }
-  float& operator[](int index) { return FBVectorFloatAddr(_store)[index]; }
-  float operator[](int index) const { return FBVectorFloatAddr(_store)[index]; }
+  friend FBFloatVector FBVectorCall operator+(float l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator-(float l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator*(float l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator/(float l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator+(FBFloatVector l, float r);
+  friend FBFloatVector FBVectorCall operator-(FBFloatVector l, float r);
+  friend FBFloatVector FBVectorCall operator*(FBFloatVector l, float r);
+  friend FBFloatVector FBVectorCall operator/(FBFloatVector l, float r);
+  friend FBFloatVector FBVectorCall operator+(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator-(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator*(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator/(FBFloatVector l, FBFloatVector r);
 
-  FBFloatVector FBVectorCall Sin() { return FBVectorFloatSin(_store); }
-  FBFloatVector FBVectorCall Unipolar() { return (*this + 1.0f) * 0.5f; }
-  FBFloatVector& FBVectorCall operator=(FBFloatVector rhs) { _store = rhs._store; return *this; }
-  FBFloatVector& FBVectorCall operator=(float rhs) { _store = FBVectorFloatSet1(rhs); return *this; }
-
-  friend FBFloatVector operator+(float l, FBFloatVector r);
-  friend FBFloatVector operator-(float l, FBFloatVector r);
-  friend FBFloatVector operator*(float l, FBFloatVector r);
-  friend FBFloatVector operator/(float l, FBFloatVector r);
-  friend FBFloatVector operator+(FBFloatVector l, float r);
-  friend FBFloatVector operator-(FBFloatVector l, float r);
-  friend FBFloatVector operator*(FBFloatVector l, float r);
-  friend FBFloatVector operator/(FBFloatVector l, float r);
-  friend FBFloatVector operator+(FBFloatVector l, FBFloatVector r);
-  friend FBFloatVector operator-(FBFloatVector l, FBFloatVector r);
-  friend FBFloatVector operator*(FBFloatVector l, FBFloatVector r);
-  friend FBFloatVector operator/(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator<(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator>(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator<=(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator>=(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator==(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall operator!=(FBFloatVector l, FBFloatVector r);
 
   FBFloatVector& FBVectorCall operator+=(float rhs) { return *this = *this + rhs; }
   FBFloatVector& FBVectorCall operator-=(float rhs) { return *this = *this - rhs; }
@@ -91,49 +89,70 @@ public:
   FBFloatVector& FBVectorCall operator*=(FBFloatVector rhs) { return *this = *this * rhs; }
   FBFloatVector& FBVectorCall operator/=(FBFloatVector rhs) { return *this = *this / rhs; }
 
-  FBFloatVector FBVectorCall CompareEq(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_EQ_OQ); }
-  FBFloatVector FBVectorCall CompareLt(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_LT_OQ); }
-  FBFloatVector FBVectorCall CompareGt(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_GT_OQ); }
-  FBFloatVector FBVectorCall CompareLte(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_LE_OQ); }
-  FBFloatVector FBVectorCall CompareGte(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_GE_OQ); }
-  FBFloatVector FBVectorCall CompareNeq(FBFloatVector rhs) { return FBVectorFloatCmp(_store, rhs._store, _CMP_NEQ_OQ); }
+  void FBVectorCall Clear() { *this = 0.0f; }
+  float& operator[](int index) { return FBVectorFloatAddr(_store)[index]; }
+  float operator[](int index) const { return FBVectorFloatAddr(_store)[index]; }
+
+  FBFloatVector FBVectorCall Sin() { return FBVectorFloatSin(_store); }
+  FBFloatVector FBVectorCall Unipolar() { return (*this + 1.0f) * 0.5f; }
+  FBFloatVector& FBVectorCall operator=(FBFloatVector rhs) { _store = rhs._store; return *this; }
+  FBFloatVector& FBVectorCall operator=(float rhs) { _store = FBVectorFloatSet1(rhs); return *this; }
 };
 
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator+(FBFloatVector l, FBFloatVector r)
 { return FBVectorFloatAdd(l._store, r._store); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator-(FBFloatVector l, FBFloatVector r)
 { return FBVectorFloatSub(l._store, r._store); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator*(FBFloatVector l, FBFloatVector r)
 { return FBVectorFloatMul(l._store, r._store); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator/(FBFloatVector l, FBFloatVector r)
 { return FBVectorFloatDiv(l._store, r._store); }
 
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator+(float l, FBFloatVector r)
 { return FBVectorFloatAdd(FBVectorFloatSet1(l), r._store); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator-(float l, FBFloatVector r)
 { return FBVectorFloatSub(FBVectorFloatSet1(l), r._store); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator*(float l, FBFloatVector r)
 { return FBVectorFloatMul(FBVectorFloatSet1(l), r._store); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator/(float l, FBFloatVector r)
 { return FBVectorFloatDiv(FBVectorFloatSet1(l), r._store); }
 
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator+(FBFloatVector l, float r)
 { return FBVectorFloatAdd(l._store, FBVectorFloatSet1(r)); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator-(FBFloatVector l, float r)
 { return FBVectorFloatSub(l._store, FBVectorFloatSet1(r)); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator*(FBFloatVector l, float r)
 { return FBVectorFloatMul(l._store, FBVectorFloatSet1(r)); }
-inline FBFloatVector
+inline FBFloatVector FBVectorCall
 operator/(FBFloatVector l, float r)
 { return FBVectorFloatDiv(l._store, FBVectorFloatSet1(r)); }
+
+inline FBFloatVector FBVectorCall 
+operator<(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_LT_OQ); }
+inline FBFloatVector FBVectorCall 
+operator>(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_GT_OQ); }
+inline FBFloatVector FBVectorCall
+operator<=(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_LE_OQ); }
+inline FBFloatVector FBVectorCall 
+operator>=(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_GE_OQ); }
+inline FBFloatVector FBVectorCall 
+operator==(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_EQ_OQ); }
+inline FBFloatVector FBVectorCall 
+operator!=(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_NEQ_OQ); }
