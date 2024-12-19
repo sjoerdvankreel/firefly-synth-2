@@ -1,3 +1,4 @@
+optionally build with -mavx and msvc equivalent
 checkout if the threadpool is actually used
 checkout the patch json
 retest voice stealing including clap return with > 64 voices
