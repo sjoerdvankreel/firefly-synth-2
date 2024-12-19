@@ -1,3 +1,4 @@
+enable fast math
 optionally build with -mavx and msvc equivalent
 checkout if the threadpool is actually used
 checkout the patch json
