@@ -18,6 +18,8 @@ GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
   float b;
   FBFloatVector result = phase * 2.0f - 1.0f;
+  FBFloatVector phaseLtIncr = phase < incr;
+  (void)phaseLtIncr;
   for (int s = 0; s < FBVectorFloatCount; s++) // TODO simd conditionals
     if (phase[s] < incr[s])
     {
