@@ -13,10 +13,34 @@ GenerateSin(FBFloatVector phase)
   return (phase * FBTwoPi).Sin();
 }
 
+
+
+// https://www.kvraudio.com/forum/viewtopic.php?t=375517
+static inline float
+generate_blep(float phase, float inc)
+{
+  float b;
+  if (phase < inc) return b = phase / inc, (2.0f - b) * b - 1.0f;
+  if (phase >= 1.0f - inc) return b = (phase - 1.0f) / inc, (b + 2.0f) * b + 1.0f;
+  return 0.0f;
+}
+
+static inline float
+generate_saw(float phase, float inc)
+{
+  float saw = phase * 2 - 1;
+  return saw - generate_blep(phase, inc);
+}
+
 static FBFloatVector
 GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
 {
-  return (phase * FBTwoPi).Sin();
+  FBFloatVector result = phase;
+  for (int i = 0; i < FBVectorFloatCount; i++)
+  {
+    result[i] = generate_saw(phase[i], incr[i]);
+  }
+  return result;
 }
 
 static FBFloatVector
@@ -52,23 +76,6 @@ GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
     }
 
   return result;
-}
-
-// https://www.kvraudio.com/forum/viewtopic.php?t=375517
-static inline float
-generate_blep(float phase, float inc)
-{
-  float b;
-  if (phase < inc) return b = phase / inc, (2.0f - b) * b - 1.0f;
-  if (phase >= 1.0f - inc) return b = (phase - 1.0f) / inc, (b + 2.0f) * b + 1.0f;
-  return 0.0f;
-}
-
-static inline float
-generate_saw(float phase, float inc)
-{
-  float saw = phase * 2 - 1;
-  return saw - generate_blep(phase, inc);
 }
 
 void
