@@ -48,10 +48,15 @@ generate_saw(float phase, float inc)
 static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
-  FBFloatVector result = phase * 2.0f - 1.0f;
-  FBFloatVector phaseLtIncr = phase < incr;
+  FBFloatVector zero = 0.0f;
   FBFloatVector blepLow = phase / incr;
-  FBFloatVector phaseGteOneMinusIncr = phase >= (1.0f - incr);
+  FBFloatVector blepHi = (phase - 1.0f) / incr;
+  FBFloatVector result = phase * 2.0f - 1.0f;
+  FBFloatVector phaseLtIncrMask = phase < incr;
+  FBFloatVector phaseGteOneMinusIncrMask = phase >= (1.0f - incr);
+
+  //phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
+
   FBFloatVector blepHi = (phase - 1.0f) / incr;
 
 
