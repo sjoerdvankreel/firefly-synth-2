@@ -14,6 +14,12 @@ GenerateSin(FBFloatVector phase)
 }
 
 static FBFloatVector
+GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
+{
+  return (phase * FBTwoPi).Sin();
+}
+
+static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector result = phase * 2.0f - 1.0f;
@@ -78,7 +84,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   auto const& gain = params.acc.gain[0].Voice()[voice].CV();
   auto const& glfoToGain = params.acc.glfoToGain[0].Voice()[voice].CV();
   bool on = topo.params[FFOsciBlockOn].NormalizedToBool(params.block.on[0].Voice()[voice]);
-  bool type = topo.params[FFOsciBlockType].NormalizedToDiscrete(params.block.type[0].Voice()[voice]);
+  int type = topo.params[FFOsciBlockType].NormalizedToDiscrete(params.block.type[0].Voice()[voice]);
 
   if (!on)
   {
@@ -95,6 +101,8 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     return GenerateSin(output[ch][v]); }); break;
   case FFOsciTypeBLEPSaw: output.Transform([&](int ch, int v) {
     return GenerateBLEPSaw(output[ch][v], FBFloatVector(incr)); }); break;
+  case FFOsciTypeSurgeSaw: output.Transform([&](int ch, int v) {
+    return GenerateSurgeSaw(output[ch][v], FBFloatVector(incr)); }); break;
   default: assert(false); break;
   }
   output.Transform([&](int ch, int v) { 
