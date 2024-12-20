@@ -58,7 +58,7 @@ GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
   //phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
 
   FBFloatVector blepHi = (phase - 1.0f) / incr;
-
+  _mm_cmplt_ps
 
   phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
   result -= phaseLtIncr * ((2.0f - blepLow) * blepLow - 1.0f);
