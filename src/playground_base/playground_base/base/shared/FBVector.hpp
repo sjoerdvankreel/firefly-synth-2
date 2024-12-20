@@ -21,8 +21,8 @@ inline int constexpr FBVectorBitCount = 128;
 #define FBVectorFloatMul _mm_mul_ps
 #define FBVectorFloatDiv _mm_div_ps
 #define FBVectorFloatSin _mm_sin_ps
-#define FBVectorFloatFMA _mm_fmadd_ps
 #define FBVectorFloatSet1 _mm_set1_ps
+#define FBVectorFloatBlend  _mm_blendv_ps
 #define FBVectorFloatSetZero _mm_setzero_ps
 
 #elif FB_USE_AVX
@@ -40,8 +40,8 @@ inline int constexpr FBVectorBitCount = 256;
 #define FBVectorFloatMul _mm256_mul_ps
 #define FBVectorFloatDiv _mm256_div_ps
 #define FBVectorFloatSin _mm256_sin_ps
-#define FBVectorFloatFMA _mm256_fmadd_ps
 #define FBVectorFloatSet1 _mm256_set1_ps
+#define FBVectorFloatBlend  _mm256_blendv_ps
 #define FBVectorFloatSetZero _mm256_setzero_ps
 
 #else
@@ -79,6 +79,8 @@ public:
   friend FBFloatVector FBVectorCall operator>=(FBFloatVector l, FBFloatVector r);
   friend FBFloatVector FBVectorCall operator==(FBFloatVector l, FBFloatVector r);
   friend FBFloatVector FBVectorCall operator!=(FBFloatVector l, FBFloatVector r);
+
+  friend FBFloatVector FBVectorCall FBFloatVectorBlend(FBFloatVector l, FBFloatVector r, FBFloatVector mask);
 
   FBFloatVector& FBVectorCall operator+=(float rhs) { return *this = *this + rhs; }
   FBFloatVector& FBVectorCall operator-=(float rhs) { return *this = *this - rhs; }
@@ -156,3 +158,7 @@ operator==(FBFloatVector l, FBFloatVector r)
 inline FBFloatVector FBVectorCall 
 operator!=(FBFloatVector l, FBFloatVector r)
 { return FBVectorFloatCmp(l._store, r._store, _CMP_NEQ_OQ); }
+
+inline FBFloatVector FBVectorCall 
+FBFloatVectorBlend(FBFloatVector l, FBFloatVector r, FBFloatVector mask)
+{ return FBVectorFloatBlend(l._store, r._store, mask._store); }

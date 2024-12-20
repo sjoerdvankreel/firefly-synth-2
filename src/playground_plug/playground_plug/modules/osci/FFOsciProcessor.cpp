@@ -50,11 +50,13 @@ GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector result = phase * 2.0f - 1.0f;
   FBFloatVector phaseLtIncr = phase < incr;
-  FBFloatVector phaseGteOneMinusIncr = phase >= (1.0f - incr);
-  //phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
   FBFloatVector blepLow = phase / incr;
-  result -= phaseLtIncr * ((2.0f - blepLow) * blepLow - 1.0f);
+  FBFloatVector phaseGteOneMinusIncr = phase >= (1.0f - incr);
   FBFloatVector blepHi = (phase - 1.0f) / incr;
+
+
+  phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
+  result -= phaseLtIncr * ((2.0f - blepLow) * blepLow - 1.0f);
   result -= phaseGteOneMinusIncr * ((blepHi + 2.0f) * blepHi + 1.0f);
   return result;
 }
