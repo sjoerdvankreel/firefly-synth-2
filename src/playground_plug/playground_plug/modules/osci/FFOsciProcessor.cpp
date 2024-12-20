@@ -7,13 +7,26 @@
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
+// TODO
+static float generate_saw(float phase, float inc);
+static FBFloatVector GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr);
+
 static FBFloatVector
 GenerateSin(FBFloatVector phase)
 {
   return (phase * FBTwoPi).Sin();
 }
 
-
+static FBFloatVector
+GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
+{
+  FBFloatVector result = phase;
+  for (int i = 0; i < FBVectorFloatCount; i++)
+  {
+    result[i] = generate_saw(phase[i], incr[i]);
+  }
+  return result;
+}
 
 // https://www.kvraudio.com/forum/viewtopic.php?t=375517
 static inline float
@@ -33,48 +46,16 @@ generate_saw(float phase, float inc)
 }
 
 static FBFloatVector
-GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
-{
-  FBFloatVector result = phase;
-  for (int i = 0; i < FBVectorFloatCount; i++)
-  {
-    result[i] = generate_saw(phase[i], incr[i]);
-  }
-  return result;
-}
-
-static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector result = phase * 2.0f - 1.0f;
   FBFloatVector phaseLtIncr = phase < incr;
-  FBFloatVector phaseGteOneMinusIncr = phase >= 1.0f - incr;
-  phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
+  FBFloatVector phaseGteOneMinusIncr = phase >= (1.0f - incr);
+  //phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
   FBFloatVector blepLow = phase / incr;
   result -= phaseLtIncr * ((2.0f - blepLow) * blepLow - 1.0f);
   FBFloatVector blepHi = (phase - 1.0f) / incr;
   result -= phaseGteOneMinusIncr * ((blepHi + 2.0f) * blepHi + 1.0f);
-
-  FBFloatVector res2 = result;
-  for (int s = 0; s < FBVectorFloatCount; s++) // TODO simd conditionals
-    if (phase[s] < incr[s])
-    {
-      float b = phase[s] / incr[s];
-      res2[s] -= (2.0f - b) * b - 1.0f;
-    }
-    else if (phase[s] >= 1.0f - incr[s])
-    {
-      float b = (phase[s] - 1.0f) / incr[s];
-      res2[s] -= (b + 2.0f) * b + 1.0f;
-    }
-
-  for(int i = 0; i < FBVectorFloatCount; i++)
-    if (result[i] != res2[i])
-    {
-      int x = 0;
-      x++;
-    }
-
   return result;
 }
 
