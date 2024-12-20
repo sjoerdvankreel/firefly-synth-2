@@ -48,17 +48,20 @@ generate_saw(float phase, float inc)
 static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
+  // y = phase * 2 - 1
+  // if (phase < inc) y -= b = phase / inc, (2.0f - b) * b - 1.0f
+  // else if (phase >= 1.0f - inc) y -= b = (phase - 1.0f) / inc, (b + 2.0f) * b + 1.0f
+  FBFloatVector one = 1.0f;
   FBFloatVector zero = 0.0f;
   FBFloatVector blepLo = phase / incr;
   FBFloatVector blepHi = (phase - 1.0f) / incr;
   FBFloatVector result = phase * 2.0f - 1.0f;
-  FBFloatVector phaseLoMask = FBFloatVectorCmpLt(phase, incr);
-  FBFloatVector phaseHiMask = FBFloatVectorCmpGe(phase, 1.0f - incr);
-  phaseHiMask = FBFloatVectorAnd(phaseHiMask, phaseLoMask);
-  FBFloatVector blepLoOrZero = FBFloatVectorBlend(zero, blepLo, phaseLoMask);
-  FBFloatVector blepHiOrZero = FBFloatVectorBlend(zero, blepHi, phaseHiMask);
-  result -= blepLoOrZero;
-  result -= blepHiOrZero;
+  FBFloatVector loMask = FBFloatVectorCmpLt(phase, incr);
+  FBFloatVector hiMask = FBFloatVectorAndNot(loMask, FBFloatVectorCmpGe(phase, 1.0f - incr));
+  FBFloatVector loMul = FBFloatVectorBlend(zero, one, loMask);
+  FBFloatVector hiMul = FBFloatVectorBlend(zero, one, hiMask);
+  result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
+  result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
   return result;
 }
 
