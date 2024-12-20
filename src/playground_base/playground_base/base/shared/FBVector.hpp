@@ -17,23 +17,17 @@ inline int constexpr FBVectorBitCount = 128;
 
 #define FBVectorFloatSin _mm_sin_ps
 #define FBVectorFloatSet1 _mm_set1_ps
+#define FBVectorFloatCmp _mm_cmp_ps
+#define FBVectorFloatBlend _mm_blendv_ps
 
 #define FBVectorFloatAdd _mm_add_ps
 #define FBVectorFloatSub _mm_sub_ps
 #define FBVectorFloatMul _mm_mul_ps
 #define FBVectorFloatDiv _mm_div_ps
 
-#define FBVectorFloatCmpLt _mm_cmplt_ps
-#define FBVectorFloatCmpGt _mm_cmpgt_ps
-#define FBVectorFloatCmpLe _mm_cmple_ps
-#define FBVectorFloatCmpGe _mm_cmpge_ps
-#define FBVectorFloatCmpEq _mm_cmpeq_ps
-#define FBVectorFloatCmpNeq _mm_cmpneq_ps
-
 #define FBVectorFloatOr _mm_or_ps
 #define FBVectorFloatAnd _mm_and_ps
 #define FBVectorFloatAndNot _mm_andnot_ps
-#define FBVectorFloatBlend  _mm_blendv_ps
 #define FBVectorFloatSetZero _mm_setzero_ps
 
 #elif FB_USE_AVX
@@ -47,23 +41,17 @@ inline int constexpr FBVectorBitCount = 256;
 
 #define FBVectorFloatSin _mm256_sin_ps
 #define FBVectorFloatSet1 _mm256_set1_ps
+#define FBVectorFloatCmp _mm256_cmp_ps
+#define FBVectorFloatBlend _mm256_blendv_ps
 
 #define FBVectorFloatAdd _mm256_add_ps
 #define FBVectorFloatSub _mm256_sub_ps
 #define FBVectorFloatMul _mm256_mul_ps
 #define FBVectorFloatDiv _mm256_div_ps
 
-#define FBVectorFloatCmpLt _mm256_cmplt_ps
-#define FBVectorFloatCmpGt _mm256_cmpgt_ps
-#define FBVectorFloatCmpLe _mm256_cmple_ps
-#define FBVectorFloatCmpGe _mm256_cmpge_ps
-#define FBVectorFloatCmpEq _mm256_cmpeq_ps
-#define FBVectorFloatCmpNeq _mm256_cmpneq_ps
-
 #define FBVectorFloatOr _mm256_or_ps
 #define FBVectorFloatAnd _mm256_and_ps
 #define FBVectorFloatAndNot _mm256_andnot_ps
-#define FBVectorFloatBlend  _mm256_blendv_ps
 #define FBVectorFloatSetZero _mm256_setzero_ps
 
 #else
@@ -167,22 +155,22 @@ operator/(FBFloatVector l, float r)
 
 inline FBFloatVector FBVectorCall 
 FBFloatVectorCmpLt(FBFloatVector l, FBFloatVector r)
-{ return FBVectorFloatCmpLt(l._store, r._store); }
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_LT_OQ); }
 inline FBFloatVector FBVectorCall 
 FBFloatVectorCmpGt(FBFloatVector l, FBFloatVector r)
-{ return FBVectorFloatCmpGt(l._store, r._store); }
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_GT_OQ); }
 inline FBFloatVector FBVectorCall 
 FBFloatVectorCmpLe(FBFloatVector l, FBFloatVector r)
-{ return FBVectorFloatCmpLe(l._store, r._store); }
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_LE_OQ); }
 inline FBFloatVector FBVectorCall 
 FBFloatVectorCmpGe(FBFloatVector l, FBFloatVector r)
-{ return FBVectorFloatCmpGe(l._store, r._store); }
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_GE_OQ); }
 inline FBFloatVector FBVectorCall 
 FBFloatVectorCmpEq(FBFloatVector l, FBFloatVector r)
-{ return FBVectorFloatCmpEq(l._store, r._store); }
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_EQ_OQ); }
 inline FBFloatVector FBVectorCall 
 FBFloatVectorCmpNeq(FBFloatVector l, FBFloatVector r)
-{ return FBVectorFloatCmpNeq(l._store, r._store); }
+{ return FBVectorFloatCmp(l._store, r._store, _CMP_NEQ_OQ); }
 
 inline FBFloatVector FBVectorCall 
 FBFloatVectorOr(FBFloatVector l, FBFloatVector r)

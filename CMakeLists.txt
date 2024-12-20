@@ -12,6 +12,9 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum macOS version")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 
+# listing - TODO also for gcc and clang
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /FA")
+
 # project
 set (PROJECT_VERSION_MAJOR 3)
 set (PROJECT_VERSION_MINOR 0)
