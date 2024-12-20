@@ -15,18 +15,24 @@ inline int constexpr FBVectorBitCount = 128;
 #define FBVectorCall __vectorcall
 #define FBVectorFloatAddr(x) (x.m128_f32)
 
+#define FBVectorFloatSin _mm_sin_ps
+#define FBVectorFloatSet1 _mm_set1_ps
+
 #define FBVectorFloatAdd _mm_add_ps
 #define FBVectorFloatSub _mm_sub_ps
 #define FBVectorFloatMul _mm_mul_ps
 #define FBVectorFloatDiv _mm_div_ps
-#define FBVectorFloatSin _mm_sin_ps
-#define FBVectorFloatSet1 _mm_set1_ps
+
 #define FBVectorFloatCmpLt _mm_cmplt_ps
 #define FBVectorFloatCmpGt _mm_cmpgt_ps
 #define FBVectorFloatCmpLe _mm_cmple_ps
 #define FBVectorFloatCmpGe _mm_cmpge_ps
 #define FBVectorFloatCmpEq _mm_cmpeq_ps
 #define FBVectorFloatCmpNeq _mm_cmpneq_ps
+
+#define FBVectorFloatOr _mm_or_ps
+#define FBVectorFloatAnd _mm_and_ps
+#define FBVectorFloatAndNot _mm_andnot_ps
 #define FBVectorFloatBlend  _mm_blendv_ps
 #define FBVectorFloatSetZero _mm_setzero_ps
 
@@ -39,18 +45,24 @@ inline int constexpr FBVectorBitCount = 256;
 #define FBVectorCall __vectorcall
 #define FBVectorFloatAddr(x) (x.m256_f32)
 
+#define FBVectorFloatSin _mm256_sin_ps
+#define FBVectorFloatSet1 _mm256_set1_ps
+
 #define FBVectorFloatAdd _mm256_add_ps
 #define FBVectorFloatSub _mm256_sub_ps
 #define FBVectorFloatMul _mm256_mul_ps
 #define FBVectorFloatDiv _mm256_div_ps
-#define FBVectorFloatSin _mm256_sin_ps
-#define FBVectorFloatSet1 _mm256_set1_ps
+
 #define FBVectorFloatCmpLt _mm256_cmplt_ps
 #define FBVectorFloatCmpGt _mm256_cmpgt_ps
 #define FBVectorFloatCmpLe _mm256_cmple_ps
 #define FBVectorFloatCmpGe _mm256_cmpge_ps
 #define FBVectorFloatCmpEq _mm256_cmpeq_ps
 #define FBVectorFloatCmpNeq _mm256_cmpneq_ps
+
+#define FBVectorFloatOr _mm256_or_ps
+#define FBVectorFloatAnd _mm256_and_ps
+#define FBVectorFloatAndNot _mm256_andnot_ps
 #define FBVectorFloatBlend  _mm256_blendv_ps
 #define FBVectorFloatSetZero _mm256_setzero_ps
 
@@ -90,6 +102,9 @@ public:
   friend FBFloatVector FBVectorCall FBFloatVectorCmpEq(FBFloatVector l, FBFloatVector r);
   friend FBFloatVector FBVectorCall FBFloatVectorCmpNeq(FBFloatVector l, FBFloatVector r);
 
+  friend FBFloatVector FBVectorCall FBFloatVectorOr(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall FBFloatVectorAnd(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall FBFloatVectorAndNot(FBFloatVector l, FBFloatVector r);
   friend FBFloatVector FBVectorCall FBFloatVectorBlend(FBFloatVector l, FBFloatVector r, FBFloatVector mask);
 
   FBFloatVector& FBVectorCall operator+=(float rhs) { return *this = *this + rhs; }
@@ -169,6 +184,15 @@ inline FBFloatVector FBVectorCall
 FBFloatVectorCmpNeq(FBFloatVector l, FBFloatVector r)
 { return FBVectorFloatCmpNeq(l._store, r._store); }
 
+inline FBFloatVector FBVectorCall 
+FBFloatVectorOr(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatOr(l._store, r._store);}
+inline FBFloatVector FBVectorCall 
+FBFloatVectorAnd(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatAnd(l._store, r._store);}
+inline FBFloatVector FBVectorCall 
+FBFloatVectorAndNot(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatAndNot(l._store, r._store);}
 inline FBFloatVector FBVectorCall 
 FBFloatVectorBlend(FBFloatVector l, FBFloatVector r, FBFloatVector mask)
 { return FBVectorFloatBlend(l._store, r._store, mask._store); }

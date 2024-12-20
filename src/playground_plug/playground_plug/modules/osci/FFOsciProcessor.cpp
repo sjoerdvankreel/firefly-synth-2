@@ -49,20 +49,16 @@ static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector zero = 0.0f;
-  FBFloatVector blepLow = phase / incr;
+  FBFloatVector blepLo = phase / incr;
   FBFloatVector blepHi = (phase - 1.0f) / incr;
   FBFloatVector result = phase * 2.0f - 1.0f;
-  FBFloatVector phaseLtIncrMask = phase < incr;
-  FBFloatVector phaseGteOneMinusIncrMask = phase >= (1.0f - incr);
-
-  //phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
-
-  FBFloatVector blepHi = (phase - 1.0f) / incr;
-  _mm_cmplt_ps
-
-  phaseGteOneMinusIncr *= 1.0f - phaseLtIncr;
-  result -= phaseLtIncr * ((2.0f - blepLow) * blepLow - 1.0f);
-  result -= phaseGteOneMinusIncr * ((blepHi + 2.0f) * blepHi + 1.0f);
+  FBFloatVector phaseLoMask = FBFloatVectorCmpLt(phase, incr);
+  FBFloatVector phaseHiMask = FBFloatVectorCmpGe(phase, 1.0f - incr);
+  phaseHiMask = FBFloatVectorAnd(phaseHiMask, phaseLoMask);
+  FBFloatVector blepLoOrZero = FBFloatVectorBlend(zero, blepLo, phaseLoMask);
+  FBFloatVector blepHiOrZero = FBFloatVectorBlend(zero, blepHi, phaseHiMask);
+  result -= blepLoOrZero;
+  result -= blepHiOrZero;
   return result;
 }
 
