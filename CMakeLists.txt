@@ -12,24 +12,6 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "Minimum macOS version")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 
-# listing - TODO also for gcc and clang
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /FAs")
-
-# architecture
-if (FB_USE_SSE)
-set (PROJECT_ARCH "SSE")
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
-endif()
-elseif (FB_USE_AVX)
-set (PROJECT_ARCH "AVX")
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
-endif()
-else ()
-message (FATAL_ERROR "Unsupported architecture.")
-endif ()
-
 # project
 set (PROJECT_VERSION_MAJOR 3)
 set (PROJECT_VERSION_MINOR 0)
@@ -41,6 +23,28 @@ set (PROJECT_NAME_BASE_VST3 "${PROJECT_NAME_BASE}_vst3")
 set (PROJECT_NAME_PLUG_CLAP "${PROJECT_NAME_PLUG}_clap")
 set (PROJECT_NAME_BASE_CLAP "${PROJECT_NAME_BASE}_clap")
 set (PROJECT_NAME_OUT PlaygroundPlug)
+
+# architecture
+if (FB_USE_SSE)
+set (PROJECT_ARCH "SSE")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
+endif()
+elseif (FB_USE_AVX)
+set (PROJECT_ARCH "AVX")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
+endif()
+else ()
+message (FATAL_ERROR "Unsupported architecture.")
+endif ()
+
+# compiler TODO the rest
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /FAs")
+set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL")  
+set (CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")  
+endif()
 
 # juce
 set(JUCE_MODULES_DIR "${CMAKE_SOURCE_DIR}/lib/JUCE/modules")
