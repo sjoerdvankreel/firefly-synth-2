@@ -17,6 +17,15 @@ static FBFloatVector
 GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
 {
   // https://github.com/surge-synthesizer/clap-saw-demo
+  // float phaseSteps[3];
+  // for (int q = -2; q <= 0; ++q)
+  // {
+  //   float ph = phase + q * incr;
+  //   ph -= std::floor(ph);
+  //   ph = ph * 2.0f - 1.0f;
+  //   phaseSteps[q + 2] = (ph * ph - 1.0f) * ph / 6.0f;
+  // }
+  // y = (phaseSteps[0] + phaseSteps[2] - 2.0f * phaseSteps[1]) * 0.25f * (1.0f / incr) * (1.0f / incr);
   FBFloatVector result;
   for (int v = 0; v < FBVectorFloatCount; v++)
   {
@@ -24,7 +33,7 @@ GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
     for (int q = -2; q <= 0; ++q)
     {
       float ph = phase[v] + q * incr[v];
-      ph = ph - floor(ph);
+      ph -= std::floor(ph);
       ph = ph * 2.0f - 1.0f;
       phaseSteps[q + 2] = (ph * ph - 1.0f) * ph / 6.0f;
     }
