@@ -15,15 +15,16 @@ inline int constexpr FBVectorBitCount = 128;
 #define FBVectorCall __vectorcall
 #define FBVectorFloatAddr(x) (x.m128_f32)
 
-#define FBVectorFloatSin _mm_sin_ps
-#define FBVectorFloatSet1 _mm_set1_ps
-#define FBVectorFloatCmp _mm_cmp_ps
-#define FBVectorFloatBlend _mm_blendv_ps
-
 #define FBVectorFloatAdd _mm_add_ps
 #define FBVectorFloatSub _mm_sub_ps
 #define FBVectorFloatMul _mm_mul_ps
 #define FBVectorFloatDiv _mm_div_ps
+
+#define FBVectorFloatSin _mm_sin_ps
+#define FBVectorFloatCmp _mm_cmp_ps
+#define FBVectorFloatSet1 _mm_set1_ps
+#define FBVectorFloatFloor _mm_floor_ps
+#define FBVectorFloatBlend _mm_blendv_ps
 
 #define FBVectorFloatOr _mm_or_ps
 #define FBVectorFloatAnd _mm_and_ps
@@ -39,15 +40,16 @@ inline int constexpr FBVectorBitCount = 256;
 #define FBVectorCall __vectorcall
 #define FBVectorFloatAddr(x) (x.m256_f32)
 
-#define FBVectorFloatSin _mm256_sin_ps
-#define FBVectorFloatSet1 _mm256_set1_ps
-#define FBVectorFloatCmp _mm256_cmp_ps
-#define FBVectorFloatBlend _mm256_blendv_ps
-
 #define FBVectorFloatAdd _mm256_add_ps
 #define FBVectorFloatSub _mm256_sub_ps
 #define FBVectorFloatMul _mm256_mul_ps
 #define FBVectorFloatDiv _mm256_div_ps
+
+#define FBVectorFloatSin _mm256_sin_ps
+#define FBVectorFloatCmp _mm256_cmp_ps
+#define FBVectorFloatSet1 _mm256_set1_ps
+#define FBVectorFloatFloor _mm256_floor_ps
+#define FBVectorFloatBlend _mm256_blendv_ps
 
 #define FBVectorFloatOr _mm256_or_ps
 #define FBVectorFloatAnd _mm256_and_ps
@@ -108,8 +110,13 @@ public:
   float& operator[](int index) { return FBVectorFloatAddr(_store)[index]; }
   float operator[](int index) const { return FBVectorFloatAddr(_store)[index]; }
 
-  FBFloatVector FBVectorCall Sin() { return FBVectorFloatSin(_store); }
+  FBFloatVector FBVectorCall Inverted() { return 1.0f - *this; }
+  FBFloatVector FBVectorCall Reciprocal() { return 1.0f / *this; }
+  FBFloatVector FBVectorCall Bipolar() { return (*this * 2.0f) - 1.0f; }
   FBFloatVector FBVectorCall Unipolar() { return (*this + 1.0f) * 0.5f; }
+
+  FBFloatVector FBVectorCall Sin() { return FBVectorFloatSin(_store); }
+  FBFloatVector FBVectorCall Floor() { return FBVectorFloatFloor(_store); }
   FBFloatVector& FBVectorCall operator=(FBFloatVector rhs) { _store = rhs._store; return *this; }
   FBFloatVector& FBVectorCall operator=(float rhs) { _store = FBVectorFloatSet1(rhs); return *this; }
 };
