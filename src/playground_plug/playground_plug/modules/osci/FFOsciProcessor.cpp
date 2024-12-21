@@ -7,10 +7,6 @@
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
-// TODO
-static float generate_saw(float phase, float inc);
-static FBFloatVector GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr);
-
 static FBFloatVector
 GenerateSin(FBFloatVector phase)
 {
@@ -20,34 +16,43 @@ GenerateSin(FBFloatVector phase)
 static FBFloatVector
 GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
 {
-  FBFloatVector result = phase;
-  for (int i = 0; i < FBVectorFloatCount; i++)
+  // stolen from clap-saw-demo
+  FBFloatVector result;
+  for (int v = 0; v < FBVectorFloatCount; v++)
   {
-    result[i] = generate_saw(phase[i], incr[i]);
+    /*
+         * Use a cubic integrated saw and second derive it at
+         * each point. This is basically the math I worked
+         * out for the surge modern oscillator. The cubic function
+         * which gives a clean saw is phase^3 / 6 - phase / 6.
+         * Evaluate it at 3 points and then differentiate it like
+         * we do in Surge Modern. The waveform is the same both
+         * channels.
+         */
+    double phaseSteps[3];
+    for (int q = -2; q <= 0; ++q)
+    {
+      double ph = phase[v] + q * incr[v];
+
+      // Bind phase to 0...1. Lots of ways to do this
+      ph = ph - floor(ph);
+
+      // Our calculation assumes phase in -1,1 and this phase is
+      // in 0 1 so
+      ph = ph * 2 - 1;
+      phaseSteps[q + 2] = (ph * ph - 1) * ph / 6.0;
+    }
+    // the 0.25 here is because of the phase rescaling again
+    double saw = (phaseSteps[0] + phaseSteps[2] - 2 * phaseSteps[1]) * 0.25 * (1.0 / incr[v]) * (1.0 / incr[v]);
+    result[v] = 0.2 * saw;
   }
   return result;
-}
-
-// https://www.kvraudio.com/forum/viewtopic.php?t=375517
-static inline float
-generate_blep(float phase, float inc)
-{
-  float b;
-  if (phase < inc) return b = phase / inc, (2.0f - b) * b - 1.0f;
-  if (phase >= 1.0f - inc) return b = (phase - 1.0f) / inc, (b + 2.0f) * b + 1.0f;
-  return 0.0f;
-}
-
-static inline float
-generate_saw(float phase, float inc)
-{
-  float saw = phase * 2 - 1;
-  return saw - generate_blep(phase, inc);
 }
 
 static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
+  // plain BLEP saw
   // y = phase * 2 - 1
   // if (phase < inc) y -= b = phase / inc, (2.0f - b) * b - 1.0f
   // else if (phase >= 1.0f - inc) y -= b = (phase - 1.0f) / inc, (b + 2.0f) * b + 1.0f
