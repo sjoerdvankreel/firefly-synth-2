@@ -13,13 +13,19 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 
 # listing - TODO also for gcc and clang
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /FA")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /FAs")
 
 # architecture
 if (FB_USE_SSE)
 set (PROJECT_ARCH "SSE")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
+endif()
 elseif (FB_USE_AVX)
 set (PROJECT_ARCH "AVX")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
+endif()
 else ()
 message (FATAL_ERROR "Unsupported architecture.")
 endif ()
