@@ -16,35 +16,19 @@ GenerateSin(FBFloatVector phase)
 static FBFloatVector
 GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
 {
-  // stolen from clap-saw-demo
+  // https://github.com/surge-synthesizer/clap-saw-demo
   FBFloatVector result;
   for (int v = 0; v < FBVectorFloatCount; v++)
   {
-    /*
-         * Use a cubic integrated saw and second derive it at
-         * each point. This is basically the math I worked
-         * out for the surge modern oscillator. The cubic function
-         * which gives a clean saw is phase^3 / 6 - phase / 6.
-         * Evaluate it at 3 points and then differentiate it like
-         * we do in Surge Modern. The waveform is the same both
-         * channels.
-         */
     float phaseSteps[3];
     for (int q = -2; q <= 0; ++q)
     {
       float ph = phase[v] + q * incr[v];
-
-      // Bind phase to 0...1. Lots of ways to do this
       ph = ph - floor(ph);
-
-      // Our calculation assumes phase in -1,1 and this phase is
-      // in 0 1 so
       ph = ph * 2.0f - 1.0f;
-      phaseSteps[q + 2] = (ph * ph - 1) * ph / 6.0f;
+      phaseSteps[q + 2] = (ph * ph - 1.0f) * ph / 6.0f;
     }
-    // the 0.25 here is because of the phase rescaling again
-    float saw = (phaseSteps[0] + phaseSteps[2] - 2.0f * phaseSteps[1]) * 0.25f * (1.0f / incr[v]) * (1.0f / incr[v]);
-    result[v] = saw;
+    result[v] = (phaseSteps[0] + phaseSteps[2] - 2.0f * phaseSteps[1]) * 0.25f * (1.0f / incr[v]) * (1.0f / incr[v]);
   }
   return result;
 }
