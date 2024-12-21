@@ -29,21 +29,21 @@ GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
          * we do in Surge Modern. The waveform is the same both
          * channels.
          */
-    double phaseSteps[3];
+    float phaseSteps[3];
     for (int q = -2; q <= 0; ++q)
     {
-      double ph = phase[v] + q * incr[v];
+      float ph = phase[v] + q * incr[v];
 
       // Bind phase to 0...1. Lots of ways to do this
       ph = ph - floor(ph);
 
       // Our calculation assumes phase in -1,1 and this phase is
       // in 0 1 so
-      ph = ph * 2 - 1;
-      phaseSteps[q + 2] = (ph * ph - 1) * ph / 6.0;
+      ph = ph * 2.0f - 1.0f;
+      phaseSteps[q + 2] = (ph * ph - 1) * ph / 6.0f;
     }
     // the 0.25 here is because of the phase rescaling again
-    double saw = (phaseSteps[0] + phaseSteps[2] - 2 * phaseSteps[1]) * 0.25 * (1.0 / incr[v]) * (1.0 / incr[v]);
+    float saw = (phaseSteps[0] + phaseSteps[2] - 2.0f * phaseSteps[1]) * 0.25f * (1.0f / incr[v]) * (1.0f / incr[v]);
     result[v] = saw;
   }
   return result;
@@ -52,7 +52,7 @@ GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
 static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
-  // plain BLEP saw
+  // https://www.kvraudio.com/forum/viewtopic.php?t=375517
   // y = phase * 2 - 1
   // if (phase < inc) y -= b = phase / inc, (2.0f - b) * b - 1.0f
   // else if (phase >= 1.0f - inc) y -= b = (phase - 1.0f) / inc, (b + 2.0f) * b + 1.0f
