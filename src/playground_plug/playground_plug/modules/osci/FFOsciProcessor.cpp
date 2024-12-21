@@ -44,7 +44,7 @@ GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
     }
     // the 0.25 here is because of the phase rescaling again
     double saw = (phaseSteps[0] + phaseSteps[2] - 2 * phaseSteps[1]) * 0.25 * (1.0 / incr[v]) * (1.0 / incr[v]);
-    result[v] = 0.2 * saw;
+    result[v] = saw;
   }
   return result;
 }
