@@ -13,4 +13,4 @@ enum { FFModuleGLFO, FFModuleOsci, FFModuleMaster, FFModuleCount };
 enum { FFGLFOBlockOn, FFGLFOAccRate, FFGLFOParamCount };
 enum { FFMasterBlockSmooth, FFMasterAccGain, FFMasterParamCount };
 enum { FFOsciTypeSine, FFOsciTypeBLEPSaw, FFOsciTypeCount };
-enum { FFOsciBlockOn, FFOsciBlockType, FFOsciAccGain, FFOsciAccPitch, FFOsciAccGLFOToGain, FFOsciParamCount };
+enum { FFOsciBlockOn, FFOsciBlockType, FFOsciBlockNote, FFOsciAccGain, FFOsciAccCent, FFOsciAccGLFOToGain, FFOsciParamCount };

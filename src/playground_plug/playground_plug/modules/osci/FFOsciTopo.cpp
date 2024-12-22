@@ -37,6 +37,18 @@ FFMakeOsciTopo()
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
 
+  auto& note = result.params[FFOsciBlockNote];
+  note.acc = false;
+  note.slotCount = 1;
+  note.valueCount = 127;
+  note.defaultText = "C4";
+  note.name = "Note";
+  note.id = "{592BFC17-0E32-428F-B4B0-E0DF39514BF0}";
+  // todo totext without list
+  auto selectNote = [](auto& module) { return &module.block.note; };
+  note.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectNote);
+  note.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectNote);
+
   auto& gain = result.params[FFOsciAccGain];
   gain.acc = true;
   gain.unit = "%";
@@ -50,18 +62,18 @@ FFMakeOsciTopo()
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
   gain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
 
-  auto& pitch = result.params[FFOsciAccPitch];
-  pitch.acc = true;
-  pitch.slotCount = 1;
-  pitch.valueCount = 0;
-  pitch.plainMin = 0.0f;
-  pitch.plainMax = 127.0f;
-  pitch.name = "Pitch";
-  pitch.unit = "Semitones";
-  pitch.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
-  auto selectPitch = [](auto& module) { return &module.acc.pitch; };
-  pitch.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPitch);
-  pitch.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectPitch);
+  auto& cent = result.params[FFOsciAccCent];
+  cent.acc = true;
+  cent.slotCount = 1;
+  cent.valueCount = 0;
+  cent.plainMin = 0.0f;
+  cent.plainMax = 127.0f;
+  cent.name = "Pitch";
+  cent.unit = "Semitones";
+  cent.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
+  auto selectCent = [](auto& module) { return &module.acc.cent; };
+  cent.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectCent);
+  cent.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectCent);
 
   auto& glfoToGain = result.params[FFOsciAccGLFOToGain];
   glfoToGain.acc = true;
