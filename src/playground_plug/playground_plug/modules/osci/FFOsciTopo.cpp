@@ -25,9 +25,9 @@ FFMakeOsciTopo()
 
   auto& type = result.params[FFOsciBlockType];
   type.acc = false;
+  type.defaultText = "Sine";
   type.name = "Type";
   type.slotCount = 1;
-  type.defaultText = "Sine";
   type.valueCount = FFOsciTypeCount;
   type.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
   type.list = {
@@ -39,10 +39,10 @@ FFMakeOsciTopo()
 
   auto& note = result.params[FFOsciBlockNote];
   note.acc = false;
-  note.slotCount = 1;
-  note.valueCount = 127;
   note.defaultText = "C4";
   note.name = "Note";
+  note.slotCount = 1;
+  note.valueCount = 128;
   note.id = "{592BFC17-0E32-428F-B4B0-E0DF39514BF0}";
   // todo totext without list
   auto selectNote = [](auto& module) { return &module.block.note; };
@@ -51,12 +51,12 @@ FFMakeOsciTopo()
 
   auto& gain = result.params[FFOsciAccGain];
   gain.acc = true;
-  gain.unit = "%";
-  gain.name = "Gain";
-  gain.valueCount = 0;
   gain.defaultText = "100";
   gain.displayMultiplier = 100.0f;
+  gain.name = "Gain";
   gain.slotCount = FFOsciGainCount;
+  gain.valueCount = 0;
+  gain.unit = "%";
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
@@ -64,12 +64,14 @@ FFMakeOsciTopo()
 
   auto& cent = result.params[FFOsciAccCent];
   cent.acc = true;
+  cent.defaultText = "0";
+  cent.displayMultiplier = 100.0f;
+  cent.name = "Cent";
+  cent.plainMin = -1.0f;
+  cent.plainMax = 1.0f;
   cent.slotCount = 1;
   cent.valueCount = 0;
-  cent.plainMin = 0.0f;
-  cent.plainMax = 127.0f;
-  cent.name = "Pitch";
-  cent.unit = "Semitones";
+  cent.unit = "Cent";
   cent.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
   auto selectCent = [](auto& module) { return &module.acc.cent; };
   cent.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectCent);
@@ -77,11 +79,11 @@ FFMakeOsciTopo()
 
   auto& glfoToGain = result.params[FFOsciAccGLFOToGain];
   glfoToGain.acc = true;
-  glfoToGain.unit = "%";
+  glfoToGain.displayMultiplier = 100.0f;
   glfoToGain.name = "GLFO To Gain";
   glfoToGain.slotCount = 1;
   glfoToGain.valueCount = 0;
-  glfoToGain.displayMultiplier = 100.0f;
+  glfoToGain.unit = "%";
   glfoToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
   auto selectGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
   glfoToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
