@@ -24,6 +24,15 @@ FBStaticParam::TextToDiscreteInt(std::string const& text) const
 }
 
 std::optional<int>
+FBStaticParam::TextToDiscreteFormat(std::string const& text) const
+{
+  for (int i = 0; i < valueCount; i++)
+    if (text == discreteToText(i))
+      return { i };
+  return {};
+}
+
+std::optional<int>
 FBStaticParam::TextToDiscreteList(std::string const& text, bool io) const
 {
   for (int i = 0; i < list.size(); i++)
@@ -37,6 +46,8 @@ FBStaticParam::TextToDiscrete(std::string const& text, bool io) const
 {
   if (list.size() != 0)
     return TextToDiscreteList(text, io);
+  else if (discreteToText)
+    return TextToDiscreteFormat(text);
   else if (valueCount == 2)
     return TextToDiscreteBool(text);
   else
@@ -61,6 +72,8 @@ FBStaticParam::DiscreteToText(int discrete, bool io) const
 {
   if (list.size() != 0)
     return io ? list[discrete].id : list[discrete].text;
+  if (discreteToText)
+    return discreteToText(discrete);
   if (valueCount == 2)
     return discrete == 0 ? "Off" : "On";
   return std::to_string(discrete);

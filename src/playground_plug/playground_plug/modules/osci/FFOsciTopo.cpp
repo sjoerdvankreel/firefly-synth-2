@@ -37,14 +37,15 @@ FFMakeOsciTopo()
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
 
+  std::vector<std::string> notes = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
   auto& note = result.params[FFOsciBlockNote];
   note.acc = false;
   note.defaultText = "C4";
+  note.discreteToText = [notes](int i) { return notes[i % 12] + std::to_string(i / 12 - 1); };
   note.name = "Note";
   note.slotCount = 1;
   note.valueCount = 128;
   note.id = "{592BFC17-0E32-428F-B4B0-E0DF39514BF0}";
-  // todo totext without list
   auto selectNote = [](auto& module) { return &module.block.note; };
   note.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectNote);
   note.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectNote);

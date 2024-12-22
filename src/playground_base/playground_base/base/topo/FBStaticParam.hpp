@@ -14,6 +14,8 @@ class FBGlobalAccParamState;
 class FBVoiceBlockParamState;
 class FBGlobalBlockParamState;
 
+typedef std::function<std::string(int)>
+FBDiscreteToText;
 typedef std::function<float* (
   int moduleSlot, int paramSlot, void* state)>
 FBScalarAddrSelector;
@@ -46,6 +48,8 @@ private:
   std::optional<int>
   TextToDiscreteBool(std::string const& text) const;
   std::optional<int>
+  TextToDiscreteFormat(std::string const& text) const;
+  std::optional<int>
   TextToDiscreteList(std::string const& text, bool io) const;
 
 public:
@@ -60,6 +64,7 @@ public:
   float displayMultiplier = 1.0f;
   std::string defaultText = {};
   std::vector<FBListItem> list = {};
+  FBDiscreteToText discreteToText = {};
 
   FBScalarAddrSelector scalarAddr = {};
   FBVoiceAccAddrSelector voiceAccAddr = {};
