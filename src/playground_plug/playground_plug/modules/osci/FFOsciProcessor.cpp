@@ -37,7 +37,8 @@ GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 void
 FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 {
-  float key = static_cast<float>(state.voice->event.note.key);
+  int key = state.voice->event.note.key;
+  float freq = FBPitchToFreq(static_cast<float>(key));
   auto const& glfo = state.proc->dsp.global.glfo[0].output;
   auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
 
@@ -56,21 +57,15 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     return;
   }
 
-  FBFixedVectorBlock incr;
-  FBFixedVectorBlock pitch;
-  pitch.Transform([&](int v) { return key + note - 60.0f + cent[v]; });
+  float incr = freq / state.sampleRate; // TODO this should be dynamic
   for (int s = 0; s < FBFixedBlockSamples; s++)
-  {
-    float freq = FBPitchToFreq(pitch.Sample(s));
-    incr.Sample(s, freq / state.sampleRate);
     output.Samples(s, _phase.Next(state.sampleRate, freq));
-  }
   switch (type)
   {
   case FFOsciTypeSine: output.Transform([&](int ch, int v) { 
     return GenerateSin(output[ch][v]); }); break;
   case FFOsciTypeBLEPSaw: output.Transform([&](int ch, int v) {
-    return GenerateBLEPSaw(output[ch][v], incr[v]); }); break;
+    return GenerateBLEPSaw(output[ch][v], FBFloatVector(incr)); }); break;
   default: assert(false); break;
   }
   output.Transform([&](int ch, int v) { 
