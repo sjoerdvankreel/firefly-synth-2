@@ -14,8 +14,9 @@ GenerateSin(FBFloatVector phase)
 }
 
 static FBFloatVector
-GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
+GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 { 
+  // TODO the fast version
   // https://github.com/surge-synthesizer/clap-saw-demo
   // float phaseSteps[3];
   // for (int q = -2; q <= 0; ++q) {
@@ -72,8 +73,8 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   {
   case FFOsciTypeSine: output.Transform([&](int ch, int v) { 
     return GenerateSin(output[ch][v]); }); break;
-  case FFOsciTypeBLEPSaw: output.Transform([&](int ch, int v) {
-    return GenerateBLEPSaw(output[ch][v], incr[v]); }); break;
+  case FFOsciTypeSaw: output.Transform([&](int ch, int v) {
+    return GenerateSaw(output[ch][v], incr[v]); }); break;
   default: assert(false); break;
   }
   output.Transform([&](int ch, int v) { 
