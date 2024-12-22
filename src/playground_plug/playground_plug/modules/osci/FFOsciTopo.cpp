@@ -32,8 +32,7 @@ FFMakeOsciTopo()
   type.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
   type.list = {
     { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
-    { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "BLEP Saw" },
-    { "{5C1E6C35-4C7E-4C91-93E8-1D2AAD2B663E}", "Surge Saw" } };
+    { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "BLEP Saw" } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);

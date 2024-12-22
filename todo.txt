@@ -1,4 +1,4 @@
-why surge saw same as blep saw?
+checkout the fast surge saw
 do an early mac build to see if manual neon is doable, or sse2neon works, or need google highway after all
 make use of fma
 checkout if the threadpool is actually used

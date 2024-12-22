@@ -14,31 +14,6 @@ GenerateSin(FBFloatVector phase)
 }
 
 static FBFloatVector
-GenerateSurgeSaw(FBFloatVector phase, FBFloatVector incr)
-{
-  // https://github.com/surge-synthesizer/clap-saw-demo
-  // float phaseSteps[3];
-  // for (int q = -2; q <= 0; ++q) {
-  //   float ph = phase + q * incr;
-  //   ph -= std::floor(ph);
-  //   ph = ph * 2.0f - 1.0f;
-  //   phaseSteps[q + 2] = (ph * ph - 1.0f) * ph / 6.0f; }
-  // float scale = 0.25f * (1.0f / incr) * (1.0f / incr);
-  // y = scale * (phaseSteps[0] + phaseSteps[2] - 2.0f * phaseSteps[1]);
-  FBFloatVector result;
-  FBFloatVector phaseSteps[3];
-  FBFloatVector incrReciprocal = incr.Reciprocal();
-  for (int q = -2; q <= 0; ++q)
-  {
-    FBFloatVector ph = phase + static_cast<float>(q) * incr;
-    ph = (ph - ph.Floor()).Bipolar();
-    phaseSteps[q + 2] = (ph * ph - 1.0f) * ph / 6.0f;
-  }
-  FBFloatVector scale = 0.25f * incrReciprocal * incrReciprocal;
-  return scale * (phaseSteps[0] + phaseSteps[2] - 2.0f * phaseSteps[1]);
-}
-
-static FBFloatVector
 GenerateBLEPSaw(FBFloatVector phase, FBFloatVector incr)
 {
   // https://www.kvraudio.com/forum/viewtopic.php?t=375517
@@ -89,8 +64,6 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     return GenerateSin(output[ch][v]); }); break;
   case FFOsciTypeBLEPSaw: output.Transform([&](int ch, int v) {
     return GenerateBLEPSaw(output[ch][v], FBFloatVector(incr)); }); break;
-  case FFOsciTypeSurgeSaw: output.Transform([&](int ch, int v) {
-    return GenerateSurgeSaw(output[ch][v], FBFloatVector(incr)); }); break;
   default: assert(false); break;
   }
   output.Transform([&](int ch, int v) { 
