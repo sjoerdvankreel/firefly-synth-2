@@ -20,6 +20,8 @@ inline int constexpr FBVectorBitCount = 128;
 #define FBVectorFloatMul _mm_mul_ps
 #define FBVectorFloatDiv _mm_div_ps
 
+#define FBVectorFloatMin _mm_min_ps
+#define FBVectorFloatMax _mm_max_ps
 #define FBVectorFloatPow _mm_pow_ps
 #define FBVectorFloatSin _mm_sin_ps
 #define FBVectorFloatCmp _mm_cmp_ps
@@ -46,6 +48,8 @@ inline int constexpr FBVectorBitCount = 256;
 #define FBVectorFloatMul _mm256_mul_ps
 #define FBVectorFloatDiv _mm256_div_ps
 
+#define FBVectorFloatMin _mm256_min_ps
+#define FBVectorFloatMax _mm256_max_ps
 #define FBVectorFloatPow _mm256_pow_ps
 #define FBVectorFloatSin _mm256_sin_ps
 #define FBVectorFloatCmp _mm256_cmp_ps
@@ -87,6 +91,8 @@ public:
   friend FBFloatVector FBVectorCall operator*(FBFloatVector l, FBFloatVector r);
   friend FBFloatVector FBVectorCall operator/(FBFloatVector l, FBFloatVector r);
 
+  friend FBFloatVector FBVectorCall FBFloatVectorMin(FBFloatVector l, FBFloatVector r);
+  friend FBFloatVector FBVectorCall FBFloatVectorMax(FBFloatVector l, FBFloatVector r);
   friend FBFloatVector FBVectorCall FBFloatVectorPow(FBFloatVector l, FBFloatVector r);
 
   friend FBFloatVector FBVectorCall FBFloatVectorCmpLt(FBFloatVector l, FBFloatVector r);
@@ -125,6 +131,12 @@ public:
   FBFloatVector& FBVectorCall operator=(float rhs) { _store = FBVectorFloatSet1(rhs); return *this; }
 };
 
+inline FBFloatVector FBVectorCall 
+FBFloatVectorMin(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatMin(l._store, r._store); }
+inline FBFloatVector FBVectorCall 
+FBFloatVectorMax(FBFloatVector l, FBFloatVector r)
+{ return FBVectorFloatMax(l._store, r._store); }
 inline FBFloatVector FBVectorCall 
 FBFloatVectorPow(FBFloatVector l, FBFloatVector r)
 { return FBVectorFloatPow(l._store, r._store); }
