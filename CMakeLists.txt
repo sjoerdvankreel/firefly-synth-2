@@ -56,6 +56,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 # juce
+add_definitions(-DJUCE_USE_CURL=0)
+add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=0)
 set(JUCE_MODULES_DIR "${CMAKE_SOURCE_DIR}/lib/JUCE/modules")
 add_library(juce STATIC 
   "${JUCE_MODULES_DIR}/juce_core/juce_core.cpp"

@@ -2,6 +2,12 @@
 
 #include <numbers>
 
+#if _MSC_VER
+#define FBVectorCall __vectorcall
+#else
+#define FBVectorCall
+#endif
+
 // todo neon
 #if FB_USE_SSE
 #if FB_USE_AVX
@@ -12,7 +18,6 @@
 typedef __m128 FBVectorStore;
 inline int constexpr FBVectorBitCount = 128;
 
-#define FBVectorCall __vectorcall
 #define FBVectorFloatAddr(x) (x.m128_f32)
 
 #define FBVectorFloatAdd _mm_add_ps

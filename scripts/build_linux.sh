@@ -9,5 +9,5 @@ fi
 cd ..
 mkdir -p "build/linux/$1/SSE"
 cd "build/linux/$1/SSE"
-cmake -DCMAKE_BUILD_TYPE="$1" -DFB_USE_SSE=1 -DFB_USE_AVX=0 -DJUCE_USE_CURL=0 ../../../..
+cmake -DCMAKE_BUILD_TYPE="$1" -DFB_USE_SSE=1 -DFB_USE_AVX=0 ../../../..
 make
