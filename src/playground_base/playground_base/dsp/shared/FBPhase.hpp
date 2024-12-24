@@ -1,21 +1,27 @@
 #pragma once
 
+#include <playground_base/base/shared/FBVector.hpp>
 #include <cmath>
 
-class FBPhase
+class alignas(sizeof(FBFloatVector)) FBPhase final
 {
-  float _current = 0.0f;
+  std::array<float, FBVectorFloatCount> _scratch = {};
+  float _x = {};
 
 public:
-  float Current() const { return _current; }
-  float Next(float sampleRate, float frequency);
+  FBFloatVector Next(FBFloatVector incr);
 };
 
-inline float
-FBPhase::Next(float sampleRate, float frequency)
+inline FBFloatVector
+FBPhase::Next(FBFloatVector incr)
 {
-  float result = _current;
-  _current += frequency / sampleRate;
-  _current -= std::floor(_current);
-  return result;
+  incr.store_aligned(_scratch.data());
+  for (int i = 0; i < FBVectorFloatCount; i++)
+  {
+    float y = _x;
+    _x += _scratch[i];
+    _x -= std::floor(_x);
+    _scratch[i] = y;
+  }
+  return FBFloatVector::load_aligned(_scratch.data());
 }

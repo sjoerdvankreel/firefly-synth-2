@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/topo/FBListItem.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
@@ -80,6 +81,8 @@ public:
   { return std::clamp((int)(normalized * valueCount), 0, valueCount - 1); }
 
   float NormalizedToPlainLinear(float normalized) const
+  { return plainMin + (plainMax - plainMin) * normalized; }
+  FBFloatVector NormalizedToPlainLinear(FBFloatVector normalized) const
   { return plainMin + (plainMax - plainMin) * normalized; }
   float PlainLinearToNormalized(float plain) const
   { return std::clamp((plain - plainMin) / (plainMax - plainMin), 0.0f, 1.0f); }

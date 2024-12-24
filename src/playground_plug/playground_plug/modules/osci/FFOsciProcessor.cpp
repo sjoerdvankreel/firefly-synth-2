@@ -57,14 +57,13 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     return;
   }
 
-  FBFixedVectorBlock freq;
   FBFixedVectorBlock incr;
-  FBFixedVectorBlock pitch;
-  pitch.Transform([&](int v) { return key + note - 60.0f + cent[v]; });
-  freq.Transform([&](int v) { return FBPitchToFreq(pitch[v], state.sampleRate); });
-  incr.Transform([&](int v) { return freq[v] / state.sampleRate; });
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-    output.Samples(s, _phase.Next(state.sampleRate, freq.Sample(s)));
+  incr.Transform([&](int v) { 
+    auto centPlain = topo.params[FFOsciAccCent].NormalizedToPlainLinear(cent[v]);
+    auto pitch = key + note - 60.0f + centPlain;
+    auto freq = FBPitchToFreq(pitch, state.sampleRate);
+    return freq / state.sampleRate; });
+  output.Transform([&](int v) { return _phase.Next(incr[v]); });
 
   switch (type)
   {
