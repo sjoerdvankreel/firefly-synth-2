@@ -13,7 +13,7 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
   friend class FBVoiceAccParamState;
   friend class FBGlobalAccParamState;
 
-  FBFixedVectorBlock _cv = {};
+  FBFixedVectorBlock _cv = {}; // TODO this not needs be simd -- but, need have 1 simd-size-block as latency
   float _modulation = {};
   FBOnePoleFilter _smoother = {};
 

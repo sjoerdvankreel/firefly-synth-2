@@ -6,7 +6,6 @@
 class alignas(sizeof(FBFloatVector)) FBPhase final
 {
   float _x = 0.0f;
-
 public:
   FBFloatVector Next(FBFloatVector incr);
 };
