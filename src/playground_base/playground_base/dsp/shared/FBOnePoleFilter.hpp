@@ -1,33 +1,26 @@
 #pragma once
 
-#include <playground_base/base/shared/FBVector.hpp>
-
 #include <cmath>
 #include <cassert>
 #include <numbers>
 
-class alignas(sizeof(FBFloatVector)) FBOnePoleFilter final
+class FBOnePoleFilter final
 {
-  std::array<float, FBVectorFloatCount> _scratch = {};
   float _a = 0.0f;
-  float _b = 0.0f; 
+  float _b = 0.0f;
   float _z = 0.0f;
 
 public:
-  FBFloatVector Next(FBFloatVector in);
+  float Next(float in);
   void SetCoeffs(float sampleRate, float durationSecs);
 };
 
-inline FBFloatVector
-FBOnePoleFilter::Next(FBFloatVector in)
+inline float
+FBOnePoleFilter::Next(float in)
 {
-  in.store_aligned(_scratch.data());
-  for (int i = 0; i < FBVectorFloatCount; i++)
-  {
-    _z = (_scratch[i] * _b) + (_z * _a);
-    _scratch[i] = _z;
-  }
-  return FBFloatVector::load_aligned(_scratch.data());
+  float out = (in * _b) + (_z * _a);
+  assert(!std::isnan(out));
+  return _z = out;
 }
 
 inline void
