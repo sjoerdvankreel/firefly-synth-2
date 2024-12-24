@@ -25,3 +25,9 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
   FBFixedVectorBlock const& CV() const { return _cv; }
 };
+
+inline void 
+FBAccParamState::SetSmoothingCoeffs(float sampleRate, float durationSecs) 
+{ 
+  _smoother.SetCoeffs(sampleRate, durationSecs); 
+}
