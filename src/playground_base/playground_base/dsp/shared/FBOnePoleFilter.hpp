@@ -6,9 +6,8 @@
 #include <cassert>
 #include <numbers>
 
-class alignas(sizeof(FBFloatVector)) FBOnePoleFilter final
+class FBOnePoleFilter final
 {
-  std::array<float, FBVectorFloatCount> _scratch = {};
   float _a = 0.0f;
   float _b = 0.0f; 
   float _z = 0.0f;
@@ -21,13 +20,14 @@ public:
 inline FBFloatVector
 FBOnePoleFilter::Next(FBFloatVector in)
 {
-  in.store_aligned(_scratch.data());
+  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> scratch;
+  in.store_aligned(scratch.data());
   for (int i = 0; i < FBVectorFloatCount; i++)
   {
-    _z = (_scratch[i] * _b) + (_z * _a);
-    _scratch[i] = _z;
+    _z = (scratch[i] * _b) + (_z * _a);
+    scratch[i] = _z;
   }
-  return FBFloatVector::load_aligned(_scratch.data());
+  return FBFloatVector::load_aligned(scratch.data());
 }
 
 inline void

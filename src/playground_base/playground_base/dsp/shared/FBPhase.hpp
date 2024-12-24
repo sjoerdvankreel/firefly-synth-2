@@ -5,8 +5,7 @@
 
 class alignas(sizeof(FBFloatVector)) FBPhase final
 {
-  std::array<float, FBVectorFloatCount> _scratch = {};
-  float _x = {};
+  float _x = 0.0f;
 
 public:
   FBFloatVector Next(FBFloatVector incr);
@@ -15,13 +14,14 @@ public:
 inline FBFloatVector
 FBPhase::Next(FBFloatVector incr)
 {
-  incr.store_aligned(_scratch.data());
+  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> scratch;
+  incr.store_aligned(scratch.data());
   for (int i = 0; i < FBVectorFloatCount; i++)
   {
     float y = _x;
-    _x += _scratch[i];
+    _x += scratch[i];
     _x -= std::floor(_x);
-    _scratch[i] = y;
+    scratch[i] = y;
   }
-  return FBFloatVector::load_aligned(_scratch.data());
+  return FBFloatVector::load_aligned(scratch.data());
 }
