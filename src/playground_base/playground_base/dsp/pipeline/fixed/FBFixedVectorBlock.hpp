@@ -18,13 +18,13 @@ public:
   template <class Op>
   void Transform(Op op);
 
-  FBFloatVector& operator[](int index) { return _store[index]; }
-  FBFloatVector const& operator[](int index) const { return _store[index]; }
-  float Sample(int index) const { return 0; }//TODO { return (*this)[index / FBVectorFloatCount].get(index % FBVectorFloatCount); } // TODO?
-  void Sample(int index, float val) {} // TODO (*this)[index / FBVectorFloatCount][index % FBVectorFloatCount] = val; }
+  void Clear();
+  void StoreUnaligned(float* vals);
+  void LoadUnaligned(float const* vals);
+  void Add(FBFixedVectorBlock const& rhs);
 
-  void Clear() { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v] = 0.0f; }
-  void Add(FBFixedVectorBlock const& rhs) { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v] += rhs._store[v]; }
+  FBFloatVector& operator[](int index) { return _store[index]; }
+  FBFloatVector const& operator[](int index) const { return _store[index]; } 
 };
 
 template <class Op>
@@ -33,4 +33,32 @@ FBFixedVectorBlock::Transform(Op op)
 {
   for (int v = 0; v < FBFixedBlockVectors; v++)
     (*this)[v] = op(v);
+}
+
+inline void
+FBFixedVectorBlock::Clear()
+{
+  for (int v = 0; v < FBFixedBlockVectors; v++)
+    _store[v] = 0.0f;
+}
+
+void
+FBFixedVectorBlock::Add(FBFixedVectorBlock const& rhs)
+{
+  for (int v = 0; v < FBFixedBlockVectors; v++)
+    _store[v] += rhs._store[v];
+}
+
+inline void
+FBFixedVectorBlock::StoreUnaligned(float* vals)
+{
+  for (int v = 0; v < FBFixedBlockVectors; v++)
+    _store[v].store_unaligned(vals + v * FBVectorFloatCount);
+}
+
+inline void
+FBFixedVectorBlock::LoadUnaligned(float const* vals)
+{
+  for (int v = 0; v < FBFixedBlockVectors; v++)
+    _store[v] = FBFloatVector::load_unaligned(vals + v * FBVectorFloatCount);
 }
