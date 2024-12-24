@@ -5,6 +5,14 @@
 #include <cassert>
 
 void
+FBBufferAudioBlock::Drop(int count)
+{
+  assert(0 <= count && count <= Count());
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].erase(_store[ch].begin(), _store[ch].begin() + count);
+}
+
+void
 FBBufferAudioBlock::Append(FBHostAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
@@ -16,14 +24,8 @@ void
 FBBufferAudioBlock::Append(FBFixedAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      _store[ch].push_back(rhs.Sample(ch, s));
-}
-
-void
-FBBufferAudioBlock::Drop(int count)
-{
-  assert(0 <= count && count <= Count());
-  for (int ch = 0; ch < 2; ch++)
-    _store[ch].erase(_store[ch].begin(), _store[ch].begin() + count);
+  {
+    _store[ch].insert(_store[ch].end(), FBFixedBlockSamples, 0.0f);
+    rhs[ch].StoreUnaligned(_store[ch].data() + _store[ch].size() - FBFixedBlockSamples);
+  }
 }

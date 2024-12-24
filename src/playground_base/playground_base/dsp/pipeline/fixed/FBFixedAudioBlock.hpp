@@ -3,6 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedVectorBlock.hpp>
+#include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
 #include <array>
 
@@ -19,16 +20,14 @@ public:
   void Transform(Op op);
 
   void Clear();
+  void LoadUnaligned(float const* vals[2]);
+  void StoreUnaligned(float* vals[2]) const;
   void Add(FBFixedAudioBlock const& rhs);
   void CopyFrom(FBFixedAudioBlock const& rhs);
   void CopyFrom(FBBufferAudioBlock const& rhs);
 
   FBFixedVectorBlock& operator[](int ch) { return _store[ch]; }
   FBFixedVectorBlock const& operator[](int ch) const { return _store[ch]; }
-
-  float Sample(int ch, int index) const { return _store[ch].Sample(index); }
-  void Sample(int ch, int index, float val) { _store[ch].Sample(index, val); }
-  void Samples(int index, float val) { _store[0].Sample(index, val); _store[1].Sample(index, val); }
 };
 
 template <class Op>
@@ -47,11 +46,25 @@ FBFixedAudioBlock::Clear()
     _store[ch].Clear();
 }
 
-inline void 
-FBFixedAudioBlock::Add(FBFixedAudioBlock const& rhs) 
-{ 
-  for (int ch = 0; ch < 2; ch++) 
-    _store[ch].Add(rhs._store[ch]); 
+inline void
+FBFixedAudioBlock::Add(FBFixedAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].Add(rhs._store[ch]);
+}
+
+inline void
+FBFixedAudioBlock::LoadUnaligned(float const* vals[2])
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].LoadUnaligned(vals[ch]);
+}
+
+inline void
+FBFixedAudioBlock::StoreUnaligned(float* vals[2]) const
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].StoreUnaligned(vals[ch]);
 }
 
 inline void
@@ -65,7 +78,6 @@ FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
 inline void
 FBFixedAudioBlock::CopyFrom(FBBufferAudioBlock const& rhs)
 {
-  for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      Sample(ch, s, rhs[ch][s]);
+  float const* lr[2] = { rhs[0].data(), rhs[1].data() };
+  LoadUnaligned(lr);
 }
