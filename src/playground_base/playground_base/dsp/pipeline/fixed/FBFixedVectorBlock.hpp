@@ -42,7 +42,7 @@ FBFixedVectorBlock::Clear()
     _store[v] = 0.0f;
 }
 
-void
+inline void
 FBFixedVectorBlock::Add(FBFixedVectorBlock const& rhs)
 {
   for (int v = 0; v < FBFixedBlockVectors; v++)
