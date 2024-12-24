@@ -7,7 +7,7 @@
 
 #include <algorithm>
 
-class alignas(FBVectorByteCount) FBAccParamState final
+class alignas(sizeof(FBFloatVector)) FBAccParamState final
 {
   friend class FBSmoothProcessor;
   friend class FBVoiceAccParamState;

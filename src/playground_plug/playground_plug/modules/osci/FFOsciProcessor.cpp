@@ -10,7 +10,7 @@
 static FBFloatVector
 GenerateSin(FBFloatVector phase)
 {
-  return (phase * FBTwoPi).Sin();
+  return xsimd::sin(phase * FBTwoPi);
 }
 
 static FBFloatVector
@@ -26,10 +26,10 @@ GenerateSaw(FBFloatVector phase, FBFloatVector incr)
   FBFloatVector blepLo = phase / incr;
   FBFloatVector blepHi = (phase - 1.0f) / incr;
   FBFloatVector result = phase * 2.0f - 1.0f;
-  FBFloatVector loMask = FBFloatVectorCmpLt(phase, incr);
-  FBFloatVector hiMask = FBFloatVectorAndNot(loMask, FBFloatVectorCmpGe(phase, 1.0f - incr));
-  FBFloatVector loMul = FBFloatVectorBlend(zero, one, loMask);
-  FBFloatVector hiMul = FBFloatVectorBlend(zero, one, hiMask);
+  auto loMask = xsimd::lt(phase, incr);
+  auto hiMask = xsimd::bitwise_andnot(loMask, xsimd::ge(phase, 1.0f - incr));
+  FBFloatVector loMul = xsimd::select(loMask, zero, one);
+  FBFloatVector hiMul = xsimd::select(hiMask, zero, one);
   result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
   result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
   return result;

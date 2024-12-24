@@ -9,7 +9,7 @@
 
 struct FBStaticModule;
 
-class alignas(FBVectorByteCount) FFGLFODSPState final
+class alignas(sizeof(FBFloatVector)) FFGLFODSPState final
 {
   friend class FFPlugProcessor;
   FFGLFOProcessor processor = {};

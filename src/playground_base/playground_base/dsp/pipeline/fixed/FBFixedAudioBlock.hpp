@@ -8,7 +8,7 @@
 
 class FBBufferAudioBlock;
 
-class alignas(FBVectorByteCount) FBFixedAudioBlock
+class alignas(sizeof(FBFloatVector)) FBFixedAudioBlock
 {
   std::array<FBFixedVectorBlock, 2> _store = {};
 

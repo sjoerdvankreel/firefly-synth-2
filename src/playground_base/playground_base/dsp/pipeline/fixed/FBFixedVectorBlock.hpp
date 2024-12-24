@@ -8,7 +8,7 @@
 
 inline int constexpr FBFixedBlockVectors = FBFixedBlockSamples / FBVectorFloatCount;
 
-class alignas(FBVectorByteCount) FBFixedVectorBlock
+class alignas(sizeof(FBFloatVector)) FBFixedVectorBlock
 {
   std::array<FBFloatVector, FBFixedBlockVectors> _store = {};
 
@@ -20,10 +20,10 @@ public:
 
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; }
-  float Sample(int index) const { return (*this)[index / FBVectorFloatCount][index % FBVectorFloatCount]; }
-  void Sample(int index, float val) { (*this)[index / FBVectorFloatCount][index % FBVectorFloatCount] = val; }
+  float Sample(int index) const { return 0; }//TODO { return (*this)[index / FBVectorFloatCount].get(index % FBVectorFloatCount); } // TODO?
+  void Sample(int index, float val) {} // TODO (*this)[index / FBVectorFloatCount][index % FBVectorFloatCount] = val; }
 
-  void Clear() { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v].Clear(); }
+  void Clear() { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v] = 0.0f; }
   void Add(FBFixedVectorBlock const& rhs) { for (int v = 0; v < FBFixedBlockVectors; v++) _store[v] += rhs._store[v]; }
 };
 
