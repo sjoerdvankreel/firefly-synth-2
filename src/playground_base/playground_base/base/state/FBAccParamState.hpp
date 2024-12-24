@@ -18,17 +18,10 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
   FBOnePoleFilter _smoother = {};
 
   void Modulate(float offset) { _modulation = offset; }
-  void SmoothNext(int sample, float automation) {}//todo _cv.Sample(sample, _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f)));
-  void SetSmoothingCoeffs(float sampleRate, float durationSecs);
-  void SmoothNext(int sample, float automation) {}//todo _cv.Sample(sample, _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f)));
+  void SetSmoothingCoeffs(float sampleRate, float durationSecs) { _smoother.SetCoeffs(sampleRate, durationSecs); }
+  void SmoothNext(int sample, float automation) { _cv.Sample(sample, _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f))); }
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
   FBFixedVectorBlock const& CV() const { return _cv; }
 };
-
-inline void 
-FBAccParamState::SetSmoothingCoeffs(float sampleRate, float durationSecs) 
-{ 
-  _smoother.SetCoeffs(sampleRate, durationSecs); 
-}
