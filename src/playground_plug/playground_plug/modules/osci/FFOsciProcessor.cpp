@@ -45,7 +45,6 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   auto const& topo = state.topo->modules[FFModuleOsci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
   auto const& gain = params.acc.gain[0].Voice()[voice].CV();
-  auto const& cent = params.acc.cent[0].Voice()[voice].CV();
   auto const& glfoToGain = params.acc.glfoToGain[0].Voice()[voice].CV();
   bool on = topo.params[FFOsciBlockOn].NormalizedToBool(params.block.on[0].Voice()[voice]);
   int type = topo.params[FFOsciBlockType].NormalizedToDiscrete(params.block.type[0].Voice()[voice]);
@@ -60,12 +59,12 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   FBFixedVectorBlock incr;
   FBFixedVectorBlock phase;
   incr.Transform([&](int v) {
-    auto centPlain = topo.params[FFOsciAccCent].NormalizedToPlainLinear(cent[v]);
+    auto cent = params.acc.cent[0].Voice()[voice].CV(v);
+    auto centPlain = topo.params[FFOsciAccCent].NormalizedToPlainLinear(cent);
     auto pitch = key + note - 60.0f + centPlain;
     auto freq = FBPitchToFreq(pitch, state.sampleRate);
     return freq / state.sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
-  output.Transform([&](int ch, int v) { return phase[v]; });
 
   switch (type)
   {

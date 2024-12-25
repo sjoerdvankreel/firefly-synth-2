@@ -5,6 +5,7 @@
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedVectorBlock.hpp>
 
+#include <array>
 #include <algorithm>
 
 class alignas(sizeof(FBFloatVector)) FBAccParamState final
@@ -13,21 +14,33 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
   friend class FBVoiceAccParamState;
   friend class FBGlobalAccParamState;
 
-  FBFixedVectorBlock _cv = {}; // TODO this not needs be simd -- but, need have 1 simd-size-block as latency
+  std::array<float, FBFixedBlockSamples> _cv = {};
   float _modulation = {};
   FBOnePoleFilter _smoother = {};
 
+  void SmoothNext(int sample, float automation);
   void Modulate(float offset) { _modulation = offset; }
   void SetSmoothingCoeffs(float sampleRate, float durationSecs);
-  void SmoothNext(int sample, float automation) { _cv.Sample(sample, _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f))); }
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
-  FBFixedVectorBlock const& CV() const { return _cv; }
+  FBFloatVector CV(int v) const;
 };
+
+inline FBFloatVector
+FBAccParamState::CV(int v) const
+{
+  return FBFloatVector::load_aligned(_cv.data() + v * FBVectorFloatCount);
+}
 
 inline void 
 FBAccParamState::SetSmoothingCoeffs(float sampleRate, float durationSecs) 
 { 
   _smoother.SetCoeffs(sampleRate, durationSecs); 
+}
+
+inline void
+FBAccParamState::SmoothNext(int sample, float automation) 
+{ 
+  _cv[sample] = _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f));
 }

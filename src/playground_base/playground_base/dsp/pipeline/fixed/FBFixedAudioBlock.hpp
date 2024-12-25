@@ -18,6 +18,8 @@ public:
 
   template <class Op>
   void Transform(Op op);
+  template <class Op>
+  void TransformBoth(Op op);
 
   void Clear();
   void LoadUnaligned(float const* vals[2]);
@@ -37,6 +39,18 @@ FBFixedAudioBlock::Transform(Op op)
   for (int ch = 0; ch < 2; ch++)
     for (int v = 0; v < FBFixedBlockVectors; v++)
       (*this)[ch][v] = op(ch, v);
+}
+
+template <class Op>
+void
+FBFixedAudioBlock::TransformBoth(Op op)
+{
+  for (int v = 0; v < FBFixedBlockVectors; v++)
+  {
+    auto y = op(v);
+    for (int ch = 0; ch < 2; ch++)
+      (*this)[ch][v] = y;
+  }
 }
 
 inline void 

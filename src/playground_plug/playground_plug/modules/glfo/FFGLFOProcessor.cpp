@@ -10,9 +10,8 @@ void
 FFGLFOProcessor::Process(FFModuleProcState const& state)
 {
   auto const& topo = state.topo->modules[FFModuleGLFO];
-  auto const& params = state.proc->param.global.glfo[state.moduleSlot];
-  auto const& rate = params.acc.rate[0].Global().CV();
   auto& output = state.proc->dsp.global.glfo[state.moduleSlot].output;
+  auto const& params = state.proc->param.global.glfo[state.moduleSlot];
   bool on = topo.params[FFGLFOBlockOn].NormalizedToBool(params.block.on[0].Value());
 
   if (!on)
@@ -22,8 +21,8 @@ FFGLFOProcessor::Process(FFModuleProcState const& state)
   }
     
   output.Transform([&](int v) { 
-    auto plainRate = topo.params[FFGLFOAccRate].NormalizedToPlainLinear(rate[v]);
-    return _phase.Next(plainRate / state.sampleRate); });
-  output.Transform([&](int v) { 
-    return FBToUnipolar(xsimd::sin(output[v] * FBTwoPi)); });
+    auto rate = params.acc.rate[0].Global().CV(v);
+    auto plainRate = topo.params[FFGLFOAccRate].NormalizedToPlainLinear(rate);
+    auto phase = _phase.Next(plainRate / state.sampleRate); 
+    return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
 }

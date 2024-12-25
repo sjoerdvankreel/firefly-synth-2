@@ -7,10 +7,10 @@
 void
 FFMasterProcessor::Process(FFModuleProcState const& state)
 {
-  auto const& params = state.proc->param.global.master[state.moduleSlot];
   auto& output = state.proc->dsp.global.master.output;
   auto const& input = state.proc->dsp.global.master.input;
-  auto const& gain = params.acc.gain[0].Global().CV();
-  output.Transform([&](int ch, int v) { 
-    return input[ch][v] * gain[v]; });
+  auto const& params = state.proc->param.global.master[state.moduleSlot];
+  output.Transform([&](int ch, int v) {
+    auto gain = params.acc.gain[0].Global().CV(v);
+    return input[ch][v] * gain; });
 }
