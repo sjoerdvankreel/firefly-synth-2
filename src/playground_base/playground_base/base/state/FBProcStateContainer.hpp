@@ -28,10 +28,10 @@ public:
   FBProcStateContainer(FBRuntimeTopo const& topo);
   ~FBProcStateContainer() { _freeRawState(_rawState); }
 
-  void* Raw() { return _rawState; }
   void CopyFrom(FBScalarStateContainer const& scalar);
   void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 
+  void* Raw() { return _rawState; }
   FBSpecialParams const& Special() const { return _special; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
 };

@@ -3,7 +3,7 @@
 #include <playground_plug/plug/FFPlugState.hpp>
 
 template <class State>
-static auto
+inline auto
 FFTopoDetailSelectAddr(
   auto selectModule, auto selectParam)
 {
@@ -12,14 +12,14 @@ FFTopoDetailSelectAddr(
     return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
 }
 
-static auto
+inline auto
 FFTopoDetailSelectScalarAddr(
   auto selectModule, auto selectParam)
 {
   return FFTopoDetailSelectAddr<FFScalarState>(selectModule, selectParam);
 }
 
-static auto
+inline auto
 FFTopoDetailSelectProcAddr(
   auto selectModule, auto selectParam)
 {

@@ -12,10 +12,10 @@
 
 enum class FBProcParamType
 {
-  GlobalBlock,
+  VoiceAcc,
   GlobalAcc,
   VoiceBlock,
-  VoiceAcc
+  GlobalBlock
 };
 
 inline bool 
@@ -37,10 +37,10 @@ class FBProcParamState final
   FBProcParamType _type;
   union
   {
-    FBGlobalBlockParamState* _globalBlock;
     FBVoiceAccParamState* _voiceAcc;
     FBGlobalAccParamState* _globalAcc;
     FBVoiceBlockParamState* _voiceBlock;
+    FBGlobalBlockParamState* _globalBlock;
   };
 
   friend struct FBRuntimeTopo;

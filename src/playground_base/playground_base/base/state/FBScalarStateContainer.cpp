@@ -26,12 +26,7 @@ void
 FBScalarStateContainer::CopyFrom(FBProcStateContainer const& proc)
 {
   for (int p = 0; p < Params().size(); p++)
-  {
-    auto val = proc.Params()[p].Value();
-    *Params()[p] = val;
-    auto val2 = *Params()[p];
-    (void)val2;
-  }
+    *Params()[p] = proc.Params()[p].Value();
 }
 
 void 
