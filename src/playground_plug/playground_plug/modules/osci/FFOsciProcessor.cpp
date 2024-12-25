@@ -27,9 +27,10 @@ GenerateSaw(FBFloatVector phase, FBFloatVector incr)
   FBFloatVector blepHi = (phase - 1.0f) / incr;
   FBFloatVector result = phase * 2.0f - 1.0f;
   auto loMask = xsimd::lt(phase, incr);
-  auto hiMask = xsimd::bitwise_andnot(loMask, xsimd::ge(phase, 1.0f - incr));
-  FBFloatVector loMul = xsimd::select(loMask, zero, one);
-  FBFloatVector hiMul = xsimd::select(hiMask, zero, one);
+  auto hiMask = xsimd::ge(phase, 1.0f - incr);
+  hiMask = xsimd::bitwise_andnot(hiMask, loMask);
+  FBFloatVector loMul = xsimd::select(loMask, one, zero);
+  FBFloatVector hiMul = xsimd::select(hiMask, one, zero);
   result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
   result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
   return result;
