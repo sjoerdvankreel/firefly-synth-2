@@ -44,8 +44,6 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 
   auto const& topo = state.topo->modules[FFModuleOsci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
-  auto const& gain = params.acc.gain[0].Voice()[voice].CV();
-  auto const& glfoToGain = params.acc.glfoToGain[0].Voice()[voice].CV();
   bool on = topo.params[FFOsciBlockOn].NormalizedToBool(params.block.on[0].Voice()[voice]);
   int type = topo.params[FFOsciBlockType].NormalizedToDiscrete(params.block.type[0].Voice()[voice]);
   int note = topo.params[FFOsciBlockNote].NormalizedToDiscrete(params.block.note[0].Voice()[voice]);
@@ -57,6 +55,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   }
 
   FBFixedVectorBlock incr;
+  FBFixedVectorBlock mono;
   FBFixedVectorBlock phase;
   incr.Transform([&](int v) {
     auto cent = params.acc.cent[0].Voice()[voice].CV(v);
@@ -68,14 +67,17 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 
   switch (type)
   {
-  case FFOsciTypeSine: output.Transform([&](int ch, int v) { 
-    return GenerateSin(output[ch][v]); }); break;
-  case FFOsciTypeSaw: output.Transform([&](int ch, int v) {
-    return GenerateSaw(output[ch][v], incr[v]); }); break;
+  case FFOsciTypeSine: mono.Transform([&](int v) {
+    return GenerateSin(phase[v]); }); break;
+  case FFOsciTypeSaw: mono.Transform([&](int v) {
+    return GenerateSaw(phase[v], incr[v]); }); break;
   default: assert(false); break;
   }
-  output.Transform([&](int ch, int v) { 
-    return (1.0f - glfoToGain[v]) * output[ch][v] + output[ch][v] * glfoToGain[v] * glfo[v]; });
-  output.Transform([&](int ch, int v) { 
-    return output[ch][v] * gain[v]; });
+  mono.Transform([&](int v) {
+    auto gain = params.acc.gain[0].Voice()[voice].CV(v);
+    auto glfoToGain = params.acc.glfoToGain[0].Voice()[voice].CV(v);
+    return gain * ((1.0f - glfoToGain) * mono[v] + mono[v] * glfoToGain * glfo[v]); });
+  output.Transform([&](int ch, int v) {
+    return mono[v];
+  });
 }
