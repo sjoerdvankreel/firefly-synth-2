@@ -1,7 +1,5 @@
 #pragma once
 
-#include <playground_base/base/shared/FBVector.hpp>
-
 #include <cmath>
 #include <cassert>
 #include <numbers>
@@ -13,21 +11,16 @@ class FBOnePoleFilter final
   float _z = 0.0f;
 
 public:
-  FBFloatVector Next(FBFloatVector in);
+  float Next(float in);
   void SetCoeffs(float sampleRate, float durationSecs);
 };
 
-inline FBFloatVector
-FBOnePoleFilter::Next(FBFloatVector in)
+inline float
+FBOnePoleFilter::Next(float in)
 {
-  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> scratch;
-  in.store_aligned(scratch.data());
-  for (int i = 0; i < FBVectorFloatCount; i++)
-  {
-    _z = (scratch[i] * _b) + (_z * _a);
-    scratch[i] = _z;
-  }
-  return FBFloatVector::load_aligned(scratch.data());
+  float out = (in * _b) + (_z * _a);
+  assert(!std::isnan(out));
+  return _z = out;
 }
 
 inline void
