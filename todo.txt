@@ -7,6 +7,5 @@ checkout the patch json
 retest voice stealing including clap return with > 64 voices
 clap + vst3 note expr + midi mpe + polymod + mark as done somewhere
 voice block start position (fake it by amp env?)
-Linux visibility-hidden & inline-hidden et all
 vst3/clap posix fd
 context menu
