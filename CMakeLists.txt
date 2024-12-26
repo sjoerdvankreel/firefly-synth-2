@@ -37,7 +37,7 @@ elseif (FB_USE_AVX)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -avx2")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2")
   endif()
 else ()
 message (FATAL_ERROR "Unsupported architecture.")
@@ -201,7 +201,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-linux/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.so")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-linux/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.so")
 else ()
   message(FATAL_ERROR "Unsupported platform.")
 endif()
