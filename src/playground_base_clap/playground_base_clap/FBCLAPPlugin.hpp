@@ -1,5 +1,6 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessContext.hpp>
@@ -12,8 +13,6 @@ using namespace clap::helpers;
 
 struct FBStaticTopo;
 struct FBRuntimeTopo;
-
-class FBHostProcessor;
 class IFBPlugProcessor;
 
 class FBCLAPPlugin:

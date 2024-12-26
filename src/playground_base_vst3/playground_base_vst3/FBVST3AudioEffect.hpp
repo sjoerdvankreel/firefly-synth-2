@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessContext.hpp>
@@ -15,11 +16,9 @@ using namespace Steinberg::Vst;
 
 struct FBStaticTopo;
 struct FBRuntimeTopo;
-
-class FBHostProcessor;
 class IFBPlugProcessor;
-
 class FBVST3AudioEffect:
+
 public AudioEffect,
 public IFBHostProcessContext
 {
