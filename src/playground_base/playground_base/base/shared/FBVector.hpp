@@ -9,6 +9,9 @@
 #ifdef FB_ARCH_TYPE
 #if FB_ARCH_TYPE == FB_ARCH_TYPE_SSE2
 typedef xsimd::batch<float, xsimd::sse2> FBFloatVector;
+#ifndef NDEBUG
+#error varken7
+#endif
 #elif FB_ARCH_TYPE == FB_ARCH_TYPE_AVX2
 typedef xsimd::batch<float, xsimd::avx2> FBFloatVector;
 #elif FB_ARCH_TYPE == FB_ARCH_TYPE_AARCH64
