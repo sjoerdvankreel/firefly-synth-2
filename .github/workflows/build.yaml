@@ -1,0 +1,13 @@
+name: build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: prepare
+      run: |
+        mkdir -p build
+        cd build
+        cmake ..
+        make
