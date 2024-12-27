@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: prepare
+    - name: build-ubuntu-sse-debug
       run: |
         mkdir -p build
         cd build
-        cmake ..
+        cmake -DCMAKE_BUILD_TYPE=Debug -FFB_USE_SSE=1 -DFB_USE_AVX=0 ..
         make
