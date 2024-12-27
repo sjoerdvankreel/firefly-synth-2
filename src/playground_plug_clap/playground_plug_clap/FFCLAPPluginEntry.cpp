@@ -9,6 +9,10 @@
 #include <clap/clap.h>
 #include <cstring>
 
+#if __linux__
+#error just testing
+#endif
+
 class FFCLAPPlugin:
 public FBCLAPPlugin
 {
