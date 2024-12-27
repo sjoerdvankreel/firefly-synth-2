@@ -5,6 +5,7 @@ on:
 
 jobs:
   build-linux:
+    name: build-linux
     job_matrix:
       strategy:
         matrix:
