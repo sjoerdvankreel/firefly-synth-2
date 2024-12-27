@@ -2,6 +2,10 @@
 
 #include <xsimd/xsimd.hpp>
 
+#ifdef NDEBUG
+#error JODELO
+#endif
+
 // todo neon
 #if FB_USE_SSE
 typedef xsimd::batch<float, xsimd::sse2> FBFloatVector;
