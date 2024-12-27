@@ -8,7 +8,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04]
-        type: [Debug, Release]
+        arch_type: [1, 2]
+        build_type: [Debug, Release]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -18,5 +19,5 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DFB_USE_SSE=1 -DFB_USE_AVX=0 ..
+        cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DFB_ARCH_TYPE=${{ matrix.arch_type }} ..
         make
