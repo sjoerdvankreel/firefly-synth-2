@@ -26,10 +26,8 @@ FBCLAPPlugin::paramsValue(
   if (index == -1)
     return false;
   auto const& state = _state;
-  int valueCount = _topo->params[index].static_.valueCount;
-  *value = state.Params()[index].Value();
-  if (valueCount != 0)
-    *value *= valueCount - 1.0f;
+  auto const& static_ = _topo->params[index].static_;
+  *value = FBNormalizedToCLAP(static_, state.Params()[index].Value());
   return true;
 }
 
@@ -40,10 +38,11 @@ FBCLAPPlugin::paramsTextToValue(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  auto normalized = _topo->params[index].static_.TextToNormalized(display, false);
+  auto const& static_ = _topo->params[index].static_;
+  auto normalized = static_.TextToNormalized(display, false);
   if (!normalized.has_value())
     return false;
-  *value = normalized.value();
+  *value = FBNormalizedToCLAP(static_, normalized.value());
   return true;
 }
 
@@ -102,12 +101,13 @@ FBCLAPPlugin::paramsInfo(
   info->min_value = 0.0;
   info->cookie = nullptr;
   info->id = runtimeParam.tag;
-  info->default_value = staticParam.DefaultNormalizedByText();
+  info->default_value = FBNormalizedToCLAP(staticParam, staticParam.DefaultNormalizedByText());
+
   std::fill(info->name, info->name + sizeof(info->name), 0);
   std::fill(info->module, info->module + sizeof(info->module), 0);
-  strncpy(info->module, runtimeModule.name.c_str(), 
+  strncpy(info->module, runtimeModule.name.c_str(),
     std::min(sizeof(info->module) - 1, runtimeModule.name.size()));
-  strncpy(info->name, runtimeParam.longName.c_str(), 
+  strncpy(info->name, runtimeParam.longName.c_str(),
     std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
 
   // TODO CLAP_PARAM_IS_HIDDEN
