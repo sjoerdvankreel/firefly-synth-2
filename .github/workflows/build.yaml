@@ -12,5 +12,5 @@ jobs:
       run: |
         mkdir -p build
         cd build
-        cmake -DCMAKE_BUILD_TYPE=Debug -FFB_USE_SSE=1 -DFB_USE_AVX=0 ..
+        cmake -DCMAKE_BUILD_TYPE=Debug -DFB_USE_SSE=1 -DFB_USE_AVX=0 ..
         make
