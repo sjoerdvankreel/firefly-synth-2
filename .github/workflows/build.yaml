@@ -8,13 +8,27 @@ jobs:
     strategy:
       matrix:
         os: [windows-10, ubuntu-22.04]
-  steps:
-  - uses: actions/checkout@v3
-    with:
-      submodules: recursive
-  - name: build
-    run: |
-      mkdir -p build
-      cd build
-      cmake -DCMAKE_BUILD_TYPE=Debug -DFB_USE_SSE=1 -DFB_USE_AVX=0 ..
-      make
+  build-lin-sse-debug:
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name: build
+      run: |
+        mkdir -p build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Debug -DFB_USE_SSE=1 -DFB_USE_AVX=0 ..
+        make
+  build-lin-avx-debug:
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - name: build
+      run: |
+        mkdir -p build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Debug -DFB_USE_SSE=0 -DFB_USE_AVX=1 ..
+        make
