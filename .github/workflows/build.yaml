@@ -4,8 +4,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-lin-sse-debug:
-    runs-on: ubuntu-22.04
+  job_matrix:
+    strategy:
+      matrix:
+        os: [windows-10, ubuntu-22.04]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
       with:
@@ -15,40 +18,4 @@ jobs:
         mkdir -p build
         cd build
         cmake -DCMAKE_BUILD_TYPE=Debug -DFB_USE_SSE=1 -DFB_USE_AVX=0 ..
-        make
-  build-lin-avx-debug:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - name: build
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Debug -DFB_USE_SSE=0 -DFB_USE_AVX=1 ..
-        make
-  build-lin-sse-release:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - name: build
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DFB_USE_SSE=1 -DFB_USE_AVX=0 ..
-        make
-  build-lin-avx-release:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - name: build
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DFB_USE_SSE=0 -DFB_USE_AVX=1 ..
         make
