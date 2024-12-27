@@ -1,3 +1,6 @@
+autobuilds:
+  factor out sse/avx/neon into 1 variable
+  handle windows and mac builds
 reaper voice off by disable plug not working
 checkout the fast surge saw
 do an early mac build to see if manual neon is doable, or sse2neon works, or need google highway after all
