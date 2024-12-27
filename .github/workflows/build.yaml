@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
 
 jobs:
+  matrix:
+    strategy:
+      matrix:
+        os: [windows-10, ubuntu-22.04]
   build-lin-sse-debug:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
       with:
@@ -17,7 +21,7 @@ jobs:
         cmake -DCMAKE_BUILD_TYPE=Debug -DFB_USE_SSE=1 -DFB_USE_AVX=0 ..
         make
   build-lin-avx-debug:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
       with:
