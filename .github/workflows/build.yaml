@@ -22,3 +22,21 @@ jobs:
           cd build
           cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DFB_ARCH_TYPE=${{ matrix.arch_type }} ..
           make
+  build-linux2:
+    name: build-linux2
+    job_matrix:
+      strategy:
+        matrix:
+          arch_type: [1, 2]
+          build_type: [Debug, Release]
+      runs-on: ubuntu-22.04
+      steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: build
+        run: |
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DFB_ARCH_TYPE=${{ matrix.arch_type }} ..
+          make
