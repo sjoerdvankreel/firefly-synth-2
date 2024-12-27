@@ -4,17 +4,17 @@ setlocal
 if "%1" == "" goto usage
 
 cd ..
-if not exist build\windows\sse mkdir build\windows\sse
-cd build\windows\sse
-cmake -DFB_USE_SSE=1 -DFB_USE_AVX=0 ..\..\..
+if not exist build\windows\sse mkdir build\windows\sse2
+cd build\windows\sse2
+cmake -DFB_ARCH_TYPE=1 ..\..\..
 if %errorlevel% neq 0 exit /b !errorlevel!
 msbuild /property:Configuration="%1" playground_plug.sln
 if %errorlevel% neq 0 exit /b !errorlevel!
 
 cd ..\..\..
-if not exist build\windows\avx mkdir build\windows\avx
-cd build\windows\avx
-cmake -DFB_USE_SSE=0 -DFB_USE_AVX=1 ..\..\..
+if not exist build\windows\avx2 mkdir build\windows\avx2
+cd build\windows\avx2
+cmake -DFB_ARCH_TYPE=2 ..\..\..
 if %errorlevel% neq 0 exit /b !errorlevel!
 msbuild /property:Configuration="%1" playground_plug.sln
 if %errorlevel% neq 0 exit /b !errorlevel!
