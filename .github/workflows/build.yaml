@@ -28,7 +28,7 @@ jobs:
         cd build
         cmake -DCMAKE_BUILD_TYPE=Debug -DFB_ARCH_TYPE=2 ..
         make
-  build-lin-sse-release:
+  build-lin-sse2-release:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
@@ -40,7 +40,7 @@ jobs:
         cd build
         cmake -DCMAKE_BUILD_TYPE=Release -DFB_ARCH_TYPE=1 ..
         make
-  build-lin-avx-release:
+  build-lin-avx2-release:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
