@@ -7,13 +7,13 @@ if [ "$1" == "" ]; then
 fi
 
 cd ..
-mkdir -p "build/linux/$1/SSE"
-cd "build/linux/$1/SSE"
-cmake -DCMAKE_BUILD_TYPE="$1" -DFB_USE_SSE=1 -DFB_USE_AVX=0 ../../../..
+mkdir -p "build/linux/$1/sse2"
+cd "build/linux/$1/sse2"
+cmake -DCMAKE_BUILD_TYPE="$1" -DFB_ARCH_TYPE=1 ../../../..
 make
 
 cd ../../../..
-mkdir -p "build/linux/$1/AVX"
-cd "build/linux/$1/AVX"
-cmake -DCMAKE_BUILD_TYPE="$1" -DFB_USE_SSE=0 -DFB_USE_AVX=1 ../../../..
+mkdir -p "build/linux/$1/avx2"
+cd "build/linux/$1/avx2"
+cmake -DCMAKE_BUILD_TYPE="$1" -DFB_ARCH_TYPE=2 ../../../..
 make
