@@ -1,4 +1,5 @@
 autobuilds:
+  build on /build
   factor out sse/avx/neon into 1 variable
   handle windows and mac builds
 reaper voice off by disable plug not working
