@@ -16,6 +16,6 @@ FBCLAPToNormalized(FBStaticParam const& topo, double clap)
 {
   if (topo.valueCount == 0)
     return static_cast<float>(clap);
-  double normalized = std::round(clap / (topo.valueCount - 1.0));
+  double normalized = clap / (topo.valueCount - 1.0);
   return static_cast<float>(std::clamp(normalized, 0.0, 1.0));
 }
