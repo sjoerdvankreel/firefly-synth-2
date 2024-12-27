@@ -35,6 +35,7 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
 {
   friend class FFOsciProcessor;
   friend FBStaticModule FFMakeOsciTopo();
+  std::array<TVoiceAcc, 1> pw = {};
   std::array<TVoiceAcc, 1> cent = {};
   std::array<TVoiceAcc, 1> glfoToGain = {};
   std::array<TVoiceAcc, FFOsciGainCount> gain = {};

@@ -32,7 +32,8 @@ FFMakeOsciTopo()
   type.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
   type.list = {
     { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
-    { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" } };
+    { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" },
+    { "{E552CDF9-62A8-4EE2-84E2-8D7170D15919}", "Pulse" } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
@@ -77,6 +78,21 @@ FFMakeOsciTopo()
   auto selectCent = [](auto& module) { return &module.acc.cent; };
   cent.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectCent);
   cent.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectCent);
+
+  auto& pw = result.params[FFOsciAccPW];
+  pw.acc = true;
+  pw.defaultText = "50";
+  pw.displayMultiplier = 100.0f;
+  pw.name = "PW";
+  pw.plainMin = 0.0f;
+  pw.plainMax = 1.0f;
+  pw.slotCount = 1;
+  pw.valueCount = 0;
+  pw.unit = "%";
+  pw.id = "{CDB18D21-6C2A-4352-93E1-FCF37EA7D35F}";
+  auto selectPW = [](auto& module) { return &module.acc.pw; };
+  pw.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPW);
+  pw.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectPW);
 
   auto& glfoToGain = result.params[FFOsciAccGLFOToGain];
   glfoToGain.acc = true;

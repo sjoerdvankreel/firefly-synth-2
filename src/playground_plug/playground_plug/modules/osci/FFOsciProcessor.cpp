@@ -36,6 +36,17 @@ GenerateSaw(FBFloatVector phase, FBFloatVector incr)
   return result;
 }
 
+static FBFloatVector
+GeneratePulse(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
+{
+  // TODO PWM is no good
+  FBFloatVector minPW = 0.05f;
+  FBFloatVector realPW = (minPW + (1.0f - minPW * pw)) * 0.5f;
+  FBFloatVector phase2 = phase + realPW;
+  phase2 -= xsimd::floor(phase2);
+  return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;
+}
+
 void
 FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 {
@@ -72,6 +83,9 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     return GenerateSin(phase[v]); }); break;
   case FFOsciTypeSaw: mono.Transform([&](int v) {
     return GenerateSaw(phase[v], incr[v]); }); break;
+  case FFOsciTypePulse: mono.Transform([&](int v) {
+    auto pw = params.acc.pw[0].Voice()[voice].CV(v);
+    return GeneratePulse(phase[v], incr[v], pw); }); break;
   default: assert(false); break;
   }
   mono.Transform([&](int v) {

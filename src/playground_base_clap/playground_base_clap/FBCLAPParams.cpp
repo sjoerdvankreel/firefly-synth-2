@@ -1,4 +1,5 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base_clap/FBCLAPUtility.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
@@ -25,7 +26,10 @@ FBCLAPPlugin::paramsValue(
   if (index == -1)
     return false;
   auto const& state = _state;
+  int valueCount = _topo->params[index].static_.valueCount;
   *value = state.Params()[index].Value();
+  if (valueCount != 0)
+    *value *= valueCount - 1.0f;
   return true;
 }
 
@@ -50,10 +54,10 @@ FBCLAPPlugin::paramsValueToText(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  std::string text = _topo->params[index].static_.NormalizedToText(false, static_cast<float>(value));
+  float normalized = FBCLAPToNormalized(_topo->params[index].static_, value);
+  std::string text = _topo->params[index].static_.NormalizedToText(false, normalized);
   std::fill(display, display + size, 0);
-  strncpy(display, text.c_str(), 
-    std::min(size - 1, static_cast<uint32_t>(text.size())));
+  strncpy(display, text.c_str(), std::min(size - 1, static_cast<uint32_t>(text.size())));
   return true;
 }
 
@@ -62,6 +66,7 @@ FBCLAPPlugin::paramsFlush(
   const clap_input_events* in, const clap_output_events* out) noexcept
 {
 #if 0 // TODO
+  // also todo stuff with claptonorm
   // TODO when is this even called anyway?
   // TODO handle case with gui / main thread
   for (uint32_t i = 0; i < in->size(in); i++)
@@ -94,7 +99,6 @@ FBCLAPPlugin::paramsInfo(
   if (paramIndex >= _topo->params.size())
     return false;
 
-  info->max_value = 1.0;
   info->min_value = 0.0;
   info->cookie = nullptr;
   info->id = runtimeParam.tag;
@@ -112,11 +116,13 @@ FBCLAPPlugin::paramsInfo(
   if (staticParam.valueCount != 0)
   {
     info->flags |= CLAP_PARAM_IS_STEPPED;
+    info->max_value = staticParam.valueCount - 1.0f;
     if (staticParam.list.size() != 0)
       info->flags |= CLAP_PARAM_IS_ENUM;
   }
   else
   {
+    info->max_value = 1.0;
     info->flags |= CLAP_PARAM_IS_MODULATABLE;
     if (staticModule.voice)
     {

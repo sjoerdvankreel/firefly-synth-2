@@ -1,4 +1,5 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base_clap/FBCLAPUtility.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
@@ -8,11 +9,11 @@
 
 static FBBlockEvent
 MakeBlockEvent(
-  int param, double value)
+  FBStaticParam const& topo, int param, double value)
 {
   FBBlockEvent result;
   result.param = param;
-  result.normalized = static_cast<float>(value);
+  result.normalized = FBCLAPToNormalized(topo, value);
   return result;
 }
 
@@ -152,10 +153,13 @@ FBCLAPPlugin::process(
     case CLAP_EVENT_PARAM_VALUE:
       value = reinterpret_cast<clap_event_param_value const*>(header);
       if ((iter = _topo->tagToParam.find(value->param_id)) != _topo->tagToParam.end())
-        if (_topo->params[iter->second].static_.acc)
+      {
+        auto const& static_ = _topo->params[iter->second].static_;
+        if (static_.acc)
           accAuto.push_back(MakeAccAutoEvent(iter->second, value));
         else
-          _input.block.push_back(MakeBlockEvent(iter->second, value->value));
+          _input.block.push_back(MakeBlockEvent(static_, iter->second, value->value));
+      }
       break;
     default:
       break;
