@@ -25,14 +25,14 @@ set (PROJECT_NAME_BASE_CLAP "${PROJECT_NAME_BASE}_clap")
 set (PROJECT_NAME_OUT PlaygroundPlug)
 
 # architecture TODO NEON
-if (${FB_ARCH_TYPE} == 1)
+if ("${FB_ARCH_TYPE}" STREQUAL "1")
   set (PROJECT_ARCH "SSE2")
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
   endif()
-elseif (${FB_ARCH_TYPE} == 2)
+elseif ("${FB_ARCH_TYPE}" STREQUAL "2")
   set (PROJECT_ARCH "AVX2")
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # TODO the rest
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
