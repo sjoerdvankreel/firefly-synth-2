@@ -6,10 +6,6 @@
 #define FB_ARCH_TYPE_AVX2 2
 #define FB_ARCH_TYPE_AARCH64 3
 
-#ifdef WIN32
-#error no workie
-#endif
-
 #ifdef FB_ARCH_TYPE
 #if FB_ARCH_TYPE == FB_ARCH_TYPE_SSE2
 typedef xsimd::batch<float, xsimd::sse2> FBFloatVector;
