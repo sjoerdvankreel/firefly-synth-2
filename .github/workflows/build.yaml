@@ -1,54 +1,52 @@
 name: build
-
 on:
   workflow_dispatch:
 
 jobs:
-  build-lin-sse2-debug:
-    runs-on: ubuntu-22.04
+  build_plugin:
+    name: Build ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - name: "Windows 10 SSE2 Debug"
+            os: windows-2019
+            arch_type: 1
+            build_type: DEBUG
+          - name: "Windows 10 SSE2 Release"
+            os: windows-2019
+            arch_type: 1
+            build_type: RELEASE
+          - name: "Windows 10 AVX2 Debug"
+            os: windows-2019
+            arch_type: 2
+            build_type: DEBUG
+          - name: "Windows 10 AVX2 Release"
+            os: windows-2019
+            arch_type: 2
+            build_type: RELEASE
+          - name: "Ubuntu 22 SSE2 Debug"
+            os: ubuntu-22.04
+            arch_type: 1
+            build_type: DEBUG
+          - name: "Ubuntu 22 SSE2 Release"
+            os: ubuntu-22.04
+            arch_type: 1
+            build_type: RELEASE
+          - name: "Ubuntu 22 AVX2 Debug"
+            os: ubuntu-22.04
+            arch_type: 2
+            build_type: DEBUG
+          - name: "Ubuntu 22 AVX2 Release"
+            os: ubuntu-22.04
+            arch_type: 2
+            build_type: RELEASE
     steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - name: build
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Debug -DFB_ARCH_TYPE=1 ..
-        make
-  build-lin-avx2-debug:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - name: build
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Debug -DFB_ARCH_TYPE=2 ..
-        make
-  build-lin-sse2-release:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - name: build
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DFB_ARCH_TYPE=1 ..
-        make
-  build-lin-avx2-release:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: recursive
-    - name: build
-      run: |
-        mkdir -p build
-        cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -DFB_ARCH_TYPE=2 ..
-        make
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build
+        run: |
+          cmake -S . -B ./build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DFB_ARCH_TYPE=${{ matrix.arch_type }}
+          cmake --build ./build --config ${{ matrix.build_type }} --target ${{ matrix.target }}
