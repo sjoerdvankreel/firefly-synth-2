@@ -49,4 +49,4 @@ jobs:
       - name: Build
         run: |
           cmake -S . -B ./build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DFB_ARCH_TYPE=${{ matrix.arch_type }}
-          cmake --build ./build --config ${{ matrix.build_type }} --target ${{ matrix.target }}
+          cmake --build ./build --config ${{ matrix.build_type }}
