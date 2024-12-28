@@ -9,5 +9,6 @@ fi
 cd ..
 mkdir -p "build/mac/$1/universal"
 cd "build/mac/$1/universal"
+export XCODE_VERSION="15"
 cmake -DCMAKE_BUILD_TYPE="$1" -DFB_ARCH_TYPE=3 ../../../..
 make
