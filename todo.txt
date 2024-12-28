@@ -1,3 +1,4 @@
+fix mac infoplist and the other thingy
 autobuilds:
   build on /build
   factor out sse/avx/neon into 1 variable
