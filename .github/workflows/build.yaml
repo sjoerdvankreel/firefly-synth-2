@@ -43,11 +43,11 @@ jobs:
             arch_type: 2
             build_type: RELEASE
           - name: "MacOS 11 Universal Debug"
-            os: macos-11
+            os: macos-12
             arch_type: 3
             build_type: DEBUG
           - name: "MacOS 11 Universal Release"
-            os: macos-11
+            os: macos-12
             arch_type: 3
             build_type: RELEASE
     steps:
