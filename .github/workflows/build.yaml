@@ -42,12 +42,12 @@ jobs:
             os: ubuntu-22.04
             arch_type: 2
             build_type: RELEASE
-          - name: "MacOS Latest Universal Debug"
-            os: macos-latest
+          - name: "MacOS 13 Universal Debug"
+            os: macos-13
             arch_type: 3
             build_type: DEBUG
-          - name: "MacOS Latest Universal Release"
-            os: macos-latest
+          - name: "MacOS 13 Universal Release"
+            os: macos-13
             arch_type: 3
             build_type: RELEASE
     steps:
