@@ -42,6 +42,14 @@ jobs:
             os: ubuntu-22.04
             arch_type: 2
             build_type: RELEASE
+          - name: "MacOS 11 Universal Debug"
+            os: macos-11
+            arch_type: 3
+            build_type: DEBUG
+          - name: "MacOS 11 Universal Release"
+            os: macos-11
+            arch_type: 3
+            build_type: RELEASE
     steps:
       - name: Checkout
         uses: actions/checkout@v4
