@@ -10,7 +10,6 @@
 #if FB_ARCH_TYPE == FB_ARCH_TYPE_SSE2
 typedef xsimd::batch<float, xsimd::sse2> FBFloatVector;
 #elif FB_ARCH_TYPE == FB_ARCH_TYPE_AVX2
-#error no workie
 typedef xsimd::batch<float, xsimd::avx2> FBFloatVector;
 #elif FB_ARCH_TYPE == FB_ARCH_TYPE_AARCH64
 typedef xsimd::batch<float, xsimd::neon64> FBFloatVector;
