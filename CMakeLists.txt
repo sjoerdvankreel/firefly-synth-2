@@ -171,7 +171,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   set_target_properties(${PROJECT_NAME_PLUG_VST3} PROPERTIES SUFFIX ".vst3")
-else if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
   set_target_properties(${PROJECT_NAME_PLUG_VST3} PROPERTIES PREFIX "" SUFFIX "")
 endif ()
 
