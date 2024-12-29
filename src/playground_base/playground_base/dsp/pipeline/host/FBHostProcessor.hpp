@@ -36,7 +36,7 @@ class FBHostProcessor final
 
 public:
   ~FBHostProcessor();  
-  FB_NOCOPY_MOVE_NODEFCTOR(FBHostProcessor);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostProcessor);
 
   FBHostProcessor(
     IFBHostProcessContext* hostContext,
