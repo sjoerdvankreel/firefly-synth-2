@@ -25,3 +25,6 @@
 [submodule "lib/xsimd"]
 	path = lib/xsimd
 	url = https://github.com/sjoerdvankreel/xsimd.git
+[submodule "lib/sse2neon"]
+	path = lib/sse2neon
+	url = https://github.com/sjoerdvankreel/sse2neon.git

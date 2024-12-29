@@ -1,5 +1,10 @@
 #include <playground_base/base/shared/FBDenormal.hpp>
+
+#ifdef __APPLE__ && !defined(__aarch64__)
+#include <sse2neon.h>
+#else
 #include <immintrin.h>
+#endif
 
 void
 FBRestoreDenormal(FBDenormalState state)
