@@ -1,6 +1,6 @@
 #include <playground_base/base/shared/FBDenormal.hpp>
 
-#if (defined __APPLE__) && !defined(__aarch64__)
+#if (defined __APPLE__) && defined(__aarch64__)
 #include <sse2neon.h>
 #else
 #include <immintrin.h>
