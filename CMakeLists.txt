@@ -69,11 +69,9 @@ else ()
 endif ()
 
 # juce
-set(JUCE_MODULES_ONLY ON)
-set(JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
-set(JUCE_MODULES_DIR "${CMAKE_SOURCE_DIR}/lib/JUCE/modules")
 add_definitions(-DJUCE_USE_CURL=0)
 add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=0)
+set(JUCE_MODULES_DIR "${CMAKE_SOURCE_DIR}/lib/JUCE/modules")
 add_library(juce STATIC 
   "${JUCE_MODULES_DIR}/juce_core/juce_core.cpp"
   "${JUCE_MODULES_DIR}/juce_core/juce_core_CompilationTime.cpp")
