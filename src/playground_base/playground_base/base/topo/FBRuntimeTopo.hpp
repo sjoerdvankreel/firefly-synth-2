@@ -16,10 +16,10 @@ class FBScalarStateContainer;
 
 struct FBRuntimeTopo final
 {
-  FBStaticTopo const static_;
-  std::vector<FBRuntimeModule> const modules;
-  std::vector<FBRuntimeParam> const params;
-  std::unordered_map<int, int> const tagToParam;
+  FBStaticTopo static_;
+  std::vector<FBRuntimeModule> modules;
+  std::vector<FBRuntimeParam> params;
+  std::unordered_map<int, int> tagToParam;
 
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);

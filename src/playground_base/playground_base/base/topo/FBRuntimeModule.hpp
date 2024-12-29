@@ -10,10 +10,10 @@ struct FBStaticModule;
 
 struct FBRuntimeModule final
 {
-  int const staticIndex;
-  int const staticSlot;
-  std::string const name;
-  std::vector<FBRuntimeParam> const params;
+  int staticIndex;
+  int staticSlot;
+  std::string name;
+  std::vector<FBRuntimeParam> params;
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeModule);
   FBRuntimeModule(
