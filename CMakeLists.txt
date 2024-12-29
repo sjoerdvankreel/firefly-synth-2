@@ -71,13 +71,12 @@ endif ()
 # juce
 add_definitions(-DJUCE_USE_CURL=0)
 add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=0)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/JUCE)
-#set(JUCE_MODULES_DIR "${CMAKE_SOURCE_DIR}/lib/JUCE/modules")
-#add_library(juce STATIC
- # "${JUCE_MODULES_DIR}/juce_core/juce_core.cpp"
-  #"${JUCE_MODULES_DIR}/juce_core/juce_core_CompilationTime.cpp")
-#target_include_directories(juce PRIVATE "${JUCE_MODULES_DIR}")
-#target_compile_definitions(juce PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
+set(JUCE_MODULES_DIR "${CMAKE_SOURCE_DIR}/lib/JUCE/modules")
+add_library(juce STATIC 
+  "${JUCE_MODULES_DIR}/juce_core/juce_core.cpp"
+  "${JUCE_MODULES_DIR}/juce_core/juce_core_CompilationTime.cpp")
+target_include_directories(juce PRIVATE "${JUCE_MODULES_DIR}")
+target_compile_definitions(juce PRIVATE JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1)
 
 # vst3 sdk
 set(VST_SDK TRUE)
