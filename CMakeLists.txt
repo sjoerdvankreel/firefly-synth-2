@@ -69,9 +69,11 @@ else ()
 endif ()
 
 # juce
+set(JUCE_MODULES_ONLY ON)
 add_definitions(-DJUCE_USE_CURL=0)
 add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=0)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/JUCE)
+juce_add_module(${CMAKE_SOURCE_DIR}/lib/JUCE/modules/juce_core)
 #set(JUCE_MODULES_DIR "${CMAKE_SOURCE_DIR}/lib/JUCE/modules")
 #add_library(juce STATIC
  # "${JUCE_MODULES_DIR}/juce_core/juce_core.cpp"
