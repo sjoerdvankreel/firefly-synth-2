@@ -9,6 +9,7 @@
 void
 FBRestoreDenormal(FBDenormalState state)
 {
+  static_assert(sizeof(void*) == 8);
   _MM_SET_FLUSH_ZERO_MODE(state.first);
   _MM_SET_DENORMALS_ZERO_MODE(state.second);
 }
