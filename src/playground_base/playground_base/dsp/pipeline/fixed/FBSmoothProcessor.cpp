@@ -73,6 +73,6 @@ FBSmoothProcessor::ProcessSmoothing(
         else
           for(int v = 0; v < FBMaxVoices; v++)
             if (_voiceManager->IsActive(v))
-                ;//params[p].VoiceAcc().SmoothNext(v, s);
+              params[p].VoiceAcc().SmoothNext(v, s);
   }
 }
