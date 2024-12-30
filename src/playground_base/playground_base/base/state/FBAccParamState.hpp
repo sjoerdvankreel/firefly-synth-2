@@ -42,5 +42,5 @@ FBAccParamState::SetSmoothingCoeffs(float sampleRate, float durationSecs)
 inline void
 FBAccParamState::SmoothNext(int sample, float automation) 
 { 
-  _cv[sample] = _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f));
+  //_cv[sample] = _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f));
 }
