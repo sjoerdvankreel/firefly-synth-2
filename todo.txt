@@ -1,4 +1,5 @@
 rosetta is borked
+mac is slow af
 threadpool makes it slower
 fix mac infoplist and the other thingy
 reaper voice off by disable plug not working
