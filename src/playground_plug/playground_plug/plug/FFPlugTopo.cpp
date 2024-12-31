@@ -4,6 +4,7 @@
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
 FBStaticModule FFMakeGLFOTopo();
+FBStaticModule FFMakeGLPFTopo();
 FBStaticModule FFMakeOsciTopo();
 FBStaticModule FFMakeMasterTopo();
 
@@ -16,6 +17,7 @@ FFMakeTopo()
   result->version.minor = FF_PLUG_VERSION_MINOR;
   result->version.patch = FF_PLUG_VERSION_PATCH;
   result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
+  result->modules[FFModuleGLPF] = FFMakeGLPFTopo();
   result->modules[FFModuleOsci] = FFMakeOsciTopo();
   result->modules[FFModuleMaster] = FFMakeMasterTopo();
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
