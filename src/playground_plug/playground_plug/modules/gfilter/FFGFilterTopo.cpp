@@ -3,17 +3,17 @@
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
 FBStaticModule
-FFMakeGLPFTopo()
+FFMakeGFilterTopo()
 {
   FBStaticModule result = {};
   result.voice = false;
-  result.name = "GLPF";
-  result.slotCount = FFGLPFCount;
+  result.name = "GFilter";
+  result.slotCount = FFGFilterCount;
   result.id = "{290E86EF-DFE9-4A3C-B6B2-9063643DD0E8}";
-  result.params.resize(FFGLPFParamCount);
-  auto selectModule = [](auto& state) { return &state.global.glpf; };
+  result.params.resize(FFGFilterParamCount);
+  auto selectModule = [](auto& state) { return &state.global.gFilter; };
 
-  auto& on = result.params[FFGLPFBlockOn];
+  auto& on = result.params[FFGFilterBlockOn];
   on.acc = false;
   on.name = "On";
   on.slotCount = 1;
@@ -23,7 +23,7 @@ FFMakeGLPFTopo()
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
 
-  auto& res = result.params[FFGLFPAccRes];
+  auto& res = result.params[FFGFilterAccRes];
   res.acc = true;
   res.defaultText = "0";
   res.displayMultiplier = 100.0f;
@@ -36,7 +36,7 @@ FFMakeGLPFTopo()
   res.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectRes);
   res.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectRes);
 
-  auto& freq = result.params[FFGLPFAccFreq];
+  auto& freq = result.params[FFGFilterAccFreq];
   freq.acc = true;
   freq.defaultText = "1000";
   freq.name = "Freq";

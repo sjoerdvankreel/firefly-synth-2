@@ -94,16 +94,16 @@ FFMakeOsciTopo()
   pw.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPW);
   pw.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectPW);
 
-  auto& glfoToGain = result.params[FFOsciAccGLFOToGain];
-  glfoToGain.acc = true;
-  glfoToGain.displayMultiplier = 100.0f;
-  glfoToGain.name = "GLFO To Gain";
-  glfoToGain.slotCount = 1;
-  glfoToGain.valueCount = 0;
-  glfoToGain.unit = "%";
-  glfoToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
-  auto selectGLFOToGain = [](auto& module) { return &module.acc.glfoToGain; };
-  glfoToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
-  glfoToGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGLFOToGain);
+  auto& gLFOToGain = result.params[FFOsciAccGLFOToGain];
+  gLFOToGain.acc = true;
+  gLFOToGain.displayMultiplier = 100.0f;
+  gLFOToGain.name = "GLFO To Gain";
+  gLFOToGain.slotCount = 1;
+  gLFOToGain.valueCount = 0;
+  gLFOToGain.unit = "%";
+  gLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
+  auto selectGLFOToGain = [](auto& module) { return &module.acc.gLFOToGain; };
+  gLFOToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
+  gLFOToGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGLFOToGain);
   return result;
 }

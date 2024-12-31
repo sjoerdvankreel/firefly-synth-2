@@ -4,9 +4,9 @@
 
 struct FFModuleProcState;
 
-class FFGLPFProcessor
+class FFGFilterProcessor
 {
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLPFProcessor);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterProcessor);
   void Process(FFModuleProcState const& state);
 };

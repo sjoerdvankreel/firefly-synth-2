@@ -10,8 +10,8 @@ void
 FFGLFOProcessor::Process(FFModuleProcState const& state)
 {
   auto const& topo = state.topo->modules[FFModuleGLFO];
-  auto& output = state.proc->dsp.global.glfo[state.moduleSlot].output;
-  auto const& params = state.proc->param.global.glfo[state.moduleSlot];
+  auto& output = state.proc->dsp.global.gLFO[state.moduleSlot].output;
+  auto const& params = state.proc->param.global.gLFO[state.moduleSlot];
   bool on = topo.params[FFGLFOBlockOn].NormalizedToBool(params.block.on[0].Value());
 
   if (!on)

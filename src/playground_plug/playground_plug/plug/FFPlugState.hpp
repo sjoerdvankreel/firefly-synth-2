@@ -1,9 +1,9 @@
 #pragma once
 
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
-#include <playground_plug/modules/glpf/FFGLPFState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
+#include <playground_plug/modules/gfilter/FFGFilterState.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
@@ -16,8 +16,8 @@
 struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
 {
   FFMasterDSPState master = {};
-  std::array<FFGLPFDSPState, FFGLPFCount> glpf = {};
-  std::array<FFGLFODSPState, FFGLFOCount> glfo = {};
+  std::array<FFGLFODSPState, FFGLFOCount> gLFO = {};
+  std::array<FFGFilterDSPState, FFGFilterCount> gFilter = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
 };
 
@@ -40,8 +40,8 @@ struct alignas(alignof(TGlobalAcc)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFMasterParamState<TGlobalBlock, TGlobalAcc>, 1> master = {};
-  std::array<FFGLPFParamState<TGlobalBlock, TGlobalAcc>, FFGLPFCount> glpf = {};
-  std::array<FFGLFOParamState<TGlobalBlock, TGlobalAcc>, FFGLFOCount> glfo = {};
+  std::array<FFGLFOParamState<TGlobalBlock, TGlobalAcc>, FFGLFOCount> gLFO = {};
+  std::array<FFGFilterParamState<TGlobalBlock, TGlobalAcc>, FFGFilterCount> gFilter = {};
 };
 
 template <class TVoiceBlock, class TVoiceAcc>

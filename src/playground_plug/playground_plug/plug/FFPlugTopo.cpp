@@ -4,9 +4,9 @@
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
 FBStaticModule FFMakeGLFOTopo();
-FBStaticModule FFMakeGLPFTopo();
 FBStaticModule FFMakeOsciTopo();
 FBStaticModule FFMakeMasterTopo();
+FBStaticModule FFMakeGFilterTopo();
 
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
@@ -17,9 +17,9 @@ FFMakeTopo()
   result->version.minor = FF_PLUG_VERSION_MINOR;
   result->version.patch = FF_PLUG_VERSION_PATCH;
   result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
-  result->modules[FFModuleGLPF] = FFMakeGLPFTopo();
   result->modules[FFModuleOsci] = FFMakeOsciTopo();
   result->modules[FFModuleMaster] = FFMakeMasterTopo();
+  result->modules[FFModuleGFilter] = FFMakeGFilterTopo();
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
   result->freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };

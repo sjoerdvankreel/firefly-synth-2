@@ -51,7 +51,7 @@ void
 FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 {
   float key = static_cast<float>(state.voice->event.note.key);
-  auto const& glfo = state.proc->dsp.global.glfo[0].output;
+  auto const& gLFO = state.proc->dsp.global.gLFO[0].output;
   auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
 
   auto const& topo = state.topo->modules[FFModuleOsci];
@@ -90,8 +90,8 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   }
   mono.Transform([&](int v) {
     auto gain = params.acc.gain[0].Voice()[voice].CV(v);
-    auto glfoToGain = params.acc.glfoToGain[0].Voice()[voice].CV(v);
-    return gain * ((1.0f - glfoToGain) * mono[v] + mono[v] * glfoToGain * glfo[v]); });
+    auto gLFOToGain = params.acc.gLFOToGain[0].Voice()[voice].CV(v);
+    return gain * ((1.0f - gLFOToGain) * mono[v] + mono[v] * gLFOToGain * gLFO[v]); });
   output.Transform([&](int ch, int v) {
     return mono[v];
   });
