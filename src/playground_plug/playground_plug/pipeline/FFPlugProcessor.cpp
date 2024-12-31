@@ -59,14 +59,24 @@ void
 FFPlugProcessor::ProcessPostVoice(
   FBPlugInputBlock const& input, FBFixedAudioBlock& output)
 {
-  auto& masterIn = _state->dsp.global.master.input;
-  masterIn.Clear();
+  auto& glfoIn = _state->dsp.global.glpf[0].input;
+  glfoIn.Clear();
   for (int v = 0; v < FBMaxVoices; v++)
     if (input.voiceManager->IsActive(v))
-      masterIn.Add(_state->dsp.voice[v].output);
+      glfoIn.Add(_state->dsp.voice[v].output);
 
   auto moduleState = MakeModuleState(input);
   moduleState.moduleSlot = 0;
+  _state->dsp.global.glpf[0].processor.Process(moduleState);
+  for (int s = 1; s < FFGLPFCount; s++)
+  {
+    moduleState.moduleSlot = s;
+    _state->dsp.global.glpf[s].input.CopyFrom(_state->dsp.global.glpf[s - 1].output);
+    _state->dsp.global.glpf[s].processor.Process(moduleState);
+  }
+
+  moduleState.moduleSlot = 0;
+  _state->dsp.global.master.input.CopyFrom(_state->dsp.global.glpf[FFGLPFCount - 1].output);
   _state->dsp.global.master.processor.Process(moduleState);
   output.CopyFrom(_state->dsp.global.master.output);
 }

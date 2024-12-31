@@ -6,7 +6,7 @@ struct FBStaticTopo;
 std::unique_ptr<FBStaticTopo> FFMakeTopo();
 
 inline int constexpr FFGLFOCount = 1;
-inline int constexpr FFGLPFCount = 1;
+inline int constexpr FFGLPFCount = 2;
 inline int constexpr FFOsciCount = 2; // todo oscis - it must be a single module
 inline int constexpr FFOsciGainCount = 2;
 
