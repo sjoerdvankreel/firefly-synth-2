@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
+#include <playground_plug/modules/glpf/FFGLPFState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
 
@@ -15,6 +16,7 @@
 struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
 {
   FFMasterDSPState master = {};
+  std::array<FFGLPFDSPState, FFGLPFCount> glpf = {};
   std::array<FFGLFODSPState, FFGLFOCount> glfo = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
 };
@@ -38,6 +40,7 @@ struct alignas(alignof(TGlobalAcc)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFMasterParamState<TGlobalBlock, TGlobalAcc>, 1> master = {};
+  std::array<FFGLPFParamState<TGlobalBlock, TGlobalAcc>, FFGLPFCount> glpf = {};
   std::array<FFGLFOParamState<TGlobalBlock, TGlobalAcc>, FFGLFOCount> glfo = {};
 };
 
