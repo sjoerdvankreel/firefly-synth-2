@@ -14,6 +14,7 @@ class alignas(sizeof(FBFloatVector)) FFGLPFDSPState final
   friend class FFPlugProcessor;
   FFGLPFProcessor processor = {};
 public:
+  FBFixedAudioBlock input = {};
   FBFixedAudioBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLPFDSPState);
 };
