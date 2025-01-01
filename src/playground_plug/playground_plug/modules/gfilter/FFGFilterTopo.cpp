@@ -61,7 +61,7 @@ FFMakeGFilterTopo()
   freq.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectFreq);
   freq.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectFreq);
 
-  auto& gain = result->params[FFGFilterAccFreq];
+  auto& gain = result->params[FFGFilterAccGain];
   gain.acc = true;
   gain.defaultText = "0";
   gain.name = "Gain";
