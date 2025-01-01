@@ -25,6 +25,7 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
   FBFloatVector CV(int v) const;
+  std::array<float, FBFixedBlockSamples> const& CV() const { return _cv; }
 };
 
 inline FBFloatVector

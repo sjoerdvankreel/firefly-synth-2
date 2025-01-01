@@ -23,10 +23,14 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
+  FBFixedDoubleBlock res;
+  //res.LoadFromFloat(params.acc.res[0].Global().CV());
+
   FBFixedDoubleBlock g;
   g.Transform([&](int v) {
-    auto freq = params.acc.freq[0].Global().CV(v);
-    return xsimd::tan(std::numbers::pi * freq / state.sampleRate);
+    //auto freq = params.acc.freq[0].Global().CV(v);
+    //return xsimd::tan(std::numbers::pi * freq / state.sampleRate);
+    return 0.0f;
   });
 
   FBFixedDoubleBlock k;
@@ -39,7 +43,7 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
 
   output.Transform([&](int ch, int v) {
     auto resFloat = params.acc.res[0].Global().CV(v);
-    auto resDouble = xsimd::batch_cast<double>(resFloat);
-    return input[ch][v] * resDouble; // TODO some filtering !
+    //auto resDouble = xsimd::batch_cast<double>(resFloat);
+    return resFloat;// 0.0f;// input[ch][v] * resDouble; // TODO some filtering !
   });
 }
