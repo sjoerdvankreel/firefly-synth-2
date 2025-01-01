@@ -13,6 +13,7 @@ inline int constexpr FFOsciGainCount = 2;
 enum { FFModuleGLFO, FFModuleGFilter, FFModuleOsci, FFModuleMaster, FFModuleCount };
 enum { FFGLFOBlockOn, FFGLFOAccRate, FFGLFOParamCount };
 enum { FFMasterBlockSmooth, FFMasterAccGain, FFMasterParamCount };
-enum { FFGFilterBlockOn, FFGFilterAccFreq, FFGFilterAccRes, FFGFilterParamCount };
+enum { FFGFilterBlockOn, FFGFilterBlockType, FFGFilterAccFreq, FFGFilterAccRes, FFGFilterParamCount };
 enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypePulse, FFOsciTypeCount };
 enum { FFOsciBlockOn, FFOsciBlockType, FFOsciBlockNote, FFOsciAccGain, FFOsciAccCent, FFOsciAccPW, FFOsciAccGLFOToGain, FFOsciParamCount };
+enum { FFGFilterTypeLPF, FFGFilterTypeBPF, FFGFilterTypeHPF, FFGFilterTypeBSF, FFGFilterTypeAPF, FFGFilterTypePEQ, FFGFilterTypeBLL, FFGFilterTypeLSH, FFGFilterTypeHSH, FFGFilterTypeCount };

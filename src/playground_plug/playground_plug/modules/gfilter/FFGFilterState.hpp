@@ -24,7 +24,8 @@ class alignas(alignof(TGlobalBlock)) FFGFilterBlockParamState final
 {
   friend class FFGFilterProcessor;
   friend FBStaticModule FFMakeGFilterTopo();
-  std::array<TGlobalBlock, 1> on = {}; // TODO type
+  std::array<TGlobalBlock, 1> on = {};
+  std::array<TGlobalBlock, 1> type = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterBlockParamState);
 };
@@ -36,6 +37,7 @@ class alignas(alignof(TGlobalAcc)) FFGFilterAccParamState final
   friend FBStaticModule FFMakeGFilterTopo();
   std::array<TGlobalAcc, 1> res = {};
   std::array<TGlobalAcc, 1> freq = {};
+  std::array<TGlobalAcc, 1> gain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterAccParamState);
 };

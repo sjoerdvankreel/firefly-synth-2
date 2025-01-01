@@ -23,6 +23,16 @@ FFMakeGFilterTopo()
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
 
+  auto& type = result.params[FFGFilterBlockType];
+  type.acc = false;
+  type.name = "Type";
+  type.slotCount = 1;
+  type.valueCount = 2;
+  type.id = "{503DECBB-EE24-4EC9-8AA2-DC865A38A70C}";
+  auto selectType = [](auto& module) { return &module.block.type; };
+  type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
+  type.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
+
   auto& res = result.params[FFGFilterAccRes];
   res.acc = true;
   res.defaultText = "0";
@@ -49,5 +59,20 @@ FFMakeGFilterTopo()
   auto selectFreq = [](auto& module) { return &module.acc.freq; };
   freq.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectFreq);
   freq.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectFreq);
+
+  auto& gain = result.params[FFGFilterAccFreq];
+  gain.acc = true;
+  gain.defaultText = "0";
+  gain.name = "Gain";
+  gain.plainMin = -24.0f;
+  gain.plainMax = 24.0f;
+  gain.slotCount = 1;
+  gain.valueCount = 0;
+  gain.unit = "dB";
+  gain.id = "{8A4C5073-CE26-44CF-A244-425824596540}";
+  auto selectGain = [](auto& module) { return &module.acc.gain; };
+  gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
+  gain.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
+
   return result;
 }
