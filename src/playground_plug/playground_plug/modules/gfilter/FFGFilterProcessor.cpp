@@ -14,12 +14,27 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   auto const& input = state.proc->dsp.global.gFilter[state.moduleSlot].input;
   auto const& params = state.proc->param.global.gFilter[state.moduleSlot];
   bool on = topo.params[(int)FFGFilterParam::On].NormalizedToBool(params.block.on[0].Value());
+  // todo type
 
   if (!on)
   {
     output.CopyFrom(input);
     return;
   }
+
+  FBFixedVectorBlock g;
+  g.Transform([&](int v) {
+    auto freq = params.acc.freq[0].Global().CV(v);
+    return xsimd::tan(std::numbers::pi_v<float> *freq / state.sampleRate);
+  });
+
+  FBFixedVectorBlock k;
+  FBFixedVectorBlock a1;
+  FBFixedVectorBlock a2;
+  FBFixedVectorBlock a3;
+  FBFixedVectorBlock m1;
+  FBFixedVectorBlock m2;
+  FBFixedVectorBlock m3;
 
   output.Transform([&](int ch, int v) {
     auto res = params.acc.res[0].Global().CV(v);

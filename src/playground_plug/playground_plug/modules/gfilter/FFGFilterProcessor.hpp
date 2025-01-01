@@ -4,6 +4,7 @@
 
 struct FFModuleProcState;
 
+// https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 class FFGFilterProcessor
 {
 public:
