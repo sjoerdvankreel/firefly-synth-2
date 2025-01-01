@@ -28,7 +28,9 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
 
   FBFixedDoubleBlock g;
   g.Transform([&](int v) {
-    g.LoadFromFloatAligned(params.acc.freq[0].Global().CV(v));
+    FBFloatVector zork;
+    g.LoadFromFloatAligned(v, params.acc.freq[0].Global().CV(v));
+    zork = g.StoreToFloatAligned(v);
     //auto freq = params.acc.freq[0].Global().CV(v);
     //return xsimd::tan(std::numbers::pi * freq / state.sampleRate);
     return 0.0f;
