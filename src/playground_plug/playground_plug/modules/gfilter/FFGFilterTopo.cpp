@@ -1,19 +1,20 @@
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFTopoDetail.hpp>
+#include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
-FBStaticModule
+std::unique_ptr<FBStaticModule>
 FFMakeGFilterTopo()
 {
-  FBStaticModule result = {};
-  result.voice = false;
-  result.name = "GFilter";
-  result.slotCount = FFGFilterCount;
-  result.id = "{290E86EF-DFE9-4A3C-B6B2-9063643DD0E8}";
-  result.params.resize(FFGFilterParamCount);
+  auto result = std::make_unique<FBStaticModule>();
+  result->voice = false;
+  result->name = "GFilter";
+  result->slotCount = FFGFilterCount;
+  result->id = "{290E86EF-DFE9-4A3C-B6B2-9063643DD0E8}";
+  result->params.resize(FFGFilterParamCount);
   auto selectModule = [](auto& state) { return &state.global.gFilter; };
 
-  auto& on = result.params[FFGFilterBlockOn];
+  auto& on = result->params[FFGFilterBlockOn];
   on.acc = false;
   on.name = "On";
   on.slotCount = 1;
@@ -23,7 +24,7 @@ FFMakeGFilterTopo()
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
 
-  auto& type = result.params[FFGFilterBlockType];
+  auto& type = result->params[FFGFilterBlockType];
   type.acc = false;
   type.name = "Type";
   type.slotCount = 1;
@@ -33,7 +34,7 @@ FFMakeGFilterTopo()
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
 
-  auto& res = result.params[FFGFilterAccRes];
+  auto& res = result->params[FFGFilterAccRes];
   res.acc = true;
   res.defaultText = "0";
   res.displayMultiplier = 100.0f;
@@ -46,7 +47,7 @@ FFMakeGFilterTopo()
   res.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectRes);
   res.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectRes);
 
-  auto& freq = result.params[FFGFilterAccFreq];
+  auto& freq = result->params[FFGFilterAccFreq];
   freq.acc = true;
   freq.defaultText = "1000";
   freq.name = "Freq";
@@ -60,7 +61,7 @@ FFMakeGFilterTopo()
   freq.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectFreq);
   freq.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectFreq);
 
-  auto& gain = result.params[FFGFilterAccFreq];
+  auto& gain = result->params[FFGFilterAccFreq];
   gain.acc = true;
   gain.defaultText = "0";
   gain.name = "Gain";

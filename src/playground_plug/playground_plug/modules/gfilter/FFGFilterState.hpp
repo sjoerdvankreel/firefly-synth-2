@@ -23,7 +23,7 @@ template <class TGlobalBlock>
 class alignas(alignof(TGlobalBlock)) FFGFilterBlockParamState final
 {
   friend class FFGFilterProcessor;
-  friend FBStaticModule FFMakeGFilterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
   std::array<TGlobalBlock, 1> on = {};
   std::array<TGlobalBlock, 1> type = {};
 public:
@@ -34,7 +34,7 @@ template <class TGlobalAcc>
 class alignas(alignof(TGlobalAcc)) FFGFilterAccParamState final
 {
   friend class FFGFilterProcessor;
-  friend FBStaticModule FFMakeGFilterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
   std::array<TGlobalAcc, 1> res = {};
   std::array<TGlobalAcc, 1> freq = {};
   std::array<TGlobalAcc, 1> gain = {};
@@ -46,7 +46,7 @@ template <class TGlobalBlock, class TGlobalAcc>
 class alignas(alignof(TGlobalAcc)) FFGFilterParamState final
 {
   friend class FFGFilterProcessor;
-  friend FBStaticModule FFMakeGFilterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
   FFGFilterAccParamState<TGlobalAcc> acc = {};
   FFGFilterBlockParamState<TGlobalBlock> block = {};
 public:

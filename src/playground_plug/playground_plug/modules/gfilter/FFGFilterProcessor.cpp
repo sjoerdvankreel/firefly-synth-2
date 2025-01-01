@@ -1,6 +1,7 @@
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFModuleProcState.hpp>
+#include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <playground_base/base/topo/FBStaticTopo.hpp>
