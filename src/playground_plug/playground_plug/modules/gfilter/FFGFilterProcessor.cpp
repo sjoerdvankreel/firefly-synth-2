@@ -5,6 +5,7 @@
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 void
 FFGFilterProcessor::Process(FFModuleProcState const& state)
@@ -22,22 +23,23 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
-  FBFixedFloatBlock g;
+  FBFixedDoubleBlock g;
   g.Transform([&](int v) {
     auto freq = params.acc.freq[0].Global().CV(v);
-    return xsimd::tan(std::numbers::pi_v<float> *freq / state.sampleRate);
+    return xsimd::tan(std::numbers::pi * freq / state.sampleRate);
   });
 
-  FBFixedFloatBlock k;
-  FBFixedFloatBlock a1;
-  FBFixedFloatBlock a2;
-  FBFixedFloatBlock a3;
-  FBFixedFloatBlock m1;
-  FBFixedFloatBlock m2;
-  FBFixedFloatBlock m3;
+  FBFixedDoubleBlock k;
+  FBFixedDoubleBlock a1;
+  FBFixedDoubleBlock a2;
+  FBFixedDoubleBlock a3;
+  FBFixedDoubleBlock m1;
+  FBFixedDoubleBlock m2;
+  FBFixedDoubleBlock m3;
 
   output.Transform([&](int ch, int v) {
-    auto res = params.acc.res[0].Global().CV(v);
-    return input[ch][v] * res; // TODO some filtering !
+    auto resFloat = params.acc.res[0].Global().CV(v);
+    auto resDouble = xsimd::batch_cast<double>(resFloat);
+    return input[ch][v] * resDouble; // TODO some filtering !
   });
 }
