@@ -10,6 +10,4 @@ inline int constexpr FFGFilterCount = 2;
 inline int constexpr FFOsciCount = 2; // todo oscis - it must be a single module
 inline int constexpr FFOsciGainCount = 2;
 
-enum { FFModuleGLFO, FFModuleGFilter, FFModuleOsci, FFModuleMaster, FFModuleCount };
-enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypePulse, FFOsciTypeCount };
-enum { FFOsciBlockOn, FFOsciBlockType, FFOsciBlockNote, FFOsciAccGain, FFOsciAccCent, FFOsciAccPW, FFOsciAccGLFOToGain, FFOsciParamCount };
+enum { FFModuleGLFO, FFModuleGFilter, FFModuleOsci, FFModuleMaster, FFModuleCount }; // todo enum class

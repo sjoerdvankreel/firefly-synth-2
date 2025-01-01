@@ -1,19 +1,20 @@
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFTopoDetail.hpp>
+#include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
-FBStaticModule
+std::unique_ptr<FBStaticModule>
 FFMakeOsciTopo()
 {
-  FBStaticModule result = {};
-  result.voice = true;
-  result.name = "Osc";
-  result.slotCount = FFOsciCount;
-  result.id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
-  result.params.resize(FFOsciParamCount);
+  auto result = std::make_unique<FBStaticModule>();
+  result->voice = true;
+  result->name = "Osc";
+  result->slotCount = FFOsciCount;
+  result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
+  result->params.resize((int)FFOsciParam::Count);
   auto selectModule = [](auto& state) { return &state.voice.osci; };
 
-  auto& on = result.params[FFOsciBlockOn];
+  auto& on = result->params[(int)FFOsciParam::On];
   on.acc = false;
   on.name = "On";
   on.slotCount = 1;
@@ -23,12 +24,12 @@ FFMakeOsciTopo()
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
 
-  auto& type = result.params[FFOsciBlockType];
+  auto& type = result->params[(int)FFOsciParam::Type];
   type.acc = false;
   type.defaultText = "Sine";
   type.name = "Type";
   type.slotCount = 1;
-  type.valueCount = FFOsciTypeCount;
+  type.valueCount = (int)FFOsciType::Count;
   type.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
   type.list = {
     { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
@@ -39,7 +40,7 @@ FFMakeOsciTopo()
   type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
 
   std::vector<std::string> notes = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
-  auto& note = result.params[FFOsciBlockNote];
+  auto& note = result->params[(int)FFOsciParam::Note];
   note.acc = false;
   note.defaultText = "C4";
   note.discreteToText = [notes](int i) { return notes[i % 12] + std::to_string(i / 12 - 1); };
@@ -51,7 +52,7 @@ FFMakeOsciTopo()
   note.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectNote);
   note.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectNote);
 
-  auto& gain = result.params[FFOsciAccGain];
+  auto& gain = result->params[(int)FFOsciParam::Gain];
   gain.acc = true;
   gain.defaultText = "100";
   gain.displayMultiplier = 100.0f;
@@ -64,7 +65,7 @@ FFMakeOsciTopo()
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
   gain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
 
-  auto& cent = result.params[FFOsciAccCent];
+  auto& cent = result->params[(int)FFOsciParam::Cent];
   cent.acc = true;
   cent.defaultText = "0";
   cent.displayMultiplier = 100.0f;
@@ -79,7 +80,7 @@ FFMakeOsciTopo()
   cent.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectCent);
   cent.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectCent);
 
-  auto& pw = result.params[FFOsciAccPW];
+  auto& pw = result->params[(int)FFOsciParam::PW];
   pw.acc = true;
   pw.defaultText = "50";
   pw.displayMultiplier = 100.0f;
@@ -94,7 +95,7 @@ FFMakeOsciTopo()
   pw.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPW);
   pw.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectPW);
 
-  auto& gLFOToGain = result.params[FFOsciAccGLFOToGain];
+  auto& gLFOToGain = result->params[(int)FFOsciParam::GLFOToGain];
   gLFOToGain.acc = true;
   gLFOToGain.displayMultiplier = 100.0f;
   gLFOToGain.name = "GLFO To Gain";

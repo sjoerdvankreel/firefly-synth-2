@@ -1,6 +1,7 @@
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFModuleProcState.hpp>
+#include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 
 #include <playground_base/base/topo/FBStaticTopo.hpp>
@@ -56,9 +57,9 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 
   auto const& topo = state.topo->modules[FFModuleOsci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
-  bool on = topo.params[FFOsciBlockOn].NormalizedToBool(params.block.on[0].Voice()[voice]);
-  int type = topo.params[FFOsciBlockType].NormalizedToDiscrete(params.block.type[0].Voice()[voice]);
-  int note = topo.params[FFOsciBlockNote].NormalizedToDiscrete(params.block.note[0].Voice()[voice]);
+  bool on = topo.params[(int)FFOsciParam::On].NormalizedToBool(params.block.on[0].Voice()[voice]);
+  int type = topo.params[(int)FFOsciParam::Type].NormalizedToDiscrete(params.block.type[0].Voice()[voice]);
+  int note = topo.params[(int)FFOsciParam::Note].NormalizedToDiscrete(params.block.note[0].Voice()[voice]);
 
   if (!on)
   {
@@ -71,19 +72,19 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   FBFixedVectorBlock phase;
   incr.Transform([&](int v) {
     auto cent = params.acc.cent[0].Voice()[voice].CV(v);
-    auto centPlain = topo.params[FFOsciAccCent].NormalizedToPlainLinear(cent);
+    auto centPlain = topo.params[(int)FFOsciParam::Cent].NormalizedToPlainLinear(cent);
     auto pitch = key + note - 60.0f + centPlain;
     auto freq = FBPitchToFreq(pitch, state.sampleRate);
     return freq / state.sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
 
-  switch (type)
+  switch ((FFOsciType)type)
   {
-  case FFOsciTypeSine: mono.Transform([&](int v) {
+  case FFOsciType::Sine: mono.Transform([&](int v) {
     return GenerateSin(phase[v]); }); break;
-  case FFOsciTypeSaw: mono.Transform([&](int v) {
+  case FFOsciType::Saw: mono.Transform([&](int v) {
     return GenerateSaw(phase[v], incr[v]); }); break;
-  case FFOsciTypePulse: mono.Transform([&](int v) {
+  case FFOsciType::Pulse: mono.Transform([&](int v) {
     auto pw = params.acc.pw[0].Voice()[voice].CV(v);
     return GeneratePulse(phase[v], incr[v], pw); }); break;
   default: assert(false); break;
