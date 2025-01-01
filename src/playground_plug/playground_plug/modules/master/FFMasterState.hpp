@@ -23,7 +23,7 @@ template <class TGlobalAcc>
 class alignas(alignof(TGlobalAcc)) FFMasterAccParamState final
 {
   friend class FFMasterProcessor;
-  friend FBStaticModule FFMakeMasterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   std::array<TGlobalAcc, 1> gain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
@@ -33,7 +33,7 @@ template <class TGlobalBlock>
 class alignas(alignof(TGlobalBlock)) FFMasterBlockParamState final
 {
   friend class FFMasterProcessor;
-  friend FBStaticModule FFMakeMasterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   std::array<TGlobalBlock, 1> smooth = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterBlockParamState);
@@ -43,7 +43,7 @@ template <class TGlobalBlock, class TGlobalAcc>
 class alignas(alignof(TGlobalAcc)) FFMasterParamState final
 {
   friend class FFMasterProcessor;
-  friend FBStaticModule FFMakeMasterTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   FFMasterAccParamState<TGlobalAcc> acc = {};
   FFMasterBlockParamState<TGlobalBlock> block = {};
 public:

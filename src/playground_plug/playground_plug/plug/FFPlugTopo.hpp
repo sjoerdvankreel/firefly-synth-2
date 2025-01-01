@@ -11,6 +11,5 @@ inline int constexpr FFOsciCount = 2; // todo oscis - it must be a single module
 inline int constexpr FFOsciGainCount = 2;
 
 enum { FFModuleGLFO, FFModuleGFilter, FFModuleOsci, FFModuleMaster, FFModuleCount };
-enum { FFMasterBlockSmooth, FFMasterAccGain, FFMasterParamCount };
 enum { FFOsciTypeSine, FFOsciTypeSaw, FFOsciTypePulse, FFOsciTypeCount };
 enum { FFOsciBlockOn, FFOsciBlockType, FFOsciBlockNote, FFOsciAccGain, FFOsciAccCent, FFOsciAccPW, FFOsciAccGLFOToGain, FFOsciParamCount };

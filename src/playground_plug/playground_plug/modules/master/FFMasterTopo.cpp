@@ -1,19 +1,20 @@
 #include <playground_plug/plug/FFPlugTopo.hpp>
 #include <playground_plug/plug/FFTopoDetail.hpp>
+#include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
-FBStaticModule
+std::unique_ptr<FBStaticModule>
 FFMakeMasterTopo()
 {
-  FBStaticModule result = {};
-  result.voice = false;
-  result.name = "Master";
-  result.slotCount = 1;
-  result.id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
-  result.params.resize(FFMasterParamCount);
+  auto result = std::make_unique<FBStaticModule>();
+  result->voice = false;
+  result->name = "Master";
+  result->slotCount = 1;
+  result->id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
+  result->params.resize((int)FFMasterParam::Count);
   auto selectModule = [](auto& state) { return &state.global.master; };
 
-  auto& gain = result.params[FFMasterAccGain];
+  auto& gain = result->params[(int)FFMasterParam::Gain];
   gain.acc = true;
   gain.defaultText = "100";
   gain.displayMultiplier = 100.0f;
@@ -26,7 +27,7 @@ FFMakeMasterTopo()
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
   gain.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
 
-  auto& smooth = result.params[FFMasterBlockSmooth];
+  auto& smooth = result->params[(int)FFMasterParam::Smooth];
   smooth.acc = false;
   smooth.defaultText = "20";
   smooth.displayMultiplier = 1000.0f;
