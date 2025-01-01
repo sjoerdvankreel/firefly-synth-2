@@ -2,9 +2,9 @@
 #include <playground_plug/plug/FFPlugState.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
+#include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 
-FBStaticModule FFMakeGLFOTopo();
 FBStaticModule FFMakeOsciTopo();
 FBStaticModule FFMakeMasterTopo();
 
@@ -16,7 +16,7 @@ FFMakeTopo()
   result->version.major = FF_PLUG_VERSION_MAJOR;
   result->version.minor = FF_PLUG_VERSION_MINOR;
   result->version.patch = FF_PLUG_VERSION_PATCH;
-  result->modules[FFModuleGLFO] = FFMakeGLFOTopo();
+  result->modules[FFModuleGLFO] = std::move(*FFMakeGLFOTopo());
   result->modules[FFModuleOsci] = FFMakeOsciTopo();
   result->modules[FFModuleMaster] = FFMakeMasterTopo();
   result->modules[FFModuleGFilter] = std::move(*FFMakeGFilterTopo());
