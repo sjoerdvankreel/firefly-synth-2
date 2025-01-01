@@ -13,7 +13,7 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   auto& output = state.proc->dsp.global.gFilter[state.moduleSlot].output;
   auto const& input = state.proc->dsp.global.gFilter[state.moduleSlot].input;
   auto const& params = state.proc->param.global.gFilter[state.moduleSlot];
-  bool on = topo.params[FFGFilterBlockOn].NormalizedToBool(params.block.on[0].Value());
+  bool on = topo.params[(int)FFGFilterParam::On].NormalizedToBool(params.block.on[0].Value());
 
   if (!on)
   {

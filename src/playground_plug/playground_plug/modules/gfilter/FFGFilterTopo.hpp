@@ -5,5 +5,5 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
 
-enum { FFGFilterBlockOn, FFGFilterBlockType, FFGFilterAccFreq, FFGFilterAccRes, FFGFilterAccGain, FFGFilterParamCount };
-enum { FFGFilterTypeLPF, FFGFilterTypeBPF, FFGFilterTypeHPF, FFGFilterTypeBSF, FFGFilterTypeAPF, FFGFilterTypePEQ, FFGFilterTypeBLL, FFGFilterTypeLSH, FFGFilterTypeHSH, FFGFilterTypeCount };
+enum class FFGFilterParam { On, Type, Freq, Res, Gain, Count };
+enum class FFGFilterType { LPF, BPF, HPF, BSF, APF, PEQ, BLL, LSH, HSH, Count };
