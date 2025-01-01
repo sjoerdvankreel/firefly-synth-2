@@ -6,14 +6,14 @@
 
 #include <array>
 
-inline int constexpr FBFixedBlockVectors = FBFixedBlockSamples / FBVectorFloatCount;
+inline int constexpr FBFixedFloatVectors = FBFixedBlockSamples / FBVectorFloatCount;
 
-class alignas(sizeof(FBFloatVector)) FBFixedVectorBlock
+class alignas(sizeof(FBFloatVector)) FBFixedFloatBlock
 {
-  std::array<FBFloatVector, FBFixedBlockVectors> _store = {};
+  std::array<FBFloatVector, FBFixedFloatVectors> _store = {};
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedVectorBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedFloatBlock);
 
   template <class Op>
   void Transform(Op op);
@@ -21,7 +21,7 @@ public:
   void Clear();
   void LoadUnaligned(float const* vals);
   void StoreUnaligned(float* vals) const;
-  void Add(FBFixedVectorBlock const& rhs);
+  void Add(FBFixedFloatBlock const& rhs);
 
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; } 
@@ -29,36 +29,36 @@ public:
 
 template <class Op>
 void
-FBFixedVectorBlock::Transform(Op op)
+FBFixedFloatBlock::Transform(Op op)
 {
-  for (int v = 0; v < FBFixedBlockVectors; v++)
+  for (int v = 0; v < FBFixedFloatVectors; v++)
     (*this)[v] = op(v);
 }
 
 inline void
-FBFixedVectorBlock::Clear()
+FBFixedFloatBlock::Clear()
 {
-  for (int v = 0; v < FBFixedBlockVectors; v++)
+  for (int v = 0; v < FBFixedFloatVectors; v++)
     _store[v] = 0.0f;
 }
 
 inline void
-FBFixedVectorBlock::Add(FBFixedVectorBlock const& rhs)
+FBFixedFloatBlock::Add(FBFixedFloatBlock const& rhs)
 {
-  for (int v = 0; v < FBFixedBlockVectors; v++)
+  for (int v = 0; v < FBFixedFloatVectors; v++)
     _store[v] += rhs._store[v];
 }
 
 inline void
-FBFixedVectorBlock::StoreUnaligned(float* vals) const
+FBFixedFloatBlock::StoreUnaligned(float* vals) const
 {
-  for (int v = 0; v < FBFixedBlockVectors; v++)
+  for (int v = 0; v < FBFixedFloatVectors; v++)
     _store[v].store_unaligned(vals + v * FBVectorFloatCount);
 }
 
 inline void
-FBFixedVectorBlock::LoadUnaligned(float const* vals)
+FBFixedFloatBlock::LoadUnaligned(float const* vals)
 {
-  for (int v = 0; v < FBFixedBlockVectors; v++)
+  for (int v = 0; v < FBFixedFloatVectors; v++)
     _store[v] = FBFloatVector::load_unaligned(vals + v * FBVectorFloatCount);
 }

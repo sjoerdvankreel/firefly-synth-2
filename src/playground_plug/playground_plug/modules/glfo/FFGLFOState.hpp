@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedVectorBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
 #include <array>
@@ -14,7 +14,7 @@ class alignas(sizeof(FBFloatVector)) FFGLFODSPState final
   friend class FFPlugProcessor;
   FFGLFOProcessor processor = {};
 public:
-  FBFixedVectorBlock output = {};
+  FBFixedFloatBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
 };
 

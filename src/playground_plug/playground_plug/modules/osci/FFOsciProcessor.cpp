@@ -67,9 +67,9 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     return;
   }
 
-  FBFixedVectorBlock incr;
-  FBFixedVectorBlock mono;
-  FBFixedVectorBlock phase;
+  FBFixedFloatBlock incr;
+  FBFixedFloatBlock mono;
+  FBFixedFloatBlock phase;
   incr.Transform([&](int v) {
     auto cent = params.acc.cent[0].Voice()[voice].CV(v);
     auto centPlain = topo.params[(int)FFOsciParam::Cent].NormalizedToPlainLinear(cent);

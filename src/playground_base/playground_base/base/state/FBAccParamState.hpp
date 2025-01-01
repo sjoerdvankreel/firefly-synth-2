@@ -3,7 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedVectorBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
 
 #include <array>
 #include <algorithm>

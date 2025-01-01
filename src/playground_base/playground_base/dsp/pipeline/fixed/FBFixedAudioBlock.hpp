@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedVectorBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
 #include <array>
@@ -11,7 +11,7 @@ class FBBufferAudioBlock;
 
 class alignas(sizeof(FBFloatVector)) FBFixedAudioBlock
 {
-  std::array<FBFixedVectorBlock, 2> _store = {};
+  std::array<FBFixedFloatBlock, 2> _store = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioBlock);
@@ -26,8 +26,8 @@ public:
   void CopyFrom(FBFixedAudioBlock const& rhs);
   void CopyFrom(FBBufferAudioBlock const& rhs);
 
-  FBFixedVectorBlock& operator[](int ch) { return _store[ch]; }
-  FBFixedVectorBlock const& operator[](int ch) const { return _store[ch]; }
+  FBFixedFloatBlock& operator[](int ch) { return _store[ch]; }
+  FBFixedFloatBlock const& operator[](int ch) const { return _store[ch]; }
 };
 
 template <class Op>
@@ -35,7 +35,7 @@ void
 FBFixedAudioBlock::Transform(Op op)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int v = 0; v < FBFixedBlockVectors; v++)
+    for (int v = 0; v < FBFixedFloatVectors; v++)
       (*this)[ch][v] = op(ch, v);
 }
 
@@ -71,7 +71,7 @@ inline void
 FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int v = 0; v < FBFixedBlockVectors; v++)
+    for (int v = 0; v < FBFixedFloatVectors; v++)
       (*this)[ch][v] = rhs[ch][v];
 }
 

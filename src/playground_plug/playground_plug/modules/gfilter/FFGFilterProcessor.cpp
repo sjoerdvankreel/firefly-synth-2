@@ -22,19 +22,19 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
-  FBFixedVectorBlock g;
+  FBFixedFloatBlock g;
   g.Transform([&](int v) {
     auto freq = params.acc.freq[0].Global().CV(v);
     return xsimd::tan(std::numbers::pi_v<float> *freq / state.sampleRate);
   });
 
-  FBFixedVectorBlock k;
-  FBFixedVectorBlock a1;
-  FBFixedVectorBlock a2;
-  FBFixedVectorBlock a3;
-  FBFixedVectorBlock m1;
-  FBFixedVectorBlock m2;
-  FBFixedVectorBlock m3;
+  FBFixedFloatBlock k;
+  FBFixedFloatBlock a1;
+  FBFixedFloatBlock a2;
+  FBFixedFloatBlock a3;
+  FBFixedFloatBlock m1;
+  FBFixedFloatBlock m2;
+  FBFixedFloatBlock m3;
 
   output.Transform([&](int ch, int v) {
     auto res = params.acc.res[0].Global().CV(v);
