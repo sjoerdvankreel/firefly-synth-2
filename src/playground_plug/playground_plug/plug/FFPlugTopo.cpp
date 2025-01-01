@@ -11,21 +11,21 @@ std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
 {
   auto result = std::make_unique<FBStaticTopo>();
-  result->modules.resize(FFModuleCount);
+  result->modules.resize((int)FFModuleType::Count);
   result->version.major = FF_PLUG_VERSION_MAJOR;
   result->version.minor = FF_PLUG_VERSION_MINOR;
   result->version.patch = FF_PLUG_VERSION_PATCH;
-  result->modules[FFModuleGLFO] = std::move(*FFMakeGLFOTopo());
-  result->modules[FFModuleOsci] = std::move(*FFMakeOsciTopo());
-  result->modules[FFModuleMaster] = std::move(*FFMakeMasterTopo());
-  result->modules[FFModuleGFilter] = std::move(*FFMakeGFilterTopo());
+  result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeGLFOTopo());
+  result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
+  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
+  result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
   result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
   result->freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result->freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
   result->specialSelector = [](FBStaticTopo const& topo, void* state) {
     FBSpecialParams params = {};
-    params.smooth = topo.modules[FFModuleMaster].params[(int)FFMasterParam::Smooth].globalBlockAddr(0, 0, state);
+    params.smooth = topo.modules[(int)FFModuleType::Master].params[(int)FFMasterParam::Smooth].globalBlockAddr(0, 0, state);
     return params; };
   return result;
 }

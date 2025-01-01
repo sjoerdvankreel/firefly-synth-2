@@ -9,7 +9,7 @@
 void
 FFGFilterProcessor::Process(FFModuleProcState const& state)
 {
-  auto const& topo = state.topo->modules[FFModuleGFilter];
+  auto const& topo = state.topo->modules[(int)FFModuleType::GFilter];
   auto& output = state.proc->dsp.global.gFilter[state.moduleSlot].output;
   auto const& input = state.proc->dsp.global.gFilter[state.moduleSlot].input;
   auto const& params = state.proc->param.global.gFilter[state.moduleSlot];

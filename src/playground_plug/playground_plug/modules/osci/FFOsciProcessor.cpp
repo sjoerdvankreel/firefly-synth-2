@@ -55,7 +55,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   auto const& gLFO = state.proc->dsp.global.gLFO[0].output;
   auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
 
-  auto const& topo = state.topo->modules[FFModuleOsci];
+  auto const& topo = state.topo->modules[(int)FFModuleType::Osci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
   bool on = topo.params[(int)FFOsciParam::On].NormalizedToBool(params.block.on[0].Voice()[voice]);
   int type = topo.params[(int)FFOsciParam::Type].NormalizedToDiscrete(params.block.type[0].Voice()[voice]);
