@@ -17,12 +17,11 @@ public:
 
   template <class Op>
   void Transform(Op op);
-
   void Clear();
-  void LoadUnaligned(float const* vals);
-  void StoreUnaligned(float* vals) const;
   void Add(FBFixedFloatBlock const& rhs);
 
+  void LoadUnaligned(float const* vals);
+  void StoreUnaligned(float* vals) const;
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; } 
 };
