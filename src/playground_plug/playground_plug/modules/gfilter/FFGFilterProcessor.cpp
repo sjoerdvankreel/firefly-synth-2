@@ -23,6 +23,8 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
+#if 0
+
   FBFixedDoubleBlock res, freq, g, k;
   res.LoadFromFloatArray(params.acc.res[0].Global().CV());
   freq.LoadFromFloat(params.acc.freq[0].Global().CV());
