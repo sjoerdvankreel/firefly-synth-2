@@ -11,8 +11,8 @@ class alignas(sizeof(FBDoubleVector)) FBFixedDoubleAudioBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedDoubleAudioBlock);
 
-  template <class Op>
-  void Transform(Op op);
+  void Clear();
+  template <class Op> void Transform(Op op);
 
   void StoreToFloatArray(FBFixedFloatAudioArray& array) const;
   void LoadFromFloatArray(FBFixedFloatAudioArray const& array);
@@ -24,10 +24,17 @@ public:
 };
 
 template <class Op>
-void
+inline void
 FBFixedDoubleAudioBlock::Transform(Op op)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int v = 0; v < FBFixedFloatVectors; v++)
       (*this)[ch][v] = op(ch, v);
+}
+
+inline void
+FBFixedDoubleAudioBlock::Clear()
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].Clear();
 }

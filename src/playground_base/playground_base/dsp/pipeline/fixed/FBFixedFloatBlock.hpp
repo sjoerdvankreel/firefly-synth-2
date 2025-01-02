@@ -11,8 +11,8 @@ class alignas(sizeof(FBFloatVector)) FBFixedFloatBlock
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedFloatBlock);
 
-  template <class Op>
-  void Transform(Op op);
+  void Clear();
+  template <class Op> void Transform(Op op);
 
   void StoreToFloatArray(FBFixedFloatArray& array) const;
   void LoadFromFloatArray(FBFixedFloatArray const& array);
@@ -24,9 +24,15 @@ public:
 };
 
 template <class Op> 
-void
+inline void
 FBFixedFloatBlock::Transform(Op op)
 {
   for (int v = 0; v < FBFixedFloatVectors; v++)
     (*this)[v] = op(v);
+}
+
+inline void
+FBFixedFloatBlock::Clear()
+{
+  Transform([](auto) { return 0.0f; });
 }
