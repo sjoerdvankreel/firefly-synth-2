@@ -37,4 +37,7 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   a1.Transform([&](int v) { return 1.0 / (1.0 + g[v] * (g[v] + k[v])); });
   a2.Transform([&](int v) { return g[v] * a1[v]; });
   a3.Transform([&](int v) { return g[v] * a2[v]; });
+
+  alignas(sizeof(FBDoubleVector)) std::array<std::array<double, FBFixedBlockSamples>, 2> audio = {};
+  //for(int ch = 0; ch < 2; ch++)
 }
