@@ -23,7 +23,7 @@ struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
 
 struct alignas(sizeof(FBFloatVector)) FFVoiceDSPState final
 {
-  FBFixedAudioBlock output = {};
+  FBFixedFloatAudioBlock output = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };

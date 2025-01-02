@@ -7,12 +7,12 @@
 
 struct FBNoteEvent;
 class FBVoiceManager;
-class FBFixedAudioBlock;
+class FBFixedFloatAudioBlock;
 
 struct FBPlugInputBlock final
 {
   FBVoiceManager* voiceManager = {};
-  FBFixedAudioBlock const* audio = {};
+  FBFixedFloatAudioBlock const* audio = {};
   std::vector<FBNoteEvent> const* note = {};
   FB_NOCOPY_MOVE_DEFCTOR(FBPlugInputBlock);
 };

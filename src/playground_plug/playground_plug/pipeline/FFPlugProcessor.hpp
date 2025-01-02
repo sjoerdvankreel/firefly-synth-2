@@ -5,7 +5,7 @@
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
 struct FFProcState;
-class FBFixedAudioBlock;
+class FBFixedFloatAudioBlock;
 
 class FFPlugProcessor final:
 public IFBPlugProcessor
@@ -24,5 +24,5 @@ public:
   void ReturnVoices(FBPlugInputBlock const& input) override;
   void ProcessPreVoice(FBPlugInputBlock const& input) override;
   void ProcessVoice(FBPlugInputBlock const& input, int voice) override;
-  void ProcessPostVoice(FBPlugInputBlock const& input, FBFixedAudioBlock& output) override;
+  void ProcessPostVoice(FBPlugInputBlock const& input, FBFixedFloatAudioBlock& output) override;
 };

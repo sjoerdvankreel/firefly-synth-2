@@ -8,7 +8,7 @@
 
 class FBVoiceManager;
 class FBHostAudioBlock;
-class FBFixedAudioBlock;
+class FBFixedFloatAudioBlock;
 
 class FBFixedBufferProcessor final
 {
@@ -23,5 +23,5 @@ public:
   FBFixedBufferProcessor(FBVoiceManager* voiceManager);
 
   void ProcessToHost(FBHostOutputBlock& host);
-  void BufferFromFixed(FBFixedAudioBlock const& fixed);
+  void BufferFromFixed(FBFixedFloatAudioBlock const& fixed);
 };

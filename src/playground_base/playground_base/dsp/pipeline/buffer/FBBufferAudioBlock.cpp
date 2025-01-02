@@ -1,5 +1,5 @@
 #include <playground_base/dsp/pipeline/host/FBHostAudioBlock.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
 #include <cassert>
@@ -21,7 +21,7 @@ FBBufferAudioBlock::Append(FBHostAudioBlock const& rhs)
 }
 
 void
-FBBufferAudioBlock::Append(FBFixedAudioBlock const& rhs)
+FBBufferAudioBlock::Append(FBFixedFloatAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
   {

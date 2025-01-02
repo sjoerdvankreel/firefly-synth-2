@@ -4,7 +4,7 @@
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 
 #include <cmath>
 #include <numbers>
@@ -57,7 +57,7 @@ FFPlugProcessor::ProcessPreVoice(
 
 void
 FFPlugProcessor::ProcessPostVoice(
-  FBPlugInputBlock const& input, FBFixedAudioBlock& output)
+  FBPlugInputBlock const& input, FBFixedFloatAudioBlock& output)
 {
   auto& gGilterIn = _state->dsp.global.gFilter[0].input;
   gGilterIn.Clear();

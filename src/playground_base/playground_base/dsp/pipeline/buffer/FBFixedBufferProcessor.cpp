@@ -1,7 +1,7 @@
 #include <playground_base/dsp/pipeline/host/FBHostAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBFixedBufferProcessor.hpp>
 
@@ -12,7 +12,7 @@ FBFixedBufferProcessor(FBVoiceManager* voiceManager):
 _voiceManager(voiceManager) {}
 
 void 
-FBFixedBufferProcessor::BufferFromFixed(FBFixedAudioBlock const& fixed)
+FBFixedBufferProcessor::BufferFromFixed(FBFixedFloatAudioBlock const& fixed)
 {
   _buffer.Append(fixed);
   _returnedVoices.insert(

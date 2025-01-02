@@ -3,13 +3,13 @@
 #include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/pipeline/shared/FBAccModEvent.hpp>
 #include <playground_base/dsp/pipeline/shared/FBAccAutoEvent.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 
 #include <vector>
 
 struct FBFixedInputBlock final
 {
-  FBFixedAudioBlock audio = {};
+  FBFixedFloatAudioBlock audio = {};
   std::vector<FBNoteEvent> note = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};

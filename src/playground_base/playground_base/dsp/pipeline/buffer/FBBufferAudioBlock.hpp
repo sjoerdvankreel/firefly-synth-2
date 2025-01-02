@@ -6,7 +6,7 @@
 #include <vector>
 
 class FBHostAudioBlock;
-class FBFixedAudioBlock;
+class FBFixedFloatAudioBlock;
 
 class FBBufferAudioBlock final
 {
@@ -15,7 +15,7 @@ class FBBufferAudioBlock final
 public:
   void Drop(int count);
   void Append(FBHostAudioBlock const& rhs);
-  void Append(FBFixedAudioBlock const& rhs);
+  void Append(FBFixedFloatAudioBlock const& rhs);
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferAudioBlock);
   int Count() const { return static_cast<int>(_store[0].size()); }

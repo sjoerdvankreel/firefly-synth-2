@@ -2,7 +2,7 @@
 
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 
 #include <array>
 #include <memory>
@@ -14,7 +14,7 @@ class alignas(sizeof(FBFloatVector)) FFOsciDSPState final
   friend class FFPlugProcessor;
   FFOsciProcessor processor = {};
 public:
-  FBFixedAudioBlock output = {};
+  FBFixedFloatAudioBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 #include <playground_plug/modules/master/FFMasterProcessor.hpp>
 
 #include <array>
@@ -14,8 +14,8 @@ class alignas(sizeof(FBFloatVector)) FFMasterDSPState final
   friend class FFPlugProcessor;
   FFMasterProcessor processor = {};
 public:
-  FBFixedAudioBlock input = {};
-  FBFixedAudioBlock output = {};
+  FBFixedFloatAudioBlock input = {};
+  FBFixedFloatAudioBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterDSPState);
 };
 

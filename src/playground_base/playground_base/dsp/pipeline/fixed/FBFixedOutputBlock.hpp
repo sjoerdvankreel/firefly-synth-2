@@ -1,12 +1,12 @@
 #pragma once
 
-#include <playground_base/dsp/pipeline/fixed/FBFixedAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 
 class FBProcStateContainer;
 
 struct FBFixedOutputBlock final
 {
-  FBFixedAudioBlock audio = {};
+  FBFixedFloatAudioBlock audio = {};
   FBProcStateContainer* state = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedOutputBlock);
 };
