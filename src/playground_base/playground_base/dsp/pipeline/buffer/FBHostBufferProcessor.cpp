@@ -68,7 +68,11 @@ FBHostBufferProcessor::ProcessToFixed()
   if (_buffer.audio.Count() < FBFixedBlockSamples)
     return nullptr;
 
-  _fixed.audio.CopyFrom(_buffer.audio);
+  FBFixedFloatAudioArray array;
+  for (int ch = 0; ch < 2; ch++)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      array.data[ch].data[s] = _buffer.audio[ch][s];
+  _fixed.audio.LoadFromFloatArray(array);
   _buffer.audio.Drop(FBFixedBlockSamples);
   GatherAccToFixed(_buffer.note, _fixed.note);
   GatherAccToFixed(_buffer.accAutoByParamThenSample, _fixed.accAutoByParamThenSample);
