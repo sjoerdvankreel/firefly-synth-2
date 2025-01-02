@@ -17,7 +17,7 @@ public:
   template <class Op> void Transform(Op op);
 
   void StoreToDoubleArray(FBFixedDoubleAudioArray& array) const;
-  void LoadFromDoubleArray(FBFixedFloatAudioArray const& array);
+  void LoadFromDoubleArray(FBFixedDoubleAudioArray const& array);
   void StoreCastToFloatArray(FBFixedFloatAudioArray& array) const;
   void LoadCastFromFloatArray(FBFixedFloatAudioArray const& array);
 
@@ -53,4 +53,32 @@ FBFixedDoubleAudioBlock::CopyFrom(FBFixedDoubleAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     _store[ch].CopyFrom(rhs[ch]);
+}
+
+inline void
+FBFixedDoubleAudioBlock::StoreToDoubleArray(FBFixedDoubleAudioArray& array) const
+{
+  for(int ch = 0; ch < 2; ch++)
+    _store[ch].StoreToDoubleArray(array.data[ch]);
+}
+
+inline void
+FBFixedDoubleAudioBlock::LoadFromDoubleArray(FBFixedDoubleAudioArray const& array)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].LoadFromDoubleArray(array.data[ch]);
+}
+
+inline void
+FBFixedDoubleAudioBlock::StoreCastToFloatArray(FBFixedFloatAudioArray& array) const
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].StoreCastToFloatArray(array.data[ch]);
+}
+
+inline void
+FBFixedDoubleAudioBlock::LoadCastFromFloatArray(FBFixedFloatAudioArray const& array)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].LoadCastFromFloatArray(array.data[ch]);
 }

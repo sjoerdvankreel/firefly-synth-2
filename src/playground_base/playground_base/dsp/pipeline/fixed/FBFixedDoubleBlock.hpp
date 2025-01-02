@@ -17,7 +17,7 @@ public:
   template <class Op> void Transform(Op op);
 
   void StoreToDoubleArray(FBFixedDoubleArray& array) const;
-  void LoadFromDoubleArray(FBFixedFloatArray const& array);
+  void LoadFromDoubleArray(FBFixedDoubleArray const& array);
   void StoreCastToFloatArray(FBFixedFloatArray& array) const;
   void LoadCastFromFloatArray(FBFixedFloatArray const& array);
 
@@ -49,4 +49,36 @@ inline void
 FBFixedDoubleBlock::CopyFrom(FBFixedDoubleBlock const& rhs)
 {
   Transform([&](int v) { return rhs[v]; });
+}
+
+inline void
+FBFixedDoubleBlock::StoreToDoubleArray(FBFixedDoubleArray& array) const
+{
+  for (int v = 0; v < FBFixedDoubleVectors; v++)
+    _store[v].store_aligned(array.data.data() + v * FBVectorDoubleCount);
+}
+
+inline void
+FBFixedDoubleBlock::LoadFromDoubleArray(FBFixedDoubleArray const& array)
+{
+  for (int v = 0; v < FBFixedDoubleVectors; v++)
+    _store[v] = FBDoubleVector::load_aligned(array.data.data() + v * FBVectorDoubleCount);
+}
+
+inline void
+FBFixedDoubleBlock::StoreCastToFloatArray(FBFixedFloatArray& array) const
+{
+  FBFixedDoubleArray doubles;
+  StoreToDoubleArray(doubles);
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    array.data[s] = (float)doubles.data[s];
+}
+
+inline void
+FBFixedDoubleBlock::LoadCastFromFloatArray(FBFixedFloatArray const& array)
+{
+  FBFixedDoubleArray doubles;
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    doubles.data[s] = array.data[s];
+  LoadFromDoubleArray(doubles);
 }
