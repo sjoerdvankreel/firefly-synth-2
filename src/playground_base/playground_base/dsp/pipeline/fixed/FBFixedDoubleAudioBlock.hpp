@@ -12,6 +12,7 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedDoubleAudioBlock);
 
   void Clear();
+  void Add(FBFixedDoubleAudioBlock const& rhs);
   template <class Op> void Transform(Op op);
 
   void StoreToFloatArray(FBFixedFloatAudioArray& array) const;
@@ -37,4 +38,11 @@ FBFixedDoubleAudioBlock::Clear()
 {
   for (int ch = 0; ch < 2; ch++)
     _store[ch].Clear();
+}
+
+inline void
+FBFixedDoubleAudioBlock::Add(FBFixedDoubleAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].Add(rhs[ch]);
 }

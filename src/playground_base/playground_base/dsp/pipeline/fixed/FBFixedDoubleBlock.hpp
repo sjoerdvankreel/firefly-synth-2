@@ -12,6 +12,7 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedDoubleBlock);
 
   void Clear();
+  void Add(FBFixedDoubleBlock const& rhs);
   template <class Op> void Transform(Op op);
 
   void StoreToFloatArray(FBFixedFloatArray& array) const;
@@ -35,4 +36,10 @@ inline void
 FBFixedDoubleBlock::Clear()
 {
   Transform([](auto) { return 0.0; });
+}
+
+inline void
+FBFixedDoubleBlock::Add(FBFixedDoubleBlock const& rhs)
+{
+  Transform([&](int v) { return _store[v] + rhs[v]; });
 }
