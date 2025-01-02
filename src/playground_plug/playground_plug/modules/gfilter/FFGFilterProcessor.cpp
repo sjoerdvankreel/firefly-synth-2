@@ -23,31 +23,18 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
-  FBFixedDoubleBlock res;
-  res.LoadFromFloat(params.acc.res[0].Global().CV());
-  FBFixedDoubleBlock freq;
-  freq.LoadFromFloat(params.acc.freq[0].Global().CV());
+  // todo drop storetofloat ?
 
-  // TODO merge
-  FBFixedDoubleBlock g, k;
+  FBFixedDoubleBlock res, freq, g, k;
+  res.LoadFromFloat(params.acc.res[0].Global().CV());
+  freq.LoadFromFloat(params.acc.freq[0].Global().CV());
   k.Transform([&](int v) { return 2.0 - 2.0 * res[v]; });
   g.Transform([&](int v) {
     auto plainFreq = topo.params[(int)FFGFilterParam::Freq].NormalizedToPlainLinear(freq[v]);
     return xsimd::tan(std::numbers::pi * plainFreq / state.sampleRate); });
-
+  
   FBFixedDoubleBlock a1, a2, a3;
   a1.Transform([&](int v) { return 1.0 / (1.0 + g[v] * (g[v] + k[v])); });
   a2.Transform([&](int v) { return g[v] * a1[v]; });
   a3.Transform([&](int v) { return g[v] * a2[v]; });
-
-  FBFixedDoubleBlock m0, m1, m2;
-  m0.Transform([&](int v) { return 0.0; });
-  m1.Transform([&](int v) { return 0.0; });
-  m2.Transform([&](int v) { return 1.0; });
-
-  output.Transform([&](int ch, int v) {
-    auto resFloat = params.acc.res[0].Global().CV(v);
-    //auto resDouble = xsimd::batch_cast<double>(resFloat);
-    return resFloat;// 0.0f;// input[ch][v] * resDouble; // TODO some filtering !
-  });
 }
