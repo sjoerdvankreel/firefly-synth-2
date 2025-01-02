@@ -3,6 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedUtility.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
 
 #include <array>
@@ -14,7 +15,7 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
   friend class FBVoiceAccParamState;
   friend class FBGlobalAccParamState;
 
-  std::array<float, FBFixedBlockSamples> _cv = {};
+  FBFixedFloatArray _cv = {};
   float _modulation = {};
   FBOnePoleFilter _smoother = {};
 
@@ -25,13 +26,13 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
   FBFloatVector CV(int v) const;
-  std::array<float, FBFixedBlockSamples> CV() const { return _cv; }
+  FBFixedFloatArray const& CV() const { return _cv; }
 };
 
 inline FBFloatVector
 FBAccParamState::CV(int v) const
 {
-  return FBFloatVector::load_aligned(_cv.data() + v * FBVectorFloatCount);
+  return FBFloatVector::load_aligned(_cv.data.data() + v * FBVectorFloatCount);
 }
 
 inline void 
@@ -43,5 +44,5 @@ FBAccParamState::SetSmoothingCoeffs(float sampleRate, float durationSecs)
 inline void
 FBAccParamState::SmoothNext(int sample, float automation) 
 { 
-  _cv[sample] = _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f));
+  _cv.data[sample] = _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f));
 }
