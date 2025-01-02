@@ -56,7 +56,7 @@ FBFixedDoubleBlock::LoadFromFloat(std::array<float, FBFixedBlockSamples> const& 
   for (int v = 0; v < FBFixedFloatVectors; v++)
   {
     for (int i = 0; i < FBVectorFloatCount; i++)
-      doubles[i] = block[i];
+      doubles[i] = block[v * FBVectorFloatCount + i];
     (*this)[v * 2 + 0] = FBDoubleVector::load_aligned(doubles.data());
     (*this)[v * 2 + 1] = FBDoubleVector::load_aligned(doubles.data() + 2);
   }
