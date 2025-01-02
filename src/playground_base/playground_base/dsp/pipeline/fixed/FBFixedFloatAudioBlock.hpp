@@ -13,6 +13,7 @@ public:
 
   void Clear();
   void Add(FBFixedFloatAudioBlock const& rhs);
+  void CopyFrom(FBFixedFloatAudioBlock const& rhs);
   template <class Op> void Transform(Op op);
 
   void StoreToFloatArray(FBFixedFloatAudioArray& array) const;
@@ -45,4 +46,11 @@ FBFixedFloatAudioBlock::Add(FBFixedFloatAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     _store[ch].Add(rhs[ch]);
+}
+
+inline void
+FBFixedFloatAudioBlock::CopyFrom(FBFixedFloatAudioBlock const& rhs)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].CopyFrom(rhs[ch]);
 }

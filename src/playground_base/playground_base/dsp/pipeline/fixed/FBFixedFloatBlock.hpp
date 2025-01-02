@@ -13,6 +13,7 @@ public:
 
   void Clear();
   void Add(FBFixedFloatBlock const& rhs);
+  void CopyFrom(FBFixedFloatBlock const& rhs);
   template <class Op> void Transform(Op op);
 
   void StoreToFloatArray(FBFixedFloatArray& array) const;
@@ -42,4 +43,10 @@ inline void
 FBFixedFloatBlock::Add(FBFixedFloatBlock const& rhs)
 {
   Transform([&](int v) { return _store[v] + rhs[v]; });
+}
+
+inline void
+FBFixedFloatBlock::CopyFrom(FBFixedFloatBlock const& rhs)
+{
+  Transform([&](int v) { return rhs[v]; });
 }
