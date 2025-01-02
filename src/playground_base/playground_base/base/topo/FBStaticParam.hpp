@@ -84,6 +84,8 @@ public:
   { return plainMin + (plainMax - plainMin) * normalized; }
   FBFloatVector NormalizedToPlainLinear(FBFloatVector normalized) const
   { return plainMin + (plainMax - plainMin) * normalized; }
+  FBDoubleVector NormalizedToPlainLinear(FBDoubleVector normalized) const
+  { return plainMin + (plainMax - plainMin) * normalized; }
   float PlainLinearToNormalized(float plain) const
   { return std::clamp((plain - plainMin) / (plainMax - plainMin), 0.0f, 1.0f); }
 

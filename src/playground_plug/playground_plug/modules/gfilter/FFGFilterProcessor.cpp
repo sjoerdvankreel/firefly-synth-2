@@ -23,30 +23,27 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
-  //auto const& rcv = params.acc.res[0].Global().CV();
-  std::array<float, 16> rcv = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
-  FBFixedDoubleBlock rdbl;
-  rdbl.LoadFromFloat(rcv);
-  FBFixedFloatBlock rflt;
-  rdbl.StoreToFloat(rflt);
+  FBFixedDoubleBlock res;
+  res.LoadFromFloat(params.acc.res[0].Global().CV());
+  FBFixedDoubleBlock freq;
+  freq.LoadFromFloat(params.acc.freq[0].Global().CV());
 
-  FBFixedDoubleBlock g;
+  // TODO merge
+  FBFixedDoubleBlock g, k;
+  k.Transform([&](int v) { return 2.0 - 2.0 * res[v]; });
   g.Transform([&](int v) {
-   // FBFloatVector zork;
-    //g.LoadFromFloatAligned(v, params.acc.freq[0].Global().CV(v));
-    //zork = g.StoreToFloatAligned(v);
-    //auto freq = params.acc.freq[0].Global().CV(v);
-    //return xsimd::tan(std::numbers::pi * freq / state.sampleRate);
-    return 0.0f;
-  });
+    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].NormalizedToPlainLinear(freq[v]);
+    return xsimd::tan(std::numbers::pi * plainFreq / state.sampleRate); });
 
-  FBFixedDoubleBlock k;
-  FBFixedDoubleBlock a1;
-  FBFixedDoubleBlock a2;
-  FBFixedDoubleBlock a3;
-  FBFixedDoubleBlock m1;
-  FBFixedDoubleBlock m2;
-  FBFixedDoubleBlock m3;
+  FBFixedDoubleBlock a1, a2, a3;
+  a1.Transform([&](int v) { return 1.0 / (1.0 + g[v] * (g[v] + k[v])); });
+  a2.Transform([&](int v) { return g[v] * a1[v]; });
+  a3.Transform([&](int v) { return g[v] * a2[v]; });
+
+  FBFixedDoubleBlock m0, m1, m2;
+  m0.Transform([&](int v) { return 0.0; });
+  m1.Transform([&](int v) { return 0.0; });
+  m2.Transform([&](int v) { return 1.0; });
 
   output.Transform([&](int ch, int v) {
     auto resFloat = params.acc.res[0].Global().CV(v);
