@@ -23,51 +23,38 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
-#if 0
-
   FBFixedDoubleBlock res, freq, g, k;
-  res.LoadFromFloatArray(params.acc.res[0].Global().CV());
-  freq.LoadFromFloat(params.acc.freq[0].Global().CV());
+  res.LoadCastFromFloatArray(params.acc.res[0].Global().CV());
+  freq.LoadCastFromFloatArray(params.acc.freq[0].Global().CV());
   k.Transform([&](int v) { return 2.0 - 2.0 * res[v]; });
   g.Transform([&](int v) {
     auto plainFreq = topo.params[(int)FFGFilterParam::Freq].NormalizedToPlainLinear(freq[v]);
     return xsimd::tan(std::numbers::pi * plainFreq / state.sampleRate); });
   
-  FBFixedDoubleBlock a1, a2, a3;
-  a1.Transform([&](int v) { return 1.0 / (1.0 + g[v] * (g[v] + k[v])); });
-  a2.Transform([&](int v) { return g[v] * a1[v]; });
-  a3.Transform([&](int v) { return g[v] * a2[v]; });
+  FBFixedDoubleBlock a1b, a2b, a3b;
+  a1b.Transform([&](int v) { return 1.0 / (1.0 + g[v] * (g[v] + k[v])); });
+  a2b.Transform([&](int v) { return g[v] * a1b[v]; });
+  a3b.Transform([&](int v) { return g[v] * a2b[v]; });
 
-  FBFixedDoubleAudioArray audio;
-  input.StoreToDoubleArray(audio);
+  FBFixedDoubleArray a1a, a2a, a3a;
+  a1b.StoreToDoubleArray(a1a);
+  a2b.StoreToDoubleArray(a2a);
+  a3b.StoreToDoubleArray(a3a);
+
+  FBFixedDoubleAudioArray audioIn;
+  FBFixedDoubleAudioArray audioOut = {};
+  input.StoreCastToDoubleArray(audioIn);
   
-  for(int s = 0; s < FBFixedBlockSamples; s++)
-  { }
+  for (int s = 0; s < FBFixedBlockSamples; s++)
     for (int ch = 0; ch < 2; ch++)
     {
-      double v0 = audioIn[ch][s];
+      double v0 = audioIn.data[ch].data[s];
       double v3 = v0 - _ic2eq[ch];
-      double v1 = _a1 * _ic1eq[ch] + _a2 * v3;
-      double v2 = _ic2eq[ch] + _a2 * _ic1eq[ch] + _a3 * v3;
+      double v1 = a1a.data[s] * _ic1eq[ch] + a2a.data[s] * v3;
+      double v2 = _ic2eq[ch] + a2a.data[s] * _ic1eq[ch] + a3a.data[s] * v3;
       _ic1eq[ch] = 2 * v1 - _ic1eq[ch];
       _ic2eq[ch] = 2 * v2 - _ic2eq[ch];
-      return _m0 * v0 + _m1 * v1 + _m2 * v2;
+      audioOut.data[ch].data[s] = v2;
     }
-
-  for (int v = 0; v < FBFixedDoubleVectors; v++)
-  {
-    for (int i = 0; i < FBVectorDoubleCount; i++)
-    {
-      double v0 = in;
-      double v3 = v0 - _ic2eq[ch];
-      double v1 = _a1 * _ic1eq[ch] + _a2 * v3;
-      double v2 = _ic2eq[ch] + _a2 * _ic1eq[ch] + _a3 * v3;
-      _ic1eq[ch] = 2 * v1 - _ic1eq[ch];
-      _ic2eq[ch] = 2 * v2 - _ic2eq[ch];
-      return _m0 * v0 + _m1 * v1 + _m2 * v2;
-    }
-  }
-#endif
-
-  //for(int ch = 0; ch < 2; ch++)
+  output.LoadCastFromDoubleArray(audioOut);  
 }
