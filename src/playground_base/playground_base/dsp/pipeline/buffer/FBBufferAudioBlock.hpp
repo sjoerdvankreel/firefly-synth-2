@@ -14,8 +14,8 @@ class FBBufferAudioBlock final
 
 public:
   void Drop(int count);
-  void Append(FBHostAudioBlock const& rhs);
-  void Append(FBFixedFloatAudioBlock const& rhs);
+  void AppendHost(FBHostAudioBlock const& rhs);
+  void AppendFixed(FBFixedFloatAudioBlock const& rhs);
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferAudioBlock);
   int Count() const { return static_cast<int>(_store[0].size()); }

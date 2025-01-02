@@ -92,5 +92,5 @@ FBHostBufferProcessor::BufferFromHost(FBHostInputBlock const& input)
   GatherAccFromHost(
     input.accModByParamThenNoteThenSample, _buffer.accModByParamThenNoteThenSample,
     FBAccModEventIsSameStream, _buffer.audio.Count());
-  _buffer.audio.Append(input.audio);
+  _buffer.audio.AppendHost(input.audio);
 }

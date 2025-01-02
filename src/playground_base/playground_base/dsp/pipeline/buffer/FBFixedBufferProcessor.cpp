@@ -14,7 +14,7 @@ _voiceManager(voiceManager) {}
 void 
 FBFixedBufferProcessor::BufferFromFixed(FBFixedFloatAudioBlock const& fixed)
 {
-  _buffer.Append(fixed);
+  _buffer.AppendFixed(fixed);
   _returnedVoices.insert(
     _returnedVoices.end(), 
     _voiceManager->ReturnedVoices().begin(), 

@@ -41,8 +41,6 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   FBFixedDoubleAudioArray audio;
   input.StoreToDoubleArray(audio);
   
-#if 0
-
   for(int s = 0; s < FBFixedBlockSamples; s++)
   { }
     for (int ch = 0; ch < 2; ch++)

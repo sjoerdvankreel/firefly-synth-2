@@ -13,7 +13,7 @@ FBBufferAudioBlock::Drop(int count)
 }
 
 void
-FBBufferAudioBlock::Append(FBHostAudioBlock const& rhs)
+FBBufferAudioBlock::AppendHost(FBHostAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < rhs.Count(); s++)
@@ -21,11 +21,10 @@ FBBufferAudioBlock::Append(FBHostAudioBlock const& rhs)
 }
 
 void
-FBBufferAudioBlock::Append(FBFixedFloatAudioBlock const& rhs)
+FBBufferAudioBlock::AppendFixed(FBFixedFloatAudioBlock const& rhs)
 {
+  FBFixedFloatAudioArray array;
+  rhs.StoreToFloatArray(array);
   for (int ch = 0; ch < 2; ch++)
-  {
-    _store[ch].insert(_store[ch].end(), FBFixedBlockSamples, 0.0f);
-    rhs[ch].StoreUnaligned(_store[ch].data() + _store[ch].size() - FBFixedBlockSamples);
-  }
+    _store[ch].insert(_store[ch].end(), array.data[ch].data.begin(), array.data[ch].data.end());
 }
