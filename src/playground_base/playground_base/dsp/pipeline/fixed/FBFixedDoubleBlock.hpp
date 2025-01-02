@@ -19,9 +19,7 @@ public:
   template <class Op>
   void Transform(Op op);
   
-  void StoreAligned(int v, double* vals) const;
-  void LoadFromFloat(std::array<float, FBFixedBlockSamples> const& block);
-
+  void LoadFromFloatArray(FBFixedFloatArray const& array);
   FBDoubleVector& operator[](int index) { return _store[index]; }
   FBDoubleVector const& operator[](int index) const { return _store[index]; }
 };
@@ -35,13 +33,7 @@ FBFixedDoubleBlock::Transform(Op op)
 }
 
 inline void
-FBFixedDoubleBlock::StoreAligned(int v, double* vals) const
-{
-  _store[v].store_aligned(vals);
-}
-
-inline void
-FBFixedDoubleBlock::LoadFromFloat(std::array<float, FBFixedBlockSamples> const& block)
+FBFixedDoubleBlock::LoadFromFloatArray(std::array<float, FBFixedBlockSamples> const& block)
 {
   alignas(sizeof(FBDoubleVector)) std::array<double, FBVectorFloatCount> doubles;
   for (int v = 0; v < FBFixedFloatVectors; v++)

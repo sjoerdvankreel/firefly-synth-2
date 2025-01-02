@@ -3,10 +3,10 @@
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedTypes.hpp>
 
 #include <array>
 
-typedef std::array<double, FBFixedBlockSamples> FBFixedDoubleArray;
 inline int constexpr FBFixedFloatVectors = FBFixedBlockSamples / FBVectorFloatCount;
 
 class alignas(sizeof(FBFloatVector)) FBFixedFloatBlock
@@ -25,7 +25,8 @@ public:
   void StoreUnaligned(float* vals) const;
   void LoadAligned(int v, float const* vals);
   void StoreAligned(int v, float* vals) const;
-  void StoreToDouble(FBFixedDoubleArray& array) const;
+  void StoreToDoubleArray(FBFixedDoubleArray& array) const;
+
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; } 
 };
@@ -79,7 +80,7 @@ FBFixedFloatBlock::LoadUnaligned(float const* vals)
 }
 
 inline void
-FBFixedFloatBlock::StoreToDouble(FBFixedDoubleArray& array) const
+FBFixedFloatBlock::StoreToDoubleArray(FBFixedDoubleArray& array) const
 {
   alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> floats;
   for (int v = 0; v < FBFixedFloatVectors; v++)

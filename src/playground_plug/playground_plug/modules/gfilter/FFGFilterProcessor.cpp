@@ -36,6 +36,8 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   a2.Transform([&](int v) { return g[v] * a1[v]; });
   a3.Transform([&](int v) { return g[v] * a2[v]; });
 
+  FBFixedDoubleAudioArray audio;
+  input.StoreToDoubleArray(audio);
   
 #if 0
 

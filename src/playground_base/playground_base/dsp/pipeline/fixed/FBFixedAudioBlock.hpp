@@ -20,14 +20,14 @@ public:
   template <class Op>
   void Transform(Op op);
 
-  void LoadUnaligned(float const* vals[2]);
-  void StoreUnaligned(float* vals[2]) const;
-  void StoreToDouble(FBFixedDoubleAudioArray& array) const;
-
   void Clear();
   void Add(FBFixedAudioBlock const& rhs);
   void CopyFrom(FBFixedAudioBlock const& rhs);
   void CopyFrom(FBBufferAudioBlock const& rhs);
+
+  void LoadUnaligned(float const* vals[2]);
+  void StoreUnaligned(float* vals[2]) const;
+  void StoreToDoubleArray(FBFixedDoubleAudioArray& array) const;
 
   FBFixedFloatBlock& operator[](int ch) { return _store[ch]; }
   FBFixedFloatBlock const& operator[](int ch) const { return _store[ch]; }
@@ -86,8 +86,8 @@ FBFixedAudioBlock::CopyFrom(FBBufferAudioBlock const& rhs)
 }
 
 inline void
-FBFixedAudioBlock::StoreToDouble(FBFixedDoubleAudioArray& array) const
+FBFixedAudioBlock::StoreToDoubleArray(FBFixedDoubleAudioArray& array) const
 {
   for (int ch = 0; ch < 2; ch++)
-    _store[ch].StoreToDouble(array[ch]);
+    _store[ch].StoreToDoubleArray(array[ch]);
 }
