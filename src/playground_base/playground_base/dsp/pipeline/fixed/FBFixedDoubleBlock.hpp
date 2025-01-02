@@ -16,10 +16,10 @@ public:
   void CopyFrom(FBFixedDoubleBlock const& rhs);
   template <class Op> void Transform(Op op);
 
-  void StoreToFloatArray(FBFixedFloatArray& array) const;
-  void LoadFromFloatArray(FBFixedFloatArray const& array);
   void StoreToDoubleArray(FBFixedDoubleArray& array) const;
   void LoadFromDoubleArray(FBFixedFloatArray const& array);
+  void StoreCastToFloatArray(FBFixedFloatArray& array) const;
+  void LoadCastFromFloatArray(FBFixedFloatArray const& array);
 
   FBDoubleVector& operator[](int index) { return _store[index]; }
   FBDoubleVector const& operator[](int index) const { return _store[index]; }

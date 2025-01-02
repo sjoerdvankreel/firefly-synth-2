@@ -18,8 +18,8 @@ public:
 
   void StoreToFloatArray(FBFixedFloatAudioArray& array) const;
   void LoadFromFloatArray(FBFixedFloatAudioArray const& array);
-  void StoreToDoubleArray(FBFixedDoubleAudioArray& array) const;
-  void LoadFromDoubleArray(FBFixedFloatAudioArray const& array);
+  void StoreCastToDoubleArray(FBFixedDoubleAudioArray& array) const;
+  void LoadCastFromDoubleArray(FBFixedDoubleAudioArray const& array);
 
   FBFixedFloatBlock& operator[](int ch) { return _store[ch]; }
   FBFixedFloatBlock const& operator[](int ch) const { return _store[ch]; }
@@ -53,4 +53,32 @@ FBFixedFloatAudioBlock::CopyFrom(FBFixedFloatAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     _store[ch].CopyFrom(rhs[ch]);
+}
+
+inline void 
+FBFixedFloatAudioBlock::StoreToFloatArray(FBFixedFloatAudioArray& array) const
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].StoreToFloatArray(array.data[ch]);
+}
+
+inline void 
+FBFixedFloatAudioBlock::LoadFromFloatArray(FBFixedFloatAudioArray const& array)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].LoadFromFloatArray(array.data[ch]);
+}
+
+inline void 
+FBFixedFloatAudioBlock::StoreCastToDoubleArray(FBFixedDoubleAudioArray& array) const
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].StoreCastToDoubleArray(array.data[ch]);
+}
+
+inline void 
+FBFixedFloatAudioBlock::LoadCastFromDoubleArray(FBFixedDoubleAudioArray const& array)
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].LoadCastFromDoubleArray(array.data[ch]);
 }

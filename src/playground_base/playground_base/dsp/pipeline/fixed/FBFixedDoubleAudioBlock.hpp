@@ -16,10 +16,10 @@ public:
   void CopyFrom(FBFixedDoubleAudioBlock const& rhs);
   template <class Op> void Transform(Op op);
 
-  void StoreToFloatArray(FBFixedFloatAudioArray& array) const;
-  void LoadFromFloatArray(FBFixedFloatAudioArray const& array);
   void StoreToDoubleArray(FBFixedDoubleAudioArray& array) const;
   void LoadFromDoubleArray(FBFixedFloatAudioArray const& array);
+  void StoreCastToFloatArray(FBFixedFloatAudioArray& array) const;
+  void LoadCastFromFloatArray(FBFixedFloatAudioArray const& array);
 
   FBFixedDoubleBlock& operator[](int ch) { return _store[ch]; }
   FBFixedDoubleBlock const& operator[](int ch) const { return _store[ch]; }

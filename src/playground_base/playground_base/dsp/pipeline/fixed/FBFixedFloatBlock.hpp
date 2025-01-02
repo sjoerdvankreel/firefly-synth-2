@@ -18,8 +18,8 @@ public:
 
   void StoreToFloatArray(FBFixedFloatArray& array) const;
   void LoadFromFloatArray(FBFixedFloatArray const& array);
-  void StoreToDoubleArray(FBFixedDoubleArray& array) const;
-  void LoadFromDoubleArray(FBFixedFloatArray const& array);
+  void StoreCastToDoubleArray(FBFixedDoubleArray& array) const;
+  void LoadCastFromDoubleArray(FBFixedDoubleArray const& array);
 
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; } 
@@ -49,4 +49,36 @@ inline void
 FBFixedFloatBlock::CopyFrom(FBFixedFloatBlock const& rhs)
 {
   Transform([&](int v) { return rhs[v]; });
+}
+
+inline void 
+FBFixedFloatBlock::StoreToFloatArray(FBFixedFloatArray& array) const
+{
+  for (int v = 0; v < FBFixedFloatVectors; v++)
+    _store[v].store_aligned(array.data.data() + v * FBVectorFloatCount);
+}
+
+inline void
+FBFixedFloatBlock::LoadFromFloatArray(FBFixedFloatArray const& array)
+{
+  for (int v = 0; v < FBFixedFloatVectors; v++)
+    _store[v] = FBFloatVector::load_aligned(array.data.data() + v * FBVectorFloatCount);
+}
+
+inline void
+FBFixedFloatBlock::StoreCastToDoubleArray(FBFixedDoubleArray& array) const
+{
+  FBFixedFloatArray floats;
+  StoreToFloatArray(floats);
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    array.data[s] = floats.data[s];
+}
+
+inline void
+FBFixedFloatBlock::LoadCastFromDoubleArray(FBFixedDoubleArray const& array)
+{
+  FBFixedFloatArray floats;
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    floats.data[s] = (float)array.data[s];
+  LoadFromFloatArray(floats);
 }
