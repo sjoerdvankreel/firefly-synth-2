@@ -23,8 +23,6 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
-  // todo drop storetofloat ?
-
   FBFixedDoubleBlock res, freq, g, k;
   res.LoadFromFloat(params.acc.res[0].Global().CV());
   freq.LoadFromFloat(params.acc.freq[0].Global().CV());
@@ -37,6 +35,20 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   a1.Transform([&](int v) { return 1.0 / (1.0 + g[v] * (g[v] + k[v])); });
   a2.Transform([&](int v) { return g[v] * a1[v]; });
   a3.Transform([&](int v) { return g[v] * a2[v]; });
+
+  for (int v = 0; v < FBFixedDoubleVectors; v++)
+  {
+    for (int i = 0; i < FBVectorDoubleCount; i++)
+    {
+      double v0 = in;
+      double v3 = v0 - _ic2eq[ch];
+      double v1 = _a1 * _ic1eq[ch] + _a2 * v3;
+      double v2 = _ic2eq[ch] + _a2 * _ic1eq[ch] + _a3 * v3;
+      _ic1eq[ch] = 2 * v1 - _ic1eq[ch];
+      _ic2eq[ch] = 2 * v2 - _ic2eq[ch];
+      return _m0 * v0 + _m1 * v1 + _m2 * v2;
+    }
+  }
 
   alignas(sizeof(FBDoubleVector)) std::array<std::array<double, FBFixedBlockSamples>, 2> audio = {};
   //for(int ch = 0; ch < 2; ch++)
