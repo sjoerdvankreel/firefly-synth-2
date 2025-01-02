@@ -22,6 +22,8 @@ public:
 
   void LoadUnaligned(float const* vals);
   void StoreUnaligned(float* vals) const;
+  void LoadAligned(int v, float const* vals);
+  void StoreAligned(int v, float* vals) const;
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; } 
 };
@@ -46,6 +48,18 @@ FBFixedFloatBlock::Add(FBFixedFloatBlock const& rhs)
 {
   for (int v = 0; v < FBFixedFloatVectors; v++)
     _store[v] += rhs._store[v];
+}
+
+inline void
+FBFixedFloatBlock::StoreAligned(int v, float* vals) const
+{
+  _store[v].store_aligned(vals);
+}
+
+inline void
+FBFixedFloatBlock::LoadAligned(int v, float const* vals)
+{
+  _store[v] = FBFloatVector::load_unaligned(vals);
 }
 
 inline void

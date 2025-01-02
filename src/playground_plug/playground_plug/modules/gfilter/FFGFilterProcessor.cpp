@@ -23,14 +23,18 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
-  //FBFixedDoubleBlock res;
-  //res.LoadFromFloat(params.acc.res[0].Global().CV());
+  //auto const& rcv = params.acc.res[0].Global().CV();
+  std::array<float, 16> rcv = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+  FBFixedDoubleBlock rdbl;
+  rdbl.LoadFromFloat(rcv);
+  FBFixedFloatBlock rflt;
+  rdbl.StoreToFloat(rflt);
 
   FBFixedDoubleBlock g;
   g.Transform([&](int v) {
-    FBFloatVector zork;
-    g.LoadFromFloatAligned(v, params.acc.freq[0].Global().CV(v));
-    zork = g.StoreToFloatAligned(v);
+   // FBFloatVector zork;
+    //g.LoadFromFloatAligned(v, params.acc.freq[0].Global().CV(v));
+    //zork = g.StoreToFloatAligned(v);
     //auto freq = params.acc.freq[0].Global().CV(v);
     //return xsimd::tan(std::numbers::pi * freq / state.sampleRate);
     return 0.0f;
