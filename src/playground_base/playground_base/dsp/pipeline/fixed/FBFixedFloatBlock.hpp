@@ -6,6 +6,7 @@
 
 #include <array>
 
+typedef std::array<double, FBFixedBlockSamples> FBFixedDoubleArray;
 inline int constexpr FBFixedFloatVectors = FBFixedBlockSamples / FBVectorFloatCount;
 
 class alignas(sizeof(FBFloatVector)) FBFixedFloatBlock
@@ -20,11 +21,11 @@ public:
   void Clear();
   void Add(FBFixedFloatBlock const& rhs);
 
-  void StoreToDouble(double* vals) const;
   void LoadUnaligned(float const* vals);
   void StoreUnaligned(float* vals) const;
   void LoadAligned(int v, float const* vals);
   void StoreAligned(int v, float* vals) const;
+  void StoreToDouble(FBFixedDoubleArray& array) const;
   FBFloatVector& operator[](int index) { return _store[index]; }
   FBFloatVector const& operator[](int index) const { return _store[index]; } 
 };
@@ -78,13 +79,13 @@ FBFixedFloatBlock::LoadUnaligned(float const* vals)
 }
 
 inline void
-FBFixedFloatBlock::StoreToDouble(double* vals) const
+FBFixedFloatBlock::StoreToDouble(FBFixedDoubleArray& array) const
 {
   alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> floats;
   for (int v = 0; v < FBFixedFloatVectors; v++)
   {
     StoreAligned(v, floats.data());
     for (int i = 0; i < FBVectorFloatCount; i++)
-      vals[v * FBVectorFloatCount + i] = floats[i];
+      array[v * FBVectorFloatCount + i] = floats[i];
   }
 }

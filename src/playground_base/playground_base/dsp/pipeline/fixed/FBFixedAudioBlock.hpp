@@ -8,6 +8,7 @@
 #include <array>
 
 class FBBufferAudioBlock;
+typedef std::array<FBFixedDoubleArray, 2> FBFixedDoubleAudioArray;
 
 class alignas(sizeof(FBFloatVector)) FBFixedAudioBlock
 {
@@ -21,7 +22,7 @@ public:
 
   void LoadUnaligned(float const* vals[2]);
   void StoreUnaligned(float* vals[2]) const;
-  void StoreToDouble(double* vals[2]) const;
+  void StoreToDouble(FBFixedDoubleAudioArray& array) const;
 
   void Clear();
   void Add(FBFixedAudioBlock const& rhs);
@@ -70,13 +71,6 @@ FBFixedAudioBlock::StoreUnaligned(float* vals[2]) const
 }
 
 inline void
-FBFixedAudioBlock::StoreToDouble(double* vals[2]) const
-{
-  for (int ch = 0; ch < 2; ch++)
-    _store[ch].StoreToDouble(vals[ch]);
-}
-
-inline void
 FBFixedAudioBlock::CopyFrom(FBFixedAudioBlock const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
@@ -89,4 +83,11 @@ FBFixedAudioBlock::CopyFrom(FBBufferAudioBlock const& rhs)
 {
   float const* lr[2] = { rhs[0].data(), rhs[1].data() };
   LoadUnaligned(lr);
+}
+
+inline void
+FBFixedAudioBlock::StoreToDouble(FBFixedDoubleAudioArray& array) const
+{
+  for (int ch = 0; ch < 2; ch++)
+    _store[ch].StoreToDouble(array[ch]);
 }

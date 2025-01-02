@@ -36,10 +36,21 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   a2.Transform([&](int v) { return g[v] * a1[v]; });
   a3.Transform([&](int v) { return g[v] * a2[v]; });
 
+  
+#if 0
 
-  double audioIn[FBFixedBlockSamples][2];
-  double* z[2] = audioIn;
-  input.StoreToDouble(audioIn);
+  for(int s = 0; s < FBFixedBlockSamples; s++)
+  { }
+    for (int ch = 0; ch < 2; ch++)
+    {
+      double v0 = audioIn[ch][s];
+      double v3 = v0 - _ic2eq[ch];
+      double v1 = _a1 * _ic1eq[ch] + _a2 * v3;
+      double v2 = _ic2eq[ch] + _a2 * _ic1eq[ch] + _a3 * v3;
+      _ic1eq[ch] = 2 * v1 - _ic1eq[ch];
+      _ic2eq[ch] = 2 * v2 - _ic2eq[ch];
+      return _m0 * v0 + _m1 * v1 + _m2 * v2;
+    }
 
   for (int v = 0; v < FBFixedDoubleVectors; v++)
   {
@@ -54,6 +65,7 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
       return _m0 * v0 + _m1 * v1 + _m2 * v2;
     }
   }
+#endif
 
   //for(int ch = 0; ch < 2; ch++)
 }
