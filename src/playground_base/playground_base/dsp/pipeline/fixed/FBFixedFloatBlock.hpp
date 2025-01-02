@@ -20,6 +20,7 @@ public:
   void Clear();
   void Add(FBFixedFloatBlock const& rhs);
 
+  void StoreToDouble(double* vals) const;
   void LoadUnaligned(float const* vals);
   void StoreUnaligned(float* vals) const;
   void LoadAligned(int v, float const* vals);
@@ -74,4 +75,16 @@ FBFixedFloatBlock::LoadUnaligned(float const* vals)
 {
   for (int v = 0; v < FBFixedFloatVectors; v++)
     _store[v] = FBFloatVector::load_unaligned(vals + v * FBVectorFloatCount);
+}
+
+inline void
+FBFixedFloatBlock::StoreToDouble(double* vals) const
+{
+  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> floats;
+  for (int v = 0; v < FBFixedFloatVectors; v++)
+  {
+    StoreAligned(v, floats.data());
+    for (int i = 0; i < FBVectorFloatCount; i++)
+      vals[v * FBVectorFloatCount + i] = floats[i];
+  }
 }
