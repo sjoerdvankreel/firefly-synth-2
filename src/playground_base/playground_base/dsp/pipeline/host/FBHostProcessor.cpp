@@ -60,6 +60,8 @@ FBHostProcessor::ProcessHost(
   auto denormalState = FBDisableDenormal(); 
   for (auto const& be : input.block)
     _fixedOut.state->Params()[be.param].Value(be.normalized);
+
+  // TODO norm to plain
   _state->SetSmoothingCoeffs(_sampleRate, _state->Special().smooth->Value());
 
   FBFixedInputBlock const* fixedIn;
