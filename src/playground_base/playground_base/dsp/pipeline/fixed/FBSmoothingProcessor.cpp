@@ -3,9 +3,9 @@
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBSmoothProcessor.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBSmoothingProcessor.hpp>
 
 #include <cassert>
 #include <algorithm>
@@ -22,8 +22,8 @@ SortSampleLastToSampleFirst(
   std::sort(output.begin(), output.end(), compare);
 }
 
-FBSmoothProcessor::
-FBSmoothProcessor(FBVoiceManager* voiceManager, int paramCount) :
+FBSmoothingProcessor::
+FBSmoothingProcessor(FBVoiceManager* voiceManager, int paramCount) :
 _voiceManager(voiceManager)
 {
   _activeGlobalSmoothingSamples.resize(paramCount);
@@ -32,7 +32,7 @@ _voiceManager(voiceManager)
 }
 
 void
-FBSmoothProcessor::FinishGlobalSmoothing(int param)
+FBSmoothingProcessor::FinishGlobalSmoothing(int param)
 {
   RemoveMustExist(_activeGlobalSmoothing, param);
   InsertMustNotExist(_finishedGlobalSmoothing, param);
@@ -40,7 +40,7 @@ FBSmoothProcessor::FinishGlobalSmoothing(int param)
 }
 
 void 
-FBSmoothProcessor::BeginGlobalSmoothing(int param, int smoothingSamples)
+FBSmoothingProcessor::BeginGlobalSmoothing(int param, int smoothingSamples)
 {
   InsertIfNotExists(_activeGlobalSmoothing, param);
   RemoveIfNotExists(_finishedGlobalSmoothing, param);
@@ -48,7 +48,7 @@ FBSmoothProcessor::BeginGlobalSmoothing(int param, int smoothingSamples)
 }
 
 void
-FBSmoothProcessor::FinishVoiceSmoothing(int voice, int param)
+FBSmoothingProcessor::FinishVoiceSmoothing(int voice, int param)
 {
   RemoveMustExist(_activeVoiceSmoothing[voice], param);
   InsertMustNotExist(_finishedVoiceSmoothing[voice], param);
@@ -56,7 +56,7 @@ FBSmoothProcessor::FinishVoiceSmoothing(int voice, int param)
 }
 
 void 
-FBSmoothProcessor::BeginVoiceSmoothing(int voice, int param, int smoothingSamples)
+FBSmoothingProcessor::BeginVoiceSmoothing(int voice, int param, int smoothingSamples)
 {
   InsertIfNotExists(_activeVoiceSmoothing[voice], param);
   RemoveIfNotExists(_finishedVoiceSmoothing[voice], param);
@@ -64,7 +64,7 @@ FBSmoothProcessor::BeginVoiceSmoothing(int voice, int param, int smoothingSample
 }
 
 void
-FBSmoothProcessor::RemoveMustExist(std::vector<int>& params, int param)
+FBSmoothingProcessor::RemoveMustExist(std::vector<int>& params, int param)
 {
   auto iter = std::find(params.begin(), params.end(), param);
   assert(iter != params.end());
@@ -72,7 +72,7 @@ FBSmoothProcessor::RemoveMustExist(std::vector<int>& params, int param)
 }
 
 void
-FBSmoothProcessor::RemoveIfNotExists(std::vector<int>& params, int param)  
+FBSmoothingProcessor::RemoveIfNotExists(std::vector<int>& params, int param)
 {
   auto iter = std::find(params.begin(), params.end(), param);
   if(iter != params.end())
@@ -80,14 +80,14 @@ FBSmoothProcessor::RemoveIfNotExists(std::vector<int>& params, int param)
 }
 
 void
-FBSmoothProcessor::InsertIfNotExists(std::vector<int>& params, int param)
+FBSmoothingProcessor::InsertIfNotExists(std::vector<int>& params, int param)
 {
   if (std::find(params.begin(), params.end(), param) == params.end())
     params.push_back(param);
 }
 
 void
-FBSmoothProcessor::InsertMustNotExist(std::vector<int>& params, int param) 
+FBSmoothingProcessor::InsertMustNotExist(std::vector<int>& params, int param)
 {
 #ifndef NDEBUG
   auto iter = std::find(params.begin(), params.end(), param);
@@ -97,7 +97,7 @@ FBSmoothProcessor::InsertMustNotExist(std::vector<int>& params, int param)
 }
 
 void 
-FBSmoothProcessor::ProcessSmoothing(
+FBSmoothingProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output, int smoothingSamples)
 {
   auto& params = output.state->Params();

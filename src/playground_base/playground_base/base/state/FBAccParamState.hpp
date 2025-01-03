@@ -11,7 +11,7 @@
 
 class alignas(sizeof(FBFloatVector)) FBAccParamState final
 {
-  friend class FBSmoothProcessor;
+  friend class FBSmoothingProcessor;
   friend class FBVoiceAccParamState;
   friend class FBGlobalAccParamState;
 

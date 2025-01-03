@@ -8,7 +8,7 @@ class alignas(sizeof(FBFloatVector)) FBVoiceAccParamState final
 {
   friend class FBVoiceManager;
   friend class FBProcParamState;
-  friend class FBSmoothProcessor;
+  friend class FBSmoothingProcessor;
 
   float _value = {};
   std::array<FBAccParamState, FBMaxVoices> _voice = {};

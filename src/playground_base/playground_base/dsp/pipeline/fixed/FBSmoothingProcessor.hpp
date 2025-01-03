@@ -12,7 +12,7 @@ class FBVoiceManager;
 struct FBFixedInputBlock;
 struct FBFixedOutputBlock;
 
-class FBSmoothProcessor final
+class FBSmoothingProcessor final
 {
   FBVoiceManager* const _voiceManager;
   std::vector<int> _activeGlobalSmoothing = {};
@@ -35,7 +35,7 @@ class FBSmoothProcessor final
   void BeginVoiceSmoothing(int voice, int param, int smoothingSamples);
 
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBSmoothProcessor);
-  FBSmoothProcessor(FBVoiceManager* voiceManager, int paramCount);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBSmoothingProcessor);
+  FBSmoothingProcessor(FBVoiceManager* voiceManager, int paramCount);
   void ProcessSmoothing(FBFixedInputBlock const& input, FBFixedOutputBlock& output, int smoothingSamples);
 }; 

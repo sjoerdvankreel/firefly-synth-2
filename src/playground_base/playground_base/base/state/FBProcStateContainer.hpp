@@ -14,7 +14,7 @@ class FBProcStateContainer final
 {
   friend class FBVoiceManager;
   friend class FBHostProcessor;
-  friend class FBSmoothProcessor;
+  friend class FBSmoothingProcessor;
 
   void* _rawState;
   FBSpecialParams _special;

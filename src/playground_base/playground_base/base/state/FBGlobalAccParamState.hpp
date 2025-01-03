@@ -7,7 +7,7 @@
 class alignas(sizeof(FBFloatVector)) FBGlobalAccParamState final
 {
   friend class FBProcParamState;
-  friend class FBSmoothProcessor;
+  friend class FBSmoothingProcessor;
 
   float _value = {};
   FBAccParamState _global = {};
