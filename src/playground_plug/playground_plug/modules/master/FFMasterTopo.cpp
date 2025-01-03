@@ -29,7 +29,7 @@ FFMakeMasterTopo()
 
   auto& smoothing = result->params[(int)FFMasterParam::Smoothing];
   smoothing.acc = false;
-  smoothing.defaultText = "20";
+  smoothing.defaultText = "2";
   smoothing.displayMultiplier = 1000.0f;
   smoothing.name = "Smooth";
   smoothing.plainMin = 0.0f;
