@@ -1,3 +1,4 @@
+retest smoothing
 rosetta is borked
 mac is slow af
 threadpool makes it slower
