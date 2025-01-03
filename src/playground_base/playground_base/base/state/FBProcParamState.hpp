@@ -55,6 +55,7 @@ class FBProcParamState final
   FBGlobalBlockParamState& GlobalBlock();
 
   void Value(float value);
+  void InitProcessing(float value);
   void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 
 public:

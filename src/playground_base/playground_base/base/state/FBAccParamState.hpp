@@ -21,6 +21,8 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
 
   void SmoothNext(int sample, float automation);
   void Modulate(float offset) { _modulation = offset; }
+
+  void InitProcessing(float value);
   void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 
 public:
@@ -33,6 +35,12 @@ inline FBFloatVector
 FBAccParamState::CV(int v) const
 {
   return FBFloatVector::load_aligned(_cv.data.data() + v * FBVectorFloatCount);
+}
+
+inline void
+FBAccParamState::InitProcessing(float value)
+{
+  std::fill(_cv.data.begin(), _cv.data.end(), value);
 }
 
 inline void 

@@ -18,6 +18,8 @@ class alignas(sizeof(FBFloatVector)) FBGlobalAccParamState final
   void Modulate(float offset) { _global.Modulate(offset); }
   void SmoothNext(int sample) { _global.SmoothNext(sample, _value); }
   
+  void InitProcessing(float value) 
+  { _global.InitProcessing(value); }
   void SetSmoothingCoeffs(float sampleRate, float duration) 
   { _global.SetSmoothingCoeffs(sampleRate, duration); }
 

@@ -12,6 +12,8 @@ class alignas(sizeof(FBFloatVector)) FBVoiceAccParamState final
 
   float _value = {};
   std::array<FBAccParamState, FBMaxVoices> _voice = {};
+
+  void InitProcessing(float value);
   void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 
   float Value() const { return _value; }
@@ -25,6 +27,13 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBVoiceAccParamState);
   std::array<FBAccParamState, FBMaxVoices> const& Voice() const { return _voice; }
 };
+
+inline void
+FBVoiceAccParamState::InitProcessing(float value)
+{
+  for (int v = 0; v < FBMaxVoices; v++)
+    _voice[v].InitProcessing(value);
+}
 
 inline void
 FBVoiceAccParamState::SetSmoothingCoeffs(float sampleRate, float durationSecs)
