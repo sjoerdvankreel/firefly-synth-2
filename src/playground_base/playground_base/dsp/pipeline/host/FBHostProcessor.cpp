@@ -24,8 +24,10 @@ FBHostProcessor::
 FBHostProcessor::
 FBHostProcessor(
   IFBHostProcessContext* hostContext,
+  FBStaticTopo const& topo,
   std::unique_ptr<IFBPlugProcessor>&& plug,
   FBProcStateContainer* state, float sampleRate):
+_topo(topo),
 _sampleRate(sampleRate),
 _state(state),
 _hostContext(hostContext),
@@ -61,8 +63,8 @@ FBHostProcessor::ProcessHost(
   for (auto const& be : input.block)
     _fixedOut.state->Params()[be.param].Value(be.normalized);
 
-  // TODO norm to plain
-  float smoothingSeconds = _state->Special().smooth->Value();
+  auto const& smoothing = _state->Special().smoothing;
+  float smoothingSeconds = smoothing.PlainLinear(_topo);
   int smoothingSamples = (int)std::ceil(smoothingSeconds * _sampleRate);
   _state->SetSmoothingCoeffs(_sampleRate, smoothingSeconds);
 

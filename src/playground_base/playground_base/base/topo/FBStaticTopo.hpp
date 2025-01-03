@@ -3,7 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/FBPlugVersion.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
-#include <playground_base/base/state/FBSpecialParams.hpp>
+#include <playground_base/base/topo/FBSpecialParams.hpp>
 
 #include <vector>
 #include <functional>

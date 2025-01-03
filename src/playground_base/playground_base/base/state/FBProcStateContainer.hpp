@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBSpecialParams.hpp>
+#include <playground_base/base/topo/FBSpecialParams.hpp>
 #include <playground_base/base/state/FBProcParamState.hpp>
 
 #include <vector>

@@ -7,6 +7,18 @@
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 
+static FBSpecialParam
+MakeSpecialParam(
+  FBStaticTopo const& topo, void* state, 
+  int moduleIndex, int paramIndex)
+{
+  FBSpecialParam result;
+  result.paramIndex = paramIndex;
+  result.moduleIndex = moduleIndex;
+  result.state = topo.modules[moduleIndex].params[paramIndex].globalBlockAddr(0, 0, state);
+  return result;
+}
+
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
 {
@@ -25,7 +37,7 @@ FFMakeTopo()
   result->freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
   result->specialSelector = [](FBStaticTopo const& topo, void* state) {
     FBSpecialParams params = {};
-    params.smooth = topo.modules[(int)FFModuleType::Master].params[(int)FFMasterParam::Smooth].globalBlockAddr(0, 0, state);
+    params.smoothing = MakeSpecialParam(topo, state, (int)FFModuleType::Master, (int)FFMasterParam::Smoothing);
     return params; };
   return result;
 }

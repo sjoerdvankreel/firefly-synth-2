@@ -1,12 +1,12 @@
 #pragma once
 
+#include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 #include <memory>
 
-struct FBRuntimeTopo;
 struct FBHostInputBlock;
 struct FBHostOutputBlock;
 
@@ -22,7 +22,8 @@ class FBFixedBufferProcessor;
 
 class FBHostProcessor final
 {
-  float _sampleRate = {};
+  FBStaticTopo _topo;
+  float _sampleRate;
   FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};
   FBProcStateContainer* _state = {};
@@ -40,6 +41,7 @@ public:
 
   FBHostProcessor(
     IFBHostProcessContext* hostContext,
+    FBStaticTopo const& topo,
     std::unique_ptr<IFBPlugProcessor>&& plug,
     FBProcStateContainer* state, float sampleRate);
 
