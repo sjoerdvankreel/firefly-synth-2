@@ -125,7 +125,6 @@ FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
   auto plug = MakePlugProcessor(_topo->static_, _state.Raw(), setup.sampleRate);
-  _state.SetSmoothingCoeffs(setup.sampleRate, _state.Special().smooth->Value());
   _hostProcessor.reset(new FBHostProcessor(this, std::move(plug), &_state, setup.sampleRate));
   return kResultTrue;
 }
