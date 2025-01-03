@@ -40,6 +40,17 @@ FBSmoothProcessor::ProcessSmoothing(
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     for (int eventIndex = 0;
+      eventIndex < myAccAuto.size() && myAccAuto[eventIndex].pos == s;
+      eventIndex++)
+    {
+      auto const& event = myAccAuto[eventIndex];
+      if (!params[event.param].IsVoice())
+        params[event.param].GlobalAcc().Value(event.value);
+      else
+        params[event.param].VoiceAcc().Value(event.value);
+    }
+
+    for (int eventIndex = 0;
       eventIndex < myAccMod.size() && myAccMod[eventIndex].pos == s;
       eventIndex++)
     {
@@ -53,17 +64,6 @@ FBSmoothProcessor::ProcessSmoothing(
           if (_voiceManager->IsActive(v) && event.note.Matches(voice.event.note))
             params[event.param].VoiceAcc().Modulate(v, event.value);
         }
-    }
-
-    for (int eventIndex = 0;
-      eventIndex < myAccAuto.size() && myAccAuto[eventIndex].pos == s;
-      eventIndex++)
-    {
-      auto const& event = myAccAuto[eventIndex];
-      if (!params[event.param].IsVoice())
-        params[event.param].GlobalAcc().Value(event.value);
-      else
-        params[event.param].VoiceAcc().Value(event.value);
     }
 
     for (int p = 0; p < params.size(); p++)
