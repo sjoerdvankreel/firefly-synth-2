@@ -19,7 +19,8 @@ class FBProcStateContainer final
   void* _rawState;
   FBSpecialParams _special;
   void (*_freeRawState)(void*);
-  std::vector<FBProcParamState> _params;
+  float _smoothingDurationSecs = {};
+  std::vector<FBProcParamState> _params = {};
 
   std::vector<FBProcParamState>& Params() { return _params; }
 

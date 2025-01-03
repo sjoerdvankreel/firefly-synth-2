@@ -9,8 +9,7 @@ FBProcStateContainer::
 FBProcStateContainer(FBRuntimeTopo const& topo):
 _rawState(topo.static_.allocRawProcState()),
 _special(topo.static_.specialSelector(topo.static_, _rawState)),
-_freeRawState(topo.static_.freeRawProcState),
-_params()
+_freeRawState(topo.static_.freeRawProcState)
 {
   for (int p = 0; p < topo.params.size(); p++)
     if (topo.static_.modules[topo.params[p].staticModuleIndex].voice)
@@ -54,6 +53,9 @@ FBProcStateContainer::CopyFrom(FBScalarStateContainer const& scalar)
 void
 FBProcStateContainer::SetSmoothingCoeffs(float sampleRate, float durationSecs)
 {
+  if (_smoothingDurationSecs == durationSecs)
+    return;
+  _smoothingDurationSecs = durationSecs;
   for (int p = 0; p < Params().size(); p++)
     Params()[p].SetSmoothingCoeffs(sampleRate, durationSecs);
 }
