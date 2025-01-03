@@ -63,7 +63,7 @@ FBHostProcessor::ProcessHost(
 
   // TODO norm to plain
   float smoothingSeconds = _state->Special().smooth->Value();
-  int smoothingSamples = (int)std::ceil(smoothingSeconds / _sampleRate);
+  int smoothingSamples = (int)std::ceil(smoothingSeconds * _sampleRate);
   _state->SetSmoothingCoeffs(_sampleRate, smoothingSeconds);
 
   FBFixedInputBlock const* fixedIn;
