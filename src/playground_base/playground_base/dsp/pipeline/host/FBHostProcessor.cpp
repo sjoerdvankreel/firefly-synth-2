@@ -31,9 +31,9 @@ _state(state),
 _hostContext(hostContext),
 _plug(std::move(plug)),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
-_smooth(std::make_unique<FBSmoothProcessor>(_voiceManager.get())),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
-_fixedBuffer(std::make_unique<FBFixedBufferProcessor>(_voiceManager.get()))
+_fixedBuffer(std::make_unique<FBFixedBufferProcessor>(_voiceManager.get())),
+_smooth(std::make_unique<FBSmoothProcessor>(_voiceManager.get(), (int)state->Params().size()))
 {
   _fixedOut.state = state;
   _plugIn.voiceManager = _voiceManager.get();
@@ -62,7 +62,9 @@ FBHostProcessor::ProcessHost(
     _fixedOut.state->Params()[be.param].Value(be.normalized);
 
   // TODO norm to plain
-  _state->SetSmoothingCoeffs(_sampleRate, _state->Special().smooth->Value());
+  float smoothingSeconds = _state->Special().smooth->Value();
+  int smoothingSamples = (int)std::ceil(smoothingSeconds / _sampleRate);
+  _state->SetSmoothingCoeffs(_sampleRate, smoothingSeconds);
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);
@@ -71,7 +73,7 @@ FBHostProcessor::ProcessHost(
     _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
     _plug->LeaseVoices(_plugIn);
-    _smooth->ProcessSmoothing(*fixedIn, _fixedOut);
+    _smooth->ProcessSmoothing(*fixedIn, _fixedOut, smoothingSamples);
     _plug->ProcessPreVoice(_plugIn);
     _hostContext->ProcessVoices();
     _plug->ProcessPostVoice(_plugIn, _fixedOut.audio);

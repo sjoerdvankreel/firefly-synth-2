@@ -22,18 +22,50 @@ SortSampleLastToSampleFirst(
 }
 
 FBSmoothProcessor::
-FBSmoothProcessor(FBVoiceManager* voiceManager) :
-_voiceManager(voiceManager) {}
+FBSmoothProcessor(FBVoiceManager* voiceManager, int paramCount) :
+_voiceManager(voiceManager)
+{
+  _activeGlobalSmoothingSamples.resize(paramCount);
+  for (int v = 0; v < FBMaxVoices; v++)
+    _activeVoiceSmoothingSamples[v].resize(paramCount);
+}
+
+void
+FBSmoothProcessor::FinishGlobalSmoothing(int param)
+{
+  _activeGlobalSmoothing.erase(param);
+  _finishedGlobalSmoothing.insert(param);
+  _activeGlobalSmoothingSamples[param] = 0;
+}
+
+void 
+FBSmoothProcessor::BeginGlobalSmoothing(int param, int smoothingSamples)
+{
+  _activeGlobalSmoothing.insert(param);
+  _finishedGlobalSmoothing.erase(param);
+  _activeGlobalSmoothingSamples[param] = smoothingSamples;
+}
+
+void
+FBSmoothProcessor::FinishVoiceSmoothing(int voice, int param)
+{
+  _activeVoiceSmoothing[voice].erase(param);
+  _finishedVoiceSmoothing[voice].insert(param);
+  _activeVoiceSmoothingSamples[voice][param] = 0;
+}
+
+void 
+FBSmoothProcessor::BeginVoiceSmoothing(int voice, int param, int smoothingSamples)
+{
+  _activeVoiceSmoothing[voice].insert(param);
+  _finishedVoiceSmoothing[voice].erase(param);
+  _activeVoiceSmoothingSamples[voice][param] = smoothingSamples;
+}
 
 void 
 FBSmoothProcessor::ProcessSmoothing(
-  FBFixedInputBlock const& input, FBFixedOutputBlock& output)
+  FBFixedInputBlock const& input, FBFixedOutputBlock& output, int smoothingSamples)
 {
-  SortSampleLastToSampleFirst(input.accAutoByParamThenSample, 
-    _accAutoBySampleThenParam, FBAccAutoEventOrderByPosThenParam);
-  SortSampleLastToSampleFirst(input.accModByParamThenNoteThenSample, 
-    _accModBySampleThenParamThenNote, FBAccModEventOrderByPosThenParamThenNote);
-
   auto& params = output.state->Params();
   for (int param : _finishedGlobalSmoothing)
     for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -48,6 +80,11 @@ FBSmoothProcessor::ProcessSmoothing(
     _finishedVoiceSmoothing[v].clear();
   }
 
+  SortSampleLastToSampleFirst(input.accAutoByParamThenSample,
+    _accAutoBySampleThenParam, FBAccAutoEventOrderByPosThenParam);
+  SortSampleLastToSampleFirst(input.accModByParamThenNoteThenSample, 
+    _accModBySampleThenParamThenNote, FBAccModEventOrderByPosThenParamThenNote);
+
   auto const& myAccAuto = _accAutoBySampleThenParam;
   auto const& myAccMod = _accModBySampleThenParamThenNote;
   for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -58,9 +95,17 @@ FBSmoothProcessor::ProcessSmoothing(
     {
       auto const& event = myAccAuto[eventIndex];
       if (!params[event.param].IsVoice())
+      {
         params[event.param].GlobalAcc().Value(event.value);
+        BeginGlobalSmoothing(event.param, smoothingSamples);
+      }
       else
+      {
         params[event.param].VoiceAcc().Value(event.value);
+        for (int v = 0; v < FBMaxVoices; v++)
+          if (_voiceManager->IsActive(v))
+            BeginVoiceSmoothing(v, event.param, smoothingSamples);
+      }
     }
 
     for (int eventIndex = 0;
@@ -69,33 +114,30 @@ FBSmoothProcessor::ProcessSmoothing(
     {
       auto const& event = myAccMod[eventIndex];
       if (!params[event.param].IsVoice())
+      {
         params[event.param].GlobalAcc().Modulate(event.value);
+        BeginGlobalSmoothing(event.param, smoothingSamples);
+      }
       else
         for (int v = 0; v < FBMaxVoices; v++)
         {
           auto const& voice = _voiceManager->Voices()[v];
           if (_voiceManager->IsActive(v) && event.note.Matches(voice.event.note))
+          {
             params[event.param].VoiceAcc().Modulate(v, event.value);
+            BeginVoiceSmoothing(v, event.param, smoothingSamples);
+          }
         }
     }
 
-    for (int i : _activeGlobalSmoothing)
-      ++boohoo;
+    for (int param : _activeGlobalSmoothing)
+      if (--_activeGlobalSmoothingSamples[param] <= 0)
+        FinishGlobalSmoothing(param);
+
     for (int v = 0; v < FBMaxVoices; v++)
-      for (int i : _activeVoiceSmoothing[v])
-        if (_voiceManager->IsActive(v))
-          ++boohoo;
-#if 0
-
-
-    for (int p = 0; p < params.size(); p++)
-      if(params[p].IsAcc())
-        if (!params[p].IsVoice())
-          params[p].GlobalAcc().SmoothNext(s);
-        else
-          for(int v = 0; v < FBMaxVoices; v++)
-            if (_voiceManager->IsActive(v))
-              params[p].VoiceAcc().SmoothNext(v, s);
-#endif
+      if (_voiceManager->IsActive(v))
+        for (int param : _activeVoiceSmoothing[v])
+          if (--_activeVoiceSmoothingSamples[v][param] <= 0)
+            FinishVoiceSmoothing(v, param);
   }
 }
