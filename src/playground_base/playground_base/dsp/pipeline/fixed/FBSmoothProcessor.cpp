@@ -30,6 +30,12 @@ _voiceManager(voiceManager)
     _activeVoiceSmoothingSamples[v].resize(paramCount);
 }
 
+void 
+FBSmoothProcessor::InsertIfNotExists(std::vector<int>& params, int param)
+{
+  params.insert(std::upper_bound(params.begin(), params.end(), param), param);
+}
+
 void
 FBSmoothProcessor::FinishGlobalSmoothing(int param)
 {
@@ -131,13 +137,19 @@ FBSmoothProcessor::ProcessSmoothing(
     }
 
     for (int param : _activeGlobalSmoothing)
+    {
+      params[param].GlobalAcc().SmoothNext(s);
       if (--_activeGlobalSmoothingSamples[param] <= 0)
         FinishGlobalSmoothing(param);
+    }
 
     for (int v = 0; v < FBMaxVoices; v++)
       if (_voiceManager->IsActive(v))
         for (int param : _activeVoiceSmoothing[v])
+        {
+          params[param].VoiceAcc().SmoothNext(v, s);
           if (--_activeVoiceSmoothingSamples[v][param] <= 0)
             FinishVoiceSmoothing(v, param);
+        }
   }
 }

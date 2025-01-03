@@ -5,7 +5,6 @@
 #include <playground_base/dsp/pipeline/shared/FBAccModEvent.hpp>
 #include <playground_base/dsp/pipeline/shared/FBAccAutoEvent.hpp>
 
-#include <set>
 #include <array>
 #include <vector>
 
@@ -16,14 +15,16 @@ struct FBFixedOutputBlock;
 class FBSmoothProcessor final
 {
   FBVoiceManager* const _voiceManager;
-  std::set<int> _activeGlobalSmoothing = {};
-  std::set<int> _finishedGlobalSmoothing = {};
+  std::vector<int> _activeGlobalSmoothing = {};
+  std::vector<int> _finishedGlobalSmoothing = {};
   std::vector<int> _activeGlobalSmoothingSamples = {};
   std::vector<FBAccAutoEvent> _accAutoBySampleThenParam = {};
   std::vector<FBAccModEvent> _accModBySampleThenParamThenNote = {};
-  std::array<std::set<int>, FBMaxVoices> _activeVoiceSmoothing = {};
-  std::array<std::set<int>, FBMaxVoices> _finishedVoiceSmoothing = {};
+  std::array<std::vector<int>, FBMaxVoices> _activeVoiceSmoothing = {};
+  std::array<std::vector<int>, FBMaxVoices> _finishedVoiceSmoothing = {};
   std::array<std::vector<int>, FBMaxVoices> _activeVoiceSmoothingSamples = {};
+
+  void InsertIfNotExists(std::vector<int>& params, int param);
 
   void FinishGlobalSmoothing(int param);
   void FinishVoiceSmoothing(int voice, int param);
