@@ -46,10 +46,10 @@ _freeRawState(topo.static_.freeRawProcState)
 }
 
 void
-FBProcStateContainer::CopyFrom(FBScalarStateContainer const& scalar)
+FBProcStateContainer::InitProcessing(FBScalarStateContainer const& scalar)
 {
   for (int p = 0; p < Params().size(); p++)
-    Params()[p].Value(*scalar.Params()[p]);
+    Params()[p].InitProcessing(*scalar.Params()[p]);
 }
 
 void

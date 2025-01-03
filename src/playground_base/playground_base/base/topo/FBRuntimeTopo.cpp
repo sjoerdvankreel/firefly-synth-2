@@ -55,7 +55,7 @@ FBRuntimeTopo::LoadStateWithDryRun(
   FBScalarStateContainer scalar(*this);
   bool result = LoadState(from, scalar);
   if (result)
-    to.CopyFrom(scalar);
+    to.InitProcessing(scalar);
   return result;
 }
 
