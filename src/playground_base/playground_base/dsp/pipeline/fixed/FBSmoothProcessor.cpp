@@ -35,6 +35,19 @@ FBSmoothProcessor::ProcessSmoothing(
     _accModBySampleThenParamThenNote, FBAccModEventOrderByPosThenParamThenNote);
 
   auto& params = output.state->Params();
+  for (int param : _finishedGlobalSmoothing)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      params[param].GlobalAcc().SmoothNext(s);
+  _finishedGlobalSmoothing.clear();
+  for (int v = 0; v < FBMaxVoices; v++)
+  {
+    if (_voiceManager->IsActive(v))
+      for (int param : _finishedVoiceSmoothing[v])
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+          params[param].VoiceAcc().SmoothNext(v, s);
+    _finishedVoiceSmoothing[v].clear();
+  }
+
   auto const& myAccAuto = _accAutoBySampleThenParam;
   auto const& myAccMod = _accModBySampleThenParamThenNote;
   for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -66,6 +79,15 @@ FBSmoothProcessor::ProcessSmoothing(
         }
     }
 
+    for (int i : _activeGlobalSmoothing)
+      ++boohoo;
+    for (int v = 0; v < FBMaxVoices; v++)
+      for (int i : _activeVoiceSmoothing[v])
+        if (_voiceManager->IsActive(v))
+          ++boohoo;
+#if 0
+
+
     for (int p = 0; p < params.size(); p++)
       if(params[p].IsAcc())
         if (!params[p].IsVoice())
@@ -74,5 +96,6 @@ FBSmoothProcessor::ProcessSmoothing(
           for(int v = 0; v < FBMaxVoices; v++)
             if (_voiceManager->IsActive(v))
               params[p].VoiceAcc().SmoothNext(v, s);
+#endif
   }
 }
