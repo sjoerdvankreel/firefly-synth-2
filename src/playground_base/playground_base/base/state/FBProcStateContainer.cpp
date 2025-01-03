@@ -26,8 +26,10 @@ _freeRawState(topo.static_.freeRawProcState)
       else
         _params.push_back(FBProcParamState(topo.params[p].static_.globalBlockAddr(
           topo.params[p].staticModuleSlot, topo.params[p].staticSlot, _rawState)));
+
   for (int p = 0; p < Params().size(); p++)
     Params()[p].Value(topo.params[p].static_.DefaultNormalizedByText());
+
 #ifndef NDEBUG
   std::set<void*> uniquePtrs = {};
   for (int p = 0; p < _params.size(); p++)
