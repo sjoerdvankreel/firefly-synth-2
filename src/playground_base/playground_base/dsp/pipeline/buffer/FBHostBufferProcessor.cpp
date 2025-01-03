@@ -68,7 +68,7 @@ FBHostBufferProcessor::ProcessToFixed()
   if (_buffer.audio.Count() < FBFixedBlockSamples)
     return nullptr;
 
-  FBFixedFloatAudioArray array;
+  FBFixedFloatAudioArray array = {};
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       array.data[ch].data[s] = _buffer.audio[ch][s];
