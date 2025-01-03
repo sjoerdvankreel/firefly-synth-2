@@ -7,6 +7,7 @@
 #include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
+#include <cassert>
 #include <algorithm>
 
 template <class Event, class Compare>
@@ -30,42 +31,69 @@ _voiceManager(voiceManager)
     _activeVoiceSmoothingSamples[v].resize(paramCount);
 }
 
-void 
-FBSmoothProcessor::InsertIfNotExists(std::vector<int>& params, int param)
-{
-  params.insert(std::upper_bound(params.begin(), params.end(), param), param);
-}
-
 void
 FBSmoothProcessor::FinishGlobalSmoothing(int param)
 {
-  _activeGlobalSmoothing.erase(param);
-  _finishedGlobalSmoothing.insert(param);
+  RemoveMustExist(_activeGlobalSmoothing, param);
+  InsertMustNotExist(_finishedGlobalSmoothing, param);
   _activeGlobalSmoothingSamples[param] = 0;
 }
 
 void 
 FBSmoothProcessor::BeginGlobalSmoothing(int param, int smoothingSamples)
 {
-  _activeGlobalSmoothing.insert(param);
-  _finishedGlobalSmoothing.erase(param);
+  InsertIfNotExists(_activeGlobalSmoothing, param);
+  RemoveIfNotExists(_finishedGlobalSmoothing, param);
   _activeGlobalSmoothingSamples[param] = smoothingSamples;
 }
 
 void
 FBSmoothProcessor::FinishVoiceSmoothing(int voice, int param)
 {
-  _activeVoiceSmoothing[voice].erase(param);
-  _finishedVoiceSmoothing[voice].insert(param);
+  RemoveMustExist(_activeVoiceSmoothing[voice], param);
+  InsertMustNotExist(_finishedVoiceSmoothing[voice], param);
   _activeVoiceSmoothingSamples[voice][param] = 0;
 }
 
 void 
 FBSmoothProcessor::BeginVoiceSmoothing(int voice, int param, int smoothingSamples)
 {
-  _activeVoiceSmoothing[voice].insert(param);
-  _finishedVoiceSmoothing[voice].erase(param);
+  InsertIfNotExists(_activeVoiceSmoothing[voice], param);
+  RemoveIfNotExists(_finishedVoiceSmoothing[voice], param);
   _activeVoiceSmoothingSamples[voice][param] = smoothingSamples;
+}
+
+void
+FBSmoothProcessor::RemoveMustExist(std::vector<int>& params, int param)
+{
+  auto iter = std::find(params.begin(), params.end(), param);
+  assert(iter != params.end());
+  params.erase(iter);
+}
+
+void
+FBSmoothProcessor::RemoveIfNotExists(std::vector<int>& params, int param)  
+{
+  auto iter = std::find(params.begin(), params.end(), param);
+  if(iter != params.end())
+    params.erase(iter);
+}
+
+void
+FBSmoothProcessor::InsertIfNotExists(std::vector<int>& params, int param)
+{
+  if (std::find(params.begin(), params.end(), param) == params.end())
+    params.push_back(param);
+}
+
+void
+FBSmoothProcessor::InsertMustNotExist(std::vector<int>& params, int param) 
+{
+#ifndef NDEBUG
+  auto iter = std::find(params.begin(), params.end(), param);
+  assert(iter == params.end());
+#endif
+  params.push_back(param);
 }
 
 void 

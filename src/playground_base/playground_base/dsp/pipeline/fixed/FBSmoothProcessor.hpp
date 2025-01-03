@@ -24,7 +24,10 @@ class FBSmoothProcessor final
   std::array<std::vector<int>, FBMaxVoices> _finishedVoiceSmoothing = {};
   std::array<std::vector<int>, FBMaxVoices> _activeVoiceSmoothingSamples = {};
 
+  void RemoveMustExist(std::vector<int>& params, int param);
+  void RemoveIfNotExists(std::vector<int>& params, int param); 
   void InsertIfNotExists(std::vector<int>& params, int param);
+  void InsertMustNotExist(std::vector<int>& params, int param); 
 
   void FinishGlobalSmoothing(int param);
   void FinishVoiceSmoothing(int voice, int param);
