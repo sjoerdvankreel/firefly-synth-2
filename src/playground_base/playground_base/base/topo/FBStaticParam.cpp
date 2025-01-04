@@ -17,6 +17,8 @@ FBStaticParam::NormalizedToText(bool io, float normalized) const
     return list.PlainToText(io, list.NormalizedToPlain(normalized));
   case FBParamType::Linear:
     return linear.PlainToText(linear.NormalizedToPlain(normalized));
+  case FBParamType::FreqOct:
+    return freqOct.PlainToText(freqOct.NormalizedToPlain(normalized));
   case FBParamType::Boolean:
     return boolean.PlainToText(boolean.NormalizedToPlain(normalized));
   case FBParamType::Discrete:

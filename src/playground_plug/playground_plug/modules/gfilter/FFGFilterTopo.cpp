@@ -65,9 +65,9 @@ FFMakeGFilterTopo()
   freq.slotCount = 1;
   freq.unit = "Hz";
   freq.id = "{24E988C5-7D41-4064-9212-111D1C3D2AF7}";
-  freq.type = FBParamType::Linear;
-  freq.linear.min = 20.0f;
-  freq.linear.max = 20000.0f;
+  freq.type = FBParamType::FreqOct;
+  freq.freqOct.octaves = 10;
+  freq.freqOct.minHz = 20.0f;
   auto selectFreq = [](auto& module) { return &module.acc.freq; };
   freq.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectFreq);
   freq.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectFreq);

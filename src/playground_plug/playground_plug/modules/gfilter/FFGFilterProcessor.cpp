@@ -28,7 +28,7 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   freq.LoadCastFromFloatArray(params.acc.freq[0].Global().CV());
   k.Transform([&](int v) { return 2.0 - 2.0 * res[v]; });
   g.Transform([&](int v) {
-    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].linear.NormalizedToPlain(freq[v]);
+    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].freqOct.NormalizedToPlain(freq[v]);
     return xsimd::tan(std::numbers::pi * plainFreq / state.sampleRate); });
   
   FBFixedDoubleBlock a1b, a2b, a3b;
