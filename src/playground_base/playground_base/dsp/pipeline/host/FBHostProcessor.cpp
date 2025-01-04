@@ -64,7 +64,7 @@ FBHostProcessor::ProcessHost(
     _fixedOut.state->Params()[be.param].Value(be.normalized);
 
   auto const& smoothing = _state->Special().smoothing;
-  float smoothingSeconds = smoothing.PlainLinear(_topo);
+  float smoothingSeconds = smoothing.NormalizedToPlainLinear(_topo);
   int smoothingSamples = (int)std::ceil(smoothingSeconds * _sampleRate);
   _state->SetSmoothingCoeffs(_sampleRate, smoothingSeconds);
 
