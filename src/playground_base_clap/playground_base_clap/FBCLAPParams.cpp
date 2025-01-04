@@ -117,7 +117,7 @@ FBCLAPPlugin::paramsInfo(
   {
     info->flags |= CLAP_PARAM_IS_STEPPED;
     info->max_value = staticParam.valueCount - 1.0f;
-    if (staticParam.list.size() != 0)
+    if (staticParam.type == FBParamType::List)
       info->flags |= CLAP_PARAM_IS_ENUM;
   }
   else

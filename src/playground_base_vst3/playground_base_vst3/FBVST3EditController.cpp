@@ -32,7 +32,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
 
   // TODO once we drop generic editor
   result.flags = ParameterInfo::kCanAutomate;
-  if (param.static_.list.size()) 
+  if (param.static_.type == FBParamType::List)
     result.flags |= ParameterInfo::kIsList;
   return result;
 }
