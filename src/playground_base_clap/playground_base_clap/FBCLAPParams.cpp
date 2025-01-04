@@ -39,7 +39,7 @@ FBCLAPPlugin::paramsTextToValue(
   if (index == -1)
     return false;
   auto const& static_ = _topo->params[index].static_;
-  auto normalized = static_.TextToNormalized(display, false);
+  auto normalized = static_.TextToNormalized(false, display);
   if (!normalized.has_value())
     return false;
   *value = FBNormalizedToCLAP(static_, normalized.value());
