@@ -148,7 +148,7 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStateContainer& to) co
   {
     float defaultNormalized = 0.0f;
     if(params[p].static_.defaultText.size())
-      defaultNormalized = params[p].static_.TextToNormalized(params[p].static_.defaultText, false).value();
+      defaultNormalized = params[p].static_.TextToNormalized(false, params[p].static_.defaultText).value();
     *to.Params()[p] = defaultNormalized;
   }
 
@@ -174,9 +174,9 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStateContainer& to) co
       continue;
 
     auto const& topo = params[iter->second].static_;
-    auto normalized = topo.TextToNormalized(val.toString().toStdString(), true);
+    auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
-      normalized = topo.TextToNormalized(topo.defaultText, false);
+      normalized = topo.TextToNormalized(false, topo.defaultText);
     *to.Params()[iter->second] = static_cast<float>(normalized.value());
   }
 

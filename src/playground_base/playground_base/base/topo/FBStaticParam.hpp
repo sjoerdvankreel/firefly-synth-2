@@ -16,7 +16,6 @@
 
 struct FBStaticParam final
 {
-public:
   bool acc = false;
   int slotCount = {};
   std::string id = {};
@@ -37,4 +36,8 @@ public:
   FBGlobalBlockAddrSelector globalBlockAddr = {};    
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
+
+  float DefaultNormalizedByText() const;
+  std::string NormalizedToText(bool io, float normalized) const;
+  std::optional<float> TextToNormalized(bool io, std::string const& text) const;
 };
