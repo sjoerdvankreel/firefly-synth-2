@@ -3,35 +3,16 @@
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/param/FBListItem.hpp>
+#include <playground_base/base/topo/param/FBParamAddrSelector.hpp>
 
 #include <string>
 #include <vector>
 #include <optional>
-#include <algorithm>
+#include <algorithm> // todo drop
 #include <functional>
-
-class FBVoiceAccParamState;
-class FBGlobalAccParamState;
-class FBVoiceBlockParamState;
-class FBGlobalBlockParamState;
 
 typedef std::function<std::string(int)>
 FBDiscreteToText;
-typedef std::function<float* (
-  int moduleSlot, int paramSlot, void* state)>
-FBScalarAddrSelector;
-typedef std::function<FBVoiceAccParamState* (
-  int moduleSlot, int paramSlot, void* state)>
-  FBVoiceAccAddrSelector;
-typedef std::function<FBGlobalAccParamState* (
-  int moduleSlot, int paramSlot, void* state)>
-FBGlobalAccAddrSelector;
-typedef std::function<FBVoiceBlockParamState* (
-  int moduleSlot, int paramSlot, void* state)>
-FBVoiceBlockAddrSelector;
-typedef std::function<FBGlobalBlockParamState* (
-  int moduleSlot, int paramSlot, void* state)>
-FBGlobalBlockAddrSelector;
 
 struct FBStaticParam final
 {
