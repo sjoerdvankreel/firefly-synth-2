@@ -49,14 +49,7 @@ public:
   FBVoiceBlockAddrSelector voiceBlockAddr = {};
   FBGlobalBlockAddrSelector globalBlockAddr = {};  
 
-  float NormalizedToPlainLinear(float normalized) const
-  { return plainMin + (plainMax - plainMin) * normalized; }
-  FBFloatVector NormalizedToPlainLinear(FBFloatVector normalized) const
-  { return plainMin + (plainMax - plainMin) * normalized; }
-  FBDoubleVector NormalizedToPlainLinear(FBDoubleVector normalized) const
-  { return plainMin + (plainMax - plainMin) * normalized; }
-  float PlainLinearToNormalized(float plain) const
-  { return std::clamp((plain - plainMin) / (plainMax - plainMin), 0.0f, 1.0f); }
+  
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
   std::string NormalizedToText(bool io, float normalized) const;
