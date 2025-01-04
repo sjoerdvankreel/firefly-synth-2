@@ -9,7 +9,7 @@
 
 struct FBListParam
 {
-  std::vector<FBListItem> list = {};
+  std::vector<FBListItem> items = {};
 
   float PlainToNormalized(int plain) const;
   int NormalizedToPlain(float normalized) const;
@@ -21,6 +21,6 @@ struct FBListParam
 inline int
 FBListParam::NormalizedToPlain(float normalized) const
 {
-  int count = (int)list.size();
+  int count = (int)items.size();
   return std::clamp((int)(normalized * count), 0, count - 1);
 }

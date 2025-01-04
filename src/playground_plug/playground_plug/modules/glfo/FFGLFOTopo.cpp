@@ -18,8 +18,8 @@ FFMakeGLFOTopo()
   on.acc = false;
   on.name = "On";
   on.slotCount = 1;
-  on.valueCount = 2;
   on.id = "{A9741F9B-5E07-40D9-8FC1-73F90363EF0C}";
+  on.type = FBParamType::Boolean;
   auto selectOn = [](auto& module) { return &module.block.on; };
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
@@ -28,12 +28,12 @@ FFMakeGLFOTopo()
   rate.acc = true;
   rate.defaultText = "1";
   rate.name = "Rate";
-  rate.plainMin = 0.1f;
-  rate.plainMax = 20.0f;
   rate.slotCount = 1;
-  rate.valueCount = 0;
   rate.unit = "Hz";
   rate.id = "{79BFD05E-98FA-48D4-8D07-C009285EACA7}";
+  rate.type = FBParamType::Linear;
+  rate.linear.min = 0.1f;
+  rate.linear.max = 20.0f;
   auto selectRate = [](auto& module) { return &module.acc.rate; };
   rate.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectRate);
   rate.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectRate);
