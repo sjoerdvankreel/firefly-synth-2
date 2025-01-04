@@ -58,7 +58,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   auto const& topo = state.topo->modules[(int)FFModuleType::Osci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
   bool on = topo.params[(int)FFOsciParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
-  int type = topo.params[(int)FFOsciParam::Type].discrete.NormalizedToPlain(params.block.type[0].Voice()[voice]);
+  int type = topo.params[(int)FFOsciParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
   int note = topo.params[(int)FFOsciParam::Note].discrete.NormalizedToPlain(params.block.note[0].Voice()[voice]);
 
   if (!on)
