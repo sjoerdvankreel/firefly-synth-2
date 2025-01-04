@@ -3,9 +3,9 @@
 #include <playground_base/base/state/FBGlobalBlockParamState.hpp>
 
 float 
-FBSpecialParam::PlainLinear(FBStaticTopo const& topo) const
+FBSpecialParam::NormalizedToPlainLinear(FBStaticTopo const& topo) const
 {
   auto const& module = topo.modules[moduleIndex];
   auto const& param = module.params[paramIndex];
-  return param.NormalizedToPlainLinear(state->Value());
+  return param.linear.NormalizedToPlain(state->Value());
 }

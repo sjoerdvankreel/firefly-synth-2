@@ -2,7 +2,11 @@
 
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/param/FBListItem.hpp> // todo drop
+#include <playground_base/base/topo/param/FBParamType.hpp>
+#include <playground_base/base/topo/param/FBBoolParam.hpp>
+#include <playground_base/base/topo/param/FBListParam.hpp>
+#include <playground_base/base/topo/param/FBLinearParam.hpp>
+#include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 #include <playground_base/base/topo/param/FBParamAddrSelector.hpp>
 
 #include <string>
@@ -12,48 +16,25 @@
 
 struct FBStaticParam final
 {
-private:
-  std::string
-  DiscreteToText(int discrete, bool io) const;
-
-  std::optional<float>
-  TextToPlain(std::string const& text) const;
-  std::optional<int>
-  TextToDiscrete(std::string const& text, bool io) const;
-
-  std::optional<int>
-  TextToDiscreteInt(std::string const& text) const;
-  std::optional<int>
-  TextToDiscreteBool(std::string const& text) const;
-  std::optional<int>
-  TextToDiscreteFormat(std::string const& text) const;
-  std::optional<int>
-  TextToDiscreteList(std::string const& text, bool io) const;
-
 public:
   bool acc = false;
   int slotCount = {};
-  int valueCount = {};
   std::string id = {};
   std::string name = {};
   std::string unit = {};
-  float plainMin = 0.0f;
-  float plainMax = 1.0f; // TODO logmidpoint
-  float displayMultiplier = 1.0f;
   std::string defaultText = {};
-  std::vector<FBListItem> list = {};
+
+  FBParamType type = {};
+  FBListParam list = {};
+  FBBoolParam boolean = {};
+  FBLinearParam linear = {};
+  FBDiscreteParam discrete = {};
 
   FBScalarAddrSelector scalarAddr = {};
   FBVoiceAccAddrSelector voiceAccAddr = {};
   FBGlobalAccAddrSelector globalAccAddr = {};
   FBVoiceBlockAddrSelector voiceBlockAddr = {};
-  FBGlobalBlockAddrSelector globalBlockAddr = {};  
-
-  
+  FBGlobalBlockAddrSelector globalBlockAddr = {};    
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
-  std::string NormalizedToText(bool io, float normalized) const;
-  std::optional<float> TextToNormalized(std::string const& text, bool io) const;
-  float DefaultNormalizedByText() const
-  { return defaultText.empty()? 0.0f: TextToNormalized(defaultText, false).value(); }
 };

@@ -9,7 +9,7 @@ struct FBSpecialParam
   int moduleIndex = -1;
   FBGlobalBlockParamState* state = nullptr;
 
-  float PlainLinear(FBStaticTopo const& topo) const;
+  float NormalizedToPlainLinear(FBStaticTopo const& topo) const;
 };
 
 struct FBSpecialParams
