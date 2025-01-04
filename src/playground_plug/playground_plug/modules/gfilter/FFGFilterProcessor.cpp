@@ -14,7 +14,7 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   auto& output = state.proc->dsp.global.gFilter[state.moduleSlot].output;
   auto const& input = state.proc->dsp.global.gFilter[state.moduleSlot].input;
   auto const& params = state.proc->param.global.gFilter[state.moduleSlot];
-  bool on = topo.params[(int)FFGFilterParam::On].NormalizedToBool(params.block.on[0].Value());
+  bool on = topo.params[(int)FFGFilterParam::On].boolean.NormalizedToPlain(params.block.on[0].Value());
   // todo type
 
   if (!on)
@@ -28,7 +28,7 @@ FFGFilterProcessor::Process(FFModuleProcState const& state)
   freq.LoadCastFromFloatArray(params.acc.freq[0].Global().CV());
   k.Transform([&](int v) { return 2.0 - 2.0 * res[v]; });
   g.Transform([&](int v) {
-    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].NormalizedToPlainLinear(freq[v]);
+    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].linear.NormalizedToPlain(freq[v]);
     return xsimd::tan(std::numbers::pi * plainFreq / state.sampleRate); });
   
   FBFixedDoubleBlock a1b, a2b, a3b;
