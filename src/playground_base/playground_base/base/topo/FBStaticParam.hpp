@@ -8,11 +8,7 @@
 #include <string>
 #include <vector>
 #include <optional>
-#include <algorithm> // todo drop
-#include <functional>
-
-typedef std::function<std::string(int)>
-FBDiscreteToText;
+#include <algorithm>
 
 struct FBStaticParam final
 {
@@ -46,20 +42,12 @@ public:
   float displayMultiplier = 1.0f;
   std::string defaultText = {};
   std::vector<FBListItem> list = {};
-  FBDiscreteToText discreteToText = {};
 
   FBScalarAddrSelector scalarAddr = {};
   FBVoiceAccAddrSelector voiceAccAddr = {};
   FBGlobalAccAddrSelector globalAccAddr = {};
   FBVoiceBlockAddrSelector voiceBlockAddr = {};
-  FBGlobalBlockAddrSelector globalBlockAddr = {};
-
-  bool NormalizedToBool(float normalized) const
-  { return NormalizedToDiscrete(normalized) != 0; }
-  float DiscreteToNormalized(int discrete) const
-  { return std::clamp(discrete / (valueCount - 1.0f), 0.0f, 1.0f); }
-  int NormalizedToDiscrete(float normalized) const
-  { return std::clamp((int)(normalized * valueCount), 0, valueCount - 1); }
+  FBGlobalBlockAddrSelector globalBlockAddr = {};  
 
   float NormalizedToPlainLinear(float normalized) const
   { return plainMin + (plainMax - plainMin) * normalized; }
