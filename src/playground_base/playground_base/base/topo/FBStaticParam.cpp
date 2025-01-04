@@ -5,6 +5,9 @@
 float 
 FBStaticParam::DefaultNormalizedByText() const
 {
+  if (defaultText.size() == 0)
+    return 0.0f;
+  return TextToNormalized(false, defaultText).value();
 }
 
 std::string 
