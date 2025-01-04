@@ -12,6 +12,8 @@ struct FBLinearParam
   float max = 1.0f;
   float displayMultiplier = 1.0f;
 
+  int ValueCount() const { return 0; }
+
   std::string PlainToText(float plain) const;
   std::optional<float> TextToPlain(std::string const& text) const;
 

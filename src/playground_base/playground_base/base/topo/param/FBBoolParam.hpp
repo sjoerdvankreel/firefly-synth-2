@@ -5,6 +5,8 @@
 
 struct FBBoolParam
 {
+  int ValueCount() const { return 2; }
+
   float PlainToNormalized(bool plain) const;
   bool NormalizedToPlain(float normalized) const;
 

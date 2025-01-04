@@ -11,6 +11,7 @@
 
 #include <string>
 #include <vector>
+#include <cassert>
 #include <optional>
 #include <algorithm>
 
@@ -37,7 +38,21 @@ struct FBStaticParam final
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
+  int ValueCount() const;
   float DefaultNormalizedByText() const;
   std::string NormalizedToText(bool io, float normalized) const;
   std::optional<float> TextToNormalized(bool io, std::string const& text) const;
 };
+
+inline int
+FBStaticParam::ValueCount() const
+{
+  switch (type)
+  {
+  case FBParamType::List: return list.ValueCount();
+  case FBParamType::Linear: return linear.ValueCount();
+  case FBParamType::Boolean: return boolean.ValueCount();
+  case FBParamType::Discrete: return discrete.ValueCount();
+  default: assert(false); return {};
+  }
+}

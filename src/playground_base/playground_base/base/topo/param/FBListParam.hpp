@@ -11,6 +11,8 @@ struct FBListParam
 {
   std::vector<FBListItem> items = {};
 
+  int ValueCount() const { return (int)items.size(); }
+
   float PlainToNormalized(int plain) const;
   int NormalizedToPlain(float normalized) const;
 

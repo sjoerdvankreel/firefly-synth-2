@@ -1,7 +1,5 @@
 #include <playground_base/base/topo/FBStaticParam.hpp>
 
-#include <cassert>
-
 float 
 FBStaticParam::DefaultNormalizedByText() const
 {
