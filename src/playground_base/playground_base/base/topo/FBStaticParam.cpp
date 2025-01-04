@@ -50,6 +50,12 @@ FBStaticParam::TextToNormalized(bool io, std::string const& text) const
       if (!plain) return {};
       return linear.PlainToNormalized(plain.value());
     }
+    case FBParamType::FreqOct:
+    {
+      auto plain = freqOct.TextToPlain(text);
+      if (!plain) return {};
+      return freqOct.PlainToNormalized(plain.value());
+    }
     case FBParamType::Discrete:
     {
       auto plain = discrete.TextToPlain(text);
