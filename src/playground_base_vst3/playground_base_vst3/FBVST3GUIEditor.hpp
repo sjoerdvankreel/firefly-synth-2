@@ -25,8 +25,8 @@ public:
 
   tresult PLUGIN_API removed() override;
   tresult PLUGIN_API canResize() override;
-  tresult PLUGIN_API onSize(ViewRect* new_size) override;
-  tresult PLUGIN_API getSize(ViewRect* new_size) override;
+  tresult PLUGIN_API getSize(ViewRect* size) override;
+  tresult PLUGIN_API onSize(ViewRect* newSize) override;
   tresult PLUGIN_API checkSizeConstraint(ViewRect* rect) override;
   tresult PLUGIN_API attached(void* parent, FIDString type) override;
   tresult PLUGIN_API isPlatformTypeSupported(FIDString type) override;

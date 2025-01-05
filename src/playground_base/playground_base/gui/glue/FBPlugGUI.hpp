@@ -13,6 +13,8 @@ public:
   virtual int MinWidth() const = 0;
   virtual int MaxWidth() const = 0;
   virtual int DefaultWidth() const = 0;
+
+  int DefaultHeight() const;
   virtual int AspectRatioWidth() const = 0;
   virtual int AspectRatioHeight() const = 0;
 
@@ -21,5 +23,5 @@ public:
 protected:
   IFBHostGUIContext* const _hostContext;
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
-  FBPlugGUI(IFBHostGUIContext* hostContext) : _hostContext(hostContext) {}
+  FBPlugGUI(IFBHostGUIContext* hostContext);
 };
