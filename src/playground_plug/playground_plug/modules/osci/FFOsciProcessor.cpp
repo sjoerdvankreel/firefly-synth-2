@@ -40,9 +40,8 @@ GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 static FBFloatVector
 GeneratePulse(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 {
-  // TODO PWM is no good
   FBFloatVector minPW = 0.05f;
-  FBFloatVector realPW = (minPW + (1.0f - minPW * pw)) * 0.5f;
+  FBFloatVector realPW = (minPW + (1.0f - minPW) * pw) * 0.5f;
   FBFloatVector phase2 = phase + realPW;
   phase2 -= xsimd::floor(phase2);
   return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;

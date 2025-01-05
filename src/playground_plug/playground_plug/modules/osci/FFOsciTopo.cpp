@@ -89,8 +89,6 @@ FFMakeOsciTopo()
   pw.unit = "%";
   pw.id = "{CDB18D21-6C2A-4352-93E1-FCF37EA7D35F}";
   pw.type = FBParamType::Linear;
-  pw.linear.min = 0.0f;
-  pw.linear.max = 1.0f;
   pw.linear.displayMultiplier = 100.0f;
   auto selectPW = [](auto& module) { return &module.acc.pw; };
   pw.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPW);
