@@ -5,7 +5,6 @@ FBPlugGUI(IFBHostGUIContext* hostContext) :
 _hostContext(hostContext)
 {
   setVisible(true);
-  setSize(DefaultWidth(), DefaultHeight());
 }
 
 int 

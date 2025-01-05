@@ -5,6 +5,7 @@ FFPlugGUI::
 FFPlugGUI(IFBHostGUIContext* hostContext):
 FBPlugGUI(hostContext)
 {
+  setSize(DefaultWidth(), DefaultHeight());
   _s.setVisible(true);
   addChildComponent(_s);
 }
