@@ -9,15 +9,15 @@ class FBPlugGUI:
 public juce::Component  
 {
 public:
+  void paint(juce::Graphics& g);
+
   // TODO scale factor
+  int DefaultHeight() const;
   virtual int MinWidth() const = 0;
   virtual int MaxWidth() const = 0;
   virtual int DefaultWidth() const = 0;
-
-  int DefaultHeight() const;
   virtual int AspectRatioWidth() const = 0;
   virtual int AspectRatioHeight() const = 0;
-
   virtual void SetParamNormalized(int index, float normalized) = 0;
 
 protected:

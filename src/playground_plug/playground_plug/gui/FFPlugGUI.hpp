@@ -18,6 +18,5 @@ public:
   int AspectRatioWidth() const override { return 4; }
   int AspectRatioHeight() const override { return 3; }
 
-  void paint(juce::Graphics& g) override;
   void SetParamNormalized(int index, float normalized) override;
 };

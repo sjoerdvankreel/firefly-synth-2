@@ -7,16 +7,9 @@ FFPlugGUI::
 FFPlugGUI(IFBHostGUIContext* hostContext):
 FBPlugGUI(hostContext)
 {
-  setSize(DefaultWidth(), DefaultHeight());
   _s.setVisible(true);
   addChildComponent(_s);
-}
-
-void 
-FFPlugGUI::paint(Graphics& g)
-{
-  g.setColour(Colours::orange);
-  g.fillRect(getLocalBounds());
+  setSize(DefaultWidth(), DefaultHeight());
 }
 
 void
