@@ -1,5 +1,5 @@
-#include <playground_plug/plug/FFPlugTopo.hpp>
-#include <playground_plug/plug/FFPlugState.hpp>
+#include <playground_plug/shared/FFPlugTopo.hpp>
+#include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>

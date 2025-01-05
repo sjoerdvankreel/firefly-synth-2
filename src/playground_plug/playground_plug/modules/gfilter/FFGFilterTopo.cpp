@@ -1,5 +1,5 @@
-#include <playground_plug/plug/FFPlugTopo.hpp>
-#include <playground_plug/plug/FFTopoDetail.hpp>
+#include <playground_plug/shared/FFPlugTopo.hpp>
+#include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
 

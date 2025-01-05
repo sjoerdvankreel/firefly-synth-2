@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/plug/FFPlugState.hpp>
+#include <playground_plug/shared/FFPlugState.hpp>
 
 template <class State>
 inline auto
