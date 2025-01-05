@@ -12,6 +12,8 @@ public:
   virtual int MinWidth() const = 0;
   virtual int MaxWidth() const = 0;
   virtual int DefaultWidth() const = 0;
+  virtual int AspectRatioWidth() const = 0;
+  virtual int AspectRatioHeight() const = 0;
 
   virtual void SetParamNormalized(int index, float normalized) = 0;
 
