@@ -1,11 +1,12 @@
+#include <playground_plug/gui/FFPlugGUI.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_base/base/topo/FBStaticTopo.hpp>
-#include <playground_base/base/topo/FBStaticModule.hpp>
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
+#include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/topo/FBStaticModule.hpp>
 
 static FBSpecialParam
 MakeSpecialParam(
@@ -35,6 +36,7 @@ FFMakeTopo()
   result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
   result->freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result->freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
+  result->guiFactory = [](IFBHostGUIContext* ctx) { return std::make_unique<FFPlugGUI>(ctx); };
   result->specialSelector = [](FBStaticTopo const& topo, void* state) {
     FBSpecialParams params = {};
     params.smoothing = MakeSpecialParam(topo, state, (int)FFModuleType::Master, (int)FFMasterParam::Smoothing);
