@@ -34,10 +34,15 @@ static std::vector<FBRuntimeModule>
 MakeRuntimeModules(FBStaticTopo const& topo)
 {
   int runtimeIndex = 0;
+  int runtimeParamStart = 0;
   std::vector<FBRuntimeModule> result;
   for (int m = 0; m < topo.modules.size(); m++)
     for (int s = 0; s < topo.modules[m].slotCount; s++)
-      result.push_back(FBRuntimeModule(topo.modules[m], runtimeIndex++, m, s));
+    {
+      auto module = FBRuntimeModule(topo.modules[m], runtimeIndex++, runtimeParamStart, m, s);
+      result.push_back(module);
+      runtimeParamStart += (int)module.params.size();
+    }
   return result;
 }
 

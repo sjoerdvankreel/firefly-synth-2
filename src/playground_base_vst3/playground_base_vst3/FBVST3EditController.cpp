@@ -50,6 +50,18 @@ FBVST3EditController::createView(FIDString name)
   return new FBVST3GUIEditor(_topo->static_.guiFactory, this);
 }
 
+void 
+FBVST3EditController::EndParamChange(int index)
+{
+  endEdit(_topo->params[index].tag);
+}
+
+void 
+FBVST3EditController::BeginParamChange(int index)
+{
+  beginEdit(_topo->params[index].tag);
+}
+
 float
 FBVST3EditController::GetParamNormalized(int index) const
 {

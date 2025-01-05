@@ -4,7 +4,8 @@
 
 static std::vector<FBRuntimeParam>
 MakeRuntimeParams(
-  FBStaticModule const& staticModule, int runtimeModuleIndex, 
+  FBStaticModule const& staticModule, 
+  int runtimeModuleIndex, int runtimeParamStart,
   int staticModuleIndex, int staticModuleSlot,
   std::vector<FBStaticParam> const& staticParams)
 {
@@ -12,15 +13,18 @@ MakeRuntimeParams(
   for (int p = 0; p < staticParams.size(); p++)
     for (int s = 0; s < staticParams[p].slotCount; s++)
       result.push_back(FBRuntimeParam(
-        staticModule, staticParams[p], runtimeModuleIndex, staticModuleIndex, staticModuleSlot, p, s));
+        staticModule, staticParams[p], 
+        runtimeModuleIndex, runtimeParamStart++, 
+        staticModuleIndex, staticModuleSlot, p, s));
   return result;
 }
 
 FBRuntimeModule::
 FBRuntimeModule(
-  FBStaticModule const& staticModule, int runtimeIndex,
+  FBStaticModule const& staticModule, 
+  int runtimeIndex, int runtimeParamStart,
   int staticIndex, int staticSlot) :
 staticIndex(staticIndex),
 staticSlot(staticSlot),
 name(FBMakeRuntimeName(staticModule.name, staticModule.slotCount, staticSlot)),
-params(MakeRuntimeParams(staticModule, runtimeIndex, staticIndex, staticSlot, staticModule.params)) {}
+params(MakeRuntimeParams(staticModule, runtimeIndex, runtimeParamStart, staticIndex, staticSlot, staticModule.params)) {}

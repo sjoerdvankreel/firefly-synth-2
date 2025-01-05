@@ -26,10 +26,11 @@ FBRuntimeParam::
 FBRuntimeParam(
   FBStaticModule const& staticModule,
   FBStaticParam const& staticParam,
-  int runtimeModuleIndex,
+  int runtimeModuleIndex, int runtimeParamIndex,
   int staticModuleIndex, int staticModuleSlot,
   int staticIndex, int staticSlot):
 runtimeModuleIndex(runtimeModuleIndex),
+runtimeParamIndex(runtimeParamIndex),
 staticModuleIndex(staticModuleIndex),
 staticModuleSlot(staticModuleSlot),
 staticIndex(staticIndex),

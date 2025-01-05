@@ -10,6 +10,7 @@ struct FBStaticModule;
 struct FBRuntimeParam final
 {
   int runtimeModuleIndex;
+  int runtimeParamIndex;
   int staticModuleIndex;
   int staticModuleSlot;
   int staticIndex;
@@ -25,7 +26,7 @@ struct FBRuntimeParam final
   FBRuntimeParam(
     FBStaticModule const& staticModule, 
     FBStaticParam const& staticParam,
-    int runtimeModuleIndex,
+    int runtimeModuleIndex, int runtimeParamIndex,
     int staticModuleIndex, int staticModuleSlot,
     int staticIndex, int staticSlot);    
 };

@@ -17,6 +17,7 @@ struct FBRuntimeModule final
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeModule);
   FBRuntimeModule(
-    FBStaticModule const& staticModule, int runtimeIndex,
+    FBStaticModule const& staticModule,
+    int runtimeIndex, int runtimeParamStart,
     int staticIndex, int staticSlot);
 };
