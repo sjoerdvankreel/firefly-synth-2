@@ -14,12 +14,6 @@ _context(context),
 _param(param) {}
 
 void 
-FBParamSlider::valueChanged()
-{
-  // TODO
-}
-
-void 
 FBParamSlider::stoppedDragging()
 {
   _context->EndParamChange(_param->runtimeModuleIndex);
@@ -29,4 +23,10 @@ void
 FBParamSlider::startedDragging()
 {
   _context->BeginParamChange(_param->runtimeModuleIndex);
+}
+
+void
+FBParamSlider::valueChanged()
+{
+  _context->SetParamNormalized(_param->runtimeParamIndex, getValue());
 }
