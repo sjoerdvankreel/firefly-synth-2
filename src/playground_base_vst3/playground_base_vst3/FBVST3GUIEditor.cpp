@@ -1,0 +1,1 @@
+#include <playground_base_vst3/FBVST3GUIEditor.hpp>
