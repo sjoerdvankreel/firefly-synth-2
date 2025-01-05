@@ -9,9 +9,12 @@ class FBPlugGUI:
 public juce::Component  
 {
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
+  virtual int MinWidth() const = 0;
+  virtual int MaxWidth() const = 0;
   virtual void SetParamNormalized(int index, float normalized) = 0;
+
 protected:
   IFBHostGUIContext* const _hostContext;
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(IFBHostGUIContext* hostContext) : _hostContext(hostContext) {}
 };
