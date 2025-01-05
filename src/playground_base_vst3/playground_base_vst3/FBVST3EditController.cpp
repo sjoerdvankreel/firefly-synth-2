@@ -1,8 +1,10 @@
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base_vst3/FBVST3Utility.hpp>
 #include <playground_base_vst3/FBVST3Parameter.hpp>
+#include <playground_base_vst3/FBVST3GUIEditor.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 
+#include <base/source/fstring.h>
 #include <utility>
 #include <algorithm>
 
@@ -40,6 +42,13 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
 FBVST3EditController::
 FBVST3EditController(FBStaticTopo const& topo) :
 _topo(std::make_unique<FBRuntimeTopo>(topo)) {}
+
+IPlugView* PLUGIN_API
+FBVST3EditController::createView(FIDString name)
+{
+  if (ConstString(name) != ViewType::kEditor) return nullptr;
+  return new FBVST3GUIEditor(_topo->static_.guiFactory, this);
+}
 
 float
 FBVST3EditController::GetParamNormalized(int index) const

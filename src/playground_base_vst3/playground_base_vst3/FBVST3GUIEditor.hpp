@@ -4,16 +4,18 @@
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <public.sdk/source/vst/vsteditcontroller.h>
 
+#include <memory>
+
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
+class FBPlugGUI;
 class FBVST3EditController;
 
 class FBVST3GUIEditor final:
 public EditorView
 {
-  FBPlugGUIFactory const _factory;
-  IFBHostGUIContext* const _hostContext;
+  std::unique_ptr<FBPlugGUI> _gui;
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);

@@ -26,6 +26,7 @@ public:
   tresult PLUGIN_API setState(IBStream* state) override;
   tresult PLUGIN_API getState(IBStream* state) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
+  IPlugView* PLUGIN_API createView(FIDString name) override;
 
   float GetParamNormalized(int index) const override;
   void SetParamNormalized(int index, float normalized) override;
