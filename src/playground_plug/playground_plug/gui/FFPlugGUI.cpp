@@ -8,14 +8,15 @@ FFPlugGUI(IFBHostGUIContext* hostContext):
 FBPlugGUI(hostContext),
 _slider(Slider::SliderStyle::Rotary, Slider::TextEntryBoxPosition::NoTextBox)
 {
-  _slider.setVisible(true);
-  addChildComponent(_slider);
+  addAndMakeVisible(_slider);
   setSize(DefaultWidth(), DefaultHeight());
+  resized();
 }
 
 void 
 FFPlugGUI::resized()
 {
+  getChildComponent(0)->setBounds(getLocalBounds());
   getChildComponent(0)->resized();
 }
 
