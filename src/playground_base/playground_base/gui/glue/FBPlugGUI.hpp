@@ -9,6 +9,7 @@ class FBPlugGUI:
 public juce::Component  
 {
 public:
+  // TODO scale factor
   virtual int MinWidth() const = 0;
   virtual int MaxWidth() const = 0;
   virtual int DefaultWidth() const = 0;
