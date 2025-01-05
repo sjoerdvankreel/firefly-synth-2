@@ -12,5 +12,6 @@ public:
 
   int MinWidth() const override;
   int MaxWidth() const override;
+  int DefaultWidth() const override;
   void SetParamNormalized(int index, float normalized) override;
 };
