@@ -6,6 +6,7 @@
 #include <playground_base/base/topo/FBSpecialParams.hpp>
 
 #include <vector>
+#include <memory>
 #include <functional>
 
 struct FBStaticTopo;
@@ -13,12 +14,19 @@ typedef std::function<FBSpecialParams (
   FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
 
+class FBPlugGUI;
+class IFBHostGUIContext;
+typedef std::function<std::unique_ptr<FBPlugGUI>(
+  IFBHostGUIContext*)>
+FBPlugGUIFactory;
+
 struct FBStaticTopo final
 {
   FBPlugVersion version = {};
   std::vector<FBStaticModule> modules = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 
+  FBPlugGUIFactory guiFactory = {};
   void* (*allocRawProcState)() = {};
   void* (*allocRawScalarState)() = {};
   void (*freeRawProcState)(void* state) = {};
