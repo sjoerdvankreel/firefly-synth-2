@@ -7,7 +7,7 @@ struct FFProcState;
 struct FBStaticTopo;
 struct FBPlugInputBlock;
 
-struct FFModuleProcState
+struct FFModuleProcState final
 {
   int moduleSlot = {};
   float sampleRate = {};

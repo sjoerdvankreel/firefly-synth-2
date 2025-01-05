@@ -1,6 +1,6 @@
 #pragma once
 
-struct FBNote
+struct FBNote final
 {
   int id = -1;
   int key = -1;

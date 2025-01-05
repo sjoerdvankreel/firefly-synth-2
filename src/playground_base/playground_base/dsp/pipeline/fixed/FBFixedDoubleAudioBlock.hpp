@@ -4,7 +4,7 @@
 #include <playground_base/dsp/pipeline/fixed/FBFixedUtility.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
-class alignas(sizeof(FBDoubleVector)) FBFixedDoubleAudioBlock
+class alignas(sizeof(FBDoubleVector)) FBFixedDoubleAudioBlock final
 {
   std::array<FBFixedDoubleBlock, 2> _store = {};
 

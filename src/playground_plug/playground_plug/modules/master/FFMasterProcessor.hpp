@@ -4,7 +4,7 @@
 
 struct FFModuleProcState;
 
-class FFMasterProcessor
+class FFMasterProcessor final
 {
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterProcessor);

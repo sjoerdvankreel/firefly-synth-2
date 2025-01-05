@@ -3,7 +3,7 @@
 #include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
-class FFOsciProcessor
+class FFOsciProcessor final
 {
   FBPhase _phase = {};
 public:

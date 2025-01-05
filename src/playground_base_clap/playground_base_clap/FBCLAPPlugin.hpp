@@ -15,7 +15,7 @@ struct FBStaticTopo;
 struct FBRuntimeTopo;
 class IFBPlugProcessor;
 
-class FBCLAPPlugin:
+class FBCLAPPlugin final:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
 public IFBHostProcessContext
 {

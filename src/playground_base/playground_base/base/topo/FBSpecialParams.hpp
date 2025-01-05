@@ -3,7 +3,7 @@
 struct FBStaticTopo;
 class FBGlobalBlockParamState;
 
-struct FBSpecialParam
+struct FBSpecialParam final
 {
   int paramIndex = -1;
   int moduleIndex = -1;
@@ -12,7 +12,7 @@ struct FBSpecialParam
   float NormalizedToPlainLinear(FBStaticTopo const& topo) const;
 };
 
-struct FBSpecialParams
+struct FBSpecialParams final
 {
   FBSpecialParam smoothing = {};
 };

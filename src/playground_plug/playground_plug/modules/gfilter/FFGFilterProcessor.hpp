@@ -7,7 +7,7 @@
 struct FFModuleProcState;
 
 // https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
-class FFGFilterProcessor
+class FFGFilterProcessor final
 {
   std::array<double, 2> _ic1eq = {};
   std::array<double, 2> _ic2eq = {};

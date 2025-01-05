@@ -2,7 +2,7 @@
 
 #include <playground_base/dsp/pipeline/shared/FBNote.hpp>
 
-struct FBAccModEvent
+struct FBAccModEvent final
 {
   int pos = -1;
   int param = -1;

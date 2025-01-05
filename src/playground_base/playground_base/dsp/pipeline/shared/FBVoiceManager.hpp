@@ -17,14 +17,14 @@ enum class FBVoiceState
   Returned
 };
 
-struct FBVoiceInfo
+struct FBVoiceInfo final
 {
   int initialOffset = {};
   FBNoteEvent event = {};
   FBVoiceState state = {};
 };
 
-class FBVoiceManager
+class FBVoiceManager final
 {
   std::uint64_t _counter = {};
   FBProcStateContainer* const _state;

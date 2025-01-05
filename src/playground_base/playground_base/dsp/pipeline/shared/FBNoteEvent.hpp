@@ -2,7 +2,7 @@
 
 #include <playground_base/dsp/pipeline/shared/FBNote.hpp>
 
-struct FBNoteEvent
+struct FBNoteEvent final
 {
   int pos = -1;
   bool on = false;

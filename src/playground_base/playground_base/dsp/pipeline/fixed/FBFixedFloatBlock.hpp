@@ -4,7 +4,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedUtility.hpp>
 
-class alignas(sizeof(FBFloatVector)) FBFixedFloatBlock
+class alignas(sizeof(FBFloatVector)) FBFixedFloatBlock final
 {
   std::array<FBFloatVector, FBFixedFloatVectors> _store = {};
 

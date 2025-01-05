@@ -5,7 +5,7 @@
 
 struct FFModuleProcState;
 
-class FFGLFOProcessor
+class FFGLFOProcessor final
 {
   FBPhase _phase = {};
 public:

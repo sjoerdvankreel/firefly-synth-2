@@ -3,7 +3,7 @@
 #include <playground_base/gui/glue/FBPlugGUI.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
-class FFPlugGUI :
+class FFPlugGUI final:
 public FBPlugGUI
 {
   juce::Slider _s;

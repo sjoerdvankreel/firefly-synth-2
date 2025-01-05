@@ -4,7 +4,7 @@
 #include <playground_base/dsp/pipeline/fixed/FBFixedUtility.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
 
-class alignas(sizeof(FBFloatVector)) FBFixedFloatAudioBlock
+class alignas(sizeof(FBFloatVector)) FBFixedFloatAudioBlock final
 {
   std::array<FBFixedFloatBlock, 2> _store = {};
 
