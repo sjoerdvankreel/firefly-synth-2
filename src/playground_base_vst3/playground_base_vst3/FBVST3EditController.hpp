@@ -2,6 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/shared/FBStringify.hpp>
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <public.sdk/source/vst/vsteditcontroller.h>
 #include <memory>
@@ -13,7 +14,8 @@ struct FBStaticTopo;
 struct FBRuntimeTopo;
 
 class FBVST3EditController final:
-public EditControllerEx1
+public EditControllerEx1,
+public IFBHostGUIContext
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
 
@@ -24,4 +26,7 @@ public:
   tresult PLUGIN_API setState(IBStream* state) override;
   tresult PLUGIN_API getState(IBStream* state) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
+
+  float GetParamNormalized(int index) const override;
+  void SetParamNormalized(int index, float normalized) override;
 };

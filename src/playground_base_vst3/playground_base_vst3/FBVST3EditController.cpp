@@ -41,6 +41,18 @@ FBVST3EditController::
 FBVST3EditController(FBStaticTopo const& topo) :
 _topo(std::make_unique<FBRuntimeTopo>(topo)) {}
 
+float
+FBVST3EditController::GetParamNormalized(int index) const
+{
+  return parameters.getParameterByIndex(index)->getNormalized();
+}
+
+void 
+FBVST3EditController::SetParamNormalized(int index, float normalized)
+{
+  parameters.getParameterByIndex(index)->setNormalized(normalized);
+}
+
 tresult PLUGIN_API
 FBVST3EditController::setState(IBStream* state)
 {

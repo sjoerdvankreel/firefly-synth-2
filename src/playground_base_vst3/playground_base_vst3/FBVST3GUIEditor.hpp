@@ -7,6 +7,8 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
+class FBVST3EditController;
+
 class FBVST3GUIEditor final:
 public EditorView
 {
@@ -15,7 +17,9 @@ public EditorView
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);
-  FBVST3GUIEditor(FBPlugGUIFactory const& factory, IFBHostGUIContext* hostContext);
+  FBVST3GUIEditor(
+    FBPlugGUIFactory const& factory, 
+    FBVST3EditController* editController);
 
   tresult PLUGIN_API removed() override;
   tresult PLUGIN_API canResize() override;
