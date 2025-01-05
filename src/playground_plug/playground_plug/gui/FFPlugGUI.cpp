@@ -5,10 +5,11 @@ using namespace juce;
 
 FFPlugGUI::
 FFPlugGUI(IFBHostGUIContext* hostContext):
-FBPlugGUI(hostContext)
+FBPlugGUI(hostContext),
+_slider(Slider::SliderStyle::Rotary, Slider::TextEntryBoxPosition::NoTextBox)
 {
-  _s.setVisible(true);
-  addChildComponent(_s);
+  _slider.setVisible(true);
+  addChildComponent(_slider);
   setSize(DefaultWidth(), DefaultHeight());
 }
 

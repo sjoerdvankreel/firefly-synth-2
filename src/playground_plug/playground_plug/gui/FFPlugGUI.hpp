@@ -6,7 +6,7 @@
 class FFPlugGUI final:
 public FBPlugGUI
 {
-  juce::Slider _s;
+  juce::Slider _slider;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
