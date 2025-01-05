@@ -12,6 +12,12 @@ FBPlugGUI(hostContext)
   setSize(DefaultWidth(), DefaultHeight());
 }
 
+void 
+FFPlugGUI::resized()
+{
+  getChildComponent(0)->resized();
+}
+
 void
 FFPlugGUI::SetParamNormalized(int index, float normalized)
 {
