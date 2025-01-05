@@ -1,6 +1,8 @@
 #include <playground_plug/gui/FFPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 
+using namespace juce;
+
 FFPlugGUI::
 FFPlugGUI(IFBHostGUIContext* hostContext):
 FBPlugGUI(hostContext)
@@ -11,6 +13,13 @@ FBPlugGUI(hostContext)
 }
 
 void 
+FFPlugGUI::paint(Graphics& g)
+{
+  g.setColour(Colours::orange);
+  g.fillRect(getLocalBounds());
+}
+
+void
 FFPlugGUI::SetParamNormalized(int index, float normalized)
 {
 }
