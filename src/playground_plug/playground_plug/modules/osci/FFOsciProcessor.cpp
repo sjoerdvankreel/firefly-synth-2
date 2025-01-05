@@ -17,7 +17,6 @@ GenerateSin(FBFloatVector phase)
 static FBFloatVector
 GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 { 
-  // TODO fast paul saw
   // https://www.kvraudio.com/forum/viewtopic.php?t=375517
   // y = phase * 2 - 1
   // if (phase < inc) y -= b = phase / inc, (2.0f - b) * b - 1.0f
