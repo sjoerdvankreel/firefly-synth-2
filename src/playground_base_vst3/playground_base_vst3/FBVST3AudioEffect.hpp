@@ -17,9 +17,9 @@ using namespace Steinberg::Vst;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 class IFBPlugProcessor;
-class FBVST3AudioEffect:
 
-public AudioEffect:
+class FBVST3AudioEffect:
+public AudioEffect,
 public IFBHostProcessContext
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
