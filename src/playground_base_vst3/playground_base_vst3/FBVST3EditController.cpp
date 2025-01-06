@@ -84,7 +84,7 @@ FBVST3EditController::createView(FIDString name)
 }
 
 tresult PLUGIN_API
-FBVST3EditController::setState(IBStream* state)
+FBVST3EditController::setComponentState(IBStream* state)
 {
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
@@ -93,19 +93,13 @@ FBVST3EditController::setState(IBStream* state)
   if (!_topo->LoadState(json, scalar))
     return kResultFalse;
   for (int i = 0; i < scalar.Params().size(); i++)
-    parameters.getParameterByIndex(i)->setNormalized(*scalar.Params()[i]);
+  {
+    float normalized = *scalar.Params()[i];
+    parameters.getParameterByIndex(i)->setNormalized(normalized);
+    if (_guiEditor != nullptr)
+      _guiEditor->SetParamNormalized(i, normalized);
+  }
   return kResultOk;
-}
-
-tresult PLUGIN_API
-FBVST3EditController::getState(IBStream* state)
-{
-  FBScalarStateContainer scalar(*_topo);
-  for (int i = 0; i < scalar.Params().size(); i++)
-    *scalar.Params()[i] = parameters.getParameterByIndex(i)->getNormalized();
-  std::string json = _topo->SaveState(scalar);
-  bool result = FBVST3SaveIBStream(state, json);
-  return result ? kResultOk : kResultFalse;
 }
 
 tresult PLUGIN_API
