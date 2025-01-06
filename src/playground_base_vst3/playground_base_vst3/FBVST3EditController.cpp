@@ -62,16 +62,25 @@ FBVST3EditController::GetParamNormalized(int index) const
 }
 
 void 
-FBVST3EditController::SetParamNormalized(int index, float normalized)
+FBVST3EditController::PerformParamEdit(int index, float normalized)
 {
-  parameters.getParameterByIndex(index)->setNormalized(normalized);
+  performEdit(_topo->params[index].tag, normalized);
+}
+
+tresult PLUGIN_API 
+FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
+{
+  if (_guiEditor != nullptr)
+    _guiEditor->SetParamNormalized(_topo->tagToParam[tag], (float)value);
+  return EditControllerEx1::setParamNormalized(tag, value);
 }
 
 IPlugView* PLUGIN_API
 FBVST3EditController::createView(FIDString name)
 {
   if (ConstString(name) != ViewType::kEditor) return nullptr;
-  return new FBVST3GUIEditor(_topo->static_.guiFactory, _topo.get(), this);
+  _guiEditor = new FBVST3GUIEditor(_topo->static_.guiFactory, _topo.get(), this);
+  return _guiEditor;
 }
 
 tresult PLUGIN_API

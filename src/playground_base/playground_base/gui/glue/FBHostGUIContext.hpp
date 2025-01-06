@@ -6,8 +6,9 @@ class IFBHostGUIContext
 {
 public:
   FB_NOCOPY_MOVE_DEFCTOR(IFBHostGUIContext);
+  virtual float GetParamNormalized(int index) const = 0;
+
   virtual void EndParamChange(int index) = 0;
   virtual void BeginParamChange(int index) = 0;
-  virtual float GetParamNormalized(int index) const = 0;
-  virtual void SetParamNormalized(int index, float normalized) = 0;
+  virtual void PerformParamEdit(int index, float normalized) = 0;
 };

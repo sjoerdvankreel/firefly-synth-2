@@ -6,27 +6,32 @@ using namespace juce;
 
 FBParamSlider::
 FBParamSlider(
-  IFBHostGUIContext* context, 
   FBRuntimeParam const* param,
+  IFBHostGUIContext* context,
   Slider::SliderStyle style):
 Slider(style, Slider::NoTextBox),
 _context(context),
-_param(param) {}
+_param(param) 
+{
+  setRange(0.0, 1.0);
+  float normalized = _context->GetParamNormalized(param->runtimeParamIndex);
+  setValue(normalized, juce::dontSendNotification);
+}
 
 void 
 FBParamSlider::stoppedDragging()
 {
-  _context->EndParamChange(_param->runtimeModuleIndex);
+  _context->EndParamChange(_param->runtimeParamIndex);
 }
 
 void 
 FBParamSlider::startedDragging()
 {
-  _context->BeginParamChange(_param->runtimeModuleIndex);
+  _context->BeginParamChange(_param->runtimeParamIndex);
 }
 
 void
 FBParamSlider::valueChanged()
 {
-  _context->SetParamNormalized(_param->runtimeParamIndex, getValue());
+  _context->PerformParamEdit(_param->runtimeParamIndex, getValue());
 }

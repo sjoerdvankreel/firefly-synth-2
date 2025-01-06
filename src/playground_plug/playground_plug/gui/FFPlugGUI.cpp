@@ -1,4 +1,5 @@
 #include <playground_plug/gui/FFPlugGUI.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 
 using namespace juce;
@@ -11,11 +12,8 @@ FBPlugGUI(),
 _topo(topo),
 _hostContext(hostContext)
 {
-  // 29  = master gain
- // auto slider = std::make_unique<juce::Slider>(Slider::SliderStyle::Rotary, Slider::TextEntryBoxPosition::NoTextBox).release();
-  
-   // addAndMakeVisible(*slider);
-  //addAndMakeVisible(_slider);
+  _slider = std::make_unique<FBParamSlider>(&_topo->params[29], _hostContext, Slider::SliderStyle::Rotary);
+  addAndMakeVisible(*_slider);
   setSize(DefaultWidth(), DefaultHeight());
   resized();
 }
@@ -23,11 +21,13 @@ _hostContext(hostContext)
 void 
 FFPlugGUI::resized()
 {
-  //getChildComponent(0)->setBounds(getLocalBounds());
-  //getChildComponent(0)->resized();
+  getChildComponent(0)->setBounds(getLocalBounds());
+  getChildComponent(0)->resized();
 }
 
 void
 FFPlugGUI::SetParamNormalized(int index, float normalized)
 {
+  if(index == 29)
+    dynamic_cast<FBParamSlider*>(getChildComponent(0))->setValue(normalized, juce::dontSendNotification);
 }

@@ -8,13 +8,13 @@ class IFBHostGUIContext;
 class FBParamSlider final:
 public juce::Slider
 {
-  IFBHostGUIContext* const _context;
   FBRuntimeParam const* const _param;
+  IFBHostGUIContext* const _context;
 
 public:
   FBParamSlider(
-    IFBHostGUIContext* context,
     FBRuntimeParam const* param,
+    IFBHostGUIContext* context,
     juce::Slider::SliderStyle style);
 
   void valueChanged() override;

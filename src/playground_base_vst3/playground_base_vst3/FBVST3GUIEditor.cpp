@@ -49,6 +49,12 @@ FBVST3GUIEditor::onSize(ViewRect* newSize)
   return kResultTrue;
 }
 
+void
+FBVST3GUIEditor::SetParamNormalized(int index, float normalized)
+{
+  _gui->SetParamNormalized(index, normalized);
+}
+
 tresult PLUGIN_API 
 FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect)
 {

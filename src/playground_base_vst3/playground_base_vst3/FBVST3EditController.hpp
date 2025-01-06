@@ -12,24 +12,27 @@ using namespace Steinberg::Vst;
 
 struct FBStaticTopo;
 struct FBRuntimeTopo;
+class FBVST3GUIEditor;
 
 class FBVST3EditController final:
 public EditControllerEx1,
 public IFBHostGUIContext
 {
+  FBVST3GUIEditor* _guiEditor = {};
   std::unique_ptr<FBRuntimeTopo> _topo;
 
 public:
   FBVST3EditController(FBStaticTopo const& topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
 
+  void EndParamChange(int index) override;
+  void BeginParamChange(int index) override;
+  float GetParamNormalized(int index) const override;
+  void PerformParamEdit(int index, float normalized) override;
+
   tresult PLUGIN_API setState(IBStream* state) override;
   tresult PLUGIN_API getState(IBStream* state) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
   IPlugView* PLUGIN_API createView(FIDString name) override;
-  
-  void EndParamChange(int index) override;
-  void BeginParamChange(int index) override;
-  float GetParamNormalized(int index) const override;
-  void SetParamNormalized(int index, float normalized) override;
+  tresult PLUGIN_API setParamNormalized(ParamID tag, ParamValue value) override;
 };

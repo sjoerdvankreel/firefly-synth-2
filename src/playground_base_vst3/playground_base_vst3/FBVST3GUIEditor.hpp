@@ -25,6 +25,8 @@ public:
     FBRuntimeTopo const* topo,
     FBVST3EditController* editController);
 
+  void SetParamNormalized(int index, float normalized);
+
   tresult PLUGIN_API removed() override;
   tresult PLUGIN_API canResize() override;
   tresult PLUGIN_API getSize(ViewRect* size) override;
