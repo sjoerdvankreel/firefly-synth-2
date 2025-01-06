@@ -16,6 +16,12 @@ FBVST3Parameter::toString(ParamValue valueNormalized, String128 string) const
 bool 
 FBVST3Parameter::fromString(const TChar* string, ParamValue& valueNormalized) const
 {
-  // TODO
-  return false;
+  std::string str;
+  if (!FBVST3CopyFromString128(string, str))
+    return false;
+  auto parsed = _topo.TextToNormalized(false, str);
+  if (!parsed.has_value())
+    return false;
+  valueNormalized = parsed.value();
+  return true;
 }

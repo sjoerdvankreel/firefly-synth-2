@@ -7,7 +7,10 @@ using namespace Steinberg;
 using namespace Steinberg::Vst;
 
 void
-FBVST3CopyToString128(std::string const& in, TChar* out); 
+FBVST3CopyToString128(std::string const& in, TChar* out);
+bool
+FBVST3CopyFromString128(TChar const* in, std::string& out);
+
 bool
 FBVST3LoadIBStream(IBStream* stream, std::string& state);
 bool

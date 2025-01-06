@@ -10,6 +10,18 @@ FBVST3CopyToString128(std::string const& in, TChar* out)
 }
 
 bool
+FBVST3CopyFromString128(TChar const* in, std::string& out)
+{
+  out.clear();
+  for (int i = 0; i < 127 && in[i] != (TChar)0; i++)
+    if (in[i] > 127)
+      return false;
+    else
+      out.push_back((char)in[i]);
+  return true;
+}
+
+bool
 FBVST3LoadIBStream(IBStream* stream, std::string& state)
 {
   state = {};
