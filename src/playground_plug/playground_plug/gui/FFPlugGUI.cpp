@@ -12,7 +12,7 @@ FBPlugGUI(),
 _topo(topo),
 _hostContext(hostContext)
 {
-  _slider = std::make_unique<FBParamSlider>(&_topo->params[29], _hostContext, Slider::SliderStyle::Rotary);
+  _slider = std::make_unique<FBParamSlider>(&_topo->params[4], _hostContext, Slider::SliderStyle::Rotary);
   addAndMakeVisible(*_slider);
   setSize(DefaultWidth(), DefaultHeight());
   resized();
@@ -28,6 +28,6 @@ FFPlugGUI::resized()
 void
 FFPlugGUI::SetParamNormalized(int index, float normalized)
 {
-  if(index == 29)
+  if(index == 4)
     dynamic_cast<FBParamSlider*>(getChildComponent(0))->setValue(normalized, juce::dontSendNotification);
 }
