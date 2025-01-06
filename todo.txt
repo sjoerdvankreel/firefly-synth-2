@@ -1,3 +1,4 @@
+fix warnings
 rosetta is borked
 threadpool makes it slower
 fix mac infoplist and the other thingy

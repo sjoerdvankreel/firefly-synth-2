@@ -9,7 +9,7 @@ FBParamSlider(
   FBRuntimeParam const* param,
   IFBHostGUIContext* context,
   Slider::SliderStyle style):
-Slider(style, Slider::NoTextBox),
+Slider(style, Slider::TextBoxBelow),
 _context(context),
 _param(param) 
 {
