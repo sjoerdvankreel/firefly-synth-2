@@ -4,6 +4,7 @@
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
+#include <juce_gui_basics/juce_gui_basics.h>
 #include <public.sdk/source/main/pluginfactory.h>
 #include <pluginterfaces/vst/ivstcomponent.h>
 #include <pluginterfaces/vst/ivsteditcontroller.h>
@@ -31,6 +32,21 @@ protected:
   { return std::make_unique<FFPlugProcessor>(
     topo, static_cast<FFProcState*>(state), sampleRate); }
 };
+
+// todo also clap
+bool
+DeinitModule()
+{
+  juce::shutdownJuce_GUI();
+  return true;
+}
+
+bool 
+InitModule()
+{
+  juce::initialiseJuce_GUI();
+  return true;
+}
 
 static FUID
 TextToFUID(char const* text)
