@@ -33,5 +33,18 @@ FBParamSlider::startedDragging()
 void
 FBParamSlider::valueChanged()
 {
-  _context->PerformParamEdit(_param->runtimeParamIndex, getValue());
+  _context->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
+}
+
+String 
+FBParamSlider::getTextFromValue(double value)
+{
+  return String(_param->static_.NormalizedToText(false, (float)value));
+}
+
+double 
+FBParamSlider::getValueFromText(const String& text)
+{
+  auto parsed = _param->static_.TextToNormalized(false, text.toStdString());
+  return parsed.value_or(_param->static_.DefaultNormalizedByText());
 }
