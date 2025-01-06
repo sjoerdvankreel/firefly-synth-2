@@ -15,9 +15,10 @@ typedef std::function<FBSpecialParams (
 FBSpecialParamsSelector;
 
 class FBPlugGUI;
+struct FBRuntimeTopo;
 class IFBHostGUIContext;
 typedef std::function<std::unique_ptr<FBPlugGUI>(
-  IFBHostGUIContext*)>
+  FBRuntimeTopo const* topo, IFBHostGUIContext*)>
 FBPlugGUIFactory;
 
 struct FBStaticTopo final

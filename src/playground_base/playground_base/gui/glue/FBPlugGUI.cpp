@@ -3,8 +3,7 @@
 using namespace juce;
 
 FBPlugGUI::
-FBPlugGUI(IFBHostGUIContext* hostContext) : 
-_hostContext(hostContext)
+FBPlugGUI()
 {
   setOpaque(true);
   setVisible(true);

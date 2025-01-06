@@ -36,7 +36,8 @@ FFMakeTopo()
   result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
   result->freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result->freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
-  result->guiFactory = [](IFBHostGUIContext* ctx) { return std::make_unique<FFPlugGUI>(ctx); };
+  result->guiFactory = [](FBRuntimeTopo const* topo, IFBHostGUIContext* ctx) { 
+    return std::make_unique<FFPlugGUI>(topo, ctx); };
   result->specialSelector = [](FBStaticTopo const& topo, void* state) {
     FBSpecialParams params = {};
     params.smoothing = MakeSpecialParam(topo, state, (int)FFModuleType::Master, (int)FFMasterParam::Smoothing);

@@ -11,6 +11,7 @@ using namespace Steinberg::Vst;
 
 class FBPlugGUI;
 class FBVST3EditController;
+struct FBRuntimeTopo;
 
 class FBVST3GUIEditor final:
 public EditorView
@@ -21,6 +22,7 @@ public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);
   FBVST3GUIEditor(
     FBPlugGUIFactory const& factory, 
+    FBRuntimeTopo const* topo,
     FBVST3EditController* editController);
 
   tresult PLUGIN_API removed() override;

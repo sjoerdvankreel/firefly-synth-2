@@ -4,11 +4,14 @@
 using namespace juce;
 
 FFPlugGUI::
-FFPlugGUI(IFBHostGUIContext* hostContext):
-FBPlugGUI(hostContext),
-_slider(Slider::SliderStyle::Rotary, Slider::TextEntryBoxPosition::NoTextBox)
+FFPlugGUI(
+  FBRuntimeTopo const* topo, 
+  IFBHostGUIContext* hostContext):
+FBPlugGUI(),
+_topo(topo),
+_hostContext(hostContext)
 {
-  addAndMakeVisible(_slider);
+  //addAndMakeVisible(_slider);
   setSize(DefaultWidth(), DefaultHeight());
   resized();
 }

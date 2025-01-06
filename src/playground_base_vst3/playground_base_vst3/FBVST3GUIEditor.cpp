@@ -7,9 +7,10 @@
 FBVST3GUIEditor::
 FBVST3GUIEditor(
   FBPlugGUIFactory const& factory,
+  FBRuntimeTopo const* topo,
   FBVST3EditController* editController):
 EditorView(editController),
-_gui(factory(editController)) {}
+_gui(factory(topo, editController)) {}
 
 tresult PLUGIN_API 
 FBVST3GUIEditor::canResize()
