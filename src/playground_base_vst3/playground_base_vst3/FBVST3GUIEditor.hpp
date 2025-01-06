@@ -20,6 +20,7 @@ public EditorView
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);
+  ~FBVST3GUIEditor();
   FBVST3GUIEditor(
     FBPlugGUIFactory const& factory, 
     FBRuntimeTopo const* topo,

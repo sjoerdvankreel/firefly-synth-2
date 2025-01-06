@@ -12,7 +12,13 @@ FBVST3GUIEditor(
 EditorView(editController),
 _gui(factory(topo, editController)) {}
 
-tresult PLUGIN_API 
+FBVST3GUIEditor::
+~FBVST3GUIEditor()
+{
+  dynamic_cast<FBVST3EditController&>(*getController()).ResetView();
+}
+
+tresult PLUGIN_API
 FBVST3GUIEditor::canResize()
 {
   return kResultTrue;

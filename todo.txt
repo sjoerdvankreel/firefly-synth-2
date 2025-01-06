@@ -1,3 +1,4 @@
+renoise ui not work
 fix warnings
 rosetta is borked
 threadpool makes it slower

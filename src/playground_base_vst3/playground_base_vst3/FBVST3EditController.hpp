@@ -25,6 +25,7 @@ public:
   FBVST3EditController(FBStaticTopo const& topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
 
+  void ResetView();
   void EndParamChange(int index) override;
   void BeginParamChange(int index) override;
   float GetParamNormalized(int index) const override;

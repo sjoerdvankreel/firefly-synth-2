@@ -75,11 +75,18 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
   return EditControllerEx1::setParamNormalized(tag, value);
 }
 
+void
+FBVST3EditController::ResetView()
+{
+  _guiEditor = nullptr;
+}
+
 IPlugView* PLUGIN_API
 FBVST3EditController::createView(FIDString name)
 {
   if (ConstString(name) != ViewType::kEditor) return nullptr;
-  _guiEditor = new FBVST3GUIEditor(_topo->static_.guiFactory, _topo.get(), this);
+  if(_guiEditor == nullptr)
+    _guiEditor = new FBVST3GUIEditor(_topo->static_.guiFactory, _topo.get(), this);
   return _guiEditor;
 }
 
