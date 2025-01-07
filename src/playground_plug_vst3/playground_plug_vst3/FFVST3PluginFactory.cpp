@@ -33,7 +33,6 @@ protected:
     topo, static_cast<FFProcState*>(state), sampleRate); }
 };
 
-// todo also clap
 bool
 DeinitModule()
 {

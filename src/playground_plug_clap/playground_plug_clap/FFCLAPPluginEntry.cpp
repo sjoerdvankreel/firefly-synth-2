@@ -6,6 +6,7 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 
+#include <juce_gui_basics/juce_gui_basics.h>
 #include <clap/clap.h>
 #include <cstring>
 
@@ -30,8 +31,18 @@ protected:
     topo, static_cast<FFProcState*>(rawState), sampleRate); }
 };
 
-static void CLAP_ABI Deinit() {}
-static bool CLAP_ABI Init(char const*) { return true; }
+static void CLAP_ABI 
+Deinit()
+{
+  juce::shutdownJuce_GUI();
+}
+
+static bool CLAP_ABI 
+Init(char const*) 
+{ 
+  juce::initialiseJuce_GUI();
+  return true; 
+}
 
 static char const*
 Features[] = { CLAP_PLUGIN_FEATURE_INSTRUMENT, nullptr };
