@@ -13,6 +13,7 @@ _context(context),
 _param(param) 
 {
   SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
+  _isOn = getToggleState();
 }
 
 void
@@ -20,11 +21,15 @@ FBParamToggleButton::SetValueNormalized(float normalized)
 {
   int plain = _param->static_.boolean.NormalizedToPlain(normalized);
   setToggleState(plain != 0, dontSendNotification);
+  _isOn = getToggleState();
 }
 
 void
 FBParamToggleButton::buttonStateChanged()
 {
   float normalized = _param->static_.boolean.PlainToNormalized(getToggleState());
-  _context->PerformParamEdit(_param->runtimeParamIndex, normalized);
+  int plain = _param->static_.boolean.NormalizedToPlain(normalized);
+  if(_isOn != (plain != 0))
+    _context->PerformParamEdit(_param->runtimeParamIndex, normalized);
+  _isOn = getToggleState();
 }
