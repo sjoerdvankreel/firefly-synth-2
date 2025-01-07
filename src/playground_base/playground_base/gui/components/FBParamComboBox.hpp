@@ -6,24 +6,18 @@
 struct FBRuntimeParam;
 class IFBHostGUIContext;
 
-class FBParamSlider final:
-public juce::Slider,
+class FBParamComboBox final:
+public juce::ComboBox,
 public IFBParamControl
 {
   FBRuntimeParam const* const _param;
   IFBHostGUIContext* const _context;
 
 public:
-  FBParamSlider(
+  FBParamComboBox(
     FBRuntimeParam const* param,
-    IFBHostGUIContext* context,
-    juce::Slider::SliderStyle style);
+    IFBHostGUIContext* context);
 
-  void valueChanged() override;
-  void stoppedDragging() override;
-  void startedDragging() override;
-  
+  void valueChanged(juce::Value& value) override;
   void SetValueNormalized(float normalized) override;
-  juce::String getTextFromValue(double value) override;
-  double getValueFromText(const juce::String& text) override;
 };

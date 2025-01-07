@@ -14,7 +14,12 @@ _context(context),
 _param(param) 
 {
   setRange(0.0, 1.0);
-  float normalized = _context->GetParamNormalized(param->runtimeParamIndex);
+  SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
+}
+
+void
+FBParamSlider::SetValueNormalized(float normalized)
+{
   setValue(normalized, juce::dontSendNotification);
 }
 

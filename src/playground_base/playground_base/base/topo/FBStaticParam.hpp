@@ -41,6 +41,9 @@ struct FBStaticParam final
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
   int ValueCount() const;
+  float ListOrDiscreteToNormalizedSlow(int discrete) const;
+  int NormalizedToListOrDiscreteSlow(float normalized) const;
+
   float DefaultNormalizedByText() const;
   std::string NormalizedToText(bool io, float normalized) const;
   std::optional<float> TextToNormalized(bool io, std::string const& text) const;
