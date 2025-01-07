@@ -1,6 +1,24 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 
-bool 
+bool
+FBCLAPPlugin::guiCanResize() const noexcept
+{
+  return true;
+}
+
+bool
+FBCLAPPlugin::implementsGui() const noexcept
+{
+  return true;
+}
+
+bool
+FBCLAPPlugin::guiSetScale(double scale) noexcept
+{
+  return false; // TODO scaling
+}
+
+bool
 FBCLAPPlugin::guiShow() noexcept
 {
 }
@@ -16,32 +34,7 @@ FBCLAPPlugin::guiDestroy() noexcept
 }
 
 bool
-FBCLAPPlugin::guiCanResize() const noexcept 
-{
-}
-
-bool
-FBCLAPPlugin::implementsGui() const noexcept 
-{
-}
-
-bool
-FBCLAPPlugin::guiSetScale(double scale) noexcept 
-{
-}
-
-void
-FBCLAPPlugin::guiSuggestTitle(const char* title) noexcept 
-{
-}
-
-bool
 FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept 
-{
-}
-
-bool
-FBCLAPPlugin::guiSetTransient(const clap_window* window) noexcept 
 {
 }
 

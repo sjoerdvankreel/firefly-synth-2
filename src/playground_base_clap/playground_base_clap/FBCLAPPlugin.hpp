@@ -52,9 +52,7 @@ public:
   bool guiCanResize() const noexcept override;
   bool implementsGui() const noexcept override;
   bool guiSetScale(double scale) noexcept override;
-  void guiSuggestTitle(const char* title) noexcept override;
   bool guiSetParent(const clap_window* window) noexcept override;
-  bool guiSetTransient(const clap_window* window) noexcept override;
   bool guiSetSize(uint32_t width, uint32_t height) noexcept override;
   bool guiCreate(const char* api, bool isFloating) noexcept override;
   bool guiGetSize(uint32_t* width, uint32_t* height) noexcept override;
