@@ -78,6 +78,26 @@ FBCLAPPlugin::ProcessVoices()
     _hostProcessor->ProcessAllVoices();
 }
 
+void 
+FBCLAPPlugin::EndParamChange(int index)
+{
+}
+
+void 
+FBCLAPPlugin::BeginParamChange(int index)
+{
+}
+
+float 
+FBCLAPPlugin::GetParamNormalized(int index) const
+{
+}
+
+void 
+FBCLAPPlugin::PerformParamEdit(int index, float normalized)
+{  
+}
+
 bool 
 FBCLAPPlugin::isValidParamId(
   clap_id paramId) const noexcept
