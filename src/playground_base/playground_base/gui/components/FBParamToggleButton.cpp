@@ -19,7 +19,7 @@ void
 FBParamToggleButton::SetValueNormalized(float normalized)
 {
   int plain = _param->static_.boolean.NormalizedToPlain(normalized);
-  setToggleState(plain != 0, juce::dontSendNotification);
+  setToggleState(plain != 0, dontSendNotification);
 }
 
 void

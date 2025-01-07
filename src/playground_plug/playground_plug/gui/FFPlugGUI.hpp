@@ -13,6 +13,7 @@ public FBPlugGUI
 {
   FBRuntimeTopo const* const _topo;
   IFBHostGUIContext* const _hostContext;
+  std::vector<std::unique_ptr<juce::Component>> _labels = {};
   std::vector<std::unique_ptr<juce::Component>> _controls = {};
 
 public:

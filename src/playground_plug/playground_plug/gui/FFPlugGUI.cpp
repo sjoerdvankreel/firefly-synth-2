@@ -16,6 +16,12 @@ _topo(topo),
 _hostContext(hostContext)
 {
   for (int i = 0; i < topo->params.size(); i++)
+  {
+    auto label = std::make_unique<Label>();
+    label->setText(topo->params[i].longName, dontSendNotification);
+    _labels.emplace_back(std::move(label));
+  }
+  for (int i = 0; i < topo->params.size(); i++)
     switch (topo->params[i].static_.type)
     {
     case FBParamType::List:
@@ -38,6 +44,8 @@ _hostContext(hostContext)
     }
   for (int i = 0; i < topo->params.size(); i++)
     addAndMakeVisible(_controls[i].get());
+  for (int i = 0; i < topo->params.size(); i++)
+    addAndMakeVisible(_labels[i].get());
   setSize(DefaultWidth(), DefaultHeight());
   resized();
 }
@@ -61,13 +69,15 @@ FFPlugGUI::resized()
   for(int r = 0; r < rowColCount; r++)
     for (int c = 0; c < rowColCount; c++)
     {
-      int p = r * rowColCount + c;
-      if (p < _topo->params.size())
+      int param = r * rowColCount + c;
+      if (param < _topo->params.size())
       {
         int y = r * rh;
         int x = c * cw;
-        getChildComponent(p)->setBounds(x, y, cw, rh);
-        getChildComponent(p)->resized();
+        getChildComponent(param)->setBounds(x, y, cw, rh * 3 / 4);
+        getChildComponent(param)->resized();
+        getChildComponent(param + _topo->params.size())->setBounds(x, y + rh * 3 / 4, cw, rh * 1 / 4);
+        getChildComponent(param + _topo->params.size())->resized();
       }
     }
 }

@@ -20,7 +20,7 @@ _param(param)
 void
 FBParamSlider::SetValueNormalized(float normalized)
 {
-  setValue(normalized, juce::dontSendNotification);
+  setValue(normalized, dontSendNotification);
 }
 
 void 
