@@ -26,17 +26,17 @@ struct FBFreqOctParam
 inline float
 FBFreqOctParam::NormalizedToPlain(float normalized) const
 {
-  return minHz * std::pow(2.0f, octaves * normalized);
+  return minHz * std::pow(2.0f, (float)octaves * normalized);
 }
 
 inline FBFloatVector 
 FBFreqOctParam::NormalizedToPlain(FBFloatVector normalized) const
 {
-  return minHz * xsimd::pow(FBFloatVector(2.0f), octaves * normalized);
+  return minHz * xsimd::pow(FBFloatVector(2.0f), (float)octaves * normalized);
 }
 
 inline FBDoubleVector 
 FBFreqOctParam::NormalizedToPlain(FBDoubleVector normalized) const
 {
-  return minHz * xsimd::pow(FBDoubleVector(2.0), octaves * normalized);
+  return minHz * xsimd::pow(FBDoubleVector(2.0), (float)octaves * normalized);
 }
