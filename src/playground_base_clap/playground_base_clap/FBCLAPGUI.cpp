@@ -1,4 +1,8 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base/gui/glue/FBPlugGUI.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+
+#include <juce_gui_basics/juce_gui_basics.h>
 
 bool
 FBCLAPPlugin::guiCanResize() const noexcept
@@ -31,6 +35,8 @@ FBCLAPPlugin::guiHide() noexcept
 void
 FBCLAPPlugin::guiDestroy() noexcept 
 {
+  _gui->removeFromDesktop();
+  _gui.reset();
 }
 
 bool
@@ -46,6 +52,8 @@ FBCLAPPlugin::guiSetSize(uint32_t width, uint32_t height) noexcept
 bool
 FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept 
 {
+  _gui = _topo->static_.guiFactory(_topo.get(), this);
+  return true;
 }
 
 bool

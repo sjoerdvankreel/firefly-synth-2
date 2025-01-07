@@ -1,5 +1,6 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base_clap/FBCLAPUtility.hpp>
+#include <playground_base/gui/glue/FBPlugGUI.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>

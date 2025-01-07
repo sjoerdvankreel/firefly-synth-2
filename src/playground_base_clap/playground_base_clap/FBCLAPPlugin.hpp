@@ -1,3 +1,4 @@
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
@@ -13,17 +14,21 @@ using namespace clap::helpers;
 
 struct FBStaticTopo;
 struct FBRuntimeTopo;
+
+class FBPlugGUI;
 class IFBPlugProcessor;
 
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
-public IFBHostProcessContext
+public IFBHostProcessContext,
+public IFBHostGUIContext
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
   FBProcStateContainer _state;
 
   FBHostInputBlock _input = {};
   FBHostOutputBlock _output = {};
+  std::unique_ptr<FBPlugGUI> _gui = {};
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
 
@@ -35,6 +40,12 @@ public:
   ~FBCLAPPlugin();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBCLAPPlugin);
   FBCLAPPlugin(FBStaticTopo const& topo, clap_plugin_descriptor const* desc, clap_host const* host);
+
+  void ProcessVoices() override;
+  void EndParamChange(int index) override;
+  void BeginParamChange(int index) override;
+  float GetParamNormalized(int index) const override;
+  void PerformParamEdit(int index, float normalized) override;
 
   uint32_t latencyGet() const noexcept override;
   bool implementsLatency() const noexcept override;
@@ -61,7 +72,6 @@ public:
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
   bool guiGetPreferredApi(const char** api, bool* isFloating) noexcept override;
 
-  void ProcessVoices() override;
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;
   bool getParamInfoForParamId(clap_id paramId, clap_param_info* info) const noexcept override;
