@@ -61,7 +61,7 @@ void
 FFPlugGUI::resized()
 {
   auto bounds = getLocalBounds();
-  int rowColCount = std::ceil(std::sqrt((float)_topo->params.size()));
+  int rowColCount = (int)std::ceil(std::sqrt((float)_topo->params.size()));
   int w = bounds.getWidth();
   int h = bounds.getHeight();
   int rh = h / rowColCount;
@@ -70,14 +70,14 @@ FFPlugGUI::resized()
     for (int c = 0; c < rowColCount; c++)
     {
       int param = r * rowColCount + c;
-      if (param < _topo->params.size())
+      if (param < (int)_topo->params.size())
       {
         int y = r * rh;
         int x = c * cw;
         getChildComponent(param)->setBounds(x, y, cw, rh * 3 / 4);
         getChildComponent(param)->resized();
-        getChildComponent(param + _topo->params.size())->setBounds(x, y + rh * 3 / 4, cw, rh * 1 / 4);
-        getChildComponent(param + _topo->params.size())->resized();
+        getChildComponent(param + (int)_topo->params.size())->setBounds(x, y + rh * 3 / 4, cw, rh * 1 / 4);
+        getChildComponent(param + (int)_topo->params.size())->resized();
       }
     }
 }
