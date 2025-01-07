@@ -12,6 +12,11 @@ ComboBox(),
 _context(context),
 _param(param) 
 {
+  for (int i = 0; i < param->static_.ValueCount(); i++)
+  {
+    float normalized = param->static_.ListOrDiscreteToNormalizedSlow(i);
+    addItem(param->static_.NormalizedToText(false, normalized), i + 1);
+  }
   SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
 }
 
