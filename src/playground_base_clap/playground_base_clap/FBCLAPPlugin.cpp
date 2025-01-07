@@ -67,8 +67,8 @@ FBCLAPPlugin(
   clap_plugin_descriptor const* desc, 
   clap_host const* host):
 Plugin(desc, host),
-_topo(std::make_unique<FBRuntimeTopo>(topo)),
-_state(*_topo) {}
+_procState(*_topo),
+_topo(std::make_unique<FBRuntimeTopo>(topo)) {}
 
 void 
 FBCLAPPlugin::ProcessVoices()
@@ -130,8 +130,8 @@ FBCLAPPlugin::activate(
   float fSampleRate = static_cast<float>(sampleRate);
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
-  auto plug = MakePlugProcessor(_topo->static_, _state.Raw(), fSampleRate);
-  _hostProcessor.reset(new FBHostProcessor(this, _topo->static_, std::move(plug), &_state, fSampleRate));
+  auto plug = MakePlugProcessor(_topo->static_, _procState.Raw(), fSampleRate);
+  _hostProcessor.reset(new FBHostProcessor(this, _topo->static_, std::move(plug), &_procState, fSampleRate));
   return true;
 }
 

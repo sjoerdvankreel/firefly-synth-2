@@ -18,7 +18,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       return false;
     else
       json.append(buffer, read);
-  if (!_topo->LoadStateWithDryRun(json, _state))
+  if (!_topo->LoadStateWithDryRun(json, _procState))
     return false;
   return true;
 }
@@ -28,7 +28,7 @@ FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
 {
   int64_t written = 0;
   int64_t numWritten = 0;
-  std::string json = _topo->SaveState(_state);
+  std::string json = _topo->SaveState(_procState);
   while ((numWritten = stream->write(stream, json.data() + written, json.size() - written)) != 0)
     if (numWritten == -1)
       return false;

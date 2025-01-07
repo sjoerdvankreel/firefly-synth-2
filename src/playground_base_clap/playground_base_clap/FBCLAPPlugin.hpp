@@ -23,8 +23,8 @@ public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
 public IFBHostProcessContext,
 public IFBHostGUIContext
 {
+  FBProcStateContainer _procState;
   std::unique_ptr<FBRuntimeTopo> _topo;
-  FBProcStateContainer _state;
 
   FBHostInputBlock _input = {};
   FBHostOutputBlock _output = {};

@@ -25,7 +25,7 @@ FBCLAPPlugin::paramsValue(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  auto const& state = _state;
+  auto const& state = _procState;
   auto const& static_ = _topo->params[index].static_;
   *value = FBNormalizedToCLAP(static_, state.Params()[index].Value());
   return true;
