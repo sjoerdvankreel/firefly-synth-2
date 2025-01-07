@@ -1,6 +1,7 @@
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/base/state/FBScalarStateContainer.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
@@ -24,6 +25,7 @@ public IFBHostProcessContext,
 public IFBHostGUIContext
 {
   FBProcStateContainer _procState;
+  FBScalarStateContainer _guiState;
   std::unique_ptr<FBRuntimeTopo> _topo;
 
   FBHostInputBlock _input = {};

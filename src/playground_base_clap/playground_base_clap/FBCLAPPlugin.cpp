@@ -68,6 +68,7 @@ FBCLAPPlugin(
   clap_host const* host):
 Plugin(desc, host),
 _procState(*_topo),
+_guiState(*_topo),
 _topo(std::make_unique<FBRuntimeTopo>(topo)) {}
 
 void 
@@ -81,28 +82,26 @@ FBCLAPPlugin::ProcessVoices()
 void 
 FBCLAPPlugin::EndParamChange(int index)
 {
+  // todo
 }
 
 void 
 FBCLAPPlugin::BeginParamChange(int index)
 {
+  // todo
 }
 
 float 
 FBCLAPPlugin::GetParamNormalized(int index) const
 {
+  return *_guiState.Params()[index];
 }
 
 void 
 FBCLAPPlugin::PerformParamEdit(int index, float normalized)
 {  
-}
-
-bool 
-FBCLAPPlugin::isValidParamId(
-  clap_id paramId) const noexcept
-{
-  return _topo->tagToParam.find(paramId) != _topo->tagToParam.end();
+  // todo
+  *_guiState.Params()[index] = normalized;
 }
 
 int32_t 
@@ -121,6 +120,13 @@ FBCLAPPlugin::getParamInfoForParamId(
   if (iter == _topo->tagToParam.end())
     return false;
   return paramsInfo(iter->second, info);
+}
+
+bool
+FBCLAPPlugin::isValidParamId(
+  clap_id paramId) const noexcept
+{
+  return _topo->tagToParam.find(paramId) != _topo->tagToParam.end();
 }
 
 bool
