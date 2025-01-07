@@ -46,6 +46,23 @@ public:
   bool stateSave(const clap_ostream* stream) noexcept override;
   bool stateLoad(const clap_istream* stream) noexcept override;
 
+  bool guiShow() noexcept override;
+  bool guiHide() noexcept override;
+  void guiDestroy() noexcept override;
+  bool guiCanResize() const noexcept override;
+  bool implementsGui() const noexcept override;
+  bool guiSetScale(double scale) noexcept override;
+  void guiSuggestTitle(const char* title) noexcept override;
+  bool guiSetParent(const clap_window* window) noexcept override;
+  bool guiSetTransient(const clap_window* window) noexcept override;
+  bool guiSetSize(uint32_t width, uint32_t height) noexcept override;
+  bool guiCreate(const char* api, bool isFloating) noexcept override;
+  bool guiGetSize(uint32_t* width, uint32_t* height) noexcept override;
+  bool guiAdjustSize(uint32_t* width, uint32_t* height) noexcept override;
+  bool guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept override;
+  bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
+  bool guiGetPreferredApi(const char** api, bool* isFloating) noexcept override;
+
   void ProcessVoices() override;
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;
