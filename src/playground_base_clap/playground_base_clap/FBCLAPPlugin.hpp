@@ -70,7 +70,6 @@ public:
   bool guiAdjustSize(uint32_t* width, uint32_t* height) noexcept override;
   bool guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept override;
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
-  bool guiGetPreferredApi(const char** api, bool* isFloating) noexcept override;
 
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;
