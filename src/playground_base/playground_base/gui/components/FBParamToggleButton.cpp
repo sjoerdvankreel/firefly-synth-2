@@ -12,7 +12,6 @@ ToggleButton(),
 _context(context),
 _param(param) 
 {
-  setButtonText(param->longName);
   SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
 }
 
