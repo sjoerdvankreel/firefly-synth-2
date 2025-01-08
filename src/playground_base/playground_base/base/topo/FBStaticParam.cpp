@@ -1,6 +1,6 @@
 #include <playground_base/base/topo/FBStaticParam.hpp>
 
-double
+float
 FBStaticParam::DefaultNormalizedByText() const
 {
   if (defaultText.size() == 0)
@@ -8,7 +8,7 @@ FBStaticParam::DefaultNormalizedByText() const
   return TextToNormalized(false, defaultText).value();
 }
 
-double
+float
 FBStaticParam::ListOrDiscreteToNormalizedSlow(int plain) const
 {
   switch (type)
@@ -24,7 +24,7 @@ FBStaticParam::ListOrDiscreteToNormalizedSlow(int plain) const
 }
 
 int 
-FBStaticParam::NormalizedToListOrDiscreteSlow(double normalized) const
+FBStaticParam::NormalizedToListOrDiscreteSlow(float normalized) const
 {
   switch (type)
   {
@@ -39,7 +39,7 @@ FBStaticParam::NormalizedToListOrDiscreteSlow(double normalized) const
 }
 
 std::string 
-FBStaticParam::NormalizedToText(bool io, double normalized) const
+FBStaticParam::NormalizedToText(bool io, float normalized) const
 {
   switch (type)
   {
@@ -59,7 +59,7 @@ FBStaticParam::NormalizedToText(bool io, double normalized) const
   }
 }
 
-std::optional<double>
+std::optional<float> 
 FBStaticParam::TextToNormalized(bool io, std::string const& text) const
 {
   switch (type)
