@@ -1,25 +1,25 @@
 #include <playground_base/base/topo/param/FBFreqOctParam.hpp>
 
-float
-FBFreqOctParam::PlainToNormalized(float plain) const
+double
+FBFreqOctParam::PlainToNormalized(double plain) const
 {
   return std::log2(plain / minHz) / octaves;
 }
 
 std::string
-FBFreqOctParam::PlainToText(float plain) const
+FBFreqOctParam::PlainToText(double plain) const
 {
   return std::to_string(plain);
 }
 
-std::optional<float>
+std::optional<double>
 FBFreqOctParam::TextToPlain(std::string const& text) const
 {
   char* end;
-  float result = std::strtof(text.c_str(), &end);
+  double result = std::strtod(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
-  if (result < minHz || result > NormalizedToPlain(1.0f))
+  if (result < minHz || result > NormalizedToPlain(1.0))
     return {};
   return { result };
 }

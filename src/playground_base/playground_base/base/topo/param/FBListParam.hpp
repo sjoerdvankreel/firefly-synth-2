@@ -13,15 +13,15 @@ struct FBListParam
 
   int ValueCount() const { return (int)items.size(); }
 
-  float PlainToNormalized(int plain) const;
-  int NormalizedToPlain(float normalized) const;
+  double PlainToNormalized(int plain) const;
+  int NormalizedToPlain(double normalized) const;
 
   std::string PlainToText(bool io, int plain) const;
   std::optional<int> TextToPlain(bool io, std::string const& text) const;
 };
 
 inline int
-FBListParam::NormalizedToPlain(float normalized) const
+FBListParam::NormalizedToPlain(double normalized) const
 {
   int count = (int)items.size();
   return std::clamp((int)(normalized * count), 0, count - 1);
