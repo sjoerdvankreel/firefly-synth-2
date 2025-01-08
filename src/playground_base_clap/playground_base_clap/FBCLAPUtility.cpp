@@ -15,7 +15,7 @@ float
 FBCLAPToNormalized(FBStaticParam const& topo, double clap)
 {
   if (topo.ValueCount() == 0)
-    return static_cast<float>(clap);
+    return (float)clap;
   double normalized = clap / (topo.ValueCount() - 1.0);
-  return static_cast<float>(std::clamp(normalized, 0.0, 1.0));
+  return (float)std::clamp(normalized, 0.0, 1.0);
 }

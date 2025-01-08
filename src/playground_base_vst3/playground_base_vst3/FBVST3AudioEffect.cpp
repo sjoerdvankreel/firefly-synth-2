@@ -153,7 +153,7 @@ FBVST3AudioEffect::process(ProcessData& data)
     for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
         if (queue->getPointCount() > 0)
-          if ((iter = _topo->tagToParam.find(queue->getParameterId())) != _topo->tagToParam.end())
+          if ((iter = _topo->paramTagToIndex.find(queue->getParameterId())) != _topo->paramTagToIndex.end())
             if (_topo->params[iter->second].static_.acc)
             {
               for (int point = 0; point < queue->getPointCount(); point++)

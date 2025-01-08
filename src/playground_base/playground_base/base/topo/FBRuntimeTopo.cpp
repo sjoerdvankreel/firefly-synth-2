@@ -10,7 +10,7 @@ static std::string const
 Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
 
 static std::unordered_map<int, int>
-MakeTagToParam(
+MakeParamTagToIndex(
   std::vector<FBRuntimeParam> const& params)
 {
   std::unordered_map<int, int> result;
@@ -51,7 +51,7 @@ FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
 modules(MakeRuntimeModules(topo)),
 params(MakeRuntimeParams(modules)),
-tagToParam(MakeTagToParam(params)) {}
+paramTagToIndex(MakeParamTagToIndex(params)) {}
 
 bool
 FBRuntimeTopo::LoadStateWithDryRun(
@@ -175,14 +175,14 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStateContainer& to) co
 
     std::unordered_map<int, int>::const_iterator iter;
     int tag = FBMakeStableHash(id.toString().toStdString());
-    if ((iter = tagToParam.find(tag)) == tagToParam.end())
+    if ((iter = paramTagToIndex.find(tag)) == paramTagToIndex.end())
       continue;
 
     auto const& topo = params[iter->second].static_;
     auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
       normalized = topo.TextToNormalized(false, topo.defaultText);
-    *to.Params()[iter->second] = static_cast<float>(normalized.value());
+    *to.Params()[iter->second] = normalized.value();
   }
 
   return true;

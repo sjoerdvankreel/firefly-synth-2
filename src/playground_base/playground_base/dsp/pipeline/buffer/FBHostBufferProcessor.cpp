@@ -33,7 +33,7 @@ static void GatherStraddledFromHost(
     Event straddledEvent = thisEvent;
     straddledEvent.pos = (i + 1) * FBFixedBlockSamples - 1;
     float valueRange = nextEvent.value - thisEvent.value;
-    float normalizedPos = straddledEvent.pos / static_cast<float>(nextEvent.pos);
+    float normalizedPos = straddledEvent.pos / (float)nextEvent.pos;
     straddledEvent.value = thisEvent.value + valueRange * normalizedPos;
     output.push_back(straddledEvent);
   }

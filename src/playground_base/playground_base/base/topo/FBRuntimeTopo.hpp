@@ -19,7 +19,7 @@ struct FBRuntimeTopo final
   FBStaticTopo static_;
   std::vector<FBRuntimeModule> modules;
   std::vector<FBRuntimeParam> params;
-  std::unordered_map<int, int> tagToParam;
+  std::unordered_map<int, int> paramTagToIndex;
 
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);

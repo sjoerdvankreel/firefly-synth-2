@@ -49,7 +49,7 @@ GeneratePulse(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 void
 FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
 {
-  float key = static_cast<float>(state.voice->event.note.key);
+  float key = (float)state.voice->event.note.key;
   auto const& gLFO = state.proc->dsp.global.gLFO[0].output;
   auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
 

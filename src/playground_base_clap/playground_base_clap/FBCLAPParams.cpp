@@ -80,9 +80,9 @@ FBCLAPPlugin::paramsFlush(
     if (index == -1)
       continue;
     if (_procStatePtrs.isAcc[index])
-      _procStatePtrs.single.acc[index]->current = static_cast<float>(event->value);
+      _procStatePtrs.single.acc[index]->current = (float)event->value;
     else
-      *_procStatePtrs.single.block[index] = static_cast<float>(event->value);
+      *_procStatePtrs.single.block[index] = (float)event->value;
   }
 #endif  
 }

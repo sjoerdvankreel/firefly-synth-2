@@ -71,7 +71,7 @@ tresult PLUGIN_API
 FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 {
   if (_guiEditor != nullptr)
-    _guiEditor->SetParamNormalized(_topo->tagToParam[tag], (float)value);
+    _guiEditor->SetParamNormalized(_topo->paramTagToIndex[tag], (float)value);
   return EditControllerEx1::setParamNormalized(tag, value);
 }
 
