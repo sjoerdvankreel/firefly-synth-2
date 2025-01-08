@@ -76,7 +76,7 @@ MakeNoteEndEvent(FBNote const& note, int time)
 }
 
 static clap_event_param_value
-MakeValueEvent(int paramTag, float value)
+MakeValueEvent(int paramTag, double value)
 {
   clap_event_param_value result = {};
   result.value = value;
@@ -205,13 +205,6 @@ clap_process_status
 FBCLAPPlugin::process(
   const clap_process* process) noexcept 
 {
-  clap_event_param_mod const* modFromHost;
-  clap_event_param_value const* valueFromHost;
-  std::unordered_map<int, int>::const_iterator iter;
-
-  auto inEvents = process->in_events;
-  auto outEvents = process->out_events;
-  int inEventCount = inEvents->size(inEvents);
   auto& accAuto = _input.accAutoByParamThenSample;
   auto& accMod = _input.accModByParamThenNoteThenSample;
 
@@ -227,13 +220,13 @@ FBCLAPPlugin::process(
     else
       _input.block.push_back(MakeBlockEvent(static_, index, value)); };
 
-  int paramTag;
-  bool gestureBegin;
   FBCLAPSyncToAudioEvent uiEvent;
-  clap_event_param_value valueToHost;
-  clap_event_param_gesture gestureToHost;
+  auto outEvents = process->out_events;
   while (_mainToAudioEvents.try_dequeue(uiEvent))
   {
+    bool gestureBegin;
+    clap_event_param_value valueToHost;
+    clap_event_param_gesture gestureToHost;
     int paramTag = _topo->params[uiEvent.paramIndex].tag;
     switch (uiEvent.type)
     {
@@ -254,6 +247,11 @@ FBCLAPPlugin::process(
     }
   }
 
+  auto inEvents = process->in_events;
+  int inEventCount = inEvents->size(inEvents);
+  clap_event_param_mod const* modFromHost;
+  clap_event_param_value const* valueFromHost;
+  std::unordered_map<int, int>::const_iterator iter;
   for (int i = 0; i < inEventCount; i++)
   {
     auto header = inEvents->get(inEvents, i);
