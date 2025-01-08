@@ -24,15 +24,14 @@ class FBSmoothingProcessor final
   std::array<std::vector<int>, FBMaxVoices> _finishedVoiceSmoothing = {};
   std::array<std::vector<int>, FBMaxVoices> _activeVoiceSmoothingSamples = {};
 
-  void RemoveMustExist(std::vector<int>& params, int param);
   void RemoveIfNotExists(std::vector<int>& params, int param); 
   void InsertIfNotExists(std::vector<int>& params, int param);
   void InsertMustNotExist(std::vector<int>& params, int param); 
 
-  void FinishGlobalSmoothing(int param);
-  void FinishVoiceSmoothing(int voice, int param);
   void BeginGlobalSmoothing(int param, int smoothingSamples);
   void BeginVoiceSmoothing(int voice, int param, int smoothingSamples);
+  std::vector<int>::iterator FinishGlobalSmoothing(std::vector<int>::iterator iter);
+  std::vector<int>::iterator FinishVoiceSmoothing(int voice, std::vector<int>::iterator iter);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBSmoothingProcessor);
