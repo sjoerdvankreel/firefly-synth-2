@@ -24,7 +24,7 @@ void
 FBParamComboBox::SetValueNormalized(float normalized)
 {
   int plain = _param->static_.NormalizedToListOrDiscreteSlow(normalized);
-  setSelectedItemIndex(plain);
+  setSelectedItemIndex(plain, dontSendNotification);
 }
 
 void

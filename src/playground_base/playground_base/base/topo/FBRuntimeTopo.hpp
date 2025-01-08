@@ -29,4 +29,5 @@ struct FBRuntimeTopo final
 
   bool LoadState(std::string const& from, FBScalarStateContainer& to) const;
   bool LoadStateWithDryRun(std::string const& from, FBProcStateContainer& to) const;
+  bool LoadStateWithDryRun(std::string const& from, FBScalarStateContainer& to) const;
 };

@@ -69,7 +69,7 @@ _state(*_topo)
 void
 FBVST3AudioEffect::ProcessVoices()
 {
-  _hostProcessor->ProcessAllVoices();
+  _hostProcessor->ProcessAllVoices(); // todo default to this
 }
 
 tresult PLUGIN_API

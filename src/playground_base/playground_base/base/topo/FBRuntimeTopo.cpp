@@ -64,6 +64,17 @@ FBRuntimeTopo::LoadStateWithDryRun(
   return result;
 }
 
+bool
+FBRuntimeTopo::LoadStateWithDryRun(
+  std::string const& from, FBScalarStateContainer& to) const
+{
+  FBScalarStateContainer scalar(*this);
+  bool result = LoadState(from, scalar);
+  if (result)
+    to.CopyFrom(scalar);
+  return result;
+}
+
 std::string
 FBRuntimeTopo::SaveState(FBProcStateContainer const& from) const
 {
