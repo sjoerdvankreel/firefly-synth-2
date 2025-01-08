@@ -151,6 +151,7 @@ bool
 FBCLAPPlugin::init() noexcept
 {
   startTimerHz(60); // TODO 60?
+  return true;
 }
 
 void 
