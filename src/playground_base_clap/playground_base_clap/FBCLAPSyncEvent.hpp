@@ -14,12 +14,12 @@ struct FBCLAPSyncToMainEvent
 {
   int pad;
   int paramIndex;
-  double value;
+  double normalized;
 };
 
 struct FBCLAPSyncToAudioEvent
 {
-  double value;
+  double normalized;
   int paramIndex;
   FBCLAPSyncEventType type;
 };

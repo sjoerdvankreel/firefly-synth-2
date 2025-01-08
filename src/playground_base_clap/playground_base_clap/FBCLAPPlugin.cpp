@@ -137,7 +137,7 @@ void
 FBCLAPPlugin::EndParamChange(int index)
 {
   FBCLAPSyncToAudioEvent event;
-  event.value = 0.0f;
+  event.normalized = 0.0f;
   event.paramIndex = index;
   event.type = FBCLAPSyncEventType::EndChange;
   _mainToAudioEvents.enqueue(event);
@@ -147,7 +147,7 @@ void
 FBCLAPPlugin::BeginParamChange(int index)
 {
   FBCLAPSyncToAudioEvent event;
-  event.value = 0.0f;
+  event.normalized = 0.0f;
   event.paramIndex = index;
   event.type = FBCLAPSyncEventType::BeginChange;
   _mainToAudioEvents.enqueue(event);
@@ -157,8 +157,8 @@ void
 FBCLAPPlugin::PerformParamEdit(int index, float normalized)
 {  
   FBCLAPSyncToAudioEvent event;
-  event.value = normalized;
   event.paramIndex = index;
+  event.normalized = normalized;
   event.type = FBCLAPSyncEventType::PerformEdit;
   _mainToAudioEvents.enqueue(event);
   *_guiState.Params()[index] = normalized;
@@ -227,19 +227,19 @@ FBCLAPPlugin::process(
     bool gestureBegin;
     clap_event_param_value valueToHost;
     clap_event_param_gesture gestureToHost;
-    int paramTag = _topo->params[uiEvent.paramIndex].tag;
+    auto const& param = _topo->params[uiEvent.paramIndex];
     switch (uiEvent.type)
     {
     case FBCLAPSyncEventType::EndChange:
     case FBCLAPSyncEventType::BeginChange:
       gestureBegin = uiEvent.type == FBCLAPSyncEventType::BeginChange;
-      gestureToHost = MakeGestureEvent(paramTag, gestureBegin);
+      gestureToHost = MakeGestureEvent(param.tag, gestureBegin);
       outEvents->try_push(outEvents, &gestureToHost.header);
       break;
     case FBCLAPSyncEventType::PerformEdit:
-      valueToHost = MakeValueEvent(paramTag, uiEvent.value);
+      valueToHost = MakeValueEvent(param.tag, FBNormalizedToCLAP(param.static_, uiEvent.normalized));
       outEvents->try_push(outEvents, &valueToHost.header);
-      pushParamChangeToProcessor(uiEvent.paramIndex, uiEvent.value, 0);
+      pushParamChangeToProcessor(uiEvent.paramIndex, uiEvent.normalized, 0);
       break;
     default:
       assert(false);
