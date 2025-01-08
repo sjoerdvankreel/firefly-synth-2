@@ -8,23 +8,23 @@
 
 struct FBLinearParam
 {
-  float min = 0.0f;
-  float max = 1.0f;
-  float displayMultiplier = 1.0f;
+  double min = 0.0;
+  double max = 1.0;
+  double displayMultiplier = 1.0;
 
   int ValueCount() const { return 0; }
 
-  std::string PlainToText(float plain) const;
-  std::optional<float> TextToPlain(std::string const& text) const;
+  std::string PlainToText(double plain) const;
+  std::optional<double> TextToPlain(std::string const& text) const;
 
-  float PlainToNormalized(float plain) const;
-  float NormalizedToPlain(float normalized) const;
+  double PlainToNormalized(double plain) const;
+  double NormalizedToPlain(double normalized) const;
   FBFloatVector NormalizedToPlain(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlain(FBDoubleVector normalized) const;
 };
 
-inline float
-FBLinearParam::NormalizedToPlain(float normalized) const
+inline double
+FBLinearParam::NormalizedToPlain(double normalized) const
 {
   return min + (max - min) * normalized;
 }

@@ -10,23 +10,23 @@
 struct FBFreqOctParam
 {
   int octaves = 0;
-  float minHz = 0.0f;
+  double minHz = 0.0;
 
   int ValueCount() const { return 0; }
 
-  std::string PlainToText(float plain) const;
-  std::optional<float> TextToPlain(std::string const& text) const;
+  std::string PlainToText(double plain) const;
+  std::optional<double> TextToPlain(std::string const& text) const;
 
-  float PlainToNormalized(float plain) const;
-  float NormalizedToPlain(float normalized) const;
+  double PlainToNormalized(double plain) const;
+  double NormalizedToPlain(double normalized) const;
   FBFloatVector NormalizedToPlain(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlain(FBDoubleVector normalized) const;
 };
 
-inline float
-FBFreqOctParam::NormalizedToPlain(float normalized) const
+inline double
+FBFreqOctParam::NormalizedToPlain(double normalized) const
 {
-  return minHz * std::pow(2.0f, (float)octaves * normalized);
+  return minHz * std::pow(2.0, (double)octaves * normalized);
 }
 
 inline FBFloatVector 
@@ -38,5 +38,5 @@ FBFreqOctParam::NormalizedToPlain(FBFloatVector normalized) const
 inline FBDoubleVector 
 FBFreqOctParam::NormalizedToPlain(FBDoubleVector normalized) const
 {
-  return minHz * xsimd::pow(FBDoubleVector(2.0), (float)octaves * normalized);
+  return minHz * xsimd::pow(FBDoubleVector(2.0), (double)octaves * normalized);
 }
