@@ -1,6 +1,6 @@
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 
-double
+float 
 FBBoolParam::PlainToNormalized(bool plain) const
 {
   return plain ? 1.0f : 0.0f;

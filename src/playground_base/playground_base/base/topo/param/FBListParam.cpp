@@ -1,10 +1,10 @@
 #include <playground_base/base/topo/param/FBListParam.hpp>
 
-double
+float
 FBListParam::PlainToNormalized(int plain) const
 {
   int count = (int)items.size();
-  return std::clamp(plain / (count - 1.0), 0.0, 1.0);
+  return std::clamp(plain / (count - 1.0f), 0.0f, 1.0f);
 }
 
 std::string
