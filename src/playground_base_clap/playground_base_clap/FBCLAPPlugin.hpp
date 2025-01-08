@@ -8,6 +8,7 @@
 #include <playground_base/dsp/pipeline/host/FBHostProcessContext.hpp>
 #include <playground_base_clap/FBCLAPSyncEvent.hpp>
 
+#include <juce_events/juce_events.h>
 #include <clap/helpers/plugin.hh>
 #include <readerwriterqueue.h>
 #include <memory>
@@ -23,6 +24,7 @@ class IFBPlugProcessor;
 
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
+public juce::Timer,
 public IFBHostProcessContext,
 public IFBHostGUIContext
 {
@@ -49,6 +51,9 @@ public:
   ~FBCLAPPlugin();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBCLAPPlugin);
   FBCLAPPlugin(FBStaticTopo const& topo, clap_plugin_descriptor const* desc, clap_host const* host);
+
+  bool init() noexcept override;
+  void timerCallback() override;
 
   void ProcessVoices() override;
   void EndParamChange(int index) override;

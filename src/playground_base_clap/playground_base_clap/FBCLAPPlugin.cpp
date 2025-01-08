@@ -114,7 +114,10 @@ MakeGestureEvent(int paramTag, bool begin)
 }
 
 FBCLAPPlugin::
-~FBCLAPPlugin() {}
+~FBCLAPPlugin() 
+{
+  stopTimer();
+}
 
 FBCLAPPlugin::
 FBCLAPPlugin(
@@ -142,6 +145,21 @@ FBCLAPPlugin::ProcessVoices()
   if (!_host.canUseThreadPool() ||
     !_host.threadPoolRequestExec(FBMaxVoices))
     _hostProcessor->ProcessAllVoices();
+}
+
+bool
+FBCLAPPlugin::init() noexcept
+{
+  startTimerHz(60); // TODO 60?
+}
+
+void 
+FBCLAPPlugin::timerCallback()
+{
+  FBCLAPSyncToMainEvent event;
+  while (_audioToMainEvents.try_dequeue(event))
+    if (_gui)
+      _gui->SetParamNormalized(event.paramIndex, event.normalized);
 }
 
 void 
