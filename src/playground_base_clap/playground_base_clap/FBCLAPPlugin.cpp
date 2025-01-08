@@ -8,6 +8,16 @@
 #include <clap/helpers/plugin.hxx>
 #include <algorithm>
 
+FBCLAPSyncToMainEvent
+MakeSyncToMainEvent(
+  int param, double normalized)
+{
+  FBCLAPSyncToMainEvent result;
+  result.paramIndex = param;
+  result.normalized = (float)normalized;
+  return result;
+}
+
 static FBBlockEvent
 MakeBlockEvent(
   int param, double normalized)
@@ -248,7 +258,8 @@ FBCLAPPlugin::process(
     }
   }
 
-  float normalized;
+  double normalized;
+  FBCLAPSyncToMainEvent syncToMain;
   auto inEvents = process->in_events;
   int inEventCount = inEvents->size(inEvents);
   clap_event_param_mod const* modFromHost;
@@ -277,6 +288,8 @@ FBCLAPPlugin::process(
       {
         normalized = FBCLAPToNormalized(_topo->params[iter->second].static_, valueFromHost->value);
         pushParamChangeToProcessor(iter->second, normalized, valueFromHost->header.time);
+        if(_gui)
+          _audioToMainEvents.enqueue(MakeSyncToMainEvent(iter->second, normalized));
       }
       break;
     default:
