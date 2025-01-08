@@ -8,14 +8,24 @@
 #include <clap/helpers/plugin.hxx>
 #include <algorithm>
 
+static FBBlockEvent
+MakeBlockEvent(
+  int param, double normalized)
+{
+  FBBlockEvent result;
+  result.param = param;
+  result.normalized = (float)normalized;
+  return result;
+}
+
 static FBAccAutoEvent
 MakeAccAutoEvent(
-  int param, double value, int pos)
+  int param, double normalized, int pos)
 {
   FBAccAutoEvent result;
   result.pos = pos;
   result.param = param;
-  result.value = (float)value;
+  result.value = (float)normalized;
   return result;
 }
 
@@ -30,16 +40,6 @@ MakeAccModEvent(
   result.note.id = event->note_id;
   result.note.channel = event->channel;
   result.value = (float)event->amount;
-  return result;
-}
-
-static FBBlockEvent
-MakeBlockEvent(
-  FBStaticParam const& topo, int param, double value)
-{
-  FBBlockEvent result;
-  result.param = param;
-  result.normalized = FBCLAPToNormalized(topo, value);
   return result;
 }
 
@@ -214,12 +214,12 @@ FBCLAPPlugin::process(
   _input.note.clear();
   _input.block.clear();
 
-  auto pushParamChangeToProcessor = [&](int index, double value, int pos) {
+  auto pushParamChangeToProcessor = [&](int index, double normalized, int pos) {
     auto const& static_ = _topo->params[index].static_;
     if (static_.acc)
-      accAuto.push_back(MakeAccAutoEvent(index, value, pos));
+      accAuto.push_back(MakeAccAutoEvent(index, normalized, pos));
     else
-      _input.block.push_back(MakeBlockEvent(static_, index, value)); };
+      _input.block.push_back(MakeBlockEvent(index, normalized)); };
 
   FBCLAPSyncToAudioEvent uiEvent;
   auto outEvents = process->out_events;
@@ -248,6 +248,7 @@ FBCLAPPlugin::process(
     }
   }
 
+  float normalized;
   auto inEvents = process->in_events;
   int inEventCount = inEvents->size(inEvents);
   clap_event_param_mod const* modFromHost;
@@ -273,7 +274,10 @@ FBCLAPPlugin::process(
     case CLAP_EVENT_PARAM_VALUE:
       valueFromHost = reinterpret_cast<clap_event_param_value const*>(header);
       if ((iter = _topo->paramTagToIndex.find(valueFromHost->param_id)) != _topo->paramTagToIndex.end())
-        pushParamChangeToProcessor(iter->second, valueFromHost->value, valueFromHost->header.time);
+      {
+        normalized = FBCLAPToNormalized(_topo->params[iter->second].static_, valueFromHost->value);
+        pushParamChangeToProcessor(iter->second, normalized, valueFromHost->header.time);
+      }
       break;
     default:
       break;
