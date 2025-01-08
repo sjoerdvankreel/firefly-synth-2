@@ -115,6 +115,7 @@ Plugin(desc, host),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
 _procState(*_topo),
 _guiState(*_topo),
+_gui(),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1) {}
 

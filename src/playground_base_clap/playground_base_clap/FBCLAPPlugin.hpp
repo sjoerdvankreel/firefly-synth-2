@@ -29,16 +29,17 @@ public IFBHostGUIContext
   std::unique_ptr<FBRuntimeTopo> _topo;
   FBProcStateContainer _procState;
   FBScalarStateContainer _guiState;
+  std::unique_ptr<FBPlugGUI> _gui;
 
-  FBHostInputBlock _input = {};
-  FBHostOutputBlock _output = {};
-  std::unique_ptr<FBPlugGUI> _gui = {};
-  std::array<std::vector<float>, 2> _zeroIn = {};
-  std::unique_ptr<FBHostProcessor> _hostProcessor = {};
   moodycamel::ReaderWriterQueue<FBCLAPSyncToMainEvent, 
     FBCLAPSyncEventReserve> _audioToMainEvents;
   moodycamel::ReaderWriterQueue<FBCLAPSyncToAudioEvent, 
     FBCLAPSyncEventReserve> _mainToAudioEvents;
+
+  FBHostInputBlock _input = {};
+  FBHostOutputBlock _output = {};
+  std::array<std::vector<float>, 2> _zeroIn = {};
+  std::unique_ptr<FBHostProcessor> _hostProcessor = {};
 
 protected:
   virtual std::unique_ptr<IFBPlugProcessor>

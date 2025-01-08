@@ -11,7 +11,7 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
 
 public:
-  void paint(juce::Graphics& g);
+  void paint(juce::Graphics& g) override;
 
   // TODO scale factor
   int DefaultHeight() const;
