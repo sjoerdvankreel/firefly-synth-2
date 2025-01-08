@@ -156,20 +156,24 @@ FBSmoothingProcessor::ProcessSmoothing(
         }
     }
 
-    for(auto iter = _activeGlobalSmoothing.begin(); iter != _activeGlobalSmoothing.end(); iter++)
+    for(auto iter = _activeGlobalSmoothing.begin(); iter != _activeGlobalSmoothing.end(); )
     {
       params[*iter].GlobalAcc().SmoothNext(s);
       if (--_activeGlobalSmoothingSamples[*iter] <= 0)
         iter = FinishGlobalSmoothing(iter);
+      else
+        iter++;      
     }
 
     for (int v = 0; v < FBMaxVoices; v++)
       if (_voiceManager->IsActive(v))
-        for (auto iter = _activeVoiceSmoothing[v].begin(); iter != _activeVoiceSmoothing[v].end(); iter++)
+        for (auto iter = _activeVoiceSmoothing[v].begin(); iter != _activeVoiceSmoothing[v].end(); )
         {
           params[*iter].VoiceAcc().SmoothNext(v, s);
           if (--_activeVoiceSmoothingSamples[v][*iter] <= 0)
             iter = FinishVoiceSmoothing(v, iter);
+          else
+            iter++;
         }
   }
 }
