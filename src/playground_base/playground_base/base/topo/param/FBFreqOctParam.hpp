@@ -38,5 +38,5 @@ FBFreqOctParam::NormalizedToPlain(FBFloatVector normalized) const
 inline FBDoubleVector 
 FBFreqOctParam::NormalizedToPlain(FBDoubleVector normalized) const
 {
-  return minHz * xsimd::pow(FBDoubleVector(2.0), (float)octaves * normalized);
+  return minHz * xsimd::pow(FBDoubleVector(2.0), (double)octaves * normalized);
 }

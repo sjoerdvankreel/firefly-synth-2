@@ -43,6 +43,12 @@ FBVST3EditController::
 FBVST3EditController(FBStaticTopo const& topo) :
 _topo(std::make_unique<FBRuntimeTopo>(topo)) {}
 
+void
+FBVST3EditController::ResetView()
+{
+  _guiEditor = nullptr;
+}
+
 void 
 FBVST3EditController::EndParamChange(int index)
 {
@@ -73,12 +79,6 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
   if (_guiEditor != nullptr)
     _guiEditor->SetParamNormalized(_topo->paramTagToIndex[tag], (float)value);
   return EditControllerEx1::setParamNormalized(tag, value);
-}
-
-void
-FBVST3EditController::ResetView()
-{
-  _guiEditor = nullptr;
 }
 
 IPlugView* PLUGIN_API

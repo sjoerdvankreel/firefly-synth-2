@@ -12,14 +12,14 @@ enum class FBCLAPSyncEventType
 
 struct FBCLAPSyncToMainEvent
 {
-  int pad;
   int paramIndex;
-  double normalized;
+  float normalized;
 };
 
 struct FBCLAPSyncToAudioEvent
 {
-  double normalized;
+  int pad;
   int paramIndex;
+  float normalized;
   FBCLAPSyncEventType type;
 };

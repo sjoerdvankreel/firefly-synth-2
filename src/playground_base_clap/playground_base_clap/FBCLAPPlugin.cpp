@@ -53,8 +53,8 @@ MakeNoteEvent(
   result.note.key = event->key;
   result.note.id = event->note_id;
   result.note.channel = event->channel;
-  result.on = header->type == CLAP_EVENT_NOTE_ON;
   result.velo = (float)event->velocity;
+  result.on = header->type == CLAP_EVENT_NOTE_ON;
   return result;
 }
 

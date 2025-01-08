@@ -11,7 +11,6 @@ FBNormalizedToCLAP(FBStaticParam const& topo, float normalized)
   return std::round(normalized * (topo.ValueCount() - 1.0));
 }
 
-// TODO doubles
 float
 FBCLAPToNormalized(FBStaticParam const& topo, double clap)
 {
