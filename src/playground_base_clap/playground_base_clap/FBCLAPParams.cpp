@@ -65,7 +65,9 @@ FBCLAPPlugin::paramsFlush(
   const clap_input_events* in, const clap_output_events* out) noexcept
 {
 #if 0 // TODO
-  // also todo stuff with claptonorm
+
+  isProcessing() // TODO TODO TODO
+    // also todo stuff with claptonorm
   // TODO when is this even called anyway?
   // TODO handle case with gui / main thread
   for (uint32_t i = 0; i < in->size(in); i++)
