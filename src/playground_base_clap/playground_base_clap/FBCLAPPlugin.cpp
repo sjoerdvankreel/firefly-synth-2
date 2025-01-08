@@ -338,5 +338,6 @@ FBCLAPPlugin::process(
     clap_event_note endEvent = MakeNoteEndEvent(rvs[rv], process->frames_count - 1);
     process->out_events->try_push(process->out_events, &(endEvent.header));
   }
-  return true;
+
+  return CLAP_PROCESS_CONTINUE;
 }
