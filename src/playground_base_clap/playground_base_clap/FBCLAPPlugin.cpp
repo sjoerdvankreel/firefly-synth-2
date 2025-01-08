@@ -152,6 +152,8 @@ FBCLAPPlugin::EndParamChange(int index)
   event.paramIndex = index;
   event.type = FBCLAPSyncEventType::EndChange;
   _mainToAudioEvents.enqueue(event);
+  if(_host.canUseParams())
+    _host.paramsRequestFlush();
 }
 
 void 
@@ -162,6 +164,8 @@ FBCLAPPlugin::BeginParamChange(int index)
   event.paramIndex = index;
   event.type = FBCLAPSyncEventType::BeginChange;
   _mainToAudioEvents.enqueue(event);
+  if (_host.canUseParams())
+    _host.paramsRequestFlush();
 }
 
 void 
@@ -173,6 +177,8 @@ FBCLAPPlugin::PerformParamEdit(int index, float normalized)
   event.type = FBCLAPSyncEventType::PerformEdit;
   _mainToAudioEvents.enqueue(event);
   *_guiState.Params()[index] = normalized;
+  if (_host.canUseParams())
+    _host.paramsRequestFlush();
 }
 
 int32_t 
