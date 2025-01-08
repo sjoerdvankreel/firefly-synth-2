@@ -294,8 +294,7 @@ FBCLAPPlugin::process(
       {
         normalized = FBCLAPToNormalized(_topo->params[iter->second].static_, valueFromHost->value);
         pushParamChangeToProcessor(iter->second, normalized, valueFromHost->header.time);
-        if(_gui)
-          _audioToMainEvents.enqueue(MakeSyncToMainEvent(iter->second, normalized));
+        _audioToMainEvents.enqueue(MakeSyncToMainEvent(iter->second, normalized));
       }
       break;
     default:
