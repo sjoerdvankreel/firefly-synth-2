@@ -87,9 +87,8 @@ FBCLAPPlugin::paramsFlush(
       _mainToAudioEvents.enqueue(FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, event->value));
     }
   }
-
-  if (isProcessing())
-    ProcessMainToAudioEvents(out, false);
+  
+  ProcessMainToAudioEvents(out, false);
 }
 
 bool 
