@@ -219,9 +219,33 @@ FBCLAPPlugin::activate(
 }
 
 void 
-FBCLAPPlugin::ProcessMainToAudioEvents()
+FBCLAPPlugin::ProcessMainToAudioEvents(const clap_output_events* out)
 {
-
+  FBCLAPSyncToAudioEvent uiEvent;
+  while (_mainToAudioEvents.try_dequeue(uiEvent))
+  {
+    bool gestureBegin;
+    clap_event_param_value valueToHost;
+    clap_event_param_gesture gestureToHost;
+    auto const& param = _topo->params[uiEvent.paramIndex];
+    switch (uiEvent.type)
+    {
+    case FBCLAPSyncEventType::EndChange:
+    case FBCLAPSyncEventType::BeginChange:
+      gestureBegin = uiEvent.type == FBCLAPSyncEventType::BeginChange;
+      gestureToHost = MakeGestureEvent(param.tag, gestureBegin);
+      out->try_push(out, &gestureToHost.header);
+      break;
+    case FBCLAPSyncEventType::PerformEdit:
+      valueToHost = MakeValueEvent(param.tag, FBNormalizedToCLAP(param.static_, uiEvent.normalized));
+      out->try_push(out, &valueToHost.header);
+      pushParamChangeToProcessor(uiEvent.paramIndex, uiEvent.normalized, 0);
+      break;
+    default:
+      assert(false);
+      break;
+    }
+  }
 }
 
 clap_process_status 
@@ -243,32 +267,7 @@ FBCLAPPlugin::process(
     else
       _input.block.push_back(MakeBlockEvent(index, normalized)); };
 
-  FBCLAPSyncToAudioEvent uiEvent;
-  auto outEvents = process->out_events;
-  while (_mainToAudioEvents.try_dequeue(uiEvent))
-  {
-    bool gestureBegin;
-    clap_event_param_value valueToHost;
-    clap_event_param_gesture gestureToHost;
-    auto const& param = _topo->params[uiEvent.paramIndex];
-    switch (uiEvent.type)
-    {
-    case FBCLAPSyncEventType::EndChange:
-    case FBCLAPSyncEventType::BeginChange:
-      gestureBegin = uiEvent.type == FBCLAPSyncEventType::BeginChange;
-      gestureToHost = MakeGestureEvent(param.tag, gestureBegin);
-      outEvents->try_push(outEvents, &gestureToHost.header);
-      break;
-    case FBCLAPSyncEventType::PerformEdit:
-      valueToHost = MakeValueEvent(param.tag, FBNormalizedToCLAP(param.static_, uiEvent.normalized));
-      outEvents->try_push(outEvents, &valueToHost.header);
-      pushParamChangeToProcessor(uiEvent.paramIndex, uiEvent.normalized, 0);
-      break;
-    default:
-      assert(false);
-      break;
-    }
-  }
+  ProcessMainToAudioEvents(process->out_events);
 
   double normalized;
   FBCLAPSyncToMainEvent syncToMain;

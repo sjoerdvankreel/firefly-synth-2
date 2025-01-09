@@ -43,6 +43,8 @@ public IFBHostGUIContext
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
 
+  void ProcessMainToAudioEvents(const clap_output_events* out);
+
 protected:
   virtual std::unique_ptr<IFBPlugProcessor>
   MakePlugProcessor(FBStaticTopo const& topo, void* rawState, float sampleRate) const = 0;

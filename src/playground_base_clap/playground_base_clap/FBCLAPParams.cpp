@@ -88,29 +88,8 @@ FBCLAPPlugin::paramsFlush(
     }
   }
 
-#if 0 // TODO
-
-  isProcessing() // TODO TODO TODO
-    // also todo stuff with claptonorm
-  // TODO when is this even called anyway?
-  // TODO handle case with gui / main thread
-  for (uint32_t i = 0; i < in->size(in); i++)
-  {
-    clap_event_header_t const* header = in->get(in, i);
-    if (header->space_id != CLAP_CORE_EVENT_SPACE_ID)
-      continue;
-    if (header->type != CLAP_EVENT_PARAM_VALUE)
-      continue;
-    auto event = reinterpret_cast<clap_event_param_value const*>(header);
-    int index = getParamIndexForParamId(event->param_id);
-    if (index == -1)
-      continue;
-    if (_procStatePtrs.isAcc[index])
-      _procStatePtrs.single.acc[index]->current = (float)event->value;
-    else
-      *_procStatePtrs.single.block[index] = (float)event->value;
-  }
-#endif  
+  if (isProcessing())
+    ProcessMainToAudioEvents(out);
 }
 
 bool 
