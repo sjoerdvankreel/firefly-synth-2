@@ -29,6 +29,7 @@ public:
   FBProcStateContainer(FBRuntimeTopo const& topo);
   ~FBProcStateContainer() { _freeRawState(_rawState); }
 
+  void InitProcessing(int index, float value);
   void InitProcessing(FBScalarStateContainer const& scalar);
   void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 

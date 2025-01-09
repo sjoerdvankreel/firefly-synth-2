@@ -8,16 +8,6 @@
 #include <clap/helpers/plugin.hxx>
 #include <algorithm>
 
-FBCLAPSyncToMainEvent
-MakeSyncToMainEvent(
-  int param, double normalized)
-{
-  FBCLAPSyncToMainEvent result;
-  result.paramIndex = param;
-  result.normalized = (float)normalized;
-  return result;
-}
-
 static FBBlockEvent
 MakeBlockEvent(
   int param, double normalized)
@@ -166,10 +156,7 @@ FBCLAPPlugin::timerCallback()
 void 
 FBCLAPPlugin::EndParamChange(int index)
 {
-  FBCLAPSyncToAudioEvent event;
-  event.normalized = 0.0f;
-  event.paramIndex = index;
-  event.type = FBCLAPSyncEventType::EndChange;
+  auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::EndChange, index, 0.0f);
   _mainToAudioEvents.enqueue(event);
   if(_host.canUseParams())
     _host.paramsRequestFlush();
@@ -178,10 +165,7 @@ FBCLAPPlugin::EndParamChange(int index)
 void 
 FBCLAPPlugin::BeginParamChange(int index)
 {
-  FBCLAPSyncToAudioEvent event;
-  event.normalized = 0.0f;
-  event.paramIndex = index;
-  event.type = FBCLAPSyncEventType::BeginChange;
+  auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::BeginChange, index, 0.0f);
   _mainToAudioEvents.enqueue(event);
   if (_host.canUseParams())
     _host.paramsRequestFlush();
@@ -190,10 +174,7 @@ FBCLAPPlugin::BeginParamChange(int index)
 void 
 FBCLAPPlugin::PerformParamEdit(int index, float normalized)
 {  
-  FBCLAPSyncToAudioEvent event;
-  event.paramIndex = index;
-  event.normalized = normalized;
-  event.type = FBCLAPSyncEventType::PerformEdit;
+  auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized);
   _mainToAudioEvents.enqueue(event);
   *_guiState.Params()[index] = normalized;
   if (_host.canUseParams())
@@ -235,6 +216,12 @@ FBCLAPPlugin::activate(
   auto plug = MakePlugProcessor(_topo->static_, _procState.Raw(), fSampleRate);
   _hostProcessor.reset(new FBHostProcessor(this, _topo->static_, std::move(plug), &_procState, fSampleRate));
   return true;
+}
+
+void 
+FBCLAPPlugin::ProcessMainToAudioEvents()
+{
+
 }
 
 clap_process_status 
@@ -313,7 +300,7 @@ FBCLAPPlugin::process(
       {
         normalized = FBCLAPToNormalized(_topo->params[iter->second].static_, valueFromHost->value);
         pushParamChangeToProcessor(iter->second, normalized, valueFromHost->header.time);
-        _audioToMainEvents.enqueue(MakeSyncToMainEvent(iter->second, normalized));
+        _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(iter->second, normalized));
       }
       break;
     default:

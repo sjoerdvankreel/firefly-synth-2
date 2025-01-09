@@ -45,11 +45,17 @@ _freeRawState(topo.static_.freeRawProcState)
 #endif
 }
 
+void 
+FBProcStateContainer::InitProcessing(int index, float value)
+{
+  Params()[index].InitProcessing(value);
+}
+
 void
 FBProcStateContainer::InitProcessing(FBScalarStateContainer const& scalar)
 {
   for (int p = 0; p < Params().size(); p++)
-    Params()[p].InitProcessing(*scalar.Params()[p]);
+    InitProcessing(p, *scalar.Params()[p]);
 }
 
 void

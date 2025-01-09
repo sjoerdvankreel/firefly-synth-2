@@ -23,3 +23,8 @@ struct FBCLAPSyncToAudioEvent
   float normalized;
   FBCLAPSyncEventType type;
 };
+
+FBCLAPSyncToMainEvent
+FBMakeSyncToMainEvent(int paramIndex, double normalized);
+FBCLAPSyncToAudioEvent
+FBMakeSyncToAudioEvent(FBCLAPSyncEventType type, int paramIndex, double normalized);

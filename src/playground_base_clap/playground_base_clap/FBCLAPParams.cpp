@@ -64,6 +64,30 @@ void
 FBCLAPPlugin::paramsFlush(
   const clap_input_events* in, const clap_output_events* out) noexcept
 {
+  int inEventCount = in->size(in);
+  for (int i = 0; i < inEventCount; i++)
+  {
+    auto header = in->get(in, i);
+    if (header->space_id != CLAP_CORE_EVENT_SPACE_ID)
+      continue;
+    if (header->type != CLAP_EVENT_PARAM_VALUE)
+      continue;
+    auto event = reinterpret_cast<clap_event_param_value const*>(header);
+    int index = getParamIndexForParamId(event->param_id);
+    if (index == -1)
+      continue;
+    if (isProcessing())
+    {
+      _procState.InitProcessing(index, (float)event->value);
+      _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(index, event->value));
+    }
+    else
+    {
+      *_guiState.Params()[index] = (float)event->value;
+      _mainToAudioEvents.enqueue(FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, event->value));
+    }
+  }
+
 #if 0 // TODO
 
   isProcessing() // TODO TODO TODO
