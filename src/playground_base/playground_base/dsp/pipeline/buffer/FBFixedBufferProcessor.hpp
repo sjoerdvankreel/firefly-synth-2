@@ -12,8 +12,6 @@ class FBFixedFloatAudioBlock;
 
 class FBFixedBufferProcessor final
 {
-  bool _paddedOnce = false;
-  bool _hitFixedBlockSize = false;
   FBBufferAudioBlock _buffer = {};
   std::vector<FBNote> _returnedVoices = {};
   FBVoiceManager* _voiceManager;

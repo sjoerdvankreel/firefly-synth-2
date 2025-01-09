@@ -9,17 +9,11 @@
 
 FBFixedBufferProcessor::
 FBFixedBufferProcessor(FBVoiceManager* voiceManager):
-_voiceManager(voiceManager) {}
-
-void 
-FBFixedBufferProcessor::BufferFromFixed(FBFixedFloatAudioBlock const& fixed)
+_voiceManager(voiceManager)
 {
-  _buffer.AppendFixed(fixed);
-  _returnedVoices.insert(
-    _returnedVoices.end(), 
-    _voiceManager->ReturnedVoices().begin(), 
-    _voiceManager->ReturnedVoices().end());
-  _voiceManager->ResetReturnedVoices();
+  FBFixedFloatAudioBlock lag;
+  lag.Transform([](int ch, int v) { return 0.0f; });
+  _buffer.AppendFixed(lag);
 }
 
 void 
@@ -32,21 +26,19 @@ FBFixedBufferProcessor::ProcessToHost(FBHostOutputBlock& host)
     _returnedVoices.end());
   _returnedVoices.clear();
   assert(host.returnedVoices.size() < FBMaxVoices);
-    
-  _hitFixedBlockSize |= _buffer.Count() >= FBFixedBlockSamples;
-  if (!_hitFixedBlockSize)
-  {
-    host.audio.SetToZero(0, host.audio.Count());
-    return;
-  }
 
-  int maxUsable = _buffer.Count() - FBFixedBlockSamples;
-  int padded = std::max(0, host.audio.Count() - maxUsable);
-  assert(!_paddedOnce || padded == 0);
-  _paddedOnce |= padded > 0;
-  host.audio.SetToZero(0, padded);
+  assert(host.audio.Count() <= _buffer.Count());
+  host.audio.CopyFrom(_buffer, host.audio.Count());
+  _buffer.Drop(host.audio.Count());
+}
 
-  int used = std::min(host.audio.Count(), maxUsable);
-  host.audio.CopyFrom(_buffer, padded, used);
-  _buffer.Drop(used);
+void
+FBFixedBufferProcessor::BufferFromFixed(FBFixedFloatAudioBlock const& fixed)
+{
+  _buffer.AppendFixed(fixed);
+  _returnedVoices.insert(
+    _returnedVoices.end(),
+    _voiceManager->ReturnedVoices().begin(),
+    _voiceManager->ReturnedVoices().end());
+  _voiceManager->ResetReturnedVoices();
 }

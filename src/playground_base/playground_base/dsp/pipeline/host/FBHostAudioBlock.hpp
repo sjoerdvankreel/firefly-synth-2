@@ -15,8 +15,6 @@ public:
   FBHostAudioBlock(float** channels, int count);
 
   int Count() const { return _count; }
+  void CopyFrom(FBBufferAudioBlock const& rhs, int count);
   float const* operator[](int ch) const { return _store[ch]; }
-
-  void SetToZero(int from, int to);
-  void CopyFrom(FBBufferAudioBlock const& rhs, int thisStart, int thatCount);
 };
