@@ -1,6 +1,6 @@
 redo perf test
 do special cases for bitwig host test
-whats up with renoise smoothing ?
+whats up with renoise smoothing ? => maybe do per-param smoothing ?
 pdbs are borked after first build
 add some temporary test files
 fix warnings
