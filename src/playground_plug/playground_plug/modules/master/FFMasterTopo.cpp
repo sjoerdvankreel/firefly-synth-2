@@ -16,7 +16,7 @@ FFMakeMasterTopo()
 
   auto& gain = result->params[(int)FFMasterParam::Gain];
   gain.acc = true;
-  gain.defaultText = "100";
+  gain.defaultText = "33";
   gain.name = "Gain";
   gain.slotCount = 1;
   gain.unit = "%";
