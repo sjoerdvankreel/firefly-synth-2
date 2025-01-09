@@ -89,7 +89,7 @@ FBCLAPPlugin::paramsFlush(
   }
 
   if (isProcessing())
-    ProcessMainToAudioEvents(out);
+    ProcessMainToAudioEvents(out, false);
 }
 
 bool 

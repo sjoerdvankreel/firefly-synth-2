@@ -219,7 +219,19 @@ FBCLAPPlugin::activate(
 }
 
 void 
-FBCLAPPlugin::ProcessMainToAudioEvents(const clap_output_events* out)
+FBCLAPPlugin::PushParamChangeToProcessorBlock(
+  int index, double normalized, int pos)
+{
+  auto const& static_ = _topo->params[index].static_;
+  if (static_.acc)
+    _input.accAutoByParamThenSample.push_back(MakeAccAutoEvent(index, normalized, pos));
+  else
+    _input.block.push_back(MakeBlockEvent(index, normalized));
+}
+
+void 
+FBCLAPPlugin::ProcessMainToAudioEvents(
+  const clap_output_events* out, bool pushToProcBlock)
 {
   FBCLAPSyncToAudioEvent uiEvent;
   while (_mainToAudioEvents.try_dequeue(uiEvent))
@@ -239,7 +251,10 @@ FBCLAPPlugin::ProcessMainToAudioEvents(const clap_output_events* out)
     case FBCLAPSyncEventType::PerformEdit:
       valueToHost = MakeValueEvent(param.tag, FBNormalizedToCLAP(param.static_, uiEvent.normalized));
       out->try_push(out, &valueToHost.header);
-      pushParamChangeToProcessor(uiEvent.paramIndex, uiEvent.normalized, 0);
+      if (pushToProcBlock)
+        PushParamChangeToProcessorBlock(uiEvent.paramIndex, uiEvent.normalized, 0);
+      else
+        _procState.InitProcessing(uiEvent.paramIndex, uiEvent.normalized);
       break;
     default:
       assert(false);
@@ -252,22 +267,12 @@ clap_process_status
 FBCLAPPlugin::process(
   const clap_process* process) noexcept 
 {
-  auto& accAuto = _input.accAutoByParamThenSample;
-  auto& accMod = _input.accModByParamThenNoteThenSample;
-
-  accMod.clear();
-  accAuto.clear();
   _input.note.clear();
   _input.block.clear();
+  _input.accAutoByParamThenSample.clear();
+  _input.accModByParamThenNoteThenSample.clear();
 
-  auto pushParamChangeToProcessor = [&](int index, double normalized, int pos) {
-    auto const& static_ = _topo->params[index].static_;
-    if (static_.acc)
-      accAuto.push_back(MakeAccAutoEvent(index, normalized, pos));
-    else
-      _input.block.push_back(MakeBlockEvent(index, normalized)); };
-
-  ProcessMainToAudioEvents(process->out_events);
+  ProcessMainToAudioEvents(process->out_events, true);
 
   double normalized;
   FBCLAPSyncToMainEvent syncToMain;
@@ -291,14 +296,14 @@ FBCLAPPlugin::process(
       modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
       if ((iter = _topo->paramTagToIndex.find(modFromHost->param_id)) != _topo->paramTagToIndex.end())
         if (_topo->params[iter->second].static_.acc)
-          accMod.push_back(MakeAccModEvent(iter->second, modFromHost));
+          _input.accModByParamThenNoteThenSample.push_back(MakeAccModEvent(iter->second, modFromHost));
       break;
     case CLAP_EVENT_PARAM_VALUE:
       valueFromHost = reinterpret_cast<clap_event_param_value const*>(header);
       if ((iter = _topo->paramTagToIndex.find(valueFromHost->param_id)) != _topo->paramTagToIndex.end())
       {
         normalized = FBCLAPToNormalized(_topo->params[iter->second].static_, valueFromHost->value);
-        pushParamChangeToProcessor(iter->second, normalized, valueFromHost->header.time);
+        PushParamChangeToProcessorBlock(iter->second, normalized, valueFromHost->header.time);
         _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(iter->second, normalized));
       }
       break;
@@ -307,14 +312,21 @@ FBCLAPPlugin::process(
     }
   }
 
+  std::sort(
+    _input.accAutoByParamThenSample.begin(),
+    _input.accAutoByParamThenSample.end(),
+    FBAccAutoEventOrderByParamThenPos);
+  std::sort(
+    _input.accModByParamThenNoteThenSample.begin(),
+    _input.accModByParamThenNoteThenSample.end(),
+    FBAccModEventOrderByParamThenNoteThenPos);
+
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
   if (process->audio_inputs_count != 1)
     _input.audio = FBHostAudioBlock(zeroIn, process->frames_count);
   else
     _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
   _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
-  std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
-  std::sort(accMod.begin(), accMod.end(), FBAccModEventOrderByParamThenNoteThenPos);
 
   _hostProcessor->ProcessHost(_input, _output);
   

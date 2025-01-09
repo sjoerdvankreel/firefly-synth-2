@@ -43,7 +43,8 @@ public IFBHostGUIContext
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
 
-  void ProcessMainToAudioEvents(const clap_output_events* out);
+  void PushParamChangeToProcessorBlock(int index, double normalized, int pos);
+  void ProcessMainToAudioEvents(const clap_output_events* out, bool pushToProcBlock);
 
 protected:
   virtual std::unique_ptr<IFBPlugProcessor>
