@@ -32,10 +32,16 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   FBVST3CopyToString128(param.shortName, result.shortTitle);
   FBVST3CopyToString128(param.static_.unit, result.units);
 
-  // TODO once we drop generic editor
-  result.flags = ParameterInfo::kCanAutomate;
-  if (param.static_.type == FBParamType::List)
-    result.flags |= ParameterInfo::kIsList;
+  result.flags = ParameterInfo::kNoFlags;
+  if (FBParamTypeIsStepped(param.static_.type))
+  {
+    result.flags |= ParameterInfo::kIsHidden;
+    result.flags |= ParameterInfo::kIsReadOnly;
+    if (param.static_.type == FBParamType::List)
+      result.flags |= ParameterInfo::kIsList;
+  }
+  else
+    result.flags = ParameterInfo::kCanAutomate;
   return result;
 }
 
