@@ -40,12 +40,13 @@ FBFixedBufferProcessor::ProcessToHost(FBHostOutputBlock& host)
     return;
   }
 
-  int padded = std::max(0, host.audio.Count() - _buffer.Count());
+  int maxUsable = _buffer.Count() - FBFixedBlockSamples;
+  int padded = std::max(0, host.audio.Count() - maxUsable);
   assert(!_paddedOnce || padded == 0);
   _paddedOnce |= padded > 0;
   host.audio.SetToZero(0, padded);
 
-  int used = std::min(host.audio.Count(), _buffer.Count());
+  int used = std::min(host.audio.Count(), maxUsable);
   host.audio.CopyFrom(_buffer, padded, used);
   _buffer.Drop(used);
 }

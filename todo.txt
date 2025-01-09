@@ -1,3 +1,4 @@
+pdbs are borked after first build
 add some temporary test files
 fix warnings
 rosetta is borked
