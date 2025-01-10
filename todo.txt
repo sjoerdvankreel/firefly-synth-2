@@ -3,6 +3,7 @@ do special cases for bitwig host test
 whats up with renoise smoothing ? => maybe do per-param smoothing ? => 8*480@48000 => 20*128@48000
 => ff = also borked
 => reaper = 1x160@48000
+=> 192 = x4 blocks
 pdbs are borked after first build
 add some temporary test files
 fix warnings
