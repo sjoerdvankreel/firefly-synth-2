@@ -1,3 +1,4 @@
+checkout if flstudio/reaper does clap (poly)mod
 redo perf test
 do special cases for bitwig host test
 whats up with renoise smoothing ? => maybe do per-param smoothing ? => 8*480@48000 => 20*128@48000
