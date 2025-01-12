@@ -1,12 +1,10 @@
 redo perf test
 pdbs are borked after first build
-add some temporary test files
 fix warnings
 rosetta is borked
 threadpool makes it slower
 fix mac infoplist and the other thingy
 reaper voice off by disable plug not working
-checkout the fast surge saw
 checkout the patch json
 retest voice stealing including clap return with > 64 voices
 clap + vst3 note expr + midi mpe + polymod + mark as done somewhere
