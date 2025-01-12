@@ -83,6 +83,9 @@ FBPlugGUIBase::GetDefaultUnscaledHeight() const
 void
 FBPlugGUIBase::SetContentScaleFactor(float scale)
 {
+  float old = _scale;
   _scale = scale;
+  float factor = scale / old;
   setTransform(AffineTransform::scale(scale));
+  setSize((int)std::round(getWidth() * factor), (int)(std::round(getHeight() * factor)));
 }
