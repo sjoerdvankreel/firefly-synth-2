@@ -57,11 +57,10 @@ FFPlugGUI::SetContentScaleFactor(float scale)
   setTransform(AffineTransform::scale(scale));
 }
 
-void
-FFPlugGUI::SetParamNormalized(int index, float normalized)
+IFBParamControl* 
+FFPlugGUI::GetParamControlForIndex(int index)
 {
-  auto& control = dynamic_cast<IFBParamControl&>(*_controls[index]);
-  control.SetValueNormalized(normalized);
+  return &dynamic_cast<IFBParamControl&>(*_controls[index]);
 }
 
 void 

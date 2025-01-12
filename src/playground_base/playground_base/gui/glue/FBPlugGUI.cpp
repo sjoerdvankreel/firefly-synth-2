@@ -23,3 +23,9 @@ FBPlugGUI::DefaultHeight() const
   int arH = AspectRatioHeight();
   return w * arH / arW;
 }
+
+void
+FBPlugGUI::SetParamNormalized(int index, float normalized)
+{
+  GetParamControlForIndex(index)->SetValueNormalized(normalized);
+}

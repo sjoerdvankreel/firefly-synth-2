@@ -31,5 +31,5 @@ public:
 
   void resized() override;
   void SetContentScaleFactor(float scale) override;
-  void SetParamNormalized(int index, float normalized) override;
+  IFBParamControl* GetParamControlForIndex(int index) override;
 };
