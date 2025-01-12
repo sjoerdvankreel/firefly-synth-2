@@ -11,6 +11,7 @@ class IFBHostGUIContext;
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  float _scale = 1.0f;
   FBRuntimeTopo const* const _topo;
   IFBHostGUIContext* const _hostContext;
   std::vector<std::unique_ptr<juce::Component>> _labels = {};
@@ -29,5 +30,6 @@ public:
   int AspectRatioHeight() const override { return 1; }
 
   void resized() override;
+  void SetContentScaleFactor(float scale) override;
   void SetParamNormalized(int index, float normalized) override;
 };

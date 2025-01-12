@@ -18,10 +18,28 @@ FBVST3GUIEditor::
   dynamic_cast<FBVST3EditController&>(*getController()).ResetView();
 }
 
+void
+FBVST3GUIEditor::SetParamNormalized(int index, float normalized)
+{
+  _gui->SetParamNormalized(index, normalized);
+}
+
 tresult PLUGIN_API
 FBVST3GUIEditor::canResize()
 {
   return kResultTrue;
+}
+
+uint32 PLUGIN_API 
+FBVST3GUIEditor::addRef() 
+{ 
+  return EditorView::addRef(); 
+}
+
+uint32 PLUGIN_API 
+FBVST3GUIEditor::release()
+{ 
+  return EditorView::release(); 
 }
 
 tresult PLUGIN_API
@@ -36,6 +54,13 @@ FBVST3GUIEditor::attached(void* parent, FIDString type)
 {
   _gui->addToDesktop(0, parent);
   return EditorView::attached(parent, type);
+}
+
+tresult PLUGIN_API
+FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
+{
+  QUERY_INTERFACE(iid, obj, IPlugViewContentScaleSupport::iid, IPlugViewContentScaleSupport);
+  return EditorView::queryInterface(iid, obj);
 }
 
 tresult PLUGIN_API 
@@ -55,10 +80,18 @@ FBVST3GUIEditor::onSize(ViewRect* newSize)
   return kResultTrue;
 }
 
-void
-FBVST3GUIEditor::SetParamNormalized(int index, float normalized)
+tresult PLUGIN_API
+FBVST3GUIEditor::setContentScaleFactor(ScaleFactor factor)
 {
-  _gui->SetParamNormalized(index, normalized);
+#if __APPLE__
+  return kResultFalse;
+#endif
+  ViewRect newSize;
+  _gui->SetContentScaleFactor(factor);
+  getSize(&newSize);
+  if (plugFrame) 
+    plugFrame->resizeView(this, &newSize);
+  return kResultTrue;
 }
 
 tresult PLUGIN_API 

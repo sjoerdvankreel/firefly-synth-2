@@ -51,6 +51,13 @@ _hostContext(hostContext)
 }
 
 void
+FFPlugGUI::SetContentScaleFactor(float scale)
+{
+  _scale = scale;
+  setTransform(AffineTransform::scale(scale));
+}
+
+void
 FFPlugGUI::SetParamNormalized(int index, float normalized)
 {
   auto& control = dynamic_cast<IFBParamControl&>(*_controls[index]);
