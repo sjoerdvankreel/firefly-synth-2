@@ -2,6 +2,7 @@
 #include <playground_base/gui/glue/FBPlugGUI.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 
+#include <clap/helpers/host-proxy.hxx>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 bool
