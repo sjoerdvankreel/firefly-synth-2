@@ -17,13 +17,6 @@ FBCLAPPlugin::implementsGui() const noexcept
 }
 
 bool
-FBCLAPPlugin::guiSetScale(double scale) noexcept
-{
-  _gui->SetContentScaleFactor((float)scale);
-  return true;
-}
-
-bool
 FBCLAPPlugin::guiShow() noexcept
 {
   if (!_gui)
@@ -63,6 +56,14 @@ bool
 FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
 {
   _gui = _topo->static_.guiFactory(_topo.get(), this);
+  return true;
+}
+
+bool
+FBCLAPPlugin::guiSetScale(double scale) noexcept
+{
+  _gui->SetContentScaleFactor((float)scale);
+  _host.guiRequestResize(_gui->GetScaledWidth(), _gui->GetScaledHeight());
   return true;
 }
 
