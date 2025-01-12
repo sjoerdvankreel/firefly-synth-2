@@ -11,7 +11,7 @@ FFPlugGUI::
 FFPlugGUI(
   FBRuntimeTopo const* topo, 
   IFBHostGUIContext* hostContext):
-FBPlugGUI(),
+FBPlugGUIBase(),
 _topo(topo),
 _hostContext(hostContext)
 {
@@ -46,15 +46,8 @@ _hostContext(hostContext)
     addAndMakeVisible(_controls[i].get());
   for (int i = 0; i < topo->params.size(); i++)
     addAndMakeVisible(_labels[i].get());
-  setSize(DefaultWidth(), DefaultHeight());
+  setSize(GetDefaultUnscaledWidth(), GetDefaultUnscaledHeight());
   resized();
-}
-
-void
-FFPlugGUI::SetContentScaleFactor(float scale)
-{
-  _scale = scale;
-  setTransform(AffineTransform::scale(scale));
 }
 
 IFBParamControl* 

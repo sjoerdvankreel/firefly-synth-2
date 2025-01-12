@@ -19,7 +19,8 @@ FBCLAPPlugin::implementsGui() const noexcept
 bool
 FBCLAPPlugin::guiSetScale(double scale) noexcept
 {
-  return false; // TODO scaling
+  _gui->SetContentScaleFactor((float)scale);
+  return true;
 }
 
 bool
@@ -27,7 +28,7 @@ FBCLAPPlugin::guiShow() noexcept
 {
   if (!_gui)
     return false;
-  _gui->setVisible(true);
+  _gui->SetVisible(true);
   return true;
 }
 
@@ -36,7 +37,7 @@ FBCLAPPlugin::guiHide() noexcept
 {
   if (!_gui)
     return false;
-  _gui->setVisible(false);
+  _gui->SetVisible(false);
   return true;
 }
 
@@ -45,7 +46,7 @@ FBCLAPPlugin::guiDestroy() noexcept
 {
   if (!_gui)
     return;
-  _gui->removeFromDesktop();
+  _gui->RemoveFromDesktop();
   _gui.reset();
 }
 
@@ -54,7 +55,7 @@ FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 {
   if (!_gui)
     return false;
-  _gui->addToDesktop(0, window->ptr);
+  _gui->AddToDesktop(window->ptr);
   return true;
 }
 
@@ -71,7 +72,7 @@ FBCLAPPlugin::guiSetSize(uint32_t width, uint32_t height) noexcept
   if (!_gui)
     return false;
   guiAdjustSize(&width, &height);
-  _gui->setSize(width, height);
+  _gui->SetScaledSize(width, height);
   return true;
 }
 
@@ -80,8 +81,8 @@ FBCLAPPlugin::guiGetSize(uint32_t* width, uint32_t* height) noexcept
 {
   if (!_gui)
     return false;
-  *width = _gui->getWidth();
-  *height = _gui->getHeight();
+  *width = _gui->GetScaledWidth();
+  *height = _gui->GetScaledHeight();
   guiAdjustSize(width, height);
   return true;
 }
@@ -91,10 +92,10 @@ FBCLAPPlugin::guiAdjustSize(uint32_t* width, uint32_t* height) noexcept
 {
   if (!_gui)
     return false;
-  int minW = _gui->MinWidth();
-  int maxW = _gui->MaxWidth();
-  int arW = _gui->AspectRatioWidth();
-  int arH = _gui->AspectRatioHeight();
+  int minW = _gui->GetMinScaledWidth();
+  int maxW = _gui->GetMaxScaledWidth();
+  int arW = _gui->GetAspectRatioWidth();
+  int arH = _gui->GetAspectRatioHeight();
   *width = std::clamp((int)*width, minW, maxW);
   *height = *width * arH / arW;
   return true;
@@ -106,8 +107,8 @@ FBCLAPPlugin::guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept
   hints->preserve_aspect_ratio = true;
   hints->can_resize_vertically = true;
   hints->can_resize_horizontally = true;
-  hints->aspect_ratio_width = _gui->AspectRatioWidth();
-  hints->aspect_ratio_height = _gui->AspectRatioHeight();
+  hints->aspect_ratio_width = _gui->GetAspectRatioWidth();
+  hints->aspect_ratio_height = _gui->GetAspectRatioHeight();
   return true;
 }
 

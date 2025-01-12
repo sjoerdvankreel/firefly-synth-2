@@ -45,14 +45,14 @@ FBVST3GUIEditor::release()
 tresult PLUGIN_API
 FBVST3GUIEditor::removed()
 {
-  _gui->removeFromDesktop();
+  _gui->RemoveFromDesktop();
   return EditorView::removed();
 }
 
 tresult PLUGIN_API
 FBVST3GUIEditor::attached(void* parent, FIDString type)
 {
-  _gui->addToDesktop(0, parent);
+  _gui->AddToDesktop(parent);
   return EditorView::attached(parent, type);
 }
 
@@ -66,8 +66,8 @@ FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
 tresult PLUGIN_API 
 FBVST3GUIEditor::getSize(ViewRect* size)
 {
-  size->right = size->left + _gui->getWidth();
-  size->bottom = size->top + _gui->getHeight();
+  size->right = size->left + _gui->GetScaledWidth();
+  size->bottom = size->top + _gui->GetScaledHeight();
   checkSizeConstraint(size);
   return kResultTrue;
 }
@@ -76,7 +76,7 @@ tresult PLUGIN_API
 FBVST3GUIEditor::onSize(ViewRect* newSize)
 {
   checkSizeConstraint(newSize);
-  _gui->setSize(newSize->getWidth(), newSize->getHeight());
+  _gui->SetScaledSize(newSize->getWidth(), newSize->getHeight());
   return kResultTrue;
 }
 
@@ -97,10 +97,10 @@ FBVST3GUIEditor::setContentScaleFactor(ScaleFactor factor)
 tresult PLUGIN_API 
 FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect)
 {
-  int minW = _gui->MinWidth();
-  int maxW = _gui->MaxWidth();
-  int arW = _gui->AspectRatioWidth();
-  int arH = _gui->AspectRatioHeight();
+  int minW = _gui->GetMinScaledWidth();
+  int maxW = _gui->GetMaxScaledWidth();
+  int arW = _gui->GetAspectRatioWidth();
+  int arH = _gui->GetAspectRatioHeight();
   rect->right = rect->left + std::clamp(rect->getWidth(), minW, maxW);
   rect->bottom = rect->top + rect->getWidth() * arH / arW;
   return kResultTrue;

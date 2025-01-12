@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/gui/glue/FBPlugGUI.hpp>
+#include <playground_base/gui/glue/FBPlugGUIBase.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
 #include <memory>
@@ -9,13 +9,16 @@ struct FBRuntimeTopo;
 class IFBHostGUIContext;
 
 class FFPlugGUI final:
-public FBPlugGUI
+public FBPlugGUIBase
 {
-  float _scale = 1.0f;
   FBRuntimeTopo const* const _topo;
   IFBHostGUIContext* const _hostContext;
   std::vector<std::unique_ptr<juce::Component>> _labels = {};
   std::vector<std::unique_ptr<juce::Component>> _controls = {};
+
+protected:
+  IFBParamControl* 
+  GetParamControlForIndex(int index) override;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
@@ -23,13 +26,11 @@ public:
     FBRuntimeTopo const* topo, 
     IFBHostGUIContext* hostContext);
 
-  int MinWidth() const override { return 200; }
-  int MaxWidth() const override { return 1200; }
-  int DefaultWidth() const override { return 600; }
-  int AspectRatioWidth() const override { return 1; }
-  int AspectRatioHeight() const override { return 1; }
-
   void resized() override;
-  void SetContentScaleFactor(float scale) override;
-  IFBParamControl* GetParamControlForIndex(int index) override;
+
+  int GetAspectRatioWidth() const override { return 1; }
+  int GetAspectRatioHeight() const override { return 1; }
+  int GetMinUnscaledWidth() const override { return 200; }
+  int GetMaxUnscaledWidth() const override { return 1200; }
+  int GetDefaultUnscaledWidth() const override { return 600; }  
 };
