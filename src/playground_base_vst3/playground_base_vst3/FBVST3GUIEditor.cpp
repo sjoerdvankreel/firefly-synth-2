@@ -76,8 +76,8 @@ FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect)
 tresult PLUGIN_API 
 FBVST3GUIEditor::isPlatformTypeSupported(FIDString type)
 {
-  if (std::string(type) == kPlatformTypeHWND) return true;
-  if (std::string(type) == kPlatformTypeNSView) return true;
-  if (std::string(type) == kPlatformTypeX11EmbedWindowID) return true;
-  return false;
+  if (std::string(type) == kPlatformTypeHWND) return kResultTrue;
+  if (std::string(type) == kPlatformTypeNSView) return kResultTrue;
+  if (std::string(type) == kPlatformTypeX11EmbedWindowID) return kResultTrue;
+  return kResultFalse;
 }
