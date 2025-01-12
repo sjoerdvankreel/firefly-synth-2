@@ -71,6 +71,13 @@ FBPlugGUIBase::SetScaledSize(int w, int h)
   setSize((int)std::round(w / _scale), (int)(std::round(h / _scale)));
 }
 
+void
+FBPlugGUIBase::SetContentScaleFactor(float scale)
+{
+  _scale = scale;
+  setTransform(AffineTransform::scale(scale));
+}
+
 int 
 FBPlugGUIBase::GetDefaultUnscaledHeight() const
 {
@@ -78,14 +85,4 @@ FBPlugGUIBase::GetDefaultUnscaledHeight() const
   int arW = GetAspectRatioWidth();
   int arH = GetAspectRatioHeight();
   return w * arH / arW;
-}
-
-void
-FBPlugGUIBase::SetContentScaleFactor(float scale)
-{
-  float old = _scale;
-  _scale = scale;
-  float factor = scale / old;
-  setTransform(AffineTransform::scale(scale));
-  setSize((int)std::round(getWidth() * factor), (int)(std::round(getHeight() * factor)));
 }
