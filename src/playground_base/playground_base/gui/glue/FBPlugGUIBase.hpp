@@ -29,7 +29,6 @@ public:
   int GetMaxScaledWidth() const override;
   void SetScaledSize(int w, int h) override;
   int GetDefaultUnscaledHeight() const override;
-
   void SetContentScaleFactor(float scale) override;
 
   void RemoveFromDesktop() override;
