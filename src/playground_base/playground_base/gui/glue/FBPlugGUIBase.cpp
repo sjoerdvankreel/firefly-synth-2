@@ -35,12 +35,6 @@ FBPlugGUIBase::SetVisible(bool visible)
   setVisible(visible);
 }
 
-void
-FBPlugGUIBase::SetScaledSize(int w, int h)
-{
-  setSize(w, h);
-}
-
 int 
 FBPlugGUIBase::GetScaledWidth() const
 {
@@ -69,6 +63,12 @@ void
 FBPlugGUIBase::SetParamNormalized(int index, float normalized)
 {
   GetParamControlForIndex(index)->SetValueNormalized(normalized);
+}
+
+void
+FBPlugGUIBase::SetScaledSize(int w, int h)
+{
+  setSize((int)std::round(w / _scale), (int)(std::round(h / _scale)));
 }
 
 int 
