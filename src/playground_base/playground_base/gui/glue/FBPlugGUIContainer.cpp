@@ -21,6 +21,7 @@ _gui(topo->static_.gui.factory(topo, context))
   int plugHeight = GetHeightForAspectRatio(plugWidth);
   setSize(plugWidth, plugHeight);
   _gui->setSize(plugWidth, plugHeight);
+  addAndMakeVisible(_gui.get());
 }
 
 void 
