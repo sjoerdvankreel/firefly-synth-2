@@ -18,8 +18,9 @@ _gui(topo->static_.gui.factory(topo, context))
   setOpaque(true);
   setVisible(true);
   int plugWidth = topo->static_.gui.plugWidth;
-  setSize(plugWidth, GetHeightForAspectRatio(plugWidth));
-  _gui->setSize(getWidth(), getHeight());
+  int plugHeight = GetHeightForAspectRatio(plugWidth);
+  setSize(plugWidth, plugHeight);
+  _gui->setSize(plugWidth, plugHeight);
 }
 
 void 
