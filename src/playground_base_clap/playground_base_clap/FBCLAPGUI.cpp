@@ -1,6 +1,6 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/gui/glue/FBPlugGUIContext.hpp>
+#include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 
 #include <clap/helpers/host-proxy.hxx>
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -65,7 +65,7 @@ FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 bool
 FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
 {
-  _gui = _topo->static_.gui.factory(_topo.get(), this);
+  _gui = std::make_unique<FBPlugGUIContainer>(_topo.get(), this);
   return true;
 }
 

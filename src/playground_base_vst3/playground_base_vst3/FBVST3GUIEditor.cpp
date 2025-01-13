@@ -1,7 +1,7 @@
 #include <playground_base_vst3/FBVST3GUIEditor.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/gui/glue/FBPlugGUIContext.hpp>
+#include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 
 #include <algorithm>
 
@@ -11,7 +11,7 @@ FBVST3GUIEditor(
   FBRuntimeTopo const* topo,
   FBVST3EditController* editController):
 EditorView(editController),
-_gui(factory(topo, editController)) {}
+_gui(std::make_unique<FBPlugGUIContainer>(topo, editController)) {}
 
 FBVST3GUIEditor::
 ~FBVST3GUIEditor()

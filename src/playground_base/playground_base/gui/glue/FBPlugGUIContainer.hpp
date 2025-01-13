@@ -18,16 +18,16 @@ public FBPlugGUIContext
   std::unique_ptr<FBPlugGUI> _gui;
 
 protected:
-  FBPlugGUIContainer(
-    FBRuntimeTopo const* topo, 
-    IFBHostGUIContext* context);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContainer);
   void RequestRescale(float combinedScale) override;
 
 public:
   ~FBPlugGUIContainer();
-  void paint(juce::Graphics& g) override;
+  FBPlugGUIContainer(
+    FBRuntimeTopo const* topo,
+    IFBHostGUIContext* context);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContainer);
 
+  void paint(juce::Graphics& g) override;
   void RemoveFromDesktop() override;
   void AddToDesktop(void* parent) override;
   void SetVisible(bool visible) override;
