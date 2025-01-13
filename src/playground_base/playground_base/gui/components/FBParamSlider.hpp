@@ -10,7 +10,6 @@ class FBParamSlider final:
 public juce::Slider,
 public IFBParamControl
 {
-  bool _bounceToHost = true;
   FBRuntimeParam const* const _param;
   IFBHostGUIContext* const _context;
 
