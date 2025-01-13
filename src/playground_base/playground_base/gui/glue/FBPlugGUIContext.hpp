@@ -20,6 +20,7 @@ protected:
 
 public:
   virtual ~FBPlugGUIContext() {}
+
   void SetSystemScale(float scale);
   void SetUserScaleByHostWidth(int width);
   std::pair<int, int> GetHostSize() const;

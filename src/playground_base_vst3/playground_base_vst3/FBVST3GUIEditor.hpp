@@ -22,7 +22,6 @@ public EditorView,
 public IPlugViewContentScaleSupport
 {
   std::unique_ptr<FBPlugGUIContext> _gui;
-  FBStaticGUITopo const* const _topo;
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);

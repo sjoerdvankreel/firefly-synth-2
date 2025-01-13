@@ -11,7 +11,6 @@ FBVST3GUIEditor(
   FBRuntimeTopo const* topo,
   FBVST3EditController* editController):
 EditorView(editController),
-_topo(&topo->static_.gui),
 _gui(factory(topo, editController)) {}
 
 FBVST3GUIEditor::
@@ -68,8 +67,9 @@ FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
 tresult PLUGIN_API 
 FBVST3GUIEditor::getSize(ViewRect* size)
 {
-  size->right = size->left + _topo->width * _gui->GetScale();
-  size->bottom = size->top + _gui->GetScaledHeight();
+  auto hostSize = _gui->GetHostSize();
+  size->right = size->left + hostSize.first;
+  size->bottom = size->top + hostSize.second;
   checkSizeConstraint(size);
   return kResultTrue;
 }
@@ -78,7 +78,7 @@ tresult PLUGIN_API
 FBVST3GUIEditor::onSize(ViewRect* newSize)
 {
   checkSizeConstraint(newSize);
-  _gui->SetScaledSize(newSize->getWidth(), newSize->getHeight());
+  _gui->SetUserScaleByHostWidth(newSize->getWidth());
   return kResultTrue;
 }
 
@@ -89,7 +89,7 @@ FBVST3GUIEditor::setContentScaleFactor(ScaleFactor factor)
   return kResultFalse;
 #endif
   ViewRect newSize;
-  _gui->SetContentScaleFactor(factor);
+  _gui->SetSystemScale(factor);
   getSize(&newSize);
   if (plugFrame) 
     plugFrame->resizeView(this, &newSize);
