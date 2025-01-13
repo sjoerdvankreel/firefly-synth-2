@@ -1,4 +1,3 @@
-test sys dpi
 remember the gui size
 multitap fb delay
 redo perf test
