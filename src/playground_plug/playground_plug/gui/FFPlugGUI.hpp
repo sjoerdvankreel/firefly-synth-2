@@ -12,16 +12,14 @@ class FFPlugGUI final:
 public FBPlugGUI
 {
   FBRuntimeTopo const* const _topo;
-  IFBHostGUIContext* const _hostContext;
   std::vector<std::unique_ptr<juce::Component>> _labels = {};
   std::vector<std::unique_ptr<juce::Component>> _controls = {};
 
-protected:
-  IFBParamControl* 
-  GetParamControlForIndex(int index) override;
-
 public:
   void resized() override;
+  IFBParamControl*
+  GetParamControlForIndex(int index) override;
+
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext);  
 };

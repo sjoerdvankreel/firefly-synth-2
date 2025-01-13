@@ -19,6 +19,7 @@ _gui(topo->static_.gui.factory(topo, context))
   setVisible(true);
   int plugWidth = topo->static_.gui.plugWidth;
   setSize(plugWidth, GetHeightForAspectRatio(plugWidth));
+  _gui->setSize(getWidth(), getHeight());
 }
 
 void 
@@ -46,13 +47,15 @@ FBPlugGUIContainer::SetVisible(bool visible)
 }
 
 void
-FBPlugGUIContainer::RequestRescale(float combinedScale)
-{
-  _gui->setTransform(AffineTransform::scale(combinedScale));
-}
-
-void
 FBPlugGUIContainer::SetParamNormalized(int index, float normalized)
 {
   _gui->GetParamControlForIndex(index)->SetValueNormalized(normalized);
+}
+
+void
+FBPlugGUIContainer::RequestRescale(float combinedScale)
+{
+  auto hostSize = GetHostSize();
+  setSize(hostSize.first, hostSize.second);
+  _gui->setTransform(AffineTransform::scale(combinedScale));
 }

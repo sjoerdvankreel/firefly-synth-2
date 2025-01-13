@@ -22,7 +22,6 @@ protected:
     FBRuntimeTopo const* topo, 
     IFBHostGUIContext* context);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContainer);
-
   void RequestRescale(float combinedScale) override;
 
 public:

@@ -11,9 +11,8 @@ FFPlugGUI::
 FFPlugGUI(
   FBRuntimeTopo const* topo, 
   IFBHostGUIContext* hostContext):
-FBPlugGUI(&topo->static_.gui),
-_topo(topo),
-_hostContext(hostContext)
+FBPlugGUI(),
+_topo(topo)
 {
   for (int i = 0; i < topo->params.size(); i++)
   {
@@ -27,16 +26,16 @@ _hostContext(hostContext)
     case FBParamType::List:
     case FBParamType::Discrete:
       _controls.emplace_back(std::make_unique<FBParamComboBox>(
-        &_topo->params[i], _hostContext));
+        &_topo->params[i], hostContext));
       break;
     case FBParamType::Boolean:
       _controls.emplace_back(std::make_unique<FBParamToggleButton>(
-        &_topo->params[i], _hostContext));
+        &_topo->params[i], hostContext));
       break;
     case FBParamType::Linear:
     case FBParamType::FreqOct:
       _controls.emplace_back(std::make_unique<FBParamSlider>(
-        &_topo->params[i], _hostContext, Slider::SliderStyle::Rotary));
+        &_topo->params[i], hostContext, Slider::SliderStyle::Rotary));
       break;
     default:
       assert(false);
