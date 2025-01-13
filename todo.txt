@@ -1,6 +1,6 @@
 test sys dpi
 store width in the stream
-do minmax width + remember the gui size
+remember the gui size
 multitap fb delay
 redo perf test
 pdbs are borked after first build
