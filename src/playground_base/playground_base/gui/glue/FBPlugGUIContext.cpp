@@ -27,10 +27,16 @@ FBPlugGUIContext::SetUserScaleByHostWidth(int width)
   RequestRescale(CombinedScale());
 }
 
+int
+FBPlugGUIContext::GetHeightForAspectRatio(int width) const
+{
+  return width * _topo->aspectRatioHeight / _topo->aspectRatioWidth;
+}
+
 std::pair<int, int>
 FBPlugGUIContext::GetHostSize() const
 {
   int w = (int)std::round(_topo->plugWidth * CombinedScale());
-  int h = (int)std::round(_topo->plugWidth * _topo->aspectRatioHeight / _topo->aspectRatioWidth * CombinedScale());
+  int h = (int)std::round(GetHeightForAspectRatio(_topo->plugWidth) * CombinedScale());
   return { w, h };
 }

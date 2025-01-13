@@ -101,7 +101,7 @@ FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect)
 {
   int minW = _gui->GetMinScaledWidth();
   int maxW = _gui->GetMaxScaledWidth();
-  int arW = _gui->GetAspectRatioWidth();
+  int arW = _topo _gui->GetAspectRatioWidth();
   int arH = _gui->GetAspectRatioHeight();
   rect->right = rect->left + std::clamp(rect->getWidth(), minW, maxW);
   rect->bottom = rect->top + rect->getWidth() * arH / arW;

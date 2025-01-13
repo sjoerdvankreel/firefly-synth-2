@@ -11,7 +11,7 @@ FFPlugGUI::
 FFPlugGUI(
   FBRuntimeTopo const* topo, 
   IFBHostGUIContext* hostContext):
-FBPlugGUIBase(&topo->static_.gui),
+FBPlugGUI(&topo->static_.gui),
 _topo(topo),
 _hostContext(hostContext)
 {

@@ -3,13 +3,13 @@
 
 using namespace juce;
 
-FBPlugGUIBase::
-FBPlugGUIBase(FBStaticGUITopo const* topo):
+FBPlugGUI::
+FBPlugGUI(FBStaticGUITopo const* topo):
 FBPlugGUIContext(topo)
 {
   setOpaque(true);
   setVisible(true);
-  setSize(topo->plugWidth, topo->plugWidth * topo->aspectRatioHeight / topo->aspectRatioWidth);
+  setSize(topo->plugWidth, GetHeightForAspectRatio(topo->plugWidth));
 }
 
 void 

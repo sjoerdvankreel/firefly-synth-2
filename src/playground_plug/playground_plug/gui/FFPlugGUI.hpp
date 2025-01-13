@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/gui/glue/FBPlugGUIBase.hpp>
+#include <playground_base/gui/glue/FBPlugGUI.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
 #include <memory>
@@ -9,7 +9,7 @@ struct FBRuntimeTopo;
 class IFBHostGUIContext;
 
 class FFPlugGUI final:
-public FBPlugGUIBase
+public FBPlugGUI
 {
   FBRuntimeTopo const* const _topo;
   IFBHostGUIContext* const _hostContext;
