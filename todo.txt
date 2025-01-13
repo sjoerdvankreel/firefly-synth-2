@@ -1,8 +1,7 @@
-fruity load gui borks the automation
-remember the gui size
+test sys dpi
+store width in the stream
+do minmax width + remember the gui size
 multitap fb delay
-scaling is borked
-also do resize by scaling
 redo perf test
 pdbs are borked after first build
 fix warnings
