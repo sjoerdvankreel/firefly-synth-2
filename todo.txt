@@ -1,3 +1,4 @@
+fruity load gui borks the automation
 remember the gui size
 multitap fb delay
 scaling is borked
