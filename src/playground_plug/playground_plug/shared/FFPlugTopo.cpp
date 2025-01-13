@@ -32,12 +32,15 @@ FFMakeTopo()
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
+  result->gui.width = 800;
+  result->gui.aspectRatioWidth = 4;
+  result->gui.aspectRatioHeight = 3;
+  result->gui.factory = [](FBRuntimeTopo const* topo, IFBHostGUIContext* ctx) {
+    return std::make_unique<FFPlugGUI>(topo, ctx); };
   result->state.allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result->state.allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
   result->state.freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result->state.freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
-  result->guiFactory = [](FBRuntimeTopo const* topo, IFBHostGUIContext* ctx) { 
-    return std::make_unique<FFPlugGUI>(topo, ctx); };
   result->state.specialSelector = [](FBStaticTopo const& topo, void* state) {
     FBSpecialParams params = {};
     params.smoothing = MakeSpecialParam(topo, state, (int)FFModuleType::Master, (int)FFMasterParam::Smoothing);

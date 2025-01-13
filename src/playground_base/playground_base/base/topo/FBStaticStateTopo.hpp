@@ -13,7 +13,6 @@ FBSpecialParamsSelector;
 struct FBStaticStateTopo final
 {
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticStateTopo);
-
   void* (*allocRawProcState)() = {};
   void* (*allocRawScalarState)() = {};
   void (*freeRawProcState)(void* state) = {};

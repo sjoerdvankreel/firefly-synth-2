@@ -56,7 +56,7 @@ FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 bool
 FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
 {
-  _gui = _topo->static_.guiFactory(_topo.get(), this);
+  _gui = _topo->static_.gui.factory(_topo.get(), this);
   return true;
 }
 
