@@ -41,7 +41,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
   for (int i = 0; i < _guiState.Params().size(); i++)
   {
     float normalized = *_guiState.Params()[i];
-    PerformParamEdit(i, normalized);
+    _procState.InitProcessing(i, normalized);
     if (_gui)
       _gui->SetParamNormalized(i, normalized);
   }
