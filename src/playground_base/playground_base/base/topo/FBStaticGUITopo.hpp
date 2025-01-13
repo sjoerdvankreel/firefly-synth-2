@@ -18,6 +18,8 @@ struct FBStaticGUITopo final
 {
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticGUITopo);
   int plugWidth = {};
+  float minUserScale = {};
+  float maxUserScale = {};
   int aspectRatioWidth = {};
   int aspectRatioHeight = {};
   FBPlugGUIFactory factory = {};

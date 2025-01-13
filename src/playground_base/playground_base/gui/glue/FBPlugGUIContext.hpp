@@ -24,6 +24,7 @@ public:
   void SetSystemScale(float scale);
   void SetUserScaleByHostWidth(int width);
   std::pair<int, int> GetHostSize() const;
+  int ClampHostWidthForScale(int width) const;
   int GetHeightForAspectRatio(int width) const;
 
   virtual void RemoveFromDesktop() = 0;

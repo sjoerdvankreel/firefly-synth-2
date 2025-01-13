@@ -91,6 +91,7 @@ FBVST3GUIEditor::setContentScaleFactor(ScaleFactor factor)
 tresult PLUGIN_API 
 FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect)
 {
+  rect->right = rect->left + _gui->ClampHostWidthForScale(rect->getWidth());
   rect->bottom = rect->top + _gui->GetHeightForAspectRatio(rect->getWidth());
   return kResultTrue;
 }

@@ -2,6 +2,7 @@
 #include <playground_base/base/topo/FBStaticGUITopo.hpp>
 
 #include <cmath>
+#include <algorithm>
 
 FBPlugGUIContext::
 FBPlugGUIContext(FBStaticGUITopo const* topo):
@@ -31,6 +32,14 @@ int
 FBPlugGUIContext::GetHeightForAspectRatio(int width) const
 {
   return width * _topo->aspectRatioHeight / _topo->aspectRatioWidth;
+}
+
+int
+FBPlugGUIContext::ClampHostWidthForScale(int width) const
+{
+  float minW = _topo->plugWidth * _topo->minUserScale * _systemScale;
+  float maxW = _topo->plugWidth * _topo->maxUserScale * _systemScale;
+  return (int)std::round(std::clamp((float)width, minW, maxW));
 }
 
 std::pair<int, int>
