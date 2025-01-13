@@ -10,8 +10,10 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
+struct FBGUIState;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
+
 class FBVST3GUIEditor;
 
 class FBVST3EditController final:
@@ -20,8 +22,10 @@ public IFBHostGUIContext
 {
   FBVST3GUIEditor* _guiEditor = {};
   std::unique_ptr<FBRuntimeTopo> _topo;
+  std::unique_ptr<FBGUIState> _guiState;
 
 public:
+  ~FBVST3EditController();
   FBVST3EditController(FBStaticTopo const& topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
 

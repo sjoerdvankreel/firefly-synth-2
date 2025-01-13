@@ -1,21 +1,25 @@
 #pragma once
 
+#include <playground_base/base/state/FBGUIState.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
+
 #include <utility>
 
 struct FBStaticGUITopo;
 
 class FBPlugGUIContext
 {
-  float _userScale = 1.0f;
   float _systemScale = 1.0f;
+  FBGUIState* const _state;
   FBStaticGUITopo const* const _topo;
 
   float CombinedScale() const;
 
 protected:
+  FBPlugGUIContext(
+    FBStaticGUITopo const* topo, 
+    FBGUIState* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContext);
-  FBPlugGUIContext(FBStaticGUITopo const* topo);
   virtual void RequestRescale(float combinedScale) = 0;
 
 public:

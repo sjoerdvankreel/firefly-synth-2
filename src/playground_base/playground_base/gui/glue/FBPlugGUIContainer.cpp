@@ -11,8 +11,9 @@ FBPlugGUIContainer::
 FBPlugGUIContainer::
 FBPlugGUIContainer(
   FBRuntimeTopo const* topo,
+  FBGUIState* state,
   IFBHostGUIContext* context):
-FBPlugGUIContext(&topo->static_.gui),
+FBPlugGUIContext(&topo->static_.gui, state),
 _gui(topo->static_.gui.factory(topo, context))
 {
   setOpaque(true);
