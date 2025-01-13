@@ -7,9 +7,9 @@
 
 FBScalarStateContainer::
 FBScalarStateContainer(FBRuntimeTopo const& topo):
-_rawState(topo.static_.allocRawScalarState()),
+_rawState(topo.static_.state.allocRawScalarState()),
 _params(),
-_freeRawState(topo.static_.freeRawScalarState)
+_freeRawState(topo.static_.state.freeRawScalarState)
 {
   for (int p = 0; p < topo.params.size(); p++)
     _params.push_back(topo.params[p].static_.scalarAddr(

@@ -32,13 +32,13 @@ FFMakeTopo()
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
-  result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
-  result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
-  result->freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
-  result->freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
+  result->state.allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
+  result->state.allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
+  result->state.freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
+  result->state.freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
   result->guiFactory = [](FBRuntimeTopo const* topo, IFBHostGUIContext* ctx) { 
     return std::make_unique<FFPlugGUI>(topo, ctx); };
-  result->specialSelector = [](FBStaticTopo const& topo, void* state) {
+  result->state.specialSelector = [](FBStaticTopo const& topo, void* state) {
     FBSpecialParams params = {};
     params.smoothing = MakeSpecialParam(topo, state, (int)FFModuleType::Master, (int)FFMasterParam::Smoothing);
     return params; };
