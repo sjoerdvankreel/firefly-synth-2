@@ -1,5 +1,4 @@
 test sys dpi
-store width in the stream
 remember the gui size
 multitap fb delay
 redo perf test
