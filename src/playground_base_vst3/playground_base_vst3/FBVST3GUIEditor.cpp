@@ -1,6 +1,7 @@
 #include <playground_base_vst3/FBVST3GUIEditor.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 #include <playground_base/gui/glue/FBPlugGUI.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 
 #include <algorithm>
 
@@ -10,6 +11,7 @@ FBVST3GUIEditor(
   FBRuntimeTopo const* topo,
   FBVST3EditController* editController):
 EditorView(editController),
+_topo(&topo->static_.gui),
 _gui(factory(topo, editController)) {}
 
 FBVST3GUIEditor::
@@ -66,7 +68,7 @@ FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
 tresult PLUGIN_API 
 FBVST3GUIEditor::getSize(ViewRect* size)
 {
-  size->right = size->left + _gui->GetScaledWidth();
+  size->right = size->left + _topo->width * _gui->GetScale();
   size->bottom = size->top + _gui->GetScaledHeight();
   checkSizeConstraint(size);
   return kResultTrue;

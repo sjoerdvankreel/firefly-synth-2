@@ -5,18 +5,18 @@
 #include <memory>
 #include <functional>
 
-class IFBPlugGUI;
-class IFBHostGUIContext;
 struct FBRuntimeTopo;
+class FBPlugGUIContext;
+class IFBHostGUIContext;
 
-typedef std::function<std::unique_ptr<IFBPlugGUI>(
+typedef std::function<std::unique_ptr<FBPlugGUIContext>(
   FBRuntimeTopo const* topo, IFBHostGUIContext* context)>
 FBPlugGUIFactory;
 
 struct FBStaticGUITopo final
 {
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticGUITopo);
-  int width = {};
+  int plugWidth = {};
   int aspectRatioWidth = {};
   int aspectRatioHeight = {};
   FBPlugGUIFactory factory = {};

@@ -19,8 +19,8 @@ using namespace clap::helpers;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
-class IFBPlugGUI;
 class IFBPlugProcessor;
+class FBPlugGUIContext;
 
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
@@ -31,7 +31,7 @@ public IFBHostGUIContext
   std::unique_ptr<FBRuntimeTopo> _topo;
   FBProcStateContainer _procState;
   FBScalarStateContainer _guiState;
-  std::unique_ptr<IFBPlugGUI> _gui;
+  std::unique_ptr<FBPlugGUIContext> _gui;
 
   moodycamel::ReaderWriterQueue<FBCLAPSyncToMainEvent, 
     FBCLAPSyncEventReserve> _audioToMainEvents;

@@ -11,15 +11,18 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-class IFBPlugGUI;
-class FBVST3EditController;
 struct FBRuntimeTopo;
+struct FBStaticGUITopo;
+
+class FBPlugGUIContext;
+class FBVST3EditController;
 
 class FBVST3GUIEditor final:
 public EditorView,
 public IPlugViewContentScaleSupport
 {
-  std::unique_ptr<IFBPlugGUI> _gui;
+  std::unique_ptr<FBPlugGUIContext> _gui;
+  FBStaticGUITopo const* const _topo;
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);
