@@ -5,11 +5,12 @@
 #include <memory>
 #include <functional>
 
-struct FBRuntimeTopo;
-class FBPlugGUIContext;
+class FBPlugGUI;
 class IFBHostGUIContext;
 
-typedef std::function<std::unique_ptr<FBPlugGUIContext>(
+struct FBRuntimeTopo;
+
+typedef std::function<std::unique_ptr<FBPlugGUI>(
   FBRuntimeTopo const* topo, IFBHostGUIContext* context)>
 FBPlugGUIFactory;
 
