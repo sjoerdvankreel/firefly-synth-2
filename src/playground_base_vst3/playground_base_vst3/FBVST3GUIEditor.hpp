@@ -11,7 +11,6 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-struct FBGUIState;
 struct FBRuntimeTopo;
 struct FBStaticGUITopo;
 
@@ -30,7 +29,6 @@ public:
   FBVST3GUIEditor(
     FBPlugGUIFactory const& factory, 
     FBRuntimeTopo const* topo,
-    FBGUIState* guiState,
     FBVST3EditController* editController);
 
   void SetParamNormalized(int index, float normalized);

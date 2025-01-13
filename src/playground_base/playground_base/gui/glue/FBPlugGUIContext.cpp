@@ -5,22 +5,13 @@
 #include <algorithm>
 
 FBPlugGUIContext::
-FBPlugGUIContext(
-  FBStaticGUITopo const* topo, 
-  FBGUIState* state):
-_state(state),
+FBPlugGUIContext(FBStaticGUITopo const* topo):
 _topo(topo) {}
 
 float 
 FBPlugGUIContext::CombinedScale() const
 {
-  return _state->userScale * _systemScale;
-}
-
-int
-FBPlugGUIContext::GetHeightForAspectRatio(int width) const
-{
-  return width * _topo->aspectRatioHeight / _topo->aspectRatioWidth;
+  return _userScale * _systemScale;
 }
 
 void 
@@ -33,8 +24,14 @@ FBPlugGUIContext::SetSystemScale(float scale)
 void 
 FBPlugGUIContext::SetUserScaleByHostWidth(int width)
 {
-  _state->userScale = ((float)width / (float)_topo->plugWidth) / _systemScale;
+  _userScale = ((float)width / (float)_topo->plugWidth) / _systemScale;
   RequestRescale(CombinedScale());
+}
+
+int
+FBPlugGUIContext::GetHeightForAspectRatio(int width) const
+{
+  return width * _topo->aspectRatioHeight / _topo->aspectRatioWidth;
 }
 
 int
