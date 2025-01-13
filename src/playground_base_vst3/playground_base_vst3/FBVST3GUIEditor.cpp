@@ -57,20 +57,12 @@ FBVST3GUIEditor::attached(void* parent, FIDString type)
   return EditorView::attached(parent, type);
 }
 
-tresult PLUGIN_API
-FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
-{
-  QUERY_INTERFACE(iid, obj, IPlugViewContentScaleSupport::iid, IPlugViewContentScaleSupport);
-  return EditorView::queryInterface(iid, obj);
-}
-
 tresult PLUGIN_API 
 FBVST3GUIEditor::getSize(ViewRect* size)
 {
   auto hostSize = _gui->GetHostSize();
   size->right = size->left + hostSize.first;
   size->bottom = size->top + hostSize.second;
-  checkSizeConstraint(size);
   return kResultTrue;
 }
 
@@ -99,12 +91,7 @@ FBVST3GUIEditor::setContentScaleFactor(ScaleFactor factor)
 tresult PLUGIN_API 
 FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect)
 {
-  int minW = _gui->GetMinScaledWidth();
-  int maxW = _gui->GetMaxScaledWidth();
-  int arW = _topo _gui->GetAspectRatioWidth();
-  int arH = _gui->GetAspectRatioHeight();
-  rect->right = rect->left + std::clamp(rect->getWidth(), minW, maxW);
-  rect->bottom = rect->top + rect->getWidth() * arH / arW;
+  rect->bottom = rect->top + _gui->GetHeightForAspectRatio(rect->getWidth());
   return kResultTrue;
 }
 
@@ -115,4 +102,11 @@ FBVST3GUIEditor::isPlatformTypeSupported(FIDString type)
   if (std::string(type) == kPlatformTypeNSView) return kResultTrue;
   if (std::string(type) == kPlatformTypeX11EmbedWindowID) return kResultTrue;
   return kResultFalse;
+}
+
+tresult PLUGIN_API
+FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
+{
+  QUERY_INTERFACE(iid, obj, IPlugViewContentScaleSupport::iid, IPlugViewContentScaleSupport);
+  return EditorView::queryInterface(iid, obj);
 }

@@ -13,31 +13,37 @@ FBPlugGUIContext(topo)
 }
 
 void 
-FBPlugGUIBase::paint(Graphics& g)
+FBPlugGUI::paint(Graphics& g)
 {
   g.fillAll(Colours::black);
 }
 
 void
-FBPlugGUIBase::RemoveFromDesktop()
+FBPlugGUI::RemoveFromDesktop()
 {
   removeFromDesktop();
 }
 
 void
-FBPlugGUIBase::AddToDesktop(void* parent)
+FBPlugGUI::AddToDesktop(void* parent)
 {
   addToDesktop(0, parent);
 }
 
 void
-FBPlugGUIBase::SetVisible(bool visible)
+FBPlugGUI::SetVisible(bool visible)
 {
   setVisible(visible);
 }
 
 void
-FBPlugGUIBase::SetParamNormalized(int index, float normalized)
+FBPlugGUI::RequestRescale(float combinedScale)
+{
+  setTransform(AffineTransform::scale(combinedScale));
+}
+
+void
+FBPlugGUI::SetParamNormalized(int index, float normalized)
 {
   GetParamControlForIndex(index)->SetValueNormalized(normalized);
 }

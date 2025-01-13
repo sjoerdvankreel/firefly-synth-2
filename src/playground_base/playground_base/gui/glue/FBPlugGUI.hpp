@@ -15,8 +15,10 @@ public FBPlugGUIContext
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBStaticGUITopo const* topo);
+  
   virtual IFBParamControl* 
   GetParamControlForIndex(int index) = 0;
+  void RequestRescale(float combinedScale) override;
 
 public:
   void paint(juce::Graphics& g) override;

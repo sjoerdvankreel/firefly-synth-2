@@ -45,6 +45,15 @@ FBCLAPPlugin::guiDestroy() noexcept
 }
 
 bool
+FBCLAPPlugin::guiSetScale(double scale) noexcept
+{
+  _gui->SetSystemScale((float)scale);
+  auto hostSize = _gui->GetHostSize();
+  _host.guiRequestResize(hostSize.first, hostSize.second);
+  return true;
+}
+
+bool
 FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 {
   if (!_gui)
@@ -61,20 +70,12 @@ FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
 }
 
 bool
-FBCLAPPlugin::guiSetScale(double scale) noexcept
-{
-  _gui->SetContentScaleFactor((float)scale);
-  _host.guiRequestResize(_gui->GetScaledWidth(), _gui->GetScaledHeight());
-  return true;
-}
-
-bool
 FBCLAPPlugin::guiSetSize(uint32_t width, uint32_t height) noexcept 
 {
   if (!_gui)
     return false;
   guiAdjustSize(&width, &height);
-  _gui->SetScaledSize(width, height);
+  _gui->SetUserScaleByHostWidth(width);
   return true;
 }
 
@@ -83,9 +84,9 @@ FBCLAPPlugin::guiGetSize(uint32_t* width, uint32_t* height) noexcept
 {
   if (!_gui)
     return false;
-  *width = _gui->GetScaledWidth();
-  *height = _gui->GetScaledHeight();
-  guiAdjustSize(width, height);
+  auto hostSize = _gui->GetHostSize();
+  *width = hostSize.first;
+  *height = hostSize.second;
   return true;
 }
 
@@ -94,12 +95,7 @@ FBCLAPPlugin::guiAdjustSize(uint32_t* width, uint32_t* height) noexcept
 {
   if (!_gui)
     return false;
-  int minW = _gui->GetMinScaledWidth();
-  int maxW = _gui->GetMaxScaledWidth();
-  int arW = _gui->GetAspectRatioWidth();
-  int arH = _gui->GetAspectRatioHeight();
-  *width = std::clamp((int)*width, minW, maxW);
-  *height = *width * arH / arW;
+  *height = _gui->GetHeightForAspectRatio(*width);
   return true;
 }
 
@@ -109,8 +105,8 @@ FBCLAPPlugin::guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept
   hints->preserve_aspect_ratio = true;
   hints->can_resize_vertically = true;
   hints->can_resize_horizontally = true;
-  hints->aspect_ratio_width = _gui->GetAspectRatioWidth();
-  hints->aspect_ratio_height = _gui->GetAspectRatioHeight();
+  hints->aspect_ratio_width = _topo->static_.gui.aspectRatioWidth;
+  hints->aspect_ratio_height = _topo->static_.gui.aspectRatioHeight;
   return true;
 }
 

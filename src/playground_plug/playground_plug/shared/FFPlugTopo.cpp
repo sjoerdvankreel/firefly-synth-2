@@ -32,7 +32,7 @@ FFMakeTopo()
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
-  result->gui.width = 800;
+  result->gui.plugWidth = 800;
   result->gui.aspectRatioWidth = 4;
   result->gui.aspectRatioHeight = 3;
   result->gui.factory = [](FBRuntimeTopo const* topo, IFBHostGUIContext* ctx) {
