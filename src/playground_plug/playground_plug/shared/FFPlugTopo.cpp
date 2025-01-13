@@ -34,7 +34,7 @@ FFMakeTopo()
   result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
   result->gui.plugWidth = 800;
   result->gui.minUserScale = 0.5f;
-  result->gui.maxUserScale = 1.5f; // TODO
+  result->gui.maxUserScale = 16.0f;
   result->gui.aspectRatioWidth = 4;
   result->gui.aspectRatioHeight = 3;
   result->gui.factory = [](FBRuntimeTopo const* topo, IFBHostGUIContext* ctx) {
