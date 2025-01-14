@@ -75,7 +75,7 @@ FBVST3AudioEffect::ProcessVoices()
 tresult PLUGIN_API
 FBVST3AudioEffect::getState(IBStream* state)
 {
-  std::string json = _topo->SaveProcState(_state);
+  std::string json = _topo->SaveProcStateToString(_state);
   if (!FBVST3SaveIBStream(state, json))
     return kResultFalse;
   return kResultOk;
@@ -87,7 +87,7 @@ FBVST3AudioEffect::setState(IBStream* state)
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
-  if (!_topo->LoadProcStateWithDryRun(json, _state))
+  if (!_topo->LoadProcStateFromStringWithDryRun(json, _state))
     return kResultFalse;
   return kResultOk;
 }
