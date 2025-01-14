@@ -87,7 +87,7 @@ FBVST3AudioEffect::setState(IBStream* state)
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
-  if (!_topo->LoadStateWithDryRun(json, _state))
+  if (!_topo->LoadProcStateWithDryRun(json, _state))
     return kResultFalse;
   return kResultOk;
 }

@@ -54,7 +54,7 @@ params(MakeRuntimeParams(modules)),
 paramTagToIndex(MakeParamTagToIndex(params)) {}
 
 bool
-FBRuntimeTopo::LoadStateWithDryRun(
+FBRuntimeTopo::LoadProcStateWithDryRun(
   std::string const& from, FBProcStateContainer& to) const
 {
   FBScalarStateContainer scalar(*this);
