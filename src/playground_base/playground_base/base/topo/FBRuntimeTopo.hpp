@@ -8,9 +8,11 @@
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
 
+#include <juce_core/juce_core.h>
 #include <vector>
 #include <unordered_map>
 
+struct FBGUIState;
 class FBProcStateContainer;
 class FBScalarStateContainer;
 
@@ -24,10 +26,19 @@ struct FBRuntimeTopo final
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
 
-  std::string SaveProcState(FBProcStateContainer const& proc) const;
-  std::string SaveEditState(FBScalarStateContainer const& edit) const;
+  juce::var SaveGUIStateToVar(FBGUIState const& gui) const;
+  juce::var SaveProcStateToVar(FBProcStateContainer const& proc) const;
+  juce::var SaveEditStateToVar(FBScalarStateContainer const& edit) const;
 
-  bool LoadEditState(std::string const& jsonText, FBScalarStateContainer& edit) const;
-  bool LoadProcStateWithDryRun(std::string const& jsonText, FBProcStateContainer& proc) const;
-  bool LoadEditStateWithDryRun(std::string const& jsonText, FBScalarStateContainer& edit) const;
+  std::string SaveGUIStateToString(FBGUIState const& gui) const;
+  std::string SaveProcStateToString(FBProcStateContainer const& proc) const;
+  std::string SaveEditStateToString(FBScalarStateContainer const& edit) const;
+
+  bool LoadGUIStateFromVar(juce::var const& json, FBGUIState& gui) const;
+  bool LoadProcStateFromVar(juce::var const& json, FBProcStateContainer& proc) const;
+  bool LoadEditStateFromVar(juce::var const& json, FBScalarStateContainer& edit) const;
+
+  bool LoadGUIStateFromString(std::string const& text, FBGUIState& gui) const;
+  bool LoadProcStateFromString(std::string const& text, FBProcStateContainer& proc) const;
+  bool LoadEditStateFromString(std::string const& text, FBScalarStateContainer& edit) const;
 };

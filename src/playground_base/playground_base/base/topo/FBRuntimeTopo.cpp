@@ -1,13 +1,26 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/topo/FBTopoDetail.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBGUIState.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
 
 #include <juce_core/juce_core.h>
 
+using namespace juce;
+
 static std::string const 
 Magic = "{84A1EBED-4BE5-47F2-8E53-13B965628974}";
+
+static bool
+ParseJson(std::string const& text, var& json)
+{
+  auto parsed = JSON::parse(text, json);
+  DynamicObject* obj = json.getDynamicObject();
+  if (!parsed.wasOk() || obj == nullptr)
+    return false;
+  return true;
+}
 
 static std::unordered_map<int, int>
 MakeParamTagToIndex(
@@ -53,46 +66,104 @@ modules(MakeRuntimeModules(topo)),
 params(MakeRuntimeParams(modules)),
 paramTagToIndex(MakeParamTagToIndex(params)) {}
 
-std::string
-FBRuntimeTopo::SaveProcState(
+std::string 
+FBRuntimeTopo::SaveGUIStateToString(
+  FBGUIState const& gui) const
+{
+  return SaveGUIStateToVar(gui).toString().toStdString();
+}
+
+std::string 
+FBRuntimeTopo::SaveProcStateToString(
+  FBProcStateContainer const& proc) const
+{
+  return SaveProcStateToVar(proc).toString().toStdString();
+}
+
+std::string 
+FBRuntimeTopo::SaveEditStateToString(
+  FBScalarStateContainer const& edit) const
+{
+  return SaveEditStateToVar(edit).toString().toStdString();
+}
+
+bool 
+FBRuntimeTopo::LoadGUIStateFromString(
+  std::string const& text, FBGUIState& gui) const
+{
+  var json;
+  if (!ParseJson(text, json))
+    return false;
+  return LoadGUIStateFromVar(json, gui);
+}
+
+bool
+FBRuntimeTopo::LoadProcStateFromString(
+  std::string const& text, FBProcStateContainer& proc) const
+{
+  var json;
+  if (!ParseJson(text, json))
+    return false;
+  return LoadProcStateFromVar(json, proc);
+}
+
+bool 
+FBRuntimeTopo::LoadEditStateFromString(
+  std::string const& text, FBScalarStateContainer& edit) const
+{
+  var json;
+  if (!ParseJson(text, json))
+    return false;
+  return LoadEditStateFromVar(json, edit);
+}
+
+var
+FBRuntimeTopo::SaveProcStateToVar( 
   FBProcStateContainer const& proc) const
 {
   FBScalarStateContainer edit(*this);
   edit.CopyFrom(proc);
-  return SaveEditState(edit);
+  return SaveEditStateToVar(edit);
 }
 
-bool
-FBRuntimeTopo::LoadProcStateWithDryRun(
-  std::string const& jsonText, FBProcStateContainer& proc) const
+var 
+FBRuntimeTopo::SaveGUIStateToVar(
+  FBGUIState const& gui) const
 {
-  FBScalarStateContainer dryEdit(*this);
-  bool result = LoadEditState(jsonText, dryEdit);
-  if (result)
-    proc.InitProcessing(dryEdit);
-  return result;
+  auto result = new DynamicObject;
+  result->setProperty("userScale", gui.userScale);
+  return var(result);
 }
 
-bool
-FBRuntimeTopo::LoadEditStateWithDryRun(
-  std::string const& jsonText, FBScalarStateContainer& edit) const
+bool 
+FBRuntimeTopo::LoadProcStateFromVar(
+  var const& json, FBProcStateContainer& proc) const
 {
-  FBScalarStateContainer dryEdit(*this);
-  bool result = LoadEditState(jsonText, dryEdit);
-  if (result)
-    edit.CopyFrom(dryEdit);
-  return result;
+  FBScalarStateContainer edit(*this);
+  if (!LoadEditStateFromVar(json, edit))
+    return false;
+  proc.InitProcessing(edit);
+  return true;
 }
 
-std::string 
-FBRuntimeTopo::SaveEditState(
+bool 
+FBRuntimeTopo::LoadGUIStateFromVar(
+  var const& json, FBGUIState& gui) const
+{
+  DynamicObject* obj = json.getDynamicObject();
+  if (!obj->hasProperty("userScale"))
+    return false;
+  else
+    gui.userScale = std::clamp(
+      (float)obj->getProperty("userScale"), 
+      static_.gui.minUserScale, static_.gui.maxUserScale);
+  return true;
+}
+
+var
+FBRuntimeTopo::SaveEditStateToVar(
   FBScalarStateContainer const& edit) const
 {
-  using juce::var;
-  using juce::JSON;
-  using juce::String;
-  using juce::DynamicObject;
-
   var state;
   for (int p = 0; p < params.size(); p++)
   {
@@ -108,24 +179,14 @@ FBRuntimeTopo::SaveEditState(
   result->setProperty("minor", static_.version.minor);
   result->setProperty("patch", static_.version.patch);
   result->setProperty("state", state);
-  return JSON::toString(var(result)).toStdString();
+  return var(result);
 }
 
 bool 
-FBRuntimeTopo::LoadEditState(
-  std::string const& jsonText, FBScalarStateContainer& edit) const
+FBRuntimeTopo::LoadEditStateFromVar(
+  var const& json, FBScalarStateContainer& edit) const
 {
-  using juce::var;
-  using juce::JSON;
-  using juce::String;
-  using juce::DynamicObject;
-  
-  var json;
-  auto parsed = JSON::parse(jsonText, json);
   DynamicObject* obj = json.getDynamicObject();
-  if (!parsed.wasOk() || obj == nullptr)
-    return false;
-
   if (!obj->hasProperty("magic"))
     return false;
   var magic = obj->getProperty("magic");
