@@ -103,6 +103,26 @@ FBVST3EditController::createView(FIDString name)
 }
 
 tresult PLUGIN_API
+FBVST3EditController::getState(IBStream* state)
+{
+  std::string json = _topo->SaveGUIStateToString(*_guiState);
+  if (!FBVST3SaveIBStream(state, json))
+    return kResultFalse;
+  return kResultOk;
+}
+
+tresult PLUGIN_API 
+FBVST3EditController::setState(IBStream* state)
+{
+  std::string json;
+  if (!FBVST3LoadIBStream(state, json))
+    return kResultFalse;
+  if (!_topo->LoadGUIStateFromStringWithDryRun(json, *_guiState))
+    return kResultFalse;
+  return kResultTrue;
+}
+
+tresult PLUGIN_API
 FBVST3EditController::setComponentState(IBStream* state)
 {
   std::string json;

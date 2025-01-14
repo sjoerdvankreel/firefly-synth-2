@@ -34,8 +34,10 @@ public:
   void BeginParamChange(int index) override;
   float GetParamNormalized(int index) const override;
   void PerformParamEdit(int index, float normalized) override;
-
   IPlugView* PLUGIN_API createView(FIDString name) override;
+
+  tresult PLUGIN_API setState(IBStream* state) override;
+  tresult PLUGIN_API getState(IBStream* state) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
   tresult PLUGIN_API setComponentState(IBStream* state) override;
   tresult PLUGIN_API setParamNormalized(ParamID tag, ParamValue value) override;
