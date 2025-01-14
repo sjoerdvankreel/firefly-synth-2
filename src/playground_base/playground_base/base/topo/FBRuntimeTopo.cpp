@@ -70,21 +70,21 @@ std::string
 FBRuntimeTopo::SaveGUIStateToString(
   FBGUIState const& gui) const
 {
-  return SaveGUIStateToVar(gui).toString().toStdString();
+  return JSON::toString(SaveGUIStateToVar(gui)).toStdString();
 }
 
 std::string 
 FBRuntimeTopo::SaveProcStateToString(
   FBProcStateContainer const& proc) const
 {
-  return SaveProcStateToVar(proc).toString().toStdString();
+  return JSON::toString(SaveProcStateToVar(proc)).toStdString();
 }
 
 std::string 
 FBRuntimeTopo::SaveEditStateToString(
   FBScalarStateContainer const& edit) const
 {
-  return SaveEditStateToVar(edit).toString().toStdString();
+  return JSON::toString(SaveEditStateToVar(edit)).toStdString();
 }
 
 bool 
