@@ -151,9 +151,7 @@ FBRuntimeTopo::LoadGUIStateFromVar(
   var const& json, FBGUIState& gui) const
 {
   DynamicObject* obj = json.getDynamicObject();
-  if (!obj->hasProperty("userScale"))
-    return false;
-  else
+  if (obj->hasProperty("userScale"))
     gui.userScale = std::clamp(
       (float)obj->getProperty("userScale"), 
       static_.gui.minUserScale, static_.gui.maxUserScale);
