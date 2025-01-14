@@ -118,7 +118,7 @@ FBCLAPPlugin(
 Plugin(desc, host),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
 _procState(*_topo),
-_guiState(*_topo),
+_editState(*_topo),
 _gui(),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1) {}
@@ -126,7 +126,7 @@ _mainToAudioEvents(FBCLAPSyncEventReserve - 1) {}
 float
 FBCLAPPlugin::GetParamNormalized(int index) const
 {
-  return *_guiState.Params()[index];
+  return *_editState.Params()[index];
 }
 
 void 
@@ -177,7 +177,7 @@ FBCLAPPlugin::PerformParamEdit(int index, float normalized)
 {  
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized);
   _mainToAudioEvents.enqueue(event);
-  *_guiState.Params()[index] = normalized;
+  *_editState.Params()[index] = normalized;
   if (_host.canUseParams())
     _host.paramsRequestFlush();
 }

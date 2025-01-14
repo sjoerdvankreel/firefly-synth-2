@@ -25,7 +25,7 @@ FBCLAPPlugin::paramsValue(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  auto const& state = _guiState;
+  auto const& state = _editState;
   auto const& static_ = _topo->params[index].static_;
   *value = FBNormalizedToCLAP(static_, *state.Params()[index]);
   return true;
@@ -83,7 +83,7 @@ FBCLAPPlugin::paramsFlush(
     }
     else
     {
-      *_guiState.Params()[index] = (float)event->value;
+      *_editState.Params()[index] = (float)event->value;
       _mainToAudioEvents.enqueue(FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, event->value));
     }
   }

@@ -30,7 +30,7 @@ public IFBHostGUIContext
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
   FBProcStateContainer _procState;
-  FBScalarStateContainer _guiState;
+  FBScalarStateContainer _editState;
   std::unique_ptr<FBPlugGUIContext> _gui;
 
   moodycamel::ReaderWriterQueue<FBCLAPSyncToMainEvent, 
