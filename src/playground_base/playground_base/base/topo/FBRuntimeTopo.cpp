@@ -76,7 +76,7 @@ FBRuntimeTopo::LoadStateWithDryRun(
 }
 
 std::string
-FBRuntimeTopo::SaveState(FBProcStateContainer const& from) const
+FBRuntimeTopo::SaveProcState(FBProcStateContainer const& from) const
 {
   FBScalarStateContainer scalar(*this);
   scalar.CopyFrom(from);

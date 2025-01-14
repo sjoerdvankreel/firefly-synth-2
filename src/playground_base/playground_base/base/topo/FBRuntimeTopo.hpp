@@ -24,8 +24,8 @@ struct FBRuntimeTopo final
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
 
-  std::string SaveState(FBProcStateContainer const& from) const;
   std::string SaveState(FBScalarStateContainer const& from) const;
+  std::string SaveProcState(FBProcStateContainer const& from) const;
 
   bool LoadState(std::string const& from, FBScalarStateContainer& to) const;
   bool LoadStateWithDryRun(std::string const& from, FBScalarStateContainer& to) const;
