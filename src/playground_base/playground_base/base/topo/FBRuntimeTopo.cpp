@@ -53,38 +53,40 @@ modules(MakeRuntimeModules(topo)),
 params(MakeRuntimeParams(modules)),
 paramTagToIndex(MakeParamTagToIndex(params)) {}
 
+std::string
+FBRuntimeTopo::SaveProcState(
+  FBProcStateContainer const& proc) const
+{
+  FBScalarStateContainer edit(*this);
+  edit.CopyFrom(proc);
+  return SaveEditState(edit);
+}
+
 bool
 FBRuntimeTopo::LoadProcStateWithDryRun(
-  std::string const& from, FBProcStateContainer& to) const
+  std::string const& jsonText, FBProcStateContainer& proc) const
 {
-  FBScalarStateContainer scalar(*this);
-  bool result = LoadState(from, scalar);
+  FBScalarStateContainer dryEdit(*this);
+  bool result = LoadEditState(jsonText, dryEdit);
   if (result)
-    to.InitProcessing(scalar);
+    proc.InitProcessing(dryEdit);
   return result;
 }
 
 bool
-FBRuntimeTopo::LoadStateWithDryRun(
-  std::string const& from, FBScalarStateContainer& to) const
+FBRuntimeTopo::LoadEditStateWithDryRun(
+  std::string const& jsonText, FBScalarStateContainer& edit) const
 {
-  FBScalarStateContainer scalar(*this);
-  bool result = LoadState(from, scalar);
+  FBScalarStateContainer dryEdit(*this);
+  bool result = LoadEditState(jsonText, dryEdit);
   if (result)
-    to.CopyFrom(scalar);
+    edit.CopyFrom(dryEdit);
   return result;
-}
-
-std::string
-FBRuntimeTopo::SaveProcState(FBProcStateContainer const& from) const
-{
-  FBScalarStateContainer scalar(*this);
-  scalar.CopyFrom(from);
-  return SaveState(scalar);
 }
 
 std::string 
-FBRuntimeTopo::SaveState(FBScalarStateContainer const& from) const
+FBRuntimeTopo::SaveEditState(
+  FBScalarStateContainer const& edit) const
 {
   using juce::var;
   using juce::JSON;
@@ -96,7 +98,7 @@ FBRuntimeTopo::SaveState(FBScalarStateContainer const& from) const
   {
     auto param = new DynamicObject;
     param->setProperty("id", String(params[p].id));
-    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *from.Params()[p])));
+    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *edit.Params()[p])));
     state.append(var(param));
   }
 
@@ -110,7 +112,8 @@ FBRuntimeTopo::SaveState(FBScalarStateContainer const& from) const
 }
 
 bool 
-FBRuntimeTopo::LoadState(std::string const& from, FBScalarStateContainer& to) const
+FBRuntimeTopo::LoadEditState(
+  std::string const& jsonText, FBScalarStateContainer& edit) const
 {
   using juce::var;
   using juce::JSON;
@@ -118,7 +121,7 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStateContainer& to) co
   using juce::DynamicObject;
   
   var json;
-  auto parsed = JSON::parse(from, json);
+  auto parsed = JSON::parse(jsonText, json);
   DynamicObject* obj = json.getDynamicObject();
   if (!parsed.wasOk() || obj == nullptr)
     return false;
@@ -160,12 +163,12 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStateContainer& to) co
   if (!state.isArray())
     return false;
 
-  for (int p = 0; p < to.Params().size(); p++)
+  for (int p = 0; p < edit.Params().size(); p++)
   {
     float defaultNormalized = 0.0f;
     if(params[p].static_.defaultText.size())
       defaultNormalized = params[p].static_.TextToNormalized(false, params[p].static_.defaultText).value();
-    *to.Params()[p] = defaultNormalized;
+    *edit.Params()[p] = defaultNormalized;
   }
 
   for (int sp = 0; sp < state.size(); sp++)
@@ -193,7 +196,7 @@ FBRuntimeTopo::LoadState(std::string const& from, FBScalarStateContainer& to) co
     auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
       normalized = topo.TextToNormalized(false, topo.defaultText);
-    *to.Params()[iter->second] = normalized.value();
+    *edit.Params()[iter->second] = normalized.value();
   }
 
   return true;

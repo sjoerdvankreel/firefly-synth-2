@@ -24,10 +24,10 @@ struct FBRuntimeTopo final
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
 
-  std::string SaveState(FBScalarStateContainer const& from) const;
-  std::string SaveProcState(FBProcStateContainer const& from) const;
+  std::string SaveProcState(FBProcStateContainer const& proc) const;
+  std::string SaveEditState(FBScalarStateContainer const& edit) const;
 
-  bool LoadState(std::string const& from, FBScalarStateContainer& to) const;
-  bool LoadStateWithDryRun(std::string const& from, FBScalarStateContainer& to) const;
-  bool LoadProcStateWithDryRun(std::string const& from, FBProcStateContainer& to) const;
+  bool LoadEditState(std::string const& jsonText, FBScalarStateContainer& edit) const;
+  bool LoadProcStateWithDryRun(std::string const& jsonText, FBProcStateContainer& proc) const;
+  bool LoadEditStateWithDryRun(std::string const& jsonText, FBScalarStateContainer& edit) const;
 };

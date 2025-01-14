@@ -108,12 +108,12 @@ FBVST3EditController::setComponentState(IBStream* state)
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
-  FBScalarStateContainer scalar(*_topo);
-  if (!_topo->LoadState(json, scalar))
+  FBScalarStateContainer edit(*_topo);
+  if (!_topo->LoadEditState(json, edit))
     return kResultFalse;
-  for (int i = 0; i < scalar.Params().size(); i++)
+  for (int i = 0; i < edit.Params().size(); i++)
   {
-    float normalized = *scalar.Params()[i];
+    float normalized = *edit.Params()[i];
     parameters.getParameterByIndex(i)->setNormalized(normalized);
     if (_guiEditor != nullptr)
       _guiEditor->SetParamNormalized(i, normalized);
