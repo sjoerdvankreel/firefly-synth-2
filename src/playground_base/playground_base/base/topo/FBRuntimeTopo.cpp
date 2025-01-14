@@ -117,6 +117,39 @@ FBRuntimeTopo::LoadEditStateFromString(
   return LoadEditStateFromVar(json, edit);
 }
 
+bool 
+FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
+  std::string const& text, FBGUIState& gui) const
+{
+  FBGUIState dryGUI = {};
+  if (!LoadGUIStateFromString(text, dryGUI))
+    return false;
+  gui = dryGUI;
+  return true;
+}
+
+bool 
+FBRuntimeTopo::LoadProcStateFromStringWithDryRun(
+  std::string const& text, FBProcStateContainer& proc) const
+{
+  FBScalarStateContainer dryEdit(*this);
+  if (!LoadEditStateFromString(text, dryEdit))
+    return false;
+  proc.InitProcessing(dryEdit);
+  return true;
+}
+
+bool 
+FBRuntimeTopo::LoadEditStateFromStringWithDryRun(
+  std::string const& text, FBScalarStateContainer& edit) const
+{
+  FBScalarStateContainer dryEdit(*this);
+  if (!LoadEditStateFromString(text, dryEdit))
+    return false;
+  edit.CopyFrom(dryEdit);
+  return true;
+}
+
 var
 FBRuntimeTopo::SaveProcStateToVar( 
   FBProcStateContainer const& proc) const

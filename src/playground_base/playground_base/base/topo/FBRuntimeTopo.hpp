@@ -41,4 +41,8 @@ struct FBRuntimeTopo final
   bool LoadGUIStateFromString(std::string const& text, FBGUIState& gui) const;
   bool LoadProcStateFromString(std::string const& text, FBProcStateContainer& proc) const;
   bool LoadEditStateFromString(std::string const& text, FBScalarStateContainer& edit) const;
+
+  bool LoadGUIStateFromStringWithDryRun(std::string const& text, FBGUIState& gui) const;
+  bool LoadProcStateFromStringWithDryRun(std::string const& text, FBProcStateContainer& proc) const;
+  bool LoadEditStateFromStringWithDryRun(std::string const& text, FBScalarStateContainer& edit) const;
 };
