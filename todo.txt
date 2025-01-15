@@ -1,3 +1,4 @@
+checkout the Linux logging
 remember the gui size
 multitap fb delay
 redo perf test
