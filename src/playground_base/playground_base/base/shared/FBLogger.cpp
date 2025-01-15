@@ -12,6 +12,20 @@ using namespace juce;
 
 static std::unique_ptr<FileLogger> _logger = {};
 
+FBEntryExitLogger::
+~FBEntryExitLogger()
+{
+  FBLoggerWrite(file, line, func, "Exit.");
+}
+
+FBEntryExitLogger::
+FBEntryExitLogger(
+char const* file, int line, char const* func):
+line(line), file(file), func(func)
+{
+  FBLoggerWrite(file, line, func, "Enter.");
+}
+
 void
 FBLoggerTerminate()
 {

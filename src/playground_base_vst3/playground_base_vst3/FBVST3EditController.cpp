@@ -3,6 +3,7 @@
 #include <playground_base_vst3/FBVST3GUIEditor.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
+#include <playground_base/base/shared/FBLogger.hpp>
 #include <playground_base/base/state/FBGUIState.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 
@@ -48,12 +49,18 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
 }
 
 FBVST3EditController::
-~FBVST3EditController() {}
+~FBVST3EditController()
+{
+  FB_LOG_ENTRY_EXIT();
+}
 
 FBVST3EditController::
 FBVST3EditController(FBStaticTopo const& topo) :
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_guiState(std::make_unique<FBGUIState>()) {}
+_guiState(std::make_unique<FBGUIState>())
+{
+  FB_LOG_ENTRY_EXIT();
+}
 
 void
 FBVST3EditController::ResetView()
@@ -96,6 +103,7 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 IPlugView* PLUGIN_API
 FBVST3EditController::createView(FIDString name)
 {
+  FB_LOG_ENTRY_EXIT();
   if (ConstString(name) != ViewType::kEditor) return nullptr;
   if(_guiEditor == nullptr)
     _guiEditor = new FBVST3GUIEditor(_topo->static_.gui.factory, _topo.get(), _guiState.get(), this);
@@ -105,6 +113,7 @@ FBVST3EditController::createView(FIDString name)
 tresult PLUGIN_API
 FBVST3EditController::getState(IBStream* state)
 {
+  FB_LOG_ENTRY_EXIT();
   std::string json = _topo->SaveGUIStateToString(*_guiState);
   if (!FBVST3SaveIBStream(state, json))
     return kResultFalse;
@@ -114,6 +123,7 @@ FBVST3EditController::getState(IBStream* state)
 tresult PLUGIN_API 
 FBVST3EditController::setState(IBStream* state)
 {
+  FB_LOG_ENTRY_EXIT();
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
@@ -125,6 +135,7 @@ FBVST3EditController::setState(IBStream* state)
 tresult PLUGIN_API
 FBVST3EditController::setComponentState(IBStream* state)
 {
+  FB_LOG_ENTRY_EXIT();
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
@@ -144,6 +155,7 @@ FBVST3EditController::setComponentState(IBStream* state)
 tresult PLUGIN_API
 FBVST3EditController::initialize(FUnknown* context)
 {
+  FB_LOG_ENTRY_EXIT();
   if (EditController::initialize(context) != kResultTrue)
     return kResultFalse;
 
