@@ -38,7 +38,7 @@ FBLoggerInit(FBStaticTopoMeta const& meta)
 {
   auto path = FBGetUserPluginDataFolder(meta) / "lastrun.log";
   auto file = File(String(path.string()));
-  _logger = std::make_unique<FileLogger>(file, "", 0);
+  _logger = std::make_unique<FileLogger>(file, meta.NameAndVersion(), 0);
   FB_LOGGER_WRITE("Initialized logging.");
 }
 
