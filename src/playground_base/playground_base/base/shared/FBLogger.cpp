@@ -4,6 +4,7 @@
 
 #include <juce_core/juce_core.h>
 
+#include <ctime>
 #include <memory>
 #include <filesystem>
 
@@ -27,7 +28,19 @@ FBLoggerInit(FBStaticTopoMeta const& meta)
 
 void
 FBLoggerWrite(
-  std::string const& file, std::string const& line,
-  std::string const& func, std::string const& message)
+  char const* file, int line,
+  char const* func, std::string const& message)
 {
+  time_t rawTime;
+  struct tm* timeInfo;
+  char buffer[80] = { 0 };
+  auto fileName = std::filesystem::path(file).filename().string();
+
+  time(&rawTime);
+  timeInfo = localtime(&rawTime);
+  strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", timeInfo);
+  _logger->logMessage(
+    std::string(buffer) + "::" + 
+    fileName + ":" + std::to_string(line) + "::" + 
+    func + ": " + message);
 }

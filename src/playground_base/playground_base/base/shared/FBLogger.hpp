@@ -10,5 +10,5 @@ void
 FBLoggerInit(FBStaticTopoMeta const& meta);
 void
 FBLoggerWrite(
-  std::string const& file, std::string const& line, 
-  std::string const& func, std::string const& message);
+  char const* file, int line, 
+  char const* func, std::string const& message);

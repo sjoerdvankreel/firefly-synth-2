@@ -2,6 +2,7 @@
 #include <playground_plug/shared/FFPlugMeta.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base/base/shared/FBLogger.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
@@ -35,11 +36,13 @@ static void CLAP_ABI
 Deinit()
 {
   juce::shutdownJuce_GUI();
+  FBLoggerTerminate();
 }
 
 static bool CLAP_ABI 
 Init(char const*) 
 { 
+  FBLoggerInit(FFPlugMeta());
   juce::initialiseJuce_GUI();
   return true; 
 }
