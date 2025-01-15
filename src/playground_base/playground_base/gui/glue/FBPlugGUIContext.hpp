@@ -5,19 +5,19 @@
 
 #include <utility>
 
-struct FBStaticGUITopo;
+struct FBStaticTopoGUI;
 
 class FBPlugGUIContext
 {
   float _systemScale = 1.0f;
   FBGUIState* const _state;
-  FBStaticGUITopo const* const _topo;
+  FBStaticTopoGUI const* const _topo;
 
   float CombinedScale() const;
 
 protected:
   FBPlugGUIContext(
-    FBStaticGUITopo const* topo, 
+    FBStaticTopoGUI const* topo,
     FBGUIState* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContext);
   virtual void RequestRescale(float combinedScale) = 0;

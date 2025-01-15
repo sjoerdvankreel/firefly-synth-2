@@ -13,7 +13,7 @@ using namespace Steinberg::Vst;
 
 struct FBGUIState;
 struct FBRuntimeTopo;
-struct FBStaticGUITopo;
+struct FBStaticTopoGUI;
 
 class FBPlugGUIContext;
 class FBVST3EditController;

@@ -14,13 +14,13 @@ typedef std::function<std::unique_ptr<FBPlugGUI>(
   FBRuntimeTopo const* topo, IFBHostGUIContext* context)>
 FBPlugGUIFactory;
 
-struct FBStaticGUITopo final
+struct FBStaticTopoGUI final
 {
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticGUITopo);
   int plugWidth = {};
   float minUserScale = {};
   float maxUserScale = {};
   int aspectRatioWidth = {};
   int aspectRatioHeight = {};
   FBPlugGUIFactory factory = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoGUI);
 };

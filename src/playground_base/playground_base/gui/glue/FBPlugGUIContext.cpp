@@ -1,12 +1,12 @@
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
-#include <playground_base/base/topo/FBStaticGUITopo.hpp>
+#include <playground_base/base/topo/FBStaticTopoGUI.hpp>
 
 #include <cmath>
 #include <algorithm>
 
 FBPlugGUIContext::
 FBPlugGUIContext(
-  FBStaticGUITopo const* topo, 
+  FBStaticTopoGUI const* topo,
   FBGUIState* state):
 _state(state),
 _topo(topo) {}
