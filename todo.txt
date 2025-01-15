@@ -1,3 +1,4 @@
+do all the clap logging
 checkout the Linux logging and also mac
 remember the gui size also clap
 multitap fb delay
