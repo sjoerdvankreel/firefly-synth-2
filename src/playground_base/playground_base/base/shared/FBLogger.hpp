@@ -2,6 +2,9 @@
 
 #include <string>
 
+#define FB_LOGGER_WRITE(msg) \
+FBLoggerWrite(__FILE__, __LINE__, __func__, msg)
+
 struct FBStaticTopoMeta;
 
 void 

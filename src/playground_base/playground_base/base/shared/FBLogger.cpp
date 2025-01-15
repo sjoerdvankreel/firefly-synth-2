@@ -15,6 +15,7 @@ static std::unique_ptr<FileLogger> _logger = {};
 void
 FBLoggerTerminate()
 {
+  FB_LOGGER_WRITE("Terminating logging.");
   _logger.reset();
 }
 
@@ -24,6 +25,7 @@ FBLoggerInit(FBStaticTopoMeta const& meta)
   auto path = FBGetUserPluginDataFolder(meta) / "lastrun.log";
   auto file = File(String(path.string()));
   _logger = std::make_unique<FileLogger>(file, "", 0);
+  FB_LOGGER_WRITE("Initialized logging.");
 }
 
 void
