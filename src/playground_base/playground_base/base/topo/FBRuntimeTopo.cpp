@@ -210,9 +210,10 @@ FBRuntimeTopo::SaveEditStateToVar(
 
   auto result = new DynamicObject;
   result->setProperty("magic", String(Magic));
-  result->setProperty("major", static_.version.major);
-  result->setProperty("minor", static_.version.minor);
-  result->setProperty("patch", static_.version.patch);
+  result->setProperty("id", String(static_.meta.id));
+  result->setProperty("major", static_.meta.version.major);
+  result->setProperty("minor", static_.meta.version.minor);
+  result->setProperty("patch", static_.meta.version.patch);
   result->setProperty("state", state);
   return var(result);
 }
@@ -230,6 +231,11 @@ FBRuntimeTopo::LoadEditStateFromVar(
   if (magic.toString() != String(Magic))
     return false;
 
+  if (!obj->hasProperty("id"))
+    return false;
+  var id = obj->getProperty("id");
+  if (!id.isString())
+    return false;
   if (!obj->hasProperty("major"))
     return false;
   var major = obj->getProperty("major");
@@ -246,11 +252,13 @@ FBRuntimeTopo::LoadEditStateFromVar(
   if (!patch.isInt())
     return false;
 
-  if ((int)major > static_.version.major)
+  if (id.toString().toStdString() != static_.meta.id)
     return false;
-  if ((int)major == static_.version.major && (int)minor > static_.version.minor)
+  if ((int)major > static_.meta.version.major)
     return false;
-  if ((int)minor == static_.version.minor && (int)patch > static_.version.patch)
+  if ((int)major == static_.meta.version.major && (int)minor > static_.meta.version.minor)
+    return false;
+  if ((int)minor == static_.meta.version.minor && (int)patch > static_.meta.version.patch)
     return false;
 
   if (!obj->hasProperty("state"))
