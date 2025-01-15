@@ -1,6 +1,8 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugMeta.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
+
+#include <playground_base/base/shared/FBLogger.hpp>
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
@@ -37,12 +39,14 @@ bool
 DeinitModule()
 {
   juce::shutdownJuce_GUI();
+  FBLoggerTerminate();
   return true;
 }
 
 bool 
 InitModule()
 {
+  FBLoggerInit(FFPlugMeta());
   juce::initialiseJuce_GUI();
   return true;
 }
