@@ -1,4 +1,4 @@
-#include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/topo/FBStaticTopoMeta.hpp>
 #include <playground_base/base/shared/FBUserDataFolder.hpp>
 
 #include <juce_core/juce_core.h>
@@ -21,7 +21,7 @@ FBGetUserDataFolder()
 }
 
 std::filesystem::path
-FBGetUserPluginDataFolder(FBStaticTopo const* topo)
+FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta)
 {
-  return FBGetUserDataFolder() / topo->meta.vendor / topo->meta.name / topo->meta.id;
+  return FBGetUserDataFolder() / meta.vendor / meta.name / meta.id;
 }

@@ -2,9 +2,9 @@
 
 #include <filesystem>
 
-struct FBStaticTopo;
+struct FBStaticTopoMeta;
 
 std::filesystem::path
 FBGetUserDataFolder();
 std::filesystem::path
-FBGetUserPluginDataFolder(FBStaticTopo const* topo);
+FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta);
