@@ -10,12 +10,12 @@ typedef std::function<FBSpecialParams (
   FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
 
-struct FBStaticStateTopo final
+struct FBStaticTopoState final
 {
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticStateTopo);
   void* (*allocRawProcState)() = {};
   void* (*allocRawScalarState)() = {};
   void (*freeRawProcState)(void* state) = {};
   void (*freeRawScalarState)(void* state) = {};
   FBSpecialParamsSelector specialSelector = {};
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoState);
 };
