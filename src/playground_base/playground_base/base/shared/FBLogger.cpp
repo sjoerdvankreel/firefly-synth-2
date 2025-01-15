@@ -42,7 +42,7 @@ FBLoggerWrite(
   timeInfo = localtime(&rawTime);
   strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", timeInfo);
   _logger->logMessage(
-    std::string(buffer) + "::" + 
-    fileName + ":" + std::to_string(line) + "::" + 
+    std::string(buffer) + " :: " + 
+    fileName + ":" + std::to_string(line) + " :: " + 
     func + ": " + message);
 }
