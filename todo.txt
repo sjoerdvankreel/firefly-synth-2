@@ -1,5 +1,5 @@
-checkout the Linux logging
-remember the gui size
+checkout the Linux logging and also mac
+remember the gui size also clap
 multitap fb delay
 redo perf test
 pdbs are borked after first build
