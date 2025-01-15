@@ -113,7 +113,6 @@ FBVST3AudioEffect::initialize(FUnknown* context)
 tresult PLUGIN_API
 FBVST3AudioEffect::canProcessSampleSize(int32 symbolicSize)
 {
-  FB_LOG_ENTRY_EXIT();
   if (symbolicSize == kSample32) 
     return kResultTrue;
   return kResultFalse;
