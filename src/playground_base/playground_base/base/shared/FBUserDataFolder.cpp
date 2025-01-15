@@ -23,5 +23,5 @@ FBGetUserDataFolder()
 std::filesystem::path
 FBGetUserPluginDataFolder(FBStaticTopo const* topo)
 {
-  return FBGetUserDataFolder();//TODO
+  return FBGetUserDataFolder() / topo->meta.vendor / topo->meta.name / topo->meta.id;
 }
