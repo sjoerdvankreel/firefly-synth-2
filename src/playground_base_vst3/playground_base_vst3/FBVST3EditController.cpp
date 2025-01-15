@@ -65,6 +65,7 @@ _guiState(std::make_unique<FBGUIState>())
 void
 FBVST3EditController::ResetView()
 {
+  FB_LOG_ENTRY_EXIT();
   _guiEditor = nullptr;
 }
 

@@ -1,5 +1,6 @@
 #include <playground_base_vst3/FBVST3Utility.hpp>
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
+#include <playground_base/base/shared/FBLogger.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
@@ -55,7 +56,10 @@ MakeNoteOffEvent(Event const& event)
 }
 
 FBVST3AudioEffect::
-~FBVST3AudioEffect() {}
+~FBVST3AudioEffect()
+{
+  FB_LOG_ENTRY_EXIT();
+}
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
@@ -63,6 +67,7 @@ FBVST3AudioEffect(
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
 _state(*_topo)
 {
+  FB_LOG_ENTRY_EXIT();
   setControllerClass(controllerId);
 }
 
@@ -75,6 +80,7 @@ FBVST3AudioEffect::ProcessVoices()
 tresult PLUGIN_API
 FBVST3AudioEffect::getState(IBStream* state)
 {
+  FB_LOG_ENTRY_EXIT();
   std::string json = _topo->SaveProcStateToString(_state);
   if (!FBVST3SaveIBStream(state, json))
     return kResultFalse;
@@ -84,6 +90,7 @@ FBVST3AudioEffect::getState(IBStream* state)
 tresult PLUGIN_API
 FBVST3AudioEffect::setState(IBStream* state)
 {
+  FB_LOG_ENTRY_EXIT();
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
@@ -95,6 +102,7 @@ FBVST3AudioEffect::setState(IBStream* state)
 tresult PLUGIN_API
 FBVST3AudioEffect::initialize(FUnknown* context)
 {
+  FB_LOG_ENTRY_EXIT();
   if (AudioEffect::initialize(context) != kResultTrue)
     return kResultFalse;
   addEventInput(STR16("Event In"));
@@ -105,6 +113,7 @@ FBVST3AudioEffect::initialize(FUnknown* context)
 tresult PLUGIN_API
 FBVST3AudioEffect::canProcessSampleSize(int32 symbolicSize)
 {
+  FB_LOG_ENTRY_EXIT();
   if (symbolicSize == kSample32) 
     return kResultTrue;
   return kResultFalse;
@@ -114,6 +123,7 @@ tresult PLUGIN_API
 FBVST3AudioEffect::setBusArrangements(
   SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
+  FB_LOG_ENTRY_EXIT();
   if (numIns != 0 || numOuts != 1 || outputs[0] != SpeakerArr::kStereo)
     return kResultFalse;
   return AudioEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
@@ -122,6 +132,7 @@ FBVST3AudioEffect::setBusArrangements(
 tresult PLUGIN_API
 FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
+  FB_LOG_ENTRY_EXIT();
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
   auto plug = MakePlugProcessor(_topo->static_, _state.Raw(), setup.sampleRate);

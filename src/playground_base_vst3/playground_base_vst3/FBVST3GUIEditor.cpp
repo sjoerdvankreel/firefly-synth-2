@@ -1,5 +1,7 @@
 #include <playground_base_vst3/FBVST3GUIEditor.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
+
+#include <playground_base/base/shared/FBLogger.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 
@@ -12,11 +14,15 @@ FBVST3GUIEditor(
   FBGUIState* guiState,
   FBVST3EditController* editController):
 EditorView(editController),
-_gui(std::make_unique<FBPlugGUIContainer>(topo, guiState, editController)) {}
+_gui(std::make_unique<FBPlugGUIContainer>(topo, guiState, editController)) 
+{
+  FB_LOG_ENTRY_EXIT();
+}
 
 FBVST3GUIEditor::
 ~FBVST3GUIEditor()
 {
+  FB_LOG_ENTRY_EXIT();
   dynamic_cast<FBVST3EditController&>(*getController()).ResetView();
 }
 
@@ -47,6 +53,7 @@ FBVST3GUIEditor::release()
 tresult PLUGIN_API
 FBVST3GUIEditor::removed()
 {
+  FB_LOG_ENTRY_EXIT();
   _gui->RemoveFromDesktop();
   return EditorView::removed();
 }
@@ -54,6 +61,7 @@ FBVST3GUIEditor::removed()
 tresult PLUGIN_API
 FBVST3GUIEditor::attached(void* parent, FIDString type)
 {
+  FB_LOG_ENTRY_EXIT();
   _gui->AddToDesktop(parent);
   return EditorView::attached(parent, type);
 }
