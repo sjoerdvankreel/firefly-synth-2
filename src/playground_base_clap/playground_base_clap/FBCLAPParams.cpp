@@ -115,12 +115,11 @@ FBCLAPPlugin::paramsInfo(
   strncpy(info->name, runtimeParam.longName.c_str(),
     std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
 
-  // TODO CLAP_PARAM_IS_HIDDEN
-  // TODO CLAP_PARAM_IS_READONLY
-  info->flags = CLAP_PARAM_IS_AUTOMATABLE; // TODO need this also for vst3? bitwig requires to show host controls
+  info->flags = CLAP_PARAM_REQUIRES_PROCESS;
   if (staticParam.ValueCount() != 0)
   {
     info->flags |= CLAP_PARAM_IS_STEPPED;
+    info->flags |= CLAP_PARAM_IS_READONLY;
     info->max_value = staticParam.ValueCount() - 1.0f;
     if (staticParam.type == FBParamType::List)
       info->flags |= CLAP_PARAM_IS_ENUM;
@@ -129,6 +128,7 @@ FBCLAPPlugin::paramsInfo(
   {
     info->max_value = 1.0;
     info->flags |= CLAP_PARAM_IS_MODULATABLE;
+    info->flags |= CLAP_PARAM_IS_AUTOMATABLE;
     if (staticModule.voice)
     {
       info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_KEY;
