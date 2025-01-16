@@ -16,6 +16,7 @@
 using namespace clap;
 using namespace clap::helpers;
 
+struct FBGUIState;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
@@ -29,6 +30,7 @@ public IFBHostProcessContext,
 public IFBHostGUIContext
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
+  std::unique_ptr<FBGUIState> _guiState;
   FBProcStateContainer _procState;
   FBScalarStateContainer _editState;
   std::unique_ptr<FBPlugGUIContext> _gui;

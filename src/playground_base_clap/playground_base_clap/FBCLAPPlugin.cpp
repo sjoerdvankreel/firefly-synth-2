@@ -1,6 +1,7 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base_clap/FBCLAPUtility.hpp>
 
+#include <playground_base/base/state/FBGUIState.hpp>
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
@@ -119,6 +120,7 @@ FBCLAPPlugin(
   clap_host const* host):
 Plugin(desc, host),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
+_guiState(std::make_unique<FBGUIState>()),
 _procState(*_topo),
 _editState(*_topo),
 _gui(),
