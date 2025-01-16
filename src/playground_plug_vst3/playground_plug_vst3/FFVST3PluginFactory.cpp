@@ -78,7 +78,7 @@ ComponentFactory(void*)
 
 BEGIN_FACTORY_DEF(FFVendorName, FFVendorURL, FFVendorMail)
   DEF_CLASS2(
-    INLINE_UID_FROM_FUID(TextToFUID(FFPlugProcessorId)),
+    INLINE_UID_FROM_FUID(TextToFUID(FFPlugUniqueId)),
       PClassInfo::kManyInstances, kVstAudioEffectClass, 
     FFPlugName, kDistributable, PlugType::kInstrument,
       FF_PLUG_VERSION, kVstVersionString, ComponentFactory);
