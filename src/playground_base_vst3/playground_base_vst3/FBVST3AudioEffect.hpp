@@ -4,7 +4,6 @@
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostProcessContext.hpp>
 
 #include <public.sdk/source/vst/vstaudioeffect.h>
 #include <array>
@@ -19,8 +18,7 @@ struct FBRuntimeTopo;
 class IFBPlugProcessor;
 
 class FBVST3AudioEffect:
-public AudioEffect,
-public IFBHostProcessContext
+public AudioEffect
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
   FBProcStateContainer _state;
@@ -38,8 +36,6 @@ public:
   ~FBVST3AudioEffect();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
   FBVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId);
-
-  void ProcessVoices() override;
   uint32 PLUGIN_API getLatencySamples() override { return FBFixedBlockSamples; }
 
   tresult PLUGIN_API setState(IBStream* state) override;

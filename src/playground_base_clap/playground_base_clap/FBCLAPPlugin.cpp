@@ -136,15 +136,6 @@ FBCLAPPlugin::GetParamNormalized(int index) const
   return *_editState.Params()[index];
 }
 
-void 
-FBCLAPPlugin::ProcessVoices()
-{
-  // todo maybe drop this ?
-  if (!_host.canUseThreadPool() ||
-    !_host.threadPoolRequestExec(FBMaxVoices))
-    _hostProcessor->ProcessAllVoices();
-}
-
 bool
 FBCLAPPlugin::init() noexcept
 {
@@ -224,7 +215,7 @@ FBCLAPPlugin::activate(
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
   auto plug = MakePlugProcessor(_topo->static_, _procState.Raw(), fSampleRate);
-  _hostProcessor.reset(new FBHostProcessor(this, _topo->static_, std::move(plug), &_procState, fSampleRate));
+  _hostProcessor.reset(new FBHostProcessor(_topo->static_, std::move(plug), &_procState, fSampleRate));
   return true;
 }
 

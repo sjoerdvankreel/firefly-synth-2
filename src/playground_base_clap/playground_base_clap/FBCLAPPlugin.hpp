@@ -5,7 +5,6 @@
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostProcessContext.hpp>
 #include <playground_base_clap/FBCLAPSyncEvent.hpp>
 
 #include <juce_events/juce_events.h>
@@ -26,7 +25,6 @@ class FBPlugGUIContext;
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
 public juce::Timer,
-public IFBHostProcessContext,
 public IFBHostGUIContext
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
@@ -60,7 +58,6 @@ public:
   bool init() noexcept override;
   void timerCallback() override;
 
-  void ProcessVoices() override;
   void EndParamChange(int index) override;
   void BeginParamChange(int index) override;
   float GetParamNormalized(int index) const override;
@@ -68,9 +65,6 @@ public:
 
   uint32_t latencyGet() const noexcept override;
   bool implementsLatency() const noexcept override;
-
-  bool implementsThreadPool() const noexcept override;
-  void threadPoolExec(uint32_t taskIndex) noexcept override;
 
   bool implementsState() const noexcept override;
   bool stateSave(const clap_ostream* stream) noexcept override;

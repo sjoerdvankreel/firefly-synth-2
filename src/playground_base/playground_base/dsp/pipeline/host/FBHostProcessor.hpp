@@ -10,11 +10,9 @@
 struct FBHostInputBlock;
 struct FBHostOutputBlock;
 
-class IFBPlugProcessor;
-class IFBHostProcessContext;
-
 class FBVoiceManager;
 class FBHostAudioBlock;
+class IFBPlugProcessor;
 class FBSmoothingProcessor;
 class FBProcStateContainer;
 class FBHostBufferProcessor;
@@ -27,7 +25,6 @@ class FBHostProcessor final
   FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};
   FBProcStateContainer* _state = {};
-  IFBHostProcessContext* _hostContext = {};
 
   std::unique_ptr<IFBPlugProcessor> _plug;
   std::unique_ptr<FBVoiceManager> _voiceManager;
@@ -35,17 +32,15 @@ class FBHostProcessor final
   std::unique_ptr<FBFixedBufferProcessor> _fixedBuffer;
   std::unique_ptr<FBSmoothingProcessor> _smoothing;
 
-public:
-  ~FBHostProcessor();  
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostProcessor);
+  void ProcessVoices();
 
+public:
   FBHostProcessor(
-    IFBHostProcessContext* hostContext,
     FBStaticTopo const& topo,
     std::unique_ptr<IFBPlugProcessor>&& plug,
     FBProcStateContainer* state, float sampleRate);
 
-  void ProcessAllVoices();
-  void ProcessVoice(int slot);
+  ~FBHostProcessor();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostProcessor);
   void ProcessHost(FBHostInputBlock const& input, FBHostOutputBlock& output);
 };

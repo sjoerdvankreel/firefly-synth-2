@@ -10,7 +10,6 @@
 #include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
 #include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostProcessContext.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothingProcessor.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBHostBufferProcessor.hpp>
@@ -23,14 +22,12 @@ FBHostProcessor::
 
 FBHostProcessor::
 FBHostProcessor(
-  IFBHostProcessContext* hostContext,
   FBStaticTopo const& topo,
   std::unique_ptr<IFBPlugProcessor>&& plug,
   FBProcStateContainer* state, float sampleRate):
 _topo(topo),
 _sampleRate(sampleRate),
 _state(state),
-_hostContext(hostContext),
 _plug(std::move(plug)),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
@@ -42,17 +39,11 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), (int)stat
 }
 
 void
-FBHostProcessor::ProcessAllVoices()
+FBHostProcessor::ProcessVoices()
 {
   for (int v = 0; v < FBMaxVoices; v++)
-    ProcessVoice(v);
-}
-
-void 
-FBHostProcessor::ProcessVoice(int slot)
-{
-  if (_plugIn.voiceManager->IsActive(slot))
-    _plug->ProcessVoice(_plugIn, slot);
+    if (_plugIn.voiceManager->IsActive(v))
+      _plug->ProcessVoice(_plugIn, v);
 }
 
 void 
@@ -77,7 +68,7 @@ FBHostProcessor::ProcessHost(
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _fixedOut, smoothingSamples);
     _plug->ProcessPreVoice(_plugIn);
-    _hostContext->ProcessVoices();
+    ProcessVoices();
     _plug->ProcessPostVoice(_plugIn, _fixedOut.audio);
     _plug->ReturnVoices(_plugIn);
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);
