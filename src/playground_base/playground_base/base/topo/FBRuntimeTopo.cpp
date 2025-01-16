@@ -127,6 +127,16 @@ FBRuntimeTopo::LoadEditStateFromString(
 }
 
 bool 
+FBRuntimeTopo::LoadEditAndGUIStateFromString(
+  std::string const& text, FBScalarStateContainer& edit, FBGUIState& gui) const
+{
+  var json;
+  if (!ParseJson(text, json))
+    return false;
+  return LoadEditAndGUIStateFromVar(json, edit, gui);
+}
+
+bool 
 FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
   std::string const& text, FBGUIState& gui) const
 {
@@ -155,6 +165,19 @@ FBRuntimeTopo::LoadEditStateFromStringWithDryRun(
   FBScalarStateContainer dryEdit(*this);
   if (!LoadEditStateFromString(text, dryEdit))
     return false;
+  edit.CopyFrom(dryEdit);
+  return true;
+}
+
+bool 
+FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
+  std::string const& text, FBScalarStateContainer& edit, FBGUIState& gui) const
+{
+  FBGUIState dryGUI = {};
+  FBScalarStateContainer dryEdit(*this);
+  if (!LoadEditAndGUIStateFromString(text, dryEdit, dryGUI))
+    return false;
+  gui = dryGUI;
   edit.CopyFrom(dryEdit);
   return true;
 }
@@ -214,6 +237,21 @@ FBRuntimeTopo::LoadGUIStateFromVar(
         static_.gui.minUserScale, static_.gui.maxUserScale);
   }
   return true;
+}
+
+bool 
+FBRuntimeTopo::LoadEditAndGUIStateFromVar(
+  var const& json, FBScalarStateContainer& edit, FBGUIState& gui) const
+{
+  DynamicObject* obj = json.getDynamicObject();
+  if (obj->hasProperty("gui"))
+    LoadGUIStateFromVar(obj->getProperty("gui"), gui);
+  if (!obj->hasProperty("edit"))
+  {
+    FB_LOG_ERROR("Missing edit state.");
+    return false;
+  }
+  return LoadEditStateFromVar(obj->getProperty("edit"), edit);
 }
 
 var
