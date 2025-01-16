@@ -122,7 +122,6 @@ tresult PLUGIN_API
 FBVST3AudioEffect::setBusArrangements(
   SpeakerArrangement* inputs, int32 numIns, SpeakerArrangement* outputs, int32 numOuts)
 {
-  FB_LOG_ENTRY_EXIT();
   if (numIns != 0 || numOuts != 1 || outputs[0] != SpeakerArr::kStereo)
     return kResultFalse;
   return AudioEffect::setBusArrangements(inputs, numIns, outputs, numOuts);
