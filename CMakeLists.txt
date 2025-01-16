@@ -65,6 +65,8 @@ else ()
 endif ()
 
 # juce
+find_package(Freetype)
+include_directories(/usr/include/freetype2)
 set(JUCE_MODULES_ONLY ON)
 add_definitions(-DJUCE_USE_CURL=0)
 add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=0)
