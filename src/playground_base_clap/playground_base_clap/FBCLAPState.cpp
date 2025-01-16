@@ -31,6 +31,7 @@ bool
 FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
 {
   FB_LOG_ENTRY_EXIT();
+
   int64_t read = 0;
   char buffer[1024];
   std::string json = {};
@@ -39,6 +40,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       return false;
     else
       json.append(buffer, read);
+
   if (!_topo->LoadEditAndGUIStateFromStringWithDryRun(json, _editState, *_guiState))
     return false;
   for (int i = 0; i < _editState.Params().size(); i++)

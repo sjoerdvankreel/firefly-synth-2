@@ -89,6 +89,13 @@ FBRuntimeTopo::SaveEditStateToString(
   return JSON::toString(SaveEditStateToVar(edit)).toStdString();
 }
 
+std::string 
+FBRuntimeTopo::SaveEditAndGUIStateToString(
+  FBScalarStateContainer const& edit, FBGUIState const& gui) const
+{
+  return JSON::toString(SaveEditAndGUIStateToVar(edit, gui)).toStdString();
+}
+
 bool 
 FBRuntimeTopo::LoadGUIStateFromString(
   std::string const& text, FBGUIState& gui) const
@@ -167,6 +174,18 @@ FBRuntimeTopo::SaveGUIStateToVar(
 {
   auto result = new DynamicObject;
   result->setProperty("userScale", gui.userScale);
+  return var(result);
+}
+
+var 
+FBRuntimeTopo::SaveEditAndGUIStateToVar(
+  FBScalarStateContainer const& edit, FBGUIState const& gui) const
+{
+  auto guiState = SaveGUIStateToVar(gui);
+  auto editState = SaveEditStateToVar(edit);
+  auto result = new DynamicObject;
+  result->setProperty("gui", guiState);
+  result->setProperty("edit", editState);
   return var(result);
 }
 
