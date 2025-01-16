@@ -1,50 +1,63 @@
 #include <playground_base/base/topo/FBStaticTopoMeta.hpp>
-#include <playground_base/base/shared/FBLogger.hpp>
+#include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/shared/FBUserDataFolder.hpp>
 
 #include <juce_core/juce_core.h>
 
 #include <ctime>
 #include <memory>
+#include <cassert>
 #include <filesystem>
 
 using namespace juce;
 
 static std::unique_ptr<FileLogger> _logger = {};
 
-FBEntryExitLogger::
-~FBEntryExitLogger()
+FBEntryExitLog::
+~FBEntryExitLog()
 {
-  FBLoggerWrite(file, line, func, "Exit.");
+  FB_LOG_INFO(file, line, func, "Exit.");
 }
 
-FBEntryExitLogger::
-FBEntryExitLogger(
+FBEntryExitLog::
+FBEntryExitLog(
 char const* file, int line, char const* func):
 line(line), file(file), func(func)
 {
-  FBLoggerWrite(file, line, func, "Enter.");
+  FB_LOG_INFO(file, line, func, "Enter.");
 }
 
 void
-FBLoggerTerminate()
+FBLogTerminate()
 {
-  FB_LOGGER_WRITE("Terminating logging.");
+  FB_LOG_INFO("Terminating log.");
   _logger.reset();
 }
 
 void
-FBLoggerInit(FBStaticTopoMeta const& meta)
+FBLogInit(FBStaticTopoMeta const& meta)
 {
   auto path = FBGetUserPluginDataFolder(meta) / "lastrun.log";
   auto file = File(String(path.string()));
   _logger = std::make_unique<FileLogger>(file, meta.NameAndVersion(), 0);
-  FB_LOGGER_WRITE("Initialized logging.");
+  FB_LOG_INFO("Initialized log.");
+}
+
+std::string
+FBLogLevelToString(FBLogLevel level)
+{
+  switch (level)
+  {
+  case FBLogLevel::Info: return "INFO";
+  case FBLogLevel::Warn: return "WARN";
+  case FBLogLevel::Error: return "ERROR";
+  default: assert(false); return "";
+  }
 }
 
 void
-FBLoggerWrite(
-  char const* file, int line,
+FBLogWrite(
+  FBLogLevel level, char const* file, int line,
   char const* func, std::string const& message)
 {
   time_t rawTime;
@@ -56,7 +69,6 @@ FBLoggerWrite(
   timeInfo = localtime(&rawTime);
   strftime(buffer, sizeof(buffer), "%d-%m-%Y %H:%M:%S", timeInfo);
   _logger->logMessage(
-    std::string(buffer) + " :: " + 
-    fileName + ":" + std::to_string(line) + " :: " + 
-    func + ": " + message);
+    std::string(buffer) + ": " + FBLogLevelToString(level) + " :: " +
+    fileName + ":" + std::to_string(line) + " (" + func + "): " + message);
 }
