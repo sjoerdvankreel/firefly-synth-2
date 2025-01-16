@@ -246,12 +246,12 @@ FBRuntimeTopo::LoadEditAndGUIStateFromVar(
   DynamicObject* obj = json.getDynamicObject();
   if (obj->hasProperty("gui"))
     LoadGUIStateFromVar(obj->getProperty("gui"), gui);
-  if (!obj->hasProperty("edit"))
-  {
-    FB_LOG_ERROR("Missing edit state.");
-    return false;
-  }
-  return LoadEditStateFromVar(obj->getProperty("edit"), edit);
+  if (obj->hasProperty("edit"))
+    return LoadEditStateFromVar(obj->getProperty("edit"), edit);
+  FB_LOG_ERROR("Missing edit state.");
+  FBScalarStateContainer editDefault(*this);
+  edit.CopyFrom(editDefault);
+  return true;
 }
 
 var
