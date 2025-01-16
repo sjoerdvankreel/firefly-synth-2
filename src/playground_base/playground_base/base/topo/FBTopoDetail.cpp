@@ -1,4 +1,5 @@
 #include <playground_base/base/topo/FBTopoDetail.hpp>
+#include <cstdint>
 
 int
 FBMakeStableHash(std::string const& id)
