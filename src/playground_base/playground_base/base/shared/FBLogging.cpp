@@ -16,7 +16,7 @@ static std::unique_ptr<FileLogger> _logger = {};
 FBEntryExitLog::
 ~FBEntryExitLog()
 {
-  FB_LOG_INFO(file, line, func, "Exit.");
+  FBLogWrite(FBLogLevel::Info, file, line, func, "Exit.");
 }
 
 FBEntryExitLog::
@@ -24,7 +24,7 @@ FBEntryExitLog(
 char const* file, int line, char const* func):
 line(line), file(file), func(func)
 {
-  FB_LOG_INFO(file, line, func, "Enter.");
+  FBLogWrite(FBLogLevel::Info, file, line, func, "Enter.");
 }
 
 void
