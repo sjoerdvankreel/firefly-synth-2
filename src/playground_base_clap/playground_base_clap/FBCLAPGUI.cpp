@@ -1,4 +1,5 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 
@@ -38,6 +39,7 @@ FBCLAPPlugin::guiHide() noexcept
 void
 FBCLAPPlugin::guiDestroy() noexcept 
 {
+  FB_LOG_ENTRY_EXIT();
   if (!_gui)
     return;
   _gui->RemoveFromDesktop();
@@ -56,6 +58,7 @@ FBCLAPPlugin::guiSetScale(double scale) noexcept
 bool
 FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 {
+  FB_LOG_ENTRY_EXIT();
   if (!_gui)
     return false;
   _gui->AddToDesktop(window->ptr);
@@ -65,6 +68,7 @@ FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 bool
 FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
 {
+  FB_LOG_ENTRY_EXIT();
   // TODO
   _gui = std::make_unique<FBPlugGUIContainer>(_topo.get(), nullptr, this);
   return true;

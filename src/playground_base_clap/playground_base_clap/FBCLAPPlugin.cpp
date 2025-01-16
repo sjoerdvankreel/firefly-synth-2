@@ -1,6 +1,7 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base_clap/FBCLAPUtility.hpp>
 
+#include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
@@ -107,6 +108,7 @@ MakeGestureEvent(int paramTag, bool begin)
 FBCLAPPlugin::
 ~FBCLAPPlugin() 
 {
+  FB_LOG_ENTRY_EXIT();
   stopTimer();
 }
 
@@ -121,7 +123,10 @@ _procState(*_topo),
 _editState(*_topo),
 _gui(),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
-_mainToAudioEvents(FBCLAPSyncEventReserve - 1) {}
+_mainToAudioEvents(FBCLAPSyncEventReserve - 1) 
+{
+  FB_LOG_ENTRY_EXIT();
+}
 
 float
 FBCLAPPlugin::GetParamNormalized(int index) const
@@ -141,6 +146,7 @@ FBCLAPPlugin::ProcessVoices()
 bool
 FBCLAPPlugin::init() noexcept
 {
+  FB_LOG_ENTRY_EXIT();
   startTimerHz(60); // TODO 60?
   return true;
 }
@@ -211,6 +217,7 @@ bool
 FBCLAPPlugin::activate(
   double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept 
 {
+  FB_LOG_ENTRY_EXIT();
   float fSampleRate = (float)sampleRate;
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);

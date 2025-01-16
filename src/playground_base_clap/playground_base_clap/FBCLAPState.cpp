@@ -1,4 +1,5 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
 
@@ -11,6 +12,8 @@ FBCLAPPlugin::implementsState() const noexcept
 bool
 FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
 {
+  FB_LOG_ENTRY_EXIT();
+
   int64_t written = 0;
   int64_t numWritten = 0;
   // TODO edit and GUI
@@ -29,6 +32,8 @@ FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
 bool
 FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
 {
+  FB_LOG_ENTRY_EXIT();
+
   int64_t read = 0;
   char buffer[1024];
   std::string json = {};
