@@ -1,6 +1,8 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/topo/FBTopoDetail.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+
+#include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/state/FBGUIState.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
@@ -222,50 +224,98 @@ bool
 FBRuntimeTopo::LoadEditStateFromVar(
   var const& json, FBScalarStateContainer& edit) const
 {
+  FB_LOG_ENTRY_EXIT();
+
   DynamicObject* obj = json.getDynamicObject();
   if (!obj->hasProperty("magic"))
+  {
+    FB_LOG_ERROR("Missing file magic.");
     return false;
+  }
   var magic = obj->getProperty("magic");
   if (!magic.isString())
+  {
+    FB_LOG_ERROR("File magic is not a string.");
     return false;
+  }
   if (magic.toString() != String(Magic))
+  {
+    FB_LOG_ERROR("File magic mismatch.");
     return false;
+  }
 
   if (!obj->hasProperty("id"))
+  {
+    FB_LOG_ERROR("Missing plugin id.");
     return false;
+  }
   var id = obj->getProperty("id");
   if (!id.isString())
+  {
+    FB_LOG_ERROR("Plugin id is not a string.");
     return false;
+  }
+  if (id.toString().toStdString() != static_.meta.id)
+  {
+    FB_LOG_ERROR("Plugin id mismatch.");
+    return false;
+  }
+
   if (!obj->hasProperty("major"))
+  {
+    FB_LOG_ERROR("Missing plugin major version.");
     return false;
+  }
   var major = obj->getProperty("major");
   if (!major.isInt())
+  {
+    FB_LOG_ERROR("Plugin major version is not an int.");
     return false;
+  }
+
   if (!obj->hasProperty("minor"))
+  {
+    FB_LOG_ERROR("Missing plugin minor version.");
     return false;
+  }
   var minor = obj->getProperty("minor");
   if (!minor.isInt())
+  {
+    FB_LOG_ERROR("Plugin minor version is not an int.");
     return false;
+  }
+
   if (!obj->hasProperty("patch"))
+  {
+    FB_LOG_ERROR("Missing plugin patch version.");
     return false;
+  }
   var patch = obj->getProperty("patch");
   if (!patch.isInt())
+  {
+    FB_LOG_ERROR("Plugin patch version is not an int.");
     return false;
+  }
 
-  if (id.toString().toStdString() != static_.meta.id)
+  if ((int)major > static_.meta.version.major ||
+    (int)major == static_.meta.version.major && (int)minor > static_.meta.version.minor ||
+    (int)minor == static_.meta.version.minor && (int)patch > static_.meta.version.patch)
+  {
+    FB_LOG_ERROR("Stored plugin version is newer than current plugin version.");
     return false;
-  if ((int)major > static_.meta.version.major)
-    return false;
-  if ((int)major == static_.meta.version.major && (int)minor > static_.meta.version.minor)
-    return false;
-  if ((int)minor == static_.meta.version.minor && (int)patch > static_.meta.version.patch)
-    return false;
+  }
 
   if (!obj->hasProperty("state"))
+  {
+    FB_LOG_ERROR("Missing plugin state.");
     return false;
+  }
   var state = obj->getProperty("state");
   if (!state.isArray())
+  {
+    FB_LOG_ERROR("Plugin state is not an array.");
     return false;
+  }
 
   for (int p = 0; p < edit.Params().size(); p++)
   {
@@ -280,16 +330,28 @@ FBRuntimeTopo::LoadEditStateFromVar(
     DynamicObject* param = state[sp].getDynamicObject();
     
     if (!param->hasProperty("id"))
+    {
+      FB_LOG_ERROR("Plugin param state is missing id.");
       return false;
+    }
     var id = param->getProperty("id");
     if (!id.isString())
+    {
+      FB_LOG_ERROR("Plugin param state id is not a string.");
       return false;
+    }
 
     if (!param->hasProperty("val"))
+    {
+      FB_LOG_ERROR("Plugin param state is missing value.");
       return false;
+    }
     var val = param->getProperty("val");
     if (!val.isString())
+    {
+      FB_LOG_ERROR("Plugin param state value is not a string.");
       return false;
+    }
 
     std::unordered_map<int, int>::const_iterator iter;
     int tag = FBMakeStableHash(id.toString().toStdString());
