@@ -61,8 +61,8 @@ GetPluginDescriptor(
   result.features = Features;
   result.url = FFVendorURL;
   result.name = FFPlugName;
+  result.id = FFPlugUniqueId;
   result.vendor = FFVendorName;
-  result.id = FFPlugProcessorId;
   result.version = FF_PLUG_VERSION;
   result.clap_version = CLAP_VERSION_INIT;
   return &result;
