@@ -10,6 +10,8 @@
 #include <juce_events/native/juce_EventLoopInternal_linux.h>
 #endif
 
+using namespace juce;
+
 bool
 FBCLAPPlugin::guiCanResize() const noexcept
 {
