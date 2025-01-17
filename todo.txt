@@ -1,3 +1,4 @@
+log warnings on load
 checkout the threadpool maybe later but 16 samples seems to few to do it
 gui modulation indicators also for clap (poly)mod
 checkout the Linux logging and also mac
