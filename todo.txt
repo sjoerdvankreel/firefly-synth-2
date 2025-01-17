@@ -10,5 +10,4 @@ reaper voice off by disable plug not working
 retest voice stealing including clap return with > 64 voices
 clap + vst3 note expr + midi mpe + polymod + mark as done somewhere
 voice block start position (fake it by amp env?)
-vst3/clap posix fd
 context menu
