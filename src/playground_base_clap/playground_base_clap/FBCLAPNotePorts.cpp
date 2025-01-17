@@ -23,6 +23,7 @@ FBCLAPPlugin::notePortsInfo(uint32_t index, bool isInput, clap_note_port_info* i
   info->id = 0;
   info->name[0] = 0;
   info->preferred_dialect = CLAP_NOTE_DIALECT_CLAP;
-  info->supported_dialects = CLAP_NOTE_DIALECT_CLAP | CLAP_NOTE_DIALECT_MIDI; // TODO actually handle midi
+  // TODO actually handle ALL midi not just what vst3 can do?
+  info->supported_dialects = CLAP_NOTE_DIALECT_CLAP/* | CLAP_NOTE_DIALECT_MIDI*/;
   return true;
 }
