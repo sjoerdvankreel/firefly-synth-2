@@ -26,20 +26,20 @@ jobs:
             os: windows-2019
             arch_type: 2
             build_type: RELEASE
-          - name: "Ubuntu Latest SSE2 Debug"
-            os: ubuntu-latest
+          - name: "Ubuntu 22 SSE2 Debug"
+            os: ubuntu-22.04
             arch_type: 1
             build_type: DEBUG
-          - name: "Ubuntu Latest SSE2 Release"
-            os: ubuntu-latest
+          - name: "Ubuntu 22 SSE2 Release"
+            os: ubuntu-22.04
             arch_type: 1
             build_type: RELEASE
-          - name: "Ubuntu Latest AVX2 Debug"
-            os: ubuntu-latest
+          - name: "Ubuntu 22 AVX2 Debug"
+            os: ubuntu-22.04
             arch_type: 2
             build_type: DEBUG
-          - name: "Ubuntu Latest AVX2 Release"
-            os: ubuntu-latest
+          - name: "Ubuntu 22 AVX2 Release"
+            os: ubuntu-22.04
             arch_type: 2
             build_type: RELEASE
           - name: "MacOS 13 Universal Debug"
