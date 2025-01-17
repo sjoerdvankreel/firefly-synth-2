@@ -11,6 +11,8 @@
 
 #include <algorithm>
 
+using namespace juce;
+
 FBVST3GUIEditor::
 FBVST3GUIEditor(
   FBPlugGUIFactory const& factory,
