@@ -5,6 +5,10 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 
+#if SMTG_OS_LINUX
+#include <juce_events/native/juce_EventLoopInternal_linux.h>
+#endif
+
 #include <algorithm>
 
 FBVST3GUIEditor::
@@ -51,22 +55,6 @@ FBVST3GUIEditor::release()
 }
 
 tresult PLUGIN_API
-FBVST3GUIEditor::removed()
-{
-  FB_LOG_ENTRY_EXIT();
-  _gui->RemoveFromDesktop();
-  return EditorView::removed();
-}
-
-tresult PLUGIN_API
-FBVST3GUIEditor::attached(void* parent, FIDString type)
-{
-  FB_LOG_ENTRY_EXIT();
-  _gui->AddToDesktop(parent);
-  return EditorView::attached(parent, type);
-}
-
-tresult PLUGIN_API 
 FBVST3GUIEditor::getSize(ViewRect* size)
 {
   auto hostSize = _gui->GetHostSize();
@@ -83,6 +71,14 @@ FBVST3GUIEditor::onSize(ViewRect* newSize)
   return kResultTrue;
 }
 
+#if SMTG_OS_LINUX
+void PLUGIN_API
+FBVST3GUIEditor::onFDIsSet(FileDescriptor fd)
+{
+  LinuxEventLoopInternal::invokeEventLoopCallbackForFd(fd);
+}
+#endif
+
 tresult PLUGIN_API
 FBVST3GUIEditor::setContentScaleFactor(ScaleFactor factor)
 {
@@ -92,9 +88,38 @@ FBVST3GUIEditor::setContentScaleFactor(ScaleFactor factor)
   ViewRect newSize;
   _gui->SetSystemScale(factor);
   getSize(&newSize);
-  if (plugFrame) 
+  if (plugFrame)
     plugFrame->resizeView(this, &newSize);
   return kResultTrue;
+}
+
+tresult PLUGIN_API
+FBVST3GUIEditor::removed()
+{
+  FB_LOG_ENTRY_EXIT();
+  _gui->RemoveFromDesktop();
+#if SMTG_OS_LINUX
+  IRunLoop* loop = {};
+  auto ok = plugFrame->queryInterface(IRunLoop::iid, (void**)&loop);
+  assert(ok == kResultOk);
+  loop->unregisterEventHandler(this);
+#endif
+  return EditorView::removed();
+}
+
+tresult PLUGIN_API
+FBVST3GUIEditor::attached(void* parent, FIDString type)
+{
+  FB_LOG_ENTRY_EXIT();
+#if SMTG_OS_LINUX
+  IRunLoop* loop = {};
+  auto ok = plugFrame->queryInterface(IRunLoop::iid, (void**)&loop);
+  assert(ok == kResultOk);
+  for (int fd : LinuxEventLoopInternal::getRegisteredFds())
+    loop->registerEventHandler(this, fd);
+#endif
+  _gui->AddToDesktop(parent);
+  return EditorView::attached(parent, type);
 }
 
 tresult PLUGIN_API 
@@ -117,6 +142,9 @@ FBVST3GUIEditor::isPlatformTypeSupported(FIDString type)
 tresult PLUGIN_API
 FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
 {
+#if SMTG_OS_LINUX
+  QUERY_INTERFACE(iid, obj, IEventHandler::iid, IEventHandler);
+#endif
   QUERY_INTERFACE(iid, obj, IPlugViewContentScaleSupport::iid, IPlugViewContentScaleSupport);
   return EditorView::queryInterface(iid, obj);
 }

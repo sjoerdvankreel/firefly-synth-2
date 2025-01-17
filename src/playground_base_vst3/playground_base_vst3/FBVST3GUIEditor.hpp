@@ -10,6 +10,9 @@
 
 using namespace Steinberg;
 using namespace Steinberg::Vst;
+#if SMTG_OS_LINUX
+using namespace Steinberg::Linux;
+#endif
 
 struct FBGUIState;
 struct FBRuntimeTopo;
@@ -21,6 +24,9 @@ class FBVST3EditController;
 class FBVST3GUIEditor final:
 public EditorView,
 public IPlugViewContentScaleSupport
+#if SMTG_OS_LINUX
+, public IEventHandler
+#endif
 {
   std::unique_ptr<FBPlugGUIContext> _gui;
 
@@ -34,6 +40,10 @@ public:
     FBVST3EditController* editController);
 
   void SetParamNormalized(int index, float normalized);
+
+#if SMTG_OS_LINUX
+  void PLUGIN_API onFDIsSet(FileDescriptor fd) override;
+#endif
 
   tresult PLUGIN_API removed() override;
   tresult PLUGIN_API canResize() override;
