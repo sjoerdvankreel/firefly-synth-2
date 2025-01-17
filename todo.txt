@@ -1,3 +1,4 @@
+maybe drop avx?
 gui modulation indicators also for clap (poly)mod
 checkout the Linux logging and also mac
 multitap fb delay
