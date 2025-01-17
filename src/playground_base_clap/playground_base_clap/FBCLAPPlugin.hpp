@@ -70,6 +70,11 @@ public:
   bool stateSave(const clap_ostream* stream) noexcept override;
   bool stateLoad(const clap_istream* stream) noexcept override;
 
+#if (defined __linux__) || (defined  __FreeBSD__)
+  bool implementsPosixFdSupport() const noexcept override;
+  void onPosixFd(int fd, clap_posix_fd_flags_t flags) noexcept override;
+#endif
+
   bool guiShow() noexcept override;
   bool guiHide() noexcept override;
   void guiDestroy() noexcept override;

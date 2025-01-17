@@ -6,6 +6,10 @@
 #include <clap/helpers/host-proxy.hxx>
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#if (defined __linux__) || (defined  __FreeBSD__)
+#include <juce_events/native/juce_EventLoopInternal_linux.h>
+#endif
+
 bool
 FBCLAPPlugin::guiCanResize() const noexcept
 {
@@ -36,16 +40,6 @@ FBCLAPPlugin::guiHide() noexcept
   return true;
 }
 
-void
-FBCLAPPlugin::guiDestroy() noexcept 
-{
-  FB_LOG_ENTRY_EXIT();
-  if (!_gui)
-    return;
-  _gui->RemoveFromDesktop();
-  _gui.reset();
-}
-
 bool
 FBCLAPPlugin::guiSetScale(double scale) noexcept
 {
@@ -55,6 +49,20 @@ FBCLAPPlugin::guiSetScale(double scale) noexcept
   return true;
 }
 
+void
+FBCLAPPlugin::guiDestroy() noexcept 
+{
+  FB_LOG_ENTRY_EXIT();
+  if (!_gui)
+    return;
+  _gui->RemoveFromDesktop();
+  _gui.reset();
+#if (defined __linux__) || (defined  __FreeBSD__)
+  for (int fd : LinuxEventLoopInternal::getRegisteredFds())
+    _host.posixFdSupportUnregister(fd);
+#endif
+}
+
 bool
 FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 {
@@ -62,6 +70,10 @@ FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
   if (!_gui)
     return false;
   _gui->AddToDesktop(window->ptr);
+#if (defined __linux__) || (defined  __FreeBSD__)
+  for (int fd : LinuxEventLoopInternal::getRegisteredFds())
+    _host.posixFdSupportRegister(fd, CLAP_POSIX_FD_READ);
+#endif
   return true;
 }
 
