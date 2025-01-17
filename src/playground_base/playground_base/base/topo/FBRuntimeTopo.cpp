@@ -20,7 +20,10 @@ ParseJson(std::string const& text, var& json)
   auto parsed = JSON::parse(text, json);
   DynamicObject* obj = json.getDynamicObject();
   if (!parsed.wasOk() || obj == nullptr)
+  {
+    FB_LOG_ERROR("Failed to parse json.");
     return false;
+  }
   return true;
 }
 
@@ -413,12 +416,18 @@ FBRuntimeTopo::LoadEditStateFromVar(
     std::unordered_map<int, int>::const_iterator iter;
     int tag = FBMakeStableHash(id.toString().toStdString());
     if ((iter = paramTagToIndex.find(tag)) == paramTagToIndex.end())
+    {
+      FB_LOG_WARN("Unknown plugin parameter.");
       continue;
+    }
 
     auto const& topo = params[iter->second].static_;
     auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
+    {
+      FB_LOG_WARN("Failed to parse plugin parameter value.");
       normalized = topo.TextToNormalized(false, topo.defaultText);
+    }
     *edit.Params()[iter->second] = normalized.value();
   }
 
