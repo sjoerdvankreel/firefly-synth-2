@@ -56,7 +56,7 @@ jobs:
         with:
           submodules: recursive
       - name: Install Linux Deps
-        if: inputs.os == 'ubuntu-22.04'
+        if: matrix.os == 'ubuntu-22.04'
         shell: bash
         run: |
           sudo apt-get update
