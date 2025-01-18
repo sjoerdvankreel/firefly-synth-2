@@ -1,11 +1,11 @@
-#include <playground_plug/gui/FFPlugGUIStore.hpp>
+#include <playground_base/gui/shared/FBGUIStore.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 
 using namespace juce;
 
 std::unique_ptr<Component>
-FFMakeMasterGUI(FBRuntimeTopo const* topo, IFFPlugGUIStore* store, IFBHostGUIContext* hostContext)
+FFMakeMasterGUI(FBRuntimeTopo const* topo, IFBGUIStore* store, IFBHostGUIContext* hostContext)
 {
-  Label& lbl = FFGUIStoreComponent<Label>(store);
+  Label& lbl = FBGUIStoreComponent<Label>(store);
   return {};
 }

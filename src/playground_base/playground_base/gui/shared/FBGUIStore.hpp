@@ -6,16 +6,16 @@
 #include <memory>
 #include <utility>
 
-class IFFPlugGUIStore
+class IFBGUIStore
 {
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(IFFPlugGUIStore);
+  FB_NOCOPY_NOMOVE_DEFCTOR(IFBGUIStore);
   virtual juce::Component* 
   StoreComponent(std::unique_ptr<juce::Component>&& component) = 0;
 };
 
 template <class TComponent, class... Args>
-TComponent& FFGUIStoreComponent(IFFPlugGUIStore* store, Args&&... args)
+TComponent& FBGUIStoreComponent(IFBGUIStore* store, Args&&... args)
 {
   auto component = std::make_unique<TComponent>(std::forward<Args>(args)...);
   TComponent* result = component.get();
