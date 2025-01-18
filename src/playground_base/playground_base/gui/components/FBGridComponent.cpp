@@ -17,5 +17,5 @@ FBGridComponent::AddItemAndChild(GridItem const& item)
     assert(getChildComponent(i) != item.associatedComponent);
 #endif
   grid.items.add(item);
-  addChildComponent(item.associatedComponent);
+  addAndMakeVisible(item.associatedComponent);
 }

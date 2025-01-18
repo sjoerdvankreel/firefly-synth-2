@@ -10,10 +10,12 @@ FFPlugGUI(
 FBPlugGUI()
 {
   addAndMakeVisible(FFMakeMasterGUI(topo, this, hostContext));
+  resized();
 }
 
 void 
 FFPlugGUI::resized()
 {
+  getChildComponent(0)->setBounds(getLocalBounds());
   getChildComponent(0)->resized();
 }
