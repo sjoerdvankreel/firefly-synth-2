@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/gui/components/FBParamControl.hpp>
+#include <playground_base/gui/shared/FBParamControl.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 struct FBRuntimeParam;
