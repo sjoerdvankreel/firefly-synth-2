@@ -12,10 +12,16 @@ MakeRuntimeParams(
   std::vector<FBRuntimeParam> result;
   for (int p = 0; p < staticParams.size(); p++)
     for (int s = 0; s < staticParams[p].slotCount; s++)
+    {
+      FBParamTopoIndices indices = {};
+      indices.staticParamSlot = s;
+      indices.staticParamIndex = p;
+      indices.staticModuleSlot = staticModuleSlot;
+      indices.staticModuleIndex = staticModuleIndex;
       result.push_back(FBRuntimeParam(
-        staticModule, staticParams[p], 
-        runtimeModuleIndex, runtimeParamStart++, 
-        staticModuleIndex, staticModuleSlot, p, s));
+        staticModule, staticParams[p],
+        indices, runtimeModuleIndex, runtimeParamStart++));
+    }
   return result;
 }
 

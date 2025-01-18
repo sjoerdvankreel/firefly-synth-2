@@ -2,6 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/FBStaticParam.hpp>
+#include <playground_base/base/topo/FBParamTopoIndices.hpp>
 
 #include <string>
 
@@ -11,11 +12,8 @@ struct FBRuntimeParam final
 {
   int runtimeModuleIndex;
   int runtimeParamIndex;
-  int staticModuleIndex;
-  int staticModuleSlot;
-  int staticIndex;
-  int staticSlot;
   FBStaticParam static_;
+  FBParamTopoIndices topoIndices;
 
   std::string longName;
   std::string shortName;
@@ -24,9 +22,8 @@ struct FBRuntimeParam final
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
   FBRuntimeParam(
-    FBStaticModule const& staticModule, 
+    FBStaticModule const& staticModule,
     FBStaticParam const& staticParam,
-    int runtimeModuleIndex, int runtimeParamIndex,
-    int staticModuleIndex, int staticModuleSlot,
-    int staticIndex, int staticSlot);    
+    FBParamTopoIndices const& topoIndices,
+    int runtimeModuleIndex, int runtimeParamIndex);
 };

@@ -12,20 +12,24 @@ _special(topo.static_.state.specialSelector(topo.static_, _rawState)),
 _freeRawState(topo.static_.state.freeRawProcState)
 {
   for (int p = 0; p < topo.params.size(); p++)
-    if (topo.static_.modules[topo.params[p].staticModuleIndex].voice)
+    if (topo.static_.modules[topo.params[p].topoIndices.staticModuleIndex].voice)
       if (topo.params[p].static_.acc)
         _params.push_back(FBProcParamState(topo.params[p].static_.voiceAccAddr(
-          topo.params[p].staticModuleSlot, topo.params[p].staticSlot, _rawState)));
+          topo.params[p].topoIndices.staticModuleSlot, 
+          topo.params[p].topoIndices.staticParamSlot, _rawState)));
       else
         _params.push_back(FBProcParamState(topo.params[p].static_.voiceBlockAddr(
-          topo.params[p].staticModuleSlot, topo.params[p].staticSlot, _rawState)));
+          topo.params[p].topoIndices.staticModuleSlot, 
+          topo.params[p].topoIndices.staticParamSlot, _rawState)));
     else
       if (topo.params[p].static_.acc)
         _params.push_back(FBProcParamState(topo.params[p].static_.globalAccAddr(
-          topo.params[p].staticModuleSlot, topo.params[p].staticSlot, _rawState)));
+          topo.params[p].topoIndices.staticModuleSlot, 
+          topo.params[p].topoIndices.staticParamSlot, _rawState)));
       else
         _params.push_back(FBProcParamState(topo.params[p].static_.globalBlockAddr(
-          topo.params[p].staticModuleSlot, topo.params[p].staticSlot, _rawState)));
+          topo.params[p].topoIndices.staticModuleSlot, 
+          topo.params[p].topoIndices.staticParamSlot, _rawState)));
 
   for (int p = 0; p < Params().size(); p++)
     Params()[p].InitProcessing(topo.params[p].static_.DefaultNormalizedByText());
