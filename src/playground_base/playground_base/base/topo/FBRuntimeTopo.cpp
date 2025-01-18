@@ -37,11 +37,11 @@ MakeParamTagToIndex(
   return result;
 }
 
-static std::unordered_map<FBParamTopoIndices, int>
+static std::map<FBParamTopoIndices, int>
 MakeParamTopoToRuntime(
   std::vector<FBRuntimeParam> const& params)
 {
-  std::unordered_map<FBParamTopoIndices, int> result;
+  std::map<FBParamTopoIndices, int> result;
   for (int p = 0; p < params.size(); p++)
     result[params[p].topoIndices] = p;
   return result;

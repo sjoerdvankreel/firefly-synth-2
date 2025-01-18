@@ -10,6 +10,8 @@
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
 
 #include <juce_core/juce_core.h>
+
+#include <map>
 #include <vector>
 #include <unordered_map>
 
@@ -23,7 +25,7 @@ struct FBRuntimeTopo final
   std::vector<FBRuntimeModule> modules;
   std::vector<FBRuntimeParam> params;
   std::unordered_map<int, int> paramTagToIndex;
-  std::unordered_map<FBParamTopoIndices, int> paramTopoToRuntime;
+  std::map<FBParamTopoIndices, int> paramTopoToRuntime;
 
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);

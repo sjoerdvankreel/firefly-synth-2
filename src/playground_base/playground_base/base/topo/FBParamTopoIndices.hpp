@@ -6,4 +6,6 @@ struct FBParamTopoIndices final
   int staticModuleSlot = {};
   int staticParamIndex = {};
   int staticParamSlot = {};
+
+  auto operator<=>(FBParamTopoIndices const&) const = default;
 };
