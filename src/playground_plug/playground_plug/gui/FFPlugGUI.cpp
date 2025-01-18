@@ -22,12 +22,11 @@ FFPlugGUI::resized()
   auto rows = getNumChildComponents();
   for (int i = 0; i < getNumChildComponents(); i++)
   {
-    Rectangle<int> bounds;
-    bounds.setLeft(0);
-    bounds.setWidth(local.getWidth());
-    bounds.setHeight(local.getHeight() / rows);
-    bounds.setTop(i * local.getHeight() / rows);
-    getChildComponent(i)->setBounds(bounds);
+    int x = local.getX();
+    int w = local.getWidth();
+    int h = local.getHeight() / rows;
+    int y = local.getY() + i * local.getHeight() / rows;
+    getChildComponent(i)->setBounds(x, y, w, h);
     getChildComponent(i)->resized();
   }
 }
