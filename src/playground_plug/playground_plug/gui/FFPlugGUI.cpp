@@ -9,7 +9,7 @@ FFPlugGUI(
   IFBHostGUIContext* hostContext):
 FBPlugGUI()
 {
-  addAndMakeVisible(StoreComponent(FFMakeMasterGUI(topo, this, hostContext)));
+  addAndMakeVisible(FFMakeMasterGUI(topo, this, hostContext));
 }
 
 void 
