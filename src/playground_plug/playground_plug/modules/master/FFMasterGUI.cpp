@@ -10,12 +10,17 @@
 using namespace juce;
 
 Component&
-FFMakeMasterGUI(FBRuntimeTopo const* topo, IFBGUIStore* store, IFBHostGUIContext* hostContext)
+FFMakeMasterGUI(
+  FBRuntimeTopo const* topo, int moduleSlot, 
+  IFBGUIStore* store, IFBHostGUIContext* hostContext)
 {
   auto& grid = FBGUIStoreComponent<FBGridComponent>(store);
   grid.grid.templateRows.add(Grid::TrackInfo(Grid::Fr(1)));
   grid.grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(1)));
-  auto const* param = topo->ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Gain, 0 });
-  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, param, hostContext, Slider::SliderStyle::Rotary)));
+  grid.grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(1)));
+  auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });
+  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, gain, hostContext, Slider::SliderStyle::Rotary)));
+  auto const* smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
+  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, smooth, hostContext, Slider::SliderStyle::Rotary)));
   return grid;
 } 
