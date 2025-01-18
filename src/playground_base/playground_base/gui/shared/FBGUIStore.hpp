@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/topo/FBRuntimeParam.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -9,16 +10,16 @@
 #include <utility>
 #include <cassert>
 
-class IFBParamControl;
-
 class IFBGUIStore
 {
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(IFBGUIStore);
-  virtual juce::Component* 
+  virtual IFBParamControl*
+  GetParamControlForIndex(int paramIndex) const = 0;
+  virtual juce::Component*
   StoreComponent(std::unique_ptr<juce::Component>&& component) = 0;
   virtual IFBParamControl*
-  StoreParamControl(std::unique_ptr<IFBParamControl>&& control) = 0;
+  StoreParamControl(int index, std::unique_ptr<IFBParamControl>&& control) = 0;
 };
 
 template <class TComponent, class... Args>
@@ -32,10 +33,10 @@ TComponent& FBGUIStoreComponent(IFBGUIStore* store, Args&&... args)
 }
 
 template <class TParamControl, class... Args>
-TParamControl& FBGUIStoreParamControl(IFBGUIStore* store, Args&&... args)
+TParamControl& FBGUIStoreParamControl(IFBGUIStore* store, FBRuntimeParam const* param, Args&&... args)
 {
-  auto control = std::make_unique<TParamControl>(std::forward<Args>(args)...);
+  auto control = std::make_unique<TParamControl>(param, std::forward<Args>(args)...);
   TParamControl* result = control.get();
-  store->StoreParamControl(std::move(control));
+  store->StoreParamControl(param->runtimeParamIndex, std::move(control));
   return *result;
 }
