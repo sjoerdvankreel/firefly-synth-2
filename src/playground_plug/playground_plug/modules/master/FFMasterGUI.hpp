@@ -4,7 +4,8 @@
 #include <memory>
 
 struct FBRuntimeTopo;
+class IFFPlugGUIStore;
 class IFBHostGUIContext;
 
 std::unique_ptr<juce::Component>
-FFMakeMasterGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext);
+FFMakeMasterGUI(FBRuntimeTopo const* topo, IFFPlugGUIStore* store, IFBHostGUIContext* hostContext);
