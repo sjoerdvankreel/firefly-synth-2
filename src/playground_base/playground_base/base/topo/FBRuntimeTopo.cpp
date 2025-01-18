@@ -71,6 +71,12 @@ modules(MakeRuntimeModules(topo)),
 params(MakeRuntimeParams(modules)),
 paramTagToIndex(MakeParamTagToIndex(params)) {}
 
+FBRuntimeParam const*
+FBRuntimeTopo::ParamAtSlow(int staticModule, int moduleSlot, int staticParam, int paramSlot) const
+{
+
+}
+
 std::string 
 FBRuntimeTopo::SaveGUIStateToString(
   FBGUIState const& gui) const
