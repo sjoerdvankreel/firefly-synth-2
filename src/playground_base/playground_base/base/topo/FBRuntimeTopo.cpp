@@ -37,6 +37,16 @@ MakeParamTagToIndex(
   return result;
 }
 
+static std::unordered_map<FBParamTopoIndices, int>
+MakeParamTopoToRuntime(
+  std::vector<FBRuntimeParam> const& params)
+{
+  std::unordered_map<FBParamTopoIndices, int> result;
+  for (int p = 0; p < params.size(); p++)
+    result[params[p].topoIndices] = p;
+  return result;
+}
+
 static std::vector<FBRuntimeParam>
 MakeRuntimeParams(
   std::vector<FBRuntimeModule> const& modules)
@@ -69,12 +79,14 @@ FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
 modules(MakeRuntimeModules(topo)),
 params(MakeRuntimeParams(modules)),
-paramTagToIndex(MakeParamTagToIndex(params)) {}
+paramTagToIndex(MakeParamTagToIndex(params)),
+paramTopoToRuntime(MakeParamTopoToRuntime(params)) {}
 
 FBRuntimeParam const*
-FBRuntimeTopo::ParamAtSlow(int staticModule, int moduleSlot, int staticParam, int paramSlot) const
+FBRuntimeTopo::ParamAtTopo(
+  FBParamTopoIndices const& topoIndices) const
 {
-
+  return &params[paramTopoToRuntime.at(topoIndices)];
 }
 
 std::string 
