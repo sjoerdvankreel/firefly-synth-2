@@ -11,14 +11,6 @@ if %errorlevel% neq 0 exit /b !errorlevel!
 msbuild /property:Configuration="%1" playground_plug.sln
 if %errorlevel% neq 0 exit /b !errorlevel!
 
-cd ..\..\..
-if not exist build\windows\avx2 mkdir build\windows\avx2
-cd build\windows\avx2
-cmake -DFB_ARCH_TYPE=2 ..\..\..
-if %errorlevel% neq 0 exit /b !errorlevel!
-msbuild /property:Configuration="%1" playground_plug.sln
-if %errorlevel% neq 0 exit /b !errorlevel!
-
 exit /b 0
 :usage
 echo "Usage: build_windows Debug|Release"

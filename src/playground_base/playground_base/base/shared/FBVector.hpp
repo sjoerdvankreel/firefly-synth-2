@@ -3,8 +3,7 @@
 #include <xsimd/xsimd.hpp>
 
 #define FB_ARCH_TYPE_WIN_LIN_SSE2 1
-#define FB_ARCH_TYPE_WIN_LIN_AVX2 2
-#define FB_ARCH_TYPE_MAC_UNIVERSAL 3
+#define FB_ARCH_TYPE_MAC_UNIVERSAL 2
 
 #ifndef FB_ARCH_TYPE
 #error
@@ -13,9 +12,6 @@
 #if FB_ARCH_TYPE == FB_ARCH_TYPE_WIN_LIN_SSE2
 typedef xsimd::batch<float, xsimd::sse2> FBFloatVector;
 typedef xsimd::batch<double, xsimd::sse2> FBDoubleVector;
-#elif FB_ARCH_TYPE == FB_ARCH_TYPE_WIN_LIN_AVX2
-typedef xsimd::batch<float, xsimd::avx2> FBFloatVector;
-typedef xsimd::batch<double, xsimd::avx2> FBDoubleVector;
 #elif FB_ARCH_TYPE == FB_ARCH_TYPE_MAC_UNIVERSAL
 #ifdef __x86_64__
 typedef xsimd::batch<float, xsimd::sse2> FBFloatVector;

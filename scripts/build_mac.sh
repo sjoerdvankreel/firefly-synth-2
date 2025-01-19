@@ -9,5 +9,5 @@ fi
 cd ..
 mkdir -p "build/mac/$1/universal"
 cd "build/mac/$1/universal"
-cmake -DCMAKE_BUILD_TYPE="$1" -DFB_ARCH_TYPE=3 ../../../..
+cmake -DCMAKE_BUILD_TYPE="$1" -DFB_ARCH_TYPE=2 ../../../..
 make
