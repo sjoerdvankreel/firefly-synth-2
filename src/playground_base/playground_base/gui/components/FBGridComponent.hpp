@@ -11,5 +11,7 @@ public:
 
   juce::Grid grid = {};
   void resized() override;
-  void AddItemAndChild(juce::GridItem const& item);
+
+  void Add(juce::Component* child);
+  void Add(juce::GridItem const& item);
 };

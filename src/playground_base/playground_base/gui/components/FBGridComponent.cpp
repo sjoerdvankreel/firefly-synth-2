@@ -20,8 +20,14 @@ FBGridComponent::resized()
   grid.performLayout(getLocalBounds());
 }
 
+void
+FBGridComponent::Add(Component* child)
+{
+  Add(GridItem(child));
+}
+
 void 
-FBGridComponent::AddItemAndChild(GridItem const& item)
+FBGridComponent::Add(GridItem const& item)
 {
 #ifndef NDEBUG
   for (int i = 0; i < getNumChildComponents(); i++)

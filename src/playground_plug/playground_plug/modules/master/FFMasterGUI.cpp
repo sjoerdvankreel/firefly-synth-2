@@ -16,8 +16,8 @@ FFMakeMasterGUI(
 {
   auto& grid = store->AddComponent<FBGridComponent>(1, 2);
   auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });
-  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamSlider>(gain, hostContext, Slider::SliderStyle::Rotary)));
+  grid.Add(store->AddParamControl<FBParamSlider>(gain, hostContext, Slider::SliderStyle::Rotary));
   auto const* smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
-  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamSlider>(smooth, hostContext, Slider::SliderStyle::Rotary)));
+  grid.Add(store->AddParamControl<FBParamSlider>(smooth, hostContext, Slider::SliderStyle::Rotary));
   return grid;
 } 
