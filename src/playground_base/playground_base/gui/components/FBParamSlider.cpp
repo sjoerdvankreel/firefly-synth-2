@@ -14,6 +14,7 @@ _param(param)
 {
   setRange(0.0, 1.0);
   setPopupDisplayEnabled(true, true, root);
+  setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
   SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
 }
 
