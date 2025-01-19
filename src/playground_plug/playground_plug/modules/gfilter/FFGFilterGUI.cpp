@@ -16,6 +16,7 @@ FFMakeGFilterGUI(
   FBRuntimeTopo const* topo, int moduleSlot,
   IFBGUIStore* store, IFBHostGUIContext* hostContext)
 {
+  auto& tabs = FBGUIStoreComponent<TabbedComponent>(store, TabbedButtonBar::Orientation::TabsAtTop);
   auto& grid = FBGUIStoreComponent<FBGridComponent>(store, 1, 5);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::On, 0 });
   grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamToggleButton>(store, on, hostContext)));
@@ -27,5 +28,6 @@ FFMakeGFilterGUI(
   grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, res, hostContext, Slider::SliderStyle::Rotary)));
   auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Gain, 0 });
   grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, gain, hostContext, Slider::SliderStyle::Rotary)));
-  return grid;
+  tabs.addTab("TODO", Colours::black, &grid, false);
+  return tabs;
 }
