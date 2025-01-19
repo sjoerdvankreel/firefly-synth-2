@@ -16,10 +16,7 @@ FFMakeGLFOGUI(
   IFBGUIStore* store, IFBHostGUIContext* hostContext)
 {
   // TODO figure out stuff to make this all less wordy
-  auto& grid = FBGUIStoreComponent<FBGridComponent>(store);
-  grid.grid.templateRows.add(Grid::TrackInfo(Grid::Fr(1)));
-  grid.grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(1)));
-  grid.grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(1)));
+  auto& grid = FBGUIStoreComponent<FBGridComponent>(store, 1, 2);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0 });
   grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamToggleButton>(store, on, hostContext)));
   auto const* rate = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
