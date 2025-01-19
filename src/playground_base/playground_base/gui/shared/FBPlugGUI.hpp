@@ -1,7 +1,6 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/gui/shared/FBGUIStore.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
@@ -10,8 +9,7 @@
 class IFBParamControl;
 
 class FBPlugGUI:
-public juce::Component,
-public FBGUIStore
+public juce::Component
 {
   std::map<int, int> _paramIndexToControl = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
@@ -21,9 +19,9 @@ protected:
 
 public:
   IFBParamControl* 
-  GetParamControlForIndex(int paramIndex) const override;
+  GetParamControlForIndex(int paramIndex) const;
   juce::Component* 
-  AddComponent(std::unique_ptr<juce::Component>&& component) override;
+  AddComponent(std::unique_ptr<juce::Component>&& component);
   IFBParamControl* 
-  AddParamControl(int index, std::unique_ptr<IFBParamControl>&& control) override;
+  AddParamControl(int index, std::unique_ptr<IFBParamControl>&& control);
 };

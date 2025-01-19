@@ -1,4 +1,4 @@
-#include <playground_base/gui/glue/FBPlugGUI.hpp>
+#include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <cassert>
 
 using namespace juce;
