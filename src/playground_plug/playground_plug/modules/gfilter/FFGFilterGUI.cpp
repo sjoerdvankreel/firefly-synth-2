@@ -8,13 +8,14 @@
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBParamComboBox.hpp>
 #include <playground_base/gui/components/FBParamToggleButton.hpp>
+#include <playground_base/gui/components/FBModuleTabComponent.hpp>
 
 using namespace juce;
 
 static Component&
 MakeGFilterGUI(
-  FBRuntimeTopo const* topo, int moduleSlot,
-  FBGUIStore* store, IFBHostGUIContext* hostContext)
+  FBRuntimeTopo const* topo, FBGUIStore* store,
+  IFBHostGUIContext* hostContext, int moduleSlot)
 {
   auto& result = store->AddComponent<FBGridComponent>(1, 5);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::On, 0 });
@@ -34,13 +35,6 @@ Component&
 FFMakeGFilterGUI(
   FBRuntimeTopo const* topo,
   FBGUIStore* store, IFBHostGUIContext* hostContext)
-{;
-  auto& result = store->AddComponent<TabbedComponent>(TabbedButtonBar::Orientation::TabsAtTop);
-  result.addTab("MOO", Colours::black, nullptr, false);
-  for (int i = 0; i < FFGFilterCount; i++)
-  {
-    auto& tab = MakeGFilterGUI(topo, i, store, hostContext);
-    result.addTab(std::to_string(i + 1), Colours::black, &tab, false);
-  }
-  return result;
+{
+  return store->AddComponent<FBModuleTabComponent>(topo, store, hostContext, (int)FFModuleType::GFilter, MakeGFilterGUI);
 }

@@ -8,13 +8,14 @@
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBParamComboBox.hpp>
 #include <playground_base/gui/components/FBParamToggleButton.hpp>
+#include <playground_base/gui/components/FBModuleTabComponent.hpp>
 
 using namespace juce;
 
 static Component&
 MakeOsciGUI(
-  FBRuntimeTopo const* topo, int moduleSlot,
-  FBGUIStore* store, IFBHostGUIContext* hostContext)
+  FBRuntimeTopo const* topo, FBGUIStore* store, 
+  IFBHostGUIContext* hostContext, int moduleSlot)
 {
   auto& result = store->AddComponent<FBGridComponent>(1, 7);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::On, 0 });
@@ -39,11 +40,5 @@ FFMakeOsciGUI(
   FBRuntimeTopo const* topo, 
   FBGUIStore* store, IFBHostGUIContext* hostContext)
 {
-  auto& result = store->AddComponent<TabbedComponent>(TabbedButtonBar::Orientation::TabsAtTop);
-  for (int i = 0; i < FFOsciCount; i++)
-  {
-    auto& tab = MakeOsciGUI(topo, i, store, hostContext);
-    result.addTab(std::to_string(i + 1), Colours::black, &tab, false);
-  }
-  return result;
+  return store->AddComponent<FBModuleTabComponent>(topo, store, hostContext, (int)FFModuleType::Osci, MakeOsciGUI);
 }
