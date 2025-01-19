@@ -4,8 +4,8 @@
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
-#include <playground_base/gui/components/FBParamLabel.hpp>
-#include <playground_base/gui/components/FBParamSlider.hpp>
+#include <playground_base/gui/controls/FBParamLabel.hpp>
+#include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
 

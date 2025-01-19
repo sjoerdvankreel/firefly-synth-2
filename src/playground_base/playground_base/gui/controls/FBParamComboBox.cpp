@@ -1,6 +1,6 @@
 #include <playground_base/base/topo/FBRuntimeParam.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
-#include <playground_base/gui/components/FBParamComboBox.hpp>
+#include <playground_base/gui/controls/FBParamComboBox.hpp>
 
 using namespace juce;
 

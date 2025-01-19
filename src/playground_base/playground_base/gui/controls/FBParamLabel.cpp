@@ -1,5 +1,5 @@
 #include <playground_base/base/topo/FBRuntimeParam.hpp>
-#include <playground_base/gui/components/FBParamLabel.hpp>
+#include <playground_base/gui/controls/FBParamLabel.hpp>
 
 #include <string>
 

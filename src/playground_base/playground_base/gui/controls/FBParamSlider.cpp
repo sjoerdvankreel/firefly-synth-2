@@ -1,6 +1,6 @@
 #include <playground_base/base/topo/FBRuntimeParam.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
-#include <playground_base/gui/components/FBParamSlider.hpp>
+#include <playground_base/gui/controls/FBParamSlider.hpp>
 
 using namespace juce;
 
