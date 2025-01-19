@@ -12,7 +12,7 @@ using namespace juce;
 Component&
 FFMakeMasterGUI(
   FBRuntimeTopo const* topo, int moduleSlot, 
-  IFBGUIStore* store, IFBHostGUIContext* hostContext)
+  FBGUIStore* store, IFBHostGUIContext* hostContext)
 {
   auto& grid = FBGUIStoreComponent<FBGridComponent>(store, 1, 2);
   auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });

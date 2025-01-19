@@ -10,10 +10,10 @@
 #include <utility>
 #include <cassert>
 
-class IFBGUIStore
+class FBGUIStore
 {
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(IFBGUIStore);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBGUIStore);
   virtual IFBParamControl*
   GetParamControlForIndex(int paramIndex) const = 0;
   virtual juce::Component*
@@ -23,7 +23,7 @@ public:
 };
 
 template <class TComponent, class... Args>
-TComponent& FBGUIStoreComponent(IFBGUIStore* store, Args&&... args)
+TComponent& FBGUIStoreComponent(FBGUIStore* store, Args&&... args)
 {
   auto component = std::make_unique<TComponent>(std::forward<Args>(args)...);
   TComponent* result = component.get();
@@ -33,7 +33,7 @@ TComponent& FBGUIStoreComponent(IFBGUIStore* store, Args&&... args)
 }
 
 template <class TParamControl, class... Args>
-TParamControl& FBGUIStoreParamControl(IFBGUIStore* store, FBRuntimeParam const* param, Args&&... args)
+TParamControl& FBGUIStoreParamControl(FBGUIStore* store, FBRuntimeParam const* param, Args&&... args)
 {
   auto control = std::make_unique<TParamControl>(param, std::forward<Args>(args)...);
   TParamControl* result = control.get();

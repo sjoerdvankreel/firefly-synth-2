@@ -3,10 +3,10 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 struct FBRuntimeTopo;
-class IFBGUIStore;
+class FBGUIStore;
 class IFBHostGUIContext;
 
 juce::Component&
 FFMakeMasterGUI(
   FBRuntimeTopo const* topo, int moduleSlot, 
-  IFBGUIStore* store, IFBHostGUIContext* hostContext);
+  FBGUIStore* store, IFBHostGUIContext* hostContext);

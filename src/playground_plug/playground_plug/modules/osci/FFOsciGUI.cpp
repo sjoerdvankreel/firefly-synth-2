@@ -14,7 +14,7 @@ using namespace juce;
 Component&
 FFMakeOsciGUI(
   FBRuntimeTopo const* topo, int moduleSlot,
-  IFBGUIStore* store, IFBHostGUIContext* hostContext)
+  FBGUIStore* store, IFBHostGUIContext* hostContext)
 {
   auto& grid = FBGUIStoreComponent<FBGridComponent>(store, 1, 7);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::On, 0 });

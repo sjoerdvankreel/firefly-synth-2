@@ -14,7 +14,7 @@ using namespace juce;
 Component&
 FFMakeGFilterGUI(
   FBRuntimeTopo const* topo, int moduleSlot,
-  IFBGUIStore* store, IFBHostGUIContext* hostContext)
+  FBGUIStore* store, IFBHostGUIContext* hostContext)
 {
   auto& tabs = FBGUIStoreComponent<TabbedComponent>(store, TabbedButtonBar::Orientation::TabsAtTop);
   auto& grid = FBGUIStoreComponent<FBGridComponent>(store, 1, 5);

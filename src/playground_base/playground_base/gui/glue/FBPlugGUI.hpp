@@ -11,7 +11,7 @@ class IFBParamControl;
 
 class FBPlugGUI:
 public juce::Component,
-public IFBGUIStore
+public FBGUIStore
 {
   std::map<int, int> _paramIndexToControl = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
