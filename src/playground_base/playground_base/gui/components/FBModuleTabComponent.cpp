@@ -17,6 +17,7 @@ _tabs(TabbedButtonBar::Orientation::TabsAtTop)
   _tabs.addTab(module.name, Colours::black, nullptr, false);
   for (int i = 0; i < module.slotCount; i++)
     _tabs.addTab(std::to_string(i + 1), Colours::black, &tabFactory(topo, store, hostContext, i), false);
+  addAndMakeVisible(_tabs);
 }
 
 void
