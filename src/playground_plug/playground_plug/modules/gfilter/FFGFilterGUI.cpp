@@ -15,7 +15,8 @@ using namespace juce;
 static Component&
 MakeGFilterGUI(
   FBRuntimeTopo const* topo, FBGUIStore* store,
-  IFBHostGUIContext* hostContext, int moduleSlot)
+  IFBHostGUIContext* hostContext, Component* root, 
+  int moduleSlot)
 {
   auto& result = store->AddComponent<FBGridComponent>(1, 5);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::On, 0 });
@@ -23,18 +24,18 @@ MakeGFilterGUI(
   auto const* type = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Type, 0 });
   result.Add(store->AddParamControl<FBParamComboBox>(type, hostContext));
   auto const* freq = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Freq, 0 });
-  result.Add(store->AddParamControl<FBParamSlider>(freq, hostContext, Slider::SliderStyle::Rotary));
+  result.Add(store->AddParamControl<FBParamSlider>(freq, hostContext, root, Slider::SliderStyle::Rotary));
   auto const* res = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Res, 0 });
-  result.Add(store->AddParamControl<FBParamSlider>(res, hostContext, Slider::SliderStyle::Rotary));
+  result.Add(store->AddParamControl<FBParamSlider>(res, hostContext, root, Slider::SliderStyle::Rotary));
   auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Gain, 0 });
-  result.Add(store->AddParamControl<FBParamSlider>(gain, hostContext, Slider::SliderStyle::Rotary));
+  result.Add(store->AddParamControl<FBParamSlider>(gain, hostContext, root, Slider::SliderStyle::Rotary));
   return result;
 }
 
 Component&
 FFMakeGFilterGUI(
-  FBRuntimeTopo const* topo,
-  FBGUIStore* store, IFBHostGUIContext* hostContext)
+  FBRuntimeTopo const* topo, FBGUIStore* store, 
+  IFBHostGUIContext* hostContext, Component* root)
 {
-  return store->AddComponent<FBModuleTabComponent>(topo, store, hostContext, (int)FFModuleType::GFilter, MakeGFilterGUI);
+  return store->AddComponent<FBModuleTabComponent>(topo, store, hostContext, root, (int)FFModuleType::GFilter, MakeGFilterGUI);
 }

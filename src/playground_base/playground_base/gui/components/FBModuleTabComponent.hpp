@@ -9,7 +9,8 @@ class IFBHostGUIContext;
 
 typedef std::function<juce::Component&(
   FBRuntimeTopo const* topo, FBGUIStore* store, 
-  IFBHostGUIContext* hostContext, int moduleSlot)>
+  IFBHostGUIContext* hostContext, juce::Component* root,
+  int moduleSlot)>
 FBModuleTabFactory;
 
 class FBModuleTabComponent:
@@ -21,6 +22,6 @@ public:
   void resized() override;
   FBModuleTabComponent(
     FBRuntimeTopo const* topo, FBGUIStore* store, 
-    IFBHostGUIContext* hostContext, int moduleIndex,
-    FBModuleTabFactory const& tabFactory);
+    IFBHostGUIContext* hostContext, juce::Component* root,
+    int moduleIndex, FBModuleTabFactory const& tabFactory);
 };
