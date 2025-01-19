@@ -7,5 +7,6 @@ public juce::Component
 {
 public:
   void resized() override;
+  void paint(juce::Graphics& g) override;
   FBSectionComponent(juce::Component* content);
 };
