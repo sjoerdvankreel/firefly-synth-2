@@ -6,8 +6,8 @@ using namespace juce;
 
 FBParamSlider::
 FBParamSlider(
-  FBRuntimeParam const* param, IFBHostGUIContext* context,
-  Component* root, Slider::SliderStyle style):
+  FBRuntimeParam const* param, Component* root, 
+  IFBHostGUIContext* context, Slider::SliderStyle style):
 Slider(style, Slider::NoTextBox),
 _context(context),
 _param(param) 

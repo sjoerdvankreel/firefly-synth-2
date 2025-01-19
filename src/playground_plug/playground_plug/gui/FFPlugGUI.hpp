@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/gui/glue/FBPlugGUI.hpp>
+#include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
 struct FBRuntimeTopo;

@@ -15,8 +15,8 @@ public IFBParamControl
 
 public:
   FBParamSlider(
-    FBRuntimeParam const* param, IFBHostGUIContext* context,
-    juce::Component* root, juce::Slider::SliderStyle style);
+    FBRuntimeParam const* param, juce::Component* root, 
+    IFBHostGUIContext* context, juce::Slider::SliderStyle style);
 
   void valueChanged() override;
   void stoppedDragging() override;

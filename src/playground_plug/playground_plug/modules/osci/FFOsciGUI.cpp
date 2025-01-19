@@ -25,13 +25,13 @@ MakeOsciGUI(
   auto const* note = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 });
   result.Add(plugGUI->AddParamControl<FBParamComboBox>(note, hostContext));
   auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 0 });
-  result.Add(plugGUI->AddParamControl<FBParamSlider>(gain, hostContext, plugGUI, Slider::SliderStyle::Rotary));
+  result.Add(plugGUI->AddParamControl<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   auto const* cent = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
-  result.Add(plugGUI->AddParamControl<FBParamSlider>(cent, hostContext, plugGUI, Slider::SliderStyle::Rotary));
+  result.Add(plugGUI->AddParamControl<FBParamSlider>(cent, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   auto const* pw = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::PW, 0 });
-  result.Add(plugGUI->AddParamControl<FBParamSlider>(pw, hostContext, plugGUI, Slider::SliderStyle::Rotary));
+  result.Add(plugGUI->AddParamControl<FBParamSlider>(pw, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   auto const* gLFOToGain = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
-  result.Add(plugGUI->AddParamControl<FBParamSlider>(gLFOToGain, hostContext, plugGUI, Slider::SliderStyle::Rotary));
+  result.Add(plugGUI->AddParamControl<FBParamSlider>(gLFOToGain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   return result;
 }
 

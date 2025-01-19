@@ -3,10 +3,11 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 struct FBRuntimeTopo;
-class FBGUIStore;
+class FBPlugGUI;
 class IFBHostGUIContext;
 
 juce::Component&
 FFMakeGLFOGUI(
-  FBRuntimeTopo const* topo, FBGUIStore* store, 
-  IFBHostGUIContext* hostContext, juce::Component* root);
+  FBRuntimeTopo const* topo,
+  FBPlugGUI* plugGUI, 
+  IFBHostGUIContext* hostContext);
