@@ -14,9 +14,15 @@ FBModuleTabComponent(
 _tabs(TabbedButtonBar::Orientation::TabsAtTop)
 {
   auto const& module = topo->static_.modules[moduleIndex];
-  _tabs.addTab(module.name, Colours::black, nullptr, false);
-  for (int i = 0; i < module.slotCount; i++)
-    _tabs.addTab(std::to_string(i + 1), Colours::black, &tabFactory(topo, store, hostContext, i), false);
+  if(module.slotCount == 1)
+    _tabs.addTab(module.name, Colours::black, &tabFactory(topo, store, hostContext, 0), false);
+  else
+  {
+    _tabs.addTab(module.name, Colours::black, nullptr, false);
+    for (int i = 0; i < module.slotCount; i++)
+      _tabs.addTab(std::to_string(i + 1), Colours::black, &tabFactory(topo, store, hostContext, i), false);
+    _tabs.setCurrentTabIndex(1);
+  }
   addAndMakeVisible(_tabs);
 }
 
