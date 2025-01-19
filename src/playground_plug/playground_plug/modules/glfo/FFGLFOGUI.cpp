@@ -14,21 +14,20 @@ using namespace juce;
 static Component&
 MakeGLFOGUI(
   FBRuntimeTopo const* topo, FBGUIStore* store, 
-  IFBHostGUIContext* hostContext, Component* root,
-  int moduleSlot)
+  IFBHostGUIContext* hostContext, int moduleSlot)
 {
   auto& result = store->AddComponent<FBGridComponent>(1, 2);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0 });
   result.Add(store->AddParamControl<FBParamToggleButton>(on, hostContext));
   auto const* rate = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
-  result.Add(store->AddParamControl<FBParamSlider>(rate, hostContext, root, Slider::SliderStyle::Rotary));
+  result.Add(store->AddParamControl<FBParamSlider>(rate, hostContext, Slider::SliderStyle::Rotary));
   return result;
 }
 
 Component&
 FFMakeGLFOGUI(
-  FBRuntimeTopo const* topo, FBGUIStore* store, 
-  IFBHostGUIContext* hostContext, Component* root)
+  FBRuntimeTopo const* topo,
+  FBGUIStore* store, IFBHostGUIContext* hostContext)
 {
-  return store->AddComponent<FBModuleTabComponent>(topo, store, hostContext, root, (int)FFModuleType::GLFO, MakeGLFOGUI);
+  return store->AddComponent<FBModuleTabComponent>(topo, store, hostContext, (int)FFModuleType::GLFO, MakeGLFOGUI);
 }

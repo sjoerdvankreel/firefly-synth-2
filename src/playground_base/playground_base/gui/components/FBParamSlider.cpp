@@ -6,14 +6,14 @@ using namespace juce;
 
 FBParamSlider::
 FBParamSlider(
-  FBRuntimeParam const* param, IFBHostGUIContext* context,
-  Component* root, Slider::SliderStyle style):
-Slider(style, Slider::NoTextBox),
+  FBRuntimeParam const* param,
+  IFBHostGUIContext* context,
+  Slider::SliderStyle style):
+Slider(style, Slider::TextBoxBelow),
 _context(context),
 _param(param) 
 {
   setRange(0.0, 1.0);
-  setPopupDisplayEnabled(true, true, root);
   SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
 }
 
