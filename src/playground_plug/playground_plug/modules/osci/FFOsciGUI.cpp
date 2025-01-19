@@ -12,11 +12,11 @@
 using namespace juce;
 
 Component&
-FFMakeGFilterGUI(
+FFMakeOsciGUI(
   FBRuntimeTopo const* topo, int moduleSlot,
   IFBGUIStore* store, IFBHostGUIContext* hostContext)
 {
-  auto& grid = FBGUIStoreComponent<FBGridComponent>(store, 1, 2);
+  auto& grid = FBGUIStoreComponent<FBGridComponent>(store, 1, 7);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::On, 0 });
   grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamToggleButton>(store, on, hostContext)));
   auto const* type = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Type, 0 });
