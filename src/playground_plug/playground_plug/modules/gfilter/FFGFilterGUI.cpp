@@ -36,6 +36,7 @@ FFMakeGFilterGUI(
   FBGUIStore* store, IFBHostGUIContext* hostContext)
 {;
   auto& result = store->AddComponent<TabbedComponent>(TabbedButtonBar::Orientation::TabsAtTop);
+  result.addTab("MOO", Colours::black, nullptr, false);
   for (int i = 0; i < FFGFilterCount; i++)
   {
     auto& tab = MakeGFilterGUI(topo, i, store, hostContext);
