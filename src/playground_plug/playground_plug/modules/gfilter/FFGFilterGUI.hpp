@@ -8,5 +8,5 @@ class IFBHostGUIContext;
 
 juce::Component&
 FFMakeGFilterGUI(
-  FBRuntimeTopo const* topo,
-  FBGUIStore* store, IFBHostGUIContext* hostContext);
+  FBRuntimeTopo const* topo, FBGUIStore* store, 
+  IFBHostGUIContext* hostContext, juce::Component* root);
