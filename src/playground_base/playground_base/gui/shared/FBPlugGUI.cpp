@@ -1,4 +1,6 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/shared/FBParamControl.hpp>
+
 #include <cassert>
 
 using namespace juce;
