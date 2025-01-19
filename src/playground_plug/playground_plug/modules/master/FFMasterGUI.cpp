@@ -11,13 +11,13 @@ using namespace juce;
 
 Component&
 FFMakeMasterGUI(
-  FBRuntimeTopo const* topo, int moduleSlot, 
+  FBRuntimeTopo const* topo,   
   FBGUIStore* store, IFBHostGUIContext* hostContext)
 {
   auto& grid = store->AddComponent<FBGridComponent>(1, 2);
-  auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });
+  auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Gain, 0 });
   grid.Add(store->AddParamControl<FBParamSlider>(gain, hostContext, Slider::SliderStyle::Rotary));
-  auto const* smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
+  auto const* smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Smoothing, 0 });
   grid.Add(store->AddParamControl<FBParamSlider>(smooth, hostContext, Slider::SliderStyle::Rotary));
   return grid;
 } 

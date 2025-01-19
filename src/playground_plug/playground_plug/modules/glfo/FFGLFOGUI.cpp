@@ -12,13 +12,13 @@ using namespace juce;
 
 Component&
 FFMakeGLFOGUI(
-  FBRuntimeTopo const* topo, int moduleSlot,
+  FBRuntimeTopo const* topo,
   FBGUIStore* store, IFBHostGUIContext* hostContext)
 {
   auto& grid = store->AddComponent<FBGridComponent>(1, 2);
-  auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0 });
+  auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GLFO, 0, (int)FFGLFOParam::On, 0 });
   grid.Add(store->AddParamControl<FBParamToggleButton>(on, hostContext));
-  auto const* rate = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
+  auto const* rate = topo->ParamAtTopo({ (int)FFModuleType::GLFO, 0, (int)FFGLFOParam::Rate, 0 });
   grid.Add(store->AddParamControl<FBParamSlider>(rate, hostContext, Slider::SliderStyle::Rotary));
   return grid;
 }

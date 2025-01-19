@@ -8,5 +8,5 @@ class IFBHostGUIContext;
 
 juce::Component&
 FFMakeMasterGUI(
-  FBRuntimeTopo const* topo, int moduleSlot, 
+  FBRuntimeTopo const* topo,   
   FBGUIStore* store, IFBHostGUIContext* hostContext);
