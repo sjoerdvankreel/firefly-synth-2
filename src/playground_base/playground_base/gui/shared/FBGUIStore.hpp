@@ -16,9 +16,9 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBGUIStore);
 
   template <class TComponent, class... Args>
-  TComponent& AddComponent(Args&&... args);
+  TComponent& AddComponent2(Args&&... args);
   template <class TParamControl, class... Args>
-  TParamControl& AddParamControl(FBRuntimeParam const* param, Args&&... args);
+  TParamControl& AddParamControl2(FBRuntimeParam const* param, Args&&... args);
 
   virtual IFBParamControl*
   GetParamControlForIndex(int paramIndex) const = 0;
@@ -29,7 +29,7 @@ public:
 };
 
 template <class TComponent, class... Args>
-TComponent& FBGUIStore::AddComponent(Args&&... args)
+TComponent& FBGUIStore::AddComponent2(Args&&... args)
 {
   auto component = std::make_unique<TComponent>(std::forward<Args>(args)...);
   TComponent* result = component.get();
@@ -39,7 +39,7 @@ TComponent& FBGUIStore::AddComponent(Args&&... args)
 }
 
 template <class TParamControl, class... Args>
-TParamControl& FBGUIStore::AddParamControl(FBRuntimeParam const* param, Args&&... args)
+TParamControl& FBGUIStore::AddParamControl2(FBRuntimeParam const* param, Args&&... args)
 {
   auto control = std::make_unique<TParamControl>(param, std::forward<Args>(args)...);
   TParamControl* result = control.get();
