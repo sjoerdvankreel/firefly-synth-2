@@ -4,6 +4,7 @@
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/components/FBParamLabel.hpp>
 #include <playground_base/gui/components/FBParamSlider.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBParamToggleButton.hpp>
@@ -16,10 +17,12 @@ MakeGLFOGUI(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto& result = plugGUI->AddComponent<FBGridComponent>(1, 2);
+  auto& result = plugGUI->AddComponent<FBGridComponent>(1, (int)FFGLFOParam::Count * 2);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(on));
   result.Add(plugGUI->AddParamControl<FBParamToggleButton>(on, hostContext));
   auto const* rate = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(rate));
   result.Add(plugGUI->AddParamControl<FBParamSlider>(rate, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   return result;
 }

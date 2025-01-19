@@ -88,9 +88,10 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   default: assert(false); break;
   }
   mono.Transform([&](int v) {
-    auto gain = params.acc.gain[0].Voice()[voice].CV(v);
+    auto gain1 = params.acc.gain[0].Voice()[voice].CV(v);
+    auto gain2 = params.acc.gain[1].Voice()[voice].CV(v);
     auto gLFOToGain = params.acc.gLFOToGain[0].Voice()[voice].CV(v);
-    return gain * ((1.0f - gLFOToGain) * mono[v] + mono[v] * gLFOToGain * gLFO[v]); });
+    return gain1 * gain2 * ((1.0f - gLFOToGain) * mono[v] + mono[v] * gLFOToGain * gLFO[v]); });
   output.Transform([&](int ch, int v) {
     return mono[v];
   });

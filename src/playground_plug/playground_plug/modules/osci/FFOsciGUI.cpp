@@ -4,6 +4,7 @@
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/components/FBParamLabel.hpp>
 #include <playground_base/gui/components/FBParamSlider.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBParamComboBox.hpp>
@@ -17,20 +18,30 @@ MakeOsciGUI(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto& result = plugGUI->AddComponent<FBGridComponent>(1, 7);
+  auto& result = plugGUI->AddComponent<FBGridComponent>(1, 16);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::On, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(on));
   result.Add(plugGUI->AddParamControl<FBParamToggleButton>(on, hostContext));
   auto const* type = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Type, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(type));
   result.Add(plugGUI->AddParamControl<FBParamComboBox>(type, hostContext));
   auto const* note = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(note));
   result.Add(plugGUI->AddParamControl<FBParamComboBox>(note, hostContext));
-  auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 0 });
-  result.Add(plugGUI->AddParamControl<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  auto const* gain1 = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(gain1));
+  result.Add(plugGUI->AddParamControl<FBParamSlider>(gain1, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  auto const* gain2 = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 1 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(gain2));
+  result.Add(plugGUI->AddParamControl<FBParamSlider>(gain2, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   auto const* cent = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(cent));
   result.Add(plugGUI->AddParamControl<FBParamSlider>(cent, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   auto const* pw = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::PW, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(pw));
   result.Add(plugGUI->AddParamControl<FBParamSlider>(pw, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   auto const* gLFOToGain = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
+  result.Add(plugGUI->AddComponent<FBParamLabel>(gLFOToGain));
   result.Add(plugGUI->AddParamControl<FBParamSlider>(gLFOToGain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   return result;
 }
