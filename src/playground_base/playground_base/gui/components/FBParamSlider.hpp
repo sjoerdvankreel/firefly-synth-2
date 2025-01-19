@@ -8,9 +8,8 @@ class IFBHostGUIContext;
 
 class FBParamSlider final:
 public juce::Slider,
-public IFBParamControl
+public FBParamControl
 {
-  FBRuntimeParam const* const _param;
   IFBHostGUIContext* const _context;
 
 public:

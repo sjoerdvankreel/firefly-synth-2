@@ -13,21 +13,10 @@ FBPlugGUI::AddComponent(std::unique_ptr<Component>&& component)
   return result;
 }
 
-IFBParamControl*
+FBParamControl*
 FBPlugGUI::GetParamControlForIndex(int paramIndex) const
 {
-  auto iter = _paramIndexToControl.find(paramIndex);
-  assert(iter != _paramIndexToControl.end());
-  return &dynamic_cast<IFBParamControl&>(*_store[iter->second].get());
-}
-
-IFBParamControl*
-FBPlugGUI::AddParamControl(int paramIndex, std::unique_ptr<IFBParamControl>&& control)
-{
-  int controlIndex = (int)_store.size();
-  IFBParamControl* controlPtr = std::move(control).release();
-  AddComponent(std::unique_ptr<Component>(&dynamic_cast<Component&>(*controlPtr)));
-  assert(_paramIndexToControl.find(paramIndex) == _paramIndexToControl.end());
-  _paramIndexToControl[paramIndex] = controlIndex;
-  return controlPtr;
+  auto iter = _paramIndexToComponent.find(paramIndex);
+  assert(iter != _paramIndexToComponent.end());
+  return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
 }

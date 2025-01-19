@@ -9,8 +9,8 @@ FBParamSlider(
   FBRuntimeParam const* param, Component* root, 
   IFBHostGUIContext* context, Slider::SliderStyle style):
 Slider(style, Slider::NoTextBox),
-_context(context),
-_param(param) 
+FBParamControl(param),
+_context(context)
 {
   setRange(0.0, 1.0);
   setPopupDisplayEnabled(true, true, root);

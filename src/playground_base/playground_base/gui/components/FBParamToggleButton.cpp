@@ -9,8 +9,8 @@ FBParamToggleButton(
   FBRuntimeParam const* param,
   IFBHostGUIContext* context):
 ToggleButton(),
-_context(context),
-_param(param) 
+FBParamControl(param),
+_context(context)
 {
   SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
   _isOn = getToggleState();

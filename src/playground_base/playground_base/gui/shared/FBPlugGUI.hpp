@@ -11,42 +11,30 @@
 class FBPlugGUI:
 public juce::Component
 {
-  std::map<int, int> _paramIndexToControl = {};
+  std::map<int, int> _paramIndexToComponent = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
 
 protected:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugGUI);
-
   juce::Component* 
   AddComponent(std::unique_ptr<juce::Component>&& component);
-  IFBParamControl* 
-  AddParamControl(int index, std::unique_ptr<IFBParamControl>&& control);
 
 public:
-  IFBParamControl* 
-  GetParamControlForIndex(int paramIndex) const;
-
   template <class TComponent, class... Args>
   TComponent& AddComponent(Args&&... args);
-  template <class TParamControl, class... Args>
-  TParamControl& AddParamControl(FBRuntimeParam const* param, Args&&... args);
+  FBParamControl*
+  GetParamControlForIndex(int paramIndex) const;
 };
 
 template <class TComponent, class... Args>
 TComponent& FBPlugGUI::AddComponent(Args&&... args)
 {
+  FBParamControl* paramControl = nullptr;
+  int componentIndex = (int)_store.size();
   auto component = std::make_unique<TComponent>(std::forward<Args>(args)...);
   TComponent* result = component.get();
   AddComponent(std::move(component));
-  assert(dynamic_cast<IFBParamControl*>(result) == nullptr);
-  return *result;
-}
-
-template <class TParamControl, class... Args>
-TParamControl& FBPlugGUI::AddParamControl(FBRuntimeParam const* param, Args&&... args)
-{
-  auto control = std::make_unique<TParamControl>(param, std::forward<Args>(args)...);
-  TParamControl* result = control.get();
-  AddParamControl(param->runtimeParamIndex, std::move(control));
+  if ((paramControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
+    _paramIndexToComponent[paramControl->Param()->runtimeParamIndex] = componentIndex;
   return *result;
 }

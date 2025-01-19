@@ -8,10 +8,9 @@ class IFBHostGUIContext;
 
 class FBParamToggleButton final:
 public juce::ToggleButton,
-public IFBParamControl
+public FBParamControl
 {
   bool _isOn = {};
-  FBRuntimeParam const* const _param;
   IFBHostGUIContext* const _context;
 
 public:

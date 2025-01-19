@@ -9,8 +9,8 @@ FBParamComboBox(
   FBRuntimeParam const* param,
   IFBHostGUIContext* context):
 ComboBox(),
-_context(context),
-_param(param) 
+FBParamControl(param),
+_context(context)
 {
   for (int i = 0; i < param->static_.ValueCount(); i++)
   {

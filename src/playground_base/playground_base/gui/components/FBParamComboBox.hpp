@@ -8,9 +8,8 @@ class IFBHostGUIContext;
 
 class FBParamComboBox final:
 public juce::ComboBox,
-public IFBParamControl
+public FBParamControl
 {
-  FBRuntimeParam const* const _param;
   IFBHostGUIContext* const _context;
 
 public:

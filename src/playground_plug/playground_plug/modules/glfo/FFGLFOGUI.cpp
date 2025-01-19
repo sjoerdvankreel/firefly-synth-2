@@ -20,10 +20,10 @@ MakeGLFOGUI(
   auto& result = plugGUI->AddComponent<FBGridComponent>(1, (int)FFGLFOParam::Count * 2);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0 });
   result.Add(plugGUI->AddComponent<FBParamLabel>(on));
-  result.Add(plugGUI->AddParamControl<FBParamToggleButton>(on, hostContext));
+  result.Add(plugGUI->AddComponent<FBParamToggleButton>(on, hostContext));
   auto const* rate = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
   result.Add(plugGUI->AddComponent<FBParamLabel>(rate));
-  result.Add(plugGUI->AddParamControl<FBParamSlider>(rate, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  result.Add(plugGUI->AddComponent<FBParamSlider>(rate, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   return result;
 }
 

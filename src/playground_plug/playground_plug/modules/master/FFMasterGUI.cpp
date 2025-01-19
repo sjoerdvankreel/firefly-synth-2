@@ -19,10 +19,10 @@ MakeMasterGUI(
   auto& result = plugGUI->AddComponent<FBGridComponent>(1, (int)FFMasterParam::Count * 2);
   auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });
   result.Add(plugGUI->AddComponent<FBParamLabel>(gain));
-  result.Add(plugGUI->AddParamControl<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  result.Add(plugGUI->AddComponent<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   auto const* smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
   result.Add(plugGUI->AddComponent<FBParamLabel>(smooth));
-  result.Add(plugGUI->AddParamControl<FBParamSlider>(smooth, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  result.Add(plugGUI->AddComponent<FBParamSlider>(smooth, plugGUI, hostContext, Slider::SliderStyle::Rotary));
   return result;
 } 
 
