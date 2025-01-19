@@ -14,7 +14,7 @@
 using namespace juce;
 
 static Component&
-MakeGLFOGUI(
+MakeGLFOSectionAll(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
@@ -34,5 +34,5 @@ FFMakeGLFOGUI(
   FBPlugGUI* plugGUI, 
   IFBHostGUIContext* hostContext)
 {
-  return plugGUI->AddComponent<FBModuleTabComponent>(topo, plugGUI, hostContext, (int)FFModuleType::GLFO, MakeGLFOGUI);
+  return plugGUI->AddComponent<FBModuleTabComponent>(topo, plugGUI, hostContext, (int)FFModuleType::GLFO, MakeGLFOSectionAll);
 }

@@ -13,7 +13,7 @@
 using namespace juce;
 
 static Component&
-MakeMasterGUI(
+MakeMasterSectionAll(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI, 
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
@@ -33,5 +33,5 @@ FFMakeMasterGUI(
   FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext)
 {
-  return plugGUI->AddComponent<FBModuleTabComponent>(topo, plugGUI, hostContext, (int)FFModuleType::Master, MakeMasterGUI);
+  return plugGUI->AddComponent<FBModuleTabComponent>(topo, plugGUI, hostContext, (int)FFModuleType::Master, MakeMasterSectionAll);
 }
