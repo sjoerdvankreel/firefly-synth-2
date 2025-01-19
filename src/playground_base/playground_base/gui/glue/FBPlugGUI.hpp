@@ -23,7 +23,7 @@ public:
   IFBParamControl* 
   GetParamControlForIndex(int paramIndex) const override;
   juce::Component* 
-  StoreComponent(std::unique_ptr<juce::Component>&& component) override;
+  AddComponent(std::unique_ptr<juce::Component>&& component) override;
   IFBParamControl* 
-  StoreParamControl(int index, std::unique_ptr<IFBParamControl>&& control) override;
+  AddParamControl(int index, std::unique_ptr<IFBParamControl>&& control) override;
 };

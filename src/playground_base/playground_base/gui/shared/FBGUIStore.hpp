@@ -14,12 +14,13 @@ class FBGUIStore
 {
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBGUIStore);
+
   virtual IFBParamControl*
   GetParamControlForIndex(int paramIndex) const = 0;
   virtual juce::Component*
-  StoreComponent(std::unique_ptr<juce::Component>&& component) = 0;
+  AddComponent(std::unique_ptr<juce::Component>&& component) = 0;
   virtual IFBParamControl*
-  StoreParamControl(int index, std::unique_ptr<IFBParamControl>&& control) = 0;
+  AddParamControl(int index, std::unique_ptr<IFBParamControl>&& control) = 0;
 };
 
 template <class TComponent, class... Args>
@@ -27,7 +28,7 @@ TComponent& FBGUIStoreComponent(FBGUIStore* store, Args&&... args)
 {
   auto component = std::make_unique<TComponent>(std::forward<Args>(args)...);
   TComponent* result = component.get();
-  store->StoreComponent(std::move(component));
+  store->AddComponent(std::move(component));
   assert(dynamic_cast<IFBParamControl*>(result) == nullptr);
   return *result;
 }
@@ -37,6 +38,6 @@ TParamControl& FBGUIStoreParamControl(FBGUIStore* store, FBRuntimeParam const* p
 {
   auto control = std::make_unique<TParamControl>(param, std::forward<Args>(args)...);
   TParamControl* result = control.get();
-  store->StoreParamControl(param->runtimeParamIndex, std::move(control));
+  store->AddParamControl(param->runtimeParamIndex, std::move(control));
   return *result;
 }

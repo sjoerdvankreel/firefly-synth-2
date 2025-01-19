@@ -4,7 +4,7 @@
 using namespace juce;
 
 Component*
-FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
+FBPlugGUI::AddComponent(std::unique_ptr<Component>&& component)
 {
   Component* result = component.get();
   _store.emplace_back(std::move(component));
@@ -20,11 +20,11 @@ FBPlugGUI::GetParamControlForIndex(int paramIndex) const
 }
 
 IFBParamControl*
-FBPlugGUI::StoreParamControl(int paramIndex, std::unique_ptr<IFBParamControl>&& control)
+FBPlugGUI::AddParamControl(int paramIndex, std::unique_ptr<IFBParamControl>&& control)
 {
   int controlIndex = (int)_store.size();
   IFBParamControl* controlPtr = std::move(control).release();
-  StoreComponent(std::unique_ptr<Component>(&dynamic_cast<Component&>(*controlPtr)));
+  AddComponent(std::unique_ptr<Component>(&dynamic_cast<Component&>(*controlPtr)));
   assert(_paramIndexToControl.find(paramIndex) == _paramIndexToControl.end());
   _paramIndexToControl[paramIndex] = controlIndex;
   return controlPtr;
