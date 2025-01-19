@@ -16,20 +16,20 @@ FFMakeOsciGUI(
   FBRuntimeTopo const* topo, int moduleSlot,
   FBGUIStore* store, IFBHostGUIContext* hostContext)
 {
-  auto& grid = FBGUIStoreComponent<FBGridComponent>(store, 1, 7);
+  auto& grid = store->AddComponent<FBGridComponent>(1, 7);
   auto const* on = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::On, 0 });
-  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamToggleButton>(store, on, hostContext)));
+  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamToggleButton>(on, hostContext)));
   auto const* type = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Type, 0 });
-  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamComboBox>(store, type, hostContext)));
+  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamComboBox>(type, hostContext)));
   auto const* note = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 });
-  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamComboBox>(store, note, hostContext)));
+  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamComboBox>(note, hostContext)));
   auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 0 });
-  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, gain, hostContext, Slider::SliderStyle::Rotary)));
+  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamSlider>(gain, hostContext, Slider::SliderStyle::Rotary)));
   auto const* cent = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
-  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, cent, hostContext, Slider::SliderStyle::Rotary)));
+  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamSlider>(cent, hostContext, Slider::SliderStyle::Rotary)));
   auto const* pw = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::PW, 0 });
-  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, pw, hostContext, Slider::SliderStyle::Rotary)));
+  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamSlider>(pw, hostContext, Slider::SliderStyle::Rotary)));
   auto const* gLFOToGain = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
-  grid.AddItemAndChild(GridItem(FBGUIStoreParamControl<FBParamSlider>(store, gLFOToGain, hostContext, Slider::SliderStyle::Rotary)));
+  grid.AddItemAndChild(GridItem(store->AddParamControl<FBParamSlider>(gLFOToGain, hostContext, Slider::SliderStyle::Rotary)));
   return grid;
 }
