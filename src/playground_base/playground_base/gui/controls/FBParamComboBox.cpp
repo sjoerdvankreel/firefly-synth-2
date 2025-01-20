@@ -20,6 +20,17 @@ _context(context)
   SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
 }
 
+int
+FBParamComboBox::FixedWidth() const
+{
+  Font font(12.0f); // TODO
+  int maxTextWidth = 0;
+  for (int i = 0; i < getNumItems(); i++)
+    maxTextWidth = std::max(maxTextWidth, (int)std::ceil(
+      TextLayout::getStringWidth(font, getItemText(i))));
+  return maxTextWidth + 48; // TODO
+}
+
 void
 FBParamComboBox::SetValueNormalized(float normalized)
 {

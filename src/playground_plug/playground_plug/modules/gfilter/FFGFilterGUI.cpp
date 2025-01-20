@@ -19,7 +19,7 @@ MakeSectionMain(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 1 });
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0 });
   auto on = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::On, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(on));
   grid->Add(0, 1, plugGUI->AddComponent<FBParamToggleButton>(on, hostContext));
