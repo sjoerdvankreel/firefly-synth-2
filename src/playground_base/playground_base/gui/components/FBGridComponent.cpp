@@ -24,6 +24,16 @@ _rows(rows),
 _cols(cols),
 _positions() {}
 
+int
+FBGridComponent::FixedWidth() const
+{
+  // TODO all rows
+  int result = 0;
+  for (int i = 0; i < _cols.size(); i++)
+    result += HorizontalAutoSizeAt(0, i)->FixedWidth();
+  return result;
+}
+
 void
 FBGridComponent::Add(int row, int col, Component* child)
 {
@@ -33,17 +43,17 @@ FBGridComponent::Add(int row, int col, Component* child)
   _positions[position] = child;
 }
 
+IFBHorizontalAutoSize*
+FBGridComponent::HorizontalAutoSizeAt(int row, int col) const
+{
+  auto position = std::make_pair(row, col);
+  auto component = _positions.at(position);
+  return FBAsHorizontalAutoSize(component);
+}
+
 void
 FBGridComponent::resized()
 {
-  // TODO rows
-  // TODO this assumes first row is autosize
-  std::vector<int> absoluteOrRelative = _cols;
-  for (int i = 0; i < _cols.size(); i++)
-    if (_cols[i] == 0)
-      absoluteOrRelative[i] = dynamic_cast<IFBHorizontalAutoSize&>(
-        *_positions[std::make_pair(0, i)]).FixedWidth();
-  
   Grid grid;
   for (auto const& e : _positions)
   {
@@ -56,13 +66,18 @@ FBGridComponent::resized()
     grid.items.add(item);
   }
 
+  // TODO rows
+  // TODO this assumes first row is autosize
+  std::vector<int> absoluteOrRelative = _cols;
+  for (int i = 0; i < _cols.size(); i++)
+    if (_cols[i] == 0)
+      absoluteOrRelative[i] = HorizontalAutoSizeAt(0, i)->FixedWidth();
   for (int i = 0; i < _rows.size(); i++)
     grid.templateRows.add(Grid::TrackInfo(Grid::Fr(1)));
   for (int i = 0; i < absoluteOrRelative.size(); i++)
     if (_cols[i] == 0)
       grid.templateColumns.add(Grid::TrackInfo(Grid::Px(absoluteOrRelative[i])));
     else
-      grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));
-  
+      grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));  
   grid.performLayout(getLocalBounds());
 }

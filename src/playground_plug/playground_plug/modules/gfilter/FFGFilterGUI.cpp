@@ -52,7 +52,7 @@ TabFactory(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto result = plugGUI->AddComponent<FBGridComponent>(1, 2);
+  auto result = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1 });
   result->Add(0, 0, MakeSectionMain(topo, plugGUI, hostContext, moduleSlot));
   result->Add(0, 1, MakeSectionParams(topo, plugGUI, hostContext, moduleSlot));
   return result;
