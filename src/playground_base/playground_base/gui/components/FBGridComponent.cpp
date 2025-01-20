@@ -1,38 +1,68 @@
 #include <playground_base/gui/components/FBGridComponent.hpp>
+#include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
+
 #include <cassert>
 
 using namespace juce;
 
 FBGridComponent::
-FBGridComponent(int rows, int cols):
-Component(),
-grid()
-{
-  for(int r = 0; r < rows; r++)
-    grid.templateRows.add(Grid::TrackInfo(Grid::Fr(1)));
-  for (int c = 0; c < cols; c++)
-    grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(1)));
-}
+FBGridComponent(int rows, std::vector<int> const& cols):
+FBGridComponent(std::vector<int>(rows, 1), cols) {}
 
-void 
-FBGridComponent::resized()
+FBGridComponent::
+FBGridComponent(std::vector<int> const& rows, int cols):
+FBGridComponent(rows, std::vector<int>(cols, 1)) {}
+
+FBGridComponent::
+FBGridComponent(int rows, int cols):
+FBGridComponent(std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
+
+FBGridComponent::
+FBGridComponent(std::vector<int> const& rows, std::vector<int> const& cols):
+Component(),
+_rows(rows),
+_cols(cols),
+_positions() {}
+
+void
+FBGridComponent::Add(int row, int col, Component* child)
 {
-  grid.performLayout(getLocalBounds());
+  addAndMakeVisible(child);
+  auto position = std::make_pair(row, col);
+  assert(_positions.find(position) == _positions.end());
+  _positions[position] = child;
 }
 
 void
-FBGridComponent::Add(Component* child)
+FBGridComponent::resized()
 {
-  Add(GridItem(child));
-}
+  // TODO rows
+  // TODO this assumes first row is autosize
+  std::vector<int> absoluteOrRelative = _cols;
+  for (int i = 0; i < _cols.size(); i++)
+    if (_cols[i] == 0)
+      absoluteOrRelative[i] = dynamic_cast<IFBHorizontalAutoSize&>(
+        *_positions[std::make_pair(0, i)]).FixedWidth();
+  
+  Grid grid;
+  for (auto const& e : _positions)
+  {
+    // TODO span
+    GridItem item(e.second);
+    item.row.end = e.first.first + 2;
+    item.row.start = e.first.first + 1;
+    item.column.end = e.first.second + 2;
+    item.column.start = e.first.second + 1;
+    grid.items.add(item);
+  }
 
-void 
-FBGridComponent::Add(GridItem const& item)
-{
-#ifndef NDEBUG
-  for (int i = 0; i < getNumChildComponents(); i++)
-    assert(getChildComponent(i) != item.associatedComponent);
-#endif
-  grid.items.add(item);
-  addAndMakeVisible(item.associatedComponent);
+  for (int i = 0; i < _rows.size(); i++)
+    grid.templateRows.add(Grid::TrackInfo(Grid::Fr(1)));
+  for (int i = 0; i < absoluteOrRelative.size(); i++)
+    if (_cols[i] == 0)
+      grid.templateColumns.add(Grid::TrackInfo(Grid::Px(absoluteOrRelative[i])));
+    else
+      grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));
+  
+  grid.performLayout(getLocalBounds());
 }

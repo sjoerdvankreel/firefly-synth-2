@@ -6,7 +6,7 @@ struct FBRuntimeTopo;
 class FBPlugGUI;
 class IFBHostGUIContext;
 
-juce::Component&
+juce::Component*
 FFMakeOsciGUI(
   FBRuntimeTopo const* topo, 
   FBPlugGUI* plugGUI, 

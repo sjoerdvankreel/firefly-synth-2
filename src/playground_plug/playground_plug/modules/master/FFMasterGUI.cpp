@@ -12,26 +12,27 @@
 
 using namespace juce;
 
-static Component&
+static Component*
 MakeMasterSectionAll(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI, 
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto& grid = plugGUI->AddComponent<FBGridComponent>(1, (int)FFMasterParam::Count * 2);
-  auto const* gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });
-  grid.Add(plugGUI->AddComponent<FBParamLabel>(gain));
-  grid.Add(plugGUI->AddComponent<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
-  auto const* smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
-  grid.Add(plugGUI->AddComponent<FBParamLabel>(smooth));
-  grid.Add(plugGUI->AddComponent<FBParamSlider>(smooth, plugGUI, hostContext, Slider::SliderStyle::Rotary));
-  return plugGUI->AddComponent<FBSectionComponent>(&grid);
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, 4);
+  auto gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });
+  grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(gain));
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  auto smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
+  grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(smooth));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(smooth, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  return plugGUI->AddComponent<FBSectionComponent>(grid);
 } 
 
-Component&
+Component*
 FFMakeMasterGUI(
   FBRuntimeTopo const* topo, 
   FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext)
 {
-  return plugGUI->AddComponent<FBModuleTabComponent>(topo, plugGUI, hostContext, (int)FFModuleType::Master, MakeMasterSectionAll);
+  return plugGUI->AddComponent<FBModuleTabComponent>(
+    topo, plugGUI, hostContext, (int)FFModuleType::Master, MakeMasterSectionAll);
 }

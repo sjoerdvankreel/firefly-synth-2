@@ -21,13 +21,13 @@ protected:
 
 public:
   template <class TComponent, class... Args>
-  TComponent& AddComponent(Args&&... args);
+  TComponent* AddComponent(Args&&... args);
   FBParamControl*
   GetParamControlForIndex(int paramIndex) const;
 };
 
 template <class TComponent, class... Args>
-TComponent& FBPlugGUI::AddComponent(Args&&... args)
+TComponent* FBPlugGUI::AddComponent(Args&&... args)
 {
   FBParamControl* paramControl = nullptr;
   int componentIndex = (int)_store.size();
@@ -36,5 +36,5 @@ TComponent& FBPlugGUI::AddComponent(Args&&... args)
   AddComponent(std::move(component));
   if ((paramControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
     _paramIndexToComponent[paramControl->Param()->runtimeParamIndex] = componentIndex;
-  return *result;
+  return result;
 }
