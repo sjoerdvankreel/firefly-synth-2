@@ -15,7 +15,7 @@
 using namespace juce;
 
 static Component&
-MakeGFilterSectionMain(
+MakeSectionMain(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
@@ -30,7 +30,7 @@ MakeGFilterSectionMain(
 }
 
 static Component&
-MakeGFilterSectionParams(
+MakeSectionParams(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
@@ -48,13 +48,13 @@ MakeGFilterSectionParams(
 }
   
 static Component&
-MakeGFilterGUI(
+TabFactory(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
   auto& result = plugGUI->AddComponent<FBGridComponent>(1, 2);
-  result.Add(MakeGFilterSectionMain(topo, plugGUI, hostContext, moduleSlot));
-  result.Add(MakeGFilterSectionParams(topo, plugGUI, hostContext, moduleSlot));
+  result.Add(MakeSectionMain(topo, plugGUI, hostContext, moduleSlot));
+  result.Add(MakeSectionParams(topo, plugGUI, hostContext, moduleSlot));
   return result;
 }
 
@@ -64,5 +64,5 @@ FFMakeGFilterGUI(
   FBPlugGUI* plugGUI, 
   IFBHostGUIContext* hostContext)
 {
-  return plugGUI->AddComponent<FBModuleTabComponent>(topo, plugGUI, hostContext, (int)FFModuleType::GFilter, MakeGFilterGUI);
+  return plugGUI->AddComponent<FBModuleTabComponent>(topo, plugGUI, hostContext, (int)FFModuleType::GFilter, TabFactory);
 }
