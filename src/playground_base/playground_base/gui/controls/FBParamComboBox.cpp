@@ -6,18 +6,18 @@ using namespace juce;
 
 FBParamComboBox::
 FBParamComboBox(
+  FBRuntimeTopo const* topo,
   FBRuntimeParam const* param,
-  IFBHostGUIContext* context):
+  IFBHostGUIContext* hostContext):
 ComboBox(),
-FBParamControl(param),
-_context(context)
+FBParamControl(topo, param, hostContext)
 {
   for (int i = 0; i < param->static_.ValueCount(); i++)
   {
-    float normalized = param->static_.ListOrDiscreteToNormalizedSlow(i);
+    float normalized = param->static_.AnyDiscreteToNormalizedSlow(i);
     addItem(param->static_.NormalizedToText(false, normalized), i + 1);
   }
-  SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalized(hostContext->GetParamNormalized(param->runtimeParamIndex));
 }
 
 int
@@ -34,13 +34,13 @@ FBParamComboBox::FixedWidth(int height) const
 void
 FBParamComboBox::SetValueNormalized(float normalized)
 {
-  int plain = _param->static_.NormalizedToListOrDiscreteSlow(normalized);
+  int plain = _param->static_.NormalizedToAnyDiscreteSlow(normalized);
   setSelectedItemIndex(plain, dontSendNotification);
 }
 
 void
 FBParamComboBox::valueChanged(Value& value)
 {
-  float normalized = _param->static_.ListOrDiscreteToNormalizedSlow(getSelectedItemIndex());
-  _context->PerformParamEdit(_param->runtimeParamIndex, normalized);
+  float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedItemIndex());
+  _hostContext->PerformParamEdit(_param->runtimeParamIndex, normalized);
 }

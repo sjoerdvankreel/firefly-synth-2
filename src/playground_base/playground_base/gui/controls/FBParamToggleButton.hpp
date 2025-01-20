@@ -5,6 +5,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
+struct FBRuntimeTopo;
 struct FBRuntimeParam;
 class IFBHostGUIContext;
 
@@ -14,12 +15,12 @@ public FBParamControl,
 public IFBHorizontalAutoSize
 {
   bool _isOn = {};
-  IFBHostGUIContext* const _context;
 
 public:
   FBParamToggleButton(
+    FBRuntimeTopo const* topo,
     FBRuntimeParam const* param,
-    IFBHostGUIContext* context);
+    IFBHostGUIContext* hostContext);
 
   void buttonStateChanged() override;
   int FixedWidth(int height) const override;

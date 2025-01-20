@@ -2,6 +2,8 @@
 
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/topo/FBDependencySelector.hpp>
+
 #include <playground_base/base/topo/param/FBParamType.hpp>
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 #include <playground_base/base/topo/param/FBListParam.hpp>
@@ -32,6 +34,9 @@ struct FBStaticParam final
   FBFreqOctParam freqOct = {};
   FBDiscreteParam discrete = {};
 
+  std::vector<int> enabledWhen = {};
+  FBDependencySelector enabledSelector = {};
+
   FBScalarAddrSelector scalarAddr = {};
   FBVoiceAccAddrSelector voiceAccAddr = {};
   FBGlobalAccAddrSelector globalAccAddr = {};
@@ -41,12 +46,13 @@ struct FBStaticParam final
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
   int ValueCount() const;
-  float ListOrDiscreteToNormalizedSlow(int discrete) const;
-  int NormalizedToListOrDiscreteSlow(float normalized) const;
+  float AnyDiscreteToNormalizedSlow(int discrete) const;
+  int NormalizedToAnyDiscreteSlow(float normalized) const;
 
   float DefaultNormalizedByText() const;
   std::string NormalizedToText(bool io, float normalized) const;
   std::optional<float> TextToNormalized(bool io, std::string const& text) const;
+  void EnableWhen(std::vector<int> const& params, FBDependencySelector const& selector);
 };
 
 inline int

@@ -5,6 +5,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
+struct FBRuntimeTopo;
 struct FBRuntimeParam;
 class IFBHostGUIContext;
 
@@ -13,12 +14,13 @@ public juce::Slider,
 public FBParamControl,
 public IFBHorizontalAutoSize
 {
-  IFBHostGUIContext* const _context;
-
 public:
   FBParamSlider(
-    FBRuntimeParam const* param, juce::Component* root, 
-    IFBHostGUIContext* context, juce::Slider::SliderStyle style);
+    FBRuntimeTopo const* topo,
+    FBRuntimeParam const* param, 
+    IFBHostGUIContext* hostContext,
+    juce::Component* root, 
+    juce::Slider::SliderStyle style);
 
   void valueChanged() override;
   void stoppedDragging() override;

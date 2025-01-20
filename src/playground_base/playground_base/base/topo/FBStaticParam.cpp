@@ -1,5 +1,14 @@
 #include <playground_base/base/topo/FBStaticParam.hpp>
 
+void 
+FBStaticParam::EnableWhen(
+  std::vector<int> const& params,
+  FBDependencySelector const& selector)
+{
+  enabledWhen = params;
+  enabledSelector = selector;     
+}
+
 float
 FBStaticParam::DefaultNormalizedByText() const
 {
@@ -9,12 +18,14 @@ FBStaticParam::DefaultNormalizedByText() const
 }
 
 float
-FBStaticParam::ListOrDiscreteToNormalizedSlow(int plain) const
+FBStaticParam::AnyDiscreteToNormalizedSlow(int plain) const
 {
   switch (type)
   {
   case FBParamType::List:
     return list.PlainToNormalized(plain);
+  case FBParamType::Boolean:
+    return boolean.PlainToNormalized(plain);
   case FBParamType::Discrete:
     return discrete.PlainToNormalized(plain);
   default:
@@ -24,12 +35,14 @@ FBStaticParam::ListOrDiscreteToNormalizedSlow(int plain) const
 }
 
 int 
-FBStaticParam::NormalizedToListOrDiscreteSlow(float normalized) const
+FBStaticParam::NormalizedToAnyDiscreteSlow(float normalized) const
 {
   switch (type)
   {
   case FBParamType::List:
     return list.NormalizedToPlain(normalized);
+  case FBParamType::Boolean:
+    return boolean.NormalizedToPlain(normalized);
   case FBParamType::Discrete:
     return discrete.NormalizedToPlain(normalized);
   default:

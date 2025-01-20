@@ -22,10 +22,10 @@ MakeSectionMain(
   auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0 });
   auto on = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::On, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(on));
-  grid->Add(0, 1, plugGUI->AddComponent<FBParamToggleButton>(on, hostContext));
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamToggleButton>(topo, on, hostContext));
   auto type = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Type, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(type));
-  grid->Add(0, 3, plugGUI->AddComponent<FBParamComboBox>(type, hostContext));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamComboBox>(topo, type, hostContext));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 }
 
@@ -37,13 +37,13 @@ MakeSectionParams(
   auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 0, 1, 0, 1 });
   auto freq = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Freq, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(freq));
-  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(freq, plugGUI, hostContext, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(topo, freq, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
   auto res = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Res, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(res));
-  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(res, plugGUI, hostContext, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(topo, res, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
   auto gain = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Gain, 0 });
   grid->Add(0, 4, plugGUI->AddComponent<FBParamLabel>(gain));
-  grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(topo, gain, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 }
   

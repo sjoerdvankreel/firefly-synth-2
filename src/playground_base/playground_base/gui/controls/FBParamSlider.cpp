@@ -8,16 +8,18 @@ using namespace juce;
 
 FBParamSlider::
 FBParamSlider(
-  FBRuntimeParam const* param, Component* root, 
-  IFBHostGUIContext* context, Slider::SliderStyle style):
+  FBRuntimeTopo const* topo,
+  FBRuntimeParam const* param, 
+  IFBHostGUIContext* hostContext,
+  Component* root, 
+  Slider::SliderStyle style):
 Slider(style, Slider::NoTextBox),
-FBParamControl(param),
-_context(context)
+FBParamControl(topo, param, hostContext)
 {
   setRange(0.0, 1.0);
   setPopupDisplayEnabled(true, true, root);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
-  SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalized(hostContext->GetParamNormalized(param->runtimeParamIndex));
 }
 
 int 
@@ -36,19 +38,19 @@ FBParamSlider::SetValueNormalized(float normalized)
 void 
 FBParamSlider::stoppedDragging()
 {
-  _context->EndParamChange(_param->runtimeParamIndex);
+  _hostContext->EndParamChange(_param->runtimeParamIndex);
 }
 
 void 
 FBParamSlider::startedDragging()
 {
-  _context->BeginParamChange(_param->runtimeParamIndex);
+  _hostContext->BeginParamChange(_param->runtimeParamIndex);
 }
 
 void
 FBParamSlider::valueChanged()
 {
-  _context->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
+  _hostContext->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
 }
 
 String 

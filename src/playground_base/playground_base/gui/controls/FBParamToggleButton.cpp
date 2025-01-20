@@ -6,13 +6,13 @@ using namespace juce;
 
 FBParamToggleButton::
 FBParamToggleButton(
+  FBRuntimeTopo const* topo,
   FBRuntimeParam const* param,
-  IFBHostGUIContext* context):
+  IFBHostGUIContext* hostContext):
 ToggleButton(),
-FBParamControl(param),
-_context(context)
+FBParamControl(topo, param, hostContext)
 {
-  SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalized(hostContext->GetParamNormalized(param->runtimeParamIndex));
   _isOn = getToggleState();
 }
 
@@ -36,6 +36,6 @@ FBParamToggleButton::buttonStateChanged()
   float normalized = _param->static_.boolean.PlainToNormalized(getToggleState());
   int plain = _param->static_.boolean.NormalizedToPlain(normalized);
   if(_isOn != (plain != 0))
-    _context->PerformParamEdit(_param->runtimeParamIndex, normalized);
+    _hostContext->PerformParamEdit(_param->runtimeParamIndex, normalized);
   _isOn = getToggleState();
 }
