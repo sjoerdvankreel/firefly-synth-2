@@ -31,7 +31,7 @@ MakeSectionMain(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto grid = plugGUI->AddComponent<FBGridComponent>(1, 8);
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
   auto on = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::On, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(on));
   grid->Add(0, 1, plugGUI->AddComponent<FBParamToggleButton>(on, hostContext));
@@ -70,7 +70,7 @@ TabFactory(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto result = plugGUI->AddComponent<FBGridComponent>(1, 3);
+  auto result = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 1 });
   result->Add(0, 0, MakeSectionMain(topo, plugGUI, hostContext, moduleSlot));
   result->Add(0, 1, MakeSectionGain(topo, plugGUI, hostContext, moduleSlot));
   result->Add(0, 2, MakeSectionPW(topo, plugGUI, hostContext, moduleSlot));

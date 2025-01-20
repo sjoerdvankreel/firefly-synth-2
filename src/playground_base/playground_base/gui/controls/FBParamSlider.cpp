@@ -2,6 +2,8 @@
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 
+#include <cassert>
+
 using namespace juce;
 
 FBParamSlider::
@@ -16,6 +18,13 @@ _context(context)
   setPopupDisplayEnabled(true, true, root);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
   SetValueNormalized(_context->GetParamNormalized(param->runtimeParamIndex));
+}
+
+int 
+FBParamSlider::FixedWidth() const
+{
+  assert(getSliderStyle() == SliderStyle::Rotary);
+  return 30; // TODO
 }
 
 void
