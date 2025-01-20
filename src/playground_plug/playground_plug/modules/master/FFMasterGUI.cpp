@@ -17,13 +17,13 @@ MakeMasterSectionAll(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI, 
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto grid = plugGUI->AddComponent<FBGridComponent>(1, 4);
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 0, 1 } );
   auto gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(gain));
-  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(gain, plugGUI, hostContext, Slider::SliderStyle::LinearHorizontal));
   auto smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(smooth));
-  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(smooth, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(smooth, plugGUI, hostContext, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 } 
 
