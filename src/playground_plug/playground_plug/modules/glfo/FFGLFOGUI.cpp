@@ -18,13 +18,13 @@ MakeGLFOSectionAll(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto grid = plugGUI->AddComponent<FBGridComponent>(1, 4);
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 1});
   auto on = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(on));
   grid->Add(0, 1, plugGUI->AddComponent<FBParamToggleButton>(on, hostContext));
   auto rate = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(rate));
-  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(rate, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(rate, plugGUI, hostContext, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 }
 
