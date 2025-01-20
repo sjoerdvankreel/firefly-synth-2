@@ -21,10 +21,10 @@ _context(context)
 }
 
 int 
-FBParamSlider::FixedWidth() const
+FBParamSlider::FixedWidth(int height) const
 {
   assert(getSliderStyle() == SliderStyle::Rotary);
-  return 30; // TODO
+  return height;
 }
 
 void

@@ -6,7 +6,7 @@
 class IFBHorizontalAutoSize
 {
 public:
-  virtual int FixedWidth() const = 0;
+  virtual int FixedWidth(int height) const = 0;
   FB_NOCOPY_NOMOVE_DEFCTOR(IFBHorizontalAutoSize);
 };
 

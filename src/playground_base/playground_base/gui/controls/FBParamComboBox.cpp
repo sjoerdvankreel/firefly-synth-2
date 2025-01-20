@@ -21,7 +21,7 @@ _context(context)
 }
 
 int
-FBParamComboBox::FixedWidth() const
+FBParamComboBox::FixedWidth(int height) const
 {
   Font font(12.0f); // TODO
   int maxTextWidth = 0;

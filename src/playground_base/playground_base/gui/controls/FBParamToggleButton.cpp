@@ -17,7 +17,7 @@ _context(context)
 }
 
 int 
-FBParamToggleButton::FixedWidth() const
+FBParamToggleButton::FixedWidth(int height) const
 {
   return 24; // TODO;
 }

@@ -21,7 +21,7 @@ public:
     FBRuntimeParam const* param,
     IFBHostGUIContext* context);
 
-  int FixedWidth() const override;
   void buttonStateChanged() override;
+  int FixedWidth(int height) const override;
   void SetValueNormalized(float normalized) override;
 };

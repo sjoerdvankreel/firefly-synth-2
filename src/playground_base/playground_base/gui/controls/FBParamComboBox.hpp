@@ -20,7 +20,7 @@ public:
     FBRuntimeParam const* param,
     IFBHostGUIContext* context);
 
-  int FixedWidth() const override;
+  int FixedWidth(int height) const override;
   void valueChanged(juce::Value& value) override;
   void SetValueNormalized(float normalized) override;
 };

@@ -24,16 +24,6 @@ _rows(rows),
 _cols(cols),
 _positions() {}
 
-int
-FBGridComponent::FixedWidth() const
-{
-  // TODO all rows
-  int result = 0;
-  for (int i = 0; i < _cols.size(); i++)
-    result += HorizontalAutoSizeAt(0, i)->FixedWidth();
-  return result;
-}
-
 void
 FBGridComponent::Add(int row, int col, Component* child)
 {
@@ -49,6 +39,16 @@ FBGridComponent::HorizontalAutoSizeAt(int row, int col) const
   auto position = std::make_pair(row, col);
   auto component = _positions.at(position);
   return FBAsHorizontalAutoSize(component);
+}
+
+int
+FBGridComponent::FixedWidth(int height) const
+{
+  // TODO all rows
+  int result = 0;
+  for (int i = 0; i < _cols.size(); i++)
+    result += HorizontalAutoSizeAt(0, i)->FixedWidth(height);
+  return result;
 }
 
 void
@@ -68,10 +68,12 @@ FBGridComponent::resized()
 
   // TODO rows
   // TODO this assumes first row is autosize
+  // TODO distribute the roundoff error across rows
   std::vector<int> absoluteOrRelative = _cols;
+  int rowHeight = getLocalBounds().getHeight() / _rows.size();
   for (int i = 0; i < _cols.size(); i++)
     if (_cols[i] == 0)
-      absoluteOrRelative[i] = HorizontalAutoSizeAt(0, i)->FixedWidth();
+      absoluteOrRelative[i] = HorizontalAutoSizeAt(0, i)->FixedWidth(rowHeight);
   for (int i = 0; i < _rows.size(); i++)
     grid.templateRows.add(Grid::TrackInfo(Grid::Fr(1)));
   for (int i = 0; i < absoluteOrRelative.size(); i++)

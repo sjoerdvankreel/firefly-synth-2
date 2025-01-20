@@ -14,7 +14,7 @@ Label()
 }
 
 int 
-FBParamLabel::FixedWidth() const
+FBParamLabel::FixedWidth(int height) const
 {
   auto border = getBorderSize().getLeftAndRight();
   return border + (int)std::ceil(TextLayout::getStringWidth(getFont(), getText()));

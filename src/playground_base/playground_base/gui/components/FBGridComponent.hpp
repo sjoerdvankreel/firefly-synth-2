@@ -20,7 +20,7 @@ public IFBHorizontalAutoSize
 
 public:
   void resized() override;
-  int FixedWidth() const override;
+  int FixedWidth(int height) const override;
   void Add(int row, int col, juce::Component* child);
 
   FBGridComponent() = default;

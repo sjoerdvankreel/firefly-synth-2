@@ -28,8 +28,8 @@ FBSectionComponent::resized()
 }
 
 int
-FBSectionComponent::FixedWidth() const
+FBSectionComponent::FixedWidth(int height) const
 {
   // TODO 2 * 2
-  return FBAsHorizontalAutoSize(getChildComponent(0))->FixedWidth() + 2 * 2;
+  return FBAsHorizontalAutoSize(getChildComponent(0))->FixedWidth(height - 2 * 2) + 2 * 2;
 }

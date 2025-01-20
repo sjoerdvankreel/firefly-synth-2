@@ -10,6 +10,6 @@ public juce::Label,
 public IFBHorizontalAutoSize
 {
 public:
-  int FixedWidth() const override;
   FBParamLabel(FBRuntimeParam const* param);
+  int FixedWidth(int height) const override;
 };
