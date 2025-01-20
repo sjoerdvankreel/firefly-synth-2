@@ -19,10 +19,10 @@ MakeSectionPW(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto grid = plugGUI->AddComponent<FBGridComponent>(1, 2);
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1 });
   auto pw = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::PW, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(pw));
-  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(pw, plugGUI, hostContext, Slider::SliderStyle::Rotary));
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(pw, plugGUI, hostContext, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 }
 
@@ -52,7 +52,7 @@ MakeSectionGain(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto grid = plugGUI->AddComponent<FBGridComponent>(1, 6);
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto gain1 = topo->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(gain1));
   grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(gain1, plugGUI, hostContext, Slider::SliderStyle::Rotary));
@@ -70,7 +70,7 @@ TabFactory(
   FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
   IFBHostGUIContext* hostContext, int moduleSlot)
 {
-  auto result = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 1 });
+  auto result = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 1 });
   result->Add(0, 0, MakeSectionMain(topo, plugGUI, hostContext, moduleSlot));
   result->Add(0, 1, MakeSectionGain(topo, plugGUI, hostContext, moduleSlot));
   result->Add(0, 2, MakeSectionPW(topo, plugGUI, hostContext, moduleSlot));
