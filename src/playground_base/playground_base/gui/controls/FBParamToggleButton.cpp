@@ -16,6 +16,12 @@ _context(context)
   _isOn = getToggleState();
 }
 
+int 
+FBParamToggleButton::FixedWidth() const
+{
+  return 24; // TODO;
+}
+
 void
 FBParamToggleButton::SetValueNormalized(float normalized)
 {
