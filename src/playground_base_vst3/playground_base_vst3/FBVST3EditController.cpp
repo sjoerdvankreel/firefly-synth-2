@@ -90,6 +90,7 @@ FBVST3EditController::GetParamNormalized(int index) const
 void 
 FBVST3EditController::PerformParamEdit(int index, float normalized)
 {
+  parameters.getParameterByIndex(index)->setNormalized(normalized);
   performEdit(_topo->params[index].tag, normalized);
 }
 
