@@ -10,7 +10,7 @@ FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
 ToggleButton(),
 FBParamControl(plugGUI, param)
 {
-  SetValueNormalized(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
   _isOn = getToggleState();
 }
 
@@ -21,7 +21,7 @@ FBParamToggleButton::FixedWidth(int height) const
 }
 
 void
-FBParamToggleButton::SetValueNormalized(float normalized)
+FBParamToggleButton::SetValueNormalizedFromHost(float normalized)
 {
   int plain = _param->static_.boolean.NormalizedToPlain(normalized);
   setToggleState(plain != 0, dontSendNotification);
@@ -33,7 +33,10 @@ FBParamToggleButton::buttonStateChanged()
 {
   float normalized = _param->static_.boolean.PlainToNormalized(getToggleState());
   int plain = _param->static_.boolean.NormalizedToPlain(normalized);
-  if(_isOn != (plain != 0))
+  if (_isOn != (plain != 0))
+  {
     _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
+    _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex, normalized);
+  }
   _isOn = getToggleState();
 }

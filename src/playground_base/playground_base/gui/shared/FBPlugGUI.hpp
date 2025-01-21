@@ -21,8 +21,10 @@ public:
   TComponent* AddComponent(Args&&... args);
 
   FBRuntimeTopo const* Topo() const { return _topo; }
-  void SetParamNormalized(int index, float normalized);
   IFBHostGUIContext* HostContext() const { return _hostContext; }
+
+  void SetParamNormalizedFromHost(int index, float normalized);
+  void SteppedParamNormalizedChanged(int index, float normalized);
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

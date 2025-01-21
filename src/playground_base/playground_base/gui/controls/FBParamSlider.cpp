@@ -18,7 +18,7 @@ FBParamControl(plugGUI, param)
   setRange(0.0, 1.0);
   setPopupDisplayEnabled(true, true, plugGUI);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
-  SetValueNormalized(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
 int 
@@ -29,7 +29,7 @@ FBParamSlider::FixedWidth(int height) const
 }
 
 void
-FBParamSlider::SetValueNormalized(float normalized)
+FBParamSlider::SetValueNormalizedFromHost(float normalized)
 {
   setValue(normalized, dontSendNotification);
 }

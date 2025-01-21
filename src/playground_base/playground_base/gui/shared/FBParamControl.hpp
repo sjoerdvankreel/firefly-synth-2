@@ -13,9 +13,9 @@ protected:
   FBRuntimeParam const* const _param;
 
 public:
-  virtual void SetValueNormalized(float normalized) = 0;
   FBRuntimeParam const* Param() const { return _param; }
   bool Evaluate(std::vector<int> const& vals) const override;
+  virtual void SetValueNormalizedFromHost(float normalized) = 0;
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamControl);
   FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param);

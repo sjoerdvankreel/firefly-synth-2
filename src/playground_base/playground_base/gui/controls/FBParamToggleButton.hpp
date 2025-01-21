@@ -18,6 +18,6 @@ public IFBHorizontalAutoSize
 public:
   void buttonStateChanged() override;
   int FixedWidth(int height) const override;
-  void SetValueNormalized(float normalized) override;
+  void SetValueNormalizedFromHost(float normalized) override;
   FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

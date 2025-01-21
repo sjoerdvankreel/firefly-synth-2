@@ -16,6 +16,6 @@ public IFBHorizontalAutoSize
 public:
   int FixedWidth(int height) const override;
   void valueChanged(juce::Value& value) override;
-  void SetValueNormalized(float normalized) override;
+  void SetValueNormalizedFromHost(float normalized) override;
   FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

@@ -15,7 +15,7 @@ FBParamControl(plugGUI, param)
     float normalized = param->static_.AnyDiscreteToNormalizedSlow(i);
     addItem(param->static_.NormalizedToText(false, normalized), i + 1);
   }
-  SetValueNormalized(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
 int
@@ -30,7 +30,7 @@ FBParamComboBox::FixedWidth(int height) const
 }
 
 void
-FBParamComboBox::SetValueNormalized(float normalized)
+FBParamComboBox::SetValueNormalizedFromHost(float normalized)
 {
   int plain = _param->static_.NormalizedToAnyDiscreteSlow(normalized);
   setSelectedItemIndex(plain, dontSendNotification);
@@ -41,4 +41,5 @@ FBParamComboBox::valueChanged(Value& value)
 {
   float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedItemIndex());
   _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
+  _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }

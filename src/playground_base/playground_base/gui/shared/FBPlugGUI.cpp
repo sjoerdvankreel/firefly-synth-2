@@ -11,13 +11,21 @@ FBPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext):
 _topo(topo), _hostContext(hostContext) {}
 
 void
-FBPlugGUI::SetParamNormalized(int index, float value)
+FBPlugGUI::SteppedParamNormalizedChanged(int index, float normalized)
+{
+  for (auto target : _enabledTargets[index])
+    dynamic_cast<Component&>(*target).setEnabled(target->Evaluate());
+}
+
+void
+FBPlugGUI::SetParamNormalizedFromHost(int index, float value)
 {
   auto iter = _paramIndexToComponent.find(index);
   assert(iter != _paramIndexToComponent.end());
-  dynamic_cast<FBParamControl&>(*_store[iter->second].get()).SetValueNormalized(value);
-  for (auto target : _enabledTargets[index])
-    dynamic_cast<Component&>(*target).setEnabled(target->Evaluate());
+  auto& paramControl = dynamic_cast<FBParamControl&>(*_store[iter->second].get());
+  paramControl.SetValueNormalizedFromHost(value);
+  if(FBParamTypeIsStepped(paramControl.Param()->static_.type))
+    SteppedParamNormalizedChanged(index, value);
 }
 
 Component*

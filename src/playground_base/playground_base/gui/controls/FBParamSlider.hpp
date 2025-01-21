@@ -24,7 +24,7 @@ public:
   void startedDragging() override;
   
   int FixedWidth(int height) const override;
-  void SetValueNormalized(float normalized) override;
   juce::String getTextFromValue(double value) override;
+  void SetValueNormalizedFromHost(float normalized) override;
   double getValueFromText(const juce::String& text) override;
 };
