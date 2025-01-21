@@ -13,26 +13,20 @@
 using namespace juce;
 
 static Component*
-MakeMasterSectionAll(
-  FBRuntimeTopo const* topo, FBPlugGUI* plugGUI, 
-  IFBHostGUIContext* hostContext, int moduleSlot)
+MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 0, 1 } );
-  auto gain = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0 });
+  auto gain = plugGUI->Topo()->ParamAtTopo({(int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0});
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(gain));
-  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(topo, gain, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
-  auto smooth = topo->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+  auto smooth = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(smooth));
-  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(topo, smooth, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 } 
 
 Component*
-FFMakeMasterGUI(
-  FBRuntimeTopo const* topo, 
-  FBPlugGUI* plugGUI,
-  IFBHostGUIContext* hostContext)
+FFMakeMasterGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->AddComponent<FBModuleTabComponent>(
-    topo, plugGUI, hostContext, (int)FFModuleType::Master, MakeMasterSectionAll);
+  return plugGUI->AddComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Master, MakeSectionAll);
 }

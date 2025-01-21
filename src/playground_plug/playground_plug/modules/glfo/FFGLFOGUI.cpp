@@ -14,7 +14,7 @@
 using namespace juce;
 
 static Component*
-MakeGLFOSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
+MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 1});
   auto on = plugGUI->Topo()->ParamAtTopo({(int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0});
@@ -29,5 +29,5 @@ MakeGLFOSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeGLFOGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->AddComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::GLFO, MakeGLFOSectionAll);
+  return plugGUI->AddComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::GLFO, MakeSectionAll);
 }

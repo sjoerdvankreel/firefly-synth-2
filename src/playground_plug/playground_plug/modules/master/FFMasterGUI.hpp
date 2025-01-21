@@ -2,12 +2,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-struct FBRuntimeTopo;
 class FBPlugGUI;
-class IFBHostGUIContext;
 
 juce::Component*
-FFMakeMasterGUI(
-  FBRuntimeTopo const* topo,
-  FBPlugGUI* plugGUI,
-  IFBHostGUIContext* hostContext);
+FFMakeMasterGUI(FBPlugGUI* plugGUI);
