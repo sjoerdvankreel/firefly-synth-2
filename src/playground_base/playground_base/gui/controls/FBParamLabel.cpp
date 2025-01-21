@@ -7,8 +7,10 @@
 using namespace juce;
 
 FBParamLabel::
-FBParamLabel(FBRuntimeParam const* param):
-Label()
+FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
+Label(),
+FBParamComponent(plugGUI, param),
+IFBHorizontalAutoSize()
 {
   setText(param->shortName, dontSendNotification);
 }
