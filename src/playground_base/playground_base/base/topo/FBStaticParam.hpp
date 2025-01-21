@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/FBParamsDependencies.hpp>
+#include <playground_base/base/topo/FBParamsDependency.hpp>
 
 #include <playground_base/base/topo/param/FBParamType.hpp>
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
@@ -33,7 +33,7 @@ struct FBStaticParam final
   FBLinearParam linear = {};
   FBFreqOctParam freqOct = {};
   FBDiscreteParam discrete = {};
-  FBParamsDependencies dependencies = {};
+  FBParamsDependency relevant = {};
 
   FBScalarAddrSelector scalarAddr = {};
   FBVoiceAccAddrSelector voiceAccAddr = {};
