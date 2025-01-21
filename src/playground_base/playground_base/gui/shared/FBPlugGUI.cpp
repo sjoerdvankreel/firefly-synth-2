@@ -1,3 +1,4 @@
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
@@ -15,6 +16,14 @@ FBPlugGUI::SteppedParamNormalizedChanged(int index)
 {
   for (auto target : _paramsDependents[index])
     target->DependenciesChanged();
+}
+
+void 
+FBPlugGUI::InitAllDependencies()
+{
+  for (int i = 0; i < _topo->params.size(); i++)
+    if (FBParamTypeIsStepped(_topo->params[i].static_.type))
+      SteppedParamNormalizedChanged(i);
 }
 
 void

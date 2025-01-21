@@ -16,6 +16,7 @@ FBPlugGUI(topo, hostContext)
   addAndMakeVisible(FFMakeGLFOGUI(this));
   addAndMakeVisible(FFMakeGFilterGUI(this));
   addAndMakeVisible(FFMakeOsciGUI(this));
+  InitAllDependencies();
   resized();
 }
 

@@ -29,6 +29,8 @@ public:
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext);
+
+  void InitAllDependencies();
   juce::Component* AddComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
