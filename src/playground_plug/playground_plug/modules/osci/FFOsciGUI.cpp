@@ -11,6 +11,7 @@
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
+#include <playground_base/gui/components/FBParamsDependentSectionComponent.hpp>
 
 using namespace juce;
 
@@ -62,7 +63,7 @@ MakeSectionGain(FBPlugGUI* plugGUI, int moduleSlot)
   indices.slot = moduleSlot;
   FBParamsDependency dependency;
   dependency.When({ (int)FFOsciParam::On }, [](auto const& vs) { return vs[0] != 0; });
-  return plugGUI->AddComponent<FBSectionComponent>(plugGUI, indices, dependency, grid);
+  return plugGUI->AddComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependency);
 }
 
 static Component*
