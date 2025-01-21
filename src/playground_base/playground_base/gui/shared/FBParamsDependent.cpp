@@ -6,36 +6,33 @@
 static std::vector<int>
 RuntimeDependencies(
   FBRuntimeTopo const* topo,
+  FBTopoIndices const& staticModuleIndices,
+  int staticParamSlot,
   std::vector<int> const& staticParamIndices)
 {
   std::vector<int> result;
   for (int i = 0; i < staticParamIndices.size(); i++)
   {
     FBParamTopoIndices indices;
-    indices.staticParamIndex = param->static_.relevant.staticParamIndices[i];
-    indices.staticParamSlot = param->topoIndices.staticParamSlot;
-    indices.staticModuleSlot = param->topoIndices.staticModuleSlot;
-    indices.staticModuleIndex = param->topoIndices.staticModuleIndex;
+    indices.module = staticModuleIndices;
+    indices.param.slot = staticParamSlot;
+    indices.param.index = staticParamIndices[i];
     result.push_back(topo->ParamAtTopo(indices)->runtimeParamIndex);
   }
   return result;
 }
 
 FBParamsDependent::
-FBParamsDependent(FBPlugGUI* plugGUI, FBParamsDependency const& dependency):
+FBParamsDependent(
+  FBPlugGUI* plugGUI, FBTopoIndices const& moduleIndices,
+  int staticParamSlot, FBParamsDependency const& dependency):
 _plugGUI(plugGUI),
 _evaluations(),
 _dependency(dependency),
-_runtimeDependencies(VARKEN)
-
-
-FBParamsDependent::
-FBParamsDependent(
-  FBPlugGUI* plugGUI, 
-  std::vector<int> const& evaluateWhen):
-_plugGUI(plugGUI),
-_evaluateValues(),
-_evaluateWhen(evaluateWhen) {}
+_runtimeDependencies(
+  RuntimeDependencies(
+    plugGUI->Topo(), moduleIndices, 
+    staticParamSlot, dependency.staticParamIndices)) {}
 
 bool
 FBParamsDependent::Evaluate()
