@@ -2,7 +2,7 @@
 
 struct FBTopoIndices final
 {
-  int slot = {};
   int index = {};
+  int slot = {};
   auto operator<=>(FBTopoIndices const&) const = default;
 };

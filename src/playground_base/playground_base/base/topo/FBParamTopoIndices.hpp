@@ -4,7 +4,7 @@
 
 struct FBParamTopoIndices final
 {
-  FBTopoIndices param = {};
   FBTopoIndices module = {};
+  FBTopoIndices param = {};
   auto operator<=>(FBParamTopoIndices const&) const = default;
 };
