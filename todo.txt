@@ -1,4 +1,3 @@
-add topo and hostcontext to fbpluggui
 drop sse/arch from the build scripts
 cent is borked - actually some voices keep the old value
 gui modulation indicators also for clap (poly)mod
