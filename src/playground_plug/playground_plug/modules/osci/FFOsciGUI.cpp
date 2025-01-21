@@ -57,8 +57,12 @@ MakeSectionGain(FBPlugGUI* plugGUI, int moduleSlot)
   auto gLFOToGain = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
   grid->Add(0, 4, plugGUI->AddComponent<FBParamLabel>(plugGUI, gLFOToGain));
   grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::Rotary));
-  FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
-  FBParamsDependency dependency = { { (int)FFOsciParam::On }, [](auto const& vs) { return vs[0] != 0; } };
+  // TODO less ugly
+  FBTopoIndices indices;
+  indices.index = (int)FFModuleType::Osci;
+  indices.slot = moduleSlot;
+  FBParamsDependency dependency;
+  dependency.When({ (int)FFOsciParam::On }, [](auto const& vs) { return vs[0] != 0; });
   return plugGUI->AddComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependency);
 }
 
