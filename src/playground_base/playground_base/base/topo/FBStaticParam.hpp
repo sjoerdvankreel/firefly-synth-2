@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/FBDependencySelector.hpp>
+#include <playground_base/base/topo/FBParamsDependencies.hpp>
 
 #include <playground_base/base/topo/param/FBParamType.hpp>
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
@@ -33,9 +33,7 @@ struct FBStaticParam final
   FBLinearParam linear = {};
   FBFreqOctParam freqOct = {};
   FBDiscreteParam discrete = {};
-
-  std::vector<int> enabledWhen = {};
-  FBDependencySelector enabledSelector = {};
+  FBParamsDependencies dependencies = {};
 
   FBScalarAddrSelector scalarAddr = {};
   FBVoiceAccAddrSelector voiceAccAddr = {};
@@ -52,7 +50,6 @@ struct FBStaticParam final
   float DefaultNormalizedByText() const;
   std::string NormalizedToText(bool io, float normalized) const;
   std::optional<float> TextToNormalized(bool io, std::string const& text) const;
-  void EnableWhen(std::vector<int> const& params, FBDependencySelector const& selector);
 };
 
 inline int

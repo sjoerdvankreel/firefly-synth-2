@@ -1,14 +1,5 @@
 #include <playground_base/base/topo/FBStaticParam.hpp>
 
-void 
-FBStaticParam::EnableWhen(
-  std::vector<int> const& params,
-  FBDependencySelector const& selector)
-{
-  enabledWhen = params;
-  enabledSelector = selector;     
-}
-
 float
 FBStaticParam::DefaultNormalizedByText() const
 {

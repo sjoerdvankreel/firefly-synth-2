@@ -7,11 +7,12 @@ EvaluateWhen(
   FBRuntimeTopo const* topo, 
   FBRuntimeParam const* param)
 {
+  // TODO
   std::vector<int> result;
-  for (int i = 0; i < param->static_.enabledWhen.size(); i++)
+  for (int i = 0; i < param->static_.dependencies.enabled.params.size(); i++)
   {
     FBParamTopoIndices indices;
-    indices.staticParamIndex = param->static_.enabledWhen[i];
+    indices.staticParamIndex = param->static_.dependencies.enabled.params[i];
     indices.staticParamSlot = param->topoIndices.staticParamSlot;
     indices.staticModuleSlot = param->topoIndices.staticModuleSlot;
     indices.staticModuleIndex = param->topoIndices.staticModuleIndex;
@@ -28,5 +29,5 @@ _param(param) {}
 bool 
 FBParamComponent::Evaluate(std::vector<int> const& vals) const
 {
-  return _param->static_.enabledSelector(vals);
+  return _param->static_.dependencies.enabled.evaluate(vals);
 }
