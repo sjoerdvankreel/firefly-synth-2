@@ -1,5 +1,7 @@
 #pragma once
 
+#include <compare>
+
 struct FBTopoIndices final
 {
   int index = {};

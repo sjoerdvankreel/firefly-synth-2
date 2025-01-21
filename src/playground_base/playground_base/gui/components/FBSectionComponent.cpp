@@ -21,6 +21,12 @@ FBParamsDependent(plugGUI, moduleIndices, 0, dependency)
   addAndMakeVisible(content);
 }
 
+void
+FBSectionComponent::DependenciesChanged(bool outcome)
+{
+  dynamic_cast<Component&>(*this).setVisible(outcome);
+}
+
 void 
 FBSectionComponent::paint(Graphics& g)
 {
