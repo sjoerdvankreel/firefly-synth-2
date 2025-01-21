@@ -107,7 +107,7 @@ FBVST3EditController::createView(FIDString name)
   FB_LOG_ENTRY_EXIT();
   if (ConstString(name) != ViewType::kEditor) return nullptr;
   if(_guiEditor == nullptr)
-    _guiEditor = new FBVST3GUIEditor(_topo->static_.gui.factory, _topo.get(), _guiState.get(), this);
+    _guiEditor = new FBVST3GUIEditor(_topo->static_.gui.factory, _topo.get(), this, _guiState.get());
   return _guiEditor;
 }
 

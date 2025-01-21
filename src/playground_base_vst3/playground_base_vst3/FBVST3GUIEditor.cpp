@@ -17,8 +17,8 @@ FBVST3GUIEditor::
 FBVST3GUIEditor(
   FBPlugGUIFactory const& factory,
   FBRuntimeTopo const* topo,
-  FBGUIState* guiState,
-  FBVST3EditController* editController):
+  FBVST3EditController* editController,
+  FBGUIState* guiState):
 EditorView(editController),
 _gui(std::make_unique<FBPlugGUIContainer>(topo, editController, guiState))
 {

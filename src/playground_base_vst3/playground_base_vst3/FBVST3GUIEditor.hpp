@@ -36,8 +36,8 @@ public:
   FBVST3GUIEditor(
     FBPlugGUIFactory const& factory, 
     FBRuntimeTopo const* topo,
-    FBGUIState* guiState,
-    FBVST3EditController* editController);
+    FBVST3EditController* editController,
+    FBGUIState* guiState);
 
   void SetParamNormalized(int index, float normalized);
 
