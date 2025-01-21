@@ -30,17 +30,17 @@ _plugGUI(plugGUI),
 _evaluations(),
 _dependency(dependency),
 _runtimeDependencies(
-  RuntimeDependencies(
+  ::RuntimeDependencies(
     plugGUI->Topo(), moduleIndices, 
     staticParamSlot, dependency.staticParamIndices)) {}
 
-bool
-FBParamsDependent::Evaluate()
+void 
+FBParamsDependent::DependenciesChanged()
 {
-  _evaluateValues.clear();
-  for (int i = 0; i < _evaluateWhen.size(); i++)
-    _evaluateValues.push_back(
-      _plugGUI->Topo()->params[_evaluateWhen[i]].static_.NormalizedToAnyDiscreteSlow(
-        _plugGUI->HostContext()->GetParamNormalized(_evaluateWhen[i])));
-  return Evaluate(_evaluateValues);
+  _evaluations.clear();
+  for (int i = 0; i < _runtimeDependencies.size(); i++)
+    _evaluations.push_back(
+      _plugGUI->Topo()->params[_runtimeDependencies[i]].static_.NormalizedToAnyDiscreteSlow(
+        _plugGUI->HostContext()->GetParamNormalized(_runtimeDependencies[i])));
+  DependenciesChanged(_dependency.evaluate(_evaluations));
 }

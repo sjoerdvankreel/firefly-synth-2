@@ -14,6 +14,7 @@ protected:
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamComponent);
+  void DependenciesChanged(bool outcome) override;
   FBRuntimeParam const* Param() const { return _param; }
   FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };
