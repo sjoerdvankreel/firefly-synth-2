@@ -6,7 +6,7 @@
 class FBPlugGUI;
 
 // TODO also visible
-class FBEnabledTarget
+class FBParamsDependent
 {
 protected:
   FBPlugGUI* const _plugGUI;
@@ -20,6 +20,6 @@ public:
   virtual bool Evaluate(std::vector<int> const& vals) const = 0;
   std::vector<int> const& EvaluateWhen() const { return _evaluateWhen; }
 
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBEnabledTarget);
-  FBEnabledTarget(FBPlugGUI* plugGUI, std::vector<int> const& evaluateWhen);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependent);
+  FBParamsDependent(FBPlugGUI* plugGUI, std::vector<int> const& evaluateWhen);
 };

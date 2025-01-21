@@ -1,10 +1,10 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
-#include <playground_base/gui/shared/FBEnabledTarget.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
+#include <playground_base/gui/shared/FBParamsDependent.hpp>
 
-FBEnabledTarget::
-FBEnabledTarget(
+FBParamsDependent::
+FBParamsDependent(
   FBPlugGUI* plugGUI, 
   std::vector<int> const& evaluateWhen):
 _plugGUI(plugGUI),
@@ -12,7 +12,7 @@ _evaluateValues(),
 _evaluateWhen(evaluateWhen) {}
 
 bool
-FBEnabledTarget::Evaluate()
+FBParamsDependent::Evaluate()
 {
   _evaluateValues.clear();
   for (int i = 0; i < _evaluateWhen.size(); i++)

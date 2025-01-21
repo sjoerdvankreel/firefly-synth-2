@@ -1,13 +1,13 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/gui/shared/FBEnabledTarget.hpp>
+#include <playground_base/gui/shared/FBParamsDependent.hpp>
 
 class FBPlugGUI;
 struct FBRuntimeParam;
 
 class FBParamComponent:
-public FBEnabledTarget
+public FBParamsDependent
 {
 protected:
   FBRuntimeParam const* const _param;

@@ -22,7 +22,7 @@ EvaluateWhen(
 
 FBParamComponent::
 FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
-FBEnabledTarget(plugGUI, ::EvaluateWhen(plugGUI->Topo(), param)),
+FBParamsDependent(plugGUI, ::EvaluateWhen(plugGUI->Topo(), param)),
 _param(param) {}
 
 bool 

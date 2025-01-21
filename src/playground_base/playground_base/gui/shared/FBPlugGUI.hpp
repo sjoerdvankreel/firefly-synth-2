@@ -36,7 +36,7 @@ private:
   IFBHostGUIContext* const _hostContext;
   std::unordered_map<int, int> _paramIndexToComponent = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
-  std::unordered_map<int, std::unordered_set<FBEnabledTarget*>> _enabledTargets = {};
+  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsDependents = {};
 };
 
 template <class TComponent, class... Args>

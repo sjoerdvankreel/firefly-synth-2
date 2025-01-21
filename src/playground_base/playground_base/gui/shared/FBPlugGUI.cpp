@@ -1,6 +1,6 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
-#include <playground_base/gui/shared/FBEnabledTarget.hpp>
+#include <playground_base/gui/shared/FBParamsDependent.hpp>
 
 #include <cassert>
 
@@ -13,7 +13,7 @@ _topo(topo), _hostContext(hostContext) {}
 void
 FBPlugGUI::SteppedParamNormalizedChanged(int index, float normalized)
 {
-  for (auto target : _enabledTargets[index])
+  for (auto target : _paramsDependents[index])
     dynamic_cast<Component&>(*target).setEnabled(target->Evaluate());
 }
 
@@ -32,14 +32,14 @@ Component*
 FBPlugGUI::AddComponent(std::unique_ptr<Component>&& component)
 {
   FBParamControl* paramControl;
-  FBEnabledTarget* enabledTarget;
+  FBParamsDependent* paramsDependent;
   int componentIndex = _store.size();
   Component* result = component.get();
   _store.emplace_back(std::move(component));
   if ((paramControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
     _paramIndexToComponent[paramControl->Param()->runtimeParamIndex] = componentIndex;
-  if ((enabledTarget = dynamic_cast<FBEnabledTarget*>(result)) != nullptr)
-    for (int p : enabledTarget->EvaluateWhen())
-      _enabledTargets[p].insert(enabledTarget);
+  if ((paramsDependent = dynamic_cast<FBParamsDependent*>(result)) != nullptr)
+    for (int p : paramsDependent->EvaluateWhen())
+      _paramsDependents[p].insert(paramsDependent);
   return result;
 }
