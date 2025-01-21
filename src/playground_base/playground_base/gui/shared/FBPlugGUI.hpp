@@ -11,18 +11,11 @@
 #include <unordered_set>
 
 struct FBRuntimeTopo;
-class FBEnabledTarget;
 class IFBHostGUIContext;
 
 class FBPlugGUI:
 public juce::Component
 {
-  FBRuntimeTopo const* const _topo;
-  IFBHostGUIContext* const _hostContext;
-  std::unordered_map<int, int> _paramIndexToComponent = {};
-  std::vector<std::unique_ptr<juce::Component>> _store = {};
-  std::unordered_map<int, std::unordered_set<FBEnabledTarget*>> _enabledTargets = {};
-
 public:
   template <class TComponent, class... Args>
   TComponent* AddComponent(Args&&... args);
@@ -35,6 +28,13 @@ protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
   FBPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext);
   juce::Component* AddComponent(std::unique_ptr<juce::Component>&& component);
+
+private:
+  FBRuntimeTopo const* const _topo;
+  IFBHostGUIContext* const _hostContext;
+  std::unordered_map<int, int> _paramIndexToComponent = {};
+  std::vector<std::unique_ptr<juce::Component>> _store = {};
+  std::unordered_map<int, std::unordered_set<FBEnabledTarget*>> _enabledTargets = {};
 };
 
 template <class TComponent, class... Args>

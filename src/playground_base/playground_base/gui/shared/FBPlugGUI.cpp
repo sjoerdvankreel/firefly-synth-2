@@ -16,6 +16,8 @@ FBPlugGUI::SetParamNormalized(int index, float value)
   auto iter = _paramIndexToComponent.find(index);
   assert(iter != _paramIndexToComponent.end());
   dynamic_cast<FBParamControl&>(*_store[iter->second].get()).SetValueNormalized(value);
+  for (auto target : _enabledTargets[index])
+    dynamic_cast<Component&>(*target).setEnabled(target->Evaluate());
 }
 
 Component*
