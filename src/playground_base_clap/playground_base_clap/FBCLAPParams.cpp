@@ -99,7 +99,7 @@ FBCLAPPlugin::paramsInfo(
   auto const& runtimeParam = _topo->params[paramIndex];
   auto const& staticParam = runtimeParam.static_;
   auto const& runtimeModule = _topo->modules[runtimeParam.runtimeModuleIndex];
-  auto const& staticModule = _topo->static_.modules[runtimeParam.topoIndices.staticModuleIndex];
+  auto const& staticModule = _topo->static_.modules[runtimeParam.topoIndices.module.index];
   if (paramIndex >= _topo->params.size())
     return false;
 

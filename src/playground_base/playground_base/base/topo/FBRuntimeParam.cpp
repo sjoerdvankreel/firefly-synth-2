@@ -8,8 +8,8 @@ MakeRuntimeParamId(
   FBStaticParam const& param,
   FBParamTopoIndices const& indices)
 {
-  auto paramId = param.id + "-" + std::to_string(indices.staticParamSlot);
-  auto moduleId = module.id + "-" + std::to_string(indices.staticModuleSlot);
+  auto paramId = param.id + "-" + std::to_string(indices.param.slot);
+  auto moduleId = module.id + "-" + std::to_string(indices.module.slot);
   return moduleId + "-" + paramId;
 }
 
@@ -19,8 +19,8 @@ MakeRuntimeParamLongName(
   FBStaticParam const& param,
   FBParamTopoIndices const& indices)
 {
-  auto paramName = FBMakeRuntimeName(param.name, param.slotCount, indices.staticParamSlot);
-  auto moduleName = FBMakeRuntimeName(module.name, module.slotCount, indices.staticModuleSlot);
+  auto paramName = FBMakeRuntimeName(param.name, param.slotCount, indices.param.slot);
+  auto moduleName = FBMakeRuntimeName(module.name, module.slotCount, indices.module.slot);
   return moduleName + " " + paramName;
 }
 
@@ -35,6 +35,6 @@ runtimeParamIndex(runtimeParamIndex),
 static_(staticParam),
 topoIndices(topoIndices),
 longName(MakeRuntimeParamLongName(staticModule, staticParam, topoIndices)),
-shortName(FBMakeRuntimeName(staticParam.name, staticParam.slotCount, topoIndices.staticParamSlot)),
+shortName(FBMakeRuntimeName(staticParam.name, staticParam.slotCount, topoIndices.param.slot)),
 id(MakeRuntimeParamId(staticModule, staticParam, topoIndices)),
 tag(FBMakeStableHash(id)) {}

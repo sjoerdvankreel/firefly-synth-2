@@ -1,11 +1,10 @@
 #pragma once
 
+#include <playground_base/base/topo/FBTopoIndices.hpp>
+
 struct FBParamTopoIndices final
 {
-  int staticModuleIndex = {};
-  int staticModuleSlot = {};
-  int staticParamIndex = {};
-  int staticParamSlot = {};
-
+  FBTopoIndices param = {};
+  FBTopoIndices module = {};
   auto operator<=>(FBParamTopoIndices const&) const = default;
 };

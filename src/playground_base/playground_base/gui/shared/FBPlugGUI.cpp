@@ -11,10 +11,10 @@ FBPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext):
 _topo(topo), _hostContext(hostContext) {}
 
 void
-FBPlugGUI::SteppedParamNormalizedChanged(int index, float normalized)
+FBPlugGUI::SteppedParamNormalizedChanged(int index)
 {
   for (auto target : _paramsDependents[index])
-    dynamic_cast<Component&>(*target).setEnabled(target->Evaluate());
+    target->DependenciesChanged();
 }
 
 void
@@ -25,7 +25,7 @@ FBPlugGUI::SetParamNormalizedFromHost(int index, float value)
   auto& paramControl = dynamic_cast<FBParamControl&>(*_store[iter->second].get());
   paramControl.SetValueNormalizedFromHost(value);
   if(FBParamTypeIsStepped(paramControl.Param()->static_.type))
-    SteppedParamNormalizedChanged(index, value);
+    SteppedParamNormalizedChanged(index);
 }
 
 Component*
@@ -39,7 +39,7 @@ FBPlugGUI::AddComponent(std::unique_ptr<Component>&& component)
   if ((paramControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
     _paramIndexToComponent[paramControl->Param()->runtimeParamIndex] = componentIndex;
   if ((paramsDependent = dynamic_cast<FBParamsDependent*>(result)) != nullptr)
-    for (int p : paramsDependent->EvaluateWhen())
+    for (int p : paramsDependent->RuntimeDependencies())
       _paramsDependents[p].insert(paramsDependent);
   return result;
 }

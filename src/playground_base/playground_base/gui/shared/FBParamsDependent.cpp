@@ -3,6 +3,32 @@
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
 
+static std::vector<int>
+RuntimeDependencies(
+  FBRuntimeTopo const* topo,
+  std::vector<int> const& staticParamIndices)
+{
+  std::vector<int> result;
+  for (int i = 0; i < staticParamIndices.size(); i++)
+  {
+    FBParamTopoIndices indices;
+    indices.staticParamIndex = param->static_.relevant.staticParamIndices[i];
+    indices.staticParamSlot = param->topoIndices.staticParamSlot;
+    indices.staticModuleSlot = param->topoIndices.staticModuleSlot;
+    indices.staticModuleIndex = param->topoIndices.staticModuleIndex;
+    result.push_back(topo->ParamAtTopo(indices)->runtimeParamIndex);
+  }
+  return result;
+}
+
+FBParamsDependent::
+FBParamsDependent(FBPlugGUI* plugGUI, FBParamsDependency const& dependency):
+_plugGUI(plugGUI),
+_evaluations(),
+_dependency(dependency),
+_runtimeDependencies(VARKEN)
+
+
 FBParamsDependent::
 FBParamsDependent(
   FBPlugGUI* plugGUI, 

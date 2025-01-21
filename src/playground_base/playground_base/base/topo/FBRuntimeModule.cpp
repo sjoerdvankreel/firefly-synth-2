@@ -5,8 +5,8 @@
 static std::vector<FBRuntimeParam>
 MakeRuntimeParams(
   FBStaticModule const& staticModule, 
+  FBTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamStart,
-  int staticModuleIndex, int staticModuleSlot,
   std::vector<FBStaticParam> const& staticParams)
 {
   std::vector<FBRuntimeParam> result;
@@ -14,10 +14,9 @@ MakeRuntimeParams(
     for (int s = 0; s < staticParams[p].slotCount; s++)
     {
       FBParamTopoIndices indices = {};
-      indices.staticParamSlot = s;
-      indices.staticParamIndex = p;
-      indices.staticModuleSlot = staticModuleSlot;
-      indices.staticModuleIndex = staticModuleIndex;
+      indices.param.slot = s;
+      indices.param.index = p;
+      indices.module = topoIndices;
       result.push_back(FBRuntimeParam(
         staticModule, staticParams[p],
         indices, runtimeModuleIndex, runtimeParamStart++));
@@ -28,9 +27,8 @@ MakeRuntimeParams(
 FBRuntimeModule::
 FBRuntimeModule(
   FBStaticModule const& staticModule, 
-  int runtimeIndex, int runtimeParamStart,
-  int staticIndex, int staticSlot) :
-staticIndex(staticIndex),
-staticSlot(staticSlot),
-name(FBMakeRuntimeName(staticModule.name, staticModule.slotCount, staticSlot)),
-params(MakeRuntimeParams(staticModule, runtimeIndex, runtimeParamStart, staticIndex, staticSlot, staticModule.params)) {}
+  FBTopoIndices const& topoIndices,
+  int runtimeIndex, int runtimeParamStart):
+topoIndices(topoIndices),
+name(FBMakeRuntimeName(staticModule.name, staticModule.slotCount, topoIndices.slot)),
+params(MakeRuntimeParams(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)) {}

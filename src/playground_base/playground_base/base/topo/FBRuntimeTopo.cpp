@@ -67,7 +67,10 @@ MakeRuntimeModules(FBStaticTopo const& topo)
   for (int m = 0; m < topo.modules.size(); m++)
     for (int s = 0; s < topo.modules[m].slotCount; s++)
     {
-      auto module = FBRuntimeModule(topo.modules[m], runtimeIndex++, runtimeParamStart, m, s);
+      FBTopoIndices topoIndices;
+      topoIndices.slot = s;
+      topoIndices.index = m;
+      auto module = FBRuntimeModule(topo.modules[m], topoIndices, runtimeIndex++, runtimeParamStart);
       result.push_back(module);
       runtimeParamStart += (int)module.params.size();
     }

@@ -13,8 +13,8 @@ _freeRawState(topo.static_.state.freeRawScalarState)
 {
   for (int p = 0; p < topo.params.size(); p++)
     _params.push_back(topo.params[p].static_.scalarAddr(
-      topo.params[p].topoIndices.staticModuleSlot, 
-      topo.params[p].topoIndices.staticParamSlot, _rawState));
+      topo.params[p].topoIndices.module.slot, 
+      topo.params[p].topoIndices.param.slot, _rawState));
   for (int p = 0; p < _params.size(); p++)
     *_params[p] = topo.params[p].static_.DefaultNormalizedByText();
 #ifndef NDEBUG

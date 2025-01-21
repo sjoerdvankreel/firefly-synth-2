@@ -23,8 +23,8 @@ public:
   FBRuntimeTopo const* Topo() const { return _topo; }
   IFBHostGUIContext* HostContext() const { return _hostContext; }
 
+  void SteppedParamNormalizedChanged(int index);
   void SetParamNormalizedFromHost(int index, float normalized);
-  void SteppedParamNormalizedChanged(int index, float normalized);
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

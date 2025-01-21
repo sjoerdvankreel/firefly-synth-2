@@ -13,9 +13,7 @@ protected:
   FBRuntimeParam const* const _param;
 
 public:
-  FBRuntimeParam const* Param() const { return _param; }
-  bool Evaluate(std::vector<int> const& vals) const override;
-
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamComponent);
+  FBRuntimeParam const* Param() const { return _param; }
   FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };
