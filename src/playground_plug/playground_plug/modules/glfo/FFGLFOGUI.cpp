@@ -14,26 +14,20 @@
 using namespace juce;
 
 static Component*
-MakeGLFOSectionAll(
-  FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
-  IFBHostGUIContext* hostContext, int moduleSlot)
+MakeGLFOSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 1});
-  auto on = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0 });
+  auto on = plugGUI->Topo()->ParamAtTopo({(int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::On, 0});
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(on));
-  grid->Add(0, 1, plugGUI->AddComponent<FBParamToggleButton>(topo, on, hostContext));
-  auto rate = topo->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamToggleButton>(plugGUI, on));
+  auto rate = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(rate));
-  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(topo, rate, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(plugGUI, rate, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 }
 
 Component*
-FFMakeGLFOGUI(
-  FBRuntimeTopo const* topo, 
-  FBPlugGUI* plugGUI, 
-  IFBHostGUIContext* hostContext)
+FFMakeGLFOGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->AddComponent<FBModuleTabComponent>(
-    topo, plugGUI, hostContext, (int)FFModuleType::GLFO, MakeGLFOSectionAll);
+  return plugGUI->AddComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::GLFO, MakeGLFOSectionAll);
 }
