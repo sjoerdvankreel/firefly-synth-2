@@ -5,25 +5,33 @@
 #include <playground_base/gui/shared/FBParamControl.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
+
 #include <map>
 #include <vector>
+
+struct FBRuntimeTopo;
+class IFBHostGUIContext;
 
 class FBPlugGUI:
 public juce::Component
 {
+  FBRuntimeTopo const* const _topo;
+  IFBHostGUIContext* const _hostContext;
   std::map<int, int> _paramIndexToComponent = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
-
-protected:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugGUI);
-  juce::Component* 
-  AddComponent(std::unique_ptr<juce::Component>&& component);
 
 public:
   template <class TComponent, class... Args>
   TComponent* AddComponent(Args&&... args);
-  FBParamControl*
-  GetParamControlForIndex(int paramIndex) const;
+
+  FBRuntimeTopo const* Topo() const { return _topo; }
+  FBParamControl* GetParamControlForIndex(int paramIndex) const;
+  IFBHostGUIContext* HostContext() const { return _hostContext; }
+
+protected:
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
+  FBPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext);
+  juce::Component* AddComponent(std::unique_ptr<juce::Component>&& component);
 };
 
 template <class TComponent, class... Args>

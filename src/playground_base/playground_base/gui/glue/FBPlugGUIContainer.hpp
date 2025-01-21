@@ -25,13 +25,13 @@ public:
   ~FBPlugGUIContainer();
   FBPlugGUIContainer(
     FBRuntimeTopo const* topo,
-    FBGUIState* state,
-    IFBHostGUIContext* context);
+    IFBHostGUIContext* hostContext,
+    FBGUIState* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContainer);
 
-  void paint(juce::Graphics& g) override;
   void RemoveFromDesktop() override;
-  void AddToDesktop(void* parent) override;
   void SetVisible(bool visible) override;
+  void paint(juce::Graphics& g) override;
+  void AddToDesktop(void* parent) override;
   void SetParamNormalized(int index, float normalized) override;
 };

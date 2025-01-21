@@ -1,23 +1,21 @@
 #include <playground_base/base/topo/FBRuntimeParam.hpp>
+#include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamComboBox.hpp>
 
 using namespace juce;
 
 FBParamComboBox::
-FBParamComboBox(
-  FBRuntimeTopo const* topo,
-  FBRuntimeParam const* param,
-  IFBHostGUIContext* hostContext):
+FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param):  
 ComboBox(),
-FBParamControl(topo, param, hostContext)
+FBParamControl(plugGUI, param)
 {
   for (int i = 0; i < param->static_.ValueCount(); i++)
   {
     float normalized = param->static_.AnyDiscreteToNormalizedSlow(i);
     addItem(param->static_.NormalizedToText(false, normalized), i + 1);
   }
-  SetValueNormalized(hostContext->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalized(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
 int
@@ -42,5 +40,5 @@ void
 FBParamComboBox::valueChanged(Value& value)
 {
   float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedItemIndex());
-  _hostContext->PerformParamEdit(_param->runtimeParamIndex, normalized);
+  _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
 }

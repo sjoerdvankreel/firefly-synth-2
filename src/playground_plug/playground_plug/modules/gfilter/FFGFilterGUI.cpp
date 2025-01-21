@@ -15,55 +15,46 @@
 using namespace juce;
 
 static Component*
-MakeSectionMain(
-  FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
-  IFBHostGUIContext* hostContext, int moduleSlot)
+MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0 });
-  auto on = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::On, 0 });
+  auto on = plugGUI->Topo()->ParamAtTopo({(int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::On, 0});
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(on));
   grid->Add(0, 1, plugGUI->AddComponent<FBParamToggleButton>(topo, on, hostContext));
-  auto type = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Type, 0 });
+  auto type = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Type, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(type));
   grid->Add(0, 3, plugGUI->AddComponent<FBParamComboBox>(topo, type, hostContext));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 }
 
 static Component*
-MakeSectionParams(
-  FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
-  IFBHostGUIContext* hostContext, int moduleSlot)
+MakeSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 0, 1, 0, 1 });
-  auto freq = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Freq, 0 });
+  auto freq = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Freq, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(freq));
   grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(topo, freq, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
-  auto res = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Res, 0 });
+  auto res = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Res, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(res));
   grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(topo, res, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
-  auto gain = topo->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Gain, 0 });
+  auto gain = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Gain, 0 });
   grid->Add(0, 4, plugGUI->AddComponent<FBParamLabel>(gain));
   grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(topo, gain, hostContext, plugGUI, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->AddComponent<FBSectionComponent>(grid);
 }
   
 static Component*
-TabFactory(
-  FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
-  IFBHostGUIContext* hostContext, int moduleSlot)
+TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto result = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1 });
-  result->Add(0, 0, MakeSectionMain(topo, plugGUI, hostContext, moduleSlot));
-  result->Add(0, 1, MakeSectionParams(topo, plugGUI, hostContext, moduleSlot));
+  result->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
+  result->Add(0, 1, MakeSectionParams(plugGUI, moduleSlot));
   return result;
 }
 
 Component*
-FFMakeGFilterGUI(
-  FBRuntimeTopo const* topo,
-  FBPlugGUI* plugGUI, 
-  IFBHostGUIContext* hostContext)
+FFMakeGFilterGUI(FBPlugGUI* plugGUI)
 {
   return plugGUI->AddComponent<FBModuleTabComponent>(
-    topo, plugGUI, hostContext, (int)FFModuleType::GFilter, TabFactory);
+    plugGUI, (int)FFModuleType::GFilter, TabFactory);
 }

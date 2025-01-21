@@ -5,9 +5,8 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-struct FBRuntimeTopo;
+class FBPlugGUI;
 struct FBRuntimeParam;
-class IFBHostGUIContext;
 
 class FBParamComboBox final:
 public juce::ComboBox,
@@ -15,12 +14,8 @@ public FBParamControl,
 public IFBHorizontalAutoSize
 {
 public:
-  FBParamComboBox(
-    FBRuntimeTopo const* topo,
-    FBRuntimeParam const* param,
-    IFBHostGUIContext* hostContext);
-
   int FixedWidth(int height) const override;
   void valueChanged(juce::Value& value) override;
   void SetValueNormalized(float normalized) override;
+  FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

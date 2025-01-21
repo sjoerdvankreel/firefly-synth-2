@@ -5,6 +5,10 @@
 
 using namespace juce;
 
+FBPlugGUI::
+FBPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext):
+_topo(topo), _hostContext(hostContext) {}
+
 Component*
 FBPlugGUI::AddComponent(std::unique_ptr<Component>&& component)
 {

@@ -1,4 +1,5 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 
 static std::vector<int>
@@ -20,11 +21,8 @@ EvaluateWhen(
 }
 
 FBParamControl::
-FBParamControl(
-  FBRuntimeTopo const* topo, 
-  FBRuntimeParam const* param, 
-  IFBHostGUIContext* hostContext):
-FBEnabledTarget(topo, hostContext, ::EvaluateWhen(topo, param)),
+FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
+FBEnabledTarget(plugGUI, ::EvaluateWhen(plugGUI->Topo(), param)),
 _param(param) {}
 
 bool 

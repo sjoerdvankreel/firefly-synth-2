@@ -10,7 +10,7 @@ FFPlugGUI::
 FFPlugGUI(
   FBRuntimeTopo const* topo, 
   IFBHostGUIContext* hostContext):
-FBPlugGUI()
+FBPlugGUI(topo, hostContext)
 {
   addAndMakeVisible(FFMakeMasterGUI(topo, this, hostContext));
   addAndMakeVisible(FFMakeGLFOGUI(topo, this, hostContext));

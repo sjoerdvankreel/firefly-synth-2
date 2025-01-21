@@ -3,13 +3,10 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <functional>
 
-struct FBRuntimeTopo;
 class FBPlugGUI;
-class IFBHostGUIContext;
 
 typedef std::function<juce::Component*(
-  FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
-  IFBHostGUIContext* hostContext, int moduleSlot)>
+  FBPlugGUI* plugGUI, int moduleSlot)>
 FBModuleTabFactory;
 
 class FBModuleTabComponent:
@@ -20,7 +17,6 @@ public juce::Component
 public:
   void resized() override;
   FBModuleTabComponent(
-    FBRuntimeTopo const* topo, FBPlugGUI* plugGUI,
-    IFBHostGUIContext* hostContext, int moduleIndex, 
+    FBPlugGUI* plugGUI, int moduleIndex, 
     FBModuleTabFactory const& tabFactory);
 };

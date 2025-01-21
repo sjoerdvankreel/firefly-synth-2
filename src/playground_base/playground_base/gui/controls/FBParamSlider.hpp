@@ -5,9 +5,8 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-struct FBRuntimeTopo;
+class FBPlugGUI;
 struct FBRuntimeParam;
-class IFBHostGUIContext;
 
 class FBParamSlider final:
 public juce::Slider,
@@ -16,10 +15,8 @@ public IFBHorizontalAutoSize
 {
 public:
   FBParamSlider(
-    FBRuntimeTopo const* topo,
+    FBPlugGUI* plugGUI, 
     FBRuntimeParam const* param, 
-    IFBHostGUIContext* hostContext,
-    juce::Component* root, 
     juce::Slider::SliderStyle style);
 
   void valueChanged() override;
