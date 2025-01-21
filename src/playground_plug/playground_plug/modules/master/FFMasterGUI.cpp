@@ -22,7 +22,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto smooth = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(plugGUI, smooth));
   grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::LinearHorizontal));
-  return plugGUI->AddComponent<FBSectionComponent>(grid);
+  return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 } 
 
 Component*

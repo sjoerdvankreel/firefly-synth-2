@@ -1,3 +1,5 @@
+#include <playground_base/base/topo/FBTopoIndices.hpp>
+#include <playground_base/base/topo/FBParamsDependency.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 
 #include <cassert>
@@ -5,8 +7,16 @@
 using namespace juce;
 
 FBSectionComponent::
-FBSectionComponent(Component* content):
-Component()
+FBSectionComponent(
+FBPlugGUI* plugGUI, Component* content):
+FBSectionComponent(plugGUI, {}, {}, content) {}
+
+FBSectionComponent::
+FBSectionComponent(
+FBPlugGUI* plugGUI, FBTopoIndices const& moduleIndices,
+FBParamsDependency const& dependency, Component* content):
+Component(),
+FBParamsDependent(plugGUI, moduleIndices, 0, dependency)
 {
   addAndMakeVisible(content);
 }

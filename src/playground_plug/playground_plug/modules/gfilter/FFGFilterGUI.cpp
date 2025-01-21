@@ -24,7 +24,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto type = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Type, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(plugGUI, type));
   grid->Add(0, 3, plugGUI->AddComponent<FBParamComboBox>(plugGUI, type));
-  return plugGUI->AddComponent<FBSectionComponent>(grid);
+  return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -40,7 +40,7 @@ MakeSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
   auto gain = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Gain, 0 });
   grid->Add(0, 4, plugGUI->AddComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
-  return plugGUI->AddComponent<FBSectionComponent>(grid);
+  return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 }
   
 static Component*

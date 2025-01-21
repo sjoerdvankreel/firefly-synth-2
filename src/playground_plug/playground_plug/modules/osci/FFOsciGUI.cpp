@@ -21,7 +21,7 @@ MakeSectionPW(FBPlugGUI* plugGUI, int moduleSlot)
   auto pw = plugGUI->Topo()->ParamAtTopo({(int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::PW, 0});
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(plugGUI, pw));
   grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(plugGUI, pw, Slider::SliderStyle::LinearHorizontal));
-  return plugGUI->AddComponent<FBSectionComponent>(grid);
+  return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -40,7 +40,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto cent = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
   grid->Add(0, 6, plugGUI->AddComponent<FBParamLabel>(plugGUI, cent));
   grid->Add(0, 7, plugGUI->AddComponent<FBParamSlider>(plugGUI, cent, Slider::SliderStyle::Rotary));
-  return plugGUI->AddComponent<FBSectionComponent>(grid);
+  return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -56,7 +56,7 @@ MakeSectionGain(FBPlugGUI* plugGUI, int moduleSlot)
   auto gLFOToGain = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
   grid->Add(0, 4, plugGUI->AddComponent<FBParamLabel>(plugGUI, gLFOToGain));
   grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::Rotary));
-  return plugGUI->AddComponent<FBSectionComponent>(grid);
+  return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 }
 
 static Component*

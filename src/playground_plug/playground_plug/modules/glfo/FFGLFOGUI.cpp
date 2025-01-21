@@ -23,7 +23,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto rate = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(plugGUI, rate));
   grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(plugGUI, rate, Slider::SliderStyle::LinearHorizontal));
-  return plugGUI->AddComponent<FBSectionComponent>(grid);
+  return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 }
 
 Component*
