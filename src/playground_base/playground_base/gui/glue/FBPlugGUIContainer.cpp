@@ -52,7 +52,7 @@ FBPlugGUIContainer::SetVisible(bool visible)
 void
 FBPlugGUIContainer::SetParamNormalized(int index, float normalized)
 {
-  _gui->GetParamControlForIndex(index)->SetValueNormalized(normalized);
+  _gui->SetParamNormalized(index, normalized);
 }
 
 void
