@@ -174,9 +174,9 @@ FBCLAPPlugin::BeginParamChange(int index)
 void 
 FBCLAPPlugin::PerformParamEdit(int index, float normalized)
 {  
+  *_editState.Params()[index] = normalized;
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized);
   _mainToAudioEvents.enqueue(event);
-  *_editState.Params()[index] = normalized;
   if (_host.canUseParams())
     _host.paramsRequestFlush();
 }
