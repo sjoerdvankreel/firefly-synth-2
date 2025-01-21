@@ -20,7 +20,7 @@ FBVST3GUIEditor(
   FBGUIState* guiState,
   FBVST3EditController* editController):
 EditorView(editController),
-_gui(std::make_unique<FBPlugGUIContainer>(topo, guiState, editController)) 
+_gui(std::make_unique<FBPlugGUIContainer>(topo, editController, guiState))
 {
   FB_LOG_ENTRY_EXIT();
 }

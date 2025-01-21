@@ -12,10 +12,10 @@ FFPlugGUI(
   IFBHostGUIContext* hostContext):
 FBPlugGUI(topo, hostContext)
 {
-  addAndMakeVisible(FFMakeMasterGUI(topo, this, hostContext));
-  addAndMakeVisible(FFMakeGLFOGUI(topo, this, hostContext));
-  addAndMakeVisible(FFMakeGFilterGUI(topo, this, hostContext));
-  addAndMakeVisible(FFMakeOsciGUI(topo, this, hostContext));
+  addAndMakeVisible(FFMakeMasterGUI(this));
+  addAndMakeVisible(FFMakeGLFOGUI(this));
+  addAndMakeVisible(FFMakeGFilterGUI(this));
+  addAndMakeVisible(FFMakeOsciGUI(this));
   resized();
 }
 
