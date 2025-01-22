@@ -97,7 +97,7 @@ FBVST3EditController::MakeParamContextMenu(int index)
   return _guiEditor->MakeParamContextMenu(componentHandler, index);
 }
 
-void 
+void
 FBVST3EditController::PerformParamEdit(int index, float normalized)
 {
   parameters.getParameterByIndex(index)->setNormalized(normalized);
@@ -110,6 +110,13 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
   if (_guiEditor != nullptr)
     _guiEditor->SetParamNormalized(_topo->paramTagToIndex[tag], (float)value);
   return EditControllerEx1::setParamNormalized(tag, value);
+}
+
+void
+FBVST3EditController::ParamContextMenuClicked(int paramIndex, int itemTag)
+{
+  if (_guiEditor)
+    _guiEditor->ParamContextMenuClicked(componentHandler, paramIndex, itemTag);
 }
 
 IPlugView* PLUGIN_API

@@ -15,5 +15,6 @@ public:
   virtual void PerformParamEdit(int index, float normalized) = 0;
 
   virtual float GetParamNormalized(int index) const = 0;
+  virtual void ParamContextMenuClicked(int paramIndex, int itemTag) = 0;
   virtual std::unique_ptr<juce::PopupMenu> MakeParamContextMenu(int index) = 0;
 };

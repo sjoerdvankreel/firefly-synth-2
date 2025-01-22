@@ -164,15 +164,38 @@ FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
   return EditorView::queryInterface(iid, obj);
 }
 
+void 
+FBVST3GUIEditor::ParamContextMenuClicked(
+  IPtr<IComponentHandler> handler, int paramIndex, int itemTag)
+{
+  if (itemTag <= 0)
+    return;
+
+  FUnknownPtr<IComponentHandler3> handler3(handler);
+  if (handler3 == nullptr)
+    return;
+
+  ParamID paramTag = _topo->params[paramIndex].tag;
+  IPtr<IContextMenu> vstMenu(handler3->createContextMenu(this, &paramTag));
+  if (!vstMenu)
+    return;
+
+  IContextMenu::Item item = {};
+  IContextMenuTarget* target = nullptr;
+  if (vstMenu->getItem(itemTag - 1, item, &target) == kResultOk && target != nullptr)
+    target->executeMenuItem(item.tag);
+}
+
 std::unique_ptr<PopupMenu>
-FBVST3GUIEditor::MakeParamContextMenu(IPtr<IComponentHandler> handler, int index)
+FBVST3GUIEditor::MakeParamContextMenu(
+  IPtr<IComponentHandler> handler, int index)
 {
   FUnknownPtr<IComponentHandler3> handler3(handler);
   if (handler3 == nullptr) 
     return {};
   
-  ParamID tag = _topo->params[index].tag;
-  IPtr<IContextMenu> vstMenu(handler3->createContextMenu(this, &tag));
+  ParamID paramTag = _topo->params[index].tag;
+  IPtr<IContextMenu> vstMenu(handler3->createContextMenu(this, &paramTag));
   if (!vstMenu) 
     return {};
 
@@ -211,7 +234,7 @@ FBVST3GUIEditor::MakeParamContextMenu(IPtr<IComponentHandler> handler, int index
     } else if(separator)
       builders.top().menu->addSeparator();
     else
-      builders.top().menu->addItem(1, name, !disabled, checked);
+      builders.top().menu->addItem(i + 1, name, !disabled, checked);
   }
   assert(builders.size() == 1);
   return std::move(builders.top().menu);

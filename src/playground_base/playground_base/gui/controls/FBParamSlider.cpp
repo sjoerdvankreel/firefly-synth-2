@@ -71,6 +71,8 @@ FBParamSlider::mouseUp(MouseEvent const& event)
   if (!event.mods.isRightButtonDown())
     return;
   auto menu = _plugGUI->HostContext()->MakeParamContextMenu(_param->runtimeParamIndex);
-  if (menu)
-    _plugGUI->ShowPopupMenuFor(this, *menu);
+  if (!menu)
+    return;
+  auto clicked = [this](int tag) { _plugGUI->HostContext()->ParamContextMenuClicked(_param->runtimeParamIndex, tag); };
+  _plugGUI->ShowPopupMenuFor(this, *menu, clicked);
 }

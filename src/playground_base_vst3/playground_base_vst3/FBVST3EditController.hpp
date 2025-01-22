@@ -34,6 +34,7 @@ public:
   void BeginParamChange(int index) override;
   float GetParamNormalized(int index) const override;
   void PerformParamEdit(int index, float normalized) override;
+  void ParamContextMenuClicked(int paramIndex, int itemTag) override;
   std::unique_ptr<juce::PopupMenu> MakeParamContextMenu(int index) override;
 
   IPlugView* PLUGIN_API createView(FIDString name) override;

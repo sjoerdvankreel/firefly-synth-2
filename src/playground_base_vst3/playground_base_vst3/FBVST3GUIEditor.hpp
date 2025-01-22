@@ -45,10 +45,6 @@ public:
   void PLUGIN_API onFDIsSet(FileDescriptor fd) override;
 #endif
 
-  void SetParamNormalized(int index, float normalized);
-  std::unique_ptr<juce::PopupMenu> 
-  MakeParamContextMenu(IPtr<IComponentHandler> handler, int index);
-
   tresult PLUGIN_API removed() override;
   tresult PLUGIN_API canResize() override;
   tresult PLUGIN_API getSize(ViewRect* size) override;
@@ -61,4 +57,8 @@ public:
   uint32 PLUGIN_API release() override;
   tresult PLUGIN_API setContentScaleFactor(ScaleFactor factor) override;
   tresult PLUGIN_API queryInterface(Steinberg::TUID const iid, void** obj) override;
+
+  void SetParamNormalized(int index, float normalized);
+  void ParamContextMenuClicked(IPtr<IComponentHandler> handler, int paramIndex, int itemTag);
+  std::unique_ptr<juce::PopupMenu> MakeParamContextMenu(IPtr<IComponentHandler> handler, int index);
 };
