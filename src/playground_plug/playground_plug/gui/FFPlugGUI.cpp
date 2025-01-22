@@ -9,7 +9,7 @@ using namespace juce;
 FFPlugGUI::
 FFPlugGUI(
   FBRuntimeTopo const* topo, 
-  IFBHostGUIContext* hostContext):
+  FBHostGUIContext* hostContext):
 FBPlugGUI(topo, hostContext)
 {
   addAndMakeVisible(FFMakeMasterGUI(this));

@@ -11,7 +11,7 @@
 #include <unordered_set>
 
 struct FBRuntimeTopo;
-class IFBHostGUIContext;
+class FBHostGUIContext;
 
 class FBPlugGUI:
 public juce::Component
@@ -21,7 +21,7 @@ public:
   TComponent* AddComponent(Args&&... args);
 
   FBRuntimeTopo const* Topo() const { return _topo; }
-  IFBHostGUIContext* HostContext() const { return _hostContext; }
+  FBHostGUIContext* HostContext() const { return _hostContext; }
 
   void SteppedParamNormalizedChanged(int index);
   void SetParamNormalizedFromHost(int index, float normalized);
@@ -32,14 +32,14 @@ public:
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
-  FBPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext);
+  FBPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext);
 
   void InitAllDependencies();
   juce::Component* AddComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
   FBRuntimeTopo const* const _topo;
-  IFBHostGUIContext* const _hostContext;
+  FBHostGUIContext* const _hostContext;
   std::unordered_map<int, int> _paramIndexToComponent = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsDependents = {};

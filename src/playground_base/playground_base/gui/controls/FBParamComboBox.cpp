@@ -40,6 +40,6 @@ void
 FBParamComboBox::valueChanged(Value& value)
 {
   float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedItemIndex());
-  _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
+  _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
 }

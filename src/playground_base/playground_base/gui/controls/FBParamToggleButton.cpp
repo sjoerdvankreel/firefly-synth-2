@@ -35,7 +35,7 @@ FBParamToggleButton::buttonStateChanged()
   int plain = _param->static_.boolean.NormalizedToPlain(normalized);
   if (_isOn != (plain != 0))
   {
-    _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
+    _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
     _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
   }
   _isOn = getToggleState();

@@ -4,7 +4,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 
 struct FBRuntimeTopo;
-class IFBHostGUIContext;
+class FBHostGUIContext;
 
 class FFPlugGUI final:
 public FBPlugGUI
@@ -12,5 +12,5 @@ public FBPlugGUI
 public:
   void resized() override;
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
-  FFPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext);  
+  FFPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext);
 };

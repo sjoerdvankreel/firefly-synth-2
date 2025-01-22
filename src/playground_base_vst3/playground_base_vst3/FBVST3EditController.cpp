@@ -100,16 +100,17 @@ FBVST3EditController::MakeParamContextMenu(int index)
 void
 FBVST3EditController::PerformParamEdit(int index, float normalized)
 {
-  parameters.getParameterByIndex(index)->setNormalized(normalized);
-  performEdit(_topo->params[index].tag, normalized);
+  int tag = _topo->params[index].tag;
+  setParamNormalized(tag, normalized);
+  performEdit(tag, normalized);
 }
 
 tresult PLUGIN_API 
 FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 {
+  EditControllerEx1::setParamNormalized(tag, value);
   if (_guiEditor != nullptr)
     _guiEditor->SetParamNormalized(_topo->paramTagToIndex[tag], (float)value);
-  return EditControllerEx1::setParamNormalized(tag, value);
 }
 
 void
@@ -162,12 +163,7 @@ FBVST3EditController::setComponentState(IBStream* state)
   if (!_topo->LoadEditStateFromString(json, edit))
     return kResultFalse;
   for (int i = 0; i < edit.Params().size(); i++)
-  {
-    float normalized = *edit.Params()[i];
-    parameters.getParameterByIndex(i)->setNormalized(normalized);
-    if (_guiEditor != nullptr)
-      _guiEditor->SetParamNormalized(i, normalized);
-  }
+    setParamNormalized(_topo->params[i].tag, *edit.Params()[i]);
   return kResultOk;
 }
 

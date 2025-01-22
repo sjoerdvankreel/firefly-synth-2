@@ -8,7 +8,7 @@
 using namespace juce;
 
 FBPlugGUI::
-FBPlugGUI(FBRuntimeTopo const* topo, IFBHostGUIContext* hostContext):
+FBPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext):
 _topo(topo), _hostContext(hostContext) {}
 
 void

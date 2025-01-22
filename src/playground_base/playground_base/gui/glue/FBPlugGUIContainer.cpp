@@ -11,7 +11,7 @@ FBPlugGUIContainer::
 FBPlugGUIContainer::
 FBPlugGUIContainer(
   FBRuntimeTopo const* topo,
-  IFBHostGUIContext* context,
+  FBHostGUIContext* context,
   FBGUIState* state):
 FBPlugGUIContext(&topo->static_.gui, state),
 _gui(topo->static_.gui.factory(topo, context))

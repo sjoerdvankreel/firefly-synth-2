@@ -7,7 +7,7 @@
 #include <memory>
 
 class FBPlugGUI;
-class IFBHostGUIContext;
+class FBHostGUIContext;
 
 struct FBGUIState;
 struct FBRuntimeTopo;
@@ -25,7 +25,7 @@ public:
   ~FBPlugGUIContainer();
   FBPlugGUIContainer(
     FBRuntimeTopo const* topo,
-    IFBHostGUIContext* hostContext,
+    FBHostGUIContext* hostContext,
     FBGUIState* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContainer);
 

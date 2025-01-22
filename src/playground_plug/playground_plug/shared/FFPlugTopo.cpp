@@ -36,7 +36,7 @@ FFMakeTopo()
   result->gui.maxUserScale = 16.0f;
   result->gui.aspectRatioWidth = 8;
   result->gui.aspectRatioHeight = 3;
-  result->gui.factory = [](FBRuntimeTopo const* topo, IFBHostGUIContext* ctx) {
+  result->gui.factory = [](FBRuntimeTopo const* topo, FBHostGUIContext* ctx) {
     return std::make_unique<FFPlugGUI>(topo, ctx); };
   result->state.allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result->state.allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };

@@ -18,7 +18,7 @@ class FBVST3GUIEditor;
 
 class FBVST3EditController final:
 public EditControllerEx1,
-public IFBHostGUIContext
+public FBHostGUIContext
 {
   FBVST3GUIEditor* _guiEditor = {};
   std::unique_ptr<FBRuntimeTopo> _topo;

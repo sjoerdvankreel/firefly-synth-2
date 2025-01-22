@@ -25,7 +25,7 @@ class FBPlugGUIContext;
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
 public juce::Timer,
-public IFBHostGUIContext
+public FBHostGUIContext
 {
   std::unique_ptr<FBRuntimeTopo> _topo;
   std::unique_ptr<FBGUIState> _guiState;
