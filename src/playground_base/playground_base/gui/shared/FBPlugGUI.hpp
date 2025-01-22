@@ -25,6 +25,7 @@ public:
 
   void SteppedParamNormalizedChanged(int index);
   void SetParamNormalizedFromHost(int index, float normalized);
+  void ShowPopupMenuFor(juce::Component* target, juce::PopupMenu menu);
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

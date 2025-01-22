@@ -22,6 +22,24 @@ FBParamControl(plugGUI, param)
 }
 
 void
+FBParamSlider::stoppedDragging()
+{
+  _plugGUI->HostContext()->EndParamChange(_param->runtimeParamIndex);
+}
+
+void
+FBParamSlider::startedDragging()
+{
+  _plugGUI->HostContext()->BeginParamChange(_param->runtimeParamIndex);
+}
+
+void
+FBParamSlider::valueChanged()
+{
+  _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
+}
+
+void
 FBParamSlider::SetValueNormalizedFromHost(float normalized)
 {
   setValue(normalized, dontSendNotification);
@@ -48,19 +66,11 @@ FBParamSlider::getValueFromText(const String& text)
 }
 
 void 
-FBParamSlider::stoppedDragging()
+FBParamSlider::mouseUp(MouseEvent const& event)
 {
-  _plugGUI->HostContext()->EndParamChange(_param->runtimeParamIndex);
-}
-
-void 
-FBParamSlider::startedDragging()
-{
-  _plugGUI->HostContext()->BeginParamChange(_param->runtimeParamIndex);
-}
-
-void
-FBParamSlider::valueChanged()
-{
-  _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
+  if (event.mods.isRightButtonDown())
+    return;
+  auto menu = _plugGUI->HostContext()->ParamContextMenu(_param->runtimeParamIndex);
+  if (menu)
+    _plugGUI->ShowPopupMenuFor(this, *menu);
 }

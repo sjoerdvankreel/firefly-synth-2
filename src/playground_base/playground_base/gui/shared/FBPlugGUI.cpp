@@ -26,6 +26,15 @@ FBPlugGUI::InitAllDependencies()
       SteppedParamNormalizedChanged(i);
 }
 
+void 
+FBPlugGUI::ShowPopupMenuFor(Component* target, PopupMenu menu)
+{
+  PopupMenu::Options options;
+  options = options.withParentComponent(this);
+  options = options.withTargetComponent(target);
+  menu.showMenuAsync(options);
+}
+
 void
 FBPlugGUI::SetParamNormalizedFromHost(int index, float value)
 {

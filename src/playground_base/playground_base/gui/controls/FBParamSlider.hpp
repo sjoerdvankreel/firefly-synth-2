@@ -22,6 +22,7 @@ public:
   void valueChanged() override;
   void stoppedDragging() override;
   void startedDragging() override;
+  void mouseUp(juce::MouseEvent const& event) override;
   
   int FixedWidth(int height) const override;
   juce::String getTextFromValue(double value) override;
