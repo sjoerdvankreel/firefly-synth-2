@@ -26,13 +26,16 @@ FBPlugGUI::InitAllDependencies()
       SteppedParamNormalizedChanged(i);
 }
 
-void 
-FBPlugGUI::ShowPopupMenuFor(Component* target, PopupMenu menu)
+void
+FBPlugGUI::ShowPopupMenuFor(
+  Component* target,
+  PopupMenu menu,
+  std::function<void(int)> callback)
 {
   PopupMenu::Options options;
   options = options.withParentComponent(this);
   options = options.withTargetComponent(target);
-  menu.showMenuAsync(options);
+  menu.showMenuAsync(options, callback);
 }
 
 void

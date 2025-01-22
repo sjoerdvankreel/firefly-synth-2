@@ -41,13 +41,13 @@ public:
     FBVST3EditController* editController,
     FBGUIState* guiState);
 
-  void SetParamNormalized(int index, float normalized);
-  std::unique_ptr<juce::PopupMenu> 
-  ParamContextMenu(IPtr<IComponentHandler> handler, int index);
-
 #if SMTG_OS_LINUX
   void PLUGIN_API onFDIsSet(FileDescriptor fd) override;
 #endif
+
+  void SetParamNormalized(int index, float normalized);
+  std::unique_ptr<juce::PopupMenu> 
+  MakeParamContextMenu(IPtr<IComponentHandler> handler, int index);
 
   tresult PLUGIN_API removed() override;
   tresult PLUGIN_API canResize() override;

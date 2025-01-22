@@ -88,7 +88,7 @@ public:
   void BeginParamChange(int index) override;
   float GetParamNormalized(int index) const override;
   void PerformParamEdit(int index, float normalized) override;
-  std::unique_ptr<juce::PopupMenu> ParamContextMenu(int index) override { return {}; } // todo claphostguicontext
+  std::unique_ptr<juce::PopupMenu> MakeParamContextMenu(int index) override { return {}; } // todo claphostguicontext
 
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;

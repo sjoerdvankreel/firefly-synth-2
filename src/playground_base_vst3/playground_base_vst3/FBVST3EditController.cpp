@@ -90,11 +90,11 @@ FBVST3EditController::GetParamNormalized(int index) const
 }
 
 std::unique_ptr<PopupMenu>
-FBVST3EditController::ParamContextMenu(int index)
+FBVST3EditController::MakeParamContextMenu(int index)
 {
   if (!_guiEditor)
     return {};
-  return _guiEditor->ParamContextMenu(componentHandler, index);
+  return _guiEditor->MakeParamContextMenu(componentHandler, index);
 }
 
 void 

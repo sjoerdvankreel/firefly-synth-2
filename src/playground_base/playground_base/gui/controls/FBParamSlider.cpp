@@ -70,7 +70,7 @@ FBParamSlider::mouseUp(MouseEvent const& event)
 {
   if (!event.mods.isRightButtonDown())
     return;
-  auto menu = _plugGUI->HostContext()->ParamContextMenu(_param->runtimeParamIndex);
+  auto menu = _plugGUI->HostContext()->MakeParamContextMenu(_param->runtimeParamIndex);
   if (menu)
     _plugGUI->ShowPopupMenuFor(this, *menu);
 }

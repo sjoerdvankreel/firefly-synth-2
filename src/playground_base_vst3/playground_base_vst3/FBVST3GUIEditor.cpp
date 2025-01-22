@@ -165,7 +165,7 @@ FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
 }
 
 std::unique_ptr<PopupMenu>
-FBVST3GUIEditor::ParamContextMenu(IPtr<IComponentHandler> handler, int index)
+FBVST3GUIEditor::MakeParamContextMenu(IPtr<IComponentHandler> handler, int index)
 {
   FUnknownPtr<IComponentHandler3> handler3(handler);
   if (handler3 == nullptr) 
