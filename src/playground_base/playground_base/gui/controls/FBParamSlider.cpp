@@ -68,7 +68,7 @@ FBParamSlider::getValueFromText(const String& text)
 void 
 FBParamSlider::mouseUp(MouseEvent const& event)
 {
-  if (event.mods.isRightButtonDown())
+  if (!event.mods.isRightButtonDown())
     return;
   auto menu = _plugGUI->HostContext()->ParamContextMenu(_param->runtimeParamIndex);
   if (menu)

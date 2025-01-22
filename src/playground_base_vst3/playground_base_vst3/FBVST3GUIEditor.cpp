@@ -189,23 +189,18 @@ FBVST3GUIEditor::ParamContextMenu(IPtr<IComponentHandler> handler, int index)
     std::string name;
     if (!FBVST3CopyFromString128(vstItem.name, name))
       return {};
-    bool checked = (vstItem.flags & IContextMenuItem::kIsChecked) != 0;
-    bool enabled = (vstItem.flags & IContextMenuItem::kIsDisabled) == 0;
-    bool separator = (vstItem.flags & IContextMenuItem::kIsSeparator) != 0;
-    bool groupEnd = (vstItem.flags & IContextMenuItem::kIsGroupEnd) != 0;
-    bool groupStart = (vstItem.flags & IContextMenuItem::kIsGroupStart) != 0;
-    bool isItem = !groupStart && !groupEnd && !separator;
-
-    if(isItem)
-      builders.top().menu->addItem(1, name, enabled, checked);
-    else if(separator)
-      builders.top().menu->addSeparator();
-    else if (groupStart)
+    bool checked = (vstItem.flags & IContextMenuItem::kIsChecked) == IContextMenuItem::kIsChecked;
+    bool disabled = (vstItem.flags & IContextMenuItem::kIsDisabled) == IContextMenuItem::kIsDisabled;
+    bool groupEnd = (vstItem.flags & IContextMenuItem::kIsGroupEnd) == IContextMenuItem::kIsGroupEnd;
+    bool separator = (vstItem.flags & IContextMenuItem::kIsSeparator) == IContextMenuItem::kIsSeparator;
+    bool groupStart = (vstItem.flags & IContextMenuItem::kIsGroupStart) == IContextMenuItem::kIsGroupStart;
+   
+    if (groupStart)
     {
       builders.emplace();
       builders.top().name = name;
       builders.top().checked = checked;
-      builders.top().enabled = enabled;
+      builders.top().enabled = !disabled;
       builders.top().menu = std::make_unique<PopupMenu>();
     }
     else if (groupEnd)
@@ -213,7 +208,10 @@ FBVST3GUIEditor::ParamContextMenu(IPtr<IComponentHandler> handler, int index)
       auto builder = std::move(builders.top());
       builders.pop();
       builders.top().menu->addSubMenu(builder.name, *builder.menu, builder.enabled, nullptr, builder.checked);
-    }
+    } else if(separator)
+      builders.top().menu->addSeparator();
+    else
+      builders.top().menu->addItem(1, name, !disabled, checked);
   }
   assert(builders.size() == 1);
   return std::move(builders.top().menu);
