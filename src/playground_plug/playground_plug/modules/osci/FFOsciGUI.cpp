@@ -40,7 +40,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 5, plugGUI->AddComponent<FBParamComboBox>(plugGUI, note));
   auto cent = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
   grid->Add(0, 6, plugGUI->AddComponent<FBParamLabel>(plugGUI, cent));
-  grid->Add(0, 7, plugGUI->AddComponent<FBParamSlider>(plugGUI, cent, Slider::SliderStyle::Rotary));
+  grid->Add(0, 7, plugGUI->AddComponent<FBParamSlider>(plugGUI, cent, Slider::SliderStyle::RotaryVerticalDrag));
   return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 }
 
@@ -50,13 +50,13 @@ MakeSectionGain(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto gain1 = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(plugGUI, gain1));
-  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(plugGUI, gain1, Slider::SliderStyle::Rotary));
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(plugGUI, gain1, Slider::SliderStyle::RotaryVerticalDrag));
   auto gain2 = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 1 });
   grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(plugGUI, gain2));
-  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(plugGUI, gain2, Slider::SliderStyle::Rotary));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(plugGUI, gain2, Slider::SliderStyle::RotaryVerticalDrag));
   auto gLFOToGain = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
   grid->Add(0, 4, plugGUI->AddComponent<FBParamLabel>(plugGUI, gLFOToGain));
-  grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::Rotary));
+  grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::RotaryVerticalDrag));
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   FBParamsDependency dependency = { { (int)FFOsciParam::On }, [](auto const& vs) { return vs[0] != 0; } };
   return plugGUI->AddComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependency);

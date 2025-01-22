@@ -21,17 +21,17 @@ FBParamControl(plugGUI, param)
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
-int 
-FBParamSlider::FixedWidth(int height) const
-{
-  assert(getSliderStyle() == SliderStyle::Rotary);
-  return height;
-}
-
 void
 FBParamSlider::SetValueNormalizedFromHost(float normalized)
 {
   setValue(normalized, dontSendNotification);
+}
+
+int 
+FBParamSlider::FixedWidth(int height) const
+{
+  assert(getSliderStyle() == SliderStyle::RotaryVerticalDrag);
+  return height;
 }
 
 String

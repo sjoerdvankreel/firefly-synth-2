@@ -6,25 +6,26 @@
 #include <cassert>
 
 FBVoiceManager::
-FBVoiceManager(FBProcStateContainer* state):
-_state(state) {}
+FBVoiceManager(FBProcStateContainer* state) :
+  _state(state) {
+}
 
-void 
-FBVoiceManager::ResetReturnedVoices() 
+void
+FBVoiceManager::ResetReturnedVoices()
 {
-  _returnedVoices.clear(); 
+  _returnedVoices.clear();
   for (int v = 0; v < FBMaxVoices; v++)
-    if(IsReturned(v))
+    if (IsReturned(v))
       _voices[v].state = FBVoiceState::Free;
 }
 
-void 
+void
 FBVoiceManager::ReturnOldest(FBNoteEvent const& event)
 {
   assert(!event.on);
-  
+
   int slot = -1;
-  std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();  
+  std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();
   for (int v = 0; v < _voices.size(); v++)
     if (event.note.Matches(_voices[v].event.note))
       if (IsActive(v) && _num[v] < oldest)
@@ -41,7 +42,7 @@ FBVoiceManager::ReturnOldest(FBNoteEvent const& event)
   }
 }
 
-void 
+void
 FBVoiceManager::Lease(FBNoteEvent const& event)
 {
   assert(event.on);
@@ -52,8 +53,8 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
       slot = v;
 
   std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();
-  if(slot == -1)
-    for(int v = 0; v < _voices.size(); v++)
+  if (slot == -1)
+    for (int v = 0; v < _voices.size(); v++)
       if (_num[v] < oldest)
       {
         slot = v;
@@ -61,7 +62,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
       }
 
   assert(0 <= slot && slot < _voices.size());
-  if(IsActive(slot))
+  if (IsActive(slot))
     _returnedVoices.push_back(_voices[slot].event.note);
 
   _num[slot] = ++_counter;
@@ -73,4 +74,6 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
     if (_state->Params()[p].IsVoice())
       if (!_state->Params()[p].IsAcc())
         _state->Params()[p].VoiceBlock().BeginVoice(slot);
+      else
+        _state->Params()[p].VoiceAcc().Voice()[slot].InitProcessing(_state->Params()[p].Value());
 }
