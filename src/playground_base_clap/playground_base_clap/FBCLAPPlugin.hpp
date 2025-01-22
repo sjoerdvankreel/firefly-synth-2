@@ -58,11 +58,6 @@ public:
   bool init() noexcept override;
   void timerCallback() override;
 
-  void EndParamChange(int index) override;
-  void BeginParamChange(int index) override;
-  float GetParamNormalized(int index) const override;
-  void PerformParamEdit(int index, float normalized) override;
-
   uint32_t latencyGet() const noexcept override;
   bool implementsLatency() const noexcept override;
 
@@ -88,6 +83,12 @@ public:
   bool guiAdjustSize(uint32_t* width, uint32_t* height) noexcept override;
   bool guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept override;
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
+
+  void EndParamChange(int index) override;
+  void BeginParamChange(int index) override;
+  float GetParamNormalized(int index) const override;
+  void PerformParamEdit(int index, float normalized) override;
+  std::unique_ptr<juce::PopupMenu> ParamContextMenu(int index) override { return {}; } // todo claphostguicontext
 
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;

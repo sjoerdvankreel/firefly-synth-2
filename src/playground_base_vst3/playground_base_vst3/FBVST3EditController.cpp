@@ -11,6 +11,8 @@
 #include <utility>
 #include <algorithm>
 
+using namespace juce;
+
 static UnitInfo
 MakeUnitInfo(FBRuntimeModule const& module, int id)
 {
@@ -85,6 +87,14 @@ float
 FBVST3EditController::GetParamNormalized(int index) const
 {
   return parameters.getParameterByIndex(index)->getNormalized();
+}
+
+std::unique_ptr<PopupMenu>
+FBVST3EditController::ParamContextMenu(int index)
+{
+  if (!_guiEditor)
+    return {};
+  return _guiEditor->ParamContextMenu(componentHandler, index);
 }
 
 void 

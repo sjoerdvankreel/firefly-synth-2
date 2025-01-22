@@ -1,3 +1,4 @@
+#include <playground_base_vst3/FBVST3Utility.hpp>
 #include <playground_base_vst3/FBVST3GUIEditor.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
@@ -5,13 +6,24 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 
+#include <pluginterfaces/vst/ivstcontextmenu.h>
+
 #if SMTG_OS_LINUX
 #include <juce_events/native/juce_EventLoopInternal_linux.h>
 #endif
 
+#include <stack>
 #include <algorithm>
 
 using namespace juce;
+
+struct MenuBuilder
+{
+  bool checked;
+  bool enabled;
+  std::string name;
+  std::unique_ptr<PopupMenu> menu;
+};
 
 FBVST3GUIEditor::
 FBVST3GUIEditor(
@@ -20,6 +32,7 @@ FBVST3GUIEditor(
   FBVST3EditController* editController,
   FBGUIState* guiState):
 EditorView(editController),
+_topo(topo),
 _gui(std::make_unique<FBPlugGUIContainer>(topo, editController, guiState))
 {
   FB_LOG_ENTRY_EXIT();
@@ -149,4 +162,59 @@ FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
 #endif
   QUERY_INTERFACE(iid, obj, IPlugViewContentScaleSupport::iid, IPlugViewContentScaleSupport);
   return EditorView::queryInterface(iid, obj);
+}
+
+std::unique_ptr<PopupMenu>
+FBVST3GUIEditor::ParamContextMenu(IPtr<IComponentHandler> handler, int index)
+{
+  FUnknownPtr<IComponentHandler3> handler3(handler);
+  if (handler3 == nullptr) 
+    return {};
+  
+  ParamID tag = _topo->params[index].tag;
+  IPtr<IContextMenu> vstMenu(handler3->createContextMenu(this, &tag));
+  if (!vstMenu) 
+    return {};
+
+  IContextMenu::Item vstItem = {};
+  IContextMenuTarget* target = nullptr;
+  std::stack<MenuBuilder> builders = {};
+  builders.emplace();
+  builders.top().menu = std::make_unique<PopupMenu>();
+  for (int i = 0; i < vstMenu->getItemCount(); i++)
+  {
+    if (vstMenu->getItem(i, vstItem, &target) != kResultOk) 
+      return {};
+
+    std::string name;
+    if (!FBVST3CopyFromString128(vstItem.name, name))
+      return {};
+    bool checked = (vstItem.flags & IContextMenuItem::kIsChecked) != 0;
+    bool enabled = (vstItem.flags & IContextMenuItem::kIsDisabled) == 0;
+    bool separator = (vstItem.flags & IContextMenuItem::kIsSeparator) != 0;
+    bool groupEnd = (vstItem.flags & IContextMenuItem::kIsGroupEnd) != 0;
+    bool groupStart = (vstItem.flags & IContextMenuItem::kIsGroupStart) != 0;
+    bool isItem = !groupStart && !groupEnd && !separator;
+
+    if(isItem)
+      builders.top().menu->addItem(1, name, enabled, checked);
+    else if(separator)
+      builders.top().menu->addSeparator();
+    else if (groupStart)
+    {
+      builders.emplace();
+      builders.top().name = name;
+      builders.top().checked = checked;
+      builders.top().enabled = enabled;
+      builders.top().menu = std::make_unique<PopupMenu>();
+    }
+    else if (groupEnd)
+    {
+      auto builder = std::move(builders.top());
+      builders.pop();
+      builders.top().menu->addSubMenu(builder.name, *builder.menu, builder.enabled, nullptr, builder.checked);
+    }
+  }
+  assert(builders.size() == 1);
+  return std::move(builders.top().menu);
 }

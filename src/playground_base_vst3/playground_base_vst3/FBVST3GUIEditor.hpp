@@ -3,6 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 
+#include <juce_gui_basics/juce_gui_basics.h>
 #include <public.sdk/source/vst/vsteditcontroller.h>
 #include <pluginterfaces/gui/iplugviewcontentscalesupport.h>
 
@@ -28,6 +29,7 @@ public IPlugViewContentScaleSupport
 , public IEventHandler
 #endif
 {
+  FBRuntimeTopo const* const _topo;
   std::unique_ptr<FBPlugGUIContext> _gui;
 
 public:
@@ -40,6 +42,8 @@ public:
     FBGUIState* guiState);
 
   void SetParamNormalized(int index, float normalized);
+  std::unique_ptr<juce::PopupMenu> 
+  ParamContextMenu(IPtr<IComponentHandler> handler, int index);
 
 #if SMTG_OS_LINUX
   void PLUGIN_API onFDIsSet(FileDescriptor fd) override;
