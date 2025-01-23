@@ -202,11 +202,11 @@ FBVST3GUIEditor::MakeParamContextMenu(
     if (!FBVST3CopyFromString128(vstItem.name, item.name))
       return {};
     item.hostTag = vstItem.tag;
-    item.checked = (vstItem.flags & IContextMenuItem::kIsChecked) != 0;
-    item.enabled = (vstItem.flags & IContextMenuItem::kIsDisabled) == 0;
-    item.separator = (vstItem.flags & IContextMenuItem::kIsSeparator) != 0;
-    item.subMenuEnd = (vstItem.flags & IContextMenuItem::kIsGroupEnd) != 0;
-    item.subMenuStart = (vstItem.flags & IContextMenuItem::kIsGroupStart) != 0;
+    item.checked = (vstItem.flags & IContextMenuItem::kIsChecked) == IContextMenuItem::kIsChecked;
+    item.enabled = (vstItem.flags & IContextMenuItem::kIsDisabled) != IContextMenuItem::kIsDisabled;
+    item.separator = (vstItem.flags & IContextMenuItem::kIsSeparator) == IContextMenuItem::kIsSeparator;
+    item.subMenuEnd = (vstItem.flags & IContextMenuItem::kIsGroupEnd) == IContextMenuItem::kIsGroupEnd;
+    item.subMenuStart = (vstItem.flags & IContextMenuItem::kIsGroupStart) == IContextMenuItem::kIsGroupStart;
     result.push_back(item);
   }
   return result;
