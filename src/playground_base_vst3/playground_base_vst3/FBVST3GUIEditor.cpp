@@ -7,8 +7,6 @@
 #include <playground_base/gui/glue/FBHostContextMenu.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 
-#include <pluginterfaces/vst/ivstcontextmenu.h>
-
 #if SMTG_OS_LINUX
 #include <juce_events/native/juce_EventLoopInternal_linux.h>
 #endif
@@ -156,25 +154,25 @@ FBVST3GUIEditor::queryInterface(TUID const iid, void** obj)
   return EditorView::queryInterface(iid, obj);
 }
 
+IPtr<IContextMenu>
+FBVST3GUIEditor::MakeVSTMenu(
+  IPtr<IComponentHandler> handler, int paramIndex)
+{
+  ParamID paramTag = _topo->params[paramIndex].tag;
+  FUnknownPtr<IComponentHandler3> handler3(handler);
+  if (handler3 == nullptr)
+    return {};
+  return handler3->createContextMenu(this, &paramTag);
+}
+
 void 
 FBVST3GUIEditor::ParamContextMenuClicked(
   IPtr<IComponentHandler> handler, int paramIndex, int juceTag)
 {
-  if (juceTag <= 0)
-    return;
-
-  FUnknownPtr<IComponentHandler3> handler3(handler);
-  if (handler3 == nullptr)
-    return;
-
-  ParamID paramTag = _topo->params[paramIndex].tag;
-  IPtr<IContextMenu> vstMenu(handler3->createContextMenu(this, &paramTag));
-  if (!vstMenu)
-    return;
-
   IContextMenu::Item item = {};
   IContextMenuTarget* target = nullptr;
-  if (vstMenu->getItem(juceTag - 1, item, &target) == kResultOk && target != nullptr)
+  auto vstMenu = MakeVSTMenu(handler, paramIndex);
+  if (vstMenu && vstMenu->getItem(juceTag - 1, item, &target) == kResultOk && target != nullptr)
     target->executeMenuItem(item.tag);
 }
 
@@ -182,12 +180,7 @@ std::vector<FBHostContextMenuItem>
 FBVST3GUIEditor::MakeParamContextMenu(
   IPtr<IComponentHandler> handler, int index)
 {
-  FUnknownPtr<IComponentHandler3> handler3(handler);
-  if (handler3 == nullptr) 
-    return {};
-  
-  ParamID paramTag = _topo->params[index].tag;
-  IPtr<IContextMenu> vstMenu(handler3->createContextMenu(this, &paramTag));
+  auto vstMenu = MakeVSTMenu(handler, index);
   if (!vstMenu) 
     return {};
 
@@ -201,7 +194,6 @@ FBVST3GUIEditor::MakeParamContextMenu(
       return {};
     if (!FBVST3CopyFromString128(vstItem.name, item.name))
       return {};
-    item.hostTag = vstItem.tag;
     item.checked = (vstItem.flags & IContextMenuItem::kIsChecked) == IContextMenuItem::kIsChecked;
     item.enabled = (vstItem.flags & IContextMenuItem::kIsDisabled) != IContextMenuItem::kIsDisabled;
     item.separator = (vstItem.flags & IContextMenuItem::kIsSeparator) == IContextMenuItem::kIsSeparator;

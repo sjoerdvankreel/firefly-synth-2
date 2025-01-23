@@ -7,7 +7,6 @@
 
 struct FBHostContextMenuItem
 {
-  int hostTag = 0;
   std::string name = {};
   bool checked = false;
   bool enabled = false;

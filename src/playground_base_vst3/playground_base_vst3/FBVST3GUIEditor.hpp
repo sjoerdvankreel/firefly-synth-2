@@ -6,6 +6,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <public.sdk/source/vst/vsteditcontroller.h>
+#include <pluginterfaces/vst/ivstcontextmenu.h>
 #include <pluginterfaces/gui/iplugviewcontentscalesupport.h>
 
 #include <memory>
@@ -32,6 +33,9 @@ public IPlugViewContentScaleSupport
 {
   FBRuntimeTopo const* const _topo;
   std::unique_ptr<FBPlugGUIContext> _gui;
+
+  IPtr<IContextMenu> 
+  MakeVSTMenu(IPtr<IComponentHandler> handler, int paramIndex);
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);
