@@ -1,11 +1,8 @@
-drop all the beginedit/endedit, host compat not worth it
 drop sse/arch from the build scripts
 gui modulation indicators also for clap (poly)mod
 checkout the Linux logging and also mac
 multitap fb delay
-redo perf test
 pdbs are borked after first build
-fix warnings
 rosetta is borked
 fix mac infoplist and the other thingy
 reaper voice off by disable plug not working
