@@ -1,7 +1,8 @@
 #pragma once
 
-#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <public.sdk/source/vst/vsteditcontroller.h>

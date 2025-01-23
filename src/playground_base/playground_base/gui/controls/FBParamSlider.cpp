@@ -1,6 +1,7 @@
 #include <playground_base/base/topo/FBRuntimeParam.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
+#include <playground_base/gui/glue/FBHostContextMenu.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 
 #include <cassert>
@@ -70,9 +71,10 @@ FBParamSlider::mouseUp(MouseEvent const& event)
 {
   if (!event.mods.isRightButtonDown())
     return;
-  auto menu = _plugGUI->HostContext()->MakeParamContextMenu(_param->runtimeParamIndex);
-  if (!menu)
+  auto menuItems = _plugGUI->HostContext()->MakeParamContextMenu(_param->runtimeParamIndex);
+  if (menuItems.empty())
     return;
+  auto hostMenu = FBMakeHostContextMenu(menuItems);
   auto clicked = [this](int tag) { _plugGUI->HostContext()->ParamContextMenuClicked(_param->runtimeParamIndex, tag); };
-  _plugGUI->ShowPopupMenuFor(this, *menu, clicked);
+  _plugGUI->ShowPopupMenuFor(this, *hostMenu, clicked);
 }
