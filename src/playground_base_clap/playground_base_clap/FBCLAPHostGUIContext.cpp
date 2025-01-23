@@ -106,7 +106,7 @@ FBCLAPPlugin::MakeParamContextMenu(int index, std::vector<FBHostContextMenuItem>
   auto result = std::make_unique<clap_context_menu_target>();
   result->id = _topo->params[index].tag;
   result->kind = CLAP_CONTEXT_MENU_TARGET_KIND_PARAM;
-  if (!_host.contextMenuPopulate(result.get(), &builder))
-    return {};
+  // bitwig returns false
+  _host.contextMenuPopulate(result.get(), &builder);
   return result;
 }
