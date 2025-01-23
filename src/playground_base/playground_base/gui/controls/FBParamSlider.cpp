@@ -71,10 +71,13 @@ FBParamSlider::mouseUp(MouseEvent const& event)
 {
   if (!event.mods.isRightButtonDown())
     return;
-  auto menuItems = _plugGUI->HostContext()->MakeParamContextMenu(_param->runtimeParamIndex);
+  auto* hostContext = _plugGUI->HostContext();
+  auto menuItems = hostContext->MakeParamContextMenu(_param->runtimeParamIndex);
   if (menuItems.empty())
     return;
   auto hostMenu = FBMakeHostContextMenu(menuItems);
-  auto clicked = [this](int tag) { _plugGUI->HostContext()->ParamContextMenuClicked(_param->runtimeParamIndex, tag); };
+  auto clicked = [this, hostContext](int tag) {
+    if(tag > 0)
+      hostContext->ParamContextMenuClicked(_param->runtimeParamIndex, tag); };
   _plugGUI->ShowPopupMenuFor(this, *hostMenu, clicked);
 }
