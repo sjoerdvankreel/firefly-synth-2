@@ -36,6 +36,7 @@ FBPlugGUI::ShowPopupMenuFor(
   PopupMenu::Options options;
   options = options.withParentComponent(this);
   options = options.withTargetComponent(target);
+  options = options.withMousePosition();
   menu.showMenuAsync(options, callback);
 }
 
