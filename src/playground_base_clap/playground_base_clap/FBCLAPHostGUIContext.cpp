@@ -38,11 +38,11 @@ FBCLAPPlugin::PerformParamEdit(int index, float normalized)
 }
 
 void 
-FBCLAPPlugin::ParamContextMenuClicked(int paramIndex, int itemTag)
+FBCLAPPlugin::ParamContextMenuClicked(int paramIndex, int juceTag)
 {
 }
 
-std::unique_ptr<PopupMenu> 
+std::vector<FBHostContextMenuItem>
 FBCLAPPlugin::MakeParamContextMenu(int index)
 {
   if (!_host.canUseContextMenu())

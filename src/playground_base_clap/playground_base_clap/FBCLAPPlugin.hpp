@@ -88,8 +88,8 @@ public:
   void BeginParamChange(int index) override;
   float GetParamNormalized(int index) const override;
   void PerformParamEdit(int index, float normalized) override;
-  void ParamContextMenuClicked(int paramIndex, int itemTag) override;
-  std::unique_ptr<juce::PopupMenu> MakeParamContextMenu(int index) override;
+  void ParamContextMenuClicked(int paramIndex, int juceTag) override;
+  std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) override;
 
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;

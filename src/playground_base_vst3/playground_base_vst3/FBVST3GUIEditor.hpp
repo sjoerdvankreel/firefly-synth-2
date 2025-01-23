@@ -59,6 +59,6 @@ public:
   tresult PLUGIN_API queryInterface(Steinberg::TUID const iid, void** obj) override;
 
   void SetParamNormalized(int index, float normalized);
-  void ParamContextMenuClicked(IPtr<IComponentHandler> handler, int paramIndex, int itemTag);
-  std::unique_ptr<juce::PopupMenu> MakeParamContextMenu(IPtr<IComponentHandler> handler, int index);
+  void ParamContextMenuClicked(IPtr<IComponentHandler> handler, int paramIndex, int juceTag);
+  std::vector<FBHostContextMenuItem> MakeParamContextMenu(IPtr<IComponentHandler> handler, int index);
 };

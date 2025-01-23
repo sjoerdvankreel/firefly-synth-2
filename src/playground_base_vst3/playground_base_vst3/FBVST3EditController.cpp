@@ -102,7 +102,7 @@ FBVST3EditController::GetParamNormalized(int index) const
   return parameters.getParameterByIndex(index)->getNormalized();
 }
 
-std::unique_ptr<PopupMenu>
+std::vector<FBHostContextMenuItem>
 FBVST3EditController::MakeParamContextMenu(int index)
 {
   if (!_guiEditor)
@@ -121,10 +121,10 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 }
 
 void
-FBVST3EditController::ParamContextMenuClicked(int paramIndex, int itemTag)
+FBVST3EditController::ParamContextMenuClicked(int paramIndex, int juceTag)
 {
   if (_guiEditor)
-    _guiEditor->ParamContextMenuClicked(componentHandler, paramIndex, itemTag);
+    _guiEditor->ParamContextMenuClicked(componentHandler, paramIndex, juceTag);
 }
 
 IPlugView* PLUGIN_API
