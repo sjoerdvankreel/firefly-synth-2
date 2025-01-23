@@ -23,6 +23,7 @@ public:
   FBRuntimeTopo const* Topo() const { return _topo; }
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
+  void ShowHostMenuForParam(int index);
   void SteppedParamNormalizedChanged(int index);
   void SetParamNormalizedFromHost(int index, float normalized);
   void ShowPopupMenuFor(

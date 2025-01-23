@@ -28,6 +28,13 @@ FBParamSlider::SetValueNormalizedFromHost(float normalized)
   setValue(normalized, dontSendNotification);
 }
 
+void
+FBParamSlider::mouseUp(MouseEvent const& event)
+{
+  if (event.mods.isRightButtonDown())
+    _plugGUI->ShowHostMenuForParam(_param->runtimeParamIndex);
+}
+
 int 
 FBParamSlider::FixedWidth(int height) const
 {
@@ -64,20 +71,4 @@ void
 FBParamSlider::valueChanged()
 {
   _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
-}
-
-void 
-FBParamSlider::mouseUp(MouseEvent const& event)
-{
-  if (!event.mods.isRightButtonDown())
-    return;
-  auto* hostContext = _plugGUI->HostContext();
-  auto menuItems = hostContext->MakeParamContextMenu(_param->runtimeParamIndex);
-  if (menuItems.empty())
-    return;
-  auto hostMenu = FBMakeHostContextMenu(menuItems);
-  auto clicked = [this, hostContext](int tag) {
-    if(tag > 0)
-      hostContext->ParamContextMenuClicked(_param->runtimeParamIndex, tag); };
-  _plugGUI->ShowPopupMenuFor(this, *hostMenu, clicked);
 }

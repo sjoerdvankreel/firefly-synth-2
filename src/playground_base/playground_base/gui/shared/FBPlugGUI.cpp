@@ -1,4 +1,5 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
@@ -36,6 +37,19 @@ FBPlugGUI::ShowPopupMenuFor(
   options = options.withParentComponent(this);
   options = options.withTargetComponent(target);
   menu.showMenuAsync(options, callback);
+}
+
+void
+FBPlugGUI::ShowHostMenuForParam(int index)
+{
+  auto menuItems = HostContext()->MakeParamContextMenu(index);
+  if (menuItems.empty())
+    return;
+  auto hostMenu = FBMakeHostContextMenu(menuItems);
+  auto clicked = [this, index](int tag) {
+    if (tag > 0)
+      HostContext()->ParamContextMenuClicked(index, tag); };
+  ShowPopupMenuFor(this, *hostMenu, clicked);
 }
 
 void
