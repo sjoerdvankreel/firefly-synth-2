@@ -7,7 +7,7 @@ if [ "$1" == "" ]; then
 fi
 
 cd ..
-mkdir -p "build/linux/$1/sse2"
-cd "build/linux/$1/sse2"
-cmake -DCMAKE_BUILD_TYPE="$1" -DFB_ARCH_TYPE=1 ../../../..
+mkdir -p "build/linux/$1"
+cd "build/linux/$1"
+cmake -DCMAKE_BUILD_TYPE="$1" -DFB_ARCH_TYPE=1 ../../..
 make

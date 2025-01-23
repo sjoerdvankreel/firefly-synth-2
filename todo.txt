@@ -1,8 +1,6 @@
-drop sse/arch from the build scripts
 gui modulation indicators also for clap (poly)mod
 checkout the Linux logging and also mac
 multitap fb delay
-pdbs are borked after first build
 rosetta is borked
 fix mac infoplist and the other thingy
 reaper voice off by disable plug not working
