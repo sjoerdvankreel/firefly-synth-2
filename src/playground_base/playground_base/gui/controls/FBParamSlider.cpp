@@ -50,18 +50,19 @@ FBParamSlider::getValueFromText(const String& text)
 void
 FBParamSlider::stoppedDragging()
 {
-  
+  _plugGUI->HostContext()->EndParamChange(_param->runtimeParamIndex);
 }
 
 void
 FBParamSlider::startedDragging()
 {
+  _plugGUI->HostContext()->BeginParamChange(_param->runtimeParamIndex);
 }
 
 void
 FBParamSlider::valueChanged()
 {
-  _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, (float)getValue());
+  _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
 }
 
 void 
