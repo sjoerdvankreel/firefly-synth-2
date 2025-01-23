@@ -71,16 +71,29 @@ FBVST3EditController::ResetView()
   _guiEditor = nullptr;
 }
 
-void 
+void
 FBVST3EditController::EndParamChange(int index)
 {
-  endEdit(_topo->params[index].tag);
+  // see PerformParamEdit
 }
 
-void 
+void
 FBVST3EditController::BeginParamChange(int index)
 {
-  beginEdit(_topo->params[index].tag);
+  // see PerformParamEdit
+}
+
+void
+FBVST3EditController::PerformParamEdit(int index, float normalized)
+{
+  int tag = _topo->params[index].tag;
+  setParamNormalized(tag, normalized);
+
+  // this is not ideal but it prevents automation getting ignored
+  // once an automated parameter is user-modified on reaper
+  beginEdit(tag);
+  performEdit(tag, normalized);
+  endEdit(tag);
 }
 
 float
@@ -95,14 +108,6 @@ FBVST3EditController::MakeParamContextMenu(int index)
   if (!_guiEditor)
     return {};
   return _guiEditor->MakeParamContextMenu(componentHandler, index);
-}
-
-void
-FBVST3EditController::PerformParamEdit(int index, float normalized)
-{
-  int tag = _topo->params[index].tag;
-  setParamNormalized(tag, normalized);
-  performEdit(tag, normalized);
 }
 
 tresult PLUGIN_API 
