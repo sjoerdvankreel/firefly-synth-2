@@ -25,12 +25,10 @@ set (PROJECT_NAME_BASE_CLAP "${PROJECT_NAME_BASE}_clap")
 set (PROJECT_NAME_OUT PlaygroundPlug)
 
 if ("${FB_ARCH_TYPE}" STREQUAL "1")
-  set (PROJECT_ARCH "SSE2")
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse2")
   endif()
 elseif ("${FB_ARCH_TYPE}" STREQUAL "2")
-  set (PROJECT_ARCH "Universal")
   if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     message (FATAL_ERROR "Unsupported architecture.")
   endif()
@@ -195,17 +193,17 @@ endif()
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT}.vst3"
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT}.vst3"
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_VST3}>/${PROJECT_NAME_OUT}.pdb
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT}.pdb" || (exit 0))
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-win/${PROJECT_NAME_OUT}.pdb" || (exit 0))
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-linux/${PROJECT_NAME_OUT}.so")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.vst3/Contents/x86_64-linux/${PROJECT_NAME_OUT}.so")
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_VST3} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_VST3}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.vst3/Contents/MacOS/${PROJECT_NAME_OUT}")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.vst3/Contents/MacOS/${PROJECT_NAME_OUT}")
 else ()
   message(FATAL_ERROR "Unsupported platform.")
 endif()
@@ -214,17 +212,17 @@ endif()
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT}.clap"
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_NAME_OUT}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT}.clap"
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE_DIR:${PROJECT_NAME_PLUG_CLAP}>/${PROJECT_NAME_OUT}.pdb
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT}.pdb" || (exit 0))
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>/${PROJECT_NAME_OUT}.clap/Contents/x86_64-win/${PROJECT_NAME_OUT}.pdb" || (exit 0))
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.clap/Contents/x86_64-linux/${PROJECT_NAME_OUT}.clap")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.clap/Contents/x86_64-linux/${PROJECT_NAME_OUT}.clap")
 elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
   add_custom_command(TARGET ${PROJECT_NAME_PLUG_CLAP} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME_PLUG_CLAP}>
-    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_ARCH}/${PROJECT_NAME_OUT}.clap/Contents/MacOS/${PROJECT_NAME_OUT}")
+    "${CMAKE_SOURCE_DIR}/dist/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME_OUT}.clap/Contents/MacOS/${PROJECT_NAME_OUT}")
 else ()
   message(FATAL_ERROR "Unsupported platform.")
 endif()
