@@ -43,6 +43,8 @@ public FBHostGUIContext
   std::array<std::vector<float>, 2> _zeroIn = {};
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
 
+  std::unique_ptr<clap_context_menu_target> 
+  MakeParamContextMenu(int index, std::vector<FBHostContextMenuItem>& items);
   void PushParamChangeToProcessorBlock(int index, double normalized, int pos);
   void ProcessMainToAudioEvents(const clap_output_events* out, bool pushToProcBlock);
 

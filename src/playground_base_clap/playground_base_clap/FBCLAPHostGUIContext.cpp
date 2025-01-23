@@ -25,12 +25,14 @@ ContextMenuBuilderAddItem(
   {
     auto entry = static_cast<clap_context_menu_entry const*>(data);
     item.name = entry->label;
+    item.hostTag = entry->action_id;
     item.enabled = entry->is_enabled;
   }
   else if (kind == CLAP_CONTEXT_MENU_ITEM_CHECK_ENTRY)
   {
     auto check = static_cast<clap_context_menu_check_entry const*>(data);
     item.name = check->label;
+    item.hostTag = check->action_id;
     item.enabled = check->is_enabled;
     item.checked = check->is_checked;
   }
@@ -72,27 +74,39 @@ FBCLAPPlugin::PerformParamEdit(int index, float normalized)
     _host.paramsRequestFlush();
 }
 
-void 
-FBCLAPPlugin::ParamContextMenuClicked(
-  int paramIndex, int juceTag)
-{
-}
-
 std::vector<FBHostContextMenuItem>
 FBCLAPPlugin::MakeParamContextMenu(int index)
+{
+  std::vector<FBHostContextMenuItem> items;
+  if (!MakeParamContextMenu(index, items))
+    return {};
+  return items;
+}
+
+void
+FBCLAPPlugin::ParamContextMenuClicked(int paramIndex, int juceTag)
+{
+  std::vector<FBHostContextMenuItem> items;
+  auto target = MakeParamContextMenu(paramIndex, items);
+  if (target)
+    _host.contextMenuPerform(target.get(), items[juceTag - 1].hostTag);
+}
+
+std::unique_ptr<clap_context_menu_target>
+FBCLAPPlugin::MakeParamContextMenu(int index, std::vector<FBHostContextMenuItem>& items)
 {
   if (!_host.canUseContextMenu())
     return {};
 
   clap_context_menu_builder builder;
-  std::vector<FBHostContextMenuItem> result = {};
-  builder.ctx = &result;
+  builder.ctx = &items;
   builder.add_item = ContextMenuBuilderAddItem;
   builder.supports = [](auto, auto) { return true; };
 
-  auto target = std::make_unique<clap_context_menu_target>();
-  target->id = _topo->params[index].tag;
-  target->kind = CLAP_CONTEXT_MENU_TARGET_KIND_PARAM;
-  _host.contextMenuPopulate(target.get(), &builder);
+  auto result = std::make_unique<clap_context_menu_target>();
+  result->id = _topo->params[index].tag;
+  result->kind = CLAP_CONTEXT_MENU_TARGET_KIND_PARAM;
+  if (!_host.contextMenuPopulate(result.get(), &builder))
+    return {};
   return result;
 }
