@@ -56,8 +56,8 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
   auto const& topo = state.topo->modules[(int)FFModuleType::Osci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
   bool on = topo.params[(int)FFOsciParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
-  int type = topo.params[(int)FFOsciParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
   int note = topo.params[(int)FFOsciParam::Note].discrete.NormalizedToPlain(params.block.note[0].Voice()[voice]);
+  auto type = (FFOsciType)topo.params[(int)FFOsciParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
 
   if (!on)
   {
@@ -76,7 +76,7 @@ FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
     return freq / state.sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
 
-  switch ((FFOsciType)type)
+  switch (type)
   {
   case FFOsciType::Sine: mono.Transform([&](int v) {
     return GenerateSin(phase[v]); }); break;
