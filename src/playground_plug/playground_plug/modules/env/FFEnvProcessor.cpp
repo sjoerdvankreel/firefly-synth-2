@@ -12,24 +12,30 @@
 void
 FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
 {
-  _position = 0;
   _stagePositions.fill(0);
   int voice = state.voice->slot;
   auto const& topo = state.topo->modules[(int)FFModuleType::Env];
   auto const& params = state.proc->param.voice.env[state.moduleSlot];
+  _voiceState.holdSamples = (int)std::round(topo.params[(int)FFEnvParam::HoldTime].linear.NormalizedToPlain(
+    params.block.holdTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.decaySamples = (int)std::round(topo.params[(int)FFEnvParam::DecayTime].linear.NormalizedToPlain(
+    params.block.decayTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.delaySamples = (int)std::round(topo.params[(int)FFEnvParam::DelayTime].linear.NormalizedToPlain(
+    params.block.delayTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.attackSamples = (int)std::round(topo.params[(int)FFEnvParam::AttackTime].linear.NormalizedToPlain(
+    params.block.attackTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.releaseSamples = (int)std::round(topo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedToPlain(
+    params.block.releaseTime[0].Voice()[voice]) * state.sampleRate);
   _voiceState.on = topo.params[(int)FFEnvParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
   _voiceState.type = (FFEnvType)topo.params[(int)FFEnvParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
-  _voiceState.delaySamplesEnd = (int)std::round(topo.params[(int)FFEnvParam::DelayTime].linear.NormalizedToPlain(params.block.delayTime[0].Voice()[voice]) * state.sampleRate);
-  _voiceState.attackSamplesEnd = _voiceState.delaySamplesEnd + (int)std::round(topo.params[(int)FFEnvParam::AttackTime].linear.NormalizedToPlain(params.block.attackTime[0].Voice()[voice]) * state.sampleRate);
-  _voiceState.holdSamplesEnd = _voiceState.attackSamplesEnd + (int)std::round(topo.params[(int)FFEnvParam::HoldTime].linear.NormalizedToPlain(params.block.holdTime[0].Voice()[voice]) * state.sampleRate);
-  _voiceState.decaySamplesEnd = _voiceState.holdSamplesEnd + (int)std::round(topo.params[(int)FFEnvParam::DecayTime].linear.NormalizedToPlain(params.block.decayTime[0].Voice()[voice]) * state.sampleRate);
-  _voiceState.releaseSamplesEnd = _voiceState.decaySamplesEnd + (int)std::round(topo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedToPlain(params.block.releaseTime[0].Voice()[voice]) * state.sampleRate);
 }
 
 void 
 FFEnvProcessor::Process(FFModuleProcState const& state)
 {
   int voice = state.voice->slot;
+  auto const& topo = state.topo->modules[(int)FFModuleType::Env];
+  auto const& params = state.proc->param.voice.env[state.moduleSlot];
   auto& output = state.proc->dsp.voice[voice].env[state.moduleSlot].output;
 
   if (!_voiceState.on)
@@ -40,8 +46,35 @@ FFEnvProcessor::Process(FFModuleProcState const& state)
 
   int s = 0;
   FBFixedFloatArray scratch = {};
-  for (; s < FBFixedBlockSamples && _position < _voiceState.delaySamplesEnd; s++, _position++)
+  FBFixedFloatBlock sustainBlock = {};
+  FBFixedFloatArray sustainScratch = {};
+  sustainBlock.Transform([&](int v) { return params.acc.sustainLevel[0].Voice()[voice].CV(v); });
+  sustainBlock.StoreToFloatArray(sustainScratch);
+
+  for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Delay] < _voiceState.delaySamples; 
+    s++, _stagePositions[(int)FFEnvStage::Delay]++)
     scratch.data[s] = 0.0f;
-  for (; s < FBFixedBlockSamples && _position < _voiceState.attackSamplesEnd; s++, _position++)
+
+  for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Attack] < _voiceState.attackSamples; 
+    s++, _stagePositions[(int)FFEnvStage::Attack]++)
+    scratch.data[s] = _stagePositions[(int)FFEnvStage::Attack] / (float)_voiceState.attackSamples;
+
+  for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Hold] < _voiceState.holdSamples; 
+    s++, _stagePositions[(int)FFEnvStage::Hold]++)
+    scratch.data[s] = 1.0f;
+
+  for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Decay] < _voiceState.decaySamples; 
+    s++, _stagePositions[(int)FFEnvStage::Decay]++)
+    scratch.data[s] = sustainScratch.data[s] + (1.0f - sustainScratch.data[s]) * 
+      (1.0f - _stagePositions[(int)FFEnvStage::Decay] / (float)_voiceState.decaySamples);
+
+  for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Release] < _voiceState.releaseSamples;
+    s++, _stagePositions[(int)FFEnvStage::Release]++)
+    scratch.data[s] = sustainScratch.data[s] * 
+      (1.0f - _stagePositions[(int)FFEnvStage::Release] / (float)_voiceState.releaseSamples);
+
+  for (; s < FBFixedBlockSamples; s++)
     scratch.data[s] = 0.0f;
+
+  output.LoadFromFloatArray(scratch);
 }

@@ -12,16 +12,15 @@ struct FFEnvVoiceState
 {
   bool on = {};
   FFEnvType type = {};  
-  int holdSamplesEnd = {};
-  int delaySamplesEnd = {};
-  int decaySamplesEnd = {};
-  int attackSamplesEnd = {};
-  int releaseSamplesEnd = {};
+  int holdSamples = {};
+  int delaySamples = {};
+  int decaySamples = {};
+  int attackSamples = {};
+  int releaseSamples = {};
 };
 
 class FFEnvProcessor final
 {
-  int _position = 0;
   FFEnvVoiceState _voiceState = {};
   std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
 

@@ -54,9 +54,12 @@ FFOsciProcessor::BeginVoice(FFModuleProcState const& state)
   auto const& topo = state.topo->modules[(int)FFModuleType::Osci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
   _voiceState.key = (float)state.voice->event.note.key;
-  _voiceState.on = topo.params[(int)FFOsciParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
-  _voiceState.note = topo.params[(int)FFOsciParam::Note].discrete.NormalizedToPlain(params.block.note[0].Voice()[voice]);
-  _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
+  _voiceState.on = topo.params[(int)FFOsciParam::On].boolean.NormalizedToPlain(
+    params.block.on[0].Voice()[voice]);
+  _voiceState.note = topo.params[(int)FFOsciParam::Note].discrete.NormalizedToPlain(
+    params.block.note[0].Voice()[voice]);
+  _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].list.NormalizedToPlain(
+    params.block.type[0].Voice()[voice]);
 }
 
 void
