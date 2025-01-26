@@ -1,4 +1,6 @@
-dedicated voice class
+voice counter output param
+single graph for everything
+stuff gets funky when hits max voices
 gui modulation indicators also for clap (poly)mod
 checkout the Linux logging and also mac
 multitap fb delay
