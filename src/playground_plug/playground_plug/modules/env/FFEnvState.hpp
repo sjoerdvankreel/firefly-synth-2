@@ -23,6 +23,13 @@ class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+  std::array<TVoiceBlock, 1> on = {};
+  std::array<TVoiceBlock, 1> type = {};
+  std::array<TVoiceBlock, 1> delayTime = {};
+  std::array<TVoiceBlock, 1> attackTime = {};
+  std::array<TVoiceBlock, 1> holdTime = {};
+  std::array<TVoiceBlock, 1> decayTime = {};
+  std::array<TVoiceBlock, 1> releaseTime = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvBlockParamState);
 };
@@ -32,6 +39,10 @@ class alignas(alignof(TVoiceAcc)) FFEnvAccParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+  std::array<TVoiceAcc, 1> attackSlope = {};
+  std::array<TVoiceAcc, 1> decaySlope = {};
+  std::array<TVoiceAcc, 1> sustainLevel = {};
+  std::array<TVoiceAcc, 1> releaseSlope = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvAccParamState);
 };
