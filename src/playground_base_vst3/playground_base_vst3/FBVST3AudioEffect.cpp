@@ -176,6 +176,20 @@ FBVST3AudioEffect::process(ProcessData& data)
   else
     _input.audio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
   _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
+
+  // TODO CLAP
+  _output.outputParams.clear();
   _hostProcessor->ProcessHost(_input, _output);
+  if(data.outputParameterChanges != nullptr)
+    for(int i = 0; i < _output.outputParams.size(); i++)
+    {
+      int unused;
+      auto const& event = _output.outputParams[i];
+      int tag = _topo->params[event.param].tag;
+      auto queue = data.outputParameterChanges->addParameterData(tag, unused);
+      if(queue != nullptr)
+        queue->addPoint(0, event.normalized, unused);
+    }
+
   return kResultTrue;
 }

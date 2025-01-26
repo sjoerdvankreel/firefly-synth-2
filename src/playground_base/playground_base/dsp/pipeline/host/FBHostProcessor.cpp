@@ -74,7 +74,6 @@ FBHostProcessor::ProcessHost(
   }
   _fixedBuffer->ProcessToHost(output);  
 
-  output.outputParams.clear();
   for (auto const& entry : _fixedOut.outputParamsNormalized)
     output.outputParams.push_back({ entry.first, entry.second });
   FBRestoreDenormal(denormalState);
