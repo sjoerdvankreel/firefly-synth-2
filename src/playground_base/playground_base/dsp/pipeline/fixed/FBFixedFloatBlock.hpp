@@ -12,6 +12,7 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedFloatBlock);
 
   void Clear();
+  void Mul(FBFixedFloatBlock const& rhs);
   void Add(FBFixedFloatBlock const& rhs);
   void CopyFrom(FBFixedFloatBlock const& rhs);
   template <class Op> void Transform(Op op);
@@ -37,6 +38,12 @@ inline void
 FBFixedFloatBlock::Clear()
 {
   Transform([](auto) { return 0.0f; });
+}
+
+inline void
+FBFixedFloatBlock::Mul(FBFixedFloatBlock const& rhs)
+{
+  Transform([&](int v) { return _store[v] * rhs[v]; });
 }
 
 inline void
