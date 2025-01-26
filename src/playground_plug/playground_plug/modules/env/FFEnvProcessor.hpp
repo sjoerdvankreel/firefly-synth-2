@@ -21,12 +21,12 @@ struct FFEnvVoiceState
 
 class FFEnvProcessor final
 {
-  bool _finished = false;
+  int _finishedAt = -1;
   FFEnvVoiceState _voiceState = {};
   std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
-  void Process(FFModuleProcState const& state);
+  int Process(FFModuleProcState const& state);
   void BeginVoice(FFModuleProcState const& state);
 };
