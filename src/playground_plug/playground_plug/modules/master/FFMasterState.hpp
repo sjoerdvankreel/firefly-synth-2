@@ -34,6 +34,7 @@ class alignas(alignof(TGlobalBlock)) FFMasterBlockParamState final
 {
   friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  std::array<TGlobalBlock, 1> voices = {};
   std::array<TGlobalBlock, 1> smoothing = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterBlockParamState);

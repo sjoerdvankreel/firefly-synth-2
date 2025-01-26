@@ -41,5 +41,18 @@ FFMakeMasterTopo()
   auto selectSmoothing = [](auto& module) { return &module.block.smoothing; };
   smoothing.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmoothing);
   smoothing.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectSmoothing);
+
+  auto& voices = result->params[(int)FFMasterParam::Voices];
+  voices.acc = false;
+  voices.defaultText = "0";
+  voices.name = "Voices";
+  voices.slotCount = 1;
+  voices.id = "{54C6CAD4-FA5A-4395-8131-C768E0AD48CF}";
+  voices.type = FBParamType::Discrete;
+  voices.discrete.valueCount = FBMaxVoices + 1;
+  auto selectVoices = [](auto& module) { return &module.block.voices; };
+  voices.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectVoices);
+  voices.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectVoices);
+
   return result;
 }

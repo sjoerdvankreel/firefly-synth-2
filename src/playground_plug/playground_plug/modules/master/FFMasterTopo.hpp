@@ -5,4 +5,4 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
 
-enum class FFMasterParam { Smoothing, Gain, Count };
+enum class FFMasterParam { Smoothing, Gain, Voices, Count };

@@ -15,13 +15,16 @@ using namespace juce;
 static Component*
 MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 0, 1 } );
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 1, 0, 1 } );
+  auto voices = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Voices, 0 });
+  grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(plugGUI, voices));
+  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(plugGUI, voices, Slider::SliderStyle::RotaryVerticalDrag));
   auto gain = plugGUI->Topo()->ParamAtTopo({(int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0});
-  grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(plugGUI, gain));
-  grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(plugGUI, gain));
+  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
   auto smooth = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Smoothing, 0 });
-  grid->Add(0, 2, plugGUI->AddComponent<FBParamLabel>(plugGUI, smooth));
-  grid->Add(0, 3, plugGUI->AddComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 4, plugGUI->AddComponent<FBParamLabel>(plugGUI, smooth));
+  grid->Add(0, 5, plugGUI->AddComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->AddComponent<FBSectionComponent>(plugGUI, grid);
 } 
 
