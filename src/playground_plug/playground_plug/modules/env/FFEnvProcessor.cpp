@@ -10,7 +10,7 @@
 #include <cmath>
 
 void
-FFEnvProcessor::Reset()
+FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
 {
   _position = 0;
   _stage = FFEnvStage::Delay;

@@ -11,7 +11,7 @@ class FFEnvProcessor final
   FFEnvStage _stage = FFEnvStage::Delay;
 
 public:
-  void Reset();
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
   void Process(FFModuleProcState const& state);
+  void BeginVoice(FFModuleProcState const& state);
 };

@@ -5,9 +5,19 @@
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 
 void 
-FFVoiceProcessor::Reset()
+FFVoiceProcessor::BeginVoice(FFModuleProcState state)
 {
-  // TODO
+  int voice = state.voice->slot;
+  for (int i = 0; i < FFEnvCount; i++)
+  {
+    state.moduleSlot = i;
+    state.proc->dsp.voice[voice].env[i].processor.BeginVoice(state);
+  }
+  for (int i = 0; i < FFOsciCount; i++)
+  {
+    state.moduleSlot = i;
+    state.proc->dsp.voice[voice].osci[i].processor.BeginVoice(state);
+  }
 }
 
 void 
