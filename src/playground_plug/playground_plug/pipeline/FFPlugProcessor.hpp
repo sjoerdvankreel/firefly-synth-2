@@ -15,6 +15,7 @@ public IFBPlugProcessor
   float const _sampleRate;
 
   FFModuleProcState MakeModuleState(FBPlugInputBlock const& input) const;
+  FFModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice) const;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);

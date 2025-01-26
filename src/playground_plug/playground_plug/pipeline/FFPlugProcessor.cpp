@@ -17,7 +17,8 @@ _state(state),
 _sampleRate(sampleRate) {}
 
 FFModuleProcState 
-FFPlugProcessor::MakeModuleState(FBPlugInputBlock const& input) const
+FFPlugProcessor::MakeModuleState(
+  FBPlugInputBlock const& input) const
 {
   FFModuleProcState result = {};
   result.proc = _state;
@@ -27,32 +28,48 @@ FFPlugProcessor::MakeModuleState(FBPlugInputBlock const& input) const
   return result;
 }
 
-void 
-FFPlugProcessor::LeaseVoices(FBPlugInputBlock const& input)
+FFModuleProcState
+FFPlugProcessor::MakeModuleVoiceState(
+  FBPlugInputBlock const& input, int voice) const
 {
-  for (int n = 0; n < input.note->size(); n++)
-    if ((*input.note)[n].on)
-      input.voiceManager->Lease((*input.note)[n]);
+  auto result = MakeModuleState(input);
+  result.voice = &result.input->voiceManager->Voices()[voice];
+  return result;
 }
 
-void 
-FFPlugProcessor::ReturnVoices(FBPlugInputBlock const& input)
+void
+FFPlugProcessor::ProcessVoice(
+  FBPlugInputBlock const& input, int voice)
+{
+  auto state = MakeModuleVoiceState(input, voice);
+  _state->dsp.voice[voice].processor.Process(state);
+}
+
+void
+FFPlugProcessor::ReturnVoices(
+  FBPlugInputBlock const& input)
 {
   for (int n = 0; n < input.note->size(); n++)
     if (!(*input.note)[n].on)
       input.voiceManager->ReturnOldest((*input.note)[n]);
 }
 
-void
-FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
+void 
+FFPlugProcessor::LeaseVoices(
+  FBPlugInputBlock const& input)
 {
-  auto state = MakeModuleState(input);
-  state.voice = &state.input->voiceManager->Voices()[voice];
-  _state->dsp.voice[voice].processor.Process(state);
+  for (int n = 0; n < input.note->size(); n++)
+    if ((*input.note)[n].on)
+    {
+      int voice = input.voiceManager->Lease((*input.note)[n]);
+      auto state = MakeModuleVoiceState(input, voice);
+      _state->dsp.voice[voice].processor.BeginVoice(state);
+    }
 }
 
 void
-FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
+FFPlugProcessor::ProcessPreVoice(
+  FBPlugInputBlock const& input)
 {
   auto moduleState = MakeModuleState(input);
   for (int s = 0; s < FFGLFOCount; s++)
@@ -63,7 +80,8 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
 }
 
 void
-FFPlugProcessor::ProcessPostVoice(FBPlugInputBlock const& input, FBFixedFloatAudioBlock& output)
+FFPlugProcessor::ProcessPostVoice(
+  FBPlugInputBlock const& input, FBFixedFloatAudioBlock& output)
 {
   auto& gGilterIn = _state->dsp.global.gFilter[0].input;
   gGilterIn.Clear();

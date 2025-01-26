@@ -41,7 +41,7 @@ FBVoiceManager::ReturnOldest(FBNoteEvent const& event)
   }
 }
 
-void
+int
 FBVoiceManager::Lease(FBNoteEvent const& event)
 {
   assert(event.on);
@@ -76,4 +76,6 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
         _state->Params()[p].VoiceBlock().BeginVoice(slot);
       else
         _state->Params()[p].VoiceAcc().Voice()[slot].InitProcessing(_state->Params()[p].Value());
+
+  return slot;
 }

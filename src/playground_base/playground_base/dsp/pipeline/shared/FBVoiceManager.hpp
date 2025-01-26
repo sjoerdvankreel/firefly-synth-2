@@ -22,7 +22,7 @@ public:
   FBVoiceManager(FBProcStateContainer* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVoiceManager);
 
-  void Lease(FBNoteEvent const& event);
+  int Lease(FBNoteEvent const& event);
   void ReturnOldest(FBNoteEvent const& event);
 
   void ResetReturnedVoices();
