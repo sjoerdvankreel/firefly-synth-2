@@ -10,35 +10,20 @@ FBVoiceManager(FBProcStateContainer* state) :
 _state(state) {}
 
 void
+FBVoiceManager::Return(int slot)
+{
+  _voices[slot].state = FBVoiceState::Returned;
+  _returnedVoices.push_back(_voices[slot].event.note);
+  assert(_returnedVoices.size() < FBMaxVoices);
+}
+
+void
 FBVoiceManager::ResetReturnedVoices()
 {
   _returnedVoices.clear();
   for (int v = 0; v < FBMaxVoices; v++)
     if (IsReturned(v))
       _voices[v].state = FBVoiceState::Free;
-}
-
-void
-FBVoiceManager::ReturnOldest(FBNoteEvent const& event)
-{
-  assert(!event.on);
-
-  int slot = -1;
-  std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();
-  for (int v = 0; v < _voices.size(); v++)
-    if (event.note.Matches(_voices[v].event.note))
-      if (IsActive(v) && _num[v] < oldest)
-      {
-        slot = v;
-        oldest = _num[v];
-      }
-
-  if (slot != -1)
-  {
-    _voices[slot].state = FBVoiceState::Returned;
-    _returnedVoices.push_back(_voices[slot].event.note);
-    assert(_returnedVoices.size() < FBMaxVoices);
-  }
 }
 
 int
@@ -76,6 +61,5 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
         _state->Params()[p].VoiceBlock().BeginVoice(slot);
       else
         _state->Params()[p].VoiceAcc().Voice()[slot].InitProcessing(_state->Params()[p].Value());
-
   return slot;
 }

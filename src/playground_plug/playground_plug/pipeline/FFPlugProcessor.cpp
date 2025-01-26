@@ -42,16 +42,8 @@ FFPlugProcessor::ProcessVoice(
   FBPlugInputBlock const& input, int voice)
 {
   auto state = MakeModuleVoiceState(input, voice);
-  _state->dsp.voice[voice].processor.Process(state);
-}
-
-void
-FFPlugProcessor::ReturnVoices(
-  FBPlugInputBlock const& input)
-{
-  for (int n = 0; n < input.note->size(); n++)
-    if (!(*input.note)[n].on)
-      input.voiceManager->ReturnOldest((*input.note)[n]);
+  if(_state->dsp.voice[voice].processor.Process(state))
+    input.voiceManager->Return(voice);
 }
 
 void 

@@ -12,7 +12,7 @@
 void
 FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
 {
-  _finishedAt = -1;
+  _finished = false;
   _stagePositions.fill(0);
   int voice = state.voice->slot;
   auto const& topo = state.topo->modules[(int)FFModuleType::Env];
@@ -31,7 +31,7 @@ FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
   _voiceState.type = (FFEnvType)topo.params[(int)FFEnvParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
 }
 
-int 
+bool 
 FFEnvProcessor::Process(FFModuleProcState const& state)
 {
   int voice = state.voice->slot;
@@ -39,10 +39,10 @@ FFEnvProcessor::Process(FFModuleProcState const& state)
   auto const& params = state.proc->param.voice.env[state.moduleSlot];
   auto& output = state.proc->dsp.voice[voice].env[state.moduleSlot].output;
 
-  if (!_voiceState.on || _finishedAt != -1)
+  if (!_voiceState.on || _finished)
   {
     output.Clear();
-    return _finishedAt;
+    return true;
   }
 
   int s = 0;
@@ -74,10 +74,11 @@ FFEnvProcessor::Process(FFModuleProcState const& state)
     scratch.data[s] = sustainScratch.data[s] * 
       (1.0f - _stagePositions[(int)FFEnvStage::Release] / (float)_voiceState.releaseSamples);
 
-  if (s < FBFixedBlockSamples)
-    _finishedAt = s;
   for (; s < FBFixedBlockSamples; s++)
+  {
+    _finished = true;
     scratch.data[s] = 0.0f;
+  }
   output.LoadFromFloatArray(scratch);
-  return _finishedAt;
+  return _finished;
 }

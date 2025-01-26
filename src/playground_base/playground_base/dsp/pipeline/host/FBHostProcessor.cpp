@@ -70,7 +70,6 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPreVoice(_plugIn);
     ProcessVoices();
     _plug->ProcessPostVoice(_plugIn, _fixedOut.audio);
-    _plug->ReturnVoices(_plugIn);
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);
   }
   _fixedBuffer->ProcessToHost(output);  

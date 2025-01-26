@@ -22,10 +22,10 @@ public:
   FBVoiceManager(FBProcStateContainer* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVoiceManager);
 
-  int Lease(FBNoteEvent const& event);
-  void ReturnOldest(FBNoteEvent const& event);
-
+  void Return(int slot);
   void ResetReturnedVoices();
+  int Lease(FBNoteEvent const& event);
+
   std::vector<FBNote> const& ReturnedVoices() { return _returnedVoices; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return _voices; }
 
