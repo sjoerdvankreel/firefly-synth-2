@@ -46,21 +46,29 @@ GeneratePulse(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
   return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;
 }
 
+void 
+FFOsciProcessor::BeginVoice(FFModuleProcState const& state)
+{
+  _phase = {};
+  int voice = state.voice->slot;
+  auto const& topo = state.topo->modules[(int)FFModuleType::Osci];
+  auto const& params = state.proc->param.voice.osci[state.moduleSlot];
+  _voiceState.key = (float)state.voice->event.note.key;
+  _voiceState.on = topo.params[(int)FFOsciParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
+  _voiceState.note = topo.params[(int)FFOsciParam::Note].discrete.NormalizedToPlain(params.block.note[0].Voice()[voice]);
+  _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
+}
+
 void
 FFOsciProcessor::Process(FFModuleProcState const& state)
 {
   int voice = state.voice->slot;
-  float key = (float)state.voice->event.note.key;
   auto const& gLFO = state.proc->dsp.global.gLFO[0].output;
-  auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
-
   auto const& topo = state.topo->modules[(int)FFModuleType::Osci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
-  bool on = topo.params[(int)FFOsciParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
-  int note = topo.params[(int)FFOsciParam::Note].discrete.NormalizedToPlain(params.block.note[0].Voice()[voice]);
-  auto type = (FFOsciType)topo.params[(int)FFOsciParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
+  auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
 
-  if (!on)
+  if (!_voiceState.on)
   {
     output.Clear();
     return;
@@ -72,12 +80,12 @@ FFOsciProcessor::Process(FFModuleProcState const& state)
   incr.Transform([&](int v) {
     auto cent = params.acc.cent[0].Voice()[voice].CV(v);
     auto centPlain = topo.params[(int)FFOsciParam::Cent].linear.NormalizedToPlain(cent);
-    auto pitch = key + note - 60.0f + centPlain;
+    auto pitch = _voiceState.key + _voiceState.note - 60.0f + centPlain;
     auto freq = FBPitchToFreq(pitch, state.sampleRate);
     return freq / state.sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
 
-  switch (type)
+  switch (_voiceState.type)
   {
   case FFOsciType::Sine: mono.Transform([&](int v) {
     return GenerateSin(phase[v]); }); break;
