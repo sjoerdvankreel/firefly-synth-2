@@ -95,6 +95,6 @@ FFPlugProcessor::ProcessPostVoice(
 
   state.moduleSlot = 0;
   _state->dsp.global.master.input.CopyFrom(_state->dsp.global.gFilter[FFGFilterCount - 1].output);
-  _state->dsp.global.master.processor.Process(state);
+  _state->dsp.global.master.processor.Process(state, output.outputParamsNormalized);
   output.audio.CopyFrom(_state->dsp.global.master.output);
 }
