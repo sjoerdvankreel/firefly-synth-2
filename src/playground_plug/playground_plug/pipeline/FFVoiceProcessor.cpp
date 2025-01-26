@@ -15,6 +15,7 @@ FFVoiceProcessor::Process(FFModuleProcState state, int voice)
 {
   auto& voiceDSP = state.proc->dsp.voice[voice];
   state.voice = &state.input->voiceManager->Voices()[voice];
+  voiceDSP.output.Clear();
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
