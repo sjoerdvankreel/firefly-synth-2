@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_plug/modules/env/FFEnvState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
@@ -24,6 +25,7 @@ struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
 struct alignas(sizeof(FBFloatVector)) FFVoiceDSPState final
 {
   FBFixedFloatAudioBlock output = {};
+  std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
@@ -48,6 +50,7 @@ template <class TVoiceBlock, class TVoiceAcc>
 struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
+  std::array<FFEnvParamState<TVoiceBlock, TVoiceAcc>, FFEnvCount> env = {};
   std::array<FFOsciParamState<TVoiceBlock, TVoiceAcc>, FFOsciCount> osci = {};
 };
 
