@@ -11,15 +11,19 @@ enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Count };
 struct FFEnvVoiceState
 {
   bool on = {};
-  FFEnvType type = {};
-  std::array<int, (int)FFEnvStage::Count> stageSamples = {};
+  FFEnvType type = {};  
+  int holdSamplesEnd = {};
+  int delaySamplesEnd = {};
+  int decaySamplesEnd = {};
+  int attackSamplesEnd = {};
+  int releaseSamplesEnd = {};
 };
 
 class FFEnvProcessor final
 {
   int _position = 0;
   FFEnvVoiceState _voiceState = {};
-  FFEnvStage _stage = FFEnvStage::Delay;
+  std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
