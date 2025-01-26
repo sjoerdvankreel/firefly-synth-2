@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
-#include <vector>
+#include <map>
 
 class FBProcStateContainer;
 
@@ -9,8 +9,6 @@ struct FBFixedOutputBlock final
 {
   FBFixedFloatAudioBlock audio = {};
   FBProcStateContainer* state = {};
-  std::vector<float> outputParamsNormalized = {};
-  
-  FBFixedOutputBlock(int runtimeParamCount);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedOutputBlock);
+  std::map<int, float> outputParamsNormalized = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedOutputBlock);
 };

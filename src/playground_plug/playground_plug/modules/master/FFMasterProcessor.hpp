@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <vector>
+#include <map>
 
 struct FFModuleProcState;
 
@@ -11,5 +11,5 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterProcessor);
   void Process(
     FFModuleProcState const& state, 
-    std::vector<float>& outputParamsNormalized);
+    std::map<int, float>& outputParamsNormalized);
 };

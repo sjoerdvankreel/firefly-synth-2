@@ -11,7 +11,7 @@
 void
 FFMasterProcessor::Process(
   FFModuleProcState const& state, 
-  std::vector<float>& outputParamsNormalized)
+  std::map<int, float>& outputParamsNormalized)
 {
   auto& output = state.proc->dsp.global.master.output;
   auto const& input = state.proc->dsp.global.master.input;

@@ -27,7 +27,6 @@ FBHostProcessor(
   FBProcStateContainer* state, float sampleRate):
 _sampleRate(sampleRate),
 _topo(topo),
-_fixedOut(topo->params.size()),
 _state(state),
 _plug(std::move(plug)),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
@@ -74,5 +73,9 @@ FBHostProcessor::ProcessHost(
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);
   }
   _fixedBuffer->ProcessToHost(output);  
+
+  output.outputParams.clear();
+  for (auto const& entry : _fixedOut.outputParamsNormalized)
+    output.outputParams.push_back({ entry.first, entry.second });
   FBRestoreDenormal(denormalState);
 }

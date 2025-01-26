@@ -22,8 +22,8 @@ class FBHostProcessor final
 {
   float _sampleRate;
   FBRuntimeTopo const* _topo;
-  FBFixedOutputBlock _fixedOut;
   FBPlugInputBlock _plugIn = {};
+  FBFixedOutputBlock _fixedOut = {};
   FBProcStateContainer* _state = {};
   std::unique_ptr<IFBPlugProcessor> _plug;
   std::unique_ptr<FBVoiceManager> _voiceManager;
