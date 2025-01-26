@@ -47,7 +47,8 @@ void
 FFPlugProcessor::ProcessVoice(FBPlugInputBlock const& input, int voice)
 {
   auto state = MakeModuleState(input);
-  _state->dsp.voice[voice].processor.Process(state, voice);
+  state.voice = &state.input->voiceManager->Voices()[voice];
+  _state->dsp.voice[voice].processor.Process(state);
 }
 
 void

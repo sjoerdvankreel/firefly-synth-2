@@ -9,6 +9,6 @@ class FFVoiceProcessor final
 {
 public:
   void Reset();
+  void Process(FFModuleProcState state);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceProcessor);
-  void Process(FFModuleProcState state, int voice);
 };

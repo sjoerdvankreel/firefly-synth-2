@@ -1,8 +1,8 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/pipeline/FFVoiceProcessor.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
-#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 void 
 FFVoiceProcessor::Reset()
@@ -11,10 +11,10 @@ FFVoiceProcessor::Reset()
 }
 
 void 
-FFVoiceProcessor::Process(FFModuleProcState state, int voice)
+FFVoiceProcessor::Process(FFModuleProcState state)
 {
+  int voice = state.voice->slot;
   auto& voiceDSP = state.proc->dsp.voice[voice];
-  state.voice = &state.input->voiceManager->Voices()[voice];
   voiceDSP.output.Clear();
   for (int i = 0; i < FFOsciCount; i++)
   {

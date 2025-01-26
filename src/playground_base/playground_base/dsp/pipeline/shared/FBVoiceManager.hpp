@@ -2,28 +2,13 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
-#include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 #include <array>
 #include <vector>
 #include <cstdint>
 
 class FBProcStateContainer;
-
-enum class FBVoiceState
-{
-  Free,
-  Active,
-  Returned
-};
-
-struct FBVoiceInfo final
-{
-  int slot = {};
-  int initialOffset = {};
-  FBNoteEvent event = {};
-  FBVoiceState state = {};
-};
 
 class FBVoiceManager final
 {

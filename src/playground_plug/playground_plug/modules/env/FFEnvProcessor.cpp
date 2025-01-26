@@ -5,7 +5,7 @@
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/base/topo/FBStaticTopo.hpp>
-#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 #include <cmath>
 

@@ -6,7 +6,7 @@
 
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
-#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 static FBFloatVector
 GenerateSin(FBFloatVector phase)
