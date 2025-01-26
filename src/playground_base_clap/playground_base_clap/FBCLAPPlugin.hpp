@@ -50,7 +50,7 @@ public FBHostGUIContext
 
 protected:
   virtual std::unique_ptr<IFBPlugProcessor>
-  MakePlugProcessor(FBStaticTopo const& topo, void* rawState, float sampleRate) const = 0;
+  MakePlugProcessor(FBRuntimeTopo const* topo, void* rawState, float sampleRate) const = 0;
 
 public:
   ~FBCLAPPlugin();

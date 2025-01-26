@@ -12,6 +12,8 @@ _state(state) {}
 void
 FBVoiceManager::Return(int slot)
 {
+  assert(_voiceCount > 0);
+  _voiceCount--;
   _voices[slot].state = FBVoiceState::Returned;
   _returnedVoices.push_back(_voices[slot].event.note);
   assert(_returnedVoices.size() < FBMaxVoices);
@@ -34,7 +36,11 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
   int slot = -1;
   for (int v = 0; v < _voices.size() && slot == -1; v++)
     if (IsFree(v))
+    {
       slot = v;
+      _voiceCount++;
+      assert(_voiceCount <= FBMaxVoices);
+    }
 
   std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();
   if (slot == -1)

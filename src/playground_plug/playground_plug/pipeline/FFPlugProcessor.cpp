@@ -1,9 +1,11 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
-#include <playground_base/base/topo/FBStaticTopo.hpp>
+
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 
 #include <cmath>
@@ -11,10 +13,10 @@
 
 FFPlugProcessor::
 FFPlugProcessor(
-FBStaticTopo const& topo, FFProcState* state, float sampleRate) :
-_topo(topo),
+FBRuntimeTopo const* topo, FFProcState* state, float sampleRate) :
 _state(state),
-_sampleRate(sampleRate) {}
+_sampleRate(sampleRate),
+_topo(topo) {}
 
 FFModuleProcState 
 FFPlugProcessor::MakeModuleState(
@@ -22,8 +24,8 @@ FFPlugProcessor::MakeModuleState(
 {
   FFModuleProcState result = {};
   result.proc = _state;
-  result.topo = &_topo;
   result.input = &input;
+  result.topo = &_topo->static_;
   result.sampleRate = _sampleRate;
   return result;
 }
@@ -73,7 +75,7 @@ FFPlugProcessor::ProcessPreVoice(
 
 void
 FFPlugProcessor::ProcessPostVoice(
-  FBPlugInputBlock const& input, FBFixedFloatAudioBlock& output)
+  FBPlugInputBlock const& input, FBFixedOutputBlock& output)
 {
   auto& gGilterIn = _state->dsp.global.gFilter[0].input;
   gGilterIn.Clear();
@@ -94,5 +96,5 @@ FFPlugProcessor::ProcessPostVoice(
   state.moduleSlot = 0;
   _state->dsp.global.master.input.CopyFrom(_state->dsp.global.gFilter[FFGFilterCount - 1].output);
   _state->dsp.global.master.processor.Process(state);
-  output.CopyFrom(_state->dsp.global.master.output);
+  output.audio.CopyFrom(_state->dsp.global.master.output);
 }

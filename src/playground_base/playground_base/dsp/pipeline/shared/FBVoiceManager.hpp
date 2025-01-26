@@ -12,6 +12,7 @@ class FBProcStateContainer;
 
 class FBVoiceManager final
 {
+  int _voiceCount = 0;
   std::uint64_t _counter = {};
   FBProcStateContainer* const _state;
   std::vector<FBNote> _returnedVoices = {};
@@ -26,6 +27,7 @@ public:
   void ResetReturnedVoices();
   int Lease(FBNoteEvent const& event);
 
+  int VoiceCount() const { return _voiceCount; }
   std::vector<FBNote> const& ReturnedVoices() { return _returnedVoices; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return _voices; }
 

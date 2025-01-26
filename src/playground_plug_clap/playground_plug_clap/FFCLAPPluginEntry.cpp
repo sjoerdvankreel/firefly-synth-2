@@ -26,7 +26,7 @@ public:
 protected:
   std::unique_ptr<IFBPlugProcessor>
   MakePlugProcessor(
-    FBStaticTopo const& topo, 
+    FBRuntimeTopo const* topo, 
     void* rawState, 
     float sampleRate) const override
   { return std::make_unique<FFPlugProcessor>(

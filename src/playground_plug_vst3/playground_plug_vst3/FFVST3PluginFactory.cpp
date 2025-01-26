@@ -3,6 +3,7 @@
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 
 #include <playground_base/base/shared/FBLogging.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
@@ -28,7 +29,7 @@ public:
 protected:
   std::unique_ptr<IFBPlugProcessor>
   MakePlugProcessor(
-    FBStaticTopo const& topo, 
+    FBRuntimeTopo const* topo, 
     void* state, 
     float sampleRate) const override
   { return std::make_unique<FFPlugProcessor>(

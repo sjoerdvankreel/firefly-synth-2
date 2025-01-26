@@ -22,11 +22,12 @@ FBHostProcessor::
 
 FBHostProcessor::
 FBHostProcessor(
-  FBStaticTopo const& topo,
+  FBRuntimeTopo const* topo,
   std::unique_ptr<IFBPlugProcessor>&& plug,
   FBProcStateContainer* state, float sampleRate):
-_topo(topo),
 _sampleRate(sampleRate),
+_topo(topo),
+_fixedOut(topo->params.size()),
 _state(state),
 _plug(std::move(plug)),
 _voiceManager(std::make_unique<FBVoiceManager>(state)),
@@ -55,7 +56,7 @@ FBHostProcessor::ProcessHost(
     _fixedOut.state->Params()[be.param].Value(be.normalized);
 
   auto const& smoothing = _state->Special().smoothing;
-  float smoothingSeconds = smoothing.NormalizedToPlainLinear(_topo);
+  float smoothingSeconds = smoothing.NormalizedToPlainLinear(_topo->static_);
   int smoothingSamples = (int)std::ceil(smoothingSeconds * _sampleRate);
   _state->SetSmoothingCoeffs(_sampleRate, smoothingSeconds);
 
@@ -69,7 +70,7 @@ FBHostProcessor::ProcessHost(
     _smoothing->ProcessSmoothing(*fixedIn, _fixedOut, smoothingSamples);
     _plug->ProcessPreVoice(_plugIn);
     ProcessVoices();
-    _plug->ProcessPostVoice(_plugIn, _fixedOut.audio);
+    _plug->ProcessPostVoice(_plugIn, _fixedOut);
     _fixedBuffer->BufferFromFixed(_fixedOut.audio);
   }
   _fixedBuffer->ProcessToHost(output);  

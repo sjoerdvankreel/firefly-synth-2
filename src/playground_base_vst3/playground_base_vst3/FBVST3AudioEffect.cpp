@@ -127,8 +127,8 @@ FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
   FB_LOG_ENTRY_EXIT();
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
-  auto plug = MakePlugProcessor(_topo->static_, _state.Raw(), setup.sampleRate);
-  _hostProcessor.reset(new FBHostProcessor(_topo->static_, std::move(plug), &_state, setup.sampleRate));
+  auto plug = MakePlugProcessor(_topo.get(), _state.Raw(), setup.sampleRate);
+  _hostProcessor.reset(new FBHostProcessor(_topo.get(), std::move(plug), &_state, setup.sampleRate));
   return kResultTrue;
 }
 

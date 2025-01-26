@@ -180,8 +180,8 @@ FBCLAPPlugin::activate(
   float fSampleRate = (float)sampleRate;
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
-  auto plug = MakePlugProcessor(_topo->static_, _procState.Raw(), fSampleRate);
-  _hostProcessor.reset(new FBHostProcessor(_topo->static_, std::move(plug), &_procState, fSampleRate));
+  auto plug = MakePlugProcessor(_topo.get(), _procState.Raw(), fSampleRate);
+  _hostProcessor.reset(new FBHostProcessor(_topo.get(), std::move(plug), &_procState, fSampleRate));
   return true;
 }
 
