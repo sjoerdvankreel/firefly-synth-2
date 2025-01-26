@@ -12,6 +12,7 @@
 void
 FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
 {
+  _finished = false;
   _stagePositions.fill(0);
   int voice = state.voice->slot;
   auto const& topo = state.topo->modules[(int)FFModuleType::Env];
@@ -38,7 +39,7 @@ FFEnvProcessor::Process(FFModuleProcState const& state)
   auto const& params = state.proc->param.voice.env[state.moduleSlot];
   auto& output = state.proc->dsp.voice[voice].env[state.moduleSlot].output;
 
-  if (!_voiceState.on)
+  if (!_voiceState.on || _finished)
   {
     output.Clear();
     return;
@@ -74,7 +75,10 @@ FFEnvProcessor::Process(FFModuleProcState const& state)
       (1.0f - _stagePositions[(int)FFEnvStage::Release] / (float)_voiceState.releaseSamples);
 
   for (; s < FBFixedBlockSamples; s++)
+  {
+    _finished = true;
     scratch.data[s] = 0.0f;
+  }
 
   output.LoadFromFloatArray(scratch);
 }

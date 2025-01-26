@@ -21,6 +21,7 @@ struct FFEnvVoiceState
 
 class FFEnvProcessor final
 {
+  bool _finished = false;
   FFEnvVoiceState _voiceState = {};
   std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
 
