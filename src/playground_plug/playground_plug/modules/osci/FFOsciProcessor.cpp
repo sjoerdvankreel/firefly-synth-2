@@ -47,7 +47,7 @@ GeneratePulse(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 }
 
 void
-FFOsciProcessor::Process(FFModuleProcState const& state, int voice)
+FFOsciProcessor::Process(FFModuleProcState const& state, int voice) // TODO drop voice
 {
   float key = (float)state.voice->event.note.key;
   auto const& gLFO = state.proc->dsp.global.gLFO[0].output;
