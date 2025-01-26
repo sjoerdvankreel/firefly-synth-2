@@ -30,7 +30,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 MakeSectionDAHDSR(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 });
+  auto grid = plugGUI->AddComponent<FBGridComponent>(1, std::vector<int> { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 });
   auto delayTime = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DelayTime, 0 });
   grid->Add(0, 0, plugGUI->AddComponent<FBParamLabel>(plugGUI, delayTime));
   grid->Add(0, 1, plugGUI->AddComponent<FBParamSlider>(plugGUI, delayTime, Slider::SliderStyle::RotaryVerticalDrag));
