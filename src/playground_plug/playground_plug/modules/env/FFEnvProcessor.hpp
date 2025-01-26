@@ -3,18 +3,16 @@
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
+#include <array>
+
 struct FFModuleProcState;
-enum class FFEnvStage { Delay, Attack, Hold, Decay, Sustain, Release };
+enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Count };
 
 struct FFEnvVoiceState
 {
   bool on = {};
   FFEnvType type = {};
-  int holdSamples = {};
-  int delaySamples = {};
-  int decaySamples = {};
-  int attackSamples = {};
-  int releaseSamples = {};
+  std::array<int, (int)FFEnvStage::Count> stageSamples = {};
 };
 
 class FFEnvProcessor final

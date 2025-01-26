@@ -19,18 +19,17 @@ FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
   auto const& params = state.proc->param.voice.env[state.moduleSlot];
   _voiceState.on = topo.params[(int)FFEnvParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
   _voiceState.type = (FFEnvType)topo.params[(int)FFEnvParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
-  _voiceState.holdSamples = (int)std::round(topo.params[(int)FFEnvParam::HoldTime].linear.NormalizedToPlain(params.block.holdTime[0].Voice()[voice]) * state.sampleRate);
-  _voiceState.delaySamples = (int)std::round(topo.params[(int)FFEnvParam::DelayTime].linear.NormalizedToPlain(params.block.delayTime[0].Voice()[voice]) * state.sampleRate);
-  _voiceState.decaySamples = (int)std::round(topo.params[(int)FFEnvParam::DecayTime].linear.NormalizedToPlain(params.block.decayTime[0].Voice()[voice]) * state.sampleRate);
-  _voiceState.attackSamples = (int)std::round(topo.params[(int)FFEnvParam::AttackTime].linear.NormalizedToPlain(params.block.attackTime[0].Voice()[voice]) * state.sampleRate);
-  _voiceState.releaseSamples = (int)std::round(topo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedToPlain(params.block.releaseTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.stageSamples[(int)FFEnvStage::Hold] = (int)std::round(topo.params[(int)FFEnvParam::HoldTime].linear.NormalizedToPlain(params.block.holdTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.stageSamples[(int)FFEnvStage::Delay] = (int)std::round(topo.params[(int)FFEnvParam::DelayTime].linear.NormalizedToPlain(params.block.delayTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.stageSamples[(int)FFEnvStage::Decay] = (int)std::round(topo.params[(int)FFEnvParam::DecayTime].linear.NormalizedToPlain(params.block.decayTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.stageSamples[(int)FFEnvStage::Attack] = (int)std::round(topo.params[(int)FFEnvParam::AttackTime].linear.NormalizedToPlain(params.block.attackTime[0].Voice()[voice]) * state.sampleRate);
+  _voiceState.stageSamples[(int)FFEnvStage::Release] = (int)std::round(topo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedToPlain(params.block.releaseTime[0].Voice()[voice]) * state.sampleRate);
 }
 
 void 
 FFEnvProcessor::Process(FFModuleProcState const& state)
 {
   int voice = state.voice->slot;
-  FBFixedFloatArray scratch = {};
   auto& output = state.proc->dsp.voice[voice].env[state.moduleSlot].output;
 
   if (!_voiceState.on)
@@ -39,6 +38,7 @@ FFEnvProcessor::Process(FFModuleProcState const& state)
     return;
   }
 
+  FBFixedFloatArray scratch = {};
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
 
