@@ -19,7 +19,7 @@ FFVoiceProcessor::Process(FFModuleProcState state, int voice)
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.osci[i].processor.Process(state, voice);
+    voiceDSP.osci[i].processor.Process(state);
     voiceDSP.output.Add(voiceDSP.osci[i].output);
   }
 }

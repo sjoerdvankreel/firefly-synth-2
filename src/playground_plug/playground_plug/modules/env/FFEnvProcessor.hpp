@@ -13,5 +13,5 @@ class FFEnvProcessor final
 public:
   void Reset();
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
-  void Process(FFModuleProcState const& state, int voice);
+  void Process(FFModuleProcState const& state);
 };

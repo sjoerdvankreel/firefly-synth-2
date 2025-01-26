@@ -19,6 +19,7 @@ enum class FBVoiceState
 
 struct FBVoiceInfo final
 {
+  int slot = {};
   int initialOffset = {};
   FBNoteEvent event = {};
   FBVoiceState state = {};

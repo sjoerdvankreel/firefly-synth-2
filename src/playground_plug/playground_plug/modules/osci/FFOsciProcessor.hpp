@@ -11,5 +11,5 @@ class FFOsciProcessor final
 public:
   void Reset() { _phase = {}; }
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
-  void Process(FFModuleProcState const& state, int voice);
+  void Process(FFModuleProcState const& state);
 };

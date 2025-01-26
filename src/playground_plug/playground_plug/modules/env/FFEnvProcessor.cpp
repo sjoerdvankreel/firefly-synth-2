@@ -5,6 +5,8 @@
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
+
 #include <cmath>
 
 void
@@ -15,8 +17,9 @@ FFEnvProcessor::Reset()
 }
 
 void 
-FFEnvProcessor::Process(FFModuleProcState const& state, int voice)
+FFEnvProcessor::Process(FFModuleProcState const& state)
 {
+  int voice = state.voice->slot;
   auto const& topo = state.topo->modules[(int)FFModuleType::Env];
   auto const& params = state.proc->param.voice.env[state.moduleSlot];
   bool on = topo.params[(int)FFEnvParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);

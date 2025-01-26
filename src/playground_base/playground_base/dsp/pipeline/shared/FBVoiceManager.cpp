@@ -7,8 +7,7 @@
 
 FBVoiceManager::
 FBVoiceManager(FBProcStateContainer* state) :
-  _state(state) {
-}
+_state(state) {}
 
 void
 FBVoiceManager::ResetReturnedVoices()
@@ -66,6 +65,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
     _returnedVoices.push_back(_voices[slot].event.note);
 
   _num[slot] = ++_counter;
+  _voices[slot].slot = slot;
   _voices[slot].event = event;
   _voices[slot].initialOffset = event.pos;
   _voices[slot].state = FBVoiceState::Active;
