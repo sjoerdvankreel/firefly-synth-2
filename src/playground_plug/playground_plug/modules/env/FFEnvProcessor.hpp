@@ -1,14 +1,12 @@
 #pragma once
 
-#include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
 struct FFModuleProcState;
 
-class FFOsciProcessor final
+class FFEnvProcessor final
 {
-  FBPhase _phase = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
   void Process(FFModuleProcState const& state, int voice);
 };
