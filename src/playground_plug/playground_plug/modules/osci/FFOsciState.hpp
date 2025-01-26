@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
@@ -11,7 +12,7 @@ struct FBStaticModule;
 
 class alignas(sizeof(FBFloatVector)) FFOsciDSPState final
 {
-  friend class FFPlugProcessor;
+  friend class FFVoiceProcessor;
   FFOsciProcessor processor = {};
 public:
   FBFixedFloatAudioBlock output = {};

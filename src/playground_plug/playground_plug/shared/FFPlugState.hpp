@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_plug/pipeline/FFVoiceProcessor.hpp>
 #include <playground_plug/modules/env/FFEnvState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
@@ -24,6 +25,7 @@ struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
 
 struct alignas(sizeof(FBFloatVector)) FFVoiceDSPState final
 {
+  FFVoiceProcessor processor = {};
   FBFixedFloatAudioBlock output = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};

@@ -11,7 +11,7 @@ struct FBStaticModule;
 
 class alignas(sizeof(FBFloatVector)) FFEnvDSPState final
 {
-  friend class FFPlugProcessor;
+  friend class FFVoiceProcessor;
   FFEnvProcessor processor = {};
 public:
   FBFixedFloatBlock output = {};
