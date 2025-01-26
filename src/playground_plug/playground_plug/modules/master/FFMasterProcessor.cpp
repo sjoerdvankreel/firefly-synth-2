@@ -2,7 +2,10 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/master/FFMasterProcessor.hpp>
+
 #include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 void
 FFMasterProcessor::Process(FFModuleProcState const& state)
@@ -13,4 +16,5 @@ FFMasterProcessor::Process(FFModuleProcState const& state)
   output.Transform([&](int ch, int v) {
     auto gain = params.acc.gain[0].Global().CV(v);
     return input[ch][v] * gain; });
+  state.input->voiceManager->VoiceCount(); // TODO
 }
