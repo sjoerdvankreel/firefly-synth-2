@@ -1,4 +1,5 @@
 #include <playground_plug/gui/FFPlugGUI.hpp>
+#include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
@@ -16,6 +17,7 @@ FBPlugGUI(topo, hostContext)
   addAndMakeVisible(FFMakeGLFOGUI(this));
   addAndMakeVisible(FFMakeGFilterGUI(this));
   addAndMakeVisible(FFMakeOsciGUI(this));
+  addAndMakeVisible(FFMakeEnvGUI(this));
   InitAllDependencies();
   resized();
 }
