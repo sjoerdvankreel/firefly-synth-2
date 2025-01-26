@@ -1,3 +1,4 @@
+actually handle sustain
 voice counter output param
 single graph for everything
 stuff gets funky when hits max voices
