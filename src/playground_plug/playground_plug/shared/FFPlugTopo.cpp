@@ -2,6 +2,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/shared/FFPlugMeta.hpp>
+#include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
@@ -27,6 +28,7 @@ FFMakeTopo()
   auto result = std::make_unique<FBStaticTopo>();
   result->meta = FFPlugMeta();
   result->modules.resize((int)FFModuleType::Count);
+  result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeGLFOTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
