@@ -4,7 +4,7 @@
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 
-#include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
@@ -51,8 +51,8 @@ FFOsciProcessor::BeginVoice(FFModuleProcState const& state)
 {
   _phase = {};
   int voice = state.voice->slot;
-  auto const& topo = state.topo->modules[(int)FFModuleType::Osci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   _voiceState.key = (float)state.voice->event.note.key;
   _voiceState.on = topo.params[(int)FFOsciParam::On].boolean.NormalizedToPlain(
     params.block.on[0].Voice()[voice]);
@@ -67,8 +67,8 @@ FFOsciProcessor::Process(FFModuleProcState const& state)
 {
   int voice = state.voice->slot;
   auto const& gLFO = state.proc->dsp.global.gLFO[0].output;
-  auto const& topo = state.topo->modules[(int)FFModuleType::Osci];
   auto const& params = state.proc->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   auto& output = state.proc->dsp.voice[voice].osci[state.moduleSlot].output;
 
   if (!_voiceState.on)

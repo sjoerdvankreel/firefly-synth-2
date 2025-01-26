@@ -4,15 +4,15 @@
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
-#include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 
 void
 FFGLFOProcessor::Process(FFModuleProcState const& state)
 {
-  auto const& topo = state.topo->modules[(int)FFModuleType::GLFO];
   auto& output = state.proc->dsp.global.gLFO[state.moduleSlot].output;
   auto const& params = state.proc->param.global.gLFO[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
   bool on = topo.params[(int)FFGLFOParam::On].boolean.NormalizedToPlain(params.block.on[0].Value());
 
   if (!on)

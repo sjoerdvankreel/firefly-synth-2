@@ -4,7 +4,7 @@
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
-#include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 #include <cmath>
@@ -15,8 +15,8 @@ FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
   _finished = false;
   _stagePositions.fill(0);
   int voice = state.voice->slot;
-  auto const& topo = state.topo->modules[(int)FFModuleType::Env];
   auto const& params = state.proc->param.voice.env[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   _voiceState.holdSamples = (int)std::round(topo.params[(int)FFEnvParam::HoldTime].linear.NormalizedToPlain(
     params.block.holdTime[0].Voice()[voice]) * state.sampleRate);
   _voiceState.decaySamples = (int)std::round(topo.params[(int)FFEnvParam::DecayTime].linear.NormalizedToPlain(
@@ -35,7 +35,7 @@ bool
 FFEnvProcessor::Process(FFModuleProcState const& state)
 {
   int voice = state.voice->slot;
-  auto const& topo = state.topo->modules[(int)FFModuleType::Env];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   auto const& params = state.proc->param.voice.env[state.moduleSlot];
   auto& output = state.proc->dsp.voice[voice].env[state.moduleSlot].output;
 

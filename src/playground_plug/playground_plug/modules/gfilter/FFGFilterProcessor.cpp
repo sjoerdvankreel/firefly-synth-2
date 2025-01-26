@@ -4,14 +4,14 @@
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
-#include <playground_base/base/topo/FBStaticTopo.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 void
 FFGFilterProcessor::Process(FFModuleProcState const& state)
 {
-  auto const& topo = state.topo->modules[(int)FFModuleType::GFilter];
   auto& output = state.proc->dsp.global.gFilter[state.moduleSlot].output;
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::GFilter];
   auto const& input = state.proc->dsp.global.gFilter[state.moduleSlot].input;
   auto const& params = state.proc->param.global.gFilter[state.moduleSlot];
   bool on = topo.params[(int)FFGFilterParam::On].boolean.NormalizedToPlain(params.block.on[0].Value());

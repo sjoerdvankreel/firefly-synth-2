@@ -2,7 +2,7 @@
 
 struct FBVoiceInfo;
 struct FFProcState;
-struct FBStaticTopo;
+struct FBRuntimeTopo;
 struct FBPlugInputBlock;
 
 struct FFModuleProcState final
@@ -11,6 +11,6 @@ struct FFModuleProcState final
   float sampleRate = {};
   FFProcState* proc = {};
   FBVoiceInfo const* voice = {};
-  FBStaticTopo const* topo = {};
+  FBRuntimeTopo const* topo = {};
   FBPlugInputBlock const* input = {};
 };

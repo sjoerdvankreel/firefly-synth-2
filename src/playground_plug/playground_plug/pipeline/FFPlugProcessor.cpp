@@ -23,9 +23,9 @@ FFPlugProcessor::MakeModuleState(
   FBPlugInputBlock const& input) const
 {
   FFModuleProcState result = {};
+  result.topo = _topo;
   result.proc = _state;
   result.input = &input;
-  result.topo = &_topo->static_;
   result.sampleRate = _sampleRate;
   return result;
 }
