@@ -29,7 +29,16 @@ FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
 void 
 FFEnvProcessor::Process(FFModuleProcState const& state)
 {
+  int voice = state.voice->slot;
   FBFixedFloatArray scratch = {};
+  auto& output = state.proc->dsp.voice[voice].env[state.moduleSlot].output;
+
+  if (!_voiceState.on)
+  {
+    output.Clear();
+    return;
+  }
+
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
 

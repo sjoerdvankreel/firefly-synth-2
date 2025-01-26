@@ -71,11 +71,11 @@ void
 FFPlugProcessor::ProcessPreVoice(
   FBPlugInputBlock const& input)
 {
-  auto moduleState = MakeModuleState(input);
+  auto state = MakeModuleState(input);
   for (int s = 0; s < FFGLFOCount; s++)
   {
-    moduleState.moduleSlot = s;
-    _state->dsp.global.gLFO[s].processor.Process(moduleState);
+    state.moduleSlot = s;
+    _state->dsp.global.gLFO[s].processor.Process(state);
   }
 }
 
@@ -89,18 +89,18 @@ FFPlugProcessor::ProcessPostVoice(
     if (input.voiceManager->IsActive(v))
       gGilterIn.Add(_state->dsp.voice[v].output);
 
-  auto moduleState = MakeModuleState(input);
-  moduleState.moduleSlot = 0;
-  _state->dsp.global.gFilter[0].processor.Process(moduleState);
+  auto state = MakeModuleState(input);
+  state.moduleSlot = 0;
+  _state->dsp.global.gFilter[0].processor.Process(state);
   for (int s = 1; s < FFGFilterCount; s++)
   {
-    moduleState.moduleSlot = s;
+    state.moduleSlot = s;
     _state->dsp.global.gFilter[s].input.CopyFrom(_state->dsp.global.gFilter[s - 1].output);
-    _state->dsp.global.gFilter[s].processor.Process(moduleState);
+    _state->dsp.global.gFilter[s].processor.Process(state);
   }
 
-  moduleState.moduleSlot = 0;
+  state.moduleSlot = 0;
   _state->dsp.global.master.input.CopyFrom(_state->dsp.global.gFilter[FFGFilterCount - 1].output);
-  _state->dsp.global.master.processor.Process(moduleState);
+  _state->dsp.global.master.processor.Process(state);
   output.CopyFrom(_state->dsp.global.master.output);
 }
