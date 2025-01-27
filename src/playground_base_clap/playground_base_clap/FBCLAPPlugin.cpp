@@ -294,8 +294,10 @@ FBCLAPPlugin::process(
     _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
   _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
 
+  _output.outputParams.clear();
   _hostProcessor->ProcessHost(_input, _output);
-  
+  for (auto const& op : _output.outputParams)
+    _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));
   auto const& rvs = _output.returnedVoices;
   for (int rv = 0; rv < rvs.size(); rv++)
   {

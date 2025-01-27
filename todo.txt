@@ -1,4 +1,3 @@
-clap output params
 handle envelope offset (actual start index in block)
 readonly output param label
 osci unison
