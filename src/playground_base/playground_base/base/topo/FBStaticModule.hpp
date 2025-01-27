@@ -7,11 +7,14 @@
 #include <vector>
 #include <functional>
 
+// TODO move to own hpp all graph stuff
 struct FBRuntimeTopo;
+struct FBScalarStateContainer;
 struct FBModuleGraphComponentData;
 
 typedef std::function<void(
   FBRuntimeTopo const* topo, 
+  FBScalarStateContainer const* scalar,
   int moduleSlot, 
   FBModuleGraphComponentData* data)>
 FBModuleGraphRenderer;

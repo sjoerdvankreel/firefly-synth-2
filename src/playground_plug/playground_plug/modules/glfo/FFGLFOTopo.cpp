@@ -1,24 +1,8 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
-
+#include <playground_plug/modules/glfo/FFGLFOGraph.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
-#include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
-
-static void
-RenderGraph(
-  FBRuntimeTopo const* topo,
-  int moduleSlot, 
-  FBModuleGraphComponentData* data)
-{
-  // TODO
-  // should we involve processor state here?
-  // pros: looks fancy
-  // cons: lots of work
-  // cons: mem/cpu overhead
-  // cons: needs more ui real estate since theres no point doing it with a single graph, needs at least 1 per module
-  data->text = "ENV";  
-}
 
 std::unique_ptr<FBStaticModule>
 FFMakeGLFOTopo()
@@ -27,7 +11,7 @@ FFMakeGLFOTopo()
   result->voice = false;
   result->name = "GLFO";
   result->slotCount = FFGLFOCount;
-  result->renderGraph = RenderGraph;
+  result->renderGraph = FFGLFORenderGraph;
   result->id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
   result->params.resize((int)FFGLFOParam::Count);
   auto selectModule = [](auto& state) { return &state.global.gLFO; };
