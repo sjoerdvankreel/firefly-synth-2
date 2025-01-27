@@ -1,5 +1,4 @@
 handle envelope offset (actual start index in block)
-readonly output param label
 osci unison
 actually handle sustain
 voice counter output param
