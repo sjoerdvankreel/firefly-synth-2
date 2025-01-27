@@ -9,6 +9,8 @@ class FBHostGUIContext;
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  void SetupGUI();
+
 public:
   void resized() override;
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
