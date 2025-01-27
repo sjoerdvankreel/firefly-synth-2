@@ -72,8 +72,8 @@ FBGridComponent::resized()
   for (auto const& e : _cells)
   {
     GridItem item(e.second.child);
-    item.row.start = e.first.row + e.second.span.row;
-    item.column.start = e.first.col + e.second.span.col;
+    item.row.start = e.first.row + 1;
+    item.column.start = e.first.col + 1;
     item.row.end = e.first.row + e.second.span.row + 1;
     item.column.end = e.first.col + e.second.span.col + 1;
     grid.items.add(item);
