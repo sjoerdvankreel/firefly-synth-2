@@ -18,7 +18,7 @@ public juce::Component
 {
 public:
   template <class TComponent, class... Args>
-  TComponent* AddComponent(Args&&... args);
+  TComponent* StoreComponent(Args&&... args);
 
   FBRuntimeTopo const* Topo() const { return _topo; }
   FBHostGUIContext* HostContext() const { return _hostContext; }
@@ -36,7 +36,7 @@ protected:
   FBPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext);
 
   void InitAllDependencies();
-  juce::Component* AddComponent(std::unique_ptr<juce::Component>&& component);
+  juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
   FBRuntimeTopo const* const _topo;
@@ -47,10 +47,10 @@ private:
 };
 
 template <class TComponent, class... Args>
-TComponent* FBPlugGUI::AddComponent(Args&&... args)
+TComponent* FBPlugGUI::StoreComponent(Args&&... args)
 {
   auto component = std::make_unique<TComponent>(std::forward<Args>(args)...);
   TComponent* result = component.get();
-  AddComponent(std::move(component));
+  StoreComponent(std::move(component));
   return result;
 }

@@ -65,7 +65,7 @@ FBPlugGUI::SetParamNormalizedFromHost(int index, float value)
 }
 
 Component*
-FBPlugGUI::AddComponent(std::unique_ptr<Component>&& component)
+FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
 {
   FBParamControl* paramControl;
   FBParamsDependent* paramsDependent;
