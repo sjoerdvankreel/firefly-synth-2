@@ -11,8 +11,7 @@
 
 void
 FFGLFORenderGraph(
-  FBRuntimeTopo const* topo,
-  FBScalarStateContainer const* scalar,
+  FBPlugGUI const* plugGUI,
   int moduleSlot,
   FBModuleGraphComponentData* data)
 {

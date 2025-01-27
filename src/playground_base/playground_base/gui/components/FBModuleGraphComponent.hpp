@@ -11,6 +11,8 @@ class FBPlugGUI;
 class FBModuleGraphComponent final:
 public juce::Component
 {
+  int _moduleSlot = -1;
+  int _moduleIndex = -1;
   FBPlugGUI const* const _plugGUI;
   FBModuleGraphComponentData _data = {};
 

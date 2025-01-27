@@ -1,13 +1,11 @@
 #pragma once
 
-struct FBRuntimeTopo;
-struct FBScalarStateContainer;
+class FBPlugGUI;
 struct FBModuleGraphComponentData;
 
 // TODO make it a struct
 void
 FFGLFORenderGraph(
-  FBRuntimeTopo const* topo,
-  FBScalarStateContainer const* scalar,
+  FBPlugGUI const* plugGUI,
   int moduleSlot,
   FBModuleGraphComponentData* data);

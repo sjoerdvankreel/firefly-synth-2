@@ -8,13 +8,11 @@
 #include <functional>
 
 // TODO move to own hpp all graph stuff
-struct FBRuntimeTopo;
-struct FBScalarStateContainer;
+class FBPlugGUI;
 struct FBModuleGraphComponentData;
 
 typedef std::function<void(
-  FBRuntimeTopo const* topo, 
-  FBScalarStateContainer const* scalar,
+  FBPlugGUI const* gui,
   int moduleSlot, 
   FBModuleGraphComponentData* data)>
 FBModuleGraphRenderer;
