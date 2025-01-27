@@ -85,6 +85,7 @@ FFPlugProcessor::ProcessPostVoice(
 
   auto state = MakeModuleState(input);
   state.moduleSlot = 0;
+  state.outputParamsNormalized = &output.outputParamsNormalized;
   _state->dsp.global.gFilter[0].processor.Process(state);
   for (int s = 1; s < FFGFilterCount; s++)
   {
@@ -95,6 +96,6 @@ FFPlugProcessor::ProcessPostVoice(
 
   state.moduleSlot = 0;
   _state->dsp.global.master.input.CopyFrom(_state->dsp.global.gFilter[FFGFilterCount - 1].output);
-  _state->dsp.global.master.processor.Process(state, output.outputParamsNormalized);
+  _state->dsp.global.master.processor.Process(state);
   output.audio.CopyFrom(_state->dsp.global.master.output);
 }

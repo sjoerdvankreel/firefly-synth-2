@@ -9,9 +9,7 @@
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 void
-FFMasterProcessor::Process(
-  FFModuleProcState const& state, 
-  std::map<int, float>& outputParamsNormalized)
+FFMasterProcessor::Process(FFModuleProcState const& state)
 {
   auto& output = state.proc->dsp.global.master.output;
   auto const& input = state.proc->dsp.global.master.input;
@@ -20,6 +18,6 @@ FFMasterProcessor::Process(
     auto gain = params.acc.gain[0].Global().CV(v);
     return input[ch][v] * gain; });
   auto const* voicesParam = state.topo->ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });
-  outputParamsNormalized[voicesParam->runtimeParamIndex] = 
+  (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = 
     voicesParam->static_.discrete.PlainToNormalized(state.input->voiceManager->VoiceCount());
 }
