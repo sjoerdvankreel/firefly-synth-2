@@ -5,6 +5,14 @@
 
 using namespace juce;
 
+bool
+FBGridCell::operator<(FBGridCell const& rhs) const
+{
+  if (row < rhs.row) return true;
+  if (row > rhs.row) return false;
+  return col < rhs.col;
+}
+
 FBGridComponent::
 FBGridComponent(int rows, std::vector<int> const& cols):
 FBGridComponent(std::vector<int>(rows, 1), cols) {}
@@ -22,24 +30,7 @@ FBGridComponent(std::vector<int> const& rows, std::vector<int> const& cols):
 Component(),
 _rows(rows),
 _cols(cols),
-_positions() {}
-
-void
-FBGridComponent::Add(int row, int col, Component* child)
-{
-  addAndMakeVisible(child);
-  auto position = std::make_pair(row, col);
-  assert(_positions.find(position) == _positions.end());
-  _positions[position] = child;
-}
-
-IFBHorizontalAutoSize*
-FBGridComponent::HorizontalAutoSizeAt(int row, int col) const
-{
-  auto position = std::make_pair(row, col);
-  auto component = _positions.at(position);
-  return FBAsHorizontalAutoSize(component);
-}
+_cells() {}
 
 int
 FBGridComponent::FixedWidth(int height) const
@@ -51,18 +42,40 @@ FBGridComponent::FixedWidth(int height) const
   return result;
 }
 
+IFBHorizontalAutoSize*
+FBGridComponent::HorizontalAutoSizeAt(int row, int col) const
+{
+  auto component = _cells.at({ row, col }).child;
+  return FBAsHorizontalAutoSize(component);
+}
+
+void
+FBGridComponent::Add(int row, int col, Component* child)
+{
+  Add(row, col, 1, 1, child);
+}
+
+void
+FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
+{
+  addAndMakeVisible(child);
+  FBGridCell cell = { row, col };
+  assert(_cells.find(cell) == _cells.end());
+  _cells[cell].child = child;
+  _cells[cell].span = { rowSpan, colSpan };
+}
+
 void
 FBGridComponent::resized()
 {
   Grid grid;
-  for (auto const& e : _positions)
+  for (auto const& e : _cells)
   {
-    // TODO span
-    GridItem item(e.second);
-    item.row.end = e.first.first + 2;
-    item.row.start = e.first.first + 1;
-    item.column.end = e.first.second + 2;
-    item.column.start = e.first.second + 1;
+    GridItem item(e.second.child);
+    item.row.start = e.first.row + e.second.span.row;
+    item.column.start = e.first.col + e.second.span.col;
+    item.row.end = e.first.row + e.second.span.row + 1;
+    item.column.end = e.first.col + e.second.span.col + 1;
     grid.items.add(item);
   }
 

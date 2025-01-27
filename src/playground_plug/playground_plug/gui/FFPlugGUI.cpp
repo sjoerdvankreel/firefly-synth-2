@@ -4,7 +4,9 @@
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
+
 #include <playground_base/gui/components/FBGridComponent.hpp>
+#include <playground_base/gui/components/FBGraphComponent.hpp>
 
 using namespace juce;
 
@@ -27,11 +29,11 @@ FFPlugGUI::resized()
 void 
 FFPlugGUI::SetupGUI()
 {
-  auto grid = StoreComponent<FBGridComponent>(5, 1);
-  grid->Add(0, 0, FFMakeMasterGUI(this));
-  grid->Add(1, 0, FFMakeGLFOGUI(this));
-  grid->Add(2, 0, FFMakeGFilterGUI(this));
-  grid->Add(3, 0, FFMakeOsciGUI(this));
-  grid->Add(4, 0, FFMakeEnvGUI(this));
+  auto grid = StoreComponent<FBGridComponent>(5, 2);
+  grid->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
+  grid->Add(1, 0, 1, 2, FFMakeGLFOGUI(this));
+  grid->Add(2, 0, 1, 2, FFMakeGFilterGUI(this));
+  grid->Add(3, 0, 1, 2, FFMakeOsciGUI(this));
+  grid->Add(4, 0, 1, 2, FFMakeEnvGUI(this));
   addAndMakeVisible(grid);
 }
