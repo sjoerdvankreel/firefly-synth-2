@@ -6,7 +6,7 @@
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 
 #include <playground_base/gui/components/FBGridComponent.hpp>
-#include <playground_base/gui/components/FBGraphComponent.hpp>
+#include <playground_base/gui/components/FBModuleGraphComponent.hpp>
 
 using namespace juce;
 
@@ -31,7 +31,7 @@ FFPlugGUI::SetupGUI()
 {
   auto grid = StoreComponent<FBGridComponent>(5, 2);
   grid->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
-  grid->Add(0, 1, 1, 1, StoreComponent<FBGraphComponent>());
+  grid->Add(0, 1, 1, 1, StoreComponent<FBModuleGraphComponent>());
   grid->Add(1, 0, 1, 2, FFMakeGLFOGUI(this));
   grid->Add(2, 0, 1, 2, FFMakeGFilterGUI(this));
   grid->Add(3, 0, 1, 2, FFMakeOsciGUI(this));

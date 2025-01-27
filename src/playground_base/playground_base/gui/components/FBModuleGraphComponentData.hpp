@@ -5,9 +5,9 @@
 #include <vector>
 #include <string>
 
-struct FBGraphComponentData final
+struct FBModuleGraphComponentData final
 {
   std::string text = {};
   std::vector<float> points = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBGraphComponentData);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };

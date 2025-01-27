@@ -1,4 +1,4 @@
-#include <playground_base/gui/components/FBGraphComponent.hpp>
+#include <playground_base/gui/components/FBModuleGraphComponent.hpp>
 
 #include <cmath>
 #include <numbers>
@@ -6,7 +6,7 @@
 using namespace juce;
 
 void
-FBGraphComponent::paint(Graphics& g)
+FBModuleGraphComponent::paint(Graphics& g)
 {
   // TODO
   Path p;

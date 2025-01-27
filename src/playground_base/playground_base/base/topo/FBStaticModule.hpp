@@ -8,12 +8,12 @@
 #include <functional>
 
 struct FBRuntimeTopo;
-struct FBGraphComponentData;
+struct FBModuleGraphComponentData;
 
 typedef std::function<void(
   FBRuntimeTopo const* topo, 
   int moduleSlot, 
-  FBGraphComponentData* data)>
+  FBModuleGraphComponentData* data)>
 FBModuleGraphRenderer;
 
 struct FBStaticModule final
@@ -22,7 +22,7 @@ struct FBStaticModule final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
+  FBModuleGraphRenderer renderGraph = {};
   std::vector<FBStaticParam> params = {};
-  FBModuleGraphRenderer graphRenderer = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };

@@ -2,7 +2,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class FBGraphComponent final:
+class FBModuleGraphComponent final:
 public juce::Component
 {
 public:
