@@ -5,6 +5,11 @@
 
 using namespace juce;
 
+FBModuleGraphComponent::
+FBModuleGraphComponent(FBPlugGUI const* plugGUI):
+Component(),
+_plugGUI(plugGUI) {}
+
 void
 FBModuleGraphComponent::paint(Graphics& g)
 {
