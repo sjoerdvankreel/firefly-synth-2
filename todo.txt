@@ -1,3 +1,4 @@
+get rid of the sysheaders warnings
 handle envelope offset (actual start index in block)
 osci unison
 actually handle sustain
