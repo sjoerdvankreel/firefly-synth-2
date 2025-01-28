@@ -1,6 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
+#include <playground_plug/modules/env/FFEnvGraph.hpp>
 #include <playground_base/base/topo/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
@@ -10,6 +11,7 @@ FFMakeEnvTopo()
   result->voice = true;
   result->name = "Env";
   result->slotCount = FFEnvCount;
+  result->renderGraph = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
   auto selectModule = [](auto& state) { return &state.voice.env; };

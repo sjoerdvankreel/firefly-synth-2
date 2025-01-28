@@ -1,7 +1,7 @@
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/modules/glfo/FFGLFOGraph.hpp>
 #include <playground_plug/pipeline/FFModuleProcState.hpp>
-#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
+#include <playground_plug/modules/env/FFEnvGraph.hpp>
+#include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
@@ -13,7 +13,7 @@
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 void
-FFGLFORenderGraph(
+FFEnvRenderGraph(
   FBPlugGUI const* plugGUI,
   int moduleSlot,
   FBModuleGraphComponentData* data)
@@ -62,13 +62,13 @@ FFGLFORenderGraph(
 
   // TODO
   int wantSamples = 100;
-  FFGLFOProcessor processor;
+  FFEnvProcessor processor;
   data->text = "ENV";
 
   while (wantSamples > 0)
   {
     processor.Process(state);
-    auto& renderThis = procState->dsp.global.gLFO[moduleSlot].output;
+    auto& renderThis = procState->dsp.voice[0].env[moduleSlot].output;
     FBFixedFloatArray rtArray = {};
     renderThis.StoreToFloatArray(rtArray);
     for (int i = 0; i < FBFixedBlockSamples && wantSamples > 0; i++, wantSamples--)
