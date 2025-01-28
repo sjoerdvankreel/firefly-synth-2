@@ -7,14 +7,9 @@
 #include <vector>
 #include <functional>
 
-// TODO move to own hpp all graph stuff
-class FBPlugGUI;
 struct FBModuleGraphComponentData;
 
-typedef std::function<void(
-  FBPlugGUI const* gui,
-  int moduleSlot, 
-  FBModuleGraphComponentData* data)>
+typedef std::function<void(FBModuleGraphComponentData* data)>
 FBModuleGraphRenderer;
 
 struct FBStaticModule final
