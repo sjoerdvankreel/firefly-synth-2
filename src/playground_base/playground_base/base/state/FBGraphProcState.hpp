@@ -8,13 +8,17 @@
 
 #include <unordered_map>
 
+class FBPlugGUI;
+struct FBRuntimeTopo;
+
 struct FBGraphProcState final
 {
-  FBPlugInputBlock input = {};
-  FBVoiceManager inputVoiceManager;
-  FBProcStateContainer procStateContainer;
-  FBFixedFloatAudioBlock inputAudio = {};
-  std::vector<FBNoteEvent> inputNotes = {};
-  std::unordered_map<int, float> outputParamsNormalized = {};
-  FB_NOCOPY_MOVE_NODEFCTOR(FBGraphProcState);
+  FBProcStateContainer container;
+  FBVoiceManager voiceManager;
+  FBFixedFloatAudioBlock audio;
+  std::vector<FBNoteEvent> notes;
+  FBPlugInputBlock input;
+
+  FBGraphProcState(FBPlugGUI const* plugGUI);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBGraphProcState);
 };
