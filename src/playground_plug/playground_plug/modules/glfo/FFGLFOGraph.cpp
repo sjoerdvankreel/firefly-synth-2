@@ -3,10 +3,13 @@
 #include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
+#include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 void
@@ -39,8 +42,13 @@ FFGLFORenderGraph(
   voiceInfo.slot = 0;
   voiceInfo.state = FBVoiceState::Active;
 
-  FBProcStateContainer container(*topo);
-  container.InitProcessing(*scalar);
+  
+  // TODO this is bound to be slow
+  // better to keep 1 fbprocstatecontainer in the graph
+  // and here we go again with the mem usage
+  FBProcStateContainer container(*plugGUI->Topo());
+  for (int i = 0; i < plugGUI->Topo()->params.size(); i++)
+    container.InitProcessing(i, plugGUI->HostContext()->GetParamNormalized(i));
   auto procState = static_cast<FFProcState*>(container.Raw());
 
   FFModuleProcState state;
@@ -48,7 +56,7 @@ FFGLFORenderGraph(
   state.moduleSlot = moduleSlot;
   state.voice = &voiceInfo;
   state.outputParamsNormalized = &outputParamsNormalized;
-  state.topo = topo;
+  state.topo = plugGUI->Topo();
   state.sampleRate = 100;
   state.proc = procState;
 
