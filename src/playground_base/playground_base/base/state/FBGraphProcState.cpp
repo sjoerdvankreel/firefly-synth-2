@@ -20,7 +20,7 @@ FBGraphProcState::
 FBGraphProcState(FBPlugGUI const* plugGUI):
 container(*plugGUI->Topo()),
 voiceManager(&container),
-audio(), notes(), input() 
+audio(), notes(), input(), moduleState()
 {
   input.note = &notes;
   input.audio = &audio;
@@ -28,4 +28,12 @@ audio(), notes(), input()
   for (int i = 0; i < plugGUI->Topo()->params.size(); i++)
     container.InitProcessing(i, plugGUI->HostContext()->GetParamNormalized(i));
   voiceManager.Lease(MakeNoteC4On());
+  
+  moduleState.input = &input;
+  moduleState.moduleSlot = -1;
+  moduleState.sampleRate = -1;
+  moduleState.topo = plugGUI->Topo();
+  moduleState.procRaw = container.Raw();
+  moduleState.outputParamsNormalized = nullptr;
+  moduleState.voice = &voiceManager.Voices()[0];
 }

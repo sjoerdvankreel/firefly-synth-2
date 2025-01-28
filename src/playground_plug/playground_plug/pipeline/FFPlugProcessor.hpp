@@ -15,7 +15,6 @@ public IFBPlugProcessor
   float const _sampleRate;
   FBRuntimeTopo const* _topo;
 
-  // TODO to base
   FBModuleProcState MakeModuleState(FBPlugInputBlock const& input) const;
   FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice) const;
 
