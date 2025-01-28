@@ -7,19 +7,17 @@
 
 class FBPlugGUI;
 
-// TODO cache stuff
+// TODO cache stuff - procstatecontainer inside the ffpluggui
 class FBModuleGraphComponent final:
 public juce::Component
 {
-  int _moduleSlot = -1;
-  int _moduleIndex = -1;
+  int _tweakedParamByUI = -1;
   FBPlugGUI const* const _plugGUI;
   FBModuleGraphComponentData _data = {};
 
 public:
+  void RequestRerender(int paramIndex);
+  void paint(juce::Graphics& g) override;
   FBModuleGraphComponent(FBPlugGUI const* plugGUI);
   FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphComponent);
-  
-  void paint(juce::Graphics& g) override;
-  void RequestRerender(int moduleIndex, int moduleSlot);  
 };

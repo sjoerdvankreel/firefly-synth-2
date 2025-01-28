@@ -71,4 +71,5 @@ void
 FBParamSlider::valueChanged()
 {
   _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
+  _plugGUI->ParamNormalizedChangedFromUI(_param->runtimeParamIndex);
 }

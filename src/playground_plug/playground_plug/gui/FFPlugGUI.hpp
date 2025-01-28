@@ -5,14 +5,18 @@
 
 struct FBRuntimeTopo;
 class FBHostGUIContext;
+class FBModuleGraphComponent;
 
 class FFPlugGUI final:
 public FBPlugGUI
 {
   void SetupGUI();
+  FBModuleGraphComponent* _graph = {};
 
 public:
   void resized() override;
+  void ParamNormalizedChangedFromUI(int index) override;
+
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext);
 };

@@ -36,6 +36,7 @@ FBParamToggleButton::buttonStateChanged()
   if (_isOn != (plain != 0))
   {
     _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
+    _plugGUI->ParamNormalizedChangedFromUI(_param->runtimeParamIndex);
     _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
   }
   _isOn = getToggleState();

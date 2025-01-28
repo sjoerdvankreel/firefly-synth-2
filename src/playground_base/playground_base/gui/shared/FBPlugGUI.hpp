@@ -23,13 +23,15 @@ public:
   FBRuntimeTopo const* Topo() const { return _topo; }
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
+  void ShowPopupMenuFor(
+    juce::Component* target,
+    juce::PopupMenu menu,
+    std::function<void(int)> callback);
+  virtual void ParamNormalizedChangedFromUI(int index) = 0;
+
   void ShowHostMenuForParam(int index);
   void SteppedParamNormalizedChanged(int index);
   void SetParamNormalizedFromHost(int index, float normalized);
-  void ShowPopupMenuFor(
-    juce::Component* target, 
-    juce::PopupMenu menu, 
-    std::function<void(int)> callback);
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

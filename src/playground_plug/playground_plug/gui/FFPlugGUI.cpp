@@ -19,6 +19,12 @@ FBPlugGUI(topo, hostContext)
   resized();
 }
 
+void 
+FFPlugGUI::ParamNormalizedChangedFromUI(int index)
+{
+  _graph->RequestRerender(index);
+}
+
 void
 FFPlugGUI::resized()
 {
@@ -30,8 +36,9 @@ void
 FFPlugGUI::SetupGUI()
 {
   auto grid = StoreComponent<FBGridComponent>(5, 2);
+  _graph = StoreComponent<FBModuleGraphComponent>(this);
   grid->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
-  grid->Add(0, 1, 1, 1, StoreComponent<FBModuleGraphComponent>(this));
+  grid->Add(0, 1, 1, 1, _graph);
   grid->Add(1, 0, 1, 2, FFMakeGLFOGUI(this));
   grid->Add(2, 0, 1, 2, FFMakeGFilterGUI(this));
   grid->Add(3, 0, 1, 2, FFMakeOsciGUI(this));

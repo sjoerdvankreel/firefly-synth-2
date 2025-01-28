@@ -15,9 +15,20 @@ _plugGUI(plugGUI) {}
 void
 FBModuleGraphComponent::paint(Graphics& g)
 {
+  if (_tweakedParamByUI == -1)
+    return;
+
+  _data.text.clear();
+  _data.points.clear();
+  auto const& topo = _plugGUI->Topo()->static_.modules[_plugGUI->Topo()->params[_tweakedParamByUI].topoIndices.module.index];
+  if (topo.renderGraph == nullptr)
+    return;
+
+  topo.renderGraph(_plugGUI, _plugGUI->Topo()->params[_tweakedParamByUI].topoIndices.module.slot, &_data);
+
   // TODO
   Path p;
-  g.fillAll(Colours::black);
+  g.fillAll(Colours::blue);
   p.startNewSubPath(0.0, 0.0);
   for (int i = 0; i < getWidth() && i < _data.points.size(); i++)
     p.lineTo((float)i, _data.points[i] * getHeight());
@@ -26,14 +37,12 @@ FBModuleGraphComponent::paint(Graphics& g)
 }
 
 void
-FBModuleGraphComponent::RequestRerender(int moduleIndex, int moduleSlot)
+FBModuleGraphComponent::RequestRerender(int paramIndex)
 {
   // TODO
-  auto const& topo = _plugGUI->Topo()->static_.modules[moduleIndex];
+  auto const& topo = _plugGUI->Topo()->static_.modules[_plugGUI->Topo()->params[paramIndex].topoIndices.module.index];
   if (topo.renderGraph == nullptr)
     return;
-  _data.text.clear();
-  _data.points.clear();
-  topo.renderGraph(_plugGUI, moduleSlot, &_data);
+  _tweakedParamByUI = paramIndex;
   repaint();
 }
