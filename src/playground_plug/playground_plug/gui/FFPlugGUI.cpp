@@ -5,6 +5,7 @@
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponent.hpp>
 
@@ -12,17 +13,12 @@ using namespace juce;
 
 FFPlugGUI::
 FFPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext):
-FBPlugGUI(topo, hostContext)
+FBPlugGUI(topo, hostContext),
+_graphProcState(this)
 {
   SetupGUI();
   InitAllDependencies();
   resized();
-}
-
-void 
-FFPlugGUI::ParamNormalizedChangedFromUI(int index)
-{
-  _graph->RequestRerender(index);
 }
 
 void
@@ -33,10 +29,18 @@ FFPlugGUI::resized()
 }
 
 void 
+FFPlugGUI::ParamNormalizedChangedFromUI(int index)
+{
+  float normalized = HostContext()->GetParamNormalized(index);
+  _graphProcState.container.InitProcessing(index, normalized);
+  _graph->RequestRerender(index);
+}
+
+void 
 FFPlugGUI::SetupGUI()
 {
   auto grid = StoreComponent<FBGridComponent>(5, 2);
-  _graph = StoreComponent<FBModuleGraphComponent>(this);
+  _graph = StoreComponent<FBModuleGraphComponent>(&_graphProcState);
   grid->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
   grid->Add(0, 1, 1, 1, _graph);
   grid->Add(1, 0, 1, 2, FFMakeGLFOGUI(this));

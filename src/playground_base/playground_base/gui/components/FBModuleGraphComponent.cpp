@@ -18,19 +18,23 @@ Component()
 void
 FBModuleGraphComponent::RequestRerender(int paramIndex)
 {
-  if (GetRendererForParam(paramIndex) == nullptr)
+  if (!PrepareForRender(paramIndex))
     return;
   _tweakedParamByUI = paramIndex;
   repaint();
 }
 
-FBModuleGraphRenderer 
-FBModuleGraphComponent::GetRendererForParam(int index)
+bool 
+FBModuleGraphComponent::PrepareForRender(int paramIndex)
 {
   auto const* runtimeTopo = _data.state->moduleState.topo;
-  int staticModuleIndex = runtimeTopo->params[index].topoIndices.module.index;
-  auto const& staticModule = runtimeTopo->static_.modules[staticModuleIndex];
-  return staticModule.renderGraph;
+  auto const& topoIndices = runtimeTopo->params[paramIndex].topoIndices.module;
+  auto const& staticModule = runtimeTopo->static_.modules[topoIndices.index];
+  if (staticModule.renderGraph == nullptr)
+    return false;
+  _renderer = staticModule.renderGraph;
+  _data.state->moduleState.moduleSlot = topoIndices.slot;
+  return true;
 }
 
 void
@@ -38,13 +42,12 @@ FBModuleGraphComponent::paint(Graphics& g)
 {
   if (_tweakedParamByUI == -1)
     return;
-  auto renderer = GetRendererForParam(_tweakedParamByUI);
-  if (renderer == nullptr)
+  if (!PrepareForRender(_tweakedParamByUI))
     return;
 
   _data.text.clear();
   _data.points.clear();
-  renderer(&_data);
+  _renderer(&_data);
 
   // TODO
   Path p;

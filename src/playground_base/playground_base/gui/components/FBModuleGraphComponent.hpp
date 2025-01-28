@@ -13,8 +13,9 @@ class FBModuleGraphComponent final:
 public juce::Component
 {
   int _tweakedParamByUI = -1;
+  FBModuleGraphRenderer _renderer = {};
   FBModuleGraphComponentData _data = {};
-  FBModuleGraphRenderer GetRendererForParam(int index);
+  bool PrepareForRender(int paramIndex);
 
 public:
   void RequestRerender(int paramIndex);

@@ -6,7 +6,7 @@
 #include <cassert>
 
 FBProcStateContainer::
-FBProcStateContainer(FBRuntimeTopo const& topo): // TODO pointer
+FBProcStateContainer(FBRuntimeTopo const& topo):
 _rawState(topo.static_.state.allocRawProcState()),
 _special(topo.static_.state.specialSelector(topo.static_, _rawState)),
 _freeRawState(topo.static_.state.freeRawProcState)
