@@ -12,6 +12,7 @@ class FBPlugGUI;
 
 struct FBGraphProcState final
 {
+  FBPlugGUI const* plugGUI;
   FBProcStateContainer container;
   FBVoiceManager voiceManager;
   FBFixedFloatAudioBlock audio;
@@ -19,6 +20,7 @@ struct FBGraphProcState final
   FBPlugInputBlock input;
   FBModuleProcState moduleState;
 
+  void PrepareForRender();
   FBGraphProcState(FBPlugGUI const* plugGUI);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBGraphProcState);
 };

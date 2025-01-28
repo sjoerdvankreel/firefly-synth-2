@@ -13,6 +13,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* data)
   int wantSamples = 100;
   FFEnvProcessor processor;
   data->text = "ENV";
+  data->state->moduleState.sampleRate = 100;
   processor.BeginVoice(data->state->moduleState);
   while (wantSamples > 0)
   {

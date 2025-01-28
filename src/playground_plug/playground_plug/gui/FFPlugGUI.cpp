@@ -33,6 +33,7 @@ FFPlugGUI::ParamNormalizedChangedFromUI(int index)
 {
   float normalized = HostContext()->GetParamNormalized(index);
   _graphProcState.container.InitProcessing(index, normalized);
+  _graphProcState.PrepareForRender();
   _graph->RequestRerender(index);
 }
 
