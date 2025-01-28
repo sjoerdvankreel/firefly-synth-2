@@ -49,12 +49,15 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data.points.clear();
   _renderer(&_data);
 
-  // TODO
   Path p;
-  g.fillAll(Colours::blue);
+  g.fillAll(Colours::black);
   p.startNewSubPath(0.0, 0.0);
-  for (int i = 0; i < getWidth() && i < _data.points.size(); i++)
-    p.lineTo((float)i, _data.points[i] * getHeight());
+  for (int i = 0; i < _data.points.size(); i++)
+  {
+    float x = (float)i / _data.points.size() * getWidth();
+    float y = (1.0f - _data.points[i]) * getHeight();
+    p.lineTo(x, y);
+  }
   g.setColour(Colours::white);
   g.strokePath(p, PathStrokeType(1.0f));
 }
