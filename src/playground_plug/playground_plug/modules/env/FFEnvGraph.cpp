@@ -70,7 +70,7 @@ FFEnvRenderGraph(
   state.outputParamsNormalized = &outputParamsNormalized;
   state.topo = plugGUI->Topo();
   state.sampleRate = 100;
-  state.proc = procState;
+  state.procRaw = procState;
 
   // TODO
   int wantSamples = 100;

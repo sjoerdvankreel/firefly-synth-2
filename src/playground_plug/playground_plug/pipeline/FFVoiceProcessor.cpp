@@ -8,15 +8,16 @@ void
 FFVoiceProcessor::BeginVoice(FFModuleProcState state)
 {
   int voice = state.voice->slot;
+  auto* procState = state.ProcState<FFProcState>();
   for (int i = 0; i < FFEnvCount; i++)
   {
     state.moduleSlot = i;
-    state.proc->dsp.voice[voice].env[i].processor.BeginVoice(state);
+    procState->dsp.voice[voice].env[i].processor.BeginVoice(state);
   }
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    state.proc->dsp.voice[voice].osci[i].processor.BeginVoice(state);
+    procState->dsp.voice[voice].osci[i].processor.BeginVoice(state);
   }
 }
 
@@ -25,7 +26,8 @@ FFVoiceProcessor::Process(FFModuleProcState state)
 {
   bool voiceFinished = false;
   int voice = state.voice->slot;
-  auto& voiceDSP = state.proc->dsp.voice[voice];
+  auto* procState = state.ProcState<FFProcState>();
+  auto& voiceDSP = procState->dsp.voice[voice];
   voiceDSP.output.Clear();
   for (int i = 0; i < FFOsciCount; i++)
   {

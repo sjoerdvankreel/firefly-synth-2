@@ -10,10 +10,11 @@
 void
 FFGFilterProcessor::Process(FFModuleProcState const& state)
 {
-  auto& output = state.proc->dsp.global.gFilter[state.moduleSlot].output;
+  auto* procState = state.ProcState<FFProcState>();
+  auto& output = procState->dsp.global.gFilter[state.moduleSlot].output;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GFilter];
-  auto const& input = state.proc->dsp.global.gFilter[state.moduleSlot].input;
-  auto const& params = state.proc->param.global.gFilter[state.moduleSlot];
+  auto const& input = procState->dsp.global.gFilter[state.moduleSlot].input;
+  auto const& params = procState->param.global.gFilter[state.moduleSlot];
   bool on = topo.params[(int)FFGFilterParam::On].boolean.NormalizedToPlain(params.block.on[0].Value());
   auto type = (FFGFilterType)topo.params[(int)FFGFilterParam::Type].list.NormalizedToPlain(params.block.type[0].Value());
 

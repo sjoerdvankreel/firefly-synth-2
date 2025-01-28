@@ -24,8 +24,8 @@ FFPlugProcessor::MakeModuleState(
 {
   FFModuleProcState result = {};
   result.topo = _topo;
-  result.proc = _state;
   result.input = &input;
+  result.procRaw = _state;
   result.sampleRate = _sampleRate;
   return result;
 }

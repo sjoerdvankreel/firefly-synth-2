@@ -3,17 +3,19 @@
 #include <unordered_map>
 
 struct FBVoiceInfo;
-struct FFProcState;
 struct FBRuntimeTopo;
 struct FBPlugInputBlock;
 
 struct FFModuleProcState final
 {
+  void* procRaw = {};
   int moduleSlot = {};
   float sampleRate = {};
-  FFProcState* proc = {};
   FBVoiceInfo const* voice = {};
   FBRuntimeTopo const* topo = {};
   FBPlugInputBlock const* input = {};
   std::unordered_map<int, float>* outputParamsNormalized = {};
+
+  template <class ProcStateT>
+  ProcStateT* ProcState() const { return static_cast<ProcStateT*>(procRaw); }
 };

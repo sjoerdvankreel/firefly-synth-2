@@ -15,7 +15,8 @@ FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
   _finished = false;
   _stagePositions.fill(0);
   int voice = state.voice->slot;
-  auto const& params = state.proc->param.voice.env[state.moduleSlot];
+  auto* procState = state.ProcState<FFProcState>();
+  auto const& params = procState->param.voice.env[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   _voiceState.holdSamples = (int)std::round(topo.params[(int)FFEnvParam::HoldTime].linear.NormalizedToPlain(
     params.block.holdTime[0].Voice()[voice]) * state.sampleRate);
@@ -35,9 +36,10 @@ bool
 FFEnvProcessor::Process(FFModuleProcState const& state)
 {
   int voice = state.voice->slot;
+  auto* procState = state.ProcState<FFProcState>();
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
-  auto const& params = state.proc->param.voice.env[state.moduleSlot];
-  auto& output = state.proc->dsp.voice[voice].env[state.moduleSlot].output;
+  auto const& params = procState->param.voice.env[state.moduleSlot];
+  auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
 
   if (!_voiceState.on || _finished)
   {
