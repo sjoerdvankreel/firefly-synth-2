@@ -38,9 +38,9 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   for (int i = 0; i < FFEnvCount; i++)
   {
     state.moduleSlot = i;
-    bool envFinished = voiceDSP.env[i].processor.Process(state);
+    int envFinishedAt = voiceDSP.env[i].processor.Process(state);
     if (i == 0)
-      voiceFinished = envFinished;
+      voiceFinished = envFinishedAt != -1;
   }
   voiceDSP.output.Mul(voiceDSP.env[0].output);
   return voiceFinished;
