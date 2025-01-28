@@ -35,13 +35,16 @@ audio(), notes(), input(), moduleState()
   moduleState.topo = plugGUI->Topo();
   moduleState.procRaw = container.Raw();
   moduleState.outputParamsNormalized = nullptr;
-
-  PrepareForRender();
 }
 
 void
 FBGraphProcState::PrepareForRender()
 {
+  if (voiceManager.VoiceCount() > 0)
+  {
+    voiceManager.Return(0);
+    voiceManager.ResetReturnedVoices();
+  }
   voiceManager.Lease(MakeNoteC4On());
   moduleState.voice = &voiceManager.Voices()[0];
 }
