@@ -1,15 +1,15 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_plug/modules/master/FFMasterProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBModuleProcState.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 void
-FFMasterProcessor::Process(FFModuleProcState const& state)
+FFMasterProcessor::Process(FBModuleProcState const& state)
 {
   auto* procState = state.ProcState<FFProcState>();
   auto& output = procState->dsp.global.master.output;

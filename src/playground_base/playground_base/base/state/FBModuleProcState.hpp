@@ -6,7 +6,7 @@ struct FBVoiceInfo;
 struct FBRuntimeTopo;
 struct FBPlugInputBlock;
 
-struct FFModuleProcState final
+struct FBModuleProcState final
 {
   void* procRaw = {};
   int moduleSlot = {};

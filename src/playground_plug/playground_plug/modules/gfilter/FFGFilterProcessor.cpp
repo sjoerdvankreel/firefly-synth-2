@@ -1,14 +1,14 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBModuleProcState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 void
-FFGFilterProcessor::Process(FFModuleProcState const& state)
+FFGFilterProcessor::Process(FBModuleProcState const& state)
 {
   auto* procState = state.ProcState<FFProcState>();
   auto& output = procState->dsp.global.gFilter[state.moduleSlot].output;

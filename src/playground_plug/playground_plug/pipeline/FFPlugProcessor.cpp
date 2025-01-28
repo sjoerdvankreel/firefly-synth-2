@@ -18,11 +18,11 @@ _state(state),
 _sampleRate(sampleRate),
 _topo(topo) {}
 
-FFModuleProcState 
+FBModuleProcState
 FFPlugProcessor::MakeModuleState(
   FBPlugInputBlock const& input) const
 {
-  FFModuleProcState result = {};
+  FBModuleProcState result = {};
   result.topo = _topo;
   result.input = &input;
   result.procRaw = _state;
@@ -30,7 +30,7 @@ FFPlugProcessor::MakeModuleState(
   return result;
 }
 
-FFModuleProcState
+FBModuleProcState
 FFPlugProcessor::MakeModuleVoiceState(
   FBPlugInputBlock const& input, int voice) const
 {

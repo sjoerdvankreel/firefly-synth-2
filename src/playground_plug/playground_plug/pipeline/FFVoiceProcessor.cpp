@@ -5,7 +5,7 @@
 #include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
 
 void 
-FFVoiceProcessor::BeginVoice(FFModuleProcState state)
+FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcState<FFProcState>();
@@ -22,7 +22,7 @@ FFVoiceProcessor::BeginVoice(FFModuleProcState state)
 }
 
 bool 
-FFVoiceProcessor::Process(FFModuleProcState state)
+FFVoiceProcessor::Process(FBModuleProcState state)
 {
   bool voiceFinished = false;
   int voice = state.voice->slot;

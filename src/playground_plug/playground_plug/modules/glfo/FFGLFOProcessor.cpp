@@ -1,14 +1,14 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBModuleProcState.hpp>
 
 void
-FFGLFOProcessor::Process(FFModuleProcState const& state)
+FFGLFOProcessor::Process(FBModuleProcState const& state)
 {
   auto* procState = state.ProcState<FFProcState>();
   auto& output = procState->dsp.global.gLFO[state.moduleSlot].output;

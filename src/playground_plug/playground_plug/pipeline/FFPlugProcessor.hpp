@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/pipeline/FFModuleProcState.hpp>
+#include <playground_base/base/state/FBModuleProcState.hpp>
 #include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
 
 struct FFProcState;
@@ -15,8 +15,9 @@ public IFBPlugProcessor
   float const _sampleRate;
   FBRuntimeTopo const* _topo;
 
-  FFModuleProcState MakeModuleState(FBPlugInputBlock const& input) const;
-  FFModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice) const;
+  // TODO to base
+  FBModuleProcState MakeModuleState(FBPlugInputBlock const& input) const;
+  FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice) const;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);

@@ -1,9 +1,9 @@
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/env/FFEnvGraph.hpp>
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBModuleProcState.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
@@ -63,7 +63,7 @@ FFEnvRenderGraph(
   evt.velo = 1;
   voiceManager.Lease(evt);
 
-  FFModuleProcState state;
+  FBModuleProcState state;
   state.input = &input;
   state.moduleSlot = moduleSlot;
   state.voice = &voiceManager.Voices()[0];

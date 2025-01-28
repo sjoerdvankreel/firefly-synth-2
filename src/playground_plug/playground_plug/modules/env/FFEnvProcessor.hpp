@@ -5,7 +5,7 @@
 
 #include <array>
 
-struct FFModuleProcState;
+struct FBModuleProcState;
 enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Count };
 
 struct FFEnvVoiceState
@@ -27,6 +27,6 @@ class FFEnvProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
-  bool Process(FFModuleProcState const& state);
-  void BeginVoice(FFModuleProcState const& state);
+  bool Process(FBModuleProcState const& state);
+  void BeginVoice(FBModuleProcState const& state);
 };

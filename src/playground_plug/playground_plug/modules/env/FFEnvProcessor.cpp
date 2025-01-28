@@ -1,16 +1,16 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBModuleProcState.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 #include <cmath>
 
 void
-FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
+FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
 {
   _finished = false;
   _stagePositions.fill(0);
@@ -33,7 +33,7 @@ FFEnvProcessor::BeginVoice(FFModuleProcState const& state)
 }
 
 bool 
-FFEnvProcessor::Process(FFModuleProcState const& state)
+FFEnvProcessor::Process(FBModuleProcState const& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcState<FFProcState>();

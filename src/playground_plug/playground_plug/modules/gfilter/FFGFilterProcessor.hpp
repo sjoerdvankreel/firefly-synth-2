@@ -4,7 +4,7 @@
 
 #include <array>
 
-struct FFModuleProcState;
+struct FBModuleProcState;
 
 // https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 class FFGFilterProcessor final
@@ -14,5 +14,5 @@ class FFGFilterProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterProcessor);
-  void Process(FFModuleProcState const& state);
+  void Process(FBModuleProcState const& state);
 };

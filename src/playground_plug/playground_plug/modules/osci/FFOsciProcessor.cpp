@@ -1,10 +1,10 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/pipeline/FFModuleProcState.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBModuleProcState.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
@@ -47,7 +47,7 @@ GeneratePulse(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 }
 
 void 
-FFOsciProcessor::BeginVoice(FFModuleProcState const& state)
+FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
 {
   _phase = {};
   int voice = state.voice->slot;
@@ -64,7 +64,7 @@ FFOsciProcessor::BeginVoice(FFModuleProcState const& state)
 }
 
 void
-FFOsciProcessor::Process(FFModuleProcState const& state)
+FFOsciProcessor::Process(FBModuleProcState const& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcState<FFProcState>();

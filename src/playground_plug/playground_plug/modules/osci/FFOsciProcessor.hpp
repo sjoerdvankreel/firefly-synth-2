@@ -4,7 +4,7 @@
 #include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
-struct FFModuleProcState;
+struct FBModuleProcState;
 
 struct FFOsciVoiceState final
 {
@@ -21,6 +21,6 @@ class FFOsciProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
-  void Process(FFModuleProcState const& state);
-  void BeginVoice(FFModuleProcState const& state);
+  void Process(FBModuleProcState const& state);
+  void BeginVoice(FBModuleProcState const& state);
 };
