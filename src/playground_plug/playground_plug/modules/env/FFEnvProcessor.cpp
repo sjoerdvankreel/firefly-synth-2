@@ -49,20 +49,22 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
 
   int s = 0;
   FBFixedFloatArray scratch = {};
+  float const minSlope = 0.01f;
+  float const slopeRange = 1.0f - 2.0f * minSlope;
+  float const invLogHalf = 1.0f / std::log(0.5f);
   auto const& sustainLevel = params.acc.sustainLevel[0].Voice()[voice].CV();
 
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Delay] < _voiceState.delaySamples; 
     s++, _stagePositions[(int)FFEnvStage::Delay]++)
     scratch.data[s] = 0.0f;
 
-  float logHalf = std::log(0.5f);
   auto const& attackSlope = params.acc.attackSlope[0].Voice()[voice].CV();
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Attack] < _voiceState.attackSamples;
     s++, _stagePositions[(int)FFEnvStage::Attack]++)
   {
-    float exp = std::log(attackSlope.data[s]) / logHalf;
+    float slope = minSlope + attackSlope.data[s] * slopeRange;
     float pos = _stagePositions[(int)FFEnvStage::Attack] / (float)_voiceState.attackSamples;
-    scratch.data[s] = std::pow(pos, exp);
+    scratch.data[s] = std::pow(pos, std::log(slope) * invLogHalf);
   }
 
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Hold] < _voiceState.holdSamples; 
