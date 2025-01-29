@@ -68,6 +68,7 @@ MakeSectionDAHDSR(FBPlugGUI* plugGUI, int moduleSlot)
   auto releaseSlope = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseSlope, 0 });
   grid->Add(0, 16, plugGUI->StoreComponent<FBParamLabel>(plugGUI, releaseSlope));
   grid->Add(0, 17, plugGUI->StoreComponent<FBParamSlider>(plugGUI, releaseSlope, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 1, 18 });
   return grid;
 }
 
