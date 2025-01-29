@@ -113,21 +113,22 @@ FBGridComponent::resized()
 void
 FBGridComponent::paint(Graphics& g)
 {
+  int x0, x1, y0, y1;
+  x0 = x1 = y0 = y1 = -1;
   g.setColour(Colours::blue);
   for (int i = 0; i < _sections.size(); i++)
   {
-    Rectangle<int> bounds = {};
     for (int j = 0; j < _grid.items.size(); j++)
     {
       if (_grid.items[j].row.start.getNumber() == _sections[i].pos.row + 1)
-        bounds.setTop(_grid.items[i].associatedComponent->getY());
+        y0 = _grid.items[j].associatedComponent->getY();
       if (_grid.items[j].column.start.getNumber() == _sections[i].pos.col + 1)
-        bounds.setLeft(_grid.items[i].associatedComponent->getX());
+        x0 = _grid.items[j].associatedComponent->getX();
       if (_grid.items[j].row.end.getNumber() == _sections[i].pos.row + _sections[i].span.row + 1)
-        bounds.setBottom(_grid.items[i].associatedComponent->getBottom());
+        y1 = _grid.items[j].associatedComponent->getBottom();
       if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
-        bounds.setRight(_grid.items[i].associatedComponent->getRight());
+        x1 = _grid.items[j].associatedComponent->getRight();
     }
-    g.fillRect(bounds);
+    g.fillRect(x0, y0, x1 - x0, y1 - y0);
   }
 }
