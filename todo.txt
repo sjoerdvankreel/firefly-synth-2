@@ -1,10 +1,8 @@
+last tweaked rt module not param
 get rid of the sysheaders warnings
 handle envelope offset (actual start index in block)
 osci unison
 actually handle sustain
-voice counter output param
-single graph for everything
-stuff gets funky when hits max voices
 gui modulation indicators also for clap (poly)mod
 checkout the Linux logging and also mac
 multitap fb delay
