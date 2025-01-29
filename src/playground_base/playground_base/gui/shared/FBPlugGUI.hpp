@@ -27,11 +27,12 @@ public:
     juce::Component* target,
     juce::PopupMenu menu,
     std::function<void(int)> callback);
-  virtual void ParamNormalizedChangedFromUI(int index) = 0;
 
   void ShowHostMenuForParam(int index);
   void SteppedParamNormalizedChanged(int index);
-  void SetParamNormalizedFromHost(int index, float normalized);
+
+  virtual void ParamNormalizedChangedFromUI(int index) = 0;
+  virtual void SetParamNormalizedFromHost(int index, float normalized);
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

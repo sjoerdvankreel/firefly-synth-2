@@ -18,8 +18,10 @@ public juce::Component
   bool PrepareForRender(int paramIndex);
 
 public:
-  void RequestRerender(int paramIndex);
-  void paint(juce::Graphics& g) override;
   FBModuleGraphComponent(FBGraphProcState* state);
   FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphComponent);
+
+  void RequestRerender(int paramIndex);
+  void paint(juce::Graphics& g) override;
+  int TweakedParamByUI() const { return _tweakedParamByUI; }
 };

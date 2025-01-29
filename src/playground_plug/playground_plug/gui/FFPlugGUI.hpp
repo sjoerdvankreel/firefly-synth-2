@@ -11,14 +11,17 @@ class FBModuleGraphComponent;
 class FFPlugGUI final:
 public FBPlugGUI
 {
-  void SetupGUI();
   FBGraphProcState _graphProcState;
   FBModuleGraphComponent* _graph = {};
 
-public:
-  void resized() override;
-  void ParamNormalizedChangedFromUI(int index) override;
+  void SetupGUI();
+  void RequestGraphRender(int paramIndex);
 
+public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext);
+
+  void resized() override;
+  void ParamNormalizedChangedFromUI(int index) override;
+  void SetParamNormalizedFromHost(int index, float normalized) override;
 };

@@ -5,6 +5,7 @@
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponent.hpp>
@@ -22,6 +23,13 @@ _graphProcState(this)
 }
 
 void
+FFPlugGUI::RequestGraphRender(int paramIndex)
+{
+  _graphProcState.PrepareForRender();
+  _graph->RequestRerender(paramIndex);
+}
+
+void
 FFPlugGUI::resized()
 {
   getChildComponent(0)->setBounds(getLocalBounds());
@@ -33,8 +41,18 @@ FFPlugGUI::ParamNormalizedChangedFromUI(int index)
 {
   float normalized = HostContext()->GetParamNormalized(index);
   _graphProcState.container.InitProcessing(index, normalized);
-  _graphProcState.PrepareForRender();
-  _graph->RequestRerender(index);
+  RequestGraphRender(index);
+}
+
+void
+FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
+{
+  FBPlugGUI::SetParamNormalizedFromHost(index, normalized);
+  _graphProcState.container.InitProcessing(index, normalized);
+  if (_graph->TweakedParamByUI() != -1 &&
+    Topo()->params[index].runtimeModuleIndex ==
+    Topo()->params[_graph->TweakedParamByUI()].runtimeModuleIndex)
+    RequestGraphRender(index);
 }
 
 void 
