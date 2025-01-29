@@ -12,6 +12,7 @@
 void
 FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 {
+  // TODO figure out SR based on pixel width?
   float const sampleRate = 100.0f;
   FFModuleGraphRenderData<FFEnvProcessor> renderData;
   renderData.graphData = graphData;
