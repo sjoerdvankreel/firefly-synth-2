@@ -15,28 +15,21 @@
 using namespace juce;
 
 static Component*
-MakeSectionOnType(FBPlugGUI* plugGUI, int moduleSlot)
+MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto on = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
   auto type = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
-}
-
-static Component*
-MakeSectionSyncExp(FBPlugGUI* plugGUI, int moduleSlot)
-{
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0 });
   auto sync = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
   auto exp = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Exp, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, exp));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, exp));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, exp));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, exp));
   return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 }
 
@@ -77,10 +70,9 @@ MakeSectionDAHDSR(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto result = plugGUI->StoreComponent<FBGridComponent>(std::vector<int> { 1, 1 }, std::vector<int> { 0, 1 });
-  result->Add(0, 0, MakeSectionOnType(plugGUI, moduleSlot));
-  result->Add(1, 0, MakeSectionSyncExp(plugGUI, moduleSlot));
-  result->Add(0, 1, 2, 1, MakeSectionDAHDSR(plugGUI, moduleSlot));
+  auto result = plugGUI->StoreComponent<FBGridComponent>(1, std::vector<int> { 0, 1 });
+  result->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
+  result->Add(0, 1, MakeSectionDAHDSR(plugGUI, moduleSlot));
   return result;
 }
 
