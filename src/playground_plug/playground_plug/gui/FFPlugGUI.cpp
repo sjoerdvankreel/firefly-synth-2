@@ -58,7 +58,7 @@ FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
 void 
 FFPlugGUI::SetupGUI()
 {
-  auto grid = StoreComponent<FBGridComponent>(5, 2);
+  auto grid = StoreComponent<FBGridComponent>(std::vector<int> { 1, 1, 1, 1, 2 }, std::vector<int> { 1, 1 });
   _graph = StoreComponent<FBModuleGraphComponent>(&_graphProcState);
   grid->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
   grid->Add(0, 1, 1, 1, _graph);

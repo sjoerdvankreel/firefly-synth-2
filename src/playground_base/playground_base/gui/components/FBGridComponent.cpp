@@ -79,20 +79,24 @@ FBGridComponent::resized()
     grid.items.add(item);
   }
 
-  // TODO rows
-  // TODO this assumes first row is autosize
   // TODO distribute the roundoff error across rows
-  std::vector<int> absoluteOrRelative = _cols;
-  int rowHeight = getLocalBounds().getHeight() / _rows.size();
-  for (int i = 0; i < _cols.size(); i++)
-    if (_cols[i] == 0)
-      absoluteOrRelative[i] = HorizontalAutoSizeAt(0, i)->FixedWidth(rowHeight);
+  int totalRelativeHeight = 0;
   for (int i = 0; i < _rows.size(); i++)
-    grid.templateRows.add(Grid::TrackInfo(Grid::Fr(1)));
-  for (int i = 0; i < absoluteOrRelative.size(); i++)
-    if (_cols[i] == 0)
-      grid.templateColumns.add(Grid::TrackInfo(Grid::Px(absoluteOrRelative[i])));
+  {
+    totalRelativeHeight += _rows[i];
+    grid.templateRows.add(Grid::TrackInfo(Grid::Fr(_rows[i])));
+  }
+
+  for (int i = 0; i < _cols.size(); i++)
+    if(_cols[i] != 0)
+      grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));
     else
-      grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));  
+    {
+      // TODO this assumes first row is autosize
+      int rowHeight = _rows[i] / (float)totalRelativeHeight * getHeight();
+      int fixedWidth = HorizontalAutoSizeAt(0, i)->FixedWidth(rowHeight);
+      grid.templateColumns.add(Grid::TrackInfo(Grid::Px(fixedWidth)));
+    }
+
   grid.performLayout(getLocalBounds());
 }
