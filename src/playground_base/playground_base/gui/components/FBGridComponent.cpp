@@ -51,10 +51,9 @@ FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* chil
 int
 FBGridComponent::FixedWidth(int height) const
 {
-  // TODO all rows
   int result = 0;
   for (int i = 0; i < _cols.size(); i++)
-    result += HorizontalAutoSizeAt(0, i)->FixedWidth(height);
+    result += FixedColWidth(i, height);
   return result;
 }
 
