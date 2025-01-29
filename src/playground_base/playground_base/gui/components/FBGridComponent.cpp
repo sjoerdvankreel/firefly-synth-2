@@ -140,6 +140,6 @@ FBGridComponent::paint(Graphics& g)
       if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
         x1 = _grid.items[j].associatedComponent->getRight();
     }
-    g.fillRect(x0, y0, x1 - x0, y1 - y0);
+    g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 2.0f); // TODO 2
   }
 }
