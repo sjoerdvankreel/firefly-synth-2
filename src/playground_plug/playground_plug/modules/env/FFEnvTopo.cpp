@@ -91,6 +91,7 @@ FFMakeEnvTopo()
   auto selectAttackSlope = [](auto& module) { return &module.acc.attackSlope; };
   attackSlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectAttackSlope);
   attackSlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectAttackSlope);
+  attackSlope.relevant.When({ (int)FFEnvParam::Exp }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& holdTime = result->params[(int)FFEnvParam::HoldTime];
   holdTime.acc = false;
@@ -132,6 +133,7 @@ FFMakeEnvTopo()
   auto selectDecaySlope = [](auto& module) { return &module.acc.decaySlope; };
   decaySlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectDecaySlope);
   decaySlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectDecaySlope);
+  decaySlope.relevant.When({ (int)FFEnvParam::Exp }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
   sustainLevel.acc = true;
@@ -172,6 +174,7 @@ FFMakeEnvTopo()
   auto selectReleaseSlope = [](auto& module) { return &module.acc.releaseSlope; };
   releaseSlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectReleaseSlope);
   releaseSlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectReleaseSlope);
+  releaseSlope.relevant.When({ (int)FFEnvParam::Exp }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }
