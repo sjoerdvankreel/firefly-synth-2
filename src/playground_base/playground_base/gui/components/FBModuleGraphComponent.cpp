@@ -24,25 +24,16 @@ FBModuleGraphComponent::RequestRerender(int paramIndex)
   repaint();
 }
 
-std::string 
-FBModuleGraphComponent::GetActiveModuleName() const
-{
-  if (_tweakedParamByUI == -1)
-    return {};
-  auto const* runtimeTopo = _data.state->moduleState.topo;
-  auto const* staticModule = runtimeTopo->StaticModuleTopoAtParam(_tweakedParamByUI);
-  int slot = runtimeTopo->StaticModuleSlotAtParam(paramIndex);
-}
-
 bool 
 FBModuleGraphComponent::PrepareForRender(int paramIndex)
 {
   auto const* runtimeTopo = _data.state->moduleState.topo;
-  auto const* staticModule = runtimeTopo->StaticModuleTopoAtParam(paramIndex);
-  if (staticModule->renderGraph == nullptr)
+  auto const& topoIndices = runtimeTopo->params[paramIndex].topoIndices.module;
+  auto const& staticModule = runtimeTopo->static_.modules[topoIndices.index];
+  if (staticModule.renderGraph == nullptr)
     return false;
-  _renderer = staticModule->renderGraph;
-  _data.state->moduleState.moduleSlot = runtimeTopo->StaticModuleSlotAtParam(paramIndex);
+  _renderer = staticModule.renderGraph;
+  _data.state->moduleState.moduleSlot = topoIndices.slot;
   return true;
 }
 
