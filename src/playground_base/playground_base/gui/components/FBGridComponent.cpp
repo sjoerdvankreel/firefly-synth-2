@@ -31,15 +31,6 @@ Component(),
 _rows(rows),
 _cols(cols) {}
 
-int
-FBGridComponent::FixedWidth(int height) const
-{
-  int result = 0;
-  for (int i = 0; i < _cols.size(); i++)
-    result += FixedColWidth(i, height);
-  return result;
-}
-
 void
 FBGridComponent::Add(int row, int col, Component* child)
 {
@@ -59,6 +50,16 @@ FBGridComponent::HorizontalAutoSizeAt(int row, int col) const
   return FBAsHorizontalAutoSize(component);
 }
 
+int
+FBGridComponent::FixedWidth(int height) const
+{
+  int result = 0;
+  for (int i = 0; i < _cols.size(); i++)
+    result += FixedColWidth(i, height);
+  auto totalColumnGap = _grid.columnGap.pixels * (_cols.size() - 1);
+  return result + static_cast<int>(std::round(totalColumnGap));
+}
+
 void
 FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
 {
@@ -76,9 +77,11 @@ FBGridComponent::FixedColWidth(int col, int height) const
   int totalRelativeHeight = 0;
   for (int i = 0; i < _rows.size(); i++)
     totalRelativeHeight += _rows[i];
+  auto totalRowGap = std::round((_rows.size() - 1) * _grid.rowGap.pixels);
+  int availableGridHeight = height - static_cast<int>(totalRowGap);
   for (int r = 0; r < _rows.size(); r++)
   {
-    int rowHeight = (int)std::round(_rows[r] / (float)totalRelativeHeight * height);
+    int rowHeight = (int)std::round(_rows[r] / (float)totalRelativeHeight * availableGridHeight);
     int fixedWidth = HorizontalAutoSizeAt(r, col)->FixedWidth(rowHeight);
     result = std::max(result, fixedWidth);
   }
