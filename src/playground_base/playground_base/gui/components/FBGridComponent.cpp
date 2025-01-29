@@ -93,7 +93,7 @@ FBGridComponent::resized()
     else
     {
       // TODO this assumes first row is autosize
-      int rowHeight = _rows[i] / (float)totalRelativeHeight * getHeight();
+      int rowHeight = (int)std::round(_rows[0] / (float)totalRelativeHeight * getHeight());
       int fixedWidth = HorizontalAutoSizeAt(0, i)->FixedWidth(rowHeight);
       grid.templateColumns.add(Grid::TrackInfo(Grid::Px(fixedWidth)));
     }
