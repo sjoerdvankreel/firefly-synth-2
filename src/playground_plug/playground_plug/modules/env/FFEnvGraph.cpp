@@ -14,7 +14,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   renderData.graphData = graphData;
   renderData.graphData->text = "ENV";
   renderData.graphData->state->moduleState.sampleRate = 100;
-  renderData.outputSelector = [](auto const& dspState, int moduleSlot) { 
+  renderData.outputSelector = [](auto const& dspState, int moduleSlot) {
     return &dspState.voice[0].env[moduleSlot].output; };
   FFRenderModuleGraph(renderData);
 }

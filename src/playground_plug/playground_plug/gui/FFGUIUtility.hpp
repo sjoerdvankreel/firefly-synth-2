@@ -4,9 +4,9 @@
 
 struct FFProcDSPState;
 struct FBModuleGraphComponentData;
-class FBFixedFloatAudioBlock;
+class FBFixedFloatBlock;
 
-typedef std::function<FBFixedFloatAudioBlock const* (
+typedef std::function<FBFixedFloatBlock const* (
     FFProcDSPState const&, int moduleSlot)>
 FFModuleGraphOutputSelector;
 
