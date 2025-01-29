@@ -34,6 +34,7 @@ FBParamComboBox::SetValueNormalizedFromHost(float normalized)
 {
   int plain = _param->static_.NormalizedToAnyDiscreteSlow(normalized);
   setSelectedItemIndex(plain, dontSendNotification);
+  UpdateTooltip();
 }
 
 void
@@ -43,4 +44,5 @@ FBParamComboBox::valueChanged(Value& value)
   _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->ParamNormalizedChangedFromUI(_param->runtimeParamIndex);
   _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
+  UpdateTooltip();
 }

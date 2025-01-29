@@ -40,6 +40,22 @@ FBPlugGUI::ShowPopupMenuFor(
   menu.showMenuAsync(options, callback);
 }
 
+std::string
+FBPlugGUI::GetTooltipForParam(int index)
+{
+  auto const& static_ = Topo()->params[index].static_;
+  float normalized = HostContext()->GetParamNormalized(index);
+
+  auto result = static_.tooltip;
+  if (result.empty())
+    result = static_.name;
+  result += ": ";
+  result += static_.NormalizedToText(false, normalized);
+  if (static_.unit.empty())
+    return result;
+  return result + " " + static_.unit;
+}
+
 void
 FBPlugGUI::ShowHostMenuForParam(int index)
 {

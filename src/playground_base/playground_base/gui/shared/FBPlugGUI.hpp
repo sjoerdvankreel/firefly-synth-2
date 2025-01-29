@@ -27,6 +27,7 @@ public:
     juce::Component* target,
     juce::PopupMenu menu,
     std::function<void(int)> callback);
+  std::string GetTooltipForParam(int index);
 
   void ShowHostMenuForParam(int index);
   void SteppedParamNormalizedChanged(int index);

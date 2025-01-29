@@ -10,6 +10,7 @@ class FBParamComponent:
 public FBParamsDependent
 {
 protected:
+  void UpdateTooltip();
   FBRuntimeParam const* const _param;
 
 public:

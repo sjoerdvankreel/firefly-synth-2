@@ -10,8 +10,9 @@ FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
 ToggleButton(),
 FBParamControl(plugGUI, param)
 {
-  setTooltip(param->static_.tooltip);
-  SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
+  auto* context = plugGUI->HostContext();
+  float normalized = context->GetParamNormalized(param->runtimeParamIndex);
+  SetValueNormalizedFromHost(normalized);
   _isOn = getToggleState();
 }
 
@@ -27,6 +28,7 @@ FBParamToggleButton::SetValueNormalizedFromHost(float normalized)
   int plain = _param->static_.boolean.NormalizedToPlain(normalized);
   setToggleState(plain != 0, dontSendNotification);
   _isOn = getToggleState();
+  UpdateTooltip();
 }
 
 void
@@ -39,6 +41,7 @@ FBParamToggleButton::buttonStateChanged()
     _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
     _plugGUI->ParamNormalizedChangedFromUI(_param->runtimeParamIndex);
     _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
+    UpdateTooltip();
   }
   _isOn = getToggleState();
 }
