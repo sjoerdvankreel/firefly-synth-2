@@ -17,13 +17,16 @@ using namespace juce;
 static Component*
 MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(1, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto on = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
+  auto exp = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Exp, 0 });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, exp));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, exp));
   auto type = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 }
 

@@ -29,6 +29,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.releaseSamples = (int)std::round(topo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedToPlain(
     params.block.releaseTime[0].Voice()[voice]) * state.sampleRate);
   _voiceState.on = topo.params[(int)FFEnvParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
+  _voiceState.exp = topo.params[(int)FFEnvParam::Exp].boolean.NormalizedToPlain(params.block.exp[0].Voice()[voice]);
   _voiceState.type = (FFEnvType)topo.params[(int)FFEnvParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
 }
 
@@ -59,13 +60,18 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     scratch.data[s] = 0.0f;
 
   auto const& attackSlope = params.acc.attackSlope[0].Voice()[voice].CV();
-  for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Attack] < _voiceState.attackSamples;
-    s++, _stagePositions[(int)FFEnvStage::Attack]++)
-  {
-    float slope = minSlope + attackSlope.data[s] * slopeRange;
-    float pos = _stagePositions[(int)FFEnvStage::Attack] / (float)_voiceState.attackSamples;
-    scratch.data[s] = std::pow(pos, std::log(slope) * invLogHalf);
-  }
+  if (!_voiceState.exp)
+    for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Attack] < _voiceState.attackSamples;
+      s++, _stagePositions[(int)FFEnvStage::Attack]++)
+        scratch.data[s] = _stagePositions[(int)FFEnvStage::Attack] / (float)_voiceState.attackSamples;
+  else
+    for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Attack] < _voiceState.attackSamples;
+      s++, _stagePositions[(int)FFEnvStage::Attack]++)
+    {
+      float slope = minSlope + attackSlope.data[s] * slopeRange;
+      float pos = _stagePositions[(int)FFEnvStage::Attack] / (float)_voiceState.attackSamples;
+      scratch.data[s] = std::pow(pos, std::log(slope) * invLogHalf);
+    }
 
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Hold] < _voiceState.holdSamples; 
     s++, _stagePositions[(int)FFEnvStage::Hold]++)

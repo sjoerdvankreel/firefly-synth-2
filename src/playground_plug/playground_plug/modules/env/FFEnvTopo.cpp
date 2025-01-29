@@ -26,6 +26,16 @@ FFMakeEnvTopo()
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
 
+  auto& exp = result->params[(int)FFEnvParam::Exp];
+  exp.acc = false;
+  exp.name = "Exp";
+  exp.slotCount = 1;
+  exp.id = "{8824AD81-0A36-4100-8E95-0012B561D303}";
+  exp.type = FBParamType::Boolean;
+  auto selectExp = [](auto& module) { return &module.block.exp; };
+  exp.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectExp);
+  exp.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectExp);
+
   auto& type = result->params[(int)FFEnvParam::Type];
   type.acc = false;
   type.defaultText = "Sustain";
