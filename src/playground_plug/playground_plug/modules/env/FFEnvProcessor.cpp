@@ -49,10 +49,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
 
   int s = 0;
   FBFixedFloatArray scratch = {};
-  FBFixedFloatBlock sustainBlock = {};
-  FBFixedFloatArray sustainScratch = {};
-  sustainBlock.Transform([&](int v) { return params.acc.sustainLevel[0].Voice()[voice].CV(v); });
-  sustainBlock.StoreToFloatArray(sustainScratch);
+  auto const& sustainLevel = params.acc.sustainLevel[0].Voice()[voice].CV();
 
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Delay] < _voiceState.delaySamples; 
     s++, _stagePositions[(int)FFEnvStage::Delay]++)
@@ -68,12 +65,12 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
 
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Decay] < _voiceState.decaySamples; 
     s++, _stagePositions[(int)FFEnvStage::Decay]++)
-    scratch.data[s] = sustainScratch.data[s] + (1.0f - sustainScratch.data[s]) * 
+    scratch.data[s] = sustainLevel.data[s] + (1.0f - sustainLevel.data[s]) *
       (1.0f - _stagePositions[(int)FFEnvStage::Decay] / (float)_voiceState.decaySamples);
 
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Release] < _voiceState.releaseSamples;
     s++, _stagePositions[(int)FFEnvStage::Release]++)
-    scratch.data[s] = sustainScratch.data[s] * 
+    scratch.data[s] = sustainLevel.data[s] *
       (1.0f - _stagePositions[(int)FFEnvStage::Release] / (float)_voiceState.releaseSamples);
 
   int processed = s;
