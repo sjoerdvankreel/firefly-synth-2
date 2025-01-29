@@ -44,9 +44,15 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   auto const& params = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
 
-  if (!_voiceState.on || _finished)
+  if (!_voiceState.on)
   {
-    output.Clear();
+    output.Fill(0.0f);
+    return 0;
+  }
+
+  if (_finished)
+  {
+    output.Fill(_voiceState.smoother.LastOutput());
     return 0;
   }
 
@@ -118,11 +124,14 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
         sustain.data[s] * (1.0f - std::pow(pos, std::log(slope) * invLogHalf)));
     }
 
+  for (; s < FBFixedBlockSamples && _voiceState.smoother.Active(); s++)
+    scratch.data[s] = _voiceState.smoother.RunOff();
+
   int processed = s;
   if (s < FBFixedBlockSamples)
     _finished = true;
   for (; s < FBFixedBlockSamples; s++)
-    scratch.data[s] = 0.0f;
+    scratch.data[s] = _voiceState.smoother.LastOutput();
   output.LoadFromFloatArray(scratch);
   return processed;
 }

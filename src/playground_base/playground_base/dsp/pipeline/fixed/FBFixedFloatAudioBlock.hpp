@@ -11,7 +11,7 @@ class alignas(sizeof(FBFloatVector)) FBFixedFloatAudioBlock final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedFloatAudioBlock);
 
-  void Clear();
+  void Fill(float val);
   void Mul(FBFixedFloatBlock const& rhs);
   void Add(FBFixedFloatAudioBlock const& rhs);
   void CopyFrom(FBFixedFloatAudioBlock const& rhs);
@@ -36,10 +36,10 @@ FBFixedFloatAudioBlock::Transform(Op op)
 }
 
 inline void
-FBFixedFloatAudioBlock::Clear()
+FBFixedFloatAudioBlock::Fill(float val)
 {
   for (int ch = 0; ch < 2; ch++)
-    _store[ch].Clear();
+    _store[ch].Fill(val);
 }
 
 inline void

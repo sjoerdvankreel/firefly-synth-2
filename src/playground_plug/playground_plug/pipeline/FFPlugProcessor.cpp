@@ -78,7 +78,7 @@ FFPlugProcessor::ProcessPostVoice(
   FBPlugInputBlock const& input, FBFixedOutputBlock& output)
 {
   auto& gGilterIn = _state->dsp.global.gFilter[0].input;
-  gGilterIn.Clear();
+  gGilterIn.Fill(0.0f);
   for (int v = 0; v < FBMaxVoices; v++)
     if (input.voiceManager->IsActive(v))
       gGilterIn.Add(_state->dsp.voice[v].output);

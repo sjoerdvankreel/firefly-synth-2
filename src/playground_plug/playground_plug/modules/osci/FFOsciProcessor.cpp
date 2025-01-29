@@ -75,7 +75,7 @@ FFOsciProcessor::Process(FBModuleProcState const& state)
 
   if (!_voiceState.on)
   {
-    output.Clear();
+    output.Fill(0.0f);
     return;
   }
 

@@ -18,7 +18,7 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
 
   if (!on)
   {
-    output.Clear();
+    output.Fill(0.0f);
     return;
   }
     

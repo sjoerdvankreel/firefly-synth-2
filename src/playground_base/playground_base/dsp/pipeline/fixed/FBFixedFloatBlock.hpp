@@ -11,7 +11,7 @@ class alignas(sizeof(FBFloatVector)) FBFixedFloatBlock final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedFloatBlock);
 
-  void Clear();
+  void Fill(float val);
   void Mul(FBFixedFloatBlock const& rhs);
   void Add(FBFixedFloatBlock const& rhs);
   void CopyFrom(FBFixedFloatBlock const& rhs);
@@ -35,9 +35,9 @@ FBFixedFloatBlock::Transform(Op op)
 }
 
 inline void
-FBFixedFloatBlock::Clear()
+FBFixedFloatBlock::Fill(float val)
 {
-  Transform([](auto) { return 0.0f; });
+  Transform([val](auto) { return val; });
 }
 
 inline void
