@@ -77,7 +77,7 @@ FFMakeEnvTopo()
   auto& smooth = result->params[(int)FFEnvParam::Smooth];
   smooth.acc = true;
   smooth.defaultText = "0";
-  smooth.name = "Smooth";
+  smooth.name = "Smth";
   smooth.slotCount = 1;
   smooth.unit = "Ms";
   smooth.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";

@@ -126,7 +126,7 @@ FBGridComponent::paint(Graphics& g)
 {
   int x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1;
-  g.setColour(Colours::blue);
+  g.setColour(Colours::darkgrey);
   for (int i = 0; i < _sections.size(); i++)
   {
     for (int j = 0; j < _grid.items.size(); j++)

@@ -30,7 +30,7 @@ FFMakeMasterTopo()
   auto& smoothing = result->params[(int)FFMasterParam::Smoothing];
   smoothing.acc = false;
   smoothing.defaultText = "2";
-  smoothing.name = "Smooth";
+  smoothing.name = "Smth";
   smoothing.slotCount = 1;
   smoothing.unit = "Ms";
   smoothing.id = "{961D1B53-9509-47EA-B646-C948C5FACA82}";

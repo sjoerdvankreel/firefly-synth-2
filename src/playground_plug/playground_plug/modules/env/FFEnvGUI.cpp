@@ -36,10 +36,8 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto smooth = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Smooth, 0 });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 1, 2 });
-  grid->MarkSection({ 1, 0, 1, 2 });
-  grid->MarkSection({ 0, 2, 1, 2 });
-  grid->MarkSection({ 1, 2, 1, 2 });
+  grid->MarkSection({ 0, 0, 1, 6 });
+  grid->MarkSection({ 1, 0, 1, 6 });
   return grid;
 }
 
