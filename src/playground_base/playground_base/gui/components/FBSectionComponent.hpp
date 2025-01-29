@@ -11,7 +11,6 @@ public IFBHorizontalAutoSize
 {
 public:
   void resized() override;
-  void paint(juce::Graphics& g) override;
   int FixedWidth(int height) const override;
   FBSectionComponent(FBPlugGUI* plugGUI, juce::Component* content);
 };

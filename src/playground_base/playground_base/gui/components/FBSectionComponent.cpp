@@ -10,14 +10,6 @@ Component()
   addAndMakeVisible(content);
 }
 
-void 
-FBSectionComponent::paint(Graphics& g)
-{
-  // TODO 2
-  g.setColour(Colours::darkgrey);
-  g.fillRect(getLocalBounds().expanded(-2, -2));
-}
-
 void
 FBSectionComponent::resized()
 {
