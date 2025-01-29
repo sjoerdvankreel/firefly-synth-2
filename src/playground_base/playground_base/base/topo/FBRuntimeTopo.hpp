@@ -30,8 +30,10 @@ struct FBRuntimeTopo final
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
 
-  FBRuntimeParam const*
-  ParamAtTopo(FBParamTopoIndices const& topoIndices) const;
+  int StaticModuleSlotAtParam(int runtimeParamIndex) const;
+  int StaticModuleIndexAtParam(int runtimeParamIndex) const;
+  FBStaticModule const* StaticModuleTopoAtParam(int runtimeParamIndex) const;
+  FBRuntimeParam const* ParamAtTopo(FBParamTopoIndices const& topoIndices) const;
 
   juce::var SaveGUIStateToVar(FBGUIState const& gui) const;
   juce::var SaveProcStateToVar(FBProcStateContainer const& proc) const;

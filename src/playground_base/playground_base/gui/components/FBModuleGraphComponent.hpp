@@ -15,7 +15,9 @@ public juce::Component
   int _tweakedParamByUI = -1;
   FBModuleGraphRenderer _renderer = {};
   FBModuleGraphComponentData _data = {};
+  
   bool PrepareForRender(int paramIndex);
+  std::string GetActiveModuleName() const;
 
 public:
   void RequestRerender(int paramIndex);

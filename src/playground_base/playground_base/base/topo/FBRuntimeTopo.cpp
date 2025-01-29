@@ -92,6 +92,24 @@ FBRuntimeTopo::ParamAtTopo(
   return &params[paramTopoToRuntime.at(topoIndices)];
 }
 
+int
+FBRuntimeTopo::StaticModuleSlotAtParam(int runtimeParamIndex) const
+{
+  return params[runtimeParamIndex].topoIndices.module.slot;
+}
+
+int
+FBRuntimeTopo::StaticModuleIndexAtParam(int runtimeParamIndex) const
+{
+  return params[runtimeParamIndex].topoIndices.module.index;
+}
+
+FBStaticModule const* 
+FBRuntimeTopo::StaticModuleTopoAtParam(int runtimeParamIndex) const
+{
+  return &static_.modules[StaticModuleIndexAtParam(runtimeParamIndex)];
+}
+
 std::string 
 FBRuntimeTopo::SaveGUIStateToString(
   FBGUIState const& gui) const
