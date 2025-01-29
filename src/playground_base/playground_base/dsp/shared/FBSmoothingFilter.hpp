@@ -20,18 +20,20 @@ public:
 };
 
 inline float
-FBSmoothingFilter::RunOff()
-{
-  assert(Active());
-  return Next(_lastInput);
-}
-
-inline float
 FBSmoothingFilter::Next(float in)
 {
   _lastInput = in;
   _activeSamples = 0;
   _lastOutput = _onePole.Next(in);
+  return _lastOutput;
+}
+
+inline float
+FBSmoothingFilter::RunOff()
+{
+  assert(Active());
+  _activeSamples++;
+  _lastOutput = _onePole.Next(_lastInput);
   return _lastOutput;
 }
 
