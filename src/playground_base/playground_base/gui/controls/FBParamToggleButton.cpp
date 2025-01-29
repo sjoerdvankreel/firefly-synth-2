@@ -10,6 +10,7 @@ FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
 ToggleButton(),
 FBParamControl(plugGUI, param)
 {
+  setTooltip(param->static_.tooltip);
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
   _isOn = getToggleState();
 }

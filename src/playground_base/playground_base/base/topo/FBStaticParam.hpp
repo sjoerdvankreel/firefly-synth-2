@@ -25,6 +25,7 @@ struct FBStaticParam final
   std::string id = {};
   std::string name = {};
   std::string unit = {};
+  std::string tooltip = {};
   std::string defaultText = {};
 
   FBParamType type = {};

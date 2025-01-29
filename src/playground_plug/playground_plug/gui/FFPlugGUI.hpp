@@ -5,12 +5,15 @@
 #include <playground_base/base/state/FBGraphProcState.hpp>
 
 struct FBRuntimeTopo;
+
+class FBGridComponent;
 class FBHostGUIContext;
 class FBModuleGraphComponent;
 
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  FBGridComponent* _content = {};
   FBGraphProcState _graphProcState;
   FBModuleGraphComponent* _graph = {};
 

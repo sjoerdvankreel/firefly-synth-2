@@ -57,6 +57,7 @@ FFMakeEnvTopo()
   auto& sync = result->params[(int)FFEnvParam::Sync];
   sync.acc = false;
   sync.name = "Sync";
+  sync.tooltip = "Tempo Sync";
   sync.slotCount = 1;
   sync.id = "{960C7FDA-5FA4-4719-9827-FCF94FCEEE99}";
   sync.type = FBParamType::Boolean;

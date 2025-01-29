@@ -58,13 +58,14 @@ FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
 void 
 FFPlugGUI::SetupGUI()
 {
-  auto grid = StoreComponent<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1, 1, 1, 2 }, std::vector<int> { 1, 1 });
   _graph = StoreComponent<FBModuleGraphComponent>(&_graphProcState);
-  grid->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
-  grid->Add(0, 1, 1, 1, _graph);
-  grid->Add(1, 0, 1, 2, FFMakeGLFOGUI(this));
-  grid->Add(2, 0, 1, 2, FFMakeGFilterGUI(this));
-  grid->Add(3, 0, 1, 2, FFMakeOsciGUI(this));
-  grid->Add(4, 0, 1, 2, FFMakeEnvGUI(this));
-  addAndMakeVisible(grid);
+  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1, 1, 1, 2 }, std::vector<int> { 1, 1 });
+  _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
+  _content->Add(0, 1, 1, 1, _graph);
+  _content->Add(1, 0, 1, 2, FFMakeGLFOGUI(this));
+  _content->Add(2, 0, 1, 2, FFMakeGFilterGUI(this));
+  _content->Add(3, 0, 1, 2, FFMakeOsciGUI(this));
+  _content->Add(4, 0, 1, 2, FFMakeEnvGUI(this));
+  addAndMakeVisible(_content);
+  addAndMakeVisible(StoreComponent<TooltipWindow>());
 }
