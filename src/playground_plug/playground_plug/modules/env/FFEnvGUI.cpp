@@ -73,7 +73,7 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(1, std::vector<int> { 0, 1 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeSectionDAHDSR(plugGUI, moduleSlot));
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+  return grid;
 }
 
 Component*
