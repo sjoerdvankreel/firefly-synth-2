@@ -51,7 +51,8 @@ MakeSectionDH(FBPlugGUI* plugGUI, int moduleSlot)
   auto holdTime = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldTime, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, holdTime));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, holdTime, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 2 });
+  grid->MarkSection({ 0, 0, 1, 2 });
+  grid->MarkSection({ 1, 0, 1, 2 });
   return grid;
 }
 
