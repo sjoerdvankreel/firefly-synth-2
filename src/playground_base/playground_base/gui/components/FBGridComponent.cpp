@@ -89,6 +89,8 @@ void
 FBGridComponent::resized()
 {
   _grid = {};
+  _grid.rowGap = Grid::Px(5);
+  _grid.columnGap = Grid::Px(5); // TODO
   for (auto const& e : _cells)
   {
     GridItem item(e.second.child);
