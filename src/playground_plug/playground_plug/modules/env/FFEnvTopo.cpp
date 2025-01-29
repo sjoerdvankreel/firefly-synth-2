@@ -87,7 +87,7 @@ FFMakeEnvTopo()
   smooth.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
   smooth.type = FBParamType::Linear;
   smooth.linear.min = 0.0f;
-  smooth.linear.max = 0.1f; // TODO same as param?
+  smooth.linear.max = 1.0f;
   smooth.linear.displayMultiplier = 1000.0f;
   auto selectSmooth = [](auto& module) { return &module.block.smooth; };
   smooth.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmooth);
