@@ -30,7 +30,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto exp = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Exp, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, exp));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, exp));
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+  return grid;
 }
 
 static Component*
@@ -64,16 +64,16 @@ MakeSectionDAHDSR(FBPlugGUI* plugGUI, int moduleSlot)
   auto releaseSlope = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseSlope, 0 });
   grid->Add(0, 16, plugGUI->StoreComponent<FBParamLabel>(plugGUI, releaseSlope));
   grid->Add(0, 17, plugGUI->StoreComponent<FBParamSlider>(plugGUI, releaseSlope, Slider::SliderStyle::RotaryVerticalDrag));
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+  return grid;
 }
 
 static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto result = plugGUI->StoreComponent<FBGridComponent>(1, std::vector<int> { 0, 1 });
-  result->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  result->Add(0, 1, MakeSectionDAHDSR(plugGUI, moduleSlot));
-  return result;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(1, std::vector<int> { 0, 1 });
+  grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
+  grid->Add(0, 1, MakeSectionDAHDSR(plugGUI, moduleSlot));
+  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 }
 
 Component*
