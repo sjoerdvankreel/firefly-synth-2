@@ -55,9 +55,15 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     s++, _stagePositions[(int)FFEnvStage::Delay]++)
     scratch.data[s] = 0.0f;
 
-  for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Attack] < _voiceState.attackSamples; 
+  float logHalf = std::log(0.5f);
+  auto const& attackSlope = params.acc.attackSlope[0].Voice()[voice].CV();
+  for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Attack] < _voiceState.attackSamples;
     s++, _stagePositions[(int)FFEnvStage::Attack]++)
-    scratch.data[s] = _stagePositions[(int)FFEnvStage::Attack] / (float)_voiceState.attackSamples;
+  {
+    float exp = std::log(attackSlope.data[s]) / logHalf;
+    float pos = _stagePositions[(int)FFEnvStage::Attack] / (float)_voiceState.attackSamples;
+    scratch.data[s] = std::pow(pos, exp);
+  }
 
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Hold] < _voiceState.holdSamples; 
     s++, _stagePositions[(int)FFEnvStage::Hold]++)

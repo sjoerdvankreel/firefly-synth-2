@@ -71,12 +71,13 @@ FFMakeEnvTopo()
 
   auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
   attackSlope.acc = true;
-  attackSlope.defaultText = "0";
+  attackSlope.defaultText = "50";
   attackSlope.name = "ASlp";
   attackSlope.slotCount = 1;
-  attackSlope.unit = "TODO";
+  attackSlope.unit = "%";
   attackSlope.id = "{0C77104F-17CC-4256-8D65-FAD17E821758}";
   attackSlope.type = FBParamType::Linear;
+  attackSlope.linear.displayMultiplier = 100.0f;
   auto selectAttackSlope = [](auto& module) { return &module.acc.attackSlope; };
   attackSlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectAttackSlope);
   attackSlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectAttackSlope);
@@ -111,24 +112,26 @@ FFMakeEnvTopo()
 
   auto& decaySlope = result->params[(int)FFEnvParam::DecaySlope];
   decaySlope.acc = true;
-  decaySlope.defaultText = "0";
+  decaySlope.defaultText = "50";
   decaySlope.name = "DSlp";
   decaySlope.slotCount = 1;
-  decaySlope.unit = "TODO";
+  decaySlope.unit = "%";
   decaySlope.id = "{2F01EA4E-2665-4882-923D-FEF63D790F7B}";
   decaySlope.type = FBParamType::Linear;
+  decaySlope.linear.displayMultiplier = 100.0f;
   auto selectDecaySlope = [](auto& module) { return &module.acc.decaySlope; };
   decaySlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectDecaySlope);
   decaySlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectDecaySlope);
 
   auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
   sustainLevel.acc = true;
-  sustainLevel.defaultText = "0.5";
+  sustainLevel.defaultText = "50";
   sustainLevel.name = "Stn";
   sustainLevel.slotCount = 1;
-  sustainLevel.unit = "TODO";
+  sustainLevel.unit = "%";
   sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
   sustainLevel.type = FBParamType::Linear;
+  sustainLevel.linear.displayMultiplier = 100.0f;
   auto selectSustainLevel = [](auto& module) { return &module.acc.sustainLevel; };
   sustainLevel.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSustainLevel);
   sustainLevel.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectSustainLevel);
@@ -149,12 +152,13 @@ FFMakeEnvTopo()
 
   auto& releaseSlope = result->params[(int)FFEnvParam::ReleaseSlope];
   releaseSlope.acc = true;
-  releaseSlope.defaultText = "0";
+  releaseSlope.defaultText = "50";
   releaseSlope.name = "RSlp";
   releaseSlope.slotCount = 1;
-  releaseSlope.unit = "TODO";
+  releaseSlope.unit = "%";
   releaseSlope.id = "{78A38181-41F7-4C0C-8489-F9AD55D6F2D9}";
   releaseSlope.type = FBParamType::Linear;
+  releaseSlope.linear.displayMultiplier = 100.0f;
   auto selectReleaseSlope = [](auto& module) { return &module.acc.releaseSlope; };
   releaseSlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectReleaseSlope);
   releaseSlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectReleaseSlope);
