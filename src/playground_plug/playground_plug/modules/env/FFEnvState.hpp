@@ -26,6 +26,7 @@ class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
   std::array<TVoiceBlock, 1> on = {};
   std::array<TVoiceBlock, 1> exp = {};
   std::array<TVoiceBlock, 1> type = {};
+  std::array<TVoiceBlock, 1> sync = {};
   std::array<TVoiceBlock, 1> delayTime = {};
   std::array<TVoiceBlock, 1> attackTime = {};
   std::array<TVoiceBlock, 1> holdTime = {};

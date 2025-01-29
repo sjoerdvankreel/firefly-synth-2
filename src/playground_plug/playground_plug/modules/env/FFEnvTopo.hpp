@@ -6,7 +6,7 @@ struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
 
 enum class FFEnvParam { 
-  On, Exp, Type,
+  On, Type, Sync, Exp,
   DelayTime, AttackTime, AttackSlope, 
   HoldTime, DecayTime, DecaySlope, 
   SustainLevel, ReleaseTime, ReleaseSlope,
