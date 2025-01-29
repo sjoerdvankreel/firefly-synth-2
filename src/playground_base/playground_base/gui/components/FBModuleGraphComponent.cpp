@@ -55,9 +55,13 @@ FBModuleGraphComponent::paint(Graphics& g)
   std::string moduleName = runtimeTopo->ModuleAtParamIndex(_tweakedParamByUI)->name;
   g.drawText(moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
 
+  if (_data.points.empty())
+    return;
+
   Path p;
-  p.startNewSubPath(0.0, 0.0);
-  for (int i = 0; i < _data.points.size(); i++)
+  float y0 = (1.0f - _data.points[0]) * getHeight();
+  p.startNewSubPath(0.0, y0);
+  for (int i = 1; i < _data.points.size(); i++)
   {
     float x = (float)i / _data.points.size() * getWidth();
     float y = (1.0f - _data.points[i]) * getHeight();
