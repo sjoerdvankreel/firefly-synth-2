@@ -27,6 +27,7 @@ class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
   std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> mode = {};
   std::array<TVoiceBlock, 1> sync = {};
+  std::array<TVoiceBlock, 1> smooth = {};
   std::array<TVoiceBlock, 1> delayTime = {};
   std::array<TVoiceBlock, 1> attackTime = {};
   std::array<TVoiceBlock, 1> holdTime = {};
@@ -41,7 +42,6 @@ class alignas(alignof(TVoiceAcc)) FFEnvAccParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
-  std::array<TVoiceAcc, 1> smooth = {};
   std::array<TVoiceAcc, 1> sustain = {};
   std::array<TVoiceAcc, 1> decaySlope = {};
   std::array<TVoiceAcc, 1> attackSlope = {};

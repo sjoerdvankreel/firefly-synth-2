@@ -89,9 +89,9 @@ FFMakeEnvTopo()
   smooth.linear.min = 0.0f;
   smooth.linear.max = 0.1f; // TODO same as param?
   smooth.linear.displayMultiplier = 1000.0f;
-  auto selectSmooth = [](auto& module) { return &module.acc.smooth; };
+  auto selectSmooth = [](auto& module) { return &module.block.smooth; };
   smooth.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmooth);
-  smooth.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectSmooth);
+  smooth.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectSmooth);
 
   auto& delayTime = result->params[(int)FFEnvParam::DelayTime];
   delayTime.acc = false;
