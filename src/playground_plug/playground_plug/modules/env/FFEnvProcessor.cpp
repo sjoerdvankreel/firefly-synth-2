@@ -29,8 +29,8 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.releaseSamples = (int)std::round(topo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedToPlain(
     params.block.releaseTime[0].Voice()[voice]) * state.sampleRate);
   _voiceState.on = topo.params[(int)FFEnvParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
-  _voiceState.exp = topo.params[(int)FFEnvParam::Exp].boolean.NormalizedToPlain(params.block.exp[0].Voice()[voice]);
   _voiceState.type = (FFEnvType)topo.params[(int)FFEnvParam::Type].list.NormalizedToPlain(params.block.type[0].Voice()[voice]);
+  _voiceState.mode = (FFEnvMode)topo.params[(int)FFEnvParam::Mode].list.NormalizedToPlain(params.block.mode[0].Voice()[voice]);
 }
 
 int 
@@ -60,7 +60,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     scratch.data[s] = 0.0f;
 
   auto const& attackSlope = params.acc.attackSlope[0].Voice()[voice].CV();
-  if (!_voiceState.exp)
+  if (_voiceState.mode == FFEnvMode::Linear)
     for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Attack] < _voiceState.attackSamples;
       s++, _stagePositions[(int)FFEnvStage::Attack]++)
         scratch.data[s] = _stagePositions[(int)FFEnvStage::Attack] / (float)_voiceState.attackSamples;
@@ -78,7 +78,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     scratch.data[s] = 1.0f;
 
   auto const& decaySlope = params.acc.decaySlope[0].Voice()[voice].CV();
-  if(!_voiceState.exp)
+  if (_voiceState.mode == FFEnvMode::Linear)
     for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Decay] < _voiceState.decaySamples;
       s++, _stagePositions[(int)FFEnvStage::Decay]++)
     {
@@ -95,7 +95,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     }
 
   auto const& releaseSlope = params.acc.releaseSlope[0].Voice()[voice].CV();
-  if(!_voiceState.exp)
+  if (_voiceState.mode == FFEnvMode::Linear)
     for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Release] < _voiceState.releaseSamples;
       s++, _stagePositions[(int)FFEnvStage::Release]++)
     {

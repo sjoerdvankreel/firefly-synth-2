@@ -11,8 +11,8 @@ enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Count };
 struct FFEnvVoiceState
 {
   bool on = {};
-  bool exp = {};
   FFEnvType type = {};  
+  FFEnvMode mode = {};
   int holdSamples = {};
   int delaySamples = {};
   int decaySamples = {};

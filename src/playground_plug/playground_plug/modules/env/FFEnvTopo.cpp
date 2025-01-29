@@ -64,18 +64,22 @@ FFMakeEnvTopo()
   sync.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSync);
   sync.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectSync);
 
-  auto& exp = result->params[(int)FFEnvParam::Exp];
-  exp.acc = false;
-  exp.name = "Exp";
-  exp.slotCount = 1;
-  exp.id = "{8824AD81-0A36-4100-8E95-0012B561D303}";
-  exp.type = FBParamType::Boolean;
-  auto selectExp = [](auto& module) { return &module.block.exp; };
-  exp.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectExp);
-  exp.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectExp);
+  auto& mode = result->params[(int)FFEnvParam::Mode];
+  mode.acc = false;
+  mode.defaultText = "Linear";
+  mode.name = "Mode";
+  mode.slotCount = 1;
+  mode.id = "{F739A948-F9E6-4A22-9F56-52720704B74F}";
+  mode.type = FBParamType::List;
+  mode.list.items = {
+    { "{59EB5AB9-50FC-4958-BABE-A126D65B7948}", "Linear" },
+    { "{0B0F822E-A7D9-40B2-9B0B-7E404656DE3C}", "Exp" } };
+  auto selectMode = [](auto& module) { return &module.block.mode; };
+  mode.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectMode);
+  mode.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectMode);
 
   auto& smooth = result->params[(int)FFEnvParam::Smooth];
-  smooth.acc = true;
+  smooth.acc = false;
   smooth.defaultText = "0";
   smooth.name = "Smth";
   smooth.slotCount = 1;
@@ -83,7 +87,7 @@ FFMakeEnvTopo()
   smooth.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
   smooth.type = FBParamType::Linear;
   smooth.linear.min = 0.0f;
-  smooth.linear.max = 10.0f; // TODO same as param?
+  smooth.linear.max = 0.1f; // TODO same as param?
   smooth.linear.displayMultiplier = 1000.0f;
   auto selectSmooth = [](auto& module) { return &module.acc.smooth; };
   smooth.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmooth);
@@ -129,7 +133,7 @@ FFMakeEnvTopo()
   auto selectAttackSlope = [](auto& module) { return &module.acc.attackSlope; };
   attackSlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectAttackSlope);
   attackSlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectAttackSlope);
-  attackSlope.relevant.When({ (int)FFEnvParam::Exp }, [](auto const& vs) { return vs[0] != 0; });
+  attackSlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   auto& holdTime = result->params[(int)FFEnvParam::HoldTime];
   holdTime.acc = false;
@@ -171,7 +175,7 @@ FFMakeEnvTopo()
   auto selectDecaySlope = [](auto& module) { return &module.acc.decaySlope; };
   decaySlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectDecaySlope);
   decaySlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectDecaySlope);
-  decaySlope.relevant.When({ (int)FFEnvParam::Exp }, [](auto const& vs) { return vs[0] != 0; });
+  decaySlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   auto& releaseTime = result->params[(int)FFEnvParam::ReleaseTime];
   releaseTime.acc = false;
@@ -199,7 +203,7 @@ FFMakeEnvTopo()
   auto selectReleaseSlope = [](auto& module) { return &module.acc.releaseSlope; };
   releaseSlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectReleaseSlope);
   releaseSlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectReleaseSlope);
-  releaseSlope.relevant.When({ (int)FFEnvParam::Exp }, [](auto const& vs) { return vs[0] != 0; });
+  releaseSlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   return result;
 }

@@ -30,9 +30,9 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto sync = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  auto exp = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Exp, 0 });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, exp));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, exp));
+  auto mode = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Mode, 0 });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
   auto smooth = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Smooth, 0 });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::RotaryVerticalDrag));
