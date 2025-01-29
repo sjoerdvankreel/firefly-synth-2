@@ -18,11 +18,6 @@ static Component*
 MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });\
-  // todo
-  grid->MarkSection({ 0, 0, 1, 2 });
-  grid->MarkSection({ 1, 0, 1, 2 });
-  grid->MarkSection({ 0, 2, 1, 2 });
-  grid->MarkSection({ 1, 2, 1, 2 });
   auto on = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
@@ -35,6 +30,10 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto exp = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Exp, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, exp));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, exp));
+  grid->MarkSection({ 0, 0, 1, 2 });
+  grid->MarkSection({ 1, 0, 1, 2 });
+  grid->MarkSection({ 0, 2, 1, 2 });
+  grid->MarkSection({ 1, 2, 1, 2 });
   return grid;
 }
 
