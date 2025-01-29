@@ -42,43 +42,52 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeSectionDAHDSR(FBPlugGUI* plugGUI, int moduleSlot)
+MakeSectionDH(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0, 0 });
   auto delayTime = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DelayTime, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delayTime));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delayTime, Slider::SliderStyle::RotaryVerticalDrag));
-  auto attackTime = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::AttackTime, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, attackTime));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, attackTime, Slider::SliderStyle::RotaryVerticalDrag));
-  auto attackSlope = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::AttackSlope, 0 });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, attackSlope));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, attackSlope, Slider::SliderStyle::RotaryVerticalDrag));
   auto holdTime = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldTime, 0 });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, holdTime));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, holdTime, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, holdTime));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, holdTime, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 2, 2 });
+  return grid;
+}
+
+static Component*
+MakeSectionADR(FBPlugGUI* plugGUI, int moduleSlot)
+{
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0, 1, 0, 1, 0, 1 });
+  auto attackTime = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::AttackTime, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, attackTime));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, attackTime, Slider::SliderStyle::RotaryVerticalDrag));
   auto decayTime = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecayTime, 0 });
-  grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, decayTime));
-  grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decayTime, Slider::SliderStyle::RotaryVerticalDrag));
-  auto decaySlope = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecaySlope, 0 });
-  grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, decaySlope));
-  grid->Add(0, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decaySlope, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, decayTime));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decayTime, Slider::SliderStyle::RotaryVerticalDrag));
   auto releaseTime = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseTime, 0 });
-  grid->Add(0, 12, plugGUI->StoreComponent<FBParamLabel>(plugGUI, releaseTime));
-  grid->Add(0, 13, plugGUI->StoreComponent<FBParamSlider>(plugGUI, releaseTime, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, releaseTime));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, releaseTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto attackSlope = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::AttackSlope, 0 });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, attackSlope));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, attackSlope, Slider::SliderStyle::RotaryVerticalDrag));
+  auto decaySlope = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecaySlope, 0 });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, decaySlope));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decaySlope, Slider::SliderStyle::RotaryVerticalDrag));
   auto releaseSlope = plugGUI->Topo()->ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseSlope, 0 });
-  grid->Add(0, 14, plugGUI->StoreComponent<FBParamLabel>(plugGUI, releaseSlope));
-  grid->Add(0, 15, plugGUI->StoreComponent<FBParamSlider>(plugGUI, releaseSlope, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 1, 16 });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, releaseSlope));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, releaseSlope, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 2, 6 });
   return grid;
 }
 
 static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 1 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  grid->Add(0, 1, MakeSectionDAHDSR(plugGUI, moduleSlot));
+  grid->Add(0, 1, MakeSectionDH(plugGUI, moduleSlot));
+  grid->Add(0, 2, MakeSectionADR(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 }
 
