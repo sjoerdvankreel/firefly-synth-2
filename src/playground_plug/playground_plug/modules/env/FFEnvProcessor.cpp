@@ -76,14 +76,11 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     scratch.data[s] = sustainScratch.data[s] * 
       (1.0f - _stagePositions[(int)FFEnvStage::Release] / (float)_voiceState.releaseSamples);
 
-  int finishedAt = -1;
+  int processed = s;
   if (s < FBFixedBlockSamples)
-  {
-    finishedAt = s;
     _finished = true;
-  }
   for (; s < FBFixedBlockSamples; s++)
     scratch.data[s] = 0.0f;
   output.LoadFromFloatArray(scratch);
-  return finishedAt;
+  return processed;
 }

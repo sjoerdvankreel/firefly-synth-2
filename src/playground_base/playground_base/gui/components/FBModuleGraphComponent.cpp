@@ -49,8 +49,11 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data.points.clear();
   _renderer(&_data);
 
-  Path p;
   g.fillAll(Colours::black);
+  g.setColour(Colours::grey);
+  g.drawText(_data.text, getLocalBounds(), Justification::centred, false);
+
+  Path p;
   p.startNewSubPath(0.0, 0.0);
   for (int i = 0; i < _data.points.size(); i++)
   {
