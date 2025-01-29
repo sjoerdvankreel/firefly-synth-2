@@ -3,4 +3,4 @@
 struct FBModuleGraphComponentData;
 
 void
-FFEnvRenderGraph(FBModuleGraphComponentData* data);
+FFEnvRenderGraph(FBModuleGraphComponentData* graphData);

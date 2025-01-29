@@ -9,7 +9,7 @@
 
 struct FBModuleGraphComponentData;
 
-typedef std::function<void(FBModuleGraphComponentData* data)>
+typedef std::function<void(FBModuleGraphComponentData* graphData)>
 FBModuleGraphRenderer;
 
 struct FBStaticModule final
