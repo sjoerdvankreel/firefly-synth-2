@@ -14,20 +14,21 @@ FBGridCell::operator<(FBGridCell const& rhs) const
 }
 
 FBGridComponent::
-FBGridComponent(int rows, std::vector<int> const& cols):
-FBGridComponent(std::vector<int>(rows, 1), cols) {}
+FBGridComponent(FBGridType type, int rows, std::vector<int> const& cols):
+FBGridComponent(type, std::vector<int>(rows, 1), cols) {}
 
 FBGridComponent::
-FBGridComponent(std::vector<int> const& rows, int cols):
-FBGridComponent(rows, std::vector<int>(cols, 1)) {}
+FBGridComponent(FBGridType type, std::vector<int> const& rows, int cols):
+FBGridComponent(type, rows, std::vector<int>(cols, 1)) {}
 
 FBGridComponent::
-FBGridComponent(int rows, int cols):
-FBGridComponent(std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
+FBGridComponent(FBGridType type, int rows, int cols):
+FBGridComponent(type, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
 
 FBGridComponent::
-FBGridComponent(std::vector<int> const& rows, std::vector<int> const& cols):
+FBGridComponent(FBGridType type, std::vector<int> const& rows, std::vector<int> const& cols):
 Component(), 
+_type(type),
 _rows(rows),
 _cols(cols) {}
 
@@ -92,8 +93,13 @@ void
 FBGridComponent::resized()
 {
   _grid = {};
-  _grid.rowGap = Grid::Px(5);
-  _grid.columnGap = Grid::Px(5); // TODO
+
+  if (_type == FBGridType::Module)
+  {
+    _grid.rowGap = Grid::Px(2);
+    _grid.columnGap = Grid::Px(2); // TODO to topo gui
+  }
+
   for (auto const& e : _cells)
   {
     GridItem item(e.second.child);

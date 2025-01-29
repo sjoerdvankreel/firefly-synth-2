@@ -7,6 +7,8 @@
 #include <vector>
 #include <utility>
 
+enum class FBGridType { Generic, Module };
+
 struct FBGridCell final
 {
   int row = -1;
@@ -30,6 +32,7 @@ class FBGridComponent:
 public juce::Component,
 public IFBHorizontalAutoSize
 {
+  FBGridType _type;
   juce::Grid _grid = {};
   std::vector<int> _rows;
   std::vector<int> _cols;
@@ -40,12 +43,6 @@ public IFBHorizontalAutoSize
   IFBHorizontalAutoSize* HorizontalAutoSizeAt(int row, int col) const;
 
 public:
-  FBGridComponent() = default;
-  FBGridComponent(int rows, int cols);
-  FBGridComponent(int rows, std::vector<int> const& cols);
-  FBGridComponent(std::vector<int> const& rows, int cols);
-  FBGridComponent(std::vector<int> const& rows, std::vector<int> const& cols);
-
   void resized() override;
   void paint(juce::Graphics& g) override;
   int FixedWidth(int height) const override;
@@ -53,4 +50,10 @@ public:
   void MarkSection(FBGridSection const& section);
   void Add(int row, int col, juce::Component* child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
+
+  FBGridComponent() = delete;
+  FBGridComponent(FBGridType type, int rows, int cols);
+  FBGridComponent(FBGridType type, int rows, std::vector<int> const& cols);
+  FBGridComponent(FBGridType type, std::vector<int> const& rows, int cols);
+  FBGridComponent(FBGridType type, std::vector<int> const& rows, std::vector<int> const& cols);
 };
