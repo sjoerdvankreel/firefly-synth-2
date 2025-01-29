@@ -51,7 +51,9 @@ FBModuleGraphComponent::paint(Graphics& g)
 
   g.fillAll(Colours::black);
   g.setColour(Colours::grey);
-  g.drawText(_data.text, getLocalBounds(), Justification::centred, false);
+  auto const* runtimeTopo = _data.state->moduleState.topo;
+  std::string moduleName = runtimeTopo->ModuleAtParamIndex(_tweakedParamByUI)->name;
+  g.drawText(moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
 
   Path p;
   p.startNewSubPath(0.0, 0.0);

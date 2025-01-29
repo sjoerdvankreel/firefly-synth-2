@@ -92,6 +92,12 @@ FBRuntimeTopo::ParamAtTopo(
   return &params[paramTopoToRuntime.at(topoIndices)];
 }
 
+FBRuntimeModule const* 
+FBRuntimeTopo::ModuleAtParamIndex(int runtimeParamIndex) const
+{
+  return &modules[params[runtimeParamIndex].runtimeModuleIndex];
+}
+
 std::string 
 FBRuntimeTopo::SaveGUIStateToString(
   FBGUIState const& gui) const
