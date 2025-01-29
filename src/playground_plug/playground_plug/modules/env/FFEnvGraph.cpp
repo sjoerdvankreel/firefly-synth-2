@@ -9,22 +9,21 @@
 void
 FFEnvRenderGraph(FBModuleGraphComponentData* data)
 {
-  // TODO
+  int finishedAt = -1;
   FFEnvProcessor processor;
+  FBFixedFloatArray points;
+  auto const& moduleState = data->state->moduleState;
+  auto* procState = moduleState.ProcState<FFProcState>();
+
   data->text = "ENV";
   data->state->moduleState.sampleRate = 100;
-  processor.BeginVoice(data->state->moduleState);
-
-  int finishedAt = -1;
+  processor.BeginVoice(moduleState);
   while (finishedAt == -1)
   {
-    auto* procState = data->state->moduleState.ProcState<FFProcState>();
-    finishedAt = processor.Process(data->state->moduleState);
-    auto& renderThis = procState->dsp.voice[0].env[data->state->moduleState.moduleSlot].output;
-    FBFixedFloatArray rtArray = {};
-    renderThis.StoreToFloatArray(rtArray);
+    finishedAt = processor.Process(moduleState);
+    procState->dsp.voice[0].env[moduleState.moduleSlot].output.StoreToFloatArray(points);
     for (int i = 0; i < FBFixedBlockSamples; i++)
       if(finishedAt == -1 || i <= finishedAt)
-        data->points.push_back(rtArray.data[i]);
+        data->points.push_back(points.data[i]);
   }
 }
