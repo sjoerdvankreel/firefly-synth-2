@@ -27,26 +27,9 @@ FBGridComponent(std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
 
 FBGridComponent::
 FBGridComponent(std::vector<int> const& rows, std::vector<int> const& cols):
-Component(),
+Component(), 
 _rows(rows),
-_cols(cols),
-_cells() {}
-
-void
-FBGridComponent::Add(int row, int col, Component* child)
-{
-  Add(row, col, 1, 1, child);
-}
-
-void
-FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
-{
-  addAndMakeVisible(child);
-  FBGridCell cell = { row, col };
-  assert(_cells.find(cell) == _cells.end());
-  _cells[cell].child = child;
-  _cells[cell].span = { rowSpan, colSpan };
-}
+_cols(cols) {}
 
 int
 FBGridComponent::FixedWidth(int height) const
@@ -57,11 +40,33 @@ FBGridComponent::FixedWidth(int height) const
   return result;
 }
 
+void
+FBGridComponent::Add(int row, int col, Component* child)
+{
+  Add(row, col, 1, 1, child);
+}
+
+void
+FBGridComponent::MarkSection(FBGridSection const& section)
+{
+  _sections.push_back(section);
+}
+
 IFBHorizontalAutoSize*
 FBGridComponent::HorizontalAutoSizeAt(int row, int col) const
 {
   auto component = _cells.at({ row, col }).child;
   return FBAsHorizontalAutoSize(component);
+}
+
+void
+FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
+{
+  addAndMakeVisible(child);
+  FBGridCell cell = { row, col };
+  assert(_cells.find(cell) == _cells.end());
+  _cells[cell].child = child;
+  _cells[cell].span = { rowSpan, colSpan };
 }
 
 int 
@@ -83,7 +88,7 @@ FBGridComponent::FixedColWidth(int col, int height) const
 void
 FBGridComponent::resized()
 {
-  Grid grid;
+  _grid = {};
   for (auto const& e : _cells)
   {
     GridItem item(e.second.child);
@@ -91,16 +96,38 @@ FBGridComponent::resized()
     item.column.start = e.first.col + 1;
     item.row.end = e.first.row + e.second.span.row + 1;
     item.column.end = e.first.col + e.second.span.col + 1;
-    grid.items.add(item);
+    _grid.items.add(item);
   }
 
   for (int i = 0; i < _rows.size(); i++)
-    grid.templateRows.add(Grid::TrackInfo(Grid::Fr(_rows[i])));
+    _grid.templateRows.add(Grid::TrackInfo(Grid::Fr(_rows[i])));
   for (int i = 0; i < _cols.size(); i++)
     if (_cols[i] != 0)
-      grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));
+      _grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));
     else
-      grid.templateColumns.add(Grid::TrackInfo(Grid::Px(FixedColWidth(i, getHeight()))));
+      _grid.templateColumns.add(Grid::TrackInfo(Grid::Px(FixedColWidth(i, getHeight()))));
 
-  grid.performLayout(getLocalBounds());
+  _grid.performLayout(getLocalBounds());
+}
+
+void
+FBGridComponent::paint(Graphics& g)
+{
+  g.setColour(Colours::blue);
+  for (int i = 0; i < _sections.size(); i++)
+  {
+    Rectangle<int> bounds = {};
+    for (int j = 0; j < _grid.items.size(); j++)
+    {
+      if (_grid.items[j].row.start.getNumber() == _sections[i].pos.row + 1)
+        bounds.setTop(_grid.items[i].associatedComponent->getY());
+      if (_grid.items[j].column.start.getNumber() == _sections[i].pos.col + 1)
+        bounds.setLeft(_grid.items[i].associatedComponent->getX());
+      if (_grid.items[j].row.end.getNumber() == _sections[i].pos.row + _sections[i].span.row + 1)
+        bounds.setBottom(_grid.items[i].associatedComponent->getBottom());
+      if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
+        bounds.setRight(_grid.items[i].associatedComponent->getRight());
+    }
+    g.fillRect(bounds);
+  }
 }

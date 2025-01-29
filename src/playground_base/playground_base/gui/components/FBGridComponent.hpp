@@ -14,6 +14,12 @@ struct FBGridCell final
   bool operator<(FBGridCell const& rhs) const;
 };
 
+struct FBGridSection final
+{
+  FBGridCell pos = {};
+  FBGridCell span = {};
+};
+
 struct FBGridChildAndSpan final
 {
   FBGridCell span = {};
@@ -24,9 +30,11 @@ class FBGridComponent:
 public juce::Component,
 public IFBHorizontalAutoSize
 {
+  juce::Grid _grid = {};
   std::vector<int> _rows;
   std::vector<int> _cols;
-  std::map<FBGridCell, FBGridChildAndSpan> _cells;
+  std::vector<FBGridSection> _sections = {};
+  std::map<FBGridCell, FBGridChildAndSpan> _cells = {};
 
   int FixedColWidth(int col, int height) const;
   IFBHorizontalAutoSize* HorizontalAutoSizeAt(int row, int col) const;
@@ -39,7 +47,10 @@ public:
   FBGridComponent(std::vector<int> const& rows, std::vector<int> const& cols);
 
   void resized() override;
+  void paint(juce::Graphics& g) override;
   int FixedWidth(int height) const override;
+
+  void MarkSection(FBGridSection const& section);
   void Add(int row, int col, juce::Component* child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
 };
