@@ -49,7 +49,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
 
   int s = 0;
   FBFixedFloatArray scratch = {};
-  float const minSlope = 0.01f;
+  float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
   float const invLogHalf = 1.0f / std::log(0.5f);
   auto const& sustainLevel = params.acc.sustainLevel[0].Voice()[voice].CV();
