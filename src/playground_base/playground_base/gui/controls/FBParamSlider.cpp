@@ -17,7 +17,6 @@ Slider(style, Slider::NoTextBox),
 FBParamControl(plugGUI, param)
 {
   setRange(0.0, 1.0);
-  setPopupDisplayEnabled(true, true, plugGUI);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
@@ -25,7 +24,8 @@ FBParamControl(plugGUI, param)
 void
 FBParamSlider::SetValueNormalizedFromHost(float normalized)
 {
-  setValue(normalized, dontSendNotification);
+  setValue(normalized, dontSendNotification); 
+  UpdateTooltip();
 }
 
 void
@@ -72,4 +72,5 @@ FBParamSlider::valueChanged()
 {
   _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
   _plugGUI->ParamNormalizedChangedFromUI(_param->runtimeParamIndex);
+  UpdateTooltip();
 }
