@@ -53,7 +53,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
   float const invLogHalf = 1.0f / std::log(0.5f);
-  auto const& sustainLevel = params.acc.sustainLevel[0].Voice()[voice].CV();
+  auto const& sustain = params.acc.sustain[0].Voice()[voice].CV();
 
   for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Delay] < _voiceState.delaySamples; 
     s++, _stagePositions[(int)FFEnvStage::Delay]++)
@@ -83,16 +83,15 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
       s++, _stagePositions[(int)FFEnvStage::Decay]++)
     {
       float pos = _stagePositions[(int)FFEnvStage::Decay] / (float)_voiceState.decaySamples;
-      scratch.data[s] = sustainLevel.data[s] + (1.0f - sustainLevel.data[s]) * (1.0f - pos);
+      scratch.data[s] = sustain.data[s] + (1.0f - sustain.data[s]) * (1.0f - pos);
     }
   else
     for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Decay] < _voiceState.decaySamples;
       s++, _stagePositions[(int)FFEnvStage::Decay]++)
     {
-      float sustain = sustainLevel.data[s];
       float slope = minSlope + decaySlope.data[s] * slopeRange;
       float pos = _stagePositions[(int)FFEnvStage::Decay] / (float)_voiceState.decaySamples;
-      scratch.data[s] = sustain + (1.0f - sustain) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
+      scratch.data[s] = sustain.data[s] + (1.0f - sustain.data[s]) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
     }
 
   auto const& releaseSlope = params.acc.releaseSlope[0].Voice()[voice].CV();
@@ -101,7 +100,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
       s++, _stagePositions[(int)FFEnvStage::Release]++)
     {
       float pos = _stagePositions[(int)FFEnvStage::Release] / (float)_voiceState.releaseSamples;
-      scratch.data[s] = sustainLevel.data[s] * (1.0f - pos);
+      scratch.data[s] = sustain.data[s] * (1.0f - pos);
     }
   else
     for (; s < FBFixedBlockSamples && _stagePositions[(int)FFEnvStage::Release] < _voiceState.releaseSamples;
@@ -109,7 +108,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     {
       float slope = minSlope + releaseSlope.data[s] * slopeRange;
       float pos = _stagePositions[(int)FFEnvStage::Release] / (float)_voiceState.releaseSamples;
-      scratch.data[s] = sustainLevel.data[s] * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
+      scratch.data[s] = sustain.data[s] * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
     }
 
   int processed = s;

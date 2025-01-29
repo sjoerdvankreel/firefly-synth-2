@@ -41,6 +41,19 @@ FFMakeEnvTopo()
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
 
+  auto& sustain = result->params[(int)FFEnvParam::Sustain];
+  sustain.acc = true;
+  sustain.defaultText = "50";
+  sustain.name = "Stn";
+  sustain.slotCount = 1;
+  sustain.unit = "%";
+  sustain.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
+  sustain.type = FBParamType::Linear;
+  sustain.linear.displayMultiplier = 100.0f;
+  auto selectSustain = [](auto& module) { return &module.acc.sustain; };
+  sustain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSustain);
+  sustain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectSustain);
+
   auto& sync = result->params[(int)FFEnvParam::Sync];
   sync.acc = false;
   sync.name = "Sync";
@@ -60,6 +73,21 @@ FFMakeEnvTopo()
   auto selectExp = [](auto& module) { return &module.block.exp; };
   exp.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectExp);
   exp.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectExp);
+
+  auto& smooth = result->params[(int)FFEnvParam::Smooth];
+  smooth.acc = true;
+  smooth.defaultText = "0";
+  smooth.name = "Smooth";
+  smooth.slotCount = 1;
+  smooth.unit = "Ms";
+  smooth.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
+  smooth.type = FBParamType::Linear;
+  smooth.linear.min = 0.0f;
+  smooth.linear.max = 10.0f; // TODO same as param?
+  smooth.linear.displayMultiplier = 1000.0f;
+  auto selectSmooth = [](auto& module) { return &module.acc.smooth; };
+  smooth.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmooth);
+  smooth.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectSmooth);
 
   auto& delayTime = result->params[(int)FFEnvParam::DelayTime];
   delayTime.acc = false;
@@ -144,19 +172,6 @@ FFMakeEnvTopo()
   decaySlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectDecaySlope);
   decaySlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectDecaySlope);
   decaySlope.relevant.When({ (int)FFEnvParam::Exp }, [](auto const& vs) { return vs[0] != 0; });
-
-  auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
-  sustainLevel.acc = true;
-  sustainLevel.defaultText = "50";
-  sustainLevel.name = "Stn";
-  sustainLevel.slotCount = 1;
-  sustainLevel.unit = "%";
-  sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
-  sustainLevel.type = FBParamType::Linear;
-  sustainLevel.linear.displayMultiplier = 100.0f;
-  auto selectSustainLevel = [](auto& module) { return &module.acc.sustainLevel; };
-  sustainLevel.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSustainLevel);
-  sustainLevel.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectSustainLevel);
 
   auto& releaseTime = result->params[(int)FFEnvParam::ReleaseTime];
   releaseTime.acc = false;

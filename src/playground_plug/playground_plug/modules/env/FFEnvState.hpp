@@ -41,9 +41,10 @@ class alignas(alignof(TVoiceAcc)) FFEnvAccParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
-  std::array<TVoiceAcc, 1> attackSlope = {};
+  std::array<TVoiceAcc, 1> smooth = {};
+  std::array<TVoiceAcc, 1> sustain = {};
   std::array<TVoiceAcc, 1> decaySlope = {};
-  std::array<TVoiceAcc, 1> sustainLevel = {};
+  std::array<TVoiceAcc, 1> attackSlope = {};
   std::array<TVoiceAcc, 1> releaseSlope = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvAccParamState);
