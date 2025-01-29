@@ -28,8 +28,8 @@ public IFBHorizontalAutoSize
   std::vector<int> _cols;
   std::map<FBGridCell, FBGridChildAndSpan> _cells;
 
-  IFBHorizontalAutoSize* 
-  HorizontalAutoSizeAt(int row, int col) const;
+  int FixedColWidth(int col, int height) const;
+  IFBHorizontalAutoSize* HorizontalAutoSizeAt(int row, int col) const;
 
 public:
   FBGridComponent() = default;

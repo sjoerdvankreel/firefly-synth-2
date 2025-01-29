@@ -32,6 +32,22 @@ _rows(rows),
 _cols(cols),
 _cells() {}
 
+void
+FBGridComponent::Add(int row, int col, Component* child)
+{
+  Add(row, col, 1, 1, child);
+}
+
+void
+FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
+{
+  addAndMakeVisible(child);
+  FBGridCell cell = { row, col };
+  assert(_cells.find(cell) == _cells.end());
+  _cells[cell].child = child;
+  _cells[cell].span = { rowSpan, colSpan };
+}
+
 int
 FBGridComponent::FixedWidth(int height) const
 {
@@ -49,20 +65,20 @@ FBGridComponent::HorizontalAutoSizeAt(int row, int col) const
   return FBAsHorizontalAutoSize(component);
 }
 
-void
-FBGridComponent::Add(int row, int col, Component* child)
+int 
+FBGridComponent::FixedColWidth(int col, int height) const
 {
-  Add(row, col, 1, 1, child);
-}
-
-void
-FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
-{
-  addAndMakeVisible(child);
-  FBGridCell cell = { row, col };
-  assert(_cells.find(cell) == _cells.end());
-  _cells[cell].child = child;
-  _cells[cell].span = { rowSpan, colSpan };
+  int result = 0;
+  int totalRelativeHeight = 0;
+  for (int i = 0; i < _rows.size(); i++)
+    totalRelativeHeight += _rows[i];
+  for (int r = 0; r < _rows.size(); r++)
+  {
+    int rowHeight = (int)std::round(_rows[r] / (float)totalRelativeHeight * height);
+    int fixedWidth = HorizontalAutoSizeAt(r, col)->FixedWidth(rowHeight);
+    result = std::max(result, fixedWidth);
+  }
+  return result;
 }
 
 void
@@ -79,28 +95,13 @@ FBGridComponent::resized()
     grid.items.add(item);
   }
 
-  int totalRelativeHeight = 0;
   for (int i = 0; i < _rows.size(); i++)
-  {
-    totalRelativeHeight += _rows[i];
     grid.templateRows.add(Grid::TrackInfo(Grid::Fr(_rows[i])));
-  }
-
-  std::vector<int> autoSizeColWidth(_cols.size(), 0);
-  for(int c = 0; c < _cols.size(); c++)
-    if (_cols[c] == 0)
-      for (int r = 0; r < _rows.size(); r++)
-      {
-        int rowHeight = (int)std::round(_rows[r] / (float)totalRelativeHeight * getHeight());
-        int fixedWidth = HorizontalAutoSizeAt(r, c)->FixedWidth(rowHeight);
-        autoSizeColWidth[c] = std::max(autoSizeColWidth[c], fixedWidth);
-      }
-
   for (int i = 0; i < _cols.size(); i++)
-    if(_cols[i] != 0)
+    if (_cols[i] != 0)
       grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));
     else
-      grid.templateColumns.add(Grid::TrackInfo(Grid::Px(autoSizeColWidth[i])));
+      grid.templateColumns.add(Grid::TrackInfo(Grid::Px(FixedColWidth(i, getHeight()))));
 
   grid.performLayout(getLocalBounds());
 }
