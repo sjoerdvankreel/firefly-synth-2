@@ -1,6 +1,7 @@
 #pragma once
 
 struct FBStaticTopo;
+struct FBStaticParam;
 class FBGlobalBlockParamState;
 
 struct FBSpecialParam final
@@ -8,11 +9,10 @@ struct FBSpecialParam final
   int paramIndex = -1;
   int moduleIndex = -1;
   FBGlobalBlockParamState* state = nullptr;
-
-  float NormalizedToPlainLinear(FBStaticTopo const& topo) const;
+  FBStaticParam const& ParamTopo(FBStaticTopo const& topo) const;
 };
 
 struct FBSpecialParams final
 {
-  FBSpecialParam smoothing = {};
+  FBSpecialParam hostSmoothTime = {};
 };

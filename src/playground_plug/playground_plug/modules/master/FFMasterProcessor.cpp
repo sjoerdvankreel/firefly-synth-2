@@ -5,7 +5,7 @@
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBModuleProcState.hpp>
-#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 void

@@ -1,12 +1,17 @@
 #include <playground_base_vst3/FBVST3Utility.hpp>
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
+
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/base/state/FBExchangeStateContainer.hpp>
 
 #include <pluginterfaces/vst/ivstevents.h>
 #include <pluginterfaces/vst/ivstparameterchanges.h>
 
+#include <cstring>
 #include <algorithm>
 #include <unordered_map>
 
@@ -65,17 +70,28 @@ FBVST3AudioEffect::
 FBVST3AudioEffect(
   FBStaticTopo const& topo, FUID const& controllerId):
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_state(*_topo)
+_procState(std::make_unique<FBProcStateContainer>(*_topo)),
+_exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo))
 {
   FB_LOG_ENTRY_EXIT();
   setControllerClass(controllerId);
+}
+
+tresult PLUGIN_API 
+FBVST3AudioEffect::setActive(TBool state)
+{
+  if (state)
+    _exchangeHandler->onActivate(processSetup);
+  else
+    _exchangeHandler->onDeactivate();
+  return AudioEffect::setActive(state);
 }
 
 tresult PLUGIN_API
 FBVST3AudioEffect::getState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
-  std::string json = _topo->SaveProcStateToString(_state);
+  std::string json = _topo->SaveProcStateToString(*_procState);
   if (!FBVST3SaveIBStream(state, json))
     return kResultFalse;
   return kResultOk;
@@ -88,9 +104,20 @@ FBVST3AudioEffect::setState(IBStream* state)
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
-  if (!_topo->LoadProcStateFromStringWithDryRun(json, _state))
+  if (!_topo->LoadProcStateFromStringWithDryRun(json, *_procState))
     return kResultFalse;
   return kResultOk;
+}
+
+tresult PLUGIN_API
+FBVST3AudioEffect::disconnect(IConnectionPoint* other)
+{
+  if (_exchangeHandler)
+  {
+    _exchangeHandler->onDisconnect(other);
+    _exchangeHandler.reset();
+  }
+  return AudioEffect::disconnect(other);
 }
 
 tresult PLUGIN_API
@@ -125,11 +152,28 @@ tresult PLUGIN_API
 FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   FB_LOG_ENTRY_EXIT();
+  _sampleRate = (float)setup.sampleRate;
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
-  auto plug = MakePlugProcessor(_topo.get(), _state.Raw(), setup.sampleRate);
-  _hostProcessor.reset(new FBHostProcessor(_topo.get(), std::move(plug), &_state, setup.sampleRate));
+  _hostProcessor.reset(new FBHostProcessor(this));
   return kResultTrue;
+}
+
+tresult PLUGIN_API 
+FBVST3AudioEffect::connect(IConnectionPoint* other)
+{
+  tresult result = AudioEffect::connect(other);
+  if (result != kResultTrue)
+    return result;
+  auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
+    config.numBlocks = 1;
+    config.userContextID = 0;
+    config.blockSize = _topo->static_.state.exchangeStateSize;
+    config.alignment = _topo->static_.state.exchangeStateAlignment;
+    return true; };
+  _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
+  _exchangeHandler->onConnect(other, getHostContext());
+  return result;
 }
 
 tresult PLUGIN_API
@@ -179,6 +223,7 @@ FBVST3AudioEffect::process(ProcessData& data)
 
   _output.outputParams.clear();
   _hostProcessor->ProcessHost(_input, _output);
+
   if(data.outputParameterChanges != nullptr)
     for(int i = 0; i < _output.outputParams.size(); i++)
     {
@@ -189,6 +234,15 @@ FBVST3AudioEffect::process(ProcessData& data)
       if(queue != nullptr)
         queue->addPoint(0, event.normalized, unused);
     }
+
+  if (_exchangeBlock.blockID == InvalidDataExchangeBlockID)
+    _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
+  if (_exchangeBlock.blockID != InvalidDataExchangeBlockID)
+  {
+    memcpy(_exchangeBlock.data, _exchangeState->Raw(), _exchangeBlock.size);
+    _exchangeHandler->sendCurrentBlock();
+    _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
+  }
 
   return kResultTrue;
 }

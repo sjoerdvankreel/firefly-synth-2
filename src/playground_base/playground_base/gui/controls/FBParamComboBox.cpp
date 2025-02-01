@@ -13,7 +13,7 @@ FBParamControl(plugGUI, param)
   for (int i = 0; i < param->static_.ValueCount(); i++)
   {
     float normalized = param->static_.AnyDiscreteToNormalizedSlow(i);
-    addItem(param->static_.NormalizedToText(false, normalized), i + 1);
+    addItem(param->static_.NormalizedToText(FBTextDisplay::Text, normalized), i + 1);
   }
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
@@ -42,7 +42,7 @@ FBParamComboBox::valueChanged(Value& value)
 {
   float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedItemIndex());
   _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
-  _plugGUI->ParamNormalizedChangedFromUI(_param->runtimeParamIndex);
+  _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
   _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
   UpdateTooltip();
 }

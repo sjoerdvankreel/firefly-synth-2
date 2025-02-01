@@ -16,14 +16,10 @@
 using namespace juce;
 
 FBVST3GUIEditor::
-FBVST3GUIEditor(
-  FBPlugGUIFactory const& factory,
-  FBRuntimeTopo const* topo,
-  FBVST3EditController* editController,
-  FBGUIState* guiState):
+FBVST3GUIEditor(FBVST3EditController* editController):
 EditorView(editController),
-_topo(topo),
-_gui(std::make_unique<FBPlugGUIContainer>(topo, editController, guiState))
+_hostContext(editController),
+_gui(std::make_unique<FBPlugGUIContainer>(editController))
 {
   FB_LOG_ENTRY_EXIT();
 }
@@ -33,6 +29,12 @@ FBVST3GUIEditor::
 {
   FB_LOG_ENTRY_EXIT();
   dynamic_cast<FBVST3EditController&>(*getController()).ResetView();
+}
+
+void 
+FBVST3GUIEditor::UpdateExchangeState()
+{
+  _gui->UpdateExchangeState();
 }
 
 void
@@ -158,7 +160,7 @@ IPtr<IContextMenu>
 FBVST3GUIEditor::MakeVSTMenu(
   IPtr<IComponentHandler> handler, int paramIndex)
 {
-  ParamID paramTag = _topo->params[paramIndex].tag;
+  ParamID paramTag = _hostContext->Topo()->params[paramIndex].tag;
   FUnknownPtr<IComponentHandler3> handler3(handler);
   if (handler3 == nullptr)
     return {};

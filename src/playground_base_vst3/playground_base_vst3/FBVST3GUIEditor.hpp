@@ -1,8 +1,7 @@
 #pragma once
 
-#include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/gui/glue/FBHostGUIContext.hpp>
+#include <playground_base/gui/glue/FBHostContextMenu.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <public.sdk/source/vst/vsteditcontroller.h>
@@ -17,11 +16,8 @@ using namespace Steinberg::Vst;
 using namespace Steinberg::Linux;
 #endif
 
-struct FBGUIState;
-struct FBRuntimeTopo;
-struct FBStaticTopoGUI;
-
 class FBPlugGUIContext;
+class FBHostGUIContext;
 class FBVST3EditController;
 
 class FBVST3GUIEditor final:
@@ -31,7 +27,7 @@ public IPlugViewContentScaleSupport
 , public IEventHandler
 #endif
 {
-  FBRuntimeTopo const* const _topo;
+  FBHostGUIContext* const _hostContext;
   std::unique_ptr<FBPlugGUIContext> _gui;
 
   IPtr<IContextMenu> 
@@ -40,11 +36,7 @@ public IPlugViewContentScaleSupport
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);
   ~FBVST3GUIEditor();
-  FBVST3GUIEditor(
-    FBPlugGUIFactory const& factory, 
-    FBRuntimeTopo const* topo,
-    FBVST3EditController* editController,
-    FBGUIState* guiState);
+  FBVST3GUIEditor(FBVST3EditController* editController);
 
 #if SMTG_OS_LINUX
   void PLUGIN_API onFDIsSet(FileDescriptor fd) override;
@@ -63,6 +55,7 @@ public:
   tresult PLUGIN_API setContentScaleFactor(ScaleFactor factor) override;
   tresult PLUGIN_API queryInterface(Steinberg::TUID const iid, void** obj) override;
 
+  void UpdateExchangeState();
   void SetParamNormalized(int index, float normalized);
   void ParamContextMenuClicked(IPtr<IComponentHandler> handler, int paramIndex, int juceTag);
   std::vector<FBHostContextMenuItem> MakeParamContextMenu(IPtr<IComponentHandler> handler, int index);

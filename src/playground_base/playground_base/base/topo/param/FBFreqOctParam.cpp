@@ -1,4 +1,5 @@
 #include <playground_base/base/topo/param/FBFreqOctParam.hpp>
+#include <format>
 
 float
 FBFreqOctParam::PlainToNormalized(float plain) const
@@ -7,10 +8,12 @@ FBFreqOctParam::PlainToNormalized(float plain) const
 }
 
 std::string
-FBFreqOctParam::PlainToText(float plain) const
+FBFreqOctParam::PlainToText(FBTextDisplay display, float plain) const
 {
-  return std::to_string(plain);
-}
+  if(display == FBTextDisplay::IO)
+    return std::to_string(plain);
+  return std::format("{:.3f}", plain);
+} 
 
 std::optional<float>
 FBFreqOctParam::TextToPlain(std::string const& text) const

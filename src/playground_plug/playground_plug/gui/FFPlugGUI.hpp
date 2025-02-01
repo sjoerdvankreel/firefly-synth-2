@@ -2,29 +2,32 @@
 
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBGraphProcState.hpp>
 
-struct FBRuntimeTopo;
+#include <memory>
 
 class FBGridComponent;
 class FBHostGUIContext;
+class FBGraphRenderState;
 class FBModuleGraphComponent;
 
 class FFPlugGUI final:
 public FBPlugGUI
 {
   FBGridComponent* _content = {};
-  FBGraphProcState _graphProcState;
   FBModuleGraphComponent* _graph = {};
+  std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
   void RequestGraphRender(int paramIndex);
 
 public:
+  ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
-  FFPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext);
+  FFPlugGUI(FBHostGUIContext* hostContext);
 
   void resized() override;
-  void ParamNormalizedChangedFromUI(int index) override;
+
+  void UpdateExchangeState() override;
+  void SetParamNormalizedFromUI(int index, float normalized) override;
   void SetParamNormalizedFromHost(int index, float normalized) override;
 };

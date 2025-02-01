@@ -1,4 +1,5 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
 
@@ -13,7 +14,7 @@ FBModuleTabComponent(
 Component(),
 _tabs(TabbedButtonBar::Orientation::TabsAtTop)
 {
-  auto const& module = plugGUI->Topo()->static_.modules[moduleIndex];
+  auto const& module = plugGUI->HostContext()->Topo()->static_.modules[moduleIndex];
   if(module.slotCount == 1)
     _tabs.addTab(module.name, Colours::black, tabFactory(plugGUI, 0), false);
   else

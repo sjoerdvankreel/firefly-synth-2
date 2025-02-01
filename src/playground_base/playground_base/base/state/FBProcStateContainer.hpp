@@ -9,6 +9,7 @@
 
 struct FBRuntimeTopo;
 class FBScalarStateContainer;
+class FBExchangeStateContainer;
 
 class FBProcStateContainer final
 {
@@ -19,9 +20,8 @@ class FBProcStateContainer final
   void* _rawState;
   FBSpecialParams _special;
   void (*_freeRawState)(void*);
-  float _smoothingDurationSecs = {};
+  int _smoothingDurationSamples = {};
   std::vector<FBProcParamState> _params = {};
-
   std::vector<FBProcParamState>& Params() { return _params; }
 
 public:
@@ -29,11 +29,12 @@ public:
   FBProcStateContainer(FBRuntimeTopo const& topo);
   ~FBProcStateContainer() { _freeRawState(_rawState); }
 
-  void InitProcessing(int index, float value);
-  void InitProcessing(FBScalarStateContainer const& scalar);
-  void SetSmoothingCoeffs(float sampleRate, float durationSecs);
-
   void* Raw() { return _rawState; }
   FBSpecialParams const& Special() const { return _special; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
+
+  void SetSmoothingCoeffs(int sampleCount);
+  void InitProcessing(int index, float value);
+  void InitProcessing(FBScalarStateContainer const& scalar);
+  void InitProcessing(FBExchangeStateContainer const& exchange, int voice);
 };

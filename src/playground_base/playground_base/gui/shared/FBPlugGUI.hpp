@@ -10,7 +10,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-struct FBRuntimeTopo;
 class FBHostGUIContext;
 
 class FBPlugGUI:
@@ -20,9 +19,6 @@ public:
   template <class TComponent, class... Args>
   TComponent* StoreComponent(Args&&... args);
 
-  FBRuntimeTopo const* Topo() const { return _topo; }
-  FBHostGUIContext* HostContext() const { return _hostContext; }
-
   void ShowPopupMenuFor(
     juce::Component* target,
     juce::PopupMenu menu,
@@ -31,20 +27,22 @@ public:
 
   void ShowHostMenuForParam(int index);
   void SteppedParamNormalizedChanged(int index);
+  FBHostGUIContext* HostContext() const { return _hostContext; }
 
-  virtual void ParamNormalizedChangedFromUI(int index) = 0;
+  virtual void UpdateExchangeState() = 0;
+  virtual void SetParamNormalizedFromUI(int index, float normalized) = 0;
   virtual void SetParamNormalizedFromHost(int index, float normalized);
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
-  FBPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext);
+  FBPlugGUI(FBHostGUIContext* hostContext);
 
   void InitAllDependencies();
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
-  FBRuntimeTopo const* const _topo;
   FBHostGUIContext* const _hostContext;
+  juce::TooltipWindow* _tooltipWindow = {};
   std::unordered_map<int, int> _paramIndexToComponent = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsDependents = {};

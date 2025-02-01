@@ -293,7 +293,7 @@ FBRuntimeTopo::SaveEditStateToVar(
   {
     auto param = new DynamicObject;
     param->setProperty("id", String(params[p].id));
-    param->setProperty("val", String(params[p].static_.NormalizedToText(true, *edit.Params()[p])));
+    param->setProperty("val", String(params[p].static_.NormalizedToText(FBTextDisplay::IO, *edit.Params()[p])));
     state.append(var(param));
   }
 

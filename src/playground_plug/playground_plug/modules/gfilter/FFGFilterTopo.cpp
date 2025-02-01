@@ -23,6 +23,7 @@ FFMakeGFilterTopo()
   auto selectOn = [](auto& module) { return &module.block.on; };
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
+  on.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectOn);
 
   auto& type = result->params[(int)FFGFilterParam::Type];
   type.acc = false;
@@ -44,6 +45,7 @@ FFMakeGFilterTopo()
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
+  type.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectType);
 
   auto& res = result->params[(int)FFGFilterParam::Res];
   res.acc = true;
@@ -57,6 +59,7 @@ FFMakeGFilterTopo()
   auto selectRes = [](auto& module) { return &module.acc.res; };
   res.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectRes);
   res.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectRes);
+  res.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectRes);
 
   auto& freq = result->params[(int)FFGFilterParam::Freq];
   freq.acc = true;
@@ -71,6 +74,7 @@ FFMakeGFilterTopo()
   auto selectFreq = [](auto& module) { return &module.acc.freq; };
   freq.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectFreq);
   freq.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectFreq);
+  freq.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectFreq);
 
   auto& gain = result->params[(int)FFGFilterParam::Gain];
   gain.acc = true;
@@ -85,6 +89,7 @@ FFMakeGFilterTopo()
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
   gain.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
+  gain.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectGain);
 
   return result;
 }

@@ -43,20 +43,20 @@ FBStaticParam::NormalizedToAnyDiscreteSlow(float normalized) const
 }
 
 std::string 
-FBStaticParam::NormalizedToText(bool io, float normalized) const
+FBStaticParam::NormalizedToText(FBTextDisplay display, float normalized) const
 {
   switch (type)
   {
-  case FBParamType::List:
-    return list.PlainToText(io, list.NormalizedToPlain(normalized));
-  case FBParamType::Linear:
-    return linear.PlainToText(linear.NormalizedToPlain(normalized));
-  case FBParamType::FreqOct:
-    return freqOct.PlainToText(freqOct.NormalizedToPlain(normalized));
   case FBParamType::Boolean:
     return boolean.PlainToText(boolean.NormalizedToPlain(normalized));
   case FBParamType::Discrete:
     return discrete.PlainToText(discrete.NormalizedToPlain(normalized));
+  case FBParamType::List:
+    return list.PlainToText(display, list.NormalizedToPlain(normalized));
+  case FBParamType::Linear:
+    return linear.PlainToText(display, linear.NormalizedToPlain(normalized));
+  case FBParamType::FreqOct:
+    return freqOct.PlainToText(display, freqOct.NormalizedToPlain(normalized));
   default:
     assert(false);
     return {};

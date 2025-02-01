@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/topo/FBTextDisplay.hpp>
 #include <playground_base/base/topo/param/FBListItem.hpp>
 
 #include <string>
@@ -10,13 +11,11 @@
 struct FBListParam
 {
   std::vector<FBListItem> items = {};
-
   int ValueCount() const { return (int)items.size(); }
 
   float PlainToNormalized(int plain) const;
   int NormalizedToPlain(float normalized) const;
-
-  std::string PlainToText(bool io, int plain) const;
+  std::string PlainToText(FBTextDisplay display, int plain) const;
   std::optional<int> TextToPlain(bool io, std::string const& text) const;
 };
 

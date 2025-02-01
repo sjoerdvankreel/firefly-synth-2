@@ -1,5 +1,7 @@
 #pragma once
 
+#include <compare>
+
 struct FBNote final
 {
   int id = -1;

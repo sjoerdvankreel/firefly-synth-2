@@ -15,6 +15,17 @@
 
 #include <array>
 
+struct FFGlobalExchangeState final
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
+};
+
+struct FFVoiceExchangeState final
+{
+  std::array<FFEnvExchangeState, FFEnvCount> env = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
+};
+
 struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
 {
   FFMasterDSPState master = {};
@@ -67,6 +78,23 @@ struct FFScalarState final
 {
   FFScalarParamState param = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
+};
+
+struct FFExchangeParamState final
+{
+  typedef std::array<float, FBMaxVoices> ScalarPerVoice;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFExchangeParamState);
+  FFGlobalParamState<float, float> global = {};
+  FFVoiceParamState<ScalarPerVoice, ScalarPerVoice> voice = {};
+};
+
+struct FFExchangeState final
+{
+  FFExchangeParamState param = {};
+  FFGlobalExchangeState global = {};
+  std::array<bool, FBMaxVoices> voiceActive = {};
+  std::array<FFVoiceExchangeState, FBMaxVoices> voice = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFExchangeState);
 };
 
 struct alignas(sizeof(FBFloatVector)) FFProcParamState final

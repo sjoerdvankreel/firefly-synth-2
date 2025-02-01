@@ -26,24 +26,27 @@ FFMakeMasterTopo()
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
   gain.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
+  gain.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectGain);
 
-  auto& smoothing = result->params[(int)FFMasterParam::Smoothing];
-  smoothing.acc = false;
-  smoothing.defaultText = "2";
-  smoothing.name = "Smth";
-  smoothing.slotCount = 1;
-  smoothing.unit = "Ms";
-  smoothing.id = "{961D1B53-9509-47EA-B646-C948C5FACA82}";
-  smoothing.type = FBParamType::Linear;
-  smoothing.linear.min = 0.0f;
-  smoothing.linear.max = 0.05f;
-  smoothing.linear.displayMultiplier = 1000.0f;
-  auto selectSmoothing = [](auto& module) { return &module.block.smoothing; };
-  smoothing.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmoothing);
-  smoothing.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectSmoothing);
+  auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
+  hostSmoothTime.acc = false;
+  hostSmoothTime.defaultText = "2";
+  hostSmoothTime.name = "Smth";
+  hostSmoothTime.slotCount = 1;
+  hostSmoothTime.unit = "Ms";
+  hostSmoothTime.id = "{961D1B53-9509-47EA-B646-C948C5FACA82}";
+  hostSmoothTime.type = FBParamType::Linear;
+  hostSmoothTime.linear.min = 0.0f;
+  hostSmoothTime.linear.max = 0.05f;
+  hostSmoothTime.linear.displayMultiplier = 1000.0f;
+  auto selectHostSmoothTime = [](auto& module) { return &module.block.hostSmoothTime; };
+  hostSmoothTime.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectHostSmoothTime);
+  hostSmoothTime.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectHostSmoothTime);
+  hostSmoothTime.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectHostSmoothTime);
 
   auto& voices = result->params[(int)FFMasterParam::Voices];
   voices.acc = false;
+  voices.output = true;
   voices.defaultText = "0";
   voices.name = "Voices";
   voices.slotCount = 1;
@@ -53,6 +56,7 @@ FFMakeMasterTopo()
   auto selectVoices = [](auto& module) { return &module.block.voices; };
   voices.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectVoices);
   voices.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectVoices);
+  voices.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectVoices);
 
   return result;
 }

@@ -1,5 +1,6 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBScalarStateContainer.hpp>
 
 #include <clap/helpers/plugin.hxx>
 
@@ -43,7 +44,7 @@ ContextMenuBuilderAddItem(
 float
 FBCLAPPlugin::GetParamNormalized(int index) const
 {
-  return *_editState.Params()[index];
+  return *_editState->Params()[index];
 }
 
 void
@@ -67,7 +68,7 @@ FBCLAPPlugin::BeginParamChange(int index)
 void
 FBCLAPPlugin::PerformParamEdit(int index, float normalized)
 {
-  *_editState.Params()[index] = normalized;
+  *_editState->Params()[index] = normalized;
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized);
   _mainToAudioEvents.enqueue(event);
   if (_host.canUseParams())

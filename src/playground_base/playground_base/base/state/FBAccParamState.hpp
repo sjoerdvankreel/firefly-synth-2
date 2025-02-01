@@ -20,11 +20,10 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
   float _modulation = {};
   FBOnePoleFilter _smoother = {};
 
+  void InitProcessing(float value);
+  void SetSmoothingCoeffs(int sampleCount);
   void SmoothNext(int sample, float automation);
   void Modulate(float offset) { _modulation = offset; }
-
-  void InitProcessing(float value);
-  void SetSmoothingCoeffs(float sampleRate, float durationSecs);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
@@ -45,9 +44,9 @@ FBAccParamState::InitProcessing(float value)
 }
 
 inline void 
-FBAccParamState::SetSmoothingCoeffs(float sampleRate, float durationSecs) 
+FBAccParamState::SetSmoothingCoeffs(int sampleCount) 
 { 
-  _smoother.SetCoeffs(sampleRate, durationSecs); 
+  _smoother.SetCoeffs(sampleCount);
 }
 
 inline void

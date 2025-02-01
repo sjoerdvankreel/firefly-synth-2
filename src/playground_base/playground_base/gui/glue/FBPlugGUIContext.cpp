@@ -1,54 +1,57 @@
+#include <playground_base/base/state/FBGUIState.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
-#include <playground_base/base/topo/FBStaticTopoGUI.hpp>
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <cmath>
 #include <algorithm>
 
 FBPlugGUIContext::
-FBPlugGUIContext(
-  FBStaticTopoGUI const* topo,
-  FBGUIState* state):
-_state(state),
-_topo(topo) {}
+FBPlugGUIContext(FBHostGUIContext* const hostContext):
+_hostContext(hostContext) {}
 
-float 
-FBPlugGUIContext::CombinedScale() const
-{
-  return _state->userScale * _systemScale;
-}
-
-int
-FBPlugGUIContext::GetHeightForAspectRatio(int width) const
-{
-  return width * _topo->aspectRatioHeight / _topo->aspectRatioWidth;
-}
-
-void 
+void
 FBPlugGUIContext::SetSystemScale(float scale)
 {
   _systemScale = scale;
   RequestRescale(CombinedScale());
 }
 
-void 
-FBPlugGUIContext::SetUserScaleByHostWidth(int width)
+float 
+FBPlugGUIContext::CombinedScale() const
 {
-  _state->userScale = ((float)width / (float)_topo->plugWidth) / _systemScale;
-  RequestRescale(CombinedScale());
+  return _hostContext->GUIState()->userScale * _systemScale;
+}
+
+int
+FBPlugGUIContext::GetHeightForAspectRatio(int width) const
+{
+  auto const& topoGUI = _hostContext->Topo()->static_.gui;
+  return width * topoGUI.aspectRatioHeight / topoGUI.aspectRatioWidth;
 }
 
 int
 FBPlugGUIContext::ClampHostWidthForScale(int width) const
 {
-  float minW = _topo->plugWidth * _topo->minUserScale * _systemScale;
-  float maxW = _topo->plugWidth * _topo->maxUserScale * _systemScale;
+  auto const& topoGUI = _hostContext->Topo()->static_.gui;
+  float minW = topoGUI.plugWidth * topoGUI.minUserScale * _systemScale;
+  float maxW = topoGUI.plugWidth * topoGUI.maxUserScale * _systemScale;
   return (int)std::round(std::clamp((float)width, minW, maxW));
 }
 
 std::pair<int, int>
 FBPlugGUIContext::GetHostSize() const
 {
-  int w = (int)std::round(_topo->plugWidth * CombinedScale());
-  int h = (int)std::round(GetHeightForAspectRatio(_topo->plugWidth) * CombinedScale());
+  auto const& topoGUI = _hostContext->Topo()->static_.gui;
+  int w = (int)std::round(topoGUI.plugWidth * CombinedScale());
+  int h = (int)std::round(GetHeightForAspectRatio(topoGUI.plugWidth) * CombinedScale());
   return { w, h };
+}
+
+void
+FBPlugGUIContext::SetUserScaleByHostWidth(int width)
+{
+  auto const& topoGUI = _hostContext->Topo()->static_.gui;
+  _hostContext->GUIState()->userScale = ((float)width / (float)topoGUI.plugWidth) / _systemScale;
+  RequestRescale(CombinedScale());
 }

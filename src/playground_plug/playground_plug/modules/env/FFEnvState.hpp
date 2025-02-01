@@ -8,6 +8,17 @@
 #include <memory>
 
 struct FBStaticModule;
+struct FBModuleGraphComponentData;
+
+class FFEnvExchangeState final
+{
+  bool active = {};
+  int position = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvExchangeState);
+  friend class FFEnvProcessor;
+  friend void FFEnvRenderGraph(FBModuleGraphComponentData* graphData);
+};
 
 class alignas(sizeof(FBFloatVector)) FFEnvDSPState final
 {
@@ -16,7 +27,7 @@ class alignas(sizeof(FBFloatVector)) FFEnvDSPState final
 public:
   FBFixedFloatBlock output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvDSPState);
-};
+}; 
 
 template <class TVoiceBlock>
 class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
@@ -27,11 +38,11 @@ class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
   std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> mode = {};
   std::array<TVoiceBlock, 1> sync = {};
-  std::array<TVoiceBlock, 1> smooth = {};
-  std::array<TVoiceBlock, 1> delayTime = {};
-  std::array<TVoiceBlock, 1> attackTime = {};
   std::array<TVoiceBlock, 1> holdTime = {};
+  std::array<TVoiceBlock, 1> delayTime = {};
   std::array<TVoiceBlock, 1> decayTime = {};
+  std::array<TVoiceBlock, 1> attackTime = {};
+  std::array<TVoiceBlock, 1> smoothTime = {};
   std::array<TVoiceBlock, 1> releaseTime = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvBlockParamState);
@@ -42,10 +53,10 @@ class alignas(alignof(TVoiceAcc)) FFEnvAccParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
-  std::array<TVoiceAcc, 1> sustain = {};
   std::array<TVoiceAcc, 1> decaySlope = {};
   std::array<TVoiceAcc, 1> attackSlope = {};
   std::array<TVoiceAcc, 1> releaseSlope = {};
+  std::array<TVoiceAcc, 1> sustainLevel = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvAccParamState);
 };

@@ -20,6 +20,12 @@ FBToBipolar(FBFloatVector v)
   return (v * 2.0f) - 1.0f;
 }
 
+inline int
+FBTimeToSamples(float time, float sampleRate)
+{
+  return (int)std::round(time * sampleRate);
+}
+
 inline FBFloatVector
 FBPitchToFreq(FBFloatVector pitch, float sampleRate)
 { 

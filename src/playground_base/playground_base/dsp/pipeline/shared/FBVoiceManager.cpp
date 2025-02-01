@@ -6,8 +6,8 @@
 #include <cassert>
 
 FBVoiceManager::
-FBVoiceManager(FBProcStateContainer* state) :
-_state(state) {}
+FBVoiceManager(FBProcStateContainer* procState) :
+_procState(procState) {}
 
 void
 FBVoiceManager::Return(int slot)
@@ -61,11 +61,11 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
   _voices[slot].initialOffset = event.pos;
   _voices[slot].state = FBVoiceState::Active;
 
-  for (int p = 0; p < _state->Params().size(); p++)
-    if (_state->Params()[p].IsVoice())
-      if (!_state->Params()[p].IsAcc())
-        _state->Params()[p].VoiceBlock().BeginVoice(slot);
+  for (int p = 0; p < _procState->Params().size(); p++)
+    if (_procState->Params()[p].IsVoice())
+      if (!_procState->Params()[p].IsAcc())
+        _procState->Params()[p].VoiceBlock().BeginVoice(slot);
       else
-        _state->Params()[p].VoiceAcc().Voice()[slot].InitProcessing(_state->Params()[p].Value());
+        _procState->Params()[p].VoiceAcc().Voice()[slot].InitProcessing(_procState->Params()[p].Value());
   return slot;
 }

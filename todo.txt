@@ -1,7 +1,6 @@
-tooltips
-continuous tooltips
+data exchange for clap
+not hardcode env1 to voice amp
 voice markers for env
-last tweaked rt module not param
 get rid of the sysheaders warnings
 handle envelope offset (actual start index in block)
 osci unison

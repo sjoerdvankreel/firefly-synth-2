@@ -13,6 +13,13 @@ FFTopoDetailSelectAddr(
 }
 
 inline auto
+FFTopoDetailSelectProcAddr(
+  auto selectModule, auto selectParam)
+{
+  return FFTopoDetailSelectAddr<FFProcState>(selectModule, selectParam);
+}
+
+inline auto
 FFTopoDetailSelectScalarAddr(
   auto selectModule, auto selectParam)
 {
@@ -20,8 +27,8 @@ FFTopoDetailSelectScalarAddr(
 }
 
 inline auto
-FFTopoDetailSelectProcAddr(
+FFTopoDetailSelectExchangeAddr(
   auto selectModule, auto selectParam)
 {
-  return FFTopoDetailSelectAddr<FFProcState>(selectModule, selectParam);
+  return FFTopoDetailSelectAddr<FFExchangeState>(selectModule, selectParam);
 }

@@ -1,7 +1,9 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base/gui/glue/FBPlugGUIContext.hpp>
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/gui/glue/FBPlugGUIContext.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/base/state/FBScalarStateContainer.hpp>
 
 bool 
 FBCLAPPlugin::implementsState() const noexcept 
@@ -15,7 +17,7 @@ FBCLAPPlugin::stateSave(const clap_ostream* stream) noexcept
   FB_LOG_ENTRY_EXIT();
   int64_t written = 0;
   int64_t numWritten = 0;
-  std::string json = _topo->SaveEditAndGUIStateToString(_editState, *_guiState);
+  std::string json = _topo->SaveEditAndGUIStateToString(*_editState, *_guiState);
   while ((numWritten = stream->write(stream, json.data() + written, json.size() - written)) != 0)
     if (numWritten == -1)
       return false;
@@ -41,12 +43,12 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
     else
       json.append(buffer, read);
 
-  if (!_topo->LoadEditAndGUIStateFromStringWithDryRun(json, _editState, *_guiState))
+  if (!_topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState))
     return false;
-  for (int i = 0; i < _editState.Params().size(); i++)
+  for (int i = 0; i < _editState->Params().size(); i++)
   {
-    float normalized = *_editState.Params()[i];
-    _procState.InitProcessing(i, normalized);
+    float normalized = *_editState->Params()[i];
+    _procState->InitProcessing(i, normalized);
     if (_gui)
       _gui->SetParamNormalized(i, normalized);
   }

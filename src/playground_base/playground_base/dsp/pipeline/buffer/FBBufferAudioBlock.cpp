@@ -1,4 +1,4 @@
-#include <playground_base/dsp/pipeline/host/FBHostAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 

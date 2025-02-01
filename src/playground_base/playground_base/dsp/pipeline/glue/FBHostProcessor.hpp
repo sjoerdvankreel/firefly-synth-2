@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 #include <memory>
@@ -13,18 +13,22 @@ struct FBHostOutputBlock;
 class FBVoiceManager;
 class FBHostAudioBlock;
 class IFBPlugProcessor;
+class IFBHostDSPContext;
 class FBSmoothingProcessor;
 class FBProcStateContainer;
 class FBHostBufferProcessor;
 class FBFixedBufferProcessor;
+class FBExchangeStateContainer;
 
 class FBHostProcessor final
 {
-  float _sampleRate;
-  FBRuntimeTopo const* _topo;
   FBPlugInputBlock _plugIn = {};
   FBFixedOutputBlock _fixedOut = {};
-  FBProcStateContainer* _state = {};
+
+  float const _sampleRate;
+  FBRuntimeTopo const* const _topo;
+  FBProcStateContainer* const _procState;
+  FBExchangeStateContainer* const _exchangeState;
   std::unique_ptr<IFBPlugProcessor> _plug;
   std::unique_ptr<FBVoiceManager> _voiceManager;
   std::unique_ptr<FBHostBufferProcessor> _hostBuffer;
@@ -34,12 +38,8 @@ class FBHostProcessor final
   void ProcessVoices();
 
 public:
-  FBHostProcessor(
-    FBRuntimeTopo const* topo,
-    std::unique_ptr<IFBPlugProcessor>&& plug,
-    FBProcStateContainer* state, float sampleRate);
-
   ~FBHostProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostProcessor);
+  FBHostProcessor(IFBHostDSPContext* hostContext);
   void ProcessHost(FBHostInputBlock const& input, FBHostOutputBlock& output);
 };

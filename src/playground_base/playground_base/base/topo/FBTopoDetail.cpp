@@ -19,3 +19,11 @@ FBMakeRuntimeName(std::string const& name, int slotCount, int slot)
     result += " " + std::to_string(slot + 1);
   return result;
 }
+
+std::string
+FBMakeRuntimeTooltip(std::string const& name, std::string const& tooltip, int slotCount, int slot)
+{
+  if (tooltip.empty())
+    return FBMakeRuntimeName(name, slotCount, slot);
+  return FBMakeRuntimeName(tooltip, slotCount, slot);
+}

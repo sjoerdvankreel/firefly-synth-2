@@ -6,8 +6,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class FBPlugGUI;
-struct FBGraphProcState;
+class FBGraphRenderState;
 
 class FBModuleGraphComponent final:
 public juce::Component
@@ -15,11 +14,16 @@ public juce::Component
   int _tweakedParamByUI = -1;
   FBModuleGraphRenderer _renderer = {};
   FBModuleGraphComponentData _data = {};
+  
   bool PrepareForRender(int paramIndex);
+  void PaintSeries(
+    juce::Graphics& g, 
+    juce::Colour color, 
+    std::vector<float> const& points);
 
 public:
-  FBModuleGraphComponent(FBGraphProcState* state);
   FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphComponent);
+  FBModuleGraphComponent(FBGraphRenderState* state);
 
   void RequestRerender(int paramIndex);
   void paint(juce::Graphics& g) override;

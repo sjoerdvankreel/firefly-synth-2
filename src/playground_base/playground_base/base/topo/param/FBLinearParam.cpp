@@ -1,4 +1,5 @@
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
+#include <format>
 
 float
 FBLinearParam::PlainToNormalized(float plain) const
@@ -7,9 +8,12 @@ FBLinearParam::PlainToNormalized(float plain) const
 }
 
 std::string
-FBLinearParam::PlainToText(float plain) const
+FBLinearParam::PlainToText(FBTextDisplay display, float plain) const
 {
-  return std::to_string(plain * displayMultiplier);
+  float displayPlain = plain * displayMultiplier;
+  if (display == FBTextDisplay::IO)
+    return std::to_string(displayPlain);
+  return std::format("{:.3f}", displayPlain);
 }
 
 std::optional<float>

@@ -3,6 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/FBStaticParam.hpp>
 
+#include <array>
 #include <string>
 #include <vector>
 #include <functional>
@@ -18,7 +19,7 @@ struct FBStaticModule final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
-  FBModuleGraphRenderer renderGraph = {};
   std::vector<FBStaticParam> params = {};
+  FBModuleGraphRenderer renderGraph = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };

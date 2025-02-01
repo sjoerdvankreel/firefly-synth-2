@@ -2,28 +2,33 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
-#include <playground_base/base/state/FBGraphProcState.hpp>
 #include <playground_base/base/state/FBModuleProcState.hpp>
+#include <playground_base/base/state/FBGraphRenderState.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 template void 
-FFRenderModuleGraph(FFModuleGraphRenderData<FFEnvProcessor>&);
+FFRenderModuleGraph(
+  FFModuleGraphRenderData<FFEnvProcessor>&, 
+  std::vector<float>&);
 
 template <class Processor>
 void
-FFRenderModuleGraph(FFModuleGraphRenderData<Processor>& renderData)
+FFRenderModuleGraph(
+  FFModuleGraphRenderData<Processor>& renderData, 
+  std::vector<float>& pointsOut)
 {
-  FBFixedFloatArray points;
+  pointsOut.clear();
+  FBFixedFloatArray pointsIn;
   int processed = FBFixedBlockSamples;
-  auto const& moduleState = renderData.graphData->state->moduleState;
+  auto const& moduleState = renderData.graphData->state->ModuleState();
   auto* procState = moduleState.ProcState<FFProcState>();
 
   renderData.processor.BeginVoice(moduleState);
   while (processed == FBFixedBlockSamples)
   {
     processed = renderData.processor.Process(moduleState);
-    renderData.outputSelector(procState->dsp, moduleState.moduleSlot)->StoreToFloatArray(points);
+    renderData.outputSelector(procState->dsp, moduleState.moduleSlot)->StoreToFloatArray(pointsIn);
     for (int i = 0; i < processed; i++)
-      renderData.graphData->points.push_back(points.data[i]);
+      pointsOut.push_back(pointsIn.data[i]);
   }
 }

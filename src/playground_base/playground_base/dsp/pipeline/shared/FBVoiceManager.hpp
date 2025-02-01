@@ -14,14 +14,14 @@ class FBVoiceManager final
 {
   int _voiceCount = 0;
   std::uint64_t _counter = {};
-  FBProcStateContainer* const _state;
+  FBProcStateContainer* const _procState;
   std::vector<FBNote> _returnedVoices = {};
   std::array<std::uint64_t, FBMaxVoices> _num = {};
   std::array<FBVoiceInfo, FBMaxVoices> _voices = {};
 
 public:
-  FBVoiceManager(FBProcStateContainer* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVoiceManager);
+  FBVoiceManager(FBProcStateContainer* procState);
 
   void Return(int slot);
   void ResetReturnedVoices();

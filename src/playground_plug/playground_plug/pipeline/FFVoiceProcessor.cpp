@@ -2,7 +2,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/pipeline/FFVoiceProcessor.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
-#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 
 void 
 FFVoiceProcessor::BeginVoice(FBModuleProcState state)
@@ -42,6 +42,8 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     if (i == 0)
       voiceFinished = envProcessed != FBFixedBlockSamples;
   }
+
+  // TODO dont hardcode this to voice amp?
   voiceDSP.output.Mul(voiceDSP.env[0].output);
   return voiceFinished;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBVector.hpp>
+#include <playground_base/base/topo/FBTextDisplay.hpp>
 
 #include <cmath>
 #include <string>
@@ -13,9 +14,8 @@ struct FBFreqOctParam
   float minHz = 0.0f;
 
   int ValueCount() const { return 0; }
-
-  std::string PlainToText(float plain) const;
   std::optional<float> TextToPlain(std::string const& text) const;
+  std::string PlainToText(FBTextDisplay display, float plain) const;
 
   float PlainToNormalized(float plain) const;
   float NormalizedToPlain(float normalized) const;

@@ -1,6 +1,7 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
+#include <playground_base/base/state/FBExchangeStateContainer.hpp>
 
 #include <set>
 #include <cassert>
@@ -50,24 +51,37 @@ _freeRawState(topo.static_.state.freeRawProcState)
 }
 
 void 
-FBProcStateContainer::InitProcessing(int index, float value)
+FBProcStateContainer::InitProcessing(
+  int index, float value)
 {
   Params()[index].InitProcessing(value);
 }
 
 void
-FBProcStateContainer::InitProcessing(FBScalarStateContainer const& scalar)
+FBProcStateContainer::InitProcessing(
+  FBScalarStateContainer const& scalar)
 {
   for (int p = 0; p < Params().size(); p++)
     InitProcessing(p, *scalar.Params()[p]);
 }
 
-void
-FBProcStateContainer::SetSmoothingCoeffs(float sampleRate, float durationSecs)
+void 
+FBProcStateContainer::InitProcessing(
+  FBExchangeStateContainer const& exchange, int voice)
 {
-  if (_smoothingDurationSecs == durationSecs)
-    return;
-  _smoothingDurationSecs = durationSecs;
   for (int p = 0; p < Params().size(); p++)
-    Params()[p].SetSmoothingCoeffs(sampleRate, durationSecs);
+    if (Params()[p].IsVoice())
+      InitProcessing(p, exchange.Params()[p].Voice()[voice]);
+    else
+      InitProcessing(p, *exchange.Params()[p].Global());    
+}
+
+void
+FBProcStateContainer::SetSmoothingCoeffs(int sampleCount)
+{
+  if (_smoothingDurationSamples == sampleCount)
+    return;
+  _smoothingDurationSamples = sampleCount;
+  for (int p = 0; p < Params().size(); p++)
+    Params()[p].SetSmoothingCoeffs(sampleCount);
 }

@@ -83,7 +83,7 @@ bool
 FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
 {
   FB_LOG_ENTRY_EXIT();
-  _gui = std::make_unique<FBPlugGUIContainer>(_topo.get(), this, _guiState.get());
+  _gui = std::make_unique<FBPlugGUIContainer>(this);
   return true;
 }
 

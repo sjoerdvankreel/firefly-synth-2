@@ -1,8 +1,8 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/host/FBBlockEvent.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostAudioBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBBlockEvent.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/pipeline/shared/FBAccModEvent.hpp>
 #include <playground_base/dsp/pipeline/shared/FBAccAutoEvent.hpp>

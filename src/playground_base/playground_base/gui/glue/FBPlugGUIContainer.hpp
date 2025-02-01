@@ -9,9 +9,6 @@
 class FBPlugGUI;
 class FBHostGUIContext;
 
-struct FBGUIState;
-struct FBRuntimeTopo;
-
 class FBPlugGUIContainer final:
 public juce::Component,
 public FBPlugGUIContext
@@ -23,15 +20,14 @@ protected:
 
 public:
   ~FBPlugGUIContainer();
-  FBPlugGUIContainer(
-    FBRuntimeTopo const* topo,
-    FBHostGUIContext* hostContext,
-    FBGUIState* state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContainer);
+  FBPlugGUIContainer(FBHostGUIContext* hostContext);
+
+  void paint(juce::Graphics& g) override;
 
   void RemoveFromDesktop() override;
+  void UpdateExchangeState() override;
   void SetVisible(bool visible) override;
-  void paint(juce::Graphics& g) override;
   void AddToDesktop(void* parent) override;
   void SetParamNormalized(int index, float normalized) override;
 };

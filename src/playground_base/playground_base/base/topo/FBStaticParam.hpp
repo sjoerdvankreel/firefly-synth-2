@@ -2,6 +2,7 @@
 
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/topo/FBTextDisplay.hpp>
 #include <playground_base/base/topo/FBParamsDependency.hpp>
 
 #include <playground_base/base/topo/param/FBParamType.hpp>
@@ -21,6 +22,7 @@
 struct FBStaticParam final
 {
   bool acc = false;
+  bool output = false;
   int slotCount = {};
   std::string id = {};
   std::string name = {};
@@ -41,6 +43,8 @@ struct FBStaticParam final
   FBGlobalAccAddrSelector globalAccAddr = {};
   FBVoiceBlockAddrSelector voiceBlockAddr = {};
   FBGlobalBlockAddrSelector globalBlockAddr = {};    
+  FBVoiceExchangeAddrSelector voiceExchangeAddr = {};
+  FBGlobalExchangeAddrSelector globalExchangeAddr = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
@@ -49,7 +53,7 @@ struct FBStaticParam final
   int NormalizedToAnyDiscreteSlow(float normalized) const;
 
   float DefaultNormalizedByText() const;
-  std::string NormalizedToText(bool io, float normalized) const;
+  std::string NormalizedToText(FBTextDisplay display, float normalized) const;
   std::optional<float> TextToNormalized(bool io, std::string const& text) const;
 };
 

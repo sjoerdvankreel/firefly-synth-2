@@ -13,14 +13,14 @@ FBProcParamState::InitProcessing(float value)
 }
 
 void
-FBProcParamState::SetSmoothingCoeffs(float sampleRate, float durationSecs)
+FBProcParamState::SetSmoothingCoeffs(int sampleCount)
 {
   switch (Type())
   {
   case FBProcParamType::VoiceBlock: break;
   case FBProcParamType::GlobalBlock: break;
-  case FBProcParamType::VoiceAcc: VoiceAcc().SetSmoothingCoeffs(sampleRate, durationSecs); break;
-  case FBProcParamType::GlobalAcc: GlobalAcc().SetSmoothingCoeffs(sampleRate, durationSecs); break;
+  case FBProcParamType::VoiceAcc: VoiceAcc().SetSmoothingCoeffs(sampleCount); break;
+  case FBProcParamType::GlobalAcc: GlobalAcc().SetSmoothingCoeffs(sampleCount); break;
   default: assert(false);
   }
 }

@@ -23,6 +23,7 @@ FFMakeGLFOTopo()
   auto selectOn = [](auto& module) { return &module.block.on; };
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
+  on.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectOn);
 
   auto& rate = result->params[(int)FFGLFOParam::Rate];
   rate.acc = true;
@@ -37,5 +38,6 @@ FFMakeGLFOTopo()
   auto selectRate = [](auto& module) { return &module.acc.rate; };
   rate.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectRate);
   rate.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectRate);
+  rate.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectRate);
   return result;
 }

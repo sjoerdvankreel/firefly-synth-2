@@ -6,6 +6,7 @@
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBGraphRenderState.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponent.hpp>
@@ -13,9 +14,12 @@
 using namespace juce;
 
 FFPlugGUI::
-FFPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext):
-FBPlugGUI(topo, hostContext),
-_graphProcState(this)
+~FFPlugGUI() {}
+
+FFPlugGUI::
+FFPlugGUI(FBHostGUIContext* hostContext):
+FBPlugGUI(hostContext),
+_graphRenderState(std::make_unique<FBGraphRenderState>(this))
 {
   SetupGUI();
   InitAllDependencies();
@@ -25,7 +29,6 @@ _graphProcState(this)
 void
 FFPlugGUI::RequestGraphRender(int paramIndex)
 {
-  _graphProcState.PrepareForRender();
   _graph->RequestRerender(paramIndex);
 }
 
@@ -37,10 +40,16 @@ FFPlugGUI::resized()
 }
 
 void 
-FFPlugGUI::ParamNormalizedChangedFromUI(int index)
+FFPlugGUI::UpdateExchangeState()
 {
-  float normalized = HostContext()->GetParamNormalized(index);
-  _graphProcState.container.InitProcessing(index, normalized);
+  if(_graph->TweakedParamByUI() != -1)
+    RequestGraphRender(_graph->TweakedParamByUI());
+}
+
+void 
+FFPlugGUI::SetParamNormalizedFromUI(int index, float normalized)
+{
+  _graphRenderState->PrimaryParamChanged(index, normalized);
   RequestGraphRender(index);
 }
 
@@ -48,17 +57,19 @@ void
 FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
 {
   FBPlugGUI::SetParamNormalizedFromHost(index, normalized);
-  _graphProcState.container.InitProcessing(index, normalized);
+  if (HostContext()->Topo()->params[index].static_.output)
+    return;
+  _graphRenderState->PrimaryParamChanged(index, normalized);
   if (_graph->TweakedParamByUI() != -1 &&
-    Topo()->params[index].runtimeModuleIndex ==
-    Topo()->params[_graph->TweakedParamByUI()].runtimeModuleIndex)
+    HostContext()->Topo()->params[index].runtimeModuleIndex ==
+    HostContext()->Topo()->params[_graph->TweakedParamByUI()].runtimeModuleIndex)
     RequestGraphRender(index);
 }
 
 void 
 FFPlugGUI::SetupGUI()
 {
-  _graph = StoreComponent<FBModuleGraphComponent>(&_graphProcState);
+  _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
   _content = StoreComponent<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1, 1, 1, 2 }, std::vector<int> { 1, 1 });
   _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(0, 1, 1, 1, _graph);
@@ -67,5 +78,4 @@ FFPlugGUI::SetupGUI()
   _content->Add(3, 0, 1, 2, FFMakeOsciGUI(this));
   _content->Add(4, 0, 1, 2, FFMakeEnvGUI(this));
   addAndMakeVisible(_content);
-  addAndMakeVisible(StoreComponent<TooltipWindow>());
 }

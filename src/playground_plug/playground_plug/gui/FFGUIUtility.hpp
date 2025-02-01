@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <functional>
 
 struct FFProcDSPState;
@@ -20,4 +21,6 @@ struct FFModuleGraphRenderData final
 
 template <class Processor> 
 void 
-FFRenderModuleGraph(FFModuleGraphRenderData<Processor>& renderData);
+FFRenderModuleGraph(
+  FFModuleGraphRenderData<Processor>& renderData, 
+  std::vector<float>& pointsOut);

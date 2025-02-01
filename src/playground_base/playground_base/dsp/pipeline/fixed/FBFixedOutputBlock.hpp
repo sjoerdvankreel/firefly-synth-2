@@ -8,7 +8,7 @@ class FBProcStateContainer;
 struct FBFixedOutputBlock final
 {
   FBFixedFloatAudioBlock audio = {};
-  FBProcStateContainer* state = {};
+  FBProcStateContainer* procState = {};
   std::unordered_map<int, float> outputParamsNormalized = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedOutputBlock);
 };

@@ -5,6 +5,8 @@
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 
 #include <public.sdk/source/vst/vsteditcontroller.h>
+#include <public.sdk/source/vst/utility/dataexchange.h>
+
 #include <memory>
 
 using namespace Steinberg;
@@ -15,32 +17,51 @@ struct FBStaticTopo;
 struct FBRuntimeTopo;
 
 class FBVST3GUIEditor;
+class FBExchangeStateContainer;
 
 class FBVST3EditController final:
 public EditControllerEx1,
+public IDataExchangeReceiver,
 public FBHostGUIContext
 {
   FBVST3GUIEditor* _guiEditor = {};
   std::unique_ptr<FBRuntimeTopo> _topo;
   std::unique_ptr<FBGUIState> _guiState;
+  std::unique_ptr<FBExchangeStateContainer> _exchangeState;
+  DataExchangeReceiverHandler _exchangeHandler;
 
 public:
+  DEFINE_INTERFACES
+    DEF_INTERFACE(IDataExchangeReceiver)
+  END_DEFINE_INTERFACES(EditController)
+  DELEGATE_REFCOUNT(EditController)
+
   ~FBVST3EditController();
   FBVST3EditController(FBStaticTopo const& topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
 
   void ResetView();
+
   void EndParamChange(int index) override;
   void BeginParamChange(int index) override;
   float GetParamNormalized(int index) const override;
   void PerformParamEdit(int index, float normalized) override;
+
   void ParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) override;
 
-  IPlugView* PLUGIN_API createView(FIDString name) override;
+  FBGUIState* GUIState() override { return _guiState.get(); }
+  FBRuntimeTopo const* Topo() const override { return _topo.get(); }
+  FBExchangeStateContainer const* ExchangeState() const override { return _exchangeState.get(); }
+
+  tresult PLUGIN_API notify(IMessage* message) override;
   tresult PLUGIN_API setState(IBStream* state) override;
   tresult PLUGIN_API getState(IBStream* state) override;
+  IPlugView* PLUGIN_API createView(FIDString name) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
   tresult PLUGIN_API setComponentState(IBStream* state) override;
+  void PLUGIN_API queueClosed(DataExchangeUserContextID id) override {}
   tresult PLUGIN_API setParamNormalized(ParamID tag, ParamValue value) override;
+  void PLUGIN_API queueOpened(DataExchangeUserContextID id, uint32 blockSize, TBool& bg) override {}
+  void PLUGIN_API onDataExchangeBlocksReceived(DataExchangeUserContextID id, uint32 numBlocks, DataExchangeBlock* blocks, TBool bg) override;
 };

@@ -9,8 +9,12 @@
 using namespace juce;
 
 FBPlugGUI::
-FBPlugGUI(FBRuntimeTopo const* topo, FBHostGUIContext* hostContext):
-_topo(topo), _hostContext(hostContext) {}
+FBPlugGUI(FBHostGUIContext* hostContext) :
+_hostContext(hostContext)
+{
+  _tooltipWindow = StoreComponent<TooltipWindow>();
+  addAndMakeVisible(_tooltipWindow);
+}
 
 void
 FBPlugGUI::SteppedParamNormalizedChanged(int index)
@@ -22,8 +26,8 @@ FBPlugGUI::SteppedParamNormalizedChanged(int index)
 void 
 FBPlugGUI::InitAllDependencies()
 {
-  for (int i = 0; i < _topo->params.size(); i++)
-    if (FBParamTypeIsStepped(_topo->params[i].static_.type))
+  for (int i = 0; i < HostContext()->Topo()->params.size(); i++)
+    if (FBParamTypeIsStepped(HostContext()->Topo()->params[i].static_.type))
       SteppedParamNormalizedChanged(i);
 }
 
@@ -43,17 +47,13 @@ FBPlugGUI::ShowPopupMenuFor(
 std::string
 FBPlugGUI::GetTooltipForParam(int index)
 {
-  auto const& static_ = Topo()->params[index].static_;
+  auto const& param = HostContext()->Topo()->params[index];
   float normalized = HostContext()->GetParamNormalized(index);
-
-  auto result = static_.tooltip;
-  if (result.empty())
-    result = static_.name;
-  result += ": ";
-  result += static_.NormalizedToText(false, normalized);
-  if (static_.unit.empty())
+  auto result = param.tooltip + ": ";
+  result += param.static_.NormalizedToText(FBTextDisplay::Tooltip, normalized);
+  if (param.static_.unit.empty())
     return result;
-  return result + " " + static_.unit;
+  return result + " " + param.static_.unit;
 }
 
 void

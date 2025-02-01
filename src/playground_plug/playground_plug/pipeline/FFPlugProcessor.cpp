@@ -3,7 +3,10 @@
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/dsp/pipeline/plug/FBPlugInputBlock.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/base/state/FBExchangeStateContainer.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
@@ -12,11 +15,11 @@
 #include <numbers>
 
 FFPlugProcessor::
-FFPlugProcessor(
-FBRuntimeTopo const* topo, FFProcState* state, float sampleRate) :
-_state(state),
-_sampleRate(sampleRate),
-_topo(topo) {}
+FFPlugProcessor(IFBHostDSPContext* hostContext) :
+_topo(hostContext->Topo()),
+_sampleRate(hostContext->SampleRate()),
+_procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
+_exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw())) {}
 
 FBModuleProcState
 FFPlugProcessor::MakeModuleState(
@@ -25,8 +28,9 @@ FFPlugProcessor::MakeModuleState(
   FBModuleProcState result = {};
   result.topo = _topo;
   result.input = &input;
-  result.procRaw = _state;
+  result.procRaw = _procState;
   result.sampleRate = _sampleRate;
+  result.exchangeOutputRaw = _exchangeState;
   return result;
 }
 
@@ -44,7 +48,7 @@ FFPlugProcessor::ProcessVoice(
   FBPlugInputBlock const& input, int voice)
 {
   auto state = MakeModuleVoiceState(input, voice);
-  if(_state->dsp.voice[voice].processor.Process(state))
+  if(_procState->dsp.voice[voice].processor.Process(state))
     input.voiceManager->Return(voice);
 }
 
@@ -57,7 +61,7 @@ FFPlugProcessor::LeaseVoices(
     {
       int voice = input.voiceManager->Lease((*input.note)[n]);
       auto state = MakeModuleVoiceState(input, voice);
-      _state->dsp.voice[voice].processor.BeginVoice(state);
+      _procState->dsp.voice[voice].processor.BeginVoice(state);
     }
 }
 
@@ -69,7 +73,7 @@ FFPlugProcessor::ProcessPreVoice(
   for (int s = 0; s < FFGLFOCount; s++)
   {
     state.moduleSlot = s;
-    _state->dsp.global.gLFO[s].processor.Process(state);
+    _procState->dsp.global.gLFO[s].processor.Process(state);
   }
 }
 
@@ -77,25 +81,25 @@ void
 FFPlugProcessor::ProcessPostVoice(
   FBPlugInputBlock const& input, FBFixedOutputBlock& output)
 {
-  auto& gGilterIn = _state->dsp.global.gFilter[0].input;
+  auto& gGilterIn = _procState->dsp.global.gFilter[0].input;
   gGilterIn.Fill(0.0f);
   for (int v = 0; v < FBMaxVoices; v++)
     if (input.voiceManager->IsActive(v))
-      gGilterIn.Add(_state->dsp.voice[v].output);
+      gGilterIn.Add(_procState->dsp.voice[v].output);
 
   auto state = MakeModuleState(input);
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;
-  _state->dsp.global.gFilter[0].processor.Process(state);
+  _procState->dsp.global.gFilter[0].processor.Process(state);
   for (int s = 1; s < FFGFilterCount; s++)
   {
     state.moduleSlot = s;
-    _state->dsp.global.gFilter[s].input.CopyFrom(_state->dsp.global.gFilter[s - 1].output);
-    _state->dsp.global.gFilter[s].processor.Process(state);
+    _procState->dsp.global.gFilter[s].input.CopyFrom(_procState->dsp.global.gFilter[s - 1].output);
+    _procState->dsp.global.gFilter[s].processor.Process(state);
   }
 
   state.moduleSlot = 0;
-  _state->dsp.global.master.input.CopyFrom(_state->dsp.global.gFilter[FFGFilterCount - 1].output);
-  _state->dsp.global.master.processor.Process(state);
-  output.audio.CopyFrom(_state->dsp.global.master.output);
+  _procState->dsp.global.master.input.CopyFrom(_procState->dsp.global.gFilter[FFGFilterCount - 1].output);
+  _procState->dsp.global.master.processor.Process(state);
+  output.audio.CopyFrom(_procState->dsp.global.master.output);
 }

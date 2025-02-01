@@ -6,6 +6,7 @@
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/base/state/FBScalarStateContainer.hpp>
 
 bool 
 FBCLAPPlugin::implementsParams() const noexcept 
@@ -28,7 +29,7 @@ FBCLAPPlugin::paramsValue(
     return false;
   auto const& state = _editState;
   auto const& static_ = _topo->params[index].static_;
-  *value = FBNormalizedToCLAP(static_, *state.Params()[index]);
+  *value = FBNormalizedToCLAP(static_, *state->Params()[index]);
   return true;
 }
 
@@ -55,7 +56,7 @@ FBCLAPPlugin::paramsValueToText(
   if (index == -1)
     return false;
   float normalized = (float)FBCLAPToNormalized(_topo->params[index].static_, value);
-  std::string text = _topo->params[index].static_.NormalizedToText(false, normalized);
+  std::string text = _topo->params[index].static_.NormalizedToText(FBTextDisplay::Text, normalized);
   std::fill(display, display + size, 0);
   strncpy(display, text.c_str(), std::min(size - 1, static_cast<uint32_t>(text.size())));
   return true;
@@ -79,12 +80,12 @@ FBCLAPPlugin::paramsFlush(
       continue;
     if (isProcessing())
     {
-      _procState.InitProcessing(index, (float)event->value);
+      _procState->InitProcessing(index, (float)event->value);
       _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(index, event->value));
     }
     else
     {
-      *_editState.Params()[index] = (float)event->value;
+      *_editState->Params()[index] = (float)event->value;
       _mainToAudioEvents.enqueue(FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, event->value));
     }
   }
@@ -104,6 +105,7 @@ FBCLAPPlugin::paramsInfo(
     return false;
 
   info->min_value = 0.0;
+  info->max_value = 1.0;
   info->cookie = nullptr;
   info->id = runtimeParam.tag;
   info->default_value = FBNormalizedToCLAP(staticParam, staticParam.DefaultNormalizedByText());
@@ -116,17 +118,8 @@ FBCLAPPlugin::paramsInfo(
     std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
 
   info->flags = CLAP_PARAM_REQUIRES_PROCESS;
-  if (staticParam.ValueCount() != 0)
+  if (runtimeParam.static_.acc)
   {
-    info->flags |= CLAP_PARAM_IS_STEPPED;
-    info->flags |= CLAP_PARAM_IS_READONLY;
-    info->max_value = staticParam.ValueCount() - 1.0f;
-    if (staticParam.type == FBParamType::List)
-      info->flags |= CLAP_PARAM_IS_ENUM;
-  }
-  else
-  {
-    info->max_value = 1.0;
     info->flags |= CLAP_PARAM_IS_MODULATABLE;
     info->flags |= CLAP_PARAM_IS_AUTOMATABLE;
     if (staticModule.voice)
@@ -134,6 +127,18 @@ FBCLAPPlugin::paramsInfo(
       info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_KEY;
       info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
       info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
+    }
+    assert(!FBParamTypeIsStepped(runtimeParam.static_.type));
+  }
+  else
+  {
+    info->flags |= CLAP_PARAM_IS_READONLY;
+    if (FBParamTypeIsStepped(runtimeParam.static_.type))
+    {
+      info->flags |= CLAP_PARAM_IS_STEPPED;
+      info->max_value = staticParam.ValueCount() - 1.0f;
+      if (staticParam.type == FBParamType::List)
+        info->flags |= CLAP_PARAM_IS_ENUM;
     }
   }
   return true;

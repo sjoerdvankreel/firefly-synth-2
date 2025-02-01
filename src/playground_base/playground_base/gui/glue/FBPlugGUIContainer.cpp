@@ -1,6 +1,7 @@
-#include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
+#include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 
 using namespace juce;
@@ -9,16 +10,13 @@ FBPlugGUIContainer::
 ~FBPlugGUIContainer() {}
 
 FBPlugGUIContainer::
-FBPlugGUIContainer(
-  FBRuntimeTopo const* topo,
-  FBHostGUIContext* context,
-  FBGUIState* state):
-FBPlugGUIContext(&topo->static_.gui, state),
-_gui(topo->static_.gui.factory(topo, context))
+FBPlugGUIContainer(FBHostGUIContext* hostContext):
+FBPlugGUIContext(hostContext),
+_gui(hostContext->Topo()->static_.gui.factory(hostContext))
 {
   setOpaque(true);
   setVisible(true);
-  int plugWidth = topo->static_.gui.plugWidth;
+  int plugWidth = hostContext->Topo()->static_.gui.plugWidth;
   int plugHeight = GetHeightForAspectRatio(plugWidth);
   setSize(plugWidth, plugHeight);
   _gui->setSize(plugWidth, plugHeight);
@@ -35,6 +33,12 @@ void
 FBPlugGUIContainer::RemoveFromDesktop()
 {
   removeFromDesktop();
+}
+
+void
+FBPlugGUIContainer::UpdateExchangeState()
+{
+  _gui->UpdateExchangeState();
 }
 
 void

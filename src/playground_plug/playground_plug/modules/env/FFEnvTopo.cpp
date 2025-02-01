@@ -25,6 +25,7 @@ FFMakeEnvTopo()
   auto selectOn = [](auto& module) { return &module.block.on; };
   on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
   on.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
+  on.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectOn);
 
   auto& type = result->params[(int)FFEnvParam::Type];
   type.acc = false;
@@ -40,19 +41,22 @@ FFMakeEnvTopo()
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
   type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
+  type.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectType);
 
-  auto& sustain = result->params[(int)FFEnvParam::Sustain];
-  sustain.acc = true;
-  sustain.defaultText = "50";
-  sustain.name = "Stn";
-  sustain.slotCount = 1;
-  sustain.unit = "%";
-  sustain.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
-  sustain.type = FBParamType::Linear;
-  sustain.linear.displayMultiplier = 100.0f;
-  auto selectSustain = [](auto& module) { return &module.acc.sustain; };
-  sustain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSustain);
-  sustain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectSustain);
+  auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
+  sustainLevel.acc = true;
+  sustainLevel.defaultText = "50";
+  sustainLevel.name = "Stn";
+  sustainLevel.tooltip = "Sustain Level";
+  sustainLevel.slotCount = 1;
+  sustainLevel.unit = "%";
+  sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
+  sustainLevel.type = FBParamType::Linear;
+  sustainLevel.linear.displayMultiplier = 100.0f;
+  auto selectSustainLevel = [](auto& module) { return &module.acc.sustainLevel; };
+  sustainLevel.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSustainLevel);
+  sustainLevel.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectSustainLevel);
+  sustainLevel.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectSustainLevel);
 
   auto& sync = result->params[(int)FFEnvParam::Sync];
   sync.acc = false;
@@ -64,6 +68,7 @@ FFMakeEnvTopo()
   auto selectSync = [](auto& module) { return &module.block.sync; };
   sync.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSync);
   sync.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectSync);
+  sync.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectSync);
 
   auto& mode = result->params[(int)FFEnvParam::Mode];
   mode.acc = false;
@@ -74,30 +79,34 @@ FFMakeEnvTopo()
   mode.type = FBParamType::List;
   mode.list.items = {
     { "{59EB5AB9-50FC-4958-BABE-A126D65B7948}", "Linear" },
-    { "{0B0F822E-A7D9-40B2-9B0B-7E404656DE3C}", "Exp" } };
+    { "{0B0F822E-A7D9-40B2-9B0B-7E404656DE3C}", "Exp", "Exponential" } };
   auto selectMode = [](auto& module) { return &module.block.mode; };
   mode.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectMode);
   mode.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectMode);
+  mode.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectMode);
 
-  auto& smooth = result->params[(int)FFEnvParam::Smooth];
-  smooth.acc = false;
-  smooth.defaultText = "0";
-  smooth.name = "Smth";
-  smooth.slotCount = 1;
-  smooth.unit = "Ms";
-  smooth.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
-  smooth.type = FBParamType::Linear;
-  smooth.linear.min = 0.0f;
-  smooth.linear.max = 1.0f;
-  smooth.linear.displayMultiplier = 1000.0f;
-  auto selectSmooth = [](auto& module) { return &module.block.smooth; };
-  smooth.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmooth);
-  smooth.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectSmooth);
+  auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
+  smoothTime.acc = false;
+  smoothTime.defaultText = "0";
+  smoothTime.name = "Smth";
+  smoothTime.tooltip = "Smoothing Time";
+  smoothTime.slotCount = 1;
+  smoothTime.unit = "Ms";
+  smoothTime.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
+  smoothTime.type = FBParamType::Linear;
+  smoothTime.linear.min = 0.0f;
+  smoothTime.linear.max = 1.0f;
+  smoothTime.linear.displayMultiplier = 1000.0f;
+  auto selectSmoothTime = [](auto& module) { return &module.block.smoothTime; };
+  smoothTime.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectSmoothTime);
+  smoothTime.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectSmoothTime);
+  smoothTime.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectSmoothTime);
 
   auto& delayTime = result->params[(int)FFEnvParam::DelayTime];
   delayTime.acc = false;
   delayTime.defaultText = "0";
   delayTime.name = "Dly";
+  delayTime.tooltip = "Delay Time";
   delayTime.slotCount = 1;
   delayTime.unit = "Sec";
   delayTime.id = "{D6A6CB86-A0D4-48A5-A495-038137E60519}";
@@ -107,11 +116,13 @@ FFMakeEnvTopo()
   auto selectDelayTime = [](auto& module) { return &module.block.delayTime; };
   delayTime.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectDelayTime);
   delayTime.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectDelayTime);
+  delayTime.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectDelayTime);
 
   auto& attackTime = result->params[(int)FFEnvParam::AttackTime];
   attackTime.acc = false;
   attackTime.defaultText = "0.03";
   attackTime.name = "Att";
+  attackTime.tooltip = "Attack Time";
   attackTime.slotCount = 1;
   attackTime.unit = "Sec";
   attackTime.id = "{193134E4-A104-419E-92A1-276E6CE1FA85}";
@@ -121,11 +132,13 @@ FFMakeEnvTopo()
   auto selectAttackTime = [](auto& module) { return &module.block.attackTime; };
   attackTime.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectAttackTime);
   attackTime.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectAttackTime);
+  attackTime.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectAttackTime);
 
   auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
   attackSlope.acc = true;
   attackSlope.defaultText = "50";
   attackSlope.name = "ASlp";
+  attackSlope.tooltip = "Attack Slope";
   attackSlope.slotCount = 1;
   attackSlope.unit = "%";
   attackSlope.id = "{0C77104F-17CC-4256-8D65-FAD17E821758}";
@@ -134,12 +147,14 @@ FFMakeEnvTopo()
   auto selectAttackSlope = [](auto& module) { return &module.acc.attackSlope; };
   attackSlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectAttackSlope);
   attackSlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectAttackSlope);
+  attackSlope.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectAttackSlope);
   attackSlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   auto& holdTime = result->params[(int)FFEnvParam::HoldTime];
   holdTime.acc = false;
   holdTime.defaultText = "0";
   holdTime.name = "Hld";
+  holdTime.tooltip = "Hold Time";
   holdTime.slotCount = 1;
   holdTime.unit = "Sec";
   holdTime.id = "{29B5298F-C593-4E78-9D94-0FA1D36434B4}";
@@ -149,11 +164,13 @@ FFMakeEnvTopo()
   auto selectHoldTime = [](auto& module) { return &module.block.holdTime; };
   holdTime.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectHoldTime);
   holdTime.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectHoldTime);
+  holdTime.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectHoldTime);
 
   auto& decayTime = result->params[(int)FFEnvParam::DecayTime];
   decayTime.acc = false;
   decayTime.defaultText = "0.1";
   decayTime.name = "Dcy";
+  decayTime.tooltip = "Decay Time";
   decayTime.slotCount = 1;
   decayTime.unit = "Sec";
   decayTime.id = "{DB9B7AB0-9FA2-4D6D-96D8-EA76D31B6F23}";
@@ -163,11 +180,13 @@ FFMakeEnvTopo()
   auto selectDecayTime = [](auto& module) { return &module.block.decayTime; };
   decayTime.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectDecayTime);
   decayTime.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectDecayTime);
+  decayTime.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectDecayTime);
 
   auto& decaySlope = result->params[(int)FFEnvParam::DecaySlope];
   decaySlope.acc = true;
   decaySlope.defaultText = "50";
   decaySlope.name = "DSlp";
+  decaySlope.tooltip = "Decay Slope";
   decaySlope.slotCount = 1;
   decaySlope.unit = "%";
   decaySlope.id = "{2F01EA4E-2665-4882-923D-FEF63D790F7B}";
@@ -176,12 +195,14 @@ FFMakeEnvTopo()
   auto selectDecaySlope = [](auto& module) { return &module.acc.decaySlope; };
   decaySlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectDecaySlope);
   decaySlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectDecaySlope);
+  decaySlope.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectDecaySlope);
   decaySlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   auto& releaseTime = result->params[(int)FFEnvParam::ReleaseTime];
   releaseTime.acc = false;
   releaseTime.defaultText = "0.2";
   releaseTime.name = "Rls";
+  releaseTime.tooltip = "Release Time";
   releaseTime.slotCount = 1;
   releaseTime.unit = "Sec";
   releaseTime.id = "{9AD9817D-295C-4911-BEF9-FEB46344BA8D}";
@@ -191,11 +212,13 @@ FFMakeEnvTopo()
   auto selectReleaseTime = [](auto& module) { return &module.block.releaseTime; };
   releaseTime.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectReleaseTime);
   releaseTime.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectReleaseTime);
+  releaseTime.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectReleaseTime);
 
   auto& releaseSlope = result->params[(int)FFEnvParam::ReleaseSlope];
   releaseSlope.acc = true;
   releaseSlope.defaultText = "50";
   releaseSlope.name = "RSlp";
+  releaseSlope.tooltip = "Release Slope";
   releaseSlope.slotCount = 1;
   releaseSlope.unit = "%";
   releaseSlope.id = "{78A38181-41F7-4C0C-8489-F9AD55D6F2D9}";
@@ -204,6 +227,7 @@ FFMakeEnvTopo()
   auto selectReleaseSlope = [](auto& module) { return &module.acc.releaseSlope; };
   releaseSlope.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectReleaseSlope);
   releaseSlope.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectReleaseSlope);
+  releaseSlope.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectReleaseSlope);
   releaseSlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   return result;

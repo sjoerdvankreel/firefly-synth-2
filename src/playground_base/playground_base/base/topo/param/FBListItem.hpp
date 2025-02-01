@@ -4,6 +4,7 @@
 
 struct FBListItem final
 {
-  std::string id;
-  std::string text;
+  std::string id = {};
+  std::string text = {};
+  std::string tooltip = {};
 };

@@ -17,6 +17,7 @@ Slider(style, Slider::NoTextBox),
 FBParamControl(plugGUI, param)
 {
   setRange(0.0, 1.0);
+  setPopupDisplayEnabled(true, false, plugGUI);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
@@ -42,17 +43,20 @@ FBParamSlider::FixedWidth(int height) const
   return height;
 }
 
-String
-FBParamSlider::getTextFromValue(double value)
-{
-  return String(_param->static_.NormalizedToText(false, (float)value));
-}
-
 double
 FBParamSlider::getValueFromText(const String& text)
 {
   auto parsed = _param->static_.TextToNormalized(false, text.toStdString());
   return parsed.value_or(_param->static_.DefaultNormalizedByText());
+}
+
+String
+FBParamSlider::getTextFromValue(double value)
+{
+  auto text = _param->static_.NormalizedToText(FBTextDisplay::Text, (float)value);
+  if (_param->static_.unit.empty())
+    return text;
+  return text + " " + _param->static_.unit;
 }
 
 void
@@ -70,7 +74,8 @@ FBParamSlider::startedDragging()
 void
 FBParamSlider::valueChanged()
 {
-  _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, (float)getValue());
-  _plugGUI->ParamNormalizedChangedFromUI(_param->runtimeParamIndex);
+  float normalized = (float)getValue();
+  _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
+  _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
   UpdateTooltip();
 }

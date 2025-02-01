@@ -6,7 +6,7 @@
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <clap/clap.h>
@@ -16,21 +16,12 @@ class FFCLAPPlugin:
 public FBCLAPPlugin
 {
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFCLAPPlugin);
-  FFCLAPPlugin(
-    FBStaticTopo const& topo, 
-    clap_plugin_descriptor const* desc, 
-    clap_host const* host):
-  FBCLAPPlugin(topo, desc, host) {}
+  std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() override
+  { return std::make_unique<FFPlugProcessor>(this); }
 
-protected:
-  std::unique_ptr<IFBPlugProcessor>
-  MakePlugProcessor(
-    FBRuntimeTopo const* topo, 
-    void* rawState, 
-    float sampleRate) const override
-  { return std::make_unique<FFPlugProcessor>(
-    topo, static_cast<FFProcState*>(rawState), sampleRate); }
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFCLAPPlugin);
+  FFCLAPPlugin(FBStaticTopo const& topo, clap_plugin_descriptor const* desc, clap_host const* host):
+  FBCLAPPlugin(topo, desc, host) {}
 };
 
 static void CLAP_ABI 

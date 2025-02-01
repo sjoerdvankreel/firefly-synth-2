@@ -36,5 +36,6 @@ static_(staticParam),
 topoIndices(topoIndices),
 longName(MakeRuntimeParamLongName(staticModule, staticParam, topoIndices)),
 shortName(FBMakeRuntimeName(staticParam.name, staticParam.slotCount, topoIndices.param.slot)),
+tooltip(FBMakeRuntimeTooltip(staticParam.name, staticParam.tooltip, staticParam.slotCount, topoIndices.param.slot)),
 id(MakeRuntimeParamId(staticModule, staticParam, topoIndices)),
 tag(FBMakeStableHash(id)) {}

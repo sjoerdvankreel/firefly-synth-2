@@ -8,10 +8,7 @@
 class FBPlugGUI;
 class FBHostGUIContext;
 
-struct FBRuntimeTopo;
-
-typedef std::function<std::unique_ptr<FBPlugGUI>(
-  FBRuntimeTopo const* topo, FBHostGUIContext* context)>
+typedef std::function<std::unique_ptr<FBPlugGUI>(FBHostGUIContext* context)>
 FBPlugGUIFactory;
 
 struct FBStaticTopoGUI final

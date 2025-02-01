@@ -1,10 +1,9 @@
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBProcStateContainer.hpp>
-#include <playground_base/base/state/FBScalarStateContainer.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostInputBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostOutputBlock.hpp>
+
 #include <playground_base_clap/FBCLAPSyncEvent.hpp>
 
 #include <juce_events/juce_events.h>
@@ -19,25 +18,33 @@ struct FBGUIState;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
+class FBHostProcessor;
 class IFBPlugProcessor;
 class FBPlugGUIContext;
+class FBProcStateContainer;
+class FBScalarStateContainer;
+class FBExchangeStateContainer;
 
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
 public juce::Timer,
-public FBHostGUIContext
+public FBHostGUIContext,
+public IFBHostDSPContext
 {
+  std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBRuntimeTopo> _topo;
   std::unique_ptr<FBGUIState> _guiState;
-  FBProcStateContainer _procState;
-  FBScalarStateContainer _editState;
-  std::unique_ptr<FBPlugGUIContext> _gui;
+  std::unique_ptr<FBProcStateContainer> _procState;
+  std::unique_ptr<FBScalarStateContainer> _editState;
+  std::unique_ptr<FBExchangeStateContainer> _dspExchangeState;
+  std::unique_ptr<FBExchangeStateContainer> _guiExchangeState;
 
   moodycamel::ReaderWriterQueue<FBCLAPSyncToMainEvent, 
     FBCLAPSyncEventReserve> _audioToMainEvents;
   moodycamel::ReaderWriterQueue<FBCLAPSyncToAudioEvent, 
     FBCLAPSyncEventReserve> _mainToAudioEvents;
 
+  float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};
   FBHostOutputBlock _output = {};
   std::array<std::vector<float>, 2> _zeroIn = {};
@@ -47,10 +54,6 @@ public FBHostGUIContext
   MakeParamContextMenu(int index, std::vector<FBHostContextMenuItem>& items);
   void PushParamChangeToProcessorBlock(int index, double normalized, int pos);
   void ProcessMainToAudioEvents(const clap_output_events* out, bool pushToProcBlock);
-
-protected:
-  virtual std::unique_ptr<IFBPlugProcessor>
-  MakePlugProcessor(FBRuntimeTopo const* topo, void* rawState, float sampleRate) const = 0;
 
 public:
   ~FBCLAPPlugin();
@@ -86,12 +89,19 @@ public:
   bool guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept override;
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
 
+  float SampleRate() const override { return _sampleRate; }
+  FBRuntimeTopo const* Topo() const override { return _topo.get(); }
+  FBProcStateContainer* ProcState() override { return _procState.get(); }
+  FBExchangeStateContainer* ExchangeState() override { return _dspExchangeState.get(); }
+
   void EndParamChange(int index) override;
   void BeginParamChange(int index) override;
   float GetParamNormalized(int index) const override;
   void PerformParamEdit(int index, float normalized) override;
   void ParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) override;
+  FBGUIState* GUIState() override { return _guiState.get(); }
+  FBExchangeStateContainer const* ExchangeState() const override { return _guiExchangeState.get(); }
 
   bool isValidParamId(clap_id paramId) const noexcept override;
   int32_t getParamIndexForParamId(clap_id paramId) const noexcept override;

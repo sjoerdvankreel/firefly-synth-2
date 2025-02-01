@@ -1,15 +1,16 @@
 #include <playground_base_vst3/FBVST3Utility.hpp>
 #include <playground_base_vst3/FBVST3Parameter.hpp>
+#include <playground_base/base/topo/FBStaticParam.hpp>
 
 FBVST3Parameter::
-FBVST3Parameter(FBStaticParam const& topo, ParameterInfo const& info) :
+FBVST3Parameter(FBStaticParam const* topo, ParameterInfo const& info) :
 Parameter(info),
 _topo(topo) {}
 
 void 
 FBVST3Parameter::toString(ParamValue valueNormalized, String128 string) const
 {
-  auto text = _topo.NormalizedToText(false, valueNormalized);
+  auto text = _topo->NormalizedToText(FBTextDisplay::Text, valueNormalized);
   FBVST3CopyToString128(text, string);
 }
 
@@ -19,7 +20,7 @@ FBVST3Parameter::fromString(const TChar* string, ParamValue& valueNormalized) co
   std::string str;
   if (!FBVST3CopyFromString128(string, str))
     return false;
-  auto parsed = _topo.TextToNormalized(false, str);
+  auto parsed = _topo->TextToNormalized(false, str);
   if (!parsed.has_value())
     return false;
   valueNormalized = parsed.value();

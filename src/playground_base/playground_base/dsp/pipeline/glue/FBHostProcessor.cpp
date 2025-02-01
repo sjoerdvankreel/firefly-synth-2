@@ -4,12 +4,15 @@
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/base/state/FBExchangeStateContainer.hpp>
+
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
-#include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostProcessor.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostInputBlock.hpp>
-#include <playground_base/dsp/pipeline/host/FBHostOutputBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostInputBlock.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostOutputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothingProcessor.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBHostBufferProcessor.hpp>
@@ -21,20 +24,18 @@ FBHostProcessor::
 ~FBHostProcessor() {}
 
 FBHostProcessor::
-FBHostProcessor(
-  FBRuntimeTopo const* topo,
-  std::unique_ptr<IFBPlugProcessor>&& plug,
-  FBProcStateContainer* state, float sampleRate):
-_sampleRate(sampleRate),
-_topo(topo),
-_state(state),
-_plug(std::move(plug)),
-_voiceManager(std::make_unique<FBVoiceManager>(state)),
+FBHostProcessor(IFBHostDSPContext* hostContext):
+_sampleRate(hostContext->SampleRate()),
+_topo(hostContext->Topo()),
+_procState(hostContext->ProcState()),
+_exchangeState(hostContext->ExchangeState()),
+_plug(hostContext->MakePlugProcessor()),
+_voiceManager(std::make_unique<FBVoiceManager>(hostContext->ProcState())),
 _hostBuffer(std::make_unique<FBHostBufferProcessor>()),
 _fixedBuffer(std::make_unique<FBFixedBufferProcessor>(_voiceManager.get())),
-_smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), (int)state->Params().size()))
+_smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), (int)hostContext->ProcState()->Params().size()))
 {
-  _fixedOut.state = state;
+  _fixedOut.procState = _procState;
   _plugIn.voiceManager = _voiceManager.get();
 }
 
@@ -52,12 +53,12 @@ FBHostProcessor::ProcessHost(
 {
   auto denormalState = FBDisableDenormal(); 
   for (auto const& be : input.block)
-    _fixedOut.state->Params()[be.param].Value(be.normalized);
+    _procState->Params()[be.param].Value(be.normalized);
 
-  auto const& smoothing = _state->Special().smoothing;
-  float smoothingSeconds = smoothing.NormalizedToPlainLinear(_topo->static_);
-  int smoothingSamples = (int)std::ceil(smoothingSeconds * _sampleRate);
-  _state->SetSmoothingCoeffs(_sampleRate, smoothingSeconds);
+  auto const& hostSmoothTimeSpecial = _procState->Special().hostSmoothTime;
+  auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(_topo->static_);
+  int hostSmoothSamples = hostSmoothTimeTopo.linear.NormalizedTimeToSamples(hostSmoothTimeSpecial.state->Value(), _sampleRate);
+  _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);
@@ -66,7 +67,7 @@ FBHostProcessor::ProcessHost(
     _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
     _plug->LeaseVoices(_plugIn);
-    _smoothing->ProcessSmoothing(*fixedIn, _fixedOut, smoothingSamples);
+    _smoothing->ProcessSmoothing(*fixedIn, _fixedOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
     ProcessVoices();
     _plug->ProcessPostVoice(_plugIn, _fixedOut);
@@ -76,5 +77,20 @@ FBHostProcessor::ProcessHost(
 
   for (auto const& entry : _fixedOut.outputParamsNormalized)
     output.outputParams.push_back({ entry.first, entry.second });
+
+  for (int v = 0; v < FBMaxVoices; v++)
+    _exchangeState->VoiceActive()[v] = _voiceManager->IsActive(v);
+
+  for (int i = 0; i < _procState->Params().size(); i++)
+    if (!_procState->Params()[i].IsAcc())
+      if (!_procState->Params()[i].IsVoice())
+        *_exchangeState->Params()[i].Global() = 
+          _procState->Params()[i].GlobalBlock().Value();
+      else
+        for (int v = 0; v < FBMaxVoices; v++)
+          if (_voiceManager->IsActive(v))
+            _exchangeState->Params()[i].Voice()[v] = 
+              _procState->Params()[i].VoiceBlock().Voice()[v];
+
   FBRestoreDenormal(denormalState);
 }

@@ -1,12 +1,16 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base_clap/FBCLAPUtility.hpp>
 
-#include <playground_base/base/state/FBGUIState.hpp>
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
-#include <playground_base/dsp/pipeline/plug/FBPlugProcessor.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
+#include <playground_base/base/state/FBGUIState.hpp>
+#include <playground_base/base/state/FBProcStateContainer.hpp>
+#include <playground_base/base/state/FBScalarStateContainer.hpp>
+#include <playground_base/base/state/FBExchangeStateContainer.hpp>
 
 #include <clap/helpers/plugin.hxx>
 #include <algorithm>
@@ -119,11 +123,13 @@ FBCLAPPlugin(
   clap_plugin_descriptor const* desc, 
   clap_host const* host):
 Plugin(desc, host),
+_gui(),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
 _guiState(std::make_unique<FBGUIState>()),
-_procState(*_topo),
-_editState(*_topo),
-_gui(),
+_procState(std::make_unique<FBProcStateContainer>(*_topo)),
+_editState(std::make_unique<FBScalarStateContainer>(*_topo)),
+_dspExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_guiExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1) 
 {
@@ -177,11 +183,10 @@ FBCLAPPlugin::activate(
   double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept 
 {
   FB_LOG_ENTRY_EXIT();
-  float fSampleRate = (float)sampleRate;
+  _sampleRate = (float)sampleRate;
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
-  auto plug = MakePlugProcessor(_topo.get(), _procState.Raw(), fSampleRate);
-  _hostProcessor.reset(new FBHostProcessor(_topo.get(), std::move(plug), &_procState, fSampleRate));
+  _hostProcessor.reset(new FBHostProcessor(this));
   return true;
 }
 
@@ -221,7 +226,7 @@ FBCLAPPlugin::ProcessMainToAudioEvents(
       if (pushToProcBlock)
         PushParamChangeToProcessorBlock(uiEvent.paramIndex, uiEvent.normalized, 0);
       else
-        _procState.InitProcessing(uiEvent.paramIndex, uiEvent.normalized);
+        _procState->InitProcessing(uiEvent.paramIndex, uiEvent.normalized);
       break;
     default:
       assert(false);

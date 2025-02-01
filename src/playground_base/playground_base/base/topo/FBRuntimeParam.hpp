@@ -17,6 +17,7 @@ struct FBRuntimeParam final
 
   std::string longName;
   std::string shortName;
+  std::string tooltip;
   std::string id;
   int tag;
 

@@ -2,7 +2,6 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/FBAccParamState.hpp>
-#include <playground_base/base/state/FBProcParamState.hpp>
 #include <playground_base/base/state/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceBlockParamState.hpp>
@@ -56,7 +55,7 @@ class FBProcParamState final
 
   void Value(float value);
   void InitProcessing(float value);
-  void SetSmoothingCoeffs(float sampleRate, float durationSecs);
+  void SetSmoothingCoeffs(int sampleCount);
 
 public:
   FB_COPY_MOVE_DEFCTOR(FBProcParamState);

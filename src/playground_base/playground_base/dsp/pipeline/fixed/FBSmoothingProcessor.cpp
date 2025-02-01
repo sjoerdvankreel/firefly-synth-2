@@ -92,7 +92,7 @@ void
 FBSmoothingProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBFixedOutputBlock& output, int smoothingSamples)
 {
-  auto& params = output.state->Params();
+  auto& params = output.procState->Params();
   for (int param : _finishedGlobalSmoothing)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       params[param].GlobalAcc().SmoothNext(s);

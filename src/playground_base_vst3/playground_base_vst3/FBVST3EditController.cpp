@@ -4,8 +4,10 @@
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
 #include <playground_base/base/shared/FBLogging.hpp>
-#include <playground_base/base/state/FBGUIState.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBGUIState.hpp>
+#include <playground_base/base/state/FBScalarStateContainer.hpp>
+#include <playground_base/base/state/FBExchangeStateContainer.hpp>
 
 #include <base/source/fstring.h>
 #include <utility>
@@ -38,15 +40,18 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   FBVST3CopyToString128(param.static_.unit, result.units);
 
   result.flags = ParameterInfo::kNoFlags;
-  if (FBParamTypeIsStepped(param.static_.type))
+  if (param.static_.acc)
+  {
+    result.flags = ParameterInfo::kCanAutomate;
+    assert(!FBParamTypeIsStepped(param.static_.type));
+  }
+  else
   {
     result.flags |= ParameterInfo::kIsHidden;
     result.flags |= ParameterInfo::kIsReadOnly;
     if (param.static_.type == FBParamType::List)
       result.flags |= ParameterInfo::kIsList;
   }
-  else
-    result.flags = ParameterInfo::kCanAutomate;
   return result;
 }
 
@@ -59,7 +64,9 @@ FBVST3EditController::
 FBVST3EditController::
 FBVST3EditController(FBStaticTopo const& topo) :
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_guiState(std::make_unique<FBGUIState>())
+_guiState(std::make_unique<FBGUIState>()),
+_exchangeState(std::make_unique<FBExchangeStateContainer>(topo)),
+_exchangeHandler(this)
 {
   FB_LOG_ENTRY_EXIT();
 }
@@ -127,13 +134,21 @@ FBVST3EditController::ParamContextMenuClicked(int paramIndex, int juceTag)
     _guiEditor->ParamContextMenuClicked(componentHandler, paramIndex, juceTag);
 }
 
+tresult PLUGIN_API 
+FBVST3EditController::notify(IMessage* message)
+{
+  if (_exchangeHandler.onMessage(message))
+    return kResultTrue;
+  return EditControllerEx1::notify(message);
+}
+
 IPlugView* PLUGIN_API
 FBVST3EditController::createView(FIDString name)
 {
   FB_LOG_ENTRY_EXIT();
   if (ConstString(name) != ViewType::kEditor) return nullptr;
   if(_guiEditor == nullptr)
-    _guiEditor = new FBVST3GUIEditor(_topo->static_.gui.factory, _topo.get(), this, _guiState.get());
+    _guiEditor = new FBVST3GUIEditor(this);
   return _guiEditor;
 }
 
@@ -189,9 +204,20 @@ FBVST3EditController::initialize(FUnknown* context)
     {
       auto const& topo = _topo->modules[m].params[p];
       auto info = MakeParamInfo(topo, unitId);
-      parameters.addParameter(new FBVST3Parameter(topo.static_, info));
+      parameters.addParameter(new FBVST3Parameter(&topo.static_, info));
     }
     unitId++;
   }
   return kResultTrue;
+}
+
+void PLUGIN_API
+FBVST3EditController::onDataExchangeBlocksReceived(
+  DataExchangeUserContextID id, uint32 numBlocks, DataExchangeBlock* blocks, TBool bg)
+{
+  if (numBlocks != 1)
+    return;
+  memcpy(_exchangeState->Raw(), blocks[0].data, _topo->static_.state.exchangeStateSize);
+  if (_guiEditor != nullptr)
+    _guiEditor->UpdateExchangeState();
 }
