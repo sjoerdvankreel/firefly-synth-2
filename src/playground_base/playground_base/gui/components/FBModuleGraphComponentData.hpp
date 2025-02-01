@@ -4,13 +4,14 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 
 class FBGraphRenderState;
 
 struct FBModuleGraphSecondaryData final
 {
-  int marker = -1; // TODO paint marker
   std::vector<float> points = {};
+  std::optional<float> marker = {};
 };
 
 struct FBModuleGraphComponentData final

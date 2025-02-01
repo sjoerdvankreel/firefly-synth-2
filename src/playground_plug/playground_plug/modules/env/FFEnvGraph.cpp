@@ -34,7 +34,8 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
         auto& secondary = graphData->secondaryData.emplace_back();
         graphData->state->PrepareForRender(false, v);
         FFRenderModuleGraph(renderData, secondary.points);
-        secondary.marker = exchange->voice[v].env[v].position;
+        // TODO adjust for SR
+        // secondary.marker = exchange->voice[v].env[graphData->state->ModuleState().moduleSlot].position;
       }
     }
 

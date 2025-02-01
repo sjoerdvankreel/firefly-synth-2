@@ -80,6 +80,7 @@ FBModuleGraphComponent::paint(Graphics& g)
   {
     g.setColour(Colours::grey);
     PaintSeries(g, Colours::grey, _data.secondaryData[i].points);
+    /* TODO
     int marker = _data.secondaryData[i].marker;
     if (marker != -1)
     {
@@ -89,6 +90,7 @@ FBModuleGraphComponent::paint(Graphics& g)
       float yPos = (1.0f - yPosNorm) * getHeight();
       g.fillEllipse(xPos - 2.0f, yPos - 2.0f, 4.0f, 4.0f); // TODO
     }
+    */
   }
   PaintSeries(g, Colours::white, _data.primaryPoints);
 }
