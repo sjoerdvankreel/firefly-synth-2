@@ -30,16 +30,19 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     if (graphData->state->ExchangeContainer()->VoiceState()[v].state == FBVoiceState::Active)
     {
       graphData->state->PrepareForRenderExchangeVoice(v);
-      int slot = renderData.graphData->state->ModuleState().moduleSlot;
+      int moduleSlot = renderData.graphData->state->ModuleState().moduleSlot;
       auto exchange = graphData->state->ExchangeState<FFExchangeState>();
-      auto const& envExchange = exchange->voice[v].env[slot];
+      auto const& envExchange = exchange->voice[v].env[moduleSlot];
       if (envExchange.active && envExchange.positionSamples < envExchange.lengthSamples)
-      {
-        auto& secondary = graphData->secondarySeries.emplace_back();
-        FFRenderModuleGraph(renderData, secondary.points);
-        maxPoints = std::max(maxPoints, (int)secondary.points.size());
-        secondary.marker = (int)((envExchange.positionSamples / (float)envExchange.lengthSamples) * secondary.points.size());
-      }
+        if (graphData->state->VoiceModuleExchangeStateEqualsPrimary(v, (int)FFModuleType::Env, moduleSlot))
+          graphData->primaryMarkers.push_back((int)((envExchange.positionSamples / (float)envExchange.lengthSamples) * graphData->primarySeries.size()));
+        else
+        {
+          auto& secondary = graphData->secondarySeries.emplace_back();
+          FFRenderModuleGraph(renderData, secondary.points);
+          maxPoints = std::max(maxPoints, (int)secondary.points.size());
+          secondary.marker = (int)((envExchange.positionSamples / (float)envExchange.lengthSamples) * secondary.points.size());
+        }
     }
 
   // todo less ugly
