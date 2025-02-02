@@ -14,41 +14,54 @@
 void
 FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 {
-  // TODO tidy up
+  // todo probably need to share some of this
+
   float const sampleRate = 100.0f;
+  auto renderState = graphData->renderState;
+  auto& moduleState = renderState->ModuleState();
+  auto exchangeState = renderState->ExchangeState<FFExchangeState>();
+  int moduleSlot = moduleState.moduleSlot;
+  auto const& exchangeVoiceState = renderState->ExchangeContainer()->VoiceState();
+  moduleState.sampleRate = sampleRate;
+
   FFModuleGraphRenderData<FFEnvProcessor> renderData;
   renderData.graphData = graphData;
-  renderData.graphData->state->ModuleState().sampleRate = sampleRate;
-  renderData.outputSelector = [](auto const& dspState, int voice, int moduleSlot) {
-    return &dspState.voice[voice].env[moduleSlot].output; };
+  renderData.outputSelector = [](auto const& dsp, int v, int slot) { 
+    return &dsp.voice[v].env[slot].output; };
 
-  graphData->state->PrepareForRenderPrimary();
+  renderState->PrepareForRenderPrimary();
   FFRenderModuleGraph(renderData, graphData->primarySeries);
   int maxPoints = (int)graphData->primarySeries.size();
-  graphData->state->PrepareForRenderExchange();
-  for(int v = 0; v < FBMaxVoices; v++)
-    if (graphData->state->ExchangeContainer()->VoiceState()[v].state == FBVoiceState::Active)
-    {
-      graphData->state->PrepareForRenderExchangeVoice(v);
-      int moduleSlot = renderData.graphData->state->ModuleState().moduleSlot;
-      auto exchange = graphData->state->ExchangeState<FFExchangeState>();
-      auto const& envExchange = exchange->voice[v].env[moduleSlot];
-      if (envExchange.active && envExchange.positionSamples < envExchange.lengthSamples)
-        if (graphData->state->VoiceModuleExchangeStateEqualsPrimary(v, (int)FFModuleType::Env, moduleSlot))
-          graphData->primaryMarkers.push_back((int)((envExchange.positionSamples / (float)envExchange.lengthSamples) * graphData->primarySeries.size()));
-        else
-        {
-          auto& secondary = graphData->secondarySeries.emplace_back();
-          FFRenderModuleGraph(renderData, secondary.points);
-          maxPoints = std::max(maxPoints, (int)secondary.points.size());
-          secondary.marker = (int)((envExchange.positionSamples / (float)envExchange.lengthSamples) * secondary.points.size());
-        }
-    }
 
-  // todo less ugly
-  graphData->primarySeries.insert(graphData->primarySeries.end(), maxPoints - graphData->primarySeries.size(), 0.0f);
+  renderState->PrepareForRenderExchange();
+  for (int v = 0; v < FBMaxVoices; v++)
+  {
+    if (exchangeVoiceState[v].state != FBVoiceState::Active)
+      continue;
+    renderState->PrepareForRenderExchangeVoice(v);
+    auto const& envExchange = exchangeState->voice[v].env[moduleSlot];
+    if (!envExchange.active || envExchange.positionSamples >= envExchange.lengthSamples)
+      continue;
+    float positionNormalized = envExchange.positionSamples / (float)envExchange.lengthSamples;
+    if (renderState->VoiceModuleExchangeStateEqualsPrimary(v, (int)FFModuleType::Env, moduleSlot))
+    {
+      graphData->primaryMarkers.push_back((int)(positionNormalized * graphData->primarySeries.size()));
+      continue;
+    }
+    auto& secondary = graphData->secondarySeries.emplace_back();
+    FFRenderModuleGraph(renderData, secondary.points);
+    maxPoints = std::max(maxPoints, (int)secondary.points.size());
+    secondary.marker = (int)(positionNormalized * secondary.points.size());
+  }
+
+  int zeroFillCount = maxPoints - (int)graphData->primarySeries.size();
+  graphData->primarySeries.insert(graphData->primarySeries.end(), zeroFillCount, 0.0f);
   for (int i = 0; i < graphData->secondarySeries.size(); i++)
-    graphData->secondarySeries[i].points.insert(graphData->secondarySeries[i].points.end(), maxPoints - graphData->secondarySeries[i].points.size(), 0.0f);
+  {
+    auto& secondaryPoints = graphData->secondarySeries[i].points;
+    zeroFillCount = maxPoints - (int)secondaryPoints.size();
+    secondaryPoints.insert(secondaryPoints.end(), zeroFillCount, 0.0f);
+  }
 
   float durationSections = renderData.graphData->primarySeries.size() / sampleRate;
   renderData.graphData->text = std::format("{:.3f}", durationSections) + " Sec";

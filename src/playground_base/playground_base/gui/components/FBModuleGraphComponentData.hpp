@@ -17,7 +17,7 @@ struct FBModuleGraphSecondarySeries final
 struct FBModuleGraphComponentData final
 {
   std::string text = {};
-  FBGraphRenderState* state = {};
+  FBGraphRenderState* renderState = {};
   std::vector<int> primaryMarkers = {};
   std::vector<float> primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};

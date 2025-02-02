@@ -13,7 +13,7 @@ public juce::Component
 {
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphComponent);
-  FBModuleGraphComponent(FBGraphRenderState* state);
+  FBModuleGraphComponent(FBGraphRenderState* renderState);
 
   void RequestRerender(int paramIndex);
   void paint(juce::Graphics& g) override;

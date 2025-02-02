@@ -10,10 +10,10 @@
 using namespace juce;
 
 FBModuleGraphComponent::
-FBModuleGraphComponent(FBGraphRenderState* state):
+FBModuleGraphComponent(FBGraphRenderState* renderState):
 Component()
 {
-  _data.state = state;
+  _data.renderState = renderState;
 }
 
 void
@@ -61,7 +61,7 @@ FBModuleGraphComponent::PaintSeries(
 bool 
 FBModuleGraphComponent::PrepareForRender(int paramIndex)
 {
-  auto& moduleState = _data.state->ModuleState();
+  auto& moduleState = _data.renderState->ModuleState();
   auto const& topoIndices = moduleState.topo->params[paramIndex].topoIndices.module;
   auto const& staticModule = moduleState.topo->static_.modules[topoIndices.index];
   if (staticModule.renderGraph == nullptr)
@@ -87,7 +87,7 @@ FBModuleGraphComponent::paint(Graphics& g)
 
   g.fillAll(Colours::black);
   g.setColour(Colours::darkgrey);
-  auto const* runtimeTopo = _data.state->ModuleState().topo;
+  auto const* runtimeTopo = _data.renderState->ModuleState().topo;
   std::string moduleName = runtimeTopo->ModuleAtParamIndex(_tweakedParamByUI)->name;
   g.drawText(moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
   for (int i = 0; i < _data.secondarySeries.size(); i++)

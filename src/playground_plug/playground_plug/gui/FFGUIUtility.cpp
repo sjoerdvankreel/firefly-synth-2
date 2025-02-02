@@ -20,15 +20,17 @@ FFRenderModuleGraph(
   seriesOut.clear();
   FBFixedFloatArray seriesIn;
   int processed = FBFixedBlockSamples;
-  int voice = renderData.graphData->state->ModuleState().voice->slot;
-  auto const& moduleState = renderData.graphData->state->ModuleState();
+  auto renderState = renderData.graphData->renderState;
+  auto const& moduleState = renderState->ModuleState();
   auto* procState = moduleState.ProcState<FFProcState>();
+  int voice = moduleState.voice->slot;
+  int moduleSlot = moduleState.moduleSlot;
 
   renderData.processor.BeginVoice(moduleState);
   while (processed == FBFixedBlockSamples)
   {
     processed = renderData.processor.Process(moduleState);
-    renderData.outputSelector(procState->dsp, voice, moduleState.moduleSlot)->StoreToFloatArray(seriesIn);
+    renderData.outputSelector(procState->dsp, voice, moduleSlot)->StoreToFloatArray(seriesIn);
     for (int i = 0; i < processed; i++)
       seriesOut.push_back(seriesIn.data[i]);
   }
