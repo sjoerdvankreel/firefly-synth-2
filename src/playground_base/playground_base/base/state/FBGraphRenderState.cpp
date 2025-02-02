@@ -77,7 +77,8 @@ FBGraphRenderState::PrepareForRender(bool primary, int voice)
   if (primary)
     _procState->InitProcessing(*_scalarState);
   else
-    // TODO initproc for 1 voice only?
+    // TODO initproc for all voices at once ?
+    // we got the storage space anyway
     _procState->InitProcessing(*ExchangeContainer(), voice);
   _voiceManager->Lease(MakeNoteC4On());
   _moduleState->voice = &_voiceManager->Voices()[0];
