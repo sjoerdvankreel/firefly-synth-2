@@ -1,3 +1,4 @@
+all non-stepped per-voice params should be automatable, modulatable only if sample accurate
 data exchange for clap
 not hardcode env1 to voice amp
 voice markers for env
