@@ -30,7 +30,7 @@ FFPlugProcessor::MakeModuleState(
   result.input = &input;
   result.procRaw = _procState;
   result.sampleRate = _sampleRate;
-  result.exchangeOutputRaw = _exchangeState;
+  result.exchangeRaw = _exchangeState;
   return result;
 }
 
