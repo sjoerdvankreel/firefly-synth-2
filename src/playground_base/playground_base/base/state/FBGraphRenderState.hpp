@@ -41,7 +41,8 @@ public:
 
   void PrimaryParamChanged(int index, float normalized);
   FBExchangeStateContainer const* ExchangeContainer() const;
-  
+  bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
+
   FBModuleProcState& ModuleState() 
   { return *_moduleState; }
   template <class TExchangeState>
