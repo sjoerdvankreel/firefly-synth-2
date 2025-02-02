@@ -3,6 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/state/FBExchangeParamState.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 #include <array>
 #include <vector>
@@ -16,10 +17,10 @@ class FBExchangeStateContainer final
   void* _rawState;
   void (*_freeRawState)(void*);
   std::vector<FBExchangeParamState> _params = {};
-  std::array<bool, FBMaxVoices>* _voiceActive = {};
+  std::array<FBVoiceInfo, FBMaxVoices>* _voiceState = {};
 
   std::vector<FBExchangeParamState>& Params() { return _params; }
-  std::array<bool, FBMaxVoices>& VoiceActive() { return *_voiceActive; }
+  std::array<FBVoiceInfo, FBMaxVoices>& VoiceState() { return *_voiceState; }
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBExchangeStateContainer);
@@ -29,5 +30,5 @@ public:
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
   std::vector<FBExchangeParamState> const& Params() const { return _params; }
-  std::array<bool, FBMaxVoices> const& VoiceActive() const { return *_voiceActive; }
+  std::array<FBVoiceInfo, FBMaxVoices> const& VoiceState() const { return *_voiceState; }
 };

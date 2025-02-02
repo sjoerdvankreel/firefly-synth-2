@@ -2,6 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/FBSpecialParams.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 #include <functional>
 
@@ -9,9 +10,9 @@ struct FBStaticTopo;
 typedef std::function<FBSpecialParams (
   FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
-typedef std::function<std::array<bool, FBMaxVoices>* (
+typedef std::function<std::array<FBVoiceInfo, FBMaxVoices>* (
   void* state)>
-FBVoiceActiveExchangeAddrSelector;
+FBVoiceStateExchangeAddrSelector;
 
 struct FBStaticTopoState final
 {
@@ -25,6 +26,6 @@ struct FBStaticTopoState final
   int exchangeStateSize = {};
   int exchangeStateAlignment = {};
   FBSpecialParamsSelector specialSelector = {};
-  FBVoiceActiveExchangeAddrSelector voiceActiveExchangeAddr = {};
+  FBVoiceStateExchangeAddrSelector voiceStateExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoState);
 };

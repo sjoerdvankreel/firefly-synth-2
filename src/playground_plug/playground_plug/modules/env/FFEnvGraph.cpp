@@ -28,7 +28,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   FFRenderModuleGraph(renderData, graphData->primaryPoints);
   maxPoints = std::max(maxPoints, (int)graphData->primaryPoints.size());
   for(int v = 0; v < FBMaxVoices; v++)
-    if (graphData->state->ExchangeContainer()->VoiceActive()[v])
+    if (graphData->state->ExchangeContainer()->VoiceState()[v].state == FBVoiceState::Active)
     {
       int slot = renderData.graphData->state->ModuleState().moduleSlot;
       auto exchange = graphData->state->ExchangeState<FFExchangeState>();

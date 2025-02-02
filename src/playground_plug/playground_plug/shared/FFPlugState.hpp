@@ -12,6 +12,7 @@
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/FBVoiceBlockParamState.hpp>
 #include <playground_base/base/state/FBGlobalBlockParamState.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 #include <array>
 
@@ -92,7 +93,7 @@ struct FFExchangeState final
 {
   FFExchangeParamState param = {};
   FFGlobalExchangeState global = {};
-  std::array<bool, FBMaxVoices> voiceActive = {};
+  std::array<FBVoiceInfo, FBMaxVoices> voiceState = {};
   std::array<FFVoiceExchangeState, FBMaxVoices> voice = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFExchangeState);
 };

@@ -79,7 +79,7 @@ FBHostProcessor::ProcessHost(
     output.outputParams.push_back({ entry.first, entry.second });
 
   for (int v = 0; v < FBMaxVoices; v++)
-    _exchangeState->VoiceActive()[v] = _voiceManager->IsActive(v);
+    _exchangeState->VoiceState()[v] = _voiceManager->Voices()[v];
 
   for (int i = 0; i < _procState->Params().size(); i++)
     if (!_procState->Params()[i].IsAcc())

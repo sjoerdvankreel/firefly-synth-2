@@ -9,7 +9,7 @@ FBExchangeStateContainer(FBRuntimeTopo const& topo):
 _rawState(topo.static_.state.allocRawExchangeState()),
 _freeRawState(topo.static_.state.freeRawExchangeState)
 {
-  _voiceActive = topo.static_.state.voiceActiveExchangeAddr(_rawState);
+  _voiceState = topo.static_.state.voiceStateExchangeAddr(_rawState);
   for (int p = 0; p < topo.params.size(); p++)
     if (topo.static_.modules[topo.params[p].topoIndices.module.index].voice)
       _params.push_back(FBExchangeParamState(topo.params[p].static_.voiceExchangeAddr(

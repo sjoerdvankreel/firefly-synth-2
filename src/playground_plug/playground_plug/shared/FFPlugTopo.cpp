@@ -50,7 +50,7 @@ FFMakeTopo()
 
   result->state.exchangeStateSize = sizeof(FFExchangeState);
   result->state.exchangeStateAlignment = alignof(FFExchangeState);
-  result->state.voiceActiveExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voiceActive; };
+  result->state.voiceStateExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voiceState; };
   result->state.specialSelector = [](FBStaticTopo const& topo, void* state) {
     FBSpecialParams params = {};
     params.hostSmoothTime = MakeSpecialParam(topo, state, (int)FFModuleType::Master, (int)FFMasterParam::HostSmoothTime);
