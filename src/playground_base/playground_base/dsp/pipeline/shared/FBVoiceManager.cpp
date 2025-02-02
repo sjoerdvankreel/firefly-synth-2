@@ -28,6 +28,26 @@ FBVoiceManager::ResetReturnedVoices()
       _voices[v].state = FBVoiceState::Free;
 }
 
+void 
+FBVoiceManager::InitFromExchange(
+  std::array<FBVoiceInfo, FBMaxVoices> const& voiceState)
+{
+  _counter = 0;
+  _voiceCount = 0;
+  _returnedVoices.clear();
+  for (int i = 0; i < FBMaxVoices; i++)
+  {
+    _num[i] = i;
+    _voices[i].slot = i;
+    _voices[i].event = voiceState[i].event;
+    _voices[i].state = voiceState[i].state;
+    _voices[i].initialOffset = voiceState[i].initialOffset;
+    _counter++;
+    if (_voices[i].state == FBVoiceState::Active)
+      _voiceCount++;
+  }
+}
+
 int
 FBVoiceManager::Lease(FBNoteEvent const& event)
 {

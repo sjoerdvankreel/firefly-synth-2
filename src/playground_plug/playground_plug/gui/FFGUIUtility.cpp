@@ -17,6 +17,8 @@ FFRenderModuleGraph(
   FFModuleGraphRenderData<Processor>& renderData, 
   std::vector<float>& pointsOut)
 {
+  // TODO tidy
+
   pointsOut.clear();
   FBFixedFloatArray pointsIn;
   int processed = FBFixedBlockSamples;
@@ -27,7 +29,7 @@ FFRenderModuleGraph(
   while (processed == FBFixedBlockSamples)
   {
     processed = renderData.processor.Process(moduleState);
-    renderData.outputSelector(procState->dsp, moduleState.moduleSlot)->StoreToFloatArray(pointsIn);
+    renderData.outputSelector(procState->dsp, renderData.graphData->state->ModuleState().voice->slot, moduleState.moduleSlot)->StoreToFloatArray(pointsIn);
     for (int i = 0; i < processed; i++)
       pointsOut.push_back(pointsIn.data[i]);
   }

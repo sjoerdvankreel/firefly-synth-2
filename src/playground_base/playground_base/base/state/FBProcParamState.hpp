@@ -56,6 +56,7 @@ class FBProcParamState final
   void Value(float value);
   void InitProcessing(float value);
   void SetSmoothingCoeffs(int sampleCount);
+  void InitProcessing(int voice, float value);
 
 public:
   FB_COPY_MOVE_DEFCTOR(FBProcParamState);

@@ -57,6 +57,13 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
 
+  // TODO
+  if (state.ExchangeState<FFExchangeState>() == nullptr)
+  {
+    int zz = 1;
+    zz--;
+  }
+
   if (!_voiceState.on)
   {
     output.Fill(0.0f);

@@ -33,11 +33,11 @@ _input(std::make_unique<FBPlugInputBlock>()),
 _moduleState(std::make_unique<FBModuleProcState>()),
 _procState(std::make_unique<FBProcStateContainer>(*plugGUI->HostContext()->Topo())),
 _scalarState(std::make_unique<FBScalarStateContainer>(*plugGUI->HostContext()->Topo())),
-_voiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
+_primaryVoiceManager(std::make_unique<FBVoiceManager>(_procState.get())),
+_exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
   _input->note = &_notes;
   _input->audio = &_audio;
-  _input->voiceManager = _voiceManager.get();
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->params.size(); i++)
@@ -65,21 +65,29 @@ FBGraphRenderState::PrimaryParamChanged(int index, float normalized)
 }
 
 void
-FBGraphRenderState::PrepareForRender(bool primary, int voice)
+FBGraphRenderState::PrepareForRenderPrimary()
 {
-  // TODO figure out to handle global
-  assert(!primary || voice == -1);
-  if (_voiceManager->VoiceCount() > 0)
+  if (_primaryVoiceManager->VoiceCount() > 0)
   {
-    _voiceManager->Return(0);
-    _voiceManager->ResetReturnedVoices();
+    _primaryVoiceManager->Return(0);
+    _primaryVoiceManager->ResetReturnedVoices();
   }
-  if (primary)
-    _procState->InitProcessing(*_scalarState);
-  else
-    // TODO initproc for all voices at once ?
-    // we got the storage space anyway
-    _procState->InitProcessing(*ExchangeContainer(), voice);
-  _voiceManager->Lease(MakeNoteC4On());
-  _moduleState->voice = &_voiceManager->Voices()[0];
+  _procState->InitProcessing(*_scalarState);
+  _primaryVoiceManager->Lease(MakeNoteC4On());
+  _input->voiceManager = _primaryVoiceManager.get();
+  _moduleState->voice = &_primaryVoiceManager->Voices()[0];
+}
+
+void
+FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
+{
+  _moduleState->voice = &_exchangeVoiceManager->Voices()[voice];
+}
+
+void
+FBGraphRenderState::PrepareForRenderExchange()
+{
+  _moduleState->voice = nullptr;
+  _procState->InitProcessing(*ExchangeContainer());
+  _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->VoiceState());
 }

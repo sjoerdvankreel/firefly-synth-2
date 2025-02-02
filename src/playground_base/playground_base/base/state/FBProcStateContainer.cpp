@@ -59,6 +59,13 @@ FBProcStateContainer::InitProcessing(
 
 void
 FBProcStateContainer::InitProcessing(
+  int index, int voice, float value)
+{
+  Params()[index].InitProcessing(voice, value);
+}
+
+void
+FBProcStateContainer::InitProcessing(
   FBScalarStateContainer const& scalar)
 {
   for (int p = 0; p < Params().size(); p++)
@@ -67,13 +74,15 @@ FBProcStateContainer::InitProcessing(
 
 void 
 FBProcStateContainer::InitProcessing(
-  FBExchangeStateContainer const& exchange, int voice)
+  FBExchangeStateContainer const& exchange)
 {
   for (int p = 0; p < Params().size(); p++)
-    if (Params()[p].IsVoice())
-      InitProcessing(p, exchange.Params()[p].Voice()[voice]);
+    if (!Params()[p].IsVoice())
+      InitProcessing(p, *exchange.Params()[p].Global());
     else
-      InitProcessing(p, *exchange.Params()[p].Global());    
+      for(int v = 0; v < FBMaxVoices; v++)
+        if(exchange.VoiceState()[v].state == FBVoiceState::Active)
+          InitProcessing(p, v, exchange.Params()[p].Voice()[v]);
 }
 
 void

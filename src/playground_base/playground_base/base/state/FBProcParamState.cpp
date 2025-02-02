@@ -1,4 +1,5 @@
 #include <playground_base/base/state/FBProcParamState.hpp>
+#include <cassert>
 
 void
 FBProcParamState::InitProcessing(float value)
@@ -9,6 +10,18 @@ FBProcParamState::InitProcessing(float value)
   case FBProcParamType::VoiceAcc: VoiceAcc().InitProcessing(value); break;
   case FBProcParamType::GlobalAcc: GlobalAcc().InitProcessing(value); break;
   default: break;
+  }
+}
+
+void
+FBProcParamState::InitProcessing(int voice, float value)
+{
+  Value(value);
+  switch (Type())
+  {
+  case FBProcParamType::VoiceBlock: VoiceBlock().BeginVoice(voice); break;
+  case FBProcParamType::VoiceAcc: VoiceAcc().InitProcessing(voice, value); break;
+  default: assert(false); break;
   }
 }
 

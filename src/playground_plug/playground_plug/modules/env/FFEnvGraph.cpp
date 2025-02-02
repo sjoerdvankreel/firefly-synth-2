@@ -20,23 +20,23 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   FFModuleGraphRenderData<FFEnvProcessor> renderData;
   renderData.graphData = graphData;
   renderData.graphData->state->ModuleState().sampleRate = sampleRate;
-  renderData.outputSelector = [](auto const& dspState, int moduleSlot) {
-    return &dspState.voice[0].env[moduleSlot].output; };
+  renderData.outputSelector = [](auto const& dspState, int voice, int moduleSlot) {
+    return &dspState.voice[voice].env[moduleSlot].output; };
 
-  int maxPoints = 0;
-  graphData->state->PrepareForRender(true, -1);
+  graphData->state->PrepareForRenderPrimary();
   FFRenderModuleGraph(renderData, graphData->primaryPoints);
-  maxPoints = std::max(maxPoints, (int)graphData->primaryPoints.size());
+  int maxPoints = (int)graphData->primaryPoints.size();
+  graphData->state->PrepareForRenderExchange();
   for(int v = 0; v < FBMaxVoices; v++)
     if (graphData->state->ExchangeContainer()->VoiceState()[v].state == FBVoiceState::Active)
     {
+      graphData->state->PrepareForRenderExchangeVoice(v);
       int slot = renderData.graphData->state->ModuleState().moduleSlot;
       auto exchange = graphData->state->ExchangeState<FFExchangeState>();
       auto const& envExchange = exchange->voice[v].env[slot];
       if (envExchange.active && envExchange.positionSamples < envExchange.lengthSamples)
       {
         auto& secondary = graphData->secondaryData.emplace_back();
-        graphData->state->PrepareForRender(false, v);
         FFRenderModuleGraph(renderData, secondary.points);
         maxPoints = std::max(maxPoints, (int)secondary.points.size());
         secondary.marker = (int)((envExchange.positionSamples / (float)envExchange.lengthSamples) * secondary.points.size());

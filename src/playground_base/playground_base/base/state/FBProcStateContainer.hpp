@@ -24,6 +24,8 @@ class FBProcStateContainer final
   std::vector<FBProcParamState> _params = {};
   std::vector<FBProcParamState>& Params() { return _params; }
 
+  void InitProcessing(int index, int voice, float value);
+
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBProcStateContainer);
   FBProcStateContainer(FBRuntimeTopo const& topo);
@@ -36,5 +38,5 @@ public:
   void SetSmoothingCoeffs(int sampleCount);
   void InitProcessing(int index, float value);
   void InitProcessing(FBScalarStateContainer const& scalar);
-  void InitProcessing(FBExchangeStateContainer const& exchange, int voice);
+  void InitProcessing(FBExchangeStateContainer const& exchange);
 };

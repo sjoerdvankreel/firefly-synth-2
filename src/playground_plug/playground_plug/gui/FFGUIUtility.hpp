@@ -8,7 +8,7 @@ struct FBModuleGraphComponentData;
 class FBFixedFloatBlock;
 
 typedef std::function<FBFixedFloatBlock const* (
-    FFProcDSPState const&, int moduleSlot)>
+  FFProcDSPState const&, int voice, int moduleSlot)>
 FFModuleGraphOutputSelector;
 
 template <class Processor>

@@ -12,12 +12,16 @@ class FBProcStateContainer;
 
 class FBVoiceManager final
 {
+  friend class FBGraphRenderState;
+
   int _voiceCount = 0;
   std::uint64_t _counter = {};
   FBProcStateContainer* const _procState;
   std::vector<FBNote> _returnedVoices = {};
   std::array<std::uint64_t, FBMaxVoices> _num = {};
   std::array<FBVoiceInfo, FBMaxVoices> _voices = {};
+
+  void InitFromExchange(std::array<FBVoiceInfo, FBMaxVoices> const& voiceState);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVoiceManager);

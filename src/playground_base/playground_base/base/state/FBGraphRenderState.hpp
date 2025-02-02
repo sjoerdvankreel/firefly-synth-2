@@ -27,14 +27,18 @@ class FBGraphRenderState final
   std::unique_ptr<FBModuleProcState> _moduleState;
   std::unique_ptr<FBProcStateContainer> _procState;
   std::unique_ptr<FBScalarStateContainer> _scalarState;
-  std::unique_ptr<FBVoiceManager> _voiceManager;
+  std::unique_ptr<FBVoiceManager> _primaryVoiceManager;
+  std::unique_ptr<FBVoiceManager> _exchangeVoiceManager;
 
 public:
   ~FBGraphRenderState();
   FBGraphRenderState(FBPlugGUI const* plugGUI);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBGraphRenderState);
 
-  void PrepareForRender(bool primary, int voice);
+  void PrepareForRenderPrimary();
+  void PrepareForRenderExchange();
+  void PrepareForRenderExchangeVoice(int voice);
+
   void PrimaryParamChanged(int index, float normalized);
   FBExchangeStateContainer const* ExchangeContainer() const;
   
