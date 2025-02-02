@@ -30,8 +30,9 @@ public:
   void BeginVoice(FBModuleProcState const& state);
 
 private:
-  int _position = 0;
   bool _finished = false;
+  int _lengthSamples = 0;
+  int _positionSamples = 0;
   float _lastDAHDSR = 0.0f;
   FBOnePoleFilter _smoother = {};
   FFEnvVoiceState _voiceState = {};

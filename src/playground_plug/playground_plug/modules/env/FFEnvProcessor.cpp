@@ -12,9 +12,9 @@
 void
 FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
 {
-  _position = 0;
   _finished = false;
   _lastDAHDSR = 0.0f;
+  _positionSamples = 0;
   _stagePositions.fill(0);
 
   int voice = state.voice->slot;
@@ -30,6 +30,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.attackSamples = topo.params[(int)FFEnvParam::AttackTime].linear.NormalizedTimeToSamples(params.block.attackTime[0].Voice()[voice], state.sampleRate);
   _voiceState.releaseSamples = topo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedTimeToSamples(params.block.releaseTime[0].Voice()[voice], state.sampleRate);
   _voiceState.smoothingSamples = topo.params[(int)FFEnvParam::SmoothTime].linear.NormalizedTimeToSamples(params.block.smoothTime[0].Voice()[voice], state.sampleRate);
+  _lengthSamples = _voiceState.delaySamples + _voiceState.attackSamples + _voiceState.holdSamples + _voiceState.decaySamples + _voiceState.releaseSamples;
 
   auto const& sustain = params.acc.sustainLevel[0].Voice()[voice].CV();
   if (_voiceState.delaySamples > 0)
@@ -147,7 +148,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     scratch.data[s] = _smoother.Next(_lastDAHDSR);
 
   int processed = s;
-  _position += processed;
+  _positionSamples += processed;
   if (s < FBFixedBlockSamples)
     _finished = true;
   for (; s < FBFixedBlockSamples; s++)
@@ -161,7 +162,8 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   auto& exchangeDSP = exchangeOutput->voice[voice].env[state.moduleSlot];
   auto& exchangeParams = exchangeOutput->param.voice.env[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.position = _position;
+  exchangeDSP.lengthSamples = _lengthSamples;
+  exchangeDSP.positionSamples = _positionSamples;
   exchangeParams.acc.decaySlope[0][voice] = decaySlope.data[processed - 1];
   exchangeParams.acc.attackSlope[0][voice] = attackSlope.data[processed - 1];
   exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.data[processed - 1];

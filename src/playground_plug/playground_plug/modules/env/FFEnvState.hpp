@@ -13,7 +13,8 @@ struct FBModuleGraphComponentData;
 class FFEnvExchangeState final
 {
   bool active = {};
-  int position = {};
+  int lengthSamples = {};
+  int positionSamples = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvExchangeState);
   friend class FFEnvProcessor;

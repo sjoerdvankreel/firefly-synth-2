@@ -16,6 +16,15 @@ Component()
   _data.state = state;
 }
 
+juce::Point<float>
+FBModuleGraphComponent::PointLocation(
+  std::vector<float> const& points, int point) const
+{
+  float x = (float)point / points.size() * getWidth();
+  float y = (1.0f - points[point]) * getHeight();
+  return { x, y };
+}
+
 void
 FBModuleGraphComponent::RequestRerender(int paramIndex)
 {
@@ -23,6 +32,21 @@ FBModuleGraphComponent::RequestRerender(int paramIndex)
     return;
   _tweakedParamByUI = paramIndex;
   repaint();
+}
+
+void
+FBModuleGraphComponent::PaintSeries(
+  Graphics& g, Colour color, std::vector<float> const& points)
+{
+  if (points.empty())
+    return;
+
+  Path path;
+  path.startNewSubPath(PointLocation(points, 0));
+  for (int i = 1; i < points.size(); i++)
+    path.lineTo(PointLocation(points, i));
+  g.setColour(color);
+  g.strokePath(path, PathStrokeType(1.0f));
 }
 
 bool 
@@ -36,26 +60,6 @@ FBModuleGraphComponent::PrepareForRender(int paramIndex)
   _renderer = staticModule.renderGraph;
   moduleState.moduleSlot = topoIndices.slot;
   return true;
-}
-
-void 
-FBModuleGraphComponent::PaintSeries(
-  Graphics& g, Colour color, std::vector<float> const& points)
-{
-  if (points.empty())
-    return;
-
-  Path p;
-  float y0 = (1.0f - points[0]) * getHeight();
-  p.startNewSubPath(0.0, y0);
-  for (int i = 1; i < points.size(); i++)
-  {
-    float x = (float)i / points.size() * getWidth();
-    float y = (1.0f - points[i]) * getHeight();
-    p.lineTo(x, y);
-  }
-  g.setColour(color);
-  g.strokePath(p, PathStrokeType(1.0f));
 }
 
 void
@@ -78,19 +82,15 @@ FBModuleGraphComponent::paint(Graphics& g)
   g.drawText(moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
   for (int i = 0; i < _data.secondaryData.size(); i++)
   {
-    g.setColour(Colours::grey);
-    PaintSeries(g, Colours::grey, _data.secondaryData[i].points);
-    /* TODO
+    auto const& points = _data.secondaryData[i].points;
+    PaintSeries(g, Colours::grey, points);
     int marker = _data.secondaryData[i].marker;
     if (marker != -1)
     {
-      float yPosNorm = _data.secondaryData[i].points[marker];
-      float xPosNorm = marker / (float)_data.secondaryData[i].points.size();
-      float xPos = xPosNorm * getWidth();
-      float yPos = (1.0f - yPosNorm) * getHeight();
-      g.fillEllipse(xPos - 2.0f, yPos - 2.0f, 4.0f, 4.0f); // TODO
+      g.setColour(Colours::white);
+      auto markerXY = PointLocation(_data.secondaryData[i].points, marker);
+      g.fillEllipse(markerXY.getX() - 4.0f, markerXY.getY() - 4.0f, 8.0f, 8.0f); // TODO
     }
-    */
   }
   PaintSeries(g, Colours::white, _data.primaryPoints);
 }

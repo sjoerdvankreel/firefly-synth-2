@@ -29,13 +29,13 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     {
       int slot = renderData.graphData->state->ModuleState().moduleSlot;
       auto exchange = graphData->state->ExchangeState<FFExchangeState>();
-      if (exchange->voice[v].env[slot].active)
+      auto const& envExchange = exchange->voice[v].env[slot];
+      if (envExchange.active && envExchange.positionSamples < envExchange.lengthSamples)
       {
         auto& secondary = graphData->secondaryData.emplace_back();
         graphData->state->PrepareForRender(false, v);
         FFRenderModuleGraph(renderData, secondary.points);
-        // TODO adjust for SR
-        // secondary.marker = exchange->voice[v].env[graphData->state->ModuleState().moduleSlot].position;
+        secondary.marker = (int)((envExchange.positionSamples / (float)envExchange.lengthSamples) * secondary.points.size());
       }
     }
 

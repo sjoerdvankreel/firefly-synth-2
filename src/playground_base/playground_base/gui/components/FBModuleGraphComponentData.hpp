@@ -10,8 +10,8 @@ class FBGraphRenderState;
 
 struct FBModuleGraphSecondaryData final
 {
+  int marker = -1;
   std::vector<float> points = {};
-  std::optional<float> marker = {};
 };
 
 struct FBModuleGraphComponentData final

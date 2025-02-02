@@ -16,10 +16,14 @@ public juce::Component
   FBModuleGraphComponentData _data = {};
   
   bool PrepareForRender(int paramIndex);
+
   void PaintSeries(
-    juce::Graphics& g, 
-    juce::Colour color, 
+    juce::Graphics& g, juce::Colour color, 
     std::vector<float> const& points);
+
+  juce::Point<float>
+  PointLocation(
+    std::vector<float> const& points, int point) const;
 
 public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphComponent);
