@@ -42,6 +42,7 @@ FFPlugGUI::resized()
 void 
 FFPlugGUI::UpdateExchangeState()
 {
+  // TODO how many fps ?
   if(_graph->TweakedParamByUI() != -1)
     RequestGraphRender(_graph->TweakedParamByUI());
 }
