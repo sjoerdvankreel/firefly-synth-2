@@ -1,4 +1,5 @@
 #include <playground_plug/gui/FFPlugGUI.hpp>
+#include <playground_plug/gui/FFGUIConfig.hpp>
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
@@ -40,14 +41,6 @@ FFPlugGUI::resized()
 }
 
 void 
-FFPlugGUI::UpdateExchangeState()
-{
-  // TODO how many fps ?
-  if(_graph->TweakedParamByUI() != -1)
-    RequestGraphRender(_graph->TweakedParamByUI());
-}
-
-void 
 FFPlugGUI::SetParamNormalizedFromUI(int index, float normalized)
 {
   _graphRenderState->PrimaryParamChanged(index, normalized);
@@ -65,6 +58,18 @@ FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
     HostContext()->Topo()->params[index].runtimeModuleIndex ==
     HostContext()->Topo()->params[_graph->TweakedParamByUI()].runtimeModuleIndex)
     RequestGraphRender(index);
+}
+
+void
+FFPlugGUI::UpdateExchangeState()
+{
+  auto now = std::chrono::high_resolution_clock::now();
+  auto elapsedMillis = std::chrono::duration_cast<std::chrono::milliseconds>(now - _exchangeUpdated);
+  if (elapsedMillis.count() < 1000.0 / FFGUIFPS)
+    return;
+  _exchangeUpdated = now;
+  if (_graph->TweakedParamByUI() != -1)
+    RequestGraphRender(_graph->TweakedParamByUI());
 }
 
 void 
