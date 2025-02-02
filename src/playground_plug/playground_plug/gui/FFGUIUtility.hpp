@@ -23,4 +23,4 @@ template <class Processor>
 void 
 FFRenderModuleGraph(
   FFModuleGraphRenderData<Processor>& renderData, 
-  std::vector<float>& pointsOut);
+  std::vector<float>& seriesOut);

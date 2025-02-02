@@ -15,13 +15,12 @@ template <class Processor>
 void
 FFRenderModuleGraph(
   FFModuleGraphRenderData<Processor>& renderData, 
-  std::vector<float>& pointsOut)
+  std::vector<float>& seriesOut)
 {
-  // TODO tidy
-
-  pointsOut.clear();
-  FBFixedFloatArray pointsIn;
+  seriesOut.clear();
+  FBFixedFloatArray seriesIn;
   int processed = FBFixedBlockSamples;
+  int voice = renderData.graphData->state->ModuleState().voice->slot;
   auto const& moduleState = renderData.graphData->state->ModuleState();
   auto* procState = moduleState.ProcState<FFProcState>();
 
@@ -29,8 +28,8 @@ FFRenderModuleGraph(
   while (processed == FBFixedBlockSamples)
   {
     processed = renderData.processor.Process(moduleState);
-    renderData.outputSelector(procState->dsp, renderData.graphData->state->ModuleState().voice->slot, moduleState.moduleSlot)->StoreToFloatArray(pointsIn);
+    renderData.outputSelector(procState->dsp, voice, moduleState.moduleSlot)->StoreToFloatArray(seriesIn);
     for (int i = 0; i < processed; i++)
-      pointsOut.push_back(pointsIn.data[i]);
+      seriesOut.push_back(seriesIn.data[i]);
   }
 }

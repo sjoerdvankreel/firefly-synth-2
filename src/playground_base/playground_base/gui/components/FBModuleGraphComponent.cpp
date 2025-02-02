@@ -16,6 +16,15 @@ Component()
   _data.state = state;
 }
 
+void
+FBModuleGraphComponent::RequestRerender(int paramIndex)
+{
+  if (!PrepareForRender(paramIndex))
+    return;
+  _tweakedParamByUI = paramIndex;
+  repaint();
+}
+
 juce::Point<float>
 FBModuleGraphComponent::PointLocation(
   std::vector<float> const& points, int point) const
@@ -25,13 +34,13 @@ FBModuleGraphComponent::PointLocation(
   return { x, y };
 }
 
-void
-FBModuleGraphComponent::RequestRerender(int paramIndex)
+void 
+FBModuleGraphComponent::PaintMarker(
+  Graphics& g, std::vector<float> const& points, int marker)
 {
-  if (!PrepareForRender(paramIndex))
-    return;
-  _tweakedParamByUI = paramIndex;
-  repaint();
+  g.setColour(Colours::white);
+  auto markerXY = PointLocation(points, marker);
+  g.fillEllipse(markerXY.getX() - 4.0f, markerXY.getY() - 4.0f, 8.0f, 8.0f);
 }
 
 void
@@ -71,8 +80,9 @@ FBModuleGraphComponent::paint(Graphics& g)
     return;
 
   _data.text.clear();
-  _data.primaryPoints.clear();
-  _data.secondaryData.clear();
+  _data.primarySeries.clear();
+  _data.primaryMarkers.clear();
+  _data.secondarySeries.clear();
   _renderer(&_data);
 
   g.fillAll(Colours::black);
@@ -80,17 +90,16 @@ FBModuleGraphComponent::paint(Graphics& g)
   auto const* runtimeTopo = _data.state->ModuleState().topo;
   std::string moduleName = runtimeTopo->ModuleAtParamIndex(_tweakedParamByUI)->name;
   g.drawText(moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
-  for (int i = 0; i < _data.secondaryData.size(); i++)
+  for (int i = 0; i < _data.secondarySeries.size(); i++)
   {
-    auto const& points = _data.secondaryData[i].points;
+    int marker = _data.secondarySeries[i].marker;
+    auto const& points = _data.secondarySeries[i].points;
     PaintSeries(g, Colours::grey, points);
-    int marker = _data.secondaryData[i].marker;
     if (marker != -1)
-    {
-      g.setColour(Colours::white);
-      auto markerXY = PointLocation(_data.secondaryData[i].points, marker);
-      g.fillEllipse(markerXY.getX() - 4.0f, markerXY.getY() - 4.0f, 8.0f, 8.0f); // TODO
-    }
+      PaintMarker(g, points, marker);
   }
-  PaintSeries(g, Colours::white, _data.primaryPoints);
+  
+  PaintSeries(g, Colours::white, _data.primarySeries);
+  for (int i = 0; i < _data.primaryMarkers.size(); i++)
+    PaintMarker(g, _data.primarySeries, _data.primaryMarkers[i]);
 }
