@@ -85,6 +85,9 @@ void
 FBParamSlider::UpdateExchangeState()
 {
   // TODO handle not-per-voice-case
+  if (!_param->static_.IsVoice())
+    return;
+
   bool anyExchange = false;
   float minExchange = 1.0f;
   float maxExchange = 0.0f;

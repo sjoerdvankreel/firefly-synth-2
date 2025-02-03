@@ -49,6 +49,13 @@ struct FBStaticParam final
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
+  bool IsAcc() const;
+  bool IsVoice() const;
+  bool IsVoiceAcc() const;
+  bool IsGlobalAcc() const;
+  bool IsVoiceBlock() const;
+  bool IsGlobalBlock() const;
+  
   int ValueCount() const;
   FBAutomationType AutomationType() const;
 

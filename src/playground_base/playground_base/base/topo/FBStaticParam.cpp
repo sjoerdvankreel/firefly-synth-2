@@ -1,11 +1,39 @@
 #include <playground_base/base/topo/FBStaticParam.hpp>
 
-float
-FBStaticParam::DefaultNormalizedByText() const
+bool 
+FBStaticParam::IsVoiceAcc() const
 {
-  if (defaultText.size() == 0)
-    return 0.0f;
-  return TextToNormalized(false, defaultText).value();
+  return voiceAccAddr != nullptr;
+}
+
+bool 
+FBStaticParam::IsGlobalAcc() const
+{
+  return globalAccAddr != nullptr;
+}
+
+bool 
+FBStaticParam::IsVoiceBlock() const
+{
+  return voiceBlockAddr != nullptr;
+}
+
+bool 
+FBStaticParam::IsGlobalBlock() const
+{
+  return globalBlockAddr != nullptr;
+}
+
+bool 
+FBStaticParam::IsAcc() const
+{
+  return IsVoiceAcc() || IsGlobalAcc();
+}
+
+bool 
+FBStaticParam::IsVoice() const
+{
+  return IsVoiceAcc() || IsVoiceBlock();
 }
 
 FBAutomationType 
@@ -13,9 +41,17 @@ FBStaticParam::AutomationType() const
 {
   if (acc)
     return FBAutomationType::Modulate;
-  if (!FBParamTypeIsStepped(type) && voiceBlockAddr != nullptr)
+  if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
     return FBAutomationType::Automate;
   return FBAutomationType::None;
+}
+
+float
+FBStaticParam::DefaultNormalizedByText() const
+{
+  if (defaultText.size() == 0)
+    return 0.0f;
+  return TextToNormalized(false, defaultText).value();
 }
 
 float
