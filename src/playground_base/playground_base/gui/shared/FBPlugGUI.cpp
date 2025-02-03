@@ -1,5 +1,6 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
+#include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
@@ -27,15 +28,49 @@ FBPlugGUI::SteppedParamNormalizedChanged(int index)
 void 
 FBPlugGUI::InitAllDependencies()
 {
-  for (int i = 0; i < HostContext()->Topo()->params.size(); i++)
-    if (FBParamTypeIsStepped(HostContext()->Topo()->params[i].static_.type))
+  auto const& params = HostContext()->Topo()->params;
+  for (int i = 0; i < params.size(); i++)
+    if (FBParamTypeIsStepped(params[i].static_.type))
       SteppedParamNormalizedChanged(i);
+}
+
+void
+FBPlugGUI::SetParamNormalizedFromHost(int index, float value)
+{
+  auto control = GetControlForParamIndex(index);
+  control->SetValueNormalizedFromHost(value);
+  if (FBParamTypeIsStepped(control->Param()->static_.type))
+    SteppedParamNormalizedChanged(index);
+}
+
+FBParamControl*
+FBPlugGUI::GetControlForParamIndex(int paramIndex) const
+{
+  auto iter = _paramIndexToComponent.find(paramIndex);
+  assert(iter != _paramIndexToComponent.end());
+  return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
 }
 
 void
 FBPlugGUI::UpdateExchangeStateTick()
 {
-  // TODO the param sliders
+  auto const& params = HostContext()->Topo()->params;
+  for (int i = 0; i < params.size(); i++)
+    if (!FBParamTypeIsStepped(params[i].static_.type))
+      dynamic_cast<FBParamSlider&>(*GetControlForParamIndex(i)).UpdateExchangeState();
+}
+
+void
+FBPlugGUI::ShowPopupMenuFor(
+  Component* target,
+  PopupMenu menu,
+  std::function<void(int)> callback)
+{
+  PopupMenu::Options options;
+  options = options.withParentComponent(this);
+  options = options.withTargetComponent(target);
+  options = options.withMousePosition();
+  menu.showMenuAsync(options, callback);
 }
 
 void
@@ -51,19 +86,6 @@ FBPlugGUI::UpdateExchangeState()
     return;
   _exchangeUpdated = now;
   UpdateExchangeStateTick();
-}
-
-void
-FBPlugGUI::ShowPopupMenuFor(
-  Component* target,
-  PopupMenu menu,
-  std::function<void(int)> callback)
-{
-  PopupMenu::Options options;
-  options = options.withParentComponent(this);
-  options = options.withTargetComponent(target);
-  options = options.withMousePosition();
-  menu.showMenuAsync(options, callback);
 }
 
 std::string
@@ -91,24 +113,13 @@ FBPlugGUI::ShowHostMenuForParam(int index)
   ShowPopupMenuFor(this, *hostMenu, clicked);
 }
 
-void
-FBPlugGUI::SetParamNormalizedFromHost(int index, float value)
-{
-  auto iter = _paramIndexToComponent.find(index);
-  assert(iter != _paramIndexToComponent.end());
-  auto& paramControl = dynamic_cast<FBParamControl&>(*_store[iter->second].get());
-  paramControl.SetValueNormalizedFromHost(value);
-  if(FBParamTypeIsStepped(paramControl.Param()->static_.type))
-    SteppedParamNormalizedChanged(index);
-}
-
 Component*
 FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
 {
   FBParamControl* paramControl;
   FBParamsDependent* paramsDependent;
-  int componentIndex = _store.size();
   Component* result = component.get();
+  int componentIndex = (int)_store.size();
   _store.emplace_back(std::move(component));
   if ((paramControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
     _paramIndexToComponent[paramControl->Param()->runtimeParamIndex] = componentIndex;

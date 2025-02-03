@@ -1,8 +1,9 @@
-#include <playground_base/base/topo/FBRuntimeParam.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/glue/FBHostContextMenu.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
+#include <playground_base/base/topo/FBRuntimeParam.hpp>
+#include <playground_base/base/state/FBExchangeStateContainer.hpp>
 
 #include <cassert>
 
@@ -78,4 +79,30 @@ FBParamSlider::valueChanged()
   _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
   UpdateTooltip();
+}
+
+void
+FBParamSlider::UpdateExchangeState()
+{
+  // TODO handle not-per-voice-case
+  bool anyExchange = false;
+  float minExchange = 1.0f;
+  float maxExchange = 0.0f;
+  float exchangeValue = 0.0f;
+  auto const* exchange = _plugGUI->HostContext()->ExchangeState();
+  for(int v = 0; v < FBMaxVoices; v++)
+    if (exchange->VoiceState()[v].state == FBVoiceState::Active)
+    {
+      anyExchange = true;
+      exchangeValue = exchange->Params()[_param->runtimeParamIndex].Voice()[v];
+      minExchange = std::min(minExchange, exchangeValue);
+      maxExchange = std::max(maxExchange, exchangeValue);
+    }
+
+  if (!anyExchange || (_minExchange == minExchange && _maxExchange == maxExchange))
+    return;
+
+  _minExchange = minExchange;
+  _maxExchange = maxExchange;
+  repaint();
 }

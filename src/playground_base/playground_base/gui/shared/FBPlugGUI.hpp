@@ -40,6 +40,7 @@ protected:
 
   void InitAllDependencies();
   virtual void UpdateExchangeStateTick() = 0;
+  FBParamControl* GetControlForParamIndex(int paramIndex) const;
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:

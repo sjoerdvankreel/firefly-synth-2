@@ -13,6 +13,9 @@ public juce::Slider,
 public FBParamControl,
 public IFBHorizontalAutoSize
 {
+  float _minExchange = 0.0f;
+  float _maxExchange = 1.0f;
+
 public:
   FBParamSlider(
     FBPlugGUI* plugGUI, 
@@ -24,6 +27,7 @@ public:
   void startedDragging() override;
   void mouseUp(juce::MouseEvent const& event) override;
   
+  void UpdateExchangeState();
   int FixedWidth(int height) const override;
   juce::String getTextFromValue(double value) override;
   void SetValueNormalizedFromHost(float normalized) override;

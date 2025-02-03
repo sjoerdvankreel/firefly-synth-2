@@ -5,6 +5,7 @@
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
@@ -143,7 +144,7 @@ bool
 FBCLAPPlugin::init() noexcept
 {
   FB_LOG_ENTRY_EXIT();
-  startTimerHz(60); // TODO 60?
+  startTimerHz(FBGUIFPS);
   return true;
 }
 
