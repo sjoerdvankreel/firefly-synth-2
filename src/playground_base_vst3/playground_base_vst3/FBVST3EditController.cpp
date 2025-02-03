@@ -212,9 +212,9 @@ void PLUGIN_API
 FBVST3EditController::onDataExchangeBlocksReceived(
   DataExchangeUserContextID id, uint32 numBlocks, DataExchangeBlock* blocks, TBool bg)
 {
-  if (numBlocks != 1)
+  if (numBlocks == 0)
     return;
-  memcpy(_exchangeState->Raw(), blocks[0].data, _topo->static_.state.exchangeStateSize);
+  memcpy(_exchangeState->Raw(), blocks[numBlocks - 1].data, _topo->static_.state.exchangeStateSize);
   if (_guiEditor != nullptr)
     _guiEditor->UpdateExchangeState();
 }

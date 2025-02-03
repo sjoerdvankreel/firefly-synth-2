@@ -1,5 +1,6 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base_clap/FBCLAPUtility.hpp>
+#include <playground_base_clap/FBCLAPExchangeStateQueue.hpp>
 
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
@@ -120,8 +121,9 @@ FBCLAPPlugin::
 FBCLAPPlugin::
 FBCLAPPlugin(
   FBStaticTopo const& topo,
-  clap_plugin_descriptor const* desc, 
-  clap_host const* host):
+  clap_plugin_descriptor const* desc,
+  clap_host const* host,
+  std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue):
 Plugin(desc, host),
 _gui(),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
@@ -130,6 +132,7 @@ _procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),
 _dspExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _guiExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
+_exchangeStateQueue(std::move(exchangeStateQueue)),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1) 
 {
@@ -147,10 +150,16 @@ FBCLAPPlugin::init() noexcept
 void 
 FBCLAPPlugin::timerCallback()
 {
-  FBCLAPSyncToMainEvent event;
+  FBCLAPSyncToMainEvent event = {};
   while (_audioToMainEvents.try_dequeue(event))
     if (_gui)
       _gui->SetParamNormalized(event.paramIndex, event.normalized);
+
+  bool receivedExchange = false;
+  while (_exchangeStateQueue->TryDequeue(_guiExchangeState->Raw()))
+    receivedExchange = true;
+  if (receivedExchange && _gui)
+    _gui->UpdateExchangeState();
 }
 
 int32_t 
@@ -300,15 +309,15 @@ FBCLAPPlugin::process(
   _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
 
   _output.outputParams.clear();
-  _hostProcessor->ProcessHost(_input, _output);
+  _hostProcessor->ProcessHost(_input, _output);  
   for (auto const& op : _output.outputParams)
     _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));
+  _exchangeStateQueue->Enqueue(_dspExchangeState->Raw()); 
   auto const& rvs = _output.returnedVoices;
   for (int rv = 0; rv < rvs.size(); rv++)
   {
     clap_event_note endEvent = MakeNoteEndEvent(rvs[rv], process->frames_count - 1);
     process->out_events->try_push(process->out_events, &(endEvent.header));
   }
-
   return CLAP_PROCESS_CONTINUE;
 }

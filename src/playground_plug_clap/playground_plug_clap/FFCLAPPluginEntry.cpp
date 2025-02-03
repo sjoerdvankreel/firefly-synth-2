@@ -1,8 +1,11 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugMeta.hpp>
+#include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base_clap/FBCLAPExchangeStateQueue.hpp>
+
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBStaticTopo.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
@@ -10,7 +13,33 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <clap/clap.h>
+
+#include <cassert>
 #include <cstring>
+
+// Just to make it work with the moodycamel queue without
+// introducing accidental copy/move support into the plugin itself.
+struct alignas(alignof(FFExchangeState)) FFCLAPExchangeState final
+{
+  FFExchangeState state;
+  FFCLAPExchangeState(FFCLAPExchangeState const& rhs);
+  FFCLAPExchangeState& operator=(FFCLAPExchangeState const& rhs);
+};
+
+FFCLAPExchangeState::
+FFCLAPExchangeState(FFCLAPExchangeState const& rhs)
+{
+  assert(&rhs != this);
+  memcpy(&state, &rhs.state, sizeof(FFExchangeState));
+}
+
+FFCLAPExchangeState&
+FFCLAPExchangeState::operator=(FFCLAPExchangeState const& rhs)
+{
+  assert(&rhs != this);
+  memcpy(&state, &rhs.state, sizeof(FFExchangeState));
+  return *this;
+}
 
 class FFCLAPPlugin:
 public FBCLAPPlugin
@@ -21,7 +50,7 @@ public:
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFCLAPPlugin);
   FFCLAPPlugin(FBStaticTopo const& topo, clap_plugin_descriptor const* desc, clap_host const* host):
-  FBCLAPPlugin(topo, desc, host) {}
+  FBCLAPPlugin(topo, desc, host, std::make_unique<FBCLAPExchangeStateQueue<FFCLAPExchangeState>>()) {}
 };
 
 static void CLAP_ABI 

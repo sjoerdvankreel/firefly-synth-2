@@ -1,6 +1,4 @@
 gui modulation indicators also for clap (poly)mod
-all non-stepped per-voice params should be automatable, modulatable only if sample accurate
-data exchange for clap
 not hardcode env1 to voice amp
 get rid of the sysheaders warnings
 handle envelope offset (actual start index in block)

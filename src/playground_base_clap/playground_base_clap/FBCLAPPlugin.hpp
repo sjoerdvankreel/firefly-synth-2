@@ -24,6 +24,7 @@ class FBPlugGUIContext;
 class FBProcStateContainer;
 class FBScalarStateContainer;
 class FBExchangeStateContainer;
+class FBCLAPExchangeStateQueueBase;
 
 class FBCLAPPlugin:
 public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
@@ -38,6 +39,7 @@ public IFBHostDSPContext
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::unique_ptr<FBExchangeStateContainer> _dspExchangeState;
   std::unique_ptr<FBExchangeStateContainer> _guiExchangeState;
+  std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
 
   moodycamel::ReaderWriterQueue<FBCLAPSyncToMainEvent, 
     FBCLAPSyncEventReserve> _audioToMainEvents;
@@ -58,7 +60,11 @@ public IFBHostDSPContext
 public:
   ~FBCLAPPlugin();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBCLAPPlugin);
-  FBCLAPPlugin(FBStaticTopo const& topo, clap_plugin_descriptor const* desc, clap_host const* host);
+  FBCLAPPlugin(
+    FBStaticTopo const& topo,
+    clap_plugin_descriptor const* desc, 
+    clap_host const* host,    
+    std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue);
 
   bool init() noexcept override;
   void timerCallback() override;
