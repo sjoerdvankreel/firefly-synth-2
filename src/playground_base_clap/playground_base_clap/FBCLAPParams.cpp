@@ -118,19 +118,8 @@ FBCLAPPlugin::paramsInfo(
     std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
 
   info->flags = CLAP_PARAM_REQUIRES_PROCESS;
-  if (runtimeParam.static_.acc)
-  {
-    info->flags |= CLAP_PARAM_IS_MODULATABLE;
-    info->flags |= CLAP_PARAM_IS_AUTOMATABLE;
-    if (staticModule.voice)
-    {
-      info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_KEY;
-      info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
-      info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
-    }
-    assert(!FBParamTypeIsStepped(runtimeParam.static_.type));
-  }
-  else
+  auto automationType = runtimeParam.static_.AutomationType();
+  if (automationType == FBAutomationType::None)
   {
     info->flags |= CLAP_PARAM_IS_READONLY;
     if (FBParamTypeIsStepped(runtimeParam.static_.type))
@@ -139,6 +128,20 @@ FBCLAPPlugin::paramsInfo(
       info->max_value = staticParam.ValueCount() - 1.0f;
       if (staticParam.type == FBParamType::List)
         info->flags |= CLAP_PARAM_IS_ENUM;
+    }
+  }
+  else
+  {
+    info->flags |= CLAP_PARAM_IS_AUTOMATABLE;
+    if (automationType == FBAutomationType::Modulate)
+    {
+      info->flags |= CLAP_PARAM_IS_MODULATABLE;
+      if (staticModule.voice)
+      {
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_KEY;
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
+      }
     }
   }
   return true;

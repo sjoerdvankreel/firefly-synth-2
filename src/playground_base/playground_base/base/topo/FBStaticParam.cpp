@@ -8,6 +8,16 @@ FBStaticParam::DefaultNormalizedByText() const
   return TextToNormalized(false, defaultText).value();
 }
 
+FBAutomationType 
+FBStaticParam::AutomationType() const
+{
+  if (acc)
+    return FBAutomationType::Modulate;
+  if (!FBParamTypeIsStepped(type) && voiceBlockAddr != nullptr)
+    return FBAutomationType::Automate;
+  return FBAutomationType::None;
+}
+
 float
 FBStaticParam::AnyDiscreteToNormalizedSlow(int plain) const
 {

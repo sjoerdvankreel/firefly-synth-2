@@ -3,6 +3,7 @@
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/FBTextDisplay.hpp>
+#include <playground_base/base/topo/FBAutomationType.hpp>
 #include <playground_base/base/topo/FBParamsDependency.hpp>
 
 #include <playground_base/base/topo/param/FBParamType.hpp>
@@ -49,6 +50,8 @@ struct FBStaticParam final
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
   int ValueCount() const;
+  FBAutomationType AutomationType() const;
+
   float AnyDiscreteToNormalizedSlow(int discrete) const;
   int NormalizedToAnyDiscreteSlow(float normalized) const;
 
