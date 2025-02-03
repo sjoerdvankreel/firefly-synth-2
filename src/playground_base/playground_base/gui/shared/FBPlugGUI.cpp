@@ -1,5 +1,6 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
+#include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
@@ -29,6 +30,27 @@ FBPlugGUI::InitAllDependencies()
   for (int i = 0; i < HostContext()->Topo()->params.size(); i++)
     if (FBParamTypeIsStepped(HostContext()->Topo()->params[i].static_.type))
       SteppedParamNormalizedChanged(i);
+}
+
+void
+FBPlugGUI::UpdateExchangeStateTick()
+{
+  // TODO the param sliders
+}
+
+void
+FBPlugGUI::UpdateExchangeState()
+{
+  using std::chrono::milliseconds;
+  using std::chrono::duration_cast;
+  using std::chrono::high_resolution_clock;
+
+  auto now = high_resolution_clock::now();
+  auto elapsedMillis = duration_cast<milliseconds>(now - _exchangeUpdated);
+  if (elapsedMillis.count() < 1000.0 / FBGUIFPS) // TODO the clap todo
+    return;
+  _exchangeUpdated = now;
+  UpdateExchangeStateTick();
 }
 
 void

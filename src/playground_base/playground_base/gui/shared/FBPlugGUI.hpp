@@ -6,6 +6,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#include <chrono>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
@@ -29,7 +30,7 @@ public:
   void SteppedParamNormalizedChanged(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
-  virtual void UpdateExchangeState() = 0;
+  void UpdateExchangeState();
   virtual void SetParamNormalizedFromUI(int index, float normalized) = 0;
   virtual void SetParamNormalizedFromHost(int index, float normalized);
 
@@ -38,6 +39,7 @@ protected:
   FBPlugGUI(FBHostGUIContext* hostContext);
 
   void InitAllDependencies();
+  virtual void UpdateExchangeStateTick() = 0;
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
@@ -45,6 +47,7 @@ private:
   juce::TooltipWindow* _tooltipWindow = {};
   std::unordered_map<int, int> _paramIndexToComponent = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
+  std::chrono::high_resolution_clock::time_point _exchangeUpdated = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsDependents = {};
 };
 

@@ -3,7 +3,6 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
-#include <chrono>
 #include <memory>
 
 class FBGridComponent;
@@ -17,7 +16,6 @@ public FBPlugGUI
   FBGridComponent* _content = {};
   FBModuleGraphComponent* _graph = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
-  std::chrono::high_resolution_clock::time_point _exchangeUpdated = {};
 
   void SetupGUI();
   void RequestGraphRender(int paramIndex);
@@ -28,8 +26,7 @@ public:
   FFPlugGUI(FBHostGUIContext* hostContext);
 
   void resized() override;
-
-  void UpdateExchangeState() override;
+  void UpdateExchangeStateTick() override;
   void SetParamNormalizedFromUI(int index, float normalized) override;
   void SetParamNormalizedFromHost(int index, float normalized) override;
 };
