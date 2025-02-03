@@ -1,11 +1,11 @@
 #include <playground_plug/gui/FFPlugGUI.hpp>
-#include <playground_plug/gui/FFGUIConfig.hpp>
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 
+#include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBGraphRenderState.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
@@ -65,7 +65,7 @@ FFPlugGUI::UpdateExchangeState()
 {
   auto now = std::chrono::high_resolution_clock::now();
   auto elapsedMillis = std::chrono::duration_cast<std::chrono::milliseconds>(now - _exchangeUpdated);
-  if (elapsedMillis.count() < 1000.0 / FFGUIFPS)
+  if (elapsedMillis.count() < 1000.0 / FBGUIFPS)
     return;
   _exchangeUpdated = now;
   if (_graph->TweakedParamByUI() != -1)
