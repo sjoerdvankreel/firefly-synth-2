@@ -1,5 +1,6 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
+#include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
@@ -12,10 +13,12 @@ FBPlugGUIContainer::
 FBPlugGUIContainer::
 FBPlugGUIContainer(FBHostGUIContext* hostContext):
 FBPlugGUIContext(hostContext),
-_gui(hostContext->Topo()->static_.gui.factory(hostContext))
+_gui(hostContext->Topo()->static_.gui.factory(hostContext)),
+_lookAndFeel(std::make_unique<FBGUILookAndFeel>())
 {
   setOpaque(true);
   setVisible(true);
+  setLookAndFeel(_lookAndFeel.get());
   int plugWidth = hostContext->Topo()->static_.gui.plugWidth;
   int plugHeight = GetHeightForAspectRatio(plugWidth);
   setSize(plugWidth, plugHeight);
