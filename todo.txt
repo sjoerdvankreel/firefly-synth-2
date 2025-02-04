@@ -1,3 +1,5 @@
+get rid of all the friends?
+tooltip about automation capabilities + min/max active voice ("audio engine min")
 gui modulation indicators also for clap (poly)mod
 not hardcode env1 to voice amp
 get rid of the sysheaders warnings

@@ -13,8 +13,8 @@ public juce::Slider,
 public FBParamControl,
 public IFBHorizontalAutoSize
 {
-  float _minExchange = 0.0f;
-  float _maxExchange = 1.0f;
+  float _minExchangeValue = 0.0f;
+  float _maxExchangeValue = 1.0f;
 
 public:
   FBParamSlider(
@@ -32,4 +32,7 @@ public:
   juce::String getTextFromValue(double value) override;
   void SetValueNormalizedFromHost(float normalized) override;
   double getValueFromText(const juce::String& text) override;
+
+  float MinExchangeValue() const { return _minExchangeValue; }
+  float MaxExchangeValue() const { return _maxExchangeValue; }
 };
