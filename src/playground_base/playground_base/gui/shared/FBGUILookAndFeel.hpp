@@ -11,6 +11,12 @@ public juce::LookAndFeel_V4
     juce::Graphics& g, FBParamSlider& slider, 
     int y, int height, float exchangeValue);
 
+  void DrawRotarySliderExchangeThumb(
+    juce::Graphics& g, FBParamSlider& slider,
+    int x, int y, int width, int height,
+    float rotaryStartAngle, float rotaryEndAngle, 
+    float exchangeValue);
+
 public:
   void drawLinearSlider(
     juce::Graphics&, 
@@ -20,6 +26,6 @@ public:
 
   void drawRotarySlider(
     juce::Graphics&,
-    int x, int y, int width, int height, float sliderPosProportional,
+    int x, int y, int width, int height, float sliderPos,
     float rotaryStartAngle, float rotaryEndAngle, juce::Slider&) override;
 };
