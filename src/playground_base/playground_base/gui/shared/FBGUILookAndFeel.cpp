@@ -49,7 +49,7 @@ FBGUILookAndFeel::drawLinearSlider(
 {
   FBParamSlider* paramSlider;
   LookAndFeel_V4::drawLinearSlider(g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, s);
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
+  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr || !paramSlider->ExchangeValueReceived())
     return;    
   DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MinExchangeValue());
   DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MaxExchangeValue());
@@ -63,7 +63,7 @@ FBGUILookAndFeel::drawRotarySlider(
 {
   FBParamSlider* paramSlider;
   LookAndFeel_V4::drawRotarySlider(g, x, y, width, height, sliderPos, rotaryStartAngle, rotaryEndAngle, s);
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
+  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr || !paramSlider->ExchangeValueReceived())
     return;
   DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramSlider->MinExchangeValue());
   DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramSlider->MaxExchangeValue());

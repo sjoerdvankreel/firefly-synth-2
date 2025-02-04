@@ -14,7 +14,8 @@ public FBParamControl,
 public IFBHorizontalAutoSize
 {
   float _minExchangeValue = 0.0f;
-  float _maxExchangeValue = 1.0f;
+  float _maxExchangeValue = 0.0f;
+  bool _exchangeValueReceived = false;
 
 public:
   FBParamSlider(
@@ -35,4 +36,5 @@ public:
 
   float MinExchangeValue() const { return _minExchangeValue; }
   float MaxExchangeValue() const { return _maxExchangeValue; }
+  bool ExchangeValueReceived() const { return _exchangeValueReceived; }
 };

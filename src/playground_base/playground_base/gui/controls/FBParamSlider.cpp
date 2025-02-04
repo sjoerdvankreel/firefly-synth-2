@@ -89,20 +89,19 @@ FBParamSlider::UpdateExchangeState()
     return;
 
   float exchangeValue = 0.0f;
-  bool anyExchangeValue = false;
   float minExchangeValue = 1.0f;
   float maxExchangeValue = 0.0f;
   auto const* exchange = _plugGUI->HostContext()->ExchangeState();
   for(int v = 0; v < FBMaxVoices; v++)
     if (exchange->VoiceState()[v].state == FBVoiceState::Active)
     {
-      anyExchangeValue = true;
+      _exchangeValueReceived = true;
       exchangeValue = exchange->Params()[_param->runtimeParamIndex].Voice()[v];
       minExchangeValue = std::min(minExchangeValue, exchangeValue);
       maxExchangeValue = std::max(maxExchangeValue, exchangeValue);
     }
 
-  if (!anyExchangeValue || (_minExchangeValue == minExchangeValue && _maxExchangeValue == maxExchangeValue))
+  if (!_exchangeValueReceived || (_minExchangeValue == minExchangeValue && _maxExchangeValue == maxExchangeValue))
     return;
 
   _minExchangeValue = minExchangeValue;
