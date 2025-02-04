@@ -12,9 +12,9 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
 {
   auto* procState = state.ProcState<FFProcState>();
   auto& output = procState->dsp.global.gLFO[state.moduleSlot].output;
-  auto const& params = procState->param.global.gLFO[state.moduleSlot];
+  auto const& procParams = procState->param.global.gLFO[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
-  bool on = topo.params[(int)FFGLFOParam::On].boolean.NormalizedToPlain(params.block.on[0].Value());
+  bool on = topo.params[(int)FFGLFOParam::On].boolean.NormalizedToPlain(procParams.block.on[0].Value());
 
   if (!on)
   {
@@ -23,8 +23,16 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
   }
     
   output.Transform([&](int v) { 
-    auto rate = params.acc.rate[0].Global().CV(v);
+    auto rate = procParams.acc.rate[0].Global().CV(v);
     auto plainRate = topo.params[(int)FFGLFOParam::Rate].linear.NormalizedToPlain(rate);
     auto phase = _phase.Next(plainRate / state.sampleRate); 
     return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
+
+  auto* exchangeState = state.ExchangeState<FFExchangeState>();
+  if (exchangeState == nullptr)
+    return;
+
+  auto const& rate = procParams.acc.rate[0].Global().CV();
+  auto& exchangeParams = exchangeState->param.global.gLFO[state.moduleSlot];
+  exchangeParams.acc.rate[0] = rate.data[FBFixedBlockSamples - 1];
 }

@@ -17,6 +17,8 @@ public IFBHorizontalAutoSize
   float _maxExchangeValue = 0.0f;
   bool _exchangeValueReceived = false;
 
+  void ReceivedNewExchangeValue(float exchangeValue);
+
 public:
   FBParamSlider(
     FBPlugGUI* plugGUI, 
