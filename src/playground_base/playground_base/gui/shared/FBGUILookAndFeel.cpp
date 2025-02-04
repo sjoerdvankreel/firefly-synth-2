@@ -1,3 +1,4 @@
+#include <playground_base/base/topo/FBRuntimeParam.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
 
@@ -52,7 +53,8 @@ FBGUILookAndFeel::drawLinearSlider(
   if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr || !paramSlider->ExchangeValueReceived())
     return;    
   DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MinExchangeValue());
-  DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MaxExchangeValue());
+  if(paramSlider->Param()->static_.IsVoice())
+    DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MaxExchangeValue());
 }
 
 void 
@@ -66,5 +68,6 @@ FBGUILookAndFeel::drawRotarySlider(
   if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr || !paramSlider->ExchangeValueReceived())
     return;
   DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramSlider->MinExchangeValue());
-  DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramSlider->MaxExchangeValue());
+  if (paramSlider->Param()->static_.IsVoice())
+    DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramSlider->MaxExchangeValue());
 }
