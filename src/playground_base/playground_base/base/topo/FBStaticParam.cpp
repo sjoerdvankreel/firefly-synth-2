@@ -46,6 +46,19 @@ FBStaticParam::AutomationType() const
   return FBAutomationType::None;
 }
 
+std::string
+FBStaticParam::AutomationTooltip() const
+{
+  if (acc)
+    if (IsVoice())
+      return "Sample Accurate Per Voice";
+    else
+      return "Sample Accurate";
+  if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
+    return "At Voice Start";
+  return "None";
+}
+
 float
 FBStaticParam::DefaultNormalizedByText() const
 {

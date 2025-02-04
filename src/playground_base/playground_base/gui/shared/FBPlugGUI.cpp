@@ -82,7 +82,7 @@ FBPlugGUI::UpdateExchangeState()
 
   auto now = high_resolution_clock::now();
   auto elapsedMillis = duration_cast<milliseconds>(now - _exchangeUpdated);
-  if (elapsedMillis.count() < 1000.0 / FBGUIFPS) // TODO the clap todo
+  if (elapsedMillis.count() < 1000.0 / FBGUIFPS)
     return;
   _exchangeUpdated = now;
   UpdateExchangeStateTick();
@@ -95,9 +95,10 @@ FBPlugGUI::GetTooltipForParam(int index)
   float normalized = HostContext()->GetParamNormalized(index);
   auto result = param.tooltip + ": ";
   result += param.static_.NormalizedToText(FBTextDisplay::Tooltip, normalized);
-  if (param.static_.unit.empty())
-    return result;
-  return result + " " + param.static_.unit;
+  if (!param.static_.unit.empty())
+    result += " " + param.static_.unit;
+  result += "\r\nAutomation: " + param.static_.AutomationTooltip();
+  return result;
 }
 
 void

@@ -57,6 +57,7 @@ struct FBStaticParam final
   bool IsGlobalBlock() const;
   
   int ValueCount() const;
+  std::string AutomationTooltip() const;
   FBAutomationType AutomationType() const;
 
   float AnyDiscreteToNormalizedSlow(int discrete) const;
