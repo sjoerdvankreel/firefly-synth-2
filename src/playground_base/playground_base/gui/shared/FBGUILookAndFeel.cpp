@@ -35,3 +35,14 @@ FBGUILookAndFeel::drawLinearSlider(
   DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MinExchangeValue());
   DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MaxExchangeValue());
 }
+
+void 
+FBGUILookAndFeel::drawRotarySlider(
+  Graphics& g,
+  int x, int y, int width, int height, float sliderPosProportional,
+  float rotaryStartAngle, float rotaryEndAngle, Slider& s)
+{
+  LookAndFeel_V4::drawRotarySlider(g, x, y, width, height, sliderPosProportional, rotaryStartAngle, rotaryEndAngle, s);
+  g.setColour(Colours::pink);
+  g.fillRect(0, 0, 10, 10);
+}
