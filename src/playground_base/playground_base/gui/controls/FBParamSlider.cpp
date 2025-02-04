@@ -44,14 +44,6 @@ FBParamSlider::FixedWidth(int height) const
   return height;
 }
 
-void
-FBParamSlider::ReceivedNewExchangeValue(float exchangeValue)
-{
-  _exchangeValueReceived = true;
-  _minExchangeValue = std::min(_minExchangeValue, exchangeValue);
-  _maxExchangeValue = std::max(_maxExchangeValue, exchangeValue);
-}
-
 double
 FBParamSlider::getValueFromText(const String& text)
 {
@@ -87,6 +79,20 @@ FBParamSlider::valueChanged()
   _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
   UpdateTooltip();
+}
+
+void
+FBParamSlider::ReceivedNewExchangeValue(float exchangeValue)
+{
+  float minExchangeValue = _minExchangeValue;
+  float maxExchangeValue = _maxExchangeValue;
+  minExchangeValue = std::min(minExchangeValue, exchangeValue);
+  maxExchangeValue = std::max(maxExchangeValue, exchangeValue);
+  if (minExchangeValue == _minExchangeValue && maxExchangeValue == _maxExchangeValue)
+    return;
+  _exchangeValueReceived = true;
+  _minExchangeValue = minExchangeValue;
+  _maxExchangeValue = maxExchangeValue;
 }
 
 void
