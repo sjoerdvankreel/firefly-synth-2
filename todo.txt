@@ -1,3 +1,4 @@
+fix the global exchange state on startup (has no voice marker)
 get rid of all the friends?
 tooltip about automation capabilities + min/max active voice ("audio engine min")
 gui modulation indicators also for clap (poly)mod
