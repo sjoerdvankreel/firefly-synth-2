@@ -91,6 +91,8 @@ FBParamSlider::UpdateExchangeState()
   float exchangeValue = 0.0f;
   float minExchangeValue = 1.0f;
   float maxExchangeValue = 0.0f;
+  _exchangeValueReceived = false;
+
   auto const* exchange = _plugGUI->HostContext()->ExchangeState();
   for(int v = 0; v < FBMaxVoices; v++)
     if (exchange->VoiceState()[v].state == FBVoiceState::Active)
