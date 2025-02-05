@@ -13,9 +13,9 @@ public juce::Slider,
 public FBParamControl,
 public IFBHorizontalAutoSize
 {
+  bool _exchangeActive = false;
   float _minExchangeValue = 0.0f;
   float _maxExchangeValue = 0.0f;
-  bool _exchangeValueReceived = false;
 
   void ReceivedNewExchangeValue(float exchangeValue);
 
@@ -36,7 +36,7 @@ public:
   void SetValueNormalizedFromHost(float normalized) override;
   double getValueFromText(const juce::String& text) override;
 
+  bool ExchangeActive() const { return _exchangeActive; }
   float MinExchangeValue() const { return _minExchangeValue; }
   float MaxExchangeValue() const { return _maxExchangeValue; }
-  bool ExchangeValueReceived() const { return _exchangeValueReceived; }
 };

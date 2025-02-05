@@ -90,7 +90,7 @@ FBParamSlider::ReceivedNewExchangeValue(float exchangeValue)
   maxExchangeValue = std::max(maxExchangeValue, exchangeValue);
   if (minExchangeValue == _minExchangeValue && maxExchangeValue == _maxExchangeValue)
     return;
-  _exchangeValueReceived = true;
+  _exchangeActive = true;
   _minExchangeValue = minExchangeValue;
   _maxExchangeValue = maxExchangeValue;
 }
@@ -98,19 +98,22 @@ FBParamSlider::ReceivedNewExchangeValue(float exchangeValue)
 void
 FBParamSlider::UpdateExchangeState()
 {
-  float exchangeValue = 0.0f;
+  _exchangeActive = false;
   _minExchangeValue = 1.0f;
   _maxExchangeValue = 0.0f;
-  _exchangeValueReceived = false;
+  
+  float exchangeValue = 0.0f;
+  auto const* exchangeState = _plugGUI->HostContext()->ExchangeState();
+  auto const& paramExchange = exchangeState->Params()[_param->runtimeParamIndex];
+  auto const& activeExchange = exchangeState->Active()[_param->runtimeModuleIndex];
 
-  auto const* exchange = _plugGUI->HostContext()->ExchangeState();
-  if (exchange->Params()[_param->runtimeParamIndex].IsGlobal())
-    ReceivedNewExchangeValue(*exchange->Params()[_param->runtimeParamIndex].Global());
+  if (paramExchange.IsGlobal() && *activeExchange.Global())
+    ReceivedNewExchangeValue(*paramExchange.Global());
   else
-    for(int v = 0; v < FBMaxVoices; v++)
-      if (exchange->VoiceState()[v].state == FBVoiceState::Active)
-        ReceivedNewExchangeValue(exchange->Params()[_param->runtimeParamIndex].Voice()[v]);
+    for (int v = 0; v < FBMaxVoices; v++)
+      if (*activeExchange.Voice()[v])
+        ReceivedNewExchangeValue(paramExchange.Voice()[v]);
 
-  if (_exchangeValueReceived)
+  if (_exchangeActive)
     repaint();
 }

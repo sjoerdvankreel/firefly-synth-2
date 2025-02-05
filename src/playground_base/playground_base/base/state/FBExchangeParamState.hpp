@@ -26,7 +26,7 @@ public:
   bool IsGlobal() const { return _isGlobal; }
   std::array<float, FBMaxVoices> const& Voice() const;
 
-  FB_COPY_MOVE_DEFCTOR(FBExchangeParamState);
+  FB_NOCOPY_MOVE_DEFCTOR(FBExchangeParamState);
   explicit FBExchangeParamState(float* global);
   explicit FBExchangeParamState(std::array<float, FBMaxVoices>* voice);
 };

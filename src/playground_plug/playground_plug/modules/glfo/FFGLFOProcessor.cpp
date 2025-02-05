@@ -33,6 +33,8 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
     return;
 
   auto const& rate = procParams.acc.rate[0].Global().CV();
+  auto& exchangeDSP = exchangeState->global.gLFO[state.moduleSlot];
   auto& exchangeParams = exchangeState->param.global.gLFO[state.moduleSlot];
+  exchangeDSP.active = true;
   exchangeParams.acc.rate[0] = rate.data[FBFixedBlockSamples - 1];
 }
