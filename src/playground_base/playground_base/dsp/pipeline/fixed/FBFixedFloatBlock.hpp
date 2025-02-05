@@ -15,6 +15,8 @@ public:
   void Mul(FBFixedFloatBlock const& rhs);
   void Add(FBFixedFloatBlock const& rhs);
   void CopyFrom(FBFixedFloatBlock const& rhs);
+
+  float Last() const;
   template <class Op> void Transform(Op op);
 
   void StoreToFloatArray(FBFixedFloatArray& array) const;
@@ -56,6 +58,14 @@ inline void
 FBFixedFloatBlock::CopyFrom(FBFixedFloatBlock const& rhs)
 {
   Transform([&](int v) { return rhs[v]; });
+}
+
+inline float
+FBFixedFloatBlock::Last() const
+{
+  alignas(alignof(FBFloatVector)) std::array<float, FBVectorFloatCount> floats;
+  _store[FBFixedFloatVectors - 1].store_aligned(floats.data());
+  return floats[FBVectorFloatCount - 1];
 }
 
 inline void 

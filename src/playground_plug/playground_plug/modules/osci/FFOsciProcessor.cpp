@@ -106,13 +106,10 @@ FFOsciProcessor::Process(FBModuleProcState const& state)
   default: assert(false); break;
   }
 
-  // TODO not ideal -- only need 1 sample
   FBFixedFloatBlock gain1WithGLFOBlock;
-  FBFixedFloatArray gain1WithGLFOArray;
   gain1WithGLFOBlock.Transform([&](int v) {
     auto gLFOToGainBlock = gLFOToGain.CV(v);
     return (1.0f - gLFOToGainBlock) * gain1.CV(v) + gLFOToGainBlock * gLFO[v] * gain1.CV(v); });
-  gain1WithGLFOBlock.StoreToFloatArray(gain1WithGLFOArray);
 
   mono.Transform([&](int v) {
     return gain1WithGLFOBlock[v] * gain2.CV(v) * mono[v]; });
@@ -123,9 +120,9 @@ FFOsciProcessor::Process(FBModuleProcState const& state)
     return; 
   exchangeState->voice[voice].osci[state.moduleSlot].active = true;
   auto& exchangeParams = exchangeState->param.voice.osci[state.moduleSlot];
+  exchangeParams.acc.gain[0][voice] = gain1WithGLFOBlock.Last();
   exchangeParams.acc.pw[0][voice] = pw.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.cent[0][voice] = cent.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.gain[1][voice] = gain2.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.gain[0][voice] = gain1WithGLFOArray.data[FBFixedBlockSamples - 1];
   exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGain.CV().data[FBFixedBlockSamples - 1];
 }
