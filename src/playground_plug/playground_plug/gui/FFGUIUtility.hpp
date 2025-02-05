@@ -8,15 +8,19 @@ struct FBModuleGraphComponentData;
 class FBFixedFloatBlock;
 
 typedef std::function<FBFixedFloatBlock const* (
+  FFProcDSPState const&, int moduleSlot)>
+  FFModuleGraphGlobalOutputSelector;
+typedef std::function<FBFixedFloatBlock const* (
   FFProcDSPState const&, int voice, int moduleSlot)>
-FFModuleGraphOutputSelector;
+FFModuleGraphVoiceOutputSelector;
 
 template <class Processor>
 struct FFModuleGraphRenderData final
 {
   Processor processor = {};
   FBModuleGraphComponentData* graphData = {};
-  FFModuleGraphOutputSelector outputSelector = {};
+  FFModuleGraphVoiceOutputSelector voiceOutputSelector = {};
+  FFModuleGraphGlobalOutputSelector globalOutputSelector = {};
 };
 
 template <class Processor> 

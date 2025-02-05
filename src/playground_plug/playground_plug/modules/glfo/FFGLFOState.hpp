@@ -12,10 +12,13 @@ struct FBStaticModule;
 class FFGLFOExchangeState final
 {
   bool active = {};
+  int lengthSamples = {};
+  int positionSamples = {};
 public:
   friend class FFGLFOProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGLFOTopo();
   friend auto FFSelectGlobalExchangeActiveAddr(auto selectModule);
+  friend void FFGLFORenderGraph(FBModuleGraphComponentData* graphData);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOExchangeState);
 };
 
