@@ -15,6 +15,7 @@ class FFMasterExchangeState final
 public:
   friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  friend auto FFSelectGlobalExchangeActiveAddr(auto selectModule);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterExchangeState);
 };
 

@@ -15,6 +15,7 @@ class FFGLFOExchangeState final
 public:
   friend class FFGLFOProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGLFOTopo();
+  friend auto FFSelectGlobalExchangeActiveAddr(auto selectModule);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOExchangeState);
 };
 

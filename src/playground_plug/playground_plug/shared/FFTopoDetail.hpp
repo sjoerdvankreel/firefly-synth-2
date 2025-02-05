@@ -3,6 +3,15 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 
 inline auto
+FFSelectGlobalExchangeActiveAddr(
+  auto selectModule)
+{
+  return [selectModule](int moduleSlot, void* state) {
+    auto& globalState = static_cast<FFExchangeState*>(state)->global;
+    return &(*selectModule(globalState))[moduleSlot].active; };
+}
+
+inline auto
 FFSelectVoiceExchangeActiveAddr(
   auto selectModule)
 {

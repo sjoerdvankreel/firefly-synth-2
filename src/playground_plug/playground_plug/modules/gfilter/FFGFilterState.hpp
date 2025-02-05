@@ -15,6 +15,7 @@ class FFGFilterExchangeState final
 public:
   friend class FFGFilterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
+  friend auto FFSelectGlobalExchangeActiveAddr(auto selectModule);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterExchangeState);
 };
 

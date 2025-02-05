@@ -12,6 +12,7 @@ FFMakeMasterTopo()
   result->slotCount = 1;
   result->id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
   result->params.resize((int)FFMasterParam::Count);
+  result->addrSelectors.globalExchangeActive = FFSelectGlobalExchangeActiveAddr([](auto& state) { return &state.master; });
   auto selectModule = [](auto& state) { return &state.global.master; };
 
   auto& gain = result->params[(int)FFMasterParam::Gain];

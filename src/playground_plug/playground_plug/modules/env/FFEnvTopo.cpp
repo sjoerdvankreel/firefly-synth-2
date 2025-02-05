@@ -7,11 +7,6 @@
 std::unique_ptr<FBStaticModule>
 FFMakeEnvTopo()
 {
-  /*
-  typedef std::function<bool* (
-  int voice, int moduleSlot, void* state)>
-FBVoiceExchangeActiveAddrSelector;*/
-
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "Env";

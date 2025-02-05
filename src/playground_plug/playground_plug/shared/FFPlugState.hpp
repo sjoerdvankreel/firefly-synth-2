@@ -18,7 +18,7 @@
 
 struct FFGlobalExchangeState final
 {
-  FFMasterExchangeState master = {};
+  std::array<FFMasterExchangeState, 1> master = {};
   std::array<FFGLFOExchangeState, FFGLFOCount> gLFO = {};
   std::array<FFGFilterExchangeState, FFGFilterCount> gFilter = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
