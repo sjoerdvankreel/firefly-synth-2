@@ -50,11 +50,14 @@ FBGUILookAndFeel::drawLinearSlider(
 {
   FBParamSlider* paramSlider;
   LookAndFeel_V4::drawLinearSlider(g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, s);
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr || !paramSlider->ExchangeActive())
+  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
     return;    
-  DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MinExchangeValue());
+  auto paramActive = paramSlider->ExchangeParamActiveState();
+  if (!paramActive.active)
+    return;
+  DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramActive.minValue);
   if(paramSlider->Param()->static_.IsVoice())
-    DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramSlider->MaxExchangeValue());
+    DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramActive.maxValue);
 }
 
 void 
@@ -65,9 +68,12 @@ FBGUILookAndFeel::drawRotarySlider(
 {
   FBParamSlider* paramSlider;
   LookAndFeel_V4::drawRotarySlider(g, x, y, width, height, sliderPos, rotaryStartAngle, rotaryEndAngle, s);
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr || !paramSlider->ExchangeActive())
+  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
     return;
-  DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramSlider->MinExchangeValue());
+  auto paramActive = paramSlider->ExchangeParamActiveState();
+  if (!paramActive.active)
+    return;
+  DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);
   if (paramSlider->Param()->static_.IsVoice())
-    DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramSlider->MaxExchangeValue());
+    DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }

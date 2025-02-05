@@ -15,7 +15,7 @@ struct FBListParam
 
   float PlainToNormalized(int plain) const;
   int NormalizedToPlain(float normalized) const;
-  std::string PlainToText(FBTextDisplay display, int plain) const;
+  std::string PlainToText(FBValueTextDisplay display, int plain) const;
   std::optional<int> TextToPlain(bool io, std::string const& text) const;
 };
 

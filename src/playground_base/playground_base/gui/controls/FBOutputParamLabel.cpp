@@ -32,5 +32,5 @@ FBOutputParamLabel::FixedWidth(int height) const
 void
 FBOutputParamLabel::SetValueNormalizedFromHost(float normalized)
 {
-  setText(_param->static_.NormalizedToText(FBTextDisplay::Text, normalized), dontSendNotification);
+  setText(_param->static_.NormalizedToText(FBValueTextDisplay::Text, normalized), dontSendNotification);
 }

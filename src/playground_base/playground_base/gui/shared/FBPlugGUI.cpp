@@ -52,6 +52,15 @@ FBPlugGUI::GetControlForParamIndex(int paramIndex) const
   return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
 }
 
+std::string
+FBPlugGUI::GetParamActiveTooltip(
+  FBStaticParam const& param, bool active, float value) const
+{
+  if (!active)
+    return "N/A";
+  return param.NormalizedToText(FBParamTextDisplay::TooltipWithUnit, value);
+}
+
 void
 FBPlugGUI::UpdateExchangeStateTick()
 {
@@ -89,26 +98,6 @@ FBPlugGUI::UpdateExchangeState()
   UpdateExchangeStateTick();
 }
 
-std::string
-FBPlugGUI::GetTooltipForParam(int index)
-{
-  // TODO dont update tooltip - rerender on request
-  auto const& param = HostContext()->Topo()->params[index];
-  float normalized = HostContext()->GetParamNormalized(index);
-  auto const& paramExchange = HostContext()->ExchangeState()->Params()[index];
-
-  auto result = param.tooltip + ": ";
-  result += param.static_.NormalizedToText(FBTextDisplay::Tooltip, normalized);
-  if (!param.static_.unit.empty())
-    result += " " + param.static_.unit;
-  result += "\r\nAutomation: " + param.static_.AutomationTooltip();
-  if (!param.static_.IsVoice())
-    result += "\r\nCurrent engine value: " + param.static_.NormalizedToText(
-      FBTextDisplay::Tooltip, *paramExchange.Global());
-  // todo N/A inactive etc
-  return result;
-}
-
 void
 FBPlugGUI::ShowHostMenuForParam(int index)
 {
@@ -135,5 +124,29 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
   if ((paramsDependent = dynamic_cast<FBParamsDependent*>(result)) != nullptr)
     for (int p : paramsDependent->RuntimeDependencies())
       _paramsDependents[p].insert(paramsDependent);
+  return result;
+}
+
+std::string
+FBPlugGUI::GetTooltipForParam(int index) const
+{
+  auto const& param = HostContext()->Topo()->params[index];
+  float normalized = HostContext()->GetParamNormalized(index);
+  auto paramActive = HostContext()->ExchangeState()->GetParamActiveState(index);
+
+  auto result = param.tooltip + ": ";
+  result += param.static_.NormalizedToText(
+    FBParamTextDisplay::TooltipWithUnit, normalized);
+  result += "\r\nAutomation: " + param.static_.AutomationTooltip();
+  if (!param.static_.IsVoice())
+    result += "\r\nCurrent engine value: " +
+    GetParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
+  else
+  {
+    result += "\r\n Min engine value: " +
+      GetParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
+    result += "\r\n Max engine value: " +
+      GetParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
+  }
   return result;
 }

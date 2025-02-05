@@ -13,7 +13,7 @@ FBParamControl(plugGUI, param)
   for (int i = 0; i < param->static_.ValueCount(); i++)
   {
     float normalized = param->static_.AnyDiscreteToNormalizedSlow(i);
-    addItem(param->static_.NormalizedToText(FBTextDisplay::Text, normalized), i + 1);
+    addItem(param->static_.NormalizedToText(FBValueTextDisplay::Text, normalized), i + 1);
   }
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }

@@ -8,9 +8,9 @@ FBFreqOctParam::PlainToNormalized(float plain) const
 }
 
 std::string
-FBFreqOctParam::PlainToText(FBTextDisplay display, float plain) const
+FBFreqOctParam::PlainToText(FBValueTextDisplay display, float plain) const
 {
-  if(display == FBTextDisplay::IO)
+  if(display == FBValueTextDisplay::IO)
     return std::to_string(plain);
   return FBFormatFloat(plain, FBDefaultDisplayPrecision);
 } 

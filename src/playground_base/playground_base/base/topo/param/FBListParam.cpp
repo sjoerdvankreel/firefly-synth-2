@@ -19,13 +19,13 @@ FBListParam::TextToPlain(bool io, std::string const& text) const
 }
 
 std::string
-FBListParam::PlainToText(FBTextDisplay display, int plain) const
+FBListParam::PlainToText(FBValueTextDisplay display, int plain) const
 {
   switch (display)
   {
-  case FBTextDisplay::IO: return items[plain].id;
-  case FBTextDisplay::Text: return items[plain].text;
-  case FBTextDisplay::Tooltip: return items[plain].tooltip.empty()? items[plain].text: items[plain].tooltip;
+  case FBValueTextDisplay::IO: return items[plain].id;
+  case FBValueTextDisplay::Text: return items[plain].text;
+  case FBValueTextDisplay::Tooltip: return items[plain].tooltip.empty()? items[plain].text: items[plain].tooltip;
   default: assert(false); return {};
   }
 }

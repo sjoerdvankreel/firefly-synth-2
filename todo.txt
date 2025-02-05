@@ -1,9 +1,4 @@
 implement exchange everywhere
-do base exchange class with active bool for both global and voice
-fix the global exchange state on startup (has no voice marker)
-get rid of all the friends?
-tooltip about automation capabilities + min/max active voice ("audio engine min")
-gui modulation indicators also for clap (poly)mod
 not hardcode env1 to voice amp
 get rid of the sysheaders warnings
 handle envelope offset (actual start index in block)

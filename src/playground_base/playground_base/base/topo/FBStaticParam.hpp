@@ -57,8 +57,9 @@ struct FBStaticParam final
   int NormalizedToAnyDiscreteSlow(float normalized) const;
 
   float DefaultNormalizedByText() const;
-  std::string NormalizedToText(FBTextDisplay display, float normalized) const;
   std::optional<float> TextToNormalized(bool io, std::string const& text) const;
+  std::string NormalizedToText(FBValueTextDisplay display, float normalized) const;
+  std::string NormalizedToText(FBParamTextDisplay display, float normalized) const;
 };
 
 inline int

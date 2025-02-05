@@ -24,7 +24,10 @@ public:
     juce::Component* target,
     juce::PopupMenu menu,
     std::function<void(int)> callback);
-  std::string GetTooltipForParam(int index);
+
+  std::string GetTooltipForParam(int index) const;
+  std::string GetParamActiveTooltip(
+    FBStaticParam const& param, bool active, float value) const;
 
   void ShowHostMenuForParam(int index);
   void SteppedParamNormalizedChanged(int index);

@@ -8,10 +8,10 @@ FBLinearParam::PlainToNormalized(float plain) const
 }
 
 std::string
-FBLinearParam::PlainToText(FBTextDisplay display, float plain) const
+FBLinearParam::PlainToText(FBValueTextDisplay display, float plain) const
 {
   float displayPlain = plain * displayMultiplier;
-  if (display == FBTextDisplay::IO)
+  if (display == FBValueTextDisplay::IO)
     return std::to_string(displayPlain);
   return FBFormatFloat(displayPlain, FBDefaultDisplayPrecision);
 }

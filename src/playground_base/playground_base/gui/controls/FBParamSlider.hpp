@@ -2,6 +2,7 @@
 
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
+#include <playground_base/base/state/FBExchangeParamActiveState.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -13,15 +14,16 @@ public juce::Slider,
 public FBParamControl,
 public IFBHorizontalAutoSize
 {
-  bool _exchangeActive = false;
-  float _minExchangeValue = 0.0f;
-  float _maxExchangeValue = 0.0f;
+  FBExchangeParamActiveState _paramActive = {};
 
 public:
   FBParamSlider(
     FBPlugGUI* plugGUI, 
     FBRuntimeParam const* param, 
     juce::Slider::SliderStyle style);
+
+  FBExchangeParamActiveState const&
+  ExchangeParamActiveState() const { return _paramActive; }
 
   void valueChanged() override;
   void stoppedDragging() override;
@@ -35,8 +37,4 @@ public:
   void UpdateExchangeState();
   int FixedWidth(int height) const override;
   void SetValueNormalizedFromHost(float normalized) override;
-
-  bool ExchangeActive() const { return _exchangeActive; }
-  float MinExchangeValue() const { return _minExchangeValue; }
-  float MaxExchangeValue() const { return _maxExchangeValue; }
 };

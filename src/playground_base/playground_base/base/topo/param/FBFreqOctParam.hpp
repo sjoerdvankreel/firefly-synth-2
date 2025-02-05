@@ -13,14 +13,14 @@ struct FBFreqOctParam
   int octaves = 0;
   float minHz = 0.0f;
 
-  int ValueCount() const { return 0; }
-  std::optional<float> TextToPlain(std::string const& text) const;
-  std::string PlainToText(FBTextDisplay display, float plain) const;
-
   float PlainToNormalized(float plain) const;
   float NormalizedToPlain(float normalized) const;
   FBFloatVector NormalizedToPlain(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlain(FBDoubleVector normalized) const;
+
+  int ValueCount() const { return 0; }
+  std::optional<float> TextToPlain(std::string const& text) const;
+  std::string PlainToText(FBValueTextDisplay display, float plain) const;
 };
 
 inline float

@@ -56,7 +56,7 @@ FBCLAPPlugin::paramsValueToText(
   if (index == -1)
     return false;
   float normalized = (float)FBCLAPToNormalized(_topo->params[index].static_, value);
-  std::string text = _topo->params[index].static_.NormalizedToText(FBTextDisplay::Text, normalized);
+  std::string text = _topo->params[index].static_.NormalizedToText(FBValueTextDisplay::Text, normalized);
   std::fill(display, display + size, 0);
   strncpy(display, text.c_str(), std::min(size - 1, static_cast<uint32_t>(text.size())));
   return true;

@@ -51,3 +51,34 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
   assert(uniquePtrs.size() == _params.size());
 #endif
 }
+
+FBExchangeParamActiveState 
+FBExchangeStateContainer::GetParamActiveState(int paramIndex) const
+{
+  FBExchangeParamActiveState result = {};
+  result.active = false;
+  result.minValue = 1.0f;
+  result.maxValue = 0.0f;
+
+  float exchangeValue = 0.0f;
+  auto const& param = Params()[paramIndex];
+  auto const& active = Active()[paramIndex];
+
+  if (param.IsGlobal())
+    if (*active.Global())
+    {
+      result.active = true;
+      result.minValue = std::min(result.minValue, *param.Global());
+      result.maxValue = std::max(result.maxValue, *param.Global());
+    }
+  if (!param.IsGlobal())
+    for (int v = 0; v < FBMaxVoices; v++)
+      if (*active.Voice()[v])
+      {
+        result.active = true;
+        result.minValue = std::min(result.minValue, param.Voice()[v]);
+        result.maxValue = std::max(result.maxValue, param.Voice()[v]);
+      }
+ 
+  return result;
+}

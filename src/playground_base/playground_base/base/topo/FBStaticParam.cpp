@@ -67,6 +67,15 @@ FBStaticParam::DefaultNormalizedByText() const
   return TextToNormalized(false, defaultText).value();
 }
 
+std::string
+FBStaticParam::NormalizedToText(FBParamTextDisplay display, float normalized) const
+{
+  std::string result = NormalizedToText((FBValueTextDisplay)display, normalized);
+  if (display == FBParamTextDisplay::TooltipWithUnit && !unit.empty())
+    result += " " + unit;
+  return result;
+}
+
 float
 FBStaticParam::AnyDiscreteToNormalizedSlow(int plain) const
 {
@@ -102,7 +111,7 @@ FBStaticParam::NormalizedToAnyDiscreteSlow(float normalized) const
 }
 
 std::string 
-FBStaticParam::NormalizedToText(FBTextDisplay display, float normalized) const
+FBStaticParam::NormalizedToText(FBValueTextDisplay display, float normalized) const
 {
   switch (type)
   {

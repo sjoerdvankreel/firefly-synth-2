@@ -16,15 +16,15 @@ struct FBLinearParam
 
   int ValueCount() const { return 0; }
 
-  std::optional<float> TextToPlain(std::string const& text) const;
-  std::string PlainToText(FBTextDisplay display, float plain) const;
-
   FBFloatVector NormalizedToPlain(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlain(FBDoubleVector normalized) const;
 
   float PlainToNormalized(float plain) const;
   float NormalizedToPlain(float normalized) const;
   int NormalizedTimeToSamples(float normalized, float sampleRate) const;
+
+  std::optional<float> TextToPlain(std::string const& text) const;
+  std::string PlainToText(FBValueTextDisplay display, float plain) const;
 };
 
 inline float

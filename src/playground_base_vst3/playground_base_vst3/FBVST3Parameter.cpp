@@ -10,7 +10,7 @@ _topo(topo) {}
 void 
 FBVST3Parameter::toString(ParamValue valueNormalized, String128 string) const
 {
-  auto text = _topo->NormalizedToText(FBTextDisplay::Text, valueNormalized);
+  auto text = _topo->NormalizedToText(FBValueTextDisplay::Text, valueNormalized);
   FBVST3CopyToString128(text, string);
 }
 
