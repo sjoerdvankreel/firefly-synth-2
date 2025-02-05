@@ -16,6 +16,7 @@ class FFOsciExchangeState final
 public:
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
+  friend auto FFSelectVoiceExchangeActiveAddr(auto selectModule);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciExchangeState);
 };
 

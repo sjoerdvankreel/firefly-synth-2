@@ -2,6 +2,15 @@
 
 #include <playground_plug/shared/FFPlugState.hpp>
 
+inline auto
+FFSelectVoiceExchangeActiveAddr(
+  auto selectModule)
+{
+  return [selectModule](int voice, int moduleSlot, void* state) {
+    auto& voiceState = static_cast<FFExchangeState*>(state)->voice[voice];
+    return &(*selectModule(voiceState))[moduleSlot].active; };
+}
+
 template <class State>
 inline auto
 FFSelectParamAddr(

@@ -19,7 +19,7 @@ FBVoiceExchangeActiveAddrSelector;*/
   result->renderGraph = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
-  result->addrSelectors.voiceExchangeActive = [](int voice, int moduleSlot, void* state) -> bool* { return &static_cast<FFExchangeState*>(state)->voice[voice].env[moduleSlot].active; };
+  result->addrSelectors.voiceExchangeActive = FFSelectVoiceExchangeActiveAddr([](auto& state) { return &state.env; });
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& on = result->params[(int)FFEnvParam::On];
