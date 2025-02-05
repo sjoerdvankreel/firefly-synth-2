@@ -1,10 +1,11 @@
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/FBExchangeStateContainer.hpp>
 
 #include <cassert>
 
@@ -91,13 +92,20 @@ FBPlugGUI::UpdateExchangeState()
 std::string
 FBPlugGUI::GetTooltipForParam(int index)
 {
+  // TODO dont update tooltip - rerender on request
   auto const& param = HostContext()->Topo()->params[index];
   float normalized = HostContext()->GetParamNormalized(index);
+  auto const& paramExchange = HostContext()->ExchangeState()->Params()[index];
+
   auto result = param.tooltip + ": ";
   result += param.static_.NormalizedToText(FBTextDisplay::Tooltip, normalized);
   if (!param.static_.unit.empty())
     result += " " + param.static_.unit;
   result += "\r\nAutomation: " + param.static_.AutomationTooltip();
+  if (!param.static_.IsVoice())
+    result += "\r\nCurrent engine value: " + param.static_.NormalizedToText(
+      FBTextDisplay::Tooltip, *paramExchange.Global());
+  // todo N/A inactive etc
   return result;
 }
 

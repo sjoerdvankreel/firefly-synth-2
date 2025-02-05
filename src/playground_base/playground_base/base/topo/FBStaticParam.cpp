@@ -57,8 +57,6 @@ FBStaticParam::AutomationTooltip() const
   if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
     return "At Voice Start";
   return "None";
-
-  // TODO more tooltip stuff
 }
 
 float
