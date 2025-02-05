@@ -18,10 +18,3 @@ FBParamComponent::DependenciesChanged(bool outcome)
 {
   dynamic_cast<Component&>(*this).setEnabled(outcome);
 }
-
-void
-FBParamComponent::UpdateTooltip()
-{
-  auto tooltip = _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
-  dynamic_cast<SettableTooltipClient&>(*this).setTooltip(tooltip);
-}

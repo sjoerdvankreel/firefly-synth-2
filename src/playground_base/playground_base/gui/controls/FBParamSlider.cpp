@@ -23,11 +23,16 @@ FBParamControl(plugGUI, param)
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
+String
+FBParamSlider::getTooltip()
+{
+  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
+}
+
 void
 FBParamSlider::SetValueNormalizedFromHost(float normalized)
 {
   setValue(normalized, dontSendNotification); 
-  UpdateTooltip();
 }
 
 void
@@ -78,7 +83,6 @@ FBParamSlider::valueChanged()
   float normalized = (float)getValue();
   _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
-  UpdateTooltip();
 }
 
 void

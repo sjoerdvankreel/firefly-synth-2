@@ -18,6 +18,12 @@ FBParamControl(plugGUI, param)
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
+String
+FBParamComboBox::getTooltip()
+{
+  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
+}
+
 int
 FBParamComboBox::FixedWidth(int height) const
 {
@@ -34,7 +40,6 @@ FBParamComboBox::SetValueNormalizedFromHost(float normalized)
 {
   int plain = _param->static_.NormalizedToAnyDiscreteSlow(normalized);
   setSelectedItemIndex(plain, dontSendNotification);
-  UpdateTooltip();
 }
 
 void
@@ -44,5 +49,4 @@ FBParamComboBox::valueChanged(Value& value)
   _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
   _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
-  UpdateTooltip();
 }

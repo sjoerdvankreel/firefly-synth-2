@@ -14,6 +14,7 @@ public FBParamControl,
 public IFBHorizontalAutoSize
 {
 public:
+  juce::String getTooltip() override;
   int FixedWidth(int height) const override;
   void valueChanged(juce::Value& value) override;
   void SetValueNormalizedFromHost(float normalized) override;

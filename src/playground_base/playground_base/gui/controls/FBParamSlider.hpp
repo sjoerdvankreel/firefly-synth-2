@@ -28,11 +28,13 @@ public:
   void startedDragging() override;
   void mouseUp(juce::MouseEvent const& event) override;
   
+  juce::String getTooltip() override;
+  juce::String getTextFromValue(double value) override;
+  double getValueFromText(const juce::String& text) override;
+
   void UpdateExchangeState();
   int FixedWidth(int height) const override;
-  juce::String getTextFromValue(double value) override;
   void SetValueNormalizedFromHost(float normalized) override;
-  double getValueFromText(const juce::String& text) override;
 
   bool ExchangeActive() const { return _exchangeActive; }
   float MinExchangeValue() const { return _minExchangeValue; }

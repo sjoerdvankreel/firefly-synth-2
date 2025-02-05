@@ -16,7 +16,9 @@ public IFBHorizontalAutoSize
   bool _isOn = {};
 
 public:
+  juce::String getTooltip() override;
   void buttonStateChanged() override;
+
   int FixedWidth(int height) const override;
   void SetValueNormalizedFromHost(float normalized) override;
   FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param);

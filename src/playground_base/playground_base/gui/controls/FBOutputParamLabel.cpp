@@ -17,6 +17,12 @@ _maxTextWidth((int)std::ceil(TextLayout::getStringWidth(Font(12.0f), maxWidthTex
   setText(defaultText, dontSendNotification);
 }
 
+String 
+FBOutputParamLabel::getTooltip()
+{
+  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
+}
+
 int
 FBOutputParamLabel::FixedWidth(int height) const
 {
@@ -27,5 +33,4 @@ void
 FBOutputParamLabel::SetValueNormalizedFromHost(float normalized)
 {
   setText(_param->static_.NormalizedToText(FBTextDisplay::Text, normalized), dontSendNotification);
-  UpdateTooltip();
 }

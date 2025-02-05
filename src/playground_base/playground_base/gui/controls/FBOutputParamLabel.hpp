@@ -21,6 +21,8 @@ public:
     FBRuntimeParam const* param,
     std::string const& defaultText,
     std::string const& maxWidthText);
+
+  juce::String getTooltip() override;
   int FixedWidth(int height) const override;
   void SetValueNormalizedFromHost(float normalized) override;
 };
