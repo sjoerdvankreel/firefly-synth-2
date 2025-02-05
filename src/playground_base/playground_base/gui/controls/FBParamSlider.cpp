@@ -82,38 +82,38 @@ FBParamSlider::valueChanged()
 }
 
 void
-FBParamSlider::ReceivedNewExchangeValue(float exchangeValue)
-{
-  float minExchangeValue = _minExchangeValue;
-  float maxExchangeValue = _maxExchangeValue;
-  minExchangeValue = std::min(minExchangeValue, exchangeValue);
-  maxExchangeValue = std::max(maxExchangeValue, exchangeValue);
-  if (minExchangeValue == _minExchangeValue && maxExchangeValue == _maxExchangeValue)
-    return;
-  _exchangeActive = true;
-  _minExchangeValue = minExchangeValue;
-  _maxExchangeValue = maxExchangeValue;
-}
-
-void
 FBParamSlider::UpdateExchangeState()
 {
-  _exchangeActive = false;
-  _minExchangeValue = 1.0f;
-  _maxExchangeValue = 0.0f;
-  
   float exchangeValue = 0.0f;
+  bool newExchangeActive = false;
+  float newMinExchangeValue = 1.0f;
+  float newMaxExchangeValue = 0.0f;
+  
   auto const* exchangeState = _plugGUI->HostContext()->ExchangeState();
   auto const& paramExchange = exchangeState->Params()[_param->runtimeParamIndex];
   auto const& activeExchange = exchangeState->Active()[_param->runtimeModuleIndex];
 
-  if (paramExchange.IsGlobal() && *activeExchange.Global())
-    ReceivedNewExchangeValue(*paramExchange.Global());
-  else
+  if (paramExchange.IsGlobal())
+    if (*activeExchange.Global())
+    {
+      newExchangeActive = true;
+      newMinExchangeValue = std::min(newMinExchangeValue, *paramExchange.Global());
+      newMaxExchangeValue = std::max(newMaxExchangeValue, *paramExchange.Global());
+    }
+  if(!paramExchange.IsGlobal())
     for (int v = 0; v < FBMaxVoices; v++)
       if (*activeExchange.Voice()[v])
-        ReceivedNewExchangeValue(paramExchange.Voice()[v]);
+      {
+        newExchangeActive = true;
+        newMinExchangeValue = std::min(newMinExchangeValue, paramExchange.Voice()[v]);
+        newMaxExchangeValue = std::max(newMaxExchangeValue, paramExchange.Voice()[v]);
+      }
 
-  if (_exchangeActive)
+  if (_exchangeActive != newExchangeActive || 
+    _minExchangeValue != newMinExchangeValue || 
+    _maxExchangeValue != newMaxExchangeValue)
     repaint();
+  _exchangeActive = newExchangeActive;
+  _minExchangeValue = newMinExchangeValue;
+  _maxExchangeValue = newMaxExchangeValue;
 }
