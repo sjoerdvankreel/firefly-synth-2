@@ -15,10 +15,17 @@ FFMasterProcessor::Process(FBModuleProcState const& state)
   auto& output = procState->dsp.global.master.output;
   auto const& input = procState->dsp.global.master.input;
   auto const& params = procState->param.global.master[state.moduleSlot];
-  output.Transform([&](int ch, int v) {
-    auto gain = params.acc.gain[0].Global().CV(v);
-    return input[ch][v] * gain; });
+
+  auto const& gain = params.acc.gain[0].Global();
+  output.Transform([&](int ch, int v) { return input[ch][v] * gain.CV(v); });
   auto const* voicesParam = state.topo->ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });
-  (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = 
-    voicesParam->static_.discrete.PlainToNormalized(state.input->voiceManager->VoiceCount());
+  float voicesNorm = voicesParam->static_.discrete.PlainToNormalized(state.input->voiceManager->VoiceCount());
+  (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = voicesNorm;
+
+  auto* exchangeState = state.ExchangeState<FFExchangeState>();
+  if (exchangeState == nullptr)
+    return;
+  exchangeState->global.master[0].active = true;
+  auto& exchangeParams = exchangeState->param.global.master[0];
+  exchangeParams.acc.gain[0] = gain.CV().data[FBFixedBlockSamples - 1];
 }

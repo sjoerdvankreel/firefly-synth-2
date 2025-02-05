@@ -22,9 +22,9 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
     return;
   }
     
+  auto const& rate = procParams.acc.rate[0].Global();
   output.Transform([&](int v) { 
-    auto rate = procParams.acc.rate[0].Global().CV(v);
-    auto plainRate = topo.params[(int)FFGLFOParam::Rate].linear.NormalizedToPlain(rate);
+    auto plainRate = topo.params[(int)FFGLFOParam::Rate].linear.NormalizedToPlain(rate.CV(v));
     auto phase = _phase.Next(plainRate / state.sampleRate); 
     return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
 
@@ -32,9 +32,7 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
   if (exchangeState == nullptr)
     return;
 
-  auto const& rate = procParams.acc.rate[0].Global().CV();
-  auto& exchangeDSP = exchangeState->global.gLFO[state.moduleSlot];
   auto& exchangeParams = exchangeState->param.global.gLFO[state.moduleSlot];
-  exchangeDSP.active = true;
-  exchangeParams.acc.rate[0] = rate.data[FBFixedBlockSamples - 1];
+  exchangeState->global.gLFO[state.moduleSlot].active = true;
+  exchangeParams.acc.rate[0] = rate.CV().data[FBFixedBlockSamples - 1];
 }
