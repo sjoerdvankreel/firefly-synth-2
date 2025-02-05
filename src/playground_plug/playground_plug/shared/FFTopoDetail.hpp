@@ -4,7 +4,7 @@
 
 template <class State>
 inline auto
-FFTopoDetailSelectAddr(
+FFSelectParamAddr(
   auto selectModule, auto selectParam)
 {
   return [selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
@@ -13,22 +13,22 @@ FFTopoDetailSelectAddr(
 }
 
 inline auto
-FFTopoDetailSelectProcAddr(
+FFSelectProcParamAddr(
   auto selectModule, auto selectParam)
 {
-  return FFTopoDetailSelectAddr<FFProcState>(selectModule, selectParam);
+  return FFSelectParamAddr<FFProcState>(selectModule, selectParam);
 }
 
 inline auto
-FFTopoDetailSelectScalarAddr(
+FFSelectScalarParamAddr(
   auto selectModule, auto selectParam)
 {
-  return FFTopoDetailSelectAddr<FFScalarState>(selectModule, selectParam);
+  return FFSelectParamAddr<FFScalarState>(selectModule, selectParam);
 }
 
 inline auto
-FFTopoDetailSelectExchangeAddr(
+FFSelectExchangeParamAddr(
   auto selectModule, auto selectParam)
 {
-  return FFTopoDetailSelectAddr<FFExchangeState>(selectModule, selectParam);
+  return FFSelectParamAddr<FFExchangeState>(selectModule, selectParam);
 }

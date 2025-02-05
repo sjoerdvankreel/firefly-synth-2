@@ -21,9 +21,9 @@ FFMakeGFilterTopo()
   on.id = "{B9DF9543-5115-4D9C-89DD-62D5D495DBF8}";
   on.type = FBParamType::Boolean;
   auto selectOn = [](auto& module) { return &module.block.on; };
-  on.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
-  on.addrSelectors.globalBlockProc = FFTopoDetailSelectProcAddr(selectModule, selectOn);
-  on.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectOn);
+  on.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOn);
+  on.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
+  on.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectOn);
 
   auto& type = result->params[(int)FFGFilterParam::Type];
   type.acc = false;
@@ -43,9 +43,9 @@ FFMakeGFilterTopo()
     { "{77FD4175-A9AD-4A2E-B701-C08477BCE07D}", "LSH" },
     { "{662A7E42-52D0-4069-AB74-1963E266D5A1}", "HSH" } };
   auto selectType = [](auto& module) { return &module.block.type; };
-  type.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectType);
-  type.addrSelectors.globalBlockProc = FFTopoDetailSelectProcAddr(selectModule, selectType);
-  type.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectType);
+  type.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectType);
+  type.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectType);
+  type.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectType);
 
   auto& res = result->params[(int)FFGFilterParam::Res];
   res.acc = true;
@@ -57,9 +57,9 @@ FFMakeGFilterTopo()
   res.type = FBParamType::Linear;
   res.linear.displayMultiplier = 100.0f;
   auto selectRes = [](auto& module) { return &module.acc.res; };
-  res.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectRes);
-  res.addrSelectors.globalAccProc = FFTopoDetailSelectProcAddr(selectModule, selectRes);
-  res.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectRes);
+  res.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectRes);
+  res.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectRes);
+  res.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectRes);
 
   auto& freq = result->params[(int)FFGFilterParam::Freq];
   freq.acc = true;
@@ -72,9 +72,9 @@ FFMakeGFilterTopo()
   freq.freqOct.octaves = 10;
   freq.freqOct.minHz = 20.0f;
   auto selectFreq = [](auto& module) { return &module.acc.freq; };
-  freq.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectFreq);
-  freq.addrSelectors.globalAccProc = FFTopoDetailSelectProcAddr(selectModule, selectFreq);
-  freq.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectFreq);
+  freq.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFreq);
+  freq.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectFreq);
+  freq.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectFreq);
 
   auto& gain = result->params[(int)FFGFilterParam::Gain];
   gain.acc = true;
@@ -87,9 +87,9 @@ FFMakeGFilterTopo()
   gain.linear.min = -24.0f;
   gain.linear.max = 24.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
-  gain.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
-  gain.addrSelectors.globalAccProc = FFTopoDetailSelectProcAddr(selectModule, selectGain);
-  gain.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectGain);
+  gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
+  gain.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectGain);
+  gain.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectGain);
 
   return result;
 }

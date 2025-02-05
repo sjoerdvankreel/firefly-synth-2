@@ -24,9 +24,9 @@ FFMakeMasterTopo()
   gain.type = FBParamType::Linear;
   gain.linear.displayMultiplier = 100.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
-  gain.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
-  gain.addrSelectors.globalAccProc = FFTopoDetailSelectProcAddr(selectModule, selectGain);
-  gain.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectGain);
+  gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
+  gain.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectGain);
+  gain.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectGain);
 
   auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
   hostSmoothTime.acc = false;
@@ -40,9 +40,9 @@ FFMakeMasterTopo()
   hostSmoothTime.linear.max = 0.05f;
   hostSmoothTime.linear.displayMultiplier = 1000.0f;
   auto selectHostSmoothTime = [](auto& module) { return &module.block.hostSmoothTime; };
-  hostSmoothTime.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectHostSmoothTime);
-  hostSmoothTime.addrSelectors.globalBlockProc = FFTopoDetailSelectProcAddr(selectModule, selectHostSmoothTime);
-  hostSmoothTime.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectHostSmoothTime);
+  hostSmoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectHostSmoothTime);
+  hostSmoothTime.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectHostSmoothTime);
+  hostSmoothTime.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectHostSmoothTime);
 
   auto& voices = result->params[(int)FFMasterParam::Voices];
   voices.acc = false;
@@ -54,9 +54,9 @@ FFMakeMasterTopo()
   voices.type = FBParamType::Discrete;
   voices.discrete.valueCount = FBMaxVoices + 1;
   auto selectVoices = [](auto& module) { return &module.block.voices; };
-  voices.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectVoices);
-  voices.addrSelectors.globalBlockProc = FFTopoDetailSelectProcAddr(selectModule, selectVoices);
-  voices.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectVoices);
+  voices.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectVoices);
+  voices.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectVoices);
+  voices.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectVoices);
 
   return result;
 }
