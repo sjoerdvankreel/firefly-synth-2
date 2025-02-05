@@ -60,6 +60,17 @@ FBHostProcessor::ProcessHost(
   int hostSmoothSamples = hostSmoothTimeTopo.linear.NormalizedTimeToSamples(hostSmoothTimeSpecial.state->Value(), _sampleRate);
   _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
+  for (int m = 0; m < _topo->modules.size(); m++)
+  {
+    auto const& indices = _topo->modules[m].topoIndices;
+    auto const& static_ = _topo->static_.modules[indices.index];
+    if (!static_.voice)
+      *_exchangeState->Active()[m].Global() = false;
+    else
+      for (int v = 0; v < FBMaxVoices; v++)
+        *_exchangeState->Active()[m].Voice()[v] = false;
+  }
+
   FBFixedInputBlock const* fixedIn;
   _hostBuffer->BufferFromHost(input);
   while ((fixedIn = _hostBuffer->ProcessToFixed()) != nullptr)

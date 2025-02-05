@@ -10,6 +10,25 @@ _rawState(topo.static_.state.allocRawExchangeState()),
 _freeRawState(topo.static_.state.freeRawExchangeState)
 {
   _voiceState = topo.static_.state.voiceStateExchangeAddr(_rawState);
+
+  for (int m = 0; m < topo.modules.size(); m++)
+  {
+    auto const& indices = topo.modules[m].topoIndices;
+    auto const& static_ = topo.static_.modules[indices.index];
+    if(!static_.voice)
+      _active.push_back(FBExchangeActiveState(
+        static_.addrSelectors.globalExchangeActive(
+          indices.slot, _rawState)));
+    else
+    {
+      std::array<bool*, FBMaxVoices> voiceActive = {};
+      for (int v = 0; v < FBMaxVoices; v++)
+        voiceActive[v] = static_.addrSelectors.voiceExchangeActive(
+          v, indices.slot, _rawState);
+      _active.push_back(FBExchangeActiveState(voiceActive));
+    }
+  }
+
   for (int p = 0; p < topo.params.size(); p++)
     if (topo.static_.modules[topo.params[p].topoIndices.module.index].voice)
       _params.push_back(FBExchangeParamState(
@@ -21,6 +40,7 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
         topo.params[p].static_.addrSelectors.globalExchange(
           topo.params[p].topoIndices.module.slot,
           topo.params[p].topoIndices.param.slot, _rawState)));
+
 #ifndef NDEBUG
   std::set<void const*> uniquePtrs = {};
   for (int p = 0; p < _params.size(); p++)
