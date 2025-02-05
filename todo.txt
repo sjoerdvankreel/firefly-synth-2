@@ -1,3 +1,4 @@
+implement exchange everywhere
 do base exchange class with active bool for both global and voice
 fix the global exchange state on startup (has no voice marker)
 get rid of all the friends?
