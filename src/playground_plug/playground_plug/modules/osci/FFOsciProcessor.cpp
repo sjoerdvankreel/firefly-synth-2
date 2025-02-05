@@ -103,7 +103,8 @@ FFOsciProcessor::Process(FBModuleProcState const& state)
     return GenerateSaw(phase[v], incr[v]); }); break;
   case FFOsciType::Pulse: mono.Transform([&](int v) {
     return GeneratePulse(phase[v], incr[v], pw.CV(v)); }); break;
-  default: assert(false); break;
+  default: 
+    assert(false); break;
   }
 
   FBFixedFloatBlock gain1WithGLFOBlock;

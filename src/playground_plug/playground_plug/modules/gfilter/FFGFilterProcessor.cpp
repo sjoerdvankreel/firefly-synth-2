@@ -119,6 +119,9 @@ FFGFilterProcessor::Process(FBModuleProcState const& state)
     m1b.Transform([&](int v) { return k[v] * (1.0 - a[v]) * a[v]; });
     m2b.Transform([&](int v) { return 1.0 - a[v] * a[v]; });
     break;
+  default:
+    assert(false);
+    break;
   }
 
   FBFixedDoubleArray m0a, m1a, m2a;
