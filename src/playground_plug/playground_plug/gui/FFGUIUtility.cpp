@@ -22,9 +22,9 @@ FFRenderModuleGraph(
   int processed = FBFixedBlockSamples;
   auto renderState = renderData.graphData->renderState;
   auto const& moduleState = renderState->ModuleState();
-  auto* procState = moduleState.ProcState<FFProcState>();
   int voice = moduleState.voice->slot;
   int moduleSlot = moduleState.moduleSlot;
+  auto* procState = moduleState.template ProcState<FFProcState>();
 
   renderData.processor.BeginVoice(moduleState);
   while (processed == FBFixedBlockSamples)
