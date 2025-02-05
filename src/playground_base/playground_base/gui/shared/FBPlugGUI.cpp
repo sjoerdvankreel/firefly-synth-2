@@ -137,7 +137,6 @@ FBPlugGUI::GetTooltipForParam(int index) const
   auto result = param.tooltip + ": ";
   result += param.static_.NormalizedToText(
     FBParamTextDisplay::TooltipWithUnit, normalized);
-  result += "\r\nAutomation: " + param.static_.AutomationTooltip();
   if (!param.static_.IsVoice())
     result += "\r\nCurrent engine value: " +
     GetParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
@@ -148,5 +147,6 @@ FBPlugGUI::GetTooltipForParam(int index) const
     result += "\r\n Max engine value: " +
       GetParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
   }
+  result += "\r\nAutomation: " + param.static_.AutomationTooltip();
   return result;
 }
