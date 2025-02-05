@@ -6,18 +6,12 @@
 #include <array>
 #include <cassert>
 
-enum class FBExchangeParamType
-{
-  Voice,
-  Global
-};
-
 class FBExchangeParamState final
 {
   friend class FBHostProcessor;
   friend class FBExchangeStateContainer;
 
-  FBExchangeParamType _type;
+  bool _isGlobal;
   union
   {
     float* _global;
@@ -28,50 +22,49 @@ class FBExchangeParamState final
   std::array<float, FBMaxVoices>& Voice();
 
 public:
+  float const* Global() const;
+  bool IsGlobal() const { return _isGlobal; }
+  std::array<float, FBMaxVoices> const& Voice() const;
+
   FB_COPY_MOVE_DEFCTOR(FBExchangeParamState);
   explicit FBExchangeParamState(float* global);
   explicit FBExchangeParamState(std::array<float, FBMaxVoices>* voice);
-
-  float const* Global() const;
-  std::array<float, FBMaxVoices> const& Voice() const;
-  FBExchangeParamType Type() const { return _type; }
-  bool IsGlobal() const { return Type() == FBExchangeParamType::Global; }
 };
 
 inline FBExchangeParamState::
 FBExchangeParamState(float* global):
-_type(FBExchangeParamType::Global),
+_isGlobal(true),
 _global(global) {}
 
 inline FBExchangeParamState::
 FBExchangeParamState(std::array<float, FBMaxVoices>* voice):
-_type(FBExchangeParamType::Voice),
+_isGlobal(false),
 _voice(voice) {}
 
 inline float*
 FBExchangeParamState::Global()
 {
-  assert(Type() == FBExchangeParamType::Global);
+  assert(IsGlobal());
   return _global;
 }
 
 inline float const*
 FBExchangeParamState::Global() const
 {
-  assert(Type() == FBExchangeParamType::Global);
+  assert(IsGlobal());
   return _global;
 }
 
 inline std::array<float, FBMaxVoices>&
 FBExchangeParamState::Voice()
 {
-  assert(Type() == FBExchangeParamType::Voice);
+  assert(!IsGlobal());
   return *_voice;
 }
 
 inline std::array<float, FBMaxVoices> const&
 FBExchangeParamState::Voice() const
 {
-  assert(Type() == FBExchangeParamType::Voice);
+  assert(!IsGlobal());
   return *_voice;
 }
