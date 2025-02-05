@@ -53,7 +53,7 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
 }
 
 FBExchangeParamActiveState 
-FBExchangeStateContainer::GetParamActiveState(int paramIndex) const
+FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
 {
   FBExchangeParamActiveState result = {};
   result.active = false;
@@ -61,23 +61,23 @@ FBExchangeStateContainer::GetParamActiveState(int paramIndex) const
   result.maxValue = 0.0f;
 
   float exchangeValue = 0.0f;
-  auto const& param = Params()[paramIndex];
-  auto const& active = Active()[paramIndex];
+  auto const& paramExchange = Params()[param->runtimeParamIndex];
+  auto const& activeExchange = Active()[param->runtimeModuleIndex];
 
-  if (param.IsGlobal())
-    if (*active.Global())
+  if (paramExchange.IsGlobal())
+    if (*activeExchange.Global())
     {
       result.active = true;
-      result.minValue = std::min(result.minValue, *param.Global());
-      result.maxValue = std::max(result.maxValue, *param.Global());
+      result.minValue = std::min(result.minValue, *paramExchange.Global());
+      result.maxValue = std::max(result.maxValue, *paramExchange.Global());
     }
-  if (!param.IsGlobal())
+  if (!paramExchange.IsGlobal())
     for (int v = 0; v < FBMaxVoices; v++)
-      if (*active.Voice()[v])
+      if (*activeExchange.Voice()[v])
       {
         result.active = true;
-        result.minValue = std::min(result.minValue, param.Voice()[v]);
-        result.maxValue = std::max(result.maxValue, param.Voice()[v]);
+        result.minValue = std::min(result.minValue, paramExchange.Voice()[v]);
+        result.maxValue = std::max(result.maxValue, paramExchange.Voice()[v]);
       }
  
   return result;

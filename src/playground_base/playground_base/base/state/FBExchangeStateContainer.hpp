@@ -11,6 +11,7 @@
 #include <vector>
 
 struct FBRuntimeTopo;
+struct FBRuntimeParam;
 
 class FBExchangeStateContainer final
 {
@@ -33,8 +34,8 @@ public:
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
-  FBExchangeParamActiveState GetParamActiveState(int paramIndex) const;
   std::vector<FBExchangeParamState> const& Params() const { return _params; }
   std::vector<FBExchangeActiveState> const& Active() const { return _active; }
   std::array<FBVoiceInfo, FBMaxVoices> const& VoiceState() const { return *_voiceState; }
+  FBExchangeParamActiveState GetParamActiveState(FBRuntimeParam const* param) const;
 };

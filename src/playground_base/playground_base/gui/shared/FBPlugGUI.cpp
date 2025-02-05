@@ -132,7 +132,7 @@ FBPlugGUI::GetTooltipForParam(int index) const
 {
   auto const& param = HostContext()->Topo()->params[index];
   float normalized = HostContext()->GetParamNormalized(index);
-  auto paramActive = HostContext()->ExchangeState()->GetParamActiveState(index);
+  auto paramActive = HostContext()->ExchangeState()->GetParamActiveState(&param);
 
   auto result = param.tooltip + ": ";
   result += param.static_.NormalizedToText(
