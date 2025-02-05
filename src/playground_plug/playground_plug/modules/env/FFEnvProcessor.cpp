@@ -56,6 +56,10 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
+  auto const& decaySlope = procParams.acc.decaySlope[0].Voice()[voice];
+  auto const& attackSlope = procParams.acc.attackSlope[0].Voice()[voice];
+  auto const& releaseSlope = procParams.acc.releaseSlope[0].Voice()[voice];
+  auto const& sustainLevel = procParams.acc.sustainLevel[0].Voice()[voice];
 
   if (!_voiceState.on)
   {
@@ -83,7 +87,6 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   }
 
   int& attackPos = _stagePositions[(int)FFEnvStage::Attack];
-  auto const& attackSlope = procParams.acc.attackSlope[0].Voice()[voice].CV();
   if (_voiceState.mode == FFEnvMode::Linear)
     for (; s < FBFixedBlockSamples && attackPos < _voiceState.attackSamples; s++, attackPos++)
     {
@@ -93,7 +96,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   else
     for (; s < FBFixedBlockSamples && attackPos < _voiceState.attackSamples; s++, attackPos++)
     {
-      float slope = minSlope + attackSlope.data[s] * slopeRange;
+      float slope = minSlope + attackSlope.CV().data[s] * slopeRange;
       float pos = attackPos / (float)_voiceState.attackSamples;
       _lastDAHDSR = std::pow(pos, std::log(slope) * invLogHalf);
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
@@ -107,39 +110,36 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   }
 
   int& decayPos = _stagePositions[(int)FFEnvStage::Decay];
-  auto const& decaySlope = procParams.acc.decaySlope[0].Voice()[voice].CV();
-  auto const& sustainLevel = procParams.acc.sustainLevel[0].Voice()[voice].CV();
   if (_voiceState.mode == FFEnvMode::Linear)
     for (; s < FBFixedBlockSamples && decayPos < _voiceState.decaySamples; s++, decayPos++)
     {
       float pos = decayPos / (float)_voiceState.decaySamples;
-      _lastDAHDSR = sustainLevel.data[s] + (1.0f - sustainLevel.data[s]) * (1.0f - pos);
+      _lastDAHDSR = sustainLevel.CV().data[s] + (1.0f - sustainLevel.CV().data[s]) * (1.0f - pos);
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
   else
     for (; s < FBFixedBlockSamples && decayPos < _voiceState.decaySamples; s++, decayPos++)
     {
-      float slope = minSlope + decaySlope.data[s] * slopeRange;
+      float slope = minSlope + decaySlope.CV().data[s] * slopeRange;
       float pos = decayPos / (float)_voiceState.decaySamples;
-      _lastDAHDSR = sustainLevel.data[s] + (1.0f - sustainLevel.data[s]) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
+      _lastDAHDSR = sustainLevel.CV().data[s] + (1.0f - sustainLevel.CV().data[s]) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
 
   int& releasePos = _stagePositions[(int)FFEnvStage::Release];
-  auto const& releaseSlope = procParams.acc.releaseSlope[0].Voice()[voice].CV();
   if (_voiceState.mode == FFEnvMode::Linear)
     for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++)
     {
       float pos = releasePos / (float)_voiceState.releaseSamples;
-      _lastDAHDSR = sustainLevel.data[s] * (1.0f - pos);
+      _lastDAHDSR = sustainLevel.CV().data[s] * (1.0f - pos);
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
   else
     for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++)
     {
-      float slope = minSlope + releaseSlope.data[s] * slopeRange;
+      float slope = minSlope + releaseSlope.CV().data[s] * slopeRange;
       float pos = releasePos / (float)_voiceState.releaseSamples;
-      _lastDAHDSR = sustainLevel.data[s] * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
+      _lastDAHDSR = sustainLevel.CV().data[s] * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
 
@@ -158,15 +158,14 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
   auto* exchangeState = state.ExchangeState<FFExchangeState>();
   if (exchangeState == nullptr || processed == 0)
     return processed;
-
   auto& exchangeDSP = exchangeState->voice[voice].env[state.moduleSlot];
-  auto& exchangeParams = exchangeState->param.voice.env[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = _lengthSamples;
   exchangeDSP.positionSamples = _positionSamples;
-  exchangeParams.acc.decaySlope[0][voice] = decaySlope.data[processed - 1];
-  exchangeParams.acc.attackSlope[0][voice] = attackSlope.data[processed - 1];
-  exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.data[processed - 1];
-  exchangeParams.acc.sustainLevel[0][voice] = sustainLevel.data[processed - 1];
+  auto& exchangeParams = exchangeState->param.voice.env[state.moduleSlot];
+  exchangeParams.acc.decaySlope[0][voice] = decaySlope.CV().data[processed - 1];
+  exchangeParams.acc.attackSlope[0][voice] = attackSlope.CV().data[processed - 1];
+  exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.CV().data[processed - 1];
+  exchangeParams.acc.sustainLevel[0][voice] = sustainLevel.CV().data[processed - 1];
   return processed;
 }

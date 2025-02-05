@@ -25,7 +25,7 @@ FFMasterProcessor::Process(FBModuleProcState const& state)
   auto* exchangeState = state.ExchangeState<FFExchangeState>();
   if (exchangeState == nullptr)
     return;
-  exchangeState->global.master[0].active = true;
-  auto& exchangeParams = exchangeState->param.global.master[0];
+  exchangeState->global.master[state.moduleSlot].active = true;
+  auto& exchangeParams = exchangeState->param.global.master[state.moduleSlot];
   exchangeParams.acc.gain[0] = gain.CV().data[FBFixedBlockSamples - 1];
 }
