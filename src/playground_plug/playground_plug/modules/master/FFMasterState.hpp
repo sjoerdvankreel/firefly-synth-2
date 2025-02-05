@@ -14,6 +14,7 @@ class FFMasterExchangeState final
   bool active = {};
 public:
   friend class FFMasterProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterExchangeState);
 };
 

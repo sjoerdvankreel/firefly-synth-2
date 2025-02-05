@@ -15,6 +15,7 @@ class FFOsciExchangeState final
   bool active = {};
 public:
   friend class FFOsciProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciExchangeState);
 };
 

@@ -14,6 +14,7 @@ class FFGFilterExchangeState final
   bool active = {};
 public:
   friend class FFGFilterProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterExchangeState);
 };
 

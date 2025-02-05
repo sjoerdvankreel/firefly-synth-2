@@ -7,6 +7,11 @@
 std::unique_ptr<FBStaticModule>
 FFMakeEnvTopo()
 {
+  /*
+  typedef std::function<bool* (
+  int voice, int moduleSlot, void* state)>
+FBVoiceExchangeActiveAddrSelector;*/
+
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "Env";
@@ -14,6 +19,7 @@ FFMakeEnvTopo()
   result->renderGraph = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
+  result->addrSelectors.voiceExchangeActive = [](int voice, int moduleSlot, void* state) -> bool* { return &static_cast<FFExchangeState*>(state)->voice[voice].env[moduleSlot].active; };
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& on = result->params[(int)FFEnvParam::On];

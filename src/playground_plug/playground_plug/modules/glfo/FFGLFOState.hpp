@@ -14,6 +14,7 @@ class FFGLFOExchangeState final
   bool active = {};
 public:
   friend class FFGLFOProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeGLFOTopo();
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOExchangeState);
 };
 

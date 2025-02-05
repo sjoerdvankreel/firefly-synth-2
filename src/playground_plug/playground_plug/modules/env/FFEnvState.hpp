@@ -18,6 +18,7 @@ class FFEnvExchangeState final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvExchangeState);
   friend class FFEnvProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
   friend void FFEnvRenderGraph(FBModuleGraphComponentData* graphData);
 };
 
