@@ -68,8 +68,14 @@ FFOsciProcessor::Process(FBModuleProcState const& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcState<FFProcState>();
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
+  auto const& pw = procParams.acc.pw[0].Voice()[voice];
+  auto const& cent = procParams.acc.cent[0].Voice()[voice];
+  auto const& gain1 = procParams.acc.gain[0].Voice()[voice];
+  auto const& gain2 = procParams.acc.gain[1].Voice()[voice];
+  auto const& gLFOToGain = procParams.acc.gLFOToGain[0].Voice()[voice];
+
   auto const& gLFO = procState->dsp.global.gLFO[0].output;
-  auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   auto& output = procState->dsp.voice[voice].osci[state.moduleSlot].output;
 
@@ -83,8 +89,7 @@ FFOsciProcessor::Process(FBModuleProcState const& state)
   FBFixedFloatBlock mono;
   FBFixedFloatBlock phase;
   incr.Transform([&](int v) {
-    auto cent = params.acc.cent[0].Voice()[voice].CV(v);
-    auto centPlain = topo.params[(int)FFOsciParam::Cent].linear.NormalizedToPlain(cent);
+    auto centPlain = topo.params[(int)FFOsciParam::Cent].linear.NormalizedToPlain(cent.CV(v));
     auto pitch = _voiceState.key + _voiceState.note - 60.0f + centPlain;
     auto freq = FBPitchToFreq(pitch, state.sampleRate);
     return freq / state.sampleRate; });
@@ -97,16 +102,23 @@ FFOsciProcessor::Process(FBModuleProcState const& state)
   case FFOsciType::Saw: mono.Transform([&](int v) {
     return GenerateSaw(phase[v], incr[v]); }); break;
   case FFOsciType::Pulse: mono.Transform([&](int v) {
-    auto pw = params.acc.pw[0].Voice()[voice].CV(v);
-    return GeneratePulse(phase[v], incr[v], pw); }); break;
+    return GeneratePulse(phase[v], incr[v], pw.CV(v)); }); break;
   default: assert(false); break;
   }
-  mono.Transform([&](int v) {
-    auto gain1 = params.acc.gain[0].Voice()[voice].CV(v);
-    auto gain2 = params.acc.gain[1].Voice()[voice].CV(v);
-    auto gLFOToGain = params.acc.gLFOToGain[0].Voice()[voice].CV(v);
-    return gain1 * gain2 * ((1.0f - gLFOToGain) * mono[v] + mono[v] * gLFOToGain * gLFO[v]); });
-  output.Transform([&](int ch, int v) {
-    return mono[v];
-  });
+  mono.Transform([&](int v) { 
+    auto gLFOToGainBlock = gLFOToGain.CV(v);
+    auto modByGLFO = (1.0f - gLFOToGainBlock) * mono[v] + gLFOToGainBlock * gLFO[v] * mono[v];
+    return gain1.CV(v) * gain2.CV(v) * modByGLFO; });
+  output.Transform([&](int ch, int v) { return mono[v]; });
+
+  auto* exchangeState = state.ExchangeState<FFExchangeState>();
+  if (exchangeState == nullptr)
+    return; 
+  exchangeState->voice[voice].osci[state.moduleSlot].active = true;
+  auto& exchangeParams = exchangeState->param.voice.osci[state.moduleSlot];
+  exchangeParams.acc.pw[0][voice] = pw.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.cent[0][voice] = cent.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.gain[0][voice] = gain1.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.gain[1][voice] = gain2.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGain.CV().data[FBFixedBlockSamples - 1];
 }

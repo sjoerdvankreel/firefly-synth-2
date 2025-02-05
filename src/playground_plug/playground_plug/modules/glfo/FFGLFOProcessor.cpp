@@ -13,9 +13,10 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
   auto* procState = state.ProcState<FFProcState>();
   auto& output = procState->dsp.global.gLFO[state.moduleSlot].output;
   auto const& procParams = procState->param.global.gLFO[state.moduleSlot];
+  auto const& rate = procParams.acc.rate[0].Global();
+
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
   bool on = topo.params[(int)FFGLFOParam::On].boolean.NormalizedToPlain(procParams.block.on[0].Value());
-  auto const& rate = procParams.acc.rate[0].Global();
 
   if (!on)
   {
