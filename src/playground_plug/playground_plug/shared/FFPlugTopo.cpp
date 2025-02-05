@@ -18,7 +18,8 @@ MakeSpecialParam(
   FBSpecialParam result;
   result.paramIndex = paramIndex;
   result.moduleIndex = moduleIndex;
-  result.state = topo.modules[moduleIndex].params[paramIndex].globalBlockAddr(0, 0, state);
+  auto const& param = topo.modules[moduleIndex].params[paramIndex];
+  result.state = param.addrSelectors.globalBlockProc(0, 0, state);
   return result;
 }
 

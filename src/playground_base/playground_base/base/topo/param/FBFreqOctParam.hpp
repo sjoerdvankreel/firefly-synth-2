@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBVector.hpp>
-#include <playground_base/base/topo/FBTextDisplay.hpp>
+#include <playground_base/base/topo/param/FBTextDisplay.hpp>
 
 #include <cmath>
 #include <string>

@@ -2,17 +2,17 @@
 
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/FBTextDisplay.hpp>
-#include <playground_base/base/topo/FBAutomationType.hpp>
 #include <playground_base/base/topo/FBParamsDependency.hpp>
 
 #include <playground_base/base/topo/param/FBParamType.hpp>
+#include <playground_base/base/topo/param/FBParamAddrs.hpp>
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 #include <playground_base/base/topo/param/FBListParam.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 #include <playground_base/base/topo/param/FBFreqOctParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
-#include <playground_base/base/topo/param/FBParamAddrSelector.hpp>
+#include <playground_base/base/topo/param/FBTextDisplay.hpp>
+#include <playground_base/base/topo/param/FBAutomationType.hpp>
 
 #include <string>
 #include <vector>
@@ -38,14 +38,7 @@ struct FBStaticParam final
   FBFreqOctParam freqOct = {};
   FBDiscreteParam discrete = {};
   FBParamsDependency relevant = {};
-
-  FBScalarAddrSelector scalarAddr = {};
-  FBVoiceAccAddrSelector voiceAccAddr = {};
-  FBGlobalAccAddrSelector globalAccAddr = {};
-  FBVoiceBlockAddrSelector voiceBlockAddr = {};
-  FBGlobalBlockAddrSelector globalBlockAddr = {};    
-  FBVoiceExchangeAddrSelector voiceExchangeAddr = {};
-  FBGlobalExchangeAddrSelector globalExchangeAddr = {};
+  FBParamAddrSelectors addrSelectors = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 

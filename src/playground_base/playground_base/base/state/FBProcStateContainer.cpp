@@ -15,22 +15,26 @@ _freeRawState(topo.static_.state.freeRawProcState)
   for (int p = 0; p < topo.params.size(); p++)
     if (topo.static_.modules[topo.params[p].topoIndices.module.index].voice)
       if (topo.params[p].static_.acc)
-        _params.push_back(FBProcParamState(topo.params[p].static_.voiceAccAddr(
-          topo.params[p].topoIndices.module.slot, 
-          topo.params[p].topoIndices.param.slot, _rawState)));
+        _params.push_back(FBProcParamState(
+          topo.params[p].static_.addrSelectors.voiceAccProc(
+            topo.params[p].topoIndices.module.slot, 
+            topo.params[p].topoIndices.param.slot, _rawState)));
       else
-        _params.push_back(FBProcParamState(topo.params[p].static_.voiceBlockAddr(
-          topo.params[p].topoIndices.module.slot, 
-          topo.params[p].topoIndices.param.slot, _rawState)));
+        _params.push_back(FBProcParamState(
+          topo.params[p].static_.addrSelectors.voiceBlockProc(
+            topo.params[p].topoIndices.module.slot, 
+            topo.params[p].topoIndices.param.slot, _rawState)));
     else
       if (topo.params[p].static_.acc)
-        _params.push_back(FBProcParamState(topo.params[p].static_.globalAccAddr(
-          topo.params[p].topoIndices.module.slot, 
-          topo.params[p].topoIndices.param.slot, _rawState)));
+        _params.push_back(FBProcParamState(
+          topo.params[p].static_.addrSelectors.globalAccProc(
+            topo.params[p].topoIndices.module.slot, 
+            topo.params[p].topoIndices.param.slot, _rawState)));
       else
-        _params.push_back(FBProcParamState(topo.params[p].static_.globalBlockAddr(
-          topo.params[p].topoIndices.module.slot, 
-          topo.params[p].topoIndices.param.slot, _rawState)));
+        _params.push_back(FBProcParamState(
+          topo.params[p].static_.addrSelectors.globalBlockProc(
+            topo.params[p].topoIndices.module.slot, 
+            topo.params[p].topoIndices.param.slot, _rawState)));
 
   for (int p = 0; p < Params().size(); p++)
     Params()[p].InitProcessing(topo.params[p].static_.DefaultNormalizedByText());

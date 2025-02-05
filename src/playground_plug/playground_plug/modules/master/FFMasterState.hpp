@@ -9,6 +9,14 @@
 
 struct FBStaticModule;
 
+class FFMasterExchangeState final
+{
+  bool active = {};
+public:
+  friend class FFMasterProcessor;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterExchangeState);
+};
+
 class alignas(sizeof(FBFloatVector)) FFMasterDSPState final
 {
   friend class FFPlugProcessor;

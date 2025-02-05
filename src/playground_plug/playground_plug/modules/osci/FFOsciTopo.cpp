@@ -21,9 +21,9 @@ FFMakeOsciTopo()
   on.id = "{35FC56D5-F0CB-4C37-BCA2-A0323FA94DCF}";
   on.type = FBParamType::Boolean;
   auto selectOn = [](auto& module) { return &module.block.on; };
-  on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
-  on.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
-  on.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectOn);
+  on.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
+  on.addrSelectors.voiceBlockProc = FFTopoDetailSelectProcAddr(selectModule, selectOn);
+  on.addrSelectors.voiceExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectOn);
 
   auto& type = result->params[(int)FFOsciParam::Type];
   type.acc = false;
@@ -37,9 +37,9 @@ FFMakeOsciTopo()
     { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" },
     { "{E552CDF9-62A8-4EE2-84E2-8D7170D15919}", "Pulse" } };
   auto selectType = [](auto& module) { return &module.block.type; };
-  type.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectType);
-  type.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectType);
-  type.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectType);
+  type.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectType);
+  type.addrSelectors.voiceBlockProc = FFTopoDetailSelectProcAddr(selectModule, selectType);
+  type.addrSelectors.voiceExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectType);
 
   std::vector<std::string> notes = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
   auto& note = result->params[(int)FFOsciParam::Note];
@@ -52,9 +52,9 @@ FFMakeOsciTopo()
   note.discrete.valueCount = 128;
   note.discrete.toText = [notes](int i) { return notes[i % 12] + std::to_string(i / 12 - 1); };
   auto selectNote = [](auto& module) { return &module.block.note; };
-  note.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectNote);
-  note.voiceBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectNote);
-  note.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectNote);
+  note.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectNote);
+  note.addrSelectors.voiceBlockProc = FFTopoDetailSelectProcAddr(selectModule, selectNote);
+  note.addrSelectors.voiceExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectNote);
 
   auto& gain = result->params[(int)FFOsciParam::Gain];
   gain.acc = true;
@@ -66,9 +66,9 @@ FFMakeOsciTopo()
   gain.type = FBParamType::Linear;
   gain.linear.displayMultiplier = 100.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
-  gain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
-  gain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGain);
-  gain.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectGain);
+  gain.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectGain);
+  gain.addrSelectors.voiceAccProc = FFTopoDetailSelectProcAddr(selectModule, selectGain);
+  gain.addrSelectors.voiceExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectGain);
 
   auto& cent = result->params[(int)FFOsciParam::Cent];
   cent.acc = true;
@@ -82,9 +82,9 @@ FFMakeOsciTopo()
   cent.linear.max = 1.0f;
   cent.linear.displayMultiplier = 100.0f;
   auto selectCent = [](auto& module) { return &module.acc.cent; };
-  cent.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectCent);
-  cent.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectCent);
-  cent.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectCent);
+  cent.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectCent);
+  cent.addrSelectors.voiceAccProc = FFTopoDetailSelectProcAddr(selectModule, selectCent);
+  cent.addrSelectors.voiceExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectCent);
 
   auto& pw = result->params[(int)FFOsciParam::PW];
   pw.acc = true;
@@ -96,9 +96,9 @@ FFMakeOsciTopo()
   pw.type = FBParamType::Linear;
   pw.linear.displayMultiplier = 100.0f;
   auto selectPW = [](auto& module) { return &module.acc.pw; };
-  pw.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectPW);
-  pw.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectPW);
-  pw.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectPW);
+  pw.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectPW);
+  pw.addrSelectors.voiceAccProc = FFTopoDetailSelectProcAddr(selectModule, selectPW);
+  pw.addrSelectors.voiceExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectPW);
   pw.relevant.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Pulse; });
 
   auto& gLFOToGain = result->params[(int)FFOsciParam::GLFOToGain];
@@ -110,8 +110,8 @@ FFMakeOsciTopo()
   gLFOToGain.type = FBParamType::Linear;
   gLFOToGain.linear.displayMultiplier = 100.0f;
   auto selectGLFOToGain = [](auto& module) { return &module.acc.gLFOToGain; };
-  gLFOToGain.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
-  gLFOToGain.voiceAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectGLFOToGain);
-  gLFOToGain.voiceExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectGLFOToGain);
+  gLFOToGain.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectGLFOToGain);
+  gLFOToGain.addrSelectors.voiceAccProc = FFTopoDetailSelectProcAddr(selectModule, selectGLFOToGain);
+  gLFOToGain.addrSelectors.voiceExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectGLFOToGain);
   return result;
 }

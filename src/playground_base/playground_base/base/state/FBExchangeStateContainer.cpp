@@ -12,13 +12,15 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
   _voiceState = topo.static_.state.voiceStateExchangeAddr(_rawState);
   for (int p = 0; p < topo.params.size(); p++)
     if (topo.static_.modules[topo.params[p].topoIndices.module.index].voice)
-      _params.push_back(FBExchangeParamState(topo.params[p].static_.voiceExchangeAddr(
+      _params.push_back(FBExchangeParamState(
+        topo.params[p].static_.addrSelectors.voiceExchange(
           topo.params[p].topoIndices.module.slot, 
           topo.params[p].topoIndices.param.slot, _rawState)));
     else
-      _params.push_back(FBExchangeParamState(topo.params[p].static_.globalExchangeAddr(
-        topo.params[p].topoIndices.module.slot,
-        topo.params[p].topoIndices.param.slot, _rawState)));
+      _params.push_back(FBExchangeParamState(
+        topo.params[p].static_.addrSelectors.globalExchange(
+          topo.params[p].topoIndices.module.slot,
+          topo.params[p].topoIndices.param.slot, _rawState)));
 #ifndef NDEBUG
   std::set<void const*> uniquePtrs = {};
   for (int p = 0; p < _params.size(); p++)

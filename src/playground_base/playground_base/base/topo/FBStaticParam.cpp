@@ -3,25 +3,25 @@
 bool 
 FBStaticParam::IsVoiceAcc() const
 {
-  return voiceAccAddr != nullptr;
+  return addrSelectors.voiceAccProc != nullptr;
 }
 
 bool 
 FBStaticParam::IsGlobalAcc() const
 {
-  return globalAccAddr != nullptr;
+  return addrSelectors.globalAccProc != nullptr;
 }
 
 bool 
 FBStaticParam::IsVoiceBlock() const
 {
-  return voiceBlockAddr != nullptr;
+  return addrSelectors.voiceBlockProc != nullptr;
 }
 
 bool 
 FBStaticParam::IsGlobalBlock() const
 {
-  return globalBlockAddr != nullptr;
+  return addrSelectors.globalBlockProc != nullptr;
 }
 
 bool 
@@ -57,6 +57,8 @@ FBStaticParam::AutomationTooltip() const
   if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
     return "At Voice Start";
   return "None";
+
+  // TODO more tooltip stuff
 }
 
 float

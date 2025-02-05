@@ -9,6 +9,14 @@
 
 struct FBStaticModule;
 
+class FFGFilterExchangeState final
+{
+  bool active = {};
+public:
+  friend class FFGFilterProcessor;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterExchangeState);
+};
+
 class alignas(sizeof(FBFloatVector)) FFGFilterDSPState final
 {
   friend class FFPlugProcessor;

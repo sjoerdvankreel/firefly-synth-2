@@ -10,6 +10,14 @@
 
 struct FBStaticModule;
 
+class FFOsciExchangeState final
+{
+  bool active = {};
+public:
+  friend class FFOsciProcessor;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciExchangeState);
+};
+
 class alignas(sizeof(FBFloatVector)) FFOsciDSPState final
 {
   friend class FFVoiceProcessor;

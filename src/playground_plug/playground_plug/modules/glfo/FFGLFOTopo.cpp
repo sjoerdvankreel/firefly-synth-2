@@ -21,9 +21,9 @@ FFMakeGLFOTopo()
   on.id = "{A9741F9B-5E07-40D9-8FC1-73F90363EF0C}";
   on.type = FBParamType::Boolean;
   auto selectOn = [](auto& module) { return &module.block.on; };
-  on.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
-  on.globalBlockAddr = FFTopoDetailSelectProcAddr(selectModule, selectOn);
-  on.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectOn);
+  on.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectOn);
+  on.addrSelectors.globalBlockProc = FFTopoDetailSelectProcAddr(selectModule, selectOn);
+  on.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectOn);
 
   auto& rate = result->params[(int)FFGLFOParam::Rate];
   rate.acc = true;
@@ -36,8 +36,8 @@ FFMakeGLFOTopo()
   rate.linear.min = 0.1f;
   rate.linear.max = 20.0f;
   auto selectRate = [](auto& module) { return &module.acc.rate; };
-  rate.scalarAddr = FFTopoDetailSelectScalarAddr(selectModule, selectRate);
-  rate.globalAccAddr = FFTopoDetailSelectProcAddr(selectModule, selectRate);
-  rate.globalExchangeAddr = FFTopoDetailSelectExchangeAddr(selectModule, selectRate);
+  rate.addrSelectors.scalar = FFTopoDetailSelectScalarAddr(selectModule, selectRate);
+  rate.addrSelectors.globalAccProc = FFTopoDetailSelectProcAddr(selectModule, selectRate);
+  rate.addrSelectors.globalExchange = FFTopoDetailSelectExchangeAddr(selectModule, selectRate);
   return result;
 }
