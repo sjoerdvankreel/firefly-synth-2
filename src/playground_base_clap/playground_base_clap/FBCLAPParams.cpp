@@ -7,6 +7,7 @@
 #include <playground_base/base/state/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 bool 
 FBCLAPPlugin::implementsParams() const noexcept 

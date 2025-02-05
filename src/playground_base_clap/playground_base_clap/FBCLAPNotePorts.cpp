@@ -1,4 +1,5 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 bool 
 FBCLAPPlugin::implementsNotePorts() const noexcept

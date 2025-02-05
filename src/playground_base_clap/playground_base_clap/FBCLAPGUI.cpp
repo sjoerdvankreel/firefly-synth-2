@@ -2,6 +2,7 @@
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 #include <clap/helpers/host-proxy.hxx>
 #include <juce_gui_basics/juce_gui_basics.h>

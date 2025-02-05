@@ -4,6 +4,7 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBScalarStateContainer.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 bool 
 FBCLAPPlugin::implementsState() const noexcept 

@@ -1,5 +1,7 @@
 #if (defined __linux__) || (defined  __FreeBSD__)
 #include <playground_base_clap/FBCLAPPlugin.hpp>
+#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
+
 #include <juce_events/native/juce_EventLoopInternal_linux.h>
 
 using namespace juce;
