@@ -1,5 +1,4 @@
 dont repaint expensive stuff if the UI not active -- but how?
-fix autobuild
 not hardcode env1 to voice amp
 get rid of the sysheaders warnings
 handle envelope offset (actual start index in block)
