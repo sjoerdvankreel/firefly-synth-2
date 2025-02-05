@@ -19,10 +19,8 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   float const sampleRate = 100.0f;
   auto renderState = graphData->renderState;
   auto& moduleState = renderState->ModuleState();
-  auto exchangeState = renderState->ExchangeState<FFExchangeState>();
-  int moduleSlot = moduleState.moduleSlot;
-  auto const& exchangeVoiceState = renderState->ExchangeContainer()->VoiceState();
   moduleState.sampleRate = sampleRate;
+  int moduleSlot = moduleState.moduleSlot;
 
   FFModuleGraphRenderData<FFEnvProcessor> renderData;
   renderData.graphData = graphData;
@@ -34,14 +32,13 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   int maxPoints = (int)graphData->primarySeries.size();
 
   renderState->PrepareForRenderExchange();
+  auto exchangeState = renderState->ExchangeState<FFExchangeState>();
   for (int v = 0; v < FBMaxVoices; v++)
   {
-    if (exchangeVoiceState[v].state != FBVoiceState::Active)
-      continue;
-    renderState->PrepareForRenderExchangeVoice(v);
     auto const& envExchange = exchangeState->voice[v].env[moduleSlot];
     if (!envExchange.active || envExchange.positionSamples >= envExchange.lengthSamples)
       continue;
+    renderState->PrepareForRenderExchangeVoice(v);
     float positionNormalized = envExchange.positionSamples / (float)envExchange.lengthSamples;
     if (renderState->VoiceModuleExchangeStateEqualsPrimary(v, (int)FFModuleType::Env, moduleSlot))
     {
