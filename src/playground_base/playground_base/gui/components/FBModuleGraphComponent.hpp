@@ -15,16 +15,16 @@ public:
   FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphComponent);
   FBModuleGraphComponent(FBGraphRenderState* renderState);
 
-  void RequestRerender(int paramIndex);
   void paint(juce::Graphics& g) override;
-  int TweakedParamByUI() const { return _tweakedParamByUI; }
-  int _tweakedParamByUI = -1;
+  void RequestRerender(int moduleIndex);
+  int TweakedModuleByUI() const { return _tweakedModuleByUI; }
 
 private:
+  int _tweakedModuleByUI = -1;
   FBModuleGraphRenderer _renderer = {};
   FBModuleGraphComponentData _data = {};  
   
-  bool PrepareForRender(int paramIndex);
+  bool PrepareForRender(int moduleIndex);
   juce::Point<float> PointLocation(std::vector<float> const& points, int point) const;
   void PaintMarker(juce::Graphics& g, std::vector<float> const& points, int marker);
   void PaintSeries(juce::Graphics& g, juce::Colour color, std::vector<float> const& points);

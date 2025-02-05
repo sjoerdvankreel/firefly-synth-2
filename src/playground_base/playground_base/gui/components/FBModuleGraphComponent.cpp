@@ -17,11 +17,11 @@ Component()
 }
 
 void
-FBModuleGraphComponent::RequestRerender(int paramIndex)
+FBModuleGraphComponent::RequestRerender(int moduleIndex)
 {
-  if (!PrepareForRender(paramIndex))
+  if (!PrepareForRender(moduleIndex))
     return;
-  _tweakedParamByUI = paramIndex;
+  _tweakedModuleByUI = moduleIndex;
   repaint();
 }
 
@@ -59,10 +59,10 @@ FBModuleGraphComponent::PaintSeries(
 }
 
 bool 
-FBModuleGraphComponent::PrepareForRender(int paramIndex)
+FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 {
   auto& moduleState = _data.renderState->ModuleState();
-  auto const& topoIndices = moduleState.topo->params[paramIndex].topoIndices.module;
+  auto const& topoIndices = moduleState.topo->modules[moduleIndex].topoIndices;
   auto const& staticModule = moduleState.topo->static_.modules[topoIndices.index];
   if (staticModule.renderGraph == nullptr)
     return false;
@@ -74,9 +74,9 @@ FBModuleGraphComponent::PrepareForRender(int paramIndex)
 void
 FBModuleGraphComponent::paint(Graphics& g)
 {
-  if (_tweakedParamByUI == -1)
+  if (_tweakedModuleByUI == -1)
     return;
-  if (!PrepareForRender(_tweakedParamByUI))
+  if (!PrepareForRender(_tweakedModuleByUI))
     return;
 
   _data.text.clear();
@@ -88,7 +88,7 @@ FBModuleGraphComponent::paint(Graphics& g)
   g.fillAll(Colours::black);
   g.setColour(Colours::darkgrey);
   auto const* runtimeTopo = _data.renderState->ModuleState().topo;
-  std::string moduleName = runtimeTopo->ModuleAtParamIndex(_tweakedParamByUI)->name;
+  std::string moduleName = runtimeTopo->modules[_tweakedModuleByUI].name;
   g.drawText(moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
   for (int i = 0; i < _data.secondarySeries.size(); i++)
   {

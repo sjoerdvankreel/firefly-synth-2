@@ -27,9 +27,16 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 }
 
 void
-FFPlugGUI::RequestGraphRender(int paramIndex)
+FFPlugGUI::RequestGraphRender(int moduleIndex)
 {
-  _graph->RequestRerender(paramIndex);
+  _graph->RequestRerender(moduleIndex);
+}
+
+void
+FFPlugGUI::UpdateExchangeStateTick()
+{
+  FBPlugGUI::UpdateExchangeStateTick();
+  RequestGraphRender(_graph->TweakedModuleByUI());
 }
 
 void
@@ -42,8 +49,9 @@ FFPlugGUI::resized()
 void 
 FFPlugGUI::SetParamNormalizedFromUI(int index, float normalized)
 {
+  int moduleIndex = HostContext()->Topo()->params[index].runtimeModuleIndex;
   _graphRenderState->PrimaryParamChanged(index, normalized);
-  RequestGraphRender(index);
+  RequestGraphRender(moduleIndex);
 }
 
 void
@@ -53,18 +61,8 @@ FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
   if (HostContext()->Topo()->params[index].static_.output)
     return;
   _graphRenderState->PrimaryParamChanged(index, normalized);
-  if (_graph->TweakedParamByUI() != -1 &&
-    HostContext()->Topo()->params[index].runtimeModuleIndex ==
-    HostContext()->Topo()->params[_graph->TweakedParamByUI()].runtimeModuleIndex)
-    RequestGraphRender(index);
-}
-
-void
-FFPlugGUI::UpdateExchangeStateTick()
-{
-  FBPlugGUI::UpdateExchangeStateTick();
-  if (_graph->TweakedParamByUI() != -1)
-    RequestGraphRender(_graph->TweakedParamByUI());
+  if (_graph->TweakedModuleByUI() == HostContext()->Topo()->params[index].runtimeModuleIndex)
+    RequestGraphRender(_graph->TweakedModuleByUI());
 }
 
 void 
