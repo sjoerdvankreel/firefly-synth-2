@@ -29,7 +29,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 
   renderState->PrepareForRenderPrimary();
   renderState->PrepareForRenderPrimaryVoice();
-  FFRenderModuleGraph(renderData, graphData->primarySeries);
+  FFRenderModuleGraph<false>(renderData, graphData->primarySeries);
   int maxPoints = (int)graphData->primarySeries.size();
 
   renderState->PrepareForRenderExchange();
@@ -47,7 +47,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
       continue;
     }
     auto& secondary = graphData->secondarySeries.emplace_back();
-    FFRenderModuleGraph(renderData, secondary.points);
+    FFRenderModuleGraph<false>(renderData, secondary.points);
     maxPoints = std::max(maxPoints, (int)secondary.points.size());
     secondary.marker = (int)(positionNormalized * secondary.points.size());
   }

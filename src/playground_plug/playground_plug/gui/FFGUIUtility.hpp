@@ -23,7 +23,7 @@ struct FFModuleGraphRenderData final
   FFModuleGraphGlobalOutputSelector globalOutputSelector = {};
 };
 
-template <class Processor> 
+template <bool Global, class Processor> 
 void 
 FFRenderModuleGraph(
   FFModuleGraphRenderData<Processor>& renderData, 

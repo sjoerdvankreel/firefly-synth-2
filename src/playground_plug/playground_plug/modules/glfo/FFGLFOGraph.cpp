@@ -28,7 +28,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
     return &dsp.global.gLFO[slot].output; };
 
   renderState->PrepareForRenderPrimary();
-  FFRenderModuleGraph(renderData, graphData->primarySeries);
+  FFRenderModuleGraph<true>(renderData, graphData->primarySeries);
   int maxPoints = (int)graphData->primarySeries.size();
 
   renderState->PrepareForRenderExchange();
@@ -45,7 +45,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   }
 
   auto& secondary = graphData->secondarySeries.emplace_back();
-  FFRenderModuleGraph(renderData, secondary.points);
+  FFRenderModuleGraph<true>(renderData, secondary.points);
   maxPoints = std::max(maxPoints, (int)secondary.points.size());
   secondary.marker = (int)(positionNormalized * secondary.points.size());
 
