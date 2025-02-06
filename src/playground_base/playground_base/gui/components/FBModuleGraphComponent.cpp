@@ -61,6 +61,8 @@ FBModuleGraphComponent::PaintSeries(
 bool 
 FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 {
+  if (moduleIndex == -1)
+    return false;
   auto& moduleState = _data.renderState->ModuleState();
   auto const& topoIndices = moduleState.topo->modules[moduleIndex].topoIndices;
   auto const& staticModule = moduleState.topo->static_.modules[topoIndices.index];
