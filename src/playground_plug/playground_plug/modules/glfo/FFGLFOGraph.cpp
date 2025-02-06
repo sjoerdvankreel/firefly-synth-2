@@ -16,7 +16,9 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 {
   // todo probably need to share some of this
 
-  float const sampleRate = 100.0f;
+  // TODO this is bogus, we should strive for 1 sample per pixel
+  // TODO also, dont zero-extend the series. have the graph component handle it
+  float const sampleRate = 10000.0f;
   auto renderState = graphData->renderState;
   auto& moduleState = renderState->ModuleState();
   moduleState.sampleRate = sampleRate;
