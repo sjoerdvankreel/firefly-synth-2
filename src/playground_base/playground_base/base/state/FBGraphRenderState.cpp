@@ -65,31 +65,52 @@ FBGraphRenderState::PrimaryParamChanged(int index, float normalized)
 }
 
 void
+FBGraphRenderState::PrepareForRenderExchange()
+{
+  _moduleState->voice = nullptr;
+  _input->voiceManager = nullptr;
+  _procState->InitProcessing(*ExchangeContainer());
+  _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->VoiceState());
+}
+
+void
 FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
 {
   _moduleState->voice = &_exchangeVoiceManager->Voices()[voice];
 }
 
 void
-FBGraphRenderState::PrepareForRenderExchange()
+FBGraphRenderState::PrepareForRenderPrimary()
 {
   _moduleState->voice = nullptr;
-  _procState->InitProcessing(*ExchangeContainer());
-  _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->VoiceState());
+  _input->voiceManager = nullptr;
+  _procState->InitProcessing(*_scalarState);
 }
 
 void
-FBGraphRenderState::PrepareForRenderPrimary()
+FBGraphRenderState::PrepareForRenderPrimaryVoice()
 {
   if (_primaryVoiceManager->VoiceCount() > 0)
   {
     _primaryVoiceManager->Return(0);
     _primaryVoiceManager->ResetReturnedVoices();
   }
-  _procState->InitProcessing(*_scalarState);
   _primaryVoiceManager->Lease(MakeNoteC4On());
   _input->voiceManager = _primaryVoiceManager.get();
   _moduleState->voice = &_primaryVoiceManager->Voices()[0];
+}
+
+bool
+FBGraphRenderState::GlobalModuleExchangeStateEqualsPrimary(
+  int moduleIndex, int moduleSlot) const
+{
+  auto topo = _plugGUI->HostContext()->Topo();
+  auto paramIndex = topo->paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
+  auto runtimeModuleIndex = topo->params[paramIndex].runtimeModuleIndex;
+  for (; topo->params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
+    if (*ExchangeContainer()->Params()[paramIndex].Global() != *_scalarState->Params()[paramIndex])
+      return false;
+  return true;
 }
 
 bool 

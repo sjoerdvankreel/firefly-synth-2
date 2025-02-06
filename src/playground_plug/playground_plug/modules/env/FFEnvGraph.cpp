@@ -24,10 +24,11 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 
   FFModuleGraphRenderData<FFEnvProcessor> renderData;
   renderData.graphData = graphData;
-  renderData.outputSelector = [](auto const& dsp, int v, int slot) { 
+  renderData.voiceOutputSelector = [](auto const& dsp, int v, int slot) { 
     return &dsp.voice[v].env[slot].output; };
 
   renderState->PrepareForRenderPrimary();
+  renderState->PrepareForRenderPrimaryVoice();
   FFRenderModuleGraph(renderData, graphData->primarySeries);
   int maxPoints = (int)graphData->primarySeries.size();
 

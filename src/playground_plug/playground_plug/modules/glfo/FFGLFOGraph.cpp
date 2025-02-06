@@ -37,12 +37,13 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 
   if (!gLFOExchange.active)
     return;
-  float positionNormalized = gLFOExchange.positionSamples / (float)envExchange.lengthSamples;
-  if (renderState->VoiceModuleExchangeStateEqualsPrimary(v, (int)FFModuleType::Env, moduleSlot))
+  float positionNormalized = gLFOExchange.cyclePositionSamples / (float)gLFOExchange.cycleLengthSamples;
+  if (renderState->GlobalModuleExchangeStateEqualsPrimary((int)FFModuleType::GLFO, moduleSlot))
   {
     graphData->primaryMarkers.push_back((int)(positionNormalized * graphData->primarySeries.size()));
-    continue;
+    return;
   }
+
   auto& secondary = graphData->secondarySeries.emplace_back();
   FFRenderModuleGraph(renderData, secondary.points);
   maxPoints = std::max(maxPoints, (int)secondary.points.size());

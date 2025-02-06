@@ -7,7 +7,7 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBModuleProcState.hpp>
 
-void
+int
 FFGLFOProcessor::Process(FBModuleProcState const& state)
 {
   auto* procState = state.ProcState<FFProcState>();
@@ -16,25 +16,31 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
   auto const& rate = procParams.acc.rate[0].Global();
 
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
+  auto const& rateParamLinear = topo.params[(int)FFGLFOParam::Rate].linear;
   bool on = topo.params[(int)FFGLFOParam::On].boolean.NormalizedToPlain(procParams.block.on[0].Value());
 
   if (!on)
   {
     output.Fill(0.0f);
-    return;
+    return 0;
   }
-    
+
+  int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
   output.Transform([&](int v) { 
-    auto plainRate = topo.params[(int)FFGLFOParam::Rate].linear.NormalizedToPlain(rate.CV(v));
-    auto phase = _phase.Next(plainRate / state.sampleRate); 
+    auto plainRate = rateParamLinear.NormalizedToPlain(rate.CV(v));
+    auto phase = _phase.Next(plainRate / state.sampleRate);
     return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
 
   auto* exchangeState = state.ExchangeState<FFExchangeState>();
   if (exchangeState == nullptr)
-    return;
-  auto& exchangeDSP = exchangeState->global.gLFO[state.moduleSlot];
-  exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = 
+    return FBFixedBlockSamples;
+
   auto& exchangeParams = exchangeState->param.global.gLFO[state.moduleSlot];
-  exchangeParams.acc.rate[0] = rate.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.rate[0] = rate.CV().data[FBFixedBlockSamples - 1];  
+  auto& exchangeDSP = exchangeState->global.gLFO[state.moduleSlot];
+  float lastRate = rate.CV().data[FBFixedBlockSamples - 1];
+  exchangeDSP.active = true;
+  exchangeDSP.cyclePositionSamples = _phase.PositionSamplesUpToFirstCycle();
+  exchangeDSP.cycleLengthSamples = rateParamLinear.NormalizedFreqToSamples(lastRate, state.sampleRate);
+  return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 }

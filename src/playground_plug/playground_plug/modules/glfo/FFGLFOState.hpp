@@ -12,8 +12,8 @@ struct FBStaticModule;
 class FFGLFOExchangeState final
 {
   bool active = {};
-  int lengthSamples = {};
-  int positionSamples = {};
+  int cycleLengthSamples = {};
+  int cyclePositionSamples = {};
 public:
   friend class FFGLFOProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGLFOTopo();

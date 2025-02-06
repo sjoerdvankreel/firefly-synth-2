@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <numbers>
+#include <cassert>
 
 inline constexpr float FBPi = std::numbers::pi_v<float>;
 inline constexpr float FBTwoPi = 2.0f * FBPi;
@@ -24,6 +25,13 @@ inline int
 FBTimeToSamples(float time, float sampleRate)
 {
   return (int)std::round(time * sampleRate);
+}
+
+inline int
+FBFreqToSamples(float freq, float sampleRate)
+{
+  assert(freq > 0.0f);
+  return (int)std::round(1.0f / freq * sampleRate);
 }
 
 inline FBFloatVector
