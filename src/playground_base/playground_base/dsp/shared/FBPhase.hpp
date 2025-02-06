@@ -7,9 +7,11 @@ class alignas(sizeof(FBFloatVector)) FBPhase final
 {
   float _x = 0.0f;
   bool _cycledOnce = false;
+  int _positionSamplesCurrentCycle = 0;
   int _positionSamplesUpToFirstCycle = 0;
 public:
   FBFloatVector Next(FBFloatVector incr);
+  int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
   int PositionSamplesUpToFirstCycle() const { return _positionSamplesUpToFirstCycle; }
 };
 
@@ -24,9 +26,16 @@ FBPhase::Next(FBFloatVector incr)
     _x += scratch[i];
     float f = std::floor(_x);
     if (f != 0.0f)
+    {
       _cycledOnce = true;
-    else if(!_cycledOnce)
-      _positionSamplesUpToFirstCycle++;
+      _positionSamplesCurrentCycle = 0;
+    }
+    else
+    {
+      _positionSamplesCurrentCycle++;
+      if (!_cycledOnce)
+        _positionSamplesUpToFirstCycle++;
+    }
     _x -= f;
     scratch[i] = y;
   }
