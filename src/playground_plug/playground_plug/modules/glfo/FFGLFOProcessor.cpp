@@ -33,7 +33,7 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
 
   auto* exchangeState = state.ExchangeState<FFExchangeState>();
   if (exchangeState == nullptr)
-    return FBFixedBlockSamples;
+    return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 
   auto& exchangeParams = exchangeState->param.global.gLFO[state.moduleSlot];
   exchangeParams.acc.rate[0] = rate.CV().data[FBFixedBlockSamples - 1];  
@@ -42,5 +42,5 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
   exchangeDSP.active = true;
   exchangeDSP.cyclePositionSamples = _phase.PositionSamplesUpToFirstCycle();
   exchangeDSP.cycleLengthSamples = rateParamLinear.NormalizedFreqToSamples(lastRate, state.sampleRate);
-  return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
+  return FBFixedBlockSamples;
 }

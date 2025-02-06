@@ -37,10 +37,12 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 
   if (!gLFOExchange.active)
     return;
+  assert(gLFOExchange.cyclePositionSamples < gLFOExchange.cycleLengthSamples);
   float positionNormalized = gLFOExchange.cyclePositionSamples / (float)gLFOExchange.cycleLengthSamples;
   if (renderState->GlobalModuleExchangeStateEqualsPrimary((int)FFModuleType::GLFO, moduleSlot))
   {
     graphData->primaryMarkers.push_back((int)(positionNormalized * graphData->primarySeries.size()));
+    assert(graphData->primaryMarkers[graphData->primaryMarkers.size() - 1] < graphData->primarySeries.size());
     return;
   }
 
@@ -48,6 +50,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   FFRenderModuleGraph<true>(renderData, secondary.points);
   maxPoints = std::max(maxPoints, (int)secondary.points.size());
   secondary.marker = (int)(positionNormalized * secondary.points.size());
+  assert(secondary.marker < secondary.points.size());
 
   int zeroFillCount = maxPoints - (int)graphData->primarySeries.size();
   graphData->primarySeries.insert(graphData->primarySeries.end(), zeroFillCount, 0.0f);

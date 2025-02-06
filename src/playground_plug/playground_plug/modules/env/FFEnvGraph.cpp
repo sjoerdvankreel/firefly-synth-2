@@ -44,12 +44,14 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     if (renderState->VoiceModuleExchangeStateEqualsPrimary(v, (int)FFModuleType::Env, moduleSlot))
     {
       graphData->primaryMarkers.push_back((int)(positionNormalized * graphData->primarySeries.size()));
+      assert(graphData->primaryMarkers[graphData->primaryMarkers.size() - 1] < graphData->primarySeries.size());
       continue;
     }
     auto& secondary = graphData->secondarySeries.emplace_back();
     FFRenderModuleGraph<false>(renderData, secondary.points);
     maxPoints = std::max(maxPoints, (int)secondary.points.size());
     secondary.marker = (int)(positionNormalized * secondary.points.size());
+    assert(secondary.marker < secondary.points.size());
   }
 
   int zeroFillCount = maxPoints - (int)graphData->primarySeries.size();
