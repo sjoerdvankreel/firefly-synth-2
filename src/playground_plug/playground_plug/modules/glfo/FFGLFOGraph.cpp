@@ -46,6 +46,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
     return;
   }
 
+  renderState->PrepareForRenderExchange();
   auto& secondary = graphData->secondarySeries.emplace_back();
   FFRenderModuleGraph<true>(renderData, secondary.points);
   maxPoints = std::max(maxPoints, (int)secondary.points.size());

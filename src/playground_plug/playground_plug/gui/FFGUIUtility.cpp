@@ -30,7 +30,9 @@ FFRenderModuleGraph(
   int moduleSlot = moduleState.moduleSlot;
   auto* procState = moduleState.template ProcState<FFProcState>();
 
-  if constexpr(!Global)
+  if constexpr (Global)
+    renderData.processor.Reset(moduleState);
+  else
     renderData.processor.BeginVoice(moduleState);
   while (processed == FBFixedBlockSamples)
   {

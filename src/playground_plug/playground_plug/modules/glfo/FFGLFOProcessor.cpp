@@ -7,6 +7,12 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/FBModuleProcState.hpp>
 
+void 
+FFGLFOProcessor::Reset(FBModuleProcState const& state)
+{
+  _phase = {};
+}
+
 int
 FFGLFOProcessor::Process(FBModuleProcState const& state)
 {
