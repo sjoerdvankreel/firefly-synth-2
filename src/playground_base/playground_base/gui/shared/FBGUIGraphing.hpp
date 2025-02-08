@@ -1,6 +1,9 @@
 #pragma once
 
 #include <playground_base/base/shared/FBFormat.hpp>
+#include <playground_base/base/state/main/FBGraphRenderState.hpp>
+#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
+#include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <vector>
 #include <cassert>

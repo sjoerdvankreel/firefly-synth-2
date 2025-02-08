@@ -1,14 +1,7 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGraph.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
-
 #include <playground_base/gui/shared/FBGUIGraphing.hpp>
-#include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
-
-#include <playground_base/base/state/proc/FBModuleProcState.hpp>
-#include <playground_base/base/state/main/FBGraphRenderState.hpp>
-#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
-#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <algorithm>
 
