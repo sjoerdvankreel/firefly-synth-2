@@ -4,7 +4,7 @@
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/exchange/FBParamExchangeState.hpp>
-#include <playground_base/base/state/exchange/FBActiveExchangeState.hpp>
+#include <playground_base/base/state/exchange/FBModuleExchangeState.hpp>
 #include <playground_base/base/state/exchange/FBParamActiveExchangeState.hpp>
 
 #include <array>
@@ -20,12 +20,12 @@ class FBExchangeStateContainer final
   void* _rawState;
   void (*_freeRawState)(void*);
   std::vector<FBParamExchangeState> _params = {};
-  std::vector<FBActiveExchangeState> _active = {};
-  std::array<FBVoiceInfo, FBMaxVoices>* _voiceState = {};
+  std::vector<FBModuleExchangeState> _modules = {};
+  std::array<FBVoiceInfo, FBMaxVoices>* _voices = {};
 
   std::vector<FBParamExchangeState>& Params() { return _params; }
-  std::vector<FBActiveExchangeState>& Active() { return _active; }
-  std::array<FBVoiceInfo, FBMaxVoices>& VoiceState() { return *_voiceState; }
+  std::vector<FBModuleExchangeState>& Modules() { return _modules; }
+  std::array<FBVoiceInfo, FBMaxVoices>& Voices() { return *_voices; }
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBExchangeStateContainer);
@@ -35,7 +35,7 @@ public:
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
   std::vector<FBParamExchangeState> const& Params() const { return _params; }
-  std::vector<FBActiveExchangeState> const& Active() const { return _active; }
-  std::array<FBVoiceInfo, FBMaxVoices> const& VoiceState() const { return *_voiceState; }
+  std::vector<FBModuleExchangeState> const& Modules() const { return _modules; }
+  std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return *_voices; }
   FBParamActiveExchangeState GetParamActiveState(FBRuntimeParam const* param) const;
 };

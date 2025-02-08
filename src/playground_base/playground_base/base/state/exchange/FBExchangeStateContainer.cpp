@@ -1,5 +1,6 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
 
 #include <set>
 #include <cassert>
@@ -9,14 +10,14 @@ FBExchangeStateContainer(FBRuntimeTopo const& topo):
 _rawState(topo.static_.state.allocRawExchangeState()),
 _freeRawState(topo.static_.state.freeRawExchangeState)
 {
-  _voiceState = topo.static_.state.voiceStateExchangeAddr(_rawState);
+  _voices = topo.static_.state.voiceStateExchangeAddr(_rawState);
 
   for (int m = 0; m < topo.modules.size(); m++)
   {
     auto const& indices = topo.modules[m].topoIndices;
     auto const& static_ = topo.static_.modules[indices.index];
     if(!static_.voice)
-      _active.push_back(FBActiveExchangeState(
+      _modules.push_back(FBModuleExchangeState(
         static_.addrSelectors.globalExchangeActive(
           indices.slot, _rawState)));
     else
@@ -25,7 +26,7 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
       for (int v = 0; v < FBMaxVoices; v++)
         voiceActive[v] = static_.addrSelectors.voiceExchangeActive(
           v, indices.slot, _rawState);
-      _active.push_back(FBActiveExchangeState(voiceActive));
+      _modules.push_back(FBModuleExchangeState(voiceActive));
     }
   }
 

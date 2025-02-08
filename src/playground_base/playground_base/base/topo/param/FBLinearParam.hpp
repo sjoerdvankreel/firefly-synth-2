@@ -2,7 +2,7 @@
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/shared/FBVector.hpp>
-#include <playground_base/base/topo/param/FBTextDisplay.hpp>
+#include <playground_base/base/topo/static/FBTextDisplay.hpp>
 
 #include <string>
 #include <optional>
