@@ -1,11 +1,11 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBAccParamState.hpp>
-#include <playground_base/base/state/FBVoiceAccParamState.hpp>
-#include <playground_base/base/state/FBGlobalAccParamState.hpp>
-#include <playground_base/base/state/FBVoiceBlockParamState.hpp>
-#include <playground_base/base/state/FBGlobalBlockParamState.hpp>
+#include <playground_base/base/state/proc/FBAccParamState.hpp>
+#include <playground_base/base/state/proc/FBVoiceAccParamState.hpp>
+#include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>
+#include <playground_base/base/state/proc/FBVoiceBlockParamState.hpp>
+#include <playground_base/base/state/proc/FBGlobalBlockParamState.hpp>
 
 #include <cassert>
 

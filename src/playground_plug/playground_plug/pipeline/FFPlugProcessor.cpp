@@ -3,8 +3,8 @@
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBProcStateContainer.hpp>
 #include <playground_base/base/state/FBExchangeStateContainer.hpp>
+#include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>

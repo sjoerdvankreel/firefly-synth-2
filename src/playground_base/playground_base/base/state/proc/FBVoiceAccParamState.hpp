@@ -2,7 +2,7 @@
 
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBAccParamState.hpp>
+#include <playground_base/base/state/proc/FBAccParamState.hpp>
 
 class alignas(sizeof(FBFloatVector)) FBVoiceAccParamState final
 {
