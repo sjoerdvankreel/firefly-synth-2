@@ -3,9 +3,9 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBParamExchangeState.hpp>
-#include <playground_base/base/state/FBActiveExchangeState.hpp>
-#include <playground_base/base/state/FBParamActiveExchangeState.hpp>
+#include <playground_base/base/state/exchange/FBParamExchangeState.hpp>
+#include <playground_base/base/state/exchange/FBActiveExchangeState.hpp>
+#include <playground_base/base/state/exchange/FBParamActiveExchangeState.hpp>
 
 #include <array>
 #include <vector>
