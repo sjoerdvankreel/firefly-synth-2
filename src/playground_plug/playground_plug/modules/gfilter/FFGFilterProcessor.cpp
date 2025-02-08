@@ -8,7 +8,7 @@
 #include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 void
-FFGFilterProcessor::Process(FBModuleProcState const& state)
+FFGFilterProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.global.gFilter[state.moduleSlot];

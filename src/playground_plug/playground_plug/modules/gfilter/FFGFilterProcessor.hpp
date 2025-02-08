@@ -13,6 +13,6 @@ class FFGFilterProcessor final
   std::array<double, 2> _ic2eq = {};
 
 public:
+  void Process(FBModuleProcState& state);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterProcessor);
-  void Process(FBModuleProcState const& state);
 };

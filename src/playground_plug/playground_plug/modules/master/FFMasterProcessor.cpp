@@ -9,7 +9,7 @@
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 
 void
-FFMasterProcessor::Process(FBModuleProcState const& state)
+FFMasterProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   auto& output = procState->dsp.global.master.output;

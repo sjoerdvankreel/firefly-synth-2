@@ -49,7 +49,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
 }
 
 int 
-FFEnvProcessor::Process(FBModuleProcState const& state)
+FFEnvProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();

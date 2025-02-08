@@ -64,7 +64,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
 }
 
 void
-FFOsciProcessor::Process(FBModuleProcState const& state)
+FFOsciProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();

@@ -52,6 +52,18 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
   _moduleState->outputParamsNormalized = nullptr;
 }
 
+FBModuleProcState* 
+FBGraphRenderState::ModuleProcState()
+{
+  return _moduleState.get();
+}
+
+FBScalarStateContainer const*
+FBGraphRenderState::ScalarContainer() const
+{
+  return _scalarState.get();
+}
+
 FBExchangeStateContainer const*
 FBGraphRenderState::ExchangeContainer() const
 {

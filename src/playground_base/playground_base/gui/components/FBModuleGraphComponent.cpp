@@ -66,13 +66,13 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 {
   if (moduleIndex == -1)
     return false;
-  auto& moduleState = _data.renderState->ModuleState();
-  auto const& topoIndices = moduleState.topo->modules[moduleIndex].topoIndices;
-  auto const& staticModule = moduleState.topo->static_.modules[topoIndices.index];
+  auto moduleProcState = _data.renderState->ModuleProcState();
+  auto const& topoIndices = moduleProcState->topo->modules[moduleIndex].topoIndices;
+  auto const& staticModule = moduleProcState->topo->static_.modules[topoIndices.index];
   if (staticModule.renderGraph == nullptr)
     return false;
   _renderer = staticModule.renderGraph;
-  moduleState.moduleSlot = topoIndices.slot;
+  moduleProcState->moduleSlot = topoIndices.slot;
   return true;
 }
 
@@ -97,7 +97,7 @@ FBModuleGraphComponent::paint(Graphics& g)
 
   g.fillAll(Colours::black);
   g.setColour(Colours::darkgrey);
-  auto const* runtimeTopo = _data.renderState->ModuleState().topo;
+  auto const* runtimeTopo = _data.renderState->ModuleProcState()->topo;
   std::string moduleName = runtimeTopo->modules[_tweakedModuleByUI].name;
   g.drawText(moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
   for (int i = 0; i < _data.secondarySeries.size(); i++)

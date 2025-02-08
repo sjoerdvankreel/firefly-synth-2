@@ -31,13 +31,15 @@ public:
   FBProcStateContainer(FBRuntimeTopo const& topo);
   ~FBProcStateContainer() { _freeRawState(_rawState); }
 
-  void* Raw() { return _rawState; }
-  FBSpecialParams const& Special() const { return _special; }
-  std::vector<FBProcParamState> const& Params() const { return _params; }
-
   void SetSmoothingCoeffs(int sampleCount);
   void InitProcessing(int index, float value);
   void InitProcessing(FBScalarStateContainer const& scalar);
   void InitProcessing(FBExchangeStateContainer const& exchange);
-  template <class T> T const* As() { return static_cast<T const*>(Raw()); }
+
+  void* Raw() { return _rawState; }
+  void const* Raw() const { return _rawState; }
+  FBSpecialParams const& Special() const { return _special; }
+  std::vector<FBProcParamState> const& Params() const { return _params; }
+  template <class T> T* As() { return static_cast<T*>(Raw()); }
+  template <class T> T const* As() const { return static_cast<T const*>(Raw()); }
 };

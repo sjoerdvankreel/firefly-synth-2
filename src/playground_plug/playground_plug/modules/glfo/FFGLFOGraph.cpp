@@ -2,12 +2,14 @@
 #include <playground_plug/modules/glfo/FFGLFOGraph.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
+#include <playground_base/gui/shared/FBGUIGraphing.hpp>
+#include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
+
 #include <playground_base/base/shared/FBFormat.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
+#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
-#include <playground_base/gui/shared/FBGUIGraphing.hpp>
-#include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <algorithm>
 
@@ -18,16 +20,18 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 
   FBModuleGraphRenderData<FFGLFOProcessor> renderData;
   auto renderState = graphData->renderState;
-  auto& moduleState = renderState->ModuleState();
+  auto moduleProcState = renderState->ModuleProcState();
+  auto scalarState = renderState->ScalarContainer()->Raw();
   auto exchangeState = renderState->ExchangeContainer()->As<FFExchangeState>();
-  auto const& moduleExchange = exchangeState->global.gLFO[moduleState.moduleSlot];
+  auto const& moduleExchange = exchangeState->global.gLFO[moduleProcState->moduleSlot];
 
-  float dspSampleCount = renderData.processor.StaticLengthSamples()
   float guiSampleCount = (float)graphData->pixelWidth;
-  float dspSampleCount = (float)moduleExchange.lengthSamples;
-  float dspSampleCount = (float)moduleExchange.lengthSamples;
+  float dspSampleCount = renderData.processor.StaticLengthSamples(
+    scalarState, moduleProcState->moduleSlot, exchangeState->sampleRate);
   float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
-  moduleState.sampleRate = dspSampleRate / (dspSampleCount / guiSampleCount);
+  if (moduleExchange.active)
+    dspSampleCount = (float)moduleExchange.lengthSamples;
+  moduleProcState->sampleRate = dspSampleRate / (dspSampleCount / guiSampleCount);
 
   renderData.graphData = graphData;
   renderData.globalOutputSelector = [](void const* procState, int slot) { 
@@ -41,7 +45,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   
   assert(moduleExchange.positionSamples < moduleExchange.lengthSamples);
   float positionNormalized = moduleExchange.positionSamples / (float)moduleExchange.lengthSamples;
-  if (renderState->GlobalModuleExchangeStateEqualsPrimary((int)FFModuleType::GLFO, moduleState.moduleSlot))
+  if (renderState->GlobalModuleExchangeStateEqualsPrimary((int)FFModuleType::GLFO, moduleProcState->moduleSlot))
   {
     graphData->primaryMarkers.push_back((int)(positionNormalized * graphData->primarySeries.size()));
     assert(graphData->primaryMarkers[graphData->primaryMarkers.size() - 1] < graphData->primarySeries.size());
@@ -54,6 +58,6 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   secondary.marker = (int)(positionNormalized * secondary.points.size());
   assert(secondary.marker < secondary.points.size());
 
-  float durationSeconds = renderData.graphData->primarySeries.size() / moduleState.sampleRate;
+  float durationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->sampleRate;
   renderData.graphData->text = FBFormatFloat(durationSeconds, FBDefaultDisplayPrecision) + " Sec";
 }

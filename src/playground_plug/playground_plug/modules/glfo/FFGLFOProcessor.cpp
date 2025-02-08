@@ -23,7 +23,7 @@ FFGLFOProcessor::StaticLengthSamples(
 }
 
 int
-FFGLFOProcessor::Process(FBModuleProcState const& state)
+FFGLFOProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   auto& output = procState->dsp.global.gLFO[state.moduleSlot].output;

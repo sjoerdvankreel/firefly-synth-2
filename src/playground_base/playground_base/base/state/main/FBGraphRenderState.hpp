@@ -40,10 +40,11 @@ public:
   void PrepareForRenderPrimaryVoice();
   void PrepareForRenderExchangeVoice(int voice);
 
-  void PrimaryParamChanged(int index, float normalized);
+  FBModuleProcState* ModuleProcState();
+  FBScalarStateContainer const* ScalarContainer() const;
   FBExchangeStateContainer const* ExchangeContainer() const;
 
-  FBModuleProcState& ModuleState() { return *_moduleState; }
+  void PrimaryParamChanged(int index, float normalized);
   bool GlobalModuleExchangeStateEqualsPrimary(int moduleIndex, int moduleSlot) const;
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
 };

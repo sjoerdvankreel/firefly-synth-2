@@ -26,7 +26,7 @@ class FFEnvProcessor final
 {
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
-  int Process(FBModuleProcState const& state);
+  int Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState const& state);
 
 private:

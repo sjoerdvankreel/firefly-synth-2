@@ -18,9 +18,9 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 
   float const sampleRate = 100.0f;
   auto renderState = graphData->renderState;
-  auto& moduleState = renderState->ModuleState();
-  moduleState.sampleRate = sampleRate;
-  int moduleSlot = moduleState.moduleSlot;
+  auto moduleProcState = renderState->ModuleProcState();
+  moduleProcState->sampleRate = sampleRate;
+  int moduleSlot = moduleProcState->moduleSlot;
 
   FBModuleGraphRenderData<FFEnvProcessor> renderData;
   renderData.graphData = graphData;
