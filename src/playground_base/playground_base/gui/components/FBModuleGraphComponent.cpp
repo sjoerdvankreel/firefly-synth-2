@@ -27,33 +27,36 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 
 juce::Point<float>
 FBModuleGraphComponent::PointLocation(
-  std::vector<float> const& points, int point) const
+  std::vector<float> const& points, 
+  int maxPoints, int point) const
 {
-  float x = (float)point / points.size() * getWidth();
+  float x = (float)point / maxPoints * getWidth();
   float y = (1.0f - points[point]) * getHeight();
   return { x, y };
 }
 
 void 
 FBModuleGraphComponent::PaintMarker(
-  Graphics& g, std::vector<float> const& points, int marker)
+  Graphics& g, std::vector<float> const& points, 
+  int maxPoints, int marker)
 {
   g.setColour(Colours::white);
-  auto markerXY = PointLocation(points, marker);
+  auto markerXY = PointLocation(points, maxPoints, marker);
   g.fillEllipse(markerXY.getX() - 4.0f, markerXY.getY() - 4.0f, 8.0f, 8.0f);
 }
 
 void
 FBModuleGraphComponent::PaintSeries(
-  Graphics& g, Colour color, std::vector<float> const& points)
+  Graphics& g, Colour color, 
+  std::vector<float> const& points, int maxPoints)
 {
   if (points.empty())
     return;
 
   Path path;
-  path.startNewSubPath(PointLocation(points, 0));
+  path.startNewSubPath(PointLocation(points, maxPoints, 0));
   for (int i = 1; i < points.size(); i++)
-    path.lineTo(PointLocation(points, i));
+    path.lineTo(PointLocation(points, maxPoints, i));
   g.setColour(color);
   g.strokePath(path, PathStrokeType(1.0f));
 }
@@ -87,6 +90,10 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data.secondarySeries.clear();
   _renderer(&_data);
 
+  int maxPoints = _data.primarySeries.size();
+  for (int i = 0; i < _data.secondarySeries.size(); i++)
+    maxPoints = std::max(maxPoints, (int)_data.secondarySeries[i].points.size());
+
   g.fillAll(Colours::black);
   g.setColour(Colours::darkgrey);
   auto const* runtimeTopo = _data.renderState->ModuleState().topo;
@@ -96,12 +103,12 @@ FBModuleGraphComponent::paint(Graphics& g)
   {
     int marker = _data.secondarySeries[i].marker;
     auto const& points = _data.secondarySeries[i].points;
-    PaintSeries(g, Colours::grey, points);
+    PaintSeries(g, Colours::grey, points, maxPoints);
     if (marker != -1)
-      PaintMarker(g, points, marker);
+      PaintMarker(g, points, maxPoints, marker);
   }
   
-  PaintSeries(g, Colours::white, _data.primarySeries);
+  PaintSeries(g, Colours::white, _data.primarySeries, maxPoints);
   for (int i = 0; i < _data.primaryMarkers.size(); i++)
-    PaintMarker(g, _data.primarySeries, _data.primaryMarkers[i]);
+    PaintMarker(g, _data.primarySeries, maxPoints, _data.primaryMarkers[i]);
 }

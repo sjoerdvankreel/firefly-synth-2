@@ -30,7 +30,6 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   renderState->PrepareForRenderPrimary();
   renderState->PrepareForRenderPrimaryVoice();
   FFRenderModuleGraph<false>(renderData, graphData->primarySeries);
-  int maxPoints = (int)graphData->primarySeries.size();
 
   renderState->PrepareForRenderExchange();
   auto exchangeState = renderState->ExchangeState<FFExchangeState>();
@@ -49,18 +48,8 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     }
     auto& secondary = graphData->secondarySeries.emplace_back();
     FFRenderModuleGraph<false>(renderData, secondary.points);
-    maxPoints = std::max(maxPoints, (int)secondary.points.size());
     secondary.marker = (int)(positionNormalized * secondary.points.size());
     assert(secondary.marker < secondary.points.size());
-  }
-
-  int zeroFillCount = maxPoints - (int)graphData->primarySeries.size();
-  graphData->primarySeries.insert(graphData->primarySeries.end(), zeroFillCount, 0.0f);
-  for (int i = 0; i < graphData->secondarySeries.size(); i++)
-  {
-    auto& secondaryPoints = graphData->secondarySeries[i].points;
-    zeroFillCount = maxPoints - (int)secondaryPoints.size();
-    secondaryPoints.insert(secondaryPoints.end(), zeroFillCount, 0.0f);
   }
 
   float durationSections = renderData.graphData->primarySeries.size() / sampleRate;

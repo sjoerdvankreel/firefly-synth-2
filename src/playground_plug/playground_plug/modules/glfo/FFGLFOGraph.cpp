@@ -17,7 +17,6 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   // todo probably need to share some of this
 
   // TODO this is bogus, we should strive for 1 sample per pixel
-  // TODO also, dont zero-extend the series. have the graph component handle it
   float const sampleRate = 10000.0f;
   auto renderState = graphData->renderState;
   auto& moduleState = renderState->ModuleState();
@@ -31,7 +30,6 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 
   renderState->PrepareForRenderPrimary();
   FFRenderModuleGraph<true>(renderData, graphData->primarySeries);
-  int maxPoints = (int)graphData->primarySeries.size();
 
   renderState->PrepareForRenderExchange();
   auto exchangeState = renderState->ExchangeState<FFExchangeState>();
@@ -51,18 +49,8 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   renderState->PrepareForRenderExchange();
   auto& secondary = graphData->secondarySeries.emplace_back();
   FFRenderModuleGraph<true>(renderData, secondary.points);
-  maxPoints = std::max(maxPoints, (int)secondary.points.size());
   secondary.marker = (int)(positionNormalized * secondary.points.size());
   assert(secondary.marker < secondary.points.size());
-
-  int zeroFillCount = maxPoints - (int)graphData->primarySeries.size();
-  graphData->primarySeries.insert(graphData->primarySeries.end(), zeroFillCount, 0.0f);
-  for (int i = 0; i < graphData->secondarySeries.size(); i++)
-  {
-    auto& secondaryPoints = graphData->secondarySeries[i].points;
-    zeroFillCount = maxPoints - (int)secondaryPoints.size();
-    secondaryPoints.insert(secondaryPoints.end(), zeroFillCount, 0.0f);
-  }
 
   float durationSections = renderData.graphData->primarySeries.size() / sampleRate;
   renderData.graphData->text = FBFormatFloat(durationSections, FBDefaultDisplayPrecision) + " Sec";
