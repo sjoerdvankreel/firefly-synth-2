@@ -26,12 +26,14 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   auto const& moduleExchange = exchangeState->global.gLFO[moduleProcState->moduleSlot];
 
   float guiSampleCount = (float)graphData->pixelWidth;
-  float dspSampleCount = renderData.processor.StaticLengthSamples(
+  float dspSampleCount = (float)renderData.processor.StaticLengthSamples(
     scalarState, moduleProcState->moduleSlot, exchangeState->sampleRate);
   float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
   if (moduleExchange.active)
     dspSampleCount = (float)moduleExchange.lengthSamples;
   moduleProcState->sampleRate = dspSampleRate / (dspSampleCount / guiSampleCount);
+
+  
 
   renderData.graphData = graphData;
   renderData.globalOutputSelector = [](void const* procState, int slot) { 
@@ -39,6 +41,14 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 
   renderState->PrepareForRenderPrimary();
   FBRenderModuleGraphSeries<true>(renderData, graphData->primarySeries);
+  float durationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->sampleRate;
+
+  if (!moduleExchange.active)
+  {
+    graphData->text = "OFF";
+    return;
+  }
+  renderData.graphData->text = FBFormatFloat(durationSeconds, FBDefaultDisplayPrecision) + " Sec";
 
   renderState->PrepareForRenderExchange();
 
@@ -58,6 +68,5 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   secondary.marker = (int)(positionNormalized * secondary.points.size());
   assert(secondary.marker < secondary.points.size());
 
-  float durationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->sampleRate;
-  renderData.graphData->text = FBFormatFloat(durationSeconds, FBDefaultDisplayPrecision) + " Sec";
+  
 }
