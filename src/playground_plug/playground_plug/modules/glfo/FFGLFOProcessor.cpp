@@ -13,15 +13,6 @@ FFGLFOProcessor::Reset(FBModuleProcState const& state)
   _phase = {};
 }
 
-int 
-FFGLFOProcessor::StaticLengthSamples(
-  void const* scalarState, int moduleSlot, float sampleRate) const
-{
-  auto state = static_cast<FFScalarState const*>(scalarState);
-  float rate = state->param.global.gLFO[moduleSlot].acc.rate[0];
-  return FBFreqToSamples(rate, sampleRate);
-}
-
 int
 FFGLFOProcessor::Process(FBModuleProcState& state)
 {
