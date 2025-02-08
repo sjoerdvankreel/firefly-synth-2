@@ -7,8 +7,8 @@
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
-#include <playground_base/base/topo/FBStaticTopo.hpp>
-#include <playground_base/base/topo/FBStaticModule.hpp>
+#include <playground_base/base/topo/static/FBStaticTopo.hpp>
+#include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 static FBSpecialParam
 MakeSpecialParam(

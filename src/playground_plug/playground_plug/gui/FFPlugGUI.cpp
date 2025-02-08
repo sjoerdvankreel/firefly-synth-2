@@ -5,7 +5,7 @@
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>

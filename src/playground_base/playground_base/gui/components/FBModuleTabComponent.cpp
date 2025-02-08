@@ -1,6 +1,6 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
 
 #include <string>
