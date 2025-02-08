@@ -1,6 +1,6 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/topo/FBTopoDetail.hpp>
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/state/main/FBGUIState.hpp>
