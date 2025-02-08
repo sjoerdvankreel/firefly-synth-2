@@ -88,6 +88,7 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data.primarySeries.clear();
   _data.primaryMarkers.clear();
   _data.secondarySeries.clear();
+  _data.pixelWidth = getWidth();
   _renderer(&_data);
 
   int maxPoints = (int)_data.primarySeries.size();

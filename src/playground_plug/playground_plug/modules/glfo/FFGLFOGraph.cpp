@@ -16,12 +16,17 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 {
   // todo probably need to share some of this
 
-  // TODO this is bogus, we should strive for 1 sample per pixel
-  float const sampleRate = 10000.0f;
   auto renderState = graphData->renderState;
   auto& moduleState = renderState->ModuleState();
-  moduleState.sampleRate = sampleRate;
-  int moduleSlot = moduleState.moduleSlot;
+  auto exchangeState = renderState->ExchangeState<FFExchangeState>();
+  auto const& moduleExchange = exchangeState->global.gLFO[moduleState.moduleSlot];
+  if (!moduleExchange.active)
+    return;
+
+  float guiSampleCount = (float)graphData->pixelWidth;
+  float dspSampleCount = (float)moduleExchange.lengthSamples;
+  float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
+  moduleState.sampleRate = dspSampleRate / (dspSampleCount / guiSampleCount);
 
   FBModuleGraphRenderData<FFGLFOProcessor> renderData;
   renderData.graphData = graphData;
@@ -32,14 +37,11 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   FBRenderModuleGraphSeries<true>(renderData, graphData->primarySeries);
 
   renderState->PrepareForRenderExchange();
-  auto exchangeState = renderState->ExchangeState<FFExchangeState>();
-  auto const& gLFOExchange = exchangeState->global.gLFO[moduleSlot];
 
-  if (!gLFOExchange.active)
-    return;
-  assert(gLFOExchange.positionSamples < gLFOExchange.lengthSamples);
-  float positionNormalized = gLFOExchange.positionSamples / (float)gLFOExchange.lengthSamples;
-  if (renderState->GlobalModuleExchangeStateEqualsPrimary((int)FFModuleType::GLFO, moduleSlot))
+  
+  assert(moduleExchange.positionSamples < moduleExchange.lengthSamples);
+  float positionNormalized = moduleExchange.positionSamples / (float)moduleExchange.lengthSamples;
+  if (renderState->GlobalModuleExchangeStateEqualsPrimary((int)FFModuleType::GLFO, moduleState.moduleSlot))
   {
     graphData->primaryMarkers.push_back((int)(positionNormalized * graphData->primarySeries.size()));
     assert(graphData->primaryMarkers[graphData->primaryMarkers.size() - 1] < graphData->primarySeries.size());
@@ -52,6 +54,6 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   secondary.marker = (int)(positionNormalized * secondary.points.size());
   assert(secondary.marker < secondary.points.size());
 
-  float durationSections = renderData.graphData->primarySeries.size() / sampleRate;
-  renderData.graphData->text = FBFormatFloat(durationSections, FBDefaultDisplayPrecision) + " Sec";
+  float durationSeconds = renderData.graphData->primarySeries.size() / moduleState.sampleRate;
+  renderData.graphData->text = FBFormatFloat(durationSeconds, FBDefaultDisplayPrecision) + " Sec";
 }
