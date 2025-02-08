@@ -6,6 +6,7 @@
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBModuleExchangeState.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
 
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
