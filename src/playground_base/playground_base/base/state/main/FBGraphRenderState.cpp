@@ -3,10 +3,10 @@
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBGraphRenderState.hpp>
-#include <playground_base/base/state/FBScalarStateContainer.hpp>
-#include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
+#include <playground_base/base/state/proc/FBProcStateContainer.hpp>
+#include <playground_base/base/state/main/FBGraphRenderState.hpp>
+#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 
 #include <cassert>
 
