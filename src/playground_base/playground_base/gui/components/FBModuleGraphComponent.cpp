@@ -90,7 +90,7 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data.secondarySeries.clear();
   _renderer(&_data);
 
-  int maxPoints = _data.primarySeries.size();
+  int maxPoints = (int)_data.primarySeries.size();
   for (int i = 0; i < _data.secondarySeries.size(); i++)
     maxPoints = std::max(maxPoints, (int)_data.secondarySeries[i].points.size());
 

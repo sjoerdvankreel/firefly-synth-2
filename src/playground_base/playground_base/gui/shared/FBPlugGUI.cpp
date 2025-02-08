@@ -5,7 +5,7 @@
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBExchangeStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <cassert>
 

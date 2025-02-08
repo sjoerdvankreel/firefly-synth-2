@@ -3,7 +3,7 @@
 #include <playground_base/gui/glue/FBHostContextMenu.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/base/topo/FBRuntimeParam.hpp>
-#include <playground_base/base/state/FBExchangeStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <cassert>
 
