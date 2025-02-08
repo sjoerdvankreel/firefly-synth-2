@@ -10,7 +10,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 {
   FBModuleGraphRenderData<FFGLFOProcessor> renderData = {};
   renderData.graphData = graphData;
-  renderData.moduleType = (int)FFModuleType::GLFO;
+  renderData.staticModuleIndex = (int)FFModuleType::GLFO;
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
   renderData.globalOutputSelector = [](void const* procState, int slot) {

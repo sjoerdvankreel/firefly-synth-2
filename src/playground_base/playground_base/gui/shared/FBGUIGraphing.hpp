@@ -29,8 +29,8 @@ FBModuleGraphVoiceExchangeSelector;
 template <class Processor>
 struct FBModuleGraphRenderData final
 {
-  int moduleType = -1;
   Processor processor = {};
+  int staticModuleIndex = -1;
   FBModuleGraphComponentData* graphData = {};
   FBModuleGraphVoiceOutputSelector voiceOutputSelector = {};
   FBModuleGraphGlobalOutputSelector globalOutputSelector = {};
@@ -76,51 +76,82 @@ template <bool Global, class RenderData>
 void
 FBRenderModuleGraph(RenderData& renderData)
 {
-  assert(renderData.moduleType != -1);
-  assert(renderData.graphData != nullptr);
-  assert((renderData.voiceOutputSelector == nullptr) != (renderData.globalOutputSelector == nullptr));
-  assert((renderData.voiceExchangeSelector == nullptr) != (renderData.globalExchangeSelector == nullptr));
-
   auto graphData = renderData.graphData;
   auto renderState = graphData->renderState;
   auto moduleProcState = renderState->ModuleProcState();
   auto scalarState = renderState->ScalarContainer()->Raw();
   auto exchangeState = renderState->ExchangeContainer()->Raw();
 
-  // TODO voice
+  assert(renderData.graphData != nullptr);
+  assert(renderData.staticModuleIndex != -1);
+  assert((renderData.voiceOutputSelector == nullptr) != (renderData.globalOutputSelector == nullptr));
+  assert((renderData.voiceExchangeSelector == nullptr) != (renderData.globalExchangeSelector == nullptr));
+
+  graphData->text = "OFF";
+  bool anyExchangeActive = false;
+  float maxDspSampleCount = 0.0f;
   FBModuleProcExchangeState const* moduleExchange = nullptr;
   if constexpr (Global)
-    moduleExchange = renderData.globalExchangeSelector(exchangeState, moduleProcState->moduleSlot);
+  {
+    moduleExchange = renderData.globalExchangeSelector(
+      exchangeState, moduleProcState->moduleSlot);
+    anyExchangeActive = moduleExchange->active;
+    maxDspSampleCount = (float)moduleExchange->lengthSamples;
+  }
+  else for (int v = 0; v < FBMaxVoices; v++)
+  {
+    moduleExchange = renderData.voiceExchangeSelector(
+      exchangeState, v, moduleProcState->moduleSlot);
+    anyExchangeActive |= moduleExchange->active;
+    maxDspSampleCount = std::max(maxDspSampleCount, (float)moduleExchange->lengthSamples);
+  }
 
-  // TODO per voice
-  graphData->text = "OFF";
-  if (!moduleExchange->active)
+  if (!anyExchangeActive)
     return;
 
   float guiSampleCount = (float)graphData->pixelWidth;
-  float dspSampleCount = (float)moduleExchange->lengthSamples;
   float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
-  moduleProcState->sampleRate = dspSampleRate / (dspSampleCount / guiSampleCount);  
-
+  moduleProcState->sampleRate = dspSampleRate / (maxDspSampleCount / guiSampleCount);
   renderState->PrepareForRenderPrimary();
+  if constexpr(!Global)
+    renderState->PrepareForRenderPrimaryVoice();
   FBRenderModuleGraphSeries<Global>(renderData, graphData->primarySeries);
-  float durationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->sampleRate;
-  renderData.graphData->text = FBFormatFloat(durationSeconds, FBDefaultDisplayPrecision) + " Sec";
+  float guiDurationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->sampleRate;
+  renderData.graphData->text = FBFormatFloat(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   
-  renderState->PrepareForRenderExchange();  
-  assert(moduleExchange->positionSamples < moduleExchange->lengthSamples);
-  float positionNormalized = moduleExchange->positionSamples / (float)moduleExchange->lengthSamples;
-
-  // TODO voice
-  if (renderState->GlobalModuleExchangeStateEqualsPrimary((int)FFModuleType::GLFO, moduleProcState->moduleSlot))
+  renderState->PrepareForRenderExchange();
+  if constexpr (Global)
   {
-    graphData->primaryMarkers.push_back((int)(positionNormalized * graphData->primarySeries.size()));
-    assert(graphData->primaryMarkers[graphData->primaryMarkers.size() - 1] < graphData->primarySeries.size());
-    return;
+    if (!moduleExchange->ShouldGraph())
+      return;
+    float positionNormalized = moduleExchange->PositionNormalized();
+    if (renderState->GlobalModuleExchangeStateEqualsPrimary(
+      renderData.staticModuleIndex, moduleProcState->moduleSlot))
+    {
+      graphData->primaryMarkers.push_back(
+        (int)(positionNormalized * graphData->primarySeries.size()));
+      return;
+    }
+    auto& secondary = graphData->secondarySeries.emplace_back();
+    FBRenderModuleGraphSeries<Global>(renderData, secondary.points);
+    secondary.marker = (int)(positionNormalized * secondary.points.size());
+  } else for (int v = 0; v < FBMaxVoices; v++)
+  {
+    auto const& moduleExchange = renderData.voiceExchangeSelector(
+      exchangeState, v, moduleProcState->moduleSlot);
+    if (!moduleExchange->ShouldGraph())
+      continue;
+    renderState->PrepareForRenderExchangeVoice(v);
+    float positionNormalized = moduleExchange->PositionNormalized();
+    if (renderState->VoiceModuleExchangeStateEqualsPrimary(
+      v, renderData.staticModuleIndex, moduleProcState->moduleSlot))
+    {
+      graphData->primaryMarkers.push_back(
+        (int)(positionNormalized * graphData->primarySeries.size()));
+      continue;
+    }
+    auto& secondary = graphData->secondarySeries.emplace_back();
+    FBRenderModuleGraphSeries<false>(renderData, secondary.points);
+    secondary.marker = (int)(positionNormalized * secondary.points.size());
   }
-
-  auto& secondary = graphData->secondarySeries.emplace_back();
-  FBRenderModuleGraphSeries<Global>(renderData, secondary.points);
-  secondary.marker = (int)(positionNormalized * secondary.points.size());
-  assert(secondary.marker < secondary.points.size());
 }
