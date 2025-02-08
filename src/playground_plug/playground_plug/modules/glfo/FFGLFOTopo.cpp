@@ -14,7 +14,7 @@ FFMakeGLFOTopo()
   result->renderGraph = FFGLFORenderGraph;
   result->id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
   result->params.resize((int)FFGLFOParam::Count);
-  result->addrSelectors.globalExchangeActive = FFSelectGlobalExchangeActiveAddr([](auto& state) { return &state.gLFO; });
+  result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gLFO; });
   auto selectModule = [](auto& state) { return &state.global.gLFO; };
 
   auto& on = result->params[(int)FFGLFOParam::On];

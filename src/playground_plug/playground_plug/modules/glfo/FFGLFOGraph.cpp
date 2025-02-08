@@ -37,8 +37,8 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 
   if (!gLFOExchange.active)
     return;
-  assert(gLFOExchange.cyclePositionSamples < gLFOExchange.cycleLengthSamples);
-  float positionNormalized = gLFOExchange.cyclePositionSamples / (float)gLFOExchange.cycleLengthSamples;
+  assert(gLFOExchange.positionSamples < gLFOExchange.lengthSamples);
+  float positionNormalized = gLFOExchange.positionSamples / (float)gLFOExchange.lengthSamples;
   if (renderState->GlobalModuleExchangeStateEqualsPrimary((int)FFModuleType::GLFO, moduleSlot))
   {
     graphData->primaryMarkers.push_back((int)(positionNormalized * graphData->primarySeries.size()));

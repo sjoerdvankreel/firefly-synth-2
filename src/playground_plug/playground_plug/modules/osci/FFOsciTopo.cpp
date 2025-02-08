@@ -12,7 +12,7 @@ FFMakeOsciTopo()
   result->slotCount = FFOsciCount;
   result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
   result->params.resize((int)FFOsciParam::Count);
-  result->addrSelectors.voiceExchangeActive = FFSelectVoiceExchangeActiveAddr([](auto& state) { return &state.osci; });
+  result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osci; });
   auto selectModule = [](auto& state) { return &state.voice.osci; };
 
   auto& on = result->params[(int)FFOsciParam::On];

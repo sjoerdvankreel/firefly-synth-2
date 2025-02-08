@@ -12,7 +12,7 @@ FFMakeGFilterTopo()
   result->slotCount = FFGFilterCount;
   result->id = "{290E86EF-DFE9-4A3C-B6B2-9063643DD0E8}";
   result->params.resize((int)FFGFilterParam::Count);
-  result->addrSelectors.globalExchangeActive = FFSelectGlobalExchangeActiveAddr([](auto& state) { return &state.gFilter; });
+  result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gFilter; });
   auto selectModule = [](auto& state) { return &state.global.gFilter; };
 
   auto& on = result->params[(int)FFGFilterParam::On];

@@ -12,22 +12,23 @@
 #include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/proc/FBVoiceBlockParamState.hpp>
 #include <playground_base/base/state/proc/FBGlobalBlockParamState.hpp>
+#include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 
 #include <array>
 
 struct FFGlobalExchangeState final
 {
-  std::array<FFMasterExchangeState, 1> master = {};
-  std::array<FFGLFOExchangeState, FFGLFOCount> gLFO = {};
-  std::array<FFGFilterExchangeState, FFGFilterCount> gFilter = {};
+  std::array<FBModuleProcExchangeState, 1> master = {};
+  std::array<FBModuleProcExchangeState, FFGLFOCount> gLFO = {};
+  std::array<FBModuleProcExchangeState, FFGFilterCount> gFilter = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
 
 struct FFVoiceExchangeState final
 {
-  std::array<FFEnvExchangeState, FFEnvCount> env = {};
-  std::array<FFOsciExchangeState, FFOsciCount> osci = {};
+  std::array<FBModuleProcExchangeState, FFEnvCount> env = {};
+  std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
 

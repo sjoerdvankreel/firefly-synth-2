@@ -3,21 +3,21 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 
 inline auto
-FFSelectGlobalExchangeActiveAddr(
+FFSelectGlobalModuleExchangeAddr(
   auto selectModule)
 {
   return [selectModule](int moduleSlot, void* state) {
     auto& globalState = static_cast<FFExchangeState*>(state)->global;
-    return &(*selectModule(globalState))[moduleSlot].active; };
+    return &(*selectModule(globalState))[moduleSlot]; };
 }
 
 inline auto
-FFSelectVoiceExchangeActiveAddr(
+FFSelectVoiceModuleExchangeAddr(
   auto selectModule)
 {
   return [selectModule](int voice, int moduleSlot, void* state) {
     auto& voiceState = static_cast<FFExchangeState*>(state)->voice[voice];
-    return &(*selectModule(voiceState))[moduleSlot].active; };
+    return &(*selectModule(voiceState))[moduleSlot]; };
 }
 
 template <class State>

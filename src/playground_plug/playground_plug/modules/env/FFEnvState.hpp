@@ -10,19 +10,6 @@
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
-class FFEnvExchangeState final
-{
-  bool active = {};
-  int lengthSamples = {};
-  int positionSamples = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvExchangeState);
-  friend class FFEnvProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
-  friend auto FFSelectVoiceExchangeActiveAddr(auto selectModule);
-  friend void FFEnvRenderGraph(FBModuleGraphComponentData* graphData);
-};
-
 class alignas(sizeof(FBFloatVector)) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;

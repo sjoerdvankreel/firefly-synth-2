@@ -10,16 +10,6 @@
 
 struct FBStaticModule;
 
-class FFOsciExchangeState final
-{
-  bool active = {};
-public:
-  friend class FFOsciProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
-  friend auto FFSelectVoiceExchangeActiveAddr(auto selectModule);
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciExchangeState);
-};
-
 class alignas(sizeof(FBFloatVector)) FFOsciDSPState final
 {
   friend class FFVoiceProcessor;

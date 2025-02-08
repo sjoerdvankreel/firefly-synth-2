@@ -9,16 +9,6 @@
 
 struct FBStaticModule;
 
-class FFMasterExchangeState final
-{
-  bool active = {};
-public:
-  friend class FFMasterProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
-  friend auto FFSelectGlobalExchangeActiveAddr(auto selectModule);
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterExchangeState);
-};
-
 class alignas(sizeof(FBFloatVector)) FFMasterDSPState final
 {
   friend class FFPlugProcessor;

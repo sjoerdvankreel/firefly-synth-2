@@ -14,7 +14,7 @@ FFMakeEnvTopo()
   result->renderGraph = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
-  result->addrSelectors.voiceExchangeActive = FFSelectVoiceExchangeActiveAddr([](auto& state) { return &state.env; });
+  result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& on = result->params[(int)FFEnvParam::On];

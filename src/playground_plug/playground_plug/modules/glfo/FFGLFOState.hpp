@@ -9,19 +9,6 @@
 
 struct FBStaticModule;
 
-class FFGLFOExchangeState final
-{
-  bool active = {};
-  int cycleLengthSamples = {};
-  int cyclePositionSamples = {};
-public:
-  friend class FFGLFOProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeGLFOTopo();
-  friend auto FFSelectGlobalExchangeActiveAddr(auto selectModule);
-  friend void FFGLFORenderGraph(FBModuleGraphComponentData* graphData);
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOExchangeState);
-};
-
 class alignas(sizeof(FBFloatVector)) FFGLFODSPState final
 {
   friend class FFPlugProcessor;
