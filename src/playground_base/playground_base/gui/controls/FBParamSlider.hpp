@@ -2,7 +2,7 @@
 
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
-#include <playground_base/base/state/FBExchangeParamActiveState.hpp>
+#include <playground_base/base/state/FBParamActiveExchangeState.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -14,7 +14,7 @@ public juce::Slider,
 public FBParamControl,
 public IFBHorizontalAutoSize
 {
-  FBExchangeParamActiveState _paramActive = {};
+  FBParamActiveExchangeState _paramActive = {};
 
 public:
   FBParamSlider(
@@ -22,8 +22,8 @@ public:
     FBRuntimeParam const* param, 
     juce::Slider::SliderStyle style);
 
-  FBExchangeParamActiveState const&
-  ExchangeParamActiveState() const { return _paramActive; }
+  FBParamActiveExchangeState const&
+  ParamActiveExchangeState() const { return _paramActive; }
 
   void valueChanged() override;
   void stoppedDragging() override;

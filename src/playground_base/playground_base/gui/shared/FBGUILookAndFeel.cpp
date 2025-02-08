@@ -52,7 +52,7 @@ FBGUILookAndFeel::drawLinearSlider(
   LookAndFeel_V4::drawLinearSlider(g, x, y, width, height, sliderPos, minSliderPos, maxSliderPos, style, s);
   if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
     return;    
-  auto paramActive = paramSlider->ExchangeParamActiveState();
+  auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)
     return;
   DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramActive.minValue);
@@ -70,7 +70,7 @@ FBGUILookAndFeel::drawRotarySlider(
   LookAndFeel_V4::drawRotarySlider(g, x, y, width, height, sliderPos, rotaryStartAngle, rotaryEndAngle, s);
   if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
     return;
-  auto paramActive = paramSlider->ExchangeParamActiveState();
+  auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)
     return;
   DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.minValue);

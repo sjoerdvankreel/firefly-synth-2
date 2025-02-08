@@ -16,7 +16,7 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
     auto const& indices = topo.modules[m].topoIndices;
     auto const& static_ = topo.static_.modules[indices.index];
     if(!static_.voice)
-      _active.push_back(FBExchangeActiveState(
+      _active.push_back(FBActiveExchangeState(
         static_.addrSelectors.globalExchangeActive(
           indices.slot, _rawState)));
     else
@@ -25,18 +25,18 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
       for (int v = 0; v < FBMaxVoices; v++)
         voiceActive[v] = static_.addrSelectors.voiceExchangeActive(
           v, indices.slot, _rawState);
-      _active.push_back(FBExchangeActiveState(voiceActive));
+      _active.push_back(FBActiveExchangeState(voiceActive));
     }
   }
 
   for (int p = 0; p < topo.params.size(); p++)
     if (topo.static_.modules[topo.params[p].topoIndices.module.index].voice)
-      _params.push_back(FBExchangeParamState(
+      _params.push_back(FBParamExchangeState(
         topo.params[p].static_.addrSelectors.voiceExchange(
           topo.params[p].topoIndices.module.slot, 
           topo.params[p].topoIndices.param.slot, _rawState)));
     else
-      _params.push_back(FBExchangeParamState(
+      _params.push_back(FBParamExchangeState(
         topo.params[p].static_.addrSelectors.globalExchange(
           topo.params[p].topoIndices.module.slot,
           topo.params[p].topoIndices.param.slot, _rawState)));
@@ -52,10 +52,10 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
 #endif
 }
 
-FBExchangeParamActiveState 
+FBParamActiveExchangeState
 FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
 {
-  FBExchangeParamActiveState result = {};
+  FBParamActiveExchangeState result = {};
   result.active = false;
   result.minValue = 1.0f;
   result.maxValue = 0.0f;

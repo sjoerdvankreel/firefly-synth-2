@@ -2,10 +2,10 @@
 
 #include <compare>
 
-struct FBExchangeParamActiveState final
+struct FBParamActiveExchangeState final
 {
   bool active = {};
   float minValue = {};
   float maxValue = {};
-  bool operator==(FBExchangeParamActiveState const&) const = default;
+  bool operator==(FBParamActiveExchangeState const&) const = default;
 };

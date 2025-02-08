@@ -6,7 +6,8 @@
 #include <array>
 #include <cassert>
 
-class FBExchangeActiveState final
+// TODO moduleexch
+class FBActiveExchangeState final
 {
   friend class FBHostProcessor;
   friend class FBExchangeStateContainer;
@@ -26,44 +27,44 @@ public:
   bool IsGlobal() const { return _isGlobal; }
   std::array<bool*, FBMaxVoices> const& Voice() const;
 
-  FB_NOCOPY_MOVE_DEFCTOR(FBExchangeActiveState);
-  explicit FBExchangeActiveState(bool* global);
-  explicit FBExchangeActiveState(std::array<bool*, FBMaxVoices> const& voice);
+  FB_NOCOPY_MOVE_DEFCTOR(FBActiveExchangeState);
+  explicit FBActiveExchangeState(bool* global);
+  explicit FBActiveExchangeState(std::array<bool*, FBMaxVoices> const& voice);
 };
 
-inline FBExchangeActiveState::
-FBExchangeActiveState(bool* global) :
+inline FBActiveExchangeState::
+FBActiveExchangeState(bool* global) :
 _isGlobal(true),
 _global(global) {}
 
-inline FBExchangeActiveState::
-FBExchangeActiveState(std::array<bool*, FBMaxVoices> const& voice) :
+inline FBActiveExchangeState::
+FBActiveExchangeState(std::array<bool*, FBMaxVoices> const& voice) :
 _isGlobal(false),
 _voice(voice) {}
 
 inline bool*
-FBExchangeActiveState::Global()
+FBActiveExchangeState::Global()
 {
   assert(IsGlobal());
   return _global;
 }
 
 inline bool const*
-FBExchangeActiveState::Global() const
+FBActiveExchangeState::Global() const
 {
   assert(IsGlobal());
   return _global;
 }
 
 inline std::array<bool*, FBMaxVoices>&
-FBExchangeActiveState::Voice()
+FBActiveExchangeState::Voice()
 {
   assert(!IsGlobal());
   return _voice;
 }
 
 inline std::array<bool*, FBMaxVoices> const&
-FBExchangeActiveState::Voice() const
+FBActiveExchangeState::Voice() const
 {
   assert(!IsGlobal());
   return _voice;
