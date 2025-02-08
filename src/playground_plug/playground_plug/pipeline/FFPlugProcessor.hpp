@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/state/FBModuleProcState.hpp>
+#include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
 
 struct FFProcState;

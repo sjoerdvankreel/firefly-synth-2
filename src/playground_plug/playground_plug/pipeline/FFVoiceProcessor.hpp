@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/FBModuleProcState.hpp>
+#include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
 struct FBPlugInputBlock;
 

@@ -3,10 +3,10 @@
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBModuleProcState.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
+#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
 static FBFloatVector
 GenerateSin(FBFloatVector phase)

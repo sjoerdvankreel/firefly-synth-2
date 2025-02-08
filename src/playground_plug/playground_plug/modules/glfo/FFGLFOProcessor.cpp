@@ -5,7 +5,7 @@
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBModuleProcState.hpp>
+#include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
 void 
 FFGLFOProcessor::Reset(FBModuleProcState const& state)

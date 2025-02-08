@@ -4,7 +4,7 @@
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBModuleProcState.hpp>
+#include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 void

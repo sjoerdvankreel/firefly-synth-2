@@ -4,9 +4,9 @@
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/base/shared/FBFormat.hpp>
-#include <playground_base/base/state/FBModuleProcState.hpp>
 #include <playground_base/base/state/FBGraphRenderState.hpp>
 #include <playground_base/base/state/FBExchangeStateContainer.hpp>
+#include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <algorithm>
