@@ -96,6 +96,7 @@ struct FFExchangeParamState final
 
 struct FFExchangeState final
 {
+  float sampleRate = {};
   FFExchangeParamState param = {};
   FFGlobalExchangeState global = {};
   std::array<FBVoiceInfo, FBMaxVoices> voices = {};

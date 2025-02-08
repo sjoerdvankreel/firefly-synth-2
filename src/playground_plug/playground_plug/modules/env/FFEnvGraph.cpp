@@ -1,4 +1,3 @@
-#include <playground_plug/gui/FFGUIUtility.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/env/FFEnvGraph.hpp>
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
@@ -7,6 +6,7 @@
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
+#include <playground_base/gui/shared/FBGUIGraphing.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <algorithm>
@@ -22,14 +22,14 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   moduleState.sampleRate = sampleRate;
   int moduleSlot = moduleState.moduleSlot;
 
-  FFModuleGraphRenderData<FFEnvProcessor> renderData;
+  FBModuleGraphRenderData<FFEnvProcessor> renderData;
   renderData.graphData = graphData;
-  renderData.voiceOutputSelector = [](auto const& dsp, int v, int slot) { 
-    return &dsp.voice[v].env[slot].output; };
+  renderData.voiceOutputSelector = [](void const* procState, int v, int slot) { 
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[v].env[slot].output; };
 
   renderState->PrepareForRenderPrimary();
   renderState->PrepareForRenderPrimaryVoice();
-  FFRenderModuleGraph<false>(renderData, graphData->primarySeries);
+  FBRenderModuleGraphSeries<false>(renderData, graphData->primarySeries);
 
   renderState->PrepareForRenderExchange();
   auto exchangeState = renderState->ExchangeState<FFExchangeState>();
@@ -47,7 +47,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
       continue;
     }
     auto& secondary = graphData->secondarySeries.emplace_back();
-    FFRenderModuleGraph<false>(renderData, secondary.points);
+    FBRenderModuleGraphSeries<false>(renderData, secondary.points);
     secondary.marker = (int)(positionNormalized * secondary.points.size());
     assert(secondary.marker < secondary.points.size());
   }

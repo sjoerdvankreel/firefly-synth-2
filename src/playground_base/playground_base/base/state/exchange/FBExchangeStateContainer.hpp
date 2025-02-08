@@ -19,6 +19,8 @@ class FBExchangeStateContainer final
 
   void* _rawState;
   void (*_freeRawState)(void*);
+
+  float* _sampleRate = {};
   std::vector<FBParamExchangeState> _params = {};
   std::vector<FBModuleExchangeState> _modules = {};
   std::array<FBVoiceInfo, FBMaxVoices>* _voices = {};
@@ -34,6 +36,7 @@ public:
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
+  float SampleRate() const { return *_sampleRate; }
   std::vector<FBParamExchangeState> const& Params() const { return _params; }
   std::vector<FBModuleExchangeState> const& Modules() const { return _modules; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return *_voices; }

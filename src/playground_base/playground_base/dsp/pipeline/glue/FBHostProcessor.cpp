@@ -62,6 +62,7 @@ FBHostProcessor::ProcessHost(
   int hostSmoothSamples = hostSmoothTimeTopo.linear.NormalizedTimeToSamples(hostSmoothTimeSpecial.state->Value(), _sampleRate);
   _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
+  *_topo->static_.state.sampleRateExchangeAddr(_exchangeState->Raw()) = _sampleRate;
   for (int m = 0; m < _topo->modules.size(); m++)
   {
     auto const& indices = _topo->modules[m].topoIndices;

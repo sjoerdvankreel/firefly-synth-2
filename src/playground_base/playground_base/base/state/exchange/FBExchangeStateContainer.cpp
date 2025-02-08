@@ -8,10 +8,10 @@
 FBExchangeStateContainer::
 FBExchangeStateContainer(FBRuntimeTopo const& topo):
 _rawState(topo.static_.state.allocRawExchangeState()),
-_freeRawState(topo.static_.state.freeRawExchangeState)
+_freeRawState(topo.static_.state.freeRawExchangeState),
+_voices(topo.static_.state.voicesExchangeAddr(_rawState)),
+_sampleRate(topo.static_.state.sampleRateExchangeAddr(_rawState))
 {
-  _voices = topo.static_.state.voicesExchangeAddr(_rawState);
-
   for (int m = 0; m < topo.modules.size(); m++)
   {
     auto const& indices = topo.modules[m].topoIndices;

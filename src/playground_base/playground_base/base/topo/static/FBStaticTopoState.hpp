@@ -7,6 +7,9 @@
 #include <functional>
 
 struct FBStaticTopo;
+
+typedef std::function<float*(void* state)>
+FBSampleRateExchangeAddrSelector;
 typedef std::function<FBSpecialParams (
   FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
@@ -27,5 +30,6 @@ struct FBStaticTopoState final
   int exchangeStateAlignment = {};
   FBSpecialParamsSelector specialSelector = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
+  FBSampleRateExchangeAddrSelector sampleRateExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoState);
 };

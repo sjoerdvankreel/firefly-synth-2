@@ -1,4 +1,4 @@
-#include <playground_plug/gui/FFPlugGUI.hpp>
+#include <playground_plug/shared/FFPlugGUI.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/shared/FFPlugMeta.hpp>
@@ -61,6 +61,7 @@ MakeTopoState()
   result.freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
   result.freeRawExchangeState = [](void* state) { delete static_cast<FFExchangeState*>(state); };
   result.voicesExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voices; };
+  result.sampleRateExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->sampleRate; };
   return result;
 }
 

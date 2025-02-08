@@ -1,4 +1,4 @@
-#include <playground_plug/gui/FFPlugGUI.hpp>
+#include <playground_plug/shared/FFPlugGUI.hpp>
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>

@@ -1,4 +1,3 @@
-#include <playground_plug/gui/FFGUIUtility.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGraph.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
@@ -7,6 +6,7 @@
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
+#include <playground_base/gui/shared/FBGUIGraphing.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <algorithm>
@@ -23,13 +23,13 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   moduleState.sampleRate = sampleRate;
   int moduleSlot = moduleState.moduleSlot;
 
-  FFModuleGraphRenderData<FFGLFOProcessor> renderData;
+  FBModuleGraphRenderData<FFGLFOProcessor> renderData;
   renderData.graphData = graphData;
-  renderData.globalOutputSelector = [](auto const& dsp, int slot) { 
-    return &dsp.global.gLFO[slot].output; };
+  renderData.globalOutputSelector = [](void const* procState, int slot) { 
+    return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].output; };
 
   renderState->PrepareForRenderPrimary();
-  FFRenderModuleGraph<true>(renderData, graphData->primarySeries);
+  FBRenderModuleGraphSeries<true>(renderData, graphData->primarySeries);
 
   renderState->PrepareForRenderExchange();
   auto exchangeState = renderState->ExchangeState<FFExchangeState>();
@@ -48,7 +48,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 
   renderState->PrepareForRenderExchange();
   auto& secondary = graphData->secondarySeries.emplace_back();
-  FFRenderModuleGraph<true>(renderData, secondary.points);
+  FBRenderModuleGraphSeries<true>(renderData, secondary.points);
   secondary.marker = (int)(positionNormalized * secondary.points.size());
   assert(secondary.marker < secondary.points.size());
 
