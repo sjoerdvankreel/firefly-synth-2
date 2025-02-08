@@ -7,5 +7,5 @@ struct FBModuleProcExchangeState final
   bool active = {};
   int lengthSamples = {};
   int positionSamples = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcExchangeState);
+  FB_COPY_MOVE_DEFCTOR(FBModuleProcExchangeState);
 };

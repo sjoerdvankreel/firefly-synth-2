@@ -21,7 +21,7 @@ class FBVoiceManager final
   std::array<std::uint64_t, FBMaxVoices> _num = {};
   std::array<FBVoiceInfo, FBMaxVoices> _voices = {};
 
-  void InitFromExchange(std::array<FBVoiceInfo, FBMaxVoices> const& voiceState);
+  void InitFromExchange(std::array<FBVoiceInfo, FBMaxVoices> const& voices);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVoiceManager);

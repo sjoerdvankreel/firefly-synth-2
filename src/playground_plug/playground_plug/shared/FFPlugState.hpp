@@ -97,7 +97,7 @@ struct FFExchangeState final
 {
   FFExchangeParamState param = {};
   FFGlobalExchangeState global = {};
-  std::array<FBVoiceInfo, FBMaxVoices> voiceState = {};
+  std::array<FBVoiceInfo, FBMaxVoices> voices = {};
   std::array<FFVoiceExchangeState, FBMaxVoices> voice = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFExchangeState);
 };

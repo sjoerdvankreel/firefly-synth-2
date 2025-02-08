@@ -30,7 +30,7 @@ FBVoiceManager::ResetReturnedVoices()
 
 void 
 FBVoiceManager::InitFromExchange(
-  std::array<FBVoiceInfo, FBMaxVoices> const& voiceState)
+  std::array<FBVoiceInfo, FBMaxVoices> const& voices)
 {
   _counter = 0;
   _voiceCount = 0;
@@ -39,9 +39,9 @@ FBVoiceManager::InitFromExchange(
   {
     _num[i] = i;
     _voices[i].slot = i;
-    _voices[i].event = voiceState[i].event;
-    _voices[i].state = voiceState[i].state;
-    _voices[i].initialOffset = voiceState[i].initialOffset;
+    _voices[i].event = voices[i].event;
+    _voices[i].state = voices[i].state;
+    _voices[i].initialOffset = voices[i].initialOffset;
     _counter++;
     if (_voices[i].state == FBVoiceState::Active)
       _voiceCount++;

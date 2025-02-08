@@ -10,7 +10,7 @@ FBExchangeStateContainer(FBRuntimeTopo const& topo):
 _rawState(topo.static_.state.allocRawExchangeState()),
 _freeRawState(topo.static_.state.freeRawExchangeState)
 {
-  _voices = topo.static_.state.voiceStateExchangeAddr(_rawState);
+  _voices = topo.static_.state.voicesExchangeAddr(_rawState);
 
   for (int m = 0; m < topo.modules.size(); m++)
   {
@@ -18,15 +18,15 @@ _freeRawState(topo.static_.state.freeRawExchangeState)
     auto const& static_ = topo.static_.modules[indices.index];
     if(!static_.voice)
       _modules.push_back(FBModuleExchangeState(
-        static_.addrSelectors.globalExchangeActive(
+        static_.addrSelectors.globalModuleExchange(
           indices.slot, _rawState)));
     else
     {
-      std::array<bool*, FBMaxVoices> voiceActive = {};
+      std::array<FBModuleProcExchangeState*, FBMaxVoices> moduleExchange = {};
       for (int v = 0; v < FBMaxVoices; v++)
-        voiceActive[v] = static_.addrSelectors.voiceExchangeActive(
+        moduleExchange[v] = static_.addrSelectors.voiceModuleExchange(
           v, indices.slot, _rawState);
-      _modules.push_back(FBModuleExchangeState(voiceActive));
+      _modules.push_back(FBModuleExchangeState(moduleExchange));
     }
   }
 
@@ -63,10 +63,10 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
 
   float exchangeValue = 0.0f;
   auto const& paramExchange = Params()[param->runtimeParamIndex];
-  auto const& activeExchange = Active()[param->runtimeModuleIndex];
+  auto const& moduleExchange = Modules()[param->runtimeModuleIndex];
 
   if (paramExchange.IsGlobal())
-    if (*activeExchange.Global())
+    if (moduleExchange.Global()->active)
     {
       result.active = true;
       result.minValue = std::min(result.minValue, *paramExchange.Global());
@@ -74,7 +74,7 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
     }
   if (!paramExchange.IsGlobal())
     for (int v = 0; v < FBMaxVoices; v++)
-      if (*activeExchange.Voice()[v])
+      if (moduleExchange.Voice()[v]->active)
       {
         result.active = true;
         result.minValue = std::min(result.minValue, paramExchange.Voice()[v]);

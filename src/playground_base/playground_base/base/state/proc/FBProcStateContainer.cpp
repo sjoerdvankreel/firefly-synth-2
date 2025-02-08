@@ -85,7 +85,7 @@ FBProcStateContainer::InitProcessing(
       InitProcessing(p, *exchange.Params()[p].Global());
     else
       for(int v = 0; v < FBMaxVoices; v++)
-        if(exchange.VoiceState()[v].state == FBVoiceState::Active)
+        if(exchange.Voices()[v].state == FBVoiceState::Active)
           InitProcessing(p, v, exchange.Params()[p].Voice()[v]);
 }
 

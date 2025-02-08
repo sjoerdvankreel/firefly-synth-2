@@ -1,18 +1,21 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+
 #include <functional>
 
-typedef std::function<bool* (
+struct FBModuleProcExchangeState;
+
+typedef std::function<FBModuleProcExchangeState* (
   int moduleSlot, void* state)>
-FBGlobalExchangeActiveAddrSelector;
-typedef std::function<bool* (
+FBGlobalModuleExchangeAddrSelector;
+typedef std::function<FBModuleProcExchangeState* (
   int voice, int moduleSlot, void* state)>
-FBVoiceExchangeActiveAddrSelector;
+FBVoiceModuleExchangeAddrSelector;
 
 struct FBModuleAddrSelectors final
 {
   FB_COPY_MOVE_DEFCTOR(FBModuleAddrSelectors);
-  FBVoiceExchangeActiveAddrSelector voiceExchangeActive = {};
-  FBGlobalExchangeActiveAddrSelector globalExchangeActive = {};
+  FBVoiceModuleExchangeAddrSelector voiceModuleExchange = {};
+  FBGlobalModuleExchangeAddrSelector globalModuleExchange = {};
 };

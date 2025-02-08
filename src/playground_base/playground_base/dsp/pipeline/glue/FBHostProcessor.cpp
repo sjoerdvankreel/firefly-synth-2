@@ -4,6 +4,7 @@
 #include <playground_base/base/state/proc/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBModuleExchangeState.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
@@ -65,10 +66,10 @@ FBHostProcessor::ProcessHost(
     auto const& indices = _topo->modules[m].topoIndices;
     auto const& static_ = _topo->static_.modules[indices.index];
     if (!static_.voice)
-      *_exchangeState->Active()[m].Global() = false;
+      *_exchangeState->Modules()[m].Global() = {};
     else
       for (int v = 0; v < FBMaxVoices; v++)
-        *_exchangeState->Active()[m].Voice()[v] = false;
+        *_exchangeState->Modules()[m].Voice()[v] = {};
   }
 
   FBFixedInputBlock const* fixedIn;
@@ -90,7 +91,7 @@ FBHostProcessor::ProcessHost(
     output.outputParams.push_back({ entry.first, entry.second });
 
   for (int v = 0; v < FBMaxVoices; v++)
-    _exchangeState->VoiceState()[v] = _voiceManager->Voices()[v];
+    _exchangeState->Voices()[v] = _voiceManager->Voices()[v];
 
   for (int i = 0; i < _procState->Params().size(); i++)
     if (!_procState->Params()[i].IsAcc())

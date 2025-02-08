@@ -12,7 +12,7 @@ typedef std::function<FBSpecialParams (
 FBSpecialParamsSelector;
 typedef std::function<std::array<FBVoiceInfo, FBMaxVoices>* (
   void* state)>
-FBVoiceStateExchangeAddrSelector;
+FBVoicesExchangeAddrSelector;
 
 struct FBStaticTopoState final
 {
@@ -26,6 +26,6 @@ struct FBStaticTopoState final
   int exchangeStateSize = {};
   int exchangeStateAlignment = {};
   FBSpecialParamsSelector specialSelector = {};
-  FBVoiceStateExchangeAddrSelector voiceStateExchangeAddr = {};
+  FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoState);
 };

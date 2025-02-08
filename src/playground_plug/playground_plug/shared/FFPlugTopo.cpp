@@ -60,7 +60,7 @@ MakeTopoState()
   result.freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result.freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
   result.freeRawExchangeState = [](void* state) { delete static_cast<FFExchangeState*>(state); };
-  result.voiceStateExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voiceState; };
+  result.voiceStateExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voices; };
   return result;
 }
 
