@@ -4,7 +4,7 @@
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
 #include <playground_base/base/shared/FBLogging.hpp>
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGUIState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>

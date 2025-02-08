@@ -2,7 +2,7 @@
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamLabel.hpp>

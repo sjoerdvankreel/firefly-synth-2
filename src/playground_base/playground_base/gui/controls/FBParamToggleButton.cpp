@@ -1,7 +1,7 @@
-#include <playground_base/base/topo/FBRuntimeParam.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamToggleButton.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;
 

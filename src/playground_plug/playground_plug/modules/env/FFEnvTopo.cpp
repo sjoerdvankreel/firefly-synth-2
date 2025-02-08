@@ -2,7 +2,7 @@
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/env/FFEnvGraph.hpp>
-#include <playground_base/base/topo/FBStaticModule.hpp>
+#include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
 FFMakeEnvTopo()

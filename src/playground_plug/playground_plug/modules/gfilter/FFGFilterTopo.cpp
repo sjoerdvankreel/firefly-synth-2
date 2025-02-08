@@ -1,7 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
-#include <playground_base/base/topo/FBStaticModule.hpp>
+#include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
 FFMakeGFilterTopo()

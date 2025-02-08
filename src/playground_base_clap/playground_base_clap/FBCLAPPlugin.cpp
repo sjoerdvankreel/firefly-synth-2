@@ -2,13 +2,13 @@
 #include <playground_base_clap/FBCLAPUtility.hpp>
 #include <playground_base_clap/FBCLAPExchangeStateQueue.hpp>
 
-#include <playground_base/base/shared/FBLogging.hpp>
-#include <playground_base/base/topo/FBStaticTopo.hpp>
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
+#include <playground_base/base/shared/FBLogging.hpp>
+#include <playground_base/base/topo/static/FBStaticTopo.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGUIState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>

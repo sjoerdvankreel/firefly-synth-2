@@ -2,10 +2,10 @@
 #include <playground_base_vst3/FBVST3GUIEditor.hpp>
 #include <playground_base_vst3/FBVST3EditController.hpp>
 
-#include <playground_base/base/shared/FBLogging.hpp>
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/glue/FBHostContextMenu.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
+#include <playground_base/base/shared/FBLogging.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #if SMTG_OS_LINUX
 #include <juce_events/native/juce_EventLoopInternal_linux.h>

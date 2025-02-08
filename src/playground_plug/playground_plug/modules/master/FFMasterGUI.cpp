@@ -2,7 +2,6 @@
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
 
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamLabel.hpp>
@@ -11,6 +10,7 @@
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
 

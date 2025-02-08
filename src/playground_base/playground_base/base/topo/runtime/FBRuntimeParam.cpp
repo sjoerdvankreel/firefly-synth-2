@@ -1,5 +1,5 @@
-#include <playground_base/base/topo/FBTopoDetail.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
+#include <playground_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 static std::string

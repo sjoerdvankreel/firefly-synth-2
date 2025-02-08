@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/FBRuntimeParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>

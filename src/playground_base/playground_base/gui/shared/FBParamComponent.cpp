@@ -1,6 +1,6 @@
-#include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamComponent.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 

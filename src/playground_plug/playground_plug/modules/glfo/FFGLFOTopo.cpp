@@ -2,7 +2,7 @@
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGraph.hpp>
-#include <playground_base/base/topo/FBStaticModule.hpp>
+#include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
 FFMakeGLFOTopo()

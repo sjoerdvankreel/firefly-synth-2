@@ -1,6 +1,6 @@
 #include <playground_base_vst3/FBVST3Utility.hpp>
 #include <playground_base_vst3/FBVST3Parameter.hpp>
-#include <playground_base/base/topo/FBStaticParam.hpp>
+#include <playground_base/base/topo/static/FBStaticParam.hpp>
 
 FBVST3Parameter::
 FBVST3Parameter(FBStaticParam const* topo, ParameterInfo const& info) :

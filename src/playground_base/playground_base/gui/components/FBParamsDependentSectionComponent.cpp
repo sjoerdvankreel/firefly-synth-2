@@ -1,5 +1,5 @@
-#include <playground_base/base/topo/FBTopoIndices.hpp>
-#include <playground_base/base/topo/FBParamsDependency.hpp>
+#include <playground_base/base/topo/runtime/FBTopoIndices.hpp>
+#include <playground_base/base/topo/static/FBParamsDependency.hpp>
 #include <playground_base/gui/components/FBParamsDependentSectionComponent.hpp>
 
 using namespace juce;
