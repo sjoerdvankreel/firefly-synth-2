@@ -6,7 +6,7 @@
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBGraphRenderState.hpp>
+#include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponent.hpp>

@@ -1,6 +1,6 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/FBGraphRenderState.hpp>
-#include <playground_base/base/state/FBModuleProcState.hpp>
+#include <playground_base/base/state/main/FBGraphRenderState.hpp>
+#include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponent.hpp>
 

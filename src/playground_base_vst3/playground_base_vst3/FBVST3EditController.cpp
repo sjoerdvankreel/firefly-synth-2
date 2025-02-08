@@ -7,7 +7,7 @@
 #include <playground_base/base/topo/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGUIState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
-#include <playground_base/base/state/FBExchangeStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <base/source/fstring.h>
 #include <utility>

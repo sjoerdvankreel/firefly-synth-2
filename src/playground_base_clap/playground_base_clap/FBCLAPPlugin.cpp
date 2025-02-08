@@ -9,10 +9,10 @@
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
-#include <playground_base/base/state/FBGUIState.hpp>
-#include <playground_base/base/state/FBScalarStateContainer.hpp>
-#include <playground_base/base/state/FBExchangeStateContainer.hpp>
+#include <playground_base/base/state/main/FBGUIState.hpp>
+#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <clap/helpers/plugin.hxx>
 #include <algorithm>
