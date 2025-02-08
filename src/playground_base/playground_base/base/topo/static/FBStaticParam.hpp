@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/FBParamsDependency.hpp>
+#include <playground_base/base/topo/static/FBParamsDependency.hpp>
 
 #include <playground_base/base/topo/param/FBParamType.hpp>
 #include <playground_base/base/topo/param/FBParamAddrs.hpp>

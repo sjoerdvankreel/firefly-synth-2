@@ -1,8 +1,8 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/FBSpecialParams.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
+#include <playground_base/base/topo/static/FBSpecialParams.hpp>
 
 #include <functional>
 

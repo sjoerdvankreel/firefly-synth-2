@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/topo/FBTopoIndices.hpp>
+#include <playground_base/base/topo/runtime/FBTopoIndices.hpp>
 
 struct FBParamTopoIndices final
 {
