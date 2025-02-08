@@ -16,19 +16,19 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 {
   // todo probably need to share some of this
 
+  FBModuleGraphRenderData<FFGLFOProcessor> renderData;
   auto renderState = graphData->renderState;
   auto& moduleState = renderState->ModuleState();
-  auto exchangeState = renderState->ExchangeState<FFExchangeState>();
+  auto exchangeState = renderState->ExchangeContainer()->As<FFExchangeState>();
   auto const& moduleExchange = exchangeState->global.gLFO[moduleState.moduleSlot];
-  if (!moduleExchange.active)
-    return;
 
+  float dspSampleCount = renderData.processor.StaticLengthSamples()
   float guiSampleCount = (float)graphData->pixelWidth;
+  float dspSampleCount = (float)moduleExchange.lengthSamples;
   float dspSampleCount = (float)moduleExchange.lengthSamples;
   float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
   moduleState.sampleRate = dspSampleRate / (dspSampleCount / guiSampleCount);
 
-  FBModuleGraphRenderData<FFGLFOProcessor> renderData;
   renderData.graphData = graphData;
   renderData.globalOutputSelector = [](void const* procState, int slot) { 
     return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].output; };

@@ -11,7 +11,7 @@
 void
 FFMasterProcessor::Process(FBModuleProcState const& state)
 {
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   auto& output = procState->dsp.global.master.output;
   auto const& input = procState->dsp.global.master.input;
   auto const& procParams = procState->param.global.master[state.moduleSlot];
@@ -22,7 +22,7 @@ FFMasterProcessor::Process(FBModuleProcState const& state)
   float voicesNorm = voicesParam->static_.discrete.PlainToNormalized(state.input->voiceManager->VoiceCount());
   (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = voicesNorm;
 
-  auto* exchangeState = state.ExchangeState<FFExchangeState>();
+  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
   if (exchangeState == nullptr)
     return;
   exchangeState->global.master[state.moduleSlot].active = true;

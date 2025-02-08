@@ -22,4 +22,5 @@ public:
   void CopyFrom(FBProcStateContainer const& proc);
   void CopyFrom(FBScalarStateContainer const& scalar);
   std::vector<float*> const& Params() const { return _params; }
+  template <class T> T const* As() { return static_cast<T const*>(_rawState); }
 };

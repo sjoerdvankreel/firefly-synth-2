@@ -32,7 +32,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   FBRenderModuleGraphSeries<false>(renderData, graphData->primarySeries);
 
   renderState->PrepareForRenderExchange();
-  auto exchangeState = renderState->ExchangeState<FFExchangeState>();
+  auto exchangeState = renderState->ExchangeContainer()->As<FFExchangeState>();
   for (int v = 0; v < FBMaxVoices; v++)
   {
     auto const& envExchange = exchangeState->voice[v].env[moduleSlot];

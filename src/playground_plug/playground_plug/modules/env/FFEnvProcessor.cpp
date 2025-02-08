@@ -18,7 +18,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   _stagePositions.fill(0);
 
   int voice = state.voice->slot;
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.env[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   _voiceState.on = topo.params[(int)FFEnvParam::On].boolean.NormalizedToPlain(params.block.on[0].Voice()[voice]);
@@ -52,7 +52,7 @@ int
 FFEnvProcessor::Process(FBModuleProcState const& state)
 {
   int voice = state.voice->slot;
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
@@ -155,7 +155,7 @@ FFEnvProcessor::Process(FBModuleProcState const& state)
     scratch.data[s] = _smoother.State();
   output.LoadFromFloatArray(scratch);
 
-  auto* exchangeState = state.ExchangeState<FFExchangeState>();
+  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
   if (exchangeState == nullptr || processed == 0)
     return processed;
   auto& exchangeDSP = exchangeState->voice[voice].env[state.moduleSlot];

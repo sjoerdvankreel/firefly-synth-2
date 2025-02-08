@@ -51,7 +51,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
 {
   _phase = {};
   int voice = state.voice->slot;
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   _voiceState.key = (float)state.voice->event.note.key;
@@ -67,7 +67,7 @@ void
 FFOsciProcessor::Process(FBModuleProcState const& state)
 {
   int voice = state.voice->slot;
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   auto const& pw = procParams.acc.pw[0].Voice()[voice];
   auto const& cent = procParams.acc.cent[0].Voice()[voice];
@@ -116,7 +116,7 @@ FFOsciProcessor::Process(FBModuleProcState const& state)
     return gain1WithGLFOBlock[v] * gain2.CV(v) * mono[v]; });
   output.Transform([&](int ch, int v) { return mono[v]; });
 
-  auto* exchangeState = state.ExchangeState<FFExchangeState>();
+  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
   if (exchangeState == nullptr)
     return; 
   exchangeState->voice[voice].osci[state.moduleSlot].active = true;

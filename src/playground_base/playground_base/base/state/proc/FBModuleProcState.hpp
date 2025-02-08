@@ -17,10 +17,6 @@ struct FBModuleProcState final
   FBPlugInputBlock const* input = {};
   std::unordered_map<int, float>* outputParamsNormalized = {};
 
-  template <class ProcStateT>
-  ProcStateT* ProcState() const 
-  { return static_cast<ProcStateT*>(procRaw); }
-  template <class ExchangeStateT>
-  ExchangeStateT* ExchangeState() const 
-  { return static_cast<ExchangeStateT*>(exchangeRaw); }
+  template <class T> T* ProcAs() const { return static_cast<T*>(procRaw); }
+  template <class T> T* ExchangeAs() const { return static_cast<T*>(exchangeRaw); }
 };

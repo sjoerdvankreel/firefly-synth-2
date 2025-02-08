@@ -43,12 +43,7 @@ public:
   void PrimaryParamChanged(int index, float normalized);
   FBExchangeStateContainer const* ExchangeContainer() const;
 
-  FBModuleProcState& ModuleState() 
-  { return *_moduleState; }
-  template <class TExchangeState>
-  TExchangeState const* ExchangeState() 
-  { return static_cast<TExchangeState const*>(ExchangeContainer()->Raw()); }
-
+  FBModuleProcState& ModuleState() { return *_moduleState; }
   bool GlobalModuleExchangeStateEqualsPrimary(int moduleIndex, int moduleSlot) const;
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
 };

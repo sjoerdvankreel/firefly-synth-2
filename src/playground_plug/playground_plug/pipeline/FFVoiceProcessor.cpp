@@ -8,7 +8,7 @@ void
 FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
   int voice = state.voice->slot;
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   for (int i = 0; i < FFEnvCount; i++)
   {
     state.moduleSlot = i;
@@ -26,7 +26,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
 {
   bool voiceFinished = false;
   int voice = state.voice->slot;
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   auto& voiceDSP = procState->dsp.voice[voice];
   voiceDSP.output.Fill(0.0f);
   for (int i = 0; i < FFOsciCount; i++)

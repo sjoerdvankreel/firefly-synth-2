@@ -39,4 +39,5 @@ public:
   void InitProcessing(int index, float value);
   void InitProcessing(FBScalarStateContainer const& scalar);
   void InitProcessing(FBExchangeStateContainer const& exchange);
+  template <class T> T const* As() { return static_cast<T const*>(Raw()); }
 };

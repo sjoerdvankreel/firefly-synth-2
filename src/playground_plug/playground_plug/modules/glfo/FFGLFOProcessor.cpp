@@ -13,10 +13,19 @@ FFGLFOProcessor::Reset(FBModuleProcState const& state)
   _phase = {};
 }
 
+int 
+FFGLFOProcessor::StaticLengthSamples(
+  void const* scalarState, int moduleSlot, float sampleRate) const
+{
+  auto state = static_cast<FFScalarState const*>(scalarState);
+  float rate = state->param.global.gLFO[moduleSlot].acc.rate[0];
+  return FBFreqToSamples(rate, sampleRate);
+}
+
 int
 FFGLFOProcessor::Process(FBModuleProcState const& state)
 {
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   auto& output = procState->dsp.global.gLFO[state.moduleSlot].output;
   auto const& procParams = procState->param.global.gLFO[state.moduleSlot];
   auto const& rate = procParams.acc.rate[0].Global();
@@ -37,7 +46,7 @@ FFGLFOProcessor::Process(FBModuleProcState const& state)
     auto phase = _phase.Next(plainRate / state.sampleRate);
     return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
 
-  auto* exchangeState = state.ExchangeState<FFExchangeState>();
+  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
   if (exchangeState == nullptr)
     return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 

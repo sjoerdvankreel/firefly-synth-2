@@ -10,7 +10,7 @@
 void
 FFGFilterProcessor::Process(FBModuleProcState const& state)
 {
-  auto* procState = state.ProcState<FFProcState>();
+  auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.global.gFilter[state.moduleSlot];
   auto const& res = procParams.acc.res[0].Global();
   auto const& freq = procParams.acc.freq[0].Global();
@@ -146,7 +146,7 @@ FFGFilterProcessor::Process(FBModuleProcState const& state)
     }
   output.LoadCastFromDoubleArray(audioOut);  
 
-  auto* exchangeState = state.ExchangeState<FFExchangeState>();
+  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
   if (exchangeState == nullptr)
     return;
   auto& exchangeParams = exchangeState->param.global.gFilter[state.moduleSlot];
