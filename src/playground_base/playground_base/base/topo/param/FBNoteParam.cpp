@@ -22,15 +22,8 @@ PopupMenu
 FBNoteParam::MakePopupMenu() const
 {
   PopupMenu result;
-  int notesPerOct = (int)NoteNames.size();
-  for (int i = 0; i < notesPerOct; i++)
-  {
-    PopupMenu noteMenu;
-    for (int j = 0; j < ValueCount(); j++)
-      if (j % notesPerOct == i)
-        noteMenu.addItem(j + 1, PlainToText(j));
-    result.addSubMenu(NoteNames[i], noteMenu);
-  }
+  for (int i = 0; i < ValueCount(); i++)
+    result.addItem(i + 1, PlainToText(i));
   return result;
 }
 
