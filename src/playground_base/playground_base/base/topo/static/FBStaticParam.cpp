@@ -83,6 +83,8 @@ FBStaticParam::AnyDiscreteToNormalizedSlow(int plain) const
   {
   case FBParamType::List:
     return list.PlainToNormalized(plain);
+  case FBParamType::Note:
+    return note.PlainToNormalized(plain);
   case FBParamType::Boolean:
     return boolean.PlainToNormalized(plain);
   case FBParamType::Discrete:
@@ -100,6 +102,8 @@ FBStaticParam::NormalizedToAnyDiscreteSlow(float normalized) const
   {
   case FBParamType::List:
     return list.NormalizedToPlain(normalized);
+  case FBParamType::Note:
+    return note.NormalizedToPlain(normalized);
   case FBParamType::Boolean:
     return boolean.NormalizedToPlain(normalized);
   case FBParamType::Discrete:
@@ -115,6 +119,8 @@ FBStaticParam::NormalizedToText(FBValueTextDisplay display, float normalized) co
 {
   switch (type)
   {
+  case FBParamType::Note:
+    return note.PlainToText(note.NormalizedToPlain(normalized));
   case FBParamType::Boolean:
     return boolean.PlainToText(boolean.NormalizedToPlain(normalized));
   case FBParamType::Discrete:
@@ -136,6 +142,12 @@ FBStaticParam::TextToNormalized(bool io, std::string const& text) const
 {
   switch (type)
   {
+    case FBParamType::Note:
+    {
+      auto plain = note.TextToPlain(io, text); // todo no io
+      if (!plain) return {};
+      return note.PlainToNormalized(plain.value());
+    }
     case FBParamType::List:
     {
       auto plain = list.TextToPlain(io, text);

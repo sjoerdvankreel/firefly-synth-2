@@ -8,13 +8,10 @@
 struct FBDiscreteParam
 {
   int valueCount = {};
-  std::function<std::string(int)> toText;
 
   int ValueCount() const { return valueCount; }
-
   float PlainToNormalized(int plain) const;
   int NormalizedToPlain(float normalized) const;
-
   std::string PlainToText(int plain) const;
   std::optional<int> TextToPlain(std::string const& text) const;
 };

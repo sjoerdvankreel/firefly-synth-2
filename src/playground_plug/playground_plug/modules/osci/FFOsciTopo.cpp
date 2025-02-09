@@ -42,16 +42,13 @@ FFMakeOsciTopo()
   type.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectType);
   type.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectType);
 
-  std::vector<std::string> notes = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
   auto& note = result->params[(int)FFOsciParam::Note];
   note.acc = false;
-  note.defaultText = "C4";
+  note.defaultText = FBNoteParam::C4Name;
   note.name = "Note";
   note.slotCount = 1;
   note.id = "{592BFC17-0E32-428F-B4B0-E0DF39514BF0}";
-  note.type = FBParamType::Discrete;
-  note.discrete.valueCount = 128;
-  note.discrete.toText = [notes](int i) { return notes[i % 12] + std::to_string(i / 12 - 1); };
+  note.type = FBParamType::Note;
   auto selectNote = [](auto& module) { return &module.block.note; };
   note.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectNote);
   note.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectNote);

@@ -46,7 +46,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   {
     result.flags |= ParameterInfo::kIsHidden;
     result.flags |= ParameterInfo::kIsReadOnly;
-    if (param.static_.type == FBParamType::List)
+    if (FBParamTypeIsList(param.static_.type))
       result.flags |= ParameterInfo::kIsList;
   }
   return result;

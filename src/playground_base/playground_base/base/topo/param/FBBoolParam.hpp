@@ -6,10 +6,8 @@
 struct FBBoolParam
 {
   int ValueCount() const { return 2; }
-
   float PlainToNormalized(bool plain) const;
   bool NormalizedToPlain(float normalized) const;
-
   std::string PlainToText(bool plain) const;
   std::optional<bool> TextToPlain(std::string const& text) const;
 };

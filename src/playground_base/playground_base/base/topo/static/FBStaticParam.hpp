@@ -5,6 +5,7 @@
 
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 #include <playground_base/base/topo/param/FBListParam.hpp>
+#include <playground_base/base/topo/param/FBNoteParam.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 #include <playground_base/base/topo/param/FBFreqOctParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
@@ -34,6 +35,7 @@ struct FBStaticParam final
 
   FBParamType type = {};
   FBListParam list = {};
+  FBNoteParam note = {};
   FBBoolParam boolean = {};
   FBLinearParam linear = {};
   FBFreqOctParam freqOct = {};
@@ -69,6 +71,7 @@ FBStaticParam::ValueCount() const
   switch (type)
   {
   case FBParamType::List: return list.ValueCount();
+  case FBParamType::Note: return note.ValueCount();
   case FBParamType::Linear: return linear.ValueCount();
   case FBParamType::FreqOct: return freqOct.ValueCount();
   case FBParamType::Boolean: return boolean.ValueCount();
