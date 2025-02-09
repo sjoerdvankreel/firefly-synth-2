@@ -6,7 +6,10 @@
 
 #include <array>
 
+struct FFScalarState;
+struct FBStaticTopo;
 struct FBModuleProcState;
+
 enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Smooth, Count };
 
 struct FFEnvVoiceState
@@ -24,12 +27,6 @@ struct FFEnvVoiceState
 
 class FFEnvProcessor final
 {
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
-  int Process(FBModuleProcState& state);
-  void BeginVoice(FBModuleProcState const& state);
-
-private:
   bool _finished = false;
   int _lengthSamples = 0;
   int _positionSamples = 0;
@@ -37,4 +34,13 @@ private:
   FBOnePoleFilter _smoother = {};
   FFEnvVoiceState _voiceState = {};
   std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
+
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
+  int Process(FBModuleProcState& state);
+  void BeginVoice(FBModuleProcState const& state);
+
+  int PlotLengthSamples(
+    FBStaticTopo const& topo, FFScalarState const& state,
+    int moduleSlot, float sampleRate) const;
 };

@@ -9,6 +9,23 @@
 
 #include <cmath>
 
+int 
+FFEnvProcessor::PlotLengthSamples(
+  FBStaticTopo const& topo, FFScalarState const& state, 
+  int moduleSlot, float sampleRate) const
+{
+  float result = 0.0f;
+  auto const& envState = state.param.voice.env[moduleSlot];
+  auto const& envTopo = topo.modules[(int)FFModuleType::Env];
+  result += envTopo.params[(int)FFEnvParam::HoldTime].linear.NormalizedToPlain(envState.block.holdTime[0]);
+  result += envTopo.params[(int)FFEnvParam::DecayTime].linear.NormalizedToPlain(envState.block.decayTime[0]);
+  result += envTopo.params[(int)FFEnvParam::DelayTime].linear.NormalizedToPlain(envState.block.delayTime[0]);
+  result += envTopo.params[(int)FFEnvParam::AttackTime].linear.NormalizedToPlain(envState.block.attackTime[0]);
+  result += envTopo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedToPlain(envState.block.releaseTime[0]);
+  result += envTopo.params[(int)FFEnvParam::SmoothTime].linear.NormalizedToPlain(envState.block.smoothTime[0]);
+  return FBTimeToSamples(result, sampleRate);
+}
+
 void
 FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
 {
@@ -30,7 +47,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.attackSamples = topo.params[(int)FFEnvParam::AttackTime].linear.NormalizedTimeToSamples(params.block.attackTime[0].Voice()[voice], state.sampleRate);
   _voiceState.releaseSamples = topo.params[(int)FFEnvParam::ReleaseTime].linear.NormalizedTimeToSamples(params.block.releaseTime[0].Voice()[voice], state.sampleRate);
   _voiceState.smoothingSamples = topo.params[(int)FFEnvParam::SmoothTime].linear.NormalizedTimeToSamples(params.block.smoothTime[0].Voice()[voice], state.sampleRate);
-  _lengthSamples = _voiceState.delaySamples + _voiceState.attackSamples + _voiceState.holdSamples + _voiceState.decaySamples + _voiceState.releaseSamples;
+  _lengthSamples = _voiceState.delaySamples + _voiceState.attackSamples + _voiceState.holdSamples + _voiceState.decaySamples + _voiceState.releaseSamples + _voiceState.smoothingSamples;
 
   auto const& sustain = params.acc.sustainLevel[0].Voice()[voice].CV();
   if (_voiceState.delaySamples > 0)

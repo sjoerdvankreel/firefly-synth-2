@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBFormat.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
@@ -10,6 +11,7 @@
 #include <functional>
 
 class FBFixedFloatBlock;
+struct FBStaticTopo;
 struct FBModuleGraphComponentData;
 
 typedef std::function<FBFixedFloatBlock const* (
@@ -26,12 +28,17 @@ typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int voice, int moduleSlot)>
 FBModuleGraphVoiceExchangeSelector;    
 
+typedef std::function<int(
+  FBStaticTopo const& topo, void const* scalarState, int moduleSlot, float sampleRate)>
+FBModuleGraphPlotLengthSelector;
+
 template <class Processor>
 struct FBModuleGraphRenderData final
 {
   Processor processor = {};
   int staticModuleIndex = -1;
   FBModuleGraphComponentData* graphData = {};
+  FBModuleGraphPlotLengthSelector plotLengthSelector = {};
   FBModuleGraphVoiceOutputSelector voiceOutputSelector = {};
   FBModuleGraphGlobalOutputSelector globalOutputSelector = {};
   FBModuleGraphVoiceExchangeSelector voiceExchangeSelector = {};
@@ -60,7 +67,7 @@ FBRenderModuleGraphSeries(
     processed = renderData.processor.Process(*moduleProcState);
     if constexpr(Global)
       renderData.globalOutputSelector(
-        moduleProcState->procRaw, 
+        moduleProcState->procRaw,
         moduleSlot)->StoreToFloatArray(seriesIn);
     else
       renderData.voiceOutputSelector(
@@ -84,33 +91,32 @@ FBRenderModuleGraph(RenderData& renderData)
 
   assert(renderData.graphData != nullptr);
   assert(renderData.staticModuleIndex != -1);
+  assert(renderData.plotLengthSelector != nullptr);
   assert((renderData.voiceOutputSelector == nullptr) != (renderData.globalOutputSelector == nullptr));
   assert((renderData.voiceExchangeSelector == nullptr) != (renderData.globalExchangeSelector == nullptr));
 
   graphData->text = "OFF";
-  bool anyExchangeActive = false;
-  float maxDspSampleCount = 0.0f;
   FBModuleProcExchangeState const* moduleExchange = nullptr;
+  float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
+  int maxDspSampleCount = renderData.plotLengthSelector(
+    moduleProcState->topo->static_, scalarState, moduleProcState->moduleSlot, dspSampleRate);
+
   if constexpr (Global)
   {
-    moduleExchange = renderData.globalExchangeSelector(
+    auto const& moduleExchange = renderData.globalExchangeSelector(
       exchangeState, moduleProcState->moduleSlot);
-    anyExchangeActive = moduleExchange->active;
-    maxDspSampleCount = (float)moduleExchange->lengthSamples;
+    if (moduleExchange->active)
+      maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
   }
   else for (int v = 0; v < FBMaxVoices; v++)
   {
-    moduleExchange = renderData.voiceExchangeSelector(
+    auto const& moduleExchange = renderData.voiceExchangeSelector(
       exchangeState, v, moduleProcState->moduleSlot);
-    anyExchangeActive |= moduleExchange->active;
-    maxDspSampleCount = std::max(maxDspSampleCount, (float)moduleExchange->lengthSamples);
+    if(moduleExchange->active)
+      maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
   }
 
-  if (!anyExchangeActive)
-    return;
-
   float guiSampleCount = (float)graphData->pixelWidth;
-  float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
   moduleProcState->sampleRate = dspSampleRate / (maxDspSampleCount / guiSampleCount);
   renderState->PrepareForRenderPrimary();
   if constexpr(!Global)
