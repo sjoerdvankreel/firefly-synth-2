@@ -32,5 +32,7 @@ void
 FBModuleTabComponent::currentTabChanged(
   int newCurrentTabIndex, juce::String const& newCurrentTabName)
 {
-  _plugGUI->ActiveModuleSlotChanged(_moduleIndex, newCurrentTabIndex);
+  // TODO
+  if(newCurrentTabIndex > 0)
+    _plugGUI->ActiveModuleSlotChanged(_moduleIndex, newCurrentTabIndex - 1);
 }
