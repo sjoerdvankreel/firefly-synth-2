@@ -13,7 +13,7 @@ struct FBNoteParam
   float PlainToNormalized(int plain) const;
   std::string PlainToText(int plain) const;
   int NormalizedToPlain(float normalized) const;
-  std::optional<int> TextToPlain(bool io, std::string const& text) const;
+  std::optional<int> TextToPlain(std::string const& text) const;
 };
 
 inline int
