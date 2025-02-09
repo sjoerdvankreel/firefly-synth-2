@@ -21,14 +21,20 @@ FBNoteParam::PlainToText(int plain) const
 PopupMenu
 FBNoteParam::MakePopupMenu() const
 {
-  // TODO
   PopupMenu result;
-  for (int i = 0; i < ValueCount(); i++)
-    result.addItem(i + 1, PlainToText(i));
+  int notesPerOct = (int)NoteNames.size();
+  for (int i = 0; i < notesPerOct; i++)
+  {
+    PopupMenu noteMenu;
+    for (int j = 0; j < ValueCount(); j++)
+      if (j % notesPerOct == i)
+        noteMenu.addItem(j + 1, PlainToText(j));
+    result.addSubMenu(NoteNames[i], noteMenu);
+  }
   return result;
 }
 
-std::optional<int> 
+std::optional<int>
 FBNoteParam::TextToPlain(std::string const& text) const
 {
   for (int i = 0; i < ValueCount(); i++)
