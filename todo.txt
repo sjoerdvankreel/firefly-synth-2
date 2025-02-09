@@ -1,4 +1,3 @@
-paint also env graph when no voice (by scalar state)
 on/off switch for realtime paint
 repaint graph on tab change
 dont repaint expensive stuff if the UI not active -- but how?

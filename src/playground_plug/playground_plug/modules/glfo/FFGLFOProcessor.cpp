@@ -18,8 +18,10 @@ FFGLFOProcessor::PlotLengthSamples(
   FBStaticTopo const& topo, FFScalarState const& state,
   int moduleSlot, float sampleRate) const
 {
-  float rate = state.param.global.gLFO[moduleSlot].acc.rate[0];
-  return FBFreqToSamples(rate, sampleRate);
+  auto const& gLFOState = state.param.global.gLFO[moduleSlot];
+  auto const& gLFOTopo = topo.modules[(int)FFModuleType::GLFO];
+  auto const& param = gLFOTopo.params[(int)FFGLFOParam::Rate];
+  return param.linear.NormalizedFreqToSamples(gLFOState.acc.rate[0], sampleRate);
 }
 
 int

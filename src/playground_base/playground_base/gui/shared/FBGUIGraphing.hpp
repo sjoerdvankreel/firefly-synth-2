@@ -96,21 +96,20 @@ FBRenderModuleGraph(RenderData& renderData)
   assert((renderData.voiceExchangeSelector == nullptr) != (renderData.globalExchangeSelector == nullptr));
 
   graphData->text = "OFF";
-  FBModuleProcExchangeState const* moduleExchange = nullptr;
   float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
   int maxDspSampleCount = renderData.plotLengthSelector(
     moduleProcState->topo->static_, scalarState, moduleProcState->moduleSlot, dspSampleRate);
 
   if constexpr (Global)
   {
-    auto const& moduleExchange = renderData.globalExchangeSelector(
+    auto moduleExchange = renderData.globalExchangeSelector(
       exchangeState, moduleProcState->moduleSlot);
     if (moduleExchange->active)
       maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
   }
   else for (int v = 0; v < FBMaxVoices; v++)
   {
-    auto const& moduleExchange = renderData.voiceExchangeSelector(
+    auto moduleExchange = renderData.voiceExchangeSelector(
       exchangeState, v, moduleProcState->moduleSlot);
     if(moduleExchange->active)
       maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
@@ -128,6 +127,8 @@ FBRenderModuleGraph(RenderData& renderData)
   renderState->PrepareForRenderExchange();
   if constexpr (Global)
   {
+    auto moduleExchange = renderData.globalExchangeSelector(
+      exchangeState, moduleProcState->moduleSlot);
     if (!moduleExchange->ShouldGraph())
       return;
     float positionNormalized = moduleExchange->PositionNormalized();
@@ -143,7 +144,7 @@ FBRenderModuleGraph(RenderData& renderData)
     secondary.marker = (int)(positionNormalized * secondary.points.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
-    auto const& moduleExchange = renderData.voiceExchangeSelector(
+    auto moduleExchange = renderData.voiceExchangeSelector(
       exchangeState, v, moduleProcState->moduleSlot);
     if (!moduleExchange->ShouldGraph())
       continue;
