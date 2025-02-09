@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+using namespace juce;
+
 float
 FBListParam::PlainToNormalized(int plain) const
 {
@@ -16,6 +18,15 @@ FBListParam::TextToPlain(bool io, std::string const& text) const
     if (text == (io ? items[i].id : items[i].text))
       return { i };
   return {};
+}
+
+PopupMenu
+FBListParam::MakePopupMenu() const
+{
+  PopupMenu result;
+  for (int i = 0; i < ValueCount(); i++)
+    result.addItem(i + 1, PlainToText(FBValueTextDisplay::Text, i));
+  return result;
 }
 
 std::string

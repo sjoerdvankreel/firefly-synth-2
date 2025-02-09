@@ -1,5 +1,7 @@
 #include <playground_base/base/topo/static/FBStaticParam.hpp>
 
+using namespace juce;
+
 bool 
 FBStaticParam::IsVoiceAcc() const
 {
@@ -34,6 +36,21 @@ bool
 FBStaticParam::IsVoice() const
 {
   return IsVoiceAcc() || IsVoiceBlock();
+}
+
+PopupMenu
+FBStaticParam::MakePopupMenu() const
+{
+  switch (type)
+  {
+  case FBParamType::List:
+    return List().MakePopupMenu();
+  case FBParamType::Note:
+    return Note().MakePopupMenu();
+  default:
+    assert(false);
+    return {};
+  }
 }
 
 FBAutomationType 

@@ -2,6 +2,7 @@
 
 #include <playground_base/base/topo/param/FBListItem.hpp>
 #include <playground_base/base/topo/static/FBTextDisplay.hpp>
+#include <juce_gui_basics/juce_gui_basics.h>
 
 #include <string>
 #include <vector>
@@ -13,6 +14,7 @@ struct FBListParam
   std::vector<FBListItem> items = {};
   int ValueCount() const { return (int)items.size(); }
 
+  juce::PopupMenu MakePopupMenu() const;
   float PlainToNormalized(int plain) const;
   int NormalizedToPlain(float normalized) const;
   std::string PlainToText(FBValueTextDisplay display, int plain) const;

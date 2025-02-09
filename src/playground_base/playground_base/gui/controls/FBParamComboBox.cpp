@@ -10,11 +10,7 @@ FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
 ComboBox(),
 FBParamControl(plugGUI, param)
 {
-  for (int i = 0; i < param->static_.ValueCount(); i++)
-  {
-    float normalized = param->static_.AnyDiscreteToNormalizedSlow(i);
-    addItem(param->static_.NormalizedToText(FBValueTextDisplay::Text, normalized), i + 1);
-  }
+  *getRootMenu() = param->static_.MakePopupMenu();
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 

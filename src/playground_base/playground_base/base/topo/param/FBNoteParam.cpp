@@ -1,6 +1,8 @@
 #include <playground_base/base/topo/param/FBNoteParam.hpp>
 #include <vector>
 
+using namespace juce;
+
 static const std::vector<std::string> NoteNames = 
 { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
@@ -14,6 +16,16 @@ std::string
 FBNoteParam::PlainToText(int plain) const
 {
   return NoteNames[plain % 12] + std::to_string(plain / 12 - 1);
+}
+
+PopupMenu
+FBNoteParam::MakePopupMenu() const
+{
+  // TODO
+  PopupMenu result;
+  for (int i = 0; i < ValueCount(); i++)
+    result.addItem(i + 1, PlainToText(i));
+  return result;
 }
 
 std::optional<int> 

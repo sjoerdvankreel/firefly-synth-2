@@ -16,6 +16,8 @@
 #include <playground_base/base/topo/static/FBAutomationType.hpp>
 #include <playground_base/base/topo/static/FBParamsDependency.hpp>
 
+#include <juce_gui_basics/juce_gui_basics.h>
+
 #include <string>
 #include <vector>
 #include <cassert>
@@ -76,6 +78,7 @@ public:
   float AnyDiscreteToNormalizedSlow(int discrete) const;
   int NormalizedToAnyDiscreteSlow(float normalized) const;
 
+  juce::PopupMenu MakePopupMenu() const;
   float DefaultNormalizedByText() const;
   std::optional<float> TextToNormalized(bool io, std::string const& text) const;
   std::string NormalizedToText(FBValueTextDisplay display, float normalized) const;
