@@ -59,7 +59,7 @@ FBHostProcessor::ProcessHost(
 
   auto const& hostSmoothTimeSpecial = _procState->Special().hostSmoothTime;
   auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(_topo->static_);
-  int hostSmoothSamples = hostSmoothTimeTopo.linear.NormalizedTimeToSamples(hostSmoothTimeSpecial.state->Value(), _sampleRate);
+  int hostSmoothSamples = hostSmoothTimeTopo.typed.Linear().NormalizedTimeToSamples(hostSmoothTimeSpecial.state->Value(), _sampleRate);
   _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
   *_topo->static_.state.sampleRateExchangeAddr(_exchangeState->Raw()) = _sampleRate;

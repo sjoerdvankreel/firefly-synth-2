@@ -13,12 +13,11 @@ FBNoteParam::PlainToNormalized(int plain) const
 std::string 
 FBNoteParam::PlainToText(int plain) const
 {
-  // TODO wtf -1?
   return NoteNames[plain % 12] + std::to_string(plain / 12 - 1);
 }
 
 std::optional<int> 
-FBNoteParam::TextToPlain(bool io, std::string const& text) const
+FBNoteParam::TextToPlain(std::string const& text) const
 {
   for (int i = 0; i < ValueCount(); i++)
     if (text == PlainToText(i))

@@ -3,18 +3,11 @@
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
-#include <playground_base/base/topo/param/FBBoolParam.hpp>
-#include <playground_base/base/topo/param/FBListParam.hpp>
-#include <playground_base/base/topo/param/FBNoteParam.hpp>
-#include <playground_base/base/topo/param/FBLinearParam.hpp>
-#include <playground_base/base/topo/param/FBFreqOctParam.hpp>
-#include <playground_base/base/topo/param/FBDiscreteParam.hpp>
-
-#include <playground_base/base/topo/static/FBParamType.hpp>
 #include <playground_base/base/topo/static/FBParamAddrs.hpp>
 #include <playground_base/base/topo/static/FBTextDisplay.hpp>
 #include <playground_base/base/topo/static/FBAutomationType.hpp>
 #include <playground_base/base/topo/static/FBParamsDependency.hpp>
+#include <playground_base/base/topo/static/FBStaticTypedParam.hpp>
 
 #include <string>
 #include <vector>
@@ -32,14 +25,7 @@ struct FBStaticParam final
   std::string unit = {};
   std::string tooltip = {};
   std::string defaultText = {};
-
-  FBParamType type = {};
-  FBListParam list = {};
-  FBNoteParam note = {};
-  FBBoolParam boolean = {};
-  FBLinearParam linear = {};
-  FBFreqOctParam freqOct = {};
-  FBDiscreteParam discrete = {};
+  FBStaticTypedParam typed = {};
   FBParamsDependency relevant = {};
   FBParamAddrSelectors addrSelectors = {};
 
@@ -68,14 +54,14 @@ struct FBStaticParam final
 inline int
 FBStaticParam::ValueCount() const
 {
-  switch (type)
+  switch (typed.type)
   {
-  case FBParamType::List: return list.ValueCount();
-  case FBParamType::Note: return note.ValueCount();
-  case FBParamType::Linear: return linear.ValueCount();
-  case FBParamType::FreqOct: return freqOct.ValueCount();
-  case FBParamType::Boolean: return boolean.ValueCount();
-  case FBParamType::Discrete: return discrete.ValueCount();
+  case FBParamType::List: return typed.List().ValueCount();
+  case FBParamType::Note: return typed.Note().ValueCount();
+  case FBParamType::Linear: return typed.Linear().ValueCount();
+  case FBParamType::FreqOct: return typed.FreqOct().ValueCount();
+  case FBParamType::Boolean: return typed.Boolean().ValueCount();
+  case FBParamType::Discrete: return typed.Discrete().ValueCount();
   default: assert(false); return {};
   }
 }
