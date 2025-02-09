@@ -55,11 +55,11 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   _voiceState.key = (float)state.voice->event.note.key;
-  _voiceState.on = topo.params[(int)FFOsciParam::On].boolean.NormalizedToPlain(
+  _voiceState.on = topo.params[(int)FFOsciParam::On].Boolean().NormalizedToPlain(
     params.block.on[0].Voice()[voice]);
-  _voiceState.note = topo.params[(int)FFOsciParam::Note].discrete.NormalizedToPlain(
+  _voiceState.note = topo.params[(int)FFOsciParam::Note].Discrete().NormalizedToPlain(
     params.block.note[0].Voice()[voice]);
-  _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].list.NormalizedToPlain(
+  _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].List().NormalizedToPlain(
     params.block.type[0].Voice()[voice]);
 }
 
@@ -89,7 +89,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBFixedFloatBlock mono;
   FBFixedFloatBlock phase;
   incr.Transform([&](int v) {
-    auto centPlain = topo.params[(int)FFOsciParam::Cent].linear.NormalizedToPlain(cent.CV(v));
+    auto centPlain = topo.params[(int)FFOsciParam::Cent].Linear().NormalizedToPlain(cent.CV(v));
     auto pitch = _voiceState.key + _voiceState.note - 60.0f + centPlain;
     auto freq = FBPitchToFreq(pitch, state.sampleRate);
     return freq / state.sampleRate; });

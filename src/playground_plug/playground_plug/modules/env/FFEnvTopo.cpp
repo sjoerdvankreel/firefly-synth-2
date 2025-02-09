@@ -35,7 +35,7 @@ FFMakeEnvTopo()
   type.slotCount = 1;
   type.id = "{36179051-025E-4F4C-BBD7-108159165128}";
   type.type = FBParamType::List;
-  type.list.items = {
+  type.List().items = {
     { "{D779DC38-B3EF-47B2-BBB1-3A12DD8292B4}", "Sustain" },
     { "{06A7F943-E9F6-48CB-BB6A-96BA4CCC995D}", "Follow" },
     { "{B3E3277E-7DEC-4F8C-935F-165AC0023F15}", "Release" } };
@@ -53,7 +53,7 @@ FFMakeEnvTopo()
   sustainLevel.unit = "%";
   sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
   sustainLevel.type = FBParamType::Linear;
-  sustainLevel.linear.displayMultiplier = 100.0f;
+  sustainLevel.Linear().displayMultiplier = 100.0f;
   auto selectSustainLevel = [](auto& module) { return &module.acc.sustainLevel; };
   sustainLevel.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSustainLevel);
   sustainLevel.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSustainLevel);
@@ -78,7 +78,7 @@ FFMakeEnvTopo()
   mode.slotCount = 1;
   mode.id = "{F739A948-F9E6-4A22-9F56-52720704B74F}";
   mode.type = FBParamType::List;
-  mode.list.items = {
+  mode.List().items = {
     { "{59EB5AB9-50FC-4958-BABE-A126D65B7948}", "Linear" },
     { "{0B0F822E-A7D9-40B2-9B0B-7E404656DE3C}", "Exp", "Exponential" } };
   auto selectMode = [](auto& module) { return &module.block.mode; };
@@ -95,9 +95,9 @@ FFMakeEnvTopo()
   smoothTime.unit = "Ms";
   smoothTime.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
   smoothTime.type = FBParamType::Linear;
-  smoothTime.linear.min = 0.0f;
-  smoothTime.linear.max = 1.0f;
-  smoothTime.linear.displayMultiplier = 1000.0f;
+  smoothTime.Linear().min = 0.0f;
+  smoothTime.Linear().max = 1.0f;
+  smoothTime.Linear().displayMultiplier = 1000.0f;
   auto selectSmoothTime = [](auto& module) { return &module.block.smoothTime; };
   smoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSmoothTime);
   smoothTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSmoothTime);
@@ -112,8 +112,8 @@ FFMakeEnvTopo()
   delayTime.unit = "Sec";
   delayTime.id = "{D6A6CB86-A0D4-48A5-A495-038137E60519}";
   delayTime.type = FBParamType::Linear;
-  delayTime.linear.min = 0.0f;
-  delayTime.linear.max = 10.0f;
+  delayTime.Linear().min = 0.0f;
+  delayTime.Linear().max = 10.0f;
   auto selectDelayTime = [](auto& module) { return &module.block.delayTime; };
   delayTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelayTime);
   delayTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayTime);
@@ -128,8 +128,8 @@ FFMakeEnvTopo()
   attackTime.unit = "Sec";
   attackTime.id = "{193134E4-A104-419E-92A1-276E6CE1FA85}";
   attackTime.type = FBParamType::Linear;
-  attackTime.linear.min = 0.0f;
-  attackTime.linear.max = 10.0f;
+  attackTime.Linear().min = 0.0f;
+  attackTime.Linear().max = 10.0f;
   auto selectAttackTime = [](auto& module) { return &module.block.attackTime; };
   attackTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackTime);
   attackTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectAttackTime);
@@ -144,7 +144,7 @@ FFMakeEnvTopo()
   attackSlope.unit = "%";
   attackSlope.id = "{0C77104F-17CC-4256-8D65-FAD17E821758}";
   attackSlope.type = FBParamType::Linear;
-  attackSlope.linear.displayMultiplier = 100.0f;
+  attackSlope.Linear().displayMultiplier = 100.0f;
   auto selectAttackSlope = [](auto& module) { return &module.acc.attackSlope; };
   attackSlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackSlope);
   attackSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectAttackSlope);
@@ -160,8 +160,8 @@ FFMakeEnvTopo()
   holdTime.unit = "Sec";
   holdTime.id = "{29B5298F-C593-4E78-9D94-0FA1D36434B4}";
   holdTime.type = FBParamType::Linear;
-  holdTime.linear.min = 0.0f;
-  holdTime.linear.max = 10.0f;
+  holdTime.Linear().min = 0.0f;
+  holdTime.Linear().max = 10.0f;
   auto selectHoldTime = [](auto& module) { return &module.block.holdTime; };
   holdTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectHoldTime);
   holdTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectHoldTime);
@@ -176,8 +176,8 @@ FFMakeEnvTopo()
   decayTime.unit = "Sec";
   decayTime.id = "{DB9B7AB0-9FA2-4D6D-96D8-EA76D31B6F23}";
   decayTime.type = FBParamType::Linear;
-  decayTime.linear.min = 0.0f;
-  decayTime.linear.max = 10.0f;
+  decayTime.Linear().min = 0.0f;
+  decayTime.Linear().max = 10.0f;
   auto selectDecayTime = [](auto& module) { return &module.block.decayTime; };
   decayTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecayTime);
   decayTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDecayTime);
@@ -192,7 +192,7 @@ FFMakeEnvTopo()
   decaySlope.unit = "%";
   decaySlope.id = "{2F01EA4E-2665-4882-923D-FEF63D790F7B}";
   decaySlope.type = FBParamType::Linear;
-  decaySlope.linear.displayMultiplier = 100.0f;
+  decaySlope.Linear().displayMultiplier = 100.0f;
   auto selectDecaySlope = [](auto& module) { return &module.acc.decaySlope; };
   decaySlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecaySlope);
   decaySlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDecaySlope);
@@ -208,8 +208,8 @@ FFMakeEnvTopo()
   releaseTime.unit = "Sec";
   releaseTime.id = "{9AD9817D-295C-4911-BEF9-FEB46344BA8D}";
   releaseTime.type = FBParamType::Linear;
-  releaseTime.linear.min = 0.0f;
-  releaseTime.linear.max = 10.0f;
+  releaseTime.Linear().min = 0.0f;
+  releaseTime.Linear().max = 10.0f;
   auto selectReleaseTime = [](auto& module) { return &module.block.releaseTime; };
   releaseTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectReleaseTime);
   releaseTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectReleaseTime);
@@ -224,7 +224,7 @@ FFMakeEnvTopo()
   releaseSlope.unit = "%";
   releaseSlope.id = "{78A38181-41F7-4C0C-8489-F9AD55D6F2D9}";
   releaseSlope.type = FBParamType::Linear;
-  releaseSlope.linear.displayMultiplier = 100.0f;
+  releaseSlope.Linear().displayMultiplier = 100.0f;
   auto selectReleaseSlope = [](auto& module) { return &module.acc.releaseSlope; };
   releaseSlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectReleaseSlope);
   releaseSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectReleaseSlope);

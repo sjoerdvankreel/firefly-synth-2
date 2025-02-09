@@ -21,7 +21,7 @@ FFGLFOProcessor::PlotLengthSamples(
   auto const& gLFOState = state.param.global.gLFO[moduleSlot];
   auto const& gLFOTopo = topo.modules[(int)FFModuleType::GLFO];
   auto const& param = gLFOTopo.params[(int)FFGLFOParam::Rate];
-  return param.linear.NormalizedFreqToSamples(gLFOState.acc.rate[0], sampleRate);
+  return param.Linear().NormalizedFreqToSamples(gLFOState.acc.rate[0], sampleRate);
 }
 
 int
@@ -33,8 +33,8 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   auto const& rate = procParams.acc.rate[0].Global();
 
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
-  auto const& rateParamLinear = topo.params[(int)FFGLFOParam::Rate].linear;
-  bool on = topo.params[(int)FFGLFOParam::On].boolean.NormalizedToPlain(procParams.block.on[0].Value());
+  auto const& rateParamLinear = topo.params[(int)FFGLFOParam::Rate].Linear();
+  bool on = topo.params[(int)FFGLFOParam::On].Boolean().NormalizedToPlain(procParams.block.on[0].Value());
 
   if (!on)
   {

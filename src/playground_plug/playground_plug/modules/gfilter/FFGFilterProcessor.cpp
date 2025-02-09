@@ -19,8 +19,8 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   auto& output = procState->dsp.global.gFilter[state.moduleSlot].output;
   auto const& input = procState->dsp.global.gFilter[state.moduleSlot].input;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GFilter];
-  bool on = topo.params[(int)FFGFilterParam::On].boolean.NormalizedToPlain(procParams.block.on[0].Value());
-  auto type = (FFGFilterType)topo.params[(int)FFGFilterParam::Type].list.NormalizedToPlain(procParams.block.type[0].Value());
+  bool on = topo.params[(int)FFGFilterParam::On].Boolean().NormalizedToPlain(procParams.block.on[0].Value());
+  auto type = (FFGFilterType)topo.params[(int)FFGFilterParam::Type].List().NormalizedToPlain(procParams.block.type[0].Value());
 
   if (!on)
   {
@@ -40,7 +40,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   case FFGFilterType::HSH:
     gainBlock.LoadCastFromFloatArray(gain.CV());
     a.Transform([&](int v) {
-      auto plainGain = topo.params[(int)FFGFilterParam::Gain].linear.NormalizedToPlain(gainBlock[v]);
+      auto plainGain = topo.params[(int)FFGFilterParam::Gain].Linear().NormalizedToPlain(gainBlock[v]);
       return xsimd::pow(FBDoubleVector(10.0), plainGain / 40.0); });
     break;
   default:
@@ -50,7 +50,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   FBFixedDoubleBlock g, k;
   k.Transform([&](int v) { return 2.0 - 2.0 * resBlock[v]; });
   g.Transform([&](int v) {
-    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].freqOct.NormalizedToPlain(freqBlock[v]);
+    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].FreqOct().NormalizedToPlain(freqBlock[v]);
     return xsimd::tan(std::numbers::pi * plainFreq / state.sampleRate); });
 
   switch (type)

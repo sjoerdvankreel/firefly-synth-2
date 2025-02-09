@@ -24,22 +24,25 @@
 
 struct FBStaticParam final
 {
-  bool acc = false;
-  bool output = false;
-  int slotCount = {};
-  std::string id = {};
-  std::string name = {};
-  std::string unit = {};
-  std::string tooltip = {};
-  std::string defaultText = {};
-
-  FBParamType type = {};
+private:
   FBListParam list = {};
   FBNoteParam note = {};
   FBBoolParam boolean = {};
   FBLinearParam linear = {};
   FBFreqOctParam freqOct = {};
   FBDiscreteParam discrete = {};
+
+public:
+  bool acc = false;
+  bool output = false;
+  int slotCount = {};
+  FBParamType type = (FBParamType)-1;
+
+  std::string id = {};
+  std::string name = {};
+  std::string unit = {};
+  std::string tooltip = {};
+  std::string defaultText = {};
   FBParamsDependency relevant = {};
   FBParamAddrSelectors addrSelectors = {};
 
@@ -51,6 +54,20 @@ struct FBStaticParam final
   bool IsGlobalAcc() const;
   bool IsVoiceBlock() const;
   bool IsGlobalBlock() const;
+
+  FBListParam& List();
+  FBNoteParam& Note();
+  FBBoolParam& Boolean();
+  FBLinearParam& Linear();
+  FBFreqOctParam& FreqOct();
+  FBDiscreteParam& Discrete();
+
+  FBListParam const& List() const;
+  FBNoteParam const& Note() const;
+  FBBoolParam const& Boolean() const;
+  FBLinearParam const& Linear() const;
+  FBFreqOctParam const& FreqOct() const;
+  FBDiscreteParam const& Discrete() const;
   
   int ValueCount() const;
   std::string AutomationTooltip() const;
@@ -64,6 +81,90 @@ struct FBStaticParam final
   std::string NormalizedToText(FBValueTextDisplay display, float normalized) const;
   std::string NormalizedToText(FBParamTextDisplay display, float normalized) const;
 };
+
+inline FBListParam&
+FBStaticParam::List()
+{
+  assert(type == FBParamType::List);
+  return list;
+}
+
+inline FBNoteParam&
+FBStaticParam::Note()
+{
+  assert(type == FBParamType::Note);
+  return note;
+}
+
+inline FBBoolParam&
+FBStaticParam::Boolean()
+{
+  assert(type == FBParamType::Boolean);
+  return boolean;
+}
+
+inline FBLinearParam&
+FBStaticParam::Linear()
+{
+  assert(type == FBParamType::Linear);
+  return linear;
+}
+
+inline FBFreqOctParam&
+FBStaticParam::FreqOct()
+{
+  assert(type == FBParamType::FreqOct);
+  return freqOct;
+}
+
+inline FBDiscreteParam&
+FBStaticParam::Discrete()
+{
+  assert(type == FBParamType::Discrete);
+  return discrete;
+}
+
+inline FBListParam const&
+FBStaticParam::List() const
+{
+  assert(type == FBParamType::List);
+  return list;
+}
+
+inline FBNoteParam const&
+FBStaticParam::Note() const
+{
+  assert(type == FBParamType::Note);
+  return note;
+}
+
+inline FBBoolParam const&
+FBStaticParam::Boolean() const
+{
+  assert(type == FBParamType::Boolean);
+  return boolean;
+}
+
+inline FBLinearParam const&
+FBStaticParam::Linear() const
+{
+  assert(type == FBParamType::Linear);
+  return linear;
+}
+
+inline FBFreqOctParam const&
+FBStaticParam::FreqOct() const
+{
+  assert(type == FBParamType::FreqOct);
+  return freqOct;
+}
+
+inline FBDiscreteParam const&
+FBStaticParam::Discrete() const
+{
+  assert(type == FBParamType::Discrete);
+  return discrete;
+}
 
 inline int
 FBStaticParam::ValueCount() const

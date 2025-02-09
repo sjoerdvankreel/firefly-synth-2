@@ -144,7 +144,7 @@ FBStaticParam::TextToNormalized(bool io, std::string const& text) const
   {
     case FBParamType::Note:
     {
-      auto plain = note.TextToPlain(io, text); // todo no io
+      auto plain = note.TextToPlain(text);
       if (!plain) return {};
       return note.PlainToNormalized(plain.value());
     }

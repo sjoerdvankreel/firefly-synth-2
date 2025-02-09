@@ -33,7 +33,7 @@ FFMakeOsciTopo()
   type.slotCount = 1;
   type.id = "{43F55F08-7C81-44B8-9A95-CC897785D3DE}";
   type.type = FBParamType::List;
-  type.list.items = {
+  type.List().items = {
     { "{2400822D-BFA9-4A43-91E8-2849756DE659}", "Sine" },
     { "{ECE0331E-DD96-446E-9CCA-5B89EE949EB4}", "Saw" },
     { "{E552CDF9-62A8-4EE2-84E2-8D7170D15919}", "Pulse" } };
@@ -62,7 +62,7 @@ FFMakeOsciTopo()
   gain.unit = "%";
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   gain.type = FBParamType::Linear;
-  gain.linear.displayMultiplier = 100.0f;
+  gain.Linear().displayMultiplier = 100.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectGain);
@@ -76,9 +76,9 @@ FFMakeOsciTopo()
   cent.unit = "Cent";
   cent.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
   cent.type = FBParamType::Linear;
-  cent.linear.min = -1.0f;
-  cent.linear.max = 1.0f;
-  cent.linear.displayMultiplier = 100.0f;
+  cent.Linear().min = -1.0f;
+  cent.Linear().max = 1.0f;
+  cent.Linear().displayMultiplier = 100.0f;
   auto selectCent = [](auto& module) { return &module.acc.cent; };
   cent.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectCent);
   cent.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectCent);
@@ -92,7 +92,7 @@ FFMakeOsciTopo()
   pw.unit = "%";
   pw.id = "{CDB18D21-6C2A-4352-93E1-FCF37EA7D35F}";
   pw.type = FBParamType::Linear;
-  pw.linear.displayMultiplier = 100.0f;
+  pw.Linear().displayMultiplier = 100.0f;
   auto selectPW = [](auto& module) { return &module.acc.pw; };
   pw.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectPW);
   pw.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectPW);
@@ -106,7 +106,7 @@ FFMakeOsciTopo()
   gLFOToGain.unit = "%";
   gLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
   gLFOToGain.type = FBParamType::Linear;
-  gLFOToGain.linear.displayMultiplier = 100.0f;
+  gLFOToGain.Linear().displayMultiplier = 100.0f;
   auto selectGLFOToGain = [](auto& module) { return &module.acc.gLFOToGain; };
   gLFOToGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGLFOToGain);
   gLFOToGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectGLFOToGain);
