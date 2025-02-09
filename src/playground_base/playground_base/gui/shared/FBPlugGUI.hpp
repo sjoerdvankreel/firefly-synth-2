@@ -29,11 +29,12 @@ public:
   std::string GetParamActiveTooltip(
     FBStaticParam const& param, bool active, float value) const;
 
+  void UpdateExchangeState();
   void ShowHostMenuForParam(int index);
   void SteppedParamNormalizedChanged(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
-  void UpdateExchangeState();
+  virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
   virtual void SetParamNormalizedFromUI(int index, float normalized) = 0;
   virtual void SetParamNormalizedFromHost(int index, float normalized);
 

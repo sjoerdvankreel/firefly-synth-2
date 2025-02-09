@@ -47,6 +47,13 @@ FFPlugGUI::resized()
 }
 
 void 
+FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
+{
+  auto topo = HostContext()->Topo()->ModuleAtTopo({ index, slot });
+  RequestGraphRender(topo->runtimeModuleIndex);
+}
+
+void 
 FFPlugGUI::SetParamNormalizedFromUI(int index, float normalized)
 {
   int moduleIndex = HostContext()->Topo()->params[index].runtimeModuleIndex;

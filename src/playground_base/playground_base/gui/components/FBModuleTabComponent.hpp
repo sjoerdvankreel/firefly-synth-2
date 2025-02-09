@@ -10,13 +10,17 @@ typedef std::function<juce::Component*(
 FBModuleTabFactory;
 
 class FBModuleTabComponent:
-public juce::Component
+public juce::TabbedComponent
 {
-  juce::TabbedComponent _tabs;
+  FBPlugGUI* const _plugGUI;
+  int const _moduleIndex;
 
 public:
-  void resized() override;
   FBModuleTabComponent(
     FBPlugGUI* plugGUI, int moduleIndex, 
     FBModuleTabFactory const& tabFactory);
+  
+  void currentTabChanged(
+    int newCurrentTabIndex, 
+    juce::String const& newCurrentTabName);
 };

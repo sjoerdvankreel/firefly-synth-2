@@ -12,6 +12,7 @@ struct FBStaticModule;
 struct FBRuntimeModule final
 {
   std::string name;
+  int runtimeModuleIndex;
   FBTopoIndices topoIndices;
   std::vector<FBRuntimeParam> params;
 

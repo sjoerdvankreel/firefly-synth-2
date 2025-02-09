@@ -22,12 +22,14 @@ struct FBRuntimeTopo final
   std::vector<FBRuntimeModule> modules;
   std::vector<FBRuntimeParam> params;
   std::unordered_map<int, int> paramTagToIndex;
+  std::map<FBTopoIndices, int> moduleTopoToRuntime;
   std::map<FBParamTopoIndices, int> paramTopoToRuntime;
 
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
 
   FBRuntimeModule const* ModuleAtParamIndex(int runtimeParamIndex) const;
+  FBRuntimeModule const* ModuleAtTopo(FBTopoIndices const& topoIndices) const;
   FBRuntimeParam const* ParamAtTopo(FBParamTopoIndices const& topoIndices) const;
 
   juce::var SaveGUIStateToVar(FBGUIState const& gui) const;

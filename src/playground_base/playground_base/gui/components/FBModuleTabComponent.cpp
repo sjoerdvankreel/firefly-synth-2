@@ -11,25 +11,26 @@ FBModuleTabComponent::
 FBModuleTabComponent(
   FBPlugGUI* plugGUI, int moduleIndex, 
   FBModuleTabFactory const& tabFactory) :
-Component(),
-_tabs(TabbedButtonBar::Orientation::TabsAtTop)
-{
-  auto const& module = plugGUI->HostContext()->Topo()->static_.modules[moduleIndex];
+TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop),
+_plugGUI(plugGUI),
+_moduleIndex(moduleIndex)
+{ 
+  auto topo = plugGUI->HostContext()->Topo();
+  auto const& module = topo->static_.modules[moduleIndex];
   if(module.slotCount == 1)
-    _tabs.addTab(module.name, Colours::black, tabFactory(plugGUI, 0), false);
+    addTab(module.name, Colours::black, tabFactory(plugGUI, 0), false);
   else
   {
-    _tabs.addTab(module.name, Colours::black, nullptr, false);
+    addTab(module.name, Colours::black, nullptr, false);
     for (int i = 0; i < module.slotCount; i++)
-      _tabs.addTab(std::to_string(i + 1), Colours::black, tabFactory(plugGUI, i), false);
-    _tabs.setCurrentTabIndex(1);
+      addTab(std::to_string(i + 1), Colours::black, tabFactory(plugGUI, i), false);
+    setCurrentTabIndex(1);
   }
-  addAndMakeVisible(_tabs);
 }
 
-void
-FBModuleTabComponent::resized()
+void 
+FBModuleTabComponent::currentTabChanged(
+  int newCurrentTabIndex, juce::String const& newCurrentTabName)
 {
-  _tabs.setBounds(getLocalBounds());
-  _tabs.resized();
+  _plugGUI->ActiveModuleSlotChanged(_moduleIndex, newCurrentTabIndex);
 }

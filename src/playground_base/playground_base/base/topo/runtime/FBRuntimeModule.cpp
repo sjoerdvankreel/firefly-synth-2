@@ -30,5 +30,6 @@ FBRuntimeModule(
   FBTopoIndices const& topoIndices,
   int runtimeIndex, int runtimeParamStart):
 topoIndices(topoIndices),
+runtimeModuleIndex(runtimeIndex),
 name(FBMakeRuntimeName(staticModule.name, staticModule.slotCount, topoIndices.slot)),
 params(MakeRuntimeParams(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)) {}

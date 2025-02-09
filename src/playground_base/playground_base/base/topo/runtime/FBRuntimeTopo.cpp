@@ -37,6 +37,16 @@ MakeParamTagToIndex(
   return result;
 }
 
+static std::map<FBTopoIndices, int>
+MakeModuleTopoToRuntime(
+  std::vector<FBRuntimeModule> const& modules)
+{
+  std::map<FBTopoIndices, int> result;
+  for (int m = 0; m < modules.size(); m++)
+    result[modules[m].topoIndices] = m;
+  return result;
+}
+
 static std::map<FBParamTopoIndices, int>
 MakeParamTopoToRuntime(
   std::vector<FBRuntimeParam> const& params)
@@ -83,6 +93,7 @@ static_(topo),
 modules(MakeRuntimeModules(topo)),
 params(MakeRuntimeParams(modules)),
 paramTagToIndex(MakeParamTagToIndex(params)),
+moduleTopoToRuntime(MakeModuleTopoToRuntime(modules)),
 paramTopoToRuntime(MakeParamTopoToRuntime(params)) {}
 
 FBRuntimeParam const*
@@ -90,6 +101,13 @@ FBRuntimeTopo::ParamAtTopo(
   FBParamTopoIndices const& topoIndices) const
 {
   return &params[paramTopoToRuntime.at(topoIndices)];
+}
+
+FBRuntimeModule const* 
+FBRuntimeTopo::ModuleAtTopo(
+  FBTopoIndices const& topoIndices) const
+{
+  return &modules[moduleTopoToRuntime.at(topoIndices)];
 }
 
 FBRuntimeModule const* 
