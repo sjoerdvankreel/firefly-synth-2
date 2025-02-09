@@ -57,7 +57,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.key = (float)state.voice->event.note.key;
   _voiceState.on = topo.params[(int)FFOsciParam::On].Boolean().NormalizedToPlain(
     params.block.on[0].Voice()[voice]);
-  _voiceState.note = topo.params[(int)FFOsciParam::Note].Discrete().NormalizedToPlain(
+  _voiceState.note = topo.params[(int)FFOsciParam::Note].Note().NormalizedToPlain(
     params.block.note[0].Voice()[voice]);
   _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].List().NormalizedToPlain(
     params.block.type[0].Voice()[voice]);
