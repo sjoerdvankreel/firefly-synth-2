@@ -41,7 +41,7 @@ FBStaticParam::AutomationType() const
 {
   if (acc)
     return FBAutomationType::Modulate;
-  if (!FBParamTypeIsStepped(typed.type) && IsVoiceBlock())
+  if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
     return FBAutomationType::Automate;
   return FBAutomationType::None;
 }
@@ -54,7 +54,7 @@ FBStaticParam::AutomationTooltip() const
       return "Sample Accurate Per Voice";
     else
       return "Sample Accurate";
-  if (!FBParamTypeIsStepped(typed.type) && IsVoiceBlock())
+  if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
     return "At Voice Start";
   return "None";
 }
@@ -79,16 +79,16 @@ FBStaticParam::NormalizedToText(FBParamTextDisplay display, float normalized) co
 float
 FBStaticParam::AnyDiscreteToNormalizedSlow(int plain) const
 {
-  switch (typed.type)
+  switch (type)
   {
   case FBParamType::List:
-    return typed.List().PlainToNormalized(plain);
+    return list.PlainToNormalized(plain);
   case FBParamType::Note:
-    return typed.Note().PlainToNormalized(plain);
+    return note.PlainToNormalized(plain);
   case FBParamType::Boolean:
-    return typed.Boolean().PlainToNormalized(plain);
+    return boolean.PlainToNormalized(plain);
   case FBParamType::Discrete:
-    return typed.Discrete().PlainToNormalized(plain);
+    return discrete.PlainToNormalized(plain);
   default:
     assert(false);
     return {};
@@ -98,16 +98,16 @@ FBStaticParam::AnyDiscreteToNormalizedSlow(int plain) const
 int 
 FBStaticParam::NormalizedToAnyDiscreteSlow(float normalized) const
 {
-  switch (typed.type)
+  switch (type)
   {
   case FBParamType::List:
-    return typed.List().NormalizedToPlain(normalized);
+    return list.NormalizedToPlain(normalized);
   case FBParamType::Note:
-    return typed.Note().NormalizedToPlain(normalized);
+    return note.NormalizedToPlain(normalized);
   case FBParamType::Boolean:
-    return typed.Boolean().NormalizedToPlain(normalized);
+    return boolean.NormalizedToPlain(normalized);
   case FBParamType::Discrete:
-    return typed.Discrete().NormalizedToPlain(normalized);
+    return discrete.NormalizedToPlain(normalized);
   default:
     assert(false);
     return {};
@@ -117,20 +117,20 @@ FBStaticParam::NormalizedToAnyDiscreteSlow(float normalized) const
 std::string 
 FBStaticParam::NormalizedToText(FBValueTextDisplay display, float normalized) const
 {
-  switch (typed.type)
+  switch (type)
   {
   case FBParamType::Note:
-    return typed.Note().PlainToText(typed.Note().NormalizedToPlain(normalized));
+    return note.PlainToText(note.NormalizedToPlain(normalized));
   case FBParamType::Boolean:
-    return typed.Boolean().PlainToText(typed.Boolean().NormalizedToPlain(normalized));
+    return boolean.PlainToText(boolean.NormalizedToPlain(normalized));
   case FBParamType::Discrete:
-    return typed.Discrete().PlainToText(typed.Discrete().NormalizedToPlain(normalized));
+    return discrete.PlainToText(discrete.NormalizedToPlain(normalized));
   case FBParamType::List:
-    return typed.List().PlainToText(display, typed.List().NormalizedToPlain(normalized));
+    return list.PlainToText(display, list.NormalizedToPlain(normalized));
   case FBParamType::Linear:
-    return typed.Linear().PlainToText(display, typed.Linear().NormalizedToPlain(normalized));
+    return linear.PlainToText(display, linear.NormalizedToPlain(normalized));
   case FBParamType::FreqOct:
-    return typed.FreqOct().PlainToText(display, typed.FreqOct().NormalizedToPlain(normalized));
+    return freqOct.PlainToText(display, freqOct.NormalizedToPlain(normalized));
   default:
     assert(false);
     return {};
@@ -140,43 +140,43 @@ FBStaticParam::NormalizedToText(FBValueTextDisplay display, float normalized) co
 std::optional<float> 
 FBStaticParam::TextToNormalized(bool io, std::string const& text) const
 {
-  switch (typed.type)
+  switch (type)
   {
     case FBParamType::Note:
     {
-      auto plain = typed.Note().TextToPlain(text);
+      auto plain = note.TextToPlain(io, text); // todo no io
       if (!plain) return {};
-      return typed.Note().PlainToNormalized(plain.value());
+      return note.PlainToNormalized(plain.value());
     }
     case FBParamType::List:
     {
-      auto plain = typed.List().TextToPlain(io, text);
+      auto plain = list.TextToPlain(io, text);
       if (!plain) return {};
-      return typed.List().PlainToNormalized(plain.value());
+      return list.PlainToNormalized(plain.value());
     }
     case FBParamType::Boolean:
     {
-      auto plain = typed.Boolean().TextToPlain(text);
+      auto plain = boolean.TextToPlain(text);
       if (!plain) return {};
-      return typed.Boolean().PlainToNormalized(plain.value());
+      return boolean.PlainToNormalized(plain.value());
     }
     case FBParamType::Linear:
     {
-      auto plain = typed.Linear().TextToPlain(text);
+      auto plain = linear.TextToPlain(text);
       if (!plain) return {};
-      return typed.Linear().PlainToNormalized(plain.value());
+      return linear.PlainToNormalized(plain.value());
     }
     case FBParamType::FreqOct:
     {
-      auto plain = typed.FreqOct().TextToPlain(text);
+      auto plain = freqOct.TextToPlain(text);
       if (!plain) return {};
-      return typed.FreqOct().PlainToNormalized(plain.value());
+      return freqOct.PlainToNormalized(plain.value());
     }
     case FBParamType::Discrete:
     {
-      auto plain = typed.Discrete().TextToPlain(text);
+      auto plain = discrete.TextToPlain(text);
       if (!plain) return {};
-      return typed.Discrete().PlainToNormalized(plain.value());
+      return discrete.PlainToNormalized(plain.value());
     }
     default:
     {
