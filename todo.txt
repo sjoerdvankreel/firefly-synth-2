@@ -1,5 +1,4 @@
 on/off switch for realtime paint
-repaint graph on tab change
 dont repaint expensive stuff if the UI not active -- but how?
 not hardcode env1 to voice amp
 get rid of the sysheaders warnings
