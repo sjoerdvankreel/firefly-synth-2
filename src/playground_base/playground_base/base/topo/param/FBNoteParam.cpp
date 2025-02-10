@@ -18,15 +18,6 @@ FBNoteParam::PlainToText(int plain) const
   return NoteNames[plain % 12] + std::to_string(plain / 12 - 1);
 }
 
-PopupMenu
-FBNoteParam::MakePopupMenu() const
-{
-  PopupMenu result;
-  for (int i = 0; i < ValueCount(); i++)
-    result.addItem(i + 1, PlainToText(i));
-  return result;
-}
-
 std::optional<int>
 FBNoteParam::TextToPlain(std::string const& text) const
 {
@@ -34,4 +25,22 @@ FBNoteParam::TextToPlain(std::string const& text) const
     if (text == PlainToText(i))
       return { i };
   return {};
+}
+
+PopupMenu
+FBNoteParam::MakePopupMenu() const
+{
+  PopupMenu result;
+  for (int i = 0; i < NoteNames.size(); i++)
+  {
+    PopupMenu noteMenu;
+    for (int j = 0; j < 128.0f / 12.0f; j++)
+    {
+      int midiNote = j * 12 + i;
+      if (midiNote < 128)
+        noteMenu.addItem(midiNote + 1, PlainToText(midiNote));
+    }
+    result.addSubMenu(NoteNames[i], noteMenu);
+  }
+  return result;
 }
