@@ -76,7 +76,7 @@ _enabled(std::make_unique<FBParamsDependentDependency>(
 std::vector<int> const& 
 FBParamsDependent::RuntimeDependencies(bool visible) const
 {
-  if (_visible)
+  if (visible)
     return _visible->runtimeDependencies;
   else
     return _enabled->runtimeDependencies;
