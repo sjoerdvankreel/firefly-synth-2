@@ -101,6 +101,7 @@ FFMakeEnvTopo()
   delayTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelayTime);
   delayTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayTime);
   delayTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDelayTime);
+  delayTime.relevant.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
 
   auto& attackTime = result->params[(int)FFEnvParam::AttackTime];
   attackTime.acc = false;
@@ -182,6 +183,23 @@ FFMakeEnvTopo()
   smoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSmoothTime);
   smoothTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSmoothTime);
   smoothTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSmoothTime);
+
+  auto& delayBars = result->params[(int)FFEnvParam::DelayBars];
+  delayBars.acc = false;
+  delayBars.defaultText = "1/4";
+  delayBars.name = "Dly"; // TODO
+  delayBars.tooltip = "Delay Bars";
+  delayBars.slotCount = 1;
+  delayBars.unit = "Bars";
+  delayBars.id = "{02BB4557-BFF4-4EBB-81FB-241861C94BDC}";
+  delayBars.type = FBParamType::TimeSig;
+  delayBars.TimeSig().items.push_back({ 1, 4 }); // TODO
+  delayBars.TimeSig().items.push_back({ 1, 1 });
+  auto selectDelayBars = [](auto& module) { return &module.block.delayBars; };
+  delayBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelayBars);
+  delayBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayBars);
+  delayBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDelayBars);
+  delayTime.relevant.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
   attackSlope.acc = true;

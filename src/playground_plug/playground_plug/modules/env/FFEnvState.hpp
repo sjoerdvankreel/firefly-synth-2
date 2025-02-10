@@ -34,6 +34,7 @@ class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
   std::array<TVoiceBlock, 1> attackTime = {};
   std::array<TVoiceBlock, 1> smoothTime = {};
   std::array<TVoiceBlock, 1> releaseTime = {};
+  std::array<TVoiceBlock, 1> delayBars = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvBlockParamState);
 };
