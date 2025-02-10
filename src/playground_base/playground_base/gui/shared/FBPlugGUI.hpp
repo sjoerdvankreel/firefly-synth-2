@@ -53,7 +53,8 @@ private:
   std::unordered_map<int, int> _paramIndexToComponent = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
   std::chrono::high_resolution_clock::time_point _exchangeUpdated = {};
-  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsDependents = {};
+  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsVisibleDependents = {};
+  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsEnabledDependents = {};
 };
 
 template <class TComponent, class... Args>

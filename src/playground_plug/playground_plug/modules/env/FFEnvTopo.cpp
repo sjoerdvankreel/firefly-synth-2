@@ -101,7 +101,7 @@ FFMakeEnvTopo()
   delayTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelayTime);
   delayTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayTime);
   delayTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDelayTime);
-  delayTime.relevant.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  delayTime.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
 
   auto& attackTime = result->params[(int)FFEnvParam::AttackTime];
   attackTime.acc = false;
@@ -199,7 +199,7 @@ FFMakeEnvTopo()
   delayBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelayBars);
   delayBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayBars);
   delayBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDelayBars);
-  delayBars.relevant.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  delayBars.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
   attackSlope.acc = true;
@@ -215,7 +215,7 @@ FFMakeEnvTopo()
   attackSlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackSlope);
   attackSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectAttackSlope);
   attackSlope.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAttackSlope);
-  attackSlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
+  attackSlope.dependencies.enabled.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   auto& decaySlope = result->params[(int)FFEnvParam::DecaySlope];
   decaySlope.acc = true;
@@ -231,7 +231,7 @@ FFMakeEnvTopo()
   decaySlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecaySlope);
   decaySlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDecaySlope);
   decaySlope.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDecaySlope);
-  decaySlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
+  decaySlope.dependencies.enabled.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   auto& releaseSlope = result->params[(int)FFEnvParam::ReleaseSlope];
   releaseSlope.acc = true;
@@ -247,7 +247,7 @@ FFMakeEnvTopo()
   releaseSlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectReleaseSlope);
   releaseSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectReleaseSlope);
   releaseSlope.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectReleaseSlope);
-  releaseSlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
+  releaseSlope.dependencies.enabled.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   return result;
 }

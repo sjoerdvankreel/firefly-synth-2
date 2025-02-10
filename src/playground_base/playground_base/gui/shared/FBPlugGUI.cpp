@@ -22,8 +22,10 @@ _hostContext(hostContext)
 void
 FBPlugGUI::SteppedParamNormalizedChanged(int index)
 {
-  for (auto target : _paramsDependents[index])
-    target->DependenciesChanged();
+  for (auto target : _paramsVisibleDependents[index])
+    target->DependenciesChanged(true);
+  for (auto target : _paramsEnabledDependents[index])
+    target->DependenciesChanged(false);
 }
 
 void 
@@ -122,8 +124,12 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
   if ((paramControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
     _paramIndexToComponent[paramControl->Param()->runtimeParamIndex] = componentIndex;
   if ((paramsDependent = dynamic_cast<FBParamsDependent*>(result)) != nullptr)
-    for (int p : paramsDependent->RuntimeDependencies())
-      _paramsDependents[p].insert(paramsDependent);
+  {
+    for (int p : paramsDependent->RuntimeDependencies(true))
+      _paramsVisibleDependents[p].insert(paramsDependent);
+    for (int p : paramsDependent->RuntimeDependencies(false))
+      _paramsEnabledDependents[p].insert(paramsDependent);
+  }
   return result;
 }
 

@@ -10,11 +10,5 @@ FBParamComponent::
 FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
 FBParamsDependent(
   plugGUI, param->topoIndices.module, 
-  param->topoIndices.param.slot, param->static_.relevant),
+  param->topoIndices.param.slot, param->static_.dependencies),
 _param(param) {}
-
-void 
-FBParamComponent::DependenciesChanged(bool outcome)
-{
-  dynamic_cast<Component&>(*this).setEnabled(outcome);
-}

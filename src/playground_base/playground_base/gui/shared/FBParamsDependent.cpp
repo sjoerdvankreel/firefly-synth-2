@@ -3,6 +3,8 @@
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
+using namespace juce;
+
 static std::vector<int>
 RuntimeDependencies(
   FBRuntimeTopo const* topo,
@@ -22,25 +24,71 @@ RuntimeDependencies(
   return result;
 }
 
+struct FBParamsDependentDependency final
+{
+  std::vector<int> evaluations = {};
+  FBParamsDependency dependency = {};
+  std::vector<int> const runtimeDependencies = {};
+  
+  bool Evaluate(FBHostGUIContext const* hostContext);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependentDependency);  
+  FBParamsDependentDependency(
+    FBRuntimeTopo const* topo, FBTopoIndices const& moduleIndices,
+    int staticParamSlot, FBParamsDependency const& dependency);
+};
+
+FBParamsDependentDependency::
+FBParamsDependentDependency(
+  FBRuntimeTopo const* topo, FBTopoIndices const& moduleIndices,
+  int staticParamSlot, FBParamsDependency const& dependency) :
+evaluations(),
+dependency(dependency),
+runtimeDependencies(RuntimeDependencies(
+  topo, moduleIndices, staticParamSlot, 
+  dependency.staticParamIndices)) {}
+
+bool
+FBParamsDependentDependency::Evaluate(FBHostGUIContext const* hostContext)
+{
+  evaluations.clear();
+  for (int i = 0; i < runtimeDependencies.size(); i++)
+  {
+    auto const& param = hostContext->Topo()->params[runtimeDependencies[i]];
+    evaluations.push_back(param.static_.NormalizedToAnyDiscreteSlow(
+      hostContext->GetParamNormalized(runtimeDependencies[i])));
+  }
+  return dependency.evaluate(evaluations);
+}
+
+FBParamsDependent::
+~FBParamsDependent() {}
+
 FBParamsDependent::
 FBParamsDependent(
   FBPlugGUI* plugGUI, FBTopoIndices const& moduleIndices,
-  int staticParamSlot, FBParamsDependency const& dependency):
+  int staticParamSlot, FBParamsDependencies const& dependencies):
 _plugGUI(plugGUI),
-_evaluations(),
-_dependency(dependency),
-_runtimeDependencies(
-  ::RuntimeDependencies(
-    plugGUI->HostContext()->Topo(), moduleIndices, 
-    staticParamSlot, dependency.staticParamIndices)) {}
+_visible(std::make_unique<FBParamsDependentDependency>(
+  plugGUI->HostContext()->Topo(), moduleIndices, staticParamSlot, dependencies.visible)),
+_enabled(std::make_unique<FBParamsDependentDependency>(
+  plugGUI->HostContext()->Topo(), moduleIndices, staticParamSlot, dependencies.enabled)) {}
+
+std::vector<int> const& 
+FBParamsDependent::RuntimeDependencies(bool visible) const
+{
+  if (_visible)
+    return _visible->runtimeDependencies;
+  else
+    return _enabled->runtimeDependencies;
+}
 
 void 
-FBParamsDependent::DependenciesChanged()
+FBParamsDependent::DependenciesChanged(bool visible)
 {
-  _evaluations.clear();
-  for (int i = 0; i < _runtimeDependencies.size(); i++)
-    _evaluations.push_back(
-      _plugGUI->HostContext()->Topo()->params[_runtimeDependencies[i]].static_.NormalizedToAnyDiscreteSlow(
-        _plugGUI->HostContext()->GetParamNormalized(_runtimeDependencies[i])));
-  DependenciesChanged(_dependency.evaluate(_evaluations));
+  auto hostContext = _plugGUI->HostContext();
+  auto& self = dynamic_cast<Component&>(*this);
+  if (visible)
+    self.setVisible(_visible->Evaluate(hostContext));
+  else
+    self.setEnabled(_enabled->Evaluate(hostContext));
 }

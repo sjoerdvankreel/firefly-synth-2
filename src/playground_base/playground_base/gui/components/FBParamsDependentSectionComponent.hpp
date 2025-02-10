@@ -4,15 +4,14 @@
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 
 struct FBTopoIndices;
-struct FBParamsDependency;
+struct FBParamsDependencies;
 
 class FBParamsDependentSectionComponent:
 public FBSectionComponent,
 public FBParamsDependent
 {
 public:
-  void DependenciesChanged(bool outcome) override;
   FBParamsDependentSectionComponent(
     FBPlugGUI* plugGUI, juce::Component* content, 
-    FBTopoIndices const& moduleIndices, FBParamsDependency const& dependency);
+    FBTopoIndices const& moduleIndices, FBParamsDependencies const& dependencies);
 };

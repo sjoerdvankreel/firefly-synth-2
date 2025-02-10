@@ -97,7 +97,7 @@ FFMakeOsciTopo()
   pw.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectPW);
   pw.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectPW);
   pw.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectPW);
-  pw.relevant.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Pulse; });
+  pw.dependencies.enabled.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Pulse; });
 
   auto& gLFOToGain = result->params[(int)FFOsciParam::GLFOToGain];
   gLFOToGain.acc = true;

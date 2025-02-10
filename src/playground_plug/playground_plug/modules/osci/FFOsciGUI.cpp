@@ -62,8 +62,9 @@ MakeSectionGain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gLFOToGain));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::RotaryVerticalDrag));
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
-  FBParamsDependency dependency = { { (int)FFOsciParam::On }, [](auto const& vs) { return vs[0] != 0; } };
-  return plugGUI->StoreComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependency);
+  FBParamsDependencies dependencies = {};
+  dependencies.visible = { {(int)FFOsciParam::On}, [](auto const& vs) { return vs[0] != 0; } };
+  return plugGUI->StoreComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependencies);
 }
 
 static Component*

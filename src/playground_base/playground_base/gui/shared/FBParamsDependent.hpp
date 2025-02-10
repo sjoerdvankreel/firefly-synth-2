@@ -1,30 +1,32 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/static/FBParamsDependency.hpp>
 
 #include <vector>
+#include <memory>
 
 class FBPlugGUI;
 struct FBTopoIndices;
+struct FBParamsDependency;
+struct FBParamsDependencies;
+struct FBParamsDependentDependency;
 
 class FBParamsDependent
 {
-private:
-  std::vector<int> _evaluations;
-  FBParamsDependency _dependency;
-  std::vector<int> const _runtimeDependencies;
-
 protected:
   FBPlugGUI* const _plugGUI;
-  virtual void DependenciesChanged(bool outcome) = 0;
+
+private:
+  std::unique_ptr<FBParamsDependentDependency> _visible;
+  std::unique_ptr<FBParamsDependentDependency> _enabled;
 
 public:
+  virtual ~FBParamsDependent();
+  void DependenciesChanged(bool visible);
+  std::vector<int> const& RuntimeDependencies(bool visible) const;
+  
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependent);
   FBParamsDependent(
     FBPlugGUI* plugGUI, FBTopoIndices const& moduleIndices,
-    int staticParamSlot, FBParamsDependency const& dependency);
-
-  void DependenciesChanged();
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependent);
-  std::vector<int> const& RuntimeDependencies() const { return _runtimeDependencies; }
+    int staticParamSlot, FBParamsDependencies const& dependencies);
 };
