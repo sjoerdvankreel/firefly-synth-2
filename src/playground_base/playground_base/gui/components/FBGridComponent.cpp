@@ -1,8 +1,6 @@
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
 
-#include <cassert>
-
 using namespace juce;
 
 bool
@@ -66,7 +64,6 @@ FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* chil
 {
   addAndMakeVisible(child);
   FBGridCell cell = { row, col };
-  assert(_cells.find(cell) == _cells.end());
   _cells[cell].child = child;
   _cells[cell].span = { rowSpan, colSpan };
 }
