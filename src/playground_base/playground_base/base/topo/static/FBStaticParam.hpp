@@ -7,6 +7,7 @@
 #include <playground_base/base/topo/param/FBListParam.hpp>
 #include <playground_base/base/topo/param/FBNoteParam.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
+#include <playground_base/base/topo/param/FBTimeSigParam.hpp>
 #include <playground_base/base/topo/param/FBFreqOctParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 
@@ -32,6 +33,7 @@ private:
   FBBoolParam boolean = {};
   FBLinearParam linear = {};
   FBFreqOctParam freqOct = {};
+  FBTimeSigParam timeSig = {};
   FBDiscreteParam discrete = {};
 
 public:
@@ -62,6 +64,7 @@ public:
   FBBoolParam& Boolean();
   FBLinearParam& Linear();
   FBFreqOctParam& FreqOct();
+  FBTimeSigParam& TimeSig();
   FBDiscreteParam& Discrete();
 
   FBListParam const& List() const;
@@ -69,6 +72,7 @@ public:
   FBBoolParam const& Boolean() const;
   FBLinearParam const& Linear() const;
   FBFreqOctParam const& FreqOct() const;
+  FBTimeSigParam const& TimeSig() const;
   FBDiscreteParam const& Discrete() const;
   
   int ValueCount() const;
@@ -97,6 +101,13 @@ FBStaticParam::Note()
 {
   assert(type == FBParamType::Note);
   return note;
+}
+
+inline FBTimeSigParam&
+FBStaticParam::TimeSig()
+{
+  assert(type == FBParamType::TimeSig);
+  return timeSig;
 }
 
 inline FBBoolParam&
@@ -141,6 +152,13 @@ FBStaticParam::Note() const
   return note;
 }
 
+inline FBTimeSigParam const&
+FBStaticParam::TimeSig() const
+{
+  assert(type == FBParamType::TimeSig);
+  return timeSig;
+}
+
 inline FBBoolParam const&
 FBStaticParam::Boolean() const
 {
@@ -178,6 +196,7 @@ FBStaticParam::ValueCount() const
   case FBParamType::Note: return note.ValueCount();
   case FBParamType::Linear: return linear.ValueCount();
   case FBParamType::FreqOct: return freqOct.ValueCount();
+  case FBParamType::TimeSig: return timeSig.ValueCount();
   case FBParamType::Boolean: return boolean.ValueCount();
   case FBParamType::Discrete: return discrete.ValueCount();
   default: assert(false); return {};
