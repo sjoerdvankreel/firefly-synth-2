@@ -86,23 +86,6 @@ FFMakeEnvTopo()
   mode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectMode);
   mode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectMode);
 
-  auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
-  smoothTime.acc = false;
-  smoothTime.defaultText = "0";
-  smoothTime.name = "Smth";
-  smoothTime.tooltip = "Smoothing Time";
-  smoothTime.slotCount = 1;
-  smoothTime.unit = "Ms";
-  smoothTime.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
-  smoothTime.type = FBParamType::Linear;
-  smoothTime.Linear().min = 0.0f;
-  smoothTime.Linear().max = 1.0f;
-  smoothTime.Linear().displayMultiplier = 1000.0f;
-  auto selectSmoothTime = [](auto& module) { return &module.block.smoothTime; };
-  smoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSmoothTime);
-  smoothTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSmoothTime);
-  smoothTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSmoothTime);
-
   auto& delayTime = result->params[(int)FFEnvParam::DelayTime];
   delayTime.acc = false;
   delayTime.defaultText = "0";
@@ -134,22 +117,6 @@ FFMakeEnvTopo()
   attackTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackTime);
   attackTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectAttackTime);
   attackTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAttackTime);
-
-  auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
-  attackSlope.acc = true;
-  attackSlope.defaultText = "50";
-  attackSlope.name = "ASlp";
-  attackSlope.tooltip = "Attack Slope";
-  attackSlope.slotCount = 1;
-  attackSlope.unit = "%";
-  attackSlope.id = "{0C77104F-17CC-4256-8D65-FAD17E821758}";
-  attackSlope.type = FBParamType::Linear;
-  attackSlope.Linear().displayMultiplier = 100.0f;
-  auto selectAttackSlope = [](auto& module) { return &module.acc.attackSlope; };
-  attackSlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackSlope);
-  attackSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectAttackSlope);
-  attackSlope.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAttackSlope);
-  attackSlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   auto& holdTime = result->params[(int)FFEnvParam::HoldTime];
   holdTime.acc = false;
@@ -183,22 +150,6 @@ FFMakeEnvTopo()
   decayTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDecayTime);
   decayTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDecayTime);
 
-  auto& decaySlope = result->params[(int)FFEnvParam::DecaySlope];
-  decaySlope.acc = true;
-  decaySlope.defaultText = "50";
-  decaySlope.name = "DSlp";
-  decaySlope.tooltip = "Decay Slope";
-  decaySlope.slotCount = 1;
-  decaySlope.unit = "%";
-  decaySlope.id = "{2F01EA4E-2665-4882-923D-FEF63D790F7B}";
-  decaySlope.type = FBParamType::Linear;
-  decaySlope.Linear().displayMultiplier = 100.0f;
-  auto selectDecaySlope = [](auto& module) { return &module.acc.decaySlope; };
-  decaySlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecaySlope);
-  decaySlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDecaySlope);
-  decaySlope.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDecaySlope);
-  decaySlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
-
   auto& releaseTime = result->params[(int)FFEnvParam::ReleaseTime];
   releaseTime.acc = false;
   releaseTime.defaultText = "0.2";
@@ -214,6 +165,55 @@ FFMakeEnvTopo()
   releaseTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectReleaseTime);
   releaseTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectReleaseTime);
   releaseTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectReleaseTime);
+
+  auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
+  smoothTime.acc = false;
+  smoothTime.defaultText = "0";
+  smoothTime.name = "Smth";
+  smoothTime.tooltip = "Smoothing Time";
+  smoothTime.slotCount = 1;
+  smoothTime.unit = "Ms";
+  smoothTime.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
+  smoothTime.type = FBParamType::Linear;
+  smoothTime.Linear().min = 0.0f;
+  smoothTime.Linear().max = 1.0f;
+  smoothTime.Linear().displayMultiplier = 1000.0f;
+  auto selectSmoothTime = [](auto& module) { return &module.block.smoothTime; };
+  smoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSmoothTime);
+  smoothTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSmoothTime);
+  smoothTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSmoothTime);
+
+  auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
+  attackSlope.acc = true;
+  attackSlope.defaultText = "50";
+  attackSlope.name = "ASlp";
+  attackSlope.tooltip = "Attack Slope";
+  attackSlope.slotCount = 1;
+  attackSlope.unit = "%";
+  attackSlope.id = "{0C77104F-17CC-4256-8D65-FAD17E821758}";
+  attackSlope.type = FBParamType::Linear;
+  attackSlope.Linear().displayMultiplier = 100.0f;
+  auto selectAttackSlope = [](auto& module) { return &module.acc.attackSlope; };
+  attackSlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackSlope);
+  attackSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectAttackSlope);
+  attackSlope.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAttackSlope);
+  attackSlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
+
+  auto& decaySlope = result->params[(int)FFEnvParam::DecaySlope];
+  decaySlope.acc = true;
+  decaySlope.defaultText = "50";
+  decaySlope.name = "DSlp";
+  decaySlope.tooltip = "Decay Slope";
+  decaySlope.slotCount = 1;
+  decaySlope.unit = "%";
+  decaySlope.id = "{2F01EA4E-2665-4882-923D-FEF63D790F7B}";
+  decaySlope.type = FBParamType::Linear;
+  decaySlope.Linear().displayMultiplier = 100.0f;
+  auto selectDecaySlope = [](auto& module) { return &module.acc.decaySlope; };
+  decaySlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecaySlope);
+  decaySlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDecaySlope);
+  decaySlope.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDecaySlope);
+  decaySlope.relevant.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
 
   auto& releaseSlope = result->params[(int)FFEnvParam::ReleaseSlope];
   releaseSlope.acc = true;
