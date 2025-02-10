@@ -199,7 +199,7 @@ FFMakeEnvTopo()
   delayBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelayBars);
   delayBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayBars);
   delayBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDelayBars);
-  delayTime.relevant.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  delayBars.relevant.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
   attackSlope.acc = true;
