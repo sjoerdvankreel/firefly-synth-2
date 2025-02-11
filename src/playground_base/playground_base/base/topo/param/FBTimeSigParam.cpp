@@ -34,17 +34,3 @@ FBTimeSigParam::TextToPlain(std::string const& text) const
       return { i };
   return {};
 }
-
-std::vector<FBTimeSigItem>
-FBTimeSigParam::MakeDefaultsWithZero()
-{
-  std::vector<int> steps({
-    1, 2, 3, 4, 5, 6, 7, 8,
-    9, 10, 11, 12, 13, 14, 15, 16,
-    20, 24, 32, 48, 64, 96, 128 });
-  std::vector<FBTimeSigItem> result;
-  for (int i = 0; i < steps.size(); i++)
-    for (int j = 0; j < steps.size(); j++)
-      result.push_back({ i, j });
-  return result;
-}
