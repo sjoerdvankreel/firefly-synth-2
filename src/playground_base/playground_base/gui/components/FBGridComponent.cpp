@@ -1,6 +1,8 @@
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
 
+#include <cassert>
+
 using namespace juce;
 
 bool
@@ -42,13 +44,6 @@ FBGridComponent::MarkSection(FBGridSection const& section)
   _sections.push_back(section);
 }
 
-IFBHorizontalAutoSize*
-FBGridComponent::HorizontalAutoSizeAt(int row, int col) const
-{
-  auto component = _cells.at({ row, col }).child;
-  return FBAsHorizontalAutoSize(component);
-}
-
 int
 FBGridComponent::FixedWidth(int height) const
 {
@@ -64,8 +59,18 @@ FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* chil
 {
   addAndMakeVisible(child);
   FBGridCell cell = { row, col };
-  _cells[cell].child = child;
-  _cells[cell].span = { rowSpan, colSpan };
+  auto iter = _cells.find(cell);
+  if (iter == _cells.end())
+  {
+    _cells[cell].children.push_back(child);
+    _cells[cell].span = { rowSpan, colSpan };
+  }
+  else
+  {
+    _cells[cell].children.push_back(child);
+    assert(_cells[cell].span.row == rowSpan);
+    assert(_cells[cell].span.col == colSpan);
+  }
 }
 
 int 
@@ -79,9 +84,15 @@ FBGridComponent::FixedColWidth(int col, int height) const
   int availableGridHeight = height - static_cast<int>(totalRowGap);
   for (int r = 0; r < _rows.size(); r++)
   {
+    int fixedCellWidth = 0;
+    auto const& sizingChildren = _cells.at({ r, col }).children;
     int rowHeight = (int)std::round(_rows[r] / (float)totalRelativeHeight * availableGridHeight);
-    int fixedWidth = HorizontalAutoSizeAt(r, col)->FixedWidth(rowHeight);
-    result = std::max(result, fixedWidth);
+    for (int i = 0; i < sizingChildren.size(); i++)
+    {
+      auto const& sizingChild = dynamic_cast<IFBHorizontalAutoSize&>(*sizingChildren[i]);
+      fixedCellWidth = std::max(fixedCellWidth, sizingChild.FixedWidth(rowHeight));
+    }
+    result = std::max(result, fixedCellWidth);
   }
   return result;
 }
@@ -98,14 +109,16 @@ FBGridComponent::resized()
   }
 
   for (auto const& e : _cells)
-  {
-    GridItem item(e.second.child);
-    item.row.start = e.first.row + 1;
-    item.column.start = e.first.col + 1;
-    item.row.end = e.first.row + e.second.span.row + 1;
-    item.column.end = e.first.col + e.second.span.col + 1;
-    _grid.items.add(item);
-  }
+    for(auto child: e.second.children)
+      if(child->isVisible())
+      {
+        GridItem item(child);
+        item.row.start = e.first.row + 1;
+        item.column.start = e.first.col + 1;
+        item.row.end = e.first.row + e.second.span.row + 1;
+        item.column.end = e.first.col + e.second.span.col + 1;
+        _grid.items.add(item);
+      }
 
   for (int i = 0; i < _rows.size(); i++)
     _grid.templateRows.add(Grid::TrackInfo(Grid::Fr(_rows[i])));
