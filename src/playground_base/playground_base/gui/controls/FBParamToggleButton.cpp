@@ -16,6 +16,12 @@ FBParamControl(plugGUI, param)
   _isOn = getToggleState();
 }
 
+void 
+FBParamToggleButton::parentHierarchyChanged()
+{
+  ParentHierarchyChanged();
+}
+
 int 
 FBParamToggleButton::FixedWidth(int height) const
 {

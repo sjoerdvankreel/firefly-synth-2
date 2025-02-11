@@ -14,6 +14,12 @@ FBParamControl(plugGUI, param)
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
+void
+FBParamComboBox::parentHierarchyChanged()
+{
+  ParentHierarchyChanged();
+}
+
 String
 FBParamComboBox::getTooltip()
 {

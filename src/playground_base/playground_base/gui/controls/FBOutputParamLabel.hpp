@@ -23,6 +23,7 @@ public:
     std::string const& maxWidthText);
 
   juce::String getTooltip() override;
+  void parentHierarchyChanged() override;
   int FixedWidth(int height) const override;
   void SetValueNormalizedFromHost(float normalized) override;
 };
