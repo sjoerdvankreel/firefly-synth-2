@@ -31,6 +31,7 @@ public:
   void mouseUp(juce::MouseEvent const& event) override;
   
   juce::String getTooltip() override;
+  void parentHierarchyChanged() override;
   juce::String getTextFromValue(double value) override;
   double getValueFromText(const juce::String& text) override;
 

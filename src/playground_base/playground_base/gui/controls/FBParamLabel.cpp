@@ -15,6 +15,12 @@ IFBHorizontalAutoSize()
   setText(param->shortName, dontSendNotification);
 }
 
+void 
+FBParamLabel::parentHierarchyChanged()
+{
+  ParentHierarchyChanged();
+}
+
 int 
 FBParamLabel::FixedWidth(int height) const
 {

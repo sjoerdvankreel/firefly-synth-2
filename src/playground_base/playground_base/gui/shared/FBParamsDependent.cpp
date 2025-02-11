@@ -85,10 +85,27 @@ FBParamsDependent::RuntimeDependencies(bool visible) const
 void 
 FBParamsDependent::DependenciesChanged(bool visible)
 {
+  assert(_initialParent != nullptr);
   auto hostContext = _plugGUI->HostContext();
   auto& self = dynamic_cast<Component&>(*this);
-  if (visible)
-    self.setVisible(_visible->Evaluate(hostContext));
-  else
+  if (!visible)
+  {
     self.setEnabled(_enabled->Evaluate(hostContext));
+    return;
+  }
+  _initialParent->removeChildComponent(&self);
+  if(_visible->Evaluate(hostContext))
+    _initialParent->addChildComponent(&self);
+  _initialParent->resized();
+}
+
+void
+FBParamsDependent::ParentHierarchyChanged()
+{
+  auto& self = dynamic_cast<Component&>(*this);
+  Component* newParent = self.getParentComponent();
+  if (_initialParent == nullptr && newParent != nullptr)
+    _initialParent = newParent;
+  else if (_initialParent != nullptr && newParent != nullptr && _initialParent != newParent)
+    assert(false);
 }
