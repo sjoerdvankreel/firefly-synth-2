@@ -96,7 +96,6 @@ FBParamsDependent::DependenciesChanged(bool visible)
   _initialParent->removeChildComponent(&self);
   if(_visible->Evaluate(hostContext))
     _initialParent->addChildComponent(&self);
-  _initialParent->resized();
 }
 
 void

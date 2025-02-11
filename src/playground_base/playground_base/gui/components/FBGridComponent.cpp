@@ -110,15 +110,14 @@ FBGridComponent::resized()
 
   for (auto const& e : _cells)
     for(auto child: e.second.children)
-      if(child->isVisible())
-      {
-        GridItem item(child);
-        item.row.start = e.first.row + 1;
-        item.column.start = e.first.col + 1;
-        item.row.end = e.first.row + e.second.span.row + 1;
-        item.column.end = e.first.col + e.second.span.col + 1;
-        _grid.items.add(item);
-      }
+    {
+      GridItem item(child);
+      item.row.start = e.first.row + 1;
+      item.column.start = e.first.col + 1;
+      item.row.end = e.first.row + e.second.span.row + 1;
+      item.column.end = e.first.col + e.second.span.col + 1;
+      _grid.items.add(item);
+    }
 
   for (int i = 0; i < _rows.size(); i++)
     _grid.templateRows.add(Grid::TrackInfo(Grid::Fr(_rows[i])));
@@ -150,6 +149,6 @@ FBGridComponent::paint(Graphics& g)
       if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
         x1 = _grid.items[j].associatedComponent->getRight();
     }
-    g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 2.0f); // TODO 2
+    g.fillRoundedRectangle((float)x0, (float)y0, (float)x1 - x0, (float)y1 - y0, 2.0f); // TODO 2
   }
 }
