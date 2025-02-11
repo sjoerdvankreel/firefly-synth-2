@@ -12,7 +12,6 @@ struct FBTimeSigParam
 {
   std::vector<FBTimeSigItem> items = {};
   int ValueCount() const { return (int)items.size(); }
-  static std::vector<FBTimeSigItem> MakeDefaultsWithZero();
 
   juce::PopupMenu MakePopupMenu() const;
   std::string PlainToText(int plain) const;
