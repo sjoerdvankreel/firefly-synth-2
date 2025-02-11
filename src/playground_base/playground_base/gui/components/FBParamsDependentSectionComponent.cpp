@@ -10,9 +10,3 @@ FBPlugGUI* plugGUI, Component* content,
 FBTopoIndices const& moduleIndices, FBParamsDependencies const& dependencies):
 FBSectionComponent(plugGUI, content),
 FBParamsDependent(plugGUI, moduleIndices, 0, dependencies) {}
-
-void 
-FBParamsDependentSectionComponent::parentHierarchyChanged()
-{
-  ParentHierarchyChanged();
-}

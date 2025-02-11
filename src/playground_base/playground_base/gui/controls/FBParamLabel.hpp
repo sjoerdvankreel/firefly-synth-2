@@ -10,7 +10,6 @@ public FBParamComponent,
 public IFBHorizontalAutoSize
 {
 public:
-  void parentHierarchyChanged() override;
   int FixedWidth(int height) const override;
   FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

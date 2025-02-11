@@ -1,7 +1,6 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <juce_gui_basics/juce_gui_basics.h>
 
 #include <vector>
 #include <memory>
@@ -16,9 +15,6 @@ class FBParamsDependent
 {
 protected:
   FBPlugGUI* const _plugGUI;
-  juce::Component* _initialParent = {};
-
-  void ParentHierarchyChanged();
 
 private:
   std::unique_ptr<FBParamsDependentDependency> _visible;

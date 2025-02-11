@@ -17,12 +17,6 @@ _maxTextWidth((int)std::ceil(TextLayout::getStringWidth(Font(12.0f), maxWidthTex
   setText(defaultText, dontSendNotification);
 }
 
-void
-FBOutputParamLabel::parentHierarchyChanged()
-{
-  ParentHierarchyChanged();
-}
-
 String 
 FBOutputParamLabel::getTooltip()
 {

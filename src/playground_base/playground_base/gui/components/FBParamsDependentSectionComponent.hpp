@@ -11,7 +11,6 @@ public FBSectionComponent,
 public FBParamsDependent
 {
 public:
-  void parentHierarchyChanged() override;
   FBParamsDependentSectionComponent(
     FBPlugGUI* plugGUI, juce::Component* content, 
     FBTopoIndices const& moduleIndices, FBParamsDependencies const& dependencies);

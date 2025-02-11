@@ -23,12 +23,6 @@ FBParamControl(plugGUI, param)
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
-void
-FBParamSlider::parentHierarchyChanged()
-{
-  ParentHierarchyChanged();
-}
-
 String
 FBParamSlider::getTooltip()
 {
