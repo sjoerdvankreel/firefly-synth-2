@@ -51,8 +51,9 @@ FBParamSlider::mouseUp(MouseEvent const& event)
 int 
 FBParamSlider::FixedWidth(int height) const
 {
-  assert(getSliderStyle() == SliderStyle::RotaryVerticalDrag);
-  return height;
+  if(getSliderStyle() == SliderStyle::RotaryVerticalDrag)
+    return height;
+  return 0;
 }
 
 double
