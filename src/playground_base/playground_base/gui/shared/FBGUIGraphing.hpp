@@ -118,13 +118,12 @@ FBRenderModuleGraph(RenderData& renderData)
   }
 
   float guiSampleCount = (float)graphData->pixelWidth;
-  moduleProcState->input->bpm = procExchange->bpm;
-  moduleProcState->input->sampleRate = procExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
-  renderState->PrepareForRenderPrimary();
+  float guiSampleRate = procExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
+  renderState->PrepareForRenderPrimary(guiSampleRate, procExchange->bpm);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
   FBRenderModuleGraphSeries<Global>(renderData, graphData->primarySeries);
-  float guiDurationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->sampleRate;
+  float guiDurationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->input->sampleRate;
   renderData.graphData->text = FBFormatFloat(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   
   renderState->PrepareForRenderExchange();

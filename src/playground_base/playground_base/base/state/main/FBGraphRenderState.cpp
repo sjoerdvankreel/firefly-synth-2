@@ -44,7 +44,6 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
     _procState->InitProcessing(i, hostContext->GetParamNormalized(i));
 
   _moduleState->moduleSlot = -1;
-  _moduleState->sampleRate = -1;
   _moduleState->input = _input.get();
   _moduleState->exchangeRaw = nullptr;
   _moduleState->topo = hostContext->Topo();
