@@ -53,6 +53,7 @@ void
 FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostOutputBlock& output)
 {
+  _plugIn.bpm = input.bpm;
   auto denormalState = FBDisableDenormal(); 
   for (auto const& be : input.block)
     _procState->Params()[be.param].Value(be.normalized);

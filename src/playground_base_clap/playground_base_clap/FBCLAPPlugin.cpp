@@ -302,18 +302,25 @@ FBCLAPPlugin::process(
     _input.accModByParamThenNoteThenSample.end(),
     FBAccModEventOrderByParamThenNoteThenPos);
 
+  _input.bpm = FBHostInputBlock::DefaultBPM;
+  if (process->transport != nullptr)
+    _input.bpm = process->transport->tempo;
+
+  _output.outputParams.clear();
+  _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
+
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
   if (process->audio_inputs_count != 1)
     _input.audio = FBHostAudioBlock(zeroIn, process->frames_count);
   else
     _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
-  _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
 
-  _output.outputParams.clear();
-  _hostProcessor->ProcessHost(_input, _output);  
+  _hostProcessor->ProcessHost(_input, _output);
+  _exchangeStateQueue->Enqueue(_dspExchangeState->Raw());
+
   for (auto const& op : _output.outputParams)
     _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));
-  _exchangeStateQueue->Enqueue(_dspExchangeState->Raw()); 
+
   auto const& rvs = _output.returnedVoices;
   for (int rv = 0; rv < rvs.size(); rv++)
   {

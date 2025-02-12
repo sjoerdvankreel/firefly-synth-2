@@ -11,6 +11,7 @@ class FBFixedFloatAudioBlock;
 
 struct FBPlugInputBlock final
 {
+  float bpm = {};
   FBVoiceManager* voiceManager = {};
   FBFixedFloatAudioBlock const* audio = {};
   std::vector<FBNoteEvent> const* note = {};

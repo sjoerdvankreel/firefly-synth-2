@@ -75,6 +75,7 @@ _exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo))
 {
   FB_LOG_ENTRY_EXIT();
   setControllerClass(controllerId);
+  processContextRequirements.needTempo();
 }
 
 tresult PLUGIN_API 
@@ -214,14 +215,19 @@ FBVST3AudioEffect::process(ProcessData& data)
             }
   std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
 
+  _output.outputParams.clear();
+  _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
+
+  _input.bpm = FBHostInputBlock::DefaultBPM;
+  if (data.processContext != nullptr && (data.processContext->state & ProcessContext::kTempoValid) != 0)
+    _input.bpm = (float)data.processContext->tempo;
+
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
   if (data.numInputs != 1)
     _input.audio = FBHostAudioBlock(zeroIn, data.numSamples);
   else
     _input.audio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
-  _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
 
-  _output.outputParams.clear();
   _hostProcessor->ProcessHost(_input, _output);
 
   if(data.outputParameterChanges != nullptr)
@@ -237,6 +243,7 @@ FBVST3AudioEffect::process(ProcessData& data)
 
   if (_exchangeBlock.blockID == InvalidDataExchangeBlockID)
     _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
+
   if (_exchangeBlock.blockID != InvalidDataExchangeBlockID)
   {
     memcpy(_exchangeBlock.data, _exchangeState->Raw(), _exchangeBlock.size);

@@ -29,7 +29,7 @@ typedef std::function<FBModuleProcExchangeState const* (
 FBModuleGraphVoiceExchangeSelector;    
 
 typedef std::function<int(
-  FBStaticTopo const& topo, void const* scalarState, int moduleSlot, float sampleRate)>
+  FBStaticTopo const& topo, void const* scalarState, int moduleSlot, float sampleRate, float bpm)>
 FBModuleGraphPlotLengthSelector;
 
 template <class Processor>
@@ -96,9 +96,10 @@ FBRenderModuleGraph(RenderData& renderData)
   assert((renderData.voiceExchangeSelector == nullptr) != (renderData.globalExchangeSelector == nullptr));
 
   graphData->text = "OFF";
+  float dspBpm = renderState->ExchangeContainer()->Bpm();
   float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
   int maxDspSampleCount = renderData.plotLengthSelector(
-    moduleProcState->topo->static_, scalarState, moduleProcState->moduleSlot, dspSampleRate);
+    moduleProcState->topo->static_, scalarState, moduleProcState->moduleSlot, dspSampleRate, dspBpm);
 
   if constexpr (Global)
   {

@@ -15,7 +15,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
   renderData.voiceOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
-  renderData.plotLengthSelector = [&](FBStaticTopo const& topo, void const* scalarState, int moduleSlot, float sampleRate) {
-    return renderData.processor.PlotLengthSamples(topo, *static_cast<FFScalarState const*>(scalarState), moduleSlot, sampleRate); };
+  renderData.plotLengthSelector = [&](FBStaticTopo const& topo, void const* scalarState, int moduleSlot, float sampleRate, float bpm) {
+    return renderData.processor.PlotLengthSamples(topo, *static_cast<FFScalarState const*>(scalarState), moduleSlot, sampleRate, bpm); };
   FBRenderModuleGraph<false>(renderData);
 }

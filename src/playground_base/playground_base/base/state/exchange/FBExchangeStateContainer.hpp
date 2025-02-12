@@ -20,6 +20,7 @@ class FBExchangeStateContainer final
   void* _rawState;
   void (*_freeRawState)(void*);
 
+  float* _bpm = {};
   float* _sampleRate = {};
   std::vector<FBParamExchangeState> _params = {};
   std::vector<FBModuleExchangeState> _modules = {};
@@ -36,6 +37,7 @@ public:
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
+  float Bpm() const { return *_bpm; }
   float SampleRate() const { return *_sampleRate; }
   template <class T> T* As() { return static_cast<T*>(Raw()); }
   template <class T> T const* As() const { return static_cast<T const*>(Raw()); }

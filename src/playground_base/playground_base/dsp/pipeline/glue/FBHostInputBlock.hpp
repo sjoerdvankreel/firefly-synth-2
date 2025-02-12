@@ -12,10 +12,13 @@
 
 struct FBHostInputBlock final
 {
+  float bpm = {};
   FBHostAudioBlock audio = {};
   std::vector<FBNoteEvent> note = {};
   std::vector<FBBlockEvent> block = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
+  
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostInputBlock);
+  static inline float constexpr DefaultBPM = 120.0f;
 };
