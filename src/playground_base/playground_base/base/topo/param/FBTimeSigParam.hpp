@@ -8,17 +8,19 @@
 #include <optional>
 #include <algorithm>
 
+std::vector<FBTimeSigItem>
+FBMakeTimeSigItems(FBTimeSigItem min, FBTimeSigItem max);
+
 struct FBTimeSigParam
 {
+  std::vector<FBTimeSigItem> items = {};
+  int ValueCount() const { return (int)items.size(); }
+
   juce::PopupMenu MakePopupMenu() const;
   std::string PlainToText(int plain) const;
   float PlainToNormalized(int plain) const;
   int NormalizedToPlain(float normalized) const;
   std::optional<int> TextToPlain(std::string const& text) const;
-  int ValueCount() const { return (int)DefaultItems().size(); }
-
-private:
-  static std::vector<FBTimeSigItem> const& DefaultItems();
 };
 
 inline int

@@ -5,7 +5,7 @@
 using namespace juce;
 
 static std::vector<int>
-DefaultSteps({
+ItemSteps({
   1, 2, 3, 4, 5, 6, 7, 8,
   9, 10, 11, 12, 13, 14, 15, 16,
   20, 24, 32, 48, 64, 96, 128 });
@@ -13,34 +13,36 @@ DefaultSteps({
 std::string
 FBTimeSigParam::PlainToText(int plain) const
 {
-  return DefaultItems()[plain].ToString();
+  return items[plain].ToString();
 }
 
 float
 FBTimeSigParam::PlainToNormalized(int plain) const
 {
-  int count = (int)DefaultItems().size();
+  int count = (int)items.size();
   return std::clamp(plain / (count - 1.0f), 0.0f, 1.0f);
 }
 
 std::optional<int>
 FBTimeSigParam::TextToPlain(std::string const& text) const
 {
-  for (int i = 0; i < DefaultItems().size(); i++)
-    if (text == DefaultItems()[i].ToString())
+  for (int i = 0; i < items.size(); i++)
+    if (text == items[i].ToString())
       return { i };
   return {};
 }
 
-std::vector<FBTimeSigItem> const&
-FBTimeSigParam::DefaultItems()
+std::vector<FBTimeSigItem>
+FBMakeTimeSigItems(FBTimeSigItem min, FBTimeSigItem max)
 {
-  thread_local std::vector<FBTimeSigItem> result;
-  if (!result.empty())
-    return result;
-  for (int i = 0; i < DefaultSteps.size(); i++)
-    for (int j = 0; j < DefaultSteps.size(); j++)
-      result.push_back({ DefaultSteps[i], DefaultSteps[j] });
+  std::vector<FBTimeSigItem> result;
+  for (int i = 0; i < ItemSteps.size(); i++)
+    for (int j = 0; j < ItemSteps.size(); j++)
+    {
+      FBTimeSigItem item = { ItemSteps[i], ItemSteps[j] };
+      if(min <= item && item <= max)
+        result.push_back(item);
+    }
   return result;
 }
 
@@ -49,12 +51,15 @@ FBTimeSigParam::MakePopupMenu() const
 {
   int k = 0;
   PopupMenu result;
-  for (int i = 0; i < DefaultSteps.size(); i++)
+  PopupMenu subMenu;
+  for (int i = 0; i < items.size(); i++)
   {
-    PopupMenu subMenu;
-    for (int j = 0; j < DefaultSteps.size(); j++, k++)
-      subMenu.addItem(k + 1, PlainToText(k));
-    result.addSubMenu(std::to_string(DefaultSteps[i]), subMenu);
+    subMenu.addItem(i + 1, PlainToText(i));
+    if (i == items.size() - 1 || items[i].num != items[i + 1].num)
+    {
+      result.addSubMenu(std::to_string(items[i].num), subMenu);
+      subMenu = {};
+    }
   }
   return result;
 }

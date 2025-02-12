@@ -33,7 +33,7 @@ FBParamComboBox::FixedWidth(int height) const
   int maxTextWidth = 0;
   for (int i = 0; i < getNumItems(); i++)
     maxTextWidth = std::max(maxTextWidth, (int)std::ceil(
-      TextLayout::getStringWidth(font, getItemText(i))));
+      font.getStringWidthFloat(getItemText(i))));
   return maxTextWidth + 48; // TODO
 }
 
