@@ -8,5 +8,6 @@ struct FBBarsItem final
   int denom = -1;
   
   std::string ToString() const;  
+  bool operator<(FBBarsItem const& rhs) const;
   bool operator<=(FBBarsItem const& rhs) const;
 };

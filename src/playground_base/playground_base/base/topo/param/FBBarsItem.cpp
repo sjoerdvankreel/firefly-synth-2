@@ -8,6 +8,12 @@ FBBarsItem::ToString() const
   return std::to_string(num) + "/" + std::to_string(denom);
 }
 
+bool
+FBBarsItem::operator<(FBBarsItem const& rhs) const
+{
+  return num / (double)denom < rhs.num / (double)rhs.denom;
+};
+
 bool 
 FBBarsItem::operator<=(FBBarsItem const& rhs) const
 {

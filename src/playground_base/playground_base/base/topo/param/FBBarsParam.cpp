@@ -1,5 +1,6 @@
 #include <playground_base/base/topo/param/FBBarsParam.hpp>
 
+#include <set>
 #include <cassert>
 
 using namespace juce;
@@ -53,7 +54,9 @@ FBMakeBarsItems(bool withZero, FBBarsItem min, FBBarsItem max)
       9, 10, 11, 12, 13, 14, 15, 16,
       20, 24, 32, 48, 64, 96, 128 });
 
+  std::set<FBBarsItem> equals;
   std::vector<FBBarsItem> result;
+
   if (withZero)
     result.push_back({ 0, -1 });
   for (int i = 0; i < BarSteps.size(); i++)
@@ -61,7 +64,8 @@ FBMakeBarsItems(bool withZero, FBBarsItem min, FBBarsItem max)
     {
       FBBarsItem item = { BarSteps[i], BarSteps[j] };
       if (min <= item && item <= max)
-        result.push_back(item);
+        if(equals.insert(item).second)
+          result.push_back(item);
     }
   return result;
 }
