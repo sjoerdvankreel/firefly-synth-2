@@ -38,8 +38,7 @@ FBFreqToSamples(float freq, float sampleRate)
 inline int
 FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 {
-  float barsPerSecond = bpm / (60.0f * 4.0f);
-  return FBTimeToSamples(bars.num * barsPerSecond / bars.denom, sampleRate);
+  return FBTimeToSamples(bpm * bars.num / (60.0f * bars.denom), sampleRate);
 }
 
 inline FBFloatVector
