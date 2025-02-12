@@ -6,6 +6,7 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
+#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 
 #include <cmath>
@@ -117,10 +118,17 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   }
 
   int s = 0;
+  int releaseAt = -1;
   FBFixedFloatArray scratch = {};
   float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
   float const invLogHalf = 1.0f / std::log(0.5f);
+
+  auto const& noteEvents = *state.input->note;
+  auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
+  for (int i = 0; i < noteEvents.size(); i++)
+    if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
+      releaseAt = noteEvents[i].pos;
 
   int& delayPos = _stagePositions[(int)FFEnvStage::Delay];
   for (; s < FBFixedBlockSamples && delayPos < _voiceState.delaySamples; s++, delayPos++)
