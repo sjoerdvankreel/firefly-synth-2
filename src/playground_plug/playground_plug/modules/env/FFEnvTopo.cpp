@@ -124,6 +124,7 @@ FFMakeEnvTopo()
   attackTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackTime);
   attackTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectAttackTime);
   attackTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAttackTime);
+  attackTime.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
 
   auto& holdTime = result->params[(int)FFEnvParam::HoldTime];
   holdTime.acc = false;
@@ -140,6 +141,7 @@ FFMakeEnvTopo()
   holdTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectHoldTime);
   holdTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectHoldTime);
   holdTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectHoldTime);
+  holdTime.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
 
   auto& decayTime = result->params[(int)FFEnvParam::DecayTime];
   decayTime.acc = false;
@@ -156,6 +158,7 @@ FFMakeEnvTopo()
   decayTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecayTime);
   decayTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDecayTime);
   decayTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDecayTime);
+  decayTime.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
 
   auto& releaseTime = result->params[(int)FFEnvParam::ReleaseTime];
   releaseTime.acc = false;
@@ -172,6 +175,7 @@ FFMakeEnvTopo()
   releaseTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectReleaseTime);
   releaseTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectReleaseTime);
   releaseTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectReleaseTime);
+  releaseTime.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
 
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
   smoothTime.acc = false;
@@ -189,10 +193,11 @@ FFMakeEnvTopo()
   smoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSmoothTime);
   smoothTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSmoothTime);
   smoothTime.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSmoothTime);
+  smoothTime.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
 
   auto& delayBars = result->params[(int)FFEnvParam::DelayBars];
   delayBars.acc = false;
-  delayBars.defaultText = "1/4";
+  delayBars.defaultText = "1/4"; // todo defaults
   delayBars.name = "Dly";
   delayBars.tooltip = "Delay Bars";
   delayBars.slotCount = 1;
@@ -205,6 +210,86 @@ FFMakeEnvTopo()
   delayBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayBars);
   delayBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDelayBars);
   delayBars.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& attackBars = result->params[(int)FFEnvParam::AttackBars];
+  attackBars.acc = false;
+  attackBars.defaultText = "1/4";
+  attackBars.name = "Att";
+  attackBars.tooltip = "Attack Bars";
+  attackBars.slotCount = 1;
+  attackBars.unit = "Bars";
+  attackBars.id = "{F03A5681-CB9A-4E34-B73E-A4EB4EF8A2F4}";
+  attackBars.type = FBParamType::Bars;
+  attackBars.Bars().items = MakeEnvBarsItems();
+  auto selectAttackBars = [](auto& module) { return &module.block.attackBars; };
+  attackBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackBars);
+  attackBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectAttackBars);
+  attackBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAttackBars);
+  attackBars.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& holdBars = result->params[(int)FFEnvParam::HoldBars];
+  holdBars.acc = false;
+  holdBars.defaultText = "1/4";
+  holdBars.name = "Hld";
+  holdBars.tooltip = "Hold Bars";
+  holdBars.slotCount = 1;
+  holdBars.unit = "Bars";
+  holdBars.id = "{67B31CCE-5B2D-4DFC-B4E6-A5027BB49E32}";
+  holdBars.type = FBParamType::Bars;
+  holdBars.Bars().items = MakeEnvBarsItems();
+  auto selectHoldBars = [](auto& module) { return &module.block.holdBars; };
+  holdBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectHoldBars);
+  holdBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectHoldBars);
+  holdBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectHoldBars);
+  holdBars.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& decayBars = result->params[(int)FFEnvParam::DecayBars];
+  decayBars.acc = false;
+  decayBars.defaultText = "1/4";
+  decayBars.name = "Dcy";
+  decayBars.tooltip = "Decay Bars";
+  decayBars.slotCount = 1;
+  decayBars.unit = "Bars";
+  decayBars.id = "{CD5B172C-FFA6-4F35-8AC7-E630B1F0A553}";
+  decayBars.type = FBParamType::Bars;
+  decayBars.Bars().items = MakeEnvBarsItems();
+  auto selectDecayBars = [](auto& module) { return &module.block.decayBars; };
+  decayBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecayBars);
+  decayBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDecayBars);
+  decayBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDecayBars);
+  decayBars.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& releaseBars = result->params[(int)FFEnvParam::ReleaseBars];
+  releaseBars.acc = false;
+  releaseBars.defaultText = "1/4";
+  releaseBars.name = "Rls";
+  releaseBars.tooltip = "Release Bars";
+  releaseBars.slotCount = 1;
+  releaseBars.unit = "Bars";
+  releaseBars.id = "{1AFD7B11-2DCA-49F6-BD0A-4D1A4FBFD111}";
+  releaseBars.type = FBParamType::Bars;
+  releaseBars.Bars().items = MakeEnvBarsItems();
+  auto selectReleaseBars = [](auto& module) { return &module.block.releaseBars; };
+  releaseBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectReleaseBars);
+  releaseBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectReleaseBars);
+  releaseBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectReleaseBars);
+  releaseBars.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
+  smoothBars.acc = false;
+  smoothBars.defaultText = "1/4";
+  smoothBars.name = "Smth";
+  smoothBars.tooltip = "Smoothing Bars";
+  smoothBars.slotCount = 1;
+  smoothBars.unit = "Bars";
+  smoothBars.id = "{8D2DEE38-2EA3-4FE3-BB77-D71847FC8666}";
+  smoothBars.type = FBParamType::Bars;
+  smoothBars.Bars().items = MakeEnvBarsItems();
+  auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
+  smoothBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSmoothBars);
+  smoothBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSmoothBars);
+  smoothBars.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSmoothBars);
+  smoothBars.dependencies.visible.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
   attackSlope.acc = true;

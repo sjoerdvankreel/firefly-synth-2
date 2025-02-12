@@ -11,5 +11,5 @@ enum class FFEnvType { Sustain, Follow, Release };
 enum class FFEnvParam { 
   On, Type, SustainLevel, Sync, Mode, 
   DelayTime, AttackTime, HoldTime, DecayTime, ReleaseTime, SmoothTime,
-  DelayBars,
+  DelayBars, AttackBars, HoldBars, DecayBars, ReleaseBars, SmoothBars,
   AttackSlope, DecaySlope, ReleaseSlope, Count };
