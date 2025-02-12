@@ -12,6 +12,11 @@ FBParamControl(plugGUI, param)
 {
   *getRootMenu() = param->static_.MakePopupMenu();
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
+
+  Font font(12.0f); // TODO
+  for (int i = 0; i < getNumItems(); i++)
+    _maxTextWidth = std::max(_maxTextWidth, (int)std::ceil(
+      font.getStringWidthFloat(getItemText(i))));
 }
 
 void
@@ -20,21 +25,16 @@ FBParamComboBox::parentHierarchyChanged()
   ParentHierarchyChanged();
 }
 
+int
+FBParamComboBox::FixedWidth(int height) const
+{
+  return _maxTextWidth + 48; // TODO
+}
+
 String
 FBParamComboBox::getTooltip()
 {
   return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
-}
-
-int
-FBParamComboBox::FixedWidth(int height) const
-{
-  Font font(12.0f); // TODO
-  int maxTextWidth = 0;
-  for (int i = 0; i < getNumItems(); i++)
-    maxTextWidth = std::max(maxTextWidth, (int)std::ceil(
-      font.getStringWidthFloat(getItemText(i))));
-  return maxTextWidth + 48; // TODO
 }
 
 void

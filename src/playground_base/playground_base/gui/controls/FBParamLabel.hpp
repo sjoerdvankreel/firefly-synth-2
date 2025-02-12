@@ -9,6 +9,7 @@ public juce::Label,
 public FBParamComponent,
 public IFBHorizontalAutoSize
 {
+  int _textWidth = 0;
 public:
   void parentHierarchyChanged() override;
   int FixedWidth(int height) const override;

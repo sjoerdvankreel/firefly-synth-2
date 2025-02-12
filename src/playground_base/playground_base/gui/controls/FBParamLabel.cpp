@@ -13,6 +13,7 @@ FBParamComponent(plugGUI, param),
 IFBHorizontalAutoSize()
 {
   setText(param->shortName, dontSendNotification);
+  _textWidth = (int)std::ceil(TextLayout::getStringWidth(getFont(), getText()));
 }
 
 void 
@@ -24,6 +25,5 @@ FBParamLabel::parentHierarchyChanged()
 int 
 FBParamLabel::FixedWidth(int height) const
 {
-  auto border = getBorderSize().getLeftAndRight();
-  return border + (int)std::ceil(TextLayout::getStringWidth(getFont(), getText()));
+  return getBorderSize().getLeftAndRight() + _textWidth;
 }

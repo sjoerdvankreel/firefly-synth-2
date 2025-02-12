@@ -197,7 +197,7 @@ FFMakeEnvTopo()
 
   auto& delayBars = result->params[(int)FFEnvParam::DelayBars];
   delayBars.acc = false;
-  delayBars.defaultText = "1/4"; // todo defaults
+  delayBars.defaultText = "0";
   delayBars.name = "Dly";
   delayBars.tooltip = "Delay Bars";
   delayBars.slotCount = 1;
@@ -213,7 +213,7 @@ FFMakeEnvTopo()
 
   auto& attackBars = result->params[(int)FFEnvParam::AttackBars];
   attackBars.acc = false;
-  attackBars.defaultText = "1/4";
+  attackBars.defaultText = "1/64";
   attackBars.name = "Att";
   attackBars.tooltip = "Attack Bars";
   attackBars.slotCount = 1;
@@ -229,7 +229,7 @@ FFMakeEnvTopo()
 
   auto& holdBars = result->params[(int)FFEnvParam::HoldBars];
   holdBars.acc = false;
-  holdBars.defaultText = "1/4";
+  holdBars.defaultText = "0";
   holdBars.name = "Hld";
   holdBars.tooltip = "Hold Bars";
   holdBars.slotCount = 1;
@@ -245,7 +245,7 @@ FFMakeEnvTopo()
 
   auto& decayBars = result->params[(int)FFEnvParam::DecayBars];
   decayBars.acc = false;
-  decayBars.defaultText = "1/4";
+  decayBars.defaultText = "1/32";
   decayBars.name = "Dcy";
   decayBars.tooltip = "Decay Bars";
   decayBars.slotCount = 1;
@@ -261,7 +261,7 @@ FFMakeEnvTopo()
 
   auto& releaseBars = result->params[(int)FFEnvParam::ReleaseBars];
   releaseBars.acc = false;
-  releaseBars.defaultText = "1/4";
+  releaseBars.defaultText = "1/16";
   releaseBars.name = "Rls";
   releaseBars.tooltip = "Release Bars";
   releaseBars.slotCount = 1;
@@ -277,7 +277,7 @@ FFMakeEnvTopo()
 
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.acc = false;
-  smoothBars.defaultText = "1/4";
+  smoothBars.defaultText = "0";
   smoothBars.name = "Smth";
   smoothBars.tooltip = "Smoothing Bars";
   smoothBars.slotCount = 1;
