@@ -12,6 +12,7 @@
 
 struct FBRuntimeTopo;
 struct FBRuntimeParam;
+struct FBProcExchangeState;
 
 class FBExchangeStateContainer final
 {
@@ -20,12 +21,12 @@ class FBExchangeStateContainer final
   void* _rawState;
   void (*_freeRawState)(void*);
 
-  float* _bpm = {};
-  float* _sampleRate = {};
+  FBProcExchangeState* _proc = {};
   std::vector<FBParamExchangeState> _params = {};
   std::vector<FBModuleExchangeState> _modules = {};
   std::array<FBVoiceInfo, FBMaxVoices>* _voices = {};
 
+  FBProcExchangeState* Proc() { return _proc; }
   std::vector<FBParamExchangeState>& Params() { return _params; }
   std::vector<FBModuleExchangeState>& Modules() { return _modules; }
   std::array<FBVoiceInfo, FBMaxVoices>& Voices() { return *_voices; }
@@ -37,11 +38,10 @@ public:
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
-  float Bpm() const { return *_bpm; }
-  float SampleRate() const { return *_sampleRate; }
   template <class T> T* As() { return static_cast<T*>(Raw()); }
   template <class T> T const* As() const { return static_cast<T const*>(Raw()); }
 
+  FBProcExchangeState const* Proc() const { return _proc; }
   std::vector<FBParamExchangeState> const& Params() const { return _params; }
   std::vector<FBModuleExchangeState> const& Modules() const { return _modules; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return *_voices; }

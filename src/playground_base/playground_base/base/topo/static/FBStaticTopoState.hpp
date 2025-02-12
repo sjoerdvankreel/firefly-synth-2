@@ -7,12 +7,14 @@
 #include <functional>
 
 struct FBStaticTopo;
+struct FBProcExchangeState;
 
-typedef std::function<float*(void* state)>
-FBSampleRateExchangeAddrSelector;
 typedef std::function<FBSpecialParams (
   FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
+typedef std::function<FBProcExchangeState* (
+  void* state)>
+FBProcExchangeAddrSelector;
 typedef std::function<std::array<FBVoiceInfo, FBMaxVoices>* (
   void* state)>
 FBVoicesExchangeAddrSelector;
@@ -29,7 +31,7 @@ struct FBStaticTopoState final
   int exchangeStateSize = {};
   int exchangeStateAlignment = {};
   FBSpecialParamsSelector specialSelector = {};
+  FBProcExchangeAddrSelector procExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
-  FBSampleRateExchangeAddrSelector sampleRateExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoState);
 };

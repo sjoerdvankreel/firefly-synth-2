@@ -4,6 +4,7 @@
 #include <playground_base/base/state/proc/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBProcExchangeState.hpp>
 #include <playground_base/base/state/exchange/FBModuleExchangeState.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
@@ -63,7 +64,8 @@ FBHostProcessor::ProcessHost(
   int hostSmoothSamples = hostSmoothTimeTopo.Linear().NormalizedTimeToSamples(hostSmoothTimeSpecial.state->Value(), _sampleRate);
   _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
-  *_topo->static_.state.sampleRateExchangeAddr(_exchangeState->Raw()) = _sampleRate;
+  _exchangeState->Proc()->bpm = input.bpm;
+  _exchangeState->Proc()->sampleRate = _sampleRate;
   for (int m = 0; m < _topo->modules.size(); m++)
   {
     auto const& indices = _topo->modules[m].topoIndices;
