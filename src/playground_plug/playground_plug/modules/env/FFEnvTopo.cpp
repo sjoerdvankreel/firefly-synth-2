@@ -187,14 +187,12 @@ FFMakeEnvTopo()
   auto& delayBars = result->params[(int)FFEnvParam::DelayBars];
   delayBars.acc = false;
   delayBars.defaultText = "1/4";
-  delayBars.name = "Dly"; // TODO
+  delayBars.name = "Dly";
   delayBars.tooltip = "Delay Bars";
   delayBars.slotCount = 1;
   delayBars.unit = "Bars";
   delayBars.id = "{02BB4557-BFF4-4EBB-81FB-241861C94BDC}";
   delayBars.type = FBParamType::TimeSig;
-  delayBars.TimeSig().items.push_back({ 1, 4 }); // TODO
-  delayBars.TimeSig().items.push_back({ 1, 1 });
   auto selectDelayBars = [](auto& module) { return &module.block.delayBars; };
   delayBars.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelayBars);
   delayBars.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayBars);
