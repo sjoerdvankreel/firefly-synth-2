@@ -1,3 +1,4 @@
+#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/gui/controls/FBParamLabel.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
@@ -10,10 +11,10 @@ FBParamLabel::
 FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
 Label(),
 FBParamComponent(plugGUI, param),
-IFBHorizontalAutoSize()
+IFBHorizontalAutoSize(),
+_textWidth(FBGetStringWidthCached(param->shortName))
 {
   setText(param->shortName, dontSendNotification);
-  _textWidth = (int)std::ceil(TextLayout::getStringWidth(getFont(), getText()));
 }
 
 void 

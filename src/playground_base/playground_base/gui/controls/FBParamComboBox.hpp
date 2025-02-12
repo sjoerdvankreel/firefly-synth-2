@@ -14,6 +14,7 @@ public FBParamControl,
 public IFBHorizontalAutoSize
 {
   int _maxTextWidth = 0;
+
 public:
   juce::String getTooltip() override;
   void parentHierarchyChanged() override;

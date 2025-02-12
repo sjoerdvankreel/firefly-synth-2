@@ -1,4 +1,5 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamComboBox.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -12,11 +13,8 @@ FBParamControl(plugGUI, param)
 {
   *getRootMenu() = param->static_.MakePopupMenu();
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
-
-  Font font(12.0f); // TODO
   for (int i = 0; i < getNumItems(); i++)
-    _maxTextWidth = std::max(_maxTextWidth, (int)std::ceil(
-      font.getStringWidthFloat(getItemText(i))));
+    _maxTextWidth = std::max(_maxTextWidth, FBGetStringWidthCached(getItemText(i).toStdString()));
 }
 
 void

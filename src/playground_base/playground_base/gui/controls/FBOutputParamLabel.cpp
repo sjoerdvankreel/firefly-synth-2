@@ -1,4 +1,5 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/gui/controls/FBOutputParamLabel.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
@@ -12,7 +13,7 @@ FBOutputParamLabel(
   std::string const& maxWidthText):
 Label(),
 FBParamControl(plugGUI, param),
-_maxTextWidth((int)std::ceil(TextLayout::getStringWidth(Font(12.0f), maxWidthText)))
+_maxTextWidth(FBGetStringWidthCached(maxWidthText))
 {
   setText(defaultText, dontSendNotification);
 }
