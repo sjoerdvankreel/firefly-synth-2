@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBVector.hpp>
+#include <playground_base/base/topo/param/FBBarsItem.hpp>
 
 #include <cmath>
 #include <numbers>
@@ -32,6 +33,13 @@ FBFreqToSamples(float freq, float sampleRate)
 {
   assert(freq > 0.0f);
   return (int)std::round(1.0f / freq * sampleRate);
+}
+
+inline int
+FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
+{
+  float barsPerSecond = bpm / (60.0f * 4.0f);
+  return FBTimeToSamples(bars.num * barsPerSecond / bars.denom, sampleRate);
 }
 
 inline FBFloatVector

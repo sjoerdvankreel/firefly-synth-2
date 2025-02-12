@@ -15,6 +15,7 @@ enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Smooth, Count };
 struct FFEnvVoiceState
 {
   bool on = {};
+  bool sync = {};
   FFEnvType type = {};  
   FFEnvMode mode = {};
   int holdSamples = {};
@@ -42,5 +43,5 @@ public:
 
   int PlotLengthSamples(
     FBStaticTopo const& topo, FFScalarState const& state,
-    int moduleSlot, float sampleRate) const;
+    int moduleSlot, float sampleRate, float bpm) const;
 };
