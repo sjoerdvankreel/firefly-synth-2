@@ -35,7 +35,7 @@ FBBarsParam::TextToPlain(std::string const& text) const
 std::vector<FBBarsItem>
 FBMakeBarsItems(FBBarsItem min, FBBarsItem max)
 {
-  std::vector<FBTimFBBarsItemeSigItem> result;
+  std::vector<FBBarsItem> result;
   for (int i = 0; i < BarSteps.size(); i++)
     for (int j = 0; j < BarSteps.size(); j++)
     {
