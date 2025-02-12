@@ -9,7 +9,7 @@
 #include <algorithm>
 
 std::vector<FBBarsItem>
-FBMakeBarsItems(FBBarsItem min, FBBarsItem max);
+FBMakeBarsItems(bool withZero, FBBarsItem min, FBBarsItem max);
 
 struct FBBarsParam
 {

@@ -7,7 +7,7 @@
 static std::vector<FBBarsItem>
 MakeEnvBarsItems()
 {
-  return FBMakeBarsItems({ 1, 128 }, { 4, 1 });
+  return FBMakeBarsItems(true, { 1, 128 }, { 4, 1 });
 }
 
 std::unique_ptr<FBStaticModule>
