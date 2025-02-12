@@ -50,21 +50,6 @@ FFMakeEnvTopo()
   type.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectType);
   type.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectType);
 
-  auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
-  sustainLevel.acc = true;
-  sustainLevel.defaultText = "50";
-  sustainLevel.name = "Stn";
-  sustainLevel.tooltip = "Sustain Level";
-  sustainLevel.slotCount = 1;
-  sustainLevel.unit = "%";
-  sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
-  sustainLevel.type = FBParamType::Linear;
-  sustainLevel.Linear().displayMultiplier = 100.0f;
-  auto selectSustainLevel = [](auto& module) { return &module.acc.sustainLevel; };
-  sustainLevel.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSustainLevel);
-  sustainLevel.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSustainLevel);
-  sustainLevel.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSustainLevel);
-
   auto& sync = result->params[(int)FFEnvParam::Sync];
   sync.acc = false;
   sync.name = "Sync";
@@ -338,6 +323,21 @@ FFMakeEnvTopo()
   releaseSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectReleaseSlope);
   releaseSlope.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectReleaseSlope);
   releaseSlope.dependencies.enabled.When({ (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] == (int)FFEnvMode::Exp; });
+
+  auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
+  sustainLevel.acc = true;
+  sustainLevel.defaultText = "50";
+  sustainLevel.name = "Stn";
+  sustainLevel.tooltip = "Sustain Level";
+  sustainLevel.slotCount = 1;
+  sustainLevel.unit = "%";
+  sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
+  sustainLevel.type = FBParamType::Linear;
+  sustainLevel.Linear().displayMultiplier = 100.0f;
+  auto selectSustainLevel = [](auto& module) { return &module.acc.sustainLevel; };
+  sustainLevel.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSustainLevel);
+  sustainLevel.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSustainLevel);
+  sustainLevel.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSustainLevel);
 
   return result;
 }
