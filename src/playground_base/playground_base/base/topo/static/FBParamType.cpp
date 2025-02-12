@@ -8,7 +8,7 @@ FBParamTypeIsList(FBParamType type)
   {
   case FBParamType::List:
   case FBParamType::Note:
-  case FBParamType::TimeSig:
+  case FBParamType::Bars:
     return true;
   case FBParamType::Linear:
   case FBParamType::FreqOct:
@@ -28,7 +28,7 @@ FBParamTypeIsStepped(FBParamType type)
   {
   case FBParamType::List:
   case FBParamType::Note:
-  case FBParamType::TimeSig:
+  case FBParamType::Bars:
   case FBParamType::Boolean:
   case FBParamType::Discrete:
     return true;

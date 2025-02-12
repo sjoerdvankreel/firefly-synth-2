@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/topo/param/FBTimeSigItem.hpp>
+#include <playground_base/base/topo/param/FBBarsItem.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <string>
@@ -8,12 +8,12 @@
 #include <optional>
 #include <algorithm>
 
-std::vector<FBTimeSigItem>
-FBMakeTimeSigItems(FBTimeSigItem min, FBTimeSigItem max);
+std::vector<FBBarsItem>
+FBMakeBarsItems(FBBarsItem min, FBBarsItem max);
 
-struct FBTimeSigParam
+struct FBBarsParam
 {
-  std::vector<FBTimeSigItem> items = {};
+  std::vector<FBBarsItem> items = {};
   int ValueCount() const { return (int)items.size(); }
 
   juce::PopupMenu MakePopupMenu() const;
@@ -24,7 +24,7 @@ struct FBTimeSigParam
 };
 
 inline int
-FBTimeSigParam::NormalizedToPlain(float normalized) const
+FBBarsParam::NormalizedToPlain(float normalized) const
 {
   int count = ValueCount();
   return std::clamp((int)(normalized * count), 0, count - 1);

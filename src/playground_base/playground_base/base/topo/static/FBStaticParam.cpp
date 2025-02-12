@@ -47,8 +47,8 @@ FBStaticParam::MakePopupMenu() const
     return List().MakePopupMenu();
   case FBParamType::Note:
     return Note().MakePopupMenu();
-  case FBParamType::TimeSig:
-    return TimeSig().MakePopupMenu();
+  case FBParamType::Bars:
+    return Bars().MakePopupMenu();
   default:
     assert(false);
     return {};
@@ -104,8 +104,8 @@ FBStaticParam::AnyDiscreteToNormalizedSlow(int plain) const
     return list.PlainToNormalized(plain);
   case FBParamType::Note:
     return note.PlainToNormalized(plain);
-  case FBParamType::TimeSig:
-    return timeSig.PlainToNormalized(plain);
+  case FBParamType::Bars:
+    return bars.PlainToNormalized(plain);
   case FBParamType::Boolean:
     return boolean.PlainToNormalized(plain);
   case FBParamType::Discrete:
@@ -125,8 +125,8 @@ FBStaticParam::NormalizedToAnyDiscreteSlow(float normalized) const
     return list.NormalizedToPlain(normalized);
   case FBParamType::Note:
     return note.NormalizedToPlain(normalized);
-  case FBParamType::TimeSig:
-    return timeSig.NormalizedToPlain(normalized);
+  case FBParamType::Bars:
+    return bars.NormalizedToPlain(normalized);
   case FBParamType::Boolean:
     return boolean.NormalizedToPlain(normalized);
   case FBParamType::Discrete:
@@ -144,8 +144,8 @@ FBStaticParam::NormalizedToText(FBValueTextDisplay display, float normalized) co
   {
   case FBParamType::Note:
     return note.PlainToText(note.NormalizedToPlain(normalized));
-  case FBParamType::TimeSig:
-    return timeSig.PlainToText(timeSig.NormalizedToPlain(normalized));
+  case FBParamType::Bars:
+    return bars.PlainToText(bars.NormalizedToPlain(normalized));
   case FBParamType::Boolean:
     return boolean.PlainToText(boolean.NormalizedToPlain(normalized));
   case FBParamType::Discrete:
@@ -179,11 +179,11 @@ FBStaticParam::TextToNormalized(bool io, std::string const& text) const
       if (!plain) return {};
       return list.PlainToNormalized(plain.value());
     }
-    case FBParamType::TimeSig:
+    case FBParamType::Bars:
     {
-      auto plain = timeSig.TextToPlain(text);
+      auto plain = bars.TextToPlain(text);
       if (!plain) return {};
-      return timeSig.PlainToNormalized(plain.value());
+      return bars.PlainToNormalized(plain.value());
     }
     case FBParamType::Boolean:
     {

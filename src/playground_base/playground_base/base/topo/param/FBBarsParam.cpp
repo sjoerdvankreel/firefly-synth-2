@@ -1,30 +1,30 @@
-#include <playground_base/base/topo/param/FBTimeSigParam.hpp>
+#include <playground_base/base/topo/param/FBBarsParam.hpp>
 
 #include <cassert>
 
 using namespace juce;
 
 static std::vector<int>
-ItemSteps({
+BarSteps({
   1, 2, 3, 4, 5, 6, 7, 8,
   9, 10, 11, 12, 13, 14, 15, 16,
   20, 24, 32, 48, 64, 96, 128 });
 
 std::string
-FBTimeSigParam::PlainToText(int plain) const
+FBBarsParam::PlainToText(int plain) const
 {
   return items[plain].ToString();
 }
 
 float
-FBTimeSigParam::PlainToNormalized(int plain) const
+FBBarsParam::PlainToNormalized(int plain) const
 {
   int count = (int)items.size();
   return std::clamp(plain / (count - 1.0f), 0.0f, 1.0f);
 }
 
 std::optional<int>
-FBTimeSigParam::TextToPlain(std::string const& text) const
+FBBarsParam::TextToPlain(std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == items[i].ToString())
@@ -32,14 +32,14 @@ FBTimeSigParam::TextToPlain(std::string const& text) const
   return {};
 }
 
-std::vector<FBTimeSigItem>
-FBMakeTimeSigItems(FBTimeSigItem min, FBTimeSigItem max)
+std::vector<FBBarsItem>
+FBMakeBarsItems(FBBarsItem min, FBBarsItem max)
 {
-  std::vector<FBTimeSigItem> result;
-  for (int i = 0; i < ItemSteps.size(); i++)
-    for (int j = 0; j < ItemSteps.size(); j++)
+  std::vector<FBTimFBBarsItemeSigItem> result;
+  for (int i = 0; i < BarSteps.size(); i++)
+    for (int j = 0; j < BarSteps.size(); j++)
     {
-      FBTimeSigItem item = { ItemSteps[i], ItemSteps[j] };
+      FBBarsItem item = { BarSteps[i], BarSteps[j] };
       if(min <= item && item <= max)
         result.push_back(item);
     }
@@ -47,7 +47,7 @@ FBMakeTimeSigItems(FBTimeSigItem min, FBTimeSigItem max)
 }
 
 PopupMenu
-FBTimeSigParam::MakePopupMenu() const
+FBBarsParam::MakePopupMenu() const
 {
   int k = 0;
   PopupMenu result;
