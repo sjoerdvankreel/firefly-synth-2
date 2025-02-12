@@ -4,6 +4,7 @@
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
@@ -45,7 +46,7 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
   output.Transform([&](int v) { 
     auto plainRate = rateParamLinear.NormalizedToPlain(rate.CV(v));
-    auto phase = _phase.Next(plainRate / state.sampleRate);
+    auto phase = _phase.Next(plainRate / state.input->sampleRate);
     return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
 
   auto* exchangeState = state.ExchangeAs<FFExchangeState>();
@@ -57,7 +58,7 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   auto& exchangeDSP = exchangeState->global.gLFO[state.moduleSlot];
   float lastRate = rate.CV().data[FBFixedBlockSamples - 1];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = rateParamLinear.NormalizedFreqToSamples(lastRate, state.sampleRate);
+  exchangeDSP.lengthSamples = rateParamLinear.NormalizedFreqToSamples(lastRate, state.input->sampleRate);
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
   return FBFixedBlockSamples;
 }

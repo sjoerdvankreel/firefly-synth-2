@@ -29,7 +29,6 @@ FFPlugProcessor::MakeModuleState(
   result.topo = _topo;
   result.input = &input;
   result.procRaw = _procState;
-  result.sampleRate = _sampleRate;
   result.exchangeRaw = _exchangeState;
   return result;
 }

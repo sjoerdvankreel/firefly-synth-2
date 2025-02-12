@@ -5,6 +5,7 @@
 
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 void
@@ -51,7 +52,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   k.Transform([&](int v) { return 2.0 - 2.0 * resBlock[v]; });
   g.Transform([&](int v) {
     auto plainFreq = topo.params[(int)FFGFilterParam::Freq].FreqOct().NormalizedToPlain(freqBlock[v]);
-    return xsimd::tan(std::numbers::pi * plainFreq / state.sampleRate); });
+    return xsimd::tan(std::numbers::pi * plainFreq / state.input->sampleRate); });
 
   switch (type)
   {

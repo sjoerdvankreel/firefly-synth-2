@@ -4,6 +4,7 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <vector>
@@ -96,10 +97,10 @@ FBRenderModuleGraph(RenderData& renderData)
   assert((renderData.voiceExchangeSelector == nullptr) != (renderData.globalExchangeSelector == nullptr));
 
   graphData->text = "OFF";
-  float dspBpm = renderState->ExchangeContainer()->Bpm();
-  float dspSampleRate = renderState->ExchangeContainer()->SampleRate();
+  auto procExchange = renderState->ExchangeContainer()->Proc();
   int maxDspSampleCount = renderData.plotLengthSelector(
-    moduleProcState->topo->static_, scalarState, moduleProcState->moduleSlot, dspSampleRate, dspBpm);
+    moduleProcState->topo->static_, scalarState, 
+    moduleProcState->moduleSlot, procExchange->sampleRate, procExchange->bpm);
 
   if constexpr (Global)
   {
@@ -117,7 +118,8 @@ FBRenderModuleGraph(RenderData& renderData)
   }
 
   float guiSampleCount = (float)graphData->pixelWidth;
-  moduleProcState->sampleRate = dspSampleRate / (maxDspSampleCount / guiSampleCount);
+  moduleProcState->input->bpm = procExchange->bpm;
+  moduleProcState->input->sampleRate = procExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
   renderState->PrepareForRenderPrimary();
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();

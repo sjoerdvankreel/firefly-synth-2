@@ -5,6 +5,7 @@
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
+#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
@@ -91,8 +92,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   incr.Transform([&](int v) {
     auto centPlain = topo.params[(int)FFOsciParam::Cent].Linear().NormalizedToPlain(cent.CV(v));
     auto pitch = _voiceState.key + _voiceState.note - 60.0f + centPlain;
-    auto freq = FBPitchToFreq(pitch, state.sampleRate);
-    return freq / state.sampleRate; });
+    auto freq = FBPitchToFreq(pitch, state.input->sampleRate);
+    return freq / state.input->sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
 
   switch (_voiceState.type)

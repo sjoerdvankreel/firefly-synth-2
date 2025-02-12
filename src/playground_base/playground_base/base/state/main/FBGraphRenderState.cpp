@@ -92,10 +92,12 @@ FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
 }
 
 void
-FBGraphRenderState::PrepareForRenderPrimary()
+FBGraphRenderState::PrepareForRenderPrimary(float sampleRate, float bpm)
 {
-  _moduleState->voice = nullptr;
+  _input->bpm = bpm;
+  _input->sampleRate = sampleRate;
   _input->voiceManager = nullptr;
+  _moduleState->voice = nullptr;
   _procState->InitProcessing(*_scalarState);
 }
 

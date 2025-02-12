@@ -39,6 +39,7 @@ _fixedBuffer(std::make_unique<FBFixedBufferProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), (int)hostContext->ProcState()->Params().size()))
 {
   _fixedOut.procState = _procState;
+  _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
 }
 

@@ -10,7 +10,6 @@ struct FBModuleProcState final
 {
   void* procRaw = {};
   int moduleSlot = {};
-  float sampleRate = {};
   void* exchangeRaw = {};
   FBVoiceInfo const* voice = {};
   FBRuntimeTopo const* topo = {};
