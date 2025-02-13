@@ -17,7 +17,7 @@ class FBScalarStateContainer;
 
 class FBGraphRenderState final
 {
-  friend class FBModuleGraphComponent;
+  friend class FBModuleGraphDisplayComponent;
 
   FBFixedFloatAudioBlock _audio = {};
   std::vector<FBNoteEvent> _notes = {};

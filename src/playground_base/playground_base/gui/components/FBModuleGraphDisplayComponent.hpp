@@ -8,12 +8,12 @@
 
 class FBGraphRenderState;
 
-class FBModuleGraphComponent final:
+class FBModuleGraphDisplayComponent final:
 public juce::Component
 {
 public:
-  FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphComponent);
-  FBModuleGraphComponent(FBGraphRenderState* renderState);
+  FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphDisplayComponent);
+  FBModuleGraphDisplayComponent(FBGraphRenderState* renderState);
 
   void paint(juce::Graphics& g) override;
   void RequestRerender(int moduleIndex);

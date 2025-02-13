@@ -2,22 +2,22 @@
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
-#include <playground_base/gui/components/FBModuleGraphComponent.hpp>
+#include <playground_base/gui/components/FBModuleGraphDisplayComponent.hpp>
 
 #include <cmath>
 #include <numbers>
 
 using namespace juce;
 
-FBModuleGraphComponent::
-FBModuleGraphComponent(FBGraphRenderState* renderState):
+FBModuleGraphDisplayComponent::
+FBModuleGraphDisplayComponent(FBGraphRenderState* renderState):
 Component()
 {
   _data.renderState = renderState;
 }
 
 void
-FBModuleGraphComponent::RequestRerender(int moduleIndex)
+FBModuleGraphDisplayComponent::RequestRerender(int moduleIndex)
 {
   if (!PrepareForRender(moduleIndex))
     return;
@@ -26,7 +26,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 }
 
 juce::Point<float>
-FBModuleGraphComponent::PointLocation(
+FBModuleGraphDisplayComponent::PointLocation(
   std::vector<float> const& points, 
   int maxPoints, int point) const
 {
@@ -36,7 +36,7 @@ FBModuleGraphComponent::PointLocation(
 }
 
 void 
-FBModuleGraphComponent::PaintMarker(
+FBModuleGraphDisplayComponent::PaintMarker(
   Graphics& g, std::vector<float> const& points, 
   int maxPoints, int marker)
 {
@@ -46,7 +46,7 @@ FBModuleGraphComponent::PaintMarker(
 }
 
 void
-FBModuleGraphComponent::PaintSeries(
+FBModuleGraphDisplayComponent::PaintSeries(
   Graphics& g, Colour color, 
   std::vector<float> const& points, int maxPoints)
 {
@@ -62,7 +62,7 @@ FBModuleGraphComponent::PaintSeries(
 }
 
 bool 
-FBModuleGraphComponent::PrepareForRender(int moduleIndex)
+FBModuleGraphDisplayComponent::PrepareForRender(int moduleIndex)
 {
   if (moduleIndex == -1)
     return false;
@@ -77,7 +77,7 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 }
 
 void
-FBModuleGraphComponent::paint(Graphics& g)
+FBModuleGraphDisplayComponent::paint(Graphics& g)
 {
   if (_tweakedModuleByUI == -1)
     return;

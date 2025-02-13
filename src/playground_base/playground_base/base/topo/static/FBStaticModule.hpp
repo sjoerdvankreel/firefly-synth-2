@@ -20,6 +20,7 @@ struct FBStaticModule final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
+  int graphControlParam = -1;
   std::vector<FBStaticParam> params = {};
   FBModuleGraphRenderer renderGraph = {};
   FBModuleAddrSelectors addrSelectors = {};

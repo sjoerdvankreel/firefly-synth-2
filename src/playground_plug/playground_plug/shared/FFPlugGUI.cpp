@@ -9,7 +9,7 @@
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
-#include <playground_base/gui/components/FBModuleGraphComponent.hpp>
+#include <playground_base/gui/components/FBModuleGraphDisplayComponent.hpp>
 
 using namespace juce;
 
@@ -75,7 +75,7 @@ FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
 void 
 FFPlugGUI::SetupGUI()
 {
-  _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
+  _graph = StoreComponent<FBModuleGraphDisplayComponent>(_graphRenderState.get());
   _content = StoreComponent<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1, 1, 1, 2 }, std::vector<int> { 1, 1 });
   _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(0, 1, 1, 1, _graph);
