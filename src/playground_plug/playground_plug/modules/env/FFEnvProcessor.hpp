@@ -32,6 +32,7 @@ class FFEnvProcessor final
   int _lengthSamples = 0;
   int _positionSamples = 0;
   float _lastDAHDSR = 0.0f;
+  float _lastBeforeRelease = 0.0f;
   FBOnePoleFilter _smoother = {};
   FFEnvVoiceState _voiceState = {};
   std::array<int, (int)FFEnvStage::Count> _stagePositions = {};

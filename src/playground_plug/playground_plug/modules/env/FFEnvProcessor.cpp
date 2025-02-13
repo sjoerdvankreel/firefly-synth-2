@@ -48,6 +48,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   _lastDAHDSR = 0.0f;
   _positionSamples = 0;
   _stagePositions.fill(0);
+  _lastBeforeRelease = 0.0f;
 
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -78,15 +79,15 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
 
   auto const& sustain = params.acc.sustainLevel[0].Voice()[voice].CV();
   if (_voiceState.delaySamples > 0)
-    _lastDAHDSR = 0.0f;
+    _lastBeforeRelease = _lastDAHDSR = 0.0f;
   else if (_voiceState.attackSamples > 0)
-    _lastDAHDSR = 0.0f;
+    _lastBeforeRelease = _lastDAHDSR = 0.0f;
   else if (_voiceState.holdSamples > 0)
-    _lastDAHDSR = 1.0f;
+    _lastBeforeRelease = _lastDAHDSR = 1.0f;
   else if (_voiceState.decaySamples > 0)
-    _lastDAHDSR = 1.0f;
+    _lastBeforeRelease = _lastDAHDSR = 1.0f;
   else if (_voiceState.releaseSamples > 0)
-    _lastDAHDSR = sustain.data[0];
+    _lastBeforeRelease = _lastDAHDSR = sustain.data[0];
 
   _smoother.SetCoeffs(_voiceState.smoothingSamples);
   _smoother.State(_lastDAHDSR);
@@ -134,6 +135,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   for (; s < FBFixedBlockSamples && delayPos < _voiceState.delaySamples; s++, delayPos++)
   {
     _lastDAHDSR = 0.0f;
+    _lastBeforeRelease = _lastDAHDSR;
     scratch.data[s] = _smoother.Next(_lastDAHDSR);
   }
 
@@ -142,6 +144,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     for (; s < FBFixedBlockSamples && attackPos < _voiceState.attackSamples; s++, attackPos++)
     {
       _lastDAHDSR = attackPos / (float)_voiceState.attackSamples;
+      _lastBeforeRelease = _lastDAHDSR;
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
   else
@@ -150,6 +153,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       float slope = minSlope + attackSlope.CV().data[s] * slopeRange;
       float pos = attackPos / (float)_voiceState.attackSamples;
       _lastDAHDSR = std::pow(pos, std::log(slope) * invLogHalf);
+      _lastBeforeRelease = _lastDAHDSR;
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
 
@@ -157,6 +161,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   for (; s < FBFixedBlockSamples && holdPos < _voiceState.holdSamples; s++, holdPos++)
   {
     _lastDAHDSR = 1.0f;
+    _lastBeforeRelease = _lastDAHDSR;
     scratch.data[s] = _smoother.Next(_lastDAHDSR);
   }
 
@@ -166,6 +171,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     {
       float pos = decayPos / (float)_voiceState.decaySamples;
       _lastDAHDSR = sustainLevel.CV().data[s] + (1.0f - sustainLevel.CV().data[s]) * (1.0f - pos);
+      _lastBeforeRelease = _lastDAHDSR;
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
   else
@@ -174,6 +180,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       float slope = minSlope + decaySlope.CV().data[s] * slopeRange;
       float pos = decayPos / (float)_voiceState.decaySamples;
       _lastDAHDSR = sustainLevel.CV().data[s] + (1.0f - sustainLevel.CV().data[s]) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
+      _lastBeforeRelease = _lastDAHDSR;
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
 
@@ -182,7 +189,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++)
     {
       float pos = releasePos / (float)_voiceState.releaseSamples;
-      _lastDAHDSR = sustainLevel.CV().data[s] * (1.0f - pos);
+      _lastDAHDSR = _lastBeforeRelease * (1.0f - pos);
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
   else
@@ -190,7 +197,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     {
       float slope = minSlope + releaseSlope.CV().data[s] * slopeRange;
       float pos = releasePos / (float)_voiceState.releaseSamples;
-      _lastDAHDSR = sustainLevel.CV().data[s] * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
+      _lastDAHDSR = _lastBeforeRelease * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
 
