@@ -8,13 +8,13 @@
 class FBGridComponent;
 class FBHostGUIContext;
 class FBGraphRenderState;
-class FBModuleGraphDisplayComponent;
+class FBModuleGraphComponent;
 
 class FFPlugGUI final:
 public FBPlugGUI
 {
   FBGridComponent* _content = {};
-  FBModuleGraphDisplayComponent* _graph = {};
+  FBModuleGraphComponent* _graph = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
