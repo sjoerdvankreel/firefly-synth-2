@@ -83,12 +83,14 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     return;
   if (!PrepareForRender(_tweakedModuleByUI))
     return;
+  auto const* topo = _data.renderState->ModuleProcState()->topo;
 
   _data.text.clear();
   _data.primarySeries.clear();
   _data.primaryMarkers.clear();
   _data.secondarySeries.clear();
   _data.pixelWidth = getWidth();
+  _data.moduleName = topo->modules[_tweakedModuleByUI].name;
   _renderer(&_data);
 
   int maxPoints = (int)_data.primarySeries.size();
@@ -97,9 +99,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 
   g.fillAll(Colours::black);
   g.setColour(Colours::darkgrey);
-  auto const* runtimeTopo = _data.renderState->ModuleProcState()->topo;
-  std::string moduleName = runtimeTopo->modules[_tweakedModuleByUI].name;
-  g.drawText(moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
+  g.drawText(_data.moduleName + " " + _data.text, getLocalBounds(), Justification::centred, false);
   for (int i = 0; i < _data.secondarySeries.size(); i++)
   {
     int marker = _data.secondarySeries[i].marker;

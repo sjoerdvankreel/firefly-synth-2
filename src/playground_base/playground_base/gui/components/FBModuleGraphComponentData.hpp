@@ -18,6 +18,7 @@ struct FBModuleGraphComponentData final
 {
   int pixelWidth = -1;
   std::string text = {};
+  std::string moduleName = {};
   FBGraphRenderState* renderState = {};
   std::vector<int> primaryMarkers = {};
   std::vector<float> primarySeries = {};
