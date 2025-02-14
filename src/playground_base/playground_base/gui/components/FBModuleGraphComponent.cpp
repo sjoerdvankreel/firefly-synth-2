@@ -56,6 +56,7 @@ FBModuleGraphComponent::paint(Graphics& g)
   if (!PrepareForRender(_tweakedModuleByUI))
     return;
   auto const* topo = _data->renderState->ModuleProcState()->topo;
+  auto const& staticIndex = topo->modules[_tweakedModuleByUI].topoIndices.index;
 
   _data->text.clear();
   _data->primarySeries.clear();
@@ -63,6 +64,6 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->secondarySeries.clear();
   _data->pixelWidth = getWidth();
   _data->moduleName = topo->modules[_tweakedModuleByUI].name;
-  topo->static_.modules[_tweakedModuleByUI].renderGraph(_data.get());
+  topo->static_.modules[staticIndex].renderGraph(_data.get());
   _display->paint(g);
 }
