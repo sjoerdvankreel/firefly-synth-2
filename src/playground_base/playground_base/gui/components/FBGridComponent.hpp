@@ -48,6 +48,7 @@ public:
 
   void MarkSection(FBGridSection const& section);
   void Add(int row, int col, juce::Component* child);
+  void Remove(int row, int col, juce::Component* child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
 
   FBGridComponent() = delete;

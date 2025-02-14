@@ -55,6 +55,15 @@ FBGridComponent::FixedWidth(int height) const
 }
 
 void
+FBGridComponent::Remove(int row, int col, Component* child)
+{
+  auto& childrenAtCell = _cells.at({ row, col }).children;
+  auto iter = std::find(childrenAtCell.begin(), childrenAtCell.end(), child);
+  assert(iter != childrenAtCell.end());
+  childrenAtCell.erase(iter);
+}
+
+void
 FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
 {
   addAndMakeVisible(child);
