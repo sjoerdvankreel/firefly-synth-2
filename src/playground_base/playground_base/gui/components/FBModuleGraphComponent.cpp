@@ -112,5 +112,5 @@ FBModuleGraphComponent::paint(Graphics& g)
 std::unique_ptr<Slider>
 FBModuleGraphComponent::MakeGraphControl(FBStaticModuleGraph const& topo) const
 {
-  return std::make_unique<Slider>(Slider::SliderStyle::RotaryVerticalDrag);
+  return std::make_unique<Slider>(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox);
 }

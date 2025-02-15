@@ -4,6 +4,15 @@
 #include <playground_plug/modules/glfo/FFGLFOGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
+static FBStaticModuleGraph
+MakeGraphTopo()
+{
+  FBStaticModuleGraph result = {};
+  result.enabled = true;
+  result.renderer = FFGLFORenderGraph;
+  return result;
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeGLFOTopo()
 {
@@ -11,7 +20,7 @@ FFMakeGLFOTopo()
   result->voice = false;
   result->name = "GLFO";
   result->slotCount = FFGLFOCount;
-  result->renderGraph = FFGLFORenderGraph;
+  result->graph = MakeGraphTopo();
   result->id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
   result->params.resize((int)FFGLFOParam::Count);
   result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gLFO; });

@@ -1,3 +1,4 @@
+put some padding in the graph for show de bolletjes
 graph control param?
 actually handle sustain
 handle envelope offset (actual start index in block)
