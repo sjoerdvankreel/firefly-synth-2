@@ -5,20 +5,20 @@
 #include <memory>
 
 class FBPlugGUI;
-class FBParamSlider;
 class FBGridComponent;
 class FBGraphRenderState;
 class FBModuleGraphDisplayComponent;
 
 struct FBTopoIndices;
 struct FBStaticModule;
+struct FBStaticModuleGraph;
 struct FBModuleGraphComponentData;
 
 class FBModuleGraphComponent final:
 public juce::Component
 {
   int _tweakedModuleByUI = -1;
-  std::unique_ptr<FBParamSlider> _graphControl = {};
+  std::unique_ptr<juce::Slider> _graphControl = {};
 
   FBPlugGUI* const _plugGUI;
   juce::ToggleButton _controlActive;
@@ -26,10 +26,11 @@ public juce::Component
   std::unique_ptr<FBModuleGraphComponentData> _data;
   std::unique_ptr<FBModuleGraphDisplayComponent> _display;
 
+  void RecreateGraphControl();
   bool PrepareForRender(int moduleIndex);
   FBTopoIndices const& TopoIndicesFor(int moduleIndex) const;
   FBStaticModule const& StaticModuleFor(int moduleIndex) const;
-  std::unique_ptr<FBParamSlider> MakeGraphControl(int graphControlParamIndex) const;
+  std::unique_ptr<juce::Slider> MakeGraphControl(FBStaticModuleGraph const& topo) const;
 
 public:
   void resized() override;

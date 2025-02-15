@@ -19,13 +19,13 @@ FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState) :
 Component(),
 _plugGUI(plugGUI),
 _controlActive(),
-_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 1, std::vector<int> { 1, 3 })), // TODO 1/3
+_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 2, 2)),
 _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
   _data->renderState = renderState;
   _grid->Add(0, 0, &_controlActive);
-  _grid->Add(0, 1, _display.get());
+  _grid->Add(0, 1, 2, 1, _display.get());
   addAndMakeVisible(_grid.get());
 }
 
@@ -58,7 +58,35 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
     return false;
   auto moduleProcState = _data->renderState->ModuleProcState();
   moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
-  return StaticModuleFor(moduleIndex).renderGraph != nullptr;
+  return StaticModuleFor(moduleIndex).graph.enabled;
+}
+
+void
+FBModuleGraphComponent::RequestRerender(int moduleIndex)
+{
+  if (!PrepareForRender(moduleIndex))
+    return;
+  if (_tweakedModuleByUI != moduleIndex)
+  {
+    _tweakedModuleByUI = moduleIndex;
+    RecreateGraphControl();
+  }
+  repaint();
+}
+
+void
+FBModuleGraphComponent::RecreateGraphControl()
+{
+  if (_graphControl != nullptr)
+    _grid->Remove(1, 0, _graphControl.get());
+  _graphControl.reset();
+  auto const& staticModule = StaticModuleFor(_tweakedModuleByUI);
+  if (staticModule.graph.hasControl)
+  {
+    _graphControl = MakeGraphControl(staticModule.graph);
+    _grid->Add(1, 0, _graphControl.get());
+  }
+  resized();
 }
 
 void
@@ -78,32 +106,11 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->secondarySeries.clear();
   _data->pixelWidth = getWidth();
   _data->moduleName = topo->modules[_tweakedModuleByUI].name;
-  topo->static_.modules[staticIndex].renderGraph(_data.get());
+  topo->static_.modules[staticIndex].graph.renderer(_data.get());
 }
 
-void
-FBModuleGraphComponent::RequestRerender(int moduleIndex)
+std::unique_ptr<Slider>
+FBModuleGraphComponent::MakeGraphControl(FBStaticModuleGraph const& topo) const
 {
-  if (!PrepareForRender(moduleIndex))
-    return;
-  if (_tweakedModuleByUI != moduleIndex)
-  {
-    _tweakedModuleByUI = moduleIndex;
-    if (_graphControl != nullptr)
-      removeChildComponent(_graphControl.get());
-    auto const& staticModule = StaticModuleFor(_tweakedModuleByUI);
-    if (staticModule.graphControlParam != -1)
-      _graphControl = MakeGraphControl(staticModule.graphControlParam);
-    resized();
-  }
-  repaint();
-}
-
-std::unique_ptr<FBParamSlider>
-FBModuleGraphComponent::MakeGraphControl(int graphControlParamIndex) const
-{
-  auto const* topo = _data->renderState->ModuleProcState()->topo;
-  int staticIndex = TopoIndicesFor(_tweakedModuleByUI).index;
-  FBParamTopoIndices indices = { staticIndex, 0, graphControlParamIndex, 0 };
-  return std::make_unique<FBParamSlider>(_plugGUI, topo->ParamAtTopo(indices), Slider::SliderStyle::RotaryVerticalDrag);
+  return std::make_unique<Slider>(Slider::SliderStyle::RotaryVerticalDrag);
 }
