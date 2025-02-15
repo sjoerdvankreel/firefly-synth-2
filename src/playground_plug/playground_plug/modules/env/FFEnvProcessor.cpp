@@ -16,7 +16,7 @@ FFEnvProcessor::PlotLengthSamples(
   FBStaticTopo const& topo, FFScalarState const& state, 
   int moduleSlot, float sampleRate, float bpm) const
 {
-  float result = 0.0f;
+  int result = 0;
   auto const& envState = state.param.voice.env[moduleSlot];
   auto const& envTopo = topo.modules[(int)FFModuleType::Env];
   bool sync = envTopo.params[(int)FFEnvParam::Sync].Boolean().NormalizedToPlain(envState.block.sync[0]);
