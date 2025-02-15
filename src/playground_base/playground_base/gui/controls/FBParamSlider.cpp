@@ -14,13 +14,11 @@ FBParamSlider(
   FBPlugGUI* plugGUI,
   FBRuntimeParam const* param, 
   Slider::SliderStyle style):
-Slider(style, Slider::NoTextBox),
+FBAutoSizeSlider(plugGUI, style),
 FBParamControl(plugGUI, param)
 {
   setRange(0.0, 1.0);
   setPopupDisplayEnabled(true, false, plugGUI);
-  setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
-  SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
 void
@@ -46,14 +44,6 @@ FBParamSlider::mouseUp(MouseEvent const& event)
 {
   if (event.mods.isRightButtonDown())
     _plugGUI->ShowHostMenuForParam(_param->runtimeParamIndex);
-}
-
-int 
-FBParamSlider::FixedWidth(int height) const
-{
-  if(getSliderStyle() == SliderStyle::RotaryVerticalDrag)
-    return height;
-  return 0;
 }
 
 double
