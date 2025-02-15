@@ -15,6 +15,12 @@ MakeGraphTopo()
 {
   FBStaticModuleGraph result = {};
   result.enabled = true;
+  result.hasControl = true;
+  result.controlName = "Key";
+  result.controlUnit = "Sec";
+  result.controlTooltip = "Key Time";
+  result.controlParam.min = 0.0f;
+  result.controlParam.max = 30.0f;
   result.renderer = FFEnvRenderGraph;
   return result;
 }

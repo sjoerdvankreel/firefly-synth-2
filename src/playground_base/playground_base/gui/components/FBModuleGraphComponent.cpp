@@ -3,7 +3,8 @@
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 
 #include <playground_base/gui/shared/FBParamControl.hpp>
-#include <playground_base/gui/controls/FBParamSlider.hpp>
+#include <playground_base/gui/controls/FBAutoSizeSlider.hpp>
+#include <playground_base/gui/controls/FBAutoSizeToggleButton.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
@@ -18,13 +19,13 @@ FBModuleGraphComponent::
 FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState) :
 Component(),
 _plugGUI(plugGUI),
-_controlActive(),
-_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 2, 2)),
+_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1 })),
 _data(std::make_unique<FBModuleGraphComponentData>()),
+_controlActive(std::make_unique<FBAutoSizeToggleButton>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
   _data->renderState = renderState;
-  _grid->Add(0, 0, &_controlActive);
+  _grid->Add(0, 0, _controlActive.get());
   _grid->Add(0, 1, 2, 1, _display.get());
   addAndMakeVisible(_grid.get());
 }
@@ -109,8 +110,8 @@ FBModuleGraphComponent::paint(Graphics& g)
   topo->static_.modules[staticIndex].graph.renderer(_data.get());
 }
 
-std::unique_ptr<Slider>
+std::unique_ptr<FBAutoSizeSlider>
 FBModuleGraphComponent::MakeGraphControl(FBStaticModuleGraph const& topo) const
 {
-  return std::make_unique<Slider>(Slider::SliderStyle::RotaryVerticalDrag, Slider::TextEntryBoxPosition::NoTextBox);
+  return std::make_unique<FBAutoSizeSlider>(_plugGUI, Slider::SliderStyle::RotaryVerticalDrag);
 }
