@@ -1,5 +1,4 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
-#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamComboBox.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -8,25 +7,16 @@ using namespace juce;
 
 FBParamComboBox::
 FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param):  
-ComboBox(),
+FBAutoSizeComboBox(param->static_.MakePopupMenu()),
 FBParamControl(plugGUI, param)
 {
-  *getRootMenu() = param->static_.MakePopupMenu();
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
-  for (int i = 0; i < getNumItems(); i++)
-    _maxTextWidth = std::max(_maxTextWidth, FBGetStringWidthCached(getItemText(i).toStdString()));
 }
 
 void
 FBParamComboBox::parentHierarchyChanged()
 {
   ParentHierarchyChanged();
-}
-
-int
-FBParamComboBox::FixedWidth(int height) const
-{
-  return _maxTextWidth + 48; // TODO
 }
 
 String
