@@ -7,7 +7,7 @@ using namespace juce;
 
 FBParamToggleButton::
 FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
-ToggleButton(),
+FBAutoSizeToggleButton(),
 FBParamControl(plugGUI, param)
 {
   auto* context = plugGUI->HostContext();
@@ -20,12 +20,6 @@ void
 FBParamToggleButton::parentHierarchyChanged()
 {
   ParentHierarchyChanged();
-}
-
-int 
-FBParamToggleButton::FixedWidth(int height) const
-{
-  return 24; // TODO;
 }
 
 String

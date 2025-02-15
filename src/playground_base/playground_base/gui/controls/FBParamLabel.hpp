@@ -7,7 +7,7 @@
 class FBPlugGUI;
 struct FBRuntimeParam;
 
-class FBParamLabel:
+class FBParamLabel final:
 public FBAutoSizeLabel,
 public FBParamComponent
 {
