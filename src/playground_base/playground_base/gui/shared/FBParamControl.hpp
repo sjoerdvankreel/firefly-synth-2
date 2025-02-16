@@ -8,6 +8,6 @@ public FBParamComponent
 {
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamControl);
-  FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
+  FBParamControl(FBPlugGUI* plugGUI, FBRuntimeAudioParam const* param);
   virtual void SetValueNormalizedFromHost(float normalized) = 0;
 };

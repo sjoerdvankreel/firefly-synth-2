@@ -2,14 +2,14 @@
 #include <playground_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeModule.hpp>
 
-static std::vector<FBRuntimeParam>
-MakeRuntimeParams(
+static std::vector<FBRuntimeAudioParam>
+MakeRuntimeAudioParams(
   FBStaticModule const& staticModule, 
   FBTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamStart,
-  std::vector<FBStaticParam> const& staticParams)
+  std::vector<FBStaticAudioParam> const& staticParams)
 {
-  std::vector<FBRuntimeParam> result;
+  std::vector<FBRuntimeAudioParam> result;
   for (int p = 0; p < staticParams.size(); p++)
     for (int s = 0; s < staticParams[p].slotCount; s++)
     {
@@ -17,7 +17,7 @@ MakeRuntimeParams(
       indices.param.slot = s;
       indices.param.index = p;
       indices.module = topoIndices;
-      result.push_back(FBRuntimeParam(
+      result.push_back(FBRuntimeAudioParam(
         staticModule, staticParams[p],
         indices, runtimeModuleIndex, runtimeParamStart++));
     }

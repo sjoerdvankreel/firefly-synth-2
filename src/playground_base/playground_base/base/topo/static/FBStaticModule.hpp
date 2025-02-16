@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/static/FBModuleAddrs.hpp>
-#include <playground_base/base/topo/static/FBStaticParam.hpp>
+#include <playground_base/base/topo/static/FBStaticAudioParam.hpp>
 
 #include <array>
 #include <string>
@@ -21,7 +21,7 @@ struct FBStaticModule final
   std::string id = {};
   std::string name = {};
   FBModuleGraphRenderer renderer = {};
-  std::vector<FBStaticParam> params = {};
   FBModuleAddrSelectors addrSelectors = {};
+  std::vector<FBStaticAudioParam> audioParams = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };

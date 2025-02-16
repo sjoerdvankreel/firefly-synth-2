@@ -1,5 +1,5 @@
 #include <playground_base/gui/shared/FBParamControl.hpp>
 
 FBParamControl::
-FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
+FBParamControl(FBPlugGUI* plugGUI, FBRuntimeAudioParam const* param):
 FBParamComponent(plugGUI, param) {}

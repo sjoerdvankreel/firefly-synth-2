@@ -1,8 +1,8 @@
 #pragma once
 
-struct FBStaticParam;
+struct FBStaticAudioParam;
 
 double
-FBCLAPToNormalized(FBStaticParam const& topo, double clap);
+FBCLAPToNormalized(FBStaticAudioParam const& topo, double clap);
 double 
-FBNormalizedToCLAP(FBStaticParam const& topo, float normalized);
+FBNormalizedToCLAP(FBStaticAudioParam const& topo, float normalized);

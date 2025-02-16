@@ -11,7 +11,7 @@
 #include <vector>
 
 struct FBRuntimeTopo;
-struct FBRuntimeParam;
+struct FBRuntimeAudioParam;
 struct FBProcExchangeState;
 
 class FBExchangeStateContainer final
@@ -45,5 +45,5 @@ public:
   std::vector<FBParamExchangeState> const& Params() const { return _params; }
   std::vector<FBModuleExchangeState> const& Modules() const { return _modules; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return *_voices; }
-  FBParamActiveExchangeState GetParamActiveState(FBRuntimeParam const* param) const;
+  FBParamActiveExchangeState GetParamActiveState(FBRuntimeAudioParam const* param) const;
 };

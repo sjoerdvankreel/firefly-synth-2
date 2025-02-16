@@ -1,6 +1,6 @@
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeAudioParam.hpp>
 
 using namespace juce;
 

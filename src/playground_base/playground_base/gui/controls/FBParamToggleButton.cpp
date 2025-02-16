@@ -1,12 +1,12 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamToggleButton.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeAudioParam.hpp>
 
 using namespace juce;
 
 FBParamToggleButton::
-FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
+FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeAudioParam const* param):
 FBAutoSizeToggleButton(),
 FBParamControl(plugGUI, param)
 {

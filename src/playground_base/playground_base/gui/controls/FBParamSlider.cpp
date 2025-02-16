@@ -2,7 +2,7 @@
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/glue/FBHostContextMenu.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeAudioParam.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <cassert>
@@ -12,7 +12,7 @@ using namespace juce;
 FBParamSlider::
 FBParamSlider(
   FBPlugGUI* plugGUI,
-  FBRuntimeParam const* param, 
+  FBRuntimeAudioParam const* param,
   Slider::SliderStyle style):
 FBAutoSizeSlider(plugGUI, style),
 FBParamControl(plugGUI, param)

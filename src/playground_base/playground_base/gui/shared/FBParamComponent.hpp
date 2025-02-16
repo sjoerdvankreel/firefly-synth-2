@@ -4,16 +4,16 @@
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
 
 class FBPlugGUI;
-struct FBRuntimeParam;
+struct FBRuntimeAudioParam;
 
 class FBParamComponent:
 public FBParamsDependent
 {
 protected:
-  FBRuntimeParam const* const _param;
+  FBRuntimeAudioParam const* const _param;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamComponent);
-  FBRuntimeParam const* Param() const { return _param; }
-  FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
+  FBRuntimeAudioParam const* Param() const { return _param; }
+  FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeAudioParam const* param);
 };

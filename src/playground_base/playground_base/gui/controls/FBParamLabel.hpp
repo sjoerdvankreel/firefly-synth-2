@@ -5,7 +5,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBPlugGUI;
-struct FBRuntimeParam;
+struct FBRuntimeAudioParam;
 
 class FBParamLabel final:
 public FBAutoSizeLabel,
@@ -13,5 +13,5 @@ public FBParamComponent
 {
 public:
   void parentHierarchyChanged() override;
-  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
+  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeAudioParam const* param);
 };

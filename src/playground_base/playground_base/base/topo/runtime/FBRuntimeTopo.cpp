@@ -28,8 +28,8 @@ ParseJson(std::string const& text, var& json)
 }
 
 static std::unordered_map<int, int>
-MakeParamTagToIndex(
-  std::vector<FBRuntimeParam> const& params)
+MakeAudioParamTagToIndex(
+  std::vector<FBRuntimeAudioParam> const& params)
 {
   std::unordered_map<int, int> result;
   for (int p = 0; p < params.size(); p++)
@@ -48,8 +48,8 @@ MakeModuleTopoToRuntime(
 }
 
 static std::map<FBParamTopoIndices, int>
-MakeParamTopoToRuntime(
-  std::vector<FBRuntimeParam> const& params)
+MakeAudioParamTopoToRuntime(
+  std::vector<FBRuntimeAudioParam> const& params)
 {
   std::map<FBParamTopoIndices, int> result;
   for (int p = 0; p < params.size(); p++)
@@ -57,14 +57,14 @@ MakeParamTopoToRuntime(
   return result;
 }
 
-static std::vector<FBRuntimeParam>
-MakeRuntimeParams(
+static std::vector<FBRuntimeAudioParam>
+MakeRuntimeAudioParams(
   std::vector<FBRuntimeModule> const& modules)
 {
-  std::vector<FBRuntimeParam> result;
+  std::vector<FBRuntimeAudioParam> result;
   for (int m = 0; m < modules.size(); m++)
-    for (int a = 0; a < modules[m].params.size(); a++)
-      result.push_back(modules[m].params[a]);
+    for (int a = 0; a < modules[m].audioParams.size(); a++)
+      result.push_back(modules[m].audioParams[a]);
   return result;
 }
 
@@ -91,16 +91,16 @@ FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
 modules(MakeRuntimeModules(topo)),
-params(MakeRuntimeParams(modules)),
-paramTagToIndex(MakeParamTagToIndex(params)),
+params(MakeRuntimeAudioParams(modules)),
+paramTagToIndex(MakeAudioParamTagToIndex(audioParams)),
 moduleTopoToRuntime(MakeModuleTopoToRuntime(modules)),
-paramTopoToRuntime(MakeParamTopoToRuntime(params)) {}
+paramTopoToRuntime(MakeAudioParamTopoToRuntime(audioParams)) {}
 
-FBRuntimeParam const*
-FBRuntimeTopo::ParamAtTopo(
+FBRuntimeAudioParam const*
+FBRuntimeTopo::AudioParamAtTopo(
   FBParamTopoIndices const& topoIndices) const
 {
-  return &params[paramTopoToRuntime.at(topoIndices)];
+  return &audioParams[audioParamTopoToRuntime.at(topoIndices)];
 }
 
 FBRuntimeModule const* 

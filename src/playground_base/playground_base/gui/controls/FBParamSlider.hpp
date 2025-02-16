@@ -7,7 +7,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBPlugGUI;
-struct FBRuntimeParam;
+struct FBRuntimeAudioParam;
 
 class FBParamSlider final:
 public FBAutoSizeSlider,
@@ -18,7 +18,7 @@ public FBParamControl
 public:
   FBParamSlider(
     FBPlugGUI* plugGUI, 
-    FBRuntimeParam const* param, 
+    FBRuntimeAudioParam const* param,
     juce::Slider::SliderStyle style);
 
   FBParamActiveExchangeState const&

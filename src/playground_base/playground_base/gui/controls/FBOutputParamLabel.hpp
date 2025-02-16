@@ -6,7 +6,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBPlugGUI;
-struct FBRuntimeParam;
+struct FBRuntimeAudioParam;
 
 class FBOutputParamLabel final:
 public juce::Label,
@@ -18,7 +18,7 @@ public IFBHorizontalAutoSize
 public:
   FBOutputParamLabel(
     FBPlugGUI* plugGUI,
-    FBRuntimeParam const* param,
+    FBRuntimeAudioParam const* param,
     std::string const& defaultText,
     std::string const& maxWidthText);
 

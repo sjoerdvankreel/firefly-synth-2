@@ -1,14 +1,14 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/gui/controls/FBOutputParamLabel.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeAudioParam.hpp>
 
 using namespace juce;
 
 FBOutputParamLabel::
 FBOutputParamLabel(
   FBPlugGUI* plugGUI, 
-  FBRuntimeParam const* param, 
+  FBRuntimeAudioParam const* param,
   std::string const& defaultText,
   std::string const& maxWidthText):
 Label(),
