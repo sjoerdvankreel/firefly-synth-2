@@ -42,7 +42,7 @@ MakeRuntimeGUIParams(
 {
   std::vector<FBRuntimeGUIParam> result;
   for (int m = 0; m < modules.size(); m++)
-    for (int p = 0; p < modules[m].params.size(); p++)
+    for (int p = 0; p < modules[m].guiParams.size(); p++)
       result.push_back(modules[m].guiParams[p]);
   return result;
 }
