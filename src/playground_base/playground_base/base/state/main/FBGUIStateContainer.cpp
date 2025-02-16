@@ -7,6 +7,7 @@
 FBGUIStateContainer::
 FBGUIStateContainer(FBRuntimeTopo const& topo):
 _rawState(topo.static_.state.allocRawGUIState()),
+_userScale(topo.static_.state.guiUserScaleAddr(_rawState)),
 _params(),
 _freeRawState(topo.static_.state.freeRawGUIState)
 {

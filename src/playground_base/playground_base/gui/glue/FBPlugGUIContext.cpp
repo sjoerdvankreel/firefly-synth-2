@@ -20,7 +20,7 @@ FBPlugGUIContext::SetSystemScale(float scale)
 float 
 FBPlugGUIContext::CombinedScale() const
 {
-  return _hostContext->GUIState()->userScale * _systemScale;
+  return *_hostContext->GUIState()->UserScale() * _systemScale;
 }
 
 int
@@ -52,6 +52,6 @@ void
 FBPlugGUIContext::SetUserScaleByHostWidth(int width)
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  _hostContext->GUIState()->userScale = ((float)width / (float)topoGUI.plugWidth) / _systemScale;
+  *_hostContext->GUIState()->UserScale() = ((float)width / (float)topoGUI.plugWidth) / _systemScale;
   RequestRescale(CombinedScale());
 }

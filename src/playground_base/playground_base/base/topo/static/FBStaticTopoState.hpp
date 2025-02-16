@@ -10,6 +10,9 @@ struct FBStaticTopo;
 struct FBProcExchangeState;
 
 // TODO drop selector in favor of just-point-at-smooth-param
+typedef std::function<float* (
+  void* state)>
+  FBGUIUserScaleAddrSelector;
 typedef std::function<FBSpecialParams (
   FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
@@ -33,7 +36,8 @@ struct FBStaticTopoState final
 
   int exchangeStateSize = {};
   int exchangeStateAlignment = {};
-  FBSpecialParamsSelector specialSelector = {};
+  FBSpecialParamsSelector specialSelector = {}; // todo replace
+  FBGUIUserScaleAddrSelector guiUserScaleAddr = {};
   FBProcExchangeAddrSelector procExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoState);

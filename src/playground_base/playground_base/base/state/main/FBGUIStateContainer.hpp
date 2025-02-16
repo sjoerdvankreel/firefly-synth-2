@@ -9,9 +9,14 @@ struct FBRuntimeTopo;
 
 class FBGUIStateContainer final
 {
+  friend class FBPlugGUIContext;
+
   void* _rawState;
+  float* _userScale;
   std::vector<float*> _params;
   void (*_freeRawState)(void*);
+
+  float* UserScale() { return _userScale; }
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBGUIStateContainer);
@@ -23,6 +28,7 @@ public:
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
+  float const* UserScale() const { return _userScale; }
   template <class T> T* As() { return static_cast<T*>(_rawState); }
   template <class T> T const* As() const { return static_cast<T const*>(_rawState); }
 };
