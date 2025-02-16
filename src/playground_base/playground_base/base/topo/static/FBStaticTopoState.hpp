@@ -9,6 +9,7 @@
 struct FBStaticTopo;
 struct FBProcExchangeState;
 
+// TODO drop selector in favor of just-point-at-smooth-param
 typedef std::function<FBSpecialParams (
   FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
