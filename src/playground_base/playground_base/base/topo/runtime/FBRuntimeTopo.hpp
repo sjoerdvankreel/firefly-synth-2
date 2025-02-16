@@ -2,8 +2,8 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/static/FBStaticTopo.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeModule.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeAudioParam.hpp>
 #include <playground_base/base/topo/runtime/FBParamTopoIndices.hpp>
 
 #include <juce_core/juce_core.h>
@@ -20,17 +20,17 @@ struct FBRuntimeTopo final
 {
   FBStaticTopo static_;
   std::vector<FBRuntimeModule> modules;
-  std::vector<FBRuntimeAudioParam> audioParams;
-  std::unordered_map<int, int> audioParamTagToIndex;
+  std::vector<FBRuntimeParam> params;
+  std::unordered_map<int, int> paramTagToIndex;
   std::map<FBTopoIndices, int> moduleTopoToRuntime;
-  std::map<FBParamTopoIndices, int> audioParamTopoToRuntime;
+  std::map<FBParamTopoIndices, int> paramTopoToRuntime;
 
   FBRuntimeTopo(FBStaticTopo const& static_);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
 
+  FBRuntimeModule const* ModuleAtParamIndex(int runtimeParamIndex) const;
   FBRuntimeModule const* ModuleAtTopo(FBTopoIndices const& topoIndices) const;
-  FBRuntimeModule const* ModuleAtAudioParamIndex(int runtimeParamIndex) const;
-  FBRuntimeAudioParam const* AudioParamAtTopo(FBParamTopoIndices const& topoIndices) const;
+  FBRuntimeParam const* ParamAtTopo(FBParamTopoIndices const& topoIndices) const;
 
   juce::var SaveGUIStateToVar(FBGUIState const& gui) const;
   juce::var SaveProcStateToVar(FBProcStateContainer const& proc) const;

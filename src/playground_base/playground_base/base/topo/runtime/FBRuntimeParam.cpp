@@ -1,11 +1,11 @@
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 #include <playground_base/base/topo/runtime/FBTopoDetail.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeAudioParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 static std::string
 MakeRuntimeParamId(
   FBStaticModule const& module, 
-  FBStaticAudioParam const& param,
+  FBStaticParam const& param,
   FBParamTopoIndices const& indices)
 {
   auto paramId = param.id + "-" + std::to_string(indices.param.slot);
@@ -16,7 +16,7 @@ MakeRuntimeParamId(
 static std::string
 MakeRuntimeParamLongName(
   FBStaticModule const& module,
-  FBStaticAudioParam const& param,
+  FBStaticParam const& param,
   FBParamTopoIndices const& indices)
 {
   auto paramName = FBMakeRuntimeName(param.name, param.slotCount, indices.param.slot);
@@ -24,10 +24,10 @@ MakeRuntimeParamLongName(
   return moduleName + " " + paramName;
 }
 
-FBRuntimeAudioParam::
-FBRuntimeAudioParam(
+FBRuntimeParam::
+FBRuntimeParam(
   FBStaticModule const& staticModule,
-  FBStaticAudioParam const& staticParam,
+  FBStaticParam const& staticParam,
   FBParamTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamIndex):
 runtimeModuleIndex(runtimeModuleIndex),

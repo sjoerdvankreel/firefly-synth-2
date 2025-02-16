@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/runtime/FBTopoIndices.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeAudioParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 #include <string>
 #include <vector>
@@ -14,7 +14,7 @@ struct FBRuntimeModule final
   std::string name;
   int runtimeModuleIndex;
   FBTopoIndices topoIndices;
-  std::vector<FBRuntimeAudioParam> audioParams;
+  std::vector<FBRuntimeParam> params;
 
   FBRuntimeModule(
     FBStaticModule const& staticModule,

@@ -1,10 +1,10 @@
 #include <playground_base_clap/FBCLAPUtility.hpp>
-#include <playground_base/base/topo/static/FBStaticAudioParam.hpp>
+#include <playground_base/base/topo/static/FBStaticParam.hpp>
 
 #include <cmath>
 
 double
-FBNormalizedToCLAP(FBStaticAudioParam const& topo, float normalized)
+FBNormalizedToCLAP(FBStaticParam const& topo, float normalized)
 {
   if (topo.ValueCount() == 0)
     return normalized;
@@ -12,7 +12,7 @@ FBNormalizedToCLAP(FBStaticAudioParam const& topo, float normalized)
 }
 
 double
-FBCLAPToNormalized(FBStaticAudioParam const& topo, double clap)
+FBCLAPToNormalized(FBStaticParam const& topo, double clap)
 {
   if (topo.ValueCount() == 0)
     return clap;

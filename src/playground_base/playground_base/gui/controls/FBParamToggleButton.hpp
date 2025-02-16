@@ -5,7 +5,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBPlugGUI;
-struct FBRuntimeAudioParam;
+struct FBRuntimeParam;
 
 class FBParamToggleButton final:
 public FBAutoSizeToggleButton,
@@ -19,5 +19,5 @@ public:
   void parentHierarchyChanged() override;
 
   void SetValueNormalizedFromHost(float normalized) override;
-  FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeAudioParam const* param);
+  FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

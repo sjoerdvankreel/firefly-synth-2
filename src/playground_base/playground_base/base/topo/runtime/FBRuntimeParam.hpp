@@ -1,18 +1,18 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/static/FBStaticAudioParam.hpp>
+#include <playground_base/base/topo/static/FBStaticParam.hpp>
 #include <playground_base/base/topo/runtime/FBParamTopoIndices.hpp>
 
 #include <string>
 
 struct FBStaticModule;
 
-struct FBRuntimeAudioParam final
+struct FBRuntimeParam final
 {
   int runtimeModuleIndex;
   int runtimeParamIndex;
-  FBStaticAudioParam static_;
+  FBStaticParam static_;
   FBParamTopoIndices topoIndices;
 
   std::string longName;
@@ -21,10 +21,10 @@ struct FBRuntimeAudioParam final
   std::string id;
   int tag;
 
-  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeAudioParam);
-  FBRuntimeAudioParam(
+  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
+  FBRuntimeParam(
     FBStaticModule const& staticModule,
-    FBStaticAudioParam const& staticParam,
+    FBStaticParam const& staticParam,
     FBParamTopoIndices const& topoIndices,
     int runtimeModuleIndex, int runtimeParamIndex);
 };

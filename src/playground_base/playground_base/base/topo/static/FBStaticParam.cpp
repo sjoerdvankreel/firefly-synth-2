@@ -1,9 +1,9 @@
-#include <playground_base/base/topo/static/FBStaticAudioParam.hpp>
+#include <playground_base/base/topo/static/FBStaticParam.hpp>
 
 using namespace juce;
 
 FBAutomationType 
-FBStaticAudioParam::AutomationType() const
+FBStaticParam::AutomationType() const
 {
   if (acc)
     return FBAutomationType::Modulate;
@@ -13,7 +13,7 @@ FBStaticAudioParam::AutomationType() const
 }
 
 std::string
-FBStaticAudioParam::AutomationTooltip() const
+FBStaticParam::AutomationTooltip() const
 {
   if (acc)
     if (IsVoice())

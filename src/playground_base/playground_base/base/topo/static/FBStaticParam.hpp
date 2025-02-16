@@ -1,6 +1,15 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+
+#include <playground_base/base/topo/param/FBBoolParam.hpp>
+#include <playground_base/base/topo/param/FBListParam.hpp>
+#include <playground_base/base/topo/param/FBNoteParam.hpp>
+#include <playground_base/base/topo/param/FBBarsParam.hpp>
+#include <playground_base/base/topo/param/FBLinearParam.hpp>
+#include <playground_base/base/topo/param/FBFreqOctParam.hpp>
+#include <playground_base/base/topo/param/FBDiscreteParam.hpp>
+
 #include <playground_base/base/topo/static/FBProcParamAddrs.hpp>
 #include <playground_base/base/topo/static/FBAutomationType.hpp>
 #include <playground_base/base/topo/static/FBStaticParamBase.hpp>
@@ -14,7 +23,7 @@
 #include <optional>
 #include <algorithm>
 
-struct FBStaticAudioParam final:
+struct FBStaticParam final:
 public FBStaticParamBase
 {
 public:
@@ -32,41 +41,41 @@ public:
 
   std::string AutomationTooltip() const;
   FBAutomationType AutomationType() const;
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticAudioParam);
+  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };
 
 inline bool
-FBStaticAudioParam::IsVoiceAcc() const
+FBStaticParam::IsVoiceAcc() const
 {
   return addrSelectors.voiceAccProc != nullptr;
 }
 
 inline bool
-FBStaticAudioParam::IsGlobalAcc() const
+FBStaticParam::IsGlobalAcc() const
 {
   return addrSelectors.globalAccProc != nullptr;
 }
 
 inline bool
-FBStaticAudioParam::IsVoiceBlock() const
+FBStaticParam::IsVoiceBlock() const
 {
   return addrSelectors.voiceBlockProc != nullptr;
 }
 
 inline bool
-FBStaticAudioParam::IsGlobalBlock() const
+FBStaticParam::IsGlobalBlock() const
 {
   return addrSelectors.globalBlockProc != nullptr;
 }
 
 inline bool
-FBStaticAudioParam::IsAcc() const
+FBStaticParam::IsAcc() const
 {
   return IsVoiceAcc() || IsGlobalAcc();
 }
 
 inline bool
-FBStaticAudioParam::IsVoice() const
+FBStaticParam::IsVoice() const
 {
   return IsVoiceAcc() || IsVoiceBlock();
 }

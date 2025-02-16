@@ -1,12 +1,12 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBParamComboBox.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeAudioParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;
 
 FBParamComboBox::
-FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeAudioParam const* param):
+FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param):  
 FBAutoSizeComboBox(param->static_.MakePopupMenu()),
 FBParamControl(plugGUI, param)
 {
@@ -22,7 +22,7 @@ FBParamComboBox::parentHierarchyChanged()
 String
 FBParamComboBox::getTooltip()
 {
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
 }
 
 void

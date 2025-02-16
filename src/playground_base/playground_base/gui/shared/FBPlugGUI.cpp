@@ -55,8 +55,8 @@ FBPlugGUI::GetControlForParamIndex(int paramIndex) const
 }
 
 std::string
-FBPlugGUI::GetAudioParamActiveTooltip(
-  FBStaticAudioParam const& param, bool active, float value) const
+FBPlugGUI::GetParamActiveTooltip(
+  FBStaticParam const& param, bool active, float value) const
 {
   if (!active)
     return "N/A";

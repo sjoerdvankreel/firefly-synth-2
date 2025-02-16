@@ -5,7 +5,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBPlugGUI;
-struct FBRuntimeAudioParam;
+struct FBRuntimeParam;
 
 class FBParamComboBox final:
 public FBAutoSizeComboBox,
@@ -18,5 +18,5 @@ public:
   void parentHierarchyChanged() override;
   void valueChanged(juce::Value& value) override;
   void SetValueNormalizedFromHost(float normalized) override;
-  FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeAudioParam const* param);
+  FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

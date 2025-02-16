@@ -54,7 +54,7 @@ _voices(topo.static_.state.voicesExchangeAddr(_rawState))
 }
 
 FBParamActiveExchangeState
-FBExchangeStateContainer::GetParamActiveState(FBRuntimeAudioParam const* param) const
+FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
 {
   FBParamActiveExchangeState result = {};
   result.active = false;

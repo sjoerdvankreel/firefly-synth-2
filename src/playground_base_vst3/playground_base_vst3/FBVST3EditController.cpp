@@ -27,7 +27,7 @@ MakeUnitInfo(FBRuntimeModule const& module, int id)
 }
 
 static ParameterInfo
-MakeParamInfo(FBRuntimeAudioParam const& param, int unitId)
+MakeParamInfo(FBRuntimeParam const& param, int unitId)
 {
   ParameterInfo result;
   result.id = param.tag;
