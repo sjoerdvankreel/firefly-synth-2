@@ -65,11 +65,8 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 {
   if (!PrepareForRender(moduleIndex))
     return;
-  if (_tweakedModuleByUI != moduleIndex)
-  {
-    _tweakedModuleByUI = moduleIndex;
-    repaint();
-  }
+  _tweakedModuleByUI = moduleIndex;
+  repaint();
 }
 
 void
