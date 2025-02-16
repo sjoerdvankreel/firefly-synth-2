@@ -1,3 +1,4 @@
+check what needs to be renamed (audioparamchanged etc)
 todo document the thing a bit
 todo fbguistatecontainer/ffguistate
 put some padding in the graph for show de bolletjes

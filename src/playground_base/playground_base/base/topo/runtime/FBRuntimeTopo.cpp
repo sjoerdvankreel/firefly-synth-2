@@ -27,16 +27,6 @@ ParseJson(std::string const& text, var& json)
   return true;
 }
 
-static std::unordered_map<int, int>
-MakeParamTagToIndex(
-  std::vector<FBRuntimeParam> const& params)
-{
-  std::unordered_map<int, int> result;
-  for (int p = 0; p < params.size(); p++)
-    result[params[p].tag] = p;
-  return result;
-}
-
 static std::map<FBTopoIndices, int>
 MakeModuleTopoToRuntime(
   std::vector<FBRuntimeModule> const& modules)
@@ -47,32 +37,12 @@ MakeModuleTopoToRuntime(
   return result;
 }
 
-static std::map<FBParamTopoIndices, int>
-MakeParamTopoToRuntime(
-  std::vector<FBRuntimeParam> const& params)
-{
-  std::map<FBParamTopoIndices, int> result;
-  for (int p = 0; p < params.size(); p++)
-    result[params[p].topoIndices] = p;
-  return result;
-}
-
-static std::vector<FBRuntimeParam>
-MakeRuntimeParams(
-  std::vector<FBRuntimeModule> const& modules)
-{
-  std::vector<FBRuntimeParam> result;
-  for (int m = 0; m < modules.size(); m++)
-    for (int a = 0; a < modules[m].params.size(); a++)
-      result.push_back(modules[m].params[a]);
-  return result;
-}
-
 static std::vector<FBRuntimeModule>
 MakeRuntimeModules(FBStaticTopo const& topo)
 {
   int runtimeIndex = 0;
   int runtimeParamStart = 0;
+  int runtimeGUIParamStart = 0;
   std::vector<FBRuntimeModule> result;
   for (int m = 0; m < topo.modules.size(); m++)
     for (int s = 0; s < topo.modules[m].slotCount; s++)
@@ -80,9 +50,10 @@ MakeRuntimeModules(FBStaticTopo const& topo)
       FBTopoIndices topoIndices;
       topoIndices.slot = s;
       topoIndices.index = m;
-      auto module = FBRuntimeModule(topo.modules[m], topoIndices, runtimeIndex++, runtimeParamStart);
+      auto module = FBRuntimeModule(topo.modules[m], topoIndices, runtimeIndex++, runtimeParamStart, runtimeGUIParamStart);
       result.push_back(module);
       runtimeParamStart += (int)module.params.size();
+      runtimeGUIParamStart += (int)module.guiParams.size();
     }
   return result;
 }
@@ -91,29 +62,15 @@ FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
 modules(MakeRuntimeModules(topo)),
-params(MakeRuntimeParams(modules)),
-paramTagToIndex(MakeParamTagToIndex(params)),
-moduleTopoToRuntime(MakeModuleTopoToRuntime(modules)),
-paramTopoToRuntime(MakeParamTopoToRuntime(params)) {}
-
-FBRuntimeParam const*
-FBRuntimeTopo::ParamAtTopo(
-  FBParamTopoIndices const& topoIndices) const
-{
-  return &params[paramTopoToRuntime.at(topoIndices)];
-}
+params(FBRuntimeParamsTopo<FBRuntimeParam>(modules)),
+guiParams(FBRuntimeParamsTopo<FBRuntimeGUIParam>(modules)),
+moduleTopoToRuntime(MakeModuleTopoToRuntime(modules)) {}
 
 FBRuntimeModule const* 
 FBRuntimeTopo::ModuleAtTopo(
   FBTopoIndices const& topoIndices) const
 {
   return &modules[moduleTopoToRuntime.at(topoIndices)];
-}
-
-FBRuntimeModule const* 
-FBRuntimeTopo::ModuleAtParamIndex(int runtimeParamIndex) const
-{
-  return &modules[params[runtimeParamIndex].runtimeModuleIndex];
 }
 
 std::string 
