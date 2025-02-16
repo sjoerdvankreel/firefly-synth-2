@@ -1,9 +1,7 @@
 retest hostsmoothtime
-store the full guistatecontainer
 make the env time params log2
 check what needs to be renamed (audioparamchanged etc)
 todo document the thing a bit
-todo fbguistatecontainer/ffguistate
 put some padding in the graph for show de bolletjes
 graph control param?
 actually handle sustain
