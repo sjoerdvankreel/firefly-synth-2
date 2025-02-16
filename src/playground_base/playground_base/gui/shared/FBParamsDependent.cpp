@@ -19,7 +19,7 @@ RuntimeDependencies(
     indices.module = staticModuleIndices;
     indices.param.slot = staticParamSlot;
     indices.param.index = staticParamIndices[i];
-    result.push_back(topo->AudioParamAtTopo(indices)->runtimeParamIndex);
+    result.push_back(topo->ParamAtTopo(indices)->runtimeParamIndex);
   }
   return result;
 }
@@ -53,7 +53,7 @@ FBParamsDependentDependency::Evaluate(FBHostGUIContext const* hostContext)
   evaluations.clear();
   for (int i = 0; i < runtimeDependencies.size(); i++)
   {
-    auto const& param = hostContext->Topo()->audioParams[runtimeDependencies[i]];
+    auto const& param = hostContext->Topo()->params[runtimeDependencies[i]];
     evaluations.push_back(param.static_.NormalizedToAnyDiscreteSlow(
       hostContext->GetParamNormalized(runtimeDependencies[i])));
   }

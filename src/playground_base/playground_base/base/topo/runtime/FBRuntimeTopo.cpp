@@ -82,7 +82,7 @@ MakeRuntimeModules(FBStaticTopo const& topo)
       topoIndices.index = m;
       auto module = FBRuntimeModule(topo.modules[m], topoIndices, runtimeIndex++, runtimeParamStart);
       result.push_back(module);
-      runtimeParamStart += (int)module.audioParams.size();
+      runtimeParamStart += (int)module.params.size();
     }
   return result;
 }
@@ -91,10 +91,10 @@ FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
 modules(MakeRuntimeModules(topo)),
-audioParams(MakeRuntimeAudioParams(modules)),
-audioParamTagToIndex(MakeAudioParamTagToIndex(audioParams)),
+params(MakeRuntimeAudioParams(modules)),
+paramTagToIndex(MakeAudioParamTagToIndex(audioParams)),
 moduleTopoToRuntime(MakeModuleTopoToRuntime(modules)),
-audioParamTopoToRuntime(MakeAudioParamTopoToRuntime(audioParams)) {}
+paramTopoToRuntime(MakeAudioParamTopoToRuntime(audioParams)) {}
 
 FBRuntimeAudioParam const*
 FBRuntimeTopo::AudioParamAtTopo(
@@ -111,9 +111,9 @@ FBRuntimeTopo::ModuleAtTopo(
 }
 
 FBRuntimeModule const* 
-FBRuntimeTopo::ModuleAtAudioParamIndex(int runtimeParamIndex) const
+FBRuntimeTopo::ModuleAtParamIndex(int runtimeParamIndex) const
 {
-  return &modules[audioParams[runtimeParamIndex].runtimeModuleIndex];
+  return &modules[params[runtimeParamIndex].runtimeModuleIndex];
 }
 
 std::string 
@@ -307,11 +307,11 @@ FBRuntimeTopo::SaveEditStateToVar(
   FBScalarStateContainer const& edit) const
 {
   var state;
-  for (int p = 0; p < audioParams.size(); p++)
+  for (int p = 0; p < params.size(); p++)
   {
     auto param = new DynamicObject;
-    param->setProperty("id", String(audioParams[p].id));
-    param->setProperty("val", String(audioParams[p].static_.NormalizedToText(FBValueTextDisplay::IO, *edit.Params()[p])));
+    param->setProperty("id", String(params[p].id));
+    param->setProperty("val", String(params[p].static_.NormalizedToText(FBValueTextDisplay::IO, *edit.Params()[p])));
     state.append(var(param));
   }
 
@@ -425,8 +425,8 @@ FBRuntimeTopo::LoadEditStateFromVar(
   for (int p = 0; p < edit.Params().size(); p++)
   {
     float defaultNormalized = 0.0f;
-    if(audioParams[p].static_.defaultText.size())
-      defaultNormalized = audioParams[p].static_.TextToNormalized(false, audioParams[p].static_.defaultText).value();
+    if(params[p].static_.defaultText.size())
+      defaultNormalized = params[p].static_.TextToNormalized(false, params[p].static_.defaultText).value();
     *edit.Params()[p] = defaultNormalized;
   }
 
@@ -460,13 +460,13 @@ FBRuntimeTopo::LoadEditStateFromVar(
 
     std::unordered_map<int, int>::const_iterator iter;
     int tag = FBMakeStableHash(id.toString().toStdString());
-    if ((iter = audioParamTagToIndex.find(tag)) == audioParamTagToIndex.end())
+    if ((iter = paramTagToIndex.find(tag)) == paramTagToIndex.end())
     {
       FB_LOG_WARN("Unknown plugin parameter.");
       continue;
     }
 
-    auto const& topo = audioParams[iter->second].static_;
+    auto const& topo = params[iter->second].static_;
     auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
     {

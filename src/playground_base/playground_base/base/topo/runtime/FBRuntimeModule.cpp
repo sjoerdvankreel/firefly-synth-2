@@ -32,4 +32,4 @@ FBRuntimeModule(
 topoIndices(topoIndices),
 runtimeModuleIndex(runtimeIndex),
 name(FBMakeRuntimeName(staticModule.name, staticModule.slotCount, topoIndices.slot)),
-audioParams(MakeRuntimeAudioParams(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.audioParams)) {}
+params(MakeRuntimeParams(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)) {}

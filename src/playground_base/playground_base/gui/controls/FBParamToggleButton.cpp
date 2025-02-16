@@ -25,7 +25,7 @@ FBParamToggleButton::parentHierarchyChanged()
 String
 FBParamToggleButton::getTooltip()
 {
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
 }
 
 void

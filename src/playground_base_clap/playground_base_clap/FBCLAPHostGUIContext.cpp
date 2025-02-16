@@ -106,7 +106,7 @@ FBCLAPPlugin::MakeParamContextMenu(int index, std::vector<FBHostContextMenuItem>
   builder.supports = [](auto, auto) { return true; };
 
   auto result = std::make_unique<clap_context_menu_target>();
-  result->id = _topo->audioParams[index].tag;
+  result->id = _topo->params[index].tag;
   result->kind = CLAP_CONTEXT_MENU_TARGET_KIND_PARAM;
   // bitwig returns false
   _host.contextMenuPopulate(result.get(), &builder);

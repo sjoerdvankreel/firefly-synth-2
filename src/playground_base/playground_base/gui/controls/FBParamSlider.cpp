@@ -30,7 +30,7 @@ FBParamSlider::parentHierarchyChanged()
 String
 FBParamSlider::getTooltip()
 {
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
 }
 
 void
@@ -43,7 +43,7 @@ void
 FBParamSlider::mouseUp(MouseEvent const& event)
 {
   if (event.mods.isRightButtonDown())
-    _plugGUI->ShowHostMenuForAudioParam(_param->runtimeParamIndex);
+    _plugGUI->ShowHostMenuForParam(_param->runtimeParamIndex);
 }
 
 double
