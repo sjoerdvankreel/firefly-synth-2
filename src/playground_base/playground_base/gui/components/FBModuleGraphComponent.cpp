@@ -19,14 +19,12 @@ FBModuleGraphComponent::
 FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState) :
 Component(),
 _plugGUI(plugGUI),
-_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1 })),
+_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 1, 1)),
 _data(std::make_unique<FBModuleGraphComponentData>()),
-_controlActive(std::make_unique<FBAutoSizeToggleButton>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
   _data->renderState = renderState;
-  _grid->Add(0, 0, _controlActive.get());
-  _grid->Add(0, 1, 2, 1, _display.get());
+  _grid->Add(0, 0, _display.get());
   addAndMakeVisible(_grid.get());
 }
 
@@ -59,7 +57,7 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
     return false;
   auto moduleProcState = _data->renderState->ModuleProcState();
   moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
-  return StaticModuleFor(moduleIndex).graph.enabled;
+  return StaticModuleFor(moduleIndex).renderer != nullptr;
 }
 
 void
@@ -70,24 +68,8 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
   if (_tweakedModuleByUI != moduleIndex)
   {
     _tweakedModuleByUI = moduleIndex;
-    RecreateGraphControl();
+    repaint();
   }
-  repaint();
-}
-
-void
-FBModuleGraphComponent::RecreateGraphControl()
-{
-  if (_graphControl != nullptr)
-    _grid->Remove(1, 0, _graphControl.get());
-  _graphControl.reset();
-  auto const& staticModule = StaticModuleFor(_tweakedModuleByUI);
-  if (staticModule.graph.hasControl)
-  {
-    _graphControl = MakeGraphControl(staticModule.graph);
-    _grid->Add(1, 0, _graphControl.get());
-  }
-  resized();
 }
 
 void
@@ -107,11 +89,5 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->secondarySeries.clear();
   _data->pixelWidth = getWidth();
   _data->moduleName = topo->modules[_tweakedModuleByUI].name;
-  topo->static_.modules[staticIndex].graph.renderer(_data.get());
-}
-
-std::unique_ptr<FBAutoSizeSlider>
-FBModuleGraphComponent::MakeGraphControl(FBStaticModuleGraph const& topo) const
-{
-  return std::make_unique<FBAutoSizeSlider>(_plugGUI, Slider::SliderStyle::RotaryVerticalDrag);
+  topo->static_.modules[staticIndex].renderer(_data.get());
 }

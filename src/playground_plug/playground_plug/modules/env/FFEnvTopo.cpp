@@ -10,21 +10,6 @@ MakeEnvBarsItems()
   return FBMakeBarsItems(true, { 1, 128 }, { 4, 1 });
 }
 
-static FBStaticModuleGraph
-MakeGraphTopo()
-{
-  FBStaticModuleGraph result = {};
-  result.enabled = true;
-  result.hasControl = true;
-  result.controlName = "Key";
-  result.controlUnit = "Sec";
-  result.controlTooltip = "Key Time";
-  result.controlParam.min = 0.0f;
-  result.controlParam.max = 30.0f;
-  result.renderer = FFEnvRenderGraph;
-  return result;
-}
-
 std::unique_ptr<FBStaticModule>
 FFMakeEnvTopo()
 {
@@ -32,7 +17,7 @@ FFMakeEnvTopo()
   result->voice = true;
   result->name = "Env";
   result->slotCount = FFEnvCount;
-  result->graph = MakeGraphTopo();
+  result->renderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
   result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
