@@ -73,6 +73,34 @@ FBRuntimeTopo::ModuleAtTopo(
   return &modules[moduleTopoToRuntime.at(topoIndices)];
 }
 
+var
+FBRuntimeTopo::SaveEditStateToVar(
+  FBScalarStateContainer const& edit) const
+{
+  return SaveParamStateToVar(edit, audio.params);
+}
+
+var
+FBRuntimeTopo::SaveGUIStateToVar(
+  FBGUIStateContainer const& gui) const
+{
+  return SaveParamStateToVar(gui, this->gui.params);
+}
+
+bool
+FBRuntimeTopo::LoadEditStateFromVar(
+  var const& json, FBScalarStateContainer& edit) const
+{
+  return LoadParamStateFromVar(json, edit, audio);
+}
+
+bool
+FBRuntimeTopo::LoadGUIStateFromVar(
+  var const& json, FBGUIStateContainer& gui) const
+{
+  return LoadParamStateFromVar(json, gui, this->gui);
+}
+
 std::string 
 FBRuntimeTopo::SaveGUIStateToString(
   FBGUIStateContainer const& gui) const
@@ -99,6 +127,26 @@ FBRuntimeTopo::SaveEditAndGUIStateToString(
   FBScalarStateContainer const& edit, FBGUIStateContainer const& gui) const
 {
   return JSON::toString(SaveEditAndGUIStateToVar(edit, gui)).toStdString();
+}
+
+var
+FBRuntimeTopo::SaveProcStateToVar(
+  FBProcStateContainer const& proc) const
+{
+  FBScalarStateContainer edit(*this);
+  edit.CopyFrom(proc);
+  return SaveEditStateToVar(edit);
+}
+
+bool
+FBRuntimeTopo::LoadProcStateFromVar(
+  var const& json, FBProcStateContainer& proc) const
+{
+  FBScalarStateContainer edit(*this);
+  if (!LoadEditStateFromVar(json, edit))
+    return false;
+  proc.InitProcessing(edit);
+  return true;
 }
 
 bool 
@@ -188,24 +236,6 @@ FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
   return true;
 }
 
-var
-FBRuntimeTopo::SaveProcStateToVar( 
-  FBProcStateContainer const& proc) const
-{
-  FBScalarStateContainer edit(*this);
-  edit.CopyFrom(proc);
-  return SaveEditStateToVar(edit);
-}
-
-var 
-FBRuntimeTopo::SaveGUIStateToVar(
-  FBGUIStateContainer const& gui) const
-{
-  auto result = new DynamicObject;
-  result->setProperty("userScale", gui.userScale);
-  return var(result);
-}
-
 var 
 FBRuntimeTopo::SaveEditAndGUIStateToVar(
   FBScalarStateContainer const& edit, FBGUIStateContainer const& gui) const
@@ -216,33 +246,6 @@ FBRuntimeTopo::SaveEditAndGUIStateToVar(
   result->setProperty("gui", guiState);
   result->setProperty("edit", editState);
   return var(result);
-}
-
-bool 
-FBRuntimeTopo::LoadProcStateFromVar(
-  var const& json, FBProcStateContainer& proc) const
-{
-  FBScalarStateContainer edit(*this);
-  if (!LoadEditStateFromVar(json, edit))
-    return false;
-  proc.InitProcessing(edit);
-  return true;
-}
-
-bool 
-FBRuntimeTopo::LoadGUIStateFromVar(
-  var const& json, FBGUIStateContainer& gui) const
-{
-  DynamicObject* obj = json.getDynamicObject();
-  if (obj->hasProperty("userScale"))
-  {
-    var userScale = obj->getProperty("userScale");
-    if(userScale.isDouble())
-      gui.userScale = std::clamp(
-        (float)(double)obj->getProperty("userScale"),
-        static_.gui.minUserScale, static_.gui.maxUserScale);
-  }
-  return true;
 }
 
 bool 
@@ -260,16 +263,17 @@ FBRuntimeTopo::LoadEditAndGUIStateFromVar(
   return true;
 }
 
+template <class TContainer, class TParam>
 var
-FBRuntimeTopo::SaveEditStateToVar(
-  FBScalarStateContainer const& edit) const
+FBRuntimeTopo::SaveParamStateToVar(
+  TContainer const& container, std::vector<TParam> const& params) const
 {
   var state;
-  for (int p = 0; p < audio.params.size(); p++)
+  for (int p = 0; p < params.size(); p++)
   {
     auto param = new DynamicObject;
-    param->setProperty("id", String(audio.params[p].id));
-    param->setProperty("val", String(audio.params[p].static_.NormalizedToText(FBValueTextDisplay::IO, *edit.Params()[p])));
+    param->setProperty("id", String(params[p].id));
+    param->setProperty("val", String(params[p].static_.NormalizedToText(FBValueTextDisplay::IO, *container.Params()[p])));
     state.append(var(param));
   }
 
@@ -283,9 +287,10 @@ FBRuntimeTopo::SaveEditStateToVar(
   return var(result);
 }
 
+template <class TContainer, class TParamsTopo>
 bool 
-FBRuntimeTopo::LoadEditStateFromVar(
-  var const& json, FBScalarStateContainer& edit) const
+FBRuntimeTopo::LoadParamStateFromVar(
+  var const& json, TContainer& container, TParamsTopo& params) const
 {
   FB_LOG_ENTRY_EXIT();
 
@@ -380,12 +385,12 @@ FBRuntimeTopo::LoadEditStateFromVar(
     return false;
   }
 
-  for (int p = 0; p < edit.Params().size(); p++)
+  for (int p = 0; p < container.Params().size(); p++)
   {
     float defaultNormalized = 0.0f;
-    if(audio.params[p].static_.defaultText.size())
-      defaultNormalized = audio.params[p].static_.TextToNormalized(false, audio.params[p].static_.defaultText).value();
-    *edit.Params()[p] = defaultNormalized;
+    if(params.params[p].static_.defaultText.size())
+      defaultNormalized = params.params[p].static_.TextToNormalized(false, params.params[p].static_.defaultText).value();
+    *container.Params()[p] = defaultNormalized;
   }
 
   for (int sp = 0; sp < state.size(); sp++)
@@ -418,20 +423,20 @@ FBRuntimeTopo::LoadEditStateFromVar(
 
     std::unordered_map<int, int>::const_iterator iter;
     int tag = FBMakeStableHash(id.toString().toStdString());
-    if ((iter = audio.paramTagToIndex.find(tag)) == audio.paramTagToIndex.end())
+    if ((iter = params.paramTagToIndex.find(tag)) == params.paramTagToIndex.end())
     {
       FB_LOG_WARN("Unknown plugin parameter.");
       continue;
     }
 
-    auto const& topo = audio.params[iter->second].static_;
+    auto const& topo = params.params[iter->second].static_;
     auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
     {
       FB_LOG_WARN("Failed to parse plugin parameter value.");
       normalized = topo.TextToNormalized(false, topo.defaultText);
     }
-    *edit.Params()[iter->second] = normalized.value();
+    *container.Params()[iter->second] = normalized.value();
   }
 
   return true;

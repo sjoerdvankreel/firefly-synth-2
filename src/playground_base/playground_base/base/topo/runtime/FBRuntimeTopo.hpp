@@ -18,6 +18,13 @@ class FBScalarStateContainer;
 
 struct FBRuntimeTopo final
 {
+private:
+  template <class TContainer, class TParam> 
+  juce::var SaveParamStateToVar(TContainer const& container, std::vector<TParam> const& params) const;
+  template <class TContainer, class TParamsTopo>
+  bool LoadParamStateFromVar(juce::var const& json, TContainer& container, TParamsTopo& params) const;
+
+public:
   FBStaticTopo static_;
   std::vector<FBRuntimeModule> modules;
   FBRuntimeParamsTopo<FBRuntimeParam> audio;
