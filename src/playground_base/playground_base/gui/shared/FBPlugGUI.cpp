@@ -31,7 +31,7 @@ FBPlugGUI::SteppedParamNormalizedChanged(int index)
 void 
 FBPlugGUI::InitAllDependencies()
 {
-  auto const& params = HostContext()->Topo()->params;
+  auto const& params = HostContext()->Topo()->audio.params;
   for (int i = 0; i < params.size(); i++)
     if (FBParamTypeIsStepped(params[i].static_.type))
       SteppedParamNormalizedChanged(i);
@@ -66,7 +66,7 @@ FBPlugGUI::GetParamActiveTooltip(
 void
 FBPlugGUI::UpdateExchangeStateTick()
 {
-  auto const& params = HostContext()->Topo()->params;
+  auto const& params = HostContext()->Topo()->audio.params;
   for (int i = 0; i < params.size(); i++)
     if (!FBParamTypeIsStepped(params[i].static_.type))
       dynamic_cast<FBParamSlider&>(*GetControlForParamIndex(i)).UpdateExchangeState();
@@ -136,7 +136,7 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
 std::string
 FBPlugGUI::GetTooltipForParam(int index) const
 {
-  auto const& param = HostContext()->Topo()->params[index];
+  auto const& param = HostContext()->Topo()->audio.params[index];
   float normalized = HostContext()->GetParamNormalized(index);
   auto paramActive = HostContext()->ExchangeState()->GetParamActiveState(&param);
 

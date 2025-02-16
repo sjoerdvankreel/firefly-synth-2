@@ -20,8 +20,8 @@ struct FBRuntimeTopo final
 {
   FBStaticTopo static_;
   std::vector<FBRuntimeModule> modules;
-  FBRuntimeParamsTopo<FBRuntimeParam> params;
-  FBRuntimeParamsTopo<FBRuntimeGUIParam> guiParams;
+  FBRuntimeParamsTopo<FBRuntimeParam> audio;
+  FBRuntimeParamsTopo<FBRuntimeGUIParam> gui;
   std::map<FBTopoIndices, int> moduleTopoToRuntime;
 
   FBRuntimeTopo(FBStaticTopo const& static_);

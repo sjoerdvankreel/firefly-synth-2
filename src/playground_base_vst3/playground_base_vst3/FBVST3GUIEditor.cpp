@@ -160,7 +160,7 @@ IPtr<IContextMenu>
 FBVST3GUIEditor::MakeVSTMenu(
   IPtr<IComponentHandler> handler, int paramIndex)
 {
-  ParamID paramTag = _hostContext->Topo()->params[paramIndex].tag;
+  ParamID paramTag = _hostContext->Topo()->audio.params[paramIndex].tag;
   FUnknownPtr<IComponentHandler3> handler3(handler);
   if (handler3 == nullptr)
     return {};

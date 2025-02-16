@@ -12,8 +12,8 @@ template <class TParam>
 struct FBRuntimeParamsTopo final
 {
   std::vector<TParam> params;
-  std::unordered_map<int, int> tagToIndex;
-  std::map<FBParamTopoIndices, int> topoToRuntime;
+  std::unordered_map<int, int> paramTagToIndex;
+  std::map<FBParamTopoIndices, int> paramTopoToRuntime;
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBRuntimeParamsTopo);
   FBRuntimeParamsTopo(std::vector<FBRuntimeModule> const& modules);

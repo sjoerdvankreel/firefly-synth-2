@@ -30,17 +30,17 @@ _voices(topo.static_.state.voicesExchangeAddr(_rawState))
     }
   }
 
-  for (int p = 0; p < topo.params.size(); p++)
-    if (topo.static_.modules[topo.params[p].topoIndices.module.index].voice)
+  for (int p = 0; p < topo.audio.params.size(); p++)
+    if (topo.static_.modules[topo.audio.params[p].topoIndices.module.index].voice)
       _params.push_back(FBParamExchangeState(
-        topo.params[p].static_.addrSelectors.voiceExchange(
-          topo.params[p].topoIndices.module.slot, 
-          topo.params[p].topoIndices.param.slot, _rawState)));
+        topo.audio.params[p].static_.addrSelectors.voiceExchange(
+          topo.audio.params[p].topoIndices.module.slot,
+          topo.audio.params[p].topoIndices.param.slot, _rawState)));
     else
       _params.push_back(FBParamExchangeState(
-        topo.params[p].static_.addrSelectors.globalExchange(
-          topo.params[p].topoIndices.module.slot,
-          topo.params[p].topoIndices.param.slot, _rawState)));
+        topo.audio.params[p].static_.addrSelectors.globalExchange(
+          topo.audio.params[p].topoIndices.module.slot,
+          topo.audio.params[p].topoIndices.param.slot, _rawState)));
 
 #ifndef NDEBUG
   std::set<void const*> uniquePtrs = {};

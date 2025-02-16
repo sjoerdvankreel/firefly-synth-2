@@ -1,5 +1,8 @@
 #include <playground_base/base/topo/runtime/FBRuntimeParamsTopo.hpp>
 
+template struct FBRuntimeParamsTopo<FBRuntimeParam>;
+template struct FBRuntimeParamsTopo<FBRuntimeGUIParam>;
+
 template <class TParam>
 static std::unordered_map<int, int>
 MakeParamTagToIndex(
@@ -44,22 +47,24 @@ MakeRuntimeGUIParams(
   return result;
 }
 
+template <>
 FBRuntimeParamsTopo<FBRuntimeParam>::
 FBRuntimeParamsTopo(std::vector<FBRuntimeModule> const& modules):
 params(MakeRuntimeParams(modules)),
-tagToIndex(MakeParamTagToIndex(params)),
-topoToRuntime(MakeParamTopoToRuntime(params)) {}
+paramTagToIndex(MakeParamTagToIndex(params)),
+paramTopoToRuntime(MakeParamTopoToRuntime(params)) {}
 
+template <>
 FBRuntimeParamsTopo<FBRuntimeGUIParam>::
 FBRuntimeParamsTopo(std::vector<FBRuntimeModule> const& modules) :
 params(MakeRuntimeGUIParams(modules)),
-tagToIndex(MakeParamTagToIndex(params)),
-topoToRuntime(MakeParamTopoToRuntime(params)) {}
+paramTagToIndex(MakeParamTagToIndex(params)),
+paramTopoToRuntime(MakeParamTopoToRuntime(params)) {}
 
 template <class TParam>
 TParam const*
 FBRuntimeParamsTopo<TParam>::ParamAtTopo(
   FBParamTopoIndices const& topoIndices) const
 {
-  return &params[topoToRuntime.at(topoIndices)];
+  return &params[paramTopoToRuntime.at(topoIndices)];
 }

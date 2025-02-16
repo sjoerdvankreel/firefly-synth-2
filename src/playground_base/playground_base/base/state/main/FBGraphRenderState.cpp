@@ -40,7 +40,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
   _input->audio = &_audio;
 
   auto hostContext = plugGUI->HostContext();
-  for (int i = 0; i < hostContext->Topo()->params.size(); i++)
+  for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)
     _procState->InitProcessing(i, hostContext->GetParamNormalized(i));
 
   _moduleState->moduleSlot = -1;
@@ -118,9 +118,9 @@ FBGraphRenderState::GlobalModuleExchangeStateEqualsPrimary(
   int moduleIndex, int moduleSlot) const
 {
   auto topo = _plugGUI->HostContext()->Topo();
-  auto paramIndex = topo->paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
-  auto runtimeModuleIndex = topo->params[paramIndex].runtimeModuleIndex;
-  for (; topo->params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
+  auto paramIndex = topo->audio.paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
+  auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
+  for (; topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
     if (*ExchangeContainer()->Params()[paramIndex].Global() != *_scalarState->Params()[paramIndex])
       return false;
   return true;
@@ -131,9 +131,9 @@ FBGraphRenderState::VoiceModuleExchangeStateEqualsPrimary(
   int voice, int moduleIndex, int moduleSlot) const
 {
   auto topo = _plugGUI->HostContext()->Topo();
-  auto paramIndex = topo->paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
-  auto runtimeModuleIndex = topo->params[paramIndex].runtimeModuleIndex;
-  for (; topo->params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
+  auto paramIndex = topo->audio.paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
+  auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
+  for (; topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
     if (ExchangeContainer()->Params()[paramIndex].Voice()[voice] != *_scalarState->Params()[paramIndex])
       return false;
   return true;

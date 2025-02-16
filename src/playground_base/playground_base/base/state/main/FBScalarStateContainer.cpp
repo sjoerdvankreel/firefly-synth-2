@@ -11,13 +11,13 @@ _rawState(topo.static_.state.allocRawScalarState()),
 _params(),
 _freeRawState(topo.static_.state.freeRawScalarState)
 {
-  for (int p = 0; p < topo.params.size(); p++)
+  for (int p = 0; p < topo.audio.params.size(); p++)
     _params.push_back(
-      topo.params[p].static_.addrSelectors.scalar(
-        topo.params[p].topoIndices.module.slot, 
-        topo.params[p].topoIndices.param.slot, _rawState));
+      topo.audio.params[p].static_.addrSelectors.scalar(
+        topo.audio.params[p].topoIndices.module.slot,
+        topo.audio.params[p].topoIndices.param.slot, _rawState));
   for (int p = 0; p < _params.size(); p++)
-    *_params[p] = topo.params[p].static_.DefaultNormalizedByText();
+    *_params[p] = topo.audio.params[p].static_.DefaultNormalizedByText();
 #ifndef NDEBUG
   std::set<float*> uniquePtrs(_params.begin(), _params.end());
   assert(uniquePtrs.size() == _params.size());

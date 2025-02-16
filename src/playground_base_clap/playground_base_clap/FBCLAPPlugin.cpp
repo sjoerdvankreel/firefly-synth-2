@@ -167,16 +167,16 @@ int32_t
 FBCLAPPlugin::getParamIndexForParamId(
   clap_id paramId) const noexcept
 {
-  auto iter = _topo->paramTagToIndex.find(paramId);
-  return iter == _topo->paramTagToIndex.end() ? -1 : iter->second;
+  auto iter = _topo->audio.paramTagToIndex.find(paramId);
+  return iter == _topo->audio.paramTagToIndex.end() ? -1 : iter->second;
 }
 
 bool 
 FBCLAPPlugin::getParamInfoForParamId(
   clap_id paramId, clap_param_info* info) const noexcept
 {
-  auto iter = _topo->paramTagToIndex.find(paramId);
-  if (iter == _topo->paramTagToIndex.end())
+  auto iter = _topo->audio.paramTagToIndex.find(paramId);
+  if (iter == _topo->audio.paramTagToIndex.end())
     return false;
   return paramsInfo(iter->second, info);
 }
@@ -185,7 +185,7 @@ bool
 FBCLAPPlugin::isValidParamId(
   clap_id paramId) const noexcept
 {
-  return _topo->paramTagToIndex.find(paramId) != _topo->paramTagToIndex.end();
+  return _topo->audio.paramTagToIndex.find(paramId) != _topo->audio.paramTagToIndex.end();
 }
 
 bool
@@ -204,7 +204,7 @@ void
 FBCLAPPlugin::PushParamChangeToProcessorBlock(
   int index, double normalized, int pos)
 {
-  auto const& static_ = _topo->params[index].static_;
+  auto const& static_ = _topo->audio.params[index].static_;
   if (static_.acc)
     _input.accAutoByParamThenSample.push_back(MakeAccAutoEvent(index, normalized, pos));
   else
@@ -221,7 +221,7 @@ FBCLAPPlugin::ProcessMainToAudioEvents(
     bool gestureBegin;
     clap_event_param_value valueToHost;
     clap_event_param_gesture gestureToHost;
-    auto const& param = _topo->params[uiEvent.paramIndex];
+    auto const& param = _topo->audio.params[uiEvent.paramIndex];
     switch (uiEvent.type)
     {
     case FBCLAPSyncEventType::EndChange:
@@ -275,15 +275,15 @@ FBCLAPPlugin::process(
       break;
     case CLAP_EVENT_PARAM_MOD:
       modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
-      if ((iter = _topo->paramTagToIndex.find(modFromHost->param_id)) != _topo->paramTagToIndex.end())
-        if (_topo->params[iter->second].static_.acc)
+      if ((iter = _topo->audio.paramTagToIndex.find(modFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
+        if (_topo->audio.params[iter->second].static_.acc)
           _input.accModByParamThenNoteThenSample.push_back(MakeAccModEvent(iter->second, modFromHost));
       break;
     case CLAP_EVENT_PARAM_VALUE:
       valueFromHost = reinterpret_cast<clap_event_param_value const*>(header);
-      if ((iter = _topo->paramTagToIndex.find(valueFromHost->param_id)) != _topo->paramTagToIndex.end())
+      if ((iter = _topo->audio.paramTagToIndex.find(valueFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
       {
-        normalized = FBCLAPToNormalized(_topo->params[iter->second].static_, valueFromHost->value);
+        normalized = FBCLAPToNormalized(_topo->audio.params[iter->second].static_, valueFromHost->value);
         PushParamChangeToProcessorBlock(iter->second, normalized, valueFromHost->header.time);
         _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(iter->second, normalized));
       }

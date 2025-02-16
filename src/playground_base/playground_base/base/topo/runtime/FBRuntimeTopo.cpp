@@ -62,8 +62,8 @@ FBRuntimeTopo::
 FBRuntimeTopo(FBStaticTopo const& topo) :
 static_(topo),
 modules(MakeRuntimeModules(topo)),
-params(FBRuntimeParamsTopo<FBRuntimeParam>(modules)),
-guiParams(FBRuntimeParamsTopo<FBRuntimeGUIParam>(modules)),
+audio(FBRuntimeParamsTopo<FBRuntimeParam>(modules)),
+gui(FBRuntimeParamsTopo<FBRuntimeGUIParam>(modules)),
 moduleTopoToRuntime(MakeModuleTopoToRuntime(modules)) {}
 
 FBRuntimeModule const* 
@@ -264,11 +264,11 @@ FBRuntimeTopo::SaveEditStateToVar(
   FBScalarStateContainer const& edit) const
 {
   var state;
-  for (int p = 0; p < params.size(); p++)
+  for (int p = 0; p < audio.params.size(); p++)
   {
     auto param = new DynamicObject;
-    param->setProperty("id", String(params[p].id));
-    param->setProperty("val", String(params[p].static_.NormalizedToText(FBValueTextDisplay::IO, *edit.Params()[p])));
+    param->setProperty("id", String(audio.params[p].id));
+    param->setProperty("val", String(audio.params[p].static_.NormalizedToText(FBValueTextDisplay::IO, *edit.Params()[p])));
     state.append(var(param));
   }
 
@@ -382,8 +382,8 @@ FBRuntimeTopo::LoadEditStateFromVar(
   for (int p = 0; p < edit.Params().size(); p++)
   {
     float defaultNormalized = 0.0f;
-    if(params[p].static_.defaultText.size())
-      defaultNormalized = params[p].static_.TextToNormalized(false, params[p].static_.defaultText).value();
+    if(audio.params[p].static_.defaultText.size())
+      defaultNormalized = audio.params[p].static_.TextToNormalized(false, audio.params[p].static_.defaultText).value();
     *edit.Params()[p] = defaultNormalized;
   }
 
@@ -417,13 +417,13 @@ FBRuntimeTopo::LoadEditStateFromVar(
 
     std::unordered_map<int, int>::const_iterator iter;
     int tag = FBMakeStableHash(id.toString().toStdString());
-    if ((iter = paramTagToIndex.find(tag)) == paramTagToIndex.end())
+    if ((iter = audio.paramTagToIndex.find(tag)) == audio.paramTagToIndex.end())
     {
       FB_LOG_WARN("Unknown plugin parameter.");
       continue;
     }
 
-    auto const& topo = params[iter->second].static_;
+    auto const& topo = audio.params[iter->second].static_;
     auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
     {

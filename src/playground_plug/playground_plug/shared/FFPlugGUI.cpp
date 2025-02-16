@@ -56,7 +56,7 @@ FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 void 
 FFPlugGUI::SetParamNormalizedFromUI(int index, float normalized)
 {
-  int moduleIndex = HostContext()->Topo()->params[index].runtimeModuleIndex;
+  int moduleIndex = HostContext()->Topo()->audio.params[index].runtimeModuleIndex;
   _graphRenderState->PrimaryParamChanged(index, normalized);
   RequestGraphRender(moduleIndex);
 }
@@ -65,10 +65,10 @@ void
 FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
 {
   FBPlugGUI::SetParamNormalizedFromHost(index, normalized);
-  if (HostContext()->Topo()->params[index].static_.output)
+  if (HostContext()->Topo()->audio.params[index].static_.output)
     return;
   _graphRenderState->PrimaryParamChanged(index, normalized);
-  if (_graph->TweakedModuleByUI() == HostContext()->Topo()->params[index].runtimeModuleIndex)
+  if (_graph->TweakedModuleByUI() == HostContext()->Topo()->audio.params[index].runtimeModuleIndex)
     RequestGraphRender(_graph->TweakedModuleByUI());
 }
 
