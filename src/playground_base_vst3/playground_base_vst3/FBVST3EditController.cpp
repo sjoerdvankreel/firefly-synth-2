@@ -90,7 +90,7 @@ FBVST3EditController::BeginParamChange(int index)
 void
 FBVST3EditController::PerformParamEdit(int index, float normalized)
 {
-  int tag = _topo->params[index].tag;
+  int tag = _topo->audioParams[index].tag;
   setParamNormalized(tag, normalized);
 
   // this is not ideal but it prevents automation getting ignored
@@ -120,7 +120,7 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
   if(EditControllerEx1::setParamNormalized(tag, value) != kResultTrue)
     return kResultFalse;
   if (_guiEditor != nullptr)
-    _guiEditor->SetParamNormalized(_topo->paramTagToIndex[tag], (float)value);
+    _guiEditor->SetParamNormalized(_topo->audioParamTagToIndex[tag], (float)value);
   return kResultTrue;
 }
 
@@ -182,7 +182,7 @@ FBVST3EditController::setComponentState(IBStream* state)
   if (!_topo->LoadEditStateFromString(json, edit))
     return kResultFalse;
   for (int i = 0; i < edit.Params().size(); i++)
-    setParamNormalized(_topo->params[i].tag, *edit.Params()[i]);
+    setParamNormalized(_topo->audioParams[i].tag, *edit.Params()[i]);
   return kResultOk;
 }
 
@@ -197,9 +197,9 @@ FBVST3EditController::initialize(FUnknown* context)
   for (int m = 0; m < _topo->modules.size(); m++)
   {
     addUnit(new Unit(MakeUnitInfo(_topo->modules[m], unitId)));
-    for (int p = 0; p < _topo->modules[m].params.size(); p++)
+    for (int p = 0; p < _topo->modules[m].audioParams.size(); p++)
     {
-      auto const& topo = _topo->modules[m].params[p];
+      auto const& topo = _topo->modules[m].audioParams[p];
       auto info = MakeParamInfo(topo, unitId);
       parameters.addParameter(new FBVST3Parameter(&topo.static_, info));
     }

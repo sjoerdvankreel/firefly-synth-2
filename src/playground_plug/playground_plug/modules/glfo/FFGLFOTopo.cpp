@@ -13,11 +13,11 @@ FFMakeGLFOTopo()
   result->slotCount = FFGLFOCount;
   result->renderer = FFGLFORenderGraph;
   result->id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
-  result->params.resize((int)FFGLFOParam::Count);
+  result->audioParams.resize((int)FFGLFOParam::Count);
   result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gLFO; });
   auto selectModule = [](auto& state) { return &state.global.gLFO; };
 
-  auto& on = result->params[(int)FFGLFOParam::On];
+  auto& on = result->audioParams[(int)FFGLFOParam::On];
   on.acc = false;
   on.name = "On";
   on.slotCount = 1;
@@ -28,7 +28,7 @@ FFMakeGLFOTopo()
   on.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
   on.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectOn);
 
-  auto& rate = result->params[(int)FFGLFOParam::Rate];
+  auto& rate = result->audioParams[(int)FFGLFOParam::Rate];
   rate.acc = true;
   rate.defaultText = "1";
   rate.name = "Rate";

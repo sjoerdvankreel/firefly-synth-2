@@ -18,7 +18,7 @@ FBCLAPPlugin::implementsParams() const noexcept
 uint32_t 
 FBCLAPPlugin::paramsCount() const noexcept
 {
-  return static_cast<uint32_t>(_topo->params.size());
+  return static_cast<uint32_t>(_topo->audioParams.size());
 }
 
 bool 
@@ -29,7 +29,7 @@ FBCLAPPlugin::paramsValue(
   if (index == -1)
     return false;
   auto const& state = _editState;
-  auto const& static_ = _topo->params[index].static_;
+  auto const& static_ = _topo->audioParams[index].static_;
   *value = FBNormalizedToCLAP(static_, *state->Params()[index]);
   return true;
 }
@@ -41,7 +41,7 @@ FBCLAPPlugin::paramsTextToValue(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  auto const& static_ = _topo->params[index].static_;
+  auto const& static_ = _topo->audioParams[index].static_;
   auto normalized = static_.TextToNormalized(false, display);
   if (!normalized.has_value())
     return false;
@@ -56,8 +56,8 @@ FBCLAPPlugin::paramsValueToText(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  float normalized = (float)FBCLAPToNormalized(_topo->params[index].static_, value);
-  std::string text = _topo->params[index].static_.NormalizedToText(FBValueTextDisplay::Text, normalized);
+  float normalized = (float)FBCLAPToNormalized(_topo->audioParams[index].static_, value);
+  std::string text = _topo->audioParams[index].static_.NormalizedToText(FBValueTextDisplay::Text, normalized);
   std::fill(display, display + size, 0);
   strncpy(display, text.c_str(), std::min(size - 1, static_cast<uint32_t>(text.size())));
   return true;
@@ -98,11 +98,11 @@ bool
 FBCLAPPlugin::paramsInfo(
   uint32_t paramIndex, clap_param_info* info) const noexcept
 {
-  auto const& runtimeParam = _topo->params[paramIndex];
+  auto const& runtimeParam = _topo->audioParams[paramIndex];
   auto const& staticParam = runtimeParam.static_;
   auto const& runtimeModule = _topo->modules[runtimeParam.runtimeModuleIndex];
   auto const& staticModule = _topo->static_.modules[runtimeParam.topoIndices.module.index];
-  if (paramIndex >= _topo->params.size())
+  if (paramIndex >= _topo->audioParams.size())
     return false;
 
   info->min_value = 0.0;

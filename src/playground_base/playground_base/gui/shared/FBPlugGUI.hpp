@@ -25,12 +25,12 @@ public:
     juce::PopupMenu menu,
     std::function<void(int)> callback);
 
-  std::string GetTooltipForParam(int index) const;
+  std::string GetTooltipForAudioParam(int index) const;
   std::string GetAudioParamActiveTooltip(
     FBStaticAudioParam const& param, bool active, float value) const;
 
   void UpdateExchangeState();
-  void ShowHostMenuForParam(int index);
+  void ShowHostMenuForAudioParam(int index);
   void SteppedParamNormalizedChanged(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
 

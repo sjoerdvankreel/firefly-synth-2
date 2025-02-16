@@ -27,7 +27,7 @@ FBOutputParamLabel::parentHierarchyChanged()
 String 
 FBOutputParamLabel::getTooltip()
 {
-  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
 }
 
 int

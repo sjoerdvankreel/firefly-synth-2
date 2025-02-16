@@ -31,7 +31,7 @@ FBPlugGUI::SteppedParamNormalizedChanged(int index)
 void 
 FBPlugGUI::InitAllDependencies()
 {
-  auto const& params = HostContext()->Topo()->params;
+  auto const& params = HostContext()->Topo()->audioParams;
   for (int i = 0; i < params.size(); i++)
     if (FBParamTypeIsStepped(params[i].static_.type))
       SteppedParamNormalizedChanged(i);
@@ -66,7 +66,7 @@ FBPlugGUI::GetAudioParamActiveTooltip(
 void
 FBPlugGUI::UpdateExchangeStateTick()
 {
-  auto const& params = HostContext()->Topo()->params;
+  auto const& params = HostContext()->Topo()->audioParams;
   for (int i = 0; i < params.size(); i++)
     if (!FBParamTypeIsStepped(params[i].static_.type))
       dynamic_cast<FBParamSlider&>(*GetControlForParamIndex(i)).UpdateExchangeState();
@@ -101,7 +101,7 @@ FBPlugGUI::UpdateExchangeState()
 }
 
 void
-FBPlugGUI::ShowHostMenuForParam(int index)
+FBPlugGUI::ShowHostMenuForAudioParam(int index)
 {
   auto menuItems = HostContext()->MakeParamContextMenu(index);
   if (menuItems.empty())
@@ -134,9 +134,9 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
 }
 
 std::string
-FBPlugGUI::GetTooltipForParam(int index) const
+FBPlugGUI::GetTooltipForAudioParam(int index) const
 {
-  auto const& param = HostContext()->Topo()->params[index];
+  auto const& param = HostContext()->Topo()->audioParams[index];
   float normalized = HostContext()->GetParamNormalized(index);
   auto paramActive = HostContext()->ExchangeState()->GetParamActiveState(&param);
 
@@ -145,13 +145,13 @@ FBPlugGUI::GetTooltipForParam(int index) const
     FBParamTextDisplay::TooltipWithUnit, normalized);
   if (!param.static_.IsVoice())
     result += "\r\nCurrent engine value: " +
-    GetParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
+    GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
   else
   {
     result += "\r\n Min engine value: " +
-      GetParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
+      GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
     result += "\r\n Max engine value: " +
-      GetParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
+      GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
   }
   result += "\r\nAutomation: " + param.static_.AutomationTooltip();
   return result;

@@ -11,11 +11,11 @@ FFMakeMasterTopo()
   result->name = "Master";
   result->slotCount = 1;
   result->id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
-  result->params.resize((int)FFMasterParam::Count);
+  result->audioParams.resize((int)FFMasterParam::Count);
   result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.master; });
   auto selectModule = [](auto& state) { return &state.global.master; };
 
-  auto& gain = result->params[(int)FFMasterParam::Gain];
+  auto& gain = result->audioParams[(int)FFMasterParam::Gain];
   gain.acc = true;
   gain.defaultText = "33";
   gain.name = "Gain";
@@ -29,7 +29,7 @@ FFMakeMasterTopo()
   gain.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectGain);
   gain.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectGain);
 
-  auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
+  auto& hostSmoothTime = result->audioParams[(int)FFMasterParam::HostSmoothTime];
   hostSmoothTime.acc = false;
   hostSmoothTime.defaultText = "2";
   hostSmoothTime.name = "Smth";
@@ -45,7 +45,7 @@ FFMakeMasterTopo()
   hostSmoothTime.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectHostSmoothTime);
   hostSmoothTime.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectHostSmoothTime);
 
-  auto& voices = result->params[(int)FFMasterParam::Voices];
+  auto& voices = result->audioParams[(int)FFMasterParam::Voices];
   voices.acc = false;
   voices.output = true;
   voices.defaultText = "0";

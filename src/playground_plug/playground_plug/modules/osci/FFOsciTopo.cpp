@@ -11,11 +11,11 @@ FFMakeOsciTopo()
   result->name = "Osc";
   result->slotCount = FFOsciCount;
   result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
-  result->params.resize((int)FFOsciParam::Count);
+  result->audioParams.resize((int)FFOsciParam::Count);
   result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osci; });
   auto selectModule = [](auto& state) { return &state.voice.osci; };
 
-  auto& on = result->params[(int)FFOsciParam::On];
+  auto& on = result->audioParams[(int)FFOsciParam::On];
   on.acc = false;
   on.name = "On";
   on.slotCount = 1;
@@ -26,7 +26,7 @@ FFMakeOsciTopo()
   on.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
   on.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectOn);
 
-  auto& type = result->params[(int)FFOsciParam::Type];
+  auto& type = result->audioParams[(int)FFOsciParam::Type];
   type.acc = false;
   type.defaultText = "Sine";
   type.name = "Type";
@@ -42,7 +42,7 @@ FFMakeOsciTopo()
   type.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectType);
   type.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectType);
 
-  auto& note = result->params[(int)FFOsciParam::Note];
+  auto& note = result->audioParams[(int)FFOsciParam::Note];
   note.acc = false;
   note.defaultText = FBNoteParam::C4Name;
   note.name = "Note";
@@ -54,7 +54,7 @@ FFMakeOsciTopo()
   note.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectNote);
   note.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectNote);
 
-  auto& gain = result->params[(int)FFOsciParam::Gain];
+  auto& gain = result->audioParams[(int)FFOsciParam::Gain];
   gain.acc = true;
   gain.defaultText = "100";
   gain.name = "Gain";
@@ -68,7 +68,7 @@ FFMakeOsciTopo()
   gain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectGain);
   gain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectGain);
 
-  auto& cent = result->params[(int)FFOsciParam::Cent];
+  auto& cent = result->audioParams[(int)FFOsciParam::Cent];
   cent.acc = true;
   cent.defaultText = "0";
   cent.name = "Cent";
@@ -84,7 +84,7 @@ FFMakeOsciTopo()
   cent.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectCent);
   cent.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectCent);
 
-  auto& pw = result->params[(int)FFOsciParam::PW];
+  auto& pw = result->audioParams[(int)FFOsciParam::PW];
   pw.acc = true;
   pw.defaultText = "50";
   pw.name = "PW";
@@ -99,7 +99,7 @@ FFMakeOsciTopo()
   pw.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectPW);
   pw.dependencies.enabled.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Pulse; });
 
-  auto& gLFOToGain = result->params[(int)FFOsciParam::GLFOToGain];
+  auto& gLFOToGain = result->audioParams[(int)FFOsciParam::GLFOToGain];
   gLFOToGain.acc = true;
   gLFOToGain.name = "GLFO To Gain";
   gLFOToGain.slotCount = 1;

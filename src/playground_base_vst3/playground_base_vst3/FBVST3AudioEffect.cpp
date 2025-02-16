@@ -201,8 +201,8 @@ FBVST3AudioEffect::process(ProcessData& data)
     for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
       if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
         if (queue->getPointCount() > 0)
-          if ((iter = _topo->paramTagToIndex.find(queue->getParameterId())) != _topo->paramTagToIndex.end())
-            if (_topo->params[iter->second].static_.acc)
+          if ((iter = _topo->audioParamTagToIndex.find(queue->getParameterId())) != _topo->audioParamTagToIndex.end())
+            if (_topo->audioParams[iter->second].static_.acc)
             {
               for (int point = 0; point < queue->getPointCount(); point++)
                 if (queue->getPoint(point, position, value) == kResultTrue)
@@ -235,7 +235,7 @@ FBVST3AudioEffect::process(ProcessData& data)
     {
       int unused;
       auto const& event = _output.outputParams[i];
-      int tag = _topo->params[event.param].tag;
+      int tag = _topo->audioParams[event.param].tag;
       auto queue = data.outputParameterChanges->addParameterData(tag, unused);
       if(queue != nullptr)
         queue->addPoint(0, event.normalized, unused);

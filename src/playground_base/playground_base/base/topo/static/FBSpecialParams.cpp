@@ -4,5 +4,5 @@
 FBStaticAudioParam const& 
 FBSpecialParam::ParamTopo(FBStaticTopo const& topo) const
 {
-  return topo.modules[moduleIndex].params[paramIndex];
+  return topo.modules[moduleIndex].audioParams[paramIndex];
 }
