@@ -1,8 +1,5 @@
 #include <playground_base/base/topo/runtime/FBRuntimeParamsTopo.hpp>
 
-template struct FBRuntimeParamsTopo<FBRuntimeParam>;
-template struct FBRuntimeParamsTopo<FBRuntimeGUIParam>;
-
 template <class TParam>
 static std::unordered_map<int, int>
 MakeParamTagToIndex(
@@ -68,3 +65,6 @@ FBRuntimeParamsTopo<TParam>::ParamAtTopo(
 {
   return &params[paramTopoToRuntime.at(topoIndices)];
 }
+
+template struct FBRuntimeParamsTopo<FBRuntimeParam>;
+template struct FBRuntimeParamsTopo<FBRuntimeGUIParam>;
