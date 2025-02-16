@@ -3,6 +3,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/static/FBModuleAddrs.hpp>
 #include <playground_base/base/topo/static/FBStaticParam.hpp>
+#include <playground_base/base/topo/static/FBStaticGUIParam.hpp>
 
 #include <array>
 #include <string>
@@ -21,7 +22,8 @@ struct FBStaticModule final
   std::string id = {};
   std::string name = {};
   FBModuleGraphRenderer renderer = {};
-  std::vector<FBStaticParam> params = {};
   FBModuleAddrSelectors addrSelectors = {};
+  std::vector<FBStaticParam> params = {};
+  std::vector<FBStaticGUIParam> guiParams = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 };
