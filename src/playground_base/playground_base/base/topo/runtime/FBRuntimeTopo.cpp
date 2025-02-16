@@ -3,9 +3,9 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <playground_base/base/shared/FBLogging.hpp>
-#include <playground_base/base/state/main/FBGUIState.hpp>
-#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
+#include <playground_base/base/state/main/FBGUIStateContainer.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
+#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 
 #include <juce_core/juce_core.h>
 
@@ -75,7 +75,7 @@ FBRuntimeTopo::ModuleAtTopo(
 
 std::string 
 FBRuntimeTopo::SaveGUIStateToString(
-  FBGUIState const& gui) const
+  FBGUIStateContainer const& gui) const
 {
   return JSON::toString(SaveGUIStateToVar(gui)).toStdString();
 }
@@ -96,14 +96,14 @@ FBRuntimeTopo::SaveEditStateToString(
 
 std::string 
 FBRuntimeTopo::SaveEditAndGUIStateToString(
-  FBScalarStateContainer const& edit, FBGUIState const& gui) const
+  FBScalarStateContainer const& edit, FBGUIStateContainer const& gui) const
 {
   return JSON::toString(SaveEditAndGUIStateToVar(edit, gui)).toStdString();
 }
 
 bool 
 FBRuntimeTopo::LoadGUIStateFromString(
-  std::string const& text, FBGUIState& gui) const
+  std::string const& text, FBGUIStateContainer& gui) const
 {
   var json;
   if (!ParseJson(text, json))
@@ -133,7 +133,8 @@ FBRuntimeTopo::LoadEditStateFromString(
 
 bool 
 FBRuntimeTopo::LoadEditAndGUIStateFromString(
-  std::string const& text, FBScalarStateContainer& edit, FBGUIState& gui) const
+  std::string const& text, 
+  FBScalarStateContainer& edit, FBGUIStateContainer& gui) const
 {
   var json;
   if (!ParseJson(text, json))
@@ -143,12 +144,12 @@ FBRuntimeTopo::LoadEditAndGUIStateFromString(
 
 bool 
 FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
-  std::string const& text, FBGUIState& gui) const
+  std::string const& text, FBGUIStateContainer& gui) const
 {
-  FBGUIState dryGUI = {};
+  FBGUIStateContainer dryGUI(*this);
   if (!LoadGUIStateFromString(text, dryGUI))
     return false;
-  gui = dryGUI;
+  gui.CopyFrom(dryGUI);
   return true;
 }
 
@@ -176,13 +177,13 @@ FBRuntimeTopo::LoadEditStateFromStringWithDryRun(
 
 bool 
 FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
-  std::string const& text, FBScalarStateContainer& edit, FBGUIState& gui) const
+  std::string const& text, FBScalarStateContainer& edit, FBGUIStateContainer& gui) const
 {
-  FBGUIState dryGUI = {};
+  FBGUIStateContainer dryGUI(*this);
   FBScalarStateContainer dryEdit(*this);
   if (!LoadEditAndGUIStateFromString(text, dryEdit, dryGUI))
     return false;
-  gui = dryGUI;
+  gui.CopyFrom(dryGUI);
   edit.CopyFrom(dryEdit);
   return true;
 }
@@ -198,7 +199,7 @@ FBRuntimeTopo::SaveProcStateToVar(
 
 var 
 FBRuntimeTopo::SaveGUIStateToVar(
-  FBGUIState const& gui) const
+  FBGUIStateContainer const& gui) const
 {
   auto result = new DynamicObject;
   result->setProperty("userScale", gui.userScale);
@@ -207,7 +208,7 @@ FBRuntimeTopo::SaveGUIStateToVar(
 
 var 
 FBRuntimeTopo::SaveEditAndGUIStateToVar(
-  FBScalarStateContainer const& edit, FBGUIState const& gui) const
+  FBScalarStateContainer const& edit, FBGUIStateContainer const& gui) const
 {
   auto guiState = SaveGUIStateToVar(gui);
   auto editState = SaveEditStateToVar(edit);
@@ -230,7 +231,7 @@ FBRuntimeTopo::LoadProcStateFromVar(
 
 bool 
 FBRuntimeTopo::LoadGUIStateFromVar(
-  var const& json, FBGUIState& gui) const
+  var const& json, FBGUIStateContainer& gui) const
 {
   DynamicObject* obj = json.getDynamicObject();
   if (obj->hasProperty("userScale"))
@@ -246,7 +247,7 @@ FBRuntimeTopo::LoadGUIStateFromVar(
 
 bool 
 FBRuntimeTopo::LoadEditAndGUIStateFromVar(
-  var const& json, FBScalarStateContainer& edit, FBGUIState& gui) const
+  var const& json, FBScalarStateContainer& edit, FBGUIStateContainer& gui) const
 {
   DynamicObject* obj = json.getDynamicObject();
   if (obj->hasProperty("gui"))

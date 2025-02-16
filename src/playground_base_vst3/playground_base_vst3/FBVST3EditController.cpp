@@ -5,7 +5,7 @@
 
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/main/FBGUIState.hpp>
+#include <playground_base/base/state/main/FBGUIStateContainer.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
@@ -61,7 +61,7 @@ FBVST3EditController::
 FBVST3EditController::
 FBVST3EditController(FBStaticTopo const& topo) :
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_guiState(std::make_unique<FBGUIState>()),
+_guiState(std::make_unique<FBGUIStateContainer>(topo)),
 _exchangeState(std::make_unique<FBExchangeStateContainer>(topo)),
 _exchangeHandler(this)
 {

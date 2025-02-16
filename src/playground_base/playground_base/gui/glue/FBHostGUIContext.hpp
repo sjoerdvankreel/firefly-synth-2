@@ -6,8 +6,8 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <memory>
 
-struct FBGUIState;
 struct FBRuntimeTopo;
+class FBGUIStateContainer;
 class FBExchangeStateContainer;
 
 class FBHostGUIContext
@@ -20,7 +20,7 @@ public:
   void PerformImmediateParamEdit(int index, float normalized);
   virtual void PerformParamEdit(int index, float normalized) = 0;
 
-  virtual FBGUIState* GUIState() = 0;
+  virtual FBGUIStateContainer* GUIState() = 0;
   virtual FBRuntimeTopo const* Topo() const = 0;
   virtual FBExchangeStateContainer const* ExchangeState() const = 0;
 

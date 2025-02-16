@@ -9,7 +9,7 @@
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/static/FBStaticTopo.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/main/FBGUIState.hpp>
+#include <playground_base/base/state/main/FBGUIStateContainer.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
@@ -128,7 +128,7 @@ FBCLAPPlugin(
 Plugin(desc, host),
 _gui(),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
-_guiState(std::make_unique<FBGUIState>()),
+_guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
 _procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),
 _dspExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),

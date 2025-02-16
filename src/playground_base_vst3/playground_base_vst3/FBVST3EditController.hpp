@@ -12,11 +12,11 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
-struct FBGUIState;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
 class FBVST3GUIEditor;
+class FBGUIStateContainer;
 class FBExchangeStateContainer;
 
 class FBVST3EditController final:
@@ -26,7 +26,7 @@ public FBHostGUIContext
 {
   FBVST3GUIEditor* _guiEditor = {};
   std::unique_ptr<FBRuntimeTopo> _topo;
-  std::unique_ptr<FBGUIState> _guiState;
+  std::unique_ptr<FBGUIStateContainer> _guiState;
   std::unique_ptr<FBExchangeStateContainer> _exchangeState;
   DataExchangeReceiverHandler _exchangeHandler;
 
@@ -50,8 +50,8 @@ public:
   void ParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) override;
 
-  FBGUIState* GUIState() override { return _guiState.get(); }
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
+  FBGUIStateContainer* GUIState() override { return _guiState.get(); }
   FBExchangeStateContainer const* ExchangeState() const override { return _exchangeState.get(); }
 
   tresult PLUGIN_API notify(IMessage* message) override;

@@ -21,9 +21,11 @@ FBVoicesExchangeAddrSelector;
 
 struct FBStaticTopoState final
 {
+  void* (*allocRawGUIState)() = {};
   void* (*allocRawProcState)() = {};
   void* (*allocRawScalarState)() = {};
   void* (*allocRawExchangeState)() = {};
+  void (*freeRawGUIState)(void* state) = {};
   void (*freeRawProcState)(void* state) = {};
   void (*freeRawScalarState)(void* state) = {};
   void (*freeRawExchangeState)(void* state) = {};

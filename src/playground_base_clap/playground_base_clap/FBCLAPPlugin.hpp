@@ -14,13 +14,13 @@
 using namespace clap;
 using namespace clap::helpers;
 
-struct FBGUIState;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
 class FBHostProcessor;
 class IFBPlugProcessor;
 class FBPlugGUIContext;
+class FBGUIStateContainer;
 class FBProcStateContainer;
 class FBScalarStateContainer;
 class FBExchangeStateContainer;
@@ -34,7 +34,7 @@ public IFBHostDSPContext
 {
   std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBRuntimeTopo> _topo;
-  std::unique_ptr<FBGUIState> _guiState;
+  std::unique_ptr<FBGUIStateContainer> _guiState;
   std::unique_ptr<FBProcStateContainer> _procState;
   std::unique_ptr<FBScalarStateContainer> _editState;
   std::unique_ptr<FBExchangeStateContainer> _dspExchangeState;
@@ -105,8 +105,8 @@ public:
   float GetParamNormalized(int index) const override;
   void PerformParamEdit(int index, float normalized) override;
   void ParamContextMenuClicked(int paramIndex, int juceTag) override;
-  std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) override;
-  FBGUIState* GUIState() override { return _guiState.get(); }
+  std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) override;  
+  FBGUIStateContainer* GUIState() override { return _guiState.get(); }
   FBExchangeStateContainer const* ExchangeState() const override { return _guiExchangeState.get(); }
 
   bool isValidParamId(clap_id paramId) const noexcept override;
