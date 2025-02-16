@@ -1,7 +1,8 @@
 #include <playground_plug/shared/FFPlugGUI.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_plug/shared/FFPlugState.hpp>
+#include <playground_plug/shared/FFGUIState.hpp>
 #include <playground_plug/shared/FFPlugMeta.hpp>
+#include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
@@ -15,8 +16,6 @@ MakeTopoGUI()
 {
   FBStaticTopoGUI result = {};
   result.plugWidth = 800;
-  result.minUserScale = 0.5f;
-  result.maxUserScale = 16.0f;
   result.aspectRatioWidth = 2;
   result.aspectRatioHeight = 1;
   result.factory = [](FBHostGUIContext* hostContext) {
@@ -37,6 +36,19 @@ MakeSpecialParam(
   return result;
 }
 
+static FBSpecialGUIParam
+MakeSpecialGUIParam(
+  FBStaticTopo const& topo, void* state,
+  int moduleIndex, int paramIndex)
+{
+  FBSpecialGUIParam result;
+  result.paramIndex = paramIndex;
+  result.moduleIndex = moduleIndex;
+  auto const& param = topo.modules[moduleIndex].guiParams[paramIndex];
+  result.state = param.addrSelector(moduleIndex, paramIndex, state);
+  return result;
+}
+
 static FBSpecialParams
 SpecialParamsSelector(
   FBStaticTopo const& topo, void* state)
@@ -47,16 +59,29 @@ SpecialParamsSelector(
   return result;
 }
 
+static FBSpecialGUIParams
+SpecialGUIParamsSelector(
+  FBStaticTopo const& topo, void* state)
+{
+  FBSpecialGUIParams result = {};
+  result.userScale = MakeSpecialGUIParam(
+    topo, state, (int)FFModuleType::Master, (int)FFMasterGUIParam::UserScale);
+  return result;
+}
+
 static FBStaticTopoState
 MakeTopoState()
 {
   FBStaticTopoState result = {};
   result.specialSelector = SpecialParamsSelector;
+  result.specialGUISelector = SpecialGUIParamsSelector;
   result.exchangeStateSize = sizeof(FFExchangeState);
   result.exchangeStateAlignment = alignof(FFExchangeState);
+  result.allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
   result.allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
   result.allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
   result.allocRawExchangeState = []() { return static_cast<void*>(new FFExchangeState); };
+  result.freeRawGUIState = [](void* state) { delete static_cast<FFGUIState*>(state); };
   result.freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
   result.freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
   result.freeRawExchangeState = [](void* state) { delete static_cast<FFExchangeState*>(state); };

@@ -3,19 +3,19 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 #include <playground_base/base/topo/static/FBSpecialParams.hpp>
+#include <playground_base/base/topo/static/FBSpecialGUIParams.hpp>
 
 #include <functional>
 
 struct FBStaticTopo;
 struct FBProcExchangeState;
 
-// TODO drop selector in favor of just-point-at-smooth-param
-typedef std::function<float* (
-  void* state)>
-  FBGUIUserScaleAddrSelector;
 typedef std::function<FBSpecialParams (
   FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
+typedef std::function<FBSpecialGUIParams(
+  FBStaticTopo const& topo, void* state)>
+FBSpecialGUIParamsSelector;
 typedef std::function<FBProcExchangeState* (
   void* state)>
 FBProcExchangeAddrSelector;
@@ -36,9 +36,9 @@ struct FBStaticTopoState final
 
   int exchangeStateSize = {};
   int exchangeStateAlignment = {};
-  FBSpecialParamsSelector specialSelector = {}; // todo replace
-  FBGUIUserScaleAddrSelector guiUserScaleAddr = {};
+  FBSpecialParamsSelector specialSelector = {};
   FBProcExchangeAddrSelector procExchangeAddr = {};
+  FBSpecialGUIParamsSelector specialGUISelector = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoState);
 };

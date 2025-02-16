@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/topo/static/FBSpecialGUIParams.hpp>
 
 #include <vector>
 #include <utility>
@@ -11,12 +12,10 @@ class FBGUIStateContainer final
 {
   friend class FBPlugGUIContext;
 
-  void* _rawState;
-  float* _userScale;
   std::vector<float*> _params;
+  void* _rawState;
   void (*_freeRawState)(void*);
-
-  float* UserScale() { return _userScale; }
+  FBSpecialGUIParams _special;
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBGUIStateContainer);
@@ -25,10 +24,10 @@ public:
 
   void CopyFrom(FBGUIStateContainer const& gui);
   std::vector<float*> const& Params() const { return _params; }
+  FBSpecialGUIParams const& Special() const { return _special; }
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
-  float const* UserScale() const { return _userScale; }
   template <class T> T* As() { return static_cast<T*>(_rawState); }
   template <class T> T const* As() const { return static_cast<T const*>(_rawState); }
 };

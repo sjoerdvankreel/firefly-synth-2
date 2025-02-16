@@ -10,8 +10,8 @@ class FBProcStateContainer;
 
 class FBScalarStateContainer final
 {
-  void* _rawState;
   std::vector<float*> _params;
+  void* _rawState;
   void (*_freeRawState)(void*);
 
 public:

@@ -5,12 +5,17 @@
 #include <utility>
 
 class FBHostGUIContext;
+struct FBStaticGUIParam;
+struct FBSpecialGUIParam;
 
 class FBPlugGUIContext
 {
   float _systemScale = 1.0f;
   FBHostGUIContext* const _hostContext;
   float CombinedScale() const;
+
+  FBStaticGUIParam const& UserScaleParam() const;
+  FBSpecialGUIParam const& UserScaleSpecial() const;
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContext);

@@ -9,6 +9,15 @@
 
 struct FBStaticModule;
 
+class FFMasterGUIState final
+{
+  float userScale = 1.0f;
+  friend class FFGUIState;
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterGUIState);
+};
+
 class alignas(sizeof(FBFloatVector)) FFMasterDSPState final
 {
   friend class FFPlugProcessor;

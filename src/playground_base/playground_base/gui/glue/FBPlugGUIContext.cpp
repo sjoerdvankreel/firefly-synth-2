@@ -10,17 +10,23 @@ FBPlugGUIContext::
 FBPlugGUIContext(FBHostGUIContext* const hostContext):
 _hostContext(hostContext) {}
 
+FBSpecialGUIParam const& 
+FBPlugGUIContext::UserScaleSpecial() const
+{
+  return _hostContext->GUIState()->Special().userScale;
+}
+
+FBStaticGUIParam const&
+FBPlugGUIContext::UserScaleParam() const
+{
+  return UserScaleSpecial().ParamTopo(_hostContext->Topo()->static_);
+}
+
 void
 FBPlugGUIContext::SetSystemScale(float scale)
 {
   _systemScale = scale;
   RequestRescale(CombinedScale());
-}
-
-float 
-FBPlugGUIContext::CombinedScale() const
-{
-  return *_hostContext->GUIState()->UserScale() * _systemScale;
 }
 
 int
@@ -30,12 +36,20 @@ FBPlugGUIContext::GetHeightForAspectRatio(int width) const
   return width * topoGUI.aspectRatioHeight / topoGUI.aspectRatioWidth;
 }
 
+float
+FBPlugGUIContext::CombinedScale() const
+{
+  float userScaleNorm = *UserScaleSpecial().state;
+  float userScalePlain = UserScaleParam().Linear().NormalizedToPlain(userScaleNorm);
+  return _systemScale * userScalePlain;
+}
+
 int
 FBPlugGUIContext::ClampHostWidthForScale(int width) const
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  float minW = topoGUI.plugWidth * topoGUI.minUserScale * _systemScale;
-  float maxW = topoGUI.plugWidth * topoGUI.maxUserScale * _systemScale;
+  float minW = topoGUI.plugWidth * UserScaleParam().Linear().min * _systemScale;
+  float maxW = topoGUI.plugWidth * UserScaleParam().Linear().max * _systemScale;
   return (int)std::round(std::clamp((float)width, minW, maxW));
 }
 
@@ -52,6 +66,7 @@ void
 FBPlugGUIContext::SetUserScaleByHostWidth(int width)
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  *_hostContext->GUIState()->UserScale() = ((float)width / (float)topoGUI.plugWidth) / _systemScale;
+  float userScalePlain = ((float)width / (float)topoGUI.plugWidth) / _systemScale;
+  *UserScaleSpecial().state = UserScaleParam().Linear().PlainToNormalized(userScalePlain);
   RequestRescale(CombinedScale());
 }

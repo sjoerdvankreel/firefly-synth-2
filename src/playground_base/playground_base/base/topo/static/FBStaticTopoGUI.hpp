@@ -14,8 +14,6 @@ FBPlugGUIFactory;
 struct FBStaticTopoGUI final
 {
   int plugWidth = {};
-  float minUserScale = {};
-  float maxUserScale = {};
   int aspectRatioWidth = {};
   int aspectRatioHeight = {};
   FBPlugGUIFactory factory = {};
