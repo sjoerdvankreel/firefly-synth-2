@@ -2,14 +2,15 @@
 #include <playground_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeModule.hpp>
 
-static std::vector<FBRuntimeParam>
+template <class RuntimeParam, class StaticParam>
+static std::vector<RuntimeParam>
 MakeRuntimeParams(
   FBStaticModule const& staticModule, 
   FBTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamStart,
-  std::vector<FBStaticParam> const& staticParams)
+  std::vector<StaticParam> const& staticParams)
 {
-  std::vector<FBRuntimeParam> result;
+  std::vector<RuntimeParam> result;
   for (int p = 0; p < staticParams.size(); p++)
     for (int s = 0; s < staticParams[p].slotCount; s++)
     {
@@ -17,7 +18,7 @@ MakeRuntimeParams(
       indices.param.slot = s;
       indices.param.index = p;
       indices.module = topoIndices;
-      result.push_back(FBRuntimeParam(
+      result.push_back(RuntimeParam(
         staticModule, staticParams[p],
         indices, runtimeModuleIndex, runtimeParamStart++));
     }
@@ -26,10 +27,10 @@ MakeRuntimeParams(
 
 FBRuntimeModule::
 FBRuntimeModule(
-  FBStaticModule const& staticModule, 
-  FBTopoIndices const& topoIndices,
-  int runtimeIndex, int runtimeParamStart):
+  FBStaticModule const& staticModule, FBTopoIndices const& topoIndices,
+  int runtimeIndex, int runtimeParamStart, int runtimeGUIParamStart):
 topoIndices(topoIndices),
 runtimeModuleIndex(runtimeIndex),
 name(FBMakeRuntimeName(staticModule.name, staticModule.slotCount, topoIndices.slot)),
-params(MakeRuntimeParams(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)) {}
+params(MakeRuntimeParams<FBRuntimeParam>(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)),
+guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(staticModule, topoIndices, runtimeIndex, runtimeGUIParamStart, staticModule.guiParams)) {}
