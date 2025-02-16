@@ -10,7 +10,7 @@
 #include <playground_base/base/topo/param/FBFreqOctParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 
-#include <playground_base/base/topo/static/FBParamAddrs.hpp>
+#include <playground_base/base/topo/static/FBProcParamAddrs.hpp>
 #include <playground_base/base/topo/static/FBAutomationType.hpp>
 #include <playground_base/base/topo/static/FBStaticParamBase.hpp>
 
