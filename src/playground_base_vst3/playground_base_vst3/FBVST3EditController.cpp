@@ -166,8 +166,7 @@ FBVST3EditController::setState(IBStream* state)
   std::string json;
   if (!FBVST3LoadIBStream(state, json))
     return kResultFalse;
-  if (!_topo->LoadGUIStateFromStringWithDryRun(json, *_guiState))
-    return kResultFalse;
+  _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
   return kResultTrue;
 }
 

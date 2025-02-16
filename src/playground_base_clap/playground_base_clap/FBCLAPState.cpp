@@ -44,8 +44,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
     else
       json.append(buffer, read);
 
-  if (!_topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState))
-    return false;
+  _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState);
   for (int i = 0; i < _editState->Params().size(); i++)
   {
     float normalized = *_editState->Params()[i];

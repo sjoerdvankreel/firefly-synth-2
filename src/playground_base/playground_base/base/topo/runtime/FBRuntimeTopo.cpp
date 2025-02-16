@@ -190,50 +190,43 @@ FBRuntimeTopo::LoadEditAndGUIStateFromString(
   return LoadEditAndGUIStateFromVar(json, edit, gui);
 }
 
-bool 
+void 
 FBRuntimeTopo::LoadGUIStateFromStringWithDryRun(
   std::string const& text, FBGUIStateContainer& gui) const
 {
   FBGUIStateContainer dryGUI(*this);
-  if (!LoadGUIStateFromString(text, dryGUI))
-    return false;
-  gui.CopyFrom(dryGUI);
-  return true;
+  if (LoadGUIStateFromString(text, dryGUI))
+    gui.CopyFrom(dryGUI);
 }
 
-bool 
+void 
 FBRuntimeTopo::LoadProcStateFromStringWithDryRun(
   std::string const& text, FBProcStateContainer& proc) const
 {
   FBScalarStateContainer dryEdit(*this);
-  if (!LoadEditStateFromString(text, dryEdit))
-    return false;
-  proc.InitProcessing(dryEdit);
-  return true;
+  if (LoadEditStateFromString(text, dryEdit))
+    proc.InitProcessing(dryEdit);
 }
 
-bool 
+void 
 FBRuntimeTopo::LoadEditStateFromStringWithDryRun(
   std::string const& text, FBScalarStateContainer& edit) const
 {
   FBScalarStateContainer dryEdit(*this);
-  if (!LoadEditStateFromString(text, dryEdit))
-    return false;
-  edit.CopyFrom(dryEdit);
-  return true;
+  if (LoadEditStateFromString(text, dryEdit))
+    edit.CopyFrom(dryEdit);
 }
 
-bool 
+void 
 FBRuntimeTopo::LoadEditAndGUIStateFromStringWithDryRun(
   std::string const& text, FBScalarStateContainer& edit, FBGUIStateContainer& gui) const
 {
   FBGUIStateContainer dryGUI(*this);
   FBScalarStateContainer dryEdit(*this);
   if (!LoadEditAndGUIStateFromString(text, dryEdit, dryGUI))
-    return false;
+    return;
   gui.CopyFrom(dryGUI);
   edit.CopyFrom(dryEdit);
-  return true;
 }
 
 var 

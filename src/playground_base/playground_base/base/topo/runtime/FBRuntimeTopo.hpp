@@ -55,8 +55,11 @@ public:
   bool LoadEditStateFromString(std::string const& text, FBScalarStateContainer& edit) const;
   bool LoadEditAndGUIStateFromString(std::string const& text, FBScalarStateContainer& edit, FBGUIStateContainer& gui) const;
 
-  bool LoadGUIStateFromStringWithDryRun(std::string const& text, FBGUIStateContainer& gui) const;
-  bool LoadProcStateFromStringWithDryRun(std::string const& text, FBProcStateContainer& proc) const;
-  bool LoadEditStateFromStringWithDryRun(std::string const& text, FBScalarStateContainer& edit) const;
-  bool LoadEditAndGUIStateFromStringWithDryRun(std::string const& text, FBScalarStateContainer& edit, FBGUIStateContainer& gui) const;
+  // With dry run copies over the loaded state only if load succeeded.
+  // It returns void rather than bool because it "always succeeds" even if not.
+  // This is important to keep bitwig happy (i.e. do nothing on load fail) rather than crashing the host.
+  void LoadGUIStateFromStringWithDryRun(std::string const& text, FBGUIStateContainer& gui) const;
+  void LoadProcStateFromStringWithDryRun(std::string const& text, FBProcStateContainer& proc) const;
+  void LoadEditStateFromStringWithDryRun(std::string const& text, FBScalarStateContainer& edit) const;
+  void LoadEditAndGUIStateFromStringWithDryRun(std::string const& text, FBScalarStateContainer& edit, FBGUIStateContainer& gui) const;
 };
