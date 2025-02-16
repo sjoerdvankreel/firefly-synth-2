@@ -17,8 +17,8 @@ FBParamSlider(
 FBAutoSizeSlider(plugGUI, style),
 FBParamControl(plugGUI, param)
 {
-  setRange(0.0, 1.0);
-  setPopupDisplayEnabled(true, false, plugGUI);
+  setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
+  SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
 }
 
 void
