@@ -61,6 +61,7 @@ FFPlugGUI::SetAudioParamNormalizedFromUI(int index, float normalized)
   RequestGraphRender(moduleIndex);
 }
 
+// TODO counterpart
 void
 FFPlugGUI::SetAudioParamNormalizedFromHost(int index, float normalized)
 {

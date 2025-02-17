@@ -55,8 +55,8 @@ private:
   std::unordered_map<int, int> _guiParamIndexToComponent = {};
   std::unordered_map<int, int> _audioParamIndexToComponent = {};
   std::chrono::high_resolution_clock::time_point _exchangeUpdated = {};
-  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsVisibleDependents = {};
-  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsEnabledDependents = {};
+  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsVisibleDependents = {};
+  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsEnabledDependents = {};
 };
 
 template <class TComponent, class... Args>

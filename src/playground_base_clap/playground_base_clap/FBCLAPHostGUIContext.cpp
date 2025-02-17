@@ -1,7 +1,8 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
+#include <playground_base/base/state/main/FBGUIStateContainer.hpp>
+#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 
 #include <clap/helpers/plugin.hxx>
 
@@ -46,6 +47,18 @@ float
 FBCLAPPlugin::GetAudioParamNormalized(int index) const
 {
   return *_editState->Params()[index];
+}
+
+float 
+FBCLAPPlugin::GetGUIParamNormalized(int index) const
+{
+  return *_guiState->Params()[index];
+}
+
+void 
+FBCLAPPlugin::SetGUIParamNormalized(int index, float normalized)
+{
+  *_guiState->Params()[index] = normalized;
 }
 
 void

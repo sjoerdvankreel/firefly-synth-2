@@ -20,18 +20,7 @@ _hostContext(hostContext)
   addAndMakeVisible(_tooltipWindow);
 }
 
-// TODO both audio/gui index
 void
-FBPlugGUI::SteppedAudioParamNormalizedChanged(int index)
-{
-  for (auto target : _paramsVisibleDependents[index])
-    target->DependenciesChanged(true);
-  for (auto target : _paramsEnabledDependents[index])
-    target->DependenciesChanged(false);
-}
-
-// todo both
-void 
 FBPlugGUI::InitAllDependencies()
 {
   auto const& params = HostContext()->Topo()->audio.params;
@@ -40,7 +29,15 @@ FBPlugGUI::InitAllDependencies()
       SteppedAudioParamNormalizedChanged(i);
 }
 
-// maybe todo ?
+void
+FBPlugGUI::SteppedAudioParamNormalizedChanged(int index)
+{
+  for (auto target : _audioParamsVisibleDependents[index])
+    target->DependenciesChanged(true);
+  for (auto target : _audioParamsEnabledDependents[index])
+    target->DependenciesChanged(false);
+}
+
 void
 FBPlugGUI::SetAudioParamNormalizedFromHost(int index, float value)
 {
@@ -50,7 +47,6 @@ FBPlugGUI::SetAudioParamNormalizedFromHost(int index, float value)
     SteppedAudioParamNormalizedChanged(index);
 }
 
-// todo counterpart
 FBParamControl*
 FBPlugGUI::GetControlForAudioParamIndex(int paramIndex) const
 {
@@ -134,9 +130,9 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
   if ((paramsDependent = dynamic_cast<FBParamsDependent*>(result)) != nullptr)
   {
     for (int p : paramsDependent->RuntimeDependencies(true))
-      _paramsVisibleDependents[p].insert(paramsDependent);
+      _audioParamsVisibleDependents[p].insert(paramsDependent);
     for (int p : paramsDependent->RuntimeDependencies(false))
-      _paramsEnabledDependents[p].insert(paramsDependent);
+      _audioParamsEnabledDependents[p].insert(paramsDependent);
   }
   return result;
 }

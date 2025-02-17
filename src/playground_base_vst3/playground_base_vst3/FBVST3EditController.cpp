@@ -106,6 +106,18 @@ FBVST3EditController::GetAudioParamNormalized(int index) const
   return parameters.getParameterByIndex(index)->getNormalized();
 }
 
+float 
+FBVST3EditController::GetGUIParamNormalized(int index) const
+{
+  return *_guiState->Params()[index];
+}
+
+void 
+FBVST3EditController::SetGUIParamNormalized(int index, float normalized)
+{
+  *_guiState->Params()[index] = normalized;
+}
+
 std::vector<FBHostContextMenuItem>
 FBVST3EditController::MakeAudioParamContextMenu(int index)
 {
