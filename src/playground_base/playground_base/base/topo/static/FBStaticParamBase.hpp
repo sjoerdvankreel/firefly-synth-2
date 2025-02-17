@@ -12,7 +12,6 @@
 
 #include <playground_base/base/topo/static/FBParamType.hpp>
 #include <playground_base/base/topo/static/FBTextDisplay.hpp>
-#include <playground_base/base/topo/static/FBParamsDependencies.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -41,7 +40,6 @@ public:
   std::string tooltip = {};
   std::string defaultText = {};
   FBParamType type = (FBParamType)-1;
-  FBParamsDependencies dependencies = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);
 
