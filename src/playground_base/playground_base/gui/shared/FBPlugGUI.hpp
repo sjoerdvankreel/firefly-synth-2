@@ -25,18 +25,18 @@ public:
     juce::PopupMenu menu,
     std::function<void(int)> callback);
 
-  std::string GetTooltipForParam(int index) const;
-  std::string GetParamActiveTooltip(
+  std::string GetTooltipForAudioParam(int index) const;
+  std::string GetAudioParamActiveTooltip(
     FBStaticParam const& param, bool active, float value) const;
 
   void UpdateExchangeState();
-  void ShowHostMenuForParam(int index);
-  void SteppedParamNormalizedChanged(int index);
+  void ShowHostMenuForAudioParam(int index);
+  void SteppedAudioParamNormalizedChanged(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
-  virtual void SetParamNormalizedFromUI(int index, float normalized) = 0;
-  virtual void SetParamNormalizedFromHost(int index, float normalized);
+  virtual void SetAudioParamNormalizedFromUI(int index, float normalized) = 0;
+  virtual void SetAudioParamNormalizedFromHost(int index, float normalized);
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);
@@ -44,14 +44,15 @@ protected:
 
   void InitAllDependencies();
   virtual void UpdateExchangeStateTick() = 0;
-  FBParamControl* GetControlForParamIndex(int paramIndex) const;
+  FBParamControl* GetControlForAudioParamIndex(int paramIndex) const;
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
   FBHostGUIContext* const _hostContext;
   juce::TooltipWindow* _tooltipWindow = {};
-  std::unordered_map<int, int> _paramIndexToComponent = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
+  std::unordered_map<int, int> _guiParamIndexToComponent = {};
+  std::unordered_map<int, int> _audioParamIndexToComponent = {};
   std::chrono::high_resolution_clock::time_point _exchangeUpdated = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _paramsEnabledDependents = {};

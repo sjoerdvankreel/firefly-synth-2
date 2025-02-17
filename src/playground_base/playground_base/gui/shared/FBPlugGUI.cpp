@@ -3,6 +3,7 @@
 #include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
+#include <playground_base/gui/shared/FBGUIParamControl.hpp>
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
@@ -19,8 +20,9 @@ _hostContext(hostContext)
   addAndMakeVisible(_tooltipWindow);
 }
 
+// TODO both audio/gui index
 void
-FBPlugGUI::SteppedParamNormalizedChanged(int index)
+FBPlugGUI::SteppedAudioParamNormalizedChanged(int index)
 {
   for (auto target : _paramsVisibleDependents[index])
     target->DependenciesChanged(true);
@@ -28,34 +30,37 @@ FBPlugGUI::SteppedParamNormalizedChanged(int index)
     target->DependenciesChanged(false);
 }
 
+// todo both
 void 
 FBPlugGUI::InitAllDependencies()
 {
   auto const& params = HostContext()->Topo()->audio.params;
   for (int i = 0; i < params.size(); i++)
     if (FBParamTypeIsStepped(params[i].static_.type))
-      SteppedParamNormalizedChanged(i);
+      SteppedAudioParamNormalizedChanged(i);
 }
 
+// maybe todo ?
 void
-FBPlugGUI::SetParamNormalizedFromHost(int index, float value)
+FBPlugGUI::SetAudioParamNormalizedFromHost(int index, float value)
 {
-  auto control = GetControlForParamIndex(index);
+  auto control = GetControlForAudioParamIndex(index);
   control->SetValueNormalizedFromHost(value);
   if (FBParamTypeIsStepped(control->Param()->static_.type))
-    SteppedParamNormalizedChanged(index);
+    SteppedAudioParamNormalizedChanged(index);
 }
 
+// todo counterpart
 FBParamControl*
-FBPlugGUI::GetControlForParamIndex(int paramIndex) const
+FBPlugGUI::GetControlForAudioParamIndex(int paramIndex) const
 {
-  auto iter = _paramIndexToComponent.find(paramIndex);
-  assert(iter != _paramIndexToComponent.end());
+  auto iter = _audioParamIndexToComponent.find(paramIndex);
+  assert(iter != _audioParamIndexToComponent.end());
   return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
 }
 
 std::string
-FBPlugGUI::GetParamActiveTooltip(
+FBPlugGUI::GetAudioParamActiveTooltip(
   FBStaticParam const& param, bool active, float value) const
 {
   if (!active)
@@ -69,7 +74,7 @@ FBPlugGUI::UpdateExchangeStateTick()
   auto const& params = HostContext()->Topo()->audio.params;
   for (int i = 0; i < params.size(); i++)
     if (!FBParamTypeIsStepped(params[i].static_.type))
-      dynamic_cast<FBParamSlider&>(*GetControlForParamIndex(i)).UpdateExchangeState();
+      dynamic_cast<FBParamSlider&>(*GetControlForAudioParamIndex(i)).UpdateExchangeState();
 }
 
 void
@@ -101,7 +106,7 @@ FBPlugGUI::UpdateExchangeState()
 }
 
 void
-FBPlugGUI::ShowHostMenuForParam(int index)
+FBPlugGUI::ShowHostMenuForAudioParam(int index)
 {
   auto menuItems = HostContext()->MakeParamContextMenu(index);
   if (menuItems.empty())
@@ -116,13 +121,16 @@ FBPlugGUI::ShowHostMenuForParam(int index)
 Component*
 FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
 {
-  FBParamControl* paramControl;
+  FBParamControl* audioParamControl;
+  FBGUIParamControl* guiParamControl;
   FBParamsDependent* paramsDependent;
   Component* result = component.get();
   int componentIndex = (int)_store.size();
   _store.emplace_back(std::move(component));
-  if ((paramControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
-    _paramIndexToComponent[paramControl->Param()->runtimeParamIndex] = componentIndex;
+  if ((audioParamControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
+    _audioParamIndexToComponent[audioParamControl->Param()->runtimeParamIndex] = componentIndex;
+  if ((guiParamControl = dynamic_cast<FBGUIParamControl*>(result)) != nullptr)
+    _guiParamIndexToComponent[guiParamControl->Param()->runtimeParamIndex] = componentIndex;
   if ((paramsDependent = dynamic_cast<FBParamsDependent*>(result)) != nullptr)
   {
     for (int p : paramsDependent->RuntimeDependencies(true))
@@ -134,7 +142,7 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
 }
 
 std::string
-FBPlugGUI::GetTooltipForParam(int index) const
+FBPlugGUI::GetTooltipForAudioParam(int index) const
 {
   auto const& param = HostContext()->Topo()->audio.params[index];
   float normalized = HostContext()->GetParamNormalized(index);
@@ -145,13 +153,13 @@ FBPlugGUI::GetTooltipForParam(int index) const
     FBParamTextDisplay::TooltipWithUnit, normalized);
   if (!param.static_.IsVoice())
     result += "\r\nCurrent engine value: " +
-    GetParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
+    GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
   else
   {
     result += "\r\n Min engine value: " +
-      GetParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
+      GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
     result += "\r\n Max engine value: " +
-      GetParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
+      GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
   }
   result += "\r\nAutomation: " + param.static_.AutomationTooltip();
   return result;
