@@ -12,7 +12,7 @@ struct FBStaticModule;
 class FFMasterGUIState final
 {
   float userScale = 1.0f;
-  friend class FFGUIState;
+  friend struct FFGUIState;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterGUIState);
