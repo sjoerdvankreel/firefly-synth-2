@@ -8,7 +8,7 @@
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/controls/FBGUIParamLabel.hpp>
 #include <playground_base/gui/controls/FBOutputParamLabel.hpp>
-#include <playground_base/gui/controls/FBGUIParamToggleButton.hpp>
+#include <playground_base/gui/controls/FBGUIParamComboBox.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
@@ -32,7 +32,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hostSmoothTime, Slider::SliderStyle::LinearHorizontal));
   auto guiDummyParam = topo->gui.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterGUIParam::DummyParam, 0 });
   grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiDummyParam));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, guiDummyParam));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, guiDummyParam));
   return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 } 
 
