@@ -20,6 +20,15 @@ FFSelectVoiceModuleExchangeAddr(
     return &(*selectModule(voiceState))[moduleSlot]; };
 }
 
+inline auto
+FFSelectGUIParamAddr(
+  auto selectModule, auto selectParam)
+{
+  return[selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
+    auto& guiState = *static_cast<FFGUIState*>(state);
+    return selectParam(*selectModule(guiState)); };
+}
+
 template <class State>
 inline auto
 FFSelectParamAddr(

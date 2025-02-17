@@ -12,6 +12,7 @@ struct FBStaticModule;
 class FFMasterGUIState final
 {
   float userScale = 1.0f;
+  float dummyParam = 0.0f;
   friend struct FFGUIState;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
 public:

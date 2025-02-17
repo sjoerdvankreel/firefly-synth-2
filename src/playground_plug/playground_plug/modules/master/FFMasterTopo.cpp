@@ -15,6 +15,7 @@ FFMakeMasterTopo()
   result->params.resize((int)FFMasterParam::Count);
   result->guiParams.resize((int)FFMasterGUIParam::Count);
   result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.master; });
+  auto selectGuiModule = [](auto& state) { return &state.master; };
   auto selectModule = [](auto& state) { return &state.global.master; };
 
   auto& gain = result->params[(int)FFMasterParam::Gain];
@@ -69,8 +70,17 @@ FFMakeMasterTopo()
   guiUserScale.type = FBParamType::Linear;
   guiUserScale.Linear().min = 0.5f;
   guiUserScale.Linear().max = 16.0f;
-  guiUserScale.addrSelector = [](int moduleSlot, int paramSlot, void* state) { 
-    return &static_cast<FFGUIState*>(state)->master.userScale; };
+  auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
+  guiUserScale.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
+
+  auto& guiDummyParam = result->guiParams[(int)FFMasterGUIParam::DummyParam];
+  guiDummyParam.defaultText = "Off";
+  guiDummyParam.name = "Dummy"; // TODO lose the dummy
+  guiDummyParam.slotCount = 1;
+  guiDummyParam.id = "{989365B6-5666-4DB1-B787-C72A4E6D1ED1}";
+  guiDummyParam.type = FBParamType::Boolean;
+  auto selectGuiDummyParam = [](auto& module) { return &module.dummyParam; };
+  guiDummyParam.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiDummyParam);
 
   return result;
 }
