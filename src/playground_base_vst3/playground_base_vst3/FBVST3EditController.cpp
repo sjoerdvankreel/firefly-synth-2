@@ -126,21 +126,21 @@ FBVST3EditController::MakeAudioParamContextMenu(int index)
   return _guiEditor->MakeParamContextMenu(componentHandler, index);
 }
 
+void
+FBVST3EditController::AudioParamContextMenuClicked(int paramIndex, int juceTag)
+{
+  if (_guiEditor)
+    _guiEditor->ParamContextMenuClicked(componentHandler, paramIndex, juceTag);
+}
+
 tresult PLUGIN_API 
 FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 {
   if(EditControllerEx1::setParamNormalized(tag, value) != kResultTrue)
     return kResultFalse;
   if (_guiEditor != nullptr)
-    _guiEditor->SetParamNormalized(_topo->audio.paramTagToIndex[tag], (float)value);
+    _guiEditor->SetAudioParamNormalizedFromHost(_topo->audio.paramTagToIndex[tag], (float)value);
   return kResultTrue;
-}
-
-void
-FBVST3EditController::AudioParamContextMenuClicked(int paramIndex, int juceTag)
-{
-  if (_guiEditor)
-    _guiEditor->ParamContextMenuClicked(componentHandler, paramIndex, juceTag);
 }
 
 tresult PLUGIN_API 
@@ -171,6 +171,9 @@ FBVST3EditController::getState(IBStream* state)
   return kResultOk;
 }
 
+// TODO SetGUIParamFromGUI
+// and SetGUIParamFromHost
+// and probably fix that here
 tresult PLUGIN_API 
 FBVST3EditController::setState(IBStream* state)
 {
