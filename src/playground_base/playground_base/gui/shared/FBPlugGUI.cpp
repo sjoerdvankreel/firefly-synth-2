@@ -137,6 +137,15 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
   return result;
 }
 
+std::string 
+FBPlugGUI::GetTooltipForGUIParam(int index) const
+{
+  auto const& param = HostContext()->Topo()->gui.params[index];
+  float normalized = HostContext()->GetGUIParamNormalized(index);
+  return param.tooltip + ": " + param.static_.NormalizedToText(
+    FBParamTextDisplay::TooltipWithUnit, normalized);
+}
+
 std::string
 FBPlugGUI::GetTooltipForAudioParam(int index) const
 {
