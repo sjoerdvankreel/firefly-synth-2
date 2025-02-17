@@ -50,7 +50,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
     float normalized = *_editState->Params()[i];
     _procState->InitProcessing(i, normalized);
     if (_gui)
-      _gui->SetAudioParamNormalized(i, normalized);
+      _gui->SetAudioParamNormalizedFromHost(i, normalized);
   }
   return true;
 }

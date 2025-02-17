@@ -45,19 +45,19 @@ FBPlugGUIContainer::UpdateExchangeState()
 }
 
 void
-FBPlugGUIContainer::AddToDesktop(void* parent)
-{
-  addToDesktop(0, parent);
-}
-
-void
 FBPlugGUIContainer::SetVisible(bool visible)
 {
   setVisible(visible);
 }
 
 void
-FBPlugGUIContainer::SetAudioParamNormalized(int index, float normalized)
+FBPlugGUIContainer::AddToDesktop(void* parent)
+{
+  addToDesktop(0, parent);
+}
+
+void
+FBPlugGUIContainer::SetAudioParamNormalizedFromHost(int index, float normalized)
 {
   _gui->SetAudioParamNormalizedFromHost(index, normalized);
 }

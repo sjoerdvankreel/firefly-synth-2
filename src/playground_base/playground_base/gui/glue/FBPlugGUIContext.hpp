@@ -28,12 +28,12 @@ public:
   std::pair<int, int> GetHostSize() const;
   int ClampHostWidthForScale(int width) const;
   int GetHeightForAspectRatio(int width) const;
+  FBHostGUIContext* const HostContext() const { return _hostContext; }
 
   virtual ~FBPlugGUIContext() {}
   virtual void RemoveFromDesktop() = 0;
   virtual void UpdateExchangeState() = 0;
   virtual void SetVisible(bool visible) = 0;
   virtual void AddToDesktop(void* parent) = 0;
-  virtual void SetAudioParamNormalized(int index, float normalized) = 0;
-  FBHostGUIContext* const HostContext() const { return _hostContext; }
+  virtual void SetAudioParamNormalizedFromHost(int index, float normalized) = 0;
 };
