@@ -74,16 +74,15 @@ FFMakeMasterTopo()
   guiUserScale.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
   auto& guiDummyParam = result->guiParams[(int)FFMasterGUIParam::DummyParam];
-  guiDummyParam.defaultText = "Sustain";
+  guiDummyParam.defaultText = "14";
   guiDummyParam.name = "Dummy"; // TODO lose the dummy
   guiDummyParam.tooltip = "Dummy Tooltip";
+  guiDummyParam.unit = "G-Unit";
   guiDummyParam.slotCount = 1;
   guiDummyParam.id = "{989365B6-5666-4DB1-B787-C72A4E6D1ED1}";
-  guiDummyParam.type = FBParamType::List;
-  guiDummyParam.List().items = {
-    { "{D779DC38-B3EF-47B2-BBB1-3A12DD8292B4}", "Sustain" },
-    { "{06A7F943-E9F6-48CB-BB6A-96BA4CCC995D}", "Follow" },
-    { "{B3E3277E-7DEC-4F8C-935F-165AC0023F15}", "Release" } };
+  guiDummyParam.type = FBParamType::Linear;
+  guiDummyParam.Linear().min = 0.5f;
+  guiDummyParam.Linear().max = 16.0f;
   auto selectGuiDummyParam = [](auto& module) { return &module.dummyParam; };
   guiDummyParam.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiDummyParam);
 

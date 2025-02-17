@@ -8,7 +8,7 @@
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/controls/FBGUIParamLabel.hpp>
 #include <playground_base/gui/controls/FBOutputParamLabel.hpp>
-#include <playground_base/gui/controls/FBGUIParamComboBox.hpp>
+#include <playground_base/gui/controls/FBGUIParamSlider.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
@@ -20,19 +20,19 @@ static Component*
 MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 0, 1, 0, 1, 0, 0 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 1 } );
   auto voices = topo->audio.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Voices, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voices));
   grid->Add(0, 1, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, voices, "0", std::to_string(FBMaxVoices)));
   auto gain = topo->audio.ParamAtTopo({(int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0});
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
   auto hostSmoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::HostSmoothTime, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hostSmoothTime));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hostSmoothTime, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hostSmoothTime, Slider::SliderStyle::RotaryVerticalDrag));
   auto guiDummyParam = topo->gui.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterGUIParam::DummyParam, 0 });
   grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiDummyParam));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, guiDummyParam));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, guiDummyParam, Slider::SliderStyle::LinearHorizontal));
   return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 } 
 
