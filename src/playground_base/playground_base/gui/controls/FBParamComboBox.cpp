@@ -10,7 +10,7 @@ FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
 FBAutoSizeComboBox(param->static_.MakePopupMenu()),
 FBParamControl(plugGUI, param)
 {
-  SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));
 }
 
 void
@@ -36,7 +36,7 @@ void
 FBParamComboBox::valueChanged(Value& value)
 {
   float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedId() - 1);
-  _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
+  _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->SetAudioParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
   _plugGUI->SteppedAudioParamNormalizedChanged(_param->runtimeParamIndex);
 }

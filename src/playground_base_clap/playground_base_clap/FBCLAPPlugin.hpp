@@ -53,7 +53,7 @@ public IFBHostDSPContext
   std::unique_ptr<FBHostProcessor> _hostProcessor = {};
 
   std::unique_ptr<clap_context_menu_target> 
-  MakeParamContextMenu(int index, std::vector<FBHostContextMenuItem>& items);
+  MakeAudioParamContextMenu(int index, std::vector<FBHostContextMenuItem>& items);
   void PushParamChangeToProcessorBlock(int index, double normalized, int pos);
   void ProcessMainToAudioEvents(const clap_output_events* out, bool pushToProcBlock);
 
@@ -100,12 +100,12 @@ public:
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeState() override { return _dspExchangeState.get(); }
 
-  void EndParamChange(int index) override;
-  void BeginParamChange(int index) override;
-  float GetParamNormalized(int index) const override;
-  void PerformParamEdit(int index, float normalized) override;
-  void ParamContextMenuClicked(int paramIndex, int juceTag) override;
-  std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) override;  
+  void EndAudioParamChange(int index) override;
+  void BeginAudioParamChange(int index) override;
+  float GetAudioParamNormalized(int index) const override;
+  void PerformAudioParamEdit(int index, float normalized) override;
+  void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
+  std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
   FBGUIStateContainer* GUIState() override { return _guiState.get(); }
   FBExchangeStateContainer const* ExchangeState() const override { return _guiExchangeState.get(); }
 

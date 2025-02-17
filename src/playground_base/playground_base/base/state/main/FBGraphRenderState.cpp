@@ -41,7 +41,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)
-    _procState->InitProcessing(i, hostContext->GetParamNormalized(i));
+    _procState->InitProcessing(i, hostContext->GetAudioParamNormalized(i));
 
   _moduleState->moduleSlot = -1;
   _moduleState->input = _input.get();

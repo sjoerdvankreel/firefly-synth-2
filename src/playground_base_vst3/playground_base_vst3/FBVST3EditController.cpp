@@ -76,19 +76,19 @@ FBVST3EditController::ResetView()
 }
 
 void
-FBVST3EditController::EndParamChange(int index)
+FBVST3EditController::EndAudioParamChange(int index)
 {
-  // see PerformParamEdit
+  // see PerformAudioParamEdit
 }
 
 void
-FBVST3EditController::BeginParamChange(int index)
+FBVST3EditController::BeginAudioParamChange(int index)
 {
-  // see PerformParamEdit
+  // see PerformAudioParamEdit
 }
 
 void
-FBVST3EditController::PerformParamEdit(int index, float normalized)
+FBVST3EditController::PerformAudioParamEdit(int index, float normalized)
 {
   int tag = _topo->audio.params[index].tag;
   setParamNormalized(tag, normalized);
@@ -101,13 +101,13 @@ FBVST3EditController::PerformParamEdit(int index, float normalized)
 }
 
 float
-FBVST3EditController::GetParamNormalized(int index) const
+FBVST3EditController::GetAudioParamNormalized(int index) const
 {
   return parameters.getParameterByIndex(index)->getNormalized();
 }
 
 std::vector<FBHostContextMenuItem>
-FBVST3EditController::MakeParamContextMenu(int index)
+FBVST3EditController::MakeAudioParamContextMenu(int index)
 {
   if (!_guiEditor)
     return {};
@@ -125,7 +125,7 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 }
 
 void
-FBVST3EditController::ParamContextMenuClicked(int paramIndex, int juceTag)
+FBVST3EditController::AudioParamContextMenuClicked(int paramIndex, int juceTag)
 {
   if (_guiEditor)
     _guiEditor->ParamContextMenuClicked(componentHandler, paramIndex, juceTag);

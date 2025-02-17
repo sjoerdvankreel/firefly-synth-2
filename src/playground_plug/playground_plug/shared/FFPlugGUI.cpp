@@ -54,7 +54,7 @@ FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 }
 
 void 
-FFPlugGUI::SetParamNormalizedFromUI(int index, float normalized)
+FFPlugGUI::SetAudioParamNormalizedFromUI(int index, float normalized)
 {
   int moduleIndex = HostContext()->Topo()->audio.params[index].runtimeModuleIndex;
   _graphRenderState->PrimaryParamChanged(index, normalized);
@@ -62,9 +62,10 @@ FFPlugGUI::SetParamNormalizedFromUI(int index, float normalized)
 }
 
 void
-FFPlugGUI::SetParamNormalizedFromHost(int index, float normalized)
+FFPlugGUI::SetAudioParamNormalizedFromHost(int index, float normalized)
 {
-  FBPlugGUI::SetParamNormalizedFromHost(index, normalized);
+  // TODO also rerender on gui params
+  FBPlugGUI::SetAudioParamNormalizedFromHost(index, normalized);
   if (HostContext()->Topo()->audio.params[index].static_.output)
     return;
   _graphRenderState->PrimaryParamChanged(index, normalized);

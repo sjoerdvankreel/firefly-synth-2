@@ -42,13 +42,13 @@ public:
 
   void ResetView();
 
-  void EndParamChange(int index) override;
-  void BeginParamChange(int index) override;
-  float GetParamNormalized(int index) const override;
-  void PerformParamEdit(int index, float normalized) override;
+  void EndAudioParamChange(int index) override;
+  void BeginAudioParamChange(int index) override;
+  float GetAudioParamNormalized(int index) const override;
+  void PerformAudioParamEdit(int index, float normalized) override;
 
-  void ParamContextMenuClicked(int paramIndex, int juceTag) override;
-  std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) override;
+  void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
+  std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;
 
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBGUIStateContainer* GUIState() override { return _guiState.get(); }

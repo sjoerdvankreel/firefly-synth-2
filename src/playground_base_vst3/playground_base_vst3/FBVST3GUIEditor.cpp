@@ -40,7 +40,7 @@ FBVST3GUIEditor::UpdateExchangeState()
 void
 FBVST3GUIEditor::SetParamNormalized(int index, float normalized)
 {
-  _gui->SetParamNormalized(index, normalized);
+  _gui->SetAudioParamNormalized(index, normalized);
 }
 
 tresult PLUGIN_API

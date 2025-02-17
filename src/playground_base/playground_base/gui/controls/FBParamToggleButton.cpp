@@ -11,7 +11,7 @@ FBAutoSizeToggleButton(),
 FBParamControl(plugGUI, param)
 {
   auto* context = plugGUI->HostContext();
-  float normalized = context->GetParamNormalized(param->runtimeParamIndex);
+  float normalized = context->GetAudioParamNormalized(param->runtimeParamIndex);
   SetValueNormalizedFromHost(normalized);
   _isOn = getToggleState();
 }
@@ -25,7 +25,7 @@ FBParamToggleButton::parentHierarchyChanged()
 String
 FBParamToggleButton::getTooltip()
 {
-  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
 }
 
 void
@@ -43,9 +43,9 @@ FBParamToggleButton::buttonStateChanged()
   int plain = _param->static_.Boolean().NormalizedToPlain(normalized);
   if (_isOn != (plain != 0))
   {
-    _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
-    _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
-    _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
+    _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
+    _plugGUI->SetAudioParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
+    _plugGUI->SteppedAudioParamNormalizedChanged(_param->runtimeParamIndex);
   }
   _isOn = getToggleState();
 }

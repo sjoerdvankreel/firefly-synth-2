@@ -55,7 +55,7 @@ FBParamsDependentDependency::Evaluate(FBHostGUIContext const* hostContext)
   {
     auto const& param = hostContext->Topo()->audio.params[runtimeDependencies[i]];
     evaluations.push_back(param.static_.NormalizedToAnyDiscreteSlow(
-      hostContext->GetParamNormalized(runtimeDependencies[i])));
+      hostContext->GetAudioParamNormalized(runtimeDependencies[i])));
   }
   return dependency.evaluate(evaluations);
 }

@@ -28,6 +28,6 @@ public:
   void resized() override;
   void UpdateExchangeStateTick() override;
   void ActiveModuleSlotChanged(int index, int slot) override;
-  void SetParamNormalizedFromUI(int index, float normalized) override;
-  void SetParamNormalizedFromHost(int index, float normalized) override;
+  void SetAudioParamNormalizedFromUI(int index, float normalized) override;
+  void SetAudioParamNormalizedFromHost(int index, float normalized) override;
 };

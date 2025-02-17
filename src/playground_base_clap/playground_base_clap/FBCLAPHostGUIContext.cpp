@@ -43,13 +43,13 @@ ContextMenuBuilderAddItem(
 }
 
 float
-FBCLAPPlugin::GetParamNormalized(int index) const
+FBCLAPPlugin::GetAudioParamNormalized(int index) const
 {
   return *_editState->Params()[index];
 }
 
 void
-FBCLAPPlugin::EndParamChange(int index)
+FBCLAPPlugin::EndAudioParamChange(int index)
 {
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::EndChange, index, 0.0f);
   _mainToAudioEvents.enqueue(event);
@@ -58,7 +58,7 @@ FBCLAPPlugin::EndParamChange(int index)
 }
 
 void
-FBCLAPPlugin::BeginParamChange(int index)
+FBCLAPPlugin::BeginAudioParamChange(int index)
 {
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::BeginChange, index, 0.0f);
   _mainToAudioEvents.enqueue(event);
@@ -67,7 +67,7 @@ FBCLAPPlugin::BeginParamChange(int index)
 }
 
 void
-FBCLAPPlugin::PerformParamEdit(int index, float normalized)
+FBCLAPPlugin::PerformAudioParamEdit(int index, float normalized)
 {
   *_editState->Params()[index] = normalized;
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized);
@@ -77,25 +77,25 @@ FBCLAPPlugin::PerformParamEdit(int index, float normalized)
 }
 
 std::vector<FBHostContextMenuItem>
-FBCLAPPlugin::MakeParamContextMenu(int index)
+FBCLAPPlugin::MakeAudioParamContextMenu(int index)
 {
   std::vector<FBHostContextMenuItem> items;
-  if (!MakeParamContextMenu(index, items))
+  if (!MakeAudioParamContextMenu(index, items))
     return {};
   return items;
 }
 
 void
-FBCLAPPlugin::ParamContextMenuClicked(int paramIndex, int juceTag)
+FBCLAPPlugin::AudioParamContextMenuClicked(int paramIndex, int juceTag)
 {
   std::vector<FBHostContextMenuItem> items;
-  auto target = MakeParamContextMenu(paramIndex, items);
+  auto target = MakeAudioParamContextMenu(paramIndex, items);
   if (target)
     _host.contextMenuPerform(target.get(), items[juceTag - 1].hostTag);
 }
 
 std::unique_ptr<clap_context_menu_target>
-FBCLAPPlugin::MakeParamContextMenu(int index, std::vector<FBHostContextMenuItem>& items)
+FBCLAPPlugin::MakeAudioParamContextMenu(int index, std::vector<FBHostContextMenuItem>& items)
 {
   if (!_host.canUseContextMenu())
     return {};

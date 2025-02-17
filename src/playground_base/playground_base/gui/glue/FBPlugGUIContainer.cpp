@@ -57,9 +57,9 @@ FBPlugGUIContainer::SetVisible(bool visible)
 }
 
 void
-FBPlugGUIContainer::SetParamNormalized(int index, float normalized)
+FBPlugGUIContainer::SetAudioParamNormalized(int index, float normalized)
 {
-  _gui->SetParamNormalizedFromHost(index, normalized);
+  _gui->SetAudioParamNormalizedFromHost(index, normalized);
 }
 
 void

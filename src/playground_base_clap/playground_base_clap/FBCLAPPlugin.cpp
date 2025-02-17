@@ -154,7 +154,7 @@ FBCLAPPlugin::timerCallback()
   FBCLAPSyncToMainEvent event = {};
   while (_audioToMainEvents.try_dequeue(event))
     if (_gui)
-      _gui->SetParamNormalized(event.paramIndex, event.normalized);
+      _gui->SetAudioParamNormalized(event.paramIndex, event.normalized);
 
   bool receivedExchange = false;
   while (_exchangeStateQueue->TryDequeue(_guiExchangeState->Raw()))

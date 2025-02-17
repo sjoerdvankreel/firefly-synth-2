@@ -18,7 +18,7 @@ FBAutoSizeSlider(plugGUI, style),
 FBParamControl(plugGUI, param)
 {
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
-  SetValueNormalizedFromHost(plugGUI->HostContext()->GetParamNormalized(param->runtimeParamIndex));
+  SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));
 }
 
 void
@@ -65,20 +65,20 @@ FBParamSlider::getTextFromValue(double value)
 void
 FBParamSlider::stoppedDragging()
 {
-  _plugGUI->HostContext()->EndParamChange(_param->runtimeParamIndex);
+  _plugGUI->HostContext()->EndAudioParamChange(_param->runtimeParamIndex);
 }
 
 void
 FBParamSlider::startedDragging()
 {
-  _plugGUI->HostContext()->BeginParamChange(_param->runtimeParamIndex);
+  _plugGUI->HostContext()->BeginAudioParamChange(_param->runtimeParamIndex);
 }
 
 void
 FBParamSlider::valueChanged()
 {
   float normalized = (float)getValue();
-  _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
+  _plugGUI->HostContext()->PerformAudioParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->SetAudioParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
 }
 

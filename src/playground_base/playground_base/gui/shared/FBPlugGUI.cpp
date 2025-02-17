@@ -108,13 +108,13 @@ FBPlugGUI::UpdateExchangeState()
 void
 FBPlugGUI::ShowHostMenuForAudioParam(int index)
 {
-  auto menuItems = HostContext()->MakeParamContextMenu(index);
+  auto menuItems = HostContext()->MakeAudioParamContextMenu(index);
   if (menuItems.empty())
     return;
   auto hostMenu = FBMakeHostContextMenu(menuItems);
   auto clicked = [this, index](int tag) {
     if (tag > 0)
-      HostContext()->ParamContextMenuClicked(index, tag); };
+      HostContext()->AudioParamContextMenuClicked(index, tag); };
   ShowPopupMenuFor(this, *hostMenu, clicked);
 }
 
@@ -145,7 +145,7 @@ std::string
 FBPlugGUI::GetTooltipForAudioParam(int index) const
 {
   auto const& param = HostContext()->Topo()->audio.params[index];
-  float normalized = HostContext()->GetParamNormalized(index);
+  float normalized = HostContext()->GetAudioParamNormalized(index);
   auto paramActive = HostContext()->ExchangeState()->GetParamActiveState(&param);
 
   auto result = param.tooltip + ": ";

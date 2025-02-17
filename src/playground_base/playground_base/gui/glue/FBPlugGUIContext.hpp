@@ -34,6 +34,6 @@ public:
   virtual void UpdateExchangeState() = 0;
   virtual void SetVisible(bool visible) = 0;
   virtual void AddToDesktop(void* parent) = 0;
-  virtual void SetParamNormalized(int index, float normalized) = 0;
+  virtual void SetAudioParamNormalized(int index, float normalized) = 0;
   FBHostGUIContext* const HostContext() const { return _hostContext; }
 };
