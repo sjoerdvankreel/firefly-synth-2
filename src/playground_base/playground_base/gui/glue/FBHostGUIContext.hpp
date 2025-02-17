@@ -15,16 +15,19 @@ class FBHostGUIContext
 public:
   FB_NOCOPY_MOVE_DEFCTOR(FBHostGUIContext);
 
-  virtual void EndParamChange(int index) = 0;
-  virtual void BeginParamChange(int index) = 0;
-  void PerformImmediateParamEdit(int index, float normalized);
-  virtual void PerformParamEdit(int index, float normalized) = 0;
-
   virtual FBGUIStateContainer* GUIState() = 0;
   virtual FBRuntimeTopo const* Topo() const = 0;
   virtual FBExchangeStateContainer const* ExchangeState() const = 0;
 
-  virtual float GetParamNormalized(int index) const = 0;
-  virtual void ParamContextMenuClicked(int paramIndex, int juceTag) = 0;
-  virtual std::vector<FBHostContextMenuItem> MakeParamContextMenu(int index) = 0;
+  virtual float GetGUIParamNormalized(int index) const = 0;
+  virtual void SetGUIParamNormalized(int index, float normalized) = 0;
+
+  virtual void EndAudioParamChange(int index) = 0;
+  virtual void BeginAudioParamChange(int index) = 0;
+  virtual void PerformAudioParamEdit(int index, float normalized) = 0;
+
+  virtual float GetAudioParamNormalized(int index) const = 0;
+  void PerformImmediateAudioParamEdit(int index, float normalized);
+  virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
+  virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 };

@@ -24,16 +24,16 @@ FBOutputParamLabel::parentHierarchyChanged()
   ParentHierarchyChanged();
 }
 
-String 
-FBOutputParamLabel::getTooltip()
-{
-  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
-}
-
 int
 FBOutputParamLabel::FixedWidth(int height) const
 {
   return _maxTextWidth + getBorderSize().getLeftAndRight();
+}
+
+String
+FBOutputParamLabel::getTooltip()
+{
+  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
 }
 
 void

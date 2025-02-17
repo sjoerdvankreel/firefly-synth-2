@@ -12,7 +12,6 @@ struct FBParamsDependency;
 struct FBParamsDependencies;
 struct FBParamsDependentDependency;
 
-// TODO make it work with GUI-only params
 class FBParamsDependent
 {
 protected:

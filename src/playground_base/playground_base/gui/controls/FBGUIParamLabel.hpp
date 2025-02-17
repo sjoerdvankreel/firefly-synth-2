@@ -13,6 +13,5 @@ public FBAutoSizeLabel,
 public FBGUIParamComponent
 {
 public:
-  void parentHierarchyChanged() override;
   FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
 };

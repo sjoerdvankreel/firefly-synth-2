@@ -22,7 +22,7 @@ FBParamComboBox::parentHierarchyChanged()
 String
 FBParamComboBox::getTooltip()
 {
-  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
+  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
 }
 
 void
@@ -37,6 +37,6 @@ FBParamComboBox::valueChanged(Value& value)
 {
   float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedId() - 1);
   _plugGUI->HostContext()->PerformImmediateParamEdit(_param->runtimeParamIndex, normalized);
-  _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
-  _plugGUI->SteppedParamNormalizedChanged(_param->runtimeParamIndex);
+  _plugGUI->SetAudioParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
+  _plugGUI->SteppedAudioParamNormalizedChanged(_param->runtimeParamIndex);
 }

@@ -27,23 +27,23 @@ FBParamSlider::parentHierarchyChanged()
   ParentHierarchyChanged();
 }
 
-String
-FBParamSlider::getTooltip()
-{
-  return _plugGUI->GetTooltipForParam(_param->runtimeParamIndex);
-}
-
 void
 FBParamSlider::SetValueNormalizedFromHost(float normalized)
 {
   setValue(normalized, dontSendNotification); 
 }
 
+String
+FBParamSlider::getTooltip()
+{
+  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
+}
+
 void
 FBParamSlider::mouseUp(MouseEvent const& event)
 {
   if (event.mods.isRightButtonDown())
-    _plugGUI->ShowHostMenuForParam(_param->runtimeParamIndex);
+    _plugGUI->ShowHostMenuForAudioParam(_param->runtimeParamIndex);
 }
 
 double
@@ -79,7 +79,7 @@ FBParamSlider::valueChanged()
 {
   float normalized = (float)getValue();
   _plugGUI->HostContext()->PerformParamEdit(_param->runtimeParamIndex, normalized);
-  _plugGUI->SetParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
+  _plugGUI->SetAudioParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
 }
 
 void

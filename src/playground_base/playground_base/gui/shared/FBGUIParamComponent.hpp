@@ -1,15 +1,14 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/gui/shared/FBParamsDependent.hpp>
 
 class FBPlugGUI;
 struct FBRuntimeGUIParam;
 
-class FBGUIParamComponent:
-public FBParamsDependent
+class FBGUIParamComponent
 {
 protected:
+  FBPlugGUI* const _plugGUI;
   FBRuntimeGUIParam const* const _param;
 
 public:

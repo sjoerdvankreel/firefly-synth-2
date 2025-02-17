@@ -7,9 +7,3 @@ FBGUIParamLabel::
 FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
 FBAutoSizeLabel(param->shortName),
 FBGUIParamComponent(plugGUI, param) {}
-
-void 
-FBGUIParamLabel::parentHierarchyChanged()
-{
-  ParentHierarchyChanged();
-}
