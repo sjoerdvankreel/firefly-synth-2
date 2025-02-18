@@ -1,3 +1,4 @@
+split out the gui control param folder
 make the env time params log2
 todo document the thing a bit
 put some padding in the graph for show de bolletjes
