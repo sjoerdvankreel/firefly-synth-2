@@ -16,7 +16,7 @@ PlotLengthSamples(FBGraphRenderState const* state)
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float bpm = state->ExchangeContainer()->Proc()->bpm;
   float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
-  bool sync = state->AudioParamBool({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldTime, 0 });
+  bool sync = state->AudioParamBool({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
   if (!sync)
   {
     result += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldTime, 0 }, sampleRate);
