@@ -37,6 +37,6 @@ FBParamComboBox::valueChanged(Value& value)
 {
   float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedId() - 1);
   _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
-  _plugGUI->SetAudioParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
+  _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
   _plugGUI->SteppedAudioParamNormalizedChanged(_param->runtimeParamIndex);
 }

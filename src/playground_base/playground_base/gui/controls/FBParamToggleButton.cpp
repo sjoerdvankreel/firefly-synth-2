@@ -44,7 +44,7 @@ FBParamToggleButton::buttonStateChanged()
   if (_isOn != (plain != 0))
   {
     _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
-    _plugGUI->SetAudioParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
+    _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
     _plugGUI->SteppedAudioParamNormalizedChanged(_param->runtimeParamIndex);
   }
   _isOn = getToggleState();

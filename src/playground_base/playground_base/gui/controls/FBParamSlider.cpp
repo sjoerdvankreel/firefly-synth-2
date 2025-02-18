@@ -79,7 +79,7 @@ FBParamSlider::valueChanged()
 {
   float normalized = (float)getValue();
   _plugGUI->HostContext()->PerformAudioParamEdit(_param->runtimeParamIndex, normalized);
-  _plugGUI->SetAudioParamNormalizedFromUI(_param->runtimeParamIndex, normalized);
+  _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
 }
 
 void

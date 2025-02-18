@@ -6,7 +6,7 @@
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
-#include <playground_base/base/state/main/FBScalarStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <cassert>
 
@@ -32,7 +32,6 @@ _plugGUI(plugGUI),
 _input(std::make_unique<FBPlugInputBlock>()),
 _moduleState(std::make_unique<FBModuleProcState>()),
 _procState(std::make_unique<FBProcStateContainer>(*plugGUI->HostContext()->Topo())),
-_scalarState(std::make_unique<FBScalarStateContainer>(*plugGUI->HostContext()->Topo())),
 _primaryVoiceManager(std::make_unique<FBVoiceManager>(_procState.get())),
 _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
@@ -57,22 +56,10 @@ FBGraphRenderState::ModuleProcState()
   return _moduleState.get();
 }
 
-FBScalarStateContainer const*
-FBGraphRenderState::ScalarContainer() const
-{
-  return _scalarState.get();
-}
-
 FBExchangeStateContainer const*
 FBGraphRenderState::ExchangeContainer() const
 {
   return _plugGUI->HostContext()->ExchangeState();
-}
-
-void
-FBGraphRenderState::PrimaryParamChanged(int index, float normalized)
-{
-  *_scalarState->Params()[index] = normalized;
 }
 
 void
@@ -97,7 +84,7 @@ FBGraphRenderState::PrepareForRenderPrimary(float sampleRate, float bpm)
   _input->sampleRate = sampleRate;
   _input->voiceManager = nullptr;
   _moduleState->voice = nullptr;
-  _procState->InitProcessing(*_scalarState);
+  _procState->InitProcessing(_plugGUI->HostContext());
 }
 
 void
@@ -117,11 +104,12 @@ bool
 FBGraphRenderState::GlobalModuleExchangeStateEqualsPrimary(
   int moduleIndex, int moduleSlot) const
 {
+  auto context = _plugGUI->HostContext();
   auto topo = _plugGUI->HostContext()->Topo();
   auto paramIndex = topo->audio.paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
   auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
   for (; topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
-    if (*ExchangeContainer()->Params()[paramIndex].Global() != *_scalarState->Params()[paramIndex])
+    if (*ExchangeContainer()->Params()[paramIndex].Global() != context->GetAudioParamNormalized(paramIndex))
       return false;
   return true;
 }
@@ -130,11 +118,12 @@ bool
 FBGraphRenderState::VoiceModuleExchangeStateEqualsPrimary(
   int voice, int moduleIndex, int moduleSlot) const
 {
+  auto context = _plugGUI->HostContext();
   auto topo = _plugGUI->HostContext()->Topo();
   auto paramIndex = topo->audio.paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
   auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
   for (; topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
-    if (ExchangeContainer()->Params()[paramIndex].Voice()[voice] != *_scalarState->Params()[paramIndex])
+    if (ExchangeContainer()->Params()[paramIndex].Voice()[voice] != context->GetAudioParamNormalized(paramIndex))
       return false;
   return true;
 }

@@ -1,9 +1,8 @@
 #pragma once
 
+#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
-#include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <memory>
 
@@ -13,7 +12,7 @@ struct FBModuleProcState;
 class FBPlugGUI;
 class FBVoiceManager;
 class FBProcStateContainer;
-class FBScalarStateContainer;
+class FBExchangeStateContainer;
 
 class FBGraphRenderState final
 {
@@ -26,7 +25,6 @@ class FBGraphRenderState final
   std::unique_ptr<FBPlugInputBlock> _input;
   std::unique_ptr<FBModuleProcState> _moduleState;
   std::unique_ptr<FBProcStateContainer> _procState;
-  std::unique_ptr<FBScalarStateContainer> _scalarState;
   std::unique_ptr<FBVoiceManager> _primaryVoiceManager;
   std::unique_ptr<FBVoiceManager> _exchangeVoiceManager;
 
@@ -41,10 +39,7 @@ public:
   void PrepareForRenderPrimary(float sampleRate, float bpm);
 
   FBModuleProcState* ModuleProcState();
-  FBScalarStateContainer const* ScalarContainer() const;
   FBExchangeStateContainer const* ExchangeContainer() const;
-
-  void PrimaryParamChanged(int index, float normalized);
   bool GlobalModuleExchangeStateEqualsPrimary(int moduleIndex, int moduleSlot) const;
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
 };

@@ -8,6 +8,7 @@
 #include <utility>
 
 struct FBRuntimeTopo;
+class FBHostGUIContext;
 class FBScalarStateContainer;
 class FBExchangeStateContainer;
 
@@ -34,6 +35,7 @@ public:
 
   void SetSmoothingCoeffs(int sampleCount);
   void InitProcessing(int index, float value);
+  void InitProcessing(FBHostGUIContext const* context);
   void InitProcessing(FBScalarStateContainer const& scalar);
   void InitProcessing(FBExchangeStateContainer const& exchange);
 

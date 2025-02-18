@@ -36,6 +36,9 @@ FBGUIParamToggleButton::buttonStateChanged()
   float normalized = _param->static_.Boolean().PlainToNormalized(getToggleState());
   int plain = _param->static_.Boolean().NormalizedToPlain(normalized);
   if (_isOn != (plain != 0))
+  {
     _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
+    _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
+  }
   _isOn = getToggleState();
 }

@@ -39,7 +39,7 @@ FBPlugGUI::SteppedAudioParamNormalizedChanged(int index)
 }
 
 void
-FBPlugGUI::SetAudioParamNormalizedFromHost(int index, float value)
+FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, float value)
 {
   auto control = GetControlForAudioParamIndex(index);
   control->SetValueNormalizedFromHost(value);

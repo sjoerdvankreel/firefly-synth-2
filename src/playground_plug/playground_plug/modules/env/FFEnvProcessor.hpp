@@ -9,6 +9,7 @@
 struct FFScalarState;
 struct FBStaticTopo;
 struct FBModuleProcState;
+class FBGraphRenderState;
 
 enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Smooth, Count };
 
@@ -41,8 +42,5 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
   int Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState const& state);
-
-  int PlotLengthSamples(
-    FBStaticTopo const& topo, FFScalarState const& state,
-    int moduleSlot, float sampleRate, float bpm) const;
+  int PlotLengthSamples(FBGraphRenderState const* state) const;
 };

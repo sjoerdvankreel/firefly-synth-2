@@ -31,4 +31,5 @@ FBGUIParamComboBox::valueChanged(Value& value)
 {
   float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedId() - 1);
   _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
+  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }

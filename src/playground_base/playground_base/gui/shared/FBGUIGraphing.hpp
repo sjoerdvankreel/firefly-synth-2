@@ -4,6 +4,7 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
@@ -14,6 +15,9 @@
 class FBFixedFloatBlock;
 struct FBStaticTopo;
 struct FBModuleGraphComponentData;
+
+typedef std::function<int(FBGraphRenderState const*)>
+FBModuleGraphPlotLengthSelector;
 
 typedef std::function<FBFixedFloatBlock const* (
   void const* procState, int moduleSlot)>
@@ -28,10 +32,6 @@ FBModuleGraphGlobalExchangeSelector;
 typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int voice, int moduleSlot)>
 FBModuleGraphVoiceExchangeSelector;    
-
-typedef std::function<int(
-  FBStaticTopo const& topo, void const* scalarState, int moduleSlot, float sampleRate, float bpm)>
-FBModuleGraphPlotLengthSelector;
 
 template <class Processor>
 struct FBModuleGraphRenderData final
@@ -87,7 +87,6 @@ FBRenderModuleGraph(RenderData& renderData)
   auto graphData = renderData.graphData;
   auto renderState = graphData->renderState;
   auto moduleProcState = renderState->ModuleProcState();
-  auto scalarState = renderState->ScalarContainer()->Raw();
   auto exchangeState = renderState->ExchangeContainer()->Raw();
 
   assert(renderData.graphData != nullptr);
@@ -97,10 +96,7 @@ FBRenderModuleGraph(RenderData& renderData)
   assert((renderData.voiceExchangeSelector == nullptr) != (renderData.globalExchangeSelector == nullptr));
 
   graphData->text = "OFF";
-  auto procExchange = renderState->ExchangeContainer()->Proc();
-  int maxDspSampleCount = renderData.plotLengthSelector(
-    moduleProcState->topo->static_, scalarState, 
-    moduleProcState->moduleSlot, procExchange->sampleRate, procExchange->bpm);
+  int maxDspSampleCount = renderData.plotLengthSelector(renderState);
 
   if constexpr (Global)
   {
@@ -117,6 +113,7 @@ FBRenderModuleGraph(RenderData& renderData)
       maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
   }
 
+  auto procExchange = renderState->ExchangeContainer()->Proc();
   float guiSampleCount = (float)graphData->pixelWidth;
   float guiSampleRate = procExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
   renderState->PrepareForRenderPrimary(guiSampleRate, procExchange->bpm);

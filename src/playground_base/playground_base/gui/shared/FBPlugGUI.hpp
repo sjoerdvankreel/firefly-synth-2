@@ -36,8 +36,9 @@ public:
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
-  virtual void SetAudioParamNormalizedFromUI(int index, float normalized) = 0;
-  virtual void SetAudioParamNormalizedFromHost(int index, float normalized);
+  virtual void GUIParamNormalizedChanged(int index, float normalized) = 0;
+  virtual void AudioParamNormalizedChangedFromUI(int index, float normalized) = 0;
+  virtual void AudioParamNormalizedChangedFromHost(int index, float normalized);
 
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUI);

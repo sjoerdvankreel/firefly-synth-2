@@ -1,3 +1,4 @@
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
@@ -74,6 +75,14 @@ FBProcStateContainer::InitProcessing(
 {
   for (int p = 0; p < Params().size(); p++)
     InitProcessing(p, *scalar.Params()[p]);
+}
+
+void 
+FBProcStateContainer::InitProcessing(
+  FBHostGUIContext const* context)
+{
+  for (int p = 0; p < Params().size(); p++)
+    InitProcessing(p, context->GetAudioParamNormalized(p));
 }
 
 void 

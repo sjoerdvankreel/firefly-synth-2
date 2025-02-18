@@ -15,14 +15,15 @@ FFGLFOProcessor::Reset(FBModuleProcState const& state)
 }
 
 int 
-FFGLFOProcessor::PlotLengthSamples(
-  FBStaticTopo const& topo, FFScalarState const& state,
-  int moduleSlot, float sampleRate) const
+FFGLFOProcessor::PlotLengthSamples(FBGraphRenderState const* state) const
 {
+  /* TODO
   auto const& gLFOState = state.param.global.gLFO[moduleSlot];
   auto const& gLFOTopo = topo.modules[(int)FFModuleType::GLFO];
   auto const& param = gLFOTopo.params[(int)FFGLFOParam::Rate];
   return param.Linear().NormalizedFreqToSamples(gLFOState.acc.rate[0], sampleRate);
+  */
+  return 0;
 }
 
 int

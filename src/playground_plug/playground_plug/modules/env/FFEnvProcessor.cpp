@@ -12,10 +12,9 @@
 #include <cmath>
 
 int 
-FFEnvProcessor::PlotLengthSamples(
-  FBStaticTopo const& topo, FFScalarState const& state, 
-  int moduleSlot, float sampleRate, float bpm) const
+FFEnvProcessor::PlotLengthSamples(FBGraphRenderState const* state) const
 {
+  /*
   int result = 0;
   auto const& envState = state.param.voice.env[moduleSlot];
   auto const& envTopo = topo.modules[(int)FFModuleType::Env];
@@ -39,6 +38,8 @@ FFEnvProcessor::PlotLengthSamples(
     result += envTopo.params[(int)FFEnvParam::ReleaseTime].Linear().NormalizedTimeToSamples(envState.block.releaseTime[0], sampleRate);
   }
   return result;
+  */
+  return 0;
 }
 
 void

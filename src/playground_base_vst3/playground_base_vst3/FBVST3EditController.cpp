@@ -171,9 +171,6 @@ FBVST3EditController::getState(IBStream* state)
   return kResultOk;
 }
 
-// TODO SetGUIParamFromGUI
-// and SetGUIParamFromHost
-// and probably fix that here
 tresult PLUGIN_API 
 FBVST3EditController::setState(IBStream* state)
 {

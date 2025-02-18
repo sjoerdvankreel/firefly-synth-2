@@ -34,7 +34,9 @@ FBGUIParamSlider::getTooltip()
 void
 FBGUIParamSlider::valueChanged()
 {
-  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, (float)getValue());
+  float normalized = (float)getValue();
+  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
+  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }
 
 double

@@ -6,6 +6,7 @@
 struct FFScalarState;
 struct FBStaticTopo;
 struct FBModuleProcState;
+class FBGraphRenderState;
 
 class FFGLFOProcessor final
 {
@@ -14,8 +15,5 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOProcessor);
   int Process(FBModuleProcState& state);
   void Reset(FBModuleProcState const& state);
-
-  int PlotLengthSamples(
-    FBStaticTopo const& topo, FFScalarState const& state, 
-    int moduleSlot, float sampleRate) const;
+  int PlotLengthSamples(FBGraphRenderState const* state) const;
 };
