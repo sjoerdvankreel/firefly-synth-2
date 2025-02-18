@@ -2,6 +2,7 @@
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 
+#include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/controls/FBAutoSizeSlider.hpp>
 #include <playground_base/gui/controls/FBAutoSizeToggleButton.hpp>
@@ -19,12 +20,12 @@ FBModuleGraphComponent::
 FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState) :
 Component(),
 _plugGUI(plugGUI),
-_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 1, 1)),
+_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 1, 2)),
 _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
   _data->renderState = renderState;
-  _grid->Add(0, 0, _display.get());
+  _grid->Add(0, 1, _display.get());
   addAndMakeVisible(_grid.get());
 }
 
@@ -33,6 +34,19 @@ FBModuleGraphComponent::resized()
 {
   _grid->setBounds(getLocalBounds());
   _grid->resized();
+}
+
+void
+FBModuleGraphComponent::RequestRerender(int moduleIndex)
+{
+  if (!PrepareForRender(moduleIndex))
+    return;
+  if (_tweakedModuleByUI != moduleIndex)
+  {
+    _tweakedModuleByUI = moduleIndex;
+    RecreateGraphControls();
+  }
+  repaint();
 }
 
 FBTopoIndices const&
@@ -61,15 +75,6 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 }
 
 void
-FBModuleGraphComponent::RequestRerender(int moduleIndex)
-{
-  if (!PrepareForRender(moduleIndex))
-    return;
-  _tweakedModuleByUI = moduleIndex;
-  repaint();
-}
-
-void
 FBModuleGraphComponent::paint(Graphics& g)
 {
   if (_tweakedModuleByUI == -1)
@@ -87,4 +92,17 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->pixelWidth = getWidth();
   _data->moduleName = topo->modules[_tweakedModuleByUI].name;
   topo->static_.modules[staticIndex].renderer(_data.get());
+}
+
+void
+FBModuleGraphComponent::RecreateGraphControls()
+{
+  if (_graphControls != nullptr)
+    _grid->Remove(0, 0, _graphControls.get());
+  _graphControls.reset();
+  auto& controlFactory = StaticModuleFor(_tweakedModuleByUI).graphControlFactory;
+  if (controlFactory == nullptr)
+    return;
+  _graphControls = controlFactory(_plugGUI->HostContext());
+  _grid->Add(0, 0, _graphControls.get());
 }
