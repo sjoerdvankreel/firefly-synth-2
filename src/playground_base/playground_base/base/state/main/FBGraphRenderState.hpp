@@ -44,4 +44,9 @@ public:
   FBExchangeStateContainer const* ExchangeContainer() const;
   bool GlobalModuleExchangeStateEqualsPrimary(int moduleIndex, int moduleSlot) const;
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
+
+  bool AudioParamBool(FBParamTopoIndices const& indices) const;
+  int AudioParamLinearFreqSamples(FBParamTopoIndices const& indices, float sampleRate) const;
+  int AudioParamLinearTimeSamples(FBParamTopoIndices const& indices, float sampleRate) const;
+  int AudioParamBarsSamples(FBParamTopoIndices const& indices, float sampleRate, float bpm) const;
 };

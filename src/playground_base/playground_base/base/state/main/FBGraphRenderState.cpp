@@ -75,18 +75,18 @@ FBGraphRenderState::ExchangeContainer() const
 }
 
 void
+FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
+{
+  _moduleState->voice = &_exchangeVoiceManager->Voices()[voice];
+}
+
+void
 FBGraphRenderState::PrepareForRenderExchange()
 {
   _moduleState->voice = nullptr;
   _input->voiceManager = nullptr;
   _procState->InitProcessing(*ExchangeContainer());
   _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->Voices());
-}
-
-void
-FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
-{
-  _moduleState->voice = &_exchangeVoiceManager->Voices()[voice];
 }
 
 void
@@ -110,6 +110,42 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
   _primaryVoiceManager->Lease(MakeNoteC4On());
   _input->voiceManager = _primaryVoiceManager.get();
   _moduleState->voice = &_primaryVoiceManager->Voices()[0];
+}
+
+bool 
+FBGraphRenderState::AudioParamBool(
+  FBParamTopoIndices const& indices) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Boolean().NormalizedToPlain(normalized);
+}
+
+int
+FBGraphRenderState::AudioParamLinearFreqSamples(
+  FBParamTopoIndices const& indices, float sampleRate) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Linear().NormalizedFreqToSamples(normalized, sampleRate);
+}
+
+int
+FBGraphRenderState::AudioParamLinearTimeSamples( 
+  FBParamTopoIndices const& indices, float sampleRate) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Linear().NormalizedTimeToSamples(normalized, sampleRate);
+}
+
+int
+FBGraphRenderState::AudioParamBarsSamples(
+  FBParamTopoIndices const& indices, float sampleRate, float bpm) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Bars().NormalizedBarsToSamples(normalized, sampleRate, bpm);
 }
 
 bool

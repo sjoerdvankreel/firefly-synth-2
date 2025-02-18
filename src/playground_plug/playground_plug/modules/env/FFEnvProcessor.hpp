@@ -42,5 +42,4 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
   int Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState const& state);
-  int PlotLengthSamples(FBGraphRenderState const* state) const;
 };

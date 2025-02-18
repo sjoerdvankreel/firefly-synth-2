@@ -11,37 +11,6 @@
 
 #include <cmath>
 
-int 
-FFEnvProcessor::PlotLengthSamples(FBGraphRenderState const* state) const
-{
-  /*
-  int result = 0;
-  auto const& envState = state.param.voice.env[moduleSlot];
-  auto const& envTopo = topo.modules[(int)FFModuleType::Env];
-  bool sync = envTopo.params[(int)FFEnvParam::Sync].Boolean().NormalizedToPlain(envState.block.sync[0]);
-  if (sync)
-  {
-    result += envTopo.params[(int)FFEnvParam::HoldBars].Bars().NormalizedBarsToSamples(envState.block.holdBars[0], sampleRate, bpm);
-    result += envTopo.params[(int)FFEnvParam::DecayBars].Bars().NormalizedBarsToSamples(envState.block.decayBars[0], sampleRate, bpm);
-    result += envTopo.params[(int)FFEnvParam::DelayBars].Bars().NormalizedBarsToSamples(envState.block.delayBars[0], sampleRate, bpm);
-    result += envTopo.params[(int)FFEnvParam::AttackBars].Bars().NormalizedBarsToSamples(envState.block.attackBars[0], sampleRate, bpm);
-    result += envTopo.params[(int)FFEnvParam::SmoothBars].Bars().NormalizedBarsToSamples(envState.block.smoothBars[0], sampleRate, bpm);
-    result += envTopo.params[(int)FFEnvParam::ReleaseBars].Bars().NormalizedBarsToSamples(envState.block.releaseBars[0], sampleRate, bpm);
-  }
-  else
-  {
-    result += envTopo.params[(int)FFEnvParam::HoldTime].Linear().NormalizedTimeToSamples(envState.block.holdTime[0], sampleRate);
-    result += envTopo.params[(int)FFEnvParam::DecayTime].Linear().NormalizedTimeToSamples(envState.block.decayTime[0], sampleRate);
-    result += envTopo.params[(int)FFEnvParam::DelayTime].Linear().NormalizedTimeToSamples(envState.block.delayTime[0], sampleRate);
-    result += envTopo.params[(int)FFEnvParam::AttackTime].Linear().NormalizedTimeToSamples(envState.block.attackTime[0], sampleRate);
-    result += envTopo.params[(int)FFEnvParam::SmoothTime].Linear().NormalizedTimeToSamples(envState.block.smoothTime[0], sampleRate);
-    result += envTopo.params[(int)FFEnvParam::ReleaseTime].Linear().NormalizedTimeToSamples(envState.block.releaseTime[0], sampleRate);
-  }
-  return result;
-  */
-  return 0;
-}
-
 void
 FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
 {

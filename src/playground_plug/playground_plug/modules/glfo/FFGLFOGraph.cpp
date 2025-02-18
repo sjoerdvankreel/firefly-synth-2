@@ -13,12 +13,9 @@
 static int
 PlotLengthSamples(FBGraphRenderState const* state)
 {
-  auto moduleProcState = state->ModuleProcState();
-  auto hostContext = state->PlugGUI()->HostContext();
-  auto procExchange = state->ExchangeContainer()->Proc();
-  auto param = moduleProcState->topo->audio.ParamAtTopo({ (int)FFModuleType::GLFO, moduleProcState->moduleSlot, (int)FFGLFOParam::Rate, 0 });
-  float rateNormalized = hostContext->GetAudioParamNormalized(param->runtimeParamIndex);
-  return param->static_.Linear().NormalizedFreqToSamples(rateNormalized, procExchange->sampleRate);
+  int moduleSlot = state->ModuleProcState()->moduleSlot;
+  float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
+  return state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, sampleRate);
 }
 
 void
