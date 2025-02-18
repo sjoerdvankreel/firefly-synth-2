@@ -15,5 +15,4 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOProcessor);
   int Process(FBModuleProcState& state);
   void Reset(FBModuleProcState const& state);
-  int PlotLengthSamples(FBGraphRenderState const* state) const;
 };

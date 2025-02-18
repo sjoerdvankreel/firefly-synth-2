@@ -50,8 +50,20 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
   _moduleState->outputParamsNormalized = nullptr;
 }
 
+FBPlugGUI const* 
+FBGraphRenderState::PlugGUI() const
+{
+  return _plugGUI;
+}
+
 FBModuleProcState* 
 FBGraphRenderState::ModuleProcState()
+{
+  return _moduleState.get();
+}
+
+FBModuleProcState const* 
+FBGraphRenderState::ModuleProcState() const
 {
   return _moduleState.get();
 }

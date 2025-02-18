@@ -38,7 +38,9 @@ public:
   void PrepareForRenderExchangeVoice(int voice);
   void PrepareForRenderPrimary(float sampleRate, float bpm);
 
+  FBPlugGUI const* PlugGUI() const;
   FBModuleProcState* ModuleProcState();
+  FBModuleProcState const* ModuleProcState() const;
   FBExchangeStateContainer const* ExchangeContainer() const;
   bool GlobalModuleExchangeStateEqualsPrimary(int moduleIndex, int moduleSlot) const;
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;

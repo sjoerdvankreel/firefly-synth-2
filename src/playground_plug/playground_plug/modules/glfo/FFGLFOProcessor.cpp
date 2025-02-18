@@ -6,24 +6,14 @@
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 void 
 FFGLFOProcessor::Reset(FBModuleProcState const& state)
 {
   _phase = {};
-}
-
-int 
-FFGLFOProcessor::PlotLengthSamples(FBGraphRenderState const* state) const
-{
-  /* TODO
-  auto const& gLFOState = state.param.global.gLFO[moduleSlot];
-  auto const& gLFOTopo = topo.modules[(int)FFModuleType::GLFO];
-  auto const& param = gLFOTopo.params[(int)FFGLFOParam::Rate];
-  return param.Linear().NormalizedFreqToSamples(gLFOState.acc.rate[0], sampleRate);
-  */
-  return 0;
 }
 
 int
