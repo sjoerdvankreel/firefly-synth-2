@@ -8,6 +8,8 @@ std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
 enum class FFEnvMode { Linear, Exp };
 enum class FFEnvType { Sustain, Follow, Release };
 
+enum class FFEnvGUIParam { 
+  GraphKeyOn, GraphKeyTime, Count };
 enum class FFEnvParam { 
   On, Type, Sync, Mode, 
   DelayTime, AttackTime, HoldTime, DecayTime, ReleaseTime, SmoothTime,

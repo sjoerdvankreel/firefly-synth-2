@@ -120,3 +120,9 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
 {
   return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Env, TabFactory);
 }
+
+std::unique_ptr<Component>
+FFMakeEnvGraphControls(FBHostGUIContext* context)
+{
+  return {};
+}

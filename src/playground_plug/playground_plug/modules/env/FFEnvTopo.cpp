@@ -1,7 +1,10 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
+#include <playground_plug/shared/FFGUIState.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
+#include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/env/FFEnvGraph.hpp>
+
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 static std::vector<FBBarsItem>
@@ -18,9 +21,12 @@ FFMakeEnvTopo()
   result->name = "Env";
   result->slotCount = FFEnvCount;
   result->graphRenderer = FFEnvRenderGraph;
+  result->graphControlFactory = FFMakeEnvGraphControls;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
+  result->guiParams.resize((int)FFEnvGUIParam::Count);
   result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
+  auto selectGuiModule = [](auto& state) { return &state.env; };
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& on = result->params[(int)FFEnvParam::On];
@@ -168,12 +174,11 @@ FFMakeEnvTopo()
   smoothTime.name = "Smth";
   smoothTime.tooltip = "Smoothing Time";
   smoothTime.slotCount = 1;
-  smoothTime.unit = "Ms";
+  smoothTime.unit = "Sec";
   smoothTime.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
   smoothTime.type = FBParamType::Linear;
   smoothTime.Linear().min = 0.0f;
-  smoothTime.Linear().max = 1.0f;
-  smoothTime.Linear().displayMultiplier = 1000.0f;
+  smoothTime.Linear().max = 10.0f;
   auto selectSmoothTime = [](auto& module) { return &module.block.smoothTime; };
   smoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSmoothTime);
   smoothTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSmoothTime);
@@ -338,6 +343,27 @@ FFMakeEnvTopo()
   sustainLevel.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSustainLevel);
   sustainLevel.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSustainLevel);
   sustainLevel.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSustainLevel);
+
+  auto& guiGraphKeyOn = result->guiParams[(int)FFEnvGUIParam::GraphKeyOn];
+  guiGraphKeyOn.name = "Key On";
+  guiGraphKeyOn.slotCount = 1;
+  guiGraphKeyOn.id = "{AF4AC682-5282-49E3-BFED-14E9167B5889}";
+  guiGraphKeyOn.type = FBParamType::Boolean;
+  auto selectGuiGraphKeyOn = [](auto& module) { return &module.graphKeyOn; };
+  guiGraphKeyOn.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyOn);
+
+  // TODO bars -- but that requires a dependency on audio params for visible/enabled
+  auto& guiGraphKeyTime = result->guiParams[(int)FFEnvGUIParam::GraphKeyOn];
+  guiGraphKeyTime.defaultText = "30";
+  guiGraphKeyTime.name = "Key Time";
+  guiGraphKeyTime.slotCount = 1;
+  guiGraphKeyTime.unit = "Sec";
+  guiGraphKeyTime.id = "{7D3F0E5D-1BE3-423D-B586-976EA45D71E0}";
+  guiGraphKeyTime.type = FBParamType::Linear;
+  guiGraphKeyTime.Linear().min = 0.0f;
+  guiGraphKeyTime.Linear().max = 60.0f;
+  auto selectGuiGraphKeyTime = [](auto& module) { return &module.graphKeyTime; };
+  guiGraphKeyTime.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyTime);
 
   return result;
 }

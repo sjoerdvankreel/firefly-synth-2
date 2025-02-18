@@ -24,9 +24,9 @@ inline auto
 FFSelectGUIParamAddr(
   auto selectModule, auto selectParam)
 {
-  return[selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
-    auto& guiState = *static_cast<FFGUIState*>(state);
-    return selectParam(*selectModule(guiState)); };
+  return [selectModule, selectParam](int moduleSlot, int paramSlot, void* state) {
+    auto moduleState = selectModule(*static_cast<FFGUIState*>(state));
+    return &(*selectParam((*moduleState)[moduleSlot]))[paramSlot]; };
 }
 
 template <class State>

@@ -10,6 +10,16 @@
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
+class FFEnvGUIState final
+{
+  friend struct FFGUIState;
+  std::array<float, 1> graphKeyOn = {};
+  std::array<float, 1> graphKeyTime = {};
+  friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvGUIState);
+};
+
 class alignas(sizeof(FBFloatVector)) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;

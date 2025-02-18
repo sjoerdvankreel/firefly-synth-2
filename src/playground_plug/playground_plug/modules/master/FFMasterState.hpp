@@ -9,11 +9,11 @@
 
 struct FBStaticModule;
 
+// TODO move to gui-only module
 class FFMasterGUIState final
 {
-  float userScale = 1.0f;
-  float dummyParam = 0.0f;
   friend struct FFGUIState;
+  std::array<float, 1> userScale = {};
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterGUIState);
