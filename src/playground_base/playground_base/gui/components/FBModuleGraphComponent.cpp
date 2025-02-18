@@ -71,7 +71,7 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
     return false;
   auto moduleProcState = _data->renderState->ModuleProcState();
   moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
-  return StaticModuleFor(moduleIndex).renderer != nullptr;
+  return StaticModuleFor(moduleIndex).graphRenderer != nullptr;
 }
 
 void
@@ -91,7 +91,7 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->secondarySeries.clear();
   _data->pixelWidth = getWidth();
   _data->moduleName = topo->modules[_tweakedModuleByUI].name;
-  topo->static_.modules[staticIndex].renderer(_data.get());
+  topo->static_.modules[staticIndex].graphRenderer(_data.get());
 }
 
 void

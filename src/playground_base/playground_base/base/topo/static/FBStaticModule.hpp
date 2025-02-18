@@ -27,8 +27,8 @@ struct FBStaticModule final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
-  FBModuleGraphRenderer renderer = {};
   FBModuleAddrSelectors addrSelectors = {};
+  FBModuleGraphRenderer graphRenderer = {};
   FBModuleGraphControlFactory graphControlFactory = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
