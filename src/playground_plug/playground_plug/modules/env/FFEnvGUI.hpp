@@ -4,9 +4,8 @@
 #include <memory>
 
 class FBPlugGUI;
-class FBHostGUIContext;
 
 juce::Component*
 FFMakeEnvGUI(FBPlugGUI* plugGUI);
 std::unique_ptr<juce::Component>
-FFMakeEnvGraphControls(FBHostGUIContext* context);
+FFMakeEnvGraphControls(FBPlugGUI* context, int moduleSlot);

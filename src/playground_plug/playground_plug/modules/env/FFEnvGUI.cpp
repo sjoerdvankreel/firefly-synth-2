@@ -9,6 +9,8 @@
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/controls/FBParamComboBox.hpp>
 #include <playground_base/gui/controls/FBParamToggleButton.hpp>
+#include <playground_base/gui/controls/FBGUIParamSlider.hpp>
+#include <playground_base/gui/controls/FBGUIParamToggleButton.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
@@ -122,7 +124,14 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
 }
 
 std::unique_ptr<Component>
-FFMakeEnvGraphControls(FBHostGUIContext* context)
+FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  return {};
+  // TODO delete these controls
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = std::make_unique<FBGridComponent>(FBGridType::Module, 2, 1);
+  auto keyOn = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyOn, 0 });
+  grid->Add(0, 0, new FBGUIParamToggleButton(plugGUI, keyOn));
+  auto keyTime = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTime, 0 });
+  grid->Add(1, 0, new FBGUIParamSlider(plugGUI, keyTime, Slider::SliderStyle::RotaryVerticalDrag));
+  return grid;
 }

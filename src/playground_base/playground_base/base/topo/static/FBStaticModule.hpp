@@ -13,12 +13,12 @@
 #include <memory>
 #include <functional>
 
-class FBHostGUIContext;
+class FBPlugGUI;
 struct FBModuleGraphComponentData;
 
 typedef std::function<void(FBModuleGraphComponentData* graphData)>
 FBModuleGraphRenderer;
-typedef std::function<std::unique_ptr<juce::Component>(FBHostGUIContext*)>
+typedef std::function<std::unique_ptr<juce::Component>(FBPlugGUI* plugGUI, int moduleSlot)>
 FBModuleGraphControlFactory;
 
 struct FBStaticModule final
