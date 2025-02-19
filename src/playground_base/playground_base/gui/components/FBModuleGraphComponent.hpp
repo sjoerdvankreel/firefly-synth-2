@@ -19,9 +19,9 @@ public juce::Component
 {
   int _tweakedModuleByUI = -1;
   juce::Component* _graphControls = {};
+  std::unique_ptr<FBGridComponent> _grid = {};
 
   FBPlugGUI* const _plugGUI;
-  std::unique_ptr<FBGridComponent> _grid;
   std::unique_ptr<FBModuleGraphComponentData> _data;
   std::unique_ptr<FBModuleGraphDisplayComponent> _display;
 

@@ -20,18 +20,17 @@ FBModuleGraphComponent::
 FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState) :
 Component(),
 _plugGUI(plugGUI),
-_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 1, std::vector<int> { 0, 1 })),
 _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
   _data->renderState = renderState;
-  _grid->Add(0, 1, _display.get());
-  addAndMakeVisible(_grid.get());
 }
 
 void
 FBModuleGraphComponent::resized()
 {
+  if (!_grid)
+    return;
   _grid->setBounds(getLocalBounds());
   _grid->resized();
 }
@@ -75,17 +74,6 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 }
 
 void
-FBModuleGraphComponent::SetupGraphControls()
-{
-  if (_graphControls != nullptr)
-    _grid->Remove(0, 0, _graphControls);
-  _graphControls = _plugGUI->GetGraphControlsForModule(_tweakedModuleByUI);
-  if (_graphControls != nullptr)
-    _grid->Add(0, 0, _graphControls);
-  _grid->resized();
-}
-
-void
 FBModuleGraphComponent::paint(Graphics& g)
 {
   if (_tweakedModuleByUI == -1)
@@ -103,4 +91,26 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->pixelWidth = getWidth();
   _data->moduleName = topo->modules[_tweakedModuleByUI].name;
   topo->static_.modules[staticIndex].graphRenderer(_data.get());
+}
+
+void
+FBModuleGraphComponent::SetupGraphControls()
+{
+  removeChildComponent(_grid.get());
+  _graphControls = _plugGUI->GetGraphControlsForModule(_tweakedModuleByUI);
+
+  if (_graphControls == nullptr)
+  {
+    _grid = std::make_unique<FBGridComponent>(FBGridType::Generic, 1, 1);
+    _grid->Add(0, 0, _display.get());
+  }
+  else
+  {
+    _grid = std::make_unique<FBGridComponent>(FBGridType::Generic, 1, std::vector<int> { 0, 1 });
+    _grid->Add(0, 0, _graphControls);
+    _grid->Add(0, 1, _display.get());
+  }
+
+  addAndMakeVisible(_grid.get());
+  resized();
 }
