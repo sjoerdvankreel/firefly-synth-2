@@ -348,8 +348,7 @@ FFMakeEnvTopo()
   guiGraphKeyOn.name = "Key On";
   guiGraphKeyOn.slotCount = 1;
   guiGraphKeyOn.id = "{AF4AC682-5282-49E3-BFED-14E9167B5889}";
-  guiGraphKeyOn.type = FBParamType::List;
-  guiGraphKeyOn.List().items = { { "foo", "bar"}, { "mooooooooooooooooooooooh", "ok" } };
+  guiGraphKeyOn.type = FBParamType::Boolean;
   auto selectGuiGraphKeyOn = [](auto& module) { return &module.graphKeyOn; };
   guiGraphKeyOn.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyOn);
 

@@ -11,12 +11,6 @@
 
 enum class FBGridType { Generic, Module };
 
-struct FBGridChild
-{
-  juce::Component* component = {};
-  bool owned = false;
-};
-
 struct FBGridCell final
 {
   int row = -1;
@@ -33,7 +27,7 @@ struct FBGridSection final
 struct FBGridChildrenAndSpan final
 {
   FBGridCell span = {};
-  std::vector<FBGridChild> children = {};
+  std::vector<juce::Component*> children = {};
 };
 
 class FBGridComponent:
@@ -50,7 +44,6 @@ public IFBHorizontalAutoSize
 
   int FixedRowHeight(int row) const;
   int FixedColWidth(int col, int height) const;
-  void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child, bool owned);
 
 public:
   void resized() override;
@@ -62,9 +55,7 @@ public:
   void MarkSection(FBGridSection const& section);
   void Add(int row, int col, juce::Component* child);
   void Remove(int row, int col, juce::Component* child);
-  void AddOwned(int row, int col, std::unique_ptr<juce::Component>&& child);
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
-  void AddOwned(int row, int col, int rowSpan, int colSpan, std::unique_ptr<juce::Component>&& child);
 
   FBGridComponent() = delete;
   FBGridComponent(FBGridType type, int rows, int cols);
