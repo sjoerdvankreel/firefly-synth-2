@@ -351,7 +351,6 @@ FFMakeEnvTopo()
   auto selectGuiGraphKeyOn = [](auto& module) { return &module.graphKeyOn; };
   guiGraphKeyOn.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyOn);
 
-  // TODO bars -- but that requires a dependency on audio params for visible/enabled
   auto& guiGraphKeyTime = result->guiParams[(int)FFEnvGUIParam::GraphKeyTime];
   guiGraphKeyTime.defaultText = "30";
   guiGraphKeyTime.name = "Key Time";
@@ -363,6 +362,18 @@ FFMakeEnvTopo()
   guiGraphKeyTime.Linear().max = 60.0f;
   auto selectGuiGraphKeyTime = [](auto& module) { return &module.graphKeyTime; };
   guiGraphKeyTime.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyTime);
+
+  auto& guiGraphKeyBars = result->guiParams[(int)FFEnvGUIParam::GraphKeyBars];
+  guiGraphKeyBars.defaultText = "4/1";
+  guiGraphKeyBars.name = "Key Bars";
+  guiGraphKeyBars.slotCount = 1;
+  guiGraphKeyBars.unit = "Bars";
+  guiGraphKeyBars.id = "{1935D647-E846-4479-9C44-6EFE0959828C}";
+  guiGraphKeyBars.type = FBParamType::Bars;
+  guiGraphKeyBars.Bars().items = MakeEnvBarsItems();
+  auto selectGuiGraphKeyBars = [](auto& module) { return &module.graphKeyBars; };
+  guiGraphKeyBars.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyBars);
+  guiGraphKeyBars.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }

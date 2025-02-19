@@ -10,6 +10,7 @@
 #include <playground_base/gui/controls/FBParamComboBox.hpp>
 #include <playground_base/gui/controls/FBParamToggleButton.hpp>
 #include <playground_base/gui/controls/FBGUIParamSlider.hpp>
+#include <playground_base/gui/controls/FBGUIParamComboBox.hpp>
 #include <playground_base/gui/controls/FBGUIParamToggleButton.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
@@ -132,6 +133,8 @@ FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, keyOn));
   auto keyTime = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTime, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, keyTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto keyBars = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyBars, 0 });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, keyBars));
   grid->MarkSection({ 0, 0, 1, 1 });
   grid->MarkSection({ 1, 0, 1, 1 });
   return grid;

@@ -15,6 +15,7 @@ class FFEnvGUIState final
   friend struct FFGUIState;
   std::array<float, 1> graphKeyOn = {};
   std::array<float, 1> graphKeyTime = {};
+  std::array<float, 1> graphKeyBars = {};
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvGUIState);
@@ -39,16 +40,16 @@ class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
   std::array<TVoiceBlock, 1> mode = {};
   std::array<TVoiceBlock, 1> sync = {};
   std::array<TVoiceBlock, 1> holdTime = {};
-  std::array<TVoiceBlock, 1> delayTime = {};
-  std::array<TVoiceBlock, 1> decayTime = {};
-  std::array<TVoiceBlock, 1> attackTime = {};
-  std::array<TVoiceBlock, 1> smoothTime = {};
-  std::array<TVoiceBlock, 1> releaseTime = {};
   std::array<TVoiceBlock, 1> holdBars = {};
+  std::array<TVoiceBlock, 1> delayTime = {};
   std::array<TVoiceBlock, 1> delayBars = {};
+  std::array<TVoiceBlock, 1> decayTime = {};
   std::array<TVoiceBlock, 1> decayBars = {};
+  std::array<TVoiceBlock, 1> attackTime = {};
   std::array<TVoiceBlock, 1> attackBars = {};
+  std::array<TVoiceBlock, 1> smoothTime = {};
   std::array<TVoiceBlock, 1> smoothBars = {};
+  std::array<TVoiceBlock, 1> releaseTime = {};
   std::array<TVoiceBlock, 1> releaseBars = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvBlockParamState);

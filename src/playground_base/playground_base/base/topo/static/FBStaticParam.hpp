@@ -4,7 +4,6 @@
 #include <playground_base/base/topo/static/FBProcParamAddrs.hpp>
 #include <playground_base/base/topo/static/FBAutomationType.hpp>
 #include <playground_base/base/topo/static/FBStaticParamBase.hpp>
-#include <playground_base/base/topo/static/FBParamsDependencies.hpp>
 
 
 #include <string>
@@ -19,7 +18,6 @@ public FBStaticParamBase
 public:
   bool acc = false;
   bool output = false;
-  FBParamsDependencies dependencies = {};
   FBParamAddrSelectors addrSelectors = {};
 
   bool IsAcc() const;
