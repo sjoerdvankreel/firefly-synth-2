@@ -33,15 +33,33 @@ _rows(rows),
 _cols(cols) {}
 
 void
-FBGridComponent::Add(int row, int col, Component* child)
-{
-  Add(row, col, 1, 1, child);
-}
-
-void
 FBGridComponent::MarkSection(FBGridSection const& section)
 {
   _sections.push_back(section);
+}
+
+void
+FBGridComponent::Add(int row, int col, Component* child)
+{
+  Add(row, col, 1, 1, child, false);
+}
+
+void
+FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
+{
+  Add(row, col, rowSpan, colSpan, child, false);
+}
+
+void
+FBGridComponent::AddOwned(int row, int col, std::unique_ptr<Component>&& child)
+{
+  Add(row, col, 1, 1, child.release(), true);
+}
+
+void
+FBGridComponent::AddOwned(int row, int col, int rowSpan, int colSpan, std::unique_ptr<Component>&& child)
+{
+  Add(row, col, rowSpan, colSpan, child.release(), true);
 }
 
 int
@@ -67,26 +85,40 @@ FBGridComponent::FixedWidth(int height) const
 void
 FBGridComponent::Remove(int row, int col, Component* child)
 {
+  int index = -1;
   auto& childrenAtCell = _cells.at({ row, col }).children;
-  auto iter = std::find(childrenAtCell.begin(), childrenAtCell.end(), child);
-  assert(iter != childrenAtCell.end());
+  for (int c = 0; c < childrenAtCell.size(); c++)
+    if(childrenAtCell[c].component == child)
+    {
+      index = c;
+      break;
+    }
+  assert(index != -1);
+  auto iter = childrenAtCell.begin() + index;
+  removeChildComponent(iter->component);
+  if (iter->owned)
+    delete iter->component;
   childrenAtCell.erase(iter);
 }
 
 void
-FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
+FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child, bool owned)
 {
+  for (auto const& e : _cells)
+    for (auto const& c : e.second.children)
+      assert(c.component != child);
+
   addAndMakeVisible(child);
   FBGridCell cell = { row, col };
   auto iter = _cells.find(cell);
   if (iter == _cells.end())
   {
-    _cells[cell].children.push_back(child);
+    _cells[cell].children.push_back({ child, owned });
     _cells[cell].span = { rowSpan, colSpan };
   }
   else
   {
-    _cells[cell].children.push_back(child);
+    _cells[cell].children.push_back({ child, owned });
     assert(_cells[cell].span.row == rowSpan);
     assert(_cells[cell].span.col == colSpan);
   }
@@ -102,7 +134,7 @@ FBGridComponent::FixedRowHeight(int row) const
     auto const& sizingChildren = _cells.at({ row, c }).children;
     for (int i = 0; i < sizingChildren.size(); i++)
     {
-      auto sizingChild = FBAsVerticalAutoSize(sizingChildren[i]);
+      auto sizingChild = FBAsVerticalAutoSize(sizingChildren[i].component);
       fixedCellHeight = std::max(fixedCellHeight, sizingChild->FixedHeight());
     }
     assert(fixedCellHeight != 0);
@@ -127,7 +159,7 @@ FBGridComponent::FixedColWidth(int col, int height) const
     int rowHeight = (int)std::round(_rows[r] / (float)totalRelativeHeight * availableGridHeight);
     for (int i = 0; i < sizingChildren.size(); i++)
     {
-      auto sizingChild = FBAsHorizontalAutoSize(sizingChildren[i]);
+      auto sizingChild = FBAsHorizontalAutoSize(sizingChildren[i].component);
       fixedCellWidth = std::max(fixedCellWidth, sizingChild->FixedWidth(rowHeight));
     }
     assert(fixedCellWidth != 0);
@@ -153,7 +185,7 @@ FBGridComponent::resized()
   for (auto const& e : _cells)
     for(auto child: e.second.children)
     {
-      GridItem item(child);
+      GridItem item(child.component);
       item.row.start = e.first.row + 1;
       item.column.start = e.first.col + 1;
       item.row.end = e.first.row + e.second.span.row + 1;
