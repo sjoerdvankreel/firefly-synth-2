@@ -13,6 +13,12 @@ ComboBox()
       FBGetStringWidthCached(getItemText(i).toStdString()));
 }
 
+int 
+FBAutoSizeComboBox::FixedHeight() const
+{
+  return 35; // TODO
+}
+
 int
 FBAutoSizeComboBox::FixedWidth(int height) const
 {
