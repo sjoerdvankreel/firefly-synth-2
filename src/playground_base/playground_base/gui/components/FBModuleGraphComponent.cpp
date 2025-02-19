@@ -6,7 +6,9 @@
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/controls/FBAutoSizeSlider.hpp>
 #include <playground_base/gui/controls/FBAutoSizeToggleButton.hpp>
+
 #include <playground_base/gui/components/FBGridComponent.hpp>
+#include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 #include <playground_base/gui/components/FBModuleGraphDisplayComponent.hpp>
@@ -29,10 +31,10 @@ _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 void
 FBModuleGraphComponent::resized()
 {
-  if (!_grid)
+  if (!_section)
     return;
-  _grid->setBounds(getLocalBounds());
-  _grid->resized();
+  _section->setBounds(getLocalBounds());
+  _section->resized();
 }
 
 void
@@ -96,7 +98,7 @@ FBModuleGraphComponent::paint(Graphics& g)
 void
 FBModuleGraphComponent::SetupGraphControls()
 {
-  removeChildComponent(_grid.get());
+  removeChildComponent(_section.get());
   _graphControls = _plugGUI->GetGraphControlsForModule(_tweakedModuleByUI);
 
   if (_graphControls == nullptr)
@@ -114,6 +116,7 @@ FBModuleGraphComponent::SetupGraphControls()
     _grid->MarkSection({ 0, 1, 1, 1 });
   }
 
-  addAndMakeVisible(_grid.get());
+  _section = std::make_unique<FBSectionComponent>(_plugGUI, _grid.get());
+  addAndMakeVisible(_section.get());
   resized();
 }

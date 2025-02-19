@@ -6,6 +6,7 @@
 
 class FBPlugGUI;
 class FBGridComponent;
+class FBSectionComponent;
 class FBGraphRenderState;
 class FBModuleGraphDisplayComponent;
 
@@ -20,6 +21,7 @@ public juce::Component
   int _tweakedModuleByUI = -1;
   juce::Component* _graphControls = {};
   std::unique_ptr<FBGridComponent> _grid = {};
+  std::unique_ptr<FBSectionComponent> _section = {};
 
   FBPlugGUI* const _plugGUI;
   std::unique_ptr<FBModuleGraphComponentData> _data;
