@@ -133,5 +133,7 @@ FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 0, new FBGUIParamToggleButton(plugGUI, keyOn));
   auto keyTime = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTime, 0 });
   grid->Add(1, 0, new FBGUIParamSlider(plugGUI, keyTime, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 1, 1 });
+  grid->MarkSection({ 1, 0, 1, 1 });
   return grid;
 }

@@ -129,6 +129,8 @@ FBGridComponent::FixedColWidth(int col, int height) const
     {
       auto const& sizingChild = dynamic_cast<IFBHorizontalAutoSize&>(*sizingChildren[i]);
       fixedCellWidth = std::max(fixedCellWidth, sizingChild.FixedWidth(rowHeight));
+      if (fixedCellWidth == 0)
+        sizingChild.FixedWidth(rowHeight);
     }
     assert(fixedCellWidth != 0);
     result = std::max(result, fixedCellWidth);
@@ -140,6 +142,9 @@ void
 FBGridComponent::resized()
 {
   _grid = {};
+
+  if (getWidth() == 0 || getHeight() == 0)
+    return;
 
   if (_type == FBGridType::Module)
   {

@@ -20,7 +20,7 @@ FBModuleGraphComponent::
 FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState) :
 Component(),
 _plugGUI(plugGUI),
-_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 1, 2)),
+_grid(std::make_unique<FBGridComponent>(FBGridType::Generic, 1, std::vector<int> { 0, 1 })),
 _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
