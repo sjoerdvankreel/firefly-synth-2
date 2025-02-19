@@ -101,9 +101,11 @@ FBModuleGraphComponent::RecreateGraphControls()
     _grid->Remove(0, 0, _graphControls.get());
   _graphControls.reset();
   auto& controlFactory = StaticModuleFor(_tweakedModuleByUI).graphControlFactory;
-  if (controlFactory == nullptr)
-    return;
-  int moduleSlot = TopoIndicesFor(_tweakedModuleByUI).slot;
-  _graphControls = controlFactory(_plugGUI, moduleSlot);
-  _grid->Add(0, 0, _graphControls.get());
+  if (controlFactory != nullptr)
+  {
+    int moduleSlot = TopoIndicesFor(_tweakedModuleByUI).slot;
+    _graphControls = controlFactory(_plugGUI, moduleSlot);
+    _grid->Add(0, 0, _graphControls.get());
+  }
+  _grid->resized();
 }

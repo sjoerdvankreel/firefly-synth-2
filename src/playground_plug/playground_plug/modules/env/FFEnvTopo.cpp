@@ -353,7 +353,7 @@ FFMakeEnvTopo()
   guiGraphKeyOn.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyOn);
 
   // TODO bars -- but that requires a dependency on audio params for visible/enabled
-  auto& guiGraphKeyTime = result->guiParams[(int)FFEnvGUIParam::GraphKeyOn];
+  auto& guiGraphKeyTime = result->guiParams[(int)FFEnvGUIParam::GraphKeyTime];
   guiGraphKeyTime.defaultText = "30";
   guiGraphKeyTime.name = "Key Time";
   guiGraphKeyTime.slotCount = 1;

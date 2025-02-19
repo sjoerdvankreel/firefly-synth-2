@@ -45,7 +45,7 @@ MakeSpecialGUIParam(
   result.paramIndex = paramIndex;
   result.moduleIndex = moduleIndex;
   auto const& param = topo.modules[moduleIndex].guiParams[paramIndex];
-  result.state = param.addrSelector(moduleIndex, paramIndex, state);
+  result.state = param.addrSelector(0, 0, state);
   return result;
 }
 
