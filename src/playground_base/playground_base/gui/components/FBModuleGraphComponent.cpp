@@ -44,7 +44,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
   if (_tweakedModuleByUI != moduleIndex)
   {
     _tweakedModuleByUI = moduleIndex;
-    RecreateGraphControls();
+    SetupGraphControls();
   }
   repaint();
 }
@@ -75,6 +75,17 @@ FBModuleGraphComponent::PrepareForRender(int moduleIndex)
 }
 
 void
+FBModuleGraphComponent::SetupGraphControls()
+{
+  if (_graphControls != nullptr)
+    _grid->Remove(0, 0, _graphControls);
+  _graphControls = _plugGUI->GetGraphControlsForModule(_tweakedModuleByUI);
+  if (_graphControls != nullptr)
+    _grid->Add(0, 0, _graphControls);
+  _grid->resized();
+}
+
+void
 FBModuleGraphComponent::paint(Graphics& g)
 {
   if (_tweakedModuleByUI == -1)
@@ -92,20 +103,4 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->pixelWidth = getWidth();
   _data->moduleName = topo->modules[_tweakedModuleByUI].name;
   topo->static_.modules[staticIndex].graphRenderer(_data.get());
-}
-
-void
-FBModuleGraphComponent::RecreateGraphControls()
-{
-  if (_graphControls != nullptr)
-    _grid->Remove(0, 0, _graphControls.get());
-  _graphControls.reset();
-  auto& controlFactory = StaticModuleFor(_tweakedModuleByUI).graphControlFactory;
-  if (controlFactory != nullptr)
-  {
-    int moduleSlot = TopoIndicesFor(_tweakedModuleByUI).slot;
-    _graphControls = controlFactory(_plugGUI, moduleSlot);
-    _grid->Add(0, 0, _graphControls.get());
-  }
-  _grid->resized();
 }

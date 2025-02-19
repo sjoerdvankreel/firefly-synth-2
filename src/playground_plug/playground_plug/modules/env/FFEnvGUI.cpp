@@ -123,16 +123,15 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
   return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Env, TabFactory);
 }
 
-std::unique_ptr<Component>
+Component*
 FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  // TODO delete these controls
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = std::make_unique<FBGridComponent>(FBGridType::Module, std::vector<int> { 0, 1 }, 1);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 0, 1 }, 1);
   auto keyOn = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyOn, 0 });
-  grid->Add(0, 0, new FBGUIParamToggleButton(plugGUI, keyOn));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, keyOn));
   auto keyTime = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTime, 0 });
-  grid->Add(1, 0, new FBGUIParamSlider(plugGUI, keyTime, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, keyTime, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ 0, 0, 1, 1 });
   grid->MarkSection({ 1, 0, 1, 1 });
   return grid;

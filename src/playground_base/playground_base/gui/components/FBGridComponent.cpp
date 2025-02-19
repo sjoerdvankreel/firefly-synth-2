@@ -98,8 +98,11 @@ FBGridComponent::FixedRowHeight(int row) const
   int result = 0;
   for (int c = 0; c < _cols.size(); c++)
   {
+    auto iter = _cells.find({ row, c });
+    if (iter == _cells.end())
+      continue;
     int fixedCellHeight = 0;
-    auto const& sizingChildren = _cells.at({ row, c }).children;
+    auto const& sizingChildren = iter->second.children;
     for (int i = 0; i < sizingChildren.size(); i++)
     {
       auto sizingChild = FBAsVerticalAutoSize(sizingChildren[i]);
@@ -122,8 +125,11 @@ FBGridComponent::FixedColWidth(int col, int height) const
   int availableGridHeight = height - static_cast<int>(totalRowGap);
   for (int r = 0; r < _rows.size(); r++)
   {
+    auto iter = _cells.find({ r, col });
+    if (iter == _cells.end())
+      continue;
     int fixedCellWidth = 0;
-    auto const& sizingChildren = _cells.at({ r, col }).children;
+    auto const& sizingChildren = iter->second.children;
     int rowHeight = (int)std::round(_rows[r] / (float)totalRelativeHeight * availableGridHeight);
     for (int i = 0; i < sizingChildren.size(); i++)
     {

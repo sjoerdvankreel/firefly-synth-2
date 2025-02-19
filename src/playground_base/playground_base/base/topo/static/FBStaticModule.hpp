@@ -18,8 +18,6 @@ struct FBModuleGraphComponentData;
 
 typedef std::function<void(FBModuleGraphComponentData* graphData)>
 FBModuleGraphRenderer;
-typedef std::function<std::unique_ptr<juce::Component>(FBPlugGUI* plugGUI, int moduleSlot)>
-FBModuleGraphControlFactory;
 
 struct FBStaticModule final
 {
@@ -29,7 +27,6 @@ struct FBStaticModule final
   std::string name = {};
   FBModuleAddrSelectors addrSelectors = {};
   FBModuleGraphRenderer graphRenderer = {};
-  FBModuleGraphControlFactory graphControlFactory = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);

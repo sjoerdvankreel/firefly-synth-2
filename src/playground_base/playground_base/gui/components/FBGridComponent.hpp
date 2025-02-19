@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/gui/shared/FBVerticalAutoSize.hpp>
 #include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
 
@@ -28,6 +29,7 @@ struct FBGridChildrenAndSpan final
 {
   FBGridCell span = {};
   std::vector<juce::Component*> children = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBGridChildrenAndSpan);
 };
 
 class FBGridComponent:

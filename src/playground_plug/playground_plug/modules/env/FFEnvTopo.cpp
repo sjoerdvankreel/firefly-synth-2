@@ -21,7 +21,6 @@ FFMakeEnvTopo()
   result->name = "Env";
   result->slotCount = FFEnvCount;
   result->graphRenderer = FFEnvRenderGraph;
-  result->graphControlFactory = FFMakeEnvGraphControls;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
   result->guiParams.resize((int)FFEnvGUIParam::Count);

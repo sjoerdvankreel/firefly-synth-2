@@ -4,6 +4,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 
 #include <memory>
+#include <unordered_map>
 
 class FBGridComponent;
 class FBHostGUIContext;
@@ -15,9 +16,11 @@ public FBPlugGUI
 {
   FBGridComponent* _content = {};
   FBModuleGraphComponent* _graph = {};
+  std::unordered_map<int, juce::Component*> _graphControls = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
+  void SetupGraphControls();
   void RequestGraphRender(int moduleIndex);
 
 public:
@@ -28,6 +31,7 @@ public:
   void resized() override;
   void UpdateExchangeStateTick() override;
   void ActiveModuleSlotChanged(int index, int slot) override;
+  juce::Component* GetGraphControlsForModule(int index) override;
   void GUIParamNormalizedChanged(int index, float normalized) override;
   void AudioParamNormalizedChangedFromUI(int index, float normalized) override;
   void AudioParamNormalizedChangedFromHost(int index, float normalized) override;
