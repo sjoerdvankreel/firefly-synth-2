@@ -101,14 +101,17 @@ FBModuleGraphComponent::SetupGraphControls()
 
   if (_graphControls == nullptr)
   {
-    _grid = std::make_unique<FBGridComponent>(FBGridType::Generic, 1, 1);
+    _grid = std::make_unique<FBGridComponent>(FBGridType::Module, 1, 1);
     _grid->Add(0, 0, _display.get());
+    _grid->MarkSection({ 0, 0, 1, 1 });
   }
   else
   {
-    _grid = std::make_unique<FBGridComponent>(FBGridType::Generic, 1, std::vector<int> { 0, 1 });
+    _grid = std::make_unique<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 1 });
     _grid->Add(0, 0, _graphControls);
     _grid->Add(0, 1, _display.get());
+    _grid->MarkSection({ 0, 0, 1, 1 });
+    _grid->MarkSection({ 0, 1, 1, 1 });
   }
 
   addAndMakeVisible(_grid.get());

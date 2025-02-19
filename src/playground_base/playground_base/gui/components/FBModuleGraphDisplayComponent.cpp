@@ -54,7 +54,6 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   for (int i = 0; i < _data->secondarySeries.size(); i++)
     maxPoints = std::max(maxPoints, (int)_data->secondarySeries[i].points.size());
 
-  g.fillAll(Colours::black);
   g.setColour(Colours::darkgrey);
   g.drawText(_data->moduleName + " " + _data->text, getLocalBounds(), Justification::centred, false);
   for (int i = 0; i < _data->secondarySeries.size(); i++)
