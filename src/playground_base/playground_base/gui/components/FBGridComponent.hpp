@@ -1,6 +1,8 @@
 #pragma once
 
+#include <playground_base/gui/shared/FBVerticalAutoSize.hpp>
 #include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <map>
@@ -30,6 +32,7 @@ struct FBGridChildrenAndSpan final
 
 class FBGridComponent:
 public juce::Component,
+public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
   FBGridType _type;
@@ -39,11 +42,14 @@ public IFBHorizontalAutoSize
   std::vector<FBGridSection> _sections = {};
   std::map<FBGridCell, FBGridChildrenAndSpan> _cells = {};
 
+  int FixedRowHeight(int row) const;
   int FixedColWidth(int col, int height) const;
 
 public:
   void resized() override;
   void paint(juce::Graphics& g) override;
+
+  int FixedHeight() const override;
   int FixedWidth(int height) const override;
 
   void MarkSection(FBGridSection const& section);

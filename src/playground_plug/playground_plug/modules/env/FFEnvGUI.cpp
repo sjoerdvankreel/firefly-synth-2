@@ -128,7 +128,7 @@ FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot)
 {
   // TODO delete these controls
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = std::make_unique<FBGridComponent>(FBGridType::Module, 2, 1);
+  auto grid = std::make_unique<FBGridComponent>(FBGridType::Module, std::vector<int> { 0, 1 }, 1);
   auto keyOn = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyOn, 0 });
   grid->Add(0, 0, new FBGUIParamToggleButton(plugGUI, keyOn));
   auto keyTime = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTime, 0 });

@@ -45,6 +45,16 @@ FBGridComponent::MarkSection(FBGridSection const& section)
 }
 
 int
+FBGridComponent::FixedHeight() const
+{
+  int result = 0;
+  for (int i = 0; i < _rows.size(); i++)
+    result += FixedRowHeight(i);
+  auto totalRowGap = _grid.rowGap.pixels * (_rows.size() - 1);
+  return result + static_cast<int>(std::round(totalRowGap));
+}
+
+int
 FBGridComponent::FixedWidth(int height) const
 {
   int result = 0;
@@ -80,6 +90,25 @@ FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* chil
     assert(_cells[cell].span.row == rowSpan);
     assert(_cells[cell].span.col == colSpan);
   }
+}
+
+int 
+FBGridComponent::FixedRowHeight(int row) const
+{
+  int result = 0;
+  for (int c = 0; c < _cols.size(); c++)
+  {
+    int fixedCellHeight = 0;
+    auto const& sizingChildren = _cells.at({ row, c }).children;
+    for (int i = 0; i < sizingChildren.size(); i++)
+    {
+      auto const& sizingChild = dynamic_cast<IFBVerticalAutoSize&>(*sizingChildren[i]);
+      fixedCellHeight = std::max(fixedCellHeight, sizingChild.FixedHeight());
+    }
+    assert(fixedCellHeight != 0);
+    result = std::max(result, fixedCellHeight);
+  }
+  return result;
 }
 
 int 
@@ -130,7 +159,10 @@ FBGridComponent::resized()
     }
 
   for (int i = 0; i < _rows.size(); i++)
-    _grid.templateRows.add(Grid::TrackInfo(Grid::Fr(_rows[i])));
+    if (_rows[i] != 0)
+      _grid.templateRows.add(Grid::TrackInfo(Grid::Fr(_rows[i])));
+    else
+      _grid.templateRows.add(Grid::TrackInfo(Grid::Px(FixedRowHeight(i))));
   for (int i = 0; i < _cols.size(); i++)
     if (_cols[i] != 0)
       _grid.templateColumns.add(Grid::TrackInfo(Grid::Fr(_cols[i])));

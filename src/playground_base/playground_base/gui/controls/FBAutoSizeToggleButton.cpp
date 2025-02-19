@@ -3,7 +3,13 @@
 using namespace juce;
 
 int 
+FBAutoSizeToggleButton::FixedHeight() const
+{
+  return 24; // TODO
+}
+
+int 
 FBAutoSizeToggleButton::FixedWidth(int height) const
 {
-  return 24; // TODO;
+  return 24; // TODO
 }
