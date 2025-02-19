@@ -122,12 +122,12 @@ FBGraphRenderState::AudioParamBool(
 }
 
 int
-FBGraphRenderState::AudioParamLinearFreqSamples(
+FBGraphRenderState::AudioParamLog2TimeSamples(
   FBParamTopoIndices const& indices, float sampleRate) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
   float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
-  return param->static_.Linear().NormalizedFreqToSamples(normalized, sampleRate);
+  return param->static_.Log2().NormalizedTimeToSamples(normalized, sampleRate);
 }
 
 int
@@ -137,6 +137,15 @@ FBGraphRenderState::AudioParamLinearTimeSamples(
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
   float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
   return param->static_.Linear().NormalizedTimeToSamples(normalized, sampleRate);
+}
+
+int
+FBGraphRenderState::AudioParamLinearFreqSamples(
+  FBParamTopoIndices const& indices, float sampleRate) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Linear().NormalizedFreqToSamples(normalized, sampleRate);
 }
 
 int

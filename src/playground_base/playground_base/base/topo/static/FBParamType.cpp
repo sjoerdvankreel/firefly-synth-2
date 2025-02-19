@@ -10,6 +10,7 @@ FBParamTypeIsList(FBParamType type)
   case FBParamType::Note:
   case FBParamType::Bars:
     return true;
+  case FBParamType::Log2:
   case FBParamType::Linear:
   case FBParamType::FreqOct:
   case FBParamType::Boolean:
@@ -32,6 +33,7 @@ FBParamTypeIsStepped(FBParamType type)
   case FBParamType::Boolean:
   case FBParamType::Discrete:
     return true;
+  case FBParamType::Log2:
   case FBParamType::Linear:
   case FBParamType::FreqOct:
     return false;

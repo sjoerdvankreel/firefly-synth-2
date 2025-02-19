@@ -46,6 +46,7 @@ public:
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
 
   bool AudioParamBool(FBParamTopoIndices const& indices) const;
+  int AudioParamLog2TimeSamples(FBParamTopoIndices const& indices, float sampleRate) const;
   int AudioParamLinearFreqSamples(FBParamTopoIndices const& indices, float sampleRate) const;
   int AudioParamLinearTimeSamples(FBParamTopoIndices const& indices, float sampleRate) const;
   int AudioParamBarsSamples(FBParamTopoIndices const& indices, float sampleRate, float bpm) const;

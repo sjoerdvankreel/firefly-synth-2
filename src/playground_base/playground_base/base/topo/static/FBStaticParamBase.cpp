@@ -93,6 +93,8 @@ FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized
     return discrete.PlainToText(discrete.NormalizedToPlain(normalized));
   case FBParamType::List:
     return list.PlainToText(display, list.NormalizedToPlain(normalized));
+  case FBParamType::Log2:
+    return log2.PlainToText(display, log2.NormalizedToPlain(normalized));
   case FBParamType::Linear:
     return linear.PlainToText(display, linear.NormalizedToPlain(normalized));
   case FBParamType::FreqOct:
@@ -131,6 +133,12 @@ FBStaticParamBase::TextToNormalized(bool io, std::string const& text) const
       auto plain = boolean.TextToPlain(text);
       if (!plain) return {};
       return boolean.PlainToNormalized(plain.value());
+    }
+    case FBParamType::Log2:
+    {
+      auto plain = log2.TextToPlain(text);
+      if (!plain) return {};
+      return log2.PlainToNormalized(plain.value());
     }
     case FBParamType::Linear:
     {

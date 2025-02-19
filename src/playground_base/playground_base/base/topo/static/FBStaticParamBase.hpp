@@ -2,6 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 
+#include <playground_base/base/topo/param/FBLog2Param.hpp>
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 #include <playground_base/base/topo/param/FBListParam.hpp>
 #include <playground_base/base/topo/param/FBNoteParam.hpp>
@@ -25,6 +26,7 @@
 struct FBStaticParamBase
 {
 private:
+  FBLog2Param log2 = {};
   FBListParam list = {};
   FBNoteParam note = {};
   FBBarsParam bars = {};
@@ -50,6 +52,7 @@ public:
   FBListParam& List();
   FBNoteParam& Note();
   FBBarsParam& Bars();
+  FBLog2Param& Log2();
   FBBoolParam& Boolean();
   FBLinearParam& Linear();
   FBFreqOctParam& FreqOct();
@@ -58,6 +61,7 @@ public:
   FBListParam const& List() const;
   FBNoteParam const& Note() const;
   FBBarsParam const& Bars() const;
+  FBLog2Param const& Log2() const;
   FBBoolParam const& Boolean() const;
   FBLinearParam const& Linear() const;
   FBFreqOctParam const& FreqOct() const;
@@ -106,6 +110,13 @@ FBStaticParamBase::Linear()
 {
   assert(type == FBParamType::Linear);
   return linear;
+}
+
+inline FBLog2Param&
+FBStaticParamBase::Log2()
+{
+  assert(type == FBParamType::Log2);
+  return log2;
 }
 
 inline FBFreqOctParam&
@@ -157,6 +168,13 @@ FBStaticParamBase::Linear() const
   return linear;
 }
 
+inline FBLog2Param const&
+FBStaticParamBase::Log2() const
+{
+  assert(type == FBParamType::Log2);
+  return log2;
+}
+
 inline FBFreqOctParam const&
 FBStaticParamBase::FreqOct() const
 {
@@ -179,6 +197,7 @@ FBStaticParamBase::ValueCount() const
   case FBParamType::List: return list.ValueCount();
   case FBParamType::Note: return note.ValueCount();
   case FBParamType::Bars: return bars.ValueCount();
+  case FBParamType::Log2: return log2.ValueCount();
   case FBParamType::Linear: return linear.ValueCount();
   case FBParamType::FreqOct: return freqOct.ValueCount();
   case FBParamType::Boolean: return boolean.ValueCount();
