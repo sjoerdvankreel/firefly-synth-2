@@ -32,13 +32,12 @@ public:
 
   void UpdateExchangeState();
   void ShowHostMenuForAudioParam(int index);
-  void SteppedAudioParamNormalizedChanged(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
   virtual juce::Component* GetGraphControlsForModule(int index) = 0;
-  virtual void GUIParamNormalizedChanged(int index, float normalized) = 0;
-  virtual void AudioParamNormalizedChangedFromUI(int index, float normalized) = 0;
+  virtual void GUIParamNormalizedChanged(int index, float normalized);
+  virtual void AudioParamNormalizedChangedFromUI(int index, float normalized);
   virtual void AudioParamNormalizedChangedFromHost(int index, float normalized);
 
 protected:
@@ -51,12 +50,17 @@ protected:
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
+  void GUIParamNormalizedChanged(int index);
+  void AudioParamNormalizedChanged(int index);
+
   FBHostGUIContext* const _hostContext;
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
   std::unordered_map<int, int> _guiParamIndexToComponent = {};
   std::unordered_map<int, int> _audioParamIndexToComponent = {};
   std::chrono::high_resolution_clock::time_point _exchangeUpdated = {};
+  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _guiParamsVisibleDependents = {};
+  std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _guiParamsEnabledDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _audioParamsEnabledDependents = {};
 };

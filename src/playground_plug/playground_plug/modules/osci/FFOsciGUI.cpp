@@ -63,7 +63,7 @@ MakeSectionGain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::RotaryVerticalDrag));
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   FBParamsDependencies dependencies = {};
-  dependencies.visible = { {(int)FFOsciParam::On}, [](auto const& vs) { return vs[0] != 0; } };
+  dependencies.visible.audio.When({(int)FFOsciParam::On}, [](auto const& vs) { return vs[0] != 0; });
   return plugGUI->StoreComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependencies);
 }
 

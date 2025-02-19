@@ -67,7 +67,7 @@ FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 void 
 FFPlugGUI::GUIParamNormalizedChanged(int index, float normalized)
 {
-  // TODO this might still need FromGUI/FromPlug
+  FBPlugGUI::GUIParamNormalizedChanged(index, normalized);
   int moduleIndex = HostContext()->Topo()->gui.params[index].runtimeModuleIndex;
   RequestGraphRender(moduleIndex);
 }
@@ -75,6 +75,7 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, float normalized)
 void 
 FFPlugGUI::AudioParamNormalizedChangedFromUI(int index, float normalized)
 {
+  FBPlugGUI::AudioParamNormalizedChangedFromUI(index, normalized);
   int moduleIndex = HostContext()->Topo()->audio.params[index].runtimeModuleIndex;
   RequestGraphRender(moduleIndex);
 }

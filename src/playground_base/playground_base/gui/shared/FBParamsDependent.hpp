@@ -16,21 +16,24 @@ class FBParamsDependent
 {
 protected:
   FBPlugGUI* const _plugGUI;
-  juce::Component* _initialParent = {};
+  juce::Component* _initialParent = {}; // TODO what about graph control?
 
   void ParentHierarchyChanged();
 
 private:
-  std::unique_ptr<FBParamsDependentDependency> _visible;
-  std::unique_ptr<FBParamsDependentDependency> _enabled;
+  std::unique_ptr<FBParamsDependentDependency> _visibleWhenGUI;
+  std::unique_ptr<FBParamsDependentDependency> _enabledWhenGUI;
+  std::unique_ptr<FBParamsDependentDependency> _visibleWhenAudio;
+  std::unique_ptr<FBParamsDependentDependency> _enabledWhenAudio;
 
 public:
   virtual ~FBParamsDependent();
-  void DependenciesChanged(bool visible);
-  std::vector<int> const& RuntimeDependencies(bool visible) const;
-  
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependent);
   FBParamsDependent(
-    FBPlugGUI* plugGUI, FBTopoIndices const& moduleIndices,
-    int staticParamSlot, FBParamsDependencies const& dependencies);
+    FBPlugGUI* plugGUI, 
+    FBTopoIndices const& moduleIndices,
+    FBParamsDependencies const& dependencies);
+
+  void DependenciesChanged(bool visible);
+  std::vector<int> const& RuntimeDependencies(bool audio, bool visible) const;
 };

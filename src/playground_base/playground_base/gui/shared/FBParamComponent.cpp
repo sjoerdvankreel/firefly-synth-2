@@ -8,7 +8,5 @@ using namespace juce;
 
 FBParamComponent::
 FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
-FBParamsDependent(
-  plugGUI, param->topoIndices.module, 
-  param->topoIndices.param.slot, param->static_.dependencies),
+FBParamsDependent(plugGUI, param->topoIndices.module, param->static_.dependencies),
 _param(param) {}

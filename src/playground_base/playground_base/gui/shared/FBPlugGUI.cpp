@@ -23,19 +23,25 @@ _hostContext(hostContext)
 void
 FBPlugGUI::InitAllDependencies()
 {
-  auto const& params = HostContext()->Topo()->audio.params;
-  for (int i = 0; i < params.size(); i++)
-    if (FBParamTypeIsStepped(params[i].static_.type))
-      SteppedAudioParamNormalizedChanged(i);
+  auto const& guiParams = HostContext()->Topo()->gui.params;
+  for (int i = 0; i < guiParams.size(); i++)
+    GUIParamNormalizedChanged(i);
+
+  auto const& audioParams = HostContext()->Topo()->audio.params;
+  for (int i = 0; i < audioParams.size(); i++)
+    AudioParamNormalizedChanged(i);
 }
 
 void
-FBPlugGUI::SteppedAudioParamNormalizedChanged(int index)
+FBPlugGUI::GUIParamNormalizedChanged(int index, float value)
 {
-  for (auto target : _audioParamsVisibleDependents[index])
-    target->DependenciesChanged(true);
-  for (auto target : _audioParamsEnabledDependents[index])
-    target->DependenciesChanged(false);
+  GUIParamNormalizedChanged(index);
+}
+
+void
+FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, float value)
+{
+  AudioParamNormalizedChanged(index);
 }
 
 void
@@ -43,8 +49,31 @@ FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, float value)
 {
   auto control = GetControlForAudioParamIndex(index);
   control->SetValueNormalizedFromHost(value);
-  if (FBParamTypeIsStepped(control->Param()->static_.type))
-    SteppedAudioParamNormalizedChanged(index);
+  AudioParamNormalizedChanged(index);
+}
+
+void
+FBPlugGUI::GUIParamNormalizedChanged(int index)
+{
+  auto const& params = HostContext()->Topo()->gui.params;
+  if (!FBParamTypeIsStepped(params[index].static_.type))
+    return;
+  for (auto target : _guiParamsVisibleDependents[index])
+    target->DependenciesChanged(true);
+  for (auto target : _guiParamsEnabledDependents[index])
+    target->DependenciesChanged(false);
+}
+
+void
+FBPlugGUI::AudioParamNormalizedChanged(int index)
+{
+  auto const& paramTopo = HostContext()->Topo()->audio.params[index].static_;
+  if (paramTopo.output || !FBParamTypeIsStepped(paramTopo.type))
+    return;
+  for (auto target : _audioParamsVisibleDependents[index])
+    target->DependenciesChanged(true);
+  for (auto target : _audioParamsEnabledDependents[index])
+    target->DependenciesChanged(false);
 }
 
 FBParamControl*
@@ -129,9 +158,13 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
     _guiParamIndexToComponent[guiParamControl->Param()->runtimeParamIndex] = componentIndex;
   if ((paramsDependent = dynamic_cast<FBParamsDependent*>(result)) != nullptr)
   {
-    for (int p : paramsDependent->RuntimeDependencies(true))
+    for (int p : paramsDependent->RuntimeDependencies(false, true))
+      _guiParamsVisibleDependents[p].insert(paramsDependent);
+    for (int p : paramsDependent->RuntimeDependencies(false, false))
+      _guiParamsEnabledDependents[p].insert(paramsDependent);
+    for (int p : paramsDependent->RuntimeDependencies(true, true))
       _audioParamsVisibleDependents[p].insert(paramsDependent);
-    for (int p : paramsDependent->RuntimeDependencies(false))
+    for (int p : paramsDependent->RuntimeDependencies(true, false))
       _audioParamsEnabledDependents[p].insert(paramsDependent);
   }
   return result;

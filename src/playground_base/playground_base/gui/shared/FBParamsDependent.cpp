@@ -9,15 +9,15 @@ static std::vector<int>
 RuntimeDependencies(
   FBRuntimeTopo const* topo,
   FBTopoIndices const& staticModuleIndices,
-  int staticParamSlot,
-  std::vector<int> const& staticParamIndices)
+  std::vector<int> const& staticParamIndices,
+  bool audio)
 {
   std::vector<int> result;
   for (int i = 0; i < staticParamIndices.size(); i++)
   {
     FBParamTopoIndices indices;
     indices.module = staticModuleIndices;
-    indices.param.slot = staticParamSlot;
+    indices.param.slot = 0; // TODO counted params - but difficult with gui/audio params
     indices.param.index = staticParamIndices[i];
     result.push_back(topo->audio.ParamAtTopo(indices)->runtimeParamIndex);
   }
@@ -27,29 +27,50 @@ RuntimeDependencies(
 struct FBParamsDependentDependency final
 {
   std::vector<int> evaluations = {};
-  FBParamsDependency dependency = {};
-  std::vector<int> const runtimeDependencies = {};
+  FBParamsDependency dependency;
+  std::vector<int> const runtimeDependencies;
   
-  bool Evaluate(FBHostGUIContext const* hostContext);
+  bool EvaluateGUI(FBHostGUIContext const* hostContext);
+  bool EvaluateAudio(FBHostGUIContext const* hostContext);
+
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependentDependency);  
   FBParamsDependentDependency(
-    FBRuntimeTopo const* topo, FBTopoIndices const& moduleIndices,
-    int staticParamSlot, FBParamsDependency const& dependency);
+    FBRuntimeTopo const* topo, 
+    FBTopoIndices const& moduleIndices,
+    FBParamsDependency const& dependency,
+    bool audio);
 };
 
 FBParamsDependentDependency::
 FBParamsDependentDependency(
-  FBRuntimeTopo const* topo, FBTopoIndices const& moduleIndices,
-  int staticParamSlot, FBParamsDependency const& dependency) :
-evaluations(),
+  FBRuntimeTopo const* topo, 
+  FBTopoIndices const& moduleIndices,
+  FBParamsDependency const& dependency,
+  bool audio) :
 dependency(dependency),
 runtimeDependencies(RuntimeDependencies(
-  topo, moduleIndices, staticParamSlot, 
-  dependency.staticParamIndices)) {}
+  topo, moduleIndices, dependency.staticParamIndices, audio)) {}
 
 bool
-FBParamsDependentDependency::Evaluate(FBHostGUIContext const* hostContext)
+FBParamsDependentDependency::EvaluateGUI(FBHostGUIContext const* hostContext)
 {
+  if (dependency.evaluate == nullptr)
+    return true;
+  evaluations.clear();
+  for (int i = 0; i < runtimeDependencies.size(); i++)
+  {
+    auto const& param = hostContext->Topo()->gui.params[runtimeDependencies[i]];
+    evaluations.push_back(param.static_.NormalizedToAnyDiscreteSlow(
+      hostContext->GetGUIParamNormalized(runtimeDependencies[i])));
+  }
+  return dependency.evaluate(evaluations);
+}
+
+bool
+FBParamsDependentDependency::EvaluateAudio(FBHostGUIContext const* hostContext)
+{
+  if (dependency.evaluate == nullptr)
+    return true;
   evaluations.clear();
   for (int i = 0; i < runtimeDependencies.size(); i++)
   {
@@ -65,21 +86,31 @@ FBParamsDependent::
 
 FBParamsDependent::
 FBParamsDependent(
-  FBPlugGUI* plugGUI, FBTopoIndices const& moduleIndices,
-  int staticParamSlot, FBParamsDependencies const& dependencies):
+  FBPlugGUI* plugGUI, 
+  FBTopoIndices const& moduleIndices,
+  FBParamsDependencies const& dependencies):
 _plugGUI(plugGUI),
-_visible(std::make_unique<FBParamsDependentDependency>(
-  plugGUI->HostContext()->Topo(), moduleIndices, staticParamSlot, dependencies.visible)),
-_enabled(std::make_unique<FBParamsDependentDependency>(
-  plugGUI->HostContext()->Topo(), moduleIndices, staticParamSlot, dependencies.enabled)) {}
+_visibleWhenGUI(std::make_unique<FBParamsDependentDependency>(
+  plugGUI->HostContext()->Topo(), moduleIndices, dependencies.visible.gui, false)),
+_enabledWhenGUI(std::make_unique<FBParamsDependentDependency>(
+  plugGUI->HostContext()->Topo(), moduleIndices, dependencies.enabled.gui, false)),
+_visibleWhenAudio(std::make_unique<FBParamsDependentDependency>(
+  plugGUI->HostContext()->Topo(), moduleIndices, dependencies.visible.audio, true)),
+_enabledWhenAudio(std::make_unique<FBParamsDependentDependency>(
+  plugGUI->HostContext()->Topo(), moduleIndices, dependencies.enabled.audio, true)) {}
 
 std::vector<int> const& 
-FBParamsDependent::RuntimeDependencies(bool visible) const
+FBParamsDependent::RuntimeDependencies(bool audio, bool visible) const
 {
+  if(audio)
+    if (visible)
+      return _visibleWhenAudio->runtimeDependencies;
+    else
+      return _enabledWhenAudio->runtimeDependencies;
   if (visible)
-    return _visible->runtimeDependencies;
+    return _visibleWhenGUI->runtimeDependencies;
   else
-    return _enabled->runtimeDependencies;
+    return _enabledWhenGUI->runtimeDependencies;
 }
 
 void 
@@ -90,11 +121,23 @@ FBParamsDependent::DependenciesChanged(bool visible)
   auto& self = dynamic_cast<Component&>(*this);
   if (!visible)
   {
-    self.setEnabled(_enabled->Evaluate(hostContext));
+    bool enabledByGUI = _enabledWhenGUI->EvaluateGUI(hostContext);
+    bool enabledByAudio = _enabledWhenAudio->EvaluateAudio(hostContext);
+    self.setEnabled(enabledByGUI && enabledByAudio);
     return;
   }
+  
+  bool isChild = false;
+  for (int i = 0; i < _initialParent->getChildren().size(); i++)
+    if (_initialParent->getChildren()[i] == &self)
+      isChild = true;
+  bool visibleByGUI = _visibleWhenGUI->EvaluateGUI(hostContext);
+  bool visibleByAudio = _visibleWhenAudio->EvaluateAudio(hostContext);
+  bool newIsChild = visibleByAudio && visibleByGUI;
+  if (newIsChild == isChild)
+    return;
   _initialParent->removeChildComponent(&self);
-  if(_visible->Evaluate(hostContext))
+  if(newIsChild)
     _initialParent->addChildComponent(&self);
 }
 
