@@ -20,7 +20,7 @@ static Component*
 MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 0, 1, 0, 1, 0, 0 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 0, 1, 0, 1 } );
   auto voices = topo->audio.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Voices, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voices));
   grid->Add(0, 1, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, voices, "0", std::to_string(FBMaxVoices)));
@@ -30,9 +30,6 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto hostSmoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::HostSmoothTime, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hostSmoothTime));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hostSmoothTime, Slider::SliderStyle::LinearHorizontal));
-  auto guiDummyParam = topo->gui.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterGUIParam::DummyParam, 0 });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiDummyParam));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, guiDummyParam));
   return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 } 
 
