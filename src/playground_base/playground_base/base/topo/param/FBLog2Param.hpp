@@ -9,6 +9,7 @@
 #include <optional>
 #include <algorithm>
 
+// TODO do it like freqoct
 struct FBLog2Param
 {
   float min = 0.0f;
