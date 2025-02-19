@@ -8,6 +8,7 @@
 
 class FBAutoSizeLabel:
 public juce::Label,
+public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
   int const _textWidth;
