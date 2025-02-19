@@ -70,12 +70,17 @@ FBGridComponent::Remove(int row, int col, Component* child)
   auto& childrenAtCell = _cells.at({ row, col }).children;
   auto iter = std::find(childrenAtCell.begin(), childrenAtCell.end(), child);
   assert(iter != childrenAtCell.end());
+  removeChildComponent(*iter);
   childrenAtCell.erase(iter);
 }
 
 void
 FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* child)
 {
+  for (auto const& e : _cells)
+    for (auto const& c : e.second.children)
+      assert(c != child);
+
   addAndMakeVisible(child);
   FBGridCell cell = { row, col };
   auto iter = _cells.find(cell);
