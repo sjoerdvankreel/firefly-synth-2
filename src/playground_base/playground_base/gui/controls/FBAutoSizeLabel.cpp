@@ -13,6 +13,12 @@ _textWidth(FBGetStringWidthCached(text))
 }
 
 int 
+FBAutoSizeLabel::FixedHeight() const
+{
+  return 20; // TODO
+}
+
+int 
 FBAutoSizeLabel::FixedWidth(int height) const
 {
   return getBorderSize().getLeftAndRight() + _textWidth;
