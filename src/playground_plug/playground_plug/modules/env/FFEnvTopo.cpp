@@ -362,6 +362,8 @@ FFMakeEnvTopo()
   guiGraphKeyTime.Linear().max = 60.0f;
   auto selectGuiGraphKeyTime = [](auto& module) { return &module.graphKeyTime; };
   guiGraphKeyTime.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyTime);
+  guiGraphKeyTime.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  guiGraphKeyTime.dependencies.enabled.gui.When({ (int)FFEnvGUIParam::GraphKeyOn }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& guiGraphKeyBars = result->guiParams[(int)FFEnvGUIParam::GraphKeyBars];
   guiGraphKeyBars.defaultText = "4/1";
@@ -373,7 +375,8 @@ FFMakeEnvTopo()
   guiGraphKeyBars.Bars().items = MakeEnvBarsItems();
   auto selectGuiGraphKeyBars = [](auto& module) { return &module.graphKeyBars; };
   guiGraphKeyBars.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyBars);
-  guiGraphKeyBars.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  guiGraphKeyBars.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });  
+  guiGraphKeyBars.dependencies.enabled.gui.When({ (int)FFEnvGUIParam::GraphKeyOn }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }
