@@ -17,6 +17,8 @@ public FBGUIParamControl
 public:
   juce::String getTooltip() override;
   void buttonStateChanged() override;
+  void parentHierarchyChanged() override;
+
   void SetValueNormalizedFromPlug(float normalized) override;
   FBGUIParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
 };

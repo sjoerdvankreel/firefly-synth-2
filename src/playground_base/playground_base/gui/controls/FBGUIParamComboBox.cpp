@@ -13,6 +13,12 @@ FBGUIParamControl(plugGUI, param)
   SetValueNormalizedFromPlug(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
 }
 
+void
+FBGUIParamComboBox::parentHierarchyChanged()
+{
+  ParentHierarchyChanged();
+}
+
 String
 FBGUIParamComboBox::getTooltip()
 {

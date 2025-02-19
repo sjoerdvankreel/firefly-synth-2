@@ -16,6 +16,12 @@ FBGUIParamControl(plugGUI, param)
   _isOn = getToggleState();
 }
 
+void
+FBGUIParamToggleButton::parentHierarchyChanged()
+{
+  ParentHierarchyChanged();
+}
+
 String
 FBGUIParamToggleButton::getTooltip()
 {

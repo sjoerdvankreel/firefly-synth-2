@@ -20,6 +20,12 @@ FBGUIParamControl(plugGUI, param)
 }
 
 void
+FBGUIParamSlider::parentHierarchyChanged()
+{
+  ParentHierarchyChanged();
+}
+
+void
 FBGUIParamSlider::SetValueNormalizedFromPlug(float normalized)
 {
   setValue(normalized, dontSendNotification); 

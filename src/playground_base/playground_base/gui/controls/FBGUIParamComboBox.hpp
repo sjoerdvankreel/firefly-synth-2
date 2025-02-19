@@ -15,7 +15,9 @@ public FBGUIParamControl
 
 public:
   juce::String getTooltip() override;
+  void parentHierarchyChanged() override;
   void valueChanged(juce::Value& value) override;
+
   void SetValueNormalizedFromPlug(float normalized) override;
   FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
 };

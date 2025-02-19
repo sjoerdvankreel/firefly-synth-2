@@ -20,7 +20,9 @@ public:
 
   void valueChanged() override;
   juce::String getTooltip() override;
+  void parentHierarchyChanged() override;
   juce::String getTextFromValue(double value) override;
   double getValueFromText(const juce::String& text) override;
+
   void SetValueNormalizedFromPlug(float normalized) override;
 };
