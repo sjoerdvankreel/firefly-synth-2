@@ -6,29 +6,34 @@
 
 using namespace juce;
 
+static float constexpr MarkerSize = 8.0f; // TODO to topo gui or config header
+static float constexpr HalfMarkerSize = MarkerSize / 2.0f;
+
 FBModuleGraphDisplayComponent::
 FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data):
 Component(),
 _data(data) {}
 
-juce::Point<float>
-FBModuleGraphDisplayComponent::PointLocation(
-  std::vector<float> const& points, 
-  int maxPoints, int point) const
-{
-  float x = (float)point / maxPoints * getWidth();
-  float y = (1.0f - points[point]) * getHeight();
-  return { x, y };
-}
-
-void 
+void
 FBModuleGraphDisplayComponent::PaintMarker(
-  Graphics& g, std::vector<float> const& points, 
+  Graphics& g, std::vector<float> const& points,
   int maxPoints, int marker)
 {
   g.setColour(Colours::white);
-  auto markerXY = PointLocation(points, maxPoints, marker);
-  g.fillEllipse(markerXY.getX() - 4.0f, markerXY.getY() - 4.0f, 8.0f, 8.0f);
+  auto xy = PointLocation(points, maxPoints, marker);
+  float x = xy.getX() - HalfMarkerSize;
+  float y = xy.getY() - HalfMarkerSize;
+  g.fillEllipse(x, y, MarkerSize, MarkerSize);
+}
+
+Point<float>
+FBModuleGraphDisplayComponent::PointLocation(
+  std::vector<float> const& points,
+  int maxPoints, int point) const
+{
+  float y = HalfMarkerSize + (1.0f - points[point]) * (getHeight() - MarkerSize);
+  float x = HalfMarkerSize + (float)point / maxPoints * (getWidth() - MarkerSize);
+  return { x, y };
 }
 
 void
