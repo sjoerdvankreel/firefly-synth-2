@@ -19,7 +19,10 @@ RuntimeDependencies(
     indices.module = staticModuleIndices;
     indices.param.slot = 0; // TODO counted params - but difficult with gui/audio params
     indices.param.index = staticParamIndices[i];
-    result.push_back(topo->audio.ParamAtTopo(indices)->runtimeParamIndex);
+    if(audio)
+      result.push_back(topo->audio.ParamAtTopo(indices)->runtimeParamIndex);
+    else
+      result.push_back(topo->gui.ParamAtTopo(indices)->runtimeParamIndex);
   }
   return result;
 }
