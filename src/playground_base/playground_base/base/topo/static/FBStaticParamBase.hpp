@@ -8,7 +8,6 @@
 #include <playground_base/base/topo/param/FBNoteParam.hpp>
 #include <playground_base/base/topo/param/FBBarsParam.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
-#include <playground_base/base/topo/param/FBFreqOctParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 
 #include <playground_base/base/topo/static/FBParamType.hpp>
@@ -32,7 +31,6 @@ private:
   FBBarsParam bars = {};
   FBBoolParam boolean = {};
   FBLinearParam linear = {};
-  FBFreqOctParam freqOct = {};
   FBDiscreteParam discrete = {};
 
 public:
@@ -55,7 +53,6 @@ public:
   FBLog2Param& Log2();
   FBBoolParam& Boolean();
   FBLinearParam& Linear();
-  FBFreqOctParam& FreqOct();
   FBDiscreteParam& Discrete();
 
   FBListParam const& List() const;
@@ -64,7 +61,6 @@ public:
   FBLog2Param const& Log2() const;
   FBBoolParam const& Boolean() const;
   FBLinearParam const& Linear() const;
-  FBFreqOctParam const& FreqOct() const;
   FBDiscreteParam const& Discrete() const;
 
   juce::PopupMenu MakePopupMenu() const;
@@ -119,13 +115,6 @@ FBStaticParamBase::Log2()
   return log2;
 }
 
-inline FBFreqOctParam&
-FBStaticParamBase::FreqOct()
-{
-  assert(type == FBParamType::FreqOct);
-  return freqOct;
-}
-
 inline FBDiscreteParam&
 FBStaticParamBase::Discrete()
 {
@@ -175,13 +164,6 @@ FBStaticParamBase::Log2() const
   return log2;
 }
 
-inline FBFreqOctParam const&
-FBStaticParamBase::FreqOct() const
-{
-  assert(type == FBParamType::FreqOct);
-  return freqOct;
-}
-
 inline FBDiscreteParam const&
 FBStaticParamBase::Discrete() const
 {
@@ -199,7 +181,6 @@ FBStaticParamBase::ValueCount() const
   case FBParamType::Bars: return bars.ValueCount();
   case FBParamType::Log2: return log2.ValueCount();
   case FBParamType::Linear: return linear.ValueCount();
-  case FBParamType::FreqOct: return freqOct.ValueCount();
   case FBParamType::Boolean: return boolean.ValueCount();
   case FBParamType::Discrete: return discrete.ValueCount();
   default: assert(false); return {};

@@ -4,16 +4,16 @@
 float
 FBLog2Param::PlainToNormalized(float plain) const
 {
-  return std::log2(plain) / (max - min) - min;
+  return std::log2(plain / minHz) / octaves;
 }
 
 std::string
 FBLog2Param::PlainToText(FBValueTextDisplay display, float plain) const
 {
-  if (display == FBValueTextDisplay::IO)
+  if(display == FBValueTextDisplay::IO)
     return std::to_string(plain);
   return FBFormatFloat(plain, FBDefaultDisplayPrecision);
-}
+} 
 
 std::optional<float>
 FBLog2Param::TextToPlain(std::string const& text) const
@@ -22,7 +22,7 @@ FBLog2Param::TextToPlain(std::string const& text) const
   float result = std::strtof(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
-  if (result < min || result > NormalizedToPlain(1.0f))
+  if (result < minHz || result > NormalizedToPlain(1.0f))
     return {};
   return { result };
 }

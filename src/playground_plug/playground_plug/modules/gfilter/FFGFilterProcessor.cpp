@@ -51,7 +51,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   FBFixedDoubleBlock g, k;
   k.Transform([&](int v) { return 2.0 - 2.0 * resBlock[v]; });
   g.Transform([&](int v) {
-    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].FreqOct().NormalizedToPlain(freqBlock[v]);
+    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].Log2().NormalizedToPlain(freqBlock[v]);
     return xsimd::tan(std::numbers::pi * plainFreq / state.input->sampleRate); });
 
   switch (type)

@@ -1,6 +1,6 @@
 #pragma once
 
-enum class FBParamType { Boolean, Discrete, List, Note, Bars, Linear, Log2, FreqOct };
+enum class FBParamType { Boolean, Discrete, List, Note, Bars, Linear, Log2 };
 
 bool
 FBParamTypeIsList(FBParamType type);
