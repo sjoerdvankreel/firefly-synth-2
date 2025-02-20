@@ -4,7 +4,15 @@
 float
 FBLog2Param::PlainToNormalized(float plain) const
 {
-  return std::log2(plain / minHz) / octaves;
+  return _offset + std::log2(plain / _curveStart) / _expo;
+}
+
+void 
+FBLog2Param::Init(float offset, float curveStart, float curveEnd)
+{
+  _offset = offset;
+  _curveStart = curveStart;
+  _expo = std::log(curveEnd / curveStart) / std::log(2.0f);
 }
 
 std::string
@@ -22,7 +30,7 @@ FBLog2Param::TextToPlain(std::string const& text) const
   float result = std::strtof(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
-  if (result < minHz || result > NormalizedToPlain(1.0f))
+  if (result < NormalizedToPlain(0.0f) || result > NormalizedToPlain(1.0f))
     return {};
   return { result };
 }

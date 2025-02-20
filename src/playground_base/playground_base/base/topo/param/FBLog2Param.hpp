@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/topo/static/FBTextDisplay.hpp>
 
@@ -10,13 +11,21 @@
 
 struct FBLog2Param
 {
-  int octaves = 0;
-  float minHz = 0.0f;
+private:
+  float _expo = {};
+  float _offset = {};
+  float _curveStart = {};
+
+public:
+  void Init(float offset, float curveStart, float curveEnd);
 
   float PlainToNormalized(float plain) const;
   float NormalizedToPlain(float normalized) const;
   FBFloatVector NormalizedToPlain(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlain(FBDoubleVector normalized) const;
+
+  int NormalizedTimeToSamples(float normalized, float sampleRate) const;
+  int NormalizedFreqToSamples(float normalized, float sampleRate) const;
 
   int ValueCount() const { return 0; }
   std::optional<float> TextToPlain(std::string const& text) const;
@@ -26,17 +35,29 @@ struct FBLog2Param
 inline float
 FBLog2Param::NormalizedToPlain(float normalized) const
 {
-  return minHz * std::pow(2.0f, (float)octaves * normalized);
+  return _offset + _curveStart * std::pow(2.0f, _expo * normalized);
 }
 
 inline FBFloatVector 
 FBLog2Param::NormalizedToPlain(FBFloatVector normalized) const
 {
-  return minHz * xsimd::pow(FBFloatVector(2.0f), (float)octaves * normalized);
+  return _offset + _curveStart * xsimd::pow(FBFloatVector(2.0f), _expo * normalized);
 }
 
 inline FBDoubleVector 
 FBLog2Param::NormalizedToPlain(FBDoubleVector normalized) const
 {
-  return minHz * xsimd::pow(FBDoubleVector(2.0), (double)octaves * normalized);
+  return _offset + _curveStart * xsimd::pow(FBDoubleVector(2.0), _expo * normalized);
+}
+
+inline int
+FBLog2Param::NormalizedTimeToSamples(float normalized, float sampleRate) const
+{
+  return FBTimeToSamples(NormalizedToPlain(normalized), sampleRate);
+}
+
+inline int
+FBLog2Param::NormalizedFreqToSamples(float normalized, float sampleRate) const
+{
+  return FBFreqToSamples(NormalizedToPlain(normalized), sampleRate);
 }

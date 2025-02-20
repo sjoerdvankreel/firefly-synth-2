@@ -70,8 +70,7 @@ FFMakeGFilterTopo()
   freq.unit = "Hz";
   freq.id = "{24E988C5-7D41-4064-9212-111D1C3D2AF7}";
   freq.type = FBParamType::Log2;
-  freq.Log2().octaves = 10;
-  freq.Log2().minHz = 20.0f;
+  freq.Log2().Init(0.0f, 20.0f, 20000.0f);
   auto selectFreq = [](auto& module) { return &module.acc.freq; };
   freq.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFreq);
   freq.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectFreq);
