@@ -12,6 +12,7 @@ struct FBLinearParam
 {
   float min = 0.0f;
   float max = 1.0f;
+  float editSkewFactor = 1.0f;
   float displayMultiplier = 1.0f;
 
   int ValueCount() const { return 0; }
