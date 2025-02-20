@@ -175,8 +175,20 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
 {
   auto const& param = HostContext()->Topo()->gui.params[index];
   float normalized = HostContext()->GetGUIParamNormalized(index);
-  return param.tooltip + ": " + param.static_.NormalizedToText(
+  std::string result = param.tooltip + ": " + param.static_.NormalizedToText(
     FBParamTextDisplay::TooltipWithUnit, normalized);
+  if (FBParamTypeIsStepped(param.static_.type))
+    return result;
+  switch (param.static_.type)
+  {
+  case FBParamType::Log2:
+    return result + "\r\nEdit: Logarithmic";
+  case FBParamType::Linear:
+    return result + "\r\nEdit: " + (param.static_.Linear().editSkewFactor == 1.0f ? "Linear" : "Logarithmic");
+  default:
+    assert(false);
+    return {};
+  }
 }
 
 std::string
