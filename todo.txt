@@ -1,3 +1,4 @@
+make the graph control for env also log2
 split out the gui control param folder
 todo document the thing a bit
 graph control param?
