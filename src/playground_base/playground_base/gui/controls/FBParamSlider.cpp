@@ -17,6 +17,8 @@ FBParamSlider(
 FBAutoSizeSlider(plugGUI, style),
 FBParamControl(plugGUI, param)
 {
+  if (param->static_.type == FBParamType::Linear)
+    setSkewFactor(param->static_.Linear().editSkewFactor);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));
 }

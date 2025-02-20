@@ -15,6 +15,8 @@ FBGUIParamSlider(
 FBAutoSizeSlider(plugGUI, style),
 FBGUIParamControl(plugGUI, param)
 {
+  if (param->static_.type == FBParamType::Linear)
+    setSkewFactor(param->static_.Linear().editSkewFactor);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
   SetValueNormalizedFromPlug(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
 }
