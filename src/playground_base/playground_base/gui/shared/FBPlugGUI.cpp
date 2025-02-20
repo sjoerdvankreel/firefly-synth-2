@@ -199,6 +199,26 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\n Max engine value: " +
       GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
   }
-  result += "\r\nAutomation: " + param.static_.AutomationTooltip();
+  std::string editType = {};
+  std::string automationType = {};
+  if (!FBParamTypeIsStepped(param.static_.type))
+  {
+    switch (param.static_.type)
+    {
+    case FBParamType::Log2:
+      editType = "Logarithmic";
+      automationType = "Logarithmic, ";
+      break;
+    case FBParamType::Linear:
+      automationType = "Linear, ";
+      editType = param.static_.Linear().editSkewFactor == 1.0f ? "Linear" : "Logarithmic";
+      break;
+    default:
+      assert(false);
+    }
+  }
+  if (!FBParamTypeIsStepped(param.static_.type))
+    result += "\r\nEdit: " + editType;
+  result += "\r\nAutomation: " + automationType + param.static_.AutomationTooltip();
   return result;
 }
