@@ -35,7 +35,9 @@ public:
 inline float
 FBLog2Param::NormalizedToPlain(float normalized) const
 {
-  return _offset + _curveStart * std::pow(2.0f, _expo * normalized);
+  float result = _offset + _curveStart * std::pow(2.0f, _expo * normalized);
+  assert(result >= _curveStart + _offset);
+  return result;
 }
 
 inline FBFloatVector 

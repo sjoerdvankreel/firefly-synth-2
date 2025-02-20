@@ -91,7 +91,7 @@ FFMakeEnvTopo()
   delayTime.unit = "Sec";
   delayTime.id = "{D6A6CB86-A0D4-48A5-A495-038137E60519}";
   delayTime.type = FBParamType::Log2;
-  delayTime.Log2().Init(-1.0f, 1.0f, 11.0f);
+  delayTime.Log2().Init(-0.1f, 0.1f, 10.1f);
   auto selectDelayTime = [](auto& module) { return &module.block.delayTime; };
   delayTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelayTime);
   delayTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelayTime);
@@ -107,7 +107,7 @@ FFMakeEnvTopo()
   attackTime.unit = "Sec";
   attackTime.id = "{193134E4-A104-419E-92A1-276E6CE1FA85}";
   attackTime.type = FBParamType::Log2;
-  attackTime.Log2().Init(-1.0f, 1.0f, 11.0f);
+  attackTime.Log2().Init(-0.1f, 0.1f, 10.1f);
   auto selectAttackTime = [](auto& module) { return &module.block.attackTime; };
   attackTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackTime);
   attackTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectAttackTime);
@@ -123,7 +123,7 @@ FFMakeEnvTopo()
   holdTime.unit = "Sec";
   holdTime.id = "{29B5298F-C593-4E78-9D94-0FA1D36434B4}";
   holdTime.type = FBParamType::Log2;
-  holdTime.Log2().Init(-1.0f, 1.0f, 11.0f);
+  holdTime.Log2().Init(-0.1f, 0.1f, 10.1f);
   auto selectHoldTime = [](auto& module) { return &module.block.holdTime; };
   holdTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectHoldTime);
   holdTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectHoldTime);
@@ -139,7 +139,7 @@ FFMakeEnvTopo()
   decayTime.unit = "Sec";
   decayTime.id = "{DB9B7AB0-9FA2-4D6D-96D8-EA76D31B6F23}";
   decayTime.type = FBParamType::Log2;
-  decayTime.Log2().Init(-1.0f, 1.0f, 11.0f);
+  decayTime.Log2().Init(-0.1f, 0.1f, 10.1f);
   auto selectDecayTime = [](auto& module) { return &module.block.decayTime; };
   decayTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecayTime);
   decayTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDecayTime);
@@ -155,7 +155,7 @@ FFMakeEnvTopo()
   releaseTime.unit = "Sec";
   releaseTime.id = "{9AD9817D-295C-4911-BEF9-FEB46344BA8D}";
   releaseTime.type = FBParamType::Log2;
-  releaseTime.Log2().Init(-1.0f, 1.0f, 11.0f);
+  releaseTime.Log2().Init(-0.1f, 0.1f, 10.1f);
   auto selectReleaseTime = [](auto& module) { return &module.block.releaseTime; };
   releaseTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectReleaseTime);
   releaseTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectReleaseTime);
@@ -171,7 +171,7 @@ FFMakeEnvTopo()
   smoothTime.unit = "Sec";
   smoothTime.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
   smoothTime.type = FBParamType::Log2;
-  smoothTime.Log2().Init(-1.0f, 1.0f, 11.0f);
+  smoothTime.Log2().Init(-0.1f, 0.1f, 10.1f);
   auto selectSmoothTime = [](auto& module) { return &module.block.smoothTime; };
   smoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSmoothTime);
   smoothTime.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSmoothTime);

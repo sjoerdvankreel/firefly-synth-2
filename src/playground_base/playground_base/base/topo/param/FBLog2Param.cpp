@@ -4,7 +4,9 @@
 float
 FBLog2Param::PlainToNormalized(float plain) const
 {
-  return _offset + std::log2(plain / _curveStart) / _expo;
+  float result = std::log2((plain - _offset) / _curveStart) / _expo;
+  assert(0.0f <= result && result <= 1.0f);
+  return result;
 }
 
 void 
