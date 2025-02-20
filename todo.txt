@@ -1,8 +1,5 @@
 split out the gui control param folder
---X make the env time params log2
-==> display as log, modulate as linear, show in tooltip
 todo document the thing a bit
-put some padding in the graph for show de bolletjes
 graph control param?
 actually handle sustain
 handle envelope offset (actual start index in block)
