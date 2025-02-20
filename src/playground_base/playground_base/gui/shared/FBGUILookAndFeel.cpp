@@ -4,6 +4,15 @@
 
 using namespace juce;
 
+static float
+ConvertExchangeValueFromSkewed(FBStaticParamBase const& param, float normalized)
+{
+  if (param.type != FBParamType::Linear)
+    return normalized;
+  NormalisableRange<float> range(0.0f, 1.0f, 0.0f, param.Linear().editSkewFactor);
+  return range.convertTo0to1(normalized);
+}
+
 void 
 FBGUILookAndFeel::DrawLinearSliderExchangeThumb(
   Graphics& g, FBParamSlider& slider, 
@@ -12,7 +21,8 @@ FBGUILookAndFeel::DrawLinearSliderExchangeThumb(
   auto layout = getSliderLayout(slider);
   int sliderRegionStart = layout.sliderBounds.getX();
   int sliderRegionSize = layout.sliderBounds.getWidth();
-  float minExchangePos = (float)(sliderRegionStart + exchangeValue * sliderRegionSize);
+  float skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
+  float minExchangePos = (float)(sliderRegionStart + skewed * sliderRegionSize);
   float kx = minExchangePos;
   float ky = (float)y + (float)height * 0.5f;
   Point<float> maxPoint = { kx, ky };
@@ -30,7 +40,8 @@ FBGUILookAndFeel::DrawRotarySliderExchangeThumb(
 {
   auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
   auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
-  auto toAngle = rotaryStartAngle + exchangeValue * (rotaryEndAngle - rotaryStartAngle);
+  float skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
+  auto toAngle = rotaryStartAngle + skewed * (rotaryEndAngle - rotaryStartAngle);
   auto lineW = jmin(8.0f, radius * 0.5f);
   auto arcRadius = radius - lineW * 0.5f;
   auto thumbWidth = lineW * 2.0f;
