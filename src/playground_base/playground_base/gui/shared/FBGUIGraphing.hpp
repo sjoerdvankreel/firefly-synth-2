@@ -134,13 +134,17 @@ FBRenderModuleGraph(RenderData& renderData)
       maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
   }
 
+  int guiReleaseAt = -1;
   auto procExchange = renderState->ExchangeContainer()->Proc();
   float guiSampleCount = (float)graphData->pixelWidth;
+  float dspSampleRate = renderState->ExchangeContainer()->Proc()->sampleRate;
   float guiSampleRate = procExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
+  if(plotParams.releaseAt != -1)
+    guiReleaseAt = (int)std::round(guiSampleRate * plotParams.releaseAt / dspSampleRate);
   renderState->PrepareForRenderPrimary(guiSampleRate, procExchange->bpm);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
-  FBRenderModuleGraphSeries<Global>(renderData, plotParams.releaseAt, graphData->primarySeries);
+  FBRenderModuleGraphSeries<Global>(renderData, guiReleaseAt, graphData->primarySeries);
   float guiDurationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->input->sampleRate;
   renderData.graphData->text = FBFormatFloat(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   

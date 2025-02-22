@@ -1,3 +1,4 @@
+do key on as percentage of DAHD
 todo document the thing a bit
 graph control param?
 actually handle sustain
