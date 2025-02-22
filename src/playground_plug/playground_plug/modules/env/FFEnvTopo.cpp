@@ -366,6 +366,7 @@ FFMakeEnvTopo()
   guiGraphKeyTime.type = FBParamType::Linear;
   guiGraphKeyTime.Linear().min = 0.0f;
   guiGraphKeyTime.Linear().max = 60.0f;
+  guiGraphKeyTime.Linear().editSkewFactor = 0.5f;
   auto selectGuiGraphKeyTime = [](auto& module) { return &module.graphKeyTime; };
   guiGraphKeyTime.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyTime);
   guiGraphKeyTime.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
