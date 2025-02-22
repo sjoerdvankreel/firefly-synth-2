@@ -18,6 +18,11 @@ public juce::LookAndFeel_V4
     float exchangeValue);
 
 public:
+  void drawToggleButton(
+    juce::Graphics& g, juce::ToggleButton& button,
+    bool shouldDrawButtonAsHighlighted,
+    bool shouldDrawButtonAsDown) override;
+
   void drawLinearSlider(
     juce::Graphics&, 
     int x, int y, int width, int height, 
