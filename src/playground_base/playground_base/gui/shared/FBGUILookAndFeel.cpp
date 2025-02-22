@@ -53,16 +53,6 @@ FBGUILookAndFeel::DrawRotarySliderExchangeThumb(
 }
 
 void 
-FBGUILookAndFeel::drawToggleButton(
-  Graphics& g, ToggleButton& button,
-  bool shouldDrawButtonAsHighlighted,
-  bool shouldDrawButtonAsDown)
-{
-  g.fillAll(Colours::red);
-  LookAndFeel_V4::drawToggleButton(g, button, shouldDrawButtonAsHighlighted, shouldDrawButtonAsDown);
-}
-
-void 
 FBGUILookAndFeel::drawLinearSlider(
   Graphics& g,
   int x, int y, int width, int height,
@@ -88,7 +78,6 @@ FBGUILookAndFeel::drawRotarySlider(
   float rotaryStartAngle, float rotaryEndAngle, Slider& s)
 {
   FBParamSlider* paramSlider;
-  g.fillAll(Colours::green);
   LookAndFeel_V4::drawRotarySlider(g, x, y, width, height, sliderPos, rotaryStartAngle, rotaryEndAngle, s);
   if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
     return;
