@@ -29,6 +29,7 @@ struct FFEnvVoiceState
 
 class FFEnvProcessor final
 {
+  bool _released = false;
   bool _finished = false;
   int _lengthSamples = 0;
   int _positionSamples = 0;
