@@ -113,21 +113,39 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
 }
 
 bool 
+FBGraphRenderState::GUIParamBool(
+  FBParamTopoIndices const& indices) const
+{
+  auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
+  return param->static_.Boolean().NormalizedToPlain(normalized);
+}
+
+int 
+FBGraphRenderState::GUIParamLinearTimeSamples(
+  FBParamTopoIndices const& indices, float sampleRate) const
+{
+  auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
+  return param->static_.Linear().NormalizedTimeToSamples(normalized, sampleRate);
+}
+
+int 
+FBGraphRenderState::GUIParamBarsSamples(
+  FBParamTopoIndices const& indices, float sampleRate, float bpm) const
+{
+  auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
+  return param->static_.Bars().NormalizedBarsToSamples(normalized, sampleRate, bpm);
+}
+
+bool 
 FBGraphRenderState::AudioParamBool(
   FBParamTopoIndices const& indices) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
   float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
   return param->static_.Boolean().NormalizedToPlain(normalized);
-}
-
-int
-FBGraphRenderState::AudioParamLog2TimeSamples(
-  FBParamTopoIndices const& indices, float sampleRate) const
-{
-  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
-  return param->static_.Log2().NormalizedTimeToSamples(normalized, sampleRate);
 }
 
 int
