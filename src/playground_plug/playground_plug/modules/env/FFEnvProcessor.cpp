@@ -103,7 +103,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
         releaseAt = noteEvents[i].pos;
 
   int& delayPos = _stagePositions[(int)FFEnvStage::Delay];
-  for (; s < FBFixedBlockSamples && !_released && delayPos < _voiceState.delaySamples; s++, delayPos++)
+  for (; s < FBFixedBlockSamples && !_released && delayPos < _voiceState.delaySamples; s++, delayPos++, _positionSamples++)
   {
     _lastDAHDSR = 0.0f;
     _lastBeforeRelease = _lastDAHDSR;
@@ -113,7 +113,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   int& attackPos = _stagePositions[(int)FFEnvStage::Attack];
   if (_voiceState.mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && !_released && attackPos < _voiceState.attackSamples; s++, attackPos++)
+    for (; s < FBFixedBlockSamples && !_released && attackPos < _voiceState.attackSamples; s++, attackPos++, _positionSamples++)
     {
       _lastDAHDSR = attackPos / (float)_voiceState.attackSamples;
       _lastBeforeRelease = _lastDAHDSR;
@@ -121,7 +121,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
   else
-    for (; s < FBFixedBlockSamples && !_released && attackPos < _voiceState.attackSamples; s++, attackPos++)
+    for (; s < FBFixedBlockSamples && !_released && attackPos < _voiceState.attackSamples; s++, attackPos++, _positionSamples++)
     {
       float slope = minSlope + attackSlope.CV().data[s] * slopeRange;
       float pos = attackPos / (float)_voiceState.attackSamples;
@@ -132,7 +132,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     }
 
   int& holdPos = _stagePositions[(int)FFEnvStage::Hold];
-  for (; s < FBFixedBlockSamples && !_released && holdPos < _voiceState.holdSamples; s++, holdPos++)
+  for (; s < FBFixedBlockSamples && !_released && holdPos < _voiceState.holdSamples; s++, holdPos++, _positionSamples++)
   {
     _lastDAHDSR = 1.0f;
     _lastBeforeRelease = _lastDAHDSR;
@@ -142,7 +142,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   int& decayPos = _stagePositions[(int)FFEnvStage::Decay];
   if (_voiceState.mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++)
+    for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++, _positionSamples++)
     {
       float pos = decayPos / (float)_voiceState.decaySamples;
       _lastDAHDSR = sustainLevel.CV().data[s] + (1.0f - sustainLevel.CV().data[s]) * (1.0f - pos);
@@ -151,7 +151,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
   else
-    for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++)
+    for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++, _positionSamples++)
     {
       float slope = minSlope + decaySlope.CV().data[s] * slopeRange;
       float pos = decayPos / (float)_voiceState.decaySamples;
@@ -172,14 +172,14 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   int& releasePos = _stagePositions[(int)FFEnvStage::Release];
   if (_voiceState.mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++)
+    for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++, _positionSamples++)
     {
       float pos = releasePos / (float)_voiceState.releaseSamples;
       _lastDAHDSR = _lastBeforeRelease * (1.0f - pos);
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
   else
-    for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++)
+    for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++, _positionSamples++)
     {
       float slope = minSlope + releaseSlope.CV().data[s] * slopeRange;
       float pos = releasePos / (float)_voiceState.releaseSamples;
@@ -188,11 +188,10 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     }
 
   int& smoothPos = _stagePositions[(int)FFEnvStage::Smooth];
-  for (; s < FBFixedBlockSamples && smoothPos < _voiceState.smoothingSamples; s++, smoothPos++)
+  for (; s < FBFixedBlockSamples && smoothPos < _voiceState.smoothingSamples; s++, smoothPos++, _positionSamples++)
     scratch.data[s] = _smoother.Next(_lastDAHDSR);
 
   int processed = s;
-  _positionSamples += processed;
   if (s < FBFixedBlockSamples)
     _finished = true;
   for (; s < FBFixedBlockSamples; s++)
