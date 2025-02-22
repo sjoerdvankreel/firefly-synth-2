@@ -16,8 +16,18 @@ class FBFixedFloatBlock;
 struct FBStaticTopo;
 struct FBModuleGraphComponentData;
 
-typedef std::function<int(FBGraphRenderState const*)>
-FBModuleGraphPlotLengthSelector;
+FBNoteEvent
+FBDetailMakeNoteC4Off(int pos);
+
+struct FBModuleGraphPlotParams final
+{
+  int samples = -1;
+  int releaseAt = -1;
+};
+
+typedef std::function<FBModuleGraphPlotParams(
+  FBGraphRenderState const*)>
+FBModuleGraphPlotParamsSelector;
 
 typedef std::function<FBFixedFloatBlock const* (
   void const* procState, int moduleSlot)>
@@ -39,7 +49,7 @@ struct FBModuleGraphRenderData final
   Processor processor = {};
   int staticModuleIndex = -1;
   FBModuleGraphComponentData* graphData = {};
-  FBModuleGraphPlotLengthSelector plotLengthSelector = {};
+  FBModuleGraphPlotParamsSelector plotParamsSelector = {};
   FBModuleGraphVoiceOutputSelector voiceOutputSelector = {};
   FBModuleGraphGlobalOutputSelector globalOutputSelector = {};
   FBModuleGraphVoiceExchangeSelector voiceExchangeSelector = {};
@@ -50,14 +60,17 @@ template <bool Global, class Processor>
 void 
 FBRenderModuleGraphSeries(
   FBModuleGraphRenderData<Processor>& renderData, 
-  std::vector<float>& seriesOut)
+  int releaseAt, std::vector<float>& seriesOut)
 {
   seriesOut.clear();
   FBFixedFloatArray seriesIn;
+  bool released = false;
   int processed = FBFixedBlockSamples;
+  bool shouldRelease = releaseAt >= 0;
   auto renderState = renderData.graphData->renderState;
   auto moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
+  moduleProcState->input->note->clear();
 
   if constexpr(Global)
     renderData.processor.Reset(*moduleProcState);
@@ -65,7 +78,14 @@ FBRenderModuleGraphSeries(
     renderData.processor.BeginVoice(*moduleProcState);
   while (processed == FBFixedBlockSamples)
   {
+    if (shouldRelease && !released && releaseAt < FBFixedBlockSamples)
+    {
+      released = true;
+      moduleProcState->input->note->push_back(FBDetailMakeNoteC4Off(releaseAt));
+    }
     processed = renderData.processor.Process(*moduleProcState);
+    if (shouldRelease && !released)
+      releaseAt -= processed;
     if constexpr(Global)
       renderData.globalOutputSelector(
         moduleProcState->procRaw,
@@ -91,12 +111,13 @@ FBRenderModuleGraph(RenderData& renderData)
 
   assert(renderData.graphData != nullptr);
   assert(renderData.staticModuleIndex != -1);
-  assert(renderData.plotLengthSelector != nullptr);
+  assert(renderData.plotParamsSelector != nullptr);
   assert((renderData.voiceOutputSelector == nullptr) != (renderData.globalOutputSelector == nullptr));
   assert((renderData.voiceExchangeSelector == nullptr) != (renderData.globalExchangeSelector == nullptr));
 
   graphData->text = "OFF";
-  int maxDspSampleCount = renderData.plotLengthSelector(renderState);
+  auto plotParams = renderData.plotParamsSelector(renderState);
+  int maxDspSampleCount = plotParams.samples;
 
   if constexpr (Global)
   {
@@ -119,7 +140,7 @@ FBRenderModuleGraph(RenderData& renderData)
   renderState->PrepareForRenderPrimary(guiSampleRate, procExchange->bpm);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
-  FBRenderModuleGraphSeries<Global>(renderData, graphData->primarySeries);
+  FBRenderModuleGraphSeries<Global>(renderData, plotParams.releaseAt, graphData->primarySeries);
   float guiDurationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->input->sampleRate;
   renderData.graphData->text = FBFormatFloat(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   
@@ -139,7 +160,7 @@ FBRenderModuleGraph(RenderData& renderData)
       return;
     }
     auto& secondary = graphData->secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<Global>(renderData, secondary.points);
+    FBRenderModuleGraphSeries<Global>(renderData, -1, secondary.points); // TODO
     secondary.marker = (int)(positionNormalized * secondary.points.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
@@ -157,7 +178,7 @@ FBRenderModuleGraph(RenderData& renderData)
       continue;
     }
     auto& secondary = graphData->secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<false>(renderData, secondary.points);
+    FBRenderModuleGraphSeries<false>(renderData, -1, secondary.points); // TODO
     secondary.marker = (int)(positionNormalized * secondary.points.size());
   }
 }

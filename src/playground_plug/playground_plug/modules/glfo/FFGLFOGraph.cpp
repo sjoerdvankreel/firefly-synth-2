@@ -10,12 +10,15 @@
 
 #include <algorithm>
 
-static int
-PlotLengthSamples(FBGraphRenderState const* state)
+static FBModuleGraphPlotParams
+PlotParams(FBGraphRenderState const* state)
 {
+  FBModuleGraphPlotParams result = {};
+  result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
-  return state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, sampleRate);
+  result.samples = state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, sampleRate);
+  return result;
 }
 
 void
@@ -23,7 +26,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 {
   FBModuleGraphRenderData<FFGLFOProcessor> renderData = {};
   renderData.graphData = graphData;
-  renderData.plotLengthSelector = PlotLengthSamples;
+  renderData.plotParamsSelector = PlotParams;
   renderData.staticModuleIndex = (int)FFModuleType::GLFO;
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };

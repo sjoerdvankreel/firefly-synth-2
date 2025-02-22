@@ -62,7 +62,7 @@ static void GatherAccFromHost(
   }
 }
 
-FBFixedInputBlock const*
+FBFixedInputBlock*
 FBHostBufferProcessor::ProcessToFixed()
 {
   if (_buffer.audio.Count() < FBFixedBlockSamples)

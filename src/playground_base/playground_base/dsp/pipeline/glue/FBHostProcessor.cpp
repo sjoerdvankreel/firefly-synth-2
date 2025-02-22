@@ -78,7 +78,7 @@ FBHostProcessor::ProcessHost(
         *_exchangeState->Modules()[m].Voice()[v] = {};
   }
 
-  FBFixedInputBlock const* fixedIn;
+  FBFixedInputBlock* fixedIn;
   _hostBuffer->BufferFromHost(input);
   while ((fixedIn = _hostBuffer->ProcessToFixed()) != nullptr)
   {

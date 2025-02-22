@@ -11,7 +11,7 @@ class FBHostBufferProcessor final
   FBBufferInputBlock _buffer = {};
 
 public:
-  FBFixedInputBlock const* ProcessToFixed();
+  FBFixedInputBlock* ProcessToFixed();
   void BufferFromHost(FBHostInputBlock const& host);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostBufferProcessor);
 };
