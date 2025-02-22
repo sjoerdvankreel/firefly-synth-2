@@ -201,6 +201,24 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   auto result = param.tooltip + ": ";
   result += param.static_.NormalizedToText(
     FBParamTextDisplay::TooltipWithUnit, normalized);
+  std::string editType = {};
+  if (!FBParamTypeIsStepped(param.static_.type))
+  {
+    switch (param.static_.type)
+    {
+    case FBParamType::Log2:
+      editType = "Logarithmic";
+      break;
+    case FBParamType::Linear:
+      editType = param.static_.Linear().editSkewFactor == 1.0f ? "Linear" : "Logarithmic";
+      break;
+    default:
+      assert(false);
+    }
+  }
+  if (!FBParamTypeIsStepped(param.static_.type))
+    result += "\r\nEdit: " + editType;
+  result += "\r\nAutomation: " + param.static_.AutomationTooltip();
   if (!param.static_.IsVoice())
     result += "\r\nCurrent engine value: " +
     GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
@@ -211,26 +229,5 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\n Max engine value: " +
       GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
   }
-  std::string editType = {};
-  std::string automationType = {};
-  if (!FBParamTypeIsStepped(param.static_.type))
-  {
-    switch (param.static_.type)
-    {
-    case FBParamType::Log2:
-      editType = "Logarithmic";
-      automationType = "Logarithmic, ";
-      break;
-    case FBParamType::Linear:
-      automationType = "Linear, ";
-      editType = param.static_.Linear().editSkewFactor == 1.0f ? "Linear" : "Logarithmic";
-      break;
-    default:
-      assert(false);
-    }
-  }
-  if (!FBParamTypeIsStepped(param.static_.type))
-    result += "\r\nEdit: " + editType;
-  result += "\r\nAutomation: " + automationType + param.static_.AutomationTooltip();
   return result;
 }

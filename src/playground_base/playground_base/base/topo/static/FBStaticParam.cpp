@@ -15,12 +15,24 @@ FBStaticParam::AutomationType() const
 std::string
 FBStaticParam::AutomationTooltip() const
 {
+  std::string automationType = "";
+  switch (type)
+  {
+  case FBParamType::Linear: 
+    automationType = "Linear, "; 
+    break;
+  case FBParamType::Log2:
+    automationType = "Logarithmic, ";
+    break;
+  default:
+    break;
+  }
   if (acc)
     if (IsVoice())
-      return "Sample Accurate Per Voice";
+      return automationType + "Sample Accurate Per Voice";
     else
-      return "Sample Accurate";
+      return automationType + "Sample Accurate";
   if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
-    return "At Voice Start";
+    return automationType + "At Voice Start";
   return "None";
 }
