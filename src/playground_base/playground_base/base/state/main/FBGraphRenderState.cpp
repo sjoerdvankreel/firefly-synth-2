@@ -121,6 +121,15 @@ FBGraphRenderState::GUIParamBool(
   return param->static_.Boolean().NormalizedToPlain(normalized);
 }
 
+float
+FBGraphRenderState::GUIParamLinear(
+  FBParamTopoIndices const& indices) const
+{
+  auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
+  float normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
+  return param->static_.Linear().NormalizedToPlain(normalized);
+}
+
 int 
 FBGraphRenderState::GUIParamLinearTimeSamples(
   FBParamTopoIndices const& indices, float sampleRate) const

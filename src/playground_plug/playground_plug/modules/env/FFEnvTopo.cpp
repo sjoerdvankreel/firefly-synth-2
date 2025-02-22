@@ -349,41 +349,19 @@ FFMakeEnvTopo()
   sustainLevel.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSustainLevel);
   sustainLevel.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSustainLevel);
 
-  auto& guiGraphKeyOn = result->guiParams[(int)FFEnvGUIParam::GraphKeyOn];
-  guiGraphKeyOn.name = "Key On";
-  guiGraphKeyOn.slotCount = 1;
-  guiGraphKeyOn.id = "{AF4AC682-5282-49E3-BFED-14E9167B5889}";
-  guiGraphKeyOn.type = FBParamType::Boolean;
-  auto selectGuiGraphKeyOn = [](auto& module) { return &module.graphKeyOn; };
-  guiGraphKeyOn.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyOn);
-
-  auto& guiGraphKeyTime = result->guiParams[(int)FFEnvGUIParam::GraphKeyTime];
-  guiGraphKeyTime.defaultText = "30";
-  guiGraphKeyTime.name = "Key Time";
-  guiGraphKeyTime.slotCount = 1;
-  guiGraphKeyTime.unit = "Sec";
-  guiGraphKeyTime.id = "{7D3F0E5D-1BE3-423D-B586-976EA45D71E0}";
-  guiGraphKeyTime.type = FBParamType::Linear;
-  guiGraphKeyTime.Linear().min = 0.0f;
-  guiGraphKeyTime.Linear().max = 60.0f;
-  guiGraphKeyTime.Linear().editSkewFactor = 0.5f;
-  auto selectGuiGraphKeyTime = [](auto& module) { return &module.graphKeyTime; };
-  guiGraphKeyTime.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyTime);
-  guiGraphKeyTime.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  guiGraphKeyTime.dependencies.enabled.gui.When({ (int)FFEnvGUIParam::GraphKeyOn }, [](auto const& vs) { return vs[0] != 0; });
-
-  auto& guiGraphKeyBars = result->guiParams[(int)FFEnvGUIParam::GraphKeyBars];
-  guiGraphKeyBars.defaultText = "4/1";
-  guiGraphKeyBars.name = "Key Bars";
-  guiGraphKeyBars.slotCount = 1;
-  guiGraphKeyBars.unit = "Bars";
-  guiGraphKeyBars.id = "{1935D647-E846-4479-9C44-6EFE0959828C}";
-  guiGraphKeyBars.type = FBParamType::Bars;
-  guiGraphKeyBars.Bars().items = MakeEnvBarsItems();
-  auto selectGuiGraphKeyBars = [](auto& module) { return &module.graphKeyBars; };
-  guiGraphKeyBars.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyBars);
-  guiGraphKeyBars.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });  
-  guiGraphKeyBars.dependencies.enabled.gui.When({ (int)FFEnvGUIParam::GraphKeyOn }, [](auto const& vs) { return vs[0] != 0; });
+  auto& guiGraphKeyTimePct = result->guiParams[(int)FFEnvGUIParam::GraphKeyTimePct];
+  guiGraphKeyTimePct.defaultText = "100";
+  guiGraphKeyTimePct.name = "Key Time";
+  guiGraphKeyTimePct.tooltip = "Key Time As % Of DAHD";
+  guiGraphKeyTimePct.slotCount = 1;
+  guiGraphKeyTimePct.unit = "%";
+  guiGraphKeyTimePct.id = "{7D3F0E5D-1BE3-423D-B586-976EA45D71E0}";
+  guiGraphKeyTimePct.type = FBParamType::Linear;
+  guiGraphKeyTimePct.Linear().min = 0.0f;
+  guiGraphKeyTimePct.Linear().max = 2.0f;
+  guiGraphKeyTimePct.Linear().displayMultiplier = 100.0f;
+  auto selectGuiGraphKeyTimePct = [](auto& module) { return &module.graphKeyTimePct; };
+  guiGraphKeyTimePct.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyTimePct);
 
   return result;
 }

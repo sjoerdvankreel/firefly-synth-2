@@ -12,32 +12,32 @@
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)
 {
-  // TODO drop the key-time-on
   FBModuleGraphPlotParams result = {};
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float bpm = state->ExchangeContainer()->Proc()->bpm;
   float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
   bool sync = state->AudioParamBool({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
+  float graphKeyTimePct = state->GUIParamLinear({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTimePct, 0 });
   
   if (!sync)
   {
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldTime, 0 }, sampleRate);
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecayTime, 0 }, sampleRate);
     result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DelayTime, 0 }, sampleRate);
     result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::AttackTime, 0 }, sampleRate);
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 }, sampleRate);
+    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldTime, 0 }, sampleRate);
+    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecayTime, 0 }, sampleRate);
+    result.releaseAt = (int)std::round(graphKeyTimePct * result.samples);
     result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseTime, 0 }, sampleRate);
-    result.releaseAt = state->GUIParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTime, 0 }, sampleRate);
+    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 }, sampleRate);
     return result;
   }
 
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldBars, 0 }, sampleRate, bpm);
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecayBars, 0 }, sampleRate, bpm);
   result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DelayBars, 0 }, sampleRate, bpm);
   result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::AttackBars, 0 }, sampleRate, bpm);
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 }, sampleRate, bpm);
+  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldBars, 0 }, sampleRate, bpm);
+  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecayBars, 0 }, sampleRate, bpm);
+  result.releaseAt = (int)std::round(graphKeyTimePct * result.samples);
   result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseBars, 0 }, sampleRate, bpm);
-  result.releaseAt = state->GUIParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyBars, 0 }, sampleRate, bpm);
+  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 }, sampleRate, bpm);
   return result;
 }
 

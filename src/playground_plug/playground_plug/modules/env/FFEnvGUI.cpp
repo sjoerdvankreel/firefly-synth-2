@@ -128,16 +128,12 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
 Component*
 FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  // TODO vertical slider
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 0, 1 }, std::vector<int> { 0, 0 });
-  auto keyOn = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyOn, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, keyOn));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, keyOn));
-  auto keyTime = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTime, 0 });
-  grid->Add(1, 0, 1, 2, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, keyTime, Slider::SliderStyle::LinearHorizontal));
-  auto keyBars = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyBars, 0 });
-  grid->Add(1, 0, 1, 2, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, keyBars));
-  grid->MarkSection({ 0, 0, 1, 1 });
-  grid->MarkSection({ 1, 0, 1, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 0, 1 }, std::vector<int> { 0 });
+  auto keyTimePct = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTimePct, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, keyTimePct));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, keyTimePct, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 2, 1 });
   return grid;
 }

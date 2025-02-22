@@ -13,9 +13,7 @@ struct FBModuleGraphComponentData;
 class FFEnvGUIState final
 {
   friend struct FFGUIState;
-  std::array<float, 1> graphKeyOn = {};
-  std::array<float, 1> graphKeyTime = {};
-  std::array<float, 1> graphKeyBars = {};
+  std::array<float, 1> graphKeyTimePct = {};
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvGUIState);
