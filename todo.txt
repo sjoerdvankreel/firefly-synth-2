@@ -1,4 +1,4 @@
-do key on as percentage of DAHD
+fix the env plot exchange
 todo document the thing a bit
 graph control param?
 actually handle sustain

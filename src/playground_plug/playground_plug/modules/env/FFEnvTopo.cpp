@@ -362,6 +362,7 @@ FFMakeEnvTopo()
   guiGraphKeyTimePct.Linear().displayMultiplier = 100.0f;
   auto selectGuiGraphKeyTimePct = [](auto& module) { return &module.graphKeyTimePct; };
   guiGraphKeyTimePct.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyTimePct);
+  guiGraphKeyTimePct.dependencies.enabled.audio.When({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != (int)FFEnvType::Follow; });
 
   return result;
 }
