@@ -37,10 +37,13 @@ public juce::Component,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
-  FBGridType _type;
+  FBGridType const _type;
+  int const _autoSizeCol;
+  int const _autoSizeRow;
+  std::vector<int> const _rows;
+  std::vector<int> const _cols;
+
   juce::Grid _grid = {};
-  std::vector<int> _rows;
-  std::vector<int> _cols;
   std::vector<FBGridSection> _sections = {};
   std::map<FBGridCell, FBGridChildrenAndSpan> _cells = {};
 
@@ -64,4 +67,8 @@ public:
   FBGridComponent(FBGridType type, int rows, std::vector<int> const& cols);
   FBGridComponent(FBGridType type, std::vector<int> const& rows, int cols);
   FBGridComponent(FBGridType type, std::vector<int> const& rows, std::vector<int> const& cols);
+  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, int rows, int cols);
+  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, int rows, std::vector<int> const& cols);
+  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, int cols);
+  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols);
 };

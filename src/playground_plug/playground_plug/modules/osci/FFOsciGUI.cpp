@@ -42,10 +42,10 @@ static Component*
 MakeSectionGLFOToGain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 0, -1, 2, std::vector<int> { 0 });
   auto gLFOToGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gLFOToGain));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::RotaryVerticalDrag)); // TODO linear horiz, autosize by specific row
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::LinearHorizontal));
   grid->MarkSection({ 0, 0, 1, 1 });
   grid->MarkSection({ 1, 0, 1, 1 });
   return grid;

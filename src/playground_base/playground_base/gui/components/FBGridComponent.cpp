@@ -15,20 +15,38 @@ FBGridCell::operator<(FBGridCell const& rhs) const
 
 FBGridComponent::
 FBGridComponent(FBGridType type, int rows, std::vector<int> const& cols):
-FBGridComponent(type, std::vector<int>(rows, 1), cols) {}
+FBGridComponent(type, -1, -1, std::vector<int>(rows, 1), cols) {}
 
 FBGridComponent::
 FBGridComponent(FBGridType type, std::vector<int> const& rows, int cols):
-FBGridComponent(type, rows, std::vector<int>(cols, 1)) {}
+FBGridComponent(type, -1, -1, rows, std::vector<int>(cols, 1)) {}
 
 FBGridComponent::
 FBGridComponent(FBGridType type, int rows, int cols):
-FBGridComponent(type, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
+FBGridComponent(type, -1, -1, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
 
 FBGridComponent::
 FBGridComponent(FBGridType type, std::vector<int> const& rows, std::vector<int> const& cols):
+FBGridComponent(type, -1, -1, rows, cols) {}
+
+FBGridComponent::
+FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, int rows, std::vector<int> const& cols):
+FBGridComponent(type, autoSizeRow, autoSizeCol, std::vector<int>(rows, 1), cols) {}
+
+FBGridComponent::
+FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, int cols):
+FBGridComponent(type, autoSizeRow, autoSizeCol, rows, std::vector<int>(cols, 1)) {}
+
+FBGridComponent::
+FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, int rows, int cols):
+FBGridComponent(type, autoSizeRow, autoSizeCol, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
+
+FBGridComponent::
+FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols):
 Component(), 
 _type(type),
+_autoSizeRow(autoSizeRow),
+_autoSizeCol(autoSizeCol),
 _rows(rows),
 _cols(cols) {}
 
