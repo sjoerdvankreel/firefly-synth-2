@@ -86,8 +86,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& basicTriGain = procParams.acc.basicTriGain[0].Voice()[voice];
   auto const& basicSqrGain = procParams.acc.basicSqrGain[0].Voice()[voice];
 
-  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
-  auto const& gLFOFromDSP = procState->dsp.global.gLFO[0].output;
+  auto const& gLFO = procState->dsp.global.gLFO[0].output;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   auto& output = procState->dsp.voice[voice].osci[state.moduleSlot].output;
 
@@ -155,14 +154,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     basicAllAudio.Add(basicTypeAudio);
   }
 
-  // TODO this might prove difficult with mod matrices.
-  // Or not, maybe we could just move it over there. Time will tell.
-  FBFixedFloatBlock gLFO;
-  if (exchangeState == nullptr)
-    gLFO.CopyFrom(gLFOFromDSP);
-  else
-    gLFO.Fill(exchangeState->global.gLFO[0].lastOutput);
-
   FBFixedFloatBlock gainWithGLFOBlock;
   gainWithGLFOBlock.Transform([&](int v) {
     auto gLFOToGainBlock = gLFOToGain.CV(v);
@@ -172,6 +163,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     return gainWithGLFOBlock[v] * basicAllAudio[v]; });
   output.Transform([&](int ch, int v) { return basicAllAudio[v]; });
 
+  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
   if (exchangeState == nullptr)
     return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 

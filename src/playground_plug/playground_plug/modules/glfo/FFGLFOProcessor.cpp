@@ -49,7 +49,6 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   auto& exchangeDSP = exchangeState->global.gLFO[state.moduleSlot];
   float lastRate = rate.CV().data[FBFixedBlockSamples - 1];
   exchangeDSP.active = true;
-  exchangeDSP.lastOutput = output.Last();
   exchangeDSP.lengthSamples = rateParamLinear.NormalizedFreqToSamples(lastRate, state.input->sampleRate);
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
   return FBFixedBlockSamples;
