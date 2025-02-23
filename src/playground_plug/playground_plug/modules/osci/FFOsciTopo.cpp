@@ -199,7 +199,7 @@ FFMakeOsciTopo()
   auto& basicSqrPW = result->params[(int)FFOsciParam::BasicSqrPW];
   basicSqrPW.acc = true;
   basicSqrPW.defaultText = "0";
-  basicSqrPW.name = "Sqr PW";
+  basicSqrPW.name = "PW";
   basicSqrPW.slotCount = 1;
   basicSqrPW.unit = "%";
   basicSqrPW.id = "{D25EFEB3-18E0-498C-AA7C-20E1FB474A0F}";

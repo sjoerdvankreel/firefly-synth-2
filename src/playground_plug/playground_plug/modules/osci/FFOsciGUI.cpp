@@ -35,7 +35,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, cent, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ 0, 0, 1, 4 });
   grid->MarkSection({ 1, 0, 1, 4 });
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+  return grid;
 }
 
 static Component*
@@ -48,7 +48,7 @@ MakeSectionGLFOToGain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::RotaryVerticalDrag)); // TODO linear horiz, autosize by specific row
   grid->MarkSection({ 0, 0, 1, 1 });
   grid->MarkSection({ 1, 0, 1, 1 });
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+  return grid;
 }
 
 static Component*
@@ -79,9 +79,9 @@ MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
   auto basicSqrPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSqrPW, 0 });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicSqrPW));
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSqrPW, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 1, 4 });
-  grid->MarkSection({ 1, 0, 1, 4 });
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+  grid->MarkSection({ 0, 0, 1, 7 });
+  grid->MarkSection({ 1, 0, 1, 7 });
+  return grid;
 }
 
 static Component*
