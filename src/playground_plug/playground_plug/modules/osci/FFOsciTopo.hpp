@@ -5,5 +5,9 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 
-enum class FFOsciType { Sine, Saw, Pulse };
-enum class FFOsciParam { On, Type, Note, Gain, Cent, PW, GLFOToGain, Count };
+enum class FFOsciType { Off, Basic };
+enum class FFOsciParam { 
+  Type, Gain, Note, Cent,
+  BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
+  BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
+  GLFOToGain, Count };
