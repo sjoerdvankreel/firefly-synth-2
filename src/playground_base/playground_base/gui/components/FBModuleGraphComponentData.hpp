@@ -21,7 +21,6 @@ struct FBModuleGraphComponentData final
   std::string moduleName = {};
   bool bipolar = false;
   bool drawMarkers = false;
-  bool scaleToLongest = false;
   FBGraphRenderState* renderState = {};
   std::vector<int> primaryMarkers = {};
   std::vector<float> primarySeries = {};
