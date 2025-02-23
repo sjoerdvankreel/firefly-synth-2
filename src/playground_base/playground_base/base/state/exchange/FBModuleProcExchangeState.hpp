@@ -5,6 +5,7 @@
 struct FBModuleProcExchangeState final
 {
   bool active = {};
+  float lastOutput = {};
   int lengthSamples = {};
   int positionSamples = {};
   FB_COPY_MOVE_DEFCTOR(FBModuleProcExchangeState);
