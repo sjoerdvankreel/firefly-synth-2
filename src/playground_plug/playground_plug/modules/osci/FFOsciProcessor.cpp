@@ -86,7 +86,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& basicTriGain = procParams.acc.basicTriGain[0].Voice()[voice];
   auto const& basicSqrGain = procParams.acc.basicSqrGain[0].Voice()[voice];
 
-  auto const& gLFO = procState->dsp.global.gLFO[0].output;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   auto& output = procState->dsp.voice[voice].osci[state.moduleSlot].output;
 
@@ -153,6 +152,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     basicTypeAudio.Mul(basicTypeGain);
     basicAllAudio.Add(basicTypeAudio);
   }
+
+  // TODO this might prove difficult, lets see how it fares with the matrices
+  FBFixedFloatBlock gLFO;
+  auto* exchangeFromGUI = state.ExchangeFromGUIAs<FFExchangeState>();
+  if (exchangeFromGUI != nullptr)
+    gLFO.Fill(exchangeFromGUI->global.gLFO[0].lastOutput);
+  else
+    gLFO.CopyFrom(procState->dsp.global.gLFO[0].output);
 
   FBFixedFloatBlock gainWithGLFOBlock;
   gainWithGLFOBlock.Transform([&](int v) {

@@ -87,6 +87,7 @@ FBGraphRenderState::PrepareForRenderExchange()
   _moduleState->voice = nullptr;
   _input->voiceManager = nullptr;
   _procState->InitProcessing(*ExchangeContainer());
+  _moduleState->exchangeFromGUIRaw = ExchangeContainer()->Raw();
   _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->Voices());
 }
 
