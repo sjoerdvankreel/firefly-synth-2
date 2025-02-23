@@ -99,12 +99,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
 
   FBFixedFloatBlock incr;
+  FBFixedFloatBlock freq;
   FBFixedFloatBlock phase;
-  incr.Transform([&](int v) {
+  freq.Transform([&](int v) {
     auto centPlain = topo.params[(int)FFOsciParam::Cent].Linear().NormalizedToPlain(cent.CV(v));
     auto pitch = _voiceState.key + _voiceState.note - 60.0f + centPlain;
-    auto freq = FBPitchToFreq(pitch, state.input->sampleRate);
-    return freq / state.input->sampleRate; });
+    return FBPitchToFreq(pitch, state.input->sampleRate); });
+  incr.Transform([&](int v) { return freq[v] / state.input->sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
 
   // TODO make it pretty
@@ -166,7 +167,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   if (exchangeState == nullptr)
     return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 
-  exchangeState->voice[voice].osci[state.moduleSlot].active = true;
+  auto& exchangeDSP = exchangeState->voice[voice].osci[state.moduleSlot];
+  exchangeDSP.active = true;
+  exchangeDSP.lengthSamples = FBFreqToSamples(freq.Last(), state.input->sampleRate);
+  exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
   auto& exchangeParams = exchangeState->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.cent[0][voice] = cent.CV().data[FBFixedBlockSamples - 1];
