@@ -12,6 +12,7 @@ struct FBModuleProcState final
   void* procRaw = {};
   int moduleSlot = {};
   void* exchangeRaw = {};
+  bool anyExchangeActive = {};
   FBVoiceInfo const* voice = {};
   FBRuntimeTopo const* topo = {};
   FBPlugInputBlock const* input = {};

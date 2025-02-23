@@ -99,7 +99,9 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   auto const& noteEvents = *state.input->note;
   auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
-  if(_voiceState.type != FFEnvType::Follow && state.renderType != FBRenderType::GraphExchange)
+  if(_voiceState.type != FFEnvType::Follow && 
+    state.renderType != FBRenderType::GraphExchange &&
+    !state.anyExchangeActive)
     for (int i = 0; i < noteEvents.size(); i++)
       if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
         releaseAt = noteEvents[i].pos;
@@ -163,7 +165,9 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
 
-  if(_voiceState.type == FFEnvType::Sustain && state.renderType != FBRenderType::GraphExchange)
+  if(_voiceState.type == FFEnvType::Sustain && 
+    state.renderType != FBRenderType::GraphExchange && 
+    !state.anyExchangeActive)
     for (; s < FBFixedBlockSamples && !_released; s++)
     {
       _lastDAHDSR = sustainLevel.CV().data[s];
