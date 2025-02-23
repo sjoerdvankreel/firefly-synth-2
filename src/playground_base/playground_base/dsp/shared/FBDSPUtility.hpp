@@ -10,6 +10,18 @@
 inline constexpr float FBPi = std::numbers::pi_v<float>;
 inline constexpr float FBTwoPi = 2.0f * FBPi;
 
+inline float
+FBToUnipolar(float v)
+{
+  return (v + 1.0f) * 0.5f;
+}
+
+inline float
+FBToBipolar(float v)
+{
+  return (v * 2.0f) - 1.0f;
+}
+
 inline FBFloatVector
 FBToUnipolar(FBFloatVector v)
 {

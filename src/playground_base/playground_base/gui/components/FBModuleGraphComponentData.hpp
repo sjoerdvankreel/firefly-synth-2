@@ -17,6 +17,7 @@ struct FBModuleGraphSecondarySeries final
 struct FBModuleGraphComponentData final
 {
   int pixelWidth = -1;
+  bool bipolar = false;
   std::string text = {};
   std::string moduleName = {};
   FBGraphRenderState* renderState = {};

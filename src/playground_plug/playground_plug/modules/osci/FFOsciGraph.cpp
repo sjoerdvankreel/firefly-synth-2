@@ -16,7 +16,7 @@ PlotParams(FBGraphRenderState const* state)
   result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
-  result.samples = FBFreqToSamples( FBPitchToFreq(60.0f, sampleRate), sampleRate);
+  result.samples = FBFreqToSamples(FBPitchToFreq(60.0f, sampleRate), sampleRate); // TODO actual pitch
   return result;
 }
 
@@ -24,6 +24,7 @@ void
 FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
 {
   FBModuleGraphRenderData<FFOsciProcessor> renderData = {};
+  graphData->bipolar = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
   renderData.staticModuleIndex = (int)FFModuleType::Osci;

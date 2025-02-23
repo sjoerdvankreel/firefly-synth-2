@@ -1,3 +1,4 @@
+#include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 #include <playground_base/gui/components/FBModuleGraphDisplayComponent.hpp>
 
@@ -31,7 +32,10 @@ FBModuleGraphDisplayComponent::PointLocation(
   std::vector<float> const& points,
   int maxPoints, int point) const
 {
-  float y = HalfMarkerSize + (1.0f - points[point]) * (getHeight() - MarkerSize);
+  float pointValue = points[point];
+  if (_data->bipolar)
+    pointValue = FBToUnipolar(pointValue);
+  float y = HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
   float x = HalfMarkerSize + (float)point / maxPoints * (getWidth() - MarkerSize);
   return { x, y };
 }

@@ -87,6 +87,7 @@ FBModuleGraphComponent::paint(Graphics& g)
   int staticIndex = topo->modules[_tweakedModuleByUI].topoIndices.index;
 
   _data->text.clear();
+  _data->bipolar = false;
   _data->primarySeries.clear();
   _data->primaryMarkers.clear();
   _data->secondarySeries.clear();
