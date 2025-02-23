@@ -38,7 +38,14 @@ GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 }
 
 static FBFloatVector
-GeneratePulse(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
+GenerateTri(FBFloatVector phase)
+{
+  // TODO
+  return xsimd::sin(phase * FBTwoPi);
+}
+
+static FBFloatVector
+GenerateSqr(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 {
   FBFloatVector minPW = 0.05f;
   FBFloatVector realPW = (minPW + (1.0f - minPW) * pw) * 0.5f;
@@ -56,12 +63,12 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   _voiceState.key = (float)state.voice->event.note.key;
-  _voiceState.on = topo.params[(int)FFOsciParam::On].Boolean().NormalizedToPlain(
-    params.block.on[0].Voice()[voice]);
-  _voiceState.note = topo.params[(int)FFOsciParam::Note].Note().NormalizedToPlain(
-    params.block.note[0].Voice()[voice]);
-  _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].List().NormalizedToPlain(
-    params.block.type[0].Voice()[voice]);
+  _voiceState.note = topo.params[(int)FFOsciParam::Note].Note().NormalizedToPlain(params.block.note[0].Voice()[voice]);
+  _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].List().NormalizedToPlain(params.block.type[0].Voice()[voice]);
+  _voiceState.basicSinOn = topo.params[(int)FFOsciParam::BasicSinOn].Boolean().NormalizedToPlain(params.block.basicSinOn[0].Voice()[voice]);
+  _voiceState.basicSawOn = topo.params[(int)FFOsciParam::BasicSawOn].Boolean().NormalizedToPlain(params.block.basicSawOn[0].Voice()[voice]);
+  _voiceState.basicTriOn = topo.params[(int)FFOsciParam::BasicTriOn].Boolean().NormalizedToPlain(params.block.basicTriOn[0].Voice()[voice]);
+  _voiceState.basicSqrOn = topo.params[(int)FFOsciParam::BasicSqrOn].Boolean().NormalizedToPlain(params.block.basicSqrOn[0].Voice()[voice]);
 }
 
 void
@@ -70,17 +77,20 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& pw = procParams.acc.pw[0].Voice()[voice];
   auto const& cent = procParams.acc.cent[0].Voice()[voice];
-  auto const& gain1 = procParams.acc.gain[0].Voice()[voice];
-  auto const& gain2 = procParams.acc.gain[1].Voice()[voice];
+  auto const& gain = procParams.acc.gain[0].Voice()[voice];
   auto const& gLFOToGain = procParams.acc.gLFOToGain[0].Voice()[voice];
+  auto const& basicSqrPW = procParams.acc.basicSqrPW[0].Voice()[voice];
+  auto const& basicSinGain = procParams.acc.basicSinGain[0].Voice()[voice];
+  auto const& basicSawGain = procParams.acc.basicSawGain[0].Voice()[voice];
+  auto const& basicTriGain = procParams.acc.basicTriGain[0].Voice()[voice];
+  auto const& basicSqrGain = procParams.acc.basicSqrGain[0].Voice()[voice];
 
   auto const& gLFO = procState->dsp.global.gLFO[0].output;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   auto& output = procState->dsp.voice[voice].osci[state.moduleSlot].output;
 
-  if (!_voiceState.on)
+  if (_voiceState.type == FFOsciType::Off)
   {
     output.Fill(0.0f);
     return;
@@ -108,13 +118,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     assert(false); break;
   }
 
-  FBFixedFloatBlock gain1WithGLFOBlock;
-  gain1WithGLFOBlock.Transform([&](int v) {
+  FBFixedFloatBlock gainWithGLFOBlock;
+  gainWithGLFOBlock.Transform([&](int v) {
     auto gLFOToGainBlock = gLFOToGain.CV(v);
-    return (1.0f - gLFOToGainBlock) * gain1.CV(v) + gLFOToGainBlock * gLFO[v] * gain1.CV(v); });
+    return (1.0f - gLFOToGainBlock) * gain.CV(v) + gLFOToGainBlock * gLFO[v] * gain.CV(v); });
 
   mono.Transform([&](int v) {
-    return gain1WithGLFOBlock[v] * gain2.CV(v) * mono[v]; });
+    return gainWithGLFOBlock[v] * mono[v]; });
   output.Transform([&](int ch, int v) { return mono[v]; });
 
   auto* exchangeState = state.ExchangeAs<FFExchangeState>();
@@ -122,9 +132,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     return; 
   exchangeState->voice[voice].osci[state.moduleSlot].active = true;
   auto& exchangeParams = exchangeState->param.voice.osci[state.moduleSlot];
-  exchangeParams.acc.gain[0][voice] = gain1WithGLFOBlock.Last();
-  exchangeParams.acc.pw[0][voice] = pw.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.cent[0][voice] = cent.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.gain[1][voice] = gain2.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSqrPW[0][voice] = basicSqrPW.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSinGain[0][voice] = basicSinGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSawGain[0][voice] = basicSawGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicTriGain[0][voice] = basicTriGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGain.CV().data[FBFixedBlockSamples - 1];
 }

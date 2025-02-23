@@ -8,9 +8,12 @@ struct FBModuleProcState;
 
 struct FFOsciVoiceState final
 {
-  bool on = {};
   int note = {};
   float key = {}; // TODO floating key
+  bool basicSinOn = {};
+  bool basicSawOn = {};
+  bool basicTriOn = {};
+  bool basicSqrOn = {};
   FFOsciType type = {};
 };
 
