@@ -88,6 +88,8 @@ FBModuleGraphComponent::paint(Graphics& g)
 
   _data->text.clear();
   _data->bipolar = false;
+  _data->drawMarkers = false;
+  _data->scaleToLongest = false;
   _data->primarySeries.clear();
   _data->primaryMarkers.clear();
   _data->secondarySeries.clear();

@@ -70,11 +70,12 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     int marker = _data->secondarySeries[i].marker;
     auto const& points = _data->secondarySeries[i].points;
     PaintSeries(g, Colours::grey, points, maxPoints);
-    if (marker != -1)
+    if (marker != -1 && _data->drawMarkers)
       PaintMarker(g, points, maxPoints, marker);
   }
   
   PaintSeries(g, Colours::white, _data->primarySeries, maxPoints);
-  for (int i = 0; i < _data->primaryMarkers.size(); i++)
-    PaintMarker(g, _data->primarySeries, maxPoints, _data->primaryMarkers[i]);
+  if(_data->drawMarkers)
+    for (int i = 0; i < _data->primaryMarkers.size(); i++)
+      PaintMarker(g, _data->primarySeries, maxPoints, _data->primaryMarkers[i]);
 }

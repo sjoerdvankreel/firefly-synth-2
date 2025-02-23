@@ -45,6 +45,7 @@ void
 FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 {
   FBModuleGraphRenderData<FFEnvProcessor> renderData = {};
+  graphData->drawMarkers = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
   renderData.staticModuleIndex = (int)FFModuleType::Env;

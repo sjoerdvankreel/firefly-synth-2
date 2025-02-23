@@ -25,6 +25,7 @@ void
 FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 {
   FBModuleGraphRenderData<FFGLFOProcessor> renderData = {};
+  graphData->drawMarkers = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
   renderData.staticModuleIndex = (int)FFModuleType::GLFO;
