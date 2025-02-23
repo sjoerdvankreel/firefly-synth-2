@@ -40,13 +40,13 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
     auto phase = _phase.Next(plainRate / state.input->sampleRate);
     return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
 
-  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
-  if (exchangeState == nullptr)
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
     return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 
-  auto& exchangeParams = exchangeState->param.global.gLFO[state.moduleSlot];
+  auto& exchangeParams = exchangeToGUI->param.global.gLFO[state.moduleSlot];
   exchangeParams.acc.rate[0] = rate.CV().data[FBFixedBlockSamples - 1];  
-  auto& exchangeDSP = exchangeState->global.gLFO[state.moduleSlot];
+  auto& exchangeDSP = exchangeToGUI->global.gLFO[state.moduleSlot];
   float lastRate = rate.CV().data[FBFixedBlockSamples - 1];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = rateParamLinear.NormalizedFreqToSamples(lastRate, state.input->sampleRate);

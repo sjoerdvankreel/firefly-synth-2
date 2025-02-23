@@ -22,10 +22,10 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   float voicesNorm = voicesParam->static_.Discrete().PlainToNormalized(state.input->voiceManager->VoiceCount());
   (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = voicesNorm;
 
-  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
-  if (exchangeState == nullptr)
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
     return;
-  exchangeState->global.master[state.moduleSlot].active = true;
-  auto& exchangeParams = exchangeState->param.global.master[state.moduleSlot];
+  exchangeToGUI->global.master[state.moduleSlot].active = true;
+  auto& exchangeParams = exchangeToGUI->param.global.master[state.moduleSlot];
   exchangeParams.acc.gain[0] = gain.CV().data[FBFixedBlockSamples - 1];
 }

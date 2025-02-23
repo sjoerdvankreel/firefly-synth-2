@@ -11,8 +11,9 @@ struct FBModuleProcState final
 {
   void* procRaw = {};
   int moduleSlot = {};
-  void* exchangeRaw = {};
   bool anyExchangeActive = {};
+  void* exchangeToGUIRaw = {};
+  void* exchangeFromGUIRaw = {};
   FBVoiceInfo const* voice = {};
   FBRuntimeTopo const* topo = {};
   FBPlugInputBlock const* input = {};
@@ -20,7 +21,9 @@ struct FBModuleProcState final
   std::unordered_map<int, float>* outputParamsNormalized = {};
 
   template <class T> T* ProcAs() { return static_cast<T*>(procRaw); }
-  template <class T> T* ExchangeAs() { return static_cast<T*>(exchangeRaw); }
   template <class T> T const* ProcAs() const { return static_cast<T const*>(procRaw); }
-  template <class T> T const* ExchangeAs() const { return static_cast<T const*>(exchangeRaw); }
+  template <class T> T* ExchangeToGUIAs() { return static_cast<T*>(exchangeToGUIRaw); }
+  template <class T> T* ExchangeFromGUIAs() { return static_cast<T*>(exchangeFromGUIRaw); }
+  template <class T> T const* ExchangeToGUIAs() const { return static_cast<T const*>(exchangeToGUIRaw); }
+  template <class T> T const* ExchangeFromGUIAs() const { return static_cast<T const*>(exchangeFromGUIRaw); }
 };

@@ -163,15 +163,15 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     return gainWithGLFOBlock[v] * basicAllAudio[v]; });
   output.Transform([&](int ch, int v) { return basicAllAudio[v]; });
 
-  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
-  if (exchangeState == nullptr)
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
     return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 
-  auto& exchangeDSP = exchangeState->voice[voice].osci[state.moduleSlot];
+  auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(freq.Last(), state.input->sampleRate);
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
-  auto& exchangeParams = exchangeState->param.voice.osci[state.moduleSlot];
+  auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.cent[0][voice] = cent.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGain.CV().data[FBFixedBlockSamples - 1];

@@ -147,11 +147,11 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     }
   output.LoadCastFromDoubleArray(audioOut);  
 
-  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
-  if (exchangeState == nullptr)
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
     return;
-  auto& exchangeParams = exchangeState->param.global.gFilter[state.moduleSlot];
-  exchangeState->global.gFilter[state.moduleSlot].active = true;
+  auto& exchangeParams = exchangeToGUI->param.global.gFilter[state.moduleSlot];
+  exchangeToGUI->global.gFilter[state.moduleSlot].active = true;
   exchangeParams.acc.res[0] = res.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.freq[0] = freq.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.gain[0] = gain.CV().data[FBFixedBlockSamples - 1];

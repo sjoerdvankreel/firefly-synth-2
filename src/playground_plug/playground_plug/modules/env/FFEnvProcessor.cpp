@@ -207,14 +207,14 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     scratch.data[s] = _smoother.State();
   output.LoadFromFloatArray(scratch);
 
-  auto* exchangeState = state.ExchangeAs<FFExchangeState>();
-  if (exchangeState == nullptr || processed == 0)
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr || processed == 0)
     return processed;
-  auto& exchangeDSP = exchangeState->voice[voice].env[state.moduleSlot];
+  auto& exchangeDSP = exchangeToGUI->voice[voice].env[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = _lengthSamples;
   exchangeDSP.positionSamples = _positionSamples;
-  auto& exchangeParams = exchangeState->param.voice.env[state.moduleSlot];
+  auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
   exchangeParams.acc.decaySlope[0][voice] = decaySlope.CV().data[processed - 1];
   exchangeParams.acc.attackSlope[0][voice] = attackSlope.CV().data[processed - 1];
   exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.CV().data[processed - 1];
