@@ -16,7 +16,7 @@ class FBParamsDependent
 {
 protected:
   FBPlugGUI* const _plugGUI;
-  juce::Component* _initialParent = {}; // TODO what about graph control?
+  juce::Component* _initialParent = {};
 
   void ParentHierarchyChanged();
 

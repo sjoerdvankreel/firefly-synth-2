@@ -128,7 +128,6 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
 Component*
 FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  // TODO vertical slider
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 0, 1 }, std::vector<int> { 0 });
   auto keyTimePct = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTimePct, 0 });
