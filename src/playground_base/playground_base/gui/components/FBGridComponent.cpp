@@ -121,6 +121,8 @@ FBGridComponent::FixedRowHeight(int row) const
   int result = 0;
   for (int c = 0; c < _cols.size(); c++)
   {
+    if (_autoSizeCol != -1 && _autoSizeCol != c)
+      continue;
     auto iter = _cells.find({ row, c });
     if (iter == _cells.end())
       continue;
@@ -153,6 +155,8 @@ FBGridComponent::FixedColWidth(int col, int height) const
 
   for (int r = 0; r < _rows.size(); r++)
   {
+    if (_autoSizeRow != -1 && _autoSizeRow != r)
+      continue;
     auto iter = _cells.find({ r, col });
     if (iter == _cells.end())
       continue;
