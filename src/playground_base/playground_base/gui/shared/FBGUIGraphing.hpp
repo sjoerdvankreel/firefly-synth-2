@@ -2,6 +2,7 @@
 
 #include <playground_base/base/shared/FBFormat.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
+#include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
@@ -144,6 +145,7 @@ FBRenderModuleGraph(RenderData& renderData)
   renderState->PrepareForRenderPrimary(guiSampleRate, procExchange->bpm);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
+  moduleProcState->renderType = FBRenderType::GraphPrimary;
   FBRenderModuleGraphSeries<Global>(renderData, guiReleaseAt, graphData->primarySeries);
   float guiDurationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->input->sampleRate;
   renderData.graphData->text = FBFormatFloat(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
@@ -163,8 +165,9 @@ FBRenderModuleGraph(RenderData& renderData)
         (int)(positionNormalized * graphData->primarySeries.size()));
       return;
     }
+    moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<Global>(renderData, -1, secondary.points); // TODO
+    FBRenderModuleGraphSeries<Global>(renderData, -1, secondary.points);
     secondary.marker = (int)(positionNormalized * secondary.points.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
@@ -181,8 +184,9 @@ FBRenderModuleGraph(RenderData& renderData)
         (int)(positionNormalized * graphData->primarySeries.size()));
       continue;
     }
+    moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<false>(renderData, -1, secondary.points); // TODO
+    FBRenderModuleGraphSeries<false>(renderData, -1, secondary.points);
     secondary.marker = (int)(positionNormalized * secondary.points.size());
   }
 }

@@ -30,6 +30,7 @@ FFPlugProcessor::MakeModuleState(
   result.input = &input;
   result.procRaw = _procState;
   result.exchangeRaw = _exchangeState;
+  result.renderType = FBRenderType::Audio;
   return result;
 }
 

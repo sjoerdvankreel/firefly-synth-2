@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/state/proc/FBRenderType.hpp>
 #include <unordered_map>
 
 struct FBVoiceInfo;
@@ -14,6 +15,7 @@ struct FBModuleProcState final
   FBVoiceInfo const* voice = {};
   FBRuntimeTopo const* topo = {};
   FBPlugInputBlock const* input = {};
+  FBRenderType renderType = FBRenderType::Audio;
   std::unordered_map<int, float>* outputParamsNormalized = {};
 
   template <class T> T* ProcAs() { return static_cast<T*>(procRaw); }

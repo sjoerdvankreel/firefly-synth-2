@@ -15,6 +15,7 @@ void
 FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
 {
   _finished = false;
+  _released = false;
   _lastDAHDSR = 0.0f;
   _positionSamples = 0;
   _stagePositions.fill(0);
@@ -45,7 +46,8 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
     _voiceState.releaseSamples = topo.params[(int)FFEnvParam::ReleaseTime].Linear().NormalizedTimeToSamples(params.block.releaseTime[0].Voice()[voice], state.input->sampleRate);
     _voiceState.smoothingSamples = topo.params[(int)FFEnvParam::SmoothTime].Linear().NormalizedTimeToSamples(params.block.smoothTime[0].Voice()[voice], state.input->sampleRate);
   }
-  _lengthSamples = _voiceState.delaySamples + _voiceState.attackSamples + _voiceState.holdSamples + _voiceState.decaySamples + _voiceState.releaseSamples + _voiceState.smoothingSamples;
+  _lengthSamplesUpToRelease = _voiceState.delaySamples + _voiceState.attackSamples + _voiceState.holdSamples + _voiceState.decaySamples;
+  _lengthSamples = _lengthSamplesUpToRelease + _voiceState.releaseSamples + _voiceState.smoothingSamples;
 
   auto const& sustain = params.acc.sustainLevel[0].Voice()[voice].CV();
   if (_voiceState.delaySamples > 0)
@@ -97,7 +99,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   auto const& noteEvents = *state.input->note;
   auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
-  if(_voiceState.type != FFEnvType::Follow)
+  if(_voiceState.type != FFEnvType::Follow && state.renderType != FBRenderType::GraphExchange)
     for (int i = 0; i < noteEvents.size(); i++)
       if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
         releaseAt = noteEvents[i].pos;
@@ -107,7 +109,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   {
     _lastDAHDSR = 0.0f;
     _lastBeforeRelease = _lastDAHDSR;
-    _released |=  s == releaseAt;
+    _released |= s == releaseAt;
     scratch.data[s] = _smoother.Next(_lastDAHDSR);
   }
 
@@ -161,7 +163,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
 
-  if(_voiceState.type == FFEnvType::Sustain)
+  if(_voiceState.type == FFEnvType::Sustain && state.renderType != FBRenderType::GraphExchange)
     for (; s < FBFixedBlockSamples && !_released; s++)
     {
       _lastDAHDSR = sustainLevel.CV().data[s];
@@ -169,6 +171,9 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       _released |= s == releaseAt;
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
+
+  if (s < FBFixedBlockSamples)
+    _positionSamples = std::max(_positionSamples, _lengthSamplesUpToRelease);
 
   int& releasePos = _stagePositions[(int)FFEnvStage::Release];
   if (_voiceState.mode == FFEnvMode::Linear)
