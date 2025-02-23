@@ -41,6 +41,14 @@ FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
   return FBTimeToSamples((bars.num * 240.0f) / (bars.denom * bpm), sampleRate);
 }
 
+inline float
+FBPitchToFreq(float pitch, float sampleRate)
+{
+  float nyquist(sampleRate * 0.5f);
+  float freq(440.0f * std::pow(2.0f, (pitch - 69.0f) / 12.0f));
+  return std::min(nyquist, freq);
+}
+
 inline FBFloatVector
 FBPitchToFreq(FBFloatVector pitch, float sampleRate)
 { 

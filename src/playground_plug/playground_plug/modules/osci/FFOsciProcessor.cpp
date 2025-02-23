@@ -71,7 +71,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.basicSqrOn = topo.params[(int)FFOsciParam::BasicSqrOn].Boolean().NormalizedToPlain(params.block.basicSqrOn[0].Voice()[voice]);
 }
 
-void
+int
 FFOsciProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
@@ -93,8 +93,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   if (_voiceState.type == FFOsciType::Off)
   {
     output.Fill(0.0f);
-    return;
+    return 0;
   }
+
+  int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
 
   FBFixedFloatBlock incr;
   FBFixedFloatBlock phase;
@@ -162,7 +164,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto* exchangeState = state.ExchangeAs<FFExchangeState>();
   if (exchangeState == nullptr)
-    return; 
+    return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
+
   exchangeState->voice[voice].osci[state.moduleSlot].active = true;
   auto& exchangeParams = exchangeState->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
@@ -173,4 +176,5 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.basicSawGain[0][voice] = basicSawGain.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.basicTriGain[0][voice] = basicTriGain.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGain.CV().data[FBFixedBlockSamples - 1];
+  return FBFixedBlockSamples;
 }
