@@ -1,7 +1,4 @@
-fix the env plot exchange
 todo document the thing a bit
-graph control param?
-actually handle sustain
 handle envelope offset (actual start index in block)
 voice block start position (fake it by amp env?)
 profile the thing - why gui expensive?
