@@ -19,6 +19,7 @@ struct FBModuleGraphComponentData final
   int pixelWidth = -1;
   bool bipolar = false;
   bool drawMarkers = false;
+  bool skipDrawOnEqualsPrimary = true;
   std::string text = {};
   std::string moduleName = {};
   FBGraphRenderState* renderState = {};

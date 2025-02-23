@@ -161,7 +161,8 @@ FBRenderModuleGraph(RenderData& renderData)
     if (!moduleExchange->ShouldGraph())
       return;
     float positionNormalized = moduleExchange->PositionNormalized();
-    if (renderState->GlobalModuleExchangeStateEqualsPrimary(
+    if (graphData->skipDrawOnEqualsPrimary &&
+      renderState->GlobalModuleExchangeStateEqualsPrimary(
       renderData.staticModuleIndex, moduleProcState->moduleSlot))
     {
       graphData->primaryMarkers.push_back(
@@ -180,7 +181,8 @@ FBRenderModuleGraph(RenderData& renderData)
       continue;
     renderState->PrepareForRenderExchangeVoice(v);
     float positionNormalized = moduleExchange->PositionNormalized();
-    if (renderState->VoiceModuleExchangeStateEqualsPrimary(
+    if (graphData->skipDrawOnEqualsPrimary &&
+      renderState->VoiceModuleExchangeStateEqualsPrimary(
       v, renderData.staticModuleIndex, moduleProcState->moduleSlot))
     {
       graphData->primaryMarkers.push_back(

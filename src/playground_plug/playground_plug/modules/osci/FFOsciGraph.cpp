@@ -27,6 +27,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
 {
   FBModuleGraphRenderData<FFOsciProcessor> renderData = {};
   graphData->bipolar = true;
+  graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
   renderData.staticModuleIndex = (int)FFModuleType::Osci;
