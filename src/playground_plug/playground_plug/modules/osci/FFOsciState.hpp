@@ -41,13 +41,13 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   std::array<TVoiceAcc, 1> cent = {};
+  std::array<TVoiceAcc, 1> gain = {};
   std::array<TVoiceAcc, 1> gLFOToGain = {};
   std::array<TVoiceAcc, 1> basicSqrPW = {};
   std::array<TVoiceAcc, 1> basicSinGain = {};
   std::array<TVoiceAcc, 1> basicSawGain = {};
   std::array<TVoiceAcc, 1> basicTriGain = {};
   std::array<TVoiceAcc, 1> basicSqrGain = {};
-  std::array<TVoiceAcc, FFOsciGainCount> gain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };

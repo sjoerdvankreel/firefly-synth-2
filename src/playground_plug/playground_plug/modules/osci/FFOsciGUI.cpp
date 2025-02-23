@@ -17,54 +17,71 @@
 using namespace juce;
 
 static Component*
-MakeSectionPW(FBPlugGUI* plugGUI, int moduleSlot)
-{
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 1 });
-  auto pw = topo->audio.ParamAtTopo({(int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::PW, 0});
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, pw));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, pw, Slider::SliderStyle::LinearHorizontal));
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
-}
-
-static Component*
 MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
-  auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::On, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Type, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  auto gain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 0 });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
   auto note = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, note));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, note));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, note));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, note));
   auto cent = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, cent));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, cent, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, cent));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, cent, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 1, 4 });
+  grid->MarkSection({ 1, 0, 1, 4 });
   return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 }
 
 static Component*
-MakeSectionGain(FBPlugGUI* plugGUI, int moduleSlot)
+MakeSectionGLFOToGain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 0, 0, 0, 0 });
-  auto gain1 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain1));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain1, Slider::SliderStyle::RotaryVerticalDrag));
-  auto gain2 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Gain, 1 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain2));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain2, Slider::SliderStyle::RotaryVerticalDrag));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0 });
   auto gLFOToGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gLFOToGain));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::RotaryVerticalDrag));
-  FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
-  FBParamsDependencies dependencies = {};
-  dependencies.visible.audio.When({(int)FFOsciParam::On}, [](auto const& vs) { return vs[0] != 0; });
-  return plugGUI->StoreComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependencies);
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gLFOToGain));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::LinearHorizontal));
+  grid->MarkSection({ 0, 0, 1, 1 });
+  grid->MarkSection({ 1, 0, 1, 1 });
+  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+}
+
+static Component*
+MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
+{
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0, 0, 1, 0, 0, 1, 0 });
+  auto basicSinOn = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSinOn, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicSinOn));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, basicSinOn));
+  auto basicSinGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSinGain, 0 });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSinGain, Slider::SliderStyle::LinearHorizontal));
+  auto basicSawOn = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSawOn, 0 });
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicSawOn));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, basicSawOn));
+  auto basicSawGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSawGain, 0 });
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSawGain, Slider::SliderStyle::LinearHorizontal));
+  auto basicTriOn = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicTriOn, 0 });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicTriOn));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, basicTriOn));
+  auto basicTriGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicTriGain, 0 });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicTriGain, Slider::SliderStyle::LinearHorizontal));
+  auto basicSqrOn = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSqrOn, 0 });
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicSqrOn));
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, basicSqrOn));
+  auto basicSqrGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSqrGain, 0 });
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSqrGain, Slider::SliderStyle::LinearHorizontal));
+  auto basicSqrPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSqrPW, 0 });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicSqrPW));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSqrPW, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 1, 4 });
+  grid->MarkSection({ 1, 0, 1, 4 });
+  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
 }
 
 static Component*
@@ -72,8 +89,8 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto result = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 1 });
   result->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  result->Add(0, 1, MakeSectionGain(plugGUI, moduleSlot));
-  result->Add(0, 2, MakeSectionPW(plugGUI, moduleSlot));
+  result->Add(0, 1, MakeSectionGLFOToGain(plugGUI, moduleSlot));
+  result->Add(0, 2, MakeSectionBasic(plugGUI, moduleSlot));
   return result;
 }
 

@@ -1,3 +1,4 @@
+do we need the _voiceState really ? if so, just copy blockparams at voice start (the whole thing)
 todo document the thing a bit
 handle envelope offset (actual start index in block)
 voice block start position (fake it by amp env?)

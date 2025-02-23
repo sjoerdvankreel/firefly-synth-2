@@ -34,7 +34,7 @@ FFMakeOsciTopo()
   gain.acc = true;
   gain.defaultText = "100";
   gain.name = "Gain";
-  gain.slotCount = FFOsciGainCount;
+  gain.slotCount = 1;
   gain.unit = "%";
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   gain.type = FBParamType::Linear;
