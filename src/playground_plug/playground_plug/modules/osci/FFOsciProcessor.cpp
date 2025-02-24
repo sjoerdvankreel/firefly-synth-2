@@ -61,7 +61,7 @@ GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
   FBFloatVector u = 2.0f - x;
   FBFloatVector u2 = u * u;
   u *= u2 * u2;
-  y -= u * phaseBetween0And2IncrMul * u;
+  y -= phaseBetween0And2IncrMul * u;
   FBFloatVector v = 1.0f - x;
   FBFloatVector v2 = v * v;
   v *= v2 * v2;
