@@ -8,6 +8,9 @@
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
+#include <playground_plug/modules/gui_settings/FFGUISettingsTopo.hpp>
+#include <playground_plug/modules/gui_settings/FFGUISettingsState.hpp>
+
 #include <playground_base/base/topo/static/FBStaticTopo.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
@@ -65,7 +68,7 @@ SpecialGUIParamsSelector(
 {
   FBSpecialGUIParams result = {};
   result.userScale = MakeSpecialGUIParam(
-    topo, state, (int)FFModuleType::Master, (int)FFMasterGUIParam::UserScale);
+    topo, state, (int)FFModuleType::Master, (int)FFGUISettingsGUIParam::UserScale);
   return result;
 }
 
@@ -103,5 +106,6 @@ FFMakeTopo()
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
+  result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   return result;
 }

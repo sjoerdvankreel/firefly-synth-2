@@ -13,7 +13,6 @@ FFMakeMasterTopo()
   result->slotCount = 1;
   result->id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
   result->params.resize((int)FFMasterParam::Count);
-  result->guiParams.resize((int)FFMasterGUIParam::Count);
   result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.master; });
   auto selectGuiModule = [](auto& state) { return &state.master; };
   auto selectModule = [](auto& state) { return &state.global.master; };
@@ -61,17 +60,6 @@ FFMakeMasterTopo()
   voices.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectVoices);
   voices.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectVoices);
   voices.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectVoices);
-
-  auto& guiUserScale = result->guiParams[(int)FFMasterGUIParam::UserScale];
-  guiUserScale.defaultText = "1";
-  guiUserScale.name = "User Scale";
-  guiUserScale.slotCount = 1;
-  guiUserScale.id = "{48F2A59F-789F-4076-AB4B-4CC19B3A929A}";
-  guiUserScale.type = FBParamType::Linear;
-  guiUserScale.Linear().min = 0.5f;
-  guiUserScale.Linear().max = 16.0f;
-  auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
-  guiUserScale.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
   return result;
 }
