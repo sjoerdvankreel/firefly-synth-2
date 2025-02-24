@@ -15,13 +15,10 @@ GenerateSin(FBFloatVector phase)
   return xsimd::sin(phase * FBTwoPi);
 }
 
+// https://www.kvraudio.com/forum/viewtopic.php?t=375517
 static FBFloatVector
 GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 { 
-  // https://www.kvraudio.com/forum/viewtopic.php?t=375517
-  // y = phase * 2 - 1
-  // if (phase < inc) y -= b = phase / inc, (2.0f - b) * b - 1.0f
-  // else if (phase >= 1.0f - inc) y -= b = (phase - 1.0f) / inc, (b + 2.0f) * b + 1.0f
   FBFloatVector one = 1.0f;
   FBFloatVector zero = 0.0f;
   FBFloatVector blepLo = phase / incr;
@@ -38,13 +35,6 @@ GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 }
 
 static FBFloatVector
-GenerateTri(FBFloatVector phase)
-{
-  // TODO
-  return xsimd::sin(phase * FBTwoPi);
-}
-
-static FBFloatVector
 GenerateSqr(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 {
   FBFloatVector minPW = 0.05f;
@@ -52,6 +42,42 @@ GenerateSqr(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
   FBFloatVector phase2 = phase + realPW;
   phase2 -= xsimd::floor(phase2);
   return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;
+}
+
+// https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
+static FBFloatVector 
+GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
+{
+  FBFloatVector y = 0.0f;
+  FBFloatVector one = 1.0f;
+  FBFloatVector zero = 0.0f;
+  auto phaseLtIncrMask = xsimd::lt(phase, incr);
+  auto phaseGte0Mask = xsimd::ge(phase, FBFloatVector(0.0f));
+  auto phaseLt2IncrMask = xsimd::lt(phase, FBFloatVector(2.0f) * incr);
+  auto phaseBetween0And2IncrMask = xsimd::bitwise_and(phaseGte0Mask, phaseLt2IncrMask);
+  FBFloatVector x = phase / incr;
+  FBFloatVector u = 2.0f - x;
+  FBFloatVector u2 = u * u;
+  u *= u2 * u2;
+  y -= u * xsimd::select(phaseBetween0And2IncrMask, one, zero) * u;
+  FBFloatVector v = 1.0f - x;
+  FBFloatVector v2 = v * v;
+  v *= v2 * v2;
+  y += 4.0f * xsimd::select(phaseLtIncrMask, one, zero) * v;
+  return y * incr / 15.0f;
+}
+
+static FBFloatVector
+GenerateTri(FBFloatVector phase, FBFloatVector incr)
+{
+  FBFloatVector v = 2.0f * xsimd::abs(2.0f * phase - 1.0f) - 1.0f;
+  v += GenerateBLAMP(phase, incr);
+  v += GenerateBLAMP(1.0f - phase, incr);
+  phase += 0.5f;
+  phase -= xsimd::floor(phase);
+  v -= GenerateBLAMP(phase, incr);
+  v -= GenerateBLAMP(1.0f - phase, incr);
+  return v;
 }
 
 void 
@@ -136,7 +162,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     basicTypeGain.Transform([&](int v) {
       auto const& paramTopo = topo.params[(int)FFOsciParam::BasicTriGain];
       return paramTopo.Linear().NormalizedToPlain(basicTriGain.CV(v)); });
-    basicTypeAudio.Transform([&](int v) { return GenerateTri(phase[v]); });
+    basicTypeAudio.Transform([&](int v) { return GenerateTri(phase[v], incr[v]); });
     basicTypeAudio.Mul(basicTypeGain);
     basicAllAudio.Add(basicTypeAudio);
   }
