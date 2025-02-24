@@ -69,22 +69,6 @@ GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
   return y * incr / 15.0f;
 }
 
-static float blamp(float phase, float incr) {
-  float y = 0;
-  if (0 <= phase && phase < 2 * incr) {
-    float x = phase / incr;
-    float u = 2 - x, u2 = u * u;
-    u *= u2 * u2;
-    y -= u;
-    if (phase < incr) {
-      float v = 1 - x, v2 = v * v;
-      v *= v2 * v2;
-      y += 4 * v;
-    }
-  }
-  return y * incr / 15;
-}
-
 static FBFloatVector
 GenerateTri(FBFloatVector phase, FBFloatVector incr)
 {
@@ -96,30 +80,6 @@ GenerateTri(FBFloatVector phase, FBFloatVector incr)
   v -= GenerateBLAMP(phase, incr);
   v -= GenerateBLAMP(1.0f - phase, incr);
   return v;
-}
-
-static float tri(float phase, float incr) {
-  float v = 2 * abs(2 * phase - 1) - 1;
-  v += blamp(phase, incr);
-  v += blamp(1 - phase, incr);
-  phase += 0.5;
-  phase -= floor(phase);
-  v -= blamp(phase, incr);
-  v -= blamp(1 - phase, incr);
-  return v;
-}
-
-static FBFloatVector
-GenerateTri2(FBFloatVector phase, FBFloatVector incr)
-{
-  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> out;
-  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> myPhase;
-  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> myIncr;
-  phase.store_aligned(&myPhase[0]);
-  incr.store_aligned(&myIncr[0]);
-  for (int i = 0; i < FBVectorFloatCount; i++)
-    out[i] = tri(myPhase[i], myIncr[i]);
-  return FBFloatVector::load_aligned(&out[0]);
 }
 
 void 
