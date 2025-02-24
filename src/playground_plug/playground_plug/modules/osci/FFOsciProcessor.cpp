@@ -46,7 +46,7 @@ GenerateSqr(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 
 // https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
 static FBFloatVector 
-GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
+GenerateBLAMP2(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector y = 0.0f;
   FBFloatVector one = 1.0f;
@@ -68,16 +68,56 @@ GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
 }
 
 static FBFloatVector
-GenerateTri(FBFloatVector phase, FBFloatVector incr)
+GenerateTri2(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector v = 2.0f * xsimd::abs(2.0f * phase - 1.0f) - 1.0f;
-  v += GenerateBLAMP(phase, incr);
-  v += GenerateBLAMP(1.0f - phase, incr);
+  v += GenerateBLAMP2(phase, incr);
+  v += GenerateBLAMP2(1.0f - phase, incr);
   phase += 0.5f;
   phase -= xsimd::floor(phase);
-  v -= GenerateBLAMP(phase, incr);
-  v -= GenerateBLAMP(1.0f - phase, incr);
+  v -= GenerateBLAMP2(phase, incr);
+  v -= GenerateBLAMP2(1.0f - phase, incr);
   return v;
+}
+
+static float blamp(float phase, float incr) {
+  float y = 0;
+  if (0 <= phase && phase < 2 * incr) {
+    float x = phase / incr;
+    float u = 2 - x, u2 = u * u;
+    u *= u2 * u2;
+    y -= u;
+    if (phase < incr) {
+      float v = 1 - x, v2 = v * v;
+      v *= v2 * v2;
+      y += 4 * v;
+    }
+  }
+  return y * incr / 15;
+}
+
+static float tri(float phase, float incr) {
+  float v = 2 * abs(2 * phase - 1) - 1;
+  v += blamp(phase, incr);
+  v += blamp(1 - phase, incr);
+  phase += 0.5;
+  phase -= floor(phase);
+  v -= blamp(phase, incr);
+  v -= blamp(1 - phase, incr);
+  return v;
+}
+
+static FBFloatVector
+GenerateTri(FBFloatVector phase, FBFloatVector incr)
+{
+  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> out;
+  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> myPhase;
+  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> myIncr;
+  phase.store_aligned(&myPhase[0]);
+  incr.store_aligned(&myIncr[0]);
+  for (int i = 0; i < FBVectorFloatCount; i++)
+    out[i] = tri(myPhase[i], myIncr[i]);
+  return FBFloatVector::load_aligned(&out[0]);
 }
 
 void 
