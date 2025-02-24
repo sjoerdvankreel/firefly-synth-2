@@ -46,7 +46,7 @@ GenerateSqr(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 
 // https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
 static FBFloatVector 
-GenerateBLAMP2(FBFloatVector phase, FBFloatVector incr)
+GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector y = 0.0f;
   FBFloatVector one = 1.0f;
@@ -55,28 +55,30 @@ GenerateBLAMP2(FBFloatVector phase, FBFloatVector incr)
   auto phaseGte0Mask = xsimd::ge(phase, FBFloatVector(0.0f));
   auto phaseLt2IncrMask = xsimd::lt(phase, FBFloatVector(2.0f) * incr);
   auto phaseBetween0And2IncrMask = xsimd::bitwise_and(phaseGte0Mask, phaseLt2IncrMask);
+  FBFloatVector phaseLtIncrMul = xsimd::select(phaseLtIncrMask, one, zero);
+  FBFloatVector phaseBetween0And2IncrMul = xsimd::select(phaseBetween0And2IncrMask, one, zero);
   FBFloatVector x = phase / incr;
   FBFloatVector u = 2.0f - x;
   FBFloatVector u2 = u * u;
   u *= u2 * u2;
-  y -= u * xsimd::select(phaseBetween0And2IncrMask, one, zero) * u;
+  y -= u * phaseBetween0And2IncrMul * u;
   FBFloatVector v = 1.0f - x;
   FBFloatVector v2 = v * v;
   v *= v2 * v2;
-  y += 4.0f * xsimd::select(phaseLtIncrMask, one, zero) * v;
+  y += 4.0f * phaseBetween0And2IncrMul * phaseLtIncrMul * v;
   return y * incr / 15.0f;
 }
 
 static FBFloatVector
-GenerateTri2(FBFloatVector phase, FBFloatVector incr)
+GenerateTri(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector v = 2.0f * xsimd::abs(2.0f * phase - 1.0f) - 1.0f;
-  v += GenerateBLAMP2(phase, incr);
-  v += GenerateBLAMP2(1.0f - phase, incr);
+  v += GenerateBLAMP(phase, incr);
+  v += GenerateBLAMP(1.0f - phase, incr);
   phase += 0.5f;
   phase -= xsimd::floor(phase);
-  v -= GenerateBLAMP2(phase, incr);
-  v -= GenerateBLAMP2(1.0f - phase, incr);
+  v -= GenerateBLAMP(phase, incr);
+  v -= GenerateBLAMP(1.0f - phase, incr);
   return v;
 }
 
@@ -108,7 +110,7 @@ static float tri(float phase, float incr) {
 }
 
 static FBFloatVector
-GenerateTri(FBFloatVector phase, FBFloatVector incr)
+GenerateTri2(FBFloatVector phase, FBFloatVector incr)
 {
   alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> out;
   alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> myPhase;
