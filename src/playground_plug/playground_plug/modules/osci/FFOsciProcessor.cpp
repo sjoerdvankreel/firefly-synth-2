@@ -69,19 +69,6 @@ GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
   return y * incr / 15.0f;
 }
 
-static FBFloatVector
-GenerateTri(FBFloatVector phase, FBFloatVector incr)
-{
-  FBFloatVector v = 2.0f * xsimd::abs(2.0f * phase - 1.0f) - 1.0f;
-  v += GenerateBLAMP(phase, incr);
-  v += GenerateBLAMP(1.0f - phase, incr);
-  phase += 0.5f;
-  phase -= xsimd::floor(phase);
-  v -= GenerateBLAMP(phase, incr);
-  v -= GenerateBLAMP(1.0f - phase, incr);
-  return v;
-}
-
 static float blamp(float phase, float incr) {
   float y = 0;
   if (0 <= phase && phase < 2 * incr) {
@@ -96,6 +83,19 @@ static float blamp(float phase, float incr) {
     }
   }
   return y * incr / 15;
+}
+
+static FBFloatVector
+GenerateTri(FBFloatVector phase, FBFloatVector incr)
+{
+  FBFloatVector v = 2.0f * xsimd::abs(2.0f * phase - 1.0f) - 1.0f;
+  v += GenerateBLAMP(phase, incr);
+  v += GenerateBLAMP(1.0f - phase, incr);
+  phase += 0.5f;
+  phase -= xsimd::floor(phase);
+  v -= GenerateBLAMP(phase, incr);
+  v -= GenerateBLAMP(1.0f - phase, incr);
+  return v;
 }
 
 static float tri(float phase, float incr) {
