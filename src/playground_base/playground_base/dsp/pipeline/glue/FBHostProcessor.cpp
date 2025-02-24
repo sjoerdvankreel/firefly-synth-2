@@ -72,10 +72,16 @@ FBHostProcessor::ProcessHost(
     auto const& indices = _topo->modules[m].topoIndices;
     auto const& static_ = _topo->static_.modules[indices.index];
     if (!static_.voice)
-      *_exchangeState->Modules()[m].Global() = {};
+    {
+      if(_exchangeState->Modules()[m] != nullptr)
+        *_exchangeState->Modules()[m]->Global() = {};
+    }
     else
-      for (int v = 0; v < FBMaxVoices; v++)
-        *_exchangeState->Modules()[m].Voice()[v] = {};
+    {
+      if (_exchangeState->Modules()[m] != nullptr)
+        for (int v = 0; v < FBMaxVoices; v++)
+        *_exchangeState->Modules()[m]->Voice()[v] = {};
+    }
   }
 
   FBFixedInputBlock* fixedIn;

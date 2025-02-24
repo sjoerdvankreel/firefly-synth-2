@@ -68,7 +68,7 @@ SpecialGUIParamsSelector(
 {
   FBSpecialGUIParams result = {};
   result.userScale = MakeSpecialGUIParam(
-    topo, state, (int)FFModuleType::Master, (int)FFGUISettingsGUIParam::UserScale);
+    topo, state, (int)FFModuleType::GUISettings, (int)FFGUISettingsGUIParam::UserScale);
   return result;
 }
 

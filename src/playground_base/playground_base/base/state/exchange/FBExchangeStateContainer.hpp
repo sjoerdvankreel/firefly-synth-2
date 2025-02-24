@@ -9,6 +9,7 @@
 
 #include <array>
 #include <vector>
+#include <memory>
 
 struct FBRuntimeTopo;
 struct FBRuntimeParam;
@@ -23,12 +24,11 @@ class FBExchangeStateContainer final
 
   FBProcExchangeState* _proc = {};
   std::vector<FBParamExchangeState> _params = {};
-  std::vector<FBModuleExchangeState> _modules = {};
   std::array<FBVoiceInfo, FBMaxVoices>* _voices = {};
+  std::vector<std::unique_ptr<FBModuleExchangeState>> _modules = {};
 
   FBProcExchangeState* Proc() { return _proc; }
   std::vector<FBParamExchangeState>& Params() { return _params; }
-  std::vector<FBModuleExchangeState>& Modules() { return _modules; }
   std::array<FBVoiceInfo, FBMaxVoices>& Voices() { return *_voices; }
 
 public:
@@ -43,7 +43,7 @@ public:
 
   FBProcExchangeState const* Proc() const { return _proc; }
   std::vector<FBParamExchangeState> const& Params() const { return _params; }
-  std::vector<FBModuleExchangeState> const& Modules() const { return _modules; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return *_voices; }
   FBParamActiveExchangeState GetParamActiveState(FBRuntimeParam const* param) const;
+  std::vector<std::unique_ptr<FBModuleExchangeState>> const& Modules() const { return _modules; }
 };

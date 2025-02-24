@@ -16,17 +16,23 @@ _voices(topo.static_.state.voicesExchangeAddr(_rawState))
   {
     auto const& indices = topo.modules[m].topoIndices;
     auto const& static_ = topo.static_.modules[indices.index];
-    if(!static_.voice)
-      _modules.push_back(FBModuleExchangeState(
+    if (!static_.voice && static_.addrSelectors.globalModuleExchange)
+    {
+      _modules.push_back(std::make_unique<FBModuleExchangeState>(
         static_.addrSelectors.globalModuleExchange(
           indices.slot, _rawState)));
-    else
+    }
+    else if(static_.voice && static_.addrSelectors.voiceModuleExchange)
     {
       std::array<FBModuleProcExchangeState*, FBMaxVoices> moduleExchange = {};
       for (int v = 0; v < FBMaxVoices; v++)
         moduleExchange[v] = static_.addrSelectors.voiceModuleExchange(
           v, indices.slot, _rawState);
-      _modules.push_back(FBModuleExchangeState(moduleExchange));
+      _modules.push_back(std::make_unique<FBModuleExchangeState>(moduleExchange));
+    }
+    else
+    {
+      _modules.push_back(std::unique_ptr<FBModuleExchangeState>());
     }
   }
 
@@ -66,7 +72,7 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
   auto const& moduleExchange = Modules()[param->runtimeModuleIndex];
 
   if (paramExchange.IsGlobal())
-    if (moduleExchange.Global()->active)
+    if (moduleExchange->Global()->active)
     {
       result.active = true;
       result.minValue = std::min(result.minValue, *paramExchange.Global());
@@ -74,7 +80,7 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
     }
   if (!paramExchange.IsGlobal())
     for (int v = 0; v < FBMaxVoices; v++)
-      if (moduleExchange.Voice()[v]->active)
+      if (moduleExchange->Voice()[v]->active)
       {
         result.active = true;
         result.minValue = std::min(result.minValue, paramExchange.Voice()[v]);
