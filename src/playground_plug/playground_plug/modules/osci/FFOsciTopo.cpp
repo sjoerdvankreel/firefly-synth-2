@@ -213,6 +213,51 @@ FFMakeOsciTopo()
   basicSqrPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrPW);
   basicSqrPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
+  auto& dsfOvertones = result->params[(int)FFOsciParam::DSFOvertones];
+  dsfOvertones.acc = false;
+  dsfOvertones.defaultText = "0";
+  dsfOvertones.name = "Overtones";
+  dsfOvertones.tooltip = "DSF Overtones";
+  dsfOvertones.slotCount = 1;
+  dsfOvertones.id = "{508C3B8D-E382-4438-B493-81208422E733}";
+  dsfOvertones.type = FBParamType::Discrete;
+  dsfOvertones.Discrete().valueCount = 999;
+  auto selectDSFOvertones = [](auto& module) { return &module.block.dsfOvertones; };
+  dsfOvertones.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFOvertones);
+  dsfOvertones.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFOvertones);
+  dsfOvertones.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFOvertones);
+  dsfOvertones.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
+
+  auto& dsfDistance = result->params[(int)FFOsciParam::DSFDistance];
+  dsfDistance.acc = false;
+  dsfDistance.defaultText = "1";
+  dsfDistance.name = "Distance";
+  dsfDistance.tooltip = "DSF Distance";
+  dsfDistance.slotCount = 1;
+  dsfDistance.id = "{0D1D4920-A17F-4716-A42E-238DD1E99952}";
+  dsfDistance.type = FBParamType::Linear;
+  dsfDistance.Linear().min = 0.05f;
+  dsfDistance.Linear().max = 20.0f;
+  auto selectDSFDistance = [](auto& module) { return &module.block.dsfDistance; };
+  dsfDistance.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDistance);
+  dsfDistance.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFDistance);
+  dsfDistance.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDistance);
+  dsfDistance.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; }); 
+  
+  auto& dsfDecay = result->params[(int)FFOsciParam::DSFDecay];
+  dsfDecay.acc = true;
+  dsfDecay.name = "Decay";
+  dsfDecay.tooltip = "DSF Decay";
+  dsfDecay.slotCount = 1;
+  dsfDecay.unit = "%";
+  dsfDecay.id = "{21CE915D-0983-4545-9F6E-8743CAC5EAB7}";
+  dsfDecay.type = FBParamType::Linear;
+  dsfDecay.Linear().displayMultiplier = 100.0f;
+  auto selectDSFDecay = [](auto& module) { return &module.acc.dsfDecay; };
+  dsfDecay.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDecay);
+  dsfDecay.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDSFDecay);
+  dsfDecay.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDecay);
+
   auto& gLFOToGain = result->params[(int)FFOsciParam::GLFOToGain];
   gLFOToGain.acc = true;
   gLFOToGain.name = "GLFO To Gain";
