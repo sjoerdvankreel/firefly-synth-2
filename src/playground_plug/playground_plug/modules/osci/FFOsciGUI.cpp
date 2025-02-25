@@ -120,7 +120,7 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
   result->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
   result->Add(0, 1, MakeSectionGLFOToGain(plugGUI, moduleSlot));
   result->Add(0, 2, MakeSectionBasic(plugGUI, moduleSlot));
-  result->Add(0, 3, MakeSectionDSF(plugGUI, moduleSlot));
+  result->Add(0, 2, MakeSectionDSF(plugGUI, moduleSlot));
   return result;
 }
 

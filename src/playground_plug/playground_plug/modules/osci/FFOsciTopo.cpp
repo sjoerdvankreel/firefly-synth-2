@@ -214,6 +214,7 @@ FFMakeOsciTopo()
   basicSqrPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrPW);
   basicSqrPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
+  // TODO maybe discrete log2 param ? or anything that dont warrant a slider? or maybe slider good, not sure
   auto& dsfOvertones = result->params[(int)FFOsciParam::DSFOvertones];
   dsfOvertones.acc = false;
   dsfOvertones.defaultText = "0";
@@ -222,7 +223,7 @@ FFMakeOsciTopo()
   dsfOvertones.slotCount = 1;
   dsfOvertones.id = "{508C3B8D-E382-4438-B493-81208422E733}";
   dsfOvertones.type = FBParamType::Discrete;
-  dsfOvertones.Discrete().valueCount = 999;
+  dsfOvertones.Discrete().valueCount = 1000;
   auto selectDSFOvertones = [](auto& module) { return &module.block.dsfOvertones; };
   dsfOvertones.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFOvertones);
   dsfOvertones.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFOvertones);
