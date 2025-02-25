@@ -26,7 +26,8 @@ FFMakeOsciTopo()
   type.type = FBParamType::List;
   type.List().items = {
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
-    { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Basic" } };
+    { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Basic" },
+    { "{19945EB6-4676-492A-BC38-E586A6D3BF6F}", "DSF" } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectType);
   type.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectType);
@@ -145,7 +146,7 @@ FFMakeOsciTopo()
   basicSinGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSinGain);
   basicSinGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSinGain);
   basicSinGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSinGain);
-  basicSinGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
+  basicSinGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSinOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
   auto& basicSawGain = result->params[(int)FFOsciParam::BasicSawGain];
   basicSawGain.acc = true;
@@ -162,7 +163,7 @@ FFMakeOsciTopo()
   basicSawGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSawGain);
   basicSawGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSawGain);
   basicSawGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSawGain);
-  basicSawGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
+  basicSawGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSawOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
   auto& basicTriGain = result->params[(int)FFOsciParam::BasicTriGain];
   basicTriGain.acc = true;
@@ -179,7 +180,7 @@ FFMakeOsciTopo()
   basicTriGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTriGain);
   basicTriGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicTriGain);
   basicTriGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTriGain);
-  basicTriGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
+  basicTriGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicTriOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
   auto& basicSqrGain = result->params[(int)FFOsciParam::BasicSqrGain];
   basicSqrGain.acc = true;
@@ -196,7 +197,7 @@ FFMakeOsciTopo()
   basicSqrGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSqrGain);
   basicSqrGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSqrGain);
   basicSqrGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrGain);
-  basicSqrGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
+  basicSqrGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
   auto& basicSqrPW = result->params[(int)FFOsciParam::BasicSqrPW];
   basicSqrPW.acc = true;

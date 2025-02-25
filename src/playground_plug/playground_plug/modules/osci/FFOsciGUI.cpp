@@ -81,7 +81,36 @@ MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSqrPW, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ 0, 0, 1, 7 });
   grid->MarkSection({ 1, 0, 1, 7 });
-  return grid;
+
+  // TODO helper function
+  FBParamsDependencies dependencies = {};
+  FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
+  dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Off || vs[0] == (int)FFOsciType::Basic; });
+  return plugGUI->StoreComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependencies);
+}
+
+static Component*
+MakeSectionDSF(FBPlugGUI* plugGUI, int moduleSlot)
+{
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0, 1, 0, 1});
+  auto dsfOvertones = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFOvertones, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dsfOvertones));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dsfOvertones, Slider::SliderStyle::LinearHorizontal));
+  auto dsfDistance = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFDistance, 0 });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dsfDistance));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dsfDistance, Slider::SliderStyle::LinearHorizontal));
+  auto dsfDecay = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFDecay, 0 });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dsfDecay));
+  grid->Add(1, 1, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dsfDecay, Slider::SliderStyle::LinearHorizontal));
+  grid->MarkSection({ 0, 0, 1, 4 });
+  grid->MarkSection({ 1, 0, 1, 4 });
+
+  // TODO helper function
+  FBParamsDependencies dependencies = {};
+  FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
+  dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
+  return plugGUI->StoreComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependencies);
 }
 
 static Component*
@@ -91,6 +120,7 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
   result->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
   result->Add(0, 1, MakeSectionGLFOToGain(plugGUI, moduleSlot));
   result->Add(0, 2, MakeSectionBasic(plugGUI, moduleSlot));
+  result->Add(0, 3, MakeSectionDSF(plugGUI, moduleSlot));
   return result;
 }
 
