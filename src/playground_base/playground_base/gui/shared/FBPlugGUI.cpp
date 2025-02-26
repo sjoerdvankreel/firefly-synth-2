@@ -216,6 +216,8 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
       assert(false);
     }
   }
+
+  // TODO make automatable discrete params
   if (!FBParamTypeIsStepped(param.static_.type))
     result += "\r\nEdit: " + editType;
   result += "\r\nAutomation: " + param.static_.AutomationTooltip();
