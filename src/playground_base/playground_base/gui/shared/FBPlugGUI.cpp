@@ -182,8 +182,10 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
   switch (param.static_.type)
   {
   case FBParamType::Log2:
+  case FBParamType::DiscreteLog2: // TODO
     return result + "\r\nEdit: Logarithmic";
   case FBParamType::Linear:
+  case FBParamType::Discrete: // TODO
     return result + "\r\nEdit: " + (param.static_.Linear().editSkewFactor == 1.0f ? "Linear" : "Logarithmic");
   default:
     assert(false);
@@ -218,7 +220,7 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   }
 
   // TODO make automatable discrete params
-  if (!FBParamTypeIsStepped(param.static_.type))
+  // if (!FBParamTypeIsStepped(param.static_.type)) // TODO figure out tooltips for everything
     result += "\r\nEdit: " + editType;
   result += "\r\nAutomation: " + param.static_.AutomationTooltip();
   if (!param.static_.IsVoice())

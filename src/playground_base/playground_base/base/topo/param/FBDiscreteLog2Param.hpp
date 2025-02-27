@@ -3,9 +3,8 @@
 #include <string>
 #include <optional>
 #include <algorithm>
-#include <functional>
 
-struct FBDiscreteParam
+struct FBDiscreteLog2Param
 {
   int valueCount = {};
   int ValueCount() const { return valueCount; }
@@ -17,7 +16,7 @@ struct FBDiscreteParam
 };
 
 inline int
-FBDiscreteParam::NormalizedToPlain(float normalized) const
+FBDiscreteLog2Param::NormalizedToPlain(float normalized) const
 {
-  return std::clamp((int)(normalized * valueCount), 0, valueCount - 1);
+  return 1 << std::clamp((int)(normalized * valueCount), 0, valueCount - 1);
 }

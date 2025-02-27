@@ -9,6 +9,7 @@
 #include <playground_base/base/topo/param/FBBarsParam.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
+#include <playground_base/base/topo/param/FBDiscreteLog2Param.hpp>
 
 #include <playground_base/base/topo/static/FBParamType.hpp>
 #include <playground_base/base/topo/static/FBTextDisplay.hpp>
@@ -32,6 +33,7 @@ private:
   FBBoolParam boolean = {};
   FBLinearParam linear = {};
   FBDiscreteParam discrete = {};
+  FBDiscreteLog2Param discreteLog2 = {};
 
 public:
   int slotCount = {};
@@ -54,6 +56,7 @@ public:
   FBBoolParam& Boolean();
   FBLinearParam& Linear();
   FBDiscreteParam& Discrete();
+  FBDiscreteLog2Param& DiscreteLog2();
 
   FBListParam const& List() const;
   FBNoteParam const& Note() const;
@@ -62,6 +65,7 @@ public:
   FBBoolParam const& Boolean() const;
   FBLinearParam const& Linear() const;
   FBDiscreteParam const& Discrete() const;
+  FBDiscreteLog2Param const& DiscreteLog2() const;
 
   juce::PopupMenu MakePopupMenu() const;
   float DefaultNormalizedByText() const;
@@ -122,6 +126,13 @@ FBStaticParamBase::Discrete()
   return discrete;
 }
 
+inline FBDiscreteLog2Param&
+FBStaticParamBase::DiscreteLog2()
+{
+  assert(type == FBParamType::DiscreteLog2);
+  return discreteLog2;
+}
+
 inline FBListParam const&
 FBStaticParamBase::List() const
 {
@@ -171,6 +182,13 @@ FBStaticParamBase::Discrete() const
   return discrete;
 }
 
+inline FBDiscreteLog2Param const&
+FBStaticParamBase::DiscreteLog2() const
+{
+  assert(type == FBParamType::DiscreteLog2);
+  return discreteLog2;
+}
+
 inline int
 FBStaticParamBase::ValueCount() const
 {
@@ -183,6 +201,7 @@ FBStaticParamBase::ValueCount() const
   case FBParamType::Linear: return linear.ValueCount();
   case FBParamType::Boolean: return boolean.ValueCount();
   case FBParamType::Discrete: return discrete.ValueCount();
+  case FBParamType::DiscreteLog2: return discreteLog2.ValueCount();
   default: assert(false); return {};
   }
 }

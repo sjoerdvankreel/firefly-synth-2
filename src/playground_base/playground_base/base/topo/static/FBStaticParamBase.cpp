@@ -51,6 +51,8 @@ FBStaticParamBase::AnyDiscreteToNormalizedSlow(int plain) const
     return boolean.PlainToNormalized(plain);
   case FBParamType::Discrete:
     return discrete.PlainToNormalized(plain);
+  case FBParamType::DiscreteLog2:
+    return discreteLog2.PlainToNormalized(plain);
   default:
     assert(false);
     return {};
@@ -72,6 +74,8 @@ FBStaticParamBase::NormalizedToAnyDiscreteSlow(float normalized) const
     return boolean.NormalizedToPlain(normalized);
   case FBParamType::Discrete:
     return discrete.NormalizedToPlain(normalized);
+  case FBParamType::DiscreteLog2:
+    return discreteLog2.NormalizedToPlain(normalized);
   default:
     assert(false);
     return {};
@@ -97,6 +101,8 @@ FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized
     return log2.PlainToText(display, log2.NormalizedToPlain(normalized));
   case FBParamType::Linear:
     return linear.PlainToText(display, linear.NormalizedToPlain(normalized));
+  case FBParamType::DiscreteLog2:
+    return discreteLog2.PlainToText(discreteLog2.NormalizedToPlain(normalized));
   default:
     assert(false);
     return {};
@@ -149,6 +155,12 @@ FBStaticParamBase::TextToNormalized(bool io, std::string const& text) const
       auto plain = discrete.TextToPlain(text);
       if (!plain) return {};
       return discrete.PlainToNormalized(plain.value());
+    }
+    case FBParamType::DiscreteLog2:
+    {
+      auto plain = discreteLog2.TextToPlain(text);
+      if (!plain) return {};
+      return discreteLog2.PlainToNormalized(plain.value());
     }
     default:
     {

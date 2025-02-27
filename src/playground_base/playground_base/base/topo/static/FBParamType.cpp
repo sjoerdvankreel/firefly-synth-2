@@ -14,6 +14,7 @@ FBParamTypeIsList(FBParamType type)
   case FBParamType::Linear:
   case FBParamType::Boolean:
   case FBParamType::Discrete:
+  case FBParamType::DiscreteLog2:
     return false;
   default:
     assert(false);
@@ -31,6 +32,7 @@ FBParamTypeIsStepped(FBParamType type)
   case FBParamType::Bars:
   case FBParamType::Boolean:
   case FBParamType::Discrete:
+  case FBParamType::DiscreteLog2:
     return true;
   case FBParamType::Log2:
   case FBParamType::Linear:

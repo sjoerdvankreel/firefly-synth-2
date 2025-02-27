@@ -1,3 +1,4 @@
+todo allow mod of discrete params
 todo document the thing a bit
 handle envelope offset (actual start index in block)
 voice block start position (fake it by amp env?)

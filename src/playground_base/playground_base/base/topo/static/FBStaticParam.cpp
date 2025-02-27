@@ -19,9 +19,11 @@ FBStaticParam::AutomationTooltip() const
   switch (type)
   {
   case FBParamType::Linear: 
+  case FBParamType::Discrete: // TODO
     automationType = "Linear, "; 
     break;
   case FBParamType::Log2:
+  case FBParamType::DiscreteLog2: // TODO
     automationType = "Logarithmic, ";
     break;
   default:
