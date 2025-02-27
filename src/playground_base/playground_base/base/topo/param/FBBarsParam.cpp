@@ -5,21 +5,33 @@
 
 using namespace juce;
 
-std::string
-FBBarsParam::PlainToText(int plain) const
+int 
+FBBarsParamNonRealTime::ValueCount() const
 {
-  return items[plain].ToString();
+  return (int)items.size();
 }
 
 float
-FBBarsParam::PlainToNormalized(int plain) const
+FBBarsParamNonRealTime::PlainToNormalized(int plain) const 
 {
   int count = (int)items.size();
   return std::clamp(plain / (count - 1.0f), 0.0f, 1.0f);
 }
 
+int
+FBBarsParamNonRealTime::NormalizedToPlain(float normalized) const 
+{
+  return FBBarsParamRealTime::NormalizedToPlain(normalized);
+}
+
+std::string
+FBBarsParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const 
+{
+  return items[plain].ToString();
+}
+
 std::optional<int>
-FBBarsParam::TextToPlain(std::string const& text) const
+FBBarsParamNonRealTime::TextToPlain(bool io, std::string const& text) const 
 {
   for (int i = 0; i < items.size(); i++)
     if (text == items[i].ToString())
@@ -28,14 +40,14 @@ FBBarsParam::TextToPlain(std::string const& text) const
 }
 
 PopupMenu
-FBBarsParam::MakePopupMenu() const
+FBBarsParamNonRealTime::MakePopupMenu() const
 {
   int k = 0;
   PopupMenu result;
   PopupMenu subMenu;
   for (int i = 0; i < items.size(); i++)
   {
-    subMenu.addItem(i + 1, PlainToText(i));
+    subMenu.addItem(i + 1, PlainToText(FBValueTextDisplay::Text, i));
     if (i == items.size() - 1 || items[i].num != items[i + 1].num)
     {
       result.addSubMenu(std::to_string(items[i].num), subMenu);

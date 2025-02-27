@@ -14,10 +14,11 @@ struct FBBoolParamRealTime
   bool NormalizedToPlain(float normalized) const;
 };
 
-struct FBBoolParamNonRealTime:
+struct FBBoolParamNonRealTime final:
 public FBBoolParamRealTime,
 public IFBParamNonRealTime
 {
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBBoolParamNonRealTime);
   int ValueCount() const override;
   float PlainToNormalized(int plain) const override;
   int NormalizedToPlain(float normalized) const override;

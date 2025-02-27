@@ -1,41 +1,48 @@
 #pragma once
 
+#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/topo/param/FBBarsItem.hpp>
+#include <playground_base/base/topo/static/FBListParamNonRealTime.hpp>
 
-#include <juce_gui_basics/juce_gui_basics.h>
-
-#include <string>
 #include <vector>
+#include <string>
 #include <optional>
 #include <algorithm>
 
 std::vector<FBBarsItem>
 FBMakeBarsItems(bool withZero, FBBarsItem min, FBBarsItem max);
 
-struct FBBarsParam
+struct FBBarsParamRealTime
 {
   std::vector<FBBarsItem> items = {};
-  int ValueCount() const { return (int)items.size(); }
-
-  juce::PopupMenu MakePopupMenu() const;
-  std::string PlainToText(int plain) const;
-  std::optional<int> TextToPlain(std::string const& text) const;
-
-  float PlainToNormalized(int plain) const;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBBarsParamRealTime);
   int NormalizedToPlain(float normalized) const;
-  int NormalizedBarsToSamples(float normalized, float sampleRate, float bpm) const;
+  int NormalizedToSamples(float normalized, float sampleRate, float bpm) const;
+};
+
+struct FBBarsParamNonRealTime final :
+public FBBarsParamRealTime,
+public IFBListParamNonRealTime
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBBarsParamNonRealTime);
+  int ValueCount() const override;
+  juce::PopupMenu MakePopupMenu() const override;
+  float PlainToNormalized(int plain) const override;
+  int NormalizedToPlain(float normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, int plain) const override;
+  std::optional<int> TextToPlain(bool io, std::string const& text) const override;
 };
 
 inline int
-FBBarsParam::NormalizedToPlain(float normalized) const
+FBBarsParamRealTime::NormalizedToPlain(float normalized) const
 {
-  int count = ValueCount();
+  int count = (int)items.size();
   return std::clamp((int)(normalized * count), 0, count - 1);
 }
 
 inline int 
-FBBarsParam::NormalizedBarsToSamples(float normalized, float sampleRate, float bpm) const
+FBBarsParamRealTime::NormalizedToSamples(float normalized, float sampleRate, float bpm) const
 {
   return FBBarsToSamples(items[NormalizedToPlain(normalized)], sampleRate, bpm);
 }
