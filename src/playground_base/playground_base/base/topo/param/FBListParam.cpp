@@ -2,17 +2,29 @@
 
 #include <cassert>
 
-using namespace juce;
+using namespace juce; 
+
+int 
+FBListParamNonRealTime::ValueCount() const
+{
+  return (int)items.size();
+}
+
+int 
+FBListParamNonRealTime::NormalizedToPlain(float normalized) const
+{
+  return FBListParamRealTime::NormalizedToPlain(normalized);
+}
 
 float
-FBListParam::PlainToNormalized(int plain) const
+FBListParamNonRealTime::PlainToNormalized(int plain) const
 {
   int count = (int)items.size();
   return std::clamp(plain / (count - 1.0f), 0.0f, 1.0f);
 }
 
 std::optional<int>
-FBListParam::TextToPlain(bool io, std::string const& text) const
+FBListParamNonRealTime::TextToPlain(bool io, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == (io ? items[i].id : items[i].text))
@@ -21,7 +33,7 @@ FBListParam::TextToPlain(bool io, std::string const& text) const
 }
 
 PopupMenu
-FBListParam::MakePopupMenu() const
+FBListParamNonRealTime::MakePopupMenu() const
 {
   PopupMenu result;
   for (int i = 0; i < ValueCount(); i++)
@@ -30,7 +42,7 @@ FBListParam::MakePopupMenu() const
 }
 
 std::string
-FBListParam::PlainToText(FBValueTextDisplay display, int plain) const
+FBListParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
 {
   switch (display)
   {
