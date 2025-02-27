@@ -1,13 +1,17 @@
 #pragma once
 
+#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/param/FBListItem.hpp>
 #include <playground_base/base/topo/static/FBListParamNonRealTime.hpp>
 
 #include <vector>
+#include <string>
+#include <optional>
 #include <algorithm>
 
 struct FBListParamRealTime
 {
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBListParamRealTime);
   std::vector<FBListItem> items = {};
   int NormalizedToPlain(float normalized) const;
 };
@@ -16,6 +20,7 @@ struct FBListParamNonRealTime final:
 public FBListParamRealTime,
 public IFBListParamNonRealTime
 {
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBListParamNonRealTime);
   int ValueCount() const override;
   juce::PopupMenu MakePopupMenu() const override;
   float PlainToNormalized(int plain) const override;
