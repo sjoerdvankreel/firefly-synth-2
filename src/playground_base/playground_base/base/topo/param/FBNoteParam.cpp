@@ -6,6 +6,18 @@ using namespace juce;
 static const std::vector<std::string> NoteNames = 
 { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
+bool
+FBNoteParamNonRealTime::IsList() const
+{
+  return true;
+}
+
+bool
+FBNoteParamNonRealTime::IsStepped() const
+{
+  return true;
+}
+
 int 
 FBNoteParamNonRealTime::ValueCount() const
 {

@@ -5,6 +5,18 @@
 
 using namespace juce;
 
+bool 
+FBBarsParamNonRealTime::IsList() const
+{
+  return true;
+}
+
+bool 
+FBBarsParamNonRealTime::IsStepped() const
+{
+  return true;
+}
+
 int 
 FBBarsParamNonRealTime::ValueCount() const
 {

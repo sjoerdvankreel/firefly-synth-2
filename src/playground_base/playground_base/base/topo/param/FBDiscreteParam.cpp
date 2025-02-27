@@ -1,6 +1,18 @@
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 
-int 
+bool
+FBDiscreteParamNonRealTime::IsList() const
+{
+  return false;
+}
+
+bool
+FBDiscreteParamNonRealTime::IsStepped() const
+{
+  return true;
+}
+
+int
 FBDiscreteParamNonRealTime::ValueCount() const
 {
   return valueCount;
