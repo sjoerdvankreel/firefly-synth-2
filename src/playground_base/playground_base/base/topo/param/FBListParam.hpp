@@ -26,7 +26,7 @@ public IFBListParamNonRealTime
   float PlainToNormalized(int plain) const override;
   int NormalizedToPlain(float normalized) const override;
   std::string PlainToText(FBValueTextDisplay display, int plain) const override;
-  std::optional<int> TextToPlain(bool io, std::string const& text) const override;
+  std::optional<int> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline int

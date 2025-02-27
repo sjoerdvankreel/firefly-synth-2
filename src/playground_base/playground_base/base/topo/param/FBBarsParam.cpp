@@ -31,7 +31,7 @@ FBBarsParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
 }
 
 std::optional<int>
-FBBarsParamNonRealTime::TextToPlain(bool io, std::string const& text) const 
+FBBarsParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == items[i].ToString())

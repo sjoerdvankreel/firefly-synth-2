@@ -23,15 +23,6 @@ FBListParamNonRealTime::PlainToNormalized(int plain) const
   return std::clamp(plain / (count - 1.0f), 0.0f, 1.0f);
 }
 
-std::optional<int>
-FBListParamNonRealTime::TextToPlain(bool io, std::string const& text) const
-{
-  for (int i = 0; i < items.size(); i++)
-    if (text == (io ? items[i].id : items[i].text))
-      return { i };
-  return {};
-}
-
 PopupMenu
 FBListParamNonRealTime::MakePopupMenu() const
 {
@@ -39,6 +30,15 @@ FBListParamNonRealTime::MakePopupMenu() const
   for (int i = 0; i < ValueCount(); i++)
     result.addItem(i + 1, PlainToText(FBValueTextDisplay::Text, i));
   return result;
+}
+
+std::optional<int>
+FBListParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
+{
+  for (int i = 0; i < items.size(); i++)
+    if (text == (display == FBValueTextDisplay::IO ? items[i].id : items[i].text))
+      return { i };
+  return {};
 }
 
 std::string

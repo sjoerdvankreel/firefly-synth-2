@@ -1,26 +1,38 @@
 #pragma once
 
-#include <juce_gui_basics/juce_gui_basics.h>
+#include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/topo/param/FBListItem.hpp>
+#include <playground_base/base/topo/static/FBListParamNonRealTime.hpp>
 
+#include <vector>
 #include <string>
 #include <optional>
 #include <algorithm>
 
-struct FBNoteParam
+struct FBNoteParamRealTime
 {
   static inline std::string const C4Name = "C4";
   static inline int constexpr MidiNoteCount = 128;
-  int ValueCount() const { return MidiNoteCount; }
 
-  juce::PopupMenu MakePopupMenu() const;
-  float PlainToNormalized(int plain) const;
-  std::string PlainToText(int plain) const;
   int NormalizedToPlain(float normalized) const;
-  std::optional<int> TextToPlain(std::string const& text) const;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteParamRealTime);
+};
+
+struct FBNoteParamNonRealTime:
+public FBNoteParamRealTime,
+public IFBListParamNonRealTime
+{
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteParamNonRealTime);
+  int ValueCount() const override;
+  juce::PopupMenu MakePopupMenu() const override;
+  float PlainToNormalized(int plain) const override;
+  int NormalizedToPlain(float normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, int plain) const override;
+  std::optional<int> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline int
-FBNoteParam::NormalizedToPlain(float normalized) const
+FBNoteParamRealTime::NormalizedToPlain(float normalized) const
 {
-  return std::clamp((int)(normalized * ValueCount()), 0, ValueCount() - 1);
+  return std::clamp((int)(normalized * MidiNoteCount), 0, MidiNoteCount - 1);
 }
