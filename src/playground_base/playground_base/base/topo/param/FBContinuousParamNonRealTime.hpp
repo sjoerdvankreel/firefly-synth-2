@@ -1,3 +1,5 @@
+#pragma once
+
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/static/FBTextDisplay.hpp>
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>

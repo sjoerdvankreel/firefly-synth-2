@@ -79,30 +79,3 @@ FBStaticParamBase::NonRealTime() const
   default: assert(false); return *static_cast<IFBParamNonRealTime*>(nullptr);
   }
 }
-
-// TODO// TODO// TODO// TODO// TODO// TODO// TODO
-
-std::string 
-FBStaticParamBase::NormalizedToText(FBParamTextDisplay display, float normalized) const
-{
-
-  std::string result = NonRealTime().NormalizedToText((FBValueTextDisplay)display, normalized);
-  if (display == FBParamTextDisplay::TooltipWithUnit && !unit.empty())
-    result += " " + unit;
-  return result;
-}
-
-std::optional<float>
-FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string const& text) const
-{
-}
-
-float
-FBStaticParamBase::DefaultNormalizedByText() const
-{
-}
-
-std::string
-FBStaticParamBase::NormalizedToText(FBParamTextDisplay display, float normalized) const
-{
-}
