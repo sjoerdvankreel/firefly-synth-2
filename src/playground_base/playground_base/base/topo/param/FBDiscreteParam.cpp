@@ -1,15 +1,9 @@
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 
 bool
-FBDiscreteParamNonRealTime::IsList() const
+FBDiscreteParamNonRealTime::IsItems() const
 {
   return false;
-}
-
-bool
-FBDiscreteParamNonRealTime::IsStepped() const
-{
-  return true;
 }
 
 int

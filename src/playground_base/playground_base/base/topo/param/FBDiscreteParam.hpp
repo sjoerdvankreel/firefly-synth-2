@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/static/FBParamNonRealTime.hpp>
+#include <playground_base/base/topo/param/FBSteppedParamNonRealTime.hpp>
 
 #include <string>
 #include <optional>
@@ -16,11 +16,10 @@ struct FBDiscreteParamRealTime
 
 struct FBDiscreteParamNonRealTime final:
 public FBDiscreteParamRealTime,
-public IFBParamNonRealTime
+public FBSteppedParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FBDiscreteParamNonRealTime);
-  bool IsList() const override;
-  bool IsStepped() const override;
+  bool IsItems() const override;
   int ValueCount() const override;
   float PlainToNormalized(int plain) const override;
   int NormalizedToPlain(float normalized) const override;
