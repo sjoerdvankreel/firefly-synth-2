@@ -1,17 +1,5 @@
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 
-bool
-FBBoolParamNonRealTime::IsList() const
-{
-  return false;
-}
-
-bool
-FBBoolParamNonRealTime::IsStepped() const
-{
-  return true;
-}
-
 int
 FBBoolParamNonRealTime::ValueCount() const
 {
@@ -21,27 +9,27 @@ FBBoolParamNonRealTime::ValueCount() const
 float 
 FBBoolParamNonRealTime::PlainToNormalized(int plain) const
 {
-  return plain ? 1.0f : 0.0f;
+  return plain != 0 ? 1.0f : 0.0f;
 }
 
 int
 FBBoolParamNonRealTime::NormalizedToPlain(float normalized) const
 {
-  return FBBoolParamRealTime::NormalizedToPlain(normalized);
+  return FBBoolParamRealTime::NormalizedToPlain(normalized)? 1: 0;
 }
 
 std::string
 FBBoolParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
 {
-  return plain ? "On" : "Off";
+  return plain != 0 ? "On" : "Off";
 }
 
 std::optional<int>
 FBBoolParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   if (text == "On")
-    return true;
+    return 1;
   if (text == "Off")
-    return false;
+    return 0;
   return {};
 }
