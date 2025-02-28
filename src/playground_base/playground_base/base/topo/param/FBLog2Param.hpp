@@ -3,7 +3,7 @@
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/static/FBParamNonRealTime.hpp>
+#include <playground_base/base/topo/param/FBContinuousParamNonRealTime.hpp>
 
 #include <cmath>
 #include <string>
@@ -30,16 +30,13 @@ public:
 
 struct FBLog2ParamNonRealTime final:
 public FBLog2ParamRealTime,
-public IFBParamNonRealTime
+public FBContinuousParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FBLog2ParamNonRealTime);
-  bool IsList() const override;
-  bool IsStepped() const override;
-  int ValueCount() const override;
-  float PlainToNormalized(int plain) const override;
-  int NormalizedToPlain(float normalized) const override;
-  std::string PlainToText(FBValueTextDisplay display, int plain) const override;
-  std::optional<int> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
+  float PlainToNormalized(float plain) const override;
+  float NormalizedToPlain(float normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, float plain) const override;
+  std::optional<float> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline float
