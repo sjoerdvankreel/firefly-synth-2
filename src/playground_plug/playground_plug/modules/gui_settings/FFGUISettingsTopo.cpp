@@ -21,8 +21,8 @@ FFMakeGUISettingsTopo()
   guiUserScale.slotCount = 1;
   guiUserScale.id = "{48F2A59F-789F-4076-AB4B-4CC19B3A929A}";
   guiUserScale.type = FBParamType::Linear;
-  guiUserScale.Linear().min = 0.5f;
-  guiUserScale.Linear().max = 16.0f;
+  guiUserScale.LinearRealTime().min = 0.5f;
+  guiUserScale.LinearRealTime().max = 16.0f;
   auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
   guiUserScale.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 

@@ -36,8 +36,8 @@ FFMakeGLFOTopo()
   rate.unit = "Hz";
   rate.id = "{79BFD05E-98FA-48D4-8D07-C009285EACA7}";
   rate.type = FBParamType::Linear;
-  rate.Linear().min = 0.1f;
-  rate.Linear().max = 20.0f;
+  rate.LinearRealTime().min = 0.1f;
+  rate.LinearRealTime().max = 20.0f;
   auto selectRate = [](auto& module) { return &module.acc.rate; };
   rate.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectRate);
   rate.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectRate);

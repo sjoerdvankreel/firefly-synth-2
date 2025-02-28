@@ -25,8 +25,8 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   auto const& rate = procParams.acc.rate[0].Global();
 
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
-  auto const& rateParamLinear = topo.params[(int)FFGLFOParam::Rate].Linear();
-  bool on = topo.params[(int)FFGLFOParam::On].Boolean().NormalizedToPlain(procParams.block.on[0].Value());
+  auto const& rateParamLinear = topo.params[(int)FFGLFOParam::Rate].LinearRealTime();
+  bool on = topo.params[(int)FFGLFOParam::On].BooleanRealTime().NormalizedToPlain(procParams.block.on[0].Value());
 
   if (!on)
   {
