@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/param/FBListItem.hpp>
-#include <playground_base/base/topo/static/FBListParamNonRealTime.hpp>
+#include <playground_base/base/topo/param/FBItemsParamNonRealTime.hpp>
 
 #include <vector>
 #include <string>
@@ -18,11 +18,9 @@ struct FBListParamRealTime
 
 struct FBListParamNonRealTime final:
 public FBListParamRealTime,
-public IFBListParamNonRealTime
+public FBItemsParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FBListParamNonRealTime);
-  bool IsList() const override;
-  bool IsStepped() const override;
   int ValueCount() const override;
   juce::PopupMenu MakePopupMenu() const override;
   float PlainToNormalized(int plain) const override;
