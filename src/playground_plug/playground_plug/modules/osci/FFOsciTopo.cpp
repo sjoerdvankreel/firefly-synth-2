@@ -2,6 +2,7 @@
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciGraph.hpp>
+#include <playground_base/base/topo/param/FBNoteParam.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
@@ -49,7 +50,7 @@ FFMakeOsciTopo()
 
   auto& note = result->params[(int)FFOsciParam::Note];
   note.acc = false;
-  note.defaultText = FBNoteParam::C4Name;
+  note.defaultText = FBNoteParamRealTime::C4Name;
   note.name = "Note";
   note.slotCount = 1;
   note.id = "{592BFC17-0E32-428F-B4B0-E0DF39514BF0}";
