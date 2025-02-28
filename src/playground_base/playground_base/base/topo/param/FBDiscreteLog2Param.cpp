@@ -3,15 +3,9 @@
 #include <bit>
 
 bool
-FBDiscreteLog2ParamNonRealTime::IsList() const
+FBDiscreteLog2ParamNonRealTime::IsItems() const
 {
   return false;
-}
-
-bool
-FBDiscreteLog2ParamNonRealTime::IsStepped() const
-{
-  return true;
 }
 
 int
