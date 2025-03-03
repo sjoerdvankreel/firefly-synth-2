@@ -7,7 +7,7 @@ using namespace juce;
 
 FBParamComboBox::
 FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param):  
-FBAutoSizeComboBox(param->static_.MakePopupMenu()),
+FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu()),
 FBParamControl(plugGUI, param)
 {
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));
@@ -26,7 +26,7 @@ FBParamComboBox::getTooltip()
 }
 
 void
-FBParamComboBox::SetValueNormalizedFromHost(float normalized)
+FBParamComboBox::SetValueNormalizedFromHost(double normalized)
 {
   int plain = _param->static_.NormalizedToAnyDiscreteSlow(normalized);
   setSelectedId(plain + 1, dontSendNotification);
@@ -35,7 +35,7 @@ FBParamComboBox::SetValueNormalizedFromHost(float normalized)
 void
 FBParamComboBox::valueChanged(Value& value)
 {
-  float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedId() - 1);
+  double normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedId() - 1);
   _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
 }

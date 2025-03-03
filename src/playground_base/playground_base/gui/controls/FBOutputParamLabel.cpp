@@ -37,7 +37,7 @@ FBOutputParamLabel::getTooltip()
 }
 
 void
-FBOutputParamLabel::SetValueNormalizedFromHost(float normalized)
+FBOutputParamLabel::SetValueNormalizedFromHost(double normalized)
 {
-  setText(_param->static_.NormalizedToText(FBValueTextDisplay::Text, normalized), dontSendNotification);
+  setText(_param->static_.NonRealTime().NormalizedToText(FBValueTextDisplay::Text, normalized), dontSendNotification);
 }

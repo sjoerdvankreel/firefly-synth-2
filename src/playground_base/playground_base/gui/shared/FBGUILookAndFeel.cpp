@@ -4,12 +4,12 @@
 
 using namespace juce;
 
-static float
-ConvertExchangeValueFromSkewed(FBStaticParamBase const& param, float normalized)
+static double
+ConvertExchangeValueFromSkewed(FBStaticParamBase const& param, double normalized)
 {
-  if (param.type != FBParamType::Linear)
+  if (param.type != FBParamType::Linear) // TODO hunt for FbParamType::
     return normalized;
-  NormalisableRange<float> range(0.0f, 1.0f, 0.0f, param.Linear().editSkewFactor);
+  NormalisableRange<double> range(0.0, 1.0, 0.0, param.LinearRealTime().editSkewFactor);
   return range.convertTo0to1(normalized);
 }
 
@@ -21,12 +21,12 @@ FBGUILookAndFeel::DrawLinearSliderExchangeThumb(
   auto layout = getSliderLayout(slider);
   int sliderRegionStart = layout.sliderBounds.getX();
   int sliderRegionSize = layout.sliderBounds.getWidth();
-  float skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
-  float minExchangePos = (float)(sliderRegionStart + skewed * sliderRegionSize);
-  float kx = minExchangePos;
-  float ky = (float)y + (float)height * 0.5f;
-  Point<float> maxPoint = { kx, ky };
-  float thumbWidth = (float)getSliderThumbRadius(slider);
+  double skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
+  double minExchangePos = (float)(sliderRegionStart + skewed * sliderRegionSize);
+  double kx = minExchangePos;
+  double ky = (double)y + (double)height * 0.5;
+  Point<double> maxPoint = { kx, ky };
+  double thumbWidth = (double)getSliderThumbRadius(slider);
   g.setColour(slider.findColour(Slider::thumbColourId).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
 }
