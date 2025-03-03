@@ -10,17 +10,17 @@ FBListParamNonRealTime::ValueCount() const
   return (int)items.size();
 }
 
-int 
-FBListParamNonRealTime::NormalizedToPlain(float normalized) const
+double 
+FBListParamNonRealTime::NormalizedToPlain(double normalized) const
 {
-  return FBListParamRealTime::NormalizedToPlain(normalized);
+  return FBListParamRealTime::NormalizedToPlain((float)normalized);
 }
 
-float
-FBListParamNonRealTime::PlainToNormalized(int plain) const
+double
+FBListParamNonRealTime::PlainToNormalized(double plain) const
 {
   int count = (int)items.size();
-  return std::clamp(plain / (count - 1.0f), 0.0f, 1.0f);
+  return std::clamp(plain / (count - 1.0), 0.0, 1.0);
 }
 
 PopupMenu
@@ -32,7 +32,7 @@ FBListParamNonRealTime::MakePopupMenu() const
   return result;
 }
 
-std::optional<int>
+std::optional<double>
 FBListParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
@@ -42,13 +42,14 @@ FBListParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string cons
 }
 
 std::string
-FBListParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
+FBListParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
 {
+  int plainDiscrete = (int)std::round(plain);
   switch (display)
   {
-  case FBValueTextDisplay::IO: return items[plain].id;
-  case FBValueTextDisplay::Text: return items[plain].text;
-  case FBValueTextDisplay::Tooltip: return items[plain].tooltip.empty()? items[plain].text: items[plain].tooltip;
+  case FBValueTextDisplay::IO: return items[plainDiscrete].id;
+  case FBValueTextDisplay::Text: return items[plainDiscrete].text;
+  case FBValueTextDisplay::Tooltip: return items[plainDiscrete].tooltip.empty()? items[plainDiscrete].text: items[plainDiscrete].tooltip;
   default: assert(false); return {};
   }
 }

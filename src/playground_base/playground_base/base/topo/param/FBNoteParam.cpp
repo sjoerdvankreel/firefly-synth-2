@@ -12,25 +12,26 @@ FBNoteParamNonRealTime::ValueCount() const
   return MidiNoteCount;
 }
 
-float
-FBNoteParamNonRealTime::PlainToNormalized(int plain) const 
+double
+FBNoteParamNonRealTime::PlainToNormalized(double plain) const
 {
-  return std::clamp(plain / (ValueCount() - 1.0f), 0.0f, 1.0f);
+  return std::clamp(plain / (ValueCount() - 1.0), 0.0, 1.0);
 }
 
-int
-FBNoteParamNonRealTime::NormalizedToPlain(float normalized) const
+double
+FBNoteParamNonRealTime::NormalizedToPlain(double normalized) const
 {
-  return FBNoteParamRealTime::NormalizedToPlain(normalized);
+  return FBNoteParamRealTime::NormalizedToPlain((float)normalized);
 }
 
 std::string
-FBNoteParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
+FBNoteParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
 {
-  return NoteNames[plain % 12] + std::to_string(plain / 12 - 1);
+  int plainDiscrete = (int)std::round(plain);
+  return NoteNames[plainDiscrete % 12] + std::to_string(plainDiscrete / 12 - 1);
 }
 
-std::optional<int>
+std::optional<double>
 FBNoteParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   for (int i = 0; i < ValueCount(); i++)

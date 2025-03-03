@@ -9,29 +9,29 @@ FBLog2ParamRealTime::Init(float offset, float curveStart, float curveEnd)
   _expo = std::log(curveEnd / curveStart) / std::log(2.0f);
 }
 
-float 
-FBLog2ParamNonRealTime::PlainToNormalized(float plain) const
+double 
+FBLog2ParamNonRealTime::PlainToNormalized(double plain) const
 {
   float result = std::log2((plain - _offset) / _curveStart) / _expo;
   assert(0.0f <= result && result <= 1.0f);
   return result;
 }
 
-float
-FBLog2ParamNonRealTime::NormalizedToPlain(float normalized) const
+double
+FBLog2ParamNonRealTime::NormalizedToPlain(double normalized) const
 {
-  return FBLog2ParamRealTime::NormalizedToPlain(normalized);
+  return FBLog2ParamRealTime::NormalizedToPlain((float)normalized);
 }
 
 std::string
-FBLog2ParamNonRealTime::PlainToText(FBValueTextDisplay display, float plain) const
+FBLog2ParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
 {
   if (display == FBValueTextDisplay::IO)
     return std::to_string(plain);
   return FBFormatFloat(plain, FBDefaultDisplayPrecision);
 }
 
-std::optional<float>
+std::optional<double>
 FBLog2ParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   char* end;

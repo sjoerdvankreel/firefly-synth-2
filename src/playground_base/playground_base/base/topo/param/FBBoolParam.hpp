@@ -3,7 +3,6 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/param/FBSteppedParamNonRealTime.hpp>
 
-#include <vector>
 #include <string>
 #include <optional>
 #include <algorithm>
@@ -21,10 +20,10 @@ public FBSteppedParamNonRealTime
   FB_NOCOPY_NOMOVE_DEFCTOR(FBBoolParamNonRealTime);
   bool IsItems() const override;
   int ValueCount() const override;
-  float PlainToNormalized(int plain) const override;
-  int NormalizedToPlain(float normalized) const override;
-  std::string PlainToText(FBValueTextDisplay display, int plain) const override;
-  std::optional<int> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
+  double PlainToNormalized(double plain) const override;
+  double NormalizedToPlain(double normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, double plain) const override;
+  std::optional<double> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline bool
