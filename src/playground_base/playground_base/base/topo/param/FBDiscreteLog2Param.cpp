@@ -14,26 +14,26 @@ FBDiscreteLog2ParamNonRealTime::ValueCount() const
   return valueCount;
 }
 
-double 
-FBDiscreteLog2ParamNonRealTime::PlainToNormalized(double plain) const
+float 
+FBDiscreteLog2ParamNonRealTime::PlainToNormalized(int plain) const
 {
   plain = std::bit_width((unsigned int)plain) - 1;
-  return std::clamp(plain / (valueCount - 1.0), 0.0, 1.0);
+  return std::clamp(plain / (valueCount - 1.0f), 0.0f, 1.0f);
 }
 
-double
-FBDiscreteLog2ParamNonRealTime::NormalizedToPlain(double normalized) const
+int
+FBDiscreteLog2ParamNonRealTime::NormalizedToPlain(float normalized) const
 {
-  return FBDiscreteLog2ParamRealTime::NormalizedToPlain((float)normalized);
+  return FBDiscreteLog2ParamRealTime::NormalizedToPlain(normalized);
 }
 
 std::string
-FBDiscreteLog2ParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
+FBDiscreteLog2ParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
 {
   return std::to_string(plain);
 }
 
-std::optional<double>
+std::optional<int>
 FBDiscreteLog2ParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   char* end;

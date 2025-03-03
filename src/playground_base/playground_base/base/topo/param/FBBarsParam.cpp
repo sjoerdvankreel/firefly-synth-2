@@ -11,26 +11,26 @@ FBBarsParamNonRealTime::ValueCount() const
   return (int)items.size();
 }
 
-double
-FBBarsParamNonRealTime::PlainToNormalized(double plain) const
+float
+FBBarsParamNonRealTime::PlainToNormalized(int plain) const 
 {
   int count = (int)items.size();
-  return std::clamp(plain / (count - 1.0), 0.0, 1.0);
+  return std::clamp(plain / (count - 1.0f), 0.0f, 1.0f);
 }
 
-double
-FBBarsParamNonRealTime::NormalizedToPlain(double normalized) const
+int
+FBBarsParamNonRealTime::NormalizedToPlain(float normalized) const 
 {
-  return FBBarsParamRealTime::NormalizedToPlain((float)normalized);
+  return FBBarsParamRealTime::NormalizedToPlain(normalized);
 }
 
 std::string
-FBBarsParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
+FBBarsParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const 
 {
-  return items[(int)std::round(plain)].ToString();
+  return items[plain].ToString();
 }
 
-std::optional<double>
+std::optional<int>
 FBBarsParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)

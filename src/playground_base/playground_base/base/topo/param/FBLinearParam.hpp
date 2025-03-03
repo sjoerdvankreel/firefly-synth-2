@@ -29,10 +29,10 @@ public FBLinearParamRealTime,
 public FBContinuousParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FBLinearParamNonRealTime);
-  double PlainToNormalized(double plain) const override;
-  double NormalizedToPlain(double normalized) const override;
-  std::string PlainToText(FBValueTextDisplay display, double plain) const override;
-  std::optional<double> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
+  float PlainToNormalized(float plain) const override;
+  float NormalizedToPlain(float normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, float plain) const override;
+  std::optional<float> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline float

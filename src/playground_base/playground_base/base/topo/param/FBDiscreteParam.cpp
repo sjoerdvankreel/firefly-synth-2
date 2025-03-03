@@ -12,25 +12,25 @@ FBDiscreteParamNonRealTime::ValueCount() const
   return valueCount;
 }
 
-double 
-FBDiscreteParamNonRealTime::PlainToNormalized(double plain) const
+float 
+FBDiscreteParamNonRealTime::PlainToNormalized(int plain) const
 {
-  return std::clamp(plain / (valueCount - 1.0), 0.0, 1.0);
+  return std::clamp(plain / (valueCount - 1.0f), 0.0f, 1.0f);
 }
 
-double
-FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const
+int
+FBDiscreteParamNonRealTime::NormalizedToPlain(float normalized) const
 {
-  return FBDiscreteParamRealTime::NormalizedToPlain((float)normalized);
+  return FBDiscreteParamRealTime::NormalizedToPlain(normalized);
 }
 
 std::string
-FBDiscreteParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
+FBDiscreteParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
 {
   return std::to_string(plain);
 }
 
-std::optional<double>
+std::optional<int>
 FBDiscreteParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   char* end;

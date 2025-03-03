@@ -28,17 +28,17 @@ public FBItemsParamNonRealTime
   FB_NOCOPY_NOMOVE_DEFCTOR(FBBarsParamNonRealTime);
   int ValueCount() const override;
   juce::PopupMenu MakePopupMenu() const override;
-  double PlainToNormalized(double plain) const override;
-  double NormalizedToPlain(double normalized) const override;
-  std::string PlainToText(FBValueTextDisplay display, double plain) const override;
-  std::optional<double> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
+  float PlainToNormalized(int plain) const override;
+  int NormalizedToPlain(float normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, int plain) const override;
+  std::optional<int> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline int
 FBBarsParamRealTime::NormalizedToPlain(float normalized) const
 {
   int count = (int)items.size();
-  return std::clamp((int)std::round(normalized * count), 0, count - 1);
+  return std::clamp((int)(normalized * count), 0, count - 1);
 }
 
 inline int 

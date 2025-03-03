@@ -1,28 +1,28 @@
 #include <playground_base/base/shared/FBFormat.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 
-double 
-FBLinearParamNonRealTime::PlainToNormalized(double plain) const
+float 
+FBLinearParamNonRealTime::PlainToNormalized(float plain) const
 {
-  return std::clamp((plain - min) / (max - min), 0.0, 1.0);
+  return std::clamp((plain - min) / (max - min), 0.0f, 1.0f);
 }
 
-double
-FBLinearParamNonRealTime::NormalizedToPlain(double normalized) const
+float
+FBLinearParamNonRealTime::NormalizedToPlain(float normalized) const
 {
-  return FBLinearParamRealTime::NormalizedToPlain((float)normalized);
+  return FBLinearParamRealTime::NormalizedToPlain(normalized);
 }
 
 std::string
-FBLinearParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
+FBLinearParamNonRealTime::PlainToText(FBValueTextDisplay display, float plain) const
 {
-  double displayPlain = plain * displayMultiplier;
+  float displayPlain = plain * displayMultiplier;
   if (display == FBValueTextDisplay::IO)
     return std::to_string(displayPlain);
   return FBFormatFloat(displayPlain, FBDefaultDisplayPrecision);
 }
 
-std::optional<double>
+std::optional<float>
 FBLinearParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   char* end;

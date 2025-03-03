@@ -8,10 +8,15 @@
 #include <optional>
 
 struct FBContinuousParamNonRealTime:
-public FBParamNonRealTime
+public IFBParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FBContinuousParamNonRealTime);
   int ValueCount() const override final { return 0; }
   bool IsItems() const override final { return false; }
   bool IsStepped() const override final { return false; }
+
+  virtual float PlainToNormalized(float plain) const = 0;
+  virtual float NormalizedToPlain(float normalized) const = 0;
+  virtual std::string PlainToText(FBValueTextDisplay display, float plain) const = 0;
+  virtual std::optional<float> TextToPlain(FBValueTextDisplay display, std::string const& text) const = 0;
 };
