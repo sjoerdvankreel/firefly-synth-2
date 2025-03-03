@@ -47,6 +47,11 @@ public:
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);
 
+  IFBParamNonRealTime& NonRealTime();
+  IFBListParamNonRealTime& ListNonRealTime();
+  IFBParamNonRealTime const& NonRealTime() const;
+  IFBListParamNonRealTime const& ListNonRealTime() const;
+
   FBListParamRealTime& ListRealTime();
   FBNoteParamRealTime& NoteRealTime();
   FBBarsParamRealTime& BarsRealTime();
@@ -64,16 +69,6 @@ public:
   FBLinearParamRealTime const& LinearRealTime() const;
   FBDiscreteParamRealTime const& DiscreteRealTime() const;
   FBDiscreteLog2ParamRealTime const& DiscreteLog2RealTime() const;
-
-  IFBParamNonRealTime& NonRealTime();
-  FBItemsParamNonRealTime& ItemsNonRealTime();
-  FBSteppedParamNonRealTime& SteppedNonRealTime();
-  FBContinuousParamNonRealTime& ContinuousNonRealTime();
-
-  IFBParamNonRealTime const& NonRealTime() const;
-  FBItemsParamNonRealTime const& ItemsNonRealTime() const;
-  FBSteppedParamNonRealTime const& SteppedNonRealTime() const;
-  FBContinuousParamNonRealTime const& ContinuousNonRealTime() const;
 
   float DefaultNormalizedByText() const;
   std::string NormalizedToText(FBParamTextDisplay display, float normalized) const;

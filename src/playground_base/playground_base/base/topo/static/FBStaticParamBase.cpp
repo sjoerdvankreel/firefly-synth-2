@@ -1,41 +1,17 @@
 #include <playground_base/base/topo/static/FBStaticParamBase.hpp>
 
-using namespace juce; 
+using namespace juce;
 
-FBItemsParamNonRealTime& 
-FBStaticParamBase::ItemsNonRealTime()
+IFBListParamNonRealTime&
+FBStaticParamBase::ListNonRealTime()
 {
-  return dynamic_cast<FBItemsParamNonRealTime&>(NonRealTime());
+  return dynamic_cast<IFBListParamNonRealTime&>(NonRealTime());
 }
 
-FBSteppedParamNonRealTime& 
-FBStaticParamBase::SteppedNonRealTime()
+IFBListParamNonRealTime const&
+FBStaticParamBase::ListNonRealTime() const
 {
-  return dynamic_cast<FBSteppedParamNonRealTime&>(NonRealTime());
-}
-
-FBContinuousParamNonRealTime& 
-FBStaticParamBase::ContinuousNonRealTime()
-{
-  return dynamic_cast<FBContinuousParamNonRealTime&>(NonRealTime());
-}
-
-FBItemsParamNonRealTime const& 
-FBStaticParamBase::ItemsNonRealTime() const
-{
-  return dynamic_cast<FBItemsParamNonRealTime const&>(NonRealTime());
-}
-
-FBSteppedParamNonRealTime const& 
-FBStaticParamBase::SteppedNonRealTime() const
-{
-  return dynamic_cast<FBSteppedParamNonRealTime const&>(NonRealTime());
-}
-
-FBContinuousParamNonRealTime const& 
-FBStaticParamBase::ContinuousNonRealTime() const
-{
-  return dynamic_cast<FBContinuousParamNonRealTime const&>(NonRealTime());
+  return dynamic_cast<IFBListParamNonRealTime const&>(NonRealTime());
 }
 
 float
