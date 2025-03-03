@@ -74,6 +74,10 @@ public:
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
   FBSteppedParamNonRealTime const& SteppedNonRealTime() const;
   FBContinuousParamNonRealTime const& ContinuousNonRealTime() const;
+
+  float DefaultNormalizedByText() const;
+  std::string NormalizedToText(FBParamTextDisplay display, float normalized) const;
+  std::optional<float> TextToNormalized(FBValueTextDisplay display, std::string const& text) const;
 };
 
 inline FBListParamRealTime&
