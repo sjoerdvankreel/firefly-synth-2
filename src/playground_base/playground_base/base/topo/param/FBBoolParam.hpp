@@ -19,7 +19,6 @@ public FBBoolParamRealTime,
 public FBSteppedParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FBBoolParamNonRealTime);
-  bool IsItems() const override;
   int ValueCount() const override;
   float PlainToNormalized(int plain) const override;
   int NormalizedToPlain(float normalized) const override;
