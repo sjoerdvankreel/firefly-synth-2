@@ -1,19 +1,7 @@
 #include <playground_base/base/shared/FBFormat.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 
-bool
-FBLinearParamNonRealTime::IsList() const
-{
-  return false;
-}
-
-bool
-FBLinearParamNonRealTime::IsStepped() const
-{
-  return false;
-}
-
-int
+int 
 FBLinearParamNonRealTime::ValueCount() const
 {
   return 0;

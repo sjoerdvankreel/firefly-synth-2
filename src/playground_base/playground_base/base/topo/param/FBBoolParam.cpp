@@ -1,18 +1,6 @@
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 
-bool
-FBBoolParamNonRealTime::IsList() const
-{
-  return false;
-}
-
-bool
-FBBoolParamNonRealTime::IsStepped() const
-{
-  return true;
-}
-
-int
+int 
 FBBoolParamNonRealTime::ValueCount() const
 {
   return 2;

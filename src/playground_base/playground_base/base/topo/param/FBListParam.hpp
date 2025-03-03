@@ -21,8 +21,6 @@ public FBListParamRealTime,
 public IFBListParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FBListParamNonRealTime);
-  bool IsList() const override;
-  bool IsStepped() const override;
   int ValueCount() const override;
   juce::PopupMenu MakePopupMenu() const override;
   float PlainToNormalized(int plain) const override;

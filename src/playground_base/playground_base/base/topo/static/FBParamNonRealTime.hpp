@@ -9,8 +9,6 @@
 struct IFBParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(IFBParamNonRealTime);
-  virtual bool IsList() const = 0;
-  virtual bool IsStepped() const = 0;
   virtual int ValueCount() const = 0;
   virtual float PlainToNormalized(int plain) const = 0;
   virtual int NormalizedToPlain(float normalized) const = 0;

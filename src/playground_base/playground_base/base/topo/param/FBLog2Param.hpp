@@ -33,8 +33,6 @@ public FBLog2ParamRealTime,
 public IFBParamNonRealTime
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FBLog2ParamNonRealTime);
-  bool IsList() const override;
-  bool IsStepped() const override;
   int ValueCount() const override;
   float PlainToNormalized(int plain) const override;
   int NormalizedToPlain(float normalized) const override;

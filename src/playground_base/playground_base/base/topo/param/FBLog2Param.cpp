@@ -9,19 +9,7 @@ FBLog2ParamRealTime::Init(float offset, float curveStart, float curveEnd)
   _expo = std::log(curveEnd / curveStart) / std::log(2.0f);
 }
 
-bool
-FBLog2ParamNonRealTime::IsList() const
-{
-  return false;
-}
-
-bool
-FBLog2ParamNonRealTime::IsStepped() const
-{
-  return false;
-}
-
-int
+int 
 FBLog2ParamNonRealTime::ValueCount() const
 {
   return 0;
