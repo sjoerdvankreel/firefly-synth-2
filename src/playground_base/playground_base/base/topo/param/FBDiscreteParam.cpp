@@ -1,31 +1,19 @@
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 
-int 
-FBDiscreteParamNonRealTime::ValueCount() const
-{
-  return valueCount;
-}
-
-float 
-FBDiscreteParamNonRealTime::PlainToNormalized(int plain) const
-{
-  return std::clamp(plain / (valueCount - 1.0f), 0.0f, 1.0f);
-}
-
-int
-FBDiscreteParamNonRealTime::NormalizedToPlain(float normalized) const
-{
-  return FBDiscreteParamRealTime::NormalizedToPlain(normalized);
-}
-
 std::string
-FBDiscreteParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
+FBDiscreteParam::PlainToText(int plain) const
 {
   return std::to_string(plain);
 }
 
+float
+FBDiscreteParam::PlainToNormalized(int plain) const
+{
+  return std::clamp(plain / (valueCount - 1.0f), 0.0f, 1.0f);
+}
+
 std::optional<int>
-FBDiscreteParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
+FBDiscreteParam::TextToPlain(std::string const& text) const
 {
   char* end;
   unsigned long plain = std::strtoul(text.c_str(), &end, 10);
