@@ -24,7 +24,7 @@ FFMakeOsciTopo()
   type.slotCount = 1;
   type.id = "{9018865F-7B05-4835-B541-95014C0C63E6}";
   type.type = FBParamType::List;
-  type.ListRealTime().items = {
+  type.List().items = {
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
     { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Basic" },
     { "{19945EB6-4676-492A-BC38-E586A6D3BF6F}", "DSF" } };
@@ -41,7 +41,7 @@ FFMakeOsciTopo()
   gain.unit = "%";
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
   gain.type = FBParamType::Linear;
-  gain.LinearRealTime().displayMultiplier = 100.0f;
+  gain.Linear().displayMultiplier = 100.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectGain);
@@ -67,9 +67,9 @@ FFMakeOsciTopo()
   cent.unit = "Cent";
   cent.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
   cent.type = FBParamType::Linear;
-  cent.LinearRealTime().min = -1.0f;
-  cent.LinearRealTime().max = 1.0f;
-  cent.LinearRealTime().displayMultiplier = 100.0f;
+  cent.Linear().min = -1.0f;
+  cent.Linear().max = 1.0f;
+  cent.Linear().displayMultiplier = 100.0f;
   auto selectCent = [](auto& module) { return &module.acc.cent; };
   cent.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectCent);
   cent.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectCent);
@@ -139,9 +139,9 @@ FFMakeOsciTopo()
   basicSinGain.unit = "%";
   basicSinGain.id = "{D8544E3C-B79D-4130-8D1B-A7ACAAE2C2EB}";
   basicSinGain.type = FBParamType::Linear;
-  basicSinGain.LinearRealTime().min = -1.0f;
-  basicSinGain.LinearRealTime().max = 1.0f;
-  basicSinGain.LinearRealTime().displayMultiplier = 100.0f;
+  basicSinGain.Linear().min = -1.0f;
+  basicSinGain.Linear().max = 1.0f;
+  basicSinGain.Linear().displayMultiplier = 100.0f;
   auto selectBasicSinGain = [](auto& module) { return &module.acc.basicSinGain; };
   basicSinGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSinGain);
   basicSinGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSinGain);
@@ -156,9 +156,9 @@ FFMakeOsciTopo()
   basicSawGain.unit = "%";
   basicSawGain.id = "{A3163CEF-B04E-49F8-B351-B115415F6B80}";
   basicSawGain.type = FBParamType::Linear;
-  basicSawGain.LinearRealTime().min = -1.0f;
-  basicSawGain.LinearRealTime().max = 1.0f;
-  basicSawGain.LinearRealTime().displayMultiplier = 100.0f;
+  basicSawGain.Linear().min = -1.0f;
+  basicSawGain.Linear().max = 1.0f;
+  basicSawGain.Linear().displayMultiplier = 100.0f;
   auto selectBasicSawGain = [](auto& module) { return &module.acc.basicSawGain; };
   basicSawGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSawGain);
   basicSawGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSawGain);
@@ -173,9 +173,9 @@ FFMakeOsciTopo()
   basicTriGain.unit = "%";
   basicTriGain.id = "{47CA45DE-21B6-41E9-BFC8-70D44F90AEB7}";
   basicTriGain.type = FBParamType::Linear;
-  basicTriGain.LinearRealTime().min = -1.0f;
-  basicTriGain.LinearRealTime().max = 1.0f;
-  basicTriGain.LinearRealTime().displayMultiplier = 100.0f;
+  basicTriGain.Linear().min = -1.0f;
+  basicTriGain.Linear().max = 1.0f;
+  basicTriGain.Linear().displayMultiplier = 100.0f;
   auto selectBasicTriGain = [](auto& module) { return &module.acc.basicTriGain; };
   basicTriGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTriGain);
   basicTriGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicTriGain);
@@ -190,9 +190,9 @@ FFMakeOsciTopo()
   basicSqrGain.unit = "%";
   basicSqrGain.id = "{F27DEECD-8AB2-4639-94E9-5AD06F999D25}";
   basicSqrGain.type = FBParamType::Linear;
-  basicSqrGain.LinearRealTime().min = -1.0f;
-  basicSqrGain.LinearRealTime().max = 1.0f;
-  basicSqrGain.LinearRealTime().displayMultiplier = 100.0f;
+  basicSqrGain.Linear().min = -1.0f;
+  basicSqrGain.Linear().max = 1.0f;
+  basicSqrGain.Linear().displayMultiplier = 100.0f;
   auto selectBasicSqrGain = [](auto& module) { return &module.acc.basicSqrGain; };
   basicSqrGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSqrGain);
   basicSqrGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSqrGain);
@@ -207,7 +207,7 @@ FFMakeOsciTopo()
   basicSqrPW.unit = "%";
   basicSqrPW.id = "{D25EFEB3-18E0-498C-AA7C-20E1FB474A0F}";
   basicSqrPW.type = FBParamType::Linear;
-  basicSqrPW.LinearRealTime().displayMultiplier = 100.0f;
+  basicSqrPW.Linear().displayMultiplier = 100.0f;
   auto selectBasicSqrPW = [](auto& module) { return &module.acc.basicSqrPW; };
   basicSqrPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSqrPW);
   basicSqrPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSqrPW);
@@ -223,7 +223,7 @@ FFMakeOsciTopo()
   dsfOvertones.slotCount = 1;
   dsfOvertones.id = "{508C3B8D-E382-4438-B493-81208422E733}";
   dsfOvertones.type = FBParamType::DiscreteLog2;
-  dsfOvertones.DiscreteLog2RealTime().valueCount = 11;
+  dsfOvertones.DiscreteLog2().valueCount = 11;
   auto selectDSFOvertones = [](auto& module) { return &module.block.dsfOvertones; };
   dsfOvertones.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFOvertones);
   dsfOvertones.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFOvertones);
@@ -238,8 +238,8 @@ FFMakeOsciTopo()
   dsfDistance.slotCount = 1;
   dsfDistance.id = "{0D1D4920-A17F-4716-A42E-238DD1E99952}";
   dsfDistance.type = FBParamType::Linear;
-  dsfDistance.LinearRealTime().min = 0.05f;
-  dsfDistance.LinearRealTime().max = 20.0f;
+  dsfDistance.Linear().min = 0.05f;
+  dsfDistance.Linear().max = 20.0f;
   auto selectDSFDistance = [](auto& module) { return &module.block.dsfDistance; };
   dsfDistance.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDistance);
   dsfDistance.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFDistance);
@@ -254,7 +254,7 @@ FFMakeOsciTopo()
   dsfDecay.unit = "%";
   dsfDecay.id = "{21CE915D-0983-4545-9F6E-8743CAC5EAB7}";
   dsfDecay.type = FBParamType::Linear;
-  dsfDecay.LinearRealTime().displayMultiplier = 100.0f;
+  dsfDecay.Linear().displayMultiplier = 100.0f;
   auto selectDSFDecay = [](auto& module) { return &module.acc.dsfDecay; };
   dsfDecay.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDecay);
   dsfDecay.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDSFDecay);
@@ -267,7 +267,7 @@ FFMakeOsciTopo()
   gLFOToGain.unit = "%";
   gLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
   gLFOToGain.type = FBParamType::Linear;
-  gLFOToGain.LinearRealTime().displayMultiplier = 100.0f;
+  gLFOToGain.Linear().displayMultiplier = 100.0f;
   auto selectGLFOToGain = [](auto& module) { return &module.acc.gLFOToGain; };
   gLFOToGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGLFOToGain);
   gLFOToGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectGLFOToGain);

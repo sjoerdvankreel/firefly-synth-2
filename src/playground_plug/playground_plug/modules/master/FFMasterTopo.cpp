@@ -25,7 +25,7 @@ FFMakeMasterTopo()
   gain.unit = "%";
   gain.id = "{9CDC04BC-D0FF-43E6-A2C2-D6C822CFA3EA}";
   gain.type = FBParamType::Linear;
-  gain.LinearRealTime().displayMultiplier = 100.0f;
+  gain.Linear().displayMultiplier = 100.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectGain);
@@ -39,9 +39,9 @@ FFMakeMasterTopo()
   hostSmoothTime.unit = "Ms";
   hostSmoothTime.id = "{961D1B53-9509-47EA-B646-C948C5FACA82}";
   hostSmoothTime.type = FBParamType::Linear;
-  hostSmoothTime.LinearRealTime().min = 0.0f;
-  hostSmoothTime.LinearRealTime().max = 0.05f;
-  hostSmoothTime.LinearRealTime().displayMultiplier = 1000.0f;
+  hostSmoothTime.Linear().min = 0.0f;
+  hostSmoothTime.Linear().max = 0.05f;
+  hostSmoothTime.Linear().displayMultiplier = 1000.0f;
   auto selectHostSmoothTime = [](auto& module) { return &module.block.hostSmoothTime; };
   hostSmoothTime.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectHostSmoothTime);
   hostSmoothTime.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectHostSmoothTime);
@@ -55,7 +55,7 @@ FFMakeMasterTopo()
   voices.slotCount = 1;
   voices.id = "{54C6CAD4-FA5A-4395-8131-C768E0AD48CF}";
   voices.type = FBParamType::Discrete;
-  voices.DiscreteRealTime().valueCount = FBMaxVoices + 1;
+  voices.Discrete().valueCount = FBMaxVoices + 1;
   auto selectVoices = [](auto& module) { return &module.block.voices; };
   voices.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectVoices);
   voices.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectVoices);
