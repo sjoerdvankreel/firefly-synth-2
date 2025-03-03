@@ -26,14 +26,14 @@
 struct FBStaticParamBase
 {
 private:
-  FBLog2ParamNonRealTime log2 = {};
-  FBListParamNonRealTime list = {};
-  FBNoteParamNonRealTime note = {};
-  FBBarsParamNonRealTime bars = {};
-  FBBoolParamNonRealTime boolean = {};
-  FBLinearParamNonRealTime linear = {};
-  FBDiscreteParamNonRealTime discrete = {};
-  FBDiscreteLog2ParamNonRealTime discreteLog2 = {};
+  FBLog2Param log2 = {};
+  FBListParam list = {};
+  FBNoteParam note = {};
+  FBBarsParam bars = {};
+  FBBoolParam boolean = {};
+  FBLinearParam linear = {};
+  FBDiscreteParam discrete = {};
+  FBDiscreteLog2Param discreteLog2 = {};
 
 public:
   int slotCount = {};
@@ -47,142 +47,161 @@ public:
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);
 
-  IFBParamNonRealTime& NonRealTime();
-  IFBListParamNonRealTime& ListNonRealTime();
-  IFBParamNonRealTime const& NonRealTime() const;
-  IFBListParamNonRealTime const& ListNonRealTime() const;
+  int ValueCount() const;
 
-  FBListParamRealTime& ListRealTime();
-  FBNoteParamRealTime& NoteRealTime();
-  FBBarsParamRealTime& BarsRealTime();
-  FBLog2ParamRealTime& Log2RealTime();
-  FBBoolParamRealTime& BooleanRealTime();
-  FBLinearParamRealTime& LinearRealTime();
-  FBDiscreteParamRealTime& DiscreteRealTime();
-  FBDiscreteLog2ParamRealTime& DiscreteLog2RealTime();
+  FBListParam& List();
+  FBNoteParam& Note();
+  FBBarsParam& Bars();
+  FBLog2Param& Log2();
+  FBBoolParam& Boolean();
+  FBLinearParam& Linear();
+  FBDiscreteParam& Discrete();
+  FBDiscreteLog2Param& DiscreteLog2();
 
-  FBListParamRealTime const& ListRealTime() const;
-  FBNoteParamRealTime const& NoteRealTime() const;
-  FBBarsParamRealTime const& BarsRealTime() const;
-  FBLog2ParamRealTime const& Log2RealTime() const;
-  FBBoolParamRealTime const& BooleanRealTime() const;
-  FBLinearParamRealTime const& LinearRealTime() const;
-  FBDiscreteParamRealTime const& DiscreteRealTime() const;
-  FBDiscreteLog2ParamRealTime const& DiscreteLog2RealTime() const;
+  FBListParam const& List() const;
+  FBNoteParam const& Note() const;
+  FBBarsParam const& Bars() const;
+  FBLog2Param const& Log2() const;
+  FBBoolParam const& Boolean() const;
+  FBLinearParam const& Linear() const;
+  FBDiscreteParam const& Discrete() const;
+  FBDiscreteLog2Param const& DiscreteLog2() const;
 
+  juce::PopupMenu MakePopupMenu() const;
   float DefaultNormalizedByText() const;
+  float AnyDiscreteToNormalizedSlow(int discrete) const;
+  int NormalizedToAnyDiscreteSlow(float normalized) const;
+
+  std::optional<float> TextToNormalized(bool io, std::string const& text) const;
+  std::string NormalizedToText(FBValueTextDisplay display, float normalized) const;
   std::string NormalizedToText(FBParamTextDisplay display, float normalized) const;
-  std::optional<float> TextToNormalized(FBValueTextDisplay display, std::string const& text) const;
 };
 
-inline FBListParamRealTime&
-FBStaticParamBase::ListRealTime()
+inline FBListParam&
+FBStaticParamBase::List()
 {
   assert(type == FBParamType::List);
   return list;
 }
 
-inline FBNoteParamRealTime&
-FBStaticParamBase::NoteRealTime()
+inline FBNoteParam&
+FBStaticParamBase::Note()
 {
   assert(type == FBParamType::Note);
   return note;
 }
 
-inline FBBarsParamRealTime&
-FBStaticParamBase::BarsRealTime()
+inline FBBarsParam&
+FBStaticParamBase::Bars()
 {
   assert(type == FBParamType::Bars);
   return bars;
 }
 
-inline FBBoolParamRealTime&
-FBStaticParamBase::BooleanRealTime()
+inline FBBoolParam&
+FBStaticParamBase::Boolean()
 {
   assert(type == FBParamType::Boolean);
   return boolean;
 }
 
-inline FBLinearParamRealTime&
-FBStaticParamBase::LinearRealTime()
+inline FBLinearParam&
+FBStaticParamBase::Linear()
 {
   assert(type == FBParamType::Linear);
   return linear;
 }
 
-inline FBLog2ParamRealTime&
-FBStaticParamBase::Log2RealTime()
+inline FBLog2Param&
+FBStaticParamBase::Log2()
 {
   assert(type == FBParamType::Log2);
   return log2;
 }
 
-inline FBDiscreteParamRealTime&
-FBStaticParamBase::DiscreteRealTime()
+inline FBDiscreteParam&
+FBStaticParamBase::Discrete()
 {
   assert(type == FBParamType::Discrete);
   return discrete;
 }
 
-inline FBDiscreteLog2ParamRealTime&
-FBStaticParamBase::DiscreteLog2RealTime()
+inline FBDiscreteLog2Param&
+FBStaticParamBase::DiscreteLog2()
 {
   assert(type == FBParamType::DiscreteLog2);
   return discreteLog2;
 }
 
-inline FBListParamRealTime const&
-FBStaticParamBase::ListRealTime() const
+inline FBListParam const&
+FBStaticParamBase::List() const
 {
   assert(type == FBParamType::List);
   return list;
 }
 
-inline FBNoteParamRealTime const&
-FBStaticParamBase::NoteRealTime() const
+inline FBNoteParam const&
+FBStaticParamBase::Note() const
 {
   assert(type == FBParamType::Note);
   return note;
 }
 
-inline FBBarsParamRealTime const&
-FBStaticParamBase::BarsRealTime() const
+inline FBBarsParam const&
+FBStaticParamBase::Bars() const
 {
   assert(type == FBParamType::Bars);
   return bars;
 }
 
-inline FBBoolParamRealTime const&
-FBStaticParamBase::BooleanRealTime() const
+inline FBBoolParam const&
+FBStaticParamBase::Boolean() const
 {
   assert(type == FBParamType::Boolean);
   return boolean;
 }
 
-inline FBLinearParamRealTime const&
-FBStaticParamBase::LinearRealTime() const
+inline FBLinearParam const&
+FBStaticParamBase::Linear() const
 {
   assert(type == FBParamType::Linear);
   return linear;
 }
 
-inline FBLog2ParamRealTime const&
-FBStaticParamBase::Log2RealTime() const
+inline FBLog2Param const&
+FBStaticParamBase::Log2() const
 {
   assert(type == FBParamType::Log2);
   return log2;
 }
 
-inline FBDiscreteParamRealTime const&
-FBStaticParamBase::DiscreteRealTime() const
+inline FBDiscreteParam const&
+FBStaticParamBase::Discrete() const
 {
   assert(type == FBParamType::Discrete);
   return discrete;
 }
 
-inline FBDiscreteLog2ParamRealTime const&
-FBStaticParamBase::DiscreteLog2RealTime() const
+inline FBDiscreteLog2Param const&
+FBStaticParamBase::DiscreteLog2() const
 {
   assert(type == FBParamType::DiscreteLog2);
   return discreteLog2;
+}
+
+inline int
+FBStaticParamBase::ValueCount() const
+{
+  switch (type)
+  {
+  case FBParamType::List: return list.ValueCount();
+  case FBParamType::Note: return note.ValueCount();
+  case FBParamType::Bars: return bars.ValueCount();
+  case FBParamType::Log2: return log2.ValueCount();
+  case FBParamType::Linear: return linear.ValueCount();
+  case FBParamType::Boolean: return boolean.ValueCount();
+  case FBParamType::Discrete: return discrete.ValueCount();
+  case FBParamType::DiscreteLog2: return discreteLog2.ValueCount();
+  default: assert(false); return {};
+  }
 }
