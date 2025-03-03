@@ -11,9 +11,9 @@
 
 struct FBListParamRealTime
 {
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBListParamRealTime);
   std::vector<FBListItem> items = {};
   int NormalizedToPlain(float normalized) const;
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBListParamRealTime);
 };
 
 struct FBListParamNonRealTime final:
