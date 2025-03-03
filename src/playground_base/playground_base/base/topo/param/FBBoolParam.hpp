@@ -1,32 +1,19 @@
 #pragma once
 
-#include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/base/topo/static/FBParamNonRealTime.hpp>
-
-#include <vector>
 #include <string>
 #include <optional>
-#include <algorithm>
 
-struct FBBoolParamRealTime
+struct FBBoolParam
 {
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBBoolParamRealTime);
+  int ValueCount() const { return 2; }
+  float PlainToNormalized(bool plain) const;
   bool NormalizedToPlain(float normalized) const;
-};
-
-struct FBBoolParamNonRealTime:
-public FBBoolParamRealTime,
-public IFBParamNonRealTime
-{
-  int ValueCount() const override;
-  float PlainToNormalized(int plain) const override;
-  int NormalizedToPlain(float normalized) const override;
-  std::string PlainToText(FBValueTextDisplay display, int plain) const override;
-  std::optional<int> TextToPlain(bool io, std::string const& text) const override;
+  std::string PlainToText(bool plain) const;
+  std::optional<bool> TextToPlain(std::string const& text) const;
 };
 
 inline bool
-FBBoolParamRealTime::NormalizedToPlain(float normalized) const
+FBBoolParam::NormalizedToPlain(float normalized) const
 {
   return normalized >= 0.5f;
 }
