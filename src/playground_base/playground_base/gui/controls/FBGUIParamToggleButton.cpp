@@ -11,7 +11,7 @@ FBAutoSizeToggleButton(),
 FBGUIParamControl(plugGUI, param)
 {
   auto* context = plugGUI->HostContext();
-  double normalized = context->GetGUIParamNormalized(param->runtimeParamIndex);
+  float normalized = context->GetGUIParamNormalized(param->runtimeParamIndex); 
   SetValueNormalizedFromPlug(normalized);
   _isOn = getToggleState();
 }
@@ -29,9 +29,9 @@ FBGUIParamToggleButton::getTooltip()
 }
 
 void
-FBGUIParamToggleButton::SetValueNormalizedFromPlug(double normalized)
+FBGUIParamToggleButton::SetValueNormalizedFromPlug(float normalized)
 {
-  int plain = _param->static_.BooleanRealTime().NormalizedToPlain(normalized);
+  int plain = _param->static_.Boolean().NormalizedToPlain(normalized);
   setToggleState(plain != 0, dontSendNotification);
   _isOn = getToggleState();
 }
@@ -39,9 +39,9 @@ FBGUIParamToggleButton::SetValueNormalizedFromPlug(double normalized)
 void
 FBGUIParamToggleButton::buttonStateChanged()
 {
-  double normalized = _param->static_.NonRealTime().PlainToNormalized(getToggleState());
-  bool plain = _param->static_.BooleanRealTime().NormalizedToPlain(normalized);
-  if (_isOn != plain)
+  float normalized = _param->static_.Boolean().PlainToNormalized(getToggleState());
+  int plain = _param->static_.Boolean().NormalizedToPlain(normalized);
+  if (_isOn != (plain != 0))
   {
     _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
     _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);

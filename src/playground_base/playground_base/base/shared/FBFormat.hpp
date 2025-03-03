@@ -5,4 +5,4 @@
 inline int const FBDefaultDisplayPrecision = 3;
 
 std::string
-FBFormatDouble(double val, int precision);
+FBFormatFloat(float val, int precision);

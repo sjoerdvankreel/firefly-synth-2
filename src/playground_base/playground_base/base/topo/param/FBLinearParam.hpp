@@ -13,8 +13,8 @@ struct FBLinearParamRealTime
 {
   float min = 0.0f;
   float max = 1.0f;
-  double editSkewFactor = 1.0f;
-  double displayMultiplier = 1.0f;
+  float editSkewFactor = 1.0f;
+  float displayMultiplier = 1.0f;
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBLinearParamRealTime);
   float NormalizedToPlain(float normalized) const;

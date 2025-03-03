@@ -88,7 +88,7 @@ FBVST3EditController::BeginAudioParamChange(int index)
 }
 
 void
-FBVST3EditController::PerformAudioParamEdit(int index, double normalized)
+FBVST3EditController::PerformAudioParamEdit(int index, float normalized)
 {
   int tag = _topo->audio.params[index].tag;
   setParamNormalized(tag, normalized);
@@ -100,13 +100,13 @@ FBVST3EditController::PerformAudioParamEdit(int index, double normalized)
   endEdit(tag);
 }
 
-double
+float
 FBVST3EditController::GetAudioParamNormalized(int index) const
 {
   return parameters.getParameterByIndex(index)->getNormalized();
 }
 
-double
+float 
 FBVST3EditController::GetGUIParamNormalized(int index) const
 {
   return *_guiState->Params()[index];
@@ -115,7 +115,7 @@ FBVST3EditController::GetGUIParamNormalized(int index) const
 void 
 FBVST3EditController::SetGUIParamNormalized(int index, double normalized)
 {
-  *_guiState->Params()[index] = (float)normalized;
+  *_guiState->Params()[index] = normalized;
 }
 
 std::vector<FBHostContextMenuItem>

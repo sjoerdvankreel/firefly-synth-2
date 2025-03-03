@@ -2,7 +2,7 @@
 #include <sstream>
 
 std::string
-FBFormatDouble(double val, int precision)
+FBFormatFloat(float val, int precision)
 {
   std::stringstream ss;
   ss << std::fixed;
