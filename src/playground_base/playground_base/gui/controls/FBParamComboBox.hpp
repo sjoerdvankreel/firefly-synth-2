@@ -18,6 +18,6 @@ public:
   void parentHierarchyChanged() override;
   void valueChanged(juce::Value& value) override;
 
-  void SetValueNormalizedFromHost(double normalized) override;
+  void SetValueNormalizedFromHost(float normalized) override;
   FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

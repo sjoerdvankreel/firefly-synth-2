@@ -9,5 +9,5 @@ public FBParamComponent
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamControl);
   FBParamControl(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
-  virtual void SetValueNormalizedFromHost(double normalized) = 0;
+  virtual void SetValueNormalizedFromHost(float normalized) = 0;
 };

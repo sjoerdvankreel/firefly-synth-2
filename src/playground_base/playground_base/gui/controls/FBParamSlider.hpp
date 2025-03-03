@@ -35,5 +35,5 @@ public:
   double getValueFromText(const juce::String& text) override;
 
   void UpdateExchangeState();
-  void SetValueNormalizedFromHost(double normalized) override;
+  void SetValueNormalizedFromHost(float normalized) override;
 };

@@ -25,5 +25,5 @@ public:
   juce::String getTooltip() override;
   void parentHierarchyChanged() override;
   int FixedWidth(int height) const override;
-  void SetValueNormalizedFromHost(double normalized) override;
+  void SetValueNormalizedFromHost(float normalized) override;
 };
