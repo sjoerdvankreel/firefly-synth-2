@@ -102,11 +102,11 @@ public:
 
   void EndAudioParamChange(int index) override;
   void BeginAudioParamChange(int index) override;
-  void PerformAudioParamEdit(int index, float normalized) override;
+  void PerformAudioParamEdit(int index, double normalized) override;
 
-  float GetAudioParamNormalized(int index) const override;
-  float GetGUIParamNormalized(int index) const override;
-  void SetGUIParamNormalized(int index, float normalized) override;
+  double GetAudioParamNormalized(int index) const override;
+  double GetGUIParamNormalized(int index) const override;
+  void SetGUIParamNormalized(int index, double normalized) override;
   
   void AudioParamContextMenuClicked(int paramIndex, int juceTag) override;
   std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) override;

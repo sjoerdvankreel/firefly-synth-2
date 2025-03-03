@@ -65,15 +65,17 @@ public:
   FBDiscreteParamRealTime const& DiscreteRealTime() const;
   FBDiscreteLog2ParamRealTime const& DiscreteLog2RealTime() const;
 
-  IFBParamNonRealTime& NonRealTime();
+  FBParamNonRealTime& NonRealTime();
   FBItemsParamNonRealTime& ItemsNonRealTime();
   FBSteppedParamNonRealTime& SteppedNonRealTime();
   FBContinuousParamNonRealTime& ContinuousNonRealTime();
 
-  IFBParamNonRealTime const& NonRealTime() const;
+  FBParamNonRealTime const& NonRealTime() const;
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
   FBSteppedParamNonRealTime const& SteppedNonRealTime() const;
   FBContinuousParamNonRealTime const& ContinuousNonRealTime() const;
+
+  double DefaultNormalizedByText() const;
 };
 
 inline FBListParamRealTime&

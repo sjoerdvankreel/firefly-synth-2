@@ -32,7 +32,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   ParameterInfo result;
   result.id = param.tag;
   result.unitId = unitId;
-  result.stepCount = std::max(0, param.static_.ValueCount() - 1);
+  result.stepCount = std::max(0, param.static_.NonRealTime().ValueCount() - 1);
   result.defaultNormalizedValue = param.static_.DefaultNormalizedByText();
 
   FBVST3CopyToString128(param.longName, result.title);
@@ -46,7 +46,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   {
     result.flags |= ParameterInfo::kIsHidden;
     result.flags |= ParameterInfo::kIsReadOnly;
-    if (FBParamTypeIsList(param.static_.type))
+    if (param.static_.NonRealTime().IsItems())
       result.flags |= ParameterInfo::kIsList;
   }
   return result;
@@ -113,7 +113,7 @@ FBVST3EditController::GetGUIParamNormalized(int index) const
 }
 
 void 
-FBVST3EditController::SetGUIParamNormalized(int index, float normalized)
+FBVST3EditController::SetGUIParamNormalized(int index, double normalized)
 {
   *_guiState->Params()[index] = normalized;
 }
