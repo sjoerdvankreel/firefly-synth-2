@@ -13,5 +13,5 @@ struct IFBParamNonRealTime
   virtual float PlainToNormalized(int plain) const = 0;
   virtual int NormalizedToPlain(float normalized) const = 0;
   virtual std::string PlainToText(FBValueTextDisplay display, int plain) const = 0;
-  virtual std::optional<int> TextToPlain(FBValueTextDisplay display, std::string const& text) const = 0;
+  virtual std::optional<int> TextToPlain(bool io, std::string const& text) const = 0;
 };

@@ -25,7 +25,7 @@ FBBoolParamNonRealTime::PlainToText(FBValueTextDisplay display, int plain) const
 }
 
 std::optional<int>
-FBBoolParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
+FBBoolParamNonRealTime::TextToPlain(bool io, std::string const& text) const
 {
   if (text == "On")
     return true;
