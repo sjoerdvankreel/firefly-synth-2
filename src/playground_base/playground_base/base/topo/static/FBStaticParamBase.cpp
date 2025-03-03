@@ -38,15 +38,15 @@ FBStaticParamBase::ContinuousNonRealTime() const
   return dynamic_cast<FBContinuousParamNonRealTime const&>(NonRealTime());
 }
 
-double
+float
 FBStaticParamBase::DefaultNormalizedByText() const
 {
   if (defaultText.size() == 0)
     return 0.0f;
-  return NonRealTime().TextToNormalized(FBValueTextDisplay::Text, defaultText).value();
+  return TextToNormalized(FBValueTextDisplay::Text, defaultText).value();
 }
 
-FBParamNonRealTime& 
+IFBParamNonRealTime& 
 FBStaticParamBase::NonRealTime()
 {
   switch (type)
@@ -59,11 +59,11 @@ FBStaticParamBase::NonRealTime()
   case FBParamType::Boolean: return boolean;
   case FBParamType::Discrete: return discrete;
   case FBParamType::DiscreteLog2: return discreteLog2;
-  default: assert(false); return *static_cast<FBParamNonRealTime*>(nullptr);
+  default: assert(false); return *static_cast<IFBParamNonRealTime*>(nullptr);
   }
 }
 
-FBParamNonRealTime const&
+IFBParamNonRealTime const&
 FBStaticParamBase::NonRealTime() const
 {
   switch (type)
@@ -76,6 +76,6 @@ FBStaticParamBase::NonRealTime() const
   case FBParamType::Boolean: return boolean;
   case FBParamType::Discrete: return discrete;
   case FBParamType::DiscreteLog2: return discreteLog2;
-  default: assert(false); return *static_cast<FBParamNonRealTime*>(nullptr);
+  default: assert(false); return *static_cast<IFBParamNonRealTime*>(nullptr);
   }
 }

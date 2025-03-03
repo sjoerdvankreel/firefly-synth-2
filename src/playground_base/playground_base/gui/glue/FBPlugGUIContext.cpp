@@ -40,7 +40,7 @@ float
 FBPlugGUIContext::CombinedScale() const
 {
   float userScaleNorm = *UserScaleSpecial().state;
-  float userScalePlain = UserScaleParam().LinearRealTime().NormalizedToPlain(userScaleNorm);
+  float userScalePlain = UserScaleParam().Linear().NormalizedToPlain(userScaleNorm);
   return _systemScale * userScalePlain;
 }
 
@@ -48,8 +48,8 @@ int
 FBPlugGUIContext::ClampHostWidthForScale(int width) const
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  float minW = topoGUI.plugWidth * UserScaleParam().LinearRealTime().min * _systemScale;
-  float maxW = topoGUI.plugWidth * UserScaleParam().LinearRealTime().max * _systemScale;
+  float minW = topoGUI.plugWidth * UserScaleParam().Linear().min * _systemScale;
+  float maxW = topoGUI.plugWidth * UserScaleParam().Linear().max * _systemScale;
   return (int)std::round(std::clamp((float)width, minW, maxW));
 }
 
@@ -67,6 +67,6 @@ FBPlugGUIContext::SetUserScaleByHostWidth(int width)
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
   float userScalePlain = ((float)width / (float)topoGUI.plugWidth) / _systemScale;
-  *UserScaleSpecial().state = UserScaleParam().NonRealTime().PlainToNormalized(userScalePlain);
+  *UserScaleSpecial().state = UserScaleParam().Linear().PlainToNormalized(userScalePlain);
   RequestRescale(CombinedScale());
 }

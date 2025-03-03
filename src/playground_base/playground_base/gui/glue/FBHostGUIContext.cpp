@@ -1,7 +1,7 @@
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 
 void 
-FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
+FBHostGUIContext::PerformImmediateAudioParamEdit(int index, float normalized)
 {
   BeginAudioParamChange(index);
   PerformAudioParamEdit(index, normalized);
