@@ -4,6 +4,18 @@
 
 using namespace juce; 
 
+bool
+FBListParamNonRealTime::IsList() const
+{
+  return true;
+}
+
+bool
+FBListParamNonRealTime::IsStepped() const
+{
+  return true;
+}
+
 int
 FBListParamNonRealTime::ValueCount() const
 {
