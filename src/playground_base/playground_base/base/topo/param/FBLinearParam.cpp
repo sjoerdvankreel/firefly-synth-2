@@ -19,14 +19,14 @@ FBLinearParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) 
   double displayPlain = plain * displayMultiplier;
   if (display == FBValueTextDisplay::IO)
     return std::to_string(displayPlain);
-  return FBFormatFloat(displayPlain, FBDefaultDisplayPrecision);
+  return FBFormatDouble(displayPlain, FBDefaultDisplayPrecision);
 }
 
 std::optional<double>
 FBLinearParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   char* end;
-  float result = std::strtof(text.c_str(), &end);
+  double result = std::strtod(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
   result /= displayMultiplier;

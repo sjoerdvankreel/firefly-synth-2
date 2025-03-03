@@ -26,7 +26,7 @@ FBGUIParamComboBox::getTooltip()
 }
 
 void
-FBGUIParamComboBox::SetValueNormalizedFromPlug(float normalized)
+FBGUIParamComboBox::SetValueNormalizedFromPlug(double normalized)
 {
   int plain = _param->static_.NormalizedToAnyDiscreteSlow(normalized);
   setSelectedId(plain + 1, dontSendNotification);

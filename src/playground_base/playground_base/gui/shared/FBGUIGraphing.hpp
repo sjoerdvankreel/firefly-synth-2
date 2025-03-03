@@ -151,7 +151,7 @@ FBRenderModuleGraph(RenderData& renderData)
   moduleProcState->renderType = FBRenderType::GraphPrimary;
   FBRenderModuleGraphSeries<Global>(renderData, guiReleaseAt, graphData->primarySeries);
   float guiDurationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->input->sampleRate;
-  renderData.graphData->text = FBFormatFloat(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
+  renderData.graphData->text = FBFormatDouble(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   
   renderState->PrepareForRenderExchange();
   if constexpr (Global)

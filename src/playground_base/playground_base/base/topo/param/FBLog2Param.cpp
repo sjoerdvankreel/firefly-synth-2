@@ -28,17 +28,17 @@ FBLog2ParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) co
 {
   if (display == FBValueTextDisplay::IO)
     return std::to_string(plain);
-  return FBFormatFloat(plain, FBDefaultDisplayPrecision);
+  return FBFormatDouble(plain, FBDefaultDisplayPrecision);
 }
 
 std::optional<double>
 FBLog2ParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   char* end;
-  float result = std::strtof(text.c_str(), &end);
+  double result = std::strtod(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
-  if (result < NormalizedToPlain(0.0f) || result > NormalizedToPlain(1.0f))
+  if (result < NormalizedToPlain(0.0) || result > NormalizedToPlain(1.0))
     return {};
   return { result };
 }

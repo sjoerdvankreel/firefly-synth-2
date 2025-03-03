@@ -7,4 +7,4 @@ FBRuntimeGUIParam(
   FBParamTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamIndex):
 FBRuntimeParamBase(staticModule, staticParam, topoIndices, runtimeModuleIndex, runtimeParamIndex),
-static_(staticParam) {}
+static_(FBStaticGUIParam(staticParam)) {}

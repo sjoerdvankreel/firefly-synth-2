@@ -16,7 +16,7 @@ FBAutoSizeSlider(plugGUI, style),
 FBGUIParamControl(plugGUI, param)
 {
   if (param->static_.type == FBParamType::Linear)
-    setSkewFactor(param->static_.Linear().editSkewFactor);
+    setSkewFactor(param->static_.LinearRealTime().editSkewFactor);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
   SetValueNormalizedFromPlug(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
 }
@@ -28,7 +28,7 @@ FBGUIParamSlider::parentHierarchyChanged()
 }
 
 void
-FBGUIParamSlider::SetValueNormalizedFromPlug(float normalized)
+FBGUIParamSlider::SetValueNormalizedFromPlug(double normalized)
 {
   setValue(normalized, dontSendNotification); 
 }
@@ -50,14 +50,15 @@ FBGUIParamSlider::valueChanged()
 double
 FBGUIParamSlider::getValueFromText(const String& text)
 {
-  auto parsed = _param->static_.TextToNormalized(false, text.toStdString());
+  auto parsed = _param->static_.NonRealTime().TextToNormalized(FBValueTextDisplay::Text, text.toStdString());
   return parsed.value_or(_param->static_.DefaultNormalizedByText());
 }
 
 String
 FBGUIParamSlider::getTextFromValue(double value)
 {
-  auto text = _param->static_.NormalizedToText(FBValueTextDisplay::Text, (float)value);
+  // TODO check out all (float) cast
+  auto text = _param->static_.NonRealTime().NormalizedToText(FBValueTextDisplay::Text, value);
   if (_param->static_.unit.empty())
     return text;
   return text + " " + _param->static_.unit;
