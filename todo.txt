@@ -1,3 +1,5 @@
+do a -Wall build
+hunt for cstyle casts
 fix the tooltips (edit/auto)
 todo document the thing a bit
 handle envelope offset (actual start index in block)
