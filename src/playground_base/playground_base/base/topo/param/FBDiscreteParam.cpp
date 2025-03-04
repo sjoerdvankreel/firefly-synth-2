@@ -33,7 +33,7 @@ FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const
 std::string
 FBDiscreteParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const 
 {
-  return std::to_string(plain);
+  return std::to_string((int)std::round(plain));
 }
 
 std::optional<double>
