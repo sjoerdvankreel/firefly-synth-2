@@ -24,10 +24,7 @@ FBDiscreteLog2ParamNonRealTime::ValueCount() const
 double
 FBDiscreteLog2ParamNonRealTime::NormalizedToPlain(double normalized) const 
 {
-  auto plain = static_cast<double>(1 << std::clamp((int)std::round(normalized * valueCount), 0, valueCount - 1));
-  auto norm = PlainToNormalized(plain);
-  //auto plain2 = NormalizedToPlain(norm);
-  return plain;
+  return static_cast<double>(1 << std::clamp((int)std::round(normalized * valueCount), 0, valueCount - 1));
 }
 
 std::string
@@ -48,9 +45,7 @@ FBDiscreteLog2ParamNonRealTime::PlainToNormalized(double plain) const
     linear++;
     discrete /= 2;
   }
-  auto norm = std::clamp(linear / (valueCount - 1.0), 0.0, 1.0);
-  //auto pln = NormalizedToPlain(norm);
-  return norm;
+  return std::clamp(linear / (valueCount - 1.0), 0.0, 1.0);
 }
 
 std::optional<double>
