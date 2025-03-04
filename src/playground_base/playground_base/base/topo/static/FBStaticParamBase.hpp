@@ -34,7 +34,7 @@ private:
   FBBoolParamNonRealTime boolean = {};
   FBLinearParam linear = {};
   FBDiscreteParamNonRealTime discrete = {};
-  FBDiscreteLog2Param discreteLog2 = {};
+  FBDiscreteLog2ParamNonRealTime discreteLog2 = {};
 
 public:
   int slotCount = {};
