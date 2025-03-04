@@ -94,7 +94,7 @@ FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized
   case FBParamType::Boolean:
     return boolean.PlainToText(display, boolean.NormalizedToPlain(normalized));
   case FBParamType::Discrete:
-    return discrete.PlainToText(discrete.NormalizedToPlain(normalized));
+    return discrete.PlainToText(display, discrete.NormalizedToPlain(normalized));
   case FBParamType::List:
     return list.PlainToText(display, list.NormalizedToPlain(normalized));
   case FBParamType::Log2:
@@ -152,7 +152,7 @@ FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string cons
     }
     case FBParamType::Discrete:
     {
-      auto plain = discrete.TextToPlain(text);
+      auto plain = discrete.TextToPlain(display, text);
       if (!plain) return {};
       return discrete.PlainToNormalized(plain.value());
     }

@@ -114,13 +114,14 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
   _moduleState->voice = &_primaryVoiceManager->Voices()[0];
 }
 
+// TODO how much of this we still need?
 bool 
 FBGraphRenderState::GUIParamBool(
   FBParamTopoIndices const& indices) const
 {
   auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
   float normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
-  return param->static_.Boolean().NormalizedToPlain(normalized);
+  return param->static_.Boolean().NormalizedToPlainFast(normalized);
 }
 
 float
@@ -165,7 +166,7 @@ FBGraphRenderState::AudioParamBool(
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
   float normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
-  return param->static_.Boolean().NormalizedToPlain(normalized);
+  return param->static_.Boolean().NormalizedToPlainFast(normalized);
 }
 
 float

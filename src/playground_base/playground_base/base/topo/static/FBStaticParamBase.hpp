@@ -33,7 +33,7 @@ private:
   FBBarsParam bars = {};
   FBBoolParamNonRealTime boolean = {};
   FBLinearParam linear = {};
-  FBDiscreteParam discrete = {};
+  FBDiscreteParamNonRealTime discrete = {};
   FBDiscreteLog2Param discreteLog2 = {};
 
 public:

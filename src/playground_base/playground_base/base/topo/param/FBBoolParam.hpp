@@ -7,7 +7,7 @@
 
 struct FBBoolParam
 {
-  bool NormalizedToPlain(float normalized) const;
+  bool NormalizedToPlainFast(float normalized) const;
 }; 
 
 struct FBBoolParamNonRealTime final:
@@ -25,7 +25,7 @@ public FBParamNonRealTime
 };
 
 inline bool
-FBBoolParam::NormalizedToPlain(float normalized) const
+FBBoolParam::NormalizedToPlainFast(float normalized) const
 {
   return normalized >= 0.5f;
 }

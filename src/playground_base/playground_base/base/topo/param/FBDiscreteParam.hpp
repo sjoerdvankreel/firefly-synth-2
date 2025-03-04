@@ -1,23 +1,41 @@
 #pragma once
 
+#include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
+
+#include <cmath>
 #include <string>
 #include <optional>
 #include <algorithm>
-#include <functional>
 
 struct FBDiscreteParam
 {
   int valueCount = {};
-  int ValueCount() const { return valueCount; }
-
-  float PlainToNormalized(int plain) const;
-  int NormalizedToPlain(float normalized) const;
-  std::string PlainToText(int plain) const;
-  std::optional<int> TextToPlain(std::string const& text) const;
+  float PlainToNormalizedFast(int plain) const;
+  int NormalizedToPlainFast(float normalized) const;
 };
 
-inline int
-FBDiscreteParam::NormalizedToPlain(float normalized) const
+struct FBDiscreteParamNonRealTime final :
+public FBDiscreteParam,
+public FBParamNonRealTime
 {
-  return std::clamp((int)(normalized * valueCount), 0, valueCount - 1);
+  bool IsItems() const override;
+  bool IsStepped() const override;
+  int ValueCount() const override;
+
+  double PlainToNormalized(double plain) const override;
+  double NormalizedToPlain(double normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, double plain) const override;
+  std::optional<double> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
+};
+
+inline float
+FBDiscreteParam::PlainToNormalizedFast(int plain) const
+{
+  return std::clamp(plain / (valueCount - 1.0f), 0.0f, 1.0f);
+}
+
+inline int
+FBDiscreteParam::NormalizedToPlainFast(float normalized) const
+{
+  return std::clamp((int)std::round(normalized * valueCount), 0, valueCount - 1);
 }

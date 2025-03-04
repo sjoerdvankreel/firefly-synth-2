@@ -32,7 +32,7 @@ FBParamToggleButton::getTooltip()
 void
 FBParamToggleButton::SetValueNormalizedFromHost(float normalized)
 {
-  int plain = _param->static_.Boolean().NormalizedToPlain(normalized);
+  int plain = _param->static_.Boolean().NormalizedToPlainFast(normalized);
   setToggleState(plain != 0, dontSendNotification);
   _isOn = getToggleState();
 }
@@ -41,7 +41,7 @@ void
 FBParamToggleButton::buttonStateChanged()
 {
   double normalized = _param->static_.NonRealTime().PlainToNormalized(getToggleState()? 1.0: 0.0);
-  bool plain = _param->static_.Boolean().NormalizedToPlain(static_cast<float>(normalized));
+  bool plain = _param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
   if (_isOn != plain)
   {
     _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
