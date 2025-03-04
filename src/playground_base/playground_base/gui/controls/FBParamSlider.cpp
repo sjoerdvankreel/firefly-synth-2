@@ -51,13 +51,15 @@ FBParamSlider::mouseUp(MouseEvent const& event)
 double
 FBParamSlider::getValueFromText(const String& text)
 {
-  auto parsed = _param->static_.TextToNormalized(false, text.toStdString());
+  // TODO all doubles
+  auto parsed = _param->static_.TextToNormalized(FBValueTextDisplay::Text, text.toStdString());
   return parsed.value_or(_param->static_.DefaultNormalizedByText());
 }
 
 String
 FBParamSlider::getTextFromValue(double value)
 {
+  // TODO all doubles
   auto text = _param->static_.NormalizedToText(FBValueTextDisplay::Text, (float)value);
   if (_param->static_.unit.empty())
     return text;

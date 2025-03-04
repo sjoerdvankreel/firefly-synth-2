@@ -24,7 +24,7 @@ FBStaticParamBase::DefaultNormalizedByText() const
 {
   if (defaultText.size() == 0)
     return 0.0f;
-  return TextToNormalized(false, defaultText).value();
+  return TextToNormalized(FBValueTextDisplay::Text, defaultText).value();
 }
 
 std::string
@@ -92,7 +92,7 @@ FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized
   case FBParamType::Bars:
     return bars.PlainToText(bars.NormalizedToPlain(normalized));
   case FBParamType::Boolean:
-    return boolean.PlainToText(boolean.NormalizedToPlain(normalized));
+    return boolean.PlainToText(display, boolean.NormalizedToPlain(normalized));
   case FBParamType::Discrete:
     return discrete.PlainToText(discrete.NormalizedToPlain(normalized));
   case FBParamType::List:
@@ -110,7 +110,7 @@ FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized
 }
 
 std::optional<float> 
-FBStaticParamBase::TextToNormalized(bool io, std::string const& text) const
+FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string const& text) const
 {
   switch (type)
   {
@@ -122,7 +122,7 @@ FBStaticParamBase::TextToNormalized(bool io, std::string const& text) const
     }
     case FBParamType::List:
     {
-      auto plain = list.TextToPlain(io, text);
+      auto plain = list.TextToPlain(display == FBValueTextDisplay::IO, text);
       if (!plain) return {};
       return list.PlainToNormalized(plain.value());
     }
@@ -134,7 +134,7 @@ FBStaticParamBase::TextToNormalized(bool io, std::string const& text) const
     }
     case FBParamType::Boolean:
     {
-      auto plain = boolean.TextToPlain(text);
+      auto plain = boolean.TextToPlain(display, text);
       if (!plain) return {};
       return boolean.PlainToNormalized(plain.value());
     }

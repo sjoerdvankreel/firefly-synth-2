@@ -26,11 +26,12 @@
 struct FBStaticParamBase
 {
 private:
+  // TODO
   FBLog2Param log2 = {};
   FBListParam list = {};
   FBNoteParam note = {};
   FBBarsParam bars = {};
-  FBBoolParam boolean = {};
+  FBBoolParamNonRealTime boolean = {};
   FBLinearParam linear = {};
   FBDiscreteParam discrete = {};
   FBDiscreteLog2Param discreteLog2 = {};
@@ -57,7 +58,7 @@ public:
   FBLinearParam& Linear();
   FBDiscreteParam& Discrete();
   FBDiscreteLog2Param& DiscreteLog2();
-
+  
   FBListParam const& List() const;
   FBNoteParam const& Note() const;
   FBBarsParam const& Bars() const;
@@ -66,15 +67,22 @@ public:
   FBLinearParam const& Linear() const;
   FBDiscreteParam const& Discrete() const;
   FBDiscreteLog2Param const& DiscreteLog2() const;
+  
+  FBParamNonRealTime const& NonRealTime() const;
 
+  // TODO check all this
+  // TODO also check all invocations of the nonrealtime stuff
+  // TODO also make sure thats all converted to double
+  // TODO also make sure no cstyle casts
+  // TODO finally get rid of all the switches
   juce::PopupMenu MakePopupMenu() const;
   float DefaultNormalizedByText() const;
   float AnyDiscreteToNormalizedSlow(int discrete) const;
   int NormalizedToAnyDiscreteSlow(float normalized) const;
 
-  std::optional<float> TextToNormalized(bool io, std::string const& text) const;
   std::string NormalizedToText(FBValueTextDisplay display, float normalized) const;
   std::string NormalizedToText(FBParamTextDisplay display, float normalized) const;
+  std::optional<float> TextToNormalized(FBValueTextDisplay display, std::string const& text) const;
 };
 
 inline FBListParam&
@@ -187,6 +195,13 @@ FBStaticParamBase::DiscreteLog2() const
 {
   assert(type == FBParamType::DiscreteLog2);
   return discreteLog2;
+}
+
+inline FBParamNonRealTime const& 
+FBStaticParamBase::NonRealTime() const
+{
+  assert(type == FBParamType::Boolean);
+  return boolean;
 }
 
 inline int

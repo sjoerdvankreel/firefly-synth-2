@@ -382,7 +382,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
   {
     float defaultNormalized = 0.0f;
     if(params.params[p].static_.defaultText.size())
-      defaultNormalized = params.params[p].static_.TextToNormalized(false, params.params[p].static_.defaultText).value();
+      defaultNormalized = params.params[p].static_.TextToNormalized(FBValueTextDisplay::Text, params.params[p].static_.defaultText).value();
     *container.Params()[p] = defaultNormalized;
   }
 
@@ -423,11 +423,11 @@ FBRuntimeTopo::LoadParamStateFromVar(
     }
 
     auto const& topo = params.params[iter->second].static_;
-    auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
+    auto normalized = topo.TextToNormalized(FBValueTextDisplay::IO, val.toString().toStdString());
     if (!normalized)
     {
       FB_LOG_WARN("Failed to parse plugin parameter value.");
-      normalized = topo.TextToNormalized(false, topo.defaultText);
+      normalized = topo.TextToNormalized(FBValueTextDisplay::Text, topo.defaultText);
     }
     *container.Params()[iter->second] = normalized.value();
   }

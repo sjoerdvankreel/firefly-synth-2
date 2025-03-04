@@ -1,23 +1,48 @@
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 
-float 
-FBBoolParam::PlainToNormalized(bool plain) const
+
+bool 
+FBBoolParamNonRealTime::IsItems() const
 {
-  return plain ? 1.0f : 0.0f;
+  return false;
+}
+
+bool 
+FBBoolParamNonRealTime::IsStepped() const
+{
+  return true;
+}
+
+int 
+FBBoolParamNonRealTime::ValueCount() const
+{
+  return 2;
+}
+
+double 
+FBBoolParamNonRealTime::PlainToNormalized(double plain) const
+{
+  return plain >= 0.5 ? 1.0 : 0.0;
+}
+
+double 
+FBBoolParamNonRealTime::NormalizedToPlain(double normalized) const
+{
+  return normalized >= 0.5 ? 1.0 : 0.0;
 }
 
 std::string 
-FBBoolParam::PlainToText(bool plain) const
+FBBoolParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
 {
-  return plain ? "On" : "Off";
+  return plain >= 0.5 ? "On" : "Off";
 }
 
-std::optional<bool> 
-FBBoolParam::TextToPlain(std::string const& text) const
+std::optional<double>
+FBBoolParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   if (text == "On")
-    return true;
+    return 1.0;
   if (text == "Off")
-    return false;
+    return 0.0;
   return {};
 }
