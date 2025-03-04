@@ -1,3 +1,4 @@
+big bug in discrete to/from normalized -- probably hits all list items too
 do a -Wall build
 hunt for cstyle casts
 fix the tooltips (edit/auto)
