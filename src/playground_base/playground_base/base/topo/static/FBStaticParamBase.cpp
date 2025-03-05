@@ -159,7 +159,7 @@ FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string cons
     }
     case FBParamType::Bars:
     {
-      auto plain = bars.TextToPlain(text);
+      auto plain = bars.TextToPlain(display, text);
       if (!plain) return {};
       return bars.PlainToNormalized(plain.value());
     }
