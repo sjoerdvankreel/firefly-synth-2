@@ -227,13 +227,13 @@ FBGridComponent::paint(Graphics& g)
     for (int j = 0; j < _grid.items.size(); j++)
     {
       if (_grid.items[j].row.start.getNumber() == _sections[i].pos.row + 1)
-        y0 = _grid.items[j].associatedComponent->getY();
+        y0 = static_cast<float>(_grid.items[j].associatedComponent->getY());
       if (_grid.items[j].column.start.getNumber() == _sections[i].pos.col + 1)
-        x0 = _grid.items[j].associatedComponent->getX();
+        x0 = static_cast<float>(_grid.items[j].associatedComponent->getX());
       if (_grid.items[j].row.end.getNumber() == _sections[i].pos.row + _sections[i].span.row + 1)
-        y1 = _grid.items[j].associatedComponent->getBottom();
+        y1 = static_cast<float>(_grid.items[j].associatedComponent->getBottom());
       if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
-        x1 = _grid.items[j].associatedComponent->getRight();
+        x1 = static_cast<float>(_grid.items[j].associatedComponent->getRight());
     }
     g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 2.0f); // TODO 2
   }

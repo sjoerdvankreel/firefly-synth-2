@@ -140,7 +140,7 @@ FBRenderModuleGraph(RenderData& renderData)
 
   int guiReleaseAt = -1;
   auto procExchange = renderState->ExchangeContainer()->Proc();
-  float guiSampleCount = static_cast<float>(graphData->pixelWidth;
+  float guiSampleCount = static_cast<float>(graphData->pixelWidth);
   float dspSampleRate = renderState->ExchangeContainer()->Proc()->sampleRate;
   float guiSampleRate = procExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
   if(plotParams.releaseAt != -1)
