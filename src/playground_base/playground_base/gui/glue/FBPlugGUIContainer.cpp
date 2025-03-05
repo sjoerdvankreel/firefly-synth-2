@@ -63,9 +63,9 @@ FBPlugGUIContainer::SetAudioParamNormalizedFromHost(int index, float normalized)
 }
 
 void
-FBPlugGUIContainer::RequestRescale(float combinedScale)
+FBPlugGUIContainer::RequestRescale(double combinedScale)
 {
   auto hostSize = GetHostSize();
   setSize(hostSize.first, hostSize.second);
-  _gui->setTransform(AffineTransform::scale(combinedScale));
+  _gui->setTransform(AffineTransform::scale(static_cast<float>(combinedScale)));
 }

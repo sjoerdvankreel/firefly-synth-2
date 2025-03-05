@@ -17,7 +17,7 @@ public FBPlugGUIContext
   std::unique_ptr<juce::LookAndFeel> _lookAndFeel;
 
 protected:
-  void RequestRescale(float combinedScale) override;
+  void RequestRescale(double combinedScale) override;
 
 public:
   ~FBPlugGUIContainer();

@@ -20,7 +20,7 @@ class FBPlugGUIContext
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContext);
   FBPlugGUIContext(FBHostGUIContext* const hostContext);
-  virtual void RequestRescale(float combinedScale) = 0; // todo 
+  virtual void RequestRescale(double combinedScale) = 0;
 
 public:
   void SetSystemScale(double scale);

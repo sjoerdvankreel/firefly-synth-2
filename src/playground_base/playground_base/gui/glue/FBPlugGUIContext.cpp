@@ -40,7 +40,7 @@ double
 FBPlugGUIContext::CombinedScale() const
 {
   double userScaleNorm = *UserScaleSpecial().state;
-  double userScalePlain = UserScaleParam().NonRealTime().NormalizedToPlain(userScaleNorm); // todo hunt all *fast
+  double userScalePlain = UserScaleParam().NonRealTime().NormalizedToPlain(userScaleNorm);
   return _systemScale * userScalePlain;
 }
 
@@ -67,7 +67,6 @@ FBPlugGUIContext::SetUserScaleByHostWidth(int width)
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
   double userScalePlain = (static_cast<double>(width) / topoGUI.plugWidth) / _systemScale;
-  double userScaleNorm = UserScaleParam().NonRealTime().PlainToNormalized(userScalePlain);
-  *UserScaleSpecial().state = static_cast<float>(userScaleNorm);
+  *UserScaleSpecial().state = UserScaleParam().NonRealTime().PlainToNormalized(userScalePlain);
   RequestRescale(CombinedScale());
 }
