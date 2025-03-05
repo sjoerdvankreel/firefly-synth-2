@@ -37,6 +37,7 @@ else ()
 endif ()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  add_compile_options(/analyze:external-)
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /fp:fast")
   set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /FAs")
   set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /GL")
