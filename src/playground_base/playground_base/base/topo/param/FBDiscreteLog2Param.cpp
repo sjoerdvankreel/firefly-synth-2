@@ -24,7 +24,8 @@ FBDiscreteLog2ParamNonRealTime::ValueCount() const
 double
 FBDiscreteLog2ParamNonRealTime::NormalizedToPlain(double normalized) const 
 {
-  return static_cast<double>(1 << std::clamp((int)std::round(normalized * valueCount), 0, valueCount - 1));
+  int scaled = static_cast<int>(normalized * valueCount);
+  return static_cast<double>(1 << std::clamp(scaled, 0, valueCount - 1));
 }
 
 std::string
@@ -36,16 +37,8 @@ FBDiscreteLog2ParamNonRealTime::PlainToText(FBValueTextDisplay display, double p
 double
 FBDiscreteLog2ParamNonRealTime::PlainToNormalized(double plain) const
 {
-  int linear = 0;
-  unsigned discrete = static_cast<unsigned>(std::round(plain));
-  assert(discrete > 0);
-  assert(std::has_single_bit(discrete));
-  while (discrete != 1)
-  {
-    linear++;
-    discrete /= 2;
-  }
-  return std::clamp(linear / (valueCount - 1.0), 0.0, 1.0);
+  unsigned width = std::bit_width(static_cast<unsigned>(plain) - 1);
+  return std::clamp(width / (valueCount - 1.0), 0.0, 1.0);
 }
 
 std::optional<double>

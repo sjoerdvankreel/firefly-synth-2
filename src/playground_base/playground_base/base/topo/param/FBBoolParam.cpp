@@ -1,6 +1,5 @@
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 
-
 bool 
 FBBoolParamNonRealTime::IsItems() const
 {

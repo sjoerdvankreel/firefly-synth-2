@@ -37,5 +37,6 @@ FBDiscreteParam::PlainToNormalizedFast(int plain) const
 inline int
 FBDiscreteParam::NormalizedToPlainFast(float normalized) const
 {
-  return std::clamp((int)(normalized * valueCount), 0, valueCount - 1);
+  int scaled = static_cast<int>(normalized * valueCount);
+  return std::clamp(scaled, 0, valueCount - 1);
 }

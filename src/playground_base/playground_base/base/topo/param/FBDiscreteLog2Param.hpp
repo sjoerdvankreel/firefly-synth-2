@@ -30,5 +30,6 @@ public FBParamNonRealTime
 inline int
 FBDiscreteLog2Param::NormalizedToPlainFast(float normalized) const
 {
-  return 1 << std::clamp((int)std::round(normalized * valueCount), 0, valueCount - 1);
+  int scaled = static_cast<int>(normalized * valueCount);
+  return 1 << std::clamp(scaled, 0, valueCount - 1);
 }

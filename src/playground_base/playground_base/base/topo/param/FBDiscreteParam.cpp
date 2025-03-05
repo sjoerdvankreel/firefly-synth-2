@@ -27,13 +27,14 @@ FBDiscreteParamNonRealTime::PlainToNormalized(double plain) const
 double
 FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const 
 {
-  return std::clamp((int)(normalized * valueCount), 0, valueCount - 1);
+  int scaled = static_cast<int>(normalized * valueCount);
+  return std::clamp(scaled, 0, valueCount - 1);
 }
 
 std::string
 FBDiscreteParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const 
 {
-  return std::to_string((int)std::round(plain));
+  return std::to_string(static_cast<int>(std::round(plain)));
 }
 
 std::optional<double>
