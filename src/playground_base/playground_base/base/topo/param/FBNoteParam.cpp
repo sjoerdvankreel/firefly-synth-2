@@ -1,4 +1,5 @@
 #include <playground_base/base/topo/param/FBNoteParam.hpp>
+
 #include <vector>
 
 using namespace juce;
@@ -6,29 +7,54 @@ using namespace juce;
 static const std::vector<std::string> NoteNames = 
 { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
-float 
-FBNoteParam::PlainToNormalized(int plain) const
+bool
+FBNoteParamNonRealTime::IsItems() const
 {
-  return std::clamp(plain / (ValueCount() - 1.0f), 0.0f, 1.0f);
+  return true;
 }
 
-std::string 
-FBNoteParam::PlainToText(int plain) const
+bool 
+FBNoteParamNonRealTime::IsStepped() const
 {
-  return NoteNames[plain % 12] + std::to_string(plain / 12 - 1);
+  return true;
 }
 
-std::optional<int>
-FBNoteParam::TextToPlain(std::string const& text) const
+int
+FBNoteParamNonRealTime::ValueCount() const
+{
+  return MidiNoteCount;
+}
+
+double 
+FBNoteParamNonRealTime::PlainToNormalized(double plain) const
+{
+  return std::clamp(plain / (MidiNoteCount - 1.0), 0.0, 1.0);
+}
+
+double
+FBNoteParamNonRealTime::NormalizedToPlain(double normalized) const
+{
+  return std::clamp(normalized * MidiNoteCount, 0.0, MidiNoteCount - 1.0);
+}
+
+std::string
+FBNoteParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
+{
+  int discrete = static_cast<int>(std::round(plain));
+  return NoteNames[discrete % 12] + std::to_string(discrete / 12 - 1);
+}
+
+std::optional<double>
+FBNoteParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
 {
   for (int i = 0; i < ValueCount(); i++)
-    if (text == PlainToText(i))
+    if (text == PlainToText(display, i))
       return { i };
   return {};
 }
 
 PopupMenu
-FBNoteParam::MakePopupMenu() const
+FBNoteParamNonRealTime::MakePopupMenu() const
 {
   PopupMenu result;
   for (int i = 0; i < NoteNames.size(); i++)
@@ -38,7 +64,7 @@ FBNoteParam::MakePopupMenu() const
     {
       int midiNote = j * 12 + i;
       if (midiNote < 128)
-        noteMenu.addItem(midiNote + 1, PlainToText(midiNote));
+        noteMenu.addItem(midiNote + 1, PlainToText(FBValueTextDisplay::Text, midiNote));
     }
     result.addSubMenu(NoteNames[i], noteMenu);
   }

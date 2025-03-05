@@ -26,10 +26,9 @@
 struct FBStaticParamBase
 {
 private:
-  // TODO
   FBLog2ParamNonRealTime log2 = {};
   FBListParamNonRealTime list = {};
-  FBNoteParam note = {};
+  FBNoteParamNonRealTime note = {};
   FBBarsParamNonRealTime bars = {};
   FBBoolParamNonRealTime boolean = {};
   FBLinearParamNonRealTime linear = {};
