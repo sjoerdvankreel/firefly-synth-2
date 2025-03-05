@@ -1,5 +1,34 @@
 #include <playground_base/base/topo/static/FBStaticParamBase.hpp>
 
+// TODO drop just about everything
+
+FBParamNonRealTime const&
+FBStaticParamBase::NonRealTime() const
+{
+  switch (type)
+  {
+  case FBParamType::Log2: return log2;
+  case FBParamType::List: return list;
+  case FBParamType::Bars: return bars;
+  case FBParamType::Linear: return linear;
+  case FBParamType::Boolean: return boolean;
+  case FBParamType::Discrete: return discrete;
+  case FBParamType::DiscreteLog2: return discreteLog2;
+  default: assert(false); return *static_cast<FBParamNonRealTime const*>(nullptr); // TODO
+  }
+}
+
+FBItemsParamNonRealTime const&
+FBStaticParamBase::ItemsNonRealTime() const
+{
+  switch (type)
+  {
+  case FBParamType::List: return list;
+  case FBParamType::Bars: return bars;
+  default: assert(false); return *static_cast<FBItemsParamNonRealTime const*>(nullptr); // TODO
+  }
+}
+
 using namespace juce;
 
 PopupMenu
@@ -13,7 +42,7 @@ FBStaticParamBase::MakePopupMenu() const
   case FBParamType::Note:
     return Note().MakePopupMenu();
   case FBParamType::Bars:
-    return Bars().MakePopupMenu();
+    return ItemsNonRealTime().MakePopupMenu();
   default:
     assert(false);
     return {};
@@ -91,7 +120,7 @@ FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized
   case FBParamType::Note:
     return note.PlainToText(note.NormalizedToPlain(normalized));
   case FBParamType::Bars:
-    return bars.PlainToText(bars.NormalizedToPlain(normalized));
+    return bars.PlainToText(display, bars.NormalizedToPlain(normalized));
   case FBParamType::Boolean:
     return boolean.PlainToText(display, boolean.NormalizedToPlain(normalized));
   case FBParamType::Discrete:
