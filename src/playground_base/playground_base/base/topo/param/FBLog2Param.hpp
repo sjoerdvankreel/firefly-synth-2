@@ -49,7 +49,10 @@ FBLog2Param::NormalizedToPlain(FBFloatVector normalized) const
 inline FBDoubleVector 
 FBLog2Param::NormalizedToPlain(FBDoubleVector normalized) const
 {
+#pragma warning(push)
+#pragma warning(disable : 4244)
   return _offset + _curveStart * xsimd::pow(FBDoubleVector(2.0), _expo * normalized);
+#pragma warning(pop)
 }
 
 inline int
