@@ -33,19 +33,19 @@ FBPlugGUI::InitAllDependencies()
 }
 
 void
-FBPlugGUI::GUIParamNormalizedChanged(int index, float value)
+FBPlugGUI::GUIParamNormalizedChanged(int index, double value)
 {
   GUIParamNormalizedChanged(index);
 }
 
 void
-FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, float value) // todo double
+FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
 {
   AudioParamNormalizedChanged(index);
 }
 
 void
-FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, float value) // todo double
+FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, double value)
 {
   auto control = GetControlForAudioParamIndex(index);
   control->SetValueNormalizedFromHost(value);

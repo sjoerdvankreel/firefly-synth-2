@@ -65,7 +65,7 @@ FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 }
 
 void 
-FFPlugGUI::GUIParamNormalizedChanged(int index, float normalized)
+FFPlugGUI::GUIParamNormalizedChanged(int index, double normalized)
 {
   FBPlugGUI::GUIParamNormalizedChanged(index, normalized);
   int moduleIndex = HostContext()->Topo()->gui.params[index].runtimeModuleIndex;
@@ -73,7 +73,7 @@ FFPlugGUI::GUIParamNormalizedChanged(int index, float normalized)
 }
 
 void 
-FFPlugGUI::AudioParamNormalizedChangedFromUI(int index, float normalized)
+FFPlugGUI::AudioParamNormalizedChangedFromUI(int index, double normalized)
 {
   FBPlugGUI::AudioParamNormalizedChangedFromUI(index, normalized);
   int moduleIndex = HostContext()->Topo()->audio.params[index].runtimeModuleIndex;
@@ -81,7 +81,7 @@ FFPlugGUI::AudioParamNormalizedChangedFromUI(int index, float normalized)
 }
 
 void
-FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, float normalized)
+FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 {
   FBPlugGUI::AudioParamNormalizedChangedFromHost(index, normalized);
   if (HostContext()->Topo()->audio.params[index].static_.output)

@@ -32,7 +32,7 @@ public:
   void UpdateExchangeStateTick() override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   juce::Component* GetGraphControlsForModule(int index) override;
-  void GUIParamNormalizedChanged(int index, float normalized) override;
-  void AudioParamNormalizedChangedFromUI(int index, float normalized) override;
-  void AudioParamNormalizedChangedFromHost(int index, float normalized) override;
+  void GUIParamNormalizedChanged(int index, double normalized) override;
+  void AudioParamNormalizedChangedFromUI(int index, double normalized) override;
+  void AudioParamNormalizedChangedFromHost(int index, double normalized) override;
 };
