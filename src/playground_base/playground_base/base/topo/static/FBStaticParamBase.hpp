@@ -1,19 +1,18 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/topo/static/FBParamsDependencies.hpp>
 
 #include <playground_base/base/topo/param/FBLog2Param.hpp>
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 #include <playground_base/base/topo/param/FBListParam.hpp>
 #include <playground_base/base/topo/param/FBNoteParam.hpp>
 #include <playground_base/base/topo/param/FBBarsParam.hpp>
+#include <playground_base/base/topo/param/FBParamType.hpp>
 #include <playground_base/base/topo/param/FBTextDisplay.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteLog2Param.hpp>
-
-#include <playground_base/base/topo/static/FBParamType.hpp>
-#include <playground_base/base/topo/static/FBParamsDependencies.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
