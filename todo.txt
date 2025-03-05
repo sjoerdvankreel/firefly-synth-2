@@ -1,13 +1,10 @@
 recheck clap mod
-check all the edit controls
 edit/auto type as members
+fix the tooltips (edit/auto)
 tooltip stuff as members
-drop all the switches
-hunt for cstyle casts
 split "sample accurate per voice"
 
 do a -Wall build
-fix the tooltips (edit/auto)
 todo document the thing a bit
 handle envelope offset (actual start index in block)
 voice block start position (fake it by amp env?)
