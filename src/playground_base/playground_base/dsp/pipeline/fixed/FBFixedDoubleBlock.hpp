@@ -71,7 +71,7 @@ FBFixedDoubleBlock::StoreCastToFloatArray(FBFixedFloatArray& array) const
   FBFixedDoubleArray doubles;
   StoreToDoubleArray(doubles);
   for (int s = 0; s < FBFixedBlockSamples; s++)
-    array.data[s] = (float)doubles.data[s];
+    array.data[s] = static_cast<float>(doubles.data[s]);
 }
 
 inline void

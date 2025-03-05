@@ -152,7 +152,7 @@ tresult PLUGIN_API
 FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   FB_LOG_ENTRY_EXIT();
-  _sampleRate = (float)setup.sampleRate;
+  _sampleRate = static_cast<float>(setup.sampleRate);
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
   _hostProcessor.reset(new FBHostProcessor(this));
@@ -219,7 +219,7 @@ FBVST3AudioEffect::process(ProcessData& data)
 
   _input.bpm = FBHostInputBlock::DefaultBPM;
   if (data.processContext != nullptr && (data.processContext->state & ProcessContext::kTempoValid) != 0)
-    _input.bpm = (float)data.processContext->tempo;
+    _input.bpm = static_cast<float>(data.processContext->tempo);
 
   float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
   if (data.numInputs != 1)

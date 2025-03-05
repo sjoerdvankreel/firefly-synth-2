@@ -29,6 +29,6 @@ FBOnePoleFilter::Next(float in)
 inline void
 FBOnePoleFilter::SetCoeffs(int sampleCount)
 {
-  _a = std::exp((-2.0f * std::numbers::pi_v<float>) / (float)sampleCount);
+  _a = std::exp((-2.0f * std::numbers::pi_v<float>) / static_cast<float>(sampleCount));
   _b = 1.0f - _a;
 }

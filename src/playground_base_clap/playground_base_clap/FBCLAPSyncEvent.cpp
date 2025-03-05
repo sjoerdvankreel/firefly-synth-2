@@ -6,7 +6,7 @@ FBMakeSyncToMainEvent(
 {
   FBCLAPSyncToMainEvent result;
   result.paramIndex = paramIndex;
-  result.normalized = (float)normalized;
+  result.normalized = static_cast<float>(normalized);
   return result;
 }
 
@@ -17,6 +17,6 @@ FBMakeSyncToAudioEvent(
   FBCLAPSyncToAudioEvent result;
   result.type = type;
   result.paramIndex = paramIndex;
-  result.normalized = (float)normalized;
+  result.normalized = static_cast<float>(normalized);
   return result;
 }

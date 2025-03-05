@@ -36,7 +36,7 @@ FBModuleGraphDisplayComponent::PointLocation(
   if (_data->bipolar)
     pointValue = FBToUnipolar(pointValue);
   float y = HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
-  float x = HalfMarkerSize + (float)point / maxPoints * (getWidth() - MarkerSize);
+  float x = HalfMarkerSize + static_cast<float>(point) / maxPoints * (getWidth() - MarkerSize);
   return { x, y };
 }
 

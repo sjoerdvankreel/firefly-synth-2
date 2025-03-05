@@ -96,6 +96,6 @@ FBFixedFloatBlock::LoadCastFromDoubleArray(FBFixedDoubleArray const& array)
 {
   FBFixedFloatArray floats;
   for (int s = 0; s < FBFixedBlockSamples; s++)
-    floats.data[s] = (float)array.data[s];
+    floats.data[s] = static_cast<float>(array.data[s]);
   LoadFromFloatArray(floats);
 }

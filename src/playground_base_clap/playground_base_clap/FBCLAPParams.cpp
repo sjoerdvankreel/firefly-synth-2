@@ -81,12 +81,12 @@ FBCLAPPlugin::paramsFlush(
       continue;
     if (isProcessing())
     {
-      _procState->InitProcessing(index, (float)event->value);
+      _procState->InitProcessing(index, static_cast<float>(event->value));
       _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(index, event->value));
     }
     else
     {
-      *_editState->Params()[index] = (float)event->value;
+      *_editState->Params()[index] = event->value;
       _mainToAudioEvents.enqueue(FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, event->value));
     }
   }

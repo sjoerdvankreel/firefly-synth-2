@@ -165,7 +165,7 @@ FBGridComponent::FixedColWidth(int col, int height) const
     if (_rows[r] == 0)
       rowHeight = FixedRowHeight(r);
     else
-      rowHeight = (int)std::round(_rows[r] / (float)totalRelativeHeight * availableGridHeight);
+      rowHeight = (int)std::round(_rows[r] / static_cast<float>(totalRelativeHeight) * availableGridHeight);
     for (int i = 0; i < sizingChildren.size(); i++)
     {
       auto sizingChild = FBAsHorizontalAutoSize(sizingChildren[i]);
@@ -219,8 +219,8 @@ FBGridComponent::resized()
 void
 FBGridComponent::paint(Graphics& g)
 {
-  int x0, x1, y0, y1;
-  x0 = x1 = y0 = y1 = -1;
+  float x0, x1, y0, y1;
+  x0 = x1 = y0 = y1 = -1.0f;
   g.setColour(Colour(0xFF181818));
   for (int i = 0; i < _sections.size(); i++)
   {
@@ -235,6 +235,6 @@ FBGridComponent::paint(Graphics& g)
       if (_grid.items[j].column.end.getNumber() == _sections[i].pos.col + _sections[i].span.col + 1)
         x1 = _grid.items[j].associatedComponent->getRight();
     }
-    g.fillRoundedRectangle((float)x0, (float)y0, (float)x1 - x0, (float)y1 - y0, 2.0f); // TODO 2
+    g.fillRoundedRectangle(x0, y0, x1 - x0, y1 - y0, 2.0f); // TODO 2
   }
 }

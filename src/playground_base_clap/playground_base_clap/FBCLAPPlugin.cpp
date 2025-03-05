@@ -23,7 +23,7 @@ MakeBlockEvent(
 {
   FBBlockEvent result;
   result.param = param;
-  result.normalized = (float)normalized;
+  result.normalized = static_cast<float>(normalized);
   return result;
 }
 
@@ -34,7 +34,7 @@ MakeAccAutoEvent(
   FBAccAutoEvent result;
   result.pos = pos;
   result.param = param;
-  result.value = (float)normalized;
+  result.value = static_cast<float>(normalized);
   return result;
 }
 
@@ -48,7 +48,7 @@ MakeAccModEvent(
   result.note.key = event->key;
   result.note.id = event->note_id;
   result.note.channel = event->channel;
-  result.value = (float)event->amount;
+  result.value = static_cast<float>(event->amount);
   return result;
 }
 
@@ -62,7 +62,7 @@ MakeNoteEvent(
   result.note.key = event->key;
   result.note.id = event->note_id;
   result.note.channel = event->channel;
-  result.velo = (float)event->velocity;
+  result.velo = static_cast<float>(event->velocity);
   result.on = header->type == CLAP_EVENT_NOTE_ON;
   return result;
 }
@@ -193,7 +193,7 @@ FBCLAPPlugin::activate(
   double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept 
 {
   FB_LOG_ENTRY_EXIT();
-  _sampleRate = (float)sampleRate;
+  _sampleRate = static_cast<float>(sampleRate);
   for (int ch = 0; ch < 2; ch++)
     _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
   _hostProcessor.reset(new FBHostProcessor(this));

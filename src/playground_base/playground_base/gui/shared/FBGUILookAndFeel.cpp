@@ -22,11 +22,11 @@ FBGUILookAndFeel::DrawLinearSliderExchangeThumb(
   int sliderRegionStart = layout.sliderBounds.getX();
   int sliderRegionSize = layout.sliderBounds.getWidth();
   float skewed = ConvertExchangeValueFromSkewed(slider.Param()->static_, exchangeValue);
-  float minExchangePos = (float)(sliderRegionStart + skewed * sliderRegionSize);
+  float minExchangePos = static_cast<float>(sliderRegionStart + skewed * sliderRegionSize);
   float kx = minExchangePos;
-  float ky = (float)y + (float)height * 0.5f;
+  float ky = static_cast<float>(y) + height * 0.5f;
   Point<float> maxPoint = { kx, ky };
-  float thumbWidth = (float)getSliderThumbRadius(slider);
+  float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
   g.setColour(slider.findColour(Slider::thumbColourId).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
 }
