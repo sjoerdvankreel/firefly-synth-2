@@ -114,7 +114,6 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
   _moduleState->voice = &_primaryVoiceManager->Voices()[0];
 }
 
-// TODO how much of this we still need?
 bool 
 FBGraphRenderState::GUIParamBool(
   FBParamTopoIndices const& indices) const
