@@ -40,7 +40,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   FBVST3CopyToString128(param.static_.unit, result.units);
 
   result.flags = ParameterInfo::kNoFlags;
-  if (param.static_.AutomationType() != FBAutomationType::None)
+  if (param.static_.AutomationTiming() != FBAutomationTiming::Never)
     result.flags = ParameterInfo::kCanAutomate;
   else
   {

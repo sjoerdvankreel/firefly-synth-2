@@ -2,9 +2,8 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/topo/static/FBProcParamAddrs.hpp>
-#include <playground_base/base/topo/static/FBAutomationType.hpp>
 #include <playground_base/base/topo/static/FBStaticParamBase.hpp>
-
+#include <playground_base/base/topo/static/FBAutomationTiming.hpp>
 
 #include <string>
 #include <vector>
@@ -28,7 +27,7 @@ public:
   bool IsGlobalBlock() const;
 
   std::string AutomationTooltip() const;
-  FBAutomationType AutomationType() const;
+  FBAutomationTiming AutomationTiming() const;
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };
 

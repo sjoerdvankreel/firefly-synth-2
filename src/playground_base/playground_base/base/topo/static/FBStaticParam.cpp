@@ -2,14 +2,14 @@
 
 using namespace juce;
 
-FBAutomationType 
-FBStaticParam::AutomationType() const
+FBAutomationTiming 
+FBStaticParam::AutomationTiming() const
 {
   if (acc)
-    return FBAutomationType::Modulate;
+    return FBAutomationTiming::PerSample;
   if (!NonRealTime().IsStepped() && IsVoiceBlock())
-    return FBAutomationType::Automate;
-  return FBAutomationType::None;
+    return FBAutomationTiming::AtVoiceStart;
+  return FBAutomationTiming::Never;
 }
 
 std::string

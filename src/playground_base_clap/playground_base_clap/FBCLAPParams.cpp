@@ -119,8 +119,8 @@ FBCLAPPlugin::paramsInfo(
     std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
 
   info->flags = CLAP_PARAM_REQUIRES_PROCESS;
-  auto automationType = runtimeParam.static_.AutomationType();
-  if (automationType == FBAutomationType::None)
+  auto timing = runtimeParam.static_.AutomationTiming();
+  if (timing == FBAutomationTiming::Never)
   {
     info->flags |= CLAP_PARAM_IS_READONLY;
     if (runtimeParam.static_.NonRealTime().IsStepped())
@@ -134,7 +134,7 @@ FBCLAPPlugin::paramsInfo(
   else
   {
     info->flags |= CLAP_PARAM_IS_AUTOMATABLE;
-    if (automationType == FBAutomationType::Modulate)
+    if (timing == FBAutomationTiming::PerSample)
     {
       info->flags |= CLAP_PARAM_IS_MODULATABLE;
       if (staticModule.voice)
