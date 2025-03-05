@@ -1,6 +1,9 @@
-big bug in discrete to/from normalized -- probably hits all list items too
-do a -Wall build
+edit/auto type as members
+tooltip stuff as members
+drop all the switches
 hunt for cstyle casts
+
+do a -Wall build
 fix the tooltips (edit/auto)
 todo document the thing a bit
 handle envelope offset (actual start index in block)
@@ -9,7 +12,6 @@ profile the thing - why gui expensive?
 on/off switch for realtime paint
 dont repaint expensive stuff if the UI not active -- but how?
 not hardcode env1 to voice amp
-get rid of the sysheaders warnings
 osci unison
 checkout the Linux logging and also mac
 multitap fb delay

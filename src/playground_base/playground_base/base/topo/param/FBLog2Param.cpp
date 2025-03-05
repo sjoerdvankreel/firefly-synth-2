@@ -1,15 +1,25 @@
 #include <playground_base/base/shared/FBFormat.hpp>
 #include <playground_base/base/topo/param/FBLog2Param.hpp>
 
-float
-FBLog2Param::PlainToNormalized(float plain) const
+bool 
+FBLog2ParamNonRealTime::IsItems() const
 {
-  float result = std::log2((plain - _offset) / _curveStart) / _expo;
-  assert(0.0f <= result && result <= 1.0f);
-  return result;
+  return false;
 }
 
-void 
+bool 
+FBLog2ParamNonRealTime::IsStepped() const 
+{
+  return false;
+}
+
+int
+FBLog2ParamNonRealTime::ValueCount() const 
+{
+  return 0;
+}
+
+void
 FBLog2Param::Init(float offset, float curveStart, float curveEnd)
 {
   _offset = offset;
@@ -17,22 +27,38 @@ FBLog2Param::Init(float offset, float curveStart, float curveEnd)
   _expo = std::log(curveEnd / curveStart) / std::log(2.0f);
 }
 
-std::string
-FBLog2Param::PlainToText(FBValueTextDisplay display, float plain) const
+double 
+FBLog2ParamNonRealTime::PlainToNormalized(double plain) const 
 {
-  if(display == FBValueTextDisplay::IO)
+  double result = std::log2((plain - _offset) / _curveStart) / _expo;
+  assert(0.0 <= result && result <= 1.0);
+  return result;
+}
+
+double
+FBLog2ParamNonRealTime::NormalizedToPlain(double normalized) const 
+{
+  double result = _offset + _curveStart * std::pow(2.0, _expo * normalized);
+  assert(result >= _curveStart + _offset);
+  return result;
+}
+
+std::string
+FBLog2ParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const 
+{
+  if (display == FBValueTextDisplay::IO)
     return std::to_string(plain);
   return FBFormatDouble(plain, FBDefaultDisplayPrecision);
-} 
+}
 
-std::optional<float>
-FBLog2Param::TextToPlain(std::string const& text) const
+std::optional<double>
+FBLog2ParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const 
 {
   char* end;
-  float result = std::strtof(text.c_str(), &end);
+  double result = std::strtod(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
-  if (result < NormalizedToPlain(0.0f) || result > NormalizedToPlain(1.0f))
+  if (result < NormalizedToPlain(0.0) || result > NormalizedToPlain(1.0))
     return {};
   return { result };
 }
