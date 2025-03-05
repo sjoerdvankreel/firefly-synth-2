@@ -43,20 +43,20 @@ ContextMenuBuilderAddItem(
   return true;
 }
 
-float // todo double
+double
 FBCLAPPlugin::GetAudioParamNormalized(int index) const
 {
   return *_editState->Params()[index];
 }
 
-float // todo double
+double
 FBCLAPPlugin::GetGUIParamNormalized(int index) const
 {
   return *_guiState->Params()[index];
 }
 
-void // todo double
-FBCLAPPlugin::SetGUIParamNormalized(int index, float normalized)
+void
+FBCLAPPlugin::SetGUIParamNormalized(int index, double normalized)
 {
   *_guiState->Params()[index] = normalized;
 }
@@ -79,8 +79,8 @@ FBCLAPPlugin::BeginAudioParamChange(int index)
     _host.paramsRequestFlush();
 }
 
-void // todo double
-FBCLAPPlugin::PerformAudioParamEdit(int index, float normalized)
+void
+FBCLAPPlugin::PerformAudioParamEdit(int index, double normalized)
 {
   *_editState->Params()[index] = normalized;
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized);
