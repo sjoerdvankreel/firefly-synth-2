@@ -16,7 +16,7 @@ PlotParams(FBGraphRenderState const* state)
   result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
-  float pitch = state->AudioParamPitch({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 });
+  float pitch = (float)state->AudioParamNote({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 });
   pitch += state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
   result.samples = FBFreqToSamples(FBPitchToFreq(pitch, sampleRate), sampleRate);
   return result;

@@ -12,7 +12,6 @@ struct FBNoteParam
   static inline int constexpr MidiNoteCount = 128;
   
   int NormalizedToPlainFast(float normalized) const;
-  float NormalizedToPitchFast(float normalized) const;
 };
 
 struct FBNoteParamNonRealTime final :
@@ -29,12 +28,6 @@ public FBItemsParamNonRealTime
   std::string PlainToText(FBValueTextDisplay display, double plain) const override;
   std::optional<double> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
-
-inline float
-FBNoteParam::NormalizedToPitchFast(float normalized) const
-{
-  return std::clamp(normalized * MidiNoteCount, 0.0f, MidiNoteCount - 1.0f);
-}
 
 inline int
 FBNoteParam::NormalizedToPlainFast(float normalized) const
