@@ -23,7 +23,7 @@ FBPlugGUIContext::UserScaleParam() const
 }
 
 void
-FBPlugGUIContext::SetSystemScale(float scale) // todo
+FBPlugGUIContext::SetSystemScale(double scale)
 {
   _systemScale = scale;
   RequestRescale(CombinedScale());

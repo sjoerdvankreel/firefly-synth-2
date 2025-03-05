@@ -46,7 +46,7 @@ FBCLAPPlugin::guiHide() noexcept
 bool
 FBCLAPPlugin::guiSetScale(double scale) noexcept
 {
-  _gui->SetSystemScale((float)scale);
+  _gui->SetSystemScale(scale);
   auto hostSize = _gui->GetHostSize();
   _host.guiRequestResize(hostSize.first, hostSize.second);
   return true;

@@ -23,7 +23,7 @@ protected:
   virtual void RequestRescale(float combinedScale) = 0; // todo 
 
 public:
-  void SetSystemScale(float scale); // todo
+  void SetSystemScale(double scale);
   void SetUserScaleByHostWidth(int width);
   std::pair<int, int> GetHostSize() const;
   int ClampHostWidthForScale(int width) const;
