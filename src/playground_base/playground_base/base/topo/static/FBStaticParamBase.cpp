@@ -40,7 +40,7 @@ FBStaticParamBase::MakePopupMenu() const
   case FBParamType::List:
     return ItemsNonRealTime().MakePopupMenu();
   case FBParamType::Note:
-    return Note().MakePopupMenu();
+    return ItemsNonRealTime().MakePopupMenu();
   case FBParamType::Bars:
     return ItemsNonRealTime().MakePopupMenu();
   default:
@@ -118,7 +118,7 @@ FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized
   switch (type)
   {
   case FBParamType::Note:
-    return note.PlainToText(note.NormalizedToPlain(normalized));
+    return note.PlainToText(display, note.NormalizedToPlain(normalized));
   case FBParamType::Bars:
     return bars.PlainToText(display, bars.NormalizedToPlain(normalized));
   case FBParamType::Boolean:
@@ -147,7 +147,7 @@ FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string cons
   {
     case FBParamType::Note:
     {
-      auto plain = note.TextToPlain(text);
+      auto plain = note.TextToPlain(display, text);
       if (!plain) return {};
       return note.PlainToNormalized(plain.value());
     }
