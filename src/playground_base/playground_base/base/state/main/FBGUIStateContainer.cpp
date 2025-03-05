@@ -19,7 +19,7 @@ _special(topo.static_.state.specialGUISelector(topo.static_, _rawState))
   for (int p = 0; p < _params.size(); p++)
     *_params[p] = topo.gui.params[p].static_.DefaultNormalizedByText();
 #ifndef NDEBUG
-  std::set<float*> uniquePtrs(_params.begin(), _params.end());
+  std::set<double*> uniquePtrs(_params.begin(), _params.end());
   assert(uniquePtrs.size() == _params.size());
 #endif
 }

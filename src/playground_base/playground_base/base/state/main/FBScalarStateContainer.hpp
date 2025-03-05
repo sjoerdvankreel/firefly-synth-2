@@ -10,7 +10,7 @@ class FBProcStateContainer;
 
 class FBScalarStateContainer final
 {
-  std::vector<float*> _params;
+  std::vector<double*> _params;
   void* _rawState;
   void (*_freeRawState)(void*);
 
@@ -21,7 +21,7 @@ public:
 
   void CopyFrom(FBProcStateContainer const& proc);
   void CopyFrom(FBScalarStateContainer const& scalar);
-  std::vector<float*> const& Params() const { return _params; }
+  std::vector<double*> const& Params() const { return _params; }
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }

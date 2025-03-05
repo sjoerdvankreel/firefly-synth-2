@@ -2,6 +2,6 @@
 
 #include <functional>
 
-typedef std::function<float* (
+typedef std::function<double* (
   int moduleSlot, int paramSlot, void* state)>
 FBScalarParamAddrSelector;

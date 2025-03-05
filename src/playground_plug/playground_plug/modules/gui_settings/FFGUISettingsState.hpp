@@ -10,7 +10,7 @@ struct FBStaticModule;
 class FFGUISettingsGUIState final
 {
   friend struct FFGUIState;
-  std::array<float, 1> userScale = {};
+  std::array<double, 1> userScale = {};
   friend std::unique_ptr<FBStaticModule> FFMakeGUISettingsTopo();
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUISettingsGUIState);

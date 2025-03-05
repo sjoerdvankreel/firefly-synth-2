@@ -7,7 +7,7 @@ struct FBSpecialGUIParam final
 {
   int paramIndex = -1;
   int moduleIndex = -1;
-  float* state = nullptr;
+  double* state = nullptr;
   FBStaticGUIParam const& ParamTopo(FBStaticTopo const& topo) const;
 };
 

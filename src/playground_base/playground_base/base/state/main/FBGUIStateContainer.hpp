@@ -12,7 +12,7 @@ class FBGUIStateContainer final
 {
   friend class FBPlugGUIContext;
 
-  std::vector<float*> _params;
+  std::vector<double*> _params;
   void* _rawState;
   void (*_freeRawState)(void*);
   FBSpecialGUIParams _special;
@@ -23,7 +23,7 @@ public:
   ~FBGUIStateContainer() { _freeRawState(_rawState); }
 
   void CopyFrom(FBGUIStateContainer const& gui);
-  std::vector<float*> const& Params() const { return _params; }
+  std::vector<double*> const& Params() const { return _params; }
   FBSpecialGUIParams const& Special() const { return _special; }
 
   void* Raw() { return _rawState; }

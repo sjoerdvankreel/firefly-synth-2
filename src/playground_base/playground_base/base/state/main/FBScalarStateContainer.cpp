@@ -19,7 +19,7 @@ _freeRawState(topo.static_.state.freeRawScalarState)
   for (int p = 0; p < _params.size(); p++)
     *_params[p] = topo.audio.params[p].static_.DefaultNormalizedByText();
 #ifndef NDEBUG
-  std::set<float*> uniquePtrs(_params.begin(), _params.end());
+  std::set<double*> uniquePtrs(_params.begin(), _params.end());
   assert(uniquePtrs.size() == _params.size());
 #endif
 }

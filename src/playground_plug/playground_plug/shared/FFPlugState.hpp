@@ -77,8 +77,8 @@ struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
 struct FFScalarParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarParamState);
-  FFVoiceParamState<float, float> voice = {};
-  FFGlobalParamState<float, float> global = {};
+  FFVoiceParamState<double, double> voice = {};
+  FFGlobalParamState<double, double> global = {};
 };
 
 struct FFScalarState final

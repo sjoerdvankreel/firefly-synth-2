@@ -1,3 +1,4 @@
+hunt static_cast<float>
 todo guistatecontainer to double?
 check "float norm"
 check all float in the base
