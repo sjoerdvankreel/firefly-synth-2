@@ -37,5 +37,5 @@ FBDiscreteParam::PlainToNormalizedFast(int plain) const
 inline int
 FBDiscreteParam::NormalizedToPlainFast(float normalized) const
 {
-  return std::clamp((int)std::round(normalized * valueCount), 0, valueCount - 1);
+  return std::clamp((int)(normalized * valueCount), 0, valueCount - 1);
 }

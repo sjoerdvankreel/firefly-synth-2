@@ -27,7 +27,7 @@ FBDiscreteParamNonRealTime::PlainToNormalized(double plain) const
 double
 FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const 
 {
-  return std::clamp(std::round(normalized * valueCount), 0.0, valueCount - 1.0);
+  return std::clamp((int)(normalized * valueCount), 0, valueCount - 1);
 }
 
 std::string
