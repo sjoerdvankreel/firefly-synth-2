@@ -21,7 +21,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   auto const& input = procState->dsp.global.gFilter[state.moduleSlot].input;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GFilter];
   bool on = topo.params[(int)FFGFilterParam::On].Boolean().NormalizedToPlainFast(procParams.block.on[0].Value());
-  auto type = (FFGFilterType)topo.params[(int)FFGFilterParam::Type].List().NormalizedToPlain(procParams.block.type[0].Value());
+  auto type = (FFGFilterType)topo.params[(int)FFGFilterParam::Type].List().NormalizedToPlainFast(procParams.block.type[0].Value());
 
   if (!on)
   {

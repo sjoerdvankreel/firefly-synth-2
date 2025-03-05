@@ -28,7 +28,7 @@ struct FBStaticParamBase
 private:
   // TODO
   FBLog2ParamNonRealTime log2 = {};
-  FBListParam list = {};
+  FBListParamNonRealTime list = {};
   FBNoteParam note = {};
   FBBarsParam bars = {};
   FBBoolParamNonRealTime boolean = {};
@@ -69,6 +69,7 @@ public:
   FBDiscreteLog2Param const& DiscreteLog2() const;
   
   FBParamNonRealTime const& NonRealTime() const;
+  FBItemsParamNonRealTime const& ItemsNonRealTime() const;
 
   // TODO check all this
   // TODO also check all invocations of the nonrealtime stuff
@@ -202,11 +203,23 @@ FBStaticParamBase::NonRealTime() const
 {
   switch (type)
   {
+  case FBParamType::Log2: return log2;
+  case FBParamType::List: return list;
   case FBParamType::Linear: return linear;
   case FBParamType::Boolean: return boolean;
   case FBParamType::Discrete: return discrete;
   case FBParamType::DiscreteLog2: return discreteLog2;
   default: assert(false); return *static_cast<FBParamNonRealTime const*>(nullptr); // TODO
+  }
+}
+
+inline FBItemsParamNonRealTime const&
+FBStaticParamBase::ItemsNonRealTime() const
+{
+  switch (type)
+  {
+  case FBParamType::List: return list;
+  default: assert(false); return *static_cast<FBItemsParamNonRealTime const*>(nullptr); // TODO
   }
 }
 

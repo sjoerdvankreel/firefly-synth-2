@@ -5,10 +5,11 @@ using namespace juce;
 PopupMenu
 FBStaticParamBase::MakePopupMenu() const
 {
+  // todo drop
   switch (type)
   {
   case FBParamType::List:
-    return List().MakePopupMenu();
+    return ItemsNonRealTime().MakePopupMenu();
   case FBParamType::Note:
     return Note().MakePopupMenu();
   case FBParamType::Bars:
@@ -123,7 +124,7 @@ FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string cons
     }
     case FBParamType::List:
     {
-      auto plain = list.TextToPlain(display == FBValueTextDisplay::IO, text);
+      auto plain = list.TextToPlain(display, text);
       if (!plain) return {};
       return list.PlainToNormalized(plain.value());
     }
