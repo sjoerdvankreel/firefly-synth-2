@@ -175,7 +175,7 @@ std::string
 FBPlugGUI::GetTooltipForGUIParam(int index) const
 {
   auto const& param = HostContext()->Topo()->gui.params[index];
-  float normalized = HostContext()->GetGUIParamNormalized(index);
+  double normalized = HostContext()->GetGUIParamNormalized(index);
   std::string result = param.tooltip + ": " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, normalized);
   if (param.static_.NonRealTime().IsStepped())
     return result;
