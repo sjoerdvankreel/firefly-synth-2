@@ -36,7 +36,7 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
 
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
   output.Transform([&](int v) { 
-    auto plainRate = rateParamLinear.NormalizedToPlain(rate.CV(v));
+    auto plainRate = rateParamLinear.NormalizedToPlainFast(rate.CV(v));
     auto phase = _phase.Next(plainRate / state.input->sampleRate);
     return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
 
@@ -50,7 +50,7 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   float lastRate = rate.CV().data[FBFixedBlockSamples - 1];
   exchangeDSP.active = true;
   exchangeDSP.lastOutput = output.Last();
-  exchangeDSP.lengthSamples = rateParamLinear.NormalizedFreqToSamples(lastRate, state.input->sampleRate);
+  exchangeDSP.lengthSamples = rateParamLinear.NormalizedFreqToSamplesFast(lastRate, state.input->sampleRate);
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
   return FBFixedBlockSamples;
 }

@@ -23,7 +23,7 @@ FBPlugGUIContext::UserScaleParam() const
 }
 
 void
-FBPlugGUIContext::SetSystemScale(float scale)
+FBPlugGUIContext::SetSystemScale(float scale) // todo
 {
   _systemScale = scale;
   RequestRescale(CombinedScale());
@@ -36,11 +36,11 @@ FBPlugGUIContext::GetHeightForAspectRatio(int width) const
   return width * topoGUI.aspectRatioHeight / topoGUI.aspectRatioWidth;
 }
 
-float
+double
 FBPlugGUIContext::CombinedScale() const
 {
-  float userScaleNorm = *UserScaleSpecial().state;
-  float userScalePlain = UserScaleParam().Linear().NormalizedToPlain(userScaleNorm);
+  double userScaleNorm = *UserScaleSpecial().state;
+  double userScalePlain = UserScaleParam().NonRealTime().NormalizedToPlain(userScaleNorm); // todo hunt all *fast
   return _systemScale * userScalePlain;
 }
 
@@ -48,9 +48,9 @@ int
 FBPlugGUIContext::ClampHostWidthForScale(int width) const
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  float minW = topoGUI.plugWidth * UserScaleParam().Linear().min * _systemScale;
-  float maxW = topoGUI.plugWidth * UserScaleParam().Linear().max * _systemScale;
-  return (int)std::round(std::clamp((float)width, minW, maxW));
+  double minW = topoGUI.plugWidth * UserScaleParam().Linear().min * _systemScale;
+  double maxW = topoGUI.plugWidth * UserScaleParam().Linear().max * _systemScale;
+  return static_cast<int>(std::round(std::clamp(static_cast<double>(width), minW, maxW)));
 }
 
 std::pair<int, int>
@@ -66,7 +66,8 @@ void
 FBPlugGUIContext::SetUserScaleByHostWidth(int width)
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  float userScalePlain = ((float)width / (float)topoGUI.plugWidth) / _systemScale;
-  *UserScaleSpecial().state = UserScaleParam().Linear().PlainToNormalized(userScalePlain);
+  double userScalePlain = (static_cast<double>(width) / topoGUI.plugWidth) / _systemScale;
+  double userScaleNorm = UserScaleParam().NonRealTime().PlainToNormalized(userScalePlain);
+  *UserScaleSpecial().state = static_cast<float>(userScaleNorm);
   RequestRescale(CombinedScale());
 }

@@ -32,7 +32,7 @@ private:
   FBNoteParam note = {};
   FBBarsParam bars = {};
   FBBoolParamNonRealTime boolean = {};
-  FBLinearParam linear = {};
+  FBLinearParamNonRealTime linear = {};
   FBDiscreteParamNonRealTime discrete = {};
   FBDiscreteLog2ParamNonRealTime discreteLog2 = {};
 
@@ -200,8 +200,14 @@ FBStaticParamBase::DiscreteLog2() const
 inline FBParamNonRealTime const& 
 FBStaticParamBase::NonRealTime() const
 {
-  assert(type == FBParamType::Boolean);
-  return boolean;
+  switch (type)
+  {
+  case FBParamType::Linear: return linear;
+  case FBParamType::Boolean: return boolean;
+  case FBParamType::Discrete: return discrete;
+  case FBParamType::DiscreteLog2: return discreteLog2;
+  default: assert(false); return *static_cast<FBParamNonRealTime const*>(nullptr); // TODO
+  }
 }
 
 inline int

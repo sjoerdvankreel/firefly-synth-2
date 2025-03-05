@@ -22,7 +22,7 @@ FBLog2Param::PlainToText(FBValueTextDisplay display, float plain) const
 {
   if(display == FBValueTextDisplay::IO)
     return std::to_string(plain);
-  return FBFormatFloat(plain, FBDefaultDisplayPrecision);
+  return FBFormatDouble(plain, FBDefaultDisplayPrecision);
 } 
 
 std::optional<float>

@@ -146,7 +146,7 @@ FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string cons
     }
     case FBParamType::Linear:
     {
-      auto plain = linear.TextToPlain(text);
+      auto plain = linear.TextToPlain(display, text);
       if (!plain) return {};
       return linear.PlainToNormalized(plain.value());
     }

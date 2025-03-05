@@ -10,9 +10,9 @@ struct FBSpecialGUIParam;
 
 class FBPlugGUIContext
 {
-  float _systemScale = 1.0f;
+  double _systemScale = 1.0;
   FBHostGUIContext* const _hostContext;
-  float CombinedScale() const;
+  double CombinedScale() const;
 
   FBStaticGUIParam const& UserScaleParam() const;
   FBSpecialGUIParam const& UserScaleSpecial() const;
@@ -20,10 +20,10 @@ class FBPlugGUIContext
 protected:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugGUIContext);
   FBPlugGUIContext(FBHostGUIContext* const hostContext);
-  virtual void RequestRescale(float combinedScale) = 0;
+  virtual void RequestRescale(float combinedScale) = 0; // todo 
 
 public:
-  void SetSystemScale(float scale);
+  void SetSystemScale(float scale); // todo
   void SetUserScaleByHostWidth(int width);
   std::pair<int, int> GetHostSize() const;
   int ClampHostWidthForScale(int width) const;
@@ -35,5 +35,5 @@ public:
   virtual void UpdateExchangeState() = 0;
   virtual void SetVisible(bool visible) = 0;
   virtual void AddToDesktop(void* parent) = 0;
-  virtual void SetAudioParamNormalizedFromHost(int index, float normalized) = 0;
+  virtual void SetAudioParamNormalizedFromHost(int index, float normalized) = 0; // todo
 };

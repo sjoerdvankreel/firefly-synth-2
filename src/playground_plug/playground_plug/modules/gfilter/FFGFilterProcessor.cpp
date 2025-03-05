@@ -41,7 +41,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   case FFGFilterType::HSH:
     gainBlock.LoadCastFromFloatArray(gain.CV());
     a.Transform([&](int v) {
-      auto plainGain = topo.params[(int)FFGFilterParam::Gain].Linear().NormalizedToPlain(gainBlock[v]);
+      auto plainGain = topo.params[(int)FFGFilterParam::Gain].Linear().NormalizedToPlainFast(gainBlock[v]);
       return xsimd::pow(FBDoubleVector(10.0), plainGain / 40.0); });
     break;
   default:
