@@ -7,7 +7,7 @@ using namespace juce;
 
 FBParamComboBox::
 FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param):  
-FBAutoSizeComboBox(param->static_.MakePopupMenu()),
+FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu()),
 FBParamControl(plugGUI, param)
 {
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));

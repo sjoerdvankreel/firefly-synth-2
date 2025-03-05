@@ -14,8 +14,6 @@
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteLog2Param.hpp>
 
-#include <juce_gui_basics/juce_gui_basics.h>
-
 #include <string>
 #include <vector>
 #include <cassert>
@@ -74,7 +72,6 @@ public:
   // TODO also make sure thats all converted to double
   // TODO also make sure no cstyle casts
   // TODO finally get rid of all the switches
-  juce::PopupMenu MakePopupMenu() const;
   float DefaultNormalizedByText() const;
   float AnyDiscreteToNormalizedSlow(int discrete) const;
   int NormalizedToAnyDiscreteSlow(float normalized) const;

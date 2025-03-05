@@ -15,7 +15,7 @@ FBStaticParamBase::NonRealTime() const
   case FBParamType::Boolean: return boolean;
   case FBParamType::Discrete: return discrete;
   case FBParamType::DiscreteLog2: return discreteLog2;
-  default: assert(false); return *static_cast<FBParamNonRealTime const*>(nullptr); // TODO
+  default: assert(false); return *static_cast<FBParamNonRealTime const*>(nullptr);
   }
 }
 
@@ -27,27 +27,7 @@ FBStaticParamBase::ItemsNonRealTime() const
   case FBParamType::List: return list;
   case FBParamType::Bars: return bars;
   case FBParamType::Note: return note;
-  default: assert(false); return *static_cast<FBItemsParamNonRealTime const*>(nullptr); // TODO
-  }
-}
-
-using namespace juce;
-
-PopupMenu
-FBStaticParamBase::MakePopupMenu() const
-{
-  // todo drop
-  switch (type)
-  {
-  case FBParamType::List:
-    return ItemsNonRealTime().MakePopupMenu();
-  case FBParamType::Note:
-    return ItemsNonRealTime().MakePopupMenu();
-  case FBParamType::Bars:
-    return ItemsNonRealTime().MakePopupMenu();
-  default:
-    assert(false);
-    return {};
+  default: assert(false); return *static_cast<FBItemsParamNonRealTime const*>(nullptr);
   }
 }
 
