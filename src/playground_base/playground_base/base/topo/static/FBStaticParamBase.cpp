@@ -48,52 +48,6 @@ FBStaticParamBase::NormalizedToText(FBParamTextDisplay display, float normalized
   return result;
 }
 
-float
-FBStaticParamBase::AnyDiscreteToNormalizedSlow(int plain) const
-{
-  switch (type)
-  {
-  case FBParamType::List:
-    return list.PlainToNormalized(plain);
-  case FBParamType::Note:
-    return note.PlainToNormalized(plain);
-  case FBParamType::Bars:
-    return bars.PlainToNormalized(plain);
-  case FBParamType::Boolean:
-    return boolean.PlainToNormalized(plain);
-  case FBParamType::Discrete:
-    return discrete.PlainToNormalized(plain);
-  case FBParamType::DiscreteLog2:
-    return discreteLog2.PlainToNormalized(plain);
-  default:
-    assert(false);
-    return {};
-  }
-}
-
-int 
-FBStaticParamBase::NormalizedToAnyDiscreteSlow(float normalized) const
-{
-  switch (type)
-  {
-  case FBParamType::List:
-    return list.NormalizedToPlain(normalized);
-  case FBParamType::Note:
-    return note.NormalizedToPlain(normalized);
-  case FBParamType::Bars:
-    return bars.NormalizedToPlain(normalized);
-  case FBParamType::Boolean:
-    return boolean.NormalizedToPlain(normalized);
-  case FBParamType::Discrete:
-    return discrete.NormalizedToPlain(normalized);
-  case FBParamType::DiscreteLog2:
-    return discreteLog2.NormalizedToPlain(normalized);
-  default:
-    assert(false);
-    return {};
-  }
-}
-
 std::string 
 FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized) const
 {

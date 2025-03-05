@@ -26,16 +26,16 @@ FBParamComboBox::getTooltip()
 }
 
 void
-FBParamComboBox::SetValueNormalizedFromHost(float normalized)
+FBParamComboBox::SetValueNormalizedFromHost(float normalized) // todo double
 {
-  int plain = _param->static_.NormalizedToAnyDiscreteSlow(normalized);
-  setSelectedId(plain + 1, dontSendNotification);
+  double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);
+  setSelectedId(static_cast<int>(plain) + 1, dontSendNotification);
 }
 
 void
 FBParamComboBox::valueChanged(Value& value)
 {
-  float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedId() - 1);
+  double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
   _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
 }

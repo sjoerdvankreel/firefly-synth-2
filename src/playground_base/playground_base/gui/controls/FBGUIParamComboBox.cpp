@@ -26,16 +26,16 @@ FBGUIParamComboBox::getTooltip()
 }
 
 void
-FBGUIParamComboBox::SetValueNormalizedFromPlug(float normalized)
+FBGUIParamComboBox::SetValueNormalizedFromPlug(float normalized) //todo double
 {
-  int plain = _param->static_.NormalizedToAnyDiscreteSlow(normalized);
-  setSelectedId(plain + 1, dontSendNotification);
+  double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);
+  setSelectedId(static_cast<int>(plain) + 1, dontSendNotification);
 }
 
 void
 FBGUIParamComboBox::valueChanged(Value& value)
 {
-  float normalized = _param->static_.AnyDiscreteToNormalizedSlow(getSelectedId() - 1);
+  double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
   _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
   _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }

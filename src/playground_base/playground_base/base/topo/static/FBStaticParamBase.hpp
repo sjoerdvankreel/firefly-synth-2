@@ -73,8 +73,6 @@ public:
   // TODO also make sure no cstyle casts
   // TODO finally get rid of all the switches
   float DefaultNormalizedByText() const;
-  float AnyDiscreteToNormalizedSlow(int discrete) const;
-  int NormalizedToAnyDiscreteSlow(float normalized) const;
 
   std::string NormalizedToText(FBValueTextDisplay display, float normalized) const;
   std::string NormalizedToText(FBParamTextDisplay display, float normalized) const;

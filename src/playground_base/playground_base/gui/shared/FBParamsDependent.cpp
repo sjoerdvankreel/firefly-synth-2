@@ -63,8 +63,9 @@ FBParamsDependentDependency::EvaluateGUI(FBHostGUIContext const* hostContext)
   for (int i = 0; i < runtimeDependencies.size(); i++)
   {
     auto const& param = hostContext->Topo()->gui.params[runtimeDependencies[i]];
-    evaluations.push_back(param.static_.NormalizedToAnyDiscreteSlow(
-      hostContext->GetGUIParamNormalized(runtimeDependencies[i])));
+    double norm = hostContext->GetGUIParamNormalized(runtimeDependencies[i]);
+    double plain = param.static_.NonRealTime().NormalizedToPlain(norm);
+    evaluations.push_back(static_cast<int>(plain));
   }
   return dependency.evaluate(evaluations);
 }
@@ -78,8 +79,9 @@ FBParamsDependentDependency::EvaluateAudio(FBHostGUIContext const* hostContext)
   for (int i = 0; i < runtimeDependencies.size(); i++)
   {
     auto const& param = hostContext->Topo()->audio.params[runtimeDependencies[i]];
-    evaluations.push_back(param.static_.NormalizedToAnyDiscreteSlow(
-      hostContext->GetAudioParamNormalized(runtimeDependencies[i])));
+    double norm = hostContext->GetAudioParamNormalized(runtimeDependencies[i]);
+    double plain = param.static_.NonRealTime().NormalizedToPlain(norm);
+    evaluations.push_back(static_cast<int>(plain));
   }
   return dependency.evaluate(evaluations);
 }
