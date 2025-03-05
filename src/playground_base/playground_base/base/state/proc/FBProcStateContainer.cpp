@@ -38,7 +38,7 @@ _special(topo.static_.state.specialSelector(topo.static_, _rawState))
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
 
   for (int p = 0; p < Params().size(); p++)
-    Params()[p].InitProcessing(topo.audio.params[p].static_.DefaultNormalizedByText());
+    Params()[p].InitProcessing(static_cast<float>(topo.audio.params[p].static_.DefaultNormalizedByText()));
 
 #ifndef NDEBUG
   std::set<void*> uniquePtrs = {};
@@ -74,7 +74,7 @@ FBProcStateContainer::InitProcessing(
   FBScalarStateContainer const& scalar)
 {
   for (int p = 0; p < Params().size(); p++)
-    InitProcessing(p, *scalar.Params()[p]);
+    InitProcessing(p, static_cast<float>(*scalar.Params()[p]));
 }
 
 void 
@@ -82,7 +82,7 @@ FBProcStateContainer::InitProcessing(
   FBHostGUIContext const* context)
 {
   for (int p = 0; p < Params().size(); p++)
-    InitProcessing(p, context->GetAudioParamNormalized(p));
+    InitProcessing(p, static_cast<float>(context->GetAudioParamNormalized(p)));
 }
 
 void 

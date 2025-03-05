@@ -30,7 +30,7 @@ FBParamToggleButton::getTooltip()
 void
 FBParamToggleButton::SetValueNormalizedFromHost(double normalized)
 {
-  bool plain = _param->static_.Boolean().NormalizedToPlainFast(normalized);
+  bool plain = _param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
   setToggleState(plain, dontSendNotification);
   _isOn = getToggleState();
 }

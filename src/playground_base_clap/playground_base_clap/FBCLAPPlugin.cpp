@@ -304,7 +304,7 @@ FBCLAPPlugin::process(
 
   _input.bpm = FBHostInputBlock::DefaultBPM;
   if (process->transport != nullptr)
-    _input.bpm = process->transport->tempo;
+    _input.bpm = static_cast<float>(process->transport->tempo);
 
   _output.outputParams.clear();
   _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);

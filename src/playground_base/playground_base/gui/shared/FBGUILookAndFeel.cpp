@@ -9,7 +9,7 @@ ConvertExchangeValueFromSkewed(FBStaticParamBase const& param, float normalized)
 {
   if (param.type != FBParamType::Linear)
     return normalized;
-  NormalisableRange<float> range(0.0f, 1.0f, 0.0f, param.Linear().editSkewFactor);
+  NormalisableRange<float> range(0.0f, 1.0f, 0.0f, static_cast<float>(param.Linear().editSkewFactor));
   return range.convertTo0to1(normalized);
 }
 
