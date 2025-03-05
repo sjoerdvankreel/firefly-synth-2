@@ -11,6 +11,7 @@ struct FBNoteParam
   static inline std::string const C4Name = "C4";
   static inline int constexpr MidiNoteCount = 128;
   
+  int NormalizedToPlainFast(float normalized) const;
   float NormalizedToPitchFast(float normalized) const;
 };
 
@@ -33,4 +34,10 @@ inline float
 FBNoteParam::NormalizedToPitchFast(float normalized) const
 {
   return std::clamp(normalized * MidiNoteCount, 0.0f, MidiNoteCount - 1.0f);
+}
+
+inline int
+FBNoteParam::NormalizedToPlainFast(float normalized) const
+{
+  return std::clamp((int)(normalized * MidiNoteCount), 0, MidiNoteCount - 1);
 }
