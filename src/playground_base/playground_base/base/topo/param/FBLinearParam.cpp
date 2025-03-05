@@ -19,6 +19,18 @@ FBLinearParamNonRealTime::ValueCount() const
   return 0;
 }
 
+FBEditType
+FBLinearParamNonRealTime::GUIEditType() const
+{
+  return editSkewFactor == 1.0 ? FBEditType::Linear : FBEditType::Logarithmic;
+}
+
+FBEditType
+FBLinearParamNonRealTime::AutomationEditType() const
+{
+  return FBEditType::Linear;
+}
+
 double 
 FBLinearParamNonRealTime::PlainToNormalized(double plain) const 
 {

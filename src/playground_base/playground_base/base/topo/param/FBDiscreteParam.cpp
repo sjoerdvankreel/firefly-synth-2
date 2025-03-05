@@ -18,6 +18,18 @@ FBDiscreteParamNonRealTime::ValueCount() const
   return valueCount;
 }
 
+FBEditType
+FBDiscreteParamNonRealTime::GUIEditType() const
+{
+  return FBEditType::Stepped;
+}
+
+FBEditType
+FBDiscreteParamNonRealTime::AutomationEditType() const
+{
+  return FBEditType::Stepped;
+}
+
 double 
 FBDiscreteParamNonRealTime::PlainToNormalized(double plain) const 
 {

@@ -22,6 +22,18 @@ FBListParamNonRealTime::ValueCount() const
   return static_cast<int>(items.size());
 }
 
+FBEditType
+FBListParamNonRealTime::GUIEditType() const
+{
+  return FBEditType::Stepped;
+}
+
+FBEditType
+FBListParamNonRealTime::AutomationEditType() const
+{
+  return FBEditType::Stepped;
+}
+
 double 
 FBListParamNonRealTime::PlainToNormalized(double plain) const 
 {

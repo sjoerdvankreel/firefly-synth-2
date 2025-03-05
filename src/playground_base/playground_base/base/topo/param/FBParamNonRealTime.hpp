@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/topo/param/FBEditType.hpp>
 #include <playground_base/base/topo/param/FBTextDisplay.hpp>
 
 #include <string>
@@ -10,6 +11,8 @@ struct FBParamNonRealTime
   virtual bool IsItems() const = 0;
   virtual bool IsStepped() const = 0;
   virtual int ValueCount() const = 0;
+  virtual FBEditType GUIEditType() const = 0;
+  virtual FBEditType AutomationEditType() const = 0;
 
   std::string NormalizedToText(FBTextDisplay display, double plain) const;
   std::optional<double> TextToNormalized(FBTextDisplay display, std::string const& text) const;

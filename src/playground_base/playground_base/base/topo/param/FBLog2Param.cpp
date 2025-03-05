@@ -19,6 +19,18 @@ FBLog2ParamNonRealTime::ValueCount() const
   return 0;
 }
 
+FBEditType
+FBLog2ParamNonRealTime::GUIEditType() const
+{
+  return FBEditType::Logarithmic;
+}
+
+FBEditType
+FBLog2ParamNonRealTime::AutomationEditType() const
+{
+  return FBEditType::Logarithmic;
+}
+
 void
 FBLog2Param::Init(float offset, float curveStart, float curveEnd)
 {

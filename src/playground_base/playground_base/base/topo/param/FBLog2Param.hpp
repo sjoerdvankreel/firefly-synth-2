@@ -33,6 +33,8 @@ public FBParamNonRealTime
   bool IsItems() const override;
   bool IsStepped() const override;
   int ValueCount() const override;
+  FBEditType GUIEditType() const override;
+  FBEditType AutomationEditType() const override;
 
   double PlainToNormalized(double plain) const override;
   double NormalizedToPlain(double normalized) const override;

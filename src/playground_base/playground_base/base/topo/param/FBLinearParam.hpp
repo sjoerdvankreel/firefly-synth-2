@@ -13,8 +13,8 @@ struct FBLinearParam
 {
   float min = 0.0f;
   float max = 1.0f;
-  double editSkewFactor = 1.0f;
-  double displayMultiplier = 1.0f;
+  double editSkewFactor = 1.0;
+  double displayMultiplier = 1.0;
 
   float NormalizedToPlainFast(float normalized) const;
   FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
@@ -30,6 +30,8 @@ public FBParamNonRealTime
   bool IsItems() const override;
   bool IsStepped() const override;
   int ValueCount() const override;
+  FBEditType GUIEditType() const override;
+  FBEditType AutomationEditType() const override;
 
   double PlainToNormalized(double plain) const override;
   double NormalizedToPlain(double normalized) const override;

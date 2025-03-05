@@ -25,6 +25,18 @@ FBNoteParamNonRealTime::ValueCount() const
   return MidiNoteCount;
 }
 
+FBEditType
+FBNoteParamNonRealTime::GUIEditType() const
+{
+  return FBEditType::Stepped;
+}
+
+FBEditType
+FBNoteParamNonRealTime::AutomationEditType() const
+{
+  return FBEditType::Stepped;
+}
+
 double 
 FBNoteParamNonRealTime::PlainToNormalized(double plain) const
 {

@@ -21,6 +21,18 @@ FBDiscreteLog2ParamNonRealTime::ValueCount() const
   return valueCount;
 }
 
+FBEditType
+FBDiscreteLog2ParamNonRealTime::GUIEditType() const
+{
+  return FBEditType::Logarithmic;
+}
+
+FBEditType
+FBDiscreteLog2ParamNonRealTime::AutomationEditType() const
+{
+  return FBEditType::Logarithmic;
+}
+
 double
 FBDiscreteLog2ParamNonRealTime::NormalizedToPlain(double normalized) const 
 {
