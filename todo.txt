@@ -1,7 +1,3 @@
-hunt static_cast<float>
-just hunt all float outside dsp
-check "float norm"
-check all float in the base
 recheck clap mod
 check all the edit controls
 edit/auto type as members
