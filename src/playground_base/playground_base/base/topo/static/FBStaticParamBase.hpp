@@ -66,8 +66,7 @@ public:
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
 
   double DefaultNormalizedByText() const;
-  std::string NormalizedToText(FBTextDisplay display, double normalized) const;
-  std::optional<double> TextToNormalized(FBTextDisplay display, std::string const& text) const;
+  std::string NormalizedToTextWithUnit(FBTextDisplay display, double normalized) const;
 };
 
 inline FBListParam&

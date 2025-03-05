@@ -34,11 +34,11 @@ FBStaticParamBase::DefaultNormalizedByText() const
 {
   if (defaultText.size() == 0)
     return 0.0;
-  return TextToNormalized(FBTextDisplay::Text, defaultText).value();
+  return NonRealTime().TextToNormalized(FBTextDisplay::Text, defaultText).value();
 }
 
 std::string
-FBStaticParamBase::NormalizedToText(FBTextDisplay display, double normalized) const
+FBStaticParamBase::NormalizedToTextWithUnit(FBTextDisplay display, double normalized) const
 {
   std::string result = NonRealTime().NormalizedToText(display, normalized);
   if (display != FBTextDisplay::IO && !unit.empty()) // TODO is this correct ?
