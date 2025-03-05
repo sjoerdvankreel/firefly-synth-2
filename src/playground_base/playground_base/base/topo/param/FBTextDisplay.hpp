@@ -1,15 +1,8 @@
 #pragma once
 
-enum class FBValueTextDisplay 
+enum class FBTextDisplay 
 { 
   IO, 
   Text, 
   Tooltip
-};
-
-enum class FBParamTextDisplay
-{
-  IO,
-  Text,
-  TooltipWithUnit
 };

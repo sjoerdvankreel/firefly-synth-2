@@ -10,7 +10,7 @@ _topo(topo) {}
 void 
 FBVST3Parameter::toString(ParamValue valueNormalized, String128 string) const
 {
-  auto text = _topo->NormalizedToText(FBValueTextDisplay::Text, valueNormalized);
+  auto text = _topo->NormalizedToText(FBTextDisplay::Text, valueNormalized);
   FBVST3CopyToString128(text, string);
 }
 
@@ -20,7 +20,7 @@ FBVST3Parameter::fromString(const TChar* string, ParamValue& valueNormalized) co
   std::string str;
   if (!FBVST3CopyFromString128(string, str))
     return false;
-  auto parsed = _topo->TextToNormalized(FBValueTextDisplay::Text, str);
+  auto parsed = _topo->TextToNormalized(FBTextDisplay::Text, str);
   if (!parsed.has_value())
     return false;
   valueNormalized = parsed.value();

@@ -28,7 +28,7 @@ FBGUIParamSlider::parentHierarchyChanged()
 }
 
 void
-FBGUIParamSlider::SetValueNormalizedFromPlug(float normalized)
+FBGUIParamSlider::SetValueNormalizedFromPlug(float normalized) // todo double
 {
   setValue(normalized, dontSendNotification); 
 }
@@ -42,22 +42,21 @@ FBGUIParamSlider::getTooltip()
 void
 FBGUIParamSlider::valueChanged()
 {
-  float normalized = (float)getValue();
-  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
-  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
+  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, getValue());
+  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, getValue());
 }
 
 double
 FBGUIParamSlider::getValueFromText(const String& text)
 {
-  auto parsed = _param->static_.TextToNormalized(FBValueTextDisplay::Text, text.toStdString());
+  auto parsed = _param->static_.TextToNormalized(FBTextDisplay::Text, text.toStdString());
   return parsed.value_or(_param->static_.DefaultNormalizedByText());
 }
 
 String
 FBGUIParamSlider::getTextFromValue(double value)
 {
-  auto text = _param->static_.NormalizedToText(FBValueTextDisplay::Text, (float)value);
+  auto text = _param->static_.NormalizedToText(FBTextDisplay::Text, value);
   if (_param->static_.unit.empty())
     return text;
   return text + " " + _param->static_.unit;

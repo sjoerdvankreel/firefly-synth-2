@@ -29,7 +29,7 @@ FBDiscreteLog2ParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBDiscreteLog2ParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const 
+FBDiscreteLog2ParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
 {
   return std::to_string((int)std::round(plain));
 }
@@ -42,7 +42,7 @@ FBDiscreteLog2ParamNonRealTime::PlainToNormalized(double plain) const
 }
 
 std::optional<double>
-FBDiscreteLog2ParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const 
+FBDiscreteLog2ParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
 {
   char* end;
   unsigned long plain = std::strtoul(text.c_str(), &end, 10);

@@ -32,16 +32,16 @@ FBLinearParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBLinearParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const 
+FBLinearParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
 {
   double displayPlain = plain * displayMultiplier;
-  if (display == FBValueTextDisplay::IO)
+  if (display == FBTextDisplay::IO)
     return std::to_string(displayPlain);
   return FBFormatDouble(displayPlain, FBDefaultDisplayPrecision);
 }
 
 std::optional<double>
-FBLinearParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const 
+FBLinearParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
 {
   char* end;
   double result = std::strtod(text.c_str(), &end);

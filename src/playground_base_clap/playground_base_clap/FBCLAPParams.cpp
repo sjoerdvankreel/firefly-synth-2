@@ -42,7 +42,7 @@ FBCLAPPlugin::paramsTextToValue(
   if (index == -1)
     return false;
   auto const& static_ = _topo->audio.params[index].static_;
-  auto normalized = static_.TextToNormalized(FBValueTextDisplay::Text, display);
+  auto normalized = static_.TextToNormalized(FBTextDisplay::Text, display);
   if (!normalized.has_value())
     return false;
   *value = FBNormalizedToCLAP(static_, normalized.value());
@@ -56,8 +56,8 @@ FBCLAPPlugin::paramsValueToText(
   int32_t index = getParamIndexForParamId(paramId);
   if (index == -1)
     return false;
-  float normalized = (float)FBCLAPToNormalized(_topo->audio.params[index].static_, value);
-  std::string text = _topo->audio.params[index].static_.NormalizedToText(FBValueTextDisplay::Text, normalized);
+  double norm = FBCLAPToNormalized(_topo->audio.params[index].static_, value);
+  std::string text = _topo->audio.params[index].static_.NormalizedToText(FBTextDisplay::Text, norm);
   std::fill(display, display + size, 0);
   strncpy(display, text.c_str(), std::min(size - 1, static_cast<uint32_t>(text.size())));
   return true;
@@ -126,7 +126,7 @@ FBCLAPPlugin::paramsInfo(
     if (runtimeParam.static_.NonRealTime().IsStepped())
     {
       info->flags |= CLAP_PARAM_IS_STEPPED;
-      info->max_value = staticParam.ValueCount() - 1.0f;
+      info->max_value = staticParam.NonRealTime().ValueCount() - 1.0;
       if (staticParam.NonRealTime().IsItems())
         info->flags |= CLAP_PARAM_IS_ENUM;
     }

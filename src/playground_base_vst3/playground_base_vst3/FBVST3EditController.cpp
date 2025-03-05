@@ -32,7 +32,7 @@ MakeParamInfo(FBRuntimeParam const& param, int unitId)
   ParameterInfo result;
   result.id = param.tag;
   result.unitId = unitId;
-  result.stepCount = std::max(0, param.static_.ValueCount() - 1);
+  result.stepCount = std::max(0, param.static_.NonRealTime().ValueCount() - 1);
   result.defaultNormalizedValue = param.static_.DefaultNormalizedByText();
 
   FBVST3CopyToString128(param.longName, result.title);
@@ -88,7 +88,7 @@ FBVST3EditController::BeginAudioParamChange(int index)
 }
 
 void
-FBVST3EditController::PerformAudioParamEdit(int index, float normalized)
+FBVST3EditController::PerformAudioParamEdit(int index, float normalized) // todo double
 {
   int tag = _topo->audio.params[index].tag;
   setParamNormalized(tag, normalized);

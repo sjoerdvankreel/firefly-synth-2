@@ -38,14 +38,14 @@ FBNoteParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBNoteParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
+FBNoteParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
 {
   int discrete = static_cast<int>(std::round(plain));
   return NoteNames[discrete % 12] + std::to_string(discrete / 12 - 1);
 }
 
 std::optional<double>
-FBNoteParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
+FBNoteParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
 {
   for (int i = 0; i < ValueCount(); i++)
     if (text == PlainToText(display, i))
@@ -64,7 +64,7 @@ FBNoteParamNonRealTime::MakePopupMenu() const
     {
       int midiNote = j * 12 + i;
       if (midiNote < 128)
-        noteMenu.addItem(midiNote + 1, PlainToText(FBValueTextDisplay::Text, midiNote));
+        noteMenu.addItem(midiNote + 1, PlainToText(FBTextDisplay::Text, midiNote));
     }
     result.addSubMenu(NoteNames[i], noteMenu);
   }

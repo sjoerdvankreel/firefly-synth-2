@@ -44,8 +44,6 @@ public:
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);
 
-  int ValueCount() const;
-
   FBListParam& List();
   FBNoteParam& Note();
   FBBarsParam& Bars();
@@ -67,16 +65,9 @@ public:
   FBParamNonRealTime const& NonRealTime() const;
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
 
-  // TODO check all this
-  // TODO also check all invocations of the nonrealtime stuff
-  // TODO also make sure thats all converted to double
-  // TODO also make sure no cstyle casts
-  // TODO finally get rid of all the switches
-  float DefaultNormalizedByText() const;
-
-  std::string NormalizedToText(FBValueTextDisplay display, float normalized) const;
-  std::string NormalizedToText(FBParamTextDisplay display, float normalized) const;
-  std::optional<float> TextToNormalized(FBValueTextDisplay display, std::string const& text) const;
+  double DefaultNormalizedByText() const;
+  std::string NormalizedToText(FBTextDisplay display, double normalized) const;
+  std::optional<double> TextToNormalized(FBTextDisplay display, std::string const& text) const;
 };
 
 inline FBListParam&
@@ -189,21 +180,4 @@ FBStaticParamBase::DiscreteLog2() const
 {
   assert(type == FBParamType::DiscreteLog2);
   return discreteLog2;
-}
-
-inline int
-FBStaticParamBase::ValueCount() const
-{
-  switch (type)
-  {
-  case FBParamType::List: return list.ValueCount();
-  case FBParamType::Note: return note.ValueCount();
-  case FBParamType::Bars: return bars.ValueCount();
-  case FBParamType::Log2: return log2.ValueCount();
-  case FBParamType::Linear: return linear.ValueCount();
-  case FBParamType::Boolean: return boolean.ValueCount();
-  case FBParamType::Discrete: return discrete.ValueCount();
-  case FBParamType::DiscreteLog2: return discreteLog2.ValueCount();
-  default: assert(false); return {};
-  }
 }

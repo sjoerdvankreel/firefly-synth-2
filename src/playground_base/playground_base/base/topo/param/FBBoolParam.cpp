@@ -31,13 +31,13 @@ FBBoolParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string 
-FBBoolParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const
+FBBoolParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
 {
   return plain >= 0.5 ? "On" : "Off";
 }
 
 std::optional<double>
-FBBoolParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const
+FBBoolParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
 {
   if (text == "On")
     return 1.0;

@@ -36,14 +36,14 @@ FBBarsParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBBarsParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const 
+FBBarsParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const 
 {
   int discrete = static_cast<int>(std::round(plain));
   return items[discrete].ToString();
 }
 
 std::optional<double>
-FBBarsParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const 
+FBBarsParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == items[i].ToString())
@@ -59,7 +59,7 @@ FBBarsParamNonRealTime::MakePopupMenu() const
   PopupMenu subMenu;
   for (int i = 0; i < items.size(); i++)
   {
-    subMenu.addItem(i + 1, PlainToText(FBValueTextDisplay::Text, i));
+    subMenu.addItem(i + 1, PlainToText(FBTextDisplay::Text, i));
     if (i == items.size() - 1 || items[i].num != items[i + 1].num)
     {
       result.addSubMenu(std::to_string(items[i].num), subMenu);

@@ -4,18 +4,17 @@
 #include <cmath>
 
 double
-FBNormalizedToCLAP(FBStaticParam const& topo, float normalized)
+FBNormalizedToCLAP(FBStaticParam const& topo, double normalized)
 {
-  if (topo.ValueCount() == 0)
+  if (!topo.NonRealTime().IsStepped())
     return normalized;
-  return std::round(normalized * (topo.ValueCount() - 1.0));
+  return std::round(normalized * (topo.NonRealTime().ValueCount() - 1.0));
 }
 
 double
 FBCLAPToNormalized(FBStaticParam const& topo, double clap)
 {
-  if (topo.ValueCount() == 0)
+  if (!topo.NonRealTime().IsStepped())
     return clap;
-  double normalized = clap / (topo.ValueCount() - 1.0);
-  return std::clamp(normalized, 0.0, 1.0);
+  return std::clamp(clap / (topo.NonRealTime().ValueCount() - 1.0), 0.0, 1.0);
 }
