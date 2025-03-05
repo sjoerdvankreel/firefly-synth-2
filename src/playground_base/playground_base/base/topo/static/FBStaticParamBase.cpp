@@ -41,7 +41,7 @@ std::string
 FBStaticParamBase::NormalizedToTextWithUnit(FBTextDisplay display, double normalized) const
 {
   std::string result = NonRealTime().NormalizedToText(display, normalized);
-  if (display != FBTextDisplay::IO && !unit.empty()) // TODO is this correct ?
+  if (display != FBTextDisplay::IO && !unit.empty())
     result += " " + unit;
   return result;
 }
