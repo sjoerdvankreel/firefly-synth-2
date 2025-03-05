@@ -28,7 +28,7 @@ FBGUIParamSlider::parentHierarchyChanged()
 }
 
 void
-FBGUIParamSlider::SetValueNormalizedFromPlug(float normalized) // todo double
+FBGUIParamSlider::SetValueNormalizedFromPlug(double normalized)
 {
   setValue(normalized, dontSendNotification); 
 }

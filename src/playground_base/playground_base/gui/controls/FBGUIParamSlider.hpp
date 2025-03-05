@@ -23,6 +23,5 @@ public:
   void parentHierarchyChanged() override;
   juce::String getTextFromValue(double value) override;
   double getValueFromText(const juce::String& text) override;
-
-  void SetValueNormalizedFromPlug(float normalized) override;
+  void SetValueNormalizedFromPlug(double normalized) override;
 };

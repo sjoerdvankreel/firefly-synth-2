@@ -19,6 +19,6 @@ public:
   void buttonStateChanged() override;
   void parentHierarchyChanged() override;
 
-  void SetValueNormalizedFromPlug(float normalized) override;
+  void SetValueNormalizedFromPlug(double normalized) override;
   FBGUIParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param);
 };
