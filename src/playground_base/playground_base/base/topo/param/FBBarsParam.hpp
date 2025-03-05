@@ -2,8 +2,7 @@
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/topo/param/FBBarsItem.hpp>
-
-#include <juce_gui_basics/juce_gui_basics.h>
+#include <playground_base/base/topo/param/FBItemsParamNonRealTime.hpp>
 
 #include <string>
 #include <vector>
@@ -11,31 +10,39 @@
 #include <algorithm>
 
 std::vector<FBBarsItem>
-FBMakeBarsItems(bool withZero, FBBarsItem min, FBBarsItem max);
+FBMakeBarsItems(bool withZero, FBBarsItem min, FBBarsItem max); 
 
 struct FBBarsParam
 {
   std::vector<FBBarsItem> items = {};
-  int ValueCount() const { return (int)items.size(); }
+  int NormalizedToPlainFast(float normalized) const;
+  int NormalizedBarsToSamplesFast(float normalized, float sampleRate, float bpm) const;
+};
 
-  juce::PopupMenu MakePopupMenu() const;
-  std::string PlainToText(int plain) const;
-  std::optional<int> TextToPlain(std::string const& text) const;
+struct FBBarsParamNonRealTime final :
+public FBBarsParam,
+public FBItemsParamNonRealTime
+{
+  bool IsItems() const override;
+  bool IsStepped() const override;
+  int ValueCount() const override;
+  juce::PopupMenu MakePopupMenu() const override;
 
-  float PlainToNormalized(int plain) const;
-  int NormalizedToPlain(float normalized) const;
-  int NormalizedBarsToSamples(float normalized, float sampleRate, float bpm) const;
+  double PlainToNormalized(double plain) const override;
+  double NormalizedToPlain(double normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, double plain) const override;
+  std::optional<double> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline int
-FBBarsParam::NormalizedToPlain(float normalized) const
+FBBarsParam::NormalizedToPlainFast(float normalized) const
 {
-  int count = ValueCount();
-  return std::clamp((int)(normalized * count), 0, count - 1);
+  int count = static_cast<int>(items.size());
+  return std::clamp(static_cast<int>(normalized * count), 0, count - 1);
 }
 
 inline int 
-FBBarsParam::NormalizedBarsToSamples(float normalized, float sampleRate, float bpm) const
+FBBarsParam::NormalizedBarsToSamplesFast(float normalized, float sampleRate, float bpm) const
 {
-  return FBBarsToSamples(items[NormalizedToPlain(normalized)], sampleRate, bpm);
+  return FBBarsToSamples(items[NormalizedToPlainFast(normalized)], sampleRate, bpm);
 }

@@ -55,11 +55,12 @@ FBListParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string cons
 std::string
 FBListParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const 
 {
+  int discrete = static_cast<int>(std::round(plain));
   switch (display)
   {
-  case FBValueTextDisplay::IO: return items[plain].id;
-  case FBValueTextDisplay::Text: return items[plain].text;
-  case FBValueTextDisplay::Tooltip: return items[plain].tooltip.empty() ? items[plain].text : items[plain].tooltip;
+  case FBValueTextDisplay::IO: return items[discrete].id;
+  case FBValueTextDisplay::Text: return items[discrete].text;
+  case FBValueTextDisplay::Tooltip: return items[discrete].tooltip.empty() ? items[discrete].text : items[discrete].tooltip;
   default: assert(false); return {};
   }
 }
