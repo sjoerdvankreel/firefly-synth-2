@@ -1,8 +1,7 @@
 #pragma once
 
 #include <playground_base/base/topo/param/FBListItem.hpp>
-#include <playground_base/base/topo/param/FBTextDisplay.hpp>
-#include <juce_gui_basics/juce_gui_basics.h>
+#include <playground_base/base/topo/param/FBItemsParamNonRealTime.hpp>
 
 #include <string>
 #include <vector>
@@ -12,18 +11,27 @@
 struct FBListParam
 {
   std::vector<FBListItem> items = {};
-  int ValueCount() const { return (int)items.size(); }
+  int NormalizedToPlainFast(float normalized) const;
+};
 
-  juce::PopupMenu MakePopupMenu() const;
-  float PlainToNormalized(int plain) const;
-  int NormalizedToPlain(float normalized) const;
-  std::string PlainToText(FBValueTextDisplay display, int plain) const;
-  std::optional<int> TextToPlain(bool io, std::string const& text) const;
+struct FBListParamNonRealTime final :
+public FBListParam,
+public FBItemsParamNonRealTime
+{
+  bool IsItems() const override;
+  bool IsStepped() const override;
+  int ValueCount() const override;
+  juce::PopupMenu MakePopupMenu() const override;
+
+  double PlainToNormalized(double plain) const override;
+  double NormalizedToPlain(double normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, double plain) const override;
+  std::optional<double> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline int
-FBListParam::NormalizedToPlain(float normalized) const
+FBListParam::NormalizedToPlainFast(float normalized) const
 {
-  int count = (int)items.size();
-  return std::clamp((int)(normalized * count), 0, count - 1);
+  int count = static_cast<int>(items.size());
+  return std::clamp(static_cast<int>(normalized * count), 0, count - 1);
 }
