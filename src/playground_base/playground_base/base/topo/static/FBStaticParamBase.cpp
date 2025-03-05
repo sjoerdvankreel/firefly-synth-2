@@ -109,6 +109,7 @@ FBStaticParamBase::NormalizedToText(FBValueTextDisplay display, float normalized
   }
 }
 
+// TODO drop all the switches
 std::optional<float> 
 FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string const& text) const
 {
@@ -140,7 +141,7 @@ FBStaticParamBase::TextToNormalized(FBValueTextDisplay display, std::string cons
     }
     case FBParamType::Log2:
     {
-      auto plain = log2.TextToPlain(text);
+      auto plain = log2.TextToPlain(display, text);
       if (!plain) return {};
       return log2.PlainToNormalized(plain.value());
     }

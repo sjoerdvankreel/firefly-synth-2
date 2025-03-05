@@ -1,7 +1,9 @@
+recheck clap mod
 edit/auto type as members
 tooltip stuff as members
 drop all the switches
 hunt for cstyle casts
+split "sample accurate per voice"
 
 do a -Wall build
 fix the tooltips (edit/auto)
