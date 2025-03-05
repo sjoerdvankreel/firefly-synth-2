@@ -56,7 +56,7 @@ void
 FBPlugGUI::GUIParamNormalizedChanged(int index)
 {
   auto const& params = HostContext()->Topo()->gui.params;
-  if (!FBParamTypeIsStepped(params[index].static_.type))
+  if (!params[index].static_.NonRealTime().IsStepped())
     return;
   for (auto target : _guiParamsVisibleDependents[index])
     target->DependenciesChanged(true);
@@ -68,7 +68,7 @@ void
 FBPlugGUI::AudioParamNormalizedChanged(int index)
 {
   auto const& paramTopo = HostContext()->Topo()->audio.params[index].static_;
-  if (paramTopo.output || !FBParamTypeIsStepped(paramTopo.type))
+  if (paramTopo.output || !paramTopo.NonRealTime().IsStepped())
     return;
   for (auto target : _audioParamsVisibleDependents[index])
     target->DependenciesChanged(true);
@@ -98,7 +98,7 @@ FBPlugGUI::UpdateExchangeStateTick()
 {
   auto const& params = HostContext()->Topo()->audio.params;
   for (int i = 0; i < params.size(); i++)
-    if (!FBParamTypeIsStepped(params[i].static_.type))
+    if (!params[i].static_.NonRealTime().IsStepped())
       dynamic_cast<FBParamSlider&>(*GetControlForAudioParamIndex(i)).UpdateExchangeState();
 }
 
@@ -177,7 +177,7 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
   float normalized = HostContext()->GetGUIParamNormalized(index);
   std::string result = param.tooltip + ": " + param.static_.NormalizedToText(
     FBParamTextDisplay::TooltipWithUnit, normalized);
-  if (FBParamTypeIsStepped(param.static_.type))
+  if (param.static_.NonRealTime().IsStepped())
     return result;
   switch (param.static_.type)
   {
@@ -204,7 +204,7 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   result += param.static_.NormalizedToText(
     FBParamTextDisplay::TooltipWithUnit, normalized);
   std::string editType = {};
-  if (!FBParamTypeIsStepped(param.static_.type))
+  if (!param.static_.NonRealTime().IsStepped())
   {
     switch (param.static_.type)
     {

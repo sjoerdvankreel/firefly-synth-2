@@ -7,7 +7,7 @@ FBStaticParam::AutomationType() const
 {
   if (acc)
     return FBAutomationType::Modulate;
-  if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
+  if (!NonRealTime().IsStepped() && IsVoiceBlock())
     return FBAutomationType::Automate;
   return FBAutomationType::None;
 }

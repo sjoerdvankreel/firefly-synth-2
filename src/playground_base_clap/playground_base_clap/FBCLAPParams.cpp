@@ -123,11 +123,11 @@ FBCLAPPlugin::paramsInfo(
   if (automationType == FBAutomationType::None)
   {
     info->flags |= CLAP_PARAM_IS_READONLY;
-    if (FBParamTypeIsStepped(runtimeParam.static_.type))
+    if (runtimeParam.static_.NonRealTime().IsStepped())
     {
       info->flags |= CLAP_PARAM_IS_STEPPED;
       info->max_value = staticParam.ValueCount() - 1.0f;
-      if (FBParamTypeIsList(staticParam.type))
+      if (staticParam.NonRealTime().IsItems())
         info->flags |= CLAP_PARAM_IS_ENUM;
     }
   }
