@@ -11,8 +11,7 @@ FBAutoSizeToggleButton(),
 FBParamControl(plugGUI, param)
 {
   auto* context = plugGUI->HostContext();
-  float normalized = context->GetAudioParamNormalized(param->runtimeParamIndex);
-  SetValueNormalizedFromHost(normalized);
+  SetValueNormalizedFromHost(context->GetAudioParamNormalized(param->runtimeParamIndex));
   _isOn = getToggleState();
 }
 
@@ -28,12 +27,11 @@ FBParamToggleButton::getTooltip()
   return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
 }
 
-// TODO double
 void
-FBParamToggleButton::SetValueNormalizedFromHost(float normalized)
+FBParamToggleButton::SetValueNormalizedFromHost(double normalized)
 {
-  int plain = _param->static_.Boolean().NormalizedToPlainFast(normalized);
-  setToggleState(plain != 0, dontSendNotification);
+  bool plain = _param->static_.Boolean().NormalizedToPlainFast(normalized);
+  setToggleState(plain, dontSendNotification);
   _isOn = getToggleState();
 }
 

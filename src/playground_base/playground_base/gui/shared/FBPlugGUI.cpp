@@ -39,13 +39,13 @@ FBPlugGUI::GUIParamNormalizedChanged(int index, float value)
 }
 
 void
-FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, float value)
+FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, float value) // todo double
 {
   AudioParamNormalizedChanged(index);
 }
 
 void
-FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, float value)
+FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, float value) // todo double
 {
   auto control = GetControlForAudioParamIndex(index);
   control->SetValueNormalizedFromHost(value);

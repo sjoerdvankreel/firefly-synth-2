@@ -26,7 +26,7 @@ FBParamComboBox::getTooltip()
 }
 
 void
-FBParamComboBox::SetValueNormalizedFromHost(float normalized) // todo double
+FBParamComboBox::SetValueNormalizedFromHost(double normalized)
 {
   double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);
   setSelectedId(static_cast<int>(plain) + 1, dontSendNotification);

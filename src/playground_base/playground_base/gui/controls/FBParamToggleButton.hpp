@@ -18,6 +18,6 @@ public:
   void buttonStateChanged() override;
   void parentHierarchyChanged() override;
 
-  void SetValueNormalizedFromHost(float normalized) override;
+  void SetValueNormalizedFromHost(double normalized) override;
   FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

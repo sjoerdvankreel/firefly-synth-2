@@ -30,7 +30,7 @@ FBParamSlider::parentHierarchyChanged()
 }
 
 void
-FBParamSlider::SetValueNormalizedFromHost(float normalized)
+FBParamSlider::SetValueNormalizedFromHost(double normalized)
 {
   setValue(normalized, dontSendNotification); 
 }
