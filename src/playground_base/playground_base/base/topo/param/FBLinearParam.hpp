@@ -2,8 +2,9 @@
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/shared/FBVector.hpp>
-#include <playground_base/base/topo/param/FBTextDisplay.hpp>
+#include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
 
+#include <cmath>
 #include <string>
 #include <optional>
 #include <algorithm>
@@ -12,49 +13,56 @@ struct FBLinearParam
 {
   float min = 0.0f;
   float max = 1.0f;
-  float editSkewFactor = 1.0f;
-  float displayMultiplier = 1.0f;
+  double editSkewFactor = 1.0f;
+  double displayMultiplier = 1.0f;
 
-  int ValueCount() const { return 0; }
+  float NormalizedToPlainFast(float normalized) const;
+  FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
+  FBDoubleVector NormalizedToPlainFast(FBDoubleVector normalized) const;
+  int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
+  int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
+};
 
-  FBFloatVector NormalizedToPlain(FBFloatVector normalized) const;
-  FBDoubleVector NormalizedToPlain(FBDoubleVector normalized) const;
+struct FBLinearParamNonRealTime final :
+public FBLinearParam,
+public FBParamNonRealTime
+{
+  bool IsItems() const override;
+  bool IsStepped() const override;
+  int ValueCount() const override;
 
-  float PlainToNormalized(float plain) const;
-  float NormalizedToPlain(float normalized) const;
-  int NormalizedTimeToSamples(float normalized, float sampleRate) const;
-  int NormalizedFreqToSamples(float normalized, float sampleRate) const;
-
-  std::optional<float> TextToPlain(std::string const& text) const;
-  std::string PlainToText(FBValueTextDisplay display, float plain) const;
+  double PlainToNormalized(double plain) const override;
+  double NormalizedToPlain(double normalized) const override;
+  std::string PlainToText(FBValueTextDisplay display, double plain) const override;
+  std::optional<double> TextToPlain(FBValueTextDisplay display, std::string const& text) const override;
 };
 
 inline float
-FBLinearParam::NormalizedToPlain(float normalized) const
+FBLinearParam::NormalizedToPlainFast(float normalized) const
 {
   return min + (max - min) * normalized;
 }
 
 inline FBFloatVector 
-FBLinearParam::NormalizedToPlain(FBFloatVector normalized) const
+FBLinearParam::NormalizedToPlainFast(FBFloatVector normalized) const
 {
   return min + (max - min) * normalized;
 }
 
 inline FBDoubleVector 
-FBLinearParam::NormalizedToPlain(FBDoubleVector normalized) const
+FBLinearParam::NormalizedToPlainFast(FBDoubleVector normalized) const
 {
   return min + (max - min) * normalized; 
 }
 
 inline int
-FBLinearParam::NormalizedTimeToSamples(float normalized, float sampleRate) const
+FBLinearParam::NormalizedTimeToSamplesFast(float normalized, float sampleRate) const
 {
-  return FBTimeToSamples(NormalizedToPlain(normalized), sampleRate);
+  return FBTimeToSamples(NormalizedToPlainFast(normalized), sampleRate);
 }
 
 inline int
-FBLinearParam::NormalizedFreqToSamples(float normalized, float sampleRate) const
+FBLinearParam::NormalizedFreqToSamplesFast(float normalized, float sampleRate) const
 {
-  return FBFreqToSamples(NormalizedToPlain(normalized), sampleRate);
+  return FBFreqToSamples(NormalizedToPlainFast(normalized), sampleRate);
 }

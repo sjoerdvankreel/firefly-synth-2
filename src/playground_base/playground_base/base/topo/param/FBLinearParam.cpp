@@ -1,26 +1,50 @@
 #include <playground_base/base/shared/FBFormat.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 
-float
-FBLinearParam::PlainToNormalized(float plain) const
+bool 
+FBLinearParamNonRealTime::IsItems() const
 {
-  return std::clamp((plain - min) / (max - min), 0.0f, 1.0f);
+  return false;
+}
+
+bool 
+FBLinearParamNonRealTime::IsStepped() const
+{
+  return false;
+}
+
+int 
+FBLinearParamNonRealTime::ValueCount() const 
+{
+  return 0;
+}
+
+double 
+FBLinearParamNonRealTime::PlainToNormalized(double plain) const 
+{
+  return std::clamp((plain - min) / (max - min), 0.0, 1.0);
+}
+
+double
+FBLinearParamNonRealTime::NormalizedToPlain(double normalized) const 
+{
+  return min + (max - min) * normalized;
 }
 
 std::string
-FBLinearParam::PlainToText(FBValueTextDisplay display, float plain) const
+FBLinearParamNonRealTime::PlainToText(FBValueTextDisplay display, double plain) const 
 {
-  float displayPlain = plain * displayMultiplier;
+  double displayPlain = plain * displayMultiplier;
   if (display == FBValueTextDisplay::IO)
     return std::to_string(displayPlain);
-  return FBFormatFloat(displayPlain, FBDefaultDisplayPrecision);
+  return FBFormatDouble(displayPlain, FBDefaultDisplayPrecision);
 }
 
-std::optional<float>
-FBLinearParam::TextToPlain(std::string const& text) const
+std::optional<double>
+FBLinearParamNonRealTime::TextToPlain(FBValueTextDisplay display, std::string const& text) const 
 {
   char* end;
-  float result = std::strtof(text.c_str(), &end);
+  double result = std::strtod(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
   result /= displayMultiplier;
