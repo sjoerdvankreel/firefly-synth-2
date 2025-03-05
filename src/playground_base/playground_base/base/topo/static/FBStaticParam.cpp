@@ -34,7 +34,7 @@ FBStaticParam::AutomationTooltip() const
       return automationType + "Sample Accurate Per Voice";
     else
       return automationType + "Sample Accurate";
-  if (!FBParamTypeIsStepped(type) && IsVoiceBlock())
+  if (!NonRealTime().IsStepped() && IsVoiceBlock())
     return automationType + "At Voice Start";
   return "None";
 }
