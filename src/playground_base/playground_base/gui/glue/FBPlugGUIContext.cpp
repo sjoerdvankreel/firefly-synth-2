@@ -57,8 +57,8 @@ std::pair<int, int>
 FBPlugGUIContext::GetHostSize() const
 {
   auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  int w = (int)std::round(topoGUI.plugWidth * CombinedScale());
-  int h = (int)std::round(GetHeightForAspectRatio(topoGUI.plugWidth) * CombinedScale());
+  int w = static_cast<int>(std::round(topoGUI.plugWidth * CombinedScale()));
+  int h = static_cast<int>(std::round(GetHeightForAspectRatio(topoGUI.plugWidth) * CombinedScale()));
   return { w, h };
 }
 

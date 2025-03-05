@@ -52,8 +52,8 @@ MakeRuntimeModules(FBStaticTopo const& topo)
       topoIndices.index = m;
       auto module = FBRuntimeModule(topo.modules[m], topoIndices, runtimeIndex++, runtimeParamStart, runtimeGUIParamStart);
       result.push_back(module);
-      runtimeParamStart += (int)module.params.size();
-      runtimeGUIParamStart += (int)module.guiParams.size();
+      runtimeParamStart += static_cast<int>(module.params.size());
+      runtimeGUIParamStart += static_cast<int>(module.guiParams.size());
     }
   return result;
 }
@@ -358,9 +358,9 @@ FBRuntimeTopo::LoadParamStateFromVar(
     return false;
   }
 
-  if ((int)major > static_.meta.version.major ||
-    (int)major == static_.meta.version.major && (int)minor > static_.meta.version.minor ||
-    (int)minor == static_.meta.version.minor && (int)patch > static_.meta.version.patch)
+  if (static_cast<int>(major) > static_.meta.version.major ||
+    static_cast<int>(major) == static_.meta.version.major && static_cast<int>(minor) > static_.meta.version.minor ||
+    static_cast<int>(minor) == static_.meta.version.minor && static_cast<int>(patch) > static_.meta.version.patch)
   {
     FB_LOG_ERROR("Stored plugin version is newer than current plugin version.");
     return false;

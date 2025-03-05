@@ -31,7 +31,7 @@ FBDiscreteLog2ParamNonRealTime::NormalizedToPlain(double normalized) const
 std::string
 FBDiscreteLog2ParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
 {
-  return std::to_string((int)std::round(plain));
+  return std::to_string(static_cast<int>(std::round(plain)));
 }
 
 double

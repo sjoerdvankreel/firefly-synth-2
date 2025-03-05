@@ -165,7 +165,7 @@ FBGridComponent::FixedColWidth(int col, int height) const
     if (_rows[r] == 0)
       rowHeight = FixedRowHeight(r);
     else
-      rowHeight = (int)std::round(_rows[r] / static_cast<float>(totalRelativeHeight) * availableGridHeight);
+      rowHeight = static_cast<int>(std::round(_rows[r] / static_cast<float>(totalRelativeHeight) * availableGridHeight));
     for (int i = 0; i < sizingChildren.size(); i++)
     {
       auto sizingChild = FBAsHorizontalAutoSize(sizingChildren[i]);

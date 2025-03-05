@@ -144,7 +144,7 @@ FBRenderModuleGraph(RenderData& renderData)
   float dspSampleRate = renderState->ExchangeContainer()->Proc()->sampleRate;
   float guiSampleRate = procExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
   if(plotParams.releaseAt != -1)
-    guiReleaseAt = (int)std::round(guiSampleRate * plotParams.releaseAt / dspSampleRate);
+    guiReleaseAt = static_cast<int>(std::round(guiSampleRate * plotParams.releaseAt / dspSampleRate));
   renderState->PrepareForRenderPrimary(guiSampleRate, procExchange->bpm);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
@@ -166,13 +166,13 @@ FBRenderModuleGraph(RenderData& renderData)
       renderData.staticModuleIndex, moduleProcState->moduleSlot))
     {
       graphData->primaryMarkers.push_back(
-        (int)(positionNormalized * graphData->primarySeries.size()));
+        static_cast<int>(positionNormalized * graphData->primarySeries.size()));
       return;
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->secondarySeries.emplace_back();
     FBRenderModuleGraphSeries<Global>(renderData, -1, secondary.points);
-    secondary.marker = (int)(positionNormalized * secondary.points.size());
+    secondary.marker = static_cast<int>(positionNormalized * secondary.points.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
     auto moduleExchange = renderData.voiceExchangeSelector(
@@ -186,12 +186,12 @@ FBRenderModuleGraph(RenderData& renderData)
       v, renderData.staticModuleIndex, moduleProcState->moduleSlot))
     {
       graphData->primaryMarkers.push_back(
-        (int)(positionNormalized * graphData->primarySeries.size()));
+        static_cast<int>(positionNormalized * graphData->primarySeries.size()));
       continue;
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->secondarySeries.emplace_back();
     FBRenderModuleGraphSeries<false>(renderData, -1, secondary.points);
-    secondary.marker = (int)(positionNormalized * secondary.points.size());
+    secondary.marker = static_cast<int>(positionNormalized * secondary.points.size());
   }
 }

@@ -37,14 +37,14 @@ FBToBipolar(FBFloatVector v)
 inline int
 FBTimeToSamples(float time, float sampleRate)
 {
-  return (int)std::round(time * sampleRate);
+  return static_cast<int>(std::round(time * sampleRate));
 }
 
 inline int
 FBFreqToSamples(float freq, float sampleRate)
 {
   assert(freq > 0.0f);
-  return (int)std::round(1.0f / freq * sampleRate);
+  return static_cast<int>(std::round(1.0f / freq * sampleRate));
 }
 
 inline int
