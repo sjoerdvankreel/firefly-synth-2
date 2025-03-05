@@ -1,4 +1,6 @@
+check all float in the base
 recheck clap mod
+check all the edit controls
 edit/auto type as members
 tooltip stuff as members
 drop all the switches
