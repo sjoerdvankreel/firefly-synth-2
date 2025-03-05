@@ -32,5 +32,5 @@ public FBItemsParamNonRealTime
 inline int
 FBNoteParam::NormalizedToPlainFast(float normalized) const
 {
-  return std::clamp((int)(normalized * MidiNoteCount), 0, MidiNoteCount - 1);
+  return std::clamp(static_cast<int>(normalized * MidiNoteCount), 0, MidiNoteCount - 1);
 }

@@ -34,7 +34,7 @@ FBNoteParamNonRealTime::PlainToNormalized(double plain) const
 double
 FBNoteParamNonRealTime::NormalizedToPlain(double normalized) const
 {
-  return std::clamp(normalized * MidiNoteCount, 0.0, MidiNoteCount - 1.0);
+  return std::clamp(static_cast<int>(normalized * MidiNoteCount), 0, MidiNoteCount - 1);
 }
 
 std::string
