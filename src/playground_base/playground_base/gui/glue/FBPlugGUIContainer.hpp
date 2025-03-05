@@ -30,5 +30,5 @@ public:
   void UpdateExchangeState() override;
   void SetVisible(bool visible) override;
   void AddToDesktop(void* parent) override;
-  void SetAudioParamNormalizedFromHost(int index, float normalized) override;
+  void SetAudioParamNormalizedFromHost(int index, double normalized) override;
 };

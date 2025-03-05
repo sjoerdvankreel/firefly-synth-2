@@ -139,7 +139,7 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
   if(EditControllerEx1::setParamNormalized(tag, value) != kResultTrue)
     return kResultFalse;
   if (_guiEditor != nullptr)
-    _guiEditor->SetAudioParamNormalizedFromHost(_topo->audio.paramTagToIndex[tag], (float)value);
+    _guiEditor->SetAudioParamNormalizedFromHost(_topo->audio.paramTagToIndex[tag], value);
   return kResultTrue;
 }
 

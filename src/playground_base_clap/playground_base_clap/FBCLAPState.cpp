@@ -47,7 +47,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
   _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState);
   for (int i = 0; i < _editState->Params().size(); i++)
   {
-    float normalized = *_editState->Params()[i];
+    double normalized = *_editState->Params()[i];
     _procState->InitProcessing(i, normalized);
     if (_gui)
       _gui->SetAudioParamNormalizedFromHost(i, normalized);
