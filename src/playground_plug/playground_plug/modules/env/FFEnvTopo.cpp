@@ -352,7 +352,7 @@ FFMakeEnvTopo()
   auto& guiGraphKeyTimePct = result->guiParams[(int)FFEnvGUIParam::GraphKeyTimePct];
   guiGraphKeyTimePct.defaultText = "100";
   guiGraphKeyTimePct.name = "Key Time";
-  guiGraphKeyTimePct.tooltip = "Key Time As % Of DAHD";
+  guiGraphKeyTimePct.tooltip = "Key Time % Of DAHD";
   guiGraphKeyTimePct.slotCount = 1;
   guiGraphKeyTimePct.unit = "%";
   guiGraphKeyTimePct.id = "{7D3F0E5D-1BE3-423D-B586-976EA45D71E0}";

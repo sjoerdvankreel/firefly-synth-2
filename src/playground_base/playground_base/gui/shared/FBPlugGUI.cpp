@@ -170,27 +170,14 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
   return result;
 }
 
-// todo move to param
 std::string 
 FBPlugGUI::GetTooltipForGUIParam(int index) const
 {
   auto const& param = HostContext()->Topo()->gui.params[index];
   double normalized = HostContext()->GetGUIParamNormalized(index);
   std::string result = param.tooltip + ": " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, normalized);
-  if (param.static_.NonRealTime().IsStepped())
-    return result;
-  switch (param.static_.type)
-  {
-  case FBParamType::Log2:
-  case FBParamType::DiscreteLog2: // TODO
-    return result + "\r\nEdit: Logarithmic";
-  case FBParamType::Linear:
-  case FBParamType::Discrete: // TODO
-    return result + "\r\nEdit: " + (param.static_.Linear().editSkewFactor == 1.0f ? "Linear" : "Logarithmic");
-  default:
-    assert(false);
-    return {};
-  }
+  result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
+  return result;
 }
 
 // todo move to param
