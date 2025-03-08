@@ -26,7 +26,6 @@ public:
   bool IsVoiceBlock() const;
   bool IsGlobalBlock() const;
 
-  std::string AutomationTooltip() const;
   FBAutomationTiming AutomationTiming() const;
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 };

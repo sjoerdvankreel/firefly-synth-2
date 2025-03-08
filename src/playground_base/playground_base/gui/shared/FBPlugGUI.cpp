@@ -180,7 +180,6 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
   return result;
 }
 
-// todo move to param
 std::string
 FBPlugGUI::GetTooltipForAudioParam(int index) const
 {
@@ -190,35 +189,19 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 
   auto result = param.tooltip + ": ";
   result += param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, normalized);
-  std::string editType = {};
-  if (!param.static_.NonRealTime().IsStepped())
-  {
-    switch (param.static_.type)
-    {
-    case FBParamType::Log2:
-      editType = "Logarithmic";
-      break;
-    case FBParamType::Linear:
-      editType = param.static_.Linear().editSkewFactor == 1.0f ? "Linear" : "Logarithmic";
-      break;
-    default:
-      assert(false);
-    }
-  }
-
-  // TODO make automatable discrete params
-  // if (!FBParamTypeIsStepped(param.static_.type)) // TODO figure out tooltips for everything
-    result += "\r\nEdit: " + editType;
-  result += "\r\nAutomation: " + param.static_.AutomationTooltip();
+  result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
+  if(param.static_.AutomationTiming() != FBAutomationTiming::Never)
+    result += "\r\nAutomate: " + FBEditTypeToString(param.static_.NonRealTime().AutomationEditType());
+  result += "\r\nAutomation: " + FBAutomationTimingToString(param.static_.AutomationTiming());
+  
+  if (!paramActive.active)
+    return result;
   if (!param.static_.IsVoice())
-    result += "\r\nCurrent engine value: " +
-    GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
-  else
   {
-    result += "\r\n Min engine value: " +
-      GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.minValue);
-    result += "\r\n Max engine value: " +
-      GetAudioParamActiveTooltip(param.static_, paramActive.active, paramActive.maxValue);
+    result += "\r\nEngine value: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, paramActive.minValue);
+    return result;
   }
+  result += "\r\nEngine min: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, paramActive.minValue);
+  result += "\r\nEngine max: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, paramActive.maxValue);
   return result;
 }
