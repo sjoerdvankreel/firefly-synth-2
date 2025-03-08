@@ -186,22 +186,23 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   auto const& param = HostContext()->Topo()->audio.params[index];
   double normalized = HostContext()->GetAudioParamNormalized(index);
   auto paramActive = HostContext()->ExchangeState()->GetParamActiveState(&param);
+  double engineMin = paramActive.active ? paramActive.minValue : normalized;
+  double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
   auto result = param.tooltip + ": ";
-  result += param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, normalized);
-  result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
-  if(param.static_.AutomationTiming() != FBAutomationTiming::Never)
-    result += "\r\nAutomate: " + FBEditTypeToString(param.static_.NonRealTime().AutomationEditType());
-  result += "\r\nAutomation: " + FBAutomationTimingToString(param.static_.AutomationTiming());
-  
-  if (!paramActive.active)
-    return result;
+  result += param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, normalized);  
   if (!param.static_.IsVoice())
+    result += "\r\nEngine: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, engineMin);
+  else
   {
-    result += "\r\nEngine value: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, paramActive.minValue);
-    return result;
+    result += "\r\nEngine min: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, engineMin);
+    result += "\r\nEngine max: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, engineMax);
   }
-  result += "\r\nEngine min: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, paramActive.minValue);
-  result += "\r\nEngine max: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, paramActive.maxValue);
+  result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
+  if (param.static_.AutomationTiming() != FBAutomationTiming::Never)
+    result += "\r\nAutomate: " + FBEditTypeToString(param.static_.NonRealTime().AutomationEditType());
+  else
+    result += "\r\nAutomate: None";
+  result += "\r\nAutomation: " + FBAutomationTimingToString(param.static_.AutomationTiming());
   return result;
 }
