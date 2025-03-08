@@ -7,7 +7,6 @@ FBAutoSizeSlider::
 FBAutoSizeSlider(FBPlugGUI* plugGUI, Slider::SliderStyle style):
 Slider(style, Slider::NoTextBox)
 {
-  setRange(0.0, 1.0);
   setPopupDisplayEnabled(true, false, plugGUI);
 }
 

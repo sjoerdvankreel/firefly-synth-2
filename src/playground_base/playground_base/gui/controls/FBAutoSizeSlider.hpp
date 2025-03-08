@@ -9,7 +9,8 @@ class FBAutoSizeSlider:
 public juce::Slider,
 public IFBHorizontalAutoSize
 {
+protected:
+  FBAutoSizeSlider(FBPlugGUI* plugGUI, juce::Slider::SliderStyle style);
 public:
   int FixedWidth(int height) const override;
-  FBAutoSizeSlider(FBPlugGUI* plugGUI, juce::Slider::SliderStyle style);
 };

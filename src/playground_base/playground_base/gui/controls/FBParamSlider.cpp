@@ -17,6 +17,10 @@ FBParamSlider(
 FBAutoSizeSlider(plugGUI, style),
 FBParamControl(plugGUI, param)
 {
+  if (param->static_.NonRealTime().IsStepped())
+    setRange(0.0, 1.0, 1.0 / (param->static_.NonRealTime().ValueCount() - 1.0));
+  else
+    setRange(0.0, 1.0);
   if (param->static_.type == FBParamType::Linear)
     setSkewFactor(param->static_.Linear().editSkewFactor);
   setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
