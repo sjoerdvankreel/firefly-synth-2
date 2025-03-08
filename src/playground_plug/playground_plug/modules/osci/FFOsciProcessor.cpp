@@ -117,18 +117,18 @@ FFOsciProcessor::ProcessBasic(
   auto* procState = state.ProcAs<FFProcState>();
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& basicSqrPW = procParams.acc.basicSqrPW[0].Voice()[voice];
-  auto const& basicSinGain = procParams.acc.basicSinGain[0].Voice()[voice];
-  auto const& basicSawGain = procParams.acc.basicSawGain[0].Voice()[voice];
-  auto const& basicTriGain = procParams.acc.basicTriGain[0].Voice()[voice];
-  auto const& basicSqrGain = procParams.acc.basicSqrGain[0].Voice()[voice];
+  auto const& sqrPW = procParams.acc.basicSqrPW[0].Voice()[voice];
+  auto const& sinGain = procParams.acc.basicSinGain[0].Voice()[voice];
+  auto const& sawGain = procParams.acc.basicSawGain[0].Voice()[voice];
+  auto const& triGain = procParams.acc.basicTriGain[0].Voice()[voice];
+  auto const& sqrGain = procParams.acc.basicSqrGain[0].Voice()[voice];
 
   audioOut.Fill(0.0f);
   if (_voiceState.basicSinOn)
   {
     gain.Transform([&](int v) {
       auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSinGain];
-      return paramTopo.Linear().NormalizedToPlainFast(basicSinGain.CV(v)); });
+      return paramTopo.Linear().NormalizedToPlainFast(sinGain.CV(v)); });
     audio.Transform([&](int v) { return GenerateSin(phase[v]) * gain[v]; });
     audioOut.Add(audio);
   }
@@ -136,7 +136,7 @@ FFOsciProcessor::ProcessBasic(
   {
     gain.Transform([&](int v) {
       auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSawGain];
-      return paramTopo.Linear().NormalizedToPlainFast(basicSawGain.CV(v)); });
+      return paramTopo.Linear().NormalizedToPlainFast(sawGain.CV(v)); });
     audio.Transform([&](int v) { return GenerateSaw(phase[v], incr[v]) * gain[v]; });
     audioOut.Add(audio);
   }
@@ -144,7 +144,7 @@ FFOsciProcessor::ProcessBasic(
   {
     gain.Transform([&](int v) {
       auto const& paramTopo = topo.params[(int)FFOsciParam::BasicTriGain];
-      return paramTopo.Linear().NormalizedToPlainFast(basicTriGain.CV(v)); });
+      return paramTopo.Linear().NormalizedToPlainFast(triGain.CV(v)); });
     audio.Transform([&](int v) { return GenerateTri(phase[v], incr[v]) * gain[v]; });
     audioOut.Add(audio);
   }
@@ -152,10 +152,10 @@ FFOsciProcessor::ProcessBasic(
   {
     pw.Transform([&](int v) {
       auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSqrPW];
-      return topo.params[(int)FFOsciParam::BasicSqrPW].Linear().NormalizedToPlainFast(basicSqrPW.CV(v)); });
+      return topo.params[(int)FFOsciParam::BasicSqrPW].Linear().NormalizedToPlainFast(sqrPW.CV(v)); });
     gain.Transform([&](int v) {
       auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSqrGain];
-      return topo.params[(int)FFOsciParam::BasicSqrGain].Linear().NormalizedToPlainFast(basicSqrGain.CV(v)); });
+      return topo.params[(int)FFOsciParam::BasicSqrGain].Linear().NormalizedToPlainFast(sqrGain.CV(v)); });
     audio.Transform([&](int v) { return GenerateSqr(phase[v], incr[v], pw[v]) * gain[v]; });
     audioOut.Add(audio);
   }
@@ -164,11 +164,78 @@ FFOsciProcessor::ProcessBasic(
   if (exchangeToGUI == nullptr)
     return;
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
-  exchangeParams.acc.basicSqrPW[0][voice] = basicSqrPW.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicSinGain[0][voice] = basicSinGain.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicSawGain[0][voice] = basicSawGain.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicTriGain[0][voice] = basicTriGain.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSqrPW[0][voice] = sqrPW.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSinGain[0][voice] = sinGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSawGain[0][voice] = sawGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicTriGain[0][voice] = triGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSqrGain[0][voice] = sqrGain.CV().data[FBFixedBlockSamples - 1];
+}
+
+// https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
+void
+FFOsciProcessor::ProcessDSF(
+  FBModuleProcState& state,
+  FBFixedFloatBlock const& phase,
+  FBFixedFloatBlock const& freq,
+  FBFixedFloatBlock const& incr,
+  FBFixedFloatBlock& audioOut)
+{
+  FBFixedFloatBlock decayBlock;
+  int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
+  auto const& decay = procParams.acc.dsfDecay[0].Voice()[voice];
+
+  decayBlock.Transform([&](int v) {
+    auto const& paramTopo = topo.params[(int)FFOsciParam::DSFDecay];
+    return paramTopo.Linear().NormalizedToPlainFast(decay.CV(v)); });
+
+  FBFixedFloatArray tempOut;
+  FBFixedFloatArray tempPhase;
+  FBFixedFloatArray tempFreq;
+  FBFixedFloatArray tempIncr;
+  FBFixedFloatArray tempDist;
+  FBFixedFloatArray tempDecay;
+
+  decayBlock.StoreToFloatArray(tempDecay);
+  tempDist.data.fill(_voiceState.dsfDistance);
+  phase.StoreToFloatArray(tempPhase);
+  freq.StoreToFloatArray(tempFreq);
+  incr.StoreToFloatArray(tempIncr);
+
+  // todo move to generate func
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    // -1: Fundamental is implicit. 
+    float ps = _voiceState.dsfOvertones ; // TODO min at 2
+    float const decay_range = 0.99f;
+    float const scale_factor = 0.975f;
+    float dist_freq = tempFreq.data[s] * tempDist.data[s];
+    float max_parts = (sampleRate * 0.5f - tempFreq.data[s]) / dist_freq;
+    ps = std::min(ps, static_cast<float>(max_parts));
+
+    float n = ps;
+    float w = tempDecay.data[s] * decay_range;
+    float w_pow_np1 = std::pow(w, n + 1);
+    float u = 2.0f * FBPi * tempPhase.data[s];
+    float v = 2.0f * FBPi * dist_freq * tempPhase.data[s] / tempFreq.data[s];
+    float a = w * std::sin(u + n * v) - std::sin(u + (n + 1) * v);
+    float x = (w * std::sin(v - u) + std::sin(u)) + w_pow_np1 * a;
+    float y = 1 + w * w - 2 * w * std::cos(v);
+    float scale = (1.0f - w_pow_np1) / (1.0f - w);
+    float result = x * scale_factor / (y * scale);
+    tempOut.data[s] = result;
+  }
+
+  audioOut.LoadFromFloatArray(tempOut);
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+  auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
+  exchangeParams.acc.dsfDecay[0][voice] = decay.CV().data[FBFixedBlockSamples - 1];
 }
 
 int
@@ -204,6 +271,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBFixedFloatBlock osciOut;
   if (_voiceState.type == FFOsciType::Basic)
     ProcessBasic(state, phase, incr, osciOut);
+  else if (_voiceState.type == FFOsciType::DSF)
+    ProcessDSF(state, phase, freq, incr, osciOut);
 
   // TODO this might prove difficult, lets see how it fares with the matrices
   FBFixedFloatBlock gLFO;
