@@ -214,20 +214,69 @@ FFMakeOsciTopo()
   basicSqrPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrPW);
   basicSqrPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
-  auto& dsfOvertones = result->params[(int)FFOsciParam::DSFOvertones];
-  dsfOvertones.acc = false;
-  dsfOvertones.defaultText = "1";
-  dsfOvertones.name = "Overtones";
-  dsfOvertones.tooltip = "DSF Overtones";
-  dsfOvertones.slotCount = 1;
-  dsfOvertones.id = "{508C3B8D-E382-4438-B493-81208422E733}";
-  dsfOvertones.type = FBParamType::DiscreteLog2;
-  dsfOvertones.DiscreteLog2().valueCount = 11;
-  auto selectDSFOvertones = [](auto& module) { return &module.block.dsfOvertones; };
-  dsfOvertones.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFOvertones);
-  dsfOvertones.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFOvertones);
-  dsfOvertones.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFOvertones);
-  dsfOvertones.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
+  auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
+  dsfMode.acc = false;
+  dsfMode.defaultText = "Linear";
+  dsfMode.name = "Mode";
+  dsfMode.tooltip = "DSF Mode";     
+  dsfMode.slotCount = 1;
+  dsfMode.id = "{D66E2800-CFBD-4B4E-B22E-D5D7572FEF6E}";
+  dsfMode.type = FBParamType::List;
+  dsfMode.List().items = {
+    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Linear" },
+    { "{E5D63A71-247C-44A5-B342-56BA579F2BCF}", "Log" },
+    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "Bandwidth" } };
+  auto selectDSFMode = [](auto& module) { return &module.block.dsfMode; };
+  dsfMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFMode);
+  dsfMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFMode);
+  dsfMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFMode);
+  dsfMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
+
+  auto& dsfOvertonesLinear = result->params[(int)FFOsciParam::DSFOvertonesLinear];
+  dsfOvertonesLinear.acc = false;
+  dsfOvertonesLinear.defaultText = "1";
+  dsfOvertonesLinear.name = "Overtones";
+  dsfOvertonesLinear.tooltip = "DSF Overtones";
+  dsfOvertonesLinear.slotCount = 1;
+  dsfOvertonesLinear.id = "{9A42FADE-5E48-49B8-804B-0C61E17AC3BB}";
+  dsfOvertonesLinear.type = FBParamType::Discrete;
+  dsfOvertonesLinear.Discrete().valueCount = 32;
+  dsfOvertonesLinear.Discrete().valueOffset = 1;
+  auto selectDSFOvertonesLinear = [](auto& module) { return &module.block.dsfOvertonesLinear; };
+  dsfOvertonesLinear.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFOvertonesLinear);
+  dsfOvertonesLinear.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFOvertonesLinear);
+  dsfOvertonesLinear.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFOvertonesLinear);
+  dsfOvertonesLinear.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF && vs[1] == (int)FFOsciDSFMode::Linear; });
+
+  auto& dsfOvertonesLog = result->params[(int)FFOsciParam::DSFOvertonesLog];
+  dsfOvertonesLog.acc = false;
+  dsfOvertonesLog.defaultText = "1";
+  dsfOvertonesLog.name = "Overtones";
+  dsfOvertonesLog.tooltip = "DSF Overtones";
+  dsfOvertonesLog.slotCount = 1;
+  dsfOvertonesLog.id = "{508C3B8D-E382-4438-B493-81208422E733}";
+  dsfOvertonesLog.type = FBParamType::DiscreteLog2;
+  dsfOvertonesLog.DiscreteLog2().valueCount = 11;
+  auto selectDSFOvertonesLog = [](auto& module) { return &module.block.dsfOvertonesLog; };
+  dsfOvertonesLog.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFOvertonesLog);
+  dsfOvertonesLog.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFOvertonesLog);
+  dsfOvertonesLog.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFOvertonesLog);
+  dsfOvertonesLog.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF && vs[1] == (int)FFOsciDSFMode::Log; });
+
+  auto& dsfOvertonesBandwidth = result->params[(int)FFOsciParam::DSFOvertonesBandwidth];
+  dsfOvertonesBandwidth.acc = false;
+  dsfOvertonesBandwidth.name = "Overtones";
+  dsfOvertonesBandwidth.tooltip = "DSF Overtones";
+  dsfOvertonesBandwidth.slotCount = 1;
+  dsfOvertonesBandwidth.unit = "%";
+  dsfOvertonesBandwidth.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
+  dsfOvertonesBandwidth.type = FBParamType::Linear;
+  dsfOvertonesBandwidth.Linear().displayMultiplier = 100.0f;
+  auto selectDSFOvertonesBandwidth = [](auto& module) { return &module.block.dsfOvertonesBandwidth; };
+  dsfOvertonesBandwidth.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFOvertonesBandwidth);
+  dsfOvertonesBandwidth.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFOvertonesBandwidth);
+  dsfOvertonesBandwidth.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFOvertonesBandwidth);
+  dsfOvertonesBandwidth.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF && vs[1] == (int)FFOsciDSFMode::Bandwidth; });
 
   auto& dsfDistance = result->params[(int)FFOsciParam::DSFDistance];
   dsfDistance.acc = false;
