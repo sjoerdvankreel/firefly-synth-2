@@ -15,8 +15,8 @@ struct FFOsciVoiceState final
   bool basicTriOn = {};
   bool basicSqrOn = {};
   FFOsciType type = {};
+  int dsfDistance = {};
   int dsfOvertones = {};
-  float dsfDistance = {};
 };
 
 class FFOsciProcessor final

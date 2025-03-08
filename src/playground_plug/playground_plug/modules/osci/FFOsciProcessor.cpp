@@ -98,7 +98,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.basicSawOn = topo.params[(int)FFOsciParam::BasicSawOn].Boolean().NormalizedToPlainFast(params.block.basicSawOn[0].Voice()[voice]);
   _voiceState.basicTriOn = topo.params[(int)FFOsciParam::BasicTriOn].Boolean().NormalizedToPlainFast(params.block.basicTriOn[0].Voice()[voice]);
   _voiceState.basicSqrOn = topo.params[(int)FFOsciParam::BasicSqrOn].Boolean().NormalizedToPlainFast(params.block.basicSqrOn[0].Voice()[voice]);
-  _voiceState.dsfDistance = topo.params[(int)FFOsciParam::DSFDistance].Linear().NormalizedToPlainFast(params.block.dsfDistance[0].Voice()[voice]);
+  _voiceState.dsfDistance = topo.params[(int)FFOsciParam::DSFDistance].Discrete().NormalizedToPlainFast(params.block.dsfDistance[0].Voice()[voice]);
   _voiceState.dsfOvertones = topo.params[(int)FFOsciParam::DSFOvertones].DiscreteLog2().NormalizedToPlainFast(params.block.dsfOvertones[0].Voice()[voice]);
 }
 
@@ -200,7 +200,7 @@ FFOsciProcessor::ProcessDSF(
   FBFixedFloatArray tempDecay;
 
   decayBlock.StoreToFloatArray(tempDecay);
-  tempDist.data.fill(_voiceState.dsfDistance);
+  tempDist.data.fill(_voiceState.dsfDistance + 1.0f); // TODO
   phase.StoreToFloatArray(tempPhase);
   freq.StoreToFloatArray(tempFreq);
   incr.StoreToFloatArray(tempIncr);
