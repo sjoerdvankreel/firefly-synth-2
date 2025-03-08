@@ -1,3 +1,4 @@
+split out the noise/kps osci
 recheck clap mod
 edit/auto type as members
 fix the tooltips (edit/auto)
