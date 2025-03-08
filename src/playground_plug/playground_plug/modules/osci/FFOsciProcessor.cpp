@@ -200,7 +200,7 @@ FFOsciProcessor::ProcessDSF(
   FBFixedFloatArray tempDecay;
 
   decayBlock.StoreToFloatArray(tempDecay);
-  tempDist.data.fill(_voiceState.dsfDistance + 1.0f); // TODO
+  tempDist.data.fill(_voiceState.dsfDistance);
   phase.StoreToFloatArray(tempPhase);
   freq.StoreToFloatArray(tempFreq);
   incr.StoreToFloatArray(tempIncr);

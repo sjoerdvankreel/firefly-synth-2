@@ -238,6 +238,7 @@ FFMakeOsciTopo()
   dsfDistance.id = "{0D1D4920-A17F-4716-A42E-238DD1E99952}";
   dsfDistance.type = FBParamType::Discrete;
   dsfDistance.Discrete().valueCount = 20;
+  dsfDistance.Discrete().valueOffset = 1;
   auto selectDSFDistance = [](auto& module) { return &module.block.dsfDistance; };
   dsfDistance.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDistance);
   dsfDistance.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFDistance);

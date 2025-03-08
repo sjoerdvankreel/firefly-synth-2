@@ -33,14 +33,14 @@ FBDiscreteParamNonRealTime::AutomationEditType() const
 double 
 FBDiscreteParamNonRealTime::PlainToNormalized(double plain) const 
 {
-  return std::clamp(plain / (valueCount - 1.0), 0.0, 1.0);
+  return std::clamp((plain - valueOffset) / (valueCount - 1.0), 0.0, 1.0);
 }
 
 double
 FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const 
 {
   int scaled = static_cast<int>(normalized * valueCount);
-  return std::clamp(scaled, 0, valueCount - 1);
+  return std::clamp(scaled, 0, valueCount - 1) + valueOffset;
 }
 
 std::string
@@ -56,7 +56,8 @@ FBDiscreteParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const
   unsigned long plain = std::strtoul(text.c_str(), &end, 10);
   if (end != text.c_str() + text.size())
     return {};
-  if (static_cast<int>(plain) >= valueCount)
+  int iPlain = static_cast<int>(plain);
+  if (iPlain < valueOffset || iPlain >= valueCount + valueOffset)
     return { };
-  return { plain };
+  return { iPlain };
 }

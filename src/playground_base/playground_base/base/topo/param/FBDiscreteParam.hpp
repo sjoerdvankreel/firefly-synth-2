@@ -10,6 +10,7 @@
 struct FBDiscreteParam
 {
   int valueCount = {};
+  int valueOffset = {};
   float PlainToNormalizedFast(int plain) const;
   int NormalizedToPlainFast(float normalized) const;
 };
@@ -33,12 +34,12 @@ public FBParamNonRealTime
 inline float
 FBDiscreteParam::PlainToNormalizedFast(int plain) const
 {
-  return std::clamp(plain / (valueCount - 1.0f), 0.0f, 1.0f);
+  return std::clamp((plain - valueOffset) / (valueCount - 1.0f), 0.0f, 1.0f);
 }
 
 inline int
 FBDiscreteParam::NormalizedToPlainFast(float normalized) const
 {
   int scaled = static_cast<int>(normalized * valueCount);
-  return std::clamp(scaled, 0, valueCount - 1);
+  return std::clamp(scaled, 0, valueCount - 1) + valueOffset;
 }
