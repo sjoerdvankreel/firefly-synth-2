@@ -15,12 +15,20 @@ struct FFOsciVoiceState final
   bool basicTriOn = {};
   bool basicSqrOn = {};
   FFOsciType type = {};
+  int dsfOvertones = {};
+  float dsfDistance = {};
 };
 
 class FFOsciProcessor final
 {
   FBPhase _phase = {};
   FFOsciVoiceState _voiceState = {};
+
+  void ProcessBasic(
+    FBModuleProcState& state, 
+    FBFixedFloatBlock const& phase,
+    FBFixedFloatBlock const& incr,
+    FBFixedFloatBlock& audioOut);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);

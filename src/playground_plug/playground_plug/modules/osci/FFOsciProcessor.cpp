@@ -93,10 +93,82 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.key = static_cast<float>(state.voice->event.note.key);
   _voiceState.note = topo.params[(int)FFOsciParam::Note].Note().NormalizedToPlainFast(params.block.note[0].Voice()[voice]);
   _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].List().NormalizedToPlainFast(params.block.type[0].Voice()[voice]);
+  _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].List().NormalizedToPlainFast(params.block.type[0].Voice()[voice]);
   _voiceState.basicSinOn = topo.params[(int)FFOsciParam::BasicSinOn].Boolean().NormalizedToPlainFast(params.block.basicSinOn[0].Voice()[voice]);
   _voiceState.basicSawOn = topo.params[(int)FFOsciParam::BasicSawOn].Boolean().NormalizedToPlainFast(params.block.basicSawOn[0].Voice()[voice]);
   _voiceState.basicTriOn = topo.params[(int)FFOsciParam::BasicTriOn].Boolean().NormalizedToPlainFast(params.block.basicTriOn[0].Voice()[voice]);
   _voiceState.basicSqrOn = topo.params[(int)FFOsciParam::BasicSqrOn].Boolean().NormalizedToPlainFast(params.block.basicSqrOn[0].Voice()[voice]);
+  _voiceState.dsfDistance = topo.params[(int)FFOsciParam::DSFDistance].Linear().NormalizedToPlainFast(params.block.dsfDistance[0].Voice()[voice]);
+  _voiceState.dsfOvertones = topo.params[(int)FFOsciParam::DSFOvertones].DiscreteLog2().NormalizedToPlainFast(params.block.dsfOvertones[0].Voice()[voice]);
+}
+
+void 
+FFOsciProcessor::ProcessBasic(
+  FBModuleProcState& state, 
+  FBFixedFloatBlock const& phase,
+  FBFixedFloatBlock const& incr,
+  FBFixedFloatBlock& audioOut)
+{
+  FBFixedFloatBlock pw;
+  FBFixedFloatBlock gain;
+  FBFixedFloatBlock audio;
+
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
+  auto const& basicSqrPW = procParams.acc.basicSqrPW[0].Voice()[voice];
+  auto const& basicSinGain = procParams.acc.basicSinGain[0].Voice()[voice];
+  auto const& basicSawGain = procParams.acc.basicSawGain[0].Voice()[voice];
+  auto const& basicTriGain = procParams.acc.basicTriGain[0].Voice()[voice];
+  auto const& basicSqrGain = procParams.acc.basicSqrGain[0].Voice()[voice];
+
+  audioOut.Fill(0.0f);
+  if (_voiceState.basicSinOn)
+  {
+    gain.Transform([&](int v) {
+      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSinGain];
+      return paramTopo.Linear().NormalizedToPlainFast(basicSinGain.CV(v)); });
+    audio.Transform([&](int v) { return GenerateSin(phase[v]) * gain[v]; });
+    audioOut.Add(audio);
+  }
+  if (_voiceState.basicSawOn)
+  {
+    gain.Transform([&](int v) {
+      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSawGain];
+      return paramTopo.Linear().NormalizedToPlainFast(basicSawGain.CV(v)); });
+    audio.Transform([&](int v) { return GenerateSaw(phase[v], incr[v]) * gain[v]; });
+    audioOut.Add(audio);
+  }
+  if (_voiceState.basicTriOn)
+  {
+    gain.Transform([&](int v) {
+      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicTriGain];
+      return paramTopo.Linear().NormalizedToPlainFast(basicTriGain.CV(v)); });
+    audio.Transform([&](int v) { return GenerateTri(phase[v], incr[v]) * gain[v]; });
+    audioOut.Add(audio);
+  }
+  if (_voiceState.basicSqrOn)
+  {
+    pw.Transform([&](int v) {
+      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSqrPW];
+      return topo.params[(int)FFOsciParam::BasicSqrPW].Linear().NormalizedToPlainFast(basicSqrPW.CV(v)); });
+    gain.Transform([&](int v) {
+      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSqrGain];
+      return topo.params[(int)FFOsciParam::BasicSqrGain].Linear().NormalizedToPlainFast(basicSqrGain.CV(v)); });
+    audio.Transform([&](int v) { return GenerateSqr(phase[v], incr[v], pw[v]) * gain[v]; });
+    audioOut.Add(audio);
+  }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+  auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
+  exchangeParams.acc.basicSqrPW[0][voice] = basicSqrPW.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSinGain[0][voice] = basicSinGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSawGain[0][voice] = basicSawGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicTriGain[0][voice] = basicTriGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGain.CV().data[FBFixedBlockSamples - 1];
 }
 
 int
@@ -108,12 +180,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& cent = procParams.acc.cent[0].Voice()[voice];
   auto const& gain = procParams.acc.gain[0].Voice()[voice];
   auto const& gLFOToGain = procParams.acc.gLFOToGain[0].Voice()[voice];
-  auto const& basicSqrPW = procParams.acc.basicSqrPW[0].Voice()[voice];
-  auto const& basicSinGain = procParams.acc.basicSinGain[0].Voice()[voice];
-  auto const& basicSawGain = procParams.acc.basicSawGain[0].Voice()[voice];
-  auto const& basicTriGain = procParams.acc.basicTriGain[0].Voice()[voice];
-  auto const& basicSqrGain = procParams.acc.basicSqrGain[0].Voice()[voice];
-
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   auto& output = procState->dsp.voice[voice].osci[state.moduleSlot].output;
 
@@ -135,51 +201,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   incr.Transform([&](int v) { return freq[v] / state.input->sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
 
-  // TODO make it pretty
-  FBFixedFloatBlock basicTypePW;
-  FBFixedFloatBlock basicTypeGain;
-  FBFixedFloatBlock basicTypeAudio;
-  FBFixedFloatBlock basicAllAudio;
-  basicAllAudio.Fill(0.0f);
-  if (_voiceState.basicSinOn)
-  {
-    basicTypeGain.Transform([&](int v) {
-      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSinGain];
-      return paramTopo.Linear().NormalizedToPlainFast(basicSinGain.CV(v)); });
-    basicTypeAudio.Transform([&](int v) { return GenerateSin(phase[v]); });
-    basicTypeAudio.Mul(basicTypeGain);
-    basicAllAudio.Add(basicTypeAudio);
-  }
-  if (_voiceState.basicSawOn)
-  {
-    basicTypeGain.Transform([&](int v) {
-      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSawGain];
-      return paramTopo.Linear().NormalizedToPlainFast(basicSawGain.CV(v)); });
-    basicTypeAudio.Transform([&](int v) { return GenerateSaw(phase[v], incr[v]); });
-    basicTypeAudio.Mul(basicTypeGain);
-    basicAllAudio.Add(basicTypeAudio);
-  }
-  if (_voiceState.basicTriOn)
-  {
-    basicTypeGain.Transform([&](int v) {
-      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicTriGain];
-      return paramTopo.Linear().NormalizedToPlainFast(basicTriGain.CV(v)); });
-    basicTypeAudio.Transform([&](int v) { return GenerateTri(phase[v], incr[v]); });
-    basicTypeAudio.Mul(basicTypeGain);
-    basicAllAudio.Add(basicTypeAudio);
-  }
-  if (_voiceState.basicSqrOn)
-  {
-    basicTypePW.Transform([&](int v) {
-      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSqrPW];
-      return topo.params[(int)FFOsciParam::BasicSqrPW].Linear().NormalizedToPlainFast(basicSqrPW.CV(v)); });
-    basicTypeGain.Transform([&](int v) {
-      auto const& paramTopo = topo.params[(int)FFOsciParam::BasicSqrGain];
-      return topo.params[(int)FFOsciParam::BasicSqrGain].Linear().NormalizedToPlainFast(basicSqrGain.CV(v)); });
-    basicTypeAudio.Transform([&](int v) { return GenerateSqr(phase[v], incr[v], basicTypePW[v]); });
-    basicTypeAudio.Mul(basicTypeGain);
-    basicAllAudio.Add(basicTypeAudio);
-  }
+  FBFixedFloatBlock osciOut;
+  if (_voiceState.type == FFOsciType::Basic)
+    ProcessBasic(state, phase, incr, osciOut);
 
   // TODO this might prove difficult, lets see how it fares with the matrices
   FBFixedFloatBlock gLFO;
@@ -194,9 +218,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     auto gLFOToGainBlock = gLFOToGain.CV(v);
     return (1.0f - gLFOToGainBlock) * gain.CV(v) + gLFOToGainBlock * gLFO[v] * gain.CV(v); });
 
-  basicAllAudio.Transform([&](int v) {
-    return gainWithGLFOBlock[v] * basicAllAudio[v]; });
-  output.Transform([&](int ch, int v) { return basicAllAudio[v]; });
+  osciOut.Transform([&](int v) {
+    return gainWithGLFOBlock[v] * osciOut[v]; });
+  output.Transform([&](int ch, int v) { return osciOut[v]; });
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
@@ -210,10 +234,5 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.cent[0][voice] = cent.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGain.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicSqrPW[0][voice] = basicSqrPW.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicSinGain[0][voice] = basicSinGain.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicSawGain[0][voice] = basicSawGain.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicTriGain[0][voice] = basicTriGain.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGain.CV().data[FBFixedBlockSamples - 1];
   return FBFixedBlockSamples;
 }
