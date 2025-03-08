@@ -208,13 +208,12 @@ FFOsciProcessor::ProcessDSF(
   // todo move to generate func
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    // -1: Fundamental is implicit. 
-    float ps = _voiceState.dsfOvertones ; // TODO min at 2
+    int ps = _voiceState.dsfOvertones;
     float const decay_range = 0.99f;
     float const scale_factor = 0.975f;
     float dist_freq = tempFreq.data[s] * tempDist.data[s];
     float max_parts = (sampleRate * 0.5f - tempFreq.data[s]) / dist_freq;
-    ps = std::min(ps, static_cast<float>(max_parts));
+    ps = std::min(ps, static_cast<int>(max_parts));
 
     float n = ps;
     float w = tempDecay.data[s] * decay_range;
