@@ -117,7 +117,8 @@ GenerateDSFBandwidth(
   FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
   FBFloatVector distFreq, FBFloatVector maxOvertones, float bandwidth)
 {
-  FBFloatVector overtones = xsimd::floor(bandwidth * maxOvertones);
+  FBFloatVector overtones = 1.0f + xsimd::floor(bandwidth * (maxOvertones - 1.0f));
+  overtones = xsimd::min(overtones, xsimd::floor(maxOvertones));
   return GenerateDSF(phase, freq, decay, distFreq, overtones);
 }
 
