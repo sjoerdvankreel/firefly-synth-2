@@ -125,7 +125,6 @@ GenerateDSFBandwidth(
 void 
 FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
 {
-  _phase = {};
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
@@ -143,6 +142,9 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.dsfDistance = topo.params[(int)FFOsciParam::DSFDistance].Discrete().NormalizedToPlainFast(params.block.dsfDistance[0].Voice()[voice]);
   _voiceState.dsfBandwidth = topo.params[(int)FFOsciParam::DSFBandwidth].Linear().NormalizedToPlainFast(params.block.dsfBandwidth[0].Voice()[voice]);
   _voiceState.dsfOvertones = topo.params[(int)FFOsciParam::DSFOvertones].Discrete().NormalizedToPlainFast(params.block.dsfOvertones[0].Voice()[voice]);
+
+  for (int i = 0; i < _voiceState.unisonCount; i++)
+    _unisonPhases[i] = FBPhase(i * _voiceState.unisonOffset / (_voiceState.unisonCount + 1.0f));
 }
 
 void 
@@ -203,6 +205,7 @@ FFOsciProcessor::ProcessBasic(
     audioOut.Add(audio);
   }
 
+  // todo not for each uni voice
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
@@ -250,11 +253,74 @@ FFOsciProcessor::ProcessDSF(
     return GenerateDSFBandwidth(
       phase[v], freq[v], decayBlock[v], distFreq[v], maxOvertones[v], _voiceState.dsfBandwidth); });
 
+  // todo not for each uni voice
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.dsfDecay[0][voice] = decay.CV().data[FBFixedBlockSamples - 1];
+}
+
+void 
+FFOsciProcessor::ProcessType(
+  FBModuleProcState& state,
+  FBFixedFloatBlock const& phase,
+  FBFixedFloatBlock const& freq,
+  FBFixedFloatBlock const& incr,
+  FBFixedFloatBlock& audioOut)
+{
+  FBFixedFloatBlock osciOut;
+  if (_voiceState.type == FFOsciType::Basic)
+    ProcessBasic(state, phase, incr, osciOut);
+  else if (_voiceState.type == FFOsciType::DSF)
+    ProcessDSF(state, phase, freq, osciOut);
+  else
+    assert(false);
+}
+
+void 
+FFOsciProcessor::ProcessUnison(
+  FBModuleProcState& state,
+  FBFixedFloatAudioBlock& audioOut)
+{
+  FBFixedFloatBlock incr;
+  FBFixedFloatBlock freq;
+  FBFixedFloatBlock phase;
+  FBFixedFloatBlock pitch;
+
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
+  auto const& cent = procParams.acc.cent[0].Voice()[voice];
+  auto const& spread = procParams.acc.unisonSpread[0].Voice()[voice];
+  auto const& detune = procParams.acc.unisonDetune[0].Voice()[voice];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+
+  pitch.Transform([&](int v) {
+    auto centPlain = topo.params[(int)FFOsciParam::Cent].Linear().NormalizedToPlainFast(cent.CV(v));
+    return _voiceState.key + _voiceState.note - 60.0f + centPlain; });
+
+  // todo account for 1 voice
+  for (int i = 0; i < _voiceState.unisonCount; i++)
+  {
+    float pos = _voiceState.unisonCount == 1 ? 0.5f : i / (_voiceState.unisonCount - 1.0f);
+    freq.Transform([&](int v) {
+      auto uniPitch = pitch[v] + 
+      return FBPitchToFreq(pitch[v], state.input->sampleRate); });
+  }
+
+  freq.Transform([&](int v) {
+    auto centPlain = topo.params[(int)FFOsciParam::Cent].Linear().NormalizedToPlainFast(cent.CV(v));
+    auto pitch = _voiceState.key + _voiceState.note - 60.0f + centPlain;
+    return FBPitchToFreq(pitch, state.input->sampleRate); });
+  incr.Transform([&](int v) { return freq[v] / state.input->sampleRate; });
+  phase.Transform([&](int v) { return _phase.Next(incr[v]); });
+
+  FBFixedFloatBlock osciOut;
+  if (_voiceState.type == FFOsciType::Basic)
+    ProcessBasic(state, phase, incr, osciOut);
+  else if (_voiceState.type == FFOsciType::DSF)
+    ProcessDSF(state, phase, freq, osciOut);
 }
 
 int
@@ -275,7 +341,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     return 0;
   }
 
-  int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
+  int prevPositionSamplesUpToFirstCycle = _unisonPhases[0].PositionSamplesUpToFirstCycle();
 
   FBFixedFloatBlock incr;
   FBFixedFloatBlock freq;
@@ -312,12 +378,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
+    return _unisonPhases[0].PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(freq.Last(), state.input->sampleRate);
-  exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
+  exchangeDSP.positionSamples = _unisonPhases[0].PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
+
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.cent[0][voice] = cent.CV().data[FBFixedBlockSamples - 1];
