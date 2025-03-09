@@ -104,7 +104,7 @@ FFMakeOsciTopo()
   unisonOffset.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonOffset);
   unisonOffset.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectUnisonOffset);
   unisonOffset.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonOffset);
-  unisonOffset.dependencies.visible.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+  unisonOffset.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
 
   auto& unisonDetune = result->params[(int)FFOsciParam::UnisonDetune];
   unisonDetune.acc = true;
@@ -120,7 +120,7 @@ FFMakeOsciTopo()
   unisonDetune.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonDetune);
   unisonDetune.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonDetune);
   unisonDetune.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonDetune);
-  unisonDetune.dependencies.visible.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+  unisonDetune.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
 
   auto& unisonSpread = result->params[(int)FFOsciParam::UnisonSpread];
   unisonSpread.acc = true;
@@ -136,7 +136,7 @@ FFMakeOsciTopo()
   unisonSpread.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonSpread);
   unisonSpread.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonSpread);
   unisonSpread.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonSpread);
-  unisonSpread.dependencies.visible.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+  unisonSpread.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
 
   auto& basicSinOn = result->params[(int)FFOsciParam::BasicSinOn];
   basicSinOn.acc = false;
