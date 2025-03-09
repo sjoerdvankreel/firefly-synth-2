@@ -30,7 +30,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto hostSmoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::HostSmoothTime, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hostSmoothTime));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hostSmoothTime, Slider::SliderStyle::LinearHorizontal));
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(grid);
 } 
 
 Component*

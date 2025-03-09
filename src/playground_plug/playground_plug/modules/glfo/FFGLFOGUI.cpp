@@ -25,7 +25,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto rate = topo->audio.ParamAtTopo({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rate));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, rate, Slider::SliderStyle::LinearHorizontal));
-  return plugGUI->StoreComponent<FBSectionComponent>(plugGUI, grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
 Component*

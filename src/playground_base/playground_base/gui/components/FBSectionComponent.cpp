@@ -4,7 +4,7 @@
 using namespace juce;
 
 FBSectionComponent::
-FBSectionComponent(FBPlugGUI* plugGUI, Component* content):
+FBSectionComponent(Component* content):
 Component()
 {
   addAndMakeVisible(content);

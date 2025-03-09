@@ -119,7 +119,7 @@ FBModuleGraphComponent::SetupGraphControls()
     _grid->MarkSection({ 0, 1, 1, 1 });
   }
 
-  _section = std::make_unique<FBSectionComponent>(_plugGUI, _grid.get());
+  _section = std::make_unique<FBSectionComponent>(_grid.get());
   addAndMakeVisible(_section.get());
   resized();
 }

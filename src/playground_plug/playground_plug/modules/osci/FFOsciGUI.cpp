@@ -12,7 +12,7 @@
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
-#include <playground_base/gui/components/FBParamsDependentSectionComponent.hpp>
+#include <playground_base/gui/components/FBParamsDependentComponent.hpp>
 
 using namespace juce;
 
@@ -86,7 +86,7 @@ MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Off || vs[0] == (int)FFOsciType::Basic; });
-  return plugGUI->StoreComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependencies);
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, indices, dependencies);
 }
 
 static Component*
@@ -116,7 +116,7 @@ MakeSectionDSF(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
-  return plugGUI->StoreComponent<FBParamsDependentSectionComponent>(plugGUI, grid, indices, dependencies);
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, indices, dependencies);
 }
 
 static Component*
