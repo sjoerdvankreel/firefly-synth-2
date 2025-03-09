@@ -27,8 +27,8 @@ struct FFOsciVoiceState final
 
 class FFOsciProcessor final
 {
+  FBPhase _phase = {};
   FFOsciVoiceState _voiceState = {};
-  std::array<FBPhase, FFOsciUnisonMaxCount> _unisonPhases = {};
 
   void ProcessBasic(
     FBModuleProcState& state, 
