@@ -171,7 +171,6 @@ FBGridComponent::FixedColWidth(int col, int height) const
       auto sizingChild = FBAsHorizontalAutoSize(sizingChildren[i]);
       fixedCellWidth = std::max(fixedCellWidth, sizingChild->FixedWidth(rowHeight));
     }
-    assert(fixedCellWidth != 0);
     result = std::max(result, fixedCellWidth);
   }
   return result;
