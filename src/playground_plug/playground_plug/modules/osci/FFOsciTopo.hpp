@@ -10,6 +10,7 @@ enum class FFOsciDSFMode { Overtones, Bandwidth };
 
 enum class FFOsciParam { 
   Type, Gain, Note, Cent,
+  UnisonCount, UnisonDetune, UnisonSpread, UnisonOffset,
   BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
   BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,

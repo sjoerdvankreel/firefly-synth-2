@@ -27,6 +27,8 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   std::array<TVoiceBlock, 1> on = {};
   std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> note = {};
+  std::array<TVoiceBlock, 1> unisonCount = {};
+  std::array<TVoiceBlock, 1> unisonOffset = {};
   std::array<TVoiceBlock, 1> basicSinOn = {};
   std::array<TVoiceBlock, 1> basicSawOn = {};
   std::array<TVoiceBlock, 1> basicTriOn = {};
@@ -46,6 +48,8 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   std::array<TVoiceAcc, 1> cent = {};
   std::array<TVoiceAcc, 1> gain = {};
+  std::array<TVoiceAcc, 1> unisonDetune = {};
+  std::array<TVoiceAcc, 1> unisonSpread = {};
   std::array<TVoiceAcc, 1> dsfDecay = {};
   std::array<TVoiceAcc, 1> gLFOToGain = {};
   std::array<TVoiceAcc, 1> basicSqrPW = {};
