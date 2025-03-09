@@ -85,15 +85,10 @@ GenerateTri(FBFloatVector phase, FBFloatVector incr)
 static FBFloatVector
 GenerateDSF(
   FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
-  int overtones_, int distance, float sampleRate)
+  FBFloatVector distFreq, FBFloatVector overtones)
 {
   float const decayRange = 0.99f;
   float const scaleFactor = 0.975f;
-
-  FBFloatVector overtones = static_cast<float>(overtones_);
-  FBFloatVector distFreq = static_cast<float>(distance) * freq;
-  FBFloatVector maxOvertones = (sampleRate * 0.5f - freq) / distFreq;
-  overtones = xsimd::min(overtones, xsimd::floor(maxOvertones));
 
   FBFloatVector n = overtones;
   FBFloatVector w = decay * decayRange;
@@ -105,6 +100,25 @@ GenerateDSF(
   FBFloatVector y = 1.0f + w * w - 2.0f * w * xsimd::cos(v);
   FBFloatVector scale = (1.0f - wPowNp1) / (1.0f - w);
   return x * scaleFactor / (y * scale);
+}
+
+static FBFloatVector
+GenerateDSFOvertones(
+  FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
+  FBFloatVector distFreq, FBFloatVector maxOvertones, int overtones_)
+{
+  FBFloatVector overtones = static_cast<float>(overtones_);
+  overtones = xsimd::min(overtones, xsimd::floor(maxOvertones));
+  return GenerateDSF(phase, freq, decay, distFreq, overtones);
+}
+
+static FBFloatVector
+GenerateDSFBandwidth(
+  FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
+  FBFloatVector distFreq, FBFloatVector maxOvertones, float bandwidth)
+{
+  FBFloatVector overtones = xsimd::floor(bandwidth * maxOvertones);
+  return GenerateDSF(phase, freq, decay, distFreq, overtones);
 }
 
 void 
@@ -122,7 +136,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.basicSawOn = topo.params[(int)FFOsciParam::BasicSawOn].Boolean().NormalizedToPlainFast(params.block.basicSawOn[0].Voice()[voice]);
   _voiceState.basicTriOn = topo.params[(int)FFOsciParam::BasicTriOn].Boolean().NormalizedToPlainFast(params.block.basicTriOn[0].Voice()[voice]);
   _voiceState.basicSqrOn = topo.params[(int)FFOsciParam::BasicSqrOn].Boolean().NormalizedToPlainFast(params.block.basicSqrOn[0].Voice()[voice]);
-  _voiceState.dsfMode = (FFOsciDSFMode)topo.params[(int)FFOsciParam::DSFMode].List().NormalizedToPlainFast(params.block.dsfDistance[0].Voice()[voice]);
+  _voiceState.dsfMode = (FFOsciDSFMode)topo.params[(int)FFOsciParam::DSFMode].List().NormalizedToPlainFast(params.block.dsfMode[0].Voice()[voice]);
   _voiceState.dsfDistance = topo.params[(int)FFOsciParam::DSFDistance].Discrete().NormalizedToPlainFast(params.block.dsfDistance[0].Voice()[voice]);
   _voiceState.dsfBandwidth = topo.params[(int)FFOsciParam::DSFBandwidth].Linear().NormalizedToPlainFast(params.block.dsfBandwidth[0].Voice()[voice]);
   _voiceState.dsfOvertones = topo.params[(int)FFOsciParam::DSFOvertones].Discrete().NormalizedToPlainFast(params.block.dsfOvertones[0].Voice()[voice]);
@@ -205,7 +219,10 @@ FFOsciProcessor::ProcessDSF(
   FBFixedFloatBlock const& freq,
   FBFixedFloatBlock& audioOut)
 {
+  FBFixedFloatBlock distFreq;
   FBFixedFloatBlock decayBlock;
+  FBFixedFloatBlock maxOvertones;
+
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -213,12 +230,22 @@ FFOsciProcessor::ProcessDSF(
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   auto const& decay = procParams.acc.dsfDecay[0].Voice()[voice];
 
+  distFreq.Transform([&](int v) { 
+    return static_cast<float>(_voiceState.dsfDistance) * freq[v]; });
+  maxOvertones.Transform([&](int v) { 
+    return (sampleRate * 0.5f - freq[v]) / distFreq[v]; });
   decayBlock.Transform([&](int v) {
     auto const& paramTopo = topo.params[(int)FFOsciParam::DSFDecay];
     return paramTopo.Linear().NormalizedToPlainFast(decay.CV(v)); });
-  audioOut.Transform([&](int v) { 
-    return GenerateDSF(phase[v], freq[v], decayBlock[v], 
-      _voiceState.dsfOvertones, _voiceState.dsfDistance, sampleRate); });
+
+  if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
+    audioOut.Transform([&](int v) { 
+      return GenerateDSFOvertones(
+        phase[v], freq[v], decayBlock[v], distFreq[v], maxOvertones[v], _voiceState.dsfOvertones); });
+  else
+    audioOut.Transform([&](int v) {
+    return GenerateDSFBandwidth(
+      phase[v], freq[v], decayBlock[v], distFreq[v], maxOvertones[v], _voiceState.dsfBandwidth); });
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
