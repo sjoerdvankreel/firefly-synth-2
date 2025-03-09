@@ -36,7 +36,6 @@ class FFOsciProcessor final
     FBModuleProcState& state,
     FBFixedFloatBlock const& phase,
     FBFixedFloatBlock const& freq,
-    FBFixedFloatBlock const& incr,
     FBFixedFloatBlock& audioOut);
 
 public:

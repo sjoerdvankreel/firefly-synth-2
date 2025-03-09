@@ -82,6 +82,31 @@ GenerateTri(FBFloatVector phase, FBFloatVector incr)
   return v;
 }
 
+static FBFloatVector
+GenerateDSF(
+  FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
+  int overtones_, int distance, float sampleRate)
+{
+  float const decayRange = 0.99f;
+  float const scaleFactor = 0.975f;
+
+  FBFloatVector overtones = static_cast<float>(overtones_);
+  FBFloatVector distFreq = static_cast<float>(distance) * freq;
+  FBFloatVector maxOvertones = (sampleRate * 0.5f - freq) / distFreq;
+  overtones = xsimd::min(overtones, xsimd::floor(maxOvertones));
+
+  FBFloatVector n = overtones;
+  FBFloatVector w = decay * decayRange;
+  FBFloatVector wPowNp1 = xsimd::pow(w, n + 1.0f);
+  FBFloatVector u = 2.0f * FBPi * phase;
+  FBFloatVector v = 2.0f * FBPi * distFreq * phase / freq;
+  FBFloatVector a = w * xsimd::sin(u + n * v) - xsimd::sin(u + (n + 1.0f) * v);
+  FBFloatVector x = (w * xsimd::sin(v - u) + xsimd::sin(u)) + wPowNp1 * a;
+  FBFloatVector y = 1.0f + w * w - 2.0f * w * xsimd::cos(v);
+  FBFloatVector scale = (1.0f - wPowNp1) / (1.0f - w);
+  return x * scaleFactor / (y * scale);
+}
+
 void 
 FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
 {
@@ -178,7 +203,6 @@ FFOsciProcessor::ProcessDSF(
   FBModuleProcState& state,
   FBFixedFloatBlock const& phase,
   FBFixedFloatBlock const& freq,
-  FBFixedFloatBlock const& incr,
   FBFixedFloatBlock& audioOut)
 {
   FBFixedFloatBlock decayBlock;
@@ -192,44 +216,9 @@ FFOsciProcessor::ProcessDSF(
   decayBlock.Transform([&](int v) {
     auto const& paramTopo = topo.params[(int)FFOsciParam::DSFDecay];
     return paramTopo.Linear().NormalizedToPlainFast(decay.CV(v)); });
-
-  FBFixedFloatArray tempOut;
-  FBFixedFloatArray tempPhase;
-  FBFixedFloatArray tempFreq;
-  FBFixedFloatArray tempIncr;
-  FBFixedFloatArray tempDist;
-  FBFixedFloatArray tempDecay;
-
-  decayBlock.StoreToFloatArray(tempDecay);
-  tempDist.data.fill(_voiceState.dsfDistance);
-  phase.StoreToFloatArray(tempPhase);
-  freq.StoreToFloatArray(tempFreq);
-  incr.StoreToFloatArray(tempIncr);
-
-  // todo move to generate func
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-  {
-    int ps = _voiceState.dsfOvertones;
-    float const decay_range = 0.99f;
-    float const scale_factor = 0.975f;
-    float dist_freq = tempFreq.data[s] * tempDist.data[s];
-    float max_parts = (sampleRate * 0.5f - tempFreq.data[s]) / dist_freq;
-    ps = std::min(ps, static_cast<int>(max_parts));
-
-    float n = ps;
-    float w = tempDecay.data[s] * decay_range;
-    float w_pow_np1 = std::pow(w, n + 1);
-    float u = 2.0f * FBPi * tempPhase.data[s];
-    float v = 2.0f * FBPi * dist_freq * tempPhase.data[s] / tempFreq.data[s];
-    float a = w * std::sin(u + n * v) - std::sin(u + (n + 1) * v);
-    float x = (w * std::sin(v - u) + std::sin(u)) + w_pow_np1 * a;
-    float y = 1 + w * w - 2 * w * std::cos(v);
-    float scale = (1.0f - w_pow_np1) / (1.0f - w);
-    float result = x * scale_factor / (y * scale);
-    tempOut.data[s] = result;
-  }
-
-  audioOut.LoadFromFloatArray(tempOut);
+  audioOut.Transform([&](int v) { 
+    return GenerateDSF(phase[v], freq[v], decayBlock[v], 
+      _voiceState.dsfOvertones, _voiceState.dsfDistance, sampleRate); });
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
@@ -272,7 +261,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   if (_voiceState.type == FFOsciType::Basic)
     ProcessBasic(state, phase, incr, osciOut);
   else if (_voiceState.type == FFOsciType::DSF)
-    ProcessDSF(state, phase, freq, incr, osciOut);
+    ProcessDSF(state, phase, freq, osciOut);
 
   // TODO this might prove difficult, lets see how it fares with the matrices
   FBFixedFloatBlock gLFO;
