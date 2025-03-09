@@ -10,6 +10,8 @@ class alignas(sizeof(FBFloatVector)) FBPhase final
   int _positionSamplesCurrentCycle = 0;
   int _positionSamplesUpToFirstCycle = 0;
 public:
+  FBPhase() = default;
+  explicit FBPhase(float x) : _x(x) {}
   FBFloatVector Next(FBFloatVector incr);
   int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
   int PositionSamplesUpToFirstCycle() const { return _positionSamplesUpToFirstCycle; }
