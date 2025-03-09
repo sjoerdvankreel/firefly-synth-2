@@ -10,13 +10,15 @@ struct FFOsciVoiceState final
 {
   int note = {};
   float key = {}; // TODO floating key
+  FFOsciType type = {};
   bool basicSinOn = {};
   bool basicSawOn = {};
   bool basicTriOn = {};
   bool basicSqrOn = {};
-  FFOsciType type = {};
+  FFOsciDSFMode dsfMode = {};
   int dsfDistance = {};
   int dsfOvertones = {};
+  float dsfBandwidth = {};
 };
 
 class FFOsciProcessor final

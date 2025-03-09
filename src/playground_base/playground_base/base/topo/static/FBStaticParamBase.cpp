@@ -12,7 +12,6 @@ FBStaticParamBase::NonRealTime() const
   case FBParamType::Linear: return linear;
   case FBParamType::Boolean: return boolean;
   case FBParamType::Discrete: return discrete;
-  case FBParamType::DiscreteLog2: return discreteLog2;
   default: assert(false); return *static_cast<FBParamNonRealTime const*>(nullptr);
   }
 }
