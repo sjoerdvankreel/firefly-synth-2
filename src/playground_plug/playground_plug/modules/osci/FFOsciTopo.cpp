@@ -77,7 +77,7 @@ FFMakeOsciTopo()
 
   auto& basicSinOn = result->params[(int)FFOsciParam::BasicSinOn];
   basicSinOn.acc = false;
-  basicSinOn.defaultText = "Off";
+  basicSinOn.defaultText = "On";
   basicSinOn.name = "Sin";
   basicSinOn.tooltip = "Sin On";
   basicSinOn.slotCount = 1;
