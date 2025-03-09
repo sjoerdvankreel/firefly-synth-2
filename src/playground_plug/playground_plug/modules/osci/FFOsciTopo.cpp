@@ -279,6 +279,7 @@ FFMakeOsciTopo()
   
   auto& dsfDecay = result->params[(int)FFOsciParam::DSFDecay];
   dsfDecay.acc = true;
+  dsfDecay.defaultText = "100";
   dsfDecay.name = "Decay";
   dsfDecay.tooltip = "DSF Decay";
   dsfDecay.slotCount = 1;
