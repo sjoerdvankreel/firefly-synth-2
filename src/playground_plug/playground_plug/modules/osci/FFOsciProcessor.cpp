@@ -133,6 +133,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.key = static_cast<float>(state.voice->event.note.key);
   _voiceState.note = topo.params[(int)FFOsciParam::Note].Note().NormalizedToPlainFast(params.block.note[0].Voice()[voice]);
   _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].List().NormalizedToPlainFast(params.block.type[0].Voice()[voice]);
+  _voiceState.unisonCount = topo.params[(int)FFOsciParam::UnisonCount].Discrete().NormalizedToPlainFast(params.block.unisonCount[0].Voice()[voice]);
+  _voiceState.unisonOffset = topo.params[(int)FFOsciParam::UnisonOffset].Linear().NormalizedToPlainFast(params.block.unisonOffset[0].Voice()[voice]);
   _voiceState.basicSinOn = topo.params[(int)FFOsciParam::BasicSinOn].Boolean().NormalizedToPlainFast(params.block.basicSinOn[0].Voice()[voice]);
   _voiceState.basicSawOn = topo.params[(int)FFOsciParam::BasicSawOn].Boolean().NormalizedToPlainFast(params.block.basicSawOn[0].Voice()[voice]);
   _voiceState.basicTriOn = topo.params[(int)FFOsciParam::BasicTriOn].Boolean().NormalizedToPlainFast(params.block.basicTriOn[0].Voice()[voice]);

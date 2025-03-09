@@ -83,7 +83,7 @@ FFMakeOsciTopo()
   unisonCount.slotCount = 1;
   unisonCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
   unisonCount.type = FBParamType::Discrete;
-  unisonCount.Discrete().valueCount = 16;
+  unisonCount.Discrete().valueCount = FFOsciUnisonMaxCount;
   unisonCount.Discrete().valueOffset = 1;
   auto selectUnisonCount = [](auto& module) { return &module.block.unisonCount; };
   unisonCount.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonCount);

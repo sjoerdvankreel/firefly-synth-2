@@ -7,6 +7,7 @@ std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 
 enum class FFOsciType { Off, Basic, DSF };
 enum class FFOsciDSFMode { Overtones, Bandwidth };
+static inline int constexpr FFOsciUnisonMaxCount = 16;
 
 enum class FFOsciParam { 
   Type, Gain, Note, Cent,

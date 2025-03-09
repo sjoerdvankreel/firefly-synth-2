@@ -4,6 +4,8 @@
 #include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 
+#include <array>
+
 struct FBModuleProcState;
 
 struct FFOsciVoiceState final
@@ -11,6 +13,8 @@ struct FFOsciVoiceState final
   int note = {};
   float key = {}; // TODO floating key
   FFOsciType type = {};
+  int unisonCount = {};
+  float unisonOffset = {};
   bool basicSinOn = {};
   bool basicSawOn = {};
   bool basicTriOn = {};
@@ -23,8 +27,8 @@ struct FFOsciVoiceState final
 
 class FFOsciProcessor final
 {
-  FBPhase _phase = {};
   FFOsciVoiceState _voiceState = {};
+  std::array<FBPhase, FFOsciUnisonMaxCount> _unisonPhases = {};
 
   void ProcessBasic(
     FBModuleProcState& state, 
