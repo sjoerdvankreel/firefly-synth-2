@@ -26,7 +26,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Type, 0 });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return grid;
 }
 
 static Component*
@@ -43,7 +43,7 @@ MakeSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
   auto gain = topo->audio.ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Gain, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return grid;
 }
   
 static Component*
