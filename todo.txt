@@ -1,3 +1,4 @@
+  // TODO hunt all norm2plainfast
 drop discretelog2
 dsf by bandwidth
 split out the noise/kps osci
