@@ -25,6 +25,7 @@ struct FBLinearParam
   FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlainFast(FBDoubleVector normalized) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
+  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const;
 };
 
 struct FBLinearParamNonRealTime final :
@@ -78,4 +79,20 @@ FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedF
 {
   for (int v = 0; v < FBFixedFloatVectors; v++)
     plain[v] = NormalizedToPlainFast(normalized.CV(v));
+}
+
+inline void
+FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
+{
+  for (int v = 0; v < FBFixedFloatVectors; v++)
+    plain[v] = NormalizedToPlainFast(normalized.CV(v));
+}
+
+inline void
+FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
+{
+  FBFixedDoubleBlock normDouble;
+  normDouble.LoadCastFromFloatArray(normalized.CV());
+  for (int v = 0; v < FBFixedDoubleVectors; v++)
+    plain[v] = NormalizedToPlainFast(normDouble[v]);
 }
