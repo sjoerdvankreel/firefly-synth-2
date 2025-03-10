@@ -3,6 +3,8 @@
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/shared/FBVector.hpp>
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
+#include <playground_base/base/state/proc/FBAccParamState.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
 
 #include <cmath>
 #include <string>
@@ -20,10 +22,12 @@ protected:
 public:
   float NormalizedToPlainFast(float normalized) const;
   void Init(float offset, float curveStart, float curveEnd);
-  FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
-  FBDoubleVector NormalizedToPlainFast(FBDoubleVector normalized) const;
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
+
+  FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
+  FBDoubleVector NormalizedToPlainFast(FBDoubleVector normalized) const;
+  void NormalizedToPlainFast(FBAccParamState const& norm, FBFixedFloatBlock& output) const;
 };
 
 struct FBLog2ParamNonRealTime final :
@@ -75,4 +79,11 @@ inline int
 FBLog2Param::NormalizedFreqToSamplesFast(float normalized, float sampleRate) const
 {
   return FBFreqToSamples(NormalizedToPlainFast(normalized), sampleRate);
+}
+
+inline void
+FBLog2Param::NormalizedToPlainFast(FBAccParamState const& norm, FBFixedFloatBlock& output) const
+{
+  for (int v = 0; v < FBFixedFloatVectors; v++)
+    output[v] = NormalizedToPlainFast(norm.CV(v));
 }
