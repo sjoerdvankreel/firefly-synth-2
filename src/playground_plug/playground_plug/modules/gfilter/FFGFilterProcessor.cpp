@@ -12,54 +12,43 @@ void
 FFGFilterProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  auto const& procParams = procState->param.global.gFilter[state.moduleSlot];
-  auto const& res = procParams.acc.res[0].Global();
-  auto const& freq = procParams.acc.freq[0].Global();
-  auto const& gain = procParams.acc.gain[0].Global();
-
   auto& output = procState->dsp.global.gFilter[state.moduleSlot].output;
   auto const& input = procState->dsp.global.gFilter[state.moduleSlot].input;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GFilter];
-  bool on = topo.params[(int)FFGFilterParam::On].Boolean().NormalizedToPlainFast(procParams.block.on[0].Value());
-  auto type = (FFGFilterType)topo.params[(int)FFGFilterParam::Type].List().NormalizedToPlainFast(procParams.block.type[0].Value());
+  auto const& procParams = procState->param.global.gFilter[state.moduleSlot];
 
-  if (!on)
+  if (!topo.NormalizedToBoolFast(FFGFilterParam::On, procParams.block.on[0].Value()))
   {
     output.CopyFrom(input);
     return;
   }
 
-  // TODO via topo
-  FBFixedDoubleBlock resBlock, gainBlock;
-  resBlock.LoadCastFromFloatArray(res.CV());
-  //freqBlock.LoadCastFromFloatArray(freq.CV());
-  
   FBFixedDoubleBlock a;
-  switch (type)
+  FBFixedDoubleBlock resPlain;
+  FBFixedDoubleBlock freqPlain;
+  auto const& resNorm = procParams.acc.res[0].Global();
+  auto const& freqNorm = procParams.acc.freq[0].Global();
+  auto const& gainNorm = procParams.acc.gain[0].Global();
+  auto mode = topo.NormalizedToListFast<FFGFilterMode>(FFGFilterParam::Mode, procParams.block.mode[0].Value());
+  topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freqNorm, freqPlain);
+  topo.NormalizedToIdentityFast(FFGFilterParam::Res, resNorm, resPlain);
+
+  if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
   {
-  case FFGFilterType::BLL:
-  case FFGFilterType::LSH:
-  case FFGFilterType::HSH:
-    gainBlock.LoadCastFromFloatArray(gain.CV());
-    a.Transform([&](int v) {
-      auto plainGain = topo.params[(int)FFGFilterParam::Gain].Linear().NormalizedToPlainFast(gainBlock[v]);
-      return xsimd::pow(FBDoubleVector(10.0), plainGain / 40.0); });
-    break;
-  default:
-    break;
+    FBFixedDoubleBlock gainPlain;
+    topo.NormalizedToIdentityFast(FFGFilterParam::Gain, gainNorm, gainPlain);
+    a.Transform([&](int v) { return xsimd::pow(FBDoubleVector(10.0), gainPlain[v] / 40.0); });
   }
 
-  FBFixedDoubleBlock g, k, freqPlain; // TODO
-  topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freq, freqPlain);
-  k.Transform([&](int v) { return 2.0 - 2.0 * resBlock[v]; });
-  g.Transform([&](int v) {
-    return xsimd::tan(std::numbers::pi * freqPlain[v] / state.input->sampleRate); });
+  FBFixedDoubleBlock g, k;
+  k.Transform([&](int v) { return 2.0 - 2.0 * resPlain[v]; });
+  g.Transform([&](int v) { return xsimd::tan(std::numbers::pi * freqPlain[v] / state.input->sampleRate); });
 
-  switch (type)
+  switch (mode)
   {
-  case FFGFilterType::BLL: k.Transform([&](int v) { return k[v] / a[v]; }); break;
-  case FFGFilterType::LSH: g.Transform([&](int v) { return g[v] / xsimd::sqrt(a[v]); }); break;
-  case FFGFilterType::HSH: g.Transform([&](int v) { return g[v] * xsimd::sqrt(a[v]); }); break;
+  case FFGFilterMode::BLL: k.Transform([&](int v) { return k[v] / a[v]; }); break;
+  case FFGFilterMode::LSH: g.Transform([&](int v) { return g[v] / xsimd::sqrt(a[v]); }); break;
+  case FFGFilterMode::HSH: g.Transform([&](int v) { return g[v] * xsimd::sqrt(a[v]); }); break;
   default: break;
   }
   
@@ -74,49 +63,49 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   a3b.StoreToDoubleArray(a3a);
 
   FBFixedDoubleBlock m0b, m1b, m2b;
-  switch (type)
+  switch (mode)
   {
-  case FFGFilterType::LPF:
+  case FFGFilterMode::LPF:
     m0b.Transform([&](int v) { return 0.0; });
     m1b.Transform([&](int v) { return 0.0; });
     m2b.Transform([&](int v) { return 1.0; });
     break;
-  case FFGFilterType::BPF:
+  case FFGFilterMode::BPF:
     m0b.Transform([&](int v) { return 0.0; });
     m1b.Transform([&](int v) { return 1.0; });
     m2b.Transform([&](int v) { return 0.0; });
     break;
-  case FFGFilterType::HPF:
+  case FFGFilterMode::HPF:
     m0b.Transform([&](int v) { return 1.0; });
     m1b.Transform([&](int v) { return -k[v]; });
     m2b.Transform([&](int v) { return -1.0; });
     break;
-  case FFGFilterType::BSF:
+  case FFGFilterMode::BSF:
     m0b.Transform([&](int v) { return 1.0; });
     m1b.Transform([&](int v) { return -k[v]; });
     m2b.Transform([&](int v) { return 0.0; });
     break;
-  case FFGFilterType::PEQ:
+  case FFGFilterMode::PEQ:
     m0b.Transform([&](int v) { return 1.0; });
     m1b.Transform([&](int v) { return -k[v]; });
     m2b.Transform([&](int v) { return -2.0; });
     break;
-  case FFGFilterType::APF:
+  case FFGFilterMode::APF:
     m0b.Transform([&](int v) { return 1.0; });
     m1b.Transform([&](int v) { return -2.0 * k[v]; });
     m2b.Transform([&](int v) { return 0.0; });
     break;
-  case FFGFilterType::BLL:
+  case FFGFilterMode::BLL:
     m0b.Transform([&](int v) { return 1.0; });
     m1b.Transform([&](int v) { return k[v] * (a[v] * a[v] - 1.0); });
     m2b.Transform([&](int v) { return 0.0; });
     break;
-  case FFGFilterType::LSH:
+  case FFGFilterMode::LSH:
     m0b.Transform([&](int v) { return 1.0; });
     m1b.Transform([&](int v) { return k[v] * (a[v] - 1.0); });
     m2b.Transform([&](int v) { return a[v] * a[v] - 1.0; });
     break;
-  case FFGFilterType::HSH:
+  case FFGFilterMode::HSH:
     m0b.Transform([&](int v) { return a[v] * a[v]; });
     m1b.Transform([&](int v) { return k[v] * (1.0 - a[v]) * a[v]; });
     m2b.Transform([&](int v) { return 1.0 - a[v] * a[v]; });
@@ -153,7 +142,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     return;
   auto& exchangeParams = exchangeToGUI->param.global.gFilter[state.moduleSlot];
   exchangeToGUI->global.gFilter[state.moduleSlot].active = true;
-  exchangeParams.acc.res[0] = res.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.freq[0] = freq.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.gain[0] = gain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.res[0] = resNorm.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.freq[0] = freqNorm.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.gain[0] = gainNorm.CV().data[FBFixedBlockSamples - 1];
 }

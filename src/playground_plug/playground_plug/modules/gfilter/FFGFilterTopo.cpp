@@ -26,14 +26,14 @@ FFMakeGFilterTopo()
   on.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
   on.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectOn);
 
-  auto& type = result->params[(int)FFGFilterParam::Type];
-  type.acc = false;
-  type.defaultText = "LPF";
-  type.name = "Type";
-  type.slotCount = 1;
-  type.id = "{503DECBB-EE24-4EC9-8AA2-DC865A38A70C}";
-  type.type = FBParamType::List;
-  type.List().items = {
+  auto& mode = result->params[(int)FFGFilterParam::Mode];
+  mode.acc = false;
+  mode.defaultText = "LPF";
+  mode.name = "Mode";
+  mode.slotCount = 1;
+  mode.id = "{503DECBB-EE24-4EC9-8AA2-DC865A38A70C}";
+  mode.type = FBParamType::List;
+  mode.List().items = {
     { "{7940E9B8-89DC-4795-AF4D-3A321F82AEF9}", "LPF" },
     { "{0BABF303-C235-45A7-A218-E1F05E3137F9}", "BPF" },
     { "{4939CA55-F119-412B-BF60-1DF803F0298C}", "HPF" },
@@ -43,10 +43,10 @@ FFMakeGFilterTopo()
     { "{77C474DC-8BCA-45A9-8017-CC19BFFD29B2}", "BLL" },
     { "{77FD4175-A9AD-4A2E-B701-C08477BCE07D}", "LSH" },
     { "{662A7E42-52D0-4069-AB74-1963E266D5A1}", "HSH" } };
-  auto selectType = [](auto& module) { return &module.block.type; };
-  type.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectType);
-  type.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectType);
-  type.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectType);
+  auto selectMode = [](auto& module) { return &module.block.mode; };
+  mode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectMode);
+  mode.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectMode);
+  mode.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectMode);
 
   auto& res = result->params[(int)FFGFilterParam::Res];
   res.acc = true;

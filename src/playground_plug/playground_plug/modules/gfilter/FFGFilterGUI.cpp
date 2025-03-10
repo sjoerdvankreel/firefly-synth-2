@@ -23,9 +23,9 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto on = topo->audio.ParamAtTopo({(int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::On, 0});
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
-  auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Type, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  auto mode = topo->audio.ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Mode, 0 });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
   return grid;
 }
 
