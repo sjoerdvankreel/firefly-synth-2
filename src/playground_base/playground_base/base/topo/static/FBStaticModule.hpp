@@ -61,6 +61,22 @@ struct FBStaticModule final
   int NormalizedToLinearTimeSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
   template <class ParamIndex>
   int NormalizedToLinearFreqSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
+
+  template <class ParamIndex>
+  float NormalizedToLog2Fast(ParamIndex index, float normalized) const;
+  template <class ParamIndex>
+  FBFloatVector NormalizedToLog2Fast(ParamIndex index, FBFloatVector normalized) const;
+  template <class ParamIndex>
+  FBDoubleVector NormalizedToLog2Fast(ParamIndex index, FBDoubleVector normalized) const;
+  template <class ParamIndex>
+  void NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
+  template <class ParamIndex>
+  void NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const;
+
+  template <class ParamIndex>
+  int NormalizedToLog2TimeSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
+  template <class ParamIndex>
+  int NormalizedToLog2FreqSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
 };
 
 template <class ParamIndex> 
@@ -152,4 +168,53 @@ inline int
 FBStaticModule::NormalizedToLinearFreqSamplesFast(ParamIndex index, float normalized, float sampleRate) const
 {
   return params[static_cast<int>(index)].Linear().NormalizedFreqToSamplesFast(normalized, sampleRate);
+}
+
+template <class ParamIndex>
+inline float
+FBStaticModule::NormalizedToLog2Fast(ParamIndex index, float normalized) const
+{
+  return params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized);
+}
+
+template <class ParamIndex>
+inline FBFloatVector
+FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBFloatVector normalized) const
+{
+  return params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized);
+}
+
+template <class ParamIndex>
+inline FBDoubleVector
+FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBDoubleVector normalized) const
+{
+  return params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized);
+}
+
+template <class ParamIndex>
+inline void
+FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatBlock& plain) const
+{
+  params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized, plain);
+}
+
+template <class ParamIndex>
+inline void
+FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
+{
+  params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized, plain);
+}
+
+template <class ParamIndex>
+inline int
+FBStaticModule::NormalizedToLog2TimeSamplesFast(ParamIndex index, float normalized, float sampleRate) const
+{
+  return params[static_cast<int>(index)].Log2().NormalizedTimeToSamplesFast(normalized, sampleRate);
+}
+
+template <class ParamIndex>
+inline int
+FBStaticModule::NormalizedToLog2FreqSamplesFast(ParamIndex index, float normalized, float sampleRate) const
+{
+  return params[static_cast<int>(index)].Log2().NormalizedFreqToSamplesFast(normalized, sampleRate);
 }

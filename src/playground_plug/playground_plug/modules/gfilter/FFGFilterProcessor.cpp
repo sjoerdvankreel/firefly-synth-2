@@ -29,9 +29,9 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     return;
   }
 
-  FBFixedDoubleBlock resBlock, freqBlock, gainBlock;
+  FBFixedDoubleBlock resBlock, gainBlock;
   resBlock.LoadCastFromFloatArray(res.CV());
-  freqBlock.LoadCastFromFloatArray(freq.CV());
+  //freqBlock.LoadCastFromFloatArray(freq.CV());
   
   FBFixedDoubleBlock a;
   switch (type)
@@ -48,11 +48,11 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     break;
   }
 
-  FBFixedDoubleBlock g, k;
+  FBFixedDoubleBlock g, k, freqPlain; // TODO
+  topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freq, freqPlain);
   k.Transform([&](int v) { return 2.0 - 2.0 * resBlock[v]; });
   g.Transform([&](int v) {
-    auto plainFreq = topo.params[(int)FFGFilterParam::Freq].Log2().NormalizedToPlainFast(freqBlock[v]);
-    return xsimd::tan(std::numbers::pi * plainFreq / state.input->sampleRate); });
+    return xsimd::tan(std::numbers::pi * freqPlain[v] / state.input->sampleRate); });
 
   switch (type)
   {

@@ -5,6 +5,7 @@
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
 #include <playground_base/base/state/proc/FBAccParamState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 #include <cmath>
 #include <string>
@@ -28,6 +29,7 @@ public:
   FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlainFast(FBDoubleVector normalized) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
+  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const;
 };
 
 struct FBLog2ParamNonRealTime final :
@@ -86,4 +88,13 @@ FBLog2Param::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFlo
 {
   for (int v = 0; v < FBFixedFloatVectors; v++)
     plain[v] = NormalizedToPlainFast(normalized.CV(v));
+}
+
+inline void
+FBLog2Param::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
+{
+  FBFixedDoubleBlock normDouble;
+  normDouble.LoadCastFromFloatArray(normalized.CV());
+  for (int v = 0; v < FBFixedDoubleVectors; v++)
+    plain[v] = NormalizedToPlainFast(normDouble[v]);
 }
