@@ -33,7 +33,8 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.mode = (FFEnvMode)topo.params[(int)FFEnvParam::Mode].List().NormalizedToPlainFast(params.block.mode[0].Voice()[voice]);
   if (_voiceState.sync)
   {
-    _voiceState.holdSamples = topo.params[(int)FFEnvParam::HoldBars].Bars().NormalizedToSamplesFast(params.block.holdBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
+    // TODO
+    _voiceState.holdSamples = topo.NormalizedToBarsSamplesFast(FFEnvParam::HoldBars, params.block.holdBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
     _voiceState.decaySamples = topo.params[(int)FFEnvParam::DecayBars].Bars().NormalizedToSamplesFast(params.block.decayBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
     _voiceState.delaySamples = topo.params[(int)FFEnvParam::DelayBars].Bars().NormalizedToSamplesFast(params.block.delayBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
     _voiceState.attackSamples = topo.params[(int)FFEnvParam::AttackBars].Bars().NormalizedToSamplesFast(params.block.attackBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);

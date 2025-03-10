@@ -31,12 +31,16 @@ struct FBStaticModule final
   std::vector<FBStaticGUIParam> guiParams = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 
+  template <class T, class ParamIndex>
+  T NormalizedToListFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
   int NormalizedToNoteFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
   bool NormalizedToBoolFast(ParamIndex index, float normalized) const;
-  template <class T, class ParamIndex>
-  T NormalizedToListFast(ParamIndex index, float normalized) const;
+  template <class ParamIndex>
+  int NormalizedToBarsFast(ParamIndex index, float normalized) const;
+  template <class ParamIndex>
+  int NormalizedToBarsSamplesFast(ParamIndex index, float normalized, float sampleRate, float bpm) const;
 };
 
 template <class ParamIndex> 
@@ -58,4 +62,18 @@ inline T
 FBStaticModule::NormalizedToListFast(ParamIndex index, float normalized) const
 {
   return static_cast<T>(params[static_cast<int>(index)].List().NormalizedToPlainFast(normalized));
+}
+
+template <class ParamIndex>
+inline int 
+FBStaticModule::NormalizedToBarsFast(ParamIndex index, float normalized) const
+{
+  return params[static_cast<int>(index)].Bars().NormalizedToPlainFast(normalized);
+}
+
+template <class ParamIndex>
+inline int
+FBStaticModule::NormalizedToBarsSamplesFast(ParamIndex index, float normalized, float sampleRate, float bpm) const
+{
+  return params[static_cast<int>(index)].Bars().NormalizedToSamplesFast(normalized, sampleRate, bpm);
 }
