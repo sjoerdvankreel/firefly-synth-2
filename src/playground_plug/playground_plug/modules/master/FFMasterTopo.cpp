@@ -24,8 +24,7 @@ FFMakeMasterTopo()
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = "{9CDC04BC-D0FF-43E6-A2C2-D6C822CFA3EA}";
-  gain.type = FBParamType::Linear;
-  gain.Linear().displayMultiplier = 100.0f;
+  gain.type = FBParamType::Identity;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectGain);

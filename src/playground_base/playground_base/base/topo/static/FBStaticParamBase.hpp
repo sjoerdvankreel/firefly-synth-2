@@ -11,6 +11,7 @@
 #include <playground_base/base/topo/param/FBParamType.hpp>
 #include <playground_base/base/topo/param/FBTextDisplay.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
+#include <playground_base/base/topo/param/FBIdentityParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 
 #include <string>
@@ -29,6 +30,7 @@ private:
   FBBoolParamNonRealTime boolean = {};
   FBLinearParamNonRealTime linear = {};
   FBDiscreteParamNonRealTime discrete = {};
+  FBIdentityParamNonRealTime identity = {};
 
 public:
   int slotCount = {};
@@ -49,6 +51,7 @@ public:
   FBBoolParam& Boolean();
   FBLinearParam& Linear();
   FBDiscreteParam& Discrete();
+  FBIdentityParam& Identity();
   
   FBListParam const& List() const;
   FBNoteParam const& Note() const;
@@ -57,6 +60,7 @@ public:
   FBBoolParam const& Boolean() const;
   FBLinearParam const& Linear() const;
   FBDiscreteParam const& Discrete() const;
+  FBIdentityParam const& Identity() const;
   
   FBParamNonRealTime const& NonRealTime() const;
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
@@ -114,6 +118,13 @@ FBStaticParamBase::Discrete()
   return discrete;
 }
 
+inline FBIdentityParam&
+FBStaticParamBase::Identity()
+{
+  assert(type == FBParamType::Identity);
+  return identity;
+}
+
 inline FBListParam const&
 FBStaticParamBase::List() const
 {
@@ -161,4 +172,11 @@ FBStaticParamBase::Discrete() const
 {
   assert(type == FBParamType::Discrete);
   return discrete;
+}
+
+inline FBIdentityParam const&
+FBStaticParamBase::Identity() const
+{
+  assert(type == FBParamType::Identity);
+  return identity;
 }

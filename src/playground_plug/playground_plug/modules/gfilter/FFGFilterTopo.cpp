@@ -55,8 +55,7 @@ FFMakeGFilterTopo()
   res.slotCount = 1;
   res.unit = "%";
   res.id = "{ED140CF2-52C6-40A6-9F39-44E8069FFC77}";
-  res.type = FBParamType::Linear;
-  res.Linear().displayMultiplier = 100.0f;
+  res.type = FBParamType::Identity;
   auto selectRes = [](auto& module) { return &module.acc.res; };
   res.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectRes);
   res.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectRes);

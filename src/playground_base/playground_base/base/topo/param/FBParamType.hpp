@@ -2,12 +2,12 @@
 
 enum class FBParamType 
 { 
+  List,
+  Note,
+  Bars,
   Boolean,
   Discrete,
-  DiscreteLog2,
-  List,
-  Note, 
-  Bars, 
+  Log2,
   Linear,
-  Log2 
+  Identity
 };

@@ -294,8 +294,7 @@ FFMakeEnvTopo()
   attackSlope.slotCount = 1;
   attackSlope.unit = "%";
   attackSlope.id = "{0C77104F-17CC-4256-8D65-FAD17E821758}";
-  attackSlope.type = FBParamType::Linear;
-  attackSlope.Linear().displayMultiplier = 100.0f;
+  attackSlope.type = FBParamType::Identity;
   auto selectAttackSlope = [](auto& module) { return &module.acc.attackSlope; };
   attackSlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAttackSlope);
   attackSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectAttackSlope);
@@ -310,8 +309,7 @@ FFMakeEnvTopo()
   decaySlope.slotCount = 1;
   decaySlope.unit = "%";
   decaySlope.id = "{2F01EA4E-2665-4882-923D-FEF63D790F7B}";
-  decaySlope.type = FBParamType::Linear;
-  decaySlope.Linear().displayMultiplier = 100.0f;
+  decaySlope.type = FBParamType::Identity;
   auto selectDecaySlope = [](auto& module) { return &module.acc.decaySlope; };
   decaySlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDecaySlope);
   decaySlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDecaySlope);
@@ -326,8 +324,7 @@ FFMakeEnvTopo()
   releaseSlope.slotCount = 1;
   releaseSlope.unit = "%";
   releaseSlope.id = "{78A38181-41F7-4C0C-8489-F9AD55D6F2D9}";
-  releaseSlope.type = FBParamType::Linear;
-  releaseSlope.Linear().displayMultiplier = 100.0f;
+  releaseSlope.type = FBParamType::Identity;
   auto selectReleaseSlope = [](auto& module) { return &module.acc.releaseSlope; };
   releaseSlope.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectReleaseSlope);
   releaseSlope.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectReleaseSlope);
@@ -342,8 +339,7 @@ FFMakeEnvTopo()
   sustainLevel.slotCount = 1;
   sustainLevel.unit = "%";
   sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
-  sustainLevel.type = FBParamType::Linear;
-  sustainLevel.Linear().displayMultiplier = 100.0f;
+  sustainLevel.type = FBParamType::Identity;
   auto selectSustainLevel = [](auto& module) { return &module.acc.sustainLevel; };
   sustainLevel.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSustainLevel);
   sustainLevel.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSustainLevel);

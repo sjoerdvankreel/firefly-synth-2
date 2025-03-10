@@ -18,6 +18,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   auto const& gain = procParams.acc.gain[0].Global();
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Master];
 
+  // TODO via topo
   output.Transform([&](int ch, int v) { return input[ch][v] * gain.CV(v); });
   auto const* voicesParam = state.topo->audio.ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });
   // TODO float voicesNorm = voicesParam->static_.Discrete().PlainToNormalizedFast(state.input->voiceManager->VoiceCount());

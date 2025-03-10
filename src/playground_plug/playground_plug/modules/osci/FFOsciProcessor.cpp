@@ -134,15 +134,15 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.note = topo.NormalizedToNoteFast(FFOsciParam::Note, params.block.note[0].Voice()[voice]);
   _voiceState.type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, params.block.type[0].Voice()[voice]);
   _voiceState.unisonCount = topo.NormalizedDiscreteFast(FFOsciParam::UnisonCount, params.block.unisonCount[0].Voice()[voice]);
-  _voiceState.unisonOffset = topo.NormalizedToLinearFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
+  _voiceState.unisonOffset = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
   _voiceState.basicSinOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSinOn, params.block.basicSinOn[0].Voice()[voice]);
   _voiceState.basicSawOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSawOn, params.block.basicSawOn[0].Voice()[voice]);
   _voiceState.basicTriOn = topo.NormalizedToBoolFast(FFOsciParam::BasicTriOn, params.block.basicTriOn[0].Voice()[voice]);
   _voiceState.basicSqrOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSqrOn, params.block.basicSqrOn[0].Voice()[voice]);
   _voiceState.dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, params.block.dsfMode[0].Voice()[voice]);
   _voiceState.dsfDistance = topo.NormalizedDiscreteFast(FFOsciParam::DSFDistance, params.block.dsfDistance[0].Voice()[voice]);
-  _voiceState.dsfBandwidth = topo.NormalizedToLinearFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
   _voiceState.dsfOvertones = topo.NormalizedDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
+  _voiceState.dsfBandwidth = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
 }
 
 void 
@@ -188,7 +188,7 @@ FFOsciProcessor::ProcessBasic(
   if (_voiceState.basicSqrOn)
   {
     topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, sqrGainNorm, gainPlain);
-    topo.NormalizedToLinearFast(FFOsciParam::BasicSqrPW, sqrPWNorm, pwPlain);
+    topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, sqrPWNorm, pwPlain);
     audio.Transform([&](int v) { return GenerateSqr(phase[v], incr[v], pwPlain[v]) * gainPlain[v]; });
     audioOut.Add(audio);
   }
@@ -224,7 +224,7 @@ FFOsciProcessor::ProcessDSF(
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   
   auto const& decayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
-  topo.NormalizedToLinearFast(FFOsciParam::DSFDecay, decayNorm, decayPlain);
+  topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, decayNorm, decayPlain);
   distFreq.Transform([&](int v) { return static_cast<float>(_voiceState.dsfDistance) * freq[v]; });
   maxOvertones.Transform([&](int v) { return (sampleRate * 0.5f - freq[v]) / distFreq[v]; });
 

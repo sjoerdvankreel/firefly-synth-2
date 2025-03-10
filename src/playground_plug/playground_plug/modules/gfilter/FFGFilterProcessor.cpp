@@ -29,6 +29,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     return;
   }
 
+  // TODO via topo
   FBFixedDoubleBlock resBlock, gainBlock;
   resBlock.LoadCastFromFloatArray(res.CV());
   //freqBlock.LoadCastFromFloatArray(freq.CV());

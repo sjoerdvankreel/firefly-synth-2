@@ -40,8 +40,7 @@ FFMakeOsciTopo()
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
-  gain.type = FBParamType::Linear;
-  gain.Linear().displayMultiplier = 100.0f;
+  gain.type = FBParamType::Identity;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectGain);
@@ -98,8 +97,7 @@ FFMakeOsciTopo()
   unisonOffset.slotCount = 1;
   unisonOffset.unit = "%";
   unisonOffset.id = "{6F5754E1-BDF4-4685-98FC-8C613128EE8D}";
-  unisonOffset.type = FBParamType::Linear;
-  unisonOffset.Linear().displayMultiplier = 100.0f;
+  unisonOffset.type = FBParamType::Identity;
   auto selectUnisonOffset = [](auto& module) { return &module.block.unisonOffset; };
   unisonOffset.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonOffset);
   unisonOffset.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectUnisonOffset);
@@ -114,8 +112,7 @@ FFMakeOsciTopo()
   unisonDetune.slotCount = 1;
   unisonDetune.unit = "%";
   unisonDetune.id = "{C73A2DFD-0C6D-47FF-A524-CA14A75DF418}";
-  unisonDetune.type = FBParamType::Linear;
-  unisonDetune.Linear().displayMultiplier = 100.0f;
+  unisonDetune.type = FBParamType::Identity;
   auto selectUnisonDetune = [](auto& module) { return &module.acc.unisonDetune; };
   unisonDetune.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonDetune);
   unisonDetune.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonDetune);
@@ -130,8 +127,7 @@ FFMakeOsciTopo()
   unisonSpread.slotCount = 1;
   unisonSpread.unit = "%";
   unisonSpread.id = "{9F71BAA5-00A2-408B-8CFC-B70D84A7654E}";
-  unisonSpread.type = FBParamType::Linear;
-  unisonSpread.Linear().displayMultiplier = 100.0f;
+  unisonSpread.type = FBParamType::Identity;
   auto selectUnisonSpread = [](auto& module) { return &module.acc.unisonSpread; };
   unisonSpread.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonSpread);
   unisonSpread.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonSpread);
@@ -269,8 +265,7 @@ FFMakeOsciTopo()
   basicSqrPW.slotCount = 1;
   basicSqrPW.unit = "%";
   basicSqrPW.id = "{D25EFEB3-18E0-498C-AA7C-20E1FB474A0F}";
-  basicSqrPW.type = FBParamType::Linear;
-  basicSqrPW.Linear().displayMultiplier = 100.0f;
+  basicSqrPW.type = FBParamType::Identity;
   auto selectBasicSqrPW = [](auto& module) { return &module.acc.basicSqrPW; };
   basicSqrPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSqrPW);
   basicSqrPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSqrPW);
@@ -317,8 +312,7 @@ FFMakeOsciTopo()
   dsfBandwidth.slotCount = 1;
   dsfBandwidth.unit = "%";
   dsfBandwidth.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
-  dsfBandwidth.type = FBParamType::Linear;
-  dsfBandwidth.Linear().displayMultiplier = 100.0f;
+  dsfBandwidth.type = FBParamType::Identity;
   auto selectDSFBandwidth = [](auto& module) { return &module.block.dsfBandwidth; };
   dsfBandwidth.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFBandwidth);
   dsfBandwidth.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFBandwidth);
@@ -348,8 +342,7 @@ FFMakeOsciTopo()
   dsfDecay.slotCount = 1;
   dsfDecay.unit = "%";
   dsfDecay.id = "{21CE915D-0983-4545-9F6E-8743CAC5EAB7}";
-  dsfDecay.type = FBParamType::Linear;
-  dsfDecay.Linear().displayMultiplier = 100.0f;
+  dsfDecay.type = FBParamType::Identity;
   auto selectDSFDecay = [](auto& module) { return &module.acc.dsfDecay; };
   dsfDecay.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDecay);
   dsfDecay.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDSFDecay);
@@ -362,8 +355,7 @@ FFMakeOsciTopo()
   gLFOToGain.slotCount = 1;
   gLFOToGain.unit = "%";
   gLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
-  gLFOToGain.type = FBParamType::Linear;
-  gLFOToGain.Linear().displayMultiplier = 100.0f;
+  gLFOToGain.type = FBParamType::Identity;
   auto selectGLFOToGain = [](auto& module) { return &module.acc.gLFOToGain; };
   gLFOToGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGLFOToGain);
   gLFOToGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectGLFOToGain);
