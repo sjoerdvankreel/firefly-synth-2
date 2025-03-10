@@ -33,12 +33,12 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.mode = (FFEnvMode)topo.params[(int)FFEnvParam::Mode].List().NormalizedToPlainFast(params.block.mode[0].Voice()[voice]);
   if (_voiceState.sync)
   {
-    _voiceState.holdSamples = topo.params[(int)FFEnvParam::HoldBars].Bars().NormalizedBarsToSamplesFast(params.block.holdBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.decaySamples = topo.params[(int)FFEnvParam::DecayBars].Bars().NormalizedBarsToSamplesFast(params.block.decayBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.delaySamples = topo.params[(int)FFEnvParam::DelayBars].Bars().NormalizedBarsToSamplesFast(params.block.delayBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.attackSamples = topo.params[(int)FFEnvParam::AttackBars].Bars().NormalizedBarsToSamplesFast(params.block.attackBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.releaseSamples = topo.params[(int)FFEnvParam::ReleaseBars].Bars().NormalizedBarsToSamplesFast(params.block.releaseBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.smoothingSamples = topo.params[(int)FFEnvParam::SmoothBars].Bars().NormalizedBarsToSamplesFast(params.block.smoothBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
+    _voiceState.holdSamples = topo.params[(int)FFEnvParam::HoldBars].Bars().NormalizedToSamplesFast(params.block.holdBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
+    _voiceState.decaySamples = topo.params[(int)FFEnvParam::DecayBars].Bars().NormalizedToSamplesFast(params.block.decayBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
+    _voiceState.delaySamples = topo.params[(int)FFEnvParam::DelayBars].Bars().NormalizedToSamplesFast(params.block.delayBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
+    _voiceState.attackSamples = topo.params[(int)FFEnvParam::AttackBars].Bars().NormalizedToSamplesFast(params.block.attackBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
+    _voiceState.releaseSamples = topo.params[(int)FFEnvParam::ReleaseBars].Bars().NormalizedToSamplesFast(params.block.releaseBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
+    _voiceState.smoothingSamples = topo.params[(int)FFEnvParam::SmoothBars].Bars().NormalizedToSamplesFast(params.block.smoothBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
   } else
   {
     _voiceState.holdSamples = topo.params[(int)FFEnvParam::HoldTime].Linear().NormalizedTimeToSamplesFast(params.block.holdTime[0].Voice()[voice], state.input->sampleRate);

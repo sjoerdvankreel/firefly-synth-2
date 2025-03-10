@@ -16,7 +16,7 @@ struct FBBarsParam
 {
   std::vector<FBBarsItem> items = {};
   int NormalizedToPlainFast(float normalized) const;
-  int NormalizedBarsToSamplesFast(float normalized, float sampleRate, float bpm) const;
+  int NormalizedToSamplesFast(float normalized, float sampleRate, float bpm) const;
 };
 
 struct FBBarsParamNonRealTime final :
@@ -44,7 +44,7 @@ FBBarsParam::NormalizedToPlainFast(float normalized) const
 }
 
 inline int 
-FBBarsParam::NormalizedBarsToSamplesFast(float normalized, float sampleRate, float bpm) const
+FBBarsParam::NormalizedToSamplesFast(float normalized, float sampleRate, float bpm) const
 {
   return FBBarsToSamples(items[NormalizedToPlainFast(normalized)], sampleRate, bpm);
 }
