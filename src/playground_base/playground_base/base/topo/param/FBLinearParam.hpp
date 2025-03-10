@@ -5,6 +5,7 @@
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
 #include <playground_base/base/state/proc/FBAccParamState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
+#include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 #include <cmath>
 #include <string>
@@ -76,13 +77,6 @@ FBLinearParam::NormalizedFreqToSamplesFast(float normalized, float sampleRate) c
 
 inline void 
 FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const
-{
-  for (int v = 0; v < FBFixedFloatVectors; v++)
-    plain[v] = NormalizedToPlainFast(normalized.CV(v));
-}
-
-inline void
-FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
 {
   for (int v = 0; v < FBFixedFloatVectors; v++)
     plain[v] = NormalizedToPlainFast(normalized.CV(v));
