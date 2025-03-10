@@ -27,7 +27,9 @@ FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   _voiceState.on = topo.params[(int)FFEnvParam::On].Boolean().NormalizedToPlainFast(params.block.on[0].Voice()[voice]);
   _voiceState.sync = topo.params[(int)FFEnvParam::Sync].Boolean().NormalizedToPlainFast(params.block.sync[0].Voice()[voice]);
-  _voiceState.type = (FFEnvType)topo.params[(int)FFEnvParam::Type].List().NormalizedToPlainFast(params.block.type[0].Voice()[voice]);
+  _voiceState.type = topo.NormalizedToListFast<FFEnvType>(FFEnvParam::Type, params.block.type[0].Voice()[voice]);
+  // TODO hunt all norm2plainfast
+  // TODO _voiceState.type = (FFEnvType)topo.params[(int)FFEnvParam::Type].List().NormalizedToPlainFast(params.block.type[0].Voice()[voice]);
   _voiceState.mode = (FFEnvMode)topo.params[(int)FFEnvParam::Mode].List().NormalizedToPlainFast(params.block.mode[0].Voice()[voice]);
   if (_voiceState.sync)
   {

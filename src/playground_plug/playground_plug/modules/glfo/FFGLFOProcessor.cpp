@@ -24,8 +24,7 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
   auto const& procParams = procState->param.global.gLFO[state.moduleSlot];
   
-  bool on = topo.params[(int)FFGLFOParam::On].Boolean().NormalizedToPlainFast(procParams.block.on[0].Value());
-  if (!on)
+  if (!topo.NormalizedToBoolFast(FFGLFOParam::On, procParams.block.on[0].Value()))
   {
     output.Fill(0.0f);
     return 0;

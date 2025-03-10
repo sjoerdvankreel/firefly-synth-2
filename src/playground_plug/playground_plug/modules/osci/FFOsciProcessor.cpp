@@ -131,7 +131,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   _voiceState.key = static_cast<float>(state.voice->event.note.key);
-  _voiceState.note = topo.params[(int)FFOsciParam::Note].Note().NormalizedToPlainFast(params.block.note[0].Voice()[voice]);
+  _voiceState.note = topo.NormalizedToNoteFast(FFOsciParam::Note, params.block.note[0].Voice()[voice]);
   _voiceState.type = (FFOsciType)topo.params[(int)FFOsciParam::Type].List().NormalizedToPlainFast(params.block.type[0].Voice()[voice]);
   _voiceState.unisonCount = topo.params[(int)FFOsciParam::UnisonCount].Discrete().NormalizedToPlainFast(params.block.unisonCount[0].Voice()[voice]);
   _voiceState.unisonOffset = topo.params[(int)FFOsciParam::UnisonOffset].Linear().NormalizedToPlainFast(params.block.unisonOffset[0].Voice()[voice]);
