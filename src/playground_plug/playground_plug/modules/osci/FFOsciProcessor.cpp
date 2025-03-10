@@ -245,12 +245,14 @@ FFOsciProcessor::ProcessDSF(
 int
 FFOsciProcessor::Process(FBModuleProcState& state)
 {
+  FBFixedFloatBlock incr;
+  FBFixedFloatBlock freq;
+  FBFixedFloatBlock phase;
+  FBFixedFloatBlock centPlain;
+
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& cent = procParams.acc.cent[0].Voice()[voice];
-  auto const& gain = procParams.acc.gain[0].Voice()[voice];
-  auto const& gLFOToGain = procParams.acc.gLFOToGain[0].Voice()[voice];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   auto& output = procState->dsp.voice[voice].osci[state.moduleSlot].output;
 
@@ -260,15 +262,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     return 0;
   }
 
+  auto const& centNorm = procParams.acc.cent[0].Voice()[voice];
+  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
+  auto const& gLFOToGainNorm = procParams.acc.gLFOToGain[0].Voice()[voice];
+  topo.NormalizedToLinearFast(FFOsciParam::Cent, centNorm, centPlain);
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
-
-  FBFixedFloatBlock incr;
-  FBFixedFloatBlock freq;
-  FBFixedFloatBlock phase;
-  freq.Transform([&](int v) {
-    auto centPlain = topo.params[(int)FFOsciParam::Cent].Linear().NormalizedToPlainFast(cent.CV(v));
-    auto pitch = _voiceState.key + _voiceState.note - 60.0f + centPlain;
-    return FBPitchToFreq(pitch, state.input->sampleRate); });
+  freq.Transform([&](int v) { return FBPitchToFreq(_voiceState.key + _voiceState.note - 60.0f + centPlain[v], state.input->sampleRate); });
   incr.Transform([&](int v) { return freq[v] / state.input->sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
 
@@ -288,8 +287,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   FBFixedFloatBlock gainWithGLFOBlock;
   gainWithGLFOBlock.Transform([&](int v) {
-    auto gLFOToGainBlock = gLFOToGain.CV(v);
-    return (1.0f - gLFOToGainBlock) * gain.CV(v) + gLFOToGainBlock * gLFO[v] * gain.CV(v); });
+    auto gLFOToGainBlock = gLFOToGainNorm.CV(v);
+    return (1.0f - gLFOToGainBlock) * gainNorm.CV(v) + gLFOToGainBlock * gLFO[v] * gainNorm.CV(v); });
 
   osciOut.Transform([&](int v) {
     return gainWithGLFOBlock[v] * osciOut[v]; });
@@ -305,7 +304,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
-  exchangeParams.acc.cent[0][voice] = cent.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.cent[0][voice] = centNorm.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGainNorm.CV().data[FBFixedBlockSamples - 1];
   return FBFixedBlockSamples;
 }
