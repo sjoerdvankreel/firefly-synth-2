@@ -140,7 +140,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.basicTriOn = topo.params[(int)FFOsciParam::BasicTriOn].Boolean().NormalizedToPlainFast(params.block.basicTriOn[0].Voice()[voice]);
   _voiceState.basicSqrOn = topo.params[(int)FFOsciParam::BasicSqrOn].Boolean().NormalizedToPlainFast(params.block.basicSqrOn[0].Voice()[voice]);
   _voiceState.dsfMode = (FFOsciDSFMode)topo.params[(int)FFOsciParam::DSFMode].List().NormalizedToPlainFast(params.block.dsfMode[0].Voice()[voice]);
-  _voiceState.dsfDistance = topo.params[(int)FFOsciParam::DSFDistance].Discrete().NormalizedToPlainFast(params.block.dsfDistance[0].Voice()[voice]);
+  _voiceState.dsfDistance = topo.NormalizedDiscreteFast(FFOsciParam::DSFDistance, params.block.dsfDistance[0].Voice()[voice]);
   _voiceState.dsfBandwidth = topo.params[(int)FFOsciParam::DSFBandwidth].Linear().NormalizedToPlainFast(params.block.dsfBandwidth[0].Voice()[voice]);
   _voiceState.dsfOvertones = topo.params[(int)FFOsciParam::DSFOvertones].Discrete().NormalizedToPlainFast(params.block.dsfOvertones[0].Voice()[voice]);
 }

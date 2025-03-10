@@ -36,6 +36,10 @@ struct FBStaticModule final
   template <class ParamIndex>
   int NormalizedToNoteFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
+  float DiscreteToNormalizedFast(ParamIndex index, int plain) const;
+  template <class ParamIndex>
+  int NormalizedDiscreteFast(ParamIndex index, float normalized) const;
+  template <class ParamIndex>
   bool NormalizedToBoolFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
   int NormalizedToBarsFast(ParamIndex index, float normalized) const;
@@ -62,6 +66,20 @@ inline T
 FBStaticModule::NormalizedToListFast(ParamIndex index, float normalized) const
 {
   return static_cast<T>(params[static_cast<int>(index)].List().NormalizedToPlainFast(normalized));
+}
+
+template <class ParamIndex>
+inline float 
+FBStaticModule::DiscreteToNormalizedFast(ParamIndex index, int plain) const
+{
+  return params[static_cast<int>(index)].Discrete().PlainToNormalizedFast(plain);
+}
+
+template <class ParamIndex>
+inline int 
+FBStaticModule::NormalizedDiscreteFast(ParamIndex index, float normalized) const
+{
+  return params[static_cast<int>(index)].Discrete().NormalizedToPlainFast(normalized);
 }
 
 template <class ParamIndex>
