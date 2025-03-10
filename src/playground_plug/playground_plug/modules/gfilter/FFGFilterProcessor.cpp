@@ -36,7 +36,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
   {
     FBFixedDoubleBlock gainPlain;
-    topo.NormalizedToIdentityFast(FFGFilterParam::Gain, gainNorm, gainPlain);
+    topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm, gainPlain);
     a.Transform([&](int v) { return xsimd::pow(FBDoubleVector(10.0), gainPlain[v] / 40.0); });
   }
 

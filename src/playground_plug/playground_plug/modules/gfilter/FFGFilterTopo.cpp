@@ -89,6 +89,7 @@ FFMakeGFilterTopo()
   gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectGain);
   gain.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectGain);
+  gain.dependencies.enabled.audio.When({ (int)FFGFilterParam::Mode }, [](auto const& vs) { return vs[0] >= (int)FFGFilterMode::BLL; });
 
   return result;
 }
