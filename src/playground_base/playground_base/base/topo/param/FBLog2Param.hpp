@@ -27,7 +27,7 @@ public:
 
   FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlainFast(FBDoubleVector normalized) const;
-  void NormalizedToPlainFast(FBAccParamState const& norm, FBFixedFloatBlock& output) const;
+  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
 };
 
 struct FBLog2ParamNonRealTime final :
@@ -82,8 +82,8 @@ FBLog2Param::NormalizedFreqToSamplesFast(float normalized, float sampleRate) con
 }
 
 inline void
-FBLog2Param::NormalizedToPlainFast(FBAccParamState const& norm, FBFixedFloatBlock& output) const
+FBLog2Param::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const
 {
   for (int v = 0; v < FBFixedFloatVectors; v++)
-    output[v] = NormalizedToPlainFast(norm.CV(v));
+    plain[v] = NormalizedToPlainFast(normalized.CV(v));
 }

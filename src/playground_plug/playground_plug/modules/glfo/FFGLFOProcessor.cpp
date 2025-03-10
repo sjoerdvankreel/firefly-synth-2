@@ -33,7 +33,8 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   FBFixedFloatBlock ratePlain;
   auto const& rateNorm = procParams.acc.rate[0].Global();
   auto const& rateParam = topo.params[(int)FFGLFOParam::Rate];
-  rateParam.Linear().NormalizedToPlainFast(rateNorm, ratePlain);
+  // TODO rateParam.Linear().NormalizedToPlainFast(rateNorm, ratePlain);
+  topo.NormalizedToLinearFast(FFGLFOParam::Rate, rateNorm, ratePlain);
 
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
   output.Transform([&](int v) { 

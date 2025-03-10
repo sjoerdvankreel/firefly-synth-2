@@ -24,7 +24,7 @@ struct FBLinearParam
 
   FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
   FBDoubleVector NormalizedToPlainFast(FBDoubleVector normalized) const;
-  void NormalizedToPlainFast(FBAccParamState const& norm, FBFixedFloatBlock& output) const;
+  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
 };
 
 struct FBLinearParamNonRealTime final :
@@ -74,8 +74,8 @@ FBLinearParam::NormalizedFreqToSamplesFast(float normalized, float sampleRate) c
 }
 
 inline void 
-FBLinearParam::NormalizedToPlainFast(FBAccParamState const& norm, FBFixedFloatBlock& output) const
+FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const
 {
   for (int v = 0; v < FBFixedFloatVectors; v++)
-    output[v] = NormalizedToPlainFast(norm.CV(v));
+    plain[v] = NormalizedToPlainFast(normalized.CV(v));
 }
