@@ -141,8 +141,10 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   if (exchangeToGUI == nullptr)
     return;
 
+  auto& exchangeDSP = exchangeToGUI->global.gFilter[state.moduleSlot];
+  exchangeDSP.active = true;
+
   auto& exchangeParams = exchangeToGUI->param.global.gFilter[state.moduleSlot];
-  exchangeToGUI->global.gFilter[state.moduleSlot].active = true;
   exchangeParams.acc.res[0] = resNorm.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.freq[0] = freqNorm.CV().data[FBFixedBlockSamples - 1];
   exchangeParams.acc.gain[0] = gainNorm.CV().data[FBFixedBlockSamples - 1];

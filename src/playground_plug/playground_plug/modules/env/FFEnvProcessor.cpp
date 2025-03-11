@@ -230,9 +230,9 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   exchangeDSP.positionSamples = _positionSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
-  exchangeParams.acc.decaySlope[0][voice] = decaySlope.CV().data[processed - 1];
-  exchangeParams.acc.attackSlope[0][voice] = attackSlope.CV().data[processed - 1];
-  exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.CV().data[processed - 1];
-  exchangeParams.acc.sustainLevel[0][voice] = sustainLevel.CV().data[processed - 1];
+  exchangeParams.acc.decaySlope[0][voice] = decaySlope.Last();
+  exchangeParams.acc.attackSlope[0][voice] = attackSlope.Last();
+  exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.Last();
+  exchangeParams.acc.sustainLevel[0][voice] = sustainLevel.Last();
   return processed;
 }

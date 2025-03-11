@@ -30,28 +30,26 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
     return 0;
   }
 
+  int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
+
+  FBFixedFloatBlock phase;
   FBFixedFloatBlock ratePlain;
   auto const& rateNorm = procParams.acc.rate[0].Global();
-  auto const& rateParam = topo.params[(int)FFGLFOParam::Rate];
-  // TODO rateParam.Linear().NormalizedToPlainFast(rateNorm, ratePlain);
   topo.NormalizedToLinearFast(FFGLFOParam::Rate, rateNorm, ratePlain);
-
-  int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
-  output.Transform([&](int v) { 
-    auto phase = _phase.Next(ratePlain[v] / state.input->sampleRate);
-    return FBToUnipolar(xsimd::sin(phase * FBTwoPi)); });
+  phase.Transform([&](int v) { return _phase.Next(ratePlain[v] / state.input->sampleRate); });
+  output.Transform([&](int v) { return FBToUnipolar(xsimd::sin(phase[v] * FBTwoPi)); });
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
 
   auto& exchangeParams = exchangeToGUI->param.global.gLFO[state.moduleSlot];
-  exchangeParams.acc.rate[0] = rateNorm.CV().data[FBFixedBlockSamples - 1];  
+  exchangeParams.acc.rate[0] = rateNorm.Last();
+
   auto& exchangeDSP = exchangeToGUI->global.gLFO[state.moduleSlot];
-  float lastRate = rateNorm.CV().data[FBFixedBlockSamples - 1];
   exchangeDSP.active = true;
   exchangeDSP.lastOutput = output.Last();
-  exchangeDSP.lengthSamples = rateParam.Linear().NormalizedFreqToSamplesFast(lastRate, state.input->sampleRate);
+  exchangeDSP.lengthSamples = topo.NormalizedToLinearFreqSamplesFast(FFGLFOParam::Rate, rateNorm.Last(), state.input->sampleRate);
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
   return FBFixedBlockSamples;
 }
