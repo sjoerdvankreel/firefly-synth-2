@@ -302,6 +302,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(freq.Last(), state.input->sampleRate);
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
+
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.cent[0][voice] = centNorm.CV().data[FBFixedBlockSamples - 1];
