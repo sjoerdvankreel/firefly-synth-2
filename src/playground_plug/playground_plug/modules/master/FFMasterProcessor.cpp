@@ -15,21 +15,22 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   auto& output = procState->dsp.global.master.output;
   auto const& input = procState->dsp.global.master.input;
   auto const& procParams = procState->param.global.master[state.moduleSlot];
-  auto const& gain = procParams.acc.gain[0].Global();
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Master];
 
-  // TODO via topo
-  output.Transform([&](int ch, int v) { return input[ch][v] * gain.CV(v); });
-  auto const* voicesParam = state.topo->audio.ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });
-  // TODO float voicesNorm = voicesParam->static_.Discrete().PlainToNormalizedFast(state.input->voiceManager->VoiceCount());
-  float voicesNorm = topo.DiscreteToNormalizedFast(FFMasterParam::Voices, state.input->voiceManager->VoiceCount());
+  FBFixedFloatBlock gainPlain;
+  auto const& gainNorm = procParams.acc.gain[0].Global();
+  topo.NormalizedToIdentityFast(FFMasterParam::Gain, gainNorm, gainPlain);
+  output.Transform([&](int ch, int v) { return input[ch][v] * gainPlain[v]; });
 
+  auto const* voicesParam = state.topo->audio.ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });
+  float voicesNorm = topo.DiscreteToNormalizedFast(FFMasterParam::Voices, state.input->voiceManager->VoiceCount());
   (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = voicesNorm;
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
+
   exchangeToGUI->global.master[state.moduleSlot].active = true;
   auto& exchangeParams = exchangeToGUI->param.global.master[state.moduleSlot];
-  exchangeParams.acc.gain[0] = gain.CV().data[FBFixedBlockSamples - 1];
+  exchangeParams.acc.gain[0] = gainNorm.Last();
 }
