@@ -140,6 +140,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
+
   auto& exchangeParams = exchangeToGUI->param.global.gFilter[state.moduleSlot];
   exchangeToGUI->global.gFilter[state.moduleSlot].active = true;
   exchangeParams.acc.res[0] = resNorm.CV().data[FBFixedBlockSamples - 1];
