@@ -42,6 +42,13 @@ class FFOsciProcessor final
     FBFixedFloatBlock const& freq,
     FBFixedFloatBlock& audioOut);
 
+  void ProcessType(
+    FBModuleProcState& state,
+    FBFixedFloatBlock const& phase,
+    FBFixedFloatBlock const& freq,
+    FBFixedFloatBlock const& incr,
+    FBFixedFloatBlock& audioOut);
+
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
   int Process(FBModuleProcState& state);

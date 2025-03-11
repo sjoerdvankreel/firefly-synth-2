@@ -242,6 +242,20 @@ FFOsciProcessor::ProcessDSF(
   exchangeParams.acc.dsfDecay[0][voice] = decayNorm.CV().data[FBFixedBlockSamples - 1];
 }
 
+void 
+FFOsciProcessor::ProcessType(
+  FBModuleProcState& state,
+  FBFixedFloatBlock const& phase,
+  FBFixedFloatBlock const& freq,
+  FBFixedFloatBlock const& incr,
+  FBFixedFloatBlock& audioOut)
+{
+  if (_voiceState.type == FFOsciType::Basic)
+    ProcessBasic(state, phase, incr, audioOut);
+  else if (_voiceState.type == FFOsciType::DSF)
+    ProcessDSF(state, phase, freq, audioOut);
+}
+
 int
 FFOsciProcessor::Process(FBModuleProcState& state)
 {
@@ -262,20 +276,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     return 0;
   }
 
+  int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
+
   auto const& centNorm = procParams.acc.cent[0].Voice()[voice];
   auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
   auto const& gLFOToGainNorm = procParams.acc.gLFOToGain[0].Voice()[voice];
   topo.NormalizedToLinearFast(FFOsciParam::Cent, centNorm, centPlain);
-  int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
   freq.Transform([&](int v) { return FBPitchToFreq(_voiceState.key + _voiceState.note - 60.0f + centPlain[v], state.input->sampleRate); });
   incr.Transform([&](int v) { return freq[v] / state.input->sampleRate; });
   phase.Transform([&](int v) { return _phase.Next(incr[v]); });
 
   FBFixedFloatBlock osciOut;
-  if (_voiceState.type == FFOsciType::Basic)
-    ProcessBasic(state, phase, incr, osciOut);
-  else if (_voiceState.type == FFOsciType::DSF)
-    ProcessDSF(state, phase, freq, osciOut);
+  ProcessType(state, phase, freq, incr, osciOut);
 
   // TODO this might prove difficult, lets see how it fares with the matrices
   FBFixedFloatBlock gLFO;
