@@ -114,7 +114,6 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
   _moduleState->voice = &_primaryVoiceManager->Voices()[0];
 }
 
-// TODO re-eval once more
 bool 
 FBGraphRenderState::GUIParamBool(
   FBParamTopoIndices const& indices) const
