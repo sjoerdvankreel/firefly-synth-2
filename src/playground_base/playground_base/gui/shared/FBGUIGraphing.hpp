@@ -24,6 +24,7 @@ struct FBModuleGraphPlotParams final
 {
   int samples = -1;
   int releaseAt = -1;
+  float seriesMultiplier = 1.0f;
 };
 
 typedef std::function<FBModuleGraphPlotParams(
@@ -61,11 +62,12 @@ template <bool Global, class Processor>
 void 
 FBRenderModuleGraphSeries(
   FBModuleGraphRenderData<Processor>& renderData, 
-  int releaseAt, std::vector<float>& seriesOut)
+  float seriesMultiplier, int releaseAt,  
+  std::vector<float>& seriesOut)
 {
   seriesOut.clear();
-  FBFixedFloatArray seriesIn;
   bool released = false;
+  FBFixedFloatArray seriesIn;
   int processed = FBFixedBlockSamples;
   bool shouldRelease = releaseAt >= 0;
   auto renderState = renderData.graphData->renderState;
@@ -97,7 +99,7 @@ FBRenderModuleGraphSeries(
         moduleProcState->voice->slot, 
         moduleSlot)->StoreToFloatArray(seriesIn);
     for (int i = 0; i < processed; i++)
-      seriesOut.push_back(seriesIn.data[i]);
+      seriesOut.push_back(seriesIn.data[i] * seriesMultiplier);
   }
 }
 
@@ -149,7 +151,7 @@ FBRenderModuleGraph(RenderData& renderData)
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
-  FBRenderModuleGraphSeries<Global>(renderData, guiReleaseAt, graphData->primarySeries);
+  FBRenderModuleGraphSeries<Global>(renderData, plotParams.seriesMultiplier, guiReleaseAt, graphData->primarySeries);
   float guiDurationSeconds = renderData.graphData->primarySeries.size() / moduleProcState->input->sampleRate;
   renderData.graphData->text = FBFormatDouble(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   
@@ -171,7 +173,7 @@ FBRenderModuleGraph(RenderData& renderData)
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<Global>(renderData, -1, secondary.points);
+    FBRenderModuleGraphSeries<Global>(renderData, plotParams.seriesMultiplier, -1, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
@@ -191,7 +193,7 @@ FBRenderModuleGraph(RenderData& renderData)
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<false>(renderData, -1, secondary.points);
+    FBRenderModuleGraphSeries<false>(renderData, plotParams.seriesMultiplier, -1, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.size());
   }
 }

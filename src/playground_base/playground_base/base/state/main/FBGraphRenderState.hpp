@@ -52,6 +52,7 @@ public:
 
   int AudioParamNote(FBParamTopoIndices const& indices) const;
   bool AudioParamBool(FBParamTopoIndices const& indices) const;
+  int AudioParamDiscrete(FBParamTopoIndices const& indices) const;
   float AudioParamLinear(FBParamTopoIndices const& indices) const;
   int AudioParamLinearFreqSamples(FBParamTopoIndices const& indices, float sampleRate) const;
   int AudioParamLinearTimeSamples(FBParamTopoIndices const& indices, float sampleRate) const;

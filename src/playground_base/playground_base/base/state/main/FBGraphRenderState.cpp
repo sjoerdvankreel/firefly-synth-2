@@ -168,6 +168,15 @@ FBGraphRenderState::AudioParamBool(
   return param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
+int
+FBGraphRenderState::AudioParamDiscrete(
+  FBParamTopoIndices const& indices) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  double normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Discrete().NormalizedToPlainFast(static_cast<float>(normalized));
+}
+
 float
 FBGraphRenderState::AudioParamLinear(
   FBParamTopoIndices const& indices) const

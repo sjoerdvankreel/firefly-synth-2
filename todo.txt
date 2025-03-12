@@ -1,5 +1,4 @@
 osci stereo graph
-scale graph to 1
 check osci pitch with unison
 fix osci to ui transfer
 
