@@ -143,9 +143,10 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.dsfOvertones = topo.NormalizedDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
   _voiceState.dsfBandwidth = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
 
+  _prng = {};
   _phase = {};
   for (int i = 0; i < _voiceState.unisonCount; i++)
-    _phases[i] = FBPhase(i * _voiceState.unisonOffset / _voiceState.unisonCount);
+    _phases[i] = FBPhase(i * _voiceState.unisonOffset / _voiceState.unisonCount * _prng.Next());
 }
 
 void 

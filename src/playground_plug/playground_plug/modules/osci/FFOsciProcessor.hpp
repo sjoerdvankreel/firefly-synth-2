@@ -1,9 +1,10 @@
 #pragma once
 
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
+#include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/dsp/shared/FBTrackingPhase.hpp>
-#include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 
 #include <array>
 
@@ -29,6 +30,7 @@ struct FFOsciVoiceState final
 class FFOsciProcessor final
 {
   FBTrackingPhase _phase = {};
+  FBParkMillerPRNG _prng = {};
   FFOsciVoiceState _voiceState = {};
   std::array<FBPhase, FFOsciUnisonMaxCount> _phases = {};
 
