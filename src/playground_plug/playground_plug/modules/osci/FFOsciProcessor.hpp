@@ -32,36 +32,52 @@ class FFOsciProcessor final
   FFOsciVoiceState _voiceState = {};
   std::array<FBPhase, FFOsciUnisonMaxCount> _phases = {};
 
-  void ProcessBasic(
-    FBModuleProcState& state, 
+  void ProcessBasicUnisonVoice(
+    FBFixedFloatBlock& audioOut,
     FBFixedFloatBlock const& phase,
     FBFixedFloatBlock const& incr,
-    FBFixedFloatBlock& audioOut);
+    FBFixedFloatBlock const& sinGainPlain,
+    FBFixedFloatBlock const& sawGainPlain,
+    FBFixedFloatBlock const& triGainPlain,
+    FBFixedFloatBlock const& sqrGainPlain,
+    FBFixedFloatBlock const& sqrPWPlain);
 
-  void ProcessDSF(
-    FBModuleProcState& state,
+  void ProcessDSFUnisonVoice(
+    float sampleRate,
+    FBFixedFloatBlock& audioOut,
     FBFixedFloatBlock const& phase,
     FBFixedFloatBlock const& freq,
-    FBFixedFloatBlock& audioOut);
+    FBFixedFloatBlock const& decayPlain);
 
-  void ProcessType(
-    FBModuleProcState& state,
+  void ProcessTypeUnisonVoice(
+    float sampleRate,
+    FBFixedFloatBlock& audioOut,
     FBFixedFloatBlock const& phase,
     FBFixedFloatBlock const& freq,
     FBFixedFloatBlock const& incr,
-    FBFixedFloatBlock& audioOut);
+    FBFixedFloatBlock const& basicSinGainPlain,
+    FBFixedFloatBlock const& basicSawGainPlain,
+    FBFixedFloatBlock const& basicTriGainPlain,
+    FBFixedFloatBlock const& basicSqrGainPlain,
+    FBFixedFloatBlock const& basicSqrPWPlain,
+    FBFixedFloatBlock const& dsfDecayPlain);
 
   void ProcessUnisonVoice(
-    FBModuleProcState& state,
+    float sampleRate, int unisonVoice, float pos,
+    FBFixedFloatBlock& audioOut,
     FBFixedFloatBlock const& basePitch,
     FBFixedFloatBlock const& detunePlain,
-    FBFixedFloatBlock& audioOut,
-    int unisonVoice, float pos);
+    FBFixedFloatBlock const& basicSinGainPlain,
+    FBFixedFloatBlock const& basicSawGainPlain,
+    FBFixedFloatBlock const& basicTriGainPlain,
+    FBFixedFloatBlock const& basicSqrGainPlain,
+    FBFixedFloatBlock const& basicSqrPWPlain,
+    FBFixedFloatBlock const& dsfDecayPlain);
 
   void ProcessUnison(
     FBModuleProcState& state,
-    FBFixedFloatBlock const& basePitch,
-    FBFixedFloatAudioBlock& audioOut);
+    FBFixedFloatAudioBlock& audioOut,
+    FBFixedFloatBlock const& basePitch);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
