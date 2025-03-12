@@ -90,8 +90,9 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->bipolar = false;
   _data->drawMarkers = false;
   _data->skipDrawOnEqualsPrimary = true;
-  _data->primarySeries.clear();
   _data->primaryMarkers.clear();
+  _data->primarySeries.l.clear();
+  _data->primarySeries.r.clear();
   _data->secondarySeries.clear();
   _data->pixelWidth = getWidth();
   _data->moduleName = topo->modules[_tweakedModuleByUI].name;

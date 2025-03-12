@@ -31,7 +31,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   renderData.staticModuleIndex = (int)FFModuleType::GLFO;
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
-  renderData.globalOutputSelector = [](void const* procState, int slot) {
+  renderData.globalCVOutputSelector = [](void const* procState, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].output; };
-  FBRenderModuleGraph<true>(renderData);
+  FBRenderModuleGraph<true, false>(renderData);
 }

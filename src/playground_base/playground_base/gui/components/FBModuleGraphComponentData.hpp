@@ -8,10 +8,16 @@
 
 class FBGraphRenderState;
 
+struct FBModuleGraphPoints final
+{
+  std::vector<float> l = {};
+  std::vector<float> r = {};
+};
+
 struct FBModuleGraphSecondarySeries final
 {
   int marker = -1;
-  std::vector<float> points = {};
+  FBModuleGraphPoints points = {};
 };
 
 struct FBModuleGraphComponentData final
@@ -24,7 +30,7 @@ struct FBModuleGraphComponentData final
   std::string moduleName = {};
   FBGraphRenderState* renderState = {};
   std::vector<int> primaryMarkers = {};
-  std::vector<float> primarySeries = {};
+  FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };

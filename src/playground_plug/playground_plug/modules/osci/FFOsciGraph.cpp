@@ -35,7 +35,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
   renderData.staticModuleIndex = (int)FFModuleType::Osci;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].osci[slot]; };
-  renderData.voiceOutputSelector = [](void const* procState, int voice, int slot) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output[0]; }; // TODO L/R?
-  FBRenderModuleGraph<false>(renderData);
+  renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
+  FBRenderModuleGraph<false, true>(renderData);
 }

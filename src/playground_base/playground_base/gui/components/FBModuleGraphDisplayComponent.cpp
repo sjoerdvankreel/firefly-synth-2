@@ -59,9 +59,9 @@ FBModuleGraphDisplayComponent::PaintSeries(
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {
-  int maxPoints = static_cast<int>(_data->primarySeries.size());
+  int maxPoints = static_cast<int>(_data->primarySeries.l.size());
   for (int i = 0; i < _data->secondarySeries.size(); i++)
-    maxPoints = std::max(maxPoints, static_cast<int>(_data->secondarySeries[i].points.size()));
+    maxPoints = std::max(maxPoints, static_cast<int>(_data->secondarySeries[i].points.l.size()));
 
   g.setColour(Colours::darkgrey);
   g.drawText(_data->moduleName + " " + _data->text, getLocalBounds(), Justification::centred, false);
@@ -69,13 +69,13 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   {
     int marker = _data->secondarySeries[i].marker;
     auto const& points = _data->secondarySeries[i].points;
-    PaintSeries(g, Colours::grey, points, maxPoints);
+    PaintSeries(g, Colours::grey, points.l, maxPoints);
     if (marker != -1 && _data->drawMarkers)
-      PaintMarker(g, points, maxPoints, marker);
+      PaintMarker(g, points.l, maxPoints, marker);
   }
   
-  PaintSeries(g, Colours::white, _data->primarySeries, maxPoints);
+  PaintSeries(g, Colours::white, _data->primarySeries.l, maxPoints);
   if(_data->drawMarkers)
     for (int i = 0; i < _data->primaryMarkers.size(); i++)
-      PaintMarker(g, _data->primarySeries, maxPoints, _data->primaryMarkers[i]);
+      PaintMarker(g, _data->primarySeries.l, maxPoints, _data->primaryMarkers[i]);
 }
