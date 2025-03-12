@@ -1,14 +1,10 @@
-  // TODO hunt all norm2plainfast
-need linear identity param (%)
-drop discretelog2
-dsf by bandwidth
-split out the noise/kps osci
-recheck clap mod
-edit/auto type as members
-fix the tooltips (edit/auto)
-tooltip stuff as members
-split "sample accurate per voice"
+osci stereo graph
+scale graph to 1
+check osci pitch with unison
+fix osci to ui transfer
 
+recheck clap mod
+split out the noise/kps osci
 xdg_config_home
 do a -Wall build
 todo document the thing a bit
