@@ -1,6 +1,5 @@
-osci stereo graph
-check osci pitch with unison
 fix osci to ui transfer
+check osci pitch with unison
 
 recheck clap mod
 split out the noise/kps osci

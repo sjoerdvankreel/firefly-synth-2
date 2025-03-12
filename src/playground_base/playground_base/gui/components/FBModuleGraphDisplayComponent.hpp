@@ -16,7 +16,7 @@ public:
   FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data);
 
 private:
-  void PaintMarker(juce::Graphics& g, std::vector<float> const& points, int maxPoints, int marker);
-  juce::Point<float> PointLocation(std::vector<float> const& points, int maxPoints, int point) const;
-  void PaintSeries(juce::Graphics& g, juce::Colour color, std::vector<float> const& points, int maxPoints);
+  void PaintMarker(juce::Graphics& g, std::vector<float> const& points, int maxPoints, int marker, bool stereo, bool left);
+  juce::Point<float> PointLocation(std::vector<float> const& points, int maxPoints, int point, bool stereo, bool left) const;
+  void PaintSeries(juce::Graphics& g, juce::Colour color, std::vector<float> const& points, int maxPoints, bool stereo, bool left);
 };
