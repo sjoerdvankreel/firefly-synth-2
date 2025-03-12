@@ -317,8 +317,8 @@ FFOsciProcessor::ProcessUnison(
     float pos = i / (_voiceState.unisonCount - 1.0f);
     ProcessUnisonVoice(state, basePitch, detunePlain, osciOut, i, pos);
     panning.Transform([&](int v) { return 0.5f + (pos - 0.5f) * spreadPlain[v]; });
-    audioOut[0].Transform([&](int v) { return (1.0f - panning[v]) * osciOut[v] * attenuate; });
-    audioOut[1].Transform([&](int v) { return panning[v] * osciOut[v] * attenuate; });
+    audioOut[0].Transform([&](int v) { return audioOut[0][v] + (1.0f - panning[v]) * osciOut[v] * attenuate; });
+    audioOut[1].Transform([&](int v) { return audioOut[1][v] + panning[v] * osciOut[v] * attenuate; });
   }
 }
 
