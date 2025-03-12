@@ -15,16 +15,20 @@ struct FFOsciVoiceState final
   int note = {};
   float key = {}; // TODO floating key
   FFOsciType type = {};
-  int unisonCount = {};
-  float unisonOffset = {};
+
   bool basicSinOn = {};
   bool basicSawOn = {};
   bool basicTriOn = {};
   bool basicSqrOn = {};
-  FFOsciDSFMode dsfMode = {};
+
   int dsfDistance = {};
   int dsfOvertones = {};
   float dsfBandwidth = {};
+  FFOsciDSFMode dsfMode = {};
+
+  int unisonCount = {};
+  float unisonOffset = {};
+  float unisonOffsetRandom = {};
 };
 
 class FFOsciProcessor final

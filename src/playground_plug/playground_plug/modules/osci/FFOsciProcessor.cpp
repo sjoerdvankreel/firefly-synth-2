@@ -132,8 +132,6 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.key = static_cast<float>(state.voice->event.note.key);
   _voiceState.note = topo.NormalizedToNoteFast(FFOsciParam::Note, params.block.note[0].Voice()[voice]);
   _voiceState.type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, params.block.type[0].Voice()[voice]);
-  _voiceState.unisonCount = topo.NormalizedDiscreteFast(FFOsciParam::UnisonCount, params.block.unisonCount[0].Voice()[voice]);
-  _voiceState.unisonOffset = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
   _voiceState.basicSinOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSinOn, params.block.basicSinOn[0].Voice()[voice]);
   _voiceState.basicSawOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSawOn, params.block.basicSawOn[0].Voice()[voice]);
   _voiceState.basicTriOn = topo.NormalizedToBoolFast(FFOsciParam::BasicTriOn, params.block.basicTriOn[0].Voice()[voice]);
@@ -142,11 +140,18 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.dsfDistance = topo.NormalizedDiscreteFast(FFOsciParam::DSFDistance, params.block.dsfDistance[0].Voice()[voice]);
   _voiceState.dsfOvertones = topo.NormalizedDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
   _voiceState.dsfBandwidth = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
+  _voiceState.unisonCount = topo.NormalizedDiscreteFast(FFOsciParam::UnisonCount, params.block.unisonCount[0].Voice()[voice]);
+  _voiceState.unisonOffset = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
+  _voiceState.unisonOffsetRandom = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffsetRandom, params.block.unisonOffsetRandom[0].Voice()[voice]);
 
   _prng = {};
   _phase = {};
   for (int i = 0; i < _voiceState.unisonCount; i++)
-    _phases[i] = FBPhase(i * _voiceState.unisonOffset / _voiceState.unisonCount * _prng.Next());
+  {
+    float offsetRandom = _voiceState.unisonOffsetRandom;
+    float unisonPhase = i * _voiceState.unisonOffset / _voiceState.unisonCount;
+    _phases[i] = FBPhase(((1.0f - offsetRandom) + offsetRandom * _prng.Next()) * unisonPhase);
+  }
 }
 
 void 

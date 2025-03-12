@@ -106,7 +106,7 @@ FFMakeOsciTopo()
 
   auto& unisonOffsetRandom = result->params[(int)FFOsciParam::UnisonOffsetRandom];
   unisonOffsetRandom.acc = false;
-  unisonOffsetRandom.defaultText = "100";
+  unisonOffsetRandom.defaultText = "50";
   unisonOffsetRandom.name = "Random";
   unisonOffsetRandom.tooltip = "Unison Offset Random";
   unisonOffsetRandom.slotCount = 1;
