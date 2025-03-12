@@ -42,21 +42,24 @@ static Component*
 MakeSectionUnison(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, std::vector<int> { 0, 0, 0, 0, 0 });
   auto count = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonCount, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, count));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, count, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, count, Slider::SliderStyle::RotaryVerticalDrag));
   auto offset = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonOffset, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, offset));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, offset, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, offset));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, offset, Slider::SliderStyle::RotaryVerticalDrag));
+  auto offsetRandom = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonOffsetRandom, 0 });
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, offsetRandom));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, offsetRandom, Slider::SliderStyle::RotaryVerticalDrag));
   auto detune = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonDetune, 0 });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, detune));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, detune, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, detune));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, detune, Slider::SliderStyle::RotaryVerticalDrag));
   auto spread = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonSpread, 0 });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, spread));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 1, 4 });
-  grid->MarkSection({ 1, 0, 1, 4 });
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, spread));
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 1, 5 });
+  grid->MarkSection({ 1, 0, 1, 5 });
   return grid;
 }
 

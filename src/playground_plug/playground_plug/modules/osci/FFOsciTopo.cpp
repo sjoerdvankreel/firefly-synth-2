@@ -104,6 +104,21 @@ FFMakeOsciTopo()
   unisonOffset.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonOffset);
   unisonOffset.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
 
+  auto& unisonOffsetRandom = result->params[(int)FFOsciParam::UnisonOffsetRandom];
+  unisonOffsetRandom.acc = false;
+  unisonOffsetRandom.defaultText = "100";
+  unisonOffsetRandom.name = "Random";
+  unisonOffsetRandom.tooltip = "Unison Offset Random";
+  unisonOffsetRandom.slotCount = 1;
+  unisonOffsetRandom.unit = "%";
+  unisonOffsetRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
+  unisonOffsetRandom.type = FBParamType::Identity;
+  auto selectUnisonOffsetRandom = [](auto& module) { return &module.block.unisonOffsetRandom; };
+  unisonOffsetRandom.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonOffsetRandom);
+  unisonOffsetRandom.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectUnisonOffsetRandom);
+  unisonOffsetRandom.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonOffsetRandom);
+  unisonOffsetRandom.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+
   auto& unisonDetune = result->params[(int)FFOsciParam::UnisonDetune];
   unisonDetune.acc = true;
   unisonDetune.defaultText = "33";
