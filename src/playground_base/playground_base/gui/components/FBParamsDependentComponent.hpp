@@ -17,6 +17,6 @@ public:
   int FixedWidth(int height) const override;
   
   FBParamsDependentComponent(
-    FBPlugGUI* plugGUI, juce::Component* content,
+    FBPlugGUI* plugGUI, juce::Component* content, int slot,
     FBTopoIndices const& moduleIndices, FBParamsDependencies const& dependencies);
 };

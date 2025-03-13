@@ -6,10 +6,10 @@ using namespace juce;
 
 FBParamsDependentComponent::
 FBParamsDependentComponent(
-FBPlugGUI* plugGUI, Component* content, 
+FBPlugGUI* plugGUI, Component* content, int slot,
 FBTopoIndices const& moduleIndices, FBParamsDependencies const& dependencies):
 Component(),
-FBParamsDependent(plugGUI, moduleIndices, dependencies) 
+FBParamsDependent(plugGUI, slot, moduleIndices, dependencies) 
 {
   addAndMakeVisible(content);
 }

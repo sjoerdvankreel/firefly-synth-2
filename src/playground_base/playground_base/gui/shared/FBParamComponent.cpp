@@ -3,5 +3,5 @@
 
 FBParamComponent::
 FBParamComponent(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
-FBParamsDependent(plugGUI, param->topoIndices.module, param->static_.dependencies),
+FBParamsDependent(plugGUI, param->topoIndices.param.slot, param->topoIndices.module, param->static_.dependencies),
 _param(param) {}

@@ -111,7 +111,7 @@ MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Off || vs[0] == (int)FFOsciType::Basic; });
-  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, indices, dependencies);
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
 static Component*
@@ -139,7 +139,7 @@ MakeSectionDSF(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
-  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, indices, dependencies);
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
 static Component*

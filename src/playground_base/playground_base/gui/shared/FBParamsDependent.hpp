@@ -30,7 +30,7 @@ public:
   virtual ~FBParamsDependent();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependent);
   FBParamsDependent(
-    FBPlugGUI* plugGUI, 
+    FBPlugGUI* plugGUI, int slot,
     FBTopoIndices const& moduleIndices,
     FBParamsDependencies const& dependencies);
 
