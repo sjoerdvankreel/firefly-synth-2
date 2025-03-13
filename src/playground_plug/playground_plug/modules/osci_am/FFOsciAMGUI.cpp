@@ -24,12 +24,12 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(0, 1 + i * 2 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
     auto mix = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Mix, i });
     auto mixHeader = plugGUI->StoreComponent<Label>();
-    mixHeader->setText(mix->shortName, dontSendNotification);
+    mixHeader->setText(mix->static_.name, dontSendNotification);
     grid->Add(1, 0, mixHeader);
     grid->Add(1, 1 + i * 2, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::LinearHorizontal));
     auto ring = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Ring, i });
     auto ringHeader = plugGUI->StoreComponent<Label>();
-    ringHeader->setText(ring->shortName, dontSendNotification);
+    ringHeader->setText(ring->static_.name, dontSendNotification);
     grid->Add(2, 0, ringHeader);
     grid->Add(2, 1 + i * 2, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ring, Slider::SliderStyle::LinearHorizontal));
   }
