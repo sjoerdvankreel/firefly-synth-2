@@ -300,7 +300,7 @@ FFOsciProcessor::ProcessUnison(
       topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, basicTriGainPlain);
     if (_voiceState.basicSqrOn)
     {
-      topo.NormalizedToLinearFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, basicSqrPWPlain);
+      topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, basicSqrPWPlain);
       topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, basicSqrGainPlain);
     }
   }
