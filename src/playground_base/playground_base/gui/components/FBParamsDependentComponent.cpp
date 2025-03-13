@@ -30,5 +30,5 @@ FBParamsDependentComponent::resized()
 int
 FBParamsDependentComponent::FixedWidth(int height) const
 {
-  return FBAsHorizontalAutoSize(getChildComponent(0))->FixedWidth(height);
+  return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height);
 }

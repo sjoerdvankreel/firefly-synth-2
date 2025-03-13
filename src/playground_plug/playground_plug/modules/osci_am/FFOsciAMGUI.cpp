@@ -15,22 +15,29 @@ using namespace juce;
 static Component*
 MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  std::vector<int> columnSizes = {};
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 3, 1 + FFOsciAMSlotCount * 2);
+  columnSizes.push_back(0);
+  for (int i = 0; i < FFOsciAMSlotCount; i++)
+  {
+    columnSizes.push_back(0);
+    columnSizes.push_back(1);
+  }
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 3, columnSizes);
+  auto mix0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Mix, 0 });
+  auto mixHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(mix0->static_.name);
+  grid->Add(1, 0, mixHeader);
+  auto ring0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Ring, 0 });
+  auto ringHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(ring0->static_.name);
+  grid->Add(2, 0, ringHeader);
   for (int i = 0; i < FFOsciAMSlotCount; i++)
   {
     auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::On, i });
     grid->Add(0, 1 + i * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
     grid->Add(0, 1 + i * 2 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
     auto mix = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Mix, i });
-    auto mixHeader = plugGUI->StoreComponent<Label>();
-    mixHeader->setText(mix->static_.name, dontSendNotification);
-    grid->Add(1, 0, mixHeader);
     grid->Add(1, 1 + i * 2, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::LinearHorizontal));
     auto ring = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Ring, i });
-    auto ringHeader = plugGUI->StoreComponent<Label>();
-    ringHeader->setText(ring->static_.name, dontSendNotification);
-    grid->Add(2, 0, ringHeader);
     grid->Add(2, 1 + i * 2, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ring, Slider::SliderStyle::LinearHorizontal));
   }
   return grid;

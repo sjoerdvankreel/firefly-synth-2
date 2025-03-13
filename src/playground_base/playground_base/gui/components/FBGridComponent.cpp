@@ -130,8 +130,9 @@ FBGridComponent::FixedRowHeight(int row) const
     auto const& sizingChildren = iter->second.children;
     for (int i = 0; i < sizingChildren.size(); i++)
     {
-      auto sizingChild = FBAsVerticalAutoSize(sizingChildren[i]);
-      fixedCellHeight = std::max(fixedCellHeight, sizingChild->FixedHeight());
+      auto sizingChild = dynamic_cast<IFBVerticalAutoSize*>(sizingChildren[i]);
+      if(sizingChild != nullptr)
+        fixedCellHeight = std::max(fixedCellHeight, sizingChild->FixedHeight());
     }
     assert(fixedCellHeight != 0);
     result = std::max(result, fixedCellHeight);
@@ -168,8 +169,9 @@ FBGridComponent::FixedColWidth(int col, int height) const
       rowHeight = static_cast<int>(std::round(_rows[r] / static_cast<float>(totalRelativeHeight) * availableGridHeight));
     for (int i = 0; i < sizingChildren.size(); i++)
     {
-      auto sizingChild = FBAsHorizontalAutoSize(sizingChildren[i]);
-      fixedCellWidth = std::max(fixedCellWidth, sizingChild->FixedWidth(rowHeight));
+      auto sizingChild = dynamic_cast<IFBHorizontalAutoSize*>(sizingChildren[i]);
+      if(sizingChild != nullptr)
+        fixedCellWidth = std::max(fixedCellWidth, sizingChild->FixedWidth(rowHeight));
     }
     result = std::max(result, fixedCellWidth);
   }

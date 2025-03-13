@@ -22,5 +22,5 @@ int
 FBSectionComponent::FixedWidth(int height) const
 {
   // TODO part of topo gui
-  return FBAsHorizontalAutoSize(getChildComponent(0))->FixedWidth(height - 2 * 2) + 2 * 2;
+  return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 2 * 2) + 2 * 2;
 }

@@ -9,6 +9,3 @@ public:
   virtual int FixedHeight() const = 0;
   FB_NOCOPY_NOMOVE_DEFCTOR(IFBVerticalAutoSize);
 };
-
-IFBVerticalAutoSize*
-FBAsVerticalAutoSize(juce::Component* component);
