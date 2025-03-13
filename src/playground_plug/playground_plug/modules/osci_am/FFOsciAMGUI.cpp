@@ -8,11 +8,12 @@
 #include <playground_base/gui/controls/FBParamLabel.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/controls/FBParamToggleButton.hpp>
+#include <playground_base/gui/components/FBModuleTabComponent.hpp>
 
 using namespace juce;
 
-Component*
-FFMakeOsciAMGUI(FBPlugGUI* plugGUI)
+static Component*
+MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 3, FFOsciAMSlotCount);
@@ -26,4 +27,10 @@ FFMakeOsciAMGUI(FBPlugGUI* plugGUI)
     grid->Add(2, i, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ring, Slider::SliderStyle::RotaryVerticalDrag));
   }
   return grid;
+}
+
+Component*
+FFMakeOsciAMGUI(FBPlugGUI* plugGUI)
+{
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::OsciAM, MakeSectionAll);
 }
