@@ -4,6 +4,7 @@
 #include <playground_plug/modules/env/FFEnvState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
+#include <playground_plug/modules/osci_am/FFOsciAMState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterState.hpp>
 
@@ -28,6 +29,7 @@ struct FFGlobalExchangeState final
 
 struct FFVoiceExchangeState final
 {
+  std::array<FBModuleProcExchangeState, 1> osciAM = {};
   std::array<FBModuleProcExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
@@ -70,6 +72,7 @@ template <class TVoiceBlock, class TVoiceAcc>
 struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
+  std::array<FFOsciAMParamState<TVoiceBlock, TVoiceAcc>, 1> osciAM = {};
   std::array<FFEnvParamState<TVoiceBlock, TVoiceAcc>, FFEnvCount> env = {};
   std::array<FFOsciParamState<TVoiceBlock, TVoiceAcc>, FFOsciCount> osci = {};
 };
