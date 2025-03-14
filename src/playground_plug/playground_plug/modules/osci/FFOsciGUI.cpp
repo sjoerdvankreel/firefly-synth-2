@@ -58,8 +58,7 @@ MakeSectionUnison(FBPlugGUI* plugGUI, int moduleSlot)
   auto spread = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonSpread, 0 });
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, spread));
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, spread, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 1, 5 });
-  grid->MarkSection({ 1, 0, 1, 5 });
+  grid->MarkSection({ 0, 0, 2, 5 });
   return grid;
 }
 
@@ -71,8 +70,7 @@ MakeSectionGLFOToGain(FBPlugGUI* plugGUI, int moduleSlot)
   auto gLFOToGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gLFOToGain));
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ 0, 0, 1, 1 });
-  grid->MarkSection({ 1, 0, 1, 1 });
+  grid->MarkSection({ 0, 0, 2, 1 });
   return grid;
 }
 
@@ -104,8 +102,7 @@ MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
   auto basicSqrPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSqrPW, 0 });
   grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicSqrPW));
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSqrPW, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 1, 7 });
-  grid->MarkSection({ 1, 0, 1, 7 });
+  grid->MarkSection({ 0, 0, 2, 7 });
 
   // TODO helper function
   FBParamsDependencies dependencies = {};
@@ -132,8 +129,7 @@ MakeSectionDSF(FBPlugGUI* plugGUI, int moduleSlot)
   auto dsfDecay = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFDecay, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dsfDecay));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dsfDecay, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ 0, 0, 1, 4 });
-  grid->MarkSection({ 1, 0, 1, 4 });
+  grid->MarkSection({ 0, 0, 2, 4 });
 
   // TODO helper function
   FBParamsDependencies dependencies = {};

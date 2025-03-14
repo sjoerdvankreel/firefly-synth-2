@@ -58,8 +58,7 @@ MakeSectionVertical(FBPlugGUI* plugGUI, int moduleSlot)
   auto sustainLevel = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SustainLevel, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sustainLevel));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, sustainLevel, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ 0, 0, 1, 4 });
-  grid->MarkSection({ 1, 0, 1, 4 });
+  grid->MarkSection({ 0, 0, 2, 4 });
   return grid;
 }
 
@@ -104,8 +103,7 @@ MakeSectionHorizontal(FBPlugGUI* plugGUI, int moduleSlot)
   auto smoothBars = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
-  grid->MarkSection({ 0, 0, 1, 6 });
-  grid->MarkSection({ 1, 0, 1, 6 });
+  grid->MarkSection({ 0, 0, 2, 6 });
   return grid;
 }
 
