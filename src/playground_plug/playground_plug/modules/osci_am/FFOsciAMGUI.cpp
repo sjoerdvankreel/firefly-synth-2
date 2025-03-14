@@ -40,6 +40,13 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
     auto ring = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Ring, i });
     grid->Add(1, 1 + i * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ring, Slider::SliderStyle::RotaryVerticalDrag));
   }
+  int x = 0;
+  grid->MarkSection({ 0, 0, 2, 1 });
+  for (int i = 0; i < FFOsciCount; i++)
+  {
+    grid->MarkSection({ 0, 1 + x, 2, 1 });
+    x += 2 * (i + 1);
+  }
   return grid;
 }
 
