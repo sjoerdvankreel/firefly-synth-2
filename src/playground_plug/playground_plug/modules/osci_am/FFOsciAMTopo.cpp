@@ -12,9 +12,9 @@ MakeSourcesAndTargets()
 {
   int i = 0;
   std::array<std::pair<int, int>, FFOsciAMSlotCount> result;
-  for (int j = 0; j < FFOsciAMSlotCount; j++)
+  for (int j = 0; j < FFOsciCount; j++)
     for (int k = 0; k <= j; k++)
-      result[i] = { k, j };
+      result[i++] = { k, j };
   return result;
 }
 
@@ -44,7 +44,7 @@ FFMakeOsciAMTopo()
   on.type = FBParamType::Boolean;
   on.slotFormatter = [](int slot) {
     auto sourceAndTarget = FFOsciAMSourcesAndTargets()[slot];
-    return std::to_string(sourceAndTarget.first + 1) + "->" + std::to_string(sourceAndTarget.second + 1); };
+    return std::to_string(sourceAndTarget.first + 1) + ">" + std::to_string(sourceAndTarget.second + 1); };
   auto selectOn = [](auto& module) { return &module.block.on; };
   on.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOn);
   on.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
