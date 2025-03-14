@@ -143,8 +143,8 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0, 0, 1 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  grid->Add(0, 1, MakeSectionUnison(plugGUI, moduleSlot));
-  grid->Add(0, 2, MakeSectionGLFOToGain(plugGUI, moduleSlot));
+  grid->Add(0, 1, MakeSectionGLFOToGain(plugGUI, moduleSlot));
+  grid->Add(0, 2, MakeSectionUnison(plugGUI, moduleSlot));
   grid->Add(0, 3, MakeSectionBasic(plugGUI, moduleSlot));
   grid->Add(0, 3, MakeSectionDSF(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
