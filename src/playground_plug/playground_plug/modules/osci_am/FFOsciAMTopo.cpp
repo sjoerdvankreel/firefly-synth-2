@@ -2,6 +2,28 @@
 #include <playground_plug/modules/osci_am/FFOsciAMTopo.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
+static std::array<std::pair<int, int>, FFOsciAMSlotCount>
+MakeSourcesAndTargets();
+static std::array<std::pair<int, int>, FFOsciAMSlotCount> 
+sourcesAndTargets = MakeSourcesAndTargets();
+
+static std::array<std::pair<int, int>, FFOsciAMSlotCount>
+MakeSourcesAndTargets()
+{
+  int i = 0;
+  std::array<std::pair<int, int>, FFOsciAMSlotCount> result;
+  for (int j = 0; j < FFOsciAMSlotCount; j++)
+    for (int k = 0; k <= j; k++)
+      result[i] = { k, j };
+  return result;
+}
+
+std::array<std::pair<int, int>, FFOsciAMSlotCount> const&
+FFOsciAMSourcesAndTargets()
+{
+  return sourcesAndTargets;
+}
+
 std::unique_ptr<FBStaticModule> 
 FFMakeOsciAMTopo()
 {
@@ -20,6 +42,9 @@ FFMakeOsciAMTopo()
   on.slotCount = FFOsciAMSlotCount;
   on.id = "{F10BBAB2-F179-496F-9A55-68545E734EF6}";
   on.type = FBParamType::Boolean;
+  on.slotFormatter = [](int slot) {
+    auto sourceAndTarget = FFOsciAMSourcesAndTargets()[slot];
+    return std::to_string(sourceAndTarget.first + 1) + "->" + std::to_string(sourceAndTarget.second + 1); };
   auto selectOn = [](auto& module) { return &module.block.on; };
   on.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOn);
   on.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOn);

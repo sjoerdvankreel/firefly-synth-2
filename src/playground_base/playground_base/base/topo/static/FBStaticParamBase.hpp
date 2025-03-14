@@ -19,6 +19,10 @@
 #include <cassert>
 #include <optional>
 #include <algorithm>
+#include <functional>
+
+typedef std::function<std::string(int slot)>
+FBParamSlotFormatter;
 
 struct FBStaticParamBase
 {
@@ -41,6 +45,7 @@ public:
   std::string defaultText = {};
   FBParamType type = (FBParamType)-1;
   FBParamsDependencies dependencies = {};
+  FBParamSlotFormatter slotFormatter = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);
 

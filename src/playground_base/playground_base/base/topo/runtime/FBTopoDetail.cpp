@@ -12,8 +12,12 @@ FBMakeStableHash(std::string const& id)
 }
 
 std::string
-FBMakeRuntimeName(std::string const& name, int slotCount, int slot)
+FBMakeRuntimeName(
+  std::string const& name, int slotCount, 
+  int slot, FBParamSlotFormatter formatter)
 {
+  if (formatter != nullptr)
+    return formatter(slot);
   std::string result = name;
   if (slotCount > 1)
     result += " " + std::to_string(slot + 1);
@@ -21,9 +25,11 @@ FBMakeRuntimeName(std::string const& name, int slotCount, int slot)
 }
 
 std::string
-FBMakeRuntimeTooltip(std::string const& name, std::string const& tooltip, int slotCount, int slot)
+FBMakeRuntimeTooltip(
+  std::string const& name, std::string const& tooltip, 
+  int slotCount, int slot, FBParamSlotFormatter formatter)
 {
   if (tooltip.empty())
-    return FBMakeRuntimeName(name, slotCount, slot);
-  return FBMakeRuntimeName(tooltip, slotCount, slot);
+    return FBMakeRuntimeName(name, slotCount, slot, formatter);
+  return FBMakeRuntimeName(tooltip, slotCount, slot, formatter);
 }
