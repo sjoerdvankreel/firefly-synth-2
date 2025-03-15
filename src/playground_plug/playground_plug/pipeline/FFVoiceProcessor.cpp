@@ -14,6 +14,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     state.moduleSlot = i;
     procState->dsp.voice[voice].env[i].processor.BeginVoice(state);
   }
+  procState->dsp.voice[voice].osciAM.processor.BeginVoice(state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
@@ -29,18 +30,20 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceDSP = procState->dsp.voice[voice];
   voiceDSP.output.Fill(0.0f);
-  for (int i = 0; i < FFOsciCount; i++)
-  {
-    state.moduleSlot = i;
-    voiceDSP.osci[i].processor.Process(state);
-    voiceDSP.output.Add(voiceDSP.osci[i].output);
-  }
+
   for (int i = 0; i < FFEnvCount; i++)
   {
     state.moduleSlot = i;
     int envProcessed = voiceDSP.env[i].processor.Process(state);
     if (i == 0)
       voiceFinished = envProcessed != FBFixedBlockSamples;
+  }
+  voiceDSP.osciAM.processor.Process(state);
+  for (int i = 0; i < FFOsciCount; i++)
+  {
+    state.moduleSlot = i;
+    voiceDSP.osci[i].processor.Process(state);
+    voiceDSP.output.Add(voiceDSP.osci[i].output);
   }
 
   // TODO dont hardcode this to voice amp?

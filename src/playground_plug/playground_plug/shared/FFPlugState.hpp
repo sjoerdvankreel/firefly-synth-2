@@ -45,6 +45,7 @@ struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
 
 struct alignas(sizeof(FBFloatVector)) FFVoiceDSPState final
 {
+  FFOsciAMDSPState osciAM = {};
   FFVoiceProcessor processor = {};
   FBFixedFloatAudioBlock output = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
