@@ -1,16 +1,16 @@
 #include <playground_plug/shared/FFOsciMod.hpp>
 
-static std::vector<std::vector<int>>
+static std::map<std::pair<int, int>, int>
 MakeSourceAndTargetToSlot();
 static std::array<std::pair<int, int>, FFOsciModSlotCount>
 MakeSlotToSourceAndTarget();
 
-static std::vector<std::vector<int>>
+static std::map<std::pair<int, int>, int>
 sourceAndTargetToSlot = MakeSourceAndTargetToSlot();
 static std::array<std::pair<int, int>, FFOsciModSlotCount> 
 slotToSourceAndTarget = MakeSlotToSourceAndTarget();
 
-std::vector<std::vector<int>> const&
+std::map<std::pair<int, int>, int> const&
 FFOsciModSourceAndTargetToSlot()
 {
   return sourceAndTargetToSlot;
@@ -22,17 +22,14 @@ FFOsciModSlotToSourceAndTarget()
   return slotToSourceAndTarget;
 }
 
-static std::vector<std::vector<int>>
+static std::map<std::pair<int, int>, int>
 MakeSourceAndTargetToSlot()
 {
   int slot = 0;
-  std::vector<std::vector<int>> result = {};
+  std::map<std::pair<int, int>, int> result = {};
   for (int tgt = 0; tgt < FFOsciCount; tgt++)
-  {
-    result.emplace_back();
     for (int src = 0; src <= tgt; src++)
-      result[src].push_back(slot++);
-  }
+      result[{ src, tgt }] = slot++;
   return result;
 }
 
