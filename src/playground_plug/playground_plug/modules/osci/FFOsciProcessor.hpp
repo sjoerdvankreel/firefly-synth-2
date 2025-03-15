@@ -29,6 +29,8 @@ struct FFOsciVoiceState final
   int unisonCount = {};
   float unisonOffset = {};
   float unisonOffsetRandom = {};
+
+  std::array<bool, FFOsciCount> _amOn = {};
 };
 
 class FFOsciProcessor final
