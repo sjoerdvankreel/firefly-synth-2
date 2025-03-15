@@ -40,8 +40,10 @@ FFOsciAMProcessor::Process(FBModuleProcState& state)
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
+
   auto& exchangeDSP = exchangeToGUI->voice[voice].osciAM[state.moduleSlot];
   exchangeDSP.active = true;
+
   auto& exchangeParams = exchangeToGUI->param.voice.osciAM[state.moduleSlot];
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
