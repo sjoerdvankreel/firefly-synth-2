@@ -277,9 +277,20 @@ FFOsciProcessor::ProcessUnisonVoice(
   for (int src = 0; src <= state.moduleSlot; src++)
     if (_voiceState.amSourceOn[src])
     {
-      // todo loads of stuff - fix uni - am is uni rm is bi
-      auto const& osciModSource = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
-      unisonAudioOut.Mul(osciModSource);
+      // todo loads of stuff - fix uni - am is uni rm is bi - fix voice count
+      FBFixedFloatBlock am;
+      FBFixedFloatBlock modulated;
+      FBFixedFloatBlock amModulated;
+      FBFixedFloatBlock rmModulated;
+      int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
+      auto const& mix = procState->dsp.voice[voice].osciAM.outputMix[slot];
+      auto const& ring = procState->dsp.voice[voice].osciAM.outputRing[slot];
+      auto const& rm = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
+      am.Transform([&](int v) { return rm[v] * 0.5f + 0.5f; });
+      amModulated.Transform([&](int v) { return unisonAudioOut[v] * am[v]; });
+      rmModulated.Transform([&](int v) { return unisonAudioOut[v] * rm[v]; });
+      modulated.Transform([&](int v) { return (1.0f - ring[v]) * amModulated[v] + ring[v] * rmModulated[v]; });
+      unisonAudioOut.Transform([&](int v) { return (1.0f - mix[v]) * unisonAudioOut[v] + mix[v] * modulated[v]; });
     }
 }
 
