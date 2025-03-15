@@ -22,13 +22,6 @@ FFOsciModSlotToSourceAndTarget()
   return slotToSourceAndTarget;
 }
 
-static std::string
-FFOsciModMakeSourceAndTargetText(int slot)
-{
-  auto sourceAndTarget = MakeSlotToSourceAndTarget()[slot];
-  return std::to_string(sourceAndTarget.first + 1) + ">" + std::to_string(sourceAndTarget.second + 1);
-};
-
 static std::vector<std::vector<int>>
 MakeSourceAndTargetToSlot()
 {
@@ -53,3 +46,10 @@ MakeSlotToSourceAndTarget()
       result[i++] = { k, j };
   return result;
 }
+
+std::string
+FFOsciModMakeSourceAndTargetText(int slot)
+{
+  auto sourceAndTarget = MakeSlotToSourceAndTarget()[slot];
+  return std::to_string(sourceAndTarget.first + 1) + ">" + std::to_string(sourceAndTarget.second + 1);
+};
