@@ -29,8 +29,8 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
-
-  exchangeToGUI->global.master[state.moduleSlot].active = true;
+  auto& exchangeDSP = exchangeToGUI->global.master[state.moduleSlot];
+  exchangeDSP.active = true;
   auto& exchangeParams = exchangeToGUI->param.global.master[state.moduleSlot];
   exchangeParams.acc.gain[0] = gainNorm.Last();
 }

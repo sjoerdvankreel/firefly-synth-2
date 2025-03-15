@@ -50,7 +50,7 @@ MakeSlotToSourceAndTarget()
 std::string
 FFOsciModMakeSourceAndTargetText(int slot)
 {
-  auto src = std::to_string(slotToSourceAndTarget[slot].first + 1);
-  auto tgt = std::to_string(slotToSourceAndTarget[slot].second + 1);
+  auto src = std::to_string(FFOsciModSlotToSourceAndTarget()[slot].first + 1);
+  auto tgt = std::to_string(FFOsciModSlotToSourceAndTarget()[slot].second + 1);
   return src + ">" + tgt;
 };

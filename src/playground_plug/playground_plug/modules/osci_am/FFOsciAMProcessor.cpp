@@ -36,4 +36,16 @@ FFOsciAMProcessor::Process(FBModuleProcState& state)
       topo.NormalizedToIdentityFast(FFOsciAMParam::Mix, mixNorm, outputMix[i]);
       topo.NormalizedToIdentityFast(FFOsciAMParam::Ring, ringNorm, outputRing[i]);
     }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+  auto& exchangeDSP = exchangeToGUI->voice[voice].osciAM[state.moduleSlot];
+  exchangeDSP.active = true;
+  auto& exchangeParams = exchangeToGUI->param.voice.osciAM[state.moduleSlot];
+  for (int i = 0; i < FFOsciModSlotCount; i++)
+  {
+    exchangeParams.acc.mix[i][voice] = procParams.acc.mix[i].Voice()[voice].Last();
+    exchangeParams.acc.ring[i][voice] = procParams.acc.ring[i].Voice()[voice].Last();
+  }
 }
