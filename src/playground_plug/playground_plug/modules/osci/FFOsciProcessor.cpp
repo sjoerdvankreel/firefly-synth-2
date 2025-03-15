@@ -155,7 +155,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
 
   auto const& amParams = procState->param.voice.osciAM[0];
   auto const& amTopo = state.topo->static_.modules[(int)FFModuleType::OsciAM];
-  for(int tgt = 0; tgt < state.moduleSlot; tgt++)
+  for(int tgt = 0; tgt <= state.moduleSlot; tgt++)
     for (int src = 0; src <= tgt; src++)
     {
       int slot = FFOsciModSourceAndTargetToSlot()[src][tgt];
