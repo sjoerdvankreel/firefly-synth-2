@@ -155,12 +155,11 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
 
   auto const& amParams = procState->param.voice.osciAM[0];
   auto const& amTopo = state.topo->static_.modules[(int)FFModuleType::OsciAM];
-  for(int tgt = 0; tgt <= state.moduleSlot; tgt++)
-    for (int src = 0; src <= tgt; src++)
-    {
-      int slot = FFOsciModSourceAndTargetToSlot()[src][tgt];
-      _voiceState.amSourceOn[src] = amTopo.NormalizedToBoolFast(FFOsciAMParam::On, amParams.block.on[slot].Voice()[voice]);
-    }
+  for (int src = 0; src <= state.moduleSlot; src++)
+  {
+    int slot = FFOsciModSourceAndTargetToSlot()[src][state.moduleSlot];
+    _voiceState.amSourceOn[src] = amTopo.NormalizedToBoolFast(FFOsciAMParam::On, amParams.block.on[slot].Voice()[voice]);
+  }
 }
 
 void 
