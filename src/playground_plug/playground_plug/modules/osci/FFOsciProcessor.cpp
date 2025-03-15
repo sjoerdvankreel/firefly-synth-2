@@ -245,7 +245,8 @@ FFOsciProcessor::ProcessTypeUnisonVoice(
 
 void
 FFOsciProcessor::ProcessUnisonVoice(
-  float sampleRate, int unisonVoice, float pos,
+  FBModuleProcState const& state,
+  int unisonVoice, float pos,
   FBFixedFloatBlock& unisonAudioOut,
   FBFixedFloatBlock const& basePitch,
   FBFixedFloatBlock const& detunePlain,
@@ -259,8 +260,12 @@ FFOsciProcessor::ProcessUnisonVoice(
   FBFixedFloatBlock incr;
   FBFixedFloatBlock freq;
   FBFixedFloatBlock phase;
-  FBFixedFloatBlock pitch;
+  FBFixedFloatBlock pitch; 
   
+  int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
+  auto* procState = state.ProcAs<FFProcState>();
+
   pitch.Transform([&](int v) { return basePitch[v] + (pos - 0.5f) * detunePlain[v]; });
   freq.Transform([&](int v) { return FBPitchToFreq(pitch[v], sampleRate); });
   incr.Transform([&](int v) { return freq[v] / sampleRate; });
@@ -268,6 +273,14 @@ FFOsciProcessor::ProcessUnisonVoice(
   ProcessTypeUnisonVoice(sampleRate, unisonAudioOut, phase, freq, incr,
     basicSinGainPlain, basicSawGainPlain, basicTriGainPlain, 
     basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
+
+  for (int src = 0; src <= state.moduleSlot; src++)
+    if (_voiceState.amSourceOn[src])
+    {
+      // todo loads of stuff - fix uni - am is uni rm is bi
+      auto const& osciModSource = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
+      unisonAudioOut.Mul(osciModSource);
+    }
 }
 
 void 
@@ -322,7 +335,7 @@ FFOsciProcessor::ProcessUnison(
   {
     detunePlain.Fill(0.0f);
     ProcessUnisonVoice(
-      state.input->sampleRate, 0, 0.5f, unisonAudioOut[0],
+      state, 0, 0.5f, unisonAudioOut[0],
       basePitch, detunePlain, basicSinGainPlain, basicSawGainPlain, 
       basicTriGainPlain, basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
     audioOut.Transform([&](int ch, int v) { return unisonAudioOut[0][v]; });
@@ -340,7 +353,7 @@ FFOsciProcessor::ProcessUnison(
     {
       float pos = i / (_voiceState.unisonCount - 1.0f);
       ProcessUnisonVoice(
-        state.input->sampleRate, i, pos, unisonAudioOut[i],
+        state, i, pos, unisonAudioOut[i],
         basePitch, detunePlain, basicSinGainPlain, basicSawGainPlain,
         basicTriGainPlain, basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
       panning.Transform([&](int v) { return 0.5f + (pos - 0.5f) * spreadPlain[v]; });

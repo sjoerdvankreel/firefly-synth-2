@@ -71,7 +71,8 @@ class FFOsciProcessor final
     FBFixedFloatBlock const& dsfDecayPlain);
 
   void ProcessUnisonVoice(
-    float sampleRate, int unisonVoice, float pos,
+    FBModuleProcState const& state,
+    int unisonVoice, float pos,
     FBFixedFloatBlock& unisonAudioOut,
     FBFixedFloatBlock const& basePitch,
     FBFixedFloatBlock const& detunePlain,
