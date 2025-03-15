@@ -152,6 +152,15 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
     float unisonPhase = i * _voiceState.unisonOffset / _voiceState.unisonCount;
     _phases[i] = FBPhase(((1.0f - offsetRandom) + offsetRandom * _prng.Next()) * unisonPhase);
   }
+
+  auto const& amParams = procState->param.voice.osciAM[0];
+  auto const& amTopo = state.topo->static_.modules[(int)FFModuleType::OsciAM];
+  for(int i = 0; i <= state.moduleSlot; i++)
+    for (int j = 0; j <= i; j++)
+    {
+     // int slot = FFOsciModSourceAndTargetToSlot()[j][i];
+      //_voiceState._amOn[j]
+    }
 }
 
 void 

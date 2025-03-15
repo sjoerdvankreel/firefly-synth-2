@@ -25,13 +25,13 @@ FFOsciModSlotToSourceAndTarget()
 static std::vector<std::vector<int>>
 MakeSourceAndTargetToSlot()
 {
-  int i = 0;
+  int slot = 0;
   std::vector<std::vector<int>> result = {};
-  for (int j = 0; j < FFOsciCount; j++)
+  for (int tgt = 0; tgt < FFOsciCount; tgt++)
   {
     result.emplace_back();
-    for (int k = 0; k <= j; k++)
-      result[j].push_back(i++);
+    for (int src = 0; src <= tgt; src++)
+      result[src].push_back(slot++);
   }
   return result;
 }
@@ -39,17 +39,18 @@ MakeSourceAndTargetToSlot()
 static std::array<std::pair<int, int>, FFOsciModSlotCount>
 MakeSlotToSourceAndTarget()
 {
-  int i = 0;
+  int slot = 0;
   std::array<std::pair<int, int>, FFOsciModSlotCount> result;
-  for (int j = 0; j < FFOsciCount; j++)
-    for (int k = 0; k <= j; k++)
-      result[i++] = { k, j };
+  for (int tgt = 0; tgt < FFOsciCount; tgt++)
+    for (int src = 0; src <= tgt; src++)
+      result[slot++] = { src, tgt };
   return result;
 }
 
 std::string
 FFOsciModMakeSourceAndTargetText(int slot)
 {
-  auto sourceAndTarget = MakeSlotToSourceAndTarget()[slot];
-  return std::to_string(sourceAndTarget.first + 1) + ">" + std::to_string(sourceAndTarget.second + 1);
+  auto src = std::to_string(slotToSourceAndTarget[slot].first + 1);
+  auto tgt = std::to_string(slotToSourceAndTarget[slot].second + 1);
+  return src + ">" + tgt;
 };
