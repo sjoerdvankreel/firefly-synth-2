@@ -22,6 +22,7 @@ public:
 template <class TVoiceBlock>
 class alignas(alignof(TVoiceBlock)) FFOsciAMBlockParamState final
 {
+  friend class FFOsciProcessor;
   friend class FFOsciAMProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciAMTopo();
   std::array<TVoiceBlock, FFOsciModSlotCount> on = {};
@@ -32,6 +33,7 @@ public:
 template <class TVoiceAcc>
 class alignas(alignof(TVoiceAcc)) FFOsciAMAccParamState final
 {
+  friend class FFOsciProcessor;
   friend class FFOsciAMProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciAMTopo();
   std::array<TVoiceAcc, FFOsciModSlotCount> mix = {};
@@ -43,6 +45,7 @@ public:
 template <class TVoiceBlock, class TVoiceAcc>
 class alignas(alignof(TVoiceAcc)) FFOsciAMParamState final
 {
+  friend class FFOsciProcessor;
   friend class FFOsciAMProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciAMTopo();
   FFOsciAMAccParamState<TVoiceAcc> acc = {};

@@ -30,7 +30,7 @@ struct FFOsciVoiceState final
   float unisonOffset = {};
   float unisonOffsetRandom = {};
 
-  std::array<bool, FFOsciCount> _amOn = {};
+  std::array<bool, FFOsciCount> amSourceOn = {};
 };
 
 class FFOsciProcessor final
