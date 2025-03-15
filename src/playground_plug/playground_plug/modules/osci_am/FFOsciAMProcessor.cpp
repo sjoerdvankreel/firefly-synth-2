@@ -46,8 +46,9 @@ FFOsciAMProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeParams = exchangeToGUI->param.voice.osciAM[state.moduleSlot];
   for (int i = 0; i < FFOsciModSlotCount; i++)
-  {
-    exchangeParams.acc.mix[i][voice] = procParams.acc.mix[i].Voice()[voice].Last();
-    exchangeParams.acc.ring[i][voice] = procParams.acc.ring[i].Voice()[voice].Last();
-  }
+    if (_voiceState.on[i])
+    {
+      exchangeParams.acc.mix[i][voice] = procParams.acc.mix[i].Voice()[voice].Last();
+      exchangeParams.acc.ring[i][voice] = procParams.acc.ring[i].Voice()[voice].Last();
+    }
 }
