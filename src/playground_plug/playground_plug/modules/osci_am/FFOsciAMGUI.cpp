@@ -19,7 +19,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   std::vector<int> columnSizes = {};
   auto topo = plugGUI->HostContext()->Topo();
   columnSizes.push_back(0);
-  for (int i = 0; i < FFOsciAMSlotCount; i++)
+  for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     columnSizes.push_back(0);
     columnSizes.push_back(1);
@@ -31,7 +31,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto ring0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Ring, 0 });
   auto ringHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(ring0->static_.name);
   grid->Add(1, 0, ringHeader);
-  for (int i = 0; i < FFOsciAMSlotCount; i++)
+  for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::On, i });
     grid->Add(0, 1 + i * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));

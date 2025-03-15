@@ -14,8 +14,8 @@ class alignas(sizeof(FBFloatVector)) FFOsciAMDSPState final
   friend class FFVoiceProcessor;
   FFOsciAMProcessor processor = {};
 public:
-  std::array<FBFixedFloatBlock, FFOsciAMSlotCount> outputMix = {};
-  std::array<FBFixedFloatBlock, FFOsciAMSlotCount> outputRing = {};
+  std::array<FBFixedFloatBlock, FFOsciModSlotCount> outputMix = {};
+  std::array<FBFixedFloatBlock, FFOsciModSlotCount> outputRing = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAMDSPState);
 };
 
@@ -24,7 +24,7 @@ class alignas(alignof(TVoiceBlock)) FFOsciAMBlockParamState final
 {
   friend class FFOsciAMProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciAMTopo();
-  std::array<TVoiceBlock, FFOsciAMSlotCount> on = {};
+  std::array<TVoiceBlock, FFOsciModSlotCount> on = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAMBlockParamState);
 };
@@ -34,8 +34,8 @@ class alignas(alignof(TVoiceAcc)) FFOsciAMAccParamState final
 {
   friend class FFOsciAMProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciAMTopo();
-  std::array<TVoiceAcc, FFOsciAMSlotCount> mix = {};
-  std::array<TVoiceAcc, FFOsciAMSlotCount> ring = {};
+  std::array<TVoiceAcc, FFOsciModSlotCount> mix = {};
+  std::array<TVoiceAcc, FFOsciModSlotCount> ring = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAMAccParamState);
 };

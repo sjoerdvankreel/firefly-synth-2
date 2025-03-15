@@ -12,7 +12,7 @@ FFOsciAMProcessor::BeginVoice(FBModuleProcState const& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osciAM[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciAM];
-  for(int i = 0; i < FFOsciAMSlotCount; i++)
+  for(int i = 0; i < FFOsciModSlotCount; i++)
     _voiceState.on[i] = topo.NormalizedToBoolFast(FFOsciAMParam::On, params.block.on[i].Voice()[voice]);
 }
 
@@ -28,7 +28,7 @@ FFOsciAMProcessor::Process(FBModuleProcState& state)
 
   // TODO these should themselves be mod targets
   // for now just copy over the stream
-  for (int i = 0; i < FFOsciAMSlotCount; i++)
+  for (int i = 0; i < FFOsciModSlotCount; i++)
     if(_voiceState.on[i])
     {
       auto const& mixNorm = procParams.acc.mix[i].Voice()[voice];
