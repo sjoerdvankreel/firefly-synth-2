@@ -246,8 +246,9 @@ FFOsciProcessor::ProcessTypeUnisonVoice(
 void
 FFOsciProcessor::ProcessUnisonVoice(
   FBModuleProcState const& state,
-  int unisonVoice, float pos,
+  int unisonVoice,
   FBFixedFloatBlock& unisonAudioOut,
+  FBFixedFloatBlock const& unisonPos,
   FBFixedFloatBlock const& basePitch,
   FBFixedFloatBlock const& detunePlain,
   FBFixedFloatBlock const& basicSinGainPlain,
@@ -266,7 +267,7 @@ FFOsciProcessor::ProcessUnisonVoice(
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
 
-  pitch.Transform([&](int v) { return basePitch[v] + (pos - 0.5f) * detunePlain[v]; });
+  pitch.Transform([&](int v) { return basePitch[v] + unisonPos[v] * detunePlain[v]; });
   freq.Transform([&](int v) { return FBPitchToFreq(pitch[v], sampleRate); });
   incr.Transform([&](int v) { return freq[v] / sampleRate; });
   phase.Transform([&](int v) { return _phases[unisonVoice].Next(incr[v]); });
@@ -353,12 +354,14 @@ FFOsciProcessor::ProcessUnison(
   else
     assert(false);
 
+  FBFixedFloatBlock unisonPos;
   FBFixedFloatBlock detunePlain;
   if (_voiceState.unisonCount == 1)
   {
+    unisonPos.Fill(0.0f);
     detunePlain.Fill(0.0f);
     ProcessUnisonVoice(
-      state, 0, 0.5f, unisonAudioOut[0],
+      state, 0, unisonAudioOut[0], unisonPos,
       basePitch, detunePlain, basicSinGainPlain, basicSawGainPlain, 
       basicTriGainPlain, basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
     audioOut.Transform([&](int ch, int v) { return unisonAudioOut[0][v]; });
@@ -371,18 +374,21 @@ FFOsciProcessor::ProcessUnison(
     topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, detuneNorm, detunePlain);
     topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, spreadNorm, spreadPlain);
 
-    float attenuate = 1.0f / std::sqrt(static_cast<float>(_voiceState.unisonCount));
     for (int i = 0; i < _voiceState.unisonCount; i++)
     {
-      float pos = i / (_voiceState.unisonCount - 1.0f);
+      unisonPos.Fill(i / (_voiceState.unisonCount - 1.0f) - 0.5f);
       ProcessUnisonVoice(
-        state, i, pos, unisonAudioOut[i],
+        state, i, unisonAudioOut[i], unisonPos,
         basePitch, detunePlain, basicSinGainPlain, basicSawGainPlain,
         basicTriGainPlain, basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
-      panning.Transform([&](int v) { return 0.5f + (pos - 0.5f) * spreadPlain[v]; });
-      audioOut[0].Transform([&](int v) { return audioOut[0][v] + (1.0f - panning[v]) * unisonAudioOut[i][v] * attenuate; });
-      audioOut[1].Transform([&](int v) { return audioOut[1][v] + panning[v] * unisonAudioOut[i][v] * attenuate; });
+      panning.Transform([&](int v) { return 0.5f + unisonPos[v] * spreadPlain[v]; });
+      audioOut[0].Transform([&](int v) { return audioOut[0][v] + (1.0f - panning[v]) * unisonAudioOut[i][v]; });
+      audioOut[1].Transform([&](int v) { return audioOut[1][v] + panning[v] * unisonAudioOut[i][v]; });
     }
+
+    float attenuate = 1.0f / std::sqrt(static_cast<float>(_voiceState.unisonCount));
+    audioOut[0].Transform([&](int v) { return audioOut[0][v] * attenuate; });
+    audioOut[1].Transform([&](int v) { return audioOut[1][v] * attenuate; });
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

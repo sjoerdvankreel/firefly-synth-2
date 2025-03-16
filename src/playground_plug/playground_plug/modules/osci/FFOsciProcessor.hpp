@@ -72,8 +72,9 @@ class FFOsciProcessor final
 
   void ProcessUnisonVoice(
     FBModuleProcState const& state,
-    int unisonVoice, float pos,
+    int unisonVoice, 
     FBFixedFloatBlock& unisonAudioOut,
+    FBFixedFloatBlock const& unisonPos,
     FBFixedFloatBlock const& basePitch,
     FBFixedFloatBlock const& detunePlain,
     FBFixedFloatBlock const& basicSinGainPlain,
