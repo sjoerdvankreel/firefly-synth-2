@@ -22,15 +22,15 @@
 struct FFGlobalExchangeState final
 {
   std::array<FBModuleProcExchangeState, 1> master = {};
-  std::array<FBModuleProcExchangeState, FFGLFOCount> gLFO = {};
+  std::array<FFGLFOExchangeState, FFGLFOCount> gLFO = {};
   std::array<FBModuleProcExchangeState, FFGFilterCount> gFilter = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
 
 struct FFVoiceExchangeState final
 {
+  std::array<FFEnvExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState, 1> osciAM = {};
-  std::array<FBModuleProcExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };

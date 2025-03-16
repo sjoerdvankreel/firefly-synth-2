@@ -2,10 +2,9 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 
-struct FBModuleProcExchangeState final
+struct FBModuleProcExchangeState
 {
   bool active = {};
-  float lastOutput = {};
   int lengthSamples = {};
   int positionSamples = {};
   FB_COPY_MOVE_DEFCTOR(FBModuleProcExchangeState);

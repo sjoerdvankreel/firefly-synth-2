@@ -1,13 +1,21 @@
 #pragma once
 
+#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
+
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
-#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
+#include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
 
 #include <array>
 #include <memory>
 
 struct FBStaticModule;
+
+struct FFGLFOExchangeState final:
+public FBModuleProcExchangeState
+{
+  float lastOutput = {};
+};
 
 class alignas(sizeof(FBFloatVector)) FFGLFODSPState final
 {

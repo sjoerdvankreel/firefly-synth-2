@@ -1,7 +1,9 @@
 #pragma once
 
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
+
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 
 #include <array>
@@ -9,6 +11,12 @@
 
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
+
+struct FFEnvExchangeState final:
+public FBModuleProcExchangeState
+{
+  float lastOutput = {};
+};
 
 class FFEnvGUIState final
 {
