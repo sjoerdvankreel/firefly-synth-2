@@ -262,7 +262,7 @@ FFOsciProcessor::ProcessUnisonVoice(
   for (int v = 0; v < FBFixedFloatVectors; v++)
   {
     pitch[v] = basePitch[v] + unisonPos[v] * detunePlain[v];
-    if(_voiceState.unisonDetuneHQ)
+    if(_voiceState.unisonDetuneHQ || _voiceState.unisonCount == 1)
       freq[v] = FBPitchToFreqAccurate(pitch[v], sampleRate);
     else
       freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
