@@ -174,27 +174,18 @@ FFOsciProcessor::ProcessBasicUnisonVoice(
   FBFixedFloatBlock const& sqrPWPlain)
 {
   unisonAudioOut.Fill(0.0f);
-  FBFixedFloatBlock osciAudio;
   if (_voiceState.basicSinOn)
-  {
-    osciAudio.Transform([&](int v) { return GenerateSin(phase[v]) * sinGainPlain[v]; });
-    unisonAudioOut.Add(osciAudio);
-  }
+    for (int v = 0; v < FBFixedFloatVectors; v++)
+      unisonAudioOut[v] += GenerateSin(phase[v]) * sinGainPlain[v];
   if (_voiceState.basicSawOn)
-  {
-    osciAudio.Transform([&](int v) { return GenerateSaw(phase[v], incr[v]) * sawGainPlain[v]; });
-    unisonAudioOut.Add(osciAudio);
-  }
+    for (int v = 0; v < FBFixedFloatVectors; v++)
+      unisonAudioOut[v] += GenerateSaw(phase[v], incr[v]) * sawGainPlain[v];
   if (_voiceState.basicTriOn)
-  {
-    osciAudio.Transform([&](int v) { return GenerateTri(phase[v], incr[v]) * triGainPlain[v]; });
-    unisonAudioOut.Add(osciAudio);
-  }
+    for (int v = 0; v < FBFixedFloatVectors; v++)
+      unisonAudioOut[v] += GenerateTri(phase[v], incr[v]) * triGainPlain[v];
   if (_voiceState.basicSqrOn)
-  {
-    osciAudio.Transform([&](int v) { return GenerateSqr(phase[v], incr[v], sqrPWPlain[v]) * sqrGainPlain[v]; });
-    unisonAudioOut.Add(osciAudio);
-  }
+    for (int v = 0; v < FBFixedFloatVectors; v++)
+      unisonAudioOut[v] += GenerateSqr(phase[v], incr[v], sqrPWPlain[v]) * sqrGainPlain[v];
 }
 
 // https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
