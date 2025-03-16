@@ -289,7 +289,8 @@ FFOsciProcessor::ProcessUnisonVoice(
       int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
       if (exchangeFromGUI != nullptr)
       {
-        // TODO mix.Fill(exchangeFromGUI->param.voice.
+        mix.Fill(exchangeFromGUI->param.voice.osciAM[0].acc.mix[slot][voice]);
+        ring.Fill(exchangeFromGUI->param.voice.osciAM[0].acc.ring[slot][voice]);
       } else 
       {
         mix.CopyFrom(procState->dsp.voice[voice].osciAM.outputMix[slot]);
