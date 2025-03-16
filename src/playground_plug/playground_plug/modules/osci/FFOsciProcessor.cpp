@@ -261,7 +261,7 @@ FFOsciProcessor::ProcessUnisonVoice(
   for (int v = 0; v < FBFixedFloatVectors; v++)
   {
     pitch[v] = basePitch[v] + unisonPos[v] * detunePlain[v];
-    freq[v] = FBPitchToFreq(pitch[v], sampleRate);
+    freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
     incr[v] = freq[v] / sampleRate;
     phase[v] = _phases[unisonVoice].Next(incr[v]);
   }
@@ -434,7 +434,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBFixedFloatBlock basePitch;
   float notePitch = _voiceState.key + _voiceState.note - 60.0f;
   basePitch.Transform([&](int v) { return notePitch + centPlain[v]; });
-  baseFreq.Transform([&](int v) { return FBPitchToFreq(basePitch[v], state.input->sampleRate); });
+  baseFreq.Transform([&](int v) { return FBPitchToFreqAccurate(basePitch[v], state.input->sampleRate); });
   baseIncr.Transform([&](int v) { return baseFreq[v] / state.input->sampleRate; });
   _phase.Next(baseIncr);
 
