@@ -14,8 +14,8 @@ PlotParams(FBGraphRenderState const* state)
 {
   FBModuleGraphPlotParams result = {};
   int moduleSlot = state->ModuleProcState()->moduleSlot;
-  float bpm = state->ExchangeContainer()->Proc()->bpm;
-  float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
+  float bpm = state->ExchangeContainer()->Host()->bpm;
+  float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   bool sync = state->AudioParamBool({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
   float graphKeyTimePct = state->GUIParamLinear({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTimePct, 0 });
   

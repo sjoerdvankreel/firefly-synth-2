@@ -16,7 +16,7 @@ PlotParams(FBGraphRenderState const* state)
   FBModuleGraphPlotParams result = {};
   result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
-  float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
+  float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   result.samples = state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, sampleRate);
   return result;
 }

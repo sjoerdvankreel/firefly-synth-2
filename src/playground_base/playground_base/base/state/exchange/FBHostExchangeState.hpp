@@ -1,6 +1,6 @@
 #pragma once
 
-struct FBProcExchangeState final
+struct FBHostExchangeState final
 {
   float bpm = {};
   float sampleRate = {};

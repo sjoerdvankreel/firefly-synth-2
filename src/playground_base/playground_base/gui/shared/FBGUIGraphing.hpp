@@ -188,13 +188,13 @@ FBRenderModuleGraph(RenderData& renderData)
   }
 
   int guiReleaseAt = -1;
-  auto procExchange = renderState->ExchangeContainer()->Proc();
+  auto hostExchange = renderState->ExchangeContainer()->Host();
   float guiSampleCount = static_cast<float>(graphData->pixelWidth);
-  float dspSampleRate = renderState->ExchangeContainer()->Proc()->sampleRate;
-  float guiSampleRate = procExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
+  float dspSampleRate = renderState->ExchangeContainer()->Host()->sampleRate;
+  float guiSampleRate = hostExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
   if(plotParams.releaseAt != -1)
     guiReleaseAt = static_cast<int>(std::round(guiSampleRate * plotParams.releaseAt / dspSampleRate));
-  renderState->PrepareForRenderPrimary(guiSampleRate, procExchange->bpm);
+  renderState->PrepareForRenderPrimary(guiSampleRate, hostExchange->bpm);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;

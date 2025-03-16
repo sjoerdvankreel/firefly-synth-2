@@ -13,7 +13,7 @@
 
 struct FBRuntimeTopo;
 struct FBRuntimeParam;
-struct FBProcExchangeState;
+struct FBHostExchangeState;
 
 class FBExchangeStateContainer final
 {
@@ -22,12 +22,12 @@ class FBExchangeStateContainer final
   void* _rawState;
   void (*_freeRawState)(void*);
 
-  FBProcExchangeState* _proc = {};
+  FBHostExchangeState* _host = {};
   std::vector<FBParamExchangeState> _params = {};
   std::array<FBVoiceInfo, FBMaxVoices>* _voices = {};
   std::vector<std::unique_ptr<FBModuleExchangeState>> _modules = {};
 
-  FBProcExchangeState* Proc() { return _proc; }
+  FBHostExchangeState* Host() { return _host; }
   std::vector<FBParamExchangeState>& Params() { return _params; }
   std::array<FBVoiceInfo, FBMaxVoices>& Voices() { return *_voices; }
 
@@ -41,7 +41,7 @@ public:
   template <class T> T* As() { return static_cast<T*>(Raw()); }
   template <class T> T const* As() const { return static_cast<T const*>(Raw()); }
 
-  FBProcExchangeState const* Proc() const { return _proc; }
+  FBHostExchangeState const* Host() const { return _host; }
   std::vector<FBParamExchangeState> const& Params() const { return _params; }
   std::array<FBVoiceInfo, FBMaxVoices> const& Voices() const { return *_voices; }
   FBParamActiveExchangeState GetParamActiveState(FBRuntimeParam const* param) const;

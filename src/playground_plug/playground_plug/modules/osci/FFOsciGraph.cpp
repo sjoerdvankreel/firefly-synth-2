@@ -15,7 +15,7 @@ PlotParams(FBGraphRenderState const* state)
   FBModuleGraphPlotParams result = {};
   result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
-  float sampleRate = state->ExchangeContainer()->Proc()->sampleRate;
+  float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   int unison = state->AudioParamDiscrete({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonCount, 0 });
   float pitch = static_cast<float>(state->AudioParamNote({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 }));
   pitch += state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
