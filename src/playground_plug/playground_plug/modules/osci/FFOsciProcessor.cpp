@@ -141,6 +141,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.dsfOvertones = topo.NormalizedDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
   _voiceState.dsfBandwidthPlain = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
   _voiceState.unisonCount = topo.NormalizedDiscreteFast(FFOsciParam::UnisonCount, params.block.unisonCount[0].Voice()[voice]);
+  _voiceState.unisonDetuneHQ = topo.NormalizedToBoolFast(FFOsciParam::UnisonDetuneHQ, params.block.unisonDetuneHQ[0].Voice()[voice]);
   _voiceState.unisonOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
   _voiceState.unisonOffsetRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffsetRandom, params.block.unisonOffsetRandom[0].Voice()[voice]);
 
@@ -261,7 +262,10 @@ FFOsciProcessor::ProcessUnisonVoice(
   for (int v = 0; v < FBFixedFloatVectors; v++)
   {
     pitch[v] = basePitch[v] + unisonPos[v] * detunePlain[v];
-    freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
+    if(_voiceState.unisonDetuneHQ)
+      freq[v] = FBPitchToFreqAccurate(pitch[v], sampleRate);
+    else
+      freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
     incr[v] = freq[v] / sampleRate;
     phase[v] = _phases[unisonVoice].Next(incr[v]);
   }

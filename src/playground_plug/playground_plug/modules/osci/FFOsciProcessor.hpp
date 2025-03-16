@@ -27,6 +27,7 @@ struct FFOsciVoiceState final
   float dsfBandwidthPlain = {};
 
   int unisonCount = {};
+  bool unisonDetuneHQ = {};
   float unisonOffsetPlain = {};
   float unisonOffsetRandomPlain = {};
 

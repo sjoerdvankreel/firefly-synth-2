@@ -11,7 +11,7 @@ static inline int constexpr FFOsciUnisonMaxCount = 16;
 
 enum class FFOsciParam { 
   Type, Gain, Note, Cent,
-  UnisonCount, UnisonDetune, UnisonSpread, UnisonOffset, UnisonOffsetRandom,
+  UnisonCount, UnisonDetune, UnisonDetuneHQ, UnisonSpread, UnisonOffset, UnisonOffsetRandom,
   BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
   BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,

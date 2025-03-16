@@ -30,6 +30,7 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> note = {};
   std::array<TVoiceBlock, 1> unisonCount = {};
+  std::array<TVoiceBlock, 1> unisonDetuneHQ = {};
   std::array<TVoiceBlock, 1> unisonOffset = {};
   std::array<TVoiceBlock, 1> unisonOffsetRandom = {};
   std::array<TVoiceBlock, 1> basicSinOn = {};

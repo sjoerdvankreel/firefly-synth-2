@@ -132,7 +132,21 @@ FFMakeOsciTopo()
   unisonDetune.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonDetune);
   unisonDetune.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonDetune);
   unisonDetune.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonDetune);
-  unisonDetune.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+  unisonDetune.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; }); 
+  
+  auto& unisonDetuneHQ = result->params[(int)FFOsciParam::UnisonDetuneHQ];
+  unisonDetuneHQ.acc = false;
+  unisonDetuneHQ.defaultText = "Off";
+  unisonDetuneHQ.name = "HQ";
+  unisonDetuneHQ.tooltip = "HQ Detune";
+  unisonDetuneHQ.slotCount = 1;
+  unisonDetuneHQ.id = "{EDA13F33-C852-4DF6-8782-43D256431C01}";
+  unisonDetuneHQ.type = FBParamType::Boolean;
+  auto selectUnisonDetuneHQ = [](auto& module) { return &module.block.unisonDetuneHQ; };
+  unisonDetuneHQ.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonDetuneHQ);
+  unisonDetuneHQ.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectUnisonDetuneHQ);
+  unisonDetuneHQ.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonDetuneHQ);
+  unisonDetuneHQ.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
 
   auto& unisonSpread = result->params[(int)FFOsciParam::UnisonSpread];
   unisonSpread.acc = true;
