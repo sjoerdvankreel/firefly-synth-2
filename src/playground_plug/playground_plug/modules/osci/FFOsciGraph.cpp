@@ -12,10 +12,17 @@
 struct OsciGraphRenderData final:
 public FBModuleGraphRenderData<OsciGraphRenderData>
 {
-  FFOsciProcessor processor = {};
-  int Process(FBModuleProcState& state) { return processor.Process(state); }
-  void BeginVoice(FBModuleProcState const& state) { processor.BeginVoice(state); }
+  FFOsciProcessor& GetProcessor(FBModuleProcState& state);
+  int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
+  void BeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
 };
+
+FFOsciProcessor&
+OsciGraphRenderData::GetProcessor(FBModuleProcState& state)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  return procState->dsp.voice[state.voice->slot].osci[state.moduleSlot].processor;
+}
 
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)

@@ -13,10 +13,17 @@
 struct GLFOGraphRenderData final:
 public FBModuleGraphRenderData<GLFOGraphRenderData>
 {
-  FFGLFOProcessor processor = {};
-  void Reset(FBModuleProcState const& state) { processor.Reset(state); }
-  int Process(FBModuleProcState& state) { return processor.Process(state); }
+  FFGLFOProcessor& GetProcessor(FBModuleProcState& state);
+  void Reset(FBModuleProcState& state) { GetProcessor(state).Reset(state); }
+  int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
 };
+
+FFGLFOProcessor& 
+GLFOGraphRenderData::GetProcessor(FBModuleProcState& state)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  return procState->dsp.global.gLFO[state.moduleSlot].processor;
+}
 
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)

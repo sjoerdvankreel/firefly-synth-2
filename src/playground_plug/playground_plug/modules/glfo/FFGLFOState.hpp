@@ -20,6 +20,7 @@ public FBModuleProcExchangeState
 class alignas(sizeof(FBFloatVector)) FFGLFODSPState final
 {
   friend class FFPlugProcessor;
+  friend struct GLFOGraphRenderData;
   FFGLFOProcessor processor = {};
 public:
   FBFixedFloatBlock output = {};

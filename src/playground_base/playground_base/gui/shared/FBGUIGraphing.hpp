@@ -64,9 +64,9 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceAudioOutputSelector voiceAudioOutputSelector = {};
   FBModuleGraphGlobalAudioOutputSelector globalAudioOutputSelector = {};
 
-  void Reset(FBModuleProcState const& state) { static_cast<Derived*>(this)->Reset(state); }
+  void Reset(FBModuleProcState& state) { static_cast<Derived*>(this)->Reset(state); }
   int Process(FBModuleProcState& state) { return static_cast<Derived*>(this)->Process(state); }
-  void BeginVoice(FBModuleProcState const& state) { static_cast<Derived*>(this)->BeginVoice(state); }
+  void BeginVoice(FBModuleProcState& state) { static_cast<Derived*>(this)->BeginVoice(state); }
 };
 
 template <bool Global, bool Audio, class Derived> 

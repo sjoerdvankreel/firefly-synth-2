@@ -12,10 +12,17 @@
 struct EnvGraphRenderData final:
 public FBModuleGraphRenderData<EnvGraphRenderData>
 {
-  FFEnvProcessor processor = {};
-  int Process(FBModuleProcState& state) { return processor.Process(state); }
-  void BeginVoice(FBModuleProcState const& state) { processor.BeginVoice(state); }
+  FFEnvProcessor& GetProcessor(FBModuleProcState& state);
+  int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
+  void BeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
 };
+
+FFEnvProcessor& 
+EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  return procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
+}
 
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)

@@ -30,6 +30,7 @@ public:
 class alignas(sizeof(FBFloatVector)) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;
+  friend struct EnvGraphRenderData;
   FFEnvProcessor processor = {};
 public:
   FBFixedFloatBlock output = {};

@@ -13,6 +13,7 @@ struct FBStaticModule;
 class alignas(sizeof(FBFloatVector)) FFOsciDSPState final
 {
   friend class FFVoiceProcessor;
+  friend struct OsciGraphRenderData;
   FFOsciProcessor processor = {};
 public:
   FBFixedFloatAudioBlock output = {};
