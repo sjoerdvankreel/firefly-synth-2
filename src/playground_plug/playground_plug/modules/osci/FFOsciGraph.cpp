@@ -12,10 +12,34 @@
 struct OsciGraphRenderData final:
 public FBModuleGraphRenderData<OsciGraphRenderData>
 {
+  int Process(FBModuleProcState& state);
+  void BeginVoice(FBModuleProcState& state);
   FFOsciProcessor& GetProcessor(FBModuleProcState& state);
-  int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
-  void BeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
 };
+
+void
+OsciGraphRenderData::BeginVoice(FBModuleProcState& state)
+{
+  int highestSlot = state.moduleSlot;
+  for (int i = 0; i <= highestSlot; i++)
+  {
+    state.moduleSlot = i;
+    GetProcessor(state).BeginVoice(state);
+  }
+}
+
+int 
+OsciGraphRenderData::Process(FBModuleProcState& state)
+{
+  int result = 0;
+  int highestSlot = state.moduleSlot;
+  for (int i = 0; i <= highestSlot; i++)
+  {
+    state.moduleSlot = i;
+    result = GetProcessor(state).Process(state);
+  }
+  return result;
+}
 
 FFOsciProcessor&
 OsciGraphRenderData::GetProcessor(FBModuleProcState& state)
