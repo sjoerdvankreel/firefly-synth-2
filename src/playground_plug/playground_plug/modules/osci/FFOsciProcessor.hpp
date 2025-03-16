@@ -23,12 +23,12 @@ struct FFOsciVoiceState final
 
   int dsfDistance = {};
   int dsfOvertones = {};
-  float dsfBandwidth = {};
   FFOsciDSFMode dsfMode = {};
+  float dsfBandwidthPlain = {};
 
   int unisonCount = {};
-  float unisonOffset = {};
-  float unisonOffsetRandom = {};
+  float unisonOffsetPlain = {};
+  float unisonOffsetRandomPlain = {};
 
   std::array<bool, FFOsciCount> amSourceOn = {};
 };

@@ -139,17 +139,17 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, params.block.dsfMode[0].Voice()[voice]);
   _voiceState.dsfDistance = topo.NormalizedDiscreteFast(FFOsciParam::DSFDistance, params.block.dsfDistance[0].Voice()[voice]);
   _voiceState.dsfOvertones = topo.NormalizedDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
-  _voiceState.dsfBandwidth = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
+  _voiceState.dsfBandwidthPlain = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
   _voiceState.unisonCount = topo.NormalizedDiscreteFast(FFOsciParam::UnisonCount, params.block.unisonCount[0].Voice()[voice]);
-  _voiceState.unisonOffset = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
-  _voiceState.unisonOffsetRandom = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffsetRandom, params.block.unisonOffsetRandom[0].Voice()[voice]);
+  _voiceState.unisonOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
+  _voiceState.unisonOffsetRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffsetRandom, params.block.unisonOffsetRandom[0].Voice()[voice]);
 
   _prng = {};
   _phase = {};
   for (int i = 0; i < _voiceState.unisonCount; i++)
   {
-    float offsetRandom = _voiceState.unisonOffsetRandom;
-    float unisonPhase = i * _voiceState.unisonOffset / _voiceState.unisonCount;
+    float offsetRandom = _voiceState.unisonOffsetRandomPlain;
+    float unisonPhase = i * _voiceState.unisonOffsetPlain / _voiceState.unisonCount;
     _phases[i] = FBPhase(((1.0f - offsetRandom) + offsetRandom * _prng.Next()) * unisonPhase);
   }
 
@@ -216,7 +216,7 @@ FFOsciProcessor::ProcessDSFUnisonVoice(
       phase[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfOvertones); });
   else
     unisonAudioOut.Transform([&](int v) { return GenerateDSFBandwidth(
-      phase[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfBandwidth); });
+      phase[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfBandwidthPlain); });
 }
 
 void 
