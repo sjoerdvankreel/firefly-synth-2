@@ -9,6 +9,14 @@
 
 #include <algorithm>
 
+struct OsciGraphRenderData final:
+public FBModuleGraphRenderData<OsciGraphRenderData>
+{
+  FFOsciProcessor processor = {};
+  int Process(FBModuleProcState& state) { return processor.Process(state); }
+  void BeginVoice(FBModuleProcState const& state) { processor.BeginVoice(state); }
+};
+
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)
 {
@@ -27,7 +35,7 @@ PlotParams(FBGraphRenderState const* state)
 void
 FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
 {
-  FBModuleGraphRenderData<FFOsciProcessor> renderData = {};
+  OsciGraphRenderData renderData = {};
   graphData->bipolar = true;
   graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;

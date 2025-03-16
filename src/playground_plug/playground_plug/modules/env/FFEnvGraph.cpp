@@ -9,6 +9,14 @@
 
 #include <algorithm>
 
+struct EnvGraphRenderData final:
+public FBModuleGraphRenderData<EnvGraphRenderData>
+{
+  FFEnvProcessor processor = {};
+  int Process(FBModuleProcState& state) { return processor.Process(state); }
+  void BeginVoice(FBModuleProcState const& state) { processor.BeginVoice(state); }
+};
+
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)
 {
@@ -44,7 +52,7 @@ PlotParams(FBGraphRenderState const* state)
 void
 FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 {
-  FBModuleGraphRenderData<FFEnvProcessor> renderData = {};
+  EnvGraphRenderData renderData = {};
   graphData->drawMarkers = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;

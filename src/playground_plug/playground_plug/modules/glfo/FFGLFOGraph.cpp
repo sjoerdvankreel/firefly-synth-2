@@ -10,6 +10,14 @@
 
 #include <algorithm>
 
+struct GLFOGraphRenderData final:
+public FBModuleGraphRenderData<GLFOGraphRenderData>
+{
+  FFGLFOProcessor processor = {};
+  void Reset(FBModuleProcState const& state) { processor.Reset(state); }
+  int Process(FBModuleProcState& state) { return processor.Process(state); }
+};
+
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)
 {
@@ -24,7 +32,7 @@ PlotParams(FBGraphRenderState const* state)
 void
 FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
 {
-  FBModuleGraphRenderData<FFGLFOProcessor> renderData = {};
+  GLFOGraphRenderData renderData = {};
   graphData->drawMarkers = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;

@@ -51,10 +51,9 @@ typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int voice, int moduleSlot)>
 FBModuleGraphVoiceExchangeSelector;    
 
-template <class Processor>
-struct FBModuleGraphRenderData final
+template <class Derived>
+struct FBModuleGraphRenderData
 {
-  Processor processor = {};
   int staticModuleIndex = -1;
   FBModuleGraphComponentData* graphData = {};
   FBModuleGraphPlotParamsSelector plotParamsSelector = {};
@@ -64,12 +63,16 @@ struct FBModuleGraphRenderData final
   FBModuleGraphGlobalCVOutputSelector globalCVOutputSelector = {};
   FBModuleGraphVoiceAudioOutputSelector voiceAudioOutputSelector = {};
   FBModuleGraphGlobalAudioOutputSelector globalAudioOutputSelector = {};
+
+  void Reset(FBModuleProcState const& state) { static_cast<Derived*>(this)->Reset(state); }
+  int Process(FBModuleProcState& state) { return static_cast<Derived*>(this)->Process(state); }
+  void BeginVoice(FBModuleProcState const& state) { static_cast<Derived*>(this)->BeginVoice(state); }
 };
 
-template <bool Global, bool Audio, class Processor> 
+template <bool Global, bool Audio, class Derived> 
 void 
 FBRenderModuleGraphSeries(
-  FBModuleGraphRenderData<Processor>& renderData, 
+  FBModuleGraphRenderData<Derived>& renderData,
   float seriesMultiplier, int releaseAt,  
   FBModuleGraphPoints& seriesOut)
 {
@@ -87,10 +90,10 @@ FBRenderModuleGraphSeries(
   int moduleSlot = moduleProcState->moduleSlot;
   moduleProcState->input->note->clear();
 
-  if constexpr(Global)
-    renderData.processor.Reset(*moduleProcState);
+  if constexpr (Global)
+    renderData.Reset(*moduleProcState);
   else
-    renderData.processor.BeginVoice(*moduleProcState);
+    renderData.BeginVoice(*moduleProcState);
   while (processed == FBFixedBlockSamples)
   {
     if (shouldRelease && !released && releaseAt < FBFixedBlockSamples)
@@ -98,7 +101,7 @@ FBRenderModuleGraphSeries(
       released = true;
       moduleProcState->input->note->push_back(FBDetailMakeNoteC4Off(releaseAt));
     }
-    processed = renderData.processor.Process(*moduleProcState);
+    processed = renderData.Process(*moduleProcState);
     if (shouldRelease && !released)
       releaseAt -= processed;
     if constexpr (Global)
@@ -137,9 +140,9 @@ FBRenderModuleGraphSeries(
   }
 }
 
-template <bool Global, bool Audio, class RenderData>
+template <bool Global, bool Audio, class Derived>
 void
-FBRenderModuleGraph(RenderData& renderData)
+FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData)
 {
   auto graphData = renderData.graphData;
   auto renderState = graphData->renderState;
