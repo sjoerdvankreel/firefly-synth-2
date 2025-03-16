@@ -28,6 +28,8 @@ FFOsciAMProcessor::Process(FBModuleProcState& state)
 
   // TODO these should themselves be mod targets
   // for now just copy over the stream
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  auto* exchangeParams = exchangeToGUI? &exchangeToGUI->param.voice.osciAM[state.moduleSlot]: nullptr;
   for (int i = 0; i < FFOsciModSlotCount; i++)
     if(_voiceState.on[i])
     {
@@ -35,19 +37,16 @@ FFOsciAMProcessor::Process(FBModuleProcState& state)
       auto const& ringNorm = procParams.acc.ring[i].Voice()[voice];
       topo.NormalizedToIdentityFast(FFOsciAMParam::Mix, mixNorm, outputMix[i]);
       topo.NormalizedToIdentityFast(FFOsciAMParam::Ring, ringNorm, outputRing[i]);
+      if (exchangeParams)
+      {
+        exchangeParams->acc.mix[i][voice] = outputMix[i].Last();
+        exchangeParams->acc.ring[i][voice] = outputRing[i].Last();
+      }
     }
 
-  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
-  if (exchangeToGUI == nullptr)
-    return;
-
-  auto& exchangeDSP = exchangeToGUI->voice[voice].osciAM[state.moduleSlot];
-  exchangeDSP.active = true;
-
-  auto& exchangeParams = exchangeToGUI->param.voice.osciAM[state.moduleSlot];
-  for (int i = 0; i < FFOsciModSlotCount; i++)
+  if (exchangeToGUI != nullptr)
   {
-    exchangeParams.acc.mix[i][voice] = procParams.acc.mix[i].Voice()[voice].Last();
-    exchangeParams.acc.ring[i][voice] = procParams.acc.ring[i].Voice()[voice].Last();
+    auto& exchangeDSP = exchangeToGUI->voice[voice].osciAM[state.moduleSlot];
+    exchangeDSP.active = true;
   }
 }
