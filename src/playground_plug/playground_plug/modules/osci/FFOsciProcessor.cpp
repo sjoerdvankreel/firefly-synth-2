@@ -274,7 +274,6 @@ FFOsciProcessor::ProcessUnisonVoice(
     basicSinGainPlain, basicSawGainPlain, basicTriGainPlain, 
     basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
 
-#if 0 // TODO
   auto* exchangeFromGUI = state.ExchangeFromGUIAs<FFExchangeState>();
   for (int src = 0; src <= state.moduleSlot; src++)
     if (_voiceState.amSourceOn[src])
@@ -305,7 +304,6 @@ FFOsciProcessor::ProcessUnisonVoice(
       modulated.Transform([&](int v) { return (1.0f - ring[v]) * amModulated[v] + ring[v] * rmModulated[v]; });
       unisonAudioOut.Transform([&](int v) { return (1.0f - mix[v]) * unisonAudioOut[v] + mix[v] * modulated[v]; });
     }
-#endif
 }
 
 void 
