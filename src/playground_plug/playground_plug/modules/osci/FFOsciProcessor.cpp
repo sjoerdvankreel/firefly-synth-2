@@ -68,14 +68,18 @@ GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
   auto phaseBetween0And2IncrMask = xsimd::bitwise_and(phaseGte0Mask, phaseLt2IncrMask);
   if (xsimd::any(phaseBetween0And2IncrMask))
   {
+
     auto phaseLtIncrMask = xsimd::lt(phase, incr);
     FBFloatVector phaseLtIncrMul = xsimd::select(phaseLtIncrMask, one, zero);
+
     FBFloatVector phaseBetween0And2IncrMul = xsimd::select(phaseBetween0And2IncrMask, one, zero);
+
     y -= phaseBetween0And2IncrMul * u;
     FBFloatVector v = 1.0f - x;
     FBFloatVector v2 = v * v;
     v *= v2 * v2;
     y += 4.0f * phaseBetween0And2IncrMul * phaseLtIncrMul * v;
+
   }
   return y * incr / 15.0f;
 }
