@@ -377,7 +377,7 @@ FFOsciProcessor::ProcessUnison(
     topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, detuneNorm, detunePlain);
     topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, spreadNorm, spreadPlain);
 
-    float attenuate = 1.0f / std::sqrt(static_cast<float>(_voiceState.unisonCount));
+    //float attenuate = 1.0f / std::sqrt(static_cast<float>(_voiceState.unisonCount));
     for (int i = 0; i < _voiceState.unisonCount; i++)
     {
       unisonPos.Fill(i / (_voiceState.unisonCount - 1.0f) - 0.5f);
@@ -388,8 +388,8 @@ FFOsciProcessor::ProcessUnison(
       for (int v = 0; v < FBFixedFloatVectors; v++)
       {
         panning[v] = 0.5f + unisonPos[v] * spreadPlain[v];
-        audioOut[0][v] += (1.0f - panning[v]) * unisonAudioOut[i][v] * attenuate;
-        audioOut[1][v] += panning[v] * unisonAudioOut[i][v] * attenuate;
+        audioOut[0][v] += (1.0f - panning[v]) * unisonAudioOut[i][v];// *attenuate;
+        audioOut[1][v] += panning[v] * unisonAudioOut[i][v];// *attenuate;
       }
     }
   }

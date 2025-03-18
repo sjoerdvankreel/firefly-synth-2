@@ -17,11 +17,13 @@ _data(data) {}
 
 void
 FBModuleGraphDisplayComponent::PaintMarker(
-  Graphics& g, std::vector<float> const& points,
-  int maxPoints, int marker, bool stereo, bool left)
+  Graphics& g, 
+  std::vector<float> const& points,
+  int marker, bool stereo, bool left,
+  int maxPointsAllSeries, float absMaxPointAllSeries)
 {
   g.setColour(Colours::white);
-  auto xy = PointLocation(points, maxPoints, marker, stereo, left);
+  auto xy = PointLocation(points, marker, stereo, left, maxPointsAllSeries, absMaxPointAllSeries);
   float x = xy.getX() - HalfMarkerSize;
   float y = xy.getY() - HalfMarkerSize;
   g.fillEllipse(x, y, MarkerSize, MarkerSize);
@@ -30,31 +32,34 @@ FBModuleGraphDisplayComponent::PaintMarker(
 Point<float>
 FBModuleGraphDisplayComponent::PointLocation(
   std::vector<float> const& points,
-  int maxPoints, int point, 
-  bool stereo, bool left) const
+  int point, bool stereo, bool left,
+  int maxPointsAllSeries, float absMaxPointAllSeries) const
 {
   float pointValue = points[point];
   if (_data->bipolar)
     pointValue = FBToUnipolar(pointValue);
   if (stereo)
     pointValue = left ? pointValue * 0.5f : 0.5f + pointValue * 0.5f;
-  float y = HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
-  float x = HalfMarkerSize + static_cast<float>(point) / maxPoints * (getWidth() - MarkerSize);
+  float y = HalfMarkerSize + (1.0f - (pointValue / absMaxPointAllSeries)) * (getHeight() - MarkerSize);
+  float x = HalfMarkerSize + static_cast<float>(point) / maxPointsAllSeries * (getWidth() - MarkerSize);
   return { x, y };
 }
 
 void
 FBModuleGraphDisplayComponent::PaintSeries(
-  Graphics& g, Colour color, std::vector<float> const& points, 
-  int maxPoints, bool stereo, bool left)
+  juce::Graphics& g,
+  juce::Colour color,
+  std::vector<float> const& points,
+  bool stereo, bool left,
+  int maxPointsAllSeries, float absMaxPointAllSeries)
 {
   if (points.empty())
     return;
 
   Path path;
-  path.startNewSubPath(PointLocation(points, maxPoints, 0, stereo, left));
+  path.startNewSubPath(PointLocation(points, 0, stereo, left, maxPointsAllSeries, absMaxPointAllSeries));
   for (int i = 1; i < points.size(); i++)
-    path.lineTo(PointLocation(points, maxPoints, i, stereo, left));
+    path.lineTo(PointLocation(points, i, stereo, left, maxPointsAllSeries, absMaxPointAllSeries));
   g.setColour(color);
   g.strokePath(path, PathStrokeType(1.0f));
 }
@@ -62,10 +67,23 @@ FBModuleGraphDisplayComponent::PaintSeries(
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {
+  float absMaxPointAllSeries = 1.0f;
   bool stereo = !_data->primarySeries.r.empty();
-  int maxPoints = static_cast<int>(_data->primarySeries.l.size());
+  int maxPointsAllSeries = static_cast<int>(_data->primarySeries.l.size());
+  for (int i = 0; i < _data->primarySeries.l.size(); i++)
+  {
+    absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->primarySeries.l[i]));
+    absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->primarySeries.r[i]));
+  }
   for (int i = 0; i < _data->secondarySeries.size(); i++)
-    maxPoints = std::max(maxPoints, static_cast<int>(_data->secondarySeries[i].points.l.size()));
+  {
+    maxPointsAllSeries = std::max(maxPointsAllSeries, static_cast<int>(_data->secondarySeries[i].points.l.size()));
+    for (int j = 0; j < _data->secondarySeries[i].points.l.size(); j++)
+    {
+      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->secondarySeries[i].points.l[j]));
+      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->secondarySeries[i].points.r[j]));
+    }
+  }
 
   g.setColour(Colours::darkgrey);
   g.drawText(_data->moduleName + " " + _data->text, getLocalBounds(), Justification::centred, false);
@@ -73,23 +91,23 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   {
     int marker = _data->secondarySeries[i].marker;
     auto const& points = _data->secondarySeries[i].points;
-    PaintSeries(g, Colours::grey, points.l, maxPoints, stereo, true);
+    PaintSeries(g, Colours::grey, points.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
     if(stereo)
-      PaintSeries(g, Colours::grey, points.r, maxPoints, stereo, false);
+      PaintSeries(g, Colours::grey, points.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
     if (marker != -1 && _data->drawMarkers)
     {
       assert(!stereo);
-      PaintMarker(g, points.l, maxPoints, marker, false, true);
+      PaintMarker(g, points.l, marker, false, true, maxPointsAllSeries, absMaxPointAllSeries);
     }
   }
   
-  PaintSeries(g, Colours::white, _data->primarySeries.l, maxPoints, stereo, true);
+  PaintSeries(g, Colours::white, _data->primarySeries.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
   if(stereo)
-    PaintSeries(g, Colours::white, _data->primarySeries.r, maxPoints, stereo, false);
+    PaintSeries(g, Colours::white, _data->primarySeries.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
   if(_data->drawMarkers)
     for (int i = 0; i < _data->primaryMarkers.size(); i++)
     {
       assert(!stereo);
-      PaintMarker(g, _data->primarySeries.l, maxPoints, _data->primaryMarkers[i], false, true);
+      PaintMarker(g, _data->primarySeries.l, _data->primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
     }
 }

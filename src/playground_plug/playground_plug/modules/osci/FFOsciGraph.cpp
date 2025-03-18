@@ -59,7 +59,6 @@ PlotParams(FBGraphRenderState const* state)
   float pitch = static_cast<float>(state->AudioParamNote({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 }));
   pitch += state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
   result.samples = FBFreqToSamples(FBPitchToFreqAccurate(pitch, sampleRate), sampleRate);
-  result.seriesMultiplier = 1.0f / (unison * (1.0f / std::sqrt(static_cast<float>(unison))));
   return result;
 }
 
