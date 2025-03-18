@@ -23,16 +23,24 @@ GenerateSaw(FBFloatVector phase, FBFloatVector incr)
   auto loMask = xsimd::lt(phase, incr);
   auto hiMask = xsimd::ge(phase, 1.0f - incr);
   hiMask = xsimd::bitwise_andnot(hiMask, loMask);
-  if (xsimd::any(loMask) || xsimd::any(hiMask))
+  bool anyLow = xsimd::any(loMask);
+  bool anyHigh = xsimd::any(hiMask);
+  if (anyLow || anyHigh)
   {
     FBFloatVector one = 1.0f;
     FBFloatVector zero = 0.0f;
-    FBFloatVector blepLo = phase / incr;
-    FBFloatVector blepHi = (phase - 1.0f) / incr;
-    FBFloatVector loMul = xsimd::select(loMask, one, zero);
-    FBFloatVector hiMul = xsimd::select(hiMask, one, zero);
-    result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
-    result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
+    if (anyLow)
+    {
+      FBFloatVector blepLo = phase / incr;
+      FBFloatVector loMul = xsimd::select(loMask, one, zero);
+      result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
+    }
+    if (anyHigh)
+    {
+      FBFloatVector blepHi = (phase - 1.0f) / incr;
+      FBFloatVector hiMul = xsimd::select(hiMask, one, zero);
+      result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
+    }
   }
   return result;
 }
