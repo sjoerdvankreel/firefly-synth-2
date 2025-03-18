@@ -16,6 +16,18 @@ public:
   FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data);
 
 private:
+  float PointXLocation(
+    float pointRelative) const;
+
+  float PointYLocation(
+    float pointYValue, bool stereo,
+    bool left, float absMaxPointAllSeries) const;
+
+  juce::Point<float> PointLocation(
+    std::vector<float> const& points,
+    int point, bool stereo, bool left,
+    int maxPointsAllSeries, float absMaxPointAllSeries) const;
+
   void PaintSeries(
     juce::Graphics& g, 
     juce::Colour color, 
@@ -28,13 +40,4 @@ private:
     std::vector<float> const& points, 
     int marker, bool stereo, bool left,
     int maxPointsAllSeries, float absMaxPointAllSeries);
-
-  float PointYLocation(
-    float pointYValue, bool stereo,
-    bool left, float absMaxPointAllSeries) const;
-  
-  juce::Point<float> PointLocation(
-    std::vector<float> const& points,
-    int point, bool stereo, bool left, 
-    int maxPointsAllSeries, float absMaxPointAllSeries) const;
 };

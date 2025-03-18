@@ -22,8 +22,15 @@ FBModuleGraphDisplayComponent::PointLocation(
   int maxPointsAllSeries, float absMaxPointAllSeries) const
 {
   float y = PointYLocation(points[point], stereo, left, absMaxPointAllSeries);
-  float x = HalfMarkerSize + static_cast<float>(point) / maxPointsAllSeries * (getWidth() - MarkerSize);
+  float x = PointXLocation(static_cast<float>(point) / maxPointsAllSeries);
   return { x, y };
+}
+
+float
+FBModuleGraphDisplayComponent::PointXLocation(
+  float pointRelative) const
+{
+  return HalfMarkerSize + pointRelative * (getWidth() - MarkerSize);
 }
 
 float 
