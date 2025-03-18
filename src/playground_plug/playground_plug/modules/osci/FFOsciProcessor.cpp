@@ -19,28 +19,25 @@ GenerateSin(FBFloatVector phase)
 static FBFloatVector
 GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 { 
+  FBFloatVector one = 1.0f;
+  FBFloatVector zero = 0.0f;
   FBFloatVector result = phase * 2.0f - 1.0f;
   auto loMask = xsimd::lt(phase, incr);
   auto hiMask = xsimd::ge(phase, 1.0f - incr);
   hiMask = xsimd::bitwise_andnot(hiMask, loMask);
   bool anyLow = xsimd::any(loMask);
   bool anyHigh = xsimd::any(hiMask);
-  if (anyLow || anyHigh)
+  if (anyLow)
   {
-    FBFloatVector one = 1.0f;
-    FBFloatVector zero = 0.0f;
-    if (anyLow)
-    {
-      FBFloatVector blepLo = phase / incr;
-      FBFloatVector loMul = xsimd::select(loMask, one, zero);
-      result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
-    }
-    if (anyHigh)
-    {
-      FBFloatVector blepHi = (phase - 1.0f) / incr;
-      FBFloatVector hiMul = xsimd::select(hiMask, one, zero);
-      result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
-    }
+    FBFloatVector blepLo = phase / incr;
+    FBFloatVector loMul = xsimd::select(loMask, one, zero);
+    result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
+  }
+  if (anyHigh)
+  {
+    FBFloatVector blepHi = (phase - 1.0f) / incr;
+    FBFloatVector hiMul = xsimd::select(hiMask, one, zero);
+    result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
   }
   return result;
 }
