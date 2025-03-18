@@ -19,21 +19,18 @@ GenerateSin(FBFloatVector phase)
 static FBFloatVector
 GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 { 
+  FBFloatVector one = 1.0f;
+  FBFloatVector zero = 0.0f;
+  FBFloatVector blepLo = phase / incr;
+  FBFloatVector blepHi = (phase - 1.0f) / incr;
   FBFloatVector result = phase * 2.0f - 1.0f;
   auto loMask = xsimd::lt(phase, incr);
   auto hiMask = xsimd::ge(phase, 1.0f - incr);
   hiMask = xsimd::bitwise_andnot(hiMask, loMask);
-  if (xsimd::any(loMask) || xsimd::any(hiMask))
-  {
-    FBFloatVector one = 1.0f;
-    FBFloatVector zero = 0.0f;
-    FBFloatVector blepLo = phase / incr;
-    FBFloatVector blepHi = (phase - 1.0f) / incr;
-    FBFloatVector loMul = xsimd::select(loMask, one, zero);
-    FBFloatVector hiMul = xsimd::select(hiMask, one, zero);
-    result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
-    result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
-  }
+  FBFloatVector loMul = xsimd::select(loMask, one, zero);
+  FBFloatVector hiMul = xsimd::select(hiMask, one, zero);
+  result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
+  result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
   return result;
 }
 
