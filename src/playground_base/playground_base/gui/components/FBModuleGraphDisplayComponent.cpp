@@ -35,12 +35,12 @@ FBModuleGraphDisplayComponent::PointLocation(
   int point, bool stereo, bool left,
   int maxPointsAllSeries, float absMaxPointAllSeries) const
 {
-  float pointValue = points[point];
+  float pointValue = points[point] / absMaxPointAllSeries;
   if (_data->bipolar)
     pointValue = FBToUnipolar(pointValue);
   if (stereo)
     pointValue = left ? pointValue * 0.5f : 0.5f + pointValue * 0.5f;
-  float y = HalfMarkerSize + (1.0f - (pointValue / absMaxPointAllSeries)) * (getHeight() - MarkerSize);
+  float y = HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
   float x = HalfMarkerSize + static_cast<float>(point) / maxPointsAllSeries * (getWidth() - MarkerSize);
   return { x, y };
 }
@@ -73,7 +73,8 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
   for (int i = 0; i < _data->primarySeries.l.size(); i++)
   {
     absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->primarySeries.l[i]));
-    absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->primarySeries.r[i]));
+    if(stereo)
+      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->primarySeries.r[i]));
   }
   for (int i = 0; i < _data->secondarySeries.size(); i++)
   {
@@ -81,7 +82,8 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     for (int j = 0; j < _data->secondarySeries[i].points.l.size(); j++)
     {
       absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->secondarySeries[i].points.l[j]));
-      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->secondarySeries[i].points.r[j]));
+      if (stereo)
+        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->secondarySeries[i].points.r[j]));
     }
   }
 
