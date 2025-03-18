@@ -28,6 +28,10 @@ private:
     std::vector<float> const& points, 
     int marker, bool stereo, bool left,
     int maxPointsAllSeries, float absMaxPointAllSeries);
+
+  float PointYLocation(
+    float pointYValue, bool stereo,
+    bool left, float absMaxPointAllSeries) const;
   
   juce::Point<float> PointLocation(
     std::vector<float> const& points,

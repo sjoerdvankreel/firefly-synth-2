@@ -15,6 +15,30 @@ FBModuleGraphDisplayComponent(FBModuleGraphComponentData const* data):
 Component(),
 _data(data) {}
 
+Point<float>
+FBModuleGraphDisplayComponent::PointLocation(
+  std::vector<float> const& points,
+  int point, bool stereo, bool left,
+  int maxPointsAllSeries, float absMaxPointAllSeries) const
+{
+  float y = PointYLocation(points[point], stereo, left, absMaxPointAllSeries);
+  float x = HalfMarkerSize + static_cast<float>(point) / maxPointsAllSeries * (getWidth() - MarkerSize);
+  return { x, y };
+}
+
+float 
+FBModuleGraphDisplayComponent::PointYLocation(
+  float pointYValue, bool stereo, 
+  bool left, float absMaxPointAllSeries) const
+{
+  float pointValue = pointYValue / absMaxPointAllSeries;
+  if (_data->bipolar)
+    pointValue = FBToUnipolar(pointValue);
+  if (stereo)
+    pointValue = left ? pointValue * 0.5f : 0.5f + pointValue * 0.5f;
+  return HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
+}
+
 void
 FBModuleGraphDisplayComponent::PaintMarker(
   Graphics& g, 
@@ -27,22 +51,6 @@ FBModuleGraphDisplayComponent::PaintMarker(
   float x = xy.getX() - HalfMarkerSize;
   float y = xy.getY() - HalfMarkerSize;
   g.fillEllipse(x, y, MarkerSize, MarkerSize);
-}
-
-Point<float>
-FBModuleGraphDisplayComponent::PointLocation(
-  std::vector<float> const& points,
-  int point, bool stereo, bool left,
-  int maxPointsAllSeries, float absMaxPointAllSeries) const
-{
-  float pointValue = points[point] / absMaxPointAllSeries;
-  if (_data->bipolar)
-    pointValue = FBToUnipolar(pointValue);
-  if (stereo)
-    pointValue = left ? pointValue * 0.5f : 0.5f + pointValue * 0.5f;
-  float y = HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
-  float x = HalfMarkerSize + static_cast<float>(point) / maxPointsAllSeries * (getWidth() - MarkerSize);
-  return { x, y };
 }
 
 void
