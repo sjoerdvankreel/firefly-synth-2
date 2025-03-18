@@ -1,3 +1,4 @@
+dont compute the poly for blep if not at boundaries
 fix osci to ui transfer
 mark osci pw section
 
