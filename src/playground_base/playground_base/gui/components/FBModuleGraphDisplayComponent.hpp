@@ -26,18 +26,23 @@ private:
   juce::Point<float> PointLocation(
     std::vector<float> const& points,
     int point, bool stereo, bool left,
-    int maxPointsAllSeries, float absMaxPointAllSeries) const;
+    int maxPointsAllSeries, float absMaxPointAllSeries) const; 
+  
+  void PaintClipBoundaries(
+    juce::Graphics& g,
+    bool stereo, bool left,
+    float absMaxPointAllSeries);
+
+  void PaintMarker(
+    juce::Graphics& g,
+    std::vector<float> const& points,
+    int marker, bool stereo, bool left,
+    int maxPointsAllSeries, float absMaxPointAllSeries);
 
   void PaintSeries(
     juce::Graphics& g, 
     juce::Colour color, 
     std::vector<float> const& points, 
     bool stereo, bool left,
-    int maxPointsAllSeries, float absMaxPointAllSeries);
-
-  void PaintMarker(
-    juce::Graphics& g, 
-    std::vector<float> const& points, 
-    int marker, bool stereo, bool left,
     int maxPointsAllSeries, float absMaxPointAllSeries);
 };

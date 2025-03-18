@@ -89,6 +89,7 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->text.clear();
   _data->bipolar = false;
   _data->drawMarkers = false;
+  _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
   _data->primaryMarkers.clear();
   _data->primarySeries.l.clear();

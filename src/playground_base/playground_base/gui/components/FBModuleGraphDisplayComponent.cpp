@@ -61,6 +61,22 @@ FBModuleGraphDisplayComponent::PaintMarker(
 }
 
 void
+FBModuleGraphDisplayComponent::PaintClipBoundaries(
+  juce::Graphics& g,
+  bool stereo, bool left,
+  float absMaxPointAllSeries)
+{
+  float dashes[2] = { 4.0, 2.0 };
+  float x0 = PointXLocation(0.0f);
+  float x1 = PointXLocation(1.0f);
+  float upperY = PointYLocation(1.0f, stereo, left, absMaxPointAllSeries);
+  float lowerY = PointYLocation(_data->bipolar? -1.0f: 0.0f, stereo, left, absMaxPointAllSeries);
+  g.setColour(Colours::white);
+  g.drawDashedLine(Line<float>(x0, upperY, x1, upperY), dashes, 2);
+  g.drawDashedLine(Line<float>(x0, lowerY, x1, lowerY), dashes, 2);
+}
+
+void
 FBModuleGraphDisplayComponent::PaintSeries(
   juce::Graphics& g,
   juce::Colour color,
@@ -127,4 +143,11 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       assert(!stereo);
       PaintMarker(g, _data->primarySeries.l, _data->primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
     }
+
+  if (_data->drawClipBoundaries)
+  {
+    PaintClipBoundaries(g, stereo, false, absMaxPointAllSeries);
+    if(stereo)
+      PaintClipBoundaries(g, stereo, true, absMaxPointAllSeries);
+  }
 }

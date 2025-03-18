@@ -67,6 +67,7 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
 {
   OsciGraphRenderData renderData = {};
   graphData->bipolar = true;
+  graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
