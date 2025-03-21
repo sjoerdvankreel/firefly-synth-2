@@ -107,7 +107,7 @@ void
 FFPlugGUI::SetupGUI()
 {
   _graph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1, 1, 2, 2, 2 }, std::vector<int> { 1, 0, 1 });
+  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 0, -1, std::vector<int> { 1, 1, 1, 2, 2, 2 }, std::vector<int> { 0, 0, 1 });
   _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(0, 1, 1, 1, FFMakeGUISettingsGUI(this));
   _content->Add(0, 2, 1, 1, _graph);
