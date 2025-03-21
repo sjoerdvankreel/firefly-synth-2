@@ -5,6 +5,15 @@
 
 using namespace juce;
 
+static std::vector<FBGridSize>
+RelativeToSize(std::vector<int> const& relative)
+{
+  std::vector<FBGridSize> result = {};
+  for (int i = 0; i < relative.size(); i++)
+    result.push_back(FBGridSize(0, relative[i]));
+  return result;
+}
+
 bool
 FBGridCell::operator<(FBGridCell const& rhs) const
 {
@@ -15,10 +24,14 @@ FBGridCell::operator<(FBGridCell const& rhs) const
 
 FBGridComponent::
 FBGridComponent(FBGridType type, int rows, int cols):
-FBGridComponent(type, -1, -1, std::vector<int>(rows, 1), std::vector<int>(cols, 1)) {}
+FBGridComponent(type, -1, -1, std::vector<FBGridSize>(rows, FBGridSize(0, 1)), std::vector<FBGridSize>(cols, FBGridSize(0, 1))) {}
 
 FBGridComponent::
 FBGridComponent(FBGridType type, std::vector<int> const& rows, std::vector<int> const& cols):
+FBGridComponent(type, -1, -1, RelativeToSize(rows), RelativeToSize(cols)) { }
+
+FBGridComponent::
+FBGridComponent(FBGridType type, std::vector<FBGridSize> const& rows, std::vector<FBGridSize> const& cols):
 FBGridComponent(type, -1, -1, rows, cols) {}
 
 FBGridComponent::
@@ -27,6 +40,10 @@ FBGridComponent(type, autoSizeRow, autoSizeCol, std::vector<int>(rows, 1), std::
 
 FBGridComponent::
 FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols):
+FBGridComponent(type, autoSizeRow, autoSizeCol, RelativeToSize(rows), RelativeToSize(cols)) { }
+
+FBGridComponent::
+FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<FBGridSize> const& rows, std::vector<FBGridSize> const& cols):
 Component(), 
 _type(type),
 _autoSizeRow(autoSizeRow),
