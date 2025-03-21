@@ -1,5 +1,4 @@
-dont compute the poly for blep if not at boundaries
-fix osci to ui transfer
+track graph + right-click to show
 mark osci pw section
 
 recheck clap mod
