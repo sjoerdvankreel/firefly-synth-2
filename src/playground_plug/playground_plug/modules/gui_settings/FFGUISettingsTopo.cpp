@@ -9,11 +9,20 @@ FFMakeGUISettingsTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
-  result->name = "GUI Settings";
+  result->name = "UI";
   result->slotCount = 1;
   result->id = "{2407B76A-7FB3-4BD6-B6FD-B1F610AF8147}";
   result->guiParams.resize((int)FFGUISettingsGUIParam::Count);
-  auto selectGuiModule = [](auto& state) { return &state.guiSettings; };
+  auto selectGuiModule = [](auto& state) { return &state.guiSettings; }; 
+  
+  auto& guiGraphTrack = result->guiParams[(int)FFGUISettingsGUIParam::GraphTrack];
+  guiGraphTrack.defaultText = "On";
+  guiGraphTrack.name = "Graph Track";
+  guiGraphTrack.slotCount = 1;
+  guiGraphTrack.id = "{B45F4562-39D1-42CA-B600-0248C98CC292}";
+  guiGraphTrack.type = FBParamType::Boolean;
+  auto selectGuiGraphTrack = [](auto& module) { return &module.graphTrack; };
+  guiGraphTrack.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphTrack);
 
   auto& guiUserScale = result->guiParams[(int)FFGUISettingsGUIParam::UserScale];
   guiUserScale.defaultText = "1";

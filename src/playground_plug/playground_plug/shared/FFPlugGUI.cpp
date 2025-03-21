@@ -3,9 +3,10 @@
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
-#include <playground_plug/modules/osci_am/FFOsciAMGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
+#include <playground_plug/modules/osci_am/FFOsciAMGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
+#include <playground_plug/modules/gui_settings/FFGUISettingsGUI.hpp>
 
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
@@ -106,13 +107,14 @@ void
 FFPlugGUI::SetupGUI()
 {
   _graph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1, 1, 2, 2, 2 }, std::vector<int> { 1, 1 });
+  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, std::vector<int> { 1, 1, 1, 2, 2, 2 }, std::vector<int> { 1, 1, 1 });
   _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
-  _content->Add(0, 1, 1, 1, _graph);
-  _content->Add(1, 0, 1, 2, FFMakeGLFOGUI(this));
-  _content->Add(2, 0, 1, 2, FFMakeGFilterGUI(this));
-  _content->Add(3, 0, 1, 2, FFMakeOsciGUI(this));
-  _content->Add(4, 0, 1, 2, FFMakeOsciAMGUI(this));
-  _content->Add(5, 0, 1, 2, FFMakeEnvGUI(this));
+  _content->Add(0, 1, 1, 1, FFMakeGUISettingsGUI(this));
+  _content->Add(0, 2, 1, 1, _graph);
+  _content->Add(1, 0, 1, 3, FFMakeGLFOGUI(this));
+  _content->Add(2, 0, 1, 3, FFMakeGFilterGUI(this));
+  _content->Add(3, 0, 1, 3, FFMakeOsciGUI(this));
+  _content->Add(4, 0, 1, 3, FFMakeOsciAMGUI(this));
+  _content->Add(5, 0, 1, 3, FFMakeEnvGUI(this));
   addAndMakeVisible(_content);
 }

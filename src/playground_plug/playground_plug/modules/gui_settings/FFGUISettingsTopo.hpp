@@ -3,5 +3,5 @@
 #include <memory>
 
 struct FBStaticModule;
-enum class FFGUISettingsGUIParam { UserScale, Count };
+enum class FFGUISettingsGUIParam { GraphTrack, UserScale, Count };
 std::unique_ptr<FBStaticModule> FFMakeGUISettingsTopo();
