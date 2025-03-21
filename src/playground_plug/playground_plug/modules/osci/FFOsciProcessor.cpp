@@ -278,7 +278,7 @@ FFOsciProcessor::ProcessUnisonVoice(
 
   auto* exchangeFromGUI = state.ExchangeFromGUIAs<FFExchangeState>();
   for (int src = 0; src <= state.moduleSlot; src++)
-    if (_voiceState.amSourceOn[src] && _voiceState.modSourceUnisonCount[src] >= unisonVoice)
+    if (_voiceState.amSourceOn[src] && _voiceState.modSourceUnisonCount[src] > unisonVoice)
     {
       FBFixedFloatBlock am;
       FBFixedFloatBlock mix;
