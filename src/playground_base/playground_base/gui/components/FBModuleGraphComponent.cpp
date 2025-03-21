@@ -114,7 +114,7 @@ FBModuleGraphComponent::SetupGraphControls()
   }
   else
   {
-    _grid = std::make_unique<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 1 });
+    _grid = std::make_unique<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
     _grid->Add(0, 0, _graphControls);
     _grid->Add(0, 1, _display.get());
     _grid->MarkSection({ 0, 0, 1, 1 });

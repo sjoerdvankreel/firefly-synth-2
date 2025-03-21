@@ -64,11 +64,7 @@ public:
 
   FBGridComponent() = delete;
   FBGridComponent(FBGridType type, int rows, int cols);
-  FBGridComponent(FBGridType type, int rows, std::vector<int> const& cols);
-  FBGridComponent(FBGridType type, std::vector<int> const& rows, int cols);
   FBGridComponent(FBGridType type, std::vector<int> const& rows, std::vector<int> const& cols);
   FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, int rows, int cols);
-  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, int rows, std::vector<int> const& cols);
-  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, int cols);
   FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols);
 };

@@ -17,7 +17,7 @@ static Component*
 MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, std::vector<int> { 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
   auto track = topo->gui.ParamAtTopo({ (int)FFModuleType::GUISettings, moduleSlot, (int)FFGUISettingsGUIParam::GraphTrack, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, track));
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, track));

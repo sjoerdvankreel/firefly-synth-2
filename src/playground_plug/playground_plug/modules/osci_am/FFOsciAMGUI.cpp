@@ -24,7 +24,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
     columnSizes.push_back(0);
     columnSizes.push_back(1);
   }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
   auto mix0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Mix, 0 });
   auto mixHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(mix0->static_.name);
   grid->Add(0, 0, mixHeader);
