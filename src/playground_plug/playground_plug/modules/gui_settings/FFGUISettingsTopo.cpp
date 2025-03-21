@@ -18,6 +18,7 @@ FFMakeGUISettingsTopo()
   auto& guiGraphTrack = result->guiParams[(int)FFGUISettingsGUIParam::GraphTrack];
   guiGraphTrack.defaultText = "On";
   guiGraphTrack.name = "Graph Track";
+  guiGraphTrack.tooltip = "Graph Tracking";
   guiGraphTrack.slotCount = 1;
   guiGraphTrack.id = "{B45F4562-39D1-42CA-B600-0248C98CC292}";
   guiGraphTrack.type = FBParamType::Boolean;

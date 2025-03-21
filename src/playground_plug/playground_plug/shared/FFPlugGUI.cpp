@@ -7,6 +7,7 @@
 #include <playground_plug/modules/osci_am/FFOsciAMGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsGUI.hpp>
+#include <playground_plug/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
@@ -28,12 +29,6 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   SetupGraphControls();
   InitAllDependencies();
   resized();
-}
-
-void
-FFPlugGUI::RequestGraphRender(int moduleIndex)
-{
-  _graph->RequestRerender(moduleIndex);
 }
 
 void
@@ -101,6 +96,16 @@ FFPlugGUI::SetupGraphControls()
     int index = topo->ModuleAtTopo({ (int)FFModuleType::Env, i })->runtimeModuleIndex;
     _graphControls[index] = FFMakeEnvGraphControls(this, i);
   }
+}
+
+void
+FFPlugGUI::RequestGraphRender(int moduleIndex)
+{
+  FBParamTopoIndices indices = { (int)FFModuleType::GUISettings, 0, (int)FFGUISettingsGUIParam::GraphTrack, 0 };
+  auto const* param = HostContext()->Topo()->gui.ParamAtTopo(indices);
+  double norm = HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
+  bool graphTrack = param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(norm));
+  _graph->RequestRerender(graphTrack ? moduleIndex : _graph->TweakedModuleByUI());
 }
 
 void 
