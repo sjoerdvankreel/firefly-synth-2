@@ -12,16 +12,6 @@
 
 enum class FBGridType { Generic, Module };
 
-struct FBGridSize final
-{
-  int fixed = 0;
-  int relative = 1;
-
-  FBGridSize() = default;
-  FBGridSize(int fixed, int relative) : 
-  fixed(fixed), relative(relative) {}
-};
-
 struct FBGridCell final
 {
   int row = -1;
@@ -50,8 +40,8 @@ public IFBHorizontalAutoSize
   FBGridType const _type;
   int const _autoSizeCol;
   int const _autoSizeRow;
-  std::vector<FBGridSize> const _rows;
-  std::vector<FBGridSize> const _cols;
+  std::vector<int> const _rows;
+  std::vector<int> const _cols;
 
   juce::Grid _grid = {};
   std::vector<FBGridSection> _sections = {};
@@ -75,8 +65,6 @@ public:
   FBGridComponent() = delete;
   FBGridComponent(FBGridType type, int rows, int cols);
   FBGridComponent(FBGridType type, std::vector<int> const& rows, std::vector<int> const& cols);
-  FBGridComponent(FBGridType type, std::vector<FBGridSize> const& rows, std::vector<FBGridSize> const& cols);
   FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, int rows, int cols);
   FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols);
-  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<FBGridSize> const& rows, std::vector<FBGridSize> const& cols);
 };
