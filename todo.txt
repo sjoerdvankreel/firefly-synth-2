@@ -1,5 +1,6 @@
 track graph + right-click to show
 mark osci pw section
+osci fm + oversampling
 
 recheck clap mod
 split out the noise/kps osci
