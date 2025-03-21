@@ -111,8 +111,22 @@ FFPlugGUI::RequestGraphRender(int moduleIndex)
 void 
 FFPlugGUI::SetupGUI()
 {
+  // TODO better move to reusable?
+  int vTabCount = 6;
+  int tabHeight = 28; // TODO
+  auto const& topoGUI = HostContext()->Topo()->static_.gui;
+  int totalHeight = topoGUI.plugWidth * topoGUI.aspectRatioHeight / topoGUI.aspectRatioWidth;
+  float availableHeight = totalHeight - vTabCount * tabHeight;
+  std::vector<int> rowSizes = {};
+  rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
+  rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
+  rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
+  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
+  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
+  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
+
   _graph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 0, -1, std::vector<int> { 1, 1, 1, 2, 2, 2 }, std::vector<int> { 0, 0, 1 });
+  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 0, -1, rowSizes, std::vector<int> { 0, 0, 1 });
   _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(0, 1, 1, 1, FFMakeGUISettingsGUI(this));
   _content->Add(0, 2, 1, 1, _graph);
