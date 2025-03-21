@@ -36,3 +36,9 @@ FBModuleTabComponent::currentTabChanged(
   if(newCurrentTabIndex > 0)
     _plugGUI->ActiveModuleSlotChanged(_moduleIndex, newCurrentTabIndex - 1);
 }
+
+int 
+FBModuleTabComponent::FixedWidth(int height) const
+{
+  return dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0)).FixedWidth(height);
+}

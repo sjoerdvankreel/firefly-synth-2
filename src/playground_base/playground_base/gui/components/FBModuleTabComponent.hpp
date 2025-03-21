@@ -1,5 +1,7 @@
 #pragma once
 
+#include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <functional>
 
@@ -10,7 +12,8 @@ typedef std::function<juce::Component*(
 FBModuleTabFactory;
 
 class FBModuleTabComponent:
-public juce::TabbedComponent
+public juce::TabbedComponent,
+public IFBHorizontalAutoSize
 {
   FBPlugGUI* const _plugGUI;
   int const _moduleIndex;
@@ -23,4 +26,6 @@ public:
   void currentTabChanged(
     int newCurrentTabIndex, 
     juce::String const& newCurrentTabName);
+
+  int FixedWidth(int height) const override;
 };
