@@ -34,7 +34,7 @@ FFMakeOsciFMTopo()
   throughZero.slotCount = FFOsciModSlotCount;
   throughZero.id = "{99BC9193-3D60-4EEE-BFE8-17C0E39971B7}";
   throughZero.type = FBParamType::Boolean;
-  throughZero.slotFormatter = [name = throughZero.name](int slot) { return name + " " + FFOsciModMakeSourceAndTargetText(slot); };
+  throughZero.slotFormatter = [tooltip = throughZero.tooltip](int slot) { return tooltip + " " + FFOsciModMakeSourceAndTargetText(slot); };
   auto selectThroughZero = [](auto& module) { return &module.block.throughZero; };
   throughZero.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectThroughZero);
   throughZero.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectThroughZero);
