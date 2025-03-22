@@ -1,10 +1,10 @@
 #include <playground_plug/shared/FFPlugGUI.hpp>
+#include <playground_plug/shared/FFOsciMod.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
-#include <playground_plug/modules/osci_am/FFOsciAMGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsTopo.hpp>
@@ -133,7 +133,7 @@ FFPlugGUI::SetupGUI()
   _content->Add(1, 0, 1, 3, FFMakeGLFOGUI(this));
   _content->Add(2, 0, 1, 3, FFMakeGFilterGUI(this));
   _content->Add(3, 0, 1, 3, FFMakeOsciGUI(this));
-  _content->Add(4, 0, 1, 3, FFMakeOsciAMGUI(this));
+  _content->Add(4, 0, 1, 3, FFMakeOsciModGUI(this));
   _content->Add(5, 0, 1, 3, FFMakeEnvGUI(this));
   addAndMakeVisible(_content);
 }

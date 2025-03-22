@@ -13,20 +13,12 @@
 
 using namespace juce;
 
-static Component*
-MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
+Component*
+FFMakeOsciFMGUI(FBPlugGUI* plugGUI)
 {
-  // TODO share this with AM
-  std::vector<int> columnSizes = {};
   auto topo = plugGUI->HostContext()->Topo();
-  columnSizes.push_back(0);
-  for (int i = 0; i < FFOsciModSlotCount; i++)
-  {
-    columnSizes.push_back(0);
-    columnSizes.push_back(1);
-  }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
-  auto index0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciFM, 0, (int)FFOsciFMParam::ThroughZero, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, FFMakeOsciModUIColumnSizes());
+  auto index0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciFM, 0, (int)FFOsciFMParam::Index, 0 });
   auto indexHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(index0->static_.name);
   grid->Add(0, 0, indexHeader);
   auto throughZero0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciFM, 0, (int)FFOsciFMParam::ThroughZero, 0 });
@@ -42,22 +34,6 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
     auto throughZero = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciFM, 0, (int)FFOsciFMParam::ThroughZero, i });
     grid->Add(1, 1 + i * 2 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, throughZero));
   }
-
-  // todo shared with am
-  int x = 0;
-  int w = 2;
-  grid->MarkSection({ 0, 0, 2, 1 });
-  for (int i = 0; i < FFOsciCount; i++)
-  {
-    grid->MarkSection({ 0, 1 + x, 2, w });
-    x += 2 * (i + 1);
-    w += 2;
-  }
+  FFMarkOsciModUIGridSections(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
-}
-
-Component*
-FFMakeOsciFMGUI(FBPlugGUI* plugGUI)
-{
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::OsciFM, MakeSectionAll);
 }
