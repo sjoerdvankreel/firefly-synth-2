@@ -172,7 +172,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
 void 
 FFOsciProcessor::ProcessBasicUnisonVoice(
   FBFixedFloatBlock& unisonAudioOut,
-  FBFixedFloatBlock const& phase,
+  FBFixedFloatBlock const& phasePlusFm,
   FBFixedFloatBlock const& incr,
   FBFixedFloatBlock const& sinGainPlain,
   FBFixedFloatBlock const& sawGainPlain,
@@ -183,16 +183,16 @@ FFOsciProcessor::ProcessBasicUnisonVoice(
   unisonAudioOut.Fill(0.0f);
   if (_voiceState.basicSinOn)
     for (int v = 0; v < FBFixedFloatVectors; v++)
-      unisonAudioOut[v] += GenerateSin(phase[v]) * sinGainPlain[v];
+      unisonAudioOut[v] += GenerateSin(phasePlusFm[v]) * sinGainPlain[v];
   if (_voiceState.basicSawOn)
     for (int v = 0; v < FBFixedFloatVectors; v++)
-      unisonAudioOut[v] += GenerateSaw(phase[v], incr[v]) * sawGainPlain[v];
+      unisonAudioOut[v] += GenerateSaw(phasePlusFm[v], incr[v]) * sawGainPlain[v];
   if (_voiceState.basicTriOn)
     for (int v = 0; v < FBFixedFloatVectors; v++)
-      unisonAudioOut[v] += GenerateTri(phase[v], incr[v]) * triGainPlain[v];
+      unisonAudioOut[v] += GenerateTri(phasePlusFm[v], incr[v]) * triGainPlain[v];
   if (_voiceState.basicSqrOn)
     for (int v = 0; v < FBFixedFloatVectors; v++)
-      unisonAudioOut[v] += GenerateSqr(phase[v], incr[v], sqrPWPlain[v]) * sqrGainPlain[v];
+      unisonAudioOut[v] += GenerateSqr(phasePlusFm[v], incr[v], sqrPWPlain[v]) * sqrGainPlain[v];
 }
 
 // https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
@@ -200,7 +200,7 @@ void
 FFOsciProcessor::ProcessDSFUnisonVoice(
   float sampleRate,
   FBFixedFloatBlock& unisonAudioOut,
-  FBFixedFloatBlock const& phase,
+  FBFixedFloatBlock const& phasePlusFm,
   FBFixedFloatBlock const& freq,
   FBFixedFloatBlock const& decayPlain)
 {
@@ -211,17 +211,17 @@ FFOsciProcessor::ProcessDSFUnisonVoice(
 
   if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
     unisonAudioOut.Transform([&](int v) { return GenerateDSFOvertones(
-      phase[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfOvertones); });
+      phasePlusFm[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfOvertones); });
   else
     unisonAudioOut.Transform([&](int v) { return GenerateDSFBandwidth(
-      phase[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfBandwidthPlain); });
+      phasePlusFm[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfBandwidthPlain); });
 }
 
 void 
 FFOsciProcessor::ProcessTypeUnisonVoice(
   float sampleRate,
   FBFixedFloatBlock& unisonAudioOut,
-  FBFixedFloatBlock const& phase,
+  FBFixedFloatBlock const& phasePlusFm,
   FBFixedFloatBlock const& freq,
   FBFixedFloatBlock const& incr,
   FBFixedFloatBlock const& basicSinGainPlain,
@@ -232,11 +232,11 @@ FFOsciProcessor::ProcessTypeUnisonVoice(
   FBFixedFloatBlock const& dsfDecayPlain)
 {
   if (_voiceState.type == FFOsciType::Basic)
-    ProcessBasicUnisonVoice(unisonAudioOut, phase, incr,
+    ProcessBasicUnisonVoice(unisonAudioOut, phasePlusFm, incr,
       basicSinGainPlain, basicSawGainPlain, 
       basicTriGainPlain, basicSqrGainPlain, basicSqrPWPlain);
   else if (_voiceState.type == FFOsciType::DSF)
-    ProcessDSFUnisonVoice(sampleRate, unisonAudioOut, phase, freq, dsfDecayPlain);
+    ProcessDSFUnisonVoice(sampleRate, unisonAudioOut, phasePlusFm, freq, dsfDecayPlain);
   else
     assert(false);
 }
@@ -258,8 +258,8 @@ FFOsciProcessor::ProcessUnisonVoice(
 {
   FBFixedFloatBlock incr;
   FBFixedFloatBlock freq;
-  FBFixedFloatBlock phase;
   FBFixedFloatBlock pitch; 
+  FBFixedFloatBlock phasePlusFM;
   
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
@@ -273,10 +273,17 @@ FFOsciProcessor::ProcessUnisonVoice(
     else
       freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
     incr[v] = freq[v] / sampleRate;
-    phase[v] = _phases[unisonVoice].Next(incr[v]);
+    phasePlusFM[v] = _phases[unisonVoice].Next(incr[v]);
+
+    // TODO self-fm and delay and TZ
+    for (int src = 0; src < state.moduleSlot; src++)
+      if (_voiceState.fmSourceMode[src] != FFOsciFMMode::Off && _voiceState.modSourceUnisonCount[src] > unisonVoice)
+      {
+
+      }
   }
 
-  ProcessTypeUnisonVoice(sampleRate, unisonAudioOut, phase, freq, incr,
+  ProcessTypeUnisonVoice(sampleRate, unisonAudioOut, phasePlusFM, freq, incr,
     basicSinGainPlain, basicSawGainPlain, basicTriGainPlain, 
     basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
 

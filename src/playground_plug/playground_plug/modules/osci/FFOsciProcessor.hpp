@@ -49,7 +49,7 @@ class FFOsciProcessor final
 
   void ProcessBasicUnisonVoice(
     FBFixedFloatBlock& unisonAudioOut,
-    FBFixedFloatBlock const& phase,
+    FBFixedFloatBlock const& phasePlusFm,
     FBFixedFloatBlock const& incr,
     FBFixedFloatBlock const& sinGainPlain,
     FBFixedFloatBlock const& sawGainPlain,
@@ -60,14 +60,14 @@ class FFOsciProcessor final
   void ProcessDSFUnisonVoice(
     float sampleRate,
     FBFixedFloatBlock& unisonAudioOut,
-    FBFixedFloatBlock const& phase,
+    FBFixedFloatBlock const& phasePlusFm,
     FBFixedFloatBlock const& freq,
     FBFixedFloatBlock const& decayPlain);
 
   void ProcessTypeUnisonVoice(
     float sampleRate,
     FBFixedFloatBlock& unisonAudioOut,
-    FBFixedFloatBlock const& phase,
+    FBFixedFloatBlock const& phasePlusFm,
     FBFixedFloatBlock const& freq,
     FBFixedFloatBlock const& incr,
     FBFixedFloatBlock const& basicSinGainPlain,
