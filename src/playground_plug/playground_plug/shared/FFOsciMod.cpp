@@ -60,8 +60,8 @@ FFMakeOsciModUIColumnSizes()
   result.push_back(0);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
-    result.push_back(0);
     result.push_back(1);
+    result.push_back(0);
   }
   return result;
 }
