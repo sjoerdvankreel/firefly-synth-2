@@ -264,6 +264,7 @@ FFOsciProcessor::ProcessUnisonVoice(
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
+  auto* exchangeFromGUI = state.ExchangeFromGUIAs<FFExchangeState>();
 
   for (int v = 0; v < FBFixedFloatVectors; v++)
   {
@@ -280,7 +281,18 @@ FFOsciProcessor::ProcessUnisonVoice(
       if (_voiceState.fmSourceMode[src] != FFOsciFMMode::Off && _voiceState.modSourceUnisonCount[src] > unisonVoice)
       {
         FBFixedFloatBlock index;
-        FBFixedFloatBlock fmModulator;
+        FBFixedFloatBlock forwardModulator;
+
+        int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
+        if (exchangeFromGUI != nullptr)
+          index.Fill(exchangeFromGUI->param.voice.osciFM[0].acc.index[slot][voice]);
+        else
+          index.CopyFrom(procState->dsp.voice[voice].osciFM.outputIndex[slot]);
+
+        auto const& throughZeroModulator = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
+        forwardModulator.Transform([&](int v) { return throughZeroModulator[v] * 0.5f + 0.5f; });
+        phasePlusFM.Transform([&](int v) { return phasePlusFM[v] + forwardModulator[v] * index[v]; });
+        phasePlusFM.Transform([&](int v) { return phasePlusFM[v] - xsimd::floor(phasePlusFM[v]); });
       }
   }
 
@@ -288,7 +300,6 @@ FFOsciProcessor::ProcessUnisonVoice(
     basicSinGainPlain, basicSawGainPlain, basicTriGainPlain, 
     basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
 
-  auto* exchangeFromGUI = state.ExchangeFromGUIAs<FFExchangeState>();
   for (int src = 0; src <= state.moduleSlot; src++)
     if (_voiceState.amSourceOn[src] && _voiceState.modSourceUnisonCount[src] > unisonVoice)
     {

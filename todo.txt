@@ -1,3 +1,5 @@
+hardsync
+drop the transform calls
 fix up the track graph
 mark osci pw section
 osci fm + oversampling
