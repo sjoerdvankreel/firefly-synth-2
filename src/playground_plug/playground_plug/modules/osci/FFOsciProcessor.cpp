@@ -382,7 +382,6 @@ FFOsciProcessor::ProcessUnison(
     topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, detuneNorm, detunePlain);
     topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, spreadNorm, spreadPlain);
 
-    //float attenuate = 1.0f / std::sqrt(static_cast<float>(_voiceState.unisonCount));
     for (int i = 0; i < _voiceState.unisonCount; i++)
     {
       unisonPos.Fill(i / (_voiceState.unisonCount - 1.0f) - 0.5f);
