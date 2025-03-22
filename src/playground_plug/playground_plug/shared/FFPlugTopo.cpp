@@ -7,6 +7,7 @@
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci_am/FFOsciAMTopo.hpp>
+#include <playground_plug/modules/osci_fm/FFOsciFMTopo.hpp>
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsTopo.hpp>
@@ -106,6 +107,7 @@ FFMakeTopo()
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeGLFOTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciAM] = std::move(*FFMakeOsciAMTopo());
+  result->modules[(int)FFModuleType::OsciFM] = std::move(*FFMakeOsciFMTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
