@@ -155,12 +155,16 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   }
 
   auto const& amParams = procState->param.voice.osciAM[0];
+  auto const& fmParams = procState->param.voice.osciFM[0];
   auto const& amTopo = state.topo->static_.modules[(int)FFModuleType::OsciAM];
+  auto const& fmTopo = state.topo->static_.modules[(int)FFModuleType::OsciFM];
   for (int src = 0; src <= state.moduleSlot; src++)
   {
     auto const& srcOsciParams = procState->param.voice.osci[src];
     int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot});
     _voiceState.amSourceOn[src] = amTopo.NormalizedToBoolFast(FFOsciAMParam::On, amParams.block.on[slot].Voice()[voice]);
+    _voiceState.fmSourceOn[src] = fmTopo.NormalizedToBoolFast(FFOsciFMParam::On, fmParams.block.on[slot].Voice()[voice]);
+    _voiceState.fmSourceThroughZero[src] = fmTopo.NormalizedToBoolFast(FFOsciFMParam::ThroughZero, fmParams.block.throughZero[slot].Voice()[voice]);
     _voiceState.modSourceUnisonCount[src] = topo.NormalizedDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
   }
 }
