@@ -137,10 +137,10 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   _voiceState.basicTriOn = topo.NormalizedToBoolFast(FFOsciParam::BasicTriOn, params.block.basicTriOn[0].Voice()[voice]);
   _voiceState.basicSqrOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSqrOn, params.block.basicSqrOn[0].Voice()[voice]);
   _voiceState.dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, params.block.dsfMode[0].Voice()[voice]);
-  _voiceState.dsfDistance = topo.NormalizedDiscreteFast(FFOsciParam::DSFDistance, params.block.dsfDistance[0].Voice()[voice]);
-  _voiceState.dsfOvertones = topo.NormalizedDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
+  _voiceState.dsfDistance = topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance, params.block.dsfDistance[0].Voice()[voice]);
+  _voiceState.dsfOvertones = topo.NormalizedToDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
   _voiceState.dsfBandwidthPlain = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
-  _voiceState.unisonCount = topo.NormalizedDiscreteFast(FFOsciParam::UnisonCount, params.block.unisonCount[0].Voice()[voice]);
+  _voiceState.unisonCount = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, params.block.unisonCount[0].Voice()[voice]);
   _voiceState.unisonDetuneHQ = topo.NormalizedToBoolFast(FFOsciParam::UnisonDetuneHQ, params.block.unisonDetuneHQ[0].Voice()[voice]);
   _voiceState.unisonOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
   _voiceState.unisonOffsetRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffsetRandom, params.block.unisonOffsetRandom[0].Voice()[voice]);
@@ -163,9 +163,9 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
     auto const& srcOsciParams = procState->param.voice.osci[src];
     int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot});
     _voiceState.amSourceOn[src] = amTopo.NormalizedToBoolFast(FFOsciAMParam::On, amParams.block.on[slot].Voice()[voice]);
-    _voiceState.fmSourceOn[src] = fmTopo.NormalizedToBoolFast(FFOsciFMParam::On, fmParams.block.on[slot].Voice()[voice]);
-    _voiceState.fmSourceThroughZero[src] = fmTopo.NormalizedToBoolFast(FFOsciFMParam::ThroughZero, fmParams.block.throughZero[slot].Voice()[voice]);
-    _voiceState.modSourceUnisonCount[src] = topo.NormalizedDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
+    _voiceState.fmSourceDelay[src] = fmTopo.NormalizedToDiscreteFast(FFOsciFMParam::Delay, fmParams.block.delay[slot].Voice()[voice]);
+    _voiceState.fmSourceMode[src] = fmTopo.NormalizedToListFast<FFOsciFMMode>(FFOsciFMParam::Mode, fmParams.block.mode[slot].Voice()[voice]);
+    _voiceState.modSourceUnisonCount[src] = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
   }
 }
 

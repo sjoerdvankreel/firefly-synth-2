@@ -20,7 +20,7 @@ FFMakeOsciAMTopo()
   on.slotCount = FFOsciModSlotCount;
   on.id = "{F10BBAB2-F179-496F-9A55-68545E734EF6}";
   on.type = FBParamType::Boolean;
-  on.slotFormatter = [](int slot) { return FFOsciModMakeSourceAndTargetText(slot); };
+  on.slotFormatter = [name = on.name](int slot) { return name + " " + FFOsciModMakeSourceAndTargetText(slot); };
   auto selectOn = [](auto& module) { return &module.block.on; };
   on.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOn);
   on.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOn);

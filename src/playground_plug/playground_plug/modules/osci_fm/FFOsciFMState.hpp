@@ -24,8 +24,8 @@ class alignas(alignof(TVoiceBlock)) FFOsciFMBlockParamState final
   friend class FFOsciProcessor;
   friend class FFOsciFMProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciFMTopo();
-  std::array<TVoiceBlock, FFOsciModSlotCount> on = {};
-  std::array<TVoiceBlock, FFOsciModSlotCount> throughZero = {};
+  std::array<TVoiceBlock, FFOsciModSlotCount> mode = {};
+  std::array<TVoiceBlock, FFOsciModSlotCount> delay = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciFMBlockParamState);
 };

@@ -14,32 +14,21 @@ FFMakeOsciFMTopo()
   result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciFM; });
   auto selectModule = [](auto& state) { return &state.voice.osciFM; };
 
-  auto& on = result->params[(int)FFOsciFMParam::On];
-  on.acc = false;
-  on.name = "On";
-  on.slotCount = FFOsciModSlotCount;
-  on.id = "{7347594D-9FBB-426B-A656-5673B6C617F3}";
-  on.type = FBParamType::Boolean;
-  on.slotFormatter = [](int slot) { return FFOsciModMakeSourceAndTargetText(slot); };
-  auto selectOn = [](auto& module) { return &module.block.on; };
-  on.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOn);
-  on.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
-  on.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectOn);
-
-  auto& throughZero = result->params[(int)FFOsciFMParam::ThroughZero];
-  throughZero.acc = false;
-  throughZero.defaultText = "On";
-  throughZero.name = "TZ";
-  throughZero.tooltip = "Through-Zero";
-  throughZero.slotCount = FFOsciModSlotCount;
-  throughZero.id = "{99BC9193-3D60-4EEE-BFE8-17C0E39971B7}";
-  throughZero.type = FBParamType::Boolean;
-  throughZero.slotFormatter = [tooltip = throughZero.tooltip](int slot) { return tooltip + " " + FFOsciModMakeSourceAndTargetText(slot); };
-  auto selectThroughZero = [](auto& module) { return &module.block.throughZero; };
-  throughZero.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectThroughZero);
-  throughZero.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectThroughZero);
-  throughZero.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectThroughZero);
-  throughZero.dependencies.enabled.audio.When({ (int)FFOsciFMParam::On }, [](auto const& vs) { return vs[0] != 0; });
+  auto& mode = result->params[(int)FFOsciFMParam::Mode];
+  mode.acc = false;
+  mode.name = "Mode";
+  mode.slotCount = FFOsciModSlotCount;
+  mode.id = "{7347594D-9FBB-426B-A656-5673B6C617F3}";
+  mode.type = FBParamType::List;
+  mode.List().items = {
+    { "{B185E4BE-6832-49D9-B75F-EC979CDF2373}", "Off", "Off"},
+    { "{6DD56568-B323-441D-8DBC-6ED52203E877}", "On", "On" },
+    { "{C75622B5-DAFD-496E-A76A-2A1CF38D0800}", "TZ", "Through Zero" } };
+  mode.slotFormatter = [name = mode.name](int slot) { return name + " " + FFOsciModMakeSourceAndTargetText(slot); };
+  auto selectMode = [](auto& module) { return &module.block.mode; };
+  mode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectMode);
+  mode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectMode);
+  mode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectMode);
 
   // TODO not linear
   auto& index = result->params[(int)FFOsciFMParam::Index];
@@ -55,7 +44,22 @@ FFMakeOsciFMTopo()
   index.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectIndex);
   index.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectIndex);
   index.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectIndex);
-  index.dependencies.enabled.audio.When({ (int)FFOsciFMParam::On }, [](auto const& vs) { return vs[0] != 0; });
+  index.dependencies.enabled.audio.When({ (int)FFOsciFMParam::Mode }, [](auto const& vs) { return vs[0] != (int)FFOsciFMMode::Off; });
+
+  // TODO not discrete
+  auto& delay = result->params[(int)FFOsciFMParam::Delay];
+  delay.acc = false;
+  delay.name = "Delay";
+  delay.slotCount = FFOsciModSlotCount;
+  delay.id = "{1B21566A-F1B1-4F8F-87D4-F188E86A0586}";
+  delay.type = FBParamType::Discrete;
+  delay.Discrete().valueCount = 8;
+  delay.slotFormatter = [name = delay.name](int slot) { return name + " " + FFOsciModMakeSourceAndTargetText(slot); };
+  auto selectDelay = [](auto& module) { return &module.block.delay; };
+  delay.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelay);
+  delay.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDelay);
+  delay.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDelay);
+  delay.dependencies.enabled.audio.When({ (int)FFOsciFMParam::Mode }, [](auto const& vs) { return vs[0] != (int)FFOsciFMMode::Off; });
 
   return result;
 }

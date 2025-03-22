@@ -13,10 +13,7 @@ FFOsciFMProcessor::BeginVoice(FBModuleProcState const& state)
   auto const& params = procState->param.voice.osciFM[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciFM];
   for (int i = 0; i < FFOsciModSlotCount; i++)
-  {
-    _voiceState.on[i] = topo.NormalizedToBoolFast(FFOsciFMParam::On, params.block.on[i].Voice()[voice]);
-    _voiceState.throughZero[i] = topo.NormalizedToBoolFast(FFOsciFMParam::ThroughZero, params.block.throughZero[i].Voice()[voice]);
-  }
+    _voiceState.mode[i] = topo.NormalizedToListFast<FFOsciFMMode>(FFOsciFMParam::Mode, params.block.mode[i].Voice()[voice]);
 }
 
 void
@@ -31,7 +28,7 @@ FFOsciFMProcessor::Process(FBModuleProcState& state)
   // TODO these should themselves be mod targets
   // for now just copy over the stream
   for (int i = 0; i < FFOsciModSlotCount; i++)
-    if(_voiceState.on[i])
+    if(_voiceState.mode[i] != FFOsciFMMode::Off)
     {
       // todo not identity
       auto const& indexNorm = procParams.acc.index[i].Voice()[voice];

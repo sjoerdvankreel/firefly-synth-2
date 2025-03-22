@@ -41,7 +41,7 @@ struct FBStaticModule final
   template <class ParamIndex>
   float DiscreteToNormalizedFast(ParamIndex index, int plain) const;
   template <class ParamIndex>
-  int NormalizedDiscreteFast(ParamIndex index, float normalized) const;
+  int NormalizedToDiscreteFast(ParamIndex index, float normalized) const;
 
   template <class ParamIndex>
   int NormalizedToBarsFast(ParamIndex index, float normalized) const;
@@ -122,7 +122,7 @@ FBStaticModule::DiscreteToNormalizedFast(ParamIndex index, int plain) const
 
 template <class ParamIndex>
 inline int 
-FBStaticModule::NormalizedDiscreteFast(ParamIndex index, float normalized) const
+FBStaticModule::NormalizedToDiscreteFast(ParamIndex index, float normalized) const
 {
   return params[static_cast<int>(index)].Discrete().NormalizedToPlainFast(normalized);
 }

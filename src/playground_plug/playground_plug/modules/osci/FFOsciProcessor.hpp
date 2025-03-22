@@ -1,6 +1,8 @@
 #pragma once
 
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
+#include <playground_plug/modules/osci_fm/FFOsciFMTopo.hpp>
+
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBPhase.hpp>
 #include <playground_base/dsp/shared/FBTrackingPhase.hpp>
@@ -32,7 +34,8 @@ struct FFOsciVoiceState final
   float unisonOffsetRandomPlain = {};
 
   std::array<bool, FFOsciCount> amSourceOn = {};
-  std::array<bool, FFOsciCount> fmSourceOn = {};
+  std::array<int, FFOsciCount> fmSourceDelay = {}; // TODO not in samples
+  std::array<FFOsciFMMode, FFOsciCount> fmSourceMode = {};
   std::array<bool, FFOsciCount> fmSourceThroughZero = {};
   std::array<int, FFOsciCount> modSourceUnisonCount = {};
 };
