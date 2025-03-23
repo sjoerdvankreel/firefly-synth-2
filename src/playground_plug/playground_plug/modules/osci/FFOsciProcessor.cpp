@@ -151,7 +151,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
   {
     float offsetRandom = _voiceState.unisonOffsetRandomPlain;
     float unisonPhase = i * _voiceState.unisonOffsetPlain / _voiceState.unisonCount;
-    _phases[i] = FBPhase(((1.0f - offsetRandom) + offsetRandom * _prng.Next()) * unisonPhase);
+    _phases[i] = FFOsciPhase(((1.0f - offsetRandom) + offsetRandom * _prng.Next()) * unisonPhase);
   }
 
   auto const& amParams = procState->param.voice.osciAM[0];
@@ -259,11 +259,31 @@ FFOsciProcessor::ProcessUnisonVoice(
   FBFixedFloatBlock incr;
   FBFixedFloatBlock freq;
   FBFixedFloatBlock pitch; 
+  FBFixedFloatBlock fmModulator;
   FBFixedFloatBlock phasePlusFM;
   
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
+
+  // TODO self-fm and delay and TZ
+  fmModulator.Fill(0.0f);
+  for (int src = 0; src < state.moduleSlot; src++)
+    if (_voiceState.fmSourceMode[src] != FFOsciFMMode::Off && _voiceState.modSourceUnisonCount[src] > unisonVoice)
+    {
+      FBFixedFloatBlock index;
+      int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
+      index.CopyFrom(procState->dsp.voice[voice].osciFM.outputIndex[slot]);
+      auto const& throughZeroModulator = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
+      if (_voiceState.fmSourceMode[src] == FFOsciFMMode::ThroughZero)
+        fmModulator.Transform([&](int v) { return fmModulator[v] + throughZeroModulator[v] * index[v]; });
+      else
+      {
+        FBFixedFloatBlock forwardModulator;
+        forwardModulator.Transform([&](int v) { return throughZeroModulator[v] * 0.5f + 0.5f; });
+        fmModulator.Transform([&](int v) { return fmModulator[v] + forwardModulator[v] * index[v]; });
+      }
+    }
 
   for (int v = 0; v < FBFixedFloatVectors; v++)
   {
@@ -273,23 +293,8 @@ FFOsciProcessor::ProcessUnisonVoice(
     else
       freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
     incr[v] = freq[v] / sampleRate;
-    phasePlusFM[v] = _phases[unisonVoice].Next(incr[v]);
+    phasePlusFM[v] = _phases[unisonVoice].Next(incr[v], fmModulator[v]);
   }
-
-  // TODO self-fm and delay and TZ
-  for (int src = 0; src < state.moduleSlot; src++)
-    if (_voiceState.fmSourceMode[src] != FFOsciFMMode::Off && _voiceState.modSourceUnisonCount[src] > unisonVoice)
-    {
-      FBFixedFloatBlock index;
-      FBFixedFloatBlock forwardModulator;
-      int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
-      index.CopyFrom(procState->dsp.voice[voice].osciFM.outputIndex[slot]);
-
-      auto const& throughZeroModulator = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
-      forwardModulator.Transform([&](int v) { return throughZeroModulator[v] * 0.5f + 0.5f; });
-      phasePlusFM.Transform([&](int v) { return phasePlusFM[v] + forwardModulator[v] * index[v] * 10; });
-      phasePlusFM.Transform([&](int v) { return phasePlusFM[v] - xsimd::floor(phasePlusFM[v]); });
-    }
 
   ProcessTypeUnisonVoice(sampleRate, unisonAudioOut, phasePlusFM, freq, incr,
     basicSinGainPlain, basicSawGainPlain, basicTriGainPlain, 
