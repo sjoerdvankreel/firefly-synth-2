@@ -16,6 +16,18 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   auto const& input = procState->dsp.global.gFilter[state.moduleSlot].input;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GFilter];
   auto const& procParams = procState->param.global.gFilter[state.moduleSlot];
+  auto const& resNorm = procParams.acc.res[0].Global();
+  auto const& freqNorm = procParams.acc.freq[0].Global();
+  auto const& gainNorm = procParams.acc.gain[0].Global();
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI != nullptr)
+  {
+    auto& exchangeParams = exchangeToGUI->param.global.gFilter[state.moduleSlot];
+    exchangeParams.acc.res[0] = resNorm.Last();
+    exchangeParams.acc.freq[0] = freqNorm.Last();
+    exchangeParams.acc.gain[0] = gainNorm.Last();
+  }
 
   if (!topo.NormalizedToBoolFast(FFGFilterParam::On, procParams.block.on[0].Value()))
   {
@@ -26,9 +38,6 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   FBFixedDoubleBlock a;
   FBFixedDoubleBlock resPlain;
   FBFixedDoubleBlock freqPlain;
-  auto const& resNorm = procParams.acc.res[0].Global();
-  auto const& freqNorm = procParams.acc.freq[0].Global();
-  auto const& gainNorm = procParams.acc.gain[0].Global();
   auto mode = topo.NormalizedToListFast<FFGFilterMode>(FFGFilterParam::Mode, procParams.block.mode[0].Value());
   topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freqNorm, freqPlain);
   topo.NormalizedToIdentityFast(FFGFilterParam::Res, resNorm, resPlain);
@@ -137,15 +146,9 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     }
   output.LoadCastFromDoubleArray(audioOut);  
 
-  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
-  if (exchangeToGUI == nullptr)
-    return;
-
-  auto& exchangeDSP = exchangeToGUI->global.gFilter[state.moduleSlot];
-  exchangeDSP.active = true;
-
-  auto& exchangeParams = exchangeToGUI->param.global.gFilter[state.moduleSlot];
-  exchangeParams.acc.res[0] = resNorm.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.freq[0] = freqNorm.CV().data[FBFixedBlockSamples - 1];
-  exchangeParams.acc.gain[0] = gainNorm.CV().data[FBFixedBlockSamples - 1];
+  if (exchangeToGUI != nullptr)
+  {
+    auto& exchangeDSP = exchangeToGUI->global.gFilter[state.moduleSlot];
+    exchangeDSP.active = true;
+  }
 }
