@@ -1,3 +1,5 @@
+fix the fm
+store the selected tab
 hardsync
 drop the transform calls
 fix up the track graph
