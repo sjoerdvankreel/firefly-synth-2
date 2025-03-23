@@ -264,7 +264,6 @@ FFOsciProcessor::ProcessUnisonVoice(
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
-  auto* exchangeFromGUI = state.ExchangeFromGUIAs<FFExchangeState>();
 
   for (int v = 0; v < FBFixedFloatVectors; v++)
   {
@@ -283,12 +282,8 @@ FFOsciProcessor::ProcessUnisonVoice(
     {
       FBFixedFloatBlock index;
       FBFixedFloatBlock forwardModulator;
-
       int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
-      if (exchangeFromGUI != nullptr)
-        index.Fill(exchangeFromGUI->param.voice.osciFM[0].acc.index[slot][voice]);
-      else
-        index.CopyFrom(procState->dsp.voice[voice].osciFM.outputIndex[slot]);
+      index.CopyFrom(procState->dsp.voice[voice].osciFM.outputIndex[slot]);
 
       auto const& throughZeroModulator = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
       forwardModulator.Transform([&](int v) { return throughZeroModulator[v] * 0.5f + 0.5f; });
@@ -311,15 +306,8 @@ FFOsciProcessor::ProcessUnisonVoice(
       FBFixedFloatBlock rmModulated;
       
       int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
-      if (exchangeFromGUI != nullptr)
-      {
-        mix.Fill(exchangeFromGUI->param.voice.osciAM[0].acc.mix[slot][voice]);
-        ring.Fill(exchangeFromGUI->param.voice.osciAM[0].acc.ring[slot][voice]);
-      } else 
-      {
-        mix.CopyFrom(procState->dsp.voice[voice].osciAM.outputMix[slot]);
-        ring.CopyFrom(procState->dsp.voice[voice].osciAM.outputRing[slot]);
-      }
+      mix.CopyFrom(procState->dsp.voice[voice].osciAM.outputMix[slot]);
+      ring.CopyFrom(procState->dsp.voice[voice].osciAM.outputRing[slot]);
 
       auto const& rmModulator = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
       amModulator.Transform([&](int v) { return rmModulator[v] * 0.5f + 0.5f; });

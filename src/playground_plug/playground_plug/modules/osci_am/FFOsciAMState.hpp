@@ -12,6 +12,7 @@ struct FBStaticModule;
 class alignas(sizeof(FBFloatVector)) FFOsciAMDSPState final
 {
   friend class FFVoiceProcessor;
+  friend struct OsciGraphRenderData;
   FFOsciAMProcessor processor = {};
 public:
   std::array<FBFixedFloatBlock, FFOsciModSlotCount> outputMix = {};

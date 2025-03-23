@@ -14,17 +14,20 @@ public FBModuleGraphRenderData<OsciGraphRenderData>
 {
   int Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState& state);
-  FFOsciProcessor& GetProcessor(FBModuleProcState& state);
+  FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
 };
 
 void
 OsciGraphRenderData::BeginVoice(FBModuleProcState& state)
 {
-  int highestSlot = state.moduleSlot;
-  for (int i = 0; i <= highestSlot; i++)
+  int osciSlot = state.moduleSlot;
+  state.moduleSlot = 0;
+  GetVoiceDSPState(state).osciAM.processor.BeginVoice(state);
+  GetVoiceDSPState(state).osciFM.processor.BeginVoice(state);
+  for (int i = 0; i <= osciSlot; i++)
   {
     state.moduleSlot = i;
-    GetProcessor(state).BeginVoice(state);
+    GetVoiceDSPState(state).osci[i].processor.BeginVoice(state);
   }
 }
 
@@ -32,20 +35,22 @@ int
 OsciGraphRenderData::Process(FBModuleProcState& state)
 {
   int result = 0;
-  int highestSlot = state.moduleSlot;
-  for (int i = 0; i <= highestSlot; i++)
+  int osciSlot = state.moduleSlot;
+  state.moduleSlot = 0;
+  GetVoiceDSPState(state).osciAM.processor.Process(state);
+  GetVoiceDSPState(state).osciFM.processor.Process(state);
+  for (int i = 0; i <= osciSlot; i++)
   {
     state.moduleSlot = i;
-    result = GetProcessor(state).Process(state);
+    result = GetVoiceDSPState(state).osci[i].processor.Process(state);
   }
   return result;
 }
 
-FFOsciProcessor&
-OsciGraphRenderData::GetProcessor(FBModuleProcState& state)
+FFVoiceDSPState&
+OsciGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
 {
-  auto* procState = state.ProcAs<FFProcState>();
-  return procState->dsp.voice[state.voice->slot].osci[state.moduleSlot].processor;
+  return state.ProcAs<FFProcState>()->dsp.voice[state.voice->slot];
 }
 
 static FBModuleGraphPlotParams
