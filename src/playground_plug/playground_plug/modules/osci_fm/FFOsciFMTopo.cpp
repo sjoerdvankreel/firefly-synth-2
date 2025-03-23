@@ -22,7 +22,8 @@ FFMakeOsciFMTopo()
   mode.type = FBParamType::List;
   mode.List().items = {
     { "{B185E4BE-6832-49D9-B75F-EC979CDF2373}", "Off", "Off"},
-    { "{6DD56568-B323-441D-8DBC-6ED52203E877}", "On", "On" },
+    { "{6DD56568-B323-441D-8DBC-6ED52203E877}", "Up", "Up" },
+    { "{420C953D-CDD6-43DD-85B9-9D33D5E9EA5D}", "Dwn", "Down" },
     { "{C75622B5-DAFD-496E-A76A-2A1CF38D0800}", "TZ", "Through Zero" } };
   mode.slotFormatter = [](int slot) { return FFOsciModMakeSourceAndTargetText(slot); };
   auto selectMode = [](auto& module) { return &module.block.mode; };
