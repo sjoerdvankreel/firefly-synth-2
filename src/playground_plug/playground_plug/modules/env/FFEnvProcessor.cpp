@@ -220,7 +220,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   output.LoadFromFloatArray(scratch);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
-  if (exchangeToGUI == nullptr || processed == 0)
+  if (exchangeToGUI == nullptr)
     return processed;
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].env[state.moduleSlot];
