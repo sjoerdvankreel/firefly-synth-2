@@ -90,16 +90,6 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   auto const& releaseSlope = procParams.acc.releaseSlope[0].Voice()[voice];
   auto const& sustainLevel = procParams.acc.sustainLevel[0].Voice()[voice];
 
-  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
-  if (exchangeToGUI != nullptr)
-  {
-    auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
-    exchangeParams.acc.decaySlope[0][voice] = decaySlope.Last();
-    exchangeParams.acc.attackSlope[0][voice] = attackSlope.Last();
-    exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.Last();
-    exchangeParams.acc.sustainLevel[0][voice] = sustainLevel.Last();
-  }
-
   if (!_voiceState.on)
   {
     output.Fill(0.0f);
@@ -121,7 +111,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   auto const& noteEvents = *state.input->note;
   auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
-  if (_voiceState.type != FFEnvType::Follow &&
+  if(_voiceState.type != FFEnvType::Follow && 
     state.renderType != FBRenderType::GraphExchange &&
     !state.anyExchangeActive)
     for (int i = 0; i < noteEvents.size(); i++)
@@ -187,8 +177,8 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       scratch.data[s] = _smoother.Next(_lastDAHDSR);
     }
 
-  if (_voiceState.type == FFEnvType::Sustain &&
-    state.renderType != FBRenderType::GraphExchange &&
+  if(_voiceState.type == FFEnvType::Sustain && 
+    state.renderType != FBRenderType::GraphExchange && 
     !state.anyExchangeActive)
     for (; s < FBFixedBlockSamples && !_released; s++)
     {
@@ -229,13 +219,20 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     scratch.data[s] = _smoother.State();
   output.LoadFromFloatArray(scratch);
 
-  if (exchangeToGUI != nullptr)
-  {
-    auto& exchangeDSP = exchangeToGUI->voice[voice].env[state.moduleSlot];
-    exchangeDSP.active = true;
-    exchangeDSP.lastOutput = output.Last();
-    exchangeDSP.lengthSamples = _lengthSamples;
-    exchangeDSP.positionSamples = _positionSamples;
-  }
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr || processed == 0)
+    return processed;
+
+  auto& exchangeDSP = exchangeToGUI->voice[voice].env[state.moduleSlot];
+  exchangeDSP.active = true;
+  exchangeDSP.lastOutput = output.Last();
+  exchangeDSP.lengthSamples = _lengthSamples;
+  exchangeDSP.positionSamples = _positionSamples;
+
+  auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
+  exchangeParams.acc.decaySlope[0][voice] = decaySlope.Last();
+  exchangeParams.acc.attackSlope[0][voice] = attackSlope.Last();
+  exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.Last();
+  exchangeParams.acc.sustainLevel[0][voice] = sustainLevel.Last();
   return processed;
 }
