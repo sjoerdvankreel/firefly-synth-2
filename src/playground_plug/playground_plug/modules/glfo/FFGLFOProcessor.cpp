@@ -23,15 +23,7 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   auto& output = procState->dsp.global.gLFO[state.moduleSlot].output;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
   auto const& procParams = procState->param.global.gLFO[state.moduleSlot];
-  auto const& rateNorm = procParams.acc.rate[0].Global();
-
-  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
-  if (exchangeToGUI != nullptr)
-  {
-    auto& exchangeParams = exchangeToGUI->param.global.gLFO[state.moduleSlot];
-    exchangeParams.acc.rate[0] = rateNorm.Last();
-  }
-
+  
   if (!topo.NormalizedToBoolFast(FFGLFOParam::On, procParams.block.on[0].Value()))
   {
     output.Fill(0.0f);
@@ -42,12 +34,18 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
 
   FBFixedFloatBlock phase;
   FBFixedFloatBlock ratePlain;
+  auto const& rateNorm = procParams.acc.rate[0].Global();
   topo.NormalizedToLinearFast(FFGLFOParam::Rate, rateNorm, ratePlain);
   phase.Transform([&](int v) { return _phase.Next(ratePlain[v] / state.input->sampleRate); });
   output.Transform([&](int v) { return FBToUnipolar(xsimd::sin(phase[v] * FBTwoPi)); });
 
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return _phase.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
+
+  auto& exchangeParams = exchangeToGUI->param.global.gLFO[state.moduleSlot];
+  exchangeParams.acc.rate[0] = rateNorm.Last();
+
   auto& exchangeDSP = exchangeToGUI->global.gLFO[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lastOutput = output.Last();
