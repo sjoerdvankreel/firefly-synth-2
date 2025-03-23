@@ -30,9 +30,8 @@ FFOsciFMProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < FFOsciModSlotCount; i++)
     if(_voiceState.mode[i] != FFOsciFMMode::Off)
     {
-      // todo not identity
       auto const& indexNorm = procParams.acc.index[i].Voice()[voice];
-      topo.NormalizedToIdentityFast(FFOsciFMParam::Index, indexNorm, outputIndex[i]);
+      topo.NormalizedToLog2Fast(FFOsciFMParam::Index, indexNorm, outputIndex[i]);
     }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

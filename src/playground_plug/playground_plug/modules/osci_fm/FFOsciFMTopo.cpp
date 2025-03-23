@@ -30,15 +30,14 @@ FFMakeOsciFMTopo()
   mode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectMode);
   mode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectMode);
 
-  // TODO not linear
   auto& index = result->params[(int)FFOsciFMParam::Index];
   index.acc = true;
   index.defaultText = "0.01";
   index.name = "Index";
   index.slotCount = FFOsciModSlotCount;
-  index.unit = "%";
   index.id = "{23E50199-00C9-4427-95EA-8E2A255632E4}";
-  index.type = FBParamType::Identity;
+  index.type = FBParamType::Log2;
+  index.Log2().Init(-0.01, 0.01f, 1.01f);
   index.slotFormatter = [name = index.name](int slot) { return name + " " + FFOsciModMakeSourceAndTargetText(slot); };
   auto selectIndex = [](auto& module) { return &module.acc.index; };
   index.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectIndex);
