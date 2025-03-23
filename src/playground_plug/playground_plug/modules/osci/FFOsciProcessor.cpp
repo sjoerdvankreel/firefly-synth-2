@@ -292,7 +292,7 @@ FFOsciProcessor::ProcessUnisonVoice(
 
       auto const& throughZeroModulator = procState->dsp.voice[voice].osci[src].unisonOutput[unisonVoice];
       forwardModulator.Transform([&](int v) { return throughZeroModulator[v] * 0.5f + 0.5f; });
-      phasePlusFM.Transform([&](int v) { return phasePlusFM[v] + forwardModulator[v] * index[v]; });
+      phasePlusFM.Transform([&](int v) { return phasePlusFM[v] + forwardModulator[v] * index[v] * 10; });
       phasePlusFM.Transform([&](int v) { return phasePlusFM[v] - xsimd::floor(phasePlusFM[v]); });
     }
 
