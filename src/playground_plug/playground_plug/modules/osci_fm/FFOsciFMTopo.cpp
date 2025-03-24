@@ -46,14 +46,14 @@ FFMakeOsciFMTopo()
   index.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectIndex);
   index.dependencies.enabled.audio.When({ (int)FFOsciFMParam::Mode }, [](auto const& vs) { return vs[0] != (int)FFOsciFMMode::Off; });
 
-  // TODO not discrete
+  // TODO not discrete ?
   auto& delay = result->params[(int)FFOsciFMParam::Delay];
   delay.acc = false;
   delay.name = "Delay";
   delay.slotCount = FFOsciModSlotCount;
   delay.id = "{1B21566A-F1B1-4F8F-87D4-F188E86A0586}";
   delay.type = FBParamType::Discrete;
-  delay.Discrete().valueCount = FBFixedBlockSamples;
+  delay.Discrete().valueCount = FBFixedBlockSamples + 1;
   delay.slotFormatter = [name = delay.name](int slot) { return name + " " + FFOsciModMakeSourceAndTargetText(slot); };
   auto selectDelay = [](auto& module) { return &module.block.delay; };
   delay.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelay);
