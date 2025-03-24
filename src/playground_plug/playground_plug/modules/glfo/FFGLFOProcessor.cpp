@@ -11,7 +11,7 @@
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 void 
-FFGLFOProcessor::Reset(FBModuleProcState const& state)
+FFGLFOProcessor::Reset(FBModuleProcState& state)
 {
   _phase = {};
 }

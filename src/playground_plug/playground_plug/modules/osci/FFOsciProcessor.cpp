@@ -123,7 +123,7 @@ GenerateDSFBandwidth(
 }
 
 void 
-FFOsciProcessor::BeginVoice(FBModuleProcState const& state)
+FFOsciProcessor::BeginVoice(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();

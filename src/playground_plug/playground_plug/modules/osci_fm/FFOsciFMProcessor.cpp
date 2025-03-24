@@ -6,7 +6,7 @@
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
 void 
-FFOsciFMProcessor::BeginVoice(FBModuleProcState const& state)
+FFOsciFMProcessor::BeginVoice(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();

@@ -19,5 +19,5 @@ class FFOsciFMProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciFMProcessor);
   void Process(FBModuleProcState& state);
-  void BeginVoice(FBModuleProcState const& state);
+  void BeginVoice(FBModuleProcState& state);
 };

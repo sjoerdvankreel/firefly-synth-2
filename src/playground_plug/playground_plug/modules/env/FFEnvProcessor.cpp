@@ -12,7 +12,7 @@
 #include <cmath>
 
 void
-FFEnvProcessor::BeginVoice(FBModuleProcState const& state)
+FFEnvProcessor::BeginVoice(FBModuleProcState& state)
 {
   _finished = false;
   _released = false;

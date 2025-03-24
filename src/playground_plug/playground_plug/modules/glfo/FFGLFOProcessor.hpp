@@ -13,6 +13,6 @@ class FFGLFOProcessor final
   FBTrackingPhase _phase = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOProcessor);
+  void Reset(FBModuleProcState& state);
   int Process(FBModuleProcState& state);
-  void Reset(FBModuleProcState const& state);
 };
