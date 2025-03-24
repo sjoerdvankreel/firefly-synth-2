@@ -356,6 +356,21 @@ FFOsciProcessor::ProcessUnisonVoice(
 }
 
 void 
+FFOsciProcessor::ShiftPrevUnisonOutputForAllOscis(
+  FBModuleProcState& state)
+{
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  for (int o = 0; o < FFOsciCount; o++)
+  {
+    auto& unisonOutput = procState->dsp.voice[voice].osci[o].unisonOutput;
+    auto& prevUnisonOutput = procState->dsp.voice[voice].osci[o].prevUnisonOutput;
+    for (int uv = 0; uv < _voiceState.unisonCount; uv++)
+      prevUnisonOutput[uv].CopyFrom(unisonOutput[uv]);
+  }
+}
+
+void 
 FFOsciProcessor::ProcessUnison(
   FBModuleProcState& state,
   FBFixedFloatAudioBlock& audioOut,
@@ -442,10 +457,6 @@ FFOsciProcessor::ProcessUnison(
     }
   }
 
-  auto& prevUnisonOutput = procState->dsp.voice[voice].osci[state.moduleSlot].prevUnisonOutput;
-  for (int i = 0; i < _voiceState.unisonCount; i++)
-    prevUnisonOutput[i].CopyFrom(unisonAudioOut[i]);
-
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
@@ -473,6 +484,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   if (_voiceState.type == FFOsciType::Off)
   {
+    if (state.moduleSlot == FFOsciCount - 1)
+      ShiftPrevUnisonOutputForAllOscis(state);
     output.Fill(0.0f);
     return 0;
   }
@@ -512,6 +525,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBFixedFloatBlock gainWithGLFOBlock;
   gainWithGLFOBlock.Transform([&](int v) { return ((1.0f - gLFOToGainPlain[v]) + gLFOToGainPlain[v] * gLFO[v]) * gainPlain[v]; });
   output.Transform([&](int ch, int v) { return output[ch][v] * gainWithGLFOBlock[v]; });
+
+  if (state.moduleSlot == FFOsciCount - 1)
+    ShiftPrevUnisonOutputForAllOscis(state);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

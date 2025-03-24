@@ -9,6 +9,7 @@
 
 #include <algorithm>
 
+// Need to process all oscis. See ShiftPrevUnisonOutputForAllOscis.
 struct OsciGraphRenderData final:
 public FBModuleGraphRenderData<OsciGraphRenderData>
 {
@@ -24,11 +25,12 @@ OsciGraphRenderData::BeginVoice(FBModuleProcState& state)
   state.moduleSlot = 0;
   GetVoiceDSPState(state).osciAM.processor.BeginVoice(state);
   GetVoiceDSPState(state).osciFM.processor.BeginVoice(state);
-  for (int i = 0; i <= osciSlot; i++)
+  for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
     GetVoiceDSPState(state).osci[i].processor.BeginVoice(state);
   }
+  state.moduleSlot = osciSlot;
 }
 
 int 
@@ -39,11 +41,14 @@ OsciGraphRenderData::Process(FBModuleProcState& state)
   state.moduleSlot = 0;
   GetVoiceDSPState(state).osciAM.processor.Process(state);
   GetVoiceDSPState(state).osciFM.processor.Process(state);
-  for (int i = 0; i <= osciSlot; i++)
+  for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    result = GetVoiceDSPState(state).osci[i].processor.Process(state);
+    int processed = GetVoiceDSPState(state).osci[i].processor.Process(state);
+    if (i == osciSlot)
+      result = processed;
   }
+  state.moduleSlot = osciSlot;
   return result;
 }
 

@@ -97,6 +97,9 @@ class FFOsciProcessor final
     std::array<FBFixedFloatBlock, FFOsciUnisonMaxCount>& unisonAudioOut,
     FBFixedFloatBlock const& basePitch);
 
+  void ShiftPrevUnisonOutputForAllOscis(
+    FBModuleProcState& state);
+
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
   int Process(FBModuleProcState& state);
