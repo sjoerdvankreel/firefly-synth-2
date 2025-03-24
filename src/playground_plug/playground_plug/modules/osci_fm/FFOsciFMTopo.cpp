@@ -53,7 +53,7 @@ FFMakeOsciFMTopo()
   delay.slotCount = FFOsciModSlotCount;
   delay.id = "{1B21566A-F1B1-4F8F-87D4-F188E86A0586}";
   delay.type = FBParamType::Discrete;
-  delay.Discrete().valueCount = 8;
+  delay.Discrete().valueCount = FBFixedBlockSamples;
   delay.slotFormatter = [name = delay.name](int slot) { return name + " " + FFOsciModMakeSourceAndTargetText(slot); };
   auto selectDelay = [](auto& module) { return &module.block.delay; };
   delay.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDelay);
