@@ -10,14 +10,14 @@
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
 static FBFloatVector
-GenerateSin(FBFloatVector phase)
+GenerateSinFast(FBFloatVector phase)
 {
   return xsimd::sin(phase * FBTwoPi);
 }
 
 // https://www.kvraudio.com/forum/viewtopic.php?t=375517
 static FBFloatVector
-GenerateSaw(FBFloatVector phase, FBFloatVector incr)
+GenerateSawFast(FBFloatVector phase, FBFloatVector incr)
 { 
   FBFloatVector one = 1.0f;
   FBFloatVector zero = 0.0f;
@@ -35,18 +35,18 @@ GenerateSaw(FBFloatVector phase, FBFloatVector incr)
 }
 
 static FBFloatVector
-GenerateSqr(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
+GenerateSqrFast(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 {
   FBFloatVector minPW = 0.05f;
   FBFloatVector realPW = (minPW + (1.0f - minPW) * pw) * 0.5f;
   FBFloatVector phase2 = phase + realPW;
   phase2 -= xsimd::floor(phase2);
-  return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;
+  return (GenerateSawFast(phase, incr) - GenerateSawFast(phase2, incr)) * 0.5f;
 }
 
 // https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
 static FBFloatVector 
-GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
+GenerateBLAMPFast(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector y = 0.0f;
   FBFloatVector one = 1.0f;
@@ -70,20 +70,20 @@ GenerateBLAMP(FBFloatVector phase, FBFloatVector incr)
 }
 
 static FBFloatVector
-GenerateTri(FBFloatVector phase, FBFloatVector incr)
+GenerateTriFast(FBFloatVector phase, FBFloatVector incr)
 {
   FBFloatVector v = 2.0f * xsimd::abs(2.0f * phase - 1.0f) - 1.0f;
-  v += GenerateBLAMP(phase, incr);
-  v += GenerateBLAMP(1.0f - phase, incr);
+  v += GenerateBLAMPFast(phase, incr);
+  v += GenerateBLAMPFast(1.0f - phase, incr);
   phase += 0.5f;
   phase -= xsimd::floor(phase);
-  v -= GenerateBLAMP(phase, incr);
-  v -= GenerateBLAMP(1.0f - phase, incr);
+  v -= GenerateBLAMPFast(phase, incr);
+  v -= GenerateBLAMPFast(1.0f - phase, incr);
   return v;
 }
 
 static FBFloatVector
-GenerateDSF(
+GenerateDSFFast(
   FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
   FBFloatVector distFreq, FBFloatVector overtones)
 {
@@ -103,23 +103,23 @@ GenerateDSF(
 }
 
 static FBFloatVector
-GenerateDSFOvertones(
+GenerateDSFOvertonesFast(
   FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
   FBFloatVector distFreq, FBFloatVector maxOvertones, int overtones_)
 {
   FBFloatVector overtones = static_cast<float>(overtones_);
   overtones = xsimd::min(overtones, xsimd::floor(maxOvertones));
-  return GenerateDSF(phase, freq, decay, distFreq, overtones);
+  return GenerateDSFFast(phase, freq, decay, distFreq, overtones);
 }
 
 static FBFloatVector
-GenerateDSFBandwidth(
+GenerateDSFBandwidthFast(
   FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
   FBFloatVector distFreq, FBFloatVector maxOvertones, float bandwidth)
 {
   FBFloatVector overtones = 1.0f + xsimd::floor(bandwidth * (maxOvertones - 1.0f));
   overtones = xsimd::min(overtones, xsimd::floor(maxOvertones));
-  return GenerateDSF(phase, freq, decay, distFreq, overtones);
+  return GenerateDSFFast(phase, freq, decay, distFreq, overtones);
 }
 
 void 
@@ -174,7 +174,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
 }
 
 void 
-FFOsciProcessor::ProcessBasicUnisonVoice(
+FFOsciProcessor::ProcessBasicUnisonVoiceFast(
   FBFixedFloatBlock& unisonAudioOut,
   FBFixedFloatBlock const& phasePlusFm,
   FBFixedFloatBlock const& incr,
@@ -187,21 +187,21 @@ FFOsciProcessor::ProcessBasicUnisonVoice(
   unisonAudioOut.Fill(0.0f);
   if (_voiceState.basicSinOn)
     for (int v = 0; v < FBFixedFloatVectors; v++)
-      unisonAudioOut[v] += GenerateSin(phasePlusFm[v]) * sinGainPlain[v];
+      unisonAudioOut[v] += GenerateSinFast(phasePlusFm[v]) * sinGainPlain[v];
   if (_voiceState.basicSawOn)
     for (int v = 0; v < FBFixedFloatVectors; v++)
-      unisonAudioOut[v] += GenerateSaw(phasePlusFm[v], incr[v]) * sawGainPlain[v];
+      unisonAudioOut[v] += GenerateSawFast(phasePlusFm[v], incr[v]) * sawGainPlain[v];
   if (_voiceState.basicTriOn)
     for (int v = 0; v < FBFixedFloatVectors; v++)
-      unisonAudioOut[v] += GenerateTri(phasePlusFm[v], incr[v]) * triGainPlain[v];
+      unisonAudioOut[v] += GenerateTriFast(phasePlusFm[v], incr[v]) * triGainPlain[v];
   if (_voiceState.basicSqrOn)
     for (int v = 0; v < FBFixedFloatVectors; v++)
-      unisonAudioOut[v] += GenerateSqr(phasePlusFm[v], incr[v], sqrPWPlain[v]) * sqrGainPlain[v];
+      unisonAudioOut[v] += GenerateSqrFast(phasePlusFm[v], incr[v], sqrPWPlain[v]) * sqrGainPlain[v];
 }
 
 // https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 void
-FFOsciProcessor::ProcessDSFUnisonVoice(
+FFOsciProcessor::ProcessDSFUnisonVoiceFast(
   float sampleRate,
   FBFixedFloatBlock& unisonAudioOut,
   FBFixedFloatBlock const& phasePlusFm,
@@ -214,15 +214,15 @@ FFOsciProcessor::ProcessDSFUnisonVoice(
   maxOvertones.Transform([&](int v) { return (sampleRate * 0.5f - freq[v]) / distFreq[v]; });
 
   if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
-    unisonAudioOut.Transform([&](int v) { return GenerateDSFOvertones(
+    unisonAudioOut.Transform([&](int v) { return GenerateDSFOvertonesFast(
       phasePlusFm[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfOvertones); });
   else
-    unisonAudioOut.Transform([&](int v) { return GenerateDSFBandwidth(
+    unisonAudioOut.Transform([&](int v) { return GenerateDSFBandwidthFast(
       phasePlusFm[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfBandwidthPlain); });
 }
 
 void 
-FFOsciProcessor::ProcessTypeUnisonVoice(
+FFOsciProcessor::ProcessTypeUnisonVoiceFast(
   float sampleRate,
   FBFixedFloatBlock& unisonAudioOut,
   FBFixedFloatBlock const& phasePlusFm,
@@ -236,11 +236,11 @@ FFOsciProcessor::ProcessTypeUnisonVoice(
   FBFixedFloatBlock const& dsfDecayPlain)
 {
   if (_voiceState.type == FFOsciType::Basic)
-    ProcessBasicUnisonVoice(unisonAudioOut, phasePlusFm, incr,
+    ProcessBasicUnisonVoiceFast(unisonAudioOut, phasePlusFm, incr,
       basicSinGainPlain, basicSawGainPlain, 
       basicTriGainPlain, basicSqrGainPlain, basicSqrPWPlain);
   else if (_voiceState.type == FFOsciType::DSF)
-    ProcessDSFUnisonVoice(sampleRate, unisonAudioOut, phasePlusFm, freq, dsfDecayPlain);
+    ProcessDSFUnisonVoiceFast(sampleRate, unisonAudioOut, phasePlusFm, freq, dsfDecayPlain);
   else
     assert(false);
 }
@@ -328,7 +328,7 @@ FFOsciProcessor::ProcessUnisonVoice(
     phasePlusFM[v] = _phases[unisonVoice].Next(incr[v], fmModulator[v]);
   }
 
-  ProcessTypeUnisonVoice(sampleRate, unisonAudioOut, phasePlusFM, freq, incr,
+  ProcessTypeUnisonVoiceFast(sampleRate, unisonAudioOut, phasePlusFM, freq, incr,
     basicSinGainPlain, basicSawGainPlain, basicTriGainPlain, 
     basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
 

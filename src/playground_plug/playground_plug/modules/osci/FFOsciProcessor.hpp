@@ -47,7 +47,7 @@ class FFOsciProcessor final
   FFOsciVoiceState _voiceState = {};
   std::array<FFOsciPhase, FFOsciUnisonMaxCount> _phases = {};
 
-  void ProcessBasicUnisonVoice(
+  void ProcessBasicUnisonVoiceFast(
     FBFixedFloatBlock& unisonAudioOut,
     FBFixedFloatBlock const& phasePlusFm,
     FBFixedFloatBlock const& incr,
@@ -57,14 +57,14 @@ class FFOsciProcessor final
     FBFixedFloatBlock const& sqrGainPlain,
     FBFixedFloatBlock const& sqrPWPlain);
 
-  void ProcessDSFUnisonVoice(
+  void ProcessDSFUnisonVoiceFast(
     float sampleRate,
     FBFixedFloatBlock& unisonAudioOut,
     FBFixedFloatBlock const& phasePlusFm,
     FBFixedFloatBlock const& freq,
     FBFixedFloatBlock const& decayPlain);
 
-  void ProcessTypeUnisonVoice(
+  void ProcessTypeUnisonVoiceFast(
     float sampleRate,
     FBFixedFloatBlock& unisonAudioOut,
     FBFixedFloatBlock const& phasePlusFm,
