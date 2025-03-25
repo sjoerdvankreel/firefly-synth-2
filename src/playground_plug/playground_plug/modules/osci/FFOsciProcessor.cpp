@@ -498,9 +498,47 @@ FFOsciProcessor::ProcessUnisonVoice(
     phasePlusFM[v] = _phases[unisonVoice].Next(incr[v], fmModulator[v]);
   }
 
-  ProcessTypeUnisonVoiceFast(sampleRate, unisonAudioOut, phasePlusFM, freq, incr,
+#if 0
+
+  ProcessTypeUnisonVoiceFast(
+    sampleRate, unisonAudioOut, phasePlusFM, freq, incr,
     basicSinGainPlain, basicSawGainPlain, basicTriGainPlain, 
     basicSqrGainPlain, basicSqrPWPlain, dsfDecayPlain);
+
+#else
+
+  FBFixedFloatArray unisonAudioOutArray;
+  FBFixedFloatArray phasePlusFMArray;
+  FBFixedFloatArray freqArray;
+  FBFixedFloatArray incrArray;
+  FBFixedFloatArray basicSinGainPlainArray;
+  FBFixedFloatArray basicSawGainPlainArray;
+  FBFixedFloatArray basicTriGainPlainArray;
+  FBFixedFloatArray basicSqrGainPlainArray;
+  FBFixedFloatArray basicSqrPWPlainArray;
+  FBFixedFloatArray dsfDecayPlainArray;
+
+  phasePlusFM.StoreToFloatArray(phasePlusFMArray);
+  freq.StoreToFloatArray(freqArray);
+  incr.StoreToFloatArray(incrArray);
+  basicSinGainPlain.StoreToFloatArray(basicSinGainPlainArray);
+  basicSawGainPlain.StoreToFloatArray(basicSawGainPlainArray);
+  basicTriGainPlain.StoreToFloatArray(basicTriGainPlainArray);
+  basicSqrGainPlain.StoreToFloatArray(basicSqrGainPlainArray);
+  basicSqrPWPlain.StoreToFloatArray(basicSqrPWPlainArray);
+  dsfDecayPlain.StoreToFloatArray(dsfDecayPlainArray);
+
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    ProcessTypeUnisonVoiceSlow(
+      sampleRate, unisonAudioOutArray.data[s], phasePlusFMArray.data[s], freqArray.data[s], incrArray.data[s],
+      basicSinGainPlainArray.data[s], basicSawGainPlainArray.data[s], basicTriGainPlainArray.data[s],
+      basicSqrGainPlainArray.data[s], basicSqrPWPlainArray.data[s], dsfDecayPlainArray.data[s]);
+  }
+
+  unisonAudioOut.LoadFromFloatArray(unisonAudioOutArray);
+
+#endif
 
   for (int src = 0; src <= state.moduleSlot; src++)
     if (_voiceState.amSourceOn[src] && _voiceState.modSourceUnisonCount[src] > unisonVoice)
