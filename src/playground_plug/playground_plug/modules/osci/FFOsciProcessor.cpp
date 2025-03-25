@@ -50,7 +50,7 @@ GenerateSawSlow(float phase, float incr)
   float result = phase * 2.0f - 1.0f;
   float loMul = phase < incr ? 1.0f : 0.0f;
   float hiMul = phase >= 1.0f - incr ? 1.0f : 0.0f;
-  hiMul *= loMul;
+  hiMul *= (1.0f - loMul);
   result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
   result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
   return result;
@@ -493,7 +493,8 @@ FFOsciProcessor::ProcessUnisonVoice(
     if (_voiceState.unisonDetuneHQ || _voiceState.unisonCount == 1)
       freq[v] = FBPitchToFreqAccurate(pitch[v], sampleRate);
     else
-      freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
+      //freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
+      freq[v] = FBPitchToFreqAccurate(pitch[v], sampleRate); // TODO just drop it
     incr[v] = freq[v] / sampleRate;
     phasePlusFM[v] = _phases[unisonVoice].Next(incr[v], fmModulator[v]);
   }
