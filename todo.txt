@@ -1,3 +1,4 @@
+get Nyquist in the dsf
 fix the fm
 store the selected tab
 hardsync
