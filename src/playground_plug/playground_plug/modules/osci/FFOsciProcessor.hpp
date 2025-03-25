@@ -57,12 +57,29 @@ class FFOsciProcessor final
     FBFixedFloatBlock const& sqrGainPlain,
     FBFixedFloatBlock const& sqrPWPlain);
 
+  void ProcessBasicUnisonVoiceSlow(
+    float& unisonAudioOut,
+    float const phasePlusFm,
+    float const incr,
+    float const sinGainPlain,
+    float const sawGainPlain,
+    float const triGainPlain,
+    float const sqrGainPlain,
+    float const sqrPWPlain);
+
   void ProcessDSFUnisonVoiceFast(
     float sampleRate,
     FBFixedFloatBlock& unisonAudioOut,
     FBFixedFloatBlock const& phasePlusFm,
     FBFixedFloatBlock const& freq,
     FBFixedFloatBlock const& decayPlain);
+
+  void ProcessDSFUnisonVoiceSlow(
+    float sampleRate,
+    float& unisonAudioOut,
+    float const phasePlusFm,
+    float const freq,
+    float const decayPlain);
 
   void ProcessTypeUnisonVoiceFast(
     float sampleRate,
@@ -76,6 +93,19 @@ class FFOsciProcessor final
     FBFixedFloatBlock const& basicSqrGainPlain,
     FBFixedFloatBlock const& basicSqrPWPlain,
     FBFixedFloatBlock const& dsfDecayPlain);
+
+  void ProcessTypeUnisonVoiceSlow(
+    float sampleRate,
+    float& unisonAudioOut,
+    float const phasePlusFm,
+    float const freq,
+    float const incr,
+    float const basicSinGainPlain,
+    float const basicSawGainPlain,
+    float const basicTriGainPlain,
+    float const basicSqrGainPlain,
+    float const basicSqrPWPlain,
+    float const dsfDecayPlain);
 
   void ProcessUnisonVoice(
     FBModuleProcState const& state,

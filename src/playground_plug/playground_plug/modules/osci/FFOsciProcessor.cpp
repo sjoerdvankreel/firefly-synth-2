@@ -15,6 +15,12 @@ GenerateSinFast(FBFloatVector phase)
   return xsimd::sin(phase * FBTwoPi);
 }
 
+static float
+GenerateSinSlow(float phase)
+{
+  return std::sin(phase * FBTwoPi);
+}
+
 // https://www.kvraudio.com/forum/viewtopic.php?t=375517
 static FBFloatVector
 GenerateSawFast(FBFloatVector phase, FBFloatVector incr)
@@ -34,6 +40,22 @@ GenerateSawFast(FBFloatVector phase, FBFloatVector incr)
   return result;
 }
 
+static float
+GenerateSawSlow(float phase, float incr)
+{
+  float one = 1.0f;
+  float zero = 0.0f;
+  float blepLo = phase / incr;
+  float blepHi = (phase - 1.0f) / incr;
+  float result = phase * 2.0f - 1.0f;
+  float loMul = phase < incr ? 1.0f : 0.0f;
+  float hiMul = phase >= 1.0f - incr ? 1.0f : 0.0f;
+  hiMul *= loMul;
+  result -= loMul * ((2.0f - blepLo) * blepLo - 1.0f);
+  result -= hiMul * ((blepHi + 2.0f) * blepHi + 1.0f);
+  return result;
+}
+
 static FBFloatVector
 GenerateSqrFast(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
 {
@@ -42,6 +64,16 @@ GenerateSqrFast(FBFloatVector phase, FBFloatVector incr, FBFloatVector pw)
   FBFloatVector phase2 = phase + realPW;
   phase2 -= xsimd::floor(phase2);
   return (GenerateSawFast(phase, incr) - GenerateSawFast(phase2, incr)) * 0.5f;
+}
+
+static float
+GenerateSqrSlow(float phase, float incr, float pw)
+{
+  float minPW = 0.05f;
+  float realPW = (minPW + (1.0f - minPW) * pw) * 0.5f;
+  float phase2 = phase + realPW;
+  phase2 -= std::floor(phase2);
+  return (GenerateSawSlow(phase, incr) - GenerateSawSlow(phase2, incr)) * 0.5f;
 }
 
 // https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
@@ -69,6 +101,26 @@ GenerateBLAMPFast(FBFloatVector phase, FBFloatVector incr)
   return y * incr / 15.0f;
 }
 
+static float
+GenerateBLAMPSlow(float phase, float incr)
+{
+  float y = 0.0f;
+  float one = 1.0f;
+  float zero = 0.0f;
+  float phaseLtIncrMul = phase < incr ? one : zero;
+  float phaseBetween0And2IncrMul = phase >= 0.0f && phase < 2.0f * incr ? one : zero;
+  float x = phase / incr;
+  float u = 2.0f - x;
+  float u2 = u * u;
+  u *= u2 * u2;
+  y -= phaseBetween0And2IncrMul * u;
+  float v = 1.0f - x;
+  float v2 = v * v;
+  v *= v2 * v2;
+  y += 4.0f * phaseBetween0And2IncrMul * phaseLtIncrMul * v;
+  return y * incr / 15.0f;
+}
+
 static FBFloatVector
 GenerateTriFast(FBFloatVector phase, FBFloatVector incr)
 {
@@ -79,6 +131,19 @@ GenerateTriFast(FBFloatVector phase, FBFloatVector incr)
   phase -= xsimd::floor(phase);
   v -= GenerateBLAMPFast(phase, incr);
   v -= GenerateBLAMPFast(1.0f - phase, incr);
+  return v;
+}
+
+static float
+GenerateTriSlow(float phase, float incr)
+{
+  float v = 2.0f * std::abs(2.0f * phase - 1.0f) - 1.0f;
+  v += GenerateBLAMPSlow(phase, incr);
+  v += GenerateBLAMPSlow(1.0f - phase, incr);
+  phase += 0.5f;
+  phase -= std::floor(phase);
+  v -= GenerateBLAMPSlow(phase, incr);
+  v -= GenerateBLAMPSlow(1.0f - phase, incr);
   return v;
 }
 
@@ -102,6 +167,26 @@ GenerateDSFFast(
   return x * scaleFactor / (y * scale);
 }
 
+static float
+GenerateDSFSlow(
+  float phase, float freq, float decay,
+  float distFreq, float overtones)
+{
+  float const decayRange = 0.99f;
+  float const scaleFactor = 0.975f;
+
+  float n = overtones;
+  float w = decay * decayRange;
+  float wPowNp1 = std::pow(w, n + 1.0f);
+  float u = 2.0f * FBPi * phase;
+  float v = 2.0f * FBPi * distFreq * phase / freq;
+  float a = w * std::sin(u + n * v) - std::sin(u + (n + 1.0f) * v);
+  float x = (w * std::sin(v - u) + std::sin(u)) + wPowNp1 * a;
+  float y = 1.0f + w * w - 2.0f * w * std::cos(v);
+  float scale = (1.0f - wPowNp1) / (1.0f - w);
+  return x * scaleFactor / (y * scale);
+}
+
 static FBFloatVector
 GenerateDSFOvertonesFast(
   FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
@@ -112,6 +197,16 @@ GenerateDSFOvertonesFast(
   return GenerateDSFFast(phase, freq, decay, distFreq, overtones);
 }
 
+static float
+GenerateDSFOvertonesSlow(
+  float phase, float freq, float decay,
+  float distFreq, float maxOvertones, int overtones_)
+{
+  float overtones = static_cast<float>(overtones_);
+  overtones = std::min(overtones, std::floor(maxOvertones));
+  return GenerateDSFSlow(phase, freq, decay, distFreq, overtones);
+}
+
 static FBFloatVector
 GenerateDSFBandwidthFast(
   FBFloatVector phase, FBFloatVector freq, FBFloatVector decay,
@@ -120,6 +215,16 @@ GenerateDSFBandwidthFast(
   FBFloatVector overtones = 1.0f + xsimd::floor(bandwidth * (maxOvertones - 1.0f));
   overtones = xsimd::min(overtones, xsimd::floor(maxOvertones));
   return GenerateDSFFast(phase, freq, decay, distFreq, overtones);
+}
+
+static float
+GenerateDSFBandwidthSlow(
+  float phase, float freq, float decay,
+  float distFreq, float maxOvertones, float bandwidth)
+{
+  float overtones = 1.0f + std::floor(bandwidth * (maxOvertones - 1.0f));
+  overtones = std::min(overtones, std::floor(maxOvertones));
+  return GenerateDSFSlow(phase, freq, decay, distFreq, overtones);
 }
 
 void 
@@ -199,6 +304,28 @@ FFOsciProcessor::ProcessBasicUnisonVoiceFast(
       unisonAudioOut[v] += GenerateSqrFast(phasePlusFm[v], incr[v], sqrPWPlain[v]) * sqrGainPlain[v];
 }
 
+void
+FFOsciProcessor::ProcessBasicUnisonVoiceSlow(
+  float& unisonAudioOut,
+  float const phasePlusFm,
+  float const incr,
+  float const sinGainPlain,
+  float const sawGainPlain,
+  float const triGainPlain,
+  float const sqrGainPlain,
+  float const sqrPWPlain)
+{
+  unisonAudioOut = 0.0f;
+  if (_voiceState.basicSinOn)
+    unisonAudioOut += GenerateSinSlow(phasePlusFm) * sinGainPlain;
+  if (_voiceState.basicSawOn)
+    unisonAudioOut += GenerateSawSlow(phasePlusFm, incr) * sawGainPlain;
+  if (_voiceState.basicTriOn)
+    unisonAudioOut += GenerateTriSlow(phasePlusFm, incr) * triGainPlain;
+  if (_voiceState.basicSqrOn)
+    unisonAudioOut += GenerateSqrSlow(phasePlusFm, incr, sqrPWPlain) * sqrGainPlain;
+}
+
 // https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 void
 FFOsciProcessor::ProcessDSFUnisonVoiceFast(
@@ -221,6 +348,25 @@ FFOsciProcessor::ProcessDSFUnisonVoiceFast(
       phasePlusFm[v], freq[v], decayPlain[v], distFreq[v], maxOvertones[v], _voiceState.dsfBandwidthPlain); });
 }
 
+void
+FFOsciProcessor::ProcessDSFUnisonVoiceSlow(
+  float sampleRate,
+  float& unisonAudioOut,
+  float const phasePlusFm,
+  float const freq,
+  float const decayPlain)
+{
+  float distFreq;
+  float maxOvertones;
+  distFreq = static_cast<float>(_voiceState.dsfDistance) * freq;
+  maxOvertones = (sampleRate * 0.5f - freq) / distFreq;
+
+  if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
+    unisonAudioOut = GenerateDSFOvertonesSlow(phasePlusFm, freq, decayPlain, distFreq, maxOvertones, _voiceState.dsfOvertones);
+  else
+    unisonAudioOut = GenerateDSFBandwidthSlow(phasePlusFm, freq, decayPlain, distFreq, maxOvertones, _voiceState.dsfBandwidthPlain);
+}
+
 void 
 FFOsciProcessor::ProcessTypeUnisonVoiceFast(
   float sampleRate,
@@ -241,6 +387,30 @@ FFOsciProcessor::ProcessTypeUnisonVoiceFast(
       basicTriGainPlain, basicSqrGainPlain, basicSqrPWPlain);
   else if (_voiceState.type == FFOsciType::DSF)
     ProcessDSFUnisonVoiceFast(sampleRate, unisonAudioOut, phasePlusFm, freq, dsfDecayPlain);
+  else
+    assert(false);
+}
+
+void
+FFOsciProcessor::ProcessTypeUnisonVoiceSlow(
+  float sampleRate,
+  float& unisonAudioOut,
+  float const phasePlusFm,
+  float const freq,
+  float const incr,
+  float const basicSinGainPlain,
+  float const basicSawGainPlain,
+  float const basicTriGainPlain,
+  float const basicSqrGainPlain,
+  float const basicSqrPWPlain,
+  float const dsfDecayPlain)
+{
+  if (_voiceState.type == FFOsciType::Basic)
+    ProcessBasicUnisonVoiceSlow(unisonAudioOut, phasePlusFm, incr,
+      basicSinGainPlain, basicSawGainPlain,
+      basicTriGainPlain, basicSqrGainPlain, basicSqrPWPlain);
+  else if (_voiceState.type == FFOsciType::DSF)
+    ProcessDSFUnisonVoiceSlow(sampleRate, unisonAudioOut, phasePlusFm, freq, dsfDecayPlain);
   else
     assert(false);
 }
