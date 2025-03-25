@@ -1,4 +1,5 @@
 fix the fm
+"slow path" is faster, thanks
 store the selected tab
 hardsync
 drop the transform calls
