@@ -434,7 +434,6 @@ FFOsciProcessor::ProcessUnisonVoice(
   FBFixedFloatBlock freq;
   FBFixedFloatBlock pitch; 
   FBFixedFloatBlock fmModulator;
-  FBFixedFloatBlock phasePlusFM;
   
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
@@ -495,13 +494,15 @@ FFOsciProcessor::ProcessUnisonVoice(
     else
       //freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
       freq[v] = FBPitchToFreqAccurate(pitch[v], sampleRate); // TODO just drop it
-    incr[v] = freq[v] / sampleRate;
-    phasePlusFM[v] = _phases[unisonVoice].Next(incr[v], fmModulator[v]);
+    incr[v] = freq[v] / sampleRate;    
   }
 
   // TODO
-  if (_voiceState.unisonDetuneHQ)
+  if (_voiceState.fmSourceMode[state.moduleSlot] == FFOsciFMMode::Off || _voiceState.modSourceUnisonCount[state.moduleSlot] <= unisonVoice)
   {
+    FBFixedFloatBlock phasePlusFM;
+    for (int v = 0; v < FBFixedFloatVectors; v++)
+      phasePlusFM[v] = _phases[unisonVoice].Next(incr[v], fmModulator[v]);
     ProcessTypeUnisonVoiceFast(
       sampleRate, unisonAudioOut, phasePlusFM, freq, incr,
       basicSinGainPlain, basicSawGainPlain, basicTriGainPlain,
@@ -513,6 +514,7 @@ FFOsciProcessor::ProcessUnisonVoice(
     FBFixedFloatArray phasePlusFMArray;
     FBFixedFloatArray freqArray;
     FBFixedFloatArray incrArray;
+    FBFixedFloatArray fmModulatorArray;
     FBFixedFloatArray basicSinGainPlainArray;
     FBFixedFloatArray basicSawGainPlainArray;
     FBFixedFloatArray basicTriGainPlainArray;
@@ -520,9 +522,9 @@ FFOsciProcessor::ProcessUnisonVoice(
     FBFixedFloatArray basicSqrPWPlainArray;
     FBFixedFloatArray dsfDecayPlainArray;
 
-    phasePlusFM.StoreToFloatArray(phasePlusFMArray);
     freq.StoreToFloatArray(freqArray);
     incr.StoreToFloatArray(incrArray);
+    fmModulator.StoreToFloatArray(fmModulatorArray);
     basicSinGainPlain.StoreToFloatArray(basicSinGainPlainArray);
     basicSawGainPlain.StoreToFloatArray(basicSawGainPlainArray);
     basicTriGainPlain.StoreToFloatArray(basicTriGainPlainArray);
@@ -532,6 +534,7 @@ FFOsciProcessor::ProcessUnisonVoice(
 
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
+      phasePlusFMArray.data[s] = _phases[unisonVoice].Next(incrArray.data[s], fmModulatorArray.data[s]);
       ProcessTypeUnisonVoiceSlow(
         sampleRate, unisonAudioOutArray.data[s], phasePlusFMArray.data[s], freqArray.data[s], incrArray.data[s],
         basicSinGainPlainArray.data[s], basicSawGainPlainArray.data[s], basicTriGainPlainArray.data[s],
