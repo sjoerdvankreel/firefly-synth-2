@@ -532,17 +532,49 @@ FFOsciProcessor::ProcessUnisonVoice(
     basicSqrPWPlain.StoreToFloatArray(basicSqrPWPlainArray);
     dsfDecayPlain.StoreToFloatArray(dsfDecayPlainArray);
 
+    float sourceScale;
+    float sourceOffset;
+    switch (_voiceState.fmSourceMode[state.moduleSlot])
+    {
+    case FFOsciFMMode::Up:
+      sourceScale = 0.5f;
+      sourceOffset = 0.5f;
+      break;
+    case FFOsciFMMode::Down:
+      sourceScale = 0.5f;
+      sourceOffset = -0.5f;
+      break;
+    case FFOsciFMMode::ThroughZero:
+      sourceScale = 1.0f;
+      sourceOffset = 0.0f;
+      break;
+    default:
+      assert(false);
+      break;
+    }
+
+    FBFixedFloatArray selfFMIndexArray;
+    int slot = FFOsciModSourceAndTargetToSlot().at({ state.moduleSlot, state.moduleSlot });
+    auto const& selfFMIndexBlock = procState->dsp.voice[voice].osciFM.outputIndex[slot];
+    selfFMIndexBlock.StoreToFloatArray(selfFMIndexArray);
+
     FBFixedFloatArray selfFMModulatorArray;
     auto const& selfFMModulatorPrevBlock = procState->dsp.voice[voice].osci[state.moduleSlot].prevUnisonOutput[unisonVoice];
     selfFMModulatorPrevBlock.StoreToFloatArray(selfFMModulatorArray);
 
+    int selfFMModulatorWritePos = 0;
+    int selfFMModulatorReadPos = FBFixedBlockSamples - 1 - _voiceState.fmSourceDelay[state.moduleSlot];
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      phasePlusFMArray.data[s] = _phases[unisonVoice].Next(incrArray.data[s], fmModulatorArray.data[s]);
+      // todo code up a proper ringbuffer
+      float selfFMModulatorValue = selfFMModulatorArray.data[selfFMModulatorReadPos] * sourceScale + sourceOffset;
+      phasePlusFMArray.data[s] = _phases[unisonVoice].Next(incrArray.data[s], fmModulatorArray.data[s] + selfFMModulatorValue * selfFMIndexArray.data[s]);
       ProcessTypeUnisonVoiceSlow(
         sampleRate, unisonAudioOutArray.data[s], phasePlusFMArray.data[s], freqArray.data[s], incrArray.data[s],
         basicSinGainPlainArray.data[s], basicSawGainPlainArray.data[s], basicTriGainPlainArray.data[s],
         basicSqrGainPlainArray.data[s], basicSqrPWPlainArray.data[s], dsfDecayPlainArray.data[s]);
+      selfFMModulatorArray.data[selfFMModulatorWritePos++] = unisonAudioOutArray.data[s];
+      selfFMModulatorReadPos = (selfFMModulatorReadPos + 1) % FBFixedBlockSamples;
     }
 
     unisonAudioOut.LoadFromFloatArray(unisonAudioOutArray);
