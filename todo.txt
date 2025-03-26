@@ -1,4 +1,4 @@
-maybe drop the whole vector thing, just go with 16-sample block + packed memory, maybe fast enough?
+maybe drop the whole vector thing, just go with 16-sample block + packed memory, maybe fast enough? NO first check without transform
 fix the fm
 "slow path" is faster, thanks
 store the selected tab
