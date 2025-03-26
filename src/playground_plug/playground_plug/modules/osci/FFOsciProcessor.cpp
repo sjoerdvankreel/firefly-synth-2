@@ -532,6 +532,10 @@ FFOsciProcessor::ProcessUnisonVoice(
     basicSqrPWPlain.StoreToFloatArray(basicSqrPWPlainArray);
     dsfDecayPlain.StoreToFloatArray(dsfDecayPlainArray);
 
+    FBFixedFloatArray selfFMModulatorArray;
+    auto const& selfFMModulatorPrevBlock = procState->dsp.voice[voice].osci[state.moduleSlot].prevUnisonOutput[unisonVoice];
+    selfFMModulatorPrevBlock.StoreToFloatArray(selfFMModulatorArray);
+
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       phasePlusFMArray.data[s] = _phases[unisonVoice].Next(incrArray.data[s], fmModulatorArray.data[s]);
