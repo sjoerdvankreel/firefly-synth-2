@@ -24,7 +24,7 @@ struct alignas(FBFixedBlockAlign) FBFixedAudioArray
 public:
   FBFixedArray<T>& operator[](int c) { return _data[c]; }
   FBFixedArray<T> const& operator[](int c) const { return _data[c]; }
-  void Fill(T val) { for(int c = 0; c < 2; c++) _data[c].fill(val); }
+  void Fill(T val) { for(int c = 0; c < 2; c++) _data[c].Data().fill(val); }
 };
 
 typedef FBFixedArray<float> FBFixedFloatArray;
