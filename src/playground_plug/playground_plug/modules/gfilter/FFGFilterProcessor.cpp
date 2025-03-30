@@ -22,102 +22,109 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     return;
   }
 
-  FBFixedDoubleBlock a;
-  FBFixedDoubleBlock resPlain;
-  FBFixedDoubleBlock freqPlain;
   auto const& resNorm = procParams.acc.res[0].Global();
   auto const& freqNorm = procParams.acc.freq[0].Global();
-  auto const& gainNorm = procParams.acc.gain[0].Global();
   auto mode = topo.NormalizedToListFast<FFGFilterMode>(FFGFilterParam::Mode, procParams.block.mode[0].Value());
-  topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freqNorm, freqPlain);
-  topo.NormalizedToIdentityFast(FFGFilterParam::Res, resNorm, resPlain);
 
+  FBFixedDoubleArray g, k;
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    double freqPlain = topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freqNorm.CV()[s]);
+    double resPlain = topo.NormalizedToIdentityFast(FFGFilterParam::Res, resNorm.CV()[s]);
+    k[s] = 2.0 - 2.0 * resPlain;
+    g[s] = std::tan(std::numbers::pi * freqPlain / state.input->sampleRate);
+  }
+
+  FBFixedDoubleArray a;
+  auto const& gainNorm = procParams.acc.gain[0].Global();
   if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      double gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm.CV()[s]);
+      a[s] = std::pow(10.0, gainPlain / 40.0);
+    }
+
+  if (mode == FFGFilterMode::BLL)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      k[s] = k[s] / a[s];
+  else if (mode == FFGFilterMode::LSH)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      g[s] /= std::sqrt(a[s]);
+  else if (mode == FFGFilterMode::HSH)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      g[s] *= std::sqrt(a[s]);
+
+  FBFixedDoubleArray a1, a2, a3;
+  for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    FBFixedDoubleBlock gainPlain;
-    topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm, gainPlain);
-    a.Transform([&](int v) { return xsimd::pow(FBDoubleVector(10.0), gainPlain[v] / 40.0); });
+    a1[s] = 1.0 / (1.0 + g[s] * (g[s] + k[s]));
+    a2[s] = g[s] * a1[s];
+    a3[s] = g[s] * a2[s];
   }
 
-  FBFixedDoubleBlock g, k;
-  k.Transform([&](int v) { return 2.0 - 2.0 * resPlain[v]; });
-  g.Transform([&](int v) { return xsimd::tan(std::numbers::pi * freqPlain[v] / state.input->sampleRate); });
-
-  switch (mode)
-  {
-  case FFGFilterMode::BLL: k.Transform([&](int v) { return k[v] / a[v]; }); break;
-  case FFGFilterMode::LSH: g.Transform([&](int v) { return g[v] / xsimd::sqrt(a[v]); }); break;
-  case FFGFilterMode::HSH: g.Transform([&](int v) { return g[v] * xsimd::sqrt(a[v]); }); break;
-  default: break;
-  }
-  
-  FBFixedDoubleBlock a1b, a2b, a3b;
-  a1b.Transform([&](int v) { return 1.0 / (1.0 + g[v] * (g[v] + k[v])); });
-  a2b.Transform([&](int v) { return g[v] * a1b[v]; });
-  a3b.Transform([&](int v) { return g[v] * a2b[v]; });
-
-  FBFixedDoubleArray a1a, a2a, a3a;
-  a1b.StoreToDoubleArray(a1a);
-  a2b.StoreToDoubleArray(a2a);
-  a3b.StoreToDoubleArray(a3a);
-
-  FBFixedDoubleBlock m0b, m1b, m2b;
+  FBFixedDoubleArray m0, m1, m2;
   switch (mode)
   {
   case FFGFilterMode::LPF:
-    m0b.Transform([&](int v) { return 0.0; });
-    m1b.Transform([&](int v) { return 0.0; });
-    m2b.Transform([&](int v) { return 1.0; });
+    m0.Fill(0.0);
+    m1.Fill(0.0);
+    m2.Fill(1.0);
     break;
   case FFGFilterMode::BPF:
-    m0b.Transform([&](int v) { return 0.0; });
-    m1b.Transform([&](int v) { return 1.0; });
-    m2b.Transform([&](int v) { return 0.0; });
+    m0.Fill(0.0);
+    m1.Fill(1.0);
+    m2.Fill(0.0);
     break;
   case FFGFilterMode::HPF:
-    m0b.Transform([&](int v) { return 1.0; });
-    m1b.Transform([&](int v) { return -k[v]; });
-    m2b.Transform([&](int v) { return -1.0; });
+    m0.Fill(1.0);
+    m2.Fill(1.0);
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      m1[s] = -k[s];
     break;
   case FFGFilterMode::BSF:
-    m0b.Transform([&](int v) { return 1.0; });
-    m1b.Transform([&](int v) { return -k[v]; });
-    m2b.Transform([&](int v) { return 0.0; });
+    m0.Fill(1.0);
+    m2.Fill(0.0);
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      m1[s] = -k[s];
     break;
   case FFGFilterMode::PEQ:
-    m0b.Transform([&](int v) { return 1.0; });
-    m1b.Transform([&](int v) { return -k[v]; });
-    m2b.Transform([&](int v) { return -2.0; });
+    m0.Fill(1.0);
+    m2.Fill(-2.0);
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      m1[s] = -k[s];
     break;
   case FFGFilterMode::APF:
-    m0b.Transform([&](int v) { return 1.0; });
-    m1b.Transform([&](int v) { return -2.0 * k[v]; });
-    m2b.Transform([&](int v) { return 0.0; });
+    m0.Fill(1.0);
+    m2.Fill(0.0);
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      m1[s] = -2.0 * k[s];
     break;
   case FFGFilterMode::BLL:
-    m0b.Transform([&](int v) { return 1.0; });
-    m1b.Transform([&](int v) { return k[v] * (a[v] * a[v] - 1.0); });
-    m2b.Transform([&](int v) { return 0.0; });
+    m0.Fill(1.0);
+    m2.Fill(0.0);
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      m1[s] = k[s] * (a[s] * a[s] - 1.0);
     break;
   case FFGFilterMode::LSH:
-    m0b.Transform([&](int v) { return 1.0; });
-    m1b.Transform([&](int v) { return k[v] * (a[v] - 1.0); });
-    m2b.Transform([&](int v) { return a[v] * a[v] - 1.0; });
+    m0.Fill(1.0);
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      m1[s] = k[s] * (a[s] - 1.0);
+      m2[s] = a[s] * a[s] - 1.0;
+    }
     break;
   case FFGFilterMode::HSH:
-    m0b.Transform([&](int v) { return a[v] * a[v]; });
-    m1b.Transform([&](int v) { return k[v] * (1.0 - a[v]) * a[v]; });
-    m2b.Transform([&](int v) { return 1.0 - a[v] * a[v]; });
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      m0[s] = a[s] * a[s];
+      m1[s] = k[s] * (1.0 - a[s]) * a[s];
+      m2[s] = 1.0 - a[s] * a[s];
+    }
     break;
   default:
     assert(false);
     break;
   }
-
-  FBFixedDoubleArray m0a, m1a, m2a;
-  m0b.StoreToDoubleArray(m0a);
-  m1b.StoreToDoubleArray(m1a);
-  m2b.StoreToDoubleArray(m2a);
 
   FBFixedDoubleAudioArray audioIn;
   FBFixedDoubleAudioArray audioOut = {};
