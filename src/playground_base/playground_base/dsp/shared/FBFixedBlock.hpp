@@ -15,6 +15,7 @@ public:
   void Fill(T val) { _data.fill(val); }
   T& operator[](int i) { return _data[i]; }
   T const& operator[](int i) const { return _data[i]; }
+  T const& Last() { return _data[FBFixedBlockSamples - 1]; }
   std::array<T, FBFixedBlockSamples>& Data() { return _data; }
   std::array<T, FBFixedBlockSamples> const& Data() const { return _data; }
 };

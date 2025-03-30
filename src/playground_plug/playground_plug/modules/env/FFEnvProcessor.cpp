@@ -71,7 +71,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   else if (_voiceState.decaySamples > 0)
     _lastBeforeRelease = _lastDAHDSR = 1.0f;
   else if (_voiceState.releaseSamples > 0)
-    _lastBeforeRelease = _lastDAHDSR = sustain.data[0];
+    _lastBeforeRelease = _lastDAHDSR = sustain[0];
 
   _smoother.SetCoeffs(_voiceState.smoothingSamples);
   _smoother.State(_lastDAHDSR);
@@ -104,7 +104,6 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   int s = 0;
   int releaseAt = -1;
-  FBFixedFloatArray scratch = {};
   float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
   float const invLogHalf = 1.0f / std::log(0.5f);
@@ -124,7 +123,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     _lastDAHDSR = 0.0f;
     _lastBeforeRelease = _lastDAHDSR;
     _released |= s == releaseAt;
-    scratch.data[s] = _smoother.Next(_lastDAHDSR);
+    output[s] = _smoother.Next(_lastDAHDSR);
   }
 
   int& attackPos = _stagePositions[(int)FFEnvStage::Attack];
@@ -134,17 +133,17 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       _lastDAHDSR = attackPos / static_cast<float>(_voiceState.attackSamples);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      scratch.data[s] = _smoother.Next(_lastDAHDSR);
+      output[s] = _smoother.Next(_lastDAHDSR);
     }
   else
     for (; s < FBFixedBlockSamples && !_released && attackPos < _voiceState.attackSamples; s++, attackPos++, _positionSamples++)
     {
-      float slope = minSlope + attackSlope.CV().data[s] * slopeRange;
+      float slope = minSlope + attackSlope.CV()[s] * slopeRange;
       float pos = attackPos / static_cast<float>(_voiceState.attackSamples);
       _lastDAHDSR = std::pow(pos, std::log(slope) * invLogHalf);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      scratch.data[s] = _smoother.Next(_lastDAHDSR);
+      output[s] = _smoother.Next(_lastDAHDSR);
     }
 
   int& holdPos = _stagePositions[(int)FFEnvStage::Hold];
@@ -153,7 +152,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     _lastDAHDSR = 1.0f;
     _lastBeforeRelease = _lastDAHDSR;
     _released |= s == releaseAt;
-    scratch.data[s] = _smoother.Next(_lastDAHDSR);
+    output[s] = _smoother.Next(_lastDAHDSR);
   }
 
   int& decayPos = _stagePositions[(int)FFEnvStage::Decay];
@@ -161,20 +160,20 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++, _positionSamples++)
     {
       float pos = decayPos / static_cast<float>(_voiceState.decaySamples);
-      _lastDAHDSR = sustainLevel.CV().data[s] + (1.0f - sustainLevel.CV().data[s]) * (1.0f - pos);
+      _lastDAHDSR = sustainLevel.CV()[s] + (1.0f - sustainLevel.CV()[s]) * (1.0f - pos);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      scratch.data[s] = _smoother.Next(_lastDAHDSR);
+      output[s] = _smoother.Next(_lastDAHDSR);
     }
   else
     for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++, _positionSamples++)
     {
-      float slope = minSlope + decaySlope.CV().data[s] * slopeRange;
+      float slope = minSlope + decaySlope.CV()[s] * slopeRange;
       float pos = decayPos / static_cast<float>(_voiceState.decaySamples);
-      _lastDAHDSR = sustainLevel.CV().data[s] + (1.0f - sustainLevel.CV().data[s]) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
+      _lastDAHDSR = sustainLevel.CV()[s] + (1.0f - sustainLevel.CV()[s]) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      scratch.data[s] = _smoother.Next(_lastDAHDSR);
+      output[s] = _smoother.Next(_lastDAHDSR);
     }
 
   if(_voiceState.type == FFEnvType::Sustain && 
@@ -182,10 +181,10 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     !state.anyExchangeActive)
     for (; s < FBFixedBlockSamples && !_released; s++)
     {
-      _lastDAHDSR = sustainLevel.CV().data[s];
+      _lastDAHDSR = sustainLevel.CV()[s];
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      scratch.data[s] = _smoother.Next(_lastDAHDSR);
+      output[s] = _smoother.Next(_lastDAHDSR);
     }
 
   if (s < FBFixedBlockSamples)
@@ -197,27 +196,26 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     {
       float pos = releasePos / static_cast<float>(_voiceState.releaseSamples);
       _lastDAHDSR = _lastBeforeRelease * (1.0f - pos);
-      scratch.data[s] = _smoother.Next(_lastDAHDSR);
+      output[s] = _smoother.Next(_lastDAHDSR);
     }
   else
     for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++, _positionSamples++)
     {
-      float slope = minSlope + releaseSlope.CV().data[s] * slopeRange;
+      float slope = minSlope + releaseSlope.CV()[s] * slopeRange;
       float pos = releasePos / static_cast<float>(_voiceState.releaseSamples);
       _lastDAHDSR = _lastBeforeRelease * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
-      scratch.data[s] = _smoother.Next(_lastDAHDSR);
+      output[s] = _smoother.Next(_lastDAHDSR);
     }
 
   int& smoothPos = _stagePositions[(int)FFEnvStage::Smooth];
   for (; s < FBFixedBlockSamples && smoothPos < _voiceState.smoothingSamples; s++, smoothPos++, _positionSamples++)
-    scratch.data[s] = _smoother.Next(_lastDAHDSR);
+    output[s] = _smoother.Next(_lastDAHDSR);
 
   int processed = s;
   if (s < FBFixedBlockSamples)
     _finished = true;
   for (; s < FBFixedBlockSamples; s++)
-    scratch.data[s] = _smoother.State();
-  output.LoadFromFloatArray(scratch);
+    output[s] = _smoother.State();
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
