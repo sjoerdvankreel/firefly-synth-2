@@ -6,7 +6,6 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 void
 FFGFilterProcessor::Process(FBModuleProcState& state)
@@ -19,7 +18,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
 
   if (!topo.NormalizedToBoolFast(FFGFilterParam::On, procParams.block.on[0].Value()))
   {
-    output.CopyFrom(input);
+    input.CopyTo(output);
     return;
   }
 
