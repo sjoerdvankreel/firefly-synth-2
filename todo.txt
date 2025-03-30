@@ -1,3 +1,5 @@
+hunt for fixedfloatblock&friends
+then rename fixed*array to block
 drop the fm delay
 maybe drop the whole vector thing, just go with 16-sample block + packed memory, maybe fast enough? NO first check without transform
 fix the fm

@@ -4,7 +4,7 @@
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/base/state/proc/FBAccParamState.hpp>
 
-class alignas(sizeof(FBFloatVector)) FBGlobalAccParamState final
+class alignas(FBFixedBlockAlign) FBGlobalAccParamState final
 {
   friend class FBProcParamState;
   friend class FBSmoothingProcessor;

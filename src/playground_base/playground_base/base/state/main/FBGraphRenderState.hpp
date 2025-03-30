@@ -1,8 +1,8 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 
 #include <memory>
 
@@ -18,7 +18,7 @@ class FBGraphRenderState final
 {
   friend class FBModuleGraphDisplayComponent;
 
-  FBFixedFloatAudioBlock _audio = {};
+  FBFixedFloatAudioArray _audio = {};
   std::vector<FBNoteEvent> _notes = {};
 
   FBPlugGUI const* const _plugGUI;
