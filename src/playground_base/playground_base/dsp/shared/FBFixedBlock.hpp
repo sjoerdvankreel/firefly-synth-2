@@ -10,9 +10,11 @@ class alignas(FBFixedBlockAlign) FBFixedArray
 {
   std::array<T, FBFixedBlockSamples> _data = {};
 public:
+  void Fill(T val) { _data.fill(val); }
   T& operator[](int i) { return _data[i]; }
   T const& operator[](int i) const { return _data[i]; }
-  void Fill(T val) { _data.fill(val); }
+  std::array<T, FBFixedBlockSamples>& Data() { return _data; }
+  std::array<T, FBFixedBlockSamples> const& Data() const { return _data; }
 };
 
 template <class T>
