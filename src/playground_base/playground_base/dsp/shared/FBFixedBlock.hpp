@@ -12,12 +12,15 @@ class alignas(FBFixedBlockAlign) FBFixedArray
   std::array<T, FBFixedBlockSamples> _data = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedArray);
-  void Fill(T val) { _data.fill(val); }
+
   T& operator[](int i) { return _data[i]; }
   T const& operator[](int i) const { return _data[i]; }
-  T const& Last() { return _data[FBFixedBlockSamples - 1]; }
   std::array<T, FBFixedBlockSamples>& Data() { return _data; }
   std::array<T, FBFixedBlockSamples> const& Data() const { return _data; }
+
+  void Fill(T val) { _data.fill(val); }
+  T const& Last() { return _data[FBFixedBlockSamples - 1]; }
+  void Add(FBFixedArray<T> const& rhs) { for (int s = 0; s < FBFixedBlockSamples; s++) _data[s] += rhs[s]; }
   void CopyTo(FBFixedArray<T>& rhs) const { for (int s = 0; s < FBFixedBlockSamples; s++) rhs[s] = _data[s]; }
 };
 
@@ -29,7 +32,9 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedAudioArray);
   FBFixedArray<T>& operator[](int c) { return _data[c]; }
   FBFixedArray<T> const& operator[](int c) const { return _data[c]; }
+
   void Fill(T val) { for(int c = 0; c < 2; c++) _data[c].Data().fill(val); }
+  void Add(FBFixedAudioArray<T> const& rhs) { for (int c = 0; c < 2; c++) _data[c].Add(rhs[c]); }
   void CopyTo(FBFixedAudioArray<T>& rhs) const { for (int c = 0; c < 2; c++) _data[c].CopyTo(rhs[c]); }
 };
 

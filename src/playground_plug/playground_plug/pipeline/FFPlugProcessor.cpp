@@ -2,11 +2,11 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
@@ -95,12 +95,12 @@ FFPlugProcessor::ProcessPostVoice(
   for (int s = 1; s < FFGFilterCount; s++)
   {
     state.moduleSlot = s;
-    _procState->dsp.global.gFilter[s].input.CopyFrom(_procState->dsp.global.gFilter[s - 1].output);
+    _procState->dsp.global.gFilter[s - 1].output.CopyTo(_procState->dsp.global.gFilter[s].input);
     _procState->dsp.global.gFilter[s].processor.Process(state);
   }
 
   state.moduleSlot = 0;
-  _procState->dsp.global.master.input.CopyFrom(_procState->dsp.global.gFilter[FFGFilterCount - 1].output);
+  _procState->dsp.global.gFilter[FFGFilterCount - 1].output.CopyTo(_procState->dsp.global.master.input);
   _procState->dsp.global.master.processor.Process(state);
-  output.audio.CopyFrom(_procState->dsp.global.master.output);
+  _procState->dsp.global.master.output.CopyTo(output.audio);
 }
