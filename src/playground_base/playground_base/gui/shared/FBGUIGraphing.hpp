@@ -6,6 +6,8 @@
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
+
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
@@ -13,7 +15,6 @@
 #include <cassert>
 #include <functional>
 
-class FBFixedFloatBlock;
 struct FBStaticTopo;
 struct FBModuleGraphComponentData;
 
@@ -30,16 +31,16 @@ typedef std::function<FBModuleGraphPlotParams(
   FBGraphRenderState const*)>
 FBModuleGraphPlotParamsSelector;
 
-typedef std::function<FBFixedFloatBlock const* (
+typedef std::function<FBFixedFloatArray const* (
   void const* procState, int moduleSlot)>
 FBModuleGraphGlobalCVOutputSelector;
-typedef std::function<FBFixedFloatAudioBlock const* (
+typedef std::function<FBFixedFloatAudioArray const* (
   void const* procState, int moduleSlot)>
   FBModuleGraphGlobalAudioOutputSelector;
-typedef std::function<FBFixedFloatBlock const* (
+typedef std::function<FBFixedFloatArray const* (
   void const* procState, int voice, int moduleSlot)>
 FBModuleGraphVoiceCVOutputSelector;
-typedef std::function<FBFixedFloatAudioBlock const* (
+typedef std::function<FBFixedFloatAudioArray const* (
   void const* procState, int voice, int moduleSlot)>
 FBModuleGraphVoiceAudioOutputSelector;
 
@@ -129,12 +130,12 @@ FBRenderModuleGraphSeries(
     if constexpr (Audio)
       for (int i = 0; i < processed; i++)
       {
-        seriesOut.l.push_back(seriesAudioIn.data[0].data[i]);
-        seriesOut.r.push_back(seriesAudioIn.data[1].data[i]);
+        seriesOut.l.push_back(seriesAudioIn[0][i]);
+        seriesOut.r.push_back(seriesAudioIn[1][i]);
       }
     else
       for (int i = 0; i < processed; i++)
-        seriesOut.l.push_back(seriesCVIn.data[i]);
+        seriesOut.l.push_back(seriesCVIn[i]);
   }
 }
 
