@@ -4,7 +4,6 @@
 
 struct FBPlugInputBlock;
 struct FBFixedOutputBlock;
-class FBFixedFloatAudioBlock;
 
 class IFBPlugProcessor
 {
