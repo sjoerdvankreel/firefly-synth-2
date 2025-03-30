@@ -1,11 +1,9 @@
 #pragma once
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
-#include <playground_base/base/shared/FBVector.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
 #include <playground_base/base/state/proc/FBAccParamState.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedDoubleBlock.hpp>
 
 #include <cmath>
 #include <string>
@@ -22,11 +20,8 @@ struct FBLinearParam
   float NormalizedToPlainFast(float normalized) const;
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
-
-  FBFloatVector NormalizedToPlainFast(FBFloatVector normalized) const;
-  FBDoubleVector NormalizedToPlainFast(FBDoubleVector normalized) const;
-  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
-  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const;
+  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
+  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 };
 
 struct FBLinearParamNonRealTime final :
@@ -51,18 +46,6 @@ FBLinearParam::NormalizedToPlainFast(float normalized) const
   return min + (max - min) * normalized;
 }
 
-inline FBFloatVector 
-FBLinearParam::NormalizedToPlainFast(FBFloatVector normalized) const
-{
-  return min + (max - min) * normalized;
-}
-
-inline FBDoubleVector 
-FBLinearParam::NormalizedToPlainFast(FBDoubleVector normalized) const
-{
-  return min + (max - min) * normalized; 
-}
-
 inline int
 FBLinearParam::NormalizedTimeToSamplesFast(float normalized, float sampleRate) const
 {
@@ -76,17 +59,15 @@ FBLinearParam::NormalizedFreqToSamplesFast(float normalized, float sampleRate) c
 }
 
 inline void 
-FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatBlock& plain) const
+FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const
 {
-  for (int v = 0; v < FBFixedFloatVectors; v++)
-    plain[v] = NormalizedToPlainFast(normalized.CV(v));
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    plain[s] = NormalizedToPlainFast(normalized.CV()[s]);
 }
 
 inline void
-FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
+FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const
 {
-  FBFixedDoubleBlock normDouble;
-  normDouble.LoadCastFromFloatArray(normalized.CV());
-  for (int v = 0; v < FBFixedDoubleVectors; v++)
-    plain[v] = NormalizedToPlainFast(normDouble[v]);
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    plain[s] = NormalizedToPlainFast(normalized.CV()[s]);
 }
