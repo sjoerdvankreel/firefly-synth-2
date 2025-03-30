@@ -18,6 +18,7 @@ public:
   T const& Last() { return _data[FBFixedBlockSamples - 1]; }
   std::array<T, FBFixedBlockSamples>& Data() { return _data; }
   std::array<T, FBFixedBlockSamples> const& Data() const { return _data; }
+  void CopyTo(FBFixedArray<T>& rhs) const { for (int s = 0; s < FBFixedBlockSamples; s++) rhs[s] = _data[s]; }
 };
 
 template <class T>
@@ -29,6 +30,7 @@ public:
   FBFixedArray<T>& operator[](int c) { return _data[c]; }
   FBFixedArray<T> const& operator[](int c) const { return _data[c]; }
   void Fill(T val) { for(int c = 0; c < 2; c++) _data[c].Data().fill(val); }
+  void CopyTo(FBFixedAudioArray<T>& rhs) const { for (int c = 0; c < 2; c++) _data[c].CopyTo(rhs[c]); }
 };
 
 typedef FBFixedArray<float> FBFixedFloatArray;

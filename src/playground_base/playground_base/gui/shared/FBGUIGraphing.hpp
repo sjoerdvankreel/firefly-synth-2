@@ -108,11 +108,11 @@ FBRenderModuleGraphSeries(
       if constexpr(Audio)
         renderData.globalAudioOutputSelector(
           moduleProcState->procRaw,
-          moduleSlot)->StoreToFloatArray(seriesAudioIn);
+          moduleSlot)->CopyTo(seriesAudioIn);
       else
         renderData.globalCVOutputSelector(
           moduleProcState->procRaw,
-          moduleSlot)->StoreToFloatArray(seriesCVIn);
+          moduleSlot)->CopyTo(seriesCVIn);
     }
     else
     {
@@ -120,12 +120,12 @@ FBRenderModuleGraphSeries(
         renderData.voiceAudioOutputSelector(
           moduleProcState->procRaw,
           moduleProcState->voice->slot,
-          moduleSlot)->StoreToFloatArray(seriesAudioIn);
+          moduleSlot)->CopyTo(seriesAudioIn);
       else
         renderData.voiceCVOutputSelector(
           moduleProcState->procRaw,
           moduleProcState->voice->slot,
-          moduleSlot)->StoreToFloatArray(seriesCVIn);
+          moduleSlot)->CopyTo(seriesCVIn);
     }
     if constexpr (Audio)
       for (int i = 0; i < processed; i++)
