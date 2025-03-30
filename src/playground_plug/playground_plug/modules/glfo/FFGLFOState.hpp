@@ -3,7 +3,7 @@
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
 
 #include <array>
@@ -17,13 +17,13 @@ public FBModuleProcExchangeState
   float lastOutput = {};
 };
 
-class alignas(sizeof(FBFloatVector)) FFGLFODSPState final
+class alignas(FBFixedBlockAlign) FFGLFODSPState final
 {
   friend class FFPlugProcessor;
   friend struct GLFOGraphRenderData;
   FFGLFOProcessor processor = {};
 public:
-  FBFixedFloatBlock output = {};
+  FBFixedFloatArray output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
 };
 

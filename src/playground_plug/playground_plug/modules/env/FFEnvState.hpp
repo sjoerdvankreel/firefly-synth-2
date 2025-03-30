@@ -3,8 +3,8 @@
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 
 #include <array>
 #include <memory>
@@ -27,13 +27,13 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvGUIState);
 };
 
-class alignas(sizeof(FBFloatVector)) FFEnvDSPState final
+class alignas(FBFixedBlockAlign) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;
   friend struct EnvGraphRenderData;
   FFEnvProcessor processor = {};
 public:
-  FBFixedFloatBlock output = {};
+  FBFixedFloatArray output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvDSPState);
 }; 
 

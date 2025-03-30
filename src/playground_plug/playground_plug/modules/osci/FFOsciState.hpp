@@ -3,22 +3,22 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 
 #include <array>
 #include <memory>
 
 struct FBStaticModule;
 
-class alignas(sizeof(FBFloatVector)) FFOsciDSPState final
+class alignas(FBFixedBlockAlign) FFOsciDSPState final
 {
   friend class FFVoiceProcessor;
   friend struct OsciGraphRenderData;
   FFOsciProcessor processor = {};
 public:
-  FBFixedFloatAudioBlock output = {};
-  std::array<FBFixedFloatBlock, FFOsciUnisonMaxCount> unisonOutput = {};
-  std::array<FBFixedFloatBlock, FFOsciUnisonMaxCount> prevUnisonOutput = {};
+  FBFixedFloatAudioArray output = {};
+  std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> unisonOutput = {};
+  std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> prevUnisonOutput = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };
 

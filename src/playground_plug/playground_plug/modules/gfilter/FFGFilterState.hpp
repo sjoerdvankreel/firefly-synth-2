@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <array>
@@ -9,13 +9,13 @@
 
 struct FBStaticModule;
 
-class alignas(sizeof(FBFloatVector)) FFGFilterDSPState final
+class alignas(FBFixedBlockAlign) FFGFilterDSPState final
 {
   friend class FFPlugProcessor;
   FFGFilterProcessor processor = {};
 public:
-  FBFixedFloatAudioBlock input = {};
-  FBFixedFloatAudioBlock output = {};
+  FBFixedFloatAudioArray input = {};
+  FBFixedFloatAudioArray output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterDSPState);
 };
 
