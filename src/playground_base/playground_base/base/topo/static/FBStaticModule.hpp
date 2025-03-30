@@ -51,13 +51,9 @@ struct FBStaticModule final
   template <class ParamIndex>
   float NormalizedToLinearFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
-  FBFloatVector NormalizedToLinearFast(ParamIndex index, FBFloatVector normalized) const;
+  void NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   template <class ParamIndex>
-  FBDoubleVector NormalizedToLinearFast(ParamIndex index, FBDoubleVector normalized) const;
-  template <class ParamIndex>
-  void NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
-  template <class ParamIndex>
-  void NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const;
+  void NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 
   template <class ParamIndex>
   int NormalizedToLinearTimeSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
@@ -67,13 +63,9 @@ struct FBStaticModule final
   template <class ParamIndex>
   float NormalizedToLog2Fast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
-  FBFloatVector NormalizedToLog2Fast(ParamIndex index, FBFloatVector normalized) const;
+  void NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   template <class ParamIndex>
-  FBDoubleVector NormalizedToLog2Fast(ParamIndex index, FBDoubleVector normalized) const;
-  template <class ParamIndex>
-  void NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
-  template <class ParamIndex>
-  void NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const;
+  void NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 
   template <class ParamIndex>
   int NormalizedToLog2TimeSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
@@ -83,13 +75,9 @@ struct FBStaticModule final
   template <class ParamIndex>
   float NormalizedToIdentityFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
-  FBFloatVector NormalizedToIdentityFast(ParamIndex index, FBFloatVector normalized) const;
+  void NormalizedToIdentityFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   template <class ParamIndex>
-  FBDoubleVector NormalizedToIdentityFast(ParamIndex index, FBDoubleVector normalized) const;
-  template <class ParamIndex>
-  void NormalizedToIdentityFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatBlock& plain) const;
-  template <class ParamIndex>
-  void NormalizedToIdentityFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const;
+  void NormalizedToIdentityFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 };
 
 template <class ParamIndex> 
@@ -149,29 +137,15 @@ FBStaticModule::NormalizedToLinearFast(ParamIndex index, float normalized) const
 }
 
 template <class ParamIndex>
-inline FBFloatVector 
-FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBFloatVector normalized) const
-{
-  return params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized);
-}
-
-template <class ParamIndex>
-inline FBDoubleVector
-FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBDoubleVector normalized) const
-{
-  return params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized);
-}
-
-template <class ParamIndex>
 inline void 
-FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatBlock& plain) const
+FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const
 {
   params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized, plain);
 }
 
 template <class ParamIndex>
 inline void
-FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
+FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleArray& plain) const
 {
   params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized, plain);
 }
@@ -198,29 +172,15 @@ FBStaticModule::NormalizedToLog2Fast(ParamIndex index, float normalized) const
 }
 
 template <class ParamIndex>
-inline FBFloatVector
-FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBFloatVector normalized) const
-{
-  return params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized);
-}
-
-template <class ParamIndex>
-inline FBDoubleVector
-FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBDoubleVector normalized) const
-{
-  return params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized);
-}
-
-template <class ParamIndex>
 inline void
-FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatBlock& plain) const
+FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const
 {
   params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized, plain);
 }
 
 template <class ParamIndex>
 inline void
-FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
+FBStaticModule::NormalizedToLog2Fast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleArray& plain) const
 {
   params[static_cast<int>(index)].Log2().NormalizedToPlainFast(normalized, plain);
 }
@@ -246,25 +206,13 @@ float FBStaticModule::NormalizedToIdentityFast(ParamIndex index, float normalize
 }
 
 template <class ParamIndex>
-FBFloatVector FBStaticModule::NormalizedToIdentityFast(ParamIndex index, FBFloatVector normalized) const
-{
-  return params[static_cast<int>(index)].Identity().NormalizedToPlainFast(normalized);
-}
-
-template <class ParamIndex>
-FBDoubleVector FBStaticModule::NormalizedToIdentityFast(ParamIndex index, FBDoubleVector normalized) const
-{
-  return params[static_cast<int>(index)].Identity().NormalizedToPlainFast(normalized);
-}
-
-template <class ParamIndex>
-void FBStaticModule::NormalizedToIdentityFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatBlock& plain) const
+void FBStaticModule::NormalizedToIdentityFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const
 {
   params[static_cast<int>(index)].Identity().NormalizedToPlainFast(normalized, plain);
 }
 
 template <class ParamIndex>
-void FBStaticModule::NormalizedToIdentityFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleBlock& plain) const
+void FBStaticModule::NormalizedToIdentityFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleArray& plain) const
 {
   params[static_cast<int>(index)].Identity().NormalizedToPlainFast(normalized, plain);
 }
