@@ -128,20 +128,21 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
 
   FBFixedDoubleAudioArray audioIn;
   FBFixedDoubleAudioArray audioOut = {};
-  input.StoreCastToDoubleArray(audioIn);
+  FBFixedFloatAudioToDoubleArray(input, audioIn);
   
   for (int s = 0; s < FBFixedBlockSamples; s++)
     for (int ch = 0; ch < 2; ch++)
     {
-      double v0 = audioIn.data[ch].data[s];
+      double v0 = audioIn[ch][s];
       double v3 = v0 - _ic2eq[ch];
-      double v1 = a1a.data[s] * _ic1eq[ch] + a2a.data[s] * v3;
-      double v2 = _ic2eq[ch] + a2a.data[s] * _ic1eq[ch] + a3a.data[s] * v3;
+      double v1 = a1[s] * _ic1eq[ch] + a2[s] * v3;
+      double v2 = _ic2eq[ch] + a2[s] * _ic1eq[ch] + a3[s] * v3;
       _ic1eq[ch] = 2 * v1 - _ic1eq[ch];
       _ic2eq[ch] = 2 * v2 - _ic2eq[ch];
-      audioOut.data[ch].data[s] = m0a.data[s] * v0 + m1a.data[s] * v1 + m2a.data[s] * v2;
+      audioOut[ch][s] = m0[s] * v0 + m1[s] * v1 + m2[s] * v2;
     }
-  output.LoadCastFromDoubleArray(audioOut);  
+
+  FBFixedDoubleAudioToFloatArray(audioOut, output);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
