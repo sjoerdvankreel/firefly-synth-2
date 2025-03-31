@@ -1,16 +1,10 @@
-am borked
-hpb/bsf borked
-hunt for fixedfloatblock&friends
 then rename fixed*array to block
 drop the fm delay
-maybe drop the whole vector thing, just go with 16-sample block + packed memory, maybe fast enough? NO first check without transform
 fix the fm
 "slow path" is faster, thanks
 store the selected tab
 hardsync
-drop the transform calls
 fix up the track graph
-mark osci pw section
 osci fm + oversampling
 
 recheck clap mod
@@ -24,7 +18,6 @@ profile the thing - why gui expensive?
 on/off switch for realtime paint
 dont repaint expensive stuff if the UI not active -- but how?
 not hardcode env1 to voice amp
-osci unison
 checkout the Linux logging and also mac
 multitap fb delay
 rosetta is borked
