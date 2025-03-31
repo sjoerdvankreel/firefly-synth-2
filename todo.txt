@@ -1,3 +1,4 @@
+check type off for osci mod
 then rename fixed*array to block
 drop the fm delay
 fix the fm
