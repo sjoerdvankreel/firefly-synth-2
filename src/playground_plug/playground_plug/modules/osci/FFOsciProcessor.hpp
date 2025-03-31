@@ -134,5 +134,6 @@ class FFOsciProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
   int Process(FBModuleProcState& state);
+  int Process2(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState& state);
 };
