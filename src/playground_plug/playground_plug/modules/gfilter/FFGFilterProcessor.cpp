@@ -77,7 +77,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     break;
   case FFGFilterMode::HPF:
     m0.Fill(1.0);
-    m2.Fill(1.0);
+    m2.Fill(-1.0);
     for (int s = 0; s < FBFixedBlockSamples; s++)
       m1[s] = -k[s];
     break;
