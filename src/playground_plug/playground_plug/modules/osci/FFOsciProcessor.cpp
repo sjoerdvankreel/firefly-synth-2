@@ -609,55 +609,58 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
 
-  float phase, sample;
-  float basicGain, basicPW;
-  float centNorm, centPlain;
-  float baseFreq, baseIncr, basePitch;
-  float dsfDistFreq, dsfMaxOvertones, dsfDecayPlain;
+  float centNorm;
+  FBFixedFloatArray basePitch, baseFreq, baseIncr, basePhase; // todo bph
   float notePitch = _voiceState.key + _voiceState.note - 60.0f;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     centNorm = procParams.acc.cent[0].Voice()[voice].CV()[s];
-    centPlain = topo.NormalizedToLinearFast(FFOsciParam::Cent, centNorm);
-    basePitch = notePitch + centPlain;
-    baseFreq = FBPitchToFreqAccurate(basePitch, state.input->sampleRate);
-    baseIncr = baseFreq / state.input->sampleRate;
-    phase = _phase.Next(baseIncr); // TODO
+    float centPlain = topo.NormalizedToLinearFast(FFOsciParam::Cent, centNorm);
+    basePitch[s] = notePitch + centPlain;
+    baseFreq[s] = FBPitchToFreqAccurate(basePitch[s], state.input->sampleRate);
+    baseIncr[s] = baseFreq[s] / state.input->sampleRate;
+    basePhase[s] = _phase.Next(baseIncr[s]);
+  }
 
+  float sample;
+  float basicGain, basicPW;
+  float dsfDistFreq, dsfMaxOvertones, dsfDecayPlain;
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
     sample = 0.0f;
     if (_voiceState.type == FFOsciType::Basic)
     {
       if (_voiceState.basicSinOn)
       {
         basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
-        sample += GenerateSin(phase) * basicGain;
+        sample += GenerateSin(basePhase[s]) * basicGain;
       }
       if (_voiceState.basicSawOn)
       {
         basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
-        sample += GenerateSaw(phase, baseIncr) * basicGain;
+        sample += GenerateSaw(basePhase[s], baseIncr[s]) * basicGain;
       }
       if (_voiceState.basicTriOn)
       {
         basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
-        sample += GenerateTri(phase, baseIncr) * basicGain;
+        sample += GenerateTri(basePhase[s], baseIncr[s]) * basicGain;
       }
       if (_voiceState.basicSqrOn)
       {
         basicPW = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
         basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
-        sample += GenerateSqr(phase, baseIncr, basicPW) * basicGain;
+        sample += GenerateSqr(basePhase[s], baseIncr[s], basicPW) * basicGain;
       }
     }
     if (_voiceState.type == FFOsciType::DSF)
     {
-      dsfDistFreq = static_cast<float>(_voiceState.dsfDistance) * baseFreq;
-      dsfMaxOvertones = (sampleRate * 0.5f - baseFreq) / dsfDistFreq;
+      dsfDistFreq = static_cast<float>(_voiceState.dsfDistance) * baseFreq[s];
+      dsfMaxOvertones = (sampleRate * 0.5f - baseFreq[s]) / dsfDistFreq;
       dsfDecayPlain = topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm.CV()[s]);
       if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
-        sample = GenerateDSFOvertones(phase, baseFreq, dsfDecayPlain, dsfDistFreq, dsfMaxOvertones, _voiceState.dsfOvertones);
+        sample = GenerateDSFOvertones(basePhase[s], baseFreq[s], dsfDecayPlain, dsfDistFreq, dsfMaxOvertones, _voiceState.dsfOvertones);
       else
-        sample = GenerateDSFBandwidth(phase, baseFreq, dsfDecayPlain, dsfDistFreq, dsfMaxOvertones, _voiceState.dsfBandwidthPlain);
+        sample = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain, dsfDistFreq, dsfMaxOvertones, _voiceState.dsfBandwidthPlain);
     }
     output[0][s] = sample;
     output[1][s] = sample;
@@ -715,7 +718,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreq, state.input->sampleRate);
+  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreq.Last(), state.input->sampleRate);
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
