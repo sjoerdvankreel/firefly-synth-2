@@ -1,4 +1,5 @@
 consolidate osci graph
+consolidate osci mod matrices
 check type off for osci mod
 then rename fixed*array to block
 drop the fm delay
