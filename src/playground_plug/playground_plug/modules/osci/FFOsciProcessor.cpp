@@ -586,6 +586,7 @@ int
 FFOsciProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
@@ -608,15 +609,11 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
 
-  float pw;
-  float gain;
-  float phase;
-  float sample;
-  float centNorm;
-  float centPlain;
-  float baseFreq;
-  float baseIncr;
-  float basePitch;
+  float phase, sample;
+  float basicGain, basicPW;
+  float centNorm, centPlain;
+  float baseFreq, baseIncr, basePitch;
+  float dsfDistFreq, dsfMaxOvertones, dsfDecayPlain;
   float notePitch = _voiceState.key + _voiceState.note - 60.0f;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
@@ -632,25 +629,35 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     {
       if (_voiceState.basicSinOn)
       {
-        gain = topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
-        sample += GenerateSin(phase) * gain;
+        basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
+        sample += GenerateSin(phase) * basicGain;
       }
       if (_voiceState.basicSawOn)
       {
-        gain = topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
-        sample += GenerateSaw(phase, baseIncr) * gain;
+        basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
+        sample += GenerateSaw(phase, baseIncr) * basicGain;
       }
       if (_voiceState.basicTriOn)
       {
-        gain = topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
-        sample += GenerateTri(phase, baseIncr) * gain;
+        basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
+        sample += GenerateTri(phase, baseIncr) * basicGain;
       }
       if (_voiceState.basicSqrOn)
       {
-        pw = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
-        gain = topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
-        sample += GenerateSqr(phase, baseIncr, pw) * gain;
+        basicPW = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
+        basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
+        sample += GenerateSqr(phase, baseIncr, basicPW) * basicGain;
       }
+    }
+    if (_voiceState.type == FFOsciType::DSF)
+    {
+      dsfDistFreq = static_cast<float>(_voiceState.dsfDistance) * baseFreq;
+      dsfMaxOvertones = (sampleRate * 0.5f - baseFreq) / dsfDistFreq;
+      dsfDecayPlain = topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm.CV()[s]);
+      if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
+        sample = GenerateDSFOvertones(phase, baseFreq, dsfDecayPlain, dsfDistFreq, dsfMaxOvertones, _voiceState.dsfOvertones);
+      else
+        sample = GenerateDSFBandwidth(phase, baseFreq, dsfDecayPlain, dsfDistFreq, dsfMaxOvertones, _voiceState.dsfBandwidthPlain);
     }
     output[0][s] = sample;
     output[1][s] = sample;
