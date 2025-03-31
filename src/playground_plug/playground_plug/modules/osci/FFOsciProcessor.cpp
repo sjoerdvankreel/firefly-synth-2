@@ -622,49 +622,42 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     basePhase[s] = _phase.Next(baseIncr[s]);
   }
 
-  float sample;
-  float basicGain, basicPW;
-  float dsfDistFreq, dsfMaxOvertones, dsfDecayPlain;
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-  {
-    sample = 0.0f;
-    if (_voiceState.type == FFOsciType::Basic)
+  // TODO drop the checkboxes ?
+  if(_voiceState.type == FFOsciType::Basic)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      if (_voiceState.basicSinOn)
-      {
-        basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
-        sample += GenerateSin(basePhase[s]) * basicGain;
-      }
-      if (_voiceState.basicSawOn)
-      {
-        basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
-        sample += GenerateSaw(basePhase[s], baseIncr[s]) * basicGain;
-      }
-      if (_voiceState.basicTriOn)
-      {
-        basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
-        sample += GenerateTri(basePhase[s], baseIncr[s]) * basicGain;
-      }
-      if (_voiceState.basicSqrOn)
-      {
-        basicPW = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
-        basicGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
-        sample += GenerateSqr(basePhase[s], baseIncr[s], basicPW) * basicGain;
-      }
+      float sample = 0.0f;
+      float basicPW = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
+      sample += GenerateSin(basePhase[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
+      sample += GenerateSaw(basePhase[s], baseIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
+      sample += GenerateTri(basePhase[s], baseIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
+      sample += GenerateSqr(basePhase[s], baseIncr[s], basicPW) * topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
+      output[0][s] = sample;
+      output[1][s] = sample;
     }
-    if (_voiceState.type == FFOsciType::DSF)
+
+  FBFixedFloatArray dsfDistFreq, dsfMaxOvertones, dsfDecayPlain;
+  if (_voiceState.type == FFOsciType::DSF)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      dsfDistFreq = static_cast<float>(_voiceState.dsfDistance) * baseFreq[s];
-      dsfMaxOvertones = (sampleRate * 0.5f - baseFreq[s]) / dsfDistFreq;
-      dsfDecayPlain = topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm.CV()[s]);
-      if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
-        sample = GenerateDSFOvertones(basePhase[s], baseFreq[s], dsfDecayPlain, dsfDistFreq, dsfMaxOvertones, _voiceState.dsfOvertones);
-      else
-        sample = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain, dsfDistFreq, dsfMaxOvertones, _voiceState.dsfBandwidthPlain);
+      dsfDistFreq[s] = static_cast<float>(_voiceState.dsfDistance) * baseFreq[s];
+      dsfMaxOvertones[s] = (sampleRate * 0.5f - baseFreq[s]) / dsfDistFreq[s];
+      dsfDecayPlain[s] = topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm.CV()[s]);
     }
-    output[0][s] = sample;
-    output[1][s] = sample;
-  }
+  if (_voiceState.type == FFOsciType::DSF && _voiceState.dsfMode == FFOsciDSFMode::Overtones)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      float sample = GenerateDSFOvertones(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfOvertones);
+      output[0][s] = sample;
+      output[1][s] = sample;
+    }
+  if (_voiceState.type == FFOsciType::DSF && _voiceState.dsfMode == FFOsciDSFMode::Bandwidth)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      float sample = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfBandwidthPlain);
+      output[0][s] = sample;
+      output[1][s] = sample;
+    }
 
 #if 0 // TODO
   FBFixedFloatArray centPlain;
