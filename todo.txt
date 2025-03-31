@@ -1,4 +1,5 @@
 am borked
+hpb/bsf borked
 hunt for fixedfloatblock&friends
 then rename fixed*array to block
 drop the fm delay
