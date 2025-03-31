@@ -32,12 +32,13 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
 
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
 
-  FBFixedFloatBlock phase;
-  FBFixedFloatBlock ratePlain;
   auto const& rateNorm = procParams.acc.rate[0].Global();
-  topo.NormalizedToLinearFast(FFGLFOParam::Rate, rateNorm, ratePlain);
-  phase.Transform([&](int v) { return _phase.Next(ratePlain[v] / state.input->sampleRate); });
-  output.Transform([&](int v) { return FBToUnipolar(xsimd::sin(phase[v] * FBTwoPi)); });
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float ratePlain = topo.NormalizedToLinearFast(FFGLFOParam::Rate, rateNorm.CV()[s]);
+    float p = _phase.Next(ratePlain / state.input->sampleRate);
+    output[s] = FBToUnipolar(std::sin(p * FBTwoPi));
+  }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

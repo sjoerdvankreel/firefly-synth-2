@@ -1,11 +1,10 @@
 #pragma once
 
-#include <playground_base/base/shared/FBVector.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
+#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 
 #include <cmath>
 
-class alignas(sizeof(FBFloatVector)) FBTrackingPhase final
+class FBTrackingPhase final
 {
   float _x = 0.0f;
   bool _cycledOnce = false;
@@ -15,43 +14,37 @@ class alignas(sizeof(FBFloatVector)) FBTrackingPhase final
 public:
   FBTrackingPhase() = default;
   explicit FBTrackingPhase(float x) : _x(x) {}
-  FBFloatVector Next(FBFloatVector incr);
-  void Next(FBFixedFloatBlock const& incr);
-
+  
+  float Next(float incr);
+  void Next(FBFixedFloatArray const& incr);
   int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
   int PositionSamplesUpToFirstCycle() const { return _positionSamplesUpToFirstCycle; }
 };
 
-inline FBFloatVector
-FBTrackingPhase::Next(FBFloatVector incr)
+inline float
+FBTrackingPhase::Next(float incr)
 {
-  alignas(sizeof(FBFloatVector)) std::array<float, FBVectorFloatCount> scratch;
-  incr.store_aligned(scratch.data());
-  for (int i = 0; i < FBVectorFloatCount; i++)
+  float y = _x;
+  _x += incr;
+  float f = std::floor(_x);
+  _x -= f;
+  if (f != 0.0f)
   {
-    float y = _x;
-    _x += scratch[i];
-    float f = std::floor(_x);
-    if (f != 0.0f)
-    {
-      _cycledOnce = true;
-      _positionSamplesCurrentCycle = 0;
-    }
-    else
-    {
-      _positionSamplesCurrentCycle++;
-      if (!_cycledOnce)
-        _positionSamplesUpToFirstCycle++;
-    }
-    _x -= f;
-    scratch[i] = y;
+    _cycledOnce = true;
+    _positionSamplesCurrentCycle = 0;
   }
-  return FBFloatVector::load_aligned(scratch.data());
+  else
+  {
+    _positionSamplesCurrentCycle++;
+    if (!_cycledOnce)
+      _positionSamplesUpToFirstCycle++;
+  }
+  return y;
 }
 
 inline void
-FBTrackingPhase::Next(FBFixedFloatBlock const& incr)
+FBTrackingPhase::Next(FBFixedFloatArray const& incr)
 {
-  for (int i = 0; i < FBFixedFloatVectors; i++)
-    Next(incr[i]);
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    Next(incr[s]);
 }

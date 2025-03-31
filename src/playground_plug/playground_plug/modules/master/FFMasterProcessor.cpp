@@ -17,10 +17,13 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   auto const& procParams = procState->param.global.master[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Master];
 
-  FBFixedFloatBlock gainPlain;
   auto const& gainNorm = procParams.acc.gain[0].Global();
-  topo.NormalizedToIdentityFast(FFMasterParam::Gain, gainNorm, gainPlain);
-  output.Transform([&](int ch, int v) { return input[ch][v] * gainPlain[v]; });
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float gainPlain = topo.NormalizedToIdentityFast(FFMasterParam::Gain, gainNorm.CV()[s]);
+    for (int ch = 0; ch < 2; ch++)
+      output[ch][s] = input[ch][s] * gainPlain;
+  }
 
   auto const* voicesParam = state.topo->audio.ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });
   float voicesNorm = topo.DiscreteToNormalizedFast(FFMasterParam::Voices, state.input->voiceManager->VoiceCount());

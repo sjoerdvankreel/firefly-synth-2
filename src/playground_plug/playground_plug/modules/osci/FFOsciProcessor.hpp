@@ -5,6 +5,7 @@
 #include <playground_plug/modules/osci_fm/FFOsciFMTopo.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/shared/FBTrackingPhase.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 
@@ -48,14 +49,14 @@ class FFOsciProcessor final
   std::array<FFOsciPhase, FFOsciUnisonMaxCount> _phases = {};
 
   void ProcessBasicUnisonVoiceFast(
-    FBFixedFloatBlock& unisonAudioOut,
-    FBFixedFloatBlock const& phasePlusFm,
-    FBFixedFloatBlock const& incr,
-    FBFixedFloatBlock const& sinGainPlain,
-    FBFixedFloatBlock const& sawGainPlain,
-    FBFixedFloatBlock const& triGainPlain,
-    FBFixedFloatBlock const& sqrGainPlain,
-    FBFixedFloatBlock const& sqrPWPlain);
+    FBFixedFloatArray& unisonAudioOut,
+    FBFixedFloatArray const& phasePlusFm,
+    FBFixedFloatArray const& incr,
+    FBFixedFloatArray const& sinGainPlain,
+    FBFixedFloatArray const& sawGainPlain,
+    FBFixedFloatArray const& triGainPlain,
+    FBFixedFloatArray const& sqrGainPlain,
+    FBFixedFloatArray const& sqrPWPlain);
 
   void ProcessBasicUnisonVoiceSlow(
     float& unisonAudioOut,
@@ -69,10 +70,10 @@ class FFOsciProcessor final
 
   void ProcessDSFUnisonVoiceFast(
     float sampleRate,
-    FBFixedFloatBlock& unisonAudioOut,
-    FBFixedFloatBlock const& phasePlusFm,
-    FBFixedFloatBlock const& freq,
-    FBFixedFloatBlock const& decayPlain);
+    FBFixedFloatArray& unisonAudioOut,
+    FBFixedFloatArray const& phasePlusFm,
+    FBFixedFloatArray const& freq,
+    FBFixedFloatArray const& decayPlain);
 
   void ProcessDSFUnisonVoiceSlow(
     float sampleRate,
@@ -83,16 +84,16 @@ class FFOsciProcessor final
 
   void ProcessTypeUnisonVoiceFast(
     float sampleRate,
-    FBFixedFloatBlock& unisonAudioOut,
-    FBFixedFloatBlock const& phasePlusFm,
-    FBFixedFloatBlock const& freq,
-    FBFixedFloatBlock const& incr,
-    FBFixedFloatBlock const& basicSinGainPlain,
-    FBFixedFloatBlock const& basicSawGainPlain,
-    FBFixedFloatBlock const& basicTriGainPlain,
-    FBFixedFloatBlock const& basicSqrGainPlain,
-    FBFixedFloatBlock const& basicSqrPWPlain,
-    FBFixedFloatBlock const& dsfDecayPlain);
+    FBFixedFloatArray& unisonAudioOut,
+    FBFixedFloatArray const& phasePlusFm,
+    FBFixedFloatArray const& freq,
+    FBFixedFloatArray const& incr,
+    FBFixedFloatArray const& basicSinGainPlain,
+    FBFixedFloatArray const& basicSawGainPlain,
+    FBFixedFloatArray const& basicTriGainPlain,
+    FBFixedFloatArray const& basicSqrGainPlain,
+    FBFixedFloatArray const& basicSqrPWPlain,
+    FBFixedFloatArray const& dsfDecayPlain);
 
   void ProcessTypeUnisonVoiceSlow(
     float sampleRate,
@@ -110,22 +111,22 @@ class FFOsciProcessor final
   void ProcessUnisonVoice(
     FBModuleProcState const& state,
     int unisonVoice, 
-    FBFixedFloatBlock& unisonAudioOut,
-    FBFixedFloatBlock const& unisonPos,
-    FBFixedFloatBlock const& basePitch,
-    FBFixedFloatBlock const& detunePlain,
-    FBFixedFloatBlock const& basicSinGainPlain,
-    FBFixedFloatBlock const& basicSawGainPlain,
-    FBFixedFloatBlock const& basicTriGainPlain,
-    FBFixedFloatBlock const& basicSqrGainPlain,
-    FBFixedFloatBlock const& basicSqrPWPlain,
-    FBFixedFloatBlock const& dsfDecayPlain);
+    FBFixedFloatArray& unisonAudioOut,
+    FBFixedFloatArray const& unisonPos,
+    FBFixedFloatArray const& basePitch,
+    FBFixedFloatArray const& detunePlain,
+    FBFixedFloatArray const& basicSinGainPlain,
+    FBFixedFloatArray const& basicSawGainPlain,
+    FBFixedFloatArray const& basicTriGainPlain,
+    FBFixedFloatArray const& basicSqrGainPlain,
+    FBFixedFloatArray const& basicSqrPWPlain,
+    FBFixedFloatArray const& dsfDecayPlain);
 
   void ProcessUnison(
     FBModuleProcState& state,
-    FBFixedFloatAudioBlock& audioOut,
-    std::array<FBFixedFloatBlock, FFOsciUnisonMaxCount>& unisonAudioOut,
-    FBFixedFloatBlock const& basePitch);
+    FBFixedFloatAudioArray& audioOut,
+    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount>& unisonAudioOut,
+    FBFixedFloatArray const& basePitch);
 
   void ShiftPrevUnisonOutputForAllOscis(
     FBModuleProcState& state);

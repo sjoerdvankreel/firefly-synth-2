@@ -1,7 +1,6 @@
 #include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostOutputBlock.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBFixedBufferProcessor.hpp>
 
@@ -11,8 +10,8 @@ FBFixedBufferProcessor::
 FBFixedBufferProcessor(FBVoiceManager* voiceManager):
 _voiceManager(voiceManager)
 {
-  FBFixedFloatAudioBlock lag;
-  lag.Transform([](int ch, int v) { return 0.0f; });
+  FBFixedFloatAudioArray lag;
+  lag.Fill(0.0f);
   _buffer.AppendFixed(lag);
 }
 
@@ -33,7 +32,7 @@ FBFixedBufferProcessor::ProcessToHost(FBHostOutputBlock& host)
 }
 
 void
-FBFixedBufferProcessor::BufferFromFixed(FBFixedFloatAudioBlock const& fixed)
+FBFixedBufferProcessor::BufferFromFixed(FBFixedFloatAudioArray const& fixed)
 {
   _buffer.AppendFixed(fixed);
   _returnedVoices.insert(

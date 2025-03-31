@@ -17,6 +17,7 @@
 #include <playground_base/base/state/exchange/FBHostExchangeState.hpp>
 #include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 
 #include <array>
 
@@ -37,7 +38,7 @@ struct FFVoiceExchangeState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
 
-struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
+struct alignas(FBFixedBlockAlign) FFGlobalDSPState final
 {
   FFMasterDSPState master = {};
   std::array<FFGLFODSPState, FFGLFOCount> gLFO = {};
@@ -45,18 +46,18 @@ struct alignas(sizeof(FBFloatVector)) FFGlobalDSPState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
 };
 
-struct alignas(sizeof(FBFloatVector)) FFVoiceDSPState final
+struct alignas(FBFixedBlockAlign) FFVoiceDSPState final
 {
   FFOsciAMDSPState osciAM = {};
   FFOsciFMDSPState osciFM = {};
   FFVoiceProcessor processor = {};
-  FBFixedFloatAudioBlock output = {};
+  FBFixedFloatAudioArray output = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
 
-struct alignas(sizeof(FBFloatVector)) FFProcDSPState final
+struct alignas(FBFixedBlockAlign) FFProcDSPState final
 {
   FFGlobalDSPState global = {};
   std::array<FFVoiceDSPState, FBMaxVoices> voice = {};
@@ -113,14 +114,14 @@ struct FFExchangeState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFExchangeState);
 };
 
-struct alignas(sizeof(FBFloatVector)) FFProcParamState final
+struct alignas(FBFixedBlockAlign) FFProcParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
   FFVoiceParamState<FBVoiceBlockParamState, FBVoiceAccParamState> voice = {};
   FFGlobalParamState<FBGlobalBlockParamState, FBGlobalAccParamState> global = {};
 };
 
-struct alignas(sizeof(FBFloatVector)) FFProcState final
+struct alignas(FBFixedBlockAlign) FFProcState final
 {
   FFProcDSPState dsp = {};
   FFProcParamState param = {};

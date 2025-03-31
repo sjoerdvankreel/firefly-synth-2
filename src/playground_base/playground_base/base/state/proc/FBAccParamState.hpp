@@ -2,14 +2,13 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedUtility.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedFloatBlock.hpp>
 
 #include <array>
 #include <algorithm>
 
-class alignas(sizeof(FBFloatVector)) FBAccParamState final
+class alignas(FBFixedBlockAlign) FBAccParamState final
 {
   friend class FBVoiceManager;
   friend class FBSmoothingProcessor;
@@ -28,26 +27,19 @@ class alignas(sizeof(FBFloatVector)) FBAccParamState final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
   float Last() const;
-  FBFloatVector CV(int v) const;
   FBFixedFloatArray const& CV() const { return _cv; }
 };
 
 inline float
 FBAccParamState::Last() const
 {
-  return CV().data[FBFixedBlockSamples - 1];
-}
-
-inline FBFloatVector
-FBAccParamState::CV(int v) const
-{
-  return FBFloatVector::load_aligned(_cv.data.data() + v * FBVectorFloatCount);
+  return CV()[FBFixedBlockSamples - 1];
 }
 
 inline void
 FBAccParamState::InitProcessing(float value)
 {
-  std::fill(_cv.data.begin(), _cv.data.end(), value);
+  _cv.Fill(value);
 }
 
 inline void 
@@ -59,5 +51,5 @@ FBAccParamState::SetSmoothingCoeffs(int sampleCount)
 inline void
 FBAccParamState::SmoothNext(int sample, float automation) 
 { 
-  _cv.data[sample] = _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f));
+  _cv[sample] = _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f));
 }

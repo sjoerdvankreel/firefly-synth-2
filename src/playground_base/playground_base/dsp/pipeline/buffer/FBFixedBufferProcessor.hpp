@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/pipeline/shared/FBNoteEvent.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
@@ -8,7 +9,6 @@
 
 class FBVoiceManager;
 class FBHostAudioBlock;
-class FBFixedFloatAudioBlock;
 
 class FBFixedBufferProcessor final
 {
@@ -21,5 +21,5 @@ public:
   FBFixedBufferProcessor(FBVoiceManager* voiceManager);
 
   void ProcessToHost(FBHostOutputBlock& host);
-  void BufferFromFixed(FBFixedFloatAudioBlock const& fixed);
+  void BufferFromFixed(FBFixedFloatAudioArray const& fixed);
 };
