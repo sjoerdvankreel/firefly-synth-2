@@ -671,6 +671,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
         float sample = 0.0f;
+        float panning = 0.5f + unisonPos[u] * spreadPlain[s];
         float uniPitch = basePitch[s] + unisonPos[u] * detunePlain[s];
         float uniFreq = FBPitchToFreqAccurate(uniPitch, sampleRate);
         float uniIncr = uniFreq / sampleRate;
@@ -679,8 +680,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         sample += GenerateSaw(uniPhase, uniIncr) * basicSawGainPlain[s];
         sample += GenerateTri(uniPhase, uniIncr) * basicTriGainPlain[s];
         sample += GenerateSqr(uniPhase, uniIncr, basicSqrPWPlain[s]) * basicSqrGainPlain[s];
-        output[0][s] += sample;
-        output[1][s] += sample;
+        output[0][s] += (1.0f - panning) * sample;
+        output[1][s] += panning * sample;
       }
   }
 
