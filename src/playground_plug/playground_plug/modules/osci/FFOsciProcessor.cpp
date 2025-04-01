@@ -641,38 +641,24 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       unisonPos[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
   }
 
-  /*
-  
-    pitch[s] = basePitch[s] + unisonPos[s] * detunePlain[s];
-    if (_voiceState.unisonDetuneHQ || _voiceState.unisonCount == 1)
-      freq[s] = FBPitchToFreqAccurate(pitch[s], sampleRate);
-    else
-      //freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
-      freq[s] = FBPitchToFreqAccurate(pitch[s], sampleRate); // TODO just drop it
-    incr[s] = freq[s] / sampleRate;
-    
-  */
-
-  if (_voiceState.type == FFOsciType::Basic)
+  for (int u = 0; u < _voiceState.unisonCount; u++)
   {
+    FBFixedFloatArray uniFreq;
+    FBFixedFloatArray uniIncr;
+    FBFixedFloatArray uniPhase;
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      float uniPitch = basePitch[s] + unisonPos[u] * detunePlain[s];
+      uniFreq[s] = FBPitchToFreqAccurate(uniPitch, sampleRate);
+      uniIncr[s] = uniFreq[s] / sampleRate;
+      uniPhase[s] = _phases[u].Next(uniIncr[s], 0.0f); // TODO FM
+    }
+
     FBFixedFloatArray osci;
     osci.Fill(0.0f);
-    for (int u = 0; u < _voiceState.unisonCount; u++)
+    if (_voiceState.type == FFOsciType::Basic)
     {
-      FBFixedFloatArray osci;
-      FBFixedFloatArray uniFreq;
-      FBFixedFloatArray uniIncr;
-      FBFixedFloatArray uniPhase;
-
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-      {
-        float uniPitch = basePitch[s] + unisonPos[u] * detunePlain[s];
-        uniFreq[s] = FBPitchToFreqAccurate(uniPitch, sampleRate);
-        uniIncr[s] = uniFreq[s] / sampleRate;
-        uniPhase[s] = _phases[u].Next(uniIncr[s], 0.0f); // TODO FM
-      }
-
-      if(_voiceState.basicSinOn)
+      if (_voiceState.basicSinOn)
         for (int s = 0; s < FBFixedBlockSamples; s++)
           osci[s] += GenerateSin(uniPhase[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
       if (_voiceState.basicSawOn)
@@ -685,60 +671,34 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         for (int s = 0; s < FBFixedBlockSamples; s++)
         {
           float pwPlain = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
-          osci[s] += GenerateSqr(uniPhase[s], uniIncr[s], pwPlain) * topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
+          osci[s] += GenerateSqr(uniPhase[s], uniIncr[s], pwPlain) * topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
         }
-
+    } else if (_voiceState.type == FFOsciType::DSF)
+    {
+      FBFixedFloatArray dsfDistFreq;
+      FBFixedFloatArray dsfDecayPlain;
+      FBFixedFloatArray dsfMaxOvertones;
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
-        float uniPanning = 0.5f + unisonPos[u] * spreadPlain[s];
-        output[0][s] += (1.0f - uniPanning) * osci[s];
-        output[1][s] += uniPanning * osci[s];
+        dsfDistFreq[s] = static_cast<float>(_voiceState.dsfDistance) * baseFreq[s];
+        dsfMaxOvertones[s] = (sampleRate * 0.5f - baseFreq[s]) / dsfDistFreq[s];
+        dsfDecayPlain[s] = topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm.CV()[s]);
       }
+      if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+          osci[s] = GenerateDSFOvertones(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfOvertones);
+      else if (_voiceState.dsfMode == FFOsciDSFMode::Bandwidth)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+          osci[s] = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfBandwidthPlain);
+    }
+
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      float uniPanning = 0.5f + unisonPos[u] * spreadPlain[s];
+      output[0][s] += (1.0f - uniPanning) * osci[s];
+      output[1][s] += uniPanning * osci[s];
     }
   }
-
-  FBFixedFloatArray dsfDistFreq, dsfMaxOvertones, dsfDecayPlain;
-  if (_voiceState.type == FFOsciType::DSF)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      dsfDistFreq[s] = static_cast<float>(_voiceState.dsfDistance) * baseFreq[s];
-      dsfMaxOvertones[s] = (sampleRate * 0.5f - baseFreq[s]) / dsfDistFreq[s];
-      dsfDecayPlain[s] = topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm.CV()[s]);
-    }
-  if (_voiceState.type == FFOsciType::DSF && _voiceState.dsfMode == FFOsciDSFMode::Overtones)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      float sample = GenerateDSFOvertones(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfOvertones);
-      output[0][s] = sample;
-      output[1][s] = sample;
-    }
-  if (_voiceState.type == FFOsciType::DSF && _voiceState.dsfMode == FFOsciDSFMode::Bandwidth)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      float sample = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfBandwidthPlain);
-      output[0][s] = sample;
-      output[1][s] = sample;
-    }
-
-#if 0 // TODO
-  FBFixedFloatArray centPlain;
-  auto const& centNorm = procParams.acc.cent[0].Voice()[voice];
-  topo.NormalizedToLinearFast(FFOsciParam::Cent, centNorm, centPlain);
-
-  FBFixedFloatArray baseFreq;
-  FBFixedFloatArray baseIncr;
-  FBFixedFloatArray basePitch;
-  float notePitch = _voiceState.key + _voiceState.note - 60.0f;
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-  {
-    basePitch[s] = notePitch + centPlain[s];
-    baseFreq[s] = FBPitchToFreqAccurate(basePitch[s], state.input->sampleRate);
-    baseIncr[s] = baseFreq[s] / state.input->sampleRate;
-    _phase.Next(baseIncr[s]);
-  }
-
-  ProcessUnison(state, output, unisonOutput, basePitch);
-#endif
 
   FBFixedFloatArray gainPlain;
   FBFixedFloatArray gLFOToGainPlain;
