@@ -602,6 +602,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   }
 
   auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
+  auto const& detuneNorm = procParams.acc.unisonDetune[0].Voice()[voice];
+  auto const& spreadNorm = procParams.acc.unisonSpread[0].Voice()[voice];
   auto const& basicSqrPWNorm = procParams.acc.basicSqrPW[0].Voice()[voice];
   auto const& basicSqrGainNorm = procParams.acc.basicSqrGain[0].Voice()[voice];
   auto const& basicSinGainNorm = procParams.acc.basicSinGain[0].Voice()[voice];
@@ -622,19 +624,65 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     basePhase[s] = _phase.Next(baseIncr[s]);
   }
 
+  FBFixedFloatArray detunePlain;
+  FBFixedFloatArray spreadPlain;
+  std::array<float, FFOsciUnisonMaxCount> unisonPos;
+  if (_voiceState.unisonCount == 1)
+  {
+    unisonPos[0] = 0.5f;
+    detunePlain.Fill(0.0f);
+    spreadPlain.Fill(0.0f);
+  }
+  else
+  {
+    topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, detuneNorm, detunePlain);
+    topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, spreadNorm, spreadPlain);
+    for(int u = 0; u < _voiceState.unisonCount; u++)
+      unisonPos[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
+  }
+
+  /*
+  
+    pitch[s] = basePitch[s] + unisonPos[s] * detunePlain[s];
+    if (_voiceState.unisonDetuneHQ || _voiceState.unisonCount == 1)
+      freq[s] = FBPitchToFreqAccurate(pitch[s], sampleRate);
+    else
+      //freq[v] = FBPitchToFreqFastAndInaccurate(pitch[v]);
+      freq[s] = FBPitchToFreqAccurate(pitch[s], sampleRate); // TODO just drop it
+    incr[s] = freq[s] / sampleRate;
+    
+  */
+
   // TODO drop the checkboxes ?
-  if(_voiceState.type == FFOsciType::Basic)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      float sample = 0.0f;
-      float basicPW = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
-      sample += GenerateSin(basePhase[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
-      sample += GenerateSaw(basePhase[s], baseIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
-      sample += GenerateTri(basePhase[s], baseIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
-      sample += GenerateSqr(basePhase[s], baseIncr[s], basicPW) * topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
-      output[0][s] = sample;
-      output[1][s] = sample;
-    }
+  if (_voiceState.type == FFOsciType::Basic)
+  {
+    FBFixedFloatArray basicSqrPWPlain;
+    FBFixedFloatArray basicSinGainPlain;
+    FBFixedFloatArray basicSawGainPlain;
+    FBFixedFloatArray basicTriGainPlain;
+    FBFixedFloatArray basicSqrGainPlain;
+    topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, basicSqrPWPlain);
+    topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, basicSinGainPlain);
+    topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, basicSawGainPlain);
+    topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, basicTriGainPlain);
+    topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, basicSqrGainPlain);
+
+    for(int u = 0; u < _voiceState.unisonCount; u++)
+      for (int s = 0; s < FBFixedBlockSamples; s++)
+      {
+        float sample = 0.0f;
+        float uniPitch = basePitch[s] + unisonPos[u] * detunePlain[s];
+        float uniFreq = FBPitchToFreqAccurate(uniPitch, sampleRate);
+        float uniIncr = uniFreq / sampleRate;
+        float uniPhase = _phases[u].Next(uniIncr, 0.0f); // TODO FM
+        sample += GenerateSin(uniPhase) * basicSinGainPlain[s];
+        sample += GenerateSaw(uniPhase, uniIncr) * basicSawGainPlain[s];
+        sample += GenerateTri(uniPhase, uniIncr) * basicTriGainPlain[s];
+        sample += GenerateSqr(uniPhase, uniIncr, basicSqrPWPlain[s]) * basicSqrGainPlain[s];
+        output[0][s] += sample;
+        output[1][s] += sample;
+      }
+  }
 
   FBFixedFloatArray dsfDistFreq, dsfMaxOvertones, dsfDecayPlain;
   if (_voiceState.type == FFOsciType::DSF)
