@@ -11,7 +11,7 @@
 class FBPlugGUI;
 class FBGridComponent;
 
-inline int constexpr FFOsciModSlotCount = (FFOsciCount * (FFOsciCount + 1)) / 2;
+inline int constexpr FFOsciModSlotCount = FFOsciCount * FFOsciCount;
 
 std::vector<int>
 FFMakeOsciModUIColumnSizes();

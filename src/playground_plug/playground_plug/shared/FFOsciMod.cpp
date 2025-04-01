@@ -36,8 +36,8 @@ MakeSourceAndTargetToSlot()
 {
   int slot = 0;
   std::map<std::pair<int, int>, int> result = {};
-  for (int tgt = 0; tgt < FFOsciCount; tgt++)
-    for (int src = 0; src <= tgt; src++)
+  for (int src = 0; src < FFOsciCount; src++)
+    for (int tgt = 0; tgt < FFOsciCount; tgt++)
       result[{ src, tgt }] = slot++;
   return result;
 }
@@ -47,8 +47,8 @@ MakeSlotToSourceAndTarget()
 {
   int slot = 0;
   std::array<std::pair<int, int>, FFOsciModSlotCount> result;
-  for (int tgt = 0; tgt < FFOsciCount; tgt++)
-    for (int src = 0; src <= tgt; src++)
+  for (int src = 0; src < FFOsciCount; src++)
+    for (int tgt = 0; tgt < FFOsciCount; tgt++)
       result[slot++] = { src, tgt };
   return result;
 }
@@ -69,15 +69,9 @@ FFMakeOsciModUIColumnSizes()
 void
 FFMarkOsciModUIGridSections(FBGridComponent* grid)
 {
-  int x = 0;
-  int w = 2;
   grid->MarkSection({ 0, 0, 2, 1 });
   for (int i = 0; i < FFOsciCount; i++)
-  {
-    grid->MarkSection({ 0, 1 + x, 2, w });
-    x += 2 * (i + 1);
-    w += 2;
-  }
+    grid->MarkSection({ 0, 1 + i * (FFOsciCount * 2), 2, FFOsciCount * 2 });
 }
 
 std::string
