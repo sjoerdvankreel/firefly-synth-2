@@ -653,36 +653,48 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     
   */
 
-  // TODO drop the checkboxes ?
   if (_voiceState.type == FFOsciType::Basic)
   {
-    FBFixedFloatArray basicSqrPWPlain;
-    FBFixedFloatArray basicSinGainPlain;
-    FBFixedFloatArray basicSawGainPlain;
-    FBFixedFloatArray basicTriGainPlain;
-    FBFixedFloatArray basicSqrGainPlain;
-    topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, basicSqrPWPlain);
-    topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, basicSinGainPlain);
-    topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, basicSawGainPlain);
-    topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, basicTriGainPlain);
-    topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, basicSqrGainPlain);
+    FBFixedFloatArray osci;
+    osci.Fill(0.0f);
+    for (int u = 0; u < _voiceState.unisonCount; u++)
+    {
+      FBFixedFloatArray osci;
+      FBFixedFloatArray uniFreq;
+      FBFixedFloatArray uniIncr;
+      FBFixedFloatArray uniPhase;
 
-    for(int u = 0; u < _voiceState.unisonCount; u++)
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
-        float sample = 0.0f;
-        float panning = 0.5f + unisonPos[u] * spreadPlain[s];
         float uniPitch = basePitch[s] + unisonPos[u] * detunePlain[s];
-        float uniFreq = FBPitchToFreqAccurate(uniPitch, sampleRate);
-        float uniIncr = uniFreq / sampleRate;
-        float uniPhase = _phases[u].Next(uniIncr, 0.0f); // TODO FM
-        sample += GenerateSin(uniPhase) * basicSinGainPlain[s];
-        sample += GenerateSaw(uniPhase, uniIncr) * basicSawGainPlain[s];
-        sample += GenerateTri(uniPhase, uniIncr) * basicTriGainPlain[s];
-        sample += GenerateSqr(uniPhase, uniIncr, basicSqrPWPlain[s]) * basicSqrGainPlain[s];
-        output[0][s] += (1.0f - panning) * sample;
-        output[1][s] += panning * sample;
+        uniFreq[s] = FBPitchToFreqAccurate(uniPitch, sampleRate);
+        uniIncr[s] = uniFreq[s] / sampleRate;
+        uniPhase[s] = _phases[u].Next(uniIncr[s], 0.0f); // TODO FM
       }
+
+      if(_voiceState.basicSinOn)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+          osci[s] += GenerateSin(uniPhase[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
+      if (_voiceState.basicSawOn)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+          osci[s] += GenerateSaw(uniPhase[s], uniIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
+      if (_voiceState.basicTriOn)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+          osci[s] += GenerateTri(uniPhase[s], uniIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
+      if (_voiceState.basicSqrOn)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+        {
+          float pwPlain = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
+          osci[s] += GenerateSqr(uniPhase[s], uniIncr[s], pwPlain) * topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
+        }
+
+      for (int s = 0; s < FBFixedBlockSamples; s++)
+      {
+        float uniPanning = 0.5f + unisonPos[u] * spreadPlain[s];
+        output[0][s] += (1.0f - uniPanning) * osci[s];
+        output[1][s] += uniPanning * osci[s];
+      }
+    }
   }
 
   FBFixedFloatArray dsfDistFreq, dsfMaxOvertones, dsfDecayPlain;
