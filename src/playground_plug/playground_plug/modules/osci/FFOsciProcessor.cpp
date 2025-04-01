@@ -594,6 +594,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto& unisonOutput = procState->dsp.voice[voice].osci[state.moduleSlot].unisonOutput;
 
   output.Fill(0.0f);
+  for (int u = 0; u < _voiceState.unisonCount; u++)
+    unisonOutput[u].Fill(0.0f);
   if (_voiceState.type == FFOsciType::Off)
   {
     if (state.moduleSlot == FFOsciCount - 1)
@@ -654,24 +656,22 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       uniPhase[s] = _phases[u].Next(uniIncr[s], 0.0f); // TODO FM
     }
 
-    FBFixedFloatArray osci;
-    osci.Fill(0.0f);
     if (_voiceState.type == FFOsciType::Basic)
     {
       if (_voiceState.basicSinOn)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          osci[s] += GenerateSin(uniPhase[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
+          unisonOutput[u][s] += GenerateSin(uniPhase[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm.CV()[s]);
       if (_voiceState.basicSawOn)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          osci[s] += GenerateSaw(uniPhase[s], uniIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
+          unisonOutput[u][s] += GenerateSaw(uniPhase[s], uniIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm.CV()[s]);
       if (_voiceState.basicTriOn)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          osci[s] += GenerateTri(uniPhase[s], uniIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
+          unisonOutput[u][s] += GenerateTri(uniPhase[s], uniIncr[s]) * topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm.CV()[s]);
       if (_voiceState.basicSqrOn)
         for (int s = 0; s < FBFixedBlockSamples; s++)
         {
           float pwPlain = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
-          osci[s] += GenerateSqr(uniPhase[s], uniIncr[s], pwPlain) * topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
+          unisonOutput[u][s] += GenerateSqr(uniPhase[s], uniIncr[s], pwPlain) * topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
         }
     } else if (_voiceState.type == FFOsciType::DSF)
     {
@@ -686,17 +686,34 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       }
       if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          osci[s] = GenerateDSFOvertones(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfOvertones);
+          unisonOutput[u][s] = GenerateDSFOvertones(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfOvertones);
       else if (_voiceState.dsfMode == FFOsciDSFMode::Bandwidth)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          osci[s] = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfBandwidthPlain);
+          unisonOutput[u][s] = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfBandwidthPlain);
     }
+
+    for (int src = 0; src <= state.moduleSlot; src++)
+      if (_voiceState.amSourceOn[src] && _voiceState.modSourceUnisonCount[src] > u)
+      {
+        int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
+        auto const& mix = procState->dsp.voice[voice].osciAM.outputMix[slot];
+        auto const& ring = procState->dsp.voice[voice].osciAM.outputRing[slot];
+        auto const& rmModulator = procState->dsp.voice[voice].osci[src].unisonOutput[u];
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+        {
+          float amModulator = rmModulator[s] * 0.5f + 0.5f;
+          float amModulated = unisonOutput[u][s] * amModulator;
+          float rmModulated = unisonOutput[u][s] * rmModulator[s];
+          float modulated = (1.0f - ring[s]) * amModulated + ring[s] * rmModulated;
+          unisonOutput[u][s] = (1.0f - mix[s]) * unisonOutput[u][s] + mix[s] * modulated;
+        }
+      }
 
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       float uniPanning = 0.5f + unisonPos[u] * spreadPlain[s];
-      output[0][s] += (1.0f - uniPanning) * osci[s];
-      output[1][s] += uniPanning * osci[s];
+      output[0][s] += (1.0f - uniPanning) * unisonOutput[u][s];
+      output[1][s] += uniPanning * unisonOutput[u][s];
     }
   }
 
