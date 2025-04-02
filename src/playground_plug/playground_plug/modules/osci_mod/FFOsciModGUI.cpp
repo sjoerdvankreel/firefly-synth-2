@@ -56,5 +56,5 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeOsciModGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Master, MakeSectionAll);
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::OsciMod, MakeSectionAll);
 }
