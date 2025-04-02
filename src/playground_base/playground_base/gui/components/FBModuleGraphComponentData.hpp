@@ -22,7 +22,6 @@ struct FBModuleGraphSecondarySeries final
 
 struct FBModuleGraphSeriesData final
 {
-  int pixelWidth = -1;
   std::string text = {};
   std::string moduleName = {};
   std::vector<int> primaryMarkers = {};
@@ -32,6 +31,7 @@ struct FBModuleGraphSeriesData final
 
 struct FBModuleGraphComponentData final
 {
+  int pixelWidth = -1;
   bool bipolar = false;
   bool drawMarkers = false;
   bool drawClipBoundaries = false;

@@ -90,12 +90,12 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->drawMarkers = false;
   _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
+  _data->pixelWidth = getWidth(); // todo
   _data->series.text.clear();
   _data->series.primaryMarkers.clear();
   _data->series.primarySeries.l.clear();
   _data->series.primarySeries.r.clear();
   _data->series.secondarySeries.clear();
-  _data->series.pixelWidth = getWidth();
   _data->series.moduleName = topo->modules[_tweakedModuleByUI].name;
   topo->static_.modules[staticIndex].graphRenderer(_data.get());
 }
