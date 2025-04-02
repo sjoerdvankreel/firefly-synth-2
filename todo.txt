@@ -1,18 +1,8 @@
-name it mixrm?
-name it mixtz?
-fix the fm
 oversample
 dedicated fm osci with feedback
 separate auto-am
 drop hq
-hunt osciam/oscifm
 consolidate osci graph
-consolidate osci mod matrices
-check type off for osci mod
-then rename fixed*array to block
-drop the fm delay
-fix the fm
-"slow path" is faster, thanks
 store the selected tab
 hardsync
 fix up the track graph
