@@ -146,17 +146,16 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _voiceState.dsfOvertones = topo.NormalizedToDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
   _voiceState.dsfBandwidthPlain = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
   _voiceState.unisonCount = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, params.block.unisonCount[0].Voice()[voice]);
-  _voiceState.unisonDetuneHQ = topo.NormalizedToBoolFast(FFOsciParam::UnisonDetuneHQ, params.block.unisonDetuneHQ[0].Voice()[voice]);
   _voiceState.unisonOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
-  _voiceState.unisonOffsetRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffsetRandom, params.block.unisonOffsetRandom[0].Voice()[voice]);
+  _voiceState.unisonRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonRandom, params.block.unisonRandom[0].Voice()[voice]);
 
   _phase = {};
   _prng = FBParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   for (int i = 0; i < _voiceState.unisonCount; i++)
   {
-    float offsetRandom = _voiceState.unisonOffsetRandomPlain;
+    float random = _voiceState.unisonRandomPlain;
     float unisonPhase = i * _voiceState.unisonOffsetPlain / _voiceState.unisonCount;
-    _unisonPhases[i] = FFOsciPhase(((1.0f - offsetRandom) + offsetRandom * _prng.Next()) * unisonPhase);
+    _unisonPhases[i] = FFOsciPhase(((1.0f - random) + random * _prng.Next()) * unisonPhase);
   }
 
   int modStartSlot = OsciModStartSlot(state.moduleSlot);

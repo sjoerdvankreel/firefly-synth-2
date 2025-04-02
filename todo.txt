@@ -1,7 +1,6 @@
 oversample
 dedicated fm osci with feedback
 separate auto-am
-drop hq
 consolidate osci graph
 store the selected tab
 hardsync
