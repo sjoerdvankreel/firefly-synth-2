@@ -74,6 +74,7 @@ FFMakeOsciModTopo()
 
   auto& tz = result->params[(int)FFOsciModParam::TZ];
   tz.acc = false;
+  tz.defaultText = "On";
   tz.name = "TZ";
   tz.tooltip = "Through Zero";
   tz.slotCount = FFOsciModSlotCount;
