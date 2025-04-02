@@ -98,56 +98,59 @@ FBModuleGraphDisplayComponent::PaintSeries(
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {
-  float absMaxPointAllSeries = 1.0f;
-  bool stereo = !_data->series.primarySeries.r.empty();
-  int maxPointsAllSeries = static_cast<int>(_data->series.primarySeries.l.size());
-  for (int i = 0; i < _data->series.primarySeries.l.size(); i++)
+  for (int s = 0; s < _data->series.size(); s++)
   {
-    absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series.primarySeries.l[i]));
-    if(stereo)
-      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series.primarySeries.r[i]));
-  }
-  for (int i = 0; i < _data->series.secondarySeries.size(); i++)
-  {
-    maxPointsAllSeries = std::max(maxPointsAllSeries, static_cast<int>(_data->series.secondarySeries[i].points.l.size()));
-    for (int j = 0; j < _data->series.secondarySeries[i].points.l.size(); j++)
+    float absMaxPointAllSeries = 1.0f;
+    bool stereo = !_data->series[s].primarySeries.r.empty();
+    int maxPointsAllSeries = static_cast<int>(_data->series[s].primarySeries.l.size());
+    for (int i = 0; i < _data->series[s].primarySeries.l.size(); i++)
     {
-      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series.secondarySeries[i].points.l[j]));
+      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].primarySeries.l[i]));
       if (stereo)
-        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series.secondarySeries[i].points.r[j]));
+        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].primarySeries.r[i]));
     }
-  }
-
-  g.setColour(Colours::darkgrey);
-  g.drawText(_data->series.moduleName + " " + _data->series.text, getLocalBounds(), Justification::centred, false);
-  for (int i = 0; i < _data->series.secondarySeries.size(); i++)
-  {
-    int marker = _data->series.secondarySeries[i].marker;
-    auto const& points = _data->series.secondarySeries[i].points;
-    PaintSeries(g, Colours::grey, points.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
-    if(stereo)
-      PaintSeries(g, Colours::grey, points.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
-    if (marker != -1 && _data->drawMarkers)
+    for (int i = 0; i < _data->series[s].secondarySeries.size(); i++)
     {
-      assert(!stereo);
-      PaintMarker(g, points.l, marker, false, true, maxPointsAllSeries, absMaxPointAllSeries);
-    }
-  }
-  
-  PaintSeries(g, Colours::white, _data->series.primarySeries.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
-  if(stereo)
-    PaintSeries(g, Colours::white, _data->series.primarySeries.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
-  if(_data->drawMarkers)
-    for (int i = 0; i < _data->series.primaryMarkers.size(); i++)
-    {
-      assert(!stereo);
-      PaintMarker(g, _data->series.primarySeries.l, _data->series.primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
+      maxPointsAllSeries = std::max(maxPointsAllSeries, static_cast<int>(_data->series[s].secondarySeries[i].points.l.size()));
+      for (int j = 0; j < _data->series[s].secondarySeries[i].points.l.size(); j++)
+      {
+        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].secondarySeries[i].points.l[j]));
+        if (stereo)
+          absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].secondarySeries[i].points.r[j]));
+      }
     }
 
-  if (_data->drawClipBoundaries)
-  {
-    PaintClipBoundaries(g, stereo, false, absMaxPointAllSeries);
-    if(stereo)
-      PaintClipBoundaries(g, stereo, true, absMaxPointAllSeries);
+    g.setColour(Colours::darkgrey);
+    g.drawText(_data->series[s].moduleName + " " + _data->series[s].text, getLocalBounds(), Justification::centred, false);
+    for (int i = 0; i < _data->series[s].secondarySeries.size(); i++)
+    {
+      int marker = _data->series[s].secondarySeries[i].marker;
+      auto const& points = _data->series[s].secondarySeries[i].points;
+      PaintSeries(g, Colours::grey, points.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
+      if (stereo)
+        PaintSeries(g, Colours::grey, points.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
+      if (marker != -1 && _data->drawMarkers)
+      {
+        assert(!stereo);
+        PaintMarker(g, points.l, marker, false, true, maxPointsAllSeries, absMaxPointAllSeries);
+      }
+    }
+
+    PaintSeries(g, Colours::white, _data->series[s].primarySeries.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
+    if (stereo)
+      PaintSeries(g, Colours::white, _data->series[s].primarySeries.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
+    if (_data->drawMarkers)
+      for (int i = 0; i < _data->series[s].primaryMarkers.size(); i++)
+      {
+        assert(!stereo);
+        PaintMarker(g, _data->series[s].primarySeries.l, _data->series[s].primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
+      }
+
+    if (_data->drawClipBoundaries)
+    {
+      PaintClipBoundaries(g, stereo, false, absMaxPointAllSeries);
+      if (stereo)
+        PaintClipBoundaries(g, stereo, true, absMaxPointAllSeries);
+    }
   }
 }

@@ -36,7 +36,7 @@ struct FBModuleGraphComponentData final
   bool drawMarkers = false;
   bool drawClipBoundaries = false;
   bool skipDrawOnEqualsPrimary = true;
-  FBModuleGraphSeriesData series = {};
   FBGraphRenderState* renderState = {};
+  std::vector<FBModuleGraphSeriesData> series = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };

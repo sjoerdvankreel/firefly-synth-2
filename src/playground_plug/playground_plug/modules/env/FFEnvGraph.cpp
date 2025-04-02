@@ -68,5 +68,5 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
   renderData.voiceCVOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
-  FBRenderModuleGraph<false, false>(renderData);
+  FBRenderModuleGraph<false, false>(renderData, 0);
 }

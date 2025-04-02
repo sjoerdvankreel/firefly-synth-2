@@ -84,5 +84,5 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].osci[slot]; };
   renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
-  FBRenderModuleGraph<false, true>(renderData);
+  FBRenderModuleGraph<false, true>(renderData, 0);
 }
