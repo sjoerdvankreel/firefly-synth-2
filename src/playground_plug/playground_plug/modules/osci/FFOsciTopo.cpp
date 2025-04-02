@@ -108,7 +108,7 @@ FFMakeOsciTopo()
   unisonRandom.acc = false;
   unisonRandom.defaultText = "50";
   unisonRandom.name = "Random";
-  unisonRandom.tooltip = "Unison Offset Random";
+  unisonRandom.tooltip = "Unison Random";
   unisonRandom.slotCount = 1;
   unisonRandom.unit = "%";
   unisonRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
