@@ -36,8 +36,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto mode = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Mode, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
-  grid->MarkSection({ 0, 0, 1, 4 });
-  grid->MarkSection({ 1, 0, 1, 4 });
+  grid->MarkSection({ 0, 0, 2, 4 });
   return grid;
 }
 
