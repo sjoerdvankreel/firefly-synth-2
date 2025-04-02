@@ -231,6 +231,22 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   for (int u = 0; u < _voiceState.unisonCount; u++)
   {
+    FBFixedFloatArray fmModulator;
+    fmModulator.Fill(0.0f);
+    for (int src = 0; src < state.moduleSlot; src++)
+      if (_voiceState.modSourceOn[src] && _voiceState.modSourceUnisonCount[src] > u)
+      {
+        int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+        auto const& fm = procState->dsp.voice[voice].osciMod.outputFM[modSlot];
+        auto const& fmModulatorBase = procState->dsp.voice[voice].osci[src].unisonOutput[u];
+        if(_voiceState.modSourceTZ[src])
+          for (int s = 0; s < FBFixedBlockSamples; s++)
+            fmModulator[s] += fmModulatorBase[s] * fm[s];
+        else
+          for (int s = 0; s < FBFixedBlockSamples; s++)
+            fmModulator[s] += FBToUnipolar(fmModulatorBase[s]) * fm[s];
+      }
+
     FBFixedFloatArray uniFreq;
     FBFixedFloatArray uniIncr;
     FBFixedFloatArray uniPhase;
@@ -239,7 +255,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       float uniPitch = basePitch[s] + unisonPos[u] * detunePlain[s];
       uniFreq[s] = FBPitchToFreqAccurate(uniPitch, sampleRate);
       uniIncr[s] = uniFreq[s] / sampleRate;
-      uniPhase[s] = _unisonPhases[u].Next(uniIncr[s], 0.0f); // TODO FM
+      uniPhase[s] = _unisonPhases[u].Next(uniIncr[s], fmModulator[s]);
     }
 
     if (_voiceState.type == FFOsciType::Basic)

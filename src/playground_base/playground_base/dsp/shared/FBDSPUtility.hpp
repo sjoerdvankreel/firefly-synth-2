@@ -14,13 +14,13 @@ inline constexpr float FBTwoPi = 2.0f * FBPi;
 inline float
 FBToUnipolar(float v)
 {
-  return (v + 1.0f) * 0.5f;
+  return (v * 0.5f) + 0.5f;
 }
 
 inline float
 FBToBipolar(float v)
 {
-  return (v * 2.0f) - 1.0f;
+  return (v - 0.5f) * 2.0f;
 }
 
 inline int
