@@ -84,6 +84,13 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].osci[slot]; };
   renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
-  for(int o = 0; o < FFOsciCount; o++)
+
+  // TODO this renders 4 * 4 times
+  int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
+  for (int o = 0; o < FFOsciCount; o++)
+  {
+    graphData->renderState->ModuleProcState()->moduleSlot = o;
     FBRenderModuleGraph<false, true>(renderData, o);
+  }
+  graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }
