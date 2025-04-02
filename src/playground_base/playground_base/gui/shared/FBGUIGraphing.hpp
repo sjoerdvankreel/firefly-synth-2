@@ -167,7 +167,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData)
       assert(renderData.voiceCVOutputSelector != nullptr);
   }
 
-  graphData->text = "OFF";
+  graphData->series.text = "OFF";
   moduleProcState->anyExchangeActive = false;
   auto plotParams = renderData.plotParamsSelector(renderState);
   int maxDspSampleCount = plotParams.samples;
@@ -191,7 +191,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData)
 
   int guiReleaseAt = -1;
   auto hostExchange = renderState->ExchangeContainer()->Host();
-  float guiSampleCount = static_cast<float>(graphData->pixelWidth);
+  float guiSampleCount = static_cast<float>(graphData->series.pixelWidth);
   float dspSampleRate = renderState->ExchangeContainer()->Host()->sampleRate;
   float guiSampleRate = hostExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
   if(plotParams.releaseAt != -1)
@@ -200,9 +200,9 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData)
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
-  FBRenderModuleGraphSeries<Global, Audio>(renderData, guiReleaseAt, graphData->primarySeries);
-  float guiDurationSeconds = renderData.graphData->primarySeries.l.size() / moduleProcState->input->sampleRate;
-  renderData.graphData->text = FBFormatDouble(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
+  FBRenderModuleGraphSeries<Global, Audio>(renderData, guiReleaseAt, graphData->series.primarySeries);
+  float guiDurationSeconds = renderData.graphData->series.primarySeries.l.size() / moduleProcState->input->sampleRate;
+  renderData.graphData->series.text = FBFormatDouble(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   
   renderState->PrepareForRenderExchange();
   if constexpr (Global)
@@ -216,12 +216,12 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData)
       renderState->GlobalModuleExchangeStateEqualsPrimary(
       renderData.staticModuleIndex, moduleProcState->moduleSlot))
     {
-      graphData->primaryMarkers.push_back(
-        static_cast<int>(positionNormalized * graphData->primarySeries.l.size()));
+      graphData->series.primaryMarkers.push_back(
+        static_cast<int>(positionNormalized * graphData->series.primarySeries.l.size()));
       return;
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
-    auto& secondary = graphData->secondarySeries.emplace_back();
+    auto& secondary = graphData->series.secondarySeries.emplace_back();
     FBRenderModuleGraphSeries<Global, Audio>(renderData, -1, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
@@ -236,12 +236,12 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData)
       renderState->VoiceModuleExchangeStateEqualsPrimary(
       v, renderData.staticModuleIndex, moduleProcState->moduleSlot))
     {
-      graphData->primaryMarkers.push_back(
-        static_cast<int>(positionNormalized * graphData->primarySeries.l.size()));
+      graphData->series.primaryMarkers.push_back(
+        static_cast<int>(positionNormalized * graphData->series.primarySeries.l.size()));
       continue;
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
-    auto& secondary = graphData->secondarySeries.emplace_back();
+    auto& secondary = graphData->series.secondarySeries.emplace_back();
     FBRenderModuleGraphSeries<false, Audio>(renderData, -1, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   }

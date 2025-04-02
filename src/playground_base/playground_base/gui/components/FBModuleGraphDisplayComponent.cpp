@@ -99,31 +99,31 @@ void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {
   float absMaxPointAllSeries = 1.0f;
-  bool stereo = !_data->primarySeries.r.empty();
-  int maxPointsAllSeries = static_cast<int>(_data->primarySeries.l.size());
-  for (int i = 0; i < _data->primarySeries.l.size(); i++)
+  bool stereo = !_data->series.primarySeries.r.empty();
+  int maxPointsAllSeries = static_cast<int>(_data->series.primarySeries.l.size());
+  for (int i = 0; i < _data->series.primarySeries.l.size(); i++)
   {
-    absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->primarySeries.l[i]));
+    absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series.primarySeries.l[i]));
     if(stereo)
-      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->primarySeries.r[i]));
+      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series.primarySeries.r[i]));
   }
-  for (int i = 0; i < _data->secondarySeries.size(); i++)
+  for (int i = 0; i < _data->series.secondarySeries.size(); i++)
   {
-    maxPointsAllSeries = std::max(maxPointsAllSeries, static_cast<int>(_data->secondarySeries[i].points.l.size()));
-    for (int j = 0; j < _data->secondarySeries[i].points.l.size(); j++)
+    maxPointsAllSeries = std::max(maxPointsAllSeries, static_cast<int>(_data->series.secondarySeries[i].points.l.size()));
+    for (int j = 0; j < _data->series.secondarySeries[i].points.l.size(); j++)
     {
-      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->secondarySeries[i].points.l[j]));
+      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series.secondarySeries[i].points.l[j]));
       if (stereo)
-        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->secondarySeries[i].points.r[j]));
+        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series.secondarySeries[i].points.r[j]));
     }
   }
 
   g.setColour(Colours::darkgrey);
-  g.drawText(_data->moduleName + " " + _data->text, getLocalBounds(), Justification::centred, false);
-  for (int i = 0; i < _data->secondarySeries.size(); i++)
+  g.drawText(_data->series.moduleName + " " + _data->series.text, getLocalBounds(), Justification::centred, false);
+  for (int i = 0; i < _data->series.secondarySeries.size(); i++)
   {
-    int marker = _data->secondarySeries[i].marker;
-    auto const& points = _data->secondarySeries[i].points;
+    int marker = _data->series.secondarySeries[i].marker;
+    auto const& points = _data->series.secondarySeries[i].points;
     PaintSeries(g, Colours::grey, points.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
     if(stereo)
       PaintSeries(g, Colours::grey, points.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
@@ -134,14 +134,14 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     }
   }
   
-  PaintSeries(g, Colours::white, _data->primarySeries.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
+  PaintSeries(g, Colours::white, _data->series.primarySeries.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
   if(stereo)
-    PaintSeries(g, Colours::white, _data->primarySeries.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
+    PaintSeries(g, Colours::white, _data->series.primarySeries.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
   if(_data->drawMarkers)
-    for (int i = 0; i < _data->primaryMarkers.size(); i++)
+    for (int i = 0; i < _data->series.primaryMarkers.size(); i++)
     {
       assert(!stereo);
-      PaintMarker(g, _data->primarySeries.l, _data->primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
+      PaintMarker(g, _data->series.primarySeries.l, _data->series.primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
     }
 
   if (_data->drawClipBoundaries)

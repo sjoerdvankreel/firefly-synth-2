@@ -86,17 +86,17 @@ FBModuleGraphComponent::paint(Graphics& g)
   auto const* topo = _data->renderState->ModuleProcState()->topo;
   int staticIndex = topo->modules[_tweakedModuleByUI].topoIndices.index;
 
-  _data->text.clear();
   _data->bipolar = false;
   _data->drawMarkers = false;
   _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
-  _data->primaryMarkers.clear();
-  _data->primarySeries.l.clear();
-  _data->primarySeries.r.clear();
-  _data->secondarySeries.clear();
-  _data->pixelWidth = getWidth();
-  _data->moduleName = topo->modules[_tweakedModuleByUI].name;
+  _data->series.text.clear();
+  _data->series.primaryMarkers.clear();
+  _data->series.primarySeries.l.clear();
+  _data->series.primarySeries.r.clear();
+  _data->series.secondarySeries.clear();
+  _data->series.pixelWidth = getWidth();
+  _data->series.moduleName = topo->modules[_tweakedModuleByUI].name;
   topo->static_.modules[staticIndex].graphRenderer(_data.get());
 }
 
