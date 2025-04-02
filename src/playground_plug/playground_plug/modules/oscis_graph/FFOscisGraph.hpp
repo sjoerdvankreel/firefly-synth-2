@@ -3,4 +3,4 @@
 struct FBModuleGraphComponentData;
 
 void
-FFOsciRenderGraph(FBModuleGraphComponentData* graphData);
+FFOscisRenderGraph(FBModuleGraphComponentData* graphData);

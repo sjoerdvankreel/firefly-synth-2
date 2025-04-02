@@ -1,6 +1,7 @@
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/modules/osci/FFOsciGraph.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModProcessor.hpp>
+#include <playground_plug/modules/oscis_graph/FFOscisGraph.hpp>
 
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBGUIGraphing.hpp>
@@ -9,9 +10,8 @@
 
 #include <algorithm>
 
-// Need to process all oscis. See ShiftPrevUnisonOutputForAllOscis.
-struct OsciGraphRenderData final:
-public FBModuleGraphRenderData<OsciGraphRenderData>
+struct OscisGraphRenderData final:
+public FBModuleGraphRenderData<OscisGraphRenderData>
 {
   int Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState& state);
@@ -19,7 +19,7 @@ public FBModuleGraphRenderData<OsciGraphRenderData>
 };
 
 void
-OsciGraphRenderData::BeginVoice(FBModuleProcState& state)
+OscisGraphRenderData::BeginVoice(FBModuleProcState& state)
 {
   int osciSlot = state.moduleSlot;
   state.moduleSlot = 0;
@@ -33,7 +33,7 @@ OsciGraphRenderData::BeginVoice(FBModuleProcState& state)
 }
 
 int 
-OsciGraphRenderData::Process(FBModuleProcState& state)
+OscisGraphRenderData::Process(FBModuleProcState& state)
 {
   int result = 0;
   int osciSlot = state.moduleSlot;
@@ -51,7 +51,7 @@ OsciGraphRenderData::Process(FBModuleProcState& state)
 }
 
 FFVoiceDSPState&
-OsciGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
+OscisGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
 {
   return state.ProcAs<FFProcState>()->dsp.voice[state.voice->slot];
 }
@@ -71,9 +71,9 @@ PlotParams(FBGraphRenderState const* state)
 }
 
 void
-FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
+FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
 {
-  OsciGraphRenderData renderData = {};
+  OscisGraphRenderData renderData = {};
   graphData->bipolar = true;
   graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false;

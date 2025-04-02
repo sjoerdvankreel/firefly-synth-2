@@ -1,5 +1,6 @@
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
+#include <playground_plug/modules/oscis_graph/FFOscisGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 std::string
@@ -24,6 +25,7 @@ FFMakeOsciModTopo()
   result->voice = true;
   result->name = "Osc Mod";
   result->slotCount = 1;
+  result->graphRenderer = FFOscisRenderGraph;
   result->id = "{546F9D74-670A-463D-80B0-B4BBD061DA88}";
   result->params.resize((int)FFOsciModParam::Count);
   result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });
