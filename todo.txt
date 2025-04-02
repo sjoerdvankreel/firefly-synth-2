@@ -1,3 +1,5 @@
+name it mixrm?
+name it mixtz?
 fix the fm
 oversample
 dedicated fm osci with feedback

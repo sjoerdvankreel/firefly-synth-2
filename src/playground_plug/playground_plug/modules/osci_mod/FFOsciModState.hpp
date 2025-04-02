@@ -20,7 +20,6 @@ public:
   std::array<FBFixedFloatArray, FFOsciModSlotCount> outputAM = {};
   std::array<FBFixedFloatArray, FFOsciModSlotCount> outputRM = {};
   std::array<FBFixedFloatArray, FFOsciModSlotCount> outputFM = {};
-  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputTZFM = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModDSPState);
 };
 
@@ -31,6 +30,7 @@ class alignas(alignof(TVoiceBlock)) FFOsciModBlockParamState final
   friend class FFOsciModProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciModTopo();
   std::array<TVoiceBlock, FFOsciModSlotCount> on = {};
+  std::array<TVoiceBlock, FFOsciModSlotCount> tz = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModBlockParamState);
 };
@@ -44,7 +44,6 @@ class alignas(alignof(TVoiceAcc)) FFOsciModAccParamState final
   std::array<TVoiceAcc, FFOsciModSlotCount> am = {};
   std::array<TVoiceAcc, FFOsciModSlotCount> rm = {};
   std::array<TVoiceAcc, FFOsciModSlotCount> fm = {};
-  std::array<TVoiceAcc, FFOsciModSlotCount> tzfm = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModAccParamState);
 };

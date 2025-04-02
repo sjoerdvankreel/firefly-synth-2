@@ -34,6 +34,7 @@ struct FFOsciVoiceState final
   float unisonOffsetRandomPlain = {};
 
   std::array<bool, FFOsciCount - 1> modSourceOn = {};
+  std::array<bool, FFOsciCount - 1> modSourceTZ = {};
   std::array<int, FFOsciCount - 1> modSourceUnisonCount = {};
 };
 

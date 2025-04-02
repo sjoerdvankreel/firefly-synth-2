@@ -12,7 +12,7 @@ FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
-  for(int i = 0; i < FFOsciModSlotCount; i++)
+  for (int i = 0; i < FFOsciModSlotCount; i++)
     _voiceState.on[i] = topo.NormalizedToBoolFast(FFOsciModParam::On, params.block.on[i].Voice()[voice]);
 }
 
@@ -24,7 +24,6 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   auto& outputAM = procState->dsp.voice[voice].osciMod.outputAM;
   auto& outputRM = procState->dsp.voice[voice].osciMod.outputRM;
   auto& outputFM = procState->dsp.voice[voice].osciMod.outputFM;
-  auto& outputTZFM = procState->dsp.voice[voice].osciMod.outputTZFM;
   auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
 
@@ -36,11 +35,9 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
       auto const& amNorm = procParams.acc.am[i].Voice()[voice];
       auto const& rmNorm = procParams.acc.rm[i].Voice()[voice];
       auto const& fmNorm = procParams.acc.fm[i].Voice()[voice];
-      auto const& tzfmNorm = procParams.acc.tzfm[i].Voice()[voice];
+      topo.NormalizedToLog2Fast(FFOsciModParam::FM, fmNorm, outputFM[i]);
       topo.NormalizedToIdentityFast(FFOsciModParam::AM, amNorm, outputAM[i]);
       topo.NormalizedToIdentityFast(FFOsciModParam::RM, rmNorm, outputRM[i]);
-      topo.NormalizedToLog2Fast(FFOsciModParam::FM, fmNorm, outputFM[i]);
-      topo.NormalizedToLog2Fast(FFOsciModParam::TZFM, tzfmNorm, outputTZFM[i]);
     }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
@@ -57,6 +54,5 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
     exchangeParams.acc.am[i][voice] = procParams.acc.am[i].Voice()[voice].Last();
     exchangeParams.acc.rm[i][voice] = procParams.acc.rm[i].Voice()[voice].Last();
     exchangeParams.acc.fm[i][voice] = procParams.acc.fm[i].Voice()[voice].Last();
-    exchangeParams.acc.tzfm[i][voice] = procParams.acc.tzfm[i].Voice()[voice].Last();
   }
 }

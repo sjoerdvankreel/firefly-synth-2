@@ -30,10 +30,10 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto rm0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::RM, 0 });
   auto amRmHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(am0->static_.name + "/" + rm0->static_.name);
   grid->Add(0, 0, amRmHeader);
+  auto tz0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::TZ, 0 });
   auto fm0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::FM, 0 });
-  auto tzfm0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::TZFM, 0 });
-  auto fmTzfmHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(fm0->static_.name + "/" + tzfm0->static_.name);
-  grid->Add(1, 0, fmTzfmHeader);
+  auto tzFmHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(tz0->static_.name + "/" + fm0->static_.name);
+  grid->Add(1, 0, tzFmHeader);
   grid->MarkSection({0, 0, 2, 1});
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
@@ -44,10 +44,10 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(0, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, am, Slider::SliderStyle::RotaryVerticalDrag));
     auto rm = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::RM, i });
     grid->Add(0, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, rm, Slider::SliderStyle::RotaryVerticalDrag));
+    auto tz = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::TZ, i });
+    grid->Add(1, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tz, Slider::SliderStyle::RotaryVerticalDrag));
     auto fm = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::FM, i });
-    grid->Add(1, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fm, Slider::SliderStyle::RotaryVerticalDrag));
-    auto tzfm = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::TZFM, i });
-    grid->Add(1, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tzfm, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fm, Slider::SliderStyle::RotaryVerticalDrag));
     grid->MarkSection({ 0, 1 + i * 3 , 2, 3 });
   }
   return plugGUI->StoreComponent<FBSectionComponent>(grid);

@@ -7,5 +7,5 @@
 inline int constexpr FFOsciModSlotCount = (FFOsciCount * (FFOsciCount - 1)) / 2;
 
 struct FBStaticModule;
-enum class FFOsciModParam { On, AM, RM, FM, TZFM, Count };
+enum class FFOsciModParam { On, AM, RM, TZ, FM, Count };
 std::unique_ptr<FBStaticModule> FFMakeOsciModTopo();

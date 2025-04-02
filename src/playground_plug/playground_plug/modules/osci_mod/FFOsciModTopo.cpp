@@ -60,6 +60,7 @@ FFMakeOsciModTopo()
   rm.acc = true;
   rm.defaultText = "0";
   rm.name = "RM";
+  rm.tooltip = "AM/RM Mix";
   rm.slotCount = FFOsciModSlotCount;
   rm.unit = "%";
   rm.id = "{D8049EBD-73AE-4343-8865-CD2D589F09B9}";
@@ -70,6 +71,19 @@ FFMakeOsciModTopo()
   rm.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectRM);
   rm.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectRM);
   rm.dependencies.enabled.audio.When({ (int)FFOsciModParam::On }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& tz = result->params[(int)FFOsciModParam::TZ];
+  tz.acc = false;
+  tz.name = "TZ";
+  tz.tooltip = "Through Zero";
+  tz.slotCount = FFOsciModSlotCount;
+  tz.id = "{09E1EC22-D3ED-415E-9767-816BEBDEE7BF}";
+  tz.type = FBParamType::Boolean;
+  tz.slotFormatter = [name = tz.name](int slot) { return name + " " + FormatSlot(slot); };
+  auto selectTZ = [](auto& module) { return &module.block.tz; };
+  tz.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectTZ);
+  tz.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectTZ);
+  tz.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectTZ);
 
   auto& fm = result->params[(int)FFOsciModParam::FM];
   fm.acc = true;
@@ -85,21 +99,6 @@ FFMakeOsciModTopo()
   fm.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFM);
   fm.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFM);
   fm.dependencies.enabled.audio.When({ (int)FFOsciModParam::On }, [](auto const& vs) { return vs[0] != 0; });
-
-  auto& tzfm = result->params[(int)FFOsciModParam::TZFM];
-  tzfm.acc = true;
-  tzfm.defaultText = "0";
-  tzfm.name = "TZFM";
-  tzfm.slotCount = FFOsciModSlotCount;
-  tzfm.id = "{4A0DE9FA-A8BC-4B2F-9FB6-584F7C353CE2}";
-  tzfm.type = FBParamType::Log2;
-  tzfm.Log2().Init(-0.01, 0.01f, 1.01f);
-  tzfm.slotFormatter = [name = tzfm.name](int slot) { return name + " " + FormatSlot(slot); };
-  auto selectTZFM = [](auto& module) { return &module.acc.tzfm; };
-  tzfm.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectTZFM);
-  tzfm.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectTZFM);
-  tzfm.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectTZFM);
-  tzfm.dependencies.enabled.audio.When({ (int)FFOsciModParam::On }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }
