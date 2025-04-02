@@ -50,24 +50,8 @@ FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 }
 
 inline float
-FBPitchToFreqAccurateRaw(float pitch)
-{
-  return 440.0f * std::pow(2.0f, (pitch - 69.0f) / 12.0f);
-}
-
-inline float
 FBPitchToFreqAccurate(float pitch, float sampleRate)
 {
-  return std::min(sampleRate * 0.5f, FBPitchToFreqAccurateRaw(pitch));
-}
-
-inline float
-FBPitchToFreqFastAndInaccurate(float pitch)
-{
-  float cent = std::clamp(pitch * 100.0f, 0.0f, static_cast<float>(FBNoteCentCount));
-  float floor = std::floor(cent);
-  float mix = cent - floor;
-  int low = static_cast<int>(floor);
-  int high = low + 1;
-  return (1.0f - mix) * FBPitchToFreqTable()[low] + mix * FBPitchToFreqTable()[high];
+  float freq = 440.0f * std::pow(2.0f, (pitch - 69.0f) / 12.0f);
+  return std::min(sampleRate * 0.5f, freq);
 }
