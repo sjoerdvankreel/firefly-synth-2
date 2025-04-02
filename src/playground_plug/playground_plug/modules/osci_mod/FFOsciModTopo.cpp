@@ -62,7 +62,7 @@ FFMakeOsciModTopo()
   rm.name = "RM";
   rm.slotCount = FFOsciModSlotCount;
   rm.unit = "%";
-  rm.id = "{4D04D0E5-3749-428C-B300-9151177555F3}";
+  rm.id = "{D8049EBD-73AE-4343-8865-CD2D589F09B9}";
   rm.type = FBParamType::Identity;
   rm.slotFormatter = [name = rm.name](int slot) { return name + " " + FormatSlot(slot); };
   auto selectRM = [](auto& module) { return &module.acc.rm; };
