@@ -483,6 +483,7 @@ FFOsciProcessor::ProcessUnisonVoice(
 #endif
 }
 
+// TODO drop this
 void
 FFOsciProcessor::ShiftPrevUnisonOutputForAllOscis(
   FBModuleProcState& state)
@@ -710,26 +711,22 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           unisonOutput[u][s] = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfBandwidthPlain);
     }
 
-#if 0 // TODO
-
-    for (int src = 0; src <= state.moduleSlot; src++)
-      if (_voiceState.amSourceOn[src] && _voiceState.modSourceUnisonCount[src] > u)
+    for (int src = 0; src < state.moduleSlot; src++)
+      if (_voiceState.modSourceOn[src] && _voiceState.modSourceUnisonCount[src] > u)
       {
-        int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
-        auto const& mix = procState->dsp.voice[voice].osciAM.outputMix[slot];
-        auto const& ring = procState->dsp.voice[voice].osciAM.outputRing[slot];
+        int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+        auto const& am = procState->dsp.voice[voice].osciMod.outputAM[modSlot];
+        auto const& rm = procState->dsp.voice[voice].osciMod.outputRM[modSlot];
         auto const& rmModulator = procState->dsp.voice[voice].osci[src].unisonOutput[u];
         for (int s = 0; s < FBFixedBlockSamples; s++)
         {
           float amModulator = rmModulator[s] * 0.5f + 0.5f;
           float amModulated = unisonOutput[u][s] * amModulator;
           float rmModulated = unisonOutput[u][s] * rmModulator[s];
-          float modulated = (1.0f - ring[s]) * amModulated + ring[s] * rmModulated;
-          unisonOutput[u][s] = (1.0f - mix[s]) * unisonOutput[u][s] + mix[s] * modulated;
+          float modulated = (1.0f - rm[s]) * amModulated + rm[s] * rmModulated;
+          unisonOutput[u][s] = (1.0f - am[s]) * unisonOutput[u][s] + am[s] * modulated;
         }
       }
-
-#endif
 
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
