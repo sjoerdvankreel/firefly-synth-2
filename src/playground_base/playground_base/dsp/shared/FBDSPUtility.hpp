@@ -8,15 +8,8 @@
 #include <cassert>
 #include <algorithm>
 
-inline constexpr int FBNoteCount = 128;
-inline constexpr int FBCentCount = 100;
-inline constexpr int FBNoteCentCount = FBNoteCount * FBCentCount;
-
 inline constexpr float FBPi = std::numbers::pi_v<float>;
 inline constexpr float FBTwoPi = 2.0f * FBPi;
-
-std::array<float, FBNoteCentCount> const&
-FBPitchToFreqTable();
 
 inline float
 FBToUnipolar(float v)
