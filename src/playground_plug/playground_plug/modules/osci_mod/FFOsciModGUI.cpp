@@ -38,7 +38,9 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::On, i });
-    grid->Add(0, 1 + i * 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
+    auto label = plugGUI->StoreComponent<FBAutoSizeLabel>();
+    label->setText(FFOsciModFormatSlot(i), dontSendNotification);
+    grid->Add(0, 1 + i * 3, label);
     grid->Add(1, 1 + i * 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
     auto am = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::AM, i });
     grid->Add(0, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, am, Slider::SliderStyle::RotaryVerticalDrag));

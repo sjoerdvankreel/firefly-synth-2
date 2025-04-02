@@ -16,10 +16,10 @@ FBMakeRuntimeName(
   std::string const& name, int slotCount, 
   int slot, FBParamSlotFormatter formatter)
 {
-  if (formatter != nullptr)
-    return formatter(slot);
   std::string result = name;
-  if (slotCount > 1)
+  if (formatter)
+    result += " " + formatter(slot);
+  else if (slotCount > 1)
     result += " " + std::to_string(slot + 1);
   return result;
 }
