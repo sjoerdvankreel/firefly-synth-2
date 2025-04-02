@@ -13,11 +13,19 @@
 
 using namespace juce;
 
-Component*
-FFMakeOsciModGUI(FBPlugGUI* plugGUI)
+static Component*
+MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  std::vector<int> columnSizes = {};
+  columnSizes.push_back(0);
+  for (int i = 0; i < FFOsciModSlotCount; i++)
+  {
+    columnSizes.push_back(0);
+    columnSizes.push_back(1);
+    columnSizes.push_back(1);
+  }
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 2, 1 + FFOsciModSlotCount * 3);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
   auto am0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::AM, 0 });
   auto rm0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::RM, 0 });
   auto amRmHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(am0->static_.name + "/" + rm0->static_.name);
@@ -40,7 +48,13 @@ FFMakeOsciModGUI(FBPlugGUI* plugGUI)
     grid->Add(1, 1 + i * 3 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fm, Slider::SliderStyle::RotaryVerticalDrag));
     auto tzfm = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::TZFM, i });
     grid->Add(1, 1 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tzfm, Slider::SliderStyle::RotaryVerticalDrag));
-    grid->MarkSection({ 0, 1 + 1 + i * 3 , 2, (1 + i) * 3 });
+    grid->MarkSection({ 0, 1 + i * 3 , 2, 3 });
   }
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
+}
+
+Component*
+FFMakeOsciModGUI(FBPlugGUI* plugGUI)
+{
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Master, MakeSectionAll);
 }

@@ -1,9 +1,9 @@
 #include <playground_plug/shared/FFPlugGUI.hpp>
-#include <playground_plug/shared/FFOsciMod.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsGUI.hpp>
