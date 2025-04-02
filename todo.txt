@@ -1,3 +1,4 @@
+dedicated fm osci with feedback
 separate auto-am
 hunt osciam/oscifm
 single osci module incl mod?

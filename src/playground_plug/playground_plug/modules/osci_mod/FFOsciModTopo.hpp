@@ -4,7 +4,7 @@
 #include <utility>
 
 // TODO rename
-inline int constexpr FFOsciModSlotCountNew = (FFOsciCount * (FFOsciCount - 1)) / 2;
+inline int constexpr FFOsciModSlotCount = (FFOsciCount * (FFOsciCount - 1)) / 2;
 
 struct FBStaticModule;
 enum class FFOsciModParam { On, AM, RM, FM, TZFM, Count };

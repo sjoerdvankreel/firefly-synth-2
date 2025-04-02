@@ -12,8 +12,8 @@ FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
-  for(int i = 0; i < FFOsciModSlotCountNew; i++)
-    _voiceState.on[i] = topo.NormalizedToBoolFast(FFOsciAMParam::On, params.block.on[i].Voice()[voice]);
+  for(int i = 0; i < FFOsciModSlotCount; i++)
+    _voiceState.on[i] = topo.NormalizedToBoolFast(FFOsciModParam::On, params.block.on[i].Voice()[voice]);
 }
 
 void
@@ -30,7 +30,7 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
 
   // TODO these should themselves be mod targets
   // for now just copy over the stream
-  for (int i = 0; i < FFOsciModSlotCountNew; i++)
+  for (int i = 0; i < FFOsciModSlotCount; i++)
     if(_voiceState.on[i])
     {
       auto const& amNorm = procParams.acc.am[i].Voice()[voice];
@@ -52,7 +52,7 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
 
   // TODO accurately reflect output
   auto& exchangeParams = exchangeToGUI->param.voice.osciMod[state.moduleSlot];
-  for (int i = 0; i < FFOsciModSlotCountNew; i++)
+  for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     exchangeParams.acc.am[i][voice] = procParams.acc.am[i].Voice()[voice].Last();
     exchangeParams.acc.rm[i][voice] = procParams.acc.rm[i].Voice()[voice].Last();

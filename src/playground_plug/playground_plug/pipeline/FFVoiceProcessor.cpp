@@ -15,8 +15,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     procState->dsp.voice[voice].env[i].processor.BeginVoice(state);
   }
   state.moduleSlot = 0;
-  procState->dsp.voice[voice].osciAM.processor.BeginVoice(state);
-  procState->dsp.voice[voice].osciFM.processor.BeginVoice(state);
+  procState->dsp.voice[voice].osciMod.processor.BeginVoice(state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
@@ -41,8 +40,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
       voiceFinished = envProcessed != FBFixedBlockSamples;
   }
   state.moduleSlot = 0;
-  voiceDSP.osciAM.processor.Process(state);
-  voiceDSP.osciFM.processor.Process(state);
+  voiceDSP.osciMod.processor.Process(state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;

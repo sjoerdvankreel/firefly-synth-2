@@ -4,8 +4,6 @@
 #include <playground_plug/modules/env/FFEnvState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
-#include <playground_plug/modules/osci_am/FFOsciAMState.hpp>
-#include <playground_plug/modules/osci_fm/FFOsciFMState.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterState.hpp>
@@ -33,8 +31,6 @@ struct FFGlobalExchangeState final
 struct FFVoiceExchangeState final
 {
   std::array<FFEnvExchangeState, FFEnvCount> env = {};
-  std::array<FBModuleProcExchangeState, 1> osciAM = {}; // todo
-  std::array<FBModuleProcExchangeState, 1> osciFM = {}; // todo
   std::array<FBModuleProcExchangeState, 1> osciMod = {};
   std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
@@ -50,8 +46,6 @@ struct alignas(FBFixedBlockAlign) FFGlobalDSPState final
 
 struct alignas(FBFixedBlockAlign) FFVoiceDSPState final
 {
-  FFOsciAMDSPState osciAM = {}; // todo
-  FFOsciFMDSPState osciFM = {}; // todo
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
   FBFixedFloatAudioArray output = {};
@@ -80,9 +74,7 @@ template <class TVoiceBlock, class TVoiceAcc>
 struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
-  std::array<FFOsciAMParamState<TVoiceBlock, TVoiceAcc>, 1> osciAM = {}; // todo
-  std::array<FFOsciFMParamState<TVoiceBlock, TVoiceAcc>, 1> osciFM = {}; // todo
-  std::array<FFOsciModParamState<TVoiceBlock, TVoiceAcc>, 1> osciMod = {}; // todo
+  std::array<FFOsciModParamState<TVoiceBlock, TVoiceAcc>, 1> osciMod = {};
   std::array<FFEnvParamState<TVoiceBlock, TVoiceAcc>, FFEnvCount> env = {};
   std::array<FFOsciParamState<TVoiceBlock, TVoiceAcc>, FFOsciCount> osci = {};
 };

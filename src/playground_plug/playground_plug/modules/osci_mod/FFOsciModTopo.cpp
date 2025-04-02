@@ -32,7 +32,7 @@ FFMakeOsciModTopo()
   auto& on = result->params[(int)FFOsciModParam::On];
   on.acc = false;
   on.name = "On";
-  on.slotCount = FFOsciModSlotCountNew;
+  on.slotCount = FFOsciModSlotCount;
   on.id = "{83FC9C98-CF1B-4E5A-91DB-2A6488B73809}";
   on.type = FBParamType::Boolean;
   on.slotFormatter = FormatSlot;
@@ -45,7 +45,7 @@ FFMakeOsciModTopo()
   am.acc = true;
   am.defaultText = "0";
   am.name = "AM";
-  am.slotCount = FFOsciModSlotCountNew;
+  am.slotCount = FFOsciModSlotCount;
   am.unit = "%";
   am.id = "{4D04D0E5-3749-428C-B300-9151177555F3}";
   am.type = FBParamType::Identity;
@@ -60,7 +60,7 @@ FFMakeOsciModTopo()
   rm.acc = true;
   rm.defaultText = "0";
   rm.name = "RM";
-  rm.slotCount = FFOsciModSlotCountNew;
+  rm.slotCount = FFOsciModSlotCount;
   rm.unit = "%";
   rm.id = "{4D04D0E5-3749-428C-B300-9151177555F3}";
   rm.type = FBParamType::Identity;
@@ -75,7 +75,7 @@ FFMakeOsciModTopo()
   fm.acc = true;
   fm.defaultText = "0";
   fm.name = "FM";
-  fm.slotCount = FFOsciModSlotCountNew;
+  fm.slotCount = FFOsciModSlotCount;
   fm.id = "{3F224B8F-5AB3-48D5-8925-1D9207AFA3B9}";
   fm.type = FBParamType::Log2;
   fm.Log2().Init(-0.01, 0.01f, 1.01f);
@@ -90,7 +90,7 @@ FFMakeOsciModTopo()
   tzfm.acc = true;
   tzfm.defaultText = "0";
   tzfm.name = "TZFM";
-  tzfm.slotCount = FFOsciModSlotCountNew;
+  tzfm.slotCount = FFOsciModSlotCount;
   tzfm.id = "{4A0DE9FA-A8BC-4B2F-9FB6-584F7C353CE2}";
   tzfm.type = FBParamType::Log2;
   tzfm.Log2().Init(-0.01, 0.01f, 1.01f);

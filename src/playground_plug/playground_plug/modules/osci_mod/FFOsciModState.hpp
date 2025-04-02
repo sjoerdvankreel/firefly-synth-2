@@ -17,10 +17,10 @@ class alignas(FBFixedBlockAlign) FFOsciModDSPState final
   friend struct OsciGraphRenderData;
   FFOsciModProcessor processor = {};
 public:
-  std::array<FBFixedFloatArray, FFOsciModSlotCountNew> outputAM = {};
-  std::array<FBFixedFloatArray, FFOsciModSlotCountNew> outputRM = {};
-  std::array<FBFixedFloatArray, FFOsciModSlotCountNew> outputFM = {};
-  std::array<FBFixedFloatArray, FFOsciModSlotCountNew> outputTZFM = {};
+  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputAM = {};
+  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputRM = {};
+  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputFM = {};
+  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputTZFM = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModDSPState);
 };
 
