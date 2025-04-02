@@ -1,9 +1,9 @@
 #pragma once
 
+#include <playground_plug/shared/FFPlugTopo.hpp>
 #include <memory>
 #include <utility>
 
-// TODO rename
 inline int constexpr FFOsciModSlotCount = (FFOsciCount * (FFOsciCount - 1)) / 2;
 
 struct FBStaticModule;

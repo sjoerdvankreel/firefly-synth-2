@@ -9,6 +9,19 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
+static inline int
+OsciModStartSlot(int osciSlot)
+{
+  switch (osciSlot)
+  {
+  case 0: return -1;
+  case 1: return 0;
+  case 2: return 1;
+  case 3: return 3;
+  default: assert(false); return -1;
+  }
+}
+
 static inline float
 GenerateSin(float phase)
 {
@@ -146,18 +159,15 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     _phases[i] = FFOsciPhase(((1.0f - offsetRandom) + offsetRandom * _prng.Next()) * unisonPhase);
   }
 
-  auto const& amParams = procState->param.voice.osciAM[0];
-  auto const& fmParams = procState->param.voice.osciFM[0];
-  auto const& amTopo = state.topo->static_.modules[(int)FFModuleType::OsciAM];
-  auto const& fmTopo = state.topo->static_.modules[(int)FFModuleType::OsciFM];
-  for (int src = 0; src <= state.moduleSlot; src++)
+  int modStartSlot = OsciModStartSlot(state.moduleSlot);
+  auto const& modParams = procState->param.voice.osciMod[0];
+  auto const& modTopo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
+  for (int modSlot = modStartSlot; modSlot < modStartSlot + state.moduleSlot; modSlot++)
   {
-    auto const& srcOsciParams = procState->param.voice.osci[src];
-    int slot = FFOsciModSourceAndTargetToSlot().at({ src, state.moduleSlot });
-    _voiceState.amSourceOn[src] = amTopo.NormalizedToBoolFast(FFOsciAMParam::On, amParams.block.on[slot].Voice()[voice]);
-    _voiceState.fmSourceDelay[src] = fmTopo.NormalizedToDiscreteFast(FFOsciFMParam::Delay, fmParams.block.delay[slot].Voice()[voice]);
-    _voiceState.fmSourceMode[src] = fmTopo.NormalizedToListFast<FFOsciFMMode>(FFOsciFMParam::Mode, fmParams.block.mode[slot].Voice()[voice]);
-    _voiceState.modSourceUnisonCount[src] = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
+    int srcOsciSlot = modSlot - modStartSlot;
+    auto const& srcOsciParams = procState->param.voice.osci[srcOsciSlot];
+    _voiceState.modSourceOn[srcOsciSlot] = modTopo.NormalizedToBoolFast(FFOsciModParam::On, modParams.block.on[modSlot].Voice()[voice]);
+    _voiceState.modSourceUnisonCount[srcOsciSlot] = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
   }
 
   auto& prevUnisonOutput = procState->dsp.voice[voice].osci[state.moduleSlot].prevUnisonOutput;
@@ -333,6 +343,7 @@ FFOsciProcessor::ProcessUnisonVoice(
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
 
+#if 0
   // TODO self-fm and delay
   fmModulator.Fill(0.0f);
   for (int src = 0; src < state.moduleSlot; src++)
@@ -374,6 +385,8 @@ FFOsciProcessor::ProcessUnisonVoice(
         fmModulator[s] = fmModulator[s] + (baseModulatorBlock[s] * sourceScale + sourceOffset) * index[s];
     }
 
+#endif // todo
+
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     pitch[s] = basePitch[s] + unisonPos[s] * detunePlain[s];
@@ -386,6 +399,7 @@ FFOsciProcessor::ProcessUnisonVoice(
   }
 
   // TODO
+#if 0
   if (_voiceState.fmSourceMode[state.moduleSlot] == FFOsciFMMode::Off || _voiceState.modSourceUnisonCount[state.moduleSlot] <= unisonVoice)
   {
     FBFixedFloatArray phasePlusFM;
@@ -446,6 +460,9 @@ FFOsciProcessor::ProcessUnisonVoice(
     unisonAudioOut.LoadFromFloatArray(unisonAudioOutArray);
 #endif
   }
+#endif
+
+#if 0
 
   for (int src = 0; src <= state.moduleSlot; src++)
     if (_voiceState.amSourceOn[src] && _voiceState.modSourceUnisonCount[src] > unisonVoice)
@@ -463,6 +480,7 @@ FFOsciProcessor::ProcessUnisonVoice(
         unisonAudioOut[s] = (1.0f - mix[s]) * unisonAudioOut[s] + mix[s] * modulated;
       }
     }
+#endif
 }
 
 void
@@ -692,6 +710,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           unisonOutput[u][s] = GenerateDSFBandwidth(basePhase[s], baseFreq[s], dsfDecayPlain[s], dsfDistFreq[s], dsfMaxOvertones[s], _voiceState.dsfBandwidthPlain);
     }
 
+#if 0 // TODO
+
     for (int src = 0; src <= state.moduleSlot; src++)
       if (_voiceState.amSourceOn[src] && _voiceState.modSourceUnisonCount[src] > u)
       {
@@ -708,6 +728,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           unisonOutput[u][s] = (1.0f - mix[s]) * unisonOutput[u][s] + mix[s] * modulated;
         }
       }
+
+#endif
 
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
@@ -742,6 +764,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   if (state.moduleSlot == FFOsciCount - 1)
     ShiftPrevUnisonOutputForAllOscis(state);
+
+// TODO output all stuff
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

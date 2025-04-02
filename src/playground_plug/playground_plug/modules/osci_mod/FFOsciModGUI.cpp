@@ -1,5 +1,5 @@
-#include <playground_plug/modules/osci_am/FFOsciAMGUI.hpp>
-#include <playground_plug/modules/osci_am/FFOsciAMTopo.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModGUI.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
 
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
