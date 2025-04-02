@@ -150,8 +150,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _voiceState.unisonOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffset, params.block.unisonOffset[0].Voice()[voice]);
   _voiceState.unisonOffsetRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UnisonOffsetRandom, params.block.unisonOffsetRandom[0].Voice()[voice]);
 
-  _prng = {};
   _phase = {};
+  _prng = FBParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   for (int i = 0; i < _voiceState.unisonCount; i++)
   {
     float offsetRandom = _voiceState.unisonOffsetRandomPlain;
