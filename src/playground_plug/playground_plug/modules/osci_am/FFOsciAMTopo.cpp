@@ -17,7 +17,7 @@ FFMakeOsciAMTopo()
   auto& on = result->params[(int)FFOsciAMParam::On];
   on.acc = false;
   on.name = "On";
-  on.slotCount = FFOsciModSlotCount;
+  on.slotCount = FFOsciModSlotCountOld;
   on.id = "{F10BBAB2-F179-496F-9A55-68545E734EF6}";
   on.type = FBParamType::Boolean;
   on.slotFormatter = [](int slot) { return FFOsciModMakeSourceAndTargetText(slot); };
@@ -30,7 +30,7 @@ FFMakeOsciAMTopo()
   mix.acc = true;
   mix.defaultText = "100";
   mix.name = "Mix";
-  mix.slotCount = FFOsciModSlotCount;
+  mix.slotCount = FFOsciModSlotCountOld;
   mix.unit = "%";
   mix.id = "{84CF7CE6-CFC4-43F7-8EF7-18D9C279D205}";
   mix.type = FBParamType::Identity;
@@ -45,7 +45,7 @@ FFMakeOsciAMTopo()
   ring.acc = true;
   ring.defaultText = "0";
   ring.name = "Ring";
-  ring.slotCount = FFOsciModSlotCount;
+  ring.slotCount = FFOsciModSlotCountOld;
   ring.unit = "%";
   ring.id = "{B17630C5-6FA6-410B-84F3-EEAC4A947658}";
   ring.type = FBParamType::Identity;

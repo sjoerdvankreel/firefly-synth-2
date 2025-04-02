@@ -14,7 +14,7 @@
 using namespace juce;
 
 Component*
-FFMakeOsciAMGUI(FBPlugGUI* plugGUI)
+FFMakeOsciModGUI(FBPlugGUI* plugGUI)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, FFMakeOsciModUIColumnSizes());
@@ -24,7 +24,7 @@ FFMakeOsciAMGUI(FBPlugGUI* plugGUI)
   auto ring0 = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::Ring, 0 });
   auto ringHeader = plugGUI->StoreComponent<FBAutoSizeLabel>(ring0->static_.name);
   grid->Add(1, 0, ringHeader);
-  for (int i = 0; i < FFOsciModSlotCountOld; i++)
+  for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciAM, 0, (int)FFOsciAMParam::On, i });
     grid->Add(0, 1 + i * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));

@@ -18,7 +18,7 @@ class alignas(FBFixedBlockAlign) FFOsciFMDSPState final
   friend struct OsciGraphRenderData;
   FFOsciFMProcessor processor = {};
 public:
-  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputIndex = {};
+  std::array<FBFixedFloatArray, FFOsciModSlotCountOld> outputIndex = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciFMDSPState);
 };
 
@@ -28,8 +28,8 @@ class alignas(alignof(TVoiceBlock)) FFOsciFMBlockParamState final
   friend class FFOsciProcessor;
   friend class FFOsciFMProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciFMTopo();
-  std::array<TVoiceBlock, FFOsciModSlotCount> mode = {};
-  std::array<TVoiceBlock, FFOsciModSlotCount> delay = {};
+  std::array<TVoiceBlock, FFOsciModSlotCountOld> mode = {};
+  std::array<TVoiceBlock, FFOsciModSlotCountOld> delay = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciFMBlockParamState);
 };
@@ -40,7 +40,7 @@ class alignas(alignof(TVoiceAcc)) FFOsciFMAccParamState final
   friend class FFOsciProcessor;
   friend class FFOsciFMProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciFMTopo();
-  std::array<TVoiceAcc, FFOsciModSlotCount> index = {};
+  std::array<TVoiceAcc, FFOsciModSlotCountOld> index = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciFMAccParamState);
 };
