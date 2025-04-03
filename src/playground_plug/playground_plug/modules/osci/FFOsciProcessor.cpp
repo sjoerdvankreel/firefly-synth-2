@@ -90,12 +90,12 @@ GenerateTri(float phase, float incr)
 static inline float
 GenerateDSF(
   float phase, float freq, float decay,
-  float distFreq, float overtones)
+  float distFreq, int overtones)
 {
   float const decayRange = 0.99f;
   float const scaleFactor = 0.975f;
 
-  float n = overtones;
+  float n = static_cast<float>(overtones);
   float w = decay * decayRange;
   float wPowNp1 = std::pow(w, n + 1.0f);
   float u = 2.0f * FBPi * phase;
