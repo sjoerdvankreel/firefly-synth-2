@@ -17,7 +17,8 @@ FFOsciPhase::Next(float incr, float fmModulator)
 {
   float y = _x;
   _x += incr + fmModulator;
-  _x -= FBFastFloor(_x);
+  if(_x >= 1.0f)
+    _x -= FBFastFloor(_x);
   assert(0.0f <= _x && _x < 1.0f);
   return y;
 }
