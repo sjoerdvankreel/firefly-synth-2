@@ -50,7 +50,7 @@ GenerateSqr(float phase, float incr, float pw)
   float minPW = 0.05f;
   float realPW = (minPW + (1.0f - minPW) * pw) * 0.5f;
   float phase2 = phase + realPW;
-  phase2 -= FBFastFloor(phase2);
+  FBPhaseWrap(phase2);
   return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;
 }
 
@@ -81,7 +81,7 @@ GenerateTri(float phase, float incr)
   v += GenerateBLAMP(phase, incr);
   v += GenerateBLAMP(1.0f - phase, incr);
   phase += 0.5f;
-  phase -= FBFastFloor(phase);
+  FBPhaseWrap(phase);
   v -= GenerateBLAMP(phase, incr);
   v -= GenerateBLAMP(1.0f - phase, incr);
   return v;

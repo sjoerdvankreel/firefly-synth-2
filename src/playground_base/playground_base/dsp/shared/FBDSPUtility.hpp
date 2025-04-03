@@ -25,6 +25,22 @@ FBFastFloor(float x)
   return i - (i > x);
 }
 
+inline void
+FBPhaseWrap(float& p)
+{
+  if (p >= 1.0f)
+    p -= FBFastFloor(p);
+}
+
+inline bool
+FBPhaseWrap2(float& p)
+{
+  if (p < 1.0f)
+    return false;
+  p -= FBFastFloor(p);
+  return true;
+}
+
 inline float
 FBToUnipolar(float v)
 {
