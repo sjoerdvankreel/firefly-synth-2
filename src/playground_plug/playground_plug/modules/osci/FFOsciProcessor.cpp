@@ -99,7 +99,7 @@ GenerateDSF(
 
   float n = static_cast<float>(overtones);
   float w = decay * decayRange;
-  float wPowNp1 = std::pow(w, n + 1.0f);
+  float wPowNp1 = FBFastPowFloatToInt(w, overtones + 1);
   float u = 2.0f * FBPi * phase;
   float v = 2.0f * FBPi * distFreq * phase / freq;
   float a = w * std::sin(u + n * v) - std::sin(u + (n + 1.0f) * v);

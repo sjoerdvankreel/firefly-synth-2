@@ -18,6 +18,18 @@ inline constexpr float FBTwoPi = 2.0f * FBPi;
 std::array<float, FBNoteCentCount> const&
 FBPitchToFreqTable();
 
+inline float
+FBToUnipolar(float v)
+{
+  return (v * 0.5f) + 0.5f;
+}
+
+inline float
+FBToBipolar(float v)
+{
+  return (v - 0.5f) * 2.0f;
+}
+
 // https://stackoverflow.com/questions/824118/why-is-floor-so-slow
 inline int
 FBFastFloor(float x)
@@ -40,18 +52,6 @@ FBPhaseWrap2(float& p)
     return false;
   p -= FBFastFloor(p);
   return true;
-}
-
-inline float
-FBToUnipolar(float v)
-{
-  return (v * 0.5f) + 0.5f;
-}
-
-inline float
-FBToBipolar(float v)
-{
-  return (v - 0.5f) * 2.0f;
 }
 
 inline int
@@ -104,4 +104,20 @@ inline float
 FBPitchToFreqFastAndInaccurate(float pitch)
 {
   return FBLerpTable(pitch * 100.0f, FBNoteCentCount, FBPitchToFreqTable());
+}
+
+// https://schneide.blog/2024/07/31/efficient-integer-powers-of-floating-point-numbers-in-c/
+inline float 
+FBFastPowFloatToInt(float x, int y)
+{
+  int p = y;
+  float result = ((p & 1) != 0) ? x : 1.0f;
+  while (p > 0)
+  {
+    x *= x;
+    p = p >> 1;
+    if ((p & 1) != 0)
+      result *= x;
+  }
+  return result;
 }
