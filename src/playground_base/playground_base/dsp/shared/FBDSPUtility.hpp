@@ -18,6 +18,7 @@ inline constexpr float FBTwoPi = 2.0f * FBPi;
 std::array<float, FBNoteCentCount> const&
 FBPitchToFreqTable();
 
+// https://stackoverflow.com/questions/824118/why-is-floor-so-slow
 inline int
 FBFastFloor(float x)
 {
