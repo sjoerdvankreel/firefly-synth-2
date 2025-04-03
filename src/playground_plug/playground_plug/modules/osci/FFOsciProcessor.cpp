@@ -28,10 +28,10 @@ GenerateSin(float phase)
   return std::sin(phase * FBTwoPi);
 }
 
+// https://www.kvraudio.com/forum/viewtopic.php?t=375517
 static inline float
 GenerateSaw(float phase, float incr)
 {
-  // https://www.kvraudio.com/forum/viewtopic.php?t=375517
   float blep = 0.0f;
   float saw = phase * 2.0f - 1.0f;
   if (phase < incr)
@@ -57,24 +57,23 @@ GenerateSqr(float phase, float incr, float pw)
   return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;
 }
 
+// https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
 static inline float
 GenerateBLAMP(float phase, float incr)
 {
   float y = 0.0f;
-  float one = 1.0f;
-  float zero = 0.0f;
-  float phaseLtIncrMul = phase < incr ? one : zero;
-  float phaseBetween0And2IncrMul = phase >= 0.0f && phase < 2.0f * incr ? one : zero;
+  if (!(0.0f <= phase && phase < 2.0f * incr))
+    return y * incr / 15;
   float x = phase / incr;
   float u = 2.0f - x;
-  float u2 = u * u;
-  u *= u2 * u2;
-  y -= phaseBetween0And2IncrMul * u;
+  u *= u * u * u * u;
+  y -= u;
+  if (phase >= incr)
+    return y * incr / 15;
   float v = 1.0f - x;
-  float v2 = v * v;
-  v *= v2 * v2;
-  y += 4.0f * phaseBetween0And2IncrMul * phaseLtIncrMul * v;
-  return y * incr / 15.0f;
+  v *= v * v * v * v;
+  y += 4 * v;
+  return y * incr / 15;
 }
 
 static inline float
