@@ -122,7 +122,11 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     }
 
     g.setColour(Colours::darkgrey);
-    g.drawText(_data->series[s].moduleName + " " + _data->series[s].text, getLocalBounds(), Justification::centred, false);
+    auto textBounds = getLocalBounds();
+    auto x0 = PointXLocation(s, 0.0f);
+    auto x1 = PointXLocation(s, 1.0f);
+    textBounds = Rectangle<int>(x0, textBounds.getY(), x1 - x0, textBounds.getHeight());
+    g.drawText(_data->series[s].moduleName + " " + _data->series[s].text, textBounds, Justification::centred, false);
     for (int i = 0; i < _data->series[s].secondarySeries.size(); i++)
     {
       int marker = _data->series[s].secondarySeries[i].marker;
