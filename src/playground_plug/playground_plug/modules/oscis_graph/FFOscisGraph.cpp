@@ -66,7 +66,7 @@ PlotParams(FBGraphRenderState const* state)
   int unison = state->AudioParamDiscrete({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonCount, 0 });
   float pitch = static_cast<float>(state->AudioParamNote({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Note, 0 }));
   pitch += state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Cent, 0 });
-  result.samples = FBFreqToSamples(FBPitchToFreqAccurate(pitch, sampleRate), sampleRate);
+  result.samples = FBFreqToSamples(FBPitchToFreqFastAndInaccurate(pitch), sampleRate);
   return result;
 }
 
@@ -84,8 +84,6 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].osci[slot]; };
   renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
-
-  // TODO this renders 4 * 4 times
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   for (int o = 0; o < FFOsciCount; o++)
   {

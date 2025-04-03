@@ -50,7 +50,7 @@ GenerateSqr(float phase, float incr, float pw)
   float minPW = 0.05f;
   float realPW = (minPW + (1.0f - minPW) * pw) * 0.5f;
   float phase2 = phase + realPW;
-  phase2 -= std::floor(phase2);
+  phase2 -= FBFastFloor(phase2);
   return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;
 }
 
@@ -81,7 +81,7 @@ GenerateTri(float phase, float incr)
   v += GenerateBLAMP(phase, incr);
   v += GenerateBLAMP(1.0f - phase, incr);
   phase += 0.5f;
-  phase -= std::floor(phase);
+  phase -= FBFastFloor(phase);
   v -= GenerateBLAMP(phase, incr);
   v -= GenerateBLAMP(1.0f - phase, incr);
   return v;
@@ -110,10 +110,9 @@ GenerateDSF(
 static inline float
 GenerateDSFOvertones(
   float phase, float freq, float decay,
-  float distFreq, float maxOvertones, int overtones_)
+  float distFreq, float maxOvertones, int overtones)
 {
-  float overtones = static_cast<float>(overtones_);
-  overtones = std::min(overtones, std::floor(maxOvertones));
+  overtones = std::min(overtones, FBFastFloor(maxOvertones));
   return GenerateDSF(phase, freq, decay, distFreq, overtones);
 }
 
@@ -122,8 +121,8 @@ GenerateDSFBandwidth(
   float phase, float freq, float decay,
   float distFreq, float maxOvertones, float bandwidth)
 {
-  float overtones = 1.0f + std::floor(bandwidth * (maxOvertones - 1.0f));
-  overtones = std::min(overtones, std::floor(maxOvertones));
+  int overtones = 1 + FBFastFloor(bandwidth * (maxOvertones - 1.0f));
+  overtones = std::min(overtones, FBFastFloor(maxOvertones));
   return GenerateDSF(phase, freq, decay, distFreq, overtones);
 }
 
@@ -207,7 +206,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     centNorm = procParams.acc.cent[0].Voice()[voice].CV()[s];
     float centPlain = topo.NormalizedToLinearFast(FFOsciParam::Cent, centNorm);
     basePitch[s] = notePitch + centPlain;
-    baseFreq[s] = FBPitchToFreqAccurate(basePitch[s], state.input->sampleRate);
+    baseFreq[s] = FBPitchToFreqFastAndInaccurate(basePitch[s]);
     _phase.Next(baseFreq[s] / state.input->sampleRate);
   }
 
@@ -252,7 +251,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       float uniPitch = basePitch[s] + unisonPos[u] * detunePlain[s];
-      uniFreq[s] = FBPitchToFreqAccurate(uniPitch, sampleRate);
+      uniFreq[s] = FBPitchToFreqFastAndInaccurate(uniPitch);
       uniIncr[s] = uniFreq[s] / sampleRate;
       uniPhase[s] = _unisonPhases[u].Next(uniIncr[s], fmModulator[s]);
     }

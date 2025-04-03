@@ -26,9 +26,9 @@ FBTrackingPhase::Next(float incr)
 {
   float y = _x;
   _x += incr;
-  float f = std::floor(_x);
+  int f = FBFastFloor(_x);
   _x -= f;
-  if (f != 0.0f)
+  if (f != 0)
   {
     _cycledOnce = true;
     _positionSamplesCurrentCycle = 0;
