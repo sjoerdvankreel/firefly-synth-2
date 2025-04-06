@@ -32,77 +32,67 @@ FFMakeOsciModTopo()
   result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });
   auto selectModule = [](auto& state) { return &state.voice.osciMod; };
 
-  auto& on = result->params[(int)FFOsciModParam::On];
-  on.acc = false;
-  on.name = "On";
-  on.slotCount = FFOsciModSlotCount;
-  on.id = "{83FC9C98-CF1B-4E5A-91DB-2A6488B73809}";
-  on.type = FBParamType::Boolean;
-  on.slotFormatter = FFOsciModFormatSlot;
-  auto selectOn = [](auto& module) { return &module.block.on; };
-  on.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOn);
-  on.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
-  on.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectOn);
+  auto& amMode = result->params[(int)FFOsciModParam::AMMode];
+  amMode.acc = false;
+  amMode.name = "AM Mode";
+  amMode.slotCount = FFOsciModSlotCount;
+  amMode.id = "{AE135DBF-A88E-49A4-9205-08C908E6FC12}";
+  amMode.type = FBParamType::List;
+  amMode.slotFormatter = FFOsciModFormatSlot;
+  amMode.List().items = {
+    { "{30807EDC-158F-4356-837E-E0DA1688A576}", "Off" },
+    { "{2E046F54-1966-4268-B973-CA6FADB1C50E}", "AM" },
+    { "{968AFEB7-5BED-421A-8099-24B6066661EE}", "RM" } };
+  auto selectAMMode = [](auto& module) { return &module.block.amMode; };
+  amMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAMMode);
+  amMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectAMMode);
+  amMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAMMode);
 
-  auto& am = result->params[(int)FFOsciModParam::AM];
-  am.acc = true;
-  am.defaultText = "0";
-  am.name = "AM";
-  am.slotCount = FFOsciModSlotCount;
-  am.unit = "%";
-  am.id = "{4D04D0E5-3749-428C-B300-9151177555F3}";
-  am.type = FBParamType::Identity;
-  am.slotFormatter = FFOsciModFormatSlot;
-  auto selectAM = [](auto& module) { return &module.acc.am; };
-  am.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAM);
-  am.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectAM);
-  am.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAM);
-  am.dependencies.enabled.audio.When({ (int)FFOsciModParam::On }, [](auto const& vs) { return vs[0] != 0; });
+  auto& amMix = result->params[(int)FFOsciModParam::AMMix];
+  amMix.acc = true;
+  amMix.defaultText = "1";
+  amMix.name = "AM Mix";
+  amMix.slotCount = FFOsciModSlotCount;
+  amMix.unit = "%";
+  amMix.id = "{F0D5C59D-7E40-46A6-AE88-D3B663A675B7}";
+  amMix.type = FBParamType::Identity;
+  amMix.slotFormatter = FFOsciModFormatSlot;
+  auto selectAMMix = [](auto& module) { return &module.acc.amMix; };
+  amMix.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAMMix);
+  amMix.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectAMMix);
+  amMix.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAMMix);
+  amMix.dependencies.enabled.audio.When({ (int)FFOsciModParam::AMMode }, [](auto const& vs) { return vs[0] != (int)FFOsciModAMMode::Off; });
 
-  auto& rm = result->params[(int)FFOsciModParam::RM];
-  rm.acc = true;
-  rm.defaultText = "0";
-  rm.name = "RM";
-  rm.tooltip = "AM/RM Mix";
-  rm.slotCount = FFOsciModSlotCount;
-  rm.unit = "%";
-  rm.id = "{D8049EBD-73AE-4343-8865-CD2D589F09B9}";
-  rm.type = FBParamType::Identity;
-  rm.slotFormatter = FFOsciModFormatSlot;
-  auto selectRM = [](auto& module) { return &module.acc.rm; };
-  rm.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectRM);
-  rm.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectRM);
-  rm.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectRM);
-  rm.dependencies.enabled.audio.When({ (int)FFOsciModParam::On }, [](auto const& vs) { return vs[0] != 0; });
+  auto& fmMode = result->params[(int)FFOsciModParam::FMMode];
+  fmMode.acc = false;
+  fmMode.name = "FM Mode";
+  fmMode.slotCount = FFOsciModSlotCount;
+  fmMode.id = "{E4F09B87-FBDB-4B72-B6E3-D64BE0733C3D}";
+  fmMode.type = FBParamType::List;
+  fmMode.slotFormatter = FFOsciModFormatSlot;
+  fmMode.List().items = {
+    { "{8B789678-8C69-445F-B7D6-B999D88714B1}", "Off" },
+    { "{FAEE7133-DB2D-4E67-9F8D-B1E0F8E87EEA}", "FM" },
+    { "{CD270554-42CF-4779-A2A2-219FD26986C3}", "TZ" } };
+  auto selectFMMode = [](auto& module) { return &module.block.fmMode; };
+  fmMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMMode);
+  fmMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMMode);
+  fmMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMMode);
 
-  auto& tz = result->params[(int)FFOsciModParam::TZ];
-  tz.acc = false;
-  tz.defaultText = "On";
-  tz.name = "TZ";
-  tz.tooltip = "Through Zero";
-  tz.slotCount = FFOsciModSlotCount;
-  tz.id = "{09E1EC22-D3ED-415E-9767-816BEBDEE7BF}";
-  tz.type = FBParamType::Boolean;
-  tz.slotFormatter = FFOsciModFormatSlot;
-  auto selectTZ = [](auto& module) { return &module.block.tz; };
-  tz.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectTZ);
-  tz.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectTZ);
-  tz.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectTZ);
-
-  auto& fm = result->params[(int)FFOsciModParam::FM];
-  fm.acc = true;
-  fm.defaultText = "0";
-  fm.name = "FM";
-  fm.slotCount = FFOsciModSlotCount;
-  fm.id = "{3F224B8F-5AB3-48D5-8925-1D9207AFA3B9}";
-  fm.type = FBParamType::Log2;
-  fm.Log2().Init(-0.01, 0.01f, 1.01f);
-  fm.slotFormatter = FFOsciModFormatSlot;
-  auto selectFM = [](auto& module) { return &module.acc.fm; };
-  fm.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFM);
-  fm.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFM);
-  fm.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFM);
-  fm.dependencies.enabled.audio.When({ (int)FFOsciModParam::On }, [](auto const& vs) { return vs[0] != 0; });
+  auto& fmIndex = result->params[(int)FFOsciModParam::FMIndex];
+  fmIndex.acc = true;
+  fmIndex.defaultText = "0.01";
+  fmIndex.name = "FM Index";
+  fmIndex.slotCount = FFOsciModSlotCount;
+  fmIndex.id = "{9E37D313-1F48-4559-A6DD-01B235240F44}";
+  fmIndex.type = FBParamType::Log2;
+  fmIndex.Log2().Init(-0.01, 0.01f, 1.01f);
+  fmIndex.slotFormatter = FFOsciModFormatSlot;
+  auto selectFMIndex = [](auto& module) { return &module.acc.fmIndex; };
+  fmIndex.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndex);
+  fmIndex.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMIndex);
+  fmIndex.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
+  fmIndex.dependencies.enabled.audio.When({ (int)FFOsciModParam::FMMode }, [](auto const& vs) { return vs[0] != (int)FFOsciModFMMode::Off; });
 
   return result;
 }

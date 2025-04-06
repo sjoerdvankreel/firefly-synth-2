@@ -9,7 +9,8 @@ struct FBModuleProcState;
 
 struct FFOsciModVoiceState final
 {
-  std::array<bool, FFOsciModSlotCount> on = {};
+  std::array<FFOsciModAMMode, FFOsciModSlotCount> amMode = {};
+  std::array<FFOsciModFMMode, FFOsciModSlotCount> fmMode = {};
 };
 
 class FFOsciModProcessor final

@@ -166,9 +166,9 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   {
     int srcOsciSlot = modSlot - modStartSlot;
     auto const& srcOsciParams = procState->param.voice.osci[srcOsciSlot];
-    _voiceState.modSourceOn[srcOsciSlot] = modTopo.NormalizedToBoolFast(FFOsciModParam::On, modParams.block.on[modSlot].Voice()[voice]);
-    _voiceState.modSourceTZ[srcOsciSlot] = modTopo.NormalizedToBoolFast(FFOsciModParam::TZ, modParams.block.tz[modSlot].Voice()[voice]);
     _voiceState.modSourceUnisonCount[srcOsciSlot] = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
+    _voiceState.modSourceAMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, modParams.block.amMode[modSlot].Voice()[voice]);
+    _voiceState.modSourceFMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModFMMode>(FFOsciModParam::FMMode, modParams.block.fmMode[modSlot].Voice()[voice]);
   }
 }
 
@@ -234,17 +234,17 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     FBFixedFloatArray fmModulator;
     fmModulator.Fill(0.0f);
     for (int src = 0; src < state.moduleSlot; src++)
-      if (_voiceState.modSourceOn[src] && _voiceState.modSourceUnisonCount[src] > u)
+      if (_voiceState.modSourceFMMode[src] != FFOsciModFMMode::Off && _voiceState.modSourceUnisonCount[src] > u)
       {
         int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-        auto const& fm = procState->dsp.voice[voice].osciMod.outputFM[modSlot];
+        auto const& fmIndex = procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot];
         auto const& fmModulatorBase = procState->dsp.voice[voice].osci[src].unisonOutput[u];
-        if(_voiceState.modSourceTZ[src])
+        if(_voiceState.modSourceFMMode[src] == FFOsciModFMMode::TZ)
           for (int s = 0; s < FBFixedBlockSamples; s++)
-            fmModulator[s] += fmModulatorBase[s] * fm[s];
+            fmModulator[s] += fmModulatorBase[s] * fmIndex[s];
         else
           for (int s = 0; s < FBFixedBlockSamples; s++)
-            fmModulator[s] += FBToUnipolar(fmModulatorBase[s]) * fm[s];
+            fmModulator[s] += FBToUnipolar(fmModulatorBase[s]) * fmIndex[s];
       }
 
     FBFixedFloatArray uniFreq;
@@ -295,20 +295,17 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
 
     for (int src = 0; src < state.moduleSlot; src++)
-      if (_voiceState.modSourceOn[src] && _voiceState.modSourceUnisonCount[src] > u)
+      if (_voiceState.modSourceAMMode[src] != FFOsciModAMMode::Off && _voiceState.modSourceUnisonCount[src] > u)
       {
         int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-        auto const& am = procState->dsp.voice[voice].osciMod.outputAM[modSlot];
-        auto const& rm = procState->dsp.voice[voice].osciMod.outputRM[modSlot];
+        auto const& amMix = procState->dsp.voice[voice].osciMod.outputAMMix[modSlot];
         auto const& rmModulator = procState->dsp.voice[voice].osci[src].unisonOutput[u];
-        for (int s = 0; s < FBFixedBlockSamples; s++)
-        {
-          float amModulator = rmModulator[s] * 0.5f + 0.5f;
-          float amModulated = unisonOutput[u][s] * amModulator;
-          float rmModulated = unisonOutput[u][s] * rmModulator[s];
-          float modulated = (1.0f - rm[s]) * amModulated + rm[s] * rmModulated;
-          unisonOutput[u][s] = (1.0f - am[s]) * unisonOutput[u][s] + am[s] * modulated;
-        }
+        if(_voiceState.modSourceAMMode[src] == FFOsciModAMMode::RM)
+          for (int s = 0; s < FBFixedBlockSamples; s++)
+            unisonOutput[u][s] = (1.0f - amMix[s]) * unisonOutput[u][s] + amMix[s] * unisonOutput[u][s] * rmModulator[s];
+        else
+          for (int s = 0; s < FBFixedBlockSamples; s++)
+            unisonOutput[u][s] = (1.0f - amMix[s]) * unisonOutput[u][s] + amMix[s] * unisonOutput[u][s] * (rmModulator[s] * 0.5f + 0.5f);
       }
 
     for (int s = 0; s < FBFixedBlockSamples; s++)

@@ -2,6 +2,7 @@
 
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciPhase.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
@@ -33,9 +34,9 @@ struct FFOsciVoiceState final
   float unisonOffsetPlain = {};
   float unisonRandomPlain = {};
 
-  std::array<bool, FFOsciCount - 1> modSourceOn = {};
-  std::array<bool, FFOsciCount - 1> modSourceTZ = {};
   std::array<int, FFOsciCount - 1> modSourceUnisonCount = {};
+  std::array<FFOsciModAMMode, FFOsciCount - 1> modSourceAMMode = {};
+  std::array<FFOsciModFMMode, FFOsciCount - 1> modSourceFMMode = {};
 };
 
 class FFOsciProcessor final
