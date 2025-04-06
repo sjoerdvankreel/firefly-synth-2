@@ -181,6 +181,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   {
     int srcOsciSlot = modSlot - modStartSlot;
     auto const& srcOsciParams = procState->param.voice.osci[srcOsciSlot];
+    _voiceState.mod4XOversampling = topo.NormalizedToBoolFast(FFOsciModParam::Oversampling4X, modParams.block.oversampling4X[0].Voice()[voice]);
     _voiceState.modSourceUnisonCount[srcOsciSlot] = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
     _voiceState.modSourceAMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, modParams.block.amMode[modSlot].Voice()[voice]);
     _voiceState.modSourceFMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModFMMode>(FFOsciModParam::FMMode, modParams.block.fmMode[modSlot].Voice()[voice]);
