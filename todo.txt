@@ -1,7 +1,5 @@
-consolidate am/rm
 oversample
 dedicated fm osci with feedback
-consolidate osci graph
 store the selected tab
 hardsync
 fix up the track graph
