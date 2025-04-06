@@ -1,5 +1,4 @@
 consolidate am/rm
-fix graph "off"
 oversample
 dedicated fm osci with feedback
 consolidate osci graph

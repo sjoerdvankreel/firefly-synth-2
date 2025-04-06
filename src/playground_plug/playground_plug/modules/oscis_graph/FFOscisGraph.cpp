@@ -88,6 +88,8 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
   for (int o = 0; o < FFOsciCount; o++)
   {
     graphData->renderState->ModuleProcState()->moduleSlot = o;
+    FBTopoIndices indices = { (int)FFModuleType::Osci, o };
+    graphData->series[o].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
     FBRenderModuleGraph<false, true>(renderData, o);
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;

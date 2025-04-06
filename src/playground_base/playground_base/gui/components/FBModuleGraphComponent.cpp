@@ -93,8 +93,6 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->series.clear();
   _data->series.resize(topo->static_.modules[staticIndex].graphCount);
   _data->pixelWidth = getWidth() / static_cast<int>(_data->series.size());
-  for(int s = 0; s < _data->series.size(); s++)
-    _data->series[s].moduleName = topo->modules[_tweakedModuleByUI].name; // TODO
   topo->static_.modules[staticIndex].graphRenderer(_data.get());
 }
 
