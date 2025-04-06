@@ -5,7 +5,6 @@
 
 #include <array>
 
-// TODO rename to block
 template <class T>
 class alignas(FBFixedBlockAlign) FBFixedArray 
 {

@@ -11,6 +11,9 @@
 
 using namespace juce::dsp;
 
+static inline int constexpr OverSamplingFactor = 2;
+static inline int constexpr OverSamplingTimes = 1 << OverSamplingFactor;
+
 static inline int
 OsciModStartSlot(int osciSlot)
 {
@@ -133,7 +136,7 @@ GenerateDSFBandwidth(
 FFOsciProcessor::
 FFOsciProcessor():
 _oversampling(
-  FFOsciUnisonMaxCount, 2, 
+  FFOsciUnisonMaxCount, OverSamplingFactor,
   Oversampling<float>::filterHalfBandFIREquiripple, 
   false, false)
 {
