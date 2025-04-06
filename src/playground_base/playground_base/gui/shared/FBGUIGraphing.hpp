@@ -202,7 +202,8 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int seriesInde
   moduleProcState->renderType = FBRenderType::GraphPrimary;
   FBRenderModuleGraphSeries<Global, Audio>(renderData, guiReleaseAt, graphData->series[seriesIndex].primarySeries);
   float guiDurationSeconds = renderData.graphData->series[seriesIndex].primarySeries.l.size() / moduleProcState->input->sampleRate;
-  renderData.graphData->series[seriesIndex].text = FBFormatDouble(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
+  if(guiDurationSeconds > 0.0f)
+    renderData.graphData->series[seriesIndex].text = FBFormatDouble(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   
   renderState->PrepareForRenderExchange();
   if constexpr (Global)
