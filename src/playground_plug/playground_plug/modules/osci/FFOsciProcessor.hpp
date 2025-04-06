@@ -9,6 +9,7 @@
 #include <playground_base/dsp/shared/FBTrackingPhase.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 
+#include <juce_dsp/juce_dsp.h>
 #include <array>
 
 struct FBModuleProcState;
@@ -44,10 +45,12 @@ class FFOsciProcessor final
   FBTrackingPhase _phase = {};
   FBParkMillerPRNG _prng = {};
   FFOsciVoiceState _voiceState = {};
+  juce::dsp::Oversampling<float> _oversampling;
   std::array<FFOsciPhase, FFOsciUnisonMaxCount> _unisonPhases = {};
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessor);
+  FFOsciProcessor();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
   int Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState& state);
 };

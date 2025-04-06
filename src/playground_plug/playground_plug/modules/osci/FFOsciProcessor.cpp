@@ -9,6 +9,8 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
+using namespace juce::dsp;
+
 static inline int
 OsciModStartSlot(int osciSlot)
 {
@@ -126,6 +128,16 @@ GenerateDSFBandwidth(
   int overtones = 1 + FBFastFloor(bandwidth * (maxOvertones - 1.0f));
   overtones = std::min(overtones, FBFastFloor(maxOvertones));
   return GenerateDSF(phase, freq, decay, distFreq, overtones);
+}
+
+FFOsciProcessor::
+FFOsciProcessor():
+_oversampling(
+  FFOsciUnisonMaxCount, 2, 
+  Oversampling<float>::filterHalfBandFIREquiripple, 
+  false, false)
+{
+  _oversampling.initProcessing(FBFixedBlockSamples);
 }
 
 void
