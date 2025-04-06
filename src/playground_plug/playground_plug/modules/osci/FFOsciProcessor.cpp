@@ -251,7 +251,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         int modSlot = OsciModStartSlot(state.moduleSlot) + src;
         auto const& fmIndex = procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot];
         auto const& fmModulatorBase = procState->dsp.voice[voice].osci[src].unisonOutput[u];
-        if(_voiceState.modSourceFMMode[src] == FFOsciModFMMode::TZ)
+        if (_voiceState.modSourceFMMode[src] == FFOsciModFMMode::TZ)
           for (int s = 0; s < FBFixedBlockSamples; s++)
             fmModulator[s] += fmModulatorBase[s] * fmIndex[s];
         else
@@ -287,7 +287,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           float pwPlain = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm.CV()[s]);
           unisonOutput[u][s] += GenerateSqr(uniPhase[s], uniIncr[s], pwPlain) * topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm.CV()[s]);
         }
-    } else if (_voiceState.type == FFOsciType::DSF)
+    }
+    else if (_voiceState.type == FFOsciType::DSF)
     {
       FBFixedFloatArray dsfDistFreq;
       FBFixedFloatArray dsfDecayPlain;
@@ -312,14 +313,17 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         int modSlot = OsciModStartSlot(state.moduleSlot) + src;
         auto const& amMix = procState->dsp.voice[voice].osciMod.outputAMMix[modSlot];
         auto const& rmModulator = procState->dsp.voice[voice].osci[src].unisonOutput[u];
-        if(_voiceState.modSourceAMMode[src] == FFOsciModAMMode::RM)
+        if (_voiceState.modSourceAMMode[src] == FFOsciModAMMode::RM)
           for (int s = 0; s < FBFixedBlockSamples; s++)
             unisonOutput[u][s] = (1.0f - amMix[s]) * unisonOutput[u][s] + amMix[s] * unisonOutput[u][s] * rmModulator[s];
         else
           for (int s = 0; s < FBFixedBlockSamples; s++)
             unisonOutput[u][s] = (1.0f - amMix[s]) * unisonOutput[u][s] + amMix[s] * unisonOutput[u][s] * (rmModulator[s] * 0.5f + 0.5f);
       }
+  }
 
+  for (int u = 0; u < _voiceState.unisonCount; u++)
+  {
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       float uniPanning = 0.5f + unisonPos[u] * spreadPlain[s];
