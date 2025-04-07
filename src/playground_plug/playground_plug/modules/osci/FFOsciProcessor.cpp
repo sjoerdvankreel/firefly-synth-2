@@ -11,9 +11,6 @@
 
 using namespace juce::dsp;
 
-static inline int constexpr OverSamplingFactor = 2;
-static inline int constexpr OverSamplingTimes = 1 << OverSamplingFactor;
-
 static inline int
 OsciModStartSlot(int osciSlot)
 {
@@ -136,11 +133,18 @@ GenerateDSFBandwidth(
 FFOsciProcessor::
 FFOsciProcessor():
 _oversampling(
-  FFOsciUnisonMaxCount, OverSamplingFactor,
+  FFOsciUnisonMaxCount, FFOsciOverSamplingFactor,
   Oversampling<float>::filterHalfBandFIREquiripple, 
   false, false)
 {
+  // Just to get a hold of juce's internal buffers.
+  std::array<float*, FBFixedBlockSamples> dummyData = {};
+  std::array<std::array<float, FBFixedBlockSamples>, FFOsciUnisonMaxCount> dummyChannelData = {};
+  for (int u = 0; u < FFOsciUnisonMaxCount; u++)
+    dummyData[u] = dummyChannelData[u].data();
+  AudioBlock<float> dummyBlock(dummyData.data(), FFOsciUnisonMaxCount, 0, FBFixedBlockSamples);
   _oversampling.initProcessing(FBFixedBlockSamples);
+  _oversamplingBuffers = _oversampling.processSamplesUp(dummyBlock);
 }
 
 void
@@ -245,10 +249,19 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       unisonPos[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
   }
 
+  int oversamplingTimes = 1;
+  float oversampledRate = sampleRate;
+  if (_voiceState.mod4XOversampling)
+  {
+    oversampledRate *= FFOsciOverSamplingTimes;
+    oversamplingTimes = FFOsciOverSamplingTimes;
+  }
+
   for (int u = 0; u < _voiceState.unisonCount; u++)
   {
-    FBFixedFloatArray fmModulator;
-    fmModulator.Fill(0.0f);
+    std::array<FBFixedFloatArray, FFOsciOverSamplingTimes> fmModulator;
+    for (int os = 0; os < oversamplingTimes; os++)
+      fmModulator[os].Fill(0.0f);
     for (int src = 0; src < state.moduleSlot; src++)
       if (_voiceState.modSourceFMMode[src] != FFOsciModFMMode::Off && _voiceState.modSourceUnisonCount[src] > u)
       {
@@ -256,12 +269,15 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         auto const& fmIndex = procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot];
         auto const& fmModulatorBase = procState->dsp.voice[voice].osci[src].unisonOutput[u];
         if (_voiceState.modSourceFMMode[src] == FFOsciModFMMode::TZ)
-          for (int s = 0; s < FBFixedBlockSamples; s++)
-            fmModulator[s] += fmModulatorBase[s] * fmIndex[s];
+          for (int os = 0; os < oversamplingTimes; os++)
+            for (int s = 0; s < FBFixedBlockSamples; s++)
+              fmModulator[os][s] += fmModulatorBase[os][s] * fmIndex[((os * FBFixedBlockSamples) + s) / oversamplingTimes];
         else
-          for (int s = 0; s < FBFixedBlockSamples; s++)
-            fmModulator[s] += FBToUnipolar(fmModulatorBase[s]) * fmIndex[s];
+          for (int os = 0; os < oversamplingTimes; os++)
+            for (int s = 0; s < FBFixedBlockSamples; s++)
+              fmModulator[os][s] += FBToUnipolar(fmModulatorBase[os][s]) * fmIndex[((os * FBFixedBlockSamples) + s) / oversamplingTimes];
       }
+    }
 
     FBFixedFloatArray uniFreq;
     FBFixedFloatArray uniIncr;

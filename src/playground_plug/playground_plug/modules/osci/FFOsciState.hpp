@@ -17,7 +17,7 @@ class alignas(FBFixedBlockAlign) FFOsciDSPState final
   FFOsciProcessor processor = {};
 public:
   FBFixedFloatAudioArray output = {};
-  std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> unisonOutput = {};
+  std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> unisonOutput = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };
 

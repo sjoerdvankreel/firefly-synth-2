@@ -47,6 +47,7 @@ class FFOsciProcessor final
   FBParkMillerPRNG _prng = {};
   FFOsciVoiceState _voiceState = {};
   juce::dsp::Oversampling<float> _oversampling;
+  juce::dsp::AudioBlock<float> _oversamplingBuffers = {};
   std::array<FFOsciPhase, FFOsciUnisonMaxCount> _unisonPhases = {};
 
 public:
