@@ -191,8 +191,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   {
     int srcOsciSlot = modSlot - modStartSlot;
     auto const& srcOsciParams = procState->param.voice.osci[srcOsciSlot];
-    _voiceState.modOversampling = topo.NormalizedToBoolFast(FFOsciModParam::Oversampling, modParams.block.oversampling[0].Voice()[voice]);
     _voiceState.modSourceUnisonCount[srcOsciSlot] = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
+    _voiceState.modOversampling = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversampling, modParams.block.oversampling[0].Voice()[voice]);
     _voiceState.modSourceAMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, modParams.block.amMode[modSlot].Voice()[voice]);
     _voiceState.modSourceFMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModFMMode>(FFOsciModParam::FMMode, modParams.block.fmMode[modSlot].Voice()[voice]);
   }
@@ -220,7 +220,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   for (int u = 0; u < _voiceState.unisonCount; u++)
     for(int os = 0; os <  oversamplingTimes; os++)
-      unisonOutput[os][u].Fill(0.0f);
+      unisonOutput[u][os].Fill(0.0f);
 
   if (_voiceState.type == FFOsciType::Off)
     return 0;
