@@ -187,12 +187,12 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
   auto const& modParams = procState->param.voice.osciMod[0];
   auto const& modTopo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
+  _voiceState.oversampling = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversampling, modParams.block.oversampling[0].Voice()[voice]);
   for (int modSlot = modStartSlot; modSlot < modStartSlot + state.moduleSlot; modSlot++)
   {
     int srcOsciSlot = modSlot - modStartSlot;
     auto const& srcOsciParams = procState->param.voice.osci[srcOsciSlot];
     _voiceState.modSourceUnisonCount[srcOsciSlot] = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
-    _voiceState.modOversampling = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversampling, modParams.block.oversampling[0].Voice()[voice]);
     _voiceState.modSourceAMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, modParams.block.amMode[modSlot].Voice()[voice]);
     _voiceState.modSourceFMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModFMMode>(FFOsciModParam::FMMode, modParams.block.fmMode[modSlot].Voice()[voice]);
   }
@@ -212,7 +212,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   output.Fill(0.0f);
   int oversamplingTimes = 1;
   float oversampledRate = sampleRate;
-  if (_voiceState.modOversampling)
+  if (_voiceState.oversampling)
   {
     oversampledRate *= FFOsciOverSamplingTimes;
     oversamplingTimes = FFOsciOverSamplingTimes;
@@ -414,7 +414,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   // downsample if oversampled, we don't use the juce buffers if not
   // when not oversampling the first unisonOutput block already contains the output data
   // if oversampling, we copy to juce, and have juce reduce the result into the first unisonOutput block
-  if (_voiceState.modOversampling)
+  if (_voiceState.oversampling)
   {
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)

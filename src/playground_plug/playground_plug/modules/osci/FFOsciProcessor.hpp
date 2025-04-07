@@ -35,7 +35,7 @@ struct FFOsciVoiceState final
   float unisonOffsetPlain = {};
   float unisonRandomPlain = {};
 
-  bool modOversampling = false;
+  bool oversampling = false;
   std::array<int, FFOsciCount - 1> modSourceUnisonCount = {};
   std::array<FFOsciModAMMode, FFOsciCount - 1> modSourceAMMode = {};
   std::array<FFOsciModFMMode, FFOsciCount - 1> modSourceFMMode = {};
