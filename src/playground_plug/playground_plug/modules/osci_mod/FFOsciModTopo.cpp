@@ -32,16 +32,16 @@ FFMakeOsciModTopo()
   result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });
   auto selectModule = [](auto& state) { return &state.voice.osciMod; };
 
-  auto& oversampling4X = result->params[(int)FFOsciModParam::Oversampling4X];
-  oversampling4X.acc = false;
-  oversampling4X.name = "4X Oversampling";
-  oversampling4X.slotCount = 1;
-  oversampling4X.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";
-  oversampling4X.type = FBParamType::Boolean;
-  auto selectOversampling4X = [](auto& module) { return &module.block.oversampling4X; };
-  oversampling4X.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOversampling4X);
-  oversampling4X.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOversampling4X);
-  oversampling4X.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectOversampling4X);
+  auto& oversampling = result->params[(int)FFOsciModParam::Oversampling];
+  oversampling.acc = false;
+  oversampling.name = "4X Oversampling";
+  oversampling.slotCount = 1;
+  oversampling.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";
+  oversampling.type = FBParamType::Boolean;
+  auto selectOversampling = [](auto& module) { return &module.block.oversampling; };
+  oversampling.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOversampling);
+  oversampling.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOversampling);
+  oversampling.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectOversampling);
 
   auto& amMode = result->params[(int)FFOsciModParam::AMMode];
   amMode.acc = false;
