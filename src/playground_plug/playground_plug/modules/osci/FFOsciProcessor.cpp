@@ -213,10 +213,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   output.Fill(0.0f);
   int oversamplingTimes = 1;
   float oversampledRate = sampleRate;
+  float oversamplingTimesFloatInv = 1.0f;
   if (_voiceState.oversampling)
   {
     oversampledRate *= FFOsciOverSamplingTimes;
     oversamplingTimes = FFOsciOverSamplingTimes;
+    oversamplingTimesFloatInv = 1.0f / static_cast<float>(FFOsciOverSamplingTimes);
   }
 
   // Only need to fill the oversampled version as it is the source of modulation.
@@ -289,14 +291,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             for (int s = 0; s < FBFixedBlockSamples; s++)
             {
               int nosIndex = NonOversampledIndex(os, s, oversamplingTimes);
-              fmModulator[os][s] += fmModulatorBase[os][s] * fmIndex[nosIndex];
+              fmModulator[os][s] += fmModulatorBase[os][s] * fmIndex[nosIndex] * oversamplingTimesFloatInv;
             }
         else
           for (int os = 0; os < oversamplingTimes; os++)
             for (int s = 0; s < FBFixedBlockSamples; s++)
             {
               int nosIndex = NonOversampledIndex(os, s, oversamplingTimes);
-              fmModulator[os][s] += FBToUnipolar(fmModulatorBase[os][s]) * fmIndex[nosIndex];
+              fmModulator[os][s] += FBToUnipolar(fmModulatorBase[os][s]) * fmIndex[nosIndex] * oversamplingTimesFloatInv;
             }
       }    
 
