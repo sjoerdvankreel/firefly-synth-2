@@ -150,7 +150,7 @@ _oversampling(
     dummyData[u] = dummyChannelData[u].data();
   AudioBlock<float> dummyBlock(dummyData.data(), FFOsciUnisonMaxCount, 0, FBFixedBlockSamples);
   _oversampling.initProcessing(FBFixedBlockSamples);
-  _oversamplingBuffers = _oversampling.processSamplesUp(dummyBlock);
+  _oversampledBlock = _oversampling.processSamplesUp(dummyBlock);
 }
 
 void
@@ -267,6 +267,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       unisonPos[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
   }
 
+  // individual unison voices are oversampled
+  // if not oversampling we only use the first unisonOutput block
+  // if oversampling we use all of them
   for (int u = 0; u < _voiceState.unisonCount; u++)
   {
     // fm modulation, oversampled
@@ -409,9 +412,19 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   }
 
   // downsample if oversampled, we don't use the juce buffers if not
+  // when not oversampling the first unisonOutput block already contains the output data
+  // if oversampling, we copy to juce, and have juce reduce the result into the first unisonOutput block
   if (_voiceState.modOversampling)
   {
-
+    for (int u = 0; u < _voiceState.unisonCount; u++)
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+          _oversampledBlock.setSample(u, os * FBFixedBlockSamples + s, unisonOutput[u][os][s]);
+    std::array<float*, FFOsciUnisonMaxCount> channelPointers = {};
+    for (int u = 0; u < _voiceState.unisonCount; u++)
+      channelPointers[u] = unisonOutput[u][0].Data().data();
+    AudioBlock<float> downsampled(channelPointers.data(), _voiceState.unisonCount, 0, FBFixedBlockSamples);
+    _oversampling.processSamplesDown(downsampled);
   }
 
   for (int u = 0; u < _voiceState.unisonCount; u++)
