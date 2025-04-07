@@ -399,18 +399,19 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         if (_voiceState.modSourceAMMode[src] == FFOsciModAMMode::RM)
           for (int os = 0; os < oversamplingTimes; os++)
             for (int s = 0; s < FBFixedBlockSamples; s++)
-            {
+            { 
               int nosIndex = NonOversampledIndex(os, s, oversamplingTimes);
-              unisonOutputMaybeOversampled[u][os][s] = (1.0f - amMix[nosIndex]) * unisonOutputMaybeOversampled[u][os][s];
-              unisonOutputMaybeOversampled[u][os][s] += amMix[nosIndex] * unisonOutputMaybeOversampled[u][os][s] * rmModulator[os][s];
+              unisonOutputMaybeOversampled[u][os][s] = 
+                (1.0f - amMix[nosIndex]) * unisonOutputMaybeOversampled[u][os][s] + 
+                amMix[nosIndex] * unisonOutputMaybeOversampled[u][os][s] * rmModulator[os][s];
             }
         else
           for (int os = 0; os < oversamplingTimes; os++)
             for (int s = 0; s < FBFixedBlockSamples; s++)
             {
               int nosIndex = NonOversampledIndex(os, s, oversamplingTimes);
-              unisonOutputMaybeOversampled[u][os][s] = (1.0f - amMix[nosIndex]) * unisonOutputMaybeOversampled[u][os][s];
-              unisonOutputMaybeOversampled[u][os][s] += amMix[nosIndex] * unisonOutputMaybeOversampled[u][os][s] * (rmModulator[os][s] * 0.5f + 0.5f);
+              unisonOutputMaybeOversampled[u][os][s] = (1.0f - amMix[nosIndex]) * unisonOutputMaybeOversampled[u][os][s] + 
+                amMix[nosIndex] * unisonOutputMaybeOversampled[u][os][s] * (rmModulator[os][s] * 0.5f + 0.5f);
             }
       }
   }
