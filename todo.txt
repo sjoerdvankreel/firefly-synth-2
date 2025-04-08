@@ -1,10 +1,8 @@
 move the oversampling switch
-oversample -- maybe choose another oversampler ? juce one seems slow ?
 dedicated fm osci with feedback
 store the selected tab
 hardsync
 fix up the track graph
-osci fm + oversampling
 
 recheck clap mod
 split out the noise/kps osci

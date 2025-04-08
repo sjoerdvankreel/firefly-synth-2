@@ -140,7 +140,7 @@ FFOsciProcessor::
 FFOsciProcessor():
 _oversampling(
   FFOsciUnisonMaxCount, FFOsciOverSamplingFactor,
-  Oversampling<float>::filterHalfBandFIREquiripple, 
+  Oversampling<float>::filterHalfBandPolyphaseIIR, 
   false, false)
 {
   // Just to get a hold of juce's internal buffers.
