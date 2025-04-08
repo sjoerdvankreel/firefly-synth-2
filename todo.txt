@@ -1,3 +1,4 @@
+move the oversampling switch
 oversample -- maybe choose another oversampler ? juce one seems slow ?
 dedicated fm osci with feedback
 store the selected tab
