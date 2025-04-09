@@ -15,8 +15,13 @@ RuntimeDependencies(
   std::vector<int> result;
   for (int i = 0; i < staticParamIndices.size(); i++)
   {
+    // Dependency should have slot count 0 or > slot.
+    auto const& staticDependency = topo->static_.modules[staticModuleIndices.index].params[staticParamIndices[i]];
+    assert(staticDependency.slotCount == 1 || staticDependency.slotCount > slot);
+    int dependencySlot = staticDependency.slotCount == 1 ? 0 : slot;
+
     FBParamTopoIndices indices;
-    indices.param.slot = slot;
+    indices.param.slot = dependencySlot;
     indices.param.index = staticParamIndices[i];
     indices.module = staticModuleIndices;
     if(audio)
