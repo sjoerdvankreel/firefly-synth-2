@@ -405,14 +405,13 @@ FFMakeOsciTopo()
 
   auto& fmIndex = result->params[(int)FFOsciParam::FMIndex];
   fmIndex.acc = true;
-  fmIndex.defaultText = "0.01";
+  fmIndex.defaultText = "0";
   fmIndex.name = "Index";
   fmIndex.tooltip = "FM Index";
   fmIndex.slotCount = FFOsciFMMatrixSize;
   fmIndex.id = "{5CEFAD50-CB71-4E79-B3D6-50B004AD7F03}";
-  fmIndex.type = FBParamType::Linear; // todo
-  fmIndex.Linear().min = 0.01f;
-  fmIndex.Linear().max = 16.0f;
+  fmIndex.type = FBParamType::Log2;
+  fmIndex.Log2().Init(-0.01, 0.01f, 1.01f);
   fmIndex.slotFormatter = FFOsciFMFormatIndexSlot;
   auto selectFMIndex = [](auto& module) { return &module.acc.fmIndex; };
   fmIndex.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndex);

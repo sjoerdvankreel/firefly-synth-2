@@ -392,7 +392,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       for (int m = 0; m < FFOsciFMMatrixSize; m++)
       {
         auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
-        topo.NormalizedToLinearFast(FFOsciParam::FMIndex, fmIndexNorm, fmIndexPlain[m]);
+        topo.NormalizedToLog2Fast(FFOsciParam::FMIndex, fmIndexNorm, fmIndexPlain[m]);
       }
 
       std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> uniIncrOp2And3 = {};
@@ -400,7 +400,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       {
         float op2Freq = uniFreq[s] * fmRatioRealPlain[0][s];
         float op3Freq = op2Freq * fmRatioRealPlain[1][s];
-        uniIncrOp2And3[0][s] = op2Freq / oversampledRate;
+        uniIncrOp2And3[0][s] = op2Freq / oversampledRate; // TODO wasnt it already oversampled?
         uniIncrOp2And3[1][s] = op3Freq / oversampledRate;
       }
 
@@ -429,7 +429,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
           fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
           float phase3 = _unisonPhases[u][2].Next(uniIncrOp2And3[1][nonOversampledIndex], fmModulator[os][s] + fmTo3);
-          float output3 = GenerateSin(phase2);
+          float output3 = GenerateSin(phase3);
 
           unisonOutputMaybeOversampled[u][os][s] = output3;
           _prevUnisonOutputForFM[u][0] = output1;
