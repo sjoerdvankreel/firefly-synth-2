@@ -212,12 +212,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   output.Fill(0.0f);
   int oversamplingTimes = 1;
   float oversampledRate = sampleRate;
-  float oversamplingTimesFloatInv = 1.0f;
   if (_voiceState.oversampling)
   {
     oversampledRate *= FFOsciOverSamplingTimes;
     oversamplingTimes = FFOsciOverSamplingTimes;
-    oversamplingTimesFloatInv = 1.0f / static_cast<float>(FFOsciOverSamplingTimes);
   }
 
   // Only need to fill the oversampled version as it is the source of modulation.
@@ -288,11 +286,11 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         if (_voiceState.modSourceFMMode[src] == FFOsciModFMMode::TZ)
           for (int s = 0; s < FBFixedBlockSamples; s++)
             for (int os = 0; os < oversamplingTimes; os++)
-              fmModulator[os][s] += fmModulatorBase[os][s] * fmIndex[s] * oversamplingTimesFloatInv;
+              fmModulator[os][s] += fmModulatorBase[os][s] * fmIndex[s];
         else
           for (int s = 0; s < FBFixedBlockSamples; s++)
             for (int os = 0; os < oversamplingTimes; os++)
-              fmModulator[os][s] += FBToUnipolar(fmModulatorBase[os][s]) * fmIndex[s] * oversamplingTimesFloatInv;
+              fmModulator[os][s] += FBToUnipolar(fmModulatorBase[os][s]) * fmIndex[s];
       }    
 
     // unison pitch, freq and delta, non-oversampled
