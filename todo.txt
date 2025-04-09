@@ -1,3 +1,4 @@
+fm index must not be processed per unison voice
 real/rational switch fm ratio
 move the oversampling switch
 dedicated fm osci with feedback
