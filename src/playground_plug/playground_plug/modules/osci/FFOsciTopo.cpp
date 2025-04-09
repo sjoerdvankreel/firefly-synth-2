@@ -388,9 +388,9 @@ FFMakeOsciTopo()
   fmIndex.name = "Ratio";
   fmIndex.tooltip = "FM Ratio";
   fmIndex.slotCount = FFOsciFMOperatorCount - 1;
-  fmIndex.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
+  fmIndex.id = "{5CEFAD50-CB71-4E79-B3D6-50B004AD7F03}";
   fmIndex.type = FBParamType::Linear; // todo
-  fmIndex.Linear().min = 0.1f;
+  fmIndex.Linear().min = 0.01f;
   fmIndex.Linear().max = 16.0f;
   auto selectFMIndex = [](auto& module) { return &module.acc.fmIndex; };
   fmIndex.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndex);

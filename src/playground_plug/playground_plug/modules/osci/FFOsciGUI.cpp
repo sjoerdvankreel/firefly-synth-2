@@ -139,14 +139,54 @@ MakeSectionDSF(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
+MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
+{
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 1, 1, 0, 1, 1, 1 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Ratio"));
+  for (int i = 0; i < 2; i++)
+  {
+    auto fmRatioReal = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMRatioReal, i });
+    grid->Add(0, 2 + i, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmRatioReal));
+  }
+  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("1>1/2/3"));
+  for (int i = 0; i < 3; i++)
+  {
+    auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
+    grid->Add(0, 5 + i, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmIndex));
+  }
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("2>1/2/3"));
+  for (int i = 3; i < 6; i++)
+  {
+    auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
+    grid->Add(1, 1 + i, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmIndex));
+  }
+  grid->Add(1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("3>1/2/3"));
+  for (int i = 6; i < 9; i++)
+  {
+    auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
+    grid->Add(1, 5 + i, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmIndex));
+  }
+  grid->MarkSection({ 0, 0, 2, 8 });
+
+  // TODO helper function
+  FBParamsDependencies dependencies = {};
+  FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
+  dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
+}
+
+static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  // TODO move marksection to here
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 1 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeSectionGLFOToGain(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeSectionUnison(plugGUI, moduleSlot));
   grid->Add(0, 3, MakeSectionBasic(plugGUI, moduleSlot));
   grid->Add(0, 3, MakeSectionDSF(plugGUI, moduleSlot));
+  grid->Add(0, 3, MakeSectionFM(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
