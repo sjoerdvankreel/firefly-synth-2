@@ -1,3 +1,4 @@
+do expo fm
 real/rational switch fm ratio
 move the oversampling switch
 dedicated fm osci with feedback
