@@ -16,11 +16,8 @@ inline float
 FFOsciPhase::Next(float incr, float fmModulator)
 {
   float y = _x;
-  _x += incr;
+  _x += incr + fmModulator;
   FBPhaseWrap(_x);
   assert(0.0f <= _x && _x < 1.0f);
-  y += fmModulator;
-  FBPhaseWrap(y);
-  assert(0.0f <= y && y < 1.0f);
   return y;
 }
