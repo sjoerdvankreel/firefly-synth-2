@@ -1,7 +1,8 @@
+real/rational switch fm ratio
 move the oversampling switch
 dedicated fm osci with feedback
 store the selected tab
-hardsync
+hard sync
 fix up the track graph
 
 recheck clap mod

@@ -365,6 +365,38 @@ FFMakeOsciTopo()
   dsfDecay.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDecay);
   dsfDecay.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
 
+  auto& fmRatioReal = result->params[(int)FFOsciParam::FMRatioReal];
+  fmRatioReal.acc = true;
+  fmRatioReal.defaultText = "1";
+  fmRatioReal.name = "Ratio";
+  fmRatioReal.tooltip = "FM Ratio";
+  fmRatioReal.slotCount = FFOsciFMOperatorCount - 1;
+  fmRatioReal.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
+  fmRatioReal.type = FBParamType::Linear; // todo
+  fmRatioReal.Linear().min = 0.1f;
+  fmRatioReal.Linear().max = 16.0f;
+  auto selectFMRatioReal = [](auto& module) { return &module.acc.fmRatioReal; };
+  fmRatioReal.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioReal);
+  fmRatioReal.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMRatioReal);
+  fmRatioReal.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMRatioReal);
+  fmRatioReal.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+
+  auto& fmIndex = result->params[(int)FFOsciParam::FMIndex];
+  fmIndex.acc = true;
+  fmIndex.defaultText = "0.01";
+  fmIndex.name = "Ratio";
+  fmIndex.tooltip = "FM Ratio";
+  fmIndex.slotCount = FFOsciFMOperatorCount - 1;
+  fmIndex.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
+  fmIndex.type = FBParamType::Linear; // todo
+  fmIndex.Linear().min = 0.1f;
+  fmIndex.Linear().max = 16.0f;
+  auto selectFMIndex = [](auto& module) { return &module.acc.fmIndex; };
+  fmIndex.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndex);
+  fmIndex.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMIndex);
+  fmIndex.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
+  fmIndex.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+
   auto& gLFOToGain = result->params[(int)FFOsciParam::GLFOToGain];
   gLFOToGain.acc = true;
   gLFOToGain.name = "GLFO To Gain";
