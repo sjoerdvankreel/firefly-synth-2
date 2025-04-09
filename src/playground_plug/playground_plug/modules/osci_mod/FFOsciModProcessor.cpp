@@ -41,7 +41,7 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
     if (_voiceState.fmMode[i] != FFOsciModFMMode::Off)
     {
       auto const& fmIndexNorm = procParams.acc.fmIndex[i].Voice()[voice];
-      topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, outputFMIndex[i]);
+      topo.NormalizedToLinearFast(FFOsciModParam::FMIndex, fmIndexNorm, outputFMIndex[i]);
     }
   }
 
