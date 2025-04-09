@@ -315,13 +315,15 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
 
     // unison phase including external fm mod, oversampled
+    // for dedicated fm-osci, we need to step 3 phases together, see below
     std::array<FBFixedFloatArray, FFOsciOverSamplingTimes> uniPhase;
-    for (int os = 0; os < oversamplingTimes; os++)
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-      {
-        int nosIndex = NonOversampledIndex(os, s, oversamplingTimes);
-        uniPhase[os][s] = _unisonPhases[u][0].Next(uniIncr[nosIndex], fmModulator[os][s]);
-      }
+    if(_voiceState.type == FFOsciType::Basic || _voiceState.type == FFOsciType::DSF)
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
+        {
+          int nosIndex = NonOversampledIndex(os, s, oversamplingTimes);
+          uniPhase[os][s] = _unisonPhases[u][0].Next(uniIncr[nosIndex], fmModulator[os][s]);
+        }
 
     // oscillator core, oversampled 
     if (_voiceState.type == FFOsciType::Basic)
