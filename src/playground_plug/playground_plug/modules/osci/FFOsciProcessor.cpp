@@ -176,8 +176,11 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     float random = _voiceState.unisonRandomPlain;
     float unisonPhase = u * _voiceState.unisonOffsetPlain / _voiceState.unisonCount;
     float unisonRandom = ((1.0f - random) + random * _prng.Next()) * unisonPhase;
-    for(int o = 0; o < FFOsciFMOperatorCount; o++)
+    for (int o = 0; o < FFOsciFMOperatorCount; o++)
+    {
+      _prevUnisonOutputForFM[u][o] = 0.0f;
       _unisonPhases[u][o] = FFOsciPhase(unisonRandom);
+    }
   }
 
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
@@ -377,6 +380,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else if (_voiceState.type == FFOsciType::FM)
     {
+      // dedicated 3-op fm osci with feedback
       std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> fmRatioRealPlain;
       for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
       {
@@ -390,6 +394,48 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
         topo.NormalizedToLinearFast(FFOsciParam::FMIndex, fmIndexNorm, fmIndexPlain[m]);
       }
+
+      std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> uniIncrOp2And3 = {};
+      for (int s = 0; s < FBFixedBlockSamples; s++)
+      {
+        float op2Freq = uniFreq[s] * fmRatioRealPlain[0][s];
+        float op3Freq = op2Freq * fmRatioRealPlain[1][s];
+        uniIncrOp2And3[0][s] = op2Freq / oversampledRate;
+        uniIncrOp2And3[1][s] = op3Freq / oversampledRate;
+      }
+
+      int oversampledIndex = 0;
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
+        {
+          int nonOversampledIndex = oversampledIndex / oversamplingTimes;
+
+          float fmTo1 = 0.0f;
+          fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[u][0];
+          fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
+          fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+          float phase1 = _unisonPhases[u][0].Next(uniIncr[nonOversampledIndex], fmModulator[os][s] + fmTo1);
+          float output1 = GenerateSin(phase1);
+
+          float fmTo2 = 0.0f;
+          fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
+          fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
+          fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+          float phase2 = _unisonPhases[u][1].Next(uniIncrOp2And3[0][nonOversampledIndex], fmModulator[os][s] + fmTo2);
+          float output2 = GenerateSin(phase2);
+
+          float fmTo3 = 0.0f;
+          fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
+          fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
+          fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+          float phase3 = _unisonPhases[u][2].Next(uniIncrOp2And3[1][nonOversampledIndex], fmModulator[os][s] + fmTo3);
+          float output3 = GenerateSin(phase2);
+
+          unisonOutputMaybeOversampled[u][os][s] = output3;
+          _prevUnisonOutputForFM[u][0] = output1;
+          _prevUnisonOutputForFM[u][1] = output2;
+          _prevUnisonOutputForFM[u][2] = output3;
+        }
     }
 
     // am modulation, oversampled
