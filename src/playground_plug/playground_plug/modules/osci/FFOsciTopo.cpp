@@ -9,8 +9,8 @@ FFOsciFMFormatRatioSlot(int slot)
 {
   switch (slot)
   {
-  case 0: return "1>2";
-  case 1: return "2>3";
+  case 0: return "1:2";
+  case 1: return "2:3";
   default: assert(false); return "";
   }
 }

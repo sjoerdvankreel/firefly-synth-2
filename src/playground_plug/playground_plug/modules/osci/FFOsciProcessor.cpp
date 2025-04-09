@@ -395,13 +395,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         topo.NormalizedToLog2Fast(FFOsciParam::FMIndex, fmIndexNorm, fmIndexPlain[m]);
       }
 
-      std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> uniIncrOp2And3 = {};
+      // op3 is output
+      std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> uniIncrOp1And2 = {};
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
-        float op2Freq = uniFreq[s] * fmRatioRealPlain[0][s];
-        float op3Freq = op2Freq * fmRatioRealPlain[1][s];
-        uniIncrOp2And3[0][s] = op2Freq / oversampledRate; // TODO wasnt it already oversampled?
-        uniIncrOp2And3[1][s] = op3Freq / oversampledRate;
+        float op2Freq = uniFreq[s] / fmRatioRealPlain[1][s];
+        float op1Freq = op2Freq / fmRatioRealPlain[0][s];
+        uniIncrOp1And2[0][s] = op1Freq / oversampledRate; // TODO wasnt it already oversampled?
+        uniIncrOp1And2[1][s] = op2Freq / oversampledRate;
       }
 
       int oversampledIndex = 0;
@@ -414,22 +415,22 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[u][0];
           fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
           fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
-          float phase1 = _unisonPhases[u][0].Next(uniIncr[nonOversampledIndex], fmModulator[os][s] + fmTo1);
-          float output1 = GenerateSin(phase1);
+          float phase1 = _unisonPhases[u][0].Next(uniIncrOp1And2[0][nonOversampledIndex], fmModulator[os][s]);
+          float output1 = GenerateSin(phase1 + fmTo1);
 
           float fmTo2 = 0.0f;
           fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
           fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
           fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
-          float phase2 = _unisonPhases[u][1].Next(uniIncrOp2And3[0][nonOversampledIndex], fmModulator[os][s] + fmTo2);
-          float output2 = GenerateSin(phase2);
+          float phase2 = _unisonPhases[u][1].Next(uniIncrOp1And2[1][nonOversampledIndex], fmModulator[os][s]);
+          float output2 = GenerateSin(phase2 + fmTo2);
 
           float fmTo3 = 0.0f;
           fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
           fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
           fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
-          float phase3 = _unisonPhases[u][2].Next(uniIncrOp2And3[1][nonOversampledIndex], fmModulator[os][s] + fmTo3);
-          float output3 = GenerateSin(phase3);
+          float phase3 = _unisonPhases[u][2].Next(uniIncr[nonOversampledIndex], fmModulator[os][s]);
+          float output3 = GenerateSin(phase3 + fmTo3); // todo need this also for the global mod?
 
           unisonOutputMaybeOversampled[u][os][s] = output3;
           _prevUnisonOutputForFM[u][0] = output1;
