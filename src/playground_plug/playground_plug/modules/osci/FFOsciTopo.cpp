@@ -4,6 +4,25 @@
 #include <playground_plug/modules/oscis_graph/FFOscisGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
+static std::string
+FFOsciFMFormatRatioSlot(int slot)
+{
+  switch (slot)
+  {
+  case 0: return "1>2";
+  case 1: return "2>3";
+  default: assert(false); return "";
+  }
+}
+
+static std::string
+FFOsciFMFormatIndexSlot(int slot)
+{
+  assert(0 <= slot && slot < FFOsciFMMatrixSize);
+  return std::to_string(slot / FFOsciFMOperatorCount + 1) + ">" + 
+    std::to_string(slot % FFOsciFMOperatorCount + 1);
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeOsciTopo()
 {
@@ -28,7 +47,8 @@ FFMakeOsciTopo()
   type.List().items = {
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
     { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Basic" },
-    { "{19945EB6-4676-492A-BC38-E586A6D3BF6F}", "DSF" } };
+    { "{19945EB6-4676-492A-BC38-E586A6D3BF6F}", "DSF" } ,
+    { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", "FM" } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectType);
   type.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectType);
@@ -376,6 +396,7 @@ FFMakeOsciTopo()
   fmRatioReal.type = FBParamType::Linear; // todo
   fmRatioReal.Linear().min = 0.1f;
   fmRatioReal.Linear().max = 16.0f;
+  fmRatioReal.slotFormatter = FFOsciFMFormatRatioSlot;
   auto selectFMRatioReal = [](auto& module) { return &module.acc.fmRatioReal; };
   fmRatioReal.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioReal);
   fmRatioReal.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMRatioReal);
@@ -385,13 +406,14 @@ FFMakeOsciTopo()
   auto& fmIndex = result->params[(int)FFOsciParam::FMIndex];
   fmIndex.acc = true;
   fmIndex.defaultText = "0.01";
-  fmIndex.name = "Ratio";
-  fmIndex.tooltip = "FM Ratio";
+  fmIndex.name = "Index";
+  fmIndex.tooltip = "FM Index";
   fmIndex.slotCount = FFOsciFMMatrixSize;
   fmIndex.id = "{5CEFAD50-CB71-4E79-B3D6-50B004AD7F03}";
   fmIndex.type = FBParamType::Linear; // todo
   fmIndex.Linear().min = 0.01f;
   fmIndex.Linear().max = 16.0f;
+  fmIndex.slotFormatter = FFOsciFMFormatIndexSlot;
   auto selectFMIndex = [](auto& module) { return &module.acc.fmIndex; };
   fmIndex.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndex);
   fmIndex.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMIndex);

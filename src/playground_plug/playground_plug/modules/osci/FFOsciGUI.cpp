@@ -147,25 +147,25 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   for (int i = 0; i < 2; i++)
   {
     auto fmRatioReal = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMRatioReal, i });
-    grid->Add(0, 2 + i, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmRatioReal));
+    grid->Add(0, 2 + i, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioReal, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("1>1/2/3"));
   for (int i = 0; i < 3; i++)
   {
     auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
-    grid->Add(0, 5 + i, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmIndex));
+    grid->Add(0, 5 + i, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("2>1/2/3"));
   for (int i = 3; i < 6; i++)
   {
     auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
-    grid->Add(1, 1 + i, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmIndex));
+    grid->Add(1, 1 + i - 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->Add(1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("3>1/2/3"));
   for (int i = 6; i < 9; i++)
   {
     auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
-    grid->Add(1, 5 + i, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmIndex));
+    grid->Add(1, 5 + i - 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ 0, 0, 2, 8 });
 
