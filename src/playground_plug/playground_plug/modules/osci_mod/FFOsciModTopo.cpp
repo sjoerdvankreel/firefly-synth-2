@@ -98,7 +98,7 @@ FFMakeOsciModTopo()
   fmIndex.id = "{9E37D313-1F48-4559-A6DD-01B235240F44}";
   fmIndex.type = FBParamType::Linear;
   fmIndex.Linear().min = 0.0f;
-  fmIndex.Linear().max = 64.0f;
+  fmIndex.Linear().max = 16.0f;
   fmIndex.slotFormatter = FFOsciModFormatSlot;
   auto selectFMIndex = [](auto& module) { return &module.acc.fmIndex; };
   fmIndex.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndex);
