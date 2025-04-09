@@ -177,11 +177,13 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
 
   _phase = {};
   _prng = FBParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
-  for (int i = 0; i < _voiceState.unisonCount; i++)
+  for (int u = 0; u < _voiceState.unisonCount; u++)
   {
     float random = _voiceState.unisonRandomPlain;
-    float unisonPhase = i * _voiceState.unisonOffsetPlain / _voiceState.unisonCount;
-    _unisonPhases[i] = FFOsciPhase(((1.0f - random) + random * _prng.Next()) * unisonPhase);
+    float unisonPhase = u * _voiceState.unisonOffsetPlain / _voiceState.unisonCount;
+    float unisonRandom = ((1.0f - random) + random * _prng.Next()) * unisonPhase;
+    for(int o = 0; o < FFOsciFMOperatorCount; o++)
+      _unisonPhases[u][o] = FFOsciPhase(unisonRandom);
   }
 
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
@@ -318,7 +320,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
         int nosIndex = NonOversampledIndex(os, s, oversamplingTimes);
-        uniPhase[os][s] = _unisonPhases[u].Next(uniIncr[nosIndex], fmModulator[os][s]);
+        uniPhase[os][s] = _unisonPhases[u][0].Next(uniIncr[nosIndex], fmModulator[os][s]);
       }
 
     // oscillator core, oversampled 

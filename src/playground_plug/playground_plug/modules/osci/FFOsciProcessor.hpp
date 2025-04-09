@@ -48,7 +48,7 @@ class FFOsciProcessor final
   FFOsciVoiceState _voiceState = {};
   juce::dsp::Oversampling<float> _oversampling;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
-  std::array<FFOsciPhase, FFOsciUnisonMaxCount> _unisonPhases = {};
+  std::array<std::array<FFOsciPhase, FFOsciFMOperatorCount>, FFOsciUnisonMaxCount> _unisonPhases = {};
 
 public:
   FFOsciProcessor();
