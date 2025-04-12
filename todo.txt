@@ -1,4 +1,3 @@
-unison loop inside for fm
 real/rational switch fm ratio
 move the oversampling switch
 store the selected tab

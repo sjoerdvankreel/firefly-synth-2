@@ -549,5 +549,15 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.basicSawGain[0][voice] = basicSawGainNorm.Last();
   exchangeParams.acc.basicTriGain[0][voice] = basicTriGainNorm.Last();
   exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGainNorm.Last();
+  for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
+  {
+    auto const& fmRatioRealNorm = procParams.acc.fmRatioReal[o].Voice()[voice];
+    exchangeParams.acc.fmRatioReal[o][voice] = fmRatioRealNorm.Last();
+  }
+  for (int m = 0; m < FFOsciFMMatrixSize; m++)
+  {
+    auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
+    exchangeParams.acc.fmIndex[m][voice] = fmIndexNorm.Last();
+  }
   return FBFixedBlockSamples;
 }
