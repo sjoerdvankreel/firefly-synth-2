@@ -353,7 +353,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           uniPhases[u][os][s] = _unisonPhases[u][0].Next(uniIncrs[u][oversampledIndex / oversamplingTimes], fmModulators[u][os][s]);
     }
 
-  // per-unison-voice oscillator core, oversampled
+  // per-unison-voice basic and dsf oscillator core, oversampled
   // basic and dsf should vectorize well this way
   if (_voiceState.type == FFOsciType::Basic)
   {
@@ -405,6 +405,58 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             dsfDistFreqs[u][s], dsfMaxOvertones[u][s], _voiceState.dsfBandwidthPlain);
   }
 
+  // per-unison-voice fm oscillator core, oversampled
+  // there is a data dependency (because of feedback fm)
+  // which prevents vectorization, so pull the unison loop
+  // to inner and hope to get some simd out of it
+  else if (_voiceState.type == FFOsciType::FM)
+  {
+    // dedicated 3-op fm osci with feedback, op3 is output
+    std::array<std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1>, FFOsciUnisonMaxCount> uniIncrsOp1And2 = {};
+    for (int u = 0; u < _voiceState.unisonCount; u++)
+      for (int s = 0; s < FBFixedBlockSamples; s++)
+      {
+        float op2Freq = uniFreqs[u][s] / fmRatioRealPlain[1][s];
+        float op1Freq = op2Freq / fmRatioRealPlain[0][s];
+        uniIncrsOp1And2[u][0][s] = op1Freq / oversampledRate;
+        uniIncrsOp1And2[u][1][s] = op2Freq / oversampledRate;
+      }
+
+    int oversampledIndex = 0;
+    for (int os = 0; os < oversamplingTimes; os++)
+      for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
+        for (int u = 0; u < _voiceState.unisonCount; u++)
+        {
+          int nonOversampledIndex = oversampledIndex / oversamplingTimes;
+
+          float fmTo1 = 0.0f;
+          fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[u][0];
+          fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
+          fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+          float phase1 = _unisonPhases[u][0].Next(uniIncrsOp1And2[u][0][nonOversampledIndex], fmModulators[u][os][s] + fmTo1);
+          float output1 = GenerateSin(phase1);
+
+          float fmTo2 = 0.0f;
+          fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
+          fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
+          fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+          float phase2 = _unisonPhases[u][1].Next(uniIncrsOp1And2[u][1][nonOversampledIndex], fmModulators[u][os][s] + fmTo2);
+          float output2 = GenerateSin(phase2);
+
+          float fmTo3 = 0.0f;
+          fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
+          fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
+          fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+          float phase3 = _unisonPhases[u][2].Next(uniIncrs[u][nonOversampledIndex], fmModulators[u][os][s] + fmTo3);
+          float output3 = GenerateSin(phase3);
+
+          unisonOutputMaybeOversampled[u][os][s] = output3;
+          _prevUnisonOutputForFM[u][0] = output1;
+          _prevUnisonOutputForFM[u][1] = output2;
+          _prevUnisonOutputForFM[u][2] = output3;
+        }
+  }
+
   // am modulation, oversampled
   for (int src = 0; src < state.moduleSlot; src++)
     for (int u = 0; u < _voiceState.unisonCount; u++)
@@ -425,55 +477,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
               unisonOutputMaybeOversampled[u][os][s] = (1.0f - amMix[s]) * unisonOutputMaybeOversampled[u][os][s] + 
                 amMix[s] * unisonOutputMaybeOversampled[u][os][s] * (rmModulator[os][s] * 0.5f + 0.5f);
       }  
-
-#if 0
-
-    else if (_voiceState.type == FFOsciType::FM)
-    {
-      // dedicated 3-op fm osci with feedback, op3 is output
-      std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> uniIncrOp1And2 = {};
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-      {
-        float op2Freq = uniFreq[s] / fmRatioRealPlain[1][s];
-        float op1Freq = op2Freq / fmRatioRealPlain[0][s];
-        uniIncrOp1And2[0][s] = op1Freq / oversampledRate;
-        uniIncrOp1And2[1][s] = op2Freq / oversampledRate;
-      }
-
-      int oversampledIndex = 0;
-      for (int os = 0; os < oversamplingTimes; os++)
-        for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
-        {
-          int nonOversampledIndex = oversampledIndex / oversamplingTimes;
-
-          float fmTo1 = 0.0f;
-          fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[u][0];
-          fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
-          fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
-          float phase1 = _unisonPhases[u][0].Next(uniIncrOp1And2[0][nonOversampledIndex], fmModulator[os][s] + fmTo1);
-          float output1 = GenerateSin(phase1);
-
-          float fmTo2 = 0.0f;
-          fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
-          fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
-          fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
-          float phase2 = _unisonPhases[u][1].Next(uniIncrOp1And2[1][nonOversampledIndex], fmModulator[os][s] + fmTo2);
-          float output2 = GenerateSin(phase2);
-
-          float fmTo3 = 0.0f;
-          fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
-          fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
-          fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
-          float phase3 = _unisonPhases[u][2].Next(uniIncr[nonOversampledIndex], fmModulator[os][s] + fmTo3);
-          float output3 = GenerateSin(phase3);
-
-          unisonOutputMaybeOversampled[u][os][s] = output3;
-          _prevUnisonOutputForFM[u][0] = output1;
-          _prevUnisonOutputForFM[u][1] = output2;
-          _prevUnisonOutputForFM[u][2] = output3;
-        }
-    }
-#endif
 
   // downsample if oversampled, or just plain copy if not
   if (!_voiceState.oversampling)
