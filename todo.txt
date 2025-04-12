@@ -1,7 +1,6 @@
-fm index must not be processed per unison voice
+unison loop inside for fm
 real/rational switch fm ratio
 move the oversampling switch
-dedicated fm osci with feedback
 store the selected tab
 hard sync
 fix up the track graph
