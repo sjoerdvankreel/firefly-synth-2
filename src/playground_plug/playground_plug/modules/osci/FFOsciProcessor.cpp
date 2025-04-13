@@ -290,7 +290,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
       {
         auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
-        topo.NormalizedToLinearFast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, fmRatioPlain[o]);
+        topo.NormalizedToLog2Fast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, fmRatioPlain[o]);
       }
   }
 

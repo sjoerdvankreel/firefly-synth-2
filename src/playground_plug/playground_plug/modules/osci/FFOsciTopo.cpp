@@ -439,9 +439,8 @@ FFMakeOsciTopo()
   fmRatioFree.tooltip = "FM Ratio";
   fmRatioFree.slotCount = FFOsciFMOperatorCount - 1;
   fmRatioFree.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
-  fmRatioFree.type = FBParamType::Linear;
-  fmRatioFree.Linear().min = 1.0f / FFOsciFMRatioCount;
-  fmRatioFree.Linear().max = FFOsciFMRatioCount;
+  fmRatioFree.type = FBParamType::Log2;
+  fmRatioFree.Log2().Init(0.0f, 1.0f / FFOsciFMRatioCount, FFOsciFMRatioCount);
   fmRatioFree.slotFormatter = FFOsciFMFormatRatioSlot;
   auto selectFMRatioFree = [](auto& module) { return &module.acc.fmRatioFree; };
   fmRatioFree.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioFree);
