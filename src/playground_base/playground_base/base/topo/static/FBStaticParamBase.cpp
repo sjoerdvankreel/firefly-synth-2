@@ -25,6 +25,7 @@ FBStaticParamBase::ItemsNonRealTime() const
   case FBParamType::List: return list;
   case FBParamType::Bars: return bars;
   case FBParamType::Note: return note;
+  case FBParamType::Discrete: return discrete;
   default: assert(false); return *static_cast<FBItemsParamNonRealTime const*>(nullptr);
   }
 }

@@ -1,5 +1,7 @@
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
 
+using namespace juce;
+
 bool 
 FBDiscreteParamNonRealTime::IsItems() const
 {
@@ -47,6 +49,15 @@ std::string
 FBDiscreteParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
 {
   return std::to_string(static_cast<int>(std::round(plain)));
+}
+
+PopupMenu
+FBDiscreteParamNonRealTime::MakePopupMenu() const
+{
+  PopupMenu result;
+  for (int i = 0; i < ValueCount(); i++)
+    result.addItem(i + 1, PlainToText(FBTextDisplay::Text, i));
+  return result;
 }
 
 std::optional<double>

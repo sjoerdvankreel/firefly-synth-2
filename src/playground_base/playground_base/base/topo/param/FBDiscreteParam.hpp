@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
+#include <playground_base/base/topo/param/FBItemsParamNonRealTime.hpp>
 
 #include <cmath>
 #include <string>
@@ -17,13 +18,14 @@ struct FBDiscreteParam
 
 struct FBDiscreteParamNonRealTime final :
 public FBDiscreteParam,
-public FBParamNonRealTime
+public FBItemsParamNonRealTime
 {
   bool IsItems() const override;
   bool IsStepped() const override;
   int ValueCount() const override;
   FBEditType GUIEditType() const override;
   FBEditType AutomationEditType() const override;
+  juce::PopupMenu MakePopupMenu() const override;
 
   double PlainToNormalized(double plain) const override;
   double NormalizedToPlain(double normalized) const override;
