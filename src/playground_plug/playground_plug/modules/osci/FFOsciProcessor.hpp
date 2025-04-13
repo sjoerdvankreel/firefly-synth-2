@@ -56,6 +56,28 @@ class FFOsciProcessor final
   std::array<std::array<FFOsciPhase, FFOsciFMOperatorCount>, FFOsciUnisonMaxCount> _unisonPhases = {};
   std::array<std::array<float, FFOsciFMOperatorCount>, FFOsciUnisonMaxCount> _prevUnisonOutputForFM = {};
 
+  void ProcessBasic(
+    FBModuleProcState& state,
+    int oversamplingTimes,
+    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniIncrs,
+    std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> const& uniPhases);
+
+  void ProcessDSF(
+    FBModuleProcState& state,
+    int oversamplingTimes,
+    float oversampledRate,
+    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniFreqs,
+    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniIncrs,
+    std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> const& uniPhases);
+
+  void ProcessFM(
+    FBModuleProcState& state,
+    int oversamplingTimes,
+    float oversampledRate,
+    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniFreqs,
+    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniIncrs,
+    std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> const& fmModulators);
+
 public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
