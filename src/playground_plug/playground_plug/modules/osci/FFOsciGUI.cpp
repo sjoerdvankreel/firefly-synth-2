@@ -144,23 +144,23 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 });
   
+  auto fmExp = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMExp, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmExp));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmExp));
+
   auto fmRatioMode = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMRatioMode, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmRatioMode));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmRatioMode));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmRatioMode));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmRatioMode));
   auto fmRatioRatio0 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMRatioRatio, 0 });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(fmRatioRatio0->static_.slotFormatter(0)));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(fmRatioRatio0->static_.slotFormatter(1)));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(fmRatioRatio0->static_.slotFormatter(0)));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(fmRatioRatio0->static_.slotFormatter(1)));
   for (int i = 0; i < 2; i++)
   {
     auto fmRatioRatio = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMRatioRatio, i });
-    grid->Add(0 + i, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmRatioRatio));
+    grid->Add(0 + i, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmRatioRatio));
     auto fmRatioFree = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMRatioFree, i });
-    grid->Add(0 + i, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioFree, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(0 + i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioFree, Slider::SliderStyle::LinearHorizontal));
   }
-
-  auto fmExp = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMExp, 0 });
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmExp));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmExp));
 
   grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("1>1/2/3"));
   auto fmIndex11 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 0 });
