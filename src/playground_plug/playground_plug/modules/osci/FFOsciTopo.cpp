@@ -451,6 +451,7 @@ FFMakeOsciTopo()
   fmRatioRatio.id = "{9F79D937-E295-41FC-ACFE-F085E12DFF90}";
   fmRatioRatio.type = FBParamType::Discrete;
   fmRatioRatio.slotFormatter = FFOsciFMFormatRatioSlot;
+  fmRatioRatio.Discrete().subMenuItemCount = FFOsciFMRatioCount;
   fmRatioRatio.Discrete().valueCount = FFOsciFMRatioCount * FFOsciFMRatioCount;
   fmRatioRatio.Discrete().valueFormatter = FFOsciFMFormatRatioValue;
   auto selectFMRatioRatio = [](auto& module) { return &module.block.fmRatioRatio; };

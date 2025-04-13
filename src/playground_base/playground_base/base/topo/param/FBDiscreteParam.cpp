@@ -57,9 +57,19 @@ FBDiscreteParamNonRealTime::PlainToText(FBTextDisplay display, double plain) con
 PopupMenu
 FBDiscreteParamNonRealTime::MakePopupMenu() const
 {
+  int j = 0;
   PopupMenu result;
-  for (int i = 0; i < ValueCount(); i++)
-    result.addItem(i + 1, PlainToText(FBTextDisplay::Text, i));
+  PopupMenu subMenu;
+  for (int i = 0; i < ValueCount(); i++, j++)
+  {
+    subMenu.addItem(i + 1, PlainToText(FBTextDisplay::Text, i + valueOffset));
+    if (j == ValueCount() - 1 || j == subMenuItemCount - 1)
+    {
+      result.addSubMenu(std::to_string(i + 1 + valueOffset - subMenuItemCount), subMenu);
+      subMenu = {};
+      j = -1;
+    }
+  }
   return result;
 }
 

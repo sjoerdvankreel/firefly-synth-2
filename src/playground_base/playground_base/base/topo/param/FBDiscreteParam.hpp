@@ -16,6 +16,7 @@ struct FBDiscreteParam
 {
   int valueCount = {};
   int valueOffset = {};
+  int subMenuItemCount = {};
   FBParamValueFormatter valueFormatter = {};
   float PlainToNormalizedFast(int plain) const;
   int NormalizedToPlainFast(float normalized) const;

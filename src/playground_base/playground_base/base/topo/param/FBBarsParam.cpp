@@ -66,7 +66,6 @@ FBBarsParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& te
 PopupMenu
 FBBarsParamNonRealTime::MakePopupMenu() const
 {
-  int k = 0;
   PopupMenu result;
   PopupMenu subMenu;
   for (int i = 0; i < items.size(); i++)
