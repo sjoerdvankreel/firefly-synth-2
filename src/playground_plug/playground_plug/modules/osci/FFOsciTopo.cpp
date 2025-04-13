@@ -420,22 +420,22 @@ FFMakeOsciTopo()
   fmRatioMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMRatioMode);
   fmRatioMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
 
-  auto& fmRatioReal = result->params[(int)FFOsciParam::FMRatioReal];
-  fmRatioReal.acc = true;
-  fmRatioReal.defaultText = "1";
-  fmRatioReal.name = "Ratio";
-  fmRatioReal.tooltip = "FM Ratio";
-  fmRatioReal.slotCount = FFOsciFMOperatorCount - 1;
-  fmRatioReal.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
-  fmRatioReal.type = FBParamType::Linear; // todo
-  fmRatioReal.Linear().min = 0.1f;
-  fmRatioReal.Linear().max = 16.0f;
-  fmRatioReal.slotFormatter = FFOsciFMFormatRatioSlot;
-  auto selectFMRatioReal = [](auto& module) { return &module.acc.fmRatioReal; };
-  fmRatioReal.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioReal);
-  fmRatioReal.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMRatioReal);
-  fmRatioReal.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMRatioReal);
-  fmRatioReal.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+  auto& fmRatioFree = result->params[(int)FFOsciParam::FMRatioFree];
+  fmRatioFree.acc = true;
+  fmRatioFree.defaultText = "1";
+  fmRatioFree.name = "Ratio";
+  fmRatioFree.tooltip = "FM Ratio";
+  fmRatioFree.slotCount = FFOsciFMOperatorCount - 1;
+  fmRatioFree.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
+  fmRatioFree.type = FBParamType::Linear;
+  fmRatioFree.Linear().min = 1.0f / FFOsciFMRatioCount;
+  fmRatioFree.Linear().max = FFOsciFMRatioCount;
+  fmRatioFree.slotFormatter = FFOsciFMFormatRatioSlot;
+  auto selectFMRatioFree = [](auto& module) { return &module.acc.fmRatioFree; };
+  fmRatioFree.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioFree);
+  fmRatioFree.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMRatioFree);
+  fmRatioFree.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMRatioFree);
+  fmRatioFree.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
 
   auto& fmIndex = result->params[(int)FFOsciParam::FMIndex];
   fmIndex.acc = true;

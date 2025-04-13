@@ -245,7 +245,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBFixedFloatArray basicTriGainPlain;
   FBFixedFloatArray basicSqrGainPlain;
   std::array<FBFixedFloatArray, FFOsciFMMatrixSize> fmIndexPlain;
-  std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> fmRatioRealPlain;
+  std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> fmRatioFreePlain;
   if (_voiceState.type == FFOsciType::Basic)
   {
     if (_voiceState.basicSinOn)
@@ -266,8 +266,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   {
     for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
     {
-      auto const& fmRatioRealNorm = procParams.acc.fmRatioReal[o].Voice()[voice];
-      topo.NormalizedToLinearFast(FFOsciParam::FMRatioReal, fmRatioRealNorm, fmRatioRealPlain[o]);
+      auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
+      topo.NormalizedToLinearFast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, fmRatioFreePlain[o]);
     }
     for (int m = 0; m < FFOsciFMMatrixSize; m++)
     {
@@ -416,8 +416,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
-        float op2Freq = uniFreqs[u][s] / fmRatioRealPlain[1][s];
-        float op1Freq = op2Freq / fmRatioRealPlain[0][s];
+        float op2Freq = uniFreqs[u][s] / fmRatioFreePlain[1][s];
+        float op1Freq = op2Freq / fmRatioFreePlain[0][s];
         uniIncrsOp1And2[u][0][s] = op1Freq / oversampledRate;
         uniIncrsOp1And2[u][1][s] = op2Freq / oversampledRate;
       }
@@ -551,8 +551,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGainNorm.Last();
   for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
   {
-    auto const& fmRatioRealNorm = procParams.acc.fmRatioReal[o].Voice()[voice];
-    exchangeParams.acc.fmRatioReal[o][voice] = fmRatioRealNorm.Last();
+    auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
+    exchangeParams.acc.fmRatioFree[o][voice] = fmRatioFreeNorm.Last();
   }
   for (int m = 0; m < FFOsciFMMatrixSize; m++)
   {

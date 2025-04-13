@@ -65,7 +65,7 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   std::array<TVoiceAcc, 1> basicTriGain = {};
   std::array<TVoiceAcc, 1> basicSqrGain = {};
   std::array<TVoiceAcc, FFOsciFMMatrixSize> fmIndex = {};
-  std::array<TVoiceAcc, FFOsciFMOperatorCount - 1> fmRatioReal = {};
+  std::array<TVoiceAcc, FFOsciFMOperatorCount - 1> fmRatioFree = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };
