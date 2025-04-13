@@ -158,9 +158,9 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(0 + i, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioFree, Slider::SliderStyle::LinearHorizontal));
   }
 
-  auto fmMode = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMMode, 0 });
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmMode));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmMode));
+  auto fmExp = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMExp, 0 });
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmExp));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmExp));
 
   grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("1>1/2/3"));
   auto fmIndex11 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 0 });

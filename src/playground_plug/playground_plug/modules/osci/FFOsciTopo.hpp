@@ -6,7 +6,6 @@ struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 
 enum class FFOsciType { Off, Basic, DSF, FM };
-enum class FFOsciFMMode { Linear, Exp };
 enum class FFOsciFMRatioMode { Ratio, Free };
 enum class FFOsciDSFMode { Overtones, Bandwidth };
 
@@ -23,4 +22,4 @@ enum class FFOsciParam {
   BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
   BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,
-  FMMode, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, GLFOToGain, Count };
+  FMExp, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, GLFOToGain, Count };
