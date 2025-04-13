@@ -1,7 +1,7 @@
-real/rational switch fm ratio
+expo fm
 move the oversampling switch
 store the selected tab
-hard sync
+hard sync?
 fix up the track graph
 
 recheck clap mod
