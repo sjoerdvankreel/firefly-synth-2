@@ -16,6 +16,13 @@ FFOsciFMFormatRatioSlot(int slot)
 }
 
 static std::string
+FFOsciFMFormatRatioSubMenu(int subMenu)
+{
+  assert(0 <= subMenu && subMenu < FFOsciFMRatioCount);
+  return std::to_string(subMenu + 1);
+}
+
+static std::string
 FFOsciFMFormatRatioValue(int val)
 {
   assert(0 <= val && val < FFOsciFMRatioCount * FFOsciFMRatioCount);
@@ -454,6 +461,7 @@ FFMakeOsciTopo()
   fmRatioRatio.Discrete().subMenuItemCount = FFOsciFMRatioCount;
   fmRatioRatio.Discrete().valueCount = FFOsciFMRatioCount * FFOsciFMRatioCount;
   fmRatioRatio.Discrete().valueFormatter = FFOsciFMFormatRatioValue;
+  fmRatioRatio.Discrete().subMenuFormatter = FFOsciFMFormatRatioSubMenu;
   auto selectFMRatioRatio = [](auto& module) { return &module.block.fmRatioRatio; };
   fmRatioRatio.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioRatio);
   fmRatioRatio.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMRatioRatio);

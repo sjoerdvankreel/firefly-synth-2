@@ -11,13 +11,16 @@
 
 typedef std::function<std::string(int val)>
 FBParamValueFormatter;
+typedef std::function<std::string(int subMenu)>
+FBParamSubMenuFormatter;
 
 struct FBDiscreteParam
 {
   int valueCount = {};
   int valueOffset = {};
-  int subMenuItemCount = {};
+  int subMenuItemCount = {};  
   FBParamValueFormatter valueFormatter = {};
+  FBParamSubMenuFormatter subMenuFormatter = {};
   float PlainToNormalizedFast(int plain) const;
   int NormalizedToPlainFast(float normalized) const;
 };

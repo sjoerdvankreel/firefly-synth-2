@@ -60,14 +60,16 @@ FBDiscreteParamNonRealTime::MakePopupMenu() const
   int j = 0;
   PopupMenu result;
   PopupMenu subMenu;
+  int subMenuIndex = 0;
   for (int i = 0; i < ValueCount(); i++, j++)
   {
     subMenu.addItem(i + 1, PlainToText(FBTextDisplay::Text, i + valueOffset));
     if (j == ValueCount() - 1 || j == subMenuItemCount - 1)
     {
-      result.addSubMenu(std::to_string(i + 1 + valueOffset - subMenuItemCount), subMenu);
+      result.addSubMenu(subMenuFormatter(subMenuIndex), subMenu);
       subMenu = {};
       j = -1;
+      subMenuIndex++;
     }
   }
   return result;
