@@ -30,6 +30,11 @@ struct FFOsciVoiceState final
   FFOsciDSFMode dsfMode = {};
   float dsfBandwidthPlain = {};
 
+  bool fmExp = {};
+  float fmRatioRatio12 = {};
+  float fmRatioRatio23 = {};
+  FFOsciFMRatioMode fmRatioMode = {};
+
   int unisonCount = {};
   bool unisonDetuneHQ = {};
   float unisonOffsetPlain = {};
