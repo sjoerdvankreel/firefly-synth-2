@@ -48,7 +48,10 @@ FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const
 std::string
 FBDiscreteParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
 {
-  return std::to_string(static_cast<int>(std::round(plain)));
+  int result = static_cast<int>(std::round(plain));
+  if (valueFormatter != nullptr)
+    return valueFormatter(result);
+  return std::to_string(result);
 }
 
 PopupMenu
@@ -63,6 +66,14 @@ FBDiscreteParamNonRealTime::MakePopupMenu() const
 std::optional<double>
 FBDiscreteParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
 {
+  if(valueFormatter != nullptr)
+  { 
+    for (int i = 0; i < ValueCount(); i++)
+      if (PlainToText(FBTextDisplay::Text, i + valueOffset) == text)
+        return { i + valueOffset };
+    return { };
+  }
+
   char* end;
   unsigned long plain = std::strtoul(text.c_str(), &end, 10);
   if (end != text.c_str() + text.size())

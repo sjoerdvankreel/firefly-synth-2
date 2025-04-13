@@ -16,6 +16,14 @@ FFOsciFMFormatRatioSlot(int slot)
 }
 
 static std::string
+FFOsciFMFormatRatioValue(int val)
+{
+  assert(0 <= val && val < FFOsciFMRatioCount * FFOsciFMRatioCount);
+  return std::to_string(val / FFOsciFMRatioCount + 1) + ":" +
+    std::to_string(val % FFOsciFMRatioCount + 1);
+}
+
+static std::string
 FFOsciFMFormatIndexSlot(int slot)
 {
   assert(0 <= slot && slot < FFOsciFMMatrixSize);
@@ -439,14 +447,15 @@ FFMakeOsciTopo()
 
   auto& fmRatioRatio = result->params[(int)FFOsciParam::FMRatioRatio];
   fmRatioRatio.acc = false;
-  fmRatioRatio.defaultText = "1";
+  fmRatioRatio.defaultText = "1:1";
   fmRatioRatio.name = "Ratio";
   fmRatioRatio.tooltip = "FM Ratio";
   fmRatioRatio.slotCount = FFOsciFMOperatorCount - 1;
   fmRatioRatio.id = "{9F79D937-E295-41FC-ACFE-F085E12DFF90}";
   fmRatioRatio.type = FBParamType::Discrete;
-  fmRatioRatio.Discrete().valueCount = FFOsciFMRatioCount * FFOsciFMRatioCount;
   fmRatioRatio.slotFormatter = FFOsciFMFormatRatioSlot;
+  fmRatioRatio.Discrete().valueCount = FFOsciFMRatioCount * FFOsciFMRatioCount;
+  fmRatioRatio.Discrete().valueFormatter = FFOsciFMFormatRatioValue;
   auto selectFMRatioRatio = [](auto& module) { return &module.block.fmRatioRatio; };
   fmRatioRatio.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioRatio);
   fmRatioRatio.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMRatioRatio);

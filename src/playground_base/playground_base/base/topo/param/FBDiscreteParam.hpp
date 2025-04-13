@@ -7,11 +7,16 @@
 #include <string>
 #include <optional>
 #include <algorithm>
+#include <functional>
+
+typedef std::function<std::string(int val)>
+FBParamValueFormatter;
 
 struct FBDiscreteParam
 {
   int valueCount = {};
   int valueOffset = {};
+  FBParamValueFormatter valueFormatter = {};
   float PlainToNormalizedFast(int plain) const;
   int NormalizedToPlainFast(float normalized) const;
 };
