@@ -386,6 +386,23 @@ FFMakeOsciTopo()
   dsfDecay.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDecay);
   dsfDecay.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
 
+  auto& fmRatioMode = result->params[(int)FFOsciParam::FMRatioMode];
+  fmRatioMode.acc = false;
+  fmRatioMode.defaultText = "Ratio";
+  fmRatioMode.name = "Ratio Mode";
+  fmRatioMode.tooltip = "FM Ratio Mode";
+  fmRatioMode.slotCount = 1;
+  fmRatioMode.id = "{40838341-6882-4BF8-813F-BA5B89B3042F}";
+  fmRatioMode.type = FBParamType::List;
+  fmRatioMode.List().items = {
+    { "{A6E83AA7-9DA3-4ECA-90DE-BCA123B48203}", "Ratio" },
+    { "{B4AF1436-6ED3-4B43-A6F0-F5B624E4121D}", "Free" } };
+  auto selectFMRatioMode = [](auto& module) { return &module.block.fmRatioMode; };
+  fmRatioMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioMode);
+  fmRatioMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMRatioMode);
+  fmRatioMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMRatioMode);
+  fmRatioMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+
   auto& fmRatioReal = result->params[(int)FFOsciParam::FMRatioReal];
   fmRatioReal.acc = true;
   fmRatioReal.defaultText = "1";

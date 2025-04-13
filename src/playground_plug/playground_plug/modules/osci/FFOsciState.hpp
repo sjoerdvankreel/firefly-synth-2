@@ -42,6 +42,7 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   std::array<TVoiceBlock, 1> dsfDistance = {};
   std::array<TVoiceBlock, 1> dsfOvertones = {};
   std::array<TVoiceBlock, 1> dsfBandwidth = {};
+  std::array<TVoiceBlock, 1> fmRatioMode = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
 };
