@@ -435,7 +435,23 @@ FFMakeOsciTopo()
   fmRatioFree.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioFree);
   fmRatioFree.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMRatioFree);
   fmRatioFree.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMRatioFree);
-  fmRatioFree.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+  fmRatioFree.dependencies.visible.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::FMRatioMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM && vs[1] == (int)FFOsciFMRatioMode::Free; });
+
+  auto& fmRatioRatio = result->params[(int)FFOsciParam::FMRatioRatio];
+  fmRatioRatio.acc = false;
+  fmRatioRatio.defaultText = "1";
+  fmRatioRatio.name = "Ratio";
+  fmRatioRatio.tooltip = "FM Ratio";
+  fmRatioRatio.slotCount = FFOsciFMOperatorCount - 1;
+  fmRatioRatio.id = "{9F79D937-E295-41FC-ACFE-F085E12DFF90}";
+  fmRatioRatio.type = FBParamType::Discrete;
+  fmRatioRatio.Discrete().valueCount = FFOsciFMRatioCount * FFOsciFMRatioCount;
+  fmRatioRatio.slotFormatter = FFOsciFMFormatRatioSlot;
+  auto selectFMRatioRatio = [](auto& module) { return &module.block.fmRatioRatio; };
+  fmRatioRatio.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMRatioRatio);
+  fmRatioRatio.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMRatioRatio);
+  fmRatioRatio.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMRatioRatio);
+  fmRatioRatio.dependencies.visible.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::FMRatioMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM && vs[1] == (int)FFOsciFMRatioMode::Ratio; });
 
   auto& fmIndex = result->params[(int)FFOsciParam::FMIndex];
   fmIndex.acc = true;
