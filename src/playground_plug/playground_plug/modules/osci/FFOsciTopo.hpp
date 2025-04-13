@@ -23,4 +23,4 @@ enum class FFOsciParam {
   BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
   BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,
-  FMRatioMode, FMRatioReal, FMIndex, GLFOToGain, Count };
+  FMMode, FMRatioMode, FMRatioReal, FMIndex, GLFOToGain, Count };

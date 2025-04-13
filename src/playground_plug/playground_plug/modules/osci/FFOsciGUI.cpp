@@ -69,7 +69,7 @@ MakeSectionGLFOToGain(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0 });
   auto gLFOToGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gLFOToGain));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ 0, 0, 2, 1 });
   return grid;
 }
@@ -142,34 +142,37 @@ static Component*
 MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 1, 1, 0, 0, 0, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Ratio"));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 1, 1, 1, 0, 0, 0, 0 });
+  auto fmMode = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMMode, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmMode));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmMode));
   auto fmRatioMode = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMRatioMode, 0 });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmRatioMode));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmRatioMode));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmRatioMode));
   for (int i = 0; i < 2; i++)
   {
     auto fmRatioReal = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMRatioReal, i });
-    grid->Add(0, 2 + i, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioReal, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(0, 3 + i, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioReal, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("1>1/2/3"));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBAutoSizeLabel>("1>1/2/3"));
   for (int i = 0; i < 3; i++)
   {
     auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
-    grid->Add(0, 5 + i, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(0, 6 + i, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("2>1/2/3"));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBAutoSizeLabel>("2>1/2/3"));
   for (int i = 3; i < 6; i++)
   {
     auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
-    grid->Add(1, 1 + i - 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1, 2 + i - 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->Add(1, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("3>1/2/3"));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBAutoSizeLabel>("3>1/2/3"));
   for (int i = 6; i < 9; i++)
   {
     auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, i });
-    grid->Add(1, 5 + i - 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1, 6 + i - 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ 0, 0, 2, 8 });
+  grid->MarkSection({ 0, 0, 2, 9 });
 
   // TODO helper function
   FBParamsDependencies dependencies = {};

@@ -386,11 +386,28 @@ FFMakeOsciTopo()
   dsfDecay.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDecay);
   dsfDecay.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
 
+  auto& fmMode = result->params[(int)FFOsciParam::FMMode];
+  fmMode.acc = false;
+  fmMode.defaultText = "Lin";
+  fmMode.name = "Mode";
+  fmMode.tooltip = "FM Mode";
+  fmMode.slotCount = 1;
+  fmMode.id = "{BE60503A-3CE3-422D-8795-C2FCB1C4A3B6}";
+  fmMode.type = FBParamType::List;
+  fmMode.List().items = {
+    { "{BF843AD0-57AB-4A96-87D0-01218570AFEC}", "Lin" },
+    { "{7ED6014F-2C3F-4A32-9FB3-C52FA971C66F}", "Exp" } };
+  auto selectFMMode = [](auto& module) { return &module.block.fmMode; };
+  fmMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMMode);
+  fmMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMMode);
+  fmMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMMode);
+  fmMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+
   auto& fmRatioMode = result->params[(int)FFOsciParam::FMRatioMode];
   fmRatioMode.acc = false;
   fmRatioMode.defaultText = "Ratio";
-  fmRatioMode.name = "Ratio Mode";
-  fmRatioMode.tooltip = "FM Ratio Mode";
+  fmRatioMode.name = "Ratio";
+  fmRatioMode.tooltip = "FM Ratio";
   fmRatioMode.slotCount = 1;
   fmRatioMode.id = "{40838341-6882-4BF8-813F-BA5B89B3042F}";
   fmRatioMode.type = FBParamType::List;
@@ -438,7 +455,7 @@ FFMakeOsciTopo()
 
   auto& gLFOToGain = result->params[(int)FFOsciParam::GLFOToGain];
   gLFOToGain.acc = true;
-  gLFOToGain.name = "GLFO To Gain";
+  gLFOToGain.name = "GTG";
   gLFOToGain.slotCount = 1;
   gLFOToGain.unit = "%";
   gLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
