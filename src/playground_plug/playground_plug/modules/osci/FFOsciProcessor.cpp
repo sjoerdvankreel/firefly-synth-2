@@ -98,43 +98,52 @@ GenerateTri(float phase, float incr)
   return v;
 }
 
-static inline float
-GenerateDSF(
-  float phase, float freq, float decay,
-  float distFreq, int overtones)
+static inline void
+GenerateDSF(//todo restrict?
+  float const* phases, float const* freqs, float const* decays,
+  float const* distFreqs, int const* overtones, float* outs)
 {
   float const decayRange = 0.99f;
   float const scaleFactor = 0.975f;
 
-  float n = static_cast<float>(overtones);
-  float w = decay * decayRange;
-  float wPowNp1 = FBFastPowFloatToInt(w, overtones + 1);
-  float u = 2.0f * FBPi * phase;
-  float v = 2.0f * FBPi * distFreq * phase / freq;
-  float a = w * std::sin(u + n * v) - std::sin(u + (n + 1.0f) * v);
-  float x = (w * std::sin(v - u) + std::sin(u)) + wPowNp1 * a;
-  float y = 1.0f + w * w - 2.0f * w * std::cos(v);
-  float scale = (1.0f - wPowNp1) / (1.0f - w);
-  return x * scaleFactor / (y * scale);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float n = static_cast<float>(overtones[i]);
+    float w = decays[i] * decayRange;
+    float wPowNp1 = FBFastPowFloatToInt(w, overtones[i] + 1);
+    float u = 2.0f * FBPi * phases[i];
+    float v = 2.0f * FBPi * distFreqs[i] * phases[i] / freqs[i];
+    float a = w * std::sin(u + n * v) - std::sin(u + (n + 1.0f) * v);
+    float x = (w * std::sin(v - u) + std::sin(u)) + wPowNp1 * a;
+    float y = 1.0f + w * w - 2.0f * w * std::cos(v);
+    float scale = (1.0f - wPowNp1) / (1.0f - w);
+    outs[i] = x * scaleFactor / (y * scale);
+  }
 }
 
-static inline float
+static inline void
 GenerateDSFOvertones(
-  float phase, float freq, float decay,
-  float distFreq, float maxOvertones, int overtones)
+  float const* phases, float const* freqs, float const* decays,
+  float const* distFreqs, float const* maxOvertones, int overtones_, float* outs)
 {
-  overtones = std::min(overtones, FBFastFloor(maxOvertones));
-  return GenerateDSF(phase, freq, decay, distFreq, overtones);
+  int overtones[FBSIMDFloatCount];
+  for(int i = 0; i < FBSIMDFloatCount; i++)
+    overtones[i] = std::min(overtones_, FBFastFloor(maxOvertones[i]));
+  return GenerateDSF(phases, freqs, decays, distFreqs, overtones, outs);
 }
 
-static inline float
+static inline void
 GenerateDSFBandwidth(
-  float phase, float freq, float decay,
-  float distFreq, float maxOvertones, float bandwidth)
+  float const* phases, float const* freqs, float const* decays,
+  float const* distFreqs, float const* maxOvertones, float bandwidth, float* outs)
 {
-  int overtones = 1 + FBFastFloor(bandwidth * (maxOvertones - 1.0f));
-  overtones = std::min(overtones, FBFastFloor(maxOvertones));
-  return GenerateDSF(phase, freq, decay, distFreq, overtones);
+  int overtones[FBSIMDFloatCount];
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    overtones[i] = 1 + FBFastFloor(bandwidth * (maxOvertones[i] - 1));
+    overtones[i] = std::min(overtones[i], FBFastFloor(maxOvertones[i]));
+  }
+  return GenerateDSF(phases, freqs, decays, distFreqs, overtones, outs);
 }
 
 FFOsciProcessor::
@@ -246,23 +255,23 @@ FFOsciProcessor::ProcessBasic(
 
   if (_voiceState.basicSinOn)
     for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-        for (int os = 0; os < oversamplingTimes; os++)
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
           unisonOutputMaybeOversampled[u][os][s] += GenerateSin(uniPhases[u][os][s]) * basicSinGainPlain[s];
   if (_voiceState.basicSawOn)
     for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-        for (int os = 0; os < oversamplingTimes; os++)
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
           unisonOutputMaybeOversampled[u][os][s] += GenerateSaw(uniPhases[u][os][s], uniIncrs[u][s]) * basicSawGainPlain[s];
   if (_voiceState.basicTriOn)
     for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-        for (int os = 0; os < oversamplingTimes; os++)
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
           unisonOutputMaybeOversampled[u][os][s] += GenerateTri(uniPhases[u][os][s], uniIncrs[u][s]) * basicTriGainPlain[s];
   if (_voiceState.basicSqrOn)
     for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-        for (int os = 0; os < oversamplingTimes; os++)
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int s = 0; s < FBFixedBlockSamples; s++)
           unisonOutputMaybeOversampled[u][os][s] += GenerateSqr(uniPhases[u][os][s], uniIncrs[u][s], basicSqrPWPlain[s]) * basicSqrGainPlain[s];
 }
 
@@ -296,19 +305,28 @@ FFOsciProcessor::ProcessDSF(
 
   if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
     for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-        for (int os = 0; os < oversamplingTimes; os++)
-          unisonOutputMaybeOversampled[u][os][s] = GenerateDSFOvertones(
-            uniPhases[u][os][s], uniFreqs[u][s], dsfDecayPlain[s],
-            dsfDistFreqs[u][s], dsfMaxOvertones[u][s], _voiceState.dsfOvertones);
+      for (int os = 0; os < oversamplingTimes; os++)
+        for(int subBlock = 0; subBlock < FBFixedBlockSamples / FBSIMDFloatCount; subBlock++)
+          GenerateDSFOvertones(
+            uniPhases[u][os].Data().data() + subBlock * FBSIMDFloatCount, 
+            uniFreqs[u].Data().data() + subBlock * FBSIMDFloatCount,
+            dsfDecayPlain.Data().data() + subBlock * FBSIMDFloatCount,
+            dsfDistFreqs[u].Data().data() + subBlock * FBSIMDFloatCount,
+            dsfMaxOvertones[u].Data().data() + subBlock * FBSIMDFloatCount,
+            _voiceState.dsfOvertones,
+            unisonOutputMaybeOversampled[u][os].Data().data() + subBlock * FBSIMDFloatCount);
   else if (_voiceState.dsfMode == FFOsciDSFMode::Bandwidth)
     for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int s = 0; s < FBFixedBlockSamples; s++)
-        for (int os = 0; os < oversamplingTimes; os++)
-          unisonOutputMaybeOversampled[u][os][s] = GenerateDSFBandwidth(
-            uniPhases[u][os][s], uniFreqs[u][s], dsfDecayPlain[s],
-            dsfDistFreqs[u][s], dsfMaxOvertones[u][s], _voiceState.dsfBandwidthPlain);
-
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int subBlock = 0; subBlock < FBFixedBlockSamples / FBSIMDFloatCount; subBlock++)
+          GenerateDSFBandwidth(
+            uniPhases[u][os].Data().data() + subBlock * FBSIMDFloatCount,
+            uniFreqs[u].Data().data() + subBlock * FBSIMDFloatCount,
+            dsfDecayPlain.Data().data() + subBlock * FBSIMDFloatCount,
+            dsfDistFreqs[u].Data().data() + subBlock * FBSIMDFloatCount,
+            dsfMaxOvertones[u].Data().data() + subBlock * FBSIMDFloatCount,
+            _voiceState.dsfBandwidthPlain,
+            unisonOutputMaybeOversampled[u][os].Data().data() + subBlock * FBSIMDFloatCount);
 }
 
 void
@@ -481,12 +499,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         auto const& fmIndex = procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot];
         auto const& fmModulatorBase = procState->dsp.voice[voice].osci[src].unisonOutputMaybeOversampled[u];
         if (_voiceState.modSourceFMMode[src] == FFOsciModFMMode::TZ)
-          for (int s = 0; s < FBFixedBlockSamples; s++)
-            for (int os = 0; os < oversamplingTimes; os++)
+          for (int os = 0; os < oversamplingTimes; os++)
+            for (int s = 0; s < FBFixedBlockSamples; s++)
               fmModulators[u][os][s] += fmModulatorBase[os][s] * fmIndex[s];
         else
-          for (int s = 0; s < FBFixedBlockSamples; s++)
-            for (int os = 0; os < oversamplingTimes; os++)
+          for (int os = 0; os < oversamplingTimes; os++)
+            for (int s = 0; s < FBFixedBlockSamples; s++)
               fmModulators[u][os][s] += FBToUnipolar(fmModulatorBase[os][s]) * fmIndex[s];
       }
 
@@ -515,14 +533,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         auto const& amMix = procState->dsp.voice[voice].osciMod.outputAMMix[modSlot];
         auto const& rmModulator = procState->dsp.voice[voice].osci[src].unisonOutputMaybeOversampled[u];
         if (_voiceState.modSourceAMMode[src] == FFOsciModAMMode::RM)
-          for (int s = 0; s < FBFixedBlockSamples; s++)
-            for (int os = 0; os < oversamplingTimes; os++)
+          for (int os = 0; os < oversamplingTimes; os++)
+            for (int s = 0; s < FBFixedBlockSamples; s++)
               unisonOutputMaybeOversampled[u][os][s] = 
                 (1.0f - amMix[s]) * unisonOutputMaybeOversampled[u][os][s] + 
                 amMix[s] * unisonOutputMaybeOversampled[u][os][s] * rmModulator[os][s];
         else
-          for (int s = 0; s < FBFixedBlockSamples; s++)
-            for (int os = 0; os < oversamplingTimes; os++)
+          for (int os = 0; os < oversamplingTimes; os++)
+            for (int s = 0; s < FBFixedBlockSamples; s++)
               unisonOutputMaybeOversampled[u][os][s] = (1.0f - amMix[s]) * unisonOutputMaybeOversampled[u][os][s] + 
                 amMix[s] * unisonOutputMaybeOversampled[u][os][s] * (rmModulator[os][s] * 0.5f + 0.5f);
       }  
