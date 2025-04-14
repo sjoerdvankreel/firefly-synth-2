@@ -186,7 +186,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _voiceState.dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, params.block.dsfMode[0].Voice()[voice]);
   _voiceState.dsfDistance = topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance, params.block.dsfDistance[0].Voice()[voice]);
   _voiceState.dsfOvertones = topo.NormalizedToDiscreteFast(FFOsciParam::DSFOvertones, params.block.dsfOvertones[0].Voice()[voice]);
-  _voiceState.dsfBandwidthPlain = topo.NormalizedToIdentityFast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
+  _voiceState.dsfBandwidthPlain = topo.NormalizedToLog2Fast(FFOsciParam::DSFBandwidth, params.block.dsfBandwidth[0].Voice()[voice]);
   _voiceState.fmExp = topo.NormalizedToBoolFast(FFOsciParam::FMExp, params.block.fmExp[0].Voice()[voice]);
   _voiceState.fmRatioMode = topo.NormalizedToListFast<FFOsciFMRatioMode>(FFOsciParam::FMRatioMode, params.block.fmRatioMode[0].Voice()[voice]);
   _voiceState.fmRatioRatio12 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, params.block.fmRatioRatio[0].Voice()[voice]));

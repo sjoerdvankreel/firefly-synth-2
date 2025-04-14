@@ -363,7 +363,8 @@ FFMakeOsciTopo()
   dsfBandwidth.slotCount = 1;
   dsfBandwidth.unit = "%";
   dsfBandwidth.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
-  dsfBandwidth.type = FBParamType::Identity;
+  dsfBandwidth.type = FBParamType::Log2;
+  dsfBandwidth.Log2().Init(-0.01f, 0.01f, 1.01f);
   auto selectDSFBandwidth = [](auto& module) { return &module.block.dsfBandwidth; };
   dsfBandwidth.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFBandwidth);
   dsfBandwidth.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFBandwidth);
