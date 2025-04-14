@@ -9,6 +9,8 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
+#include <xsimd/xsimd.hpp>
+
 using namespace juce::dsp;
 
 static inline int
@@ -99,26 +101,30 @@ GenerateTri(float phase, float incr)
 }
 
 static inline void
-GenerateDSF(//todo restrict?
+GenerateDSF(
   float const* phases, float const* freqs, float const* decays,
-  float const* distFreqs, int const* overtones, float* outs)
+  float const* distFreqs, float const* overtones, float* outs)
 {
   float const decayRange = 0.99f;
   float const scaleFactor = 0.975f;
 
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float n = static_cast<float>(overtones[i]);
-    float w = decays[i] * decayRange;
-    float wPowNp1 = FBFastPowFloatToInt(w, overtones[i] + 1);
-    float u = 2.0f * FBPi * phases[i];
-    float v = 2.0f * FBPi * distFreqs[i] * phases[i] / freqs[i];
-    float a = w * std::sin(u + n * v) - std::sin(u + (n + 1.0f) * v);
-    float x = (w * std::sin(v - u) + std::sin(u)) + wPowNp1 * a;
-    float y = 1.0f + w * w - 2.0f * w * std::cos(v);
-    float scale = (1.0f - wPowNp1) / (1.0f - w);
-    outs[i] = x * scaleFactor / (y * scale);
-  }
+  auto freqBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(freqs);
+  auto decayBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(decays);
+  auto phaseBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(phases);
+  auto distFreqBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(distFreqs);
+  auto overtonesBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(overtones);
+
+  xsimd::batch<float, FBXSIMDBatchType> n = overtonesBatch;
+  xsimd::batch<float, FBXSIMDBatchType> w = decayBatch * decayRange;
+  xsimd::batch<float, FBXSIMDBatchType> wPowNp1 = xsimd::pow(w, overtonesBatch + 1.0f);
+  xsimd::batch<float, FBXSIMDBatchType> u = 2.0f * FBPi * phaseBatch;
+  xsimd::batch<float, FBXSIMDBatchType> v = 2.0f * FBPi * distFreqBatch * phaseBatch / freqBatch;
+  xsimd::batch<float, FBXSIMDBatchType> a = w * xsimd::sin(u + n * v) - xsimd::sin(u + (n + 1.0f) * v);
+  xsimd::batch<float, FBXSIMDBatchType> x = (w * xsimd::sin(v - u) + xsimd::sin(u)) + wPowNp1 * a;
+  xsimd::batch<float, FBXSIMDBatchType> y = 1.0f + w * w - 2.0f * w * xsimd::cos(v);
+  xsimd::batch<float, FBXSIMDBatchType> scale = (1.0f - wPowNp1) / (1.0f - w);
+  auto outBatch = x * scaleFactor / (y * scale);
+  outBatch.store_aligned(outs);
 }
 
 static inline void
@@ -126,7 +132,7 @@ GenerateDSFOvertones(
   float const* phases, float const* freqs, float const* decays,
   float const* distFreqs, float const* maxOvertones, int overtones_, float* outs)
 {
-  int overtones[FBSIMDFloatCount];
+  float overtones[FBSIMDFloatCount];
   for(int i = 0; i < FBSIMDFloatCount; i++)
     overtones[i] = std::min(overtones_, FBFastFloor(maxOvertones[i]));
   return GenerateDSF(phases, freqs, decays, distFreqs, overtones, outs);
@@ -137,11 +143,11 @@ GenerateDSFBandwidth(
   float const* phases, float const* freqs, float const* decays,
   float const* distFreqs, float const* maxOvertones, float bandwidth, float* outs)
 {
-  int overtones[FBSIMDFloatCount];
+  float overtones[FBSIMDFloatCount];
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
     overtones[i] = 1 + FBFastFloor(bandwidth * (maxOvertones[i] - 1));
-    overtones[i] = std::min(overtones[i], FBFastFloor(maxOvertones[i]));
+    overtones[i] = std::min(overtones[i], static_cast<float>(FBFastFloor(maxOvertones[i])));
   }
   return GenerateDSF(phases, freqs, decays, distFreqs, overtones, outs);
 }
