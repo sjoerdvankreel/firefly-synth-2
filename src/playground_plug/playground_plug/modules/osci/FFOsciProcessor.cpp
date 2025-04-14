@@ -500,6 +500,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           uniPhases[u][os][s] = _unisonPhases[u][0].Next(uniIncrs[u][oversampledIndex / oversamplingTimes], fmModulators[u][os][s]);
     }
 
+  if (_voiceState.type == FFOsciType::Basic)
+    ProcessBasic(state, oversamplingTimes, uniIncrs, uniPhases);
+  else if (_voiceState.type == FFOsciType::DSF)
+    ProcessDSF(state, oversamplingTimes, oversampledRate, uniFreqs, uniIncrs, uniPhases);
+  else if (_voiceState.type == FFOsciType::FM)
+    ProcessFM(state, oversamplingTimes, oversampledRate, uniFreqs, uniIncrs, fmModulators);
+
   for (int src = 0; src < state.moduleSlot; src++)
     for (int u = 0; u < _voiceState.unisonCount; u++)
       if (_voiceState.modSourceAMMode[src] != FFOsciModAMMode::Off && _voiceState.modSourceUnisonCount[src] > u)
