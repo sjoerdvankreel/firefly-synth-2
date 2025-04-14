@@ -127,7 +127,6 @@ GenerateDSF(
   outBatch.store_aligned(outs);
 }
 
-// todo overtones wrong
 static inline void
 GenerateDSFOvertones(
   float const* phases, float const* freqs, float const* decays,
@@ -139,7 +138,6 @@ GenerateDSFOvertones(
   return GenerateDSF(phases, freqs, decays, distFreqs, overtones.data(), outs);
 }
 
-// todo overtones wrong
 static inline void
 GenerateDSFBandwidth(
   float const* phases, float const* freqs, float const* decays,
