@@ -5,27 +5,24 @@
 
 #include <array>
 
-template <class T, int N, int A>
-class alignas(A) FBStaticArray
+template <class T>
+class alignas(FBFixedBlockAlign) FBFixedArray 
 {
-  std::array<T, N> _data = {};
+  std::array<T, FBFixedBlockSamples> _data = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBStaticArray);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedArray);
 
   T& operator[](int i) { return _data[i]; }
   T const& operator[](int i) const { return _data[i]; }
-  std::array<T, N>& Data() { return _data; }
-  std::array<T, N> const& Data() const { return _data; }
+  std::array<T, FBFixedBlockSamples>& Data() { return _data; }
+  std::array<T, FBFixedBlockSamples> const& Data() const { return _data; }
 
   void Fill(T val) { _data.fill(val); }
-  T const& Last() { return _data[N - 1]; }
-  void Add(FBStaticArray const& rhs) { for (int s = 0; s < N; s++) _data[s] += rhs[s]; }
-  void Mul(FBStaticArray const& rhs) { for (int s = 0; s < N; s++) _data[s] *= rhs[s]; }
-  void CopyTo(FBStaticArray& rhs) const { for (int s = 0; s < N; s++) rhs[s] = _data[s]; }
+  T const& Last() { return _data[FBFixedBlockSamples - 1]; }
+  void Add(FBFixedArray<T> const& rhs) { for (int s = 0; s < FBFixedBlockSamples; s++) _data[s] += rhs[s]; }
+  void Mul(FBFixedArray<T> const& rhs) { for (int s = 0; s < FBFixedBlockSamples; s++) _data[s] *= rhs[s]; }
+  void CopyTo(FBFixedArray<T>& rhs) const { for (int s = 0; s < FBFixedBlockSamples; s++) rhs[s] = _data[s]; }
 };
-
-template <class T>
-using FBFixedArray = FBStaticArray<T, FBFixedBlockSamples, FBFixedBlockAlign>;
 
 template <class T>
 struct alignas(FBFixedBlockAlign) FBFixedAudioArray
