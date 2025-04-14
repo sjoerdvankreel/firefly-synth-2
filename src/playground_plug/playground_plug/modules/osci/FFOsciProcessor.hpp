@@ -14,6 +14,16 @@
 
 struct FBModuleProcState;
 
+typedef FBStaticArray<
+  float, FFOsciUnisonMaxCount, FBFixedBlockAlign>
+  FFOsciUnisonArray;
+typedef std::array<
+  FFOsciUnisonArray, FBFixedBlockSamples>
+  FFOsciFixedUnisonArray;
+typedef std::array<
+  FFOsciFixedUnisonArray, FFOsciOverSamplingTimes>
+  FFOsciOversampledUnisonArray;
+
 struct FFOsciVoiceState final
 {
   int note = {};
@@ -53,30 +63,30 @@ class FFOsciProcessor final
   FFOsciVoiceState _voiceState = {};
   juce::dsp::Oversampling<float> _oversampling;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
-  std::array<std::array<FFOsciPhase, FFOsciFMOperatorCount>, FFOsciUnisonMaxCount> _unisonPhases = {};
+  std::array<std::array<FFOsciPhase, FFOsciFMOperatorCount>, FFOsciUnisonMaxCount> _unisonPhases = {}; // todo
   std::array<std::array<float, FFOsciFMOperatorCount>, FFOsciUnisonMaxCount> _prevUnisonOutputForFM = {};
 
   void ProcessBasic(
     FBModuleProcState& state,
     int oversamplingTimes,
-    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniIncrs,
-    std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> const& uniPhases);
+    FFOsciFixedUnisonArray const& uniIncrs,
+    FFOsciOversampledUnisonArray const& uniPhases);
 
   void ProcessDSF(
     FBModuleProcState& state,
     int oversamplingTimes,
     float oversampledRate,
-    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniFreqs,
-    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniIncrs,
-    std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> const& uniPhases);
+    FFOsciFixedUnisonArray const& uniFreqs,
+    FFOsciFixedUnisonArray const& uniIncrs,
+    FFOsciOversampledUnisonArray const& uniPhases);
 
   void ProcessFM(
     FBModuleProcState& state,
     int oversamplingTimes,
     float oversampledRate,
-    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniFreqs,
-    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniIncrs,
-    std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> const& fmModulators);
+    FFOsciFixedUnisonArray const& uniFreqs,
+    FFOsciFixedUnisonArray const& uniIncrs,
+    FFOsciOversampledUnisonArray const& fmModulators);
 
 public:
   FFOsciProcessor();
