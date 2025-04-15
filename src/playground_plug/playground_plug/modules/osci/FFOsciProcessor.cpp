@@ -306,7 +306,7 @@ FFOsciProcessor::ProcessDSF(
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       dsfDistFreqs[u][s] = static_cast<float>(_voiceState.dsfDistance) * uniFreqs[u][s];
-      dsfMaxOvertones[u][s] = (oversampledRate * 0.5f - uniFreqs[u][s]) / dsfDistFreqs[u][s];
+      dsfMaxOvertones[u][s] = (sampleRate * 0.5f - uniFreqs[u][s]) / dsfDistFreqs[u][s];
     }
 
   if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
