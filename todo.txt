@@ -1,4 +1,3 @@
-dont do dsf against the oversampled sr
 uni blend
 expo fm
 move the oversampling switch
