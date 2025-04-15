@@ -285,12 +285,12 @@ void
 FFOsciProcessor::ProcessDSF(
   FBModuleProcState& state,
   int oversamplingTimes,
-  float oversampledRate,
   std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniFreqs,
   std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniIncrs,
   std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> const& uniPhases)
 {
   int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
@@ -527,7 +527,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   if (_voiceState.type == FFOsciType::Basic)
     ProcessBasic(state, oversamplingTimes, uniIncrs, uniPhases);
   else if (_voiceState.type == FFOsciType::DSF)
-    ProcessDSF(state, oversamplingTimes, oversampledRate, uniFreqs, uniIncrs, uniPhases);
+    ProcessDSF(state, oversamplingTimes, uniFreqs, uniIncrs, uniPhases);
   else if (_voiceState.type == FFOsciType::FM)
     ProcessFM(state, oversamplingTimes, oversampledRate, uniFreqs, uniIncrs, fmModulators);
 

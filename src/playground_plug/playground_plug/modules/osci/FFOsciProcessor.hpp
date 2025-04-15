@@ -65,7 +65,6 @@ class FFOsciProcessor final
   void ProcessDSF(
     FBModuleProcState& state,
     int oversamplingTimes,
-    float oversampledRate,
     std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniFreqs,
     std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniIncrs,
     std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> const& uniPhases);
