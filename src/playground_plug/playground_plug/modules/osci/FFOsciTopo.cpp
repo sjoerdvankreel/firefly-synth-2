@@ -87,6 +87,7 @@ FFMakeOsciTopo()
   coarse.defaultText = "0";
   coarse.name = "Coarse";
   coarse.slotCount = 1;
+  coarse.unit = "Notes";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
   coarse.type = FBParamType::Linear;
   coarse.Linear().min = -36.0f;
