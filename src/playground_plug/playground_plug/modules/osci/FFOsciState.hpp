@@ -12,6 +12,9 @@
 struct FBStaticModule;
 class FFOsciProcessor;
 
+inline int constexpr FFOsciOverSamplingFactor = 2;
+inline int constexpr FFOsciOverSamplingTimes = 1 << FFOsciOverSamplingFactor;
+
 class alignas(FBFixedBlockAlign) FFOsciDSPState final
 {
   friend class FFVoiceProcessor;

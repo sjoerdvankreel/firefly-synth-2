@@ -1,6 +1,7 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/pipeline/FFVoiceProcessor.hpp>
+#include <playground_plug/modules/env/FFEnvProcessor.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
@@ -14,7 +15,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   for (int i = 0; i < FFEnvCount; i++)
   {
     state.moduleSlot = i;
-    procState->dsp.voice[voice].env[i].processor.BeginVoice(state);
+    procState->dsp.voice[voice].env[i].processor->BeginVoice(state);
   }
   state.moduleSlot = 0;
   procState->dsp.voice[voice].osciMod.processor.BeginVoice(state);
@@ -37,7 +38,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   for (int i = 0; i < FFEnvCount; i++)
   {
     state.moduleSlot = i;
-    int envProcessed = voiceDSP.env[i].processor.Process(state);
+    int envProcessed = voiceDSP.env[i].processor->Process(state);
     if (i == 0)
       voiceFinished = envProcessed != FBFixedBlockSamples;
   }

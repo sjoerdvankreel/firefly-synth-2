@@ -21,7 +21,7 @@ FFEnvProcessor&
 EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  return procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
+  return *procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
 }
 
 static FBModuleGraphPlotParams

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <playground_plug/modules/env/FFEnvProcessor.hpp>
-
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
@@ -9,6 +7,7 @@
 #include <array>
 #include <memory>
 
+class FFEnvProcessor;
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
@@ -31,10 +30,12 @@ class alignas(FBFixedBlockAlign) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;
   friend struct EnvGraphRenderData;
-  FFEnvProcessor processor = {};
+  std::unique_ptr<FFEnvProcessor> processor = {};
 public:
+  FFEnvDSPState();
+  ~FFEnvDSPState();
   FBFixedFloatArray output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvDSPState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFEnvDSPState);
 }; 
 
 template <class TVoiceBlock>

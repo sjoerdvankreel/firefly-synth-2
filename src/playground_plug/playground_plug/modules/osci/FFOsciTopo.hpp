@@ -12,8 +12,6 @@ enum class FFOsciDSFMode { Overtones, Bandwidth };
 inline int constexpr FFOsciFMRatioCount = 16;
 inline int constexpr FFOsciFMOperatorCount = 3;
 inline int constexpr FFOsciUnisonMaxCount = 16;
-inline int constexpr FFOsciOverSamplingFactor = 2;
-inline int constexpr FFOsciOverSamplingTimes = 1 << FFOsciOverSamplingFactor;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
 enum class FFOsciParam { 
