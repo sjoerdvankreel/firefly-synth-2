@@ -523,6 +523,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   }
 
   FFOsciOversampledUnisonArray fmModulators;
+  float applyExpoFM = _voiceState.expoFM ? 1.0f : 0.0f;
+  float applyLinearFM = _voiceState.expoFM ? 0.0f : 1.0f;
   for(int u = 0; u < _voiceState.unisonCount; u++)
     for (int os = 0; os < oversamplingTimes; os++)
       fmModulators[u][os].Fill(0.0f);
@@ -531,16 +533,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       if (_voiceState.modSourceFMOn[src] && _voiceState.modSourceUnisonCount[src] > u)
       {
         int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-        auto const& fmIndex = procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot];
+        auto const& fmIndexLin = procState->dsp.voice[voice].osciMod.outputFMIndexLin[modSlot];
+        auto const& fmIndexExp = procState->dsp.voice[voice].osciMod.outputFMIndexExp[modSlot];
         auto const& fmModulatorBase = procState->dsp.voice[voice].osci[src].unisonOutputMaybeOversampled[u];
         for (int os = 0; os < oversamplingTimes; os++)
           for (int s = 0; s < FBFixedBlockSamples; s++)
-            fmModulators[u][os][s] += fmModulatorBase[os][s] * fmIndex[s];
+            fmModulators[u][os][s] += fmModulatorBase[os][s] * (fmIndexLin[s] * applyLinearFM + fmIndexExp[s] * applyExpoFM);
       }
 
   FFOsciOversampledUnisonArray uniFreqs;
   FFOsciOversampledUnisonArray uniIncrs;
-  float applyExpoFM = _voiceState.expoFM ? 1.0f : 0.0f;
   for (int u = 0; u < _voiceState.unisonCount; u++)
     for (int os = 0; os < oversamplingTimes; os++)
       for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -553,7 +555,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       }
 
   FFOsciOversampledUnisonArray uniPhases;
-  float applyLinearFM = _voiceState.expoFM ? 0.0f : 1.0f;
   if (_voiceState.type == FFOsciType::Basic || _voiceState.type == FFOsciType::DSF)
     for (int u = 0; u < _voiceState.unisonCount; u++)
     {
