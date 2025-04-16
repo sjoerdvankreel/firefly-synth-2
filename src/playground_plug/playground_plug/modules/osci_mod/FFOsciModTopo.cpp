@@ -104,7 +104,7 @@ FFMakeOsciModTopo()
 
   auto& fmIndex = result->params[(int)FFOsciModParam::FMIndex];
   fmIndex.acc = true;
-  fmIndex.defaultText = "0.01";
+  fmIndex.defaultText = "0";
   fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciModSlotCount;
   fmIndex.id = "{9E37D313-1F48-4559-A6DD-01B235240F44}";
