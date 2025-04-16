@@ -204,7 +204,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     float unisonRandom = ((1.0f - random) + random * _prng.Next()) * unisonPhase;
     for (int o = 0; o < FFOsciFMOperatorCount; o++)
     {
-      _prevUnisonOutputForFM[u][o] = 0.0f;
+      _prevUnisonOutputForFM[o][u] = 0.0f;
       _unisonPhases[u][o] = FFOsciPhase(unisonRandom);
     }
   }
@@ -379,39 +379,60 @@ FFOsciProcessor::ProcessFM(
       uniIncrsOp1And2[u][1][s] = op2Freq / oversampledRate;
     }
 
+  // because of feedback fm the only dimension that gives us a vectorization opportunity 
+  // is the unison dimension here. that requires juggling the data a bit, though.
   int oversampledIndex = 0;
   for (int os = 0; os < oversamplingTimes; os++)
     for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
+    {
+      int nonOversampledIndex = oversampledIndex / oversamplingTimes;
+      for (int subUniBlock = 0; subUniBlock < _voiceState.unisonCount; subUniBlock += FBSIMDFloatCount)
+      {
+        auto prevOutput1 = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_prevUnisonOutputForFM[0].data() + subUniBlock);
+        auto prevOutput2 = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_prevUnisonOutputForFM[1].data() + subUniBlock);
+        auto prevOutput3 = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_prevUnisonOutputForFM[2].data() + subUniBlock);
+
+        xsimd::batch<float, FBXSIMDBatchType> fmTo1 = 0.0f;
+        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * prevOutput1;
+        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * prevOutput2;
+        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * prevOutput3;
+
+        alignas(FBFixedBlockAlign) std::array<float, FBSIMDFloatCount> phase1;
+        for(int u = subUniBlock; u < _voiceState.unisonCount; u++)
+          phase1[u - subUniBlock] = _unisonPhases[u][0].Next(uniIncrsOp1And2[u][0][nonOversampledIndex], fmModulators[u][os][s] + fmTo1);
+
+
+      }
+
       for (int u = 0; u < _voiceState.unisonCount; u++)
       {
-        int nonOversampledIndex = oversampledIndex / oversamplingTimes;
-
         float fmTo1 = 0.0f;
-        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[u][0];
-        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
-        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[0][u];
+        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[1][u];
+        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
         float phase1 = _unisonPhases[u][0].Next(uniIncrsOp1And2[u][0][nonOversampledIndex], fmModulators[u][os][s] + fmTo1);
         float output1 = GenerateSin(phase1);
 
         float fmTo2 = 0.0f;
         fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
-        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
-        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[1][u];
+        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
         float phase2 = _unisonPhases[u][1].Next(uniIncrsOp1And2[u][1][nonOversampledIndex], fmModulators[u][os][s] + fmTo2);
         float output2 = GenerateSin(phase2);
 
         float fmTo3 = 0.0f;
         fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
         fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
-        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
         float phase3 = _unisonPhases[u][2].Next(uniIncrs[u][nonOversampledIndex], fmModulators[u][os][s] + fmTo3);
         float output3 = GenerateSin(phase3);
 
         unisonOutputMaybeOversampled[u][os][s] = output3;
-        _prevUnisonOutputForFM[u][0] = output1;
-        _prevUnisonOutputForFM[u][1] = output2;
-        _prevUnisonOutputForFM[u][2] = output3;
+        _prevUnisonOutputForFM[0][u] = output1;
+        _prevUnisonOutputForFM[1][u] = output2;
+        _prevUnisonOutputForFM[2][u] = output3;
       }
+    }
 }
 
 int
