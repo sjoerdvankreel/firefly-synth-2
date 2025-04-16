@@ -428,7 +428,10 @@ FFOsciProcessor::ProcessFM(
         _prevUnisonOutputForFM[1][subUniBlock] = output2;
         _prevUnisonOutputForFM[2][subUniBlock] = output3;
 
-        //unisonOutputMaybeOversampled[u][os][s] = output3; // todo
+        alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> outputArray;
+        output3.store_aligned(outputArray.data());
+        for(int v = 0; v < FBSIMDFloatCount; v++)
+          unisonOutputMaybeOversampled[u + v][os][s] = outputArray[v];
       }
     }
 }
