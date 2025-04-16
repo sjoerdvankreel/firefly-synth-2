@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <memory>
 
 struct FBStaticModule;
@@ -11,7 +12,7 @@ enum class FFOsciDSFMode { Overtones, Bandwidth };
 
 inline int constexpr FFOsciFMRatioCount = 16;
 inline int constexpr FFOsciFMOperatorCount = 3;
-inline int constexpr FFOsciUnisonMaxCount = 16;
+inline int constexpr FFOsciUnisonMaxCount = FBSIMDFloatCount * 4;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
 enum class FFOsciParam { 

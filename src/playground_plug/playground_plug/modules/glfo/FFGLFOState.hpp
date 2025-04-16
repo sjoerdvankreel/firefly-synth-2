@@ -16,7 +16,7 @@ public FBModuleProcExchangeState
   float lastOutput = {};
 };
 
-class alignas(FBFixedBlockAlign) FFGLFODSPState final
+class alignas(FBSIMDAlign) FFGLFODSPState final
 {
   friend class FFPlugProcessor;
   friend struct GLFOGraphRenderData;

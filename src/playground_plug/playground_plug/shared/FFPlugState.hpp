@@ -36,7 +36,7 @@ struct FFVoiceExchangeState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
 
-struct alignas(FBFixedBlockAlign) FFGlobalDSPState final
+struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
   FFMasterDSPState master = {};
   std::array<FFGLFODSPState, FFGLFOCount> gLFO = {};
@@ -44,7 +44,7 @@ struct alignas(FBFixedBlockAlign) FFGlobalDSPState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
 };
 
-struct alignas(FBFixedBlockAlign) FFVoiceDSPState final
+struct alignas(FBSIMDAlign) FFVoiceDSPState final
 {
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
@@ -54,7 +54,7 @@ struct alignas(FBFixedBlockAlign) FFVoiceDSPState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
 
-struct alignas(FBFixedBlockAlign) FFProcDSPState final
+struct alignas(FBSIMDAlign) FFProcDSPState final
 {
   FFGlobalDSPState global = {};
   std::array<FFVoiceDSPState, FBMaxVoices> voice = {};
@@ -110,14 +110,14 @@ struct FFExchangeState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFExchangeState);
 };
 
-struct alignas(FBFixedBlockAlign) FFProcParamState final
+struct alignas(FBSIMDAlign) FFProcParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcParamState);
   FFVoiceParamState<FBVoiceBlockParamState, FBVoiceAccParamState> voice = {};
   FFGlobalParamState<FBGlobalBlockParamState, FBGlobalAccParamState> global = {};
 };
 
-struct alignas(FBFixedBlockAlign) FFProcState final
+struct alignas(FBSIMDAlign) FFProcState final
 {
   FFProcDSPState dsp = {};
   FFProcParamState param = {};

@@ -6,5 +6,5 @@
 typedef xsimd::sse2 FBXSIMDBatchType;
 inline int constexpr FBMaxVoices = 64;
 inline int constexpr FBSIMDFloatCount = 4;
-inline int constexpr FBFixedBlockSamples = 16;
-inline int constexpr FBFixedBlockAlign = FBSIMDFloatCount * sizeof(float);
+inline int constexpr FBFixedBlockSamples = 4 * FBSIMDFloatCount;
+inline int constexpr FBSIMDAlign = FBSIMDFloatCount * sizeof(float);

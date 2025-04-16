@@ -132,7 +132,7 @@ GenerateDSFOvertones(
   float const* phases, float const* freqs, float const* decays,
   float const* distFreqs, float const* maxOvertones, int overtones_, float* outs)
 {
-  alignas(FBFixedBlockAlign) std::array<float, FBSIMDFloatCount> overtones;
+  alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> overtones;
   for(int i = 0; i < FBSIMDFloatCount; i++)
     overtones[i] = static_cast<float>(std::min(overtones_, FBFastFloor(maxOvertones[i])));
   return GenerateDSF(phases, freqs, decays, distFreqs, overtones.data(), outs);
@@ -143,7 +143,7 @@ GenerateDSFBandwidth(
   float const* phases, float const* freqs, float const* decays,
   float const* distFreqs, float const* maxOvertones, float bandwidth, float* outs)
 {
-  alignas(FBFixedBlockAlign) std::array<float, FBSIMDFloatCount> overtones;
+  alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> overtones;
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
     overtones[i] = 1.0f + FBFastFloor(bandwidth * (maxOvertones[i] - 1));
@@ -197,16 +197,19 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
 
   _phase = {};
   _prng = FBParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
+  alignas(FBSIMDAlign) std::array<float, FFOsciUnisonMaxCount> unisonPhaseInit = {};
   for (int u = 0; u < _voiceState.unisonCount; u++)
   {
     float random = _voiceState.unisonRandomPlain;
     float unisonPhase = u * _voiceState.unisonOffsetPlain / _voiceState.unisonCount;
-    float unisonRandom = ((1.0f - random) + random * _prng.Next()) * unisonPhase;
-    for (int o = 0; o < FFOsciFMOperatorCount; o++)
-    {
-      _prevUnisonOutputForFM[o][u] = 0.0f;
-      _unisonPhases[u][o] = FFOsciPhase(unisonRandom);
-    }
+    unisonPhaseInit[u] = ((1.0f - random) + random * _prng.Next()) * unisonPhase;
+    _unisonPhases[u] = FFOsciPhase(unisonPhaseInit[u]);
+  }
+  if (_voiceState.type == FFOsciType::FM)
+  {
+    for (int u = 0; u < _voiceState.unisonCount; u += FBSIMDFloatCount)
+      for(int o = 0; o < FFOsciFMOperatorCount; o++)
+      _unisonPhasesForFM[u / FBSIMDFloatCount][o] = FFOsciFMPhases(xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_unisonPhases.data() + u));
   }
 
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
@@ -521,7 +524,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       int oversampledIndex = 0;
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
-          uniPhases[u][os][s] = _unisonPhases[u][0].Next(uniIncrs[u][oversampledIndex / oversamplingTimes], fmModulators[u][os][s]);
+          uniPhases[u][os][s] = _unisonPhases[u].Next(uniIncrs[u][oversampledIndex / oversamplingTimes], fmModulators[u][os][s]);
     }
 
   if (_voiceState.type == FFOsciType::Basic)

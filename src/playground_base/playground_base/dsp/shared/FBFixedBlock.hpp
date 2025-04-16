@@ -6,7 +6,7 @@
 #include <array>
 
 template <class T>
-class alignas(FBFixedBlockAlign) FBFixedArray 
+class alignas(FBSIMDAlign) FBFixedArray
 {
   std::array<T, FBFixedBlockSamples> _data = {};
 public:
@@ -25,7 +25,7 @@ public:
 };
 
 template <class T>
-struct alignas(FBFixedBlockAlign) FBFixedAudioArray
+struct alignas(FBSIMDAlign) FBFixedAudioArray
 { 
   std::array<FBFixedArray<T>, 2> _data = {};
 public:

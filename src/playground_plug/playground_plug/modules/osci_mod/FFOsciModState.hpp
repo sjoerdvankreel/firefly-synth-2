@@ -11,7 +11,7 @@
 struct FBStaticModule;
 class FFOsciModProcessor;
 
-class alignas(FBFixedBlockAlign) FFOsciModDSPState final
+class alignas(FBSIMDAlign) FFOsciModDSPState final
 {
   friend class FFVoiceProcessor;
   friend struct OscisGraphRenderData;

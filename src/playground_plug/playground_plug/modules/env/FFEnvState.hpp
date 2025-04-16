@@ -26,7 +26,7 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvGUIState);
 };
 
-class alignas(FBFixedBlockAlign) FFEnvDSPState final
+class alignas(FBSIMDAlign) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;
   friend struct EnvGraphRenderData;

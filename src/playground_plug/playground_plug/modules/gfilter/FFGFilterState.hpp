@@ -9,7 +9,7 @@
 struct FBStaticModule;
 class FFGFilterProcessor;
 
-class alignas(FBFixedBlockAlign) FFGFilterDSPState final
+class alignas(FBSIMDAlign) FFGFilterDSPState final
 {
   friend class FFPlugProcessor;
   std::unique_ptr<FFGFilterProcessor> processor = {};

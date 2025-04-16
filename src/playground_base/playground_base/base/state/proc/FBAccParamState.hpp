@@ -8,7 +8,7 @@
 #include <array>
 #include <algorithm>
 
-class alignas(FBFixedBlockAlign) FBAccParamState final
+class alignas(FBSIMDAlign) FBAccParamState final
 {
   friend class FBVoiceManager;
   friend class FBSmoothingProcessor;
