@@ -219,7 +219,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
   auto const& modParams = procState->param.voice.osciMod[0];
   auto const& modTopo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
-  _voiceState.fmMode = modTopo.NormalizedToListFast<FFOsciModFMMode>(FFOsciModParam::FMMode, modParams.block.fmMode[0].Voice()[voice]);
+  _voiceState.expoFM = modTopo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, modParams.block.expoFM[0].Voice()[voice]);
   _voiceState.oversampling = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversampling, modParams.block.oversampling[0].Voice()[voice]);
   for (int modSlot = modStartSlot; modSlot < modStartSlot + state.moduleSlot; modSlot++)
   {
@@ -540,7 +540,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   FFOsciOversampledUnisonArray uniFreqs;
   FFOsciOversampledUnisonArray uniIncrs;
-  float applyExpoFM = _voiceState.fmMode == FFOsciModFMMode::Exp ? 1.0f : 0.0f;
+  float applyExpoFM = _voiceState.expoFM ? 1.0f : 0.0f;
   for (int u = 0; u < _voiceState.unisonCount; u++)
     for (int os = 0; os < oversamplingTimes; os++)
       for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -553,20 +553,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       }
 
   FFOsciOversampledUnisonArray uniPhases;
-  bool realFM = _voiceState.fmMode == FFOsciModFMMode::FM;
-  float applyLinearFM = _voiceState.fmMode == FFOsciModFMMode::Exp ? 0.0f : 1.0f;
+  float applyLinearFM = _voiceState.expoFM ? 0.0f : 1.0f;
   if (_voiceState.type == FFOsciType::Basic || _voiceState.type == FFOsciType::DSF)
     for (int u = 0; u < _voiceState.unisonCount; u++)
     {
       int oversampledIndex = 0;
-      if(realFM)
-        for (int os = 0; os < oversamplingTimes; os++)
-          for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
-            uniPhases[u][os][s] = _unisonPhases[u].NextFM(uniIncrs[u][os][s], fmModulators[u][os][s] * applyLinearFM);
-      else
-        for (int os = 0; os < oversamplingTimes; os++)
-          for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
-            uniPhases[u][os][s] = _unisonPhases[u].NextPM(uniIncrs[u][os][s], fmModulators[u][os][s] * applyLinearFM);
+      for (int os = 0; os < oversamplingTimes; os++)
+        for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
+          uniPhases[u][os][s] = _unisonPhases[u].Next(uniIncrs[u][os][s], fmModulators[u][os][s] * applyLinearFM);
     }
 
   if (_voiceState.type == FFOsciType::Basic)
