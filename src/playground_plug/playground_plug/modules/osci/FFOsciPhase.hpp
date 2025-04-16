@@ -1,6 +1,8 @@
 #pragma once
 
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
+#include <playground_base/dsp/shared/FBDSPUtility.hpp>
+
 #include <cmath>
 
 class FFOsciPhase final
