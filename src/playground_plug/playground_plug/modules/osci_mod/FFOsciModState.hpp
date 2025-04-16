@@ -30,7 +30,7 @@ class alignas(alignof(TVoiceBlock)) FFOsciModBlockParamState final
   friend class FFOsciProcessor;
   friend class FFOsciModProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciModTopo();
-  std::array<TVoiceBlock, 1> expoFM = {};
+  std::array<TVoiceBlock, 1> fmMode = {};
   std::array<TVoiceBlock, 1> oversampling = {};
   std::array<TVoiceBlock, FFOsciModSlotCount> fmOn = {};
   std::array<TVoiceBlock, FFOsciModSlotCount> amMode = {};

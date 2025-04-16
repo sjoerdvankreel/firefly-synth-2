@@ -32,9 +32,9 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto oversampling = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::Oversampling, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversampling));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversampling));
-  auto expoFM = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::ExpoFM, 0 });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, expoFM));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, expoFM));
+  auto fmMode = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::FMMode, 0 });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fmMode));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, fmMode));
   grid->MarkSection({ 0, 0, 2, 2 });
 
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>("AM"));

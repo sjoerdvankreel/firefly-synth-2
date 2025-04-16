@@ -12,7 +12,8 @@ class FFOsciPhase final
 public:
   FFOsciPhase() = default;
   explicit FFOsciPhase(float x) : _x(x) {}
-  float Next(float incr, float fmModulator);
+  float NextFM(float incr, float fmModulator);
+  float NextPM(float incr, float fmModulator);
 };
 
 // vectorize over unison dimension, it's 
@@ -29,7 +30,17 @@ public:
 };
 
 inline float
-FFOsciPhase::Next(float incr, float fmModulator)
+FFOsciPhase::NextFM(float incr, float fmModulator)
+{
+  float y = _x;
+  _x += incr + fmModulator;
+  FBPhaseWrap(_x);
+  assert(0.0f <= _x && _x < 1.0f);
+  return y;
+}
+
+inline float
+FFOsciPhase::NextPM(float incr, float fmModulator)
 {
   float y = _x;
   _x += incr;

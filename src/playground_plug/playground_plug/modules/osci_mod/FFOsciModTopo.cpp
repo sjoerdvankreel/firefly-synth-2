@@ -45,18 +45,21 @@ FFMakeOsciModTopo()
   oversampling.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOversampling);
   oversampling.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectOversampling);
 
-  auto& expoFM = result->params[(int)FFOsciModParam::ExpoFM];
-  expoFM.acc = false;
-  expoFM.name = "Exp FM";
-  expoFM.tooltip = "Exponential FM";
-  expoFM.defaultText = "Off";
-  expoFM.slotCount = 1;
-  expoFM.id = "{23FC415C-06AD-4ED3-8B29-08724D536096}";
-  expoFM.type = FBParamType::Boolean;
-  auto selectExpoFM = [](auto& module) { return &module.block.expoFM; };
-  expoFM.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectExpoFM);
-  expoFM.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectExpoFM);
-  expoFM.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectExpoFM);
+  auto& fmMode = result->params[(int)FFOsciModParam::FMMode];
+  fmMode.acc = false;
+  fmMode.name = "FM Mode";
+  fmMode.defaultText = "PM";
+  fmMode.slotCount = 1;
+  fmMode.id = "{23FC415C-06AD-4ED3-8B29-08724D536096}";
+  fmMode.type = FBParamType::List;
+  fmMode.List().items = {
+    { "{C1BFC142-20B7-4368-B9A9-361D523D641B}", "PM" },
+    { "{2A5B676E-590C-4C2C-A5F3-F75D74B796C8}", "FM" },
+    { "{0331DAD2-D265-4063-8490-D0A721441C3B}", "Exp" } };
+  auto selectFMMode = [](auto& module) { return &module.block.fmMode; };
+  fmMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMMode);
+  fmMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMMode);
+  fmMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMMode);
 
   auto& amMode = result->params[(int)FFOsciModParam::AMMode];
   amMode.acc = false;
@@ -104,7 +107,7 @@ FFMakeOsciModTopo()
 
   auto& fmIndex = result->params[(int)FFOsciModParam::FMIndex];
   fmIndex.acc = true;
-  fmIndex.defaultText = "0.01";
+  fmIndex.defaultText = "0";
   fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciModSlotCount;
   fmIndex.id = "{9E37D313-1F48-4559-A6DD-01B235240F44}";
