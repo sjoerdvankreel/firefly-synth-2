@@ -219,14 +219,15 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
   auto const& modParams = procState->param.voice.osciMod[0];
   auto const& modTopo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
+  _voiceState.expoFM = modTopo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, modParams.block.expoFM[0].Voice()[voice]);
   _voiceState.oversampling = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversampling, modParams.block.oversampling[0].Voice()[voice]);
   for (int modSlot = modStartSlot; modSlot < modStartSlot + state.moduleSlot; modSlot++)
   {
     int srcOsciSlot = modSlot - modStartSlot;
     auto const& srcOsciParams = procState->param.voice.osci[srcOsciSlot];
+    _voiceState.modSourceFMOn[srcOsciSlot] = modTopo.NormalizedToBoolFast(FFOsciModParam::FMOn, modParams.block.fmOn[modSlot].Voice()[voice]);
     _voiceState.modSourceUnisonCount[srcOsciSlot] = topo.NormalizedToDiscreteFast(FFOsciParam::UnisonCount, srcOsciParams.block.unisonCount[0].Voice()[voice]);
     _voiceState.modSourceAMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, modParams.block.amMode[modSlot].Voice()[voice]);
-    _voiceState.modSourceFMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModFMMode>(FFOsciModParam::FMMode, modParams.block.fmMode[modSlot].Voice()[voice]);
   }
 }
 
@@ -527,7 +528,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       fmModulators[u][os].Fill(0.0f);
   for (int src = 0; src < state.moduleSlot; src++)
     for (int u = 0; u < _voiceState.unisonCount; u++)
-      if (_voiceState.modSourceFMMode[src] != FFOsciModFMMode::Off && _voiceState.modSourceUnisonCount[src] > u)
+      if (_voiceState.modSourceFMOn[src] && _voiceState.modSourceUnisonCount[src] > u)
       {
         int modSlot = OsciModStartSlot(state.moduleSlot) + src;
         auto const& fmIndex = procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot];
@@ -539,7 +540,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   FFOsciOversampledUnisonArray uniFreqs;
   FFOsciOversampledUnisonArray uniIncrs;
-  //FFOsciOversampledUnisonArray uniPitchs;
+  FFOsciOversampledUnisonArray uniPitchs;
   for (int u = 0; u < _voiceState.unisonCount; u++)
     for (int os = 0; os < oversamplingTimes; os++)
       for (int s = 0; s < FBFixedBlockSamples; s++)

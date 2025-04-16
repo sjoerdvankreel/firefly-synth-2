@@ -14,8 +14,8 @@ FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
+    _voiceState.fmOn[i] = topo.NormalizedToBoolFast(FFOsciModParam::FMOn, params.block.fmOn[i].Voice()[voice]);
     _voiceState.amMode[i] = topo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, params.block.amMode[i].Voice()[voice]);
-    _voiceState.fmMode[i] = topo.NormalizedToListFast<FFOsciModFMMode>(FFOsciModParam::FMMode, params.block.fmMode[i].Voice()[voice]);
   }
 }
 
@@ -38,7 +38,7 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
       auto const& amMixNorm = procParams.acc.amMix[i].Voice()[voice];
       topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, outputAMMix[i]);
     }
-    if (_voiceState.fmMode[i] != FFOsciModFMMode::Off)
+    if (_voiceState.fmOn[i])
     {
       auto const& fmIndexNorm = procParams.acc.fmIndex[i].Voice()[voice];
       topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, outputFMIndex[i]);
