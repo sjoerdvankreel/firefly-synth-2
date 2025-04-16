@@ -4,22 +4,24 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
-#include <playground_plug/modules/osci_mod/FFOsciModProcessor.hpp>
 
 #include <array>
 #include <memory>
 
 struct FBStaticModule;
+class FFOsciModProcessor;
 
 class alignas(FBFixedBlockAlign) FFOsciModDSPState final
 {
   friend class FFVoiceProcessor;
   friend struct OscisGraphRenderData;
-  FFOsciModProcessor processor = {};
+  std::unique_ptr<FFOsciModProcessor> processor = {};
 public:
+  FFOsciModDSPState();
+  ~FFOsciModDSPState();
   std::array<FBFixedFloatArray, FFOsciModSlotCount> outputAMMix = {};
   std::array<FBFixedFloatArray, FFOsciModSlotCount> outputFMIndex = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModDSPState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciModDSPState);
 };
 
 template <class TVoiceBlock>

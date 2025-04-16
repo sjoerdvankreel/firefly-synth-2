@@ -3,6 +3,7 @@
 #include <playground_plug/pipeline/FFVoiceProcessor.hpp>
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModProcessor.hpp>
 
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
@@ -18,7 +19,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     procState->dsp.voice[voice].env[i].processor->BeginVoice(state);
   }
   state.moduleSlot = 0;
-  procState->dsp.voice[voice].osciMod.processor.BeginVoice(state);
+  procState->dsp.voice[voice].osciMod.processor->BeginVoice(state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
@@ -43,7 +44,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
       voiceFinished = envProcessed != FBFixedBlockSamples;
   }
   state.moduleSlot = 0;
-  voiceDSP.osciMod.processor.Process(state);
+  voiceDSP.osciMod.processor->Process(state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;

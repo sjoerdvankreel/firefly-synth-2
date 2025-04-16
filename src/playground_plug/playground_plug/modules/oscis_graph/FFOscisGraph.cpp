@@ -23,7 +23,7 @@ OscisGraphRenderData::BeginVoice(FBModuleProcState& state)
 {
   int osciSlot = state.moduleSlot;
   state.moduleSlot = 0;
-  GetVoiceDSPState(state).osciMod.processor.BeginVoice(state);
+  GetVoiceDSPState(state).osciMod.processor->BeginVoice(state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
@@ -38,7 +38,7 @@ OscisGraphRenderData::Process(FBModuleProcState& state)
   int result = 0;
   int osciSlot = state.moduleSlot;
   state.moduleSlot = 0;
-  GetVoiceDSPState(state).osciMod.processor.Process(state);
+  GetVoiceDSPState(state).osciMod.processor->Process(state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
