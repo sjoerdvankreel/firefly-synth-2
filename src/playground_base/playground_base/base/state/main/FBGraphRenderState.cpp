@@ -150,15 +150,6 @@ FBGraphRenderState::GUIParamBarsSamples(
   return param->static_.Bars().NormalizedToSamplesFast(static_cast<float>(normalized), sampleRate, bpm);
 }
 
-int
-FBGraphRenderState::AudioParamNote(
-  FBParamTopoIndices const& indices) const
-{
-  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
-  return param->static_.Note().NormalizedToPlainFast(static_cast<float>(normalized));
-}
-
 bool 
 FBGraphRenderState::AudioParamBool(
   FBParamTopoIndices const& indices) const

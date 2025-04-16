@@ -3,7 +3,6 @@
 enum class FBParamType 
 { 
   List,
-  Note,
   Bars,
   Boolean,
   Discrete,

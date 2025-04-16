@@ -177,7 +177,6 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   _voiceState.key = static_cast<float>(state.voice->event.note.key);
-  _voiceState.note = topo.NormalizedToNoteFast(FFOsciParam::Note, params.block.note[0].Voice()[voice]);
   _voiceState.type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, params.block.type[0].Voice()[voice]);
   _voiceState.basicSinOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSinOn, params.block.basicSinOn[0].Voice()[voice]);
   _voiceState.basicSawOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSawOn, params.block.basicSawOn[0].Voice()[voice]);
@@ -483,24 +482,27 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   int prevPositionSamplesUpToFirstCycle = _phase.PositionSamplesUpToFirstCycle();
 
-  auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
+  auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
+  auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
   auto const& detuneNorm = procParams.acc.unisonDetune[0].Voice()[voice];
   auto const& spreadNorm = procParams.acc.unisonSpread[0].Voice()[voice];
+  auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
   auto const& basicSqrPWNorm = procParams.acc.basicSqrPW[0].Voice()[voice];
   auto const& basicSqrGainNorm = procParams.acc.basicSqrGain[0].Voice()[voice];
   auto const& basicSinGainNorm = procParams.acc.basicSinGain[0].Voice()[voice];
   auto const& basicSawGainNorm = procParams.acc.basicSawGain[0].Voice()[voice];
   auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];  
 
-  float centNorm;
+  FBFixedFloatArray finePlain;
+  FBFixedFloatArray coarsePlain;
+  topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, finePlain);
+  topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, coarsePlain);
+
   FBFixedFloatArray baseFreq;
   FBFixedFloatArray basePitch;
-  float notePitch = _voiceState.key + _voiceState.note - 60.0f;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    centNorm = procParams.acc.cent[0].Voice()[voice].CV()[s];
-    float centPlain = topo.NormalizedToLinearFast(FFOsciParam::Cent, centNorm);
-    basePitch[s] = notePitch + centPlain;
+    basePitch[s] = _voiceState.key + coarsePlain[s] + finePlain[s];
     baseFreq[s] = FBPitchToFreqFastAndInaccurate(basePitch[s]);
     _phase.Next(baseFreq[s] / state.input->sampleRate);
   }
@@ -648,7 +650,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
-  exchangeParams.acc.cent[0][voice] = centNorm;
+  exchangeParams.acc.fine[0][voice] = fineNorm.Last();
+  exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGainNorm.Last();
   exchangeParams.acc.unisonDetune[0][voice] = detuneNorm.Last();

@@ -6,7 +6,6 @@
 #include <playground_base/base/topo/param/FBLog2Param.hpp>
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 #include <playground_base/base/topo/param/FBListParam.hpp>
-#include <playground_base/base/topo/param/FBNoteParam.hpp>
 #include <playground_base/base/topo/param/FBBarsParam.hpp>
 #include <playground_base/base/topo/param/FBParamType.hpp>
 #include <playground_base/base/topo/param/FBTextDisplay.hpp>
@@ -29,7 +28,6 @@ struct FBStaticParamBase
 private:
   FBLog2ParamNonRealTime log2 = {};
   FBListParamNonRealTime list = {};
-  FBNoteParamNonRealTime note = {};
   FBBarsParamNonRealTime bars = {};
   FBBoolParamNonRealTime boolean = {};
   FBLinearParamNonRealTime linear = {};
@@ -50,7 +48,6 @@ public:
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);
 
   FBListParam& List();
-  FBNoteParam& Note();
   FBBarsParam& Bars();
   FBLog2Param& Log2();
   FBBoolParam& Boolean();
@@ -59,7 +56,6 @@ public:
   FBIdentityParam& Identity();
   
   FBListParam const& List() const;
-  FBNoteParam const& Note() const;
   FBBarsParam const& Bars() const;
   FBLog2Param const& Log2() const;
   FBBoolParam const& Boolean() const;
@@ -79,13 +75,6 @@ FBStaticParamBase::List()
 {
   assert(type == FBParamType::List);
   return list;
-}
-
-inline FBNoteParam&
-FBStaticParamBase::Note()
-{
-  assert(type == FBParamType::Note);
-  return note;
 }
 
 inline FBBarsParam&
@@ -135,13 +124,6 @@ FBStaticParamBase::List() const
 {
   assert(type == FBParamType::List);
   return list;
-}
-
-inline FBNoteParam const&
-FBStaticParamBase::Note() const
-{
-  assert(type == FBParamType::Note);
-  return note;
 }
 
 inline FBBarsParam const&

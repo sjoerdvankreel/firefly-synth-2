@@ -8,7 +8,6 @@ FBStaticParamBase::NonRealTime() const
   case FBParamType::Log2: return log2;
   case FBParamType::List: return list;
   case FBParamType::Bars: return bars;
-  case FBParamType::Note: return note;
   case FBParamType::Linear: return linear;
   case FBParamType::Boolean: return boolean;
   case FBParamType::Discrete: return discrete;
@@ -24,7 +23,6 @@ FBStaticParamBase::ItemsNonRealTime() const
   {
   case FBParamType::List: return list;
   case FBParamType::Bars: return bars;
-  case FBParamType::Note: return note;
   case FBParamType::Discrete: return discrete;
   default: assert(false); return *static_cast<FBItemsParamNonRealTime const*>(nullptr);
   }

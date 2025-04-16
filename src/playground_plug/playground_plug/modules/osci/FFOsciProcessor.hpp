@@ -20,8 +20,7 @@ std::array<std::array<T, FFOsciUnisonMaxCount / FBSIMDFloatCount>, FFOsciFMOpera
 
 struct FFOsciVoiceState final
 {
-  int note = {};
-  float key = {}; // TODO floating key
+  float key = {};
   FFOsciType type = {};
 
   bool basicSinOn = {};

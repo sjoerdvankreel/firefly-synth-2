@@ -1,4 +1,5 @@
 uni blend
+set exact value
 do coarse/fine?
 expo fm + pitchcorrect
 linear index for expo fm

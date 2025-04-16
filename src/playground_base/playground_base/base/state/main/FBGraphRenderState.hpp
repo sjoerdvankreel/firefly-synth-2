@@ -50,7 +50,6 @@ public:
   int GUIParamLinearTimeSamples(FBParamTopoIndices const& indices, float sampleRate) const;
   int GUIParamBarsSamples(FBParamTopoIndices const& indices, float sampleRate, float bpm) const;
 
-  int AudioParamNote(FBParamTopoIndices const& indices) const;
   bool AudioParamBool(FBParamTopoIndices const& indices) const;
   int AudioParamDiscrete(FBParamTopoIndices const& indices) const;
   float AudioParamLinear(FBParamTopoIndices const& indices) const;
