@@ -1,8 +1,6 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/pipeline/FFVoiceProcessor.hpp>
-#include <playground_plug/modules/osci/FFOsciProcessor.hpp>
-
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 
@@ -21,7 +19,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    procState->dsp.voice[voice].osci[i].processor->BeginVoice(state);
+    procState->dsp.voice[voice].osci[i].processor.BeginVoice(state);
   }
 }
 
@@ -46,7 +44,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.osci[i].processor->Process(state);
+    voiceDSP.osci[i].processor.Process(state);
     voiceDSP.output.Add(voiceDSP.osci[i].output);
   }
 

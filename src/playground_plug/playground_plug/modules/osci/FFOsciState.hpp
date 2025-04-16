@@ -1,8 +1,7 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_plug/modules/osci/FFOsciTopo.hpp>
-
+#include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 
@@ -10,20 +9,17 @@
 #include <memory>
 
 struct FBStaticModule;
-class FFOsciProcessor;
 
 class alignas(FBFixedBlockAlign) FFOsciDSPState final
 {
   friend class FFVoiceProcessor;
   friend struct OscisGraphRenderData;
-  std::unique_ptr<FFOsciProcessor> processor = {};
+  FFOsciProcessor processor = {};
 public:
-  FFOsciDSPState();
-  ~FFOsciDSPState();
   FBFixedFloatAudioArray output = {};
   std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> unisonOutputNonOversampled = {};
   std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> unisonOutputMaybeOversampled = {};
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciDSPState);
 };
 
 template <class TVoiceBlock>
