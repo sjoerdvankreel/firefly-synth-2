@@ -1,4 +1,5 @@
 uni blend
+vector fastpow
 expo fm
 move the oversampling switch
 store the selected tab
