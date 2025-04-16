@@ -22,7 +22,7 @@ FFGLFOProcessor&
 GLFOGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  return procState->dsp.global.gLFO[state.moduleSlot].processor;
+  return *procState->dsp.global.gLFO[state.moduleSlot].processor;
 }
 
 static FBModuleGraphPlotParams

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
-
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
@@ -10,6 +8,7 @@
 #include <memory>
 
 struct FBStaticModule;
+class FFGLFOProcessor;
 
 struct FFGLFOExchangeState final:
 public FBModuleProcExchangeState
@@ -21,10 +20,12 @@ class alignas(FBFixedBlockAlign) FFGLFODSPState final
 {
   friend class FFPlugProcessor;
   friend struct GLFOGraphRenderData;
-  FFGLFOProcessor processor = {};
+  std::unique_ptr<FFGLFOProcessor> processor = {};
 public:
+  FFGLFODSPState();
+  ~FFGLFODSPState();
   FBFixedFloatArray output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFODSPState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFGLFODSPState);
 };
 
 template <class TGlobalBlock>

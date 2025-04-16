@@ -1,6 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
+#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
@@ -75,7 +76,7 @@ FFPlugProcessor::ProcessPreVoice(
   for (int s = 0; s < FFGLFOCount; s++)
   {
     state.moduleSlot = s;
-    _procState->dsp.global.gLFO[s].processor.Process(state);
+    _procState->dsp.global.gLFO[s].processor->Process(state);
   }
 }
 
