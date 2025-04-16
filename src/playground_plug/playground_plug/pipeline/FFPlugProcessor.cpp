@@ -1,6 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
+#include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
@@ -91,12 +92,12 @@ FFPlugProcessor::ProcessPostVoice(
   auto state = MakeModuleState(input);
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;
-  _procState->dsp.global.gFilter[0].processor.Process(state);
+  _procState->dsp.global.gFilter[0].processor->Process(state);
   for (int s = 1; s < FFGFilterCount; s++)
   {
     state.moduleSlot = s;
     _procState->dsp.global.gFilter[s - 1].output.CopyTo(_procState->dsp.global.gFilter[s].input);
-    _procState->dsp.global.gFilter[s].processor.Process(state);
+    _procState->dsp.global.gFilter[s].processor->Process(state);
   }
 
   state.moduleSlot = 0;

@@ -2,21 +2,23 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
-#include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <array>
 #include <memory>
 
 struct FBStaticModule;
+class FFGFilterProcessor;
 
 class alignas(FBFixedBlockAlign) FFGFilterDSPState final
 {
   friend class FFPlugProcessor;
-  FFGFilterProcessor processor = {};
+  std::unique_ptr<FFGFilterProcessor> processor = {};
 public:
+  FFGFilterDSPState();
+  ~FFGFilterDSPState();
   FBFixedFloatAudioArray input = {};
   FBFixedFloatAudioArray output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterDSPState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFGFilterDSPState);
 };
 
 template <class TGlobalBlock>
