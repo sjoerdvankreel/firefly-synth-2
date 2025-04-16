@@ -1,4 +1,5 @@
 uni blend
+do coarse/fine?
 expo fm
 move the oversampling switch
 store the selected tab

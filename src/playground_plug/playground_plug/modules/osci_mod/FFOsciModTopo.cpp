@@ -83,8 +83,8 @@ FFMakeOsciModTopo()
   fmMode.slotFormatter = FFOsciModFormatSlot;
   fmMode.List().items = {
     { "{8B789678-8C69-445F-B7D6-B999D88714B1}", "Off" },
-    { "{FAEE7133-DB2D-4E67-9F8D-B1E0F8E87EEA}", "FM" },
-    { "{CD270554-42CF-4779-A2A2-219FD26986C3}", "TZ" } };
+    { "{FAEE7133-DB2D-4E67-9F8D-B1E0F8E87EEA}", "Lin" },
+    { "{CD270554-42CF-4779-A2A2-219FD26986C3}", "Exp" } };
   auto selectFMMode = [](auto& module) { return &module.block.fmMode; };
   fmMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMMode);
   fmMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMMode);

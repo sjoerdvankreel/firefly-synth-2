@@ -15,6 +15,9 @@ class FFOsciProcessor;
 inline int constexpr FFOsciOverSamplingFactor = 2;
 inline int constexpr FFOsciOverSamplingTimes = 1 << FFOsciOverSamplingFactor;
 
+typedef std::array<FBFixedFloatArray, FFOsciOverSamplingTimes> FFOsciOversampledArray;
+typedef std::array<FFOsciOversampledArray, FFOsciUnisonMaxCount> FFOsciOversampledUnisonArray;
+
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
   friend class FFVoiceProcessor;
@@ -24,8 +27,8 @@ public:
   FFOsciDSPState();
   ~FFOsciDSPState();
   FBFixedFloatAudioArray output = {};
+  FFOsciOversampledUnisonArray unisonOutputMaybeOversampled = {};
   std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> unisonOutputNonOversampled = {};
-  std::array<std::array<FBFixedFloatArray, FFOsciOverSamplingTimes>, FFOsciUnisonMaxCount> unisonOutputMaybeOversampled = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 
