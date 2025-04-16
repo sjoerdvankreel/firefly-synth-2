@@ -540,31 +540,17 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   FFOsciOversampledUnisonArray uniFreqs;
   FFOsciOversampledUnisonArray uniIncrs;
-  if(_voiceState.expoFM)
-    for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int os = 0; os < oversamplingTimes; os++)
-        for (int s = 0; s < FBFixedBlockSamples; s++)
-        {
-          int nosIndex = (os * FBFixedBlockSamples + s) / oversamplingTimes;
-          float uniPitch = basePitch[nosIndex] + unisonPos[u] * detunePlain[nosIndex];
-          uniPitch += fmModulators[u][os][s] * uniPitch;
-          uniFreqs[u][os][s] = FBPitchToFreqFastAndInaccurate(uniPitch);
-          uniIncrs[u][os][s] = uniFreqs[u][os][s] / oversampledRate;
-        }
-  else
-    for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int os = 0; os < oversamplingTimes; os++)
-        for (int s = 0; s < FBFixedBlockSamples; s += oversamplingTimes)
-        {
-          int nosIndex = (os * FBFixedBlockSamples + s) / oversamplingTimes;
-          float uniPitch = basePitch[nosIndex] + unisonPos[u] * detunePlain[nosIndex];
-          float uniFreq = FBPitchToFreqFastAndInaccurate(uniPitch);
-          for (int t = 0; t < oversamplingTimes; t++)
-          {
-            uniFreqs[u][os][s + t] = uniFreq;
-            uniIncrs[u][os][s + t] = uniFreq / oversampledRate;
-          }
-        }
+  float applyExpoFM = _voiceState.expoFM ? 1.0f : 0.0f;
+  for (int u = 0; u < _voiceState.unisonCount; u++)
+    for (int os = 0; os < oversamplingTimes; os++)
+      for (int s = 0; s < FBFixedBlockSamples; s++)
+      {
+        int nosIndex = (os * FBFixedBlockSamples + s) / oversamplingTimes;
+        float uniPitch = basePitch[nosIndex] + unisonPos[u] * detunePlain[nosIndex];
+        uniPitch += fmModulators[u][os][s] * uniPitch * applyExpoFM;
+        uniFreqs[u][os][s] = FBPitchToFreqFastAndInaccurate(uniPitch);
+        uniIncrs[u][os][s] = uniFreqs[u][os][s] / oversampledRate;
+      }
 
   FFOsciOversampledUnisonArray uniPhases;
   float applyLinearFM = _voiceState.expoFM ? 0.0f : 1.0f;
