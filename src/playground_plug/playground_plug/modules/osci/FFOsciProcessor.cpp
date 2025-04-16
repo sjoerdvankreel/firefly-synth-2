@@ -204,7 +204,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     float unisonRandom = ((1.0f - random) + random * _prng.Next()) * unisonPhase;
     for (int o = 0; o < FFOsciFMOperatorCount; o++)
     {
-      _prevUnisonOutputForFM[u][o] = 0.0f;
+      _prevUnisonOutputForFM[o][u] = 0.0f;
       _unisonPhases[u][o] = FFOsciPhase(unisonRandom);
     }
   }
@@ -387,30 +387,30 @@ FFOsciProcessor::ProcessFM(
         int nonOversampledIndex = oversampledIndex / oversamplingTimes;
 
         float fmTo1 = 0.0f;
-        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[u][0];
-        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
-        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[0][u];
+        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[1][u];
+        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
         float phase1 = _unisonPhases[u][0].Next(uniIncrsOp1And2[u][0][nonOversampledIndex], fmModulators[u][os][s] + fmTo1);
         float output1 = GenerateSin(phase1);
 
         float fmTo2 = 0.0f;
         fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
-        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[u][1];
-        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[1][u];
+        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
         float phase2 = _unisonPhases[u][1].Next(uniIncrsOp1And2[u][1][nonOversampledIndex], fmModulators[u][os][s] + fmTo2);
         float output2 = GenerateSin(phase2);
 
         float fmTo3 = 0.0f;
         fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
         fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
-        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[u][2];
+        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
         float phase3 = _unisonPhases[u][2].Next(uniIncrs[u][nonOversampledIndex], fmModulators[u][os][s] + fmTo3);
         float output3 = GenerateSin(phase3);
 
         unisonOutputMaybeOversampled[u][os][s] = output3;
-        _prevUnisonOutputForFM[u][0] = output1;
-        _prevUnisonOutputForFM[u][1] = output2;
-        _prevUnisonOutputForFM[u][2] = output3;
+        _prevUnisonOutputForFM[0][u] = output1;
+        _prevUnisonOutputForFM[1][u] = output2;
+        _prevUnisonOutputForFM[2][u] = output3;
       }
 }
 
