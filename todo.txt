@@ -1,6 +1,7 @@
 uni blend
 do coarse/fine?
-expo fm
+expo fm + pitchcorrect
+linear index for expo fm
 move the oversampling switch
 store the selected tab
 hard sync?
