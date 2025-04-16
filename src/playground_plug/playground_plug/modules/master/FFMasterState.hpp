@@ -2,21 +2,23 @@
 
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
-#include <playground_plug/modules/master/FFMasterProcessor.hpp>
 
 #include <array>
 #include <memory>
 
 struct FBStaticModule;
+class FFMasterProcessor;
 
 class alignas(FBFixedBlockAlign) FFMasterDSPState final
 {
   friend class FFPlugProcessor;
-  FFMasterProcessor processor = {};
+  std::unique_ptr<FFMasterProcessor> processor = {};
 public:
+  FFMasterDSPState();
+  ~FFMasterDSPState();
   FBFixedFloatAudioArray input = {};
   FBFixedFloatAudioArray output = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterDSPState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFMasterDSPState);
 };
 
 template <class TGlobalAcc>

@@ -2,6 +2,7 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 #include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
+#include <playground_plug/modules/master/FFMasterProcessor.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
@@ -103,6 +104,6 @@ FFPlugProcessor::ProcessPostVoice(
 
   state.moduleSlot = 0;
   _procState->dsp.global.gFilter[FFGFilterCount - 1].output.CopyTo(_procState->dsp.global.master.input);
-  _procState->dsp.global.master.processor.Process(state);
+  _procState->dsp.global.master.processor->Process(state);
   _procState->dsp.global.master.output.CopyTo(output.audio);
 }
