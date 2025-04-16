@@ -20,8 +20,7 @@ public:
   FFOsciModDSPState();
   ~FFOsciModDSPState();
   std::array<FBFixedFloatArray, FFOsciModSlotCount> outputAMMix = {};
-  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputFMIndexLin = {};
-  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputFMIndexExp = {};
+  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputFMIndex = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciModDSPState);
 };
 
@@ -46,8 +45,7 @@ class alignas(alignof(TVoiceAcc)) FFOsciModAccParamState final
   friend class FFOsciModProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciModTopo();
   std::array<TVoiceAcc, FFOsciModSlotCount> amMix = {};
-  std::array<TVoiceAcc, FFOsciModSlotCount> fmIndexLin = {};
-  std::array<TVoiceAcc, FFOsciModSlotCount> fmIndexExp = {};
+  std::array<TVoiceAcc, FFOsciModSlotCount> fmIndex = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModAccParamState);
 };

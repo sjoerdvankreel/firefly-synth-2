@@ -12,7 +12,6 @@ FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
-  _voiceState.expoFM = topo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, params.block.expoFM[0].Voice()[voice]);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     _voiceState.fmOn[i] = topo.NormalizedToBoolFast(FFOsciModParam::FMOn, params.block.fmOn[i].Voice()[voice]);
@@ -26,10 +25,9 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto& outputAMMix = procState->dsp.voice[voice].osciMod.outputAMMix;
+  auto& outputFMIndex = procState->dsp.voice[voice].osciMod.outputFMIndex;
   auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
-  auto& outputFMIndexLin = procState->dsp.voice[voice].osciMod.outputFMIndexLin;
-  auto& outputFMIndexExp = procState->dsp.voice[voice].osciMod.outputFMIndexExp;
 
   // TODO these should themselves be mod targets
   // for now just copy over the stream
@@ -41,15 +39,10 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
       topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, outputAMMix[i]);
     }
     if (_voiceState.fmOn[i])
-      if(_voiceState.expoFM)
-      {
-        auto const& fmIndexExpNorm = procParams.acc.fmIndexExp[i].Voice()[voice];
-        topo.NormalizedToLinearFast(FFOsciModParam::FMIndexExp, fmIndexExpNorm, outputFMIndexExp[i]);
-      } else
-      {
-        auto const& fmIndexLinNorm = procParams.acc.fmIndexLin[i].Voice()[voice];
-        topo.NormalizedToLog2Fast(FFOsciModParam::FMIndexLin, fmIndexLinNorm, outputFMIndexLin[i]);
-      }
+    {
+      auto const& fmIndexNorm = procParams.acc.fmIndex[i].Voice()[voice];
+      topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, outputFMIndex[i]);
+    }
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
@@ -64,7 +57,6 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     exchangeParams.acc.amMix[i][voice] = procParams.acc.amMix[i].Voice()[voice].Last();
-    exchangeParams.acc.fmIndexLin[i][voice] = procParams.acc.fmIndexLin[i].Voice()[voice].Last();
-    exchangeParams.acc.fmIndexExp[i][voice] = procParams.acc.fmIndexExp[i].Voice()[voice].Last();
+    exchangeParams.acc.fmIndex[i][voice] = procParams.acc.fmIndex[i].Voice()[voice].Last();
   }
 }

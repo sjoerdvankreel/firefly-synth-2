@@ -102,37 +102,20 @@ FFMakeOsciModTopo()
   fmOn.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMOn);
   fmOn.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMOn);
 
-  auto& fmIndexLin = result->params[(int)FFOsciModParam::FMIndexLin];
-  fmIndexLin.acc = true;
-  fmIndexLin.defaultText = "0";
-  fmIndexLin.name = "Linear FM Index";
-  fmIndexLin.slotCount = FFOsciModSlotCount;
-  fmIndexLin.id = "{9E37D313-1F48-4559-A6DD-01B235240F44}";
-  fmIndexLin.type = FBParamType::Log2;
-  fmIndexLin.Log2().Init(-0.01, 0.01f, 16.01f);
-  fmIndexLin.slotFormatter = FFOsciModFormatSlot;
-  auto selectFMIndexLin = [](auto& module) { return &module.acc.fmIndexLin; };
-  fmIndexLin.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndexLin);
-  fmIndexLin.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMIndexLin);
-  fmIndexLin.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMIndexLin);
-  fmIndexLin.dependencies.visible.audio.When({ (int)FFOsciModParam::ExpoFM }, [](auto const& vs) { return vs[0] == 0; });
-  fmIndexLin.dependencies.enabled.audio.When({ (int)FFOsciModParam::FMOn, (int)FFOsciModParam::ExpoFM }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
-
-  auto& fmIndexExp = result->params[(int)FFOsciModParam::FMIndexExp];
-  fmIndexExp.acc = true;
-  fmIndexExp.defaultText = "0";
-  fmIndexExp.name = "Exp FM Index";
-  fmIndexExp.slotCount = FFOsciModSlotCount;
-  fmIndexExp.id = "{AD4B53BE-1298-4139-A1AC-3B04FF157F76}";
-  fmIndexExp.type = FBParamType::Linear;
-  fmIndexExp.Linear().max = 16.0f;
-  fmIndexExp.slotFormatter = FFOsciModFormatSlot;
-  auto selectFMIndexExp = [](auto& module) { return &module.acc.fmIndexExp; };
-  fmIndexExp.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndexExp);
-  fmIndexExp.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMIndexExp);
-  fmIndexExp.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMIndexExp);
-  fmIndexExp.dependencies.visible.audio.When({ (int)FFOsciModParam::ExpoFM }, [](auto const& vs) { return vs[0] != 0; });
-  fmIndexExp.dependencies.enabled.audio.When({ (int)FFOsciModParam::FMOn, (int)FFOsciModParam::ExpoFM }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  auto& fmIndex = result->params[(int)FFOsciModParam::FMIndex];
+  fmIndex.acc = true;
+  fmIndex.defaultText = "0.01";
+  fmIndex.name = "FM Index";
+  fmIndex.slotCount = FFOsciModSlotCount;
+  fmIndex.id = "{9E37D313-1F48-4559-A6DD-01B235240F44}";
+  fmIndex.type = FBParamType::Log2;
+  fmIndex.Log2().Init(-0.01, 0.01f, 16.01f);
+  fmIndex.slotFormatter = FFOsciModFormatSlot;
+  auto selectFMIndex = [](auto& module) { return &module.acc.fmIndex; };
+  fmIndex.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndex);
+  fmIndex.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMIndex);
+  fmIndex.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
+  fmIndex.dependencies.enabled.audio.When({ (int)FFOsciModParam::FMOn }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }

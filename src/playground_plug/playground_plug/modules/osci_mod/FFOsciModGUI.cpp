@@ -50,10 +50,8 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(0, 3 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amMix, Slider::SliderStyle::RotaryVerticalDrag));
     auto fmOn = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::FMOn, i });
     grid->Add(1, 3 + i * 3 + 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, fmOn));
-    auto fmIndexLin = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::FMIndexLin, i });
-    grid->Add(1, 3 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndexLin, Slider::SliderStyle::RotaryVerticalDrag));
-    auto fmIndexExp = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::FMIndexExp, i });
-    grid->Add(1, 3 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndexExp, Slider::SliderStyle::RotaryVerticalDrag));
+    auto fmIndex = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::FMIndex, i });
+    grid->Add(1, 3 + i * 3 + 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex, Slider::SliderStyle::RotaryVerticalDrag));
     grid->MarkSection({ 0, 3 + i * 3 , 2, 3 });
   }
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
