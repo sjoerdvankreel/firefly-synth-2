@@ -54,8 +54,10 @@ class FFOsciProcessor final
   juce::dsp::Oversampling<float> _oversampling;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
   std::array<FFOsciPhase, FFOsciUnisonMaxCount> _unisonPhases = {};
-  std::array<std::array<float, FFOsciUnisonMaxCount>, FFOsciFMOperatorCount> _prevUnisonOutputForFM = {};
-  std::array<std::array<FFOsciFMPhases, FFOsciUnisonMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _unisonPhasesForFM = {};
+  alignas(FBSIMDAlign) std::array<std::array<FFOsciFMPhases, 
+    FFOsciUnisonMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _unisonPhasesForFM = {};
+  alignas(FBSIMDAlign) std::array<std::array<xsimd::batch<float, FBXSIMDBatchType>, 
+    FFOsciUnisonMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _prevUnisonOutputForFM = {};
 
   void ProcessBasic(
     FBModuleProcState& state,

@@ -208,8 +208,12 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   if (_voiceState.type == FFOsciType::FM)
   {
     for (int u = 0; u < _voiceState.unisonCount; u += FBSIMDFloatCount)
-      for(int o = 0; o < FFOsciFMOperatorCount; o++)
-      _unisonPhasesForFM[u / FBSIMDFloatCount][o] = FFOsciFMPhases(xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_unisonPhases.data() + u));
+      for (int o = 0; o < FFOsciFMOperatorCount; o++)
+      {
+        _prevUnisonOutputForFM[o][u / FBSIMDFloatCount] = 0.0f;
+        _unisonPhasesForFM[o][u / FBSIMDFloatCount] = FFOsciFMPhases(
+          xsimd::batch<float, FBXSIMDBatchType>::load_aligned(unisonPhaseInit.data() + u));
+      }
   }
 
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
@@ -372,49 +376,61 @@ FFOsciProcessor::ProcessFM(
       topo.NormalizedToLog2Fast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, fmRatioPlain[o]);
     }
 
-  std::array<std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1>, FFOsciUnisonMaxCount> uniIncrsOp1And2 = {};
-  for (int u = 0; u < _voiceState.unisonCount; u++)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
+  alignas(FBSIMDAlign) std::array<std::array<std::array<float, 
+    FFOsciUnisonMaxCount>, FBFixedBlockSamples>, FFOsciFMOperatorCount> uniIncrsForFM;
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+    for (int u = 0; u < _voiceState.unisonCount; u++)
     {
-      float op2Freq = uniFreqs[u][s] / fmRatioPlain[1][s];
+      float op3Freq = uniFreqs[u][s];
+      float op2Freq = op3Freq / fmRatioPlain[1][s];
       float op1Freq = op2Freq / fmRatioPlain[0][s];
-      uniIncrsOp1And2[u][0][s] = op1Freq / oversampledRate;
-      uniIncrsOp1And2[u][1][s] = op2Freq / oversampledRate;
+      uniIncrsForFM[0][s][u] = op1Freq / oversampledRate;
+      uniIncrsForFM[1][s][u] = op2Freq / oversampledRate;
+      uniIncrsForFM[2][s][u] = op3Freq / oversampledRate;
     }
 
+  // data dependency in the feedback loop,
+  // need to vectorize in the unison dimension
   int oversampledIndex = 0;
   for (int os = 0; os < oversamplingTimes; os++)
     for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
-      for (int u = 0; u < _voiceState.unisonCount; u++)
+    {
+      int nonOversampledIndex = oversampledIndex / oversamplingTimes;
+      for (int u = 0; u < _voiceState.unisonCount; u += FBSIMDFloatCount)
       {
-        int nonOversampledIndex = oversampledIndex / oversamplingTimes;
+        int subUniBlock = u / FBSIMDFloatCount;
 
-        float fmTo1 = 0.0f;
-        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[0][u];
-        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[1][u];
-        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
-        float phase1 = _unisonPhases[u][0].Next(uniIncrsOp1And2[u][0][nonOversampledIndex], fmModulators[u][os][s] + fmTo1);
-        float output1 = GenerateSin(phase1);
+        xsimd::batch<float, FBXSIMDBatchType> fmTo1 = 0.0f;
+        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUnisonOutputForFM[0][subUniBlock];
+        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[1][subUniBlock];
+        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[2][subUniBlock];
+        auto uniIncrOp1Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM[0][nonOversampledIndex].data() + u);
+        auto phase1 = _unisonPhasesForFM[0][subUniBlock].Next(uniIncrOp1Batch, 0.0f); // todo fmModulators[u][os][s] + fmTo1);
+        auto output1 = xsimd::sin(phase1);
 
-        float fmTo2 = 0.0f;
+        xsimd::batch<float, FBXSIMDBatchType> fmTo2 = 0.0f;
         fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
-        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[1][u];
-        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
-        float phase2 = _unisonPhases[u][1].Next(uniIncrsOp1And2[u][1][nonOversampledIndex], fmModulators[u][os][s] + fmTo2);
-        float output2 = GenerateSin(phase2);
+        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[1][subUniBlock];
+        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[2][subUniBlock];
+        auto uniIncrOp2Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM[1][nonOversampledIndex].data() + u);
+        auto phase2 = _unisonPhasesForFM[1][subUniBlock].Next(uniIncrOp2Batch, 0.0f); // todo fmModulators[u][os][s] + fmTo1);
+        auto output2 = xsimd::sin(phase2);
 
-        float fmTo3 = 0.0f;
+        xsimd::batch<float, FBXSIMDBatchType> fmTo3 = 0.0f;
         fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
         fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
-        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[2][u];
-        float phase3 = _unisonPhases[u][2].Next(uniIncrs[u][nonOversampledIndex], fmModulators[u][os][s] + fmTo3);
-        float output3 = GenerateSin(phase3);
+        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[2][subUniBlock];
+        auto uniIncrOp3Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM[2][nonOversampledIndex].data() + u);
+        auto phase3 = _unisonPhasesForFM[2][subUniBlock].Next(uniIncrOp3Batch, 0.0f); // todo fmModulators[u][os][s] + fmTo1);
+        auto output3 = xsimd::sin(phase3);
 
-        unisonOutputMaybeOversampled[u][os][s] = output3;
-        _prevUnisonOutputForFM[0][u] = output1;
-        _prevUnisonOutputForFM[1][u] = output2;
-        _prevUnisonOutputForFM[2][u] = output3;
+        _prevUnisonOutputForFM[0][subUniBlock] = output1;
+        _prevUnisonOutputForFM[1][subUniBlock] = output2;
+        _prevUnisonOutputForFM[2][subUniBlock] = output3;
+
+        //unisonOutputMaybeOversampled[u][os][s] = output3; // todo
       }
+    }
 }
 
 int
