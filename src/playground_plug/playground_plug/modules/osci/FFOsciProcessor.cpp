@@ -320,27 +320,27 @@ FFOsciProcessor::ProcessDSF(
   if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)
-        for(int subBlock = 0; subBlock < FBFixedBlockSamples / FBSIMDFloatCount; subBlock++)
+        for(int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
           GenerateDSFOvertones(
-            uniPhases[u][os].Data().data() + subBlock * FBSIMDFloatCount, 
-            uniFreqs[u][os].Data().data() + subBlock * FBSIMDFloatCount,
-            dsfDecayPlain.Data().data() + subBlock * FBSIMDFloatCount,
-            dsfDistFreqs[u][os].Data().data() + subBlock * FBSIMDFloatCount,
-            dsfMaxOvertones[u][os].Data().data() + subBlock * FBSIMDFloatCount,
+            uniPhases[u][os].Data().data() + s, 
+            uniFreqs[u][os].Data().data() + s,
+            dsfDecayPlain.Data().data() + s,
+            dsfDistFreqs[u][os].Data().data() + s,
+            dsfMaxOvertones[u][os].Data().data() + s,
             _voiceState.dsfOvertones,
-            unisonOutputMaybeOversampled[u][os].Data().data() + subBlock * FBSIMDFloatCount);
+            unisonOutputMaybeOversampled[u][os].Data().data() + s);
   else if (_voiceState.dsfMode == FFOsciDSFMode::Bandwidth)
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)
-        for (int subBlock = 0; subBlock < FBFixedBlockSamples / FBSIMDFloatCount; subBlock++)
+        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
           GenerateDSFBandwidth(
-            uniPhases[u][os].Data().data() + subBlock * FBSIMDFloatCount,
-            uniFreqs[u][os].Data().data() + subBlock * FBSIMDFloatCount,
-            dsfDecayPlain.Data().data() + subBlock * FBSIMDFloatCount,
-            dsfDistFreqs[u][os].Data().data() + subBlock * FBSIMDFloatCount,
-            dsfMaxOvertones[u][os].Data().data() + subBlock * FBSIMDFloatCount,
+            uniPhases[u][os].Data().data() + s,
+            uniFreqs[u][os].Data().data() + s,
+            dsfDecayPlain.Data().data() + s,
+            dsfDistFreqs[u][os].Data().data() + s,
+            dsfMaxOvertones[u][os].Data().data() + s,
             _voiceState.dsfBandwidthPlain,
-            unisonOutputMaybeOversampled[u][os].Data().data() + subBlock * FBSIMDFloatCount);
+            unisonOutputMaybeOversampled[u][os].Data().data() + s);
 }
 
 void

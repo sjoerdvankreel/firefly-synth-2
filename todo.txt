@@ -1,11 +1,8 @@
 uni blend
 set exact value
-do coarse/fine?
-expo fm + pitchcorrect
-linear index for expo fm
+expo fm in fmosci
 move the oversampling switch
 store the selected tab
-hard sync?
 fix up the track graph
 
 recheck clap mod
