@@ -429,9 +429,8 @@ FFOsciProcessor::ProcessFM(
         fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUnisonOutputForFM[1][subUniBlock];
         fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUnisonOutputForFM[2][subUniBlock];
         auto uniPitchOp1Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniPitchsForFM[0][os][s].data() + u);
-        uniPitchOp1Batch += fmTo1 * uniPitchOp1Batch;
         auto uniFreqOp1Batch = 440.0f * xsimd::pow(xsimd::batch < float, FBXSIMDBatchType>(2.0f), (uniPitchOp1Batch - 69.0f) / 12.0f);
-        auto phase1 = _unisonPhasesForFM[0][subUniBlock].Next(uniFreqOp1Batch / oversampledRate, 0.0f);
+        auto phase1 = _unisonPhasesForFM[0][subUniBlock].Next(uniFreqOp1Batch / oversampledRate, fmTo1);
         auto output1 = xsimd::sin(phase1 * FBTwoPi);
 
         xsimd::batch<float, FBXSIMDBatchType> fmTo2 = 0.0f;
@@ -439,9 +438,8 @@ FFOsciProcessor::ProcessFM(
         fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUnisonOutputForFM[1][subUniBlock];
         fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUnisonOutputForFM[2][subUniBlock];
         auto uniPitchOp2Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniPitchsForFM[1][os][s].data() + u);
-        uniPitchOp2Batch += fmTo2 * uniPitchOp2Batch;
         auto uniFreqOp2Batch = 440.0f * xsimd::pow(xsimd::batch < float, FBXSIMDBatchType>(2.0f), (uniPitchOp2Batch - 69.0f) / 12.0f);
-        auto phase2 = _unisonPhasesForFM[1][subUniBlock].Next(uniFreqOp2Batch / oversampledRate, 0.0f);
+        auto phase2 = _unisonPhasesForFM[1][subUniBlock].Next(uniFreqOp2Batch / oversampledRate, fmTo2);
         auto output2 = xsimd::sin(phase2 * FBTwoPi);
 
         xsimd::batch<float, FBXSIMDBatchType> fmTo3 = 0.0f;
@@ -449,12 +447,11 @@ FFOsciProcessor::ProcessFM(
         fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
         fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[2][subUniBlock];
         auto uniPitchOp3Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniPitchsForFM[2][os][s].data() + u);
-        uniPitchOp3Batch += fmTo3 * uniPitchOp3Batch;
         auto uniFreqOp3Batch = 440.0f * xsimd::pow(xsimd::batch < float, FBXSIMDBatchType>(2.0f), (uniPitchOp3Batch - 69.0f) / 12.0f);
 
         // op3 is output, it also takes the external inter-osci fm
         //auto fmModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(externalFMModulatorsForFM[os][s].data() + u);
-        auto phase3 = _unisonPhasesForFM[2][subUniBlock].Next(uniFreqOp3Batch / oversampledRate, 0.0f);
+        auto phase3 = _unisonPhasesForFM[2][subUniBlock].Next(uniFreqOp3Batch / oversampledRate, fmTo3);
         auto output3 = xsimd::sin(phase3 * FBTwoPi);
 
         _prevUnisonOutputForFM[0][subUniBlock] = output1;
