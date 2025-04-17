@@ -78,8 +78,7 @@ class FFOsciProcessor final
     FBModuleProcState& state,
     int oversamplingTimes,
     float oversampledRate,
-    FFOsciOversampledUnisonArray const& uniFreqs,
-    FFOsciOversampledUnisonArray const& uniIncrs,
+    FFOsciOversampledUnisonArray const& uniPitchs,
     FFOsciOversampledUnisonArray const& fmModulators);
 
 public:
