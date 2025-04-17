@@ -319,6 +319,9 @@ FFOsciProcessor::ProcessDSF(
   auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
   topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm, dsfDecayPlain);
 
+  // do NOT limit to nyquist by the oversampled rate
+  // we want the maximum partial count to be equal
+  // for both oversampled and non-oversampled cases
   FFOsciOversampledUnisonArray dsfDistFreqs;
   FFOsciOversampledUnisonArray dsfMaxOvertones;
   for (int u = 0; u < _voiceState.unisonCount; u++)
@@ -392,13 +395,18 @@ FFOsciProcessor::ProcessFM(
     }
 
   // these are the external mods from the inter-osci matrix
+  // we only need to apply them here if we are doing linear fm
+  // in the case of expo fm they have already been applied to the pitch
+  // and hence to the incoming freq and delta parameters
+  float applyLinearFM = _voiceState.expoFM ? 0.0f : 1.0f;
   alignas(FBSIMDAlign) std::array<std::array<std::array<float,
     FFOsciUnisonMaxCount>, FBFixedBlockSamples>, FFOsciOverSamplingTimes> fmModulatorsForFM = {};
   for (int os = 0; os < oversamplingTimes; os++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       for (int u = 0; u < FFOsciUnisonMaxCount; u++)
-        fmModulatorsForFM[os][s][u] = fmModulators[u][os][s];
+        fmModulatorsForFM[os][s][u] = fmModulators[u][os][s] * applyLinearFM;
 
+  // calculate op1/2/3 delta according to 1:2 and 2:3 ratio
   alignas(FBSIMDAlign) std::array<std::array<std::array<std::array<float,
     FFOsciUnisonMaxCount>, FBFixedBlockSamples>, FFOsciOverSamplingTimes>, FFOsciFMOperatorCount> uniIncrsForFM = {};
   for (int o = 0; o < FFOsciFMOperatorCount; o++)
@@ -418,6 +426,8 @@ FFOsciProcessor::ProcessFM(
         uniIncrsForFM[2][os][s][u] = op3Freq / oversampledRate;
       }
 
+  // calculate 3op fm with 3x3 matrix and vectorize over unison
+  // for every feedback path there is unit delay
   int oversampledIndex = 0;
   for (int os = 0; os < oversamplingTimes; os++)
     for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
@@ -448,6 +458,8 @@ FFOsciProcessor::ProcessFM(
         fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
         fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUnisonOutputForFM[2][subUniBlock];
         auto uniIncrOp3Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM[2][os][s].data() + u);
+
+        // op3 is output, it also takes the external inter-osci fm
         auto fmModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(fmModulatorsForFM[os][s].data() + u);
         auto phase3 = _unisonPhasesForFM[2][subUniBlock].Next(uniIncrOp3Batch, fmTo3 + fmModulatorsForFMBatch);
         auto output3 = xsimd::sin(phase3 * FBTwoPi);
