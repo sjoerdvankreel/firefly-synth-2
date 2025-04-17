@@ -1,4 +1,5 @@
 uni blend
+split between fm and non-fm, have fm run all the calcs, expo fm dedicated
 set exact value
 expo fm in fmosci
 move the oversampling switch
