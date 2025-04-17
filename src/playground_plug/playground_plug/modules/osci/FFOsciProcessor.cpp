@@ -398,13 +398,13 @@ FFOsciProcessor::ProcessFM(
   // we only need to apply them here if we are doing linear fm
   // in the case of expo fm they have already been applied to the pitch
   // and hence to the incoming freq and delta parameters
-  float applyLinearFM = _voiceState.expoFM ? 0.0f : 1.0f;
+  float applyExternalLinearFM = _voiceState.expoFM ? 0.0f : 1.0f;
   alignas(FBSIMDAlign) std::array<std::array<std::array<float,
-    FFOsciUnisonMaxCount>, FBFixedBlockSamples>, FFOsciOverSamplingTimes> fmModulatorsForFM = {};
+    FFOsciUnisonMaxCount>, FBFixedBlockSamples>, FFOsciOverSamplingTimes> externalFMModulatorsForFM = {};
   for (int os = 0; os < oversamplingTimes; os++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       for (int u = 0; u < FFOsciUnisonMaxCount; u++)
-        fmModulatorsForFM[os][s][u] = fmModulators[u][os][s] * applyLinearFM;
+        externalFMModulatorsForFM[os][s][u] = fmModulators[u][os][s] * applyExternalLinearFM;
 
   // calculate op1/2/3 delta according to 1:2 and 2:3 ratio
   alignas(FBSIMDAlign) std::array<std::array<std::array<std::array<float,
@@ -460,7 +460,7 @@ FFOsciProcessor::ProcessFM(
         auto uniIncrOp3Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM[2][os][s].data() + u);
 
         // op3 is output, it also takes the external inter-osci fm
-        auto fmModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(fmModulatorsForFM[os][s].data() + u);
+        auto fmModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(externalFMModulatorsForFM[os][s].data() + u);
         auto phase3 = _unisonPhasesForFM[2][subUniBlock].Next(uniIncrOp3Batch, fmTo3 + fmModulatorsForFMBatch);
         auto output3 = xsimd::sin(phase3 * FBTwoPi);
 
