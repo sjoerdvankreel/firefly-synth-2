@@ -89,6 +89,22 @@ class FFOsciProcessor final
     FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
     FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq);
 
+  void ProcessUnisonDetuneSpreadAndPos(
+    FBStaticModule const& topo,
+    FBAccParamState const& uniDetuneNorm,
+    FBAccParamState const& uniSpreadNorm,
+    FBFixedFloatArray& uniDetunePlain,
+    FBFixedFloatArray& uniSpreadPlain,
+    std::array<float, FFOsciUnisonMaxCount>& uniPositions);
+
+  void ProcessUnisonPitches(
+    int oversamplingTimes,
+    FBFixedFloatArray const& basePitch,
+    FBFixedFloatArray const& uniDetunePlain,
+    FFOsciOversampledUnisonArray const& modMatrixFMModulators,
+    std::array<float, FFOsciUnisonMaxCount> const& uniPositions,
+    FFOsciOversampledUnisonArray& uniPitches);
+
   void ProcessModMatrixFMModulators(
     int moduleSlot,
     int oversamplingTimes, 
