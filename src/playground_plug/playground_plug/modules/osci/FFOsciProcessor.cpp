@@ -238,6 +238,49 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   }
 }
 
+// not per unison voice pitch and frequency, not oversampled
+void
+FFOsciProcessor::ProcessBasePitchAndFreq(
+  FBStaticModule const& topo, float sampleRate,
+  FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
+  FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq)
+{
+  FBFixedFloatArray finePlain;
+  FBFixedFloatArray coarsePlain;
+  topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, finePlain);
+  topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, coarsePlain);
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    basePitch[s] = _voiceState.key + coarsePlain[s] + finePlain[s];
+    baseFreq[s] = FBPitchToFreqFastAndInaccurate(basePitch[s]);
+    _phase.Next(baseFreq[s] / sampleRate);
+  }
+}
+
+// per unison voice stacked external FM modulators, oversampled
+void
+FFOsciProcessor::ProcessModMatrixFMModulators(
+  int moduleSlot,
+  int oversamplingTimes,
+  std::array<FFOsciDSPState, FFOsciCount> const& allOsciDSPStates,
+  std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputFMIndex,
+  FFOsciOversampledUnisonArray& modMatrixFMModulators)
+{
+  for (int u = 0; u < _voiceState.unisonCount; u++)
+    for (int os = 0; os < oversamplingTimes; os++)
+      modMatrixFMModulators[u][os].Fill(0.0f);
+  for (int src = 0; src < moduleSlot; src++)
+    for (int u = 0; u < _voiceState.unisonCount; u++)
+      if (_voiceState.modSourceFMOn[src] && _voiceState.modSourceUnisonCount[src] > u)
+      {
+        int modSlot = OsciModStartSlot(moduleSlot) + src;
+        auto const& fmModulatorBase = allOsciDSPStates[src].unisonOutputMaybeOversampled[u];
+        for (int os = 0; os < oversamplingTimes; os++)
+          for (int s = 0; s < FBFixedBlockSamples; s++)
+            modMatrixFMModulators[u][os][s] += fmModulatorBase[os][s] * outputFMIndex[modSlot][s];
+      }
+}
+
 // vectorization in the (over)sample dimension, 
 // phases are precomputed so no data dependency in the time domain
 void
@@ -590,16 +633,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   // base pitch and freq without unison
   FBFixedFloatArray baseFreq;
   FBFixedFloatArray basePitch;
-  FBFixedFloatArray finePlain;
-  FBFixedFloatArray coarsePlain;
-  topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, finePlain);
-  topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, coarsePlain);
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-  {
-    basePitch[s] = _voiceState.key + coarsePlain[s] + finePlain[s];
-    baseFreq[s] = FBPitchToFreqFastAndInaccurate(basePitch[s]);
-    _phase.Next(baseFreq[s] / state.input->sampleRate);
-  }
+  ProcessBasePitchAndFreq(topo, sampleRate, coarseNorm, fineNorm, basePitch, baseFreq);
 
   // continuous unison params
   FBFixedFloatArray detunePlain;
@@ -619,22 +653,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       unisonPos[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
   }
 
-  // calculate stacked FM modulators
-  FFOsciOversampledUnisonArray fmModulators;
-  for(int u = 0; u < _voiceState.unisonCount; u++)
-    for (int os = 0; os < oversamplingTimes; os++)
-      fmModulators[u][os].Fill(0.0f);
-  for (int src = 0; src < state.moduleSlot; src++)
-    for (int u = 0; u < _voiceState.unisonCount; u++)
-      if (_voiceState.modSourceFMOn[src] && _voiceState.modSourceUnisonCount[src] > u)
-      {
-        int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-        auto const& fmIndex = procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot];
-        auto const& fmModulatorBase = procState->dsp.voice[voice].osci[src].unisonOutputMaybeOversampled[u];
-        for (int os = 0; os < oversamplingTimes; os++)
-          for (int s = 0; s < FBFixedBlockSamples; s++)
-            fmModulators[u][os][s] += fmModulatorBase[os][s] * fmIndex[s];
-      }
+  // calculate stacked FM modulators, oversampled per unison
+  FFOsciOversampledUnisonArray modMatrixFMModulators;
+  ProcessModMatrixFMModulators(
+    state.moduleSlot, 
+    oversamplingTimes, 
+    procState->dsp.voice[voice].osci, 
+    procState->dsp.voice[voice].osciMod.outputFMIndex, 
+    modMatrixFMModulators);
 
   // per unison voice pitch
   // note expo fm modulates pitch not phase
@@ -646,7 +672,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       {
         int nosIndex = (os * FBFixedBlockSamples + s) / oversamplingTimes;
         uniPitchs[u][os][s] = basePitch[nosIndex] + unisonPos[u] * detunePlain[nosIndex];
-        uniPitchs[u][os][s] += fmModulators[u][os][s] * uniPitchs[u][os][s] * applyExpoFM;
+        uniPitchs[u][os][s] += modMatrixFMModulators[u][os][s] * uniPitchs[u][os][s] * applyExpoFM;
       }
 
   // per unison voice freq and delta unless dedicated 
@@ -675,7 +701,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       int oversampledIndex = 0;
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
-          uniPhases[u][os][s] = _unisonPhases[u].Next(uniIncrs[u][os][s], fmModulators[u][os][s] * applyLinearFM);
+          uniPhases[u][os][s] = _unisonPhases[u].Next(uniIncrs[u][os][s], modMatrixFMModulators[u][os][s] * applyLinearFM);
     }
 
   // run the core osci algo
@@ -685,9 +711,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     ProcessDSF(state, oversamplingTimes, uniFreqs, uniIncrs, uniPhases);
   else if (_voiceState.type == FFOsciType::FM)
     if(_voiceState.fmExp)
-      ProcessFM<true>(state, oversamplingTimes, oversampledRate, uniPitchs, uniFreqs, uniIncrs, fmModulators);
+      ProcessFM<true>(state, oversamplingTimes, oversampledRate, uniPitchs, uniFreqs, uniIncrs, modMatrixFMModulators);
     else
-      ProcessFM<false>(state, oversamplingTimes, oversampledRate, uniPitchs, uniFreqs, uniIncrs, fmModulators);
+      ProcessFM<false>(state, oversamplingTimes, oversampledRate, uniPitchs, uniFreqs, uniIncrs, modMatrixFMModulators);
 
   // apply AM/RM
   for (int src = 0; src < state.moduleSlot; src++)

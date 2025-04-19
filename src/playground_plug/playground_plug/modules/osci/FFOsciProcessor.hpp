@@ -12,6 +12,7 @@
 #include <juce_dsp/juce_dsp.h>
 #include <array>
 
+class FBAccParamState;
 struct FBModuleProcState;
 
 template <class T>
@@ -82,6 +83,18 @@ class FFOsciProcessor final
     FFOsciOversampledUnisonArray const& uniFreqs,
     FFOsciOversampledUnisonArray const& uniIncrs,
     FFOsciOversampledUnisonArray const& fmModulators);
+
+  void ProcessBasePitchAndFreq(
+    FBStaticModule const& topo, float sampleRate,
+    FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
+    FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq);
+
+  void ProcessModMatrixFMModulators(
+    int moduleSlot,
+    int oversamplingTimes, 
+    std::array<FFOsciDSPState, FFOsciCount> const& allOsciDSPStates,
+    std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputFMIndex,
+    FFOsciOversampledUnisonArray& modMatrixFMModulators);
 
 public:
   FFOsciProcessor();
