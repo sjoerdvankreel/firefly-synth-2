@@ -546,10 +546,8 @@ FFOsciProcessor::ProcessDSF(
 template <bool ExpoFM>
 xsimd::batch<float, FBXSIMDBatchType> 
 FFOsciProcessor::CalcOneSampleForFM(
-  float oversampledRate,
-  int subUniBlock,
-  float* uniPitchesForFM,
-  float* uniIncrsForFM,
+  float oversampledRate, int subUniBlock, int op,
+  float* uniPitchesForFM, float* uniIncrsForFM,
   xsimd::batch<float, FBXSIMDBatchType> fmToOp,
   xsimd::batch<float, FBXSIMDBatchType> externalFMModulatorsForFMBatch)
 {
@@ -559,12 +557,12 @@ FFOsciProcessor::CalcOneSampleForFM(
     uniPitchOpBatch += fmToOp * uniPitchOpBatch;
     auto uniPitchOpFreq = 440.0f * xsimd::pow(xsimd::batch<float, FBXSIMDBatchType>(2.0f), (uniPitchOpBatch - 69.0f) / 12.0f);
     auto uniIncrOpBatch = uniPitchOpFreq / oversampledRate;
-    return xsimd::sin(_uniPhaseGensForFM[0][subUniBlock].Next(uniIncrOpBatch, 0.0f) * FBTwoPi);
+    return xsimd::sin(_uniPhaseGensForFM[op][subUniBlock].Next(uniIncrOpBatch, 0.0f) * FBTwoPi);
   }
   else
   {
     auto uniIncrOpBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM);
-    return xsimd::sin(_uniPhaseGensForFM[0][subUniBlock].Next(uniIncrOpBatch, fmToOp) * FBTwoPi);
+    return xsimd::sin(_uniPhaseGensForFM[op][subUniBlock].Next(uniIncrOpBatch, fmToOp) * FBTwoPi);
   }
 }
 
@@ -677,7 +675,7 @@ FFOsciProcessor::ProcessFM(
         fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
         fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
         auto output1 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 
+          oversampledRate, subUniBlock, 0,
           uniPitchsForFM[0][os][s].data() + u, 
           uniIncrsForFM[0][os][s].data() + u, fmTo1, 
           0.0f);
@@ -687,7 +685,7 @@ FFOsciProcessor::ProcessFM(
         fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
         fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
         auto output2 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 
+          oversampledRate, subUniBlock, 1,
           uniPitchsForFM[1][os][s].data() + u, 
           uniIncrsForFM[1][os][s].data() + u, fmTo2, 
           0.0f);
@@ -699,7 +697,7 @@ FFOsciProcessor::ProcessFM(
         fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
         auto externalFMModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(externalFMModulatorsForFM[os][s].data() + u);
         auto output3 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 
+          oversampledRate, subUniBlock, 2,
           uniPitchsForFM[2][os][s].data() + u, 
           uniIncrsForFM[2][os][s].data() + u, fmTo3, 
           externalFMModulatorsForFMBatch);

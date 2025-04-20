@@ -79,10 +79,8 @@ class FFOsciProcessor final
     FBModuleProcState& state, int oversamplingTimes, float oversampledRate);
   template <bool ExpoFM>
   xsimd::batch<float, FBXSIMDBatchType> CalcOneSampleForFM(
-    float oversampledRate,
-    int subUniBlock,
-    float* uniPitchesForFM,
-    float* uniIncrsForFM,
+    float oversampledRate, int subUniBlock, int op,
+    float* uniPitchesForFM, float* uniIncrsForFM,
     xsimd::batch<float, FBXSIMDBatchType> fmToOp,
     xsimd::batch<float, FBXSIMDBatchType> externalFMModulatorsForFMBatch);
 
