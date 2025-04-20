@@ -85,9 +85,25 @@ class FFOsciProcessor final
     FFOsciOversampledUnisonArray const& fmModulators);
 
   void ProcessBasePitchAndFreq(
-    FBStaticModule const& topo, float sampleRate,
-    FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
-    FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq);
+    FBStaticModule const& topo, 
+    float sampleRate,
+    FBAccParamState const& coarseNorm, 
+    FBAccParamState const& fineNorm,
+    FBFixedFloatArray& basePitch, 
+    FBFixedFloatArray& baseFreq);
+
+  void ProcessUnisonPhasesNonFM(
+    int oversamplingTimes,
+    FFOsciOversampledUnisonArray const& uniIncrs,
+    FFOsciOversampledUnisonArray const& modMatrixFMModulators,
+    FFOsciOversampledUnisonArray& uniPhases);
+
+  void ProcessUnisonFreqAndDelta(
+    int oversamplingTimes,
+    float oversampledRate,
+    FFOsciOversampledUnisonArray const& uniPitches,
+    FFOsciOversampledUnisonArray& uniFreqs,
+    FFOsciOversampledUnisonArray& uniIncrs);
 
   void ProcessUnisonDetuneSpreadAndPos(
     FBStaticModule const& topo,
@@ -105,12 +121,29 @@ class FFOsciProcessor final
     std::array<float, FFOsciUnisonMaxCount> const& uniPositions,
     FFOsciOversampledUnisonArray& uniPitches);
 
+  void ProcessModMatrixAMModulators(
+    int moduleSlot,
+    int oversamplingTimes,
+    std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputAMMix,
+    std::array<FFOsciDSPState, FFOsciCount>& allOsciDSPStates);
+
   void ProcessModMatrixFMModulators(
     int moduleSlot,
     int oversamplingTimes, 
     std::array<FFOsciDSPState, FFOsciCount> const& allOsciDSPStates,
     std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputFMIndex,
     FFOsciOversampledUnisonArray& modMatrixFMModulators);
+
+  void ProcessDownSampling(
+    int oversamplingTimes,
+    FFOsciOversampledUnisonArray const& unisonOutputMaybeOversampled,
+    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount>& unisonOutputNonOversampled);
+
+  void ProcessUnisonSpreadToStereo(
+    FBFixedFloatArray const& uniSpreadPlain,
+    std::array<float, FFOsciUnisonMaxCount> const& uniPositions,
+    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& unisonOutputNonOversampled,
+    FBFixedFloatAudioArray& output);
 
 public:
   FFOsciProcessor();
