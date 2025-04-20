@@ -4,7 +4,6 @@
 #include <playground_plug/modules/osci/FFOsciPhaseGenerator.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
 
-#include <playground_base/base/shared/FBMDArray.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
@@ -64,12 +63,10 @@ class FFOsciProcessor final
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrs = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhases = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPitches = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _modMatrixFMModulators = {};
 
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _modMatrixFMModulators = {};
   alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<FFOsciFMPhasesGenerator> _uniPhaseGensForFM = {};
   alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<xsimd::batch<float, FBXSIMDBatchType>> _prevUniOutputForFM = {};
-  alignas(FBSIMDAlign) FBMDArray3<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes> _externalFMModulatorsForFM = {};
-  alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniPitchsForFM = {};
 
   void ProcessBasic(FBModuleProcState& state, int oversamplingTimes);
   void ProcessDSF(FBModuleProcState& state, int oversamplingTimes);

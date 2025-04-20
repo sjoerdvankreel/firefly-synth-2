@@ -3,7 +3,6 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 
-#include <playground_base/base/shared/FBMDArray.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 
@@ -15,7 +14,9 @@ class FFOsciProcessor;
 
 inline int constexpr FFOsciOverSamplingFactor = 2;
 inline int constexpr FFOsciOverSamplingTimes = 1 << FFOsciOverSamplingFactor;
-typedef FBMDArray2< FBFixedFloatArray, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> FFOsciOversampledUnisonArray;
+
+typedef std::array<FBFixedFloatArray, FFOsciOverSamplingTimes> FFOsciOversampledArray;
+typedef std::array<FFOsciOversampledArray, FFOsciUnisonMaxCount> FFOsciOversampledUnisonArray;
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
