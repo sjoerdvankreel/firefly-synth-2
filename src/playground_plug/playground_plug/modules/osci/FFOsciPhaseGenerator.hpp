@@ -6,30 +6,30 @@
 #include <xsimd/xsimd.hpp>
 #include <cmath>
 
-class FFOsciPhase final
+class FFOsciPhaseGenerator final
 {
   float _x = 0.0f;
 public:
-  FFOsciPhase() = default;
-  explicit FFOsciPhase(float x) : _x(x) {}
+  FFOsciPhaseGenerator() = default;
+  explicit FFOsciPhaseGenerator(float x) : _x(x) {}
   float Next(float incr, float fmModulator);
 };
 
 // vectorize over unison dimension, it's 
 // the only option because of feedback fm
-class alignas(FBSIMDAlign) FFOsciFMPhases final
+class alignas(FBSIMDAlign) FFOsciFMPhasesGenerator final
 {
   xsimd::batch<float, FBXSIMDBatchType> _x = 0.0f;
 public:
-  FFOsciFMPhases() = default;
-  explicit FFOsciFMPhases(xsimd::batch<float, FBXSIMDBatchType> x) : _x(x) {}
+  FFOsciFMPhasesGenerator() = default;
+  explicit FFOsciFMPhasesGenerator(xsimd::batch<float, FBXSIMDBatchType> x) : _x(x) {}
   xsimd::batch<float, FBXSIMDBatchType> Next(
     xsimd::batch<float, FBXSIMDBatchType> incrs, 
     xsimd::batch<float, FBXSIMDBatchType> fmModulators);
 };
 
 inline float
-FFOsciPhase::Next(float incr, float fmModulator)
+FFOsciPhaseGenerator::Next(float incr, float fmModulator)
 {
   float y = _x;
   _x += incr;
@@ -42,7 +42,7 @@ FFOsciPhase::Next(float incr, float fmModulator)
 }
 
 inline xsimd::batch<float, FBXSIMDBatchType>
-FFOsciFMPhases::Next(
+FFOsciFMPhasesGenerator::Next(
   xsimd::batch<float, FBXSIMDBatchType> incrs, 
   xsimd::batch<float, FBXSIMDBatchType> fmModulators)
 {

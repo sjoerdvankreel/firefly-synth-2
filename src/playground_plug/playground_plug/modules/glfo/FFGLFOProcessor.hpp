@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBLifetime.hpp>
-#include <playground_base/dsp/shared/FBTrackingPhase.hpp>
+#include <playground_base/dsp/shared/FBTrackingPhaseGenerator.hpp>
 
 struct FFScalarState;
 struct FBStaticTopo;
@@ -10,7 +10,7 @@ class FBGraphRenderState;
 
 class FFGLFOProcessor final
 {
-  FBTrackingPhase _phase = {};
+  FBTrackingPhaseGenerator _phase = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOProcessor);
   void Reset(FBModuleProcState& state);

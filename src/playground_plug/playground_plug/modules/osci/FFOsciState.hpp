@@ -28,7 +28,6 @@ public:
   ~FFOsciDSPState();
   FBFixedFloatAudioArray output = {};
   FFOsciOversampledUnisonArray unisonOutputMaybeOversampled = {};
-  std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> unisonOutputNonOversampled = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 
