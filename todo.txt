@@ -1,6 +1,4 @@
 uni blend
-more coarse
-dsf decay default 0.5
 set exact value
 move the oversampling switch
 store the selected tab

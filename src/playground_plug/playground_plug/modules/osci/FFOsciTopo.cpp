@@ -90,8 +90,8 @@ FFMakeOsciTopo()
   coarse.unit = "Notes";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
   coarse.type = FBParamType::Linear;
-  coarse.Linear().min = -36.0f;
-  coarse.Linear().max = 36.0f;
+  coarse.Linear().min = -72.0f;
+  coarse.Linear().max = 72.0f;
   auto selectCoarse = [](auto& module) { return &module.acc.coarse; };
   coarse.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectCoarse);
   coarse.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectCoarse);
@@ -392,7 +392,7 @@ FFMakeOsciTopo()
   
   auto& dsfDecay = result->params[(int)FFOsciParam::DSFDecay];
   dsfDecay.acc = true;
-  dsfDecay.defaultText = "100";
+  dsfDecay.defaultText = "50";
   dsfDecay.name = "Decay";
   dsfDecay.tooltip = "DSF Decay";
   dsfDecay.slotCount = 1;
