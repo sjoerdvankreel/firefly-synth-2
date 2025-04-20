@@ -542,6 +542,32 @@ FFOsciProcessor::ProcessDSF(
             unisonOutputMaybeOversampled[u][os].Data().data() + s);
 }
 
+// calculate 4 outputs in unison dimension for the fm generator
+template <bool ExpoFM>
+xsimd::batch<float, FBXSIMDBatchType> 
+FFOsciProcessor::CalcOneSampleForFM(
+  float oversampledRate,
+  int subUniBlock,
+  float* uniPitchesForFM,
+  float* uniIncrsForFM,
+  xsimd::batch<float, FBXSIMDBatchType> fmToOp,
+  xsimd::batch<float, FBXSIMDBatchType> externalFMModulatorsForFMBatch)
+{
+  if constexpr (ExpoFM)
+  {
+    auto uniPitchOpBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniPitchesForFM);
+    uniPitchOpBatch += fmToOp * uniPitchOpBatch;
+    auto uniPitchOpFreq = 440.0f * xsimd::pow(xsimd::batch<float, FBXSIMDBatchType>(2.0f), (uniPitchOpBatch - 69.0f) / 12.0f);
+    auto uniIncrOpBatch = uniPitchOpFreq / oversampledRate;
+    return xsimd::sin(_uniPhaseGensForFM[0][subUniBlock].Next(uniIncrOpBatch, 0.0f) * FBTwoPi);
+  }
+  else
+  {
+    auto uniIncrOpBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM);
+    return xsimd::sin(_uniPhaseGensForFM[0][subUniBlock].Next(uniIncrOpBatch, fmToOp) * FBTwoPi);
+  }
+}
+
 // vectorization in the unison dimension,
 // phases have data dependency in the time domain because feedback loops
 template <bool ExpoFM>
@@ -650,68 +676,33 @@ FFOsciProcessor::ProcessFM(
         fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUniOutputForFM[0][subUniBlock];
         fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
         fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-
-        xsimd::batch<float, FBXSIMDBatchType> phase1;
-        if constexpr (ExpoFM)
-        {
-          auto uniPitchOp1Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniPitchsForFM[0][os][s].data() + u);
-          uniPitchOp1Batch += fmTo1 * uniPitchOp1Batch;
-          auto uniPitchOp1Freq = 440.0f * xsimd::pow(xsimd::batch<float, FBXSIMDBatchType>(2.0f), (uniPitchOp1Batch - 69.0f) / 12.0f);
-          auto uniIncrOp1Batch = uniPitchOp1Freq / oversampledRate;
-          phase1 = _uniPhaseGensForFM[0][subUniBlock].Next(uniIncrOp1Batch, 0.0f);
-        }
-        else
-        {
-          auto uniIncrOp1Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM[0][os][s].data() + u);
-          phase1 = _uniPhaseGensForFM[0][subUniBlock].Next(uniIncrOp1Batch, fmTo1);
-        }
-        auto output1 = xsimd::sin(phase1 * FBTwoPi);
+        auto output1 = CalcOneSampleForFM<ExpoFM>(
+          oversampledRate, subUniBlock, 
+          uniPitchsForFM[0][os][s].data() + u, 
+          uniIncrsForFM[0][os][s].data() + u, fmTo1, 
+          0.0f);
 
         xsimd::batch<float, FBXSIMDBatchType> fmTo2 = 0.0f;
         fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
         fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
         fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-        
-        xsimd::batch<float, FBXSIMDBatchType> phase2;
-        if constexpr (ExpoFM)
-        {
-          auto uniPitchOp2Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniPitchsForFM[1][os][s].data() + u);
-          uniPitchOp2Batch += fmTo2 * uniPitchOp2Batch;
-          auto uniPitchOp2Freq = 440.0f * xsimd::pow(xsimd::batch<float, FBXSIMDBatchType>(2.0f), (uniPitchOp2Batch - 69.0f) / 12.0f);
-          auto uniIncrOp2Batch = uniPitchOp2Freq / oversampledRate;
-          phase2 = _uniPhaseGensForFM[1][subUniBlock].Next(uniIncrOp2Batch, 0.0f);
-        }
-        else
-        {
-          auto uniIncrOp2Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM[1][os][s].data() + u);
-          phase2 = _uniPhaseGensForFM[1][subUniBlock].Next(uniIncrOp2Batch, fmTo2);
-        }
-        
-        auto output2 = xsimd::sin(phase2 * FBTwoPi);
+        auto output2 = CalcOneSampleForFM<ExpoFM>(
+          oversampledRate, subUniBlock, 
+          uniPitchsForFM[1][os][s].data() + u, 
+          uniIncrsForFM[1][os][s].data() + u, fmTo2, 
+          0.0f);
 
+        // op3 is output, it also takes the external inter-osci fm
         xsimd::batch<float, FBXSIMDBatchType> fmTo3 = 0.0f;
         fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
         fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
         fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-
-        // op3 is output, it also takes the external inter-osci fm
-        xsimd::batch<float, FBXSIMDBatchType> phase3;
         auto externalFMModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(externalFMModulatorsForFM[os][s].data() + u);
-        if constexpr (ExpoFM)
-        {
-          auto uniPitchOp3Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniPitchsForFM[2][os][s].data() + u);
-          uniPitchOp3Batch += fmTo3 * uniPitchOp3Batch;
-          auto uniPitchOp3Freq = 440.0f * xsimd::pow(xsimd::batch<float, FBXSIMDBatchType>(2.0f), (uniPitchOp3Batch - 69.0f) / 12.0f);
-          auto uniIncrOp3Batch = uniPitchOp3Freq / oversampledRate;
-          phase3 = _uniPhaseGensForFM[2][subUniBlock].Next(uniIncrOp3Batch, externalFMModulatorsForFMBatch);
-        }
-        else
-        {
-          auto uniIncrOp3Batch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM[2][os][s].data() + u);
-          phase3 = _uniPhaseGensForFM[2][subUniBlock].Next(uniIncrOp3Batch, fmTo3 + externalFMModulatorsForFMBatch);
-        }
-
-        auto output3 = xsimd::sin(phase3 * FBTwoPi);
+        auto output3 = CalcOneSampleForFM<ExpoFM>(
+          oversampledRate, subUniBlock, 
+          uniPitchsForFM[2][os][s].data() + u, 
+          uniIncrsForFM[2][os][s].data() + u, fmTo3, 
+          externalFMModulatorsForFMBatch);
 
         _prevUniOutputForFM[0][subUniBlock] = output1;
         _prevUniOutputForFM[1][subUniBlock] = output2;

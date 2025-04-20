@@ -70,8 +70,18 @@ class FFOsciProcessor final
 
   void ProcessBasic(FBModuleProcState& state, int oversamplingTimes);
   void ProcessDSF(FBModuleProcState& state, int oversamplingTimes);
+
   template <bool ExpoFM>
-  void ProcessFM(FBModuleProcState& state, int oversamplingTimes, float oversampledRate);
+  void ProcessFM(
+    FBModuleProcState& state, int oversamplingTimes, float oversampledRate);
+  template <bool ExpoFM>
+  xsimd::batch<float, FBXSIMDBatchType> CalcOneSampleForFM(
+    float oversampledRate,
+    int subUniBlock,
+    float* uniPitchesForFM,
+    float* uniIncrsForFM,
+    xsimd::batch<float, FBXSIMDBatchType> fmToOp,
+    xsimd::batch<float, FBXSIMDBatchType> externalFMModulatorsForFMBatch);
 
   void ProcessUniPhasesNonFM(int oversamplingTimes);
   void ProcessUniFreqAndDelta(int oversamplingTimes, float oversampledRate);
