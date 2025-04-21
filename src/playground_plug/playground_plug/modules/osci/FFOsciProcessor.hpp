@@ -69,7 +69,8 @@ class FFOsciProcessor final
   alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<FFOsciFMPhasesGenerator> _uniPhaseGensForFM = {};
   alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<xsimd::batch<float, FBXSIMDBatchType>> _prevUniOutputForFM = {};
   alignas(FBSIMDAlign) FBMDArray3<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes> _externalFMModulatorsForFM = {};
-  alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniPitchsForFM = {};
+  alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniIncrsForFM = {};
+  alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniPitchesForFM = {};
 
   void ProcessBasic(FBModuleProcState& state, int oversamplingTimes);
   void ProcessDSF(FBModuleProcState& state, int oversamplingTimes);
@@ -103,12 +104,6 @@ class FFOsciProcessor final
     FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
     FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq);
 
-  void ProcessUniDetuneSpreadAndPos(
-    FBStaticModule const& topo,
-    FBAccParamState const& uniDetuneNorm, FBAccParamState const& uniSpreadNorm,
-    FBFixedFloatArray& uniDetunePlain, FBFixedFloatArray& uniSpreadPlain,
-    std::array<float, FFOsciUnisonMaxCount>& uniPositions);
-
   void ProcessUniPitches(
     int oversamplingTimes,
     FBFixedFloatArray const& basePitch,
@@ -126,6 +121,16 @@ class FFOsciProcessor final
     int oversamplingTimes,
     std::array<FFOsciDSPState, FFOsciCount> const& allOsciDSPStates,
     std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputFMIndex);
+
+  void ProcessUniBlendDetuneSpreadAndPos(
+    FBStaticModule const& topo,
+    FBAccParamState const& uniBlendNorm,
+    FBAccParamState const& uniDetuneNorm,
+    FBAccParamState const& uniSpreadNorm,
+    FBFixedFloatArray& uniBlendPlain,
+    FBFixedFloatArray& uniDetunePlain,
+    FBFixedFloatArray& uniSpreadPlain,
+    std::array<float, FFOsciUnisonMaxCount>& uniPositions);
 
 public:
   FFOsciProcessor();

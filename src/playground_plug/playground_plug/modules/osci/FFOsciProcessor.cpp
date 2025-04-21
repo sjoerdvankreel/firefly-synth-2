@@ -264,10 +264,12 @@ FFOsciProcessor::ProcessBasePitchAndFreq(
 
 // continuous unison params and position, not oversampled
 void
-FFOsciProcessor::ProcessUniDetuneSpreadAndPos(
+FFOsciProcessor::ProcessUniBlendDetuneSpreadAndPos(
   FBStaticModule const& topo,
+  FBAccParamState const& uniBlendNorm,
   FBAccParamState const& uniDetuneNorm,
   FBAccParamState const& uniSpreadNorm,
+  FBFixedFloatArray& uniBlendPlain,
   FBFixedFloatArray& uniDetunePlain,
   FBFixedFloatArray& uniSpreadPlain,
   std::array<float, FFOsciUnisonMaxCount>& uniPositions)
@@ -275,10 +277,12 @@ FFOsciProcessor::ProcessUniDetuneSpreadAndPos(
   if (_voiceState.unisonCount == 1)
   {
     uniPositions[0] = 0.5f;
+    uniBlendPlain.Fill(1.0f);
     uniDetunePlain.Fill(0.0f);
     uniSpreadPlain.Fill(0.0f);
     return;
   }
+  topo.NormalizedToIdentityFast(FFOsciParam::UnisonBlend, uniBlendNorm, uniBlendPlain);
   topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, uniDetuneNorm, uniDetunePlain);
   topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, uniSpreadNorm, uniSpreadPlain);
   for (int u = 0; u < _voiceState.unisonCount; u++)
@@ -613,23 +617,19 @@ FFOsciProcessor::ProcessFM(
   // in the case of expo fm they have already been applied to the pitch
   // and hence to the incoming freq and delta parameters
   float applyExternalLinearFM = _voiceState.externalFMExp ? 0.0f : 1.0f;
-  alignas(FBSIMDAlign) std::array<std::array<std::array<float,
-    FFOsciUnisonMaxCount>, FBFixedBlockSamples>, FFOsciOverSamplingTimes> externalFMModulatorsForFM = {};
   for (int os = 0; os < oversamplingTimes; os++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       for (int u = 0; u < FFOsciUnisonMaxCount; u++)
-        externalFMModulatorsForFM[os][s][u] = _modMatrixFMModulators[u][os][s] * applyExternalLinearFM;
+        _externalFMModulatorsForFM[os][s][u] = _modMatrixFMModulators[u][os][s] * applyExternalLinearFM;
 
   // calculate op1/2/3 delta according to 1:2 and 2:3 ratio for expo case (ratio applies to pitch)
-  alignas(FBSIMDAlign) std::array<std::array<std::array<std::array<float,
-    FFOsciUnisonMaxCount>, FBFixedBlockSamples>, FFOsciOverSamplingTimes>, FFOsciFMOperatorCount> uniPitchsForFM = {};
   if constexpr (ExpoFM)
   {
     for (int o = 0; o < FFOsciFMOperatorCount; o++)
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
           for (int u = 0; u < FFOsciUnisonMaxCount; u++)
-            uniPitchsForFM[o][os][s][u] = 0.0f;
+            _uniPitchesForFM[o][os][s][u] = 0.0f;
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -637,23 +637,21 @@ FFOsciProcessor::ProcessFM(
           float op3Pitch = _uniPitches[u][os][s];
           float op2Pitch = op3Pitch / fmRatioPlain[1][s];
           float op1Pitch = op2Pitch / fmRatioPlain[0][s];
-          uniPitchsForFM[0][os][s][u] = op1Pitch;
-          uniPitchsForFM[1][os][s][u] = op2Pitch;
-          uniPitchsForFM[2][os][s][u] = op3Pitch;
+          _uniPitchesForFM[0][os][s][u] = op1Pitch;
+          _uniPitchesForFM[1][os][s][u] = op2Pitch;
+          _uniPitchesForFM[2][os][s][u] = op3Pitch;
         }
   }
 
   // calculate op1/2/3 delta according to 1:2 and 2:3 ratio for linear case
   // for expo case, we have to do it inside the per-sample loop because ops modulate pitch
-  alignas(FBSIMDAlign) std::array<std::array<std::array<std::array<float,
-    FFOsciUnisonMaxCount>, FBFixedBlockSamples>, FFOsciOverSamplingTimes>, FFOsciFMOperatorCount> uniIncrsForFM = {};
   if constexpr (!ExpoFM)
   {
     for (int o = 0; o < FFOsciFMOperatorCount; o++)
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
           for (int u = 0; u < FFOsciUnisonMaxCount; u++)
-            uniIncrsForFM[o][os][s][u] = 0.0f;
+            _uniIncrsForFM[o][os][s][u] = 0.0f;
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -661,9 +659,9 @@ FFOsciProcessor::ProcessFM(
           float op3Freq = _uniFreqs[u][os][s];
           float op2Freq = op3Freq / fmRatioPlain[1][s];
           float op1Freq = op2Freq / fmRatioPlain[0][s];
-          uniIncrsForFM[0][os][s][u] = op1Freq / oversampledRate;
-          uniIncrsForFM[1][os][s][u] = op2Freq / oversampledRate;
-          uniIncrsForFM[2][os][s][u] = op3Freq / oversampledRate;
+          _uniIncrsForFM[0][os][s][u] = op1Freq / oversampledRate;
+          _uniIncrsForFM[1][os][s][u] = op2Freq / oversampledRate;
+          _uniIncrsForFM[2][os][s][u] = op3Freq / oversampledRate;
         }
   }
 
@@ -684,8 +682,8 @@ FFOsciProcessor::ProcessFM(
         fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
         auto output1 = CalcOneSampleForFM<ExpoFM>(
           oversampledRate, subUniBlock, 0,
-          uniPitchsForFM[0][os][s].data() + u, 
-          uniIncrsForFM[0][os][s].data() + u, fmTo1, 
+          _uniPitchesForFM[0][os][s].data() + u,
+          _uniIncrsForFM[0][os][s].data() + u, fmTo1,
           0.0f);
 
         xsimd::batch<float, FBXSIMDBatchType> fmTo2 = 0.0f;
@@ -694,8 +692,8 @@ FFOsciProcessor::ProcessFM(
         fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
         auto output2 = CalcOneSampleForFM<ExpoFM>(
           oversampledRate, subUniBlock, 1,
-          uniPitchsForFM[1][os][s].data() + u, 
-          uniIncrsForFM[1][os][s].data() + u, fmTo2, 
+          _uniPitchesForFM[1][os][s].data() + u,
+          _uniIncrsForFM[1][os][s].data() + u, fmTo2,
           0.0f);
 
         // op3 is output, it also takes the external inter-osci fm
@@ -703,11 +701,11 @@ FFOsciProcessor::ProcessFM(
         fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
         fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
         fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-        auto externalFMModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(externalFMModulatorsForFM[os][s].data() + u);
+        auto externalFMModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_externalFMModulatorsForFM[os][s].data() + u);
         auto output3 = CalcOneSampleForFM<ExpoFM>(
           oversampledRate, subUniBlock, 2,
-          uniPitchsForFM[2][os][s].data() + u, 
-          uniIncrsForFM[2][os][s].data() + u, fmTo3, 
+          _uniPitchesForFM[2][os][s].data() + u,
+          _uniIncrsForFM[2][os][s].data() + u, fmTo3,
           externalFMModulatorsForFMBatch);
 
         _prevUniOutputForFM[0][subUniBlock] = output1;
@@ -754,6 +752,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
+  auto const& uniBlendNorm = procParams.acc.unisonBlend[0].Voice()[voice];
   auto const& uniDetuneNorm = procParams.acc.unisonDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.unisonSpread[0].Voice()[voice];
   auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
@@ -776,10 +775,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   ProcessBasePitchAndFreq(topo, sampleRate, coarseNorm, fineNorm, basePitch, baseFreq);
 
   // continuous unison params and positioning, not oversampled
+  FBFixedFloatArray uniBlendPlain;
   FBFixedFloatArray uniDetunePlain;
   FBFixedFloatArray uniSpreadPlain;
   std::array<float, FFOsciUnisonMaxCount> uniPositions;
-  ProcessUniDetuneSpreadAndPos(topo, uniDetuneNorm, uniSpreadNorm, uniDetunePlain, uniSpreadPlain, uniPositions);
+  ProcessUniBlendDetuneSpreadAndPos(
+    topo, uniBlendNorm, uniDetuneNorm, uniSpreadNorm, 
+    uniBlendPlain, uniDetunePlain, uniSpreadPlain, uniPositions);
 
   // per unison voice pitch, oversampled
   // note expo fm modulates pitch not phase
@@ -860,6 +862,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGainNorm.Last();
+  exchangeParams.acc.unisonBlend[0][voice] = uniBlendNorm.Last();
   exchangeParams.acc.unisonDetune[0][voice] = uniDetuneNorm.Last();
   exchangeParams.acc.unisonSpread[0][voice] = uniSpreadNorm.Last();
   exchangeParams.acc.dsfDecay[0][voice] = dsfDecayNorm.Last();
