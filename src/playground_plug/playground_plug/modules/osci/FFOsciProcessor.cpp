@@ -570,7 +570,7 @@ FFOsciProcessor::CalcOneSampleForFM(
   else
   {
     auto uniIncrOpBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM);
-    return xsimd::sin(_uniPhaseGensForFM[op][subUniBlock].Next(uniIncrOpBatch, fmToOp) * FBTwoPi);
+    return xsimd::sin(_uniPhaseGensForFM[op][subUniBlock].Next(uniIncrOpBatch, fmToOp + externalFMModulatorsForFMBatch) * FBTwoPi);
   }
 }
 
