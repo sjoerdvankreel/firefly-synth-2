@@ -188,6 +188,21 @@ FFMakeOsciTopo()
   unisonSpread.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonSpread);
   unisonSpread.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
 
+  auto& unisonBlend = result->params[(int)FFOsciParam::UnisonBlend];
+  unisonBlend.acc = true;
+  unisonBlend.defaultText = "100";
+  unisonBlend.name = "Blend";
+  unisonBlend.tooltip = "Unison Blend";
+  unisonBlend.slotCount = 1;
+  unisonBlend.unit = "%";
+  unisonBlend.id = "{68974AC4-57ED-41E4-9B0F-6DB29E0B6BBB}";
+  unisonBlend.type = FBParamType::Identity;
+  auto selectUnisonBlend = [](auto& module) { return &module.acc.unisonBlend; };
+  unisonBlend.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonBlend);
+  unisonBlend.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonBlend);
+  unisonBlend.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonBlend);
+  unisonBlend.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+
   auto& basicSinOn = result->params[(int)FFOsciParam::BasicSinOn];
   basicSinOn.acc = false;
   basicSinOn.defaultText = "On";

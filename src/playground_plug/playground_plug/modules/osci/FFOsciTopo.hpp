@@ -17,7 +17,7 @@ inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperat
 
 enum class FFOsciParam { 
   Type, Gain, Coarse, Fine,
-  UnisonCount, UnisonOffset, UnisonRandom, UnisonDetune, UnisonSpread,
+  UnisonCount, UnisonOffset, UnisonRandom, UnisonDetune, UnisonSpread, UnisonBlend,
   BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
   BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,
