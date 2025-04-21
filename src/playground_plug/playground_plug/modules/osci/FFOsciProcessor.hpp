@@ -93,9 +93,11 @@ class FFOsciProcessor final
     FFOsciOversampledUnisonArray const& uniOutputMaybeOversampled,
     std::array<FBFixedFloatArray, FFOsciUnisonMaxCount>& uniOutputNonOversampled);
 
-  void ProcessUniSpreadToStereo(
+  void ProcessUniBlendAndSpreadToStereo(
+    FBFixedFloatArray const& uniBlendPlain,
     FBFixedFloatArray const& uniSpreadPlain,
-    std::array<float, FFOsciUnisonMaxCount> const& uniPositions,
+    std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf,
+    std::array<float, FFOsciUnisonMaxCount> const& uniPositionsAbsHalfToHalf,
     std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniOutputNonOversampled,
     FBFixedFloatAudioArray& output);
 
@@ -108,7 +110,7 @@ class FFOsciProcessor final
     int oversamplingTimes,
     FBFixedFloatArray const& basePitch,
     FBFixedFloatArray const& uniDetunePlain,
-    std::array<float, FFOsciUnisonMaxCount> const& uniPositions);
+    std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf);
 
   void ProcessModMatrixAMModulators(
     int moduleSlot,
@@ -130,7 +132,8 @@ class FFOsciProcessor final
     FBFixedFloatArray& uniBlendPlain,
     FBFixedFloatArray& uniDetunePlain,
     FBFixedFloatArray& uniSpreadPlain,
-    std::array<float, FFOsciUnisonMaxCount>& uniPositions);
+    std::array<float, FFOsciUnisonMaxCount>& uniPositionsMHalfToHalf,
+    std::array<float, FFOsciUnisonMaxCount>& uniPositionsAbsHalfToHalf);
 
 public:
   FFOsciProcessor();

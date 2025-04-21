@@ -272,21 +272,26 @@ FFOsciProcessor::ProcessUniBlendDetuneSpreadAndPos(
   FBFixedFloatArray& uniBlendPlain,
   FBFixedFloatArray& uniDetunePlain,
   FBFixedFloatArray& uniSpreadPlain,
-  std::array<float, FFOsciUnisonMaxCount>& uniPositions)
+  std::array<float, FFOsciUnisonMaxCount>& uniPositionsMHalfToHalf,
+  std::array<float, FFOsciUnisonMaxCount>& uniPositionsAbsHalfToHalf)
 {
   if (_voiceState.unisonCount == 1)
   {
-    uniPositions[0] = 0.5f;
-    uniBlendPlain.Fill(1.0f);
+    uniBlendPlain.Fill(0.0f);
     uniDetunePlain.Fill(0.0f);
     uniSpreadPlain.Fill(0.0f);
+    uniPositionsMHalfToHalf[0] = 0.0f;
+    uniPositionsAbsHalfToHalf[0] = 0.0f;
     return;
   }
   topo.NormalizedToIdentityFast(FFOsciParam::UnisonBlend, uniBlendNorm, uniBlendPlain);
   topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, uniDetuneNorm, uniDetunePlain);
   topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, uniSpreadNorm, uniSpreadPlain);
   for (int u = 0; u < _voiceState.unisonCount; u++)
-    uniPositions[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
+  {
+    uniPositionsMHalfToHalf[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
+    uniPositionsAbsHalfToHalf[u] = std::fabs(uniPositionsMHalfToHalf[u]);
+  }
 }
 
 // per unison voice freq and delta
@@ -307,20 +312,23 @@ FFOsciProcessor::ProcessUniFreqAndDelta(
       }
 }
 
-// stereo-spread the unison voices
+// stereo-spread the unison voices and apply blend
 void
-FFOsciProcessor::ProcessUniSpreadToStereo(
+FFOsciProcessor::ProcessUniBlendAndSpreadToStereo(
+  FBFixedFloatArray const& uniBlendPlain,
   FBFixedFloatArray const& uniSpreadPlain,
-  std::array<float, FFOsciUnisonMaxCount> const& uniPositions,
+  std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf,
+  std::array<float, FFOsciUnisonMaxCount> const& uniPositionsAbsHalfToHalf,
   std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniOutputNonOversampled,
   FBFixedFloatAudioArray& output)
 {
   for (int u = 0; u < _voiceState.unisonCount; u++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      float uniPanning = 0.5f + uniPositions[u] * uniSpreadPlain[s];
-      output[0][s] += (1.0f - uniPanning) * uniOutputNonOversampled[u][s];
-      output[1][s] += uniPanning * uniOutputNonOversampled[u][s];
+      float uniBlend = 1.0f - (uniPositionsAbsHalfToHalf[u] * 2.0f * (1.0f - uniBlendPlain[s]));
+      float uniPanning = 0.5f + uniPositionsMHalfToHalf[u] * uniSpreadPlain[s];
+      output[0][s] += (1.0f - uniPanning) * uniOutputNonOversampled[u][s] * uniBlend;
+      output[1][s] += uniPanning * uniOutputNonOversampled[u][s] * uniBlend;
     }
 }
 
@@ -348,7 +356,7 @@ FFOsciProcessor::ProcessUniPitches(
   int oversamplingTimes,
   FBFixedFloatArray const& basePitch,
   FBFixedFloatArray const& uniDetunePlain,
-  std::array<float, FFOsciUnisonMaxCount> const& uniPositions)
+  std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf)
 {
   float applyExpoFM = _voiceState.externalFMExp ? 1.0f : 0.0f;
   for (int u = 0; u < _voiceState.unisonCount; u++)
@@ -356,7 +364,7 @@ FFOsciProcessor::ProcessUniPitches(
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
         int nosIndex = (os * FBFixedBlockSamples + s) / oversamplingTimes;
-        _uniPitches[u][os][s] = basePitch[nosIndex] + uniPositions[u] * uniDetunePlain[nosIndex];
+        _uniPitches[u][os][s] = basePitch[nosIndex] + uniPositionsMHalfToHalf[u] * uniDetunePlain[nosIndex];
         _uniPitches[u][os][s] += _modMatrixFMModulators[u][os][s] * _uniPitches[u][os][s] * applyExpoFM;
       }
 }
@@ -778,14 +786,15 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBFixedFloatArray uniBlendPlain;
   FBFixedFloatArray uniDetunePlain;
   FBFixedFloatArray uniSpreadPlain;
-  std::array<float, FFOsciUnisonMaxCount> uniPositions;
+  std::array<float, FFOsciUnisonMaxCount> uniPositionsMHalfToHalf;
+  std::array<float, FFOsciUnisonMaxCount> uniPositionsAbsHalfToHalf;
   ProcessUniBlendDetuneSpreadAndPos(
     topo, uniBlendNorm, uniDetuneNorm, uniSpreadNorm, 
-    uniBlendPlain, uniDetunePlain, uniSpreadPlain, uniPositions);
+    uniBlendPlain, uniDetunePlain, uniSpreadPlain, uniPositionsMHalfToHalf, uniPositionsAbsHalfToHalf);
 
   // per unison voice pitch, oversampled
   // note expo fm modulates pitch not phase
-  ProcessUniPitches(oversamplingTimes, basePitch, uniDetunePlain, uniPositions);
+  ProcessUniPitches(oversamplingTimes, basePitch, uniDetunePlain, uniPositionsMHalfToHalf);
 
   // per unison voice freq and delta unless dedicated 
   // fm osci of exponential type, in which case osci 
@@ -823,7 +832,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   ProcessDownSampling(oversamplingTimes, unisonOutputMaybeOversampled, uniOutputNonOversampled);
 
   // stereo-spread the unison voices
-  ProcessUniSpreadToStereo(uniSpreadPlain, uniPositions, uniOutputNonOversampled, output);
+  ProcessUniBlendAndSpreadToStereo(
+    uniBlendPlain, uniSpreadPlain, uniPositionsMHalfToHalf, 
+    uniPositionsAbsHalfToHalf, uniOutputNonOversampled, output);
 
   FBFixedFloatArray gainPlain;
   FBFixedFloatArray gLFOToGainPlain;
