@@ -1,6 +1,5 @@
 uni blend
 hardsync
-fm2
 set exact value
 move the oversampling switch
 store the selected tab
