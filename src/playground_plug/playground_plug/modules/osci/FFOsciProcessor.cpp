@@ -249,12 +249,17 @@ FFOsciProcessor::ProcessBasePitchAndFreq(
   FBFixedFloatArray coarsePlain;
   topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, finePlain);
   topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, coarsePlain);
-  for (int s = 0; s < FBFixedBlockSamples; s++)
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    basePitch[s] = _voiceState.key + coarsePlain[s] + finePlain[s];
-    baseFreq[s] = FBPitchToFreqFastAndInaccurate(basePitch[s]);
-    _phaseGen.Next(baseFreq[s] / sampleRate);
+    auto finePlainBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(finePlain.Data().data() + s);
+    auto coarsePlainBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(coarsePlain.Data().data() + s);
+    auto basePitchBatch = _voiceState.key + coarsePlainBatch + finePlainBatch;
+    auto baseFreqBatch = FBPitchToFreq(basePitchBatch);
+    basePitchBatch.store_aligned(basePitch.Data().data() + s);
+    baseFreqBatch.store_aligned(baseFreq.Data().data() + s);
   }
+  for (int s = 0; s < FBFixedBlockSamples; s ++)
+    _phaseGen.Next(baseFreq[s] / sampleRate);
 }
 
 // continuous unison params and position, not oversampled
@@ -288,10 +293,13 @@ FFOsciProcessor::ProcessUniFreqAndDelta(
 {
   for (int u = 0; u < _voiceState.unisonCount; u++)
     for (int os = 0; os < oversamplingTimes; os++)
-      for (int s = 0; s < FBFixedBlockSamples; s++)
+      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       {
-        _uniFreqs[u][os][s] = FBPitchToFreqFastAndInaccurate(_uniPitches[u][os][s]);
-        _uniIncrs[u][os][s] = _uniFreqs[u][os][s] / oversampledRate;
+        auto uniPitchBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_uniPitches[u][os].Data().data() + s);
+        auto uniFreqBatch = FBPitchToFreq(uniPitchBatch);
+        auto uniIncrBatch = uniFreqBatch / oversampledRate;
+        uniFreqBatch.store_aligned(_uniFreqs[u][os].Data().data() + s);
+        uniIncrBatch.store_aligned(_uniIncrs[u][os].Data().data() + s);
       }
 }
 

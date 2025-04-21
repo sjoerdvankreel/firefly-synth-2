@@ -66,7 +66,7 @@ PlotParams(FBGraphRenderState const* state)
   int unison = state->AudioParamDiscrete({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UnisonCount, 0 });
   float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Coarse, 0 }));
   pitch += state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Fine, 0 });
-  result.samples = FBFreqToSamples(FBPitchToFreqFastAndInaccurate(pitch), sampleRate);
+  result.samples = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate);
   return result;
 }
 

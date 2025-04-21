@@ -1,6 +1,8 @@
 #pragma once
 
+#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/topo/param/FBBarsItem.hpp>
+#include <xsimd/xsimd.hpp>
 
 #include <cmath>
 #include <array>
@@ -8,15 +10,8 @@
 #include <cassert>
 #include <algorithm>
 
-inline constexpr int FBNoteCount = 128;
-inline constexpr int FBCentCount = 100;
-inline constexpr int FBNoteCentCount = FBNoteCount * FBCentCount;
-
 inline constexpr float FBPi = std::numbers::pi_v<float>;
 inline constexpr float FBTwoPi = 2.0f * FBPi;
-
-std::array<float, FBNoteCentCount> const&
-FBPitchToFreqTable();
 
 inline float
 FBToUnipolar(float v)
@@ -74,50 +69,15 @@ FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 }
 
 inline float
-FBPitchToFreqAccurateRaw(float pitch)
+FBPitchToFreq(float pitch)
 {
   return 440.0f * std::pow(2.0f, (pitch - 69.0f) / 12.0f);
 }
 
-inline float
-FBPitchToFreqAccurateNyquist(float pitch, float sampleRate)
+inline xsimd::batch<float, FBXSIMDBatchType>
+FBPitchToFreq(xsimd::batch<float, FBXSIMDBatchType> pitch)
 {
-  return std::min(sampleRate * 0.5f, FBPitchToFreqAccurateRaw(pitch));
-}
-
-inline float
-FBLerp(float pos, float low, float hi)
-{
-  return (1.0f - pos) * low + pos * hi;
-}
-
-template <class Table>
-inline float
-FBLerpTable(float indexReal, int tableSize, Table const& table)
-{
-  float indexBounded = std::clamp(indexReal, 0.0f, static_cast<float>(tableSize - 2));
-  int low = FBFastFloor(indexBounded);
-  return FBLerp(indexBounded - low, table[low], table[low + 1]);
-}
-
-inline float
-FBPitchToFreqFastAndInaccurate(float pitch)
-{
-  return FBLerpTable(pitch * 100.0f, FBNoteCentCount, FBPitchToFreqTable());
-}
-
-// https://schneide.blog/2024/07/31/efficient-integer-powers-of-floating-point-numbers-in-c/
-inline float 
-FBFastPowFloatToInt(float x, int y)
-{
-  int p = y;
-  float result = ((p & 1) != 0) ? x : 1.0f;
-  while (p > 0)
-  {
-    x *= x;
-    p = p >> 1;
-    if ((p & 1) != 0)
-      result *= x;
-  }
-  return result;
+  auto two = xsimd::batch<float, FBXSIMDBatchType>(2.0f);
+  auto exp = (pitch - 69.0f) / 12.0f;
+  return 440.0f * xsimd::pow(two, exp);
 }
