@@ -253,10 +253,10 @@ FFOsciProcessor::ProcessBasePitchAndFreq(
   {
     auto finePlainBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(finePlain.Data().data() + s);
     auto coarsePlainBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(coarsePlain.Data().data() + s);
-    auto basePitchBatch = _voiceState.key + coarsePlainBatch + finePlainBatch;
-    auto baseFreqBatch = FBPitchToFreq(basePitchBatch);
-    basePitchBatch.store_aligned(basePitch.Data().data() + s);
-    baseFreqBatch.store_aligned(baseFreq.Data().data() + s);
+    auto pitchBatch = _voiceState.key + coarsePlainBatch + finePlainBatch;
+    auto freqBatch = FBPitchToFreq(pitchBatch);
+    pitchBatch.store_aligned(basePitch.Data().data() + s);
+    freqBatch.store_aligned(baseFreq.Data().data() + s);
   }
   for (int s = 0; s < FBFixedBlockSamples; s ++)
     _phaseGen.Next(baseFreq[s] / sampleRate);
@@ -295,11 +295,11 @@ FFOsciProcessor::ProcessUniFreqAndDelta(
     for (int os = 0; os < oversamplingTimes; os++)
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       {
-        auto uniPitchBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_uniPitches[u][os].Data().data() + s);
-        auto uniFreqBatch = FBPitchToFreq(uniPitchBatch);
-        auto uniIncrBatch = uniFreqBatch / oversampledRate;
-        uniFreqBatch.store_aligned(_uniFreqs[u][os].Data().data() + s);
-        uniIncrBatch.store_aligned(_uniIncrs[u][os].Data().data() + s);
+        auto pitchBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_uniPitches[u][os].Data().data() + s);
+        auto freqBatch = FBPitchToFreq(pitchBatch);
+        auto incrBatch = freqBatch / oversampledRate;
+        freqBatch.store_aligned(_uniFreqs[u][os].Data().data() + s);
+        incrBatch.store_aligned(_uniIncrs[u][os].Data().data() + s);
       }
 }
 
