@@ -180,6 +180,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   _voiceState.key = static_cast<float>(state.voice->event.note.key);
+  _voiceState.syncOn = topo.NormalizedToBoolFast(FFOsciParam::SyncOn, params.block.syncOn[0].Voice()[voice]);
   _voiceState.type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, params.block.type[0].Voice()[voice]);
   _voiceState.basicSinOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSinOn, params.block.basicSinOn[0].Voice()[voice]);
   _voiceState.basicSawOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSawOn, params.block.basicSawOn[0].Voice()[voice]);
@@ -775,6 +776,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
+  auto const& syncNotesNorm = procParams.acc.syncNotes[0].Voice()[voice];
   auto const& uniBlendNorm = procParams.acc.unisonBlend[0].Voice()[voice];
   auto const& uniDetuneNorm = procParams.acc.unisonDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.unisonSpread[0].Voice()[voice];
@@ -892,6 +894,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
+  exchangeParams.acc.syncNotes[0][voice] = syncNotesNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainWithGLFOBlock.Last();
   exchangeParams.acc.gLFOToGain[0][voice] = gLFOToGainNorm.Last();
   exchangeParams.acc.unisonBlend[0][voice] = uniBlendNorm.Last();
