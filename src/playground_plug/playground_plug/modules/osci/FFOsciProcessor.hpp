@@ -16,6 +16,8 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+inline int constexpr FFOsciSyncCrossOverSamples = 8;
+
 template <class T>
 using FFOsciUnisonOperatorArrayForFM =
 std::array<std::array<T, FFOsciUnisonMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount>;
@@ -55,32 +57,45 @@ struct FFOsciVoiceState final
 
 class FFOsciProcessor final
 {
-  FBParkMillerPRNG _prng = {};
+  FBParkMillerPRNG _prng = {}; 
   FFOsciVoiceState _voiceState = {};
   FBTrackingPhaseGenerator _phaseGen = {};
   juce::dsp::Oversampling<float> _oversampling;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
-  std::array<FFOsciSlavePhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGensSlave = {};
+  FFOsciOversampledUnisonArray _uniSyncCrossOverWeights = {};
+  std::array<int, FFOsciUnisonMaxCount> _uniSyncCrossOverSamples = {};
+  FFOsciOversampledUnisonArray _unisonOutputMaybeOversampledUnsynced = {};
   std::array<FFOsciMasterPhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGensMaster = {};
-  
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqsSlave = {};
+  std::array<FFOsciSlavePhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGensSlaveSynced = {};
+  std::array<FFOsciSlavePhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGensSlaveUnsynced = {};
+
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqsMaster = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrsSlave = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrsMaster = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhasesSlave = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhasesMaster = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPitchesSlave = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPitchesMaster = {};
+
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqsSlave = {};
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrsSlave = {};
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPitchesSlave = {};
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhasesSlaveSynced = {};
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhasesSlaveUnsynced = {};
+
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _modMatrixFMModulators = {};
 
-  alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<FFOsciFMPhasesGenerator> _uniPhaseGensForFM = {};
+  alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<FFOsciFMPhasesGenerator> _uniPhaseGensForFM = {}; // todo hsync fm
   alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<xsimd::batch<float, FBXSIMDBatchType>> _prevUniOutputForFM = {};
   alignas(FBSIMDAlign) FBMDArray3<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes> _externalFMModulatorsForFM = {};
   alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniIncrsForFM = {};
   alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniPitchesForFM = {};
 
-  void ProcessBasic(FBModuleProcState& state, int oversamplingTimes);
-  void ProcessDSF(FBModuleProcState& state, int oversamplingTimes);
+  void ProcessBasic(
+    FBModuleProcState& state, 
+    int oversamplingTimes,
+    FFOsciOversampledUnisonArray const& uniPhases);
+  void ProcessDSF(
+    FBModuleProcState& state, 
+    int oversamplingTimes,
+    FFOsciOversampledUnisonArray const& uniPhases);
 
   template <bool ExpoFM>
   void ProcessFM(

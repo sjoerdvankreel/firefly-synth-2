@@ -15,7 +15,7 @@ class FFOsciProcessor;
 
 inline int constexpr FFOsciOverSamplingFactor = 2;
 inline int constexpr FFOsciOverSamplingTimes = 1 << FFOsciOverSamplingFactor;
-typedef FBMDArray2< FBFixedFloatArray, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> FFOsciOversampledUnisonArray;
+typedef FBMDArray2<FBFixedFloatArray, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> FFOsciOversampledUnisonArray;
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
@@ -26,7 +26,7 @@ public:
   FFOsciDSPState();
   ~FFOsciDSPState();
   FBFixedFloatAudioArray output = {};
-  FFOsciOversampledUnisonArray unisonOutputMaybeOversampled = {};
+  FFOsciOversampledUnisonArray unisonOutputMaybeOversampledSynced = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 

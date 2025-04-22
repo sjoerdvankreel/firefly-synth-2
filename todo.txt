@@ -1,4 +1,6 @@
 hardsync
+notes->semitones
+drop all the uni prefixes
 set exact value
 move the oversampling switch
 store the selected tab

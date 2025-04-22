@@ -19,8 +19,9 @@ class FFOsciSlavePhaseGenerator final
 {
   float _x = 0.0f;
 public:
-  float Next(float incr, float fmModulator);
   void Set(float p) { _x = p; }
+  float Get() const { return _x; }
+  float Next(float incr, float fmModulator);
   FFOsciSlavePhaseGenerator() = default;
   explicit FFOsciSlavePhaseGenerator(float x) : _x(x) {}
 };
