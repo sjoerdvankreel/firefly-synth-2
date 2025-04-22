@@ -375,10 +375,10 @@ FFOsciProcessor::ProcessUniPhasesNonFM(
         // todo how to make it fast if hardsync off
         // todo the crossover thing
         // todo the subsample thing
-        _uniPhasesMaster[u][os][s] = _uniPhaseGensMaster[u].Next(_uniIncrsMaster[u][os][s], _modMatrixFMModulators[u][os][s] * applyLinearFM, wrapped);
+        _uniPhasesMaster[u][os][s] = _uniPhaseGensMaster[u].Next(_uniIncrsMaster[u][os][s], wrapped);
         if (wrapped)
           _uniPhaseGensSlave[u].Set(0.0f); // TODO
-        _uniPhasesSlave[u][os][s] = _uniPhaseGensSlave[u].Next(_uniIncrsSlave[u][os][s]);
+        _uniPhasesSlave[u][os][s] = _uniPhaseGensSlave[u].Next(_uniIncrsSlave[u][os][s], _modMatrixFMModulators[u][os][s] * applyLinearFM);
       }
   }
 }
