@@ -364,7 +364,7 @@ void
 FFOsciProcessor::ProcessUniPhasesNonFM(
   int oversamplingTimes)
 {
-  bool wrapped;
+  bool masterWrapped;
   float applyLinearFM = _voiceState.externalFMExp ? 0.0f : 1.0f;
   for (int u = 0; u < _voiceState.unisonCount; u++)
   {
@@ -375,9 +375,11 @@ FFOsciProcessor::ProcessUniPhasesNonFM(
         // todo how to make it fast if hardsync off
         // todo the crossover thing
         // todo the subsample thing
-        _uniPhasesMaster[u][os][s] = _uniPhaseGensMaster[u].Next(_uniIncrsMaster[u][os][s], wrapped);
-        if (wrapped)
-          _uniPhaseGensSlave[u].Set(0.0f); // TODO
+        // https://www.kvraudio.com/forum/viewtopic.php?t=192829
+        // todo delete master stuff _uniPhasesMaster[u][os][s] = _uniPhaseGensMaster[u].Next(_uniIncrsMaster[u][os][s], wrapped);
+        float masterPhase = _uniPhaseGensMaster[u].Next(_uniIncrsMaster[u][os][s], masterWrapped);
+        if (masterWrapped)
+          _uniPhaseGensSlave[u].Set(masterPhase * _uniIncrsSlave[u][os][s] / _uniIncrsMaster[u][os][s]);
         _uniPhasesSlave[u][os][s] = _uniPhaseGensSlave[u].Next(_uniIncrsSlave[u][os][s], _modMatrixFMModulators[u][os][s] * applyLinearFM);
       }
   }
