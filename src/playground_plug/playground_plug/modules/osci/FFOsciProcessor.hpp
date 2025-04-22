@@ -93,11 +93,15 @@ class FFOsciProcessor final
     FFOsciOversampledUnisonArray const& uniOutputMaybeOversampled,
     std::array<FBFixedFloatArray, FFOsciUnisonMaxCount>& uniOutputNonOversampled);
 
-  void ProcessUniBlendAndSpreadToStereo(
+  void ProcessUniBlendToVoices(
+    int oversamplingTimes,
     FBFixedFloatArray const& uniBlendPlain,
+    std::array<float, FFOsciUnisonMaxCount> const& uniPositionsAbsHalfToHalf,
+    FFOsciOversampledUnisonArray& unisonOutputMaybeOversampled);
+
+  void ProcessUniSpreadToStereo(
     FBFixedFloatArray const& uniSpreadPlain,
     std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf,
-    std::array<float, FFOsciUnisonMaxCount> const& uniPositionsAbsHalfToHalf,
     std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniOutputNonOversampled,
     FBFixedFloatAudioArray& output);
 

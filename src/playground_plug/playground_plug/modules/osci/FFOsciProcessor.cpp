@@ -238,6 +238,24 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   }
 }
 
+// process voice blending
+// note: before modulation, so impacts inter-osci mod matrix
+void
+FFOsciProcessor::ProcessUniBlendToVoices(
+  int oversamplingTimes,
+  FBFixedFloatArray const& uniBlendPlain,
+  std::array<float, FFOsciUnisonMaxCount> const& uniPositionsAbsHalfToHalf,
+  FFOsciOversampledUnisonArray& unisonOutputMaybeOversampled)
+{
+  for (int u = 0; u < _voiceState.unisonCount; u++)
+    for (int os = 0; os < oversamplingTimes; os++)
+      for (int s = 0; s < FBFixedBlockSamples; s++)
+      {
+        float uniBlend = 1.0f - (uniPositionsAbsHalfToHalf[u] * 2.0f * (1.0f - uniBlendPlain[s]));
+        unisonOutputMaybeOversampled[u][os][s] *= uniBlend;
+      }
+}
+
 // not per unison voice pitch and frequency, not oversampled
 void
 FFOsciProcessor::ProcessBasePitchAndFreq(
@@ -312,23 +330,20 @@ FFOsciProcessor::ProcessUniFreqAndDelta(
       }
 }
 
-// stereo-spread the unison voices and apply blend
+// stereo-spread the unison voices
 void
-FFOsciProcessor::ProcessUniBlendAndSpreadToStereo(
-  FBFixedFloatArray const& uniBlendPlain,
+FFOsciProcessor::ProcessUniSpreadToStereo(
   FBFixedFloatArray const& uniSpreadPlain,
   std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf,
-  std::array<float, FFOsciUnisonMaxCount> const& uniPositionsAbsHalfToHalf,
   std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniOutputNonOversampled,
   FBFixedFloatAudioArray& output)
 {
   for (int u = 0; u < _voiceState.unisonCount; u++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      float uniBlend = 1.0f - (uniPositionsAbsHalfToHalf[u] * 2.0f * (1.0f - uniBlendPlain[s]));
       float uniPanning = 0.5f + uniPositionsMHalfToHalf[u] * uniSpreadPlain[s];
-      output[0][s] += (1.0f - uniPanning) * uniOutputNonOversampled[u][s] * uniBlend;
-      output[1][s] += uniPanning * uniOutputNonOversampled[u][s] * uniBlend;
+      output[0][s] += (1.0f - uniPanning) * uniOutputNonOversampled[u][s];
+      output[1][s] += uniPanning * uniOutputNonOversampled[u][s];
     }
 }
 
@@ -577,7 +592,7 @@ FFOsciProcessor::CalcOneSampleForFM(
     uniPitchOpBatch += fmToOp * uniPitchOpBatch;
     auto uniPitchOpFreq = 440.0f * xsimd::pow(xsimd::batch<float, FBXSIMDBatchType>(2.0f), (uniPitchOpBatch - 69.0f) / 12.0f);
     auto uniIncrOpBatch = uniPitchOpFreq / oversampledRate;
-    return xsimd::sin(_uniPhaseGensForFM[op][subUniBlock].Next(uniIncrOpBatch, 0.0f) * FBTwoPi);
+    return xsimd::sin(_uniPhaseGensForFM[op][subUniBlock].Next(uniIncrOpBatch, externalFMModulatorsForFMBatch) * FBTwoPi);
   }
   else
   {
@@ -820,6 +835,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     else
       ProcessFM<false>(state, oversamplingTimes, oversampledRate);
 
+  // apply unison blending
+  ProcessUniBlendToVoices(
+    oversamplingTimes, uniBlendPlain, 
+    uniPositionsAbsHalfToHalf, 
+    unisonOutputMaybeOversampled);
+
   // apply AM/RM
   ProcessModMatrixAMModulators(
     state.moduleSlot, 
@@ -832,9 +853,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   ProcessDownSampling(oversamplingTimes, unisonOutputMaybeOversampled, uniOutputNonOversampled);
 
   // stereo-spread the unison voices
-  ProcessUniBlendAndSpreadToStereo(
-    uniBlendPlain, uniSpreadPlain, uniPositionsMHalfToHalf, 
-    uniPositionsAbsHalfToHalf, uniOutputNonOversampled, output);
+  ProcessUniSpreadToStereo(
+    uniSpreadPlain, uniPositionsMHalfToHalf, 
+    uniOutputNonOversampled, output);
 
   FBFixedFloatArray gainPlain;
   FBFixedFloatArray gLFOToGainPlain;
