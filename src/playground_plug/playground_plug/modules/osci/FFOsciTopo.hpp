@@ -16,7 +16,7 @@ inline int constexpr FFOsciUnisonMaxCount = FBSIMDFloatCount * 4;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
 enum class FFOsciParam { 
-  Type, Gain, Coarse, Fine,
+  Type, Gain, Coarse, Fine, Sync,
   UnisonCount, UnisonOffset, UnisonRandom, UnisonDetune, UnisonSpread, UnisonBlend,
   BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
   BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
