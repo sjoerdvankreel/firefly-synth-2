@@ -113,21 +113,6 @@ FFMakeOsciTopo()
   fine.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFine);
   fine.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFine);
 
-  auto& sync = result->params[(int)FFOsciParam::Sync];
-  sync.acc = true;
-  sync.defaultText = "0";
-  sync.name = "Sync";
-  sync.slotCount = 1;
-  sync.unit = "Notes";
-  sync.id = "{FDFF47DB-C725-4320-92FB-F24E249131E6}";
-  sync.type = FBParamType::Linear;
-  sync.Linear().min = 0.0f;
-  sync.Linear().max = 36.0f;
-  auto selectSync = [](auto& module) { return &module.acc.sync; };
-  sync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSync);
-  sync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSync);
-  sync.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSync);
-
   auto& unisonCount = result->params[(int)FFOsciParam::UnisonCount];
   unisonCount.acc = false;
   unisonCount.defaultText = "1";
