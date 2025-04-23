@@ -43,7 +43,7 @@ FBPhaseWrap(float& p)
 inline bool
 FBPhaseWrap2(float& p)
 {
-  if (p < 1.0f)
+  if (p >= 0.0f && p < 1.0f)
     return false;
   p -= FBFastFloor(p);
   return true;
