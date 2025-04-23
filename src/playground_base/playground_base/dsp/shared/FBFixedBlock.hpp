@@ -16,6 +16,7 @@ public:
   T const& operator[](int i) const { return _data[i]; }
   std::array<T, FBFixedBlockSamples>& Data() { return _data; }
   std::array<T, FBFixedBlockSamples> const& Data() const { return _data; }
+  FBXSIMDFloatBatch LoadAligned(int offset) const { return FBLoadSIMDAligned(Data().data() + offset); }
 
   void Fill(T val) { _data.fill(val); }
   T const& Last() { return _data[FBFixedBlockSamples - 1]; }

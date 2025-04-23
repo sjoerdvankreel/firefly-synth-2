@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
@@ -20,6 +21,7 @@ struct FBLinearParam
   float NormalizedToPlainFast(float normalized) const;
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
+  FBXSIMDFloatBatch NormalizedToPlainFast(FBAccParamState const& normalized, int offset) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 };
@@ -44,6 +46,13 @@ inline float
 FBLinearParam::NormalizedToPlainFast(float normalized) const
 {
   return min + (max - min) * normalized;
+}
+
+// todo should drop all the non vector versions ?
+inline FBXSIMDFloatBatch 
+FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, int offset) const
+{
+  return min + (max - min) * normalized.CV().LoadAligned(offset);
 }
 
 inline int

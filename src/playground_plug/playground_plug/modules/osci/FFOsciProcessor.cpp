@@ -258,7 +258,7 @@ FFOsciProcessor::ProcessUniBlendToVoices(
 
 // not per unison voice pitch and frequency, not oversampled
 void
-FFOsciProcessor::ProcessBasePitchAndFreq(
+FFOsciProcessor::ProcessBasePitchAndFreqZZ(
   FBStaticModule const& topo, float sampleRate,
   FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
   FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq)
@@ -386,7 +386,7 @@ FFOsciProcessor::ProcessUniPitches(
 
 // per unison voice stacked external FM modulators, oversampled
 void
-FFOsciProcessor::ProcessModMatrixFMModulators(
+FFOsciProcessor::ProcessModMatrixFMModulatorsZZ(
   int moduleSlot,
   int oversamplingTimes,
   std::array<FFOsciDSPState, FFOsciCount> const& allOsciDSPStates,
@@ -785,17 +785,29 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& basicSawGainNorm = procParams.acc.basicSawGain[0].Voice()[voice];
   auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];  
 
-  // stacked FM modulators, oversampled per unison voice
-  ProcessModMatrixFMModulators(
-    state.moduleSlot,
-    oversamplingTimes,
-    procState->dsp.voice[voice].osci,
-    procState->dsp.voice[voice].osciMod.outputFMIndex);
+  for (int u = 0; u < _voiceState.unisonCount; u++)
+    for (int os = 0; os < oversamplingTimes; os++)
+      for (int offset = 0; offset < FBFixedBlockSamples; offset += FBSIMDFloatCount)
+      {
+        FBXSIMDFloatBatch modMatrixFMModulator = 0.0f;
+        for (int src = 0; src < state.moduleSlot; src++)
+          if (_voiceState.modSourceFMOn[src] && _voiceState.modSourceUnisonCount[src] > u)
+          {
+            int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+            auto const& fmModulatorBase = procState->dsp.voice[voice].osci[src].unisonOutputMaybeOversampled[u];
+            modMatrixFMModulator += 
+              fmModulatorBase[os].LoadAligned(offset) *
+              procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot].LoadAligned(offset);
+          }
 
-  // base pitch and freq without unison, not oversampled
-  FBFixedFloatArray baseFreq;
-  FBFixedFloatArray basePitch;
-  ProcessBasePitchAndFreq(topo, sampleRate, coarseNorm, fineNorm, basePitch, baseFreq);
+        FBXSIMDFloatBatch finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, offset);
+        FBXSIMDFloatBatch coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, offset);
+        auto basePitch = _voiceState.key + coarsePlain + finePlain;
+        auto baseFreq = FBPitchToFreq(basePitch);
+        _phaseGen.Next(baseFreq / sampleRate);
+
+
+      }
 
   // continuous unison params and positioning, not oversampled
   FBFixedFloatArray uniBlendPlain;
