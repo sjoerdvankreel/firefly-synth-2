@@ -12,14 +12,14 @@ class FFOsciMasterPhaseGenerator final
 public:
   FFOsciMasterPhaseGenerator() = default;
   explicit FFOsciMasterPhaseGenerator(float x) : _x(x) {}
-  float Next(float incr, bool& wrapped);
+  float Next(float incr, float fmModulator, bool& wrapped);
 };
 
 class FFOsciSlavePhaseGenerator final
 {
   float _x = 0.0f;
 public:
-  float Next(float incr, float fmModulator);
+  float Next(float incr);
   void Set(float p) { _x = p; }
   FFOsciSlavePhaseGenerator() = default;
   explicit FFOsciSlavePhaseGenerator(float x) : _x(x) {}
@@ -39,22 +39,24 @@ public:
 };
 
 inline float
-FFOsciMasterPhaseGenerator::Next(float incr, bool& wrapped)
+FFOsciMasterPhaseGenerator::Next(float incr, float fmModulator, bool& wrapped)
 {
   float y = _x;
   _x += incr;
   wrapped = FBPhaseWrap2(_x);
+  assert(0.0f <= _x && _x < 1.0f);
+  y += fmModulator;
+  FBPhaseWrap(y);
+  assert(0.0f <= y && y < 1.0f);
   return y;
 }
 
 inline float
-FFOsciSlavePhaseGenerator::Next(float incr, float fmModulator)
+FFOsciSlavePhaseGenerator::Next(float incr)
 {
   float y = _x;
   _x += incr;
   FBPhaseWrap(_x);
-  y += fmModulator;
-  FBPhaseWrap(y);
   return y;
 }
 
