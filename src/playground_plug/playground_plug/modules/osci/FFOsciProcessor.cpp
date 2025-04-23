@@ -208,8 +208,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     float random = _voiceState.unisonRandomPlain;
     float unisonPhase = u * _voiceState.unisonOffsetPlain / _voiceState.unisonCount;
     unisonPhaseInit[u] = ((1.0f - random) + random * _prng.Next()) * unisonPhase;
-    _uniPhaseGensSlave[u] = FFOsciSlavePhaseGenerator(unisonPhaseInit[u]);
-    _uniPhaseGensMaster[u] = FFOsciMasterPhaseGenerator(unisonPhaseInit[u]);
+    _uniPhaseGens[u] = FFOsciPhaseGenerator(unisonPhaseInit[u]);
   }
 
   // fm osci has it's own phase generators
@@ -260,17 +259,15 @@ FFOsciProcessor::ProcessUniBlendToVoices(
 
 // not per unison voice pitch and frequency, not oversampled
 void
-FFOsciProcessor::ProcessBasePitchFreqAndSync(
+FFOsciProcessor::ProcessBasePitchAndFreq(
   FBStaticModule const& topo, float sampleRate,
   FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
-  FBAccParamState const& syncNotesNorm, FBFixedFloatArray& basePitch,
-  FBFixedFloatArray& baseFreq, FBFixedFloatArray& syncNotesPlain)
+  FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq)
 {
   FBFixedFloatArray finePlain;
   FBFixedFloatArray coarsePlain;
   topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, finePlain);
   topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, coarsePlain);
-  topo.NormalizedToLinearFast(FFOsciParam::SyncNotes, syncNotesNorm, syncNotesPlain);
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto finePlainBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(finePlain.Data().data() + s);
@@ -326,18 +323,11 @@ FFOsciProcessor::ProcessUniFreqAndDelta(
     for (int os = 0; os < oversamplingTimes; os++)
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       {
-        auto pitchBatchMaster = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_uniPitchesMaster[u][os].Data().data() + s);
-        auto freqBatchMaster = FBPitchToFreq(pitchBatchMaster);
-        auto incrBatchMaster = freqBatchMaster / oversampledRate;
-        freqBatchMaster.store_aligned(_uniFreqsMaster[u][os].Data().data() + s);
-        incrBatchMaster.store_aligned(_uniIncrsMaster[u][os].Data().data() + s);
-
-        // todo conditional
-        auto pitchBatchSlave = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_uniPitchesSlave[u][os].Data().data() + s);
-        auto freqBatchSlave = FBPitchToFreq(pitchBatchSlave);
-        auto incrBatchSlave = freqBatchSlave / oversampledRate;
-        freqBatchSlave.store_aligned(_uniFreqsSlave[u][os].Data().data() + s);
-        incrBatchSlave.store_aligned(_uniIncrsSlave[u][os].Data().data() + s);
+        auto pitchBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_uniPitches[u][os].Data().data() + s);
+        auto freqBatch = FBPitchToFreq(pitchBatch);
+        auto incrBatch = freqBatch / oversampledRate;
+        freqBatch.store_aligned(_uniFreqs[u][os].Data().data() + s);
+        incrBatch.store_aligned(_uniIncrs[u][os].Data().data() + s);
       }
 }
 
@@ -364,22 +354,14 @@ void
 FFOsciProcessor::ProcessUniPhasesNonFM(
   int oversamplingTimes)
 {
-  bool wrapped;
   float applyLinearFM = _voiceState.externalFMExp ? 0.0f : 1.0f;
   for (int u = 0; u < _voiceState.unisonCount; u++)
   {
     int oversampledIndex = 0;
     for (int os = 0; os < oversamplingTimes; os++)
       for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
-      {
-        // todo how to make it fast if hardsync off
-        // todo the crossover thing
-        // todo the subsample thing
-        _uniPhasesMaster[u][os][s] = _uniPhaseGensMaster[u].Next(_uniIncrsMaster[u][os][s], _modMatrixFMModulators[u][os][s] * applyLinearFM, wrapped);
-        if (wrapped)
-          _uniPhaseGensSlave[u].Set(0.0f); // TODO
-        _uniPhasesSlave[u][os][s] = _uniPhaseGensSlave[u].Next(_uniIncrsSlave[u][os][s]);
-      }
+        _uniPhases[u][os][s] = _uniPhaseGens[u].Next(
+          _uniIncrs[u][os][s], _modMatrixFMModulators[u][os][s] * applyLinearFM);
   }
 }
 
@@ -389,7 +371,6 @@ void
 FFOsciProcessor::ProcessUniPitches(
   int oversamplingTimes,
   FBFixedFloatArray const& basePitch,
-  FBFixedFloatArray const& syncNotesPlain,
   FBFixedFloatArray const& uniDetunePlain,
   std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf)
 {
@@ -399,9 +380,8 @@ FFOsciProcessor::ProcessUniPitches(
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
         int nosIndex = (os * FBFixedBlockSamples + s) / oversamplingTimes;
-        _uniPitchesMaster[u][os][s] = basePitch[nosIndex] + uniPositionsMHalfToHalf[u] * uniDetunePlain[nosIndex];
-        _uniPitchesMaster[u][os][s] += _modMatrixFMModulators[u][os][s] * _uniPitchesMaster[u][os][s] * applyExpoFM;
-        _uniPitchesSlave[u][os][s] = _uniPitchesMaster[u][os][s] + syncNotesPlain[nosIndex];
+        _uniPitches[u][os][s] = basePitch[nosIndex] + uniPositionsMHalfToHalf[u] * uniDetunePlain[nosIndex];
+        _uniPitches[u][os][s] += _modMatrixFMModulators[u][os][s] * _uniPitches[u][os][s] * applyExpoFM;
       }
 }
 
@@ -523,22 +503,22 @@ FFOsciProcessor::ProcessBasic(
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          unisonOutputMaybeOversampled[u][os][s] += GenerateSin(_uniPhasesSlave[u][os][s]) * basicSinGainPlain[s];
+          unisonOutputMaybeOversampled[u][os][s] += GenerateSin(_uniPhases[u][os][s]) * basicSinGainPlain[s];
   if (_voiceState.basicSawOn)
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          unisonOutputMaybeOversampled[u][os][s] += GenerateSaw(_uniPhasesSlave[u][os][s], _uniIncrsSlave[u][os][s]) * basicSawGainPlain[s];
+          unisonOutputMaybeOversampled[u][os][s] += GenerateSaw(_uniPhases[u][os][s], _uniIncrs[u][os][s]) * basicSawGainPlain[s];
   if (_voiceState.basicTriOn)
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          unisonOutputMaybeOversampled[u][os][s] += GenerateTri(_uniPhasesSlave[u][os][s], _uniIncrsSlave[u][os][s]) * basicTriGainPlain[s];
+          unisonOutputMaybeOversampled[u][os][s] += GenerateTri(_uniPhases[u][os][s], _uniIncrs[u][os][s]) * basicTriGainPlain[s];
   if (_voiceState.basicSqrOn)
     for (int u = 0; u < _voiceState.unisonCount; u++)
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          unisonOutputMaybeOversampled[u][os][s] += GenerateSqr(_uniPhasesSlave[u][os][s], _uniIncrsSlave[u][os][s], basicSqrPWPlain[s]) * basicSqrGainPlain[s];
+          unisonOutputMaybeOversampled[u][os][s] += GenerateSqr(_uniPhases[u][os][s], _uniIncrs[u][os][s], basicSqrPWPlain[s]) * basicSqrGainPlain[s];
 }
 
 // vectorization in the (over)sample dimension, 
@@ -568,8 +548,8 @@ FFOsciProcessor::ProcessDSF(
     for (int os = 0; os < oversamplingTimes; os++)
       for (int s = 0; s < FBFixedBlockSamples; s++)
       {
-        dsfDistFreqs[u][os][s] = static_cast<float>(_voiceState.dsfDistance) * _uniFreqsSlave[u][os][s];
-        dsfMaxOvertones[u][os][s] = (sampleRate * 0.5f - _uniFreqsSlave[u][os][s]) / dsfDistFreqs[u][os][s];
+        dsfDistFreqs[u][os][s] = static_cast<float>(_voiceState.dsfDistance) * _uniFreqs[u][os][s];
+        dsfMaxOvertones[u][os][s] = (sampleRate * 0.5f - _uniFreqs[u][os][s]) / dsfDistFreqs[u][os][s];
       }
 
   if (_voiceState.dsfMode == FFOsciDSFMode::Overtones)
@@ -577,8 +557,8 @@ FFOsciProcessor::ProcessDSF(
       for (int os = 0; os < oversamplingTimes; os++)
         for(int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
           GenerateDSFOvertones(
-            _uniPhasesSlave[u][os].Data().data() + s,
-            _uniFreqsSlave[u][os].Data().data() + s,
+            _uniPhases[u][os].Data().data() + s, 
+            _uniFreqs[u][os].Data().data() + s,
             dsfDecayPlain.Data().data() + s,
             dsfDistFreqs[u][os].Data().data() + s,
             dsfMaxOvertones[u][os].Data().data() + s,
@@ -589,8 +569,8 @@ FFOsciProcessor::ProcessDSF(
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
           GenerateDSFBandwidth(
-            _uniPhasesSlave[u][os].Data().data() + s,
-            _uniFreqsSlave[u][os].Data().data() + s,
+            _uniPhases[u][os].Data().data() + s,
+            _uniFreqs[u][os].Data().data() + s,
             dsfDecayPlain.Data().data() + s,
             dsfDistFreqs[u][os].Data().data() + s,
             dsfMaxOvertones[u][os].Data().data() + s,
@@ -678,7 +658,7 @@ FFOsciProcessor::ProcessFM(
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
         {
-          float op3Pitch = _uniPitchesSlave[u][os][s];
+          float op3Pitch = _uniPitches[u][os][s];
           float op2Pitch = op3Pitch / fmRatioPlain[1][s];
           float op1Pitch = op2Pitch / fmRatioPlain[0][s];
           _uniPitchesForFM[0][os][s][u] = op1Pitch;
@@ -700,7 +680,7 @@ FFOsciProcessor::ProcessFM(
       for (int os = 0; os < oversamplingTimes; os++)
         for (int s = 0; s < FBFixedBlockSamples; s++)
         {
-          float op3Freq = _uniFreqsSlave[u][os][s];
+          float op3Freq = _uniFreqs[u][os][s];
           float op2Freq = op3Freq / fmRatioPlain[1][s];
           float op1Freq = op2Freq / fmRatioPlain[0][s];
           _uniIncrsForFM[0][os][s][u] = op1Freq / oversampledRate;
@@ -817,8 +797,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   // base pitch and freq without unison, not oversampled
   FBFixedFloatArray baseFreq;
   FBFixedFloatArray basePitch;
-  FBFixedFloatArray syncNotesPlain;
-  ProcessBasePitchFreqAndSync(topo, sampleRate, coarseNorm, fineNorm, syncNotesNorm, basePitch, baseFreq, syncNotesPlain);
+  ProcessBasePitchAndFreq(topo, sampleRate, coarseNorm, fineNorm, basePitch, baseFreq);
 
   // continuous unison params and positioning, not oversampled
   FBFixedFloatArray uniBlendPlain;
@@ -832,7 +811,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   // per unison voice pitch, oversampled
   // note expo fm modulates pitch not phase
-  ProcessUniPitches(oversamplingTimes, basePitch, syncNotesPlain, uniDetunePlain, uniPositionsMHalfToHalf);
+  ProcessUniPitches(oversamplingTimes, basePitch, uniDetunePlain, uniPositionsMHalfToHalf);
 
   // per unison voice freq and delta unless dedicated 
   // fm osci of exponential type, in which case osci 

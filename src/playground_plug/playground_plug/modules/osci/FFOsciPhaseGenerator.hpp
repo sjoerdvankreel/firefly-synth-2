@@ -6,23 +6,13 @@
 #include <xsimd/xsimd.hpp>
 #include <cmath>
 
-class FFOsciMasterPhaseGenerator final
+class FFOsciPhaseGenerator final
 {
   float _x = 0.0f;
 public:
-  FFOsciMasterPhaseGenerator() = default;
-  explicit FFOsciMasterPhaseGenerator(float x) : _x(x) {}
-  float Next(float incr, float fmModulator, bool& wrapped);
-};
-
-class FFOsciSlavePhaseGenerator final
-{
-  float _x = 0.0f;
-public:
-  float Next(float incr);
-  void Set(float p) { _x = p; }
-  FFOsciSlavePhaseGenerator() = default;
-  explicit FFOsciSlavePhaseGenerator(float x) : _x(x) {}
+  FFOsciPhaseGenerator() = default;
+  explicit FFOsciPhaseGenerator(float x) : _x(x) {}
+  float Next(float incr, float fmModulator);
 };
 
 // vectorize over unison dimension, it's 
@@ -39,24 +29,15 @@ public:
 };
 
 inline float
-FFOsciMasterPhaseGenerator::Next(float incr, float fmModulator, bool& wrapped)
-{
-  float y = _x;
-  _x += incr;
-  wrapped = FBPhaseWrap2(_x);
-  assert(0.0f <= _x && _x < 1.0f);
-  y += fmModulator;
-  FBPhaseWrap(y);
-  assert(0.0f <= y && y < 1.0f);
-  return y;
-}
-
-inline float
-FFOsciSlavePhaseGenerator::Next(float incr)
+FFOsciPhaseGenerator::Next(float incr, float fmModulator)
 {
   float y = _x;
   _x += incr;
   FBPhaseWrap(_x);
+  assert(0.0f <= _x && _x < 1.0f);
+  y += fmModulator;
+  FBPhaseWrap(y);
+  assert(0.0f <= y && y < 1.0f);
   return y;
 }
 

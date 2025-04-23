@@ -60,17 +60,12 @@ class FFOsciProcessor final
   FBTrackingPhaseGenerator _phaseGen = {};
   juce::dsp::Oversampling<float> _oversampling;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
-  std::array<FFOsciSlavePhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGensSlave = {};
-  std::array<FFOsciMasterPhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGensMaster = {};
+  std::array<FFOsciPhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGens = {};
   
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqsSlave = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqsMaster = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrsSlave = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrsMaster = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhasesSlave = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhasesMaster = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPitchesSlave = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPitchesMaster = {};
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqs = {};
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrs = {};
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhases = {};
+  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPitches = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _modMatrixFMModulators = {};
 
   alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<FFOsciFMPhasesGenerator> _uniPhaseGensForFM = {};
@@ -112,16 +107,14 @@ class FFOsciProcessor final
     std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniOutputNonOversampled,
     FBFixedFloatAudioArray& output);
 
-  void ProcessBasePitchFreqAndSync(
+  void ProcessBasePitchAndFreq(
     FBStaticModule const& topo, float sampleRate,
     FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
-    FBAccParamState const& syncNotesNorm, FBFixedFloatArray& basePitch,
-    FBFixedFloatArray& baseFreq, FBFixedFloatArray& syncNotesPlain);
+    FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq);
 
   void ProcessUniPitches(
     int oversamplingTimes,
     FBFixedFloatArray const& basePitch,
-    FBFixedFloatArray const& syncNotesPlain,
     FBFixedFloatArray const& uniDetunePlain,
     std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf);
 
