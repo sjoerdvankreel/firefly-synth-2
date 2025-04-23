@@ -113,32 +113,20 @@ FFMakeOsciTopo()
   fine.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFine);
   fine.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFine);
 
-  auto& syncOn = result->params[(int)FFOsciParam::SyncOn];
-  syncOn.acc = false;
-  syncOn.defaultText = "Off";
-  syncOn.name = "Sync On";
-  syncOn.slotCount = 1;
-  syncOn.id = "{3D00F6C9-8383-43CD-88B7-F702F5BA921D}";
-  syncOn.type = FBParamType::Boolean;
-  auto selectSyncOn = [](auto& module) { return &module.block.syncOn; };
-  syncOn.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSyncOn);
-  syncOn.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectSyncOn);
-  syncOn.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSyncOn);
-
-  auto& syncNotes = result->params[(int)FFOsciParam::SyncNotes];
-  syncNotes.acc = true;
-  syncNotes.defaultText = "0";
-  syncNotes.name = "Sync";
-  syncNotes.slotCount = 1;
-  syncNotes.unit = "Notes";
-  syncNotes.id = "{FDFF47DB-C725-4320-92FB-F24E249131E6}";
-  syncNotes.type = FBParamType::Linear;
-  syncNotes.Linear().min = 0.0f;
-  syncNotes.Linear().max = 36.0f;
-  auto selectSyncNotes = [](auto& module) { return &module.acc.syncNotes; };
-  syncNotes.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSyncNotes);
-  syncNotes.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSyncNotes);
-  syncNotes.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSyncNotes);
+  auto& sync = result->params[(int)FFOsciParam::Sync];
+  sync.acc = true;
+  sync.defaultText = "0";
+  sync.name = "Sync";
+  sync.slotCount = 1;
+  sync.unit = "Notes";
+  sync.id = "{FDFF47DB-C725-4320-92FB-F24E249131E6}";
+  sync.type = FBParamType::Linear;
+  sync.Linear().min = 0.0f;
+  sync.Linear().max = 36.0f;
+  auto selectSync = [](auto& module) { return &module.acc.sync; };
+  sync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectSync);
+  sync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectSync);
+  sync.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectSync);
 
   auto& unisonCount = result->params[(int)FFOsciParam::UnisonCount];
   unisonCount.acc = false;

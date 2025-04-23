@@ -25,8 +25,6 @@ struct FFOsciVoiceState final
   float key = {};
   FFOsciType type = {};
 
-  bool syncOn = {};
-
   bool basicSinOn = {};
   bool basicSawOn = {};
   bool basicTriOn = {};

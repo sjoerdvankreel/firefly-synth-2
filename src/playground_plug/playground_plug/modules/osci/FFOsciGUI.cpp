@@ -20,7 +20,7 @@ static Component*
 MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Type, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
@@ -31,14 +31,12 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, coarse));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, coarse, Slider::SliderStyle::RotaryVerticalDrag));
   auto fine = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Fine, 0 });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fine));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fine, Slider::SliderStyle::RotaryVerticalDrag));
-  auto syncOn = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::SyncOn, 0 });
-  auto syncNotes = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::SyncNotes, 0 });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, syncNotes));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, syncOn));
-  grid->Add(1, 4, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, syncNotes, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ 0, 0, 2, 6 });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fine));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fine, Slider::SliderStyle::RotaryVerticalDrag));
+  auto sync = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Sync, 0 });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, sync, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 2, 5 });
   return grid;
 }
 
