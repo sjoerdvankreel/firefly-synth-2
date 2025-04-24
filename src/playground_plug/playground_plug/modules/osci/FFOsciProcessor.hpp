@@ -105,7 +105,7 @@ class FFOsciProcessor final
     std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniOutputNonOversampled,
     FBFixedFloatAudioArray& output);
 
-  void ProcessBasePitchAndFreqZZ(
+  void ProcessBasePitchAndFreq(
     FBStaticModule const& topo, float sampleRate,
     FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
     FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq);
@@ -122,7 +122,7 @@ class FFOsciProcessor final
     std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputAMMix,
     std::array<FFOsciDSPState, FFOsciCount>& allOsciDSPStates);
 
-  void ProcessModMatrixFMModulatorsZZ(
+  void ProcessModMatrixFMModulators(
     int moduleSlot,
     int oversamplingTimes,
     std::array<FFOsciDSPState, FFOsciCount> const& allOsciDSPStates,

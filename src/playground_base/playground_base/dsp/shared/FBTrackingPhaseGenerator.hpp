@@ -17,8 +17,7 @@ public:
   explicit FBTrackingPhaseGenerator(float x) : _x(x) {}
   
   float Next(float incr);
-  void Next(FBFixedFloatArray const& incr); // todo drop ?
-  FBXSIMDFloatBatch Next(FBXSIMDFloatBatch incr);
+  void Next(FBFixedFloatArray const& incr);
   int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
   int PositionSamplesUpToFirstCycle() const { return _positionSamplesUpToFirstCycle; }
 };
@@ -48,15 +47,4 @@ FBTrackingPhaseGenerator::Next(FBFixedFloatArray const& incr)
 {
   for (int s = 0; s < FBFixedBlockSamples; s++)
     Next(incr[s]);
-}
-
-inline FBXSIMDFloatBatch 
-FBTrackingPhaseGenerator::Next(FBXSIMDFloatBatch incr)
-{
-  alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> x;
-  alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> y;
-  incr.store_aligned(x.data());
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-    y[i] = Next(x[i]);
-  return FBLoadSIMDAligned(y.data());
 }

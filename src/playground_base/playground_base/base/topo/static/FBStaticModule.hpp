@@ -49,11 +49,8 @@ struct FBStaticModule final
   template <class ParamIndex>
   int NormalizedToBarsSamplesFast(ParamIndex index, float normalized, float sampleRate, float bpm) const;
 
-  // todo drop non vector?
   template <class ParamIndex>
   float NormalizedToLinearFast(ParamIndex index, float normalized) const;
-  template <class ParamIndex>
-  FBXSIMDFloatBatch NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, int offset) const;
   template <class ParamIndex>
   void NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   template <class ParamIndex>
@@ -138,13 +135,6 @@ inline float
 FBStaticModule::NormalizedToLinearFast(ParamIndex index, float normalized) const
 {
   return params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized);
-}
-
-template <class ParamIndex>
-inline FBXSIMDFloatBatch 
-FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, int offset) const
-{
-  return params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized, offset);
 }
 
 template <class ParamIndex>
