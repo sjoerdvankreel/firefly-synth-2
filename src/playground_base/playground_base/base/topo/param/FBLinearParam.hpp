@@ -21,7 +21,9 @@ struct FBLinearParam
   float NormalizedToPlainFast(float normalized) const;
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
-  FBXSIMDFloatBatch NormalizedToPlainFast(FBAccParamState const& normalized, int offset) const;
+  FBXSIMDBatch<float> NormalizedToPlainFast(FBAccParamState const& normalized, int offset) const;
+
+  // todo drop?
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 };
@@ -49,7 +51,7 @@ FBLinearParam::NormalizedToPlainFast(float normalized) const
 }
 
 // todo should drop all the non vector versions ?
-inline FBXSIMDFloatBatch 
+inline FBXSIMDBatch<float>
 FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, int offset) const
 {
   return min + (max - min) * normalized.CV().LoadAligned(offset);

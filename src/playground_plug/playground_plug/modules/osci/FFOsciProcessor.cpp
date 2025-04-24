@@ -282,7 +282,7 @@ FFOsciProcessor::ProcessBasePitchAndFreqZZ(
 
 // continuous unison params and position, not oversampled
 void
-FFOsciProcessor::ProcessUniBlendDetuneSpreadAndPos(
+FFOsciProcessor::ProcessUniBlendDetuneSpreadAndPosZZ(
   FBStaticModule const& topo,
   FBAccParamState const& uniBlendNorm,
   FBAccParamState const& uniDetuneNorm,
@@ -785,11 +785,40 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& basicSawGainNorm = procParams.acc.basicSawGain[0].Voice()[voice];
   auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];  
 
+
+  int x = xsimd::batch<float>::;
+
+  FBFixedFloatArray uniBlendPlain(0.0f);
+  FBFixedFloatArray uniDetunePlain(0.0f);
+  FBFixedFloatArray uniSpreadPlain(0.0f);
+  alignas(FBSIMDAlign) std::array<float, FFOsciUnisonMaxCount> uniPositionsMHalfToHalf;
+  alignas(FBSIMDAlign) std::array<float, FFOsciUnisonMaxCount> uniPositionsAbsHalfToHalf;
+  if (_voiceState.unisonCount == 1)
+    for (int offset = 0; offset < FBFixedBlockSamples; offset += FBSIMDFloatCount)
+    {
+      uniBlendPlain.Fill(0.0f);
+      uniDetunePlain.Fill(0.0f);
+      uniSpreadPlain.Fill(0.0f);
+      uniPositionsMHalfToHalf[0] = 0.0f;
+      uniPositionsAbsHalfToHalf[0] = 0.0f;
+    }
+  else
+  {
+    topo.NormalizedToIdentityFast(FFOsciParam::UnisonBlend, uniBlendNorm, uniBlendPlain);
+    topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, uniDetuneNorm, uniDetunePlain);
+    topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, uniSpreadNorm, uniSpreadPlain);
+    for (int u = 0; u < _voiceState.unisonCount; u++)
+    {
+      uniPositionsMHalfToHalf[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
+      uniPositionsAbsHalfToHalf[u] = std::fabs(uniPositionsMHalfToHalf[u]);
+    }
+  }
+
   for (int u = 0; u < _voiceState.unisonCount; u++)
     for (int os = 0; os < oversamplingTimes; os++)
       for (int offset = 0; offset < FBFixedBlockSamples; offset += FBSIMDFloatCount)
       {
-        FBXSIMDFloatBatch modMatrixFMModulator = 0.0f;
+        FBXSIMDBatch<float> modMatrixFMModulator = 0.0f;
         for (int src = 0; src < state.moduleSlot; src++)
           if (_voiceState.modSourceFMOn[src] && _voiceState.modSourceUnisonCount[src] > u)
           {
@@ -800,11 +829,29 @@ FFOsciProcessor::Process(FBModuleProcState& state)
               procState->dsp.voice[voice].osciMod.outputFMIndex[modSlot].LoadAligned(offset);
           }
 
-        FBXSIMDFloatBatch finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, offset);
-        FBXSIMDFloatBatch coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, offset);
+        FBXSIMDBatch<float> finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, offset);
+        FBXSIMDBatch<float> coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, offset);
         auto basePitch = _voiceState.key + coarsePlain + finePlain;
         auto baseFreq = FBPitchToFreq(basePitch);
         _phaseGen.Next(baseFreq / sampleRate);
+
+        if (_voiceState.unisonCount == 1)
+        {
+          uniBlendPlain.Fill(0.0f);
+          uniDetunePlain.Fill(0.0f);
+          uniSpreadPlain.Fill(0.0f);
+          uniPositionsMHalfToHalf[0] = 0.0f;
+          uniPositionsAbsHalfToHalf[0] = 0.0f;
+          return;
+        }
+        topo.NormalizedToIdentityFast(FFOsciParam::UnisonBlend, uniBlendNorm, uniBlendPlain);
+        topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, uniDetuneNorm, uniDetunePlain);
+        topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, uniSpreadNorm, uniSpreadPlain);
+        for (int u = 0; u < _voiceState.unisonCount; u++)
+        {
+          uniPositionsMHalfToHalf[u] = u / (_voiceState.unisonCount - 1.0f) - 0.5f;
+          uniPositionsAbsHalfToHalf[u] = std::fabs(uniPositionsMHalfToHalf[u]);
+        }
 
 
       }
