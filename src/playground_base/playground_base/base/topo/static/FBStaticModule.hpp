@@ -53,7 +53,7 @@ struct FBStaticModule final
   template <class ParamIndex>
   float NormalizedToLinearFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
-  FBXSIMDBatch<float> NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, int offset) const;
+  FBXSIMDFloatBatch NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, int offset) const;
   template <class ParamIndex>
   void NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   template <class ParamIndex>
@@ -141,7 +141,7 @@ FBStaticModule::NormalizedToLinearFast(ParamIndex index, float normalized) const
 }
 
 template <class ParamIndex>
-inline FBXSIMDBatch<float>
+inline FBXSIMDFloatBatch 
 FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, int offset) const
 {
   return params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized, offset);

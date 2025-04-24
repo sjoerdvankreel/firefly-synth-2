@@ -128,7 +128,7 @@ class FFOsciProcessor final
     std::array<FFOsciDSPState, FFOsciCount> const& allOsciDSPStates,
     std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputFMIndex);
 
-  void ProcessUniBlendDetuneSpreadAndPosZZ(
+  void ProcessUniBlendDetuneSpreadAndPos(
     FBStaticModule const& topo,
     FBAccParamState const& uniBlendNorm,
     FBAccParamState const& uniDetuneNorm,

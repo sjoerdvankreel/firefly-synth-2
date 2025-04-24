@@ -18,7 +18,7 @@ public:
   
   float Next(float incr);
   void Next(FBFixedFloatArray const& incr); // todo drop ?
-  FBXSIMDBatch<float> Next(FBXSIMDBatch<float> incr);
+  FBXSIMDFloatBatch Next(FBXSIMDFloatBatch incr);
   int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
   int PositionSamplesUpToFirstCycle() const { return _positionSamplesUpToFirstCycle; }
 };
@@ -50,8 +50,8 @@ FBTrackingPhaseGenerator::Next(FBFixedFloatArray const& incr)
     Next(incr[s]);
 }
 
-inline FBXSIMDBatch<float>
-FBTrackingPhaseGenerator::Next(FBXSIMDBatch<float> incr)
+inline FBXSIMDFloatBatch 
+FBTrackingPhaseGenerator::Next(FBXSIMDFloatBatch incr)
 {
   alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> x;
   alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> y;
