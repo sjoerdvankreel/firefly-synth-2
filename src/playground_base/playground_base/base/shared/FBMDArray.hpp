@@ -2,6 +2,7 @@
 
 #include <array>
 
+// todo drop
 template <class T, int D1>
 using FBMDArray1 = std::array<T, D1>;
 template <class T, int D1, int D2>

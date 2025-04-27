@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
@@ -19,9 +20,9 @@ class alignas(FBSIMDAlign) FFOsciModDSPState final
 public:
   FFOsciModDSPState();
   ~FFOsciModDSPState();
-  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputAMMix = {};
-  std::array<FBFixedFloatArray, FFOsciModSlotCount> outputFMIndex = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciModDSPState);
+  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciModSlotCount> outputAMMix = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciModSlotCount> outputFMIndex = {};
 };
 
 template <class TVoiceBlock>

@@ -52,6 +52,10 @@ struct FBStaticModule final
   template <class ParamIndex>
   float NormalizedToLinearFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
+  FBSIMDVector<float> NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, int pos) const;
+
+  // todo drop ?
+  template <class ParamIndex>
   void NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   template <class ParamIndex>
   void NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
@@ -135,6 +139,13 @@ inline float
 FBStaticModule::NormalizedToLinearFast(ParamIndex index, float normalized) const
 {
   return params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized);
+}
+
+template <class ParamIndex>
+inline FBSIMDVector<float> 
+FBStaticModule::NormalizedToLinearFast(ParamIndex index, FBAccParamState const& normalized, int pos) const
+{
+  return params[static_cast<int>(index)].Linear().NormalizedToPlainFast(normalized, pos);
 }
 
 template <class ParamIndex>

@@ -60,6 +60,7 @@ class FFOsciProcessor final
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
   std::array<FFOsciPhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGens = {};
   
+  // todo hope to drop all this stuff
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqs = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrs = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhases = {};

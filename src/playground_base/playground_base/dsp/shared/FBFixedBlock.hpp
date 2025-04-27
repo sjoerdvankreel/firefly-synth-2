@@ -5,6 +5,7 @@
 
 #include <array>
 
+// TODO drop
 template <class T>
 class alignas(FBSIMDAlign) FBFixedArray
 {

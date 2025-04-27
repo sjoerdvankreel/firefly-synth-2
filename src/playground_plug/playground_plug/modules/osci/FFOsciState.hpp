@@ -3,6 +3,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBMDArray.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
@@ -15,6 +16,8 @@ class FFOsciProcessor;
 
 inline int constexpr FFOsciOverSamplingFactor = 2;
 inline int constexpr FFOsciOverSamplingTimes = 1 << FFOsciOverSamplingFactor;
+
+// todo drop the specific typedefs
 typedef FBMDArray2< FBFixedFloatArray, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> FFOsciOversampledUnisonArray;
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
@@ -25,8 +28,8 @@ class alignas(FBSIMDAlign) FFOsciDSPState final
 public:
   FFOsciDSPState();
   ~FFOsciDSPState();
-  FBFixedFloatAudioArray output = {};
-  FFOsciOversampledUnisonArray unisonOutputMaybeOversampled = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBSIMDArray3<float, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> voiceOutput = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 

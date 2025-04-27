@@ -2,6 +2,8 @@
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
+
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
 #include <playground_base/base/state/proc/FBAccParamState.hpp>
 
@@ -20,6 +22,9 @@ struct FBLinearParam
   float NormalizedToPlainFast(float normalized) const;
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
+  FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
+
+  // todo drop ?
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 };
@@ -44,6 +49,12 @@ inline float
 FBLinearParam::NormalizedToPlainFast(float normalized) const
 {
   return min + (max - min) * normalized;
+}
+
+inline FBSIMDVector<float>
+FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
+{
+  return min + (max - min) * FBSIMDVector<float>::load_aligned(normalized.CV().Data().data() + pos);
 }
 
 inline int

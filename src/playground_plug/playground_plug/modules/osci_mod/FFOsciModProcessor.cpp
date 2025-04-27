@@ -33,16 +33,20 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   // for now just copy over the stream
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
+#if 0
     if (_voiceState.amMode[i] != FFOsciModAMMode::Off)
     {
       auto const& amMixNorm = procParams.acc.amMix[i].Voice()[voice];
       topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, outputAMMix[i]);
+
     }
     if (_voiceState.fmOn[i])
     {
       auto const& fmIndexNorm = procParams.acc.fmIndex[i].Voice()[voice];
       topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, outputFMIndex[i]);
     }
+#endif
+    assert(0); // TODO
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

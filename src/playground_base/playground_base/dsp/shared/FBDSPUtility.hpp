@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/topo/param/FBBarsItem.hpp>
 #include <xsimd/xsimd.hpp>
 
@@ -74,10 +75,8 @@ FBPitchToFreq(float pitch)
   return 440.0f * std::pow(2.0f, (pitch - 69.0f) / 12.0f);
 }
 
-inline xsimd::batch<float, FBXSIMDBatchType>
-FBPitchToFreq(xsimd::batch<float, FBXSIMDBatchType> pitch)
+inline FBSIMDVector<float>
+FBPitchToFreq(FBSIMDVector<float> pitch)
 {
-  auto two = xsimd::batch<float, FBXSIMDBatchType>(2.0f);
-  auto exp = (pitch - 69.0f) / 12.0f;
-  return 440.0f * xsimd::pow(two, exp);
+  return 440.0f * xsimd::pow(FBSIMDVector<float>(2.0f), (pitch - 69.0f) / 12.0f);
 }
