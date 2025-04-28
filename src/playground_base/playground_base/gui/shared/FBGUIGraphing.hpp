@@ -183,7 +183,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int seriesInde
   } else {
     assert(renderData.voiceExchangeSelector != nullptr);
     if constexpr (Audio)
-      assert(renderData.voiceAudioOutputSelector != nullptr);
+      assert(renderData.voiceAudioOutputSelector != nullptr || renderData.voiceAudioOutputSelector2 != nullptr);
     else
       assert(renderData.voiceCVOutputSelector != nullptr);
   }

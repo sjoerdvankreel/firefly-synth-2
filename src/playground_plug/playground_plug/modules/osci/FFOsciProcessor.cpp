@@ -810,9 +810,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     auto baseFreq = FBPitchToFreq(pitch);
     basePitchPlain.Store(s, pitch);
     baseFreqPlain.Store(s, baseFreq);
-    uniBlendPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::UnisonBlend, uniBlendNorm, s));
-    uniDetunePlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::UnisonDetune, uniDetuneNorm, s));
-    uniSpreadPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::UnisonSpread, uniSpreadNorm, s));
+    uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UnisonBlend, uniBlendNorm, s));
+    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UnisonDetune, uniDetuneNorm, s));
+    uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UnisonSpread, uniSpreadNorm, s));
     _phaseGen.Next(baseFreq / sampleRate);
   }
 
