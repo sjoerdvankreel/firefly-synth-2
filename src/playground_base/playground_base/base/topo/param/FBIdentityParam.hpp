@@ -16,6 +16,7 @@ struct FBIdentityParam
 
   float NormalizedToPlainFast(float normalized) const;
   double NormalizedToPlainFast(double normalized) const;
+  FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 };
@@ -40,6 +41,12 @@ inline float
 FBIdentityParam::NormalizedToPlainFast(float normalized) const
 {
   return normalized;
+}
+
+inline FBSIMDVector<float> 
+FBIdentityParam::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
+{
+  return FBSIMDVector<float>::load_aligned(normalized.CV().Data().data() + pos);
 }
 
 inline double

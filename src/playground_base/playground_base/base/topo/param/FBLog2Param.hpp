@@ -23,6 +23,7 @@ public:
   void Init(float offset, float curveStart, float curveEnd);
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
+  FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 };
@@ -49,6 +50,13 @@ FBLog2Param::NormalizedToPlainFast(float normalized) const
   float result = _offset + _curveStart * std::pow(2.0f, _expo * normalized);
   assert(result >= _curveStart + _offset);
   return result;
+}
+
+
+inline FBSIMDVector<float> 
+FBLog2Param::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
+{
+  return _offset + _curveStart * xsimd::pow(FBSIMDVector<float>(2.0f), _expo * FBSIMDVector<float>::load_aligned(normalized.CV().Data().data() + pos));
 }
 
 inline int

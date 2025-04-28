@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBLifetime.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 
@@ -23,6 +24,7 @@ public:
   void Add(FBFixedArray<T> const& rhs) { for (int s = 0; s < FBFixedBlockSamples; s++) _data[s] += rhs[s]; }
   void Mul(FBFixedArray<T> const& rhs) { for (int s = 0; s < FBFixedBlockSamples; s++) _data[s] *= rhs[s]; }
   void CopyTo(FBFixedArray<T>& rhs) const { for (int s = 0; s < FBFixedBlockSamples; s++) rhs[s] = _data[s]; }
+  void Add(FBSIMDArray<float, FBFixedBlockSamples> const& rhs) { for (int s = 0; s < FBFixedBlockSamples; s++) _data[s] += rhs.Get(s); }
 };
 
 template <class T>
@@ -37,6 +39,7 @@ public:
   void Fill(T val) { for(int c = 0; c < 2; c++) _data[c].Data().fill(val); }
   void Mul(FBFixedArray<T> const& rhs) { for (int c = 0; c < 2; c++) _data[c].Mul(rhs); }
   void Add(FBFixedAudioArray<T> const& rhs) { for (int c = 0; c < 2; c++) _data[c].Add(rhs[c]); }
+  void Add(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& rhs) { for (int c = 0; c < 2; c++) _data[c].Add(rhs[c]); }
   void CopyTo(FBFixedAudioArray<T>& rhs) const { for (int c = 0; c < 2; c++) _data[c].CopyTo(rhs[c]); }
 };
 

@@ -29,7 +29,7 @@ public:
   FFOsciDSPState();
   ~FFOsciDSPState();
   FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
-  FBSIMDArray3<float, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> voiceOutput = {};
+  FBSIMDArray3<float, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> uniOutput = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 

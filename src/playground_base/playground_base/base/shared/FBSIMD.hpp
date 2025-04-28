@@ -22,9 +22,12 @@ public:
   FBSIMDArray(FBSIMDVector<T> val) { Fill(val); }
   FBSIMDArray(T val) { Fill(FBSIMDVector<T>(val)); }
 
+  // todo assert on load and store
+  T Last() const { return _data[N - 1]; }
   T Get(int pos) const { return _data[pos]; };
   void Set(int pos, T val) { _data[pos] = val; };
   void Store(int pos, FBSIMDVector<T> val) { val.store_aligned(_data.data() + pos); }
+  void Add(int pos, FBSIMDVector<T> val) { (Load(pos) + val).store_aligned(_data.data() + pos); }
   FBSIMDVector<T> Load(int pos) const { return FBSIMDVector<T>::load_aligned(_data.data() + pos); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
 };

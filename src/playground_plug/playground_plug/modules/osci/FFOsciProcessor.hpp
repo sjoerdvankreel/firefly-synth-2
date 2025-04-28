@@ -20,6 +20,7 @@ template <class T>
 using FFOsciUnisonOperatorArrayForFM =
 std::array<std::array<T, FFOsciUnisonMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount>;
 
+// todo move everything into the processor
 struct FFOsciVoiceState final
 {
   float key = {};
@@ -45,10 +46,13 @@ struct FFOsciVoiceState final
   float unisonRandomPlain = {};
 
   bool oversampling = false;
-  bool externalFMExp = false;
+  bool modMatrixExpoFM = false;
   std::array<bool, FFOsciCount - 1> modSourceFMOn = {};
   std::array<int, FFOsciCount - 1> modSourceUnisonCount = {};
   std::array<FFOsciModAMMode, FFOsciCount - 1> modSourceAMMode = {};
+
+  FBSIMDArray<float, FFOsciUnisonMaxCount> uniPosMHalfToHalf = {};
+  FBSIMDArray<float, FFOsciUnisonMaxCount> uniPosAbsHalfToHalf = {};
 };
 
 class FFOsciProcessor final

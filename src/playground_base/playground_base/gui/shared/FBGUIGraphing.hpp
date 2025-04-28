@@ -7,6 +7,7 @@
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
@@ -43,6 +44,9 @@ FBModuleGraphVoiceCVOutputSelector;
 typedef std::function<FBFixedFloatAudioArray const* (
   void const* procState, int voice, int moduleSlot)>
 FBModuleGraphVoiceAudioOutputSelector;
+typedef std::function<FBSIMDArray2<float, FBFixedBlockSamples, 2> const* (
+  void const* procState, int voice, int moduleSlot)>
+FBModuleGraphVoiceAudioOutputSelector2;
 
 typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int moduleSlot)>
@@ -62,6 +66,7 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceCVOutputSelector voiceCVOutputSelector = {};
   FBModuleGraphGlobalCVOutputSelector globalCVOutputSelector = {};
   FBModuleGraphVoiceAudioOutputSelector voiceAudioOutputSelector = {};
+  FBModuleGraphVoiceAudioOutputSelector2 voiceAudioOutputSelector2 = {}; // todo drop the other one
   FBModuleGraphGlobalAudioOutputSelector globalAudioOutputSelector = {};
 
   void Reset(FBModuleProcState& state) { static_cast<Derived*>(this)->Reset(state); }
@@ -117,10 +122,26 @@ FBRenderModuleGraphSeries(
     else
     {
       if constexpr (Audio)
-        renderData.voiceAudioOutputSelector(
-          moduleProcState->procRaw,
-          moduleProcState->voice->slot,
-          moduleSlot)->CopyTo(seriesAudioIn);
+      {
+        if (renderData.voiceAudioOutputSelector)
+        {
+          renderData.voiceAudioOutputSelector(
+            moduleProcState->procRaw,
+            moduleProcState->voice->slot,
+            moduleSlot)->CopyTo(seriesAudioIn);
+        }
+        else
+        {
+          // todo vectorize
+          auto const& voiceAudioOutput = renderData.voiceAudioOutputSelector2(
+            moduleProcState->procRaw,
+            moduleProcState->voice->slot,
+            moduleSlot);
+          for (int c = 0; c < 2; c++)
+            for (int s = 0; s < FBFixedBlockSamples; s++)
+              seriesAudioIn[c][s] = (*voiceAudioOutput)[c].Get(s);
+        }
+      }
       else
         renderData.voiceCVOutputSelector(
           moduleProcState->procRaw,
