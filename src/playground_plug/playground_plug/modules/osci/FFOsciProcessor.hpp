@@ -16,55 +16,43 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-template <class T>
-using FFOsciUnisonOperatorArrayForFM =
-std::array<std::array<T, FFOsciUnisonMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount>;
-
-// todo move everything into the processor
-struct FFOsciVoiceState final
-{
-  float key = {};
-  FFOsciType type = {};
-
-  bool basicSinOn = {};
-  bool basicSawOn = {};
-  bool basicTriOn = {};
-  bool basicSqrOn = {};
-
-  int dsfDistance = {};
-  int dsfOvertones = {};
-  FFOsciDSFMode dsfMode = {};
-  float dsfBandwidthPlain = {};
-
-  bool fmExp = {};
-  float fmRatioRatio12 = {};
-  float fmRatioRatio23 = {};
-  FFOsciFMRatioMode fmRatioMode = {};
-
-  int unisonCount = {};
-  float unisonOffsetPlain = {};
-  float unisonRandomPlain = {};
-
-  bool oversampling = false;
-  bool modMatrixExpoFM = false;
-  std::array<bool, FFOsciCount - 1> modSourceFMOn = {};
-  std::array<int, FFOsciCount - 1> modSourceUnisonCount = {};
-  std::array<FFOsciModAMMode, FFOsciCount - 1> modSourceAMMode = {};
-
-  FBSIMDArray<float, FFOsciUnisonMaxCount> uniPosMHalfToHalf = {};
-  FBSIMDArray<float, FFOsciUnisonMaxCount> uniPosAbsHalfToHalf = {};
-};
-
 class FFOsciProcessor final
 {
+  float _key = {};
+  FFOsciType _type = {};
+  int _uniCount = {};
+  float _uniOffsetPlain = {};
+  float _uniRandomPlain = {};
+  int _oversamplingTimes = {};
+
+  bool _basicSinOn = {};
+  bool _basicSawOn = {};
+  bool _basicTriOn = {};
+  bool _basicSqrOn = {};
+  int _dsfDistance = {};
+  int _dsfOvertones = {};
+  FFOsciDSFMode _dsfMode = {};
+  float _dsfBandwidthPlain = {};
+  bool _fmExp = {};
+  float _fmRatioRatio12 = {};
+  float _fmRatioRatio23 = {};
+  FFOsciFMRatioMode _fmRatioMode = {};
+
+  bool _modMatrixExpoFM = false;
+  std::array<bool, FFOsciCount - 1> _modSourceFMOn = {};
+  std::array<int, FFOsciCount - 1> _modSourceUniCount = {};
+  std::array<FFOsciModAMMode, FFOsciCount - 1> _modSourceAMMode = {};
+
   FBParkMillerPRNG _prng = {};
-  FFOsciVoiceState _voiceState = {};
   FBTrackingPhaseGenerator _phaseGen = {};
-  juce::dsp::Oversampling<float> _oversampling;
+  juce::dsp::Oversampling<float> _oversampler;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
-  std::array<FFOsciPhaseGenerator, FFOsciUnisonMaxCount> _uniPhaseGens = {};
+  FBSIMDArray<float, FFOsciUniMaxCount> _uniPosMHalfToHalf = {};
+  FBSIMDArray<float, FFOsciUniMaxCount> _uniPosAbsHalfToHalf = {};
+  std::array<FFOsciPhaseGenerator, FFOsciUniMaxCount> _uniPhaseGens = {};
   
   // todo hope to drop all this stuff
+#if 0
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqs = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrs = {};
   alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhases = {};
@@ -76,6 +64,8 @@ class FFOsciProcessor final
   alignas(FBSIMDAlign) FBMDArray3<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes> _externalFMModulatorsForFM = {};
   alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniIncrsForFM = {};
   alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniPitchesForFM = {};
+
+#endif
 
   void ProcessBasic(FBModuleProcState& state, int oversamplingTimes);
   void ProcessDSF(FBModuleProcState& state, int oversamplingTimes);
@@ -93,6 +83,7 @@ class FFOsciProcessor final
   void ProcessUniPhasesNonFM(int oversamplingTimes);
   void ProcessUniFreqAndDelta(int oversamplingTimes, float oversampledRate);
 
+#if 0 //todo
   void ProcessDownSampling(
     int oversamplingTimes,
     FFOsciOversampledUnisonArray const& uniOutputMaybeOversampled,
@@ -143,6 +134,8 @@ class FFOsciProcessor final
     FBFixedFloatArray& uniSpreadPlain,
     std::array<float, FFOsciUnisonMaxCount>& uniPositionsMHalfToHalf,
     std::array<float, FFOsciUnisonMaxCount>& uniPositionsAbsHalfToHalf);
+
+#endif
 
 public:
   FFOsciProcessor();

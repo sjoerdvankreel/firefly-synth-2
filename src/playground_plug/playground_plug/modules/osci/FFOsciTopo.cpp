@@ -113,7 +113,7 @@ FFMakeOsciTopo()
   fine.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFine);
   fine.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFine);
 
-  auto& unisonCount = result->params[(int)FFOsciParam::UnisonCount];
+  auto& unisonCount = result->params[(int)FFOsciParam::UniCount];
   unisonCount.acc = false;
   unisonCount.defaultText = "1";
   unisonCount.name = "Unison";
@@ -121,14 +121,14 @@ FFMakeOsciTopo()
   unisonCount.slotCount = 1;
   unisonCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
   unisonCount.type = FBParamType::Discrete;
-  unisonCount.Discrete().valueCount = FFOsciUnisonMaxCount;
+  unisonCount.Discrete().valueCount = FFOsciUniMaxCount;
   unisonCount.Discrete().valueOffset = 1;
-  auto selectUnisonCount = [](auto& module) { return &module.block.unisonCount; };
+  auto selectUnisonCount = [](auto& module) { return &module.block.uniCount; };
   unisonCount.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonCount);
   unisonCount.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectUnisonCount);
   unisonCount.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonCount);
 
-  auto& unisonOffset = result->params[(int)FFOsciParam::UnisonOffset];
+  auto& unisonOffset = result->params[(int)FFOsciParam::UniOffset];
   unisonOffset.acc = false;
   unisonOffset.defaultText = "50";
   unisonOffset.name = "Offset";
@@ -137,13 +137,13 @@ FFMakeOsciTopo()
   unisonOffset.unit = "%";
   unisonOffset.id = "{6F5754E1-BDF4-4685-98FC-8C613128EE8D}";
   unisonOffset.type = FBParamType::Identity;
-  auto selectUnisonOffset = [](auto& module) { return &module.block.unisonOffset; };
+  auto selectUnisonOffset = [](auto& module) { return &module.block.uniOffset; };
   unisonOffset.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonOffset);
   unisonOffset.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectUnisonOffset);
   unisonOffset.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonOffset);
-  unisonOffset.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+  unisonOffset.dependencies.enabled.audio.When({ (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
 
-  auto& unisonRandom = result->params[(int)FFOsciParam::UnisonRandom];
+  auto& unisonRandom = result->params[(int)FFOsciParam::UniRandom];
   unisonRandom.acc = false;
   unisonRandom.defaultText = "50";
   unisonRandom.name = "Random";
@@ -152,13 +152,13 @@ FFMakeOsciTopo()
   unisonRandom.unit = "%";
   unisonRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
   unisonRandom.type = FBParamType::Identity;
-  auto selectUnisonRandom = [](auto& module) { return &module.block.unisonRandom; };
+  auto selectUnisonRandom = [](auto& module) { return &module.block.uniRandom; };
   unisonRandom.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonRandom);
   unisonRandom.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectUnisonRandom);
   unisonRandom.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonRandom);
-  unisonRandom.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+  unisonRandom.dependencies.enabled.audio.When({ (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
 
-  auto& unisonDetune = result->params[(int)FFOsciParam::UnisonDetune];
+  auto& unisonDetune = result->params[(int)FFOsciParam::UniDetune];
   unisonDetune.acc = true;
   unisonDetune.defaultText = "33";
   unisonDetune.name = "Detune";
@@ -171,9 +171,9 @@ FFMakeOsciTopo()
   unisonDetune.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonDetune);
   unisonDetune.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonDetune);
   unisonDetune.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonDetune);
-  unisonDetune.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; }); 
+  unisonDetune.dependencies.enabled.audio.When({ (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 1; }); 
 
-  auto& unisonSpread = result->params[(int)FFOsciParam::UnisonSpread];
+  auto& unisonSpread = result->params[(int)FFOsciParam::UniSpread];
   unisonSpread.acc = true;
   unisonSpread.defaultText = "50";
   unisonSpread.name = "Spread";
@@ -186,9 +186,9 @@ FFMakeOsciTopo()
   unisonSpread.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonSpread);
   unisonSpread.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonSpread);
   unisonSpread.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonSpread);
-  unisonSpread.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+  unisonSpread.dependencies.enabled.audio.When({ (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
 
-  auto& unisonBlend = result->params[(int)FFOsciParam::UnisonBlend];
+  auto& unisonBlend = result->params[(int)FFOsciParam::UniBlend];
   unisonBlend.acc = true;
   unisonBlend.defaultText = "100";
   unisonBlend.name = "Blend";
@@ -201,7 +201,7 @@ FFMakeOsciTopo()
   unisonBlend.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectUnisonBlend);
   unisonBlend.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectUnisonBlend);
   unisonBlend.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUnisonBlend);
-  unisonBlend.dependencies.enabled.audio.When({ (int)FFOsciParam::UnisonCount }, [](auto const& vs) { return vs[0] != 1; });
+  unisonBlend.dependencies.enabled.audio.When({ (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
 
   auto& basicSinOn = result->params[(int)FFOsciParam::BasicSinOn];
   basicSinOn.acc = false;

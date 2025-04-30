@@ -12,6 +12,10 @@
 struct FBStaticModule;
 class FFOsciModProcessor;
 
+inline int constexpr FFOsciOversamplingFactor = 2;
+inline int constexpr FFOsciOversamplingTimes = 1 << FFOsciOversamplingFactor;
+inline int constexpr FFOsciFixedBlockOversamples = FBFixedBlockSamples * FFOsciOversamplingTimes;
+
 class alignas(FBSIMDAlign) FFOsciModDSPState final
 {
   friend class FFVoiceProcessor;
@@ -21,8 +25,8 @@ public:
   FFOsciModDSPState();
   ~FFOsciModDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciModDSPState);
-  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciModSlotCount> outputAMMix = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciModSlotCount> outputFMIndex = {};
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputAMMix = {};
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputFMIndex = {};
 };
 
 template <class TVoiceBlock>

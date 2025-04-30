@@ -12,12 +12,13 @@ enum class FFOsciDSFMode { Overtones, Bandwidth };
 
 inline int constexpr FFOsciFMRatioCount = 16;
 inline int constexpr FFOsciFMOperatorCount = 3;
-inline int constexpr FFOsciUnisonMaxCount = FBSIMDFloatCount * 4;
+inline int constexpr FFOsciUniMaxCount = FBSIMDFloatCount * 4;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
+// todo unison->uni
 enum class FFOsciParam { 
   Type, Gain, Coarse, Fine,
-  UnisonCount, UnisonOffset, UnisonRandom, UnisonDetune, UnisonSpread, UnisonBlend,
+  UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,
   BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
   BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,

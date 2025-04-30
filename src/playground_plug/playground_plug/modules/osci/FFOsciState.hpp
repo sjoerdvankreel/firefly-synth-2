@@ -2,6 +2,7 @@
 
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModState.hpp>
 
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBMDArray.hpp>
@@ -14,12 +15,6 @@
 struct FBStaticModule;
 class FFOsciProcessor;
 
-inline int constexpr FFOsciOverSamplingFactor = 2;
-inline int constexpr FFOsciOverSamplingTimes = 1 << FFOsciOverSamplingFactor;
-
-// todo drop the specific typedefs
-typedef FBMDArray2< FBFixedFloatArray, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> FFOsciOversampledUnisonArray;
-
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
   friend class FFVoiceProcessor;
@@ -29,7 +24,7 @@ public:
   FFOsciDSPState();
   ~FFOsciDSPState();
   FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
-  FBSIMDArray3<float, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciUnisonMaxCount> uniOutput = {};
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciUniMaxCount> uniOutput = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 
@@ -40,9 +35,9 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   std::array<TVoiceBlock, 1> on = {};
   std::array<TVoiceBlock, 1> type = {};
-  std::array<TVoiceBlock, 1> unisonCount = {};
-  std::array<TVoiceBlock, 1> unisonOffset = {};
-  std::array<TVoiceBlock, 1> unisonRandom = {};
+  std::array<TVoiceBlock, 1> uniCount = {};
+  std::array<TVoiceBlock, 1> uniOffset = {};
+  std::array<TVoiceBlock, 1> uniRandom = {};
   std::array<TVoiceBlock, 1> basicSinOn = {};
   std::array<TVoiceBlock, 1> basicSawOn = {};
   std::array<TVoiceBlock, 1> basicTriOn = {};

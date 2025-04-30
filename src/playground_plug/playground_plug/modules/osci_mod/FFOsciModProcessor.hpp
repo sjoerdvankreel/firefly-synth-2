@@ -7,15 +7,11 @@
 
 struct FBModuleProcState;
 
-struct FFOsciModVoiceState final
-{
-  std::array<bool, FFOsciModSlotCount> fmOn = {};
-  std::array<FFOsciModAMMode, FFOsciModSlotCount> amMode = {};
-};
-
 class FFOsciModProcessor final
 {
-  FFOsciModVoiceState _voiceState = {};
+  int _oversamplingTimes = {};
+  std::array<bool, FFOsciModSlotCount> _fmOn = {};
+  std::array<FFOsciModAMMode, FFOsciModSlotCount> _amMode = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModProcessor);

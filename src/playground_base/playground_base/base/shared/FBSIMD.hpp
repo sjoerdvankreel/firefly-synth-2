@@ -23,14 +23,27 @@ public:
   FBSIMDArray(T val) { Fill(FBSIMDVector<T>(val)); }
 
   // todo assert on load and store
+  T* Data() { return _data.data(); }
+  T const* Data() const { return _data.data(); }
   T Last() const { return _data[N - 1]; }
   T Get(int pos) const { return _data[pos]; };
   void Set(int pos, T val) { _data[pos] = val; };
+  void StoreRepeat(int pos, int n, FBSIMDVector<T> val);
   void Store(int pos, FBSIMDVector<T> val) { val.store_aligned(_data.data() + pos); }
   void Add(int pos, FBSIMDVector<T> val) { (Load(pos) + val).store_aligned(_data.data() + pos); }
   FBSIMDVector<T> Load(int pos) const { return FBSIMDVector<T>::load_aligned(_data.data() + pos); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
 };
+
+template <class T, int N>
+inline void 
+FBSIMDArray<T, N>::StoreRepeat(int pos, int n, FBSIMDVector<T> val)
+{
+  FBSIMDArray<T, FBSIMDTraits<T>::Size> x(val);
+  for (int i = 0; i < FBSIMDTraits<T>::Size; i++)
+    for (int j = 0; j < n; j++)
+      Set(pos + i * n + j, x.Get(i));
+}
 
 template <class T, int N1, int N2>
 class alignas(FBSIMDTraits<T>::Align) FBSIMDArray2

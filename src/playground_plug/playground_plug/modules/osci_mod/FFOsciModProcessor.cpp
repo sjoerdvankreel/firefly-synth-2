@@ -10,12 +10,18 @@ FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-  auto const& params = procState->param.voice.osciMod[state.moduleSlot];
+  auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
+
+  auto const& oversamplingNorm = procParams.block.oversampling[0].Voice()[voice];
+  bool oversampling = topo.NormalizedToBoolFast(FFOsciModParam::Oversampling, oversamplingNorm);
+  _oversamplingTimes = oversampling ? FFOsciOversamplingTimes : 1;
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
-    _voiceState.fmOn[i] = topo.NormalizedToBoolFast(FFOsciModParam::FMOn, params.block.fmOn[i].Voice()[voice]);
-    _voiceState.amMode[i] = topo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, params.block.amMode[i].Voice()[voice]);
+    auto const& fmOnNorm = procParams.block.fmOn[i].Voice()[voice];
+    auto const& amModeNorm = procParams.block.amMode[i].Voice()[voice];
+    _fmOn[i] = topo.NormalizedToBoolFast(FFOsciModParam::FMOn, fmOnNorm);
+    _amMode[i] = topo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, amModeNorm);
   }
 }
 
@@ -24,34 +30,38 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-  auto& outputAMMix = procState->dsp.voice[voice].osciMod.outputAMMix;
-  auto& outputFMIndex = procState->dsp.voice[voice].osciMod.outputFMIndex;
+  auto& voiceState = procState->dsp.voice[voice];
+  auto& outputAMMix = voiceState.osciMod.outputAMMix;
+  auto& outputFMIndex = voiceState.osciMod.outputFMIndex;
   auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
-
-  // TODO these should themselves be mod targets
-  // for now just copy over the stream
+  
+  int stepSamples = FBSIMDFloatCount * _oversamplingTimes;
+  int totalSamples = FBFixedBlockSamples * _oversamplingTimes;
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto const& amMixNorm = procParams.acc.amMix[i].Voice()[voice];
     auto const& fmIndexNorm = procParams.acc.fmIndex[i].Voice()[voice];
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    for (int s = 0; s < totalSamples; s += stepSamples)
     {
-      if (_voiceState.amMode[i] != FFOsciModAMMode::Off)
-        outputAMMix[i].Store(s, topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s));
-      if (_voiceState.fmOn[i])
-        outputFMIndex[i].Store(s, topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s));
+      if (_amMode[i] != FFOsciModAMMode::Off)
+      {
+        auto amMixPlain = topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s);
+        outputAMMix[i].StoreRepeat(s, _oversamplingTimes, amMixPlain);
+      }
+      if (_fmOn[i])
+      {
+        auto fmIndexPlain = topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s);
+        outputFMIndex[i].StoreRepeat(s, _oversamplingTimes, fmIndexPlain);
+      }
     }
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
-
   auto& exchangeDSP = exchangeToGUI->voice[voice].osciMod[state.moduleSlot];
   exchangeDSP.active = true;
-
-  // TODO accurately reflect output
   auto& exchangeParams = exchangeToGUI->param.voice.osciMod[state.moduleSlot];
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
