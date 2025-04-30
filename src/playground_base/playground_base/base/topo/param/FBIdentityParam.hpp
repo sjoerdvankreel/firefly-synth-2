@@ -46,7 +46,7 @@ FBIdentityParam::NormalizedToPlainFast(float normalized) const
 inline FBSIMDVector<float> 
 FBIdentityParam::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {
-  return FBSIMDVector<float>::load_aligned(normalized.CV().Data().data() + pos);
+  return FBSIMDVector<float>::load_aligned(normalized.CV().Ptr(pos));
 }
 
 inline double

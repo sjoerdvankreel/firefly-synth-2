@@ -166,7 +166,7 @@ _oversampler(
   std::array<float*, FBFixedBlockSamples> dummyData = {};
   FBSIMDArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> dummyChannelData = {};
   for (int u = 0; u < FFOsciUniMaxCount; u++)
-    dummyData[u] = dummyChannelData[u].Data();
+    dummyData[u] = dummyChannelData[u].Ptr(0);
   AudioBlock<float> dummyBlock(dummyData.data(), FFOsciUniMaxCount, 0, FBFixedBlockSamples);
   _oversampler.initProcessing(FBFixedBlockSamples);
   _oversampledBlock = _oversampler.processSamplesUp(dummyBlock);
@@ -847,7 +847,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
   int offset = FBSIMDArray<float, FFOsciFixedBlockOversamples>::UpsampleOffset(_oversamplingTimes);
-  for (int s = offset; s < FFOsciFixedBlockOversamples; s += FBSIMDFloatCount)
+  for (int s = offset; s < offset + FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     // todo debug this
     // todo drop storerepeat
@@ -1011,7 +1011,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Last(), state.input->sampleRate);
+  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(_oversamplingTimes * FBFixedBlockSamples - 1), state.input->sampleRate);
   exchangeDSP.positionSamples = _phaseGen.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];

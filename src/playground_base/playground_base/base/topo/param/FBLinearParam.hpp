@@ -54,7 +54,7 @@ FBLinearParam::NormalizedToPlainFast(float normalized) const
 inline FBSIMDVector<float>
 FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {
-  return min + (max - min) * FBSIMDVector<float>::load_aligned(normalized.CV().Data().data() + pos);
+  return min + (max - min) * FBSIMDVector<float>::load_aligned(normalized.CV().Ptr(pos));
 }
 
 inline int

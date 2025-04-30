@@ -56,7 +56,7 @@ FBLog2Param::NormalizedToPlainFast(float normalized) const
 inline FBSIMDVector<float> 
 FBLog2Param::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {
-  return _offset + _curveStart * xsimd::pow(FBSIMDVector<float>(2.0f), _expo * FBSIMDVector<float>::load_aligned(normalized.CV().Data().data() + pos));
+  return _offset + _curveStart * xsimd::pow(FBSIMDVector<float>(2.0f), _expo * FBSIMDVector<float>::load_aligned(normalized.CV().Ptr(pos)));
 }
 
 inline int

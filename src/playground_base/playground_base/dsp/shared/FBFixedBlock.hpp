@@ -14,10 +14,12 @@ class alignas(FBSIMDAlign) FBFixedArray
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedArray);
 
+  T* Ptr(int offset) { return &_data[offset]; }
+  T const* Ptr(int offset) const { return &_data[offset]; }
   T& operator[](int i) { return _data[i]; }
   T const& operator[](int i) const { return _data[i]; }
-  std::array<T, FBFixedBlockSamples>& Data() { return _data; }
-  std::array<T, FBFixedBlockSamples> const& Data() const { return _data; }
+  //std::array<T, FBFixedBlockSamples>& Data() { return _data; }
+  //std::array<T, FBFixedBlockSamples> const& Data() const { return _data; }
 
   void Fill(T val) { _data.fill(val); }
   T const& Last() { return _data[FBFixedBlockSamples - 1]; }
@@ -36,7 +38,7 @@ public:
   FBFixedArray<T>& operator[](int c) { return _data[c]; }
   FBFixedArray<T> const& operator[](int c) const { return _data[c]; }
 
-  void Fill(T val) { for(int c = 0; c < 2; c++) _data[c].Data().fill(val); }
+  void Fill(T val) { for (int c = 0; c < 2; c++) _data[c].Fill(val); }
   void Mul(FBFixedArray<T> const& rhs) { for (int c = 0; c < 2; c++) _data[c].Mul(rhs); }
   void Add(FBFixedAudioArray<T> const& rhs) { for (int c = 0; c < 2; c++) _data[c].Add(rhs[c]); }
   void Add(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& rhs) { for (int c = 0; c < 2; c++) _data[c].Add(rhs[c]); }

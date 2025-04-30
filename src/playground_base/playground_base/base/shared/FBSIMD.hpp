@@ -25,14 +25,14 @@ public:
   void UpsampleStretch(int times);
   static int UpsampleOffset(int times) { return (times - 1) * (N / times); }
 
-  T* Data() { return _data.data(); }
-  T const* Data() const { return _data.data(); }
   T Last() const { return _data[N - 1]; }
   T Get(int pos) const { return _data[pos]; };
   void Set(int pos, T val) { _data[pos] = val; };
-  void Store(int pos, FBSIMDVector<T> val) { val.store_aligned(_data.data() + pos); }
-  void Add(int pos, FBSIMDVector<T> val) { (Load(pos) + val).store_aligned(_data.data() + pos); }
-  FBSIMDVector<T> Load(int pos) const { return FBSIMDVector<T>::load_aligned(_data.data() + pos); }
+  T* Ptr(int offset) { return &_data[offset]; }
+  T const* Ptr(int offset) const { return &_data[offset]; }
+  void Store(int pos, FBSIMDVector<T> val) { val.store_aligned(Ptr(pos)); }
+  void Add(int pos, FBSIMDVector<T> val) { (Load(pos) + val).store_aligned(Ptr(pos)); }
+  FBSIMDVector<T> Load(int pos) const { return FBSIMDVector<T>::load_aligned(Ptr(pos)); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
 };
 

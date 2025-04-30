@@ -41,7 +41,7 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   {
     auto const& amMixNorm = procParams.acc.amMix[i].Voice()[voice];
     auto const& fmIndexNorm = procParams.acc.fmIndex[i].Voice()[voice];
-    for (int s = offset; s < FFOsciFixedBlockOversamples; s += FBSIMDFloatCount)
+    for (int s = offset; s < offset + FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       if (_amMode[i] != FFOsciModAMMode::Off)
         outputAMMix[i].Store(s, topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s));

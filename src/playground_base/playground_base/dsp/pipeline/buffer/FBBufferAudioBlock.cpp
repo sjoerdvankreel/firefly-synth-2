@@ -23,5 +23,6 @@ void
 FBBufferAudioBlock::AppendFixed(FBFixedFloatAudioArray const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
-    _store[ch].insert(_store[ch].end(), rhs[ch].Data().begin(), rhs[ch].Data().end());
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      _store[ch].push_back(rhs[ch][s]);
 }
