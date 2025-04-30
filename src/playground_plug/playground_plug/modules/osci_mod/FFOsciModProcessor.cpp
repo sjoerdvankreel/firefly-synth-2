@@ -36,25 +36,20 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
   
-  int stepSamples = FBSIMDFloatCount * _oversamplingTimes;
-  int totalSamples = FBFixedBlockSamples * _oversamplingTimes;
+  int offset = FBSIMDArray<float, FFOsciFixedBlockOversamples>::UpsampleOffset(_oversamplingTimes);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto const& amMixNorm = procParams.acc.amMix[i].Voice()[voice];
     auto const& fmIndexNorm = procParams.acc.fmIndex[i].Voice()[voice];
-    for (int s = 0; s < totalSamples; s += stepSamples)
+    for (int s = offset; s < FFOsciFixedBlockOversamples; s += FBSIMDFloatCount)
     {
       if (_amMode[i] != FFOsciModAMMode::Off)
-      {
-        auto amMixPlain = topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s);
-        outputAMMix[i].StoreRepeat(s, _oversamplingTimes, amMixPlain);
-      }
+        outputAMMix[i].Store(s, topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s));
       if (_fmOn[i])
-      {
-        auto fmIndexPlain = topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s);
-        outputFMIndex[i].StoreRepeat(s, _oversamplingTimes, fmIndexPlain);
-      }
+        outputFMIndex[i].Store(s, topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s));
     }
+    outputAMMix[i].UpsampleStretch(_oversamplingTimes);
+    outputFMIndex[i].UpsampleStretch(_oversamplingTimes);
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
