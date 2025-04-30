@@ -13,7 +13,7 @@ template <class T> struct FBSIMDTraits {
 template <class T, int N>
 class alignas(FBSIMDTraits<T>::Align) FBSIMDArray
 {
-  static_assert(N% FBSIMDTraits<T>::Size == 0);
+  static_assert(N % FBSIMDTraits<T>::Size == 0);
   alignas(FBSIMDTraits<T>::Align) std::array<T, N> _data = {};
 
 public:
@@ -22,8 +22,7 @@ public:
   FBSIMDArray(FBSIMDVector<T> val) { Fill(val); }
   FBSIMDArray(T val) { Fill(FBSIMDVector<T>(val)); }
 
-  void UpsampleStretch(int times);
-  static int UpsampleOffset(int times) { return (times - 1) * (N / times); }
+  template <int Times> void UpsampleStretch();
 
   T Last() const { return _data[N - 1]; }
   T Get(int pos) const { return _data[pos]; };
@@ -37,12 +36,17 @@ public:
 };
 
 template <class T, int N>
+template <int Times>
 inline void 
-FBSIMDArray<T, N>::UpsampleStretch(int times)
+FBSIMDArray<T, N>::UpsampleStretch()
 {
-  int offset = UpsampleOffset(times);
-  for (int s = 0; s < N; s++)
-    Set(s, Get(offset + s / times));
+  // need temp for perf opt
+  FBSIMDArray<T, N / Times> x;
+  static_assert(Times == FBSIMDTraits<T>::Size);
+  for (int s = 0; s < N / Times; s += FBSIMDTraits<T>::Size)
+    x.Store(s, Load(s));
+  for (int s = 0; s < N / Times; s++)
+    Store(s * FBSIMDTraits<T>::Size, x.Get(s));
 }
 
 template <class T, int N1, int N2>

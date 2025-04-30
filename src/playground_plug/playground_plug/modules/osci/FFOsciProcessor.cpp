@@ -846,7 +846,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSinGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
-  int offset = FBSIMDArray<float, FFOsciFixedBlockOversamples>::UpsampleOffset(_oversamplingTimes);
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     // todo debug this
@@ -855,28 +854,31 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
-    basePitchPlain.Store(offset + s, pitch);
-    baseFreqPlain.Store(offset + s, baseFreq);
-    uniBlendPlain.Store(offset + s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
-    uniDetunePlain.Store(offset + s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
-    uniSpreadPlain.Store(offset + s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
-    basicSqrPWPlain.Store(offset + s, topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s));
-    basicSqrGainPlain.Store(offset + s, topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s));
-    basicSinGainPlain.Store(offset + s, topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s));
-    basicSawGainPlain.Store(offset + s, topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s));
-    basicTriGainPlain.Store(offset + s, topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s));
+    basePitchPlain.Store(s, pitch);
+    baseFreqPlain.Store(s, baseFreq);
+    uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
+    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
+    uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
+    basicSqrPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s));
+    basicSqrGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s));
+    basicSinGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s));
+    basicSawGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s));
+    basicTriGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s));
     _phaseGen.Next(baseFreq / sampleRate);
   }
-  basePitchPlain.UpsampleStretch(_oversamplingTimes);
-  baseFreqPlain.UpsampleStretch(_oversamplingTimes);
-  uniBlendPlain.UpsampleStretch(_oversamplingTimes);
-  uniDetunePlain.UpsampleStretch(_oversamplingTimes);
-  uniSpreadPlain.UpsampleStretch(_oversamplingTimes);
-  basicSqrPWPlain.UpsampleStretch(_oversamplingTimes);
-  basicSqrGainPlain.UpsampleStretch(_oversamplingTimes);
-  basicSinGainPlain.UpsampleStretch(_oversamplingTimes);
-  basicSawGainPlain.UpsampleStretch(_oversamplingTimes);
-  basicTriGainPlain.UpsampleStretch(_oversamplingTimes);
+  if (_oversamplingTimes != 1)
+  {
+    basePitchPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    baseFreqPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    uniBlendPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    uniDetunePlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    uniSpreadPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    basicSqrPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    basicSqrGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    basicSinGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    basicSawGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    basicTriGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+  }
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
   float applyModMatrixLinearFM = _modMatrixExpoFM ? 0.0f : 1.0f;

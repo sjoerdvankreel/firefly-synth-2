@@ -14,8 +14,7 @@ FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
 
   auto const& oversamplingNorm = procParams.block.oversampling[0].Voice()[voice];
-  bool oversampling = topo.NormalizedToBoolFast(FFOsciModParam::Oversampling, oversamplingNorm);
-  _oversamplingTimes = oversampling ? FFOsciOversamplingTimes : 1;
+  _oversampling = topo.NormalizedToBoolFast(FFOsciModParam::Oversampling, oversamplingNorm);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto const& fmOnNorm = procParams.block.fmOn[i].Voice()[voice];
@@ -35,8 +34,7 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   auto& outputFMIndex = voiceState.osciMod.outputFMIndex;
   auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
-  
-  int offset = FBSIMDArray<float, FFOsciFixedBlockOversamples>::UpsampleOffset(_oversamplingTimes);
+
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto const& amMixNorm = procParams.acc.amMix[i].Voice()[voice];
@@ -44,12 +42,15 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       if (_amMode[i] != FFOsciModAMMode::Off)
-        outputAMMix[i].Store(offset + s, topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s));
+        outputAMMix[i].Store(s, topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s));
       if (_fmOn[i])
-        outputFMIndex[i].Store(offset + s, topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s));
+        outputFMIndex[i].Store(s, topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s));
     }
-    outputAMMix[i].UpsampleStretch(_oversamplingTimes);
-    outputFMIndex[i].UpsampleStretch(_oversamplingTimes);
+    if (_oversampling)
+    {
+      outputAMMix[i].UpsampleStretch<FFOsciOversamplingTimes>();
+      outputFMIndex[i].UpsampleStretch<FFOsciOversamplingTimes>();
+    }
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
