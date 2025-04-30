@@ -34,6 +34,7 @@ FMRatioRatio(int v)
   return ((v / FFOsciFMRatioCount) + 1.0f) / ((v % FFOsciFMRatioCount) + 1.0f);
 }
 
+// https://www.kvraudio.com/forum/viewtopic.php?t=375517
 static inline float
 GenerateBLEP(float phase, float incr)
 {
@@ -51,7 +52,25 @@ GenerateBLEP(float phase, float incr)
   return blep;
 }
 
-// https://www.kvraudio.com/forum/viewtopic.php?t=375517
+// https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
+static inline float
+GenerateBLAMP(float phase, float incr)
+{
+  float y = 0.0f;
+  if (!(0.0f <= phase && phase < 2.0f * incr))
+    return y * incr / 15;
+  float x = phase / incr;
+  float u = 2.0f - x;
+  u *= u * u * u * u;
+  y -= u;
+  if (phase >= incr)
+    return y * incr / 15;
+  float v = 1.0f - x;
+  v *= v * v * v * v;
+  y += 4 * v;
+  return y * incr / 15;
+}
+
 static inline FBSIMDVector<float>
 GenerateSaw(FBSIMDVector<float> phaseVec, FBSIMDVector<float> incrVec)
 {
@@ -81,36 +100,28 @@ GenerateSqr(
   return (sawVec - GenerateSaw(phase2, incrVec)) * 0.5f;
 }
 
-// https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
-static inline float
-GenerateBLAMP(float phase, float incr)
+static inline FBSIMDVector<float>
+GenerateTri(FBSIMDVector<float> phaseVec, FBSIMDVector<float> incrVec)
 {
-  float y = 0.0f;
-  if (!(0.0f <= phase && phase < 2.0f * incr))
-    return y * incr / 15;
-  float x = phase / incr;
-  float u = 2.0f - x;
-  u *= u * u * u * u;
-  y -= u;
-  if (phase >= incr)
-    return y * incr / 15;
-  float v = 1.0f - x;
-  v *= v * v * v * v;
-  y += 4 * v;
-  return y * incr / 15;
-}
-
-static inline float
-GenerateTri(float phase, float incr)
-{
-  float v = 2.0f * std::abs(2.0f * phase - 1.0f) - 1.0f;
-  v += GenerateBLAMP(phase, incr);
-  v += GenerateBLAMP(1.0f - phase, incr);
-  phase += 0.5f;
-  phase = FBPhaseWrap(phase);
-  v -= GenerateBLAMP(phase, incr);
-  v -= GenerateBLAMP(1.0f - phase, incr);
-  return v;
+  FBSIMDArray<float, FBSIMDFloatCount> yArray;
+  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
+  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
+  incrArray.Store(0, incrVec);
+  phaseArray.Store(0, phaseVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float incr = incrArray.Get(i);
+    float phase = phaseArray.Get(i);
+    float y = 2.0f * std::abs(2.0f * phase - 1.0f) - 1.0f;
+    y += GenerateBLAMP(phase, incr);
+    y += GenerateBLAMP(1.0f - phase, incr);
+    phase += 0.5f;
+    phase = FBPhaseWrap(phase);
+    y -= GenerateBLAMP(phase, incr);
+    y -= GenerateBLAMP(1.0f - phase, incr);
+    yArray.Set(i, y);
+  }
+  return yArray.Load(0);
 }
 
 // https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
@@ -951,8 +962,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
         if (_basicTriOn)
         {
-        //  auto basicTriGain = basicTriGainPlain.Load(s);
-          //thisUniOutput += GenerateTri(uniPhase, uniIncr) * basicTriGain;
+          auto basicTriGain = basicTriGainPlain.Load(s);
+          thisUniOutput += GenerateTri(uniPhase, uniIncr) * basicTriGain;
         }
         if (_basicSqrOn)
         {

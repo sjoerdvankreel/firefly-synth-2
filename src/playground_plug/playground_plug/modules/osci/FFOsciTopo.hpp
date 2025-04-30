@@ -12,7 +12,7 @@ enum class FFOsciDSFMode { Overtones, Bandwidth };
 
 inline int constexpr FFOsciFMRatioCount = 16;
 inline int constexpr FFOsciFMOperatorCount = 3;
-inline int constexpr FFOsciUniMaxCount = FBSIMDFloatCount * 4;
+inline int constexpr FFOsciUniMaxCount = FBSIMDFloatCount * 2;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
 // todo unison->uni
