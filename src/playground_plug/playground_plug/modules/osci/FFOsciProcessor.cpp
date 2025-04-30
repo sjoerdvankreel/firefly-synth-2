@@ -817,7 +817,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   float sampleRate = state.input->sampleRate;
   float oversampledRate = sampleRate * _oversamplingTimes;
-  int stepSamples = FBSIMDFloatCount * _oversamplingTimes;
   int totalSamples = FBFixedBlockSamples * _oversamplingTimes;
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
@@ -837,6 +836,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& basicSawGainNorm = procParams.acc.basicSawGain[0].Voice()[voice];
   auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];  
 
+  int offset = (_oversamplingTimes - 1) * FBFixedBlockSamples;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
@@ -847,32 +847,38 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSinGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
-  for (int s = 0; s < totalSamples; s += stepSamples)
+  for (int s = offset; s < FFOsciFixedBlockOversamples; s += FBSIMDFloatCount)
   {
     // todo debug this
+    // todo drop storerepeat
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
-    auto uniBlend = topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s);
-    auto uniDetune = topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s);
-    auto uniSpread = topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s);
-    auto basicSqrPW = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s);
-    auto basicSqrGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s);
-    auto basicSinGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s);
-    auto basicSawGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s);
-    auto basicTriGain = topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s);
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
-    basePitchPlain.StoreRepeat(s, _oversamplingTimes, pitch);
-    baseFreqPlain.StoreRepeat(s, _oversamplingTimes, baseFreq);
-    uniBlendPlain.StoreRepeat(s, _oversamplingTimes, uniBlend);
-    uniDetunePlain.StoreRepeat(s, _oversamplingTimes, uniDetune);
-    uniSpreadPlain.StoreRepeat(s, _oversamplingTimes, uniSpread);
-    basicSqrPWPlain.StoreRepeat(s, _oversamplingTimes, basicSqrPW);
-    basicSqrGainPlain.StoreRepeat(s, _oversamplingTimes, basicSqrGain);
-    basicSinGainPlain.StoreRepeat(s, _oversamplingTimes, basicSinGain);
-    basicSawGainPlain.StoreRepeat(s, _oversamplingTimes, basicSawGain);
-    basicTriGainPlain.StoreRepeat(s, _oversamplingTimes, basicTriGain);
+    basePitchPlain.Store(s, pitch);
+    baseFreqPlain.Store(s, baseFreq);
+    uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
+    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
+    uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
+    basicSqrPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s));
+    basicSqrGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s));
+    basicSinGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s));
+    basicSawGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s));
+    basicTriGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s));
     _phaseGen.Next(baseFreq / sampleRate);
+  }
+  for (int s = 0; s < totalSamples; s ++)
+  {
+    basePitchPlain.Set(s, basePitchPlain.Get(offset + s / _oversamplingTimes));
+    baseFreqPlain.Set(s, baseFreqPlain.Get(offset + s / _oversamplingTimes));
+    uniBlendPlain.Set(s, uniBlendPlain.Get(offset + s / _oversamplingTimes));
+    uniDetunePlain.Set(s, uniDetunePlain.Get(offset + s / _oversamplingTimes));
+    uniSpreadPlain.Set(s, uniSpreadPlain.Get(offset + s / _oversamplingTimes));
+    basicSqrPWPlain.Set(s, basicSqrPWPlain.Get(offset + s / _oversamplingTimes));
+    basicSqrGainPlain.Set(s, basicSqrGainPlain.Get(offset + s / _oversamplingTimes));
+    basicSinGainPlain.Set(s, basicSinGainPlain.Get(offset + s / _oversamplingTimes));
+    basicSawGainPlain.Set(s, basicSawGainPlain.Get(offset + s / _oversamplingTimes));
+    basicTriGainPlain.Set(s, basicTriGainPlain.Get(offset + s / _oversamplingTimes));
   }
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
