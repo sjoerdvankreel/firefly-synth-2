@@ -42,32 +42,47 @@ GenerateSin(float phase)
 }
 
 // https://www.kvraudio.com/forum/viewtopic.php?t=375517
-static inline float
-GenerateSaw(float phase, float incr)
+static inline FBSIMDVector<float>
+GenerateSaw(FBSIMDVector<float> phaseVec, FBSIMDVector<float> incrVec)
 {
-  float blep = 0.0f;
-  float saw = phase * 2.0f - 1.0f;
-  if (phase < incr)
+  FBSIMDArray<float, FBSIMDFloatCount> yArray;
+  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
+  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
+  incrArray.Store(0, incrVec);
+  phaseArray.Store(0, phaseVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
   {
-    blep = phase / incr;
-    blep = (2.0f - blep) * blep - 1.0f;
+    float blep = 0.0f;
+    float incr = incrArray.Get(i);
+    float phase = phaseArray.Get(i);
+    float saw = phase * 2.0f - 1.0f;
+    if (phase < incr)
+    {
+      blep = phase / incr;
+      blep = (2.0f - blep) * blep - 1.0f;
+    }
+    else if (phase >= 1.0f - incr)
+    {
+      blep = (phase - 1.0f) / incr;
+      blep = (blep + 2.0f) * blep + 1.0f;
+    }
+    yArray.Set(i, saw - blep);
   }
-  else if (phase >= 1.0f - incr)
-  {
-    blep = (phase - 1.0f) / incr;
-    blep = (blep + 2.0f) * blep + 1.0f;
-  }
-  return saw - blep;
+  return yArray.Load(0);
 }
 
-static inline float
-GenerateSqr(float phase, float incr, float pw)
+static inline FBSIMDVector<float>
+GenerateSqr(
+  FBSIMDVector<float> sawVec, FBSIMDVector<float> phaseVec, 
+  FBSIMDVector<float> incrVec, FBSIMDVector<float> pwVec)
 {
-  float minPW = 0.05f;
-  float realPW = (minPW + (1.0f - minPW) * pw) * 0.5f;
-  float phase2 = phase + realPW;
-  FBPhaseWrap(phase2);
-  return (GenerateSaw(phase, incr) - GenerateSaw(phase2, incr)) * 0.5f;
+  FBSIMDVector<float> minPW = 0.05f;
+  FBSIMDArray<float, FBSIMDFloatCount> phase2;
+  auto realPW = (minPW + (1.0f - minPW) * pwVec) * 0.5f;
+  phase2.Store(0, phaseVec + realPW);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+    phase2.Set(i, FBPhaseWrap(phase2.Get(i)));
+  return (sawVec - GenerateSaw(phase2.Load(0), incrVec)) * 0.5f;
 }
 
 // https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
@@ -96,7 +111,7 @@ GenerateTri(float phase, float incr)
   v += GenerateBLAMP(phase, incr);
   v += GenerateBLAMP(1.0f - phase, incr);
   phase += 0.5f;
-  FBPhaseWrap(phase);
+  phase = FBPhaseWrap(phase);
   v -= GenerateBLAMP(phase, incr);
   v -= GenerateBLAMP(1.0f - phase, incr);
   return v;
@@ -841,15 +856,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
-  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSqrPWPlain; // TODO conditional
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSqrPWPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSqrGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSinGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    // todo debug this
-    // todo drop storerepeat
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto pitch = _key + coarse + fine;
@@ -873,11 +886,20 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     uniBlendPlain.UpsampleStretch<FFOsciOversamplingTimes>();
     uniDetunePlain.UpsampleStretch<FFOsciOversamplingTimes>();
     uniSpreadPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    basicSqrPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    basicSqrGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    basicSinGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    basicSawGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    basicTriGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    if (_type == FFOsciType::Basic)
+    {
+      if(_basicSinOn)
+        basicSinGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      if(_basicSawOn)
+        basicSawGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      if(_basicTriOn)
+        basicTriGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      if (_basicSqrOn)
+      {
+        basicSqrPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+        basicSqrGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      }
+    }
   }
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
@@ -897,23 +919,41 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           matrixFMMod += matrixFMModBySlot * voiceState.osciMod.outputFMIndex[modSlot].Load(s);
         }
 
-      auto uniPitches = basePitchPlain.Load(s);
-      uniPitches += uniPosMHalfToHalf * uniDetunePlain.Load(s);
-      uniPitches += matrixFMMod * uniPitches * applyModMatrixExpoFM;
+      auto uniPitch = basePitchPlain.Load(s);
+      uniPitch += uniPosMHalfToHalf * uniDetunePlain.Load(s);
+      uniPitch += matrixFMMod * uniPitch * applyModMatrixExpoFM;
 
       // todo from here it deviates for fm
-      auto uniFreqs = FBPitchToFreq(uniPitches);
-      auto uniIncrs = uniFreqs / oversampledRate;
-      auto uniPhases = _uniPhaseGens[u].Next(uniIncrs, matrixFMMod * applyModMatrixLinearFM);
+      auto uniFreq = FBPitchToFreq(uniPitch);
+      auto uniIncr = uniFreq / oversampledRate;
+      auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
 
-      // todo if constexpr
-      // todo all the other oscis
-      //if(_voiceState.type == FFOsciType::Basic && _voiceState.basicSinOn)
-      auto basicSinGain = basicSinGainPlain.Load(s);
-      auto thisUniOutput = xsimd::sin(uniPhases * FBTwoPi) * basicSinGain;
+      FBSIMDVector<float> thisUniOutput = 0.0f;
+      if (_type == FFOsciType::Basic)
+      {
+        FBSIMDVector<float> saw;
+        if (_basicSawOn || _basicSqrOn)
+          saw = GenerateSaw(uniPhase, uniIncr);
+        if (_basicSinOn)
+        {
+          auto basicSinGain = basicSinGainPlain.Load(s);
+          thisUniOutput += xsimd::sin(uniPhase * FBTwoPi) * basicSinGain;
+        }
+        if(_basicSawOn)
+        {
+          auto basicSawGain = basicSawGainPlain.Load(s);
+          thisUniOutput += saw * basicSawGain;
+        }
+        if (_basicSqrOn)
+        {
+          auto basicSqrPW = basicSqrPWPlain.Load(s);
+          auto basicSqrGain = basicSqrGainPlain.Load(s);
+          thisUniOutput += GenerateSqr(saw, uniPhase, uniIncr, basicSqrPW) * basicSqrGain;
+        }
+      }
+
       auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
       thisUniOutput *= uniBlend;
-
       uniOutput[u].Store(s, thisUniOutput);
     }
   }

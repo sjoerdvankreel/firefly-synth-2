@@ -41,9 +41,9 @@ FFOsciPhaseGenerator::Next(FBSIMDVector<float> incr, FBSIMDVector<float> fmModul
   {
     float y = _x;
     _x += incrArray.Get(i);
-    FBPhaseWrap(_x);
+    _x = FBPhaseWrap(_x);
     y += fmModulatorArray.Get(i);
-    FBPhaseWrap(y);
+    y = FBPhaseWrap(y);
     yArray.Set(i, y);
   }
   return yArray.Load(0);

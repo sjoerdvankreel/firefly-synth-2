@@ -34,11 +34,12 @@ FBFastFloor(float x)
   return i - (i > x);
 }
 
-inline void
-FBPhaseWrap(float& p)
+inline float
+FBPhaseWrap(float p)
 {
   if (p >= 1.0f || p < 0.0f)
     p -= FBFastFloor(p);
+  return p;
 }
 
 inline bool
