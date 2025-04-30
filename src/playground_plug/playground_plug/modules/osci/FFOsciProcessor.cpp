@@ -856,10 +856,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     auto uniDetune = topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s);
     auto uniSpread = topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s);
     auto basicSqrPW = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s);
-    auto basicSqrGain = topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s);
-    auto basicSinGain = topo.NormalizedToIdentityFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s);
-    auto basicSawGain = topo.NormalizedToIdentityFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s);
-    auto basicTriGain = topo.NormalizedToIdentityFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s);
+    auto basicSqrGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s);
+    auto basicSinGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s);
+    auto basicSawGain = topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s);
+    auto basicTriGain = topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s);
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
     basePitchPlain.StoreRepeat(s, _oversamplingTimes, pitch);
