@@ -34,11 +34,21 @@ FMRatioRatio(int v)
   return ((v / FFOsciFMRatioCount) + 1.0f) / ((v % FFOsciFMRatioCount) + 1.0f);
 }
 
-// todo drop
 static inline float
-GenerateSin(float phase)
+GenerateBLEP(float phase, float incr)
 {
-  return std::sin(phase * FBTwoPi);
+  float blep = 0.0f;
+  if (phase < incr)
+  {
+    blep = phase / incr;
+    blep = (2.0f - blep) * blep - 1.0f;
+  }
+  else if (phase >= 1.0f - incr)
+  {
+    blep = (phase - 1.0f) / incr;
+    blep = (blep + 2.0f) * blep + 1.0f;
+  }
+  return blep;
 }
 
 // https://www.kvraudio.com/forum/viewtopic.php?t=375517
@@ -52,20 +62,8 @@ GenerateSaw(FBSIMDVector<float> phaseVec, FBSIMDVector<float> incrVec)
   phaseArray.Store(0, phaseVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
-    float blep = 0.0f;
-    float incr = incrArray.Get(i);
-    float phase = phaseArray.Get(i);
-    float saw = phase * 2.0f - 1.0f;
-    if (phase < incr)
-    {
-      blep = phase / incr;
-      blep = (2.0f - blep) * blep - 1.0f;
-    }
-    else if (phase >= 1.0f - incr)
-    {
-      blep = (phase - 1.0f) / incr;
-      blep = (blep + 2.0f) * blep + 1.0f;
-    }
+    float saw = phaseArray.Get(i) * 2.0f - 1.0f;
+    float blep = GenerateBLEP(phaseArray.Get(i), incrArray.Get(i));
     yArray.Set(i, saw - blep);
   }
   return yArray.Load(0);
@@ -77,12 +75,10 @@ GenerateSqr(
   FBSIMDVector<float> incrVec, FBSIMDVector<float> pwVec)
 {
   FBSIMDVector<float> minPW = 0.05f;
-  FBSIMDArray<float, FBSIMDFloatCount> phase2;
   auto realPW = (minPW + (1.0f - minPW) * pwVec) * 0.5f;
-  phase2.Store(0, phaseVec + realPW);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-    phase2.Set(i, FBPhaseWrap(phase2.Get(i)));
-  return (sawVec - GenerateSaw(phase2.Load(0), incrVec)) * 0.5f;
+  auto phase2 = phaseVec + realPW;
+  phase2 -= xsimd::floor(phase2);
+  return (sawVec - GenerateSaw(phase2, incrVec)) * 0.5f;
 }
 
 // https://dsp.stackexchange.com/questions/54790/polyblamp-anti-aliasing-in-c
@@ -943,15 +939,20 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         FBSIMDVector<float> saw;
         if (_basicSawOn || _basicSqrOn)
           saw = GenerateSaw(uniPhase, uniIncr);
+        if (_basicSawOn)
+        {
+          auto basicSawGain = basicSawGainPlain.Load(s);
+          thisUniOutput += saw * basicSawGain;
+        }
         if (_basicSinOn)
         {
           auto basicSinGain = basicSinGainPlain.Load(s);
           thisUniOutput += xsimd::sin(uniPhase * FBTwoPi) * basicSinGain;
         }
-        if(_basicSawOn)
+        if (_basicTriOn)
         {
-          auto basicSawGain = basicSawGainPlain.Load(s);
-          thisUniOutput += saw * basicSawGain;
+        //  auto basicTriGain = basicTriGainPlain.Load(s);
+          //thisUniOutput += GenerateTri(uniPhase, uniIncr) * basicTriGain;
         }
         if (_basicSqrOn)
         {
