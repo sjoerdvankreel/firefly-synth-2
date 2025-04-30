@@ -836,7 +836,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& basicSawGainNorm = procParams.acc.basicSawGain[0].Voice()[voice];
   auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];  
 
-  int offset = (_oversamplingTimes - 1) * FBFixedBlockSamples;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
@@ -847,6 +846,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSinGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
+  int offset = FBSIMDArray<float, FFOsciFixedBlockOversamples>::UpsampleOffset(_oversamplingTimes);
   for (int s = offset; s < FFOsciFixedBlockOversamples; s += FBSIMDFloatCount)
   {
     // todo debug this
@@ -867,19 +867,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     basicTriGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s));
     _phaseGen.Next(baseFreq / sampleRate);
   }
-  for (int s = 0; s < totalSamples; s ++)
-  {
-    basePitchPlain.Set(s, basePitchPlain.Get(offset + s / _oversamplingTimes));
-    baseFreqPlain.Set(s, baseFreqPlain.Get(offset + s / _oversamplingTimes));
-    uniBlendPlain.Set(s, uniBlendPlain.Get(offset + s / _oversamplingTimes));
-    uniDetunePlain.Set(s, uniDetunePlain.Get(offset + s / _oversamplingTimes));
-    uniSpreadPlain.Set(s, uniSpreadPlain.Get(offset + s / _oversamplingTimes));
-    basicSqrPWPlain.Set(s, basicSqrPWPlain.Get(offset + s / _oversamplingTimes));
-    basicSqrGainPlain.Set(s, basicSqrGainPlain.Get(offset + s / _oversamplingTimes));
-    basicSinGainPlain.Set(s, basicSinGainPlain.Get(offset + s / _oversamplingTimes));
-    basicSawGainPlain.Set(s, basicSawGainPlain.Get(offset + s / _oversamplingTimes));
-    basicTriGainPlain.Set(s, basicTriGainPlain.Get(offset + s / _oversamplingTimes));
-  }
+  basePitchPlain.UpsampleStretch(_oversamplingTimes);
+  baseFreqPlain.UpsampleStretch(_oversamplingTimes);
+  uniBlendPlain.UpsampleStretch(_oversamplingTimes);
+  uniDetunePlain.UpsampleStretch(_oversamplingTimes);
+  uniSpreadPlain.UpsampleStretch(_oversamplingTimes);
+  basicSqrPWPlain.UpsampleStretch(_oversamplingTimes);
+  basicSqrGainPlain.UpsampleStretch(_oversamplingTimes);
+  basicSinGainPlain.UpsampleStretch(_oversamplingTimes);
+  basicSawGainPlain.UpsampleStretch(_oversamplingTimes);
+  basicTriGainPlain.UpsampleStretch(_oversamplingTimes);
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
   float applyModMatrixLinearFM = _modMatrixExpoFM ? 0.0f : 1.0f;
