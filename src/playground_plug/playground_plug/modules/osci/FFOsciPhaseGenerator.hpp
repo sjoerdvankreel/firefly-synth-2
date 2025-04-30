@@ -13,7 +13,6 @@ class FFOsciPhaseGenerator final
 public:
   FFOsciPhaseGenerator() = default;
   explicit FFOsciPhaseGenerator(float x) : _x(x) {}
-  float Next(float incr, float fmModulator);
   FBSIMDVector<float> Next(FBSIMDVector<float> incr, FBSIMDVector<float> fmModulator);
 };
 
@@ -30,30 +29,24 @@ public:
     xsimd::batch<float, FBXSIMDBatchType> fmModulators);
 };
 
-inline float
-FFOsciPhaseGenerator::Next(float incr, float fmModulator)
-{
-  float y = _x;
-  _x += incr;
-  FBPhaseWrap(_x);
-  assert(0.0f <= _x && _x < 1.0f);
-  y += fmModulator;
-  FBPhaseWrap(y);
-  assert(0.0f <= y && y < 1.0f);
-  return y;
-}
-
 inline FBSIMDVector<float> 
 FFOsciPhaseGenerator::Next(FBSIMDVector<float> incr, FBSIMDVector<float> fmModulator)
 {
-  FBSIMDArray<float, FBSIMDTraits<float>::Size> y;
-  FBSIMDArray<float, FBSIMDTraits<float>::Size> incrArray;
-  FBSIMDArray<float, FBSIMDTraits<float>::Size> fmModulatorArray;
+  FBSIMDArray<float, FBSIMDFloatCount> yArray;
+  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
+  FBSIMDArray<float, FBSIMDFloatCount> fmModulatorArray;
   incrArray.Store(0, incr);
   fmModulatorArray.Store(0, fmModulator);
-  for (int i = 0; i < FBSIMDTraits<float>::Size; i++)
-    y.Set(i, Next(incrArray.Get(i), fmModulatorArray.Get(i)));
-  return y.Load(0);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float y = _x;
+    _x += incrArray.Get(i);
+    FBPhaseWrap(_x);
+    y += fmModulatorArray.Get(i);
+    FBPhaseWrap(y);
+    yArray.Set(i, y);
+  }
+  return yArray.Load(0);
 }
 
 inline xsimd::batch<float, FBXSIMDBatchType>
