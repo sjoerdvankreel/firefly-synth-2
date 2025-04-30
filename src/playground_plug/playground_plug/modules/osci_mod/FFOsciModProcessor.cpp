@@ -41,12 +41,12 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   {
     auto const& amMixNorm = procParams.acc.amMix[i].Voice()[voice];
     auto const& fmIndexNorm = procParams.acc.fmIndex[i].Voice()[voice];
-    for (int s = offset; s < offset + FBFixedBlockSamples; s += FBSIMDFloatCount)
+    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       if (_amMode[i] != FFOsciModAMMode::Off)
-        outputAMMix[i].Store(s, topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s));
+        outputAMMix[i].Store(offset + s, topo.NormalizedToIdentityFast(FFOsciModParam::AMMix, amMixNorm, s));
       if (_fmOn[i])
-        outputFMIndex[i].Store(s, topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s));
+        outputFMIndex[i].Store(offset + s, topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s));
     }
     outputAMMix[i].UpsampleStretch(_oversamplingTimes);
     outputFMIndex[i].UpsampleStretch(_oversamplingTimes);

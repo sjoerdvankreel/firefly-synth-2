@@ -847,7 +847,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
   int offset = FBSIMDArray<float, FFOsciFixedBlockOversamples>::UpsampleOffset(_oversamplingTimes);
-  for (int s = offset; s < offset + FBFixedBlockSamples; s += FBSIMDFloatCount)
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     // todo debug this
     // todo drop storerepeat
@@ -855,16 +855,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
-    basePitchPlain.Store(s, pitch);
-    baseFreqPlain.Store(s, baseFreq);
-    uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
-    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
-    uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
-    basicSqrPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s));
-    basicSqrGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s));
-    basicSinGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s));
-    basicSawGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s));
-    basicTriGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s));
+    basePitchPlain.Store(offset + s, pitch);
+    baseFreqPlain.Store(offset + s, baseFreq);
+    uniBlendPlain.Store(offset + s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
+    uniDetunePlain.Store(offset + s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
+    uniSpreadPlain.Store(offset + s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
+    basicSqrPWPlain.Store(offset + s, topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s));
+    basicSqrGainPlain.Store(offset + s, topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s));
+    basicSinGainPlain.Store(offset + s, topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s));
+    basicSawGainPlain.Store(offset + s, topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s));
+    basicTriGainPlain.Store(offset + s, topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s));
     _phaseGen.Next(baseFreq / sampleRate);
   }
   basePitchPlain.UpsampleStretch(_oversamplingTimes);
