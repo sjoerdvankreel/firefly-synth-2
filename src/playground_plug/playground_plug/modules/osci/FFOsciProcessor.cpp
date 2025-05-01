@@ -277,7 +277,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     }
     else
     {
-      _uniPosMHalfToHalf.Set(u, u / (_uniCount - 1.0f));
+      _uniPosMHalfToHalf.Set(u, u / (_uniCount - 1.0f) - 0.5f);
       _uniPosAbsHalfToHalf.Set(u, std::fabs(_uniPosMHalfToHalf.Get(u)));
     }
   }
@@ -979,6 +979,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
   }
 
+  // todo
   FBSIMDArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> uniOutputNonOversampled;
   if (_oversamplingTimes == 1)
     for (int u = 0; u < _uniCount; u++)
