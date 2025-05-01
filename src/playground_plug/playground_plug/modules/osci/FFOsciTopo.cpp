@@ -502,17 +502,5 @@ FFMakeOsciTopo()
   fmIndex.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
   fmIndex.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
 
-  auto& gLFOToGain = result->params[(int)FFOsciParam::GLFOToGain];
-  gLFOToGain.acc = true;
-  gLFOToGain.name = "GTG";
-  gLFOToGain.slotCount = 1;
-  gLFOToGain.unit = "%";
-  gLFOToGain.id = "{5F4BE3D9-EA5F-49D9-B6C5-8FCD0C279B93}";
-  gLFOToGain.type = FBParamType::Identity;
-  auto selectGLFOToGain = [](auto& module) { return &module.acc.gLFOToGain; };
-  gLFOToGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGLFOToGain);
-  gLFOToGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectGLFOToGain);
-  gLFOToGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectGLFOToGain);
-
   return result;
 }

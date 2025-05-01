@@ -66,18 +66,6 @@ MakeSectionUnison(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeSectionGLFOToGain(FBPlugGUI* plugGUI, int moduleSlot)
-{
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0 });
-  auto gLFOToGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::GLFOToGain, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gLFOToGain));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gLFOToGain, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 1 });
-  return grid;
-}
-
-static Component*
 MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
@@ -199,13 +187,12 @@ static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
   // TODO move marksection to here
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  grid->Add(0, 1, MakeSectionGLFOToGain(plugGUI, moduleSlot));
-  grid->Add(0, 2, MakeSectionUnison(plugGUI, moduleSlot));
-  grid->Add(0, 3, MakeSectionBasic(plugGUI, moduleSlot));
-  grid->Add(0, 3, MakeSectionDSF(plugGUI, moduleSlot));
-  grid->Add(0, 3, MakeSectionFM(plugGUI, moduleSlot));
+  grid->Add(0, 1, MakeSectionUnison(plugGUI, moduleSlot));
+  grid->Add(0, 2, MakeSectionBasic(plugGUI, moduleSlot));
+  grid->Add(0, 2, MakeSectionDSF(plugGUI, moduleSlot));
+  grid->Add(0, 2, MakeSectionFM(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
