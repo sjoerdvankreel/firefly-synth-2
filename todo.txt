@@ -1,4 +1,5 @@
-hardsync
+drop fastfloor and friends ? just everything xsimd ?
+hardsync -- neh
 set exact value
 move the oversampling switch
 store the selected tab

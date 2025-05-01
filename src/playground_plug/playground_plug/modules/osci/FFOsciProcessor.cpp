@@ -125,58 +125,46 @@ GenerateTri(FBSIMDVector<float> phaseVec, FBSIMDVector<float> incrVec)
 }
 
 // https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
-static inline void
+static inline FBSIMDVector<float>
 GenerateDSF(
-  float const* phases, float const* freqs, float const* decays,
-  float const* distFreqs, float const* overtones, float* outs)
+  FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec, 
+  FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec, 
+  FBSIMDVector<float> overtoneVec)
 {
   float const decayRange = 0.99f;
   float const scaleFactor = 0.975f;
 
-  auto freqBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(freqs);
-  auto decayBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(decays);
-  auto phaseBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(phases);
-  auto distFreqBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(distFreqs);
-  auto overtonesBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(overtones);
-
-  xsimd::batch<float, FBXSIMDBatchType> n = overtonesBatch;
-  xsimd::batch<float, FBXSIMDBatchType> w = decayBatch * decayRange;
-  xsimd::batch<float, FBXSIMDBatchType> wPowNp1 = xsimd::pow(w, overtonesBatch + 1.0f);
-  xsimd::batch<float, FBXSIMDBatchType> u = 2.0f * FBPi * phaseBatch;
-  xsimd::batch<float, FBXSIMDBatchType> v = 2.0f * FBPi * distFreqBatch * phaseBatch / freqBatch;
-  xsimd::batch<float, FBXSIMDBatchType> a = w * xsimd::sin(u + n * v) - xsimd::sin(u + (n + 1.0f) * v);
-  xsimd::batch<float, FBXSIMDBatchType> x = (w * xsimd::sin(v - u) + xsimd::sin(u)) + wPowNp1 * a;
-  xsimd::batch<float, FBXSIMDBatchType> y = 1.0f + w * w - 2.0f * w * xsimd::cos(v);
-  xsimd::batch<float, FBXSIMDBatchType> scale = (1.0f - wPowNp1) / (1.0f - w);
-  auto outBatch = x * scaleFactor / (y * scale);
-  outBatch.store_aligned(outs);
+  auto n = overtoneVec;
+  auto w = decayVec * decayRange;
+  auto wPowNp1 = xsimd::pow(FBSIMDVector<float>(w), overtoneVec + 1.0f);
+  auto u = 2.0f * FBPi * phaseVec;
+  auto v = 2.0f * FBPi * distFreqVec * phaseVec / freqVec;
+  auto a = w * xsimd::sin(u + n * v) - xsimd::sin(u + (n + 1.0f) * v);
+  auto x = (w * xsimd::sin(v - u) + xsimd::sin(u)) + wPowNp1 * a;
+  auto y = 1.0f + w * w - 2.0f * w * xsimd::cos(v);
+  auto scale = (1.0f - wPowNp1) / (1.0f - w);
+  return x * scaleFactor / (y * scale);
 }
 
-// fixed overtone count limited by nyquist
-static inline void
+static inline FBSIMDVector<float>
 GenerateDSFOvertones(
-  float const* phases, float const* freqs, float const* decays,
-  float const* distFreqs, float const* maxOvertones, int overtones_, float* outs)
+  FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec, 
+  FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec, 
+  FBSIMDVector<float> maxOvertoneVec, float overtones_)
 {
-  alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> overtones;
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-    overtones[i] = static_cast<float>(std::min(overtones_, FBFastFloor(maxOvertones[i])));
-  return GenerateDSF(phases, freqs, decays, distFreqs, overtones.data(), outs);
+  auto overtoneVec = xsimd::min(FBSIMDVector<float>(overtones_), xsimd::floor(maxOvertoneVec));
+  return GenerateDSF(phaseVec, freqVec, decayVec, distFreqVec, overtoneVec);
 }
 
-// overtone count determined by available bandwidth between fundamental and nyquist
-static inline void
+static inline FBSIMDVector<float>
 GenerateDSFBandwidth(
-  float const* phases, float const* freqs, float const* decays,
-  float const* distFreqs, float const* maxOvertones, float bandwidth, float* outs)
+  FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec, 
+  FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec, 
+  FBSIMDVector<float> maxOvertoneVec, float bandwidth)
 {
-  alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> overtones;
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    overtones[i] = 1.0f + FBFastFloor(bandwidth * (maxOvertones[i] - 1));
-    overtones[i] = std::min(overtones[i], static_cast<float>(FBFastFloor(maxOvertones[i])));
-  }
-  return GenerateDSF(phases, freqs, decays, distFreqs, overtones.data(), outs);
+  auto overtoneVec = 1.0f + xsimd::floor(bandwidth * (maxOvertoneVec - 1.0f));
+  overtoneVec = xsimd::min(overtoneVec, xsimd::floor(maxOvertoneVec));
+  return GenerateDSF(phaseVec, freqVec, decayVec, distFreqVec, overtoneVec);
 }
 
 FFOsciProcessor::
@@ -239,8 +227,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _basicTriOn = topo.NormalizedToBoolFast(FFOsciParam::BasicTriOn, basicTriOnNorm);
   _basicSqrOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSqrOn, basicSqrOnNorm);
   _dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, dsfModeNorm);
-  _dsfDistance = topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance, dsfDistanceNorm);
-  _dsfOvertones = topo.NormalizedToDiscreteFast(FFOsciParam::DSFOvertones, dsfOvertonesNorm);
+  _dsfDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance, dsfDistanceNorm));
+  _dsfOvertones = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFOvertones, dsfOvertonesNorm));
   _dsfBandwidthPlain = topo.NormalizedToLog2Fast(FFOsciParam::DSFBandwidth, dsfBandwidthNorm);
   _fmExp = topo.NormalizedToBoolFast(FFOsciParam::FMExp, fmExpNorm);
   _fmRatioMode = topo.NormalizedToListFast<FFOsciFMRatioMode>(FFOsciParam::FMRatioMode, fmRatioModeNorm);
@@ -868,6 +856,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSinGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
@@ -881,11 +870,11 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
     if (_type == FFOsciType::Basic)
     {
-      if(_basicSinOn)
+      if (_basicSinOn)
         basicSinGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s));
-      if(_basicSawOn)
+      if (_basicSawOn)
         basicSawGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s));
-      if(_basicTriOn)
+      if (_basicTriOn)
         basicTriGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s));
       if (_basicSqrOn)
       {
@@ -893,6 +882,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         basicSqrGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s));
       }
     }
+    else if (_type == FFOsciType::DSF)
+      dsfDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm, s));
+    else
+      assert(false);
     _phaseGen.Next(baseFreq / sampleRate);
   }
   if (_oversamplingTimes != 1)
@@ -904,11 +897,11 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     uniSpreadPlain.UpsampleStretch<FFOsciOversamplingTimes>();
     if (_type == FFOsciType::Basic)
     {
-      if(_basicSinOn)
+      if (_basicSinOn)
         basicSinGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-      if(_basicSawOn)
+      if (_basicSawOn)
         basicSawGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-      if(_basicTriOn)
+      if (_basicTriOn)
         basicTriGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
       if (_basicSqrOn)
       {
@@ -916,6 +909,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         basicSqrGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
       }
     }
+    else if (_type == FFOsciType::DSF)
+      dsfDecayPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    else
+      assert(false);
   }
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
@@ -972,6 +969,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           thisUniOutput += GenerateSqr(saw, uniPhase, uniIncr, basicSqrPW) * basicSqrGain;
         }
       }
+      else if (_type == FFOsciType::DSF)
+      {
+        auto dsfDecay = dsfDecayPlain.Load(s);
+        auto dsfDistFreq = _dsfDistance * uniFreq;
+        auto dsfMaxOvertones = (sampleRate * 0.5f - uniFreq) / dsfDistFreq;
+        if (_dsfMode == FFOsciDSFMode::Overtones)
+          thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfOvertones);
+        else if (_dsfMode == FFOsciDSFMode::Bandwidth)
+          thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
+        else assert(false);
+      }
+      else assert(false);
 
       auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
       thisUniOutput *= uniBlend;
