@@ -55,7 +55,7 @@ class FFOsciProcessor final
   std::array<FFOsciPhaseGenerator, FFOsciUniMaxCount> _uniPhaseGens = {};
   FBSIMDArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> _uniOutputDownsampled = {};
 
-  FBSIMDArray<float, FFOsciUniMaxCount> _prevUniFMOutput = {};
+  FBSIMDArray2<float, FFOsciUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   FBMDArray2<FFOsciFMPhaseGenerator, FFOsciUniMaxCount / FBSIMDFloatCount, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
 
   template <bool ExpoFM>

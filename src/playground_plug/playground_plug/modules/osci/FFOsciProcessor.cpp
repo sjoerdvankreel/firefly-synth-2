@@ -590,71 +590,165 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
   float applyModMatrixLinearFM = _modMatrixExpoFM ? 0.0f : 1.0f;
-  for (int u = 0; u < _uniCount; u++)
+  if (_type != FFOsciType::FM)
   {
-    float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
-    for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+    for (int u = 0; u < _uniCount; u++)
     {
-      FBSIMDVector<float> matrixFMMod(0.0f);
-      for (int src = 0; src < state.moduleSlot; src++)
-        if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
-        {
-          int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-          auto const& thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Load(s);
-          matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Load(s);
-        }
-
-      auto uniPitch = basePitchPlain.Load(s);
-      uniPitch += uniPosMHalfToHalf * uniDetunePlain.Load(s);
-      uniPitch += matrixFMMod * uniPitch * applyModMatrixExpoFM;
-
-      auto uniFreq = FBPitchToFreq(uniPitch);
-      auto uniIncr = uniFreq / oversampledRate;
-      auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
-
-      FBSIMDVector<float> thisUniOutput = 0.0f;
-      if (_type == FFOsciType::Basic)
+      float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
+      for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
       {
-        FBSIMDVector<float> saw;
-        if (_basicSawOn || _basicSqrOn)
-          saw = GenerateSaw(uniPhase, uniIncr);
-        if (_basicSawOn)
+        FBSIMDVector<float> matrixFMMod(0.0f);
+        for (int src = 0; src < state.moduleSlot; src++)
+          if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
+          {
+            int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+            auto const& thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Load(s);
+            matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Load(s);
+          }
+
+        auto uniPitch = basePitchPlain.Load(s);
+        uniPitch += uniPosMHalfToHalf * uniDetunePlain.Load(s);
+        uniPitch += matrixFMMod * uniPitch * applyModMatrixExpoFM;
+
+        auto uniFreq = FBPitchToFreq(uniPitch);
+        auto uniIncr = uniFreq / oversampledRate;
+        auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
+
+        FBSIMDVector<float> thisUniOutput = 0.0f;
+        if (_type == FFOsciType::Basic)
         {
-          auto basicSawGain = basicSawGainPlain.Load(s);
-          thisUniOutput += saw * basicSawGain;
+          FBSIMDVector<float> saw;
+          if (_basicSawOn || _basicSqrOn)
+            saw = GenerateSaw(uniPhase, uniIncr);
+          if (_basicSawOn)
+          {
+            auto basicSawGain = basicSawGainPlain.Load(s);
+            thisUniOutput += saw * basicSawGain;
+          }
+          if (_basicSinOn)
+          {
+            auto basicSinGain = basicSinGainPlain.Load(s);
+            thisUniOutput += xsimd::sin(uniPhase * FBTwoPi) * basicSinGain;
+          }
+          if (_basicTriOn)
+          {
+            auto basicTriGain = basicTriGainPlain.Load(s);
+            thisUniOutput += GenerateTri(uniPhase, uniIncr) * basicTriGain;
+          }
+          if (_basicSqrOn)
+          {
+            auto basicSqrPW = basicSqrPWPlain.Load(s);
+            auto basicSqrGain = basicSqrGainPlain.Load(s);
+            thisUniOutput += GenerateSqr(saw, uniPhase, uniIncr, basicSqrPW) * basicSqrGain;
+          }
         }
-        if (_basicSinOn)
+        else if (_type == FFOsciType::DSF)
         {
-          auto basicSinGain = basicSinGainPlain.Load(s);
-          thisUniOutput += xsimd::sin(uniPhase * FBTwoPi) * basicSinGain;
+          auto dsfDecay = dsfDecayPlain.Load(s);
+          auto dsfDistFreq = _dsfDistance * uniFreq;
+          auto dsfMaxOvertones = (sampleRate * 0.5f - uniFreq) / dsfDistFreq;
+          if (_dsfMode == FFOsciDSFMode::Overtones)
+            thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfOvertones);
+          else if (_dsfMode == FFOsciDSFMode::Bandwidth)
+            thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
+          else assert(false);
         }
-        if (_basicTriOn)
-        {
-          auto basicTriGain = basicTriGainPlain.Load(s);
-          thisUniOutput += GenerateTri(uniPhase, uniIncr) * basicTriGain;
-        }
-        if (_basicSqrOn)
-        {
-          auto basicSqrPW = basicSqrPWPlain.Load(s);
-          auto basicSqrGain = basicSqrGainPlain.Load(s);
-          thisUniOutput += GenerateSqr(saw, uniPhase, uniIncr, basicSqrPW) * basicSqrGain;
-        }
-      }
-      else if (_type == FFOsciType::DSF)
-      {
-        auto dsfDecay = dsfDecayPlain.Load(s);
-        auto dsfDistFreq = _dsfDistance * uniFreq;
-        auto dsfMaxOvertones = (sampleRate * 0.5f - uniFreq) / dsfDistFreq;
-        if (_dsfMode == FFOsciDSFMode::Overtones)
-          thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfOvertones);
-        else if (_dsfMode == FFOsciDSFMode::Bandwidth)
-          thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
         else assert(false);
+        uniOutputOversampled[u].Store(s, thisUniOutput);
       }
-      else assert(false);  
-      uniOutputOversampled[u].Store(s, thisUniOutput);
     }
   }
+
+  // todo get the fm matrix in here
+  // todo expo fm
+  if (_type == FFOsciType::FM)
+  {
+    for (int s = 0; s < totalSamples; s++)
+      for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
+      {
+        int block = u / FBSIMDFloatCount;
+        auto uniPosMHalfToHalf = _uniPosMHalfToHalf.Load(u);
+        auto op3UniPitch = basePitchPlain.Get(s) * uniPosMHalfToHalf * uniDetunePlain.Get(s);
+        auto op3UniFreq = FBPitchToFreq(op3UniPitch);
+        auto op2UniFreq = op3UniFreq / fmRatioPlain[1].Get(s);
+        auto op1UniFreq = op2UniFreq / fmRatioPlain[0].Get(s);
+        auto op1UniIncr = op1UniFreq / oversampledRate;
+        auto op2UniIncr = op2UniFreq / oversampledRate;
+        auto op3UniIncr = op3UniFreq / oversampledRate;
+
+        FBSIMDVector<float> fmTo1 = 0.0f;
+        fmTo1 += fmIndexPlain[0].Get(s) * _prevUniFMOutput[0].Load(u);
+        fmTo1 += fmIndexPlain[3].Get(s) * _prevUniFMOutput[1].Load(u);
+        fmTo1 += fmIndexPlain[6].Get(s) * _prevUniFMOutput[2].Load(u);
+        auto output1 = xsimd::sin(_uniFMPhaseGens[0][block].Next(op1UniIncr, fmTo1) * FBTwoPi);
+
+        FBSIMDVector<float> fmTo2 = 0.0f;
+        fmTo2 += fmIndexPlain[1].Get(s) * output1;
+        fmTo2 += fmIndexPlain[4].Get(s) * _prevUniFMOutput[1].Load(u);
+        fmTo2 += fmIndexPlain[7].Get(s) * _prevUniFMOutput[2].Load(u);
+        auto output2 = xsimd::sin(_uniFMPhaseGens[1][block].Next(op2UniIncr, fmTo2) * FBTwoPi);
+
+        FBSIMDVector<float> fmTo3 = 0.0f;
+        fmTo3 += fmIndexPlain[2].Get(s) * output1;
+        fmTo3 += fmIndexPlain[5].Get(s) * output2;
+        fmTo3 += fmIndexPlain[8].Get(s) * _prevUniFMOutput[2].Load(u);
+        auto output3 = xsimd::sin(_uniFMPhaseGens[2][block].Next(op3UniIncr, fmTo3) * FBTwoPi);
+
+        _prevUniFMOutput[0].Store(u, output1);
+        _prevUniFMOutput[1].Store(u, output2);
+        _prevUniFMOutput[2].Store(u, output3);
+
+        FBSIMDArray<float, FBSIMDFloatCount> outputArray;
+        outputArray.Store(0, output3);
+        for (int v = 0; v < FBSIMDFloatCount; v++)
+          uniOutputOversampled[u + v].Set(s, outputArray.Get(v));
+      }
+  }
+
+#if 0
+        auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
+
+        xsimd::batch<float, FBXSIMDBatchType> fmTo1 = 0.0f;
+        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUniOutputForFM[0][subUniBlock];
+        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
+        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
+        auto output1 = CalcOneSampleForFM<ExpoFM>(
+          oversampledRate, subUniBlock, 0,
+          _uniPitchesForFM[0][os][s].data() + u,
+          _uniIncrsForFM[0][os][s].data() + u, fmTo1,
+          0.0f);
+
+        xsimd::batch<float, FBXSIMDBatchType> fmTo2 = 0.0f;
+        fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
+        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
+        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
+        auto output2 = CalcOneSampleForFM<ExpoFM>(
+          oversampledRate, subUniBlock, 1,
+          _uniPitchesForFM[1][os][s].data() + u,
+          _uniIncrsForFM[1][os][s].data() + u, fmTo2,
+          0.0f);
+
+        // op3 is output, it also takes the external inter-osci fm
+        xsimd::batch<float, FBXSIMDBatchType> fmTo3 = 0.0f;
+        fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
+        fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
+        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
+        auto externalFMModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_externalFMModulatorsForFM[os][s].data() + u);
+        auto output3 = CalcOneSampleForFM<ExpoFM>(
+          oversampledRate, subUniBlock, 2,
+          _uniPitchesForFM[2][os][s].data() + u,
+          _uniIncrsForFM[2][os][s].data() + u, fmTo3,
+          externalFMModulatorsForFMBatch);
+
+        _prevUniOutputForFM[0][subUniBlock] = output1;
+        _prevUniOutputForFM[1][subUniBlock] = output2;
+        _prevUniOutputForFM[2][subUniBlock] = output3;
+
+        alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> outputArray;
+        output3.store_aligned(outputArray.data());
+        for (int v = 0; v < FBSIMDFloatCount; v++)
+          unisonOutputMaybeOversampled[u + v][os][s] = outputArray[v];
+#endif
 
   for (int u = 0; u < _uniCount; u++)
     for (int src = 0; src < state.moduleSlot; src++)
