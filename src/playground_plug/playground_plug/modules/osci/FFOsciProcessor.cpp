@@ -669,29 +669,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
   }
 
-#if 0
-
-  // run the core osci algo
-  if (_voiceState.type == FFOsciType::Basic)
-    ProcessBasic(state, oversamplingTimes);
-  else if (_voiceState.type == FFOsciType::DSF)
-    ProcessDSF(state, oversamplingTimes);
-  else if (_voiceState.type == FFOsciType::FM)
-    if (_voiceState.fmExp)
-      ProcessFM<true>(state, oversamplingTimes, oversampledRate);
-    else
-      ProcessFM<false>(state, oversamplingTimes, oversampledRate);
-
-  // todo
-  // apply AM/RM
-  ProcessModMatrixAMModulators(
-    state.moduleSlot,
-    oversamplingTimes,
-    procState->dsp.voice[voice].osciMod.outputAMMix,
-    procState->dsp.voice[voice].osci);
-
-#endif
-
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return _phaseGen.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
