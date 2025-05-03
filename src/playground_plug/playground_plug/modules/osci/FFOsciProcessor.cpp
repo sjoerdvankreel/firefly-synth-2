@@ -120,6 +120,28 @@ GenerateHalf(
 }
 
 static inline FBSIMDVector<float>
+GenerateFull(
+  FBSIMDVector<float> phaseVec,
+  FBSIMDVector<float> incrVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> yArray;
+  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
+  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
+  incrArray.Store(0, incrVec);
+  phaseArray.Store(0, phaseVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float incr = incrArray.Get(i);
+    float phase = phaseArray.Get(i);
+    float p = FBPhaseWrap(phase + 0.25f);
+    float y = 2.0f * std::sin(FBPi * p) - 4.0f / FBPi;
+    y += FBTwoPi * incr * GenerateBLAMP(p, incr);
+    yArray.Set(i, y);
+  }
+  return yArray.Load(0);
+}
+
+static inline FBSIMDVector<float>
 GenerateTri(
   FBSIMDVector<float> phaseVec,
   FBSIMDVector<float> incrVec, 
@@ -508,7 +530,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           {
             auto basicSinGain = basicSinGainPlain.Load(s);
             // TODO thisUniOutput += xsimd::sin(uniPhase * FBTwoPi) * basicSinGain;
-            thisUniOutput += GenerateHalf(uniPhase, uniIncr) * basicSinGain;
+            thisUniOutput += GenerateFull(uniPhase, uniIncr) * basicSinGain;
           }
           if (_basicTriOn)
           {
@@ -708,113 +730,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
 #if 0
 
-/*
-PolyBLEP Waveform generator ported from the Jesusonic code by Tale
-http://www.taletn.com/reaper/mono_synth/
-
-Permission has been granted to release this port under the WDL/IPlug license:
-
-    This software is provided 'as-is', without any express or implied
-    warranty.  In no event will the authors be held liable for any damages
-    arising from the use of this software.
-
-    Permission is granted to anyone to use this software for any purpose,
-    including commercial applications, and to alter it and redistribute it
-    freely, subject to the following restrictions:
-
-    1. The origin of this software must not be misrepresented; you must not
-       claim that you wrote the original software. If you use this software
-       in a product, an acknowledgment in the product documentation would be
-       appreciated but is not required.
-    2. Altered source versions must be plainly marked as such, and must not be
-       misrepresented as being the original software.
-    3. This notice may not be removed or altered from any source distribution.
-*/
-
-#include "PolyBLEP.h"
-
-#define _USE_MATH_DEFINES
-
-#include <math.h>
-#include <cmath>
-#include <cstdint>
-
-const double TWO_PI = 2 * M_PI;
-
-template<typename T>
-inline T square_number(const T& x) {
-  return x * x;
-}
-
-// Adapted from "Phaseshaping Oscillator Algorithms for Musical Sound
-// Synthesis" by Jari Kleimola, Victor Lazzarini, Joseph Timoney, and Vesa
-// Valimaki.
-// http://www.acoustics.hut.fi/publications/papers/smc2010-phaseshaping/
-inline double blep(double t, double dt) {
-  if (t < dt) {
-    return -square_number(t / dt - 1);
-  }
-  else if (t > 1 - dt) {
-    return square_number((t - 1) / dt + 1);
-  }
-  else {
-    return 0;
-  }
-}
-
-// Derived from blep().
-inline double blamp(double t, double dt) {
-  if (t < dt) {
-    t = t / dt - 1;
-    return -1 / 3.0 * square_number(t) * t;
-  }
-  else if (t > 1 - dt) {
-    t = (t - 1) / dt + 1;
-    return 1 / 3.0 * square_number(t) * t;
-  }
-  else {
-    return 0;
-  }
-}
-
-template<typename T>
-inline int64_t bitwiseOrZero(const T& t) {
-  return static_cast<int64_t>(t) | 0;
-}
-
-PolyBLEP::PolyBLEP(double sampleRate, Waveform waveform, double initialFrequency)
-  : waveform(waveform), sampleRate(sampleRate), amplitude(1.0), t(0.0) {
-  setSampleRate(sampleRate);
-  setFrequency(initialFrequency);
-  setWaveform(waveform);
-  setPulseWidth(0.5);
-}
-
-PolyBLEP::~PolyBLEP() {
-
-}
-
-void PolyBLEP::setdt(double time) {
-  freqInSecondsPerSample = time;
-}
-
-void PolyBLEP::setFrequency(double freqInHz) {
-  setdt(freqInHz / sampleRate);
-}
-
-void PolyBLEP::setSampleRate(double sampleRate) {
-  const double freqInHz = getFreqInHz();
-  this->sampleRate = sampleRate;
-  setFrequency(freqInHz);
-}
-
-double PolyBLEP::getFreqInHz() const {
-  return freqInSecondsPerSample * sampleRate;
-}
-
-void PolyBLEP::setPulseWidth(double pulseWidth) {
-  this->pulseWidth = pulseWidth;
-}
+// TODOTODOTODO
 
 void PolyBLEP::sync(double phase) {
   t = phase;
@@ -824,68 +740,6 @@ void PolyBLEP::sync(double phase) {
   else {
     t += 1 - bitwiseOrZero(t);
   }
-}
-
-void PolyBLEP::setWaveform(Waveform waveform) {
-  this->waveform = waveform;
-}
-
-double PolyBLEP::get() const {
-  if (getFreqInHz() >= sampleRate / 4) {
-    return sin();
-  }
-  else switch (waveform) {
-  case SINE:
-    return sin();
-  case COSINE:
-    return cos();
-  case TRIANGLE:
-    return tri();
-  case SQUARE:
-    return sqr();
-  case RECTANGLE:
-    return rect();
-  case SAWTOOTH:
-    return saw();
-  case RAMP:
-    return ramp();
-  case MODIFIED_TRIANGLE:
-    return tri2();
-  case MODIFIED_SQUARE:
-    return sqr2();
-  case HALF_WAVE_RECTIFIED_SINE:
-    return half();
-  case FULL_WAVE_RECTIFIED_SINE:
-    return full();
-  case TRIANGULAR_PULSE:
-    return trip();
-  case TRAPEZOID_FIXED:
-    return trap();
-  case TRAPEZOID_VARIABLE:
-    return trap2();
-  default:
-    return 0.0;
-  }
-}
-
-double PolyBLEP::half() const {
-  double t2 = t + 0.5;
-  t2 -= bitwiseOrZero(t2);
-
-  double y = (t < 0.5 ? 2 * std::sin(TWO_PI * t) - 2 / M_PI : -2 / M_PI);
-  y += TWO_PI * freqInSecondsPerSample * (blamp(t, freqInSecondsPerSample) + blamp(t2, freqInSecondsPerSample));
-
-  return amplitude * y;
-}
-
-double PolyBLEP::full() const {
-  double _t = this->t + 0.25;
-  _t -= bitwiseOrZero(_t);
-
-  double y = 2 * std::sin(M_PI * _t) - 4 / M_PI;
-  y += TWO_PI * freqInSecondsPerSample * blamp(_t, freqInSecondsPerSample);
-
-  return amplitude * y;
 }
 
 double PolyBLEP::trip() const {
