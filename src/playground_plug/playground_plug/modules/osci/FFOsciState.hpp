@@ -24,7 +24,7 @@ public:
   FFOsciDSPState();
   ~FFOsciDSPState();
   FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
-  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciUniMaxCount> uniOutput = {};
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciUniMaxCount> uniOutputOversampled = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 

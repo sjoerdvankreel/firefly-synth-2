@@ -47,28 +47,11 @@ class FFOsciProcessor final
   FBTrackingPhaseGenerator _phaseGen = {};
   juce::dsp::Oversampling<float> _oversampler;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
+  juce::dsp::AudioBlock<float> _downsampledBlock = {};
   FBSIMDArray<float, FFOsciUniMaxCount> _uniPosMHalfToHalf = {};
   FBSIMDArray<float, FFOsciUniMaxCount> _uniPosAbsHalfToHalf = {};
   std::array<FFOsciPhaseGenerator, FFOsciUniMaxCount> _uniPhaseGens = {};
-  
-  // todo hope to drop all this stuff
-#if 0
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniFreqs = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniIncrs = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPhases = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _uniPitches = {};
-  alignas(FBSIMDAlign) FFOsciOversampledUnisonArray _modMatrixFMModulators = {};
-
-  alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<FFOsciFMPhasesGenerator> _uniPhaseGensForFM = {};
-  alignas(FBSIMDAlign) FFOsciUnisonOperatorArrayForFM<xsimd::batch<float, FBXSIMDBatchType>> _prevUniOutputForFM = {};
-  alignas(FBSIMDAlign) FBMDArray3<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes> _externalFMModulatorsForFM = {};
-  alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniIncrsForFM = {};
-  alignas(FBSIMDAlign) FBMDArray4<float, FFOsciUnisonMaxCount, FBFixedBlockSamples, FFOsciOverSamplingTimes, FFOsciFMOperatorCount> _uniPitchesForFM = {};
-
-#endif
-
-  void ProcessBasic(FBModuleProcState& state, int oversamplingTimes);
-  void ProcessDSF(FBModuleProcState& state, int oversamplingTimes);
+  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> _uniOutputDownsampled = {};
 
   template <bool ExpoFM>
   void ProcessFM(
@@ -80,60 +63,14 @@ class FFOsciProcessor final
     xsimd::batch<float, FBXSIMDBatchType> fmToOp,
     xsimd::batch<float, FBXSIMDBatchType> externalFMModulatorsForFMBatch);
 
-  void ProcessUniPhasesNonFM(int oversamplingTimes);
-  void ProcessUniFreqAndDelta(int oversamplingTimes, float oversampledRate);
-
 #if 0 //todo
-  void ProcessDownSampling(
-    int oversamplingTimes,
-    FFOsciOversampledUnisonArray const& uniOutputMaybeOversampled,
-    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount>& uniOutputNonOversampled);
 
-  void ProcessUniBlendToVoices(
-    int oversamplingTimes,
-    FBFixedFloatArray const& uniBlendPlain,
-    std::array<float, FFOsciUnisonMaxCount> const& uniPositionsAbsHalfToHalf,
-    FFOsciOversampledUnisonArray& unisonOutputMaybeOversampled);
-
-  void ProcessUniSpreadToStereo(
-    FBFixedFloatArray const& uniSpreadPlain,
-    std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf,
-    std::array<FBFixedFloatArray, FFOsciUnisonMaxCount> const& uniOutputNonOversampled,
-    FBFixedFloatAudioArray& output);
-
-  void ProcessBasePitchAndFreq(
-    FBStaticModule const& topo, float sampleRate,
-    FBAccParamState const& coarseNorm, FBAccParamState const& fineNorm,
-    FBFixedFloatArray& basePitch, FBFixedFloatArray& baseFreq);
-
-  void ProcessUniPitches(
-    int oversamplingTimes,
-    FBFixedFloatArray const& basePitch,
-    FBFixedFloatArray const& uniDetunePlain,
-    std::array<float, FFOsciUnisonMaxCount> const& uniPositionsMHalfToHalf);
 
   void ProcessModMatrixAMModulators(
     int moduleSlot,
     int oversamplingTimes,
     std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputAMMix,
     std::array<FFOsciDSPState, FFOsciCount>& allOsciDSPStates);
-
-  void ProcessModMatrixFMModulators(
-    int moduleSlot,
-    int oversamplingTimes,
-    std::array<FFOsciDSPState, FFOsciCount> const& allOsciDSPStates,
-    std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputFMIndex);
-
-  void ProcessUniBlendDetuneSpreadAndPos(
-    FBStaticModule const& topo,
-    FBAccParamState const& uniBlendNorm,
-    FBAccParamState const& uniDetuneNorm,
-    FBAccParamState const& uniSpreadNorm,
-    FBFixedFloatArray& uniBlendPlain,
-    FBFixedFloatArray& uniDetunePlain,
-    FBFixedFloatArray& uniSpreadPlain,
-    std::array<float, FFOsciUnisonMaxCount>& uniPositionsMHalfToHalf,
-    std::array<float, FFOsciUnisonMaxCount>& uniPositionsAbsHalfToHalf);
 
 #endif
 
