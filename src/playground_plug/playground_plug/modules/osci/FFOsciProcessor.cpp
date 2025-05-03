@@ -501,6 +501,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain;
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
@@ -509,10 +511,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     auto baseFreq = FBPitchToFreq(pitch);
     basePitchPlain.Store(s, pitch);
     baseFreqPlain.Store(s, baseFreq);
+    _phaseGen.Next(baseFreq / sampleRate);
+
     gainPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Gain, gainNorm, s));
     uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
     uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
+
     if (_type == FFOsciType::Basic)
     {
       if (_basicSinOn)
@@ -529,9 +534,26 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else if (_type == FFOsciType::DSF)
       dsfDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm, s));
-    else
-      assert(false);
-    _phaseGen.Next(baseFreq / sampleRate);
+    else if (_type == FFOsciType::FM)
+    {
+      for (int m = 0; m < FFOsciFMMatrixSize; m++)
+      {
+        auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
+        fmIndexPlain[m].Store(s, topo.NormalizedToLog2Fast(FFOsciParam::FMIndex, fmIndexNorm, s));
+      }
+      if (_fmRatioMode == FFOsciFMRatioMode::Ratio)
+      {
+        fmRatioPlain[0].Store(s, _fmRatioRatio12);
+        fmRatioPlain[1].Store(s, _fmRatioRatio23);
+      }
+      else
+        for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
+        {
+          auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
+          fmRatioPlain[o].Store(s, topo.NormalizedToLog2Fast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, s));
+        }
+    }
+    else assert(false);
   }
   if (_oversamplingTimes != 1)
   {
@@ -557,8 +579,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else if (_type == FFOsciType::DSF)
       dsfDecayPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    else
-      assert(false);
+    else if (_type == FFOsciType::FM)
+    {
+      for (int m = 0; m < FFOsciFMMatrixSize; m++)
+        fmIndexPlain[m].UpsampleStretch<FFOsciOversamplingTimes>();
+      for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
+        fmRatioPlain[o].UpsampleStretch<FFOsciOversamplingTimes>();
+    } else assert(false);
   }
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
