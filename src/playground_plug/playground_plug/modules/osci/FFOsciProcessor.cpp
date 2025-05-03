@@ -529,8 +529,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           if (_basicSinOn)
           {
             auto basicSinGain = basicSinGainPlain.Load(s);
-            // TODO thisUniOutput += xsimd::sin(uniPhase * FBTwoPi) * basicSinGain;
-            thisUniOutput += GenerateFull(uniPhase, uniIncr) * basicSinGain;
+            thisUniOutput += GenerateSin(uniPhase) * basicSinGain;
           }
           if (_basicTriOn)
           {
