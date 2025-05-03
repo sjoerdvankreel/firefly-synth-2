@@ -70,6 +70,13 @@ GenerateBLAMP(float phase, float incr)
 }
 
 static inline FBSIMDVector<float>
+GenerateSin(
+  FBSIMDVector<float> phaseVec)
+{
+  return xsimd::sin(phaseVec * FBTwoPi);
+}
+
+static inline FBSIMDVector<float>
 GenerateSaw(
   FBSIMDVector<float> phaseVec,
   FBSIMDVector<float> incrVec)
@@ -81,9 +88,33 @@ GenerateSaw(
   phaseArray.Store(0, phaseVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
-    float saw = FBPhaseWrap(phaseArray.Get(i) + 0.5f) * 2.0f - 1.0f;
-    float blep = GenerateBLEP(phaseArray.Get(i), incrArray.Get(i));
+    float incr = incrArray.Get(i);
+    float phase = phaseArray.Get(i);
+    float saw = FBPhaseWrap(phase + 0.5f) * 2.0f - 1.0f;
+    float blep = GenerateBLEP(phase, incr);
     yArray.Set(i, saw - blep);
+  }
+  return yArray.Load(0);
+}
+
+static inline FBSIMDVector<float>
+GenerateHalf(
+  FBSIMDVector<float> phaseVec,
+  FBSIMDVector<float> incrVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> yArray;
+  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
+  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
+  incrArray.Store(0, incrVec);
+  phaseArray.Store(0, phaseVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float incr = incrArray.Get(i);
+    float phase = phaseArray.Get(i);
+    float p2 = FBPhaseWrap(phase + 0.5f);
+    float y = (phase < 0.5f ? 2.0f * std::sin(FBTwoPi * phase) - 2.0f / FBPi : -2.0f / FBPi);
+    y += FBTwoPi * incr * (GenerateBLAMP(phase, incr) + GenerateBLAMP(p2, incr));
+    yArray.Set(i, y);
   }
   return yArray.Load(0);
 }
@@ -476,7 +507,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           if (_basicSinOn)
           {
             auto basicSinGain = basicSinGainPlain.Load(s);
-            thisUniOutput += xsimd::sin(uniPhase * FBTwoPi) * basicSinGain;
+            // TODO thisUniOutput += xsimd::sin(uniPhase * FBTwoPi) * basicSinGain;
+            thisUniOutput += GenerateHalf(uniPhase, uniIncr) * basicSinGain;
           }
           if (_basicTriOn)
           {
