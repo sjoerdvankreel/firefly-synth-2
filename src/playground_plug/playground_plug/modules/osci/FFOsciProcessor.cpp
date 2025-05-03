@@ -485,8 +485,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
   }
 
-  // todo get the fm matrix in here
-  // todo expo fm
   if (_type == FFOsciType::FM)
   {
     for (int s = 0; s < totalSamples; s++)
