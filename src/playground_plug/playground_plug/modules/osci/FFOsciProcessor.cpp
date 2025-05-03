@@ -599,7 +599,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   for (int u = 0; u < _uniCount; u++)
   {
     float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
-    float uniPosAbsHalfToHalf = _uniPosAbsHalfToHalf.Get(u);
     for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
     {
       FBSIMDVector<float> matrixFMMod(0.0f);
@@ -659,10 +658,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
         else assert(false);
       }
-      else assert(false);
-
-      auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
-      thisUniOutput *= uniBlend;
+      else assert(false);      
       uniOutputOversampled[u].Store(s, thisUniOutput);
     }
   }
@@ -683,10 +679,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   for (int u = 0; u < _uniCount; u++)
   {
     float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
+    float uniPosAbsHalfToHalf = _uniPosAbsHalfToHalf.Get(u);
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
       auto uniPanning = 0.5f + uniPosMHalfToHalf * uniSpreadPlain.Load(s);
-      auto uniMono = _uniOutputDownsampled[u].Load(s) * gainPlain.Load(s);
+      auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
+      auto uniMono = _uniOutputDownsampled[u].Load(s) * gainPlain.Load(s) * uniBlend;
       output[0].Add(s, (1.0f - uniPanning) * uniMono);
       output[1].Add(s, uniPanning * uniMono);
     }
