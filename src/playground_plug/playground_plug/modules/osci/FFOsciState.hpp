@@ -66,7 +66,7 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   std::array<TVoiceAcc, 1> unisonSpread = {};
   std::array<TVoiceAcc, 1> dsfDecay = {};
   std::array<TVoiceAcc, 1> gLFOToGain = {};
-  std::array<TVoiceAcc, 1> basicSqrPW = {};
+  std::array<TVoiceAcc, 1> basicPW = {};
   std::array<TVoiceAcc, 1> basicSinGain = {};
   std::array<TVoiceAcc, 1> basicSawGain = {};
   std::array<TVoiceAcc, 1> basicTriGain = {};

@@ -90,9 +90,9 @@ MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, basicSqrOn));
   auto basicSqrGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSqrGain, 0 });
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSqrGain, Slider::SliderStyle::LinearHorizontal));
-  auto basicSqrPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSqrPW, 0 });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicSqrPW));
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSqrPW, Slider::SliderStyle::RotaryVerticalDrag));
+  auto basicPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicPW, 0 });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicPW));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicPW, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ 0, 0, 2, 7 });
 
   // TODO helper function

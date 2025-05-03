@@ -327,19 +327,19 @@ FFMakeOsciTopo()
   basicSqrGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrGain);
   basicSqrGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
-  auto& basicSqrPW = result->params[(int)FFOsciParam::BasicSqrPW];
-  basicSqrPW.acc = true;
-  basicSqrPW.defaultText = "100";
-  basicSqrPW.name = "PW";
-  basicSqrPW.slotCount = 1;
-  basicSqrPW.unit = "%";
-  basicSqrPW.id = "{D25EFEB3-18E0-498C-AA7C-20E1FB474A0F}";
-  basicSqrPW.type = FBParamType::Identity;
-  auto selectBasicSqrPW = [](auto& module) { return &module.acc.basicSqrPW; };
-  basicSqrPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSqrPW);
-  basicSqrPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSqrPW);
-  basicSqrPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrPW);
-  basicSqrPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+  auto& basicPW = result->params[(int)FFOsciParam::BasicPW];
+  basicPW.acc = true;
+  basicPW.defaultText = "100";
+  basicPW.name = "PW";
+  basicPW.slotCount = 1;
+  basicPW.unit = "%";
+  basicPW.id = "{D25EFEB3-18E0-498C-AA7C-20E1FB474A0F}";
+  basicPW.type = FBParamType::Identity;
+  auto selectBasicPW = [](auto& module) { return &module.acc.basicPW; };
+  basicPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicPW);
+  basicPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicPW);
+  basicPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicPW);
+  basicPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn, (int)FFOsciParam::BasicTriOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && (vs[1] != 0 || vs[2] != 0); });
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;

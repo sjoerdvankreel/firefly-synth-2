@@ -20,6 +20,6 @@ enum class FFOsciParam {
   Type, Gain, Coarse, Fine,
   UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,
   BasicSinOn, BasicSawOn, BasicTriOn, BasicSqrOn,
-  BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicSqrPW,
+  BasicSinGain, BasicSawGain, BasicTriGain, BasicSqrGain, BasicPW,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,
   FMExp, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, Count };
