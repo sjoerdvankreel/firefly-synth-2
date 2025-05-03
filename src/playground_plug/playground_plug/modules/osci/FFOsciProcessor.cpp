@@ -123,39 +123,32 @@ GenerateTri(
 }
 
 static inline FBSIMDVector<float>
-GenerateTri22222(FBSIMDVector<float> phaseVec, FBSIMDVector<float> incrVec)
+GenerateSqr(
+  FBSIMDVector<float> phaseVec,
+  FBSIMDVector<float> incrVec, 
+  FBSIMDVector<float> pwVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> yArray;
   FBSIMDArray<float, FBSIMDFloatCount> incrArray;
   FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
+  FBSIMDArray<float, FBSIMDFloatCount> realPWArray;
+  auto realPWVec = (MinPW + (1.0f - MinPW) * pwVec) * 0.5f;
   incrArray.Store(0, incrVec);
   phaseArray.Store(0, phaseVec);
+  realPWArray.Store(0, realPWVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
+    float pw = realPWArray.Get(i);
     float incr = incrArray.Get(i);
     float phase = phaseArray.Get(i);
-    float y = 2.0f * std::abs(2.0f * phase - 1.0f) - 1.0f;
-    y += GenerateBLAMP(phase, incr);
-    y += GenerateBLAMP(1.0f - phase, incr);
-    phase += 0.5f;
-    phase = FBPhaseWrap(phase);
-    y -= GenerateBLAMP(phase, incr);
-    y -= GenerateBLAMP(1.0f - phase, incr);
+    float p2 = FBPhaseWrap(phase + 1.0f - pw);
+    float y = -2.0f * pw;
+    if (phase < pw)
+      y += 2.0f;
+    y += GenerateBLEP(phase, incr) - GenerateBLEP(p2, incr);
     yArray.Set(i, y);
   }
   return yArray.Load(0);
-}
-
-static inline FBSIMDVector<float>
-GenerateSqr(
-  FBSIMDVector<float> sawVec, FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec, FBSIMDVector<float> pwVec)
-{
-  FBSIMDVector<float> minPW = 0.05f;
-  auto realPW = (minPW + (1.0f - minPW) * pwVec) * 0.5f;
-  auto phase2 = phaseVec + realPW;
-  phase2 -= xsimd::floor(phase2);
-  return (sawVec - GenerateSaw(phase2, incrVec)) * 0.5f;
 }
 
 // https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
@@ -475,13 +468,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         FBSIMDVector<float> thisUniOutput = 0.0f;
         if (_type == FFOsciType::Basic)
         {
-          FBSIMDVector<float> saw;
-          if (_basicSawOn || _basicSqrOn)
-            saw = GenerateSaw(uniPhase, uniIncr);
           if (_basicSawOn)
           {
             auto basicSawGain = basicSawGainPlain.Load(s);
-            thisUniOutput += saw * basicSawGain;
+            thisUniOutput += GenerateSaw(uniPhase, uniIncr) * basicSawGain;
           }
           if (_basicSinOn)
           {
@@ -498,7 +488,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           {
             auto basicPW = basicPWPlain.Load(s);
             auto basicSqrGain = basicSqrGainPlain.Load(s);
-            thisUniOutput += GenerateSqr(saw, uniPhase, uniIncr, basicPW) * basicSqrGain;
+            thisUniOutput += GenerateSqr(uniPhase, uniIncr, basicPW) * basicSqrGain;
           }
         }
         else if (_type == FFOsciType::DSF)
@@ -846,25 +836,6 @@ double PolyBLEP::get() const {
   }
 }
 
-void PolyBLEP::inc() {
-  t += freqInSecondsPerSample;
-  t -= bitwiseOrZero(t);
-}
-
-double PolyBLEP::getAndInc() {
-  const double sample = get();
-  inc();
-  return sample;
-}
-
-double PolyBLEP::sin() const {
-  return amplitude * std::sin(TWO_PI * t);
-}
-
-double PolyBLEP::cos() const {
-  return amplitude * std::cos(TWO_PI * t);
-}
-
 double PolyBLEP::half() const {
   double t2 = t + 0.5;
   t2 -= bitwiseOrZero(t2);
@@ -881,53 +852,6 @@ double PolyBLEP::full() const {
 
   double y = 2 * std::sin(M_PI * _t) - 4 / M_PI;
   y += TWO_PI * freqInSecondsPerSample * blamp(_t, freqInSecondsPerSample);
-
-  return amplitude * y;
-}
-
-double PolyBLEP::tri() const {
-  double t1 = t + 0.25;
-  t1 -= bitwiseOrZero(t1);
-
-  double t2 = t + 0.75;
-  t2 -= bitwiseOrZero(t2);
-
-  double y = t * 4;
-
-  if (y >= 3) {
-    y -= 4;
-  }
-  else if (y > 1) {
-    y = 2 - y;
-  }
-
-  y += 4 * freqInSecondsPerSample * (blamp(t1, freqInSecondsPerSample) - blamp(t2, freqInSecondsPerSample));
-
-  return amplitude * y;
-}
-
-double PolyBLEP::tri2() const {
-  double pulseWidth = std::fmax(0.0001, std::fmin(0.9999, this->pulseWidth));
-
-  double t1 = t + 0.5 * pulseWidth;
-  t1 -= bitwiseOrZero(t1);
-
-  double t2 = t + 1 - 0.5 * pulseWidth;
-  t2 -= bitwiseOrZero(t2);
-
-  double y = t * 2;
-
-  if (y >= 2 - pulseWidth) {
-    y = (y - 2) / pulseWidth;
-  }
-  else if (y >= pulseWidth) {
-    y = 1 - (y - pulseWidth) / (1 - pulseWidth);
-  }
-  else {
-    y /= pulseWidth;
-  }
-
-  y += freqInSecondsPerSample / (pulseWidth - pulseWidth * pulseWidth) * (blamp(t1, freqInSecondsPerSample) - blamp(t2, freqInSecondsPerSample));
 
   return amplitude * y;
 }
@@ -953,37 +877,6 @@ double PolyBLEP::trip() const {
     t3 -= bitwiseOrZero(t3);
     y += 2 * freqInSecondsPerSample / pulseWidth * (blamp(t1, freqInSecondsPerSample) - 2 * blamp(t2, freqInSecondsPerSample) + blamp(t3, freqInSecondsPerSample));
   }
-  return amplitude * y;
-}
-
-double PolyBLEP::trap() const {
-  double y = 4 * t;
-  if (y >= 3) {
-    y -= 4;
-  }
-  else if (y > 1) {
-    y = 2 - y;
-  }
-  y = std::fmax(-1, std::fmin(1, 2 * y));
-
-  double t1 = t + 0.125;
-  t1 -= bitwiseOrZero(t1);
-
-  double t2 = t1 + 0.5;
-  t2 -= bitwiseOrZero(t2);
-
-  // Triangle #1
-  y += 4 * freqInSecondsPerSample * (blamp(t1, freqInSecondsPerSample) - blamp(t2, freqInSecondsPerSample));
-
-  t1 = t + 0.375;
-  t1 -= bitwiseOrZero(t1);
-
-  t2 = t1 + 0.5;
-  t2 -= bitwiseOrZero(t2);
-
-  // Triangle #2
-  y += 4 * freqInSecondsPerSample * (blamp(t1, freqInSecondsPerSample) - blamp(t2, freqInSecondsPerSample));
-
   return amplitude * y;
 }
 
@@ -1017,76 +910,6 @@ double PolyBLEP::trap2() const {
 
   // Triangle #2
   y += scale * 2 * freqInSecondsPerSample * (blamp(t1, freqInSecondsPerSample) - blamp(t2, freqInSecondsPerSample));
-
-  return amplitude * y;
-}
-
-double PolyBLEP::sqr() const {
-  double t2 = t + 0.5;
-  t2 -= bitwiseOrZero(t2);
-
-  double y = t < 0.5 ? 1 : -1;
-  y += blep(t, freqInSecondsPerSample) - blep(t2, freqInSecondsPerSample);
-
-  return amplitude * y;
-}
-
-double PolyBLEP::sqr2() const {
-  double t1 = t + 0.875 + 0.25 * (pulseWidth - 0.5);
-  t1 -= bitwiseOrZero(t1);
-
-  double t2 = t + 0.375 + 0.25 * (pulseWidth - 0.5);
-  t2 -= bitwiseOrZero(t2);
-
-  // Square #1
-  double y = t1 < 0.5 ? 1 : -1;
-
-  y += blep(t1, freqInSecondsPerSample) - blep(t2, freqInSecondsPerSample);
-
-  t1 += 0.5 * (1 - pulseWidth);
-  t1 -= bitwiseOrZero(t1);
-
-  t2 += 0.5 * (1 - pulseWidth);
-  t2 -= bitwiseOrZero(t2);
-
-  // Square #2
-  y += t1 < 0.5 ? 1 : -1;
-
-  y += blep(t1, freqInSecondsPerSample) - blep(t2, freqInSecondsPerSample);
-
-  return amplitude * 0.5 * y;
-}
-
-double PolyBLEP::rect() const {
-  double t2 = t + 1 - pulseWidth;
-  t2 -= bitwiseOrZero(t2);
-
-  double y = -2 * pulseWidth;
-  if (t < pulseWidth) {
-    y += 2;
-  }
-
-  y += blep(t, freqInSecondsPerSample) - blep(t2, freqInSecondsPerSample);
-
-  return amplitude * y;
-}
-
-double PolyBLEP::saw() const {
-  double _t = t + 0.5;
-  _t -= bitwiseOrZero(_t);
-
-  double y = 2 * _t - 1;
-  y -= blep(_t, freqInSecondsPerSample);
-
-  return amplitude * y;
-}
-
-double PolyBLEP::ramp() const {
-  double _t = t;
-  _t -= bitwiseOrZero(_t);
-
-  double y = 1 - 2 * _t;
-  y += blep(_t, freqInSecondsPerSample);
 
   return amplitude * y;
 }
