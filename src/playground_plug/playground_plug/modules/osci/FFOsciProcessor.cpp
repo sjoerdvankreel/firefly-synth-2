@@ -606,8 +606,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
         {
           int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-          auto const& matrixFMModBySlot = voiceState.osci[src].uniOutputOversampled[u].Load(s);
-          matrixFMMod += matrixFMModBySlot * voiceState.osciMod.outputFMIndex[modSlot].Load(s);
+          auto const& thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Load(s);
+          matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Load(s);
         }
 
       auto uniPitch = basePitchPlain.Load(s);
@@ -659,6 +659,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         else assert(false);
       }
       else assert(false);      
+
+      for (int src = 0; src < state.moduleSlot; src++)
+        if (_modSourceAMMode[src] != FFOsciModAMMode::Off && _modSourceUniCount[src] > u)
+        {
+          int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+          auto outputAMMix = voiceState.osciMod.outputAMMix[modSlot].Load(s);
+          float scale = _modSourceAMMode[src] == FFOsciModAMMode::RM ? 1.0f : 0.5f;
+          float offset = _modSourceAMMode[src] == FFOsciModAMMode::RM ? 0.0f : 0.5f;
+          auto const& thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Load(s);
+          thisUniOutput = (1.0f - outputAMMix) * thisUniOutput + outputAMMix * thisUniOutput * (thatUniOutput * scale + offset);
+        }
+
       uniOutputOversampled[u].Store(s, thisUniOutput);
     }
   }
