@@ -173,10 +173,10 @@ _oversampler(
     FFOsciUniMaxCount, FFOsciOversamplingFactor,
     Oversampling<float>::filterHalfBandPolyphaseIIR, false, false)
 {
-  std::array<float*, FFOsciUniMaxCount> channelPtrsDown = {};
+  _oversampler.initProcessing(FBFixedBlockSamples);
   for (int u = 0; u < FFOsciUniMaxCount; u++)
-    channelPtrsDown[u] = _uniOutputDownsampled[u].Ptr(0);
-  _downsampledBlock = AudioBlock<float>(channelPtrsDown.data(), FFOsciUniMaxCount, 0, FBFixedBlockSamples);
+    _downsampledChannelPtrs[u] = _uniOutputDownsampled[u].Ptr(0);
+  _downsampledBlock = AudioBlock<float>(_downsampledChannelPtrs.data(), FFOsciUniMaxCount, 0, FBFixedBlockSamples);
   _oversampledBlock = _oversampler.processSamplesUp(_downsampledBlock);
 }
 

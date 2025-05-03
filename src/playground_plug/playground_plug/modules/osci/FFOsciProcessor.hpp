@@ -43,11 +43,13 @@ class FFOsciProcessor final
   std::array<int, FFOsciCount - 1> _modSourceUniCount = {};
   std::array<FFOsciModAMMode, FFOsciCount - 1> _modSourceAMMode = {};
 
-  FBParkMillerPRNG _prng = {};
-  FBTrackingPhaseGenerator _phaseGen = {};
   juce::dsp::Oversampling<float> _oversampler;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
   juce::dsp::AudioBlock<float> _downsampledBlock = {};
+  std::array<float*, FFOsciUniMaxCount> _downsampledChannelPtrs = {};
+
+  FBParkMillerPRNG _prng = {};
+  FBTrackingPhaseGenerator _phaseGen = {};
   FBSIMDArray<float, FFOsciUniMaxCount> _uniPosMHalfToHalf = {};
   FBSIMDArray<float, FFOsciUniMaxCount> _uniPosAbsHalfToHalf = {};
   std::array<FFOsciPhaseGenerator, FFOsciUniMaxCount> _uniPhaseGens = {};
