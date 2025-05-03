@@ -280,180 +280,6 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   }
 }
 
-#if 0 // todo
-
-// calculate 4 outputs in unison dimension for the fm generator
-template <bool ExpoFM>
-xsimd::batch<float, FBXSIMDBatchType>
-FFOsciProcessor::CalcOneSampleForFM(
-  float oversampledRate, int subUniBlock, int op,
-  float* uniPitchesForFM, float* uniIncrsForFM,
-  xsimd::batch<float, FBXSIMDBatchType> fmToOp,
-  xsimd::batch<float, FBXSIMDBatchType> externalFMModulatorsForFMBatch)
-{
-#if 0
-  if constexpr (ExpoFM)
-  {
-    auto uniPitchOpBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniPitchesForFM);
-    uniPitchOpBatch += fmToOp * uniPitchOpBatch;
-    auto uniPitchOpFreq = 440.0f * xsimd::pow(xsimd::batch<float, FBXSIMDBatchType>(2.0f), (uniPitchOpBatch - 69.0f) / 12.0f);
-    auto uniIncrOpBatch = uniPitchOpFreq / oversampledRate;
-    return xsimd::sin(_uniPhaseGensForFM[op][subUniBlock].Next(uniIncrOpBatch, externalFMModulatorsForFMBatch) * FBTwoPi);
-  }
-  else
-  {
-    auto uniIncrOpBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(uniIncrsForFM);
-    return xsimd::sin(_uniPhaseGensForFM[op][subUniBlock].Next(uniIncrOpBatch, fmToOp + externalFMModulatorsForFMBatch) * FBTwoPi);
-  }
-#endif
-}
-
-// vectorization in the unison dimension,
-// phases have data dependency in the time domain because feedback loops
-template <bool ExpoFM>
-void
-FFOsciProcessor::ProcessFM(
-  FBModuleProcState& state,
-  int oversamplingTimes,
-  float oversampledRate)
-{
-#if 0
-  int voice = state.voice->slot;
-  auto* procState = state.ProcAs<FFProcState>();
-  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
-  auto& unisonOutputMaybeOversampled = procState->dsp.voice[voice].osci[state.moduleSlot].unisonOutputMaybeOversampled;
-
-  std::array<FBFixedFloatArray, FFOsciFMMatrixSize> fmIndexPlain;
-  std::array<FBFixedFloatArray, FFOsciFMOperatorCount - 1> fmRatioPlain;
-  for (int m = 0; m < FFOsciFMMatrixSize; m++)
-  {
-    auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
-    topo.NormalizedToLog2Fast(FFOsciParam::FMIndex, fmIndexNorm, fmIndexPlain[m]);
-  }
-  if (_voiceState.fmRatioMode == FFOsciFMRatioMode::Ratio)
-  {
-    fmRatioPlain[0].Fill(_voiceState.fmRatioRatio12);
-    fmRatioPlain[1].Fill(_voiceState.fmRatioRatio23);
-  }
-  else
-    for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
-    {
-      auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
-      topo.NormalizedToLog2Fast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, fmRatioPlain[o]);
-    }
-
-  // these are the external mods from the inter-osci matrix
-  // we only need to apply them here if the mod matrix is doing linear fm
-  // in the case of expo fm they have already been applied to the pitch
-  // and hence to the incoming freq and delta parameters
-  float applyExternalLinearFM = _voiceState.externalFMExp ? 0.0f : 1.0f;
-  for (int os = 0; os < oversamplingTimes; os++)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      for (int u = 0; u < FFOsciUnisonMaxCount; u++)
-        _externalFMModulatorsForFM[os][s][u] = _modMatrixFMModulators[u][os][s] * applyExternalLinearFM;
-
-  // calculate op1/2/3 delta according to 1:2 and 2:3 ratio for expo case (ratio applies to pitch)
-  if constexpr (ExpoFM)
-  {
-    for (int o = 0; o < FFOsciFMOperatorCount; o++)
-      for (int os = 0; os < oversamplingTimes; os++)
-        for (int s = 0; s < FBFixedBlockSamples; s++)
-          for (int u = 0; u < FFOsciUnisonMaxCount; u++)
-            _uniPitchesForFM[o][os][s][u] = 0.0f;
-    for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int os = 0; os < oversamplingTimes; os++)
-        for (int s = 0; s < FBFixedBlockSamples; s++)
-        {
-          float op3Pitch = _uniPitches[u][os][s];
-          float op2Pitch = op3Pitch / fmRatioPlain[1][s];
-          float op1Pitch = op2Pitch / fmRatioPlain[0][s];
-          _uniPitchesForFM[0][os][s][u] = op1Pitch;
-          _uniPitchesForFM[1][os][s][u] = op2Pitch;
-          _uniPitchesForFM[2][os][s][u] = op3Pitch;
-        }
-  }
-
-  // calculate op1/2/3 delta according to 1:2 and 2:3 ratio for linear case
-  // for expo case, we have to do it inside the per-sample loop because ops modulate pitch
-  if constexpr (!ExpoFM)
-  {
-    for (int o = 0; o < FFOsciFMOperatorCount; o++)
-      for (int os = 0; os < oversamplingTimes; os++)
-        for (int s = 0; s < FBFixedBlockSamples; s++)
-          for (int u = 0; u < FFOsciUnisonMaxCount; u++)
-            _uniIncrsForFM[o][os][s][u] = 0.0f;
-    for (int u = 0; u < _voiceState.unisonCount; u++)
-      for (int os = 0; os < oversamplingTimes; os++)
-        for (int s = 0; s < FBFixedBlockSamples; s++)
-        {
-          float op3Freq = _uniFreqs[u][os][s];
-          float op2Freq = op3Freq / fmRatioPlain[1][s];
-          float op1Freq = op2Freq / fmRatioPlain[0][s];
-          _uniIncrsForFM[0][os][s][u] = op1Freq / oversampledRate;
-          _uniIncrsForFM[1][os][s][u] = op2Freq / oversampledRate;
-          _uniIncrsForFM[2][os][s][u] = op3Freq / oversampledRate;
-        }
-  }
-
-  // calculate 3op fm with 3x3 matrix and vectorize over unison
-  // for every feedback path there is unit delay
-  int oversampledIndex = 0;
-  for (int os = 0; os < oversamplingTimes; os++)
-    for (int s = 0; s < FBFixedBlockSamples; s++, oversampledIndex++)
-    {
-      int nonOversampledIndex = oversampledIndex / oversamplingTimes;
-      for (int u = 0; u < _voiceState.unisonCount; u += FBSIMDFloatCount)
-      {
-        int subUniBlock = u / FBSIMDFloatCount;
-
-        xsimd::batch<float, FBXSIMDBatchType> fmTo1 = 0.0f;
-        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUniOutputForFM[0][subUniBlock];
-        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
-        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-        auto output1 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 0,
-          _uniPitchesForFM[0][os][s].data() + u,
-          _uniIncrsForFM[0][os][s].data() + u, fmTo1,
-          0.0f);
-
-        xsimd::batch<float, FBXSIMDBatchType> fmTo2 = 0.0f;
-        fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
-        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
-        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-        auto output2 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 1,
-          _uniPitchesForFM[1][os][s].data() + u,
-          _uniIncrsForFM[1][os][s].data() + u, fmTo2,
-          0.0f);
-
-        // op3 is output, it also takes the external inter-osci fm
-        xsimd::batch<float, FBXSIMDBatchType> fmTo3 = 0.0f;
-        fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
-        fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
-        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-        auto externalFMModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_externalFMModulatorsForFM[os][s].data() + u);
-        auto output3 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 2,
-          _uniPitchesForFM[2][os][s].data() + u,
-          _uniIncrsForFM[2][os][s].data() + u, fmTo3,
-          externalFMModulatorsForFMBatch);
-
-        _prevUniOutputForFM[0][subUniBlock] = output1;
-        _prevUniOutputForFM[1][subUniBlock] = output2;
-        _prevUniOutputForFM[2][subUniBlock] = output3;
-
-        alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> outputArray;
-        output3.store_aligned(outputArray.data());
-        for (int v = 0; v < FBSIMDFloatCount; v++)
-          unisonOutputMaybeOversampled[u + v][os][s] = outputArray[v];
-      }
-    }
-#endif
-}
-
-#endif
-
 int
 FFOsciProcessor::Process(FBModuleProcState& state)
 {
@@ -670,29 +496,61 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         auto uniPosMHalfToHalf = _uniPosMHalfToHalf.Load(u);
         FBSIMDVector<float> op3UniPitch = basePitchPlain.Get(s) + uniPosMHalfToHalf * uniDetunePlain.Get(s);
         auto op3UniFreq = FBPitchToFreq(op3UniPitch);
-        auto op2UniFreq = op3UniFreq / fmRatioPlain[1].Get(s);
-        auto op1UniFreq = op2UniFreq / fmRatioPlain[0].Get(s);
-        auto op1UniIncr = op1UniFreq / oversampledRate;
-        auto op2UniIncr = op2UniFreq / oversampledRate;
-        auto op3UniIncr = op3UniFreq / oversampledRate;
 
+        FBSIMDVector<float> op1UniPhase;
         FBSIMDVector<float> fmTo1 = 0.0f;
         fmTo1 += fmIndexPlain[0].Get(s) * _prevUniFMOutput[0].Load(u);
         fmTo1 += fmIndexPlain[3].Get(s) * _prevUniFMOutput[1].Load(u);
         fmTo1 += fmIndexPlain[6].Get(s) * _prevUniFMOutput[2].Load(u);
-        auto output1 = xsimd::sin(_uniFMPhaseGens[0][block].Next(op1UniIncr, fmTo1) * FBTwoPi);
+        if (_fmExp)
+        {
+          auto op1UniPitch = op3UniPitch / fmRatioPlain[1].Get(s) / fmRatioPlain[0].Get(s);
+          op1UniPitch += op1UniPitch * fmTo1;
+          auto op1UniFreq = FBPitchToFreq(op1UniPitch);
+          op1UniPhase = _uniFMPhaseGens[0][block].Next(op1UniFreq / oversampledRate, 0.0f);
+        }
+        else
+        {
+          auto op1UniFreq = op3UniFreq / fmRatioPlain[1].Get(s) / fmRatioPlain[0].Get(s);
+          op1UniPhase = _uniFMPhaseGens[0][block].Next(op1UniFreq / oversampledRate, fmTo1);
+        }
+        auto output1 = xsimd::sin(op1UniPhase * FBTwoPi);
 
+        FBSIMDVector<float> op2UniPhase;
         FBSIMDVector<float> fmTo2 = 0.0f;
         fmTo2 += fmIndexPlain[1].Get(s) * output1;
         fmTo2 += fmIndexPlain[4].Get(s) * _prevUniFMOutput[1].Load(u);
         fmTo2 += fmIndexPlain[7].Get(s) * _prevUniFMOutput[2].Load(u);
-        auto output2 = xsimd::sin(_uniFMPhaseGens[1][block].Next(op2UniIncr, fmTo2) * FBTwoPi);
+        if (_fmExp)
+        {
+          auto op2UniPitch = op3UniPitch / fmRatioPlain[1].Get(s);
+          op2UniPitch += op2UniPitch * fmTo2;
+          auto op2UniFreq = FBPitchToFreq(op2UniPitch);
+          op2UniPhase = _uniFMPhaseGens[1][block].Next(op2UniFreq / oversampledRate, 0.0f);
+        }
+        else
+        {
+          auto op2UniFreq = op3UniFreq / fmRatioPlain[1].Get(s);
+          op2UniPhase = _uniFMPhaseGens[1][block].Next(op2UniFreq / oversampledRate, fmTo2);
+        }
+        auto output2 = xsimd::sin(op2UniPhase * FBTwoPi);
 
+        FBSIMDVector<float> op3UniPhase;
         FBSIMDVector<float> fmTo3 = 0.0f;
         fmTo3 += fmIndexPlain[2].Get(s) * output1;
         fmTo3 += fmIndexPlain[5].Get(s) * output2;
         fmTo3 += fmIndexPlain[8].Get(s) * _prevUniFMOutput[2].Load(u);
-        auto output3 = xsimd::sin(_uniFMPhaseGens[2][block].Next(op3UniIncr, fmTo3) * FBTwoPi);
+        if (_fmExp)
+        {
+          op3UniPitch += op3UniPitch * fmTo3;
+          auto op3UniFreq = FBPitchToFreq(op3UniPitch);
+          op3UniPhase = _uniFMPhaseGens[2][block].Next(op3UniFreq / oversampledRate, 0.0f);
+        }
+        else
+        {
+          op3UniPhase = _uniFMPhaseGens[1][block].Next(op3UniFreq / oversampledRate, fmTo3);
+        }
+        auto output3 = xsimd::sin(op3UniPhase * FBTwoPi);
 
         _prevUniFMOutput[0].Store(u, output1);
         _prevUniFMOutput[1].Store(u, output2);
@@ -704,51 +562,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           uniOutputOversampled[u + v].Set(s, outputArray.Get(v));
       }
   }
-
-#if 0
-        auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
-
-        xsimd::batch<float, FBXSIMDBatchType> fmTo1 = 0.0f;
-        fmTo1 += fmIndexPlain[0][nonOversampledIndex] * _prevUniOutputForFM[0][subUniBlock];
-        fmTo1 += fmIndexPlain[3][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
-        fmTo1 += fmIndexPlain[6][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-        auto output1 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 0,
-          _uniPitchesForFM[0][os][s].data() + u,
-          _uniIncrsForFM[0][os][s].data() + u, fmTo1,
-          0.0f);
-
-        xsimd::batch<float, FBXSIMDBatchType> fmTo2 = 0.0f;
-        fmTo2 += fmIndexPlain[1][nonOversampledIndex] * output1;
-        fmTo2 += fmIndexPlain[4][nonOversampledIndex] * _prevUniOutputForFM[1][subUniBlock];
-        fmTo2 += fmIndexPlain[7][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-        auto output2 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 1,
-          _uniPitchesForFM[1][os][s].data() + u,
-          _uniIncrsForFM[1][os][s].data() + u, fmTo2,
-          0.0f);
-
-        // op3 is output, it also takes the external inter-osci fm
-        xsimd::batch<float, FBXSIMDBatchType> fmTo3 = 0.0f;
-        fmTo3 += fmIndexPlain[2][nonOversampledIndex] * output1;
-        fmTo3 += fmIndexPlain[5][nonOversampledIndex] * output2;
-        fmTo3 += fmIndexPlain[8][nonOversampledIndex] * _prevUniOutputForFM[2][subUniBlock];
-        auto externalFMModulatorsForFMBatch = xsimd::batch<float, FBXSIMDBatchType>::load_aligned(_externalFMModulatorsForFM[os][s].data() + u);
-        auto output3 = CalcOneSampleForFM<ExpoFM>(
-          oversampledRate, subUniBlock, 2,
-          _uniPitchesForFM[2][os][s].data() + u,
-          _uniIncrsForFM[2][os][s].data() + u, fmTo3,
-          externalFMModulatorsForFMBatch);
-
-        _prevUniOutputForFM[0][subUniBlock] = output1;
-        _prevUniOutputForFM[1][subUniBlock] = output2;
-        _prevUniOutputForFM[2][subUniBlock] = output3;
-
-        alignas(FBSIMDAlign) std::array<float, FBSIMDFloatCount> outputArray;
-        output3.store_aligned(outputArray.data());
-        for (int v = 0; v < FBSIMDFloatCount; v++)
-          unisonOutputMaybeOversampled[u + v][os][s] = outputArray[v];
-#endif
 
   for (int u = 0; u < _uniCount; u++)
     for (int src = 0; src < state.moduleSlot; src++)
