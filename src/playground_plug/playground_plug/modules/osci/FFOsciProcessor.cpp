@@ -268,52 +268,19 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     }
   }
 
-#if 0 // TODO
-  if (_voiceState.type == FFOsciType::FM)
+  if (_type == FFOsciType::FM)
   {
-    for (int u = 0; u < _voiceState.unisonCount; u += FBSIMDFloatCount)
-      for (int o = 0; o < FFOsciFMOperatorCount; o++)
+    _prevUniFMOutput.Fill(0.0f);
+    for (int o = 0; o < FFOsciFMOperatorCount; o++)
+      for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
       {
-        _prevUniOutputForFM[o][u / FBSIMDFloatCount] = 0.0f;
-        _uniPhaseGensForFM[o][u / FBSIMDFloatCount] = FFOsciFMPhasesGenerator(
-          xsimd::batch<float, FBXSIMDBatchType>::load_aligned(unisonPhaseInit.data() + u));
+        auto phaseInits = FBSIMDVector<float>::load_aligned(uniPhaseInit.Ptr(0) + u);
+        _uniFMPhaseGens[o][u / FBSIMDFloatCount] = FFOsciFMPhaseGenerator(phaseInits);
       }
   }
-#endif
 }
 
 #if 0 // todo
-
-// per unison voice stacked external AM/RM modulators, oversampled
-void
-FFOsciProcessor::ProcessModMatrixAMModulators(
-  int moduleSlot,
-  int oversamplingTimes,
-  std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputAMMix,
-  std::array<FFOsciDSPState, FFOsciCount>& allOsciDSPStates)
-{
-#if 0
-  for (int src = 0; src < moduleSlot; src++)
-    for (int u = 0; u < _voiceState.unisonCount; u++)
-      if (_voiceState.modSourceAMMode[src] != FFOsciModAMMode::Off && _voiceState.modSourceUnisonCount[src] > u)
-      {
-        int modSlot = OsciModStartSlot(moduleSlot) + src;
-        auto& unisonOutputMaybeOversampled = allOsciDSPStates[moduleSlot].unisonOutputMaybeOversampled;
-        auto const& rmModulator = allOsciDSPStates[src].unisonOutputMaybeOversampled[u];
-        if (_voiceState.modSourceAMMode[src] == FFOsciModAMMode::RM)
-          for (int os = 0; os < oversamplingTimes; os++)
-            for (int s = 0; s < FBFixedBlockSamples; s++)
-              unisonOutputMaybeOversampled[u][os][s] =
-              (1.0f - outputAMMix[modSlot][s]) * unisonOutputMaybeOversampled[u][os][s] +
-              outputAMMix[modSlot][s] * unisonOutputMaybeOversampled[u][os][s] * rmModulator[os][s];
-        else
-          for (int os = 0; os < oversamplingTimes; os++)
-            for (int s = 0; s < FBFixedBlockSamples; s++)
-              unisonOutputMaybeOversampled[u][os][s] = (1.0f - outputAMMix[modSlot][s]) * unisonOutputMaybeOversampled[u][os][s] +
-              outputAMMix[modSlot][s] * unisonOutputMaybeOversampled[u][os][s] * (rmModulator[os][s] * 0.5f + 0.5f);
-      }
-#endif
-}
 
 // calculate 4 outputs in unison dimension for the fm generator
 template <bool ExpoFM>

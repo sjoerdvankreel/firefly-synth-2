@@ -16,17 +16,13 @@ public:
   FBSIMDVector<float> Next(FBSIMDVector<float> incr, FBSIMDVector<float> fmModulator);
 };
 
-// vectorize over unison dimension, it's 
-// the only option because of feedback fm
-class alignas(FBSIMDAlign) FFOsciFMPhasesGenerator final
+class alignas(FBSIMDAlign) FFOsciFMPhaseGenerator final
 {
-  xsimd::batch<float, FBXSIMDBatchType> _x = 0.0f;
+  FBSIMDVector<float> _x = 0.0f;
 public:
-  FFOsciFMPhasesGenerator() = default;
-  explicit FFOsciFMPhasesGenerator(xsimd::batch<float, FBXSIMDBatchType> x) : _x(x) {}
-  xsimd::batch<float, FBXSIMDBatchType> Next(
-    xsimd::batch<float, FBXSIMDBatchType> incrs, 
-    xsimd::batch<float, FBXSIMDBatchType> fmModulators);
+  FFOsciFMPhaseGenerator() = default;
+  explicit FFOsciFMPhaseGenerator(FBSIMDVector<float> x) : _x(x) {}
+  FBSIMDVector<float> Next(FBSIMDVector<float> incrs, FBSIMDVector<float> fmModulators);
 };
 
 inline FBSIMDVector<float> 
@@ -49,12 +45,10 @@ FFOsciPhaseGenerator::Next(FBSIMDVector<float> incr, FBSIMDVector<float> fmModul
   return yArray.Load(0);
 }
 
-inline xsimd::batch<float, FBXSIMDBatchType>
-FFOsciFMPhasesGenerator::Next(
-  xsimd::batch<float, FBXSIMDBatchType> incrs, 
-  xsimd::batch<float, FBXSIMDBatchType> fmModulators)
+inline FBSIMDVector<float>
+FFOsciFMPhaseGenerator::Next(FBSIMDVector<float> incrs, FBSIMDVector<float> fmModulators)
 {
-  xsimd::batch<float, FBXSIMDBatchType> y = _x;
+  auto y = _x;
   _x += incrs;
   _x -= xsimd::floor(_x);
   y += fmModulators;
