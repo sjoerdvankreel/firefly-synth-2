@@ -280,6 +280,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   auto const& basicSawOnNorm = params.block.basicSawOn[0].Voice()[voice];
   auto const& basicTriOnNorm = params.block.basicTriOn[0].Voice()[voice];
   auto const& basicSqrOnNorm = params.block.basicSqrOn[0].Voice()[voice];
+  auto const& basicHalfOnNorm = params.block.basicHalfOn[0].Voice()[voice];
+  auto const& basicFullOnNorm = params.block.basicFullOn[0].Voice()[voice];
   auto const& dsfModeNorm = params.block.dsfMode[0].Voice()[voice];
   auto const& dsfDistanceNorm = params.block.dsfDistance[0].Voice()[voice];
   auto const& dsfOvertonesNorm = params.block.dsfOvertones[0].Voice()[voice];
@@ -304,6 +306,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _basicSawOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSawOn, basicSawOnNorm);
   _basicTriOn = topo.NormalizedToBoolFast(FFOsciParam::BasicTriOn, basicTriOnNorm);
   _basicSqrOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSqrOn, basicSqrOnNorm);
+  _basicHalfOn = topo.NormalizedToBoolFast(FFOsciParam::BasicHalfOn, basicHalfOnNorm);
+  _basicFullOn = topo.NormalizedToBoolFast(FFOsciParam::BasicFullOn, basicFullOnNorm);
   _dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, dsfModeNorm);
   _dsfBandwidthPlain = topo.NormalizedToLog2Fast(FFOsciParam::DSFBandwidth, dsfBandwidthNorm);
   _dsfDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance, dsfDistanceNorm));
@@ -389,11 +393,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& uniDetuneNorm = procParams.acc.unisonDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.unisonSpread[0].Voice()[voice];
   auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
-  auto const& basicPWNorm = procParams.acc.basicPW[0].Voice()[voice];
-  auto const& basicSqrGainNorm = procParams.acc.basicSqrGain[0].Voice()[voice];
+  auto const& basicTriPWNorm = procParams.acc.basicTriPW[0].Voice()[voice];
+  auto const& basicSqrPWNorm = procParams.acc.basicSqrPW[0].Voice()[voice];
   auto const& basicSinGainNorm = procParams.acc.basicSinGain[0].Voice()[voice];
   auto const& basicSawGainNorm = procParams.acc.basicSawGain[0].Voice()[voice];
-  auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];  
+  auto const& basicSqrGainNorm = procParams.acc.basicSqrGain[0].Voice()[voice];
+  auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];
+  auto const& basicHalfGainNorm = procParams.acc.basicHalfGain[0].Voice()[voice];
+  auto const& basicFullGainNorm = procParams.acc.basicFullGain[0].Voice()[voice];
 
   FBSIMDArray<float, FFOsciFixedBlockOversamples> gainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
@@ -401,11 +408,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
-  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicPWPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriPWPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSqrPWPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSqrGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSinGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicHalfGainPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicFullGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
@@ -426,16 +436,24 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
     if (_type == FFOsciType::Basic)
     {
-      if (_basicSqrOn || _basicTriOn)
-        basicPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicPW, basicPWNorm, s));
       if (_basicSinOn)
         basicSinGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSinGain, basicSinGainNorm, s));
       if (_basicSawOn)
         basicSawGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSawGain, basicSawGainNorm, s));
+      if (_basicHalfOn)
+        basicHalfGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicHalfGain, basicHalfGainNorm, s));
+      if (_basicFullOn)
+        basicFullGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicFullGain, basicFullGainNorm, s));
       if (_basicTriOn)
+      {
+        basicTriPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicTriPW, basicTriPWNorm, s));
         basicTriGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicTriGain, basicTriGainNorm, s));
+      }
       if (_basicSqrOn)
+      {
+        basicSqrPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s));
         basicSqrGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s));
+      }
     }
     else if (_type == FFOsciType::DSF)
       dsfDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm, s));
@@ -470,16 +488,24 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     uniSpreadPlain.UpsampleStretch<FFOsciOversamplingTimes>();
     if (_type == FFOsciType::Basic)
     {
-      if(_basicSqrOn || _basicTriOn)
-        basicPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
       if (_basicSinOn)
         basicSinGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
       if (_basicSawOn)
         basicSawGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      if (_basicHalfOn)
+        basicHalfGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      if (_basicFullOn)
+        basicFullGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
       if (_basicTriOn)
+      {
+        basicTriPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
         basicTriGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      }
       if (_basicSqrOn)
+      {
+        basicSqrPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
         basicSqrGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      }
     }
     else if (_type == FFOsciType::DSF)
       dsfDecayPlain.UpsampleStretch<FFOsciOversamplingTimes>();
@@ -521,27 +547,37 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         FBSIMDVector<float> thisUniOutput = 0.0f;
         if (_type == FFOsciType::Basic)
         {
-          if (_basicSawOn)
-          {
-            auto basicSawGain = basicSawGainPlain.Load(s);
-            thisUniOutput += GenerateSaw(uniPhase, uniIncr) * basicSawGain;
-          }
           if (_basicSinOn)
           {
             auto basicSinGain = basicSinGainPlain.Load(s);
             thisUniOutput += GenerateSin(uniPhase) * basicSinGain;
           }
+          if (_basicSawOn)
+          {
+            auto basicSawGain = basicSawGainPlain.Load(s);
+            thisUniOutput += GenerateSaw(uniPhase, uniIncr) * basicSawGain;
+          }
+          if (_basicHalfOn)
+          {
+            auto basicHalfGain = basicHalfGainPlain.Load(s);
+            thisUniOutput += GenerateHalf(uniPhase, uniIncr) * basicHalfGain;
+          }
+          if (_basicFullOn)
+          {
+            auto basicFullGain = basicFullGainPlain.Load(s);
+            thisUniOutput += GenerateFull(uniPhase, uniIncr) * basicFullGain;
+          }
           if (_basicTriOn)
           {
-            auto basicPW = basicPWPlain.Load(s);
+            auto basicTriPW = basicTriPWPlain.Load(s);
             auto basicTriGain = basicTriGainPlain.Load(s);
-            thisUniOutput += GenerateTri(uniPhase, uniIncr, basicPW) * basicTriGain;
+            thisUniOutput += GenerateTri(uniPhase, uniIncr, basicTriPW) * basicTriGain;
           }
           if (_basicSqrOn)
           {
-            auto basicPW = basicPWPlain.Load(s);
+            auto basicSqrPW = basicSqrPWPlain.Load(s);
             auto basicSqrGain = basicSqrGainPlain.Load(s);
-            thisUniOutput += GenerateSqr(uniPhase, uniIncr, basicPW) * basicSqrGain;
+            thisUniOutput += GenerateSqr(uniPhase, uniIncr, basicSqrPW) * basicSqrGain;
           }
         }
         else if (_type == FFOsciType::DSF)
@@ -709,11 +745,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.unisonDetune[0][voice] = uniDetuneNorm.Last();
   exchangeParams.acc.unisonSpread[0][voice] = uniSpreadNorm.Last();
   exchangeParams.acc.dsfDecay[0][voice] = dsfDecayNorm.Last();
-  exchangeParams.acc.basicPW[0][voice] = basicPWNorm.Last();
+  exchangeParams.acc.basicTriPW[0][voice] = basicTriPWNorm.Last();
+  exchangeParams.acc.basicSqrPW[0][voice] = basicSqrPWNorm.Last();
   exchangeParams.acc.basicSinGain[0][voice] = basicSinGainNorm.Last();
   exchangeParams.acc.basicSawGain[0][voice] = basicSawGainNorm.Last();
   exchangeParams.acc.basicTriGain[0][voice] = basicTriGainNorm.Last();
   exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGainNorm.Last();
+  exchangeParams.acc.basicHalfGain[0][voice] = basicHalfGainNorm.Last();
+  exchangeParams.acc.basicFullGain[0][voice] = basicFullGainNorm.Last();
   for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
   {
     auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];

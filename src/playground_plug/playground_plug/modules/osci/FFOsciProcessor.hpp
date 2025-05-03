@@ -29,6 +29,8 @@ class FFOsciProcessor final
   bool _basicSawOn = {};
   bool _basicTriOn = {};
   bool _basicSqrOn = {};
+  bool _basicHalfOn = {};
+  bool _basicFullOn = {};
   float _dsfDistance = {};
   float _dsfOvertones = {};
   FFOsciDSFMode _dsfMode = {};

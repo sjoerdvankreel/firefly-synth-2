@@ -40,6 +40,8 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   std::array<TVoiceBlock, 1> uniRandom = {};
   std::array<TVoiceBlock, 1> basicSinOn = {};
   std::array<TVoiceBlock, 1> basicSawOn = {};
+  std::array<TVoiceBlock, 1> basicHalfOn = {};
+  std::array<TVoiceBlock, 1> basicFullOn = {};
   std::array<TVoiceBlock, 1> basicTriOn = {};
   std::array<TVoiceBlock, 1> basicSqrOn = {};
   std::array<TVoiceBlock, 1> dsfMode = {};
@@ -66,9 +68,12 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   std::array<TVoiceAcc, 1> unisonSpread = {};
   std::array<TVoiceAcc, 1> dsfDecay = {};
   std::array<TVoiceAcc, 1> gLFOToGain = {};
-  std::array<TVoiceAcc, 1> basicPW = {};
+  std::array<TVoiceAcc, 1> basicTriPW = {};
+  std::array<TVoiceAcc, 1> basicSqrPW = {};
   std::array<TVoiceAcc, 1> basicSinGain = {};
   std::array<TVoiceAcc, 1> basicSawGain = {};
+  std::array<TVoiceAcc, 1> basicHalfGain = {};
+  std::array<TVoiceAcc, 1> basicFullGain = {};
   std::array<TVoiceAcc, 1> basicTriGain = {};
   std::array<TVoiceAcc, 1> basicSqrGain = {};
   std::array<TVoiceAcc, FFOsciFMMatrixSize> fmIndex = {};
