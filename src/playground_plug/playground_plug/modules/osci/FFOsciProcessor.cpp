@@ -608,7 +608,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       uniPitch += uniPosMHalfToHalf * uniDetunePlain.Load(s);
       uniPitch += matrixFMMod * uniPitch * applyModMatrixExpoFM;
 
-      // todo from here it deviates for fm
       auto uniFreq = FBPitchToFreq(uniPitch);
       auto uniIncr = uniFreq / oversampledRate;
       auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
@@ -652,22 +651,26 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
         else assert(false);
       }
-      else assert(false);      
-
-      for (int src = 0; src < state.moduleSlot; src++)
-        if (_modSourceAMMode[src] != FFOsciModAMMode::Off && _modSourceUniCount[src] > u)
-        {
-          int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-          auto outputAMMix = voiceState.osciMod.outputAMMix[modSlot].Load(s);
-          float scale = _modSourceAMMode[src] == FFOsciModAMMode::RM ? 1.0f : 0.5f;
-          float offset = _modSourceAMMode[src] == FFOsciModAMMode::RM ? 0.0f : 0.5f;
-          auto const& thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Load(s);
-          thisUniOutput = (1.0f - outputAMMix) * thisUniOutput + outputAMMix * thisUniOutput * (thatUniOutput * scale + offset);
-        }
-
+      else assert(false);  
       uniOutputOversampled[u].Store(s, thisUniOutput);
     }
   }
+
+  for (int u = 0; u < _uniCount; u++)
+    for (int src = 0; src < state.moduleSlot; src++)
+      if (_modSourceAMMode[src] != FFOsciModAMMode::Off && _modSourceUniCount[src] > u)
+      {
+        float scale = _modSourceAMMode[src] == FFOsciModAMMode::RM ? 1.0f : 0.5f;
+        float offset = _modSourceAMMode[src] == FFOsciModAMMode::RM ? 0.0f : 0.5f;
+        for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+        {
+          int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+          auto outputAMMix = voiceState.osciMod.outputAMMix[modSlot].Load(s);
+          auto thisUniOutput = uniOutputOversampled[u].Load(s);
+          auto const& thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Load(s);
+          uniOutputOversampled[u].Store(s, (1.0f - outputAMMix) * thisUniOutput + outputAMMix * thisUniOutput * (thatUniOutput * scale + offset));
+        }
+      }
 
   if (_oversamplingTimes == 1)
     for (int u = 0; u < _uniCount; u++)
