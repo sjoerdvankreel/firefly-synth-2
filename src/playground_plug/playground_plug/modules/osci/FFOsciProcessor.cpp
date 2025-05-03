@@ -74,7 +74,6 @@ GenerateSaw(
   FBSIMDVector<float> phaseVec,
   FBSIMDVector<float> incrVec)
 {
-  // todo make it center at half
   FBSIMDArray<float, FBSIMDFloatCount> yArray;
   FBSIMDArray<float, FBSIMDFloatCount> incrArray;
   FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
@@ -82,7 +81,7 @@ GenerateSaw(
   phaseArray.Store(0, phaseVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
-    float saw = phaseArray.Get(i) * 2.0f - 1.0f;
+    float saw = FBPhaseWrap(phaseArray.Get(i) + 0.5f) * 2.0f - 1.0f;
     float blep = GenerateBLEP(phaseArray.Get(i), incrArray.Get(i));
     yArray.Set(i, saw - blep);
   }
