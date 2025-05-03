@@ -668,7 +668,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       {
         int block = u / FBSIMDFloatCount;
         auto uniPosMHalfToHalf = _uniPosMHalfToHalf.Load(u);
-        auto op3UniPitch = basePitchPlain.Get(s) * uniPosMHalfToHalf * uniDetunePlain.Get(s);
+        FBSIMDVector<float> op3UniPitch = basePitchPlain.Get(s) + uniPosMHalfToHalf * uniDetunePlain.Get(s);
         auto op3UniFreq = FBPitchToFreq(op3UniPitch);
         auto op2UniFreq = op3UniFreq / fmRatioPlain[1].Get(s);
         auto op1UniFreq = op2UniFreq / fmRatioPlain[0].Get(s);
