@@ -494,7 +494,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       {
         int block = u / FBSIMDFloatCount;
         auto uniPosMHalfToHalf = _uniPosMHalfToHalf.Load(u);
+
+        FBSIMDVector<float> matrixFMMod(0.0f);
+        for (int src = 0; src < state.moduleSlot; src++)
+          if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
+          {
+            int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+            float thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Get(s);
+            matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Get(s);
+          }
+
         FBSIMDVector<float> op3UniPitch = basePitchPlain.Get(s) + uniPosMHalfToHalf * uniDetunePlain.Get(s);
+        op3UniPitch += matrixFMMod * op3UniPitch * applyModMatrixExpoFM;
         auto op3UniFreq = FBPitchToFreq(op3UniPitch);
 
         FBSIMDVector<float> op1UniPhase;
