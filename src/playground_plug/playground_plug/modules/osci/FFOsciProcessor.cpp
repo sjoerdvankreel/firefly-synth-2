@@ -548,7 +548,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
         else
         {
-          op3UniPhase = _uniFMPhaseGens[1][block].Next(op3UniFreq / oversampledRate, fmTo3);
+          op3UniPhase = _uniFMPhaseGens[2][block].Next(op3UniFreq / oversampledRate, fmTo3);
         }
         auto output3 = xsimd::sin(op3UniPhase * FBTwoPi);
 
