@@ -12,7 +12,8 @@
 
 #include <xsimd/xsimd.hpp>
 
-// basics from https://github.com/martinfinke/PolyBLEP/blob/master/PolyBLEP.cpp
+// basics https://github.com/martinfinke/PolyBLEP/blob/master/PolyBLEP.cpp
+// dsf https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 
 static inline float constexpr MinPW = 0.05f;
 
@@ -282,7 +283,6 @@ GenerateTrap(
   return yArray.Load(0);
 }
 
-// https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 static inline FBSIMDVector<float>
 GenerateDSF(
   FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec, 
@@ -885,12 +885,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.dsfDecay[0][voice] = dsfDecayNorm.Last();
   exchangeParams.acc.basicTriPW[0][voice] = basicTriPWNorm.Last();
   exchangeParams.acc.basicSqrPW[0][voice] = basicSqrPWNorm.Last();
+  exchangeParams.acc.basicTripPW[0][voice] = basicTripPWNorm.Last();
+  exchangeParams.acc.basicTrapPW[0][voice] = basicTrapPWNorm.Last();
   exchangeParams.acc.basicSinGain[0][voice] = basicSinGainNorm.Last();
   exchangeParams.acc.basicSawGain[0][voice] = basicSawGainNorm.Last();
   exchangeParams.acc.basicTriGain[0][voice] = basicTriGainNorm.Last();
   exchangeParams.acc.basicSqrGain[0][voice] = basicSqrGainNorm.Last();
   exchangeParams.acc.basicHalfGain[0][voice] = basicHalfGainNorm.Last();
   exchangeParams.acc.basicFullGain[0][voice] = basicFullGainNorm.Last();
+  exchangeParams.acc.basicTripGain[0][voice] = basicTripGainNorm.Last();
+  exchangeParams.acc.basicTrapGain[0][voice] = basicTrapGainNorm.Last();
   for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
   {
     auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
