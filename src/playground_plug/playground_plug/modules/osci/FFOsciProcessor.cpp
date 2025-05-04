@@ -87,7 +87,7 @@ BasicCos(
 }
 
 static inline FBSIMDVector<float>
-BasicHalfSin(
+BasicHWSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -110,7 +110,7 @@ BasicHalfSin(
 }
 
 static inline FBSIMDVector<float>
-BasicFullSin(
+BasicFWSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -131,7 +131,7 @@ BasicFullSin(
 }
 
 static inline FBSIMDVector<float>
-BasicSinPulse(
+BasicSinSqr(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -154,7 +154,7 @@ BasicSinPulse(
 }
 
 static inline FBSIMDVector<float>
-BasicSawPulse(
+BasicSawSqr(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -178,6 +178,28 @@ BasicSawPulse(
 }
 
 static inline FBSIMDVector<float>
+BasicAltSin(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float y = (BLAMP(FBPhaseWrap(t + 0.5f), dt) - BLAMP(t, dt)) * -FBTwoPi * dt;
+    if (t < 0.5f)
+      y += std::sin(t * 4.0f * FBPi);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 GenerateBasic(
   FFOsciBasicMode mode,
   FBSIMDVector<float> phaseVec,
@@ -188,10 +210,11 @@ GenerateBasic(
   {
   case FFOsciBasicMode::Sin: return BasicSin(phaseVec); 
   case FFOsciBasicMode::Cos: return BasicCos(phaseVec);
-  case FFOsciBasicMode::HalfSin: return BasicHalfSin(phaseVec, incrVec);
-  case FFOsciBasicMode::FullSin: return BasicFullSin(phaseVec, incrVec);
-  case FFOsciBasicMode::SinPulse: return BasicSinPulse(phaseVec, incrVec);
-  case FFOsciBasicMode::SawPulse: return BasicSawPulse(phaseVec, incrVec);
+  case FFOsciBasicMode::HWSin: return BasicHWSin(phaseVec, incrVec);
+  case FFOsciBasicMode::FWSin: return BasicFWSin(phaseVec, incrVec);
+  case FFOsciBasicMode::SinSqr: return BasicSinSqr(phaseVec, incrVec);
+  case FFOsciBasicMode::SawSqr: return BasicSawSqr(phaseVec, incrVec);
+  case FFOsciBasicMode::AltSin: return BasicAltSin(phaseVec, incrVec);
   default: assert(false); return 0.0f;
   }
 }
