@@ -131,6 +131,53 @@ BasicFullSin(
 }
 
 static inline FBSIMDVector<float>
+BasicSinPulse(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float y = -BLEP(FBPhaseWrap(t + 0.5f), dt) + BLAMP(t, dt) * FBPi * dt;
+    if (t < 0.5f)
+      y += std::sin(t * FBPi) * 2.0f;
+    y -= 2.0f / FBPi;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicSawPulse(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    t = FBPhaseWrap(t + 0.5f);
+    float y = -BLEP(t, dt);
+    if (t >= 0.5f)
+      y += std::cos(t * FBTwoPi) + 1.0f;
+    y -= 0.5f;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 GenerateBasic(
   FFOsciBasicMode mode,
   FBSIMDVector<float> phaseVec,
@@ -143,6 +190,8 @@ GenerateBasic(
   case FFOsciBasicMode::Cos: return BasicCos(phaseVec);
   case FFOsciBasicMode::HalfSin: return BasicHalfSin(phaseVec, incrVec);
   case FFOsciBasicMode::FullSin: return BasicFullSin(phaseVec, incrVec);
+  case FFOsciBasicMode::SinPulse: return BasicSinPulse(phaseVec, incrVec);
+  case FFOsciBasicMode::SawPulse: return BasicSawPulse(phaseVec, incrVec);
   default: assert(false); return 0.0f;
   }
 }

@@ -20,6 +20,8 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::Cos] = { false, false };
   result[(int)FFOsciBasicMode::HalfSin] = { false, false };
   result[(int)FFOsciBasicMode::FullSin] = { false, false };
+  result[(int)FFOsciBasicMode::SinPulse] = { false, false };
+  result[(int)FFOsciBasicMode::SawPulse] = { false, false };
   return result;
 }
 
@@ -238,7 +240,9 @@ FFMakeOsciTopo()
     { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin" },
     { "{6A17D1AC-C7EB-46DF-B05B-02F4AB34F402}", "Cos" },
     { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HalfSin" },
-    { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FullSin" } };
+    { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FullSin" },
+    { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinPulse" },
+    { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawPulse" } };
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
   basicMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicMode);
