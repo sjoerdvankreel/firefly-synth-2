@@ -454,6 +454,76 @@ BasicPWTrap(
 }
 
 static inline FBSIMDVector<float>
+BasicSqr(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float t2 = FBPhaseWrap(t + 0.5f);
+    float y = t < 0.5f ? 1.0f : -1.0f;
+    y += BLEP(t, dt) - BLEP(t2, dt);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicSqrM1(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float t2 = FBPhaseWrap(t + 0.5f);
+    float y = (std::sin(t * FBTwoPi) * (dt * dt * 6.5753f /* what? */ / FBPi - 2.0f / FBPi));
+    if (t < 0.5f)
+      y += 1.0f;
+    y = (y * 2.0f - 1.0f) + BLEP(t, dt) - BLEP(t2, dt);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicPWSqr(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float y = 0;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 GenerateBasic(
   FFOsciBasicMode mode,
   FBSIMDVector<float> phaseVec,
@@ -475,6 +545,9 @@ GenerateBasic(
   case FFOsciBasicMode::HypTri: return BasicHypTri(phaseVec, incrVec);
   case FFOsciBasicMode::PWTriSaw: return BasicPWTriSaw(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWTriSqr: return BasicPWTriSqr(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::Sqr: return BasicSqr(phaseVec, incrVec);
+  case FFOsciBasicMode::SqrM1: return BasicSqrM1(phaseVec, incrVec);
+  case FFOsciBasicMode::PWSqr: return BasicPWSqr(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::Trap: return BasicTrap(phaseVec, incrVec);
   case FFOsciBasicMode::PWTrap: return BasicPWTrap(phaseVec, incrVec, pwVec);
   default: assert(false); return 0.0f;
