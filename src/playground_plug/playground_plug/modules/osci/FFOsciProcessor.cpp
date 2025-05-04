@@ -18,6 +18,7 @@
 // dsf https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 
 static inline float constexpr MinPW = 0.05f;
+static inline float const Exp2 = std::exp(2.0f);
 static inline float const SqrtPi = std::sqrt(FBPi);
 
 using namespace juce::dsp;
@@ -258,7 +259,8 @@ BasicParabl(
   {
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
-    float y = (BLUH(FBPhaseWrap(t + 0.5f), dt) - BLUH(t, dt)) * 2.0f / 3.0f * dt * dt + (t * 16.0f - 8.0f) * (std::abs(t - 0.5f) - 0.5f);
+    float y = (BLUH(FBPhaseWrap(t + 0.5f), dt) - BLUH(t, dt)) * 2.0f / 3.0f * dt * dt;
+    y += (t * 16.0f - 8.0f) * (std::abs(t - 0.5f) - 0.5f);
     yArr.Set(i, y);
   }
   return yArr.Load(0);
@@ -306,7 +308,10 @@ BasicHypTri(
   {
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
-    float y = 0.0f;
+    float t1 = t;
+    float t2 = FBPhaseWrap(t1 + 0.5f);
+    float y = (BLAMP(t1, dt) * 4.0f / FBPi - BLAMP(t2, dt) * 9.273f /* what? */) * dt;
+    y += std::exp((t1 < 0.5f ? t1 : 1.0f - t1) * 4.0f) * (2.0f / (Exp2 - 1.0f)) - 1.0f;
     yArr.Set(i, y);
   }
   return yArr.Load(0);
