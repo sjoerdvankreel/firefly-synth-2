@@ -1,3 +1,4 @@
+oversmp expo fm is borked
 drop fastfloor and friends ? just everything xsimd ?
 hardsync -- neh
 set exact value
