@@ -213,10 +213,7 @@ FFMakeOsciTopo()
   basicMode.type = FBParamType::List;
   basicMode.List().items = {
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
-    { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Tri" },
-    { "{19945EB6-4676-492A-BC38-E586A6D3BF6F}", "Sqr" } ,
-    { "{19945EB6-4676-492A-BC38-E586A6D3BF6F}", "Trip" } ,
-    { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", "Trap" } };
+    { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", "Sin" } };
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
   basicMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicMode);
@@ -225,7 +222,8 @@ FFMakeOsciTopo()
   auto& basicGain = result->params[(int)FFOsciParam::BasicGain];
   basicGain.acc = true;
   basicGain.defaultText = "100";
-  basicGain.name = "Basic Gain";
+  basicGain.name = "Gain";
+  basicGain.tooltip = "Basic Gain";
   basicGain.slotCount = FFOsciBasicCount;
   basicGain.unit = "%";
   basicGain.id = "{CB7B0BA4-2182-4EA8-9895-1763A29DD9F0}";
@@ -243,7 +241,8 @@ FFMakeOsciTopo()
   auto& basicPW = result->params[(int)FFOsciParam::BasicPW];
   basicPW.acc = true;
   basicPW.defaultText = "100";
-  basicPW.name = "Basic Param";
+  basicPW.name = "PW";
+  basicPW.tooltip = "Basic PW";
   basicPW.slotCount = FFOsciBasicCount;
   basicPW.unit = "%";
   basicPW.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
@@ -258,7 +257,8 @@ FFMakeOsciTopo()
   auto& basicSync = result->params[(int)FFOsciParam::BasicSync];
   basicSync.acc = true;
   basicSync.defaultText = "0";
-  basicSync.name = "Basic Sync";
+  basicSync.name = "Sync";
+  basicSync.tooltip = "Basic Sync";
   basicSync.slotCount = FFOsciBasicCount;
   basicSync.unit = "Semitones";
   basicSync.id = "{E58CA58A-088E-4B84-A0FB-E4EAC3812EC0}";
