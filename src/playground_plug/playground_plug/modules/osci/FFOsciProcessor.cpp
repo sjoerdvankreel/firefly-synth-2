@@ -181,6 +181,77 @@ BasicSaw(
 }
 
 static inline FBSIMDVector<float>
+BasicSawM1(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float t2 = FBPhaseWrap(t + 0.5f);
+    float y = (std::sin(t * FBTwoPi) * (dt * dt * 3.28765f /* what? */ / FBPi - 1.0f / FBPi) + t2) * 2.0f - 1.0f;
+    y -= BLEP(t2, dt);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicPWHWSaw(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float t2 = FBPhaseWrap(t + 0.5f);
+    float t1 = FBPhaseWrap(t2 + pw);
+    float y = 0.0f;
+    if (t1 < pw)
+      y = t1 * 2.0f / pw;
+    y -= pw;
+    if (t1 < dt)
+    {
+      float p = t1 / dt - 1.0f;
+      y -= p * p * p / (pw * 3.0f) * dt;
+    }
+    else if (t1 > 1.0f - dt)
+    {
+      float p = (t1 - 1.0f) / dt + 1.0f;
+      y += p * p * p / (pw * 3.0f) * dt;
+    }
+    if (t2 < dt)
+    {
+      float p = t2 / dt - 1.0f;
+      y += ((p * p) / (pw * 3.0f) * dt + p) * p;
+    }
+    else if (t2 > 1.0f - dt)
+    {
+      float p = (t2 - 1.0f) / dt + 1.0f;
+      y -= ((p * p) / (pw * 3.0f) * dt + p) * p;
+    }
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 BasicRamp(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
@@ -656,6 +727,8 @@ GenerateBasic(
   case FFOsciBasicMode::Cos: return BasicCos(phaseVec);
   case FFOsciBasicMode::PWRect: return BasicPWRect(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::Saw: return BasicSaw(phaseVec, incrVec);
+  case FFOsciBasicMode::SawM1: return BasicSawM1(phaseVec, incrVec);
+  case FFOsciBasicMode::PWHWSaw: return BasicPWHWSaw(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::Ramp: return BasicRamp(phaseVec, incrVec);
   case FFOsciBasicMode::BSSin: return BasicBSSin(phaseVec, incrVec);
   case FFOsciBasicMode::HWSin: return BasicHWSin(phaseVec, incrVec);

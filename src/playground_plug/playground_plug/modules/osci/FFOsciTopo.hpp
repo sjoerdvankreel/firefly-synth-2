@@ -10,10 +10,10 @@ enum class FFOsciType { Off, Basic, DSF, FM };
 enum class FFOsciFMRatioMode { Ratio, Free };
 enum class FFOsciDSFMode { Overtones, Bandwidth };
 
-// TODO hstri, hssqr
+// TODO hstri, hssqr, hssaw
 enum class FFOsciBasicMode { 
   Off, 
-  Sin, Cos, PWRect, Saw, Ramp, BSSin, HWSin, FWSin, SinSqr, SawSqr, SinSaw, AltSin, Parabl, 
+  Sin, Cos, PWRect, Saw, SawM1, PWHWSaw, Ramp, BSSin, HWSin, FWSin, SinSqr, SawSqr, SinSaw, AltSin, Parabl, 
   Tri, HypTri, PWTriSaw, PWTriSqr, Sqr, SqrM1, PWSqr, Trap, PWTrap, Count };
 
 inline int constexpr FFOsciBasicCount = 4;
