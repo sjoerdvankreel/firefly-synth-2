@@ -12,7 +12,9 @@
 
 #include <xsimd/xsimd.hpp>
 
-// basics https://github.com/martinfinke/PolyBLEP/blob/master/PolyBLEP.cpp
+// basics 
+// https://www.taletn.com/reaper/mono_synth/
+// http://www.acoustics.hut.fi/publications/papers/smc2010-phaseshaping/
 // dsf https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 
 static inline float constexpr MinPW = 0.05f;
