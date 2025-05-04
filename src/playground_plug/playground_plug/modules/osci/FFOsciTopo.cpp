@@ -36,10 +36,10 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::HypTri] = { false, false };
   result[(int)FFOsciBasicMode::PWRect] = { true, false };
   result[(int)FFOsciBasicMode::PWSqr] = { true, false };
-  result[(int)FFOsciBasicMode::PWTrap] = { true, false };
   result[(int)FFOsciBasicMode::PWHWSaw] = { true, false };
   result[(int)FFOsciBasicMode::PWTriSaw] = { true, false };
   result[(int)FFOsciBasicMode::PWTriSqr] = { true, false };
+  result[(int)FFOsciBasicMode::PWTrapTri] = { true, false };
   return result;
 }
 
@@ -275,10 +275,10 @@ FFMakeOsciTopo()
     { "{B3BC94E7-226A-483B-B406-C2879EF62560}", "HypTri", "Hyper Tri" },
     { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "PWRect", "PW Rect" },
     { "{DFD55382-FBA0-4080-B179-98385452528B}", "PWSqr", "PW Sqr" },
-    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PWTrap", "PW Trapezoid" },
     { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "PWHWSAW", "PW Half Rect Saw" },
     { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PWTriSaw", "PW Tri To Saw" },
     { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriSqr", "PW Tri To Sqr" },
+    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PWTrapTri", "PW Trap To Tri" }
   };
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
