@@ -335,7 +335,16 @@ BasicPWTri(
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
     float pw = pwArr.Get(i);
-    float y = 0.0f;
+    float t1 = FBPhaseWrap(t + 0.5f * pw);
+    float t2 = FBPhaseWrap(t + 1.0f - 0.5f * pw);
+    float y = t * 2.0f;
+    if (y >= 2.0f - pw)
+      y = (y - 2.0f) / pw;
+    else if (y >= pw)
+      y = 1.0f - (y - pw) / (1.0f - pw);
+    else
+      y /= pw;
+    y += dt / (pw - pw * pw) * (BLAMP(t1, dt) - BLAMP(t2, dt));
     yArr.Set(i, y);
   }
   return yArr.Load(0);
@@ -690,6 +699,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
               // todo conditional
               auto basicPW = basicPWPlain[i].Load(s);
               auto basicGain = basicGainPlain[i].Load(s);
+              basicPW = (MinPW + (1.0f - MinPW) * basicPW) * 0.5f;
               // todo auto basicSync = basicSyncPlain[i].Load(s);
               thisUniOutput += GenerateBasic(_basicMode[i], uniPhase, uniIncr, basicPW) * basicGain;
             }
