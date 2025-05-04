@@ -24,6 +24,7 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::SinSqr] = { false, false };
   result[(int)FFOsciBasicMode::SawSqr] = { false, false };
   result[(int)FFOsciBasicMode::AltSin] = { false, false };
+  result[(int)FFOsciBasicMode::Parabl] = { false, false };
   return result;
 }
 
@@ -246,7 +247,9 @@ FFMakeOsciTopo()
     { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin", "Full Wave Rectified Sine" },
     { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sine Square" },
     { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr", "Saw Square" },
-    { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sine" }};
+    { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sine" },
+    { "{EE5AC911-DB72-4D22-ABD0-EBBE72141394}", "Parabl", "Parabola" }
+  };
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
   basicMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicMode);
