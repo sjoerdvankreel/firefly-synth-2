@@ -38,7 +38,7 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::PWSqr] = { true, false };
   result[(int)FFOsciBasicMode::PWHWSaw] = { true, false };
   result[(int)FFOsciBasicMode::PWTriSaw] = { true, false };
-  result[(int)FFOsciBasicMode::PWTriSqr] = { true, false };
+  result[(int)FFOsciBasicMode::PWTriPls] = { true, false };
   result[(int)FFOsciBasicMode::PWTrapTri] = { true, false };
   return result;
 }
@@ -277,7 +277,7 @@ FFMakeOsciTopo()
     { "{DFD55382-FBA0-4080-B179-98385452528B}", "PWSqr", "PW Sqr" },
     { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "PWHWSAW", "PW Half Rect Saw" },
     { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PWTriSaw", "PW Tri To Saw" },
-    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriSqr", "PW Tri To Sqr" },
+    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriPls", "PW Tri To Pulse" },
     { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PWTrapTri", "PW Trap To Tri" }
   };
   basicMode.List().submenuStart[(int)FFOsciBasicMode::Off] = "Off";

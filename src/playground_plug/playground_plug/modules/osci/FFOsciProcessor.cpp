@@ -644,7 +644,7 @@ BasicPWTriSaw(
 }
 
 static inline FBSIMDVector<float>
-BasicPWTriSqr(
+BasicPWTriPls(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -745,7 +745,7 @@ GenerateBasicCheck(
   case FFOsciBasicMode::PWSqr: return BasicPWSqr(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWHWSaw: return BasicPWHWSaw(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWTriSaw: return BasicPWTriSaw(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::PWTriSqr: return BasicPWTriSqr(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::PWTriPls: return BasicPWTriPls(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWTrapTri: return BasicPWTrapTri(phaseVec, incrVec, pwVec);
   default: assert(false); return 0.0f;
   }
