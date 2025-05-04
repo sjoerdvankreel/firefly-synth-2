@@ -30,6 +30,7 @@ float
 FBModuleGraphDisplayComponent::PointXLocation(
   int graph, float pointRelative) const
 {
+  assert(!std::isnan(pointRelative));
   float graphCount = static_cast<float>(_data->series.size());
   float graphPointRelative = (graph + pointRelative) / graphCount;
   return HalfMarkerSize + graphPointRelative * (getWidth() - MarkerSize);
@@ -40,6 +41,7 @@ FBModuleGraphDisplayComponent::PointYLocation(
   float pointYValue, bool stereo, 
   bool left, float absMaxPointAllSeries) const
 {
+  assert(!std::isnan(pointYValue));
   float pointValue = pointYValue / absMaxPointAllSeries;
   if (_data->bipolar)
     pointValue = FBToUnipolar(pointValue);

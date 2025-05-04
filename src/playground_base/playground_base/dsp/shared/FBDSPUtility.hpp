@@ -13,6 +13,7 @@
 
 inline constexpr float FBPi = std::numbers::pi_v<float>;
 inline constexpr float FBTwoPi = 2.0f * FBPi;
+inline constexpr float FBMaxPitch = 140.0f; // 26.5 kHz safety net
 
 inline float
 FBToUnipolar(float v)
@@ -80,11 +81,13 @@ FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 inline float
 FBPitchToFreq(float pitch)
 {
+  pitch = std::min(pitch, FBMaxPitch);
   return 440.0f * std::pow(2.0f, (pitch - 69.0f) / 12.0f);
 }
 
 inline FBSIMDVector<float>
 FBPitchToFreq(FBSIMDVector<float> pitch)
 {
+  pitch = xsimd::min(pitch, FBSIMDVector<float>(FBMaxPitch));
   return 440.0f * xsimd::pow(FBSIMDVector<float>(2.0f), (pitch - 69.0f) / 12.0f);
 }

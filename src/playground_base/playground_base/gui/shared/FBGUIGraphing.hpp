@@ -151,6 +151,8 @@ FBRenderModuleGraphSeries(
     if constexpr (Audio)
       for (int i = 0; i < processed; i++)
       {
+        assert(!std::isnan(seriesAudioIn[0][i]));
+        assert(!std::isnan(seriesAudioIn[1][i]));
         seriesOut.l.push_back(seriesAudioIn[0][i]);
         seriesOut.r.push_back(seriesAudioIn[1][i]);
       }

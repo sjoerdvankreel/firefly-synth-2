@@ -715,7 +715,7 @@ BasicPWTrapTri(
 }
 
 static inline FBSIMDVector<float>
-GenerateBasic(
+GenerateBasicCheck(
   FFOsciBasicMode mode,
   FBSIMDVector<float> phaseVec,
   FBSIMDVector<float> incrVec,
@@ -749,6 +749,23 @@ GenerateBasic(
   case FFOsciBasicMode::PWTrapTri: return BasicPWTrapTri(phaseVec, incrVec, pwVec);
   default: assert(false); return 0.0f;
   }
+}
+
+static inline FBSIMDVector<float>
+GenerateBasic(
+  FFOsciBasicMode mode,
+  FBSIMDVector<float> phaseVec,
+  FBSIMDVector<float> incrVec,
+  FBSIMDVector<float> pwVec)
+{
+  auto result = GenerateBasicCheck(mode, phaseVec, incrVec, pwVec);
+#ifndef NDEBUG
+  FBSIMDArray<float, FBSIMDFloatCount> check;
+  check.Store(0, result);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+    assert(!std::isnan(check.Get(i)));
+#endif
+  return result;
 }
 
 static inline FBSIMDVector<float>
@@ -1096,6 +1113,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           assert(false);
         }
         uniOutputOversampled[u].Store(s, thisUniOutput);
+        for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
+          assert(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
       }
     }
   }
@@ -1227,6 +1246,11 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       auto uniMono = _uniOutputDownsampled[u].Load(s) * gainPlain.Load(s) * uniBlend;
       output[0].Add(s, (1.0f - uniPanning) * uniMono);
       output[1].Add(s, uniPanning * uniMono);
+      for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
+      {
+        assert(!std::isnan(output[0].Get(s + s2)));
+        assert(!std::isnan(output[1].Get(s + s2)));
+      }
     }
   }
 
