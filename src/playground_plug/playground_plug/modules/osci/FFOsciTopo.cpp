@@ -342,15 +342,18 @@ FFMakeOsciTopo()
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;
-  dsfMode.defaultText = "Overtones";
+  dsfMode.defaultText = "Overtones1";
   dsfMode.name = "Mode";
   dsfMode.tooltip = "DSF Mode";     
   dsfMode.slotCount = 1;
   dsfMode.id = "{D66E2800-CFBD-4B4E-B22E-D5D7572FEF6E}";
   dsfMode.type = FBParamType::List;
   dsfMode.List().items = {
-    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Overtones" },
-    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "Bandwidth" } };
+    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Overtones1" },
+    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "Bandwidth1" },
+    { "{0E14A753-CB35-45F9-8E1C-B7DE2F2B13BD}", "Overtones2" },
+    { "{112539D3-10B8-4C7B-B9E1-BAF58E85A89F}", "Bandwidth2" } 
+  };
   auto selectDSFMode = [](auto& module) { return &module.block.dsfMode; };
   dsfMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFMode);
   dsfMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFMode);
@@ -371,7 +374,8 @@ FFMakeOsciTopo()
   dsfOvertones.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFOvertones);
   dsfOvertones.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFOvertones);
   dsfOvertones.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFOvertones);
-  dsfOvertones.dependencies.visible.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF && vs[1] == (int)FFOsciDSFMode::Overtones; });
+  dsfOvertones.dependencies.visible.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode }, [](auto const& vs) { 
+    return vs[0] == (int)FFOsciType::DSF && (vs[1] == (int)FFOsciDSFMode::Overtones1 || vs[1] == (int)FFOsciDSFMode::Overtones2); });
 
   auto& dsfBandwidth = result->params[(int)FFOsciParam::DSFBandwidth];
   dsfBandwidth.acc = false;
@@ -386,38 +390,72 @@ FFMakeOsciTopo()
   dsfBandwidth.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFBandwidth);
   dsfBandwidth.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFBandwidth);
   dsfBandwidth.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFBandwidth);
-  dsfBandwidth.dependencies.visible.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF && vs[1] == (int)FFOsciDSFMode::Bandwidth; });
+  dsfBandwidth.dependencies.visible.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode }, [](auto const& vs) { 
+    return vs[0] == (int)FFOsciType::DSF && (vs[1] == (int)FFOsciDSFMode::Bandwidth1 || vs[1] == (int)FFOsciDSFMode::Bandwidth2); });
 
-  auto& dsfDistance = result->params[(int)FFOsciParam::DSFDistance];
-  dsfDistance.acc = false;
-  dsfDistance.defaultText = "1";
-  dsfDistance.name = "Distance";
-  dsfDistance.tooltip = "DSF Distance";
-  dsfDistance.slotCount = 1;
-  dsfDistance.id = "{0D1D4920-A17F-4716-A42E-238DD1E99952}";
-  dsfDistance.type = FBParamType::Discrete;
-  dsfDistance.Discrete().valueCount = 20;
-  dsfDistance.Discrete().valueOffset = 1;
-  auto selectDSFDistance = [](auto& module) { return &module.block.dsfDistance; };
-  dsfDistance.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDistance);
-  dsfDistance.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFDistance);
-  dsfDistance.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDistance);
-  dsfDistance.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
+  auto& dsfDistance1 = result->params[(int)FFOsciParam::DSFDistance1];
+  dsfDistance1.acc = false;
+  dsfDistance1.defaultText = "1";
+  dsfDistance1.name = "Distance 1";
+  dsfDistance1.tooltip = "DSF Distance 1";
+  dsfDistance1.slotCount = 1;
+  dsfDistance1.id = "{0D1D4920-A17F-4716-A42E-238DD1E99952}";
+  dsfDistance1.type = FBParamType::Discrete;
+  dsfDistance1.Discrete().valueCount = 20;
+  dsfDistance1.Discrete().valueOffset = 1;
+  auto selectDSFDistance1 = [](auto& module) { return &module.block.dsfDistance1; };
+  dsfDistance1.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDistance1);
+  dsfDistance1.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFDistance1);
+  dsfDistance1.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDistance1);
+  dsfDistance1.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
+
+  auto& dsfDistance2 = result->params[(int)FFOsciParam::DSFDistance2];
+  dsfDistance2.acc = false;
+  dsfDistance2.defaultText = "1";
+  dsfDistance2.name = "Distance 2";
+  dsfDistance2.tooltip = "DSF Distance 2";
+  dsfDistance2.slotCount = 1;
+  dsfDistance2.id = "{E2559F90-AE0E-4B96-8E38-A0F989708C38}";
+  dsfDistance2.type = FBParamType::Discrete;
+  dsfDistance2.Discrete().valueCount = 20;
+  dsfDistance2.Discrete().valueOffset = 1;
+  auto selectDSFDistance2 = [](auto& module) { return &module.block.dsfDistance2; };
+  dsfDistance2.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDistance2);
+  dsfDistance2.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFDistance2);
+  dsfDistance2.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDistance2);
+  dsfDistance2.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode}, [](auto const& vs) { 
+    return vs[0] == (int)FFOsciType::DSF && (vs[1] == (int)FFOsciDSFMode::Overtones2 || vs[1] == (int)FFOsciDSFMode::Bandwidth2); });
   
-  auto& dsfDecay = result->params[(int)FFOsciParam::DSFDecay];
-  dsfDecay.acc = true;
-  dsfDecay.defaultText = "50";
-  dsfDecay.name = "Decay";
-  dsfDecay.tooltip = "DSF Decay";
-  dsfDecay.slotCount = 1;
-  dsfDecay.unit = "%";
-  dsfDecay.id = "{21CE915D-0983-4545-9F6E-8743CAC5EAB7}";
-  dsfDecay.type = FBParamType::Identity;
-  auto selectDSFDecay = [](auto& module) { return &module.acc.dsfDecay; };
-  dsfDecay.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDecay);
-  dsfDecay.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDSFDecay);
-  dsfDecay.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDecay);
-  dsfDecay.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
+  auto& dsfDecay1 = result->params[(int)FFOsciParam::DSFDecay1];
+  dsfDecay1.acc = true;
+  dsfDecay1.defaultText = "50";
+  dsfDecay1.name = "Decay 1";
+  dsfDecay1.tooltip = "DSF Decay 1";
+  dsfDecay1.slotCount = 1;
+  dsfDecay1.unit = "%";
+  dsfDecay1.id = "{21CE915D-0983-4545-9F6E-8743CAC5EAB7}";
+  dsfDecay1.type = FBParamType::Identity;
+  auto selectDSFDecay1 = [](auto& module) { return &module.acc.dsfDecay1; };
+  dsfDecay1.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDecay1);
+  dsfDecay1.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDSFDecay1);
+  dsfDecay1.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDecay1);
+  dsfDecay1.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
+
+  auto& dsfDecay2 = result->params[(int)FFOsciParam::DSFDecay2];
+  dsfDecay2.acc = true;
+  dsfDecay2.defaultText = "50";
+  dsfDecay2.name = "Decay 2";
+  dsfDecay2.tooltip = "DSF Decay 2";
+  dsfDecay2.slotCount = 1;
+  dsfDecay2.unit = "%";
+  dsfDecay2.id = "{C265214D-D0A7-41F9-B4F0-26F01333893A}";
+  dsfDecay2.type = FBParamType::Identity;
+  auto selectDSFDecay2 = [](auto& module) { return &module.acc.dsfDecay2; };
+  dsfDecay2.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFDecay2);
+  dsfDecay2.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectDSFDecay2);
+  dsfDecay2.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectDSFDecay2);
+  dsfDecay2.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::DSFMode }, [](auto const& vs) {
+    return vs[0] == (int)FFOsciType::DSF && (vs[1] == (int)FFOsciDSFMode::Overtones2 || vs[1] == (int)FFOsciDSFMode::Bandwidth2); });
 
   auto& fmExp = result->params[(int)FFOsciParam::FMExp];
   fmExp.acc = false;

@@ -26,7 +26,8 @@ class FFOsciProcessor final
   int _oversamplingTimes = {};
 
   std::array<FFOsciBasicMode, FFOsciBasicCount> _basicMode = {};
-  float _dsfDistance = {};
+  float _dsfDistance1 = {};
+  float _dsfDistance2 = {};
   float _dsfOvertones = {};
   FFOsciDSFMode _dsfMode = {};
   float _dsfBandwidthPlain = {};

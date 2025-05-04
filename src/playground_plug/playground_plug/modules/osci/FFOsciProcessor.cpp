@@ -840,7 +840,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   auto const& uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
   auto const& uniRandomNorm = params.block.uniRandom[0].Voice()[voice];
   auto const& dsfModeNorm = params.block.dsfMode[0].Voice()[voice];
-  auto const& dsfDistanceNorm = params.block.dsfDistance[0].Voice()[voice];
+  auto const& dsfDistance1Norm = params.block.dsfDistance1[0].Voice()[voice];
+  auto const& dsfDistance2Norm = params.block.dsfDistance2[0].Voice()[voice];
   auto const& dsfOvertonesNorm = params.block.dsfOvertones[0].Voice()[voice];
   auto const& dsfBandwidthNorm = params.block.dsfBandwidth[0].Voice()[voice];
   auto const& fmExpNorm = params.block.fmExp[0].Voice()[voice];
@@ -861,7 +862,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, uniRandomNorm);
   _dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, dsfModeNorm);
   _dsfBandwidthPlain = topo.NormalizedToLog2Fast(FFOsciParam::DSFBandwidth, dsfBandwidthNorm);
-  _dsfDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance, dsfDistanceNorm));
+  _dsfDistance1 = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance1, dsfDistance1Norm));
+  _dsfDistance2 = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance2, dsfDistance2Norm));
   _dsfOvertones = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFOvertones, dsfOvertonesNorm));
   _fmExp = topo.NormalizedToBoolFast(FFOsciParam::FMExp, fmExpNorm);
   _fmRatioMode = topo.NormalizedToListFast<FFOsciFMRatioMode>(FFOsciParam::FMRatioMode, fmRatioModeNorm);
@@ -948,7 +950,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& uniBlendNorm = procParams.acc.unisonBlend[0].Voice()[voice];
   auto const& uniDetuneNorm = procParams.acc.unisonDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.unisonSpread[0].Voice()[voice];
-  auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
+  auto const& dsfDecay1Norm = procParams.acc.dsfDecay1[0].Voice()[voice];
+  auto const& dsfDecay2Norm = procParams.acc.dsfDecay2[0].Voice()[voice];
 
   FBSIMDArray<float, FFOsciFixedBlockOversamples> gainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
@@ -956,7 +959,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
-  FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain1;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain2;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicPWPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicGainPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicSyncPlain;
@@ -993,7 +997,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else if (_type == FFOsciType::DSF)
     {
-      dsfDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm, s));
+      dsfDecayPlain1.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay1, dsfDecay1Norm, s));
+      if(_dsfMode == FFOsciDSFMode::Overtones2 || _dsfMode == FFOsciDSFMode::Bandwidth2)
+        dsfDecayPlain2.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay2, dsfDecay2Norm, s));
     }
     else if (_type == FFOsciType::FM)
     {
@@ -1042,7 +1048,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else if (_type == FFOsciType::DSF)
     {
-      dsfDecayPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      dsfDecayPlain1.UpsampleStretch<FFOsciOversamplingTimes>();
+      if(_dsfMode == FFOsciDSFMode::Overtones2 || _dsfMode == FFOsciDSFMode::Bandwidth2)
+        dsfDecayPlain2.UpsampleStretch<FFOsciOversamplingTimes>();
     }
     else if (_type == FFOsciType::FM)
     {
@@ -1099,13 +1107,23 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
         else if (_type == FFOsciType::DSF)
         {
-          auto dsfDecay = dsfDecayPlain.Load(s);
-          auto dsfDistFreq = _dsfDistance * uniFreq;
-          auto dsfMaxOvertones = (sampleRate * 0.5f - uniFreq) / dsfDistFreq;
-          if (_dsfMode == FFOsciDSFMode::Overtones)
-            thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfOvertones);
-          else if (_dsfMode == FFOsciDSFMode::Bandwidth)
-            thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
+          auto dsfDecay1 = dsfDecayPlain1.Load(s);
+          auto dsfDistFreq1 = _dsfDistance1 * uniFreq;
+          auto dsfMaxOvertones1 = (sampleRate * 0.5f - uniFreq) / dsfDistFreq1;
+          if (_dsfMode == FFOsciDSFMode::Overtones1 || _dsfMode == FFOsciDSFMode::Overtones2)
+            thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay1, dsfDistFreq1, dsfMaxOvertones1, _dsfOvertones);
+          else if (_dsfMode == FFOsciDSFMode::Bandwidth1 || _dsfMode == FFOsciDSFMode::Bandwidth2)
+            thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay1, dsfDistFreq1, dsfMaxOvertones1, _dsfBandwidthPlain);
+          if (_dsfMode == FFOsciDSFMode::Overtones2 || _dsfMode == FFOsciDSFMode::Bandwidth2)
+          {
+            auto dsfDecay2 = dsfDecayPlain2.Load(s);
+            auto dsfDistFreq2 = _dsfDistance2 * uniFreq;
+            auto dsfMaxOvertones2 = (sampleRate * 0.5f - uniFreq) / dsfDistFreq2;
+            if (_dsfMode == FFOsciDSFMode::Overtones2)
+              thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay2, dsfDistFreq2, dsfMaxOvertones2, _dsfOvertones);
+            else if (_dsfMode == FFOsciDSFMode::Bandwidth2)
+              thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay2, dsfDistFreq2, dsfMaxOvertones2, _dsfBandwidthPlain);
+          }
           else assert(false);
         }
         else
@@ -1270,7 +1288,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.unisonBlend[0][voice] = uniBlendNorm.Last();
   exchangeParams.acc.unisonDetune[0][voice] = uniDetuneNorm.Last();
   exchangeParams.acc.unisonSpread[0][voice] = uniSpreadNorm.Last();
-  exchangeParams.acc.dsfDecay[0][voice] = dsfDecayNorm.Last();
+  exchangeParams.acc.dsfDecay1[0][voice] = dsfDecay1Norm.Last();
+  exchangeParams.acc.dsfDecay2[0][voice] = dsfDecay2Norm.Last();
   for (int i = 0; i < FFOsciBasicCount; i++)
   {
     auto const& basicPWNorm = procParams.acc.basicPW[i].Voice()[voice];
