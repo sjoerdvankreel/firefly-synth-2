@@ -69,21 +69,23 @@ static Component*
 MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1, 0, 1, 0 });
 
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Mode/PW"));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Gain/Sync"));
   for (int i = 0; i < FFOsciBasicCount; i++)
   {
     auto basicMode = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicMode, i });
-    grid->Add(0, i * 2 + 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, basicMode));
-    auto basicGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicGain, i });
-    grid->Add(0, i * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicGain, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(0, 1 + i * 2 + 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, basicMode));
     auto basicPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicPW, i });
-    grid->Add(1, i * 2 + 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicPW, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(0, 1 + i * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicPW, Slider::SliderStyle::RotaryVerticalDrag));
+    auto basicGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicGain, i });
+    grid->Add(1, 1 + i * 2 + 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicGain, Slider::SliderStyle::LinearHorizontal));
     auto basicSync = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSync, i });
-    grid->Add(1, i * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSync, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1, 1 + i * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSync, Slider::SliderStyle::RotaryVerticalDrag));
   }
 
-  grid->MarkSection({ 0, 0, 2, 8 });
+  grid->MarkSection({ 0, 0, 2, 9 });
 
   // TODO helper function
   FBParamsDependencies dependencies = {};
