@@ -224,7 +224,7 @@ FFMakeOsciTopo()
 
   auto& basicGain = result->params[(int)FFOsciParam::BasicGain];
   basicGain.acc = true;
-  basicGain.defaultText = "0";
+  basicGain.defaultText = "100";
   basicGain.name = "Basic Gain";
   basicGain.slotCount = FFOsciBasicCount;
   basicGain.unit = "%";
@@ -243,7 +243,7 @@ FFMakeOsciTopo()
   basicParam.acc = true;
   basicParam.defaultText = "100";
   basicParam.name = "Basic Param";
-  basicParam.slotCount = 1;
+  basicParam.slotCount = FFOsciBasicCount;
   basicParam.unit = "%";
   basicParam.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
   basicParam.type = FBParamType::Identity;
