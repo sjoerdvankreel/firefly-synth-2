@@ -244,7 +244,7 @@ FFMakeOsciTopo()
     { "{884C404C-9831-4A36-8669-C0281C334DCF}", "BSSin", "Bipolar Squared Sine" },
     { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HWSin", "Half Wave Rectified Sine" },
     { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin", "Full Wave Rectified Sine" },
-    { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sin Square" },
+    { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sine Square" },
     { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr", "Saw Square" },
     { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sine" }};
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
