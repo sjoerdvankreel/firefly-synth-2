@@ -34,12 +34,19 @@ FBFastFloor(float x)
   return i - (i > x);
 }
 
+// todo can drop this all ?
 inline float
 FBPhaseWrap(float p)
 {
   if (p >= 1.0f || p < 0.0f)
     p -= FBFastFloor(p);
   return p;
+}
+
+inline FBSIMDVector<float>
+FBPhaseWrap(FBSIMDVector<float> p)
+{
+  return p - xsimd::floor(p);
 }
 
 inline bool

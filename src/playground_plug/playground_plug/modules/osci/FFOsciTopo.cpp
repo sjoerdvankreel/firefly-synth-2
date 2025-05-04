@@ -4,6 +4,28 @@
 #include <playground_plug/modules/oscis_graph/FFOscisGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
+struct FFBasicModeDetails
+{
+  bool canPW = {};
+  bool canSync = {};
+};
+
+static std::vector<FFBasicModeDetails> 
+MakeBasicModeDetails()
+{
+  std::vector<FFBasicModeDetails> result;
+  result.resize((int)FFOsciBasicMode::Count);
+  result[(int)FFOsciBasicMode::Off] = { false, false };
+  result[(int)FFOsciBasicMode::Sin] = { false, false };
+  result[(int)FFOsciBasicMode::Cos] = { false, false };
+  result[(int)FFOsciBasicMode::HalfSin] = { false, false };
+  result[(int)FFOsciBasicMode::FullSin] = { false, false };
+  return result;
+}
+
+static std::vector<FFBasicModeDetails> const 
+basicModeDetails = MakeBasicModeDetails();
+
 static std::string
 FFOsciFMFormatRatioSlot(int slot)
 {
@@ -212,8 +234,11 @@ FFMakeOsciTopo()
   basicMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
   basicMode.type = FBParamType::List;
   basicMode.List().items = {
-    { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
-    { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", "Sin" } };
+    { "{00880EBC-8E91-44C6-ADD4-4D2BB9B4E945}", "Off" },
+    { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin" },
+    { "{6A17D1AC-C7EB-46DF-B05B-02F4AB34F402}", "Cos" },
+    { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HalfSin" },
+    { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FullSin" } };
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
   basicMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicMode);
@@ -238,7 +263,6 @@ FFMakeOsciTopo()
   basicGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicGain);
   basicGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
-  // todo disable conditional
   auto& basicPW = result->params[(int)FFOsciParam::BasicPW];
   basicPW.acc = true;
   basicPW.defaultText = "100";
@@ -252,9 +276,8 @@ FFMakeOsciTopo()
   basicPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicPW);
   basicPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicPW);
   basicPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicPW);
-  basicPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+  basicPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && basicModeDetails[vs[1]].canPW; });
 
-  // todo disable conditional
   auto& basicSync = result->params[(int)FFOsciParam::BasicSync];
   basicSync.acc = true;
   basicSync.defaultText = "0";
@@ -270,7 +293,7 @@ FFMakeOsciTopo()
   basicSync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSync);
   basicSync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSync);
   basicSync.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSync);
-  basicSync.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+  basicSync.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && basicModeDetails[vs[1]].canSync; });
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;
