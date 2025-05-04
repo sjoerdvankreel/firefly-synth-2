@@ -109,6 +109,77 @@ BasicCos(
 }
 
 static inline FBSIMDVector<float>
+BasicPWRect(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float t2 = FBPhaseWrap(t + 1.0f - pw);
+    float y = -2.0f * pw;
+    if (t < pw)
+      y += 2.0f;
+    y += BLEP(t, dt) - BLEP(t, dt);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicSaw(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float t1 = FBPhaseWrap(t + 0.5f);
+    float y = 2.0f * t1 - 1.0f;
+    y -= BLEP(t1, dt);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicRamp(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float y = 1.0f - 2.0f * t;
+    y += BLEP(t, dt);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 BasicBSSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
@@ -541,6 +612,9 @@ GenerateBasic(
   {
   case FFOsciBasicMode::Sin: return BasicSin(phaseVec); 
   case FFOsciBasicMode::Cos: return BasicCos(phaseVec);
+  case FFOsciBasicMode::PWRect: return BasicPWRect(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::Saw: return BasicSaw(phaseVec, incrVec);
+  case FFOsciBasicMode::Ramp: return BasicRamp(phaseVec, incrVec);
   case FFOsciBasicMode::BSSin: return BasicBSSin(phaseVec, incrVec);
   case FFOsciBasicMode::HWSin: return BasicHWSin(phaseVec, incrVec);
   case FFOsciBasicMode::FWSin: return BasicFWSin(phaseVec, incrVec);

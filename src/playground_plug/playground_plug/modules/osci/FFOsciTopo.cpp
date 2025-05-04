@@ -18,6 +18,9 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::Off] = { false, false };
   result[(int)FFOsciBasicMode::Sin] = { false, false };
   result[(int)FFOsciBasicMode::Cos] = { false, false };
+  result[(int)FFOsciBasicMode::PWRect] = { true, false };
+  result[(int)FFOsciBasicMode::Saw] = { false, false };
+  result[(int)FFOsciBasicMode::Ramp] = { false, false };
   result[(int)FFOsciBasicMode::BSSin] = { false, false };
   result[(int)FFOsciBasicMode::HWSin] = { false, false };
   result[(int)FFOsciBasicMode::FWSin] = { false, false };
@@ -251,6 +254,9 @@ FFMakeOsciTopo()
     { "{00880EBC-8E91-44C6-ADD4-4D2BB9B4E945}", "Off" },
     { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin", "Sine" },
     { "{6A17D1AC-C7EB-46DF-B05B-02F4AB34F402}", "Cos", "Cosine" },
+    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "PWRect", "PW Rect" },
+    { "{0D1AA9D3-4CA5-4B67-BFFD-5D5F2C5B7161}", "Saw", "Saw" },
+    { "{C858202B-8FD4-4C53-93D4-AB2FF019068C}", "Ramp", "Ramp" },
     { "{884C404C-9831-4A36-8669-C0281C334DCF}", "BSSin", "Bipolar Sin^2" },
     { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HWSin", "Half Rect Sin" },
     { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin", "Full Rect Sin" },
