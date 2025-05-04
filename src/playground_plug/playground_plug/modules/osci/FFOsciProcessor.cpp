@@ -18,6 +18,7 @@
 // dsf https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 
 static inline float constexpr MinPW = 0.05f;
+static inline float const SqrtPi = std::sqrt(FBPi);
 
 using namespace juce::dsp;
 
@@ -42,15 +43,15 @@ FMRatioRatio(int v)
 }
 
 static inline float
-BLEP(float phase, float incr)
+BLEP(float t, float dt)
 {
-  if (phase < incr) 
+  if (t < dt)
   {
-    float b = phase / incr - 1.0f;
+    float b = t / dt - 1.0f;
     return -(b * b);
-  } else if (phase > 1.0f - incr) 
+  } else if (t > 1.0f - dt)
   {
-    float b = (phase - 1.0f) / incr + 1.0f;
+    float b = (t - 1.0f) / dt + 1.0f;
     return b * b;
   }
   else
@@ -58,17 +59,36 @@ BLEP(float phase, float incr)
 }
 
 static inline float
-BLAMP(float phase, float incr)
+BLAMP(float t, float dt)
 {
-  if (phase < incr) 
+  if (t < dt)
   {
-    float b = phase / incr - 1.0f;
+    float b = t / dt - 1.0f;
     return -1.0f / 3.0f * b * b * b;
-  } else if (phase > 1.0f - incr) 
+  } else if (t > 1.0f - dt)
   {
-    float b = (phase - 1.0f) / incr + 1.0f;
+    float b = (t - 1.0f) / dt + 1.0f;
     return 1.0f / 3.0f * b * b * b;
   } else
+    return 0.0f;
+}
+
+static inline float 
+BLUH(float t, float dt)
+{
+  if (t < dt)
+  {
+   t = t / dt - 1.0f;
+   t *= t;
+   return (t * t - t) * -4.0f;
+  }
+  else if (t > 1.0f - dt)
+  {
+    t = (t - 1.0f) / dt + 1.0f;
+    t *= t;
+    return (t * t - t) * 4.0f;
+  }
+  else
     return 0.0f;
 }
 
@@ -84,6 +104,31 @@ BasicCos(
   FBSIMDVector<float> t)
 {
   return xsimd::cos(t * FBTwoPi);
+}
+
+static inline FBSIMDVector<float>
+BasicBSSin(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float y = (BLUH(FBPhaseWrap(t + 0.5f), dt) - BLUH(t, dt)) * dt * dt * -SqrtPi;
+    float stp = std::sin(t * FBTwoPi);
+    if (t < 0.5f)
+      y += stp * stp;
+    else
+      y -= stp * stp;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
 }
 
 static inline FBSIMDVector<float>
@@ -210,6 +255,7 @@ GenerateBasic(
   {
   case FFOsciBasicMode::Sin: return BasicSin(phaseVec); 
   case FFOsciBasicMode::Cos: return BasicCos(phaseVec);
+  case FFOsciBasicMode::BSSin: return BasicBSSin(phaseVec, incrVec);
   case FFOsciBasicMode::HWSin: return BasicHWSin(phaseVec, incrVec);
   case FFOsciBasicMode::FWSin: return BasicFWSin(phaseVec, incrVec);
   case FFOsciBasicMode::SinSqr: return BasicSinSqr(phaseVec, incrVec);
