@@ -265,6 +265,78 @@ BasicParabl(
 }
 
 static inline FBSIMDVector<float>
+BasicTri(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float t0 = t;
+    float t1 = FBPhaseWrap(t + 0.25f);
+    float t2 = FBPhaseWrap(t + 0.75f);
+    float y = t * 4.0f;
+    if (y >= 3.0f)
+      y -= 4.0f;
+    else if (y > 1.0f)
+      y = 2.0f - y;
+    y += 4.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicHypTri(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float y = 0.0f;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicPWTri(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float y = 0.0f;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 GenerateBasic(
   FFOsciBasicMode mode,
   FBSIMDVector<float> phaseVec,
@@ -282,6 +354,9 @@ GenerateBasic(
   case FFOsciBasicMode::SawSqr: return BasicSawSqr(phaseVec, incrVec);
   case FFOsciBasicMode::AltSin: return BasicAltSin(phaseVec, incrVec);
   case FFOsciBasicMode::Parabl: return BasicParabl(phaseVec, incrVec);
+  case FFOsciBasicMode::Tri: return BasicTri(phaseVec, incrVec);
+  case FFOsciBasicMode::HypTri: return BasicHypTri(phaseVec, incrVec);
+  case FFOsciBasicMode::PWTri: return BasicPWTri(phaseVec, incrVec, pwVec);
   default: assert(false); return 0.0f;
   }
 }

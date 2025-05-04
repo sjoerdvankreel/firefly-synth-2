@@ -25,6 +25,9 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::SawSqr] = { false, false };
   result[(int)FFOsciBasicMode::AltSin] = { false, false };
   result[(int)FFOsciBasicMode::Parabl] = { false, false };
+  result[(int)FFOsciBasicMode::Tri] = { false, false };
+  result[(int)FFOsciBasicMode::HypTri] = { false, false };
+  result[(int)FFOsciBasicMode::PWTri] = { true, false };
   return result;
 }
 
@@ -248,7 +251,10 @@ FFMakeOsciTopo()
     { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sine Square" },
     { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr", "Saw Square" },
     { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sine" },
-    { "{EE5AC911-DB72-4D22-ABD0-EBBE72141394}", "Parabl", "Parabola" }
+    { "{EE5AC911-DB72-4D22-ABD0-EBBE72141394}", "Parabl", "Parabola" },
+    { "{8B420C8F-B2F7-4498-8481-678D3DBD10EF}", "Tri", "Triangle" },
+    { "{B3BC94E7-226A-483B-B406-C2879EF62560}", "HypTri", "Hyper Triangle" },
+    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PWTri", "Pulse Width Triangle" }
   };
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
