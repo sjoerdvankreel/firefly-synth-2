@@ -318,6 +318,26 @@ BasicSawSqr(
 }
 
 static inline FBSIMDVector<float>
+BasicSinSaw(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float y = BLEP(t, dt) + std::sin((0.5f - t) * FBPi);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 BasicAltSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
@@ -642,6 +662,7 @@ GenerateBasic(
   case FFOsciBasicMode::FWSin: return BasicFWSin(phaseVec, incrVec);
   case FFOsciBasicMode::SinSqr: return BasicSinSqr(phaseVec, incrVec);
   case FFOsciBasicMode::SawSqr: return BasicSawSqr(phaseVec, incrVec);
+  case FFOsciBasicMode::SinSaw: return BasicSinSaw(phaseVec, incrVec);
   case FFOsciBasicMode::AltSin: return BasicAltSin(phaseVec, incrVec);
   case FFOsciBasicMode::Parabl: return BasicParabl(phaseVec, incrVec);
   case FFOsciBasicMode::Tri: return BasicTri(phaseVec, incrVec);

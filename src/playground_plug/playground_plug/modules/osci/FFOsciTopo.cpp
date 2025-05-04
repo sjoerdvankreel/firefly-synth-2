@@ -26,6 +26,7 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::FWSin] = { false, false };
   result[(int)FFOsciBasicMode::SinSqr] = { false, false };
   result[(int)FFOsciBasicMode::SawSqr] = { false, false };
+  result[(int)FFOsciBasicMode::SinSaw] = { false, false };
   result[(int)FFOsciBasicMode::AltSin] = { false, false };
   result[(int)FFOsciBasicMode::Parabl] = { false, false };
   result[(int)FFOsciBasicMode::Tri] = { false, false };
@@ -262,6 +263,7 @@ FFMakeOsciTopo()
     { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin", "Full Rect Sin" },
     { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sin Sqr" },
     { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr", "Saw Sqr" },
+    { "{AB878F10-8D9A-4C21-AA6D-E18055EAEB9E}", "SinSaw", "Sin Saw" },
     { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sin" },
     { "{EE5AC911-DB72-4D22-ABD0-EBBE72141394}", "Parabl", "Parabola" },
     { "{8B420C8F-B2F7-4498-8481-678D3DBD10EF}", "Tri", "Triangle" },
