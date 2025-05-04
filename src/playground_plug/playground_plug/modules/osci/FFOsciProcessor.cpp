@@ -517,8 +517,15 @@ BasicPWSqr(
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
     float pw = pwArr.Get(i);
-    float y = 0;
-    yArr.Set(i, y);
+    float t1 = FBPhaseWrap(t + 0.875f + 0.25f * (pw - 0.5f));
+    float t2 = FBPhaseWrap(t + 0.375f + 0.25f * (pw - 0.5f));
+    float y = t1 < 0.5f ? 1.0f : -1.0f;
+    y += BLEP(t1, dt) - BLEP(t2, dt);
+    t1 = FBPhaseWrap(t1 + 0.5f * (1.0f - pw));
+    t2 = FBPhaseWrap(t2 + 0.5f * (1.0f - pw));
+    y += t1 < 0.5f ? 1.0f : -1.0f;
+    y += BLEP(t1, dt) - BLEP(t2, dt);
+    yArr.Set(i, y * 0.5f);
   }
   return yArr.Load(0);
 }
