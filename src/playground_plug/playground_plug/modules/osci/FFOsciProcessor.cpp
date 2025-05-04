@@ -111,10 +111,23 @@ BasicHalfSin(
 
 static inline FBSIMDVector<float>
 BasicFullSin(
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec)
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
 {
-  return 0.0f;
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);    
+    t = FBPhaseWrap(t + 0.25f);
+    float y = BLAMP(t, dt) * FBTwoPi * dt + std::sin(t * FBPi) * 2.0f - 4.0f / FBPi;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
 }
 
 static inline FBSIMDVector<float>
