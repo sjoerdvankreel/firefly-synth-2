@@ -318,7 +318,7 @@ BasicHypTri(
 }
 
 static inline FBSIMDVector<float>
-BasicPWTri(
+BasicPWTriSaw(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -351,6 +351,41 @@ BasicPWTri(
 }
 
 static inline FBSIMDVector<float>
+BasicPWTriSqr(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float y;
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float t1 = FBPhaseWrap(t + 0.75f + 0.5f * pw);
+    if (t1 >= pw)
+      y = -pw;
+    else 
+    {
+      y = 4.0f * t1;
+      y = (y >= 2.0f * pw ? 4.0f - y / pw - pw : y / pw - pw);
+    }
+    float t2 = FBPhaseWrap(t1 + 1.0f - 0.5f * pw);
+    float t3 = FBPhaseWrap(t1 + 1.0f - pw);
+    y += 2.0f * dt / pw * (BLAMP(t1, dt) - 2.0f * BLAMP(t2, dt) + BLAMP(t3, dt));
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 GenerateBasic(
   FFOsciBasicMode mode,
   FBSIMDVector<float> phaseVec,
@@ -370,7 +405,8 @@ GenerateBasic(
   case FFOsciBasicMode::Parabl: return BasicParabl(phaseVec, incrVec);
   case FFOsciBasicMode::Tri: return BasicTri(phaseVec, incrVec);
   case FFOsciBasicMode::HypTri: return BasicHypTri(phaseVec, incrVec);
-  case FFOsciBasicMode::PWTri: return BasicPWTri(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::PWTriSaw: return BasicPWTriSaw(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::PWTriSqr: return BasicPWTriSqr(phaseVec, incrVec, pwVec);
   default: assert(false); return 0.0f;
   }
 }

@@ -27,7 +27,8 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::Parabl] = { false, false };
   result[(int)FFOsciBasicMode::Tri] = { false, false };
   result[(int)FFOsciBasicMode::HypTri] = { false, false };
-  result[(int)FFOsciBasicMode::PWTri] = { true, false };
+  result[(int)FFOsciBasicMode::PWTriSaw] = { true, false };
+  result[(int)FFOsciBasicMode::PWTriSqr] = { true, false };
   return result;
 }
 
@@ -245,16 +246,17 @@ FFMakeOsciTopo()
     { "{00880EBC-8E91-44C6-ADD4-4D2BB9B4E945}", "Off" },
     { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin", "Sine" },
     { "{6A17D1AC-C7EB-46DF-B05B-02F4AB34F402}", "Cos", "Cosine" },
-    { "{884C404C-9831-4A36-8669-C0281C334DCF}", "BSSin", "Bipolar Squared Sine" },
-    { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HWSin", "Half Wave Rectified Sine" },
-    { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin", "Full Wave Rectified Sine" },
-    { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sine Square" },
-    { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr", "Saw Square" },
-    { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sine" },
+    { "{884C404C-9831-4A36-8669-C0281C334DCF}", "BSSin", "Bipolar Sin^2" },
+    { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HWSin", "Half Rect Sin" },
+    { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin", "Full Rect Sin" },
+    { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sin Sqr" },
+    { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr", "Saw Sqr" },
+    { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sin" },
     { "{EE5AC911-DB72-4D22-ABD0-EBBE72141394}", "Parabl", "Parabola" },
     { "{8B420C8F-B2F7-4498-8481-678D3DBD10EF}", "Tri", "Triangle" },
-    { "{B3BC94E7-226A-483B-B406-C2879EF62560}", "HypTri", "Hyper Triangle" },
-    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PWTri", "Pulse Width Triangle" }
+    { "{B3BC94E7-226A-483B-B406-C2879EF62560}", "HypTri", "Hyper Tri" },
+    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PWTriSaw", "PW Tri To Saw" },
+    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriSqr", "PW Tri To Sqr" },
   };
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
