@@ -69,7 +69,7 @@ static Component*
 MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0 });
 
   auto basicSinOn = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSinOn, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicSinOn));
@@ -111,7 +111,23 @@ MakeSectionBasic(FBPlugGUI* plugGUI, int moduleSlot)
   auto basicSqrPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicSqrPW, 0 });
   grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicSqrPW, Slider::SliderStyle::RotaryVerticalDrag));
 
-  grid->MarkSection({ 0, 0, 2, 10 });
+  auto basicTripOn = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicTripOn, 0 });
+  grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicTripOn));
+  grid->Add(0, 11, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, basicTripOn));
+  auto basicTripGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicTripGain, 0 });
+  grid->Add(0, 12, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicTripGain, Slider::SliderStyle::LinearHorizontal));
+  auto basicTripPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicTripPW, 0 });
+  grid->Add(0, 13, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicTripPW, Slider::SliderStyle::RotaryVerticalDrag));
+
+  auto basicTrapOn = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicTrapOn, 0 });
+  grid->Add(1, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, basicTrapOn));
+  grid->Add(1, 11, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, basicTrapOn));
+  auto basicTrapGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicTrapGain, 0 });
+  grid->Add(1, 12, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicTrapGain, Slider::SliderStyle::LinearHorizontal));
+  auto basicTrapPW = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::BasicTrapPW, 0 });
+  grid->Add(1, 13, plugGUI->StoreComponent<FBParamSlider>(plugGUI, basicTrapPW, Slider::SliderStyle::RotaryVerticalDrag));
+
+  grid->MarkSection({ 0, 0, 2, 14 });
 
   // TODO helper function
   FBParamsDependencies dependencies = {};

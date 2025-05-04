@@ -31,6 +31,8 @@ class FFOsciProcessor final
   bool _basicSqrOn = {};
   bool _basicHalfOn = {};
   bool _basicFullOn = {};
+  bool _basicTripOn = {};
+  bool _basicTrapOn = {};
   float _dsfDistance = {};
   float _dsfOvertones = {};
   FFOsciDSFMode _dsfMode = {};

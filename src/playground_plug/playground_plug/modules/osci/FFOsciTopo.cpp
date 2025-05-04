@@ -287,6 +287,34 @@ FFMakeOsciTopo()
   basicSqrOn.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrOn);
   basicSqrOn.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
 
+  auto& basicTripOn = result->params[(int)FFOsciParam::BasicTripOn];
+  basicTripOn.acc = false;
+  basicTripOn.defaultText = "Off";
+  basicTripOn.name = "Trip";
+  basicTripOn.tooltip = "Trip On";
+  basicTripOn.slotCount = 1;
+  basicTripOn.id = "{C4EAD86F-7794-4FB4-906D-1DED705D98B4}";
+  basicTripOn.type = FBParamType::Boolean;
+  auto selectBasicTripOn = [](auto& module) { return &module.block.basicTripOn; };
+  basicTripOn.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTripOn);
+  basicTripOn.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicTripOn);
+  basicTripOn.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTripOn);
+  basicTripOn.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
+
+  auto& basicTrapOn = result->params[(int)FFOsciParam::BasicTrapOn];
+  basicTrapOn.acc = false;
+  basicTrapOn.defaultText = "Off";
+  basicTrapOn.name = "Trap";
+  basicTrapOn.tooltip = "Trap On";
+  basicTrapOn.slotCount = 1;
+  basicTrapOn.id = "{430C3311-1E2E-46B9-8BD4-3E18B9076850}";
+  basicTrapOn.type = FBParamType::Boolean;
+  auto selectBasicTrapOn = [](auto& module) { return &module.block.basicTrapOn; };
+  basicTrapOn.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTrapOn);
+  basicTrapOn.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicTrapOn);
+  basicTrapOn.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTrapOn);
+  basicTrapOn.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
+
   auto& basicSinGain = result->params[(int)FFOsciParam::BasicSinGain];
   basicSinGain.acc = true;
   basicSinGain.defaultText = "0";
@@ -372,21 +400,6 @@ FFMakeOsciTopo()
   basicTriGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTriGain);
   basicTriGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicTriOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
-  auto& basicTriPW = result->params[(int)FFOsciParam::BasicTriPW];
-  basicTriPW.acc = true;
-  basicTriPW.defaultText = "100";
-  basicTriPW.name = "PW";
-  basicTriPW.tooltip = "Tri PW";
-  basicTriPW.slotCount = 1;
-  basicTriPW.unit = "%";
-  basicTriPW.id = "{E65CC25F-75E1-4BCC-956D-C54EF0B701F6}";
-  basicTriPW.type = FBParamType::Identity;
-  auto selectBasicTriPW = [](auto& module) { return &module.acc.basicTriPW; };
-  basicTriPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTriPW);
-  basicTriPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicTriPW);
-  basicTriPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTriPW);
-  basicTriPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicTriOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
-  
   auto& basicSqrGain = result->params[(int)FFOsciParam::BasicSqrGain];
   basicSqrGain.acc = true;
   basicSqrGain.defaultText = "0";
@@ -404,11 +417,58 @@ FFMakeOsciTopo()
   basicSqrGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrGain);
   basicSqrGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
+  auto& basicTripGain = result->params[(int)FFOsciParam::BasicTripGain];
+  basicTripGain.acc = true;
+  basicTripGain.defaultText = "0";
+  basicTripGain.name = "Trip Gain";
+  basicTripGain.slotCount = 1;
+  basicTripGain.unit = "%";
+  basicTripGain.id = "{7D21ED5B-06CA-4238-9269-5E2D37F556A5}";
+  basicTripGain.type = FBParamType::Linear;
+  basicTripGain.Linear().min = -1.0f;
+  basicTripGain.Linear().max = 1.0f;
+  basicTripGain.Linear().displayMultiplier = 100.0f;
+  auto selectBasicTripGain = [](auto& module) { return &module.acc.basicTripGain; };
+  basicTripGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTripGain);
+  basicTripGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicTripGain);
+  basicTripGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTripGain);
+  basicTripGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicTripOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+
+  auto& basicTrapGain = result->params[(int)FFOsciParam::BasicTrapGain];
+  basicTrapGain.acc = true;
+  basicTrapGain.defaultText = "0";
+  basicTrapGain.name = "Trap Gain";
+  basicTrapGain.slotCount = 1;
+  basicTrapGain.unit = "%";
+  basicTrapGain.id = "{3A2BEFC9-4B7C-4F82-8E55-3081D10A1DEA}";
+  basicTrapGain.type = FBParamType::Linear;
+  basicTrapGain.Linear().min = -1.0f;
+  basicTrapGain.Linear().max = 1.0f;
+  basicTrapGain.Linear().displayMultiplier = 100.0f;
+  auto selectBasicTrapGain = [](auto& module) { return &module.acc.basicTrapGain; };
+  basicTrapGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTrapGain);
+  basicTrapGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicTrapGain);
+  basicTrapGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTrapGain);
+  basicTrapGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicTrapOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+
+  auto& basicTriPW = result->params[(int)FFOsciParam::BasicTriPW];
+  basicTriPW.acc = true;
+  basicTriPW.defaultText = "100";
+  basicTriPW.name = "Tri PW";
+  basicTriPW.slotCount = 1;
+  basicTriPW.unit = "%";
+  basicTriPW.id = "{E65CC25F-75E1-4BCC-956D-C54EF0B701F6}";
+  basicTriPW.type = FBParamType::Identity;
+  auto selectBasicTriPW = [](auto& module) { return &module.acc.basicTriPW; };
+  basicTriPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTriPW);
+  basicTriPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicTriPW);
+  basicTriPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTriPW);
+  basicTriPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicTriOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+
   auto& basicSqrPW = result->params[(int)FFOsciParam::BasicSqrPW];
   basicSqrPW.acc = true;
   basicSqrPW.defaultText = "100";
-  basicSqrPW.name = "PW";
-  basicSqrPW.tooltip = "Sqr PW";
+  basicSqrPW.name = "Sqr PW";
   basicSqrPW.slotCount = 1;
   basicSqrPW.unit = "%";
   basicSqrPW.id = "{7936D807-1BFB-414C-8AB3-67A2E2F52AA5}";
@@ -418,6 +478,34 @@ FFMakeOsciTopo()
   basicSqrPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSqrPW);
   basicSqrPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSqrPW);
   basicSqrPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicSqrOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+
+  auto& basicTripPW = result->params[(int)FFOsciParam::BasicTripPW];
+  basicTripPW.acc = true;
+  basicTripPW.defaultText = "100";
+  basicTripPW.name = "Trip PW";
+  basicTripPW.slotCount = 1;
+  basicTripPW.unit = "%";
+  basicTripPW.id = "{C14C87A0-31ED-4176-B077-B84B9E48B055}";
+  basicTripPW.type = FBParamType::Identity;
+  auto selectBasicTripPW = [](auto& module) { return &module.acc.basicTripPW; };
+  basicTripPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTripPW);
+  basicTripPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicTripPW);
+  basicTripPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTripPW);
+  basicTripPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicTripOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+
+  auto& basicTrapPW = result->params[(int)FFOsciParam::BasicTrapPW];
+  basicTrapPW.acc = true;
+  basicTrapPW.defaultText = "100";
+  basicTrapPW.name = "Trap PW";
+  basicTrapPW.slotCount = 1;
+  basicTrapPW.unit = "%";
+  basicTrapPW.id = "{46E5EDFC-E4C8-41D1-AE5D-FF8B7F9668F3}";
+  basicTrapPW.type = FBParamType::Identity;
+  auto selectBasicTrapPW = [](auto& module) { return &module.acc.basicTrapPW; };
+  basicTrapPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicTrapPW);
+  basicTrapPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicTrapPW);
+  basicTrapPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicTrapPW);
+  basicTrapPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicTrapOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;

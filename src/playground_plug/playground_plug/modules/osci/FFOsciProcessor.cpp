@@ -204,6 +204,84 @@ GenerateSqr(
   return yArray.Load(0);
 }
 
+static inline FBSIMDVector<float>
+GenerateTrip(
+  FBSIMDVector<float> phaseVec,
+  FBSIMDVector<float> incrVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> yArray;
+  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
+  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
+  FBSIMDArray<float, FBSIMDFloatCount> realPWArray;
+  auto realPWVec = (MinPW + (1.0f - MinPW) * pwVec) * 0.5f;
+  incrArray.Store(0, incrVec);
+  phaseArray.Store(0, phaseVec);
+  realPWArray.Store(0, realPWVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float y;
+    float pw = realPWArray.Get(i);
+    float incr = incrArray.Get(i);
+    float phase = phaseArray.Get(i);
+    float p1 = FBPhaseWrap(phase + 0.75f + 0.5f * pw);   
+    
+    if (p1 >= pw)
+      y = -pw;
+    else 
+    {
+      y = 4.0f * p1;
+      y = (y >= 2.0f * pw ? 4.0f - y / pw - pw : y / pw - pw);
+    }
+
+    if (pw > 0.0f) 
+    {
+      float p2 = FBPhaseWrap(p1 + 1.0f - 0.5f * pw);
+      float p3 = FBPhaseWrap(p1 + 1.0f - pw);
+      y += 2.0f * incr / pw * (GenerateBLAMP(p1, incr) - 2.0f * GenerateBLAMP(p2, incr) + GenerateBLAMP(p3, incr));
+    }
+    yArray.Set(i, y);
+  }
+  return yArray.Load(0);
+}
+
+static inline FBSIMDVector<float>
+GenerateTrap(
+  FBSIMDVector<float> phaseVec,
+  FBSIMDVector<float> incrVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> yArray;
+  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
+  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
+  FBSIMDArray<float, FBSIMDFloatCount> realPWArray;
+  auto realPWVec = (MinPW + (1.0f - MinPW) * pwVec) * 0.5f;
+  incrArray.Store(0, incrVec);
+  phaseArray.Store(0, phaseVec);
+  realPWArray.Store(0, realPWVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float pw = realPWArray.Get(i);
+    float incr = incrArray.Get(i);
+    float phase = phaseArray.Get(i);
+    float scale = 1.0f / (1.0f - pw);
+    float y = 4.0f * phase;
+    if (y >= 3.0f)
+      y -= 4.0f;
+    else if (y > 1.0f) 
+      y = 2.0f - y;
+    y = std::clamp(scale * y, -1.0f, 1.0f);
+    float p1 = FBPhaseWrap(phase + 0.25f - 0.25f * pw);
+    float p2 = FBPhaseWrap(p1 + 0.5f);
+    y += scale * 2.0f * incr * (GenerateBLAMP(p1, incr) - GenerateBLAMP(p2, incr));
+    p1 = FBPhaseWrap(phase + 0.25f + 0.25f * pw);
+    p2 = FBPhaseWrap(p1 + 0.5f);
+    y += scale * 2.0f * incr * (GenerateBLAMP(p1, incr) - GenerateBLAMP(p2, incr));
+    yArray.Set(i, y);
+  }
+  return yArray.Load(0);
+}
+
 // https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 static inline FBSIMDVector<float>
 GenerateDSF(
@@ -282,6 +360,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   auto const& basicSqrOnNorm = params.block.basicSqrOn[0].Voice()[voice];
   auto const& basicHalfOnNorm = params.block.basicHalfOn[0].Voice()[voice];
   auto const& basicFullOnNorm = params.block.basicFullOn[0].Voice()[voice];
+  auto const& basicTripOnNorm = params.block.basicTripOn[0].Voice()[voice];
+  auto const& basicTrapOnNorm = params.block.basicTrapOn[0].Voice()[voice];
   auto const& dsfModeNorm = params.block.dsfMode[0].Voice()[voice];
   auto const& dsfDistanceNorm = params.block.dsfDistance[0].Voice()[voice];
   auto const& dsfOvertonesNorm = params.block.dsfOvertones[0].Voice()[voice];
@@ -308,6 +388,8 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _basicSqrOn = topo.NormalizedToBoolFast(FFOsciParam::BasicSqrOn, basicSqrOnNorm);
   _basicHalfOn = topo.NormalizedToBoolFast(FFOsciParam::BasicHalfOn, basicHalfOnNorm);
   _basicFullOn = topo.NormalizedToBoolFast(FFOsciParam::BasicFullOn, basicFullOnNorm);
+  _basicTripOn = topo.NormalizedToBoolFast(FFOsciParam::BasicTripOn, basicTripOnNorm);
+  _basicTrapOn = topo.NormalizedToBoolFast(FFOsciParam::BasicTrapOn, basicTrapOnNorm);
   _dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, dsfModeNorm);
   _dsfBandwidthPlain = topo.NormalizedToLog2Fast(FFOsciParam::DSFBandwidth, dsfBandwidthNorm);
   _dsfDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance, dsfDistanceNorm));
@@ -395,12 +477,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
   auto const& basicTriPWNorm = procParams.acc.basicTriPW[0].Voice()[voice];
   auto const& basicSqrPWNorm = procParams.acc.basicSqrPW[0].Voice()[voice];
+  auto const& basicTripPWNorm = procParams.acc.basicTripPW[0].Voice()[voice];
+  auto const& basicTrapPWNorm = procParams.acc.basicTrapPW[0].Voice()[voice];
   auto const& basicSinGainNorm = procParams.acc.basicSinGain[0].Voice()[voice];
   auto const& basicSawGainNorm = procParams.acc.basicSawGain[0].Voice()[voice];
   auto const& basicSqrGainNorm = procParams.acc.basicSqrGain[0].Voice()[voice];
   auto const& basicTriGainNorm = procParams.acc.basicTriGain[0].Voice()[voice];
   auto const& basicHalfGainNorm = procParams.acc.basicHalfGain[0].Voice()[voice];
   auto const& basicFullGainNorm = procParams.acc.basicFullGain[0].Voice()[voice];
+  auto const& basicTripGainNorm = procParams.acc.basicTripGain[0].Voice()[voice];
+  auto const& basicTrapGainNorm = procParams.acc.basicTrapGain[0].Voice()[voice];
 
   FBSIMDArray<float, FFOsciFixedBlockOversamples> gainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
@@ -410,12 +496,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriPWPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSqrPWPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTripPWPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTrapPWPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSqrGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSinGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicSawGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTriGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicHalfGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basicFullGainPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTripGainPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> basicTrapGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
@@ -454,9 +544,21 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         basicSqrPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicSqrPW, basicSqrPWNorm, s));
         basicSqrGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSqrGain, basicSqrGainNorm, s));
       }
+      if (_basicTripOn)
+      {
+        basicTripPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicTripPW, basicTripPWNorm, s));
+        basicTripGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicTripGain, basicTripGainNorm, s));
+      }
+      if (_basicTrapOn)
+      {
+        basicTrapPWPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicTrapPW, basicTrapPWNorm, s));
+        basicTrapGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicTrapGain, basicTrapGainNorm, s));
+      }
     }
     else if (_type == FFOsciType::DSF)
+    {
       dsfDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm, s));
+    }
     else if (_type == FFOsciType::FM)
     {
       for (int m = 0; m < FFOsciFMMatrixSize; m++)
@@ -470,13 +572,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         fmRatioPlain[1].Store(s, _fmRatioRatio23);
       }
       else
+      {
         for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
         {
           auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
           fmRatioPlain[o].Store(s, topo.NormalizedToLog2Fast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, s));
         }
+      }
     }
-    else assert(false);
+    else
+    {
+      assert(false);
+    }
   }
   if (_oversamplingTimes != 1)
   {
@@ -506,16 +613,32 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         basicSqrPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
         basicSqrGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
       }
+      if (_basicTripOn)
+      {
+        basicTripPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+        basicTripGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      }
+      if (_basicTrapOn)
+      {
+        basicTrapPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+        basicTrapGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      }
     }
     else if (_type == FFOsciType::DSF)
+    {
       dsfDecayPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    }
     else if (_type == FFOsciType::FM)
     {
       for (int m = 0; m < FFOsciFMMatrixSize; m++)
         fmIndexPlain[m].UpsampleStretch<FFOsciOversamplingTimes>();
       for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
         fmRatioPlain[o].UpsampleStretch<FFOsciOversamplingTimes>();
-    } else assert(false);
+    }
+    else
+    {
+      assert(false);
+    }
   }
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
@@ -579,6 +702,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             auto basicSqrGain = basicSqrGainPlain.Load(s);
             thisUniOutput += GenerateSqr(uniPhase, uniIncr, basicSqrPW) * basicSqrGain;
           }
+          if (_basicTripOn)
+          {
+            auto basicTripPW = basicTripPWPlain.Load(s);
+            auto basicTripGain = basicTripGainPlain.Load(s);
+            thisUniOutput += GenerateTrip(uniPhase, uniIncr, basicTripPW) * basicTripGain;
+          }
+          if (_basicTrapOn)
+          {
+            auto basicTrapPW = basicTrapPWPlain.Load(s);
+            auto basicTrapGain = basicTrapGainPlain.Load(s);
+            thisUniOutput += GenerateTrap(uniPhase, uniIncr, basicTrapPW) * basicTrapGain;
+          }
         }
         else if (_type == FFOsciType::DSF)
         {
@@ -591,7 +726,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
           else assert(false);
         }
-        else assert(false);
+        else
+        {
+          assert(false);
+        }
         uniOutputOversampled[u].Store(s, thisUniOutput);
       }
     }
@@ -765,77 +903,3 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   }
   return FBFixedBlockSamples;
 }
-
-#if 0
-
-// TODOTODOTODO
-
-void PolyBLEP::sync(double phase) {
-  t = phase;
-  if (t >= 0) {
-    t -= bitwiseOrZero(t);
-  }
-  else {
-    t += 1 - bitwiseOrZero(t);
-  }
-}
-
-double PolyBLEP::trip() const {
-  double t1 = t + 0.75 + 0.5 * pulseWidth;
-  t1 -= bitwiseOrZero(t1);
-
-  double y;
-  if (t1 >= pulseWidth) {
-    y = -pulseWidth;
-  }
-  else {
-    y = 4 * t1;
-    y = (y >= 2 * pulseWidth ? 4 - y / pulseWidth - pulseWidth : y / pulseWidth - pulseWidth);
-  }
-
-  if (pulseWidth > 0) {
-    double t2 = t1 + 1 - 0.5 * pulseWidth;
-    t2 -= bitwiseOrZero(t2);
-
-    double t3 = t1 + 1 - pulseWidth;
-    t3 -= bitwiseOrZero(t3);
-    y += 2 * freqInSecondsPerSample / pulseWidth * (blamp(t1, freqInSecondsPerSample) - 2 * blamp(t2, freqInSecondsPerSample) + blamp(t3, freqInSecondsPerSample));
-  }
-  return amplitude * y;
-}
-
-double PolyBLEP::trap2() const {
-  double pulseWidth = std::fmin(0.9999, this->pulseWidth);
-  double scale = 1 / (1 - pulseWidth);
-
-  double y = 4 * t;
-  if (y >= 3) {
-    y -= 4;
-  }
-  else if (y > 1) {
-    y = 2 - y;
-  }
-  y = std::fmax(-1, std::fmin(1, scale * y));
-
-  double t1 = t + 0.25 - 0.25 * pulseWidth;
-  t1 -= bitwiseOrZero(t1);
-
-  double t2 = t1 + 0.5;
-  t2 -= bitwiseOrZero(t2);
-
-  // Triangle #1
-  y += scale * 2 * freqInSecondsPerSample * (blamp(t1, freqInSecondsPerSample) - blamp(t2, freqInSecondsPerSample));
-
-  t1 = t + 0.25 + 0.25 * pulseWidth;
-  t1 -= bitwiseOrZero(t1);
-
-  t2 = t1 + 0.5;
-  t2 -= bitwiseOrZero(t2);
-
-  // Triangle #2
-  y += scale * 2 * freqInSecondsPerSample * (blamp(t1, freqInSecondsPerSample) - blamp(t2, freqInSecondsPerSample));
-
-  return amplitude * y;
-}
-
-#endif

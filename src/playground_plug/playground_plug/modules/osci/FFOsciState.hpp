@@ -40,10 +40,12 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   std::array<TVoiceBlock, 1> uniRandom = {};
   std::array<TVoiceBlock, 1> basicSinOn = {};
   std::array<TVoiceBlock, 1> basicSawOn = {};
-  std::array<TVoiceBlock, 1> basicHalfOn = {};
-  std::array<TVoiceBlock, 1> basicFullOn = {};
   std::array<TVoiceBlock, 1> basicTriOn = {};
   std::array<TVoiceBlock, 1> basicSqrOn = {};
+  std::array<TVoiceBlock, 1> basicHalfOn = {};
+  std::array<TVoiceBlock, 1> basicFullOn = {};
+  std::array<TVoiceBlock, 1> basicTripOn = {};
+  std::array<TVoiceBlock, 1> basicTrapOn = {};
   std::array<TVoiceBlock, 1> dsfMode = {};
   std::array<TVoiceBlock, 1> dsfDistance = {};
   std::array<TVoiceBlock, 1> dsfOvertones = {};
@@ -70,12 +72,16 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   std::array<TVoiceAcc, 1> gLFOToGain = {};
   std::array<TVoiceAcc, 1> basicTriPW = {};
   std::array<TVoiceAcc, 1> basicSqrPW = {};
+  std::array<TVoiceAcc, 1> basicTripPW = {};
+  std::array<TVoiceAcc, 1> basicTrapPW = {};
   std::array<TVoiceAcc, 1> basicSinGain = {};
   std::array<TVoiceAcc, 1> basicSawGain = {};
-  std::array<TVoiceAcc, 1> basicHalfGain = {};
-  std::array<TVoiceAcc, 1> basicFullGain = {};
   std::array<TVoiceAcc, 1> basicTriGain = {};
   std::array<TVoiceAcc, 1> basicSqrGain = {};
+  std::array<TVoiceAcc, 1> basicHalfGain = {};
+  std::array<TVoiceAcc, 1> basicFullGain = {};
+  std::array<TVoiceAcc, 1> basicTripGain = {};
+  std::array<TVoiceAcc, 1> basicTrapGain = {};
   std::array<TVoiceAcc, FFOsciFMMatrixSize> fmIndex = {};
   std::array<TVoiceAcc, FFOsciFMOperatorCount - 1> fmRatioFree = {};
 public:
