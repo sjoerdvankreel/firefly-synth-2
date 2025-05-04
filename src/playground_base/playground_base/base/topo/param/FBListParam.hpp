@@ -3,6 +3,7 @@
 #include <playground_base/base/topo/param/FBListItem.hpp>
 #include <playground_base/base/topo/param/FBItemsParamNonRealTime.hpp>
 
+#include <map>
 #include <string>
 #include <vector>
 #include <optional>
@@ -11,6 +12,7 @@
 struct FBListParam
 {
   std::vector<FBListItem> items = {};
+  std::map<int, std::string> submenuStart = {};
   int NormalizedToPlainFast(float normalized) const;
 };
 

@@ -50,8 +50,28 @@ PopupMenu
 FBListParamNonRealTime::MakePopupMenu() const
 {
   PopupMenu result;
+  if (submenuStart.empty())
+  {
+    for (int i = 0; i < ValueCount(); i++)
+      result.addItem(i + 1, PlainToText(FBTextDisplay::Text, i));
+    return result;
+  }
+  PopupMenu submenu;
+  std::string submenuHeader = submenuStart.at(0);
   for (int i = 0; i < ValueCount(); i++)
-    result.addItem(i + 1, PlainToText(FBTextDisplay::Text, i));
+  {
+    if (i != 0 && submenuStart.contains(i))
+    {
+      result.addSubMenu(submenuHeader, submenu);
+      submenu = {};
+      submenuHeader = submenuStart.at(i);
+    }
+    submenu.addItem(i + 1, PlainToText(FBTextDisplay::Text, i));
+    if (i == ValueCount() - 1)
+    {
+      result.addSubMenu(submenuHeader, submenu);
+    }
+  }
   return result;
 }
 

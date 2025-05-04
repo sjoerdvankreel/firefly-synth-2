@@ -280,6 +280,10 @@ FFMakeOsciTopo()
     { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriSqr", "PW Tri To Sqr" },
     { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PWTrapTri", "PW Trap To Tri" }
   };
+  basicMode.List().submenuStart[(int)FFOsciBasicMode::Off] = "Off";
+  basicMode.List().submenuStart[(int)FFOsciBasicMode::Sin] = "Basic";
+  basicMode.List().submenuStart[(int)FFOsciBasicMode::SawM1] = "Fancy";
+  basicMode.List().submenuStart[(int)FFOsciBasicMode::PWRect] = "PW";
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
   basicMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicMode);
