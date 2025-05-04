@@ -29,6 +29,8 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::HypTri] = { false, false };
   result[(int)FFOsciBasicMode::PWTriSaw] = { true, false };
   result[(int)FFOsciBasicMode::PWTriSqr] = { true, false };
+  result[(int)FFOsciBasicMode::Trap] = { false, false };
+  result[(int)FFOsciBasicMode::PWTrap] = { true, false };
   return result;
 }
 
@@ -257,6 +259,8 @@ FFMakeOsciTopo()
     { "{B3BC94E7-226A-483B-B406-C2879EF62560}", "HypTri", "Hyper Tri" },
     { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PWTriSaw", "PW Tri To Saw" },
     { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriSqr", "PW Tri To Sqr" },
+    { "{555A6AC2-2F65-438B-BAE3-7151136EC983}", "Trap", "Trapezoid" },
+    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PWTrap", "PW Trapezoid" },
   };
   auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);

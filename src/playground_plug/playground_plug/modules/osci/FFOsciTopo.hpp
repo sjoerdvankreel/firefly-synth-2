@@ -9,7 +9,9 @@ std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 enum class FFOsciType { Off, Basic, DSF, FM };
 enum class FFOsciFMRatioMode { Ratio, Free };
 enum class FFOsciDSFMode { Overtones, Bandwidth };
-enum class FFOsciBasicMode { Off, Sin, Cos, BSSin, HWSin, FWSin, SinSqr, SawSqr, AltSin, Parabl, Tri, HypTri, PWTriSaw, PWTriSqr, Count };
+
+// TODO hstri
+enum class FFOsciBasicMode { Off, Sin, Cos, BSSin, HWSin, FWSin, SinSqr, SawSqr, AltSin, Parabl, Tri, HypTri, PWTriSaw, PWTriSqr, Trap, PWTrap, Count };
 
 inline int constexpr FFOsciBasicCount = 4;
 inline int constexpr FFOsciFMRatioCount = 16;
