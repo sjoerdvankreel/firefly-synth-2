@@ -123,14 +123,36 @@ BasicPWRect(
   pwArr.Store(0, pwVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
+    float y;
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
     float pw = pwArr.Get(i);
-    float t2 = FBPhaseWrap(t + 1.0f - pw);
-    float y = -2.0f * pw;
-    if (t < pw)
-      y += 2.0f;
-    y += BLEP(t, dt) - BLEP(t, dt);
+    float t1 = t;
+    float t2 = FBPhaseWrap(t1 - pw + 1.0f);
+    if (t1 < pw)
+      y = (1.0f - pw) * 2.0f;
+    else
+      y = -pw * 2.0f;
+    if (t1 < dt)
+    {
+      float x = t1 / dt - 1;
+      y -= x * x;
+    }
+    else if (t1 > 1.0f - dt)
+    {
+      float x = (t1 - 1.0f) / dt + 1.0f;
+      y += x * x;
+    }
+    if (t2 < dt)
+    {
+      float x = t2 / dt - 1.0f;
+      y += x * x;
+    }
+    else if (t2 > 1.0f - dt)
+    {
+      float x = (t2 - 1.0f) / dt + 1.0f;
+      y -= x * x;
+    }
     yArr.Set(i, y);
   }
   return yArr.Load(0);
