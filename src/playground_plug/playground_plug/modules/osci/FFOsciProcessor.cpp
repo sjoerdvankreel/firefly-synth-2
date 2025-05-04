@@ -73,144 +73,10 @@ GenerateBLAMP(float phase, float incr)
 }
 
 static inline FBSIMDVector<float>
-GenerateTri(
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec, 
-  FBSIMDVector<float> pwVec)
+GenerateBasicSin(
+  FBSIMDVector<float> phaseVec)
 {
-  FBSIMDArray<float, FBSIMDFloatCount> yArray;
-  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
-  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
-  FBSIMDArray<float, FBSIMDFloatCount> realPWArray;
-  auto realPWVec = (MinPW + (1.0f - MinPW) * pwVec) * 0.5f;
-  incrArray.Store(0, incrVec);
-  phaseArray.Store(0, phaseVec);
-  realPWArray.Store(0, realPWVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float pw = realPWArray.Get(i);
-    float incr = incrArray.Get(i);
-    float phase = phaseArray.Get(i);
-    float p1 = FBPhaseWrap(phase + 0.5f * pw);
-    float p2 = FBPhaseWrap(phase + 1.0f - 0.5f * pw);
-    float y = phase * 2.0f;
-    if (y >= 2.0f - pw)
-      y = (y - 2.0f) / pw;
-    else if (y >= pw)
-      y = 1.0f - (y - pw) / (1.0f - pw);
-    else
-      y /= pw;
-    y += incr / (pw - pw * pw) * (GenerateBLAMP(p1, incr) - GenerateBLAMP(p2, incr));
-    yArray.Set(i, y);
-  }
-  return yArray.Load(0);
-}
-
-static inline FBSIMDVector<float>
-GenerateSqr(
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec, 
-  FBSIMDVector<float> pwVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> yArray;
-  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
-  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
-  FBSIMDArray<float, FBSIMDFloatCount> realPWArray;
-  auto realPWVec = (MinPW + (1.0f - MinPW) * pwVec) * 0.5f;
-  incrArray.Store(0, incrVec);
-  phaseArray.Store(0, phaseVec);
-  realPWArray.Store(0, realPWVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float pw = realPWArray.Get(i);
-    float incr = incrArray.Get(i);
-    float phase = phaseArray.Get(i);
-    float p2 = FBPhaseWrap(phase + 1.0f - pw);
-    float y = -2.0f * pw;
-    if (phase < pw)
-      y += 2.0f;
-    y += GenerateBLEP(phase, incr) - GenerateBLEP(p2, incr);
-    yArray.Set(i, y);
-  }
-  return yArray.Load(0);
-}
-
-static inline FBSIMDVector<float>
-GenerateTrip(
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec,
-  FBSIMDVector<float> pwVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> yArray;
-  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
-  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
-  FBSIMDArray<float, FBSIMDFloatCount> realPWArray;
-  auto realPWVec = (MinPW + (1.0f - MinPW) * pwVec) * 0.5f;
-  incrArray.Store(0, incrVec);
-  phaseArray.Store(0, phaseVec);
-  realPWArray.Store(0, realPWVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float y;
-    float pw = realPWArray.Get(i);
-    float incr = incrArray.Get(i);
-    float phase = phaseArray.Get(i);
-    float p1 = FBPhaseWrap(phase + 0.75f + 0.5f * pw);   
-    
-    if (p1 >= pw)
-      y = -pw;
-    else 
-    {
-      y = 4.0f * p1;
-      y = (y >= 2.0f * pw ? 4.0f - y / pw - pw : y / pw - pw);
-    }
-
-    if (pw > 0.0f) 
-    {
-      float p2 = FBPhaseWrap(p1 + 1.0f - 0.5f * pw);
-      float p3 = FBPhaseWrap(p1 + 1.0f - pw);
-      y += 2.0f * incr / pw * (GenerateBLAMP(p1, incr) - 2.0f * GenerateBLAMP(p2, incr) + GenerateBLAMP(p3, incr));
-    }
-    yArray.Set(i, y);
-  }
-  return yArray.Load(0);
-}
-
-static inline FBSIMDVector<float>
-GenerateTrap(
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec,
-  FBSIMDVector<float> pwVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> yArray;
-  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
-  FBSIMDArray<float, FBSIMDFloatCount> phaseArray;
-  FBSIMDArray<float, FBSIMDFloatCount> realPWArray;
-  auto realPWVec = (MinPW + (1.0f - MinPW) * pwVec) * 0.5f;
-  incrArray.Store(0, incrVec);
-  phaseArray.Store(0, phaseVec);
-  realPWArray.Store(0, realPWVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float pw = realPWArray.Get(i);
-    float incr = incrArray.Get(i);
-    float phase = phaseArray.Get(i);
-    float scale = 1.0f / (1.0f - pw);
-    float y = 4.0f * phase;
-    if (y >= 3.0f)
-      y -= 4.0f;
-    else if (y > 1.0f) 
-      y = 2.0f - y;
-    y = std::clamp(scale * y, -1.0f, 1.0f);
-    float p1 = FBPhaseWrap(phase + 0.25f - 0.25f * pw);
-    float p2 = FBPhaseWrap(p1 + 0.5f);
-    y += scale * 2.0f * incr * (GenerateBLAMP(p1, incr) - GenerateBLAMP(p2, incr));
-    p1 = FBPhaseWrap(phase + 0.25f + 0.25f * pw);
-    p2 = FBPhaseWrap(p1 + 0.5f);
-    y += scale * 2.0f * incr * (GenerateBLAMP(p1, incr) - GenerateBLAMP(p2, incr));
-    yArray.Set(i, y);
-  }
-  return yArray.Load(0);
+  return xsimd::sin(phaseVec * FBTwoPi);
 }
 
 static inline FBSIMDVector<float>
@@ -222,10 +88,7 @@ GenerateBasic(
 {
   switch (mode)
   {
-  case FFOsciBasicMode::Tri: return GenerateTri(phaseVec, incrVec, pwVec); 
-  case FFOsciBasicMode::Sqr: return GenerateSqr(phaseVec, incrVec, pwVec); 
-  case FFOsciBasicMode::Trip: return GenerateTrip(phaseVec, incrVec, pwVec); 
-  case FFOsciBasicMode::Trap: return GenerateTrap(phaseVec, incrVec, pwVec); 
+  case FFOsciBasicMode::Sin: return GenerateBasicSin(phaseVec); 
   default: assert(false); return 0.0f;
   }
 }
@@ -419,8 +282,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain;
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicPWPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicGainPlain;
-  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicParamPlain;
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicSyncPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
@@ -443,10 +307,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       for (int i = 0; i < FFOsciBasicCount; i++)
         if (_basicMode[i] != FFOsciBasicMode::Off)
         {
+          auto const& basicPWNorm = procParams.acc.basicPW[i].Voice()[voice];
           auto const& basicGainNorm = procParams.acc.basicGain[i].Voice()[voice];
-          auto const& basicParamNorm = procParams.acc.basicParam[i].Voice()[voice];
+          auto const& basicSyncNorm = procParams.acc.basicSync[i].Voice()[voice];
+          // todo conditional
+          basicPWPlain[i].Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicPW, basicPWNorm, s));
           basicGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicGain, basicGainNorm, s));
-          basicParamPlain[i].Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicParam, basicParamNorm, s));
+          basicSyncPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSync, basicSyncNorm, s));
         }
     }
     else if (_type == FFOsciType::DSF)
@@ -492,8 +359,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       for (int i = 0; i < FFOsciBasicCount; i++)
         if (_basicMode[i] != FFOsciBasicMode::Off)
         {
+          // todo conditional
+          basicPWPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
           basicGainPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
-          basicParamPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
+          basicSyncPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
         }
     }
     else if (_type == FFOsciType::DSF)
@@ -545,9 +414,11 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           for (int i = 0; i < FFOsciBasicCount; i++)
             if (_basicMode[i] != FFOsciBasicMode::Off)
             {
+              // todo conditional
+              auto basicPW = basicPWPlain[i].Load(s);
               auto basicGain = basicGainPlain[i].Load(s);
-              auto basicParam = basicParamPlain[i].Load(s);
-              thisUniOutput += GenerateBasic(_basicMode[i], uniPhase, uniIncr, basicParam) * basicGain;
+              // todo auto basicSync = basicSyncPlain[i].Load(s);
+              thisUniOutput += GenerateBasic(_basicMode[i], uniPhase, uniIncr, basicPW) * basicGain;
             }
         }
         else if (_type == FFOsciType::DSF)
@@ -719,10 +590,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.dsfDecay[0][voice] = dsfDecayNorm.Last();
   for (int i = 0; i < FFOsciBasicCount; i++)
   {
+    auto const& basicPWNorm = procParams.acc.basicPW[i].Voice()[voice];
     auto const& basicGainNorm = procParams.acc.basicGain[i].Voice()[voice];
-    auto const& basicParamNorm = procParams.acc.basicParam[i].Voice()[voice];
+    auto const& basicSyncNorm = procParams.acc.basicSync[i].Voice()[voice];
+    exchangeParams.acc.basicPW[i][voice] = basicPWNorm.Last();
     exchangeParams.acc.basicGain[i][voice] = basicGainNorm.Last();
-    exchangeParams.acc.basicParam[i][voice] = basicParamNorm.Last();
+    exchangeParams.acc.basicSync[i][voice] = basicSyncNorm.Last();
   }
   for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
   {

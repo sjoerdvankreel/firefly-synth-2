@@ -9,7 +9,7 @@ std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 enum class FFOsciType { Off, Basic, DSF, FM };
 enum class FFOsciFMRatioMode { Ratio, Free };
 enum class FFOsciDSFMode { Overtones, Bandwidth };
-enum class FFOsciBasicMode { Off, Tri, Sqr, Trip, Trap };
+enum class FFOsciBasicMode { Off, Sin };
 
 inline int constexpr FFOsciBasicCount = 4;
 inline int constexpr FFOsciFMRatioCount = 16;
@@ -21,6 +21,6 @@ inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperat
 enum class FFOsciParam { 
   Type, Gain, Coarse, Fine,
   UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,
-  BasicMode, BasicGain, BasicParam,
+  BasicMode, BasicGain, BasicPW, BasicSync,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,
   FMExp, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, Count };

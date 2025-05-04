@@ -239,19 +239,37 @@ FFMakeOsciTopo()
   basicGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicGain);
   basicGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
-  auto& basicParam = result->params[(int)FFOsciParam::BasicParam];
-  basicParam.acc = true;
-  basicParam.defaultText = "100";
-  basicParam.name = "Basic Param";
-  basicParam.slotCount = FFOsciBasicCount;
-  basicParam.unit = "%";
-  basicParam.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
-  basicParam.type = FBParamType::Identity;
-  auto selectBasicParam = [](auto& module) { return &module.acc.basicParam; };
-  basicParam.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicParam);
-  basicParam.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicParam);
-  basicParam.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicParam);
-  basicParam.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+  // todo disable conditional
+  auto& basicPW = result->params[(int)FFOsciParam::BasicPW];
+  basicPW.acc = true;
+  basicPW.defaultText = "100";
+  basicPW.name = "Basic Param";
+  basicPW.slotCount = FFOsciBasicCount;
+  basicPW.unit = "%";
+  basicPW.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
+  basicPW.type = FBParamType::Identity;
+  auto selectBasicPW = [](auto& module) { return &module.acc.basicPW; };
+  basicPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicPW);
+  basicPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicPW);
+  basicPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicPW);
+  basicPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+
+  // todo disable conditional
+  auto& basicSync = result->params[(int)FFOsciParam::BasicSync];
+  basicSync.acc = true;
+  basicSync.defaultText = "0";
+  basicSync.name = "Basic Sync";
+  basicSync.slotCount = FFOsciBasicCount;
+  basicSync.unit = "Semitones";
+  basicSync.id = "{E58CA58A-088E-4B84-A0FB-E4EAC3812EC0}";
+  basicSync.type = FBParamType::Linear;
+  basicSync.Linear().min = 0.0f;
+  basicSync.Linear().max = 36.0f;
+  auto selectBasicSync = [](auto& module) { return &module.acc.basicSync; };
+  basicSync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSync);
+  basicSync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSync);
+  basicSync.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSync);
+  basicSync.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;
