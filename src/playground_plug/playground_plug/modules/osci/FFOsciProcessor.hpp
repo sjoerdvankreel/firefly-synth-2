@@ -25,14 +25,7 @@ class FFOsciProcessor final
   float _uniRandomPlain = {};
   int _oversamplingTimes = {};
 
-  bool _basicSinOn = {};
-  bool _basicSawOn = {};
-  bool _basicTriOn = {};
-  bool _basicSqrOn = {};
-  bool _basicHalfOn = {};
-  bool _basicFullOn = {};
-  bool _basicTripOn = {};
-  bool _basicTrapOn = {};
+  std::array<FFOsciBasicMode, FFOsciBasicCount> _basicMode = {};
   float _dsfDistance = {};
   float _dsfOvertones = {};
   FFOsciDSFMode _dsfMode = {};
@@ -61,27 +54,6 @@ class FFOsciProcessor final
 
   FBSIMDArray2<float, FFOsciUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   FBMDArray2<FFOsciFMPhaseGenerator, FFOsciUniMaxCount / FBSIMDFloatCount, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
-
-  template <bool ExpoFM>
-  void ProcessFM(
-    FBModuleProcState& state, int oversamplingTimes, float oversampledRate);
-  template <bool ExpoFM>
-  xsimd::batch<float, FBXSIMDBatchType> CalcOneSampleForFM(
-    float oversampledRate, int subUniBlock, int op,
-    float* uniPitchesForFM, float* uniIncrsForFM,
-    xsimd::batch<float, FBXSIMDBatchType> fmToOp,
-    xsimd::batch<float, FBXSIMDBatchType> externalFMModulatorsForFMBatch);
-
-#if 0 //todo
-
-
-  void ProcessModMatrixAMModulators(
-    int moduleSlot,
-    int oversamplingTimes,
-    std::array<FBFixedFloatArray, FFOsciModSlotCount> const& outputAMMix,
-    std::array<FFOsciDSPState, FFOsciCount>& allOsciDSPStates);
-
-#endif
 
 public:
   FFOsciProcessor();
