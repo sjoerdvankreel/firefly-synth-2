@@ -13,8 +13,9 @@ enum class FFOsciDSFMode { Overtones, Bandwidth };
 // TODO hstri, hssqr, hssaw
 enum class FFOsciBasicMode { 
   Off, 
-  Sin, Cos, PWRect, Saw, SawM1, PWHWSaw, Ramp, BSSin, HWSin, FWSin, SinSqr, SawSqr, SinSaw, AltSin, Parabl, 
-  Tri, HypTri, PWTriSaw, PWTriSqr, Sqr, SqrM1, PWSqr, Trap, PWTrap, Count };
+  Sin, Cos, Saw, Ramp, Sqr, Tri, Trap, SinSqr, SawSqr, SinSaw,
+  SawM1, SqrM1, BSSin, HWSin, FWSin, AltSin, Parabl, HypTri, 
+  PWRect, PWSqr, PWTrap, PWHWSaw, PWTriSaw, PWTriSqr, Count };
 
 inline int constexpr FFOsciBasicCount = 4;
 inline int constexpr FFOsciFMRatioCount = 16;

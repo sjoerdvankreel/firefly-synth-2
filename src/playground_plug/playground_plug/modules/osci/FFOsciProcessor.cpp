@@ -109,56 +109,6 @@ BasicCos(
 }
 
 static inline FBSIMDVector<float>
-BasicPWRect(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  pwArr.Store(0, pwVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float y;
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float pw = pwArr.Get(i);
-    float t1 = t;
-    float t2 = FBPhaseWrap(t1 - pw + 1.0f);
-    if (t1 < pw)
-      y = (1.0f - pw) * 2.0f;
-    else
-      y = -pw * 2.0f;
-    if (t1 < dt)
-    {
-      float x = t1 / dt - 1;
-      y -= x * x;
-    }
-    else if (t1 > 1.0f - dt)
-    {
-      float x = (t1 - 1.0f) / dt + 1.0f;
-      y += x * x;
-    }
-    if (t2 < dt)
-    {
-      float x = t2 / dt - 1.0f;
-      y += x * x;
-    }
-    else if (t2 > 1.0f - dt)
-    {
-      float x = (t2 - 1.0f) / dt + 1.0f;
-      y -= x * x;
-    }
-    yArr.Set(i, y);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
 BasicSaw(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
@@ -175,77 +125,6 @@ BasicSaw(
     float t1 = FBPhaseWrap(t + 0.5f);
     float y = 2.0f * t1 - 1.0f;
     y -= BLEP(t1, dt);
-    yArr.Set(i, y);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
-BasicSawM1(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float t2 = FBPhaseWrap(t + 0.5f);
-    float y = (std::sin(t * FBTwoPi) * (dt * dt * 3.28765f /* what? */ / FBPi - 1.0f / FBPi) + t2) * 2.0f - 1.0f;
-    y -= BLEP(t2, dt);
-    yArr.Set(i, y);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
-BasicPWHWSaw(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  pwArr.Store(0, pwVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float pw = pwArr.Get(i);
-    float t2 = FBPhaseWrap(t + 0.5f);
-    float t1 = FBPhaseWrap(t2 + pw);
-    float y = 0.0f;
-    if (t1 < pw)
-      y = t1 * 2.0f / pw;
-    y -= pw;
-    if (t1 < dt)
-    {
-      float p = t1 / dt - 1.0f;
-      y -= p * p * p / (pw * 3.0f) * dt;
-    }
-    else if (t1 > 1.0f - dt)
-    {
-      float p = (t1 - 1.0f) / dt + 1.0f;
-      y += p * p * p / (pw * 3.0f) * dt;
-    }
-    if (t2 < dt)
-    {
-      float p = t2 / dt - 1.0f;
-      y += ((p * p) / (pw * 3.0f) * dt + p) * p;
-    }
-    else if (t2 > 1.0f - dt)
-    {
-      float p = (t2 - 1.0f) / dt + 1.0f;
-      y -= ((p * p) / (pw * 3.0f) * dt + p) * p;
-    }
     yArr.Set(i, y);
   }
   return yArr.Load(0);
@@ -273,7 +152,7 @@ BasicRamp(
 }
 
 static inline FBSIMDVector<float>
-BasicBSSin(
+BasicSqr(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -286,19 +165,16 @@ BasicBSSin(
   {
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
-    float y = (BLUH(FBPhaseWrap(t + 0.5f), dt) - BLUH(t, dt)) * dt * dt * -SqrtPi;
-    float stp = std::sin(t * FBTwoPi);
-    if (t < 0.5f)
-      y += stp * stp;
-    else
-      y -= stp * stp;
+    float t2 = FBPhaseWrap(t + 0.5f);
+    float y = t < 0.5f ? 1.0f : -1.0f;
+    y += BLEP(t, dt) - BLEP(t2, dt);
     yArr.Set(i, y);
   }
   return yArr.Load(0);
 }
 
 static inline FBSIMDVector<float>
-BasicHWSin(
+BasicTri(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -311,17 +187,22 @@ BasicHWSin(
   {
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
-    float y = (BLAMP(t, dt) + BLAMP(FBPhaseWrap(t + 0.5f), dt)) * FBTwoPi * dt;
-    if (t < 0.5f)
-      y += std::sin(t * FBTwoPi) * 2.0f;
-    y -= 2.0f / FBPi;
+    float t0 = t;
+    float t1 = FBPhaseWrap(t + 0.25f);
+    float t2 = FBPhaseWrap(t + 0.75f);
+    float y = t * 4.0f;
+    if (y >= 3.0f)
+      y -= 4.0f;
+    else if (y > 1.0f)
+      y = 2.0f - y;
+    y += 4.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
     yArr.Set(i, y);
   }
   return yArr.Load(0);
 }
 
 static inline FBSIMDVector<float>
-BasicFWSin(
+BasicTrap(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -333,9 +214,19 @@ BasicFWSin(
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
     float t = tArr.Get(i);
-    float dt = dtArr.Get(i);    
-    t = FBPhaseWrap(t + 0.25f);
-    float y = BLAMP(t, dt) * FBTwoPi * dt + std::sin(t * FBPi) * 2.0f - 4.0f / FBPi;
+    float dt = dtArr.Get(i);
+    float y = 4.0f * t;
+    if (y >= 3.0f)
+      y -= 4.0f;
+    else if (y > 1.0f)
+      y = 2.0f - y;
+    y = std::clamp(2.0f * y, -1.0f, 1.0f);
+    float t1 = FBPhaseWrap(t + 0.125f);
+    float t2 = FBPhaseWrap(t1 + 0.5f);
+    y += 4.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
+    t1 = FBPhaseWrap(t + 0.375f);
+    t2 = FBPhaseWrap(t1 + 0.5f);
+    y += 4.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
     yArr.Set(i, y);
   }
   return yArr.Load(0);
@@ -409,6 +300,121 @@ BasicSinSaw(
 }
 
 static inline FBSIMDVector<float>
+BasicSawM1(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float t2 = FBPhaseWrap(t + 0.5f);
+    float y = (std::sin(t * FBTwoPi) * (dt * dt * 3.28765f /* what? */ / FBPi - 1.0f / FBPi) + t2) * 2.0f - 1.0f;
+    y -= BLEP(t2, dt);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicSqrM1(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float t2 = FBPhaseWrap(t + 0.5f);
+    float y = (std::sin(t * FBTwoPi) * (dt * dt * 6.5753f /* what? */ / FBPi - 2.0f / FBPi));
+    if (t < 0.5f)
+      y += 1.0f;
+    y = (y * 2.0f - 1.0f) + BLEP(t, dt) - BLEP(t2, dt);
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicBSSin(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float y = (BLUH(FBPhaseWrap(t + 0.5f), dt) - BLUH(t, dt)) * dt * dt * -SqrtPi;
+    float stp = std::sin(t * FBTwoPi);
+    if (t < 0.5f)
+      y += stp * stp;
+    else
+      y -= stp * stp;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicHWSin(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float y = (BLAMP(t, dt) + BLAMP(FBPhaseWrap(t + 0.5f), dt)) * FBTwoPi * dt;
+    if (t < 0.5f)
+      y += std::sin(t * FBTwoPi) * 2.0f;
+    y -= 2.0f / FBPi;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicFWSin(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    t = FBPhaseWrap(t + 0.25f);
+    float y = BLAMP(t, dt) * FBTwoPi * dt + std::sin(t * FBPi) * 2.0f - 4.0f / FBPi;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
 BasicAltSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
@@ -452,34 +458,6 @@ BasicParabl(
 }
 
 static inline FBSIMDVector<float>
-BasicTri(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float t0 = t;
-    float t1 = FBPhaseWrap(t + 0.25f);
-    float t2 = FBPhaseWrap(t + 0.75f);
-    float y = t * 4.0f;
-    if (y >= 3.0f)
-      y -= 4.0f;
-    else if (y > 1.0f)
-      y = 2.0f - y;
-    y += 4.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
-    yArr.Set(i, y);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
 BasicHypTri(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
@@ -497,6 +475,172 @@ BasicHypTri(
     float t2 = FBPhaseWrap(t1 + 0.5f);
     float y = (BLAMP(t1, dt) * 4.0f / FBPi - BLAMP(t2, dt) * 9.273f /* what? */) * dt;
     y += std::exp((t1 < 0.5f ? t1 : 1.0f - t1) * 4.0f) * (2.0f / (Exp2 - 1.0f)) - 1.0f;
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicPWRect(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float y;
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float t1 = t;
+    float t2 = FBPhaseWrap(t1 - pw + 1.0f);
+    if (t1 < pw)
+      y = (1.0f - pw) * 2.0f;
+    else
+      y = -pw * 2.0f;
+    if (t1 < dt)
+    {
+      float x = t1 / dt - 1;
+      y -= x * x;
+    }
+    else if (t1 > 1.0f - dt)
+    {
+      float x = (t1 - 1.0f) / dt + 1.0f;
+      y += x * x;
+    }
+    if (t2 < dt)
+    {
+      float x = t2 / dt - 1.0f;
+      y += x * x;
+    }
+    else if (t2 > 1.0f - dt)
+    {
+      float x = (t2 - 1.0f) / dt + 1.0f;
+      y -= x * x;
+    }
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicPWSqr(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float t1 = FBPhaseWrap(t + 0.875f + 0.25f * (pw - 0.5f));
+    float t2 = FBPhaseWrap(t + 0.375f + 0.25f * (pw - 0.5f));
+    float y = t1 < 0.5f ? 1.0f : -1.0f;
+    y += BLEP(t1, dt) - BLEP(t2, dt);
+    t1 = FBPhaseWrap(t1 + 0.5f * (1.0f - pw));
+    t2 = FBPhaseWrap(t2 + 0.5f * (1.0f - pw));
+    y += t1 < 0.5f ? 1.0f : -1.0f;
+    y += BLEP(t1, dt) - BLEP(t2, dt);
+    yArr.Set(i, y * 0.5f);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicPWTrap(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float scale = 1.0f / (1.0f - pw);
+    float y = 4.0f * t;
+    if (y >= 3.0f)
+      y -= 4.0f;
+    else if (y > 1.0f)
+      y = 2.0f - y;
+    y = std::clamp(scale * y, -1.0f, 1.0f);
+    float t1 = FBPhaseWrap(t + 0.25f - 0.25f * pw);
+    float t2 = FBPhaseWrap(t1 + 0.5f);
+    y += scale * 2.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
+    t1 = FBPhaseWrap(t + 0.25f + 0.25f * pw);
+    t2 = FBPhaseWrap(t1 + 0.5f);
+    y += scale * 2.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
+    yArr.Set(i, y);
+  }
+  return yArr.Load(0);
+}
+
+static inline FBSIMDVector<float>
+BasicPWHWSaw(
+  FBSIMDVector<float> tVec,
+  FBSIMDVector<float> dtVec,
+  FBSIMDVector<float> pwVec)
+{
+  FBSIMDArray<float, FBSIMDFloatCount> tArr;
+  FBSIMDArray<float, FBSIMDFloatCount> yArr;
+  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
+  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  tArr.Store(0, tVec);
+  dtArr.Store(0, dtVec);
+  pwArr.Store(0, pwVec);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float t = tArr.Get(i);
+    float dt = dtArr.Get(i);
+    float pw = pwArr.Get(i);
+    float t2 = FBPhaseWrap(t + 0.5f);
+    float t1 = FBPhaseWrap(t2 + pw);
+    float y = 0.0f;
+    if (t1 < pw)
+      y = t1 * 2.0f / pw;
+    y -= pw;
+    if (t1 < dt)
+    {
+      float p = t1 / dt - 1.0f;
+      y -= p * p * p / (pw * 3.0f) * dt;
+    }
+    else if (t1 > 1.0f - dt)
+    {
+      float p = (t1 - 1.0f) / dt + 1.0f;
+      y += p * p * p / (pw * 3.0f) * dt;
+    }
+    if (t2 < dt)
+    {
+      float p = t2 / dt - 1.0f;
+      y += ((p * p) / (pw * 3.0f) * dt + p) * p;
+    }
+    else if (t2 > 1.0f - dt)
+    {
+      float p = (t2 - 1.0f) / dt + 1.0f;
+      y -= ((p * p) / (pw * 3.0f) * dt + p) * p;
+    }
     yArr.Set(i, y);
   }
   return yArr.Load(0);
@@ -571,150 +715,6 @@ BasicPWTriSqr(
 }
 
 static inline FBSIMDVector<float>
-BasicTrap(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float y = 4.0f * t;
-    if (y >= 3.0f)
-      y -= 4.0f;
-    else if (y > 1.0f)
-      y = 2.0f - y;
-    y = std::clamp(2.0f * y, -1.0f, 1.0f);
-    float t1 = FBPhaseWrap(t + 0.125f);
-    float t2 = FBPhaseWrap(t1 + 0.5f);
-    y += 4.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
-    t1 = FBPhaseWrap(t + 0.375f);
-    t2 = FBPhaseWrap(t1 + 0.5f);
-    y += 4.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
-    yArr.Set(i, y);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
-BasicPWTrap(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  pwArr.Store(0, pwVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float pw = pwArr.Get(i);
-    float scale = 1.0f / (1.0f - pw);
-    float y = 4.0f * t;
-    if (y >= 3.0f)
-      y -= 4.0f;
-    else if (y > 1.0f)
-      y = 2.0f - y;
-    y = std::clamp(scale * y, -1.0f, 1.0f);
-    float t1 = FBPhaseWrap(t + 0.25f - 0.25f * pw);
-    float t2 = FBPhaseWrap(t1 + 0.5f);
-    y += scale * 2.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
-    t1 = FBPhaseWrap(t + 0.25f + 0.25f * pw);
-    t2 = FBPhaseWrap(t1 + 0.5f);
-    y += scale * 2.0f * dt * (BLAMP(t1, dt) - BLAMP(t2, dt));
-    yArr.Set(i, y);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
-BasicSqr(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float t2 = FBPhaseWrap(t + 0.5f);
-    float y = t < 0.5f ? 1.0f : -1.0f;
-    y += BLEP(t, dt) - BLEP(t2, dt);
-    yArr.Set(i, y);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
-BasicSqrM1(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float t2 = FBPhaseWrap(t + 0.5f);
-    float y = (std::sin(t * FBTwoPi) * (dt * dt * 6.5753f /* what? */ / FBPi - 2.0f / FBPi));
-    if (t < 0.5f)
-      y += 1.0f;
-    y = (y * 2.0f - 1.0f) + BLEP(t, dt) - BLEP(t2, dt);
-    yArr.Set(i, y);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
-BasicPWSqr(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
-{
-  FBSIMDArray<float, FBSIMDFloatCount> tArr;
-  FBSIMDArray<float, FBSIMDFloatCount> yArr;
-  FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
-  tArr.Store(0, tVec);
-  dtArr.Store(0, dtVec);
-  pwArr.Store(0, pwVec);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
-  {
-    float t = tArr.Get(i);
-    float dt = dtArr.Get(i);
-    float pw = pwArr.Get(i);
-    float t1 = FBPhaseWrap(t + 0.875f + 0.25f * (pw - 0.5f));
-    float t2 = FBPhaseWrap(t + 0.375f + 0.25f * (pw - 0.5f));
-    float y = t1 < 0.5f ? 1.0f : -1.0f;
-    y += BLEP(t1, dt) - BLEP(t2, dt);
-    t1 = FBPhaseWrap(t1 + 0.5f * (1.0f - pw));
-    t2 = FBPhaseWrap(t2 + 0.5f * (1.0f - pw));
-    y += t1 < 0.5f ? 1.0f : -1.0f;
-    y += BLEP(t1, dt) - BLEP(t2, dt);
-    yArr.Set(i, y * 0.5f);
-  }
-  return yArr.Load(0);
-}
-
-static inline FBSIMDVector<float>
 GenerateBasic(
   FFOsciBasicMode mode,
   FBSIMDVector<float> phaseVec,
@@ -725,28 +725,28 @@ GenerateBasic(
   {
   case FFOsciBasicMode::Sin: return BasicSin(phaseVec); 
   case FFOsciBasicMode::Cos: return BasicCos(phaseVec);
-  case FFOsciBasicMode::PWRect: return BasicPWRect(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::Saw: return BasicSaw(phaseVec, incrVec);
-  case FFOsciBasicMode::SawM1: return BasicSawM1(phaseVec, incrVec);
-  case FFOsciBasicMode::PWHWSaw: return BasicPWHWSaw(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::Ramp: return BasicRamp(phaseVec, incrVec);
-  case FFOsciBasicMode::BSSin: return BasicBSSin(phaseVec, incrVec);
-  case FFOsciBasicMode::HWSin: return BasicHWSin(phaseVec, incrVec);
-  case FFOsciBasicMode::FWSin: return BasicFWSin(phaseVec, incrVec);
+  case FFOsciBasicMode::Sqr: return BasicSqr(phaseVec, incrVec);
+  case FFOsciBasicMode::Tri: return BasicTri(phaseVec, incrVec);
+  case FFOsciBasicMode::Trap: return BasicTrap(phaseVec, incrVec);
   case FFOsciBasicMode::SinSqr: return BasicSinSqr(phaseVec, incrVec);
   case FFOsciBasicMode::SawSqr: return BasicSawSqr(phaseVec, incrVec);
   case FFOsciBasicMode::SinSaw: return BasicSinSaw(phaseVec, incrVec);
+  case FFOsciBasicMode::SawM1: return BasicSawM1(phaseVec, incrVec);
+  case FFOsciBasicMode::SqrM1: return BasicSqrM1(phaseVec, incrVec);
+  case FFOsciBasicMode::BSSin: return BasicBSSin(phaseVec, incrVec);
+  case FFOsciBasicMode::HWSin: return BasicHWSin(phaseVec, incrVec);
+  case FFOsciBasicMode::FWSin: return BasicFWSin(phaseVec, incrVec);
   case FFOsciBasicMode::AltSin: return BasicAltSin(phaseVec, incrVec);
   case FFOsciBasicMode::Parabl: return BasicParabl(phaseVec, incrVec);
-  case FFOsciBasicMode::Tri: return BasicTri(phaseVec, incrVec);
   case FFOsciBasicMode::HypTri: return BasicHypTri(phaseVec, incrVec);
+  case FFOsciBasicMode::PWRect: return BasicPWRect(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::PWSqr: return BasicPWSqr(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::PWTrap: return BasicPWTrap(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::PWHWSaw: return BasicPWHWSaw(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWTriSaw: return BasicPWTriSaw(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWTriSqr: return BasicPWTriSqr(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::Sqr: return BasicSqr(phaseVec, incrVec);
-  case FFOsciBasicMode::SqrM1: return BasicSqrM1(phaseVec, incrVec);
-  case FFOsciBasicMode::PWSqr: return BasicPWSqr(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::Trap: return BasicTrap(phaseVec, incrVec);
-  case FFOsciBasicMode::PWTrap: return BasicPWTrap(phaseVec, incrVec, pwVec);
   default: assert(false); return 0.0f;
   }
 }
