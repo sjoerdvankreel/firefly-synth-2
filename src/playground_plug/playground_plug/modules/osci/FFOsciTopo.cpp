@@ -218,6 +218,7 @@ FFMakeOsciTopo()
   basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
   basicMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicMode);
   basicMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicMode);
+  basicMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
 
   auto& basicGain = result->params[(int)FFOsciParam::BasicGain];
   basicGain.acc = true;
