@@ -278,7 +278,6 @@ FFMakeOsciTopo()
     { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "TrapTri", "Trap To Tri" },
     { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "HWSaw", "Half Rect Saw" },
   };
-
   auto selectWavePWMode = [](auto& module) { return &module.block.wavePWMode; };
   wavePWMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWavePWMode);
   wavePWMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectWavePWMode);
@@ -318,6 +317,79 @@ FFMakeOsciTopo()
   wavePWPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWavePWPW);
   wavePWPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWavePWPW);
   wavePWPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WavePWMode },
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
+
+  auto& waveHSMode = result->params[(int)FFOsciParam::WaveHSMode];
+  waveHSMode.acc = false;
+  waveHSMode.defaultText = "Off";
+  waveHSMode.name = "HS Mode";
+  waveHSMode.tooltip = "HS Wave Mode";
+  waveHSMode.slotCount = 1;
+  waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
+  waveHSMode.type = FBParamType::List;
+  waveHSMode.List().items = {
+    { "{F68B6202-6C23-4049-B0DD-2565694B1C45}", "Off" },
+    { "{2BBF8E97-0D2A-4F12-B608-47E241A5E125}", "Saw", "Saw" },
+    { "{4B99FF6B-9848-4F4E-8D97-0F0C3BA4F74C}", "Sqr", "Sqr" },
+    { "{C7843450-2A2F-4FD0-A6C9-0B44F67F3170}", "Tri", "Tri" }
+  };
+  auto selectWaveHSMode = [](auto& module) { return &module.block.waveHSMode; };
+  waveHSMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveHSMode);
+  waveHSMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectWaveHSMode);
+  waveHSMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveHSMode);
+  waveHSMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave; });
+
+  auto& waveHSGain = result->params[(int)FFOsciParam::WaveHSGain];
+  waveHSGain.acc = true;
+  waveHSGain.defaultText = "100";
+  waveHSGain.name = "HS Gain";
+  waveHSGain.tooltip = "HS Wave Gain";
+  waveHSGain.slotCount = 1;
+  waveHSGain.unit = "%";
+  waveHSGain.id = "{7AFF257F-165E-427B-A4BF-9DC4BFE48528}";
+  waveHSGain.type = FBParamType::Linear;
+  waveHSGain.Linear().min = -1.0f;
+  waveHSGain.Linear().max = 1.0f;
+  waveHSGain.Linear().displayMultiplier = 100.0f;
+  auto selectWaveHSGain = [](auto& module) { return &module.acc.waveHSGain; };
+  waveHSGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveHSGain);
+  waveHSGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWaveHSGain);
+  waveHSGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveHSGain);
+  waveHSGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
+
+  auto& waveHSPW = result->params[(int)FFOsciParam::WaveHSPW];
+  waveHSPW.acc = true;
+  waveHSPW.defaultText = "100";
+  waveHSPW.name = "Wave PW";
+  waveHSPW.tooltip = "HS Wave PW";
+  waveHSPW.slotCount = 1;
+  waveHSPW.unit = "%";
+  waveHSPW.id = "{8C087631-3614-4A44-A2EF-61DCE6D5FE9A}";
+  waveHSPW.type = FBParamType::Identity;
+  auto selectWaveHSPW = [](auto& module) { return &module.acc.waveHSPW; };
+  waveHSPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveHSPW);
+  waveHSPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWaveHSPW);
+  waveHSPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveHSPW);
+  waveHSPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
+
+  auto& waveHSSync = result->params[(int)FFOsciParam::WaveHSSync];
+  waveHSSync.acc = true;
+  waveHSSync.defaultText = "0";
+  waveHSSync.name = "Sync";
+  waveHSSync.tooltip = "HS Sync";
+  waveHSSync.slotCount = 1;
+  waveHSSync.unit = "Semitones";
+  waveHSSync.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
+  waveHSSync.type = FBParamType::Linear;
+  waveHSSync.Linear().min = 0.0f;
+  waveHSSync.Linear().max = 36.0f;
+  auto selectWaveHSSync = [](auto& module) { return &module.acc.waveHSSync; };
+  waveHSSync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveHSSync);
+  waveHSSync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWaveHSSync);
+  waveHSSync.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveHSSync);
+  waveHSSync.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];

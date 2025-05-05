@@ -1,3 +1,4 @@
+drop the tooltips ?
 hardsync -- neh
 set exact value
 move the oversampling switch
