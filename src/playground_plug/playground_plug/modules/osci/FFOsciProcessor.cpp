@@ -732,7 +732,47 @@ WaveHSSaw(
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
     float fr = frArr.Get(i);
-    float y = 0.0f;
+    
+    float pw;
+    int n = std::max(std::ceil(fr) - 1.0f, 0.0f);
+    float scale = fr - n;
+    if (fr > 0.0f)
+      pw = scale / fr;
+    else
+      pw = 1.0f;
+
+    t = FBPhaseWrap(t + 0.5f);
+    float y = t * fr;
+    y = FBPhaseWrap(y) * 2.0f - pw * pw * fr + pw - 1.0f;
+    if (t < dt)
+    {
+      float a = t / dt - 1.0f;
+      y += a * a * scale;
+    }
+    else if (t > 1.0f - dt)
+    {
+      float a = (t - 1.0f) / dt + 1.0f;
+      y -= a * a * scale;
+    }
+
+    if (n > 0)
+      pw = (pw - 1.0f) / n + 1;
+
+    for (int i = 0; i < n; i++)
+    {
+      t = FBPhaseWrap(t + pw);
+      if (t < dt)
+      {
+        float a = t / dt - 1.0f;
+        y += a * a;
+      }
+      else if (t > 1.0f - dt)
+      {
+        float a = (t - 1.0f) / dt + 1.0f;
+        y -= a * a;
+      }
+    }
+
     yArr.Set(i, y);
   }
   return yArr.Load(0);
