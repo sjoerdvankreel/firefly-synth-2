@@ -358,22 +358,6 @@ FFMakeOsciTopo()
   waveHSGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
-  auto& waveHSPW = result->params[(int)FFOsciParam::WaveHSPW];
-  waveHSPW.acc = true;
-  waveHSPW.defaultText = "100";
-  waveHSPW.name = "Wave PW";
-  waveHSPW.tooltip = "HS Wave PW";
-  waveHSPW.slotCount = 1;
-  waveHSPW.unit = "%";
-  waveHSPW.id = "{8C087631-3614-4A44-A2EF-61DCE6D5FE9A}";
-  waveHSPW.type = FBParamType::Identity;
-  auto selectWaveHSPW = [](auto& module) { return &module.acc.waveHSPW; };
-  waveHSPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveHSPW);
-  waveHSPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWaveHSPW);
-  waveHSPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveHSPW);
-  waveHSPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
-    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
-
   auto& waveHSSync = result->params[(int)FFOsciParam::WaveHSSync];
   waveHSSync.acc = true;
   waveHSSync.defaultText = "0";
