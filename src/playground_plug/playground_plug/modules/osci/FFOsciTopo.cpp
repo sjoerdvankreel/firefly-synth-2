@@ -271,13 +271,14 @@ FFMakeOsciTopo()
   wavePWMode.type = FBParamType::List;
   wavePWMode.List().items = {
     { "{00880EBC-8E91-44C6-ADD4-4D2BB9B4E945}", "Off" },
-    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "Rect", "Rect" },
     { "{DFD55382-FBA0-4080-B179-98385452528B}", "Sqr", "Sqr" },
-    { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "HWSAW", "Half Rect Saw" },
-    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "TriSaw", "Tri To Saw" },
+    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "Rect", "Rect" },
+    { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "HWSaw", "Half Rect Saw" },
     { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "TriPls", "Tri To Sqr" },
+    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "TriSaw", "Tri To Saw" },
     { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "TrapTri", "Trap To Tri" }
   };
+
   auto selectWavePWMode = [](auto& module) { return &module.block.wavePWMode; };
   wavePWMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWavePWMode);
   wavePWMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectWavePWMode);

@@ -19,7 +19,7 @@ enum class FFOsciWaveBasicMode {
   Trap, SawM1, SqrM1, Parabl, HypTri, Count };
 
 enum class FFOsciWavePWMode {
-  Off, Rect, Sqr, HWSaw, TriSaw, TriPls, TrapTri, Count };
+  Off, Sqr, Rect, HWSaw, TriPls, TriSaw, TrapTri, Count };
 
 inline int constexpr FFOsciWavePWCount = 2;
 inline int constexpr FFOsciWaveBasicCount = 2;
