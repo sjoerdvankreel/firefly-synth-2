@@ -349,10 +349,10 @@ FFMakeOsciTopo()
   dsfMode.id = "{D66E2800-CFBD-4B4E-B22E-D5D7572FEF6E}";
   dsfMode.type = FBParamType::List;
   dsfMode.List().items = {
-    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Overtones 1" },
-    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "Bandwidth 1" },
-    { "{0E14A753-CB35-45F9-8E1C-B7DE2F2B13BD}", "Overtones 2" },
-    { "{112539D3-10B8-4C7B-B9E1-BAF58E85A89F}", "Bandwidth 2" } 
+    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Overtones1" },
+    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "Bandwidth1" },
+    { "{0E14A753-CB35-45F9-8E1C-B7DE2F2B13BD}", "Overtones2" },
+    { "{112539D3-10B8-4C7B-B9E1-BAF58E85A89F}", "Bandwidth2" } 
   };
   auto selectDSFMode = [](auto& module) { return &module.block.dsfMode; };
   dsfMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFMode);
@@ -379,7 +379,6 @@ FFMakeOsciTopo()
 
   auto& dsfBandwidth = result->params[(int)FFOsciParam::DSFBandwidth];
   dsfBandwidth.acc = false;
-  dsfBandwidth.defaultText = "50";
   dsfBandwidth.name = "Bandwidth";
   dsfBandwidth.tooltip = "DSF Bandwidth";
   dsfBandwidth.slotCount = 1;

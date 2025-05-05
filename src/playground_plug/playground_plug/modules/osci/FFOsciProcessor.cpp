@@ -1104,39 +1104,35 @@ FFOsciProcessor::Process(FBModuleProcState& state)
               // todo auto basicSync = basicSyncPlain[i].Load(s);
               thisUniOutput += GenerateBasic(_basicMode[i], uniPhase, uniIncr, basicPW) * basicGain;
             }
-          uniOutputOversampled[u].Store(s, thisUniOutput);
-          for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
-            assert(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
         }
         else if (_type == FFOsciType::DSF)
         {
           auto dsfDecay1 = dsfDecayPlain1.Load(s);
           auto dsfDistFreq1 = _dsfDistance1 * uniFreq;
-          auto dsfMaxOvertones1 = xsimd::max(FBSIMDVector<float>(0.0f), (sampleRate * 0.5f - uniFreq) / dsfDistFreq1);
+          auto dsfMaxOvertones1 = (sampleRate * 0.5f - uniFreq) / dsfDistFreq1;
           if (_dsfMode == FFOsciDSFMode::Overtones1 || _dsfMode == FFOsciDSFMode::Overtones2)
             thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay1, dsfDistFreq1, dsfMaxOvertones1, _dsfOvertones);
           else if (_dsfMode == FFOsciDSFMode::Bandwidth1 || _dsfMode == FFOsciDSFMode::Bandwidth2)
             thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay1, dsfDistFreq1, dsfMaxOvertones1, _dsfBandwidthPlain);
-          else 
-            assert(false);
           if (_dsfMode == FFOsciDSFMode::Overtones2 || _dsfMode == FFOsciDSFMode::Bandwidth2)
           {
             auto dsfDecay2 = dsfDecayPlain2.Load(s);
             auto dsfDistFreq2 = _dsfDistance2 * uniFreq;
-            auto dsfMaxOvertones2 = xsimd::max(FBSIMDVector<float>(0.0f), (sampleRate * 0.5f - uniFreq) / dsfDistFreq2);
+            auto dsfMaxOvertones2 = (sampleRate * 0.5f - uniFreq) / dsfDistFreq2;
             if (_dsfMode == FFOsciDSFMode::Overtones2)
               thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay2, dsfDistFreq2, dsfMaxOvertones2, _dsfOvertones);
             else if (_dsfMode == FFOsciDSFMode::Bandwidth2)
               thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay2, dsfDistFreq2, dsfMaxOvertones2, _dsfBandwidthPlain);
           }
-          uniOutputOversampled[u].Store(s, thisUniOutput);
-          for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
-            assert(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
+          else assert(false);
         }
         else
         {
           assert(false);
         }
+        uniOutputOversampled[u].Store(s, thisUniOutput);
+        for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
+          assert(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
       }
     }
   }
