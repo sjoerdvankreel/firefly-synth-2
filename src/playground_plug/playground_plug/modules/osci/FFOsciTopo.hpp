@@ -15,7 +15,7 @@ enum class FFOsciBasicMode {
   Off, 
   Sin, Cos, Saw, Ramp, Sqr, Tri, Trap, SinSqr, SawSqr, SinSaw,
   SawM1, SqrM1, BSSin, HWSin, FWSin, AltSin, Parabl, HypTri, 
-  PWRect, PWSqr, PWHWSaw, PWTriSaw, PWTriPls, PWTrapTri, Count };
+  PWRect, PWSqr, PWHWSaw, PWTriSaw, PWTriSqr, PWTrapTri, Count };
 
 inline int constexpr FFOsciBasicCount = 4;
 inline int constexpr FFOsciFMRatioCount = 16;
