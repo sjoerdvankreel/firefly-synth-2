@@ -384,7 +384,7 @@ FFMakeOsciTopo()
   waveHSSync.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
   waveHSSync.type = FBParamType::Linear;
   waveHSSync.Linear().min = 0.0f;
-  waveHSSync.Linear().max = 36.0f;
+  waveHSSync.Linear().max = 48.0f;
   auto selectWaveHSSync = [](auto& module) { return &module.acc.waveHSSync; };
   waveHSSync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveHSSync);
   waveHSSync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWaveHSSync);
