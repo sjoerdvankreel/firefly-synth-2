@@ -734,7 +734,7 @@ WaveHSSaw(
     float fr = frArr.Get(i);
     
     float pw;
-    int n = std::max(std::ceil(fr) - 1.0f, 0.0f);
+    int n = static_cast<int>(std::max(std::ceil(fr) - 1.0f, 0.0f));
     float scale = fr - n;
     if (fr > 0.0f)
       pw = scale / fr;
@@ -851,7 +851,39 @@ WaveHSTri(
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
     float fr = frArr.Get(i);
-    float y = 0.0f;
+
+    t = FBPhaseWrap(t + 0.5f);
+    float x = t * fr + 0.75f;
+    float y = std::abs((FBFastFloor(x + 0.75f) - x) * 4.0f - 1.0f) - 1.0f;
+    float dc = -1.0f / fr;
+    float pw = dc * 0.5f + 1.0f;
+    x = FBPhaseWrap(fr);
+    float scale = std::abs(x * 2.0f - 1.0f) - 1.0f;
+
+    if (x > 0.5f)
+      x -= 0.5f;
+    else
+      dc = -dc;
+    y -= (x * x * 2 - x) * dc;
+    y += BLEP(t, dt) * scale;
+
+    int n = static_cast<int>(std::ceil(fr * 2.0f));
+    scale = fr * 4.0f * dt;
+    if (n % 2 == 1)
+    {
+      n -= 1;
+      t += pw;
+      scale = -scale;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+      t = FBPhaseWrap(t);
+      y += BLAMP(t, dt) * scale;
+      t += pw;
+      scale = -scale;
+    }    
+
     yArr.Set(i, y);
   }
   return yArr.Load(0);
