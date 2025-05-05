@@ -718,7 +718,8 @@ static inline FBSIMDVector<float>
 WaveHSSaw(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBSIMDVector<float> pwVec,
+  FBSIMDVector<float> freqRatioVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -742,21 +743,52 @@ static inline FBSIMDVector<float>
 WaveHSSqr(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBSIMDVector<float> freqRatioVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
   FBSIMDArray<float, FBSIMDFloatCount> dtArr;
-  FBSIMDArray<float, FBSIMDFloatCount> pwArr;
+  FBSIMDArray<float, FBSIMDFloatCount> frArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
-  pwArr.Store(0, pwVec);
+  frArr.Store(0, freqRatioVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
   {
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
-    float pw = pwArr.Get(i);
-    float y = 0.0f;
+    float fr = frArr.Get(i);
+    
+    float y;
+    t = FBPhaseWrap(t + 0.5f);
+    float x = t * fr;
+    if (x - FBFastFloor(x) < 0.5f)
+      y = -2.0f;
+    else
+      y = 0.0f;
+    x = static_cast<float>(FBFastFloor(fr));
+    if (x + 0.5f > fr)
+      y += 2.0f - x / std::max(fr, 0.5f);
+    else
+      y += (x + 1.0f) / fr;
+    
+    float scale;
+    float pw = 1.0f - 0.5f / fr;
+    int n = static_cast<int>(std::ceil(fr - 0.5f));
+    if (x < n)
+      scale = -1.0f;
+    else
+    {
+      t += pw;
+      scale = 1.0f;
+    }
+
+    for (int i = 0; i < 2 * n; i++)
+    {
+      t = FBPhaseWrap(t);
+      y += BLEP(t, dt) * scale;
+      t += pw;
+      scale = -scale;
+    }
     yArr.Set(i, y);
   }
   return yArr.Load(0);
@@ -766,7 +798,8 @@ static inline FBSIMDVector<float>
 WaveHSTri(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBSIMDVector<float> pwVec,
+  FBSIMDVector<float> freqRatioVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -840,13 +873,14 @@ GenerateWaveHSCheck(
   FFOsciWaveHSMode mode,
   FBSIMDVector<float> phaseVec,
   FBSIMDVector<float> incrVec,
-  FBSIMDVector<float> pwVec)
+  FBSIMDVector<float> pwVec,
+  FBSIMDVector<float> freqRatioVec)
 {
   switch (mode)
   {
-  case FFOsciWaveHSMode::Saw: return WaveHSSaw(phaseVec, incrVec, pwVec);
-  case FFOsciWaveHSMode::Sqr: return WaveHSSqr(phaseVec, incrVec, pwVec);
-  case FFOsciWaveHSMode::Tri: return WaveHSTri(phaseVec, incrVec, pwVec);
+  case FFOsciWaveHSMode::Saw: return WaveHSSaw(phaseVec, incrVec, pwVec, freqRatioVec);
+  case FFOsciWaveHSMode::Sqr: return WaveHSSqr(phaseVec, incrVec, freqRatioVec);
+  case FFOsciWaveHSMode::Tri: return WaveHSTri(phaseVec, incrVec, pwVec, freqRatioVec);
   default: assert(false); return 0.0f;
   }
 }
@@ -879,9 +913,10 @@ GenerateWaveHS(
   FFOsciWaveHSMode mode,
   FBSIMDVector<float> phaseVec,
   FBSIMDVector<float> incrVec,
-  FBSIMDVector<float> pwVec)
+  FBSIMDVector<float> pwVec,
+  FBSIMDVector<float> freqRatioVec)
 {
-  auto result = GenerateWaveHSCheck(mode, phaseVec, incrVec, pwVec);
+  auto result = GenerateWaveHSCheck(mode, phaseVec, incrVec, pwVec, freqRatioVec);
   FBSIMDVectorNaNCheck(result);
   return result;
 }
@@ -1245,8 +1280,11 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           {
             auto waveHSPW = waveHSPWPlain.Load(s);
             auto waveHSGain = waveHSGainPlain.Load(s);
+            auto waveHSSync = waveHSSyncPlain.Load(s);
+            auto uniSyncFreq = FBPitchToFreq(uniPitch + waveHSSync);
+            auto uniSyncFreqRatio = uniSyncFreq / uniFreq;
             waveHSPW = (MinPW + (1.0f - MinPW) * waveHSPW) * 0.5f;
-            thisUniOutput += GenerateWaveHS(_waveHSMode, uniPhase, uniIncr, waveHSPW) * waveHSGain;
+            thisUniOutput += GenerateWaveHS(_waveHSMode, uniPhase, uniIncr, waveHSPW, uniSyncFreqRatio) * waveHSGain;
           }
         }
         else if (_type == FFOsciType::DSF)
