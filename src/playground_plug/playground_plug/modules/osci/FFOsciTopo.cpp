@@ -342,7 +342,7 @@ FFMakeOsciTopo()
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;
-  dsfMode.defaultText = "Overtones 1";
+  dsfMode.defaultText = "Overtones1";
   dsfMode.name = "Mode";
   dsfMode.tooltip = "DSF Mode";     
   dsfMode.slotCount = 1;
@@ -386,7 +386,7 @@ FFMakeOsciTopo()
   dsfBandwidth.unit = "%";
   dsfBandwidth.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
   dsfBandwidth.type = FBParamType::Log2;
-  dsfBandwidth.Log2().Init(-1.0f, 1.0f, 101.0f);
+  dsfBandwidth.Log2().Init(-0.01f, 0.01f, 1.01f);
   auto selectDSFBandwidth = [](auto& module) { return &module.block.dsfBandwidth; };
   dsfBandwidth.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFBandwidth);
   dsfBandwidth.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFBandwidth);
