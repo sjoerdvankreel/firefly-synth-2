@@ -152,7 +152,7 @@ WaveBasicRamp(
 }
 
 static inline FBSIMDVector<float>
-WaveBasicSqr(
+WaveBasicRect(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -726,7 +726,7 @@ GenerateWaveBasicCheck(
   case FFOsciWaveBasicMode::Cos: return WaveBasicCos(phaseVec);
   case FFOsciWaveBasicMode::Saw: return WaveBasicSaw(phaseVec, incrVec);
   case FFOsciWaveBasicMode::Ramp: return WaveBasicRamp(phaseVec, incrVec);
-  case FFOsciWaveBasicMode::Sqr: return WaveBasicSqr(phaseVec, incrVec);
+  case FFOsciWaveBasicMode::Rect: return WaveBasicRect(phaseVec, incrVec);
   case FFOsciWaveBasicMode::Tri: return WaveBasicTri(phaseVec, incrVec);
   case FFOsciWaveBasicMode::Trap: return WaveBasicTrap(phaseVec, incrVec);
   case FFOsciWaveBasicMode::SinSqr: return WaveBasicSinSqr(phaseVec, incrVec);

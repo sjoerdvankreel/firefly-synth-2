@@ -12,8 +12,11 @@ enum class FFOsciDSFMode { Overtones, Bandwidth };
 
 // TODO hstri, hssqr, hssaw
 enum class FFOsciWaveBasicMode {
-  Off, Sin, Cos, Saw, Ramp, Sqr, Tri, Trap, SinSqr, SawSqr, SinSaw,
-  SawM1, SqrM1, BSSin, HWSin, FWSin, AltSin, Parabl, HypTri, Count };
+  Off, 
+  Sin, Cos, Saw, Tri, Rect, Ramp, 
+  SinSqr, SawSqr, SinSaw,
+  BSSin, HWSin, FWSin, AltSin,
+  Trap, SawM1, SqrM1, Parabl, HypTri, Count };
 
 enum class FFOsciWavePWMode {
   Off, Rect, Sqr, HWSaw, TriSaw, TriPls, TrapTri, Count };

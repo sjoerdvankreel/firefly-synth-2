@@ -216,22 +216,27 @@ FFMakeOsciTopo()
     { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin", "Sine" },
     { "{6A17D1AC-C7EB-46DF-B05B-02F4AB34F402}", "Cos", "Cosine" },
     { "{0D1AA9D3-4CA5-4B67-BFFD-5D5F2C5B7161}", "Saw", "Saw" },
-    { "{C858202B-8FD4-4C53-93D4-AB2FF019068C}", "Ramp", "Ramp" },
-    { "{CCA18B27-785F-4F33-BCE7-89C27CF9EEC2}", "Sqr", "Sqr" },
     { "{8B420C8F-B2F7-4498-8481-678D3DBD10EF}", "Tri", "Triangle" },
-    { "{555A6AC2-2F65-438B-BAE3-7151136EC983}", "Trap", "Trapezoid" },
+    { "{CCA18B27-785F-4F33-BCE7-89C27CF9EEC2}", "Rect", "Rect" },
+    { "{C858202B-8FD4-4C53-93D4-AB2FF019068C}", "Ramp", "Ramp" },
     { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sin Sqr" },
     { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr", "Saw Sqr" },
     { "{AB878F10-8D9A-4C21-AA6D-E18055EAEB9E}", "SinSaw", "Sin Saw" },
-    { "{A3FA17C6-E9F7-4BA6-B791-FF847B3A1B0F}", "SawM1", "Saw No Fundamental" },
-    { "{40DF0782-F181-4956-A665-29BAD08E0D6F}", "SqrM1", "Sqr No Fundamental" },
     { "{884C404C-9831-4A36-8669-C0281C334DCF}", "BSSin", "Bipolar Sin^2" },
     { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HWSin", "Half Rect Sin" },
     { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin", "Full Rect Sin" },
     { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sin" },
+    { "{555A6AC2-2F65-438B-BAE3-7151136EC983}", "Trap", "Trapezoid" },
+    { "{A3FA17C6-E9F7-4BA6-B791-FF847B3A1B0F}", "SawM1", "Saw No Fundamental" },
+    { "{40DF0782-F181-4956-A665-29BAD08E0D6F}", "SqrM1", "Sqr No Fundamental" },
     { "{EE5AC911-DB72-4D22-ABD0-EBBE72141394}", "Parabl", "Parabola" },
     { "{B3BC94E7-226A-483B-B406-C2879EF62560}", "HypTri", "Hyper Tri" }
   };
+  waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::Off] = "Off";
+  waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::Sin] = "Classic";
+  waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::SinSqr] = "Mixed";
+  waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::BSSin] = "Mod Sin";
+  waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::Trap] = "Other";
   auto selectWaveBasicMode = [](auto& module) { return &module.block.waveBasicMode; };
   waveBasicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveBasicMode);
   waveBasicMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectWaveBasicMode);
