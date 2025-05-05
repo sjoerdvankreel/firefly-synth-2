@@ -4,47 +4,47 @@
 #include <playground_plug/modules/oscis_graph/FFOscisGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
-struct FFBasicModeDetails
+struct FFWaveModeDetails
 {
   bool canPW = {};
   bool canSync = {};
 };
 
-static std::vector<FFBasicModeDetails> 
-MakeBasicModeDetails()
+static std::vector<FFWaveModeDetails> 
+MakeWaveModeDetails()
 {
-  std::vector<FFBasicModeDetails> result;
-  result.resize((int)FFOsciBasicMode::Count);
-  result[(int)FFOsciBasicMode::Off] = { false, false };
-  result[(int)FFOsciBasicMode::Sin] = { false, false };
-  result[(int)FFOsciBasicMode::Cos] = { false, false };
-  result[(int)FFOsciBasicMode::Saw] = { false, false };
-  result[(int)FFOsciBasicMode::Ramp] = { false, false };
-  result[(int)FFOsciBasicMode::Sqr] = { false, false };
-  result[(int)FFOsciBasicMode::Tri] = { false, false };
-  result[(int)FFOsciBasicMode::Trap] = { false, false };
-  result[(int)FFOsciBasicMode::SinSqr] = { false, false };
-  result[(int)FFOsciBasicMode::SawSqr] = { false, false };
-  result[(int)FFOsciBasicMode::SinSaw] = { false, false };
-  result[(int)FFOsciBasicMode::SawM1] = { false, false };
-  result[(int)FFOsciBasicMode::SqrM1] = { false, false };
-  result[(int)FFOsciBasicMode::BSSin] = { false, false };
-  result[(int)FFOsciBasicMode::HWSin] = { false, false };
-  result[(int)FFOsciBasicMode::FWSin] = { false, false };
-  result[(int)FFOsciBasicMode::AltSin] = { false, false };
-  result[(int)FFOsciBasicMode::Parabl] = { false, false };
-  result[(int)FFOsciBasicMode::HypTri] = { false, false };
-  result[(int)FFOsciBasicMode::PWRect] = { true, false };
-  result[(int)FFOsciBasicMode::PWSqr] = { true, false };
-  result[(int)FFOsciBasicMode::PWHWSaw] = { true, false };
-  result[(int)FFOsciBasicMode::PWTriSaw] = { true, false };
-  result[(int)FFOsciBasicMode::PWTriPls] = { true, false };
-  result[(int)FFOsciBasicMode::PWTrapTri] = { true, false };
+  std::vector<FFWaveModeDetails> result;
+  result.resize((int)FFOsciWaveMode::Count);
+  result[(int)FFOsciWaveMode::Off] = { false, false };
+  result[(int)FFOsciWaveMode::Sin] = { false, false };
+  result[(int)FFOsciWaveMode::Cos] = { false, false };
+  result[(int)FFOsciWaveMode::Saw] = { false, false };
+  result[(int)FFOsciWaveMode::Ramp] = { false, false };
+  result[(int)FFOsciWaveMode::Sqr] = { false, false };
+  result[(int)FFOsciWaveMode::Tri] = { false, false };
+  result[(int)FFOsciWaveMode::Trap] = { false, false };
+  result[(int)FFOsciWaveMode::SinSqr] = { false, false };
+  result[(int)FFOsciWaveMode::SawSqr] = { false, false };
+  result[(int)FFOsciWaveMode::SinSaw] = { false, false };
+  result[(int)FFOsciWaveMode::SawM1] = { false, false };
+  result[(int)FFOsciWaveMode::SqrM1] = { false, false };
+  result[(int)FFOsciWaveMode::BSSin] = { false, false };
+  result[(int)FFOsciWaveMode::HWSin] = { false, false };
+  result[(int)FFOsciWaveMode::FWSin] = { false, false };
+  result[(int)FFOsciWaveMode::AltSin] = { false, false };
+  result[(int)FFOsciWaveMode::Parabl] = { false, false };
+  result[(int)FFOsciWaveMode::HypTri] = { false, false };
+  result[(int)FFOsciWaveMode::PWRect] = { true, false };
+  result[(int)FFOsciWaveMode::PWSqr] = { true, false };
+  result[(int)FFOsciWaveMode::PWHWSaw] = { true, false };
+  result[(int)FFOsciWaveMode::PWTriSaw] = { true, false };
+  result[(int)FFOsciWaveMode::PWTriPls] = { true, false };
+  result[(int)FFOsciWaveMode::PWTrapTri] = { true, false };
   return result;
 }
 
-static std::vector<FFBasicModeDetails> const 
-BasicModeDetails = MakeBasicModeDetails();
+static std::vector<FFWaveModeDetails> const 
+WaveModeDetails = MakeWaveModeDetails();
 
 static std::string
 FFOsciFMFormatRatioSlot(int slot)
@@ -103,7 +103,7 @@ FFMakeOsciTopo()
   type.type = FBParamType::List;
   type.List().items = {
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
-    { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Basic" },
+    { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Wave" },
     { "{19945EB6-4676-492A-BC38-E586A6D3BF6F}", "DSF" } ,
     { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", "FM" } };
   auto selectType = [](auto& module) { return &module.block.type; };
@@ -245,15 +245,15 @@ FFMakeOsciTopo()
   uniBlend.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectUniBlend);
   uniBlend.dependencies.enabled.audio.When({ (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
 
-  auto& basicMode = result->params[(int)FFOsciParam::BasicMode];
-  basicMode.acc = false;
-  basicMode.defaultText = "Off";
-  basicMode.name = "Mode";
-  basicMode.tooltip = "Basic Mode";
-  basicMode.slotCount = FFOsciBasicCount;
-  basicMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
-  basicMode.type = FBParamType::List;
-  basicMode.List().items = {
+  auto& waveMode = result->params[(int)FFOsciParam::WaveMode];
+  waveMode.acc = false;
+  waveMode.defaultText = "Off";
+  waveMode.name = "Mode";
+  waveMode.tooltip = "Wave Mode";
+  waveMode.slotCount = FFOsciWaveCount;
+  waveMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
+  waveMode.type = FBParamType::List;
+  waveMode.List().items = {
     { "{00880EBC-8E91-44C6-ADD4-4D2BB9B4E945}", "Off" },
     { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin", "Sine" },
     { "{6A17D1AC-C7EB-46DF-B05B-02F4AB34F402}", "Cos", "Cosine" },
@@ -280,67 +280,67 @@ FFMakeOsciTopo()
     { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriPls", "PW Tri To Sqr" },
     { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PWTrapTri", "PW Trap To Tri" }
   };
-  basicMode.List().submenuStart[(int)FFOsciBasicMode::Off] = "Off";
-  basicMode.List().submenuStart[(int)FFOsciBasicMode::Sin] = "Basic";
-  basicMode.List().submenuStart[(int)FFOsciBasicMode::SawM1] = "Fancy";
-  basicMode.List().submenuStart[(int)FFOsciBasicMode::PWRect] = "PW";
-  auto selectBasicMode = [](auto& module) { return &module.block.basicMode; };
-  basicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicMode);
-  basicMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectBasicMode);
-  basicMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicMode);
-  basicMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic; });
+  waveMode.List().submenuStart[(int)FFOsciWaveMode::Off] = "Off";
+  waveMode.List().submenuStart[(int)FFOsciWaveMode::Sin] = "Basic";
+  waveMode.List().submenuStart[(int)FFOsciWaveMode::SawM1] = "Fancy";
+  waveMode.List().submenuStart[(int)FFOsciWaveMode::PWRect] = "PW";
+  auto selectWaveMode = [](auto& module) { return &module.block.waveMode; };
+  waveMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveMode);
+  waveMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectWaveMode);
+  waveMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveMode);
+  waveMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave; });
 
-  auto& basicGain = result->params[(int)FFOsciParam::BasicGain];
-  basicGain.acc = true;
-  basicGain.defaultText = "100";
-  basicGain.name = "Gain";
-  basicGain.tooltip = "Basic Gain";
-  basicGain.slotCount = FFOsciBasicCount;
-  basicGain.unit = "%";
-  basicGain.id = "{CB7B0BA4-2182-4EA8-9895-1763A29DD9F0}";
-  basicGain.type = FBParamType::Linear;
-  basicGain.Linear().min = -1.0f;
-  basicGain.Linear().max = 1.0f;
-  basicGain.Linear().displayMultiplier = 100.0f;
-  auto selectBasicGain = [](auto& module) { return &module.acc.basicGain; };
-  basicGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicGain);
-  basicGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicGain);
-  basicGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicGain);
-  basicGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && vs[1] != 0; });
+  auto& waveGain = result->params[(int)FFOsciParam::WaveGain];
+  waveGain.acc = true;
+  waveGain.defaultText = "100";
+  waveGain.name = "Gain";
+  waveGain.tooltip = "Wave Gain";
+  waveGain.slotCount = FFOsciWaveCount;
+  waveGain.unit = "%";
+  waveGain.id = "{CB7B0BA4-2182-4EA8-9895-1763A29DD9F0}";
+  waveGain.type = FBParamType::Linear;
+  waveGain.Linear().min = -1.0f;
+  waveGain.Linear().max = 1.0f;
+  waveGain.Linear().displayMultiplier = 100.0f;
+  auto selectWaveGain = [](auto& module) { return &module.acc.waveGain; };
+  waveGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveGain);
+  waveGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWaveGain);
+  waveGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveGain);
+  waveGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
-  auto& basicPW = result->params[(int)FFOsciParam::BasicPW];
-  basicPW.acc = true;
-  basicPW.defaultText = "100";
-  basicPW.name = "PW";
-  basicPW.tooltip = "Basic PW";
-  basicPW.slotCount = FFOsciBasicCount;
-  basicPW.unit = "%";
-  basicPW.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
-  basicPW.type = FBParamType::Identity;
-  auto selectBasicPW = [](auto& module) { return &module.acc.basicPW; };
-  basicPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicPW);
-  basicPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicPW);
-  basicPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicPW);
-  basicPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, 
-    [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && BasicModeDetails[vs[1]].canPW; });
+  auto& wavePW = result->params[(int)FFOsciParam::WavePW];
+  wavePW.acc = true;
+  wavePW.defaultText = "100";
+  wavePW.name = "PW";
+  wavePW.tooltip = "Wave PW";
+  wavePW.slotCount = FFOsciWaveCount;
+  wavePW.unit = "%";
+  wavePW.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
+  wavePW.type = FBParamType::Identity;
+  auto selectWavePW = [](auto& module) { return &module.acc.wavePW; };
+  wavePW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWavePW);
+  wavePW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWavePW);
+  wavePW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWavePW);
+  wavePW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveMode },
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && WaveModeDetails[vs[1]].canPW; });
 
-  auto& basicSync = result->params[(int)FFOsciParam::BasicSync];
-  basicSync.acc = true;
-  basicSync.defaultText = "0";
-  basicSync.name = "Sync";
-  basicSync.tooltip = "Basic Sync";
-  basicSync.slotCount = FFOsciBasicCount;
-  basicSync.unit = "Semitones";
-  basicSync.id = "{E58CA58A-088E-4B84-A0FB-E4EAC3812EC0}";
-  basicSync.type = FBParamType::Linear;
-  basicSync.Linear().min = 0.0f;
-  basicSync.Linear().max = 36.0f;
-  auto selectBasicSync = [](auto& module) { return &module.acc.basicSync; };
-  basicSync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSync);
-  basicSync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSync);
-  basicSync.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSync);
-  basicSync.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, 
-    [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && BasicModeDetails[vs[1]].canSync; });
+  auto& waveSync = result->params[(int)FFOsciParam::WaveSync];
+  waveSync.acc = true;
+  waveSync.defaultText = "0";
+  waveSync.name = "Sync";
+  waveSync.tooltip = "Wave Sync";
+  waveSync.slotCount = FFOsciWaveCount;
+  waveSync.unit = "Semitones";
+  waveSync.id = "{E58CA58A-088E-4B84-A0FB-E4EAC3812EC0}";
+  waveSync.type = FBParamType::Linear;
+  waveSync.Linear().min = 0.0f;
+  waveSync.Linear().max = 36.0f;
+  auto selectWaveSync = [](auto& module) { return &module.acc.waveSync; };
+  waveSync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveSync);
+  waveSync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWaveSync);
+  waveSync.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveSync);
+  waveSync.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveMode },
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && WaveModeDetails[vs[1]].canSync; });
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;

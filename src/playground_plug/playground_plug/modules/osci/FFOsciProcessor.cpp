@@ -12,7 +12,7 @@
 
 #include <xsimd/xsimd.hpp>
 
-// basics 
+// blep waves
 // https://www.taletn.com/reaper/mono_synth/
 // https://github.com/martinfinke/PolyBLEP/blob/master/PolyBLEP.cpp
 // http://www.acoustics.hut.fi/publications/papers/smc2010-phaseshaping/
@@ -95,21 +95,21 @@ BLUH(float t, float dt)
 }
 
 static inline FBSIMDVector<float>
-BasicSin(
+WaveBasicSin(
   FBSIMDVector<float> t)
 {
   return xsimd::sin(t * FBTwoPi);
 }
 
 static inline FBSIMDVector<float>
-BasicCos(
+WaveBasicCos(
   FBSIMDVector<float> t)
 {
   return xsimd::cos(t * FBTwoPi);
 }
 
 static inline FBSIMDVector<float>
-BasicSaw(
+WaveBasicSaw(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -131,7 +131,7 @@ BasicSaw(
 }
 
 static inline FBSIMDVector<float>
-BasicRamp(
+WaveBasicRamp(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -152,7 +152,7 @@ BasicRamp(
 }
 
 static inline FBSIMDVector<float>
-BasicSqr(
+WaveBasicSqr(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -174,7 +174,7 @@ BasicSqr(
 }
 
 static inline FBSIMDVector<float>
-BasicTri(
+WaveBasicTri(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -202,7 +202,7 @@ BasicTri(
 }
 
 static inline FBSIMDVector<float>
-BasicTrap(
+WaveBasicTrap(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -233,7 +233,7 @@ BasicTrap(
 }
 
 static inline FBSIMDVector<float>
-BasicSinSqr(
+WaveBasicSinSqr(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -256,7 +256,7 @@ BasicSinSqr(
 }
 
 static inline FBSIMDVector<float>
-BasicSawSqr(
+WaveBasicSawSqr(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -280,7 +280,7 @@ BasicSawSqr(
 }
 
 static inline FBSIMDVector<float>
-BasicSinSaw(
+WaveBasicSinSaw(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -300,7 +300,7 @@ BasicSinSaw(
 }
 
 static inline FBSIMDVector<float>
-BasicSawM1(
+WaveBasicSawM1(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -322,7 +322,7 @@ BasicSawM1(
 }
 
 static inline FBSIMDVector<float>
-BasicSqrM1(
+WaveBasicSqrM1(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -346,7 +346,7 @@ BasicSqrM1(
 }
 
 static inline FBSIMDVector<float>
-BasicBSSin(
+WaveBasicBSSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -371,7 +371,7 @@ BasicBSSin(
 }
 
 static inline FBSIMDVector<float>
-BasicHWSin(
+WaveBasicHWSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -394,7 +394,7 @@ BasicHWSin(
 }
 
 static inline FBSIMDVector<float>
-BasicFWSin(
+WaveBasicFWSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -415,7 +415,7 @@ BasicFWSin(
 }
 
 static inline FBSIMDVector<float>
-BasicAltSin(
+WaveBasicAltSin(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -437,7 +437,7 @@ BasicAltSin(
 }
 
 static inline FBSIMDVector<float>
-BasicParabl(
+WaveBasicParabl(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -458,7 +458,7 @@ BasicParabl(
 }
 
 static inline FBSIMDVector<float>
-BasicHypTri(
+WaveBasicHypTri(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec)
 {
@@ -481,7 +481,7 @@ BasicHypTri(
 }
 
 static inline FBSIMDVector<float>
-BasicPWRect(
+WavePWRect(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -531,7 +531,7 @@ BasicPWRect(
 }
 
 static inline FBSIMDVector<float>
-BasicPWSqr(
+WavePWSqr(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -562,7 +562,7 @@ BasicPWSqr(
 }
 
 static inline FBSIMDVector<float>
-BasicPWHWSaw(
+WavePWHWSaw(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -611,7 +611,7 @@ BasicPWHWSaw(
 }
 
 static inline FBSIMDVector<float>
-BasicPWTriSaw(
+WavePWTriSaw(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -644,7 +644,7 @@ BasicPWTriSaw(
 }
 
 static inline FBSIMDVector<float>
-BasicPWTriPls(
+WavePWTriPls(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -679,7 +679,7 @@ BasicPWTriPls(
 }
 
 static inline FBSIMDVector<float>
-BasicPWTrapTri(
+WavePWTrapTri(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -715,50 +715,50 @@ BasicPWTrapTri(
 }
 
 static inline FBSIMDVector<float>
-GenerateBasicCheck(
-  FFOsciBasicMode mode,
+GenerateWaveCheck(
+  FFOsciWaveMode mode,
   FBSIMDVector<float> phaseVec,
   FBSIMDVector<float> incrVec,
   FBSIMDVector<float> pwVec)
 {
   switch (mode)
   {
-  case FFOsciBasicMode::Sin: return BasicSin(phaseVec); 
-  case FFOsciBasicMode::Cos: return BasicCos(phaseVec);
-  case FFOsciBasicMode::Saw: return BasicSaw(phaseVec, incrVec);
-  case FFOsciBasicMode::Ramp: return BasicRamp(phaseVec, incrVec);
-  case FFOsciBasicMode::Sqr: return BasicSqr(phaseVec, incrVec);
-  case FFOsciBasicMode::Tri: return BasicTri(phaseVec, incrVec);
-  case FFOsciBasicMode::Trap: return BasicTrap(phaseVec, incrVec);
-  case FFOsciBasicMode::SinSqr: return BasicSinSqr(phaseVec, incrVec);
-  case FFOsciBasicMode::SawSqr: return BasicSawSqr(phaseVec, incrVec);
-  case FFOsciBasicMode::SinSaw: return BasicSinSaw(phaseVec, incrVec);
-  case FFOsciBasicMode::SawM1: return BasicSawM1(phaseVec, incrVec);
-  case FFOsciBasicMode::SqrM1: return BasicSqrM1(phaseVec, incrVec);
-  case FFOsciBasicMode::BSSin: return BasicBSSin(phaseVec, incrVec);
-  case FFOsciBasicMode::HWSin: return BasicHWSin(phaseVec, incrVec);
-  case FFOsciBasicMode::FWSin: return BasicFWSin(phaseVec, incrVec);
-  case FFOsciBasicMode::AltSin: return BasicAltSin(phaseVec, incrVec);
-  case FFOsciBasicMode::Parabl: return BasicParabl(phaseVec, incrVec);
-  case FFOsciBasicMode::HypTri: return BasicHypTri(phaseVec, incrVec);
-  case FFOsciBasicMode::PWRect: return BasicPWRect(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::PWSqr: return BasicPWSqr(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::PWHWSaw: return BasicPWHWSaw(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::PWTriSaw: return BasicPWTriSaw(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::PWTriPls: return BasicPWTriPls(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::PWTrapTri: return BasicPWTrapTri(phaseVec, incrVec, pwVec);
+  case FFOsciWaveMode::Sin: return WaveBasicSin(phaseVec); 
+  case FFOsciWaveMode::Cos: return WaveBasicCos(phaseVec);
+  case FFOsciWaveMode::Saw: return WaveBasicSaw(phaseVec, incrVec);
+  case FFOsciWaveMode::Ramp: return WaveBasicRamp(phaseVec, incrVec);
+  case FFOsciWaveMode::Sqr: return WaveBasicSqr(phaseVec, incrVec);
+  case FFOsciWaveMode::Tri: return WaveBasicTri(phaseVec, incrVec);
+  case FFOsciWaveMode::Trap: return WaveBasicTrap(phaseVec, incrVec);
+  case FFOsciWaveMode::SinSqr: return WaveBasicSinSqr(phaseVec, incrVec);
+  case FFOsciWaveMode::SawSqr: return WaveBasicSawSqr(phaseVec, incrVec);
+  case FFOsciWaveMode::SinSaw: return WaveBasicSinSaw(phaseVec, incrVec);
+  case FFOsciWaveMode::SawM1: return WaveBasicSawM1(phaseVec, incrVec);
+  case FFOsciWaveMode::SqrM1: return WaveBasicSqrM1(phaseVec, incrVec);
+  case FFOsciWaveMode::BSSin: return WaveBasicBSSin(phaseVec, incrVec);
+  case FFOsciWaveMode::HWSin: return WaveBasicHWSin(phaseVec, incrVec);
+  case FFOsciWaveMode::FWSin: return WaveBasicFWSin(phaseVec, incrVec);
+  case FFOsciWaveMode::AltSin: return WaveBasicAltSin(phaseVec, incrVec);
+  case FFOsciWaveMode::Parabl: return WaveBasicParabl(phaseVec, incrVec);
+  case FFOsciWaveMode::HypTri: return WaveBasicHypTri(phaseVec, incrVec);
+  case FFOsciWaveMode::PWRect: return WavePWRect(phaseVec, incrVec, pwVec);
+  case FFOsciWaveMode::PWSqr: return WavePWSqr(phaseVec, incrVec, pwVec);
+  case FFOsciWaveMode::PWHWSaw: return WavePWHWSaw(phaseVec, incrVec, pwVec);
+  case FFOsciWaveMode::PWTriSaw: return WavePWTriSaw(phaseVec, incrVec, pwVec);
+  case FFOsciWaveMode::PWTriPls: return WavePWTriPls(phaseVec, incrVec, pwVec);
+  case FFOsciWaveMode::PWTrapTri: return WavePWTrapTri(phaseVec, incrVec, pwVec);
   default: assert(false); return 0.0f;
   }
 }
 
 static inline FBSIMDVector<float>
-GenerateBasic(
-  FFOsciBasicMode mode,
+GenerateWave(
+  FFOsciWaveMode mode,
   FBSIMDVector<float> phaseVec,
   FBSIMDVector<float> incrVec,
   FBSIMDVector<float> pwVec)
 {
-  auto result = GenerateBasicCheck(mode, phaseVec, incrVec, pwVec);
+  auto result = GenerateWaveCheck(mode, phaseVec, incrVec, pwVec);
 #ifndef NDEBUG
   FBSIMDArray<float, FBSIMDFloatCount> check;
   check.Store(0, result);
@@ -868,10 +868,10 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _fmRatioRatio12 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio12Norm));
   _fmRatioRatio23 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio23Norm));
 
-  for (int i = 0; i < FFOsciBasicCount; i++)
+  for (int i = 0; i < FFOsciWaveCount; i++)
   {
-    auto const& basicModeNorm = params.block.basicMode[i].Voice()[voice];
-    _basicMode[i] = topo.NormalizedToListFast<FFOsciBasicMode>(FFOsciParam::BasicMode, basicModeNorm);
+    auto const& waveModeNorm = params.block.waveMode[i].Voice()[voice];
+    _waveMode[i] = topo.NormalizedToListFast<FFOsciWaveMode>(FFOsciParam::WaveMode, waveModeNorm);
   }
 
   bool oversampling = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversampling, modOversamplingNorm);
@@ -957,9 +957,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain;
-  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicPWPlain;
-  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicGainPlain;
-  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBasicCount> basicSyncPlain;
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveCount> wavePWPlain;
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveCount> waveGainPlain;
+  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveCount> waveSyncPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
@@ -977,18 +977,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
     uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
 
-    if (_type == FFOsciType::Basic)
+    if (_type == FFOsciType::Wave)
     {
-      for (int i = 0; i < FFOsciBasicCount; i++)
-        if (_basicMode[i] != FFOsciBasicMode::Off)
+      for (int i = 0; i < FFOsciWaveCount; i++)
+        if (_waveMode[i] != FFOsciWaveMode::Off)
         {
-          auto const& basicPWNorm = procParams.acc.basicPW[i].Voice()[voice];
-          auto const& basicGainNorm = procParams.acc.basicGain[i].Voice()[voice];
-          auto const& basicSyncNorm = procParams.acc.basicSync[i].Voice()[voice];
+          auto const& wavePWNorm = procParams.acc.wavePW[i].Voice()[voice];
+          auto const& waveGainNorm = procParams.acc.waveGain[i].Voice()[voice];
+          auto const& waveSyncNorm = procParams.acc.waveSync[i].Voice()[voice];
           // todo conditional
-          basicPWPlain[i].Store(s, topo.NormalizedToIdentityFast(FFOsciParam::BasicPW, basicPWNorm, s));
-          basicGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicGain, basicGainNorm, s));
-          basicSyncPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::BasicSync, basicSyncNorm, s));
+          wavePWPlain[i].Store(s, topo.NormalizedToIdentityFast(FFOsciParam::WavePW, wavePWNorm, s));
+          waveGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveGain, waveGainNorm, s));
+          waveSyncPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveSync, waveSyncNorm, s));
         }
     }
     else if (_type == FFOsciType::DSF)
@@ -1029,15 +1029,15 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     uniBlendPlain.UpsampleStretch<FFOsciOversamplingTimes>();
     uniDetunePlain.UpsampleStretch<FFOsciOversamplingTimes>();
     uniSpreadPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    if (_type == FFOsciType::Basic)
+    if (_type == FFOsciType::Wave)
     {
-      for (int i = 0; i < FFOsciBasicCount; i++)
-        if (_basicMode[i] != FFOsciBasicMode::Off)
+      for (int i = 0; i < FFOsciWaveCount; i++)
+        if (_waveMode[i] != FFOsciWaveMode::Off)
         {
           // todo conditional
-          basicPWPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
-          basicGainPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
-          basicSyncPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
+          wavePWPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
+          waveGainPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
+          waveSyncPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
         }
     }
     else if (_type == FFOsciType::DSF)
@@ -1084,17 +1084,17 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
 
         FBSIMDVector<float> thisUniOutput = 0.0f;
-        if (_type == FFOsciType::Basic)
+        if (_type == FFOsciType::Wave)
         {
-          for (int i = 0; i < FFOsciBasicCount; i++)
-            if (_basicMode[i] != FFOsciBasicMode::Off)
+          for (int i = 0; i < FFOsciWaveCount; i++)
+            if (_waveMode[i] != FFOsciWaveMode::Off)
             {
               // todo conditional
-              auto basicPW = basicPWPlain[i].Load(s);
-              auto basicGain = basicGainPlain[i].Load(s);
-              basicPW = (MinPW + (1.0f - MinPW) * basicPW) * 0.5f;
+              auto wavePW = wavePWPlain[i].Load(s);
+              auto waveGain = waveGainPlain[i].Load(s);
+              wavePW = (MinPW + (1.0f - MinPW) * wavePW) * 0.5f;
               // todo auto basicSync = basicSyncPlain[i].Load(s);
-              thisUniOutput += GenerateBasic(_basicMode[i], uniPhase, uniIncr, basicPW) * basicGain;
+              thisUniOutput += GenerateWave(_waveMode[i], uniPhase, uniIncr, wavePW) * waveGain;
             }
         }
         else if (_type == FFOsciType::DSF)
@@ -1272,14 +1272,14 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.uniDetune[0][voice] = uniDetuneNorm.Last();
   exchangeParams.acc.uniSpread[0][voice] = uniSpreadNorm.Last();
   exchangeParams.acc.dsfDecay[0][voice] = dsfDecayNorm.Last();
-  for (int i = 0; i < FFOsciBasicCount; i++)
+  for (int i = 0; i < FFOsciWaveCount; i++)
   {
-    auto const& basicPWNorm = procParams.acc.basicPW[i].Voice()[voice];
-    auto const& basicGainNorm = procParams.acc.basicGain[i].Voice()[voice];
-    auto const& basicSyncNorm = procParams.acc.basicSync[i].Voice()[voice];
-    exchangeParams.acc.basicPW[i][voice] = basicPWNorm.Last();
-    exchangeParams.acc.basicGain[i][voice] = basicGainNorm.Last();
-    exchangeParams.acc.basicSync[i][voice] = basicSyncNorm.Last();
+    auto const& wavePWNorm = procParams.acc.wavePW[i].Voice()[voice];
+    auto const& waveGainNorm = procParams.acc.waveGain[i].Voice()[voice];
+    auto const& waveSyncNorm = procParams.acc.waveSync[i].Voice()[voice];
+    exchangeParams.acc.wavePW[i][voice] = wavePWNorm.Last();
+    exchangeParams.acc.waveGain[i][voice] = waveGainNorm.Last();
+    exchangeParams.acc.waveSync[i][voice] = waveSyncNorm.Last();
   }
   for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
   {
