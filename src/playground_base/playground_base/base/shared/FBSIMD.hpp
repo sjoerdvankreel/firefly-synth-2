@@ -4,6 +4,11 @@
 #include <array>
 #include <xsimd/xsimd.hpp>
 
+// better make sure this all lines up
+typedef xsimd::sse2 FBXSIMDBatchType;
+inline int constexpr FBSIMDFloatCount = 4;
+inline int constexpr FBSIMDAlign = FBSIMDFloatCount * sizeof(float);
+
 template <class T> using FBSIMDVector = xsimd::batch<T, xsimd::sse2>;
 template <class T> struct FBSIMDTraits {
   static inline int constexpr Size = FBSIMDVector<T>::size; 
@@ -24,6 +29,7 @@ public:
 
   template <int Times> void UpsampleStretch();
 
+  void NaNCheck();
   T Last() const { return _data[N - 1]; }
   T Get(int pos) const { return _data[pos]; };
   void Set(int pos, T val) { _data[pos] = val; };
@@ -34,6 +40,16 @@ public:
   FBSIMDVector<T> Load(int pos) const { return FBSIMDVector<T>::load_aligned(Ptr(pos)); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
 };
+
+template <class T, int N>
+inline void
+FBSIMDArray<T, N>::NaNCheck()
+{
+#ifndef NDEBUG
+  for (int i = 0; i < N; i++)
+    assert(!std::isnan(Get(i)));
+#endif
+}
 
 template <class T, int N>
 template <int Times>
@@ -47,6 +63,17 @@ FBSIMDArray<T, N>::UpsampleStretch()
     x.Store(s, Load(s));
   for (int s = 0; s < N / Times; s++)
     Store(s * FBSIMDTraits<T>::Size, x.Get(s));
+}
+
+template <class T>
+inline void
+FBSIMDVectorNaNCheck(FBSIMDVector<T> vec)
+{
+#ifndef NDEBUG
+  FBSIMDArray<float, FBSIMDTraits<T>::Size> check;
+  check.Store(0, vec);
+  check.NaNCheck();
+#endif
 }
 
 template <class T, int N1, int N2>

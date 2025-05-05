@@ -25,7 +25,8 @@ class FFOsciProcessor final
   float _uniRandomPlain = {};
   int _oversamplingTimes = {};
 
-  std::array<FFOsciWaveMode, FFOsciWaveCount> _waveMode = {};
+  std::array<FFOsciWavePWMode, FFOsciWavePWCount> _wavePWMode = {};
+  std::array<FFOsciWaveBasicMode, FFOsciWaveBasicCount> _waveBasicMode = {};
   float _dsfDistance = {};
   float _dsfOvertones = {};
   FFOsciDSFMode _dsfMode = {};
