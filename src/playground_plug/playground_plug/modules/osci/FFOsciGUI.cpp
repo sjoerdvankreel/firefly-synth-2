@@ -39,7 +39,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeSectionUnison(FBPlugGUI* plugGUI, int moduleSlot)
+MakeSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
@@ -181,7 +181,7 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
   // TODO move marksection to here
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  grid->Add(0, 1, MakeSectionUnison(plugGUI, moduleSlot));
+  grid->Add(0, 1, MakeSectionUni(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeSectionBasic(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeSectionDSF(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeSectionFM(plugGUI, moduleSlot));

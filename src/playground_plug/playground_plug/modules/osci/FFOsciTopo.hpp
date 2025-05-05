@@ -23,7 +23,6 @@ inline int constexpr FFOsciFMOperatorCount = 3;
 inline int constexpr FFOsciUniMaxCount = FBSIMDFloatCount * 2;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
-// todo unison->uni
 enum class FFOsciParam { 
   Type, Gain, Coarse, Fine,
   UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,

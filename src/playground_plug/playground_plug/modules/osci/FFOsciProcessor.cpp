@@ -945,9 +945,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
   auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
-  auto const& uniBlendNorm = procParams.acc.unisonBlend[0].Voice()[voice];
-  auto const& uniDetuneNorm = procParams.acc.unisonDetune[0].Voice()[voice];
-  auto const& uniSpreadNorm = procParams.acc.unisonSpread[0].Voice()[voice];
+  auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
+  auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
+  auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
   auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
 
   FBSIMDArray<float, FFOsciFixedBlockOversamples> gainPlain;
@@ -1268,9 +1268,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.gain[0][voice] = gainNorm.Last();
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
-  exchangeParams.acc.unisonBlend[0][voice] = uniBlendNorm.Last();
-  exchangeParams.acc.unisonDetune[0][voice] = uniDetuneNorm.Last();
-  exchangeParams.acc.unisonSpread[0][voice] = uniSpreadNorm.Last();
+  exchangeParams.acc.uniBlend[0][voice] = uniBlendNorm.Last();
+  exchangeParams.acc.uniDetune[0][voice] = uniDetuneNorm.Last();
+  exchangeParams.acc.uniSpread[0][voice] = uniSpreadNorm.Last();
   exchangeParams.acc.dsfDecay[0][voice] = dsfDecayNorm.Last();
   for (int i = 0; i < FFOsciBasicCount; i++)
   {

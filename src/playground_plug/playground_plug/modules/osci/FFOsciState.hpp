@@ -58,9 +58,9 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   std::array<TVoiceAcc, 1> coarse = {};
   std::array<TVoiceAcc, 1> fine = {};
   std::array<TVoiceAcc, 1> gain = {};
-  std::array<TVoiceAcc, 1> unisonBlend = {};
-  std::array<TVoiceAcc, 1> unisonDetune = {};
-  std::array<TVoiceAcc, 1> unisonSpread = {};
+  std::array<TVoiceAcc, 1> uniBlend = {};
+  std::array<TVoiceAcc, 1> uniDetune = {};
+  std::array<TVoiceAcc, 1> uniSpread = {};
   std::array<TVoiceAcc, 1> dsfDecay = {};
   std::array<TVoiceAcc, FFOsciBasicCount> basicPW = {};
   std::array<TVoiceAcc, FFOsciBasicCount> basicGain = {};
