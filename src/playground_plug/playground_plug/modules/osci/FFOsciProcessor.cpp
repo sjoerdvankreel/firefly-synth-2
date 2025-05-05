@@ -644,7 +644,7 @@ BasicPWTriSaw(
 }
 
 static inline FBSIMDVector<float>
-BasicPWTriSqr(
+BasicPWTriPls(
   FBSIMDVector<float> tVec,
   FBSIMDVector<float> dtVec,
   FBSIMDVector<float> pwVec)
@@ -745,7 +745,7 @@ GenerateBasicCheck(
   case FFOsciBasicMode::PWSqr: return BasicPWSqr(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWHWSaw: return BasicPWHWSaw(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWTriSaw: return BasicPWTriSaw(phaseVec, incrVec, pwVec);
-  case FFOsciBasicMode::PWTriSqr: return BasicPWTriSqr(phaseVec, incrVec, pwVec);
+  case FFOsciBasicMode::PWTriSqr: return BasicPWTriPls(phaseVec, incrVec, pwVec);
   case FFOsciBasicMode::PWTrapTri: return BasicPWTrapTri(phaseVec, incrVec, pwVec);
   default: assert(false); return 0.0f;
   }
@@ -1101,12 +1101,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         {
           auto dsfDecay = dsfDecayPlain.Load(s);
           auto dsfDistFreq = _dsfDistance * uniFreq;
-          auto dsfMaxOvertones = (sampleRate * 0.5f - uniFreq) / dsfDistFreq;
+          auto dsfMaxOvertones = xsimd::max(FBSIMDVector<float>(0.0f), (sampleRate * 0.5f - uniFreq) / dsfDistFreq);
           if (_dsfMode == FFOsciDSFMode::Overtones)
             thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfOvertones);
           else if (_dsfMode == FFOsciDSFMode::Bandwidth)
             thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
-          else assert(false);
+          else 
+            assert(false);
         }
         else
         {

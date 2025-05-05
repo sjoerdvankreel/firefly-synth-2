@@ -38,7 +38,7 @@ MakeBasicModeDetails()
   result[(int)FFOsciBasicMode::PWSqr] = { true, false };
   result[(int)FFOsciBasicMode::PWHWSaw] = { true, false };
   result[(int)FFOsciBasicMode::PWTriSaw] = { true, false };
-  result[(int)FFOsciBasicMode::PWTriSqr] = { true, false };
+  result[(int)FFOsciBasicMode::PWTriPls] = { true, false };
   result[(int)FFOsciBasicMode::PWTrapTri] = { true, false };
   return result;
 }
@@ -51,8 +51,8 @@ FFOsciFMFormatRatioSlot(int slot)
 {
   switch (slot)
   {
-  case 0: return "1:2";
-  case 1: return "2:3";
+  case 0: return "2:1";
+  case 1: return "3:2";
   default: assert(false); return "";
   }
 }
@@ -277,7 +277,7 @@ FFMakeOsciTopo()
     { "{DFD55382-FBA0-4080-B179-98385452528B}", "PWSqr", "PW Sqr" },
     { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "PWHWSAW", "PW Half Rect Saw" },
     { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PWTriSaw", "PW Tri To Saw" },
-    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriSqr", "PW Tri To Sqr" },
+    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PWTriPls", "PW Tri To Sqr" },
     { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PWTrapTri", "PW Trap To Tri" }
   };
   basicMode.List().submenuStart[(int)FFOsciBasicMode::Off] = "Off";
@@ -375,13 +375,14 @@ FFMakeOsciTopo()
 
   auto& dsfBandwidth = result->params[(int)FFOsciParam::DSFBandwidth];
   dsfBandwidth.acc = false;
+  dsfBandwidth.defaultText = "50";
   dsfBandwidth.name = "Bandwidth";
   dsfBandwidth.tooltip = "DSF Bandwidth";
   dsfBandwidth.slotCount = 1;
   dsfBandwidth.unit = "%";
   dsfBandwidth.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
   dsfBandwidth.type = FBParamType::Log2;
-  dsfBandwidth.Log2().Init(-0.01f, 0.01f, 1.01f);
+  dsfBandwidth.Log2().Init(-1.0f, 1.0f, 101.0f);
   auto selectDSFBandwidth = [](auto& module) { return &module.block.dsfBandwidth; };
   dsfBandwidth.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectDSFBandwidth);
   dsfBandwidth.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectDSFBandwidth);
