@@ -38,7 +38,8 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   std::array<TVoiceBlock, 1> uniCount = {};
   std::array<TVoiceBlock, 1> uniOffset = {};
   std::array<TVoiceBlock, 1> uniRandom = {};
-  std::array<TVoiceBlock, FFOsciWaveCount> waveMode = {};
+  std::array<TVoiceBlock, FFOsciWavePWCount> wavePWMode = {};
+  std::array<TVoiceBlock, FFOsciWaveBasicCount> waveBasicMode = {};
   std::array<TVoiceBlock, 1> dsfMode = {};
   std::array<TVoiceBlock, 1> dsfDistance = {};
   std::array<TVoiceBlock, 1> dsfOvertones = {};
@@ -62,9 +63,9 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   std::array<TVoiceAcc, 1> uniDetune = {};
   std::array<TVoiceAcc, 1> uniSpread = {};
   std::array<TVoiceAcc, 1> dsfDecay = {};
-  std::array<TVoiceAcc, FFOsciWaveCount> wavePW = {};
-  std::array<TVoiceAcc, FFOsciWaveCount> waveGain = {};
-  std::array<TVoiceAcc, FFOsciWaveCount> waveSync = {};
+  std::array<TVoiceAcc, FFOsciWavePWCount> wavePWPW = {};
+  std::array<TVoiceAcc, FFOsciWavePWCount> wavePWGain = {};
+  std::array<TVoiceAcc, FFOsciWaveBasicCount> waveBasicGain = {};
   std::array<TVoiceAcc, FFOsciFMMatrixSize> fmIndex = {};
   std::array<TVoiceAcc, FFOsciFMOperatorCount - 1> fmRatioFree = {};
 public:

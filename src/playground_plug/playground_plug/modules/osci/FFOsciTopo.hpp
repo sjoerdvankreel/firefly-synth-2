@@ -11,21 +11,23 @@ enum class FFOsciFMRatioMode { Ratio, Free };
 enum class FFOsciDSFMode { Overtones, Bandwidth };
 
 // TODO hstri, hssqr, hssaw
-enum class FFOsciWaveMode { 
-  Off, 
-  Sin, Cos, Saw, Ramp, Sqr, Tri, Trap, SinSqr, SawSqr, SinSaw,
-  SawM1, SqrM1, BSSin, HWSin, FWSin, AltSin, Parabl, HypTri, 
-  PWRect, PWSqr, PWHWSaw, PWTriSaw, PWTriPls, PWTrapTri, Count };
+enum class FFOsciWaveBasicMode {
+  Off, Sin, Cos, Saw, Ramp, Sqr, Tri, Trap, SinSqr, SawSqr, SinSaw,
+  SawM1, SqrM1, BSSin, HWSin, FWSin, AltSin, Parabl, HypTri, Count };
 
-inline int constexpr FFOsciWaveCount = 4;
+enum class FFOsciWavePWMode {
+  Off, Rect, Sqr, HWSaw, TriSaw, TriPls, TrapTri, Count };
+
+inline int constexpr FFOsciWavePWCount = 2;
+inline int constexpr FFOsciWaveBasicCount = 2;
+inline int constexpr FFOsciUniMaxCount = FBSIMDFloatCount * 2;
 inline int constexpr FFOsciFMRatioCount = 16;
 inline int constexpr FFOsciFMOperatorCount = 3;
-inline int constexpr FFOsciUniMaxCount = FBSIMDFloatCount * 2;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
 enum class FFOsciParam { 
   Type, Gain, Coarse, Fine,
   UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,
-  WaveMode, WaveGain, WavePW, WaveSync,
+  WaveBasicMode, WaveBasicGain, WavePWMode, WavePWGain, WavePWPW,
   DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,
   FMExp, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, Count };
