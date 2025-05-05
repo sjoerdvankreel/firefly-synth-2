@@ -44,7 +44,7 @@ MakeBasicModeDetails()
 }
 
 static std::vector<FFBasicModeDetails> const 
-basicModeDetails = MakeBasicModeDetails();
+BasicModeDetails = MakeBasicModeDetails();
 
 static std::string
 FFOsciFMFormatRatioSlot(int slot)
@@ -321,7 +321,8 @@ FFMakeOsciTopo()
   basicPW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicPW);
   basicPW.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicPW);
   basicPW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicPW);
-  basicPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && basicModeDetails[vs[1]].canPW; });
+  basicPW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, 
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && BasicModeDetails[vs[1]].canPW; });
 
   auto& basicSync = result->params[(int)FFOsciParam::BasicSync];
   basicSync.acc = true;
@@ -338,7 +339,8 @@ FFMakeOsciTopo()
   basicSync.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectBasicSync);
   basicSync.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectBasicSync);
   basicSync.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectBasicSync);
-  basicSync.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && basicModeDetails[vs[1]].canSync; });
+  basicSync.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::BasicMode }, 
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Basic && BasicModeDetails[vs[1]].canSync; });
 
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;
