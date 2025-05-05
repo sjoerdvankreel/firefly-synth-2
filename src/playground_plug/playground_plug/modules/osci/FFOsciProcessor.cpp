@@ -1215,6 +1215,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           wavePWPWPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
           wavePWGainPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
         }
+      if (_waveHSMode != FFOsciWaveHSMode::Off)
+      {
+        waveHSPWPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+        waveHSGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+        waveHSSyncPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      }
     }
     else if (_type == FFOsciType::DSF)
     {
