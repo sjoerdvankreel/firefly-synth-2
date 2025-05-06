@@ -46,7 +46,7 @@ FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBDiscreteParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
+FBDiscreteParamNonRealTime::PlainToText(bool io, double plain) const
 {
   int result = static_cast<int>(std::round(plain));
   if (valueFormatter != nullptr)
@@ -63,7 +63,7 @@ FBDiscreteParamNonRealTime::MakePopupMenu() const
   int subMenuIndex = 0;
   for (int i = 0; i < ValueCount(); i++, j++)
   {
-    subMenu.addItem(i + 1, PlainToText(FBTextDisplay::Text, i + valueOffset));
+    subMenu.addItem(i + 1, PlainToText(false, i + valueOffset));
     if (j == ValueCount() - 1 || j == subMenuItemCount - 1)
     {
       result.addSubMenu(subMenuFormatter(subMenuIndex), subMenu);
@@ -76,12 +76,12 @@ FBDiscreteParamNonRealTime::MakePopupMenu() const
 }
 
 std::optional<double>
-FBDiscreteParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
+FBDiscreteParamNonRealTime::TextToPlain(bool io, std::string const& text) const
 {
   if(valueFormatter != nullptr)
   { 
     for (int i = 0; i < ValueCount(); i++)
-      if (PlainToText(FBTextDisplay::Text, i + valueOffset) == text)
+      if (PlainToText(io, i + valueOffset) == text)
         return { i + valueOffset };
     return { };
   }

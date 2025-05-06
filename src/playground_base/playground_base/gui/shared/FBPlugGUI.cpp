@@ -90,7 +90,7 @@ FBPlugGUI::GetAudioParamActiveTooltip(
 {
   if (!active)
     return "N/A";
-  return param.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, value);
+  return param.NormalizedToTextWithUnit(false, value);
 }
 
 void
@@ -175,7 +175,7 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
 {
   auto const& param = HostContext()->Topo()->gui.params[index];
   double normalized = HostContext()->GetGUIParamNormalized(index);
-  std::string result = param.tooltip + ": " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, normalized);
+  std::string result = param.tooltip + ": " + param.static_.NormalizedToTextWithUnit(false, normalized);
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   return result;
 }
@@ -190,13 +190,13 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
   auto result = param.tooltip + ": ";
-  result += param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, normalized);  
+  result += param.static_.NormalizedToTextWithUnit(false, normalized);  
   if (!param.static_.IsVoice())
-    result += "\r\nEngine: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, engineMin);
+    result += "\r\nEngine: " + param.static_.NormalizedToTextWithUnit(false, engineMin);
   else
   {
-    result += "\r\nEngine min: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, engineMin);
-    result += "\r\nEngine max: " + param.static_.NormalizedToTextWithUnit(FBTextDisplay::Tooltip, engineMax);
+    result += "\r\nEngine min: " + param.static_.NormalizedToTextWithUnit(false, engineMin);
+    result += "\r\nEngine max: " + param.static_.NormalizedToTextWithUnit(false, engineMax);
   }
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   if (param.static_.AutomationTiming() != FBAutomationTiming::Never)

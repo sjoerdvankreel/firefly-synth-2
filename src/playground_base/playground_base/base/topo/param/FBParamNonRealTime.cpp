@@ -1,15 +1,15 @@
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
 
 std::string
-FBParamNonRealTime::NormalizedToText(FBTextDisplay display, double plain) const
+FBParamNonRealTime::NormalizedToText(bool io, double plain) const
 {
-  return PlainToText(display, NormalizedToPlain(plain));
+  return PlainToText(io, NormalizedToPlain(plain));
 }
 
 std::optional<double> 
-FBParamNonRealTime::TextToNormalized(FBTextDisplay display, std::string const& text) const
+FBParamNonRealTime::TextToNormalized(bool io, std::string const& text) const
 {
-  auto plain = TextToPlain(display, text);
+  auto plain = TextToPlain(io, text);
   if (!plain)
     return {};
   return PlainToNormalized(plain.value());

@@ -53,12 +53,12 @@ FBGUIParamSlider::valueChanged()
 String
 FBGUIParamSlider::getTextFromValue(double value)
 {
-  return _param->static_.NormalizedToTextWithUnit(FBTextDisplay::Text, value);
+  return _param->static_.NormalizedToTextWithUnit(false, value);
 }
 
 double
 FBGUIParamSlider::getValueFromText(const String& text)
 {
-  auto parsed = _param->static_.NonRealTime().TextToNormalized(FBTextDisplay::Text, text.toStdString());
+  auto parsed = _param->static_.NonRealTime().TextToNormalized(false, text.toStdString());
   return parsed.value_or(_param->static_.DefaultNormalizedByText());
 }

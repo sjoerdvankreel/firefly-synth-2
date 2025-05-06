@@ -42,7 +42,7 @@ FBCLAPPlugin::paramsTextToValue(
   if (index == -1)
     return false;
   auto const& static_ = _topo->audio.params[index].static_;
-  auto normalized = static_.NonRealTime().TextToNormalized(FBTextDisplay::Text, display);
+  auto normalized = static_.NonRealTime().TextToNormalized(false, display);
   if (!normalized.has_value())
     return false;
   *value = FBNormalizedToCLAP(static_, normalized.value());
@@ -57,7 +57,7 @@ FBCLAPPlugin::paramsValueToText(
   if (index == -1)
     return false;
   double norm = FBCLAPToNormalized(_topo->audio.params[index].static_, value);
-  std::string text = _topo->audio.params[index].static_.NonRealTime().NormalizedToText(FBTextDisplay::Text, norm);
+  std::string text = _topo->audio.params[index].static_.NonRealTime().NormalizedToText(false, norm);
   std::fill(display, display + size, 0);
   strncpy(display, text.c_str(), std::min(size - 1, static_cast<uint32_t>(text.size())));
   return true;

@@ -8,7 +8,6 @@
 #include <playground_base/base/topo/param/FBListParam.hpp>
 #include <playground_base/base/topo/param/FBBarsParam.hpp>
 #include <playground_base/base/topo/param/FBParamType.hpp>
-#include <playground_base/base/topo/param/FBTextDisplay.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 #include <playground_base/base/topo/param/FBIdentityParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>
@@ -67,7 +66,7 @@ public:
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
 
   double DefaultNormalizedByText() const;
-  std::string NormalizedToTextWithUnit(FBTextDisplay display, double normalized) const;
+  std::string NormalizedToTextWithUnit(bool io, double normalized) const;
 };
 
 inline FBListParam&

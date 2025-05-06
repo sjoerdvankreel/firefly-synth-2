@@ -286,7 +286,7 @@ FBRuntimeTopo::SaveParamStateToVar(
   {
     auto param = new DynamicObject;
     param->setProperty("id", String(params[p].id));
-    param->setProperty("val", String(params[p].static_.NonRealTime().NormalizedToText(FBTextDisplay::IO, *container.Params()[p])));
+    param->setProperty("val", String(params[p].static_.NonRealTime().NormalizedToText(true, *container.Params()[p])));
     state.append(var(param));
   }
 
@@ -402,7 +402,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
   {
     double defaultNormalized = 0.0f;
     if(params.params[p].static_.defaultText.size())
-      defaultNormalized = params.params[p].static_.NonRealTime().TextToNormalized(FBTextDisplay::Text, params.params[p].static_.defaultText).value();
+      defaultNormalized = params.params[p].static_.NonRealTime().TextToNormalized(false, params.params[p].static_.defaultText).value();
     *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
@@ -443,11 +443,11 @@ FBRuntimeTopo::LoadParamStateFromVar(
     }
 
     auto const& topo = params.params[iter->second].static_;
-    auto normalized = topo.NonRealTime().TextToNormalized(FBTextDisplay::IO, val.toString().toStdString());
+    auto normalized = topo.NonRealTime().TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
     {
       FB_LOG_WARN("Failed to parse plugin parameter value.");
-      normalized = topo.NonRealTime().TextToNormalized(FBTextDisplay::Text, topo.defaultText);
+      normalized = topo.NonRealTime().TextToNormalized(false, topo.defaultText);
     }
     *container.Params()[iter->second] = static_cast<float>(normalized.value());
   }

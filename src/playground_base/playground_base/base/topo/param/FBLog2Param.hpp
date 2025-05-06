@@ -40,8 +40,8 @@ public FBParamNonRealTime
 
   double PlainToNormalized(double plain) const override;
   double NormalizedToPlain(double normalized) const override;
-  std::string PlainToText(FBTextDisplay display, double plain) const override;
-  std::optional<double> TextToPlain(FBTextDisplay display, std::string const& text) const override;
+  std::string PlainToText(bool io, double plain) const override;
+  std::optional<double> TextToPlain(bool io, std::string const& text) const override;
 };
 
 inline float

@@ -56,15 +56,15 @@ FBLog2ParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBLog2ParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
+FBLog2ParamNonRealTime::PlainToText(bool io, double plain) const
 {
-  if (display == FBTextDisplay::IO)
+  if (io)
     return std::to_string(plain);
   return FBFormatDouble(plain, FBDefaultDisplayPrecision);
 }
 
 std::optional<double>
-FBLog2ParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
+FBLog2ParamNonRealTime::TextToPlain(bool io, std::string const& text) const
 {
   char* end;
   double result = std::strtod(text.c_str(), &end);

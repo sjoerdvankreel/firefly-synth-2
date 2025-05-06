@@ -53,7 +53,7 @@ FBListParamNonRealTime::MakePopupMenu() const
   if (submenuStart.empty())
   {
     for (int i = 0; i < ValueCount(); i++)
-      result.addItem(i + 1, PlainToText(FBTextDisplay::Text, i));
+      result.addItem(i + 1, PlainToText(false, i));
     return result;
   }
   PopupMenu submenu;
@@ -66,7 +66,7 @@ FBListParamNonRealTime::MakePopupMenu() const
       submenu = {};
       submenuHeader = submenuStart.at(i);
     }
-    submenu.addItem(i + 1, PlainToText(FBTextDisplay::Text, i));
+    submenu.addItem(i + 1, PlainToText(false, i));
     if (i == ValueCount() - 1)
     {
       result.addSubMenu(submenuHeader, submenu);
@@ -76,23 +76,17 @@ FBListParamNonRealTime::MakePopupMenu() const
 }
 
 std::optional<double>
-FBListParamNonRealTime::TextToPlain(FBTextDisplay display, std::string const& text) const
+FBListParamNonRealTime::TextToPlain(bool io, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
-    if (text == ((display == FBTextDisplay::IO) ? items[i].id : items[i].text))
+    if (text == (io ? items[i].id : items[i].name))
       return { i };
   return {};
 }
 
 std::string
-FBListParamNonRealTime::PlainToText(FBTextDisplay display, double plain) const
+FBListParamNonRealTime::PlainToText(bool io, double plain) const
 {
   int discrete = static_cast<int>(std::round(plain));
-  switch (display)
-  {
-  case FBTextDisplay::IO: return items[discrete].id;
-  case FBTextDisplay::Text: return items[discrete].text;
-  case FBTextDisplay::Tooltip: return items[discrete].tooltip.empty() ? items[discrete].text : items[discrete].tooltip;
-  default: assert(false); return {};
-  }
+  return io ? items[discrete].id : items[discrete].name;
 }
