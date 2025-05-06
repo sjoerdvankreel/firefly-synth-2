@@ -330,7 +330,7 @@ FFMakeEnvTopo()
   auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
   sustainLevel.acc = true;
   sustainLevel.defaultText = "50";
-  sustainLevel.name = "Sustain";
+  sustainLevel.name = "Sustain Level";
   sustainLevel.slotCount = 1;
   sustainLevel.unit = "%";
   sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
