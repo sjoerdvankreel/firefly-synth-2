@@ -124,6 +124,12 @@ FBGUILookAndFeel::drawRotarySlider(
   int x, int y, int width, int height, float sliderPos,
   float rotaryStartAngle, float rotaryEndAngle, Slider& s)
 {
+  // juce default reduces by 10
+  x -= 7;
+  y -= 7;
+  width += 14;
+  height += 14;
+
   FBParamSlider* paramSlider;
   LookAndFeel_V4::drawRotarySlider(g, x, y, width, height, sliderPos, rotaryStartAngle, rotaryEndAngle, s);
   if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
