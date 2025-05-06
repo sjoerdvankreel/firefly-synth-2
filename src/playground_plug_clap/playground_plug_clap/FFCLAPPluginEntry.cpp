@@ -7,6 +7,7 @@
 #include <playground_base_clap/FBCLAPExchangeStateQueue.hpp>
 
 #include <playground_base/base/shared/FBLogging.hpp>
+#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/base/topo/static/FBStaticTopo.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
@@ -56,6 +57,7 @@ public:
 static void CLAP_ABI 
 Deinit()
 {
+  FBGUITerminate();
   juce::shutdownJuce_GUI();
   FBLogTerminate();
 }
@@ -65,6 +67,7 @@ Init(char const*)
 { 
   FBLogInit(FFPlugMeta());
   juce::initialiseJuce_GUI();
+  FBGUIInit();
   return true; 
 }
 

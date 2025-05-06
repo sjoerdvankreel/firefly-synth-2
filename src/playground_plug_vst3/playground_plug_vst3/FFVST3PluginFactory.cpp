@@ -4,6 +4,7 @@
 
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
+#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
@@ -33,6 +34,7 @@ public:
 bool
 DeinitModule()
 {
+  FBGUITerminate();
   juce::shutdownJuce_GUI();
   FBLogTerminate();
   return true;
@@ -43,6 +45,7 @@ InitModule()
 {
   FBLogInit(FFPlugMeta());
   juce::initialiseJuce_GUI();
+  FBGUIInit();
   return true;
 }
 
