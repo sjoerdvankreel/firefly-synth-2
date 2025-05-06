@@ -88,3 +88,18 @@ FBGUILookAndFeel::drawRotarySlider(
   if (paramSlider->Param()->static_.IsVoice())
     DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }
+
+void 
+FBGUILookAndFeel::drawComboBox(Graphics& g,
+  int	width, int height, bool	isButtonDown,
+  int	buttonX, int buttonY, int	buttonW, int buttonH, ComboBox& box)
+{
+  auto cornerSize = 3.0f;
+  Rectangle<int> boxBounds(0, 0, width, height);
+
+  g.setColour(box.findColour(ComboBox::backgroundColourId));
+  g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
+
+  g.setColour(box.findColour(ComboBox::outlineColourId));
+  g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
+}
