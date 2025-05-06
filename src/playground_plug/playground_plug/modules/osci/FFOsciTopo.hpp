@@ -6,9 +6,12 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 
-enum class FFOsciType { Off, Wave, DSF, FM };
+enum class FFOsciType { Off, Wave, FM };
 enum class FFOsciFMRatioMode { Ratio, Free };
-enum class FFOsciDSFMode { Overtones, Bandwidth };
+
+enum class FFOsciWaveDSFMode {
+  Off,
+  Over, BW };
 
 enum class FFOsciWaveHSMode {
   Off,
@@ -37,6 +40,6 @@ inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperat
 enum class FFOsciParam { 
   Type, Gain, Coarse, Fine,
   UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,
-  WaveBasicMode, WaveBasicGain, WavePWMode, WavePWGain, WavePWPW, WaveHSMode, WaveHSGain, WaveHSSync,
-  DSFMode, DSFOvertones, DSFBandwidth, DSFDistance, DSFDecay,
+  WaveBasicMode, WaveBasicGain, WavePWMode, WavePWGain, WavePWPW, 
+  WaveHSMode, WaveHSGain, WaveHSSync, WaveDSFMode, WaveDSFOver, WaveDSFBW, WaveDSFDistance, WaveDSFDecay,
   FMExp, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, Count };

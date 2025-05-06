@@ -1060,10 +1060,11 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
   auto const& uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
   auto const& uniRandomNorm = params.block.uniRandom[0].Voice()[voice];
-  auto const& dsfModeNorm = params.block.dsfMode[0].Voice()[voice];
-  auto const& dsfDistanceNorm = params.block.dsfDistance[0].Voice()[voice];
-  auto const& dsfOvertonesNorm = params.block.dsfOvertones[0].Voice()[voice];
-  auto const& dsfBandwidthNorm = params.block.dsfBandwidth[0].Voice()[voice];
+  auto const& waveHSModeNorm = params.block.waveHSMode[0].Voice()[voice];
+  auto const& waveDSFBWNorm = params.block.waveDSFBW[0].Voice()[voice];
+  auto const& waveDSFModeNorm = params.block.waveDSFMode[0].Voice()[voice];
+  auto const& waveDSFOverNorm = params.block.waveDSFOver[0].Voice()[voice];
+  auto const& waveDSFDistanceNorm = params.block.waveDSFDistance[0].Voice()[voice];
   auto const& fmExpNorm = params.block.fmExp[0].Voice()[voice];
   auto const& fmRatioModeNorm = params.block.fmRatioMode[0].Voice()[voice];
   auto const& fmRatioRatio12Norm = params.block.fmRatioRatio[0].Voice()[voice];
@@ -1080,17 +1081,16 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _uniCount = topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm);
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, uniRandomNorm);
-  _dsfMode = topo.NormalizedToListFast<FFOsciDSFMode>(FFOsciParam::DSFMode, dsfModeNorm);
-  _dsfBandwidthPlain = topo.NormalizedToLog2Fast(FFOsciParam::DSFBandwidth, dsfBandwidthNorm);
-  _dsfDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFDistance, dsfDistanceNorm));
-  _dsfOvertones = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::DSFOvertones, dsfOvertonesNorm));
+  _waveHSMode = topo.NormalizedToListFast<FFOsciWaveHSMode>(FFOsciParam::WaveHSMode, waveHSModeNorm);
+  _waveDSFBWPlain = topo.NormalizedToLog2Fast(FFOsciParam::WaveDSFBW, waveDSFBWNorm);
+  _waveDSFMode = topo.NormalizedToListFast<FFOsciWaveDSFMode>(FFOsciParam::WaveDSFMode, waveDSFModeNorm);
+  _waveDSFOver = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFOver, waveDSFOverNorm));
+  _waveDSFDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFDistance, waveDSFDistanceNorm));
   _fmExp = topo.NormalizedToBoolFast(FFOsciParam::FMExp, fmExpNorm);
   _fmRatioMode = topo.NormalizedToListFast<FFOsciFMRatioMode>(FFOsciParam::FMRatioMode, fmRatioModeNorm);
   _fmRatioRatio12 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio12Norm));
   _fmRatioRatio23 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio23Norm));
 
-  auto const& waveHSModeNorm = params.block.waveHSMode[0].Voice()[voice];
-  _waveHSMode = topo.NormalizedToListFast<FFOsciWaveHSMode>(FFOsciParam::WaveHSMode, waveHSModeNorm);
   for (int i = 0; i < FFOsciWavePWCount; i++)
   {
     auto const& wavePWModeNorm = params.block.wavePWMode[i].Voice()[voice];
@@ -1176,7 +1176,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
-  auto const& dsfDecayNorm = procParams.acc.dsfDecay[0].Voice()[voice];
+  auto const& waveHSGainNorm = procParams.acc.waveHSGain[0].Voice()[voice];
+  auto const& waveHSSyncNorm = procParams.acc.waveHSSync[0].Voice()[voice];
+  auto const& waveDSFDecayNorm = procParams.acc.waveDSFDecay[0].Voice()[voice];
 
   FBSIMDArray<float, FFOsciFixedBlockOversamples> gainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
@@ -1184,9 +1186,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
-  FBSIMDArray<float, FFOsciFixedBlockOversamples> dsfDecayPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> waveHSGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> waveHSSyncPlain;
+  FBSIMDArray<float, FFOsciFixedBlockOversamples> waveDSFDecayPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWPWPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWGainPlain;
   FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveBasicCount> waveBasicGainPlain;
@@ -1225,15 +1227,13 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
       if (_waveHSMode != FFOsciWaveHSMode::Off)
       {
-        auto const& waveHSGainNorm = procParams.acc.waveHSGain[0].Voice()[voice];
-        auto const& waveHSSyncNorm = procParams.acc.waveHSSync[0].Voice()[voice];
         waveHSGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSGain, waveHSGainNorm, s));
         waveHSSyncPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSSync, waveHSSyncNorm, s));
       }
-    }
-    else if (_type == FFOsciType::DSF)
-    {
-      dsfDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::DSFDecay, dsfDecayNorm, s));
+      if (_waveDSFMode != FFOsciWaveDSFMode::Off)
+      {
+        waveDSFDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::WaveDSFDecay, waveDSFDecayNorm, s));
+      }
     }
     else if (_type == FFOsciType::FM)
     {
@@ -1285,10 +1285,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         waveHSGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
         waveHSSyncPlain.UpsampleStretch<FFOsciOversamplingTimes>();
       }
-    }
-    else if (_type == FFOsciType::DSF)
-    {
-      dsfDecayPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      if (_waveDSFMode != FFOsciWaveDSFMode::Off)
+      {
+        waveDSFDecayPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+      }
     }
     else if (_type == FFOsciType::FM)
     {
@@ -1354,18 +1354,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             auto uniSyncFreqRatio = uniSyncFreq / uniFreq;
             thisUniOutput += GenerateWaveHS(_waveHSMode, uniPhase, uniIncr, uniSyncFreqRatio) * waveHSGain;
           }
-        }
-        else if (_type == FFOsciType::DSF)
-        {
-          auto dsfDecay = dsfDecayPlain.Load(s);
-          auto dsfDistFreq = _dsfDistance * uniFreq;
-          auto dsfMaxOvertones = xsimd::max(FBSIMDVector<float>(0.0f), (sampleRate * 0.5f - uniFreq) / dsfDistFreq);
-          if (_dsfMode == FFOsciDSFMode::Overtones)
-            thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfOvertones);
-          else if (_dsfMode == FFOsciDSFMode::Bandwidth)
-            thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, dsfDecay, dsfDistFreq, dsfMaxOvertones, _dsfBandwidthPlain);
-          else 
-            assert(false);
+          if (_waveDSFMode != FFOsciWaveDSFMode::Off)
+          {
+            auto waveDSFDecay = waveDSFDecayPlain.Load(s);
+            auto distFreq = _waveDSFDistance * uniFreq;
+            auto maxOvertones = xsimd::max(FBSIMDVector<float>(0.0f), (sampleRate * 0.5f - uniFreq) / distFreq);
+            if (_waveDSFMode == FFOsciWaveDSFMode::Over)
+              thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFOver);
+            else if (_waveDSFMode == FFOsciWaveDSFMode::BW)
+              thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFBWPlain);
+            else
+              assert(false);
+          }
         }
         else
         {
@@ -1529,11 +1529,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.uniBlend[0][voice] = uniBlendNorm.Last();
   exchangeParams.acc.uniDetune[0][voice] = uniDetuneNorm.Last();
   exchangeParams.acc.uniSpread[0][voice] = uniSpreadNorm.Last();
-  exchangeParams.acc.dsfDecay[0][voice] = dsfDecayNorm.Last();
-  auto const& waveHSGainNorm = procParams.acc.waveHSGain[0].Voice()[voice];
-  auto const& waveHSSyncNorm = procParams.acc.waveHSSync[0].Voice()[voice];
   exchangeParams.acc.waveHSGain[0][voice] = waveHSGainNorm.Last();
   exchangeParams.acc.waveHSSync[0][voice] = waveHSSyncNorm.Last();
+  exchangeParams.acc.waveDSFDecay[0][voice] = waveDSFDecayNorm.Last();
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
   {
     auto const& waveBasicGainNorm = procParams.acc.waveBasicGain[i].Voice()[voice];

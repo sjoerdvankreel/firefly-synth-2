@@ -96,6 +96,18 @@ MakeSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     auto sync = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::WaveHSSync, 0 });
     grid->Add(0, 8, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, sync, Slider::SliderStyle::LinearHorizontal));
   }
+  {
+    auto mode = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::WaveDSFMode, 0 });
+    grid->Add(1, 6, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
+    auto over = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::WaveDSFOver, 0 });
+    grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, over, Slider::SliderStyle::RotaryVerticalDrag));
+    auto bw = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::WaveDSFBW, 0 });
+    grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, bw, Slider::SliderStyle::RotaryVerticalDrag));
+    auto distance = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::WaveDSFDistance, 0 });
+    grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distance, Slider::SliderStyle::RotaryVerticalDrag));
+    auto decay = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::WaveDSFDecay, 0 });
+    grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decay, Slider::SliderStyle::RotaryVerticalDrag));
+  }
 
   grid->MarkSection({ 0, 0, 2, 10 });
 
@@ -103,33 +115,6 @@ MakeSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Off || vs[0] == (int)FFOsciType::Wave; });
-  return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
-}
-
-static Component*
-MakeSectionDSF(FBPlugGUI* plugGUI, int moduleSlot)
-{
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1});
-  auto dsfMode = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFMode, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dsfMode));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, dsfMode));
-  auto dsfOvertones = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFOvertones, 0 });
-  grid->Add(1, 0, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dsfOvertones, Slider::SliderStyle::LinearHorizontal));
-  auto dsfBandwidth = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFBandwidth, 0 });
-  grid->Add(1, 0, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dsfBandwidth, Slider::SliderStyle::LinearHorizontal));
-  auto dsfDistance = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFDistance, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dsfDistance));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dsfDistance, Slider::SliderStyle::LinearHorizontal));
-  auto dsfDecay = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::DSFDecay, 0 });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dsfDecay));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dsfDecay, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ 0, 0, 2, 4 });
-
-  // TODO helper function
-  FBParamsDependencies dependencies = {};
-  FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
-  dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::DSF; });
   return plugGUI->StoreComponent<FBParamsDependentComponent>(plugGUI, grid, 0, indices, dependencies);
 }
 
@@ -195,7 +180,6 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeSectionUni(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeSectionWave(plugGUI, moduleSlot));
-  grid->Add(0, 2, MakeSectionDSF(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeSectionFM(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }

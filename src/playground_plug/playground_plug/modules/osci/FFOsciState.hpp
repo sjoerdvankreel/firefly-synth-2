@@ -41,10 +41,10 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   std::array<TVoiceBlock, 1> waveHSMode = {};
   std::array<TVoiceBlock, FFOsciWavePWCount> wavePWMode = {};
   std::array<TVoiceBlock, FFOsciWaveBasicCount> waveBasicMode = {};
-  std::array<TVoiceBlock, 1> dsfMode = {};
-  std::array<TVoiceBlock, 1> dsfDistance = {};
-  std::array<TVoiceBlock, 1> dsfOvertones = {};
-  std::array<TVoiceBlock, 1> dsfBandwidth = {};
+  std::array<TVoiceBlock, 1> waveDSFBW = {};
+  std::array<TVoiceBlock, 1> waveDSFMode = {};
+  std::array<TVoiceBlock, 1> waveDSFOver = {};
+  std::array<TVoiceBlock, 1> waveDSFDistance = {};
   std::array<TVoiceBlock, 1> fmExp = {};
   std::array<TVoiceBlock, 1> fmRatioMode = {};
   std::array<TVoiceBlock, FFOsciFMOperatorCount - 1> fmRatioRatio = {};
@@ -63,9 +63,9 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   std::array<TVoiceAcc, 1> uniBlend = {};
   std::array<TVoiceAcc, 1> uniDetune = {};
   std::array<TVoiceAcc, 1> uniSpread = {};
-  std::array<TVoiceAcc, 1> dsfDecay = {};
   std::array<TVoiceAcc, 1> waveHSGain = {};
   std::array<TVoiceAcc, 1> waveHSSync = {};
+  std::array<TVoiceAcc, 1> waveDSFDecay = {};
   std::array<TVoiceAcc, FFOsciWavePWCount> wavePWPW = {};
   std::array<TVoiceAcc, FFOsciWavePWCount> wavePWGain = {};
   std::array<TVoiceAcc, FFOsciWaveBasicCount> waveBasicGain = {};
