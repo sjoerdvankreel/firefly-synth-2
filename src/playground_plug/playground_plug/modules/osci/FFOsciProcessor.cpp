@@ -990,7 +990,7 @@ GenerateWaveHS(
 }
 
 static inline FBSIMDVector<float>
-GenerateDSF(
+GenerateDSFCheck(
   FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec, 
   FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec, 
   FBSIMDVector<float> overtoneVec)
@@ -1008,6 +1008,17 @@ GenerateDSF(
   auto y = 1.0f + w * w - 2.0f * w * xsimd::cos(v);
   auto scale = (1.0f - wPowNp1) / (1.0f - w);
   return x * scaleFactor / (y * scale);
+}
+
+static inline FBSIMDVector<float>
+GenerateDSF(
+  FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec,
+  FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec,
+  FBSIMDVector<float> overtoneVec)
+{
+  auto result = GenerateDSFCheck(phaseVec, freqVec, decayVec, distFreqVec, overtoneVec);
+  FBSIMDVectorNaNCheck(result);
+  return result;
 }
 
 static inline FBSIMDVector<float>
