@@ -191,7 +191,7 @@ FFMakeEnvTopo()
 
   auto& delayBars = result->params[(int)FFEnvParam::DelayBars];
   delayBars.acc = false;
-  delayBars.defaultText = "0";
+  delayBars.defaultText = "Off";
   delayBars.display = "Delay";
   delayBars.name = "Delay Bars";
   delayBars.slotCount = 1;
@@ -223,7 +223,7 @@ FFMakeEnvTopo()
 
   auto& holdBars = result->params[(int)FFEnvParam::HoldBars];
   holdBars.acc = false;
-  holdBars.defaultText = "0";
+  holdBars.defaultText = "Off";
   holdBars.display = "Hold";
   holdBars.name = "Hold Bars";
   holdBars.slotCount = 1;
@@ -271,7 +271,7 @@ FFMakeEnvTopo()
 
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.acc = false;
-  smoothBars.defaultText = "0";
+  smoothBars.defaultText = "Off";
   smoothBars.display = "Smooth";
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;

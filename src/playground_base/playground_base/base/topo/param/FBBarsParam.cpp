@@ -73,7 +73,7 @@ FBBarsParamNonRealTime::MakePopupMenu() const
     subMenu.addItem(i + 1, PlainToText(false, i));
     if (i == items.size() - 1 || items[i].num != items[i + 1].num)
     {
-      result.addSubMenu(std::to_string(items[i].num), subMenu);
+      result.addSubMenu(items[i].num == 0? "Off": std::to_string(items[i].num), subMenu);
       subMenu = {};
     }
   }

@@ -4,7 +4,7 @@ std::string
 FBBarsItem::ToString() const
 {
   if (num == 0)
-    return "0";
+    return "Off";
   return std::to_string(num) + "/" + std::to_string(denom);
 }
 
