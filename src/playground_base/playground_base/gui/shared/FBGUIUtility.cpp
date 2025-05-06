@@ -13,6 +13,6 @@ FBGetStringWidthCached(std::string const& text)
   int& result = cache[text];
   if (result != 0)
     return result;
-  result = static_cast<int>(std::ceil(TextLayout::getStringWidth(Font(12.0f), text)));
+  result = static_cast<int>(std::ceil(TextLayout::getStringWidth(Font(15.0f), text)));
   return result;
 }

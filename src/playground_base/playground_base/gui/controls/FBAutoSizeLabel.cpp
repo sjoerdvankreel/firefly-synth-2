@@ -9,6 +9,7 @@ Label(),
 IFBHorizontalAutoSize(),
 _textWidth(FBGetStringWidthCached(text))
 {
+  setBorderSize({ 1, 2, 1, 2 });
   setText(text, dontSendNotification);
 }
 
