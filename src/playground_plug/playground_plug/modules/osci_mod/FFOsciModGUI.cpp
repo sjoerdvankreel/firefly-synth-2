@@ -4,13 +4,14 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
+#include <playground_base/gui/components/FBGridComponent.hpp>
+#include <playground_base/gui/components/FBSectionComponent.hpp>
+#include <playground_base/gui/components/FBModuleTabComponent.hpp>
 #include <playground_base/gui/controls/FBParamLabel.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/controls/FBParamComboBox.hpp>
 #include <playground_base/gui/controls/FBParamToggleButton.hpp>
-#include <playground_base/gui/components/FBGridComponent.hpp>
-#include <playground_base/gui/components/FBSectionComponent.hpp>
-#include <playground_base/gui/components/FBModuleTabComponent.hpp>
+#include <playground_base/gui/controls/FBAutoSizeMultiLineLabel.hpp>
 
 using namespace juce;
 
@@ -43,7 +44,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
-    grid->Add(0, 3 + i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(FFOsciModFormatSlot(i)));
+    grid->Add(0, 3 + i * 3, 2, 1, plugGUI->StoreComponent<FBAutoSizeMultiLineLabel>(FFOsciModFormatSlotVertical(i)));
     auto amMode = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::AMMode, i });
     grid->Add(0, 3 + i * 3 + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, amMode));
     auto amMix = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::AMMix, i });
