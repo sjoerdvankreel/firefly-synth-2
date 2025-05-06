@@ -20,8 +20,8 @@ MakeTopoGUI()
 {
   FBStaticTopoGUI result = {};
   result.plugWidth = 1040;
-  result.aspectRatioWidth = 13;
-  result.aspectRatioHeight = 6;
+  result.aspectRatioWidth = 26;
+  result.aspectRatioHeight = 11;
   result.factory = [](FBHostGUIContext* hostContext) {
     return std::make_unique<FFPlugGUI>(hostContext); };
   return result;
