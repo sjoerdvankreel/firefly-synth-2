@@ -1,7 +1,3 @@
-drop the tooltips ?
-hardsync -- neh
-set exact value
-move the oversampling switch
 store the selected tab
 fix up the track graph or ditch it
 
