@@ -18,6 +18,12 @@ public juce::LookAndFeel_V4
     float exchangeValue);
 
 public:
+  juce::BorderSize<int> getLabelBorderSize(
+    juce::Label&) override;
+
+  void positionComboBoxText(
+    juce::ComboBox&, juce::Label&) override;
+
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
 

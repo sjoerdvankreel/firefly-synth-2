@@ -52,6 +52,21 @@ FBGUILookAndFeel::DrawRotarySliderExchangeThumb(
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
+BorderSize<int> 
+FBGUILookAndFeel::getLabelBorderSize(
+  Label&)
+{
+  return { 1, 2, 1, 2 };
+}
+
+void 
+FBGUILookAndFeel::positionComboBoxText(
+  ComboBox& b, Label& l)
+{
+  l.setBounds(1, 1, l.getWidth() - 2, l.getHeight() - 2);
+  l.setFont(getComboBoxFont(b));
+}
+
 void 
 FBGUILookAndFeel::drawLabel(
   Graphics& g, Label& label)
