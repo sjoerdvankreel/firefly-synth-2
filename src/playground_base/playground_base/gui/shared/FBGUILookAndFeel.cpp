@@ -65,7 +65,7 @@ FBGUILookAndFeel::positionComboBoxText(
 {
   l.setFont(getComboBoxFont(b));
   l.setBorderSize(getLabelBorderSize(l));
-  l.setBounds(2, 1, b.getWidth() - 4, b.getHeight() - 2);
+  l.setBounds(3, 1, b.getWidth() - 6, b.getHeight() - 2);
 }
 
 void 
