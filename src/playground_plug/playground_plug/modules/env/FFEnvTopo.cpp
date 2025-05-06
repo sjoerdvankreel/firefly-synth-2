@@ -84,7 +84,7 @@ FFMakeEnvTopo()
   auto& delayTime = result->params[(int)FFEnvParam::DelayTime];
   delayTime.acc = false;
   delayTime.defaultText = "0";
-  delayTime.display = "Dly";
+  delayTime.display = "Delay";
   delayTime.name = "Delay Time";
   delayTime.slotCount = 1;
   delayTime.unit = "Sec";
@@ -102,7 +102,7 @@ FFMakeEnvTopo()
   auto& attackTime = result->params[(int)FFEnvParam::AttackTime];
   attackTime.acc = false;
   attackTime.defaultText = "0.03";
-  attackTime.display = "Att";
+  attackTime.display = "Attack";
   attackTime.name = "Attack Time";
   attackTime.slotCount = 1;
   attackTime.unit = "Sec";
@@ -120,7 +120,7 @@ FFMakeEnvTopo()
   auto& holdTime = result->params[(int)FFEnvParam::HoldTime];
   holdTime.acc = false;
   holdTime.defaultText = "0";
-  holdTime.display = "Hld";
+  holdTime.display = "Hold";
   holdTime.name = "Hold Time";
   holdTime.slotCount = 1;
   holdTime.unit = "Sec";
@@ -138,7 +138,7 @@ FFMakeEnvTopo()
   auto& decayTime = result->params[(int)FFEnvParam::DecayTime];
   decayTime.acc = false;
   decayTime.defaultText = "0.1";
-  decayTime.display = "Dcy";
+  decayTime.display = "Decay";
   decayTime.name = "Decay Time";
   decayTime.slotCount = 1;
   decayTime.unit = "Sec";
@@ -156,7 +156,7 @@ FFMakeEnvTopo()
   auto& releaseTime = result->params[(int)FFEnvParam::ReleaseTime];
   releaseTime.acc = false;
   releaseTime.defaultText = "0.2";
-  releaseTime.display = "Rls";
+  releaseTime.display = "Release";
   releaseTime.name = "Release Time";
   releaseTime.slotCount = 1;
   releaseTime.unit = "Sec";
@@ -174,7 +174,7 @@ FFMakeEnvTopo()
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
   smoothTime.acc = false;
   smoothTime.defaultText = "0";
-  smoothTime.display = "Smth";
+  smoothTime.display = "Smooth";
   smoothTime.name = "Smooth Time";
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
@@ -192,7 +192,7 @@ FFMakeEnvTopo()
   auto& delayBars = result->params[(int)FFEnvParam::DelayBars];
   delayBars.acc = false;
   delayBars.defaultText = "0";
-  delayBars.display = "Dly";
+  delayBars.display = "Delay";
   delayBars.name = "Delay Bars";
   delayBars.slotCount = 1;
   delayBars.unit = "Bars";
@@ -208,7 +208,7 @@ FFMakeEnvTopo()
   auto& attackBars = result->params[(int)FFEnvParam::AttackBars];
   attackBars.acc = false;
   attackBars.defaultText = "1/64";
-  attackBars.display = "Att";
+  attackBars.display = "Attack";
   attackBars.name = "Attack Bars";
   attackBars.slotCount = 1;
   attackBars.unit = "Bars";
@@ -224,7 +224,7 @@ FFMakeEnvTopo()
   auto& holdBars = result->params[(int)FFEnvParam::HoldBars];
   holdBars.acc = false;
   holdBars.defaultText = "0";
-  holdBars.display = "Hld";
+  holdBars.display = "Hold";
   holdBars.name = "Hold Bars";
   holdBars.slotCount = 1;
   holdBars.unit = "Bars";
@@ -240,7 +240,7 @@ FFMakeEnvTopo()
   auto& decayBars = result->params[(int)FFEnvParam::DecayBars];
   decayBars.acc = false;
   decayBars.defaultText = "1/32";
-  decayBars.display = "Dcy";
+  decayBars.display = "Decay";
   decayBars.name = "Decay Bars";
   decayBars.slotCount = 1;
   decayBars.unit = "Bars";
@@ -256,7 +256,7 @@ FFMakeEnvTopo()
   auto& releaseBars = result->params[(int)FFEnvParam::ReleaseBars];
   releaseBars.acc = false;
   releaseBars.defaultText = "1/16";
-  releaseBars.display = "Rls";
+  releaseBars.display = "Release";
   releaseBars.name = "Release Bars";
   releaseBars.slotCount = 1;
   releaseBars.unit = "Bars";
@@ -272,7 +272,7 @@ FFMakeEnvTopo()
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.acc = false;
   smoothBars.defaultText = "0";
-  smoothBars.display = "Smth";
+  smoothBars.display = "Smooth";
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
@@ -288,7 +288,6 @@ FFMakeEnvTopo()
   auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
   attackSlope.acc = true;
   attackSlope.defaultText = "50";
-  attackSlope.display = "ASlp";
   attackSlope.name = "Attack Slope";
   attackSlope.slotCount = 1;
   attackSlope.unit = "%";
@@ -303,7 +302,6 @@ FFMakeEnvTopo()
   auto& decaySlope = result->params[(int)FFEnvParam::DecaySlope];
   decaySlope.acc = true;
   decaySlope.defaultText = "50";
-  decaySlope.display = "DSlp";
   decaySlope.name = "Decay Slope";
   decaySlope.slotCount = 1;
   decaySlope.unit = "%";
@@ -318,7 +316,6 @@ FFMakeEnvTopo()
   auto& releaseSlope = result->params[(int)FFEnvParam::ReleaseSlope];
   releaseSlope.acc = true;
   releaseSlope.defaultText = "50";
-  releaseSlope.display = "RSlp";
   releaseSlope.name = "Release Slope";
   releaseSlope.slotCount = 1;
   releaseSlope.unit = "%";
@@ -333,8 +330,7 @@ FFMakeEnvTopo()
   auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
   sustainLevel.acc = true;
   sustainLevel.defaultText = "50";
-  sustainLevel.display = "Stn";
-  sustainLevel.name = "Sustain Level";
+  sustainLevel.name = "Sustain";
   sustainLevel.slotCount = 1;
   sustainLevel.unit = "%";
   sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
