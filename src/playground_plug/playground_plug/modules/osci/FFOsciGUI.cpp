@@ -29,12 +29,11 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
   auto coarse = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Coarse, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, coarse));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, coarse, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, coarse, Slider::SliderStyle::RotaryVerticalDrag));
   auto fine = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Fine, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fine));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fine, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 1, 4 });
-  grid->MarkSection({ 1, 0, 1, 4 });
+  grid->MarkSection({ 0, 0, 2, 4 });
   return grid;
 }
 
