@@ -270,7 +270,7 @@ FFMakeOsciTopo()
   wavePWMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
   wavePWMode.type = FBParamType::List;
   wavePWMode.List().items = {
-    { "{00880EBC-8E91-44C6-ADD4-4D2BB9B4E945}", "Off" },
+    { "{BAAB3335-9DF4-4D97-957A-6FBF47D5089E}", "Off" },
     { "{DFD55382-FBA0-4080-B179-98385452528B}", "Sqr", "Sqr" },
     { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "Rect", "Rect" },
     { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "TriPls", "Tri To Sqr" },

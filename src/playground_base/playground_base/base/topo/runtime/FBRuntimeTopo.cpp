@@ -64,7 +64,25 @@ static_(topo),
 modules(MakeRuntimeModules(topo)),
 audio(FBRuntimeParamsTopo<FBRuntimeParam>(modules)),
 gui(FBRuntimeParamsTopo<FBRuntimeGUIParam>(modules)),
-moduleTopoToRuntime(MakeModuleTopoToRuntime(modules)) {}
+moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
+{
+#ifndef NDEBUG
+  std::set<std::string> allIds = {};
+  for (int m = 0; m < topo.modules.size(); m++)
+  {
+    auto const& module = topo.modules[m];
+    assert(allIds.insert(module.id).second);
+    for (int p = 0; p < module.params.size(); p++)
+    {
+      auto const& param = topo.modules[m].params[p];
+      assert(allIds.insert(param.id).second);
+      if (param.type == FBParamType::List)
+        for (int i = 0; i < param.List().items.size(); i++)
+          assert(allIds.insert(param.List().items[i].id).second);
+    }
+  }
+#endif
+}
 
 FBRuntimeModule const* 
 FBRuntimeTopo::ModuleAtTopo(
