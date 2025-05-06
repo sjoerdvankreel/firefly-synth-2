@@ -18,19 +18,22 @@ public juce::LookAndFeel_V4
     float exchangeValue);
 
 public:
+  void drawLabel(
+    juce::Graphics&, juce::Label&) override;
+
+  void drawComboBox(juce::Graphics&,
+    int	width, int height, bool	isButtonDown,
+    int	buttonX, int buttonY, int	buttonW, int buttonH,
+    juce::ComboBox&) override;
+
   void drawLinearSlider(
-    juce::Graphics&, 
-    int x, int y, int width, int height, 
-    float sliderPos, float minSliderPos, float maxSliderPos, 
+    juce::Graphics&,
+    int x, int y, int width, int height,
+    float sliderPos, float minSliderPos, float maxSliderPos,
     juce::Slider::SliderStyle, juce::Slider&) override;
 
   void drawRotarySlider(
     juce::Graphics&,
     int x, int y, int width, int height, float sliderPos,
     float rotaryStartAngle, float rotaryEndAngle, juce::Slider&) override;
-
-  void drawComboBox(juce::Graphics&,
-    int	width, int height, bool	isButtonDown,
-    int	buttonX, int buttonY, int	buttonW, int buttonH,
-    juce::ComboBox&) override;
 };

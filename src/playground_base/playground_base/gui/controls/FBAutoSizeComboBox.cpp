@@ -16,11 +16,11 @@ ComboBox()
 int 
 FBAutoSizeComboBox::FixedHeight() const
 {
-  return 35; // TODO
+  return 24;
 }
 
 int
 FBAutoSizeComboBox::FixedWidth(int height) const
 {
-  return _maxTextWidth + 48; // TODO
+  return _maxTextWidth + 18;
 }
