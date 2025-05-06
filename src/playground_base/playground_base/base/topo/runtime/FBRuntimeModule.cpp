@@ -31,7 +31,7 @@ FBRuntimeModule(
   int runtimeIndex, int runtimeParamStart, int runtimeGUIParamStart):
 topoIndices(topoIndices),
 runtimeModuleIndex(runtimeIndex),
-name(FBMakeRuntimeName(staticModule.name, staticModule.slotCount, topoIndices.slot, {})),
+name(FBMakeRuntimeShortName(staticModule.name, staticModule.slotCount, topoIndices.slot, {})),
 params(MakeRuntimeParams<FBRuntimeParam>(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)),
 guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(staticModule, topoIndices, runtimeIndex, runtimeGUIParamStart, staticModule.guiParams))
 {

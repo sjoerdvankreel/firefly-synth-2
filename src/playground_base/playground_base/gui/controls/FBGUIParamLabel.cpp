@@ -5,7 +5,7 @@ using namespace juce;
 
 FBGUIParamLabel::
 FBGUIParamLabel(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-FBAutoSizeLabel(param->shortName),
+FBAutoSizeLabel(param->displayName),
 FBGUIParamComponent(plugGUI, param) {}
 
 void
