@@ -1,4 +1,3 @@
-#include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -31,6 +30,6 @@ FBGetStringWidthCached(std::string const& text)
   int& result = cache[text];
   if (result != 0)
     return result;
-  result = static_cast<int>(std::ceil(TextLayout::getStringWidth(Font(FBGUIFontSize), text)));
+  result = static_cast<int>(std::ceil(TextLayout::getStringWidth(Font(15.0f), text)));
   return result;
 }
