@@ -65,7 +65,7 @@ FBGUILookAndFeel::positionComboBoxText(
 {
   l.setFont(getComboBoxFont(b));
   l.setBorderSize(getLabelBorderSize(l));
-  l.setBounds(1, 1, b.getWidth() - 2, b.getHeight() - 2);
+  l.setBounds(2, 1, b.getWidth() - 4, b.getHeight() - 2);
 }
 
 void 
@@ -90,7 +90,7 @@ FBGUILookAndFeel::drawComboBox(Graphics& g,
   int	buttonX, int buttonY, int	buttonW, int buttonH, ComboBox& box)
 {
   auto cornerSize = 3.0f;
-  Rectangle<int> boxBounds(0, 1, width, height - 2);
+  Rectangle<int> boxBounds(2, 1, width - 4, height - 2);
 
   g.setColour(box.findColour(ComboBox::backgroundColourId));
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
