@@ -116,8 +116,8 @@ FFMakeOsciTopo()
   auto& uniCount = result->params[(int)FFOsciParam::UniCount];
   uniCount.acc = false;
   uniCount.defaultText = "1";
-  uniCount.name = "Unison";
-  uniCount.tooltip = "Unison Count";
+  uniCount.display = "Unison";
+  uniCount.name = "Unison Count";
   uniCount.slotCount = 1;
   uniCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
   uniCount.type = FBParamType::Discrete;
@@ -131,8 +131,8 @@ FFMakeOsciTopo()
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
   uniOffset.acc = false;
   uniOffset.defaultText = "50";
-  uniOffset.name = "Offset";
-  uniOffset.tooltip = "Unison Offset";
+  uniOffset.display = "Offset";
+  uniOffset.name = "Unison Offset";
   uniOffset.slotCount = 1;
   uniOffset.unit = "%";
   uniOffset.id = "{6F5754E1-BDF4-4685-98FC-8C613128EE8D}";
@@ -146,8 +146,8 @@ FFMakeOsciTopo()
   auto& uniRandom = result->params[(int)FFOsciParam::UniRandom];
   uniRandom.acc = false;
   uniRandom.defaultText = "50";
-  uniRandom.name = "Random";
-  uniRandom.tooltip = "Unison Random";
+  uniRandom.display = "Random";
+  uniRandom.name = "Unison Random";
   uniRandom.slotCount = 1;
   uniRandom.unit = "%";
   uniRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
@@ -161,8 +161,8 @@ FFMakeOsciTopo()
   auto& uniDetune = result->params[(int)FFOsciParam::UniDetune];
   uniDetune.acc = true;
   uniDetune.defaultText = "33";
-  uniDetune.name = "Detune";
-  uniDetune.tooltip = "Unison Detune";
+  uniDetune.display = "Detune";
+  uniDetune.name = "Unison Detune";
   uniDetune.slotCount = 1;
   uniDetune.unit = "%";
   uniDetune.id = "{C73A2DFD-0C6D-47FF-A524-CA14A75DF418}";
@@ -176,8 +176,8 @@ FFMakeOsciTopo()
   auto& uniSpread = result->params[(int)FFOsciParam::UniSpread];
   uniSpread.acc = true;
   uniSpread.defaultText = "50";
-  uniSpread.name = "Spread";
-  uniSpread.tooltip = "Unison Spread";
+  uniSpread.display = "Spread";
+  uniSpread.name = "Unison Spread";
   uniSpread.slotCount = 1;
   uniSpread.unit = "%";
   uniSpread.id = "{9F71BAA5-00A2-408B-8CFC-B70D84A7654E}";
@@ -191,8 +191,8 @@ FFMakeOsciTopo()
   auto& uniBlend = result->params[(int)FFOsciParam::UniBlend];
   uniBlend.acc = true;
   uniBlend.defaultText = "100";
-  uniBlend.name = "Blend";
-  uniBlend.tooltip = "Unison Blend";
+  uniBlend.display = "Blend";
+  uniBlend.name = "Unison Blend";
   uniBlend.slotCount = 1;
   uniBlend.unit = "%";
   uniBlend.id = "{68974AC4-57ED-41E4-9B0F-6DB29E0B6BBB}";
@@ -207,7 +207,6 @@ FFMakeOsciTopo()
   waveBasicMode.acc = false;
   waveBasicMode.defaultText = "Off";
   waveBasicMode.name = "Basic Mode";
-  waveBasicMode.tooltip = "Basic Wave Mode";
   waveBasicMode.slotCount = FFOsciWaveBasicCount;
   waveBasicMode.id = "{296806B7-DEC4-47F5-AEE0-C35B119CF871}";
   waveBasicMode.type = FBParamType::List;
@@ -247,7 +246,6 @@ FFMakeOsciTopo()
   waveBasicGain.acc = true;
   waveBasicGain.defaultText = "100";
   waveBasicGain.name = "Basic Gain";
-  waveBasicGain.tooltip = "Basic Wave Gain";
   waveBasicGain.slotCount = FFOsciWaveBasicCount;
   waveBasicGain.unit = "%";
   waveBasicGain.id = "{9B04E634-D046-4117-A542-7E050F3B5FB5}";
@@ -265,7 +263,6 @@ FFMakeOsciTopo()
   wavePWMode.acc = false;
   wavePWMode.defaultText = "Off";
   wavePWMode.name = "PW Mode";
-  wavePWMode.tooltip = "PW Wave Mode";
   wavePWMode.slotCount = FFOsciWavePWCount;
   wavePWMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
   wavePWMode.type = FBParamType::List;
@@ -288,7 +285,6 @@ FFMakeOsciTopo()
   wavePWGain.acc = true;
   wavePWGain.defaultText = "100";
   wavePWGain.name = "PW Gain";
-  wavePWGain.tooltip = "PW Wave Gain";
   wavePWGain.slotCount = FFOsciWavePWCount;
   wavePWGain.unit = "%";
   wavePWGain.id = "{CB7B0BA4-2182-4EA8-9895-1763A29DD9F0}";
@@ -306,8 +302,7 @@ FFMakeOsciTopo()
   auto& wavePWPW = result->params[(int)FFOsciParam::WavePWPW];
   wavePWPW.acc = true;
   wavePWPW.defaultText = "100";
-  wavePWPW.name = "Wave PW";
-  wavePWPW.tooltip = "PW Wave PW";
+  wavePWPW.name = "PW Pulse Width";
   wavePWPW.slotCount = FFOsciWavePWCount;
   wavePWPW.unit = "%";
   wavePWPW.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
@@ -323,7 +318,6 @@ FFMakeOsciTopo()
   waveHSMode.acc = false;
   waveHSMode.defaultText = "Off";
   waveHSMode.name = "HS Mode";
-  waveHSMode.tooltip = "HS Wave Mode";
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
   waveHSMode.type = FBParamType::List;
@@ -343,7 +337,6 @@ FFMakeOsciTopo()
   waveHSGain.acc = true;
   waveHSGain.defaultText = "100";
   waveHSGain.name = "HS Gain";
-  waveHSGain.tooltip = "HS Wave Gain";
   waveHSGain.slotCount = 1;
   waveHSGain.unit = "%";
   waveHSGain.id = "{7AFF257F-165E-427B-A4BF-9DC4BFE48528}";
@@ -361,8 +354,7 @@ FFMakeOsciTopo()
   auto& waveHSSync = result->params[(int)FFOsciParam::WaveHSSync];
   waveHSSync.acc = true;
   waveHSSync.defaultText = "0";
-  waveHSSync.name = "Sync";
-  waveHSSync.tooltip = "HS Sync";
+  waveHSSync.name = "HS Sync Pitch";
   waveHSSync.slotCount = 1;
   waveHSSync.unit = "Semitones";
   waveHSSync.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
@@ -379,8 +371,7 @@ FFMakeOsciTopo()
   auto& dsfMode = result->params[(int)FFOsciParam::DSFMode];
   dsfMode.acc = false;
   dsfMode.defaultText = "Overtones";
-  dsfMode.name = "Mode";
-  dsfMode.tooltip = "DSF Mode";     
+  dsfMode.name = "DSF Mode";
   dsfMode.slotCount = 1;
   dsfMode.id = "{D66E2800-CFBD-4B4E-B22E-D5D7572FEF6E}";
   dsfMode.type = FBParamType::List;
@@ -396,8 +387,7 @@ FFMakeOsciTopo()
   auto& dsfOvertones = result->params[(int)FFOsciParam::DSFOvertones];
   dsfOvertones.acc = false;
   dsfOvertones.defaultText = "1";
-  dsfOvertones.name = "Overtones";
-  dsfOvertones.tooltip = "DSF Overtones";
+  dsfOvertones.name = "DSF Overtones";
   dsfOvertones.slotCount = 1;
   dsfOvertones.id = "{9A42FADE-5E48-49B8-804B-0C61E17AC3BB}";
   dsfOvertones.type = FBParamType::Discrete;
@@ -412,8 +402,7 @@ FFMakeOsciTopo()
   auto& dsfBandwidth = result->params[(int)FFOsciParam::DSFBandwidth];
   dsfBandwidth.acc = false;
   dsfBandwidth.defaultText = "50";
-  dsfBandwidth.name = "Bandwidth";
-  dsfBandwidth.tooltip = "DSF Bandwidth";
+  dsfBandwidth.name = "DSF Bandwidth";
   dsfBandwidth.slotCount = 1;
   dsfBandwidth.unit = "%";
   dsfBandwidth.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
@@ -428,8 +417,7 @@ FFMakeOsciTopo()
   auto& dsfDistance = result->params[(int)FFOsciParam::DSFDistance];
   dsfDistance.acc = false;
   dsfDistance.defaultText = "1";
-  dsfDistance.name = "Distance";
-  dsfDistance.tooltip = "DSF Distance";
+  dsfDistance.name = "DSF Distance";
   dsfDistance.slotCount = 1;
   dsfDistance.id = "{0D1D4920-A17F-4716-A42E-238DD1E99952}";
   dsfDistance.type = FBParamType::Discrete;
@@ -444,8 +432,7 @@ FFMakeOsciTopo()
   auto& dsfDecay = result->params[(int)FFOsciParam::DSFDecay];
   dsfDecay.acc = true;
   dsfDecay.defaultText = "50";
-  dsfDecay.name = "Decay";
-  dsfDecay.tooltip = "DSF Decay";
+  dsfDecay.name = "DSF Decay";
   dsfDecay.slotCount = 1;
   dsfDecay.unit = "%";
   dsfDecay.id = "{21CE915D-0983-4545-9F6E-8743CAC5EAB7}";
@@ -459,8 +446,8 @@ FFMakeOsciTopo()
   auto& fmExp = result->params[(int)FFOsciParam::FMExp];
   fmExp.acc = false;
   fmExp.defaultText = "Off";
-  fmExp.name = "Exp";
-  fmExp.tooltip = "Exponential";
+  fmExp.display = "Exp";
+  fmExp.name = "Exponential";
   fmExp.slotCount = 1;
   fmExp.id = "{BE60503A-3CE3-422D-8795-C2FCB1C4A3B6}";
   fmExp.type = FBParamType::Boolean;
@@ -473,8 +460,8 @@ FFMakeOsciTopo()
   auto& fmRatioMode = result->params[(int)FFOsciParam::FMRatioMode];
   fmRatioMode.acc = false;
   fmRatioMode.defaultText = "Ratio";
-  fmRatioMode.name = "Ratio";
-  fmRatioMode.tooltip = "FM Ratio";
+  fmRatioMode.name = "FM Ratio Mode";
+  fmRatioMode.display = "Ratio";
   fmRatioMode.slotCount = 1;
   fmRatioMode.id = "{40838341-6882-4BF8-813F-BA5B89B3042F}";
   fmRatioMode.type = FBParamType::List;
@@ -490,8 +477,7 @@ FFMakeOsciTopo()
   auto& fmRatioFree = result->params[(int)FFOsciParam::FMRatioFree];
   fmRatioFree.acc = true;
   fmRatioFree.defaultText = "1";
-  fmRatioFree.name = "Ratio";
-  fmRatioFree.tooltip = "FM Ratio";
+  fmRatioFree.name = "FM Ratio Free";
   fmRatioFree.slotCount = FFOsciFMOperatorCount - 1;
   fmRatioFree.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
   fmRatioFree.type = FBParamType::Log2;
@@ -506,8 +492,7 @@ FFMakeOsciTopo()
   auto& fmRatioRatio = result->params[(int)FFOsciParam::FMRatioRatio];
   fmRatioRatio.acc = false;
   fmRatioRatio.defaultText = "1:1";
-  fmRatioRatio.name = "Ratio";
-  fmRatioRatio.tooltip = "FM Ratio";
+  fmRatioRatio.name = "FM Ratio Ratio";
   fmRatioRatio.slotCount = FFOsciFMOperatorCount - 1;
   fmRatioRatio.id = "{9F79D937-E295-41FC-ACFE-F085E12DFF90}";
   fmRatioRatio.type = FBParamType::Discrete;
@@ -525,8 +510,7 @@ FFMakeOsciTopo()
   auto& fmIndex = result->params[(int)FFOsciParam::FMIndex];
   fmIndex.acc = true;
   fmIndex.defaultText = "0";
-  fmIndex.name = "Index";
-  fmIndex.tooltip = "FM Index";
+  fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciFMMatrixSize;
   fmIndex.id = "{5CEFAD50-CB71-4E79-B3D6-50B004AD7F03}";
   fmIndex.type = FBParamType::Log2;

@@ -175,7 +175,7 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
 {
   auto const& param = HostContext()->Topo()->gui.params[index];
   double normalized = HostContext()->GetGUIParamNormalized(index);
-  std::string result = param.tooltip + ": " + param.static_.NormalizedToTextWithUnit(false, normalized);
+  std::string result = param.shortName + ": " + param.static_.NormalizedToTextWithUnit(false, normalized);
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   return result;
 }
@@ -189,7 +189,7 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   double engineMin = paramActive.active ? paramActive.minValue : normalized;
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
-  auto result = param.tooltip + ": ";
+  auto result = param.shortName + ": ";
   result += param.static_.NormalizedToTextWithUnit(false, normalized);  
   if (!param.static_.IsVoice())
     result += "\r\nEngine: " + param.static_.NormalizedToTextWithUnit(false, engineMin);

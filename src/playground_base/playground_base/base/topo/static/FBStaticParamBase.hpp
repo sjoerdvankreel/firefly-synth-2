@@ -38,7 +38,7 @@ public:
   std::string id = {};
   std::string name = {};
   std::string unit = {};
-  std::string tooltip = {};
+  std::string display = {};
   std::string defaultText = {};
   FBParamType type = (FBParamType)-1;
   FBParamsDependencies dependencies = {};

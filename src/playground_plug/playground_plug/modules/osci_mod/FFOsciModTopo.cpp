@@ -34,8 +34,7 @@ FFMakeOsciModTopo()
 
   auto& oversampling = result->params[(int)FFOsciModParam::Oversampling];
   oversampling.acc = false;
-  oversampling.name = "OverSmp";
-  oversampling.tooltip = "4X Oversampling";
+  oversampling.name = "Oversampling";
   oversampling.defaultText = "Off";
   oversampling.slotCount = 1;
   oversampling.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";
@@ -48,7 +47,6 @@ FFMakeOsciModTopo()
   auto& expoFM = result->params[(int)FFOsciModParam::ExpoFM];
   expoFM.acc = false;
   expoFM.name = "Exp FM";
-  expoFM.tooltip = "Exponential FM";
   expoFM.defaultText = "Off";
   expoFM.slotCount = 1;
   expoFM.id = "{23FC415C-06AD-4ED3-8B29-08724D536096}";

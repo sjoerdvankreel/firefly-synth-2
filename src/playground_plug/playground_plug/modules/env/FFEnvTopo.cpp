@@ -58,7 +58,6 @@ FFMakeEnvTopo()
   auto& sync = result->params[(int)FFEnvParam::Sync];
   sync.acc = false;
   sync.name = "Sync";
-  sync.tooltip = "Tempo Sync";
   sync.slotCount = 1;
   sync.id = "{960C7FDA-5FA4-4719-9827-FCF94FCEEE99}";
   sync.type = FBParamType::Boolean;
@@ -85,8 +84,8 @@ FFMakeEnvTopo()
   auto& delayTime = result->params[(int)FFEnvParam::DelayTime];
   delayTime.acc = false;
   delayTime.defaultText = "0";
-  delayTime.name = "Dly";
-  delayTime.tooltip = "Delay Time";
+  delayTime.display = "Dly";
+  delayTime.name = "Delay Time";
   delayTime.slotCount = 1;
   delayTime.unit = "Sec";
   delayTime.id = "{D6A6CB86-A0D4-48A5-A495-038137E60519}";
@@ -103,8 +102,8 @@ FFMakeEnvTopo()
   auto& attackTime = result->params[(int)FFEnvParam::AttackTime];
   attackTime.acc = false;
   attackTime.defaultText = "0.03";
-  attackTime.name = "Att";
-  attackTime.tooltip = "Attack Time";
+  attackTime.display = "Att";
+  attackTime.name = "Attack Time";
   attackTime.slotCount = 1;
   attackTime.unit = "Sec";
   attackTime.id = "{193134E4-A104-419E-92A1-276E6CE1FA85}";
@@ -121,8 +120,8 @@ FFMakeEnvTopo()
   auto& holdTime = result->params[(int)FFEnvParam::HoldTime];
   holdTime.acc = false;
   holdTime.defaultText = "0";
-  holdTime.name = "Hld";
-  holdTime.tooltip = "Hold Time";
+  holdTime.display = "Hld";
+  holdTime.name = "Hold Time";
   holdTime.slotCount = 1;
   holdTime.unit = "Sec";
   holdTime.id = "{29B5298F-C593-4E78-9D94-0FA1D36434B4}";
@@ -139,8 +138,8 @@ FFMakeEnvTopo()
   auto& decayTime = result->params[(int)FFEnvParam::DecayTime];
   decayTime.acc = false;
   decayTime.defaultText = "0.1";
-  decayTime.name = "Dcy";
-  decayTime.tooltip = "Decay Time";
+  decayTime.display = "Dcy";
+  decayTime.name = "Decay Time";
   decayTime.slotCount = 1;
   decayTime.unit = "Sec";
   decayTime.id = "{DB9B7AB0-9FA2-4D6D-96D8-EA76D31B6F23}";
@@ -157,8 +156,8 @@ FFMakeEnvTopo()
   auto& releaseTime = result->params[(int)FFEnvParam::ReleaseTime];
   releaseTime.acc = false;
   releaseTime.defaultText = "0.2";
-  releaseTime.name = "Rls";
-  releaseTime.tooltip = "Release Time";
+  releaseTime.display = "Rls";
+  releaseTime.name = "Release Time";
   releaseTime.slotCount = 1;
   releaseTime.unit = "Sec";
   releaseTime.id = "{9AD9817D-295C-4911-BEF9-FEB46344BA8D}";
@@ -175,8 +174,8 @@ FFMakeEnvTopo()
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
   smoothTime.acc = false;
   smoothTime.defaultText = "0";
-  smoothTime.name = "Smth";
-  smoothTime.tooltip = "Smoothing Time";
+  smoothTime.display = "Smth";
+  smoothTime.name = "Smooth Time";
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
   smoothTime.id = "{D9B99AFC-8D45-4506-9D85-8978BF9BE317}";
@@ -193,8 +192,8 @@ FFMakeEnvTopo()
   auto& delayBars = result->params[(int)FFEnvParam::DelayBars];
   delayBars.acc = false;
   delayBars.defaultText = "0";
-  delayBars.name = "Dly";
-  delayBars.tooltip = "Delay Bars";
+  delayBars.display = "Dly";
+  delayBars.name = "Delay Bars";
   delayBars.slotCount = 1;
   delayBars.unit = "Bars";
   delayBars.id = "{02BB4557-BFF4-4EBB-81FB-241861C94BDC}";
@@ -209,8 +208,8 @@ FFMakeEnvTopo()
   auto& attackBars = result->params[(int)FFEnvParam::AttackBars];
   attackBars.acc = false;
   attackBars.defaultText = "1/64";
-  attackBars.name = "Att";
-  attackBars.tooltip = "Attack Bars";
+  attackBars.display = "Att";
+  attackBars.name = "Attack Bars";
   attackBars.slotCount = 1;
   attackBars.unit = "Bars";
   attackBars.id = "{F03A5681-CB9A-4E34-B73E-A4EB4EF8A2F4}";
@@ -225,8 +224,8 @@ FFMakeEnvTopo()
   auto& holdBars = result->params[(int)FFEnvParam::HoldBars];
   holdBars.acc = false;
   holdBars.defaultText = "0";
-  holdBars.name = "Hld";
-  holdBars.tooltip = "Hold Bars";
+  holdBars.display = "Hld";
+  holdBars.name = "Hold Bars";
   holdBars.slotCount = 1;
   holdBars.unit = "Bars";
   holdBars.id = "{67B31CCE-5B2D-4DFC-B4E6-A5027BB49E32}";
@@ -241,8 +240,8 @@ FFMakeEnvTopo()
   auto& decayBars = result->params[(int)FFEnvParam::DecayBars];
   decayBars.acc = false;
   decayBars.defaultText = "1/32";
-  decayBars.name = "Dcy";
-  decayBars.tooltip = "Decay Bars";
+  decayBars.display = "Dcy";
+  decayBars.name = "Decay Bars";
   decayBars.slotCount = 1;
   decayBars.unit = "Bars";
   decayBars.id = "{CD5B172C-FFA6-4F35-8AC7-E630B1F0A553}";
@@ -257,8 +256,8 @@ FFMakeEnvTopo()
   auto& releaseBars = result->params[(int)FFEnvParam::ReleaseBars];
   releaseBars.acc = false;
   releaseBars.defaultText = "1/16";
-  releaseBars.name = "Rls";
-  releaseBars.tooltip = "Release Bars";
+  releaseBars.display = "Rls";
+  releaseBars.name = "Release Bars";
   releaseBars.slotCount = 1;
   releaseBars.unit = "Bars";
   releaseBars.id = "{1AFD7B11-2DCA-49F6-BD0A-4D1A4FBFD111}";
@@ -273,8 +272,8 @@ FFMakeEnvTopo()
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.acc = false;
   smoothBars.defaultText = "0";
-  smoothBars.name = "Smth";
-  smoothBars.tooltip = "Smoothing Bars";
+  smoothBars.display = "Smth";
+  smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
   smoothBars.id = "{8D2DEE38-2EA3-4FE3-BB77-D71847FC8666}";
@@ -289,8 +288,8 @@ FFMakeEnvTopo()
   auto& attackSlope = result->params[(int)FFEnvParam::AttackSlope];
   attackSlope.acc = true;
   attackSlope.defaultText = "50";
-  attackSlope.name = "ASlp";
-  attackSlope.tooltip = "Attack Slope";
+  attackSlope.display = "ASlp";
+  attackSlope.name = "Attack Slope";
   attackSlope.slotCount = 1;
   attackSlope.unit = "%";
   attackSlope.id = "{0C77104F-17CC-4256-8D65-FAD17E821758}";
@@ -304,8 +303,8 @@ FFMakeEnvTopo()
   auto& decaySlope = result->params[(int)FFEnvParam::DecaySlope];
   decaySlope.acc = true;
   decaySlope.defaultText = "50";
-  decaySlope.name = "DSlp";
-  decaySlope.tooltip = "Decay Slope";
+  decaySlope.display = "DSlp";
+  decaySlope.name = "Decay Slope";
   decaySlope.slotCount = 1;
   decaySlope.unit = "%";
   decaySlope.id = "{2F01EA4E-2665-4882-923D-FEF63D790F7B}";
@@ -319,8 +318,8 @@ FFMakeEnvTopo()
   auto& releaseSlope = result->params[(int)FFEnvParam::ReleaseSlope];
   releaseSlope.acc = true;
   releaseSlope.defaultText = "50";
-  releaseSlope.name = "RSlp";
-  releaseSlope.tooltip = "Release Slope";
+  releaseSlope.display = "RSlp";
+  releaseSlope.name = "Release Slope";
   releaseSlope.slotCount = 1;
   releaseSlope.unit = "%";
   releaseSlope.id = "{78A38181-41F7-4C0C-8489-F9AD55D6F2D9}";
@@ -334,8 +333,8 @@ FFMakeEnvTopo()
   auto& sustainLevel = result->params[(int)FFEnvParam::SustainLevel];
   sustainLevel.acc = true;
   sustainLevel.defaultText = "50";
-  sustainLevel.name = "Stn";
-  sustainLevel.tooltip = "Sustain Level";
+  sustainLevel.display = "Stn";
+  sustainLevel.name = "Sustain Level";
   sustainLevel.slotCount = 1;
   sustainLevel.unit = "%";
   sustainLevel.id = "{3B686952-A0CE-401D-97BC-20D159ADCF1C}";
@@ -347,8 +346,8 @@ FFMakeEnvTopo()
 
   auto& guiGraphKeyTimePct = result->guiParams[(int)FFEnvGUIParam::GraphKeyTimePct];
   guiGraphKeyTimePct.defaultText = "100";
-  guiGraphKeyTimePct.name = "Key Time";
-  guiGraphKeyTimePct.tooltip = "Key Time % Of DAHD";
+  guiGraphKeyTimePct.display = "Key Time";
+  guiGraphKeyTimePct.name = "Key Time % Of DAHD";
   guiGraphKeyTimePct.slotCount = 1;
   guiGraphKeyTimePct.unit = "%";
   guiGraphKeyTimePct.id = "{7D3F0E5D-1BE3-423D-B586-976EA45D71E0}";
