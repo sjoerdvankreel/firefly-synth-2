@@ -33,4 +33,11 @@ topoIndices(topoIndices),
 runtimeModuleIndex(runtimeIndex),
 name(FBMakeRuntimeName(staticModule.name, staticModule.slotCount, topoIndices.slot, {})),
 params(MakeRuntimeParams<FBRuntimeParam>(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)),
-guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(staticModule, topoIndices, runtimeIndex, runtimeGUIParamStart, staticModule.guiParams)) {}
+guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(staticModule, topoIndices, runtimeIndex, runtimeGUIParamStart, staticModule.guiParams))
+{
+#ifndef NDEBUG
+  std::set<std::string> paramNames = {};
+  for (int p = 0; p < staticModule.params.size(); p++)
+    assert(paramNames.insert(staticModule.params[p].name).second);
+#endif
+}

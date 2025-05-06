@@ -7,4 +7,12 @@ FBRuntimeParam(
   FBParamTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamIndex):
 FBRuntimeParamBase(staticModule, staticParam, topoIndices, runtimeModuleIndex, runtimeParamIndex),
-static_(staticParam) {}
+static_(staticParam)
+{
+#ifndef NDEBUG
+  std::set<std::string> itemNames = {};
+  if(staticParam.type == FBParamType::List)
+    for (int i = 0; i < staticParam.List().items.size(); i++)
+      assert(itemNames.insert(staticParam.List().items[i].text).second);
+#endif
+}

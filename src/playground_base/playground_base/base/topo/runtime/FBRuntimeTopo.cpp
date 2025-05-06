@@ -68,10 +68,12 @@ moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
 {
 #ifndef NDEBUG
   std::set<std::string> allIds = {};
+  std::set<std::string> moduleNames = {};
   for (int m = 0; m < topo.modules.size(); m++)
   {
     auto const& module = topo.modules[m];
     assert(allIds.insert(module.id).second);
+    assert(moduleNames.insert(module.name).second);
     for (int p = 0; p < module.params.size(); p++)
     {
       auto const& param = topo.modules[m].params[p];
