@@ -18,6 +18,21 @@ FFOsciModFormatSlot(int slot)
   }
 }
 
+std::string
+FFOsciModFormatSlotVertical(int slot)
+{
+  switch (slot)
+  {
+  case 0: return "2\r\n^\r\n1";
+  case 1: return "3\r\n^\r\n1";
+  case 2: return "3\r\n^\r\n2";
+  case 3: return "4\r\n^\r\n1";
+  case 4: return "4\r\n^\r\n2";
+  case 5: return "4\r\n^\r\n3";
+  default: assert(false); return "";
+  }
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeOsciModTopo()
 {
