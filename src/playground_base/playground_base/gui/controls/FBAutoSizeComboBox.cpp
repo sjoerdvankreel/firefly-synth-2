@@ -22,5 +22,5 @@ FBAutoSizeComboBox::FixedHeight() const
 int
 FBAutoSizeComboBox::FixedWidth(int height) const
 {
-  return _maxTextWidth + 18;
+  return _maxTextWidth + 12;
 }

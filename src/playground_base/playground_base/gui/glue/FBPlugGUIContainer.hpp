@@ -14,7 +14,6 @@ public juce::Component,
 public FBPlugGUIContext
 {
   std::unique_ptr<FBPlugGUI> _gui;
-  std::unique_ptr<juce::LookAndFeel> _lookAndFeel;
 
 protected:
   void RequestRescale(double combinedScale) override;
