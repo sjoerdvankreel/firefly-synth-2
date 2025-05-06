@@ -29,9 +29,9 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   }
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
-  auto oversampling = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::Oversampling, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversampling));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversampling));
+  auto oversample = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::Oversample, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversample));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversample));
   auto expoFM = topo->audio.ParamAtTopo({ (int)FFModuleType::OsciMod, 0, (int)FFOsciModParam::ExpoFM, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, expoFM));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, expoFM));

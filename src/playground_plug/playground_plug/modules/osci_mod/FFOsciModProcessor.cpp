@@ -13,8 +13,8 @@ FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
   auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
 
-  auto const& oversamplingNorm = procParams.block.oversampling[0].Voice()[voice];
-  _oversampling = topo.NormalizedToBoolFast(FFOsciModParam::Oversampling, oversamplingNorm);
+  auto const& oversampleNorm = procParams.block.oversample[0].Voice()[voice];
+  _oversample = topo.NormalizedToBoolFast(FFOsciModParam::Oversample, oversampleNorm);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto const& fmOnNorm = procParams.block.fmOn[i].Voice()[voice];
@@ -46,10 +46,10 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
       if (_fmOn[i])
         outputFMIndex[i].Store(s, topo.NormalizedToLog2Fast(FFOsciModParam::FMIndex, fmIndexNorm, s));
     }
-    if (_oversampling)
+    if (_oversample)
     {
-      outputAMMix[i].UpsampleStretch<FFOsciOversamplingTimes>();
-      outputFMIndex[i].UpsampleStretch<FFOsciOversamplingTimes>();
+      outputAMMix[i].UpsampleStretch<FFOsciOversampleTimes>();
+      outputFMIndex[i].UpsampleStretch<FFOsciOversampleTimes>();
     }
   }
 

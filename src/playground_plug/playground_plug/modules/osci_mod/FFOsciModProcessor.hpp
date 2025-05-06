@@ -9,7 +9,7 @@ struct FBModuleProcState;
 
 class FFOsciModProcessor final
 {
-  bool _oversampling = {};
+  bool _oversample = {};
   std::array<bool, FFOsciModSlotCount> _fmOn = {};
   std::array<FFOsciModAMMode, FFOsciModSlotCount> _amMode = {};
 

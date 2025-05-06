@@ -20,10 +20,10 @@ class FFOsciProcessor final
 {
   float _key = {};
   FFOsciType _type = {};
+  int _oversampleTimes = {};
   int _uniCount = {};
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
-  int _oversamplingTimes = {};
 
   bool _fmExp = {};
   float _fmRatioRatio12 = {};

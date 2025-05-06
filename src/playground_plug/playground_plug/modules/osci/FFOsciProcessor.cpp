@@ -1034,7 +1034,7 @@ GenerateDSFBandwidth(
 FFOsciProcessor::
 FFOsciProcessor() :
 _oversampler(
-    FFOsciUniMaxCount, FFOsciOversamplingFactor,
+    FFOsciUniMaxCount, FFOsciOversampleFactor,
     Oversampling<float>::filterHalfBandPolyphaseIIR, false, false)
 {
   _oversampler.initProcessing(FBFixedBlockSamples);
@@ -1071,7 +1071,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   auto const& fmRatioRatio23Norm = params.block.fmRatioRatio[1].Voice()[voice];
 
   auto const& modExpoFMNorm = modParams.block.expoFM[0].Voice()[voice];
-  auto const& modOversamplingNorm = modParams.block.oversampling[0].Voice()[voice];
+  auto const& modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
 
   _phaseGen = {};
   _prng = FBParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
@@ -1102,9 +1102,9 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     _waveBasicMode[i] = topo.NormalizedToListFast<FFOsciWaveBasicMode>(FFOsciParam::WaveBasicMode, waveBasicModeNorm);
   }
 
-  bool oversampling = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversampling, modOversamplingNorm);
+  bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
   _modMatrixExpoFM = modTopo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, modExpoFMNorm);
-  _oversamplingTimes = oversampling ? FFOsciOversamplingTimes : 1;
+  _oversampleTimes = oversample ? FFOsciOversampleTimes : 1;
 
   for (int modSlot = modStartSlot; modSlot < modStartSlot + state.moduleSlot; modSlot++)
   {
@@ -1164,8 +1164,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     return 0;
 
   float sampleRate = state.input->sampleRate;
-  float oversampledRate = sampleRate * _oversamplingTimes;
-  int totalSamples = FBFixedBlockSamples * _oversamplingTimes;
+  float oversampledRate = sampleRate * _oversampleTimes;
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
@@ -1261,41 +1261,41 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       assert(false);
     }
   }
-  if (_oversamplingTimes != 1)
+  if (_oversampleTimes != 1)
   {
-    gainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    basePitchPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    baseFreqPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    uniBlendPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    uniDetunePlain.UpsampleStretch<FFOsciOversamplingTimes>();
-    uniSpreadPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+    gainPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    basePitchPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    baseFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    uniBlendPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    uniDetunePlain.UpsampleStretch<FFOsciOversampleTimes>();
+    uniSpreadPlain.UpsampleStretch<FFOsciOversampleTimes>();
     if (_type == FFOsciType::Wave)
     {
       for (int i = 0; i < FFOsciWaveBasicCount; i++)
         if (_waveBasicMode[i] != FFOsciWaveBasicMode::Off)
-          waveBasicGainPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
+          waveBasicGainPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
       for (int i = 0; i < FFOsciWavePWCount; i++)
         if (_wavePWMode[i] != FFOsciWavePWMode::Off)
         {
-          wavePWPWPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
-          wavePWGainPlain[i].UpsampleStretch<FFOsciOversamplingTimes>();
+          wavePWPWPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
+          wavePWGainPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
         }
       if (_waveHSMode != FFOsciWaveHSMode::Off)
       {
-        waveHSGainPlain.UpsampleStretch<FFOsciOversamplingTimes>();
-        waveHSSyncPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+        waveHSGainPlain.UpsampleStretch<FFOsciOversampleTimes>();
+        waveHSSyncPlain.UpsampleStretch<FFOsciOversampleTimes>();
       }
       if (_waveDSFMode != FFOsciWaveDSFMode::Off)
       {
-        waveDSFDecayPlain.UpsampleStretch<FFOsciOversamplingTimes>();
+        waveDSFDecayPlain.UpsampleStretch<FFOsciOversampleTimes>();
       }
     }
     else if (_type == FFOsciType::FM)
     {
       for (int m = 0; m < FFOsciFMMatrixSize; m++)
-        fmIndexPlain[m].UpsampleStretch<FFOsciOversamplingTimes>();
+        fmIndexPlain[m].UpsampleStretch<FFOsciOversampleTimes>();
       for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
-        fmRatioPlain[o].UpsampleStretch<FFOsciOversamplingTimes>();
+        fmRatioPlain[o].UpsampleStretch<FFOsciOversampleTimes>();
     }
     else
     {
@@ -1481,7 +1481,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
       }
 
-  if (_oversamplingTimes == 1)
+  if (_oversampleTimes == 1)
     for (int u = 0; u < _uniCount; u++)
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
         _uniOutputDownsampled[u].Store(s, uniOutputOversampled[u].Load(s));
@@ -1519,7 +1519,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(_oversamplingTimes * FBFixedBlockSamples - 1), state.input->sampleRate);
+  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1), state.input->sampleRate);
   exchangeDSP.positionSamples = _phaseGen.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];

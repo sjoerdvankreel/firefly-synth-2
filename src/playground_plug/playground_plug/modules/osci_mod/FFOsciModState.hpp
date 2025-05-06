@@ -12,9 +12,9 @@
 struct FBStaticModule;
 class FFOsciModProcessor;
 
-inline int constexpr FFOsciOversamplingFactor = 2;
-inline int constexpr FFOsciOversamplingTimes = 1 << FFOsciOversamplingFactor;
-inline int constexpr FFOsciFixedBlockOversamples = FBFixedBlockSamples * FFOsciOversamplingTimes;
+inline int constexpr FFOsciOversampleFactor = 2;
+inline int constexpr FFOsciOversampleTimes = 1 << FFOsciOversampleFactor;
+inline int constexpr FFOsciFixedBlockOversamples = FBFixedBlockSamples * FFOsciOversampleTimes;
 
 class alignas(FBSIMDAlign) FFOsciModDSPState final
 {
@@ -36,7 +36,7 @@ class alignas(alignof(TVoiceBlock)) FFOsciModBlockParamState final
   friend class FFOsciModProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciModTopo();
   std::array<TVoiceBlock, 1> expoFM = {};
-  std::array<TVoiceBlock, 1> oversampling = {};
+  std::array<TVoiceBlock, 1> oversample = {};
   std::array<TVoiceBlock, FFOsciModSlotCount> fmOn = {};
   std::array<TVoiceBlock, FFOsciModSlotCount> amMode = {};
 public:
