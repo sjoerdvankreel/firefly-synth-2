@@ -90,7 +90,7 @@ FBGUILookAndFeel::drawComboBox(Graphics& g,
   int	buttonX, int buttonY, int	buttonW, int buttonH, ComboBox& box)
 {
   auto cornerSize = 3.0f;
-  Rectangle<int> boxBounds(0, 0, width, height);
+  Rectangle<int> boxBounds(0, 1, width, height - 2);
 
   g.setColour(box.findColour(ComboBox::backgroundColourId));
   g.fillRoundedRectangle(boxBounds.toFloat(), cornerSize);
