@@ -213,24 +213,24 @@ FFMakeOsciTopo()
   waveBasicMode.type = FBParamType::List;
   waveBasicMode.List().items = {
     { "{00880EBC-8E91-44C6-ADD4-4D2BB9B4E945}", "Off" },
-    { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin", "Sine" },
-    { "{6A17D1AC-C7EB-46DF-B05B-02F4AB34F402}", "Cos", "Cosine" },
-    { "{0D1AA9D3-4CA5-4B67-BFFD-5D5F2C5B7161}", "Saw", "Saw" },
-    { "{8B420C8F-B2F7-4498-8481-678D3DBD10EF}", "Tri", "Triangle" },
-    { "{CCA18B27-785F-4F33-BCE7-89C27CF9EEC2}", "Rect", "Rect" },
-    { "{C858202B-8FD4-4C53-93D4-AB2FF019068C}", "Ramp", "Ramp" },
-    { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr", "Sin Sqr" },
-    { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr", "Saw Sqr" },
-    { "{AB878F10-8D9A-4C21-AA6D-E18055EAEB9E}", "SinSaw", "Sin Saw" },
-    { "{884C404C-9831-4A36-8669-C0281C334DCF}", "BSSin", "Bipolar Sin^2" },
-    { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HWSin", "Half Rect Sin" },
-    { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin", "Full Rect Sin" },
-    { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin", "Alternating Sin" },
-    { "{555A6AC2-2F65-438B-BAE3-7151136EC983}", "Trap", "Trapezoid" },
-    { "{A3FA17C6-E9F7-4BA6-B791-FF847B3A1B0F}", "SawM1", "Saw No Fundamental" },
-    { "{40DF0782-F181-4956-A665-29BAD08E0D6F}", "SqrM1", "Sqr No Fundamental" },
-    { "{EE5AC911-DB72-4D22-ABD0-EBBE72141394}", "Parabl", "Parabola" },
-    { "{B3BC94E7-226A-483B-B406-C2879EF62560}", "HypTri", "Hyper Tri" }
+    { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin" },
+    { "{6A17D1AC-C7EB-46DF-B05B-02F4AB34F402}", "Cos" },
+    { "{0D1AA9D3-4CA5-4B67-BFFD-5D5F2C5B7161}", "Saw" },
+    { "{8B420C8F-B2F7-4498-8481-678D3DBD10EF}", "Tri" },
+    { "{CCA18B27-785F-4F33-BCE7-89C27CF9EEC2}", "Rect" },
+    { "{C858202B-8FD4-4C53-93D4-AB2FF019068C}", "Ramp" },
+    { "{B559ECEF-AEF2-448D-A2E8-87C76B42C110}", "SinSqr" },
+    { "{67B63472-31C1-4C72-AE37-D377FB342E7C}", "SawSqr" },
+    { "{AB878F10-8D9A-4C21-AA6D-E18055EAEB9E}", "SinSaw" },
+    { "{884C404C-9831-4A36-8669-C0281C334DCF}", "BSSin" },
+    { "{D96284EC-DB70-4C30-9F40-CC9789C10211}", "HWSin" },
+    { "{AA6D107C-A4D6-41D2-AA4F-DA05923B2555}", "FWSin" },
+    { "{9497D99D-5458-4D26-9633-F2A26B987681}", "AltSin" },
+    { "{555A6AC2-2F65-438B-BAE3-7151136EC983}", "Trap" },
+    { "{A3FA17C6-E9F7-4BA6-B791-FF847B3A1B0F}", "SawM1" },
+    { "{40DF0782-F181-4956-A665-29BAD08E0D6F}", "SqrM1" },
+    { "{EE5AC911-DB72-4D22-ABD0-EBBE72141394}", "Parabl" },
+    { "{B3BC94E7-226A-483B-B406-C2879EF62560}", "HypTri" }
   };
   waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::Off] = "Off";
   waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::Sin] = "Classic";
@@ -271,12 +271,12 @@ FFMakeOsciTopo()
   wavePWMode.type = FBParamType::List;
   wavePWMode.List().items = {
     { "{BAAB3335-9DF4-4D97-957A-6FBF47D5089E}", "Off" },
-    { "{DFD55382-FBA0-4080-B179-98385452528B}", "Sqr", "Sqr" },
-    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "Rect", "Rect" },
-    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "TriPls", "Tri To Sqr" },
-    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "TriSaw", "Tri To Saw" },
-    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "TrapTri", "Trap To Tri" },
-    { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "HWSaw", "Half Rect Saw" },
+    { "{DFD55382-FBA0-4080-B179-98385452528B}", "Sqr" },
+    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "Rect" },
+    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "TriPls" },
+    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "TriSaw" },
+    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "TrapTri" },
+    { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "HWSaw" },
   };
   auto selectWavePWMode = [](auto& module) { return &module.block.wavePWMode; };
   wavePWMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWavePWMode);
@@ -329,9 +329,9 @@ FFMakeOsciTopo()
   waveHSMode.type = FBParamType::List;
   waveHSMode.List().items = {
     { "{F68B6202-6C23-4049-B0DD-2565694B1C45}", "Off" },
-    { "{2BBF8E97-0D2A-4F12-B608-47E241A5E125}", "Saw", "Saw" },
-    { "{4B99FF6B-9848-4F4E-8D97-0F0C3BA4F74C}", "Sqr", "Sqr" },
-    { "{C7843450-2A2F-4FD0-A6C9-0B44F67F3170}", "Tri", "Tri" }
+    { "{2BBF8E97-0D2A-4F12-B608-47E241A5E125}", "Saw" },
+    { "{4B99FF6B-9848-4F4E-8D97-0F0C3BA4F74C}", "Sqr" },
+    { "{C7843450-2A2F-4FD0-A6C9-0B44F67F3170}", "Tri" }
   };
   auto selectWaveHSMode = [](auto& module) { return &module.block.waveHSMode; };
   waveHSMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveHSMode);

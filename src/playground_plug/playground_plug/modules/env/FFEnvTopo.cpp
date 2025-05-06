@@ -76,7 +76,7 @@ FFMakeEnvTopo()
   mode.type = FBParamType::List;
   mode.List().items = {
     { "{59EB5AB9-50FC-4958-BABE-A126D65B7948}", "Linear" },
-    { "{0B0F822E-A7D9-40B2-9B0B-7E404656DE3C}", "Exp", "Exponential" } };
+    { "{0B0F822E-A7D9-40B2-9B0B-7E404656DE3C}", "Exp" } };
   auto selectMode = [](auto& module) { return &module.block.mode; };
   mode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectMode);
   mode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectMode);
