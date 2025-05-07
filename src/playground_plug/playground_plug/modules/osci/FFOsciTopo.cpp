@@ -370,7 +370,7 @@ FFMakeOsciTopo()
 
   auto& waveDSFMode = result->params[(int)FFOsciParam::WaveDSFMode];
   waveDSFMode.acc = false;
-  waveDSFMode.defaultText = "Over";
+  waveDSFMode.defaultText = "Off";
   waveDSFMode.name = "DSF Mode";
   waveDSFMode.slotCount = 1;
   waveDSFMode.id = "{D66E2800-CFBD-4B4E-B22E-D5D7572FEF6E}";
