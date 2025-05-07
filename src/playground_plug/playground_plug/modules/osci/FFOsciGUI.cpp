@@ -119,7 +119,6 @@ MakeSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
 
   grid->MarkSection({ 0, 0, 2, 16 });
 
-  // TODO helper function
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Off || vs[0] == (int)FFOsciType::Wave; });
@@ -176,7 +175,6 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 
   grid->MarkSection({ 0, 0, 2, 10 });
 
-  // TODO helper function
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
   dependencies.visible.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
@@ -186,7 +184,6 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  // TODO move marksection to here
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeSectionUni(plugGUI, moduleSlot));
