@@ -385,6 +385,24 @@ FFMakeOsciTopo()
   waveDSFMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveDSFMode);
   waveDSFMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave; });
 
+  auto& waveDSFGain = result->params[(int)FFOsciParam::WaveDSFGain];
+  waveDSFGain.acc = true;
+  waveDSFGain.defaultText = "100";
+  waveDSFGain.name = "DSF Gain";
+  waveDSFGain.slotCount = 1;
+  waveDSFGain.unit = "%";
+  waveDSFGain.id = "{8B92892C-4B53-4628-8266-CCED37867F99}";
+  waveDSFGain.type = FBParamType::Linear;
+  waveDSFGain.Linear().min = -1.0f;
+  waveDSFGain.Linear().max = 1.0f;
+  waveDSFGain.Linear().displayMultiplier = 100.0f;
+  auto selectWaveDSFGain = [](auto& module) { return &module.acc.waveDSFGain; };
+  waveDSFGain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveDSFGain);
+  waveDSFGain.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectWaveDSFGain);
+  waveDSFGain.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveDSFGain);
+  waveDSFGain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveDSFMode },
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
+
   auto& waveDSFOver = result->params[(int)FFOsciParam::WaveDSFOver];
   waveDSFOver.acc = false;
   waveDSFOver.defaultText = "1";

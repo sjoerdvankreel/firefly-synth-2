@@ -41,5 +41,6 @@ enum class FFOsciParam {
   Type, Gain, Coarse, Fine,
   UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,
   WaveBasicMode, WaveBasicGain, WavePWMode, WavePWGain, WavePWPW, 
-  WaveHSMode, WaveHSGain, WaveHSSync, WaveDSFMode, WaveDSFOver, WaveDSFBW, WaveDSFDistance, WaveDSFDecay,
+  WaveHSMode, WaveHSGain, WaveHSSync, 
+  WaveDSFMode, WaveDSFGain, WaveDSFOver, WaveDSFBW, WaveDSFDistance, WaveDSFDecay,
   FMExp, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, Count };

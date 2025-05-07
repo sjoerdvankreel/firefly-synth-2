@@ -65,6 +65,7 @@ class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
   std::array<TVoiceAcc, 1> uniSpread = {};
   std::array<TVoiceAcc, 1> waveHSGain = {};
   std::array<TVoiceAcc, 1> waveHSSync = {};
+  std::array<TVoiceAcc, 1> waveDSFGain = {};
   std::array<TVoiceAcc, 1> waveDSFDecay = {};
   std::array<TVoiceAcc, FFOsciWavePWCount> wavePWPW = {};
   std::array<TVoiceAcc, FFOsciWavePWCount> wavePWGain = {};
