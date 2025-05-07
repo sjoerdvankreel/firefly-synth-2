@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBStringify.hpp>
+#include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/base/topo/static/FBStaticTopoMeta.hpp>
 
 #define FF_PLUG_VERSION FB_STRINGIFY(FF_PLUG_VERSION_MAJOR.FF_PLUG_VERSION_MINOR.FF_PLUG_VERSION_PATCH)

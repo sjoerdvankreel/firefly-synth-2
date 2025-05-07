@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
-#include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/shared/FBUtility.hpp>
 
 #include <array>
 

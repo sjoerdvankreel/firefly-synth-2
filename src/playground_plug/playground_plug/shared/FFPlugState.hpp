@@ -8,7 +8,7 @@
 #include <playground_plug/modules/master/FFMasterState.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterState.hpp>
 
-#include <playground_base/base/shared/FBLifetime.hpp>
+#include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/base/state/proc/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/proc/FBVoiceBlockParamState.hpp>
