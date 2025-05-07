@@ -1,7 +1,6 @@
 #pragma once
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/base/topo/static/FBModuleAddrs.hpp>
 #include <playground_base/base/topo/static/FBStaticParam.hpp>
 #include <playground_base/base/topo/static/FBStaticGUIParam.hpp>
 
@@ -15,9 +14,23 @@
 
 class FBPlugGUI;
 struct FBModuleGraphComponentData;
+struct FBModuleProcExchangeState;
 
+typedef std::function<FBModuleProcExchangeState* (
+  int moduleSlot, void* state)>
+FBGlobalModuleExchangeAddrSelector;
+typedef std::function<FBModuleProcExchangeState* (
+  int voice, int moduleSlot, void* state)>
+FBVoiceModuleExchangeAddrSelector;
 typedef std::function<void(FBModuleGraphComponentData* graphData)>
 FBModuleGraphRenderer;
+
+struct FBModuleAddrSelectors final
+{
+  FB_COPY_MOVE_DEFCTOR(FBModuleAddrSelectors);
+  FBVoiceModuleExchangeAddrSelector voiceModuleExchange = {};
+  FBGlobalModuleExchangeAddrSelector globalModuleExchange = {};
+};
 
 struct FBStaticModule final
 {

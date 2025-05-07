@@ -3,7 +3,6 @@
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/base/topo/static/FBProcParamAddrs.hpp>
 #include <playground_base/base/topo/static/FBStaticParamBase.hpp>
-#include <playground_base/base/topo/static/FBAutomationTiming.hpp>
 
 #include <string>
 #include <vector>
