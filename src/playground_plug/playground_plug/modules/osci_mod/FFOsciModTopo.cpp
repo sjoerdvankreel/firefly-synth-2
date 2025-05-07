@@ -18,17 +18,17 @@ FFOsciModFormatSlot(int slot)
   }
 }
 
-std::string
+juce::String
 FFOsciModFormatSlotVertical(int slot)
 {
   switch (slot)
   {
-  case 0: return "2\r\n^\r\n1";
-  case 1: return "3\r\n^\r\n1";
-  case 2: return "3\r\n^\r\n2";
-  case 3: return "4\r\n^\r\n1";
-  case 4: return "4\r\n^\r\n2";
-  case 5: return "4\r\n^\r\n3";
+  case 0: return juce::String(u8"1\r\n\U00002193\r\n2");
+  case 1: return juce::String(u8"1\r\n\U00002193\r\n3");
+  case 2: return juce::String(u8"2\r\n\U00002193\r\n3");
+  case 3: return juce::String(u8"1\r\n\U00002193\r\n4");
+  case 4: return juce::String(u8"2\r\n\U00002193\r\n4");
+  case 5: return juce::String(u8"3\r\n\U00002193\r\n4");
   default: assert(false); return "";
   }
 }

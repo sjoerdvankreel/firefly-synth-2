@@ -10,7 +10,7 @@ ComboBox()
   *getRootMenu() = rootMenu;
   for (int i = 0; i < getNumItems(); i++)
     _maxTextWidth = std::max(_maxTextWidth, 
-      FBGetStringWidthCached(getItemText(i).toStdString()));
+      FBGUIGetStringWidthCached(getItemText(i).toStdString()));
 }
 
 int 

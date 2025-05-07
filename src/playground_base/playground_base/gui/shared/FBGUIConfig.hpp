@@ -1,4 +1,4 @@
 #pragma once
 
+// todo drop
 inline int constexpr FBGUIFPS = 30;
-inline int constexpr FBGUIFontSize = 15;

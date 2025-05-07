@@ -13,7 +13,7 @@ FBOutputParamLabel(
   std::string const& maxWidthText):
 Label(),
 FBParamControl(plugGUI, param),
-_maxTextWidth(FBGetStringWidthCached(maxWidthText))
+_maxTextWidth(FBGUIGetStringWidthCached(maxWidthText))
 {
   setText(defaultText, dontSendNotification);
 }

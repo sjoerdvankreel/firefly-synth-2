@@ -35,7 +35,6 @@ bool
 DeinitModule()
 {
   FBGUITerminate();
-  juce::shutdownJuce_GUI();
   FBLogTerminate();
   return true;
 }
@@ -44,7 +43,6 @@ bool
 InitModule()
 {
   FBLogInit(FFPlugMeta());
-  juce::initialiseJuce_GUI();
   FBGUIInit();
   return true;
 }

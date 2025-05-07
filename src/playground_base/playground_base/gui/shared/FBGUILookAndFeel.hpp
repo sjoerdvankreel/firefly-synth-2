@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBParamSlider;
@@ -7,9 +8,6 @@ class FBParamSlider;
 class FBGUILookAndFeel:
 public juce::LookAndFeel_V4
 {
-  juce::Typeface::Ptr _typeface = {};
-  juce::Font _font = {};
-
   void DrawLinearSliderExchangeThumb(
     juce::Graphics& g, FBParamSlider& slider, 
     int y, int height, float exchangeValue);
@@ -21,15 +19,12 @@ public juce::LookAndFeel_V4
     float exchangeValue);
 
 public:  
-  
-  FBGUILookAndFeel();
-
-  juce::Font getPopupMenuFont() override { return _font; }
-  juce::Font getLabelFont(juce::Label&) override { return _font; }
-  juce::Font getComboBoxFont(juce::ComboBox&) override { return _font; }
-  juce::Font getSliderPopupFont(juce::Slider&) override { return _font; }
-  juce::Font getTextButtonFont(juce::TextButton&, int)  override { return _font; }
-  juce::Font getTabButtonFont(juce::TabBarButton& b, float) override { return _font; }
+  juce::Font getPopupMenuFont() override { return FBGUIGetFont(); }
+  juce::Font getLabelFont(juce::Label&) override { return FBGUIGetFont(); }
+  juce::Font getComboBoxFont(juce::ComboBox&) override { return FBGUIGetFont(); }
+  juce::Font getSliderPopupFont(juce::Slider&) override { return FBGUIGetFont(); }
+  juce::Font getTextButtonFont(juce::TextButton&, int)  override { return FBGUIGetFont(); }
+  juce::Font getTabButtonFont(juce::TabBarButton& b, float) override { return FBGUIGetFont(); }
 
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;

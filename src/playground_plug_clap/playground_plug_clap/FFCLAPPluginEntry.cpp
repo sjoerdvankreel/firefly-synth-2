@@ -58,7 +58,6 @@ static void CLAP_ABI
 Deinit()
 {
   FBGUITerminate();
-  juce::shutdownJuce_GUI();
   FBLogTerminate();
 }
 
@@ -66,7 +65,6 @@ static bool CLAP_ABI
 Init(char const*) 
 { 
   FBLogInit(FFPlugMeta());
-  juce::initialiseJuce_GUI();
   FBGUIInit();
   return true; 
 }

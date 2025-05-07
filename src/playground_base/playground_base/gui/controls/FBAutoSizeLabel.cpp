@@ -7,7 +7,7 @@ FBAutoSizeLabel::
 FBAutoSizeLabel(std::string const& text):
 Label(),
 IFBHorizontalAutoSize(),
-_textWidth(FBGetStringWidthCached(text))
+_textWidth(FBGUIGetStringWidthCached(text))
 {
   setText(text, dontSendNotification);
 }

@@ -8,10 +8,10 @@ class FBAutoSizeMultiLineLabel:
 public juce::Component,
 public IFBHorizontalAutoSize
 {
-  int const _textWidth;
-  std::string const _text;
+  juce::Point<int> const _textSize;
+  juce::String const _text;
 public:
   void paint(juce::Graphics& g) override;
   int FixedWidth(int height) const override;
-  FBAutoSizeMultiLineLabel(std::string const& text);
+  FBAutoSizeMultiLineLabel(juce::String const& text);
 };

@@ -4,8 +4,6 @@
 #include <playground_base/base/shared/FBUserDataFolder.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
-#include <filesystem>
-
 using namespace juce;
 
 static float
@@ -54,17 +52,6 @@ FBGUILookAndFeel::DrawRotarySliderExchangeThumb(
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
   g.setColour(slider.findColour(Slider::thumbColourId).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
-}
-
-FBGUILookAndFeel::
-FBGUILookAndFeel()
-{
-  File selfJuce(File::getSpecialLocation(File::currentExecutableFile));
-  std::filesystem::path selfPath(selfJuce.getFullPathName().toStdString());
-  auto fontPath = selfPath.parent_path().parent_path() / "Resources" / "ui" / "font.ttf";
-  auto fontBytes = FBReadFile(fontPath);
-  _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
-  _font = Font(FontOptions(_typeface)).withHeight(FBGUIFontSize);
 }
 
 BorderSize<int> 
