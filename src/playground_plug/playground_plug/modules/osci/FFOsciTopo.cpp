@@ -354,6 +354,7 @@ FFMakeOsciTopo()
   waveHSSync.acc = true;
   waveHSSync.defaultText = "0";
   waveHSSync.name = "HS Sync Pitch";
+  waveHSSync.display = "HSync";
   waveHSSync.slotCount = 1;
   waveHSSync.unit = "Semitones";
   waveHSSync.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
@@ -387,7 +388,8 @@ FFMakeOsciTopo()
   auto& waveDSFOver = result->params[(int)FFOsciParam::WaveDSFOver];
   waveDSFOver.acc = false;
   waveDSFOver.defaultText = "1";
-  waveDSFOver.name = "DSF Over";
+  waveDSFOver.name = "DSF Overtones";
+  waveDSFOver.display = "Over";
   waveDSFOver.slotCount = 1;
   waveDSFOver.id = "{9A42FADE-5E48-49B8-804B-0C61E17AC3BB}";
   waveDSFOver.type = FBParamType::Discrete;
@@ -397,13 +399,16 @@ FFMakeOsciTopo()
   waveDSFOver.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveDSFOver);
   waveDSFOver.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectWaveDSFOver);
   waveDSFOver.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveDSFOver);
+  waveDSFOver.dependencies.visible.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveDSFMode },
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != (int)FFOsciWaveDSFMode::BW; });
   waveDSFOver.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveDSFMode },
-    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] == (int)FFOsciWaveDSFMode::Over; });
 
   auto& waveDSFBW = result->params[(int)FFOsciParam::WaveDSFBW];
   waveDSFBW.acc = false;
   waveDSFBW.defaultText = "50";
-  waveDSFBW.name = "DSF BW";
+  waveDSFBW.name = "DSF Bandwidth";
+  waveDSFBW.display = "BW";
   waveDSFBW.slotCount = 1;
   waveDSFBW.unit = "%";
   waveDSFBW.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
@@ -413,13 +418,16 @@ FFMakeOsciTopo()
   waveDSFBW.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveDSFBW);
   waveDSFBW.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectWaveDSFBW);
   waveDSFBW.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectWaveDSFBW);
+  waveDSFBW.dependencies.visible.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveDSFMode },
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] == (int)FFOsciWaveDSFMode::BW; });
   waveDSFBW.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveDSFMode },
-    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
+    [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] == (int)FFOsciWaveDSFMode::BW; });
 
   auto& waveDSFDistance = result->params[(int)FFOsciParam::WaveDSFDistance];
   waveDSFDistance.acc = false;
   waveDSFDistance.defaultText = "1";
   waveDSFDistance.name = "DSF Distance";
+  waveDSFDistance.display = "Dist";
   waveDSFDistance.slotCount = 1;
   waveDSFDistance.id = "{0D1D4920-A17F-4716-A42E-238DD1E99952}";
   waveDSFDistance.type = FBParamType::Discrete;
