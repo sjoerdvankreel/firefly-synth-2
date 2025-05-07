@@ -1,38 +1,13 @@
 #include <playground_base/base/topo/param/FBListParam.hpp>
-
 #include <cassert>
 
 using namespace juce;
 
-bool 
-FBListParamNonRealTime::IsItems() const
-{
-  return true;
-}
-
-bool 
-FBListParamNonRealTime::IsStepped() const
-{
-  return true;
-}
-
-int 
-FBListParamNonRealTime::ValueCount() const 
-{
-  return static_cast<int>(items.size());
-}
-
-FBEditType
-FBListParamNonRealTime::GUIEditType() const
-{
-  return FBEditType::Stepped;
-}
-
-FBEditType
-FBListParamNonRealTime::AutomationEditType() const
-{
-  return FBEditType::Stepped;
-}
+bool FBListParamNonRealTime::IsItems() const { return true; }
+bool FBListParamNonRealTime::IsStepped() const { return true; }
+int FBListParamNonRealTime::ValueCount() const { return static_cast<int>(items.size()); }
+FBEditType FBListParamNonRealTime::GUIEditType() const { return FBEditType::Stepped; }
+FBEditType FBListParamNonRealTime::AutomationEditType() const { return FBEditType::Stepped; }
 
 double 
 FBListParamNonRealTime::PlainToNormalized(double plain) const 

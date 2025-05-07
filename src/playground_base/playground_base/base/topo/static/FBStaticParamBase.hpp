@@ -7,7 +7,6 @@
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 #include <playground_base/base/topo/param/FBListParam.hpp>
 #include <playground_base/base/topo/param/FBBarsParam.hpp>
-#include <playground_base/base/topo/param/FBParamType.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 #include <playground_base/base/topo/param/FBIdentityParam.hpp>
 #include <playground_base/base/topo/param/FBDiscreteParam.hpp>

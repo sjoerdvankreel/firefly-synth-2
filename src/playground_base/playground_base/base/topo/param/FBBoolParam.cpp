@@ -1,34 +1,10 @@
 #include <playground_base/base/topo/param/FBBoolParam.hpp>
 
-bool 
-FBBoolParamNonRealTime::IsItems() const
-{
-  return false;
-}
-
-bool 
-FBBoolParamNonRealTime::IsStepped() const
-{
-  return true;
-}
-
-int 
-FBBoolParamNonRealTime::ValueCount() const
-{
-  return 2;
-}
-
-FBEditType
-FBBoolParamNonRealTime::GUIEditType() const
-{
-  return FBEditType::Stepped;
-}
-
-FBEditType
-FBBoolParamNonRealTime::AutomationEditType() const
-{
-  return FBEditType::Stepped;
-}
+int FBBoolParamNonRealTime::ValueCount() const { return 2; }
+bool FBBoolParamNonRealTime::IsItems() const { return false; }
+bool FBBoolParamNonRealTime::IsStepped() const { return true; }
+FBEditType FBBoolParamNonRealTime::GUIEditType() const { return FBEditType::Stepped; }
+FBEditType FBBoolParamNonRealTime::AutomationEditType() const { return FBEditType::Stepped; }
 
 double 
 FBBoolParamNonRealTime::PlainToNormalized(double plain) const

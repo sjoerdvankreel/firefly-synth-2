@@ -1,13 +1,18 @@
 #pragma once
 
-#include <playground_base/base/topo/param/FBListItem.hpp>
-#include <playground_base/base/topo/param/FBItemsParamNonRealTime.hpp>
+#include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
 
 #include <map>
 #include <string>
 #include <vector>
 #include <optional>
 #include <algorithm>
+
+struct FBListItem final
+{
+  std::string id = {};
+  std::string name = {};
+};
 
 struct FBListParam
 {

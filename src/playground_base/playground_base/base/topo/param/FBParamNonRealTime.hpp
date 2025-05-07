@@ -1,9 +1,14 @@
 #pragma once
 
-#include <playground_base/base/topo/param/FBEditType.hpp>
-
+#include <juce_gui_basics/juce_gui_basics.h>
 #include <string>
 #include <optional>
+
+enum class FBEditType { Linear, Stepped, Logarithmic };
+enum class FBParamType { List, Bars, Boolean, Discrete, Log2, Linear, Identity };
+
+std::string
+FBEditTypeToString(FBEditType type);
 
 struct FBParamNonRealTime
 {
@@ -20,4 +25,10 @@ struct FBParamNonRealTime
   virtual double NormalizedToPlain(double normalized) const = 0;
   virtual std::string PlainToText(bool io, double plain) const = 0;
   virtual std::optional<double> TextToPlain(bool io, std::string const& text) const = 0;
+};
+
+struct FBItemsParamNonRealTime :
+public FBParamNonRealTime
+{
+  virtual juce::PopupMenu MakePopupMenu() const = 0;
 };

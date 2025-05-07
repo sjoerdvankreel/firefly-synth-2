@@ -2,7 +2,7 @@
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/base/topo/param/FBBarsItem.hpp>
-#include <playground_base/base/topo/param/FBItemsParamNonRealTime.hpp>
+#include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
 
 #include <string>
 #include <vector>

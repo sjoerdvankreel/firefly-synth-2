@@ -1,34 +1,10 @@
 #include <playground_base/base/topo/param/FBIdentityParam.hpp>
 
-bool 
-FBIdentityParamNonRealTime::IsItems() const
-{
-  return false;
-}
-
-bool 
-FBIdentityParamNonRealTime::IsStepped() const
-{
-  return false;
-}
-
-int 
-FBIdentityParamNonRealTime::ValueCount() const
-{
-  return 0;
-}
-
-FBEditType
-FBIdentityParamNonRealTime::GUIEditType() const
-{
-  return FBEditType::Linear;
-}
-
-FBEditType
-FBIdentityParamNonRealTime::AutomationEditType() const
-{
-  return FBEditType::Linear;
-}
+bool FBIdentityParamNonRealTime::IsItems() const { return false; }
+bool FBIdentityParamNonRealTime::IsStepped() const { return false; }
+int FBIdentityParamNonRealTime::ValueCount() const { return 0; }
+FBEditType FBIdentityParamNonRealTime::GUIEditType() const { return FBEditType::Linear; }
+FBEditType FBIdentityParamNonRealTime::AutomationEditType() const { return FBEditType::Linear; }
 
 double 
 FBIdentityParamNonRealTime::PlainToNormalized(double plain) const

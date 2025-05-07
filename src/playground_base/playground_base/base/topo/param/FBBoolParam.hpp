@@ -7,7 +7,7 @@
 
 struct FBBoolParam
 {
-  bool NormalizedToPlainFast(float normalized) const;
+  bool NormalizedToPlainFast(float normalized) const { return normalized >= 0.5f; }
 }; 
 
 struct FBBoolParamNonRealTime final:
@@ -25,9 +25,3 @@ public FBParamNonRealTime
   std::string PlainToText(bool io, double plain) const override;
   std::optional<double> TextToPlain(bool io, std::string const& text) const override;
 };
-
-inline bool
-FBBoolParam::NormalizedToPlainFast(float normalized) const
-{
-  return normalized >= 0.5f;
-}

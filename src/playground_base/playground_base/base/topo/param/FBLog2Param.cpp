@@ -1,34 +1,10 @@
 #include <playground_base/base/topo/param/FBLog2Param.hpp>
 
-bool 
-FBLog2ParamNonRealTime::IsItems() const
-{
-  return false;
-}
-
-bool 
-FBLog2ParamNonRealTime::IsStepped() const 
-{
-  return false;
-}
-
-int
-FBLog2ParamNonRealTime::ValueCount() const 
-{
-  return 0;
-}
-
-FBEditType
-FBLog2ParamNonRealTime::GUIEditType() const
-{
-  return FBEditType::Logarithmic;
-}
-
-FBEditType
-FBLog2ParamNonRealTime::AutomationEditType() const
-{
-  return FBEditType::Logarithmic;
-}
+bool FBLog2ParamNonRealTime::IsItems() const { return false; }
+bool FBLog2ParamNonRealTime::IsStepped() const { return false; }
+int FBLog2ParamNonRealTime::ValueCount() const { return 0; }
+FBEditType FBLog2ParamNonRealTime::GUIEditType() const { return FBEditType::Logarithmic; }
+FBEditType FBLog2ParamNonRealTime::AutomationEditType() const { return FBEditType::Logarithmic; }
 
 void
 FBLog2Param::Init(float offset, float curveStart, float curveEnd)

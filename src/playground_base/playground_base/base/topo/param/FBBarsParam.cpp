@@ -5,35 +5,11 @@
 
 using namespace juce;
 
-bool 
-FBBarsParamNonRealTime::IsItems() const
-{
-  return true;
-}
-
-bool 
-FBBarsParamNonRealTime::IsStepped() const 
-{
-  return true;
-}
-
-int
-FBBarsParamNonRealTime::ValueCount() const 
-{
-  return static_cast<int>(items.size());
-}
-
-FBEditType 
-FBBarsParamNonRealTime::GUIEditType() const
-{
-  return FBEditType::Stepped;
-}
-
-FBEditType 
-FBBarsParamNonRealTime::AutomationEditType() const
-{
-  return FBEditType::Stepped;
-}
+bool FBBarsParamNonRealTime::IsItems() const { return true; }
+bool FBBarsParamNonRealTime::IsStepped() const { return true; }
+int FBBarsParamNonRealTime::ValueCount() const { return static_cast<int>(items.size()); }
+FBEditType FBBarsParamNonRealTime::GUIEditType() const { return FBEditType::Stepped; }
+FBEditType FBBarsParamNonRealTime::AutomationEditType() const { return FBEditType::Stepped;}
 
 double 
 FBBarsParamNonRealTime::PlainToNormalized(double plain) const 

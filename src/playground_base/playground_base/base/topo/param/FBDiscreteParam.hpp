@@ -1,7 +1,6 @@
 #pragma once
 
 #include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
-#include <playground_base/base/topo/param/FBItemsParamNonRealTime.hpp>
 
 #include <cmath>
 #include <string>

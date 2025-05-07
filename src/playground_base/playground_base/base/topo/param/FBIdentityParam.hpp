@@ -14,8 +14,8 @@ struct FBIdentityParam
 {
   double displayMultiplier = 100.0;
 
-  float NormalizedToPlainFast(float normalized) const;
-  double NormalizedToPlainFast(double normalized) const;
+  float NormalizedToPlainFast(float normalized) const {  return normalized; }
+  double NormalizedToPlainFast(double normalized) const {  return normalized; }
   FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
   void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
@@ -37,22 +37,10 @@ public FBParamNonRealTime
   std::optional<double> TextToPlain(bool io, std::string const& text) const override;
 };
 
-inline float
-FBIdentityParam::NormalizedToPlainFast(float normalized) const
-{
-  return normalized;
-}
-
 inline FBSIMDVector<float> 
 FBIdentityParam::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {
   return FBSIMDVector<float>::load_aligned(normalized.CV().Ptr(pos));
-}
-
-inline double
-FBIdentityParam::NormalizedToPlainFast(double normalized) const
-{
-  return normalized;
 }
 
 inline void 

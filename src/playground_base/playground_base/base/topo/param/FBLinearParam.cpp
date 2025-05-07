@@ -1,33 +1,13 @@
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 
-bool 
-FBLinearParamNonRealTime::IsItems() const
-{
-  return false;
-}
+bool FBLinearParamNonRealTime::IsItems() const { return false; }
+bool FBLinearParamNonRealTime::IsStepped() const { return false; }
+int FBLinearParamNonRealTime::ValueCount() const { return 0; }
+FBEditType FBLinearParamNonRealTime::AutomationEditType() const { return FBEditType::Linear; }
 
-bool 
-FBLinearParamNonRealTime::IsStepped() const
-{
-  return false;
-}
-
-int 
-FBLinearParamNonRealTime::ValueCount() const 
-{
-  return 0;
-}
-
-FBEditType
-FBLinearParamNonRealTime::GUIEditType() const
-{
-  return editSkewFactor == 1.0 ? FBEditType::Linear : FBEditType::Logarithmic;
-}
-
-FBEditType
-FBLinearParamNonRealTime::AutomationEditType() const
-{
-  return FBEditType::Linear;
+FBEditType FBLinearParamNonRealTime::GUIEditType() const 
+{ 
+  return editSkewFactor == 1.0 ? FBEditType::Linear : FBEditType::Logarithmic; 
 }
 
 double 
