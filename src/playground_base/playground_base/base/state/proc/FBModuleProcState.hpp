@@ -1,11 +1,17 @@
 #pragma once
 
-#include <playground_base/base/state/proc/FBRenderType.hpp>
 #include <unordered_map>
 
 struct FBVoiceInfo;
 struct FBRuntimeTopo;
 struct FBPlugInputBlock;
+
+enum class FBRenderType
+{
+  Audio,
+  GraphPrimary,
+  GraphExchange
+};
 
 struct FBModuleProcState final
 {
