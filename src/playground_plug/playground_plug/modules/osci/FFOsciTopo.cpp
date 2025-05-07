@@ -115,7 +115,7 @@ FFMakeOsciTopo()
   auto& uniCount = result->params[(int)FFOsciParam::UniCount];
   uniCount.acc = false;
   uniCount.defaultText = "1";
-  uniCount.display = "Unison";
+  uniCount.display = "Uni";
   uniCount.name = "Unison Count";
   uniCount.slotCount = 1;
   uniCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
@@ -130,7 +130,7 @@ FFMakeOsciTopo()
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
   uniOffset.acc = false;
   uniOffset.defaultText = "50";
-  uniOffset.display = "Offset";
+  uniOffset.display = "Ofst";
   uniOffset.name = "Unison Offset";
   uniOffset.slotCount = 1;
   uniOffset.unit = "%";
@@ -145,7 +145,7 @@ FFMakeOsciTopo()
   auto& uniRandom = result->params[(int)FFOsciParam::UniRandom];
   uniRandom.acc = false;
   uniRandom.defaultText = "50";
-  uniRandom.display = "Random";
+  uniRandom.display = "Rand";
   uniRandom.name = "Unison Random";
   uniRandom.slotCount = 1;
   uniRandom.unit = "%";
@@ -160,7 +160,7 @@ FFMakeOsciTopo()
   auto& uniDetune = result->params[(int)FFOsciParam::UniDetune];
   uniDetune.acc = true;
   uniDetune.defaultText = "33";
-  uniDetune.display = "Detune";
+  uniDetune.display = "Dtn";
   uniDetune.name = "Unison Detune";
   uniDetune.slotCount = 1;
   uniDetune.unit = "%";
@@ -175,7 +175,7 @@ FFMakeOsciTopo()
   auto& uniSpread = result->params[(int)FFOsciParam::UniSpread];
   uniSpread.acc = true;
   uniSpread.defaultText = "50";
-  uniSpread.display = "Spread";
+  uniSpread.display = "Sprd";
   uniSpread.name = "Unison Spread";
   uniSpread.slotCount = 1;
   uniSpread.unit = "%";
@@ -190,7 +190,7 @@ FFMakeOsciTopo()
   auto& uniBlend = result->params[(int)FFOsciParam::UniBlend];
   uniBlend.acc = true;
   uniBlend.defaultText = "100";
-  uniBlend.display = "Blend";
+  uniBlend.display = "Blnd";
   uniBlend.name = "Unison Blend";
   uniBlend.slotCount = 1;
   uniBlend.unit = "%";
