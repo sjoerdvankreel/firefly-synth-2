@@ -34,7 +34,7 @@ static std::string
 FFOsciFMFormatIndexSlot(int slot)
 {
   assert(0 <= slot && slot < FFOsciFMMatrixSize);
-  return std::to_string(slot / FFOsciFMOperatorCount + 1) + ">" + 
+  return std::to_string(slot / FFOsciFMOperatorCount + 1) + "\U00002192" + 
     std::to_string(slot % FFOsciFMOperatorCount + 1);
 }
 

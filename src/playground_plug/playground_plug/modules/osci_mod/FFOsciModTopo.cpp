@@ -8,27 +8,27 @@ FFOsciModFormatSlot(int slot)
 {
   switch (slot)
   {
-  case 0: return "1>2";
-  case 1: return "1>3";
-  case 2: return "2>3";
-  case 3: return "1>4";
-  case 4: return "2>4";
-  case 5: return "3>4";
+  case 0: return "1\U000021922";
+  case 1: return "1\U000021923";
+  case 2: return "2\U000021923";
+  case 3: return "1\U000021924";
+  case 4: return "2\U000021924";
+  case 5: return "3\U000021924";
   default: assert(false); return "";
   }
 }
 
-juce::String
+std::string
 FFOsciModFormatSlotVertical(int slot)
 {
   switch (slot)
   {
-  case 0: return juce::String(u8"1\r\n\U00002193\r\n2");
-  case 1: return juce::String(u8"1\r\n\U00002193\r\n3");
-  case 2: return juce::String(u8"2\r\n\U00002193\r\n3");
-  case 3: return juce::String(u8"1\r\n\U00002193\r\n4");
-  case 4: return juce::String(u8"2\r\n\U00002193\r\n4");
-  case 5: return juce::String(u8"3\r\n\U00002193\r\n4");
+  case 0: return "1\r\n\U00002193\r\n2";
+  case 1: return "1\r\n\U00002193\r\n3";
+  case 2: return "2\r\n\U00002193\r\n3";
+  case 3: return "1\r\n\U00002193\r\n4";
+  case 4: return "2\r\n\U00002193\r\n4";
+  case 5: return "3\r\n\U00002193\r\n4";
   default: assert(false); return "";
   }
 }

@@ -150,7 +150,7 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(0 + i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmRatioFree, Slider::SliderStyle::RotaryVerticalDrag));
   }
 
-  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("1>1/2/3"));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("1\U000021921/2/3"));
   auto fmIndex11 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 0 });
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex11, Slider::SliderStyle::RotaryVerticalDrag));
   auto fmIndex12 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 1 });
@@ -158,7 +158,7 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto fmIndex13 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 2 });
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex13, Slider::SliderStyle::RotaryVerticalDrag));
 
-  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("2>1/2/3"));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("2\U000021921/2/3"));
   auto fmIndex21 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 3 });
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex21, Slider::SliderStyle::RotaryVerticalDrag));
   auto fmIndex22 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 4 });
@@ -166,7 +166,7 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto fmIndex23 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 5 });
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex23, Slider::SliderStyle::RotaryVerticalDrag));
 
-  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("3>1/2/3"));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBAutoSizeLabel>("3\U000021921/2/3"));
   auto fmIndex31 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 6 });
   grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex31, Slider::SliderStyle::RotaryVerticalDrag));
   auto fmIndex32 = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::FMIndex, 7 });
