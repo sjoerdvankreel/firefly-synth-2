@@ -45,7 +45,7 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
   std::array<TVoiceBlock, 1> waveDSFMode = {};
   std::array<TVoiceBlock, 1> waveDSFOver = {};
   std::array<TVoiceBlock, 1> waveDSFDistance = {};
-  std::array<TVoiceBlock, 1> fmExp = {};
+  std::array<TVoiceBlock, 1> fmMode = {};
   std::array<TVoiceBlock, 1> fmRatioMode = {};
   std::array<TVoiceBlock, FFOsciFMOperatorCount - 1> fmRatioRatio = {};
 public:

@@ -474,19 +474,21 @@ FFMakeOsciTopo()
   waveDSFDecay.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveDSFMode },
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
-  auto& fmExp = result->params[(int)FFOsciParam::FMExp];
-  fmExp.acc = false;
-  fmExp.defaultText = "Off";
-  fmExp.display = "Exp";
-  fmExp.name = "Exponential";
-  fmExp.slotCount = 1;
-  fmExp.id = "{BE60503A-3CE3-422D-8795-C2FCB1C4A3B6}";
-  fmExp.type = FBParamType::Boolean;
-  auto selectFMExp = [](auto& module) { return &module.block.fmExp; };
-  fmExp.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMExp);
-  fmExp.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMExp);
-  fmExp.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMExp);
-  fmExp.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+  auto& fmMode = result->params[(int)FFOsciParam::FMMode];
+  fmMode.acc = false;
+  fmMode.defaultText = "Linear";
+  fmMode.name = "FM Mode";
+  fmMode.slotCount = 1;
+  fmMode.id = "{BE60503A-3CE3-422D-8795-C2FCB1C4A3B6}";
+  fmMode.type = FBParamType::List;
+  fmMode.List().items = {
+    { "{8DF1F983-F892-4B5A-B784-C4222563E5BC}", "Linear" },
+    { "{5DE278F5-21B2-4DD5-AB5A-BBF43BDFDD7F}", "Exp" } };
+  auto selectFMMode = [](auto& module) { return &module.block.fmMode; };
+  fmMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMMode);
+  fmMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMMode);
+  fmMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMMode);
+  fmMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
 
   auto& fmRatioMode = result->params[(int)FFOsciParam::FMRatioMode];
   fmRatioMode.acc = false;

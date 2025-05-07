@@ -25,7 +25,7 @@ class FFOsciProcessor final
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
 
-  bool _fmExp = {};
+  FFOsciFMMode _fmMode = {};
   float _fmRatioRatio12 = {};
   float _fmRatioRatio23 = {};
   FFOsciFMRatioMode _fmRatioMode = {};

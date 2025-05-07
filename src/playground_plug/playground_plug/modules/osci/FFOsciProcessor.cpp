@@ -1076,7 +1076,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   auto const& waveDSFModeNorm = params.block.waveDSFMode[0].Voice()[voice];
   auto const& waveDSFOverNorm = params.block.waveDSFOver[0].Voice()[voice];
   auto const& waveDSFDistanceNorm = params.block.waveDSFDistance[0].Voice()[voice];
-  auto const& fmExpNorm = params.block.fmExp[0].Voice()[voice];
+  auto const& fmModeNorm = params.block.fmMode[0].Voice()[voice];
   auto const& fmRatioModeNorm = params.block.fmRatioMode[0].Voice()[voice];
   auto const& fmRatioRatio12Norm = params.block.fmRatioRatio[0].Voice()[voice];
   auto const& fmRatioRatio23Norm = params.block.fmRatioRatio[1].Voice()[voice];
@@ -1097,7 +1097,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   _waveDSFMode = topo.NormalizedToListFast<FFOsciWaveDSFMode>(FFOsciParam::WaveDSFMode, waveDSFModeNorm);
   _waveDSFOver = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFOver, waveDSFOverNorm));
   _waveDSFDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFDistance, waveDSFDistanceNorm));
-  _fmExp = topo.NormalizedToBoolFast(FFOsciParam::FMExp, fmExpNorm);
+  _fmMode = topo.NormalizedToListFast<FFOsciFMMode>(FFOsciParam::FMMode, fmModeNorm);
   _fmRatioMode = topo.NormalizedToListFast<FFOsciFMRatioMode>(FFOsciParam::FMRatioMode, fmRatioModeNorm);
   _fmRatioRatio12 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio12Norm));
   _fmRatioRatio23 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio23Norm));
@@ -1420,7 +1420,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         fmTo1 += fmIndexPlain[0].Get(s) * _prevUniFMOutput[0].Load(u);
         fmTo1 += fmIndexPlain[3].Get(s) * _prevUniFMOutput[1].Load(u);
         fmTo1 += fmIndexPlain[6].Get(s) * _prevUniFMOutput[2].Load(u);
-        if (_fmExp)
+        if (_fmMode == FFOsciFMMode::Exp)
         {
           auto op1UniPitch = op3UniPitch / fmRatioPlain[1].Get(s) / fmRatioPlain[0].Get(s);
           op1UniPitch += op1UniPitch * fmTo1;
@@ -1439,7 +1439,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         fmTo2 += fmIndexPlain[1].Get(s) * output1;
         fmTo2 += fmIndexPlain[4].Get(s) * _prevUniFMOutput[1].Load(u);
         fmTo2 += fmIndexPlain[7].Get(s) * _prevUniFMOutput[2].Load(u);
-        if (_fmExp)
+        if (_fmMode == FFOsciFMMode::Exp)
         {
           auto op2UniPitch = op3UniPitch / fmRatioPlain[1].Get(s);
           op2UniPitch += op2UniPitch * fmTo2;
@@ -1458,7 +1458,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         fmTo3 += fmIndexPlain[2].Get(s) * output1;
         fmTo3 += fmIndexPlain[5].Get(s) * output2;
         fmTo3 += fmIndexPlain[8].Get(s) * _prevUniFMOutput[2].Load(u);
-        if (_fmExp)
+        if (_fmMode == FFOsciFMMode::Exp)
         {
           op3UniPitch += op3UniPitch * fmTo3;
           auto op3UniFreq = FBPitchToFreq(op3UniPitch);

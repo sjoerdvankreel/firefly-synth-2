@@ -7,28 +7,14 @@ struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 
 enum class FFOsciType { Off, Wave, FM };
+enum class FFOsciFMMode { Linear, Exp };
 enum class FFOsciFMRatioMode { Ratio, Free };
 
-enum class FFOsciWaveDSFMode {
-  Off,
-  Over, BW };
-
-enum class FFOsciWaveHSMode {
-  Off,
-  Saw, Sqr, Tri };
-
-enum class FFOsciWavePWMode {
-  Off, 
-  Sqr, Rect, 
-  TriPls, TriSaw, TrapTri,
-  HWSaw };
-
-enum class FFOsciWaveBasicMode {
-  Off, 
-  Sin, Cos, Saw, Tri, Rect, Ramp, 
-  SinSqr, SawSqr, SinSaw,
-  BSSin, HWSin, FWSin, AltSin,
-  Trap, SawM1, SqrM1, Parabl, HypTri };
+enum class FFOsciWaveDSFMode { Off, Over, BW };
+enum class FFOsciWaveHSMode { Off, Saw, Sqr, Tri };
+enum class FFOsciWavePWMode { Off, Sqr, Rect, TriPls, TriSaw, TrapTri, HWSaw };
+enum class FFOsciWaveBasicMode { Off, Sin, Cos, Saw, Tri, Rect, Ramp, SinSqr, 
+  SawSqr, SinSaw, BSSin, HWSin, FWSin, AltSin, Trap, SawM1, SqrM1, Parabl, HypTri };
 
 inline int constexpr FFOsciWavePWCount = 2;
 inline int constexpr FFOsciWaveBasicCount = 2;
@@ -43,4 +29,4 @@ enum class FFOsciParam {
   WaveBasicMode, WaveBasicGain, WavePWMode, WavePWGain, WavePWPW, 
   WaveHSMode, WaveHSGain, WaveHSSync, 
   WaveDSFMode, WaveDSFGain, WaveDSFOver, WaveDSFBW, WaveDSFDistance, WaveDSFDecay,
-  FMExp, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, Count };
+  FMMode, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex, Count };
