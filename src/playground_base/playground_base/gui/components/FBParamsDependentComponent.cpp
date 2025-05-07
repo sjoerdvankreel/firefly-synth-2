@@ -1,4 +1,4 @@
-#include <playground_base/base/topo/runtime/FBRuntimeModule.hpp>
+#include <playground_base/base/topo/runtime/FBTopoIndices.hpp>
 #include <playground_base/base/topo/static/FBParamsDependencies.hpp>
 #include <playground_base/gui/components/FBParamsDependentComponent.hpp>
 
