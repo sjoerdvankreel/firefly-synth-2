@@ -4,6 +4,13 @@
 #include <playground_base/base/topo/static/FBStaticParam.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParamBase.hpp>
 
+struct FBParamTopoIndices final
+{
+  FBTopoIndices module = {};
+  FBTopoIndices param = {};
+  auto operator<=>(FBParamTopoIndices const&) const = default;
+};
+
 struct FBRuntimeParam final:
 public FBRuntimeParamBase
 {
