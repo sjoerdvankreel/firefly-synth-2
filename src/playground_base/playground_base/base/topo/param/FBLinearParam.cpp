@@ -1,4 +1,3 @@
-#include <playground_base/base/shared/FBFormat.hpp>
 #include <playground_base/base/topo/param/FBLinearParam.hpp>
 
 bool 
