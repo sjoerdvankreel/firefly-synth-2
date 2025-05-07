@@ -13,8 +13,8 @@
 #include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/proc/FBVoiceBlockParamState.hpp>
 #include <playground_base/base/state/proc/FBGlobalBlockParamState.hpp>
-#include <playground_base/base/state/exchange/FBHostExchangeState.hpp>
-#include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
+#include <playground_base/base/state/exchange/FBModuleExchangeState.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 #include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 

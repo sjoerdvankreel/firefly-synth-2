@@ -5,15 +5,28 @@
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/base/state/exchange/FBParamExchangeState.hpp>
 #include <playground_base/base/state/exchange/FBModuleExchangeState.hpp>
-#include <playground_base/base/state/exchange/FBParamActiveExchangeState.hpp>
 
 #include <array>
 #include <vector>
 #include <memory>
+#include <compare>
 
 struct FBRuntimeTopo;
 struct FBRuntimeParam;
-struct FBHostExchangeState;
+
+struct FBHostExchangeState final
+{
+  float bpm = {};
+  float sampleRate = {};
+};
+
+struct FBParamActiveExchangeState final
+{
+  bool active = {};
+  float minValue = {};
+  float maxValue = {};
+  bool operator==(FBParamActiveExchangeState const&) const = default;
+};
 
 class FBExchangeStateContainer final
 {

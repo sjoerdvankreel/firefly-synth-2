@@ -2,7 +2,7 @@
 
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/controls/FBAutoSizeSlider.hpp>
-#include <playground_base/base/state/exchange/FBParamActiveExchangeState.hpp>
+#include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 

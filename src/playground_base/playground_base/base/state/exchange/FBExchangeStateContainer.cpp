@@ -1,6 +1,5 @@
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
-#include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
 
 #include <set>
 #include <cassert>

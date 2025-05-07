@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
-#include <playground_base/base/state/exchange/FBModuleProcExchangeState.hpp>
+#include <playground_base/base/state/exchange/FBModuleExchangeState.hpp>
 
 #include <array>
 #include <memory>
