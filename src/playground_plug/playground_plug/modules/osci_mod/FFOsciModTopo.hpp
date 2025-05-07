@@ -1,7 +1,6 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugTopo.hpp>
-
 #include <juce_core/juce_core.h>
 
 #include <string>
