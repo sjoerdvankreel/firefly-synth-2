@@ -478,6 +478,7 @@ FFMakeOsciTopo()
   fmMode.acc = false;
   fmMode.defaultText = "Linear";
   fmMode.name = "FM Mode";
+  fmMode.display = "Mode";
   fmMode.slotCount = 1;
   fmMode.id = "{BE60503A-3CE3-422D-8795-C2FCB1C4A3B6}";
   fmMode.type = FBParamType::List;
