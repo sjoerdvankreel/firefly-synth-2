@@ -233,7 +233,7 @@ FFMakeOsciTopo()
   waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::Off] = "Off";
   waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::Sin] = "Classic";
   waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::SinSqr] = "Mixed";
-  waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::BSSin] = "Mod Sin";
+  waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::BSSin] = "ModSin";
   waveBasicMode.List().submenuStart[(int)FFOsciWaveBasicMode::Trap] = "Other";
   auto selectWaveBasicMode = [](auto& module) { return &module.block.waveBasicMode; };
   waveBasicMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectWaveBasicMode);

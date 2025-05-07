@@ -69,12 +69,11 @@ MakeSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Gain/PW/Sync"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Gain/PW/DSF"));
+  grid->Add(0, 1, 2, 1, plugGUI->StoreComponent<FBAutoSizeLabel>("Gain"));
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
   {
     auto mode = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::WaveBasicMode, i });
-    grid->Add(i, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
+    grid->Add(i, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
     auto gain = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::WaveBasicGain, i });
     grid->Add(i, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
   }
