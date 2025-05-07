@@ -2,7 +2,9 @@
 #include <playground_base/base/topo/static/FBStaticTopoMeta.hpp>
 
 #include <juce_core/juce_core.h>
+
 #include <string>
+#include <fstream>
 
 using namespace juce;
 
@@ -24,4 +26,15 @@ std::filesystem::path
 FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta)
 {
   return FBGetUserDataFolder() / meta.vendor / meta.name / meta.id;
+}
+
+std::vector<std::uint8_t>
+FBReadFile(std::filesystem::path const& p)
+{
+  auto length = std::filesystem::file_size(p);
+  std::vector<std::uint8_t> buffer(length);
+  std::ifstream str(p.string(), std::ios_base::binary);
+  str.read(reinterpret_cast<char*>(buffer.data()), length);
+  str.close();
+  return buffer;
 }

@@ -7,6 +7,9 @@ class FBParamSlider;
 class FBGUILookAndFeel:
 public juce::LookAndFeel_V4
 {
+  juce::Typeface::Ptr _typeface = {};
+  juce::Font _font = {};
+
   void DrawLinearSliderExchangeThumb(
     juce::Graphics& g, FBParamSlider& slider, 
     int y, int height, float exchangeValue);
@@ -17,7 +20,17 @@ public juce::LookAndFeel_V4
     float rotaryStartAngle, float rotaryEndAngle, 
     float exchangeValue);
 
-public:
+public:  
+  
+  FBGUILookAndFeel();
+
+  juce::Font getPopupMenuFont() override { return _font; }
+  juce::Font getLabelFont(juce::Label&) override { return _font; }
+  juce::Font getComboBoxFont(juce::ComboBox&) override { return _font; }
+  juce::Font getSliderPopupFont(juce::Slider&) override { return _font; }
+  juce::Font getTextButtonFont(juce::TextButton&, int)  override { return _font; }
+  juce::Font getTabButtonFont(juce::TabBarButton& b, float) override { return _font; }
+
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
 
