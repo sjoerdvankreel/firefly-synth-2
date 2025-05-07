@@ -11,6 +11,11 @@
 #include <optional>
 #include <algorithm>
 
+enum class FBAutomationTiming { Never, PerSample, AtVoiceStart };
+
+std::string
+FBAutomationTimingToString(FBAutomationTiming timing);
+
 struct FBStaticParam final:
 public FBStaticParamBase
 {
