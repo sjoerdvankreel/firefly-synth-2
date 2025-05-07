@@ -462,6 +462,7 @@ FFMakeOsciTopo()
   waveDSFDecay.acc = true;
   waveDSFDecay.defaultText = "50";
   waveDSFDecay.name = "DSF Decay";
+  waveDSFDecay.display = "Dcy";
   waveDSFDecay.slotCount = 1;
   waveDSFDecay.unit = "%";
   waveDSFDecay.id = "{21CE915D-0983-4545-9F6E-8743CAC5EAB7}";
