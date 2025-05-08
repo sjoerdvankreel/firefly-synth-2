@@ -1,7 +1,6 @@
 #pragma once
 
-#include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
-
+#include <playground_base/gui/shared/FBAutoSize.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <functional>
 

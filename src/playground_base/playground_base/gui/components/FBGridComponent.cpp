@@ -1,5 +1,5 @@
+#include <playground_base/gui/shared/FBAutoSize.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
-#include <playground_base/gui/shared/FBHorizontalAutoSize.hpp>
 
 #include <cassert>
 

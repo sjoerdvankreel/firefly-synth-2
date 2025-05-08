@@ -1,4 +1,4 @@
-#include <playground_base/gui/shared/FBGUIGraphing.hpp>
+#include <playground_base/gui/shared/FBGraphing.hpp>
 
 FBNoteEvent
 FBDetailMakeNoteC4Off(int pos)

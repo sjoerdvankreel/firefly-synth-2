@@ -1,6 +1,6 @@
-#include <playground_base/gui/shared/FBGUI.hpp>
-#include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
+#include <playground_base/gui/shared/FBGUI.hpp>
+#include <playground_base/gui/shared/FBLookAndFeel.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -12,31 +12,12 @@ using namespace juce;
 
 static Font _font = {};
 static Typeface::Ptr _typeface = {};
-static std::unique_ptr<FBGUILookAndFeel> _lookAndFeel = {};
+static std::unique_ptr<FBLookAndFeel> _lookAndFeel = {};
 
-Font const&
-FBGUIGetFont()
-{
-  return _font;
-}
-
-float 
-FBGUIGetFontHeightFloat()
-{
-  return FBGUIGetFont().getHeight();
-}
-
-int
-FBGUIGetFontHeightInt()
-{
-  return static_cast<int>(std::ceil(FBGUIGetFontHeightFloat()));
-}
-
-int
-FBGUIGetStringWidthCached(std::string const& text)
-{
-  return FBGUIGetStringSizeCached(text).x;
-}
+Font const& FBGUIGetFont() { return _font; }
+float FBGUIGetFontHeightFloat() { return FBGUIGetFont().getHeight(); }
+int FBGUIGetFontHeightInt() { return static_cast<int>(std::ceil(FBGUIGetFontHeightFloat())); }
+int FBGUIGetStringWidthCached(std::string const& text) { return FBGUIGetStringSizeCached(text).x; }
 
 void
 FBGUITerminate()
@@ -58,7 +39,7 @@ FBGUIInit()
   auto fontBytes = FBReadFile(fontPath);
   _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
   _font = Font(FontOptions(_typeface)).withHeight(FBGUIFontSize);
-  _lookAndFeel = std::make_unique<FBGUILookAndFeel>();
+  _lookAndFeel = std::make_unique<FBLookAndFeel>();
   LookAndFeel::setDefaultLookAndFeel(_lookAndFeel.get());
 }
 

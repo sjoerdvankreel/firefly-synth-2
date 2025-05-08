@@ -1,12 +1,12 @@
 #pragma once
 
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
-#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>

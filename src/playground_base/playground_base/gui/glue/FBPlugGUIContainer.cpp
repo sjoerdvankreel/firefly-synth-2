@@ -1,6 +1,6 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/shared/FBLookAndFeel.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
-#include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContainer.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>

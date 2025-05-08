@@ -1,7 +1,6 @@
-#include <playground_base/gui/controls/FBSlider.hpp>
-#include <playground_base/gui/shared/FBGUIConfig.hpp>
-#include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
+#include <playground_base/gui/controls/FBSlider.hpp>
+#include <playground_base/gui/shared/FBLookAndFeel.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;
@@ -16,7 +15,7 @@ ConvertExchangeValueFromSkewed(FBStaticParamBase const& param, float normalized)
 }
 
 void 
-FBGUILookAndFeel::DrawLinearSliderExchangeThumb(
+FBLookAndFeel::DrawLinearSliderExchangeThumb(
   Graphics& g, FBParamSlider& slider, 
   int y, int height, float exchangeValue) 
 {
@@ -34,7 +33,7 @@ FBGUILookAndFeel::DrawLinearSliderExchangeThumb(
 }
 
 void 
-FBGUILookAndFeel::DrawRotarySliderExchangeThumb(
+FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Graphics& g, FBParamSlider& slider,
   int x, int y, int width, int height,
   float rotaryStartAngle, float rotaryEndAngle, 
@@ -55,14 +54,14 @@ FBGUILookAndFeel::DrawRotarySliderExchangeThumb(
 }
 
 BorderSize<int> 
-FBGUILookAndFeel::getLabelBorderSize(
+FBLookAndFeel::getLabelBorderSize(
   Label&)
 {
   return { 1, 2, 1, 2 };
 }
 
 void 
-FBGUILookAndFeel::positionComboBoxText(
+FBLookAndFeel::positionComboBoxText(
   ComboBox& b, Label& l)
 {
   l.setFont(getComboBoxFont(b));
@@ -71,7 +70,7 @@ FBGUILookAndFeel::positionComboBoxText(
 }
 
 void 
-FBGUILookAndFeel::drawLabel(
+FBLookAndFeel::drawLabel(
   Graphics& g, Label& label)
 {
   g.fillAll(label.findColour(Label::backgroundColourId));
@@ -87,7 +86,7 @@ FBGUILookAndFeel::drawLabel(
 }
 
 void
-FBGUILookAndFeel::drawComboBox(Graphics& g,
+FBLookAndFeel::drawComboBox(Graphics& g,
   int	width, int height, bool	isButtonDown,
   int	buttonX, int buttonY, int	buttonW, int buttonH, ComboBox& box)
 {
@@ -102,7 +101,7 @@ FBGUILookAndFeel::drawComboBox(Graphics& g,
 }
 
 void
-FBGUILookAndFeel::drawLinearSlider(
+FBLookAndFeel::drawLinearSlider(
   Graphics& g,
   int x, int y, int width, int height,
   float sliderPos, float minSliderPos, float maxSliderPos,
@@ -121,7 +120,7 @@ FBGUILookAndFeel::drawLinearSlider(
 }
 
 void
-FBGUILookAndFeel::drawRotarySlider(
+FBLookAndFeel::drawRotarySlider(
   Graphics& g,
   int x, int y, int width, int height, float sliderPos,
   float rotaryStartAngle, float rotaryEndAngle, Slider& s)
