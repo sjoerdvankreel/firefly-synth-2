@@ -7,7 +7,7 @@
 
 using namespace juce;
 
-static float constexpr MarkerSize = 8.0f; // TODO to topo gui or config header
+static float constexpr MarkerSize = 8.0f;
 static float constexpr HalfMarkerSize = MarkerSize / 2.0f;
 
 FBModuleGraphDisplayComponent::

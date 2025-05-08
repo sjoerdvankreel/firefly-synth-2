@@ -13,7 +13,6 @@ Component()
 void
 FBSectionComponent::resized()
 {
-  // TODO part of topo gui
   getChildComponent(0)->setBounds(getLocalBounds().expanded(-2, -2));
   getChildComponent(0)->resized();
 }
@@ -21,6 +20,5 @@ FBSectionComponent::resized()
 int
 FBSectionComponent::FixedWidth(int height) const
 {
-  // TODO part of topo gui
   return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height - 2 * 2) + 2 * 2;
 }

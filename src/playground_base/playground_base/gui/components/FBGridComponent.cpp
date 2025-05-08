@@ -173,7 +173,7 @@ FBGridComponent::resized()
   if (_type == FBGridType::Module)
   {
     _grid.rowGap = Grid::Px(2);
-    _grid.columnGap = Grid::Px(2); // TODO to topo gui
+    _grid.columnGap = Grid::Px(2);
   }
 
   for (auto const& e : _cells)
