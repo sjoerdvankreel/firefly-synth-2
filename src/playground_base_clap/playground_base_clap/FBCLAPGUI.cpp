@@ -125,8 +125,8 @@ FBCLAPPlugin::guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept
   hints->preserve_aspect_ratio = true;
   hints->can_resize_vertically = true;
   hints->can_resize_horizontally = true;
-  hints->aspect_ratio_width = _topo->static_.gui.aspectRatioWidth;
-  hints->aspect_ratio_height = _topo->static_.gui.aspectRatioHeight;
+  hints->aspect_ratio_width = _topo->static_.guiAspectRatioWidth;
+  hints->aspect_ratio_height = _topo->static_.guiAspectRatioHeight;
   return true;
 }
 

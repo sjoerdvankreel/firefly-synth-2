@@ -23,7 +23,7 @@ FFMakeGUISettingsTopo()
   guiGraphTrack.id = "{B45F4562-39D1-42CA-B600-0248C98CC292}";
   guiGraphTrack.type = FBParamType::Boolean;
   auto selectGuiGraphTrack = [](auto& module) { return &module.graphTrack; };
-  guiGraphTrack.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphTrack);
+  guiGraphTrack.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphTrack);
 
   auto& guiUserScale = result->guiParams[(int)FFGUISettingsGUIParam::UserScale];
   guiUserScale.defaultText = "1";
@@ -34,7 +34,7 @@ FFMakeGUISettingsTopo()
   guiUserScale.Linear().min = 0.5f;
   guiUserScale.Linear().max = 16.0f;
   auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
-  guiUserScale.addrSelector = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
+  guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
   return result;
 }

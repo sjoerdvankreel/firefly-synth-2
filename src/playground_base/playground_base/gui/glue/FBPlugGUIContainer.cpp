@@ -13,11 +13,11 @@ FBPlugGUIContainer::
 FBPlugGUIContainer::
 FBPlugGUIContainer(FBHostGUIContext* hostContext):
 FBPlugGUIContext(hostContext),
-_gui(hostContext->Topo()->static_.gui.factory(hostContext))
+_gui(hostContext->Topo()->static_.guiFactory(hostContext))
 {
   setOpaque(true);
   setVisible(true);
-  int plugWidth = hostContext->Topo()->static_.gui.plugWidth;
+  int plugWidth = hostContext->Topo()->static_.guiWidth;
   int plugHeight = GetHeightForAspectRatio(plugWidth);
   setSize(plugWidth, plugHeight);
   _gui->setSize(plugWidth, plugHeight);

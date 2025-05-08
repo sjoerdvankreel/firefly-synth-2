@@ -32,8 +32,8 @@ FBPlugGUIContext::SetSystemScale(double scale)
 int
 FBPlugGUIContext::GetHeightForAspectRatio(int width) const
 {
-  auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  return width * topoGUI.aspectRatioHeight / topoGUI.aspectRatioWidth;
+  auto const& topo = _hostContext->Topo()->static_;
+  return width * topo.guiAspectRatioHeight / topo.guiAspectRatioWidth;
 }
 
 double
@@ -47,26 +47,26 @@ FBPlugGUIContext::CombinedScale() const
 int
 FBPlugGUIContext::ClampHostWidthForScale(int width) const
 {
-  auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  double minW = topoGUI.plugWidth * UserScaleParam().Linear().min * _systemScale;
-  double maxW = topoGUI.plugWidth * UserScaleParam().Linear().max * _systemScale;
+  auto const& topo = _hostContext->Topo()->static_;
+  double minW = topo.guiWidth * UserScaleParam().Linear().min * _systemScale;
+  double maxW = topo.guiWidth * UserScaleParam().Linear().max * _systemScale;
   return static_cast<int>(std::round(std::clamp(static_cast<double>(width), minW, maxW)));
 }
 
 std::pair<int, int>
 FBPlugGUIContext::GetHostSize() const
 {
-  auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  int w = static_cast<int>(std::round(topoGUI.plugWidth * CombinedScale()));
-  int h = static_cast<int>(std::round(GetHeightForAspectRatio(topoGUI.plugWidth) * CombinedScale()));
+  auto const& topo = _hostContext->Topo()->static_;
+  int w = static_cast<int>(std::round(topo.guiWidth * CombinedScale()));
+  int h = static_cast<int>(std::round(GetHeightForAspectRatio(topo.guiWidth) * CombinedScale()));
   return { w, h };
 }
 
 void
 FBPlugGUIContext::SetUserScaleByHostWidth(int width)
 {
-  auto const& topoGUI = _hostContext->Topo()->static_.gui;
-  double userScalePlain = (static_cast<double>(width) / topoGUI.plugWidth) / _systemScale;
+  auto const& topo = _hostContext->Topo()->static_;
+  double userScalePlain = (static_cast<double>(width) / topo.guiWidth) / _systemScale;
   *UserScaleSpecial().state = UserScaleParam().NonRealTime().PlainToNormalized(userScalePlain);
   RequestRescale(CombinedScale());
 }

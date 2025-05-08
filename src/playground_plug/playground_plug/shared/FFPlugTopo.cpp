@@ -15,18 +15,6 @@
 #include <playground_base/base/topo/static/FBStaticTopo.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
-static FBStaticTopoGUI
-MakeTopoGUI()
-{
-  FBStaticTopoGUI result = {};
-  result.plugWidth = 900;
-  result.aspectRatioWidth = 52;
-  result.aspectRatioHeight = 26;
-  result.factory = [](FBHostGUIContext* hostContext) {
-    return std::make_unique<FFPlugGUI>(hostContext); };
-  return result;
-}
-
 static FBSpecialParam
 MakeSpecialParam(
   FBStaticTopo const& topo, void* state, 
@@ -36,7 +24,7 @@ MakeSpecialParam(
   result.paramIndex = paramIndex;
   result.moduleIndex = moduleIndex;
   auto const& param = topo.modules[moduleIndex].params[paramIndex];
-  result.state = param.addrSelectors.globalBlockProc(0, 0, state);
+  result.state = param.globalBlockProcAddr(0, 0, state);
   return result;
 }
 
@@ -49,7 +37,7 @@ MakeSpecialGUIParam(
   result.paramIndex = paramIndex;
   result.moduleIndex = moduleIndex;
   auto const& param = topo.modules[moduleIndex].guiParams[paramIndex];
-  result.state = param.addrSelector(0, 0, state);
+  result.state = param.scalarAddr(0, 0, state);
   return result;
 }
 
@@ -73,34 +61,31 @@ SpecialGUIParamsSelector(
   return result;
 }
 
-static FBStaticTopoState
-MakeTopoState()
-{
-  FBStaticTopoState result = {};
-  result.specialSelector = SpecialParamsSelector;
-  result.specialGUISelector = SpecialGUIParamsSelector;
-  result.exchangeStateSize = sizeof(FFExchangeState);
-  result.exchangeStateAlignment = alignof(FFExchangeState);
-  result.allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
-  result.allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
-  result.allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
-  result.allocRawExchangeState = []() { return static_cast<void*>(new FFExchangeState); };
-  result.freeRawGUIState = [](void* state) { delete static_cast<FFGUIState*>(state); };
-  result.freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
-  result.freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
-  result.freeRawExchangeState = [](void* state) { delete static_cast<FFExchangeState*>(state); };
-  result.hostExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->host; };
-  result.voicesExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voices; };
-  return result;
-}
-
 std::unique_ptr<FBStaticTopo>
 FFMakeTopo()
 {
   auto result = std::make_unique<FBStaticTopo>();
   result->meta = FFPlugMeta();
-  result->gui = MakeTopoGUI();
-  result->state = MakeTopoState();
+  result->guiWidth = 900;
+  result->guiAspectRatioWidth = 52;
+  result->guiAspectRatioHeight = 26;
+  result->guiFactory = [](FBHostGUIContext* hostContext) { return std::make_unique<FFPlugGUI>(hostContext); };
+
+  result->specialSelector = SpecialParamsSelector;
+  result->specialGUISelector = SpecialGUIParamsSelector;
+  result->exchangeStateSize = sizeof(FFExchangeState);
+  result->exchangeStateAlignment = alignof(FFExchangeState);
+  result->allocRawGUIState = []() { return static_cast<void*>(new FFGUIState); };
+  result->allocRawProcState = []() { return static_cast<void*>(new FFProcState); };
+  result->allocRawScalarState = []() { return static_cast<void*>(new FFScalarState); };
+  result->allocRawExchangeState = []() { return static_cast<void*>(new FFExchangeState); };
+  result->freeRawGUIState = [](void* state) { delete static_cast<FFGUIState*>(state); };
+  result->freeRawProcState = [](void* state) { delete static_cast<FFProcState*>(state); };
+  result->freeRawScalarState = [](void* state) { delete static_cast<FFScalarState*>(state); };
+  result->freeRawExchangeState = [](void* state) { delete static_cast<FFExchangeState*>(state); };
+  result->hostExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->host; };
+  result->voicesExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voices; };
+
   result->modules.resize((int)FFModuleType::Count);
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeGLFOTopo());

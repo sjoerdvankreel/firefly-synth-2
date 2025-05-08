@@ -44,7 +44,7 @@ FFMakeOsciModTopo()
   result->graphRenderer = FFOscisRenderGraph;
   result->id = "{546F9D74-670A-463D-80B0-B4BBD061DA88}";
   result->params.resize((int)FFOsciModParam::Count);
-  result->addrSelectors.voiceModuleExchange = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });
+  result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });
   auto selectModule = [](auto& state) { return &state.voice.osciMod; };
 
   auto& oversample = result->params[(int)FFOsciModParam::Oversample];
@@ -55,9 +55,9 @@ FFMakeOsciModTopo()
   oversample.id = "{2449CE02-EE0D-48E7-A716-E59633F279FB}";
   oversample.type = FBParamType::Boolean;
   auto selectOversample = [](auto& module) { return &module.block.oversample; };
-  oversample.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOversample);
-  oversample.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectOversample);
-  oversample.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectOversample);
+  oversample.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOversample);
+  oversample.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOversample);
+  oversample.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOversample);
 
   auto& expoFM = result->params[(int)FFOsciModParam::ExpoFM];
   expoFM.acc = false;
@@ -67,9 +67,9 @@ FFMakeOsciModTopo()
   expoFM.id = "{23FC415C-06AD-4ED3-8B29-08724D536096}";
   expoFM.type = FBParamType::Boolean;
   auto selectExpoFM = [](auto& module) { return &module.block.expoFM; };
-  expoFM.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectExpoFM);
-  expoFM.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectExpoFM);
-  expoFM.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectExpoFM);
+  expoFM.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExpoFM);
+  expoFM.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectExpoFM);
+  expoFM.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExpoFM);
 
   auto& amMode = result->params[(int)FFOsciModParam::AMMode];
   amMode.acc = false;
@@ -83,9 +83,9 @@ FFMakeOsciModTopo()
     { "{2E046F54-1966-4268-B973-CA6FADB1C50E}", "AM" },
     { "{968AFEB7-5BED-421A-8099-24B6066661EE}", "RM" } };
   auto selectAMMode = [](auto& module) { return &module.block.amMode; };
-  amMode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAMMode);
-  amMode.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectAMMode);
-  amMode.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAMMode);
+  amMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAMMode);
+  amMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectAMMode);
+  amMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAMMode);
 
   auto& amMix = result->params[(int)FFOsciModParam::AMMix];
   amMix.acc = true;
@@ -97,9 +97,9 @@ FFMakeOsciModTopo()
   amMix.type = FBParamType::Identity;
   amMix.slotFormatter = FFOsciModFormatSlot;
   auto selectAMMix = [](auto& module) { return &module.acc.amMix; };
-  amMix.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectAMMix);
-  amMix.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectAMMix);
-  amMix.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectAMMix);
+  amMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAMMix);
+  amMix.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectAMMix);
+  amMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAMMix);
   amMix.dependencies.enabled.audio.When({ (int)FFOsciModParam::AMMode }, [](auto const& vs) { return vs[0] != (int)FFOsciModAMMode::Off; });
 
   auto& fmOn = result->params[(int)FFOsciModParam::FMOn];
@@ -111,9 +111,9 @@ FFMakeOsciModTopo()
   fmOn.type = FBParamType::Boolean;
   fmOn.slotFormatter = FFOsciModFormatSlot;
   auto selectFMOn = [](auto& module) { return &module.block.fmOn; };
-  fmOn.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMOn);
-  fmOn.addrSelectors.voiceBlockProc = FFSelectProcParamAddr(selectModule, selectFMOn);
-  fmOn.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMOn);
+  fmOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFMOn);
+  fmOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFMOn);
+  fmOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFMOn);
 
   auto& fmIndex = result->params[(int)FFOsciModParam::FMIndex];
   fmIndex.acc = true;
@@ -125,9 +125,9 @@ FFMakeOsciModTopo()
   fmIndex.Log2().Init(-0.01, 0.01f, 16.01f);
   fmIndex.slotFormatter = FFOsciModFormatSlot;
   auto selectFMIndex = [](auto& module) { return &module.acc.fmIndex; };
-  fmIndex.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFMIndex);
-  fmIndex.addrSelectors.voiceAccProc = FFSelectProcParamAddr(selectModule, selectFMIndex);
-  fmIndex.addrSelectors.voiceExchange = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
+  fmIndex.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFMIndex);
+  fmIndex.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFMIndex);
+  fmIndex.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
   fmIndex.dependencies.enabled.audio.When({ (int)FFOsciModParam::FMOn }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;

@@ -114,8 +114,8 @@ FFPlugGUI::SetupGUI()
   // TODO better move to reusable?
   int vTabCount = 6;
   int tabHeight = 28; // TODO
-  auto const& topoGUI = HostContext()->Topo()->static_.gui;
-  int totalHeight = topoGUI.plugWidth * topoGUI.aspectRatioHeight / topoGUI.aspectRatioWidth;
+  auto const& topo = HostContext()->Topo()->static_;
+  int totalHeight = topo.guiWidth * topo.guiAspectRatioHeight / topo.guiAspectRatioWidth;
   float availableHeight = totalHeight - vTabCount * tabHeight;
   std::vector<int> rowSizes = {};
   rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
