@@ -3,10 +3,10 @@
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
 
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/controls/FBLabel.hpp>
+#include <playground_base/gui/controls/FBSlider.hpp>
+#include <playground_base/gui/controls/FBToggleButton.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
-#include <playground_base/gui/controls/FBParamLabel.hpp>
-#include <playground_base/gui/controls/FBParamSlider.hpp>
-#include <playground_base/gui/controls/FBParamToggleButton.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>

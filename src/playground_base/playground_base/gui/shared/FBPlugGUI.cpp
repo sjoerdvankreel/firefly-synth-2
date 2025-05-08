@@ -1,10 +1,10 @@
-#include <playground_base/gui/glue/FBHostGUIContext.hpp>
-#include <playground_base/gui/controls/FBParamSlider.hpp>
+#include <playground_base/gui/controls/FBSlider.hpp>
 #include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBGUIParamControl.hpp>
 #include <playground_base/gui/shared/FBParamsDependent.hpp>
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 

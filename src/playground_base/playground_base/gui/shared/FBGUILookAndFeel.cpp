@@ -1,5 +1,5 @@
+#include <playground_base/gui/controls/FBSlider.hpp>
 #include <playground_base/gui/shared/FBGUIConfig.hpp>
-#include <playground_base/gui/controls/FBParamSlider.hpp>
 #include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
