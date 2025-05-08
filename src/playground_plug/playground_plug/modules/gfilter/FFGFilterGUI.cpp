@@ -4,9 +4,9 @@
 
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
+#include <playground_base/gui/controls/FBComboBox.hpp>
 #include <playground_base/gui/controls/FBParamLabel.hpp>
 #include <playground_base/gui/controls/FBParamSlider.hpp>
-#include <playground_base/gui/controls/FBParamComboBox.hpp>
 #include <playground_base/gui/controls/FBParamToggleButton.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
