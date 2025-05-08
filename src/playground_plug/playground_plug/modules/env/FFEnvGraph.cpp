@@ -3,7 +3,7 @@
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
-#include <playground_base/gui/shared/FBGUIGraphing.hpp>
+#include <playground_base/gui/shared/FBGraphing.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 

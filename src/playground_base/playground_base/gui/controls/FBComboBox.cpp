@@ -1,5 +1,5 @@
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
-#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/gui/controls/FBComboBox.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
