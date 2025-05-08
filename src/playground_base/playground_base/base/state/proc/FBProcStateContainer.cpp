@@ -9,9 +9,9 @@
 
 FBProcStateContainer::
 FBProcStateContainer(FBRuntimeTopo const& topo):
-_rawState(topo.static_.state.allocRawProcState()),
-_freeRawState(topo.static_.state.freeRawProcState),
-_special(topo.static_.state.specialSelector(topo.static_, _rawState))
+_rawState(topo.static_.allocRawProcState()),
+_freeRawState(topo.static_.freeRawProcState),
+_special(topo.static_.specialSelector(topo.static_, _rawState))
 {
   for (int p = 0; p < topo.audio.params.size(); p++)
     if (topo.static_.modules[topo.audio.params[p].topoIndices.module.index].voice)

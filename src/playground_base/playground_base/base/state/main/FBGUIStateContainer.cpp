@@ -13,7 +13,7 @@ _special(topo.static_.specialGUISelector(topo.static_, _rawState))
 {
   for (int p = 0; p < topo.gui.params.size(); p++)
     _params.push_back(
-      topo.gui.params[p].static_.addrSelector(
+      topo.gui.params[p].static_.scalarAddr(
         topo.gui.params[p].topoIndices.module.slot,
         topo.gui.params[p].topoIndices.param.slot, _rawState));
   for (int p = 0; p < _params.size(); p++)
