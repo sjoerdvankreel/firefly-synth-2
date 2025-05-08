@@ -98,8 +98,8 @@ struct FBStaticTopo final
   int exchangeStateSize = {};
   int exchangeStateAlignment = {};
   FBSpecialParamsSelector specialSelector = {};
-  FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBSpecialGUIParamsSelector specialGUISelector = {};
+  FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 
   std::vector<FBStaticModule> modules = {};

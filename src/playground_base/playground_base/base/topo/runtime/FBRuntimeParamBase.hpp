@@ -1,8 +1,8 @@
 #pragma once
 
 #include <playground_base/base/shared/FBUtility.hpp>
+#include <playground_base/base/topo/static/FBStaticParam.hpp>
 #include <playground_base/base/topo/runtime/FBTopoIndices.hpp>
-#include <playground_base/base/topo/static/FBStaticParamBase.hpp>
 
 #include <string>
 
