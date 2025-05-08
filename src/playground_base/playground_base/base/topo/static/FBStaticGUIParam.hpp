@@ -2,7 +2,6 @@
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/base/topo/static/FBStaticParamBase.hpp>
-#include <playground_base/base/topo/static/FBScalarParamAddrs.hpp>
 
 struct FBStaticGUIParam final:
 public FBStaticParamBase

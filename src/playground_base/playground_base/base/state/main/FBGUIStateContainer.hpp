@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/base/topo/static/FBSpecialGUIParams.hpp>
+#include <playground_base/base/topo/static/FBStaticTopo.hpp>
 
 #include <vector>
 #include <utility>
