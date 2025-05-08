@@ -1,5 +1,5 @@
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/gui/controls/FBLabel.hpp>
-#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;

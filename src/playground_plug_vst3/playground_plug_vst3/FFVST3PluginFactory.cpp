@@ -2,9 +2,9 @@
 #include <playground_plug/shared/FFPlugMeta.hpp>
 #include <playground_plug/pipeline/FFPlugProcessor.hpp>
 
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <playground_base/gui/shared/FBGUIUtility.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>

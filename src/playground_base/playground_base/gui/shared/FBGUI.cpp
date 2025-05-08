@@ -1,5 +1,4 @@
-#include <playground_base/gui/shared/FBGUIConfig.hpp>
-#include <playground_base/gui/shared/FBGUIUtility.hpp>
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/gui/shared/FBGUILookAndFeel.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
@@ -10,8 +9,6 @@
 #include <unordered_map>
 
 using namespace juce;
-
-static inline int constexpr FontSize = 13;
 
 static Font _font = {};
 static Typeface::Ptr _typeface = {};
@@ -60,7 +57,7 @@ FBGUIInit()
   auto fontPath = selfPath.parent_path().parent_path() / "Resources" / "ui" / "JetBrainsMono-Medium.ttf";
   auto fontBytes = FBReadFile(fontPath);
   _typeface = Typeface::createSystemTypefaceFor(fontBytes.data(), fontBytes.size());
-  _font = Font(FontOptions(_typeface)).withHeight(FontSize);
+  _font = Font(FontOptions(_typeface)).withHeight(FBGUIFontSize);
   _lookAndFeel = std::make_unique<FBGUILookAndFeel>();
   LookAndFeel::setDefaultLookAndFeel(_lookAndFeel.get());
 }

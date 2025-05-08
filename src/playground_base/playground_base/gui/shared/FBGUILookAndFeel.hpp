@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/gui/shared/FBGUIUtility.hpp>
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 class FBParamSlider;

@@ -3,11 +3,15 @@
 #include <string>
 #include <juce_gui_basics/juce_gui_basics.h>
 
+inline int constexpr FBGUIFPS = 30;
+inline int constexpr FBGUIFontSize = 13;
+
 void FBGUIInit();
 void FBGUITerminate();
 
-juce::Font const& FBGUIGetFont();
 int FBGUIGetFontHeightInt();
 float FBGUIGetFontHeightFloat();
+juce::Font const& FBGUIGetFont();
+
 int FBGUIGetStringWidthCached(std::string const& text);
 juce::Point<int> FBGUIGetStringSizeCached(std::string const& text);
