@@ -8,8 +8,8 @@
 FBScalarStateContainer::
 FBScalarStateContainer(FBRuntimeTopo const& topo):
 _params(),
-_rawState(topo.static_.state.allocRawScalarState()),
-_freeRawState(topo.static_.state.freeRawScalarState)
+_rawState(topo.static_.allocRawScalarState()),
+_freeRawState(topo.static_.freeRawScalarState)
 {
   for (int p = 0; p < topo.audio.params.size(); p++)
     _params.push_back(

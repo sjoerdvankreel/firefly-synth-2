@@ -225,7 +225,7 @@ FBVST3EditController::onDataExchangeBlocksReceived(
 {
   if (numBlocks == 0)
     return;
-  memcpy(_exchangeState->Raw(), blocks[numBlocks - 1].data, _topo->static_.state.exchangeStateSize);
+  memcpy(_exchangeState->Raw(), blocks[numBlocks - 1].data, _topo->static_.exchangeStateSize);
   if (_guiEditor != nullptr)
     _guiEditor->UpdateExchangeState();
 }

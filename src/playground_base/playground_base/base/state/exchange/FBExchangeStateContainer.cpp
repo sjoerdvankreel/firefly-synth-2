@@ -6,10 +6,10 @@
 
 FBExchangeStateContainer::
 FBExchangeStateContainer(FBRuntimeTopo const& topo):
-_rawState(topo.static_.state.allocRawExchangeState()),
-_freeRawState(topo.static_.state.freeRawExchangeState),
-_host(topo.static_.state.hostExchangeAddr(_rawState)),
-_voices(topo.static_.state.voicesExchangeAddr(_rawState))
+_rawState(topo.static_.allocRawExchangeState()),
+_freeRawState(topo.static_.freeRawExchangeState),
+_host(topo.static_.hostExchangeAddr(_rawState)),
+_voices(topo.static_.voicesExchangeAddr(_rawState))
 {
   for (int m = 0; m < topo.modules.size(); m++)
   {

@@ -168,8 +168,8 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
   auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
     config.numBlocks = 1;
     config.userContextID = 0;
-    config.blockSize = _topo->static_.state.exchangeStateSize;
-    config.alignment = _topo->static_.state.exchangeStateAlignment;
+    config.blockSize = _topo->static_.exchangeStateSize;
+    config.alignment = _topo->static_.exchangeStateAlignment;
     return true; };
   _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
   _exchangeHandler->onConnect(other, getHostContext());

@@ -77,17 +77,15 @@ typedef std::function<std::unique_ptr<FBPlugGUI>(
 FBHostGUIContext* context)>
 FBPlugGUIFactory;
 
-struct FBStaticTopoGUI final
+struct FBStaticTopo final
 {
-  int plugWidth = {};
-  int aspectRatioWidth = {};
-  int aspectRatioHeight = {};
+  int guiWidth = {};
+  int guiAspectRatioWidth = {};
+  int guiAspectRatioHeight = {};
   FBPlugGUIFactory guiFactory = {};
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoGUI);
-}; 
 
-struct FBStaticTopoState final
-{
+  FBStaticTopoMeta meta = {};
+
   void* (*allocRawGUIState)() = {};
   void* (*allocRawProcState)() = {};
   void* (*allocRawScalarState)() = {};
@@ -103,14 +101,7 @@ struct FBStaticTopoState final
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBSpecialGUIParamsSelector specialGUISelector = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
-  FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopoState);
-};
 
-struct FBStaticTopo final
-{
-  FBStaticTopoGUI gui = {};
-  FBStaticTopoMeta meta = {};
-  FBStaticTopoState state = {};
   std::vector<FBStaticModule> modules = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };
