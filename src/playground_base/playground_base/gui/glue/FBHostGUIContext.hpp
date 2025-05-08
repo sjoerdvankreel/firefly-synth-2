@@ -1,14 +1,30 @@
 #pragma once
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/gui/glue/FBHostContextMenu.hpp>
-
 #include <juce_gui_basics/juce_gui_basics.h>
+
 #include <memory>
+#include <string>
+#include <vector>
 
 struct FBRuntimeTopo;
 class FBGUIStateContainer;
 class FBExchangeStateContainer;
+
+struct FBHostContextMenuItem
+{
+  int hostTag = -1;
+  std::string name = {};
+  bool checked = false;
+  bool enabled = false;
+  bool separator = false;
+  bool subMenuEnd = false;
+  bool subMenuStart = false;
+};
+
+std::unique_ptr<juce::PopupMenu>
+FBMakeHostContextMenu(
+  std::vector<FBHostContextMenuItem> const& items);
 
 class FBHostGUIContext
 {
