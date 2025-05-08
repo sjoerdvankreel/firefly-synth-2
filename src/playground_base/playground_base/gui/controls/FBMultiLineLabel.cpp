@@ -1,6 +1,6 @@
 #include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/shared/FBGUIUtility.hpp>
-#include <playground_base/gui/controls/FBAutoSizeMultiLineLabel.hpp>
+#include <playground_base/gui/controls/FBMultiLineLabel.hpp>
 
 using namespace juce;
 
