@@ -2,14 +2,14 @@
 #include <playground_plug/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsTopo.hpp>
 
-#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/controls/FBLabel.hpp>
+#include <playground_base/gui/controls/FBToggleButton.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
-#include <playground_base/gui/controls/FBGUIParamLabel.hpp>
-#include <playground_base/gui/controls/FBGUIParamToggleButton.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleTabComponent.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
 
