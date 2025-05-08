@@ -1,4 +1,4 @@
-#include <playground_base/base/topo/param/FBLog2Param.hpp>
+#include <playground_base/base/topo/static/FBLog2Param.hpp>
 
 bool FBLog2ParamNonRealTime::IsItems() const { return false; }
 bool FBLog2ParamNonRealTime::IsStepped() const { return false; }

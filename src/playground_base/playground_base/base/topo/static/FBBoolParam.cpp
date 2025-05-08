@@ -1,4 +1,4 @@
-#include <playground_base/base/topo/param/FBBoolParam.hpp>
+#include <playground_base/base/topo/static/FBBoolParam.hpp>
 
 int FBBoolParamNonRealTime::ValueCount() const { return 2; }
 bool FBBoolParamNonRealTime::IsItems() const { return false; }

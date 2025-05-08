@@ -1,8 +1,8 @@
 #pragma once
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
-#include <playground_base/base/topo/param/FBBarsItem.hpp>
-#include <playground_base/base/topo/param/FBParamNonRealTime.hpp>
+#include <playground_base/base/topo/static/FBBarsItem.hpp>
+#include <playground_base/base/topo/static/FBParamNonRealTime.hpp>
 
 #include <string>
 #include <vector>

@@ -12,7 +12,7 @@ FFMakeGFilterTopo()
   result->slotCount = FFGFilterCount;
   result->id = "{290E86EF-DFE9-4A3C-B6B2-9063643DD0E8}";
   result->params.resize((int)FFGFilterParam::Count);
-  result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gFilter; });
+  result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gFilter; });
   auto selectModule = [](auto& state) { return &state.global.gFilter; };
 
   auto& on = result->params[(int)FFGFilterParam::On];
@@ -22,9 +22,9 @@ FFMakeGFilterTopo()
   on.id = "{B9DF9543-5115-4D9C-89DD-62D5D495DBF8}";
   on.type = FBParamType::Boolean;
   auto selectOn = [](auto& module) { return &module.block.on; };
-  on.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOn);
-  on.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
-  on.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectOn);
+  on.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOn);
+  on.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOn);
+  on.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOn);
 
   auto& mode = result->params[(int)FFGFilterParam::Mode];
   mode.acc = false;
@@ -44,9 +44,9 @@ FFMakeGFilterTopo()
     { "{77FD4175-A9AD-4A2E-B701-C08477BCE07D}", "LSH" },
     { "{662A7E42-52D0-4069-AB74-1963E266D5A1}", "HSH" } };
   auto selectMode = [](auto& module) { return &module.block.mode; };
-  mode.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectMode);
-  mode.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectMode);
-  mode.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectMode);
+  mode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMode);
+  mode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMode);
+  mode.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMode);
 
   auto& res = result->params[(int)FFGFilterParam::Res];
   res.acc = true;
@@ -57,9 +57,9 @@ FFMakeGFilterTopo()
   res.id = "{ED140CF2-52C6-40A6-9F39-44E8069FFC77}";
   res.type = FBParamType::Identity;
   auto selectRes = [](auto& module) { return &module.acc.res; };
-  res.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectRes);
-  res.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectRes);
-  res.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectRes);
+  res.scalarAddr = FFSelectScalarParamAddr(selectModule, selectRes);
+  res.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectRes);
+  res.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectRes);
 
   auto& freq = result->params[(int)FFGFilterParam::Freq];
   freq.acc = true;
@@ -71,9 +71,9 @@ FFMakeGFilterTopo()
   freq.type = FBParamType::Log2;
   freq.Log2().Init(0.0f, 20.0f, 20000.0f);
   auto selectFreq = [](auto& module) { return &module.acc.freq; };
-  freq.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectFreq);
-  freq.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectFreq);
-  freq.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectFreq);
+  freq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFreq);
+  freq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFreq);
+  freq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFreq);
 
   auto& gain = result->params[(int)FFGFilterParam::Gain];
   gain.acc = true;
@@ -86,9 +86,9 @@ FFMakeGFilterTopo()
   gain.Linear().min = -24.0f;
   gain.Linear().max = 24.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
-  gain.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectGain);
-  gain.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectGain);
-  gain.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectGain);
+  gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
+  gain.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
+  gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
   gain.dependencies.enabled.audio.When({ (int)FFGFilterParam::Mode }, [](auto const& vs) { return vs[0] >= (int)FFGFilterMode::BLL; });
 
   return result;

@@ -17,23 +17,23 @@ _special(topo.static_.state.specialSelector(topo.static_, _rawState))
     if (topo.static_.modules[topo.audio.params[p].topoIndices.module.index].voice)
       if (topo.audio.params[p].static_.acc)
         _params.push_back(FBProcParamState(
-          topo.audio.params[p].static_.addrSelectors.voiceAccProc(
+          topo.audio.params[p].static_.voiceAccProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
       else
         _params.push_back(FBProcParamState(
-          topo.audio.params[p].static_.addrSelectors.voiceBlockProc(
+          topo.audio.params[p].static_.voiceBlockProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
     else
       if (topo.audio.params[p].static_.acc)
         _params.push_back(FBProcParamState(
-          topo.audio.params[p].static_.addrSelectors.globalAccProc(
+          topo.audio.params[p].static_.globalAccProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
       else
         _params.push_back(FBProcParamState(
-          topo.audio.params[p].static_.addrSelectors.globalBlockProc(
+          topo.audio.params[p].static_.globalBlockProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
 

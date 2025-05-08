@@ -24,13 +24,6 @@ FBVoiceModuleExchangeAddrSelector;
 typedef std::function<void(FBModuleGraphComponentData* graphData)>
 FBModuleGraphRenderer;
 
-struct FBModuleAddrSelectors final
-{
-  FB_COPY_MOVE_DEFCTOR(FBModuleAddrSelectors);
-  FBVoiceModuleExchangeAddrSelector voiceModuleExchange = {};
-  FBGlobalModuleExchangeAddrSelector globalModuleExchange = {};
-};
-
 struct FBStaticModule final
 {
   bool voice = false;
@@ -38,10 +31,11 @@ struct FBStaticModule final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
-  FBModuleAddrSelectors addrSelectors = {};
-  FBModuleGraphRenderer graphRenderer = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
+  FBModuleGraphRenderer graphRenderer = {};
+  FBVoiceModuleExchangeAddrSelector voiceModuleExchangeAddr = {};
+  FBGlobalModuleExchangeAddrSelector globalModuleExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);
 
   template <class T, class ParamIndex>

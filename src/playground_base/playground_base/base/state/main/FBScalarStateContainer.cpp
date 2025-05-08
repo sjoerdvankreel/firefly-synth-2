@@ -13,7 +13,7 @@ _freeRawState(topo.static_.freeRawScalarState)
 {
   for (int p = 0; p < topo.audio.params.size(); p++)
     _params.push_back(
-      topo.audio.params[p].static_.addrSelectors.scalar(
+      topo.audio.params[p].static_.scalarAddr(
         topo.audio.params[p].topoIndices.module.slot,
         topo.audio.params[p].topoIndices.param.slot, _rawState));
   for (int p = 0; p < _params.size(); p++)

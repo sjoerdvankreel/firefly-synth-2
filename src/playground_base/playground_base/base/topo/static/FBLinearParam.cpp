@@ -1,4 +1,4 @@
-#include <playground_base/base/topo/param/FBLinearParam.hpp>
+#include <playground_base/base/topo/static/FBLinearParam.hpp>
 
 bool FBLinearParamNonRealTime::IsItems() const { return false; }
 bool FBLinearParamNonRealTime::IsStepped() const { return false; }

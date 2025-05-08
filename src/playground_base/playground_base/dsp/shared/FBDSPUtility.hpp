@@ -2,7 +2,7 @@
 
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/shared/FBSIMD.hpp>
-#include <playground_base/base/topo/param/FBBarsItem.hpp>
+#include <playground_base/base/topo/static/FBBarsItem.hpp>
 #include <xsimd/xsimd.hpp>
 
 #include <cmath>

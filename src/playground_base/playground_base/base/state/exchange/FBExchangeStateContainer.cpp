@@ -15,18 +15,16 @@ _voices(topo.static_.voicesExchangeAddr(_rawState))
   {
     auto const& indices = topo.modules[m].topoIndices;
     auto const& static_ = topo.static_.modules[indices.index];
-    if (!static_.voice && static_.addrSelectors.globalModuleExchange)
+    if (!static_.voice && static_.globalModuleExchangeAddr)
     {
       _modules.push_back(std::make_unique<FBModuleExchangeState>(
-        static_.addrSelectors.globalModuleExchange(
-          indices.slot, _rawState)));
+        static_.globalModuleExchangeAddr(indices.slot, _rawState)));
     }
-    else if(static_.voice && static_.addrSelectors.voiceModuleExchange)
+    else if(static_.voice && static_.voiceModuleExchangeAddr)
     {
       std::array<FBModuleProcExchangeState*, FBMaxVoices> moduleExchange = {};
       for (int v = 0; v < FBMaxVoices; v++)
-        moduleExchange[v] = static_.addrSelectors.voiceModuleExchange(
-          v, indices.slot, _rawState);
+        moduleExchange[v] = static_.voiceModuleExchangeAddr(v, indices.slot, _rawState);
       _modules.push_back(std::make_unique<FBModuleExchangeState>(moduleExchange));
     }
     else
@@ -38,12 +36,12 @@ _voices(topo.static_.voicesExchangeAddr(_rawState))
   for (int p = 0; p < topo.audio.params.size(); p++)
     if (topo.static_.modules[topo.audio.params[p].topoIndices.module.index].voice)
       _params.push_back(FBParamExchangeState(
-        topo.audio.params[p].static_.addrSelectors.voiceExchange(
+        topo.audio.params[p].static_.voiceExchangeAddr(
           topo.audio.params[p].topoIndices.module.slot,
           topo.audio.params[p].topoIndices.param.slot, _rawState)));
     else
       _params.push_back(FBParamExchangeState(
-        topo.audio.params[p].static_.addrSelectors.globalExchange(
+        topo.audio.params[p].static_.globalExchangeAddr(
           topo.audio.params[p].topoIndices.module.slot,
           topo.audio.params[p].topoIndices.param.slot, _rawState)));
 

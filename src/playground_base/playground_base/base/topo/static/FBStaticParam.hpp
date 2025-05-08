@@ -2,15 +2,15 @@
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
-#include <playground_base/base/topo/static/FBParamsDependencies.hpp>
 
-#include <playground_base/base/topo/param/FBLog2Param.hpp>
-#include <playground_base/base/topo/param/FBBoolParam.hpp>
-#include <playground_base/base/topo/param/FBListParam.hpp>
-#include <playground_base/base/topo/param/FBBarsParam.hpp>
-#include <playground_base/base/topo/param/FBLinearParam.hpp>
-#include <playground_base/base/topo/param/FBIdentityParam.hpp>
-#include <playground_base/base/topo/param/FBDiscreteParam.hpp>
+#include <playground_base/base/topo/static/FBLog2Param.hpp>
+#include <playground_base/base/topo/static/FBBoolParam.hpp>
+#include <playground_base/base/topo/static/FBListParam.hpp>
+#include <playground_base/base/topo/static/FBBarsParam.hpp>
+#include <playground_base/base/topo/static/FBLinearParam.hpp>
+#include <playground_base/base/topo/static/FBIdentityParam.hpp>
+#include <playground_base/base/topo/static/FBDiscreteParam.hpp>
+#include <playground_base/base/topo/static/FBParamsDependencies.hpp>
 
 #include <array>
 #include <string>

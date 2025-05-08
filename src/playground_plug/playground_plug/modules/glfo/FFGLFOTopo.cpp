@@ -14,7 +14,7 @@ FFMakeGLFOTopo()
   result->graphRenderer = FFGLFORenderGraph;
   result->id = "{D89A9DCA-6A8F-48E5-A317-071E688D729E}";
   result->params.resize((int)FFGLFOParam::Count);
-  result->addrSelectors.globalModuleExchange = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gLFO; });
+  result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gLFO; });
   auto selectModule = [](auto& state) { return &state.global.gLFO; };
 
   auto& on = result->params[(int)FFGLFOParam::On];
@@ -24,9 +24,9 @@ FFMakeGLFOTopo()
   on.id = "{A9741F9B-5E07-40D9-8FC1-73F90363EF0C}";
   on.type = FBParamType::Boolean;
   auto selectOn = [](auto& module) { return &module.block.on; };
-  on.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectOn);
-  on.addrSelectors.globalBlockProc = FFSelectProcParamAddr(selectModule, selectOn);
-  on.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectOn);
+  on.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOn);
+  on.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOn);
+  on.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOn);
 
   auto& rate = result->params[(int)FFGLFOParam::Rate];
   rate.acc = true;
@@ -39,8 +39,8 @@ FFMakeGLFOTopo()
   rate.Linear().min = 0.1f;
   rate.Linear().max = 20.0f;
   auto selectRate = [](auto& module) { return &module.acc.rate; };
-  rate.addrSelectors.scalar = FFSelectScalarParamAddr(selectModule, selectRate);
-  rate.addrSelectors.globalAccProc = FFSelectProcParamAddr(selectModule, selectRate);
-  rate.addrSelectors.globalExchange = FFSelectExchangeParamAddr(selectModule, selectRate);
+  rate.scalarAddr = FFSelectScalarParamAddr(selectModule, selectRate);
+  rate.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectRate);
+  rate.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectRate);
   return result;
 }
