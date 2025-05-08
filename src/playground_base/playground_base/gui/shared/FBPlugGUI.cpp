@@ -1,5 +1,4 @@
 #include <playground_base/gui/controls/FBSlider.hpp>
-#include <playground_base/gui/shared/FBGUIConfig.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/shared/FBGUIParamControl.hpp>
