@@ -1,7 +1,7 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/controls/FBGUIParamComboBox.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeGUIParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;
 

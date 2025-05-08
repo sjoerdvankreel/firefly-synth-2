@@ -1,5 +1,5 @@
 #include <playground_base/gui/shared/FBGUIParamComponent.hpp>
-#include <playground_base/base/topo/runtime/FBRuntimeGUIParam.hpp>
+#include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 FBGUIParamComponent::
 FBGUIParamComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
