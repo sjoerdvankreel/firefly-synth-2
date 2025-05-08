@@ -2,10 +2,10 @@
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
 
-#include <playground_base/gui/shared/FBPlugGUI.hpp>
-#include <playground_base/gui/shared/FBParamControl.hpp>
 #include <playground_base/gui/controls/FBSlider.hpp>
 #include <playground_base/gui/controls/FBToggleButton.hpp>
+#include <playground_base/gui/shared/FBPlugGUI.hpp>
+#include <playground_base/gui/shared/FBParamComponent.hpp>
 
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
