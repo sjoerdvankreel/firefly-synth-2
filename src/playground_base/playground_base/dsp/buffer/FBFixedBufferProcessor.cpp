@@ -1,7 +1,7 @@
 #include <playground_base/dsp/host/FBHostBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
-#include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
-#include <playground_base/dsp/pipeline/buffer/FBFixedBufferProcessor.hpp>
+#include <playground_base/dsp/buffer/FBBufferBlock.hpp>
+#include <playground_base/dsp/buffer/FBFixedBufferProcessor.hpp>
 
 #include <cassert>
 

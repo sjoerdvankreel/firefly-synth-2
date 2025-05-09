@@ -1,5 +1,5 @@
-#include <playground_base/dsp/pipeline/glue/FBHostInputBlock.hpp>
-#include <playground_base/dsp/pipeline/buffer/FBHostBufferProcessor.hpp>
+#include <playground_base/dsp/host/FBHostBlock.hpp>
+#include <playground_base/dsp/buffer/FBHostBufferProcessor.hpp>
 
 #include <algorithm>
 

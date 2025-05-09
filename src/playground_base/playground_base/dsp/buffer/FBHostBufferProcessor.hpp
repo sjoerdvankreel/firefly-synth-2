@@ -1,7 +1,7 @@
 #pragma once
 
+#include <playground_base/dsp/buffer/FBBufferBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
-#include <playground_base/dsp/pipeline/buffer/FBBufferInputBlock.hpp>
 
 struct FBHostInputBlock;
 
