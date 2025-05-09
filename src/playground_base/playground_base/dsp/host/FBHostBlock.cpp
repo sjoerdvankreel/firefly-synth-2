@@ -1,13 +1,13 @@
-#include <playground_base/dsp/pipeline/glue/FBHostAudioBlock.hpp>
+#include <playground_base/dsp/host/FBHostBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
 #include <cassert>
 
 FBHostAudioBlock::
-FBHostAudioBlock(float** channels, int count):
-_count(count), _store({ channels[0], channels[1] }) {}
+FBHostAudioBlock(float** channels, int count) :
+  _count(count), _store({ channels[0], channels[1] }) {}
 
-void 
+void
 FBHostAudioBlock::CopyFrom(
   FBBufferAudioBlock const& rhs, int count)
 {
