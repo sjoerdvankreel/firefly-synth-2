@@ -1,8 +1,8 @@
 #pragma once
 
-#include <playground_base/dsp/host/FBHostBlock.hpp>
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBFixedBlock.hpp>
+#include <playground_base/dsp/host/FBHostBlock.hpp>
 
 #include <memory>
 
@@ -18,8 +18,8 @@ class FBGraphRenderState final
 {
   friend class FBModuleGraphDisplayComponent;
 
-  FBFixedFloatAudioArray _audio = {};
   std::vector<FBNoteEvent> _notes = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> _audio = {};
 
   FBPlugGUI const* const _plugGUI;
   std::unique_ptr<FBPlugInputBlock> _input;
