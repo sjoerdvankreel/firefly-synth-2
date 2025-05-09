@@ -9,8 +9,8 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
-#include <playground_base/dsp/buffer/FBHostBufferProcessor.hpp>
-#include <playground_base/dsp/buffer/FBFixedBufferProcessor.hpp>
+#include <playground_base/dsp/buffer/FBHostToPlugProcessor.hpp>
+#include <playground_base/dsp/buffer/FBPlugToHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
@@ -29,8 +29,8 @@ _procState(hostContext->ProcState()),
 _exchangeState(hostContext->ExchangeState()),
 _plug(hostContext->MakePlugProcessor()),
 _voiceManager(std::make_unique<FBVoiceManager>(hostContext->ProcState())),
-_hostBuffer(std::make_unique<FBHostBufferProcessor>()),
-_fixedBuffer(std::make_unique<FBFixedBufferProcessor>(_voiceManager.get())),
+_hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
+_plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
   _fixedOut.procState = _procState;
@@ -80,8 +80,8 @@ FBHostProcessor::ProcessHost(
   }
 
   FBFixedInputBlock* fixedIn;
-  _hostBuffer->BufferFromHost(input);
-  while ((fixedIn = _hostBuffer->ProcessToFixed()) != nullptr)
+  _hostToPlug->BufferFromHost(input);
+  while ((fixedIn = _hostToPlug->ProcessToPlug()) != nullptr)
   {
     _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
@@ -90,9 +90,9 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPreVoice(_plugIn);
     ProcessVoices();
     _plug->ProcessPostVoice(_plugIn, _fixedOut);
-    _fixedBuffer->BufferFromFixed(_fixedOut.audio);
+    _plugToHost->BufferFromPlug(_fixedOut.audio);
   }
-  _fixedBuffer->ProcessToHost(output);  
+  _plugToHost->ProcessToHost(output);
 
   for (auto const& entry : _fixedOut.outputParamsNormalized)
     output.outputParams.push_back({ entry.first, entry.second });
