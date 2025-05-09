@@ -15,10 +15,10 @@
 #include <algorithm>
 #include <unordered_map>
 
-static FBBlockEvent
-MakeBlockEvent(int param, ParamValue value)
+static FBBlockAutoEvent
+MakeBlockAutoEvent(int param, ParamValue value)
 {
-  FBBlockEvent result;
+  FBBlockAutoEvent result;
   result.param = param;
   result.normalized = value;
   return result;
@@ -193,7 +193,7 @@ FBVST3AudioEffect::process(ProcessData& data)
   ParamValue value;
   IParamValueQueue* queue;
   std::unordered_map<int, int>::const_iterator iter;
-  _input.block.clear();
+  _input.blockAuto.clear();
   auto& accAuto = _input.accAutoByParamThenSample;
   accAuto.clear();
   if(data.inputParameterChanges != nullptr)
@@ -210,7 +210,7 @@ FBVST3AudioEffect::process(ProcessData& data)
             else
             {
               if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-                _input.block.push_back(MakeBlockEvent(iter->second, value));
+                _input.blockAuto.push_back(MakeBlockAutoEvent(iter->second, value));
             }
   std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
 

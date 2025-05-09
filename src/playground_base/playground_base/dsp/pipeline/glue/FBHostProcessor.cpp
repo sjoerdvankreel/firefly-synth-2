@@ -54,7 +54,7 @@ FBHostProcessor::ProcessHost(
 {
   _plugIn.bpm = input.bpm;
   auto denormalState = FBDisableDenormal(); 
-  for (auto const& be : input.block)
+  for (auto const& be : input.blockAuto)
     _procState->Params()[be.param].Value(be.normalized);
 
   auto const& hostSmoothTimeSpecial = _procState->Special().hostSmoothTime;

@@ -17,11 +17,11 @@
 #include <clap/helpers/plugin.hxx>
 #include <algorithm>
 
-static FBBlockEvent
-MakeBlockEvent(
+static FBBlockAutoEvent
+MakeBlockAutoEvent(
   int param, double normalized)
 {
-  FBBlockEvent result;
+  FBBlockAutoEvent result;
   result.param = param;
   result.normalized = static_cast<float>(normalized);
   return result;
@@ -208,7 +208,7 @@ FBCLAPPlugin::PushParamChangeToProcessorBlock(
   if (static_.acc)
     _input.accAutoByParamThenSample.push_back(MakeAccAutoEvent(index, normalized, pos));
   else
-    _input.block.push_back(MakeBlockEvent(index, normalized));
+    _input.blockAuto.push_back(MakeBlockAutoEvent(index, normalized));
 }
 
 void 
@@ -250,7 +250,7 @@ FBCLAPPlugin::process(
   const clap_process* process) noexcept 
 {
   _input.note.clear();
-  _input.block.clear();
+  _input.blockAuto.clear();
   _input.accAutoByParamThenSample.clear();
   _input.accModByParamThenNoteThenSample.clear();
 
