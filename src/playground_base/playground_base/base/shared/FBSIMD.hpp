@@ -27,18 +27,20 @@ public:
   FBSIMDArray(FBSIMDVector<T> val) { Fill(val); }
   FBSIMDArray(T val) { Fill(FBSIMDVector<T>(val)); }
 
+  void NaNCheck();
   template <int Times> void UpsampleStretch();
 
-  void NaNCheck();
   T Last() const { return _data[N - 1]; }
   T Get(int pos) const { return _data[pos]; };
   void Set(int pos, T val) { _data[pos] = val; };
   T* Ptr(int offset) { return &_data[offset]; }
   T const* Ptr(int offset) const { return &_data[offset]; }
+
   void Store(int pos, FBSIMDVector<T> val) { val.store_aligned(Ptr(pos)); }
   void Add(int pos, FBSIMDVector<T> val) { (Load(pos) + val).store_aligned(Ptr(pos)); }
   FBSIMDVector<T> Load(int pos) const { return FBSIMDVector<T>::load_aligned(Ptr(pos)); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
+  void CopyTo(FBSIMDArray<T, N>& rhs) const { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) rhs.Store(i, Load(i)); }
 };
 
 template <class T, int N>
@@ -84,6 +86,7 @@ public:
   FBSIMDArray<T, N1>& operator[](int i) { return _data[i]; }
   FBSIMDArray<T, N1> const& operator[](int i) const { return _data[i]; }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N2; i++) _data[i].Fill(val); }
+  void CopyTo(FBSIMDArray2<T, N1, N2>& rhs) const { for (int i = 0; i < N2; i++) _data[i].CopyTo(rhs._data[i]); }
 };
 
 template <class T, int N1, int N2, int N3>
@@ -94,4 +97,5 @@ public:
   FBSIMDArray2<T, N1, N2>& operator[](int i) { return _data[i]; }
   FBSIMDArray2<T, N1, N2> const& operator[](int i) const { return _data[i]; }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N3; i++) _data[i].Fill(val); }
+  void CopyTo(FBSIMDArray3<T, N1, N2, N3>& rhs) const { for (int i = 0; i < N3; i++) _data[i].CopyTo(rhs._data[i]); }
 };

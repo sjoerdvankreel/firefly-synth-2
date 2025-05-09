@@ -10,7 +10,7 @@ FBFixedBufferProcessor::
 FBFixedBufferProcessor(FBVoiceManager* voiceManager):
 _voiceManager(voiceManager)
 {
-  FBFixedFloatAudioArray lag;
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> lag;
   lag.Fill(0.0f);
   _buffer.AppendFixed(lag);
 }
@@ -32,7 +32,7 @@ FBFixedBufferProcessor::ProcessToHost(FBHostOutputBlock& host)
 }
 
 void
-FBFixedBufferProcessor::BufferFromFixed(FBFixedFloatAudioArray const& fixed)
+FBFixedBufferProcessor::BufferFromFixed(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& fixed)
 {
   _buffer.AppendFixed(fixed);
   _returnedVoices.insert(
