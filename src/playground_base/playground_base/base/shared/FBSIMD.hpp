@@ -8,6 +8,7 @@
 typedef xsimd::sse2 FBXSIMDBatchType;
 inline int constexpr FBSIMDFloatCount = 4;
 inline int constexpr FBSIMDAlign = FBSIMDFloatCount * sizeof(float);
+inline int constexpr FBFixedBlockSamples = 4 * FBSIMDFloatCount;
 
 template <class T> using FBSIMDVector = xsimd::batch<T, xsimd::sse2>;
 template <class T> struct FBSIMDTraits {

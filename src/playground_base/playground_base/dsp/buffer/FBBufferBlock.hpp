@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBFixedBlock.hpp>
+#include <playground_base/dsp/host/FBHostBlock.hpp>
 
 #include <array>
 #include <vector>
@@ -21,4 +21,13 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferAudioBlock);
   int Count() const { return static_cast<int>(_store[0].size()); }
   std::vector<float> const& operator[](int ch) const { return _store[ch]; }
+};
+
+struct FBBufferInputBlock final
+{
+  FBBufferAudioBlock audio = {};
+  std::vector<FBNoteEvent> note = {};
+  std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
+  std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferInputBlock);
 };
