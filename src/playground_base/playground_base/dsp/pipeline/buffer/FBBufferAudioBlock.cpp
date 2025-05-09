@@ -1,4 +1,4 @@
-#include <playground_base/dsp/pipeline/glue/FBHostAudioBlock.hpp>
+#include <playground_base/dsp/host/FBHostBlock.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBBufferAudioBlock.hpp>
 
 #include <cassert>
@@ -20,9 +20,9 @@ FBBufferAudioBlock::AppendHost(FBHostAudioBlock const& rhs)
 }
 
 void
-FBBufferAudioBlock::AppendFixed(FBFixedFloatAudioArray const& rhs)
+FBBufferAudioBlock::AppendFixed(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& rhs)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      _store[ch].push_back(rhs[ch][s]);
+      _store[ch].push_back(rhs[ch].Get(s));
 }
