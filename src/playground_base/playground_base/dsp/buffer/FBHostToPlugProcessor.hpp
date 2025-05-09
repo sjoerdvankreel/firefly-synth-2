@@ -5,13 +5,13 @@
 
 struct FBHostInputBlock;
 
-class FBHostBufferProcessor final
+class FBHostToPlugProcessor final
 {
+  FBBufferBlock _buffer = {};
   FBFixedInputBlock _fixed = {};
-  FBBufferInputBlock _buffer = {};
 
 public:
-  FBFixedInputBlock* ProcessToFixed();
-  void BufferFromHost(FBHostInputBlock const& host);
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostBufferProcessor);
+  FBFixedInputBlock* ProcessToPlug();
+  void BufferFromHost(FBHostInputBlock const& hostBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostToPlugProcessor);
 };

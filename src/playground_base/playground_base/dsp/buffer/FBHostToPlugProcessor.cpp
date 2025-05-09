@@ -1,5 +1,5 @@
 #include <playground_base/dsp/host/FBHostBlock.hpp>
-#include <playground_base/dsp/buffer/FBHostBufferProcessor.hpp>
+#include <playground_base/dsp/buffer/FBHostToPlugProcessor.hpp>
 
 #include <algorithm>
 
@@ -63,7 +63,7 @@ static void GatherAccFromHost(
 }
 
 FBFixedInputBlock*
-FBHostBufferProcessor::ProcessToFixed()
+FBHostToPlugProcessor::ProcessToPlug()
 {
   if (_buffer.audio.Count() < FBFixedBlockSamples)
     return nullptr;
@@ -80,20 +80,20 @@ FBHostBufferProcessor::ProcessToFixed()
 }
 
 void 
-FBHostBufferProcessor::BufferFromHost(FBHostInputBlock const& input)
+FBHostToPlugProcessor::BufferFromHost(FBHostInputBlock const& hostBlock)
 {
-  for (int e = 0; e < input.note.size(); e++)
+  for (int e = 0; e < hostBlock.note.size(); e++)
   {
-    FBNoteEvent event = input.note[e];
+    FBNoteEvent event = hostBlock.note[e];
     event.pos += _buffer.audio.Count();
     _buffer.note.push_back(event);
   }
 
   GatherAccFromHost(
-    input.accAutoByParamThenSample, _buffer.accAutoByParamThenSample,
+    hostBlock.accAutoByParamThenSample, _buffer.accAutoByParamThenSample,
     FBAccAutoEventIsSameStream, _buffer.audio.Count());
   GatherAccFromHost(
-    input.accModByParamThenNoteThenSample, _buffer.accModByParamThenNoteThenSample,
+    hostBlock.accModByParamThenNoteThenSample, _buffer.accModByParamThenNoteThenSample,
     FBAccModEventIsSameStream, _buffer.audio.Count());
-  _buffer.audio.AppendHost(input.audio);
+  _buffer.audio.AppendHostAudio(hostBlock.audio);
 }

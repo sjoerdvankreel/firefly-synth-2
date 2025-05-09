@@ -10,16 +10,16 @@
 class FBVoiceManager;
 class FBHostAudioBlock;
 
-class FBFixedBufferProcessor final
+class FBPlugToHostProcessor final
 {
   FBBufferAudioBlock _buffer = {};
   std::vector<FBNote> _returnedVoices = {};
   FBVoiceManager* _voiceManager;
 
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBFixedBufferProcessor);
-  FBFixedBufferProcessor(FBVoiceManager* voiceManager);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBPlugToHostProcessor);
+  FBPlugToHostProcessor(FBVoiceManager* voiceManager);
 
-  void ProcessToHost(FBHostOutputBlock& host);
-  void BufferFromFixed(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& fixed);
+  void ProcessToHost(FBHostOutputBlock& hostBlock);
+  void BufferFromPlug(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
 };

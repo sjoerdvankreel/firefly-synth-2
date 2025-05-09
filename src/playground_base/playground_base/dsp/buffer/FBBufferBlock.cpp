@@ -12,17 +12,19 @@ FBBufferAudioBlock::Drop(int count)
 }
 
 void
-FBBufferAudioBlock::AppendHost(FBHostAudioBlock const& rhs)
+FBBufferAudioBlock::AppendHostAudio(
+  FBHostAudioBlock const& hostAudio)
 {
   for (int ch = 0; ch < 2; ch++)
-    for (int s = 0; s < rhs.Count(); s++)
-      _store[ch].push_back(rhs[ch][s]);
+    for (int s = 0; s < hostAudio.Count(); s++)
+      _store[ch].push_back(hostAudio[ch][s]);
 }
 
 void
-FBBufferAudioBlock::AppendFixed(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& rhs)
+FBBufferAudioBlock::AppendPlugAudio(
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> const& plugAudio)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      _store[ch].push_back(rhs[ch].Get(s));
+      _store[ch].push_back(plugAudio[ch].Get(s));
 }
