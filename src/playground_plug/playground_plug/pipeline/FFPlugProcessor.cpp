@@ -5,10 +5,10 @@
 #include <playground_plug/modules/master/FFMasterProcessor.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
+#include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
-#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>

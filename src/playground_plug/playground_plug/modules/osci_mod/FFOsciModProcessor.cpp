@@ -1,7 +1,7 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModProcessor.hpp>
 
-#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
+#include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 

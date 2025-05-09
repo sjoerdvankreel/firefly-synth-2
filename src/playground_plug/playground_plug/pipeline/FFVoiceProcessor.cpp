@@ -5,7 +5,7 @@
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModProcessor.hpp>
 
-#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
+#include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 
 void 

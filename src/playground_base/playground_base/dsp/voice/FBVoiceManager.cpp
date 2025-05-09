@@ -1,4 +1,4 @@
-#include <playground_base/dsp/pipeline/shared/FBVoiceManager.hpp>
+#include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/proc/FBVoiceBlockParamState.hpp>
 

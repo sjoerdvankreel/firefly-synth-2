@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/pipeline/shared/FBVoiceInfo.hpp>
+#include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 #include <vector>
