@@ -2,7 +2,10 @@
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBNote.hpp>
+
 #include <array>
+#include <vector>
+#include <cstdint>
 
 class FBBufferAudioBlock;
 
@@ -47,6 +50,27 @@ public:
   int Count() const { return _count; }
   void CopyFrom(FBBufferAudioBlock const& rhs, int count);
   float const* operator[](int ch) const { return _store[ch]; }
+};
+
+struct FBHostOutputBlock final
+{
+  FBHostAudioBlock audio = {};
+  std::vector<FBNote> returnedVoices = {};
+  std::vector<FBBlockAutoEvent> outputParams = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostOutputBlock);
+};
+
+struct FBHostInputBlock final
+{
+  float bpm = {};
+  FBHostAudioBlock audio = {};
+  std::vector<FBNoteEvent> note = {};
+  std::vector<FBBlockAutoEvent> blockAuto = {};
+  std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
+  std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
+
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostInputBlock);
+  static inline float constexpr DefaultBPM = 120.0f;
 };
 
 inline bool

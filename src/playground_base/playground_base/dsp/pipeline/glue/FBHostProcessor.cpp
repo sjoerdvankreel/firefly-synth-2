@@ -12,8 +12,6 @@
 #include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostInputBlock.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostOutputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothingProcessor.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBHostBufferProcessor.hpp>
 #include <playground_base/dsp/pipeline/buffer/FBFixedBufferProcessor.hpp>
