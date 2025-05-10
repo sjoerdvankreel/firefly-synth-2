@@ -49,7 +49,15 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   {
     state.moduleSlot = i;
     voiceDSP.osci[i].processor->Process(state);
-    voiceDSP.output.Add(voiceDSP.osci[i].output);
+    if(i < FFOsciCount - 1)
+      voiceDSP.output.Add(voiceDSP.osci[i].output);
+    else // TODO TEMP TEMP
+    {
+      FBSIMDArray2<float, FBFixedBlockSamples, 2> temp;
+      voiceDSP.osci[i].output.CopyTo(temp);
+      temp.Mul(state.ProcAs<FFProcState>()->dsp.global.gLFO[0].output);
+      voiceDSP.output.Add(temp);
+    }
   }
 
   // TODO dont hardcode this to voice amp?
