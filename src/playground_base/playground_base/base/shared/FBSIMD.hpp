@@ -41,7 +41,10 @@ public:
   void Add(int pos, FBSIMDVector<T> val) { (Load(pos) + val).store_aligned(Ptr(pos)); }
   void Mul(int pos, FBSIMDVector<T> val) { (Load(pos) * val).store_aligned(Ptr(pos)); }
   FBSIMDVector<T> Load(int pos) const { return FBSIMDVector<T>::load_aligned(Ptr(pos)); }
+
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
+  void Mul(FBSIMDArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Mul(i, rhs.Load(i)); }
+  void Add(FBSIMDArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Add(i, rhs.Load(i)); }
   void CopyTo(FBSIMDArray<T, N>& rhs) const { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) rhs.Store(i, Load(i)); }
 };
 
@@ -84,11 +87,15 @@ template <class T, int N1, int N2>
 class alignas(FBSIMDTraits<T>::Align) FBSIMDArray2
 {
   alignas(FBSIMDTraits<T>::Align) std::array<FBSIMDArray<T, N1>, N2> _data = {};
+
 public:
   FBSIMDArray<T, N1>& operator[](int i) { return _data[i]; }
   FBSIMDArray<T, N1> const& operator[](int i) const { return _data[i]; }
   void NaNCheck() const { for (int i = 0; i < N2; i++) _data[i].NaNCheck(); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N2; i++) _data[i].Fill(val); }
+  void Mul(FBSIMDArray<T, N1> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs); }
+  void Add(FBSIMDArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Add(rhs._data[i]); }
+  void Mul(FBSIMDArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs._data[i]); }
   void CopyTo(FBSIMDArray2<T, N1, N2>& rhs) const { for (int i = 0; i < N2; i++) _data[i].CopyTo(rhs._data[i]); }
 };
 
@@ -101,5 +108,8 @@ public:
   FBSIMDArray2<T, N1, N2> const& operator[](int i) const { return _data[i]; }
   void NaNCheck() const { for (int i = 0; i < N3; i++) _data[i].NaNCheck(); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N3; i++) _data[i].Fill(val); }
+  void Mul(FBSIMDArray<T, N1> const& rhs) { for (int i = 0; i < N3; i++) _data[i].Mul(rhs); }
+  void Add(FBSIMDArray3<T, N1, N2, N3> const& rhs) { for (int i = 0; i < N3; i++) _data[i].Add(rhs._data[i]); }
+  void Mul(FBSIMDArray3<T, N1, N2, N3> const& rhs) { for (int i = 0; i < N3; i++) _data[i].Mul(rhs._data[i]); }
   void CopyTo(FBSIMDArray3<T, N1, N2, N3>& rhs) const { for (int i = 0; i < N3; i++) _data[i].CopyTo(rhs._data[i]); }
 };
