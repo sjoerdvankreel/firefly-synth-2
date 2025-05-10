@@ -26,11 +26,12 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   auto const& freqNorm = procParams.acc.freq[0].Global();
   auto mode = topo.NormalizedToListFast<FFGFilterMode>(FFGFilterParam::Mode, procParams.block.mode[0].Value());
 
+  // TODO
   FBFixedDoubleArray g, k;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    double freqPlain = topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freqNorm.CV()[s]);
-    double resPlain = topo.NormalizedToIdentityFast(FFGFilterParam::Res, resNorm.CV()[s]);
+    double freqPlain = topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freqNorm.CV().Get(s));
+    double resPlain = topo.NormalizedToIdentityFast(FFGFilterParam::Res, resNorm.CV().Get(s));
     k[s] = 2.0 - 2.0 * resPlain;
     g[s] = std::tan(std::numbers::pi * freqPlain / state.input->sampleRate);
   }
@@ -40,7 +41,8 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      double gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm.CV()[s]);
+      // TODO
+      double gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm.CV().Get(s));
       a[s] = std::pow(10.0, gainPlain / 40.0);
     }
 

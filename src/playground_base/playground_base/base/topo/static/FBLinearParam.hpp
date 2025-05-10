@@ -73,12 +73,12 @@ inline void
 FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const
 {
   for (int s = 0; s < FBFixedBlockSamples; s++)
-    plain[s] = NormalizedToPlainFast(normalized.CV()[s]);
+    plain[s] = NormalizedToPlainFast(normalized.CV().Get(s));
 }
 
 inline void
 FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const
 {
   for (int s = 0; s < FBFixedBlockSamples; s++)
-    plain[s] = NormalizedToPlainFast(normalized.CV()[s]);
+    plain[s] = NormalizedToPlainFast(normalized.CV().Get(s));
 }

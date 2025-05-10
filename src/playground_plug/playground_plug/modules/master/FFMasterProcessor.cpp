@@ -21,7 +21,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   auto const& gainNorm = procParams.acc.gain[0].Global();
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float gainPlain = topo.NormalizedToIdentityFast(FFMasterParam::Gain, gainNorm.CV()[s]);
+    float gainPlain = topo.NormalizedToIdentityFast(FFMasterParam::Gain, gainNorm.CV().Get(s));
     for (int ch = 0; ch < 2; ch++)
       output[ch].Set(s, input[ch][s] * gainPlain);
   }
