@@ -9,7 +9,7 @@ class FBTrackingPhaseGenerator final
 {
   float _x = 0.0f;
   bool _cycledOnce = false;
-  int _positionSamplesCurrentCycle = 0; // todo drop
+  int _positionSamplesCurrentCycle = 0;
   int _positionSamplesUpToFirstCycle = 0;
 
 public:
