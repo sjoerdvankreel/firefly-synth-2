@@ -17,7 +17,6 @@ public:
   explicit FBTrackingPhaseGenerator(float x) : _x(x) {}
   
   float Next(float incr);
-  void Next(FBFixedFloatArray const& incr); // todo drop
   FBSIMDVector<float> Next(FBSIMDVector<float> incr);
   int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
   int PositionSamplesUpToFirstCycle() const { return _positionSamplesUpToFirstCycle; }
@@ -41,13 +40,6 @@ FBTrackingPhaseGenerator::Next(float incr)
       _positionSamplesUpToFirstCycle++;
   }
   return y;
-}
-
-inline void
-FBTrackingPhaseGenerator::Next(FBFixedFloatArray const& incr)
-{
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-    Next(incr[s]);
 }
 
 inline FBSIMDVector<float> 
