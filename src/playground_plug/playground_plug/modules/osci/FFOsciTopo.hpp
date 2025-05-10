@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <memory>
 
 struct FBStaticModule;

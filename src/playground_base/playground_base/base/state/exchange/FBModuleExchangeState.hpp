@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_base/base/shared/FBUtility.hpp>
+#include <playground_base/dsp/voice/FBVoiceManager.hpp>
 
 #include <array>
 #include <cassert>
