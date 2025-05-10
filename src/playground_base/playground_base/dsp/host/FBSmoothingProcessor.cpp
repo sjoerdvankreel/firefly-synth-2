@@ -4,8 +4,8 @@
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
+#include <playground_base/dsp/buffer/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/host/FBSmoothingProcessor.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 #include <cassert>
