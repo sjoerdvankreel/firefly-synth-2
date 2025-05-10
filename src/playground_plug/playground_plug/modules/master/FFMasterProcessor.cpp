@@ -16,14 +16,13 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   auto const& input = procState->dsp.global.master.input;
   auto const& procParams = procState->param.global.master[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Master];
-
-  // todo
   auto const& gainNorm = procParams.acc.gain[0].Global();
-  for (int s = 0; s < FBFixedBlockSamples; s++)
+
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    float gainPlain = topo.NormalizedToIdentityFast(FFMasterParam::Gain, gainNorm.CV().Get(s));
+    auto gainPlain = topo.NormalizedToIdentityFast(FFMasterParam::Gain, gainNorm, s);
     for (int ch = 0; ch < 2; ch++)
-      output[ch].Set(s, input[ch].Get(s) * gainPlain);
+      output[ch].Store(s, input[ch].Load(s) * gainPlain);
   }
 
   auto const* voicesParam = state.topo->audio.ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });

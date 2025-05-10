@@ -30,6 +30,7 @@ FFMakeMasterTopo()
   gain.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
   gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
 
+  // todo is this really the way ?
   auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
   hostSmoothTime.acc = false;
   hostSmoothTime.defaultText = "2";
