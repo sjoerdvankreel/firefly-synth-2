@@ -117,15 +117,3 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
 {
   return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Env, TabFactory);
 }
-
-Component*
-FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot)
-{
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 0, 1 }, std::vector<int> { 0 });
-  auto keyTimePct = topo->gui.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvGUIParam::GraphKeyTimePct, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, keyTimePct));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, keyTimePct, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 1 });
-  return grid;
-}

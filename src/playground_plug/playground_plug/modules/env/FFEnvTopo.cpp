@@ -23,7 +23,6 @@ FFMakeEnvTopo()
   result->graphRenderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
-  result->guiParams.resize((int)FFEnvGUIParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
   auto selectGuiModule = [](auto& state) { return &state.env; };
   auto selectModule = [](auto& state) { return &state.voice.env; };
@@ -343,21 +342,6 @@ FFMakeEnvTopo()
   sustainLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSustainLevel);
   sustainLevel.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectSustainLevel);
   sustainLevel.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSustainLevel);
-
-  auto& guiGraphKeyTimePct = result->guiParams[(int)FFEnvGUIParam::GraphKeyTimePct];
-  guiGraphKeyTimePct.defaultText = "100";
-  guiGraphKeyTimePct.display = "Key Time";
-  guiGraphKeyTimePct.name = "Key Time % Of DAHD";
-  guiGraphKeyTimePct.slotCount = 1;
-  guiGraphKeyTimePct.unit = "%";
-  guiGraphKeyTimePct.id = "{7D3F0E5D-1BE3-423D-B586-976EA45D71E0}";
-  guiGraphKeyTimePct.type = FBParamType::Linear;
-  guiGraphKeyTimePct.Linear().min = 0.0f;
-  guiGraphKeyTimePct.Linear().max = 2.0f;
-  guiGraphKeyTimePct.Linear().displayMultiplier = 100.0f;
-  auto selectGuiGraphKeyTimePct = [](auto& module) { return &module.graphKeyTimePct; };
-  guiGraphKeyTimePct.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphKeyTimePct);
-  guiGraphKeyTimePct.dependencies.enabled.audio.When({ (int)FFEnvParam::On, (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] != (int)FFEnvType::Follow; });
 
   return result;
 }

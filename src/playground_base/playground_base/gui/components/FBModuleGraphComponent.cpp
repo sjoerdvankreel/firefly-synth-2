@@ -26,6 +26,12 @@ _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
   _data->renderState = renderState;
+  _grid = std::make_unique<FBGridComponent>(FBGridType::Module, 1, 1);
+  _grid->Add(0, 0, _display.get());
+  _grid->MarkSection({ 0, 0, 1, 1 });
+  _section = std::make_unique<FBSectionComponent>(_grid.get());
+  addAndMakeVisible(_section.get());
+  resized();
 }
 
 void
@@ -42,11 +48,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 {
   if (!PrepareForRender(moduleIndex))
     return;
-  if (_tweakedModuleByUI != moduleIndex)
-  {
-    _tweakedModuleByUI = moduleIndex;
-    SetupGraphControls();
-  }
+  _tweakedModuleByUI = moduleIndex;
   repaint();
 }
 
@@ -94,30 +96,4 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->series.resize(topo->static_.modules[staticIndex].graphCount);
   _data->pixelWidth = getWidth() / static_cast<int>(_data->series.size());
   topo->static_.modules[staticIndex].graphRenderer(_data.get());
-}
-
-void
-FBModuleGraphComponent::SetupGraphControls()
-{
-  removeChildComponent(_section.get());
-  _graphControls = _plugGUI->GetGraphControlsForModule(_tweakedModuleByUI);
-
-  if (_graphControls == nullptr)
-  {
-    _grid = std::make_unique<FBGridComponent>(FBGridType::Module, 1, 1);
-    _grid->Add(0, 0, _display.get());
-    _grid->MarkSection({ 0, 0, 1, 1 });
-  }
-  else
-  {
-    _grid = std::make_unique<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
-    _grid->Add(0, 0, _graphControls);
-    _grid->Add(0, 1, _display.get());
-    _grid->MarkSection({ 0, 0, 1, 1 });
-    _grid->MarkSection({ 0, 1, 1, 1 });
-  }
-
-  _section = std::make_unique<FBSectionComponent>(_grid.get());
-  addAndMakeVisible(_section.get());
-  resized();
 }

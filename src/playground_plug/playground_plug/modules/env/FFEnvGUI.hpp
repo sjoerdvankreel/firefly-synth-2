@@ -7,5 +7,3 @@ class FBPlugGUI;
 
 juce::Component*
 FFMakeEnvGUI(FBPlugGUI* plugGUI);
-juce::Component*
-FFMakeEnvGraphControls(FBPlugGUI* plugGUI, int moduleSlot);

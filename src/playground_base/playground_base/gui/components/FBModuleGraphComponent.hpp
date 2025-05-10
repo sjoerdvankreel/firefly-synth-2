@@ -19,7 +19,6 @@ class FBModuleGraphComponent final:
 public juce::Component
 {
   int _tweakedModuleByUI = -1;
-  juce::Component* _graphControls = {};
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBSectionComponent> _section = {};
 
@@ -27,7 +26,6 @@ public juce::Component
   std::unique_ptr<FBModuleGraphComponentData> _data;
   std::unique_ptr<FBModuleGraphDisplayComponent> _display;
 
-  void SetupGraphControls();
   bool PrepareForRender(int moduleIndex);
   FBTopoIndices const& TopoIndicesFor(int moduleIndex) const;
   FBStaticModule const& StaticModuleFor(int moduleIndex) const;

@@ -26,7 +26,6 @@ FBPlugGUI(hostContext),
 _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 {
   SetupGUI();
-  SetupGraphControls();
   InitAllDependencies();
   resized();
 }
@@ -43,15 +42,6 @@ FFPlugGUI::resized()
 {
   getChildComponent(0)->setBounds(getLocalBounds());
   getChildComponent(0)->resized();
-}
-
-Component*
-FFPlugGUI::GetGraphControlsForModule(int index)
-{
-  auto iter = _graphControls.find(index);
-  if (iter == _graphControls.end())
-    return nullptr;
-  return iter->second;
 }
 
 void 
@@ -85,17 +75,6 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
     return;
   if (_graph->TweakedModuleByUI() == HostContext()->Topo()->audio.params[index].runtimeModuleIndex)
     RequestGraphRender(_graph->TweakedModuleByUI());
-}
-
-void
-FFPlugGUI::SetupGraphControls()
-{
-  auto topo = HostContext()->Topo();
-  for (int i = 0; i < FFEnvCount; i++)
-  {
-    int index = topo->ModuleAtTopo({ (int)FFModuleType::Env, i })->runtimeModuleIndex;
-    _graphControls[index] = FFMakeEnvGraphControls(this, i);
-  }
 }
 
 void

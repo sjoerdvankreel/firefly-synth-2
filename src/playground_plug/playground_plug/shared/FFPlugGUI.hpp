@@ -16,11 +16,9 @@ public FBPlugGUI
 {
   FBGridComponent* _content = {};
   FBModuleGraphComponent* _graph = {};
-  std::unordered_map<int, juce::Component*> _graphControls = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
-  void SetupGraphControls();
   void RequestGraphRender(int moduleIndex);
 
 public:
@@ -31,7 +29,6 @@ public:
   void resized() override;
   void UpdateExchangeStateTick() override;
   void ActiveModuleSlotChanged(int index, int slot) override;
-  juce::Component* GetGraphControlsForModule(int index) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;
   void AudioParamNormalizedChangedFromUI(int index, double normalized) override;
   void AudioParamNormalizedChangedFromHost(int index, double normalized) override;

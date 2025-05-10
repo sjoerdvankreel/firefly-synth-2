@@ -35,7 +35,6 @@ public:
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
-  virtual juce::Component* GetGraphControlsForModule(int index) = 0;
   virtual void GUIParamNormalizedChanged(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromUI(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromHost(int index, double normalized);
