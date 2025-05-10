@@ -5,7 +5,7 @@
 
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
-#include <playground_base/dsp/buffer/FBFixedInputBlock.hpp>
+#include <playground_base/dsp/buffer/FBBufferBlock.hpp>
 #include <playground_base/dsp/host/FBSmoothingProcessor.hpp>
 
 #include <cassert>

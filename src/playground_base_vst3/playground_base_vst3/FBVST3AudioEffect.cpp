@@ -2,7 +2,7 @@
 #include <playground_base_vst3/FBVST3AudioEffect.hpp>
 
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
+#include <playground_base/dsp/plug/FBPlugProcessor.hpp>
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
