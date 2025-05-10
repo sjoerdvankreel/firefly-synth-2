@@ -24,55 +24,55 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.env[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
-  _voiceState.on = topo.NormalizedToBoolFast(FFEnvParam::On, params.block.on[0].Voice()[voice]);
-  _voiceState.sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, params.block.sync[0].Voice()[voice]);
-  _voiceState.type = topo.NormalizedToListFast<FFEnvType>(FFEnvParam::Type, params.block.type[0].Voice()[voice]);
-  _voiceState.mode = topo.NormalizedToListFast<FFEnvMode>(FFEnvParam::Mode, params.block.mode[0].Voice()[voice]);
-  if (_voiceState.sync)
+  _on = topo.NormalizedToBoolFast(FFEnvParam::On, params.block.on[0].Voice()[voice]);
+  _sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, params.block.sync[0].Voice()[voice]);
+  _type = topo.NormalizedToListFast<FFEnvType>(FFEnvParam::Type, params.block.type[0].Voice()[voice]);
+  _mode = topo.NormalizedToListFast<FFEnvMode>(FFEnvParam::Mode, params.block.mode[0].Voice()[voice]);
+  if (_sync)
   {
-    _voiceState.holdSamples = topo.NormalizedToBarsSamplesFast(
+    _holdSamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::HoldBars, params.block.holdBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.decaySamples = topo.NormalizedToBarsSamplesFast(
+    _decaySamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::DecayBars, params.block.decayBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.delaySamples = topo.NormalizedToBarsSamplesFast(
+    _delaySamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::DelayBars, params.block.delayBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.attackSamples = topo.NormalizedToBarsSamplesFast(
+    _attackSamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::AttackBars, params.block.attackBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.releaseSamples = topo.NormalizedToBarsSamplesFast(
+    _releaseSamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::ReleaseBars, params.block.releaseBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
-    _voiceState.smoothingSamples = topo.NormalizedToBarsSamplesFast(
+    _smoothingSamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::SmoothBars, params.block.smoothBars[0].Voice()[voice], state.input->sampleRate, state.input->bpm);
   } else
   {
-    _voiceState.holdSamples = topo.NormalizedToLinearTimeSamplesFast(
+    _holdSamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::HoldTime, params.block.holdTime[0].Voice()[voice], state.input->sampleRate);
-    _voiceState.decaySamples = topo.NormalizedToLinearTimeSamplesFast(
+    _decaySamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::DecayTime, params.block.decayTime[0].Voice()[voice], state.input->sampleRate);
-    _voiceState.delaySamples = topo.NormalizedToLinearTimeSamplesFast(
+    _delaySamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::DelayTime, params.block.delayTime[0].Voice()[voice], state.input->sampleRate);
-    _voiceState.attackSamples = topo.NormalizedToLinearTimeSamplesFast(
+    _attackSamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::AttackTime, params.block.attackTime[0].Voice()[voice], state.input->sampleRate);
-    _voiceState.releaseSamples = topo.NormalizedToLinearTimeSamplesFast(
+    _releaseSamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::ReleaseTime, params.block.releaseTime[0].Voice()[voice], state.input->sampleRate);
-    _voiceState.smoothingSamples = topo.NormalizedToLinearTimeSamplesFast(
+    _smoothingSamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::SmoothTime, params.block.smoothTime[0].Voice()[voice], state.input->sampleRate);
   }
-  _lengthSamplesUpToRelease = _voiceState.delaySamples + _voiceState.attackSamples + _voiceState.holdSamples + _voiceState.decaySamples;
-  _lengthSamples = _lengthSamplesUpToRelease + _voiceState.releaseSamples + _voiceState.smoothingSamples;
+  _lengthSamplesUpToRelease = _delaySamples + _attackSamples + _holdSamples + _decaySamples;
+  _lengthSamples = _lengthSamplesUpToRelease + _releaseSamples + _smoothingSamples;
 
   auto const& sustain = params.acc.sustainLevel[0].Voice()[voice].CV();
-  if (_voiceState.delaySamples > 0)
+  if (_delaySamples > 0)
     _lastBeforeRelease = _lastDAHDSR = 0.0f;
-  else if (_voiceState.attackSamples > 0)
+  else if (_attackSamples > 0)
     _lastBeforeRelease = _lastDAHDSR = 0.0f;
-  else if (_voiceState.holdSamples > 0)
+  else if (_holdSamples > 0)
     _lastBeforeRelease = _lastDAHDSR = 1.0f;
-  else if (_voiceState.decaySamples > 0)
+  else if (_decaySamples > 0)
     _lastBeforeRelease = _lastDAHDSR = 1.0f;
-  else if (_voiceState.releaseSamples > 0)
+  else if (_releaseSamples > 0)
     _lastBeforeRelease = _lastDAHDSR = sustain.Get(0);
 
-  _smoother.SetCoeffs(_voiceState.smoothingSamples);
+  _smoother.SetCoeffs(_smoothingSamples);
   _smoother.State(_lastDAHDSR);
 }
 
@@ -89,7 +89,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   auto const& releaseSlope = procParams.acc.releaseSlope[0].Voice()[voice];
   auto const& sustainLevel = procParams.acc.sustainLevel[0].Voice()[voice];
 
-  if (!_voiceState.on)
+  if (!_on)
   {
     output.Fill(0.0f);
     return 0;
@@ -109,7 +109,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   auto const& noteEvents = *state.input->note;
   auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
-  if(_voiceState.type != FFEnvType::Follow && 
+  if(_type != FFEnvType::Follow && 
     state.renderType != FBRenderType::GraphExchange &&
     !state.anyExchangeActive)
     for (int i = 0; i < noteEvents.size(); i++)
@@ -117,7 +117,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
         releaseAt = noteEvents[i].pos;
 
   int& delayPos = _stagePositions[(int)FFEnvStage::Delay];
-  for (; s < FBFixedBlockSamples && !_released && delayPos < _voiceState.delaySamples; s++, delayPos++, _positionSamples++)
+  for (; s < FBFixedBlockSamples && !_released && delayPos < _delaySamples; s++, delayPos++, _positionSamples++)
   {
     _lastDAHDSR = 0.0f;
     _lastBeforeRelease = _lastDAHDSR;
@@ -126,19 +126,19 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   }
 
   int& attackPos = _stagePositions[(int)FFEnvStage::Attack];
-  if (_voiceState.mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && !_released && attackPos < _voiceState.attackSamples; s++, attackPos++, _positionSamples++)
+  if (_mode == FFEnvMode::Linear)
+    for (; s < FBFixedBlockSamples && !_released && attackPos < _attackSamples; s++, attackPos++, _positionSamples++)
     {
-      _lastDAHDSR = attackPos / static_cast<float>(_voiceState.attackSamples);
+      _lastDAHDSR = attackPos / static_cast<float>(_attackSamples);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
       output.Set(s, _smoother.Next(_lastDAHDSR));
     }
   else
-    for (; s < FBFixedBlockSamples && !_released && attackPos < _voiceState.attackSamples; s++, attackPos++, _positionSamples++)
+    for (; s < FBFixedBlockSamples && !_released && attackPos < _attackSamples; s++, attackPos++, _positionSamples++)
     {
       float slope = minSlope + attackSlope.CV().Get(s) * slopeRange;
-      float pos = attackPos / static_cast<float>(_voiceState.attackSamples);
+      float pos = attackPos / static_cast<float>(_attackSamples);
       _lastDAHDSR = std::pow(pos, std::log(slope) * invLogHalf);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
@@ -146,7 +146,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     }
 
   int& holdPos = _stagePositions[(int)FFEnvStage::Hold];
-  for (; s < FBFixedBlockSamples && !_released && holdPos < _voiceState.holdSamples; s++, holdPos++, _positionSamples++)
+  for (; s < FBFixedBlockSamples && !_released && holdPos < _holdSamples; s++, holdPos++, _positionSamples++)
   {
     _lastDAHDSR = 1.0f;
     _lastBeforeRelease = _lastDAHDSR;
@@ -155,27 +155,27 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   }
 
   int& decayPos = _stagePositions[(int)FFEnvStage::Decay];
-  if (_voiceState.mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++, _positionSamples++)
+  if (_mode == FFEnvMode::Linear)
+    for (; s < FBFixedBlockSamples && !_released && decayPos < _decaySamples; s++, decayPos++, _positionSamples++)
     {
-      float pos = decayPos / static_cast<float>(_voiceState.decaySamples);
+      float pos = decayPos / static_cast<float>(_decaySamples);
       _lastDAHDSR = sustainLevel.CV().Get(s) + (1.0f - sustainLevel.CV().Get(s)) * (1.0f - pos);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
       output.Set(s, _smoother.Next(_lastDAHDSR));
     }
   else
-    for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++, _positionSamples++)
+    for (; s < FBFixedBlockSamples && !_released && decayPos < _decaySamples; s++, decayPos++, _positionSamples++)
     {
       float slope = minSlope + decaySlope.CV().Get(s) * slopeRange;
-      float pos = decayPos / static_cast<float>(_voiceState.decaySamples);
+      float pos = decayPos / static_cast<float>(_decaySamples);
       _lastDAHDSR = sustainLevel.CV().Get(s) + (1.0f - sustainLevel.CV().Get(s)) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
       output.Set(s, _smoother.Next(_lastDAHDSR));
     }
 
-  if(_voiceState.type == FFEnvType::Sustain && 
+  if(_type == FFEnvType::Sustain && 
     state.renderType != FBRenderType::GraphExchange && 
     !state.anyExchangeActive)
     for (; s < FBFixedBlockSamples && !_released; s++)
@@ -190,24 +190,24 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     _positionSamples = std::max(_positionSamples, _lengthSamplesUpToRelease);
 
   int& releasePos = _stagePositions[(int)FFEnvStage::Release];
-  if (_voiceState.mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++, _positionSamples++)
+  if (_mode == FFEnvMode::Linear)
+    for (; s < FBFixedBlockSamples && releasePos < _releaseSamples; s++, releasePos++, _positionSamples++)
     {
-      float pos = releasePos / static_cast<float>(_voiceState.releaseSamples);
+      float pos = releasePos / static_cast<float>(_releaseSamples);
       _lastDAHDSR = _lastBeforeRelease * (1.0f - pos);
       output.Set(s, _smoother.Next(_lastDAHDSR));
     }
   else
-    for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++, _positionSamples++)
+    for (; s < FBFixedBlockSamples && releasePos < _releaseSamples; s++, releasePos++, _positionSamples++)
     {
       float slope = minSlope + releaseSlope.CV().Get(s) * slopeRange;
-      float pos = releasePos / static_cast<float>(_voiceState.releaseSamples);
+      float pos = releasePos / static_cast<float>(_releaseSamples);
       _lastDAHDSR = _lastBeforeRelease * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
       output.Set(s, _smoother.Next(_lastDAHDSR));
     }
 
   int& smoothPos = _stagePositions[(int)FFEnvStage::Smooth];
-  for (; s < FBFixedBlockSamples && smoothPos < _voiceState.smoothingSamples; s++, smoothPos++, _positionSamples++)
+  for (; s < FBFixedBlockSamples && smoothPos < _smoothingSamples; s++, smoothPos++, _positionSamples++)
     output.Set(s, _smoother.Next(_lastDAHDSR));
 
   int processed = s;

@@ -13,31 +13,27 @@ class FBGraphRenderState;
 
 enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Smooth, Count };
 
-struct FFEnvVoiceState
-{
-  bool on = {};
-  bool sync = {};
-  FFEnvType type = {};  
-  FFEnvMode mode = {};
-  int holdSamples = {};
-  int delaySamples = {};
-  int decaySamples = {};
-  int attackSamples = {};
-  int releaseSamples = {};
-  int smoothingSamples = {};
-};
-
 class FFEnvProcessor final
 {
+  bool _on = {};
+  bool _sync = {};
+  FFEnvType _type = {};
+  FFEnvMode _mode = {};
+  int _holdSamples = {};
+  int _delaySamples = {};
+  int _decaySamples = {};
+  int _attackSamples = {};
+  int _releaseSamples = {};
+  int _smoothingSamples = {};
+
   bool _released = false;
   bool _finished = false;
-  float _lastDAHDSR = 0.0f;
-  float _lastBeforeRelease = 0.0f;
   int _lengthSamples = 0;
   int _positionSamples = 0;
   int _lengthSamplesUpToRelease = 0;
+  float _lastDAHDSR = 0.0f;
+  float _lastBeforeRelease = 0.0f;
   FBOnePoleFilter _smoother = {};
-  FFEnvVoiceState _voiceState = {};
   std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
 
 public:
