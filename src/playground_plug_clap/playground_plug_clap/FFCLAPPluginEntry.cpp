@@ -7,10 +7,10 @@
 #include <playground_base_clap/FBCLAPExchangeStateQueue.hpp>
 
 #include <playground_base/gui/shared/FBGUI.hpp>
+#include <playground_base/dsp/host/FBHostProcessor.hpp>
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/static/FBStaticTopo.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <clap/clap.h>

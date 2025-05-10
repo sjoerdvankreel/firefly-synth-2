@@ -1,8 +1,8 @@
 #pragma once
 
-#include <playground_base/dsp/host/FBHostBlock.hpp>
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
+#include <playground_base/dsp/host/FBHostBlock.hpp>
+#include <playground_base/dsp/host/FBHostDSPContext.hpp>
 
 #include <public.sdk/source/vst/vstaudioeffect.h>
 #include <public.sdk/source/vst/utility/dataexchange.h>

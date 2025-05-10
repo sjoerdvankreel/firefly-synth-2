@@ -1,13 +1,13 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base_clap/FBCLAPUtility.hpp>
 
+#include <playground_base/dsp/host/FBHostProcessor.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBAccParamState.hpp>
 #include <playground_base/base/state/proc/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 
 bool 
 FBCLAPPlugin::implementsParams() const noexcept 

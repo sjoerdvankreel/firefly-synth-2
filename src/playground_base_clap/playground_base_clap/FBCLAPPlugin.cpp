@@ -3,8 +3,8 @@
 #include <playground_base_clap/FBCLAPExchangeStateQueue.hpp>
 
 #include <playground_base/gui/shared/FBGUI.hpp>
+#include <playground_base/dsp/host/FBHostProcessor.hpp>
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
 #include <playground_base/base/shared/FBLogging.hpp>
 #include <playground_base/base/topo/static/FBStaticTopo.hpp>

@@ -9,11 +9,11 @@
 #include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
+#include <playground_base/dsp/host/FBHostProcessor.hpp>
+#include <playground_base/dsp/host/FBHostDSPContext.hpp>
 #include <playground_base/dsp/buffer/FBHostToPlugProcessor.hpp>
 #include <playground_base/dsp/buffer/FBPlugToHostProcessor.hpp>
 #include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostDSPContext.hpp>
 #include <playground_base/dsp/pipeline/fixed/FBSmoothingProcessor.hpp>
 
 #include <utility>

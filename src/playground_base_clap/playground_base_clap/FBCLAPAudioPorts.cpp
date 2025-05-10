@@ -1,5 +1,5 @@
 #include <playground_base_clap/FBCLAPPlugin.hpp>
-#include <playground_base/dsp/pipeline/glue/FBHostProcessor.hpp>
+#include <playground_base/dsp/host/FBHostProcessor.hpp>
 
 bool 
 FBCLAPPlugin::implementsAudioPorts() const noexcept
