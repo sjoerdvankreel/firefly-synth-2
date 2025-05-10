@@ -7,8 +7,7 @@
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
-#include <playground_base/dsp/shared/FBFixedBlock.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
+#include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <vector>

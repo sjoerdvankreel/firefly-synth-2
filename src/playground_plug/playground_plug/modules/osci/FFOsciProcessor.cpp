@@ -4,9 +4,9 @@
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 
 #include <playground_base/base/shared/FBSIMD.hpp>
+#include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 

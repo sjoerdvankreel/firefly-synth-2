@@ -3,8 +3,8 @@
 #include <playground_plug/modules/master/FFMasterTopo.hpp>
 #include <playground_plug/modules/master/FFMasterProcessor.hpp>
 
+#include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 

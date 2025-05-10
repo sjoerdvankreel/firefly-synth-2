@@ -3,9 +3,9 @@
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
+#include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 
 void
 FFGFilterProcessor::Process(FBModuleProcState& state)

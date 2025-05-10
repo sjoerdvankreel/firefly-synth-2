@@ -1,7 +1,7 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
+#include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
