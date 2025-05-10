@@ -27,44 +27,44 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   auto mode = topo.NormalizedToListFast<FFGFilterMode>(FFGFilterParam::Mode, procParams.block.mode[0].Value());
 
   // TODO
-  FBFixedDoubleArray g, k;
+  FBSIMDArray<double, FBFixedBlockSamples> g, k;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     double freqPlain = topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freqNorm.CV().Get(s));
     double resPlain = topo.NormalizedToIdentityFast(FFGFilterParam::Res, resNorm.CV().Get(s));
-    k[s] = 2.0 - 2.0 * resPlain;
-    g[s] = std::tan(std::numbers::pi * freqPlain / state.input->sampleRate);
+    k.Set(s, 2.0 - 2.0 * resPlain);
+    g.Set(s, std::tan(std::numbers::pi * freqPlain / state.input->sampleRate));
   }
 
-  FBFixedDoubleArray a;
+  FBSIMDArray<double, FBFixedBlockSamples> a;
   auto const& gainNorm = procParams.acc.gain[0].Global();
   if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       // TODO
       double gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm.CV().Get(s));
-      a[s] = std::pow(10.0, gainPlain / 40.0);
+      a.Set(s, std::pow(10.0, gainPlain / 40.0));
     }
 
   if (mode == FFGFilterMode::BLL)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      k[s] = k[s] / a[s];
+      k.Set(s, k.Get(s) / a.Get(s));
   else if (mode == FFGFilterMode::LSH)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      g[s] /= std::sqrt(a[s]);
+      g.Set(s, g.Get(s) / std::sqrt(a.Get(s)));
   else if (mode == FFGFilterMode::HSH)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      g[s] *= std::sqrt(a[s]);
+      g.Set(s, g.Get(s) * std::sqrt(a.Get(s)));
 
-  FBFixedDoubleArray a1, a2, a3;
+  FBSIMDArray<double, FBFixedBlockSamples> a1, a2, a3;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    a1[s] = 1.0 / (1.0 + g[s] * (g[s] + k[s]));
-    a2[s] = g[s] * a1[s];
-    a3[s] = g[s] * a2[s];
+    a1.Set(s, 1.0 / (1.0 + g.Get(s) * (g.Get(s) + k.Get(s))));
+    a2.Set(s, g.Get(s) * a1.Get(s));
+    a3.Set(s, g.Get(s) * a2.Get(s));
   }
 
-  FBFixedDoubleArray m0, m1, m2;
+  FBSIMDArray<double, FBFixedBlockSamples> m0, m1, m2;
   switch (mode)
   {
   case FFGFilterMode::LPF:
@@ -81,46 +81,46 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     m0.Fill(1.0);
     m2.Fill(-1.0);
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      m1[s] = -k[s];
+      m1.Set(s, -k.Get(s));
     break;
   case FFGFilterMode::BSF:
     m0.Fill(1.0);
     m2.Fill(0.0);
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      m1[s] = -k[s];
+      m1.Set(s, -k.Get(s));
     break;
   case FFGFilterMode::PEQ:
     m0.Fill(1.0);
     m2.Fill(-2.0);
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      m1[s] = -k[s];
+      m1.Set(s, -k.Get(s));
     break;
   case FFGFilterMode::APF:
     m0.Fill(1.0);
     m2.Fill(0.0);
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      m1[s] = -2.0 * k[s];
+      m1.Set(s, -2.0 * k.Get(s));
     break;
   case FFGFilterMode::BLL:
     m0.Fill(1.0);
     m2.Fill(0.0);
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      m1[s] = k[s] * (a[s] * a[s] - 1.0);
+      m1.Set(s, k.Get(s) * (a.Get(s) * a.Get(s) - 1.0));
     break;
   case FFGFilterMode::LSH:
     m0.Fill(1.0);
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      m1[s] = k[s] * (a[s] - 1.0);
-      m2[s] = a[s] * a[s] - 1.0;
+      m1.Set(s, k.Get(s) * (a.Get(s) - 1.0));
+      m2.Set(s, a.Get(s) * a.Get(s) - 1.0);
     }
     break;
   case FFGFilterMode::HSH:
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      m0[s] = a[s] * a[s];
-      m1[s] = k[s] * (1.0 - a[s]) * a[s];
-      m2[s] = 1.0 - a[s] * a[s];
+      m0.Set(s, a.Get(s) * a.Get(s));
+      m1.Set(s, k.Get(s) * (1.0 - a.Get(s) * a.Get(s)));
+      m2.Set(s, 1.0 - a.Get(s) * a.Get(s));
     }
     break;
   default:
@@ -128,8 +128,8 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     break;
   }
 
-  FBFixedDoubleAudioArray audioIn;
-  FBFixedDoubleAudioArray audioOut = {};
+  FBSIMDArray2<double, FBFixedBlockSamples, 2> audioIn;
+  FBSIMDArray2<double, FBFixedBlockSamples, 2> audioOut = {};
   FBFixedFloatAudioToDoubleArray(input, audioIn);
   
   for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -137,11 +137,11 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     {
       double v0 = audioIn[ch][s];
       double v3 = v0 - _ic2eq[ch];
-      double v1 = a1[s] * _ic1eq[ch] + a2[s] * v3;
-      double v2 = _ic2eq[ch] + a2[s] * _ic1eq[ch] + a3[s] * v3;
+      double v1 = a1.Get(s) * _ic1eq[ch] + a2.Get(s) * v3;
+      double v2 = _ic2eq[ch] + a2.Get(s) * _ic1eq[ch] + a3.Get(s) * v3;
       _ic1eq[ch] = 2 * v1 - _ic1eq[ch];
       _ic2eq[ch] = 2 * v2 - _ic2eq[ch];
-      audioOut[ch][s] = m0[s] * v0 + m1[s] * v1 + m2[s] * v2;
+      audioOut[ch][s] = m0.Get(s) * v0 + m1.Get(s) * v1 + m2.Get(s) * v2;
     }
 
   FBFixedDoubleAudioToFloatArray(audioOut, output);

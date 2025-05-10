@@ -87,7 +87,6 @@ template <class T, int N1, int N2>
 class alignas(FBSIMDTraits<T>::Align) FBSIMDArray2
 {
   alignas(FBSIMDTraits<T>::Align) std::array<FBSIMDArray<T, N1>, N2> _data = {};
-
 public:
   FBSIMDArray<T, N1>& operator[](int i) { return _data[i]; }
   FBSIMDArray<T, N1> const& operator[](int i) const { return _data[i]; }
