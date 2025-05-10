@@ -16,9 +16,9 @@ class alignas(FBSIMDAlign) FFMasterDSPState final
 public:
   FFMasterDSPState();
   ~FFMasterDSPState();
-  FBFixedFloatAudioArray input = {}; // todo
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFMasterDSPState);
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> input = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
 };
 
 template <class TGlobalAcc>

@@ -16,9 +16,9 @@ class alignas(FBSIMDAlign) FFGFilterDSPState final
 public:
   FFGFilterDSPState();
   ~FFGFilterDSPState();
-  FBFixedFloatAudioArray input = {};
-  FBFixedFloatAudioArray output = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGFilterDSPState);
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> input = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
 };
 
 template <class TGlobalBlock>

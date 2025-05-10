@@ -7,9 +7,7 @@ struct FFProcState;
 struct FBRuntimeTopo;
 struct FFExchangeState;
 struct FBPlugOutputBlock;
-
 class IFBHostDSPContext;
-class FBFixedFloatAudioBlock;
 
 class FFPlugProcessor final:
 public IFBPlugProcessor

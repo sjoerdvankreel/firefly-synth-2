@@ -48,9 +48,9 @@ struct alignas(FBSIMDAlign) FFVoiceDSPState final
 {
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
-  FBFixedFloatAudioArray output = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
 

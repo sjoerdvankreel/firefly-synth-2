@@ -80,8 +80,8 @@ FBRenderModuleGraphSeries(
   seriesOut.l.clear();
   seriesOut.r.clear();
   
-  FBFixedFloatAudioArray seriesAudioIn;
   FBSIMDArray<float, FBFixedBlockSamples> seriesCVIn;
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> seriesAudioIn;
 
   bool released = false;
   int processed = FBFixedBlockSamples;
