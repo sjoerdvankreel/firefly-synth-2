@@ -23,10 +23,6 @@ struct FBLinearParam
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
   FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
-
-  // todo drop ?
-  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const;
-  void NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const;
 };
 
 struct FBLinearParamNonRealTime final :
@@ -67,18 +63,4 @@ inline int
 FBLinearParam::NormalizedFreqToSamplesFast(float normalized, float sampleRate) const
 {
   return FBFreqToSamples(NormalizedToPlainFast(normalized), sampleRate);
-}
-
-inline void 
-FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedFloatArray& plain) const
-{
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-    plain[s] = NormalizedToPlainFast(normalized.CV().Get(s));
-}
-
-inline void
-FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, FBFixedDoubleArray& plain) const
-{
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-    plain[s] = NormalizedToPlainFast(normalized.CV().Get(s));
 }

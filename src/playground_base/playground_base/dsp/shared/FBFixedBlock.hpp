@@ -44,30 +44,15 @@ public:
   void CopyTo(FBFixedAudioArray<T>& rhs) const { for (int c = 0; c < 2; c++) _data[c].CopyTo(rhs[c]); }
 };
 
-typedef FBFixedArray<float> FBFixedFloatArray;
 typedef FBFixedArray<double> FBFixedDoubleArray;
 typedef FBFixedAudioArray<float> FBFixedFloatAudioArray;
 typedef FBFixedAudioArray<double> FBFixedDoubleAudioArray;
-
-inline void 
-FBFixedFloatToDoubleArray(FBFixedFloatArray const& floats, FBFixedDoubleArray& doubles)
-{
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-    doubles[s] = floats[s];
-}
 
 inline void
 FBFixedFloatToDoubleArray(FBSIMDArray<float, FBFixedBlockSamples> const& floats, FBFixedDoubleArray& doubles)
 {
   for (int s = 0; s < FBFixedBlockSamples; s++)
     doubles[s] = floats.Get(s);
-}
-
-inline void
-FBFixedDoubleToFloatArray(FBFixedDoubleArray const& doubles, FBFixedFloatArray& floats)
-{
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-    floats[s] = static_cast<float>(doubles[s]);
 }
 
 inline void
@@ -78,24 +63,10 @@ FBFixedDoubleToFloatArray(FBFixedDoubleArray const& doubles, FBSIMDArray<float, 
 }
 
 inline void
-FBFixedFloatAudioToDoubleArray(FBFixedFloatAudioArray const& floats, FBFixedDoubleAudioArray& doubles)
-{
-  for (int c = 0; c < 2; c++)
-    FBFixedFloatToDoubleArray(floats[c], doubles[c]);
-}
-
-inline void
 FBFixedFloatAudioToDoubleArray(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& floats, FBFixedDoubleAudioArray& doubles)
 {
   for (int c = 0; c < 2; c++)
     FBFixedFloatToDoubleArray(floats[c], doubles[c]);
-}
-
-inline void
-FBFixedDoubleAudioToFloatArray(FBFixedDoubleAudioArray const& doubles, FBFixedFloatAudioArray& floats)
-{
-  for (int c = 0; c < 2; c++)
-    FBFixedDoubleToFloatArray(doubles[c], floats[c]);
 }
 
 inline void
