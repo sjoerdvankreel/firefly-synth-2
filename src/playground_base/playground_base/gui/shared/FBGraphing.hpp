@@ -36,12 +36,6 @@ typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int voice, int moduleSlot)>
 FBModuleGraphVoiceExchangeSelector;    
 
-typedef std::function<FBFixedFloatAudioArray const* (
-  void const* procState, int moduleSlot)>
-FBModuleGraphGlobalAudioOutputSelector;
-typedef std::function<FBFixedFloatAudioArray const* (
-  void const* procState, int voice, int moduleSlot)>
-FBModuleGraphVoiceAudioOutputSelector;
 typedef std::function<FBSIMDArray<float, FBFixedBlockSamples> const* (
   void const* procState, int moduleSlot)>
 FBModuleGraphGlobalCVOutputSelector;
@@ -50,7 +44,10 @@ typedef std::function<FBSIMDArray<float, FBFixedBlockSamples> const* (
 FBModuleGraphVoiceCVOutputSelector;
 typedef std::function<FBSIMDArray2<float, FBFixedBlockSamples, 2> const* (
   void const* procState, int voice, int moduleSlot)>
-FBModuleGraphVoiceAudioOutputSelector2;
+FBModuleGraphVoiceAudioOutputSelector;
+typedef std::function<FBSIMDArray2<float, FBFixedBlockSamples, 2> const* (
+  void const* procState, int moduleSlot)>
+FBModuleGraphGlobalAudioOutputSelector;
 
 template <class Derived>
 struct FBModuleGraphRenderData
@@ -63,7 +60,6 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceCVOutputSelector voiceCVOutputSelector = {};
   FBModuleGraphGlobalCVOutputSelector globalCVOutputSelector = {};
   FBModuleGraphVoiceAudioOutputSelector voiceAudioOutputSelector = {};
-  FBModuleGraphVoiceAudioOutputSelector2 voiceAudioOutputSelector2 = {}; // todo drop the other one
   FBModuleGraphGlobalAudioOutputSelector globalAudioOutputSelector = {};
 
   void Reset(FBModuleProcState& state) { static_cast<Derived*>(this)->Reset(state); }
@@ -80,8 +76,8 @@ FBRenderModuleGraphSeries(
   seriesOut.l.clear();
   seriesOut.r.clear();
   
-  FBSIMDArray<float, FBFixedBlockSamples> seriesCVIn;
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> seriesAudioIn;
+  FBSIMDArray<float, FBFixedBlockSamples> seriesCVIn = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> seriesAudioIn = {};
 
   bool released = false;
   int processed = FBFixedBlockSamples;
@@ -119,26 +115,10 @@ FBRenderModuleGraphSeries(
     else
     {
       if constexpr (Audio)
-      {
-        if (renderData.voiceAudioOutputSelector)
-        {
-          renderData.voiceAudioOutputSelector(
-            moduleProcState->procRaw,
-            moduleProcState->voice->slot,
-            moduleSlot)->CopyTo(seriesAudioIn);
-        }
-        else
-        {
-          // todo vectorize
-          auto const& voiceAudioOutput = renderData.voiceAudioOutputSelector2(
-            moduleProcState->procRaw,
-            moduleProcState->voice->slot,
-            moduleSlot);
-          for (int c = 0; c < 2; c++)
-            for (int s = 0; s < FBFixedBlockSamples; s++)
-              seriesAudioIn[c][s] = (*voiceAudioOutput)[c].Get(s);
-        }
-      }
+        renderData.voiceAudioOutputSelector(
+          moduleProcState->procRaw,
+          moduleProcState->voice->slot,
+          moduleSlot)->CopyTo(seriesAudioIn);
       else
         renderData.voiceCVOutputSelector(
           moduleProcState->procRaw,
@@ -146,16 +126,20 @@ FBRenderModuleGraphSeries(
           moduleSlot)->CopyTo(seriesCVIn);
     }
     if constexpr (Audio)
+    {
+      seriesAudioIn.NaNCheck();
       for (int i = 0; i < processed; i++)
       {
-        assert(!std::isnan(seriesAudioIn[0][i]));
-        assert(!std::isnan(seriesAudioIn[1][i]));
         seriesOut.l.push_back(seriesAudioIn[0][i]);
         seriesOut.r.push_back(seriesAudioIn[1][i]);
       }
+    }
     else
+    {
+      seriesCVIn.NaNCheck();
       for (int i = 0; i < processed; i++)
         seriesOut.l.push_back(seriesCVIn.Get(i));
+    }
   }
 }
 
@@ -182,7 +166,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int seriesInde
   } else {
     assert(renderData.voiceExchangeSelector != nullptr);
     if constexpr (Audio)
-      assert(renderData.voiceAudioOutputSelector != nullptr || renderData.voiceAudioOutputSelector2 != nullptr);
+      assert(renderData.voiceAudioOutputSelector != nullptr);
     else
       assert(renderData.voiceCVOutputSelector != nullptr);
   }

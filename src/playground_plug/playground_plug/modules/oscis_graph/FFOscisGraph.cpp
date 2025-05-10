@@ -81,7 +81,7 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
   renderData.staticModuleIndex = (int)FFModuleType::Osci;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].osci[slot]; };
-  renderData.voiceAudioOutputSelector2 = [](void const* procState, int voice, int slot) {
+  renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   for (int o = 0; o < FFOsciCount; o++)

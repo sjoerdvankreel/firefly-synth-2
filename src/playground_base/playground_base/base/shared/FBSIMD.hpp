@@ -28,7 +28,7 @@ public:
   FBSIMDArray(FBSIMDVector<T> val) { Fill(val); }
   FBSIMDArray(T val) { Fill(FBSIMDVector<T>(val)); }
 
-  void NaNCheck();
+  void NaNCheck() const;
   template <int Times> void UpsampleStretch();
 
   T Last() const { return _data[N - 1]; }
@@ -46,7 +46,7 @@ public:
 
 template <class T, int N>
 inline void
-FBSIMDArray<T, N>::NaNCheck()
+FBSIMDArray<T, N>::NaNCheck() const
 {
 #ifndef NDEBUG
   for (int i = 0; i < N; i++)
@@ -86,6 +86,7 @@ class alignas(FBSIMDTraits<T>::Align) FBSIMDArray2
 public:
   FBSIMDArray<T, N1>& operator[](int i) { return _data[i]; }
   FBSIMDArray<T, N1> const& operator[](int i) const { return _data[i]; }
+  void NaNCheck() const { for (int i = 0; i < N2; i++) _data[i].NaNCheck(); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N2; i++) _data[i].Fill(val); }
   void CopyTo(FBSIMDArray2<T, N1, N2>& rhs) const { for (int i = 0; i < N2; i++) _data[i].CopyTo(rhs._data[i]); }
 };
@@ -97,6 +98,7 @@ class alignas(FBSIMDTraits<T>::Align) FBSIMDArray3
 public:
   FBSIMDArray2<T, N1, N2>& operator[](int i) { return _data[i]; }
   FBSIMDArray2<T, N1, N2> const& operator[](int i) const { return _data[i]; }
+  void NaNCheck() const { for (int i = 0; i < N3; i++) _data[i].NaNCheck(); }
   void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N3; i++) _data[i].Fill(val); }
   void CopyTo(FBSIMDArray3<T, N1, N2, N3>& rhs) const { for (int i = 0; i < N3; i++) _data[i].CopyTo(rhs._data[i]); }
 };
