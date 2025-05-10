@@ -127,24 +127,18 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     assert(false);
     break;
   }
-
-  FBSIMDArray2<double, FBFixedBlockSamples, 2> audioIn;
-  FBSIMDArray2<double, FBFixedBlockSamples, 2> audioOut = {};
-  FBFixedFloatAudioToDoubleArray(input, audioIn);
   
   for (int s = 0; s < FBFixedBlockSamples; s++)
     for (int ch = 0; ch < 2; ch++)
     {
-      double v0 = audioIn[ch][s];
+      double v0 = input[ch].Get(s);
       double v3 = v0 - _ic2eq[ch];
       double v1 = a1.Get(s) * _ic1eq[ch] + a2.Get(s) * v3;
       double v2 = _ic2eq[ch] + a2.Get(s) * _ic1eq[ch] + a3.Get(s) * v3;
       _ic1eq[ch] = 2 * v1 - _ic1eq[ch];
       _ic2eq[ch] = 2 * v2 - _ic2eq[ch];
-      audioOut[ch][s] = m0.Get(s) * v0 + m1.Get(s) * v1 + m2.Get(s) * v2;
+      output[ch].Set(s, static_cast<float>(m0.Get(s) * v0 + m1.Get(s) * v1 + m2.Get(s) * v2));
     }
-
-  FBFixedDoubleAudioToFloatArray(audioOut, output);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
