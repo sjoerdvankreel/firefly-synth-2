@@ -2,12 +2,11 @@
 
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
-
-#include <vector>
-#include <cstdint>
+#include <unordered_map>
 
 struct FBNoteEvent;
 class FBVoiceManager;
+class FBProcStateContainer;
 
 struct FBPlugInputBlock final
 {
@@ -18,4 +17,12 @@ struct FBPlugInputBlock final
   FBSIMDArray2<float, FBFixedBlockSamples, 2> const* audio = {};
 
   FB_NOCOPY_MOVE_DEFCTOR(FBPlugInputBlock);
+};
+
+struct FBPlugOutputBlock final
+{
+  FBProcStateContainer* procState = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> audio = {};
+  std::unordered_map<int, float> outputParamsNormalized = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugOutputBlock);
 };

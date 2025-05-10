@@ -3,10 +3,10 @@
 #include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 
+#include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/dsp/buffer/FBFixedInputBlock.hpp>
 #include <playground_base/dsp/host/FBSmoothingProcessor.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 #include <cassert>
 #include <algorithm>
@@ -91,7 +91,7 @@ FBSmoothingProcessor::InsertMustNotExist(std::vector<int>& params, int param)
 
 void 
 FBSmoothingProcessor::ProcessSmoothing(
-  FBFixedInputBlock const& input, FBFixedOutputBlock& output, int smoothingSamples)
+  FBFixedInputBlock const& input, FBPlugOutputBlock& output, int smoothingSamples)
 {
   auto& params = output.procState->Params();
   for (int param : _finishedGlobalSmoothing)

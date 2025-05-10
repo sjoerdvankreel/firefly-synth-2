@@ -1,12 +1,12 @@
 #pragma once
 
+#include <playground_base/dsp/plug/FBPlugProcessor.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugProcessor.hpp>
 
 struct FFProcState;
 struct FBRuntimeTopo;
 struct FFExchangeState;
-struct FBFixedOutputBlock;
+struct FBPlugOutputBlock;
 
 class IFBHostDSPContext;
 class FBFixedFloatAudioBlock;
@@ -29,5 +29,5 @@ public:
   void LeaseVoices(FBPlugInputBlock const& input) override;
   void ProcessPreVoice(FBPlugInputBlock const& input) override;
   void ProcessVoice(FBPlugInputBlock const& input, int voice) override;
-  void ProcessPostVoice(FBPlugInputBlock const& input, FBFixedOutputBlock& output) override;
+  void ProcessPostVoice(FBPlugInputBlock const& input, FBPlugOutputBlock& output) override;
 };

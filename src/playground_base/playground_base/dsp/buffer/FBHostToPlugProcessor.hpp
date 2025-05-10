@@ -7,8 +7,8 @@ struct FBHostInputBlock;
 
 class FBHostToPlugProcessor final
 {
-  FBBufferBlock _buffer = {};
   FBFixedInputBlock _fixed = {};
+  FBBufferInputBlock _buffer = {};
 
 public:
   FBFixedInputBlock* ProcessToPlug();

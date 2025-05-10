@@ -1,8 +1,7 @@
 #pragma once
 
+#include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 
 #include <memory>
 
@@ -23,7 +22,7 @@ class FBExchangeStateContainer;
 class FBHostProcessor final
 {
   FBPlugInputBlock _plugIn = {};
-  FBFixedOutputBlock _fixedOut = {};
+  FBPlugOutputBlock _plugOut = {};
 
   float const _sampleRate;
   FBRuntimeTopo const* const _topo;

@@ -23,11 +23,20 @@ public:
   void AppendPlugAudio(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
 };
 
-struct FBBufferBlock final
+struct FBBufferInputBlock final
 {
   FBBufferAudioBlock audio = {};
   std::vector<FBNoteEvent> note = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferInputBlock);
+};
+
+struct FBFixedInputBlock final
+{
+  std::vector<FBNoteEvent> note = {};
+  std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
+  std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, 2> audio = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);
 };

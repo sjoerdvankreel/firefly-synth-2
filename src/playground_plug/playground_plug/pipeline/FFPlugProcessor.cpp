@@ -5,11 +5,10 @@
 #include <playground_plug/modules/master/FFMasterProcessor.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
+#include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/dsp/host/FBHostDSPContext.hpp>
-#include <playground_base/dsp/pipeline/glue/FBPlugInputBlock.hpp>
-#include <playground_base/dsp/pipeline/fixed/FBFixedOutputBlock.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBProcStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
@@ -83,7 +82,7 @@ FFPlugProcessor::ProcessPreVoice(
 
 void
 FFPlugProcessor::ProcessPostVoice(
-  FBPlugInputBlock const& input, FBFixedOutputBlock& output)
+  FBPlugInputBlock const& input, FBPlugOutputBlock& output)
 {
   auto& gGilterIn = _procState->dsp.global.gFilter[0].input;
   gGilterIn.Fill(0.0f);

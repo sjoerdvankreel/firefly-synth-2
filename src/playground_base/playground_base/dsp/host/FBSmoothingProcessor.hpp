@@ -9,7 +9,7 @@
 
 class FBVoiceManager;
 struct FBFixedInputBlock;
-struct FBFixedOutputBlock;
+struct FBPlugOutputBlock;
 
 class FBSmoothingProcessor final
 {
@@ -35,5 +35,5 @@ class FBSmoothingProcessor final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBSmoothingProcessor);
   FBSmoothingProcessor(FBVoiceManager* voiceManager, int paramCount);
-  void ProcessSmoothing(FBFixedInputBlock const& input, FBFixedOutputBlock& output, int smoothingSamples);
+  void ProcessSmoothing(FBFixedInputBlock const& input, FBPlugOutputBlock& output, int smoothingSamples);
 }; 
