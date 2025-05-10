@@ -42,5 +42,6 @@ FFMakeGLFOTopo()
   rate.scalarAddr = FFSelectScalarParamAddr(selectModule, selectRate);
   rate.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectRate);
   rate.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectRate);
+
   return result;
 }
