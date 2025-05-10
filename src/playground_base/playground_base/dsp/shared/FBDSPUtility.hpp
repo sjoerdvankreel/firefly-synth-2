@@ -1,6 +1,5 @@
 #pragma once
 
-#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/topo/static/FBBarsItem.hpp>
 #include <xsimd/xsimd.hpp>
@@ -36,7 +35,6 @@ FBFastFloor(float x)
   return i - (i > x);
 }
 
-// todo can drop this all ?
 inline float
 FBPhaseWrap(float p)
 {

@@ -1,4 +1,3 @@
-#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 

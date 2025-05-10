@@ -1,14 +1,15 @@
 #pragma once
 
-#include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/host/FBHostBlock.hpp>
-#include <playground_base/dsp/shared/FBDSPConfig.hpp>
+#include <playground_base/base/shared/FBUtility.hpp>
 
 #include <array>
 #include <vector>
 #include <cstdint>
 
 class FBProcStateContainer;
+
+inline int constexpr FBMaxVoices = 64;
 
 enum class FBVoiceState { Free, Active, Returned };
 

@@ -2,7 +2,6 @@
 
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBDSPConfig.hpp>
 #include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
 
