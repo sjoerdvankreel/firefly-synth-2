@@ -38,7 +38,7 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   {
     float ratePlain = topo.NormalizedToLinearFast(FFGLFOParam::Rate, rateNorm.CV().Get(s));
     float p = _phase.Next(ratePlain / state.input->sampleRate);
-    output[s] = FBToUnipolar(std::sin(p * FBTwoPi));
+    output.Set(s, FBToUnipolar(std::sin(p * FBTwoPi)));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

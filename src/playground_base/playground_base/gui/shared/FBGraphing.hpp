@@ -29,29 +29,28 @@ struct FBModuleGraphPlotParams final
 typedef std::function<FBModuleGraphPlotParams(
   FBGraphRenderState const*)>
 FBModuleGraphPlotParamsSelector;
-
-typedef std::function<FBFixedFloatArray const* (
-  void const* procState, int moduleSlot)>
-FBModuleGraphGlobalCVOutputSelector;
-typedef std::function<FBFixedFloatAudioArray const* (
-  void const* procState, int moduleSlot)>
-  FBModuleGraphGlobalAudioOutputSelector;
-typedef std::function<FBFixedFloatArray const* (
-  void const* procState, int voice, int moduleSlot)>
-FBModuleGraphVoiceCVOutputSelector;
-typedef std::function<FBFixedFloatAudioArray const* (
-  void const* procState, int voice, int moduleSlot)>
-FBModuleGraphVoiceAudioOutputSelector;
-typedef std::function<FBSIMDArray2<float, FBFixedBlockSamples, 2> const* (
-  void const* procState, int voice, int moduleSlot)>
-FBModuleGraphVoiceAudioOutputSelector2;
-
 typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int moduleSlot)>
 FBModuleGraphGlobalExchangeSelector;    
 typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int voice, int moduleSlot)>
 FBModuleGraphVoiceExchangeSelector;    
+
+typedef std::function<FBFixedFloatAudioArray const* (
+  void const* procState, int moduleSlot)>
+FBModuleGraphGlobalAudioOutputSelector;
+typedef std::function<FBFixedFloatAudioArray const* (
+  void const* procState, int voice, int moduleSlot)>
+FBModuleGraphVoiceAudioOutputSelector;
+typedef std::function<FBSIMDArray<float, FBFixedBlockSamples> const* (
+  void const* procState, int moduleSlot)>
+FBModuleGraphGlobalCVOutputSelector;
+typedef std::function<FBSIMDArray<float, FBFixedBlockSamples> const* (
+  void const* procState, int voice, int moduleSlot)>
+FBModuleGraphVoiceCVOutputSelector;
+typedef std::function<FBSIMDArray2<float, FBFixedBlockSamples, 2> const* (
+  void const* procState, int voice, int moduleSlot)>
+FBModuleGraphVoiceAudioOutputSelector2;
 
 template <class Derived>
 struct FBModuleGraphRenderData
@@ -81,8 +80,8 @@ FBRenderModuleGraphSeries(
   seriesOut.l.clear();
   seriesOut.r.clear();
   
-  FBFixedFloatArray seriesCVIn;
   FBFixedFloatAudioArray seriesAudioIn;
+  FBSIMDArray<float, FBFixedBlockSamples> seriesCVIn;
 
   bool released = false;
   int processed = FBFixedBlockSamples;
@@ -156,7 +155,7 @@ FBRenderModuleGraphSeries(
       }
     else
       for (int i = 0; i < processed; i++)
-        seriesOut.l.push_back(seriesCVIn[i]);
+        seriesOut.l.push_back(seriesCVIn.Get(i));
   }
 }
 

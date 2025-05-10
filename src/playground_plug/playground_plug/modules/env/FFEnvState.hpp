@@ -34,9 +34,9 @@ class alignas(FBSIMDAlign) FFEnvDSPState final
 public:
   FFEnvDSPState();
   ~FFEnvDSPState();
-  FBFixedFloatArray output = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEnvDSPState);
-}; 
+  FBSIMDArray<float, FBFixedBlockSamples> output = {};
+};
 
 template <class TVoiceBlock>
 class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final

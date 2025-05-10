@@ -24,8 +24,8 @@ class alignas(FBSIMDAlign) FFGLFODSPState final
 public:
   FFGLFODSPState();
   ~FFGLFODSPState();
-  FBFixedFloatArray output = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGLFODSPState);
+  FBSIMDArray<float, FBFixedBlockSamples> output = {};
 };
 
 template <class TGlobalBlock>

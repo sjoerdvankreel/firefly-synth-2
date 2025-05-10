@@ -122,7 +122,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     _lastDAHDSR = 0.0f;
     _lastBeforeRelease = _lastDAHDSR;
     _released |= s == releaseAt;
-    output[s] = _smoother.Next(_lastDAHDSR);
+    output.Set(s, _smoother.Next(_lastDAHDSR));
   }
 
   int& attackPos = _stagePositions[(int)FFEnvStage::Attack];
@@ -132,7 +132,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       _lastDAHDSR = attackPos / static_cast<float>(_voiceState.attackSamples);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      output[s] = _smoother.Next(_lastDAHDSR);
+      output.Set(s, _smoother.Next(_lastDAHDSR));
     }
   else
     for (; s < FBFixedBlockSamples && !_released && attackPos < _voiceState.attackSamples; s++, attackPos++, _positionSamples++)
@@ -142,7 +142,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       _lastDAHDSR = std::pow(pos, std::log(slope) * invLogHalf);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      output[s] = _smoother.Next(_lastDAHDSR);
+      output.Set(s, _smoother.Next(_lastDAHDSR));
     }
 
   int& holdPos = _stagePositions[(int)FFEnvStage::Hold];
@@ -151,7 +151,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     _lastDAHDSR = 1.0f;
     _lastBeforeRelease = _lastDAHDSR;
     _released |= s == releaseAt;
-    output[s] = _smoother.Next(_lastDAHDSR);
+    output.Set(s, _smoother.Next(_lastDAHDSR));
   }
 
   int& decayPos = _stagePositions[(int)FFEnvStage::Decay];
@@ -162,7 +162,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       _lastDAHDSR = sustainLevel.CV().Get(s) + (1.0f - sustainLevel.CV().Get(s)) * (1.0f - pos);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      output[s] = _smoother.Next(_lastDAHDSR);
+      output.Set(s, _smoother.Next(_lastDAHDSR));
     }
   else
     for (; s < FBFixedBlockSamples && !_released && decayPos < _voiceState.decaySamples; s++, decayPos++, _positionSamples++)
@@ -172,7 +172,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       _lastDAHDSR = sustainLevel.CV().Get(s) + (1.0f - sustainLevel.CV().Get(s)) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      output[s] = _smoother.Next(_lastDAHDSR);
+      output.Set(s, _smoother.Next(_lastDAHDSR));
     }
 
   if(_voiceState.type == FFEnvType::Sustain && 
@@ -183,7 +183,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       _lastDAHDSR = sustainLevel.CV().Get(s);
       _lastBeforeRelease = _lastDAHDSR;
       _released |= s == releaseAt;
-      output[s] = _smoother.Next(_lastDAHDSR);
+      output.Set(s, _smoother.Next(_lastDAHDSR));
     }
 
   if (s < FBFixedBlockSamples)
@@ -195,7 +195,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     {
       float pos = releasePos / static_cast<float>(_voiceState.releaseSamples);
       _lastDAHDSR = _lastBeforeRelease * (1.0f - pos);
-      output[s] = _smoother.Next(_lastDAHDSR);
+      output.Set(s, _smoother.Next(_lastDAHDSR));
     }
   else
     for (; s < FBFixedBlockSamples && releasePos < _voiceState.releaseSamples; s++, releasePos++, _positionSamples++)
@@ -203,18 +203,18 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       float slope = minSlope + releaseSlope.CV().Get(s) * slopeRange;
       float pos = releasePos / static_cast<float>(_voiceState.releaseSamples);
       _lastDAHDSR = _lastBeforeRelease * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
-      output[s] = _smoother.Next(_lastDAHDSR);
+      output.Set(s, _smoother.Next(_lastDAHDSR));
     }
 
   int& smoothPos = _stagePositions[(int)FFEnvStage::Smooth];
   for (; s < FBFixedBlockSamples && smoothPos < _voiceState.smoothingSamples; s++, smoothPos++, _positionSamples++)
-    output[s] = _smoother.Next(_lastDAHDSR);
+    output.Set(s, _smoother.Next(_lastDAHDSR));
 
   int processed = s;
   if (s < FBFixedBlockSamples)
     _finished = true;
   for (; s < FBFixedBlockSamples; s++)
-    output[s] = _smoother.State();
+    output.Set(s, _smoother.State());
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
