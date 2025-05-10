@@ -14,16 +14,6 @@ FFMakeGUISettingsTopo()
   result->id = "{2407B76A-7FB3-4BD6-B6FD-B1F610AF8147}";
   result->guiParams.resize((int)FFGUISettingsGUIParam::Count);
   auto selectGuiModule = [](auto& state) { return &state.guiSettings; }; 
-  
-  auto& guiGraphTrack = result->guiParams[(int)FFGUISettingsGUIParam::GraphTrack];
-  guiGraphTrack.defaultText = "On";
-  guiGraphTrack.display = "Graph Track";
-  guiGraphTrack.name = "Graph Tracking";
-  guiGraphTrack.slotCount = 1;
-  guiGraphTrack.id = "{B45F4562-39D1-42CA-B600-0248C98CC292}";
-  guiGraphTrack.type = FBParamType::Boolean;
-  auto selectGuiGraphTrack = [](auto& module) { return &module.graphTrack; };
-  guiGraphTrack.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphTrack);
 
   auto& guiUserScale = result->guiParams[(int)FFGUISettingsGUIParam::UserScale];
   guiUserScale.defaultText = "1";

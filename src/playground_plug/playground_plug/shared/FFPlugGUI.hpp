@@ -19,7 +19,6 @@ public FBPlugGUI
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
-  void RequestGraphRender(int moduleIndex);
 
 public:
   ~FFPlugGUI();
