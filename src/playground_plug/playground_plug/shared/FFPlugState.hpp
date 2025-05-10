@@ -9,7 +9,6 @@
 #include <playground_plug/modules/gfilter/FFGFilterState.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/base/state/proc/FBVoiceAccParamState.hpp>
 #include <playground_base/base/state/proc/FBGlobalAccParamState.hpp>

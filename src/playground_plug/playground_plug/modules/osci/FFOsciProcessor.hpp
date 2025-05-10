@@ -5,7 +5,6 @@
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 #include <playground_base/dsp/shared/FBTrackingPhaseGenerator.hpp>
 

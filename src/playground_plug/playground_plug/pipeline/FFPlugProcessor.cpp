@@ -6,7 +6,6 @@
 #include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
 
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
-#include <playground_base/dsp/shared/FBFixedBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/dsp/host/FBHostDSPContext.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
