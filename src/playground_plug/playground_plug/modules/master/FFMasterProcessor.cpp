@@ -23,7 +23,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   {
     float gainPlain = topo.NormalizedToIdentityFast(FFMasterParam::Gain, gainNorm.CV().Get(s));
     for (int ch = 0; ch < 2; ch++)
-      output[ch].Set(s, input[ch][s] * gainPlain);
+      output[ch].Set(s, input[ch].Get(s) * gainPlain);
   }
 
   auto const* voicesParam = state.topo->audio.ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });

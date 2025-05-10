@@ -130,8 +130,8 @@ FBRenderModuleGraphSeries(
       seriesAudioIn.NaNCheck();
       for (int i = 0; i < processed; i++)
       {
-        seriesOut.l.push_back(seriesAudioIn[0][i]);
-        seriesOut.r.push_back(seriesAudioIn[1][i]);
+        seriesOut.l.push_back(seriesAudioIn[0].Get(i));
+        seriesOut.r.push_back(seriesAudioIn[1].Get(i));
       }
     }
     else
