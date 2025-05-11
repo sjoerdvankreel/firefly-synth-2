@@ -39,6 +39,20 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     auto resPlain = topo.NormalizedToIdentityFast(FFGFilterParam::Res, resNorm.CV().LoadFloatToDouble(s));
     auto k = 2.0 - 2.0 * resPlain;
     auto g = xsimd::tan(std::numbers::pi * freqPlain / state.input->sampleRate);
+
+    FBSIMDVector<double> a = {};
+    if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
+    {
+      auto gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Freq, freqNorm.CV().LoadFloatToDouble(s));
+      a = xsimd::pow(FBSIMDVector<double>(10.0), gainPlain / 40.0);
+      switch (mode)
+      {
+      case FFGFilterMode::BLL: k = k / a; break;
+      case FFGFilterMode::LSH: g = g / xsimd::sqrt(a); break;
+      case FFGFilterMode::HSH: g = g * xsimd::sqrt(a); break;
+      default: assert(false); break;
+      }
+    }
     
     auto a1_ = 1.0 / (1.0 + g * (g + k));
     auto a2_ = g * a1_;
@@ -59,7 +73,10 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     case FFGFilterMode::BSF: m0_ = 1.0; m1_ = -k; break;
     case FFGFilterMode::PEQ: m0_ = 1.0; m1_ = -k; m2_ = -2.0; break;
     case FFGFilterMode::APF: m0_ = 1.0; m1_ = -2.0 * k; break;
-    default: break;
+    case FFGFilterMode::BLL: m0_ = 1.0; m1_ = k * (a * a - 1.0); break;
+    case FFGFilterMode::LSH: m0_ = 1.0; m1_ = k * (a - 1.0); m2_ = a * a - 1.0; break;
+    case FFGFilterMode::HSH: m0_ = a * a; m1_ = k * (1.0 - a * a); m2_ = 1.0 - a * a; break;
+    default: assert(false);  break;
     }
 
     m0.Store(s, m0_);
@@ -78,53 +95,6 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
       _ic2eq[ch] = 2 * v2 - _ic2eq[ch];
       output[ch].Set(s, static_cast<float>(m0.Get(s) * v0 + m1.Get(s) * v1 + m2.Get(s) * v2));
     }
-
-#if 0
-  FBSIMDArray<double, FBFixedBlockSamples> a;
-  auto const& gainNorm = procParams.acc.gain[0].Global();
-  if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      // TODO
-      double gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm.CV().Get(s));
-      a.Set(s, std::pow(10.0, gainPlain / 40.0));
-    }
-
-  if (mode == FFGFilterMode::BLL)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      k.Set(s, k.Get(s) / a.Get(s));
-  else if (mode == FFGFilterMode::LSH)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      g.Set(s, g.Get(s) / std::sqrt(a.Get(s)));
-  else if (mode == FFGFilterMode::HSH)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      g.Set(s, g.Get(s) * std::sqrt(a.Get(s)));
-#endif
-
-#if 0
-  case FFGFilterMode::BLL:
-    m0.Fill(1.0);
-    m2.Fill(0.0);
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      m1.Set(s, k.Get(s) * (a.Get(s) * a.Get(s) - 1.0));
-    break;
-  case FFGFilterMode::LSH:
-    m0.Fill(1.0);
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      m1.Set(s, k.Get(s) * (a.Get(s) - 1.0));
-      m2.Set(s, a.Get(s) * a.Get(s) - 1.0);
-    }
-    break;
-  case FFGFilterMode::HSH:
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-    {
-      m0.Set(s, a.Get(s) * a.Get(s));
-      m1.Set(s, k.Get(s) * (1.0 - a.Get(s) * a.Get(s)));
-      m2.Set(s, 1.0 - a.Get(s) * a.Get(s));
-    }
-    break;
-#endif
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
