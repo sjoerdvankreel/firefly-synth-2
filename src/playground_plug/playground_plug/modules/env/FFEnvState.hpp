@@ -17,15 +17,6 @@ public FBModuleProcExchangeState
   float lastOutput = {};
 };
 
-class FFEnvGUIState final
-{
-  friend struct FFGUIState;
-  std::array<double, 1> graphKeyTimePct = {};
-  friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvGUIState);
-};
-
 class alignas(FBSIMDAlign) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;

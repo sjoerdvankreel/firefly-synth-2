@@ -1,5 +1,4 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_plug/shared/FFGUIState.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/output/FFOutputTopo.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>

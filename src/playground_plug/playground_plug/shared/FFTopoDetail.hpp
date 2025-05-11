@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_plug/shared/FFGUIState.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 
 inline auto
