@@ -1153,10 +1153,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     _prevUniFMOutput.Fill(0.0f);
     for (int o = 0; o < FFOsciFMOperatorCount; o++)
       for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
-      {
-        auto phaseInits = FBSIMDVector<float>::load_aligned(uniPhaseInit.Ptr(0) + u);
-        _uniFMPhaseGens[o][u / FBSIMDFloatCount] = FFOsciFMPhaseGenerator(phaseInits);
-      }
+        _uniFMPhaseGens[o][u / FBSIMDFloatCount] = FFOsciFMPhaseGenerator(uniPhaseInit.Load(u));
   }
 }
 

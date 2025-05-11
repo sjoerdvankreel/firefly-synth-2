@@ -22,6 +22,8 @@ public:
   void Init(float offset, float curveStart, float curveEnd);
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
+  FBSIMDVector<float> NormalizedToPlainFast(FBSIMDVector<float> normalized) const;
+  FBSIMDVector<double> NormalizedToPlainFast(FBSIMDVector<double> normalized) const;
   FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
 };
 
@@ -49,10 +51,22 @@ FBLog2Param::NormalizedToPlainFast(float normalized) const
   return result;
 }
 
+inline FBSIMDVector<float>
+FBLog2Param::NormalizedToPlainFast(FBSIMDVector<float> normalized) const
+{
+  return _offset + _curveStart * xsimd::pow(FBSIMDVector<float>(2.0f), _expo * normalized);
+}
+
+inline FBSIMDVector<double>
+FBLog2Param::NormalizedToPlainFast(FBSIMDVector<double> normalized) const
+{
+  return _offset + _curveStart * xsimd::pow(FBSIMDVector<double>(2.0f), _expo * normalized);
+}
+
 inline FBSIMDVector<float> 
 FBLog2Param::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {
-  return _offset + _curveStart * xsimd::pow(FBSIMDVector<float>(2.0f), _expo * FBSIMDVector<float>::load_aligned(normalized.CV().Ptr(pos)));
+  return _offset + _curveStart * xsimd::pow(FBSIMDVector<float>(2.0f), _expo * normalized.CV().Load(pos));
 }
 
 inline int

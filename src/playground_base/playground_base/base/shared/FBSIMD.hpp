@@ -37,6 +37,9 @@ public:
   T* Ptr(int offset) { return &_data[offset]; }
   T const* Ptr(int offset) const { return &_data[offset]; }
 
+  FBSIMDVector<double> LoadFloatToDouble(int pos) const;
+  void StoreDoubleToFloat(int pos, FBSIMDVector<double> val)  const;
+
   void Store(int pos, FBSIMDVector<T> val) { val.store_aligned(Ptr(pos)); }
   void Add(int pos, FBSIMDVector<T> val) { (Load(pos) + val).store_aligned(Ptr(pos)); }
   void Mul(int pos, FBSIMDVector<T> val) { (Load(pos) * val).store_aligned(Ptr(pos)); }
@@ -47,6 +50,29 @@ public:
   void Add(FBSIMDArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Add(i, rhs.Load(i)); }
   void CopyTo(FBSIMDArray<T, N>& rhs) const { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) rhs.Store(i, Load(i)); }
 };
+
+template <class T, int N>
+inline FBSIMDVector<double> 
+FBSIMDArray<T, N>::LoadFloatToDouble(int pos) const
+{
+  static_assert(std::is_same<T, float>::value);
+  assert(pos % FBSIMDTraits<double>::Size == 0);
+  FBSIMDArray<double, FBSIMDTraits<double>::Size> y;
+  for (int i = 0; i < FBSIMDTraits<double>::Size; i++)
+    y.Set(i, Get(pos + i));
+  return y.Load(0);
+}
+
+template <class T, int N>
+inline void 
+FBSIMDArray<T, N>::StoreDoubleToFloat(int pos, FBSIMDVector<double> val)  const
+{
+  static_assert(std::is_same<T, float>::value);
+  assert(pos % FBSIMDTraits<double>::Size == 0);
+  FBSIMDArray<double, FBSIMDTraits<double>::Size> x(val);
+  for (int i = 0; i < FBSIMDTraits<double>::Size; i++)
+    Set(pos + i, static_cast<float>(x.Get(i)));
+}
 
 template <class T, int N>
 inline void

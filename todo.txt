@@ -1,3 +1,4 @@
+avx version
 less files
 midi smoothing
 combined shaper+filter+routing fx
