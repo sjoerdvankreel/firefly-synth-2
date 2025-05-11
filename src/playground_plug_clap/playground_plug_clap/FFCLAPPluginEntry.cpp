@@ -1,7 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugMeta.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/pipeline/FFPlugProcessor.hpp>
+#include <playground_plug/dsp/FFPlugProcessor.hpp>
 
 #include <playground_base_clap/FBCLAPPlugin.hpp>
 #include <playground_base_clap/FBCLAPExchangeStateQueue.hpp>

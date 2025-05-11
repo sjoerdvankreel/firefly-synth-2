@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/pipeline/FFVoiceProcessor.hpp>
+#include <playground_plug/dsp/FFVoiceProcessor.hpp>
 #include <playground_plug/modules/env/FFEnvState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
