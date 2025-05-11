@@ -41,8 +41,6 @@ struct FBStaticModule final
   template <class T, class ParamIndex>
   T NormalizedToListFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
-  int NormalizedToNoteFast(ParamIndex index, float normalized) const;
-  template <class ParamIndex>
   bool NormalizedToBoolFast(ParamIndex index, float normalized) const;
 
   template <class ParamIndex>
