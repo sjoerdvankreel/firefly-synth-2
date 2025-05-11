@@ -1,5 +1,4 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_plug/shared/FFPlugMeta.hpp>
 #include <playground_plug/dsp/FFPlugProcessor.hpp>
 
 #include <playground_base/gui/shared/FBGUI.hpp>

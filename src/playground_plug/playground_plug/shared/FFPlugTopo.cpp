@@ -1,6 +1,5 @@
 #include <playground_plug/shared/FFPlugGUI.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_plug/shared/FFPlugMeta.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/glfo/FFGLFOTopo.hpp>
@@ -58,6 +57,19 @@ SpecialGUIParamsSelector(
   FBSpecialGUIParams result = {};
   result.userScale = MakeSpecialGUIParam(
     topo, state, (int)FFModuleType::GUISettings, (int)FFGUISettingsGUIParam::UserScale);
+  return result;
+}
+
+FBStaticTopoMeta
+FFPlugMeta()
+{
+  FBStaticTopoMeta result;
+  result.name = FFPlugName;
+  result.id = FFPlugUniqueId;
+  result.vendor = FFVendorName;
+  result.version.major = FF_PLUG_VERSION_MAJOR;
+  result.version.minor = FF_PLUG_VERSION_MINOR;
+  result.version.patch = FF_PLUG_VERSION_PATCH;
   return result;
 }
 
