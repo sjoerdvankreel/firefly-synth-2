@@ -49,7 +49,6 @@ FBLog2Param::NormalizedToPlainFast(float normalized) const
   return result;
 }
 
-
 inline FBSIMDVector<float> 
 FBLog2Param::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {

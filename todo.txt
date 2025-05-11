@@ -1,5 +1,6 @@
 less files
 midi smoothing
+combined shaper+filter+routing fx
 fix todos
 tooltip combo not show
 store the selected tab
