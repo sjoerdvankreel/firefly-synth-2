@@ -1,4 +1,5 @@
 less files
+midi smoothing
 fix todos
 tooltip combo not show
 store the selected tab

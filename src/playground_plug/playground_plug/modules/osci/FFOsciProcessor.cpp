@@ -1181,8 +1181,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
 
-  // TEMP
-  auto const& gLFOOut = procState->dsp.global.gLFO[0].output;
+  auto const& gLFOOut = procState->dsp.global.gLFO[0].output; // TODO
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
   auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];

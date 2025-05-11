@@ -15,7 +15,6 @@ template <class T> struct FBSIMDTraits {
   static inline int constexpr Size = FBSIMDVector<T>::size; 
   static inline int constexpr Align = Size * sizeof(T); };
 
-// todo drop the other ones
 template <class T, int N>
 class alignas(FBSIMDTraits<T>::Align) FBSIMDArray
 {
