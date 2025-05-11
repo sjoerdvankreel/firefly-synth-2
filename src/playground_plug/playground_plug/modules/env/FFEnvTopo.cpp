@@ -4,6 +4,7 @@
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/env/FFEnvGraph.hpp>
+#include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 

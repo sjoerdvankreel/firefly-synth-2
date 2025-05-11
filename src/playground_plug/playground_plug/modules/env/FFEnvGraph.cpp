@@ -1,13 +1,6 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/env/FFEnvGraph.hpp>
-
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
-#include <playground_plug/modules/osci/FFOsciProcessor.hpp>
-#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
-#include <playground_plug/modules/master/FFMasterProcessor.hpp>
-#include <playground_plug/modules/output/FFOutputProcessor.hpp>
-#include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
-#include <playground_plug/modules/osci_mod/FFOsciModProcessor.hpp>
 
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBGraphing.hpp>
