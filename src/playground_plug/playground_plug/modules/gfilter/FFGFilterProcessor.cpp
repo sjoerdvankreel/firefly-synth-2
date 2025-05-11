@@ -53,9 +53,9 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
 
     switch (mode)
     {
-    case FFGFilterMode::LPF: m2_ = 1.0f; break;
-    case FFGFilterMode::BPF: m1_ = 1.0f; break;
-    case FFGFilterMode::HPF: m1_ = -k; m2_ = -1.0; break;
+    case FFGFilterMode::LPF: m2_ = 1.0; break;
+    case FFGFilterMode::BPF: m1_ = 1.0; break;
+    case FFGFilterMode::HPF: m0_ = 1.0; m1_ = -k; m2_ = -1.0; break;
     case FFGFilterMode::BSF: m0_ = 1.0; m1_ = -k; break;
     case FFGFilterMode::PEQ: m0_ = 1.0; m1_ = -k; m2_ = -2.0; break;
     case FFGFilterMode::APF: m0_ = 1.0; m1_ = -2.0 * k; break;
