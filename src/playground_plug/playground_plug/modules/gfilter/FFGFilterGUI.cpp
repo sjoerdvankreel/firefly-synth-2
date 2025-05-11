@@ -26,6 +26,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto mode = topo->audio.ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Mode, 0 });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
+  grid->MarkSection({ 0, 0, 1, 4 });
   return grid;
 }
 
@@ -43,16 +44,17 @@ MakeSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
   auto gain = topo->audio.ParamAtTopo({ (int)FFModuleType::GFilter, moduleSlot, (int)FFGFilterParam::Gain, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+  grid->MarkSection({ 0, 0, 1, 6 });
   return grid;
 }
   
 static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto result = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
-  result->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  result->Add(0, 1, MakeSectionParams(plugGUI, moduleSlot));
-  return result;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+  grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
+  grid->Add(0, 1, MakeSectionParams(plugGUI, moduleSlot));
+  return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
 Component*
