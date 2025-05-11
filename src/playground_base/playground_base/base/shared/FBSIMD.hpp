@@ -5,7 +5,12 @@
 #include <xsimd/xsimd.hpp>
 
 // better make sure this all lines up
+#ifdef __APPLE__
+typedef xsimd::neon FBXSIMDBatchType;
+#else
 typedef xsimd::sse2 FBXSIMDBatchType;
+#endif
+
 inline int constexpr FBSIMDFloatCount = 4;
 inline int constexpr FBSIMDDoubleCount = 2;
 inline int constexpr FBSIMDAlign = FBSIMDFloatCount * sizeof(float);

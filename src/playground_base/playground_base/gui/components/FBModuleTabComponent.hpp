@@ -22,9 +22,9 @@ public:
     FBPlugGUI* plugGUI, int moduleIndex, 
     FBModuleTabFactory const& tabFactory);
   
+  int FixedWidth(int height) const override;
+
   void currentTabChanged(
     int newCurrentTabIndex, 
-    juce::String const& newCurrentTabName);
-
-  int FixedWidth(int height) const override;
+    juce::String const& newCurrentTabName) override;
 };
