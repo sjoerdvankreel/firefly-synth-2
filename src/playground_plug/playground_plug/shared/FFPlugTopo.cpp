@@ -1,6 +1,5 @@
 #include <playground_plug/shared/FFPlugGUI.hpp>
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_plug/shared/FFGUIState.hpp>
 #include <playground_plug/shared/FFPlugMeta.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>

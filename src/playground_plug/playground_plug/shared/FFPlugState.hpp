@@ -4,10 +4,11 @@
 #include <playground_plug/modules/env/FFEnvState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
-#include <playground_plug/modules/osci_mod/FFOsciModState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
 #include <playground_plug/modules/output/FFOutputState.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterState.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModState.hpp>
+#include <playground_plug/modules/gui_settings/FFGUISettingsState.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
@@ -19,6 +20,12 @@
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <array>
+
+struct FFGUIState final
+{
+  std::array<FFGUISettingsGUIState, 1> guiSettings = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
+};
 
 struct FFGlobalExchangeState final
 {
