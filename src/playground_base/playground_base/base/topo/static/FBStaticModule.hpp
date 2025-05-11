@@ -100,13 +100,6 @@ FBStaticModule::NormalizedToBoolFast(ParamIndex index, float normalized) const
   return params[static_cast<int>(index)].Boolean().NormalizedToPlainFast(normalized);
 }
 
-template <class ParamIndex>
-inline int
-FBStaticModule::NormalizedToNoteFast(ParamIndex index, float normalized) const
-{
-  return params[static_cast<int>(index)].Note().NormalizedToPlainFast(normalized);
-}
-
 template <class T, class ParamIndex>
 inline T
 FBStaticModule::NormalizedToListFast(ParamIndex index, float normalized) const
