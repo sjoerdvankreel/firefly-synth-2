@@ -43,7 +43,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     FBSIMDVector<double> a = {};
     if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
     {
-      auto gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Freq, freqNorm.CV().LoadFloatToDouble(s));
+      auto gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm.CV().LoadFloatToDouble(s));
       a = xsimd::pow(FBSIMDVector<double>(10.0), gainPlain / 40.0);
       switch (mode)
       {
