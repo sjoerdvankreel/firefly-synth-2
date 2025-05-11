@@ -14,7 +14,6 @@ FFMakeMasterTopo()
   result->id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
   result->params.resize((int)FFMasterParam::Count);
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.master; });
-  auto selectGuiModule = [](auto& state) { return &state.master; };
   auto selectModule = [](auto& state) { return &state.global.master; };
 
   auto& gain = result->params[(int)FFMasterParam::Gain];
@@ -45,20 +44,6 @@ FFMakeMasterTopo()
   hostSmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectHostSmoothTime);
   hostSmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectHostSmoothTime);
   hostSmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHostSmoothTime);
-
-  auto& voices = result->params[(int)FFMasterParam::Voices];
-  voices.acc = false;
-  voices.output = true;
-  voices.defaultText = "0";
-  voices.name = "Voices";
-  voices.slotCount = 1;
-  voices.id = "{54C6CAD4-FA5A-4395-8131-C768E0AD48CF}";
-  voices.type = FBParamType::Discrete;
-  voices.Discrete().valueCount = FBMaxVoices + 1;
-  auto selectVoices = [](auto& module) { return &module.block.voices; };
-  voices.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVoices);
-  voices.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoices);
-  voices.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoices);
 
   return result;
 }

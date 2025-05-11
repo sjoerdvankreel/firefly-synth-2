@@ -6,6 +6,7 @@
 #include <playground_plug/modules/osci/FFOsciState.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
+#include <playground_plug/modules/output/FFOutputState.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterState.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
@@ -22,6 +23,7 @@
 struct FFGlobalExchangeState final
 {
   std::array<FBModuleProcExchangeState, 1> master = {};
+  std::array<FBModuleProcExchangeState, 1> output = {};
   std::array<FFGLFOExchangeState, FFGLFOCount> gLFO = {};
   std::array<FBModuleProcExchangeState, FFGFilterCount> gFilter = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
@@ -38,6 +40,7 @@ struct FFVoiceExchangeState final
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
   FFMasterDSPState master = {};
+  FFOutputDSPState output = {};
   std::array<FFGLFODSPState, FFGLFOCount> gLFO = {};
   std::array<FFGFilterDSPState, FFGFilterCount> gFilter = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
@@ -65,6 +68,7 @@ struct alignas(alignof(TGlobalAcc)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFMasterParamState<TGlobalBlock, TGlobalAcc>, 1> master = {};
+  std::array<FFOutputParamState<TGlobalBlock, TGlobalAcc>, 1> output = {};
   std::array<FFGLFOParamState<TGlobalBlock, TGlobalAcc>, FFGLFOCount> gLFO = {};
   std::array<FFGFilterParamState<TGlobalBlock, TGlobalAcc>, FFGFilterCount> gFilter = {};
 };

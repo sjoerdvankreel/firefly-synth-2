@@ -3,9 +3,10 @@
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
-#include <playground_plug/modules/osci_mod/FFOsciModGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
+#include <playground_plug/modules/output/FFOutputGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
+#include <playground_plug/modules/osci_mod/FFOsciModGUI.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -96,7 +97,8 @@ FFPlugGUI::SetupGUI()
   _graph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get());
   _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 0, -1, rowSizes, std::vector<int> { 0, 0, 1 });
   _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
-  _content->Add(0, 1, 1, 2, _graph);
+  _content->Add(0, 1, 1, 1, FFMakeOutputGUI(this));
+  _content->Add(0, 2, 1, 1, _graph);
   _content->Add(1, 0, 1, 3, FFMakeGLFOGUI(this));
   _content->Add(2, 0, 1, 3, FFMakeGFilterGUI(this));
   _content->Add(3, 0, 1, 3, FFMakeOsciGUI(this));

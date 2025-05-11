@@ -25,10 +25,6 @@ FFMasterProcessor::Process(FBModuleProcState& state)
       output[ch].Store(s, input[ch].Load(s) * gainPlain);
   }
 
-  auto const* voicesParam = state.topo->audio.ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::Voices, 0 });
-  float voicesNorm = topo.DiscreteToNormalizedFast(FFMasterParam::Voices, state.input->voiceManager->VoiceCount());
-  (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = voicesNorm;
-
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
