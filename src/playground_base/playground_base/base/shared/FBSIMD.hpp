@@ -6,7 +6,7 @@
 
 // better make sure this all lines up
 #ifdef __APPLE__
-typedef xsimd::neon64 FBXSIMDBatchType;
+typedef xsimd::neon FBXSIMDBatchType;
 #else
 typedef xsimd::sse2 FBXSIMDBatchType;
 #endif
