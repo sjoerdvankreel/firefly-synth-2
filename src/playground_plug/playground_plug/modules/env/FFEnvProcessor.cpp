@@ -2,6 +2,7 @@
 #include <playground_plug/shared/FFPlugState.hpp>
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
+#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
 
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
