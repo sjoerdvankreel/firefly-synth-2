@@ -28,6 +28,10 @@ public:
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
 
+  void drawTabButton(
+    juce::TabBarButton& button, juce::Graphics& g,
+    bool isMouseOver, bool isMouseDown) override;
+
   void drawComboBox(juce::Graphics&,
     int	width, int height, bool	isButtonDown,
     int	buttonX, int buttonY, int	buttonW, int buttonH,
@@ -49,5 +53,4 @@ public:
   juce::Font getComboBoxFont(juce::ComboBox&) override { return FBGUIGetFont(); }
   juce::Font getSliderPopupFont(juce::Slider&) override { return FBGUIGetFont(); }
   juce::Font getTextButtonFont(juce::TextButton&, int)  override { return FBGUIGetFont(); }
-  juce::Font getTabButtonFont(juce::TabBarButton& b, float) override { return FBGUIGetFont(); }
 };
