@@ -1,23 +1,14 @@
 #pragma once
 
 #include <playground_plug/dsp/FFVoiceProcessor.hpp>
-
 #include <playground_plug/modules/env/FFEnvState.hpp>
-#include <playground_plug/modules/osci/FFOsciState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
+#include <playground_plug/modules/osci/FFOsciState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
 #include <playground_plug/modules/output/FFOutputState.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterState.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModState.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsState.hpp>
-
-#include <playground_plug/modules/env/FFEnvProcessor.hpp>
-#include <playground_plug/modules/osci/FFOsciProcessor.hpp>
-#include <playground_plug/modules/glfo/FFGLFOProcessor.hpp>
-#include <playground_plug/modules/master/FFMasterProcessor.hpp>
-#include <playground_plug/modules/output/FFOutputProcessor.hpp>
-#include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
-#include <playground_plug/modules/osci_mod/FFOsciModProcessor.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
