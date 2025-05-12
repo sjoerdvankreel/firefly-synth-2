@@ -9,10 +9,11 @@
 #include <playground_plug/modules/osci_mod/FFOsciModGUI.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsTopo.hpp>
 
+#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
-#include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
+#include <playground_base/gui/components/FBSectionComponent.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponent.hpp>
 
 using namespace juce;
