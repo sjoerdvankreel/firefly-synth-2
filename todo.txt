@@ -1,4 +1,5 @@
 avx version
+intel mac version
 midi smoothing
 combined shaper+filter+routing fx
 fix todos
