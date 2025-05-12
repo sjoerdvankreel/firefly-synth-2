@@ -9,9 +9,9 @@
 #include <playground_base/gui/controls/FBComboBox.hpp>
 #include <playground_base/gui/controls/FBToggleButton.hpp>
 #include <playground_base/gui/controls/FBMultiLineLabel.hpp>
+#include <playground_base/gui/components/FBTabComponent.hpp>
 #include <playground_base/gui/components/FBGridComponent.hpp>
 #include <playground_base/gui/components/FBSectionComponent.hpp>
-#include <playground_base/gui/components/FBModuleTabComponent.hpp>
 
 using namespace juce;
 

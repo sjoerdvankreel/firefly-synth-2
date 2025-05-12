@@ -1,17 +1,23 @@
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
-#include <playground_base/gui/components/FBModuleTabComponent.hpp>
+#include <playground_base/gui/components/FBTabComponent.hpp>
 
 #include <string>
 
 using namespace juce;
 
+FBTabComponent::
+FBTabComponent()
+{
+  setTabBarDepth(16);
+}
+
 FBModuleTabComponent::
 FBModuleTabComponent(
   FBPlugGUI* plugGUI, int moduleIndex, 
   FBModuleTabFactory const& tabFactory) :
-TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop),
+FBTabComponent(TabbedButtonBar::Orientation::TabsAtTop),
 _plugGUI(plugGUI),
 _moduleIndex(moduleIndex)
 { 

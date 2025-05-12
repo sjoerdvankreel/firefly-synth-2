@@ -10,8 +10,15 @@ typedef std::function<juce::Component*(
   FBPlugGUI* plugGUI, int moduleSlot)>
 FBModuleTabFactory;
 
+class FBTabComponent:
+public juce::TabbedComponent
+{
+public:
+  FBTabComponent();
+};
+
 class FBModuleTabComponent:
-public juce::TabbedComponent,
+public FBTabComponent,
 public IFBHorizontalAutoSize
 {
   FBPlugGUI* const _plugGUI;
