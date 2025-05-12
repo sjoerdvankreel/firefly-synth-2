@@ -8,16 +8,17 @@
 using namespace juce;
 
 FBTabComponent::
-FBTabComponent()
+FBTabComponent():
+TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
 {
-  setTabBarDepth(16);
+  setTabBarDepth(20);
 }
 
 FBModuleTabComponent::
 FBModuleTabComponent(
   FBPlugGUI* plugGUI, int moduleIndex, 
   FBModuleTabFactory const& tabFactory) :
-FBTabComponent(TabbedButtonBar::Orientation::TabsAtTop),
+FBTabComponent(),
 _plugGUI(plugGUI),
 _moduleIndex(moduleIndex)
 { 
