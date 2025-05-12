@@ -40,5 +40,5 @@ FBModuleTabComponent::currentTabChanged(
 int 
 FBModuleTabComponent::FixedWidth(int height) const
 {
-  return dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0)).FixedWidth(height - 16);
+  return dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0)).FixedWidth(height - 30);
 }
