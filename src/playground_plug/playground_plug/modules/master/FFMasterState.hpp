@@ -1,5 +1,7 @@
 #pragma once
 
+#include <playground_plug/modules/master/FFMasterProcessor.hpp>
+
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
@@ -7,7 +9,6 @@
 #include <memory>
 
 struct FBStaticModule;
-class FFMasterProcessor;
 
 class alignas(FBSIMDAlign) FFMasterDSPState final
 {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <playground_plug/modules/gfilter/FFGFilterProcessor.hpp>
+
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
@@ -7,7 +9,6 @@
 #include <memory>
 
 struct FBStaticModule;
-class FFGFilterProcessor;
 
 class alignas(FBSIMDAlign) FFGFilterDSPState final
 {

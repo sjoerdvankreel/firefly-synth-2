@@ -2,6 +2,7 @@
 
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
+#include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModState.hpp>
 
 #include <playground_base/base/shared/FBSIMD.hpp>
@@ -11,7 +12,6 @@
 #include <memory>
 
 struct FBStaticModule;
-class FFOsciProcessor;
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
