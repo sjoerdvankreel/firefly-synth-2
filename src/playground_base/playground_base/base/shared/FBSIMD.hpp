@@ -7,13 +7,12 @@
 // better make sure this all lines up
 #ifdef __APPLE__
 typedef xsimd::neon64 FBXSIMDBatchType;
-static_assert(xsimd::batch<float, FBXSIMDBatchType>::size == 8);
-static_assert(xsimd::batch<double, FBXSIMDBatchType>::size == 4);
 #else
 typedef xsimd::sse2 FBXSIMDBatchType;
+#endif
+
 static_assert(xsimd::batch<float, FBXSIMDBatchType>::size == 4);
 static_assert(xsimd::batch<double, FBXSIMDBatchType>::size == 2);
-#endif
 
 inline int constexpr FBSIMDFloatCount = 4;
 inline int constexpr FBSIMDDoubleCount = 2;
