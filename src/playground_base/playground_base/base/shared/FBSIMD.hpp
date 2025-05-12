@@ -6,7 +6,7 @@
 
 // better make sure this all lines up
 #ifdef __APPLE__
-typedef xsimd::neon64 FBXSIMDBatchType;
+typedef xsimd::neon FBXSIMDBatchType;
 static_assert(xsimd::batch<float, FBXSIMDBatchType>::size == 4);
 static_assert(xsimd::batch<double, FBXSIMDBatchType>::size == 2);
 #else
