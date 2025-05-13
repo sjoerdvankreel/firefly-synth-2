@@ -15,6 +15,7 @@ static Typeface::Ptr _typeface = {};
 static std::unique_ptr<FBLookAndFeel> _lookAndFeel = {};
 
 Font const& FBGUIGetFont() { return _font; }
+LookAndFeel* FBGetLookAndFeel() { return _lookAndFeel.get(); }
 float FBGUIGetFontHeightFloat() { return FBGUIGetFont().getHeight(); }
 int FBGUIGetFontHeightInt() { return static_cast<int>(std::ceil(FBGUIGetFontHeightFloat())); }
 int FBGUIGetStringWidthCached(std::string const& text) { return FBGUIGetStringSizeCached(text).x; }

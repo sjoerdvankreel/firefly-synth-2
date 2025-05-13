@@ -1,3 +1,4 @@
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -12,6 +13,7 @@ FBTabComponent():
 TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
 {
   setTabBarDepth(20);
+  setLookAndFeel(FBGetLookAndFeel());
 }
 
 FBModuleTabComponent::

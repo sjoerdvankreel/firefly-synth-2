@@ -12,6 +12,7 @@ void FBGUITerminate();
 int FBGUIGetFontHeightInt();
 float FBGUIGetFontHeightFloat();
 juce::Font const& FBGUIGetFont();
+juce::LookAndFeel* FBGetLookAndFeel();
 
 int FBGUIGetStringWidthCached(std::string const& text);
 juce::Point<int> FBGUIGetStringSizeCached(std::string const& text);
