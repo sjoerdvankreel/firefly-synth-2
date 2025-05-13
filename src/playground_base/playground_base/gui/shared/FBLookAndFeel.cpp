@@ -76,7 +76,9 @@ int
 FBLookAndFeel::getTabButtonBestWidth(
   juce::TabBarButton& button, int tabDepth)
 {
-  return 100; // todo;
+  auto text = button.getButtonText().toStdString();
+  auto tw = FBGUIGetStringWidthCached(text);
+  return std::max(40, tw + 8);
 }
 
 void 
