@@ -72,6 +72,13 @@ FBLookAndFeel::getLabelBorderSize(
   return { 1, 2, 1, 2 };
 }
 
+int
+FBLookAndFeel::getTabButtonBestWidth(
+  juce::TabBarButton& button, int tabDepth)
+{
+  return 100; // todo;
+}
+
 void 
 FBLookAndFeel::positionComboBoxText(
   ComboBox& b, Label& l)

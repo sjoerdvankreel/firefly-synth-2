@@ -25,6 +25,9 @@ public:
   void positionComboBoxText(
     juce::ComboBox&, juce::Label&) override;
 
+  int getTabButtonBestWidth(
+    juce::TabBarButton& button, int tabDepth) override;
+
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
 
