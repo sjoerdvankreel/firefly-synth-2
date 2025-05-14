@@ -1134,7 +1134,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
   {
     float random = _uniRandomPlain;
     float uniPhase = u * _uniOffsetPlain / _uniCount;
-    uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _prng.Next()) * uniPhase);
+    uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _prng.NextScalar()) * uniPhase);
     _uniPhaseGens[u] = FFOsciPhaseGenerator(uniPhaseInit.Get(u));
     if (_uniCount == 1)
     {

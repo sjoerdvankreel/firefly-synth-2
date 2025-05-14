@@ -1,5 +1,7 @@
 #pragma once
 
+#include <playground_base/base/shared/FBSIMD.hpp>
+
 #include <limits>
 #include <cstdint>
 
@@ -8,7 +10,9 @@ class FBParkMillerPRNG final
   std::uint32_t _x = {};
 
 public:
-  float Next();
+  float NextScalar();
+  FBSIMDVector<float> NextVector();
+  
   FBParkMillerPRNG();
   explicit FBParkMillerPRNG(float x);
 };
@@ -22,9 +26,18 @@ FBParkMillerPRNG::FBParkMillerPRNG() :
 FBParkMillerPRNG(0.0f) {}
 
 inline float
-FBParkMillerPRNG::Next()
+FBParkMillerPRNG::NextScalar()
 {
   float y = _x / static_cast<float>(std::numeric_limits<std::uint32_t>::max());
   _x = static_cast<std::uint64_t>(_x) * 48271 % 0x7fffffff;
   return y;
+}
+
+inline FBSIMDVector<float>
+FBParkMillerPRNG::NextVector()
+{
+  FBSIMDArray<float, FBSIMDFloatCount> y;
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+    y.Set(i, NextScalar());
+  return y.Load(0);
 }
