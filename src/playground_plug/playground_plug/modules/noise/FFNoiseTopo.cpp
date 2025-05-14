@@ -179,7 +179,7 @@ FFMakeNoiseTopo()
   x.name = "X";
   x.slotCount = 1;
   x.unit = "%";
-  x.id = "{32C65288-B8CD-4245-9ED1-818667C65253}";
+  x.id = "{E911D100-EAD7-4915-AB3C-A27BA73396EC}";
   x.type = FBParamType::Identity;
   auto selectX = [](auto& module) { return &module.acc.x; };
   x.scalarAddr = FFSelectScalarParamAddr(selectModule, selectX);

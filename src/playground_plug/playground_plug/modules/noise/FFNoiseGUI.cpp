@@ -63,7 +63,7 @@ static Component*
 MakeSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 2 }, std::vector<int> { 0, 0, 0, 1, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1, 0, 1 });
   auto seed = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Seed, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
@@ -79,7 +79,7 @@ MakeSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
   auto a = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::A, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, a));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, a, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ 0, 0, 1, 6 });
+  grid->MarkSection({ 0, 0, 2, 6 });
   return grid;
 }
 
