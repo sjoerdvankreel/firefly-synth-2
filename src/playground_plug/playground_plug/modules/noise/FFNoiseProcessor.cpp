@@ -87,7 +87,8 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float a = 1.0f;
-    float color = 2.0f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
+    float colorPlain = topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
+    float color = 2.0f * (1.0f - colorPlain);
     for (int i = 0; i < _poles; i++)
     {
       a = (i - color / 2.0f) * a / (i + 1.0f);

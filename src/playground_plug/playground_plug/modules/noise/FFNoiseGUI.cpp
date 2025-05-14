@@ -67,18 +67,18 @@ MakeSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
   auto seed = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Seed, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
-  auto q = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Q, 0 });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, q));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, q, Slider::SliderStyle::RotaryVerticalDrag));
+  auto poles = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Poles, 0 });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, poles));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, poles, Slider::SliderStyle::RotaryVerticalDrag));
   auto x = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::X, 0 });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, x));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, x, Slider::SliderStyle::LinearHorizontal));
   auto y = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Y, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, y));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, y, Slider::SliderStyle::LinearHorizontal));
-  auto a = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::A, 0 });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, a));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, a, Slider::SliderStyle::LinearHorizontal));
+  auto color = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Color, 0 });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, color));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, color, Slider::SliderStyle::LinearHorizontal));
   grid->MarkSection({ 0, 0, 2, 6 });
   return grid;
 }

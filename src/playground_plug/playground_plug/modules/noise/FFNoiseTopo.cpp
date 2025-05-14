@@ -148,12 +148,13 @@ FFMakeNoiseTopo()
 
   auto& poles = result->params[(int)FFNoiseParam::Poles];
   poles.acc = false;
-  poles.defaultText = "8";
+  poles.defaultText = "3";
   poles.name = "Q";
   poles.slotCount = 1;
   poles.id = "{84B10EBF-E55D-43DF-8E80-3F1FCE093400}";
   poles.type = FBParamType::Discrete;
-  poles.Discrete().valueCount = FFNoiseMaxPoles + 1;
+  poles.Discrete().valueOffset = 1;
+  poles.Discrete().valueCount = FFNoiseMaxPoles;
   auto selectPoles = [](auto& module) { return &module.block.poles; };
   poles.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPoles);
   poles.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPoles);
