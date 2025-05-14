@@ -85,11 +85,27 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
+    float a = 1.0f;
+    float alpha = 2.0f * topo.NormalizedToIdentityFast(FFNoiseParam::A, aNorm.CV().Get(s));
+    for (int i = 0; i < _q; i++)
+    {
+      a = (i - alpha / 2.0f) * a / (i + 1.0f);
+      _w.Set(i, a);
+    }
+
     for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
     {
-      auto v = FBToBipolar(_prng.NextVector());      
+      auto val = FBToBipolar(_prng.NextVector());      
+      for (int i = 0; i < _q; i++)
+        val -= _w.Get(i) * _x[s].Load(u);
+      
+      // todo
+      for (int i = FBFixedBlockSamples - 1; i > 0; i--)
+        _x[i].Store(u, _x[i - 1].Load(u));
+      _x[0].Store(u, val);
+
       FBSIMDArray<float, FBSIMDFloatCount> outputArray;
-      outputArray.Store(0, v);
+      outputArray.Store(0, val);
       for (int v = 0; v < FBSIMDFloatCount; v++)
         _uniOutput[u + v].Set(s, outputArray.Get(v));
     }

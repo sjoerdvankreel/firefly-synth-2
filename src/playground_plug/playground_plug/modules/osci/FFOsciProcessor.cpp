@@ -1338,7 +1338,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             {
               auto wavePWPW = wavePWPWPlain[i].Load(s);
               auto wavePWGain = wavePWGainPlain[i].Load(s);
-              wavePWPW = (MinPW + (1.0f - MinPW) * wavePWPW) * 0.5f;
+              wavePWPW = (MinPW + (1.0f - 2.0f * MinPW) * wavePWPW) * 0.5f;
               thisUniOutput += GenerateWavePW(_wavePWMode[i], uniPhase, uniIncr, wavePWPW) * wavePWGain;
             }
           if (_waveHSMode != FFOsciWaveHSMode::Off)
