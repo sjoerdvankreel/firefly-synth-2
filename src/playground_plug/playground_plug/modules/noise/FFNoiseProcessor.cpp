@@ -40,6 +40,7 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _seed = topo.NormalizedToDiscreteFast(FFNoiseParam::Seed, seedNorm);
   _uniCount = topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm);
 
+  _position = 0;
   _key = static_cast<float>(state.voice->event.note.key);
   _prng = FBParkMillerPRNG(static_cast<float>(_seed) / FFNoiseMaxSeed);
   float fine = topo.NormalizedToLinearFast(FFNoiseParam::Fine, fineNorm.CV().First());
