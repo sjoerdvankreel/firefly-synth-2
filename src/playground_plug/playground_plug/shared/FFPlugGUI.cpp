@@ -3,6 +3,7 @@
 #include <playground_plug/modules/env/FFEnvGUI.hpp>
 #include <playground_plug/modules/glfo/FFGLFOGUI.hpp>
 #include <playground_plug/modules/osci/FFOsciGUI.hpp>
+#include <playground_plug/modules/noise/FFNoiseGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/output/FFOutputGUI.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
@@ -94,6 +95,7 @@ FFPlugGUI::SetupGUI()
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
+  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
 
   _graph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get());
   _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 0, -1, rowSizes, std::vector<int> { 0, 0, 1 });
@@ -102,8 +104,9 @@ FFPlugGUI::SetupGUI()
   _content->Add(0, 2, 1, 1, _graph);
   _content->Add(1, 0, 1, 3, FFMakeGLFOGUI(this));
   _content->Add(2, 0, 1, 3, FFMakeGFilterGUI(this));
-  _content->Add(3, 0, 1, 3, FFMakeOsciGUI(this));
-  _content->Add(4, 0, 1, 3, FFMakeOsciModGUI(this));
-  _content->Add(5, 0, 1, 3, FFMakeEnvGUI(this));
+  _content->Add(3, 0, 1, 3, FFMakeNoiseGUI(this));
+  _content->Add(4, 0, 1, 3, FFMakeOsciGUI(this));
+  _content->Add(5, 0, 1, 3, FFMakeOsciModGUI(this));
+  _content->Add(6, 0, 1, 3, FFMakeEnvGUI(this));
   addAndMakeVisible(_content);
 }

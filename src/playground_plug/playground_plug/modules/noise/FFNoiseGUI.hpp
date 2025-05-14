@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakeOsciGUI(FBPlugGUI* plugGUI);
+FFMakeNoiseGUI(FBPlugGUI* plugGUI);
