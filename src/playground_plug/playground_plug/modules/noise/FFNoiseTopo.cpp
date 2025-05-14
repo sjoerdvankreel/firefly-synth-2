@@ -81,7 +81,7 @@ FFMakeNoiseTopo()
   uniCount.slotCount = 1;
   uniCount.id = "{CB0CD524-CD0F-4150-8DE7-A2DD9E12EB37}";
   uniCount.type = FBParamType::Discrete;
-  uniCount.Discrete().valueCount = FFNoiseUniMaxCount;
+  uniCount.Discrete().valueCount = FFOsciBaseUniMaxCount;
   uniCount.Discrete().valueOffset = 1;
   auto selectUniCount = [](auto& module) { return &module.block.uniCount; };
   uniCount.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniCount);

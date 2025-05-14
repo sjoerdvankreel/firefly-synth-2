@@ -1,6 +1,8 @@
 #pragma once
 
 #include <playground_base/base/shared/FBSIMD.hpp>
+#include <playground_plug/modules/osci_base/FFOsciTopoBase.hpp>
+
 #include <memory>
 
 struct FBStaticModule;
@@ -18,7 +20,6 @@ enum class FFOsciWaveBasicMode { Off, Sin, Cos, Saw, Tri, Rect, Ramp, SinSqr,
 
 inline int constexpr FFOsciWavePWCount = 2;
 inline int constexpr FFOsciWaveBasicCount = 2;
-inline int constexpr FFOsciUniMaxCount = FBSIMDFloatCount * 2;
 inline int constexpr FFOsciFMRatioCount = 16;
 inline int constexpr FFOsciFMOperatorCount = 3;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;

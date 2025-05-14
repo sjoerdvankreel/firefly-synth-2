@@ -1045,13 +1045,13 @@ GenerateDSFBandwidth(
 FFOsciProcessor::
 FFOsciProcessor() :
 _oversampler(
-    FFOsciUniMaxCount, FFOsciOversampleFactor,
-    Oversampling<float>::filterHalfBandPolyphaseIIR, false, false)
+  FFOsciBaseUniMaxCount, FFOsciOversampleFactor,
+  Oversampling<float>::filterHalfBandPolyphaseIIR, false, false)
 {
   _oversampler.initProcessing(FBFixedBlockSamples);
-  for (int u = 0; u < FFOsciUniMaxCount; u++)
+  for (int u = 0; u < FFOsciBaseUniMaxCount; u++)
     _downsampledChannelPtrs[u] = _uniOutput[u].Ptr(0);
-  _downsampledBlock = AudioBlock<float>(_downsampledChannelPtrs.data(), FFOsciUniMaxCount, 0, FBFixedBlockSamples);
+  _downsampledBlock = AudioBlock<float>(_downsampledChannelPtrs.data(), FFOsciBaseUniMaxCount, 0, FBFixedBlockSamples);
   _oversampledBlock = _oversampler.processSamplesUp(_downsampledBlock);
 }
 
@@ -1129,7 +1129,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     _modSourceAMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, modAMModeNorm);
   }
   
-  FBSIMDArray<float, FFOsciUniMaxCount> uniPhaseInit = {};
+  FBSIMDArray<float, FFOsciBaseUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
   {
     float random = _uniRandomPlain;

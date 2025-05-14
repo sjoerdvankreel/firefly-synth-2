@@ -43,17 +43,17 @@ class FFOsciProcessor final
   juce::dsp::Oversampling<float> _oversampler;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
   juce::dsp::AudioBlock<float> _downsampledBlock = {};
-  std::array<float*, FFOsciUniMaxCount> _downsampledChannelPtrs = {};
+  std::array<float*, FFOsciBaseUniMaxCount> _downsampledChannelPtrs = {};
 
   FBParkMillerPRNG _prng = {};
   FBTrackingPhaseGenerator _phaseGen = {};
-  FBSIMDArray<float, FFOsciUniMaxCount> _uniPosMHalfToHalf = {};
-  FBSIMDArray<float, FFOsciUniMaxCount> _uniPosAbsHalfToHalf = {};
-  std::array<FFOsciPhaseGenerator, FFOsciUniMaxCount> _uniPhaseGens = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> _uniOutput = {};
+  FBSIMDArray<float, FFOsciBaseUniMaxCount> _uniPosMHalfToHalf = {};
+  FBSIMDArray<float, FFOsciBaseUniMaxCount> _uniPosAbsHalfToHalf = {};
+  std::array<FFOsciPhaseGenerator, FFOsciBaseUniMaxCount> _uniPhaseGens = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciBaseUniMaxCount> _uniOutput = {};
 
-  FBSIMDArray2<float, FFOsciUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
-  FBMDArray2<FFOsciFMPhaseGenerator, FFOsciUniMaxCount / FBSIMDFloatCount, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
+  FBSIMDArray2<float, FFOsciBaseUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
+  FBMDArray2<FFOsciFMPhaseGenerator, FFOsciBaseUniMaxCount / FBSIMDFloatCount, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
 
 public:
   FFOsciProcessor();
