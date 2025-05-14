@@ -46,6 +46,10 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   float fine = topo.NormalizedToLinearFast(FFNoiseParam::Fine, fineNorm.CV().First());
   float coarse = topo.NormalizedToLinearFast(FFNoiseParam::Coarse, coarseNorm.CV().First());
   _baseFreq = FBPitchToFreq(_key + coarse + fine);
+
+  for (int q = 0; q < _q; q++)
+    for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
+      _x[q].Store(u, _prng.NextVector());
 }
 
 int

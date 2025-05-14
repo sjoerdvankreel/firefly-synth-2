@@ -21,6 +21,9 @@ class FFNoiseProcessor final
   int _position = 0;
   float _baseFreq = 0.0f; // todo remove
   FBParkMillerPRNG _prng = {};
+  FBSIMDArray<float, FFNoiseMaxQ> _w = {};
+  FBSIMDArray2<float, FFNoiseUniMaxCount, FFNoiseMaxQ> _x = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, FFNoiseUniMaxCount> _uniOutput = {};
 
 public:
   FFNoiseProcessor();
