@@ -1,4 +1,7 @@
-gaussian distrib for noise
+gaussian distrib for noise boxmuller
+limit gaus to range
+distribution controls ?
+https://github.com/cicirello/ZigguratGaussian/blob/master/src/main/java/org/cicirello/math/rand/ZigguratGaussian.java
 avx version
 https://sampo.kapsi.fi/PinkNoise/
 intel mac version

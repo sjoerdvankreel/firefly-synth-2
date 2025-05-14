@@ -4,7 +4,7 @@
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
+#include <playground_base/dsp/shared/FBMarsagliaPRNG.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 #include <array>
@@ -22,7 +22,7 @@ public FFOsciProcessorBase
   float _baseFreq = 0.0f; // todo remove
   int _totalPosition = 0;
   int _bufferPosition = 0;
-  FBParkMillerPRNG _prng = {};
+  FBMarsagliaPRNG _prng = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _w = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _x = {};
 

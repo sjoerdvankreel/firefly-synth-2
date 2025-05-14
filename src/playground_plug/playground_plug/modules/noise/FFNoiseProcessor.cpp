@@ -42,7 +42,7 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _totalPosition = 0;
   _bufferPosition = 0;
-  _prng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
+  _prng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   float fine = topo.NormalizedToLinearFast(FFNoiseParam::Fine, fineNorm.CV().First());
   float coarse = topo.NormalizedToLinearFast(FFNoiseParam::Coarse, coarseNorm.CV().First());
   _baseFreq = FBPitchToFreq(_key + coarse + fine);
