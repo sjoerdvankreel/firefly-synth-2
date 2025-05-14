@@ -1,4 +1,5 @@
 avx version
+https://sampo.kapsi.fi/PinkNoise/
 intel mac version
 midi smoothing
 combined shaper+filter+routing fx
