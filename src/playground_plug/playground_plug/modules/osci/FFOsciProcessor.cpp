@@ -1050,7 +1050,7 @@ _oversampler(
 {
   _oversampler.initProcessing(FBFixedBlockSamples);
   for (int u = 0; u < FFOsciUniMaxCount; u++)
-    _downsampledChannelPtrs[u] = _uniOutputDownsampled[u].Ptr(0);
+    _downsampledChannelPtrs[u] = _uniOutput[u].Ptr(0);
   _downsampledBlock = AudioBlock<float>(_downsampledChannelPtrs.data(), FFOsciUniMaxCount, 0, FBFixedBlockSamples);
   _oversampledBlock = _oversampler.processSamplesUp(_downsampledBlock);
 }
@@ -1497,7 +1497,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   if (_oversampleTimes == 1)
     for (int u = 0; u < _uniCount; u++)
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        _uniOutputDownsampled[u].Store(s, uniOutputOversampled[u].Load(s));
+        _uniOutput[u].Store(s, uniOutputOversampled[u].Load(s));
   else
   {
     for (int u = 0; u < _uniCount; u++)
@@ -1515,7 +1515,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     {
       auto uniPanning = 0.5f + uniPosMHalfToHalf * uniSpreadPlain.Load(s);
       auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
-      auto uniMono = _uniOutputDownsampled[u].Load(s) * gainPlain.Load(s) * uniBlend;
+      auto uniMono = _uniOutput[u].Load(s) * gainPlain.Load(s) * uniBlend;
       output[0].Add(s, (1.0f - uniPanning) * uniMono);
       output[1].Add(s, uniPanning * uniMono);
       for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)

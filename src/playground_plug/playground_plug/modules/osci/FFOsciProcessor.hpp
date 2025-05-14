@@ -50,7 +50,7 @@ class FFOsciProcessor final
   FBSIMDArray<float, FFOsciUniMaxCount> _uniPosMHalfToHalf = {};
   FBSIMDArray<float, FFOsciUniMaxCount> _uniPosAbsHalfToHalf = {};
   std::array<FFOsciPhaseGenerator, FFOsciUniMaxCount> _uniPhaseGens = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> _uniOutputDownsampled = {};
+  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> _uniOutput = {};
 
   FBSIMDArray2<float, FFOsciUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   FBMDArray2<FFOsciFMPhaseGenerator, FFOsciUniMaxCount / FBSIMDFloatCount, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
