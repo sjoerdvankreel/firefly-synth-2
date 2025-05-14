@@ -21,10 +21,22 @@ FBToUnipolar(float v)
   return (v * 0.5f) + 0.5f;
 }
 
+inline float
+FBToBipolar(float v)
+{
+  return (v - 0.5f) * 2.0f;
+}
+
 inline FBSIMDVector<float>
 FBToUnipolar(FBSIMDVector<float> v)
 {
   return (v * 0.5f) + 0.5f;
+} 
+
+inline FBSIMDVector<float>
+FBToBipolar(FBSIMDVector<float> v)
+{
+  return (v - 0.5f) * 2.0f;
 }
 
 // https://stackoverflow.com/questions/824118/why-is-floor-so-slow
