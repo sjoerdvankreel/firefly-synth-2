@@ -40,7 +40,8 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _seed = topo.NormalizedToDiscreteFast(FFNoiseParam::Seed, seedNorm);
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm));
 
-  _position = 0;
+  _totalPosition = 0;
+  _bufferPosition = 0;
   _prng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   float fine = topo.NormalizedToLinearFast(FFNoiseParam::Fine, fineNorm.CV().First());
   float coarse = topo.NormalizedToLinearFast(FFNoiseParam::Coarse, coarseNorm.CV().First());
@@ -109,19 +110,20 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
       for (int v = 0; v < FBSIMDFloatCount; v++)
         _uniOutput[u + v].Set(s, outputArray.Get(v));
     }
-    _position++;
+    _totalPosition++;
+    _bufferPosition = (_bufferPosition + 1) % _q;
   }
 
   ProcessGainSpreadBlend(output);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return std::clamp(1000 - _position, 0, FBFixedBlockSamples); // TODO
+    return std::clamp(1000 - _totalPosition, 0, FBFixedBlockSamples); // TODO
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].noise[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(_baseFreq, state.input->sampleRate);
-  exchangeDSP.positionSamples = _position % exchangeDSP.lengthSamples;
+  exchangeDSP.positionSamples = _totalPosition % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.noise[state.moduleSlot];
   exchangeParams.acc.a[0][voice] = aNorm.Last();
