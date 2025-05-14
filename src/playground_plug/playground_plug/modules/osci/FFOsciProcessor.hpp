@@ -3,6 +3,7 @@
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciPhaseGenerator.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
+#include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
@@ -14,12 +15,11 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-class FFOsciProcessor final
+class FFOsciProcessor final:
+public FFOsciProcessorBase
 {
-  float _key = {};
   FFOsciType _type = {};
   int _oversampleTimes = {};
-  int _uniCount = {};
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
 
@@ -47,11 +47,7 @@ class FFOsciProcessor final
 
   FBParkMillerPRNG _prng = {};
   FBTrackingPhaseGenerator _phaseGen = {};
-  FBSIMDArray<float, FFOsciBaseUniMaxCount> _uniPosMHalfToHalf = {};
-  FBSIMDArray<float, FFOsciBaseUniMaxCount> _uniPosAbsHalfToHalf = {};
   std::array<FFOsciPhaseGenerator, FFOsciBaseUniMaxCount> _uniPhaseGens = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciBaseUniMaxCount> _uniOutput = {};
-
   FBSIMDArray2<float, FFOsciBaseUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   FBMDArray2<FFOsciFMPhaseGenerator, FFOsciBaseUniMaxCount / FBSIMDFloatCount, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
 

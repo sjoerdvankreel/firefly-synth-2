@@ -1086,10 +1086,9 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
 
   _phaseGen = {};
   _prng = FBParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
+  FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm));
 
-  _key = static_cast<float>(state.voice->event.note.key);
   _type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
-  _uniCount = topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm);
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, uniRandomNorm);
   _waveHSMode = topo.NormalizedToListFast<FFOsciWaveHSMode>(FFOsciParam::WaveHSMode, waveHSModeNorm);
@@ -1136,16 +1135,6 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     float uniPhase = u * _uniOffsetPlain / _uniCount;
     uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _prng.NextScalar()) * uniPhase);
     _uniPhaseGens[u] = FFOsciPhaseGenerator(uniPhaseInit.Get(u));
-    if (_uniCount == 1)
-    {
-      _uniPosMHalfToHalf.Set(u, 0.0f);
-      _uniPosAbsHalfToHalf.Set(u, 0.0f);
-    }
-    else
-    {
-      _uniPosMHalfToHalf.Set(u, u / (_uniCount - 1.0f) - 0.5f);
-      _uniPosAbsHalfToHalf.Set(u, std::fabs(_uniPosMHalfToHalf.Get(u)));
-    }
   }
 
   if (_type == FFOsciType::FM)
@@ -1189,12 +1178,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& waveDSFGainNorm = procParams.acc.waveDSFGain[0].Voice()[voice];
   auto const& waveDSFDecayNorm = procParams.acc.waveDSFDecay[0].Voice()[voice];
 
-  FBSIMDArray<float, FFOsciFixedBlockOversamples> gainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
-  FBSIMDArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
-  FBSIMDArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> waveHSGainPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> waveHSSyncPlain;
   FBSIMDArray<float, FFOsciFixedBlockOversamples> waveDSFGainPlain;
@@ -1214,10 +1200,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     baseFreqPlain.Store(s, baseFreq);
     _phaseGen.Next(baseFreq / sampleRate);
 
-    gainPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Gain, gainNorm, s));
-    uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
+    _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Gain, gainNorm, s));
+    _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
+    _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
-    uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
 
     if (_type == FFOsciType::Wave)
     {
@@ -1274,12 +1260,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   }
   if (_oversampleTimes != 1)
   {
-    gainPlain.UpsampleStretch<FFOsciOversampleTimes>();
-    basePitchPlain.UpsampleStretch<FFOsciOversampleTimes>();
-    baseFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
-    uniBlendPlain.UpsampleStretch<FFOsciOversampleTimes>();
     uniDetunePlain.UpsampleStretch<FFOsciOversampleTimes>();
-    uniSpreadPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    baseFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    basePitchPlain.UpsampleStretch<FFOsciOversampleTimes>();
     if (_type == FFOsciType::Wave)
     {
       for (int i = 0; i < FFOsciWaveBasicCount; i++)
@@ -1507,24 +1490,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     _oversampler.processSamplesDown(channelBlockDown);
   }
 
-  for (int u = 0; u < _uniCount; u++)
-  {
-    float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
-    float uniPosAbsHalfToHalf = _uniPosAbsHalfToHalf.Get(u);
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    {
-      auto uniPanning = 0.5f + uniPosMHalfToHalf * uniSpreadPlain.Load(s);
-      auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
-      auto uniMono = _uniOutput[u].Load(s) * gainPlain.Load(s) * uniBlend;
-      output[0].Add(s, (1.0f - uniPanning) * uniMono);
-      output[1].Add(s, uniPanning * uniMono);
-      for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
-      {
-        assert(!std::isnan(output[0].Get(s + s2)));
-        assert(!std::isnan(output[1].Get(s + s2)));
-      }
-    }
-  }
+  ProcessGainSpreadBlend(output);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
