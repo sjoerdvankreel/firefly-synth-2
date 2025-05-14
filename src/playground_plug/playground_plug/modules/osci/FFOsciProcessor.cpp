@@ -1178,7 +1178,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
 
-  auto const& gLFOOut = procState->dsp.global.gLFO[0].output; // TODO
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
   auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
@@ -1516,7 +1515,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     {
       auto uniPanning = 0.5f + uniPosMHalfToHalf * uniSpreadPlain.Load(s);
       auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
-      auto uniMono = _uniOutputDownsampled[u].Load(s) * gainPlain.Load(s) * uniBlend * gLFOOut.Load(s); // TODO
+      auto uniMono = _uniOutputDownsampled[u].Load(s) * gainPlain.Load(s) * uniBlend;
       output[0].Add(s, (1.0f - uniPanning) * uniMono);
       output[1].Add(s, uniPanning * uniMono);
       for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
@@ -1537,7 +1536,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeDSP.positionSamples = _phaseGen.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
-  exchangeParams.acc.gain[0][voice] = gainNorm.Last() * gLFOOut.Last(); // TODO
+  exchangeParams.acc.gain[0][voice] = gainNorm.Last();
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
   exchangeParams.acc.uniBlend[0][voice] = uniBlendNorm.Last();
