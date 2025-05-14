@@ -97,22 +97,25 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
     for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
     {
+      int pos;
       auto val = FBToBipolar(_prng.NextVector());      
       for (int i = 0; i < _poles; i++)
-        val -= _w.Get(i) * _x[s].Load(u);
-      
-      // todo
-      for (int i = FBFixedBlockSamples - 1; i > 0; i--)
-        _x[i].Store(u, _x[i - 1].Load(u));
-      _x[0].Store(u, val);
+      {
+        pos = (_bufferPosition + _poles - i - 1) % _poles;
+        assert(0 <= pos && pos < _poles);
+        val -= _w.Get(i) * _x[pos].Load(u);
+      }
+      pos = (_bufferPosition + _poles - 1) % _poles;
+      _x[pos].Store(u, val);
 
       FBSIMDArray<float, FBSIMDFloatCount> outputArray;
       outputArray.Store(0, val);
       for (int v = 0; v < FBSIMDFloatCount; v++)
         _uniOutput[u + v].Set(s, outputArray.Get(v));
     }
+
     _totalPosition++;
-    _bufferPosition = (_bufferPosition + 1) % _poles; // todo div 0
+    _bufferPosition = (_bufferPosition + 1) % _poles;
   }
 
   ProcessGainSpreadBlend(output);
