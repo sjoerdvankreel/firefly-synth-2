@@ -17,6 +17,9 @@ class FFNoiseProcessor final
   int _uniCount = {};
   int _seed = {};
   int _q = {};
+
+  int _position = 0;
+  float _baseFreq = 0.0f; // todo remove
   FBParkMillerPRNG _prng = {};
 
 public:

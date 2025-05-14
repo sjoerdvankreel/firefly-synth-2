@@ -9,7 +9,7 @@
 
 #include <algorithm>
 
-struct NoiseGraphRenderData final:
+struct NoiseGraphRenderData final :
 public FBModuleGraphRenderData<NoiseGraphRenderData>
 {
   FFNoiseProcessor& GetProcessor(FBModuleProcState& state);
@@ -27,11 +27,26 @@ NoiseGraphRenderData::GetProcessor(FBModuleProcState& state)
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)
 {
+  // todo
   FBModuleGraphPlotParams result = {};
+  result.samples = 1000;
+  result.releaseAt = 1000;
   return result;
 }
 
 void
 FFNoiseRenderGraph(FBModuleGraphComponentData* graphData)
 {
+  NoiseGraphRenderData renderData = {};
+  graphData->drawMarkers = true;
+  renderData.graphData = graphData;
+  renderData.plotParamsSelector = PlotParams;
+  renderData.staticModuleIndex = (int)FFModuleType::Noise;
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
+    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].noise[slot]; };
+  renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].noise[slot].output; };
+  FBTopoIndices indices = { (int)FFModuleType::Noise, graphData->renderState->ModuleProcState()->moduleSlot };
+  graphData->series[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
+  FBRenderModuleGraph<false, false>(renderData, 0);
 }

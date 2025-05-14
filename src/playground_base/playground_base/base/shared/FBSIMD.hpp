@@ -39,6 +39,7 @@ public:
   void NaNCheck() const;
   template <int Times> void UpsampleStretch();
 
+  T First() const { return _data[0]; }
   T Last() const { return _data[N - 1]; }
   T Get(int pos) const { return _data[pos]; };
   void Set(int pos, T val) { _data[pos] = val; };

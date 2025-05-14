@@ -13,6 +13,7 @@
 #include <xsimd/xsimd.hpp>
 
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
+// kps https://dsp.stackexchange.com/questions/12596/synthesizing-harmonic-tones-with-karplus-strong
 
 FFNoiseProcessor::
 FFNoiseProcessor() {}
@@ -30,6 +31,10 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   auto const& seedNorm = params.block.seed[0].Voice()[voice];
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
 
+  // TODO -- should these be block params or do we do pitch shifting karplus-strong?
+  auto const& fineNorm = params.acc.fine[0].Voice()[voice];
+  auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
+
   _q = topo.NormalizedToDiscreteFast(FFNoiseParam::Q, qNorm);
   _on = topo.NormalizedToBoolFast(FFNoiseParam::On, onNorm);
   _seed = topo.NormalizedToDiscreteFast(FFNoiseParam::Seed, seedNorm);
@@ -37,6 +42,9 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _key = static_cast<float>(state.voice->event.note.key);
   _prng = FBParkMillerPRNG(static_cast<float>(_seed) / FFNoiseMaxSeed);
+  float fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().First());
+  float coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().First());
+  _baseFreq = FBPitchToFreq(_key + coarse + fine);
 }
 
 int
@@ -69,16 +77,17 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     float v = _prng.NextScalar();
     output[0].Set(s, v);
     output[1].Set(s, v);
+    _position++;
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return FBFixedBlockSamples; // todo
+    return FBFixedBlockSamples;
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].noise[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1), state.input->sampleRate);
-  exchangeDSP.positionSamples = _phaseGen.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
+  exchangeDSP.lengthSamples = FBFreqToSamples(_baseFreq, state.input->sampleRate);
+  exchangeDSP.positionSamples = _position % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.noise[state.moduleSlot];
   exchangeParams.acc.a[0][voice] = aNorm.Last();
