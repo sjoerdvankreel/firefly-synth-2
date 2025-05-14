@@ -48,5 +48,5 @@ FFNoiseRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].noise[slot].output; };
   FBTopoIndices indices = { (int)FFModuleType::Noise, graphData->renderState->ModuleProcState()->moduleSlot };
   graphData->series[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
-  FBRenderModuleGraph<false, false>(renderData, 0);
+  FBRenderModuleGraph<false, true>(renderData, 0);
 }

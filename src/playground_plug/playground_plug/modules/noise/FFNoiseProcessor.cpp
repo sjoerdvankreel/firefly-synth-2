@@ -82,7 +82,7 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return FBFixedBlockSamples;
+    return std::clamp(1000 - _position, 0, FBFixedBlockSamples); // TODO
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].noise[state.moduleSlot];
   exchangeDSP.active = true;
