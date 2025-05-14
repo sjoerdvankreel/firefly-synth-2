@@ -135,12 +135,12 @@ FFMakeNoiseTopo()
 
   auto& seed = result->params[(int)FFNoiseParam::Seed];
   seed.acc = false;
-  seed.defaultText = "1";
+  seed.defaultText = "0";
   seed.name = "Seed";
   seed.slotCount = 1;
   seed.id = "{147FBBB6-3C3B-471B-8BDA-A10DA068769E}";
   seed.type = FBParamType::Discrete;
-  seed.Discrete().valueCount = FFNoiseMaxSeed;
+  seed.Discrete().valueCount = FFNoiseMaxSeed + 1;
   auto selectSeed = [](auto& module) { return &module.block.seed; };
   seed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSeed);
   seed.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSeed);

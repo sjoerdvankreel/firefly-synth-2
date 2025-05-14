@@ -28,8 +28,8 @@ FBParkMillerPRNG(0.0f) {}
 inline float
 FBParkMillerPRNG::NextScalar()
 {
-  float y = _x / static_cast<float>(std::numeric_limits<std::uint32_t>::max());
-  _x = static_cast<std::uint64_t>(_x) * 48271 % 0x7fffffff;
+  float y = _x / static_cast<float>(std::numeric_limits<std::int32_t>::max());
+  _x = static_cast<std::uint64_t>(_x) * 48271 % std::numeric_limits<std::int32_t>::max();
   return y;
 }
 
