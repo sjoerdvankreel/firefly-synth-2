@@ -23,7 +23,6 @@ public FFOsciProcessorBase
   int _totalPosition = 0;
   int _bufferPosition = 0;
   FBMarsagliaPRNG _prng = {};
-  FBSIMDArray<float, FFNoiseMaxPoles> _w = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _x = {};
 
 public:
