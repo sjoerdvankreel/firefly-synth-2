@@ -42,5 +42,53 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 int
 FFNoiseProcessor::Process(FBModuleProcState& state)
 {
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& voiceState = procState->dsp.voice[voice];
+  auto& output = voiceState.noise[state.moduleSlot].output;
+
+  output.Fill(0.0f);
+  if (!_on)
+    return 0;
+
+  auto const& procParams = procState->param.voice.noise[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
+
+  auto const& aNorm = procParams.acc.a[0].Voice()[voice];
+  auto const& xNorm = procParams.acc.x[0].Voice()[voice];
+  auto const& yNorm = procParams.acc.y[0].Voice()[voice];
+  auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
+  auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
+  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
+  auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
+  auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
+  auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
+
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float v = _prng.NextScalar();
+    output[0].Set(s, v);
+    output[1].Set(s, v);
+  }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return FBFixedBlockSamples; // todo
+
+  auto& exchangeDSP = exchangeToGUI->voice[voice].noise[state.moduleSlot];
+  exchangeDSP.active = true;
+  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1), state.input->sampleRate);
+  exchangeDSP.positionSamples = _phaseGen.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
+
+  auto& exchangeParams = exchangeToGUI->param.voice.noise[state.moduleSlot];
+  exchangeParams.acc.a[0][voice] = aNorm.Last();
+  exchangeParams.acc.x[0][voice] = xNorm.Last();
+  exchangeParams.acc.y[0][voice] = yNorm.Last();
+  exchangeParams.acc.gain[0][voice] = gainNorm.Last();
+  exchangeParams.acc.fine[0][voice] = fineNorm.Last();
+  exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
+  exchangeParams.acc.uniBlend[0][voice] = uniBlendNorm.Last();
+  exchangeParams.acc.uniDetune[0][voice] = uniDetuneNorm.Last();
+  exchangeParams.acc.uniSpread[0][voice] = uniSpreadNorm.Last();
   return FBFixedBlockSamples;
 }
