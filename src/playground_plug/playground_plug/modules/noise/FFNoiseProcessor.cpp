@@ -20,6 +20,23 @@ FFNoiseProcessor() {}
 void
 FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 {
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.noise[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
+
+  auto const& qNorm = params.block.q[0].Voice()[voice];
+  auto const& onNorm = params.block.on[0].Voice()[voice];
+  auto const& seedNorm = params.block.seed[0].Voice()[voice];
+  auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
+
+  _q = topo.NormalizedToDiscreteFast(FFNoiseParam::Q, qNorm);
+  _on = topo.NormalizedToBoolFast(FFNoiseParam::On, onNorm);
+  _seed = topo.NormalizedToDiscreteFast(FFNoiseParam::Seed, seedNorm);
+  _uniCount = topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm);
+
+  _key = static_cast<float>(state.voice->event.note.key);
+  _prng = FBParkMillerPRNG(static_cast<float>(_seed) / FFNoiseMaxSeed);
 }
 
 int

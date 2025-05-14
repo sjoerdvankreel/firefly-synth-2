@@ -12,6 +12,13 @@ struct FBModuleProcState;
 
 class FFNoiseProcessor final
 {
+  float _key = {};
+  bool _on = {};
+  int _uniCount = {};
+  int _seed = {};
+  int _q = {};
+  FBParkMillerPRNG _prng = {};
+
 public:
   FFNoiseProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFNoiseProcessor);

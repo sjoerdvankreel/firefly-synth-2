@@ -7,6 +7,7 @@ struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeNoiseTopo();
 
 inline int constexpr FFNoiseMaxQ = 16;
+inline int constexpr FFNoiseMaxSeed = 255;
 inline int constexpr FFNoiseUniMaxCount = FBSIMDFloatCount * 2;
 
 enum class FFNoiseParam { 

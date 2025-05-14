@@ -140,7 +140,7 @@ FFMakeNoiseTopo()
   seed.slotCount = 1;
   seed.id = "{147FBBB6-3C3B-471B-8BDA-A10DA068769E}";
   seed.type = FBParamType::Discrete;
-  seed.Discrete().valueCount = 255;
+  seed.Discrete().valueCount = FFNoiseMaxSeed;
   seed.Discrete().valueOffset = 1;
   auto selectSeed = [](auto& module) { return &module.block.seed; };
   seed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSeed);
