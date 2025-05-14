@@ -17,14 +17,14 @@ public FFOsciProcessorBase
 {
   bool _on = {};
   int _seed = {};
-  int _q = {};
+  int _poles = {};
 
   float _baseFreq = 0.0f; // todo remove
   int _totalPosition = 0;
   int _bufferPosition = 0;
   FBParkMillerPRNG _prng = {};
-  FBSIMDArray<float, FFNoiseMaxQ> _w = {};
-  FBSIMDArray2<float, FFOsciBaseUniMaxCount, FFNoiseMaxQ> _x = {};
+  FBSIMDArray<float, FFNoiseMaxPoles> _w = {};
+  FBSIMDArray2<float, FFOsciBaseUniMaxCount, FFNoiseMaxPoles> _x = {};
 
 public:
   FFNoiseProcessor();

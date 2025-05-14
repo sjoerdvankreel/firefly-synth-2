@@ -26,18 +26,18 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   auto const& params = procState->param.voice.noise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
 
-  auto const& qNorm = params.block.q[0].Voice()[voice];
   auto const& onNorm = params.block.on[0].Voice()[voice];
   auto const& seedNorm = params.block.seed[0].Voice()[voice];
+  auto const& polesNorm = params.block.poles[0].Voice()[voice];
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
 
   // TODO -- should these be block params or do we do pitch shifting karplus-strong?
   auto const& fineNorm = params.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
 
-  _q = topo.NormalizedToDiscreteFast(FFNoiseParam::Q, qNorm);
   _on = topo.NormalizedToBoolFast(FFNoiseParam::On, onNorm);
   _seed = topo.NormalizedToDiscreteFast(FFNoiseParam::Seed, seedNorm);
+  _poles = topo.NormalizedToDiscreteFast(FFNoiseParam::Poles, polesNorm);
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm));
 
   _totalPosition = 0;
@@ -47,9 +47,9 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   float coarse = topo.NormalizedToLinearFast(FFNoiseParam::Coarse, coarseNorm.CV().First());
   _baseFreq = FBPitchToFreq(_key + coarse + fine);
 
-  for (int q = 0; q < _q; q++)
+  for (int p = 0; p < _poles; p++)
     for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
-      _x[q].Store(u, _prng.NextVector());
+      _x[p].Store(u, _prng.NextVector());
 }
 
 int
@@ -67,9 +67,9 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   auto const& procParams = procState->param.voice.noise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
 
-  auto const& aNorm = procParams.acc.a[0].Voice()[voice];
   auto const& xNorm = procParams.acc.x[0].Voice()[voice];
   auto const& yNorm = procParams.acc.y[0].Voice()[voice];
+  auto const& colorNorm = procParams.acc.color[0].Voice()[voice];
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
   auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
@@ -87,17 +87,17 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float a = 1.0f;
-    float alpha = 2.0f * topo.NormalizedToIdentityFast(FFNoiseParam::A, aNorm.CV().Get(s));
-    for (int i = 0; i < _q; i++)
+    float color = 2.0f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
+    for (int i = 0; i < _poles; i++)
     {
-      a = (i - alpha / 2.0f) * a / (i + 1.0f);
+      a = (i - color / 2.0f) * a / (i + 1.0f);
       _w.Set(i, a);
     }
 
     for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
     {
       auto val = FBToBipolar(_prng.NextVector());      
-      for (int i = 0; i < _q; i++)
+      for (int i = 0; i < _poles; i++)
         val -= _w.Get(i) * _x[s].Load(u);
       
       // todo
@@ -111,7 +111,7 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
         _uniOutput[u + v].Set(s, outputArray.Get(v));
     }
     _totalPosition++;
-    _bufferPosition = (_bufferPosition + 1) % _q;
+    _bufferPosition = (_bufferPosition + 1) % _poles; // todo div 0
   }
 
   ProcessGainSpreadBlend(output);
@@ -126,9 +126,9 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   exchangeDSP.positionSamples = _totalPosition % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.noise[state.moduleSlot];
-  exchangeParams.acc.a[0][voice] = aNorm.Last();
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
+  exchangeParams.acc.color[0][voice] = colorNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainNorm.Last();
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();

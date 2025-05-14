@@ -29,9 +29,9 @@ class alignas(alignof(TVoiceBlock)) FFNoiseBlockParamState final
 {
   friend class FFNoiseProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeNoiseTopo();
-  std::array<TVoiceBlock, 1> q = {};
   std::array<TVoiceBlock, 1> on = {};
   std::array<TVoiceBlock, 1> seed = {};
+  std::array<TVoiceBlock, 1> poles = {};
   std::array<TVoiceBlock, 1> uniCount = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFNoiseBlockParamState);
@@ -48,9 +48,9 @@ class alignas(alignof(TVoiceAcc)) FFNoiseAccParamState final
   std::array<TVoiceAcc, 1> uniBlend = {};
   std::array<TVoiceAcc, 1> uniDetune = {};
   std::array<TVoiceAcc, 1> uniSpread = {};
-  std::array<TVoiceAcc, 1> a = {};
   std::array<TVoiceAcc, 1> x = {};
   std::array<TVoiceAcc, 1> y = {};
+  std::array<TVoiceAcc, 1> color = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFNoiseAccParamState);
 };
