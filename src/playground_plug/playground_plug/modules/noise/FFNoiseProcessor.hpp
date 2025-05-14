@@ -24,6 +24,7 @@ public FFOsciProcessorBase
   int _bufferPosition = 0;
   FBParkMillerPRNG _prng = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _w = {};
+  FBSIMDArray<float, FFNoiseMaxPoles> _TEMP = {}; // todo
   FBSIMDArray2<float, FFOsciBaseUniMaxCount, FFNoiseMaxPoles> _x = {};
 
 public:

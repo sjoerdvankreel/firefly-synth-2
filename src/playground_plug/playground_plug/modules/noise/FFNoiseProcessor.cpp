@@ -95,6 +95,28 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
       _w.Set(i, a);
     }
 
+    float x = _prng.NextScalar();
+    for (int i = 0; i < _poles; i++)
+      x -= _w.Get(i) * _TEMP.Get(i);
+    for (int i = _poles - 1; i > 0; i--)
+      _TEMP.Set(i, _TEMP.Get(i - 1));
+    _TEMP.Set(0, x);
+    output[0].Set(s, x);
+    output[1].Set(s, x);
+  }
+
+#if 0
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float a = 1.0f;
+    float colorPlain = topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
+    float color = 2.0f * (1.0f - colorPlain);
+    for (int i = 0; i < _poles; i++)
+    {
+      a = (i - color / 2.0f) * a / (i + 1.0f);
+      _w.Set(i, a);
+    }
+
     for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
     {
       int pos;
@@ -117,6 +139,8 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     _totalPosition++;
     _bufferPosition = (_bufferPosition + 1) % _poles;
   }
+#endif
+
 
   ProcessGainSpreadBlend(output);
 
