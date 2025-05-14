@@ -1,3 +1,4 @@
+gaussian distrib for noise
 avx version
 https://sampo.kapsi.fi/PinkNoise/
 intel mac version
