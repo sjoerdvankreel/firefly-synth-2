@@ -4,6 +4,7 @@
 #include <playground_plug/modules/env/FFEnvState.hpp>
 #include <playground_plug/modules/glfo/FFGLFOState.hpp>
 #include <playground_plug/modules/osci/FFOsciState.hpp>
+#include <playground_plug/modules/noise/FFNoiseState.hpp>
 #include <playground_plug/modules/master/FFMasterState.hpp>
 #include <playground_plug/modules/output/FFOutputState.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterState.hpp>
@@ -41,6 +42,7 @@ struct FFVoiceExchangeState final
   std::array<FFEnvExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState, 1> osciMod = {};
   std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
+  std::array<FBModuleProcExchangeState, FFNoiseCount> noise = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
 
@@ -59,6 +61,7 @@ struct alignas(FBSIMDAlign) FFVoiceDSPState final
   FFVoiceProcessor processor = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
+  std::array<FFNoiseDSPState, FFNoiseCount> noise = {};
   FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
@@ -87,6 +90,7 @@ struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
   std::array<FFOsciModParamState<TVoiceBlock, TVoiceAcc>, 1> osciMod = {};
   std::array<FFEnvParamState<TVoiceBlock, TVoiceAcc>, FFEnvCount> env = {};
   std::array<FFOsciParamState<TVoiceBlock, TVoiceAcc>, FFOsciCount> osci = {};
+  std::array<FFNoiseParamState<TVoiceBlock, TVoiceAcc>, FFNoiseCount> noise = {};
 };
 
 struct FFScalarParamState final

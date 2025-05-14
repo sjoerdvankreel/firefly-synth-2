@@ -31,7 +31,6 @@ class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
-  std::array<TVoiceBlock, 1> on = {};
   std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> uniCount = {};
   std::array<TVoiceBlock, 1> uniOffset = {};
