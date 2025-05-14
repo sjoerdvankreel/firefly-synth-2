@@ -13,3 +13,17 @@
 #include <xsimd/xsimd.hpp>
 
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
+
+FFNoiseProcessor::
+FFNoiseProcessor() {}
+
+void
+FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
+{
+}
+
+int
+FFNoiseProcessor::Process(FBModuleProcState& state)
+{
+  return FBFixedBlockSamples;
+}
