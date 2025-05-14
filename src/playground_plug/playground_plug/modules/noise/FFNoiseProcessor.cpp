@@ -38,10 +38,9 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _q = topo.NormalizedToDiscreteFast(FFNoiseParam::Q, qNorm);
   _on = topo.NormalizedToBoolFast(FFNoiseParam::On, onNorm);
   _seed = topo.NormalizedToDiscreteFast(FFNoiseParam::Seed, seedNorm);
-  _uniCount = topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm);
+  FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm));
 
   _position = 0;
-  _key = static_cast<float>(state.voice->event.note.key);
   _prng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   float fine = topo.NormalizedToLinearFast(FFNoiseParam::Fine, fineNorm.CV().First());
   float coarse = topo.NormalizedToLinearFast(FFNoiseParam::Coarse, coarseNorm.CV().First());
@@ -77,14 +76,27 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
 
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFNoiseParam::Gain, gainNorm, s));
+    _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFNoiseParam::UniBlend, uniBlendNorm, s));
+    _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFNoiseParam::UniSpread, uniSpreadNorm, s));
+  }
+
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float v = FBToBipolar(_prng.NextScalar());
-    assert(-1.0f <= v && v <= 1.0f);
-    output[0].Set(s, v);
-    output[1].Set(s, v);
+    for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
+    {
+      auto v = FBToBipolar(_prng.NextVector());      
+      FBSIMDArray<float, FBSIMDFloatCount> outputArray;
+      outputArray.Store(0, v);
+      for (int v = 0; v < FBSIMDFloatCount; v++)
+        _uniOutput[u + v].Set(s, outputArray.Get(v));
+    }
     _position++;
   }
+
+  ProcessGainSpreadBlend(output);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

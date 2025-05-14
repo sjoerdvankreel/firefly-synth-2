@@ -1,6 +1,8 @@
 #pragma once
 
 #include <playground_plug/modules/noise/FFNoiseTopo.hpp>
+#include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
+
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 
@@ -10,11 +12,10 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-class FFNoiseProcessor final
+class FFNoiseProcessor final:
+public FFOsciProcessorBase
 {
-  float _key = {};
   bool _on = {};
-  int _uniCount = {};
   int _seed = {};
   int _q = {};
 
@@ -23,7 +24,6 @@ class FFNoiseProcessor final
   FBParkMillerPRNG _prng = {};
   FBSIMDArray<float, FFNoiseMaxQ> _w = {};
   FBSIMDArray2<float, FFOsciBaseUniMaxCount, FFNoiseMaxQ> _x = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciBaseUniMaxCount> _uniOutput = {};
 
 public:
   FFNoiseProcessor();
