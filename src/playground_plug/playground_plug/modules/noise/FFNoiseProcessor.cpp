@@ -76,6 +76,7 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float v = FBToBipolar(_prng.NextScalar());
+    assert(-1.0f <= v && v <= 1.0f);
     output[0].Set(s, v);
     output[1].Set(s, v);
     _position++;

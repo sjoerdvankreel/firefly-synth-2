@@ -38,6 +38,9 @@ void
 FFNoiseRenderGraph(FBModuleGraphComponentData* graphData)
 {
   NoiseGraphRenderData renderData = {};
+  graphData->bipolar = true;
+  graphData->drawClipBoundaries = true;
+  graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
   renderData.staticModuleIndex = (int)FFModuleType::Noise;
