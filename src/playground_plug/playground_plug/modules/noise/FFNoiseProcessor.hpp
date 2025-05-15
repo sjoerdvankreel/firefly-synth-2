@@ -1,12 +1,12 @@
 #pragma once
 
 #include <playground_plug/modules/noise/FFNoiseTopo.hpp>
+#include <playground_plug/modules/noise/FFNoisePhaseGenerator.hpp>
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBMarsagliaPRNG.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
-#include <playground_base/dsp/shared/FBTrackingPhaseGenerator.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 #include <array>
@@ -29,9 +29,10 @@ public FFOsciProcessorBase
   float _lastDraw = 0.0f;
   float _correctionMax = 1.0f;
   float _correctionTotal = 0.0f;
+  float _phaseIncremented = 0.0f;
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
-  FBTrackingPhaseGenerator _phaseGen = {};
+  FFNoisePhaseGenerator _phaseGen = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
   FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correctionBuffer = {};
 
