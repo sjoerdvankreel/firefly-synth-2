@@ -43,6 +43,7 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _totalPosition = 0;
   _historyPosition = 0;
+  _correctionMax = 0.0f;
   _correctionTotal = 0.0f;
   _correctionPosition = 0;
   _correctionBuffer.Fill(0.0f);
@@ -105,13 +106,16 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     _correctionTotal -= _correctionBuffer.Get(_correctionPosition);
     _correctionBuffer.Set(_correctionPosition, val);
     _correctionPosition = (_correctionPosition + 1) % FFNoiseCorrectionBufferSize;
+    _correctionMax = std::max(std::abs(val), _correctionMax);
 
     val -= _correctionTotal / FFNoiseCorrectionBufferSize;
     _historyBuffer.Set(_historyPosition, val);
     _historyPosition = (_historyPosition + 1) % _poles;
 
-    output[0].Set(s, val);
-    output[1].Set(s, val);
+    float outVal = val / _correctionMax;
+    assert(!std::isnan(outVal));
+    output[0].Set(s, outVal);
+    output[1].Set(s, outVal);
     _totalPosition++;
   }
 

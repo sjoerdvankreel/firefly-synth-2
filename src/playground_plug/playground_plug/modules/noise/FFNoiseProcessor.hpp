@@ -22,6 +22,7 @@ public FFOsciProcessorBase
   int _poles = {};
 
   float _baseFreq = 0.0f; // todo remove
+  float _correctionMax = 1.0f;
   float _correctionTotal = 0.0f;
   int _totalPosition = 0;
   int _historyPosition = 0;
