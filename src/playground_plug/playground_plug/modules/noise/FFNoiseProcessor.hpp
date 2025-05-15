@@ -23,13 +23,15 @@ public FFOsciProcessorBase
   int _poles = {};
   FFNoiseType _type = {};
 
-  float _correctionMax = 1.0f;
-  float _correctionTotal = 0.0f;
   int _graphPosition = 0;
   int _historyPosition = 0;
   int _correctionPosition = 0;
+  float _lastDraw = 0.0f;
+  float _correctionMax = 1.0f;
+  float _correctionTotal = 0.0f;
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
+  FBTrackingPhaseGenerator _phaseGen = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
   FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correctionBuffer = {};
 

@@ -43,10 +43,13 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _graphPosition = 0;
   _historyPosition = 0;
+  _lastDraw = 0.0f;
   _correctionMax = 0.0f;
   _correctionTotal = 0.0f;
   _correctionPosition = 0;
   _correctionBuffer.Fill(0.0f);
+
+  _phaseGen = {};
   _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
 
@@ -98,7 +101,13 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float val;
+    float baseFreq = baseFreqPlain.Get(s);
+    float period = FBFreqToSamples(baseFreq, sampleRate);
+    float xPlain = topo.NormalizedToIdentityFast(FFNoiseParam::X, xNorm.CV().Get(s));
+    float yPlain = topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm.CV().Get(s));
+
+    float val = _lastDraw;
+
     if (_type == FFNoiseType::Norm)
       val = _normalPrng.NextScalar();
     else
