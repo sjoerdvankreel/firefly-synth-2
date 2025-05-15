@@ -25,12 +25,11 @@ public FFOsciProcessorBase
 
   float _correctionMax = 1.0f;
   float _correctionTotal = 0.0f;
-  int _totalPosition = 0;
+  int _graphPosition = 0;
   int _historyPosition = 0;
   int _correctionPosition = 0;
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
-  FBTrackingPhaseGenerator _phaseGen = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
   FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correctionBuffer = {};
 

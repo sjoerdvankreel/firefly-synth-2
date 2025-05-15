@@ -33,7 +33,7 @@ PlotParams(FBGraphRenderState const* state)
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Coarse, 0 }));
   pitch += state->AudioParamLinear({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Fine, 0 });
-  result.samples = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate);
+  result.samples = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * FFNoiseGraphRounds;
   return result;
 }
 

@@ -41,13 +41,12 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _type = topo.NormalizedToListFast<FFNoiseType>(FFNoiseParam::Type, typeNorm);
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm));
 
-  _totalPosition = 0;
+  _graphPosition = 0;
   _historyPosition = 0;
   _correctionMax = 0.0f;
   _correctionTotal = 0.0f;
   _correctionPosition = 0;
   _correctionBuffer.Fill(0.0f);
-  _phaseGen = {};
   _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
 
@@ -73,7 +72,6 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   float sampleRate = state.input->sampleRate;
   auto const& procParams = procState->param.voice.noise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
-  int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
 
   auto const& xNorm = procParams.acc.x[0].Voice()[voice];
   auto const& yNorm = procParams.acc.y[0].Voice()[voice];
@@ -96,7 +94,6 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
     baseFreqPlain.Store(s, baseFreq);
-    _phaseGen.Next(baseFreq / sampleRate);
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -132,7 +129,7 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     assert(!std::isnan(outVal));
     output[0].Set(s, outVal);
     output[1].Set(s, outVal);
-    _totalPosition++;
+    _graphPosition++;
   }
 
 #if 0
@@ -176,12 +173,14 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return _phaseGen.PositionSamplesUpToFirstCycle() - prevPositionSamplesUpToFirstCycle;
+  {
+    float graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFNoiseGraphRounds;
+    return std::clamp(static_cast<int>(graphSamples) - _graphPosition, 0, FBFixedBlockSamples);
+  }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].noise[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(FBFixedBlockSamples - 1), state.input->sampleRate);
-  exchangeDSP.positionSamples = _phaseGen.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.noise[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
