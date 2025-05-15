@@ -8,8 +8,8 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeNoiseTopo();
 
+inline int constexpr FFNoiseMaxPoles = 8;
 inline int constexpr FFNoiseMaxSeed = 255;
-inline int constexpr FFNoiseMaxPoles = 16;
 
 enum class FFNoiseParam { 
   On, Gain, Coarse, Fine,
