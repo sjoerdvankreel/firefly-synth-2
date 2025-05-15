@@ -100,17 +100,18 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
       assert(0 <= historyPos && historyPos < _poles);
       val -= a * _historyBuffer.Get(historyPos);
     }
-    _historyBuffer.Set(_historyPosition, val);
-    _historyPosition = (_historyPosition + 1) % _poles;
 
     _correctionTotal += val;
-    //_correctionTotal -= _correctionBuffer.Get(_correctionPosition);
+    _correctionTotal -= _correctionBuffer.Get(_correctionPosition);
     _correctionBuffer.Set(_correctionPosition, val);
     _correctionPosition = (_correctionPosition + 1) % FFNoiseCorrectionBufferSize;
 
-    float correction = _correctionTotal /( _totalPosition + 1);
-    output[0].Set(s, val - correction);
-    output[1].Set(s, val - correction);
+    val -= _correctionTotal / FFNoiseCorrectionBufferSize;
+    _historyBuffer.Set(_historyPosition, val);
+    _historyPosition = (_historyPosition + 1) % _poles;
+
+    output[0].Set(s, val);
+    output[1].Set(s, val);
     _totalPosition++;
   }
 
