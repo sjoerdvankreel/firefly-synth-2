@@ -29,8 +29,8 @@ PlotParams(FBGraphRenderState const* state)
 {
   // todo
   FBModuleGraphPlotParams result = {};
-  result.samples = 1000;
-  result.releaseAt = 1000;
+  result.samples = 10000;
+  result.releaseAt = 10000;
   return result;
 }
 

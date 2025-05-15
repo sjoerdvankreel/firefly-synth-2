@@ -87,21 +87,19 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float a = 1.0f;
-    float scale = 1.0f;
     float val = FBToBipolar(_prng.NextScalar());
     float color = 2.0f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
     for (int i = 0; i < _poles; i++)
     {
       a = (i - color / 2.0f) * a / (i + 1.0f);
       val -= a * _x.Get(i);
-      scale -= a;
     }
     for (int i = _poles - 1; i > 0; i--)
       _x.Set(i, _x.Get(i - 1));
     _x.Set(0, val);
 
-    output[0].Set(s, val / scale);
-    output[1].Set(s, val / scale);
+    output[0].Set(s, val);
+    output[1].Set(s, val);
     _totalPosition++;
   }
 
@@ -146,7 +144,7 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return std::clamp(1000 - _totalPosition, 0, FBFixedBlockSamples); // TODO
+    return std::clamp(10000 - _totalPosition, 0, FBFixedBlockSamples); // TODO
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].noise[state.moduleSlot];
   exchangeDSP.active = true;
