@@ -18,16 +18,21 @@ FFMakeNoiseTopo()
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.noise; });
   auto selectModule = [](auto& state) { return &state.voice.noise; };
 
-  auto& on = result->params[(int)FFNoiseParam::On];
-  on.acc = false;
-  on.name = "On";
-  on.slotCount = 1;
-  on.id = "{57BF91B7-0348-4D69-B482-5BD7F40D1457}";
-  on.type = FBParamType::Boolean;
-  auto selectOn = [](auto& module) { return &module.block.on; };
-  on.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOn);
-  on.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOn);
-  on.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOn);
+  auto& type = result->params[(int)FFNoiseParam::Type];
+  type.acc = false;
+  type.defaultText = "Off";
+  type.name = "Type";
+  type.slotCount = 1;
+  type.id = "{1C038085-4830-4985-9861-34B020BF85A3}";
+  type.type = FBParamType::List;
+  type.List().items = {
+    { "{75DEEBD4-15EF-402F-B092-D50C03B87737}", "Off" },
+    { "{22D40A98-F62B-4022-A356-19AD460AE2B1}", "Uni" },
+    { "{808C4DFA-F58D-44E9-AD82-CADF9C1C2A23}", "Norm" } };
+  auto selectType = [](auto& module) { return &module.block.type; };
+  type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
+  type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
+  type.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectType);
 
   auto& gain = result->params[(int)FFNoiseParam::Gain];
   gain.acc = true;
@@ -148,7 +153,7 @@ FFMakeNoiseTopo()
 
   auto& poles = result->params[(int)FFNoiseParam::Poles];
   poles.acc = false;
-  poles.defaultText = "3";
+  poles.defaultText = "4";
   poles.name = "Q";
   poles.slotCount = 1;
   poles.id = "{84B10EBF-E55D-43DF-8E80-3F1FCE093400}";

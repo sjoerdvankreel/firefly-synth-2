@@ -29,7 +29,7 @@ class alignas(alignof(TVoiceBlock)) FFNoiseBlockParamState final
 {
   friend class FFNoiseProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeNoiseTopo();
-  std::array<TVoiceBlock, 1> on = {};
+  std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> seed = {};
   std::array<TVoiceBlock, 1> poles = {};
   std::array<TVoiceBlock, 1> uniCount = {};

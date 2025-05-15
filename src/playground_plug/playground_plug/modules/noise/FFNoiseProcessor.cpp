@@ -27,7 +27,7 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   auto const& params = procState->param.voice.noise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
 
-  auto const& onNorm = params.block.on[0].Voice()[voice];
+  auto const& typeNorm = params.block.type[0].Voice()[voice];
   auto const& seedNorm = params.block.seed[0].Voice()[voice];
   auto const& polesNorm = params.block.poles[0].Voice()[voice];
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
@@ -36,9 +36,9 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   auto const& fineNorm = params.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
 
-  _on = topo.NormalizedToBoolFast(FFNoiseParam::On, onNorm);
   _seed = topo.NormalizedToDiscreteFast(FFNoiseParam::Seed, seedNorm);
   _poles = topo.NormalizedToDiscreteFast(FFNoiseParam::Poles, polesNorm);
+  _type = topo.NormalizedToListFast<FFNoiseType>(FFNoiseParam::Type, typeNorm);
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm));
 
   _totalPosition = 0;
@@ -47,14 +47,18 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _correctionTotal = 0.0f;
   _correctionPosition = 0;
   _correctionBuffer.Fill(0.0f);
-  _prng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
+  _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
+  _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
 
   float fine = topo.NormalizedToLinearFast(FFNoiseParam::Fine, fineNorm.CV().First());
   float coarse = topo.NormalizedToLinearFast(FFNoiseParam::Coarse, coarseNorm.CV().First());
   _baseFreq = FBPitchToFreq(_key + coarse + fine);
 
   for (int p = 0; p < _poles; p++)
-    _historyBuffer.Set(p, _prng.NextScalar());
+    if(_type == FFNoiseType::Norm)
+      _historyBuffer.Set(p, _normalPrng.NextScalar());
+    else
+      _historyBuffer.Set(p, _uniformPrng.NextScalar());
 }
 
 int
@@ -66,7 +70,7 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   auto& output = voiceState.noise[state.moduleSlot].output;
 
   output.Fill(0.0f);
-  if (!_on)
+  if (_type == FFNoiseType::Off)
     return 0;
 
   auto const& procParams = procState->param.voice.noise[state.moduleSlot];
@@ -91,8 +95,14 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
+    float val;
+    if (_type == FFNoiseType::Norm)
+      val = _normalPrng.NextScalar();
+    else
+      val = _uniformPrng.NextScalar();
+    val = FBToBipolar(val);
+
     float a = 1.0f;
-    float val = FBToBipolar(_prng.NextScalar());
     float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
     for (int i = 0; i < _poles; i++)
     {

@@ -1,3 +1,4 @@
+automate anything
 gaussian distrib for noise boxmuller
 limit gaus to range
 distribution controls ?

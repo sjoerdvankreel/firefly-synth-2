@@ -22,9 +22,9 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
-  auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::On, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
+  auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Type, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   auto gain = topo->audio.ParamAtTopo({ (int)FFModuleType::Noise, moduleSlot, (int)FFNoiseParam::Gain, 0 });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));

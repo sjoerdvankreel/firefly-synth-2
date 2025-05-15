@@ -5,6 +5,7 @@
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBMarsagliaPRNG.hpp>
+#include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 #include <array>
@@ -17,9 +18,9 @@ inline int constexpr FFNoiseCorrectionBufferSize = 16384;
 class FFNoiseProcessor final:
 public FFOsciProcessorBase
 {
-  bool _on = {};
   int _seed = {};
   int _poles = {};
+  FFNoiseType _type = {};
 
   float _baseFreq = 0.0f; // todo remove
   float _correctionMax = 1.0f;
@@ -27,7 +28,8 @@ public FFOsciProcessorBase
   int _totalPosition = 0;
   int _historyPosition = 0;
   int _correctionPosition = 0;
-  FBMarsagliaPRNG _prng = {};
+  FBMarsagliaPRNG _normalPrng = {};
+  FBParkMillerPRNG _uniformPrng = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
   FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correctionBuffer = {};
 
