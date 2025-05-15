@@ -42,14 +42,16 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm));
 
   _totalPosition = 0;
-  _bufferPosition = 0;
+  _historyPosition = 0;
+  _correctionPosition = 0;
+  _correction.Fill(0.0f);
   _prng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   float fine = topo.NormalizedToLinearFast(FFNoiseParam::Fine, fineNorm.CV().First());
   float coarse = topo.NormalizedToLinearFast(FFNoiseParam::Coarse, coarseNorm.CV().First());
   _baseFreq = FBPitchToFreq(_key + coarse + fine);
 
   for (int p = 0; p < _poles; p++)
-    _x.Set(p, _prng.NextScalar());
+    _history.Set(p, _prng.NextScalar());
 }
 
 int
@@ -92,11 +94,11 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     for (int i = 0; i < _poles; i++)
     {
       a = (i - color / 2.0f) * a / (i + 1.0f);
-      val -= a * _x.Get(i);
+      val -= a * _history.Get(i);
     }
     for (int i = _poles - 1; i > 0; i--)
-      _x.Set(i, _x.Get(i - 1));
-    _x.Set(0, val);
+      _history.Set(i, _history.Get(i - 1));
+    _history.Set(0, val);
 
     output[0].Set(s, val);
     output[1].Set(s, val);

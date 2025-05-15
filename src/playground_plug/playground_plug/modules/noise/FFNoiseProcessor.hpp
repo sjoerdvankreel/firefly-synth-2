@@ -12,6 +12,8 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+inline int constexpr FFNoiseCorrectionBufferSize = 16384;
+
 class FFNoiseProcessor final:
 public FFOsciProcessorBase
 {
@@ -21,9 +23,11 @@ public FFOsciProcessorBase
 
   float _baseFreq = 0.0f; // todo remove
   int _totalPosition = 0;
-  int _bufferPosition = 0;
+  int _historyPosition = 0;
+  int _correctionPosition = 0;
   FBMarsagliaPRNG _prng = {};
-  FBSIMDArray<float, FFNoiseMaxPoles> _x = {};
+  FBSIMDArray<float, FFNoiseMaxPoles> _history = {};
+  FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correction = {};
 
 public:
   FFNoiseProcessor();
