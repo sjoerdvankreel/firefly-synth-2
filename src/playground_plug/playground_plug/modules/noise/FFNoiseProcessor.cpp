@@ -43,15 +43,17 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _totalPosition = 0;
   _historyPosition = 0;
+  _correctionTotal = 0.0f;
   _correctionPosition = 0;
-  _correction.Fill(0.0f);
+  _correctionBuffer.Fill(0.0f);
   _prng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
+
   float fine = topo.NormalizedToLinearFast(FFNoiseParam::Fine, fineNorm.CV().First());
   float coarse = topo.NormalizedToLinearFast(FFNoiseParam::Coarse, coarseNorm.CV().First());
   _baseFreq = FBPitchToFreq(_key + coarse + fine);
 
   for (int p = 0; p < _poles; p++)
-    _history.Set(p, _prng.NextScalar());
+    _historyBuffer.Set(p, _prng.NextScalar());
 }
 
 int
@@ -96,13 +98,19 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
       a = (i - color / 2.0f) * a / (i + 1.0f);
       int historyPos = (_historyPosition + _poles - i - 1) % _poles;
       assert(0 <= historyPos && historyPos < _poles);
-      val -= a * _history.Get(historyPos);
+      val -= a * _historyBuffer.Get(historyPos);
     }
-    _history.Set(_historyPosition, val);
+    _historyBuffer.Set(_historyPosition, val);
     _historyPosition = (_historyPosition + 1) % _poles;
 
-    output[0].Set(s, val);
-    output[1].Set(s, val);
+    _correctionTotal += val;
+    //_correctionTotal -= _correctionBuffer.Get(_correctionPosition);
+    _correctionBuffer.Set(_correctionPosition, val);
+    _correctionPosition = (_correctionPosition + 1) % FFNoiseCorrectionBufferSize;
+
+    float correction = _correctionTotal /( _totalPosition + 1);
+    output[0].Set(s, val - correction);
+    output[1].Set(s, val - correction);
     _totalPosition++;
   }
 

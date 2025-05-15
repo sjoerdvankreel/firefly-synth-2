@@ -22,12 +22,13 @@ public FFOsciProcessorBase
   int _poles = {};
 
   float _baseFreq = 0.0f; // todo remove
+  float _correctionTotal = 0.0f;
   int _totalPosition = 0;
   int _historyPosition = 0;
   int _correctionPosition = 0;
   FBMarsagliaPRNG _prng = {};
-  FBSIMDArray<float, FFNoiseMaxPoles> _history = {};
-  FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correction = {};
+  FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
+  FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correctionBuffer = {};
 
 public:
   FFNoiseProcessor();
