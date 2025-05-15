@@ -6,6 +6,7 @@
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBMarsagliaPRNG.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
+#include <playground_base/dsp/shared/FBTrackingPhaseGenerator.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 #include <array>
@@ -22,7 +23,6 @@ public FFOsciProcessorBase
   int _poles = {};
   FFNoiseType _type = {};
 
-  float _baseFreq = 0.0f; // todo remove
   float _correctionMax = 1.0f;
   float _correctionTotal = 0.0f;
   int _totalPosition = 0;
@@ -30,6 +30,7 @@ public FFOsciProcessorBase
   int _correctionPosition = 0;
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
+  FBTrackingPhaseGenerator _phaseGen = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
   FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correctionBuffer = {};
 
