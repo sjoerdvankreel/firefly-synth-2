@@ -10,7 +10,7 @@ std::unique_ptr<FBStaticModule> FFMakeNoiseTopo();
 
 inline int constexpr FFNoiseMaxPoles = 8;
 inline int constexpr FFNoiseMaxSeed = 255;
-inline int constexpr FFNoiseGraphRounds = 5;
+inline int constexpr FFNoiseGraphRounds = 10;
 
 enum class FFNoiseType { Off, Uni, Norm };
 enum class FFNoiseParam { 
