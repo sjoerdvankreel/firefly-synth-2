@@ -94,11 +94,12 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     for (int i = 0; i < _poles; i++)
     {
       a = (i - color / 2.0f) * a / (i + 1.0f);
-      val -= a * _history.Get(i);
+      int historyPos = (_historyPosition + _poles - i - 1) % _poles;
+      assert(0 <= historyPos && historyPos < _poles);
+      val -= a * _history.Get(historyPos);
     }
-    for (int i = _poles - 1; i > 0; i--)
-      _history.Set(i, _history.Get(i - 1));
-    _history.Set(0, val);
+    _history.Set(_historyPosition, val);
+    _historyPosition = (_historyPosition + 1) % _poles;
 
     output[0].Set(s, val);
     output[1].Set(s, val);
