@@ -44,7 +44,7 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _graphPosition = 0;
   _historyPosition = 0;
   _lastDraw = 0.0f;
-  _correctionMax = 0.0f;
+  _correctionMax = 1.0f;
   _correctionTotal = 0.0f;
   _correctionPosition = 0;
   _correctionBuffer.Fill(0.0f);
@@ -108,21 +108,20 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     float yPlain = topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm.CV().Get(s));
 
     _phaseIncremented += baseFreq / sampleRate;
-    //if(_phaseIncremented >= xPlain)
-    //{
+    if(_phaseIncremented >= xPlain)
+    {
       _phaseIncremented = 0.0f;
       if (_type == FFNoiseType::Norm)
         _lastDraw = _normalPrng.NextScalar();
       else
         _lastDraw = _uniformPrng.NextScalar();
       _lastDraw = FBToBipolar(_lastDraw);
-    //}
-    //}
+    }    
     assert(!std::isnan(_lastDraw));
 
     float a = 1.0f;
     float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
-    for (int i = 0; i < _poles; i++)
+    for (int i = 0; false && i < _poles; i++) // todo
     {
       a = (i - color / 2.0f) * a / (i + 1.0f);
       int historyPos = (_historyPosition + _poles - i - 1) % _poles;
