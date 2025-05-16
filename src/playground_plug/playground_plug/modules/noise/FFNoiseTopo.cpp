@@ -180,7 +180,7 @@ FFMakeNoiseTopo()
 
   auto& x = result->params[(int)FFNoiseParam::X];
   x.acc = true;
-  x.defaultText = "0";
+  x.defaultText = "100";
   x.name = "X";
   x.slotCount = 1;
   x.unit = "%";

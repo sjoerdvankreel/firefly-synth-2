@@ -108,14 +108,10 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     float yPlain = topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm.CV().Get(s));
 
     _phaseIncremented += baseFreq / sampleRate;
-    if(_phaseIncremented >= xPlain)
+    if(_phaseIncremented >= 1.0f - xPlain)
     {
       _phaseIncremented = 0.0f;
-      if (_type == FFNoiseType::Norm)
-        _lastDraw = _normalPrng.NextScalar();
-      else
-        _lastDraw = _uniformPrng.NextScalar();
-      _lastDraw = FBToBipolar(_lastDraw);
+      _lastDraw = FBToBipolar(Draw());
     }    
     assert(!std::isnan(_lastDraw));
 
