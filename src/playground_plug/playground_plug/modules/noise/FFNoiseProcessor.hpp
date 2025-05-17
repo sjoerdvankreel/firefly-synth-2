@@ -1,7 +1,6 @@
 #pragma once
 
 #include <playground_plug/modules/noise/FFNoiseTopo.hpp>
-#include <playground_plug/modules/noise/FFNoisePhaseGenerator.hpp>
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
@@ -32,7 +31,6 @@ public FFOsciProcessorBase
   float _phaseIncremented = 0.0f;
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
-  FFNoisePhaseGenerator _phaseGen = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
   FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correctionBuffer = {};
 

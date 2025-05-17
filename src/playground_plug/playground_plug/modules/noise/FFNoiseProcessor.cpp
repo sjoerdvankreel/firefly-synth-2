@@ -49,16 +49,13 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _correctionPosition = 0;
   _correctionBuffer.Fill(0.0f);
 
-  _phaseGen = {};
   _phaseIncremented = 0.0f;
   _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
 
   for (int p = 0; p < _poles; p++)
-    if(_type == FFNoiseType::Norm)
-      _historyBuffer.Set(p, _normalPrng.NextScalar());
-    else
-      _historyBuffer.Set(p, _uniformPrng.NextScalar());
+    if(_type != FFNoiseType::Off)
+      _historyBuffer.Set(p, Draw());
 }
 
 int
@@ -111,13 +108,15 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     if(_phaseIncremented >= 1.0f - xPlain)
     {
       _phaseIncremented = 0.0f;
-      _lastDraw = FBToBipolar(Draw());
+      if(Draw() < yPlain)
+        _lastDraw = FBToBipolar(Draw());
     }    
+
     assert(!std::isnan(_lastDraw));
 
     float a = 1.0f;
     float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
-    for (int i = 0; false && i < _poles; i++) // todo
+    for (int i = 0; i < _poles; i++) // todo
     {
       a = (i - color / 2.0f) * a / (i + 1.0f);
       int historyPos = (_historyPosition + _poles - i - 1) % _poles;
@@ -145,43 +144,6 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     output[1].Set(s, outVal);
     _graphPosition++;
   }
-
-#if 0
-  for (int s = 0; s < FBFixedBlockSamples; s++)
-  {
-    float a = 1.0f;
-    float colorPlain = topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
-    float color = 2.0f * (1.0f - colorPlain);
-    for (int i = 0; i < _poles; i++)
-    {
-      a = (i - color / 2.0f) * a / (i + 1.0f);
-      _w.Set(i, a);
-    }
-
-    for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
-    {
-      int pos;
-      auto val = FBToBipolar(_prng.NextVector());      
-      for (int i = 0; i < _poles; i++)
-      {
-        pos = (_bufferPosition + _poles - i - 1) % _poles;
-        assert(0 <= pos && pos < _poles);
-        val -= _w.Get(i) * _x[pos].Load(u);
-      }
-      pos = (_bufferPosition + _poles - 1) % _poles;
-      _x[pos].Store(u, val);
-
-      FBSIMDArray<float, FBSIMDFloatCount> outputArray;
-      outputArray.Store(0, val);
-      for (int v = 0; v < FBSIMDFloatCount; v++)
-        _uniOutput[u + v].Set(s, outputArray.Get(v));
-    }
-
-    _totalPosition++;
-    _bufferPosition = (_bufferPosition + 1) % _poles;
-  }
-#endif
-
 
   ProcessGainSpreadBlend(output);
 
