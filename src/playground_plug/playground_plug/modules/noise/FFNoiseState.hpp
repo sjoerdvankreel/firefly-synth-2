@@ -14,6 +14,7 @@ struct FBStaticModule;
 
 class alignas(FBSIMDAlign) FFNoiseDSPState final
 {
+  friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
   friend struct NoiseGraphRenderData;
   std::unique_ptr<FFNoiseProcessor> processor = {};

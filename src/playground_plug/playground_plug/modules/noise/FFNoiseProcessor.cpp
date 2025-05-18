@@ -12,6 +12,9 @@
 
 #include <xsimd/xsimd.hpp>
 
+#include <bit>
+#include <cstdint>
+
 // https://www.reddit.com/r/DSP/comments/8fm3c5/what_am_i_doing_wrong_brown_noise/
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
 // kps https://dsp.stackexchange.com/questions/12596/synthesizing-harmonic-tones-with-karplus-strong
@@ -19,9 +22,20 @@
 FFNoiseProcessor::
 FFNoiseProcessor() {}
 
+void
+FFNoiseProcessor::AllocateBuffers(
+  float sampleRate)
+{
+  float minHz = 20.0f;
+  float fMaxPeriod = sampleRate / minHz;
+  auto maxPeriod = static_cast<std::uint32_t>(std::ceil(fMaxPeriod));
+  std::uint32_t nextPow2 = std::bit_ceil(maxPeriod);
+  _karplusStrongBuffer.resize(nextPow2);
+}
+
 inline float
 FFNoiseProcessor::Draw()
-{
+{ 
   if (_type == FFNoiseType::Uni)
     return FBToBipolar(_uniformPrng.NextScalar());
   assert(_type == FFNoiseType::Norm);

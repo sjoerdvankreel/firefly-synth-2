@@ -8,7 +8,9 @@
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 
 #include <juce_dsp/juce_dsp.h>
+
 #include <array>
+#include <vector>
 
 class FBAccParamState;
 struct FBModuleProcState;
@@ -27,6 +29,8 @@ public FFOsciProcessorBase
   FBParkMillerPRNG _uniformPrng = {};
 
   int _colorFilterPosition = 0;
+  int _karplusStrongPosition = 0;
+  std::vector<float> _karplusStrongBuffer = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();
@@ -34,6 +38,8 @@ public FFOsciProcessorBase
 public:
   FFNoiseProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFNoiseProcessor);
+
   int Process(FBModuleProcState& state);
+  void AllocateBuffers(float sampleRate);
   void BeginVoice(FBModuleProcState& state);
 };
