@@ -3,4 +3,4 @@
 struct FBModuleGraphComponentData;
 
 void
-FFNoiseRenderGraph(FBModuleGraphComponentData* graphData);
+FFKSNoiseRenderGraph(FBModuleGraphComponentData* graphData);

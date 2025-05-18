@@ -1,24 +1,24 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
-#include <playground_plug/modules/noise/FFNoiseTopo.hpp>
-#include <playground_plug/modules/noise/FFNoiseGraph.hpp>
+#include <playground_plug/modules/ks_noise/FFKSNoiseTopo.hpp>
+#include <playground_plug/modules/ks_noise/FFKSNoiseGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
-FFMakeNoiseTopo()
+FFMakeKSNoiseTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
-  result->name = "Noise";
-  result->slotCount = FFNoiseCount;
+  result->name = "KSNoise";
+  result->slotCount = FFKSNoiseCount;
   result->graphCount = 1;
-  result->graphRenderer = FFNoiseRenderGraph;
+  result->graphRenderer = FFKSNoiseRenderGraph;
   result->id = "{3B4A03F2-0A04-425B-8BD5-D770AB4DC87E}";
-  result->params.resize((int)FFNoiseParam::Count);
-  result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.noise; });
-  auto selectModule = [](auto& state) { return &state.voice.noise; };
+  result->params.resize((int)FFKSNoiseParam::Count);
+  result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.ksNoise; });
+  auto selectModule = [](auto& state) { return &state.voice.ksNoise; };
 
-  auto& type = result->params[(int)FFNoiseParam::Type];
+  auto& type = result->params[(int)FFKSNoiseParam::Type];
   type.acc = false;
   type.defaultText = "Off";
   type.name = "Type";
@@ -34,7 +34,7 @@ FFMakeNoiseTopo()
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
   type.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectType);
 
-  auto& gain = result->params[(int)FFNoiseParam::Gain];
+  auto& gain = result->params[(int)FFKSNoiseParam::Gain];
   gain.acc = true;
   gain.defaultText = "100";
   gain.name = "Gain";
@@ -47,7 +47,7 @@ FFMakeNoiseTopo()
   gain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
   gain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
 
-  auto& coarse = result->params[(int)FFNoiseParam::Coarse];
+  auto& coarse = result->params[(int)FFKSNoiseParam::Coarse];
   coarse.acc = true;
   coarse.defaultText = "0";
   coarse.name = "Coarse";
@@ -62,7 +62,7 @@ FFMakeNoiseTopo()
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);
   coarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCoarse);
 
-  auto& fine = result->params[(int)FFNoiseParam::Fine];
+  auto& fine = result->params[(int)FFKSNoiseParam::Fine];
   fine.acc = true;
   fine.defaultText = "0";
   fine.name = "Fine";
@@ -78,7 +78,7 @@ FFMakeNoiseTopo()
   fine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFine);
   fine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFine);
 
-  auto& uniCount = result->params[(int)FFNoiseParam::UniCount];
+  auto& uniCount = result->params[(int)FFKSNoiseParam::UniCount];
   uniCount.acc = false;
   uniCount.defaultText = "1";
   uniCount.display = "Uni";
@@ -93,7 +93,7 @@ FFMakeNoiseTopo()
   uniCount.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniCount);
   uniCount.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniCount);
 
-  auto& uniDetune = result->params[(int)FFNoiseParam::UniDetune];
+  auto& uniDetune = result->params[(int)FFKSNoiseParam::UniDetune];
   uniDetune.acc = true;
   uniDetune.defaultText = "33";
   uniDetune.display = "Dtn";
@@ -106,9 +106,9 @@ FFMakeNoiseTopo()
   uniDetune.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniDetune);
   uniDetune.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniDetune);
   uniDetune.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniDetune);
-  uniDetune.dependencies.enabled.audio.When({ (int)FFNoiseParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
+  uniDetune.dependencies.enabled.audio.When({ (int)FFKSNoiseParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
 
-  auto& uniSpread = result->params[(int)FFNoiseParam::UniSpread];
+  auto& uniSpread = result->params[(int)FFKSNoiseParam::UniSpread];
   uniSpread.acc = true;
   uniSpread.defaultText = "50";
   uniSpread.display = "Sprd";
@@ -121,9 +121,9 @@ FFMakeNoiseTopo()
   uniSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniSpread);
   uniSpread.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniSpread);
   uniSpread.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniSpread);
-  uniSpread.dependencies.enabled.audio.When({ (int)FFNoiseParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
+  uniSpread.dependencies.enabled.audio.When({ (int)FFKSNoiseParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
 
-  auto& uniBlend = result->params[(int)FFNoiseParam::UniBlend];
+  auto& uniBlend = result->params[(int)FFKSNoiseParam::UniBlend];
   uniBlend.acc = true;
   uniBlend.defaultText = "100";
   uniBlend.display = "Blnd";
@@ -136,22 +136,22 @@ FFMakeNoiseTopo()
   uniBlend.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniBlend);
   uniBlend.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniBlend);
   uniBlend.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniBlend);
-  uniBlend.dependencies.enabled.audio.When({ (int)FFNoiseParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
+  uniBlend.dependencies.enabled.audio.When({ (int)FFKSNoiseParam::UniCount }, [](auto const& vs) { return vs[0] != 1; });
 
-  auto& seed = result->params[(int)FFNoiseParam::Seed];
+  auto& seed = result->params[(int)FFKSNoiseParam::Seed];
   seed.acc = false;
   seed.defaultText = "0";
   seed.name = "Seed";
   seed.slotCount = 1;
   seed.id = "{147FBBB6-3C3B-471B-8BDA-A10DA068769E}";
   seed.type = FBParamType::Discrete;
-  seed.Discrete().valueCount = FFNoiseMaxSeed + 1;
+  seed.Discrete().valueCount = FFKSNoiseMaxSeed + 1;
   auto selectSeed = [](auto& module) { return &module.block.seed; };
   seed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSeed);
   seed.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSeed);
   seed.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSeed);
 
-  auto& poles = result->params[(int)FFNoiseParam::Poles];
+  auto& poles = result->params[(int)FFKSNoiseParam::Poles];
   poles.acc = false;
   poles.defaultText = "4";
   poles.name = "Q";
@@ -159,13 +159,13 @@ FFMakeNoiseTopo()
   poles.id = "{84B10EBF-E55D-43DF-8E80-3F1FCE093400}";
   poles.type = FBParamType::Discrete;
   poles.Discrete().valueOffset = 1;
-  poles.Discrete().valueCount = FFNoiseMaxPoles;
+  poles.Discrete().valueCount = FFKSNoiseMaxPoles;
   auto selectPoles = [](auto& module) { return &module.block.poles; };
   poles.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPoles);
   poles.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPoles);
   poles.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPoles);
 
-  auto& color = result->params[(int)FFNoiseParam::Color];
+  auto& color = result->params[(int)FFKSNoiseParam::Color];
   color.acc = true;
   color.defaultText = "50";
   color.name = "Color";
@@ -178,7 +178,7 @@ FFMakeNoiseTopo()
   color.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectColor);
   color.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectColor);
 
-  auto& x = result->params[(int)FFNoiseParam::X];
+  auto& x = result->params[(int)FFKSNoiseParam::X];
   x.acc = true;
   x.defaultText = "100";
   x.name = "X";
@@ -191,7 +191,7 @@ FFMakeNoiseTopo()
   x.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectX);
   x.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectX);
 
-  auto& y = result->params[(int)FFNoiseParam::Y];
+  auto& y = result->params[(int)FFKSNoiseParam::Y];
   y.acc = true;
   y.defaultText = "100";
   y.name = "Y";

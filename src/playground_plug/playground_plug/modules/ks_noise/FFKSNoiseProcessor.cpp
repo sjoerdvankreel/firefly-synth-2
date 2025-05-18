@@ -1,7 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/modules/noise/FFNoiseTopo.hpp>
-#include <playground_plug/modules/noise/FFNoiseProcessor.hpp>
+#include <playground_plug/modules/ks_noise/FFKSNoiseTopo.hpp>
+#include <playground_plug/modules/ks_noise/FFKSNoiseProcessor.hpp>
 
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
@@ -19,15 +19,15 @@
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
 // kps https://dsp.stackexchange.com/questions/12596/synthesizing-harmonic-tones-with-karplus-strong
 
-FFNoiseProcessor::
-FFNoiseProcessor() {}
+FFKSNoiseProcessor::
+FFKSNoiseProcessor() {}
 
 inline float
-FFNoiseProcessor::Draw()
+FFKSNoiseProcessor::Draw()
 {
-  if (_type == FFNoiseType::Uni)
+  if (_type == FFKSNoiseType::Uni)
     return FBToBipolar(_uniformPrng.NextScalar());
-  assert(_type == FFNoiseType::Norm);
+  assert(_type == FFKSNoiseType::Norm);
   float result = 0.0f;
   do
   {
@@ -37,7 +37,7 @@ FFNoiseProcessor::Draw()
 }
 
 void
-FFNoiseProcessor::AllocateBuffers(
+FFKSNoiseProcessor::AllocateBuffers(
   float sampleRate)
 {
   float minHz = 20.0f;
@@ -49,16 +49,16 @@ FFNoiseProcessor::AllocateBuffers(
 }
 
 inline float
-FFNoiseProcessor::Next(
+FFKSNoiseProcessor::Next(
   FBStaticModule const& topo,
   float sampleRate, float baseFreq, 
   float colorNorm, float xNorm, float yNorm)
 {
   float const empirical = 0.75f;
   float scale = 1.0f - colorNorm * empirical;
-  float x = topo.NormalizedToIdentityFast(FFNoiseParam::X, xNorm);
-  float y = 0.01f + 0.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm);
-  float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm);
+  float x = topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm);
+  float y = 0.01f + 0.99f * topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm);
+  float color = 1.99f * topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm);
 
   _phaseTowardsX += baseFreq / sampleRate;
   if (_phaseTowardsX < 1.0f - x)
@@ -82,12 +82,12 @@ FFNoiseProcessor::Next(
 }
 
 void
-FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
+FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
-  auto const& params = procState->param.voice.noise[state.moduleSlot];
+  auto const& params = procState->param.voice.ksNoise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
 
   auto const& xNorm = params.acc.x[0].Voice()[voice];
@@ -102,10 +102,10 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   auto const& fineNorm = params.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
 
-  _seed = topo.NormalizedToDiscreteFast(FFNoiseParam::Seed, seedNorm);
-  _poles = topo.NormalizedToDiscreteFast(FFNoiseParam::Poles, polesNorm);
-  _type = topo.NormalizedToListFast<FFNoiseType>(FFNoiseParam::Type, typeNorm);
-  FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm));
+  _seed = topo.NormalizedToDiscreteFast(FFKSNoiseParam::Seed, seedNorm);
+  _poles = topo.NormalizedToDiscreteFast(FFKSNoiseParam::Poles, polesNorm);
+  _type = topo.NormalizedToListFast<FFKSNoiseType>(FFKSNoiseParam::Type, typeNorm);
+  FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFKSNoiseParam::UniCount, uniCountNorm));
 
   _lastDraw = 0.0f;
   _graphPosition = 0;
@@ -113,10 +113,10 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _colorFilterPosition = 0;
   
   _phaseGen = {};
-  _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
-  _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
+  _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
+  _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
 
-  if (_type == FFNoiseType::Off)
+  if (_type == FFKSNoiseType::Off)
     return;
 
   for (int p = 0; p < _poles; p++)
@@ -133,19 +133,19 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 }
 
 int
-FFNoiseProcessor::Process(FBModuleProcState& state)
+FFKSNoiseProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
-  auto& output = voiceState.noise[state.moduleSlot].output;
+  auto& output = voiceState.ksNoise[state.moduleSlot].output;
 
   output.Fill(0.0f);
-  if (_type == FFNoiseType::Off)
+  if (_type == FFKSNoiseType::Off)
     return 0;
   
   float sampleRate = state.input->sampleRate;
-  auto const& procParams = procState->param.voice.noise[state.moduleSlot];
+  auto const& procParams = procState->param.voice.ksNoise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
 
   auto const& xNorm = procParams.acc.x[0].Voice()[voice];
@@ -163,9 +163,9 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
-    _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFNoiseParam::Gain, gainNorm, s));
-    _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFNoiseParam::UniBlend, uniBlendNorm, s));
-    _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFNoiseParam::UniSpread, uniSpreadNorm, s));
+    _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Gain, gainNorm, s));
+    _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniBlend, uniBlendNorm, s));
+    _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniSpread, uniSpreadNorm, s));
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
     baseFreqPlain.Store(s, baseFreq);
@@ -199,15 +199,15 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
-    int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFNoiseGraphRounds;
+    int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFKSNoiseGraphRounds;
     return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
   }
 
-  auto& exchangeDSP = exchangeToGUI->voice[voice].noise[state.moduleSlot];
+  auto& exchangeDSP = exchangeToGUI->voice[voice].ksNoise[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(FBFixedBlockSamples - 1), state.input->sampleRate);
 
-  auto& exchangeParams = exchangeToGUI->param.voice.noise[state.moduleSlot];
+  auto& exchangeParams = exchangeToGUI->param.voice.ksNoise[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
   exchangeParams.acc.color[0][voice] = colorNorm.Last();
