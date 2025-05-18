@@ -13,8 +13,6 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-inline int constexpr FFNoiseCorrectionBufferSize = 16384;
-
 class FFNoiseProcessor final:
 public FFOsciProcessorBase
 {
@@ -24,15 +22,11 @@ public FFOsciProcessorBase
 
   int _graphPosition = 0;
   int _historyPosition = 0;
-  int _correctionPosition = 0;
   float _lastDraw = 0.0f;
-  float _correctionMax = 1.0f;
-  float _correctionTotal = 0.0f;
   float _phaseIncremented = 0.0f;
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
-  FBSIMDArray<float, FFNoiseCorrectionBufferSize> _correctionBuffer = {};
 
   float Draw();
 

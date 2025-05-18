@@ -41,14 +41,9 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _type = topo.NormalizedToListFast<FFNoiseType>(FFNoiseParam::Type, typeNorm);
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFNoiseParam::UniCount, uniCountNorm));
 
+  _lastDraw = 0.0f;
   _graphPosition = 0;
   _historyPosition = 0;
-  _lastDraw = 0.0f;
-  _correctionMax = 1.0f;
-  _correctionTotal = 0.0f;
-  _correctionPosition = 0;
-  _correctionBuffer.Fill(0.0f);
-
   _phaseIncremented = 0.0f;
   _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
@@ -101,49 +96,34 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   {
     float baseFreq = baseFreqPlain.Get(s);
     float period = FBFreqToSamples(baseFreq, sampleRate);
-    float xPlain = topo.NormalizedToIdentityFast(FFNoiseParam::X, xNorm.CV().Get(s));
-    float yPlain = topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm.CV().Get(s));
+    float x = topo.NormalizedToIdentityFast(FFNoiseParam::X, xNorm.CV().Get(s));
+    float y = 0.01f + 0.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm.CV().Get(s));
+    float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
 
     _phaseIncremented += baseFreq / sampleRate;
-    if(_phaseIncremented >= 1.0f - xPlain)
+    if(_phaseIncremented >= 1.0f - x)
     {
       _phaseIncremented = 0.0f;
-      if (Draw() < yPlain)
+      if (Draw() < y)
       {
         _lastDraw = FBToBipolar(Draw());
 
-        assert(!std::isnan(_lastDraw));
-
         float a = 1.0f;
-        float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
-        for (int i = 0; i < _poles; i++) // todo
+        for (int i = 0; i < _poles; i++)
         {
           a = (i - color / 2.0f) * a / (i + 1.0f);
           int historyPos = (_historyPosition + _poles - i - 1) % _poles;
-          assert(0 <= historyPos && historyPos < _poles);
           _lastDraw -= a * _historyBuffer.Get(historyPos);
-          assert(!std::isnan(_lastDraw));
         }
-
-        _correctionTotal += _lastDraw;
-        assert(!std::isnan(_correctionTotal));
-        _correctionTotal -= _correctionBuffer.Get(_correctionPosition);
-        assert(!std::isnan(_correctionTotal));
-        _correctionBuffer.Set(_correctionPosition, _lastDraw);
-        _correctionPosition = (_correctionPosition + 1) % FFNoiseCorrectionBufferSize;
-        _correctionMax = std::max(std::abs(_lastDraw), _correctionMax);
-
-        _lastDraw -= _correctionTotal / FFNoiseCorrectionBufferSize;
-        assert(!std::isnan(_lastDraw));
         _historyBuffer.Set(_historyPosition, _lastDraw);
         _historyPosition = (_historyPosition + 1) % _poles;
       }
     }        
 
-    float outVal = _lastDraw / _correctionMax;
-    assert(!std::isnan(outVal));
-    output[0].Set(s, outVal);
-    output[1].Set(s, outVal);
+    float const empirical = 0.875f;
+    float scale = 1.0f - colorNorm.CV().Get(s) * empirical;
+    output[0].Set(s, _lastDraw * scale);
+    output[1].Set(s, _lastDraw * scale);
     _graphPosition++;
   }
 
