@@ -187,7 +187,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float outVal = (1.0f - fraction) * val1 + fraction * val2;
 
     float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
-    float newVal1 = decay * (val0 + val1) * 0.5f + (1.0f - decay) * val0;
+    float newVal1 = decay * (val0 + val1) * 0.25f + (1.0f - decay) * val1 * 0.5f;
     _waveTableBuffer[waveTablePos1] = newVal1;
 
    // if(false)
