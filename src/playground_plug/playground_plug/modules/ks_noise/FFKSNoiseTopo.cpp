@@ -9,7 +9,7 @@ FFMakeKSNoiseTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
-  result->name = "KSNoise";
+  result->name = "K-S/Noise";
   result->slotCount = FFKSNoiseCount;
   result->graphCount = 1;
   result->graphRenderer = FFKSNoiseRenderGraph;
