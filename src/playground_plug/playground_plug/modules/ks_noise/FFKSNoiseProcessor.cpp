@@ -88,7 +88,7 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.ksNoise[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::KSNoise];
 
   auto const& xNorm = params.acc.x[0].Voice()[voice];
   auto const& yNorm = params.acc.y[0].Voice()[voice];
@@ -146,7 +146,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   
   float sampleRate = state.input->sampleRate;
   auto const& procParams = procState->param.voice.ksNoise[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::KSNoise];
 
   auto const& xNorm = procParams.acc.x[0].Voice()[voice];
   auto const& yNorm = procParams.acc.y[0].Voice()[voice];
