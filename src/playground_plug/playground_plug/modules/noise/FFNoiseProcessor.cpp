@@ -120,7 +120,7 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
       }
     }        
 
-    float const empirical = 0.875f;
+    float const empirical = 0.75f;
     float scale = 1.0f - colorNorm.CV().Get(s) * empirical;
     output[0].Set(s, _lastDraw * scale);
     output[1].Set(s, _lastDraw * scale);
