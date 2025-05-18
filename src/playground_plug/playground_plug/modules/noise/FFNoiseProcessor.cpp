@@ -108,35 +108,37 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     if(_phaseIncremented >= 1.0f - xPlain)
     {
       _phaseIncremented = 0.0f;
-      if(Draw() < yPlain)
+      if (Draw() < yPlain)
+      {
         _lastDraw = FBToBipolar(Draw());
-    }    
 
-    assert(!std::isnan(_lastDraw));
+        assert(!std::isnan(_lastDraw));
 
-    float a = 1.0f;
-    float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
-    for (int i = 0; i < _poles; i++) // todo
-    {
-      a = (i - color / 2.0f) * a / (i + 1.0f);
-      int historyPos = (_historyPosition + _poles - i - 1) % _poles;
-      assert(0 <= historyPos && historyPos < _poles);
-      _lastDraw -= a * _historyBuffer.Get(historyPos);
-      assert(!std::isnan(_lastDraw));
-    }
+        float a = 1.0f;
+        float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
+        for (int i = 0; i < _poles; i++) // todo
+        {
+          a = (i - color / 2.0f) * a / (i + 1.0f);
+          int historyPos = (_historyPosition + _poles - i - 1) % _poles;
+          assert(0 <= historyPos && historyPos < _poles);
+          _lastDraw -= a * _historyBuffer.Get(historyPos);
+          assert(!std::isnan(_lastDraw));
+        }
 
-    _correctionTotal += _lastDraw;
-    assert(!std::isnan(_correctionTotal));
-    _correctionTotal -= _correctionBuffer.Get(_correctionPosition);
-    assert(!std::isnan(_correctionTotal));
-    _correctionBuffer.Set(_correctionPosition, _lastDraw);
-    _correctionPosition = (_correctionPosition + 1) % FFNoiseCorrectionBufferSize;
-    _correctionMax = std::max(std::abs(_lastDraw), _correctionMax);
+        _correctionTotal += _lastDraw;
+        assert(!std::isnan(_correctionTotal));
+        _correctionTotal -= _correctionBuffer.Get(_correctionPosition);
+        assert(!std::isnan(_correctionTotal));
+        _correctionBuffer.Set(_correctionPosition, _lastDraw);
+        _correctionPosition = (_correctionPosition + 1) % FFNoiseCorrectionBufferSize;
+        _correctionMax = std::max(std::abs(_lastDraw), _correctionMax);
 
-    _lastDraw -= _correctionTotal / FFNoiseCorrectionBufferSize;
-    assert(!std::isnan(_lastDraw));
-    _historyBuffer.Set(_historyPosition, _lastDraw);
-    _historyPosition = (_historyPosition + 1) % _poles;
+        _lastDraw -= _correctionTotal / FFNoiseCorrectionBufferSize;
+        assert(!std::isnan(_lastDraw));
+        _historyBuffer.Set(_historyPosition, _lastDraw);
+        _historyPosition = (_historyPosition + 1) % _poles;
+      }
+    }        
 
     float outVal = _lastDraw / _correctionMax;
     assert(!std::isnan(outVal));
