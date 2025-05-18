@@ -32,7 +32,7 @@ public FFOsciProcessorBase
   FFKSNoisePhaseGenerator _phaseGen = {};
 
   int _waveTableSize = 0;
-  int _prevWaveTablePos1 = 0;
+  float _prevPhase = 0.0f;
   int _colorFilterPosition = 0;
   std::vector<float> _waveTableBuffer = {};
   FBSIMDArray<float, FFKSNoiseMaxPoles> _colorFilterBuffer = {};

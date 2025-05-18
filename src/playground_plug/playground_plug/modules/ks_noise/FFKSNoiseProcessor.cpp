@@ -108,9 +108,9 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFKSNoiseParam::UniCount, uniCountNorm));
 
   _lastDraw = 0.0f;
+  _prevPhase = 0.0f;
   _graphPosition = 0;
   _phaseTowardsX = 0.0f;
-  _prevWaveTablePos1 = 0;
   _colorFilterPosition = 0;
   
   _phaseGen = {};
@@ -177,14 +177,17 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   {
     float incr = baseFreqPlain.Get(s) / sampleRate;
     float phase = _phaseGen.Next(incr);
-    float waveTablePos = phase * _waveTableSize;
-    int waveTablePos1 = static_cast<int>(waveTablePos);
-    int waveTablePos2 = (waveTablePos1 + 1) % _waveTableSize;
-    float fraction = waveTablePos - waveTablePos1;
-    float val1 = _waveTableBuffer[waveTablePos1];
-    float val2 = _waveTableBuffer[waveTablePos2];
-    float outVal = (1.0f - fraction) * val1 + fraction * val2;
+    int waveTablePos = static_cast<int>(phase * _waveTableSize);
+    int prevWaveTablePos = static_cast<int>(_prevPhase * _waveTableSize);
+    float val = _waveTableBuffer[waveTablePos];
 
+    float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
+    float prevVal = _waveTableBuffer[prevWaveTablePos];
+    float newVal = decay * (val + prevVal) * 0.5f + (1.0f - decay) * prevVal;
+    _waveTableBuffer[prevWaveTablePos] = newVal;
+    _prevPhase = phase;
+
+#if 0
     float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
     int prevPosDistance = waveTablePos1 - _prevWaveTablePos1;
     if (prevPosDistance < 0)
@@ -198,6 +201,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
       _waveTableBuffer[prevPos1] = newVal1;
     }
     _prevWaveTablePos1 = waveTablePos1;
+#endif
 
     //float newVal1 = decay * (val0 + val1) * 0.25f + (1.0f - decay) * val1 * 0.5f;
     //_waveTableBuffer[waveTablePos1] = newVal1;
@@ -208,8 +212,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     //  baseFreqPlain.Get(s), colorNorm.CV().Get(s),
       //xNorm.CV().Get(s), yNorm.CV().Get(s));
 
-    output[0].Set(s, outVal);
-    output[1].Set(s, outVal);
+    output[0].Set(s, val);
+    output[1].Set(s, val);
     _graphPosition++;
   }
 
