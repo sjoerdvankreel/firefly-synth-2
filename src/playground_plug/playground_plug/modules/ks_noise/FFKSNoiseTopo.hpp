@@ -16,4 +16,4 @@ enum class FFKSNoiseType { Off, Uni, Norm };
 enum class FFKSNoiseParam {
   Type, Gain, Coarse, Fine,
   UniCount, UniDetune, UniSpread, UniBlend,
-  Seed, Poles, Color, X, Y, Count };
+  Seed, Poles, Color, Decay, X, Y, Count };

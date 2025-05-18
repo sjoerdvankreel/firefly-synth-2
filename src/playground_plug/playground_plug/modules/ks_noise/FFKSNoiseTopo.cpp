@@ -178,6 +178,19 @@ FFMakeKSNoiseTopo()
   color.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectColor);
   color.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectColor);
 
+  auto& decay = result->params[(int)FFKSNoiseParam::Decay];
+  decay.acc = true;
+  decay.defaultText = "50";
+  decay.name = "Decay";
+  decay.slotCount = 1;
+  decay.unit = "%";
+  decay.id = "{1FD56760-3837-4A1B-8CAF-8906BA0BC6A1}";
+  decay.type = FBParamType::Identity;
+  auto selectDecay = [](auto& module) { return &module.acc.decay; };
+  decay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDecay);
+  decay.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDecay);
+  decay.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDecay);
+
   auto& x = result->params[(int)FFKSNoiseParam::X];
   x.acc = true;
   x.defaultText = "100";

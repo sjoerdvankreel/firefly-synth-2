@@ -150,6 +150,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
   auto const& xNorm = procParams.acc.x[0].Voice()[voice];
   auto const& yNorm = procParams.acc.y[0].Voice()[voice];
+  auto const& decayNorm = procParams.acc.decay[0].Voice()[voice];
   auto const& colorNorm = procParams.acc.color[0].Voice()[voice];
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
@@ -176,12 +177,18 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float incr = baseFreqPlain.Get(s) / sampleRate;
     float phase = _phaseGen.Next(incr);
     float waveTablePos = phase * _waveTableSize;
-    int waveTablePos0 = static_cast<int>(waveTablePos);
-    int waveTablePos1 = (waveTablePos0 + 1) % _waveTableSize;
-    float fraction = waveTablePos - waveTablePos0;
+    int waveTablePos1 = static_cast<int>(waveTablePos);
+    int waveTablePos2 = (waveTablePos1 + 1) % _waveTableSize;
+    int waveTablePos0 = (waveTablePos1 + _waveTableSize - 1) % _waveTableSize;
+    float fraction = waveTablePos - waveTablePos1;
     float val0 = _waveTableBuffer[waveTablePos0];
     float val1 = _waveTableBuffer[waveTablePos1];
-    float val = (1.0f - fraction) * val0 + fraction * val1;
+    float val2 = _waveTableBuffer[waveTablePos2];
+    float outVal = (1.0f - fraction) * val1 + fraction * val2;
+
+    float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
+    float newVal1 = decay * (val0 + val1) * 0.5f + (1.0f - decay) * val0;
+    _waveTableBuffer[waveTablePos1] = newVal1;
 
    // if(false)
 //    _waveTableBuffer[_waveTablePosition] = Next(
@@ -189,8 +196,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     //  baseFreqPlain.Get(s), colorNorm.CV().Get(s),
       //xNorm.CV().Get(s), yNorm.CV().Get(s));
 
-    output[0].Set(s, val);
-    output[1].Set(s, val);
+    output[0].Set(s, outVal);
+    output[1].Set(s, outVal);
     _graphPosition++;
   }
 
@@ -210,9 +217,10 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto& exchangeParams = exchangeToGUI->param.voice.ksNoise[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
-  exchangeParams.acc.color[0][voice] = colorNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainNorm.Last();
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
+  exchangeParams.acc.color[0][voice] = colorNorm.Last();
+  exchangeParams.acc.decay[0][voice] = decayNorm.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
   exchangeParams.acc.uniBlend[0][voice] = uniBlendNorm.Last();
   exchangeParams.acc.uniDetune[0][voice] = uniDetuneNorm.Last();

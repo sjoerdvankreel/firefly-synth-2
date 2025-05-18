@@ -52,6 +52,7 @@ class alignas(alignof(TVoiceAcc)) FFKSNoiseAccParamState final
   std::array<TVoiceAcc, 1> x = {};
   std::array<TVoiceAcc, 1> y = {};
   std::array<TVoiceAcc, 1> color = {};
+  std::array<TVoiceAcc, 1> decay = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFKSNoiseAccParamState);
 };

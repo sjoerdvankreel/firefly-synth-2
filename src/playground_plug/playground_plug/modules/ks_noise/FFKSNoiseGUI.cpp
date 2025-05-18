@@ -79,6 +79,9 @@ MakeSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
   auto color = topo->audio.ParamAtTopo({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::Color, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, color));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, color, Slider::SliderStyle::LinearHorizontal));
+  auto decay = topo->audio.ParamAtTopo({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::Decay, 0 });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, decay));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decay, Slider::SliderStyle::LinearHorizontal));
   grid->MarkSection({ 0, 0, 2, 6 });
   return grid;
 }
