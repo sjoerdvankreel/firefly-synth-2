@@ -57,14 +57,14 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _lastDraw = 0.0f;
   _graphPosition = 0;
-  _historyPosition = 0;
   _phaseIncremented = 0.0f;
+  _colorFilterPosition = 0;
   _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
 
   for (int p = 0; p < _poles; p++)
     if(_type != FFNoiseType::Off)
-      _historyBuffer.Set(p, Draw());
+      _colorFilterBuffer.Set(p, Draw());
 }
 
 int
@@ -125,11 +125,11 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
         for (int i = 0; i < _poles; i++)
         {
           a = (i - color / 2.0f) * a / (i + 1.0f);
-          int historyPos = (_historyPosition + _poles - i - 1) % _poles;
-          _lastDraw -= a * _historyBuffer.Get(historyPos);
+          int colorFilterPos = (_colorFilterPosition + _poles - i - 1) % _poles;
+          _lastDraw -= a * _colorFilterBuffer.Get(colorFilterPos);
         }
-        _historyBuffer.Set(_historyPosition, _lastDraw);
-        _historyPosition = (_historyPosition + 1) % _poles;
+        _colorFilterBuffer.Set(_colorFilterPosition, _lastDraw);
+        _colorFilterPosition = (_colorFilterPosition + 1) % _poles;
       }
     }        
 

@@ -21,12 +21,13 @@ public FFOsciProcessorBase
   FFNoiseType _type = {};
 
   int _graphPosition = 0;
-  int _historyPosition = 0;
   float _lastDraw = 0.0f;
   float _phaseIncremented = 0.0f;
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
-  FBSIMDArray<float, FFNoiseMaxPoles> _historyBuffer = {};
+
+  int _colorFilterPosition = 0;
+  FBSIMDArray<float, FFNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();
 
