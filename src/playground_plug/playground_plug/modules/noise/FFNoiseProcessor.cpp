@@ -45,6 +45,7 @@ FFNoiseProcessor::AllocateBuffers(
   auto maxPeriod = static_cast<std::uint32_t>(std::ceil(fMaxPeriod));
   std::size_t nextPow2 = std::bit_ceil(maxPeriod);
   _waveTableBuffer.resize(std::max(_waveTableBuffer.size(), nextPow2));
+  _waveTableSize = static_cast<int>(_waveTableBuffer.size());
 }
 
 inline float
@@ -124,7 +125,7 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   float coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
   float pitch = _key + coarse + fine;
   float baseFreq = FBPitchToFreq(pitch);
-  for (int i = 0; i < _waveTableBuffer.size(); i++)
+  for (int i = 0; i < _waveTableSize; i++)
     _waveTableBuffer[i] = Next(
       topo, sampleRate, baseFreq, 
       colorNorm.CV().Get(0), xNorm.CV().Get(0), yNorm.CV().Get(0));
@@ -172,11 +173,17 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float val = _waveTableBuffer[_waveTablePosition];
+    auto period = static_cast<int>(std::ceil(sampleRate / baseFreqPlain.Get(s)));
+    period = std::min(period, _waveTableSize);
+
+    if(false)
     _waveTableBuffer[_waveTablePosition] = Next(
       topo, sampleRate,
       baseFreqPlain.Get(s), colorNorm.CV().Get(s),
       xNorm.CV().Get(s), yNorm.CV().Get(s));
-    _waveTablePosition = (_waveTablePosition + _waveTableBuffer.size() + 1) % _waveTableBuffer.size();
+
+    _waveTablePosition = (_waveTablePosition + period + 1) % period;
+
     output[0].Set(s, val);
     output[1].Set(s, val);
     _graphPosition++;

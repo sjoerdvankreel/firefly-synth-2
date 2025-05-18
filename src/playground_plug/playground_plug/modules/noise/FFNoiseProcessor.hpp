@@ -28,6 +28,7 @@ public FFOsciProcessorBase
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
 
+  int _waveTableSize = 0;
   int _waveTablePosition = 0;
   int _colorFilterPosition = 0;
   std::vector<float> _waveTableBuffer = {};
