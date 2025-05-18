@@ -12,7 +12,7 @@
 struct KSNoiseGraphRenderData final :
 public FBModuleGraphRenderData<KSNoiseGraphRenderData>
 {
-  KSFFNoiseProcessor& GetProcessor(FBModuleProcState& state);
+  FFKSNoiseProcessor& GetProcessor(FBModuleProcState& state);
   int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
   void BeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
 };
