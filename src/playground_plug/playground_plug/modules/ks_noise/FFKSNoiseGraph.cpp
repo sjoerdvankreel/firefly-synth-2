@@ -21,9 +21,7 @@ FFKSNoiseProcessor&
 KSNoiseGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  auto& processor = *procState->dsp.voice[state.voice->slot].ksNoise[state.moduleSlot].processor;
-  processor.AllocateBuffers(state.input->sampleRate);
-  return processor;
+  return *procState->dsp.voice[state.voice->slot].ksNoise[state.moduleSlot].processor;
 }
 
 static FBModuleGraphPlotParams
