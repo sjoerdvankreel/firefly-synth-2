@@ -164,8 +164,9 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   {
     float incr = baseFreqPlain.Get(s) / sampleRate;
     float phase = _phaseGen.Next(incr);
-    int waveTablePos = static_cast<int>(phase * FFKSNoiseWaveTableSize);
-    int prevWaveTablePos = (waveTablePos - 1 + FFKSNoiseWaveTableSize) % FFKSNoiseWaveTableSize;
+    int period = static_cast<int>(std::round(sampleRate / baseFreqPlain.Get(s)));
+    int waveTablePos = static_cast<int>(phase * period);
+    int prevWaveTablePos = (waveTablePos - 1 + period) % period;
     float thisVal = _waveTable.Get(waveTablePos);
     float prevVal = _waveTable.Get(prevWaveTablePos);
     float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
