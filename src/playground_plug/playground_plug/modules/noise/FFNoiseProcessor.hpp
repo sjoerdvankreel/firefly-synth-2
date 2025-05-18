@@ -36,14 +36,3 @@ public:
   int Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState& state);
 };
-
-inline float
-FFNoiseProcessor::Draw()
-{
-  if (_type == FFNoiseType::Norm)
-    return _normalPrng.NextScalar();
-  else
-    return _uniformPrng.NextScalar();
-  assert(false);
-  return 0.0f;
-}

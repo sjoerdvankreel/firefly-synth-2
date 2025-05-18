@@ -19,6 +19,21 @@
 FFNoiseProcessor::
 FFNoiseProcessor() {}
 
+inline float
+FFNoiseProcessor::Draw()
+{
+  if (_type == FFNoiseType::Uni)
+    return FBToBipolar(_uniformPrng.NextScalar());
+  assert(_type == FFNoiseType::Norm);
+  float result = 0.0f;
+  do 
+  {
+    result = _normalPrng.NextScalar();
+  } while (result < -3.0f || result > 3.0f);
+  assert(false);
+  return 0.0f;
+}
+
 void
 FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 {
@@ -92,10 +107,10 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     baseFreqPlain.Store(s, baseFreq);
   }
 
+  float scale1 = _type == FFNoiseType::Uni ? 1.0f : 3.0f;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float baseFreq = baseFreqPlain.Get(s);
-    float period = FBFreqToSamples(baseFreq, sampleRate);
     float x = topo.NormalizedToIdentityFast(FFNoiseParam::X, xNorm.CV().Get(s));
     float y = 0.01f + 0.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm.CV().Get(s));
     float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
@@ -104,9 +119,9 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     if(_phaseIncremented >= 1.0f - x)
     {
       _phaseIncremented = 0.0f;
-      if (Draw() < y)
+      if (_uniformPrng.NextScalar() <= y)
       {
-        _lastDraw = FBToBipolar(Draw());
+        _lastDraw = Draw();
 
         float a = 1.0f;
         for (int i = 0; i < _poles; i++)
@@ -121,9 +136,9 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     }        
 
     float const empirical = 0.75f;
-    float scale = 1.0f - colorNorm.CV().Get(s) * empirical;
-    output[0].Set(s, _lastDraw * scale);
-    output[1].Set(s, _lastDraw * scale);
+    float scale2 = (1.0f - colorNorm.CV().Get(s) * empirical) / scale1;
+    output[0].Set(s, _lastDraw * scale2);
+    output[1].Set(s, _lastDraw * scale2);
     _graphPosition++;
   }
 
@@ -132,8 +147,8 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
-    float graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFNoiseGraphRounds;
-    return std::clamp(static_cast<int>(graphSamples) - _graphPosition, 0, FBFixedBlockSamples);
+    int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFNoiseGraphRounds;
+    return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
   }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].noise[state.moduleSlot];
