@@ -28,9 +28,9 @@ public FFOsciProcessorBase
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
 
+  int _waveTablePosition = 0;
   int _colorFilterPosition = 0;
-  int _karplusStrongPosition = 0;
-  std::vector<float> _karplusStrongBuffer = {};
+  std::vector<float> _waveTableBuffer = {};
   FBSIMDArray<float, FFNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();

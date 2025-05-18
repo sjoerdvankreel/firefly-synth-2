@@ -43,8 +43,8 @@ FFNoiseProcessor::AllocateBuffers(
   float minHz = 20.0f;
   float fMaxPeriod = sampleRate / minHz;
   auto maxPeriod = static_cast<std::uint32_t>(std::ceil(fMaxPeriod));
-  std::uint32_t nextPow2 = std::bit_ceil(maxPeriod);
-  _karplusStrongBuffer.resize(nextPow2);
+  std::size_t nextPow2 = std::bit_ceil(maxPeriod);
+  _waveTableBuffer.resize(std::max(_waveTableBuffer.size(), nextPow2));
 }
 
 inline float
@@ -84,10 +84,14 @@ void
 FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.noise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Noise];
 
+  auto const& xNorm = params.acc.x[0].Voice()[voice];
+  auto const& yNorm = params.acc.y[0].Voice()[voice];
+  auto const& colorNorm = params.acc.color[0].Voice()[voice];
   auto const& typeNorm = params.block.type[0].Voice()[voice];
   auto const& seedNorm = params.block.seed[0].Voice()[voice];
   auto const& polesNorm = params.block.poles[0].Voice()[voice];
@@ -104,6 +108,7 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _lastDraw = 0.0f;
   _graphPosition = 0;
+  _waveTablePosition = 0;
   _phaseIncremented = 0.0f;
   _colorFilterPosition = 0;
   _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
@@ -114,6 +119,15 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   for (int p = 0; p < _poles; p++)
     _colorFilterBuffer.Set(p, Draw());
+
+  float fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
+  float coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
+  float pitch = _key + coarse + fine;
+  float baseFreq = FBPitchToFreq(pitch);
+  for (int i = 0; i < _waveTableBuffer.size(); i++)
+    _waveTableBuffer[i] = Next(
+      topo, sampleRate, baseFreq, 
+      colorNorm.CV().Get(0), xNorm.CV().Get(0), yNorm.CV().Get(0));
 }
 
 int
@@ -157,10 +171,12 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float val = Next(
-      topo, sampleRate, 
-      baseFreqPlain.Get(s), colorNorm.CV().Get(s), 
+    float val = _waveTableBuffer[_waveTablePosition];
+    _waveTableBuffer[_waveTablePosition] = Next(
+      topo, sampleRate,
+      baseFreqPlain.Get(s), colorNorm.CV().Get(s),
       xNorm.CV().Get(s), yNorm.CV().Get(s));
+    _waveTablePosition = (_waveTablePosition + _waveTableBuffer.size() + 1) % _waveTableBuffer.size();
     output[0].Set(s, val);
     output[1].Set(s, val);
     _graphPosition++;

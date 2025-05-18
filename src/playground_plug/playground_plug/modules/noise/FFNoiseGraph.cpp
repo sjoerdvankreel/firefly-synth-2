@@ -21,7 +21,9 @@ FFNoiseProcessor&
 NoiseGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  return *procState->dsp.voice[state.voice->slot].noise[state.moduleSlot].processor;
+  auto& processor = *procState->dsp.voice[state.voice->slot].noise[state.moduleSlot].processor;
+  processor.AllocateBuffers(state.input->sampleRate);
+  return processor;
 }
 
 static FBModuleGraphPlotParams
