@@ -34,6 +34,10 @@ public FFOsciProcessorBase
   FBSIMDArray<float, FFNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();
+  float Next(
+    FBStaticModule const& topo,
+    float sampleRate, float baseFreq,
+    float colorNorm, float xNorm, float yNorm);
 
 public:
   FFNoiseProcessor();

@@ -22,6 +22,20 @@
 FFNoiseProcessor::
 FFNoiseProcessor() {}
 
+inline float
+FFNoiseProcessor::Draw()
+{
+  if (_type == FFNoiseType::Uni)
+    return FBToBipolar(_uniformPrng.NextScalar());
+  assert(_type == FFNoiseType::Norm);
+  float result = 0.0f;
+  do
+  {
+    result = _normalPrng.NextScalar();
+  } while (result < -3.0f || result > 3.0f);
+  return result / 3.0f;
+}
+
 void
 FFNoiseProcessor::AllocateBuffers(
   float sampleRate)
@@ -34,17 +48,36 @@ FFNoiseProcessor::AllocateBuffers(
 }
 
 inline float
-FFNoiseProcessor::Draw()
-{ 
-  if (_type == FFNoiseType::Uni)
-    return FBToBipolar(_uniformPrng.NextScalar());
-  assert(_type == FFNoiseType::Norm);
-  float result = 0.0f;
-  do 
+FFNoiseProcessor::Next(
+  FBStaticModule const& topo,
+  float sampleRate, float baseFreq, 
+  float colorNorm, float xNorm, float yNorm)
+{
+  float const empirical = 0.75f;
+  float scale = 1.0f - colorNorm * empirical;
+  float x = topo.NormalizedToIdentityFast(FFNoiseParam::X, xNorm);
+  float y = 0.01f + 0.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm);
+  float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm);
+
+  _phaseIncremented += baseFreq / sampleRate;
+  if (_phaseIncremented < 1.0f - x)
+    return _lastDraw * scale;
+
+  _phaseIncremented = 0.0f;
+  if (_uniformPrng.NextScalar() > y)
+    return _lastDraw * scale;
+
+  _lastDraw = Draw();
+  float a = 1.0f;
+  for (int i = 0; i < _poles; i++)
   {
-    result = _normalPrng.NextScalar();
-  } while (result < -3.0f || result > 3.0f);
-  return result / 3.0f;
+    a = (i - color / 2.0f) * a / (i + 1.0f);
+    int colorFilterPos = (_colorFilterPosition + _poles - i - 1) % _poles;
+    _lastDraw -= a * _colorFilterBuffer.Get(colorFilterPos);
+  }
+  _colorFilterBuffer.Set(_colorFilterPosition, _lastDraw);
+  _colorFilterPosition = (_colorFilterPosition + 1) % _poles;
+  return _lastDraw * scale;
 }
 
 void
@@ -76,9 +109,11 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
 
+  if (_type == FFNoiseType::Off)
+    return;
+
   for (int p = 0; p < _poles; p++)
-    if(_type != FFNoiseType::Off)
-      _colorFilterBuffer.Set(p, Draw());
+    _colorFilterBuffer.Set(p, Draw());
 }
 
 int
@@ -122,35 +157,12 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float baseFreq = baseFreqPlain.Get(s);
-    float x = topo.NormalizedToIdentityFast(FFNoiseParam::X, xNorm.CV().Get(s));
-    float y = 0.01f + 0.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm.CV().Get(s));
-    float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm.CV().Get(s));
-
-    _phaseIncremented += baseFreq / sampleRate;
-    if(_phaseIncremented >= 1.0f - x)
-    {
-      _phaseIncremented = 0.0f;
-      if (_uniformPrng.NextScalar() <= y)
-      {
-        _lastDraw = Draw();
-
-        float a = 1.0f;
-        for (int i = 0; i < _poles; i++)
-        {
-          a = (i - color / 2.0f) * a / (i + 1.0f);
-          int colorFilterPos = (_colorFilterPosition + _poles - i - 1) % _poles;
-          _lastDraw -= a * _colorFilterBuffer.Get(colorFilterPos);
-        }
-        _colorFilterBuffer.Set(_colorFilterPosition, _lastDraw);
-        _colorFilterPosition = (_colorFilterPosition + 1) % _poles;
-      }
-    }        
-
-    float const empirical = 0.75f;
-    float scale = 1.0f - colorNorm.CV().Get(s) * empirical;
-    output[0].Set(s, _lastDraw * scale);
-    output[1].Set(s, _lastDraw * scale);
+    float val = Next(
+      topo, sampleRate, 
+      baseFreqPlain.Get(s), colorNorm.CV().Get(s), 
+      xNorm.CV().Get(s), yNorm.CV().Get(s));
+    output[0].Set(s, val);
+    output[1].Set(s, val);
     _graphPosition++;
   }
 
