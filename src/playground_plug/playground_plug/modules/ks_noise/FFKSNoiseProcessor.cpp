@@ -115,7 +115,6 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _phaseTowardsX = 0.0f;
   _waveTablePosition = 0;
   _colorFilterPosition = 0;
-  WTPOS = 0;
   
   _phaseGen = {};
   _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
@@ -182,10 +181,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float incr = baseFreqPlain.Get(s) / sampleRate;
     float phase = _phaseGen.Next(incr);
     int sampleTablePos = static_cast<int>(phase * FFKSNoiseWaveTableSize);
-    //float sampleVal = _waveTable.Get(sampleTablePos);
-    float sampleVal = _waveTable.Get(WTPOS);
-    WTPOS++;
-    WTPOS %= FFKSNoiseWaveTableSize;
+    float sampleVal = _waveTable.Get(sampleTablePos);
 
     assert(FFKSNoiseWaveTableSize % FBFixedBlockSamples == 0);
     int thisTableCount = FFKSNoiseWaveTableSize / FBFixedBlockSamples;
@@ -239,10 +235,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
-    //int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFKSNoiseGraphRounds;
-    //return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
-    // todo
-    return std::clamp(20000 - _graphPosition, 0, 16);
+    int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFKSNoiseGraphRounds;
+    return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
   }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].ksNoise[state.moduleSlot];
