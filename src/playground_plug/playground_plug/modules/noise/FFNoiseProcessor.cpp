@@ -60,11 +60,11 @@ FFNoiseProcessor::Next(
   float y = 0.01f + 0.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Y, yNorm);
   float color = 1.99f * topo.NormalizedToIdentityFast(FFNoiseParam::Color, colorNorm);
 
-  _phaseIncremented += baseFreq / sampleRate;
-  if (_phaseIncremented < 1.0f - x)
+  _phaseTowardsX += baseFreq / sampleRate;
+  if (_phaseTowardsX < 1.0f - x)
     return _lastDraw * scale;
 
-  _phaseIncremented = 0.0f;
+  _phaseTowardsX = 0.0f;
   if (_uniformPrng.NextScalar() > y)
     return _lastDraw * scale;
 
@@ -109,9 +109,10 @@ FFNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _lastDraw = 0.0f;
   _graphPosition = 0;
-  _waveTablePosition = 0;
-  _phaseIncremented = 0.0f;
+  _phaseTowardsX = 0.0f;
   _colorFilterPosition = 0;
+  
+  _phaseGen = {};
   _normalPrng = FBMarsagliaPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFNoiseMaxSeed + 1.0f));
 
@@ -172,17 +173,21 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float val = _waveTableBuffer[_waveTablePosition];
-    auto period = static_cast<int>(std::ceil(sampleRate / baseFreqPlain.Get(s)));
-    period = std::min(period, _waveTableSize);
+    float incr = baseFreqPlain.Get(s) / sampleRate;
+    float phase = _phaseGen.Next(incr);
+    float waveTablePos = phase * _waveTableSize;
+    int waveTablePos0 = static_cast<int>(waveTablePos);
+    int waveTablePos1 = (waveTablePos0 + 1) % _waveTableSize;
+    float fraction = waveTablePos - waveTablePos0;
+    float val0 = _waveTableBuffer[waveTablePos0];
+    float val1 = _waveTableBuffer[waveTablePos1];
+    float val = (1.0f - fraction) * val0 + fraction * val1;
 
-    if(false)
-    _waveTableBuffer[_waveTablePosition] = Next(
-      topo, sampleRate,
-      baseFreqPlain.Get(s), colorNorm.CV().Get(s),
-      xNorm.CV().Get(s), yNorm.CV().Get(s));
-
-    _waveTablePosition = (_waveTablePosition + period + 1) % period;
+   // if(false)
+//    _waveTableBuffer[_waveTablePosition] = Next(
+  //    topo, sampleRate,
+    //  baseFreqPlain.Get(s), colorNorm.CV().Get(s),
+      //xNorm.CV().Get(s), yNorm.CV().Get(s));
 
     output[0].Set(s, val);
     output[1].Set(s, val);
