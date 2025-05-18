@@ -34,6 +34,7 @@ public FFOsciProcessorBase
   FFKSNoisePhaseGenerator _phaseGen = {};
 
   //int _waveTableSize = 0; // TODO
+  int WTPOS = 0; // TODO
   float _prevPhase = 0.0f;
   int _waveTablePosition = 0;
   int _colorFilterPosition = 0;
