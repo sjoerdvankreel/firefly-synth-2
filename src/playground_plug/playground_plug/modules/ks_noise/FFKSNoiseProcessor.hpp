@@ -16,8 +16,6 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-inline int constexpr FFKSNoiseWaveTableSize = 4096;
-
 class FFKSNoiseProcessor final:
 public FFOsciProcessorBase
 {
@@ -33,12 +31,10 @@ public FFOsciProcessorBase
   FBParkMillerPRNG _uniformPrng = {};
   FFKSNoisePhaseGenerator _phaseGen = {};
 
-  //int _waveTableSize = 0; // TODO
+  int _waveTableSize = 0;
   float _prevPhase = 0.0f;
-  int _waveTablePosition = 0;
   int _colorFilterPosition = 0;
-  FBSIMDArray<float, FFKSNoiseWaveTableSize> _waveTable = {};
-  //std::vector<float> _waveTableBuffer = {}; // todo drop sr init
+  std::vector<float> _waveTableBuffer = {};
   FBSIMDArray<float, FFKSNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();
