@@ -28,7 +28,7 @@ _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()
 {
   for (int n = 0; n < FFKSNoiseCount; n++)
     for (int v = 0; v < FBMaxVoices; v++)
-      _procState->dsp.voice[v].noise[n].processor->AllocateBuffers(_sampleRate);
+      _procState->dsp.voice[v].ksNoise[n].processor->AllocateBuffers(_sampleRate);
 }
 
 FBModuleProcState
