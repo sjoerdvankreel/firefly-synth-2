@@ -30,8 +30,7 @@ FFNoiseProcessor::Draw()
   {
     result = _normalPrng.NextScalar();
   } while (result < -3.0f || result > 3.0f);
-  assert(false);
-  return 0.0f;
+  return result / 3.0f;
 }
 
 void
@@ -107,7 +106,6 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     baseFreqPlain.Store(s, baseFreq);
   }
 
-  float scale1 = _type == FFNoiseType::Uni ? 1.0f : 3.0f;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float baseFreq = baseFreqPlain.Get(s);
@@ -136,9 +134,9 @@ FFNoiseProcessor::Process(FBModuleProcState& state)
     }        
 
     float const empirical = 0.75f;
-    float scale2 = (1.0f - colorNorm.CV().Get(s) * empirical) / scale1;
-    output[0].Set(s, _lastDraw * scale2);
-    output[1].Set(s, _lastDraw * scale2);
+    float scale = 1.0f - colorNorm.CV().Get(s) * empirical;
+    output[0].Set(s, _lastDraw * scale);
+    output[1].Set(s, _lastDraw * scale);
     _graphPosition++;
   }
 
