@@ -110,6 +110,7 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _lastDraw = 0.0f;
   _graphPosition = 0;
   _phaseTowardsX = 0.0f;
+  _prevWaveTablePos1 = 0;
   _colorFilterPosition = 0;
   
   _phaseGen = {};
@@ -184,7 +185,20 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float val2 = _waveTableBuffer[waveTablePos2];
     float outVal = (1.0f - fraction) * val1 + fraction * val2;
 
-    //float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
+    float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
+    int prevPosDistance = waveTablePos1 - _prevWaveTablePos1;
+    if (prevPosDistance < 0)
+      prevPosDistance = waveTablePos1 + (_waveTableSize - _prevWaveTablePos1);
+    for (int i = 0; i < prevPosDistance - 1; i++)
+    {
+      int prevPos1 = (_prevWaveTablePos1 + _waveTableSize + i) % _waveTableSize;
+      float prevVal1 = _waveTableBuffer[prevPos1];
+      float prevVal2 = _waveTableBuffer[(prevPos1 + 1) % _waveTableSize];
+      float newVal1 = decay * (prevVal1 + prevVal2) * 0.5f + (1.0f - decay) * prevVal1;
+      _waveTableBuffer[prevPos1] = newVal1;
+    }
+    _prevWaveTablePos1 = waveTablePos1;
+
     //float newVal1 = decay * (val0 + val1) * 0.25f + (1.0f - decay) * val1 * 0.5f;
     //_waveTableBuffer[waveTablePos1] = newVal1;
 
