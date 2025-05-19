@@ -17,6 +17,47 @@ class FBAccParamState;
 struct FBModuleProcState;
 
 inline int constexpr FFKSNoiseWaveTableSize = 4096;
+inline int constexpr MaxLen = 4096;
+
+// https://forum.juce.com/t/fractional-delay-line/31946/5
+class DelayLine {
+public:
+  DelayLine() = default;
+
+
+  float process(float input)
+  {
+    // read from FIFO and interpolate
+    auto frac = read - std::floorf(read);
+    auto x0 = (int)std::floorf(read);
+    auto x1 = (x0 + 1) % MaxLen;
+    auto y0 = fifo[x0];
+    auto y1 = fifo[x1];
+
+    auto output = (1.0 - frac) * y0 + frac * y1;
+
+    // write to FIFO 
+    //fifo[write] = input; // TODO
+
+    // increment counters
+    write = (write + 1) % MaxLen;
+    read = std::fmod(read + 1.0, float(MaxLen));
+
+    return frac;
+  }
+
+  void setVal(int n, float val) { fifo[n] = val; }
+
+  void setLen(float delaySamples) {
+    auto newRead = float(write) + std::max(delaySamples, float(MaxLen));
+    read = std::fmod(newRead, float(MaxLen));
+  }
+
+private:
+  int write = 0;
+  float read = 0.0;
+  float fifo[MaxLen] = { static_cast<float> (0) };
+};
 
 class FFKSNoiseProcessor final:
 public FFOsciProcessorBase
@@ -34,7 +75,8 @@ public FFOsciProcessorBase
   FFKSNoisePhaseGenerator _phaseGen = {};
 
   int _colorFilterPosition = 0;
-  FBSIMDArray<float, FFKSNoiseWaveTableSize> _waveTable = {};
+  DelayLine _dl = {};
+  //FBSIMDArray<float, FFKSNoiseWaveTableSize> _waveTable = {};
   FBSIMDArray<float, FFKSNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();
