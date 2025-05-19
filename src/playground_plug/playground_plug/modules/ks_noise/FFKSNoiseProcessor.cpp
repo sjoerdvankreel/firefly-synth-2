@@ -101,6 +101,7 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _colorFilterPosition = 0;
   
   _phaseGen = {};
+  TEMPPRVSMPS = 0;
   _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
 
@@ -169,7 +170,11 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float smps = sampleRate / baseFreqPlain.Get(s);
-    _delayLine.setDelay(smps);
+    if (smps != TEMPPRVSMPS)
+    {
+      _delayLine.setDelay(smps);
+      TEMPPRVSMPS = smps;
+    }
     float smp = _delayLine.popSample(0);
     _delayLine.pushSample(0, smp);
     output[0].Set(s, smp);

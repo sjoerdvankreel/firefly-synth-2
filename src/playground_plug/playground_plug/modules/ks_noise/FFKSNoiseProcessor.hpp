@@ -29,6 +29,7 @@ public FFOsciProcessorBase
   float _lastDraw = 0.0f;
   float _phaseTowardsX = 0.0f;
   
+  float TEMPPRVSMPS = 0;
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
   FFKSNoisePhaseGenerator _phaseGen = {};
