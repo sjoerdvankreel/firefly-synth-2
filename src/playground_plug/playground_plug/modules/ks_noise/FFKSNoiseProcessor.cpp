@@ -18,7 +18,6 @@
 // https://www.reddit.com/r/DSP/comments/8fm3c5/what_am_i_doing_wrong_brown_noise/
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
 // kps https://dsp.stackexchange.com/questions/12596/synthesizing-harmonic-tones-with-karplus-strong
-// https://stackoverflow.com/questions/6675445/how-to-implement-an-interpolating-delay-line-and-all-pass-filter-with-the-karplu
 
 FFKSNoiseProcessor::
 FFKSNoiseProcessor() {}
@@ -116,12 +115,9 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   float pitch = _key + coarse + fine;
   float baseFreq = FBPitchToFreq(pitch);
   for (int i = 0; i < FFKSNoiseWaveTableSize; i++)
-    _dl.setVal(i, Next(
-            topo, sampleRate, baseFreq, 
-            colorNorm.CV().Get(0), xNorm.CV().Get(0), yNorm.CV().Get(0)));
-    //_waveTable.Set(i, Next(
-//      topo, sampleRate, baseFreq, 
-  //    colorNorm.CV().Get(0), xNorm.CV().Get(0), yNorm.CV().Get(0)));
+    _waveTable.Set(i, Next(
+      topo, sampleRate, baseFreq, 
+      colorNorm.CV().Get(0), xNorm.CV().Get(0), yNorm.CV().Get(0)));
 }
 
 int
@@ -166,14 +162,18 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    //float incr = baseFreqPlain.Get(s) / sampleRate;
-    //float phase = _phaseGen.Next(incr);
-    //float mypos = phase * FFKSNoiseWaveTableSize;
-    _dl.setLen(sampleRate / baseFreqPlain.Get(s));
-    float outval = _dl.process(0.0f);
-
-    output[0].Set(s, outval);
-    output[1].Set(s, outval);
+    float incr = baseFreqPlain.Get(s) / sampleRate;
+    float phase = _phaseGen.Next(incr);
+    int period = static_cast<int>(std::round(sampleRate / baseFreqPlain.Get(s)));
+    int waveTablePos = static_cast<int>(phase * period);
+    int prevWaveTablePos = (waveTablePos - 1 + period) % period;
+    float thisVal = _waveTable.Get(waveTablePos);
+    float prevVal = _waveTable.Get(prevWaveTablePos);
+    float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
+    float newVal = decay * (thisVal + prevVal) * 0.5f + (1.0f - decay) * prevVal;
+    _waveTable.Set(prevWaveTablePos, newVal);
+    output[0].Set(s, thisVal);
+    output[1].Set(s, thisVal);
     _graphPosition++;
   }
 
