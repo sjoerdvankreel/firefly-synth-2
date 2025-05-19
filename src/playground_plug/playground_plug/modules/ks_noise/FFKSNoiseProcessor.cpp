@@ -114,8 +114,14 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   float coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
   float pitch = _key + coarse + fine;
   float baseFreq = FBPitchToFreq(pitch);
-  for (int i = 0; i < FFKSNoiseWaveTableSize; i++)
-    _waveTable.Set(i, Next(
+  juce::dsp::ProcessSpec spec = {};
+  spec.maximumBlockSize = 1;
+  spec.numChannels = 1;
+  spec.sampleRate = sampleRate;
+  _delayLine.prepare(spec);
+  _delayLine.setMaximumDelayInSamples(FFKSNoiseDelaySize); // TODO not allocate
+  for (int i = 0; i < FFKSNoiseDelaySize; i++)
+    _delayLine.pushSample(0, Next(
       topo, sampleRate, baseFreq, 
       colorNorm.CV().Get(0), xNorm.CV().Get(0), yNorm.CV().Get(0)));
 }
@@ -162,18 +168,12 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float incr = baseFreqPlain.Get(s) / sampleRate;
-    float phase = _phaseGen.Next(incr);
-    int period = static_cast<int>(std::round(sampleRate / baseFreqPlain.Get(s)));
-    int waveTablePos = static_cast<int>(phase * period);
-    int prevWaveTablePos = (waveTablePos - 1 + period) % period;
-    float thisVal = _waveTable.Get(waveTablePos);
-    float prevVal = _waveTable.Get(prevWaveTablePos);
-    float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
-    float newVal = decay * (thisVal + prevVal) * 0.5f + (1.0f - decay) * prevVal;
-    _waveTable.Set(prevWaveTablePos, newVal);
-    output[0].Set(s, thisVal);
-    output[1].Set(s, thisVal);
+    float smps = sampleRate / baseFreqPlain.Get(s);
+    _delayLine.setDelay(smps);
+    float smp = _delayLine.popSample(0);
+    _delayLine.pushSample(0, smp);
+    output[0].Set(s, smp);
+    output[1].Set(s, smp);
     _graphPosition++;
   }
 

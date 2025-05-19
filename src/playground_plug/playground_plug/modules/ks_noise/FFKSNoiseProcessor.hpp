@@ -16,7 +16,7 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-inline int constexpr FFKSNoiseWaveTableSize = 4096;
+inline int constexpr FFKSNoiseDelaySize = 4096;
 
 class FFKSNoiseProcessor final:
 public FFOsciProcessorBase
@@ -32,9 +32,9 @@ public FFOsciProcessorBase
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
   FFKSNoisePhaseGenerator _phaseGen = {};
+  juce::dsp::DelayLine<float> _delayLine = {};
 
   int _colorFilterPosition = 0;
-  FBSIMDArray<float, FFKSNoiseWaveTableSize> _waveTable = {};
   FBSIMDArray<float, FFKSNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();
