@@ -22,9 +22,9 @@ public:
   void Init(float offset, float curveStart, float curveEnd);
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
-  FBSIMDVector<float> NormalizedToPlainFast(FBSIMDVector<float> normalized) const;
-  FBSIMDVector<double> NormalizedToPlainFast(FBSIMDVector<double> normalized) const;
-  FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
+  FBBatch<float> NormalizedToPlainFast(FBBatch<float> normalized) const;
+  FBBatch<double> NormalizedToPlainFast(FBBatch<double> normalized) const;
+  FBBatch<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
 };
 
 struct FBLog2ParamNonRealTime final :
@@ -51,22 +51,22 @@ FBLog2Param::NormalizedToPlainFast(float normalized) const
   return result;
 }
 
-inline FBSIMDVector<float>
-FBLog2Param::NormalizedToPlainFast(FBSIMDVector<float> normalized) const
+inline FBBatch<float>
+FBLog2Param::NormalizedToPlainFast(FBBatch<float> normalized) const
 {
-  return _offset + _curveStart * xsimd::pow(FBSIMDVector<float>(2.0f), _expo * normalized);
+  return _offset + _curveStart * xsimd::pow(FBBatch<float>(2.0f), _expo * normalized);
 }
 
-inline FBSIMDVector<double>
-FBLog2Param::NormalizedToPlainFast(FBSIMDVector<double> normalized) const
+inline FBBatch<double>
+FBLog2Param::NormalizedToPlainFast(FBBatch<double> normalized) const
 {
-  return _offset + _curveStart * xsimd::pow(FBSIMDVector<double>(2.0f), _expo * normalized);
+  return _offset + _curveStart * xsimd::pow(FBBatch<double>(2.0f), _expo * normalized);
 }
 
-inline FBSIMDVector<float> 
+inline FBBatch<float>
 FBLog2Param::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {
-  return _offset + _curveStart * xsimd::pow(FBSIMDVector<float>(2.0f), _expo * normalized.CV().Load(pos));
+  return _offset + _curveStart * xsimd::pow(FBBatch<float>(2.0f), _expo * normalized.CV().Load(pos));
 }
 
 inline int

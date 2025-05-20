@@ -15,9 +15,9 @@ struct FBIdentityParam
 
   float NormalizedToPlainFast(float normalized) const {  return normalized; }
   double NormalizedToPlainFast(double normalized) const {  return normalized; }
-  FBSIMDVector<float> NormalizedToPlainFast(FBSIMDVector<float> normalized) const { return normalized; }
-  FBSIMDVector<double> NormalizedToPlainFast(FBSIMDVector<double> normalized) const { return normalized; }
-  FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
+  FBBatch<float> NormalizedToPlainFast(FBBatch<float> normalized) const { return normalized; }
+  FBBatch<double> NormalizedToPlainFast(FBBatch<double> normalized) const { return normalized; }
+  FBBatch<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
 };
 
 struct FBIdentityParamNonRealTime final :
@@ -36,7 +36,7 @@ public FBParamNonRealTime
   std::optional<double> TextToPlain(bool io, std::string const& text) const override;
 };
 
-inline FBSIMDVector<float> 
+inline FBBatch<float>
 FBIdentityParam::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {
   return normalized.CV().Load(pos);

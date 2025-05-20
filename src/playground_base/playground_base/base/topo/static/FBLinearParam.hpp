@@ -20,9 +20,9 @@ struct FBLinearParam
   float NormalizedToPlainFast(float normalized) const;
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
-  FBSIMDVector<float> NormalizedToPlainFast(FBSIMDVector<float> normalized) const;
-  FBSIMDVector<double> NormalizedToPlainFast(FBSIMDVector<double> normalized) const;
-  FBSIMDVector<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
+  FBBatch<float> NormalizedToPlainFast(FBBatch<float> normalized) const;
+  FBBatch<double> NormalizedToPlainFast(FBBatch<double> normalized) const;
+  FBBatch<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
 };
 
 struct FBLinearParamNonRealTime final :
@@ -47,19 +47,19 @@ FBLinearParam::NormalizedToPlainFast(float normalized) const
   return min + (max - min) * normalized;
 }
 
-inline FBSIMDVector<float>
-FBLinearParam::NormalizedToPlainFast(FBSIMDVector<float> normalized) const
+inline FBBatch<float>
+FBLinearParam::NormalizedToPlainFast(FBBatch<float> normalized) const
 {
   return min + (max - min) * normalized;
 }
 
-inline FBSIMDVector<double>
-FBLinearParam::NormalizedToPlainFast(FBSIMDVector<double> normalized) const
+inline FBBatch<double>
+FBLinearParam::NormalizedToPlainFast(FBBatch<double> normalized) const
 {
   return min + (max - min) * normalized;
 }
 
-inline FBSIMDVector<float>
+inline FBBatch<float>
 FBLinearParam::NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const
 {
   return min + (max - min) * normalized.CV().Load(pos);

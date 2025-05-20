@@ -19,9 +19,9 @@ inline int constexpr FBSIMDDoubleCount = 2;
 inline int constexpr FBSIMDAlign = FBSIMDFloatCount * sizeof(float);
 inline int constexpr FBFixedBlockSamples = 4 * FBSIMDFloatCount;
 
-template <class T> using FBSIMDVector = xsimd::batch<T, FBXSIMDBatchType>;
+template <class T> using FBBatch = xsimd::batch<T, FBXSIMDBatchType>;
 template <class T> struct FBSIMDTraits {
-  static inline int constexpr Size = FBSIMDVector<T>::size; 
+  static inline int constexpr Size = FBBatch<T>::size;
   static inline int constexpr Align = Size * sizeof(T); };
 
 template <class T, int N>
@@ -33,8 +33,8 @@ class alignas(FBSIMDTraits<T>::Align) FBSIMDArray
 public:
   FBSIMDArray() = default;
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBSIMDArray);
-  FBSIMDArray(FBSIMDVector<T> val) { Fill(val); }
-  FBSIMDArray(T val) { Fill(FBSIMDVector<T>(val)); }
+  FBSIMDArray(FBBatch<T> val) { Fill(val); }
+  FBSIMDArray(T val) { Fill(FBBatch<T>(val)); }
 
   void NaNCheck() const;
   template <int Times> void UpsampleStretch();
@@ -46,22 +46,22 @@ public:
   T* Ptr(int offset) { return &_data[offset]; }
   T const* Ptr(int offset) const { return &_data[offset]; }
 
-  FBSIMDVector<double> LoadFloatToDouble(int pos) const;
-  void StoreDoubleToFloat(int pos, FBSIMDVector<double> val)  const;
+  FBBatch<double> LoadFloatToDouble(int pos) const;
+  void StoreDoubleToFloat(int pos, FBBatch<double> val)  const;
 
-  void Store(int pos, FBSIMDVector<T> val) { val.store_aligned(Ptr(pos)); }
-  void Add(int pos, FBSIMDVector<T> val) { (Load(pos) + val).store_aligned(Ptr(pos)); }
-  void Mul(int pos, FBSIMDVector<T> val) { (Load(pos) * val).store_aligned(Ptr(pos)); }
-  FBSIMDVector<T> Load(int pos) const { return FBSIMDVector<T>::load_aligned(Ptr(pos)); }
+  void Store(int pos, FBBatch<T> val) { val.store_aligned(Ptr(pos)); }
+  void Add(int pos, FBBatch<T> val) { (Load(pos) + val).store_aligned(Ptr(pos)); }
+  void Mul(int pos, FBBatch<T> val) { (Load(pos) * val).store_aligned(Ptr(pos)); }
+  FBBatch<T> Load(int pos) const { return FBBatch<T>::load_aligned(Ptr(pos)); }
 
-  void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
+  void Fill(FBBatch<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
   void Mul(FBSIMDArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Mul(i, rhs.Load(i)); }
   void Add(FBSIMDArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Add(i, rhs.Load(i)); }
   void CopyTo(FBSIMDArray<T, N>& rhs) const { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) rhs.Store(i, Load(i)); }
 };
 
 template <class T, int N>
-inline FBSIMDVector<double> 
+inline FBBatch<double>
 FBSIMDArray<T, N>::LoadFloatToDouble(int pos) const
 {
   static_assert(std::is_same<T, float>::value);
@@ -74,7 +74,7 @@ FBSIMDArray<T, N>::LoadFloatToDouble(int pos) const
 
 template <class T, int N>
 inline void 
-FBSIMDArray<T, N>::StoreDoubleToFloat(int pos, FBSIMDVector<double> val)  const
+FBSIMDArray<T, N>::StoreDoubleToFloat(int pos, FBBatch<double> val)  const
 {
   static_assert(std::is_same<T, float>::value);
   assert(pos % FBSIMDTraits<double>::Size == 0);
@@ -109,7 +109,7 @@ FBSIMDArray<T, N>::UpsampleStretch()
 
 template <class T>
 inline void
-FBSIMDVectorNaNCheck(FBSIMDVector<T> vec)
+FBBatchNaNCheck(FBBatch<T> vec)
 {
 #ifndef NDEBUG
   FBSIMDArray<float, FBSIMDTraits<T>::Size> check;
@@ -126,7 +126,7 @@ public:
   FBSIMDArray<T, N1>& operator[](int i) { return _data[i]; }
   FBSIMDArray<T, N1> const& operator[](int i) const { return _data[i]; }
   void NaNCheck() const { for (int i = 0; i < N2; i++) _data[i].NaNCheck(); }
-  void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N2; i++) _data[i].Fill(val); }
+  void Fill(FBBatch<T> val) { for (int i = 0; i < N2; i++) _data[i].Fill(val); }
   void Mul(FBSIMDArray<T, N1> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs); }
   void Add(FBSIMDArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Add(rhs._data[i]); }
   void Mul(FBSIMDArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs._data[i]); }
@@ -141,7 +141,7 @@ public:
   FBSIMDArray2<T, N1, N2>& operator[](int i) { return _data[i]; }
   FBSIMDArray2<T, N1, N2> const& operator[](int i) const { return _data[i]; }
   void NaNCheck() const { for (int i = 0; i < N3; i++) _data[i].NaNCheck(); }
-  void Fill(FBSIMDVector<T> val) { for (int i = 0; i < N3; i++) _data[i].Fill(val); }
+  void Fill(FBBatch<T> val) { for (int i = 0; i < N3; i++) _data[i].Fill(val); }
   void Mul(FBSIMDArray<T, N1> const& rhs) { for (int i = 0; i < N3; i++) _data[i].Mul(rhs); }
   void Add(FBSIMDArray3<T, N1, N2, N3> const& rhs) { for (int i = 0; i < N3; i++) _data[i].Add(rhs._data[i]); }
   void Mul(FBSIMDArray3<T, N1, N2, N3> const& rhs) { for (int i = 0; i < N3; i++) _data[i].Mul(rhs._data[i]); }

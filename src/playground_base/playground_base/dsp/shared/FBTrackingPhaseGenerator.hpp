@@ -16,14 +16,14 @@ public:
   FBTrackingPhaseGenerator() = default;
   explicit FBTrackingPhaseGenerator(float x) : _x(x) {}
   
-  float Next(float incr);
-  FBSIMDVector<float> Next(FBSIMDVector<float> incr);
+  float NextScalar(float incr);
+  FBBatch<float> NextBatch(FBBatch<float> incr);
   int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
   int PositionSamplesUpToFirstCycle() const { return _positionSamplesUpToFirstCycle; }
 };
 
 inline float
-FBTrackingPhaseGenerator::Next(float incr)
+FBTrackingPhaseGenerator::NextScalar(float incr)
 {
   float y = _x;
   _x += incr;
@@ -42,12 +42,12 @@ FBTrackingPhaseGenerator::Next(float incr)
   return y;
 }
 
-inline FBSIMDVector<float> 
-FBTrackingPhaseGenerator::Next(FBSIMDVector<float> incr)
+inline FBBatch<float>
+FBTrackingPhaseGenerator::NextBatch(FBBatch<float> incr)
 {
   FBSIMDArray<float, FBSIMDTraits<float>::Size> y;
   FBSIMDArray<float, FBSIMDTraits<float>::Size> x(incr);
   for (int i = 0; i < FBSIMDTraits<float>::Size; i++)
-    y.Set(i, Next(x.Get(i)));
+    y.Set(i, NextScalar(x.Get(i)));
   return y.Load(0);
 }

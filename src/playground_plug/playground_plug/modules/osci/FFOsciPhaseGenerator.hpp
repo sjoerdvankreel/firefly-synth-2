@@ -12,20 +12,20 @@ class FFOsciPhaseGenerator final
 public:
   FFOsciPhaseGenerator() = default;
   explicit FFOsciPhaseGenerator(float x) : _x(x) {}
-  FBSIMDVector<float> Next(FBSIMDVector<float> incr, FBSIMDVector<float> fmModulator);
+  FBBatch<float> Next(FBBatch<float> incr, FBBatch<float> fmModulator);
 };
 
 class alignas(FBSIMDAlign) FFOsciFMPhaseGenerator final
 {
-  FBSIMDVector<float> _x = 0.0f;
+  FBBatch<float> _x = 0.0f;
 public:
   FFOsciFMPhaseGenerator() = default;
-  explicit FFOsciFMPhaseGenerator(FBSIMDVector<float> x) : _x(x) {}
-  FBSIMDVector<float> Next(FBSIMDVector<float> incrs, FBSIMDVector<float> fmModulators);
+  explicit FFOsciFMPhaseGenerator(FBBatch<float> x) : _x(x) {}
+  FBBatch<float> Next(FBBatch<float> incrs, FBBatch<float> fmModulators);
 };
 
-inline FBSIMDVector<float> 
-FFOsciPhaseGenerator::Next(FBSIMDVector<float> incr, FBSIMDVector<float> fmModulator)
+inline FBBatch<float>
+FFOsciPhaseGenerator::Next(FBBatch<float> incr, FBBatch<float> fmModulator)
 {
   FBSIMDArray<float, FBSIMDFloatCount> yArray;
   FBSIMDArray<float, FBSIMDFloatCount> incrArray;
@@ -44,8 +44,8 @@ FFOsciPhaseGenerator::Next(FBSIMDVector<float> incr, FBSIMDVector<float> fmModul
   return yArray.Load(0);
 }
 
-inline FBSIMDVector<float>
-FFOsciFMPhaseGenerator::Next(FBSIMDVector<float> incrs, FBSIMDVector<float> fmModulators)
+inline FBBatch<float>
+FFOsciFMPhaseGenerator::Next(FBBatch<float> incrs, FBBatch<float> fmModulators)
 {
   auto y = _x;
   _x += incrs;

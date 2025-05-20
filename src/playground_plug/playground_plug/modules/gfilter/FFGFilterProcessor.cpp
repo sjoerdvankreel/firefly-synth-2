@@ -40,11 +40,11 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     auto k = 2.0 - 2.0 * resPlain;
     auto g = xsimd::tan(std::numbers::pi * freqPlain / state.input->sampleRate);
 
-    FBSIMDVector<double> a = {};
+    FBBatch<double> a = {};
     if (mode == FFGFilterMode::BLL || mode == FFGFilterMode::LSH || mode == FFGFilterMode::HSH)
     {
       auto gainPlain = topo.NormalizedToLinearFast(FFGFilterParam::Gain, gainNorm.CV().LoadFloatToDouble(s));
-      a = xsimd::pow(FBSIMDVector<double>(10.0), gainPlain / 40.0);
+      a = xsimd::pow(FBBatch<double>(10.0), gainPlain / 40.0);
       switch (mode)
       {
       case FFGFilterMode::BLL: k = k / a; break;
@@ -61,9 +61,9 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
     a2.Store(s, a2_);
     a3.Store(s, a3_);
 
-    FBSIMDVector<double> m0_(0.0);
-    FBSIMDVector<double> m1_(0.0);
-    FBSIMDVector<double> m2_(0.0);
+    FBBatch<double> m0_(0.0);
+    FBBatch<double> m1_(0.0);
+    FBBatch<double> m2_(0.0);
 
     switch (mode)
     {

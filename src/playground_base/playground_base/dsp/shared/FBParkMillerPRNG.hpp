@@ -11,7 +11,7 @@ class FBParkMillerPRNG final
 
 public:
   float NextScalar();
-  FBSIMDVector<float> NextVector();
+  FBBatch<float> NextBatch();
   
   FBParkMillerPRNG();
   explicit FBParkMillerPRNG(float x);
@@ -33,8 +33,8 @@ FBParkMillerPRNG::NextScalar()
   return y;
 }
 
-inline FBSIMDVector<float>
-FBParkMillerPRNG::NextVector()
+inline FBBatch<float>
+FBParkMillerPRNG::NextBatch()
 {
   FBSIMDArray<float, FBSIMDFloatCount> y;
   for (int i = 0; i < FBSIMDFloatCount; i++)

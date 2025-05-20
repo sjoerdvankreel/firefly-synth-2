@@ -27,14 +27,14 @@ FBToBipolar(float v)
   return (v - 0.5f) * 2.0f;
 }
 
-inline FBSIMDVector<float>
-FBToUnipolar(FBSIMDVector<float> v)
+inline FBBatch<float>
+FBToUnipolar(FBBatch<float> v)
 {
   return (v * 0.5f) + 0.5f;
 } 
 
-inline FBSIMDVector<float>
-FBToBipolar(FBSIMDVector<float> v)
+inline FBBatch<float>
+FBToBipolar(FBBatch<float> v)
 {
   return (v - 0.5f) * 2.0f;
 }
@@ -55,8 +55,8 @@ FBPhaseWrap(float p)
   return p;
 }
 
-inline FBSIMDVector<float>
-FBPhaseWrap(FBSIMDVector<float> p)
+inline FBBatch<float>
+FBPhaseWrap(FBBatch<float> p)
 {
   return p - xsimd::floor(p);
 }
@@ -96,9 +96,9 @@ FBPitchToFreq(float pitch)
   return 440.0f * std::pow(2.0f, (pitch - 69.0f) / 12.0f);
 }
 
-inline FBSIMDVector<float>
-FBPitchToFreq(FBSIMDVector<float> pitch)
+inline FBBatch<float>
+FBPitchToFreq(FBBatch<float> pitch)
 {
-  pitch = xsimd::clip(pitch, FBSIMDVector<float>(FBMinPitch), FBSIMDVector<float>(FBMaxPitch));
-  return 440.0f * xsimd::pow(FBSIMDVector<float>(2.0f), (pitch - 69.0f) / 12.0f);
+  pitch = xsimd::clip(pitch, FBBatch<float>(FBMinPitch), FBBatch<float>(FBMaxPitch));
+  return 440.0f * xsimd::pow(FBBatch<float>(2.0f), (pitch - 69.0f) / 12.0f);
 }

@@ -94,24 +94,24 @@ BLUH(float t, float dt)
     return 0.0f;
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicSin(
-  FBSIMDVector<float> t)
+  FBBatch<float> t)
 {
   return xsimd::sin(t * FBTwoPi);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicCos(
-  FBSIMDVector<float> t)
+  FBBatch<float> t)
 {
   return xsimd::cos(t * FBTwoPi);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicSaw(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -130,10 +130,10 @@ WaveBasicSaw(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicRamp(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -151,10 +151,10 @@ WaveBasicRamp(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicRect(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -173,10 +173,10 @@ WaveBasicRect(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicTri(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -201,10 +201,10 @@ WaveBasicTri(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicTrap(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -232,10 +232,10 @@ WaveBasicTrap(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicSinSqr(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -255,10 +255,10 @@ WaveBasicSinSqr(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicSawSqr(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -279,10 +279,10 @@ WaveBasicSawSqr(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicSinSaw(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -299,10 +299,10 @@ WaveBasicSinSaw(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicSawM1(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -321,10 +321,10 @@ WaveBasicSawM1(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicSqrM1(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -345,10 +345,10 @@ WaveBasicSqrM1(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicBSSin(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -370,10 +370,10 @@ WaveBasicBSSin(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicHWSin(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -393,10 +393,10 @@ WaveBasicHWSin(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicFWSin(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -414,10 +414,10 @@ WaveBasicFWSin(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicAltSin(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -436,10 +436,10 @@ WaveBasicAltSin(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicParabl(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -457,10 +457,10 @@ WaveBasicParabl(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveBasicHypTri(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -480,11 +480,11 @@ WaveBasicHypTri(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WavePWRect(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> pwVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -530,11 +530,11 @@ WavePWRect(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WavePWSqr(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> pwVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -561,11 +561,11 @@ WavePWSqr(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WavePWHWSaw(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> pwVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -610,11 +610,11 @@ WavePWHWSaw(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WavePWTriSaw(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> pwVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -643,11 +643,11 @@ WavePWTriSaw(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WavePWTriPls(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> pwVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -678,11 +678,11 @@ WavePWTriPls(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WavePWTrapTri(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> pwVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> pwVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -714,11 +714,11 @@ WavePWTrapTri(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveHSSaw(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> freqRatioVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> freqRatioVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -778,11 +778,11 @@ WaveHSSaw(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveHSSqr(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> freqRatioVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> freqRatioVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -833,11 +833,11 @@ WaveHSSqr(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 WaveHSTri(
-  FBSIMDVector<float> tVec,
-  FBSIMDVector<float> dtVec,
-  FBSIMDVector<float> freqRatioVec)
+  FBBatch<float> tVec,
+  FBBatch<float> dtVec,
+  FBBatch<float> freqRatioVec)
 {
   FBSIMDArray<float, FBSIMDFloatCount> tArr;
   FBSIMDArray<float, FBSIMDFloatCount> yArr;
@@ -889,11 +889,11 @@ WaveHSTri(
   return yArr.Load(0);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateWaveBasicCheck(
   FFOsciWaveBasicMode mode,
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec)
+  FBBatch<float> phaseVec,
+  FBBatch<float> incrVec)
 {
   switch (mode)
   {
@@ -919,12 +919,12 @@ GenerateWaveBasicCheck(
   }
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateWavePWCheck(
   FFOsciWavePWMode mode,
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec,
-  FBSIMDVector<float> pwVec)
+  FBBatch<float> phaseVec,
+  FBBatch<float> incrVec,
+  FBBatch<float> pwVec)
 {
   switch (mode)
   {
@@ -938,12 +938,12 @@ GenerateWavePWCheck(
   }
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateWaveHSCheck(
   FFOsciWaveHSMode mode,
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec,
-  FBSIMDVector<float> freqRatioVec)
+  FBBatch<float> phaseVec,
+  FBBatch<float> incrVec,
+  FBBatch<float> freqRatioVec)
 {
   switch (mode)
   {
@@ -954,53 +954,53 @@ GenerateWaveHSCheck(
   }
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateWaveBasic(
   FFOsciWaveBasicMode mode,
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec)
+  FBBatch<float> phaseVec,
+  FBBatch<float> incrVec)
 {
   auto result = GenerateWaveBasicCheck(mode, phaseVec, incrVec);
-  FBSIMDVectorNaNCheck(result);
+  FBBatchNaNCheck(result);
   return result;
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateWavePW(
   FFOsciWavePWMode mode,
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec,
-  FBSIMDVector<float> pwVec)
+  FBBatch<float> phaseVec,
+  FBBatch<float> incrVec,
+  FBBatch<float> pwVec)
 {
   auto result = GenerateWavePWCheck(mode, phaseVec, incrVec, pwVec);
-  FBSIMDVectorNaNCheck(result);
+  FBBatchNaNCheck(result);
   return result;
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateWaveHS(
   FFOsciWaveHSMode mode,
-  FBSIMDVector<float> phaseVec,
-  FBSIMDVector<float> incrVec,
-  FBSIMDVector<float> freqRatioVec)
+  FBBatch<float> phaseVec,
+  FBBatch<float> incrVec,
+  FBBatch<float> freqRatioVec)
 {
   auto result = GenerateWaveHSCheck(mode, phaseVec, incrVec, freqRatioVec);
-  FBSIMDVectorNaNCheck(result);
+  FBBatchNaNCheck(result);
   return result;
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateDSFCheck(
-  FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec, 
-  FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec, 
-  FBSIMDVector<float> overtoneVec)
+  FBBatch<float> phaseVec, FBBatch<float> freqVec,
+  FBBatch<float> decayVec, FBBatch<float> distFreqVec,
+  FBBatch<float> overtoneVec)
 {
   float const decayRange = 0.99f;
   float const scaleFactor = 0.975f;
 
   auto n = overtoneVec;
   auto w = decayVec * decayRange;
-  auto wPowNp1 = xsimd::pow(FBSIMDVector<float>(w), overtoneVec + 1.0f);
+  auto wPowNp1 = xsimd::pow(FBBatch<float>(w), overtoneVec + 1.0f);
   auto u = 2.0f * FBPi * phaseVec;
   auto v = 2.0f * FBPi * distFreqVec * phaseVec / freqVec;
   auto a = w * xsimd::sin(u + n * v) - xsimd::sin(u + (n + 1.0f) * v);
@@ -1010,32 +1010,32 @@ GenerateDSFCheck(
   return x * scaleFactor / (y * scale);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateDSF(
-  FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec,
-  FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec,
-  FBSIMDVector<float> overtoneVec)
+  FBBatch<float> phaseVec, FBBatch<float> freqVec,
+  FBBatch<float> decayVec, FBBatch<float> distFreqVec,
+  FBBatch<float> overtoneVec)
 {
   auto result = GenerateDSFCheck(phaseVec, freqVec, decayVec, distFreqVec, overtoneVec);
-  FBSIMDVectorNaNCheck(result);
+  FBBatchNaNCheck(result);
   return result;
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateDSFOvertones(
-  FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec, 
-  FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec, 
-  FBSIMDVector<float> maxOvertoneVec, float overtones_)
+  FBBatch<float> phaseVec, FBBatch<float> freqVec,
+  FBBatch<float> decayVec, FBBatch<float> distFreqVec,
+  FBBatch<float> maxOvertoneVec, float overtones_)
 {
-  auto overtoneVec = xsimd::min(FBSIMDVector<float>(overtones_), xsimd::floor(maxOvertoneVec));
+  auto overtoneVec = xsimd::min(FBBatch<float>(overtones_), xsimd::floor(maxOvertoneVec));
   return GenerateDSF(phaseVec, freqVec, decayVec, distFreqVec, overtoneVec);
 }
 
-static inline FBSIMDVector<float>
+static inline FBBatch<float>
 GenerateDSFBandwidth(
-  FBSIMDVector<float> phaseVec, FBSIMDVector<float> freqVec, 
-  FBSIMDVector<float> decayVec, FBSIMDVector<float> distFreqVec, 
-  FBSIMDVector<float> maxOvertoneVec, float bandwidth)
+  FBBatch<float> phaseVec, FBBatch<float> freqVec,
+  FBBatch<float> decayVec, FBBatch<float> distFreqVec,
+  FBBatch<float> maxOvertoneVec, float bandwidth)
 {
   auto overtoneVec = 1.0f + xsimd::floor(bandwidth * (maxOvertoneVec - 1.0f));
   overtoneVec = xsimd::min(overtoneVec, xsimd::floor(maxOvertoneVec));
@@ -1198,7 +1198,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     auto baseFreq = FBPitchToFreq(pitch);
     basePitchPlain.Store(s, pitch);
     baseFreqPlain.Store(s, baseFreq);
-    _phaseGen.Next(baseFreq / sampleRate);
+    _phaseGen.NextBatch(baseFreq / sampleRate);
 
     _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Gain, gainNorm, s));
     _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
@@ -1307,7 +1307,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
       float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
       for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
       {
-        FBSIMDVector<float> matrixFMMod(0.0f);
+        FBBatch<float> matrixFMMod(0.0f);
         for (int src = 0; src < state.moduleSlot; src++)
           if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
           {
@@ -1324,7 +1324,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         auto uniIncr = uniFreq / oversampledRate;
         auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
 
-        FBSIMDVector<float> thisUniOutput = 0.0f;
+        FBBatch<float> thisUniOutput = 0.0f;
         if (_type == FFOsciType::Wave)
         {
           for (int i = 0; i < FFOsciWaveBasicCount; i++)
@@ -1354,7 +1354,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             auto waveDSFGain = waveDSFGainPlain.Load(s);
             auto waveDSFDecay = waveDSFDecayPlain.Load(s);
             auto distFreq = _waveDSFDistance * uniFreq;
-            auto maxOvertones = xsimd::max(FBSIMDVector<float>(0.0f), (sampleRate * 0.5f - uniFreq) / distFreq);
+            auto maxOvertones = xsimd::max(FBBatch<float>(0.0f), (sampleRate * 0.5f - uniFreq) / distFreq);
             if (_waveDSFMode == FFOsciWaveDSFMode::Over)
               thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFOver) * waveDSFGain;
             else if (_waveDSFMode == FFOsciWaveDSFMode::BW)
@@ -1382,7 +1382,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         int block = u / FBSIMDFloatCount;
         auto uniPosMHalfToHalf = _uniPosMHalfToHalf.Load(u);
 
-        FBSIMDVector<float> matrixFMMod(0.0f);
+        FBBatch<float> matrixFMMod(0.0f);
         for (int src = 0; src < state.moduleSlot; src++)
           if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
           {
@@ -1391,12 +1391,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Get(s);
           }
 
-        FBSIMDVector<float> op3UniPitch = basePitchPlain.Get(s) + uniPosMHalfToHalf * uniDetunePlain.Get(s);
+        FBBatch<float> op3UniPitch = basePitchPlain.Get(s) + uniPosMHalfToHalf * uniDetunePlain.Get(s);
         op3UniPitch += matrixFMMod * op3UniPitch * applyModMatrixExpoFM;
         auto op3UniFreq = FBPitchToFreq(op3UniPitch);
 
-        FBSIMDVector<float> op1UniPhase;
-        FBSIMDVector<float> fmTo1 = 0.0f;
+        FBBatch<float> op1UniPhase;
+        FBBatch<float> fmTo1 = 0.0f;
         fmTo1 += fmIndexPlain[0].Get(s) * _prevUniFMOutput[0].Load(u);
         fmTo1 += fmIndexPlain[3].Get(s) * _prevUniFMOutput[1].Load(u);
         fmTo1 += fmIndexPlain[6].Get(s) * _prevUniFMOutput[2].Load(u);
@@ -1414,8 +1414,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
         auto output1 = xsimd::sin(op1UniPhase * FBTwoPi);
 
-        FBSIMDVector<float> op2UniPhase;
-        FBSIMDVector<float> fmTo2 = 0.0f;
+        FBBatch<float> op2UniPhase;
+        FBBatch<float> fmTo2 = 0.0f;
         fmTo2 += fmIndexPlain[1].Get(s) * output1;
         fmTo2 += fmIndexPlain[4].Get(s) * _prevUniFMOutput[1].Load(u);
         fmTo2 += fmIndexPlain[7].Get(s) * _prevUniFMOutput[2].Load(u);
@@ -1433,8 +1433,8 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
         auto output2 = xsimd::sin(op2UniPhase * FBTwoPi);
 
-        FBSIMDVector<float> op3UniPhase;
-        FBSIMDVector<float> fmTo3 = 0.0f;
+        FBBatch<float> op3UniPhase;
+        FBBatch<float> fmTo3 = 0.0f;
         fmTo3 += fmIndexPlain[2].Get(s) * output1;
         fmTo3 += fmIndexPlain[5].Get(s) * output2;
         fmTo3 += fmIndexPlain[8].Get(s) * _prevUniFMOutput[2].Load(u);
