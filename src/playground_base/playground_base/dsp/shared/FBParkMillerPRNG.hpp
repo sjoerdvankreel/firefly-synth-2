@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBSIMD.hpp>
+#include <playground_base/base/shared/FBArray.hpp>
 
 #include <limits>
 #include <cstdint>

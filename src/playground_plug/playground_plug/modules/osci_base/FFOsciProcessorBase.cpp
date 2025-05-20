@@ -3,7 +3,7 @@
 #include <playground_plug/modules/osci_base/FFOsciTopoBase.hpp>
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
-#include <playground_base/base/shared/FBSIMD.hpp>
+#include <playground_base/base/shared/FBArray.hpp>
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>

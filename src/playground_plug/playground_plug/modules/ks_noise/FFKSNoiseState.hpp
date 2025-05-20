@@ -4,7 +4,7 @@
 #include <playground_plug/modules/ks_noise/FFKSNoiseTopo.hpp>
 #include <playground_plug/modules/ks_noise/FFKSNoiseProcessor.hpp>
 
-#include <playground_base/base/shared/FBSIMD.hpp>
+#include <playground_base/base/shared/FBArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
 #include <array>

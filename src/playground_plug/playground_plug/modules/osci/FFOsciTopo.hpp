@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBSIMD.hpp>
+#include <playground_base/base/shared/FBArray.hpp>
 #include <playground_plug/modules/osci_base/FFOsciTopoBase.hpp>
 
 #include <memory>

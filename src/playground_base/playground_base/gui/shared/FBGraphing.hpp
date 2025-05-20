@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBSIMD.hpp>
+#include <playground_base/base/shared/FBArray.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
