@@ -9,7 +9,7 @@ FBPlugToHostProcessor::
 FBPlugToHostProcessor(FBVoiceManager* voiceManager):
 _voiceManager(voiceManager)
 {
-  FBArray2<float, FBFixedBlockSamples, 2> lag;
+  FBSArray2<float, FBFixedBlockSamples, 2> lag;
   lag.Fill(0.0f);
   _buffer.AppendPlugAudio(lag);
 }
@@ -31,7 +31,7 @@ FBPlugToHostProcessor::ProcessToHost(FBHostOutputBlock& hostBlock)
 }
 
 void
-FBPlugToHostProcessor::BufferFromPlug(FBArray2<float, FBFixedBlockSamples, 2> const& plugAudio)
+FBPlugToHostProcessor::BufferFromPlug(FBSArray2<float, FBFixedBlockSamples, 2> const& plugAudio)
 {
   _buffer.AppendPlugAudio(plugAudio);
   _returnedVoices.insert(

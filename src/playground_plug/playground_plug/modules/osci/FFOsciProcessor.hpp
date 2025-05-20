@@ -48,7 +48,7 @@ public FFOsciProcessorBase
   FBParkMillerPRNG _prng = {};
   FBTrackingPhaseGenerator _phaseGen = {};
   std::array<FFOsciPhaseGenerator, FFOsciBaseUniMaxCount> _uniPhaseGens = {};
-  FBArray2<float, FFOsciBaseUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
+  FBSArray2<float, FFOsciBaseUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   std::array<std::array<FFOsciFMPhaseGenerator, FFOsciBaseUniMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
 
 public:

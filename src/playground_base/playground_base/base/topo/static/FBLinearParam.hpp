@@ -1,7 +1,7 @@
 #pragma once
 
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/state/proc/FBAccParamState.hpp>
 #include <playground_base/base/topo/static/FBParamNonRealTime.hpp>
 

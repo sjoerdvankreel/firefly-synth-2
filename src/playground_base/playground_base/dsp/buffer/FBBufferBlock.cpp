@@ -22,7 +22,7 @@ FBBufferAudioBlock::AppendHostAudio(
 
 void
 FBBufferAudioBlock::AppendPlugAudio(
-  FBArray2<float, FBFixedBlockSamples, 2> const& plugAudio)
+  FBSArray2<float, FBFixedBlockSamples, 2> const& plugAudio)
 {
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < FBFixedBlockSamples; s++)

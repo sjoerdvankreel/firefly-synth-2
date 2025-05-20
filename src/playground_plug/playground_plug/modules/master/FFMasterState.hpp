@@ -2,7 +2,7 @@
 
 #include <playground_plug/modules/master/FFMasterProcessor.hpp>
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
 #include <array>
@@ -18,8 +18,8 @@ public:
   FFMasterDSPState();
   ~FFMasterDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFMasterDSPState);
-  FBArray2<float, FBFixedBlockSamples, 2> input = {};
-  FBArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> input = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> output = {};
 };
 
 template <class TGlobalAcc>

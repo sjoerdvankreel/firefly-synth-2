@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <unordered_map>
 
@@ -14,7 +14,7 @@ struct FBPlugInputBlock final
   float sampleRate = {};
   FBVoiceManager* voiceManager = {};
   std::vector<FBNoteEvent>* note = {};
-  FBArray2<float, FBFixedBlockSamples, 2> const* audio = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};
 
   FB_NOCOPY_MOVE_DEFCTOR(FBPlugInputBlock);
 };
@@ -22,7 +22,7 @@ struct FBPlugInputBlock final
 struct FBPlugOutputBlock final
 {
   FBProcStateContainer* procState = {};
-  FBArray2<float, FBFixedBlockSamples, 2> audio = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> audio = {};
   std::unordered_map<int, float> outputParamsNormalized = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugOutputBlock);
 };

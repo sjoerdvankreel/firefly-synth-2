@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/host/FBHostBlock.hpp>
 #include <playground_base/dsp/buffer/FBBufferBlock.hpp>
@@ -21,5 +21,5 @@ public:
   FBPlugToHostProcessor(FBVoiceManager* voiceManager);
 
   void ProcessToHost(FBHostOutputBlock& hostBlock);
-  void BufferFromPlug(FBArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
+  void BufferFromPlug(FBSArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
 };

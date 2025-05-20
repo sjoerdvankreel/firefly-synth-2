@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
@@ -36,16 +36,16 @@ typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int voice, int moduleSlot)>
 FBModuleGraphVoiceExchangeSelector;    
 
-typedef std::function<FBArray<float, FBFixedBlockSamples> const* (
+typedef std::function<FBSArray<float, FBFixedBlockSamples> const* (
   void const* procState, int moduleSlot)>
 FBModuleGraphGlobalCVOutputSelector;
-typedef std::function<FBArray<float, FBFixedBlockSamples> const* (
+typedef std::function<FBSArray<float, FBFixedBlockSamples> const* (
   void const* procState, int voice, int moduleSlot)>
 FBModuleGraphVoiceCVOutputSelector;
-typedef std::function<FBArray2<float, FBFixedBlockSamples, 2> const* (
+typedef std::function<FBSArray2<float, FBFixedBlockSamples, 2> const* (
   void const* procState, int voice, int moduleSlot)>
 FBModuleGraphVoiceAudioOutputSelector;
-typedef std::function<FBArray2<float, FBFixedBlockSamples, 2> const* (
+typedef std::function<FBSArray2<float, FBFixedBlockSamples, 2> const* (
   void const* procState, int moduleSlot)>
 FBModuleGraphGlobalAudioOutputSelector;
 
@@ -76,8 +76,8 @@ FBRenderModuleGraphSeries(
   seriesOut.l.clear();
   seriesOut.r.clear();
   
-  FBArray<float, FBFixedBlockSamples> seriesCVIn = {};
-  FBArray2<float, FBFixedBlockSamples, 2> seriesAudioIn = {};
+  FBSArray<float, FBFixedBlockSamples> seriesCVIn = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> seriesAudioIn = {};
 
   bool released = false;
   int processed = FBFixedBlockSamples;

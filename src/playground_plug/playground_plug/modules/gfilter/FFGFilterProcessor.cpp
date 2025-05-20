@@ -31,8 +31,8 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   auto const& freqNorm = procParams.acc.freq[0].Global();
   auto const& gainNorm = procParams.acc.gain[0].Global();
 
-  FBArray<double, FBFixedBlockSamples> m0, m1, m2;
-  FBArray<double, FBFixedBlockSamples> a1, a2, a3;
+  FBSArray<double, FBFixedBlockSamples> m0, m1, m2;
+  FBSArray<double, FBFixedBlockSamples> a1, a2, a3;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDDoubleCount)
   {
     auto freqPlain = topo.NormalizedToLog2Fast(FFGFilterParam::Freq, freqNorm.CV().LoadFloatToDouble(s));

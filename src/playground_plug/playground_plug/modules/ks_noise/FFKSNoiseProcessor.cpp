@@ -3,7 +3,7 @@
 #include <playground_plug/modules/ks_noise/FFKSNoiseTopo.hpp>
 #include <playground_plug/modules/ks_noise/FFKSNoiseProcessor.hpp>
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
@@ -154,7 +154,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
 
-  FBArray<float, FBFixedBlockSamples> baseFreqPlain = {};
+  FBSArray<float, FBFixedBlockSamples> baseFreqPlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);

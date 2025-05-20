@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBOnePoleFilter.hpp>
 
@@ -16,7 +16,7 @@ class alignas(FBSIMDAlign) FBAccParamState final
 
   float _modulation = {};
   FBOnePoleFilter _smoother = {};
-  FBArray<float, FBFixedBlockSamples> _cv = {};
+  FBSArray<float, FBFixedBlockSamples> _cv = {};
 
   void Modulate(float offset) { _modulation = offset; }
   void InitProcessing(float value) { _cv.Fill(value); }
@@ -28,5 +28,5 @@ class alignas(FBSIMDAlign) FBAccParamState final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
   float Last() const { return CV().Get(FBFixedBlockSamples - 1); }
-  FBArray<float, FBFixedBlockSamples> const& CV() const { return _cv; }
+  FBSArray<float, FBFixedBlockSamples> const& CV() const { return _cv; }
 };

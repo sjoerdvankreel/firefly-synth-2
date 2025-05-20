@@ -3,7 +3,7 @@
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModProcessor.hpp>
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
 #include <array>
@@ -24,8 +24,8 @@ public:
   FFOsciModDSPState();
   ~FFOsciModDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciModDSPState);
-  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputAMMix = {};
-  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputFMIndex = {};
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputAMMix = {};
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputFMIndex = {};
 };
 
 template <class TVoiceBlock>

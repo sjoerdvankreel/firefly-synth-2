@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 
 #include <limits>
 #include <cstdint>
@@ -36,7 +36,7 @@ FBParkMillerPRNG::NextScalar()
 inline FBBatch<float>
 FBParkMillerPRNG::NextBatch()
 {
-  FBArray<float, FBSIMDFloatCount> y;
+  FBSArray<float, FBSIMDFloatCount> y;
   for (int i = 0; i < FBSIMDFloatCount; i++)
     y.Set(i, NextScalar());
   return y.Load(0);

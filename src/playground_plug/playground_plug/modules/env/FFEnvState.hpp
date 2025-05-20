@@ -2,7 +2,7 @@
 
 #include <playground_plug/modules/env/FFEnvProcessor.hpp>
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/base/state/exchange/FBModuleExchangeState.hpp>
 
@@ -27,7 +27,7 @@ public:
   FFEnvDSPState();
   ~FFEnvDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEnvDSPState);
-  FBArray<float, FBFixedBlockSamples> output = {};
+  FBSArray<float, FBFixedBlockSamples> output = {};
 };
 
 template <class TVoiceBlock>

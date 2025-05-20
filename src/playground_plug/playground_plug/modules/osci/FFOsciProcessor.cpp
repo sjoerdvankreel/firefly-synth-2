@@ -3,7 +3,7 @@
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
@@ -113,9 +113,9 @@ WaveBasicSaw(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -135,9 +135,9 @@ WaveBasicRamp(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -156,9 +156,9 @@ WaveBasicRect(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -178,9 +178,9 @@ WaveBasicTri(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -206,9 +206,9 @@ WaveBasicTrap(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -237,9 +237,9 @@ WaveBasicSinSqr(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -260,9 +260,9 @@ WaveBasicSawSqr(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -284,9 +284,9 @@ WaveBasicSinSaw(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -304,9 +304,9 @@ WaveBasicSawM1(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -326,9 +326,9 @@ WaveBasicSqrM1(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -350,9 +350,9 @@ WaveBasicBSSin(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -375,9 +375,9 @@ WaveBasicHWSin(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -398,9 +398,9 @@ WaveBasicFWSin(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -419,9 +419,9 @@ WaveBasicAltSin(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -441,9 +441,9 @@ WaveBasicParabl(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -462,9 +462,9 @@ WaveBasicHypTri(
   FBBatch<float> tVec,
   FBBatch<float> dtVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   for (int i = 0; i < FBSIMDFloatCount; i++)
@@ -486,10 +486,10 @@ WavePWRect(
   FBBatch<float> dtVec,
   FBBatch<float> pwVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> pwArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> pwArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   pwArr.Store(0, pwVec);
@@ -536,10 +536,10 @@ WavePWSqr(
   FBBatch<float> dtVec,
   FBBatch<float> pwVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> pwArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> pwArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   pwArr.Store(0, pwVec);
@@ -567,10 +567,10 @@ WavePWHWSaw(
   FBBatch<float> dtVec,
   FBBatch<float> pwVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> pwArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> pwArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   pwArr.Store(0, pwVec);
@@ -616,10 +616,10 @@ WavePWTriSaw(
   FBBatch<float> dtVec,
   FBBatch<float> pwVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> pwArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> pwArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   pwArr.Store(0, pwVec);
@@ -649,10 +649,10 @@ WavePWTriPls(
   FBBatch<float> dtVec,
   FBBatch<float> pwVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> pwArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> pwArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   pwArr.Store(0, pwVec);
@@ -684,10 +684,10 @@ WavePWTrapTri(
   FBBatch<float> dtVec,
   FBBatch<float> pwVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> pwArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> pwArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   pwArr.Store(0, pwVec);
@@ -720,10 +720,10 @@ WaveHSSaw(
   FBBatch<float> dtVec,
   FBBatch<float> freqRatioVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> frArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> frArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   frArr.Store(0, freqRatioVec);
@@ -784,10 +784,10 @@ WaveHSSqr(
   FBBatch<float> dtVec,
   FBBatch<float> freqRatioVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> frArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> frArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   frArr.Store(0, freqRatioVec);
@@ -839,10 +839,10 @@ WaveHSTri(
   FBBatch<float> dtVec,
   FBBatch<float> freqRatioVec)
 {
-  FBArray<float, FBSIMDFloatCount> tArr;
-  FBArray<float, FBSIMDFloatCount> yArr;
-  FBArray<float, FBSIMDFloatCount> dtArr;
-  FBArray<float, FBSIMDFloatCount> frArr;
+  FBSArray<float, FBSIMDFloatCount> tArr;
+  FBSArray<float, FBSIMDFloatCount> yArr;
+  FBSArray<float, FBSIMDFloatCount> dtArr;
+  FBSArray<float, FBSIMDFloatCount> frArr;
   tArr.Store(0, tVec);
   dtArr.Store(0, dtVec);
   frArr.Store(0, freqRatioVec);
@@ -1128,7 +1128,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
     _modSourceAMMode[srcOsciSlot] = modTopo.NormalizedToListFast<FFOsciModAMMode>(FFOsciModParam::AMMode, modAMModeNorm);
   }
   
-  FBArray<float, FFOsciBaseUniMaxCount> uniPhaseInit = {};
+  FBSArray<float, FFOsciBaseUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
   {
     float random = _uniRandomPlain;
@@ -1178,18 +1178,18 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& waveDSFGainNorm = procParams.acc.waveDSFGain[0].Voice()[voice];
   auto const& waveDSFDecayNorm = procParams.acc.waveDSFDecay[0].Voice()[voice];
 
-  FBArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
-  FBArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
-  FBArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
-  FBArray<float, FFOsciFixedBlockOversamples> waveHSGainPlain;
-  FBArray<float, FFOsciFixedBlockOversamples> waveHSSyncPlain;
-  FBArray<float, FFOsciFixedBlockOversamples> waveDSFGainPlain;
-  FBArray<float, FFOsciFixedBlockOversamples> waveDSFDecayPlain;
-  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWPWPlain;
-  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWGainPlain;
-  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveBasicCount> waveBasicGainPlain;
-  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
-  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> waveHSGainPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> waveHSSyncPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> waveDSFGainPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> waveDSFDecayPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWPWPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWGainPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveBasicCount> waveBasicGainPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
@@ -1454,7 +1454,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         _prevUniFMOutput[1].Store(u, output2);
         _prevUniFMOutput[2].Store(u, output3);
 
-        FBArray<float, FBSIMDFloatCount> outputArray;
+        FBSArray<float, FBSIMDFloatCount> outputArray;
         outputArray.Store(0, output3);
         for (int v = 0; v < FBSIMDFloatCount; v++)
           uniOutputOversampled[u + v].Set(s, outputArray.Get(v));

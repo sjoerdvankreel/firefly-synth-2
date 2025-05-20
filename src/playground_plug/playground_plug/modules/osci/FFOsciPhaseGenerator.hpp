@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
 
 #include <xsimd/xsimd.hpp>
@@ -27,9 +27,9 @@ public:
 inline FBBatch<float>
 FFOsciPhaseGenerator::Next(FBBatch<float> incr, FBBatch<float> fmModulator)
 {
-  FBArray<float, FBSIMDFloatCount> yArray;
-  FBArray<float, FBSIMDFloatCount> incrArray;
-  FBArray<float, FBSIMDFloatCount> fmModulatorArray;
+  FBSArray<float, FBSIMDFloatCount> yArray;
+  FBSArray<float, FBSIMDFloatCount> incrArray;
+  FBSArray<float, FBSIMDFloatCount> fmModulatorArray;
   incrArray.Store(0, incr);
   fmModulatorArray.Store(0, fmModulator);
   for (int i = 0; i < FBSIMDFloatCount; i++)

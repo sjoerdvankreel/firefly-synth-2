@@ -5,7 +5,7 @@
 #include <playground_plug/modules/osci/FFOsciProcessor.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModState.hpp>
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
 #include <array>
@@ -21,8 +21,8 @@ class alignas(FBSIMDAlign) FFOsciDSPState final
 public:
   FFOsciDSPState();
   ~FFOsciDSPState();
-  FBArray2<float, FBFixedBlockSamples, 2> output = {};
-  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciBaseUniMaxCount> uniOutputOversampled = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciBaseUniMaxCount> uniOutputOversampled = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_base/base/shared/FBArray.hpp>
+#include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/host/FBHostBlock.hpp>
 
@@ -20,7 +20,7 @@ public:
 
   void Drop(int count);
   void AppendHostAudio(FBHostAudioBlock const& hostAudio);
-  void AppendPlugAudio(FBArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
+  void AppendPlugAudio(FBSArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
 };
 
 struct FBBufferInputBlock final
@@ -37,6 +37,6 @@ struct FBFixedInputBlock final
   std::vector<FBNoteEvent> note = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
-  FBArray2<float, FBFixedBlockSamples, 2> audio = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> audio = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);
 };
