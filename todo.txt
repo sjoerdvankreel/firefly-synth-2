@@ -1,4 +1,5 @@
 automate anything
+rename ksnoise
 gaussian distrib for noise boxmuller
 limit gaus to range
 distribution controls ?
