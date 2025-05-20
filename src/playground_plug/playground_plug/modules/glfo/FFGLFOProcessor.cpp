@@ -37,7 +37,7 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto ratePlain = topo.NormalizedToLinearFast(FFGLFOParam::Rate, rateNorm, s);
-    auto phase = _phase.Next(ratePlain / state.input->sampleRate);
+    auto phase = _phase.NextBatch(ratePlain / state.input->sampleRate);
     output.Store(s, FBToUnipolar(xsimd::sin(phase * FBTwoPi)));
   }
 
