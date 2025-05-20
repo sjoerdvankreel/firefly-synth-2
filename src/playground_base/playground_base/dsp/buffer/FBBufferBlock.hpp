@@ -20,7 +20,7 @@ public:
 
   void Drop(int count);
   void AppendHostAudio(FBHostAudioBlock const& hostAudio);
-  void AppendPlugAudio(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
+  void AppendPlugAudio(FBArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
 };
 
 struct FBBufferInputBlock final
@@ -37,6 +37,6 @@ struct FBFixedInputBlock final
   std::vector<FBNoteEvent> note = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> audio = {};
+  FBArray2<float, FBFixedBlockSamples, 2> audio = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);
 };

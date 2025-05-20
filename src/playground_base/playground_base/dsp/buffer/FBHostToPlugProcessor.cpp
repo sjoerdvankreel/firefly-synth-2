@@ -68,7 +68,7 @@ FBHostToPlugProcessor::ProcessToPlug()
   if (_buffer.audio.Count() < FBFixedBlockSamples)
     return nullptr;
 
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> array = {};
+  FBArray2<float, FBFixedBlockSamples, 2> array = {};
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       _fixed.audio[ch].Set(s, _buffer.audio[ch][s]);

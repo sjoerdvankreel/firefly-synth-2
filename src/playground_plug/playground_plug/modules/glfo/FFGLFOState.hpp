@@ -26,7 +26,7 @@ public:
   FFGLFODSPState();
   ~FFGLFODSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGLFODSPState);
-  FBSIMDArray<float, FBFixedBlockSamples> output = {};
+  FBArray<float, FBFixedBlockSamples> output = {};
 };
 
 template <class TGlobalBlock>

@@ -18,8 +18,8 @@ public:
   FFGFilterDSPState();
   ~FFGFilterDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGFilterDSPState);
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> input = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBArray2<float, FBFixedBlockSamples, 2> input = {};
+  FBArray2<float, FBFixedBlockSamples, 2> output = {};
 };
 
 template <class TGlobalBlock>

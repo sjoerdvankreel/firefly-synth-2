@@ -21,8 +21,8 @@ class alignas(FBSIMDAlign) FFOsciDSPState final
 public:
   FFOsciDSPState();
   ~FFOsciDSPState();
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
-  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciBaseUniMaxCount> uniOutputOversampled = {};
+  FBArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciBaseUniMaxCount> uniOutputOversampled = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 

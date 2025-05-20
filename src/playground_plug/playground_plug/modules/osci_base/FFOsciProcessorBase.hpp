@@ -14,16 +14,16 @@ class FFOsciProcessorBase
 protected:
   float _key = {};
   int _uniCount = {};
-  FBSIMDArray<float, FFOsciBaseUniMaxCount> _uniPosMHalfToHalf = {};
-  FBSIMDArray<float, FFOsciBaseUniMaxCount> _uniPosAbsHalfToHalf = {};
+  FBArray<float, FFOsciBaseUniMaxCount> _uniPosMHalfToHalf = {};
+  FBArray<float, FFOsciBaseUniMaxCount> _uniPosAbsHalfToHalf = {};
 
-  FBSIMDArray<float, FBFixedBlockSamples> _gainPlain = {};
-  FBSIMDArray<float, FBFixedBlockSamples> _uniBlendPlain = {};
-  FBSIMDArray<float, FBFixedBlockSamples> _uniSpreadPlain = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, FFOsciBaseUniMaxCount> _uniOutput = {};
+  FBArray<float, FBFixedBlockSamples> _gainPlain = {};
+  FBArray<float, FBFixedBlockSamples> _uniBlendPlain = {};
+  FBArray<float, FBFixedBlockSamples> _uniSpreadPlain = {};
+  FBArray2<float, FBFixedBlockSamples, FFOsciBaseUniMaxCount> _uniOutput = {};
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciProcessorBase);
 
   void BeginVoice(FBModuleProcState& state, int uniCount);
-  void ProcessGainSpreadBlend(FBSIMDArray2<float, FBFixedBlockSamples, 2>& output);
+  void ProcessGainSpreadBlend(FBArray2<float, FBFixedBlockSamples, 2>& output);
 };

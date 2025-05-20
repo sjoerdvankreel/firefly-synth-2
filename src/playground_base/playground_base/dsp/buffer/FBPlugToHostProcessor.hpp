@@ -21,5 +21,5 @@ public:
   FBPlugToHostProcessor(FBVoiceManager* voiceManager);
 
   void ProcessToHost(FBHostOutputBlock& hostBlock);
-  void BufferFromPlug(FBSIMDArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
+  void BufferFromPlug(FBArray2<float, FBFixedBlockSamples, 2> const& plugAudio);
 };

@@ -154,7 +154,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
 
-  FBSIMDArray<float, FBFixedBlockSamples> baseFreqPlain = {};
+  FBArray<float, FBFixedBlockSamples> baseFreqPlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);

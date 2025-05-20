@@ -21,7 +21,7 @@ class alignas(FBSIMDAlign) FFKSNoiseDSPState final
 public:
   FFKSNoiseDSPState();
   ~FFKSNoiseDSPState();
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBArray2<float, FBFixedBlockSamples, 2> output = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFKSNoiseDSPState);
 };
 

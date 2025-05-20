@@ -62,7 +62,7 @@ struct alignas(FBSIMDAlign) FFVoiceDSPState final
   std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
   std::array<FFKSNoiseDSPState, FFKSNoiseCount> ksNoise = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBArray2<float, FBFixedBlockSamples, 2> output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
 

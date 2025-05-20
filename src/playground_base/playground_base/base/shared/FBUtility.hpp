@@ -61,11 +61,6 @@ FBDenormalState;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
-template <class T, int D1>
-using FBMDArray1 = std::array<T, D1>;
-template <class T, int D1, int D2>
-using FBMDArray2 = std::array<FBMDArray1<T, D1>, D2>;
-
 FBDenormalState 
 FBDisableDenormal();
 void 

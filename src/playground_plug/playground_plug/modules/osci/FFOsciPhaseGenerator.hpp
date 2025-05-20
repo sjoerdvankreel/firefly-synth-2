@@ -27,9 +27,9 @@ public:
 inline FBBatch<float>
 FFOsciPhaseGenerator::Next(FBBatch<float> incr, FBBatch<float> fmModulator)
 {
-  FBSIMDArray<float, FBSIMDFloatCount> yArray;
-  FBSIMDArray<float, FBSIMDFloatCount> incrArray;
-  FBSIMDArray<float, FBSIMDFloatCount> fmModulatorArray;
+  FBArray<float, FBSIMDFloatCount> yArray;
+  FBArray<float, FBSIMDFloatCount> incrArray;
+  FBArray<float, FBSIMDFloatCount> fmModulatorArray;
   incrArray.Store(0, incr);
   fmModulatorArray.Store(0, fmModulator);
   for (int i = 0; i < FBSIMDFloatCount; i++)

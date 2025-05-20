@@ -16,7 +16,7 @@ class alignas(FBSIMDAlign) FBAccParamState final
 
   float _modulation = {};
   FBOnePoleFilter _smoother = {};
-  FBSIMDArray<float, FBFixedBlockSamples> _cv = {};
+  FBArray<float, FBFixedBlockSamples> _cv = {};
 
   void Modulate(float offset) { _modulation = offset; }
   void InitProcessing(float value) { _cv.Fill(value); }
@@ -28,5 +28,5 @@ class alignas(FBSIMDAlign) FBAccParamState final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
   float Last() const { return CV().Get(FBFixedBlockSamples - 1); }
-  FBSIMDArray<float, FBFixedBlockSamples> const& CV() const { return _cv; }
+  FBArray<float, FBFixedBlockSamples> const& CV() const { return _cv; }
 };

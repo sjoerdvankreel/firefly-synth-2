@@ -36,7 +36,7 @@ public FFOsciProcessorBase
   juce::dsp::DelayLine<float> _delayLine = {};
 
   int _colorFilterPosition = 0;
-  FBSIMDArray<float, FFKSNoiseMaxPoles> _colorFilterBuffer = {};
+  FBArray<float, FFKSNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();
   float Next(

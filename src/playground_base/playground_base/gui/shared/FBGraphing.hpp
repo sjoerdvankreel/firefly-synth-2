@@ -36,16 +36,16 @@ typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int voice, int moduleSlot)>
 FBModuleGraphVoiceExchangeSelector;    
 
-typedef std::function<FBSIMDArray<float, FBFixedBlockSamples> const* (
+typedef std::function<FBArray<float, FBFixedBlockSamples> const* (
   void const* procState, int moduleSlot)>
 FBModuleGraphGlobalCVOutputSelector;
-typedef std::function<FBSIMDArray<float, FBFixedBlockSamples> const* (
+typedef std::function<FBArray<float, FBFixedBlockSamples> const* (
   void const* procState, int voice, int moduleSlot)>
 FBModuleGraphVoiceCVOutputSelector;
-typedef std::function<FBSIMDArray2<float, FBFixedBlockSamples, 2> const* (
+typedef std::function<FBArray2<float, FBFixedBlockSamples, 2> const* (
   void const* procState, int voice, int moduleSlot)>
 FBModuleGraphVoiceAudioOutputSelector;
-typedef std::function<FBSIMDArray2<float, FBFixedBlockSamples, 2> const* (
+typedef std::function<FBArray2<float, FBFixedBlockSamples, 2> const* (
   void const* procState, int moduleSlot)>
 FBModuleGraphGlobalAudioOutputSelector;
 
@@ -76,8 +76,8 @@ FBRenderModuleGraphSeries(
   seriesOut.l.clear();
   seriesOut.r.clear();
   
-  FBSIMDArray<float, FBFixedBlockSamples> seriesCVIn = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> seriesAudioIn = {};
+  FBArray<float, FBFixedBlockSamples> seriesCVIn = {};
+  FBArray2<float, FBFixedBlockSamples, 2> seriesAudioIn = {};
 
   bool released = false;
   int processed = FBFixedBlockSamples;

@@ -24,8 +24,8 @@ public:
   FFOsciModDSPState();
   ~FFOsciModDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciModDSPState);
-  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputAMMix = {};
-  FBSIMDArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputFMIndex = {};
+  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputAMMix = {};
+  FBArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputFMIndex = {};
 };
 
 template <class TVoiceBlock>

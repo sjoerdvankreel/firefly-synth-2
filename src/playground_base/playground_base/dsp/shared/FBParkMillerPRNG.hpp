@@ -36,7 +36,7 @@ FBParkMillerPRNG::NextScalar()
 inline FBBatch<float>
 FBParkMillerPRNG::NextBatch()
 {
-  FBSIMDArray<float, FBSIMDFloatCount> y;
+  FBArray<float, FBSIMDFloatCount> y;
   for (int i = 0; i < FBSIMDFloatCount; i++)
     y.Set(i, NextScalar());
   return y.Load(0);

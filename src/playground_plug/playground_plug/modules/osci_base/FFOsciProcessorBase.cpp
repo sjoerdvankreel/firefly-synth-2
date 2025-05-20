@@ -34,7 +34,7 @@ FFOsciProcessorBase::BeginVoice(FBModuleProcState& state, int uniCount)
 
 void 
 FFOsciProcessorBase::ProcessGainSpreadBlend(
-  FBSIMDArray2<float, FBFixedBlockSamples, 2>& output)
+  FBArray2<float, FBFixedBlockSamples, 2>& output)
 {
   for (int u = 0; u < _uniCount; u++)
   {

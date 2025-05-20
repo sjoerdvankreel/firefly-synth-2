@@ -27,7 +27,7 @@ public:
   FFEnvDSPState();
   ~FFEnvDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEnvDSPState);
-  FBSIMDArray<float, FBFixedBlockSamples> output = {};
+  FBArray<float, FBFixedBlockSamples> output = {};
 };
 
 template <class TVoiceBlock>

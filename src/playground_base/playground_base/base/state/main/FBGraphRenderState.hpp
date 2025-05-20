@@ -19,7 +19,7 @@ class FBGraphRenderState final
   friend class FBModuleGraphDisplayComponent;
 
   std::vector<FBNoteEvent> _notes = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> _audio = {};
+  FBArray2<float, FBFixedBlockSamples, 2> _audio = {};
 
   FBPlugGUI const* const _plugGUI;
   std::unique_ptr<FBPlugInputBlock> _input;

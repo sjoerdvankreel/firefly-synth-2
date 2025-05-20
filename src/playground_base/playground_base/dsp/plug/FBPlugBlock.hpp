@@ -14,7 +14,7 @@ struct FBPlugInputBlock final
   float sampleRate = {};
   FBVoiceManager* voiceManager = {};
   std::vector<FBNoteEvent>* note = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> const* audio = {};
+  FBArray2<float, FBFixedBlockSamples, 2> const* audio = {};
 
   FB_NOCOPY_MOVE_DEFCTOR(FBPlugInputBlock);
 };
@@ -22,7 +22,7 @@ struct FBPlugInputBlock final
 struct FBPlugOutputBlock final
 {
   FBProcStateContainer* procState = {};
-  FBSIMDArray2<float, FBFixedBlockSamples, 2> audio = {};
+  FBArray2<float, FBFixedBlockSamples, 2> audio = {};
   std::unordered_map<int, float> outputParamsNormalized = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugOutputBlock);
 };
