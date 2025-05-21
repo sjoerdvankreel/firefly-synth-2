@@ -197,15 +197,19 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float damp = dampPlain.Get(s);
+    float feedback = feedbackPlain.Get(s);
     float baseFreq = baseFreqPlain.Get(s);
-    float feedback = 0.9f + 0.1f * feedbackPlain.Get(s);
+    float realFeedback = 0.9f + 0.1f * feedback;
+    float centerPitch = 60.0f + centerPlain.Get(s);
+    float pitchDiffSemis = basePitchPlain.Get(s) - centerPitch;
+    float pitchDiffNorm = FBToUnipolar(std::clamp(pitchDiffSemis / 64.0f, -1.0f, 1.0f));
 
     _delayLine.Delay(sampleRate / baseFreq);
     float nextVal = _delayLine.Pop();
     float prevVal = _prevDelayVal;
     float newVal = (1.0f - damp) * nextVal + damp * (prevVal + nextVal) * 0.5f;
     float outVal = _dcFilter.Next(newVal);
-    newVal *= feedback;
+    newVal *= realFeedback;
     _prevDelayVal = newVal;
     _delayLine.Push(newVal);
     output[0].Set(s, outVal);
