@@ -208,6 +208,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float centerPitch = 60.0f + centerPlain.Get(s);
     float pitchDiffSemis = _key - centerPitch;
     float pitchDiffNorm = std::clamp(pitchDiffSemis / range, -1.0f, 1.0f);
+    damp = std::clamp(damp - 0.5f * dampScale * pitchDiffNorm, 0.0f, 1.0f);
     feedback = std::clamp(feedback + 0.5f * feedbackScale * pitchDiffNorm, 0.0f, 1.0f);
 
     float baseFreq = baseFreqPlain.Get(s);
