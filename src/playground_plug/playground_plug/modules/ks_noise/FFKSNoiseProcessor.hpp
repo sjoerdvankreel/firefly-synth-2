@@ -24,6 +24,7 @@ public FFOsciProcessorBase
   FFKSNoiseType _type = {};
 
   float _lastDraw = 0.0f;
+  float _prevDelayVal = 0.f;
   float _phaseTowardsX = 0.0f;
   int _graphPosition = 0;
   int _colorFilterPosition = 0;

@@ -106,6 +106,7 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   _lastDraw = 0.0f;
   _graphPosition = 0;
+  _prevDelayVal = 0.0f;
   _phaseTowardsX = 0.0f;
   _colorFilterPosition = 0;
   
@@ -171,12 +172,16 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
+    float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
     _delayLine.Delay(sampleRate / baseFreqPlain.Get(s));
-    float val = _delayLine.Pop();
-    _delayLine.Push(val);
-    val = _dcFilter.Next(val);
-    output[0].Set(s, val);
-    output[1].Set(s, val);
+    float nextVal = _delayLine.Pop();
+    float prevVal = _prevDelayVal;
+    float newVal = (1.0f - decay) * nextVal + decay * (prevVal + nextVal) * 0.5f;
+    float outVal = _dcFilter.Next(newVal);
+    _prevDelayVal = newVal;
+    _delayLine.Push(newVal);
+    output[0].Set(s, outVal);
+    output[1].Set(s, outVal);
     _graphPosition++;
   }
 
