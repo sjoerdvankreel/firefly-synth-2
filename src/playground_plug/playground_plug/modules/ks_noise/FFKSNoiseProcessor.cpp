@@ -15,12 +15,20 @@
 #include <bit>
 #include <cstdint>
 
+inline int constexpr DelayLineSize = 8192;
+
 // https://www.reddit.com/r/DSP/comments/8fm3c5/what_am_i_doing_wrong_brown_noise/
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
 // kps https://dsp.stackexchange.com/questions/12596/synthesizing-harmonic-tones-with-karplus-strong
 
 FFKSNoiseProcessor::
 FFKSNoiseProcessor() {}
+
+void
+FFKSNoiseProcessor::AllocateBuffers(float sampleRate)
+{
+  _delayLine.Resize(DelayLineSize);
+}
 
 inline float
 FFKSNoiseProcessor::Draw()
@@ -85,8 +93,6 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   auto const& seedNorm = params.block.seed[0].Voice()[voice];
   auto const& polesNorm = params.block.poles[0].Voice()[voice];
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
-
-  // TODO -- should these be block params or do we do pitch shifting karplus-strong?
   auto const& fineNorm = params.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
 
@@ -101,7 +107,6 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _colorFilterPosition = 0;
   
   _phaseGen = {};
-  TEMPPRVSMPS = 0;
   _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
 
@@ -115,14 +120,8 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   float coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
   float pitch = _key + coarse + fine;
   float baseFreq = FBPitchToFreq(pitch);
-  juce::dsp::ProcessSpec spec = {};
-  spec.maximumBlockSize = 1;
-  spec.numChannels = 1;
-  spec.sampleRate = sampleRate;
-  _delayLine.prepare(spec);
-  _delayLine.setMaximumDelayInSamples(FFKSNoiseDelaySize); // TODO not allocate
-  for (int i = 0; i < FFKSNoiseDelaySize; i++)
-    _delayLine.pushSample(0, Next(
+  for (int i = 0; i < DelayLineSize; i++)
+    _delayLine.Push(Next(
       topo, sampleRate, baseFreq, 
       colorNorm.CV().Get(0), xNorm.CV().Get(0), yNorm.CV().Get(0)));
 }
@@ -169,16 +168,11 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float smps = sampleRate / baseFreqPlain.Get(s);
-    if (smps != TEMPPRVSMPS)
-    {
-      _delayLine.setDelay(smps);
-      TEMPPRVSMPS = smps;
-    }
-    float smp = _delayLine.popSample(0);
-    _delayLine.pushSample(0, smp);
-    output[0].Set(s, smp);
-    output[1].Set(s, smp);
+    _delayLine.Delay(sampleRate / baseFreqPlain.Get(s));
+    float val = _delayLine.Pop();
+    _delayLine.Push(val);
+    output[0].Set(s, val);
+    output[1].Set(s, val);
     _graphPosition++;
   }
 

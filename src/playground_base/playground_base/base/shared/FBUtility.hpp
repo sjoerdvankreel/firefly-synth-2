@@ -7,6 +7,23 @@
 #include <cstdint>
 #include <filesystem>
 
+#ifdef WIN32
+#include <malloc.h>
+inline void
+FBAlignedFree(void* p)
+{ _aligned_free(p); }
+inline void* 
+FBAlignedAlloc(std::size_t alignment, std::size_t size)
+{ return _aligned_malloc(size, alignment); }
+#else
+inline void
+FBAlignedFree(void* p)
+{ free(p); }
+inline void* 
+FBAlignedAlloc(std::size_t alignment, std::size_t size)
+{ return std::aligned_alloc(alignment, size); }
+#endif
+
 struct FBStaticTopoMeta;
 inline int const FBDefaultDisplayPrecision = 3;
 

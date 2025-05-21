@@ -5,18 +5,15 @@
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
+#include <playground_base/dsp/shared/FBDelayLine.hpp>
 #include <playground_base/dsp/shared/FBMarsagliaPRNG.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
-
-#include <juce_dsp/juce_dsp.h>
 
 #include <array>
 #include <vector>
 
 class FBAccParamState;
 struct FBModuleProcState;
-
-inline int constexpr FFKSNoiseDelaySize = 4096;
 
 class FFKSNoiseProcessor final:
 public FFOsciProcessorBase
@@ -25,17 +22,15 @@ public FFOsciProcessorBase
   int _poles = {};
   FFKSNoiseType _type = {};
 
-  int _graphPosition = 0;
   float _lastDraw = 0.0f;
   float _phaseTowardsX = 0.0f;
-  
-  float TEMPPRVSMPS = 0;
+  int _graphPosition = 0;
+  int _colorFilterPosition = 0;
+
+  FBDelayLine _delayLine = {};
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
   FFKSNoisePhaseGenerator _phaseGen = {};
-  juce::dsp::DelayLine<float> _delayLine = {};
-
-  int _colorFilterPosition = 0;
   FBSArray<float, FFKSNoiseMaxPoles> _colorFilterBuffer = {};
 
   float Draw();
@@ -47,6 +42,7 @@ public FFOsciProcessorBase
 public:
   FFKSNoiseProcessor();
   int Process(FBModuleProcState& state);
+  void AllocateBuffers(float sampleRate);
   void BeginVoice(FBModuleProcState& state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFKSNoiseProcessor);
 };
