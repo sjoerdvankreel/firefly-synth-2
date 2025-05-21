@@ -219,6 +219,34 @@ FFMakeKSNoiseTopo()
   excite.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExcite);
   excite.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExcite);
 
+  auto& lp = result->params[(int)FFKSNoiseParam::LP];
+  lp.acc = true;
+  lp.defaultText = "20000";
+  lp.name = "LP";
+  lp.slotCount = 1;
+  lp.unit = "Hz";
+  lp.id = "{06461261-A1A1-45B6-866A-CB932F2874B9}";
+  lp.type = FBParamType::Log2;
+  lp.Log2().Init(0.0f, 20.0f, 20000.0f);
+  auto selectLP = [](auto& module) { return &module.acc.lp; };
+  lp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLP);
+  lp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLP);
+  lp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLP);
+
+  auto& hp = result->params[(int)FFKSNoiseParam::HP];
+  hp.acc = true;
+  hp.defaultText = "20";
+  hp.name = "HP";
+  hp.slotCount = 1;
+  hp.unit = "Hz";
+  hp.id = "{1185219D-3A70-4B80-B542-C78704E09F85}";
+  hp.type = FBParamType::Log2;
+  hp.Log2().Init(0.0f, 20.0f, 20000.0f);
+  auto selectHP = [](auto& module) { return &module.acc.hp; };
+  hp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectHP);
+  hp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectHP);
+  hp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHP);
+
   auto& damp = result->params[(int)FFKSNoiseParam::Damp];
   damp.acc = true;
   damp.defaultText = "67";

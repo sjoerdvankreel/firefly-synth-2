@@ -113,7 +113,10 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _phaseTowardsX = 0.0f;
   _colorFilterPosition = 0;
   
+  _dcFilter = {};
   _phaseGen = {};
+  _lpFilter = {};
+  _hpFilter = {};
   _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
 

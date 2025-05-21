@@ -6,6 +6,7 @@
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBDelayLine.hpp>
+#include <playground_base/dsp/shared/FBCytomicFilter.hpp>
 #include <playground_base/dsp/shared/FBBasicHPFilter.hpp>
 #include <playground_base/dsp/shared/FBMarsagliaPRNG.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
@@ -31,6 +32,8 @@ public FFOsciProcessorBase
 
   FBDelayLine _delayLine = {};
   FBBasicHPFilter _dcFilter = {};
+  FBCytomicFilter<1> _lpFilter = {};
+  FBCytomicFilter<1> _hpFilter = {};
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
   FFKSNoisePhaseGenerator _phaseGen = {};

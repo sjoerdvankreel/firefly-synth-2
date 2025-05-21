@@ -13,6 +13,7 @@
 void
 FFEnvProcessor::BeginVoice(FBModuleProcState& state)
 {
+  _smoother = {};
   _finished = false;
   _released = false;
   _lastDAHDSR = 0.0f;
