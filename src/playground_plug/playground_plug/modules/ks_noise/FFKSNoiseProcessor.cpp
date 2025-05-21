@@ -177,9 +177,10 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float nextVal = _delayLine.Pop();
     float prevVal = _prevDelayVal;
     float newVal = (1.0f - decay) * nextVal + decay * (prevVal + nextVal) * 0.5f;
-    float outVal = _dcFilter.Next(newVal);
-    _prevDelayVal = newVal;
+    _prevDelayVal = nextVal;
     _delayLine.Push(newVal);
+    
+    float outVal = _dcFilter.Next(nextVal);
     output[0].Set(s, outVal);
     output[1].Set(s, outVal);
     _graphPosition++;
