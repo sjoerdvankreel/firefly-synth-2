@@ -157,38 +157,42 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto const& xNorm = procParams.acc.x[0].Voice()[voice];
   auto const& yNorm = procParams.acc.y[0].Voice()[voice];
   auto const& colorNorm = procParams.acc.color[0].Voice()[voice];
-  auto const& dampNorm = procParams.acc.damp[0].Voice()[voice];
-  auto const& scaleNorm = procParams.acc.scale[0].Voice()[voice];
+  auto const& rangeNorm = procParams.acc.range[0].Voice()[voice];
   auto const& centerNorm = procParams.acc.center[0].Voice()[voice];
+  auto const& dampNorm = procParams.acc.damp[0].Voice()[voice];
+  auto const& dampScaleNorm = procParams.acc.dampScale[0].Voice()[voice];
   auto const& feedbackNorm = procParams.acc.feedback[0].Voice()[voice];
+  auto const& feedbackScaleNorm = procParams.acc.feedbackScale[0].Voice()[voice];
 
   FBSArray<float, FBFixedBlockSamples> xPlain = {};
   FBSArray<float, FBFixedBlockSamples> yPlain = {};
   FBSArray<float, FBFixedBlockSamples> dampPlain = {};
   FBSArray<float, FBFixedBlockSamples> colorPlain = {};
-  FBSArray<float, FBFixedBlockSamples> scalePlain = {};
+  FBSArray<float, FBFixedBlockSamples> rangePlain = {};
   FBSArray<float, FBFixedBlockSamples> centerPlain = {};
   FBSArray<float, FBFixedBlockSamples> feedbackPlain = {};
   FBSArray<float, FBFixedBlockSamples> baseFreqPlain = {};
-  FBSArray<float, FBFixedBlockSamples> basePitchPlain = {};
   FBSArray<float, FBFixedBlockSamples> uniDetunePlain = {};
+  FBSArray<float, FBFixedBlockSamples> dampScalePlain = {};
+  FBSArray<float, FBFixedBlockSamples> feedbackScalePlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
-    basePitchPlain.Store(s, pitch);
     baseFreqPlain.Store(s, baseFreq);
 
     xPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm, s));
     yPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm, s));
     dampPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Damp, dampNorm, s));
     colorPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm, s));
-    scalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Scale, scaleNorm, s));
+    rangePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Range, rangeNorm, s));
     centerPlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Center, centerNorm, s));
     feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Feedback, feedbackNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm, s));
+    dampScalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::DampScale, dampScaleNorm, s));
+    feedbackScalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::FeedbackScale, feedbackScaleNorm, s));
     _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Gain, gainNorm, s));
     _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniBlend, uniBlendNorm, s));
     _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniSpread, uniSpreadNorm, s));
@@ -197,12 +201,16 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float damp = dampPlain.Get(s);
+    float range = rangePlain.Get(s);
     float feedback = feedbackPlain.Get(s);
+    float dampScale = dampScalePlain.Get(s);
+    float feedbackScale = feedbackScalePlain.Get(s);
+    float centerPitch = 60.0f + centerPlain.Get(s);
+    float pitchDiffSemis = _key - centerPitch;
+    float pitchDiffNorm = FBToUnipolar(std::clamp(pitchDiffSemis / range, -1.0f, 1.0f));
+
     float baseFreq = baseFreqPlain.Get(s);
     float realFeedback = 0.9f + 0.1f * feedback;
-    float centerPitch = 60.0f + centerPlain.Get(s);
-    float pitchDiffSemis = basePitchPlain.Get(s) - centerPitch;
-    float pitchDiffNorm = FBToUnipolar(std::clamp(pitchDiffSemis / 64.0f, -1.0f, 1.0f));
 
     _delayLine.Delay(sampleRate / baseFreq);
     float nextVal = _delayLine.Pop();
@@ -234,9 +242,11 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
   exchangeParams.acc.damp[0][voice] = dampNorm.Last();
-  exchangeParams.acc.scale[0][voice] = scaleNorm.Last();
+  exchangeParams.acc.dampScale[0][voice] = dampScaleNorm.Last();
+  exchangeParams.acc.range[0][voice] = rangeNorm.Last();
   exchangeParams.acc.center[0][voice] = centerNorm.Last();
   exchangeParams.acc.feedback[0][voice] = feedbackNorm.Last();
+  exchangeParams.acc.feedbackScale[0][voice] = feedbackScaleNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainNorm.Last();
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
   exchangeParams.acc.color[0][voice] = colorNorm.Last();

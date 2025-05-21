@@ -51,11 +51,13 @@ class alignas(alignof(TVoiceAcc)) FFKSNoiseAccParamState final
   std::array<TVoiceAcc, 1> uniSpread = {};
   std::array<TVoiceAcc, 1> x = {};
   std::array<TVoiceAcc, 1> y = {};
-  std::array<TVoiceAcc, 1> damp = {};
   std::array<TVoiceAcc, 1> color = {};
-  std::array<TVoiceAcc, 1> scale = {};
+  std::array<TVoiceAcc, 1> range = {};
   std::array<TVoiceAcc, 1> center = {};
+  std::array<TVoiceAcc, 1> damp = {};
+  std::array<TVoiceAcc, 1> dampScale = {};
   std::array<TVoiceAcc, 1> feedback = {};
+  std::array<TVoiceAcc, 1> feedbackScale = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFKSNoiseAccParamState);
 };

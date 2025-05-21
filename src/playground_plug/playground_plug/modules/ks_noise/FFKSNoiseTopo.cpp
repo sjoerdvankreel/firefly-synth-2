@@ -217,6 +217,23 @@ FFMakeKSNoiseTopo()
   damp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDamp);
   damp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDamp);
 
+  auto& dampScale = result->params[(int)FFKSNoiseParam::DampScale];
+  dampScale.acc = true;
+  dampScale.defaultText = "0";
+  dampScale.name = "Damp Scale";
+  dampScale.display = "Scale";
+  dampScale.slotCount = 1;
+  dampScale.unit = "%";
+  dampScale.id = "{050FADF1-C79E-4154-B219-C4970E029FE0}";
+  dampScale.type = FBParamType::Linear;
+  dampScale.Linear().min = -1.0f;
+  dampScale.Linear().max = 1.0f;
+  dampScale.Linear().displayMultiplier = 100;
+  auto selectDampScale = [](auto& module) { return &module.acc.dampScale; };
+  dampScale.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDampScale);
+  dampScale.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDampScale);
+  dampScale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDampScale);
+
   auto& feedback = result->params[(int)FFKSNoiseParam::Feedback];
   feedback.acc = true;
   feedback.defaultText = "100";
@@ -231,21 +248,22 @@ FFMakeKSNoiseTopo()
   feedback.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedback);
   feedback.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedback);
 
-  auto& scale = result->params[(int)FFKSNoiseParam::Scale];
-  scale.acc = true;
-  scale.defaultText = "0";
-  scale.name = "Scale";
-  scale.slotCount = 1;
-  scale.unit = "%";
-  scale.id = "{7685CE3A-0F9F-41CF-9808-B6B8ABB726AC}";
-  scale.type = FBParamType::Linear;
-  scale.Linear().min = -1.0f;
-  scale.Linear().max = 1.0f;
-  scale.Linear().displayMultiplier = 100;
-  auto selectScale = [](auto& module) { return &module.acc.scale; };
-  scale.scalarAddr = FFSelectScalarParamAddr(selectModule, selectScale);
-  scale.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectScale);
-  scale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectScale);
+  auto& feedbackScale = result->params[(int)FFKSNoiseParam::FeedbackScale];
+  feedbackScale.acc = true;
+  feedbackScale.defaultText = "0";
+  feedbackScale.name = "Feedback Scale";
+  feedbackScale.display = "Scale";
+  feedbackScale.slotCount = 1;
+  feedbackScale.unit = "%";
+  feedbackScale.id = "{7685CE3A-0F9F-41CF-9808-B6B8ABB726AC}";
+  feedbackScale.type = FBParamType::Linear;
+  feedbackScale.Linear().min = -1.0f;
+  feedbackScale.Linear().max = 1.0f;
+  feedbackScale.Linear().displayMultiplier = 100;
+  auto selectFeedbackScale = [](auto& module) { return &module.acc.feedbackScale; };
+  feedbackScale.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackScale);
+  feedbackScale.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackScale);
+  feedbackScale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackScale);
 
   auto& center = result->params[(int)FFKSNoiseParam::Center];
   center.acc = true;
@@ -261,6 +279,21 @@ FFMakeKSNoiseTopo()
   center.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCenter);
   center.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCenter);
   center.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCenter);
+
+  auto& range = result->params[(int)FFKSNoiseParam::Range];
+  range.acc = true;
+  range.defaultText = "24";
+  range.name = "Range";
+  range.slotCount = 1;
+  range.unit = "Semitones";
+  range.id = "{18D3BAE2-B9A6-4C02-B042-6DB92D17A0DA}}";
+  range.type = FBParamType::Linear;
+  range.Linear().min = 12.0f;
+  range.Linear().max = 128.0f;
+  auto selectRange = [](auto& module) { return &module.acc.range; };
+  range.scalarAddr = FFSelectScalarParamAddr(selectModule, selectRange);
+  range.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectRange);
+  range.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectRange);
 
   return result;
 }
