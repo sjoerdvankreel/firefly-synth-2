@@ -226,10 +226,10 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float nextVal = _delayLine.Pop();
     float prevVal = _prevDelayVal;
     float newVal = (1.0f - damp) * nextVal + damp * (prevVal + nextVal) * 0.5f;
-    float outVal = _dcFilter.Next(newVal);
+    float outVal = _dcFilter.Next(newVal); 
     newVal *= realFeedback;
     _prevDelayVal = newVal;
-    newVal += excite * Next(topo, sampleRate, baseFreq, color, x, y);
+    newVal = (1.0f - excite) * newVal + excite * Next(topo, sampleRate, baseFreq, color, x, y);
     _delayLine.Push(newVal);
 
     output[0].Set(s, outVal);
