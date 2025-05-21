@@ -169,7 +169,6 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    juce::dsp::DelayLine<float> x;
     _delayLine.Delay(sampleRate / baseFreqPlain.Get(s));
     float val = _delayLine.Pop();
     _delayLine.Push(val);
