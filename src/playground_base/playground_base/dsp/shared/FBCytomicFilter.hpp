@@ -19,8 +19,8 @@ class FBCytomicFilter final
   double _a1 = {};
   double _a2 = {};
   double _a3 = {};
-  std::array<double, Channels> _ic1Eq = {};
-  std::array<double, Channels> _ic2Eq = {};
+  std::array<double, Channels> _ic1eq = {};
+  std::array<double, Channels> _ic2eq = {};
 
 public:
   FB_NOCOPY_MOVE_DEFCTOR(FBCytomicFilter);
