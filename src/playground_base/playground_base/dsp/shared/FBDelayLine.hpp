@@ -32,6 +32,8 @@ FBDelayLine::Delay(float delay)
 inline void
 FBDelayLine::Push(float val)
 {
+  assert(!std::isnan(val));
+  assert(!std::isinf(val));
   _data.Set(_write, val);
   _write = (_write + Count() - 1) % Count();
 }

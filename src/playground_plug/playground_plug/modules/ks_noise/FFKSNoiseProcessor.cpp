@@ -50,8 +50,10 @@ FFKSNoiseProcessor::Draw()
 inline float
 FFKSNoiseProcessor::Next(
   FBStaticModule const& topo,
-  float sampleRate, float baseFreq, float excite,
-  float colorPlain, float xPlain, float yPlain)
+  float sampleRate, float baseFreq, 
+  float excite, float colorPlain, 
+  float xPlain, float yPlain,
+  float lpFreqHz, float hpFreqHz)
 {
   float const empirical1 = 0.75f;
   float const empirical2 = 4.0f;
@@ -61,13 +63,16 @@ FFKSNoiseProcessor::Next(
   float scale = 1.0f - ((1.0f - colorPlain) * empirical1);
   scale *= (1.0f + empirical2 * (1.0f - excite));
 
+  _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpFreqHz, 0.0f, 0.0f);
+  _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpFreqHz, 0.0f, 0.0f);
+
   _phaseTowardsX += baseFreq / sampleRate;
   if (_phaseTowardsX < 1.0f - x)
-    return _lastDraw * scale;
+    return static_cast<float>(_lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale)));
 
   _phaseTowardsX = 0.0f;
   if (_uniformPrng.NextScalar() > y)
-    return _lastDraw * scale;
+    return static_cast<float>(_lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale)));
 
   _lastDraw = Draw();
   float a = 1.0f;
@@ -79,7 +84,7 @@ FFKSNoiseProcessor::Next(
   }
   _colorFilterBuffer.Set(_colorFilterPosition, _lastDraw);
   _colorFilterPosition = (_colorFilterPosition + 1) % _poles;
-  return _lastDraw * scale;
+  return static_cast<float>(_lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale)));
 }
 
 void
@@ -93,6 +98,8 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
 
   auto const& xNorm = params.acc.x[0].Voice()[voice];
   auto const& yNorm = params.acc.y[0].Voice()[voice];
+  auto const& lpNorm = params.acc.lp[0].Voice()[voice];
+  auto const& hpNorm = params.acc.hp[0].Voice()[voice];
   auto const& colorNorm = params.acc.color[0].Voice()[voice];
   auto const& exciteNorm = params.acc.excite[0].Voice()[voice];
   auto const& typeNorm = params.block.type[0].Voice()[voice];
@@ -113,7 +120,6 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _phaseTowardsX = 0.0f;
   _colorFilterPosition = 0;
   
-  _dcFilter = {};
   _phaseGen = {};
   _lpFilter = {};
   _hpFilter = {};
@@ -136,7 +142,9 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
       topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0)),
       topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0)),
       topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0)),
-      topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0))));
+      topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0)),
+      topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0)),
+      topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0))));
 }
 
 int
@@ -176,6 +184,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
   FBSArray<float, FBFixedBlockSamples> xPlain = {};
   FBSArray<float, FBFixedBlockSamples> yPlain = {};
+  FBSArray<float, FBFixedBlockSamples> lpPlain = {};
+  FBSArray<float, FBFixedBlockSamples> hpPlain = {};
   FBSArray<float, FBFixedBlockSamples> dampPlain = {};
   FBSArray<float, FBFixedBlockSamples> colorPlain = {};
   FBSArray<float, FBFixedBlockSamples> rangePlain = {};
@@ -194,6 +204,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     auto baseFreq = FBPitchToFreq(pitch);
     baseFreqPlain.Store(s, baseFreq);
 
+    lpPlain.Store(s, topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm, s));
+    hpPlain.Store(s, topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm, s));
     xPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm, s));
     yPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm, s));
     dampPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Damp, dampNorm, s));
@@ -214,6 +226,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   {
     float x = xPlain.Get(s);
     float y = yPlain.Get(s);
+    float lp = lpPlain.Get(s);
+    float hp = hpPlain.Get(s);
     float color = colorPlain.Get(s);
     float damp = dampPlain.Get(s);
     float range = rangePlain.Get(s);
@@ -238,7 +252,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float outVal = _dcFilter.Next(newVal); 
     newVal *= realFeedback;
     _prevDelayVal = newVal;
-    newVal = (1.0f - excite) * newVal + excite * Next(topo, sampleRate, baseFreq, excite, color, x, y);
+    newVal = (1.0f - excite) * newVal + excite * Next(topo, sampleRate, baseFreq, excite, color, x, y, lp, hp);
     _delayLine.Push(newVal);
 
     output[0].Set(s, outVal);
