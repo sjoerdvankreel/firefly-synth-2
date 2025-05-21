@@ -204,6 +204,33 @@ FFMakeKSNoiseTopo()
   y.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectY);
   y.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectY);
 
+  auto& excite = result->params[(int)FFKSNoiseParam::Excite];
+  excite.acc = true;
+  excite.defaultText = "0";
+  excite.name = "Excite";
+  excite.slotCount = 1;
+  excite.unit = "%";
+  excite.id = "{7933FB74-1FEF-428B-A08A-33925174473B}";
+  excite.type = FBParamType::Identity;
+  auto selectExcite = [](auto& module) { return &module.acc.excite; };
+  excite.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExcite);
+  excite.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExcite);
+  excite.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExcite);
+
+  auto& exciteMix = result->params[(int)FFKSNoiseParam::ExciteMix];
+  exciteMix.acc = true;
+  exciteMix.defaultText = "50";
+  exciteMix.name = "Excite Mix";
+  exciteMix.display = "Mix";
+  exciteMix.slotCount = 1;
+  exciteMix.unit = "%";
+  exciteMix.id = "{3E9DC27E-BE4E-4E48-BC7B-EC9A6D8A40CF}";
+  exciteMix.type = FBParamType::Identity;
+  auto selectExciteMix = [](auto& module) { return &module.acc.exciteMix; };
+  exciteMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExciteMix);
+  exciteMix.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExciteMix);
+  exciteMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExciteMix);
+
   auto& damp = result->params[(int)FFKSNoiseParam::Damp];
   damp.acc = true;
   damp.defaultText = "67";

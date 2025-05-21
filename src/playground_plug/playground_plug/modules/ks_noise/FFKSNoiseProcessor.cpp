@@ -159,6 +159,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto const& colorNorm = procParams.acc.color[0].Voice()[voice];
   auto const& rangeNorm = procParams.acc.range[0].Voice()[voice];
   auto const& centerNorm = procParams.acc.center[0].Voice()[voice];
+  auto const& exciteNorm = procParams.acc.excite[0].Voice()[voice];
+  auto const& exciteMixNorm = procParams.acc.exciteMix[0].Voice()[voice];
   auto const& dampNorm = procParams.acc.damp[0].Voice()[voice];
   auto const& dampScaleNorm = procParams.acc.dampScale[0].Voice()[voice];
   auto const& feedbackNorm = procParams.acc.feedback[0].Voice()[voice];
@@ -170,10 +172,12 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   FBSArray<float, FBFixedBlockSamples> colorPlain = {};
   FBSArray<float, FBFixedBlockSamples> rangePlain = {};
   FBSArray<float, FBFixedBlockSamples> centerPlain = {};
+  FBSArray<float, FBFixedBlockSamples> excitePlain = {};
   FBSArray<float, FBFixedBlockSamples> feedbackPlain = {};
   FBSArray<float, FBFixedBlockSamples> baseFreqPlain = {};
   FBSArray<float, FBFixedBlockSamples> uniDetunePlain = {};
   FBSArray<float, FBFixedBlockSamples> dampScalePlain = {};
+  FBSArray<float, FBFixedBlockSamples> exciteMixPlain = {};
   FBSArray<float, FBFixedBlockSamples> feedbackScalePlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
@@ -188,10 +192,12 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     dampPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Damp, dampNorm, s));
     colorPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm, s));
     rangePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Range, rangeNorm, s));
+    excitePlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Excite, exciteNorm, s));
     centerPlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Center, centerNorm, s));
     feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Feedback, feedbackNorm, s));
-    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm, s));
     dampScalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::DampScale, dampScaleNorm, s));
+    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm, s));
+    exciteMixPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::ExciteMix, exciteMixNorm, s));
     feedbackScalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::FeedbackScale, feedbackScaleNorm, s));
     _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Gain, gainNorm, s));
     _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniBlend, uniBlendNorm, s));
@@ -202,9 +208,11 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   {
     float damp = dampPlain.Get(s);
     float range = rangePlain.Get(s);
+    float excite = excitePlain.Get(s);
     float feedback = feedbackPlain.Get(s);
     float dampScale = dampScalePlain.Get(s);
     float feedbackScale = feedbackScalePlain.Get(s);
+
     float centerPitch = 60.0f + centerPlain.Get(s);
     float pitchDiffSemis = _key - centerPitch;
     float pitchDiffNorm = std::clamp(pitchDiffSemis / range, -1.0f, 1.0f);
@@ -221,7 +229,18 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float outVal = _dcFilter.Next(newVal);
     newVal *= realFeedback;
     _prevDelayVal = newVal;
+
+    if (_uniformPrng.NextScalar() < excite)
+    {
+      float x = xPlain.Get(s);
+      float y = yPlain.Get(s);
+      float color = colorPlain.Get(s);
+      float exciteMix = exciteMixPlain.Get(s);
+      float excitation = Next(topo, sampleRate, baseFreq, color, x, y);
+      newVal = (1.0f - exciteMix) * newVal + exciteMix * excitation;
+    }
     _delayLine.Push(newVal);
+
     output[0].Set(s, outVal);
     output[1].Set(s, outVal);
     _graphPosition++;
@@ -243,6 +262,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto& exchangeParams = exchangeToGUI->param.voice.ksNoise[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
+  exchangeParams.acc.excite[0][voice] = exciteNorm.Last();
+  exchangeParams.acc.exciteMix[0][voice] = exciteMixNorm.Last();
   exchangeParams.acc.damp[0][voice] = dampNorm.Last();
   exchangeParams.acc.dampScale[0][voice] = dampScaleNorm.Last();
   exchangeParams.acc.range[0][voice] = rangeNorm.Last();
