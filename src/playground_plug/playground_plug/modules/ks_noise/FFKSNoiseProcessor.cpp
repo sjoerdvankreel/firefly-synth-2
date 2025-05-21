@@ -68,11 +68,23 @@ FFKSNoiseProcessor::Next(
 
   _phaseTowardsX += baseFreq / sampleRate;
   if (_phaseTowardsX < 1.0f - x)
-    return static_cast<float>(_lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale)));
+  {
+    double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
+    float result = static_cast<float>(dResult);
+    assert(!std::isnan(result));
+    assert(!std::isinf(result));
+    return result;
+  }
 
   _phaseTowardsX = 0.0f;
-  if (_uniformPrng.NextScalar() > y)
-    return static_cast<float>(_lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale)));
+  if (_uniformPrng.NextScalar() > y) 
+  {
+    double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
+    float result = static_cast<float>(dResult);
+    assert(!std::isnan(result));
+    assert(!std::isinf(result));
+    return result;
+  }
 
   _lastDraw = Draw();
   float a = 1.0f;
@@ -84,7 +96,11 @@ FFKSNoiseProcessor::Next(
   }
   _colorFilterBuffer.Set(_colorFilterPosition, _lastDraw);
   _colorFilterPosition = (_colorFilterPosition + 1) % _poles;
-  return static_cast<float>(_lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale)));
+  double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
+  float result = static_cast<float>(dResult);
+  assert(!std::isnan(result));
+  assert(!std::isinf(result));
+  return result;
 }
 
 void

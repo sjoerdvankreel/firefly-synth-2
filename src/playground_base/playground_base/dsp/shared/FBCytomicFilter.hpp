@@ -36,13 +36,20 @@ inline double
 FBCytomicFilter<Channels>::Next(
   int channel, double in)
 {
+  assert(!std::isnan(in));
+  assert(!std::isinf(in));
   double v0 = in;
   double v3 = v0 - this->_ic2eq[channel];
   double v1 = this->_a1 * this->_ic1eq[channel] + this->_a2 * v3;
   double v2 = this->_ic2eq[channel] + this->_a2 * this->_ic1eq[channel] + this->_a3 * v3;
   this->_ic1eq[channel] = 2 * v1 - this->_ic1eq[channel];
   this->_ic2eq[channel] = 2 * v2 - this->_ic2eq[channel];
-  return this->_m0 * v0 + this->_m1 * v1 + this->_m2 * v2;
+  double result = this->_m0 * v0 + this->_m1 * v1 + this->_m2 * v2;
+  assert(!std::isnan(result));
+  assert(!std::isinf(result));
+  assert(!std::isnan(static_cast<float>(result)));
+  assert(!std::isinf(static_cast<float>(result)));
+  return result;
 }
 
 template <int Channels>
@@ -51,6 +58,9 @@ FBCytomicFilter<Channels>::Set(
   FBCytomicFilterMode mode, double sampleRate, 
   double freqHz, double resNorm, double gainDb)
 {
+  // need for graphs
+  freqHz = std::clamp(freqHz, 0.0, sampleRate * 0.5f);
+
   double a;
   double k = 2.0 - 2.0 * resNorm;
   double g = std::tan(std::numbers::pi * freqHz / sampleRate);
