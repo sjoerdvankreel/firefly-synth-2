@@ -178,19 +178,6 @@ FFMakeKSNoiseTopo()
   color.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectColor);
   color.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectColor);
 
-  auto& decay = result->params[(int)FFKSNoiseParam::Decay];
-  decay.acc = true;
-  decay.defaultText = "50";
-  decay.name = "Decay";
-  decay.slotCount = 1;
-  decay.unit = "%";
-  decay.id = "{1FD56760-3837-4A1B-8CAF-8906BA0BC6A1}";
-  decay.type = FBParamType::Identity;
-  auto selectDecay = [](auto& module) { return &module.acc.decay; };
-  decay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDecay);
-  decay.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDecay);
-  decay.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDecay);
-
   auto& x = result->params[(int)FFKSNoiseParam::X];
   x.acc = true;
   x.defaultText = "100";
@@ -216,6 +203,63 @@ FFMakeKSNoiseTopo()
   y.scalarAddr = FFSelectScalarParamAddr(selectModule, selectY);
   y.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectY);
   y.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectY);
+
+  auto& damp = result->params[(int)FFKSNoiseParam::Damp];
+  damp.acc = true;
+  damp.defaultText = "50";
+  damp.name = "Damp";
+  damp.slotCount = 1;
+  damp.unit = "%";
+  damp.id = "{1FD56760-3837-4A1B-8CAF-8906BA0BC6A1}";
+  damp.type = FBParamType::Identity;
+  auto selectDamp = [](auto& module) { return &module.acc.damp; };
+  damp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDamp);
+  damp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDamp);
+  damp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDamp);
+
+  auto& feedback = result->params[(int)FFKSNoiseParam::Feedback];
+  feedback.acc = true;
+  feedback.defaultText = "100";
+  feedback.name = "Feedback";
+  feedback.slotCount = 1;
+  feedback.unit = "%";
+  feedback.id = "{74C60E5D-C7FA-46E5-8ACC-083130E1C735}";
+  feedback.type = FBParamType::Identity;
+  auto selectFeedback = [](auto& module) { return &module.acc.feedback; };
+  feedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedback);
+  feedback.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedback);
+  feedback.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedback);
+
+  auto& scale = result->params[(int)FFKSNoiseParam::Scale];
+  scale.acc = true;
+  scale.defaultText = "0";
+  scale.name = "Scale";
+  scale.slotCount = 1;
+  scale.unit = "%";
+  scale.id = "{7685CE3A-0F9F-41CF-9808-B6B8ABB726AC}";
+  scale.type = FBParamType::Linear;
+  scale.Linear().min = -1.0f;
+  scale.Linear().max = 1.0f;
+  scale.Linear().displayMultiplier = 100;
+  auto selectScale = [](auto& module) { return &module.acc.scale; };
+  scale.scalarAddr = FFSelectScalarParamAddr(selectModule, selectScale);
+  scale.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectScale);
+  scale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectScale);
+
+  auto& center = result->params[(int)FFKSNoiseParam::Center];
+  center.acc = true;
+  center.defaultText = "0";
+  center.name = "Center";
+  center.slotCount = 1;
+  center.unit = "Semitones";
+  center.id = "{988CB489-9062-4A1B-9C5E-B0674F4AAD4F}";
+  center.type = FBParamType::Linear;
+  center.Linear().min = -64.0f;
+  center.Linear().max = 64.0f;
+  auto selectCenter = [](auto& module) { return &module.acc.center; };
+  center.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCenter);
+  center.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCenter);
+  center.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCenter);
 
   return result;
 }

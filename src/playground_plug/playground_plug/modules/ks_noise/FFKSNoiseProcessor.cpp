@@ -146,16 +146,19 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto const& procParams = procState->param.voice.ksNoise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::KSNoise];
 
-  auto const& xNorm = procParams.acc.x[0].Voice()[voice];
-  auto const& yNorm = procParams.acc.y[0].Voice()[voice];
-  auto const& decayNorm = procParams.acc.decay[0].Voice()[voice];
-  auto const& colorNorm = procParams.acc.color[0].Voice()[voice];
+  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
-  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
   auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
+  auto const& xNorm = procParams.acc.x[0].Voice()[voice];
+  auto const& yNorm = procParams.acc.y[0].Voice()[voice];
+  auto const& colorNorm = procParams.acc.color[0].Voice()[voice];
+  auto const& dampNorm = procParams.acc.damp[0].Voice()[voice];
+  auto const& scaleNorm = procParams.acc.scale[0].Voice()[voice];
+  auto const& centerNorm = procParams.acc.center[0].Voice()[voice];
+  auto const& feedbackNorm = procParams.acc.feedback[0].Voice()[voice];
 
   FBSArray<float, FBFixedBlockSamples> baseFreqPlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
@@ -172,11 +175,11 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float decay = topo.NormalizedToIdentityFast(FFKSNoiseParam::Decay, decayNorm.CV().Get(s));
+    float damp = topo.NormalizedToIdentityFast(FFKSNoiseParam::Damp, dampNorm.CV().Get(s));
     _delayLine.Delay(sampleRate / baseFreqPlain.Get(s));
     float nextVal = _delayLine.Pop();
     float prevVal = _prevDelayVal;
-    float newVal = (1.0f - decay) * nextVal + decay * (prevVal + nextVal) * 0.5f;
+    float newVal = (1.0f - damp) * nextVal + damp * (prevVal + nextVal) * 0.5f;
     float outVal = _dcFilter.Next(newVal);
     _prevDelayVal = newVal;
     _delayLine.Push(newVal);
@@ -201,10 +204,13 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto& exchangeParams = exchangeToGUI->param.voice.ksNoise[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
+  exchangeParams.acc.damp[0][voice] = dampNorm.Last();
+  exchangeParams.acc.scale[0][voice] = scaleNorm.Last();
+  exchangeParams.acc.center[0][voice] = centerNorm.Last();
+  exchangeParams.acc.feedback[0][voice] = feedbackNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainNorm.Last();
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
   exchangeParams.acc.color[0][voice] = colorNorm.Last();
-  exchangeParams.acc.decay[0][voice] = decayNorm.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();
   exchangeParams.acc.uniBlend[0][voice] = uniBlendNorm.Last();
   exchangeParams.acc.uniDetune[0][voice] = uniDetuneNorm.Last();
