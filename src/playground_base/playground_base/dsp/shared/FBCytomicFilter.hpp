@@ -13,12 +13,12 @@ enum class FBCytomicFilterMode
 template <int Channels>
 class FBCytomicFilter final
 {
-  double m0 = {};
-  double m1 = {};
-  double m2 = {};
-  double a1 = {};
-  double a2 = {};
-  double a3 = {};
+  double _m0 = {};
+  double _m1 = {};
+  double _m2 = {};
+  double _a1 = {};
+  double _a2 = {};
+  double _a3 = {};
   std::array<double, Channels> _ic1Eq = {};
   std::array<double, Channels> _ic2Eq = {};
 
