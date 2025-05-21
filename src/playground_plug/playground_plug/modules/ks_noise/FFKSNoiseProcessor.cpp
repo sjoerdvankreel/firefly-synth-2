@@ -27,7 +27,8 @@ FFKSNoiseProcessor() {}
 void
 FFKSNoiseProcessor::AllocateBuffers(float sampleRate)
 {
-  _delayLine.Resize(DelayLineSize);
+  if(_delayLine.Count() == 0)
+    _delayLine.Resize(DelayLineSize);
 }
 
 inline float
