@@ -79,6 +79,9 @@ MakeSectionNoise(FBPlugGUI* plugGUI, int moduleSlot)
   auto color = topo->audio.ParamAtTopo({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::Color, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, color));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, color, Slider::SliderStyle::RotaryVerticalDrag));
+  auto excite = topo->audio.ParamAtTopo({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::Excite, 0 });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, excite));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, excite, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ 0, 0, 2, 6 });
   return grid;
 }
@@ -88,12 +91,6 @@ MakeSectionKS(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 });
-  auto excite = topo->audio.ParamAtTopo({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::Excite, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, excite));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, excite, Slider::SliderStyle::LinearHorizontal));
-  auto exciteMix = topo->audio.ParamAtTopo({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::ExciteMix, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, exciteMix));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, exciteMix, Slider::SliderStyle::RotaryVerticalDrag));
   auto damp = topo->audio.ParamAtTopo({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::Damp, 0 });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, damp));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, damp, Slider::SliderStyle::LinearHorizontal));

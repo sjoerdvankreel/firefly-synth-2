@@ -53,7 +53,6 @@ class alignas(alignof(TVoiceAcc)) FFKSNoiseAccParamState final
   std::array<TVoiceAcc, 1> y = {};
   std::array<TVoiceAcc, 1> color = {};
   std::array<TVoiceAcc, 1> excite = {};
-  std::array<TVoiceAcc, 1> exciteMix = {};
   std::array<TVoiceAcc, 1> range = {};
   std::array<TVoiceAcc, 1> center = {};
   std::array<TVoiceAcc, 1> damp = {};
