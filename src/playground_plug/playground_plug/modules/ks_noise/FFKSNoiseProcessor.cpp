@@ -51,13 +51,13 @@ inline float
 FFKSNoiseProcessor::Next(
   FBStaticModule const& topo,
   float sampleRate, float baseFreq, 
-  float colorNorm, float xNorm, float yNorm)
+  float colorPlain, float xPlain, float yPlain)
 {
   float const empirical = 0.75f;
-  float scale = 1.0f - colorNorm * empirical;
-  float x = topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm);
-  float y = 0.01f + 0.99f * topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm);
-  float color = 1.99f * topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm);
+  float x = xPlain;
+  float y = 0.01f + 0.99f * yPlain;
+  float color = 1.99f * (1.0f - colorPlain);
+  float scale = 1.0f - ((1.0f - colorPlain) * empirical);
 
   _phaseTowardsX += baseFreq / sampleRate;
   if (_phaseTowardsX < 1.0f - x)
@@ -126,8 +126,10 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   float baseFreq = FBPitchToFreq(pitch);
   for (int i = 0; i < DelayLineSize; i++)
     _delayLine.Push(Next(
-      topo, sampleRate, baseFreq, 
-      colorNorm.CV().Get(0), xNorm.CV().Get(0), yNorm.CV().Get(0)));
+      topo, sampleRate, baseFreq,
+      topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0)),
+      topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0)),
+      topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0))));
 }
 
 int
@@ -160,27 +162,50 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto const& centerNorm = procParams.acc.center[0].Voice()[voice];
   auto const& feedbackNorm = procParams.acc.feedback[0].Voice()[voice];
 
+  FBSArray<float, FBFixedBlockSamples> xPlain = {};
+  FBSArray<float, FBFixedBlockSamples> yPlain = {};
+  FBSArray<float, FBFixedBlockSamples> dampPlain = {};
+  FBSArray<float, FBFixedBlockSamples> colorPlain = {};
+  FBSArray<float, FBFixedBlockSamples> scalePlain = {};
+  FBSArray<float, FBFixedBlockSamples> centerPlain = {};
+  FBSArray<float, FBFixedBlockSamples> feedbackPlain = {};
   FBSArray<float, FBFixedBlockSamples> baseFreqPlain = {};
+  FBSArray<float, FBFixedBlockSamples> basePitchPlain = {};
+  FBSArray<float, FBFixedBlockSamples> uniDetunePlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
+    auto pitch = _key + coarse + fine;
+    auto baseFreq = FBPitchToFreq(pitch);
+    basePitchPlain.Store(s, pitch);
+    baseFreqPlain.Store(s, baseFreq);
+
+    xPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm, s));
+    yPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm, s));
+    dampPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Damp, dampNorm, s));
+    colorPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm, s));
+    scalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Scale, scaleNorm, s));
+    centerPlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Center, centerNorm, s));
+    feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Feedback, feedbackNorm, s));
+    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm, s));
     _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Gain, gainNorm, s));
     _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniBlend, uniBlendNorm, s));
     _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniSpread, uniSpreadNorm, s));
-    auto pitch = _key + coarse + fine;
-    auto baseFreq = FBPitchToFreq(pitch);
-    baseFreqPlain.Store(s, baseFreq);
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float damp = topo.NormalizedToIdentityFast(FFKSNoiseParam::Damp, dampNorm.CV().Get(s));
-    _delayLine.Delay(sampleRate / baseFreqPlain.Get(s));
+    float damp = dampPlain.Get(s);
+    float baseFreq = baseFreqPlain.Get(s);
+    float feedback = 0.9f + 0.1f * feedbackPlain.Get(s);
+
+    _delayLine.Delay(sampleRate / baseFreq);
     float nextVal = _delayLine.Pop();
     float prevVal = _prevDelayVal;
     float newVal = (1.0f - damp) * nextVal + damp * (prevVal + nextVal) * 0.5f;
     float outVal = _dcFilter.Next(newVal);
+    newVal *= feedback;
     _prevDelayVal = newVal;
     _delayLine.Push(newVal);
     output[0].Set(s, outVal);

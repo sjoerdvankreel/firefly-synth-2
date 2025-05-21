@@ -111,7 +111,7 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeSectionUni(plugGUI, moduleSlot));
   grid->Add(0, 2, MakeSectionNoise(plugGUI, moduleSlot));
-  grid->Add(0, 2, MakeSectionKS(plugGUI, moduleSlot));
+  grid->Add(0, 3, MakeSectionKS(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

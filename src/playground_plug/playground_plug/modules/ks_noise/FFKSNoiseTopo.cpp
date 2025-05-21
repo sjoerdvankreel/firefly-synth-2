@@ -167,7 +167,7 @@ FFMakeKSNoiseTopo()
 
   auto& color = result->params[(int)FFKSNoiseParam::Color];
   color.acc = true;
-  color.defaultText = "50";
+  color.defaultText = "0";
   color.name = "Color";
   color.slotCount = 1;
   color.unit = "%";
@@ -206,7 +206,7 @@ FFMakeKSNoiseTopo()
 
   auto& damp = result->params[(int)FFKSNoiseParam::Damp];
   damp.acc = true;
-  damp.defaultText = "50";
+  damp.defaultText = "67";
   damp.name = "Damp";
   damp.slotCount = 1;
   damp.unit = "%";
@@ -221,6 +221,7 @@ FFMakeKSNoiseTopo()
   feedback.acc = true;
   feedback.defaultText = "100";
   feedback.name = "Feedback";
+  feedback.display = "Fdbk";
   feedback.slotCount = 1;
   feedback.unit = "%";
   feedback.id = "{74C60E5D-C7FA-46E5-8ACC-083130E1C735}";
