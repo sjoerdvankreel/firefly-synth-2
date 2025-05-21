@@ -33,7 +33,7 @@ inline void
 FBDelayLine::Push(float val)
 {
   _data.Set(_write, val);
-  _write = (_write + 1) % Count();
+  _write = (_write + Count() - 1) % Count();
 }
 
 inline float
@@ -43,6 +43,6 @@ FBDelayLine::Pop()
   int pos2 = (pos1 + 1) % Count();
   float val1 = _data.Get(pos1);
   float val2 = _data.Get(pos2);
-  _read = (_read + 1) % Count();
+  _read = (_read + Count() - 1) % Count();
   return val1 + _delayFraction * (val2 - val1);
 }
