@@ -431,7 +431,8 @@ FFMakeOsciTopo()
   waveDSFBW.unit = "%";
   waveDSFBW.id = "{D3D24159-2A4F-46FB-8E61-749DB07FCC40}";
   waveDSFBW.type = FBParamType::Log2;
-  waveDSFBW.Log2().Init(-1.0f, 1.0f, 101.0f);
+  waveDSFBW.Log2().displayMultiplier = 100.0f;
+  waveDSFBW.Log2().Init(-0.01f, 0.01f, 1.01f);
   auto selectWaveDSFBW = [](auto& module) { return &module.block.waveDSFBW; };
   waveDSFBW.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveDSFBW);
   waveDSFBW.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectWaveDSFBW);

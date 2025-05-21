@@ -18,6 +18,8 @@ protected:
   float _curveStart = {};
 
 public:
+  double displayMultiplier = 1.0;
+
   float NormalizedToPlainFast(float normalized) const;
   void Init(float offset, float curveStart, float curveEnd);
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;

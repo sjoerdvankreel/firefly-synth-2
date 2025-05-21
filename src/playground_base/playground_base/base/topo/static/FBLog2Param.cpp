@@ -33,9 +33,10 @@ FBLog2ParamNonRealTime::NormalizedToPlain(double normalized) const
 std::string
 FBLog2ParamNonRealTime::PlainToText(bool io, double plain) const
 {
+  double displayPlain = plain * displayMultiplier;
   if (io)
-    return std::to_string(plain);
-  return FBFormatDouble(plain, FBDefaultDisplayPrecision);
+    return std::to_string(displayPlain);
+  return FBFormatDouble(displayPlain, FBDefaultDisplayPrecision);
 }
 
 std::optional<double>
@@ -45,6 +46,7 @@ FBLog2ParamNonRealTime::TextToPlain(bool io, std::string const& text) const
   double result = std::strtod(text.c_str(), &end);
   if (end != text.c_str() + text.size())
     return {};
+  result /= displayMultiplier;
   if (result < NormalizedToPlain(0.0) || result > NormalizedToPlain(1.0))
     return {};
   return { result };

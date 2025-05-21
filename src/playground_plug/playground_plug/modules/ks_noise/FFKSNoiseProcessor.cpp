@@ -130,7 +130,7 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   for (int i = 0; i < DelayLineSize; i++)
     _delayLine.Push(Next(
       topo, sampleRate, baseFreq,
-      topo.NormalizedToIdentityFast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0)),
+      topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0)),
       topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0)),
       topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0)),
       topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0))));
@@ -194,7 +194,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     dampPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Damp, dampNorm, s));
     colorPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm, s));
     rangePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Range, rangeNorm, s));
-    excitePlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Excite, exciteNorm, s));
+    excitePlain.Store(s, topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm, s));
     centerPlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Center, centerNorm, s));
     feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Feedback, feedbackNorm, s));
     dampScalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::DampScale, dampScaleNorm, s));

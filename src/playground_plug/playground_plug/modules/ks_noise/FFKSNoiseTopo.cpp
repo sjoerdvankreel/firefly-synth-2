@@ -211,7 +211,9 @@ FFMakeKSNoiseTopo()
   excite.slotCount = 1;
   excite.unit = "%";
   excite.id = "{7933FB74-1FEF-428B-A08A-33925174473B}";
-  excite.type = FBParamType::Identity;
+  excite.type = FBParamType::Log2;
+  excite.Log2().displayMultiplier = 100.0f;
+  excite.Log2().Init(-0.01f, 0.01f, 1.01f);
   auto selectExcite = [](auto& module) { return &module.acc.excite; };
   excite.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExcite);
   excite.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExcite);
