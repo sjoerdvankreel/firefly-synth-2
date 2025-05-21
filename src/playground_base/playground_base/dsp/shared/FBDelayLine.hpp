@@ -4,7 +4,7 @@
 #include <playground_base/base/shared/FBDArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
-class FBDelayLine
+class FBDelayLine final
 {
   int _read = {};
   int _write = {};

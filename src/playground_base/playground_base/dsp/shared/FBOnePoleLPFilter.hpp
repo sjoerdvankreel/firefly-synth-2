@@ -6,7 +6,8 @@
 #include <cassert>
 #include <numbers>
 
-class FBOnePoleFilter final
+// https://www.musicdsp.org/en/latest/Filters/257-1-pole-lpf-for-smooth-parameter-changes.html
+class FBOnePoleLPFilter final
 {
   float _a = 0.0f;
   float _b = 0.0f; 
@@ -21,7 +22,7 @@ public:
 };
 
 inline float
-FBOnePoleFilter::Next(float in)
+FBOnePoleLPFilter::Next(float in)
 {
   float out = (in * _b) + (_z * _a);
   assert(!std::isnan(out));
@@ -29,7 +30,7 @@ FBOnePoleFilter::Next(float in)
 }
 
 inline void
-FBOnePoleFilter::SetCoeffs(int sampleCount)
+FBOnePoleLPFilter::SetCoeffs(int sampleCount)
 {
   _a = std::exp((-2.0f * FBPi) / static_cast<float>(sampleCount));
   _b = 1.0f - _a;

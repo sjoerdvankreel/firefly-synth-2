@@ -7,7 +7,7 @@
 #include <xsimd/xsimd.hpp>
 
 template <class T, int N>
-class alignas(FBSIMDTraits<T>::Align) FBSArray
+class alignas(FBSIMDTraits<T>::Align) FBSArray final
 {
   static_assert(N % FBSIMDTraits<T>::Size == 0);
   alignas(FBSIMDTraits<T>::Align) std::array<T, N> _data = {};

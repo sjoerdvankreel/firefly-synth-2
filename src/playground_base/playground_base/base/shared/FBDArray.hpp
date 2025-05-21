@@ -7,7 +7,7 @@
 #include <xsimd/xsimd.hpp>
 
 template <class T>
-class FBDArray
+class FBDArray final
 {
   T* _data = {};
   int _count = {};
