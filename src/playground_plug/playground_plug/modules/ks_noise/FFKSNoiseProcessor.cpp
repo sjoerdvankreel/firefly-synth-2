@@ -207,7 +207,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float feedbackScale = feedbackScalePlain.Get(s);
     float centerPitch = 60.0f + centerPlain.Get(s);
     float pitchDiffSemis = _key - centerPitch;
-    float pitchDiffNorm = FBToUnipolar(std::clamp(pitchDiffSemis / range, -1.0f, 1.0f));
+    float pitchDiffNorm = std::clamp(pitchDiffSemis / range, -1.0f, 1.0f);
+    feedback = std::clamp(feedback + 0.5f * feedbackScale * pitchDiffNorm, 0.0f, 1.0f);
 
     float baseFreq = baseFreqPlain.Get(s);
     float realFeedback = 0.9f + 0.1f * feedback;
