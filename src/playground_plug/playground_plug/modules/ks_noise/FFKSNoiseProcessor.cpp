@@ -15,6 +15,7 @@
 #include <bit>
 #include <cstdint>
 
+inline float const DCBlockFreq = 20.0f;
 inline int constexpr DelayLineSize = 8192;
 
 // https://www.reddit.com/r/DSP/comments/8fm3c5/what_am_i_doing_wrong_brown_noise/
@@ -25,10 +26,11 @@ FFKSNoiseProcessor::
 FFKSNoiseProcessor() {}
 
 void
-FFKSNoiseProcessor::AllocateBuffers(float sampleRate)
+FFKSNoiseProcessor::Initialize(float sampleRate)
 {
   if(_delayLine.Count() == 0)
     _delayLine.Resize(DelayLineSize);
+  _dcFilter.SetCoeffs(DCBlockFreq, sampleRate);
 }
 
 inline float
@@ -172,6 +174,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     _delayLine.Delay(sampleRate / baseFreqPlain.Get(s));
     float val = _delayLine.Pop();
     _delayLine.Push(val);
+    val = _dcFilter.Next(val);
     output[0].Set(s, val);
     output[1].Set(s, val);
     _graphPosition++;

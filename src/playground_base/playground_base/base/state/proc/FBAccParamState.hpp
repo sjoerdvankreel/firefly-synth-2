@@ -2,7 +2,7 @@
 
 #include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBOnePoleLPFilter.hpp>
+#include <playground_base/dsp/shared/FBBasicLPFilter.hpp>
 
 #include <array>
 #include <algorithm>
@@ -15,7 +15,7 @@ class alignas(FBSIMDAlign) FBAccParamState final
   friend class FBGlobalAccParamState;
 
   float _modulation = {};
-  FBOnePoleLPFilter _smoother = {};
+  FBBasicLPFilter _smoother = {};
   FBSArray<float, FBFixedBlockSamples> _cv = {};
 
   void Modulate(float offset) { _modulation = offset; }

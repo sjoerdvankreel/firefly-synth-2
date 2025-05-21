@@ -8,7 +8,7 @@
 
 #include <playground_base/dsp/voice/FBVoiceManager.hpp>
 #include <playground_base/dsp/plug/FBPlugProcessor.hpp>
-#include <playground_base/dsp/shared/FBOnePoleLPFilter.hpp>
+#include <playground_base/dsp/shared/FBBasicLPFilter.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>
 #include <playground_base/dsp/host/FBHostDSPContext.hpp>
 #include <playground_base/dsp/host/FBSmoothingProcessor.hpp>

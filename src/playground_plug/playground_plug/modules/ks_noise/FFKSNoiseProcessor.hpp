@@ -6,6 +6,7 @@
 
 #include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/dsp/shared/FBDelayLine.hpp>
+#include <playground_base/dsp/shared/FBBasicHPFilter.hpp>
 #include <playground_base/dsp/shared/FBMarsagliaPRNG.hpp>
 #include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 
@@ -28,6 +29,7 @@ public FFOsciProcessorBase
   int _colorFilterPosition = 0;
 
   FBDelayLine _delayLine = {};
+  FBBasicHPFilter _dcFilter = {};
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
   FFKSNoisePhaseGenerator _phaseGen = {};
@@ -42,7 +44,7 @@ public FFOsciProcessorBase
 public:
   FFKSNoiseProcessor();
   int Process(FBModuleProcState& state);
-  void AllocateBuffers(float sampleRate);
+  void Initialize(float sampleRate);
   void BeginVoice(FBModuleProcState& state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFKSNoiseProcessor);
 };

@@ -2,7 +2,7 @@
 
 #include <playground_plug/modules/env/FFEnvTopo.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBOnePoleLPFilter.hpp>
+#include <playground_base/dsp/shared/FBBasicLPFilter.hpp>
 
 #include <array>
 
@@ -33,7 +33,7 @@ class FFEnvProcessor final
   int _lengthSamplesUpToRelease = 0;
   float _lastDAHDSR = 0.0f;
   float _lastBeforeRelease = 0.0f;
-  FBOnePoleLPFilter _smoother = {};
+  FBBasicLPFilter _smoother = {};
   std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
 
 public:
