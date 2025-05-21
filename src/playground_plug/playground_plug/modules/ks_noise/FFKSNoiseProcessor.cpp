@@ -155,6 +155,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto const& procParams = procState->param.voice.ksNoise[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::KSNoise];
 
+  auto const& lpNorm = procParams.acc.lp[0].Voice()[voice];
+  auto const& hpNorm = procParams.acc.hp[0].Voice()[voice];
   auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
@@ -260,6 +262,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto& exchangeParams = exchangeToGUI->param.voice.ksNoise[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
+  exchangeParams.acc.lp[0][voice] = lpNorm.Last();
+  exchangeParams.acc.hp[0][voice] = hpNorm.Last();
   exchangeParams.acc.excite[0][voice] = exciteNorm.Last();
   exchangeParams.acc.damp[0][voice] = dampNorm.Last();
   exchangeParams.acc.dampScale[0][voice] = dampScaleNorm.Last();

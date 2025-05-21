@@ -47,7 +47,10 @@ FBLog2ParamNonRealTime::TextToPlain(bool io, std::string const& text) const
   if (end != text.c_str() + text.size())
     return {};
   result /= displayMultiplier;
-  if (result < NormalizedToPlain(0.0) || result > NormalizedToPlain(1.0))
+  // account for rounding error
+  double plainMin = NormalizedToPlain(0.0);
+  double plainMax = NormalizedToPlain(1.0);
+  if (result < plainMin * 0.999 || result > plainMax * 1.001)
     return {};
-  return { result };
+  return { std::clamp(result, plainMin, plainMax) };
 }
