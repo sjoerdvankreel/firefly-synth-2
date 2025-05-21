@@ -50,14 +50,16 @@ FFKSNoiseProcessor::Draw()
 inline float
 FFKSNoiseProcessor::Next(
   FBStaticModule const& topo,
-  float sampleRate, float baseFreq, 
+  float sampleRate, float baseFreq, float excite,
   float colorPlain, float xPlain, float yPlain)
 {
-  float const empirical = 0.75f;
+  float const empirical1 = 0.75f;
+  float const empirical2 = 4.0f;
   float x = xPlain;
   float y = 0.01f + 0.99f * yPlain;
   float color = 1.99f * (1.0f - colorPlain);
-  float scale = 1.0f - ((1.0f - colorPlain) * empirical);
+  float scale = 1.0f - ((1.0f - colorPlain) * empirical1);
+  scale *= (1.0f + empirical2 * (1.0f - excite));
 
   _phaseTowardsX += baseFreq / sampleRate;
   if (_phaseTowardsX < 1.0f - x)
@@ -92,6 +94,7 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   auto const& xNorm = params.acc.x[0].Voice()[voice];
   auto const& yNorm = params.acc.y[0].Voice()[voice];
   auto const& colorNorm = params.acc.color[0].Voice()[voice];
+  auto const& exciteNorm = params.acc.excite[0].Voice()[voice];
   auto const& typeNorm = params.block.type[0].Voice()[voice];
   auto const& seedNorm = params.block.seed[0].Voice()[voice];
   auto const& polesNorm = params.block.poles[0].Voice()[voice];
@@ -127,6 +130,7 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   for (int i = 0; i < DelayLineSize; i++)
     _delayLine.Push(Next(
       topo, sampleRate, baseFreq,
+      topo.NormalizedToIdentityFast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0)),
       topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0)),
       topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0)),
       topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0))));
@@ -229,7 +233,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float outVal = _dcFilter.Next(newVal); 
     newVal *= realFeedback;
     _prevDelayVal = newVal;
-    newVal = (1.0f - excite) * newVal + excite * Next(topo, sampleRate, baseFreq, color, x, y);
+    newVal = (1.0f - excite) * newVal + excite * Next(topo, sampleRate, baseFreq, excite, color, x, y);
     _delayLine.Push(newVal);
 
     output[0].Set(s, outVal);
