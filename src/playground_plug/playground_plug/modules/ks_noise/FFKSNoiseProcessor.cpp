@@ -48,24 +48,12 @@ FFKSNoiseProcessor::Draw()
 }
 
 inline float
-FFKSNoiseProcessor::Filter(
-  float sampleRate, float lpHz, float hpHz, float val)
-{
-  _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpHz, 0.0f, 0.0f);
-  _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpHz, 0.0f, 0.0f);
-  double dResult = _lpFilter.Next(0, _hpFilter.Next(0, val));
-  float result = static_cast<float>(dResult);
-  assert(!std::isnan(result));
-  assert(!std::isinf(result));
-  return result;
-}
-
-inline float
 FFKSNoiseProcessor::Next(
   FBStaticModule const& topo,
   float sampleRate, float baseFreq, 
   float excite, float colorPlain, 
-  float xPlain, float yPlain)
+  float xPlain, float yPlain,
+  float lpFreqHz, float hpFreqHz)
 {
   float const empirical1 = 0.75f;
   float const empirical2 = 4.0f;
@@ -75,13 +63,28 @@ FFKSNoiseProcessor::Next(
   float scale = 1.0f - ((1.0f - colorPlain) * empirical1);
   scale *= (1.0f + empirical2 * (1.0f - excite));
 
+  _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpFreqHz, 0.0f, 0.0f);
+  _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpFreqHz, 0.0f, 0.0f);
+
   _phaseTowardsX += baseFreq / sampleRate;
   if (_phaseTowardsX < 1.0f - x)
-    return _lastDraw * scale;
+  {
+    double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
+    float result = static_cast<float>(dResult);
+    assert(!std::isnan(result));
+    assert(!std::isinf(result));
+    return result;
+  }
 
   _phaseTowardsX = 0.0f;
   if (_uniformPrng.NextScalar() > y) 
-    return _lastDraw * scale;
+  {
+    double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
+    float result = static_cast<float>(dResult);
+    assert(!std::isnan(result));
+    assert(!std::isinf(result));
+    return result;
+  }
 
   _lastDraw = Draw();
   float a = 1.0f;
@@ -93,7 +96,11 @@ FFKSNoiseProcessor::Next(
   }
   _colorFilterBuffer.Set(_colorFilterPosition, _lastDraw);
   _colorFilterPosition = (_colorFilterPosition + 1) % _poles;
-  return _lastDraw * scale;
+  double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
+  float result = static_cast<float>(dResult);
+  assert(!std::isnan(result));
+  assert(!std::isinf(result));
+  return result;
 }
 
 void
@@ -141,22 +148,19 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   for (int p = 0; p < _poles; p++)
     _colorFilterBuffer.Set(p, Draw());
 
-  float x = topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0));
-  float y = topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0));
-  float lpHz = topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0));
-  float hpHz = topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0));
   float fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
   float coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
-  float excite = topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0));
-  float color = topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0));
-
   float pitch = _key + coarse + fine;
   float baseFreq = FBPitchToFreq(pitch);
   for (int i = 0; i < DelayLineSize; i++)
-  {
-    float next = Next(topo, sampleRate, baseFreq, excite, color, x, y);
-    _delayLine.Push(Filter(sampleRate, lpHz, hpHz, next));
-  }
+    _delayLine.Push(Next(
+      topo, sampleRate, baseFreq,
+      topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0)),
+      topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0)),
+      topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0)),
+      topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0)),
+      topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0)),
+      topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0))));
 }
 
 int
@@ -264,8 +268,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float outVal = _dcFilter.Next(newVal); 
     newVal *= realFeedback;
     _prevDelayVal = newVal;
-    newVal = (1.0f - excite) * newVal + excite * Next(topo, sampleRate, baseFreq, excite, color, x, y);
-    newVal = Filter(sampleRate, lp, hp, newVal);
+    newVal = (1.0f - excite) * newVal + excite * Next(topo, sampleRate, baseFreq, excite, color, x, y, lp, hp);
     _delayLine.Push(newVal);
 
     output[0].Set(s, outVal);
