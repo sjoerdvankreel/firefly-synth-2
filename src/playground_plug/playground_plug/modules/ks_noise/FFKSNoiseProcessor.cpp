@@ -273,7 +273,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     {
       float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetune;
       float uniFreq = FBPitchToFreq(uniPitch);
-      _uniState[u].delayLine.Delay(sampleRate / uniPitch);
+      _uniState[u].delayLine.Delay(sampleRate / uniFreq);
       float nextVal = _uniState[u].delayLine.Pop();
       float prevVal = _uniState[u].prevDelayVal;
       float newVal = (1.0f - damp) * nextVal + damp * (prevVal + nextVal) * 0.5f;
