@@ -135,18 +135,18 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
 
-  for (int i = 0; i < _uniCount; i++)
+  for (int u = 0; u < _uniCount; u++)
   {
-    _uniState[i].phaseGen = {};
-    _uniState[i].lpFilter = {};
-    _uniState[i].hpFilter = {};
-    _uniState[i].lastDraw = 0.0f;
-    _uniState[i].prevDelayVal = 0.0f;
-    _uniState[i].phaseTowardsX = 0.0f;
-    _uniState[i].colorFilterPosition = 0;
+    _uniState[u].phaseGen = {};
+    _uniState[u].lpFilter = {};
+    _uniState[u].hpFilter = {};
+    _uniState[u].lastDraw = 0.0f;
+    _uniState[u].prevDelayVal = 0.0f;
+    _uniState[u].phaseTowardsX = 0.0f;
+    _uniState[u].colorFilterPosition = 0;
 
     for (int p = 0; p < _poles; p++)
-      _uniState[i].colorFilterBuffer.Set(p, Draw());
+      _uniState[u].colorFilterBuffer.Set(p, Draw());
 
     float lpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0));
     float hpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0));
@@ -159,12 +159,12 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
     float uniDetunePlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm.CV().Get(0));
 
     float basePitch = _key + coarsePlain + finePlain;
-    float uniPitch = basePitch + _uniPosMHalfToHalf.Get(i) * uniDetunePlain;
+    float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain;
     float uniFreq = FBPitchToFreq(uniPitch);
 
     for (int i = 0; i < DelayLineSize; i++)
-      _uniState[i].delayLine.Push(Next(
-        topo, i, sampleRate, uniFreq, excitePlain, 
+      _uniState[u].delayLine.Push(Next(
+        topo, u, sampleRate, uniFreq, excitePlain,
         colorPlain, xPlain, yPlain, lpPlain, hpPlain));
   }
 }
