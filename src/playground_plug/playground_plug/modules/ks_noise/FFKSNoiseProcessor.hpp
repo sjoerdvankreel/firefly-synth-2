@@ -17,32 +17,37 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+struct FFKSNoiseUniVoiceState final
+{
+  float lastDraw = 0.0f;
+  float prevDelayVal = 0.f;
+  float phaseTowardsX = 0.0f;
+  int colorFilterPosition = 0;
+
+  FBDelayLine delayLine = {};
+  FBBasicHPFilter dcFilter = {};
+  FBCytomicFilter<1> lpFilter = {};
+  FBCytomicFilter<1> hpFilter = {};
+  FFKSNoisePhaseGenerator phaseGen = {};
+  FBSArray<float, FFKSNoiseMaxPoles> colorFilterBuffer = {};
+};
+
 class FFKSNoiseProcessor final:
 public FFOsciProcessorBase
 {
   int _seed = {};
   int _poles = {};
+  int _graphPosition = {};
   FFKSNoiseType _type = {};
 
-  float _lastDraw = 0.0f;
-  float _prevDelayVal = 0.f;
-  float _phaseTowardsX = 0.0f;
-  int _graphPosition = 0;
-  int _colorFilterPosition = 0;
-
-  FBDelayLine _delayLine = {};
-  FBBasicHPFilter _dcFilter = {};
-  FBCytomicFilter<1> _lpFilter = {};
-  FBCytomicFilter<1> _hpFilter = {};
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
-  FFKSNoisePhaseGenerator _phaseGen = {};
-  FBSArray<float, FFKSNoiseMaxPoles> _colorFilterBuffer = {};
+  std::array<FFKSNoiseUniVoiceState, FFOsciBaseUniMaxCount> _uniState = {};
 
   float Draw();
   float Next(
-    FBStaticModule const& topo,
-    float sampleRate, float baseFreq, 
+    FBStaticModule const& topo, int uniVoice,
+    float sampleRate, float uniFreq, 
     float excite, float colorNorm, 
     float xNorm, float yNorm,
     float lpFreqHz, float hpFreqHz);

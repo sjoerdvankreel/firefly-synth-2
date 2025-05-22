@@ -28,9 +28,12 @@ FFKSNoiseProcessor() {}
 void
 FFKSNoiseProcessor::Initialize(float sampleRate)
 {
-  if(_delayLine.Count() == 0)
-    _delayLine.Resize(DelayLineSize);
-  _dcFilter.SetCoeffs(DCBlockFreq, sampleRate);
+  for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
+  {
+    if (_uniState[i].delayLine.Count() == 0)
+      _uniState[i].delayLine.Resize(DelayLineSize);
+    _uniState[i].dcFilter.SetCoeffs(DCBlockFreq, sampleRate);
+  }
 }
 
 inline float
@@ -49,8 +52,8 @@ FFKSNoiseProcessor::Draw()
 
 inline float
 FFKSNoiseProcessor::Next(
-  FBStaticModule const& topo,
-  float sampleRate, float baseFreq, 
+  FBStaticModule const& topo, int uniVoice,
+  float sampleRate, float uniFreq, 
   float excite, float colorPlain, 
   float xPlain, float yPlain,
   float lpFreqHz, float hpFreqHz)
@@ -63,44 +66,38 @@ FFKSNoiseProcessor::Next(
   float scale = 1.0f - ((1.0f - colorPlain) * empirical1);
   scale *= (1.0f + empirical2 * (1.0f - excite));
 
-  _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpFreqHz, 0.0f, 0.0f);
-  _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpFreqHz, 0.0f, 0.0f);
+  _uniState[uniVoice].lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpFreqHz, 0.0f, 0.0f);
+  _uniState[uniVoice].hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpFreqHz, 0.0f, 0.0f);
 
-  _phaseTowardsX += baseFreq / sampleRate;
-  if (_phaseTowardsX < 1.0f - x)
-  {
-    double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
-    float result = static_cast<float>(dResult);
-    assert(!std::isnan(result));
-    assert(!std::isinf(result));
-    return result;
-  }
+  _uniState[uniVoice].phaseTowardsX += uniFreq / sampleRate;
+  if (_uniState[uniVoice].phaseTowardsX < 1.0f - x)
+    return static_cast<float>(
+      _uniState[uniVoice].lpFilter.Next(0, 
+        _uniState[uniVoice].hpFilter.Next(0, 
+          _uniState[uniVoice].lastDraw * scale)));
 
-  _phaseTowardsX = 0.0f;
+  _uniState[uniVoice].phaseTowardsX = 0.0f;
   if (_uniformPrng.NextScalar() > y) 
-  {
-    double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
-    float result = static_cast<float>(dResult);
-    assert(!std::isnan(result));
-    assert(!std::isinf(result));
-    return result;
-  }
+    return static_cast<float>(
+      _uniState[uniVoice].lpFilter.Next(0,
+        _uniState[uniVoice].hpFilter.Next(0,
+          _uniState[uniVoice].lastDraw * scale)));
 
-  _lastDraw = Draw();
+  _uniState[uniVoice].lastDraw = Draw();
   float a = 1.0f;
   for (int i = 0; i < _poles; i++)
   {
     a = (i - color / 2.0f) * a / (i + 1.0f);
-    int colorFilterPos = (_colorFilterPosition + _poles - i - 1) % _poles;
-    _lastDraw -= a * _colorFilterBuffer.Get(colorFilterPos);
+    int colorFilterPos = (_uniState[uniVoice].colorFilterPosition + _poles - i - 1) % _poles;
+    _uniState[uniVoice].lastDraw -= a * _uniState[uniVoice].colorFilterBuffer.Get(colorFilterPos);
   }
-  _colorFilterBuffer.Set(_colorFilterPosition, _lastDraw);
-  _colorFilterPosition = (_colorFilterPosition + 1) % _poles;
-  double dResult = _lpFilter.Next(0, _hpFilter.Next(0, _lastDraw * scale));
-  float result = static_cast<float>(dResult);
-  assert(!std::isnan(result));
-  assert(!std::isinf(result));
-  return result;
+  _uniState[uniVoice].colorFilterBuffer.Set(_uniState[uniVoice].colorFilterPosition, _uniState[uniVoice].lastDraw);
+  _uniState[uniVoice].colorFilterPosition = (_uniState[uniVoice].colorFilterPosition + 1) % _poles;
+
+  return static_cast<float>(
+    _uniState[uniVoice].lpFilter.Next(0,
+      _uniState[uniVoice].hpFilter.Next(0,
+        _uniState[uniVoice].lastDraw * scale)));
 }
 
 void
@@ -121,46 +118,55 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   auto const& typeNorm = params.block.type[0].Voice()[voice];
   auto const& seedNorm = params.block.seed[0].Voice()[voice];
   auto const& polesNorm = params.block.poles[0].Voice()[voice];
-  auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
   auto const& fineNorm = params.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
+  auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
+  auto const& uniDetuneNorm = params.acc.uniDetune[0].Voice()[voice];
 
   _seed = topo.NormalizedToDiscreteFast(FFKSNoiseParam::Seed, seedNorm);
   _poles = topo.NormalizedToDiscreteFast(FFKSNoiseParam::Poles, polesNorm);
   _type = topo.NormalizedToListFast<FFKSNoiseType>(FFKSNoiseParam::Type, typeNorm);
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFKSNoiseParam::UniCount, uniCountNorm));
 
-  _lastDraw = 0.0f;
-  _graphPosition = 0;
-  _prevDelayVal = 0.0f;
-  _phaseTowardsX = 0.0f;
-  _colorFilterPosition = 0;
-  
-  _phaseGen = {};
-  _lpFilter = {};
-  _hpFilter = {};
-  _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
-  _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
-
   if (_type == FFKSNoiseType::Off)
     return;
 
-  for (int p = 0; p < _poles; p++)
-    _colorFilterBuffer.Set(p, Draw());
+  _graphPosition = 0;
+  _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
+  _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
 
-  float fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
-  float coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
-  float pitch = _key + coarse + fine;
-  float baseFreq = FBPitchToFreq(pitch);
-  for (int i = 0; i < DelayLineSize; i++)
-    _delayLine.Push(Next(
-      topo, sampleRate, baseFreq,
-      topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0)),
-      topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0)),
-      topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0)),
-      topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0)),
-      topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0)),
-      topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0))));
+  for (int i = 0; i < _uniCount; i++)
+  {
+    _uniState[i].phaseGen = {};
+    _uniState[i].lpFilter = {};
+    _uniState[i].hpFilter = {};
+    _uniState[i].lastDraw = 0.0f;
+    _uniState[i].prevDelayVal = 0.0f;
+    _uniState[i].phaseTowardsX = 0.0f;
+    _uniState[i].colorFilterPosition = 0;
+
+    for (int p = 0; p < _poles; p++)
+      _uniState[i].colorFilterBuffer.Set(p, Draw());
+
+    float lpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0));
+    float hpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0));
+    float xPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0));
+    float yPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0));
+    float finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
+    float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
+    float excitePlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0));
+    float colorPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0));
+    float uniDetunePlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm.CV().Get(0));
+
+    float basePitch = _key + coarsePlain + finePlain;
+    float uniPitch = basePitch + _uniPosMHalfToHalf.Get(i) * uniDetunePlain;
+    float uniFreq = FBPitchToFreq(uniPitch);
+
+    for (int i = 0; i < DelayLineSize; i++)
+      _uniState[i].delayLine.Push(Next(
+        topo, i, sampleRate, uniFreq, excitePlain, 
+        colorPlain, xPlain, yPlain, lpPlain, hpPlain));
+  }
 }
 
 int
@@ -209,6 +215,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   FBSArray<float, FBFixedBlockSamples> excitePlain = {};
   FBSArray<float, FBFixedBlockSamples> feedbackPlain = {};
   FBSArray<float, FBFixedBlockSamples> baseFreqPlain = {};
+  FBSArray<float, FBFixedBlockSamples> basePitchPlain = {};
   FBSArray<float, FBFixedBlockSamples> uniDetunePlain = {};
   FBSArray<float, FBFixedBlockSamples> dampScalePlain = {};
   FBSArray<float, FBFixedBlockSamples> feedbackScalePlain = {};
@@ -218,6 +225,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
+    basePitchPlain.Store(s, pitch);
     baseFreqPlain.Store(s, baseFreq);
 
     lpPlain.Store(s, topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm, s));
@@ -244,35 +252,39 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     float y = yPlain.Get(s);
     float lp = lpPlain.Get(s);
     float hp = hpPlain.Get(s);
-    float color = colorPlain.Get(s);
     float damp = dampPlain.Get(s);
     float range = rangePlain.Get(s);
+    float color = colorPlain.Get(s);
     float excite = excitePlain.Get(s);
     float feedback = feedbackPlain.Get(s);
+    float basePitch = basePitchPlain.Get(s);
     float dampScale = dampScalePlain.Get(s);
+    float uniDetune = uniDetunePlain.Get(s);
+    float centerPitch = 60.0f + centerPlain.Get(s);
     float feedbackScale = feedbackScalePlain.Get(s);
 
-    float centerPitch = 60.0f + centerPlain.Get(s);
     float pitchDiffSemis = _key - centerPitch;
     float pitchDiffNorm = std::clamp(pitchDiffSemis / range, -1.0f, 1.0f);
     damp = std::clamp(damp - 0.5f * dampScale * pitchDiffNorm, 0.0f, 1.0f);
     feedback = std::clamp(feedback + 0.5f * feedbackScale * pitchDiffNorm, 0.0f, 1.0f);
-
-    float baseFreq = baseFreqPlain.Get(s);
     float realFeedback = 0.9f + 0.1f * feedback;
 
-    _delayLine.Delay(sampleRate / baseFreq);
-    float nextVal = _delayLine.Pop();
-    float prevVal = _prevDelayVal;
-    float newVal = (1.0f - damp) * nextVal + damp * (prevVal + nextVal) * 0.5f;
-    float outVal = _dcFilter.Next(newVal); 
-    newVal *= realFeedback;
-    _prevDelayVal = newVal;
-    newVal = (1.0f - excite) * newVal + excite * Next(topo, sampleRate, baseFreq, excite, color, x, y, lp, hp);
-    _delayLine.Push(newVal);
+    for (int u = 0; u < _uniCount; u++)
+    {
+      float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetune;
+      float uniFreq = FBPitchToFreq(uniPitch);
+      _uniState[u].delayLine.Delay(sampleRate / uniPitch);
+      float nextVal = _uniState[u].delayLine.Pop();
+      float prevVal = _uniState[u].prevDelayVal;
+      float newVal = (1.0f - damp) * nextVal + damp * (prevVal + nextVal) * 0.5f;
+      float outVal = _uniState[u].dcFilter.Next(newVal);
+      newVal *= realFeedback;
+      _uniState[u].prevDelayVal = newVal;
+      newVal = (1.0f - excite) * newVal + excite * Next(topo, u, sampleRate, uniFreq, excite, color, x, y, lp, hp);
+      _uniState[u].delayLine.Push(newVal);
+      _uniOutput[u].Set(s, outVal);
+    }
 
-    output[0].Set(s, outVal);
-    output[1].Set(s, outVal);
     _graphPosition++;
   }
 
