@@ -55,8 +55,7 @@ FFKSNoiseProcessor::Next(
   FBStaticModule const& topo, int uniVoice,
   float sampleRate, float uniFreq, 
   float excite, float colorPlain, 
-  float xPlain, float yPlain,
-  float lpFreqHz, float hpFreqHz)
+  float xPlain, float yPlain)
 {
   float const empirical1 = 0.75f;
   float const empirical2 = 4.0f;
@@ -66,22 +65,17 @@ FFKSNoiseProcessor::Next(
   float scale = 1.0f - ((1.0f - colorPlain) * empirical1);
   scale *= (1.0f + empirical2 * (1.0f - excite));
 
-  _uniState[uniVoice].lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpFreqHz, 0.0f, 0.0f);
-  _uniState[uniVoice].hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpFreqHz, 0.0f, 0.0f);
-
   _uniState[uniVoice].phaseTowardsX += uniFreq / sampleRate;
   if (_uniState[uniVoice].phaseTowardsX < 1.0f - x)
     return static_cast<float>(
-      _uniState[uniVoice].lpFilter.Next(0, 
-        _uniState[uniVoice].hpFilter.Next(0, 
-          _uniState[uniVoice].lastDraw * scale)));
+      _lpFilter.Next(uniVoice, _hpFilter.Next(
+        uniVoice, _uniState[uniVoice].lastDraw * scale)));
 
   _uniState[uniVoice].phaseTowardsX = 0.0f;
   if (_uniformPrng.NextScalar() > y) 
     return static_cast<float>(
-      _uniState[uniVoice].lpFilter.Next(0,
-        _uniState[uniVoice].hpFilter.Next(0,
-          _uniState[uniVoice].lastDraw * scale)));
+      _lpFilter.Next(uniVoice, _hpFilter.Next(
+        uniVoice, _uniState[uniVoice].lastDraw * scale)));
 
   _uniState[uniVoice].lastDraw = Draw();
   float a = 1.0f;
@@ -95,9 +89,8 @@ FFKSNoiseProcessor::Next(
   _uniState[uniVoice].colorFilterPosition = (_uniState[uniVoice].colorFilterPosition + 1) % _poles;
 
   return static_cast<float>(
-    _uniState[uniVoice].lpFilter.Next(0,
-      _uniState[uniVoice].hpFilter.Next(0,
-        _uniState[uniVoice].lastDraw * scale)));
+    _lpFilter.Next(uniVoice, _hpFilter.Next(
+      uniVoice, _uniState[uniVoice].lastDraw * scale)));
 }
 
 void
@@ -131,15 +124,26 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   if (_type == FFKSNoiseType::Off)
     return;
 
+  float lpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0));
+  float hpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0));
+  float xPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0));
+  float yPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0));
+  float finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
+  float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
+  float excitePlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0));
+  float colorPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0));
+  float uniDetunePlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm.CV().Get(0));
+
+  _lpFilter = {};
+  _hpFilter = {};
   _graphPosition = 0;
   _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
   _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
-
+  _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpPlain, 0.0f, 0.0f);
+  _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpPlain, 0.0f, 0.0f);
   for (int u = 0; u < _uniCount; u++)
   {
     _uniState[u].phaseGen = {};
-    _uniState[u].lpFilter = {};
-    _uniState[u].hpFilter = {};
     _uniState[u].lastDraw = 0.0f;
     _uniState[u].prevDelayVal = 0.0f;
     _uniState[u].phaseTowardsX = 0.0f;
@@ -148,24 +152,12 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
     for (int p = 0; p < _poles; p++)
       _uniState[u].colorFilterBuffer.Set(p, Draw());
 
-    float lpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0));
-    float hpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0));
-    float xPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0));
-    float yPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0));
-    float finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
-    float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
-    float excitePlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0));
-    float colorPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0));
-    float uniDetunePlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm.CV().Get(0));
-
     float basePitch = _key + coarsePlain + finePlain;
     float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain;
     float uniFreq = FBPitchToFreq(uniPitch);
-
     for (int i = 0; i < DelayLineSize; i++)
       _uniState[u].delayLine.Push(Next(
-        topo, u, sampleRate, uniFreq, excitePlain,
-        colorPlain, xPlain, yPlain, lpPlain, hpPlain));
+        topo, u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain));
   }
 }
 
@@ -269,6 +261,8 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     feedback = std::clamp(feedback + 0.5f * feedbackScale * pitchDiffNorm, 0.0f, 1.0f);
     float realFeedback = 0.9f + 0.1f * feedback;
 
+    _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lp, 0.0f, 0.0f);
+    _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hp, 0.0f, 0.0f);
     for (int u = 0; u < _uniCount; u++)
     {
       float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetune;
@@ -280,7 +274,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
       float outVal = _uniState[u].dcFilter.Next(newVal);
       newVal *= realFeedback;
       _uniState[u].prevDelayVal = newVal;
-      newVal = (1.0f - excite) * newVal + excite * Next(topo, u, sampleRate, uniFreq, excite, color, x, y, lp, hp);
+      newVal = (1.0f - excite) * newVal + excite * Next(topo, u, sampleRate, uniFreq, excite, color, x, y);
       _uniState[u].delayLine.Push(newVal);
       _uniOutput[u].Set(s, outVal);
     }

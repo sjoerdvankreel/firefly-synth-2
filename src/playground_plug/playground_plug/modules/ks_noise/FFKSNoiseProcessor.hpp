@@ -26,8 +26,6 @@ struct FFKSNoiseUniVoiceState final
 
   FBDelayLine delayLine = {};
   FBBasicHPFilter dcFilter = {};
-  FBCytomicFilter<1> lpFilter = {};
-  FBCytomicFilter<1> hpFilter = {};
   FFKSNoisePhaseGenerator phaseGen = {};
   FBSArray<float, FFKSNoiseMaxPoles> colorFilterBuffer = {};
 };
@@ -42,6 +40,8 @@ public FFOsciProcessorBase
 
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
+  FBCytomicFilter<FFOsciBaseUniMaxCount> _lpFilter = {};
+  FBCytomicFilter<FFOsciBaseUniMaxCount> _hpFilter = {};
   std::array<FFKSNoiseUniVoiceState, FFOsciBaseUniMaxCount> _uniState = {};
 
   float Draw();
@@ -49,8 +49,7 @@ public FFOsciProcessorBase
     FBStaticModule const& topo, int uniVoice,
     float sampleRate, float uniFreq, 
     float excite, float colorNorm, 
-    float xNorm, float yNorm,
-    float lpFreqHz, float hpFreqHz);
+    float xNorm, float yNorm);
 
 public:
   FFKSNoiseProcessor();
