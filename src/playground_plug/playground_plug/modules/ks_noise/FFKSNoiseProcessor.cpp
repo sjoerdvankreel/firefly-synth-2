@@ -263,20 +263,27 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
 
     _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lp, 0.0f, 0.0f);
     _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hp, 0.0f, 0.0f);
-    for (int u = 0; u < _uniCount; u++)
+    for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
     {
-      float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetune;
-      float uniFreq = FBPitchToFreq(uniPitch);
-      _uniState[u].delayLine.Delay(sampleRate / uniFreq);
-      float nextVal = _uniState[u].delayLine.Pop();
-      float prevVal = _uniState[u].prevDelayVal;
-      float newVal = (1.0f - damp) * nextVal + damp * (prevVal + nextVal) * 0.5f;
-      float outVal = _uniState[u].dcFilter.Next(newVal);
-      newVal *= realFeedback;
-      _uniState[u].prevDelayVal = newVal;
-      newVal = (1.0f - excite) * newVal + excite * Next(topo, u, sampleRate, uniFreq, excite, color, x, y);
-      _uniState[u].delayLine.Push(newVal);
-      _uniOutput[u].Set(s, outVal);
+      auto uniPitchBatch = basePitch + _uniPosMHalfToHalf.Load(ub) * uniDetune;
+      auto uniFreqBatch = FBPitchToFreq(uniPitchBatch);
+      FBSArray<float, FBSIMDFloatCount> uniFreqArray(uniFreqBatch);
+
+      for (int u = ub; u < ub + FBSIMDFloatCount; u++)
+      {
+        float uniFreq = uniFreqArray.Get(u - ub);
+        _uniState[u].delayLine.Delay(sampleRate / uniFreq);
+        float thisVal = _uniState[u].delayLine.Pop();
+        float prevVal = _uniState[u].prevDelayVal;
+        float newVal = (1.0f - damp) * thisVal + damp * (prevVal + thisVal) * 0.5f;
+        float outVal = _uniState[u].dcFilter.Next(newVal);
+        newVal *= realFeedback;
+        _uniState[u].prevDelayVal = newVal;
+        float nextVal = Next(topo, u, sampleRate, uniFreq, excite, color, x, y);
+        newVal = (1.0f - excite) * newVal + excite * nextVal;
+        _uniState[u].delayLine.Push(newVal);
+        _uniOutput[u].Set(s, outVal);
+      }
     }
 
     _graphPosition++;
