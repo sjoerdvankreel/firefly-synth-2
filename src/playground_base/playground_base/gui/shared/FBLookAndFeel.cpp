@@ -5,6 +5,13 @@
 
 using namespace juce;
 
+static Colour
+getSliderThumbColor(Slider const& s)
+{
+  auto result = s.findColour(Slider::thumbColourId);
+  return s.isEnabled() ? result : result.darker();
+}
+
 static void createTabTextLayout(
   const TabBarButton& button,
   float length, float depth,
@@ -40,7 +47,7 @@ FBLookAndFeel::DrawLinearSliderExchangeThumb(
   float ky = static_cast<float>(y) + height * 0.5f;
   Point<float> maxPoint = { kx, ky };
   float thumbWidth = static_cast<float>(getSliderThumbRadius(slider));
-  g.setColour(slider.findColour(Slider::thumbColourId).withAlpha(0.5f));
+  g.setColour(getSliderThumbColor(slider).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(maxPoint));
 }
 
@@ -61,7 +68,7 @@ FBLookAndFeel::DrawRotarySliderExchangeThumb(
   Point<float> thumbPoint(
     bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
     bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
-  g.setColour(slider.findColour(Slider::thumbColourId).withAlpha(0.5f));
+  g.setColour(getSliderThumbColor(slider).withAlpha(0.5f));
   g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
 }
 
@@ -144,7 +151,7 @@ void
 FBLookAndFeel::drawRotarySlider(
   Graphics& g,
   int x, int y, int width, int height, float sliderPos,
-  float rotaryStartAngle, float rotaryEndAngle, Slider& s)
+  float rotaryStartAngle, float rotaryEndAngle, Slider& slider)
 {
   // juce default reduces by 10
   x -= 7;
@@ -152,9 +159,39 @@ FBLookAndFeel::drawRotarySlider(
   width += 14;
   height += 14;
 
+  auto outline = slider.findColour(Slider::rotarySliderOutlineColourId);
+  auto fill = slider.findColour(Slider::rotarySliderFillColourId);
+  auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(10);
+  auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
+  auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
+  auto lineW = jmin(8.0f, radius * 0.5f);
+  auto arcRadius = radius - lineW * 0.5f;
+
+  Path backgroundArc;
+  backgroundArc.addCentredArc(
+    bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
+    0.0f, rotaryStartAngle, rotaryEndAngle, true);
+  g.setColour(outline);
+  g.strokePath(backgroundArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
+
+  if (slider.isEnabled())
+  {
+    Path valueArc;
+    valueArc.addCentredArc(
+      bounds.getCentreX(), bounds.getCentreY(), arcRadius, arcRadius,
+      0.0f, rotaryStartAngle, toAngle, true);
+    g.setColour(fill);
+    g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
+  }
+
+  auto thumbWidth = lineW * 2.0f;
+  Point<float> thumbPoint(bounds.getCentreX() + arcRadius * std::cos(toAngle - MathConstants<float>::halfPi),
+    bounds.getCentreY() + arcRadius * std::sin(toAngle - MathConstants<float>::halfPi));
+  g.setColour(getSliderThumbColor(slider));
+  g.fillEllipse(Rectangle<float>(thumbWidth, thumbWidth).withCentre(thumbPoint));
+
   FBParamSlider* paramSlider;
-  LookAndFeel_V4::drawRotarySlider(g, x, y, width, height, sliderPos, rotaryStartAngle, rotaryEndAngle, s);
-  if ((paramSlider = dynamic_cast<FBParamSlider*>(&s)) == nullptr)
+  if ((paramSlider = dynamic_cast<FBParamSlider*>(&slider)) == nullptr)
     return;
   auto paramActive = paramSlider->ParamActiveExchangeState();
   if (!paramActive.active)
