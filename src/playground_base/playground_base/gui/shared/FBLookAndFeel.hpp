@@ -35,6 +35,14 @@ public:
     juce::TabBarButton& button, juce::Graphics& g,
     bool isMouseOver, bool isMouseDown) override;
 
+  void drawTickBox(
+    juce::Graphics& g, juce::Component& component,
+    float x, float y, float w, float h,
+    const bool ticked,
+    const bool isEnabled,
+    const bool shouldDrawButtonAsHighlighted,
+    const bool shouldDrawButtonAsDown) override;
+
   void drawComboBox(juce::Graphics&,
     int	width, int height, bool	isButtonDown,
     int	buttonX, int buttonY, int	buttonW, int buttonH,

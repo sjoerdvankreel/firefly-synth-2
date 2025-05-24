@@ -128,6 +128,30 @@ FBLookAndFeel::drawComboBox(Graphics& g,
   g.drawRoundedRectangle(boxBounds.toFloat().reduced(0.5f, 0.5f), cornerSize, 1.0f);
 }
 
+void 
+FBLookAndFeel::drawTickBox(
+  Graphics& g, Component& component,
+  float x, float y, float w, float h,
+  const bool ticked,
+  const bool isEnabled,
+  const bool shouldDrawButtonAsHighlighted,
+  const bool shouldDrawButtonAsDown)
+{
+  Rectangle<float> tickBounds(x, y, w, h);
+  g.setColour(component.findColour(ToggleButton::tickDisabledColourId));
+  g.drawRoundedRectangle(tickBounds, 4.0f, 1.0f);
+
+  if (ticked)
+  {
+    auto color = component.findColour(ToggleButton::tickColourId);
+    if (!component.isEnabled())
+      color = color.darker(0.6f);
+    g.setColour(color);
+    auto tick = getTickShape(0.75f);
+    g.fillPath(tick, tick.getTransformToScaleToFit(tickBounds.reduced(4, 5).toFloat(), false));
+  }
+}
+
 void
 FBLookAndFeel::drawLinearSlider(
   Graphics& g,
