@@ -1,7 +1,6 @@
 panning
 automate anything
 clip/autoadjust
-rename ksnoise
 avx version
 intel mac version
 midi smoothing
