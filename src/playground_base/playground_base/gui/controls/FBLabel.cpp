@@ -11,6 +11,7 @@ IFBHorizontalAutoSize(),
 _textWidth(FBGUIGetStringWidthCached(text))
 {
   setText(text, dontSendNotification);
+  setBorderSize({ 1, 2, 1, 2 });
 }
 
 int 
