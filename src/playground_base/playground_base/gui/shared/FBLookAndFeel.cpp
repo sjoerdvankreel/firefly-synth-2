@@ -9,7 +9,7 @@ static Colour
 getSliderThumbColor(Slider const& s)
 {
   auto result = s.findColour(Slider::thumbColourId);
-  return s.isEnabled() ? result : result.darker();
+  return s.isEnabled() ? result : result.darker(0.6f);
 }
 
 static void createTabTextLayout(
