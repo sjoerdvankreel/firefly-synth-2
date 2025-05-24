@@ -16,7 +16,8 @@
 #include <cstdint>
 
 inline float const DCBlockFreq = 20.0f;
-inline int constexpr DelayLineSize = 8192;
+inline int constexpr GraphDelayLineSize = 256;
+inline int constexpr AudioDelayLineSize = 8192;
 
 // https://www.reddit.com/r/DSP/comments/8fm3c5/what_am_i_doing_wrong_brown_noise/
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
@@ -26,12 +27,13 @@ FFKSNoiseProcessor::
 FFKSNoiseProcessor() {}
 
 void
-FFKSNoiseProcessor::Initialize(float sampleRate)
+FFKSNoiseProcessor::Initialize(bool graph, float sampleRate)
 {
+  int delayLineSize = graph ? GraphDelayLineSize : AudioDelayLineSize;
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
   {
     if (_uniState[i].delayLine.Count() == 0)
-      _uniState[i].delayLine.Resize(DelayLineSize);
+      _uniState[i].delayLine.Resize(delayLineSize);
     _uniState[i].dcFilter.SetCoeffs(DCBlockFreq, sampleRate);
   }
 }
@@ -67,15 +69,11 @@ FFKSNoiseProcessor::Next(
 
   _uniState[uniVoice].phaseTowardsX += uniFreq / sampleRate;
   if (_uniState[uniVoice].phaseTowardsX < 1.0f - x)
-    return static_cast<float>(
-      _lpFilter.Next(uniVoice, _hpFilter.Next(
-        uniVoice, _uniState[uniVoice].lastDraw * scale)));
+    return _uniState[uniVoice].lastDraw * scale;
 
   _uniState[uniVoice].phaseTowardsX = 0.0f;
   if (_uniformPrng.NextScalar() > y) 
-    return static_cast<float>(
-      _lpFilter.Next(uniVoice, _hpFilter.Next(
-        uniVoice, _uniState[uniVoice].lastDraw * scale)));
+    return _uniState[uniVoice].lastDraw * scale;
 
   _uniState[uniVoice].lastDraw = Draw();
   float a = 1.0f;
@@ -87,14 +85,11 @@ FFKSNoiseProcessor::Next(
   }
   _uniState[uniVoice].colorFilterBuffer.Set(_uniState[uniVoice].colorFilterPosition, _uniState[uniVoice].lastDraw);
   _uniState[uniVoice].colorFilterPosition = (_uniState[uniVoice].colorFilterPosition + 1) % _poles;
-
-  return static_cast<float>(
-    _lpFilter.Next(uniVoice, _hpFilter.Next(
-      uniVoice, _uniState[uniVoice].lastDraw * scale)));
+  return _uniState[uniVoice].lastDraw * scale;
 }
 
 void
-FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
+FFKSNoiseProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
@@ -141,6 +136,8 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
   _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
   _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpPlain, 0.0f, 0.0f);
   _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpPlain, 0.0f, 0.0f);
+  
+  int delayLineSize = graph ? GraphDelayLineSize : AudioDelayLineSize;
   for (int u = 0; u < _uniCount; u++)
   {
     _uniState[u].phaseGen = {};
@@ -155,9 +152,11 @@ FFKSNoiseProcessor::BeginVoice(FBModuleProcState& state)
     float basePitch = _key + coarsePlain + finePlain;
     float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain;
     float uniFreq = FBPitchToFreq(uniPitch);
-    for (int i = 0; i < DelayLineSize; i++)
-      _uniState[u].delayLine.Push(Next(
-        topo, u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain));
+    for (int i = 0; i < delayLineSize; i++)
+    {
+      float nextVal = Next(topo, u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain);
+      _uniState[u].delayLine.Push(static_cast<float>(_lpFilter.Next(u, _hpFilter.Next(u, nextVal))));
+    }
   }
 }
 
@@ -280,6 +279,7 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
         newVal *= realFeedback;
         _uniState[u].prevDelayVal = newVal;
         float nextVal = Next(topo, u, sampleRate, uniFreq, excite, color, x, y);
+        nextVal = static_cast<float>(_lpFilter.Next(u, _hpFilter.Next(u, nextVal)));
         newVal = (1.0f - excite) * newVal + excite * nextVal;
         _uniState[u].delayLine.Push(newVal);
         _uniOutput[u].Set(s, outVal);

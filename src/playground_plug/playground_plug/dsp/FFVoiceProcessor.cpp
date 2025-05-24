@@ -32,7 +32,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   for (int i = 0; i < FFKSNoiseCount; i++)
   {
     state.moduleSlot = i;
-    procState->dsp.voice[voice].ksNoise[i].processor->BeginVoice(state);
+    procState->dsp.voice[voice].ksNoise[i].processor->BeginVoice(false, state);
   }
 }
 

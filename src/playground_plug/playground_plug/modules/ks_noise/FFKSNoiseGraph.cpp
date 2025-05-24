@@ -14,7 +14,7 @@ public FBModuleGraphRenderData<KSNoiseGraphRenderData>
 {
   FFKSNoiseProcessor& GetProcessor(FBModuleProcState& state);
   int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
-  void BeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
+  void BeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(true, state); }
 };
 
 FFKSNoiseProcessor&
@@ -22,7 +22,7 @@ KSNoiseGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   auto& processor = *procState->dsp.voice[state.voice->slot].ksNoise[state.moduleSlot].processor;
-  processor.Initialize(state.input->sampleRate);
+  processor.Initialize(true, state.input->sampleRate);
   return processor;
 }
 

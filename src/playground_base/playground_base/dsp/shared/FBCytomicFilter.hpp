@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
 #include <array>
@@ -11,7 +12,7 @@ enum class FBCytomicFilterMode
 { LPF, BPF, HPF, BSF, APF, PEQ, BLL, LSH, HSH };
 
 template <int Channels>
-class FBCytomicFilter final
+class alignas(FBSIMDAlign) FBCytomicFilter final
 {
   double _m0 = {};
   double _m1 = {};
@@ -19,8 +20,8 @@ class FBCytomicFilter final
   double _a1 = {};
   double _a2 = {};
   double _a3 = {};
-  std::array<double, Channels> _ic1eq = {};
-  std::array<double, Channels> _ic2eq = {};
+  alignas(FBSIMDAlign) std::array<double, Channels> _ic1eq = {};
+  alignas(FBSIMDAlign) std::array<double, Channels> _ic2eq = {};
 
 public:
   FB_NOCOPY_MOVE_DEFCTOR(FBCytomicFilter);

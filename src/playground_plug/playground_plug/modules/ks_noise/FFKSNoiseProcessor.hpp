@@ -54,7 +54,7 @@ public FFOsciProcessorBase
 public:
   FFKSNoiseProcessor();
   int Process(FBModuleProcState& state);
-  void Initialize(float sampleRate);
-  void BeginVoice(FBModuleProcState& state);
+  void Initialize(bool graph, float sampleRate);
+  void BeginVoice(bool graph, FBModuleProcState& state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFKSNoiseProcessor);
 };
