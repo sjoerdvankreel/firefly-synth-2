@@ -154,7 +154,8 @@ FFMakeKSNoiseTopo()
   auto& poles = result->params[(int)FFKSNoiseParam::Poles];
   poles.acc = false;
   poles.defaultText = "4";
-  poles.name = "Q";
+  poles.name = "Quality";
+  poles.display = "Qlty";
   poles.slotCount = 1;
   poles.id = "{84B10EBF-E55D-43DF-8E80-3F1FCE093400}";
   poles.type = FBParamType::Discrete;
