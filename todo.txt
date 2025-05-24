@@ -1,4 +1,5 @@
 more gain
+fm osci not show in track controls
 phys spread is borked
 actual release build
 panning
