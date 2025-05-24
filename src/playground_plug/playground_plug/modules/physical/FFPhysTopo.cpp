@@ -154,6 +154,7 @@ FFMakePhysTopo()
   seed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSeed);
   seed.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSeed);
   seed.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSeed);
+  seed.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& poles = result->params[(int)FFPhysParam::Poles];
   poles.acc = false;
@@ -169,6 +170,7 @@ FFMakePhysTopo()
   poles.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPoles);
   poles.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPoles);
   poles.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPoles);
+  poles.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& color = result->params[(int)FFPhysParam::Color];
   color.acc = true;
@@ -182,6 +184,7 @@ FFMakePhysTopo()
   color.scalarAddr = FFSelectScalarParamAddr(selectModule, selectColor);
   color.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectColor);
   color.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectColor);
+  color.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& x = result->params[(int)FFPhysParam::X];
   x.acc = true;
@@ -195,6 +198,7 @@ FFMakePhysTopo()
   x.scalarAddr = FFSelectScalarParamAddr(selectModule, selectX);
   x.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectX);
   x.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectX);
+  x.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& y = result->params[(int)FFPhysParam::Y];
   y.acc = true;
@@ -208,6 +212,7 @@ FFMakePhysTopo()
   y.scalarAddr = FFSelectScalarParamAddr(selectModule, selectY);
   y.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectY);
   y.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectY);
+  y.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& excite = result->params[(int)FFPhysParam::Excite];
   excite.acc = true;
@@ -223,6 +228,7 @@ FFMakePhysTopo()
   excite.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExcite);
   excite.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectExcite);
   excite.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExcite);
+  excite.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& lp = result->params[(int)FFPhysParam::LP];
   lp.acc = true;
@@ -237,6 +243,7 @@ FFMakePhysTopo()
   lp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLP);
   lp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLP);
   lp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLP);
+  lp.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& hp = result->params[(int)FFPhysParam::HP];
   hp.acc = true;
@@ -251,6 +258,7 @@ FFMakePhysTopo()
   hp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectHP);
   hp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectHP);
   hp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHP);
+  hp.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& damp = result->params[(int)FFPhysParam::Damp];
   damp.acc = true;
@@ -264,6 +272,7 @@ FFMakePhysTopo()
   damp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDamp);
   damp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDamp);
   damp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDamp);
+  damp.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& dampScale = result->params[(int)FFPhysParam::DampScale];
   dampScale.acc = true;
@@ -281,6 +290,7 @@ FFMakePhysTopo()
   dampScale.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDampScale);
   dampScale.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDampScale);
   dampScale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDampScale);
+  dampScale.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& feedback = result->params[(int)FFPhysParam::Feedback];
   feedback.acc = true;
@@ -295,6 +305,7 @@ FFMakePhysTopo()
   feedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedback);
   feedback.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedback);
   feedback.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedback);
+  feedback.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& feedbackScale = result->params[(int)FFPhysParam::FeedbackScale];
   feedbackScale.acc = true;
@@ -312,6 +323,7 @@ FFMakePhysTopo()
   feedbackScale.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackScale);
   feedbackScale.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackScale);
   feedbackScale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackScale);
+  feedbackScale.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& center = result->params[(int)FFPhysParam::Center];
   center.acc = true;
@@ -327,6 +339,7 @@ FFMakePhysTopo()
   center.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCenter);
   center.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCenter);
   center.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCenter);
+  center.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& range = result->params[(int)FFPhysParam::Range];
   range.acc = true;
@@ -342,6 +355,7 @@ FFMakePhysTopo()
   range.scalarAddr = FFSelectScalarParamAddr(selectModule, selectRange);
   range.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectRange);
   range.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectRange);
+  range.dependencies.enabled.audio.When({ (int)FFPhysParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }
