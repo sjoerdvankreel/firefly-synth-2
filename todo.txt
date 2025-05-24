@@ -1,3 +1,4 @@
+scale/range is not the interesting params
 automate anything
 clip/autoadjust
 rename ksnoise
