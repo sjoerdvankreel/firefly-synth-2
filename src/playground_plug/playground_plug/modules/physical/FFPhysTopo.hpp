@@ -6,14 +6,14 @@
 #include <memory>
 
 struct FBStaticModule;
-std::unique_ptr<FBStaticModule> FFMakeKSNoiseTopo();
+std::unique_ptr<FBStaticModule> FFMakePhysTopo();
 
-inline int constexpr FFKSNoiseMaxPoles = 8;
-inline int constexpr FFKSNoiseMaxSeed = 255;
-inline int constexpr FFKSNoiseGraphRounds = 5;
+inline int constexpr FFPhysMaxPoles = 8;
+inline int constexpr FFPhysMaxSeed = 255;
+inline int constexpr FFPhysGraphRounds = 5;
 
-enum class FFKSNoiseType { Off, Uni, Norm };
-enum class FFKSNoiseParam {
+enum class FFPhysType { Off, Uni, Norm };
+enum class FFPhysParam {
   Type, Gain, Coarse, Fine,
   UniCount, UniDetune, UniSpread, UniBlend,
   Seed, Poles, X, Y, Color, Excite, LP, HP,

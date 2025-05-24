@@ -1,7 +1,7 @@
 #pragma once
 
-#include <playground_plug/modules/ks_noise/FFKSNoiseTopo.hpp>
-#include <playground_plug/modules/ks_noise/FFKSNoisePhaseGenerator.hpp>
+#include <playground_plug/modules/physical/FFPhysTopo.hpp>
+#include <playground_plug/modules/physical/FFPhysPhaseGenerator.hpp>
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
@@ -17,7 +17,7 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-struct FFKSNoiseUniVoiceState final
+struct FFPhysUniVoiceState final
 {
   float lastDraw = 0.0f;
   float prevDelayVal = 0.f;
@@ -26,23 +26,23 @@ struct FFKSNoiseUniVoiceState final
 
   FBDelayLine delayLine = {};
   FBBasicHPFilter dcFilter = {};
-  FFKSNoisePhaseGenerator phaseGen = {};
-  FBSArray<float, FFKSNoiseMaxPoles> colorFilterBuffer = {};
+  FFPhysPhaseGenerator phaseGen = {};
+  FBSArray<float, FFPhysMaxPoles> colorFilterBuffer = {};
 };
 
-class FFKSNoiseProcessor final:
+class FFPhysProcessor final:
 public FFOsciProcessorBase
 {
   int _seed = {};
   int _poles = {};
   int _graphPosition = {};
-  FFKSNoiseType _type = {};
 
+  FFPhysType _type = {};
   FBMarsagliaPRNG _normalPrng = {};
   FBParkMillerPRNG _uniformPrng = {};
   FBCytomicFilter<FFOsciBaseUniMaxCount> _lpFilter = {};
   FBCytomicFilter<FFOsciBaseUniMaxCount> _hpFilter = {};
-  std::array<FFKSNoiseUniVoiceState, FFOsciBaseUniMaxCount> _uniState = {};
+  std::array<FFPhysUniVoiceState, FFOsciBaseUniMaxCount> _uniState = {};
 
   float Draw();
   float Next(
@@ -52,9 +52,9 @@ public FFOsciProcessorBase
     float xNorm, float yNorm);
 
 public:
-  FFKSNoiseProcessor();
+  FFPhysProcessor();
   int Process(FBModuleProcState& state);
   void Initialize(bool graph, float sampleRate);
   void BeginVoice(bool graph, FBModuleProcState& state);
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFKSNoiseProcessor);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFPhysProcessor);
 };

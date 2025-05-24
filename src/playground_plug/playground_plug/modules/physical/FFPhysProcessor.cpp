@@ -1,7 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/modules/ks_noise/FFKSNoiseTopo.hpp>
-#include <playground_plug/modules/ks_noise/FFKSNoiseProcessor.hpp>
+#include <playground_plug/modules/physical/FFPhysTopo.hpp>
+#include <playground_plug/modules/physical/FFPhysProcessor.hpp>
 
 #include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
@@ -23,11 +23,11 @@ inline int constexpr AudioDelayLineSize = 8192;
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
 // kps https://dsp.stackexchange.com/questions/12596/synthesizing-harmonic-tones-with-karplus-strong
 
-FFKSNoiseProcessor::
-FFKSNoiseProcessor() {}
+FFPhysProcessor::
+FFPhysProcessor() {}
 
 void
-FFKSNoiseProcessor::Initialize(bool graph, float sampleRate)
+FFPhysProcessor::Initialize(bool graph, float sampleRate)
 {
   int delayLineSize = graph ? GraphDelayLineSize : AudioDelayLineSize;
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
@@ -39,11 +39,11 @@ FFKSNoiseProcessor::Initialize(bool graph, float sampleRate)
 }
 
 inline float
-FFKSNoiseProcessor::Draw()
+FFPhysProcessor::Draw()
 {
-  if (_type == FFKSNoiseType::Uni)
+  if (_type == FFPhysType::Uni)
     return FBToBipolar(_uniformPrng.NextScalar());
-  assert(_type == FFKSNoiseType::Norm);
+  assert(_type == FFPhysType::Norm);
   float result = 0.0f;
   do
   {
@@ -53,7 +53,7 @@ FFKSNoiseProcessor::Draw()
 }
 
 inline float
-FFKSNoiseProcessor::Next(
+FFPhysProcessor::Next(
   FBStaticModule const& topo, int uniVoice,
   float sampleRate, float uniFreq, 
   float excite, float colorPlain, 
@@ -89,13 +89,13 @@ FFKSNoiseProcessor::Next(
 }
 
 void
-FFKSNoiseProcessor::BeginVoice(bool graph, FBModuleProcState& state)
+FFPhysProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
-  auto const& params = procState->param.voice.ksNoise[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::KSNoise];
+  auto const& params = procState->param.voice.phys[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Phys];
 
   auto const& xNorm = params.acc.x[0].Voice()[voice];
   auto const& yNorm = params.acc.y[0].Voice()[voice];
@@ -111,29 +111,29 @@ FFKSNoiseProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
   auto const& uniDetuneNorm = params.acc.uniDetune[0].Voice()[voice];
 
-  _seed = topo.NormalizedToDiscreteFast(FFKSNoiseParam::Seed, seedNorm);
-  _poles = topo.NormalizedToDiscreteFast(FFKSNoiseParam::Poles, polesNorm);
-  _type = topo.NormalizedToListFast<FFKSNoiseType>(FFKSNoiseParam::Type, typeNorm);
-  FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFKSNoiseParam::UniCount, uniCountNorm));
+  _seed = topo.NormalizedToDiscreteFast(FFPhysParam::Seed, seedNorm);
+  _poles = topo.NormalizedToDiscreteFast(FFPhysParam::Poles, polesNorm);
+  _type = topo.NormalizedToListFast<FFPhysType>(FFPhysParam::Type, typeNorm);
+  FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFPhysParam::UniCount, uniCountNorm));
 
-  if (_type == FFKSNoiseType::Off)
+  if (_type == FFPhysType::Off)
     return;
 
-  float lpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm.CV().Get(0));
-  float hpPlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm.CV().Get(0));
-  float xPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm.CV().Get(0));
-  float yPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm.CV().Get(0));
-  float finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
-  float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
-  float excitePlain = topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm.CV().Get(0));
-  float colorPlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm.CV().Get(0));
-  float uniDetunePlain = topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm.CV().Get(0));
+  float lpPlain = topo.NormalizedToLog2Fast(FFPhysParam::LP, lpNorm.CV().Get(0));
+  float hpPlain = topo.NormalizedToLog2Fast(FFPhysParam::HP, hpNorm.CV().Get(0));
+  float xPlain = topo.NormalizedToIdentityFast(FFPhysParam::X, xNorm.CV().Get(0));
+  float yPlain = topo.NormalizedToIdentityFast(FFPhysParam::Y, yNorm.CV().Get(0));
+  float finePlain = topo.NormalizedToLinearFast(FFPhysParam::Fine, fineNorm.CV().Get(0));
+  float coarsePlain = topo.NormalizedToLinearFast(FFPhysParam::Coarse, coarseNorm.CV().Get(0));
+  float excitePlain = topo.NormalizedToLog2Fast(FFPhysParam::Excite, exciteNorm.CV().Get(0));
+  float colorPlain = topo.NormalizedToIdentityFast(FFPhysParam::Color, colorNorm.CV().Get(0));
+  float uniDetunePlain = topo.NormalizedToIdentityFast(FFPhysParam::UniDetune, uniDetuneNorm.CV().Get(0));
 
   _lpFilter = {};
   _hpFilter = {};
   _graphPosition = 0;
-  _normalPrng = FBMarsagliaPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
-  _uniformPrng = FBParkMillerPRNG(_seed / (FFKSNoiseMaxSeed + 1.0f));
+  _normalPrng = FBMarsagliaPRNG(_seed / (FFPhysMaxSeed + 1.0f));
+  _uniformPrng = FBParkMillerPRNG(_seed / (FFPhysMaxSeed + 1.0f));
   _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpPlain, 0.0f, 0.0f);
   _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpPlain, 0.0f, 0.0f);
   
@@ -161,20 +161,20 @@ FFKSNoiseProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 }
 
 int
-FFKSNoiseProcessor::Process(FBModuleProcState& state)
+FFPhysProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
-  auto& output = voiceState.ksNoise[state.moduleSlot].output;
+  auto& output = voiceState.phys[state.moduleSlot].output;
 
   output.Fill(0.0f);
-  if (_type == FFKSNoiseType::Off)
+  if (_type == FFPhysType::Off)
     return 0;
   
   float sampleRate = state.input->sampleRate;
-  auto const& procParams = procState->param.voice.ksNoise[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::KSNoise];
+  auto const& procParams = procState->param.voice.phys[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Phys];
 
   auto const& lpNorm = procParams.acc.lp[0].Voice()[voice];
   auto const& hpNorm = procParams.acc.hp[0].Voice()[voice];
@@ -219,22 +219,22 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
     basePitchPlain.Store(s, pitch);
     baseFreqPlain.Store(s, baseFreq);
 
-    lpPlain.Store(s, topo.NormalizedToLog2Fast(FFKSNoiseParam::LP, lpNorm, s));
-    hpPlain.Store(s, topo.NormalizedToLog2Fast(FFKSNoiseParam::HP, hpNorm, s));
-    xPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::X, xNorm, s));
-    yPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Y, yNorm, s));
-    dampPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Damp, dampNorm, s));
-    colorPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Color, colorNorm, s));
-    rangePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Range, rangeNorm, s));
-    excitePlain.Store(s, topo.NormalizedToLog2Fast(FFKSNoiseParam::Excite, exciteNorm, s));
-    centerPlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::Center, centerNorm, s));
-    feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Feedback, feedbackNorm, s));
-    dampScalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::DampScale, dampScaleNorm, s));
-    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniDetune, uniDetuneNorm, s));
-    feedbackScalePlain.Store(s, topo.NormalizedToLinearFast(FFKSNoiseParam::FeedbackScale, feedbackScaleNorm, s));
-    _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::Gain, gainNorm, s));
-    _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniBlend, uniBlendNorm, s));
-    _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFKSNoiseParam::UniSpread, uniSpreadNorm, s));
+    lpPlain.Store(s, topo.NormalizedToLog2Fast(FFPhysParam::LP, lpNorm, s));
+    hpPlain.Store(s, topo.NormalizedToLog2Fast(FFPhysParam::HP, hpNorm, s));
+    xPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::X, xNorm, s));
+    yPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::Y, yNorm, s));
+    dampPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::Damp, dampNorm, s));
+    colorPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::Color, colorNorm, s));
+    rangePlain.Store(s, topo.NormalizedToLinearFast(FFPhysParam::Range, rangeNorm, s));
+    excitePlain.Store(s, topo.NormalizedToLog2Fast(FFPhysParam::Excite, exciteNorm, s));
+    centerPlain.Store(s, topo.NormalizedToLinearFast(FFPhysParam::Center, centerNorm, s));
+    feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::Feedback, feedbackNorm, s));
+    dampScalePlain.Store(s, topo.NormalizedToLinearFast(FFPhysParam::DampScale, dampScaleNorm, s));
+    uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::UniDetune, uniDetuneNorm, s));
+    feedbackScalePlain.Store(s, topo.NormalizedToLinearFast(FFPhysParam::FeedbackScale, feedbackScaleNorm, s));
+    _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::Gain, gainNorm, s));
+    _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::UniBlend, uniBlendNorm, s));
+    _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::UniSpread, uniSpreadNorm, s));
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -294,15 +294,15 @@ FFKSNoiseProcessor::Process(FBModuleProcState& state)
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
-    int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFKSNoiseGraphRounds;
+    int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFPhysGraphRounds;
     return std::clamp(graphSamples - _graphPosition, 0, FBFixedBlockSamples);
   }
 
-  auto& exchangeDSP = exchangeToGUI->voice[voice].ksNoise[state.moduleSlot];
+  auto& exchangeDSP = exchangeToGUI->voice[voice].phys[state.moduleSlot];
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(FBFixedBlockSamples - 1), state.input->sampleRate);
 
-  auto& exchangeParams = exchangeToGUI->param.voice.ksNoise[state.moduleSlot];
+  auto& exchangeParams = exchangeToGUI->param.voice.phys[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
   exchangeParams.acc.lp[0][voice] = lpNorm.Last();

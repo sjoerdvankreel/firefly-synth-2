@@ -6,17 +6,17 @@
 #include <xsimd/xsimd.hpp>
 #include <cmath>
 
-class FFKSNoisePhaseGenerator final
+class FFPhysPhaseGenerator final
 {
   float _x = 0.0f;
 public:
   float Next(float incr);
-  FFKSNoisePhaseGenerator() = default;
-  explicit FFKSNoisePhaseGenerator(float x) : _x(x) {}
+  FFPhysPhaseGenerator() = default;
+  explicit FFPhysPhaseGenerator(float x) : _x(x) {}
 };
 
 inline float
-FFKSNoisePhaseGenerator::Next(float incr)
+FFPhysPhaseGenerator::Next(float incr)
 {
   float y = _x;
   _x += incr;

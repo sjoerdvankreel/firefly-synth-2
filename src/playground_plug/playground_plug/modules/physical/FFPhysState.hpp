@@ -1,8 +1,8 @@
 #pragma once
 
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_plug/modules/ks_noise/FFKSNoiseTopo.hpp>
-#include <playground_plug/modules/ks_noise/FFKSNoiseProcessor.hpp>
+#include <playground_plug/modules/physical/FFPhysTopo.hpp>
+#include <playground_plug/modules/physical/FFPhysProcessor.hpp>
 
 #include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
@@ -12,37 +12,37 @@
 
 struct FBStaticModule;
 
-class alignas(FBSIMDAlign) FFKSNoiseDSPState final
+class alignas(FBSIMDAlign) FFPhysDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct KSNoiseGraphRenderData;
-  std::unique_ptr<FFKSNoiseProcessor> processor = {};
+  friend struct PhysGraphRenderData;
+  std::unique_ptr<FFPhysProcessor> processor = {};
 public:
-  FFKSNoiseDSPState();
-  ~FFKSNoiseDSPState();
+  FFPhysDSPState();
+  ~FFPhysDSPState();
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFKSNoiseDSPState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFPhysDSPState);
 };
 
 template <class TVoiceBlock>
-class alignas(alignof(TVoiceBlock)) FFKSNoiseBlockParamState final
+class alignas(alignof(TVoiceBlock)) FFPhysBlockParamState final
 {
-  friend class FFKSNoiseProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeKSNoiseTopo();
+  friend class FFPhysProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakePhysTopo();
   std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> seed = {};
   std::array<TVoiceBlock, 1> poles = {};
   std::array<TVoiceBlock, 1> uniCount = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFKSNoiseBlockParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFPhysBlockParamState);
 };
 
 template <class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFKSNoiseAccParamState final
+class alignas(alignof(TVoiceAcc)) FFPhysAccParamState final
 {
-  friend class FFKSNoiseProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeKSNoiseTopo();
+  friend class FFPhysProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakePhysTopo();
   std::array<TVoiceAcc, 1> coarse = {};
   std::array<TVoiceAcc, 1> fine = {};
   std::array<TVoiceAcc, 1> gain = {};
@@ -62,16 +62,16 @@ class alignas(alignof(TVoiceAcc)) FFKSNoiseAccParamState final
   std::array<TVoiceAcc, 1> feedback = {};
   std::array<TVoiceAcc, 1> feedbackScale = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFKSNoiseAccParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFPhysAccParamState);
 };
 
 template <class TVoiceBlock, class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFKSNoiseParamState final
+class alignas(alignof(TVoiceAcc)) FFPhysParamState final
 {
-  friend class FFKSNoiseProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeKSNoiseTopo();
-  FFKSNoiseAccParamState<TVoiceAcc> acc = {};
-  FFKSNoiseBlockParamState<TVoiceBlock> block = {};
+  friend class FFPhysProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakePhysTopo();
+  FFPhysAccParamState<TVoiceAcc> acc = {};
+  FFPhysBlockParamState<TVoiceBlock> block = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFKSNoiseParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFPhysParamState);
 };

@@ -101,9 +101,9 @@ FFMakeTopo()
   result->modules.resize((int)FFModuleType::Count);
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeGLFOTopo());
+  result->modules[(int)FFModuleType::Phys] = std::move(*FFMakePhysTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
-  result->modules[(int)FFModuleType::KSNoise] = std::move(*FFMakeKSNoiseTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
   result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());

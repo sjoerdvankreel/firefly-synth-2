@@ -1,6 +1,6 @@
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/modules/ks_noise/FFKSNoiseGraph.hpp>
-#include <playground_plug/modules/ks_noise/FFKSNoiseProcessor.hpp>
+#include <playground_plug/modules/physical/FFPhysGraph.hpp>
+#include <playground_plug/modules/physical/FFPhysProcessor.hpp>
 
 #include <playground_base/gui/shared/FBPlugGUI.hpp>
 #include <playground_base/gui/shared/FBGraphing.hpp>
@@ -9,19 +9,19 @@
 
 #include <algorithm>
 
-struct KSNoiseGraphRenderData final :
-public FBModuleGraphRenderData<KSNoiseGraphRenderData>
+struct PhysGraphRenderData final :
+public FBModuleGraphRenderData<PhysGraphRenderData>
 {
-  FFKSNoiseProcessor& GetProcessor(FBModuleProcState& state);
+  FFPhysProcessor& GetProcessor(FBModuleProcState& state);
   int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
   void BeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(true, state); }
 };
 
-FFKSNoiseProcessor&
-KSNoiseGraphRenderData::GetProcessor(FBModuleProcState& state)
+FFPhysProcessor&
+PhysGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  auto& processor = *procState->dsp.voice[state.voice->slot].ksNoise[state.moduleSlot].processor;
+  auto& processor = *procState->dsp.voice[state.voice->slot].phys[state.moduleSlot].processor;
   processor.Initialize(true, state.input->sampleRate);
   return processor;
 }
@@ -33,27 +33,27 @@ PlotParams(FBGraphRenderState const* state)
   result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::Coarse, 0 }));
-  pitch += state->AudioParamLinear({ (int)FFModuleType::KSNoise, moduleSlot, (int)FFKSNoiseParam::Fine, 0 });
-  result.samples = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * FFKSNoiseGraphRounds;
+  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Phys, moduleSlot, (int)FFPhysParam::Coarse, 0 }));
+  pitch += state->AudioParamLinear({ (int)FFModuleType::Phys, moduleSlot, (int)FFPhysParam::Fine, 0 });
+  result.samples = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * FFPhysGraphRounds;
   return result;
 }
 
 void
-FFKSNoiseRenderGraph(FBModuleGraphComponentData* graphData)
+FFPhysRenderGraph(FBModuleGraphComponentData* graphData)
 {
-  KSNoiseGraphRenderData renderData = {};
+  PhysGraphRenderData renderData = {};
   graphData->bipolar = true;
   graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
-  renderData.staticModuleIndex = (int)FFModuleType::KSNoise;
+  renderData.staticModuleIndex = (int)FFModuleType::Phys;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].ksNoise[slot]; };
+    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].phys[slot]; };
   renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].ksNoise[slot].output; };
-  FBTopoIndices indices = { (int)FFModuleType::KSNoise, graphData->renderState->ModuleProcState()->moduleSlot };
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].phys[slot].output; };
+  FBTopoIndices indices = { (int)FFModuleType::Phys, graphData->renderState->ModuleProcState()->moduleSlot };
   graphData->series[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
   FBRenderModuleGraph<false, true>(renderData, 0);
 }
