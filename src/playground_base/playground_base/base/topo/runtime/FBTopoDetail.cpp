@@ -29,5 +29,7 @@ FBMakeRuntimeDisplayName(
   std::string const& name, std::string const& display, 
   int slotCount, int slot, FBParamSlotFormatter formatter)
 {
-  return FBMakeRuntimeShortName(display.empty()? name: display, slotCount, slot, formatter);
+  if (!display.empty())
+    return display;
+  return FBMakeRuntimeShortName(name, slotCount, slot, formatter);
 }

@@ -245,6 +245,7 @@ FFMakeOsciTopo()
   waveBasicGain.acc = true;
   waveBasicGain.defaultText = "100";
   waveBasicGain.name = "Basic Gain";
+  waveBasicGain.display = "Gn";
   waveBasicGain.slotCount = FFOsciWaveBasicCount;
   waveBasicGain.unit = "%";
   waveBasicGain.id = "{9B04E634-D046-4117-A542-7E050F3B5FB5}";
@@ -284,6 +285,7 @@ FFMakeOsciTopo()
   wavePWGain.acc = true;
   wavePWGain.defaultText = "100";
   wavePWGain.name = "PW Gain";
+  wavePWGain.display = "Gn";
   wavePWGain.slotCount = FFOsciWavePWCount;
   wavePWGain.unit = "%";
   wavePWGain.id = "{CB7B0BA4-2182-4EA8-9895-1763A29DD9F0}";
@@ -302,6 +304,7 @@ FFMakeOsciTopo()
   wavePWPW.acc = true;
   wavePWPW.defaultText = "100";
   wavePWPW.name = "PW Pulse Width";
+  wavePWPW.display = "PW";
   wavePWPW.slotCount = FFOsciWavePWCount;
   wavePWPW.unit = "%";
   wavePWPW.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
@@ -336,6 +339,7 @@ FFMakeOsciTopo()
   waveHSGain.acc = true;
   waveHSGain.defaultText = "100";
   waveHSGain.name = "HS Gain";
+  waveHSGain.display = "Gn";
   waveHSGain.slotCount = 1;
   waveHSGain.unit = "%";
   waveHSGain.id = "{7AFF257F-165E-427B-A4BF-9DC4BFE48528}";
@@ -389,6 +393,7 @@ FFMakeOsciTopo()
   waveDSFGain.acc = true;
   waveDSFGain.defaultText = "100";
   waveDSFGain.name = "DSF Gain";
+  waveDSFGain.display = "Gn";
   waveDSFGain.slotCount = 1;
   waveDSFGain.unit = "%";
   waveDSFGain.id = "{8B92892C-4B53-4628-8266-CCED37867F99}";
