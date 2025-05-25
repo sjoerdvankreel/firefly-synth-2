@@ -41,7 +41,10 @@ FFMakePhysTopo()
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = "{86CDFC86-DE6C-4EB0-BCE1-5A74A0488D4B}";
-  gain.type = FBParamType::Identity;
+  gain.type = FBParamType::Linear;
+  gain.Linear().min = 0.0f;
+  gain.Linear().max = 2.0f;
+  gain.Linear().displayMultiplier = 100.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
