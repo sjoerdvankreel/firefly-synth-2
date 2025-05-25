@@ -1,3 +1,4 @@
+drop lastoutput
 test clap, more hosts, winlinmac
 actual release build
 panning
