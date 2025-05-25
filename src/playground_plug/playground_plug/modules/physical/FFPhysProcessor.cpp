@@ -232,7 +232,7 @@ FFPhysProcessor::Process(FBModuleProcState& state)
     dampScalePlain.Store(s, topo.NormalizedToLinearFast(FFPhysParam::DampScale, dampScaleNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::UniDetune, uniDetuneNorm, s));
     feedbackScalePlain.Store(s, topo.NormalizedToLinearFast(FFPhysParam::FeedbackScale, feedbackScaleNorm, s));
-    _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::Gain, gainNorm, s));
+    _gainPlain.Store(s, topo.NormalizedToLinearFast(FFPhysParam::Gain, gainNorm, s));
     _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::UniBlend, uniBlendNorm, s));
     _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFPhysParam::UniSpread, uniSpreadNorm, s));
   }
