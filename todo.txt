@@ -1,11 +1,10 @@
 test clap, more hosts, winlinmac
-phys spread is borked
 actual release build
 panning
 clip/autoadjust
 avx version
 intel mac version
-midi smoothing
+midi smoothing (actual midi too)
 combined shaper+filter+routing fx
 fix todos
 tooltip combo not show
