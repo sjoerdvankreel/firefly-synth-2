@@ -2,7 +2,6 @@ test clap, more hosts, winlinmac
 phys spread is borked
 actual release build
 panning
-automate anything
 clip/autoadjust
 avx version
 intel mac version
