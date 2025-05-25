@@ -1,24 +1,22 @@
 #include <playground_base_vst3/FBVST3Utility.hpp>
+
+#include <public.sdk/source/vst/utility/stringconvert.h>
+#include <cassert>
 #include <cstring>
 
 void
 FBVST3CopyToString128(std::string const& in, TChar* out)
 {
   memset(out, 0, 128 * sizeof(TChar));
-  for (int i = 0; i < 127 && i < in.size(); i++)
-    out[i] = in[i];
+  bool ok = Vst::StringConvert::convert(in, out, 127);
+  assert(ok);
 }
 
-bool
+void
 FBVST3CopyFromString128(TChar const* in, std::string& out)
 {
-  out.clear();
-  for (int i = 0; i < 127 && in[i] != (TChar)0; i++)
-    if (in[i] > 127)
-      return false;
-    else
-      out.push_back((char)in[i]);
-  return true;
+  out = Vst::StringConvert::convert(in);
+  out = out.substr(0, 127);
 }
 
 bool

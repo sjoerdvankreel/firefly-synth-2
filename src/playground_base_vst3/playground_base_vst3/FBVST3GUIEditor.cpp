@@ -192,10 +192,12 @@ FBVST3GUIEditor::MakeParamContextMenu(
   std::vector<FBHostContextMenuItem> result = {};
   for (int i = 0; i < vstMenu->getItemCount(); i++)
   {
-    if (vstMenu->getItem(i, vstItem, &target) != kResultOk) 
+    if (vstMenu->getItem(i, vstItem, &target) != kResultOk)
+    {
+      assert(false);
       return {};
-    if (!FBVST3CopyFromString128(vstItem.name, item.name))
-      return {};
+    }
+    FBVST3CopyFromString128(vstItem.name, item.name);
     item.checked = (vstItem.flags & IContextMenuItem::kIsChecked) == IContextMenuItem::kIsChecked;
     item.enabled = (vstItem.flags & IContextMenuItem::kIsDisabled) != IContextMenuItem::kIsDisabled;
     item.separator = (vstItem.flags & IContextMenuItem::kIsSeparator) == IContextMenuItem::kIsSeparator;

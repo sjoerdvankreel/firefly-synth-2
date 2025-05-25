@@ -18,8 +18,7 @@ bool
 FBVST3Parameter::fromString(const TChar* string, ParamValue& valueNormalized) const
 {
   std::string str;
-  if (!FBVST3CopyFromString128(string, str))
-    return false;
+  FBVST3CopyFromString128(string, str);
   auto parsed = _topo->NonRealTime().TextToNormalized(false, str);
   if (!parsed.has_value())
     return false;

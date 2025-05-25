@@ -1,4 +1,4 @@
-fm osci not show in track controls
+test clap, more hosts, winlinmac
 phys spread is borked
 actual release build
 panning
