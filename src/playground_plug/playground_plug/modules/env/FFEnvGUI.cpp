@@ -19,23 +19,39 @@ static Component*
 MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
-  auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   auto sync = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
+  auto sustain = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sustain, 0 });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
   auto mode = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Mode, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mode));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, mode));
-  grid->MarkSection({ 0, 0, 2, 4 });
+  auto release = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Release, 0 });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, release));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, release));
+  auto loopStart = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopStart, 0 });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopStart));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopStart));
+  auto loopLength = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopLength, 0 });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopLength));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopLength));
+  auto smoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 });
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
+  grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto smoothBars = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 });
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
+  grid->Add(1, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
+  grid->MarkSection({ 0, 0, 2, 8 });
   return grid;
 }
 
+#if 0
 static Component*
 MakeSectionVertical(FBPlugGUI* plugGUI, int moduleSlot)
 {
@@ -92,23 +108,19 @@ MakeSectionHorizontal(FBPlugGUI* plugGUI, int moduleSlot)
   auto releaseBars = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseBars, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, releaseBars));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, releaseBars));
-  auto smoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::RotaryVerticalDrag));
-  auto smoothBars = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
   grid->MarkSection({ 0, 0, 2, 6 });
   return grid;
 }
 
+#endif
+
 static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 1 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  grid->Add(0, 1, MakeSectionHorizontal(plugGUI, moduleSlot));
-  grid->Add(0, 2, MakeSectionVertical(plugGUI, moduleSlot));
+  //grid->Add(0, 1, MakeSectionHorizontal(plugGUI, moduleSlot));
+  //grid->Add(0, 2, MakeSectionVertical(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

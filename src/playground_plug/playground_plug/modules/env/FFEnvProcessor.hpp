@@ -11,13 +11,13 @@ struct FBStaticTopo;
 struct FBModuleProcState;
 class FBGraphRenderState;
 
-enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Smooth, Count };
+// enum class FFEnvStage { Delay, Attack, Hold, Decay, Release, Smooth, Count };
 
 class FFEnvProcessor final
 {
   bool _on = {};
   bool _sync = {};
-  FFEnvType _type = {};
+  //FFEnvType _type = {};
   FFEnvMode _mode = {};
   int _holdSamples = {};
   int _delaySamples = {};
@@ -34,7 +34,7 @@ class FFEnvProcessor final
   float _lastDAHDSR = 0.0f;
   float _lastBeforeRelease = 0.0f;
   FBBasicLPFilter _smoother = {};
-  std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
+  //std::array<int, (int)FFEnvStage::Count> _stagePositions = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);

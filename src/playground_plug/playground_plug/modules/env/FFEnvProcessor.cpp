@@ -13,6 +13,7 @@
 void
 FFEnvProcessor::BeginVoice(FBModuleProcState& state)
 {
+#if 0
   _smoother = {};
   _finished = false;
   _released = false;
@@ -75,11 +76,14 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
 
   _smoother.SetCoeffs(_smoothingSamples);
   _smoother.State(_lastDAHDSR);
+#endif
 }
 
 int 
 FFEnvProcessor::Process(FBModuleProcState& state)
 {
+  return 3;
+#if 0
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
@@ -232,4 +236,5 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.Last();
   exchangeParams.acc.sustainLevel[0][voice] = sustainLevel.Last();
   return processed;
+#endif
 }

@@ -30,21 +30,16 @@ class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
   std::array<TVoiceBlock, 1> on = {};
-  std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> mode = {};
   std::array<TVoiceBlock, 1> sync = {};
-  std::array<TVoiceBlock, 1> holdTime = {};
-  std::array<TVoiceBlock, 1> holdBars = {};
-  std::array<TVoiceBlock, 1> delayTime = {};
-  std::array<TVoiceBlock, 1> delayBars = {};
-  std::array<TVoiceBlock, 1> decayTime = {};
-  std::array<TVoiceBlock, 1> decayBars = {};
-  std::array<TVoiceBlock, 1> attackTime = {};
-  std::array<TVoiceBlock, 1> attackBars = {};
+  std::array<TVoiceBlock, 1> sustain = {};
+  std::array<TVoiceBlock, 1> release = {};
+  std::array<TVoiceBlock, 1> loopStart = {};
+  std::array<TVoiceBlock, 1> loopLength = {};
   std::array<TVoiceBlock, 1> smoothTime = {};
   std::array<TVoiceBlock, 1> smoothBars = {};
-  std::array<TVoiceBlock, 1> releaseTime = {};
-  std::array<TVoiceBlock, 1> releaseBars = {};
+  std::array<TVoiceBlock, FFEnvStageCount> stageTime = {};
+  std::array<TVoiceBlock, FFEnvStageCount> stageBars = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvBlockParamState);
 };
@@ -54,10 +49,8 @@ class alignas(alignof(TVoiceAcc)) FFEnvAccParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
-  std::array<TVoiceAcc, 1> decaySlope = {};
-  std::array<TVoiceAcc, 1> attackSlope = {};
-  std::array<TVoiceAcc, 1> releaseSlope = {};
-  std::array<TVoiceAcc, 1> sustainLevel = {};
+  std::array<TVoiceAcc, FFEnvStageCount> stageSlope = {};
+  std::array<TVoiceAcc, FFEnvStageCount> stageLevel = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvAccParamState);
 };

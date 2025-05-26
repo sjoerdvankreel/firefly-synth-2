@@ -28,6 +28,7 @@ static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)
 {
   FBModuleGraphPlotParams result = {};
+#if 0
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float bpm = state->ExchangeContainer()->Host()->bpm;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
@@ -52,6 +53,7 @@ PlotParams(FBGraphRenderState const* state)
   result.releaseAt = result.samples;
   result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseBars, 0 }, sampleRate, bpm);
   result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 }, sampleRate, bpm);
+#endif
   return result;
 }
 
