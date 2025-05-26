@@ -50,21 +50,19 @@ FFMakeEnvTopo()
   sync.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSync);
   sync.dependencies.enabled.audio.When({ (int)FFEnvParam::On }, [](auto const& vs) { return vs[0] != 0; });
 
-  auto& mode = result->params[(int)FFEnvParam::Mode];
-  mode.acc = false;
-  mode.defaultText = "Linear";
-  mode.name = "Mode";
-  mode.slotCount = 1;
-  mode.id = "{1FF0F02E-E3D6-4DCB-8968-07CAC3DDC179}";
-  mode.type = FBParamType::List;
-  mode.List().items = {
-    { "{59EB5AB9-50FC-4958-BABE-A126D65B7948}", "Linear" },
-    { "{0B0F822E-A7D9-40B2-9B0B-7E404656DE3C}", "Exp" } };
-  auto selectMode = [](auto& module) { return &module.block.mode; };
-  mode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMode);
-  mode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMode);
-  mode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMode);
-  mode.dependencies.enabled.audio.When({ (int)FFEnvParam::On }, [](auto const& vs) { return vs[0] != 0; });
+  auto& exp = result->params[(int)FFEnvParam::Exp];
+  exp.acc = false;
+  exp.defaultText = "Off";
+  exp.name = "Exponential";
+  exp.display = "Exp";
+  exp.slotCount = 1;
+  exp.id = "{1FF0F02E-E3D6-4DCB-8968-07CAC3DDC179}";
+  exp.type = FBParamType::Boolean;
+  auto selectExp = [](auto& module) { return &module.block.exp; };
+  exp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectExp);
+  exp.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectExp);
+  exp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExp);
+  exp.dependencies.enabled.audio.When({ (int)FFEnvParam::On }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& release = result->params[(int)FFEnvParam::Release];
   release.acc = false;
@@ -85,7 +83,7 @@ FFMakeEnvTopo()
   auto& sustain = result->params[(int)FFEnvParam::Sustain];
   sustain.acc = false;
   sustain.name = "Sustain";
-  sustain.display = "Sustn";
+  sustain.display = "Stn";
   sustain.slotCount = 1;
   sustain.id = "{FE555166-638C-4A3B-9DB9-9EBFE3762B23}";
   sustain.type = FBParamType::Boolean;
@@ -99,7 +97,7 @@ FFMakeEnvTopo()
   loopStart.acc = false;
   loopStart.defaultText = "Off";
   loopStart.name = "Loop At";
-  loopStart.display = "Lp At";
+  loopStart.display = "Loop";
   loopStart.slotCount = 1;
   loopStart.id = "{97402218-4546-447E-A925-AB3DFD21A9F8}";
   loopStart.type = FBParamType::Discrete;
@@ -115,7 +113,7 @@ FFMakeEnvTopo()
   loopLength.acc = false;
   loopLength.defaultText = "0";
   loopLength.name = "Loop Length";
-  loopLength.display = "Lp Len";
+  loopLength.display = "Length";
   loopLength.slotCount = 1;
   loopLength.id = "{078E33B3-02EB-4637-84E0-949E2830A0DB}";
   loopLength.type = FBParamType::Discrete;
@@ -188,7 +186,7 @@ FFMakeEnvTopo()
   stageSlope.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageSlope);
   stageSlope.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStageSlope);
   stageSlope.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageSlope);
-  stageSlope.dependencies.enabled.audio.When({ (int)FFEnvParam::On, (int)FFEnvParam::Mode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEnvMode::Exp; });
+  stageSlope.dependencies.enabled.audio.When({ (int)FFEnvParam::On, (int)FFEnvParam::Exp }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& stageTime = result->params[(int)FFEnvParam::StageTime];
   stageTime.acc = false;

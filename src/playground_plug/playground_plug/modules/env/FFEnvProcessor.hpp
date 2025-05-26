@@ -18,7 +18,7 @@ class FFEnvProcessor final
   bool _on = {};
   bool _sync = {};
   //FFEnvType _type = {};
-  FFEnvMode _mode = {};
+  bool _exp = {};
   int _holdSamples = {};
   int _delaySamples = {};
   int _decaySamples = {};

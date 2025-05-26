@@ -30,7 +30,7 @@ class alignas(alignof(TVoiceBlock)) FFEnvBlockParamState final
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
   std::array<TVoiceBlock, 1> on = {};
-  std::array<TVoiceBlock, 1> mode = {};
+  std::array<TVoiceBlock, 1> exp = {};
   std::array<TVoiceBlock, 1> sync = {};
   std::array<TVoiceBlock, 1> sustain = {};
   std::array<TVoiceBlock, 1> release = {};
