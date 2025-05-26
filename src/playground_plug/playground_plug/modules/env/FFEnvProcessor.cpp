@@ -81,17 +81,13 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
 int 
 FFEnvProcessor::Process(FBModuleProcState& state)
 {
-  return 3;
-#if 0
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
-  auto const& decaySlope = procParams.acc.decaySlope[0].Voice()[voice];
-  auto const& attackSlope = procParams.acc.attackSlope[0].Voice()[voice];
-  auto const& releaseSlope = procParams.acc.releaseSlope[0].Voice()[voice];
-  auto const& sustainLevel = procParams.acc.sustainLevel[0].Voice()[voice];
+  auto const& stageLevel = procParams.acc.stageLevel;
+  auto const& stageSlope = procParams.acc.stageSlope;
 
   if (!_on)
   {
@@ -110,7 +106,37 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
   float const invLogHalf = 1.0f / std::log(0.5f);
+  
+  for (int stage = 0; stage < FFEnvStageCount; stage++)
+  {
+    int& stagePos = _stagePositions[stage];
+    int stageSamples = _stageSamples[stage];
+    if (!_exp)
+      for (; s < FBFixedBlockSamples && stagePos < stageSamples; s++, stagePos++, _positionSamples++)
+      {
+        float pos = stagePos / static_cast<float>(stageSamples);
+        float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
+        float stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
+        _lastOverall = stageStart + (stageEnd - stageStart) * pos;
+        //_lastBeforeRelease = _lastDAHDSR;
+        //_released |= s == releaseAt;
+        output.Set(s, _smoother.Next(_lastOverall));
+      }
+    else
+      for (; s < FBFixedBlockSamples /* && !_released */ && stagePos < stageSamples; s++, stagePos++, _positionSamples++)
+      {
+        float pos = stagePos / static_cast<float>(stageSamples);
+        float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
+        float stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
+        float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
+        _lastOverall = std::pow(pos, std::log(slope) * invLogHalf);
+        //_lastBeforeRelease = _lastDAHDSR;
+        //_released |= s == releaseAt;
+        output.Set(s, _smoother.Next(_lastOverall));
+      }
+  }
 
+#if 0 //todo
   auto const& noteEvents = *state.input->note;
   auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
   if(_type != FFEnvType::Follow && 
@@ -119,6 +145,9 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     for (int i = 0; i < noteEvents.size(); i++)
       if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
         releaseAt = noteEvents[i].pos;
+#endif
+
+#if 0
 
   int& delayPos = _stagePositions[(int)FFEnvStage::Delay];
   for (; s < FBFixedBlockSamples && !_released && delayPos < _delaySamples; s++, delayPos++, _positionSamples++)
@@ -210,9 +239,12 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       output.Set(s, _smoother.Next(_lastDAHDSR));
     }
 
-  int& smoothPos = _stagePositions[(int)FFEnvStage::Smooth];
+
+  int& smoothPos = _smo[(int)FFEnvStage::Smooth];
   for (; s < FBFixedBlockSamples && smoothPos < _smoothingSamples; s++, smoothPos++, _positionSamples++)
     output.Set(s, _smoother.Next(_lastDAHDSR));
+
+#endif
 
   int processed = s;
   if (s < FBFixedBlockSamples)
@@ -230,10 +262,10 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   exchangeDSP.positionSamples = _positionSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
-  exchangeParams.acc.decaySlope[0][voice] = decaySlope.Last();
-  exchangeParams.acc.attackSlope[0][voice] = attackSlope.Last();
-  exchangeParams.acc.releaseSlope[0][voice] = releaseSlope.Last();
-  exchangeParams.acc.sustainLevel[0][voice] = sustainLevel.Last();
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    exchangeParams.acc.stageLevel[i][voice] = stageLevel[i].Voice()[voice].Last();
+    exchangeParams.acc.stageSlope[i][voice] = stageSlope[i].Voice()[voice].Last();
+  }
   return processed;
-#endif
 }

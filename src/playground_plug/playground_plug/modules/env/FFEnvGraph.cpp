@@ -28,7 +28,6 @@ static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)
 {
   FBModuleGraphPlotParams result = {};
-#if 0
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float bpm = state->ExchangeContainer()->Host()->bpm;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
@@ -36,24 +35,15 @@ PlotParams(FBGraphRenderState const* state)
   
   if (!sync)
   {
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DelayTime, 0 }, sampleRate);
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::AttackTime, 0 }, sampleRate);
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldTime, 0 }, sampleRate);
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecayTime, 0 }, sampleRate);
-    result.releaseAt = result.samples;
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseTime, 0 }, sampleRate);
-    result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 }, sampleRate);
+    for(int i = 0; i < FFEnvStageCount; i++)
+      result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageTime, i }, sampleRate);
+    result.releaseAt = result.samples; // TODO
     return result;
   }
 
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DelayBars, 0 }, sampleRate, bpm);
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::AttackBars, 0 }, sampleRate, bpm);
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::HoldBars, 0 }, sampleRate, bpm);
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::DecayBars, 0 }, sampleRate, bpm);
-  result.releaseAt = result.samples;
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::ReleaseBars, 0 }, sampleRate, bpm);
-  result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 }, sampleRate, bpm);
-#endif
+  for (int i = 0; i < FFEnvStageCount; i++)
+    result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i }, sampleRate, bpm);
+  result.releaseAt = result.samples; // TODO
   return result;
 }
 
