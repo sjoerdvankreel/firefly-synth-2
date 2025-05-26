@@ -33,8 +33,15 @@ FBDiscreteParamNonRealTime::PlainToText(bool io, double plain) const
 PopupMenu
 FBDiscreteParamNonRealTime::MakePopupMenu() const
 {
-  int j = 0;
   PopupMenu result;
+  if (!subMenuFormatter)
+  {
+    for (int i = 0; i < ValueCount(); i++)
+      result.addItem(i + 1, PlainToText(false, i + valueOffset));
+    return result;
+  }
+
+  int j = 0;
   PopupMenu subMenu;
   int subMenuIndex = 0;
   for (int i = 0; i < ValueCount(); i++, j++)

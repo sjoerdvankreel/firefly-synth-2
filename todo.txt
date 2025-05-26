@@ -1,3 +1,4 @@
+nice things with env graph, show sus/rel etc
 defaults to dahdsr -- require per slot defaults
 do all sensible per slot defaults
 noise peaks at high vals with 8 uni count
