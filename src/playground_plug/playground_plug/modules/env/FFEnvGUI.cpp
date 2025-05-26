@@ -55,17 +55,17 @@ static Component*
 MakeSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int>(FFEnvStageCount * 2));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, -1, std::vector<int> { 1, 1 }, std::vector<int>(FFEnvStageCount * 2, 0) );
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     auto time = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageTime, i });
-    grid->Add(0, i * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, time, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(0, i * 2 + 0, 1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, time, Slider::SliderStyle::RotaryVerticalDrag));
     auto bars = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i });
-    grid->Add(0, i * 2 + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bars));
+    grid->Add(0, i * 2 + 0, 1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bars));
     auto level = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageLevel, i });
-    grid->Add(1, i * 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, level, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1, i * 2 + 0, 1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, level, Slider::SliderStyle::RotaryVerticalDrag));
     auto slope = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageSlope, i });
-    grid->Add(1, i * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1, i * 2 + 1, 1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ 0, 0, 2, FFEnvStageCount * 2 });
   return grid;
@@ -74,7 +74,7 @@ MakeSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
 static Component*
 TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
   grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeSectionStage(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
