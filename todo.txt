@@ -1,5 +1,4 @@
 noise peaks at high vals with 8 uni count
-drop lastoutput
 test clap, more hosts, winlinmac
 actual release build
 panning

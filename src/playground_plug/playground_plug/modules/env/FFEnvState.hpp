@@ -12,12 +12,6 @@
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
-struct FFEnvExchangeState final:
-public FBModuleProcExchangeState
-{
-  float lastOutput = {};
-};
-
 class alignas(FBSIMDAlign) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;

@@ -11,12 +11,6 @@
 
 struct FBStaticModule;
 
-struct FFGLFOExchangeState final:
-public FBModuleProcExchangeState
-{
-  float lastOutput = {};
-};
-
 class alignas(FBSIMDAlign) FFGLFODSPState final
 {
   friend class FFPlugProcessor;
