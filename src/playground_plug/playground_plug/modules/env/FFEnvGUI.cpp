@@ -37,7 +37,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, release));
   auto smoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::RotaryVerticalDrag));
   auto smoothBars = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
@@ -56,8 +56,9 @@ MakeSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 1, -1, std::vector<int> { 1, 1 }, std::vector<int>(1 + FFEnvStageCount * 2, 0) );
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Length"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Lvl/Slp"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Seg Length"));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Seg Lvl/Slp"));
+  grid->MarkSection({ 0, 0, 2, 1 });
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     auto time = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageTime, i });
@@ -68,9 +69,8 @@ MakeSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(1, 1 + i * 2 + 0, 1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, level, Slider::SliderStyle::RotaryVerticalDrag));
     auto slope = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageSlope, i });
     grid->Add(1, 1 + i * 2 + 1, 1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->MarkSection({ 0, 1 + i * 2, 2, 2 });
   }
-  grid->MarkSection({ 0, 0, 2, 1 });
-  grid->MarkSection({ 0, 1, 2, FFEnvStageCount * 2 });
   return grid;
 }
 

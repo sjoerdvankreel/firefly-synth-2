@@ -129,7 +129,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
         float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
         float stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
         float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
-        _lastOverall = std::pow(pos, std::log(slope) * invLogHalf);
+        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * invLogHalf);
         //_lastBeforeRelease = _lastDAHDSR;
         //_released |= s == releaseAt;
         output.Set(s, _smoother.Next(_lastOverall));
