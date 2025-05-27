@@ -20,7 +20,7 @@ struct FBModuleGraphSecondarySeries final
   FBModuleGraphPoints points = {};
 };
 
-struct FBModuleGraphSeriesData final
+struct FBModuleGraphData final
 {
   std::string text = {};
   std::string moduleName = {};
@@ -39,6 +39,6 @@ struct FBModuleGraphComponentData final
   bool drawClipBoundaries = false;
   bool skipDrawOnEqualsPrimary = true;
   FBGraphRenderState* renderState = {};
-  std::vector<FBModuleGraphSeriesData> series = {};
+  std::vector<FBModuleGraphData> graphs = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };

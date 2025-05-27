@@ -74,7 +74,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   
   FBRenderModuleGraph<false, false>(renderData, 0);
   FBTopoIndices indices = { (int)FFModuleType::Env, graphData->renderState->ModuleProcState()->moduleSlot };
-  graphData->series[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
+  graphData->graphs[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
 
   int totalSamplesAudio = 0;
   auto stageLengthsAudio = StageLengthAudioSamples(graphData->renderState);
@@ -92,7 +92,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     for (; lp < loopStart - 1; lp++)
       loopStartSamples += stageLengthsAudio[lp];
     loopStartSamples = static_cast<int>(loopStartSamples * audioToGUI);
-    graphData->series[0].verticalIndicators1.push_back(loopStartSamples);
+    graphData->graphs[0].verticalIndicators1.push_back(loopStartSamples);
 
     int loopLength = graphData->renderState->AudioParamDiscrete(
       { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopLength, 0 });
@@ -102,7 +102,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
       for(; lp < loopStart - 1 + loopLength && lp < FFEnvStageCount; lp++)
         loopLengthSamples += stageLengthsAudio[lp];
       loopLengthSamples = static_cast<int>(loopLengthSamples * audioToGUI);
-      graphData->series[0].verticalIndicators1.push_back(loopStartSamples + loopLengthSamples);
+      graphData->graphs[0].verticalIndicators1.push_back(loopStartSamples + loopLengthSamples);
     }
   }
 }

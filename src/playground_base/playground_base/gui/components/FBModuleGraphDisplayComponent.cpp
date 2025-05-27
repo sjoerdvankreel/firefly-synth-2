@@ -31,7 +31,7 @@ FBModuleGraphDisplayComponent::PointXLocation(
   int graph, float pointRelative) const
 {
   assert(!std::isnan(pointRelative));
-  float graphCount = static_cast<float>(_data->series.size());
+  float graphCount = static_cast<float>(_data->graphs.size());
   float graphPointRelative = (graph + pointRelative) / graphCount;
   return HalfMarkerSize + graphPointRelative * (getWidth() - MarkerSize);
 }
@@ -114,70 +114,73 @@ FBModuleGraphDisplayComponent::PaintSeries(
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
 {
-  for (int s = 0; s < _data->series.size(); s++)
+  for (int graph = 0; graph < _data->graphs.size(); graph++)
   {
     float absMaxPointAllSeries = 1.0f;
-    bool stereo = !_data->series[s].primarySeries.r.empty();
-    int maxPointsAllSeries = static_cast<int>(_data->series[s].primarySeries.l.size());
-    for (int i = 0; i < _data->series[s].primarySeries.l.size(); i++)
+    auto const& graphData = _data->graphs[graph];
+    auto const& primarySeries = graphData.primarySeries;
+    auto const& secondarySeries = graphData.secondarySeries;
+    bool stereo = !primarySeries.r.empty();
+    int maxPointsAllSeries = static_cast<int>(primarySeries.l.size());
+    for (int i = 0; i < primarySeries.l.size(); i++)
     {
-      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].primarySeries.l[i]));
+      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(primarySeries.l[i]));
       if (stereo)
-        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].primarySeries.r[i]));
+        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(primarySeries.r[i]));
     }
-    for (int i = 0; i < _data->series[s].secondarySeries.size(); i++)
+    for (int i = 0; i < secondarySeries.size(); i++)
     {
-      maxPointsAllSeries = std::max(maxPointsAllSeries, static_cast<int>(_data->series[s].secondarySeries[i].points.l.size()));
-      for (int j = 0; j < _data->series[s].secondarySeries[i].points.l.size(); j++)
+      maxPointsAllSeries = std::max(maxPointsAllSeries, static_cast<int>(secondarySeries[i].points.l.size()));
+      for (int j = 0; j < secondarySeries[i].points.l.size(); j++)
       {
-        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].secondarySeries[i].points.l[j]));
+        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(secondarySeries[i].points.l[j]));
         if (stereo)
-          absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].secondarySeries[i].points.r[j]));
+          absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(secondarySeries[i].points.r[j]));
       }
     }
 
-    auto const& vi1 = _data->series[s].verticalIndicators1;
+    auto const& vi1 = graphData.verticalIndicators1;
     for (int i = 0; i < vi1.size(); i++)
     {
       assert(!stereo);
-      PaintVerticalIndicator(g, s, vi1[i], maxPointsAllSeries, absMaxPointAllSeries);
+      PaintVerticalIndicator(g, graph, vi1[i], maxPointsAllSeries, absMaxPointAllSeries);
     }
 
     g.setColour(Colours::darkgrey);
     auto textBounds = getLocalBounds();
-    auto x0 = PointXLocation(s, 0.0f);
-    auto x1 = PointXLocation(s, 1.0f);
+    auto x0 = PointXLocation(graph, 0.0f);
+    auto x1 = PointXLocation(graph, 1.0f);
     textBounds = Rectangle<int>(x0, textBounds.getY(), x1 - x0, textBounds.getHeight());
-    g.drawText(_data->series[s].moduleName + " " + _data->series[s].text, textBounds, Justification::centred, false);
-    for (int i = 0; i < _data->series[s].secondarySeries.size(); i++)
+    g.drawText(graphData.moduleName + " " + graphData.text, textBounds, Justification::centred, false);
+    for (int i = 0; i < secondarySeries.size(); i++)
     {
-      int marker = _data->series[s].secondarySeries[i].marker;
-      auto const& points = _data->series[s].secondarySeries[i].points;
-      PaintSeries(g, Colours::grey, s, points.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
+      int marker = secondarySeries[i].marker;
+      auto const& points = secondarySeries[i].points;
+      PaintSeries(g, Colours::grey, graph, points.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
       if (stereo)
-        PaintSeries(g, Colours::grey, s, points.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
+        PaintSeries(g, Colours::grey, graph, points.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
       if (marker != -1 && _data->drawMarkers)
       {
         assert(!stereo);
-        PaintMarker(g, s, points.l, marker, false, true, maxPointsAllSeries, absMaxPointAllSeries);
+        PaintMarker(g, graph, points.l, marker, false, true, maxPointsAllSeries, absMaxPointAllSeries);
       }
     }
 
-    PaintSeries(g, Colours::white, s, _data->series[s].primarySeries.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
+    PaintSeries(g, Colours::white, graph, primarySeries.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
     if (stereo)
-      PaintSeries(g, Colours::white, s, _data->series[s].primarySeries.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
+      PaintSeries(g, Colours::white, graph, primarySeries.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
     if (_data->drawMarkers)
-      for (int i = 0; i < _data->series[s].primaryMarkers.size(); i++)
+      for (int i = 0; i < graphData.primaryMarkers.size(); i++)
       {
         assert(!stereo);
-        PaintMarker(g, s, _data->series[s].primarySeries.l, _data->series[s].primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
+        PaintMarker(g, graph, primarySeries.l, graphData.primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
       }
 
     if (_data->drawClipBoundaries)
     {
-      PaintClipBoundaries(g, s, stereo, false, absMaxPointAllSeries);
+      PaintClipBoundaries(g, graph, stereo, false, absMaxPointAllSeries);
       if (stereo)
-        PaintClipBoundaries(g, s, stereo, true, absMaxPointAllSeries);
+        PaintClipBoundaries(g, graph, stereo, true, absMaxPointAllSeries);
     }
   }
 }
