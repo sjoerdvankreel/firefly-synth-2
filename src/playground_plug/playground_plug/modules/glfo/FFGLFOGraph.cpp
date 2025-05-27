@@ -14,8 +14,9 @@ struct GLFOGraphRenderData final:
 public FBModuleGraphRenderData<GLFOGraphRenderData>
 {
   FFGLFOProcessor& GetProcessor(FBModuleProcState& state);
-  void Reset(FBModuleProcState& state) { GetProcessor(state).Reset(state); }
-  int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
+  void DoProcessIndicators(FBModuleGraphPoints& points) {}
+  void DoReset(FBModuleProcState& state) { GetProcessor(state).Reset(state); }
+  int DoProcess(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
 };
 
 FFGLFOProcessor& 

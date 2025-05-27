@@ -62,9 +62,10 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceAudioOutputSelector voiceAudioOutputSelector = {};
   FBModuleGraphGlobalAudioOutputSelector globalAudioOutputSelector = {};
 
-  void Reset(FBModuleProcState& state) { static_cast<Derived*>(this)->Reset(state); }
-  int Process(FBModuleProcState& state) { return static_cast<Derived*>(this)->Process(state); }
-  void BeginVoice(FBModuleProcState& state) { static_cast<Derived*>(this)->BeginVoice(state); }
+  void Reset(FBModuleProcState& state) { static_cast<Derived*>(this)->DoReset(state); }
+  int Process(FBModuleProcState& state) { return static_cast<Derived*>(this)->DoProcess(state); }
+  void BeginVoice(FBModuleProcState& state) { static_cast<Derived*>(this)->DoBeginVoice(state); }
+  void ProcessIndicators(FBModuleGraphPoints& points) { return static_cast<Derived*>(this)->DoProcessIndicators(points); }
 };
 
 template <bool Global, bool Audio, class Derived> 
@@ -75,6 +76,7 @@ FBRenderModuleGraphSeries(
 {
   seriesOut.l.clear();
   seriesOut.r.clear();
+  seriesOut.verticalIndicators.clear();
   
   FBSArray<float, FBFixedBlockSamples> seriesCVIn = {};
   FBSArray2<float, FBFixedBlockSamples, 2> seriesAudioIn = {};
@@ -91,6 +93,7 @@ FBRenderModuleGraphSeries(
     renderData.Reset(*moduleProcState);
   else
     renderData.BeginVoice(*moduleProcState);
+
   while (processed == FBFixedBlockSamples)
   {
     if (shouldRelease && !released && releaseAt < FBFixedBlockSamples)
@@ -141,6 +144,8 @@ FBRenderModuleGraphSeries(
         seriesOut.l.push_back(seriesCVIn.Get(i));
     }
   }
+
+  renderData.ProcessIndicators(seriesOut);
 }
 
 template <bool Global, bool Audio, class Derived>

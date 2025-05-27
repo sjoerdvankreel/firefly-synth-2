@@ -34,7 +34,7 @@ private:
     float absMaxValueAllSeries);
 
   void PaintVerticalIndicator(
-    juce::Graphics& g, int graph, int point,
+    juce::Graphics& g, int graph, int point, bool primary,
     int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintMarker(

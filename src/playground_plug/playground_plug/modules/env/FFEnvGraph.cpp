@@ -12,17 +12,11 @@
 struct EnvGraphRenderData final:
 public FBModuleGraphRenderData<EnvGraphRenderData>
 {
+  void DoProcessIndicators(FBModuleGraphPoints& points);
   FFEnvProcessor& GetProcessor(FBModuleProcState& state);
-  int Process(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
-  void BeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
+  int DoProcess(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
+  void DoBeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
 };
-
-FFEnvProcessor& 
-EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
-{
-  auto* procState = state.ProcAs<FFProcState>();
-  return *procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
-}
 
 static void
 StageLengthAudioSamples(
@@ -47,9 +41,9 @@ StageLengthAudioSamples(
   {
     for (int i = 0; i < FFEnvStageCount; i++)
       stageLengths.push_back(state->AudioParamBarsSamples(
-        { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i }, sampleRate, bpm)); 
+        { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i }, sampleRate, bpm));
     smoothLength = state->AudioParamBarsSamples(
-        { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 }, sampleRate, bpm);
+      { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 }, sampleRate, bpm);
   }
 }
 
@@ -67,6 +61,13 @@ PlotParams(FBGraphRenderState const* state)
   return result;
 }
 
+FFEnvProcessor& 
+EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  return *procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
+}
+
 void
 FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 {
@@ -82,17 +83,21 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   
   FBRenderModuleGraph<false, false>(renderData, 0);
   FBTopoIndices indices = { (int)FFModuleType::Env, graphData->renderState->ModuleProcState()->moduleSlot };
-  graphData->graphs[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
+  graphData->graphs[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;  
+}
 
+void
+EnvGraphRenderData::DoProcessIndicators(FBModuleGraphPoints& points)
+{
   int smoothLengthAudio;
   int totalSamplesAudio = 0;
   std::vector<int> stageLengthsAudio;
-  FBModuleGraphPlotParams result = {};
+  FBModuleGraphPlotParams result = {}; 
   StageLengthAudioSamples(graphData->renderState, stageLengthsAudio, smoothLengthAudio);
   for (int i = 0; i < stageLengthsAudio.size(); i++)
     totalSamplesAudio += stageLengthsAudio[i];
   totalSamplesAudio += smoothLengthAudio;
-  int thisSamplesGUI = static_cast<int>(graphData->graphs[0].primarySeries.l.size());
+  int thisSamplesGUI = static_cast<int>(points.l.size());
   float audioToGUI = thisSamplesGUI / static_cast<float>(totalSamplesAudio);
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
@@ -104,7 +109,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     for (int i = 0; i < releasePoint - 1; i++)
       releasePointSamples += stageLengthsAudio[i];
     releasePointSamples = static_cast<int>(releasePointSamples * audioToGUI);
-    graphData->graphs[0].verticalIndicators.push_back(releasePointSamples);
+    points.verticalIndicators.push_back(releasePointSamples);
   }
 
   int loopStart = graphData->renderState->AudioParamDiscrete(
@@ -116,17 +121,17 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     for (; lp < loopStart - 1; lp++)
       loopStartSamples += stageLengthsAudio[lp];
     loopStartSamples = static_cast<int>(loopStartSamples * audioToGUI);
-    graphData->graphs[0].verticalIndicators.push_back(loopStartSamples);
+    points.verticalIndicators.push_back(loopStartSamples);
 
     int loopLength = graphData->renderState->AudioParamDiscrete(
       { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopLength, 0 });
     if (loopLength != 0 && lp < FFEnvStageCount)
     {
       int loopLengthSamples = 0;
-      for(; lp < loopStart - 1 + loopLength && lp < FFEnvStageCount; lp++)
+      for (; lp < loopStart - 1 + loopLength && lp < FFEnvStageCount; lp++)
         loopLengthSamples += stageLengthsAudio[lp];
       loopLengthSamples = static_cast<int>(loopLengthSamples * audioToGUI);
-      graphData->graphs[0].verticalIndicators.push_back(loopStartSamples + loopLengthSamples);
+      points.verticalIndicators.push_back(loopStartSamples + loopLengthSamples);
     }
   }
 }

@@ -52,11 +52,13 @@ FBModuleGraphDisplayComponent::PointYLocation(
 
 void
 FBModuleGraphDisplayComponent::PaintVerticalIndicator(
-  Graphics& g, int graph, int point, 
+  Graphics& g, int graph, int point, bool primary,
   int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   float dashes[2] = { 4, 2 };
   g.setColour(Colours::white);
+  if (!primary)
+    g.setColour(Colours::white.withAlpha(0.5f));
   float x = PointXLocation(graph, point / static_cast<float>(maxSizeAllSeries));
   float y0 = PointYLocation(0.0f, false, false, absMaxValueAllSeries);
   float y1 = PointYLocation(absMaxValueAllSeries, false, false, absMaxValueAllSeries);
@@ -124,11 +126,17 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     bool stereo = !primarySeries.r.empty();
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
 
-    auto const& vi = graphData.verticalIndicators;
-    for (int i = 0; i < vi.size(); i++)
+    auto const& pvi = graphData.primarySeries.verticalIndicators;
+    for (int i = 0; i < pvi.size(); i++)
     {
       assert(!stereo);
-      PaintVerticalIndicator(g, graph, vi[i], maxSizeAllSeries, absMaxValueAllSeries);
+      PaintVerticalIndicator(g, graph, pvi[i], true, maxSizeAllSeries, absMaxValueAllSeries);
+    }
+    for (int i = 0; i < graphData.secondarySeries.size(); i++)
+    {
+      auto const& svi = graphData.secondarySeries[i].points.verticalIndicators;
+      for (int j = 0; j < svi.size(); j++)
+        PaintVerticalIndicator(g, graph, svi[j], false, maxSizeAllSeries, absMaxValueAllSeries);
     }
 
     g.setColour(Colours::darkgrey);

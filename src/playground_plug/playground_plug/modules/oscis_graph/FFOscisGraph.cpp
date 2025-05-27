@@ -13,13 +13,14 @@
 struct OscisGraphRenderData final:
 public FBModuleGraphRenderData<OscisGraphRenderData>
 {
-  int Process(FBModuleProcState& state);
-  void BeginVoice(FBModuleProcState& state);
+  int DoProcess(FBModuleProcState& state);
+  void DoBeginVoice(FBModuleProcState& state);
+  void DoProcessIndicators(FBModuleGraphPoints& points) {}
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
 };
 
 void
-OscisGraphRenderData::BeginVoice(FBModuleProcState& state)
+OscisGraphRenderData::DoBeginVoice(FBModuleProcState& state)
 {
   int osciSlot = state.moduleSlot;
   state.moduleSlot = 0;
@@ -33,7 +34,7 @@ OscisGraphRenderData::BeginVoice(FBModuleProcState& state)
 }
 
 int 
-OscisGraphRenderData::Process(FBModuleProcState& state)
+OscisGraphRenderData::DoProcess(FBModuleProcState& state)
 {
   int result = 0;
   int osciSlot = state.moduleSlot;

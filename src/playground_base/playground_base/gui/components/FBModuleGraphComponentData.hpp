@@ -12,6 +12,7 @@ struct FBModuleGraphPoints final
 {
   std::vector<float> l = {};
   std::vector<float> r = {};
+  std::vector<int> verticalIndicators = {};
 };
 
 struct FBModuleGraphSecondarySeries final
@@ -30,7 +31,6 @@ public:
   std::string text = {};
   std::string moduleName = {};
   std::vector<int> primaryMarkers = {};
-  std::vector<int> verticalIndicators = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
   void GetLimits(int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
