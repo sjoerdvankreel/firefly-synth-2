@@ -24,10 +24,11 @@ EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
   return *procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
 }
 
-static std::vector<int>
-StageLengthAudioSamples(FBGraphRenderState const* state)
+static void
+StageLengthAudioSamples(
+  FBGraphRenderState const* state, std::vector<int>& stageLengths, int& smoothLength)
 {
-  std::vector<int> result = {};
+  stageLengths = {};
   float bpm = state->ExchangeContainer()->Host()->bpm;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
@@ -37,24 +38,31 @@ StageLengthAudioSamples(FBGraphRenderState const* state)
   if (!sync)
   {
     for (int i = 0; i < FFEnvStageCount; i++)
-      result.push_back(state->AudioParamLinearTimeSamples(
+      stageLengths.push_back(state->AudioParamLinearTimeSamples(
         { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageTime, i }, sampleRate));
-    return result;
+    smoothLength = state->AudioParamLinearTimeSamples(
+      { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 }, sampleRate);
   }
-
-  for (int i = 0; i < FFEnvStageCount; i++)
-    result.push_back(state->AudioParamBarsSamples(
-      {(int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i}, sampleRate, bpm));
-  return result;
+  else
+  {
+    for (int i = 0; i < FFEnvStageCount; i++)
+      stageLengths.push_back(state->AudioParamBarsSamples(
+        { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i }, sampleRate, bpm)); 
+    smoothLength = state->AudioParamBarsSamples(
+        { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 }, sampleRate, bpm);
+  }
 }
 
 static FBModuleGraphPlotParams
 PlotParams(FBGraphRenderState const* state)
 {
+  int smoothLength;
+  std::vector<int> stageLengths;
   FBModuleGraphPlotParams result = {};
-  auto stageLengths = StageLengthAudioSamples(state);
+  StageLengthAudioSamples(state, stageLengths, smoothLength);
   for (int i = 0; i < stageLengths.size(); i++)
     result.samples += stageLengths[i];
+  result.samples += smoothLength;
   result.releaseAt = result.samples; // todo
   return result;
 }
@@ -76,10 +84,14 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   FBTopoIndices indices = { (int)FFModuleType::Env, graphData->renderState->ModuleProcState()->moduleSlot };
   graphData->graphs[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
 
+  int smoothLengthAudio;
   int totalSamplesAudio = 0;
-  auto stageLengthsAudio = StageLengthAudioSamples(graphData->renderState);
+  std::vector<int> stageLengthsAudio;
+  FBModuleGraphPlotParams result = {};
+  StageLengthAudioSamples(graphData->renderState, stageLengthsAudio, smoothLengthAudio);
   for (int i = 0; i < stageLengthsAudio.size(); i++)
     totalSamplesAudio += stageLengthsAudio[i];
+  totalSamplesAudio += smoothLengthAudio;
 
   int thisSamplesGUI = static_cast<int>(graphData->graphs[0].primarySeries.l.size());
   float audioToGUI = thisSamplesGUI / static_cast<float>(totalSamplesAudio);
