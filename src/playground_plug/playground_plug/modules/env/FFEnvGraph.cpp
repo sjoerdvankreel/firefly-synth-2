@@ -80,7 +80,9 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   auto stageLengthsAudio = StageLengthAudioSamples(graphData->renderState);
   for (int i = 0; i < stageLengthsAudio.size(); i++)
     totalSamplesAudio += stageLengthsAudio[i];
-  float audioToGUI = static_cast<float>(graphData->pixelWidth) / totalSamplesAudio;
+
+  int thisSamplesGUI = static_cast<int>(graphData->graphs[0].primarySeries.l.size());
+  float audioToGUI = thisSamplesGUI / static_cast<float>(totalSamplesAudio);
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   int loopStart = graphData->renderState->AudioParamDiscrete(
