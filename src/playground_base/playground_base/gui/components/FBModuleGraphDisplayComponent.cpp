@@ -124,11 +124,11 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     bool stereo = !primarySeries.r.empty();
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
 
-    auto const& vi1 = graphData.verticalIndicators1;
-    for (int i = 0; i < vi1.size(); i++)
+    auto const& vi = graphData.verticalIndicators;
+    for (int i = 0; i < vi.size(); i++)
     {
       assert(!stereo);
-      PaintVerticalIndicator(g, graph, vi1[i], maxSizeAllSeries, absMaxValueAllSeries);
+      PaintVerticalIndicator(g, graph, vi[i], maxSizeAllSeries, absMaxValueAllSeries);
     }
 
     g.setColour(Colours::darkgrey);

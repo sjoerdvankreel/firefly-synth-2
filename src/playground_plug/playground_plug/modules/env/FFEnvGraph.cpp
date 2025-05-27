@@ -92,11 +92,21 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   for (int i = 0; i < stageLengthsAudio.size(); i++)
     totalSamplesAudio += stageLengthsAudio[i];
   totalSamplesAudio += smoothLengthAudio;
-
   int thisSamplesGUI = static_cast<int>(graphData->graphs[0].primarySeries.l.size());
   float audioToGUI = thisSamplesGUI / static_cast<float>(totalSamplesAudio);
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
+  int releasePoint = graphData->renderState->AudioParamDiscrete(
+    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Release, 0 });
+  if (releasePoint != 0)
+  {
+    int releasePointSamples = 0;
+    for (int i = 0; i < releasePoint - 1; i++)
+      releasePointSamples += stageLengthsAudio[i];
+    releasePointSamples = static_cast<int>(releasePointSamples * audioToGUI);
+    graphData->graphs[0].verticalIndicators.push_back(releasePointSamples);
+  }
+
   int loopStart = graphData->renderState->AudioParamDiscrete(
     { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopStart, 0 });
   if (loopStart != 0)
@@ -106,7 +116,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     for (; lp < loopStart - 1; lp++)
       loopStartSamples += stageLengthsAudio[lp];
     loopStartSamples = static_cast<int>(loopStartSamples * audioToGUI);
-    graphData->graphs[0].verticalIndicators1.push_back(loopStartSamples);
+    graphData->graphs[0].verticalIndicators.push_back(loopStartSamples);
 
     int loopLength = graphData->renderState->AudioParamDiscrete(
       { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopLength, 0 });
@@ -116,7 +126,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
       for(; lp < loopStart - 1 + loopLength && lp < FFEnvStageCount; lp++)
         loopLengthSamples += stageLengthsAudio[lp];
       loopLengthSamples = static_cast<int>(loopLengthSamples * audioToGUI);
-      graphData->graphs[0].verticalIndicators1.push_back(loopStartSamples + loopLengthSamples);
+      graphData->graphs[0].verticalIndicators.push_back(loopStartSamples + loopLengthSamples);
     }
   }
 }

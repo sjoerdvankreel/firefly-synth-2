@@ -30,9 +30,9 @@ public:
   std::string text = {};
   std::string moduleName = {};
   std::vector<int> primaryMarkers = {};
+  std::vector<int> pointIndicators = {};
+  std::vector<int> verticalIndicators = {};
   FBModuleGraphPoints primarySeries = {};
-  std::vector<int> verticalIndicators1 = {};
-  std::vector<int> verticalIndicators2 = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
   void GetLimits(int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
 };
