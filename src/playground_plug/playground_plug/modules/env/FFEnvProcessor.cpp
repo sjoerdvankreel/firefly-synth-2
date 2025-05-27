@@ -17,6 +17,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   _finished = false;
   _released = false;
   _lastOverall = 0.0f;
+  _smoothPosition = 0;
   _positionSamples = 0;
   _stagePositions.fill(0);
   _lastBeforeRelease = 0.0f;
@@ -135,6 +136,9 @@ FFEnvProcessor::Process(FBModuleProcState& state)
         output.Set(s, _smoother.Next(_lastOverall));
       }
   }
+
+  for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
+    output.Set(s, _smoother.Next(_lastOverall));
 
 #if 0 //todo
   auto const& noteEvents = *state.input->note;

@@ -30,6 +30,7 @@ class FFEnvProcessor final
   float _lastOverall = 0.0f;
   float _lastBeforeRelease = 0.0f;
 
+  int _smoothPosition = {};
   FBBasicLPFilter _smoother = {};
   std::array<int, (int)FFEnvStageCount> _stageSamples = {};
   std::array<int, (int)FFEnvStageCount> _stagePositions = {};
