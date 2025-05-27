@@ -73,7 +73,7 @@ FFMakeEnvTopo()
   release.id = "{38670133-4372-461F-ACB8-0E1E156BD3DF}";
   release.type = FBParamType::Discrete;
   release.Discrete().valueCount = FFEnvStageCount + 2;
-  release.Discrete().valueFormatter = [](int v) { return v == 0 ? "Off" : std::to_string(v); };
+  release.Discrete().valueFormatter = [](int v) { return v == 0 ? "Off" : std::to_string(v - 1); };
   auto selectRelease = [](auto& module) { return &module.block.release; };
   release.scalarAddr = FFSelectScalarParamAddr(selectModule, selectRelease);
   release.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectRelease);
