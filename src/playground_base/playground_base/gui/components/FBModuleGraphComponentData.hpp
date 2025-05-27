@@ -22,6 +22,11 @@ struct FBModuleGraphSecondarySeries final
 
 struct FBModuleGraphData final
 {
+private:
+  mutable int _maxSizeAllSeries = -1;
+  mutable float _absMaxValueAllSeries = {};
+
+public:
   std::string text = {};
   std::string moduleName = {};
   std::vector<int> primaryMarkers = {};
@@ -29,6 +34,7 @@ struct FBModuleGraphData final
   std::vector<int> verticalIndicators1 = {};
   std::vector<int> verticalIndicators2 = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
+  void GetLimits(int& maxSizeAllSeries, float& absMaxValueAllSeries) const;
 };
 
 struct FBModuleGraphComponentData final

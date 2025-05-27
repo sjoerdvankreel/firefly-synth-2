@@ -19,10 +19,10 @@ Point<float>
 FBModuleGraphDisplayComponent::PointLocation(
   int graph, std::vector<float> const& points,
   int point, bool stereo, bool left,
-  int maxPointsAllSeries, float absMaxPointAllSeries) const
+  int maxSizeAllSeries, float absMaxValueAllSeries) const
 {
-  float y = PointYLocation(points[point], stereo, left, absMaxPointAllSeries);
-  float x = PointXLocation(graph, static_cast<float>(point) / maxPointsAllSeries);
+  float y = PointYLocation(points[point], stereo, left, absMaxValueAllSeries);
+  float x = PointXLocation(graph, static_cast<float>(point) / maxSizeAllSeries);
   return { x, y };
 }
 
@@ -39,10 +39,10 @@ FBModuleGraphDisplayComponent::PointXLocation(
 float 
 FBModuleGraphDisplayComponent::PointYLocation(
   float pointYValue, bool stereo, 
-  bool left, float absMaxPointAllSeries) const
+  bool left, float absMaxValueAllSeries) const
 {
   assert(!std::isnan(pointYValue));
-  float pointValue = pointYValue / absMaxPointAllSeries;
+  float pointValue = pointYValue / absMaxValueAllSeries;
   if (_data->bipolar)
     pointValue = FBToUnipolar(pointValue);
   if (stereo)
@@ -53,13 +53,13 @@ FBModuleGraphDisplayComponent::PointYLocation(
 void
 FBModuleGraphDisplayComponent::PaintVerticalIndicator(
   Graphics& g, int graph, int point, 
-  int maxPointsAllSeries, float absMaxPointAllSeries)
+  int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   float dashes[2] = { 4, 2 };
   g.setColour(Colours::white);
-  float x = PointXLocation(graph, point / static_cast<float>(maxPointsAllSeries));
-  float y0 = PointYLocation(0.0f, false, false, absMaxPointAllSeries);
-  float y1 = PointYLocation(absMaxPointAllSeries, false, false, absMaxPointAllSeries);
+  float x = PointXLocation(graph, point / static_cast<float>(maxSizeAllSeries));
+  float y0 = PointYLocation(0.0f, false, false, absMaxValueAllSeries);
+  float y1 = PointYLocation(absMaxValueAllSeries, false, false, absMaxValueAllSeries);
   g.drawDashedLine(Line<float>(x, y0, x, y1), dashes, 2);
 }
 
@@ -68,10 +68,10 @@ FBModuleGraphDisplayComponent::PaintMarker(
   Graphics& g, 
   int graph, std::vector<float> const& points,
   int marker, bool stereo, bool left,
-  int maxPointsAllSeries, float absMaxPointAllSeries)
+  int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   g.setColour(Colours::white);
-  auto xy = PointLocation(graph, points, marker, stereo, left, maxPointsAllSeries, absMaxPointAllSeries);
+  auto xy = PointLocation(graph, points, marker, stereo, left, maxSizeAllSeries, absMaxValueAllSeries);
   float x = xy.getX() - HalfMarkerSize;
   float y = xy.getY() - HalfMarkerSize;
   g.fillEllipse(x, y, MarkerSize, MarkerSize);
@@ -81,13 +81,13 @@ void
 FBModuleGraphDisplayComponent::PaintClipBoundaries(
   juce::Graphics& g,
   int graph, bool stereo, bool left,
-  float absMaxPointAllSeries)
+  float absMaxValueAllSeries)
 {
   float dashes[2] = { 4.0, 2.0 };
   float x0 = PointXLocation(graph, 0.0f);
   float x1 = PointXLocation(graph, 1.0f);
-  float upperY = PointYLocation(1.0f, stereo, left, absMaxPointAllSeries);
-  float lowerY = PointYLocation(_data->bipolar? -1.0f: 0.0f, stereo, left, absMaxPointAllSeries);
+  float upperY = PointYLocation(1.0f, stereo, left, absMaxValueAllSeries);
+  float lowerY = PointYLocation(_data->bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries);
   g.setColour(Colours::white);
   g.drawDashedLine(Line<float>(x0, upperY, x1, upperY), dashes, 2);
   g.drawDashedLine(Line<float>(x0, lowerY, x1, lowerY), dashes, 2);
@@ -98,15 +98,15 @@ FBModuleGraphDisplayComponent::PaintSeries(
   juce::Graphics& g, juce::Colour color,
   int graph, std::vector<float> const& points,
   bool stereo, bool left,
-  int maxPointsAllSeries, float absMaxPointAllSeries)
+  int maxSizeAllSeries, float absMaxValueAllSeries)
 {
   if (points.empty())
     return;
 
   Path path;
-  path.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxPointsAllSeries, absMaxPointAllSeries));
+  path.startNewSubPath(PointLocation(graph, points, 0, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   for (int i = 1; i < points.size(); i++)
-    path.lineTo(PointLocation(graph, points, i, stereo, left, maxPointsAllSeries, absMaxPointAllSeries));
+    path.lineTo(PointLocation(graph, points, i, stereo, left, maxSizeAllSeries, absMaxValueAllSeries));
   g.setColour(color);
   g.strokePath(path, PathStrokeType(1.0f));
 }
@@ -116,34 +116,19 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 {
   for (int graph = 0; graph < _data->graphs.size(); graph++)
   {
-    float absMaxPointAllSeries = 1.0f;
-    auto const& graphData = _data->graphs[graph];
+    int maxSizeAllSeries;
+    float absMaxValueAllSeries;
+    auto& graphData = _data->graphs[graph];
     auto const& primarySeries = graphData.primarySeries;
     auto const& secondarySeries = graphData.secondarySeries;
     bool stereo = !primarySeries.r.empty();
-    int maxPointsAllSeries = static_cast<int>(primarySeries.l.size());
-    for (int i = 0; i < primarySeries.l.size(); i++)
-    {
-      absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(primarySeries.l[i]));
-      if (stereo)
-        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(primarySeries.r[i]));
-    }
-    for (int i = 0; i < secondarySeries.size(); i++)
-    {
-      maxPointsAllSeries = std::max(maxPointsAllSeries, static_cast<int>(secondarySeries[i].points.l.size()));
-      for (int j = 0; j < secondarySeries[i].points.l.size(); j++)
-      {
-        absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(secondarySeries[i].points.l[j]));
-        if (stereo)
-          absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(secondarySeries[i].points.r[j]));
-      }
-    }
+    graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
 
     auto const& vi1 = graphData.verticalIndicators1;
     for (int i = 0; i < vi1.size(); i++)
     {
       assert(!stereo);
-      PaintVerticalIndicator(g, graph, vi1[i], maxPointsAllSeries, absMaxPointAllSeries);
+      PaintVerticalIndicator(g, graph, vi1[i], maxSizeAllSeries, absMaxValueAllSeries);
     }
 
     g.setColour(Colours::darkgrey);
@@ -156,31 +141,31 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     {
       int marker = secondarySeries[i].marker;
       auto const& points = secondarySeries[i].points;
-      PaintSeries(g, Colours::grey, graph, points.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
+      PaintSeries(g, Colours::grey, graph, points.l, stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
       if (stereo)
-        PaintSeries(g, Colours::grey, graph, points.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
+        PaintSeries(g, Colours::grey, graph, points.r, stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
       if (marker != -1 && _data->drawMarkers)
       {
         assert(!stereo);
-        PaintMarker(g, graph, points.l, marker, false, true, maxPointsAllSeries, absMaxPointAllSeries);
+        PaintMarker(g, graph, points.l, marker, false, true, maxSizeAllSeries, absMaxValueAllSeries);
       }
     }
 
-    PaintSeries(g, Colours::white, graph, primarySeries.l, stereo, true, maxPointsAllSeries, absMaxPointAllSeries);
+    PaintSeries(g, Colours::white, graph, primarySeries.l, stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
     if (stereo)
-      PaintSeries(g, Colours::white, graph, primarySeries.r, stereo, false, maxPointsAllSeries, absMaxPointAllSeries);
+      PaintSeries(g, Colours::white, graph, primarySeries.r, stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
     if (_data->drawMarkers)
       for (int i = 0; i < graphData.primaryMarkers.size(); i++)
       {
         assert(!stereo);
-        PaintMarker(g, graph, primarySeries.l, graphData.primaryMarkers[i], false, true, maxPointsAllSeries, absMaxPointAllSeries);
+        PaintMarker(g, graph, primarySeries.l, graphData.primaryMarkers[i], false, true, maxSizeAllSeries, absMaxValueAllSeries);
       }
 
     if (_data->drawClipBoundaries)
     {
-      PaintClipBoundaries(g, graph, stereo, false, absMaxPointAllSeries);
+      PaintClipBoundaries(g, graph, stereo, false, absMaxValueAllSeries);
       if (stereo)
-        PaintClipBoundaries(g, graph, stereo, true, absMaxPointAllSeries);
+        PaintClipBoundaries(g, graph, stereo, true, absMaxValueAllSeries);
     }
   }
 }

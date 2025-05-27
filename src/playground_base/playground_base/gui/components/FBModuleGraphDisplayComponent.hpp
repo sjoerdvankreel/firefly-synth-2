@@ -21,31 +21,31 @@ private:
 
   float PointYLocation(
     float pointYValue, bool stereo, bool left, 
-    float absMaxPointAllSeries) const;
+    float absMaxValueAllSeries) const;
 
   juce::Point<float> PointLocation(
     int graph, std::vector<float> const& points,
     int point, bool stereo, bool left,
-    int maxPointsAllSeries, float absMaxPointAllSeries) const; 
+    int maxSizeAllSeries, float absMaxValueAllSeries) const;
   
   void PaintClipBoundaries(
     juce::Graphics& g,
     int graph, bool stereo, bool left,
-    float absMaxPointAllSeries);
+    float absMaxValueAllSeries);
 
   void PaintVerticalIndicator(
     juce::Graphics& g, int graph, int point,
-    int maxPointsAllSeries, float absMaxPointAllSeries);
+    int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintMarker(
     juce::Graphics& g,
     int graph, std::vector<float> const& points,
     int marker, bool stereo, bool left,
-    int maxPointsAllSeries, float absMaxPointAllSeries);
+    int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintSeries(
     juce::Graphics& g, juce::Colour color, 
     int graph, std::vector<float> const& points,
     bool stereo, bool left,
-    int maxPointsAllSeries, float absMaxPointAllSeries);
+    int maxSizeAllSeries, float absMaxValueAllSeries);
 };
