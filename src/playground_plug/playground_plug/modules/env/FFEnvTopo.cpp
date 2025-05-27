@@ -97,6 +97,7 @@ FFMakeEnvTopo()
   loopStart.acc = false;
   loopStart.defaultText = "Off";
   loopStart.name = "Loop Start";
+  loopStart.display = "Loop";
   loopStart.slotCount = 1;
   loopStart.id = "{97402218-4546-447E-A925-AB3DFD21A9F8}";
   loopStart.type = FBParamType::Discrete;
@@ -112,6 +113,7 @@ FFMakeEnvTopo()
   loopLength.acc = false;
   loopLength.defaultText = "0";
   loopLength.name = "Loop Length";
+  loopLength.display = "Length";
   loopLength.slotCount = 1;
   loopLength.id = "{078E33B3-02EB-4637-84E0-949E2830A0DB}";
   loopLength.type = FBParamType::Discrete;
