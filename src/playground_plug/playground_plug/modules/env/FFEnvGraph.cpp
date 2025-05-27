@@ -87,10 +87,22 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopStart, 0 });
   if (loopStart != 0)
   {
-    int loopStartPos = 0;
-    for (int i = 0; i < loopStart - 1; i++)
-      loopStartPos += stageLengthsAudio[i];
-    loopStartPos = static_cast<int>(loopStartPos * audioToGUI);
-    graphData->series[0].verticalIndicators1.push_back(loopStartPos);
+    int lp = 0;
+    int loopStartSamples = 0;
+    for (; lp < loopStart - 1; lp++)
+      loopStartSamples += stageLengthsAudio[lp];
+    loopStartSamples = static_cast<int>(loopStartSamples * audioToGUI);
+    graphData->series[0].verticalIndicators1.push_back(loopStartSamples);
+
+    int loopLength = graphData->renderState->AudioParamDiscrete(
+      { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopLength, 0 });
+    if (loopLength != 0 && lp < FFEnvStageCount)
+    {
+      int loopLengthSamples = 0;
+      for(; lp < loopStart - 1 + loopLength && lp < FFEnvStageCount; lp++)
+        loopLengthSamples += stageLengthsAudio[lp];
+      loopLengthSamples = static_cast<int>(loopLengthSamples * audioToGUI);
+      graphData->series[0].verticalIndicators1.push_back(loopStartSamples + loopLengthSamples);
+    }
   }
 }
