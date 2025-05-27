@@ -26,6 +26,8 @@ struct FBModuleGraphSeriesData final
   std::string moduleName = {};
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
+  std::vector<int> verticalIndicators1 = {};
+  std::vector<int> verticalIndicators2 = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};
 };
 

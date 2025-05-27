@@ -33,6 +33,10 @@ private:
     int graph, bool stereo, bool left,
     float absMaxPointAllSeries);
 
+  void PaintVerticalIndicator(
+    juce::Graphics& g, int graph, int point,
+    int maxPointsAllSeries, float absMaxPointAllSeries);
+
   void PaintMarker(
     juce::Graphics& g,
     int graph, std::vector<float> const& points,

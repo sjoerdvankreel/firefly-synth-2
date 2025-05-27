@@ -24,26 +24,38 @@ EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
   return *procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
 }
 
-static FBModuleGraphPlotParams
-PlotParams(FBGraphRenderState const* state)
+static std::vector<int>
+StageLengthAudioSamples(FBGraphRenderState const* state)
 {
-  FBModuleGraphPlotParams result = {};
-  int moduleSlot = state->ModuleProcState()->moduleSlot;
+  std::vector<int> result = {};
   float bpm = state->ExchangeContainer()->Host()->bpm;
+  int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  bool sync = state->AudioParamBool({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
-  
+  bool sync = state->AudioParamBool(
+    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
+
   if (!sync)
   {
-    for(int i = 0; i < FFEnvStageCount; i++)
-      result.samples += state->AudioParamLinearTimeSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageTime, i }, sampleRate);
-    result.releaseAt = result.samples; // TODO
+    for (int i = 0; i < FFEnvStageCount; i++)
+      result.push_back(state->AudioParamLinearTimeSamples(
+        { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageTime, i }, sampleRate));
     return result;
   }
 
   for (int i = 0; i < FFEnvStageCount; i++)
-    result.samples += state->AudioParamBarsSamples({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i }, sampleRate, bpm);
-  result.releaseAt = result.samples; // TODO
+    result.push_back(state->AudioParamBarsSamples(
+      {(int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i}, sampleRate, bpm));
+  return result;
+}
+
+static FBModuleGraphPlotParams
+PlotParams(FBGraphRenderState const* state)
+{
+  FBModuleGraphPlotParams result = {};
+  auto stageLengths = StageLengthAudioSamples(state);
+  for (int i = 0; i < stageLengths.size(); i++)
+    result.samples += stageLengths[i];
+  result.releaseAt = result.samples; // todo
   return result;
 }
 
@@ -59,7 +71,26 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
   renderData.voiceCVOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
+  
+  FBRenderModuleGraph<false, false>(renderData, 0);
   FBTopoIndices indices = { (int)FFModuleType::Env, graphData->renderState->ModuleProcState()->moduleSlot };
   graphData->series[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
-  FBRenderModuleGraph<false, false>(renderData, 0);
+
+  int totalSamplesAudio = 0;
+  auto stageLengthsAudio = StageLengthAudioSamples(graphData->renderState);
+  for (int i = 0; i < stageLengthsAudio.size(); i++)
+    totalSamplesAudio += stageLengthsAudio[i];
+  float audioToGUI = static_cast<float>(graphData->pixelWidth) / totalSamplesAudio;
+
+  int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
+  int loopStart = graphData->renderState->AudioParamDiscrete(
+    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopStart, 0 });
+  if (loopStart != 0)
+  {
+    int loopStartPos = 0;
+    for (int i = 0; i < loopStart - 1; i++)
+      loopStartPos += stageLengthsAudio[i];
+    loopStartPos = static_cast<int>(loopStartPos * audioToGUI);
+    graphData->series[0].verticalIndicators1.push_back(loopStartPos);
+  }
 }

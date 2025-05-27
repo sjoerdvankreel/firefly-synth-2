@@ -51,6 +51,19 @@ FBModuleGraphDisplayComponent::PointYLocation(
 }
 
 void
+FBModuleGraphDisplayComponent::PaintVerticalIndicator(
+  Graphics& g, int graph, int point, 
+  int maxPointsAllSeries, float absMaxPointAllSeries)
+{
+  float dashes[2] = { 4, 2 };
+  g.setColour(Colours::white);
+  float x = PointXLocation(graph, point / static_cast<float>(maxPointsAllSeries));
+  float y0 = PointYLocation(0.0f, false, false, absMaxPointAllSeries);
+  float y1 = PointYLocation(absMaxPointAllSeries, false, false, absMaxPointAllSeries);
+  g.drawDashedLine(Line<float>(x, y0, x, y1), dashes, 2);
+}
+
+void
 FBModuleGraphDisplayComponent::PaintMarker(
   Graphics& g, 
   int graph, std::vector<float> const& points,
@@ -121,6 +134,13 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         if (stereo)
           absMaxPointAllSeries = std::max(absMaxPointAllSeries, std::abs(_data->series[s].secondarySeries[i].points.r[j]));
       }
+    }
+
+    auto const& vi1 = _data->series[s].verticalIndicators1;
+    for (int i = 0; i < vi1.size(); i++)
+    {
+      assert(!stereo);
+      PaintVerticalIndicator(g, s, vi1[i], maxPointsAllSeries, absMaxPointAllSeries);
     }
 
     g.setColour(Colours::darkgrey);
