@@ -102,7 +102,7 @@ FFMakeEnvTopo()
   loopStart.id = "{97402218-4546-447E-A925-AB3DFD21A9F8}";
   loopStart.type = FBParamType::Discrete;
   loopStart.Discrete().valueCount = FFEnvStageCount + 2;
-  loopStart.Discrete().valueFormatter = [](int v) { return v == 0 ? "Off" : std::to_string(v); };
+  loopStart.Discrete().valueFormatter = [](int v) { return v == 0 ? "Off" : std::to_string(v - 1); };
   auto selectLoopStart = [](auto& module) { return &module.block.loopStart; };
   loopStart.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLoopStart);
   loopStart.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectLoopStart);
