@@ -114,6 +114,19 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
   _moduleState->voice = &_primaryVoiceManager->Voices()[0];
 }
 
+double
+FBGraphRenderState::GetAudioParamNormalized(
+  FBParamTopoIndices const& indices,
+  bool exchange, int exchangeVoice) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  if (!exchange)
+    return _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  if (exchangeVoice == -1)
+    return *ExchangeContainer()->Params()[param->runtimeParamIndex].Global();
+  return ExchangeContainer()->Params()[param->runtimeParamIndex].Voice()[exchangeVoice];
+}
+
 bool 
 FBGraphRenderState::GUIParamBool(
   FBParamTopoIndices const& indices) const
@@ -152,55 +165,55 @@ FBGraphRenderState::GUIParamBarsSamples(
 
 bool 
 FBGraphRenderState::AudioParamBool(
-  FBParamTopoIndices const& indices) const
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
 int
 FBGraphRenderState::AudioParamDiscrete(
-  FBParamTopoIndices const& indices) const
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Discrete().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
 float
 FBGraphRenderState::AudioParamLinear(
-  FBParamTopoIndices const& indices) const
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Linear().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
 int
 FBGraphRenderState::AudioParamLinearTimeSamples( 
-  FBParamTopoIndices const& indices, float sampleRate) const
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Linear().NormalizedTimeToSamplesFast(static_cast<float>(normalized), sampleRate);
 }
 
 int
 FBGraphRenderState::AudioParamLinearFreqSamples(
-  FBParamTopoIndices const& indices, float sampleRate) const
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Linear().NormalizedFreqToSamplesFast(static_cast<float>(normalized), sampleRate);
 }
 
 int
 FBGraphRenderState::AudioParamBarsSamples(
-  FBParamTopoIndices const& indices, float sampleRate, float bpm) const
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate, float bpm) const
 {
   auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
   return param->static_.Bars().NormalizedToSamplesFast(static_cast<float>(normalized), sampleRate, bpm);
 }
 

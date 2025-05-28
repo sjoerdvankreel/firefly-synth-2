@@ -15,8 +15,8 @@ public FBModuleGraphRenderData<OscisGraphRenderData>
 {
   int DoProcess(FBModuleProcState& state);
   void DoBeginVoice(FBModuleProcState& state);
-  void DoProcessIndicators(FBModuleGraphPoints& points) {}
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
+  void DoProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
 void
@@ -64,8 +64,8 @@ PlotParams(FBGraphRenderState const* state)
   result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Coarse, 0 }));
-  pitch += state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Fine, 0 });
+  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Coarse, 0 }, false, -1));
+  pitch += state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Fine, 0 }, false, -1);
   result.samples = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate);
   return result;
 }

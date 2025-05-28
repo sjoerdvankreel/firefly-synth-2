@@ -13,9 +13,9 @@ struct PhysGraphRenderData final :
 public FBModuleGraphRenderData<PhysGraphRenderData>
 {
   FFPhysProcessor& GetProcessor(FBModuleProcState& state);
-  void DoProcessIndicators(FBModuleGraphPoints& points) {}
   int DoProcess(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
   void DoBeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(true, state); }
+  void DoProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
 FFPhysProcessor&
@@ -34,8 +34,8 @@ PlotParams(FBGraphRenderState const* state)
   result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Phys, moduleSlot, (int)FFPhysParam::Coarse, 0 }));
-  pitch += state->AudioParamLinear({ (int)FFModuleType::Phys, moduleSlot, (int)FFPhysParam::Fine, 0 });
+  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Phys, moduleSlot, (int)FFPhysParam::Coarse, 0 }, false, -1));
+  pitch += state->AudioParamLinear({ (int)FFModuleType::Phys, moduleSlot, (int)FFPhysParam::Fine, 0 }, false, -1);
   result.samples = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * FFPhysGraphRounds;
   return result;
 }

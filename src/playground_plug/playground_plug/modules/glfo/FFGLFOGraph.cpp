@@ -14,9 +14,9 @@ struct GLFOGraphRenderData final:
 public FBModuleGraphRenderData<GLFOGraphRenderData>
 {
   FFGLFOProcessor& GetProcessor(FBModuleProcState& state);
-  void DoProcessIndicators(FBModuleGraphPoints& points) {}
   void DoReset(FBModuleProcState& state) { GetProcessor(state).Reset(state); }
   int DoProcess(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
+  void DoProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
 FFGLFOProcessor& 
@@ -33,7 +33,7 @@ PlotParams(FBGraphRenderState const* state)
   result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  result.samples = state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, sampleRate);
+  result.samples = state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, false, -1, sampleRate);
   return result;
 }
 

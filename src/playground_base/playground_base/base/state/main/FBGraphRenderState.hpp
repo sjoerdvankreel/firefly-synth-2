@@ -28,6 +28,10 @@ class FBGraphRenderState final
   std::unique_ptr<FBVoiceManager> _primaryVoiceManager;
   std::unique_ptr<FBVoiceManager> _exchangeVoiceManager;
 
+  double GetAudioParamNormalized(
+    FBParamTopoIndices const& indices,
+    bool exchange, int exchangeVoice) const;
+
 public:
   ~FBGraphRenderState();
   FBGraphRenderState(FBPlugGUI const* plugGUI);
@@ -50,10 +54,10 @@ public:
   int GUIParamLinearTimeSamples(FBParamTopoIndices const& indices, float sampleRate) const;
   int GUIParamBarsSamples(FBParamTopoIndices const& indices, float sampleRate, float bpm) const;
 
-  bool AudioParamBool(FBParamTopoIndices const& indices) const;
-  int AudioParamDiscrete(FBParamTopoIndices const& indices) const;
-  float AudioParamLinear(FBParamTopoIndices const& indices) const;
-  int AudioParamLinearFreqSamples(FBParamTopoIndices const& indices, float sampleRate) const;
-  int AudioParamLinearTimeSamples(FBParamTopoIndices const& indices, float sampleRate) const;
-  int AudioParamBarsSamples(FBParamTopoIndices const& indices, float sampleRate, float bpm) const;
+  bool AudioParamBool(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
+  int AudioParamDiscrete(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
+  float AudioParamLinear(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
+  int AudioParamLinearFreqSamples(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const;
+  int AudioParamLinearTimeSamples(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const;
+  int AudioParamBarsSamples(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate, float bpm) const;
 };
