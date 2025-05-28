@@ -21,7 +21,7 @@ FBModuleGraphDisplayComponent::PointLocation(
   int point, bool stereo, bool left,
   int maxSizeAllSeries, float absMaxValueAllSeries) const
 {
-  assert(0 <= point && point < points.size());
+  point = std::clamp(point, 0, static_cast<int>(points.size()) - 1);
   float y = PointYLocation(points[point], stereo, left, absMaxValueAllSeries);
   float x = PointXLocation(graph, static_cast<float>(point) / maxSizeAllSeries);
   return { x, y };

@@ -26,6 +26,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.env[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
+
   _on = topo.NormalizedToBoolFast(FFEnvParam::On, params.block.on[0].Voice()[voice]);
   _exp = topo.NormalizedToBoolFast(FFEnvParam::Exp, params.block.exp[0].Voice()[voice]);
   _sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, params.block.sync[0].Voice()[voice]);
@@ -61,19 +62,22 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   }
   _lengthSamples += _smoothSamples;
 
-#if 0 // todo
-  auto const& sustain = params.acc.sustainLevel[0].Voice()[voice].CV();
-  if (_delaySamples > 0)
-    _lastBeforeRelease = _lastDAHDSR = 0.0f;
-  else if (_attackSamples > 0)
-    _lastBeforeRelease = _lastDAHDSR = 0.0f;
-  else if (_holdSamples > 0)
-    _lastBeforeRelease = _lastDAHDSR = 1.0f;
-  else if (_decaySamples > 0)
-    _lastBeforeRelease = _lastDAHDSR = 1.0f;
-  else if (_releaseSamples > 0)
-    _lastBeforeRelease = _lastDAHDSR = sustain.Get(0);
-#endif
+  for (int i = 0; i < FFEnvStageCount; i++)
+    if (_stageSamples[i] > 0)
+    {
+      if (i == 0)
+      {
+        _lastOverall = 0.0f;
+        _lastBeforeRelease = 0.0f;
+      }
+      else
+      {
+        float lvlNorm = params.acc.stageLevel[i - 1].Voice()[voice].CV().Get(0);
+        float lvlPlain = topo.NormalizedToIdentityFast(FFEnvParam::StageLevel, lvlNorm);
+        _lastOverall = lvlPlain;
+        _lastBeforeRelease = lvlPlain;
+      }
+    }
 
   _smoother.SetCoeffs(_smoothSamples);
   _smoother.State(_lastOverall);
@@ -107,48 +111,64 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
   float const invLogHalf = 1.0f / std::log(0.5f);
+
+  auto const& noteEvents = *state.input->note;
+  auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
+  if (_releasePoint != 0 &&
+    state.renderType != FBRenderType::GraphExchange &&
+    !state.anyExchangeActive)
+    for (int i = 0; i < noteEvents.size(); i++)
+      if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
+        releaseAt = noteEvents[i].pos;
   
   for (int stage = 0; stage < FFEnvStageCount; stage++)
   {
     int& stagePos = _stagePositions[stage];
     int stageSamples = _stageSamples[stage];
-    if (!_exp)
-      for (; s < FBFixedBlockSamples && stagePos < stageSamples; s++, stagePos++, _positionSamples++)
+    for (; s < FBFixedBlockSamples && stagePos < stageSamples; s++, stagePos++, _positionSamples++)
+    {
+      float stageStart;
+      float pos = stagePos / static_cast<float>(stageSamples);
+      float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
+      if (_releasePoint != 0 && stage == _releasePoint - 1 && _released)
+        stageStart = _lastBeforeRelease;
+      else
+        stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
+      _lastOverall = stageStart + (stageEnd - stageStart) * pos;
+      output.Set(s, _smoother.Next(_lastOverall));
+      if (_releasePoint != 0 && stage < _releasePoint - 1 && !_released)
       {
-        float pos = stagePos / static_cast<float>(stageSamples);
-        float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
-        float stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
-        _lastOverall = stageStart + (stageEnd - stageStart) * pos;
+        _lastBeforeRelease = _lastOverall;
+        if (s == releaseAt)
+        {
+          _released = true;
+          stage = _releasePoint - 1;
+          for (int ps = 0; ps < stage; ps++)
+            _stagePositions[ps] = _stageSamples[ps];
+          _positionSamples = _lengthSamplesUpToRelease;
+          break;
+        }
+      }
+    }
+    //else
+//      for (; s < FBFixedBlockSamples /* && !_released */ && stagePos < stageSamples; s++, stagePos++, _positionSamples++)
+  //    {
+    //    float pos = stagePos / static_cast<float>(stageSamples);
+      //  float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
+//        float stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
+  //      float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
+    //    _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * invLogHalf);
         //_lastBeforeRelease = _lastDAHDSR;
         //_released |= s == releaseAt;
-        output.Set(s, _smoother.Next(_lastOverall));
-      }
-    else
-      for (; s < FBFixedBlockSamples /* && !_released */ && stagePos < stageSamples; s++, stagePos++, _positionSamples++)
-      {
-        float pos = stagePos / static_cast<float>(stageSamples);
-        float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
-        float stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
-        float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
-        _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * invLogHalf);
-        //_lastBeforeRelease = _lastDAHDSR;
-        //_released |= s == releaseAt;
-        output.Set(s, _smoother.Next(_lastOverall));
-      }
+      //  output.Set(s, _smoother.Next(_lastOverall));
+      
   }
 
   for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
     output.Set(s, _smoother.Next(_lastOverall));
 
 #if 0 //todo
-  auto const& noteEvents = *state.input->note;
-  auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
-  if(_type != FFEnvType::Follow && 
-    state.renderType != FBRenderType::GraphExchange &&
-    !state.anyExchangeActive)
-    for (int i = 0; i < noteEvents.size(); i++)
-      if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
-        releaseAt = noteEvents[i].pos;
+  
 #endif
 
 #if 0
