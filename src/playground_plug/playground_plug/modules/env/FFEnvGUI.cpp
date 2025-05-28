@@ -19,35 +19,29 @@ static Component*
 MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 1, 0, 0 });
-  auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1, 0, 0 });
+  auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   auto sync = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  auto sustain = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sustain, 0 });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sustain));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sustain));
-  auto exp = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Exp, 0 });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, exp));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, exp));
   auto release = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Release, 0 });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, release));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, release));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, release));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, release));
   auto smoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::LinearHorizontal));
   auto smoothBars = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
   auto loopStart = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopStart, 0 });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopStart));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopStart));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopStart));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopStart));
   auto loopLength = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopLength, 0 });
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopLength));
-  grid->Add(1, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopLength));
-  grid->MarkSection({ 0, 0, 2, 8 });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopLength));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopLength));
+  grid->MarkSection({ 0, 0, 2, 6 });
   return grid;
 }
 

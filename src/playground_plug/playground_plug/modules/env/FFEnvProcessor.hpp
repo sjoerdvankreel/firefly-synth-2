@@ -13,10 +13,8 @@ class FBGraphRenderState;
 
 class FFEnvProcessor final
 {
-  bool _on = {};
-  bool _exp = {};
   bool _sync = {};
-  bool _sustain = {};
+  FFEnvType _type = {};
   int _loopStart = {};
   int _loopLength = {};
   int _releasePoint = {};

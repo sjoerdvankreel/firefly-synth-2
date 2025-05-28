@@ -27,10 +27,8 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   auto const& params = procState->param.voice.env[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
 
-  _on = topo.NormalizedToBoolFast(FFEnvParam::On, params.block.on[0].Voice()[voice]);
-  _exp = topo.NormalizedToBoolFast(FFEnvParam::Exp, params.block.exp[0].Voice()[voice]);
   _sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, params.block.sync[0].Voice()[voice]);
-  _sustain = topo.NormalizedToBoolFast(FFEnvParam::Sustain, params.block.sustain[0].Voice()[voice]);
+  _type = topo.NormalizedToListFast<FFEnvType>(FFEnvParam::Type, params.block.type[0].Voice()[voice]);
   _releasePoint = topo.NormalizedToDiscreteFast(FFEnvParam::Release, params.block.release[0].Voice()[voice]);
   _loopStart = topo.NormalizedToDiscreteFast(FFEnvParam::LoopStart, params.block.loopStart[0].Voice()[voice]);
   _loopLength = topo.NormalizedToDiscreteFast(FFEnvParam::LoopStart, params.block.loopLength[0].Voice()[voice]);
@@ -96,7 +94,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   auto const& stageLevel = procParams.acc.stageLevel;
   auto const& stageSlope = procParams.acc.stageSlope;
 
-  if (!_on)
+  if (_type == FFEnvType::Off)
   {
     output.Fill(0.0f);
     return 0;
@@ -144,7 +142,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       else
         stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
 
-      if(!_exp)
+      if(_type == FFEnvType::Linear)
         _lastOverall = stageStart + (stageEnd - stageStart) * pos;
       else
       {

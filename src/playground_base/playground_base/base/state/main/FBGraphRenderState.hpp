@@ -57,7 +57,17 @@ public:
   bool AudioParamBool(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   int AudioParamDiscrete(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   float AudioParamLinear(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
+  template <class T> T AudioParamList(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   int AudioParamLinearFreqSamples(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const;
   int AudioParamLinearTimeSamples(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate) const;
   int AudioParamBarsSamples(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice, float sampleRate, float bpm) const;
 };
+
+template <class T> T
+FBGraphRenderState::AudioParamList(
+  FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const
+{
+  auto param = ModuleProcState()->topo->audio.ParamAtTopo(indices);
+  double normalized = GetAudioParamNormalized(indices, exchange, exchangeVoice);
+  return static_cast<T>(param->static_.List().NormalizedToPlainFast(static_cast<float>(normalized)));
+}

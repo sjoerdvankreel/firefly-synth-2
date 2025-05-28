@@ -29,11 +29,11 @@ StageLengthAudioSamples(
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   
-  bool on = state->AudioParamBool(
-    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 }, exchange, exchangeVoice);
+  auto type = state->AudioParamList<FFEnvType>(
+    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 }, exchange, exchangeVoice);
   bool sync = state->AudioParamBool(
     { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 }, exchange, exchangeVoice);
-  if (!on)
+  if (type == FFEnvType::Off)
     return;
 
   if (!sync)
@@ -107,9 +107,9 @@ EnvGraphRenderData::DoProcessIndicators(bool exchange, int exchangeVoice, FBModu
   float thisSamplesGUI = static_cast<float>(points.l.size());
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
-  bool on = graphData->renderState->AudioParamBool(
-    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 }, exchange, exchangeVoice);
-  if (!on)
+  auto type = graphData->renderState->AudioParamList<FFEnvType>(
+    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 }, exchange, exchangeVoice);
+  if (type == FFEnvType::Off)
     return;
 
   int releasePoint = graphData->renderState->AudioParamDiscrete(
