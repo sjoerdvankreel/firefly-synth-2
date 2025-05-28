@@ -162,12 +162,20 @@ FFEnvProcessor::Process(FBModuleProcState& state)
         }
       }
 
-      if (!graphing && !_released && stagePos == stageSamples - 1 && stage == loopEnd - 1)
+      if (!graphing && !_released)
       {
-        for(int ps = _loopStart - 1; ps < loopEnd; ps++)
-          _stagePositions[ps] = 0;
-        _positionSamples = _lengthSamplesUpToStage[_loopStart - 1];
-        stage = _loopStart - 1;
+        if (stage == _loopStart - 1 && _loopLength == 0)
+        {
+          _stagePositions[stage] = 0;
+          _positionSamples = _lengthSamplesUpToStage[stage];
+        }
+        else if (stagePos == stageSamples - 1 && stage == loopEnd - 1)
+        {
+          for (int ps = _loopStart - 1; ps < loopEnd; ps++)
+            _stagePositions[ps] = 0;
+          _positionSamples = _lengthSamplesUpToStage[_loopStart - 1];
+          stage = _loopStart - 1;
+        }
       }
     }      
   }
