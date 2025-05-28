@@ -77,6 +77,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
         _lastOverall = lvlPlain;
         _lastBeforeRelease = lvlPlain;
       }
+      break;
     }
 
   _smoother.SetCoeffs(_smoothSamples);

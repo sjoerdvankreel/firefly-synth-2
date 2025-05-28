@@ -5,7 +5,7 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
 
-inline int constexpr FFEnvStageCount = 8;
+inline int constexpr FFEnvStageCount = 9;
 enum class FFEnvType { Off, Linear, Exp };
 
 enum class FFEnvParam {
