@@ -9,7 +9,7 @@ midi smoothing (actual midi too)
 combined shaper+filter+routing fx
 fix todos
 tooltip combo not show
-store the selected tab
+store the selected tab 
 
 recheck clap mod
 xdg_config_home
