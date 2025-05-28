@@ -38,6 +38,7 @@ FFMakeEnvTopo()
     { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
     { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Lin" },
     { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Exp" } };
+  type.defaultTextSelector = [](int s) { return s == 0 ? "Lin" : "Off"; };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
@@ -57,7 +58,7 @@ FFMakeEnvTopo()
 
   auto& release = result->params[(int)FFEnvParam::Release];
   release.acc = false;
-  release.defaultText = "Off";
+  release.defaultText = "2";
   release.name = "Release";
   release.display = "Rls";
   release.slotCount = 1;
@@ -73,7 +74,7 @@ FFMakeEnvTopo()
 
   auto& loopStart = result->params[(int)FFEnvParam::LoopStart];
   loopStart.acc = false;
-  loopStart.defaultText = "Off";
+  loopStart.defaultText = "2";
   loopStart.name = "Loop Start";
   loopStart.display = "Loop";
   loopStart.slotCount = 1;
@@ -140,11 +141,11 @@ FFMakeEnvTopo()
 
   auto& stageLevel = result->params[(int)FFEnvParam::StageLevel];
   stageLevel.acc = true;
-  stageLevel.defaultText = "50";
   stageLevel.name = "Level";
   stageLevel.slotCount = FFEnvStageCount;
   stageLevel.unit = "%";
   stageLevel.id = "{0E6A1B2B-AC57-473B-9B31-F67631C6B152}";
+  stageLevel.defaultTextSelector = [](int s) { return s == 0 ? "100" : s == 1 ? "25" : "0"; };
   stageLevel.type = FBParamType::Identity;
   auto selectStageLevel = [](auto& module) { return &module.acc.stageLevel; };
   stageLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageLevel);
@@ -168,11 +169,11 @@ FFMakeEnvTopo()
 
   auto& stageTime = result->params[(int)FFEnvParam::StageTime];
   stageTime.acc = false;
-  stageTime.defaultText = "0";
   stageTime.name = "Time";
   stageTime.slotCount = FFEnvStageCount;
   stageTime.unit = "Sec";
   stageTime.id = "{3023BA36-07C3-422F-A894-5F6372603EEF}";
+  stageTime.defaultTextSelector = [](int s) { return s == 0 ? "0.1" : s == 1 ? "0.2" : s == 2 ? "0.4" : "0"; };
   stageTime.type = FBParamType::Linear;
   stageTime.Linear().min = 0.0f;
   stageTime.Linear().max = 10.0f;
@@ -186,11 +187,11 @@ FFMakeEnvTopo()
 
   auto& stageBars = result->params[(int)FFEnvParam::StageBars];
   stageBars.acc = false;
-  stageBars.defaultText = "Off";
   stageBars.name = "Bars";
   stageBars.slotCount = FFEnvStageCount;
   stageBars.unit = "Bars";
   stageBars.id = "{43780C3A-3C23-4A94-8BDF-152FDF408A5F}";
+  stageBars.defaultTextSelector = [](int s) { return s == 0 ? "1/16" : s == 1 ? "1/8" : s == 2 ? "1/4" : "Off"; };
   stageBars.type = FBParamType::Bars;
   stageBars.Bars().items = MakeEnvBarsItems();
   auto selectStageBars = [](auto& module) { return &module.block.stageBars; };
