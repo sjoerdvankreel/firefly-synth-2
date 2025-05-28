@@ -128,11 +128,13 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
         releaseAt = noteEvents[i].pos;
   
-  for (int stage = 0; stage < FFEnvStageCount; stage++)
+  int stage = 0;
+  while(stage < FFEnvStageCount)
   {
+    bool stageReset = false;
     int& stagePos = _stagePositions[stage];
     int stageSamples = _stageSamples[stage];
-    for (; s < FBFixedBlockSamples && stagePos < stageSamples; s++, stagePos++, _positionSamples++)
+    while (s < FBFixedBlockSamples && stagePos < stageSamples)
     {
       float stageStart;
       float pos = stagePos / static_cast<float>(stageSamples);
@@ -151,19 +153,26 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       }
       output.Set(s, _smoother.Next(_lastOverall));
 
+      bool isReleaseNow = s == releaseAt;
+      s++;
+
       if (releasePoint != 0 && !_released)
       {
         _lastBeforeRelease = _lastOverall;
-        if (s == releaseAt)
+        if (isReleaseNow)
         {
           _released = true;
-          stage = releasePoint - 1;
-          for (int ps = 0; ps < stage; ps++)
-            _stagePositions[ps] = _stageSamples[ps];
-          for (int ps = stage; ps < FFEnvStageCount; ps++)
-            _stagePositions[ps] = 0;
-          _positionSamples = _lengthSamplesUpToRelease;
-          break;
+          if (stage < releasePoint - 1)
+          {
+            stage = releasePoint - 1;
+            for (int ps = 0; ps < stage; ps++)
+              _stagePositions[ps] = _stageSamples[ps];
+            for (int ps = stage; ps < FFEnvStageCount; ps++)
+              _stagePositions[ps] = 0;
+            _positionSamples = _lengthSamplesUpToRelease;
+            stageReset = true;
+            break;
+          }
         }
       }
 
@@ -173,6 +182,8 @@ FFEnvProcessor::Process(FBModuleProcState& state)
         {
           _stagePositions[stage] = 0;
           _positionSamples = _lengthSamplesUpToStage[stage];
+          stageReset = true;
+          break;
         }
         else if (stagePos == stageSamples - 1 && stage == loopEnd - 1)
         {
@@ -180,9 +191,17 @@ FFEnvProcessor::Process(FBModuleProcState& state)
             _stagePositions[ps] = 0;
           _positionSamples = _lengthSamplesUpToStage[_loopStart - 1];
           stage = _loopStart - 1;
+          stageReset = true;
+          break;
         }
       }
+
+      stagePos++;
+      _positionSamples++;
     }      
+
+    if (!stageReset)
+      stage++;
   }
 
   for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
