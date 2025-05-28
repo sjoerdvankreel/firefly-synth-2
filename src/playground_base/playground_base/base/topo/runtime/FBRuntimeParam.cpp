@@ -65,26 +65,26 @@ static_(staticParam)
 #endif
 }
 
-std::string 
+std::string
 FBRuntimeParam::GetDefaultText() const
 {
-  return static_.GetDefaultText(topoIndices.param.slot);
-}
-
-double
-FBRuntimeParam::DefaultNormalizedByText() const
-{
-  return static_.DefaultNormalizedByText(topoIndices.param.slot);
+  return static_.GetDefaultText(topoIndices.module.slot, topoIndices.param.slot);
 }
 
 std::string
 FBRuntimeGUIParam::GetDefaultText() const
 {
-  return static_.GetDefaultText(topoIndices.param.slot);
+  return static_.GetDefaultText(topoIndices.module.slot, topoIndices.param.slot);
+}
+
+double
+FBRuntimeParam::DefaultNormalizedByText() const
+{
+  return static_.DefaultNormalizedByText(topoIndices.module.slot, topoIndices.param.slot);
 }
 
 double
 FBRuntimeGUIParam::DefaultNormalizedByText() const
 {
-  return static_.DefaultNormalizedByText(topoIndices.param.slot);
+  return static_.DefaultNormalizedByText(topoIndices.module.slot, topoIndices.param.slot);
 }

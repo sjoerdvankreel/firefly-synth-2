@@ -1,13 +1,5 @@
 #include <playground_base/base/topo/static/FBStaticParam.hpp>
 
-std::string 
-FBStaticParamBase::GetDefaultText(int slot) const
-{
-  if (defaultTextSelector)
-    return defaultTextSelector(slot);
-  return defaultText;
-}
-
 FBAutomationTiming
 FBStaticParam::AutomationTiming() const
 {
@@ -28,6 +20,14 @@ FBAutomationTimingToString(FBAutomationTiming timing)
   case FBAutomationTiming::AtVoiceStart: return "At Voice Start";
   default: assert(false); return {};
   }
+}
+
+std::string
+FBStaticParamBase::GetDefaultText(int moduleSlot, int paramSlot) const
+{
+  if (defaultTextSelector)
+    return defaultTextSelector(moduleSlot, paramSlot);
+  return defaultText;
 }
 
 FBParamNonRealTime const&
@@ -59,9 +59,9 @@ FBStaticParamBase::ItemsNonRealTime() const
 }
 
 double
-FBStaticParamBase::DefaultNormalizedByText(int slot) const
+FBStaticParamBase::DefaultNormalizedByText(int moduleSlot, int paramSlot) const
 {
-  auto text = GetDefaultText(slot);
+  auto text = GetDefaultText(moduleSlot, paramSlot);
   if (text.size() == 0)
     return 0.0;
   return NonRealTime().TextToNormalized(false, text).value();

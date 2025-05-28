@@ -32,7 +32,7 @@ FBAutomationTimingToString(FBAutomationTiming timing);
 
 typedef std::function<std::string(int slot)>
 FBParamSlotFormatter;
-typedef std::function<std::string(int slot)>
+typedef std::function<std::string(int moduleSlot, int paramSlot)>
 FBParamDefaultTextSelector;
 
 typedef std::function<double* (
@@ -84,11 +84,11 @@ public:
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);
 
-  std::string GetDefaultText(int slot) const;
   FBParamNonRealTime const& NonRealTime() const;
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
+  std::string GetDefaultText(int moduleSlot, int paramSlot) const;
 
-  double DefaultNormalizedByText(int slot) const;
+  double DefaultNormalizedByText(int moduleSlot, int paramSlot) const;
   std::string NormalizedToTextWithUnit(bool io, double normalized) const;
 
   FBListParam& List() { assert(type == FBParamType::List); return list; }
