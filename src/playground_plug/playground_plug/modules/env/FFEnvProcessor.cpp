@@ -120,7 +120,10 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   loopEnd = std::min(loopEnd, FFEnvStageCount);
   bool graphing = state.renderType != FBRenderType::Audio;
   bool graphingExchange = state.renderType == FBRenderType::GraphExchange || state.anyExchangeActive;
-  if (_releasePoint != 0 && !graphingExchange)
+  bool forcedRelease = _releasePoint == 0 && _loopStart != 0 && state.moduleSlot == 0;
+  int releasePoint = forcedRelease ? FFEnvStageCount : _releasePoint;
+
+  if (releasePoint != 0 && !graphingExchange)
     for (int i = 0; i < noteEvents.size(); i++)
       if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
         releaseAt = noteEvents[i].pos;
@@ -134,7 +137,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       float stageStart;
       float pos = stagePos / static_cast<float>(stageSamples);
       float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
-      if (_releasePoint != 0 && stage == _releasePoint - 1 && _released)
+      if (releasePoint != 0 && stage == releasePoint - 1 && _released)
         stageStart = _lastBeforeRelease;
       else
         stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
@@ -148,13 +151,13 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       }
       output.Set(s, _smoother.Next(_lastOverall));
 
-      if (_releasePoint != 0 && stage < _releasePoint - 1 && !_released)
+      if (releasePoint != 0 && stage < releasePoint - 1 && !_released)
       {
         _lastBeforeRelease = _lastOverall;
         if (s == releaseAt)
         {
           _released = true;
-          stage = _releasePoint - 1;
+          stage = releasePoint - 1;
           for (int ps = 0; ps < stage; ps++)
             _stagePositions[ps] = _stageSamples[ps];
           _positionSamples = _lengthSamplesUpToRelease;
