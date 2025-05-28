@@ -34,6 +34,7 @@ class FFEnvProcessor final
   FBBasicLPFilter _smoother = {};
   std::array<int, (int)FFEnvStageCount> _stageSamples = {};
   std::array<int, (int)FFEnvStageCount> _stagePositions = {};
+  std::array<int, (int)FFEnvStageCount> _lengthSamplesUpToStage = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);

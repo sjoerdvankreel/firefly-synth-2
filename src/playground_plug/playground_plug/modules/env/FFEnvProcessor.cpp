@@ -54,11 +54,13 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
 
   _lengthSamples = 0;
   _lengthSamplesUpToRelease = 0;
+  _lengthSamplesUpToStage = {};
   for (int i = 0; i < FFEnvStageCount; i++)
   {
+    _lengthSamplesUpToStage[i] = _lengthSamples;
     _lengthSamples += _stageSamples[i];
     if (i < _releasePoint - 1)
-      _lengthSamplesUpToRelease += _stageSamples[i]; // todo debug
+      _lengthSamplesUpToRelease += _stageSamples[i];    
   }
   _lengthSamples += _smoothSamples;
 
@@ -114,9 +116,11 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   auto const& noteEvents = *state.input->note;
   auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
-  if (_releasePoint != 0 &&
-    state.renderType != FBRenderType::GraphExchange &&
-    !state.anyExchangeActive)
+  int loopEnd = _loopStart == 0 ? -1 : _loopStart - 1 + _loopLength;
+  loopEnd = std::min(loopEnd, FFEnvStageCount);
+  bool graphing = state.renderType != FBRenderType::Audio;
+  bool graphingExchange = state.renderType == FBRenderType::GraphExchange || state.anyExchangeActive;
+  if (_releasePoint != 0 && !graphingExchange)
     for (int i = 0; i < noteEvents.size(); i++)
       if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
         releaseAt = noteEvents[i].pos;
@@ -157,88 +161,21 @@ FFEnvProcessor::Process(FBModuleProcState& state)
           break;
         }
       }
-    }
-    //else
-//      for (; s < FBFixedBlockSamples /* && !_released */ && stagePos < stageSamples; s++, stagePos++, _positionSamples++)
-  //    {
-    //    float pos = stagePos / static_cast<float>(stageSamples);
-      //  float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
-//        float stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
-  //      float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
-    //    _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * invLogHalf);
-        //_lastBeforeRelease = _lastDAHDSR;
-        //_released |= s == releaseAt;
-      //  output.Set(s, _smoother.Next(_lastOverall));
-      
+
+      if (!graphing && !_released && stagePos == stageSamples - 1 && stage == loopEnd - 1)
+      {
+        for(int ps = _loopStart - 1; ps < loopEnd; ps++)
+          _stagePositions[ps] = 0;
+        _positionSamples = _lengthSamplesUpToStage[_loopStart - 1];
+        stage = _loopStart - 1;
+      }
+    }      
   }
 
   for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
     output.Set(s, _smoother.Next(_lastOverall));
 
-#if 0 //todo
-  
-#endif
-
 #if 0
-
-  int& delayPos = _stagePositions[(int)FFEnvStage::Delay];
-  for (; s < FBFixedBlockSamples && !_released && delayPos < _delaySamples; s++, delayPos++, _positionSamples++)
-  {
-    _lastDAHDSR = 0.0f;
-    _lastBeforeRelease = _lastDAHDSR;
-    _released |= s == releaseAt;
-    output.Set(s, _smoother.Next(_lastDAHDSR));
-  }
-
-  int& attackPos = _stagePositions[(int)FFEnvStage::Attack];
-  if (_mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && !_released && attackPos < _attackSamples; s++, attackPos++, _positionSamples++)
-    {
-      _lastDAHDSR = attackPos / static_cast<float>(_attackSamples);
-      _lastBeforeRelease = _lastDAHDSR;
-      _released |= s == releaseAt;
-      output.Set(s, _smoother.Next(_lastDAHDSR));
-    }
-  else
-    for (; s < FBFixedBlockSamples && !_released && attackPos < _attackSamples; s++, attackPos++, _positionSamples++)
-    {
-      float slope = minSlope + attackSlope.CV().Get(s) * slopeRange;
-      float pos = attackPos / static_cast<float>(_attackSamples);
-      _lastDAHDSR = std::pow(pos, std::log(slope) * invLogHalf);
-      _lastBeforeRelease = _lastDAHDSR;
-      _released |= s == releaseAt;
-      output.Set(s, _smoother.Next(_lastDAHDSR));
-    }
-
-  int& holdPos = _stagePositions[(int)FFEnvStage::Hold];
-  for (; s < FBFixedBlockSamples && !_released && holdPos < _holdSamples; s++, holdPos++, _positionSamples++)
-  {
-    _lastDAHDSR = 1.0f;
-    _lastBeforeRelease = _lastDAHDSR;
-    _released |= s == releaseAt;
-    output.Set(s, _smoother.Next(_lastDAHDSR));
-  }
-
-  int& decayPos = _stagePositions[(int)FFEnvStage::Decay];
-  if (_mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && !_released && decayPos < _decaySamples; s++, decayPos++, _positionSamples++)
-    {
-      float pos = decayPos / static_cast<float>(_decaySamples);
-      _lastDAHDSR = sustainLevel.CV().Get(s) + (1.0f - sustainLevel.CV().Get(s)) * (1.0f - pos);
-      _lastBeforeRelease = _lastDAHDSR;
-      _released |= s == releaseAt;
-      output.Set(s, _smoother.Next(_lastDAHDSR));
-    }
-  else
-    for (; s < FBFixedBlockSamples && !_released && decayPos < _decaySamples; s++, decayPos++, _positionSamples++)
-    {
-      float slope = minSlope + decaySlope.CV().Get(s) * slopeRange;
-      float pos = decayPos / static_cast<float>(_decaySamples);
-      _lastDAHDSR = sustainLevel.CV().Get(s) + (1.0f - sustainLevel.CV().Get(s)) * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
-      _lastBeforeRelease = _lastDAHDSR;
-      _released |= s == releaseAt;
-      output.Set(s, _smoother.Next(_lastDAHDSR));
-    }
 
   if(_type == FFEnvType::Sustain && 
     state.renderType != FBRenderType::GraphExchange && 
@@ -250,31 +187,6 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       _released |= s == releaseAt;
       output.Set(s, _smoother.Next(_lastDAHDSR));
     }
-
-  if (s < FBFixedBlockSamples)
-    _positionSamples = std::max(_positionSamples, _lengthSamplesUpToRelease);
-
-  int& releasePos = _stagePositions[(int)FFEnvStage::Release];
-  if (_mode == FFEnvMode::Linear)
-    for (; s < FBFixedBlockSamples && releasePos < _releaseSamples; s++, releasePos++, _positionSamples++)
-    {
-      float pos = releasePos / static_cast<float>(_releaseSamples);
-      _lastDAHDSR = _lastBeforeRelease * (1.0f - pos);
-      output.Set(s, _smoother.Next(_lastDAHDSR));
-    }
-  else
-    for (; s < FBFixedBlockSamples && releasePos < _releaseSamples; s++, releasePos++, _positionSamples++)
-    {
-      float slope = minSlope + releaseSlope.CV().Get(s) * slopeRange;
-      float pos = releasePos / static_cast<float>(_releaseSamples);
-      _lastDAHDSR = _lastBeforeRelease * (1.0f - std::pow(pos, std::log(slope) * invLogHalf));
-      output.Set(s, _smoother.Next(_lastDAHDSR));
-    }
-
-
-  int& smoothPos = _smo[(int)FFEnvStage::Smooth];
-  for (; s < FBFixedBlockSamples && smoothPos < _smoothingSamples; s++, smoothPos++, _positionSamples++)
-    output.Set(s, _smoother.Next(_lastDAHDSR));
 
 #endif
 
