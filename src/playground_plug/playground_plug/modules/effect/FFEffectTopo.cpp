@@ -37,7 +37,7 @@ FFMakeEffectTopo()
   shaperGain.id = "{51D5655F-A8E0-47F9-B62D-67E4EFA24E4F}";
   shaperGain.type = FBParamType::Linear;
   shaperGain.Linear().min = 0.0f;
-  shaperGain.Linear().max = 8.0f;
+  shaperGain.Linear().max = 32.0f;
   shaperGain.Linear().displayMultiplier = 100;
   auto selectShaperGain = [](auto& module) { return &module.acc.shaperGain; };
   shaperGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectShaperGain);
