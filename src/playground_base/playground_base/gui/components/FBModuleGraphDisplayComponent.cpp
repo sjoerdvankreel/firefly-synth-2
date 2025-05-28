@@ -126,6 +126,9 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     bool stereo = !primarySeries.r.empty();
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
 
+    if (maxSizeAllSeries == 0)
+      continue;
+
     auto const& pvi = graphData.primarySeries.verticalIndicators;
     for (int i = 0; i < pvi.size(); i++)
     {
