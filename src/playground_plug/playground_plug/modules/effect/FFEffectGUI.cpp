@@ -28,7 +28,7 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
   auto shaperGain = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::ShaperGain, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, shaperGain));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, shaperGain, Slider::SliderStyle::LinearHorizontal));
-  grid->MarkSection({ 0, 0, 2, 4 });
+  grid->MarkSection({ 0, 0, 2, 2 });
   return grid;
 }
 
