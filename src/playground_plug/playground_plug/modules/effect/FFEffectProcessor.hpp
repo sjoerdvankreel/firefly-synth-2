@@ -10,8 +10,10 @@ struct FBModuleProcState;
 
 class FFEffectProcessor final
 {
+  bool _on = {};
+
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectProcessor);
-  int Process(FBModuleProcState& state);
+  void Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState& state);
 };

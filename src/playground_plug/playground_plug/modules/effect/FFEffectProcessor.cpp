@@ -15,10 +15,48 @@
 void
 FFEffectProcessor::BeginVoice(FBModuleProcState& state)
 {
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.effect[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Effect];
+  auto const& onNorm = params.block.on[0].Voice()[voice];
+  _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
 }
 
-int
+void
 FFEffectProcessor::Process(FBModuleProcState& state)
 {
-  return FBFixedBlockSamples;
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& voiceState = procState->dsp.voice[voice];
+  auto& output = voiceState.effect[state.moduleSlot].output;
+  auto const& input = voiceState.effect[state.moduleSlot].input;
+
+  if (!_on)
+  {
+    input.CopyTo(output);
+    return;
+  }
+
+  auto const& procParams = procState->param.voice.effect[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Effect];
+  auto const& shaperGainNorm = procParams.acc.shaperGain[0].Voice()[voice];
+
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    auto shaperGainPlain = topo.NormalizedToLinearFast(FFEffectParam::ShaperGain, shaperGainNorm, s);
+    for (int c = 0; c < 2; c++)
+      output[c].Store(s, xsimd::tanh(shaperGainPlain * input[c].Load(s)));
+  }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+
+  auto& exchangeDSP = exchangeToGUI->voice[voice].effect[state.moduleSlot];
+  exchangeDSP.active = true;
+  exchangeDSP.lengthSamples = -1;
+
+  auto& exchangeParams = exchangeToGUI->param.voice.effect[state.moduleSlot];
+  exchangeParams.acc.shaperGain[0][voice] = shaperGainNorm.Last();
 }
