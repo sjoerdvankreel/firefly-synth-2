@@ -27,17 +27,14 @@ PhysGraphRenderData::GetProcessor(FBModuleProcState& state)
   return processor;
 }
 
-static FBModuleGraphPlotParams
-PlotParams(FBGraphRenderState const* state)
+static int
+PlotSamples(FBGraphRenderState const* state)
 {
-  FBModuleGraphPlotParams result = {};
-  result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Phys, moduleSlot, (int)FFPhysParam::Coarse, 0 }, false, -1));
   pitch += state->AudioParamLinear({ (int)FFModuleType::Phys, moduleSlot, (int)FFPhysParam::Fine, 0 }, false, -1);
-  result.samples = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * FFPhysGraphRounds;
-  return result;
+  return FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * FFPhysGraphRounds;
 }
 
 void
@@ -48,7 +45,7 @@ FFPhysRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
+  renderData.plotSamplesSelector = PlotSamples;
   renderData.staticModuleIndex = (int)FFModuleType::Phys;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].phys[slot]; };

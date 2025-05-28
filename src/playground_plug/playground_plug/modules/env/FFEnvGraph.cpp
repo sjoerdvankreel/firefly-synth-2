@@ -54,17 +54,16 @@ StageLengthAudioSamples(
   }
 }
 
-static FBModuleGraphPlotParams
-PlotParams(FBGraphRenderState const* state)
+static int
+PlotSamples(FBGraphRenderState const* state)
 {
-  int smoothLength;
+  int result = 0;
+  int smoothLength = 0;
   std::vector<int> stageLengths;
-  FBModuleGraphPlotParams result = {};
   StageLengthAudioSamples(state, false, -1, stageLengths, smoothLength);
   for (int i = 0; i < stageLengths.size(); i++)
-    result.samples += stageLengths[i];
-  result.samples += smoothLength;
-  result.releaseAt = result.samples;
+    result += stageLengths[i];
+  result += smoothLength;
   return result;
 }
 
@@ -81,7 +80,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   EnvGraphRenderData renderData = {};
   graphData->drawMarkers = true;
   renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
+  renderData.plotSamplesSelector = PlotSamples;
   renderData.staticModuleIndex = (int)FFModuleType::Env;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
@@ -99,7 +98,6 @@ EnvGraphRenderData::DoProcessIndicators(bool exchange, int exchangeVoice, FBModu
   int smoothLengthAudio;
   int totalSamplesAudio = 0;
   std::vector<int> stageLengthsAudio;
-  FBModuleGraphPlotParams result = {}; 
   StageLengthAudioSamples(graphData->renderState, exchange, exchangeVoice, stageLengthsAudio, smoothLengthAudio);
   for (int i = 0; i < stageLengthsAudio.size(); i++)
     totalSamplesAudio += stageLengthsAudio[i];

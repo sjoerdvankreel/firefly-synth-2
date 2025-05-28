@@ -26,15 +26,12 @@ GLFOGraphRenderData::GetProcessor(FBModuleProcState& state)
   return *procState->dsp.global.gLFO[state.moduleSlot].processor;
 }
 
-static FBModuleGraphPlotParams
-PlotParams(FBGraphRenderState const* state)
+static int
+PlotSamples(FBGraphRenderState const* state)
 {
-  FBModuleGraphPlotParams result = {};
-  result.releaseAt = -1;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  result.samples = state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, false, -1, sampleRate);
-  return result;
+  return state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, false, -1, sampleRate);
 }
 
 void
@@ -43,7 +40,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   GLFOGraphRenderData renderData = {};
   graphData->drawMarkers = true;
   renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
+  renderData.plotSamplesSelector = PlotSamples;
   renderData.staticModuleIndex = (int)FFModuleType::GLFO;
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
