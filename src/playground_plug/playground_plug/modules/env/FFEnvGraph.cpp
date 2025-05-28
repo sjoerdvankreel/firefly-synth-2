@@ -64,7 +64,7 @@ PlotParams(FBGraphRenderState const* state)
   for (int i = 0; i < stageLengths.size(); i++)
     result.samples += stageLengths[i];
   result.samples += smoothLength;
-  result.releaseAt = result.samples; // todo
+  result.releaseAt = result.samples;
   return result;
 }
 
