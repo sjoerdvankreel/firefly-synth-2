@@ -117,7 +117,7 @@ EnvGraphRenderData::DoProcessIndicators(bool exchange, int exchangeVoice, FBModu
   if (releasePoint != 0)
   {
     int releasePointSamples = 0;
-    for (int i = 0; i < releasePoint - 1; i++)
+    for (int i = 0; i < releasePoint; i++)
       releasePointSamples += stageLengthsAudio[i];
     releasePointSamples = static_cast<int>(releasePointSamples * thisSamplesGUI / totalSamplesAudio);
     points.pointIndicators.push_back(releasePointSamples);

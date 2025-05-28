@@ -59,7 +59,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   {
     _lengthSamplesUpToStage[i] = _lengthSamples;
     _lengthSamples += _stageSamples[i];
-    if (i < _releasePoint - 1)
+    if (i < _releasePoint)
       _lengthSamplesUpToRelease += _stageSamples[i];    
   }
   _lengthSamples += _smoothSamples;
@@ -139,7 +139,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       float stageStart;
       float pos = stagePos / static_cast<float>(stageSamples);
       float stageEnd = stageLevel[stage].Voice()[voice].CV().Get(s);
-      if (releasePoint != 0 && stage == releasePoint - 1 && _released)
+      if (releasePoint != 0 && stage == releasePoint && _released)
         stageStart = _lastBeforeRelease;
       else
         stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
@@ -162,9 +162,9 @@ FFEnvProcessor::Process(FBModuleProcState& state)
         if (isReleaseNow)
         {
           _released = true;
-          if (stage < releasePoint - 1)
+          if (stage < releasePoint)
           {
-            stage = releasePoint - 1;
+            stage = releasePoint;
             for (int ps = 0; ps < stage; ps++)
               _stagePositions[ps] = _stageSamples[ps];
             for (int ps = stage; ps < FFEnvStageCount; ps++)
@@ -206,21 +206,6 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   for (; s < FBFixedBlockSamples && _smoothPosition < _smoothSamples; s++, _smoothPosition++, _positionSamples++)
     output.Set(s, _smoother.Next(_lastOverall));
-
-#if 0
-
-  if(_type == FFEnvType::Sustain && 
-    state.renderType != FBRenderType::GraphExchange && 
-    !state.anyExchangeActive)
-    for (; s < FBFixedBlockSamples && !_released; s++)
-    {
-      _lastDAHDSR = sustainLevel.CV().Get(s);
-      _lastBeforeRelease = _lastDAHDSR;
-      _released |= s == releaseAt;
-      output.Set(s, _smoother.Next(_lastDAHDSR));
-    }
-
-#endif
 
   int processed = s;
   if (s < FBFixedBlockSamples)
