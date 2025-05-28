@@ -28,8 +28,13 @@ StageLengthAudioSamples(
   float bpm = state->ExchangeContainer()->Host()->bpm;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
+  
+  bool on = state->AudioParamBool(
+    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 }, exchange, exchangeVoice);
   bool sync = state->AudioParamBool(
     { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 }, exchange, exchangeVoice);
+  if (!on)
+    return;
 
   if (!sync)
   {
@@ -102,6 +107,11 @@ EnvGraphRenderData::DoProcessIndicators(bool exchange, int exchangeVoice, FBModu
   float thisSamplesGUI = static_cast<float>(points.l.size());
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
+  bool on = graphData->renderState->AudioParamBool(
+    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::On, 0 }, exchange, exchangeVoice);
+  if (!on)
+    return;
+
   int releasePoint = graphData->renderState->AudioParamDiscrete(
     { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Release, 0 }, exchange, exchangeVoice);
   if (releasePoint != 0)
@@ -110,7 +120,7 @@ EnvGraphRenderData::DoProcessIndicators(bool exchange, int exchangeVoice, FBModu
     for (int i = 0; i < releasePoint - 1; i++)
       releasePointSamples += stageLengthsAudio[i];
     releasePointSamples = static_cast<int>(releasePointSamples * thisSamplesGUI / totalSamplesAudio);
-    points.verticalIndicators.push_back(releasePointSamples);
+    points.pointIndicators.push_back(releasePointSamples);
   }
 
   int loopStart = graphData->renderState->AudioParamDiscrete(

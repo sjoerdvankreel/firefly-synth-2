@@ -40,8 +40,8 @@ private:
   void PaintMarker(
     juce::Graphics& g,
     int graph, std::vector<float> const& points,
-    int marker, bool stereo, bool left,
-    int maxSizeAllSeries, float absMaxValueAllSeries);
+    int marker, bool primary, bool isPointIndicator, bool stereo,
+    bool left, int maxSizeAllSeries, float absMaxValueAllSeries);
 
   void PaintSeries(
     juce::Graphics& g, juce::Colour color, 

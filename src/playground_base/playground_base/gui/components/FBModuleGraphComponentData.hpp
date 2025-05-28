@@ -12,6 +12,7 @@ struct FBModuleGraphPoints final
 {
   std::vector<float> l = {};
   std::vector<float> r = {};
+  std::vector<int> pointIndicators = {};
   std::vector<int> verticalIndicators = {};
 };
 
