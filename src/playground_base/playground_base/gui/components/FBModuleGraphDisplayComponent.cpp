@@ -132,22 +132,22 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     bool stereo = !primarySeries.r.empty();
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
 
-    if (maxSizeAllSeries == 0)
-      continue;
-
-    auto const& pvi = graphData.primarySeries.verticalIndicators;
-    for (int i = 0; i < pvi.size(); i++)
+    if (maxSizeAllSeries != 0)
     {
-      assert(!stereo);
-      PaintVerticalIndicator(g, graph, pvi[i], 
-        true, maxSizeAllSeries, absMaxValueAllSeries);
-    }
-    for (int i = 0; i < graphData.secondarySeries.size(); i++)
-    {
-      auto const& svi = graphData.secondarySeries[i].points.verticalIndicators;
-      for (int j = 0; j < svi.size(); j++)
-        PaintVerticalIndicator(g, graph, svi[j], 
-          false, maxSizeAllSeries, absMaxValueAllSeries);
+      auto const& pvi = graphData.primarySeries.verticalIndicators;
+      for (int i = 0; i < pvi.size(); i++)
+      {
+        assert(!stereo);
+        PaintVerticalIndicator(g, graph, pvi[i],
+          true, maxSizeAllSeries, absMaxValueAllSeries);
+      }
+      for (int i = 0; i < graphData.secondarySeries.size(); i++)
+      {
+        auto const& svi = graphData.secondarySeries[i].points.verticalIndicators;
+        for (int j = 0; j < svi.size(); j++)
+          PaintVerticalIndicator(g, graph, svi[j],
+            false, maxSizeAllSeries, absMaxValueAllSeries);
+      }
     }
 
     g.setColour(Colours::darkgrey);
@@ -157,51 +157,54 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     textBounds = Rectangle<int>(x0, textBounds.getY(), x1 - x0, textBounds.getHeight());
     g.drawText(graphData.moduleName + " " + graphData.text, textBounds, Justification::centred, false);
 
-    for (int i = 0; i < secondarySeries.size(); i++)
+    if (maxSizeAllSeries != 0)
     {
-      int marker = secondarySeries[i].marker;
-      auto const& points = secondarySeries[i].points;
-      PaintSeries(g, Colours::grey, graph, points.l, 
+      for (int i = 0; i < secondarySeries.size(); i++)
+      {
+        int marker = secondarySeries[i].marker;
+        auto const& points = secondarySeries[i].points;
+        PaintSeries(g, Colours::grey, graph, points.l,
+          stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
+        if (stereo)
+          PaintSeries(g, Colours::grey, graph, points.r,
+            stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
+
+        for (int i = 0; i < points.pointIndicators.size(); i++)
+          PaintMarker(g, graph, points.l, points.pointIndicators[i],
+            false, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+
+        if (marker != -1 && _data->drawMarkers)
+        {
+          assert(!stereo);
+          PaintMarker(g, graph, points.l, marker,
+            false, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+        }
+      }
+
+      PaintSeries(g, Colours::white, graph, primarySeries.l,
         stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
       if (stereo)
-        PaintSeries(g, Colours::grey, graph, points.r, 
+        PaintSeries(g, Colours::white, graph, primarySeries.r,
           stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
 
-      for (int i = 0; i < points.pointIndicators.size(); i++)
-        PaintMarker(g, graph, points.l, points.pointIndicators[i],
-          false, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+      for (int i = 0; i < primarySeries.pointIndicators.size(); i++)
+        PaintMarker(g, graph, primarySeries.l, primarySeries.pointIndicators[i],
+          true, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
-      if (marker != -1 && _data->drawMarkers)
+      if (_data->drawMarkers)
+        for (int i = 0; i < graphData.primaryMarkers.size(); i++)
+        {
+          assert(!stereo);
+          PaintMarker(g, graph, primarySeries.l, graphData.primaryMarkers[i],
+            true, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+        }
+
+      if (_data->drawClipBoundaries)
       {
-        assert(!stereo);
-        PaintMarker(g, graph, points.l, marker, 
-          false, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
+        PaintClipBoundaries(g, graph, stereo, false, absMaxValueAllSeries);
+        if (stereo)
+          PaintClipBoundaries(g, graph, stereo, true, absMaxValueAllSeries);
       }
-    }
-
-    PaintSeries(g, Colours::white, graph, primarySeries.l,
-      stereo, true, maxSizeAllSeries, absMaxValueAllSeries);
-    if (stereo)
-      PaintSeries(g, Colours::white, graph, primarySeries.r, 
-        stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
-
-    for(int i = 0; i < primarySeries.pointIndicators.size(); i++)
-      PaintMarker(g, graph, primarySeries.l, primarySeries.pointIndicators[i], 
-        true, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
-
-    if (_data->drawMarkers)
-      for (int i = 0; i < graphData.primaryMarkers.size(); i++)
-      {
-        assert(!stereo);
-        PaintMarker(g, graph, primarySeries.l, graphData.primaryMarkers[i],
-          true, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
-      }
-
-    if (_data->drawClipBoundaries)
-    {
-      PaintClipBoundaries(g, graph, stereo, false, absMaxValueAllSeries);
-      if (stereo)
-        PaintClipBoundaries(g, graph, stereo, true, absMaxValueAllSeries);
     }
   }
 }
