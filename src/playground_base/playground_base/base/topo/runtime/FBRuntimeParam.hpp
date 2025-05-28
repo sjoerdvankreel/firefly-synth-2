@@ -32,6 +32,8 @@ struct FBRuntimeGUIParam final:
 public FBRuntimeParamBase
 {
   FBStaticGUIParam static_;
+  std::string GetDefaultText() const;
+  double DefaultNormalizedByText() const;
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeGUIParam);
   FBRuntimeGUIParam(
@@ -45,6 +47,8 @@ struct FBRuntimeParam final:
 public FBRuntimeParamBase
 {
   FBStaticParam static_;
+  std::string GetDefaultText() const;
+  double DefaultNormalizedByText() const;
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
   FBRuntimeParam(

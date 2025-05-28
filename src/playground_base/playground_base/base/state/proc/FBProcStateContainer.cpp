@@ -38,7 +38,7 @@ _special(topo.static_.specialSelector(topo.static_, _rawState))
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
 
   for (int p = 0; p < Params().size(); p++)
-    Params()[p].InitProcessing(static_cast<float>(topo.audio.params[p].static_.DefaultNormalizedByText()));
+    Params()[p].InitProcessing(static_cast<float>(topo.audio.params[p].DefaultNormalizedByText()));
 
 #ifndef NDEBUG
   std::set<void*> uniquePtrs = {};

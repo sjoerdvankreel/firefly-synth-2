@@ -109,7 +109,7 @@ FBCLAPPlugin::paramsInfo(
   info->max_value = 1.0;
   info->cookie = nullptr;
   info->id = runtimeParam.tag;
-  info->default_value = FBNormalizedToCLAP(staticParam, staticParam.DefaultNormalizedByText());
+  info->default_value = FBNormalizedToCLAP(staticParam, runtimeParam.DefaultNormalizedByText());
 
   std::fill(info->name, info->name + sizeof(info->name), 0);
   std::fill(info->module, info->module + sizeof(info->module), 0);

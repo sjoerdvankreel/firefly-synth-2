@@ -64,3 +64,27 @@ static_(staticParam)
       assert(itemNames.insert(staticParam.List().items[i].name).second);
 #endif
 }
+
+std::string 
+FBRuntimeParam::GetDefaultText() const
+{
+  return static_.GetDefaultText(topoIndices.param.slot);
+}
+
+double
+FBRuntimeParam::DefaultNormalizedByText() const
+{
+  return static_.DefaultNormalizedByText(topoIndices.param.slot);
+}
+
+std::string
+FBRuntimeGUIParam::GetDefaultText() const
+{
+  return static_.GetDefaultText(topoIndices.param.slot);
+}
+
+double
+FBRuntimeGUIParam::DefaultNormalizedByText() const
+{
+  return static_.DefaultNormalizedByText(topoIndices.param.slot);
+}

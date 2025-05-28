@@ -37,7 +37,7 @@ FBGUIParamControl(plugGUI, param)
     setRange(0.0, 1.0);
   if (param->static_.type == FBParamType::Linear)
     setSkewFactor(param->static_.Linear().editSkewFactor);
-  setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
+  setDoubleClickReturnValue(true, param->DefaultNormalizedByText());
   SetValueNormalizedFromPlug(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
 }
 
@@ -76,7 +76,7 @@ double
 FBGUIParamSlider::getValueFromText(const String& text)
 {
   auto parsed = _param->static_.NonRealTime().TextToNormalized(false, text.toStdString());
-  return parsed.value_or(_param->static_.DefaultNormalizedByText());
+  return parsed.value_or(_param->DefaultNormalizedByText());
 }
 
 FBParamSlider::
@@ -93,7 +93,7 @@ FBParamControl(plugGUI, param)
     setRange(0.0, 1.0);
   if (param->static_.type == FBParamType::Linear)
     setSkewFactor(param->static_.Linear().editSkewFactor);
-  setDoubleClickReturnValue(true, param->static_.DefaultNormalizedByText());
+  setDoubleClickReturnValue(true, param->DefaultNormalizedByText());
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));
 }
 
@@ -132,7 +132,7 @@ double
 FBParamSlider::getValueFromText(const String& text)
 {
   auto parsed = _param->static_.NonRealTime().TextToNormalized(false, text.toStdString());
-  return parsed.value_or(_param->static_.DefaultNormalizedByText());
+  return parsed.value_or(_param->DefaultNormalizedByText());
 }
 
 void
