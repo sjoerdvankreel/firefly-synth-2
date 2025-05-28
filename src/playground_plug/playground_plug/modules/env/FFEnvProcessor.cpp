@@ -151,7 +151,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       }
       output.Set(s, _smoother.Next(_lastOverall));
 
-      if (releasePoint != 0 && stage < releasePoint - 1 && !_released)
+      if (releasePoint != 0 && !_released)
       {
         _lastBeforeRelease = _lastOverall;
         if (s == releaseAt)
@@ -160,6 +160,8 @@ FFEnvProcessor::Process(FBModuleProcState& state)
           stage = releasePoint - 1;
           for (int ps = 0; ps < stage; ps++)
             _stagePositions[ps] = _stageSamples[ps];
+          for (int ps = stage; ps < FFEnvStageCount; ps++)
+            _stagePositions[ps] = 0;
           _positionSamples = _lengthSamplesUpToRelease;
           break;
         }
