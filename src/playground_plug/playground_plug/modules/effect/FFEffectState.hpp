@@ -30,6 +30,8 @@ class alignas(alignof(TVoiceBlock)) FFEffectBlockParamState final
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
   std::array<TVoiceBlock, 1> on = {};
+  std::array<TVoiceBlock, 1> oversample = {};
+  std::array<TVoiceBlock, FFEffectBlockCount> type = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);
 };
@@ -39,7 +41,11 @@ class alignas(alignof(TVoiceAcc)) FFEffectAccParamState final
 {
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
-  std::array<TVoiceAcc, 1> shaperGain = {};
+  std::array<TVoiceAcc, FFEffectBlockCount> shaperGain = {};
+  std::array<TVoiceAcc, FFEffectBlockCount> combGainMin = {};
+  std::array<TVoiceAcc, FFEffectBlockCount> combGainPlus = {};
+  std::array<TVoiceAcc, FFEffectBlockCount> combDelayMin = {};
+  std::array<TVoiceAcc, FFEffectBlockCount> combDelayPlus = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectAccParamState);
 };
