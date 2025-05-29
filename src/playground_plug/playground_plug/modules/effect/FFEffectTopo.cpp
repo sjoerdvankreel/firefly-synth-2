@@ -81,7 +81,7 @@ FFMakeEffectTopo()
   combKeyTrk.acc = true;
   combKeyTrk.defaultText = "0";
   combKeyTrk.name = "Comb KeyTrk";
-  combKeyTrk.display = "KeyTrk";
+  combKeyTrk.display = "KTrk";
   combKeyTrk.slotCount = FFEffectBlockCount;
   combKeyTrk.unit = "%";
   combKeyTrk.id = "{77B1716F-4511-492B-A32E-F04CF668238B}";
@@ -100,7 +100,7 @@ FFMakeEffectTopo()
   combFreqPlus.acc = true;
   combFreqPlus.defaultText = "1000";
   combFreqPlus.name = "Comb Freq+";
-  combFreqPlus.display = "Freq+";
+  combFreqPlus.display = "Frq+";
   combFreqPlus.slotCount = FFEffectBlockCount;
   combFreqPlus.unit = "Hz";
   combFreqPlus.id = "{19B8B573-C49D-4D34-8078-02B2A30F40E8}";
@@ -117,7 +117,7 @@ FFMakeEffectTopo()
   combFreqMin.acc = true;
   combFreqMin.defaultText = "1000";
   combFreqMin.name = "Comb Freq-";
-  combFreqMin.display = "Freq-";
+  combFreqMin.display = "Frq-";
   combFreqMin.slotCount = FFEffectBlockCount;
   combFreqMin.unit = "Hz";
   combFreqMin.id = "{B2C0AEB8-F2C1-4553-961C-7B61021C8B70}";
@@ -133,7 +133,7 @@ FFMakeEffectTopo()
   auto& combResPlus = result->params[(int)FFEffectParam::CombResPlus];
   combResPlus.acc = true;
   combResPlus.defaultText = "50";
-  combResPlus.name = "Comb Res+";
+  combResPlus.name = "Comb Rz+";
   combResPlus.display = "Res+";
   combResPlus.slotCount = FFEffectBlockCount;
   combResPlus.unit = "%";
