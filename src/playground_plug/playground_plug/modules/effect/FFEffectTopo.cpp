@@ -50,32 +50,109 @@ FFMakeEffectTopo()
   type.type = FBParamType::List;
   type.List().items = {
     { "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", "Off" },
-    { "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", "Shaper" }, // todo shape/clip/skew
-    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", "Comb" } };
+    { "{348FED12-9753-4C48-9D21-BB8D21E036AB}", "StVar" },
+    { "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", "Comb" },
+    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", "Shaper" } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
   type.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectType);
   type.dependencies.enabled.audio.When({ (int)FFEffectParam::On }, [](auto const& vs) { return vs[0] != 0; });
 
-  auto& shaperGain = result->params[(int)FFEffectParam::ShaperGain];
-  shaperGain.acc = true;
-  shaperGain.defaultText = "100";
-  shaperGain.name = "Shaper Gain";
-  shaperGain.display = "Gain";
-  shaperGain.slotCount = FFEffectBlockCount;
-  shaperGain.unit = "%";
-  shaperGain.id = "{51D5655F-A8E0-47F9-B62D-67E4EFA24E4F}";
-  shaperGain.type = FBParamType::Linear;
-  shaperGain.Linear().min = 0.0f;
-  shaperGain.Linear().max = 32.0f;
-  shaperGain.Linear().displayMultiplier = 100;
-  auto selectShaperGain = [](auto& module) { return &module.acc.shaperGain; };
-  shaperGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectShaperGain);
-  shaperGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectShaperGain);
-  shaperGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectShaperGain);
-  shaperGain.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != (int)FFEffectType::Comb; });
-  shaperGain.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type}, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Shaper; });
+  auto& stVarMode = result->params[(int)FFEffectParam::StVarMode];
+  stVarMode.acc = false;
+  stVarMode.defaultText = "LPF";
+  stVarMode.name = "StVar Mode";
+  stVarMode.display = "Mode";
+  stVarMode.slotCount = FFEffectBlockCount;
+  stVarMode.id = "{275B2C8D-6D21-4741-AB69-D21FA95CD7F5}";
+  stVarMode.type = FBParamType::List;
+  stVarMode.List().items = {
+    { "{EAAE7102-9F6C-4EC2-8C39-B13BBDFF7AD1}", "LPF" },
+    { "{6A91C381-DB9F-4CAA-8155-4A407700661A}", "BPF" },
+    { "{747DA91C-C43D-4CFC-8EFD-353B0AC23E0E}", "HPF" },
+    { "{10FEE670-AB90-4DBF-A617-6F15F3E4602D}", "BSF" },
+    { "{EE9A4F79-B557-43B4-ABDF-320414D773D5}", "APF" },
+    { "{C9C3A3F5-5C5B-4331-8F6E-DDD2DC5A1D7B}", "PEQ" },
+    { "{8D885EEB-DF69-455A-9FFD-BA95E3E30596}", "BLL" },
+    { "{C4BBC616-CFDB-4E93-9315-D25552D85F71}", "LSH" },
+    { "{AF2550ED-90C5-4E09-996D-A4669728C744}", "HSH" } };
+  auto selectStVarMode = [](auto& module) { return &module.block.stVarMode; };
+  stVarMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarMode);
+  stVarMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStVarMode);
+  stVarMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarMode);
+  stVarMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
+
+  auto& stVarKeyTrk = result->params[(int)FFEffectParam::StVarKeyTrak];
+  stVarKeyTrk.acc = true;
+  stVarKeyTrk.defaultText = "0";
+  stVarKeyTrk.name = "StVar KeyTrk";
+  stVarKeyTrk.display = "KTrk";
+  stVarKeyTrk.slotCount = FFEffectBlockCount;
+  stVarKeyTrk.unit = "%";
+  stVarKeyTrk.id = "{CC91F0B0-9D53-4140-B698-0561D04F500C}";
+  stVarKeyTrk.type = FBParamType::Linear;
+  stVarKeyTrk.Linear().min = -2.0f;
+  stVarKeyTrk.Linear().max = 2.0f;
+  stVarKeyTrk.Linear().displayMultiplier = 100;
+  auto selectStVarKeyTrk = [](auto& module) { return &module.acc.stVarKeyTrk; };
+  stVarKeyTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarKeyTrk);
+  stVarKeyTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarKeyTrk);
+  stVarKeyTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarKeyTrk);
+  stVarKeyTrk.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarKeyTrk.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
+
+  auto& stVarRes = result->params[(int)FFEffectParam::StVarRes];
+  stVarRes.acc = true;
+  stVarRes.defaultText = "0";
+  stVarRes.name = "StVar Res";
+  stVarRes.display = "Res";
+  stVarRes.slotCount = FFEffectBlockCount;
+  stVarRes.unit = "%";
+  stVarRes.id = "{0B7CCB1C-FF95-46CD-9C93-1BAF5CE350E3}";
+  stVarRes.type = FBParamType::Identity;
+  auto selectStVarRes = [](auto& module) { return &module.acc.stVarRes; };
+  stVarRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarRes);
+  stVarRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarRes);
+  stVarRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarRes);
+  stVarRes.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarRes.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
+
+  auto& stVarFreq = result->params[(int)FFEffectParam::StVarFreq];
+  stVarFreq.acc = true;
+  stVarFreq.defaultText = "1000";
+  stVarFreq.name = "StVar Freq";
+  stVarFreq.display = "Frq";
+  stVarFreq.slotCount = FFEffectBlockCount;
+  stVarFreq.unit = "Hz";
+  stVarFreq.id = "{4ACF9D3E-D1F0-4B3B-8F6F-6FEE6BCDE449}";
+  stVarFreq.type = FBParamType::Log2;
+  stVarFreq.Log2().Init(0.0f, 20.0f, 20000.0f);
+  auto selectStVarFreq = [](auto& module) { return &module.acc.stVarFreq; };
+  stVarFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarFreq);
+  stVarFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarFreq);
+  stVarFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarFreq);
+  stVarFreq.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarFreq.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
+
+  auto& stVarGain = result->params[(int)FFEffectParam::StVarGain];
+  stVarGain.acc = true;
+  stVarGain.defaultText = "0";
+  stVarGain.name = "StVar Gain";
+  stVarGain.display = "Gn";
+  stVarGain.slotCount = FFEffectBlockCount;
+  stVarGain.unit = "dB";
+  stVarGain.id = "{CA06747B-F867-4E03-AF36-327662021440}";
+  stVarGain.type = FBParamType::Linear;
+  stVarGain.Linear().min = -24.0f;
+  stVarGain.Linear().max = 24.0f;
+  auto selectStVarGain = [](auto& module) { return &module.acc.stVarGain; };
+  stVarGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarGain);
+  stVarGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarGain);
+  stVarGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarGain);
+  stVarGain.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarGain.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::StVarMode}, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar && vs[2] >= (int)FBCytomicFilterMode::BLL; });
 
   auto& combKeyTrk = result->params[(int)FFEffectParam::CombKeyTrk];
   combKeyTrk.acc = true;
@@ -167,6 +244,25 @@ FFMakeEffectTopo()
   combResMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCombResMin);
   combResMin.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
   combResMin.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
+
+  auto& shaperGain = result->params[(int)FFEffectParam::ShaperGain];
+  shaperGain.acc = true;
+  shaperGain.defaultText = "100";
+  shaperGain.name = "Shaper Gain";
+  shaperGain.display = "Gain";
+  shaperGain.slotCount = FFEffectBlockCount;
+  shaperGain.unit = "%";
+  shaperGain.id = "{51D5655F-A8E0-47F9-B62D-67E4EFA24E4F}";
+  shaperGain.type = FBParamType::Linear;
+  shaperGain.Linear().min = 0.0f;
+  shaperGain.Linear().max = 32.0f;
+  shaperGain.Linear().displayMultiplier = 100;
+  auto selectShaperGain = [](auto& module) { return &module.acc.shaperGain; };
+  shaperGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectShaperGain);
+  shaperGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectShaperGain);
+  shaperGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectShaperGain);
+  shaperGain.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Shaper; });
+  shaperGain.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Shaper; });
 
   return result;
 }
