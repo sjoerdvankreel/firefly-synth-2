@@ -348,7 +348,7 @@ FFMakeEffectTopo()
   distSkewMode.type = FBParamType::List;
   distSkewMode.List().items = {
     { "{ABE6AB1B-A19B-4338-B9E8-2976DDD8AFC2}", "Uni" },
-    { "{ABE6AB1B-A19B-4338-B9E8-2976DDD8AFC2}", "Bi" } };
+    { "{CC72D003-1E3C-4AD1-B069-17DFCF02D2EF}", "Bi" } };
   auto selectDistSkewMode = [](auto& module) { return &module.block.distSkewMode; };
   distSkewMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistSkewMode);
   distSkewMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistSkewMode);

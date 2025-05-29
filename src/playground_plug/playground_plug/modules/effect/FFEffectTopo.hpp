@@ -5,7 +5,7 @@
 
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
-inline int constexpr FFEffectBlockCount = 4;
+inline int constexpr FFEffectBlockCount = 3;
 
 enum class FFEffectType { Off, StVar, Comb, Dist };
 enum class FFEffectDistMode { Clip, Shape, Skew };
