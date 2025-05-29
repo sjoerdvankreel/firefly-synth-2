@@ -31,7 +31,7 @@ FFMakeEffectTopo()
   auto& oversample = result->params[(int)FFEffectParam::Oversample];
   oversample.acc = false;
   oversample.defaultText = "Off";
-  oversample.name = "Oversample";
+  oversample.name = "Oversmp";
   oversample.slotCount = 1;
   oversample.id = "{28875DF7-255B-4190-80CE-D0A9ED20F263}";
   oversample.type = FBParamType::Boolean;

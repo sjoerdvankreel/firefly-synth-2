@@ -38,8 +38,8 @@ FBGUIParamLabel::parentHierarchyChanged()
 }
 
 FBParamLabel::
-FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
-FBAutoSizeLabel(param->displayName),
+FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string overrideText):
+FBAutoSizeLabel(overrideText.empty()? param->displayName: overrideText),
 FBParamComponent(plugGUI, param) {}
 
 void 
