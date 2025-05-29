@@ -264,6 +264,7 @@ FFMakeEffectTopo()
   distMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist; });
   distMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist; });
 
+  // todo drive
   auto& distGain = result->params[(int)FFEffectParam::DistGain];
   distGain.acc = true;
   distGain.defaultText = "100";
@@ -401,11 +402,11 @@ FFMakeEffectTopo()
   distShapeKind2.id = "{756F59B0-C65C-4C24-8820-0B75065A07B7}";
   distShapeKind2.type = FBParamType::List;
   distShapeKind2.List().items = {
-    { "{E62F1C97-6486-4256-80A8-4D0576FFA7C3}", "Off" },
-    { "{7D071104-2780-4AAF-94FD-D55DE2FF4E87}", "Sin" },
-    { "{96E3F1A7-65C1-492B-89EE-A6159B8AE483}", "Cos" },
-    { "{1FB6C6A0-D79F-4304-B5EC-C72DFF80B0AD}", "Tri" },
-    { "{DF2C417A-EA9D-4269-9545-341E0A41823B}", "Fld" } };
+    { "{B0C1E7D1-3038-4711-BD99-9B1DC445C3F4}", "Off" },
+    { "{5D802596-E159-4F05-BD42-82F293B38A28}", "Sin" },
+    { "{0023A0F0-87D2-4B21-9883-542190C69AEE}", "Cos" },
+    { "{4D801277-8419-45AD-B4F9-3E4B08CCDE2C}", "Tri" },
+    { "{1697F121-F3F8-4ECA-B5CA-1F36DD9025EA}", "Fld" } };
   auto selectDistShapeKind2 = [](auto& module) { return &module.block.distShapeKind2; };
   distShapeKind2.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistShapeKind2);
   distShapeKind2.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistShapeKind2);
