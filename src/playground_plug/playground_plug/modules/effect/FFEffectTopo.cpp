@@ -371,37 +371,47 @@ FFMakeEffectTopo()
   distSkewAmt.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Skew; });
   distSkewAmt.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Skew; });
 
-  auto& distShapeKind = result->params[(int)FFEffectParam::DistShapeKind];
-  distShapeKind.acc = false;
-  distShapeKind.defaultText = "Sin";
-  distShapeKind.name = "Dist Shape Kind";
-  distShapeKind.display = "Kind";
-  distShapeKind.slotCount = FFEffectBlockCount;
-  distShapeKind.id = "{1307CD98-5054-4C0F-B98C-A761851F8933}";
-  distShapeKind.type = FBParamType::List;
-  distShapeKind.List().items = {
-    { "{E62F1C97-6486-4256-80A8-4D0576FFA7C3}", "Sin" },
-    { "{7D071104-2780-4AAF-94FD-D55DE2FF4E87}", "Cos" },
-    { "{96E3F1A7-65C1-492B-89EE-A6159B8AE483}", "Tri" },
-    { "{1FB6C6A0-D79F-4304-B5EC-C72DFF80B0AD}", "Foldback" },
-    { "{DF2C417A-EA9D-4269-9545-341E0A41823B}", "SinSin" },
-    { "{B50180B6-C52E-4BD4-8F52-085980FF759A}", "SinCos" },
-    { "{5A002D60-CC05-4C19-A5F5-5E6C631659BB}", "CosSin" },
-    { "{3331C90A-C01B-4860-861B-D90BEFA08C7E}", "CosCos" },
-    { "{30EFDD49-4ED5-4D0F-9AD1-1E6513272CCA}", "SinSinSin" },
-    { "{C7FED0E5-76E3-42F3-80FF-85C5C2E5ED2B}", "SinSinCos" },
-    { "{7E3D4C99-C018-4728-A405-FD4BFBA6CD52}", "SinCosSin" },
-    { "{B59F3DA3-AD03-416F-AA28-F69141214EB9}", "SinCosCos" },
-    { "{CE165A44-B1FB-40A8-BBD8-6453E1ECF8B0}", "CosSinSin" },
-    { "{3EB4E95C-5D1D-4FD2-B9D8-2E0F224B7EE2}", "CosSinCos" },
-    { "{173ED891-7124-4928-8DB0-338095ED5E90}", "CosCosSin" },
-    { "{BFC03D83-2318-4674-A365-7BDF1308BDF6}", "CosCosCos" } };
-  auto selectDistShapeKind = [](auto& module) { return &module.block.distShapeKind; };
-  distShapeKind.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistShapeKind);
-  distShapeKind.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistShapeKind);
-  distShapeKind.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistShapeKind);
-  distShapeKind.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Shape; });
-  distShapeKind.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Shape; });
+  auto& distShapeKind1 = result->params[(int)FFEffectParam::DistShapeKind1];
+  distShapeKind1.acc = false;
+  distShapeKind1.defaultText = "Sin";
+  distShapeKind1.name = "Dist Shape Kind 1";
+  distShapeKind1.display = "Knd1";
+  distShapeKind1.slotCount = FFEffectBlockCount;
+  distShapeKind1.id = "{1307CD98-5054-4C0F-B98C-A761851F8933}";
+  distShapeKind1.type = FBParamType::List;
+  distShapeKind1.List().items = {
+    { "{E62F1C97-6486-4256-80A8-4D0576FFA7C3}", "Off" },
+    { "{7D071104-2780-4AAF-94FD-D55DE2FF4E87}", "Sin" },
+    { "{96E3F1A7-65C1-492B-89EE-A6159B8AE483}", "Cos" },
+    { "{1FB6C6A0-D79F-4304-B5EC-C72DFF80B0AD}", "Tri" },
+    { "{DF2C417A-EA9D-4269-9545-341E0A41823B}", "Fld" } };
+  auto selectDistShapeKind1 = [](auto& module) { return &module.block.distShapeKind1; };
+  distShapeKind1.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistShapeKind1);
+  distShapeKind1.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistShapeKind1);
+  distShapeKind1.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistShapeKind1);
+  distShapeKind1.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Shape; });
+  distShapeKind1.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Shape; });
+
+  auto& distShapeKind2 = result->params[(int)FFEffectParam::DistShapeKind2];
+  distShapeKind2.acc = false;
+  distShapeKind2.defaultText = "Off";
+  distShapeKind2.name = "Dist Shape Kind 2";
+  distShapeKind2.display = "Knd2";
+  distShapeKind2.slotCount = FFEffectBlockCount;
+  distShapeKind2.id = "{756F59B0-C65C-4C24-8820-0B75065A07B7}";
+  distShapeKind2.type = FBParamType::List;
+  distShapeKind2.List().items = {
+    { "{E62F1C97-6486-4256-80A8-4D0576FFA7C3}", "Off" },
+    { "{7D071104-2780-4AAF-94FD-D55DE2FF4E87}", "Sin" },
+    { "{96E3F1A7-65C1-492B-89EE-A6159B8AE483}", "Cos" },
+    { "{1FB6C6A0-D79F-4304-B5EC-C72DFF80B0AD}", "Tri" },
+    { "{DF2C417A-EA9D-4269-9545-341E0A41823B}", "Fld" } };
+  auto selectDistShapeKind2 = [](auto& module) { return &module.block.distShapeKind2; };
+  distShapeKind2.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistShapeKind2);
+  distShapeKind2.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistShapeKind2);
+  distShapeKind2.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistShapeKind2);
+  distShapeKind2.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Shape; });
+  distShapeKind2.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Shape; });
 
   return result;
 }

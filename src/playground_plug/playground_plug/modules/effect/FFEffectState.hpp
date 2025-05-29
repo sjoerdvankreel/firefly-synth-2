@@ -36,7 +36,8 @@ class alignas(alignof(TVoiceBlock)) FFEffectBlockParamState final
   std::array<TVoiceBlock, FFEffectBlockCount> distMode = {};
   std::array<TVoiceBlock, FFEffectBlockCount> distClipKind = {};
   std::array<TVoiceBlock, FFEffectBlockCount> distSkewKind = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> distShapeKind = {};
+  std::array<TVoiceBlock, FFEffectBlockCount> distShapeKind1 = {};
+  std::array<TVoiceBlock, FFEffectBlockCount> distShapeKind2 = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);
 };
