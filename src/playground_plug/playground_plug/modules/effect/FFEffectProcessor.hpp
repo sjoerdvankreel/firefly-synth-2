@@ -26,5 +26,5 @@ public:
   FFEffectProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
   void Process(FBModuleProcState& state);
-  void BeginVoice(FBModuleProcState& state);
+  void BeginVoice(FBModuleProcState& state, int graphIndex);
 };

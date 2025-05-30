@@ -25,7 +25,7 @@ void
 EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state, int graphIndex)
 { 
   samplesProcessed = 0;
-  GetProcessor(state).BeginVoice(state); 
+  GetProcessor(state).BeginVoice(state, graphIndex); 
 }
 
 int 
@@ -69,5 +69,6 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].effect[slot]; };
   renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].effect[slot].output[0]; };
-  FBRenderModuleGraph<false, false>(renderData, 0);
+  for(int i = 0; i < FFEffectBlockCount; i++)
+    FBRenderModuleGraph<false, false>(renderData, i);
 }

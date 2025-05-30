@@ -28,7 +28,7 @@ _oversampler(
 }
 
 void
-FFEffectProcessor::BeginVoice(FBModuleProcState& state)
+FFEffectProcessor::BeginVoice(FBModuleProcState& state, int graphIndex)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -48,7 +48,8 @@ FFEffectProcessor::BeginVoice(FBModuleProcState& state)
   _oversampleTimes = oversample ? EffectOversampleTimes : 1;
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
-    _kind[i] = topo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind, kindNorm[i].Voice()[voice]);
+    bool blockActive = graphIndex == -1 || graphIndex == i;
+    _kind[i] = !blockActive? FFEffectKind::Off: topo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind, kindNorm[i].Voice()[voice]);
     _clipMode[i] = topo.NormalizedToListFast<FFEffectClipMode>(FFEffectParam::ClipMode, clipModeNorm[i].Voice()[voice]);
     _foldMode[i] = topo.NormalizedToListFast<FFEffectFoldMode>(FFEffectParam::FoldMode, foldModeNorm[i].Voice()[voice]);
     _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(FFEffectParam::SkewMode, skewModeNorm[i].Voice()[voice]);
