@@ -197,9 +197,10 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         for (int c = 0; c < 2; c++)
         {
           auto mix = distMixPlain[i].Load(s);
+          auto bias = distBiasPlain[i].Load(s);
           auto drive = distDrivePlain[i].Load(s);
           auto inSample = oversampled[c].Load(s);
-          auto shapedSample = inSample * drive;
+          auto shapedSample = (inSample + bias) * drive;
           switch (_clipMode[i])
           {
           case FFEffectClipMode::TanH:
