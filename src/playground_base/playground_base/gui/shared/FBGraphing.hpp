@@ -18,7 +18,7 @@ struct FBStaticTopo;
 struct FBModuleGraphComponentData;
 
 typedef std::function<int(
-  FBGraphRenderState const*)>
+  FBModuleGraphComponentData const*)>
 FBModuleGraphPlotSamplesSelector;
 typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int moduleSlot)>
@@ -162,7 +162,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
 
   graphData->graphs[graphIndex].text = "OFF";
   moduleProcState->anyExchangeActive = false;
-  int maxDspSampleCount = renderData.plotSamplesSelector(renderState);
+  int maxDspSampleCount = renderData.plotSamplesSelector(graphData);
 
   if constexpr (Global)
   {

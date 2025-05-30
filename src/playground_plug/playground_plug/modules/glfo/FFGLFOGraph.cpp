@@ -27,8 +27,9 @@ GLFOGraphRenderData::GetProcessor(FBModuleProcState& state)
 }
 
 static int
-PlotSamples(FBGraphRenderState const* state)
+PlotSamples(FBModuleGraphComponentData const* data)
 {
+  auto const* state = data->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   return state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, false, -1, sampleRate);

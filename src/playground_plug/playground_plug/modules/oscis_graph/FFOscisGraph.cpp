@@ -58,8 +58,9 @@ OscisGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
 }
 
 static int
-PlotSamples(FBGraphRenderState const* state)
+PlotSamples(FBModuleGraphComponentData const* data)
 {
+  auto const* state = data->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Coarse, 0 }, false, -1));

@@ -12,11 +12,28 @@
 struct EffectGraphRenderData final:
 public FBModuleGraphRenderData<EffectGraphRenderData>
 {
+  int thisPlotSamples = {};
+  int totalPlotSamples = {};
+  int DoProcess(FBModuleProcState& state);
+  void DoBeginVoice(FBModuleProcState& state);
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBModuleProcState& state) { GetProcessor(state).Process(state); return 16; }
-  void DoBeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
   void DoProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
+
+void 
+EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state) 
+{ 
+  thisPlotSamples = 0;
+  GetProcessor(state).BeginVoice(state); 
+}
+
+int 
+EffectGraphRenderData::DoProcess(FBModuleProcState& state) 
+{ 
+  GetProcessor(state).Process(state); 
+  thisPlotSamples -= FBFixedBlockSamples;
+  return std::max(0, thisPlotSamples);
+}
 
 FFEffectProcessor&
 EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
@@ -26,9 +43,9 @@ EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
 }
 
 static int
-PlotSamples(FBGraphRenderState const* state)
+PlotSamples(FBModuleGraphComponentData const* data)
 {
-  return 1000;
+  return data->pixelWidth;
 }
 
 void
@@ -40,6 +57,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;
   renderData.plotSamplesSelector = PlotSamples;
+  renderData.totalPlotSamples = PlotSamples(graphData);
   renderData.staticModuleIndex = (int)FFModuleType::Effect;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].effect[slot]; };

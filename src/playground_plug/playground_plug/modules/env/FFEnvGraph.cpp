@@ -55,11 +55,12 @@ StageLengthAudioSamples(
 }
 
 static int
-PlotSamples(FBGraphRenderState const* state)
+PlotSamples(FBModuleGraphComponentData const* data)
 {
   int result = 0;
   int smoothLength = 0;
   std::vector<int> stageLengths;
+  auto const* state = data->renderState;
   StageLengthAudioSamples(state, false, -1, stageLengths, smoothLength);
   for (int i = 0; i < stageLengths.size(); i++)
     result += stageLengths[i];
