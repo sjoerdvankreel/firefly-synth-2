@@ -285,16 +285,16 @@ FFMakeEffectTopo()
     { "{8CFCDA01-C9A9-4231-9994-8480CC08A1CE}", "Cos" },
     { "{549CC93F-C88A-4C3B-AD37-B3C818DFF573}", "Sin2" },
     { "{544151DB-5403-4732-B416-6CA2C9C78066}", "Cos2" },
-    { "{C10D2D9B-53F1-4779-AE80-D463A0DD7278}", "SinCos" },
-    { "{D820E334-2D19-4306-914D-00AA7D048D48}", "CosSin" },
+    { "{C10D2D9B-53F1-4779-AE80-D463A0DD7278}", "SnCs" },
+    { "{D820E334-2D19-4306-914D-00AA7D048D48}", "CsSn" },
     { "{BB19624C-893C-41F9-83AD-CB17DFD9FC60}", "Sin3" },
     { "{66737A7F-6548-4881-B8F3-69FCF0EB1843}", "Cos3" },
-    { "{2133F2BE-95B6-4845-A622-5712F2747960}", "Sn2Cs" },
-    { "{5C572DE3-6197-4289-A009-573A88E2B09F}", "Cs2Sn" },
-    { "{7527549D-68FE-4D6F-B420-BA75F9097EEE}", "SnCs2" },
-    { "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", "CsSn2" },
-    { "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", "SnCsSn" },
-    { "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CsSnCs" } };
+    { "{2133F2BE-95B6-4845-A622-5712F2747960}", "S2Cs" },
+    { "{5C572DE3-6197-4289-A009-573A88E2B09F}", "C2Sn" },
+    { "{7527549D-68FE-4D6F-B420-BA75F9097EEE}", "SnC2" },
+    { "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", "CsS2" },
+    { "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", "SCS" },
+    { "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CSC" } };
   auto selectFoldMode = [](auto& module) { return &module.block.foldMode; };
   foldMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFoldMode);
   foldMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFoldMode);
