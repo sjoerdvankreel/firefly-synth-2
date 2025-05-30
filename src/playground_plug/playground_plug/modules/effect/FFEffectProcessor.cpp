@@ -193,7 +193,27 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
     for (int i = 0; i < FFEffectBlockCount; i++)
-      if (_kind[i] == FFEffectKind::Clip)
+      if (_kind[i] == FFEffectKind::Skew)
+        for (int c = 0; c < 2; c++)
+        {
+          auto mix = distMixPlain[i].Load(s);
+          auto bias = distBiasPlain[i].Load(s);
+          auto drive = distDrivePlain[i].Load(s);
+          auto inSample = oversampled[c].Load(s);
+          auto shapedSample = (inSample + bias) * drive;
+          switch (_skewMode[i])
+          {
+          case FFEffectSkewMode::Uni:
+            signBatch = xsimd::sign(shapedSample);
+            compBatch1 = xsimd::lt(shapedSample, FBBatch<float>(-1.0f));
+            compBatch1 = xsimd::bitwise_or(compBatch1, xsimd::gt(shapedSample, FBBatch<float>(1.0f)));
+            shapedSample = xsimd::select(compBatch1, shapedSample, FBToBipolar(xsimd::pow(FBToUnipolar(shapedSample), distAmtPlain[i].Load(s))));
+            break;
+          }
+          auto mixedSample = (1.0f - mix) * inSample + mix * shapedSample;
+          oversampled[c].Store(s, mixedSample);
+        }
+      else if(_kind[i] == FFEffectKind::Clip)
         for (int c = 0; c < 2; c++)
         {
           auto mix = distMixPlain[i].Load(s);
