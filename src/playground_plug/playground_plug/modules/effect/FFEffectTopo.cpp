@@ -83,8 +83,10 @@ FFMakeEffectTopo()
   stVarMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarMode);
   stVarMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStVarMode);
   stVarMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarMode);
-  stVarMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
-  stVarMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
+  stVarMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
 
   auto& stVarKeyTrk = result->params[(int)FFEffectParam::StVarKeyTrak];
   stVarKeyTrk.acc = true;
@@ -102,8 +104,10 @@ FFMakeEffectTopo()
   stVarKeyTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarKeyTrk);
   stVarKeyTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarKeyTrk);
   stVarKeyTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarKeyTrk);
-  stVarKeyTrk.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
-  stVarKeyTrk.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
+  stVarKeyTrk.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarKeyTrk.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
 
   auto& stVarRes = result->params[(int)FFEffectParam::StVarRes];
   stVarRes.acc = true;
@@ -118,8 +122,10 @@ FFMakeEffectTopo()
   stVarRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarRes);
   stVarRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarRes);
   stVarRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarRes);
-  stVarRes.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
-  stVarRes.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
+  stVarRes.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarRes.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
 
   auto& stVarFreq = result->params[(int)FFEffectParam::StVarFreq];
   stVarFreq.acc = true;
@@ -135,8 +141,10 @@ FFMakeEffectTopo()
   stVarFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarFreq);
   stVarFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarFreq);
   stVarFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarFreq);
-  stVarFreq.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
-  stVarFreq.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
+  stVarFreq.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarFreq.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar; });
 
   auto& stVarGain = result->params[(int)FFEffectParam::StVarGain];
   stVarGain.acc = true;
@@ -153,8 +161,10 @@ FFMakeEffectTopo()
   stVarGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarGain);
   stVarGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarGain);
   stVarGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStVarGain);
-  stVarGain.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
-  stVarGain.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::StVarMode}, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar && vs[2] >= (int)FBCytomicFilterMode::BLL; });
+  stVarGain.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == 0 || vs[0] == (int)FFEffectType::StVar; });
+  stVarGain.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::StVarMode}, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::StVar && vs[2] >= (int)FBCytomicFilterMode::BLL; });
 
   auto& combKeyTrk = result->params[(int)FFEffectParam::CombKeyTrk];
   combKeyTrk.acc = true;
@@ -172,8 +182,10 @@ FFMakeEffectTopo()
   combKeyTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCombKeyTrk);
   combKeyTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCombKeyTrk);
   combKeyTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCombKeyTrk);
-  combKeyTrk.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
-  combKeyTrk.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
+  combKeyTrk.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
+  combKeyTrk.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
   
   auto& combFreqPlus = result->params[(int)FFEffectParam::CombFreqPlus];
   combFreqPlus.acc = true;
@@ -189,8 +201,10 @@ FFMakeEffectTopo()
   combFreqPlus.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCombFreqPlus);
   combFreqPlus.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCombFreqPlus);
   combFreqPlus.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCombFreqPlus);
-  combFreqPlus.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
-  combFreqPlus.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
+  combFreqPlus.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
+  combFreqPlus.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
 
   auto& combFreqMin = result->params[(int)FFEffectParam::CombFreqMin];
   combFreqMin.acc = true;
@@ -206,8 +220,10 @@ FFMakeEffectTopo()
   combFreqMin.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCombFreqMin);
   combFreqMin.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCombFreqMin);
   combFreqMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCombFreqMin);
-  combFreqMin.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
-  combFreqMin.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
+  combFreqMin.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
+  combFreqMin.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
 
   auto& combResPlus = result->params[(int)FFEffectParam::CombResPlus];
   combResPlus.acc = true;
@@ -225,8 +241,10 @@ FFMakeEffectTopo()
   combResPlus.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCombResPlus);
   combResPlus.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCombResPlus);
   combResPlus.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCombResPlus);
-  combResPlus.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
-  combResPlus.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
+  combResPlus.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
+  combResPlus.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
 
   auto& combResMin = result->params[(int)FFEffectParam::CombResMin];
   combResMin.acc = true;
@@ -244,8 +262,10 @@ FFMakeEffectTopo()
   combResMin.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCombResMin);
   combResMin.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCombResMin);
   combResMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCombResMin);
-  combResMin.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
-  combResMin.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
+  combResMin.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
+  combResMin.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
 
   auto& clipMode = result->params[(int)FFEffectParam::ClipMode];
   clipMode.acc = false;
@@ -267,8 +287,10 @@ FFMakeEffectTopo()
   clipMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectClipMode);
   clipMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectClipMode);
   clipMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectClipMode);
-  clipMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Clip; });
-  clipMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Clip; });
+  clipMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Clip; });
+  clipMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Clip; });
 
   // todo submenu
   auto& foldMode = result->params[(int)FFEffectParam::FoldMode];
@@ -299,8 +321,10 @@ FFMakeEffectTopo()
   foldMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFoldMode);
   foldMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFoldMode);
   foldMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFoldMode);
-  foldMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Fold; });
-  foldMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Fold; });
+  foldMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Fold; });
+  foldMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Fold; });
   
   auto& skewMode = result->params[(int)FFEffectParam::SkewMode];
   skewMode.acc = false;
@@ -317,8 +341,10 @@ FFMakeEffectTopo()
   skewMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSkewMode);
   skewMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSkewMode);
   skewMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSkewMode);
-  skewMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Skew; });
-  skewMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Skew; });
+  skewMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Skew; });
+  skewMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Skew; });
 
   auto& distDrive = result->params[(int)FFEffectParam::DistDrive];
   distDrive.acc = true;
@@ -336,8 +362,10 @@ FFMakeEffectTopo()
   distDrive.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistDrive);
   distDrive.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistDrive);
   distDrive.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistDrive);
-  distDrive.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] >= (int)FFEffectType::Clip; });
-  distDrive.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectType::Clip; });
+  distDrive.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] >= (int)FFEffectType::Clip; });
+  distDrive.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectType::Clip; });
 
   auto& distMix = result->params[(int)FFEffectParam::DistMix];
   distMix.acc = true;
@@ -351,8 +379,10 @@ FFMakeEffectTopo()
   distMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistMix);
   distMix.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistMix);
   distMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistMix);
-  distMix.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] >= (int)FFEffectType::Clip; });
-  distMix.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectType::Clip; });
+  distMix.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] >= (int)FFEffectType::Clip; });
+  distMix.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectType::Clip; });
 
   auto& distBias = result->params[(int)FFEffectParam::DistBias];
   distBias.acc = true;
@@ -370,10 +400,11 @@ FFMakeEffectTopo()
   distBias.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistBias);
   distBias.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistBias);
   distBias.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistBias);
-  distBias.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] >= (int)FFEffectType::Clip; });
-  distBias.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectType::Clip; });
+  distBias.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] >= (int)FFEffectType::Clip; });
+  distBias.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectType::Clip; });
 
-  // todo enabled
   auto& distAmt = result->params[(int)FFEffectParam::DistAmt];
   distAmt.acc = true;
   distAmt.defaultText = "50";
@@ -386,8 +417,10 @@ FFMakeEffectTopo()
   distAmt.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistAmt);
   distAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistAmt);
   distAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistAmt);
-  distAmt.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] >= (int)FFEffectType::Clip; });
-  distAmt.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] >= (int)FFEffectType::Clip; });
+  distAmt.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, 
+    [](auto const& vs) { return vs[0] >= (int)FFEffectType::Clip; });
+  distAmt.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::ClipMode }, 
+    [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectType::Skew || vs[1] == (int)FFEffectType::Clip && vs[2] == (int)FFEffectClipMode::Exp); });
 
   return result;
 }
