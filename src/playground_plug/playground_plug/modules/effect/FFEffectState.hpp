@@ -29,7 +29,7 @@ class alignas(alignof(TVoiceBlock)) FFEffectBlockParamState final
 {
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
-  std::array<TVoiceBlock, 1> on = {};
+  std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> oversample = {};
   std::array<TVoiceBlock, FFEffectBlockCount> kind = {};
   std::array<TVoiceBlock, FFEffectBlockCount> clipMode = {};

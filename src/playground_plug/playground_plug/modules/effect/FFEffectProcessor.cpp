@@ -44,7 +44,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    auto distDrivePlain = topo.NormalizedToLinearFast(FFEffectParam::ShaperGain, distDriveNorm, s);
+    auto distDrivePlain = topo.NormalizedToLinearFast(FFEffectParam::DistDrive, distDriveNorm, s);
     for (int c = 0; c < 2; c++)
       output[c].Store(s, xsimd::tanh(distDrivePlain * input[c].Load(s)));
   }
