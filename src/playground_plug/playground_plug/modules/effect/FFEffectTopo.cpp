@@ -26,11 +26,27 @@ FFMakeEffectTopo()
   type.List().items = {
     { "{BED24339-5660-4B8F-9A01-F2C7886E0C9F}", "Off" },
     { "{369304F5-3571-42C0-AB0B-F369BA427713}", "On" },
-    { "{8A0B5B14-949E-4AFF-B670-1EAC9F14FE1A}", "Feedback" } };
+    { "{8A0B5B14-949E-4AFF-B670-1EAC9F14FE1A}", "Fdbk" } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
   type.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectType);
+
+  auto& feedback = result->params[(int)FFEffectParam::Feedback];
+  feedback.acc = true;
+  feedback.defaultText = "0";
+  feedback.name = "Feedback";
+  feedback.display = "Fdbk";
+  feedback.slotCount = 1;
+  feedback.unit = "%";
+  feedback.id = "{19017F12-FE20-4623-9AB9-105E7CC26C0B}";
+  feedback.type = FBParamType::Identity;
+  auto selectFeedback = [](auto& module) { return &module.acc.feedback; };
+  feedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedback);
+  feedback.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedback);
+  feedback.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedback);
+  feedback.dependencies.enabled.audio.When({ (int)FFEffectParam::Type },
+    [](auto const& vs) { return vs[0] == (int)FFEffectType::Feedback; });
 
   auto& oversample = result->params[(int)FFEffectParam::Oversample];
   oversample.acc = false;
