@@ -12,6 +12,10 @@
 
 struct FBStaticModule;
 
+inline int constexpr FFEffectOversampleFactor = 2;
+inline int constexpr FFEffectOversampleTimes = 1 << FFEffectOversampleFactor;
+inline int constexpr FFEffectFixedBlockOversamples = FBFixedBlockSamples * FFEffectOversampleTimes;
+
 class alignas(FBSIMDAlign) FFEffectDSPState final
 {
   friend class FFVoiceProcessor;
@@ -21,6 +25,7 @@ public:
   ~FFEffectDSPState();
   FBSArray2<float, FBFixedBlockSamples, 2> input = {};
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2> oversampled = {};
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectDSPState);
 };
 
