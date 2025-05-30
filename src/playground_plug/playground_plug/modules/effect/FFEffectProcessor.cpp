@@ -130,7 +130,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, distDriveNorm[i].Voice()[voice], s));
       }
       else
-        assert(false);
+        assert(_kind[i] == FFEffectKind::Off);
     }
 
   if (_oversampleTimes != 1)
@@ -161,11 +161,12 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         distDrivePlain[i].UpsampleStretch<EffectOversampleTimes>();
       }
       else
-        assert(false);
+        assert(_kind[i] == FFEffectKind::Off);
     }
   }
 
-  FBSArray2<float, FBFixedBlockSamples, 2> oversampled;
+  AudioBlock<float> oversampledBlock = {};
+  FBSArray2<float, EffectFixedBlockOversamples, 2> oversampled;
   if (_oversampleTimes == 1)
     for (int c = 0; c < 2; c++)
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
@@ -176,7 +177,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     audioIn[0] = input[0].Ptr(0);
     audioIn[1] = input[1].Ptr(0);
     AudioBlock<float const> inputBlock(audioIn, 2, 0, FBFixedBlockSamples);
-    auto oversampledBlock = _oversampler.processSamplesUp(inputBlock);
+    oversampledBlock = _oversampler.processSamplesUp(inputBlock);
     for (int c = 0; c < 2; c++)
       for (int s = 0; s < EffectFixedBlockOversamples; s++)
         oversampled[c].Set(s, oversampledBlock.getSample(c, s));
@@ -195,6 +196,9 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         output[c].Store(s, oversampled[c].Load(s));
   else
   {
+    for (int c = 0; c < 2; c++)
+      for (int s = 0; s < EffectFixedBlockOversamples; s++)
+        oversampledBlock.setSample(c, s, oversampled[c].Get(s));
     float* audioOut[2] = {};
     audioOut[0] = output[0].Ptr(0);
     audioOut[1] = output[1].Ptr(0);
