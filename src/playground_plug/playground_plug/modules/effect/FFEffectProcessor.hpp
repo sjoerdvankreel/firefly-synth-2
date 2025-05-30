@@ -20,8 +20,11 @@ class FFEffectProcessor final
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
   std::array<FBCytomicFilterMode, FFEffectBlockCount> _stVarMode = {};
 
+  juce::dsp::Oversampling<float> _oversampler;
+
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectProcessor);
+  FFEffectProcessor();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
   void Process(FBModuleProcState& state);
   void BeginVoice(FBModuleProcState& state);
 };

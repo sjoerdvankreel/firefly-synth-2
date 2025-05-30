@@ -12,9 +12,20 @@
 
 #include <xsimd/xsimd.hpp>
 
+using namespace juce::dsp;
+
 static int constexpr EffectOversampleFactor = 2;
 static int constexpr EffectOversampleTimes = 1 << EffectOversampleFactor;
 static int constexpr EffectFixedBlockOversamples = FBFixedBlockSamples * EffectOversampleTimes;
+
+FFEffectProcessor::
+FFEffectProcessor() :
+_oversampler(
+  2, EffectOversampleFactor,
+  Oversampling<float>::filterHalfBandPolyphaseIIR, false, false)
+{
+  _oversampler.initProcessing(FBFixedBlockSamples);
+}
 
 void
 FFEffectProcessor::BeginVoice(FBModuleProcState& state)
