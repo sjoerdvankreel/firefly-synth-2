@@ -12,8 +12,9 @@
 struct EffectGraphRenderData final:
 public FBModuleGraphRenderData<EffectGraphRenderData>
 {
-  int thisPlotSamples = {};
-  int totalPlotSamples = {};
+  int totalSamples = {};
+  int samplesProcessed = {};
+
   int DoProcess(FBModuleProcState& state);
   void DoBeginVoice(FBModuleProcState& state);
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
@@ -23,16 +24,21 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
 void 
 EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state) 
 { 
-  thisPlotSamples = 0;
+  samplesProcessed = 0;
   GetProcessor(state).BeginVoice(state); 
 }
 
 int 
 EffectGraphRenderData::DoProcess(FBModuleProcState& state) 
-{ 
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& input = procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].input;
+  for (int c = 0; c < 2; c++)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      input[c].Set(s, ((samplesProcessed + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   GetProcessor(state).Process(state); 
-  thisPlotSamples -= FBFixedBlockSamples;
-  return std::max(0, thisPlotSamples);
+  samplesProcessed += FBFixedBlockSamples;
+  return std::clamp(totalSamples - samplesProcessed, 0, FBFixedBlockSamples);
 }
 
 FFEffectProcessor&
@@ -57,13 +63,11 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;
   renderData.plotSamplesSelector = PlotSamples;
-  renderData.totalPlotSamples = PlotSamples(graphData);
+  renderData.totalSamples = PlotSamples(graphData);
   renderData.staticModuleIndex = (int)FFModuleType::Effect;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].effect[slot]; };
   renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].effect[slot].output; };
-  int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   FBRenderModuleGraph<false, true>(renderData, 0);
-  graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }
