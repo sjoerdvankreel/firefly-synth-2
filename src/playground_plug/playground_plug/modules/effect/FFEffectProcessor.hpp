@@ -12,8 +12,8 @@ struct FBModuleProcState;
 
 class FFEffectProcessor final
 {
-  bool _oversample = {};
   FFEffectType _type = {};
+  int _oversampleTimes = {};
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};

@@ -12,6 +12,10 @@
 
 #include <xsimd/xsimd.hpp>
 
+static int constexpr EffectOversampleFactor = 2;
+static int constexpr EffectOversampleTimes = 1 << EffectOversampleFactor;
+static int constexpr EffectFixedBlockOversamples = FBFixedBlockSamples * EffectOversampleTimes;
+
 void
 FFEffectProcessor::BeginVoice(FBModuleProcState& state)
 {
@@ -29,7 +33,8 @@ FFEffectProcessor::BeginVoice(FBModuleProcState& state)
   auto const& oversampleNorm = params.block.oversample[0].Voice()[voice];
 
   _type = topo.NormalizedToListFast<FFEffectType>(FFEffectParam::Type, typeNorm);
-  _oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
+  bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
+  _oversampleTimes = oversample ? EffectOversampleTimes : 1;
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
     _kind[i] = topo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind, kindNorm[i].Voice()[voice]);
@@ -48,13 +53,14 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto& voiceState = procState->dsp.voice[voice];
   auto& output = voiceState.effect[state.moduleSlot].output;
   auto const& input = voiceState.effect[state.moduleSlot].input;
-  auto& oversampled = voiceState.effect[state.moduleSlot].oversampled;
 
   if (_type == FFEffectType::Off)
   {
     input.CopyTo(output);
     return;
   }
+
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
 
   auto const& procParams = procState->param.voice.effect[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Effect];
@@ -73,8 +79,81 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto const& combFreqPlusNorm = procParams.acc.combFreqPlus;
   auto const& feedbackNorm = procParams.acc.feedback[0].Voice()[voice];
 
+  FBSArray<float, EffectFixedBlockOversamples> feedbackPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distAmtPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distMixPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distBiasPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distDrivePlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> stVarResPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> stVarFreqPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> stVarGainPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> stVarKeyTrkPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combKeyTrkPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combResMinPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combResPlusPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combFreqMinPlain;
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combFreqPlusPlain;
+  
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    for (int i = 0; i < FFEffectBlockCount; i++)
+    {
+      feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFEffectParam::Feedback, feedbackNorm, s));
+      if (_kind[i] == FFEffectKind::StVar)
+      {
+        stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq, stVarFreqNorm[i].Voice()[voice], s));
+        stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes, stVarResNorm[i].Voice()[voice], s));
+        stVarGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarGain, stVarGainNorm[i].Voice()[voice], s));
+        stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak, stVarKeyTrkNorm[i].Voice()[voice], s));
+      }
+      else if (_kind[i] == FFEffectKind::Comb)
+      {
+        combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk, combKeyTrkNorm[i].Voice()[voice], s));
+        combFreqMinPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqMin, combFreqMinNorm[i].Voice()[voice], s));
+        combFreqPlusPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqPlus, combFreqPlusNorm[i].Voice()[voice], s));
+        combResMinPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CombResMin, combResMinNorm[i].Voice()[voice], s));
+        combResPlusPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CombResPlus, combResPlusNorm[i].Voice()[voice], s));
+      }
+      else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
+      {
+        distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt, distAmtNorm[i].Voice()[voice], s));
+        distMixPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistMix, distMixNorm[i].Voice()[voice], s));
+        distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias, distBiasNorm[i].Voice()[voice], s));
+        distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, distDriveNorm[i].Voice()[voice], s));
+      }
+      else
+        assert(false);
+    }
+
+  if (_oversampleTimes != 1)
   {
+    feedbackPlain.UpsampleStretch<EffectOversampleTimes>();
+    for (int i = 0; i < FFEffectBlockCount; i++)
+    {
+      if (_kind[i] == FFEffectKind::StVar)
+      {
+        stVarFreqPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        stVarResPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        stVarGainPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        stVarKeyTrkPlain[i].UpsampleStretch<EffectOversampleTimes>();
+      }
+      else if (_kind[i] == FFEffectKind::Comb)
+      {
+        combKeyTrkPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        combFreqMinPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        combFreqPlusPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        combResMinPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        combResPlusPlain[i].UpsampleStretch<EffectOversampleTimes>();
+      }
+      else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
+      {
+        distAmtPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        distMixPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        distBiasPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        distDrivePlain[i].UpsampleStretch<EffectOversampleTimes>();
+      }
+      else
+        assert(false);
+    }
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
