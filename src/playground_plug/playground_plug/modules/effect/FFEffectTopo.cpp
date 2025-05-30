@@ -52,7 +52,8 @@ FFMakeEffectTopo()
     { "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", "Off" },
     { "{348FED12-9753-4C48-9D21-BB8D21E036AB}", "StVar" },
     { "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", "Comb" },
-    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", "Dist" } };
+    { "{FD072A47-EE67-4091-A687-7168B69A6E89}", "Clip" },
+    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", "Shape" } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
@@ -245,44 +246,82 @@ FFMakeEffectTopo()
   combResMin.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Comb; });
   combResMin.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Comb; });
 
-  auto& distMode = result->params[(int)FFEffectParam::DistMode];
-  distMode.acc = false;
-  distMode.defaultText = "Clip";
-  distMode.name = "Dist Mode";
-  distMode.display = "Mode";
-  distMode.slotCount = FFEffectBlockCount;
-  distMode.id = "{317BA4AC-8E9A-47B9-A289-294047E29C78}";
-  distMode.type = FBParamType::List;
-  distMode.List().items = {
-    { "{89B7DFF2-E7D6-4D55-8060-C7BD00734AC2}", "Clip" },
-    { "{CF8ED573-1755-40BC-B7BF-BD2F330E795F}", "Shape" },
-    { "{F73CA415-19C6-4E53-BC86-B028DC64370C}", "Skew" } };
-  auto selectDistMode = [](auto& module) { return &module.block.distMode; };
-  distMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistMode);
-  distMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistMode);
-  distMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistMode);
-  distMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist; });
-  distMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist; });
+  // todo submenu
+  auto& shapeMode = result->params[(int)FFEffectParam::ShapeMode];
+  shapeMode.acc = false;
+  shapeMode.defaultText = "Clip";
+  shapeMode.name = "Dist Mode";
+  shapeMode.display = "Mode";
+  shapeMode.slotCount = FFEffectBlockCount;
+  shapeMode.id = "{317BA4AC-8E9A-47B9-A289-294047E29C78}";
+  shapeMode.type = FBParamType::List;
+  shapeMode.List().items = {
+    { "{5DD2175C-3166-481A-A1AC-FBFB7C66D8C8}", "Tri" },
+    { "{55167ED0-D050-403B-A061-CA4D0916E400}", "Fldbk" },
+    { "{2718E956-39DB-455A-BC7E-484A698A985D}", "SkewU" },
+    { "{3E2F7609-B1B0-486C-BD32-C2E593B9297B}", "SkewB" },
+    { "{129369F6-C303-4BBA-8573-06FC33972FD9}", "Sin" },
+    { "{8CFCDA01-C9A9-4231-9994-8480CC08A1CE}", "Cos" },
+    { "{549CC93F-C88A-4C3B-AD37-B3C818DFF573}", "Sin2" },
+    { "{544151DB-5403-4732-B416-6CA2C9C78066}", "Cos2" },
+    { "{C10D2D9B-53F1-4779-AE80-D463A0DD7278}", "SinCos" },
+    { "{D820E334-2D19-4306-914D-00AA7D048D48}", "CosSin" },
+    { "{BB19624C-893C-41F9-83AD-CB17DFD9FC60}", "Sin3" },
+    { "{66737A7F-6548-4881-B8F3-69FCF0EB1843}", "Cos3" },
+    { "{2133F2BE-95B6-4845-A622-5712F2747960}", "Sn2Cs" },
+    { "{5C572DE3-6197-4289-A009-573A88E2B09F}", "Cs2Sn" },
+    { "{7527549D-68FE-4D6F-B420-BA75F9097EEE}", "SnCs2" },
+    { "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", "CsSn2" },
+    { "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", "SnCsSn" },
+    { "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CsSnCs" } };
+  auto selectShapeMode = [](auto& module) { return &module.block.shapeMode; };
+  shapeMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectShapeMode);
+  shapeMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectShapeMode);
+  shapeMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectShapeMode);
+  shapeMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Shape; });
+  shapeMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Shape; });
 
-  // todo drive
-  auto& distGain = result->params[(int)FFEffectParam::DistGain];
-  distGain.acc = true;
-  distGain.defaultText = "100";
-  distGain.name = "Dist Gain";
-  distGain.display = "Gn";
-  distGain.slotCount = FFEffectBlockCount;
-  distGain.unit = "%";
-  distGain.id = "{971B9F5B-0348-4F56-A6A0-DC40FC4B32BD}";
-  distGain.type = FBParamType::Linear;
-  distGain.Linear().min = 0.0f;
-  distGain.Linear().max = 32.0f;
-  distGain.Linear().displayMultiplier = 100;
-  auto selectDistGain = [](auto& module) { return &module.acc.distGain; };
-  distGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistGain);
-  distGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistGain);
-  distGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistGain);
-  distGain.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist; });
-  distGain.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist; });
+  auto& clipMode = result->params[(int)FFEffectParam::ClipMode];
+  clipMode.acc = false;
+  clipMode.defaultText = "TanH";
+  clipMode.name = "Clip Mode";
+  clipMode.display = "Mode";
+  clipMode.slotCount = FFEffectBlockCount;
+  clipMode.id = "{D1F80BB8-4076-4296-A678-94E8442C51A5}";
+  clipMode.type = FBParamType::List;
+  clipMode.List().items = {
+    { "{32F53B15-54AC-44AE-8812-97D598B9928B}", "Hard" },
+    { "{E4ECBDA0-F14F-411D-81A8-C59CC9B7C2C6}", "TanH" },
+    { "{851F55D9-89E0-4B37-A6DA-A81692A716BD}", "Sin" },
+    { "{A629BC3E-4732-4A6A-AB79-38CE84F04B0D}", "TSQ" },
+    { "{C0E30CBB-596C-4267-96E9-9FBFD5D26C27}", "Cube" },
+    { "{192BF63E-663D-494C-956F-3A8BB2E22067}", "Inv" },
+    { "{8A58AAB2-0AE7-426E-B71F-A444653286A6}", "Exp" } };
+  auto selectClipMode = [](auto& module) { return &module.block.clipMode; };
+  clipMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectClipMode);
+  clipMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectClipMode);
+  clipMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectClipMode);
+  clipMode.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Clip; });
+  clipMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Clip; });
+
+  auto& distDrive = result->params[(int)FFEffectParam::DistDrive];
+  distDrive.acc = true;
+  distDrive.defaultText = "100";
+  distDrive.name = "Dist Drive";
+  distDrive.display = "Drv";
+  distDrive.slotCount = FFEffectBlockCount;
+  distDrive.unit = "%";
+  distDrive.id = "{971B9F5B-0348-4F56-A6A0-DC40FC4B32BD}";
+  distDrive.type = FBParamType::Linear;
+  distDrive.Linear().min = 0.0f;
+  distDrive.Linear().max = 32.0f;
+  distDrive.Linear().displayMultiplier = 100;
+  auto selectDistDrive = [](auto& module) { return &module.acc.distDrive; };
+  distDrive.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistDrive);
+  distDrive.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistDrive);
+  distDrive.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistDrive);
+  distDrive.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Clip || vs[0] == (int)FFEffectType::Shape; });
+  distDrive.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectType::Clip || vs[1] == (int)FFEffectType::Shape); });
 
   auto& distMix = result->params[(int)FFEffectParam::DistMix];
   distMix.acc = true;
@@ -296,123 +335,39 @@ FFMakeEffectTopo()
   distMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistMix);
   distMix.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistMix);
   distMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistMix);
-  distMix.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist; });
-  distMix.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist; });
+  distMix.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Clip || vs[0] == (int)FFEffectType::Shape; });
+  distMix.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectType::Clip || vs[1] == (int)FFEffectType::Shape); });
 
-  auto& distClipKind = result->params[(int)FFEffectParam::DistClipKind];
-  distClipKind.acc = false;
-  distClipKind.defaultText = "Hard";
-  distClipKind.name = "Dist Clip Kind";
-  distClipKind.display = "Kind";
-  distClipKind.slotCount = FFEffectBlockCount;
-  distClipKind.id = "{D1F80BB8-4076-4296-A678-94E8442C51A5}";
-  distClipKind.type = FBParamType::List;
-  distClipKind.List().items = {
-    { "{32F53B15-54AC-44AE-8812-97D598B9928B}", "Hard" },
-    { "{E4ECBDA0-F14F-411D-81A8-C59CC9B7C2C6}", "TanH" },
-    { "{851F55D9-89E0-4B37-A6DA-A81692A716BD}", "Sin" },
-    { "{A629BC3E-4732-4A6A-AB79-38CE84F04B0D}", "TSQ" },
-    { "{C0E30CBB-596C-4267-96E9-9FBFD5D26C27}", "Cube" },
-    { "{192BF63E-663D-494C-956F-3A8BB2E22067}", "Inv" },
-    { "{8A58AAB2-0AE7-426E-B71F-A444653286A6}", "Exp" } };
-  auto selectDistClipKind = [](auto& module) { return &module.block.distClipKind; };
-  distClipKind.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistClipKind);
-  distClipKind.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistClipKind);
-  distClipKind.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistClipKind);
-  distClipKind.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Clip; });
-  distClipKind.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Clip; });
+  auto& distAmt = result->params[(int)FFEffectParam::DistAmt];
+  distAmt.acc = true;
+  distAmt.defaultText = "50";
+  distAmt.name = "Dist Amt";
+  distAmt.display = "Amt";
+  distAmt.slotCount = FFEffectBlockCount;
+  distAmt.id = "{C78B596F-8059-44F0-B73D-A699AB647F54}";
+  distAmt.type = FBParamType::Identity;
+  auto selectDistAmt = [](auto& module) { return &module.acc.distAmt; };
+  distAmt.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistAmt);
+  distAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistAmt);
+  distAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistAmt);
+  distAmt.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Clip || vs[0] == (int)FFEffectType::Shape; });
+  distAmt.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectType::Clip || vs[1] == (int)FFEffectType::Shape); });
 
-  auto& distClipExp = result->params[(int)FFEffectParam::DistClipExp];
-  distClipExp.acc = true;
-  distClipExp.defaultText = "1";
-  distClipExp.name = "Dist Clip Exp";
-  distClipExp.display = "Exp";
-  distClipExp.slotCount = FFEffectBlockCount;
-  distClipExp.id = "{A5901BBF-3B8A-433A-99F5-10DF84ADB1F8}";
-  distClipExp.type = FBParamType::Linear;
-  distClipExp.Linear().min = 0.1f;
-  distClipExp.Linear().max = 10.0f;
-  auto selectDistClipExp = [](auto& module) { return &module.acc.distClipExp; };
-  distClipExp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistClipExp);
-  distClipExp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistClipExp);
-  distClipExp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistClipExp);
-  distClipExp.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Clip; });
-  distClipExp.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode, (int)FFEffectParam::DistClipExp }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Clip && vs[3] == (int)FFEffectDistClipKind::Exp; });
-
-  auto& distSkewKind = result->params[(int)FFEffectParam::DistSkewKind];
-  distSkewKind.acc = false;
-  distSkewKind.defaultText = "Uni";
-  distSkewKind.name = "Dist Skew Kind";
-  distSkewKind.display = "Kind";
-  distSkewKind.slotCount = FFEffectBlockCount;
-  distSkewKind.id = "{02008903-8467-49DF-BC28-B435BAFD1B6A}";
-  distSkewKind.type = FBParamType::List;
-  distSkewKind.List().items = {
-    { "{ABE6AB1B-A19B-4338-B9E8-2976DDD8AFC2}", "Uni" },
-    { "{CC72D003-1E3C-4AD1-B069-17DFCF02D2EF}", "Bi" } };
-  auto selectDistSkewKind = [](auto& module) { return &module.block.distSkewKind; };
-  distSkewKind.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistSkewKind);
-  distSkewKind.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistSkewKind);
-  distSkewKind.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistSkewKind);
-  distSkewKind.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Skew; });
-  distSkewKind.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Skew; });
-  
-  auto& distSkewAmt = result->params[(int)FFEffectParam::DistSkewAmt];
-  distSkewAmt.acc = true;
-  distSkewAmt.defaultText = "50";
-  distSkewAmt.name = "Dist Skew Amt";
-  distSkewAmt.display = "Amt";
-  distSkewAmt.slotCount = FFEffectBlockCount;
-  distSkewAmt.id = "{C78B596F-8059-44F0-B73D-A699AB647F54}";
-  distSkewAmt.type = FBParamType::Identity;
-  auto selectDistSkewAmt = [](auto& module) { return &module.acc.distSkewAmt; };
-  distSkewAmt.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistSkewAmt);
-  distSkewAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistSkewAmt);
-  distSkewAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistSkewAmt);
-  distSkewAmt.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Skew; });
-  distSkewAmt.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Skew; });
-
-  auto& distShapeKind1 = result->params[(int)FFEffectParam::DistShapeKind1];
-  distShapeKind1.acc = false;
-  distShapeKind1.defaultText = "Sin";
-  distShapeKind1.name = "Dist Shape Kind 1";
-  distShapeKind1.display = "Knd1";
-  distShapeKind1.slotCount = FFEffectBlockCount;
-  distShapeKind1.id = "{1307CD98-5054-4C0F-B98C-A761851F8933}";
-  distShapeKind1.type = FBParamType::List;
-  distShapeKind1.List().items = {
-    { "{E62F1C97-6486-4256-80A8-4D0576FFA7C3}", "Off" },
-    { "{7D071104-2780-4AAF-94FD-D55DE2FF4E87}", "Sin" },
-    { "{96E3F1A7-65C1-492B-89EE-A6159B8AE483}", "Cos" },
-    { "{1FB6C6A0-D79F-4304-B5EC-C72DFF80B0AD}", "Tri" },
-    { "{DF2C417A-EA9D-4269-9545-341E0A41823B}", "Fld" } };
-  auto selectDistShapeKind1 = [](auto& module) { return &module.block.distShapeKind1; };
-  distShapeKind1.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistShapeKind1);
-  distShapeKind1.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistShapeKind1);
-  distShapeKind1.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistShapeKind1);
-  distShapeKind1.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Shape; });
-  distShapeKind1.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Shape; });
-
-  auto& distShapeKind2 = result->params[(int)FFEffectParam::DistShapeKind2];
-  distShapeKind2.acc = false;
-  distShapeKind2.defaultText = "Off";
-  distShapeKind2.name = "Dist Shape Kind 2";
-  distShapeKind2.display = "Knd2";
-  distShapeKind2.slotCount = FFEffectBlockCount;
-  distShapeKind2.id = "{756F59B0-C65C-4C24-8820-0B75065A07B7}";
-  distShapeKind2.type = FBParamType::List;
-  distShapeKind2.List().items = {
-    { "{B0C1E7D1-3038-4711-BD99-9B1DC445C3F4}", "Off" },
-    { "{5D802596-E159-4F05-BD42-82F293B38A28}", "Sin" },
-    { "{0023A0F0-87D2-4B21-9883-542190C69AEE}", "Cos" },
-    { "{4D801277-8419-45AD-B4F9-3E4B08CCDE2C}", "Tri" },
-    { "{1697F121-F3F8-4ECA-B5CA-1F36DD9025EA}", "Fld" } };
-  auto selectDistShapeKind2 = [](auto& module) { return &module.block.distShapeKind2; };
-  distShapeKind2.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistShapeKind2);
-  distShapeKind2.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectDistShapeKind2);
-  distShapeKind2.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistShapeKind2);
-  distShapeKind2.dependencies.visible.audio.When({ (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Dist && vs[1] == (int)FFEffectDistMode::Shape; });
-  distShapeKind2.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type, (int)FFEffectParam::DistMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectType::Dist && vs[2] == (int)FFEffectDistMode::Shape; });
+  // todo whole module feedback (4->1)
+  auto& distFdbk = result->params[(int)FFEffectParam::DistFdbk];
+  distFdbk.acc = true;
+  distFdbk.defaultText = "50";
+  distFdbk.name = "Dist Feeedback";
+  distFdbk.display = "Fdbk";
+  distFdbk.slotCount = FFEffectBlockCount;
+  distFdbk.id = "{E3512478-1203-47D3-B5A3-F8BFBAAE264C}";
+  distFdbk.type = FBParamType::Identity;
+  auto selectDistFdbk = [](auto& module) { return &module.acc.distFdbk; };
+  distFdbk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectDistFdbk);
+  distFdbk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectDistFdbk);
+  distFdbk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectDistFdbk);
+  distFdbk.dependencies.visible.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEffectType::Clip || vs[0] == (int)FFEffectType::Shape; });
+  distFdbk.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectType::Clip || vs[1] == (int)FFEffectType::Shape); });
 
   return result;
 }

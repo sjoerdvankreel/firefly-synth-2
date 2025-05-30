@@ -40,13 +40,13 @@ FFEffectProcessor::Process(FBModuleProcState& state)
 
   auto const& procParams = procState->param.voice.effect[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Effect];
-  auto const& distGainNorm = procParams.acc.distGain[0].Voice()[voice];
+  auto const& distDriveNorm = procParams.acc.distDrive[0].Voice()[voice];
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
-    auto distGainPlain = topo.NormalizedToLinearFast(FFEffectParam::ShaperGain, distGainNorm, s);
+    auto distDrivePlain = topo.NormalizedToLinearFast(FFEffectParam::ShaperGain, distDriveNorm, s);
     for (int c = 0; c < 2; c++)
-      output[c].Store(s, xsimd::tanh(distGainPlain * input[c].Load(s)));
+      output[c].Store(s, xsimd::tanh(distDrivePlain * input[c].Load(s)));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
@@ -58,5 +58,5 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   exchangeDSP.lengthSamples = -1;
 
   auto& exchangeParams = exchangeToGUI->param.voice.effect[state.moduleSlot];
-  exchangeParams.acc.distGain[0][voice] = distGainNorm.Last();
+  exchangeParams.acc.distDrive[0][voice] = distDriveNorm.Last();
 }

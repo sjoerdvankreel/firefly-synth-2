@@ -7,13 +7,13 @@ struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
 inline int constexpr FFEffectBlockCount = 3;
 
-enum class FFEffectType { Off, StVar, Comb, Dist };
-enum class FFEffectDistMode { Clip, Shape, Skew };
-enum class FFEffectDistSkewKind { Unipolar, Bipolar };
-enum class FFEffectDistShapeKind { Off, Sin, Cos, Tri, Fldbk };
-enum class FFEffectDistClipKind { Hard, TanH, Sin, TSQ, Cube, Inv, Exp };
+enum class FFEffectType { Off, StVar, Comb, Clip, Shape };
+enum class FFEffectClipMode { Hard, TanH, Sin, TSQ, Cube, Inv, Exp  };
+enum class FFEffectShapeMode { 
+  Off, Tri, Fldbk, SkewU, SkewB, Sin, Cos, Sin2, Cos2, SinCos, CosSin, 
+  Sin3, Cos3, Sn2Cs, Cs2Sn, SnCs2, CsSn2, SnCsSn, CsSnCs };
 
 enum class FFEffectParam { On, Oversample, Type, ShaperGain, 
   CombKeyTrk, CombFreqPlus, CombResPlus, CombFreqMin, CombResMin, 
   StVarMode, StVarKeyTrak, StVarFreq, StVarRes, StVarGain,  
-  DistMode, DistGain, DistMix, DistClipKind, DistClipExp, DistSkewKind, DistSkewAmt, DistShapeKind1, DistShapeKind2, Count };
+  ClipMode, ShapeMode, DistDrive, DistMix, DistAmt, DistFdbk, Count };

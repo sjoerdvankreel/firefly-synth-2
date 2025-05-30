@@ -32,12 +32,9 @@ class alignas(alignof(TVoiceBlock)) FFEffectBlockParamState final
   std::array<TVoiceBlock, 1> on = {};
   std::array<TVoiceBlock, 1> oversample = {};
   std::array<TVoiceBlock, FFEffectBlockCount> type = {};
+  std::array<TVoiceBlock, FFEffectBlockCount> clipMode = {};
+  std::array<TVoiceBlock, FFEffectBlockCount> shapeMode = {};
   std::array<TVoiceBlock, FFEffectBlockCount> stVarMode = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> distMode = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> distClipKind = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> distSkewKind = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> distShapeKind1 = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> distShapeKind2 = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);
 };
@@ -47,10 +44,10 @@ class alignas(alignof(TVoiceAcc)) FFEffectAccParamState final
 {
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
-  std::array<TVoiceAcc, FFEffectBlockCount> distGain = {};
   std::array<TVoiceAcc, FFEffectBlockCount> distMix = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> distClipExp = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> distSkewAmt = {};
+  std::array<TVoiceAcc, FFEffectBlockCount> distAmt = {};
+  std::array<TVoiceAcc, FFEffectBlockCount> distFdbk = {};
+  std::array<TVoiceAcc, FFEffectBlockCount> distDrive = {};
   std::array<TVoiceAcc, FFEffectBlockCount> stVarRes = {};
   std::array<TVoiceAcc, FFEffectBlockCount> stVarFreq = {};
   std::array<TVoiceAcc, FFEffectBlockCount> stVarGain = {};

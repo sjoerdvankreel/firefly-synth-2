@@ -1,3 +1,6 @@
+drv/mix/skew/mode (=all forms) + exp
++ type = uni/bi for the skwer
+
 noise peaks at high vals with 8 uni count
 test clap, more hosts, winlinmac
 actual release build
