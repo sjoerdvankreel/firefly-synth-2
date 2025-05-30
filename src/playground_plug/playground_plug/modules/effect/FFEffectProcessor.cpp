@@ -71,8 +71,6 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     return;
   }
 
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-
   auto const& procParams = procState->param.voice.effect[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Effect];
   auto const& distAmtNorm = procParams.acc.distAmt;
@@ -165,6 +163,43 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       else
         assert(false);
     }
+  }
+
+  FBSArray2<float, FBFixedBlockSamples, 2> oversampled;
+  if (_oversampleTimes == 1)
+    for (int c = 0; c < 2; c++)
+      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        oversampled[c].Store(s, input[c].Load(s));
+  else
+  {
+    float const* audioIn[2] = {};
+    audioIn[0] = input[0].Ptr(0);
+    audioIn[1] = input[1].Ptr(0);
+    AudioBlock<float const> inputBlock(audioIn, 2, 0, FBFixedBlockSamples);
+    auto oversampledBlock = _oversampler.processSamplesUp(inputBlock);
+    for (int c = 0; c < 2; c++)
+      for (int s = 0; s < EffectFixedBlockOversamples; s++)
+        oversampled[c].Set(s, oversampledBlock.getSample(c, s));
+  }
+
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    for (int c = 0; c < 2; c++)
+      oversampled[c].Set(s, std::tanh(oversampled[c].Get(s) * distDrivePlain[0].Get(s)));
+  }
+
+  if(_oversampleTimes == 1)
+    for (int c = 0; c < 2; c++)
+      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        output[c].Store(s, oversampled[c].Load(s));
+  else
+  {
+    float* audioOut[2] = {};
+    audioOut[0] = output[0].Ptr(0);
+    audioOut[1] = output[1].Ptr(0);
+    AudioBlock<float> outputBlock(audioOut, 2, 0, FBFixedBlockSamples);
+    _oversampler.processSamplesDown(outputBlock);
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
