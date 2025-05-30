@@ -185,11 +185,24 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   }
 
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s++)
-  {
-    for (int c = 0; c < 2; c++)
-      oversampled[c].Set(s, std::tanh(oversampled[c].Get(s) * distDrivePlain[0].Get(s)));
-  }
+  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+    for (int i = 0; i < FFEffectBlockCount; i++)
+      if (_kind[i] == FFEffectKind::Clip)
+        for (int c = 0; c < 2; c++)
+        {
+          auto mix = distMixPlain[i].Load(s);
+          auto drive = distDrivePlain[i].Load(s);
+          auto inSample = oversampled[c].Load(s);
+          auto shapedSample = inSample * drive;
+          switch (_clipMode[i])
+          {
+          case FFEffectClipMode::TanH: shapedSample = xsimd::tanh(shapedSample); break;
+          case FFEffectClipMode::Hard: shapedSample = xsimd::clip(shapedSample, FBBatch<float>(-1.0f), FBBatch<float>(1.0f)); break;
+          default: break;
+          }
+          auto mixedSample = (1.0f - mix) * inSample + mix * shapedSample;
+          oversampled[c].Store(s, mixedSample);
+        }
 
   if(_oversampleTimes == 1)
     for (int c = 0; c < 2; c++)
