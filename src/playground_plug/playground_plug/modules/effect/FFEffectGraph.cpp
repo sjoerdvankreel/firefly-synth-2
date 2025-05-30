@@ -13,7 +13,7 @@ struct EffectGraphRenderData final:
 public FBModuleGraphRenderData<EffectGraphRenderData>
 {
   int totalSamples = {};
-  int samplesProcessed = {};
+  std::array<int, FFEffectBlockCount> samplesProcessed = {};
 
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBModuleProcState& state, int graphIndex);
@@ -24,7 +24,7 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
 void 
 EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state, int graphIndex)
 { 
-  samplesProcessed = 0;
+  samplesProcessed[graphIndex] = 0;
   GetProcessor(state).BeginVoice(graphIndex, state); 
 }
 
@@ -35,10 +35,10 @@ EffectGraphRenderData::DoProcess(FBModuleProcState& state, int graphIndex)
   auto& input = procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].input;
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      input[c].Set(s, ((samplesProcessed + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
+      input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   GetProcessor(state).Process(state); 
-  samplesProcessed += FBFixedBlockSamples;
-  return std::clamp(totalSamples - samplesProcessed, 0, FBFixedBlockSamples);
+  samplesProcessed[graphIndex] += FBFixedBlockSamples;
+  return std::clamp(totalSamples - samplesProcessed[graphIndex], 0, FBFixedBlockSamples);
 }
 
 FFEffectProcessor&
