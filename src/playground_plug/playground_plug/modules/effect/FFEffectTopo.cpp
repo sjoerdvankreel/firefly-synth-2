@@ -1,6 +1,7 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
 #include <playground_plug/modules/effect/FFEffectTopo.hpp>
+#include <playground_plug/modules/effect/FFEffectGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
@@ -10,7 +11,8 @@ FFMakeEffectTopo()
   result->voice = true;
   result->name = "FX";
   result->slotCount = FFEffectCount;
-  result->graphCount = 1;
+  result->graphCount = FFEffectBlockCount;
+  result->graphRenderer = FFEffectRenderGraph;
   result->id = "{154051CE-66D9-41C8-B479-C52D1111C962}";
   result->params.resize((int)FFEffectParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.effect; });
