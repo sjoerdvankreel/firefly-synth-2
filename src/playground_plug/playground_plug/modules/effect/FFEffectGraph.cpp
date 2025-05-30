@@ -67,7 +67,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   renderData.staticModuleIndex = (int)FFModuleType::Effect;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].effect[slot]; };
-  renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].effect[slot].output; };
-  FBRenderModuleGraph<false, true>(renderData, 0);
+  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot) {
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].effect[slot].output[0]; };
+  FBRenderModuleGraph<false, false>(renderData, 0);
 }

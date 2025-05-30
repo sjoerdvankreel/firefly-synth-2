@@ -50,7 +50,7 @@ FFPhysRenderGraph(FBModuleGraphComponentData* graphData)
   renderData.staticModuleIndex = (int)FFModuleType::Phys;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].phys[slot]; };
-  renderData.voiceAudioOutputSelector = [](void const* procState, int voice, int slot) {
+  renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].phys[slot].output; };
   FBTopoIndices indices = { (int)FFModuleType::Phys, graphData->renderState->ModuleProcState()->moduleSlot };
   graphData->graphs[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;

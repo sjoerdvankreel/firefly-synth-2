@@ -45,7 +45,7 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
   renderData.staticModuleIndex = (int)FFModuleType::GLFO;
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
-  renderData.globalCVOutputSelector = [](void const* procState, int slot) {
+  renderData.globalMonoOutputSelector = [](void const* procState, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].output; };
   FBTopoIndices indices = { (int)FFModuleType::GLFO, graphData->renderState->ModuleProcState()->moduleSlot };
   graphData->graphs[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
