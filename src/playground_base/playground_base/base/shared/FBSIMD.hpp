@@ -19,6 +19,7 @@ inline int constexpr FBSIMDAlign = FBSIMDFloatCount * sizeof(float);
 inline int constexpr FBFixedBlockSamples = 4 * FBSIMDFloatCount;
 
 template <class T> using FBBatch = xsimd::batch<T, FBXSIMDBatchType>;
+template <class T> using FBBoolBatch = xsimd::batch_bool<T, FBXSIMDBatchType>;
 template <class T> struct FBSIMDTraits {
   static inline int constexpr Size = FBBatch<T>::size;
   static inline int constexpr Align = Size * sizeof(T); };

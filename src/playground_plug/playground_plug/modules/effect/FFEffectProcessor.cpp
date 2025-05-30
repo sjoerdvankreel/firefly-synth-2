@@ -184,6 +184,9 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         oversampled[c].Set(s, oversampledBlock.getSample(c, s));
   }
 
+  FBBatch<float> sinBatch;
+  FBBatch<float> signBatch;
+  FBBoolBatch<float> compBatch;
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
     for (int i = 0; i < FFEffectBlockCount; i++)
@@ -196,9 +199,23 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           auto shapedSample = inSample * drive;
           switch (_clipMode[i])
           {
-          case FFEffectClipMode::TanH: shapedSample = xsimd::tanh(shapedSample); break;
-          case FFEffectClipMode::Hard: shapedSample = xsimd::clip(shapedSample, FBBatch<float>(-1.0f), FBBatch<float>(1.0f)); break;
-          default: break;
+          case FFEffectClipMode::Sin:
+            signBatch = xsimd::sign(shapedSample);
+            sinBatch = xsimd::sin((shapedSample * 3.0f * FBPi) / 4.0f);
+            compBatch = xsimd::gt(xsimd::abs(shapedSample), FBBatch<float>(2.0f / 3.0f));
+            shapedSample = xsimd::select(compBatch, signBatch, sinBatch);
+            break;
+          case FFEffectClipMode::TanH:
+            shapedSample = xsimd::tanh(shapedSample); 
+            break;
+          case FFEffectClipMode::Hard: 
+            shapedSample = xsimd::clip(shapedSample, FBBatch<float>(-1.0f), FBBatch<float>(1.0f)); 
+            break;
+          case FFEffectClipMode::Inv:
+            shapedSample = xsimd::sign(shapedSample) * (1.0f - (1.0f / (1.0f + xsimd::abs(30.0f * shapedSample))));
+            break;
+          default: 
+            break;
           }
           auto mixedSample = (1.0f - mix) * inSample + mix * shapedSample;
           oversampled[c].Store(s, mixedSample);
