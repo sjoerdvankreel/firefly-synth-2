@@ -1,3 +1,4 @@
+fix up all the graph texts
 drv/mix/skew/mode (=all forms) + exp
 + type = uni/bi for the skwer
 
