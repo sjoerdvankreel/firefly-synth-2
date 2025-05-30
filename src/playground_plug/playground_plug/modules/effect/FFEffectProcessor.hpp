@@ -10,7 +10,7 @@ struct FBModuleProcState;
 
 class FFEffectProcessor final
 {
-  bool _on = {};
+  FFEffectType _type = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectProcessor);

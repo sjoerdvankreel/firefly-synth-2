@@ -21,14 +21,18 @@ static Component*
 MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 1 });
+  auto upper = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Type, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  upper->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
+  upper->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  grid->Add(0, 0, upper);
+  auto lower = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   auto oversample = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Oversample, 0 });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversample));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversample));
-  grid->MarkSection({ 0, 0, 2, 2 });
+  lower->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversample));
+  lower->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversample));
+  grid->Add(1, 0, lower);
+  grid->MarkSection({ 0, 0, 2, 1 });
   return grid;
 }
 

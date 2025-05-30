@@ -19,8 +19,8 @@ FFEffectProcessor::BeginVoice(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.effect[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Effect];
-  auto const& onNorm = params.block.on[0].Voice()[voice];
-  _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
+  auto const& typeNorm = params.block.type[0].Voice()[voice];
+  _type = topo.NormalizedToListFast<FFEffectType>(FFEffectParam::Type, typeNorm);
 }
 
 void
@@ -32,7 +32,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto& output = voiceState.effect[state.moduleSlot].output;
   auto const& input = voiceState.effect[state.moduleSlot].input;
 
-  if (!_on)
+  if (_type == FFEffectType::Off)
   {
     input.CopyTo(output);
     return;
