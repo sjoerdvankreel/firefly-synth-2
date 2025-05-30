@@ -233,6 +233,12 @@ FFEffectProcessor::Process(FBModuleProcState& state)
             tsqBatch = signBatch * (3.0f - exceedBatch2 * exceedBatch2) / 3.0f;
             shapedSample = xsimd::select(compBatch1, signBatch, xsimd::select(compBatch2, exceedBatch1, tsqBatch));
             break;
+          case FFEffectClipMode::Exp:
+            signBatch = xsimd::sign(shapedSample);
+            compBatch1 = xsimd::gt(xsimd::abs(shapedSample), FBBatch<float>(2.0f / 3.0f));
+            exceedBatch1 = signBatch * (1.0f - xsimd::pow(xsimd::abs(1.5f * shapedSample - signBatch), 0.1f + distAmtPlain[i].Load(s) * 9.9f));
+            shapedSample = xsimd::select(compBatch1, signBatch, exceedBatch1);
+            break;
           default: 
             break;
           }
