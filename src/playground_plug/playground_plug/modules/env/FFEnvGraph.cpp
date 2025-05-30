@@ -13,9 +13,9 @@ struct EnvGraphRenderData final:
 public FBModuleGraphRenderData<EnvGraphRenderData>
 {
   FFEnvProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
-  void DoBeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(state); }
-  void DoProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
+  int DoProcess(FBModuleProcState& state, int graphIndex) { return GetProcessor(state).Process(state); }
+  void DoBeginVoice(FBModuleProcState& state, int graphIndex) { GetProcessor(state).BeginVoice(state); }
+  void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points);
 };
 
 static void
@@ -94,7 +94,9 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 }
 
 void
-EnvGraphRenderData::DoProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+EnvGraphRenderData::DoProcessIndicators(
+  bool exchange, int exchangeVoice, 
+  int graphIndex, FBModuleGraphPoints& points)
 {
   int smoothLengthAudio;
   int totalSamplesAudio = 0;

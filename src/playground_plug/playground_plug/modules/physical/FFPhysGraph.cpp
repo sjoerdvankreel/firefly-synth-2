@@ -13,9 +13,9 @@ struct PhysGraphRenderData final :
 public FBModuleGraphRenderData<PhysGraphRenderData>
 {
   FFPhysProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBModuleProcState& state) { return GetProcessor(state).Process(state); }
-  void DoBeginVoice(FBModuleProcState& state) { GetProcessor(state).BeginVoice(true, state); }
-  void DoProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
+  int DoProcess(FBModuleProcState& state, int graphIndex) { return GetProcessor(state).Process(state); }
+  void DoBeginVoice(FBModuleProcState& state, int graphIndex) { GetProcessor(state).BeginVoice(true, state); }
+  void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
 };
 
 FFPhysProcessor&

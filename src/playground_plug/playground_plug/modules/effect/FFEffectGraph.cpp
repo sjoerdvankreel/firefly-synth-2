@@ -15,21 +15,21 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
   int totalSamples = {};
   int samplesProcessed = {};
 
-  int DoProcess(FBModuleProcState& state);
-  void DoBeginVoice(FBModuleProcState& state);
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
-  void DoProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
+  int DoProcess(FBModuleProcState& state, int graphIndex);
+  void DoBeginVoice(FBModuleProcState& state, int graphIndex);
+  void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
 };
 
 void 
-EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state) 
+EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state, int graphIndex)
 { 
   samplesProcessed = 0;
   GetProcessor(state).BeginVoice(state); 
 }
 
 int 
-EffectGraphRenderData::DoProcess(FBModuleProcState& state) 
+EffectGraphRenderData::DoProcess(FBModuleProcState& state, int graphIndex)
 {
   auto* procState = state.ProcAs<FFProcState>();
   auto& input = procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].input;

@@ -53,18 +53,18 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceStereoOutputSelector voiceStereoOutputSelector = {};
   FBModuleGraphGlobalStereoOutputSelector globalStereoOutputSelector = {};
 
-  void Reset(FBModuleProcState& state) { static_cast<Derived*>(this)->DoReset(state); }
-  int Process(FBModuleProcState& state) { return static_cast<Derived*>(this)->DoProcess(state); }
-  void BeginVoice(FBModuleProcState& state) { static_cast<Derived*>(this)->DoBeginVoice(state); }
-  void ProcessIndicators(bool exchange, int exchangeVoice, FBModuleGraphPoints& points) 
-  { return static_cast<Derived*>(this)->DoProcessIndicators(exchange, exchangeVoice, points); }
+  void Reset(FBModuleProcState& state, int graphIndex) { static_cast<Derived*>(this)->DoReset(state, graphIndex); }
+  int Process(FBModuleProcState& state, int graphIndex) { return static_cast<Derived*>(this)->DoProcess(state, graphIndex); }
+  void BeginVoice(FBModuleProcState& state, int graphIndex) { static_cast<Derived*>(this)->DoBeginVoice(state, graphIndex); }
+  void ProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points)
+  { return static_cast<Derived*>(this)->DoProcessIndicators(exchange, exchangeVoice, graphIndex, points); }
 };
 
 template <bool Global, bool Stereo, class Derived> 
 void 
 FBRenderModuleGraphSeries(
   FBModuleGraphRenderData<Derived>& renderData,
-  bool exchange, int exchangeVoice, 
+  bool exchange, int exchangeVoice, int graphIndex,
   FBModuleGraphPoints& seriesOut)
 {
   seriesOut.l.clear();
@@ -81,13 +81,13 @@ FBRenderModuleGraphSeries(
   moduleProcState->input->note->clear();
 
   if constexpr (Global)
-    renderData.Reset(*moduleProcState);
+    renderData.Reset(*moduleProcState, graphIndex);
   else
-    renderData.BeginVoice(*moduleProcState);
+    renderData.BeginVoice(*moduleProcState, graphIndex);
 
   while (processed == FBFixedBlockSamples)
   {
-    processed = renderData.Process(*moduleProcState);
+    processed = renderData.Process(*moduleProcState, graphIndex);
     if constexpr (Global)
     {
       if constexpr(Stereo)
@@ -129,7 +129,7 @@ FBRenderModuleGraphSeries(
     }
   }
 
-  renderData.ProcessIndicators(exchange, exchangeVoice, seriesOut);
+  renderData.ProcessIndicators(exchange, exchangeVoice, graphIndex, seriesOut);
 }
 
 template <bool Global, bool Stereo, class Derived>
@@ -189,7 +189,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
-  FBRenderModuleGraphSeries<Global, Stereo>(renderData, false, -1, graphData->graphs[graphIndex].primarySeries);
+  FBRenderModuleGraphSeries<Global, Stereo>(renderData, false, -1, graphIndex, graphData->graphs[graphIndex].primarySeries);
   float guiDurationSeconds = renderData.graphData->graphs[graphIndex].primarySeries.l.size() / moduleProcState->input->sampleRate;
   if(guiDurationSeconds > 0.0f)
     renderData.graphData->graphs[graphIndex].text = FBFormatDouble(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
@@ -212,7 +212,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<Global, Stereo>(renderData, true, -1, secondary.points);
+    FBRenderModuleGraphSeries<Global, Stereo>(renderData, true, -1, graphIndex, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
@@ -232,7 +232,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     }
     moduleProcState->renderType = FBRenderType::GraphExchange;
     auto& secondary = graphData->graphs[graphIndex].secondarySeries.emplace_back();
-    FBRenderModuleGraphSeries<false, Stereo>(renderData, true, v, secondary.points);
+    FBRenderModuleGraphSeries<false, Stereo>(renderData, true, v, graphIndex, secondary.points);
     secondary.marker = static_cast<int>(positionNormalized * secondary.points.l.size());
   }
 }
