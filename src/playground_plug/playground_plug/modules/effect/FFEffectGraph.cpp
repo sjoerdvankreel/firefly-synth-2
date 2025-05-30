@@ -25,7 +25,7 @@ void
 EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state, int graphIndex)
 { 
   samplesProcessed = 0;
-  GetProcessor(state).BeginVoice(state, graphIndex); 
+  GetProcessor(state).BeginVoice(graphIndex, state); 
 }
 
 int 

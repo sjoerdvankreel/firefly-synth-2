@@ -28,7 +28,7 @@ _oversampler(
 }
 
 void
-FFEffectProcessor::BeginVoice(FBModuleProcState& state, int graphIndex)
+FFEffectProcessor::BeginVoice(int graphIndex, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
