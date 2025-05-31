@@ -36,26 +36,13 @@ class FFEffectProcessor final
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain);
-  
-  template <class T>
-  T ProcessSkewSampleOrBatch(
-    int block, T in,
-    T distAmtPlain, T distMixPlain, T distBiasPlain, T distDrivePlain);
-  void ProcessSkewBuffer(
+  void ProcessSkew(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
-  void ProcessSkewSample(
-    int block,
-    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
-
   void ProcessClip(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
