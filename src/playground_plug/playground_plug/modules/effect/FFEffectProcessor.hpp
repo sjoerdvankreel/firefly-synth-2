@@ -28,7 +28,15 @@ class FFEffectProcessor final
   juce::dsp::Oversampling<float> _oversampler;
   std::array<FBCytomicFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
-  void ProcessStVar(
+  void ProcessStVarSample(
+    int block, float sampleRate, int sample,
+    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain);
+  void ProcessStVarBuffer(
     int block, float sampleRate,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
     FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
@@ -56,14 +64,37 @@ class FFEffectProcessor final
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
 
-  void ProcessClip(
+  template <class T>
+  T ProcessClipSampleOrBatch(
+    int block, T in,
+    T distAmtPlain, T distMixPlain, T distBiasPlain, T distDrivePlain);
+  void ProcessClipBuffer(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
-  void ProcessFold(
+  void ProcessClipSample(
+    int block,
+    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+
+  template <class T>
+  T ProcessFoldSampleOrBatch(
+    int block, T in,
+    T distAmtPlain, T distMixPlain, T distBiasPlain, T distDrivePlain);
+  void ProcessFoldBuffer(
+    int block,
+    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+  void ProcessFoldSample(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
