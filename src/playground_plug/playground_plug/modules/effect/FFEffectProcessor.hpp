@@ -31,6 +31,7 @@ class FFEffectProcessor final
   void ProcessStVar(
     int block, float sampleRate,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,

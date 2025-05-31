@@ -36,7 +36,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   lower->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversample));
   lower->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversample));
   auto trackingKey = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::TrackingKey, 0 });
-  lower->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversample));
+  lower->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, trackingKey));
   lower->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingKey, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(1, 0, lower);
 

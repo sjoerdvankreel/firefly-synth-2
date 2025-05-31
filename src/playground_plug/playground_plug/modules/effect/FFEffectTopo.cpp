@@ -53,7 +53,7 @@ FFMakeEffectTopo()
   auto& oversample = result->params[(int)FFEffectParam::Oversample];
   oversample.acc = false;
   oversample.defaultText = "Off";
-  oversample.name = "Oversample";
+  oversample.name = "Ovrsmp";
   oversample.slotCount = 1;
   oversample.id = "{28875DF7-255B-4190-80CE-D0A9ED20F263}";
   oversample.type = FBParamType::Boolean;
@@ -107,7 +107,7 @@ FFMakeEffectTopo()
   stVarMode.acc = false;
   stVarMode.defaultText = "LPF";
   stVarMode.name = "StVar Mode";
-  stVarMode.display = "Mode";
+  stVarMode.display = "Mod";
   stVarMode.slotCount = FFEffectBlockCount;
   stVarMode.id = "{275B2C8D-6D21-4741-AB69-D21FA95CD7F5}";
   stVarMode.type = FBParamType::List;
@@ -134,7 +134,7 @@ FFMakeEffectTopo()
   stVarKeyTrk.acc = true;
   stVarKeyTrk.defaultText = "0";
   stVarKeyTrk.name = "StVar KeyTrk";
-  stVarKeyTrk.display = "KTrk";
+  stVarKeyTrk.display = "KTr";
   stVarKeyTrk.slotCount = FFEffectBlockCount;
   stVarKeyTrk.unit = "%";
   stVarKeyTrk.id = "{CC91F0B0-9D53-4140-B698-0561D04F500C}";
@@ -212,7 +212,7 @@ FFMakeEffectTopo()
   combKeyTrk.acc = true;
   combKeyTrk.defaultText = "0";
   combKeyTrk.name = "Comb KeyTrk";
-  combKeyTrk.display = "KTrk";
+  combKeyTrk.display = "KTr";
   combKeyTrk.slotCount = FFEffectBlockCount;
   combKeyTrk.unit = "%";
   combKeyTrk.id = "{77B1716F-4511-492B-A32E-F04CF668238B}";
@@ -313,7 +313,7 @@ FFMakeEffectTopo()
   clipMode.acc = false;
   clipMode.defaultText = "TanH";
   clipMode.name = "Clip Mode";
-  clipMode.display = "Mode";
+  clipMode.display = "Mod";
   clipMode.slotCount = FFEffectBlockCount;
   clipMode.id = "{D1F80BB8-4076-4296-A678-94E8442C51A5}";
   clipMode.type = FBParamType::List;
@@ -339,7 +339,7 @@ FFMakeEffectTopo()
   foldMode.acc = false;
   foldMode.defaultText = "Sin";
   foldMode.name = "Fold Mode";
-  foldMode.display = "Mode";
+  foldMode.display = "Mod";
   foldMode.slotCount = FFEffectBlockCount;
   foldMode.id = "{317BA4AC-8E9A-47B9-A289-294047E29C78}";
   foldMode.type = FBParamType::List;
@@ -372,7 +372,7 @@ FFMakeEffectTopo()
   skewMode.acc = false;
   skewMode.defaultText = "Uni";
   skewMode.name = "Skew Mode";
-  skewMode.display = "Mode";
+  skewMode.display = "Mod";
   skewMode.slotCount = FFEffectBlockCount;
   skewMode.id = "{DCA38D64-3791-4542-A6C7-FCA66DA45FEE}";
   skewMode.type = FBParamType::List;
