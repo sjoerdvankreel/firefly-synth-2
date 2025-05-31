@@ -147,11 +147,11 @@ FFEffectProcessor::BeginVoice(int graphIndex, FBModuleProcState& state)
   auto const& foldModeNorm = params.block.foldMode;
   auto const& skewModeNorm = params.block.skewMode;
   auto const& stVarModeNorm = params.block.stVarMode;
-  auto const& typeNorm = params.block.type[0].Voice()[voice];
+  auto const& onNorm = params.block.on[0].Voice()[voice];
   auto const& oversampleNorm = params.block.oversample[0].Voice()[voice];
 
   _key = static_cast<float>(state.voice->event.note.key);
-  _type = topo.NormalizedToListFast<FFEffectType>(FFEffectParam::Type, typeNorm);
+  _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
   _oversampleTimes = oversample ? EffectOversampleTimes : 1;
   for (int i = 0; i < FFEffectBlockCount; i++)
@@ -363,7 +363,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto& output = voiceState.effect[state.moduleSlot].output;
   auto const& input = voiceState.effect[state.moduleSlot].input;
 
-  if (_type == FFEffectType::Off)
+  if (!_on)
   {
     input.CopyTo(output);
     return;
@@ -385,10 +385,8 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto const& combResPlusNorm = procParams.acc.combResPlus;
   auto const& combFreqMinNorm = procParams.acc.combFreqMin;
   auto const& combFreqPlusNorm = procParams.acc.combFreqPlus;
-  auto const& feedbackNorm = procParams.acc.feedback[0].Voice()[voice];
   auto const& trackingKeyNorm = procParams.acc.trackingKey[0].Voice()[voice];
 
-  FBSArray<float, EffectFixedBlockOversamples> feedbackPlain;
   FBSArray<float, EffectFixedBlockOversamples> trackingKeyPlain;
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distAmtPlain;
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distMixPlain;
@@ -407,7 +405,6 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
-      feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFEffectParam::Feedback, feedbackNorm, s));
       trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
       if (_kind[i] == FFEffectKind::StVar)
       {
@@ -437,7 +434,6 @@ FFEffectProcessor::Process(FBModuleProcState& state)
 
   if (_oversampleTimes != 1)
   {
-    feedbackPlain.UpsampleStretch<EffectOversampleTimes>();
     trackingKeyPlain.UpsampleStretch<EffectOversampleTimes>();
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
@@ -531,7 +527,6 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   exchangeDSP.lengthSamples = -1;
 
   auto& exchangeParams = exchangeToGUI->param.voice.effect[state.moduleSlot];
-  exchangeParams.acc.feedback[0][voice] = feedbackNorm.Last();
   exchangeParams.acc.trackingKey[0][voice] = trackingKeyNorm.Last();
   for (int i = 0; i < FFEffectBlockCount; i++)
   {

@@ -23,12 +23,10 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 1 });
 
-  auto upper = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0 });
-  auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Type, 0 });
-  upper->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  upper->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
-  auto feedback = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Feedback, 0 });
-  upper->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedback, Slider::SliderStyle::RotaryVerticalDrag));
+  auto upper = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+  auto on = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::On, 0 });
+  upper->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
+  upper->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, on));
   grid->Add(0, 0, upper);
 
   auto lower = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1 });
