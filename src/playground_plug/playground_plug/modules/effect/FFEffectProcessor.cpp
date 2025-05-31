@@ -186,6 +186,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
 
   FBBatch<float> tsqBatch;
   FBBatch<float> signBatch;
+  FBBatch<float> expoBatch;
   FBBatch<float> exceedBatch1;
   FBBatch<float> exceedBatch2;
   FBBoolBatch<float> compBatch1;
@@ -201,20 +202,27 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           auto mix = distMixPlain[i].Load(s);
           auto bias = distBiasPlain[i].Load(s);
           auto drive = distDrivePlain[i].Load(s);
-          auto inSample = oversampled[c].Load(s);
-          auto shapedSample = (inSample + bias) * drive;
+          auto inBatch = oversampled[c].Load(s);
+          auto shapedBatch = (inBatch + bias) * drive;
+          signBatch = xsimd::sign(shapedBatch);
+          expoBatch = xsimd::log(0.01f + distAmtPlain[i].Load(s) * 0.98f) * invLogHalf;
           switch (_skewMode[i])
           {
+          case FFEffectSkewMode::Bi:
+            shapedBatch = signBatch * xsimd::pow(xsimd::abs(shapedBatch), expoBatch);
+            break;
           case FFEffectSkewMode::Uni:
-            signBatch = xsimd::sign(shapedSample);
-            compBatch1 = xsimd::lt(shapedSample, FBBatch<float>(-1.0f));
-            compBatch1 = xsimd::bitwise_or(compBatch1, xsimd::gt(shapedSample, FBBatch<float>(1.0f)));
-            exceedBatch1 = FBToBipolar(xsimd::pow(FBToUnipolar(shapedSample), xsimd::log(0.01f + distAmtPlain[i].Load(s) * 0.98f) * invLogHalf));
-            shapedSample = xsimd::select(compBatch1, shapedSample, exceedBatch1);
+            compBatch1 = xsimd::lt(shapedBatch, FBBatch<float>(-1.0f));
+            compBatch1 = xsimd::bitwise_or(compBatch1, xsimd::gt(shapedBatch, FBBatch<float>(1.0f)));
+            exceedBatch1 = FBToBipolar(xsimd::pow(FBToUnipolar(shapedBatch), expoBatch));
+            shapedBatch = xsimd::select(compBatch1, shapedBatch, exceedBatch1);
+            break;
+          default:
+            assert(false);
             break;
           }
-          auto mixedSample = (1.0f - mix) * inSample + mix * shapedSample;
-          oversampled[c].Store(s, mixedSample);
+          auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
+          oversampled[c].Store(s, mixedBatch);
         }
       else if(_kind[i] == FFEffectKind::Clip)
         for (int c = 0; c < 2; c++)
@@ -222,52 +230,53 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           auto mix = distMixPlain[i].Load(s);
           auto bias = distBiasPlain[i].Load(s);
           auto drive = distDrivePlain[i].Load(s);
-          auto inSample = oversampled[c].Load(s);
-          auto shapedSample = (inSample + bias) * drive;
+          auto inBatch = oversampled[c].Load(s);
+          auto shapedBatch = (inBatch + bias) * drive;
           switch (_clipMode[i])
           {
           case FFEffectClipMode::TanH:
-            shapedSample = xsimd::tanh(shapedSample);
+            shapedBatch = xsimd::tanh(shapedBatch);
             break;
           case FFEffectClipMode::Hard:
-            shapedSample = xsimd::clip(shapedSample, FBBatch<float>(-1.0f), FBBatch<float>(1.0f));
+            shapedBatch = xsimd::clip(shapedBatch, FBBatch<float>(-1.0f), FBBatch<float>(1.0f));
             break;
           case FFEffectClipMode::Inv:
-            shapedSample = xsimd::sign(shapedSample) * (1.0f - (1.0f / (1.0f + xsimd::abs(30.0f * shapedSample))));
+            shapedBatch = xsimd::sign(shapedBatch) * (1.0f - (1.0f / (1.0f + xsimd::abs(30.0f * shapedBatch))));
             break;
           case FFEffectClipMode::Sin:
-            signBatch = xsimd::sign(shapedSample);
-            exceedBatch1 = xsimd::sin((shapedSample * 3.0f * FBPi) / 4.0f);
-            compBatch1 = xsimd::gt(xsimd::abs(shapedSample), FBBatch<float>(2.0f / 3.0f));
-            shapedSample = xsimd::select(compBatch1, signBatch, exceedBatch1);
+            signBatch = xsimd::sign(shapedBatch);
+            exceedBatch1 = xsimd::sin((shapedBatch * 3.0f * FBPi) / 4.0f);
+            compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+            shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
             break;
           case FFEffectClipMode::Cube:
-            signBatch = xsimd::sign(shapedSample);
-            compBatch1 = xsimd::gt(xsimd::abs(shapedSample), FBBatch<float>(2.0f / 3.0f));
-            exceedBatch1 = (9.0f * shapedSample * 0.25f) - (27.0f * shapedSample * shapedSample * shapedSample / 16.0f);
-            shapedSample = xsimd::select(compBatch1, signBatch, exceedBatch1);
+            signBatch = xsimd::sign(shapedBatch);
+            compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+            exceedBatch1 = (9.0f * shapedBatch * 0.25f) - (27.0f * shapedBatch * shapedBatch * shapedBatch / 16.0f);
+            shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
             break;
           case FFEffectClipMode::TSQ:
-            signBatch = xsimd::sign(shapedSample);
-            compBatch1 = xsimd::gt(xsimd::abs(shapedSample), FBBatch<float>(2.0f / 3.0f));
-            compBatch2 = xsimd::lt(FBBatch<float>(-1.0f / 3.0f), shapedSample);
-            compBatch2 = xsimd::bitwise_and(compBatch2, xsimd::lt(shapedSample, FBBatch<float>(1.0f / 3.0f)));
-            exceedBatch1 = 2.0f * shapedSample;
-            exceedBatch2 = 2.0f - xsimd::abs(3.0f * shapedSample);
+            signBatch = xsimd::sign(shapedBatch);
+            compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+            compBatch2 = xsimd::lt(FBBatch<float>(-1.0f / 3.0f), shapedBatch);
+            compBatch2 = xsimd::bitwise_and(compBatch2, xsimd::lt(shapedBatch, FBBatch<float>(1.0f / 3.0f)));
+            exceedBatch1 = 2.0f * shapedBatch;
+            exceedBatch2 = 2.0f - xsimd::abs(3.0f * shapedBatch);
             tsqBatch = signBatch * (3.0f - exceedBatch2 * exceedBatch2) / 3.0f;
-            shapedSample = xsimd::select(compBatch1, signBatch, xsimd::select(compBatch2, exceedBatch1, tsqBatch));
+            shapedBatch = xsimd::select(compBatch1, signBatch, xsimd::select(compBatch2, exceedBatch1, tsqBatch));
             break;
           case FFEffectClipMode::Exp:
-            signBatch = xsimd::sign(shapedSample);
-            compBatch1 = xsimd::gt(xsimd::abs(shapedSample), FBBatch<float>(2.0f / 3.0f));
-            exceedBatch1 = signBatch * (1.0f - xsimd::pow(xsimd::abs(1.5f * shapedSample - signBatch), 0.1f + distAmtPlain[i].Load(s) * 9.9f));
-            shapedSample = xsimd::select(compBatch1, signBatch, exceedBatch1);
+            signBatch = xsimd::sign(shapedBatch);
+            compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+            exceedBatch1 = signBatch * (1.0f - xsimd::pow(xsimd::abs(1.5f * shapedBatch - signBatch), 0.1f + distAmtPlain[i].Load(s) * 9.9f));
+            shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
             break;
           default: 
+            assert(false);
             break;
           }
-          auto mixedSample = (1.0f - mix) * inSample + mix * shapedSample;
-          oversampled[c].Store(s, mixedSample);
+          auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
+          oversampled[c].Store(s, mixedBatch);
         }
 
   if(_oversampleTimes == 1)
