@@ -77,6 +77,9 @@ FFMakeEffectTopo()
     { "{FD072A47-EE67-4091-A687-7168B69A6E89}", "Clip" },
     { "{06334343-5264-489E-ADF9-20ADCEF983FC}", "Fold" },
     { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", "Skew" } };
+  kind.List().submenuStart[(int)FFEffectKind::Off] = "Off";
+  kind.List().submenuStart[(int)FFEffectKind::StVar] = "Filter";
+  kind.List().submenuStart[(int)FFEffectKind::Clip] = "Shape";
   auto selectKind = [](auto& module) { return &module.block.kind; };
   kind.scalarAddr = FFSelectScalarParamAddr(selectModule, selectKind);
   kind.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectKind);

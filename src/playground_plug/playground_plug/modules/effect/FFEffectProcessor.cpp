@@ -120,8 +120,8 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk, combKeyTrkNorm[i].Voice()[voice], s));
         combFreqMinPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqMin, combFreqMinNorm[i].Voice()[voice], s));
         combFreqPlusPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqPlus, combFreqPlusNorm[i].Voice()[voice], s));
-        combResMinPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CombResMin, combResMinNorm[i].Voice()[voice], s));
-        combResPlusPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::CombResPlus, combResPlusNorm[i].Voice()[voice], s));
+        combResMinPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResMin, combResMinNorm[i].Voice()[voice], s));
+        combResPlusPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResPlus, combResPlusNorm[i].Voice()[voice], s));
       }
       else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
       {
