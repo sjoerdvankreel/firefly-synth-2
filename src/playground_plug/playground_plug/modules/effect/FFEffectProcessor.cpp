@@ -190,7 +190,9 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   FBBatch<float> exceedBatch2;
   FBBoolBatch<float> compBatch1;
   FBBoolBatch<float> compBatch2;
+  float const invLogHalf = 1.0f / std::log(0.5f);
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
     for (int i = 0; i < FFEffectBlockCount; i++)
       if (_kind[i] == FFEffectKind::Skew)
@@ -207,7 +209,8 @@ FFEffectProcessor::Process(FBModuleProcState& state)
             signBatch = xsimd::sign(shapedSample);
             compBatch1 = xsimd::lt(shapedSample, FBBatch<float>(-1.0f));
             compBatch1 = xsimd::bitwise_or(compBatch1, xsimd::gt(shapedSample, FBBatch<float>(1.0f)));
-            shapedSample = xsimd::select(compBatch1, shapedSample, FBToBipolar(xsimd::pow(FBToUnipolar(shapedSample), distAmtPlain[i].Load(s))));
+            exceedBatch1 = FBToBipolar(xsimd::pow(FBToUnipolar(shapedSample), xsimd::log(0.01f + distAmtPlain[i].Load(s) * 0.98f) * invLogHalf));
+            shapedSample = xsimd::select(compBatch1, shapedSample, exceedBatch1);
             break;
           }
           auto mixedSample = (1.0f - mix) * inSample + mix * shapedSample;

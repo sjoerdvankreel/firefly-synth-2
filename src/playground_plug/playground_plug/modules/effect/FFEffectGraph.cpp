@@ -28,6 +28,13 @@ EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state, int graphIndex)
   GetProcessor(state).BeginVoice(graphIndex, state); 
 }
 
+FFEffectProcessor&
+EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  return *procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].processor;
+}
+
 int 
 EffectGraphRenderData::DoProcess(FBModuleProcState& state, int graphIndex)
 {
@@ -41,17 +48,10 @@ EffectGraphRenderData::DoProcess(FBModuleProcState& state, int graphIndex)
   return std::clamp(totalSamples - samplesProcessed[graphIndex], 0, FBFixedBlockSamples);
 }
 
-FFEffectProcessor&
-EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
-{
-  auto* procState = state.ProcAs<FFProcState>();
-  return *procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].processor;
-}
-
 static int
 PlotSamples(FBModuleGraphComponentData const* data)
 {
-  return data->pixelWidth;
+  return data->pixelWidth * 2;
 }
 
 void
