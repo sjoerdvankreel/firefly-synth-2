@@ -18,6 +18,25 @@ static int constexpr EffectOversampleFactor = 2;
 static int constexpr EffectOversampleTimes = 1 << EffectOversampleFactor;
 static int constexpr EffectFixedBlockOversamples = FBFixedBlockSamples * EffectOversampleTimes;
 
+static inline FBBatch<float>
+FoldBack(FBBatch<float> in)
+{
+  FBSArray<float, FBSIMDFloatCount> out;
+  out.Store(0, in);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+  {
+    float x = std::clamp(out.Get(i), -32.0f, 32.0f);
+    while (true)
+    {
+      if (x > 1.0f) x -= 2.0f * (x - 1.0f);
+      else if (x < -1.0f) x += 2.0f * (-x - 1.0f);
+      else break;
+    }
+    out.Set(i, x);
+  }
+  return out.Load(0);
+}
+
 FFEffectProcessor::
 FFEffectProcessor() :
 _oversampler(
@@ -288,8 +307,53 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           auto shapedBatch = (inBatch + bias) * drive;
           switch (_foldMode[i])
           {
+          case FFEffectFoldMode::Fold:
+            shapedBatch = FoldBack(shapedBatch);
+            break;
           case FFEffectFoldMode::Sin:
             shapedBatch = xsimd::sin(shapedBatch * FBPi);
+            break;
+          case FFEffectFoldMode::Cos:
+            shapedBatch = xsimd::cos(shapedBatch * FBPi);
+            break;
+          case FFEffectFoldMode::Sin2:
+            shapedBatch = xsimd::sin(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi));
+            break;
+          case FFEffectFoldMode::Cos2:
+            shapedBatch = xsimd::cos(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi));
+            break;
+          case FFEffectFoldMode::SinCos:
+            shapedBatch = xsimd::sin(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi));
+            break;
+          case FFEffectFoldMode::CosSin:
+            shapedBatch = xsimd::cos(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi));
+            break;
+          case FFEffectFoldMode::Sin3:
+            shapedBatch = xsimd::sin(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi)));
+            break;
+          case FFEffectFoldMode::Cos3:
+            shapedBatch = xsimd::cos(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi)));
+            break;
+          case FFEffectFoldMode::Sn2Cs:
+            shapedBatch = xsimd::sin(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi)));
+            break;
+          case FFEffectFoldMode::Cs2Sn:
+            shapedBatch = xsimd::cos(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi)));
+            break;
+          case FFEffectFoldMode::SnCs2:
+            shapedBatch = xsimd::sin(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi)));
+            break;
+          case FFEffectFoldMode::CsSn2:
+            shapedBatch = xsimd::cos(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi)));
+            break;
+          case FFEffectFoldMode::SnCsSn:
+            shapedBatch = xsimd::sin(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi)));
+            break;
+          case FFEffectFoldMode::CsSnCs:
+            shapedBatch = xsimd::cos(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi)));
+            break;
+          default:
+            assert(false);
             break;
           }
           auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
