@@ -16,6 +16,7 @@ inline int constexpr EffectFixedBlockOversamples = FBFixedBlockSamples * EffectO
 
 class FFEffectProcessor final
 {
+  float _key = {};
   FFEffectType _type = {};
   int _oversampleTimes = {};
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};

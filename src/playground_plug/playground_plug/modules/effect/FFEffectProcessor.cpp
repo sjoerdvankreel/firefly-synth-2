@@ -150,6 +150,7 @@ FFEffectProcessor::BeginVoice(int graphIndex, FBModuleProcState& state)
   auto const& typeNorm = params.block.type[0].Voice()[voice];
   auto const& oversampleNorm = params.block.oversample[0].Voice()[voice];
 
+  _key = static_cast<float>(state.voice->event.note.key);
   _type = topo.NormalizedToListFast<FFEffectType>(FFEffectParam::Type, typeNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
   _oversampleTimes = oversample ? EffectOversampleTimes : 1;
@@ -180,7 +181,9 @@ FFEffectProcessor::ProcessStVar(
     auto res = stVarResPlain[block].Get(s);
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
-    // todo ktrk
+    auto ktrk = stVarKeyTrkPlain[block].Get(s);
+    freq *= std::pow(2.0, (_key - 60.0f) / 12.0f * ktrk);
+    freq = std::clamp(freq, 20.0f, 20000.0f);
     _stVarFilters[block].Set(_stVarMode[block], sampleRate, freq, res, gain);
     for(int c = 0; c < 2; c++)
       oversampled[c].Set(s, _stVarFilters[block].Next(c, oversampled[c].Get(s)));
