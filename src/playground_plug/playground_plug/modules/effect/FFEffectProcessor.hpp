@@ -47,8 +47,7 @@ class FFEffectProcessor final
   
   template <class T>
   T ProcessSkewSampleOrBatch(
-    int block, T in,
-    T distAmtPlain, T distMixPlain, T distBiasPlain, T distDrivePlain);
+    int block, T in, T amt);
   void ProcessSkewBuffer(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
@@ -66,8 +65,7 @@ class FFEffectProcessor final
 
   template <class T>
   T ProcessClipSampleOrBatch(
-    int block, T in,
-    T distAmtPlain, T distMixPlain, T distBiasPlain, T distDrivePlain);
+    int block, T in, T amt);
   void ProcessClipBuffer(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
@@ -85,8 +83,7 @@ class FFEffectProcessor final
 
   template <class T>
   T ProcessFoldSampleOrBatch(
-    int block, T in,
-    T distAmtPlain, T distMixPlain, T distBiasPlain, T distDrivePlain);
+    int block, T in);
   void ProcessFoldBuffer(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,

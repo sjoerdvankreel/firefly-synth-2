@@ -16,115 +16,131 @@ using namespace juce::dsp;
 
 static float const InvLogHalf = 1.0f / std::log(0.5f);
 
-static inline FBBatch<float>
-Sin2(FBBatch<float> in)
+template <class T>
+static inline T
+Sin2(T in)
 {
   auto sin1 = xsimd::sin(in * FBPi);
   return xsimd::sin(in * FBPi + sin1);
 }
 
-static inline FBBatch<float>
-Cos2(FBBatch<float> in)
+template <class T>
+static inline T
+Cos2(T in)
 {
   auto cos1 = xsimd::cos(in * FBPi);
   return xsimd::cos(in * FBPi + cos1);
 }
 
-static inline FBBatch<float>
-SinCos(FBBatch<float> in)
+template <class T>
+static inline T
+SinCos(T in)
 {
   auto cos1 = xsimd::cos(in * FBPi);
   return xsimd::sin(in * FBPi + cos1);
 }
 
-static inline FBBatch<float>
-CosSin(FBBatch<float> in)
+template <class T>
+static inline T
+CosSin(T in)
 {
   auto sin1 = xsimd::sin(in * FBPi);
   return xsimd::cos(in * FBPi + sin1);
 }
 
-static inline FBBatch<float>
-Sin3(FBBatch<float> in)
+template <class T>
+static inline T
+Sin3(T in)
 {
   auto sin1 = xsimd::sin(in * FBPi);
   auto sin2 = xsimd::sin(in * FBPi + sin1);
   return xsimd::sin(in * FBPi + sin2);
 }
 
-static inline FBBatch<float>
-Cos3(FBBatch<float> in)
+template <class T>
+static inline T
+Cos3(T in)
 {
   auto cos1 = xsimd::cos(in * FBPi);
   auto cos2 = xsimd::cos(in * FBPi + cos1);
   return xsimd::cos(in * FBPi + cos2);
 }
 
-static inline FBBatch<float>
-Sn2Cs(FBBatch<float> in)
+template <class T>
+static inline T
+Sn2Cs(T in)
 {
   auto cos1 = xsimd::cos(in * FBPi);
   auto sin2 = xsimd::sin(in * FBPi + cos1);
   return xsimd::sin(in * FBPi + sin2);
 }
 
-static inline FBBatch<float>
-Cs2Sn(FBBatch<float> in)
+template <class T>
+static inline T
+Cs2Sn(T in)
 {
   auto sin1 = xsimd::sin(in * FBPi);
   auto cos2 = xsimd::cos(in * FBPi + sin1);
   return xsimd::cos(in * FBPi + cos2);
 }
 
-static inline FBBatch<float>
-SnCs2(FBBatch<float> in)
+template <class T>
+static inline T
+SnCs2(T in)
 {
   auto cos1 = xsimd::cos(in * FBPi);
   auto cos2 = xsimd::cos(in * FBPi + cos1);
   return xsimd::sin(in * FBPi + cos2);
 }
 
-static inline FBBatch<float>
-CsSn2(FBBatch<float> in)
+template <class T>
+static inline T
+CsSn2(T in)
 {
   auto sin1 = xsimd::sin(in * FBPi);
   auto sin2 = xsimd::sin(in * FBPi + sin1);
   return xsimd::cos(in * FBPi + sin2);
 }
 
-static inline FBBatch<float>
-SnCsSn(FBBatch<float> in)
+template <class T>
+static inline T
+SnCsSn(T in)
 {
   auto sin1 = xsimd::sin(in * FBPi);
   auto cos2 = xsimd::cos(in * FBPi + sin1);
   return xsimd::sin(in * FBPi + cos2);
 }
 
-static inline FBBatch<float>
-CsSnCs(FBBatch<float> in)
+template <class T>
+static inline T
+CsSnCs(T in)
 {
   auto cos1 = xsimd::cos(in * FBPi);
   auto sin2 = xsimd::sin(in * FBPi + cos1);
   return xsimd::cos(in * FBPi + sin2);
 }
 
-static inline FBBatch<float>
-FoldBack(FBBatch<float> in)
+static inline float
+FoldBack(float x)
 {
-  FBSArray<float, FBSIMDFloatCount> out;
-  out.Store(0, in);
-  for (int i = 0; i < FBSIMDFloatCount; i++)
+  x = xsimd::clip(x, -32.0f, 32.0f);
+  while (true)
   {
-    float x = std::clamp(out.Get(i), -32.0f, 32.0f);
-    while (true)
-    {
-      if (x > 1.0f) x -= 2.0f * (x - 1.0f);
-      else if (x < -1.0f) x += 2.0f * (-x - 1.0f);
-      else break;
-    }
-    out.Set(i, x);
+    if (x > 1.0f) x -= 2.0f * (x - 1.0f);
+    else if (x < -1.0f) x += 2.0f * (-x - 1.0f);
+    else break;
   }
-  return out.Load(0);
+  return x;
+}
+
+static inline FBBatch<float>
+FoldBack(FBBatch<float> x)
+{
+  FBSArray<float, FBSIMDFloatCount> y;
+  y.Store(0, x);
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+    y.Set(i, FoldBack(y.Get(i)));
+  return y.Load(0);
 }
 
 FFEffectProcessor::
@@ -211,25 +227,21 @@ FFEffectProcessor::ProcessStVarBuffer(
 template <class T>
 inline T 
 FFEffectProcessor::ProcessSkewSampleOrBatch(
-  int block, T in, 
-  T distAmtPlain, T distMixPlain, 
-  T distBiasPlain, T distDrivePlain)
+  int block, T in, T amt)
 {
   T exceed; 
   decltype(xsimd::lt(T(), T())) comp;
-
-  T shaped = (in + distBiasPlain) * distDrivePlain;
-  T sign = xsimd::sign(shaped);
-  T expo = xsimd::log(0.01f + distAmtPlain * 0.98f) * InvLogHalf;
+  T sign = xsimd::sign(in);
+  T expo = xsimd::log(0.01f + amt * 0.98f) * InvLogHalf;
   switch (_skewMode[block])
   {
   case FFEffectSkewMode::Bi:
-    return sign * xsimd::pow(xsimd::abs(shaped), expo);
+    return sign * xsimd::pow(xsimd::abs(in), expo);
   case FFEffectSkewMode::Uni:
-    comp = xsimd::lt(shaped, T(-1.0f));
-    comp = xsimd::bitwise_or(comp, xsimd::gt(shaped, T(1.0f)));
-    exceed = FBToBipolar(xsimd::pow(FBToUnipolar(shaped), expo));
-    return xsimd::select(comp, shaped, exceed);
+    comp = xsimd::lt(in, T(-1.0f));
+    comp = xsimd::bitwise_or(comp, xsimd::gt(in, T(1.0f)));
+    exceed = FBToBipolar(xsimd::pow(FBToUnipolar(in), expo));
+    return xsimd::select(comp, in, exceed);
   default:
     assert(false);
     return {};
@@ -256,7 +268,7 @@ FFEffectProcessor::ProcessSkewBuffer(
     {
       auto in = oversampled[c].Load(s);
       auto shaped = (in + bias) * drive;
-      shaped = ProcessSkewSampleOrBatch(block, shaped, amt, mix, bias, drive);
+      shaped = ProcessSkewSampleOrBatch(block, shaped, amt);
       auto mixed = (1.0f - mix) * in + mix * shaped;
       oversampled[c].Store(s, mixed);
     }
@@ -283,7 +295,7 @@ FFEffectProcessor::ProcessSkewSample(
     {
       auto in = oversampled[c].Get(s);
       auto shaped = (in + bias) * drive;
-      shaped = ProcessSkewSampleOrBatch(block, shaped, amt, mix, bias, drive);
+      shaped = ProcessSkewSampleOrBatch(block, shaped, amt);
       auto mixed = (1.0f - mix) * in + mix * shaped;
       oversampled[c].Set(s, mixed);
     }
@@ -293,9 +305,7 @@ FFEffectProcessor::ProcessSkewSample(
 template <class T>
 inline T 
 FFEffectProcessor::ProcessClipSampleOrBatch(
-  int block, T in, 
-  T distAmtPlain, T distMixPlain, 
-  T distBiasPlain, T distDrivePlain)
+  int block, T in, T amt)
 {
   T tsq;
   T sign;
@@ -335,13 +345,13 @@ FFEffectProcessor::ProcessClipSampleOrBatch(
     break;
   case FFEffectClipMode::Exp:
     sign = xsimd::sign(in);
-    comp1 = xsimd::gt(xsimd::abs(in), FBBatch<float>(2.0f / 3.0f));
-    exceed1 = sign * (1.0f - xsimd::pow(xsimd::abs(1.5f * in - sign), 0.1f + distAmtPlain * 9.9f));
+    comp1 = xsimd::gt(xsimd::abs(in), T(2.0f / 3.0f));
+    exceed1 = sign * (1.0f - xsimd::pow(xsimd::abs(1.5f * in - sign), 0.1f + amt * 9.9f));
     return xsimd::select(comp1, sign, exceed1);
     break;
   default:
     assert(false);
-    break;
+    return {};
   }
 }
 
@@ -354,13 +364,6 @@ FFEffectProcessor::ProcessClipBuffer(
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
 {
-  FBBatch<float> tsqBatch;
-  FBBatch<float> signBatch;
-  FBBatch<float> exceedBatch1;
-  FBBatch<float> exceedBatch2;
-  FBBoolBatch<float> compBatch1;
-  FBBoolBatch<float> compBatch2;
-
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
   {
@@ -372,10 +375,63 @@ FFEffectProcessor::ProcessClipBuffer(
     {
       auto in = oversampled[c].Load(s);
       auto shaped = (in + bias) * drive;
-      shaped = ProcessClipSampleOrBatch(block, shaped, amt, mix, bias, drive);
+      shaped = ProcessClipSampleOrBatch(block, shaped, amt);
       auto mixed = (1.0f - mix) * in + mix * shaped;
       oversampled[c].Store(s, mixed);
     }
+  }
+}
+
+void
+FFEffectProcessor::ProcessClipSample(
+  int block,
+  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+{
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    auto mix = distMixPlain[block].Get(s);
+    auto amt = distAmtPlain[block].Get(s);
+    auto bias = distBiasPlain[block].Get(s);
+    auto drive = distDrivePlain[block].Get(s);
+    for (int c = 0; c < 2; c++)
+    {
+      auto in = oversampled[c].Get(s);
+      auto shaped = (in + bias) * drive;
+      shaped = ProcessClipSampleOrBatch(block, shaped, amt);
+      auto mixed = (1.0f - mix) * in + mix * shaped;
+      oversampled[c].Set(s, mixed);
+    }
+  }
+}
+
+template <class T>
+inline T 
+FFEffectProcessor::ProcessFoldSampleOrBatch(
+  int block, T in)
+{
+  switch (_foldMode[block])
+  {
+  case FFEffectFoldMode::Fold: return FoldBack(in); break;
+  case FFEffectFoldMode::Sin: return xsimd::sin(in * FBPi); break;
+  case FFEffectFoldMode::Cos: return xsimd::cos(in * FBPi); break;
+  case FFEffectFoldMode::Sin2: return Sin2(in); break;
+  case FFEffectFoldMode::Cos2: return Cos2(in); break;
+  case FFEffectFoldMode::SinCos: return SinCos(in); break;
+  case FFEffectFoldMode::CosSin: return CosSin(in); break;
+  case FFEffectFoldMode::Sin3: return Sin3(in); break;
+  case FFEffectFoldMode::Cos3: return Cos3(in); break;
+  case FFEffectFoldMode::Sn2Cs: return Sn2Cs(in); break;
+  case FFEffectFoldMode::Cs2Sn: return Cs2Sn(in); break;
+  case FFEffectFoldMode::SnCs2: return SnCs2(in); break;
+  case FFEffectFoldMode::CsSn2: return CsSn2(in); break;
+  case FFEffectFoldMode::SnCsSn: return SnCsSn(in); break;
+  case FFEffectFoldMode::CsSnCs: return CsSnCs(in); break;
+  default: assert(false); return {};
   }
 }
 
@@ -396,29 +452,37 @@ FFEffectProcessor::ProcessFoldBuffer(
     auto drive = distDrivePlain[block].Load(s);
     for (int c = 0; c < 2; c++)
     { 
-      auto inBatch = oversampled[c].Load(s);
-      auto shapedBatch = (inBatch + bias) * drive;
-      switch (_foldMode[block])
-      {
-      case FFEffectFoldMode::Fold: shapedBatch = FoldBack(shapedBatch); break;
-      case FFEffectFoldMode::Sin: shapedBatch = xsimd::sin(shapedBatch * FBPi); break;
-      case FFEffectFoldMode::Cos: shapedBatch = xsimd::cos(shapedBatch * FBPi); break;
-      case FFEffectFoldMode::Sin2: shapedBatch = Sin2(shapedBatch); break;
-      case FFEffectFoldMode::Cos2: shapedBatch = Cos2(shapedBatch); break;
-      case FFEffectFoldMode::SinCos: shapedBatch = SinCos(shapedBatch); break;
-      case FFEffectFoldMode::CosSin: shapedBatch = CosSin(shapedBatch); break;
-      case FFEffectFoldMode::Sin3: shapedBatch = Sin3(shapedBatch); break;
-      case FFEffectFoldMode::Cos3: shapedBatch = Cos3(shapedBatch); break;
-      case FFEffectFoldMode::Sn2Cs: shapedBatch = Sn2Cs(shapedBatch); break;
-      case FFEffectFoldMode::Cs2Sn: shapedBatch = Cs2Sn(shapedBatch); break;
-      case FFEffectFoldMode::SnCs2: shapedBatch = SnCs2(shapedBatch); break;
-      case FFEffectFoldMode::CsSn2: shapedBatch = CsSn2(shapedBatch); break;
-      case FFEffectFoldMode::SnCsSn: shapedBatch = SnCsSn(shapedBatch); break;
-      case FFEffectFoldMode::CsSnCs: shapedBatch = CsSnCs(shapedBatch); break;
-      default: assert(false); break;
-      }
-      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
-      oversampled[c].Store(s, mixedBatch);
+      auto in = oversampled[c].Load(s);
+      auto shaped = (in + bias) * drive;
+      shaped = ProcessFoldSampleOrBatch(block, shaped);
+      auto mixed = (1.0f - mix) * in + mix * shaped;
+      oversampled[c].Store(s, mixed);
+    }
+  }
+}
+
+void
+FFEffectProcessor::ProcessFoldSample(
+  int block,
+  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+{
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s ++)
+  {
+    auto mix = distMixPlain[block].Get(s);
+    auto bias = distBiasPlain[block].Get(s);
+    auto drive = distDrivePlain[block].Get(s);
+    for (int c = 0; c < 2; c++)
+    {
+      auto in = oversampled[c].Get(s);
+      auto shaped = (in + bias) * drive;
+      shaped = ProcessFoldSampleOrBatch(block, shaped);
+      auto mixed = (1.0f - mix) * in + mix * shaped;
+      oversampled[c].Set(s, mixed);
     }
   }
 }
