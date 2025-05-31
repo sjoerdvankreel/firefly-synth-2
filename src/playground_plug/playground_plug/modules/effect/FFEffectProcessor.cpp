@@ -278,6 +278,23 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
           oversampled[c].Store(s, mixedBatch);
         }
+      else if(_kind[i] == FFEffectKind::Fold)
+        for (int c = 0; c < 2; c++)
+        {
+          auto mix = distMixPlain[i].Load(s);
+          auto bias = distBiasPlain[i].Load(s);
+          auto drive = distDrivePlain[i].Load(s);
+          auto inBatch = oversampled[c].Load(s);
+          auto shapedBatch = (inBatch + bias) * drive;
+          switch (_foldMode[i])
+          {
+          case FFEffectFoldMode::Sin:
+            shapedBatch = xsimd::sin(shapedBatch * FBPi);
+            break;
+          }
+          auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
+          oversampled[c].Store(s, mixedBatch);
+        }
 
   if(_oversampleTimes == 1)
     for (int c = 0; c < 2; c++)
