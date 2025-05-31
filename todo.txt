@@ -1,3 +1,4 @@
+make it see what the voice are doing for fx
 ktrk center note
 comb filter with delay line
 total graph for all fx blocks
