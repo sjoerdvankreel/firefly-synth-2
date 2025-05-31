@@ -22,6 +22,7 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 1 });
+
   auto upper = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0 });
   auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Type, 0 });
   upper->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
@@ -29,11 +30,16 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto feedback = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Feedback, 0 });
   upper->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedback, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 0, upper);
-  auto lower = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+
+  auto lower = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1 });
   auto oversample = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Oversample, 0 });
   lower->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversample));
   lower->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversample));
+  auto trackingKey = topo->audio.ParamAtTopo({ (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::TrackingKey, 0 });
+  lower->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oversample));
+  lower->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingKey, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(1, 0, lower);
+
   grid->MarkSection({ 0, 0, 2, 1 });
   return grid;
 }

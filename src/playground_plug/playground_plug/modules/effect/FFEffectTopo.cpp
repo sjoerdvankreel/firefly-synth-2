@@ -63,6 +63,23 @@ FFMakeEffectTopo()
   oversample.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOversample);
   oversample.dependencies.enabled.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& trackingKey = result->params[(int)FFEffectParam::TrackingKey];
+  trackingKey.acc = true;
+  trackingKey.defaultText = "0";
+  trackingKey.name = "Tracking Key";
+  trackingKey.display = "Key";
+  trackingKey.slotCount = 1;
+  trackingKey.unit = "Semitones";
+  trackingKey.id = "{409B79DA-5F59-4C54-AA3D-3E7E84B1A303}";
+  trackingKey.type = FBParamType::Linear;
+  trackingKey.Linear().min = -64.0f;
+  trackingKey.Linear().max = 64.0f;
+  auto selectTrackingKey = [](auto& module) { return &module.acc.trackingKey; };
+  trackingKey.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTrackingKey);
+  trackingKey.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectTrackingKey);
+  trackingKey.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTrackingKey);
+  trackingKey.dependencies.enabled.audio.When({ (int)FFEffectParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& kind = result->params[(int)FFEffectParam::Kind];
   kind.acc = false;
   kind.name = "Kind";

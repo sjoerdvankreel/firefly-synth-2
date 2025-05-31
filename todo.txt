@@ -1,3 +1,5 @@
+ktrk center note
+total graph for all fx blocks
 do actual frequency response plot without explicit fft if possible?
 should a voice receive events after its released (but still playing)?
 dc correct the shaper bias ?

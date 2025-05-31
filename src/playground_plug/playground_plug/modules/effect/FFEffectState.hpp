@@ -47,6 +47,7 @@ class alignas(alignof(TVoiceAcc)) FFEffectAccParamState final
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
   std::array<TVoiceAcc, 1> feedback = {};
+  std::array<TVoiceAcc, 1> trackingKey = {};
   std::array<TVoiceAcc, FFEffectBlockCount> distMix = {};
   std::array<TVoiceAcc, FFEffectBlockCount> distAmt = {};
   std::array<TVoiceAcc, FFEffectBlockCount> distBias = {};
