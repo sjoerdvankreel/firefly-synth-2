@@ -14,10 +14,6 @@
 
 using namespace juce::dsp;
 
-static int constexpr EffectOversampleFactor = 2;
-static int constexpr EffectOversampleTimes = 1 << EffectOversampleFactor;
-static int constexpr EffectFixedBlockOversamples = FBFixedBlockSamples * EffectOversampleTimes;
-
 static inline FBBatch<float>
 FoldBack(FBBatch<float> in)
 {
@@ -74,6 +70,136 @@ FFEffectProcessor::BeginVoice(int graphIndex, FBModuleProcState& state)
     _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(FFEffectParam::SkewMode, skewModeNorm[i].Voice()[voice]);
     _stVarMode[i] = topo.NormalizedToListFast<FBCytomicFilterMode>(FFEffectParam::StVarMode, stVarModeNorm[i].Voice()[voice]);
   }
+}
+
+void 
+FFEffectProcessor::ProcessSkew(
+  int block,
+  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+{
+  auto invLogHalf = 1.0f / std::log(0.5f);
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+  {
+    auto mix = distMixPlain[block].Load(s);
+    auto bias = distBiasPlain[block].Load(s);
+    auto drive = distDrivePlain[block].Load(s);
+    for (int c = 0; c < 2; c++)
+    {
+      auto inBatch = oversampled[c].Load(s);
+      auto shapedBatch = (inBatch + bias) * drive;
+      auto signBatch = xsimd::sign(shapedBatch);
+      auto expoBatch = xsimd::log(0.01f + distAmtPlain[block].Load(s) * 0.98f) * invLogHalf;
+      switch (_skewMode[block])
+      {
+      case FFEffectSkewMode::Bi:
+        shapedBatch = signBatch * xsimd::pow(xsimd::abs(shapedBatch), expoBatch);
+        break;
+      case FFEffectSkewMode::Uni:
+        auto compBatch = xsimd::lt(shapedBatch, FBBatch<float>(-1.0f));
+        compBatch = xsimd::bitwise_or(compBatch, xsimd::gt(shapedBatch, FBBatch<float>(1.0f)));
+        auto exceedBatch = FBToBipolar(xsimd::pow(FBToUnipolar(shapedBatch), expoBatch));
+        shapedBatch = xsimd::select(compBatch, shapedBatch, exceedBatch);
+        break;
+      default:
+        assert(false);
+        break;
+      }
+      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
+      oversampled[c].Store(s, mixedBatch);
+    }
+  }
+}
+
+void 
+FFEffectProcessor::ProcessClip(
+  int block,
+  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+{
+  FBBatch<float> tsqBatch;
+  FBBatch<float> signBatch;
+  FBBatch<float> exceedBatch1;
+  FBBatch<float> exceedBatch2;
+  FBBoolBatch<float> compBatch1;
+  FBBoolBatch<float> compBatch2;
+
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+  {
+    auto mix = distMixPlain[block].Load(s);
+    auto bias = distBiasPlain[block].Load(s);
+    auto drive = distDrivePlain[block].Load(s);
+    for (int c = 0; c < 2; c++)
+    {
+      auto inBatch = oversampled[c].Load(s);
+      auto shapedBatch = (inBatch + bias) * drive;
+      switch (_clipMode[block])
+      {
+      case FFEffectClipMode::TanH:
+        shapedBatch = xsimd::tanh(shapedBatch);
+        break;
+      case FFEffectClipMode::Hard:
+        shapedBatch = xsimd::clip(shapedBatch, FBBatch<float>(-1.0f), FBBatch<float>(1.0f));
+        break;
+      case FFEffectClipMode::Inv:
+        shapedBatch = xsimd::sign(shapedBatch) * (1.0f - (1.0f / (1.0f + xsimd::abs(30.0f * shapedBatch))));
+        break;
+      case FFEffectClipMode::Sin:
+        signBatch = xsimd::sign(shapedBatch);
+        exceedBatch1 = xsimd::sin((shapedBatch * 3.0f * FBPi) / 4.0f);
+        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
+        break;
+      case FFEffectClipMode::Cube:
+        signBatch = xsimd::sign(shapedBatch);
+        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+        exceedBatch1= (9.0f * shapedBatch * 0.25f) - (27.0f * shapedBatch * shapedBatch * shapedBatch / 16.0f);
+        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
+        break;
+      case FFEffectClipMode::TSQ:
+        signBatch = xsimd::sign(shapedBatch);
+        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+        compBatch2 = xsimd::lt(FBBatch<float>(-1.0f / 3.0f), shapedBatch);
+        compBatch2 = xsimd::bitwise_and(compBatch2, xsimd::lt(shapedBatch, FBBatch<float>(1.0f / 3.0f)));
+        exceedBatch1 = 2.0f * shapedBatch;
+        exceedBatch2 = 2.0f - xsimd::abs(3.0f * shapedBatch);
+        tsqBatch = signBatch * (3.0f - exceedBatch2 * exceedBatch2) / 3.0f;
+        shapedBatch = xsimd::select(compBatch1, signBatch, xsimd::select(compBatch2, exceedBatch1, tsqBatch));
+        break;
+      case FFEffectClipMode::Exp:
+        signBatch = xsimd::sign(shapedBatch);
+        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+        exceedBatch1 = signBatch * (1.0f - xsimd::pow(xsimd::abs(1.5f * shapedBatch - signBatch), 0.1f + distAmtPlain[block].Load(s) * 9.9f));
+        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
+        break;
+      default:
+        assert(false);
+        break;
+      }
+      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
+      oversampled[c].Store(s, mixedBatch);
+    }
+  }
+}
+
+void 
+FFEffectProcessor::ProcessFold(
+  int block,
+  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+{
+
 }
 
 void
@@ -202,6 +328,21 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       for (int s = 0; s < EffectFixedBlockOversamples; s++)
         oversampled[c].Set(s, oversampledBlock.getSample(c, s));
   }
+
+  for(int i = 0; i < FFEffectBlockCount; i++)
+    switch (_kind[i])
+    {
+    case FFEffectKind::Clip:
+      ProcessClip(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
+      break;
+    case FFEffectKind::Skew:
+      ProcessSkew(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
+      break;
+    default:
+      break;
+    }
+
+#if 0
 
   FBBatch<float> tsqBatch;
   FBBatch<float> signBatch;
@@ -359,6 +500,8 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
           oversampled[c].Store(s, mixedBatch);
         }
+
+#endif
 
   if(_oversampleTimes == 1)
     for (int c = 0; c < 2; c++)

@@ -10,6 +10,10 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+inline int constexpr EffectOversampleFactor = 2;
+inline int constexpr EffectOversampleTimes = 1 << EffectOversampleFactor;
+inline int constexpr EffectFixedBlockOversamples = FBFixedBlockSamples * EffectOversampleTimes;
+
 class FFEffectProcessor final
 {
   FFEffectType _type = {};
@@ -21,6 +25,28 @@ class FFEffectProcessor final
   std::array<FBCytomicFilterMode, FFEffectBlockCount> _stVarMode = {};
 
   juce::dsp::Oversampling<float> _oversampler;
+  
+  void ProcessSkew(
+    int block,
+    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+  void ProcessClip(
+    int block,
+    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+  void ProcessFold(
+    int block,
+    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
 
 public:
   FFEffectProcessor();
