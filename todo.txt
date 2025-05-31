@@ -1,3 +1,4 @@
+filter freq oversampling
 ktrk center note
 comb filter with delay line
 total graph for all fx blocks

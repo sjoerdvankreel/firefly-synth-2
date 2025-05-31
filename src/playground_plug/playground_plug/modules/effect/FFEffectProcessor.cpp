@@ -168,6 +168,7 @@ FFEffectProcessor::BeginVoice(int graphIndex, FBModuleProcState& state)
   auto const& typeNorm = params.block.type[0].Voice()[voice];
   auto const& oversampleNorm = params.block.oversample[0].Voice()[voice];
 
+  _feedbackSample = {};
   _key = static_cast<float>(state.voice->event.note.key);
   _type = topo.NormalizedToListFast<FFEffectType>(FFEffectParam::Type, typeNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
@@ -186,7 +187,7 @@ FFEffectProcessor::BeginVoice(int graphIndex, FBModuleProcState& state)
 
 void
 FFEffectProcessor::ProcessStVarSample(
-  int block, float sampleRate, int sample,
+  int block, float oversampledRate, int sample,
   FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
   FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
@@ -201,14 +202,14 @@ FFEffectProcessor::ProcessStVarSample(
   auto ktrk = stVarKeyTrkPlain[block].Get(sample);
   freq *= std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
   freq = std::clamp(freq, 20.0f, 20000.0f);
-  _stVarFilters[block].Set(_stVarMode[block], sampleRate, freq, res, gain);
+  _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);
   for (int c = 0; c < 2; c++)
     oversampled[c].Set(sample, _stVarFilters[block].Next(c, oversampled[c].Get(sample)));
 }
 
 void 
 FFEffectProcessor::ProcessStVarBuffer(
-  int block, float sampleRate,
+  int block, float oversampledRate,
   FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
   FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
@@ -219,7 +220,7 @@ FFEffectProcessor::ProcessStVarBuffer(
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s++)
     ProcessStVarSample(
-      block, sampleRate, s, 
+      block, oversampledRate, s,
       oversampled, trackingKeyPlain, 
       stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
 }
@@ -277,28 +278,24 @@ FFEffectProcessor::ProcessSkewBuffer(
 
 void
 FFEffectProcessor::ProcessSkewSample(
-  int block,
+  int block, int sample,
   FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
 {
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s ++)
+  auto mix = distMixPlain[block].Get(sample);
+  auto amt = distAmtPlain[block].Get(sample);
+  auto bias = distBiasPlain[block].Get(sample);
+  auto drive = distDrivePlain[block].Get(sample);
+  for (int c = 0; c < 2; c++)
   {
-    auto mix = distMixPlain[block].Get(s);
-    auto amt = distAmtPlain[block].Get(s);
-    auto bias = distBiasPlain[block].Get(s);
-    auto drive = distDrivePlain[block].Get(s);
-    for (int c = 0; c < 2; c++)
-    {
-      auto in = oversampled[c].Get(s);
-      auto shaped = (in + bias) * drive;
-      shaped = ProcessSkewSampleOrBatch(block, shaped, amt);
-      auto mixed = (1.0f - mix) * in + mix * shaped;
-      oversampled[c].Set(s, mixed);
-    }
+    auto in = oversampled[c].Get(sample);
+    auto shaped = (in + bias) * drive;
+    shaped = ProcessSkewSampleOrBatch(block, shaped, amt);
+    auto mixed = (1.0f - mix) * in + mix * shaped;
+    oversampled[c].Set(sample, mixed);
   }
 }
 
@@ -384,28 +381,24 @@ FFEffectProcessor::ProcessClipBuffer(
 
 void
 FFEffectProcessor::ProcessClipSample(
-  int block,
+  int block, int sample,
   FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
 {
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s++)
+  auto mix = distMixPlain[block].Get(sample);
+  auto amt = distAmtPlain[block].Get(sample);
+  auto bias = distBiasPlain[block].Get(sample);
+  auto drive = distDrivePlain[block].Get(sample);
+  for (int c = 0; c < 2; c++)
   {
-    auto mix = distMixPlain[block].Get(s);
-    auto amt = distAmtPlain[block].Get(s);
-    auto bias = distBiasPlain[block].Get(s);
-    auto drive = distDrivePlain[block].Get(s);
-    for (int c = 0; c < 2; c++)
-    {
-      auto in = oversampled[c].Get(s);
-      auto shaped = (in + bias) * drive;
-      shaped = ProcessClipSampleOrBatch(block, shaped, amt);
-      auto mixed = (1.0f - mix) * in + mix * shaped;
-      oversampled[c].Set(s, mixed);
-    }
+    auto in = oversampled[c].Get(sample);
+    auto shaped = (in + bias) * drive;
+    shaped = ProcessClipSampleOrBatch(block, shaped, amt);
+    auto mixed = (1.0f - mix) * in + mix * shaped;
+    oversampled[c].Set(sample, mixed);
   }
 }
 
@@ -463,27 +456,23 @@ FFEffectProcessor::ProcessFoldBuffer(
 
 void
 FFEffectProcessor::ProcessFoldSample(
-  int block,
+  int block, int sample,
   FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
 {
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s ++)
+  auto mix = distMixPlain[block].Get(sample);
+  auto bias = distBiasPlain[block].Get(sample);
+  auto drive = distDrivePlain[block].Get(sample);
+  for (int c = 0; c < 2; c++)
   {
-    auto mix = distMixPlain[block].Get(s);
-    auto bias = distBiasPlain[block].Get(s);
-    auto drive = distDrivePlain[block].Get(s);
-    for (int c = 0; c < 2; c++)
-    {
-      auto in = oversampled[c].Get(s);
-      auto shaped = (in + bias) * drive;
-      shaped = ProcessFoldSampleOrBatch(block, shaped);
-      auto mixed = (1.0f - mix) * in + mix * shaped;
-      oversampled[c].Set(s, mixed);
-    }
+    auto in = oversampled[c].Get(sample);
+    auto shaped = (in + bias) * drive;
+    shaped = ProcessFoldSampleOrBatch(block, shaped);
+    auto mixed = (1.0f - mix) * in + mix * shaped;
+    oversampled[c].Set(sample, mixed);
   }
 }
 
@@ -619,6 +608,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         oversampled[c].Set(s, oversampledBlock.getSample(c, s));
   }
 
+  float oversampledRate = sampleRate * _oversampleTimes;
   if(_type == FFEffectType::On)
     for(int i = 0; i < FFEffectBlockCount; i++)
       switch (_kind[i])
@@ -633,30 +623,41 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         ProcessSkewBuffer(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
         break;
       case FFEffectKind::StVar:
-        ProcessStVarBuffer(i, sampleRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
+        ProcessStVarBuffer(i, oversampledRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
         break;
       default:
         break;
       }
   else
-    for (int i = 0; i < FFEffectBlockCount; i++)
-      switch (_kind[i])
-      {
-      case FFEffectKind::Clip:
-        ProcessClipSample(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
-        break;
-      case FFEffectKind::Fold:
-        ProcessFoldSample(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
-        break;
-      case FFEffectKind::Skew:
-        ProcessSkewSample(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
-        break;
-      case FFEffectKind::StVar:
-        ProcessStVarBuffer(i, sampleRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
-        break;
-      default:
-        break;
-      }
+  {
+    int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+    for (int s = 0; s < totalSamples; s++)
+    {
+      float feedback = feedbackPlain.Get(s);
+      for (int c = 0; c < 2; c++)
+        oversampled[c].Set(s, oversampled[c].Get(s) + feedback * _feedbackSample[c]);
+      for (int i = 0; i < FFEffectBlockCount; i++)
+        switch (_kind[i])
+        {
+        case FFEffectKind::Clip:
+          ProcessClipSample(i, s, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
+          break;
+        case FFEffectKind::Fold:
+          ProcessFoldSample(i, s, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
+          break;
+        case FFEffectKind::Skew:
+          ProcessSkewSample(i, s, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
+          break;
+        case FFEffectKind::StVar:
+          ProcessStVarSample(i, oversampledRate, s, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
+          break;
+        default:
+          break;
+        }
+      for (int c = 0; c < 2; c++)
+        _feedbackSample[c] = oversampled[c].Get(s);
+    }
+  }
 
   if(_oversampleTimes == 1)
     for (int c = 0; c < 2; c++)
