@@ -25,7 +25,15 @@ class FFEffectProcessor final
   std::array<FBCytomicFilterMode, FFEffectBlockCount> _stVarMode = {};
 
   juce::dsp::Oversampling<float> _oversampler;
-  
+  std::array<FBCytomicFilter<2>, FFEffectBlockCount> _stVarFilters = {};
+
+  void ProcessStVar(
+    int block, float sampleRate,
+    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain);
   void ProcessSkew(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
