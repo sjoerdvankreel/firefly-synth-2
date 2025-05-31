@@ -29,7 +29,7 @@ class FFEffectProcessor final
   std::array<FBCytomicFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
   void ProcessStVar(
-    int block, float sampleRate,
+    int block, float oversampledRate,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
     FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,

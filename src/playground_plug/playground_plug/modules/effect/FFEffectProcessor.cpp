@@ -168,7 +168,7 @@ FFEffectProcessor::BeginVoice(int graphIndex, FBModuleProcState& state)
 
 void 
 FFEffectProcessor::ProcessStVar(
-  int block, float sampleRate,
+  int block, float oversampledRate,
   FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
   FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
   FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
@@ -184,9 +184,9 @@ FFEffectProcessor::ProcessStVar(
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq *= std::pow(2.0, (_key - 60.0f + trkk) / 12.0f * ktrk);
+    freq *= std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
     freq = std::clamp(freq, 20.0f, 20000.0f);
-    _stVarFilters[block].Set(_stVarMode[block], sampleRate, freq, res, gain);
+    _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);
     for(int c = 0; c < 2; c++)
       oversampled[c].Set(s, _stVarFilters[block].Next(c, oversampled[c].Get(s)));
   }
@@ -486,6 +486,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         oversampled[c].Set(s, oversampledBlock.getSample(c, s));
   }
 
+  float oversampledRate = _oversampleTimes * sampleRate;
   for(int i = 0; i < FFEffectBlockCount; i++)
     switch (_kind[i])
     {
@@ -499,7 +500,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       ProcessSkew(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
       break;
     case FFEffectKind::StVar:
-      ProcessStVar(i, sampleRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
+      ProcessStVar(i, oversampledRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
       break;
     default:
       break;
