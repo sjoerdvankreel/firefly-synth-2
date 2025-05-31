@@ -232,6 +232,7 @@ FFEffectProcessor::ProcessFold(
       case FFEffectFoldMode::CosSin:
         shapedBatch = xsimd::cos(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi));
         break;
+#if 0
       case FFEffectFoldMode::Sin3:
         shapedBatch = xsimd::sin(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi)));
         break;
@@ -256,6 +257,7 @@ FFEffectProcessor::ProcessFold(
       case FFEffectFoldMode::CsSnCs:
         shapedBatch = xsimd::cos(shapedBatch * FBPi + xsimd::sin(shapedBatch * FBPi + xsimd::cos(shapedBatch * FBPi)));
         break;
+#endif
       default:
         assert(false);
         break;
