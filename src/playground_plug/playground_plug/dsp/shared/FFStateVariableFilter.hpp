@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
@@ -64,7 +65,7 @@ FFStateVariableFilter<Channels>::Set(
   freqHz = std::clamp(freqHz, 0.0, sampleRate * 0.5f);
 
   double a;
-  double k = 2.0 - 2.0 * resNorm;
+  double k = 2.0 - 2.0 * resNorm * FFMaxFilterRes;
   double g = std::tan(std::numbers::pi * freqHz / sampleRate);
 
   if (mode >= FFStateVariableFilterMode::BLL)

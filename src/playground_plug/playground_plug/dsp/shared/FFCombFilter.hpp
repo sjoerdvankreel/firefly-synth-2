@@ -78,8 +78,8 @@ FFCombFilter<Channels>::Set(
   float freqMin, float resMin)
 {
   // need for graphs
-  _resMin = resMin;
-  _resPlus = resPlus;
+  _resMin = resMin * FFMaxFilterRes;
+  _resPlus = resPlus * FFMaxFilterRes;
   freqMin = std::clamp(freqMin, 0.0f, sampleRate * 0.5f);
   freqPlus = std::clamp(freqPlus, 0.0f, sampleRate * 0.5f);
   for (int c = 0; c < Channels; c++)

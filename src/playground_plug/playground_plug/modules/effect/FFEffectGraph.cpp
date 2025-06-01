@@ -43,20 +43,6 @@ EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
   return processor;
 }
 
-void
-EffectGraphRenderData::DoPostProcess(
-  FBGraphRenderState* state, int graphIndex,
-  bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
-{
-  auto nextPow2 = std::bit_ceil(points.l.size());
-  int order = std::bit_width(nextPow2) - 1;
-  // todo reuse
-  juce::dsp::FFT fft(order);
-  points.l.resize(nextPow2 * 2);
-  fft.performFrequencyOnlyForwardTransform(points.l.data(), true);
-  points.l.resize(points.l.size() / 4);
-}
-
 void 
 EffectGraphRenderData::DoBeginVoice(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
@@ -64,6 +50,44 @@ EffectGraphRenderData::DoBeginVoice(
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
   GetProcessor(*moduleProcState).BeginVoice(true, graphIndex, totalSamples, *moduleProcState);
+}
+
+void
+EffectGraphRenderData::DoPostProcess(
+  FBGraphRenderState* state, int graphIndex,
+  bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+{
+  if (graphIndex == FFEffectBlockCount)
+    return;
+
+  auto* moduleProcState = state->ModuleProcState();
+  int moduleSlot = moduleProcState->moduleSlot;
+  FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
+  auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
+  if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb)
+    return;
+
+  auto nextPow2 = std::bit_ceil(points.l.size());
+  int order = std::bit_width(nextPow2) - 1;
+  // todo reuse
+  juce::dsp::FFT fft(order);
+  points.l.resize(nextPow2 * 2);
+  fft.performFrequencyOnlyForwardTransform(points.l.data(), true);
+  points.l.resize(points.l.size() / 4);
+
+  float min = 0.0f;
+  float max = 1.0f;
+  for (int i = 0; i < points.l.size(); i++)
+  {
+    min = std::min(min, points.l[i]);
+    max = std::max(max, points.l[i]);
+  }
+
+  for (int i = 0; i < points.l.size(); i++)
+  {
+    points.l[i] = FBToBipolar(points.l[i] / (max - min) - min);
+    assert(-1.01f <= points.l[i] && points.l[i] <= 1.01f);
+  }
 }
 
 int 
