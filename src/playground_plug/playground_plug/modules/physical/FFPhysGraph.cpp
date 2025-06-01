@@ -13,20 +13,22 @@ struct PhysGraphRenderData final :
 public FBModuleGraphRenderData<PhysGraphRenderData>
 {
   FFPhysProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, int graphIndex);
-  void DoBeginVoice(FBGraphRenderState* state, int graphIndex);
-  void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
+  int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
 int 
-PhysGraphRenderData::DoProcess(FBGraphRenderState* state, int graphIndex) 
+PhysGraphRenderData::DoProcess(
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
   return GetProcessor(*moduleProcState).Process(*moduleProcState);
 }
 
 void 
-PhysGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex) 
+PhysGraphRenderData::DoBeginVoice(
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
   GetProcessor(*moduleProcState).BeginVoice(true, *moduleProcState);

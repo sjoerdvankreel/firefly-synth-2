@@ -16,9 +16,9 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
   std::array<int, FFEffectBlockCount> samplesProcessed = {};
 
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, int graphIndex);
-  void DoBeginVoice(FBGraphRenderState* state, int graphIndex);
-  void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
+  int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
 FFEffectProcessor&
@@ -29,7 +29,8 @@ EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
 }
 
 void 
-EffectGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex)
+EffectGraphRenderData::DoBeginVoice(
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
@@ -37,11 +38,14 @@ EffectGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex)
 }
 
 int 
-EffectGraphRenderData::DoProcess(FBGraphRenderState* state, int graphIndex)
+EffectGraphRenderData::DoProcess(
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
+  int moduleSlot = moduleProcState->moduleSlot;
   auto* procState = moduleProcState->ProcAs<FFProcState>(); 
   auto& input = procState->dsp.voice[moduleProcState->voice->slot].effect[moduleProcState->moduleSlot].input;
+  //auto kind = state->AudioParamList<FFEffectKind>({ (int)FFModuleType::Effect, moduleSlot, (int)FFEnvParam::Type, 0 }, exchange, exchangeVoice);
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);

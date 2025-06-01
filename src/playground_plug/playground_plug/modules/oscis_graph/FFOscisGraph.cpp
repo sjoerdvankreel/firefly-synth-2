@@ -13,10 +13,10 @@
 struct OscisGraphRenderData final:
 public FBModuleGraphRenderData<OscisGraphRenderData>
 {
-  int DoProcess(FBGraphRenderState* state, int graphIndex);
-  void DoBeginVoice(FBGraphRenderState* state, int graphIndex);
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
-  void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
+  int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
 FFVoiceDSPState&
@@ -25,9 +25,9 @@ OscisGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
   return state.ProcAs<FFProcState>()->dsp.voice[state.voice->slot];
 }
 
-// TODO graph index IS the osci index -- can we process only 1?
 void
-OscisGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex)
+OscisGraphRenderData::DoBeginVoice(
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
   int osciSlot = moduleProcState->moduleSlot;
@@ -43,7 +43,8 @@ OscisGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex)
 }
 
 int 
-OscisGraphRenderData::DoProcess(FBGraphRenderState* state, int graphIndex)
+OscisGraphRenderData::DoProcess(
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   int result = 0;
   auto* moduleProcState = state->ModuleProcState();

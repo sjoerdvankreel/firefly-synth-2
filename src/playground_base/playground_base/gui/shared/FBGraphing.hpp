@@ -53,11 +53,14 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceStereoOutputSelector voiceStereoOutputSelector = {};
   FBModuleGraphGlobalStereoOutputSelector globalStereoOutputSelector = {};
 
-  void Reset(FBGraphRenderState* state, int graphIndex) { static_cast<Derived*>(this)->DoReset(state, graphIndex); }
-  int Process(FBGraphRenderState* state, int graphIndex) { return static_cast<Derived*>(this)->DoProcess(state, graphIndex); }
-  void BeginVoice(FBGraphRenderState* state, int graphIndex) { static_cast<Derived*>(this)->DoBeginVoice(state, graphIndex); }
-  void ProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points)
-  { return static_cast<Derived*>(this)->DoProcessIndicators(exchange, exchangeVoice, graphIndex, points); }
+  void Reset(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
+  { static_cast<Derived*>(this)->DoReset(state, graphIndex, exchange, exchangeVoice); }
+  int Process(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
+  { return static_cast<Derived*>(this)->DoProcess(state, graphIndex, exchange, exchangeVoice); }
+  void BeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
+  { static_cast<Derived*>(this)->DoBeginVoice(state, graphIndex, exchange, exchangeVoice); }
+  void ProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+  { return static_cast<Derived*>(this)->DoProcessIndicators(graphIndex, exchange, exchangeVoice, points); }
 };
 
 template <bool Global, bool Stereo, class Derived> 
@@ -81,13 +84,13 @@ FBRenderModuleGraphSeries(
   moduleProcState->input->note->clear();
 
   if constexpr (Global)
-    renderData.Reset(renderState, graphIndex);
+    renderData.Reset(renderState, graphIndex, exchange, exchangeVoice);
   else
-    renderData.BeginVoice(renderState, graphIndex);
+    renderData.BeginVoice(renderState, graphIndex, exchange, exchangeVoice);
 
   while (processed == FBFixedBlockSamples)
   {
-    processed = renderData.Process(renderState, graphIndex);
+    processed = renderData.Process(renderState, graphIndex, exchange, exchangeVoice);
     if constexpr (Global)
     {
       if constexpr(Stereo)
@@ -129,7 +132,7 @@ FBRenderModuleGraphSeries(
     }
   }
 
-  renderData.ProcessIndicators(exchange, exchangeVoice, graphIndex, seriesOut);
+  renderData.ProcessIndicators(graphIndex, exchange, exchangeVoice, seriesOut);
 }
 
 template <bool Global, bool Stereo, class Derived>

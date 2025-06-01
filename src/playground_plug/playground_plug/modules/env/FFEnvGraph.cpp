@@ -13,9 +13,9 @@ struct EnvGraphRenderData final:
 public FBModuleGraphRenderData<EnvGraphRenderData>
 {
   FFEnvProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBGraphRenderState* state, int graphIndex);
-  void DoBeginVoice(FBGraphRenderState* state, int graphIndex);
-  void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points);
+  int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
 };
 
 static void
@@ -69,14 +69,18 @@ PlotSamples(FBModuleGraphComponentData const* data)
 }
 
 int 
-EnvGraphRenderData::DoProcess(FBGraphRenderState* state, int graphIndex) 
+EnvGraphRenderData::DoProcess(
+  FBGraphRenderState* state, int graphIndex, 
+  bool exchange, int exchangeVoice)
 { 
   auto* moduleProcState = state->ModuleProcState();
   return GetProcessor(*moduleProcState).Process(*moduleProcState);
 }
 
 void 
-EnvGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex) 
+EnvGraphRenderData::DoBeginVoice(
+  FBGraphRenderState* state, int graphIndex, 
+  bool exchange, int exchangeVoice)
 { 
   auto* moduleProcState = state->ModuleProcState();
   GetProcessor(*moduleProcState).BeginVoice(*moduleProcState);
@@ -109,8 +113,8 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 
 void
 EnvGraphRenderData::DoProcessIndicators(
-  bool exchange, int exchangeVoice, 
-  int graphIndex, FBModuleGraphPoints& points)
+  int graphIndex, bool exchange, 
+  int exchangeVoice, FBModuleGraphPoints& points)
 {
   int smoothLengthAudio;
   int totalSamplesAudio = 0;
