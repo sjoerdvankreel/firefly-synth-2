@@ -13,7 +13,7 @@ struct EffectGraphRenderData final:
 public FBModuleGraphRenderData<EffectGraphRenderData>
 {
   int totalSamples = {};
-  std::array<int, FFEffectBlockCount> samplesProcessed = {};
+  std::array<int, FFEffectBlockCount + 1> samplesProcessed = {};
 
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
@@ -50,18 +50,23 @@ int
 EffectGraphRenderData::DoProcess(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
+  bool plotSpecificFilter = false;
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
-  FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
-  auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
-  if (kind == FFEffectKind::Off)
-    return 0;
+  if (graphIndex != FFEffectBlockCount)
+  {
+    FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
+    auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
+    plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb;
+    if (kind == FFEffectKind::Off)
+      return 0;
+  }
 
   auto* procState = moduleProcState->ProcAs<FFProcState>();
   auto& input = procState->dsp.voice[moduleProcState->voice->slot].effect[moduleProcState->moduleSlot].input;
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      if (kind == FFEffectKind::StVar || kind == FFEffectKind::Comb)
+      if (plotSpecificFilter)
         input[c].Set(s, samplesProcessed[graphIndex] == 0 ? 1.0f : 0.0f);
       else
         input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
@@ -90,11 +95,16 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   auto* renderState = graphData->renderState;
   auto* moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
-  for (int i = 0; i < FFEffectBlockCount; i++)
+  for (int i = 0; i <= FFEffectBlockCount; i++)
   {
     FBRenderModuleGraph<false, false>(renderData, i);
-    FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, i };
-    auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
-    graphData->graphs[i].text = kind == FFEffectKind::Off ? std::to_string(i + 1) + " OFF" : std::to_string(i + 1);
+    if (i == FFEffectBlockCount)
+      graphData->graphs[i].text = "ALL";
+    else
+    {
+      FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, i };
+      auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
+      graphData->graphs[i].text = kind == FFEffectKind::Off ? std::to_string(i + 1) + " OFF" : std::to_string(i + 1);
+    }
   }
 }

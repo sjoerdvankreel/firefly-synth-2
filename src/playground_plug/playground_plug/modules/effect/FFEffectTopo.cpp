@@ -11,7 +11,7 @@ FFMakeEffectTopo()
   result->voice = true;
   result->name = "FX";
   result->slotCount = FFEffectCount;
-  result->graphCount = FFEffectBlockCount;
+  result->graphCount = FFEffectBlockCount + 1;
   result->graphRenderer = FFEffectRenderGraph;
   result->id = "{154051CE-66D9-41C8-B479-C52D1111C962}";
   result->params.resize((int)FFEffectParam::Count);
