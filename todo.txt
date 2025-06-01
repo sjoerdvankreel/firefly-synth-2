@@ -1,4 +1,6 @@
 release build is borked
+comb filter not delay line?
+store the graph fft somewhere
 phys more gain
 comb filter with delay line
 should a voice receive events after its released (but still playing)?
