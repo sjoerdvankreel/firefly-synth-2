@@ -17,6 +17,7 @@ public FBModuleGraphRenderData<GLFOGraphRenderData>
   void DoReset(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
+  void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
 FFGLFOProcessor& 

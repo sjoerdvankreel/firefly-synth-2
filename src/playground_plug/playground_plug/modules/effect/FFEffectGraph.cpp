@@ -7,6 +7,7 @@
 #include <playground_base/gui/glue/FBPlugGUIContext.hpp>
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
 
+#include <bit>
 #include <algorithm>
 
 struct EffectGraphRenderData final:
@@ -19,6 +20,7 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
+  void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
 };
 
 static FBModuleGraphPlotParams
@@ -39,6 +41,18 @@ EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
   auto& processor = *procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].processor;
   processor.InitializeBuffers(state.input->sampleRate);
   return processor;
+}
+
+void
+EffectGraphRenderData::DoPostProcess(
+  FBGraphRenderState* state, int graphIndex,
+  bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
+{
+  auto nextPow2 = std::bit_ceil(points.l.size());
+  int order = std::bit_width(nextPow2) - 1;
+  juce::dsp::FFT fft(order);
+  points.l.resize(nextPow2 * 2);
+  fft.performFrequencyOnlyForwardTransform(points.l.data(), true);
 }
 
 void 
