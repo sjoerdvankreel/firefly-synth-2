@@ -21,6 +21,15 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
   void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
+static int
+PlotSamples(FBModuleGraphComponentData const* data)
+{
+  // Need exactly as many samples for the dsp side as the gui side.
+  // This way we guarantee rendering for the graph is done with audio sample rate.
+  // This is important for the filters.
+  return data->pixelWidth;
+}
+
 FFEffectProcessor&
 EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
@@ -45,19 +54,17 @@ EffectGraphRenderData::DoProcess(
   int moduleSlot = moduleProcState->moduleSlot;
   auto* procState = moduleProcState->ProcAs<FFProcState>(); 
   auto& input = procState->dsp.voice[moduleProcState->voice->slot].effect[moduleProcState->moduleSlot].input;
-  //auto kind = state->AudioParamList<FFEffectKind>({ (int)FFModuleType::Effect, moduleSlot, (int)FFEnvParam::Type, 0 }, exchange, exchangeVoice);
+  FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
+  auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
+      if (kind == FFEffectKind::StVar || kind == FFEffectKind::Comb)
+        input[c].Set(s, samplesProcessed[graphIndex] == 0 ? 1.0f : 0.0f);
+      else
+        input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   GetProcessor(*moduleProcState).Process(*moduleProcState);
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
   return std::clamp(totalSamples - samplesProcessed[graphIndex], 0, FBFixedBlockSamples);
-}
-
-static int
-PlotSamples(FBModuleGraphComponentData const* data)
-{
-  return data->pixelWidth * 2;
 }
 
 void
