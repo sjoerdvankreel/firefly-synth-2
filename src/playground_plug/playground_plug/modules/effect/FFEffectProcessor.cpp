@@ -1,5 +1,6 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
+#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_plug/modules/effect/FFEffectTopo.hpp>
 #include <playground_plug/modules/effect/FFEffectProcessor.hpp>
 
@@ -190,7 +191,7 @@ FFEffectProcessor::ProcessStVar(
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
     freq *= std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
-    freq = std::clamp(freq, 20.0f, 20000.0f);
+    freq = std::clamp(freq, FFMinFilterFreq, FFMaxFilterFreq);
     _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);
     for(int c = 0; c < 2; c++)
       oversampled[c].Set(s, _stVarFilters[block].Next(c, oversampled[c].Get(s)));

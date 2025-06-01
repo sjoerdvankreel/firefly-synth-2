@@ -1,5 +1,6 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
+#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_plug/modules/gfilter/FFGFilterTopo.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
 
@@ -69,7 +70,7 @@ FFMakeGFilterTopo()
   freq.unit = "Hz";
   freq.id = "{24E988C5-7D41-4064-9212-111D1C3D2AF7}";
   freq.type = FBParamType::Log2;
-  freq.Log2().Init(0.0f, 20.0f, 20000.0f);
+  freq.Log2().Init(0.0f, FFMinFilterFreq, FFMaxFilterFreq);
   auto selectFreq = [](auto& module) { return &module.acc.freq; };
   freq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFreq);
   freq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFreq);

@@ -1,5 +1,6 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
+#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_plug/modules/effect/FFEffectTopo.hpp>
 #include <playground_plug/modules/effect/FFEffectGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
@@ -158,7 +159,7 @@ FFMakeEffectTopo()
   stVarFreq.unit = "Hz";
   stVarFreq.id = "{4ACF9D3E-D1F0-4B3B-8F6F-6FEE6BCDE449}";
   stVarFreq.type = FBParamType::Log2;
-  stVarFreq.Log2().Init(0.0f, 20.0f, 20000.0f);
+  stVarFreq.Log2().Init(0.0f, FFMinFilterFreq, FFMaxFilterFreq);
   auto selectStVarFreq = [](auto& module) { return &module.acc.stVarFreq; };
   stVarFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStVarFreq);
   stVarFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStVarFreq);
@@ -218,7 +219,7 @@ FFMakeEffectTopo()
   combFreqPlus.unit = "Hz";
   combFreqPlus.id = "{19B8B573-C49D-4D34-8078-02B2A30F40E8}";
   combFreqPlus.type = FBParamType::Log2;
-  combFreqPlus.Log2().Init(0.0f, 20.0f, 20000.0f);
+  combFreqPlus.Log2().Init(0.0f, FFMinFilterFreq, FFMaxFilterFreq);
   auto selectCombFreqPlus = [](auto& module) { return &module.acc.combFreqPlus; };
   combFreqPlus.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCombFreqPlus);
   combFreqPlus.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCombFreqPlus);
@@ -237,7 +238,7 @@ FFMakeEffectTopo()
   combFreqMin.unit = "Hz";
   combFreqMin.id = "{B2C0AEB8-F2C1-4553-961C-7B61021C8B70}";
   combFreqMin.type = FBParamType::Log2;
-  combFreqMin.Log2().Init(0.0f, 20.0f, 20000.0f);
+  combFreqMin.Log2().Init(0.0f, FFMinFilterFreq, FFMaxFilterFreq);
   auto selectCombFreqMin = [](auto& module) { return &module.acc.combFreqMin; };
   combFreqMin.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCombFreqMin);
   combFreqMin.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCombFreqMin);
