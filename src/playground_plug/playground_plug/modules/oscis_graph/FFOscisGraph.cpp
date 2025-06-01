@@ -31,9 +31,10 @@ OscisGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex)
 {
   auto* moduleProcState = state->ModuleProcState();
   int osciSlot = moduleProcState->moduleSlot;
+  assert(osciSlot == graphIndex);
   moduleProcState->moduleSlot = 0;
   GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(*moduleProcState);
-  for (int i = 0; i < FFOsciCount; i++)
+  for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
     GetVoiceDSPState(*moduleProcState).osci[i].processor->BeginVoice(*moduleProcState);
@@ -47,9 +48,10 @@ OscisGraphRenderData::DoProcess(FBGraphRenderState* state, int graphIndex)
   int result = 0;
   auto* moduleProcState = state->ModuleProcState();
   int osciSlot = moduleProcState->moduleSlot;
+  assert(osciSlot == graphIndex);
   moduleProcState->moduleSlot = 0;
   GetVoiceDSPState(*moduleProcState).osciMod.processor->Process(*moduleProcState);
-  for (int i = 0; i < FFOsciCount; i++)
+  for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
     int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState);
