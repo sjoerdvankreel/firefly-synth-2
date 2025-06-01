@@ -80,7 +80,7 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
   OscisGraphRenderData renderData = {};
   graphData->bipolar = true;
   graphData->drawClipBoundaries = true;
-  graphData->skipDrawOnEqualsPrimary = false;
+  graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
   renderData.plotSamplesSelector = PlotSamples;
   renderData.staticModuleIndex = (int)FFModuleType::Osci;

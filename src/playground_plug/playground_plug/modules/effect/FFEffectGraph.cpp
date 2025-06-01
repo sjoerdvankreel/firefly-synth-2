@@ -86,6 +86,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   EffectGraphRenderData renderData = {};
   graphData->bipolar = true;
   graphData->drawClipBoundaries = true;
+  graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
   renderData.plotSamplesSelector = PlotSamples;
   renderData.totalSamples = PlotSamples(graphData);
