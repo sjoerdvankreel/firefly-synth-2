@@ -524,6 +524,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].effect[state.moduleSlot];
   exchangeDSP.active = true;
+  exchangeDSP.lengthSamples = -1;
 
   auto& exchangeParams = exchangeToGUI->param.voice.effect[state.moduleSlot];
   exchangeParams.acc.trackingKey[0][voice] = trackingKeyNorm.Last();

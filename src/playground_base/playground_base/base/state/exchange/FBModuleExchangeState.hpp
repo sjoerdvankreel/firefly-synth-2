@@ -9,13 +9,12 @@
 struct FBModuleProcExchangeState
 {
   bool active = {};
-  bool fixedLength = {};
-  int fixedLengthSamples = {};
-  int fixedPositionSamples = {};
+  int lengthSamples = {};
+  int positionSamples = {};
   FB_COPY_MOVE_DEFCTOR(FBModuleProcExchangeState);
 
-  bool ShouldGraph() const { return active && (!fixedLength || fixedPositionSamples < fixedLengthSamples); }
-  float PositionNormalized() const { return !fixedLength? 0.0f: fixedPositionSamples / static_cast<float>(fixedLengthSamples); }
+  bool ShouldGraph() const { return active && positionSamples < lengthSamples; }
+  float PositionNormalized() const { return positionSamples / static_cast<float>(lengthSamples); }
 };
 
 class FBModuleExchangeState final

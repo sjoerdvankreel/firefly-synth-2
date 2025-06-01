@@ -300,6 +300,7 @@ FFPhysProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].phys[state.moduleSlot];
   exchangeDSP.active = true;
+  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(FBFixedBlockSamples - 1), state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.phys[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
