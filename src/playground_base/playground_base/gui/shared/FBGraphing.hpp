@@ -17,9 +17,16 @@
 struct FBStaticTopo;
 struct FBModuleGraphComponentData;
 
-typedef std::function<int(
+struct FBModuleGraphPlotParams
+{
+  int sampleCount = {};
+  float sampleRate = {};
+  bool autoSampleRate = {};
+};
+
+typedef std::function<FBModuleGraphPlotParams(
   FBModuleGraphComponentData const*)>
-FBModuleGraphPlotSamplesSelector;
+FBModuleGraphPlotParamsSelector;
 typedef std::function<FBModuleProcExchangeState const* (
   void const* exchangeState, int moduleSlot)>
 FBModuleGraphGlobalExchangeSelector;    
@@ -45,7 +52,7 @@ struct FBModuleGraphRenderData
 {
   int staticModuleIndex = -1;
   FBModuleGraphComponentData* graphData = {};
-  FBModuleGraphPlotSamplesSelector plotSamplesSelector = {};
+  FBModuleGraphPlotParamsSelector plotParamsSelector = {};
   FBModuleGraphVoiceExchangeSelector voiceExchangeSelector = {};
   FBModuleGraphGlobalExchangeSelector globalExchangeSelector = {};
   FBModuleGraphVoiceMonoOutputSelector voiceMonoOutputSelector = {};
@@ -146,7 +153,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
 
   assert(renderData.graphData != nullptr);
   assert(renderData.staticModuleIndex != -1);
-  assert(renderData.plotSamplesSelector != nullptr);
+  assert(renderData.plotParamsSelector != nullptr);
 
   if constexpr (Global)
   {
@@ -164,7 +171,8 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   }
 
   moduleProcState->anyExchangeActive = false;
-  int maxDspSampleCount = renderData.plotSamplesSelector(graphData);
+  auto plotParams = renderData.plotParamsSelector(graphData);
+  int maxDspSampleCount = plotParams.sampleCount;
   if (maxDspSampleCount == 0)
     return;
 
@@ -185,10 +193,20 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
       maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
   }
 
+  float guiSampleRate;
+  float guiSampleCount;
   auto hostExchange = renderState->ExchangeContainer()->Host();
-  float guiSampleCount = static_cast<float>(graphData->pixelWidth);
   float dspSampleRate = renderState->ExchangeContainer()->Host()->sampleRate;
-  float guiSampleRate = hostExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
+  if (plotParams.autoSampleRate)
+  {
+    guiSampleCount = static_cast<float>(graphData->pixelWidth);
+    guiSampleRate = hostExchange->sampleRate / (maxDspSampleCount / guiSampleCount);
+  }
+  else
+  {
+    guiSampleRate = plotParams.sampleRate;
+    guiSampleCount = plotParams.sampleCount;
+  }
   renderState->PrepareForRenderPrimary(guiSampleRate, hostExchange->bpm);
   if constexpr(!Global)
     renderState->PrepareForRenderPrimaryVoice();

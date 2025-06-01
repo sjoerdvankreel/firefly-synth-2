@@ -21,13 +21,17 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
   void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
 
-static int
-PlotSamples(FBModuleGraphComponentData const* data)
+static FBModuleGraphPlotParams
+PlotParams(FBModuleGraphComponentData const* data)
 {
   // Need exactly as many samples for the dsp side as the gui side.
   // This way we guarantee rendering for the graph is done with audio sample rate.
   // This is important for the filters.
-  return data->pixelWidth;
+  FBModuleGraphPlotParams result = {};
+  result.sampleRate = 0.0f;
+  result.autoSampleRate = true;
+  result.sampleCount = data->pixelWidth;
+  return result;
 }
 
 FFEffectProcessor&
@@ -90,8 +94,8 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
-  renderData.plotSamplesSelector = PlotSamples;
-  renderData.totalSamples = PlotSamples(graphData);
+  renderData.plotParamsSelector = PlotParams;
+  renderData.totalSamples = PlotParams(graphData).sampleCount;
   renderData.staticModuleIndex = (int)FFModuleType::Effect;
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].effect[slot]; };
