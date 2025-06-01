@@ -4,7 +4,7 @@
 #include <playground_base/base/shared/FBDArray.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
-class FBDelayLine final
+class FFDelayLine final
 {
   int _read = {};
   int _write = {};
@@ -13,7 +13,7 @@ class FBDelayLine final
   FBDArray<float> _data = {};
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBDelayLine);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFDelayLine);
   float Pop();
   void Push(float val);
   void Delay(float delay);
@@ -22,7 +22,7 @@ public:
 };
 
 inline void
-FBDelayLine::Delay(float delay)
+FFDelayLine::Delay(float delay)
 {
   _delayWhole = static_cast<int>(delay);
   _delayFraction = delay - _delayWhole;
@@ -30,7 +30,7 @@ FBDelayLine::Delay(float delay)
 }
 
 inline void
-FBDelayLine::Push(float val)
+FFDelayLine::Push(float val)
 {
   assert(!std::isnan(val));
   assert(!std::isinf(val));
@@ -39,7 +39,7 @@ FBDelayLine::Push(float val)
 }
 
 inline float
-FBDelayLine::Pop()
+FFDelayLine::Pop()
 {
   int pos1 = (_read + _delayWhole) % Count();
   int pos2 = (pos1 + 1) % Count();

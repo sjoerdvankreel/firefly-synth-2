@@ -1,5 +1,5 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
-#include <playground_plug/dsp/FFPlugProcessor.hpp>
+#include <playground_plug/dsp/plug/FFPlugProcessor.hpp>
 
 #include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/dsp/host/FBHostProcessor.hpp>

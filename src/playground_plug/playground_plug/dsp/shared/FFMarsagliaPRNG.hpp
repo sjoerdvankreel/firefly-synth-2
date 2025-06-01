@@ -1,35 +1,35 @@
 #pragma once
 
+#include <playground_plug/dsp/shared/FFParkMillerPRNG.hpp>
 #include <playground_base/base/shared/FBSArray.hpp>
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
-#include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
 
 #include <limits>
 #include <cstdint>
 
-class FBMarsagliaPRNG final
+class FFMarsagliaPRNG final
 {
   float _spare = {};
   bool _haveSpare = {};
-  FBParkMillerPRNG _uniform = {};
+  FFParkMillerPRNG _uniform = {};
 
 public:
   float NextScalar();
 
-  FBMarsagliaPRNG();
-  explicit FBMarsagliaPRNG(float x);
+  FFMarsagliaPRNG();
+  explicit FFMarsagliaPRNG(float x);
 };
 
 inline 
-FBMarsagliaPRNG::FBMarsagliaPRNG(float x):
+FFMarsagliaPRNG::FFMarsagliaPRNG(float x):
 _uniform(x) {}
 
 inline
-FBMarsagliaPRNG::FBMarsagliaPRNG() :
+FFMarsagliaPRNG::FFMarsagliaPRNG() :
 _uniform(0.0f) {}
 
 inline float
-FBMarsagliaPRNG::NextScalar()
+FFMarsagliaPRNG::NextScalar()
 {
   float constexpr mean = 0.0f;
   float constexpr stdev = 1.0f;

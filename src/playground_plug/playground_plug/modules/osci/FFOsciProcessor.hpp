@@ -1,14 +1,13 @@
 #pragma once
 
+#include <playground_plug/dsp/shared/FFParkMillerPRNG.hpp>
+#include <playground_plug/dsp/shared/FFTrackingPhaseGenerator.hpp>
 #include <playground_plug/modules/osci/FFOsciTopo.hpp>
 #include <playground_plug/modules/osci/FFOsciPhaseGenerator.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModTopo.hpp>
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
-#include <playground_base/dsp/shared/FBTrackingPhaseGenerator.hpp>
-
 #include <juce_dsp/juce_dsp.h>
 #include <array>
 
@@ -45,8 +44,8 @@ public FFOsciProcessorBase
   juce::dsp::AudioBlock<float> _downsampledBlock = {};
   std::array<float*, FFOsciBaseUniMaxCount> _downsampledChannelPtrs = {};
 
-  FBParkMillerPRNG _prng = {};
-  FBTrackingPhaseGenerator _phaseGen = {};
+  FFParkMillerPRNG _prng = {};
+  FFTrackingPhaseGenerator _phaseGen = {};
   std::array<FFOsciPhaseGenerator, FFOsciBaseUniMaxCount> _uniPhaseGens = {};
   FBSArray2<float, FFOsciBaseUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   std::array<std::array<FFOsciFMPhaseGenerator, FFOsciBaseUniMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _uniFMPhaseGens = {};

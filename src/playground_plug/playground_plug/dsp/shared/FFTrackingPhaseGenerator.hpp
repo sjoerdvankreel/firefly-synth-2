@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-class FBTrackingPhaseGenerator final
+class FFTrackingPhaseGenerator final
 {
   float _x = 0.0f;
   bool _cycledOnce = false;
@@ -13,8 +13,8 @@ class FBTrackingPhaseGenerator final
   int _positionSamplesUpToFirstCycle = 0;
 
 public:
-  FBTrackingPhaseGenerator() = default;
-  explicit FBTrackingPhaseGenerator(float x) : _x(x) {}
+  FFTrackingPhaseGenerator() = default;
+  explicit FFTrackingPhaseGenerator(float x) : _x(x) {}
   
   float NextScalar(float incr);
   FBBatch<float> NextBatch(FBBatch<float> incr);
@@ -23,7 +23,7 @@ public:
 };
 
 inline float
-FBTrackingPhaseGenerator::NextScalar(float incr)
+FFTrackingPhaseGenerator::NextScalar(float incr)
 {
   float y = _x;
   _x += incr;
@@ -43,7 +43,7 @@ FBTrackingPhaseGenerator::NextScalar(float incr)
 }
 
 inline FBBatch<float>
-FBTrackingPhaseGenerator::NextBatch(FBBatch<float> incr)
+FFTrackingPhaseGenerator::NextBatch(FBBatch<float> incr)
 {
   FBSArray<float, FBSIMDTraits<float>::Size> y;
   FBSArray<float, FBSIMDTraits<float>::Size> x(incr);

@@ -1085,7 +1085,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   auto const& modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
 
   _phaseGen = {};
-  _prng = FBParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
+  _prng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm));
 
   _type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);

@@ -132,8 +132,8 @@ FFPhysProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _lpFilter = {};
   _hpFilter = {};
   _graphPosition = 0;
-  _normalPrng = FBMarsagliaPRNG(_seed / (FFPhysMaxSeed + 1.0f));
-  _uniformPrng = FBParkMillerPRNG(_seed / (FFPhysMaxSeed + 1.0f));
+  _normalPrng = FFMarsagliaPRNG(_seed / (FFPhysMaxSeed + 1.0f));
+  _uniformPrng = FFParkMillerPRNG(_seed / (FFPhysMaxSeed + 1.0f));
   _lpFilter.Set(FBCytomicFilterMode::LPF, sampleRate, lpPlain, 0.0f, 0.0f);
   _hpFilter.Set(FBCytomicFilterMode::HPF, sampleRate, hpPlain, 0.0f, 0.0f);
   

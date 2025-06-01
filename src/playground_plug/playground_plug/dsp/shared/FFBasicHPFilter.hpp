@@ -7,7 +7,7 @@
 #include <numbers>
 
 // https://www.musicdsp.org/en/latest/Filters/117-one-pole-one-zero-lp-hp.html
-class FBBasicHPFilter final
+class FFBasicHPFilter final
 {
   float _a0 = 0.0f;
   float _a1 = 0.0f; 
@@ -21,7 +21,7 @@ public:
 };
 
 inline float
-FBBasicHPFilter::Next(float in)
+FFBasicHPFilter::Next(float in)
 {
   float out = _a0 * in + _a1 * _x1 + _b1 * _y1;
   assert(!std::isnan(out));
@@ -31,7 +31,7 @@ FBBasicHPFilter::Next(float in)
 }
 
 inline void
-FBBasicHPFilter::SetCoeffs(float cutoffFreq, float sampleRate)
+FFBasicHPFilter::SetCoeffs(float cutoffFreq, float sampleRate)
 {
   float w = 2.0f * sampleRate;
   float cutoffFreqW = cutoffFreq * FBTwoPi;

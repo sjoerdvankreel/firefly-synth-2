@@ -1,16 +1,15 @@
 #pragma once
 
+#include <playground_plug/dsp/shared/FFDelayLine.hpp>
+#include <playground_plug/dsp/shared/FFCytomicFilter.hpp>
+#include <playground_plug/dsp/shared/FFBasicHPFilter.hpp>
+#include <playground_plug/dsp/shared/FFMarsagliaPRNG.hpp>
+#include <playground_plug/dsp/shared/FFParkMillerPRNG.hpp>
 #include <playground_plug/modules/physical/FFPhysTopo.hpp>
 #include <playground_plug/modules/physical/FFPhysPhaseGenerator.hpp>
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_base/dsp/shared/FBDelayLine.hpp>
-#include <playground_base/dsp/shared/FBCytomicFilter.hpp>
-#include <playground_base/dsp/shared/FBBasicHPFilter.hpp>
-#include <playground_base/dsp/shared/FBMarsagliaPRNG.hpp>
-#include <playground_base/dsp/shared/FBParkMillerPRNG.hpp>
-
 #include <array>
 #include <vector>
 
@@ -24,8 +23,8 @@ struct FFPhysUniVoiceState final
   float phaseTowardsX = 0.0f;
   int colorFilterPosition = 0;
 
-  FBDelayLine delayLine = {};
-  FBBasicHPFilter dcFilter = {};
+  FFDelayLine delayLine = {};
+  FFBasicHPFilter dcFilter = {};
   FFPhysPhaseGenerator phaseGen = {};
   FBSArray<float, FFPhysMaxPoles> colorFilterBuffer = {};
 };
@@ -38,8 +37,8 @@ public FFOsciProcessorBase
   int _graphPosition = {};
 
   FFPhysType _type = {};
-  FBMarsagliaPRNG _normalPrng = {};
-  FBParkMillerPRNG _uniformPrng = {};
+  FFMarsagliaPRNG _normalPrng = {};
+  FFParkMillerPRNG _uniformPrng = {};
   FBCytomicFilter<FFOsciBaseUniMaxCount> _lpFilter = {};
   FBCytomicFilter<FFOsciBaseUniMaxCount> _hpFilter = {};
   std::array<FFPhysUniVoiceState, FFOsciBaseUniMaxCount> _uniState = {};
