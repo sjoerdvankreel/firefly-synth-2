@@ -16,17 +16,10 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
   std::array<int, FFEffectBlockCount> samplesProcessed = {};
 
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
-  int DoProcess(FBModuleProcState& state, int graphIndex);
-  void DoBeginVoice(FBModuleProcState& state, int graphIndex);
+  int DoProcess(FBGraphRenderState* state, int graphIndex);
+  void DoBeginVoice(FBGraphRenderState* state, int graphIndex);
   void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
 };
-
-void 
-EffectGraphRenderData::DoBeginVoice(FBModuleProcState& state, int graphIndex)
-{ 
-  samplesProcessed[graphIndex] = 0;
-  GetProcessor(state).BeginVoice(graphIndex, state); 
-}
 
 FFEffectProcessor&
 EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
@@ -35,15 +28,24 @@ EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
   return *procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].processor;
 }
 
+void 
+EffectGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex)
+{ 
+  samplesProcessed[graphIndex] = 0;
+  auto* moduleProcState = state->ModuleProcState();
+  GetProcessor(*moduleProcState).BeginVoice(graphIndex, *moduleProcState);
+}
+
 int 
-EffectGraphRenderData::DoProcess(FBModuleProcState& state, int graphIndex)
+EffectGraphRenderData::DoProcess(FBGraphRenderState* state, int graphIndex)
 {
-  auto* procState = state.ProcAs<FFProcState>();
-  auto& input = procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].input;
+  auto* moduleProcState = state->ModuleProcState();
+  auto* procState = moduleProcState->ProcAs<FFProcState>(); 
+  auto& input = procState->dsp.voice[moduleProcState->voice->slot].effect[moduleProcState->moduleSlot].input;
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
-  GetProcessor(state).Process(state); 
+  GetProcessor(*moduleProcState).Process(*moduleProcState);
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
   return std::clamp(totalSamples - samplesProcessed[graphIndex], 0, FBFixedBlockSamples);
 }

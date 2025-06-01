@@ -13,48 +13,51 @@
 struct OscisGraphRenderData final:
 public FBModuleGraphRenderData<OscisGraphRenderData>
 {
-  int DoProcess(FBModuleProcState& state, int graphIndex);
-  void DoBeginVoice(FBModuleProcState& state, int graphIndex);
+  int DoProcess(FBGraphRenderState* state, int graphIndex);
+  void DoBeginVoice(FBGraphRenderState* state, int graphIndex);
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
   void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
 };
-
-void
-OscisGraphRenderData::DoBeginVoice(FBModuleProcState& state, int graphIndex)
-{
-  int osciSlot = state.moduleSlot;
-  state.moduleSlot = 0;
-  GetVoiceDSPState(state).osciMod.processor->BeginVoice(state);
-  for (int i = 0; i < FFOsciCount; i++)
-  {
-    state.moduleSlot = i;
-    GetVoiceDSPState(state).osci[i].processor->BeginVoice(state);
-  }
-  state.moduleSlot = osciSlot;
-}
-
-int 
-OscisGraphRenderData::DoProcess(FBModuleProcState& state, int graphIndex)
-{
-  int result = 0;
-  int osciSlot = state.moduleSlot;
-  state.moduleSlot = 0;
-  GetVoiceDSPState(state).osciMod.processor->Process(state);
-  for (int i = 0; i < FFOsciCount; i++)
-  {
-    state.moduleSlot = i;
-    int processed = GetVoiceDSPState(state).osci[i].processor->Process(state);
-    if (i == osciSlot)
-      result = processed;
-  }
-  state.moduleSlot = osciSlot;
-  return result;
-}
 
 FFVoiceDSPState&
 OscisGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
 {
   return state.ProcAs<FFProcState>()->dsp.voice[state.voice->slot];
+}
+
+// TODO graph index IS the osci index -- can we process only 1?
+void
+OscisGraphRenderData::DoBeginVoice(FBGraphRenderState* state, int graphIndex)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  int osciSlot = moduleProcState->moduleSlot;
+  moduleProcState->moduleSlot = 0;
+  GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(*moduleProcState);
+  for (int i = 0; i < FFOsciCount; i++)
+  {
+    moduleProcState->moduleSlot = i;
+    GetVoiceDSPState(*moduleProcState).osci[i].processor->BeginVoice(*moduleProcState);
+  }
+  moduleProcState->moduleSlot = osciSlot;
+}
+
+int 
+OscisGraphRenderData::DoProcess(FBGraphRenderState* state, int graphIndex)
+{
+  int result = 0;
+  auto* moduleProcState = state->ModuleProcState();
+  int osciSlot = moduleProcState->moduleSlot;
+  moduleProcState->moduleSlot = 0;
+  GetVoiceDSPState(*moduleProcState).osciMod.processor->Process(*moduleProcState);
+  for (int i = 0; i < FFOsciCount; i++)
+  {
+    moduleProcState->moduleSlot = i;
+    int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState);
+    if (i == osciSlot)
+      result = processed;
+  }
+  moduleProcState->moduleSlot = osciSlot;
+  return result;
 }
 
 static int

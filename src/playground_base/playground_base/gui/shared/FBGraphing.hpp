@@ -53,9 +53,9 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceStereoOutputSelector voiceStereoOutputSelector = {};
   FBModuleGraphGlobalStereoOutputSelector globalStereoOutputSelector = {};
 
-  void Reset(FBModuleProcState& state, int graphIndex) { static_cast<Derived*>(this)->DoReset(state, graphIndex); }
-  int Process(FBModuleProcState& state, int graphIndex) { return static_cast<Derived*>(this)->DoProcess(state, graphIndex); }
-  void BeginVoice(FBModuleProcState& state, int graphIndex) { static_cast<Derived*>(this)->DoBeginVoice(state, graphIndex); }
+  void Reset(FBGraphRenderState* state, int graphIndex) { static_cast<Derived*>(this)->DoReset(state, graphIndex); }
+  int Process(FBGraphRenderState* state, int graphIndex) { return static_cast<Derived*>(this)->DoProcess(state, graphIndex); }
+  void BeginVoice(FBGraphRenderState* state, int graphIndex) { static_cast<Derived*>(this)->DoBeginVoice(state, graphIndex); }
   void ProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points)
   { return static_cast<Derived*>(this)->DoProcessIndicators(exchange, exchangeVoice, graphIndex, points); }
 };
@@ -81,13 +81,13 @@ FBRenderModuleGraphSeries(
   moduleProcState->input->note->clear();
 
   if constexpr (Global)
-    renderData.Reset(*moduleProcState, graphIndex);
+    renderData.Reset(renderState, graphIndex);
   else
-    renderData.BeginVoice(*moduleProcState, graphIndex);
+    renderData.BeginVoice(renderState, graphIndex);
 
   while (processed == FBFixedBlockSamples)
   {
-    processed = renderData.Process(*moduleProcState, graphIndex);
+    processed = renderData.Process(renderState, graphIndex);
     if constexpr (Global)
     {
       if constexpr(Stereo)
