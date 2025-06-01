@@ -68,7 +68,11 @@ FFPhysRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].phys[slot]; };
   renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].phys[slot].output; };
-  FBTopoIndices indices = { (int)FFModuleType::Phys, graphData->renderState->ModuleProcState()->moduleSlot };
-  graphData->graphs[0].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
+
   FBRenderModuleGraph<false, true>(renderData, 0);
+  FBTopoIndices modIndices = { (int)FFModuleType::Phys, graphData->renderState->ModuleProcState()->moduleSlot };
+  FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFPhysParam::Type, 0 };
+  graphData->graphs[0].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+  if (graphData->renderState->AudioParamList<FFPhysType>(paramIndices, false, -1) == FFPhysType::Off)
+    graphData->graphs[0].text += " OFF";
 }

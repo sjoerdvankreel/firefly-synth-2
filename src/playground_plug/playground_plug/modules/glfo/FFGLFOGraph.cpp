@@ -63,7 +63,11 @@ FFGLFORenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
   renderData.globalMonoOutputSelector = [](void const* procState, int slot) {
     return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].output; };
-  FBTopoIndices indices = { (int)FFModuleType::GLFO, graphData->renderState->ModuleProcState()->moduleSlot };
-  graphData->graphs[0].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;
+  
   FBRenderModuleGraph<true, false>(renderData, 0);
+  FBTopoIndices modIndices = { (int)FFModuleType::GLFO, graphData->renderState->ModuleProcState()->moduleSlot };
+  FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFGLFOParam::On, 0 };
+  graphData->graphs[0].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+  if (!graphData->renderState->AudioParamBool(paramIndices, false, -1))
+    graphData->graphs[0].text += " OFF";
 }
