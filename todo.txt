@@ -1,4 +1,3 @@
-make it see what the voice are doing for fx
 comb filter with delay line
 do actual frequency response plot without explicit fft if possible?
 should a voice receive events after its released (but still playing)?
