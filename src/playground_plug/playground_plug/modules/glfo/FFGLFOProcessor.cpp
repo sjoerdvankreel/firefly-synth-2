@@ -50,7 +50,8 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->global.gLFO[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = topo.NormalizedToLinearFreqSamplesFast(FFGLFOParam::Rate, rateNorm.Last(), state.input->sampleRate);
-  exchangeDSP.positionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.lengthSamples;
+  exchangeDSP.fixedLength = true;
+  exchangeDSP.fixedLengthSamples = topo.NormalizedToLinearFreqSamplesFast(FFGLFOParam::Rate, rateNorm.Last(), state.input->sampleRate);
+  exchangeDSP.fixedPositionSamples = _phase.PositionSamplesCurrentCycle() % exchangeDSP.fixedLengthSamples;
   return FBFixedBlockSamples;
 }
