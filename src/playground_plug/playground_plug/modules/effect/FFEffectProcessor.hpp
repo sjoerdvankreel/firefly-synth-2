@@ -13,7 +13,7 @@ class FBAccParamState;
 struct FBModuleProcState;
 
 // Show at least 1 sample of the comb filter.
-inline float constexpr FFEffectPlotLengthSeconds = 0.01f;
+inline float constexpr FFEffectPlotLengthSeconds = 2.0f / FFMinFilterFreq;
 inline int constexpr FFEffectOversampleFactor = 2;
 inline int constexpr FFEffectOversampleTimes = 1 << FFEffectOversampleFactor;
 inline int constexpr FFEffectFixedBlockOversamples = FBFixedBlockSamples * FFEffectOversampleTimes;

@@ -24,13 +24,11 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
 static FBModuleGraphPlotParams
 PlotParams(FBModuleGraphComponentData const* data)
 {
-  // Need exactly as many samples for the dsp side as the gui side.
-  // This way we guarantee rendering for the graph is done with audio sample rate.
-  // This is important for the filters.
+  // Need same sample rate for dsp and gui because filters.
   FBModuleGraphPlotParams result = {};
-  result.sampleRate = 0.0f;
-  result.autoSampleRate = true;
-  result.sampleCount = data->pixelWidth;
+  result.autoSampleRate = false;
+  result.sampleRate = data->renderState->ExchangeContainer()->Host()->sampleRate;
+  result.sampleCount = static_cast<int>(FFEffectPlotLengthSeconds * result.sampleRate);
   return result;
 }
 
