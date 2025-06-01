@@ -74,7 +74,7 @@ EffectGraphRenderData::DoProcess(
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       if (plotSpecificFilter)
-        input[c].Set(s, samplesProcessed[graphIndex] == 0 ? 1.0f : 0.0f);
+        input[c].Set(s, (samplesProcessed[graphIndex] + s) == 0 ? 1.0f : 0.0f);
       else
         input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   
