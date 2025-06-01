@@ -1,6 +1,5 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFPlugState.hpp>
-#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_plug/modules/effect/FFEffectTopo.hpp>
 #include <playground_plug/modules/effect/FFEffectProcessor.hpp>
 
@@ -14,8 +13,6 @@
 #include <xsimd/xsimd.hpp>
 
 using namespace juce::dsp;
-
-static float const PlotLengthSeconds = 0.01f;
 
 static inline FBBatch<float>
 Sin2(FBBatch<float> in)
@@ -131,7 +128,7 @@ FoldBack(FBBatch<float> in)
 FFEffectProcessor::
 FFEffectProcessor() :
 _oversampler(
-  2, EffectOversampleFactor,
+  2, FFEffectOversampleFactor,
   Oversampling<float>::filterHalfBandPolyphaseIIR, false, false)
 {
   _oversampler.initProcessing(FBFixedBlockSamples);
@@ -141,7 +138,7 @@ void
 FFEffectProcessor::InitializeBuffers(float sampleRate)
 {
   for (int i = 0; i < FFEffectBlockCount; i++)
-    _combFilters[i].Resize(sampleRate * EffectOversampleTimes, FFMinFilterFreq);
+    _combFilters[i].Resize(sampleRate * FFEffectOversampleTimes, FFMinFilterFreq);
 }
 
 void
@@ -166,7 +163,7 @@ FFEffectProcessor::BeginVoice(bool graph, int graphIndex, int graphSampleCount, 
   _key = static_cast<float>(state.voice->event.note.key);
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
-  _oversampleTimes = !graph && oversample ? EffectOversampleTimes : 1;
+  _oversampleTimes = !graph && oversample ? FFEffectOversampleTimes : 1;
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
     bool blockActive = !graph || graphIndex == i || graphIndex == FFEffectBlockCount;
@@ -183,13 +180,13 @@ FFEffectProcessor::BeginVoice(bool graph, int graphIndex, int graphSampleCount, 
 void 
 FFEffectProcessor::ProcessComb(
   int block, float oversampledRate,
-  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain)
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain)
 {
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s++)
@@ -212,12 +209,12 @@ FFEffectProcessor::ProcessComb(
 void 
 FFEffectProcessor::ProcessStVar(
   int block, float oversampledRate,
-  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain)
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain)
 {
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s ++)
@@ -238,11 +235,11 @@ FFEffectProcessor::ProcessStVar(
 void 
 FFEffectProcessor::ProcessSkew(
   int block,
-  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
 {
   auto invLogHalf = 1.0f / std::log(0.5f);
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
@@ -281,11 +278,11 @@ FFEffectProcessor::ProcessSkew(
 void 
 FFEffectProcessor::ProcessClip(
   int block,
-  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
 {
   FBBatch<float> tsqBatch;
   FBBatch<float> signBatch;
@@ -356,11 +353,11 @@ FFEffectProcessor::ProcessClip(
 void 
 FFEffectProcessor::ProcessFold(
   int block,
-  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
 {
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
@@ -430,20 +427,20 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto const& combFreqPlusNorm = procParams.acc.combFreqPlus;
   auto const& trackingKeyNorm = procParams.acc.trackingKey[0].Voice()[voice];
 
-  FBSArray<float, EffectFixedBlockOversamples> trackingKeyPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distAmtPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distMixPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distBiasPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> distDrivePlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> stVarResPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> stVarFreqPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> stVarGainPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> stVarKeyTrkPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combKeyTrkPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combResMinPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combResPlusPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combFreqMinPlain;
-  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> combFreqPlusPlain;
+  FBSArray<float, FFEffectFixedBlockOversamples> trackingKeyPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distAmtPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distMixPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distBiasPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distDrivePlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarResPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarFreqPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarGainPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> stVarKeyTrkPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combKeyTrkPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combResMinPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combResPlusPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combFreqMinPlain;
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combFreqPlusPlain;
   
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     for (int i = 0; i < FFEffectBlockCount; i++)
@@ -477,30 +474,30 @@ FFEffectProcessor::Process(FBModuleProcState& state)
 
   if (_oversampleTimes != 1)
   {
-    trackingKeyPlain.UpsampleStretch<EffectOversampleTimes>();
+    trackingKeyPlain.UpsampleStretch<FFEffectOversampleTimes>();
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
       if (_kind[i] == FFEffectKind::StVar)
       {
-        stVarFreqPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        stVarResPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        stVarGainPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        stVarKeyTrkPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        stVarFreqPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        stVarResPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        stVarGainPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        stVarKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
       else if (_kind[i] == FFEffectKind::Comb)
       {
-        combKeyTrkPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        combFreqMinPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        combFreqPlusPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        combResMinPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        combResPlusPlain[i].UpsampleStretch<EffectOversampleTimes>();
+        combKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        combFreqMinPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        combFreqPlusPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        combResMinPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        combResPlusPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
       else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
       {
-        distAmtPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        distMixPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        distBiasPlain[i].UpsampleStretch<EffectOversampleTimes>();
-        distDrivePlain[i].UpsampleStretch<EffectOversampleTimes>();
+        distAmtPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        distMixPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        distBiasPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        distDrivePlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
       else
         assert(_kind[i] == FFEffectKind::Off);
@@ -508,7 +505,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   }
 
   AudioBlock<float> oversampledBlock = {};
-  FBSArray2<float, EffectFixedBlockOversamples, 2> oversampled;
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2> oversampled;
   if (_oversampleTimes == 1)
     for (int c = 0; c < 2; c++)
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
@@ -521,7 +518,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     AudioBlock<float const> inputBlock(audioIn, 2, 0, FBFixedBlockSamples);
     oversampledBlock = _oversampler.processSamplesUp(inputBlock);
     for (int c = 0; c < 2; c++)
-      for (int s = 0; s < EffectFixedBlockOversamples; s++)
+      for (int s = 0; s < FFEffectFixedBlockOversamples; s++)
         oversampled[c].Set(s, oversampledBlock.getSample(c, s));
   }
 
@@ -555,7 +552,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   else
   {
     for (int c = 0; c < 2; c++)
-      for (int s = 0; s < EffectFixedBlockOversamples; s++)
+      for (int s = 0; s < FFEffectFixedBlockOversamples; s++)
         oversampledBlock.setSample(c, s, oversampled[c].Get(s));
     float* audioOut[2] = {};
     audioOut[0] = output[0].Ptr(0);
@@ -573,7 +570,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].effect[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBTimeToSamples(PlotLengthSeconds, sampleRate);
+  exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.effect[state.moduleSlot];
   exchangeParams.acc.trackingKey[0][voice] = trackingKeyNorm.Last();

@@ -165,6 +165,8 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
 
   moduleProcState->anyExchangeActive = false;
   int maxDspSampleCount = renderData.plotSamplesSelector(graphData);
+  if (maxDspSampleCount == 0)
+    return;
 
   if constexpr (Global)
   {

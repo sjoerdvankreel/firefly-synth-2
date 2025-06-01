@@ -9,8 +9,8 @@
 template <class T>
 class FBDArray final
 {
-  T* _data = {};
-  int _count = {};
+  int _count = 0;
+  T* _data = nullptr;
   void BoundsCheck(int pos) const { assert(0 <= pos && pos < _count); }
 
 public:

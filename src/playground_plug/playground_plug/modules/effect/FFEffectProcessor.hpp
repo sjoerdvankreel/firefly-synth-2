@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_plug/dsp/shared/FFCombFilter.hpp>
 #include <playground_plug/dsp/shared/FFStateVariableFilter.hpp>
 #include <playground_plug/modules/effect/FFEffectTopo.hpp>
@@ -11,9 +12,11 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-inline int constexpr EffectOversampleFactor = 2;
-inline int constexpr EffectOversampleTimes = 1 << EffectOversampleFactor;
-inline int constexpr EffectFixedBlockOversamples = FBFixedBlockSamples * EffectOversampleTimes;
+// Show at least 1 sample of the comb filter.
+inline float constexpr FFEffectPlotLengthSeconds = 0.01f;
+inline int constexpr FFEffectOversampleFactor = 2;
+inline int constexpr FFEffectOversampleTimes = 1 << FFEffectOversampleFactor;
+inline int constexpr FFEffectFixedBlockOversamples = FBFixedBlockSamples * FFEffectOversampleTimes;
 
 class FFEffectProcessor final
 {
@@ -35,46 +38,46 @@ class FFEffectProcessor final
 
   void ProcessComb(
     int block, float oversampledRate,
-    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain);
+    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain);
 
   void ProcessStVar(
     int block, float oversampledRate,
-    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain);
+    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain);
 
   void ProcessSkew(
     int block,
-    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
 
   void ProcessClip(
     int block,
-    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
 
   void ProcessFold(
     int block,
-    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+    FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
 
 public:
   FFEffectProcessor();
