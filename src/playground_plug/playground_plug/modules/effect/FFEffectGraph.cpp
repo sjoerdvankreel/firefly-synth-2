@@ -55,12 +55,15 @@ EffectGraphRenderData::DoProcess(
   int moduleSlot = moduleProcState->moduleSlot;
   FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::On, 0 };
   bool on = state->AudioParamBool(indices, false, -1);
+  if (!on)
+    return 0;
+
   if (graphIndex != FFEffectBlockCount)
   {
     indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
     plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb;
-    if (!on || kind == FFEffectKind::Off)
+    if (kind == FFEffectKind::Off)
       return 0;
   }
 
