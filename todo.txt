@@ -1,5 +1,6 @@
 release build is borked
 comb filter not delay line?
+painting is sooo slow sure ok it's doing N samples on M frames so quadratic but how to fix it?
 store the graph fft somewhere
 phys more gain
 comb filter with delay line
