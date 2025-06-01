@@ -26,9 +26,13 @@ _sampleRate(hostContext->SampleRate()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
-  for (int n = 0; n < FFPhysCount; n++)
-    for (int v = 0; v < FBMaxVoices; v++)
-      _procState->dsp.voice[v].phys[n].processor->InitializeBuffers(false, _sampleRate);
+  for (int v = 0; v < FBMaxVoices; v++)
+  {
+    for (int i = 0; i < FFEffectCount; i++)
+      _procState->dsp.voice[v].effect[i].processor->InitializeBuffers(_sampleRate);
+    for (int i = 0; i < FFPhysCount; i++)
+      _procState->dsp.voice[v].phys[i].processor->InitializeBuffers(false, _sampleRate);
+  }
 }
 
 FBModuleProcState

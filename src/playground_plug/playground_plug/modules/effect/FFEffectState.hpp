@@ -14,6 +14,7 @@ struct FBStaticModule;
 
 class alignas(FBSIMDAlign) FFEffectDSPState final
 {
+  friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
   friend struct EffectGraphRenderData;
   std::unique_ptr<FFEffectProcessor> processor = {};

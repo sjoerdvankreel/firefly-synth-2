@@ -34,7 +34,9 @@ FFEffectProcessor&
 EffectGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  return *procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].processor;
+  auto& processor = *procState->dsp.voice[state.voice->slot].effect[state.moduleSlot].processor;
+  processor.InitializeBuffers(state.input->sampleRate);
+  return processor;
 }
 
 void 
