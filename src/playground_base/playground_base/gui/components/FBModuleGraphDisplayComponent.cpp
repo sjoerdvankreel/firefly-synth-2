@@ -1,4 +1,5 @@
 #include <playground_base/dsp/shared/FBDSPUtility.hpp>
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 #include <playground_base/gui/components/FBModuleGraphDisplayComponent.hpp>
 
@@ -150,12 +151,13 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    g.setColour(Colours::darkgrey);
     auto textBounds = getLocalBounds();
     auto x0 = PointXLocation(graph, 0.0f);
     auto x1 = PointXLocation(graph, 1.0f);
     textBounds = Rectangle<int>(x0, textBounds.getY(), x1 - x0, textBounds.getHeight());
-    g.drawText(graphData.moduleName + " " + graphData.text, textBounds, Justification::centred, false);
+    g.setColour(Colours::darkgrey);
+    g.setFont(FBGUIGetFont().withHeight(24.0f));
+    g.drawText(graphData.text, textBounds, Justification::centred, false);
 
     if (maxSizeAllSeries != 0)
     {

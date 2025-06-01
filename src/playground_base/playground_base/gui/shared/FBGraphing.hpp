@@ -163,7 +163,6 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
       assert(renderData.voiceMonoOutputSelector != nullptr);
   }
 
-  graphData->graphs[graphIndex].text = "OFF";
   moduleProcState->anyExchangeActive = false;
   int maxDspSampleCount = renderData.plotSamplesSelector(graphData);
 
@@ -193,9 +192,6 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     renderState->PrepareForRenderPrimaryVoice();
   moduleProcState->renderType = FBRenderType::GraphPrimary;
   FBRenderModuleGraphSeries<Global, Stereo>(renderData, false, -1, graphIndex, graphData->graphs[graphIndex].primarySeries);
-  float guiDurationSeconds = renderData.graphData->graphs[graphIndex].primarySeries.l.size() / moduleProcState->input->sampleRate;
-  if(guiDurationSeconds > 0.0f)
-    renderData.graphData->graphs[graphIndex].text = FBFormatDouble(guiDurationSeconds, FBDefaultDisplayPrecision) + " Sec";
   
   renderState->PrepareForRenderExchange();
   if constexpr (Global)

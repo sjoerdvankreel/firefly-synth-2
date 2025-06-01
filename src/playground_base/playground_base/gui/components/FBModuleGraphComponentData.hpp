@@ -30,7 +30,6 @@ private:
 
 public:
   std::string text = {};
-  std::string moduleName = {};
   std::vector<int> primaryMarkers = {};
   FBModuleGraphPoints primarySeries = {};
   std::vector<FBModuleGraphSecondarySeries> secondarySeries = {};

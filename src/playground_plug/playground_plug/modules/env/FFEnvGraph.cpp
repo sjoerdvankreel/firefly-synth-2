@@ -108,7 +108,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   
   FBRenderModuleGraph<false, false>(renderData, 0);
   FBTopoIndices indices = { (int)FFModuleType::Env, graphData->renderState->ModuleProcState()->moduleSlot };
-  graphData->graphs[0].moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;  
+  graphData->graphs[0].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;  
 }
 
 void
