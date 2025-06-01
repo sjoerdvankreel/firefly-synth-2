@@ -10,11 +10,10 @@ template <class T, int N>
 class alignas(FBSIMDTraits<T>::Align) FBSArray final
 {
   static_assert(N % FBSIMDTraits<T>::Size == 0);
-  alignas(FBSIMDTraits<T>::Align) std::array<T, N> _data = {};
+  alignas(FBSIMDTraits<T>::Align) std::array<T, N> _data; // DONT init, is expensive
 
 public:
-  FBSArray() = default;
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBSArray);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBSArray);
   FBSArray(FBBatch<T> val) { Fill(val); }
   FBSArray(T val) { Fill(FBBatch<T>(val)); }
 
