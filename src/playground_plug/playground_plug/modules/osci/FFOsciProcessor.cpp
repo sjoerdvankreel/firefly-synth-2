@@ -1056,7 +1056,7 @@ _oversampler(
 }
 
 void
-FFOsciProcessor::BeginVoice(FBModuleProcState& state)
+FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -1114,7 +1114,7 @@ FFOsciProcessor::BeginVoice(FBModuleProcState& state)
 
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
   _modMatrixExpoFM = modTopo.NormalizedToBoolFast(FFOsciModParam::ExpoFM, modExpoFMNorm);
-  _oversampleTimes = oversample ? FFOsciOversampleTimes : 1;
+  _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
 
   for (int modSlot = modStartSlot; modSlot < modStartSlot + state.moduleSlot; modSlot++)
   {

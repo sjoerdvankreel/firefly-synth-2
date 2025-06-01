@@ -6,7 +6,7 @@
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 
 void 
-FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
+FFOsciModProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -14,7 +14,7 @@ FFOsciModProcessor::BeginVoice(FBModuleProcState& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
 
   auto const& oversampleNorm = procParams.block.oversample[0].Voice()[voice];
-  _oversample = topo.NormalizedToBoolFast(FFOsciModParam::Oversample, oversampleNorm);
+  _oversample = !graph && topo.NormalizedToBoolFast(FFOsciModParam::Oversample, oversampleNorm);
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {
     auto const& fmOnNorm = procParams.block.fmOn[i].Voice()[voice];

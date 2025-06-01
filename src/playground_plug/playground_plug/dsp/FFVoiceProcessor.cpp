@@ -23,11 +23,11 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     procState->dsp.voice[voice].env[i].processor->BeginVoice(state);
   }
   state.moduleSlot = 0;
-  procState->dsp.voice[voice].osciMod.processor->BeginVoice(state);
+  procState->dsp.voice[voice].osciMod.processor->BeginVoice(false, state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    procState->dsp.voice[voice].osci[i].processor->BeginVoice(state);
+    procState->dsp.voice[voice].osci[i].processor->BeginVoice(false, state);
   }
   for (int i = 0; i < FFPhysCount; i++)
   {

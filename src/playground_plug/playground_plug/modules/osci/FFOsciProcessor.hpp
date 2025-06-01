@@ -55,5 +55,5 @@ public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
   int Process(FBModuleProcState& state);
-  void BeginVoice(FBModuleProcState& state);
+  void BeginVoice(bool graph, FBModuleProcState& state);
 };

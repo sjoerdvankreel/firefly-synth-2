@@ -33,11 +33,11 @@ OscisGraphRenderData::DoBeginVoice(
   int osciSlot = moduleProcState->moduleSlot;
   assert(osciSlot == graphIndex);
   moduleProcState->moduleSlot = 0;
-  GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(*moduleProcState);
+  GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(true, *moduleProcState);
   for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
-    GetVoiceDSPState(*moduleProcState).osci[i].processor->BeginVoice(*moduleProcState);
+    GetVoiceDSPState(*moduleProcState).osci[i].processor->BeginVoice(true, *moduleProcState);
   }
   moduleProcState->moduleSlot = osciSlot;
 }
