@@ -1,14 +1,7 @@
 make it see what the voice are doing for fx
-ktrk center note
 comb filter with delay line
-total graph for all fx blocks
 do actual frequency response plot without explicit fft if possible?
 should a voice receive events after its released (but still playing)?
-dc correct the shaper bias ?
-fix up all the graph texts
-drv/mix/skew/mode (=all forms) + exp
-+ type = uni/bi for the skwer
-
 noise peaks at high vals with 8 uni count
 test clap, more hosts, winlinmac
 actual release build
