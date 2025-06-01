@@ -25,6 +25,7 @@ public juce::Component
   FBPlugGUI* const _plugGUI;
   std::unique_ptr<FBModuleGraphComponentData> _data;
   std::unique_ptr<FBModuleGraphDisplayComponent> _display;
+  std::chrono::high_resolution_clock::time_point _updated = {};
 
   bool PrepareForRender(int moduleIndex);
   FBTopoIndices const& TopoIndicesFor(int moduleIndex) const;

@@ -1,3 +1,4 @@
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <playground_base/base/state/proc/FBModuleProcState.hpp>
 #include <playground_base/base/state/main/FBGraphRenderState.hpp>
@@ -45,9 +46,19 @@ FBModuleGraphComponent::resized()
 void
 FBModuleGraphComponent::RequestRerender(int moduleIndex)
 {
+  using std::chrono::milliseconds;
+  using std::chrono::duration_cast;
+  using std::chrono::high_resolution_clock;
+
   if (!PrepareForRender(moduleIndex))
     return;
   _tweakedModuleByUI = moduleIndex;
+
+  auto now = high_resolution_clock::now();
+  auto elapsedMillis = duration_cast<milliseconds>(now - _updated);
+  if (elapsedMillis.count() < 1000.0 / FBGUIFPS)
+    return;
+  _updated = now;
   repaint();
 }
 
