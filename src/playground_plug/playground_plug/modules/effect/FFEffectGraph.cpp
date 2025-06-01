@@ -43,7 +43,7 @@ EffectGraphRenderData::DoBeginVoice(
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).BeginVoice(true, graphIndex, *moduleProcState);
+  GetProcessor(*moduleProcState).BeginVoice(true, graphIndex, totalSamples, *moduleProcState);
 }
 
 int 
@@ -76,9 +76,8 @@ EffectGraphRenderData::DoProcess(
       else
         input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   
-  GetProcessor(*moduleProcState).Process(*moduleProcState);
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
-  return std::clamp(totalSamples - samplesProcessed[graphIndex], 0, FBFixedBlockSamples);
+  return GetProcessor(*moduleProcState).Process(*moduleProcState);
 }
 
 void
@@ -87,7 +86,6 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   EffectGraphRenderData renderData = {};
   graphData->bipolar = true;
   graphData->drawClipBoundaries = true;
-  graphData->skipDrawOnEqualsPrimary = false;
   renderData.graphData = graphData;
   renderData.plotSamplesSelector = PlotSamples;
   renderData.totalSamples = PlotSamples(graphData);

@@ -14,6 +14,8 @@
 
 using namespace juce::dsp;
 
+static float const PlotLengthSeconds = 0.01f;
+
 static inline FBBatch<float>
 Sin2(FBBatch<float> in)
 {
@@ -135,7 +137,7 @@ _oversampler(
 }
 
 void
-FFEffectProcessor::BeginVoice(bool graph, int graphIndex, FBModuleProcState& state)
+FFEffectProcessor::BeginVoice(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -150,6 +152,9 @@ FFEffectProcessor::BeginVoice(bool graph, int graphIndex, FBModuleProcState& sta
   auto const& onNorm = params.block.on[0].Voice()[voice];
   auto const& oversampleNorm = params.block.oversample[0].Voice()[voice];
 
+  _graph = graph;
+  _graphSamplesProcessed = 0;
+  _graphSampleCount = graphSampleCount;
   _key = static_cast<float>(state.voice->event.note.key);
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
@@ -354,7 +359,7 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-void
+int
 FFEffectProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
@@ -366,7 +371,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   if (!_on)
   {
     input.CopyTo(output);
-    return;
+    return FBFixedBlockSamples;
   }
 
   float sampleRate = state.input->sampleRate;
@@ -520,11 +525,14 @@ FFEffectProcessor::Process(FBModuleProcState& state)
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return;
+  {
+    _graphSamplesProcessed += FBFixedBlockSamples;
+    return std::clamp(_graphSampleCount - _graphSamplesProcessed, 0, FBFixedBlockSamples);
+  }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].effect[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = -1;
+  exchangeDSP.lengthSamples = FBTimeToSamples(PlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.effect[state.moduleSlot];
   exchangeParams.acc.trackingKey[0][voice] = trackingKeyNorm.Last();
@@ -544,4 +552,5 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     exchangeParams.acc.combFreqMin[i][voice] = combFreqMinNorm[i].Voice()[voice].Last();
     exchangeParams.acc.combFreqPlus[i][voice] = combFreqPlusNorm[i].Voice()[voice].Last();
   }
+  return FBFixedBlockSamples;
 }

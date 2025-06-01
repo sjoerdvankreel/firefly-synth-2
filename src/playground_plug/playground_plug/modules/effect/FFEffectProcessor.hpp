@@ -25,6 +25,9 @@ class FFEffectProcessor final
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
   std::array<FBCytomicFilterMode, FFEffectBlockCount> _stVarMode = {};
 
+  bool _graph = {};
+  int _graphSampleCount = {};
+  int _graphSamplesProcessed = {};
   juce::dsp::Oversampling<float> _oversampler;
   std::array<FBCytomicFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
@@ -61,6 +64,6 @@ class FFEffectProcessor final
 public:
   FFEffectProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
-  void Process(FBModuleProcState& state);
-  void BeginVoice(bool graph, int graphIndex, FBModuleProcState& state);
+  int Process(FBModuleProcState& state);
+  void BeginVoice(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 };
