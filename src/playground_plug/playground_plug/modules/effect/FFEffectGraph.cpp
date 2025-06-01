@@ -53,12 +53,14 @@ EffectGraphRenderData::DoProcess(
   bool plotSpecificFilter = false;
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
+  FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::On, 0 };
+  bool on = state->AudioParamBool(indices, false, -1);
   if (graphIndex != FFEffectBlockCount)
   {
-    FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
+    indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
     plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb;
-    if (kind == FFEffectKind::Off)
+    if (!on || kind == FFEffectKind::Off)
       return 0;
   }
 
@@ -95,16 +97,21 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   auto* renderState = graphData->renderState;
   auto* moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
+  FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::On, 0 };
+  bool on = renderState->AudioParamBool(indices, false, -1);
   for (int i = 0; i <= FFEffectBlockCount; i++)
   {
     FBRenderModuleGraph<false, false>(renderData, i);
     if (i == FFEffectBlockCount)
-      graphData->graphs[i].text = "ALL";
+      graphData->graphs[i].text = on? "ALL": "ALL OFF";
     else
     {
       FBParamTopoIndices indices = { (int)FFModuleType::Effect, moduleSlot, (int)FFEffectParam::Kind, i };
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
-      graphData->graphs[i].text = kind == FFEffectKind::Off ? std::to_string(i + 1) + " OFF" : std::to_string(i + 1);
+      bool blockOn = on && kind != FFEffectKind::Off;
+      graphData->graphs[i].text = std::to_string(i + 1);
+      if (!blockOn)
+        graphData->graphs[i].text += " OFF";
     }
   }
 }
