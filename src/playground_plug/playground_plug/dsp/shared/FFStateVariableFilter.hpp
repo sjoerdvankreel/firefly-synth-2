@@ -8,11 +8,12 @@
 #include <numbers>
 #include <cassert>
 
-enum class FBCytomicFilterMode
+enum class FFStateVariableFilterMode
 { LPF, BPF, HPF, BSF, APF, PEQ, BLL, LSH, HSH };
 
+// https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 template <int Channels>
-class alignas(FBSIMDAlign) FBCytomicFilter final
+class alignas(FBSIMDAlign) FFStateVariableFilter final
 {
   double _m0 = {};
   double _m1 = {};
@@ -24,17 +25,17 @@ class alignas(FBSIMDAlign) FBCytomicFilter final
   alignas(FBSIMDAlign) std::array<double, Channels> _ic2eq = {};
 
 public:
-  FB_NOCOPY_MOVE_DEFCTOR(FBCytomicFilter);
+  FB_NOCOPY_MOVE_DEFCTOR(FFStateVariableFilter);
   double Next(
     int channel, double in);
   void Set(
-    FBCytomicFilterMode mode, double sampleRate, 
+    FFStateVariableFilterMode mode, double sampleRate,
     double freqHz, double resNorm, double gainDb);
 };
 
 template <int Channels>
 inline double 
-FBCytomicFilter<Channels>::Next(
+FFStateVariableFilter<Channels>::Next(
   int channel, double in)
 {
   assert(!std::isnan(in));
@@ -55,8 +56,8 @@ FBCytomicFilter<Channels>::Next(
 
 template <int Channels>
 inline void 
-FBCytomicFilter<Channels>::Set(
-  FBCytomicFilterMode mode, double sampleRate, 
+FFStateVariableFilter<Channels>::Set(
+  FFStateVariableFilterMode mode, double sampleRate,
   double freqHz, double resNorm, double gainDb)
 {
   // need for graphs
@@ -66,14 +67,14 @@ FBCytomicFilter<Channels>::Set(
   double k = 2.0 - 2.0 * resNorm;
   double g = std::tan(std::numbers::pi * freqHz / sampleRate);
 
-  if (mode >= FBCytomicFilterMode::BLL)
+  if (mode >= FFStateVariableFilterMode::BLL)
   {
     a = std::pow(10.0, gainDb / 40.0);
     switch (mode)
     {
-    case FBCytomicFilterMode::BLL: k = k / a; break;
-    case FBCytomicFilterMode::LSH: g = g / std::sqrt(a); break;
-    case FBCytomicFilterMode::HSH: g = g * std::sqrt(a); break;
+    case FFStateVariableFilterMode::BLL: k = k / a; break;
+    case FFStateVariableFilterMode::LSH: g = g / std::sqrt(a); break;
+    case FFStateVariableFilterMode::HSH: g = g * std::sqrt(a); break;
     default: assert(false); break;
     }
   }
@@ -87,15 +88,15 @@ FBCytomicFilter<Channels>::Set(
   this->_m2 = 0.0f;
   switch (mode)
   {
-  case FBCytomicFilterMode::LPF: this->_m2 = 1.0; break;
-  case FBCytomicFilterMode::BPF: this->_m1 = 1.0; break;
-  case FBCytomicFilterMode::HPF: this->_m0 = 1.0; this->_m1 = -k; this->_m2 = -1.0; break;
-  case FBCytomicFilterMode::BSF: this->_m0 = 1.0; this->_m1 = -k; break;
-  case FBCytomicFilterMode::PEQ: this->_m0 = 1.0; this->_m1 = -k; this->_m2 = -2.0; break;
-  case FBCytomicFilterMode::APF: this->_m0 = 1.0; this->_m1 = -2.0 * k; break;
-  case FBCytomicFilterMode::BLL: this->_m0 = 1.0; this->_m1 = k * (a * a - 1.0); break;
-  case FBCytomicFilterMode::LSH: this->_m0 = 1.0; this->_m1 = k * (a - 1.0); this->_m2 = a * a - 1.0; break;
-  case FBCytomicFilterMode::HSH: this->_m0 = a * a; this->_m1 = k * (1.0 - a * a); this->_m2 = 1.0 - a * a; break;
+  case FFStateVariableFilterMode::LPF: this->_m2 = 1.0; break;
+  case FFStateVariableFilterMode::BPF: this->_m1 = 1.0; break;
+  case FFStateVariableFilterMode::HPF: this->_m0 = 1.0; this->_m1 = -k; this->_m2 = -1.0; break;
+  case FFStateVariableFilterMode::BSF: this->_m0 = 1.0; this->_m1 = -k; break;
+  case FFStateVariableFilterMode::PEQ: this->_m0 = 1.0; this->_m1 = -k; this->_m2 = -2.0; break;
+  case FFStateVariableFilterMode::APF: this->_m0 = 1.0; this->_m1 = -2.0 * k; break;
+  case FFStateVariableFilterMode::BLL: this->_m0 = 1.0; this->_m1 = k * (a * a - 1.0); break;
+  case FFStateVariableFilterMode::LSH: this->_m0 = 1.0; this->_m1 = k * (a - 1.0); this->_m2 = a * a - 1.0; break;
+  case FFStateVariableFilterMode::HSH: this->_m0 = a * a; this->_m1 = k * (1.0 - a * a); this->_m2 = 1.0 - a * a; break;
   default: assert(false);  break;
   }
 }

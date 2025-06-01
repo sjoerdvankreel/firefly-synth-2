@@ -1,16 +1,15 @@
 #pragma once
 
 #include <playground_base/base/shared/FBUtility.hpp>
-#include <playground_plug/dsp/shared/FFCytomicFilter.hpp>
+#include <playground_plug/dsp/shared/FFStateVariableFilter.hpp>
 
 #include <array>
 
 struct FBModuleProcState;
 
-// https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 class FFGFilterProcessor final
 {
-  FBCytomicFilter<2> _filter = {};
+  FFStateVariableFilter<2> _filter = {};
 
 public:
   void Process(FBModuleProcState& state);

@@ -166,7 +166,7 @@ FFEffectProcessor::BeginVoice(bool graph, int graphIndex, int graphSampleCount, 
     _clipMode[i] = topo.NormalizedToListFast<FFEffectClipMode>(FFEffectParam::ClipMode, clipModeNorm[i].Voice()[voice]);
     _foldMode[i] = topo.NormalizedToListFast<FFEffectFoldMode>(FFEffectParam::FoldMode, foldModeNorm[i].Voice()[voice]);
     _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(FFEffectParam::SkewMode, skewModeNorm[i].Voice()[voice]);
-    _stVarMode[i] = topo.NormalizedToListFast<FBCytomicFilterMode>(FFEffectParam::StVarMode, stVarModeNorm[i].Voice()[voice]);
+    _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(FFEffectParam::StVarMode, stVarModeNorm[i].Voice()[voice]);
     _stVarFilters[i] = {};
   }
 }  

@@ -20,7 +20,7 @@ FFGFilterProcessor::Process(FBModuleProcState& state)
   auto const& onNorm = procParams.block.on[0].Value();
   auto const& modeNorm = procParams.block.mode[0].Value();
   bool on = topo.NormalizedToBoolFast(FFGFilterParam::On, onNorm);
-  auto mode = topo.NormalizedToListFast<FBCytomicFilterMode>(FFGFilterParam::Mode, modeNorm);
+  auto mode = topo.NormalizedToListFast<FFStateVariableFilterMode>(FFGFilterParam::Mode, modeNorm);
 
   if (!on)
   {

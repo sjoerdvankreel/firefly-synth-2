@@ -1,10 +1,10 @@
 #pragma once
 
 #include <playground_plug/dsp/shared/FFDelayLine.hpp>
-#include <playground_plug/dsp/shared/FFCytomicFilter.hpp>
 #include <playground_plug/dsp/shared/FFBasicHPFilter.hpp>
 #include <playground_plug/dsp/shared/FFMarsagliaPRNG.hpp>
 #include <playground_plug/dsp/shared/FFParkMillerPRNG.hpp>
+#include <playground_plug/dsp/shared/FFStateVariableFilter.hpp>
 #include <playground_plug/modules/physical/FFPhysTopo.hpp>
 #include <playground_plug/modules/physical/FFPhysPhaseGenerator.hpp>
 #include <playground_plug/modules/osci_base/FFOsciProcessorBase.hpp>
@@ -39,8 +39,8 @@ public FFOsciProcessorBase
   FFPhysType _type = {};
   FFMarsagliaPRNG _normalPrng = {};
   FFParkMillerPRNG _uniformPrng = {};
-  FBCytomicFilter<FFOsciBaseUniMaxCount> _lpFilter = {};
-  FBCytomicFilter<FFOsciBaseUniMaxCount> _hpFilter = {};
+  FFStateVariableFilter<FFOsciBaseUniMaxCount> _lpFilter = {};
+  FFStateVariableFilter<FFOsciBaseUniMaxCount> _hpFilter = {};
   std::array<FFPhysUniVoiceState, FFOsciBaseUniMaxCount> _uniState = {};
 
   float Draw();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <playground_plug/dsp/shared/FFCytomicFilter.hpp>
+#include <playground_plug/dsp/shared/FFStateVariableFilter.hpp>
 #include <playground_plug/modules/effect/FFEffectTopo.hpp>
 
 #include <playground_base/base/shared/FBUtility.hpp>
@@ -23,13 +23,13 @@ class FFEffectProcessor final
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
   std::array<FFEffectSkewMode, FFEffectBlockCount> _skewMode = {};
-  std::array<FBCytomicFilterMode, FFEffectBlockCount> _stVarMode = {};
+  std::array<FFStateVariableFilterMode, FFEffectBlockCount> _stVarMode = {};
 
   bool _graph = {};
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
   juce::dsp::Oversampling<float> _oversampler;
-  std::array<FBCytomicFilter<2>, FFEffectBlockCount> _stVarFilters = {};
+  std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
   void ProcessStVar(
     int block, float oversampledRate,
