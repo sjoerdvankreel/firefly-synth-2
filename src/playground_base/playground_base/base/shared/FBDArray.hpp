@@ -20,6 +20,7 @@ public:
 
   void Resize(int count);
   int Count() const { return _count; }
+  void SetToZero() { std::memset(_data, 0, _count * sizeof(T)); }
   T Get(int pos) const { BoundsCheck(pos); return _data[pos]; };
   void Set(int pos, T val) { BoundsCheck(pos); _data[pos] = val; };
   void Store(int pos, FBBatch<T> val) { val.store_aligned(Ptr(pos)); }
@@ -32,8 +33,11 @@ template <class T>
 inline void
 FBDArray<T>::Resize(int count)
 {
-  FBAlignedFree(_data); 
-  _count = count; 
-  _data = static_cast<T*>(FBAlignedAlloc(FBSIMDAlign, count * sizeof(T)));
   assert(count % FBSIMDTraits<T>::Size == 0);
+  if (_count != count)
+  {
+    FBAlignedFree(_data);
+    _count = count;
+    _data = static_cast<T*>(FBAlignedAlloc(FBSIMDAlign, count * sizeof(T)));
+  }  
 }

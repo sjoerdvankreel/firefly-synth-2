@@ -1,5 +1,5 @@
+phys more gain
 comb filter with delay line
-do actual frequency response plot without explicit fft if possible?
 should a voice receive events after its released (but still playing)?
 noise peaks at high vals with 8 uni count
 test clap, more hosts, winlinmac

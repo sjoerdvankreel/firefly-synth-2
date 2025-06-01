@@ -17,6 +17,7 @@ public:
   float Pop();
   void Push(float val);
   void Delay(float delay);
+  void SetToZero() { _data.SetToZero(); }
   int Count() const { return _data.Count(); }
   void Resize(int count) { _data.Resize(count); }
 };

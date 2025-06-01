@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_plug/dsp/shared/FFCombFilter.hpp>
 #include <playground_plug/dsp/shared/FFStateVariableFilter.hpp>
 #include <playground_plug/modules/effect/FFEffectTopo.hpp>
 
@@ -29,7 +30,18 @@ class FFEffectProcessor final
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
   juce::dsp::Oversampling<float> _oversampler;
+  std::array<FFCombFilter<2>, FFEffectBlockCount> _combFilters = {};
   std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
+
+  void ProcessComb(
+    int block, float oversampledRate,
+    FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+    FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
+    FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain);
 
   void ProcessStVar(
     int block, float oversampledRate,
@@ -39,6 +51,7 @@ class FFEffectProcessor final
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain);
+
   void ProcessSkew(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
@@ -46,6 +59,7 @@ class FFEffectProcessor final
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+
   void ProcessClip(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
@@ -53,6 +67,7 @@ class FFEffectProcessor final
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
     FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);
+
   void ProcessFold(
     int block,
     FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
@@ -65,5 +80,6 @@ public:
   FFEffectProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
   int Process(FBModuleProcState& state);
+  void InitializeBuffers(float sampleRate);
   void BeginVoice(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 };

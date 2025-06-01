@@ -137,6 +137,13 @@ _oversampler(
   _oversampler.initProcessing(FBFixedBlockSamples);
 }
 
+void 
+FFEffectProcessor::InitializeBuffers(float sampleRate)
+{
+  for (int i = 0; i < FFEffectBlockCount; i++)
+    _combFilters[i].Resize(sampleRate * EffectOversampleTimes, FFMinFilterFreq);
+}
+
 void
 FFEffectProcessor::BeginVoice(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state)
 {
@@ -169,8 +176,38 @@ FFEffectProcessor::BeginVoice(bool graph, int graphIndex, int graphSampleCount, 
     _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(FFEffectParam::SkewMode, skewModeNorm[i].Voice()[voice]);
     _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(FFEffectParam::StVarMode, stVarModeNorm[i].Voice()[voice]);
     _stVarFilters[i] = {};
+    _combFilters[i].SetToZero();
   }
 }  
+
+void 
+FFEffectProcessor::ProcessComb(
+  int block, float oversampledRate,
+  FBSArray2<float, EffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray<float, EffectFixedBlockOversamples> const& trackingKeyPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
+  FBSArray2<float, EffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain)
+{
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    auto trkk = trackingKeyPlain.Get(s);
+    auto ktrk = combKeyTrkPlain[block].Get(s);
+    auto resMin = combResMinPlain[block].Get(s);
+    auto resPlus = combResPlusPlain[block].Get(s);
+    auto freqMin = combFreqMinPlain[block].Get(s);
+    auto freqPlus = combFreqPlusPlain[block].Get(s);
+    auto freqMul = std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
+    freqMin *= freqMul;
+    freqPlus *= freqMul;
+    _combFilters[block].Set(oversampledRate, freqPlus, resPlus, freqMin, resMin);
+    for (int c = 0; c < 2; c++)
+      oversampled[c].Set(s, _combFilters[block].Next(c, oversampled[c].Get(s)));
+  }
+}
 
 void 
 FFEffectProcessor::ProcessStVar(
@@ -503,6 +540,9 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       break;
     case FFEffectKind::StVar:
       ProcessStVar(i, oversampledRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
+      break;
+    case FFEffectKind::Comb:
+      ProcessComb(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
       break;
     default:
       break;
