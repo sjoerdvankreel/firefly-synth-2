@@ -39,7 +39,7 @@ PhysGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   auto& processor = *procState->dsp.voice[state.voice->slot].phys[state.moduleSlot].processor;
-  processor.Initialize(true, state.input->sampleRate);
+  processor.InitializeBuffers(true, state.input->sampleRate);
   return processor;
 }
 

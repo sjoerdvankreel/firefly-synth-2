@@ -53,7 +53,7 @@ public FFOsciProcessorBase
 public:
   FFPhysProcessor();
   int Process(FBModuleProcState& state);
-  void Initialize(bool graph, float sampleRate);
+  void InitializeBuffers(bool graph, float sampleRate);
   void BeginVoice(bool graph, FBModuleProcState& state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPhysProcessor);
 };

@@ -28,7 +28,7 @@ _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()
 {
   for (int n = 0; n < FFPhysCount; n++)
     for (int v = 0; v < FBMaxVoices; v++)
-      _procState->dsp.voice[v].phys[n].processor->Initialize(false, _sampleRate);
+      _procState->dsp.voice[v].phys[n].processor->InitializeBuffers(false, _sampleRate);
 }
 
 FBModuleProcState

@@ -27,7 +27,7 @@ FFPhysProcessor::
 FFPhysProcessor() {}
 
 void
-FFPhysProcessor::Initialize(bool graph, float sampleRate)
+FFPhysProcessor::InitializeBuffers(bool graph, float sampleRate)
 {
   int delayLineSize = graph ? GraphDelayLineSize : AudioDelayLineSize;
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
