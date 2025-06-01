@@ -107,8 +107,12 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
   
   FBRenderModuleGraph<false, false>(renderData, 0);
-  FBTopoIndices indices = { (int)FFModuleType::Env, graphData->renderState->ModuleProcState()->moduleSlot };
-  graphData->graphs[0].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(indices)->name;  
+  int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
+  FBTopoIndices modIndices = { (int)FFModuleType::Env, moduleSlot};
+  FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFEnvParam::Type, 0 };
+  graphData->graphs[0].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+  if (graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1) == FFEnvType::Off)
+    graphData->graphs[0].text += " OFF";
 }
 
 void
