@@ -15,12 +15,22 @@ class FFDelayLine final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFDelayLine);
   float Pop();
+  void Reset();
   void Push(float val);
   void Delay(float delay);
-  void SetToZero() { _data.SetToZero(); }
   int Count() const { return _data.Count(); }
   void Resize(int count) { _data.Resize(count); }
 };
+
+inline void
+FFDelayLine::Reset()
+{
+  _read = 0;
+  _write = 0;
+  _delayWhole = 0;
+  _delayFraction = 0;
+  _data.SetToZero();
+}
 
 inline void
 FFDelayLine::Delay(float delay)
@@ -37,6 +47,7 @@ FFDelayLine::Push(float val)
   assert(!std::isinf(val));
   _data.Set(_write, val);
   _write = (_write + Count() - 1) % Count();
+  assert(0 <= _write && _write < Count());
 }
 
 inline float
@@ -47,5 +58,6 @@ FFDelayLine::Pop()
   float val1 = _data.Get(pos1);
   float val2 = _data.Get(pos2);
   _read = (_read + Count() - 1) % Count();
+  assert(0 <= _read && _read < Count());
   return val1 + _delayFraction * (val2 - val1);
 }

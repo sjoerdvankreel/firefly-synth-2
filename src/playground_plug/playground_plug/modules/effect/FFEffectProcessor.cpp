@@ -176,7 +176,7 @@ FFEffectProcessor::BeginVoice(bool graph, int graphIndex, int graphSampleCount, 
     _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(FFEffectParam::SkewMode, skewModeNorm[i].Voice()[voice]);
     _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(FFEffectParam::StVarMode, stVarModeNorm[i].Voice()[voice]);
     _stVarFilters[i] = {};
-    _combFilters[i].SetToZero();
+    _combFilters[i].Reset();
   }
 }  
 

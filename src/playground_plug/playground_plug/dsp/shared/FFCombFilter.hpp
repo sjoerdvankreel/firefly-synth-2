@@ -19,7 +19,7 @@ class alignas(FBSIMDAlign) FFCombFilter final
 
 public:
   FB_NOCOPY_MOVE_DEFCTOR(FFCombFilter);
-  void SetToZero();
+  void Reset();
   float Next(int channel, float in);
   void Resize(float sampleRate, float minFreq);
   void Set(float sampleRate, float freqPlus, float resPlus, float freqMin, float resMin);
@@ -27,12 +27,12 @@ public:
 
 template <int Channels>
 inline void
-FFCombFilter<Channels>::SetToZero()
+FFCombFilter<Channels>::Reset()
 {
   for (int c = 0; c < Channels; c++)
   {
-    this->_delayLinesMin[c].SetToZero();
-    this->_delayLinesPlus[c].SetToZero();
+    this->_delayLinesMin[c].Reset();
+    this->_delayLinesPlus[c].Reset();
   }
 }
 
@@ -82,7 +82,7 @@ FFCombFilter<Channels>::Set(
   freqPlus = std::clamp(freqPlus, 0.0f, sampleRate * 0.5f);
   for (int c = 0; c < Channels; c++)
   {
-    _delayLinesMin[c].Delay(1.0f / freqMin);
-    _delayLinesPlus[c].Delay(1.0f / freqPlus);
+    _delayLinesMin[c].Delay(sampleRate / freqMin);
+    _delayLinesPlus[c].Delay(sampleRate / freqPlus);
   }
 }

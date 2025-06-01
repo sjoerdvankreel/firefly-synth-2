@@ -145,6 +145,7 @@ FFPhysProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     _uniState[u].prevDelayVal = 0.0f;
     _uniState[u].phaseTowardsX = 0.0f;
     _uniState[u].colorFilterPosition = 0;
+    _uniState[u].delayLine.Reset();
 
     for (int p = 0; p < _poles; p++)
       _uniState[u].colorFilterBuffer.Set(p, Draw());
