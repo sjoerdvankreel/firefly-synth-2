@@ -69,7 +69,7 @@ EffectGraphRenderData::DoPostProcess(
 
   auto nextPow2 = std::bit_ceil(points.l.size());
   int order = std::bit_width(nextPow2) - 1;
-  // todo reuse
+  // todo reuse?
   juce::dsp::FFT fft(order);
   points.l.resize(nextPow2 * 2);
   fft.performFrequencyOnlyForwardTransform(points.l.data(), true);
