@@ -28,7 +28,6 @@ _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
   _data->renderState = renderState;
   _grid = std::make_unique<FBGridComponent>(FBGridType::Module, 1, 1);
   _grid->Add(0, 0, _display.get());
-  _grid->MarkSection({ 0, 0, 1, 1 });
   _section = std::make_unique<FBSectionComponent>(_grid.get());
   addAndMakeVisible(_section.get());
   resized();

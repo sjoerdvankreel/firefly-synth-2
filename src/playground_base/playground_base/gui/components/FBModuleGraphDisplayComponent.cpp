@@ -34,8 +34,13 @@ FBModuleGraphDisplayComponent::PointXLocation(
 {
   assert(!std::isnan(pointRelative));
   float graphCount = static_cast<float>(_data->graphs.size());
-  float graphPointRelative = (graph + pointRelative) / graphCount;
-  return HalfMarkerSize + graphPointRelative * (getWidth() - MarkerSize);
+  float gapWidth = 3.0f;
+  float gapCount = graphCount - 1.0f;
+  float graphWidth = std::floor((getWidth() - gapCount * gapWidth) / graphCount);
+  float graphLeft = graph * (graphWidth + gapWidth);
+  if (graph == graphCount - 1)
+    graphWidth += (getWidth() - gapCount * gapWidth - graphCount * graphWidth);
+  return graphLeft + pointRelative * graphWidth;
 }
 
 float 
@@ -122,7 +127,7 @@ FBModuleGraphDisplayComponent::PaintSeries(
 
 void
 FBModuleGraphDisplayComponent::paint(Graphics& g)
-{
+{  
   for (int graph = 0; graph < _data->graphs.size(); graph++)
   {
     int maxSizeAllSeries;
@@ -151,13 +156,15 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    auto textBounds = getLocalBounds();
+    auto bounds = getLocalBounds();
     auto x0 = PointXLocation(graph, 0.0f);
     auto x1 = PointXLocation(graph, 1.0f);
-    textBounds = Rectangle<int>(x0, textBounds.getY(), x1 - x0, textBounds.getHeight());
+    auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
+    g.setColour(Colour(0xFF181818));
+    g.fillRoundedRectangle(graphBounds.toFloat(), 2.0f);
     g.setColour(Colours::darkgrey);
     g.setFont(FBGUIGetFont().withHeight(24.0f));
-    g.drawText(graphData.text, textBounds, Justification::centred, false);
+    g.drawText(graphData.text, graphBounds, Justification::centred, false);
 
     if (maxSizeAllSeries != 0)
     {
