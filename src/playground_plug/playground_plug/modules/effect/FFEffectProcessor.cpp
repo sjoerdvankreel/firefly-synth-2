@@ -125,6 +125,14 @@ FoldBack(FBBatch<float> in)
   return out.Load(0);
 }
 
+static float
+GetGraphFilterFreqMultiplier(bool graph, float sampleRate)
+{
+  if (graph && sampleRate < (FFMaxFilterFreq * 2.0f))
+    return sampleRate / (FFMaxFilterFreq * 2.0f);
+  return 1.0f;
+}
+
 FFEffectProcessor::
 FFEffectProcessor() :
 _oversampler(
@@ -135,10 +143,12 @@ _oversampler(
 }
 
 void 
-FFEffectProcessor::InitializeBuffers(float sampleRate)
+FFEffectProcessor::InitializeBuffers(
+  bool graph, float sampleRate)
 {
+  float graphFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, sampleRate);
   for (int i = 0; i < FFEffectBlockCount; i++)
-    _combFilters[i].Resize(sampleRate * FFEffectOversampleTimes, FFMinFilterFreq);
+    _combFilters[i].Resize(sampleRate * FFEffectOversampleTimes, FFMinFilterFreq * graphFilterFreqMultiplier);
 }
 
 void
@@ -161,7 +171,7 @@ FFEffectProcessor::BeginVoice(
   _graph = graph;
   _graphSamplesProcessed = 0;
   _graphSampleCount = graphSampleCount;
-  _graphFilterFreqMultiplier = graph ? state.input->sampleRate / (FFMaxFilterFreq * 2.0f) : 1.0f;
+  _graphFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, state.input->sampleRate);
 
   _key = static_cast<float>(state.voice->event.note.key);
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
