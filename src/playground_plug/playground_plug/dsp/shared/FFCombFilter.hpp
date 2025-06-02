@@ -1,6 +1,7 @@
 #pragma once
 
 #include <playground_plug/dsp/shared/FFDelayLine.hpp>
+#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
@@ -77,11 +78,22 @@ FFCombFilter<Channels>::Set(
   float freqPlus, float resPlus,
   float freqMin, float resMin)
 {
-  // need for graphs
+  // check for graphs
+#ifndef NDEBUG
+  float nyquist = sampleRate * 0.5f;
+  float minFilterFreq = FFMinFilterFreq;
+  float maxFilterFreq = FFMaxFilterFreq;
+  if (FFMaxFilterFreq > nyquist)
+  {
+    minFilterFreq *= nyquist / FFMaxFilterFreq;
+    maxFilterFreq *= nyquist / FFMaxFilterFreq;
+  }
+  assert(minFilterFreq <= freqMin && freqMin <= maxFilterFreq);
+  assert(minFilterFreq <= freqPlus && freqPlus <= maxFilterFreq);
+#endif
+
   _resMin = resMin * FFMaxFilterRes;
   _resPlus = resPlus * FFMaxFilterRes;
-  freqMin = std::clamp(freqMin, 0.0f, sampleRate * 0.5f);
-  freqPlus = std::clamp(freqPlus, 0.0f, sampleRate * 0.5f);
   for (int c = 0; c < Channels; c++)
   {
     _delayLinesMin[c].Delay(sampleRate / freqMin);

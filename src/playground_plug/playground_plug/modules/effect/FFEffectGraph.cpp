@@ -26,11 +26,12 @@ public FBModuleGraphRenderData<EffectGraphRenderData>
 static FBModuleGraphPlotParams
 PlotParams(FBModuleGraphComponentData const* data)
 {
-  // Need same sample rate for dsp and gui because filters.
+  // Need to know SR for graphing because filters.
+  // Figure it out so that FFEffectPlotLengthSeconds equals pixel width.
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
-  result.sampleRate = data->renderState->ExchangeContainer()->Host()->sampleRate;
-  result.sampleCount = static_cast<int>(FFEffectPlotLengthSeconds * result.sampleRate);
+  result.sampleCount = data->pixelWidth;
+  result.sampleRate = data->pixelWidth / FFEffectPlotLengthSeconds;
   return result;
 }
 
@@ -49,7 +50,8 @@ EffectGraphRenderData::DoBeginVoice(
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).BeginVoice(true, graphIndex, totalSamples, *moduleProcState);
+  auto dspSampleRate = state->ExchangeContainer()->Host()->sampleRate;
+  GetProcessor(*moduleProcState).BeginVoice(true, graphIndex, totalSamples, dspSampleRate, *moduleProcState);
 }
 
 void

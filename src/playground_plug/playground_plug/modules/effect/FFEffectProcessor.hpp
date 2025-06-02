@@ -32,6 +32,7 @@ class FFEffectProcessor final
   bool _graph = {};
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
+  float _graphFilterFreqMultiplier = {};
   juce::dsp::Oversampling<float> _oversampler;
   std::array<FFCombFilter<2>, FFEffectBlockCount> _combFilters = {};
   std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
@@ -84,5 +85,5 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
   int Process(FBModuleProcState& state);
   void InitializeBuffers(float sampleRate);
-  void BeginVoice(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+  void BeginVoice(bool graph, int graphIndex, int graphSampleCount, float dspSampleRate, FBModuleProcState& state);
 };

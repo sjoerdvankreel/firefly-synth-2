@@ -61,8 +61,18 @@ FFStateVariableFilter<Channels>::Set(
   FFStateVariableFilterMode mode, double sampleRate,
   double freqHz, double resNorm, double gainDb)
 {
-  // need for graphs
-  freqHz = std::clamp(freqHz, 0.0, sampleRate * 0.5f);
+  // check for graphs
+#ifndef NDEBUG
+  float nyquist = sampleRate * 0.5f;
+  float minFilterFreq = FFMinFilterFreq;
+  float maxFilterFreq = FFMaxFilterFreq;
+  if (FFMaxFilterFreq > nyquist)
+  {
+    minFilterFreq *= nyquist / FFMaxFilterFreq;
+    maxFilterFreq *= nyquist / FFMaxFilterFreq;
+  }
+  assert(minFilterFreq <= freqHz && freqHz <= maxFilterFreq);
+#endif
 
   double a;
   double k = 2.0 - 2.0 * resNorm * FFMaxFilterRes;
