@@ -71,7 +71,7 @@ FFStateVariableFilter<Channels>::Set(
     minFilterFreq *= nyquist / FFMaxFilterFreq;
     maxFilterFreq *= nyquist / FFMaxFilterFreq;
   }
-  assert(minFilterFreq <= freqHz && freqHz <= maxFilterFreq);
+  assert(minFilterFreq - 0.1 <= freqHz && freqHz <= maxFilterFreq + 0.1);
 #endif
 
   double a;

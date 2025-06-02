@@ -50,8 +50,7 @@ EffectGraphRenderData::DoBeginVoice(
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
-  auto dspSampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  GetProcessor(*moduleProcState).BeginVoice(true, graphIndex, totalSamples, dspSampleRate, *moduleProcState);
+  GetProcessor(*moduleProcState).BeginVoice(true, graphIndex, totalSamples, *moduleProcState);
 }
 
 void

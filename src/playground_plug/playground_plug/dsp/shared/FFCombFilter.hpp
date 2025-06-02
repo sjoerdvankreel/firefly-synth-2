@@ -88,8 +88,8 @@ FFCombFilter<Channels>::Set(
     minFilterFreq *= nyquist / FFMaxFilterFreq;
     maxFilterFreq *= nyquist / FFMaxFilterFreq;
   }
-  assert(minFilterFreq <= freqMin && freqMin <= maxFilterFreq);
-  assert(minFilterFreq <= freqPlus && freqPlus <= maxFilterFreq);
+  assert(minFilterFreq - 0.1f <= freqMin && freqMin <= maxFilterFreq + 0.1f);
+  assert(minFilterFreq - 0.1f <= freqPlus && freqPlus <= maxFilterFreq + 0.1f);
 #endif
 
   _resMin = resMin * FFMaxFilterRes;

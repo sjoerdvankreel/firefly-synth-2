@@ -85,5 +85,5 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
   int Process(FBModuleProcState& state);
   void InitializeBuffers(float sampleRate);
-  void BeginVoice(bool graph, int graphIndex, int graphSampleCount, float dspSampleRate, FBModuleProcState& state);
+  void BeginVoice(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 };
