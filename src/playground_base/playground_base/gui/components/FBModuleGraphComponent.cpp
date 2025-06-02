@@ -102,6 +102,8 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->drawMarkers = false;
   _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
+  _data->graphRenderType = FBGraphRenderType::Basic; // TODO
+
   _data->graphs.clear();
   _data->graphs.resize(topo->static_.modules[staticIndex].graphCount);
   _data->pixelWidth = getWidth() / static_cast<int>(_data->graphs.size());

@@ -147,10 +147,11 @@ FBRenderModuleGraphSeries(
 
 template <bool Global, bool Stereo, class Derived>
 void
-FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex)
+FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex) 
 {
   auto graphData = renderData.graphData;
   auto renderState = graphData->renderState;
+  auto graphRenderType = graphData->graphRenderType;
   auto moduleProcState = renderState->ModuleProcState();
   auto exchangeState = renderState->ExchangeContainer()->Raw();
 
@@ -179,21 +180,24 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   if (maxDspSampleCount == 0)
     return;
 
-  if constexpr (Global)
+  if (graphRenderType == FBGraphRenderType::Full)
   {
-    auto moduleExchange = renderData.globalExchangeSelector(
-      exchangeState, moduleProcState->moduleSlot);
-    moduleProcState->anyExchangeActive |= moduleExchange->active;
-    if (moduleExchange->active)
-      maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
-  }
-  else for (int v = 0; v < FBMaxVoices; v++)
-  {
-    auto moduleExchange = renderData.voiceExchangeSelector(
-      exchangeState, v, moduleProcState->moduleSlot);
-    moduleProcState->anyExchangeActive |= moduleExchange->active;
-    if(moduleExchange->active)
-      maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
+    if constexpr (Global)
+    {
+      auto moduleExchange = renderData.globalExchangeSelector(
+        exchangeState, moduleProcState->moduleSlot);
+      moduleProcState->anyExchangeActive |= moduleExchange->active;
+      if (moduleExchange->active)
+        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
+    }
+    else for (int v = 0; v < FBMaxVoices; v++)
+    {
+      auto moduleExchange = renderData.voiceExchangeSelector(
+        exchangeState, v, moduleProcState->moduleSlot);
+      moduleProcState->anyExchangeActive |= moduleExchange->active;
+      if (moduleExchange->active)
+        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
+    }
   }
 
   float guiSampleRate;
@@ -216,6 +220,9 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   moduleProcState->renderType = FBRenderType::GraphPrimary;
   FBRenderModuleGraphSeries<Global, Stereo>(renderData, false, -1, graphIndex, graphData->graphs[graphIndex].primarySeries);
   
+  if (graphRenderType == FBGraphRenderType::Basic)
+    return;
+
   renderState->PrepareForRenderExchange();
   if constexpr (Global)
   {

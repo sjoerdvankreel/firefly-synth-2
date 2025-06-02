@@ -8,6 +8,8 @@
 
 class FBGraphRenderState;
 
+enum class FBGraphRenderType { Basic, Full };
+
 struct FBModuleGraphPoints final
 {
   std::vector<float> l = {};
@@ -45,5 +47,6 @@ struct FBModuleGraphComponentData final
   bool skipDrawOnEqualsPrimary = true;
   FBGraphRenderState* renderState = {};
   std::vector<FBModuleGraphData> graphs = {};
+  FBGraphRenderType graphRenderType = FBGraphRenderType::Basic;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };
