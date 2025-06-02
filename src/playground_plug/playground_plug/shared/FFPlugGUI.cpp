@@ -6,9 +6,10 @@
 #include <playground_plug/modules/effect/FFEffectGUI.hpp>
 #include <playground_plug/modules/master/FFMasterGUI.hpp>
 #include <playground_plug/modules/output/FFOutputGUI.hpp>
-#include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 #include <playground_plug/modules/physical/FFPhysGUI.hpp>
+#include <playground_plug/modules/gfilter/FFGFilterGUI.hpp>
 #include <playground_plug/modules/osci_mod/FFOsciModGUI.hpp>
+#include <playground_plug/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <playground_plug/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <playground_base/gui/glue/FBHostGUIContext.hpp>
@@ -100,16 +101,17 @@ FFPlugGUI::SetupGUI()
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
 
   _graph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 0, -1, rowSizes, std::vector<int> { 0, 0, 1 });
+  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 0, -1, rowSizes, std::vector<int> { 0, 0, 0, 1 });
   _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(0, 1, 1, 1, FFMakeOutputGUI(this));
-  _content->Add(0, 2, 1, 1, _graph);
-  _content->Add(1, 0, 1, 3, FFMakeGLFOGUI(this));
-  _content->Add(2, 0, 1, 3, FFMakeGFilterGUI(this));
-  _content->Add(3, 0, 1, 3, FFMakePhysGUI(this));
-  _content->Add(4, 0, 1, 3, FFMakeOsciGUI(this));
-  _content->Add(5, 0, 1, 3, FFMakeOsciModGUI(this));
-  _content->Add(6, 0, 1, 3, FFMakeEffectGUI(this));
-  _content->Add(7, 0, 1, 3, FFMakeEnvGUI(this));
+  _content->Add(0, 2, 1, 1, FFMakeGUISettingsGUI(this));
+  _content->Add(0, 3, 1, 1, _graph);
+  _content->Add(1, 0, 1, 4, FFMakeGLFOGUI(this));
+  _content->Add(2, 0, 1, 4, FFMakeGFilterGUI(this));
+  _content->Add(3, 0, 1, 4, FFMakePhysGUI(this));
+  _content->Add(4, 0, 1, 4, FFMakeOsciGUI(this));
+  _content->Add(5, 0, 1, 4, FFMakeOsciModGUI(this));
+  _content->Add(6, 0, 1, 4, FFMakeEffectGUI(this));
+  _content->Add(7, 0, 1, 4, FFMakeEnvGUI(this));
   addAndMakeVisible(_content);
 }
