@@ -81,6 +81,20 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
     _graph->RequestRerender(_graph->TweakedModuleByUI());
 }
 
+FBGUIRenderType 
+FFPlugGUI::GetRenderType() const
+{
+  FBParamTopoIndices indices = { (int)FFModuleType::GUISettings, 0, (int)FFGUISettingsGUIParam::GraphMode, 0 };
+  auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
+  auto normalized = HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex);
+  auto mode = static_cast<FFGUISettingsGraphMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
+  if (mode == FFGUISettingsGraphMode::Basic)
+    return FBGUIRenderType::Basic;
+  if (mode == FFGUISettingsGraphMode::Always)
+    return FBGUIRenderType::Full;
+  return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
+}
+
 void 
 FFPlugGUI::SetupGUI()
 {

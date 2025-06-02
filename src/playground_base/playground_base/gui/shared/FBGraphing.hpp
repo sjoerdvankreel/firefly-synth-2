@@ -7,6 +7,7 @@
 #include <playground_base/base/state/main/FBScalarStateContainer.hpp>
 #include <playground_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/dsp/plug/FBPlugBlock.hpp>
 #include <playground_base/gui/components/FBModuleGraphComponentData.hpp>
 
@@ -151,7 +152,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
 {
   auto graphData = renderData.graphData;
   auto renderState = graphData->renderState;
-  auto graphRenderType = graphData->graphRenderType;
+  auto guiRenderType = graphData->guiRenderType;
   auto moduleProcState = renderState->ModuleProcState();
   auto exchangeState = renderState->ExchangeContainer()->Raw();
 
@@ -180,7 +181,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   if (maxDspSampleCount == 0)
     return;
 
-  if (graphRenderType == FBGraphRenderType::Full)
+  if (guiRenderType == FBGUIRenderType::Full)
   {
     if constexpr (Global)
     {
@@ -220,7 +221,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   moduleProcState->renderType = FBRenderType::GraphPrimary;
   FBRenderModuleGraphSeries<Global, Stereo>(renderData, false, -1, graphIndex, graphData->graphs[graphIndex].primarySeries);
   
-  if (graphRenderType == FBGraphRenderType::Basic)
+  if (guiRenderType == FBGUIRenderType::Basic)
     return;
 
   renderState->PrepareForRenderExchange();

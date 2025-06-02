@@ -1,7 +1,8 @@
 #pragma once
 
-#include <playground_base/base/shared/FBUtility.hpp>
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/gui/shared/FBParamComponent.hpp>
+#include <playground_base/base/shared/FBUtility.hpp>
 #include <playground_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -34,6 +35,7 @@ public:
   void ShowHostMenuForAudioParam(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
+  virtual FBGUIRenderType GetRenderType() const = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
   virtual void GUIParamNormalizedChanged(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromUI(int index, double normalized);

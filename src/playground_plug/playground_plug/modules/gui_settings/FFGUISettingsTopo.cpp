@@ -35,7 +35,7 @@ FFMakeGUISettingsTopo()
   guiGraphMode.type = FBParamType::List;
   guiGraphMode.List().items = {
     { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Basic" },
-    { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Full" },
+    { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Always" },
     { "{A5369260-7E9F-4C23-8FED-0C42CAA9DD91}", "If Focus" } };
   auto selectGuiGraphMode = [](auto& module) { return &module.graphMode; };
   guiGraphMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphMode);

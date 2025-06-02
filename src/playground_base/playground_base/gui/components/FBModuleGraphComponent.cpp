@@ -43,6 +43,31 @@ FBModuleGraphComponent::resized()
   _section->resized();
 }
 
+FBTopoIndices const&
+FBModuleGraphComponent::TopoIndicesFor(int moduleIndex) const
+{
+  auto moduleProcState = _data->renderState->ModuleProcState();
+  return moduleProcState->topo->modules[moduleIndex].topoIndices;
+}
+
+FBStaticModule const&
+FBModuleGraphComponent::StaticModuleFor(int moduleIndex) const
+{
+  int staticIndex = TopoIndicesFor(moduleIndex).index;
+  auto moduleProcState = _data->renderState->ModuleProcState();
+  return moduleProcState->topo->static_.modules[staticIndex];
+}
+
+bool
+FBModuleGraphComponent::PrepareForRender(int moduleIndex)
+{
+  if (moduleIndex == -1)
+    return false;
+  auto moduleProcState = _data->renderState->ModuleProcState();
+  moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
+  return StaticModuleFor(moduleIndex).graphRenderer != nullptr;
+}
+
 void
 FBModuleGraphComponent::RequestRerender(int moduleIndex)
 {
@@ -54,37 +79,16 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
     return;
   _tweakedModuleByUI = moduleIndex;
 
+  float fps = FBGUIFPS;
   auto now = high_resolution_clock::now();
   auto elapsedMillis = duration_cast<milliseconds>(now - _updated);
-  if (elapsedMillis.count() < 1000.0 / FBGUIFPS)
+  if (auto* parent = findParentComponentOfClass<FBPlugGUI>())
+    if(parent->GetRenderType() == FBGUIRenderType::Basic)
+      fps = 1;
+  if (elapsedMillis.count() < 1000.0 / fps)
     return;
   _updated = now;
   repaint();
-}
-
-FBTopoIndices const&
-FBModuleGraphComponent::TopoIndicesFor(int moduleIndex) const
-{
-  auto moduleProcState = _data->renderState->ModuleProcState();
-  return moduleProcState->topo->modules[moduleIndex].topoIndices;
-}
-
-FBStaticModule const& 
-FBModuleGraphComponent::StaticModuleFor(int moduleIndex) const 
-{
-  int staticIndex = TopoIndicesFor(moduleIndex).index;
-  auto moduleProcState = _data->renderState->ModuleProcState();
-  return moduleProcState->topo->static_.modules[staticIndex];
-}
-
-bool 
-FBModuleGraphComponent::PrepareForRender(int moduleIndex)
-{
-  if (moduleIndex == -1)
-    return false;
-  auto moduleProcState = _data->renderState->ModuleProcState();
-  moduleProcState->moduleSlot = TopoIndicesFor(moduleIndex).slot;
-  return StaticModuleFor(moduleIndex).graphRenderer != nullptr;
 }
 
 void
@@ -102,7 +106,9 @@ FBModuleGraphComponent::paint(Graphics& g)
   _data->drawMarkers = false;
   _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
-  _data->graphRenderType = FBGraphRenderType::Basic; // TODO
+  _data->guiRenderType = FBGUIRenderType::Basic;
+  if(auto* parent = findParentComponentOfClass<FBPlugGUI>())
+    _data->guiRenderType = parent->GetRenderType();
 
   _data->graphs.clear();
   _data->graphs.resize(topo->static_.modules[staticIndex].graphCount);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <playground_base/gui/shared/FBGUI.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
 #include <vector>
@@ -7,8 +8,6 @@
 #include <optional>
 
 class FBGraphRenderState;
-
-enum class FBGraphRenderType { Basic, Full };
 
 struct FBModuleGraphPoints final
 {
@@ -47,6 +46,6 @@ struct FBModuleGraphComponentData final
   bool skipDrawOnEqualsPrimary = true;
   FBGraphRenderState* renderState = {};
   std::vector<FBModuleGraphData> graphs = {};
-  FBGraphRenderType graphRenderType = FBGraphRenderType::Basic;
+  FBGUIRenderType guiRenderType = FBGUIRenderType::Basic;
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };

@@ -27,6 +27,7 @@ public:
 
   void resized() override;
   void UpdateExchangeStateTick() override;
+  FBGUIRenderType GetRenderType() const override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;
   void AudioParamNormalizedChangedFromUI(int index, double normalized) override;

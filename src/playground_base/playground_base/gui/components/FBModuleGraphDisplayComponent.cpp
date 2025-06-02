@@ -137,7 +137,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto const& secondarySeries = graphData.secondarySeries;
     bool stereo = !primarySeries.r.empty();
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
-    assert(graphData.secondarySeries.size() == 0 || _data->graphRenderType == FBGraphRenderType::Full);
+    assert(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
     if (maxSizeAllSeries != 0)
     {
@@ -201,7 +201,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         PaintMarker(g, graph, primarySeries.l, primarySeries.pointIndicators[i],
           true, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
-      assert(graphData.primaryMarkers.size() == 0 || _data->graphRenderType == FBGraphRenderType::Full);
+      assert(graphData.primaryMarkers.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
       if (_data->drawMarkers)
         for (int i = 0; i < graphData.primaryMarkers.size(); i++)
         {
