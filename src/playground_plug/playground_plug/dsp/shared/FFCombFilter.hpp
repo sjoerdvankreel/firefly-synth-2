@@ -1,7 +1,6 @@
 #pragma once
 
 #include <playground_plug/dsp/shared/FFDelayLine.hpp>
-#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
@@ -9,6 +8,10 @@
 #include <cmath>
 #include <numbers>
 #include <cassert>
+
+inline float constexpr FFMaxCombFilterRes = 0.99f;
+inline float constexpr FFMinCombFilterFreq = 80.0f;
+inline float constexpr FFMaxCombFilterFreq = 20000.0f;
 
 template <int Channels>
 class alignas(FBSIMDAlign) FFCombFilter final
@@ -81,19 +84,19 @@ FFCombFilter<Channels>::Set(
   // check for graphs
 #ifndef NDEBUG
   float nyquist = sampleRate * 0.5f;
-  float minFilterFreq = FFMinFilterFreq;
-  float maxFilterFreq = FFMaxFilterFreq;
-  if (FFMaxFilterFreq > nyquist)
+  float minFilterFreq = FFMinCombFilterFreq;
+  float maxFilterFreq = FFMaxCombFilterFreq;
+  if (FFMaxCombFilterFreq > nyquist)
   {
-    minFilterFreq *= nyquist / FFMaxFilterFreq;
-    maxFilterFreq *= nyquist / FFMaxFilterFreq;
+    minFilterFreq *= nyquist / FFMaxCombFilterFreq;
+    maxFilterFreq *= nyquist / FFMaxCombFilterFreq;
   }
   assert(minFilterFreq - 0.1f <= freqMin && freqMin <= maxFilterFreq + 0.1f);
   assert(minFilterFreq - 0.1f <= freqPlus && freqPlus <= maxFilterFreq + 0.1f);
 #endif
 
-  _resMin = resMin * FFMaxFilterRes;
-  _resPlus = resPlus * FFMaxFilterRes;
+  _resMin = resMin * FFMaxCombFilterRes;
+  _resPlus = resPlus * FFMaxCombFilterRes;
   for (int c = 0; c < Channels; c++)
   {
     _delayLinesMin[c].Delay(sampleRate / freqMin);

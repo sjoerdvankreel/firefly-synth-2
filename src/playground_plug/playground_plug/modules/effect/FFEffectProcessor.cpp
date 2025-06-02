@@ -126,10 +126,10 @@ FoldBack(FBBatch<float> in)
 }
 
 static float
-GetGraphFilterFreqMultiplier(bool graph, float sampleRate)
+GetGraphFilterFreqMultiplier(bool graph, float sampleRate, float maxFilterFreq)
 {
-  if (graph && sampleRate < (FFMaxFilterFreq * 2.0f))
-    return sampleRate / (FFMaxFilterFreq * 2.0f);
+  if (graph && sampleRate < (maxFilterFreq * 2.0f))
+    return sampleRate / (maxFilterFreq * 2.0f);
   return 1.0f;
 }
 
@@ -146,9 +146,9 @@ void
 FFEffectProcessor::InitializeBuffers(
   bool graph, float sampleRate)
 {
-  float graphFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, sampleRate);
+  float graphFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, sampleRate, FFMaxCombFilterFreq);
   for (int i = 0; i < FFEffectBlockCount; i++)
-    _combFilters[i].Resize(sampleRate * FFEffectOversampleTimes, FFMinFilterFreq * graphFilterFreqMultiplier);
+    _combFilters[i].Resize(sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier);
 }
 
 void
@@ -171,7 +171,8 @@ FFEffectProcessor::BeginVoice(
   _graph = graph;
   _graphSamplesProcessed = 0;
   _graphSampleCount = graphSampleCount;
-  _graphFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, state.input->sampleRate);
+  _graphCombFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxCombFilterFreq);
+  _graphStVarFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
   _key = static_cast<float>(state.voice->event.note.key);
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
@@ -212,16 +213,18 @@ FFEffectProcessor::ProcessComb(
     auto freqPlus = combFreqPlusPlain[block].Get(s);
     auto freqMul = std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
     freqMin *= freqMul;
-    freqMin = std::clamp(freqMin, FFMinFilterFreq, FFMaxFilterFreq);
+    freqMin = std::clamp(freqMin, FFMinCombFilterFreq, FFMaxCombFilterFreq);
     freqPlus *= freqMul;
-    freqPlus = std::clamp(freqPlus, FFMinFilterFreq, FFMaxFilterFreq);
+    freqPlus = std::clamp(freqPlus, FFMinCombFilterFreq, FFMaxCombFilterFreq);
     
     if(_graph)
     {
-      freqMin *= _graphFilterFreqMultiplier;
-      freqPlus *= _graphFilterFreqMultiplier;
-      freqMin = std::clamp(freqMin, 1.01f * _graphFilterFreqMultiplier * FFMinFilterFreq, 0.99f * _graphFilterFreqMultiplier * FFMaxFilterFreq);
-      freqPlus = std::clamp(freqPlus, 1.01f * _graphFilterFreqMultiplier * FFMinFilterFreq, 0.99f * _graphFilterFreqMultiplier * FFMaxFilterFreq);
+      freqMin *= _graphCombFilterFreqMultiplier;
+      freqPlus *= _graphCombFilterFreqMultiplier;
+      float clampMin = 1.01f * _graphCombFilterFreqMultiplier * FFMinCombFilterFreq;
+      float clampMax = 0.99f * _graphCombFilterFreqMultiplier * FFMaxCombFilterFreq;
+      freqMin = std::clamp(freqMin, clampMin, clampMax);
+      freqPlus = std::clamp(freqPlus, clampMin, clampMax);
     }
 
     _combFilters[block].Set(oversampledRate, freqPlus, resPlus, freqMin, resMin);
@@ -249,12 +252,14 @@ FFEffectProcessor::ProcessStVar(
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
     freq *= std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
-    freq = std::clamp(freq, FFMinFilterFreq, FFMaxFilterFreq);
+    freq = std::clamp(freq, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
     
     if (_graph)
     {
-      freq *= _graphFilterFreqMultiplier;
-      freq = std::clamp(freq, 1.01f * _graphFilterFreqMultiplier * FFMinFilterFreq, 0.99f * _graphFilterFreqMultiplier * FFMaxFilterFreq);
+      freq *= _graphStVarFilterFreqMultiplier;
+      float clampMin = 1.01f * _graphStVarFilterFreqMultiplier * FFMinStateVariableFilterFreq;
+      float clampMax = 0.99f * _graphStVarFilterFreqMultiplier * FFMaxStateVariableFilterFreq;
+      freq = std::clamp(freq, clampMin, clampMax);
     }
 
     _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);

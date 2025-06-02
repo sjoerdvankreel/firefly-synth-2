@@ -1,6 +1,5 @@
 #include <playground_plug/shared/FFPlugTopo.hpp>
 #include <playground_plug/shared/FFTopoDetail.hpp>
-#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_plug/modules/physical/FFPhysTopo.hpp>
 #include <playground_plug/modules/physical/FFPhysGraph.hpp>
 #include <playground_base/base/topo/static/FBStaticModule.hpp>
@@ -236,13 +235,13 @@ FFMakePhysTopo()
 
   auto& lp = result->params[(int)FFPhysParam::LP];
   lp.acc = true;
-  lp.defaultText = std::to_string((int)FFMaxFilterFreq);
+  lp.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   lp.name = "LP";
   lp.slotCount = 1;
   lp.unit = "Hz";
   lp.id = "{06461261-A1A1-45B6-866A-CB932F2874B9}";
   lp.type = FBParamType::Log2;
-  lp.Log2().Init(0.0f, FFMinFilterFreq, FFMaxFilterFreq);
+  lp.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectLP = [](auto& module) { return &module.acc.lp; };
   lp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLP);
   lp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLP);
@@ -251,13 +250,13 @@ FFMakePhysTopo()
 
   auto& hp = result->params[(int)FFPhysParam::HP];
   hp.acc = true;
-  hp.defaultText = std::to_string((int)FFMinFilterFreq);
+  hp.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   hp.name = "HP";
   hp.slotCount = 1;
   hp.unit = "Hz";
   hp.id = "{1185219D-3A70-4B80-B542-C78704E09F85}";
   hp.type = FBParamType::Log2;
-  hp.Log2().Init(0.0f, FFMinFilterFreq, FFMaxFilterFreq);
+  hp.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectHP = [](auto& module) { return &module.acc.hp; };
   hp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectHP);
   hp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectHP);

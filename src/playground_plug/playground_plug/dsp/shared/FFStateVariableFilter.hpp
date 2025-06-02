@@ -1,6 +1,5 @@
 #pragma once
 
-#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_base/base/shared/FBSIMD.hpp>
 #include <playground_base/base/shared/FBUtility.hpp>
 
@@ -8,6 +7,10 @@
 #include <cmath>
 #include <numbers>
 #include <cassert>
+
+inline float constexpr FFMaxStateVariableFilterRes = 0.99f;
+inline float constexpr FFMinStateVariableFilterFreq = 20.0f;
+inline float constexpr FFMaxStateVariableFilterFreq = 20000.0f;
 
 enum class FFStateVariableFilterMode
 { LPF, BPF, HPF, BSF, APF, PEQ, BLL, LSH, HSH };
@@ -64,18 +67,18 @@ FFStateVariableFilter<Channels>::Set(
   // check for graphs
 #ifndef NDEBUG
   float nyquist = sampleRate * 0.5f;
-  float minFilterFreq = FFMinFilterFreq;
-  float maxFilterFreq = FFMaxFilterFreq;
-  if (FFMaxFilterFreq > nyquist)
+  float minFilterFreq = FFMinStateVariableFilterFreq;
+  float maxFilterFreq = FFMaxStateVariableFilterFreq;
+  if (FFMaxStateVariableFilterFreq > nyquist)
   {
-    minFilterFreq *= nyquist / FFMaxFilterFreq;
-    maxFilterFreq *= nyquist / FFMaxFilterFreq;
+    minFilterFreq *= nyquist / FFMaxStateVariableFilterFreq;
+    maxFilterFreq *= nyquist / FFMaxStateVariableFilterFreq;
   }
   assert(minFilterFreq - 0.1 <= freqHz && freqHz <= maxFilterFreq + 0.1);
 #endif
 
   double a;
-  double k = 2.0 - 2.0 * resNorm * FFMaxFilterRes;
+  double k = 2.0 - 2.0 * resNorm * FFMaxStateVariableFilterRes;
   double g = std::tan(std::numbers::pi * freqHz / sampleRate);
 
   if (mode >= FFStateVariableFilterMode::BLL)

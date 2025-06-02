@@ -27,11 +27,11 @@ static FBModuleGraphPlotParams
 PlotParams(FBModuleGraphComponentData const* data)
 {
   // Need to know SR for graphing because filters.
-  // Figure it out so that FFEffectPlotLengthSeconds equals pixel width.
+  // Plot a bit more than exact pixel width to make it look prettier.
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
-  result.sampleCount = data->pixelWidth;
-  result.sampleRate = data->pixelWidth / FFEffectPlotLengthSeconds;
+  result.sampleCount = data->pixelWidth * 4;
+  result.sampleRate = data->pixelWidth * 4.0f / FFEffectPlotLengthSeconds;
   return result;
 }
 

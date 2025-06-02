@@ -1,6 +1,5 @@
 #pragma once
 
-#include <playground_plug/dsp/shared/FFDSPUtility.hpp>
 #include <playground_plug/dsp/shared/FFCombFilter.hpp>
 #include <playground_plug/dsp/shared/FFStateVariableFilter.hpp>
 #include <playground_plug/modules/effect/FFEffectTopo.hpp>
@@ -13,7 +12,7 @@ class FBAccParamState;
 struct FBModuleProcState;
 
 // Show at least 1 sample of the comb filter.
-inline float constexpr FFEffectPlotLengthSeconds = 2.0f / FFMinFilterFreq;
+inline float constexpr FFEffectPlotLengthSeconds = 2.0f / FFMinCombFilterFreq;
 inline int constexpr FFEffectOversampleFactor = 2;
 inline int constexpr FFEffectOversampleTimes = 1 << FFEffectOversampleFactor;
 inline int constexpr FFEffectFixedBlockOversamples = FBFixedBlockSamples * FFEffectOversampleTimes;
@@ -32,7 +31,8 @@ class FFEffectProcessor final
   bool _graph = {};
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
-  float _graphFilterFreqMultiplier = {};
+  float _graphCombFilterFreqMultiplier = {};
+  float _graphStVarFilterFreqMultiplier = {};
   juce::dsp::Oversampling<float> _oversampler;
   std::array<FFCombFilter<2>, FFEffectBlockCount> _combFilters = {};
   std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
