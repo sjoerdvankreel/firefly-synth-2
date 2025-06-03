@@ -139,6 +139,13 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
     assert(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
+    auto bounds = getLocalBounds();
+    auto x0 = PointXLocation(graph, 0.0f);
+    auto x1 = PointXLocation(graph, 1.0f);
+    auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
+    g.setColour(Colour(0xFF181818));
+    g.fillRoundedRectangle(graphBounds.toFloat(), 2.0f);
+
     if (maxSizeAllSeries != 0)
     {
       auto const& pvi = graphData.primarySeries.verticalIndicators;
@@ -157,12 +164,6 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       }
     }
 
-    auto bounds = getLocalBounds();
-    auto x0 = PointXLocation(graph, 0.0f);
-    auto x1 = PointXLocation(graph, 1.0f);
-    auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
-    g.setColour(Colour(0xFF181818));
-    g.fillRoundedRectangle(graphBounds.toFloat(), 2.0f);
     g.setColour(Colours::darkgrey);
     g.setFont(FBGUIGetFont().withHeight(24.0f));
     g.drawText(graphData.text, graphBounds, Justification::centred, false);
