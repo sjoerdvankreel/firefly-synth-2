@@ -1,7 +1,7 @@
 # global
 cmake_minimum_required(VERSION 3.21)
 cmake_policy(SET CMP0091 NEW)
-project(firefly_synth)
+project(firefly_synth_2)
 
 # build
 set (CMAKE_CXX_STANDARD 20)
@@ -23,7 +23,7 @@ set (PROJECT_NAME_PLUG_VST3 "${PROJECT_NAME_PLUG}_vst3")
 set (PROJECT_NAME_BASE_VST3 "${PROJECT_NAME_BASE}_vst3")
 set (PROJECT_NAME_PLUG_CLAP "${PROJECT_NAME_PLUG}_clap")
 set (PROJECT_NAME_BASE_CLAP "${PROJECT_NAME_BASE}_clap")
-set (PROJECT_NAME_OUT FireflySynth)
+set (PROJECT_NAME_OUT FireflySynth2)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_compile_options(/analyze:external-)
