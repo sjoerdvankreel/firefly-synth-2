@@ -21,6 +21,6 @@ inline int constexpr FFGFilterCount = 2;
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";
 inline constexpr char FFVendorMail[] = "sjoerdvankreel@gmail.com";
 inline constexpr char FFVendorURL[] = "https://github.com/sjoerdvankreel";
-inline constexpr char FFPlugName[] = "Firefly Synth";
+inline constexpr char FFPlugName[] = "Firefly Synth 2";
 inline constexpr char FFPlugUniqueId[] = "754068B351A04DB4813B58D562BDFC1F";
 inline constexpr char FFPlugControllerId[] = "959E6302402B461A8C9AA5A6737BCAAD";
