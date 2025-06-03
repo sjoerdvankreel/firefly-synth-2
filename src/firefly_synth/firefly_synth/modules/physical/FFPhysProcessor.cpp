@@ -272,7 +272,7 @@ FFPhysProcessor::Process(FBModuleProcState& state)
       auto uniFreqBatch = FBPitchToFreq(uniPitchBatch);
       FBSArray<float, FBSIMDFloatCount> uniFreqArray(uniFreqBatch);
 
-      for (int u = ub; u < ub + FBSIMDFloatCount; u++)
+      for (int u = ub; u < ub + FBSIMDFloatCount && u < _uniCount; u++)
       {
         float uniFreq = uniFreqArray.Get(u - ub);
         _uniState[u].delayLine.Delay(sampleRate / uniFreq);
