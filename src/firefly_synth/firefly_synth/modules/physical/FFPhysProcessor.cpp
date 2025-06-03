@@ -1,5 +1,6 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
+#include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/modules/physical/FFPhysTopo.hpp>
 #include <firefly_synth/modules/physical/FFPhysProcessor.hpp>
 
@@ -134,8 +135,10 @@ FFPhysProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _graphPosition = 0;
   _normalPrng = FFMarsagliaPRNG(_seed / (FFPhysMaxSeed + 1.0f));
   _uniformPrng = FFParkMillerPRNG(_seed / (FFPhysMaxSeed + 1.0f));
-  _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpPlain, 0.0f, 0.0f);
-  _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpPlain, 0.0f, 0.0f);
+
+  _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
+  _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpPlain * _graphStVarFilterFreqMultiplier, 0.0f, 0.0f);
+  _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpPlain * _graphStVarFilterFreqMultiplier, 0.0f, 0.0f);
   
   int delayLineSize = graph ? GraphDelayLineSize : AudioDelayLineSize;
   for (int u = 0; u < _uniCount; u++)
@@ -261,8 +264,8 @@ FFPhysProcessor::Process(FBModuleProcState& state)
     feedback = std::clamp(feedback + 0.5f * feedbackScale * pitchDiffNorm, 0.0f, 1.0f);
     float realFeedback = 0.9f + 0.1f * feedback;
 
-    _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lp, 0.0f, 0.0f);
-    _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hp, 0.0f, 0.0f);
+    _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lp * _graphStVarFilterFreqMultiplier, 0.0f, 0.0f);
+    _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hp * _graphStVarFilterFreqMultiplier, 0.0f, 0.0f);
     for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
     {
       auto uniPitchBatch = basePitch + _uniPosMHalfToHalf.Load(ub) * uniDetune;

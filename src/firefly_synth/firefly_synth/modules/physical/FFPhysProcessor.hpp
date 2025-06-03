@@ -35,6 +35,7 @@ public FFOsciProcessorBase
   int _seed = {};
   int _poles = {};
   int _graphPosition = {};
+  float _graphStVarFilterFreqMultiplier = {};
 
   FFPhysType _type = {};
   FFMarsagliaPRNG _normalPrng = {};

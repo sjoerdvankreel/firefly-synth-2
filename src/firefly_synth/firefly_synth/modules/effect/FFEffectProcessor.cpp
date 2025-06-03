@@ -1,5 +1,6 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
+#include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectProcessor.hpp>
 
@@ -125,14 +126,6 @@ FoldBack(FBBatch<float> in)
   return out.Load(0);
 }
 
-static float
-GetGraphFilterFreqMultiplier(bool graph, float sampleRate, float maxFilterFreq)
-{
-  if (graph && sampleRate < (maxFilterFreq * 2.0f))
-    return sampleRate / (maxFilterFreq * 2.0f);
-  return 1.0f;
-}
-
 FFEffectProcessor::
 FFEffectProcessor() :
 _oversampler(
@@ -146,7 +139,7 @@ void
 FFEffectProcessor::InitializeBuffers(
   bool graph, float sampleRate)
 {
-  float graphFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, sampleRate, FFMaxCombFilterFreq);
+  float graphFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, sampleRate, FFMaxCombFilterFreq);
   for (int i = 0; i < FFEffectBlockCount; i++)
     _combFilters[i].Resize(sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier);
 }
@@ -171,8 +164,8 @@ FFEffectProcessor::BeginVoice(
   _graph = graph;
   _graphSamplesProcessed = 0;
   _graphSampleCount = graphSampleCount;
-  _graphCombFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxCombFilterFreq);
-  _graphStVarFilterFreqMultiplier = GetGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
+  _graphCombFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxCombFilterFreq);
+  _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
   _key = static_cast<float>(state.voice->event.note.key);
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
