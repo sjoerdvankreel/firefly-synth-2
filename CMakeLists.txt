@@ -1,7 +1,7 @@
 # global
 cmake_minimum_required(VERSION 3.21)
 cmake_policy(SET CMP0091 NEW)
-project(playground_plug)
+project(firefly_synth)
 
 # build
 set (CMAKE_CXX_STANDARD 20)
@@ -17,13 +17,13 @@ set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 set (PROJECT_VERSION_MAJOR 2)
 set (PROJECT_VERSION_MINOR 0)
 set (PROJECT_VERSION_PATCH 0)
-set (PROJECT_NAME_PLUG playground_plug)
-set (PROJECT_NAME_BASE playground_base)
+set (PROJECT_NAME_BASE firefly_base)
+set (PROJECT_NAME_PLUG firefly_synth)
 set (PROJECT_NAME_PLUG_VST3 "${PROJECT_NAME_PLUG}_vst3")
 set (PROJECT_NAME_BASE_VST3 "${PROJECT_NAME_BASE}_vst3")
 set (PROJECT_NAME_PLUG_CLAP "${PROJECT_NAME_PLUG}_clap")
 set (PROJECT_NAME_BASE_CLAP "${PROJECT_NAME_BASE}_clap")
-set (PROJECT_NAME_OUT PlaygroundPlug)
+set (PROJECT_NAME_OUT FireflySynth)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_compile_options(/analyze:external-)
