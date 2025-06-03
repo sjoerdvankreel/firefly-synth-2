@@ -1,3 +1,4 @@
+rename physical scale/center/range to keyboard tracking
 release build is borked
 store the graph fft somewhere
 phys more gain
