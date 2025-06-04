@@ -3,7 +3,7 @@
 * Only tested on reaper and bitwig.
 * Only builds on windows (for the time being).
 * Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
-* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, MTS-ESP, no routing matrices (routing is hardcoded), 
+* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, MTS-ESP, no routing matrices (routing is hardcoded),
 even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
 # Why yet another one?
@@ -13,9 +13,11 @@ The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice 
 * Finally bit the bullet and made it SIMD-friendly. Flat structs everywhere, proper alignment, no pointer chasing, and a bit of manual (x)simd where it makes sense.
 * Fixed internal block size (16) instead of maximum internal block size (so, PDC). This plays nicely into simd-friendly datastructures.
 * Both the audio engine and the GUI keep a copy of the per-voice parameter state to allow accurate reconstruction of the engine state in graphs. Synced each host (not internal) block.
-* The actual audio engine state is now a dense buffer per-voice-per-parameter (for per voice params that are automatable/modulatable per sample). 
+* The actual audio engine state is now a dense buffer per-voice-per-parameter (for per voice params that are automatable/modulatable per sample).
 Not the most memory-efficient setup, but easily doable with 16 block size, and makes it really straightforward to do simd stuff.
 * Net result so far is something that's easily twice as fast (or less slow, if you will ;) and at the same time provides superior visualization.
+* I also took the opportunity to fix some other issues with FF1 that did not necessarily warrant a rewrite, but whatever. I got FM wrong (again) in FF1, hard-sync anything just doesn't work, and more.
+* And of course, the opportunity to improve upon existing stuff. Keyboard tracking comb filters, pitch modulatable karplus-strong, continuous morphing white to pink to brown noise, and more to come.
 
 # So whats the planning?
 * To finish it ;)
