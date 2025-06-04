@@ -56,7 +56,9 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 
 ## Voice FX
 * A single FX slot is optionally oversampled "as a whole".
+* Keyboard tracking center key with -64 to +64 semis, 0 is C4.
 * A bit like osci, for each FX slot, take your pick of 4 sub-slots.
+* All waveshapers have a new bias param to allow for asymmetric shaping.
 * 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter. These are processed in order.
 
 ## Envelope
