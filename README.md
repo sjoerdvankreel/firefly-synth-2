@@ -8,11 +8,10 @@
 # Why yet another one?
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1. 
 This is stuff that has to be built-in from the ground up, which would essentially mean a complete rewrite anyway.
-The big ones are 1) make it faster, 2) provide accurate graphs of the audio engine state, and 3) support clap polyphonic modulation.
-
-There's a bunch of relatively small mistakes in FF1 that are fixable that way (FM being one of them).
-However these are the big ones i felt warrant a re-write, I just can't retrofit them, this stuff has to be in-place from the ground-up, and it was not.
-* MOO
+The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice audio engine state, and 3) support clap polyphonic modulation.
+* Finally bit the bullet and made it SIMD-friendly. Flat structs everywhere, proper alignment, no pointer chasing, and a bit of manual (x)simd where it makes sense.
+* Fixed internal block size (16) instead of maximum internal block size (so, PDC). This plays nicely into simd-friendly datastructures.
+* Both the audio engine and the GUI keep a copy of the per-voice parameter state to allow accurate reconstruction of the engine state in graphs. Synced each host (not internal) block.
 
 # So whats the planning.
 * To finish it ;)
