@@ -10,15 +10,15 @@ even ENV1 is only connected to per-voice amp, the others route nowhere. Let alon
 * Bowed strings
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_bowstring.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_bowstring.rpp)
+* Distortion (still love it)
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_distortion.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_distortion.rpp)
 * Plucked strings
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_pluckstring.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_pluckstring.rpp)
 (just noticed this one clicks a bit, so that's a bug)
-* Distortion (still love it)
-[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_distortion.mp3)
-[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_distortion.rpp)
 
-That last one is actually interesting to look at the reaper file. It makes use of envelope loop points,
+The distortion demo is actually interesting to look at the reaper file. It makes use of envelope loop points,
 keytracking state variable filters and keytracking comb filters. Because of the keytracking each engine voice
 shows up as a different line (frequency response in the filter case, but the same applies to oscis and envelopes)
 in the graph plot. See bottom of the page for screenshot.
