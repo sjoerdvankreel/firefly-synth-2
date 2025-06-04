@@ -146,7 +146,7 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _uniformPrng = FFParkMillerPRNG(_seed / (FFStringOsciMaxSeed + 1.0f));
 
   lpFreqPlain = WithKeyboardTracking(lpFreqPlain, _key, trackingKeyPlain, lpKTrkPlain, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-  hpFreqPlain = WithKeyboardTracking(hpFreqPlain, _key, trackingKeyPlain, hpKTrkPlain, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  hpFreqPlain = WithKeyboardTracking(hpFreqPlain, _key, trackingKeyPlain, -hpKTrkPlain, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
   _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain * _graphStVarFilterFreqMultiplier, lpResPlain, 0.0f);
   _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain * _graphStVarFilterFreqMultiplier, hpResPlain, 0.0f);
@@ -293,7 +293,7 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
     float realFeedback = 0.9f + 0.1f * feedback;
 
     lpFreq = WithKeyboardTracking(lpFreq, _key, trackingKey, lpKTrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    hpFreq = WithKeyboardTracking(hpFreq, _key, trackingKey, hpKTrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+    hpFreq = WithKeyboardTracking(hpFreq, _key, trackingKey, -hpKTrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
     _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreq * _graphStVarFilterFreqMultiplier, lpRes, 0.0f);
     _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreq * _graphStVarFilterFreqMultiplier, hpRes, 0.0f);
     for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
