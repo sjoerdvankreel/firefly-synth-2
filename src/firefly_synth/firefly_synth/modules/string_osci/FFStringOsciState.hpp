@@ -30,6 +30,8 @@ class alignas(alignof(TVoiceBlock)) FFStringOsciBlockParamState final
 {
   friend class FFStringOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeStringOsciTopo();
+  std::array<TVoiceBlock, 1> lpOn = {};
+  std::array<TVoiceBlock, 1> hpOn = {};
   std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> seed = {};
   std::array<TVoiceBlock, 1> poles = {};

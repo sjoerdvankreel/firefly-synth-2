@@ -34,10 +34,13 @@ public FFOsciProcessorBase
 {
   int _seed = {};
   int _poles = {};
+  bool _lpOn = {};
+  bool _hpOn = {};
+  FFStringOsciType _type = {};
+
   int _graphPosition = {};
   float _graphStVarFilterFreqMultiplier = {};
 
-  FFStringOsciType _type = {};
   FFMarsagliaPRNG _normalPrng = {};
   FFParkMillerPRNG _uniformPrng = {};
   FFStateVariableFilter<FFOsciBaseUniMaxCount> _lpFilter = {};

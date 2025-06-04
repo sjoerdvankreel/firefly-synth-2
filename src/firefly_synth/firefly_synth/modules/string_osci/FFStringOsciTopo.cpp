@@ -233,6 +233,20 @@ FFMakeStringOsciTopo()
   excite.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExcite);
   excite.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& lpOn = result->params[(int)FFStringOsciParam::LPOn];
+  lpOn.acc = false;
+  lpOn.name = "LP On";
+  lpOn.display = "LP";
+  lpOn.slotCount = 1;
+  lpOn.defaultText = "Off";
+  lpOn.id = "{2AE4576B-8611-498B-978B-53CD1E7EA1F4}";
+  lpOn.type = FBParamType::Boolean;
+  auto selectLPOn = [](auto& module) { return &module.block.lpOn; };
+  lpOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLPOn);
+  lpOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectLPOn);
+  lpOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLPOn);
+  lpOn.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& lpFreq = result->params[(int)FFStringOsciParam::LPFreq];
   lpFreq.acc = true;
   lpFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
@@ -247,7 +261,7 @@ FFMakeStringOsciTopo()
   lpFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLPFreq);
   lpFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLPFreq);
   lpFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLPFreq);
-  lpFreq.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  lpFreq.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type, (int)FFStringOsciParam::LPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& lpRes = result->params[(int)FFStringOsciParam::LPRes];
   lpRes.acc = true;
@@ -262,7 +276,7 @@ FFMakeStringOsciTopo()
   lpRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLPRes);
   lpRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLPRes);
   lpRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLPRes);
-  lpRes.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  lpRes.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type, (int)FFStringOsciParam::LPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& lpKTrk = result->params[(int)FFStringOsciParam::LPKTrk];
   lpKTrk.acc = true;
@@ -281,6 +295,21 @@ FFMakeStringOsciTopo()
   lpKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLPKeyTrk);
   lpKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLPKeyTrk);
   lpKTrk.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  lpKTrk.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type, (int)FFStringOsciParam::LPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& hpOn = result->params[(int)FFStringOsciParam::HPOn];
+  hpOn.acc = false;
+  hpOn.name = "HP On";
+  hpOn.display = "HP";
+  hpOn.slotCount = 1;
+  hpOn.defaultText = "Off";
+  hpOn.id = "{32237430-13BF-4239-B570-E94E10913A88}";
+  hpOn.type = FBParamType::Boolean;
+  auto selectHPOn = [](auto& module) { return &module.block.hpOn; };
+  hpOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectHPOn);
+  hpOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectHPOn);
+  hpOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHPOn);
+  hpOn.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& hpFreq = result->params[(int)FFStringOsciParam::HPFreq];
   hpFreq.acc = true;
@@ -296,6 +325,7 @@ FFMakeStringOsciTopo()
   hpFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectHPFreq);
   hpFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHPFreq);
   hpFreq.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  hpFreq.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type, (int)FFStringOsciParam::HPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& hpRes = result->params[(int)FFStringOsciParam::HPRes];
   hpRes.acc = true;
@@ -311,6 +341,7 @@ FFMakeStringOsciTopo()
   hpRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectHPRes);
   hpRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHPRes);
   hpRes.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  hpRes.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type, (int)FFStringOsciParam::HPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& hpKTrk = result->params[(int)FFStringOsciParam::HPKTrk];
   hpKTrk.acc = true;
@@ -329,6 +360,7 @@ FFMakeStringOsciTopo()
   hpKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectHPKeyTrk);
   hpKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHPKeyTrk);
   hpKTrk.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  hpKTrk.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type, (int)FFStringOsciParam::HPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
   
   auto& damp = result->params[(int)FFStringOsciParam::Damp];
   damp.acc = true;
