@@ -5,7 +5,7 @@
 * Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
 * Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, no routing matrices (routing is hardcoded), even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
-# Why yet another one instead of improving on FF1.
+# Why yet another one
 There's a bunch of relatively small mistakes in FF1 that are fixable that way (FM being one of them).
 However these are the big ones i felt warrant a re-write, I just can't retrofit them, this stuff has to be in-place from the ground-up, and it was not.
 * MOO
