@@ -1,4 +1,3 @@
-ltcg build crashes
 store the graph fft somewhere
 should a voice receive events after its released (but still playing)?
 test clap, more hosts, winlinmac
