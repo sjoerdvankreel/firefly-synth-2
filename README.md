@@ -9,7 +9,7 @@ even ENV1 is only connected to per-voice amp, the others route nowhere. Let alon
 # Some demo material
 * Plucked strings 
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_pluckstring.mp3)
-[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/plucked_strings.rpp)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_pluckstring.rpp)
 
 # Why yet another one?
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
