@@ -8,7 +8,7 @@ even ENV1 is only connected to per-voice amp, the others route nowhere. Let alon
 
 # Some demo material
 * Plucked strings 
-[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/plucked_strings.mp3)
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_pluckstring.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/plucked_strings.rpp)
 
 # Why yet another one?
