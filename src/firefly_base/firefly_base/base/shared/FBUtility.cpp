@@ -64,7 +64,7 @@ FBGetUserDataFolder()
 
 std::vector<std::uint8_t>
 FBReadFile(std::filesystem::path const& p)
-{
+{ 
   FB_LOG_INFO("Reading file: " + p.string());
   auto length = std::filesystem::file_size(p);
   std::vector<std::uint8_t> buffer(length);

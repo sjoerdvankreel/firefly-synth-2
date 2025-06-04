@@ -13,5 +13,5 @@ if %errorlevel% neq 0 exit /b !errorlevel!
 
 exit /b 0
 :usage
-echo "Usage: build_windows Debug|Release"
+echo "Usage: build_windows Debug|RelWithDebInfo|Release"
 exit /b 1
