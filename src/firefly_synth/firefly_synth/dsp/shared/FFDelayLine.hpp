@@ -40,7 +40,7 @@ FFDelayLine::Delay(float delay)
   assert(0.0f <= delay && delay < _data.Count());
 }
 
-void
+inline void
 FFDelayLine::Resize(int count)
 {
   while (count % FBSIMDTraits<float>::Size != 0)
