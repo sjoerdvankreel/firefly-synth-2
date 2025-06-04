@@ -79,8 +79,8 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
 
 ## Osci mod matrix
-* Inter-osci AM/RM/FM, with (new) exponential FM.
 * Oversampling applies to all osci's (not string).
+* Inter-osci AM/RM/FM, with (new) exponential FM.
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
 * All modulations are still per-unison-voice. Make sure the mod source has at least as many uni voices as the target.
 * FF1 was actually doing "real" FM instead of PM. That bit me when i was doing feedback FM on the dedicated FM osci, and the pitch went down.
