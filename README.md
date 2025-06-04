@@ -57,7 +57,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 ## Envelope
 * 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
 * Per stage amp and slope, per-sample automate/modulate.
-* Linear/expo mode, 2 loop points for the sustain stage, any point can be release point.
+* Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
 
 # Build it
 As always. Git clone recursive, build scripts are in /scripts, build_windows.bat Debug|RelWithDebInfo|Release.
