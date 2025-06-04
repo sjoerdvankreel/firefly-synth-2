@@ -59,7 +59,8 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Keyboard tracking center key with -64 to +64 semis, 0 is C4.
 * A bit like osci, for each FX slot, take your pick of 4 sub-slots.
 * All waveshapers have a new bias param to allow for asymmetric shaping.
-* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter. These are processed in order.
+* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter. 
+* These are processed in order. AKA "build your own distortion module".
 
 ## Envelope
 * 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
