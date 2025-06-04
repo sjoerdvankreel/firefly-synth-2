@@ -17,9 +17,11 @@ The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice 
 Not the most memory-efficient setup, but easily doable with 16 block size, and makes it really straightforward to do simd stuff.
 * Net result so far is something that's easily twice as fast (or less slow, if you will ;) and at the same time provides superior visualization.
 
-# So whats the planning.
+# So whats the planning ?
 * To finish it ;)
-* Instead of working totally in the dark for a year or more, i figured, well it's running
+* Instead of working in the dark for a year or more i figured, i have something that runs, let's build from here.
+* The idea is to do an alpha release per feature. New module (say echo, midi support, skin the gui, whatever).
+* Untill the thing's finally KVR-ready, get it out of alpha, and add non-essential features from there.
 
 # Why yet another one?
 
