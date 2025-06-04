@@ -18,6 +18,11 @@ even ENV1 is only connected to per-voice amp, the others route nowhere. Let alon
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_distortion.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_distortion.rpp)
 
+That last one is actually interesting to look at the reaper file. It makes use of envelope loop points,
+keytracking state variable filters and keytracking comb filters. Because of the keytracking each engine voice
+shows up as a different line (frequency response in the filter case, but the same applies to oscis and envelopes)
+in the graph plot. See bottom of the page for screenshot.
+
 # Why yet another one?
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
 This is stuff that has to be built-in from the ground up, which would essentially mean a complete rewrite anyway.
