@@ -57,7 +57,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 ## Voice FX
 * A single FX slot is optionally oversampled "as a whole".
 * A bit like osci, for each FX slot, take your pick of 4 sub-slots.
-* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter.
+* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter. These are processed in order.
 
 ## Envelope
 * 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
