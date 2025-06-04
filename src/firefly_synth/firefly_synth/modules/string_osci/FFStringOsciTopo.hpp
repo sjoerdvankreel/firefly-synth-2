@@ -16,5 +16,5 @@ enum class FFStringOsciType { Off, Uni, Norm };
 enum class FFStringOsciParam {
   Type, Gain, Coarse, Fine,
   UniCount, UniDetune, UniSpread, UniBlend,
-  Seed, Poles, X, Y, Color, Excite, LP, HP,
+  Seed, Poles, X, Y, Color, Excite, LPFreq, LPRes, HPFreq, HPRes,
   Damp, DampScale, Feedback, FeedbackScale, Center, Range, Count };

@@ -53,8 +53,10 @@ class alignas(alignof(TVoiceAcc)) FFStringOsciAccParamState final
   std::array<TVoiceAcc, 1> y = {};
   std::array<TVoiceAcc, 1> color = {};
   std::array<TVoiceAcc, 1> excite = {};
-  std::array<TVoiceAcc, 1> lp = {};
-  std::array<TVoiceAcc, 1> hp = {};
+  std::array<TVoiceAcc, 1> lpRes = {};
+  std::array<TVoiceAcc, 1> hpRes = {};
+  std::array<TVoiceAcc, 1> lpFreq = {};
+  std::array<TVoiceAcc, 1> hpFreq = {};
   std::array<TVoiceAcc, 1> range = {};
   std::array<TVoiceAcc, 1> center = {};
   std::array<TVoiceAcc, 1> damp = {};

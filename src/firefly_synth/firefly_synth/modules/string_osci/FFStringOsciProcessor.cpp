@@ -100,8 +100,10 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 
   auto const& xNorm = params.acc.x[0].Voice()[voice];
   auto const& yNorm = params.acc.y[0].Voice()[voice];
-  auto const& lpNorm = params.acc.lp[0].Voice()[voice];
-  auto const& hpNorm = params.acc.hp[0].Voice()[voice];
+  auto const& lpResNorm = params.acc.lpRes[0].Voice()[voice];
+  auto const& hpResNorm = params.acc.hpRes[0].Voice()[voice];
+  auto const& lpFreqNorm = params.acc.lpFreq[0].Voice()[voice];
+  auto const& hpFreqNorm = params.acc.hpFreq[0].Voice()[voice];
   auto const& colorNorm = params.acc.color[0].Voice()[voice];
   auto const& exciteNorm = params.acc.excite[0].Voice()[voice];
   auto const& typeNorm = params.block.type[0].Voice()[voice];
@@ -120,8 +122,10 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   if (_type == FFStringOsciType::Off)
     return;
 
-  float lpPlain = topo.NormalizedToLog2Fast(FFStringOsciParam::LP, lpNorm.CV().Get(0));
-  float hpPlain = topo.NormalizedToLog2Fast(FFStringOsciParam::HP, hpNorm.CV().Get(0));
+  float lpResPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::LPRes, lpResNorm.CV().Get(0));
+  float hpResPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::HPRes, hpResNorm.CV().Get(0));
+  float lpFreqPlain = topo.NormalizedToLog2Fast(FFStringOsciParam::LPFreq, lpFreqNorm.CV().Get(0));
+  float hpFreqPlain = topo.NormalizedToLog2Fast(FFStringOsciParam::HPFreq, hpFreqNorm.CV().Get(0));
   float xPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::X, xNorm.CV().Get(0));
   float yPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::Y, yNorm.CV().Get(0));
   float finePlain = topo.NormalizedToLinearFast(FFStringOsciParam::Fine, fineNorm.CV().Get(0));
@@ -137,8 +141,8 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _uniformPrng = FFParkMillerPRNG(_seed / (FFStringOsciMaxSeed + 1.0f));
 
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
-  _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpPlain * _graphStVarFilterFreqMultiplier, 0.0f, 0.0f);
-  _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpPlain * _graphStVarFilterFreqMultiplier, 0.0f, 0.0f);
+  _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain * _graphStVarFilterFreqMultiplier, lpResPlain, 0.0f);
+  _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain * _graphStVarFilterFreqMultiplier, hpResPlain, 0.0f);
   
   int delayLineSize = graph ? GraphDelayLineSize : AudioDelayLineSize;
   for (int u = 0; u < _uniCount; u++)
@@ -180,8 +184,10 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
   auto const& procParams = procState->param.voice.stringOsci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::StringOsci];
 
-  auto const& lpNorm = procParams.acc.lp[0].Voice()[voice];
-  auto const& hpNorm = procParams.acc.hp[0].Voice()[voice];
+  auto const& lpResNorm = procParams.acc.lpRes[0].Voice()[voice];
+  auto const& hpResNorm = procParams.acc.hpRes[0].Voice()[voice];
+  auto const& lpFreqNorm = procParams.acc.lpFreq[0].Voice()[voice];
+  auto const& hpFreqNorm = procParams.acc.hpFreq[0].Voice()[voice];
   auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
@@ -201,8 +207,10 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
 
   FBSArray<float, FBFixedBlockSamples> xPlain = {};
   FBSArray<float, FBFixedBlockSamples> yPlain = {};
-  FBSArray<float, FBFixedBlockSamples> lpPlain = {};
-  FBSArray<float, FBFixedBlockSamples> hpPlain = {};
+  FBSArray<float, FBFixedBlockSamples> lpResPlain = {};
+  FBSArray<float, FBFixedBlockSamples> hpResPlain = {};
+  FBSArray<float, FBFixedBlockSamples> lpFreqPlain = {};
+  FBSArray<float, FBFixedBlockSamples> hpFreqPlain = {};
   FBSArray<float, FBFixedBlockSamples> dampPlain = {};
   FBSArray<float, FBFixedBlockSamples> colorPlain = {};
   FBSArray<float, FBFixedBlockSamples> rangePlain = {};
@@ -223,8 +231,10 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
     basePitchPlain.Store(s, pitch);
     baseFreqPlain.Store(s, baseFreq);
 
-    lpPlain.Store(s, topo.NormalizedToLog2Fast(FFStringOsciParam::LP, lpNorm, s));
-    hpPlain.Store(s, topo.NormalizedToLog2Fast(FFStringOsciParam::HP, hpNorm, s));
+    lpResPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::LPRes, lpResNorm, s));
+    hpResPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::HPRes, hpResNorm, s));
+    lpFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFStringOsciParam::LPFreq, lpFreqNorm, s));
+    hpFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFStringOsciParam::HPFreq, hpFreqNorm, s));
     xPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::X, xNorm, s));
     yPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::Y, yNorm, s));
     dampPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::Damp, dampNorm, s));
@@ -245,8 +255,10 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
   {
     float x = xPlain.Get(s);
     float y = yPlain.Get(s);
-    float lp = lpPlain.Get(s);
-    float hp = hpPlain.Get(s);
+    float lpRes = lpResPlain.Get(s);
+    float hpRes = hpResPlain.Get(s);
+    float lpFreq = lpFreqPlain.Get(s);
+    float hpFreq = hpFreqPlain.Get(s);
     float damp = dampPlain.Get(s);
     float range = rangePlain.Get(s);
     float color = colorPlain.Get(s);
@@ -264,8 +276,8 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
     feedback = std::clamp(feedback + 0.5f * feedbackScale * pitchDiffNorm, 0.0f, 1.0f);
     float realFeedback = 0.9f + 0.1f * feedback;
 
-    _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lp * _graphStVarFilterFreqMultiplier, 0.0f, 0.0f);
-    _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hp * _graphStVarFilterFreqMultiplier, 0.0f, 0.0f);
+    _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreq * _graphStVarFilterFreqMultiplier, lpRes, 0.0f);
+    _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreq * _graphStVarFilterFreqMultiplier, hpRes, 0.0f);
     for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
     {
       auto uniPitchBatch = basePitch + _uniPosMHalfToHalf.Load(ub) * uniDetune;
@@ -309,8 +321,10 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
   auto& exchangeParams = exchangeToGUI->param.voice.stringOsci[state.moduleSlot];
   exchangeParams.acc.x[0][voice] = xNorm.Last();
   exchangeParams.acc.y[0][voice] = yNorm.Last();
-  exchangeParams.acc.lp[0][voice] = lpNorm.Last();
-  exchangeParams.acc.hp[0][voice] = hpNorm.Last();
+  exchangeParams.acc.lpRes[0][voice] = lpResNorm.Last();
+  exchangeParams.acc.hpRes[0][voice] = hpResNorm.Last();
+  exchangeParams.acc.lpFreq[0][voice] = lpFreqNorm.Last();
+  exchangeParams.acc.hpFreq[0][voice] = hpFreqNorm.Last();
   exchangeParams.acc.excite[0][voice] = exciteNorm.Last();
   exchangeParams.acc.damp[0][voice] = dampNorm.Last();
   exchangeParams.acc.dampScale[0][voice] = dampScaleNorm.Last();
