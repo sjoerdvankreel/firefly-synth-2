@@ -20,7 +20,7 @@ Not the most memory-efficient setup, but easily doable with 16 block size, and m
 # So whats the planning ?
 * To finish it ;)
 * Instead of working in the dark for a year or more i figured, i have something that runs, let's build from here.
-* The idea is to do an alpha release per feature. New module (say echo, midi support, skin the gui, whatever).
+* The idea is to do an alpha release per feature. New module (say echo, lfo), midi support, skin the gui, whatever.
 * Untill the thing's finally KVR-ready, get it out of alpha, and add non-essential features from there.
 
 # Why yet another one?
