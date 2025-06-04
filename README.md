@@ -71,10 +71,11 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Separated out the string osci from the regular osci. The regular one is phase-based, this one is not. It does not participate in the osci mod matrix and it has less unison controls.
 
 ## Osci
+* Note: it would be wise to set the osci mod matrix to oversample if you use the FM generator.
 * Comes with unison stereo spread, detune, phase offset, 2 new ones: voice blend and phase offset randomization (gets rid off the phasing effect).
 * For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
 * For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
-* Note: it would be wise to set the osci mod matrix to oversample if you use the FM generator. The reason it's not per-osci is precisely because of the inter-osci modulation.
+
 
 
 # Build it
