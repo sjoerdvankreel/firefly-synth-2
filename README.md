@@ -15,7 +15,7 @@ The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice 
 * Both the audio engine and the GUI keep a copy of the per-voice parameter state to allow accurate reconstruction of the engine state in graphs. Synced each host (not internal) block.
 * The actual audio engine state is now a dense buffer per-voice-per-parameter (for per voice params that are automatable/modulatable per sample). 
 Not the most memory-efficient setup, but easily doable with 16 block size, and makes it really straightforward to do simd stuff.
-* Net result so far is something that's easily twice as fast (or less slow, if you will;) and at the same time provides superior visualization.
+* Net result so far is something that's easily twice as fast (or less slow, if you will ;) and at the same time provides superior visualization.
 
 # So whats the planning.
 * To finish it ;)
