@@ -2,7 +2,7 @@
 * Only builds on windows (for the time being).
 * Only tested on reaper and bitwig.
 * Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
-* Stock JUCE GUI, no patch saving/loading, no delay, reverb, LFO's, global fx, no routing matrices (routing is hardcoded), even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
+* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, no routing matrices (routing is hardcoded), even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 * It is, however, a functioning clap and vst3 plugin.
 
 # So whats the planning.
