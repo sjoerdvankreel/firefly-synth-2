@@ -54,7 +54,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 
 # The details
 * Envelope
-** 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
+- 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
 
 # Build it
 As always. Git clone recursive, build scripts are in /scripts, build_windows.bat Debug|RelWithDebInfo|Release.
