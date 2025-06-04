@@ -54,11 +54,31 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 
 # The details
 
+## Voice FX
+* A single FX slot is optionally oversampled "as a whole".
+* A bit like osci, for each FX slot, take your pick of 4 sub-slots.
+* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter.
+
 ## Envelope
 * 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
 * Per stage amp and slope, per-sample automate/modulate.
 * Stage length per-voice-start automate/modulate when not tempo-synced.
 * Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
+
+## Osci
+* Note: it would be wise to set the osci mod matrix to oversample if you use the FM generator.
+* Comes with unison stereo spread, detune, phase offset, 2 new ones: voice blend and phase offset randomization (gets rid off the phasing effect).
+* For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
+* For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
+* There are loads of new waveforms, see credits below. I stole a bunch of properly BLEP'ed algo's.
+These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
+
+## Osci mod matrix
+* Oversampling applies to all osci's (not string).
+* Inter-osci AM/RM/FM, with (new) exponential FM.
+* Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
+* All modulations are still per-unison-voice. Make sure the mod source has at least as many uni voices as the target.
+* FF1 was actually doing "real" FM instead of PM. That bit me when i was doing feedback FM on the dedicated FM osci, and the pitch went down.
 
 ## String osci
 * Brought back the "frozen noise" from infernal synth.
@@ -69,21 +89,6 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Don't know if this is still karplus-strong, or waveguides, or anywhere in between, or something else. It's different from the one in FF1 in any case.
 * Also new, excite param controls how much new noise to feedback into the delay line (for bowed strings). Optional LPF/HPF for more control of the feedback loop.
 * Separated out the string osci from the regular osci. The regular one is phase-based, this one is not. It does not participate in the osci mod matrix and it has less unison controls.
-
-## Osci
-* Note: it would be wise to set the osci mod matrix to oversample if you use the FM generator.
-* Comes with unison stereo spread, detune, phase offset, 2 new ones: voice blend and phase offset randomization (gets rid off the phasing effect).
-* For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
-* For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
-* There are loads of new waveforms, see credits below. I stole a bunch of properly BLEP'ed algo's. 
-These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
-
-## Osci mod matrix
-* Oversampling applies to all osci's (not string).
-* Inter-osci AM/RM/FM, with (new) exponential FM.
-* Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
-* All modulations are still per-unison-voice. Make sure the mod source has at least as many uni voices as the target.
-* FF1 was actually doing "real" FM instead of PM. That bit me when i was doing feedback FM on the dedicated FM osci, and the pitch went down.
 
 # Build it
 As always. Git clone recursive, build scripts are in /scripts, build_windows.bat Debug|RelWithDebInfo|Release.
