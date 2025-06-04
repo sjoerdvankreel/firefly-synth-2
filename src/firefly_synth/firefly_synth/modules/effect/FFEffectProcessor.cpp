@@ -244,8 +244,7 @@ FFEffectProcessor::ProcessStVar(
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq *= std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
-    freq = std::clamp(freq, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+    freq = WithKeyboardTracking(freq, _key, trkk, ktrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
     
     if (_graph)
     {
