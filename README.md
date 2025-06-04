@@ -60,6 +60,17 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Stage length per-voice-start automate/modulate when not tempo-synced.
 * Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
 
+## String osci
+* Continous white-to-pink-to-brown noise.
+* Brought back the "frozen noise" from infernal synth.
+* Comes with unison stereo spread, detune, voice blend (new).
+* Finally does proper pitch shifting. Accomplished by replacing circular buffer by fractional delay line.
+* This one doubles as a noise osci and string osci. Turn the excite param all the way up for full-on noise.
+* Don't know if this is still karplus-strong, or waveguides, or anywhere in between, or something else. It's different from the one in FF1 in any case.
+* Also new, excite param controls how much new noise to feedback into the delay line (for bowed strings). Optional LPF/HPF for more control of the feedback loop.
+* Separated out the string osci from the regular osci. The regular one is phase-based, this one is not. It does not participate in the osci mod matrix and it has less unison controls.
+
+
 # Build it
 As always. Git clone recursive, build scripts are in /scripts, build_windows.bat Debug|RelWithDebInfo|Release.
 
