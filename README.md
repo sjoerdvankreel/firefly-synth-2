@@ -1,3 +1,6 @@
+# This is NOT a finished (or even half-finished) product.
+
+
 # Why yet another one?
 
 A repository for trying out a bunch of ideas that are currently not easy to do in firefly synth.
