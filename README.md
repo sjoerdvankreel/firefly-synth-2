@@ -1,5 +1,6 @@
 # This is not a finished product.
 * Only builds on windows (for the time being).
+* Only tested on reaper and bitwig.
 * Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
 * No delay, reverb, LFO's, global fx, no routing matrices (routing is hardcoded), even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
