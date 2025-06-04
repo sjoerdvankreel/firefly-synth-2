@@ -3,15 +3,18 @@
 * Only tested on reaper and bitwig.
 * Only builds on windows (for the time being).
 * Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
-* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, no routing matrices (routing is hardcoded), even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
+* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, no routing matrices (routing is hardcoded), 
+even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
 # Why yet another one?
-There's a couple things i wanted to do that prove difficult to retrofit onto FF1. 
+There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
 This is stuff that has to be built-in from the ground up, which would essentially mean a complete rewrite anyway.
 The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice audio engine state, and 3) support clap polyphonic modulation.
 * Finally bit the bullet and made it SIMD-friendly. Flat structs everywhere, proper alignment, no pointer chasing, and a bit of manual (x)simd where it makes sense.
 * Fixed internal block size (16) instead of maximum internal block size (so, PDC). This plays nicely into simd-friendly datastructures.
 * Both the audio engine and the GUI keep a copy of the per-voice parameter state to allow accurate reconstruction of the engine state in graphs. Synced each host (not internal) block.
+* The actual audio engine state is now a dense buffer per-voice-per-parameter (for per voice params that are automatable/modulatable per sample). 
+Not the most memory-efficient setup, but easily doable with 16 block size, and makes it really straightforward to do simd stuff.
 
 # So whats the planning.
 * To finish it ;)
