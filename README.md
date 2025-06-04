@@ -62,8 +62,8 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 
 ## String osci
 * Brought back the "frozen noise" from infernal synth.
-* Comes with unison stereo spread, detune, voice blend (new).
 * Continous white-to-pink-to-brown noise, uniform or gaussian.
+* Comes with unison stereo spread, detune, voice blend (new unison param).
 * Finally does proper pitch shifting. Accomplished by replacing circular buffer by fractional delay line.
 * This one doubles as a noise osci and string osci. Turn the excite param all the way up for full-on noise.
 * Don't know if this is still karplus-strong, or waveguides, or anywhere in between, or something else. It's different from the one in FF1 in any case.
