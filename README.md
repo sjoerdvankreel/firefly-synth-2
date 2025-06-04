@@ -1,10 +1,15 @@
-# This is not a finished product.
+# This is not a finished product
 * But it is a functioning clap and vst3 plugin.
 * Only tested on reaper and bitwig.
 * Only builds on windows (for the time being).
 * Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
 * Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, MTS-ESP, no routing matrices (routing is hardcoded),
 even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
+
+# Some demo material
+* Plucked strings 
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/plucked_strings.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/plucked_strings.rpp)
 
 # Why yet another one?
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
