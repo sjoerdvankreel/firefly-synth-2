@@ -44,9 +44,6 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * The idea is to do an alpha release per feature. New module (say echo, lfo), midi support, skin the gui, linux/mac, whatever.
 * Untill the thing's finally KVR-ready, get it out of alpha, and add non-essential features from there.
 
-# Build it
-As always. Git clone recursive, build scripts are in /scripts, build_windows.bat Debug|RelWithDebInfo|Release.
-
 # Credits
 * Special thanks to Surge Synth Team as always.
 * Same soft clippers: https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf.
@@ -54,6 +51,9 @@ As always. Git clone recursive, build scripts are in /scripts, build_windows.bat
 * Same state variable filter: https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf.
 * Stole the color-morphing noise algo from here: https://sampo.kapsi.fi/PinkNoise/.
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/. You have to download the zip to get at the PolyBLEP source for all waveforms.
+
+# Build it
+As always. Git clone recursive, build scripts are in /scripts, build_windows.bat Debug|RelWithDebInfo|Release.
 
 # Screenshot
 <img alt="Screenshot" src="demo/screenshot.png"/>
