@@ -1,5 +1,7 @@
-# This is NOT a finished (or even half-finished) product.
-
+# This is NOT a finished product.
+* Only builds on windows (for the time being).
+* Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
+* So no delay, reverb, LFO's, global fx, NO routing matrices (routing is hardcoded), even ENV1 is only connected to per-voice amp, the others route nowhere.
 
 # Why yet another one?
 
