@@ -16,10 +16,10 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFDelayLine);
   float Pop();
   void Reset();
+  void Resize(int count);
   void Push(float val);
   void Delay(float delay);
   int Count() const { return _data.Count(); }
-  void Resize(int count) { _data.Resize(count); }
 };
 
 inline void
@@ -38,6 +38,14 @@ FFDelayLine::Delay(float delay)
   _delayWhole = static_cast<int>(delay);
   _delayFraction = delay - _delayWhole;
   assert(0.0f <= delay && delay < _data.Count());
+}
+
+void
+FFDelayLine::Resize(int count)
+{
+  while (count % FBSIMDTraits<float>::Size != 0)
+    count++;
+  _data.Resize(count);
 }
 
 inline void

@@ -90,7 +90,7 @@ static Component*
 MakeSectionKS(FBPlugGUI* plugGUI, int moduleSlot)
 {
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 1, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 });
   auto lpFreq = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::LPFreq, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::LinearHorizontal));
@@ -103,25 +103,31 @@ MakeSectionKS(FBPlugGUI* plugGUI, int moduleSlot)
   auto hpRes = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::HPRes, 0 });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  auto lpKTrk = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::LPKTrk, 0 });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpKTrk));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpKTrk, Slider::SliderStyle::RotaryVerticalDrag));
+  auto hpKTrk = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::HPKTrk, 0 });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpKTrk));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpKTrk, Slider::SliderStyle::RotaryVerticalDrag));
   auto damp = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::Damp, 0 });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, damp));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, damp, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, damp));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, damp, Slider::SliderStyle::LinearHorizontal));
   auto dampKTrk = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::DampKTrk, 0 });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dampKTrk));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dampKTrk, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dampKTrk));
+  grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dampKTrk, Slider::SliderStyle::RotaryVerticalDrag));
   auto feedback = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::Feedback, 0 });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedback));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedback, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedback));
+  grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedback, Slider::SliderStyle::LinearHorizontal));
   auto feedbackKTrk = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::FeedbackKTrk, 0 });
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackKTrk));
-  grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackKTrk, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackKTrk));
+  grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackKTrk, Slider::SliderStyle::RotaryVerticalDrag));
   auto trackingKey = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::TrackingKey, 0 });
-  grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, trackingKey));
-  grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingKey, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, trackingKey));
+  grid->Add(0, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingKey, Slider::SliderStyle::RotaryVerticalDrag));
   auto trackingRange = topo->audio.ParamAtTopo({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::TrackingRange, 0 });
-  grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, trackingRange));
-  grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingRange, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 10 });
+  grid->Add(1, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, trackingRange));
+  grid->Add(1, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingRange, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ 0, 0, 2, 12 });
   return grid;
 }
 

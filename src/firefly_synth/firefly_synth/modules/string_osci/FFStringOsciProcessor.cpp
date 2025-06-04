@@ -17,8 +17,7 @@
 #include <cstdint>
 
 inline float const DCBlockFreq = 20.0f;
-inline int constexpr GraphDelayLineSize = 256;
-inline int constexpr AudioDelayLineSize = 8192;
+inline float const StringOsciMinFreq = 20.0f;
 
 // https://www.reddit.com/r/DSP/comments/8fm3c5/what_am_i_doing_wrong_brown_noise/
 // 1/f^a noise https://sampo.kapsi.fi/PinkNoise/
@@ -30,10 +29,10 @@ FFStringOsciProcessor() {}
 void
 FFStringOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
 {
-  int delayLineSize = graph ? GraphDelayLineSize : AudioDelayLineSize;
+  int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringOsciMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
   {
-    if (_uniState[i].delayLine.Count() == 0)
+    if (_uniState[i].delayLine.Count() < delayLineSize)
       _uniState[i].delayLine.Resize(delayLineSize);
     _uniState[i].dcFilter.SetCoeffs(DCBlockFreq, sampleRate);
   }
@@ -143,8 +142,8 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
   _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain * _graphStVarFilterFreqMultiplier, lpResPlain, 0.0f);
   _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain * _graphStVarFilterFreqMultiplier, hpResPlain, 0.0f);
-  
-  int delayLineSize = graph ? GraphDelayLineSize : AudioDelayLineSize;
+
+  int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringOsciMinFreq));
   for (int u = 0; u < _uniCount; u++)
   {
     _uniState[u].phaseGen = {};

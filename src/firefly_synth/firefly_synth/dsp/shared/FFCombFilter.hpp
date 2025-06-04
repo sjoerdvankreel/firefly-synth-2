@@ -50,8 +50,6 @@ FFCombFilter<Channels>::Resize(
   int maxSamples = static_cast<int>(std::ceil(fMaxSamples));
   int const safetyCheck = 20 * 192000;
   assert(0 < maxSamples && maxSamples <= safetyCheck);
-  while (maxSamples % FBSIMDTraits<float>::Size != 0)
-    maxSamples++;
   for (int c = 0; c < Channels; c++)
   {
     _delayLinesMin[c].Resize(maxSamples);

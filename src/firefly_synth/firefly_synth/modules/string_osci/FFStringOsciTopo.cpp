@@ -264,6 +264,24 @@ FFMakeStringOsciTopo()
   lpRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLPRes);
   lpRes.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& lpKTrk = result->params[(int)FFStringOsciParam::LPKTrk];
+  lpKTrk.acc = true;
+  lpKTrk.defaultText = "0";
+  lpKTrk.name = "LP KeyTrk";
+  lpKTrk.display = "KTrk";
+  lpKTrk.slotCount = 1;
+  lpKTrk.unit = "%";
+  lpKTrk.id = "{7DC28A03-D1EE-4938-9F11-1D3996021662}";
+  lpKTrk.type = FBParamType::Linear;
+  lpKTrk.Linear().min = -2.0f;
+  lpKTrk.Linear().max = 2.0f;
+  lpKTrk.Linear().displayMultiplier = 100;
+  auto selectLPKeyTrk = [](auto& module) { return &module.acc.lpKTrk; };
+  lpKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLPKeyTrk);
+  lpKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLPKeyTrk);
+  lpKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLPKeyTrk);
+  lpKTrk.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& hpFreq = result->params[(int)FFStringOsciParam::HPFreq];
   hpFreq.acc = true;
   hpFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
@@ -294,6 +312,24 @@ FFMakeStringOsciTopo()
   hpRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHPRes);
   hpRes.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& hpKTrk = result->params[(int)FFStringOsciParam::HPKTrk];
+  hpKTrk.acc = true;
+  hpKTrk.defaultText = "0";
+  hpKTrk.name = "HP KeyTrk";
+  hpKTrk.display = "KTrk";
+  hpKTrk.slotCount = 1;
+  hpKTrk.unit = "%";
+  hpKTrk.id = "{DCF3E189-013E-4AE0-98F7-75AF83867CF4}";
+  hpKTrk.type = FBParamType::Linear;
+  hpKTrk.Linear().min = -2.0f;
+  hpKTrk.Linear().max = 2.0f;
+  hpKTrk.Linear().displayMultiplier = 100;
+  auto selectHPKeyTrk = [](auto& module) { return &module.acc.hpKTrk; };
+  hpKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectHPKeyTrk);
+  hpKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectHPKeyTrk);
+  hpKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHPKeyTrk);
+  hpKTrk.dependencies.enabled.audio.When({ (int)FFStringOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  
   auto& damp = result->params[(int)FFStringOsciParam::Damp];
   damp.acc = true;
   damp.defaultText = "67";
