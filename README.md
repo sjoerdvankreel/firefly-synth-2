@@ -17,8 +17,8 @@ The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice 
 Not the most memory-efficient setup, but easily doable with 16 block size, and makes it really straightforward to do simd stuff.
 * Net result so far is something that's easily twice as fast (or less slow, if you will ;) and at the same time provides superior visualization.
 * I also took the opportunity to fix some other issues with FF1 that did not necessarily warrant a rewrite, but whatever. I got FM wrong (again) in FF1, hard-sync anything just doesn't work, and more.
-* And of course, the opportunity to improve upon existing stuff. Keyboard tracking comb filters, pitch modulatable karplus-strong, continuous morphing white to pink to brown noise, and more to come.
-See below for a more detailed overview of what's new and improved.
+* And of course, the opportunity to improve upon existing stuff. Keyboard tracking comb filters, pitch modulatable karplus-strong, 
+continuous morphing white to pink to brown noise, looping envelopes, and more to come. See below for a more detailed overview of what's new and improved.
 
 # So whats the planning?
 * To finish it ;)
