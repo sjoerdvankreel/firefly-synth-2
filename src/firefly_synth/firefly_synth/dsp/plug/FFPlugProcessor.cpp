@@ -28,10 +28,10 @@ _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()
 {
   for (int v = 0; v < FBMaxVoices; v++)
   {
-    for (int i = 0; i < FFPhysCount; i++)
-      _procState->dsp.voice[v].phys[i].processor->InitializeBuffers(false, _sampleRate);
     for (int i = 0; i < FFEffectCount; i++)
       _procState->dsp.voice[v].effect[i].processor->InitializeBuffers(false, _sampleRate);
+    for (int i = 0; i < FFStringOsciCount; i++)
+      _procState->dsp.voice[v].stringOsci[i].processor->InitializeBuffers(false, _sampleRate);
   }
 }
 

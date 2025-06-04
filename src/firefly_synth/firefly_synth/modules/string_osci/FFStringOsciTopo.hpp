@@ -6,14 +6,14 @@
 #include <memory>
 
 struct FBStaticModule;
-std::unique_ptr<FBStaticModule> FFMakePhysTopo();
+std::unique_ptr<FBStaticModule> FFMakeStringOsciTopo();
 
-inline int constexpr FFPhysMaxPoles = 8;
-inline int constexpr FFPhysMaxSeed = 255;
-inline int constexpr FFPhysGraphRounds = 5;
+inline int constexpr FFStringOsciMaxPoles = 8;
+inline int constexpr FFStringOsciMaxSeed = 255;
+inline int constexpr FFStringOsciGraphRounds = 5;
 
-enum class FFPhysType { Off, Uni, Norm };
-enum class FFPhysParam {
+enum class FFStringOsciType { Off, Uni, Norm };
+enum class FFStringOsciParam {
   Type, Gain, Coarse, Fine,
   UniCount, UniDetune, UniSpread, UniBlend,
   Seed, Poles, X, Y, Color, Excite, LP, HP,

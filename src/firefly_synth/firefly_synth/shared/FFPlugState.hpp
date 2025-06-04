@@ -8,8 +8,8 @@
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
 #include <firefly_synth/modules/gfilter/FFGFilterState.hpp>
-#include <firefly_synth/modules/physical/FFPhysState.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
+#include <firefly_synth/modules/string_osci/FFStringOsciState.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -43,8 +43,8 @@ struct FFVoiceExchangeState final
   std::array<FBModuleProcExchangeState, 1> osciMod = {};
   std::array<FBModuleProcExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
-  std::array<FBModuleProcExchangeState, FFPhysCount> phys = {};
   std::array<FBModuleProcExchangeState, FFEffectCount> effect = {};
+  std::array<FBModuleProcExchangeState, FFStringOsciCount> stringOsci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
 
@@ -63,8 +63,8 @@ struct alignas(FBSIMDAlign) FFVoiceDSPState final
   FFVoiceProcessor processor = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
-  std::array<FFPhysDSPState, FFPhysCount> phys = {};
   std::array<FFEffectDSPState, FFEffectCount> effect = {};
+  std::array<FFStringOsciDSPState, FFStringOsciCount> stringOsci = {};
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
 };
@@ -93,8 +93,8 @@ struct alignas(alignof(TVoiceAcc)) FFVoiceParamState final
   std::array<FFOsciModParamState<TVoiceBlock, TVoiceAcc>, 1> osciMod = {};
   std::array<FFEnvParamState<TVoiceBlock, TVoiceAcc>, FFEnvCount> env = {};
   std::array<FFOsciParamState<TVoiceBlock, TVoiceAcc>, FFOsciCount> osci = {};
-  std::array<FFPhysParamState<TVoiceBlock, TVoiceAcc>, FFPhysCount> phys = {};
   std::array<FFEffectParamState<TVoiceBlock, TVoiceAcc>, FFEffectCount> effect = {};
+  std::array<FFStringOsciParamState<TVoiceBlock, TVoiceAcc>, FFStringOsciCount> stringOsci = {};
 };
 
 struct FFScalarParamState final

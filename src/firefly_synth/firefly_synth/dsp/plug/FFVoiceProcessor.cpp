@@ -29,10 +29,10 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     state.moduleSlot = i;
     procState->dsp.voice[voice].osci[i].processor->BeginVoice(false, state);
   }
-  for (int i = 0; i < FFPhysCount; i++)
+  for (int i = 0; i < FFStringOsciCount; i++)
   {
     state.moduleSlot = i;
-    procState->dsp.voice[voice].phys[i].processor->BeginVoice(false, state);
+    procState->dsp.voice[voice].stringOsci[i].processor->BeginVoice(false, state);
   }
   for (int i = 0; i < FFEffectCount; i++)
   {
@@ -65,11 +65,11 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     voiceDSP.osci[i].processor->Process(state);
     //voiceDSP.output.Add(voiceDSP.osci[i].output); // todo
   }
-  for (int i = 0; i < FFPhysCount; i++)
+  for (int i = 0; i < FFStringOsciCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.phys[i].processor->Process(state);
-    voiceDSP.output.Add(voiceDSP.phys[i].output);
+    voiceDSP.stringOsci[i].processor->Process(state);
+    voiceDSP.output.Add(voiceDSP.stringOsci[i].output);
   }
   assert(FFOsciCount == FFEffectCount); // TODO for now
   for (int i = 0; i < FFEffectCount; i++)

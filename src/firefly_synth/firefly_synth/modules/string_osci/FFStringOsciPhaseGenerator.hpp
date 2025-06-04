@@ -6,17 +6,17 @@
 #include <xsimd/xsimd.hpp>
 #include <cmath>
 
-class FFPhysPhaseGenerator final
+class FFStringOsciPhaseGenerator final
 {
   float _x = 0.0f;
 public:
   float Next(float incr);
-  FFPhysPhaseGenerator() = default;
-  explicit FFPhysPhaseGenerator(float x) : _x(x) {}
+  FFStringOsciPhaseGenerator() = default;
+  explicit FFStringOsciPhaseGenerator(float x) : _x(x) {}
 };
 
 inline float
-FFPhysPhaseGenerator::Next(float incr)
+FFStringOsciPhaseGenerator::Next(float incr)
 {
   float y = _x;
   _x += incr;

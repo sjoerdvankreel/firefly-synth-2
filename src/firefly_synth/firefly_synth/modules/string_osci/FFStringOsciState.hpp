@@ -1,8 +1,8 @@
 #pragma once
 
 #include <firefly_synth/shared/FFPlugTopo.hpp>
-#include <firefly_synth/modules/physical/FFPhysTopo.hpp>
-#include <firefly_synth/modules/physical/FFPhysProcessor.hpp>
+#include <firefly_synth/modules/string_osci/FFStringOsciTopo.hpp>
+#include <firefly_synth/modules/string_osci/FFStringOsciProcessor.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -12,37 +12,37 @@
 
 struct FBStaticModule;
 
-class alignas(FBSIMDAlign) FFPhysDSPState final
+class alignas(FBSIMDAlign) FFStringOsciDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct PhysGraphRenderData;
-  std::unique_ptr<FFPhysProcessor> processor = {};
+  friend struct StringOsciGraphRenderData;
+  std::unique_ptr<FFStringOsciProcessor> processor = {};
 public:
-  FFPhysDSPState();
-  ~FFPhysDSPState();
+  FFStringOsciDSPState();
+  ~FFStringOsciDSPState();
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFPhysDSPState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFStringOsciDSPState);
 };
 
 template <class TVoiceBlock>
-class alignas(alignof(TVoiceBlock)) FFPhysBlockParamState final
+class alignas(alignof(TVoiceBlock)) FFStringOsciBlockParamState final
 {
-  friend class FFPhysProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakePhysTopo();
+  friend class FFStringOsciProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeStringOsciTopo();
   std::array<TVoiceBlock, 1> type = {};
   std::array<TVoiceBlock, 1> seed = {};
   std::array<TVoiceBlock, 1> poles = {};
   std::array<TVoiceBlock, 1> uniCount = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFPhysBlockParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFStringOsciBlockParamState);
 };
 
 template <class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFPhysAccParamState final
+class alignas(alignof(TVoiceAcc)) FFStringOsciAccParamState final
 {
-  friend class FFPhysProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakePhysTopo();
+  friend class FFStringOsciProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeStringOsciTopo();
   std::array<TVoiceAcc, 1> coarse = {};
   std::array<TVoiceAcc, 1> fine = {};
   std::array<TVoiceAcc, 1> gain = {};
@@ -62,16 +62,16 @@ class alignas(alignof(TVoiceAcc)) FFPhysAccParamState final
   std::array<TVoiceAcc, 1> feedback = {};
   std::array<TVoiceAcc, 1> feedbackScale = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFPhysAccParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFStringOsciAccParamState);
 };
 
 template <class TVoiceBlock, class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFPhysParamState final
+class alignas(alignof(TVoiceAcc)) FFStringOsciParamState final
 {
-  friend class FFPhysProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakePhysTopo();
-  FFPhysAccParamState<TVoiceAcc> acc = {};
-  FFPhysBlockParamState<TVoiceBlock> block = {};
+  friend class FFStringOsciProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeStringOsciTopo();
+  FFStringOsciAccParamState<TVoiceAcc> acc = {};
+  FFStringOsciBlockParamState<TVoiceBlock> block = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFPhysParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFStringOsciParamState);
 };
