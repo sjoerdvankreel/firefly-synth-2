@@ -57,12 +57,12 @@ class alignas(alignof(TVoiceAcc)) FFStringOsciAccParamState final
   std::array<TVoiceAcc, 1> hpRes = {};
   std::array<TVoiceAcc, 1> lpFreq = {};
   std::array<TVoiceAcc, 1> hpFreq = {};
-  std::array<TVoiceAcc, 1> range = {};
-  std::array<TVoiceAcc, 1> center = {};
   std::array<TVoiceAcc, 1> damp = {};
-  std::array<TVoiceAcc, 1> dampScale = {};
+  std::array<TVoiceAcc, 1> dampKTrk = {};
   std::array<TVoiceAcc, 1> feedback = {};
-  std::array<TVoiceAcc, 1> feedbackScale = {};
+  std::array<TVoiceAcc, 1> feedbackKTrk = {};
+  std::array<TVoiceAcc, 1> trackingKey = {};
+  std::array<TVoiceAcc, 1> trackingRange = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFStringOsciAccParamState);
 };

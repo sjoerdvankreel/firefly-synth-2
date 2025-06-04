@@ -66,9 +66,9 @@ FFStateVariableFilter<Channels>::Set(
 {
   // check for graphs
 #ifndef NDEBUG
-  float nyquist = sampleRate * 0.5f;
-  float minFilterFreq = FFMinStateVariableFilterFreq;
-  float maxFilterFreq = FFMaxStateVariableFilterFreq;
+  double nyquist = sampleRate * 0.5f;
+  double minFilterFreq = FFMinStateVariableFilterFreq;
+  double maxFilterFreq = FFMaxStateVariableFilterFreq;
   if (FFMaxStateVariableFilterFreq > nyquist)
   {
     minFilterFreq *= nyquist / FFMaxStateVariableFilterFreq;

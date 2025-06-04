@@ -197,13 +197,13 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
   auto const& xNorm = procParams.acc.x[0].Voice()[voice];
   auto const& yNorm = procParams.acc.y[0].Voice()[voice];
   auto const& colorNorm = procParams.acc.color[0].Voice()[voice];
-  auto const& rangeNorm = procParams.acc.range[0].Voice()[voice];
-  auto const& centerNorm = procParams.acc.center[0].Voice()[voice];
+  auto const& trackingRangeNorm = procParams.acc.trackingRange[0].Voice()[voice];
+  auto const& trackingKeyNorm = procParams.acc.trackingKey[0].Voice()[voice];
   auto const& exciteNorm = procParams.acc.excite[0].Voice()[voice];
   auto const& dampNorm = procParams.acc.damp[0].Voice()[voice];
-  auto const& dampScaleNorm = procParams.acc.dampScale[0].Voice()[voice];
+  auto const& dampKTrkNorm = procParams.acc.dampKTrk[0].Voice()[voice];
   auto const& feedbackNorm = procParams.acc.feedback[0].Voice()[voice];
-  auto const& feedbackScaleNorm = procParams.acc.feedbackScale[0].Voice()[voice];
+  auto const& feedbackKTrkNorm = procParams.acc.feedbackKTrk[0].Voice()[voice];
 
   FBSArray<float, FBFixedBlockSamples> xPlain = {};
   FBSArray<float, FBFixedBlockSamples> yPlain = {};
@@ -213,15 +213,15 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
   FBSArray<float, FBFixedBlockSamples> hpFreqPlain = {};
   FBSArray<float, FBFixedBlockSamples> dampPlain = {};
   FBSArray<float, FBFixedBlockSamples> colorPlain = {};
-  FBSArray<float, FBFixedBlockSamples> rangePlain = {};
-  FBSArray<float, FBFixedBlockSamples> centerPlain = {};
   FBSArray<float, FBFixedBlockSamples> excitePlain = {};
   FBSArray<float, FBFixedBlockSamples> feedbackPlain = {};
   FBSArray<float, FBFixedBlockSamples> baseFreqPlain = {};
   FBSArray<float, FBFixedBlockSamples> basePitchPlain = {};
   FBSArray<float, FBFixedBlockSamples> uniDetunePlain = {};
-  FBSArray<float, FBFixedBlockSamples> dampScalePlain = {};
-  FBSArray<float, FBFixedBlockSamples> feedbackScalePlain = {};
+  FBSArray<float, FBFixedBlockSamples> dampKTrkPlain = {};
+  FBSArray<float, FBFixedBlockSamples> feedbackKTrkPlain = {};
+  FBSArray<float, FBFixedBlockSamples> trackingKeyPlain = {};
+  FBSArray<float, FBFixedBlockSamples> trackingRangePlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
@@ -239,13 +239,13 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
     yPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::Y, yNorm, s));
     dampPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::Damp, dampNorm, s));
     colorPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::Color, colorNorm, s));
-    rangePlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::Range, rangeNorm, s));
     excitePlain.Store(s, topo.NormalizedToLog2Fast(FFStringOsciParam::Excite, exciteNorm, s));
-    centerPlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::Center, centerNorm, s));
+    trackingRangePlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::TrackingRange, trackingRangeNorm, s));
+    trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::TrackingKey, trackingKeyNorm, s));
     feedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::Feedback, feedbackNorm, s));
-    dampScalePlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::DampScale, dampScaleNorm, s));
+    dampKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::DampKTrk, dampKTrkNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::UniDetune, uniDetuneNorm, s));
-    feedbackScalePlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::FeedbackScale, feedbackScaleNorm, s));
+    feedbackKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::FeedbackKTrk, feedbackKTrkNorm, s));
     _gainPlain.Store(s, topo.NormalizedToLinearFast(FFStringOsciParam::Gain, gainNorm, s));
     _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::UniBlend, uniBlendNorm, s));
     _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFStringOsciParam::UniSpread, uniSpreadNorm, s));
@@ -260,20 +260,21 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
     float lpFreq = lpFreqPlain.Get(s);
     float hpFreq = hpFreqPlain.Get(s);
     float damp = dampPlain.Get(s);
-    float range = rangePlain.Get(s);
+    float trackingKey = trackingKeyPlain.Get(s);
+    float trackingRange = trackingRangePlain.Get(s);
     float color = colorPlain.Get(s);
     float excite = excitePlain.Get(s);
     float feedback = feedbackPlain.Get(s);
     float basePitch = basePitchPlain.Get(s);
-    float dampScale = dampScalePlain.Get(s);
+    float dampKTrk = dampKTrkPlain.Get(s);
     float uniDetune = uniDetunePlain.Get(s);
-    float centerPitch = 60.0f + centerPlain.Get(s);
-    float feedbackScale = feedbackScalePlain.Get(s);
+    float centerPitch = 60.0f + trackingKey;
+    float feedbackKTrk = feedbackKTrkPlain.Get(s);
 
     float pitchDiffSemis = _key - centerPitch;
-    float pitchDiffNorm = std::clamp(pitchDiffSemis / range, -1.0f, 1.0f);
-    damp = std::clamp(damp - 0.5f * dampScale * pitchDiffNorm, 0.0f, 1.0f);
-    feedback = std::clamp(feedback + 0.5f * feedbackScale * pitchDiffNorm, 0.0f, 1.0f);
+    float pitchDiffNorm = std::clamp(pitchDiffSemis / trackingRange, -1.0f, 1.0f);
+    damp = std::clamp(damp - 0.5f * dampKTrk * pitchDiffNorm, 0.0f, 1.0f);
+    feedback = std::clamp(feedback + 0.5f * feedbackKTrk * pitchDiffNorm, 0.0f, 1.0f);
     float realFeedback = 0.9f + 0.1f * feedback;
 
     _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreq * _graphStVarFilterFreqMultiplier, lpRes, 0.0f);
@@ -327,11 +328,11 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.hpFreq[0][voice] = hpFreqNorm.Last();
   exchangeParams.acc.excite[0][voice] = exciteNorm.Last();
   exchangeParams.acc.damp[0][voice] = dampNorm.Last();
-  exchangeParams.acc.dampScale[0][voice] = dampScaleNorm.Last();
-  exchangeParams.acc.range[0][voice] = rangeNorm.Last();
-  exchangeParams.acc.center[0][voice] = centerNorm.Last();
+  exchangeParams.acc.dampKTrk[0][voice] = dampKTrkNorm.Last();
+  exchangeParams.acc.trackingRange[0][voice] = trackingRangeNorm.Last();
+  exchangeParams.acc.trackingKey[0][voice] = trackingKeyNorm.Last();
   exchangeParams.acc.feedback[0][voice] = feedbackNorm.Last();
-  exchangeParams.acc.feedbackScale[0][voice] = feedbackScaleNorm.Last();
+  exchangeParams.acc.feedbackKTrk[0][voice] = feedbackKTrkNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainNorm.Last();
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
   exchangeParams.acc.color[0][voice] = colorNorm.Last();
