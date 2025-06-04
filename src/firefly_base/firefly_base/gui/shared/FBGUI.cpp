@@ -1,3 +1,4 @@
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
@@ -23,17 +24,24 @@ int FBGUIGetStringWidthCached(std::string const& text) { return FBGUIGetStringSi
 void
 FBGUITerminate()
 {
+  FB_LOG_INFO("Terminating GUI.");
   LookAndFeel::setDefaultLookAndFeel(nullptr);
   _lookAndFeel.reset();
   _font = {};
   _typeface.reset();
+  FB_LOG_INFO("Terminating JUCE GUI.");
   shutdownJuce_GUI();
+  FB_LOG_INFO("Terminated JUCE GUI.");
+  FB_LOG_INFO("Terminated GUI.");
 }
 
 void
 FBGUIInit()
 {
+  FB_LOG_INFO("Initializing GUI.");
+  FB_LOG_INFO("Initializing JUCE GUI.");
   initialiseJuce_GUI();
+  FB_LOG_INFO("Initialized JUCE GUI.");
   File selfJuce(File::getSpecialLocation(File::currentExecutableFile));
   std::filesystem::path selfPath(selfJuce.getFullPathName().toStdString());
   auto fontPath = selfPath.parent_path().parent_path() / "Resources" / "ui" / "JetBrainsMono-Medium.ttf";
@@ -42,6 +50,7 @@ FBGUIInit()
   _font = Font(FontOptions(_typeface)).withHeight(FBGUIFontSize);
   _lookAndFeel = std::make_unique<FBLookAndFeel>();
   LookAndFeel::setDefaultLookAndFeel(_lookAndFeel.get());
+  FB_LOG_INFO("Initialized GUI.");
 }
 
 juce::Point<int>
