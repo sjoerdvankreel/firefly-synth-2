@@ -1,7 +1,7 @@
 # This is not a finished product
 * But it is a functioning clap and vst3 plugin.
+* Builds and runs on win/lin/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
-* Only builds on windows (for the time being).
 * Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
 * Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, MTS-ESP, no routing matrices (routing is hardcoded),
 even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
@@ -94,7 +94,7 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 * Separated out the string osci from the regular osci. The regular one is phase-based, this one is not. It does not participate in the osci mod matrix and it has less unison controls.
 
 # Build it
-As always. Git clone recursive, build scripts are in /scripts, build_windows.bat Debug|RelWithDebInfo|Release.
+As always. Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release.
 
 # Screenshot
 <img alt="Screenshot" src="demo/screenshot.png"/>
