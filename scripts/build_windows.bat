@@ -6,7 +6,7 @@ if "%1" == "" goto usage
 cd ..
 if not exist build\windows mkdir build\windows
 cd build\windows
-cmake -DFB_ARCH_TYPE=1 ..\..
+cmake ..\..
 if %errorlevel% neq 0 exit /b !errorlevel!
 msbuild /property:Configuration="%1" firefly_synth_2.sln
 if %errorlevel% neq 0 exit /b !errorlevel!
