@@ -10,13 +10,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: "Windows 10 Debug"
+          - name: "Windows 2022 Debug"
             arch_type: 1
-            os: windows-2019
+            os: windows-2022
             build_type: DEBUG
-          - name: "Windows 10 Release"
+          - name: "Windows 2022 Release"
             arch_type: 1
-            os: windows-2019
+            os: windows-2022
             build_type: RELEASE
           - name: "Ubuntu 22 Debug"
             arch_type: 1
