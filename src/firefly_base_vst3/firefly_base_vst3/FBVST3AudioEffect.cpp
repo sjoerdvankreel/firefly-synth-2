@@ -166,7 +166,7 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
   if (result != kResultTrue)
     return result;
   auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
-    config.numBlocks = 1;
+    config.numBlocks = 2;
     config.userContextID = 0;
     config.blockSize = _topo->static_.exchangeStateSize;
     config.alignment = _topo->static_.exchangeStateAlignment;
