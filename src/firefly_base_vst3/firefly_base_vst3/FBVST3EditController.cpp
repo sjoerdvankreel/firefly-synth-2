@@ -155,12 +155,39 @@ IPlugView* PLUGIN_API
 FBVST3EditController::createView(FIDString name)
 {
   FB_LOG_ENTRY_EXIT();
-  if (ConstString(name) != ViewType::kEditor) return nullptr;
+  if (ConstString(name) != ViewType::kEditor) 
+    return nullptr;
   if (_guiEditor == nullptr)
   {
-    FB_LOG_INFO("Creating VST3 view.");
-    _guiEditor = new FBVST3GUIEditor(this);
-    FB_LOG_INFO("Created VST3 view.");
+    std::exception_ptr eptr = {};
+    try
+    {
+      FB_LOG_INFO("Creating VST3 view.");
+      _guiEditor = new FBVST3GUIEditor(this);
+      FB_LOG_INFO("Created VST3 view.");
+    }
+    catch(...)
+    {
+      eptr = std::current_exception();
+      FB_LOG_ERROR("Creating VST3 view failed.");
+    }
+    if (eptr)
+    {
+      try
+      {
+        std::rethrow_exception(eptr);
+      }
+      catch (std::exception const& e)
+      {
+        FB_LOG_ERROR(std::string("Creating VST3 view failed: ") + e.what());
+        throw;
+      }
+      catch (...)
+      {
+        FB_LOG_ERROR("Creating VST3 view failed with no std::exception.");
+        throw;
+      }
+    }
   }
   return _guiEditor;
 }
