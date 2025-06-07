@@ -164,7 +164,7 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
 {
   tresult result = AudioEffect::connect(other);
   if (result != kResultTrue)
-    return result;
+    return result; 
   auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
     config.numBlocks = 4;
     config.userContextID = 0;
