@@ -166,10 +166,15 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
   if (result != kResultTrue)
     return result; 
   auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
-    config.numBlocks = 4;
+    config.numBlocks = 1;
     config.userContextID = 0;
     config.blockSize = _topo->static_.exchangeStateSize;
-    config.alignment = 32;
+
+    // If this is set to the natural alignment of the struct being transmitted
+    // this stuff totally breaks down on MacOS. The 32 magic number is not AFAIK
+    // documented anywhere except being mentioned in the sample code at 
+    // https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Data+Exchange/Index.html.
+    config.alignment = std::max(32, _topo->static_.exchangeStateAlignment);
     return true; };
   _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
   _exchangeHandler->onConnect(other, getHostContext());
