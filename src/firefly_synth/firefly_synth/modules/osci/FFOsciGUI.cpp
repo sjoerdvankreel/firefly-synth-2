@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -197,5 +198,6 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeOsciGUI(FBPlugGUI* plugGUI)
 {
+  FB_LOG_ENTRY_EXIT();
   return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Osci, TabFactory);
 }

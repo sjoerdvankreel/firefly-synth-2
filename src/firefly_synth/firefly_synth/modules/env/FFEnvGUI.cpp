@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
@@ -89,5 +90,6 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeEnvGUI(FBPlugGUI* plugGUI)
 {
+  FB_LOG_ENTRY_EXIT();
   return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Env, TabFactory);
 }

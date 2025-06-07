@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
@@ -33,5 +34,6 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeMasterGUI(FBPlugGUI* plugGUI)
 {
+  FB_LOG_ENTRY_EXIT();
   return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Master, MakeSectionAll);
 }

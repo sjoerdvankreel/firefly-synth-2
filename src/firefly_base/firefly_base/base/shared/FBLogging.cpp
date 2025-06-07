@@ -31,6 +31,7 @@ FBLogTerminate()
 {
   FB_LOG_INFO("Terminating log.");
   _logger.reset();
+  FB_LOG_INFO("Terminated log.");
 }
 
 void

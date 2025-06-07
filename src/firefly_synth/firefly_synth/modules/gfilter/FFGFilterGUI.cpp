@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/gfilter/FFGFilterGUI.hpp>
 #include <firefly_synth/modules/gfilter/FFGFilterTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
@@ -60,5 +61,6 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeGFilterGUI(FBPlugGUI* plugGUI)
 {
+  FB_LOG_ENTRY_EXIT();
   return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::GFilter, TabFactory);
 }

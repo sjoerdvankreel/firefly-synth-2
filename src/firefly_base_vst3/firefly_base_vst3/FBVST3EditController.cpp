@@ -156,8 +156,12 @@ FBVST3EditController::createView(FIDString name)
 {
   FB_LOG_ENTRY_EXIT();
   if (ConstString(name) != ViewType::kEditor) return nullptr;
-  if(_guiEditor == nullptr)
+  if (_guiEditor == nullptr)
+  {
+    FB_LOG_INFO("Creating VST3 view.");
     _guiEditor = new FBVST3GUIEditor(this);
+    FB_LOG_INFO("Created VST3 view.");
+  }
   return _guiEditor;
 }
 

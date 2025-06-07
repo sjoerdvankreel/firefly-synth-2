@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/glfo/FFGLFOGUI.hpp>
+
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
@@ -12,6 +13,7 @@
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
@@ -29,6 +31,7 @@ FFPlugGUI(FBHostGUIContext* hostContext):
 FBPlugGUI(hostContext),
 _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 {
+  FB_LOG_ENTRY_EXIT();
   SetupGUI();
   InitAllDependencies();
   resized();
@@ -98,7 +101,10 @@ FFPlugGUI::GetRenderType() const
 void 
 FFPlugGUI::SetupGUI()
 {
+  FB_LOG_ENTRY_EXIT();
+
   // TODO better move to reusable?
+  FB_LOG_INFO("Calculating GUI grid size.");
   int vTabCount = 6;
   int tabHeight = 28; // TODO
   auto const& topo = HostContext()->Topo()->static_;
@@ -113,7 +119,9 @@ FFPlugGUI::SetupGUI()
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
+  FB_LOG_INFO("Calculated GUI grid size.");
 
+  FB_LOG_INFO("Creating GUI components.");
   _graph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get());
   _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 0, -1, rowSizes, std::vector<int> { 0, 0, 0, 1 });
   _content->Add(0, 0, 1, 1, FFMakeMasterGUI(this));
@@ -127,5 +135,9 @@ FFPlugGUI::SetupGUI()
   _content->Add(5, 0, 1, 4, FFMakeOsciModGUI(this));
   _content->Add(6, 0, 1, 4, FFMakeEffectGUI(this));
   _content->Add(7, 0, 1, 4, FFMakeEnvGUI(this));
+  FB_LOG_INFO("Created GUI components.");
+
+  FB_LOG_INFO("Making GUI visible.");
   addAndMakeVisible(_content);
+  FB_LOG_INFO("Made GUI visible.");
 }

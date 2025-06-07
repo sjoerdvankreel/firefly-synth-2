@@ -1,3 +1,4 @@
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -8,7 +9,10 @@
 
 FBPlugGUIContext::
 FBPlugGUIContext(FBHostGUIContext* const hostContext):
-_hostContext(hostContext) {}
+_hostContext(hostContext) 
+{
+  FB_LOG_ENTRY_EXIT();
+}
 
 FBSpecialGUIParam const& 
 FBPlugGUIContext::UserScaleSpecial() const
