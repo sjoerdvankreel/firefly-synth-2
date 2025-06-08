@@ -63,4 +63,7 @@ auto WithLogException(F f, Args... args) -> decltype(f(args...))
     FB_LOG_ERROR("Caught unknown exception."); 
     throw;
   }
+
+  assert(false);
+  return {};
 }
