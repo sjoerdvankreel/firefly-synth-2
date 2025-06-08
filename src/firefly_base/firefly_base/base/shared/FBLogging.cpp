@@ -1,11 +1,13 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
+#include <boost/stacktrace.hpp>
 #include <juce_core/juce_core.h>
 
 #include <ctime>
 #include <memory>
 #include <cassert>
+#include <stdexcept>
 #include <filesystem>
 
 using namespace juce;
@@ -41,6 +43,12 @@ FBLogInit(FBStaticTopoMeta const& meta)
   auto file = File(String(path.string()));
   _logger = std::make_unique<FileLogger>(file, meta.NameVersionAndFormat(), 0);
   FB_LOG_INFO("Initialized log.");
+}
+
+std::string 
+FBStackTraceFromCurrentException()
+{
+
 }
 
 std::string
