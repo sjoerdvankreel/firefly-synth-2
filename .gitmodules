@@ -28,6 +28,3 @@
 [submodule "lib/xsimd"]
 	path = lib/xsimd
 	url = https://github.com/sjoerdvankreel/xsimd.git
-[submodule "lib/stacktrace"]
-	path = lib/stacktrace
-	url = https://github.com/sjoerdvankreel/stacktrace.git
