@@ -2,7 +2,7 @@
 set -e
 
 if [ "$1" == "" ]; then
-  echo "Usage: build_mac Debug|RelWithDebInfo|Release"
+  echo "Usage: build_mac Debug|RelWithDebInfo"
   exit 1
 fi
 

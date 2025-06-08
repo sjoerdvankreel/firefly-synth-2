@@ -2,7 +2,7 @@
 set -e
 
 if [ "$1" == "" ]; then
-  echo "Usage: build_linux Debug|RelWithDebInfo|Release"
+  echo "Usage: build_linux Debug|RelWithDebInfo"
   exit 1
 fi
 
