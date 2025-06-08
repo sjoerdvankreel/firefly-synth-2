@@ -28,95 +28,122 @@ FBCLAPPlugin::implementsGui() const noexcept
 bool
 FBCLAPPlugin::guiShow() noexcept
 {
-  if (!_gui)
-    return false;
-  _gui->SetVisible(true);
-  return true;
+  return FBWithLogException([this]()
+  {
+    if (!_gui)
+      return false;
+    _gui->SetVisible(true);
+    return true;
+  });
 }
 
 bool 
 FBCLAPPlugin::guiHide() noexcept 
 {
-  if (!_gui)
-    return false;
-  _gui->SetVisible(false);
-  return true;
+  return FBWithLogException([this]()
+  {
+    if (!_gui)
+      return false;
+    _gui->SetVisible(false);
+    return true;
+  });
 }
 
 bool
 FBCLAPPlugin::guiSetScale(double scale) noexcept
 {
-  _gui->SetSystemScale(scale);
-  auto hostSize = _gui->GetHostSize();
-  _host.guiRequestResize(hostSize.first, hostSize.second);
-  return true;
+  return FBWithLogException([this, scale]()
+  {
+    _gui->SetSystemScale(scale);
+    auto hostSize = _gui->GetHostSize();
+    _host.guiRequestResize(hostSize.first, hostSize.second);
+    return true;
+  });
 }
 
 void
 FBCLAPPlugin::guiDestroy() noexcept 
 {
   FB_LOG_ENTRY_EXIT();
-  if (!_gui)
-    return;
-  _gui->RemoveFromDesktop();
-  _gui.reset();
+  FBWithLogException([this]()
+  {
+    if (!_gui)
+      return;
+    _gui->RemoveFromDesktop();
+    _gui.reset();
 #if (defined __linux__) || (defined  __FreeBSD__)
-  for (int fd : LinuxEventLoopInternal::getRegisteredFds())
-    _host.posixFdSupportUnregister(fd);
+    for (int fd : LinuxEventLoopInternal::getRegisteredFds())
+      _host.posixFdSupportUnregister(fd);
 #endif
+  });
 }
 
 bool
 FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 {
   FB_LOG_ENTRY_EXIT();
-  if (!_gui)
-    return false;
-  _gui->AddToDesktop(window->ptr);
+  return FBWithLogException([this, window]()
+  {
+    if (!_gui)
+      return false;
+    _gui->AddToDesktop(window->ptr);
 #if (defined __linux__) || (defined  __FreeBSD__)
-  for (int fd : LinuxEventLoopInternal::getRegisteredFds())
-    _host.posixFdSupportRegister(fd, CLAP_POSIX_FD_READ);
+    for (int fd : LinuxEventLoopInternal::getRegisteredFds())
+      _host.posixFdSupportRegister(fd, CLAP_POSIX_FD_READ);
 #endif
-  return true;
+    return true;
+  });
 }
 
 bool
 FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
 {
   FB_LOG_ENTRY_EXIT();
-  _gui = std::make_unique<FBPlugGUIContainer>(this);
-  return true;
+  return FBWithLogException([this]()
+  {
+    _gui = std::make_unique<FBPlugGUIContainer>(this);
+    return true;
+  });
 }
 
 bool
 FBCLAPPlugin::guiSetSize(uint32_t width, uint32_t height) noexcept 
 {
-  if (!_gui)
-    return false;
-  guiAdjustSize(&width, &height);
-  _gui->SetUserScaleByHostWidth(width);
-  return true;
+  return FBWithLogException([this, &width, &height]()
+  {
+    if (!_gui)
+      return false;
+    guiAdjustSize(&width, &height);
+    _gui->SetUserScaleByHostWidth(width);
+    return true;
+  });
 }
 
 bool
 FBCLAPPlugin::guiGetSize(uint32_t* width, uint32_t* height) noexcept 
 {
-  if (!_gui)
-    return false;
-  auto hostSize = _gui->GetHostSize();
-  *width = hostSize.first;
-  *height = hostSize.second;
-  return true;
+  return FBWithLogException([this, width, height]()
+  {
+    if (!_gui)
+      return false;
+    auto hostSize = _gui->GetHostSize();
+    *width = hostSize.first;
+    *height = hostSize.second;
+    return true;
+  });
 }
 
 bool
 FBCLAPPlugin::guiAdjustSize(uint32_t* width, uint32_t* height) noexcept 
 {
-  if (!_gui)
-    return false;
-  *width = _gui->ClampHostWidthForScale(*width);
-  *height = _gui->GetHeightForAspectRatio(*width);
-  return true;
+  return FBWithLogException([this, width, height]()
+  {
+    if (!_gui)
+      return false;
+    *width = _gui->ClampHostWidthForScale(*width);
+    *height = _gui->GetHeightForAspectRatio(*width);
+    return true;
+  });
 }
 
 bool

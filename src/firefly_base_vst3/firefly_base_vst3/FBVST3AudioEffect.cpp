@@ -81,54 +81,69 @@ _exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo))
 tresult PLUGIN_API 
 FBVST3AudioEffect::setActive(TBool state)
 {
-  if (state)
-    _exchangeHandler->onActivate(processSetup);
-  else
-    _exchangeHandler->onDeactivate();
-  return AudioEffect::setActive(state);
+  return FBWithLogException([this, state]()
+  {
+    if (state)
+      _exchangeHandler->onActivate(processSetup);
+    else
+      _exchangeHandler->onDeactivate();
+    return AudioEffect::setActive(state);
+  });
 }
 
 tresult PLUGIN_API
 FBVST3AudioEffect::getState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
-  std::string json = _topo->SaveProcStateToString(*_procState);
-  if (!FBVST3SaveIBStream(state, json))
-    return kResultFalse;
-  return kResultOk;
+  return FBWithLogException([this, state]()
+  {
+    std::string json = _topo->SaveProcStateToString(*_procState);
+    if (!FBVST3SaveIBStream(state, json))
+      return kResultFalse;
+    return kResultOk;
+  });
 }
 
 tresult PLUGIN_API
 FBVST3AudioEffect::setState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
-  std::string json;
-  if (!FBVST3LoadIBStream(state, json))
-    return kResultFalse;
-  _topo->LoadProcStateFromStringWithDryRun(json, *_procState);
-  return kResultOk;
+  return FBWithLogException([this, state]()
+  {
+    std::string json;
+    if (!FBVST3LoadIBStream(state, json))
+      return kResultFalse;
+    _topo->LoadProcStateFromStringWithDryRun(json, *_procState);
+    return kResultOk;
+  });
 }
 
 tresult PLUGIN_API
 FBVST3AudioEffect::disconnect(IConnectionPoint* other)
 {
-  if (_exchangeHandler)
+  return FBWithLogException([this, other]() 
   {
-    _exchangeHandler->onDisconnect(other);
-    _exchangeHandler.reset();
-  }
-  return AudioEffect::disconnect(other);
+    if (_exchangeHandler)
+    {
+      _exchangeHandler->onDisconnect(other);
+      _exchangeHandler.reset();
+    }
+    return AudioEffect::disconnect(other);
+  });
 }
 
 tresult PLUGIN_API
 FBVST3AudioEffect::initialize(FUnknown* context)
 {
   FB_LOG_ENTRY_EXIT();
-  if (AudioEffect::initialize(context) != kResultTrue)
-    return kResultFalse;
-  addEventInput(STR16("Event In"));
-  addAudioOutput(STR16("Stereo Out"), SpeakerArr::kStereo);
-  return kResultTrue;
+  return FBWithLogException([this, context]() 
+  {
+    if (AudioEffect::initialize(context) != kResultTrue)
+      return kResultFalse;
+    addEventInput(STR16("Event In"));
+    addAudioOutput(STR16("Stereo Out"), SpeakerArr::kStereo);
+    return kResultTrue;
+  });
 }
 
 tresult PLUGIN_API
@@ -152,108 +167,117 @@ tresult PLUGIN_API
 FBVST3AudioEffect::setupProcessing(ProcessSetup& setup)
 {
   FB_LOG_ENTRY_EXIT();
-  _sampleRate = static_cast<float>(setup.sampleRate);
-  for (int ch = 0; ch < 2; ch++)
-    _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
-  _hostProcessor.reset(new FBHostProcessor(this));
-  return kResultTrue;
+  return FBWithLogException([this, &setup]() 
+  {
+    _sampleRate = static_cast<float>(setup.sampleRate);
+    for (int ch = 0; ch < 2; ch++)
+      _zeroIn[ch] = std::vector<float>(setup.maxSamplesPerBlock, 0.0f);
+    _hostProcessor.reset(new FBHostProcessor(this));
+    return kResultTrue;
+  });
 }
 
 tresult PLUGIN_API 
 FBVST3AudioEffect::connect(IConnectionPoint* other)
 {
-  tresult result = AudioEffect::connect(other);
-  if (result != kResultTrue)
-    return result; 
-  auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
-    config.numBlocks = 1;
-    config.userContextID = 0;
-    config.blockSize = _topo->static_.exchangeStateSize;
+  return FBWithLogException([this, other]()
+  {
+    tresult result = AudioEffect::connect(other);
+    if (result != kResultTrue)
+      return result;
+    auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
+      config.numBlocks = 1;
+      config.userContextID = 0;
+      config.blockSize = _topo->static_.exchangeStateSize;
 
-    // If this is set to the natural alignment of the struct being transmitted
-    // this stuff totally breaks down on MacOS. The 32 magic number is not AFAIK
-    // documented anywhere except being mentioned in the sample code at 
-    // https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Data+Exchange/Index.html.
-    config.alignment = std::max(32, _topo->static_.exchangeStateAlignment);
-    return true; };
-  _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
-  _exchangeHandler->onConnect(other, getHostContext());
-  return result;
+      // If this is set to the natural alignment of the struct being transmitted
+      // this stuff totally breaks down on MacOS. The 32 magic number is not AFAIK
+      // documented anywhere except being mentioned in the sample code at 
+      // https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Data+Exchange/Index.html.
+      config.alignment = std::max(32, _topo->static_.exchangeStateAlignment);
+      return true; };
+    _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
+    _exchangeHandler->onConnect(other, getHostContext());
+    return result;
+  });
 }
 
 tresult PLUGIN_API
 FBVST3AudioEffect::process(ProcessData& data)
 {
-  Event event;
-  _input.note.clear();
-  if (data.inputEvents != nullptr)
-    for (int i = 0; i < data.inputEvents->getEventCount(); i++)
-      if (data.inputEvents->getEvent(i, event) == kResultOk)
-        if (event.type == Event::kNoteOnEvent)
-          _input.note.push_back(MakeNoteOnEvent(event));
-        else if (event.type == Event::kNoteOffEvent)
-          _input.note.push_back(MakeNoteOffEvent(event));
+  return FBWithLogException([this, &data]()
+  {
+    Event event;
+    _input.note.clear();
+    if (data.inputEvents != nullptr)
+      for (int i = 0; i < data.inputEvents->getEventCount(); i++)
+        if (data.inputEvents->getEvent(i, event) == kResultOk)
+          if (event.type == Event::kNoteOnEvent)
+            _input.note.push_back(MakeNoteOnEvent(event));
+          else if (event.type == Event::kNoteOffEvent)
+            _input.note.push_back(MakeNoteOffEvent(event));
 
-  int position;
-  ParamValue value;
-  IParamValueQueue* queue;
-  std::unordered_map<int, int>::const_iterator iter;
-  _input.blockAuto.clear();
-  auto& accAuto = _input.accAutoByParamThenSample;
-  accAuto.clear();
-  if(data.inputParameterChanges != nullptr)
-    for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
-      if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
-        if (queue->getPointCount() > 0)
-          if ((iter = _topo->audio.paramTagToIndex.find(queue->getParameterId())) != _topo->audio.paramTagToIndex.end())
-            if (_topo->audio.params[iter->second].static_.acc)
-            {
-              for (int point = 0; point < queue->getPointCount(); point++)
-                if (queue->getPoint(point, position, value) == kResultTrue)
-                  accAuto.push_back(MakeAccAutoEvent(iter->second, position, value));
-            }
-            else
-            {
-              if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
-                _input.blockAuto.push_back(MakeBlockAutoEvent(iter->second, value));
-            }
-  std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
+    int position;
+    ParamValue value;
+    IParamValueQueue* queue;
+    std::unordered_map<int, int>::const_iterator iter;
+    _input.blockAuto.clear();
+    auto& accAuto = _input.accAutoByParamThenSample;
+    accAuto.clear();
+    if (data.inputParameterChanges != nullptr)
+      for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
+        if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
+          if (queue->getPointCount() > 0)
+            if ((iter = _topo->audio.paramTagToIndex.find(queue->getParameterId())) != _topo->audio.paramTagToIndex.end())
+              if (_topo->audio.params[iter->second].static_.acc)
+              {
+                for (int point = 0; point < queue->getPointCount(); point++)
+                  if (queue->getPoint(point, position, value) == kResultTrue)
+                    accAuto.push_back(MakeAccAutoEvent(iter->second, position, value));
+              }
+              else
+              {
+                if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
+                  _input.blockAuto.push_back(MakeBlockAutoEvent(iter->second, value));
+              }
+    std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
 
-  _output.outputParams.clear();
-  _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
+    _output.outputParams.clear();
+    _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
 
-  _input.bpm = FBHostInputBlock::DefaultBPM;
-  if (data.processContext != nullptr && (data.processContext->state & ProcessContext::kTempoValid) != 0)
-    _input.bpm = static_cast<float>(data.processContext->tempo);
+    _input.bpm = FBHostInputBlock::DefaultBPM;
+    if (data.processContext != nullptr && (data.processContext->state & ProcessContext::kTempoValid) != 0)
+      _input.bpm = static_cast<float>(data.processContext->tempo);
 
-  float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
-  if (data.numInputs != 1)
-    _input.audio = FBHostAudioBlock(zeroIn, data.numSamples);
-  else
-    _input.audio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
+    float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
+    if (data.numInputs != 1)
+      _input.audio = FBHostAudioBlock(zeroIn, data.numSamples);
+    else
+      _input.audio = FBHostAudioBlock(data.inputs[0].channelBuffers32, data.numSamples);
 
-  _hostProcessor->ProcessHost(_input, _output);
+    _hostProcessor->ProcessHost(_input, _output);
 
-  if(data.outputParameterChanges != nullptr)
-    for(int i = 0; i < _output.outputParams.size(); i++)
+    if (data.outputParameterChanges != nullptr)
+      for (int i = 0; i < _output.outputParams.size(); i++)
+      {
+        int unused;
+        auto const& event = _output.outputParams[i];
+        int tag = _topo->audio.params[event.param].tag;
+        auto queue = data.outputParameterChanges->addParameterData(tag, unused);
+        if (queue != nullptr)
+          queue->addPoint(0, event.normalized, unused);
+      }
+
+    if (_exchangeBlock.blockID == InvalidDataExchangeBlockID)
+      _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
+
+    if (_exchangeBlock.blockID != InvalidDataExchangeBlockID)
     {
-      int unused;
-      auto const& event = _output.outputParams[i];
-      int tag = _topo->audio.params[event.param].tag;
-      auto queue = data.outputParameterChanges->addParameterData(tag, unused);
-      if(queue != nullptr)
-        queue->addPoint(0, event.normalized, unused);
+      memcpy(_exchangeBlock.data, _exchangeState->Raw(), _exchangeBlock.size);
+      _exchangeHandler->sendCurrentBlock();
+      _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
     }
 
-  if (_exchangeBlock.blockID == InvalidDataExchangeBlockID)
-    _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
-
-  if (_exchangeBlock.blockID != InvalidDataExchangeBlockID)
-  {
-    memcpy(_exchangeBlock.data, _exchangeState->Raw(), _exchangeBlock.size);
-    _exchangeHandler->sendCurrentBlock();
-    _exchangeBlock = _exchangeHandler->getCurrentOrNewBlock();
-  }
-
-  return kResultTrue;
+    return kResultTrue;
+  });
 }

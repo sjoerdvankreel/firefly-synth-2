@@ -146,88 +146,108 @@ FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 tresult PLUGIN_API 
 FBVST3EditController::notify(IMessage* message)
 {
-  if (_exchangeHandler.onMessage(message))
-    return kResultTrue;
-  return EditControllerEx1::notify(message);
+  return FBWithLogException([this, message]()
+  {
+    if (_exchangeHandler.onMessage(message))
+      return static_cast<tresult>(kResultTrue);
+    return EditControllerEx1::notify(message);
+  });
 }
 
 IPlugView* PLUGIN_API
 FBVST3EditController::createView(FIDString name)
 {
   FB_LOG_ENTRY_EXIT();
-  if (ConstString(name) != ViewType::kEditor) 
-    return nullptr;
-  if (_guiEditor == nullptr)
-    _guiEditor = WithLogException([this]() { 
-      return new FBVST3GUIEditor(this); });
-  return _guiEditor;
+  return FBWithLogException([this, name]()
+  {
+    if (ConstString(name) != ViewType::kEditor)
+      return static_cast<IPlugView*>(nullptr);
+    if (_guiEditor == nullptr)
+      _guiEditor = new FBVST3GUIEditor(this);
+    return static_cast<IPlugView*>(_guiEditor);
+  });
 }
 
 tresult PLUGIN_API
 FBVST3EditController::getState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
-  std::string json = _topo->SaveGUIStateToString(*_guiState);
-  if (!FBVST3SaveIBStream(state, json))
-    return kResultFalse;
-  return kResultOk;
+  return FBWithLogException([this, state]()
+  {
+    std::string json = _topo->SaveGUIStateToString(*_guiState);
+    if (!FBVST3SaveIBStream(state, json))
+      return kResultFalse;
+    return kResultOk;
+  });
 }
 
 tresult PLUGIN_API 
 FBVST3EditController::setState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
-  std::string json;
-  if (!FBVST3LoadIBStream(state, json))
-    return kResultFalse;
-  _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
-  return kResultTrue;
+  return FBWithLogException([this, state]()
+  {
+    std::string json;
+    if (!FBVST3LoadIBStream(state, json))
+      return kResultFalse;
+    _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
+    return kResultTrue;
+  });
 }
 
 tresult PLUGIN_API
 FBVST3EditController::setComponentState(IBStream* state)
 {
   FB_LOG_ENTRY_EXIT();
-  std::string json;
-  if (!FBVST3LoadIBStream(state, json))
-    return kResultFalse;
-  FBScalarStateContainer edit(*_topo);
-  if (!_topo->LoadEditStateFromString(json, edit))
-    return kResultFalse;
-  for (int i = 0; i < edit.Params().size(); i++)
-    setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
-  return kResultOk;
+  return FBWithLogException([this, state]()
+  {
+    std::string json;
+    if (!FBVST3LoadIBStream(state, json))
+      return kResultFalse;
+    FBScalarStateContainer edit(*_topo);
+    if (!_topo->LoadEditStateFromString(json, edit))
+      return kResultFalse;
+    for (int i = 0; i < edit.Params().size(); i++)
+      setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
+    return kResultOk;
+  });
 }
 
 tresult PLUGIN_API
 FBVST3EditController::initialize(FUnknown* context)
 {
   FB_LOG_ENTRY_EXIT();
-  if (EditController::initialize(context) != kResultTrue)
-    return kResultFalse;
-
-  int unitId = 1;
-  for (int m = 0; m < _topo->modules.size(); m++)
+  return FBWithLogException([this, context]()
   {
-    addUnit(new Unit(MakeUnitInfo(_topo->modules[m], unitId)));
-    for (int p = 0; p < _topo->modules[m].params.size(); p++)
+    if (EditController::initialize(context) != kResultTrue)
+      return kResultFalse;
+
+    int unitId = 1;
+    for (int m = 0; m < _topo->modules.size(); m++)
     {
-      auto const& topo = _topo->modules[m].params[p];
-      auto info = MakeParamInfo(topo, unitId);
-      parameters.addParameter(new FBVST3Parameter(&topo.static_, info));
+      addUnit(new Unit(MakeUnitInfo(_topo->modules[m], unitId)));
+      for (int p = 0; p < _topo->modules[m].params.size(); p++)
+      {
+        auto const& topo = _topo->modules[m].params[p];
+        auto info = MakeParamInfo(topo, unitId);
+        parameters.addParameter(new FBVST3Parameter(&topo.static_, info));
+      }
+      unitId++;
     }
-    unitId++;
-  }
-  return kResultTrue;
+    return kResultTrue;
+  });
 }
 
 void PLUGIN_API
 FBVST3EditController::onDataExchangeBlocksReceived(
   DataExchangeUserContextID id, uint32 numBlocks, DataExchangeBlock* blocks, TBool bg)
 {
-  if (numBlocks == 0)
-    return;
-  memcpy(_exchangeState->Raw(), blocks[numBlocks - 1].data, _topo->static_.exchangeStateSize);
-  if (_guiEditor != nullptr)
-    _guiEditor->UpdateExchangeState();
+  FBWithLogException([this, id, numBlocks, blocks, bg]()
+  {
+    if (numBlocks == 0)
+      return;
+    memcpy(_exchangeState->Raw(), blocks[numBlocks - 1].data, _topo->static_.exchangeStateSize);
+    if (_guiEditor != nullptr)
+      _guiEditor->UpdateExchangeState();
+  });
 }

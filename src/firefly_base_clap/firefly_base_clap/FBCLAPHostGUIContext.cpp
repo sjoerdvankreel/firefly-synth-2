@@ -1,5 +1,6 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
@@ -101,27 +102,33 @@ FBCLAPPlugin::MakeAudioParamContextMenu(int index)
 void
 FBCLAPPlugin::AudioParamContextMenuClicked(int paramIndex, int juceTag)
 {
-  std::vector<FBHostContextMenuItem> items;
-  auto target = MakeAudioParamContextMenu(paramIndex, items);
-  if (target)
-    _host.contextMenuPerform(target.get(), items[juceTag - 1].hostTag);
+  FBWithLogException([this, paramIndex, juceTag]()
+  {
+    std::vector<FBHostContextMenuItem> items;
+    auto target = MakeAudioParamContextMenu(paramIndex, items);
+    if (target)
+      _host.contextMenuPerform(target.get(), items[juceTag - 1].hostTag);
+  });
 }
 
 std::unique_ptr<clap_context_menu_target>
 FBCLAPPlugin::MakeAudioParamContextMenu(int index, std::vector<FBHostContextMenuItem>& items)
 {
-  if (!_host.canUseContextMenu())
-    return {};
+  return FBWithLogException([this, index, &items]()
+  {
+    if (!_host.canUseContextMenu())
+      return std::unique_ptr<clap_context_menu_target>();
 
-  clap_context_menu_builder builder;
-  builder.ctx = &items;
-  builder.add_item = ContextMenuBuilderAddItem;
-  builder.supports = [](auto, auto) { return true; };
+    clap_context_menu_builder builder;
+    builder.ctx = &items;
+    builder.add_item = ContextMenuBuilderAddItem;
+    builder.supports = [](auto, auto) { return true; };
 
-  auto result = std::make_unique<clap_context_menu_target>();
-  result->id = _topo->audio.params[index].tag;
-  result->kind = CLAP_CONTEXT_MENU_TARGET_KIND_PARAM;
-  // bitwig returns false
-  _host.contextMenuPopulate(result.get(), &builder);
-  return result;
+    auto result = std::make_unique<clap_context_menu_target>();
+    result->id = _topo->audio.params[index].tag;
+    result->kind = CLAP_CONTEXT_MENU_TARGET_KIND_PARAM;
+    // bitwig returns false
+    _host.contextMenuPopulate(result.get(), &builder);
+    return result;
+  });
 }

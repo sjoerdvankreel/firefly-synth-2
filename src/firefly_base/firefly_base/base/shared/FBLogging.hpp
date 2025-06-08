@@ -41,7 +41,7 @@ void FBLogWrite(FBLogLevel level, char const* file, int line, char const* func, 
 // It logs the exception then rethrows, not wise to continue on any unknown error.
 // Do NOT log unconditionally here since this function may be called from RT.
 template <class F, class... Args>
-auto WithLogException(F f, Args... args) -> decltype(f(args...))
+auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
 {
   std::exception_ptr eptr = {};
   try { 

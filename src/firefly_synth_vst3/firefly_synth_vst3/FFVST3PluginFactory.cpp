@@ -57,18 +57,24 @@ TextToFUID(char const* text)
 static FUnknown*
 ControllerFactory(void*) 
 {
-  auto topo = FFMakeTopo(FBPlugFormat::VST3);
-  auto result = new FBVST3EditController(*topo);
-  return static_cast<IEditController*>(result);
+  return FBWithLogException([]() 
+  {
+    auto topo = FFMakeTopo(FBPlugFormat::VST3);
+    auto result = new FBVST3EditController(*topo);
+    return static_cast<IEditController*>(result);
+  });
 }
 
 static FUnknown*
 ComponentFactory(void*)
 {
-  auto topo = FFMakeTopo(FBPlugFormat::VST3);
-  auto controllerFuid = TextToFUID(FFPlugControllerId);
-  auto result = new FFVST3AudioEffect(*topo, controllerFuid);
-  return static_cast<IAudioProcessor*>(result);
+  return FBWithLogException([]() 
+  {
+    auto topo = FFMakeTopo(FBPlugFormat::VST3);
+    auto controllerFuid = TextToFUID(FFPlugControllerId);
+    auto result = new FFVST3AudioEffect(*topo, controllerFuid);
+    return static_cast<IAudioProcessor*>(result);
+  });
 }
 
 BEGIN_FACTORY_DEF(FFVendorName, FFVendorURL, FFVendorMail)

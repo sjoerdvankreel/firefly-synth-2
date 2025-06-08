@@ -77,6 +77,7 @@ static clap_plugin_descriptor_t const*
 GetPluginDescriptor(
   clap_plugin_factory const*, std::uint32_t)
 {
+  FB_LOG_ENTRY_EXIT();
   static clap_plugin_descriptor_t result = {};
   result.features = Features;
   result.url = FFVendorURL;
@@ -93,16 +94,21 @@ CreatePlugin(
   struct clap_plugin_factory const* factory,
   clap_host_t const* host, char const* pluginId)
 {
-  auto topo = FFMakeTopo(FBPlugFormat::CLAP);
-  auto const* desc = GetPluginDescriptor(nullptr, 0);
-  if (strcmp(desc->id, pluginId))
-    return static_cast<clap_plugin_t const*>(nullptr);
-  return (new FFCLAPPlugin(*topo, desc, host))->clapPlugin();
+  FB_LOG_ENTRY_EXIT();
+  return FBWithLogException([factory, host, pluginId]()
+  {
+    auto topo = FFMakeTopo(FBPlugFormat::CLAP);
+    auto const* desc = GetPluginDescriptor(nullptr, 0);
+    if (strcmp(desc->id, pluginId))
+      return static_cast<clap_plugin_t const*>(nullptr);
+    return (new FFCLAPPlugin(*topo, desc, host))->clapPlugin();
+  });
 }
 
 static void const*
 GetFactory(char const* factoryId)
 {
+  FB_LOG_ENTRY_EXIT();
   if (strcmp(factoryId, CLAP_PLUGIN_FACTORY_ID)) 
     return nullptr;
 
