@@ -52,7 +52,7 @@ auto WithLogException(F f, Args... args) -> decltype(f(args...))
 
   assert(eptr);
   if (!eptr) 
-    return {};
+    return f(args...);
 
   try { 
     std::rethrow_exception(eptr);
@@ -65,5 +65,5 @@ auto WithLogException(F f, Args... args) -> decltype(f(args...))
   }
 
   assert(false);
-  return {};
+  return f(args...);
 }
