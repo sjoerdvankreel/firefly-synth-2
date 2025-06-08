@@ -14,26 +14,26 @@ jobs:
             arch_type: 1
             os: windows-2022
             build_type: DEBUG
-          - name: "Windows 2022 Release"
+          - name: "Windows 2022 RelWithDebInfo"
             arch_type: 1
             os: windows-2022
-            build_type: RELEASE
+            build_type: RELWITHDEBINFO
           - name: "Ubuntu 22 Debug"
             arch_type: 1
             os: ubuntu-22.04
             build_type: DEBUG
-          - name: "Ubuntu 22 Release"
+          - name: "Ubuntu 22 RelWithDebInfo"
             arch_type: 1
             os: ubuntu-22.04
-            build_type: RELEASE
+            build_type: RELWITHDEBINFO
           - name: "MacOS 13 Debug"
             arch_type: 2
             os: macos-13
             build_type: DEBUG
-          - name: "MacOS 13 Release"
+          - name: "MacOS 13 RelWithDebInfo"
             arch_type: 2
             os: macos-13
-            build_type: RELEASE
+            build_type: RELWITHDEBINFO
     steps:
       - name: Checkout
         uses: actions/checkout@v4
