@@ -62,9 +62,10 @@ SpecialGUIParamsSelector(
 }
 
 FBStaticTopoMeta
-FFPlugMeta()
+FFPlugMeta(FBPlugFormat format)
 {
   FBStaticTopoMeta result;
+  result.format = format;
   result.name = FFPlugName;
   result.id = FFPlugUniqueId;
   result.vendor = FFVendorName;
@@ -75,10 +76,10 @@ FFPlugMeta()
 }
 
 std::unique_ptr<FBStaticTopo>
-FFMakeTopo()
+FFMakeTopo(FBPlugFormat format)
 {
   auto result = std::make_unique<FBStaticTopo>();
-  result->meta = FFPlugMeta();
+  result->meta = FFPlugMeta(format);
   result->guiWidth = 900;
   result->guiAspectRatioWidth = 12;
   result->guiAspectRatioHeight = 7;

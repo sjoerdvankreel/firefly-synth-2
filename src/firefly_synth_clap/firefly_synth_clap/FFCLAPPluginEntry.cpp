@@ -63,7 +63,7 @@ Deinit()
 static bool CLAP_ABI 
 Init(char const*) 
 { 
-  FBLogInit(FFPlugMeta());
+  FBLogInit(FFPlugMeta(FBPlugFormat::CLAP));
   FBGUIInit();
   return true; 
 }
@@ -93,7 +93,7 @@ CreatePlugin(
   struct clap_plugin_factory const* factory,
   clap_host_t const* host, char const* pluginId)
 {
-  auto topo = FFMakeTopo();
+  auto topo = FFMakeTopo(FBPlugFormat::CLAP);
   auto const* desc = GetPluginDescriptor(nullptr, 0);
   if (strcmp(desc->id, pluginId))
     return static_cast<clap_plugin_t const*>(nullptr);

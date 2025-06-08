@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <memory>
 
 #define FF_PLUG_VERSION FB_STRINGIFY(FF_PLUG_VERSION_MAJOR.FF_PLUG_VERSION_MINOR.FF_PLUG_VERSION_PATCH)
@@ -7,8 +8,8 @@
 struct FBStaticTopo;
 struct FBStaticTopoMeta;
 
-FBStaticTopoMeta FFPlugMeta();
-std::unique_ptr<FBStaticTopo> FFMakeTopo();
+FBStaticTopoMeta FFPlugMeta(FBPlugFormat format);
+std::unique_ptr<FBStaticTopo> FFMakeTopo(FBPlugFormat format);
 
 enum class FFModuleType { GLFO, GFilter, StringOsci, Osci, OsciMod, Effect, Env, Master, Output, GUISettings, Count };
 
