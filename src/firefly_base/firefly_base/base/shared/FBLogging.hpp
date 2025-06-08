@@ -1,7 +1,9 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+
 #include <string>
+#include <cassert>
 
 #define FB_LOG_WRITE(lvl, msg) \
 FBLogWrite(lvl, __FILE__, __LINE__, __func__, msg)
@@ -33,3 +35,21 @@ struct FBEntryExitLog
 void FBLogTerminate();
 void FBLogInit(FBStaticTopoMeta const& meta);
 void FBLogWrite(FBLogLevel level, char const* file, int line, char const* func, std::string const& message);
+
+// Writes exception to log, if any.
+// Meant to be used for top level functions (so called from the host).
+// It logs the exception then rethrows, not wise to continue on any unknown error.
+template <class F, class... Args>
+auto WithLogException(F f, Args... args) -> decltype(f(args...))
+{
+  std::exception_ptr eptr = {};
+  try { return f(args...); }
+  catch (...) { eptr = std::current_exception(); }
+
+  assert(eptr);
+  if (!eptr) return {};
+
+  try { std::rethrow_exception(eptr); }
+  catch (std::exception const& e) { FB_LOG_ERROR(std::string("Caught exception: ") + e.what()); throw; }
+  catch (...) { FB_LOG_ERROR("Caught unknown exception."); throw; }
+}
