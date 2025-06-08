@@ -17,6 +17,10 @@ class FBPlugGUI;
 class FBHostGUIContext;
 class FBGlobalBlockParamState;
 
+enum class FBPlugFormat { VST3, CLAP };
+std::string 
+FBPlugFormatToString(FBPlugFormat format);
+
 struct FBPlugVersion final
 {
   int major = 0;
@@ -31,7 +35,8 @@ struct FBStaticTopoMeta final
   std::string name;
   std::string vendor;
   FBPlugVersion version;
-  std::string NameAndVersion() const;
+  FBPlugFormat format = (FBPlugFormat)-1;
+  std::string NameVersionAndFormat() const;
 };
 
 struct FBSpecialParam final

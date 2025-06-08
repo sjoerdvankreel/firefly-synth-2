@@ -45,7 +45,7 @@ FBDisableDenormal()
 std::filesystem::path
 FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta)
 {
-  return FBGetUserDataFolder() / meta.vendor / meta.name / meta.id;
+  return FBGetUserDataFolder() / meta.vendor / meta.name / FBPlugFormatToString(meta.format) / meta.id;
 }
 
 std::filesystem::path
