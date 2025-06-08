@@ -43,13 +43,23 @@ template <class F, class... Args>
 auto WithLogException(F f, Args... args) -> decltype(f(args...))
 {
   std::exception_ptr eptr = {};
-  try { return f(args...); }
-  catch (...) { eptr = std::current_exception(); }
+  try { 
+    return f(args...); 
+  } catch (...) { 
+    eptr = std::current_exception(); 
+  }
 
   assert(eptr);
-  if (!eptr) return {};
+  if (!eptr) 
+    return {};
 
-  try { std::rethrow_exception(eptr); }
-  catch (std::exception const& e) { FB_LOG_ERROR(std::string("Caught exception: ") + e.what()); throw; }
-  catch (...) { FB_LOG_ERROR("Caught unknown exception."); throw; }
+  try { 
+    std::rethrow_exception(eptr);
+  } catch (std::exception const& e) { 
+    FB_LOG_ERROR(std::string("Caught exception: ") + e.what()); 
+    throw; 
+  } catch (...) { 
+    FB_LOG_ERROR("Caught unknown exception."); 
+    throw;
+  }
 }
