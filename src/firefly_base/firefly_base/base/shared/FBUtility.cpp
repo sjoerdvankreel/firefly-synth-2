@@ -25,6 +25,21 @@ FBFormatDouble(double val, int precision)
   return ss.str();
 }
 
+std::optional<double>
+FBStringToDoubleOptCLocale(std::string const& text)
+{
+  double result = 0.0;
+  std::istringstream str(text);
+  str.imbue(std::locale("C"));
+  str >> result;
+  if (str.fail() || str.bad() || !str.eof())
+  {
+    FB_LOG_WARN("Failed to parse '" + text + "' to double, returning 0.");
+    return std::nullopt;
+  }
+  return result;
+}
+
 void
 FBRestoreDenormal(FBDenormalState state)
 {

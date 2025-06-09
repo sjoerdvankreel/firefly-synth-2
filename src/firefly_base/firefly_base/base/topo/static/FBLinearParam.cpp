@@ -35,13 +35,10 @@ FBLinearParamNonRealTime::PlainToText(bool io, double plain) const
 std::optional<double>
 FBLinearParamNonRealTime::TextToPlain(bool io, std::string const& text) const
 {
-  char* end;
-  double result = std::strtod(text.c_str(), &end);
-  if (end != text.c_str() + text.size())
-  {
-    FB_LOG_WARN(std::string("Parsing text remainder: '") + end + "'.");
-    return {};
-  }
+  auto resultOpt = FBStringToDoubleOptCLocale(text);
+  if (!resultOpt)
+    return std::nullopt;
+  double result = resultOpt.value();
   result /= displayMultiplier;
   if (result < min - 0.01 || result > max + 0.01)
     return {};

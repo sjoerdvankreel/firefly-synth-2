@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <optional>
 #include <cstdint>
 #include <filesystem>
 
@@ -85,6 +86,11 @@ FBRestoreDenormal(FBDenormalState state);
 
 std::string
 FBFormatDouble(double val, int precision);
+
+// Localization for std::strtod gave me issues on Linux.
+std::optional<double>
+FBStringToDoubleOptCLocale(std::string const& text);
+
 std::vector<std::uint8_t>
 FBReadFile(std::filesystem::path const& p);
 
