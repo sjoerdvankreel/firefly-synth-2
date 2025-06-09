@@ -17,8 +17,9 @@
 using namespace juce;
 
 static Component*
-MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciModSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(0);
   columnSizes.push_back(0);
@@ -63,5 +64,5 @@ Component*
 FFMakeOsciModGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::OsciMod, MakeSectionAll);
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::OsciMod, MakeOsciModSectionAll);
 }

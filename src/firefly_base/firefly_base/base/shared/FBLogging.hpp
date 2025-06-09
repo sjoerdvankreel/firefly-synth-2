@@ -2,6 +2,8 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 
+#include <chrono>
+#include <thread>
 #include <string>
 #include <cassert>
 
@@ -43,6 +45,8 @@ void FBLogWrite(FBLogLevel level, char const* file, int line, char const* func, 
 template <class F, class... Args>
 auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
 {
+  using namespace std::chrono_literals;
+
   std::exception_ptr eptr = {};
   try { 
     return f(args...); 
@@ -58,9 +62,11 @@ auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
     std::rethrow_exception(eptr);
   } catch (std::exception const& e) { 
     FB_LOG_ERROR(std::string("Caught exception: ") + e.what()); 
+    std::this_thread::sleep_for(1000ms); // really need for flush
     throw; 
   } catch (...) { 
     FB_LOG_ERROR("Caught unknown exception."); 
+    std::this_thread::sleep_for(1000ms); // really need for flush
     throw;
   }
 

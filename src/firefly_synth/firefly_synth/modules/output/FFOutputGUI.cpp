@@ -17,8 +17,9 @@
 using namespace juce;
 
 static Component*
-MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOutputSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0 } );
   auto voices = topo->audio.ParamAtTopo({ (int)FFModuleType::Output, moduleSlot, (int)FFOutputParam::Voices, 0 });
@@ -32,5 +33,5 @@ Component*
 FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Output, MakeSectionAll);
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Output, MakeOutputSectionAll);
 }
