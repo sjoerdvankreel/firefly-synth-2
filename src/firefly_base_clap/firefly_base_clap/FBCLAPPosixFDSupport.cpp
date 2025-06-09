@@ -1,6 +1,5 @@
 #if (defined __linux__) || (defined  __FreeBSD__)
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
-#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 
 #include <juce_events/native/juce_EventLoopInternal_linux.h>
