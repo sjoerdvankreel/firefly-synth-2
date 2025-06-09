@@ -46,7 +46,6 @@ add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=0)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/JUCE)
 
 # boost stacktrace and dependencies
-add_definitions(-D_GNU_SOURCE=1)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/mp11)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/core)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/assert)
