@@ -1,3 +1,4 @@
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBStaticParam.hpp>
 
 FBAutomationTiming
@@ -64,7 +65,11 @@ FBStaticParamBase::DefaultNormalizedByText(int moduleSlot, int paramSlot) const
   auto text = GetDefaultText(moduleSlot, paramSlot);
   if (text.size() == 0)
     return 0.0;
-  return NonRealTime().TextToNormalized(false, text).value();
+  auto result = NonRealTime().TextToNormalized(false, text);
+  if (result)
+    return result.value();
+  FB_LOG_WARN("Failed to parse default text '" + text + "' for param '" + name + "'.");
+  return 0.0;
 }
 
 std::string
