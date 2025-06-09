@@ -28,3 +28,36 @@
 [submodule "lib/xsimd"]
 	path = lib/xsimd
 	url = https://github.com/sjoerdvankreel/xsimd.git
+[submodule "lib/boost/winapi"]
+	path = lib/boost/winapi
+	url = https://github.com/sjoerdvankreel/boost-winapi.git
+[submodule "lib/boost/config"]
+	path = lib/boost/config
+	url = https://github.com/sjoerdvankreel/boost-config.git
+[submodule "lib/boost/stacktrace"]
+	path = lib/boost/stacktrace
+	url = https://github.com/sjoerdvankreel/boost-stacktrace.git
+[submodule "lib/boost/predef"]
+	path = lib/boost/predef
+	url = https://github.com/sjoerdvankreel/boost-predef.git
+[submodule "lib/boost/core"]
+	path = lib/boost/core
+	url = https://github.com/sjoerdvankreel/boost-core.git
+[submodule "lib/boost/container_hash"]
+	path = lib/boost/container_hash
+	url = https://github.com/sjoerdvankreel/boost-container_hash.git
+[submodule "lib/boost/describe"]
+	path = lib/boost/describe
+	url = https://github.com/sjoerdvankreel/boost-describe.git
+[submodule "lib/boost/mp11"]
+	path = lib/boost/mp11
+	url = https://github.com/sjoerdvankreel/boost-mp11.git
+[submodule "lib/boost/assert"]
+	path = lib/boost/assert
+	url = https://github.com/sjoerdvankreel/boost-assert.git
+[submodule "lib/boost/static_assert"]
+	path = lib/boost/static_assert
+	url = https://github.com/sjoerdvankreel/boost-static_assert.git
+[submodule "lib/boost/throw_exception"]
+	path = lib/boost/throw_exception
+	url = https://github.com/sjoerdvankreel/boost-throw_exception.git
