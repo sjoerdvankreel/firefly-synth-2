@@ -40,7 +40,8 @@ FBLogTerminate()
 void
 FBLogInit(FBStaticTopoMeta const& meta)
 {
-  auto path = FBGetUserPluginDataFolder(meta) / "lastrun.log";
+  auto uuid = juce::Uuid().toString().toStdString();
+  auto path = FBGetUserPluginDataFolder(meta) / (uuid + ".log");
   auto file = File(String(path.string()));
   _logger = std::make_unique<FileLogger>(file, meta.NameVersionAndFormat(), 0);
   FB_LOG_INFO("Initialized log.");
