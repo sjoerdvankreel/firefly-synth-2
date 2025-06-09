@@ -20,5 +20,5 @@ cd ..\..\..\..\scripts
 
 exit /b 0
 :usage
-echo "Usage: build_windows Debug|RelWithDebInfo"
+echo "Usage: build_windows Debug|RelWithDebInfo|Release"
 exit /b 1
