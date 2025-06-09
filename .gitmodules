@@ -46,18 +46,3 @@
 [submodule "lib/boost/container_hash"]
 	path = lib/boost/container_hash
 	url = https://github.com/sjoerdvankreel/boost-container_hash.git
-[submodule "lib/boost/describe"]
-	path = lib/boost/describe
-	url = https://github.com/sjoerdvankreel/boost-describe.git
-[submodule "lib/boost/mp11"]
-	path = lib/boost/mp11
-	url = https://github.com/sjoerdvankreel/boost-mp11.git
-[submodule "lib/boost/assert"]
-	path = lib/boost/assert
-	url = https://github.com/sjoerdvankreel/boost-assert.git
-[submodule "lib/boost/static_assert"]
-	path = lib/boost/static_assert
-	url = https://github.com/sjoerdvankreel/boost-static_assert.git
-[submodule "lib/boost/throw_exception"]
-	path = lib/boost/throw_exception
-	url = https://github.com/sjoerdvankreel/boost-throw_exception.git

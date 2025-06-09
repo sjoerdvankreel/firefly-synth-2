@@ -49,19 +49,6 @@ add_definitions(-DJUCE_USE_CURL=0)
 add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=0)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/JUCE)
 
-# boost stacktrace and dependencies
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/mp11)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/core)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/assert)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/predef)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/winapi)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/config)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/describe)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/stacktrace)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/static_assert)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/container_hash)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/boost/throw_exception)
-
 # vst3 sdk
 set(VST_SDK TRUE)
 set(SMTG_USE_STATIC_CRT ON)
