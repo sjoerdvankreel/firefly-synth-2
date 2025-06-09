@@ -28,3 +28,9 @@
 [submodule "lib/xsimd"]
 	path = lib/xsimd
 	url = https://github.com/sjoerdvankreel/xsimd.git
+[submodule "lib/boost/stacktrace"]
+	path = lib/boost/stacktrace
+	url = https://github.com/sjoerdvankreel/stacktrace.git
+[submodule "lib/boost/config"]
+	path = lib/boost/config
+	url = https://github.com/sjoerdvankreel/config.git
