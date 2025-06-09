@@ -1,3 +1,4 @@
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBIdentityParam.hpp>
 
 bool FBIdentityParamNonRealTime::IsItems() const { return false; }
@@ -33,7 +34,10 @@ FBIdentityParamNonRealTime::TextToPlain(bool io, std::string const& text) const
   char* end;
   double result = std::strtod(text.c_str(), &end);
   if (end != text.c_str() + text.size())
+  {
+    FB_LOG_WARN(std::string("Parsing text remainder: '") + end + "'.");
     return {};
+  }
   result /= displayMultiplier;
   if (result < 0.0 || result > 1.0)
     return {};

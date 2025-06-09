@@ -46,7 +46,10 @@ FBLog2ParamNonRealTime::TextToPlain(bool io, std::string const& text) const
   char* end;
   double result = std::strtod(text.c_str(), &end);
   if (end != text.c_str() + text.size())
+  {
+    FB_LOG_WARN(std::string("Parsing text remainder: '") + end + "'.");
     return {};
+  }
   result /= displayMultiplier;
   // account for rounding error
   double plainMin = NormalizedToPlain(0.0);

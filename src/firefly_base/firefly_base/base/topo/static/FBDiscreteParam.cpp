@@ -1,3 +1,4 @@
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBDiscreteParam.hpp>
 
 using namespace juce;
@@ -72,7 +73,10 @@ FBDiscreteParamNonRealTime::TextToPlain(bool io, std::string const& text) const
   char* end;
   unsigned long plain = std::strtoul(text.c_str(), &end, 10);
   if (end != text.c_str() + text.size())
+  {
+    FB_LOG_WARN(std::string("Parsing text remainder: '") + end + "'.");
     return {};
+  }
   int iPlain = static_cast<int>(plain);
   if (iPlain < valueOffset || iPlain >= valueCount + valueOffset)
     return { };
