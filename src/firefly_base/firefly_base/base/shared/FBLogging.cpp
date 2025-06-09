@@ -2,13 +2,10 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
 #include <juce_core/juce_core.h>
-#include <boost/stacktrace.hpp>
 
 #include <ctime>
 #include <memory>
-#include <sstream>
 #include <cassert>
-#include <stdexcept>
 #include <filesystem>
 
 using namespace juce;
@@ -56,15 +53,6 @@ FBLogLevelToString(FBLogLevel level)
   case FBLogLevel::Error: return "ERROR";
   default: assert(false); return "";
   }
-}
-
-std::string
-FBStackTraceFromCurrentException()
-{
-  std::ostringstream oss;
-  auto trace = boost::stacktrace::stacktrace::from_current_exception();
-  oss << trace;
-  return oss.str();
 }
 
 void

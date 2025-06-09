@@ -28,21 +28,3 @@
 [submodule "lib/xsimd"]
 	path = lib/xsimd
 	url = https://github.com/sjoerdvankreel/xsimd.git
-[submodule "lib/boost/winapi"]
-	path = lib/boost/winapi
-	url = https://github.com/sjoerdvankreel/boost-winapi.git
-[submodule "lib/boost/config"]
-	path = lib/boost/config
-	url = https://github.com/sjoerdvankreel/boost-config.git
-[submodule "lib/boost/stacktrace"]
-	path = lib/boost/stacktrace
-	url = https://github.com/sjoerdvankreel/boost-stacktrace.git
-[submodule "lib/boost/predef"]
-	path = lib/boost/predef
-	url = https://github.com/sjoerdvankreel/boost-predef.git
-[submodule "lib/boost/core"]
-	path = lib/boost/core
-	url = https://github.com/sjoerdvankreel/boost-core.git
-[submodule "lib/boost/container_hash"]
-	path = lib/boost/container_hash
-	url = https://github.com/sjoerdvankreel/boost-container_hash.git
