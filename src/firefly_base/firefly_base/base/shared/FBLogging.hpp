@@ -2,9 +2,7 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 
-#include <chrono>
 #include <string>
-#include <thread>
 #include <cassert>
 
 #define FB_LOG_WRITE(lvl, msg) \
@@ -44,20 +42,16 @@ void FBLogWrite(FBLogLevel level, char const* file, int line, char const* func, 
 // Meant to be used for top level functions (so called from the host).
 // It logs the exception then rethrows, not wise to continue on any unknown error.
 // Do NOT log unconditionally here since this function may be called from RT.
-// 1 second wait for the buffers to flush. According to the docs not necessary, but somehow it does make a difference.
 template <class F, class... Args>
 auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
 {
-  using namespace std::chrono_literals;
   try { 
     return f(args...); 
   } catch (std::exception const& e) {
     FB_LOG_ERROR(std::string("Caught exception: ") + e.what() + "\n" + FBStackTraceFromCurrentException());
-    std::this_thread::sleep_for(1000ms);
     throw;
   } catch (...) { 
     FB_LOG_ERROR(std::string("Caught unknown exception:\n") +  FBStackTraceFromCurrentException());
-    std::this_thread::sleep_for(1000ms);
     throw;
   }
   assert(false);
