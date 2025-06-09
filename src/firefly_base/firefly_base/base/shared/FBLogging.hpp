@@ -19,6 +19,8 @@ FBLogWrite(FBLogLevel::Error, __FILE__, __LINE__, __func__, msg)
 
 struct FBStaticTopoMeta;
 enum class FBLogLevel { Info, Warn, Error };
+
+std::string FBStackTraceFromCurrentException();
 std::string FBLogLevelToString(FBLogLevel level);
 
 struct FBEntryExitLog
@@ -46,24 +48,13 @@ auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
   std::exception_ptr eptr = {};
   try { 
     return f(args...); 
-  } catch (...) { 
-    eptr = std::current_exception(); 
-  }
-
-  assert(eptr);
-  if (!eptr) 
-    return f(args...);
-
-  try { 
-    std::rethrow_exception(eptr);
-  } catch (std::exception const& e) { 
-    FB_LOG_ERROR(std::string("Caught exception: ") + e.what()); 
-    throw; 
-  } catch (...) { 
-    FB_LOG_ERROR("Caught unknown exception."); 
+  } catch (std::exception const& e) {
+    FB_LOG_ERROR(std::string("Caught exception: ") + e.what() + "\n" + FBStackTraceFromCurrentException());
+    throw;
+  } catch (...) {
+    FB_LOG_ERROR("Caught unknown exception:\n" + FBStackTraceFromCurrentException());
     throw;
   }
-
   assert(false);
   return f(args...);
 }
