@@ -24,8 +24,9 @@ class FBScalarStateContainer;
 class FBExchangeStateContainer;
 class FBCLAPExchangeStateQueueBase;
 
+// MisbehaviourHandler::Ignore fails to print stacktraces in log.
 class FBCLAPPlugin:
-public Plugin<MisbehaviourHandler::Ignore, CheckingLevel::Maximal>,
+public Plugin<MisbehaviourHandler::Terminate, CheckingLevel::Maximal>,
 public juce::Timer,
 public FBHostGUIContext,
 public IFBHostDSPContext
