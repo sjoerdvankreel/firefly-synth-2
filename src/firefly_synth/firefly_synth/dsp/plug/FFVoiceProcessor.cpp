@@ -76,7 +76,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   {
     state.moduleSlot = i;
     voiceDSP.osci[i].output.CopyTo(voiceDSP.vEffect[i].input);
-    voiceDSP.vEffect[i].processor->Process(state);
+    voiceDSP.vEffect[i].processor->Process<false>(state);
     voiceDSP.output.Add(voiceDSP.vEffect[i].output);
   }
 

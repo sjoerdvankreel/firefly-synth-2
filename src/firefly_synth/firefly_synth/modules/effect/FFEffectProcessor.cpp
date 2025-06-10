@@ -152,7 +152,7 @@ FFEffectProcessor::BeginVoice(
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-  auto const& params = *FFSelectDualProcParamState<Global>(
+  auto const& params = *FFSelectDualState<Global>(
     [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
     [procState, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
   auto const& topo = state.topo->static_.modules[(int)(Global? FFModuleType::GEffect: FFModuleType::VEffect)];
@@ -196,259 +196,23 @@ FFEffectProcessor::BeginVoice(
     _stVarFilters[i] = {};
     _combFilters[i].Reset();
   }
-}  
-
-void 
-FFEffectProcessor::ProcessComb(
-  int block, float oversampledRate,
-  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain)
-{
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s++)
-  {
-    auto trkk = trackingKeyPlain.Get(s);
-    auto ktrk = combKeyTrkPlain[block].Get(s);
-    auto resMin = combResMinPlain[block].Get(s);
-    auto resPlus = combResPlusPlain[block].Get(s);
-    auto freqMin = combFreqMinPlain[block].Get(s);
-    auto freqPlus = combFreqPlusPlain[block].Get(s);
-    auto freqMul = std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
-    freqMin *= freqMul;
-    freqMin = std::clamp(freqMin, FFMinCombFilterFreq, FFMaxCombFilterFreq);
-    freqPlus *= freqMul;
-    freqPlus = std::clamp(freqPlus, FFMinCombFilterFreq, FFMaxCombFilterFreq);
-    
-    if(_graph)
-    {
-      freqMin *= _graphCombFilterFreqMultiplier;
-      freqPlus *= _graphCombFilterFreqMultiplier;
-      float clampMin = 1.01f * _graphCombFilterFreqMultiplier * FFMinCombFilterFreq;
-      float clampMax = 0.99f * _graphCombFilterFreqMultiplier * FFMaxCombFilterFreq;
-      freqMin = std::clamp(freqMin, clampMin, clampMax);
-      freqPlus = std::clamp(freqPlus, clampMin, clampMax);
-    }
-
-    _combFilters[block].Set(oversampledRate, freqPlus, resPlus, freqMin, resMin);
-    for (int c = 0; c < 2; c++)
-      oversampled[c].Set(s, _combFilters[block].Next(c, oversampled[c].Get(s)));
-  }
 }
 
-void 
-FFEffectProcessor::ProcessStVar(
-  int block, float oversampledRate,
-  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain)
-{
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s ++)
-  {
-    auto trkk = trackingKeyPlain.Get(s);
-    auto res = stVarResPlain[block].Get(s);
-    auto freq = stVarFreqPlain[block].Get(s);
-    auto gain = stVarGainPlain[block].Get(s);
-    auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq = WithKeyboardTracking(freq, _key, trkk, ktrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    
-    if (_graph)
-    {
-      freq *= _graphStVarFilterFreqMultiplier;
-      float clampMin = 1.01f * _graphStVarFilterFreqMultiplier * FFMinStateVariableFilterFreq;
-      float clampMax = 0.99f * _graphStVarFilterFreqMultiplier * FFMaxStateVariableFilterFreq;
-      freq = std::clamp(freq, clampMin, clampMax);
-    }
-
-    _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);
-    for(int c = 0; c < 2; c++)
-      oversampled[c].Set(s, _stVarFilters[block].Next(c, oversampled[c].Get(s)));
-  }
-}
-
-void 
-FFEffectProcessor::ProcessSkew(
-  int block,
-  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
-{
-  FBBatch<float> exceedBatch;
-  FBBoolBatch<float> compBatch;
-  auto invLogHalf = 1.0f / std::log(0.5f);
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
-  {
-    auto mix = distMixPlain[block].Load(s);
-    auto bias = distBiasPlain[block].Load(s);
-    auto drive = distDrivePlain[block].Load(s);
-    for (int c = 0; c < 2; c++)
-    {
-      auto inBatch = oversampled[c].Load(s);
-      auto shapedBatch = (inBatch + bias) * drive;
-      auto signBatch = xsimd::sign(shapedBatch);
-      auto expoBatch = xsimd::log(0.01f + distAmtPlain[block].Load(s) * 0.98f) * invLogHalf;
-      switch (_skewMode[block])
-      {
-      case FFEffectSkewMode::Bi:
-        shapedBatch = signBatch * xsimd::pow(xsimd::abs(shapedBatch), expoBatch);
-        break;
-      case FFEffectSkewMode::Uni:
-        compBatch = xsimd::lt(shapedBatch, FBBatch<float>(-1.0f));
-        compBatch = xsimd::bitwise_or(compBatch, xsimd::gt(shapedBatch, FBBatch<float>(1.0f)));
-        exceedBatch = FBToBipolar(xsimd::pow(FBToUnipolar(shapedBatch), expoBatch));
-        shapedBatch = xsimd::select(compBatch, shapedBatch, exceedBatch);
-        break;
-      default:
-        assert(false);
-        break;
-      }
-      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
-      oversampled[c].Store(s, mixedBatch);
-    }
-  }
-}
-
-void 
-FFEffectProcessor::ProcessClip(
-  int block,
-  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
-{
-  FBBatch<float> tsqBatch;
-  FBBatch<float> signBatch;
-  FBBatch<float> exceedBatch1;
-  FBBatch<float> exceedBatch2;
-  FBBoolBatch<float> compBatch1;
-  FBBoolBatch<float> compBatch2;
-
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
-  {
-    auto mix = distMixPlain[block].Load(s);
-    auto bias = distBiasPlain[block].Load(s);
-    auto drive = distDrivePlain[block].Load(s);
-    for (int c = 0; c < 2; c++)
-    {
-      auto inBatch = oversampled[c].Load(s);
-      auto shapedBatch = (inBatch + bias) * drive;
-      switch (_clipMode[block])
-      {
-      case FFEffectClipMode::TanH:
-        shapedBatch = xsimd::tanh(shapedBatch);
-        break;
-      case FFEffectClipMode::Hard:
-        shapedBatch = xsimd::clip(shapedBatch, FBBatch<float>(-1.0f), FBBatch<float>(1.0f));
-        break;
-      case FFEffectClipMode::Inv:
-        shapedBatch = xsimd::sign(shapedBatch) * (1.0f - (1.0f / (1.0f + xsimd::abs(30.0f * shapedBatch))));
-        break;
-      case FFEffectClipMode::Sin:
-        signBatch = xsimd::sign(shapedBatch);
-        exceedBatch1 = xsimd::sin((shapedBatch * 3.0f * FBPi) / 4.0f);
-        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
-        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
-        break;
-      case FFEffectClipMode::Cube:
-        signBatch = xsimd::sign(shapedBatch);
-        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
-        exceedBatch1= (9.0f * shapedBatch * 0.25f) - (27.0f * shapedBatch * shapedBatch * shapedBatch / 16.0f);
-        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
-        break;
-      case FFEffectClipMode::TSQ:
-        signBatch = xsimd::sign(shapedBatch);
-        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
-        compBatch2 = xsimd::lt(FBBatch<float>(-1.0f / 3.0f), shapedBatch);
-        compBatch2 = xsimd::bitwise_and(compBatch2, xsimd::lt(shapedBatch, FBBatch<float>(1.0f / 3.0f)));
-        exceedBatch1 = 2.0f * shapedBatch;
-        exceedBatch2 = 2.0f - xsimd::abs(3.0f * shapedBatch);
-        tsqBatch = signBatch * (3.0f - exceedBatch2 * exceedBatch2) / 3.0f;
-        shapedBatch = xsimd::select(compBatch1, signBatch, xsimd::select(compBatch2, exceedBatch1, tsqBatch));
-        break;
-      case FFEffectClipMode::Exp:
-        signBatch = xsimd::sign(shapedBatch);
-        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
-        exceedBatch1 = signBatch * (1.0f - xsimd::pow(xsimd::abs(1.5f * shapedBatch - signBatch), 0.1f + distAmtPlain[block].Load(s) * 9.9f));
-        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
-        break;
-      default:
-        assert(false);
-        break;
-      }
-      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
-      oversampled[c].Store(s, mixedBatch);
-    }
-  }
-}
-
-void 
-FFEffectProcessor::ProcessFold(
-  int block,
-  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
-{
-  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
-  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
-  {
-    auto mix = distMixPlain[block].Load(s);
-    auto bias = distBiasPlain[block].Load(s);
-    auto drive = distDrivePlain[block].Load(s);
-    for (int c = 0; c < 2; c++)
-    { 
-      auto inBatch = oversampled[c].Load(s);
-      auto shapedBatch = (inBatch + bias) * drive;
-      switch (_foldMode[block])
-      {
-      case FFEffectFoldMode::Fold: shapedBatch = FoldBack(shapedBatch); break;
-      case FFEffectFoldMode::Sin: shapedBatch = xsimd::sin(shapedBatch * FBPi); break;
-      case FFEffectFoldMode::Cos: shapedBatch = xsimd::cos(shapedBatch * FBPi); break;
-      case FFEffectFoldMode::Sin2: shapedBatch = Sin2(shapedBatch); break;
-      case FFEffectFoldMode::Cos2: shapedBatch = Cos2(shapedBatch); break;
-      case FFEffectFoldMode::SinCos: shapedBatch = SinCos(shapedBatch); break;
-      case FFEffectFoldMode::CosSin: shapedBatch = CosSin(shapedBatch); break;
-      case FFEffectFoldMode::Sin3: shapedBatch = Sin3(shapedBatch); break;
-      case FFEffectFoldMode::Cos3: shapedBatch = Cos3(shapedBatch); break;
-      case FFEffectFoldMode::Sn2Cs: shapedBatch = Sn2Cs(shapedBatch); break;
-      case FFEffectFoldMode::Cs2Sn: shapedBatch = Cs2Sn(shapedBatch); break;
-      case FFEffectFoldMode::SnCs2: shapedBatch = SnCs2(shapedBatch); break;
-      case FFEffectFoldMode::CsSn2: shapedBatch = CsSn2(shapedBatch); break;
-      case FFEffectFoldMode::SnCsSn: shapedBatch = SnCsSn(shapedBatch); break;
-      case FFEffectFoldMode::CsSnCs: shapedBatch = CsSnCs(shapedBatch); break;
-      default: assert(false); break;
-      }
-      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
-      oversampled[c].Store(s, mixedBatch);
-    }
-  }
-}
-
+template <bool Global>
 int
 FFEffectProcessor::Process(FBModuleProcState& state)
 {
-  return 0;
-
-#if 0
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-  auto& voiceState = procState->dsp.voice[voice];
-  auto& output = voiceState.effect[state.moduleSlot].output;
-  auto const& input = voiceState.effect[state.moduleSlot].input;
+  auto const& procParams = *FFSelectDualState<Global>(
+    [procState, voice, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
+    [procState, voice, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
+  auto& dspState = *FFSelectDualState<Global>(
+    [procState, voice, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
+    [procState, voice, &state]() { return &procState->dsp.voice[voice].vEffect[state.moduleSlot]; });
+  auto& output = dspState.output;
+  auto const& input = dspState.input;
+  auto const& topo = state.topo->static_.modules[(int)(Global ? FFModuleType::GEffect : FFModuleType::VEffect)];
 
   if (!_on)
   {
@@ -457,8 +221,6 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   }
 
   float sampleRate = state.input->sampleRate;
-  auto const& procParams = procState->param.voice.effect[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Effect];
   auto const& distAmtNorm = procParams.acc.distAmt;
   auto const& distMixNorm = procParams.acc.distMix;
   auto const& distBiasNorm = procParams.acc.distBias;
@@ -472,7 +234,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto const& combResPlusNorm = procParams.acc.combResPlus;
   auto const& combFreqMinNorm = procParams.acc.combFreqMin;
   auto const& combFreqPlusNorm = procParams.acc.combFreqPlus;
-  auto const& trackingKeyNorm = procParams.acc.trackingKey[0].Voice()[voice];
+  auto const& trackingKeyNorm = FFSelectDualProcAccParamNormalized<Global>(procParams.acc.trackingKey[0], voice);
 
   FBSArray<float, FFEffectFixedBlockOversamples> trackingKeyPlain;
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> distAmtPlain;
@@ -495,25 +257,38 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
       if (_kind[i] == FFEffectKind::StVar)
       {
-        stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq, stVarFreqNorm[i].Voice()[voice], s));
-        stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes, stVarResNorm[i].Voice()[voice], s));
-        stVarGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarGain, stVarGainNorm[i].Voice()[voice], s));
-        stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak, stVarKeyTrkNorm[i].Voice()[voice], s));
+        stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq, 
+          FFSelectDualProcAccParamNormalized<Global>(stVarFreqNorm[i], voice), s));
+        stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes, 
+          FFSelectDualProcAccParamNormalized<Global>(stVarResNorm[i], voice), s));
+        stVarGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarGain, 
+          FFSelectDualProcAccParamNormalized<Global>(stVarGainNorm[i], voice), s));
+        stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak, 
+          FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice), s));
       }
       else if (_kind[i] == FFEffectKind::Comb)
       {
-        combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk, combKeyTrkNorm[i].Voice()[voice], s));
-        combFreqMinPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqMin, combFreqMinNorm[i].Voice()[voice], s));
-        combFreqPlusPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqPlus, combFreqPlusNorm[i].Voice()[voice], s));
-        combResMinPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResMin, combResMinNorm[i].Voice()[voice], s));
-        combResPlusPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResPlus, combResPlusNorm[i].Voice()[voice], s));
+        combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk, 
+          FFSelectDualProcAccParamNormalized<Global>(combKeyTrkNorm[i], voice), s));
+        combFreqMinPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqMin, 
+          FFSelectDualProcAccParamNormalized<Global>(combFreqMinNorm[i], voice), s));
+        combFreqPlusPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqPlus, 
+          FFSelectDualProcAccParamNormalized<Global>(combFreqPlusNorm[i], voice), s));
+        combResMinPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResMin, 
+          FFSelectDualProcAccParamNormalized<Global>(combResMinNorm[i], voice), s));
+        combResPlusPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResPlus, 
+          FFSelectDualProcAccParamNormalized<Global>(combResPlusNorm[i], voice), s));
       }
       else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
       {
-        distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt, distAmtNorm[i].Voice()[voice], s));
-        distMixPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistMix, distMixNorm[i].Voice()[voice], s));
-        distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias, distBiasNorm[i].Voice()[voice], s));
-        distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, distDriveNorm[i].Voice()[voice], s));
+        distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt, 
+          FFSelectDualProcAccParamNormalized<Global>(distAmtNorm[i], voice), s));
+        distMixPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistMix, 
+          FFSelectDualProcAccParamNormalized<Global>(distMixNorm[i], voice), s));
+        distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias, 
+          FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice), s));
+        distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, 
+          FFSelectDualProcAccParamNormalized<Global>(distDriveNorm[i], voice), s));
       }
       else
         assert(_kind[i] == FFEffectKind::Off);
@@ -615,31 +390,276 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     return std::clamp(_graphSampleCount - _graphSamplesProcessed, 0, FBFixedBlockSamples);
   }
 
-  auto& exchangeDSP = exchangeToGUI->voice[voice].effect[state.moduleSlot];
+  auto& exchangeDSP = *FFSelectDualState<Global>(
+    [exchangeToGUI, &state, voice]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
+    [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
 
-  auto& exchangeParams = exchangeToGUI->param.voice.effect[state.moduleSlot];
-  exchangeParams.acc.trackingKey[0][voice] = trackingKeyNorm.Last();
+  auto& exchangeParams = *FFSelectDualState<Global>(
+    [exchangeToGUI, &state, voice] { return &exchangeToGUI->param.global.gEffect[state.moduleSlot]; },
+    [exchangeToGUI, &state, voice] { return &exchangeToGUI->param.voice.vEffect[state.moduleSlot]; });
+  FFSelectDualExchangeState<Global>(exchangeParams.acc.trackingKey[0], voice) = trackingKeyNorm.Last();
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
-    exchangeParams.acc.distAmt[i][voice] = distAmtNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.distMix[i][voice] = distMixNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.distBias[i][voice] = distBiasNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.distDrive[i][voice] = distDriveNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.stVarRes[i][voice] = stVarResNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.stVarFreq[i][voice] = stVarFreqNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.stVarGain[i][voice] = stVarGainNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.stVarKeyTrk[i][voice] = stVarKeyTrkNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.combKeyTrk[i][voice] = combKeyTrkNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.combResMin[i][voice] = combResMinNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.combResPlus[i][voice] = combResPlusNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.combFreqMin[i][voice] = combFreqMinNorm[i].Voice()[voice].Last();
-    exchangeParams.acc.combFreqPlus[i][voice] = combFreqPlusNorm[i].Voice()[voice].Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.distAmt[i], voice) = FFSelectDualProcAccParamNormalized<Global>(distAmtNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.distMix[i], voice) = FFSelectDualProcAccParamNormalized<Global>(distMixNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.distBias[i], voice) = FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.distDrive[i], voice) = FFSelectDualProcAccParamNormalized<Global>(distDriveNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarRes[i], voice) = FFSelectDualProcAccParamNormalized<Global>(stVarResNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarFreq[i], voice) = FFSelectDualProcAccParamNormalized<Global>(stVarFreqNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarGain[i], voice) = FFSelectDualProcAccParamNormalized<Global>(stVarGainNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarKeyTrk[i], voice) = FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.combKeyTrk[i], voice) = FFSelectDualProcAccParamNormalized<Global>(combKeyTrkNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.combResMin[i], voice) = FFSelectDualProcAccParamNormalized<Global>(combResMinNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.combResPlus[i], voice) = FFSelectDualProcAccParamNormalized<Global>(combResPlusNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.combFreqMin[i], voice) = FFSelectDualProcAccParamNormalized<Global>(combFreqMinNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.combFreqPlus[i],voice) = FFSelectDualProcAccParamNormalized<Global>(combFreqPlusNorm[i], voice).Last();
   }
   return FBFixedBlockSamples;
-#endif
 }
 
+void
+FFEffectProcessor::ProcessComb(
+  int block, float oversampledRate,
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combKeyTrkPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResMinPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combResPlusPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain)
+{
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    auto trkk = trackingKeyPlain.Get(s);
+    auto ktrk = combKeyTrkPlain[block].Get(s);
+    auto resMin = combResMinPlain[block].Get(s);
+    auto resPlus = combResPlusPlain[block].Get(s);
+    auto freqMin = combFreqMinPlain[block].Get(s);
+    auto freqPlus = combFreqPlusPlain[block].Get(s);
+    auto freqMul = std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
+    freqMin *= freqMul;
+    freqMin = std::clamp(freqMin, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+    freqPlus *= freqMul;
+    freqPlus = std::clamp(freqPlus, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+
+    if (_graph)
+    {
+      freqMin *= _graphCombFilterFreqMultiplier;
+      freqPlus *= _graphCombFilterFreqMultiplier;
+      float clampMin = 1.01f * _graphCombFilterFreqMultiplier * FFMinCombFilterFreq;
+      float clampMax = 0.99f * _graphCombFilterFreqMultiplier * FFMaxCombFilterFreq;
+      freqMin = std::clamp(freqMin, clampMin, clampMax);
+      freqPlus = std::clamp(freqPlus, clampMin, clampMax);
+    }
+
+    _combFilters[block].Set(oversampledRate, freqPlus, resPlus, freqMin, resMin);
+    for (int c = 0; c < 2; c++)
+      oversampled[c].Set(s, _combFilters[block].Next(c, oversampled[c].Get(s)));
+  }
+}
+
+void
+FFEffectProcessor::ProcessStVar(
+  int block, float oversampledRate,
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray<float, FFEffectFixedBlockOversamples> const& trackingKeyPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarResPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarFreqPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarGainPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& stVarKeyTrkPlain)
+{
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    auto trkk = trackingKeyPlain.Get(s);
+    auto res = stVarResPlain[block].Get(s);
+    auto freq = stVarFreqPlain[block].Get(s);
+    auto gain = stVarGainPlain[block].Get(s);
+    auto ktrk = stVarKeyTrkPlain[block].Get(s);
+    freq = WithKeyboardTracking(freq, _key, trkk, ktrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+
+    if (_graph)
+    {
+      freq *= _graphStVarFilterFreqMultiplier;
+      float clampMin = 1.01f * _graphStVarFilterFreqMultiplier * FFMinStateVariableFilterFreq;
+      float clampMax = 0.99f * _graphStVarFilterFreqMultiplier * FFMaxStateVariableFilterFreq;
+      freq = std::clamp(freq, clampMin, clampMax);
+    }
+
+    _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);
+    for (int c = 0; c < 2; c++)
+      oversampled[c].Set(s, _stVarFilters[block].Next(c, oversampled[c].Get(s)));
+  }
+}
+
+void
+FFEffectProcessor::ProcessSkew(
+  int block,
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+{
+  FBBatch<float> exceedBatch;
+  FBBoolBatch<float> compBatch;
+  auto invLogHalf = 1.0f / std::log(0.5f);
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+  {
+    auto mix = distMixPlain[block].Load(s);
+    auto bias = distBiasPlain[block].Load(s);
+    auto drive = distDrivePlain[block].Load(s);
+    for (int c = 0; c < 2; c++)
+    {
+      auto inBatch = oversampled[c].Load(s);
+      auto shapedBatch = (inBatch + bias) * drive;
+      auto signBatch = xsimd::sign(shapedBatch);
+      auto expoBatch = xsimd::log(0.01f + distAmtPlain[block].Load(s) * 0.98f) * invLogHalf;
+      switch (_skewMode[block])
+      {
+      case FFEffectSkewMode::Bi:
+        shapedBatch = signBatch * xsimd::pow(xsimd::abs(shapedBatch), expoBatch);
+        break;
+      case FFEffectSkewMode::Uni:
+        compBatch = xsimd::lt(shapedBatch, FBBatch<float>(-1.0f));
+        compBatch = xsimd::bitwise_or(compBatch, xsimd::gt(shapedBatch, FBBatch<float>(1.0f)));
+        exceedBatch = FBToBipolar(xsimd::pow(FBToUnipolar(shapedBatch), expoBatch));
+        shapedBatch = xsimd::select(compBatch, shapedBatch, exceedBatch);
+        break;
+      default:
+        assert(false);
+        break;
+      }
+      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
+      oversampled[c].Store(s, mixedBatch);
+    }
+  }
+}
+
+void
+FFEffectProcessor::ProcessClip(
+  int block,
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+{
+  FBBatch<float> tsqBatch;
+  FBBatch<float> signBatch;
+  FBBatch<float> exceedBatch1;
+  FBBatch<float> exceedBatch2;
+  FBBoolBatch<float> compBatch1;
+  FBBoolBatch<float> compBatch2;
+
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+  {
+    auto mix = distMixPlain[block].Load(s);
+    auto bias = distBiasPlain[block].Load(s);
+    auto drive = distDrivePlain[block].Load(s);
+    for (int c = 0; c < 2; c++)
+    {
+      auto inBatch = oversampled[c].Load(s);
+      auto shapedBatch = (inBatch + bias) * drive;
+      switch (_clipMode[block])
+      {
+      case FFEffectClipMode::TanH:
+        shapedBatch = xsimd::tanh(shapedBatch);
+        break;
+      case FFEffectClipMode::Hard:
+        shapedBatch = xsimd::clip(shapedBatch, FBBatch<float>(-1.0f), FBBatch<float>(1.0f));
+        break;
+      case FFEffectClipMode::Inv:
+        shapedBatch = xsimd::sign(shapedBatch) * (1.0f - (1.0f / (1.0f + xsimd::abs(30.0f * shapedBatch))));
+        break;
+      case FFEffectClipMode::Sin:
+        signBatch = xsimd::sign(shapedBatch);
+        exceedBatch1 = xsimd::sin((shapedBatch * 3.0f * FBPi) / 4.0f);
+        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
+        break;
+      case FFEffectClipMode::Cube:
+        signBatch = xsimd::sign(shapedBatch);
+        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+        exceedBatch1 = (9.0f * shapedBatch * 0.25f) - (27.0f * shapedBatch * shapedBatch * shapedBatch / 16.0f);
+        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
+        break;
+      case FFEffectClipMode::TSQ:
+        signBatch = xsimd::sign(shapedBatch);
+        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+        compBatch2 = xsimd::lt(FBBatch<float>(-1.0f / 3.0f), shapedBatch);
+        compBatch2 = xsimd::bitwise_and(compBatch2, xsimd::lt(shapedBatch, FBBatch<float>(1.0f / 3.0f)));
+        exceedBatch1 = 2.0f * shapedBatch;
+        exceedBatch2 = 2.0f - xsimd::abs(3.0f * shapedBatch);
+        tsqBatch = signBatch * (3.0f - exceedBatch2 * exceedBatch2) / 3.0f;
+        shapedBatch = xsimd::select(compBatch1, signBatch, xsimd::select(compBatch2, exceedBatch1, tsqBatch));
+        break;
+      case FFEffectClipMode::Exp:
+        signBatch = xsimd::sign(shapedBatch);
+        compBatch1 = xsimd::gt(xsimd::abs(shapedBatch), FBBatch<float>(2.0f / 3.0f));
+        exceedBatch1 = signBatch * (1.0f - xsimd::pow(xsimd::abs(1.5f * shapedBatch - signBatch), 0.1f + distAmtPlain[block].Load(s) * 9.9f));
+        shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
+        break;
+      default:
+        assert(false);
+        break;
+      }
+      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
+      oversampled[c].Store(s, mixedBatch);
+    }
+  }
+}
+
+void
+FFEffectProcessor::ProcessFold(
+  int block,
+  FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
+  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
+{
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+  {
+    auto mix = distMixPlain[block].Load(s);
+    auto bias = distBiasPlain[block].Load(s);
+    auto drive = distDrivePlain[block].Load(s);
+    for (int c = 0; c < 2; c++)
+    {
+      auto inBatch = oversampled[c].Load(s);
+      auto shapedBatch = (inBatch + bias) * drive;
+      switch (_foldMode[block])
+      {
+      case FFEffectFoldMode::Fold: shapedBatch = FoldBack(shapedBatch); break;
+      case FFEffectFoldMode::Sin: shapedBatch = xsimd::sin(shapedBatch * FBPi); break;
+      case FFEffectFoldMode::Cos: shapedBatch = xsimd::cos(shapedBatch * FBPi); break;
+      case FFEffectFoldMode::Sin2: shapedBatch = Sin2(shapedBatch); break;
+      case FFEffectFoldMode::Cos2: shapedBatch = Cos2(shapedBatch); break;
+      case FFEffectFoldMode::SinCos: shapedBatch = SinCos(shapedBatch); break;
+      case FFEffectFoldMode::CosSin: shapedBatch = CosSin(shapedBatch); break;
+      case FFEffectFoldMode::Sin3: shapedBatch = Sin3(shapedBatch); break;
+      case FFEffectFoldMode::Cos3: shapedBatch = Cos3(shapedBatch); break;
+      case FFEffectFoldMode::Sn2Cs: shapedBatch = Sn2Cs(shapedBatch); break;
+      case FFEffectFoldMode::Cs2Sn: shapedBatch = Cs2Sn(shapedBatch); break;
+      case FFEffectFoldMode::SnCs2: shapedBatch = SnCs2(shapedBatch); break;
+      case FFEffectFoldMode::CsSn2: shapedBatch = CsSn2(shapedBatch); break;
+      case FFEffectFoldMode::SnCsSn: shapedBatch = SnCsSn(shapedBatch); break;
+      case FFEffectFoldMode::CsSnCs: shapedBatch = CsSnCs(shapedBatch); break;
+      default: assert(false); break;
+      }
+      auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
+      oversampled[c].Store(s, mixedBatch);
+    }
+  }
+}
+
+template int FFEffectProcessor::Process<true>(FBModuleProcState& state);
+template int FFEffectProcessor::Process<false>(FBModuleProcState& state);
 template void FFEffectProcessor::BeginVoice<true>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 template void FFEffectProcessor::BeginVoice<false>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);

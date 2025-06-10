@@ -83,9 +83,10 @@ class FFEffectProcessor final
 public:
   FFEffectProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
-  int Process(FBModuleProcState& state);
   void InitializeBuffers(bool graph, float sampleRate);
 
+  template <bool Global>
+  int Process(FBModuleProcState& state);
   template <bool Global>
   void BeginVoice(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 };
