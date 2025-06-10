@@ -119,6 +119,7 @@ FFPlugGUI::SetupGUI()
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
+  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   FB_LOG_INFO("Calculated GUI grid size.");
 
   FB_LOG_INFO("Creating GUI components.");
@@ -130,11 +131,12 @@ FFPlugGUI::SetupGUI()
   _content->Add(0, 3, 1, 1, _graph);
   _content->Add(1, 0, 1, 4, FFMakeGLFOGUI(this));
   _content->Add(2, 0, 1, 4, FFMakeGFilterGUI(this));
-  _content->Add(3, 0, 1, 4, FFMakeStringOsciGUI(this));
-  _content->Add(4, 0, 1, 4, FFMakeOsciGUI(this));
-  _content->Add(5, 0, 1, 4, FFMakeOsciModGUI(this));
-  _content->Add(6, 0, 1, 4, FFMakeEffectGUI(this));
-  _content->Add(7, 0, 1, 4, FFMakeEnvGUI(this));
+  _content->Add(3, 0, 1, 4, FFMakeEffectGUI(this, true));
+  _content->Add(4, 0, 1, 4, FFMakeStringOsciGUI(this));
+  _content->Add(5, 0, 1, 4, FFMakeOsciGUI(this));
+  _content->Add(6, 0, 1, 4, FFMakeOsciModGUI(this));
+  _content->Add(7, 0, 1, 4, FFMakeEffectGUI(this, false));
+  _content->Add(8, 0, 1, 4, FFMakeEnvGUI(this));
   FB_LOG_INFO("Created GUI components.");
 
   FB_LOG_INFO("Making GUI visible.");
