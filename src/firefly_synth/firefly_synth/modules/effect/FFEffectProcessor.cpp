@@ -150,8 +150,8 @@ void
 FFEffectProcessor::BeginVoiceOrReset(
   bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state)
 {
-  int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
+  int voice = state.voice == nullptr ? -1 : state.voice->slot;
   auto const& params = *FFSelectDualState<Global>(
     [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
     [procState, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
@@ -171,7 +171,8 @@ FFEffectProcessor::BeginVoiceOrReset(
   _graphCombFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxCombFilterFreq);
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
-  _key = static_cast<float>(state.voice->event.note.key);
+  // TODO want something with global fx keytracking?
+  _key = state.voice == nullptr? 60.0f: static_cast<float>(state.voice->event.note.key);
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
   _oversampleTimes = !graph && oversample ? FFEffectOversampleTimes : 1;
@@ -202,8 +203,8 @@ template <bool Global>
 int
 FFEffectProcessor::Process(FBModuleProcState& state)
 {
-  int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
+  int voice = state.voice == nullptr ? -1 : state.voice->slot;
   auto const& procParams = *FFSelectDualState<Global>(
     [procState, voice, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
     [procState, voice, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
