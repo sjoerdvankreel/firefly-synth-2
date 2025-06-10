@@ -12,11 +12,15 @@
 
 struct FBStaticModule;
 
+template <bool Global>
+struct EffectGraphRenderData;
+
 class alignas(FBSIMDAlign) FFEffectDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct EffectGraphRenderData;
+  friend struct EffectGraphRenderData<true>;
+  friend struct EffectGraphRenderData<false>;
   std::unique_ptr<FFEffectProcessor> processor = {};
 public:
   FFEffectDSPState();

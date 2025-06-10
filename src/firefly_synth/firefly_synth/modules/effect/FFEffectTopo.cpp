@@ -14,7 +14,7 @@ FFMakeEffectTopo(bool global)
   result->name = global? "GFX": "VFX";
   result->slotCount = FFEffectCount;
   result->graphCount = FFEffectBlockCount + 1;
-  result->graphRenderer = FFEffectRenderGraph;
+  result->graphRenderer = global? FFEffectRenderGraph<true>: FFEffectRenderGraph<false>;
   result->id = "{154051CE-66D9-41C8-B479-C52D1111C962}";
   result->params.resize((int)FFEffectParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vEffect; });

@@ -147,7 +147,7 @@ FFEffectProcessor::InitializeBuffers(
 
 template <bool Global>
 void
-FFEffectProcessor::BeginVoice(
+FFEffectProcessor::BeginVoiceOrReset(
   bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
@@ -661,5 +661,5 @@ FFEffectProcessor::ProcessFold(
 
 template int FFEffectProcessor::Process<true>(FBModuleProcState& state);
 template int FFEffectProcessor::Process<false>(FBModuleProcState& state);
-template void FFEffectProcessor::BeginVoice<true>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
-template void FFEffectProcessor::BeginVoice<false>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+template void FFEffectProcessor::BeginVoiceOrReset<true>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+template void FFEffectProcessor::BeginVoiceOrReset<false>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);

@@ -14,7 +14,7 @@ public FBModuleGraphRenderData<StringOsciGraphRenderData>
 {
   FFStringOsciProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoiceOrReset(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
@@ -28,7 +28,7 @@ StringOsciGraphRenderData::DoProcess(
 }
 
 void 
-StringOsciGraphRenderData::DoBeginVoice(
+StringOsciGraphRenderData::DoBeginVoiceOrReset(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
