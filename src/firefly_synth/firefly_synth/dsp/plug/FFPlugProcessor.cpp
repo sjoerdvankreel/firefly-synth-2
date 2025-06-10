@@ -26,10 +26,12 @@ _sampleRate(hostContext->SampleRate()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
+  for (int i = 0; i < FFEffectCount; i++)
+    _procState->dsp.global.gEffect[i].processor->InitializeBuffers(false, _sampleRate);
   for (int v = 0; v < FBMaxVoices; v++)
   {
     for (int i = 0; i < FFEffectCount; i++)
-      _procState->dsp.voice[v].effect[i].processor->InitializeBuffers(false, _sampleRate);
+      _procState->dsp.voice[v].vEffect[i].processor->InitializeBuffers(false, _sampleRate);
     for (int i = 0; i < FFStringOsciCount; i++)
       _procState->dsp.voice[v].stringOsci[i].processor->InitializeBuffers(false, _sampleRate);
   }

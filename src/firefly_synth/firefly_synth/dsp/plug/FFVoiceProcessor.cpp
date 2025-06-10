@@ -37,7 +37,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;
-    procState->dsp.voice[voice].effect[i].processor->BeginVoice(false, -1, -1, state);
+    procState->dsp.voice[voice].vEffect[i].processor->BeginVoice(false, -1, -1, state);
   }
 }
 
@@ -75,9 +75,9 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.osci[i].output.CopyTo(voiceDSP.effect[i].input);
-    voiceDSP.effect[i].processor->Process(state);
-    voiceDSP.output.Add(voiceDSP.effect[i].output);
+    voiceDSP.osci[i].output.CopyTo(voiceDSP.vEffect[i].input);
+    voiceDSP.vEffect[i].processor->Process(state);
+    voiceDSP.output.Add(voiceDSP.vEffect[i].output);
   }
 
   // TODO dont hardcode this to voice amp?
