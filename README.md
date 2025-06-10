@@ -69,7 +69,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
 
 ## Osci
-* Note: it would be wise to set the osci mod matrix to oversample if you use the FM generator.
+* Note: it would be wise to set the osci mod matrix to oversample if you use either the dedicated FM generator or the inter-osci FM mods.
 * Comes with unison stereo spread, detune, phase offset, 2 new ones: voice blend and phase offset randomization (gets rid off the phasing effect).
 * For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
 * For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
