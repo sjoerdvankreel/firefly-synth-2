@@ -9,7 +9,7 @@
 std::unique_ptr<FBStaticModule>
 FFMakeEffectTopo(bool global)
 {
-  std::string prefix = global ? "G" : "V";
+  std::string prefix = global ? "G" : ""; // TODO prefix should be V once we go out of alpha, but, dont want to refix the demos right now
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
   result->name = global? "GFX": "VFX";
