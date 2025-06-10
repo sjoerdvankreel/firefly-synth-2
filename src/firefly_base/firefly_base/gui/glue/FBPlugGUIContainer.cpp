@@ -3,6 +3,7 @@
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContainer.hpp>
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
@@ -15,13 +16,26 @@ FBPlugGUIContainer(FBHostGUIContext* hostContext):
 FBPlugGUIContext(hostContext),
 _gui(hostContext->Topo()->static_.guiFactory(hostContext))
 {
+  FB_LOG_ENTRY_EXIT();
   setOpaque(true);
   setVisible(true);
+  
+  FB_LOG_INFO("Calculating GUI size.");
   int plugWidth = hostContext->Topo()->static_.guiWidth;
   int plugHeight = GetHeightForAspectRatio(plugWidth);
+  FB_LOG_INFO("Calculated GUI size.");
+
+  FB_LOG_INFO("Adjusting JUCE GUI size.");
   setSize(plugWidth, plugHeight);
+  FB_LOG_INFO("Adjusted JUCE GUI size.");
+
+  FB_LOG_INFO("Adjusting plug GUI size.");
   _gui->setSize(plugWidth, plugHeight);
+  FB_LOG_INFO("Adjusted plug GUI size.");
+
+  FB_LOG_INFO("Showing plug GUI.");
   addAndMakeVisible(_gui.get());
+  FB_LOG_INFO("Showed plug GUI.");
 }
 
 void 

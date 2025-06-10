@@ -269,6 +269,8 @@ FFEffectProcessor::ProcessSkew(
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
 {
+  FBBatch<float> exceedBatch;
+  FBBoolBatch<float> compBatch;
   auto invLogHalf = 1.0f / std::log(0.5f);
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
@@ -288,9 +290,9 @@ FFEffectProcessor::ProcessSkew(
         shapedBatch = signBatch * xsimd::pow(xsimd::abs(shapedBatch), expoBatch);
         break;
       case FFEffectSkewMode::Uni:
-        auto compBatch = xsimd::lt(shapedBatch, FBBatch<float>(-1.0f));
+        compBatch = xsimd::lt(shapedBatch, FBBatch<float>(-1.0f));
         compBatch = xsimd::bitwise_or(compBatch, xsimd::gt(shapedBatch, FBBatch<float>(1.0f)));
-        auto exceedBatch = FBToBipolar(xsimd::pow(FBToUnipolar(shapedBatch), expoBatch));
+        exceedBatch = FBToBipolar(xsimd::pow(FBToUnipolar(shapedBatch), expoBatch));
         shapedBatch = xsimd::select(compBatch, shapedBatch, exceedBatch);
         break;
       default:

@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
@@ -16,8 +17,9 @@
 using namespace juce;
 
 static Component*
-MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
+MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 });
@@ -46,8 +48,9 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
+MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(0);
@@ -78,16 +81,18 @@ MakeSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
+EnvTabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
-  grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  grid->Add(0, 1, MakeSectionStage(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeEnvSectionMain(plugGUI, moduleSlot));
+  grid->Add(0, 1, MakeEnvSectionStage(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
 Component*
 FFMakeEnvGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Env, TabFactory);
+  FB_LOG_ENTRY_EXIT();
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Env, EnvTabFactory);
 }

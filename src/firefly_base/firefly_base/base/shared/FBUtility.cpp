@@ -25,6 +25,21 @@ FBFormatDouble(double val, int precision)
   return ss.str();
 }
 
+std::optional<double>
+FBStringToDoubleOptCLocale(std::string const& text)
+{
+  double result = 0.0;
+  std::istringstream str(text);
+  str.imbue(std::locale("C"));
+  str >> result;
+  if (str.fail() || str.bad() || !str.eof())
+  {
+    FB_LOG_WARN("Failed to parse '" + text + "' to double, returning 0.");
+    return std::nullopt;
+  }
+  return result;
+}
+
 void
 FBRestoreDenormal(FBDenormalState state)
 {
@@ -45,7 +60,7 @@ FBDisableDenormal()
 std::filesystem::path
 FBGetUserPluginDataFolder(FBStaticTopoMeta const& meta)
 {
-  return FBGetUserDataFolder() / meta.vendor / meta.name / meta.id;
+  return FBGetUserDataFolder() / meta.vendor / meta.name / FBPlugFormatToString(meta.format) / meta.id;
 }
 
 std::filesystem::path
@@ -65,12 +80,12 @@ FBGetUserDataFolder()
 std::vector<std::uint8_t>
 FBReadFile(std::filesystem::path const& p)
 { 
-  FB_LOG_INFO("Reading file: " + p.string());
+  FB_LOG_INFO("Reading file " + p.string());
   auto length = std::filesystem::file_size(p);
   std::vector<std::uint8_t> buffer(length);
   std::ifstream str(p.string(), std::ios_base::binary);
   str.read(reinterpret_cast<char*>(buffer.data()), length);
   str.close();
-  FB_LOG_INFO("Done reading file.");
+  FB_LOG_INFO("Read file " + p.string());
   return buffer;
 }

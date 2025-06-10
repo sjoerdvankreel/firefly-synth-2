@@ -23,12 +23,12 @@ FFOsciModFormatSlotVertical(int slot)
 {
   switch (slot)
   {
-  case 0: return "1\r\n\U00002193\r\n2";
-  case 1: return "1\r\n\U00002193\r\n3";
-  case 2: return "2\r\n\U00002193\r\n3";
-  case 3: return "1\r\n\U00002193\r\n4";
-  case 4: return "2\r\n\U00002193\r\n4";
-  case 5: return "3\r\n\U00002193\r\n4";
+  case 0: return "1\n\U000021932";
+  case 1: return "1\n\U000021933";
+  case 2: return "2\n\U000021933";
+  case 3: return "1\n\U000021934";
+  case 4: return "2\n\U000021934";
+  case 5: return "3\n\U000021934";
   default: assert(false); return "";
   }
 }

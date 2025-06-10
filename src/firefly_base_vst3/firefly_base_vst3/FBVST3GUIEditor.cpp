@@ -64,25 +64,31 @@ FBVST3GUIEditor::release()
 tresult PLUGIN_API
 FBVST3GUIEditor::getSize(ViewRect* size)
 {
-  auto hostSize = _gui->GetHostSize();
-  size->right = size->left + hostSize.first;
-  size->bottom = size->top + hostSize.second;
-  return kResultTrue;
+  return FBWithLogException([this, size]()
+  {
+    auto hostSize = _gui->GetHostSize();
+    size->right = size->left + hostSize.first;
+    size->bottom = size->top + hostSize.second;
+    return kResultTrue;
+  });
 }
 
 tresult PLUGIN_API
 FBVST3GUIEditor::onSize(ViewRect* newSize)
 {
-  checkSizeConstraint(newSize);
-  _gui->SetUserScaleByHostWidth(newSize->getWidth());
-  return kResultTrue;
+  return FBWithLogException([this, newSize]()
+  {
+    checkSizeConstraint(newSize);
+    _gui->SetUserScaleByHostWidth(newSize->getWidth());
+    return kResultTrue;
+  });
 }
 
 #if SMTG_OS_LINUX
 void PLUGIN_API
 FBVST3GUIEditor::onFDIsSet(FileDescriptor fd)
 {
-  LinuxEventLoopInternal::invokeEventLoopCallbackForFd(fd);
+  FBWithLogException([fd]() { LinuxEventLoopInternal::invokeEventLoopCallbackForFd(fd); });
 }
 #endif
 
@@ -92,49 +98,61 @@ FBVST3GUIEditor::setContentScaleFactor(ScaleFactor factor)
 #if __APPLE__
   return kResultFalse;
 #endif
-  ViewRect newSize;
-  _gui->SetSystemScale(factor);
-  getSize(&newSize);
-  if (plugFrame)
-    plugFrame->resizeView(this, &newSize);
-  return kResultTrue;
+  return FBWithLogException([this, factor]()
+  {
+    ViewRect newSize;
+    _gui->SetSystemScale(factor);
+    getSize(&newSize);
+    if (plugFrame)
+      plugFrame->resizeView(this, &newSize);
+    return kResultTrue;
+  });
 }
 
 tresult PLUGIN_API
 FBVST3GUIEditor::removed()
 {
   FB_LOG_ENTRY_EXIT();
-  _gui->RemoveFromDesktop();
+  return FBWithLogException([this]()
+  {
+    _gui->RemoveFromDesktop();
 #if SMTG_OS_LINUX
-  IRunLoop* loop = {};
-  auto ok = plugFrame->queryInterface(IRunLoop::iid, (void**)&loop);
-  assert(ok == kResultOk);
-  loop->unregisterEventHandler(this);
+    IRunLoop* loop = {};
+    auto ok = plugFrame->queryInterface(IRunLoop::iid, (void**)&loop);
+    assert(ok == kResultOk);
+    loop->unregisterEventHandler(this);
 #endif
-  return EditorView::removed();
+    return EditorView::removed();
+  });
 }
 
 tresult PLUGIN_API
 FBVST3GUIEditor::attached(void* parent, FIDString type)
 {
   FB_LOG_ENTRY_EXIT();
+  return FBWithLogException([this, parent, type]()
+  {
 #if SMTG_OS_LINUX
-  IRunLoop* loop = {};
-  auto ok = plugFrame->queryInterface(IRunLoop::iid, (void**)&loop);
-  assert(ok == kResultOk);
-  for (int fd : LinuxEventLoopInternal::getRegisteredFds())
-    loop->registerEventHandler(this, fd);
+    IRunLoop* loop = {};
+    auto ok = plugFrame->queryInterface(IRunLoop::iid, (void**)&loop);
+    assert(ok == kResultOk);
+    for (int fd : LinuxEventLoopInternal::getRegisteredFds())
+      loop->registerEventHandler(this, fd);
 #endif
-  _gui->AddToDesktop(parent);
-  return EditorView::attached(parent, type);
+    _gui->AddToDesktop(parent);
+    return EditorView::attached(parent, type);
+  });
 }
 
 tresult PLUGIN_API 
 FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect)
 {
-  rect->right = rect->left + _gui->ClampHostWidthForScale(rect->getWidth());
-  rect->bottom = rect->top + _gui->GetHeightForAspectRatio(rect->getWidth());
-  return kResultTrue;
+  return FBWithLogException([this, rect]()
+  {
+    rect->right = rect->left + _gui->ClampHostWidthForScale(rect->getWidth());
+    rect->bottom = rect->top + _gui->GetHeightForAspectRatio(rect->getWidth());
+    return kResultTrue;
+  });
 }
 
 tresult PLUGIN_API 
@@ -160,50 +178,59 @@ IPtr<IContextMenu>
 FBVST3GUIEditor::MakeVSTMenu(
   IPtr<IComponentHandler> handler, int paramIndex)
 {
-  ParamID paramTag = _hostContext->Topo()->audio.params[paramIndex].tag;
-  FUnknownPtr<IComponentHandler3> handler3(handler);
-  if (handler3 == nullptr)
-    return {};
-  return handler3->createContextMenu(this, &paramTag);
+  return FBWithLogException([this, handler, paramIndex]()
+  {
+    ParamID paramTag = _hostContext->Topo()->audio.params[paramIndex].tag;
+    FUnknownPtr<IComponentHandler3> handler3(handler);
+    if (handler3 == nullptr)
+      return IPtr<IContextMenu>();
+    return IPtr<IContextMenu>(handler3->createContextMenu(this, &paramTag));
+  });
 }
 
 void 
 FBVST3GUIEditor::ParamContextMenuClicked(
   IPtr<IComponentHandler> handler, int paramIndex, int juceTag)
 {
-  IContextMenu::Item item = {};
-  IContextMenuTarget* target = nullptr;
-  auto vstMenu = MakeVSTMenu(handler, paramIndex);
-  if (vstMenu && vstMenu->getItem(juceTag - 1, item, &target) == kResultOk && target != nullptr)
-    target->executeMenuItem(item.tag);
+  FBWithLogException([this, handler, paramIndex, juceTag]()
+  {
+    IContextMenu::Item item = {};
+    IContextMenuTarget* target = nullptr;
+    auto vstMenu = MakeVSTMenu(handler, paramIndex);
+    if (vstMenu && vstMenu->getItem(juceTag - 1, item, &target) == kResultOk && target != nullptr)
+      target->executeMenuItem(item.tag);
+  });
 }
 
 std::vector<FBHostContextMenuItem>
 FBVST3GUIEditor::MakeParamContextMenu(
   IPtr<IComponentHandler> handler, int index)
 {
-  auto vstMenu = MakeVSTMenu(handler, index);
-  if (!vstMenu) 
-    return {};
-
-  IContextMenu::Item vstItem = {};
-  FBHostContextMenuItem item = {};
-  IContextMenuTarget* target = nullptr;
-  std::vector<FBHostContextMenuItem> result = {};
-  for (int i = 0; i < vstMenu->getItemCount(); i++)
+  return FBWithLogException([this, handler, index]
   {
-    if (vstMenu->getItem(i, vstItem, &target) != kResultOk)
+    auto vstMenu = MakeVSTMenu(handler, index);
+    if (!vstMenu)
+      return std::vector<FBHostContextMenuItem>();
+
+    IContextMenu::Item vstItem = {};
+    FBHostContextMenuItem item = {};
+    IContextMenuTarget* target = nullptr;
+    std::vector<FBHostContextMenuItem> result = {};
+    for (int i = 0; i < vstMenu->getItemCount(); i++)
     {
-      assert(false);
-      return {};
+      if (vstMenu->getItem(i, vstItem, &target) != kResultOk)
+      {
+        assert(false);
+        return std::vector<FBHostContextMenuItem>();
+      }
+      FBVST3CopyFromString128(vstItem.name, item.name);
+      item.checked = (vstItem.flags & IContextMenuItem::kIsChecked) == IContextMenuItem::kIsChecked;
+      item.enabled = (vstItem.flags & IContextMenuItem::kIsDisabled) != IContextMenuItem::kIsDisabled;
+      item.separator = (vstItem.flags & IContextMenuItem::kIsSeparator) == IContextMenuItem::kIsSeparator;
+      item.subMenuEnd = (vstItem.flags & IContextMenuItem::kIsGroupEnd) == IContextMenuItem::kIsGroupEnd;
+      item.subMenuStart = (vstItem.flags & IContextMenuItem::kIsGroupStart) == IContextMenuItem::kIsGroupStart;
+      result.push_back(item);
     }
-    FBVST3CopyFromString128(vstItem.name, item.name);
-    item.checked = (vstItem.flags & IContextMenuItem::kIsChecked) == IContextMenuItem::kIsChecked;
-    item.enabled = (vstItem.flags & IContextMenuItem::kIsDisabled) != IContextMenuItem::kIsDisabled;
-    item.separator = (vstItem.flags & IContextMenuItem::kIsSeparator) == IContextMenuItem::kIsSeparator;
-    item.subMenuEnd = (vstItem.flags & IContextMenuItem::kIsGroupEnd) == IContextMenuItem::kIsGroupEnd;
-    item.subMenuStart = (vstItem.flags & IContextMenuItem::kIsGroupStart) == IContextMenuItem::kIsGroupStart;
-    result.push_back(item);
-  }
-  return result;
+    return result;
+  });
 }

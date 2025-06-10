@@ -4,6 +4,8 @@
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
@@ -22,6 +24,8 @@ _hostContext(hostContext)
 void
 FBPlugGUI::InitAllDependencies()
 {
+  FB_LOG_ENTRY_EXIT();
+
   auto const& guiParams = HostContext()->Topo()->gui.params;
   for (int i = 0; i < guiParams.size(); i++)
     GUIParamNormalizedChanged(i);

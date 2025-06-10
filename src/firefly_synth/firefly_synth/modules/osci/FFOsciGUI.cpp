@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -18,8 +19,9 @@
 using namespace juce;
 
 static Component*
-MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Type, 0 });
@@ -39,8 +41,9 @@ MakeSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto count = topo->audio.ParamAtTopo({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::UniCount, 0 });
@@ -66,8 +69,9 @@ MakeSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1 });
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
@@ -128,8 +132,9 @@ MakeSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 });
   
@@ -184,18 +189,20 @@ MakeSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
+OsciTabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
-  grid->Add(0, 0, MakeSectionMain(plugGUI, moduleSlot));
-  grid->Add(0, 1, MakeSectionUni(plugGUI, moduleSlot));
-  grid->Add(0, 2, MakeSectionWave(plugGUI, moduleSlot));
-  grid->Add(0, 2, MakeSectionFM(plugGUI, moduleSlot));
+  grid->Add(0, 0, MakeOsciSectionMain(plugGUI, moduleSlot));
+  grid->Add(0, 1, MakeOsciSectionUni(plugGUI, moduleSlot));
+  grid->Add(0, 2, MakeOsciSectionWave(plugGUI, moduleSlot));
+  grid->Add(0, 2, MakeOsciSectionFM(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
 Component*
 FFMakeOsciGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Osci, TabFactory);
+  FB_LOG_ENTRY_EXIT();
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Osci, OsciTabFactory);
 }

@@ -151,34 +151,43 @@ FBCLAPPlugin::init() noexcept
 void 
 FBCLAPPlugin::timerCallback()
 {
-  FBCLAPSyncToMainEvent event = {};
-  while (_audioToMainEvents.try_dequeue(event))
-    if (_gui)
-      _gui->SetAudioParamNormalizedFromHost(event.paramIndex, event.normalized);
+  FBWithLogException([this]()
+  {
+    FBCLAPSyncToMainEvent event = {};
+    while (_audioToMainEvents.try_dequeue(event))
+      if (_gui)
+        _gui->SetAudioParamNormalizedFromHost(event.paramIndex, event.normalized);
 
-  bool receivedExchange = false;
-  while (_exchangeStateQueue->TryDequeue(_guiExchangeState->Raw()))
-    receivedExchange = true;
-  if (receivedExchange && _gui)
-    _gui->UpdateExchangeState();
+    bool receivedExchange = false;
+    while (_exchangeStateQueue->TryDequeue(_guiExchangeState->Raw()))
+      receivedExchange = true;
+    if (receivedExchange && _gui)
+      _gui->UpdateExchangeState();
+  });
 }
 
 int32_t 
 FBCLAPPlugin::getParamIndexForParamId(
   clap_id paramId) const noexcept
 {
-  auto iter = _topo->audio.paramTagToIndex.find(paramId);
-  return iter == _topo->audio.paramTagToIndex.end() ? -1 : iter->second;
+  return FBWithLogException([this, paramId]()
+  {
+    auto iter = _topo->audio.paramTagToIndex.find(paramId);
+    return iter == _topo->audio.paramTagToIndex.end() ? -1 : iter->second;
+  });
 }
 
 bool 
 FBCLAPPlugin::getParamInfoForParamId(
   clap_id paramId, clap_param_info* info) const noexcept
 {
-  auto iter = _topo->audio.paramTagToIndex.find(paramId);
-  if (iter == _topo->audio.paramTagToIndex.end())
-    return false;
-  return paramsInfo(iter->second, info);
+  return FBWithLogException([this, paramId, info]()
+  {
+    auto iter = _topo->audio.paramTagToIndex.find(paramId);
+    if (iter == _topo->audio.paramTagToIndex.end())
+      return false;
+    return paramsInfo(iter->second, info);
+  });
 }
 
 bool
@@ -193,11 +202,14 @@ FBCLAPPlugin::activate(
   double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept 
 {
   FB_LOG_ENTRY_EXIT();
-  _sampleRate = static_cast<float>(sampleRate);
-  for (int ch = 0; ch < 2; ch++)
-    _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
-  _hostProcessor.reset(new FBHostProcessor(this));
-  return true;
+  return FBWithLogException([this, sampleRate, minFrameCount, maxFrameCount]()
+  {
+    _sampleRate = static_cast<float>(sampleRate);
+    for (int ch = 0; ch < 2; ch++)
+      _zeroIn[ch] = std::vector<float>(maxFrameCount, 0.0f);
+    _hostProcessor.reset(new FBHostProcessor(this));
+    return true;
+  });
 }
 
 void 
@@ -249,83 +261,86 @@ clap_process_status
 FBCLAPPlugin::process(
   const clap_process* process) noexcept 
 {
-  _input.note.clear();
-  _input.blockAuto.clear();
-  _input.accAutoByParamThenSample.clear();
-  _input.accModByParamThenNoteThenSample.clear();
-
-  ProcessMainToAudioEvents(process->out_events, true);
-
-  double normalized;
-  auto inEvents = process->in_events;
-  int inEventCount = inEvents->size(inEvents);
-  clap_event_param_mod const* modFromHost;
-  clap_event_param_value const* valueFromHost;
-  std::unordered_map<int, int>::const_iterator iter;
-  for (int i = 0; i < inEventCount; i++)
+  return FBWithLogException([this, process]()
   {
-    auto header = inEvents->get(inEvents, i);
-    if (header->space_id != CLAP_CORE_EVENT_SPACE_ID)
-      continue;
-    switch (header->type)
+    _input.note.clear();
+    _input.blockAuto.clear();
+    _input.accAutoByParamThenSample.clear();
+    _input.accModByParamThenNoteThenSample.clear();
+
+    ProcessMainToAudioEvents(process->out_events, true);
+
+    double normalized;
+    auto inEvents = process->in_events;
+    int inEventCount = inEvents->size(inEvents);
+    clap_event_param_mod const* modFromHost;
+    clap_event_param_value const* valueFromHost;
+    std::unordered_map<int, int>::const_iterator iter;
+    for (int i = 0; i < inEventCount; i++)
     {
-    case CLAP_EVENT_NOTE_ON: 
-    case CLAP_EVENT_NOTE_OFF: 
-      _input.note.push_back(MakeNoteEvent(header)); 
-      break;
-    case CLAP_EVENT_PARAM_MOD:
-      modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
-      if ((iter = _topo->audio.paramTagToIndex.find(modFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
-        if (_topo->audio.params[iter->second].static_.acc)
-          _input.accModByParamThenNoteThenSample.push_back(MakeAccModEvent(iter->second, modFromHost));
-      break;
-    case CLAP_EVENT_PARAM_VALUE:
-      valueFromHost = reinterpret_cast<clap_event_param_value const*>(header);
-      if ((iter = _topo->audio.paramTagToIndex.find(valueFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
+      auto header = inEvents->get(inEvents, i);
+      if (header->space_id != CLAP_CORE_EVENT_SPACE_ID)
+        continue;
+      switch (header->type)
       {
-        normalized = FBCLAPToNormalized(_topo->audio.params[iter->second].static_, valueFromHost->value);
-        PushParamChangeToProcessorBlock(iter->second, normalized, valueFromHost->header.time);
-        _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(iter->second, normalized));
+      case CLAP_EVENT_NOTE_ON:
+      case CLAP_EVENT_NOTE_OFF:
+        _input.note.push_back(MakeNoteEvent(header));
+        break;
+      case CLAP_EVENT_PARAM_MOD:
+        modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
+        if ((iter = _topo->audio.paramTagToIndex.find(modFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
+          if (_topo->audio.params[iter->second].static_.acc)
+            _input.accModByParamThenNoteThenSample.push_back(MakeAccModEvent(iter->second, modFromHost));
+        break;
+      case CLAP_EVENT_PARAM_VALUE:
+        valueFromHost = reinterpret_cast<clap_event_param_value const*>(header);
+        if ((iter = _topo->audio.paramTagToIndex.find(valueFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
+        {
+          normalized = FBCLAPToNormalized(_topo->audio.params[iter->second].static_, valueFromHost->value);
+          PushParamChangeToProcessorBlock(iter->second, normalized, valueFromHost->header.time);
+          _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(iter->second, normalized));
+        }
+        break;
+      default:
+        break;
       }
-      break;
-    default:
-      break;
     }
-  }
 
-  std::sort(
-    _input.accAutoByParamThenSample.begin(),
-    _input.accAutoByParamThenSample.end(),
-    FBAccAutoEventOrderByParamThenPos);
-  std::sort(
-    _input.accModByParamThenNoteThenSample.begin(),
-    _input.accModByParamThenNoteThenSample.end(),
-    FBAccModEventOrderByParamThenNoteThenPos);
+    std::sort(
+      _input.accAutoByParamThenSample.begin(),
+      _input.accAutoByParamThenSample.end(),
+      FBAccAutoEventOrderByParamThenPos);
+    std::sort(
+      _input.accModByParamThenNoteThenSample.begin(),
+      _input.accModByParamThenNoteThenSample.end(),
+      FBAccModEventOrderByParamThenNoteThenPos);
 
-  _input.bpm = FBHostInputBlock::DefaultBPM;
-  if (process->transport != nullptr)
-    _input.bpm = static_cast<float>(process->transport->tempo);
+    _input.bpm = FBHostInputBlock::DefaultBPM;
+    if (process->transport != nullptr)
+      _input.bpm = static_cast<float>(process->transport->tempo);
 
-  _output.outputParams.clear();
-  _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
+    _output.outputParams.clear();
+    _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
 
-  float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
-  if (process->audio_inputs_count != 1)
-    _input.audio = FBHostAudioBlock(zeroIn, process->frames_count);
-  else
-    _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
+    float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
+    if (process->audio_inputs_count != 1)
+      _input.audio = FBHostAudioBlock(zeroIn, process->frames_count);
+    else
+      _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
 
-  _hostProcessor->ProcessHost(_input, _output);
-  _exchangeStateQueue->Enqueue(_dspExchangeState->Raw());
+    _hostProcessor->ProcessHost(_input, _output);
+    _exchangeStateQueue->Enqueue(_dspExchangeState->Raw());
 
-  for (auto const& op : _output.outputParams)
-    _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));
+    for (auto const& op : _output.outputParams)
+      _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));
 
-  auto const& rvs = _output.returnedVoices;
-  for (int rv = 0; rv < rvs.size(); rv++)
-  {
-    clap_event_note endEvent = MakeNoteEndEvent(rvs[rv], process->frames_count - 1);
-    process->out_events->try_push(process->out_events, &(endEvent.header));
-  }
-  return CLAP_PROCESS_CONTINUE;
+    auto const& rvs = _output.returnedVoices;
+    for (int rv = 0; rv < rvs.size(); rv++)
+    {
+      clap_event_note endEvent = MakeNoteEndEvent(rvs[rv], process->frames_count - 1);
+      process->out_events->try_push(process->out_events, &(endEvent.header));
+    }
+    return CLAP_PROCESS_CONTINUE;
+  });
 }

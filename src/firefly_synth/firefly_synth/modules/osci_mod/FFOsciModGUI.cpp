@@ -1,6 +1,7 @@
 #include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -16,8 +17,9 @@
 using namespace juce;
 
 static Component*
-MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciModSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(0);
   columnSizes.push_back(0);
@@ -61,5 +63,6 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeOsciModGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::OsciMod, MakeSectionAll);
+  FB_LOG_ENTRY_EXIT();
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::OsciMod, MakeOsciModSectionAll);
 }

@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
@@ -14,8 +15,9 @@
 using namespace juce;
 
 static Component*
-TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
+GUISettingsTabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   auto graphMode = topo->gui.ParamAtTopo({ (int)FFModuleType::GUISettings, moduleSlot, (int)FFGUISettingsGUIParam::GraphMode, 0 });
@@ -28,5 +30,6 @@ TabFactory(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::GUISettings, TabFactory);
+  FB_LOG_ENTRY_EXIT();
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::GUISettings, GUISettingsTabFactory);
 }

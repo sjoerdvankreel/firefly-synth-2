@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
@@ -16,8 +17,9 @@
 using namespace juce;
 
 static Component*
-MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOutputSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0 } );
   auto voices = topo->audio.ParamAtTopo({ (int)FFModuleType::Output, moduleSlot, (int)FFOutputParam::Voices, 0 });
@@ -30,5 +32,6 @@ MakeSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
 Component*
 FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Output, MakeSectionAll);
+  FB_LOG_ENTRY_EXIT();
+  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Output, MakeOutputSectionAll);
 }

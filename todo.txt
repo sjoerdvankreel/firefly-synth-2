@@ -11,18 +11,11 @@ midi smoothing (actual midi too)
 fix todos
 tooltip combo not show
 store the selected tab 
-
-recheck clap mod
-xdg_config_home
 do a -Wall build
 todo document the thing a bit
 handle envelope offset (actual start index in block)
 voice block start position (fake it by amp env?)
-profile the thing - why gui expensive?
-on/off switch for realtime paint
-dont repaint expensive stuff if the UI not active -- but how?
 not hardcode env1 to voice amp
-checkout the Linux logging and also mac
 multitap fb delay
 rosetta is borked
 fix mac infoplist and the other thingy

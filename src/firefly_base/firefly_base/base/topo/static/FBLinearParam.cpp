@@ -1,3 +1,4 @@
+#include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBLinearParam.hpp>
 
 bool FBLinearParamNonRealTime::IsItems() const { return false; }
@@ -34,12 +35,14 @@ FBLinearParamNonRealTime::PlainToText(bool io, double plain) const
 std::optional<double>
 FBLinearParamNonRealTime::TextToPlain(bool io, std::string const& text) const
 {
-  char* end;
-  double result = std::strtod(text.c_str(), &end);
-  if (end != text.c_str() + text.size())
-    return {};
+  auto resultOpt = FBStringToDoubleOptCLocale(text);
+  if (!resultOpt)
+    return std::nullopt;
+  double result = resultOpt.value();
   result /= displayMultiplier;
-  if (result < min || result > max)
+  if (result < min - 0.01 || result > max + 0.01)
     return {};
-  return { result };
+  if (result < min || result > max)
+    FB_LOG_INFO("Clamping " + text + " to [" + std::to_string(min) + ", " + std::to_string(max) + "].");
+  return { std::clamp(result, static_cast<double>(min),  static_cast<double>(max)) };
 }

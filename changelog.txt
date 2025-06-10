@@ -1,0 +1,23 @@
+June 10, 2025 - alpha 2.
+
+- Build
+* Update GH windows runners.
+* Build scripts now zip the artifacts again.
+* Fix build script error for release builds (resources weren't being copied).
+
+- Core
+* Split out VST3 and CLAP logs.
+* Fixed some vertical text layout errors on Linux.
+* Compiles and runs on Windows/Linux/MacOS. Ubuntu22+, Mac ARM only, no Intel.
+* Added more detailed logging, including in the case of an unhandled exception.
+* Fixed a bug where locale-independent parsing was assumed (std::strtod), broke on Linux.
+* Fixed a bug in VST3 data exchange alignment which caused visualization to not work on MacOS.
+
+June 4, 2025 - alpha 1.
+
+- Core
+* Clap polyphonic modulation support.
+* Visualization directly from audio engine.
+
+- Modules
+* Envelopes, per-voice fx, string osci, osci + mod matrix.
