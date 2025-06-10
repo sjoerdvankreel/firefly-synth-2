@@ -30,7 +30,7 @@ template <class TBlock>
 class alignas(alignof(TBlock)) FFEffectBlockParamState final
 {
   friend class FFEffectProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool);
   std::array<TBlock, 1> on = {};
   std::array<TBlock, 1> oversample = {};
   std::array<TBlock, FFEffectBlockCount> kind = {};
@@ -46,7 +46,7 @@ template <class TAccurate>
 class alignas(alignof(TAccurate)) FFEffectAccParamState final
 {
   friend class FFEffectProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool);
   std::array<TAccurate, 1> trackingKey = {};
   std::array<TAccurate, FFEffectBlockCount> distMix = {};
   std::array<TAccurate, FFEffectBlockCount> distAmt = {};
@@ -66,10 +66,10 @@ public:
 };
 
 template <class TBlock, class TAccurate>
-class alignas(alignof(TBlock)) FFEffectParamState final
+class alignas(alignof(TAccurate)) FFEffectParamState final
 {
   friend class FFEffectProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool);
   FFEffectAccParamState<TAccurate> acc = {};
   FFEffectBlockParamState<TBlock> block = {};
 public:

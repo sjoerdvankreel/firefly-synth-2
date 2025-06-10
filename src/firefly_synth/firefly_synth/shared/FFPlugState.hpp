@@ -34,6 +34,7 @@ struct FFGlobalExchangeState final
   std::array<FBModuleProcExchangeState, 1> master = {};
   std::array<FBModuleProcExchangeState, 1> output = {};
   std::array<FBModuleProcExchangeState, FFGLFOCount> gLFO = {};
+  std::array<FBModuleProcExchangeState, FFEffectCount> gEffect = {};
   std::array<FBModuleProcExchangeState, FFGFilterCount> gFilter = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
@@ -43,7 +44,7 @@ struct FFVoiceExchangeState final
   std::array<FBModuleProcExchangeState, 1> osciMod = {};
   std::array<FBModuleProcExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
-  std::array<FBModuleProcExchangeState, FFEffectCount> effect = {};
+  std::array<FBModuleProcExchangeState, FFEffectCount> vEffect = {};
   std::array<FBModuleProcExchangeState, FFStringOsciCount> stringOsci = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
@@ -53,6 +54,7 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
   FFMasterDSPState master = {};
   FFOutputDSPState output = {};
   std::array<FFGLFODSPState, FFGLFOCount> gLFO = {};
+  std::array<FFEffectDSPState, FFEffectCount> gEffect = {};
   std::array<FFGFilterDSPState, FFGFilterCount> gFilter = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
 };
@@ -63,7 +65,7 @@ struct alignas(FBSIMDAlign) FFVoiceDSPState final
   FFVoiceProcessor processor = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
-  std::array<FFEffectDSPState, FFEffectCount> effect = {};
+  std::array<FFEffectDSPState, FFEffectCount> vEffect = {};
   std::array<FFStringOsciDSPState, FFStringOsciCount> stringOsci = {};
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceDSPState);
@@ -83,6 +85,7 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
   std::array<FFMasterParamState<TBlock, TAccurate>, 1> master = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
   std::array<FFGLFOParamState<TBlock, TAccurate>, FFGLFOCount> gLFO = {};
+  std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> gEffect = {};
   std::array<FFGFilterParamState<TBlock, TAccurate>, FFGFilterCount> gFilter = {};
 };
 
@@ -93,7 +96,7 @@ struct alignas(alignof(TAccurate)) FFVoiceParamState final
   std::array<FFOsciModParamState<TBlock, TAccurate>, 1> osciMod = {};
   std::array<FFEnvParamState<TBlock, TAccurate>, FFEnvCount> env = {};
   std::array<FFOsciParamState<TBlock, TAccurate>, FFOsciCount> osci = {};
-  std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> effect = {};
+  std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> vEffect = {};
   std::array<FFStringOsciParamState<TBlock, TAccurate>, FFStringOsciCount> stringOsci = {};
 };
 

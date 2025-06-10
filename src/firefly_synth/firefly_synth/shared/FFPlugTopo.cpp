@@ -106,7 +106,8 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::StringOsci] = std::move(*FFMakeStringOsciTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
-  result->modules[(int)FFModuleType::Effect] = std::move(*FFMakeEffectTopo());
+  result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));
+  result->modules[(int)FFModuleType::GEffect] = std::move(*FFMakeEffectTopo(true));
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
   result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());

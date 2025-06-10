@@ -4,8 +4,8 @@
 #include <memory>
 
 struct FBStaticModule;
-std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
 inline int constexpr FFEffectBlockCount = 4;
+std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool global);
 
 enum class FFEffectKind { Off, StVar, Comb, Clip, Fold, Skew };
 enum class FFEffectSkewMode { Uni, Bi };
