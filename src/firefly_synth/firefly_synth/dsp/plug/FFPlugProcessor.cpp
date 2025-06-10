@@ -6,7 +6,6 @@
 #include <firefly_synth/modules/glfo/FFGLFOProcessor.hpp>
 #include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
-#include <firefly_synth/modules/gfilter/FFGFilterProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
  
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
@@ -98,25 +97,25 @@ void
 FFPlugProcessor::ProcessPostVoice(
   FBPlugInputBlock const& input, FBPlugOutputBlock& output)
 {
-  auto& gGilterIn = _procState->dsp.global.gFilter[0].input;
-  gGilterIn.Fill(0.0f);
+  auto& gEffectIn = _procState->dsp.global.gEffect[0].input;
+  gEffectIn.Fill(0.0f);
   for (int v = 0; v < FBMaxVoices; v++)
     if (input.voiceManager->IsActive(v))
-      gGilterIn.Add(_procState->dsp.voice[v].output);
+      gEffectIn.Add(_procState->dsp.voice[v].output);
 
   auto state = MakeModuleState(input);
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;
-  _procState->dsp.global.gFilter[0].processor->Process(state);
-  for (int s = 1; s < FFGFilterCount; s++)
+  _procState->dsp.global.gEffect[0].processor->Process<true>(state);
+  for (int s = 1; s < FFEffectCount; s++)
   {
     state.moduleSlot = s;
-    _procState->dsp.global.gFilter[s - 1].output.CopyTo(_procState->dsp.global.gFilter[s].input);
-    _procState->dsp.global.gFilter[s].processor->Process(state);
+    _procState->dsp.global.gEffect[s - 1].output.CopyTo(_procState->dsp.global.gEffect[s].input);
+    _procState->dsp.global.gEffect[s].processor->Process<true>(state);
   }
 
   state.moduleSlot = 0;
-  _procState->dsp.global.gFilter[FFGFilterCount - 1].output.CopyTo(_procState->dsp.global.master.input);
+  _procState->dsp.global.gEffect[FFEffectCount - 1].output.CopyTo(_procState->dsp.global.master.input);
   _procState->dsp.global.master.processor->Process(state);
   _procState->dsp.global.master.output.CopyTo(output.audio);
   _procState->dsp.global.output.processor->Process(state);

@@ -4,9 +4,8 @@
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
 #include <firefly_synth/modules/glfo/FFGLFOProcessor.hpp>
-#include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
-#include <firefly_synth/modules/gfilter/FFGFilterProcessor.hpp>
+#include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
 
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>

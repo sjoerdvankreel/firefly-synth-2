@@ -7,7 +7,6 @@
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
-#include <firefly_synth/modules/gfilter/FFGFilterState.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
 #include <firefly_synth/modules/string_osci/FFStringOsciState.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
@@ -35,8 +34,7 @@ struct FFGlobalExchangeState final
   std::array<FBModuleProcExchangeState, 1> output = {};
   std::array<FBModuleProcExchangeState, FFGLFOCount> gLFO = {};
   std::array<FBModuleProcExchangeState, FFEffectCount> gEffect = {};
-  std::array<FBModuleProcExchangeState, FFGFilterCount> gFilter = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
+    FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
 
 struct FFVoiceExchangeState final
@@ -55,8 +53,7 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
   FFOutputDSPState output = {};
   std::array<FFGLFODSPState, FFGLFOCount> gLFO = {};
   std::array<FFEffectDSPState, FFEffectCount> gEffect = {};
-  std::array<FFGFilterDSPState, FFGFilterCount> gFilter = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
+    FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
 };
 
 struct alignas(FBSIMDAlign) FFVoiceDSPState final
@@ -86,8 +83,7 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
   std::array<FFGLFOParamState<TBlock, TAccurate>, FFGLFOCount> gLFO = {};
   std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> gEffect = {};
-  std::array<FFGFilterParamState<TBlock, TAccurate>, FFGFilterCount> gFilter = {};
-};
+  };
 
 template <class TBlock, class TAccurate>
 struct alignas(alignof(TAccurate)) FFVoiceParamState final

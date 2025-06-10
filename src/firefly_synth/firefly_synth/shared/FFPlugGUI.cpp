@@ -7,7 +7,6 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
-#include <firefly_synth/modules/gfilter/FFGFilterGUI.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
 #include <firefly_synth/modules/string_osci/FFStringOsciGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
@@ -113,7 +112,6 @@ FFPlugGUI::SetupGUI()
   std::vector<int> rowSizes = {};
   rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
-  rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
   rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
@@ -130,13 +128,12 @@ FFPlugGUI::SetupGUI()
   _content->Add(0, 2, 1, 1, FFMakeGUISettingsGUI(this));
   _content->Add(0, 3, 1, 1, _graph);
   _content->Add(1, 0, 1, 4, FFMakeGLFOGUI(this));
-  _content->Add(2, 0, 1, 4, FFMakeGFilterGUI(this));
-  _content->Add(3, 0, 1, 4, FFMakeEffectGUI(this, true));
-  _content->Add(4, 0, 1, 4, FFMakeStringOsciGUI(this));
-  _content->Add(5, 0, 1, 4, FFMakeOsciGUI(this));
-  _content->Add(6, 0, 1, 4, FFMakeOsciModGUI(this));
-  _content->Add(7, 0, 1, 4, FFMakeEffectGUI(this, false));
-  _content->Add(8, 0, 1, 4, FFMakeEnvGUI(this));
+  _content->Add(2, 0, 1, 4, FFMakeEffectGUI(this, true));
+  _content->Add(3, 0, 1, 4, FFMakeStringOsciGUI(this));
+  _content->Add(4, 0, 1, 4, FFMakeOsciGUI(this));
+  _content->Add(5, 0, 1, 4, FFMakeOsciModGUI(this));
+  _content->Add(6, 0, 1, 4, FFMakeEffectGUI(this, false));
+  _content->Add(7, 0, 1, 4, FFMakeEnvGUI(this));
   FB_LOG_INFO("Created GUI components.");
 
   FB_LOG_INFO("Making GUI visible.");

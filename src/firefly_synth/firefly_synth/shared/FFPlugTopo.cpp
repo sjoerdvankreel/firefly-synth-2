@@ -7,7 +7,6 @@
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
-#include <firefly_synth/modules/gfilter/FFGFilterTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
@@ -110,7 +109,6 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::GEffect] = std::move(*FFMakeEffectTopo(true));
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
-  result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   return result;
 }
