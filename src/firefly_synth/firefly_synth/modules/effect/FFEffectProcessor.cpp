@@ -1,5 +1,6 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
+#include <firefly_synth/shared/FFStateDetail.hpp>
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectProcessor.hpp>
@@ -144,22 +145,25 @@ FFEffectProcessor::InitializeBuffers(
     _combFilters[i].Resize(sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier);
 }
 
+template <bool Global>
 void
 FFEffectProcessor::BeginVoice(
   bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-  auto const& params = procState->param.voice.effect[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Effect];
+  auto const& params = *FFSelectDualProcParamState<Global>(
+    [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
+    [procState, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
+  auto const& topo = state.topo->static_.modules[(int)(Global? FFModuleType::GEffect: FFModuleType::VEffect)];
   
   auto const& kindNorm = params.block.kind;
   auto const& clipModeNorm = params.block.clipMode;
   auto const& foldModeNorm = params.block.foldMode;
   auto const& skewModeNorm = params.block.skewMode;
   auto const& stVarModeNorm = params.block.stVarMode;
-  auto const& onNorm = params.block.on[0].Voice()[voice];
-  auto const& oversampleNorm = params.block.oversample[0].Voice()[voice];
+  auto const& onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
+  auto const& oversampleNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.oversample[0], voice);
 
   _graph = graph;
   _graphSamplesProcessed = 0;
@@ -174,11 +178,21 @@ FFEffectProcessor::BeginVoice(
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
     bool blockActive = !graph || graphIndex == i || graphIndex == FFEffectBlockCount;
-    _kind[i] = !blockActive? FFEffectKind::Off: topo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind, kindNorm[i].Voice()[voice]);
-    _clipMode[i] = topo.NormalizedToListFast<FFEffectClipMode>(FFEffectParam::ClipMode, clipModeNorm[i].Voice()[voice]);
-    _foldMode[i] = topo.NormalizedToListFast<FFEffectFoldMode>(FFEffectParam::FoldMode, foldModeNorm[i].Voice()[voice]);
-    _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(FFEffectParam::SkewMode, skewModeNorm[i].Voice()[voice]);
-    _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(FFEffectParam::StVarMode, stVarModeNorm[i].Voice()[voice]);
+    _kind[i] = !blockActive? FFEffectKind::Off: topo.NormalizedToListFast<FFEffectKind>(
+      FFEffectParam::Kind, 
+      FFSelectDualProcBlockParamNormalized<Global>(kindNorm[i], voice));
+    _clipMode[i] = topo.NormalizedToListFast<FFEffectClipMode>(
+      FFEffectParam::ClipMode, 
+      FFSelectDualProcBlockParamNormalized<Global>(clipModeNorm[i], voice));
+    _foldMode[i] = topo.NormalizedToListFast<FFEffectFoldMode>(
+      FFEffectParam::FoldMode, 
+      FFSelectDualProcBlockParamNormalized<Global>(foldModeNorm[i], voice));
+    _skewMode[i] = topo.NormalizedToListFast<FFEffectSkewMode>(
+      FFEffectParam::SkewMode, 
+      FFSelectDualProcBlockParamNormalized<Global>(skewModeNorm[i], voice));
+    _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(
+      FFEffectParam::StVarMode, 
+      FFSelectDualProcBlockParamNormalized<Global>(stVarModeNorm[i], voice));
     _stVarFilters[i] = {};
     _combFilters[i].Reset();
   }
@@ -427,6 +441,9 @@ FFEffectProcessor::ProcessFold(
 int
 FFEffectProcessor::Process(FBModuleProcState& state)
 {
+  return 0;
+
+#if 0
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
@@ -621,4 +638,8 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     exchangeParams.acc.combFreqPlus[i][voice] = combFreqPlusNorm[i].Voice()[voice].Last();
   }
   return FBFixedBlockSamples;
+#endif
 }
+
+template void FFEffectProcessor::BeginVoice<true>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+template void FFEffectProcessor::BeginVoice<false>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
