@@ -28,40 +28,40 @@ public:
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputFMIndex = {};
 };
 
-template <class TVoiceBlock>
-class alignas(alignof(TVoiceBlock)) FFOsciModBlockParamState final
+template <class TBlock>
+class alignas(alignof(TBlock)) FFOsciModBlockParamState final
 {
   friend class FFOsciProcessor;
   friend class FFOsciModProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciModTopo();
-  std::array<TVoiceBlock, 1> expoFM = {};
-  std::array<TVoiceBlock, 1> oversample = {};
-  std::array<TVoiceBlock, FFOsciModSlotCount> fmOn = {};
-  std::array<TVoiceBlock, FFOsciModSlotCount> amMode = {};
+  std::array<TBlock, 1> expoFM = {};
+  std::array<TBlock, 1> oversample = {};
+  std::array<TBlock, FFOsciModSlotCount> fmOn = {};
+  std::array<TBlock, FFOsciModSlotCount> amMode = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModBlockParamState);
 };
 
-template <class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFOsciModAccParamState final
+template <class TAccurate>
+class alignas(alignof(TAccurate)) FFOsciModAccParamState final
 {
   friend class FFOsciProcessor;
   friend class FFOsciModProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciModTopo();
-  std::array<TVoiceAcc, FFOsciModSlotCount> amMix = {};
-  std::array<TVoiceAcc, FFOsciModSlotCount> fmIndex = {};
+  std::array<TAccurate, FFOsciModSlotCount> amMix = {};
+  std::array<TAccurate, FFOsciModSlotCount> fmIndex = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModAccParamState);
 };
 
-template <class TVoiceBlock, class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFOsciModParamState final
+template <class TBlock, class TAccurate>
+class alignas(alignof(TAccurate)) FFOsciModParamState final
 {
   friend class FFOsciProcessor;
   friend class FFOsciModProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciModTopo();
-  FFOsciModAccParamState<TVoiceAcc> acc = {};
-  FFOsciModBlockParamState<TVoiceBlock> block = {};
+  FFOsciModAccParamState<TAccurate> acc = {};
+  FFOsciModBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciModParamState);
 };

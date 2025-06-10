@@ -22,36 +22,36 @@ public:
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
 };
 
-template <class TGlobalBlock>
-class alignas(alignof(TGlobalBlock)) FFGFilterBlockParamState final
+template <class TBlock>
+class alignas(alignof(TBlock)) FFGFilterBlockParamState final
 {
   friend class FFGFilterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
-  std::array<TGlobalBlock, 1> on = {};
-  std::array<TGlobalBlock, 1> mode = {};
+  std::array<TBlock, 1> on = {};
+  std::array<TBlock, 1> mode = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterBlockParamState);
 };
 
-template <class TGlobalAcc>
-class alignas(alignof(TGlobalAcc)) FFGFilterAccParamState final
+template <class TAccurate>
+class alignas(alignof(TAccurate)) FFGFilterAccParamState final
 {
   friend class FFGFilterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
-  std::array<TGlobalAcc, 1> res = {};
-  std::array<TGlobalAcc, 1> freq = {};
-  std::array<TGlobalAcc, 1> gain = {};
+  std::array<TAccurate, 1> res = {};
+  std::array<TAccurate, 1> freq = {};
+  std::array<TAccurate, 1> gain = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterAccParamState);
 };
 
-template <class TGlobalBlock, class TGlobalAcc>
-class alignas(alignof(TGlobalAcc)) FFGFilterParamState final
+template <class TBlock, class TAccurate>
+class alignas(alignof(TAccurate)) FFGFilterParamState final
 {
   friend class FFGFilterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGFilterTopo();
-  FFGFilterAccParamState<TGlobalAcc> acc = {};
-  FFGFilterBlockParamState<TGlobalBlock> block = {};
+  FFGFilterAccParamState<TAccurate> acc = {};
+  FFGFilterBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGFilterParamState);
 };

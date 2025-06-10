@@ -20,22 +20,22 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOutputDSPState);
 };
 
-template <class TGlobalBlock>
-class alignas(alignof(TGlobalBlock)) FFOutputBlockParamState final
+template <class TBlock>
+class alignas(alignof(TBlock)) FFOutputBlockParamState final
 {
   friend class FFOutputProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOutputTopo();
-  std::array<TGlobalBlock, 1> voices = {};
+  std::array<TBlock, 1> voices = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOutputBlockParamState);
 };
 
-template <class TGlobalBlock, class TGlobalAcc>
-class alignas(alignof(TGlobalAcc)) FFOutputParamState final
+template <class TBlock, class TAccurate>
+class alignas(alignof(TAccurate)) FFOutputParamState final
 {
   friend class FFOutputProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOutputTopo();
-  FFOutputBlockParamState<TGlobalBlock> block = {};
+  FFOutputBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOutputParamState);
 };

@@ -26,60 +26,60 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 
-template <class TVoiceBlock>
-class alignas(alignof(TVoiceBlock)) FFOsciBlockParamState final
+template <class TBlock>
+class alignas(alignof(TBlock)) FFOsciBlockParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
-  std::array<TVoiceBlock, 1> type = {};
-  std::array<TVoiceBlock, 1> uniCount = {};
-  std::array<TVoiceBlock, 1> uniOffset = {};
-  std::array<TVoiceBlock, 1> uniRandom = {};
-  std::array<TVoiceBlock, 1> waveHSMode = {};
-  std::array<TVoiceBlock, FFOsciWavePWCount> wavePWMode = {};
-  std::array<TVoiceBlock, FFOsciWaveBasicCount> waveBasicMode = {};
-  std::array<TVoiceBlock, 1> waveDSFBW = {};
-  std::array<TVoiceBlock, 1> waveDSFMode = {};
-  std::array<TVoiceBlock, 1> waveDSFOver = {};
-  std::array<TVoiceBlock, 1> waveDSFDistance = {};
-  std::array<TVoiceBlock, 1> fmMode = {};
-  std::array<TVoiceBlock, 1> fmRatioMode = {};
-  std::array<TVoiceBlock, FFOsciFMOperatorCount - 1> fmRatioRatio = {};
+  std::array<TBlock, 1> type = {};
+  std::array<TBlock, 1> uniCount = {};
+  std::array<TBlock, 1> uniOffset = {};
+  std::array<TBlock, 1> uniRandom = {};
+  std::array<TBlock, 1> waveHSMode = {};
+  std::array<TBlock, FFOsciWavePWCount> wavePWMode = {};
+  std::array<TBlock, FFOsciWaveBasicCount> waveBasicMode = {};
+  std::array<TBlock, 1> waveDSFBW = {};
+  std::array<TBlock, 1> waveDSFMode = {};
+  std::array<TBlock, 1> waveDSFOver = {};
+  std::array<TBlock, 1> waveDSFDistance = {};
+  std::array<TBlock, 1> fmMode = {};
+  std::array<TBlock, 1> fmRatioMode = {};
+  std::array<TBlock, FFOsciFMOperatorCount - 1> fmRatioRatio = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
 };
 
-template <class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFOsciAccParamState final
+template <class TAccurate>
+class alignas(alignof(TAccurate)) FFOsciAccParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
-  std::array<TVoiceAcc, 1> coarse = {};
-  std::array<TVoiceAcc, 1> fine = {};
-  std::array<TVoiceAcc, 1> gain = {};
-  std::array<TVoiceAcc, 1> uniBlend = {};
-  std::array<TVoiceAcc, 1> uniDetune = {};
-  std::array<TVoiceAcc, 1> uniSpread = {};
-  std::array<TVoiceAcc, 1> waveHSGain = {};
-  std::array<TVoiceAcc, 1> waveHSSync = {};
-  std::array<TVoiceAcc, 1> waveDSFGain = {};
-  std::array<TVoiceAcc, 1> waveDSFDecay = {};
-  std::array<TVoiceAcc, FFOsciWavePWCount> wavePWPW = {};
-  std::array<TVoiceAcc, FFOsciWavePWCount> wavePWGain = {};
-  std::array<TVoiceAcc, FFOsciWaveBasicCount> waveBasicGain = {};
-  std::array<TVoiceAcc, FFOsciFMMatrixSize> fmIndex = {};
-  std::array<TVoiceAcc, FFOsciFMOperatorCount - 1> fmRatioFree = {};
+  std::array<TAccurate, 1> coarse = {};
+  std::array<TAccurate, 1> fine = {};
+  std::array<TAccurate, 1> gain = {};
+  std::array<TAccurate, 1> uniBlend = {};
+  std::array<TAccurate, 1> uniDetune = {};
+  std::array<TAccurate, 1> uniSpread = {};
+  std::array<TAccurate, 1> waveHSGain = {};
+  std::array<TAccurate, 1> waveHSSync = {};
+  std::array<TAccurate, 1> waveDSFGain = {};
+  std::array<TAccurate, 1> waveDSFDecay = {};
+  std::array<TAccurate, FFOsciWavePWCount> wavePWPW = {};
+  std::array<TAccurate, FFOsciWavePWCount> wavePWGain = {};
+  std::array<TAccurate, FFOsciWaveBasicCount> waveBasicGain = {};
+  std::array<TAccurate, FFOsciFMMatrixSize> fmIndex = {};
+  std::array<TAccurate, FFOsciFMOperatorCount - 1> fmRatioFree = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };
 
-template <class TVoiceBlock, class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFOsciParamState final
+template <class TBlock, class TAccurate>
+class alignas(alignof(TAccurate)) FFOsciParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
-  FFOsciAccParamState<TVoiceAcc> acc = {};
-  FFOsciBlockParamState<TVoiceBlock> block = {};
+  FFOsciAccParamState<TAccurate> acc = {};
+  FFOsciBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciParamState);
 };

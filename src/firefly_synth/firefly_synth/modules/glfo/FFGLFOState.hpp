@@ -23,33 +23,33 @@ public:
   FBSArray<float, FBFixedBlockSamples> output = {};
 };
 
-template <class TGlobalBlock>
-class alignas(alignof(TGlobalBlock)) FFGLFOBlockParamState final
+template <class TBlock>
+class alignas(alignof(TBlock)) FFGLFOBlockParamState final
 {
   friend class FFGLFOProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGLFOTopo();
-  std::array<TGlobalBlock, 1> on = {};
+  std::array<TBlock, 1> on = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOBlockParamState);
 };
 
-template <class TGlobalAcc>
-class alignas(alignof(TGlobalAcc)) FFGLFOAccParamState final
+template <class TAccurate>
+class alignas(alignof(TAccurate)) FFGLFOAccParamState final
 {
   friend class FFGLFOProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGLFOTopo();
-  std::array<TGlobalAcc, 1> rate = {};
+  std::array<TAccurate, 1> rate = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOAccParamState);
 };
 
-template <class TGlobalBlock, class TGlobalAcc>
-class alignas(alignof(TGlobalAcc)) FFGLFOParamState final
+template <class TBlock, class TAccurate>
+class alignas(alignof(TAccurate)) FFGLFOParamState final
 {
   friend class FFGLFOProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGLFOTopo();
-  FFGLFOAccParamState<TGlobalAcc> acc = {};
-  FFGLFOBlockParamState<TGlobalBlock> block = {};
+  FFGLFOAccParamState<TAccurate> acc = {};
+  FFGLFOBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOParamState);
 };

@@ -26,52 +26,52 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectDSPState);
 };
 
-template <class TVoiceBlock>
-class alignas(alignof(TVoiceBlock)) FFEffectBlockParamState final
+template <class TBlock>
+class alignas(alignof(TBlock)) FFEffectBlockParamState final
 {
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
-  std::array<TVoiceBlock, 1> on = {};
-  std::array<TVoiceBlock, 1> oversample = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> kind = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> clipMode = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> foldMode = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> skewMode = {};
-  std::array<TVoiceBlock, FFEffectBlockCount> stVarMode = {};
+  std::array<TBlock, 1> on = {};
+  std::array<TBlock, 1> oversample = {};
+  std::array<TBlock, FFEffectBlockCount> kind = {};
+  std::array<TBlock, FFEffectBlockCount> clipMode = {};
+  std::array<TBlock, FFEffectBlockCount> foldMode = {};
+  std::array<TBlock, FFEffectBlockCount> skewMode = {};
+  std::array<TBlock, FFEffectBlockCount> stVarMode = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectBlockParamState);
 };
 
-template <class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFEffectAccParamState final
+template <class TAccurate>
+class alignas(alignof(TAccurate)) FFEffectAccParamState final
 {
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
-  std::array<TVoiceAcc, 1> trackingKey = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> distMix = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> distAmt = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> distBias = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> distDrive = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> stVarRes = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> stVarFreq = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> stVarGain = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> stVarKeyTrk = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> combKeyTrk = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> combResMin = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> combResPlus = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> combFreqMin = {};
-  std::array<TVoiceAcc, FFEffectBlockCount> combFreqPlus = {};
+  std::array<TAccurate, 1> trackingKey = {};
+  std::array<TAccurate, FFEffectBlockCount> distMix = {};
+  std::array<TAccurate, FFEffectBlockCount> distAmt = {};
+  std::array<TAccurate, FFEffectBlockCount> distBias = {};
+  std::array<TAccurate, FFEffectBlockCount> distDrive = {};
+  std::array<TAccurate, FFEffectBlockCount> stVarRes = {};
+  std::array<TAccurate, FFEffectBlockCount> stVarFreq = {};
+  std::array<TAccurate, FFEffectBlockCount> stVarGain = {};
+  std::array<TAccurate, FFEffectBlockCount> stVarKeyTrk = {};
+  std::array<TAccurate, FFEffectBlockCount> combKeyTrk = {};
+  std::array<TAccurate, FFEffectBlockCount> combResMin = {};
+  std::array<TAccurate, FFEffectBlockCount> combResPlus = {};
+  std::array<TAccurate, FFEffectBlockCount> combFreqMin = {};
+  std::array<TAccurate, FFEffectBlockCount> combFreqPlus = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectAccParamState);
 };
 
-template <class TVoiceBlock, class TVoiceAcc>
-class alignas(alignof(TVoiceAcc)) FFEffectParamState final
+template <class TBlock, class TAccurate>
+class alignas(alignof(TBlock)) FFEffectParamState final
 {
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo();
-  FFEffectAccParamState<TVoiceAcc> acc = {};
-  FFEffectBlockParamState<TVoiceBlock> block = {};
+  FFEffectAccParamState<TAccurate> acc = {};
+  FFEffectBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEffectParamState);
 };
