@@ -162,8 +162,8 @@ FFEffectProcessor::BeginVoiceOrReset(
   auto const& foldModeNorm = params.block.foldMode;
   auto const& skewModeNorm = params.block.skewMode;
   auto const& stVarModeNorm = params.block.stVarMode;
-  auto const& onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
-  auto const& oversampleNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.oversample[0], voice);
+  float onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
+  float oversampleNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.oversample[0], voice);
 
   _graph = graph;
   _graphSamplesProcessed = 0;

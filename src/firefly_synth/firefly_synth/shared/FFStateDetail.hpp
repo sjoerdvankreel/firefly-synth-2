@@ -37,7 +37,7 @@ FFSelectDualProcAccParamNormalized(
 }
 
 template <bool Global, class TBlockParamState>
-inline auto const&
+inline float
 FFSelectDualProcBlockParamNormalized(
   TBlockParamState const& state, int voice)
 {
