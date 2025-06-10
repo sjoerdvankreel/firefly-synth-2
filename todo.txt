@@ -1,5 +1,3 @@
-make changelog
-Linux + bitwig + vst3 not plot good (clap ok)
 get rid of the lpf that is implied by the fractional delay line
 demo_pluckstring clicks
 store the graph fft somewhere
