@@ -80,8 +80,8 @@ FFMakeTopo(FBPlugFormat format)
   auto result = std::make_unique<FBStaticTopo>();
   result->meta = FFPlugMeta(format);
   result->guiWidth = 900;
-  result->guiAspectRatioWidth = 3;
-  result->guiAspectRatioHeight = 2;
+  result->guiAspectRatioWidth = 5;
+  result->guiAspectRatioHeight = 3;
   result->guiFactory = [](FBHostGUIContext* hostContext) { return std::make_unique<FFPlugGUI>(hostContext); };
 
   result->specialSelector = SpecialParamsSelector;
