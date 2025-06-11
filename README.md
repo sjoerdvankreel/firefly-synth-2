@@ -3,7 +3,7 @@
 * Builds and runs on win/lin/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
 * Only osci, inter-osci mod, string osci, per-voice fx, global fx and envelopes implemented.
-* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, MTS-ESP, no routing matrices (routing is hardcoded),
+* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, MTS-ESP, no routing matrices (routing is hardcoded),
 even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
 # Some demo material
