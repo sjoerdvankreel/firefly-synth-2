@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakeEffectGUI(FBPlugGUI* plugGUI, bool global);
+FFMakeEffectGUI(FBPlugGUI* plugGUI);
