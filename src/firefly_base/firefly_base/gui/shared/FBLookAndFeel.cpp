@@ -19,8 +19,8 @@ static void createTabTextLayout(
   TextLayout& textLayout)
 {
   AttributedString s;
-  s.setJustification(Justification::centred);
-  s.append(button.getButtonText().trim(), font, colour);
+  s.setJustification(button.getButtonText().length() == 1? Justification::centred: Justification::centredLeft);
+  s.append(button.getButtonText(), font, colour);
   textLayout.createLayout(s, length);
 }
 
@@ -85,7 +85,7 @@ FBLookAndFeel::getTabButtonBestWidth(
 {
   auto text = button.getButtonText().toStdString();
   auto tw = FBGUIGetStringWidthCached(text);
-  return std::max(50, tw + 8);
+  return text.size() == 1 ? 32 : 64;
 }
 
 void 
