@@ -1,3 +1,15 @@
+June 11, 2025 - alpha 3.
+
+- Core
+* Cache JUCE FFT instance.
+* Keep track of last incoming MIDI key (in case of chord this is "whatever").
+* Reworked the infra a bit to allow for modules that are both global and per-voice.
+
+- Modules
+* Add global FX.
+* Separate comb+/comb-/both filters. Just a performance tweak.
+* New FX param (global only): smoothing last MIDI key. Smooths filter freq jumps when keytracking global filters.
+
 June 10, 2025 - alpha 2.
 
 - Build
