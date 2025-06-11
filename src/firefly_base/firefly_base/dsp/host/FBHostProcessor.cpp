@@ -32,9 +32,9 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
+  _lastMIDINoteKey = 60.0f;
   _plugOut.procState = _procState;
-  _lastMIDINoteKeyPrevBlock = 60.0f;
-  _plugIn.lastMIDINoteKey = 60.0f;
+  _plugIn.lastMIDINoteKey.Fill(60.0f);
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
 }
@@ -83,16 +83,16 @@ FBHostProcessor::ProcessHost(
   while ((fixedIn = _hostToPlug->ProcessToPlug()) != nullptr)
   {
     _plugIn.audio = &fixedIn->audio;
-    _plugIn.lastMIDINoteKey = _lastMIDINoteKeyPrevBlock;
     _plugIn.noteEvents = &fixedIn->noteEvents;
-    for (int n = 0; n < _plugIn.noteEvents->size(); n++)
+    
+    int n = 0;
+    for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      auto const& noteEvent = (*_plugIn.noteEvents)[n];
-      float noteKey = static_cast<float>(noteEvent.note.key);
-      if (noteEvent.pos == 0)
-        _plugIn.lastMIDINoteKey = noteKey;
-      _lastMIDINoteKeyPrevBlock = noteKey;
+      while (n < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n].pos == s)
+        _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n].note.key);
+      _plugIn.lastMIDINoteKey.Set(s, _lastMIDINoteKey);
     }
+
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
@@ -107,7 +107,8 @@ FBHostProcessor::ProcessHost(
 
   _exchangeState->Host()->bpm = input.bpm;
   _exchangeState->Host()->sampleRate = _sampleRate;
-  _exchangeState->Host()->lastMIDINoteKey = _plugIn.lastMIDINoteKey;
+  _exchangeState->Host()->lastMIDINoteKey = _plugIn.lastMIDINoteKey.Last();
+
   for (int v = 0; v < FBMaxVoices; v++)
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];
 

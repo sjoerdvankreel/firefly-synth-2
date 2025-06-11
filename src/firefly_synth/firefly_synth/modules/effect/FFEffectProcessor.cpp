@@ -174,9 +174,10 @@ FFEffectProcessor::BeginVoiceOrBlock(
   _graphCombFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxCombFilterFreq);
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
-  _key = state.input->lastMIDINoteKey;
-  if(!Global)
-    _key = static_cast<float>(state.voice->event.note.key);
+  if constexpr(Global)
+    state.input->lastMIDINoteKey.CopyTo(_MIDINoteKey);
+  else
+    _MIDINoteKey.Fill(static_cast<float>(state.voice->event.note.key));
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
   _oversampleTimes = !graph && oversample ? FFEffectOversampleTimes : 1;
@@ -466,7 +467,7 @@ FFEffectProcessor::ProcessComb(
     auto resPlus = combResPlusPlain[block].Get(s);
     auto freqMin = combFreqMinPlain[block].Get(s);
     auto freqPlus = combFreqPlusPlain[block].Get(s);
-    float freqMul = KeyboardTrackingMultiplier(_key, trkk, ktrk);
+    float freqMul = KeyboardTrackingMultiplier(_MIDINoteKey.Get(s), trkk, ktrk);
 
     if constexpr(MinOn)
       freqMin = MultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
@@ -508,7 +509,7 @@ FFEffectProcessor::ProcessStVar(
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq = MultiplyClamp(freq, KeyboardTrackingMultiplier(_key, trkk, ktrk), 
+    freq = MultiplyClamp(freq, KeyboardTrackingMultiplier(_MIDINoteKey.Get(s), trkk, ktrk),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
 
     if (_graph)

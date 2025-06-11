@@ -20,8 +20,8 @@ inline int constexpr FFEffectFixedBlockOversamples = FBFixedBlockSamples * FFEff
 class FFEffectProcessor final
 {
   bool _on = {};
-  float _key = {};
   int _oversampleTimes = {};
+  FBSArray<float, FBFixedBlockSamples> _MIDINoteKey = {};
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
