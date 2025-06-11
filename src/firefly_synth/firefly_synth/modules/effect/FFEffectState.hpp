@@ -37,6 +37,7 @@ class alignas(alignof(TBlock)) FFEffectBlockParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool);
   std::array<TBlock, 1> on = {};
   std::array<TBlock, 1> oversample = {};
+  std::array<TBlock, 1> lastKeySmoothTime = {};
   std::array<TBlock, FFEffectBlockCount> kind = {};
   std::array<TBlock, FFEffectBlockCount> clipMode = {};
   std::array<TBlock, FFEffectBlockCount> foldMode = {};

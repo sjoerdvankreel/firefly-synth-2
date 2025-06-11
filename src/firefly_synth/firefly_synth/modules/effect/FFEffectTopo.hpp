@@ -14,7 +14,7 @@ enum class FFEffectFoldMode {
   Fold, Sin, Cos, Sin2, Cos2, SinCos, CosSin, 
   Sin3, Cos3, Sn2Cs, Cs2Sn, SnCs2, CsSn2, SnCsSn, CsSnCs };
 
-enum class FFEffectParam { On, Oversample, TrackingKey, Kind, 
+enum class FFEffectParam { On, Oversample, TrackingKey, LastKeySmoothTime, Kind, 
   CombKeyTrk, CombFreqPlus, CombResPlus, CombFreqMin, CombResMin, 
   StVarMode, StVarKeyTrak, StVarFreq, StVarRes, StVarGain,  
   ClipMode, FoldMode, SkewMode, DistDrive, DistMix, DistBias, DistAmt, Count };

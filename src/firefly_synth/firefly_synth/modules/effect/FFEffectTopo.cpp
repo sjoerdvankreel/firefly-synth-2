@@ -71,6 +71,26 @@ FFMakeEffectTopo(bool global)
   trackingKey.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTrackingKey);
   trackingKey.dependencies.enabled.audio.When({ (int)FFEffectParam::On }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& lastKeySmoothTime = result->params[(int)FFEffectParam::LastKeySmoothTime];
+  lastKeySmoothTime.acc = false;
+  lastKeySmoothTime.defaultText = "0.1";
+  lastKeySmoothTime.display = "Smth";
+  lastKeySmoothTime.name = "Last Key Smooth Time";
+  lastKeySmoothTime.slotCount = 1;
+  lastKeySmoothTime.unit = "Sec";
+  lastKeySmoothTime.id = prefix + "{453EDEDA-3FB8-4211-A5DD-DCDC4F44119D}";
+  lastKeySmoothTime.type = FBParamType::Linear;
+  lastKeySmoothTime.Linear().min = 0.0f;
+  lastKeySmoothTime.Linear().max = 10.0f;
+  lastKeySmoothTime.Linear().editSkewFactor = 0.5f;
+  auto selectLastKeySmoothTime = [](auto& module) { return &module.block.lastKeySmoothTime; };
+  lastKeySmoothTime.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectLastKeySmoothTime);
+  lastKeySmoothTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectLastKeySmoothTime);
+  lastKeySmoothTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectLastKeySmoothTime);
+  lastKeySmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectLastKeySmoothTime);
+  lastKeySmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectLastKeySmoothTime);
+  lastKeySmoothTime.dependencies.enabled.audio.When({ (int)FFEffectParam::On }, [global](auto const& vs) { return global && vs[0] != 0; });
+
   auto& kind = result->params[(int)FFEffectParam::Kind];
   kind.acc = false;
   kind.name = "Kind";

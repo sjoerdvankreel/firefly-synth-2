@@ -31,7 +31,10 @@ MakeSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oversample));
   auto trackingKey = topo->audio.ParamAtTopo({ (int)moduleType, moduleSlot, (int)FFEffectParam::TrackingKey, 0 });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, trackingKey));
-  grid->Add(1, 1, 1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingKey, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingKey, Slider::SliderStyle::RotaryVerticalDrag));
+  auto lastKeySmoothTime = topo->audio.ParamAtTopo({ (int)moduleType, moduleSlot, (int)FFEffectParam::LastKeySmoothTime, 0 });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lastKeySmoothTime));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lastKeySmoothTime, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ 0, 0, 2, 4 });
   return grid;
 }
