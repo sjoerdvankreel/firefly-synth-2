@@ -2,7 +2,7 @@
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
-* Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
+* Only osci, inter-osci mod, string osci, per-voice fx, global fx and envelopes implemented.
 * Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, MTS-ESP, no routing matrices (routing is hardcoded),
 even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
@@ -54,13 +54,14 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 
 # The details
 
-## Voice FX
+## FX
 * A single FX slot is optionally oversampled "as a whole".
-* Keyboard tracking center key with -64 to +64 semis, 0 is C4.
 * A bit like osci, for each FX slot, take your pick of 4 sub-slots.
 * All waveshapers have a new bias param to allow for asymmetric shaping.
-* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter. 
+* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter.
 * These are processed in order. AKA "build your own distortion module".
+* Keyboard tracking center key with -64 to +64 semis, 0 is C4. Global tracks the last MIDI key.
+* For global FX, new smoothing param for incoming last-midi-key. Prevents jumps when keytracking global filters.
 
 ## Envelope
 * 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
