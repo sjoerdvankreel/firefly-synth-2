@@ -263,8 +263,8 @@ FBCLAPPlugin::process(
 {
   return FBWithLogException([this, process]()
   {
-    _input.note.clear();
     _input.blockAuto.clear();
+    _input.noteEvents.clear();
     _input.accAutoByParamThenSample.clear();
     _input.accModByParamThenNoteThenSample.clear();
 
@@ -285,7 +285,7 @@ FBCLAPPlugin::process(
       {
       case CLAP_EVENT_NOTE_ON:
       case CLAP_EVENT_NOTE_OFF:
-        _input.note.push_back(MakeNoteEvent(header));
+        _input.noteEvents.push_back(MakeNoteEvent(header));
         break;
       case CLAP_EVENT_PARAM_MOD:
         modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);

@@ -5,6 +5,9 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 
+#include <juce_dsp/juce_dsp.h>
+
+#include <vector>
 #include <memory>
 
 struct FBPlugInputBlock;
@@ -19,10 +22,11 @@ class FBGraphRenderState final
 {
   friend class FBModuleGraphDisplayComponent;
 
-  std::vector<FBNoteEvent> _notes = {};
+  std::vector<FBNoteEvent> _noteEvents = {};
   FBSArray2<float, FBFixedBlockSamples, 2> _audio = {};
 
   FBPlugGUI const* const _plugGUI;
+  std::unique_ptr<juce::dsp::FFT> _fft = {};
   std::unique_ptr<FBPlugInputBlock> _input;
   std::unique_ptr<FBModuleProcState> _moduleState;
   std::unique_ptr<FBProcStateContainer> _procState;
@@ -38,9 +42,10 @@ public:
   FBGraphRenderState(FBPlugGUI const* plugGUI);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBGraphRenderState);
 
-  void PrepareForRenderExchange();
+  void FFT(std::vector<float>& data);
   void PrepareForRenderPrimaryVoice();
   void PrepareForRenderExchangeVoice(int voice);
+  void PrepareForRenderExchange(float lastMIDINoteKey);
   void PrepareForRenderPrimary(float sampleRate, float bpm);
 
   FBPlugGUI const* PlugGUI() const;

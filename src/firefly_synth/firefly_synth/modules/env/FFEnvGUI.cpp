@@ -81,7 +81,7 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-EnvTabFactory(FBPlugGUI* plugGUI, int moduleSlot)
+MakeEnvTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
@@ -94,5 +94,8 @@ Component*
 FFMakeEnvGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Env, EnvTabFactory);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
+  for (int i = 0; i < FFEnvCount; i++)
+    tabs->AddModuleTab({ (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i));
+  return tabs;
 }

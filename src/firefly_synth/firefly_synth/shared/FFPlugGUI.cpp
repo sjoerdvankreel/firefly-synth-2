@@ -1,15 +1,13 @@
 #include <firefly_synth/shared/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
-#include <firefly_synth/modules/glfo/FFGLFOGUI.hpp>
-
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
-#include <firefly_synth/modules/gfilter/FFGFilterGUI.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
 #include <firefly_synth/modules/string_osci/FFStringOsciGUI.hpp>
+#include <firefly_synth/modules/shared/FFOsciAndStringOsciGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
@@ -89,7 +87,7 @@ FFPlugGUI::GetRenderType() const
 {
   FBParamTopoIndices indices = { (int)FFModuleType::GUISettings, 0, (int)FFGUISettingsGUIParam::GraphMode, 0 };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
-  auto normalized = HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex);
+  float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
   auto mode = static_cast<FFGUISettingsGraphMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
   if (mode == FFGUISettingsGraphMode::Basic)
     return FBGUIRenderType::Basic;
@@ -106,19 +104,16 @@ FFPlugGUI::SetupGUI()
   // TODO better move to reusable?
   FB_LOG_INFO("Calculating GUI grid size.");
   int vTabCount = 6;
-  int tabHeight = 28; // TODO
+  float tabHeight = 28.0f; // TODO
   auto const& topo = HostContext()->Topo()->static_;
   int totalHeight = topo.guiWidth * topo.guiAspectRatioHeight / topo.guiAspectRatioWidth;
-  float availableHeight = totalHeight - vTabCount * tabHeight;
+  float availableHeight = static_cast<float>(totalHeight - vTabCount * tabHeight);
   std::vector<int> rowSizes = {};
-  rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
-  rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
-  rowSizes.push_back(tabHeight + 1.0f / 9.0f * availableHeight);
-  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
-  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
-  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
-  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
-  rowSizes.push_back(tabHeight + 2.0f / 9.0f * availableHeight);
+  rowSizes.push_back(static_cast<int>(tabHeight + 1.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
   FB_LOG_INFO("Calculated GUI grid size.");
 
   FB_LOG_INFO("Creating GUI components.");
@@ -128,13 +123,10 @@ FFPlugGUI::SetupGUI()
   _content->Add(0, 1, 1, 1, FFMakeOutputGUI(this));
   _content->Add(0, 2, 1, 1, FFMakeGUISettingsGUI(this));
   _content->Add(0, 3, 1, 1, _graph);
-  _content->Add(1, 0, 1, 4, FFMakeGLFOGUI(this));
-  _content->Add(2, 0, 1, 4, FFMakeGFilterGUI(this));
-  _content->Add(3, 0, 1, 4, FFMakeStringOsciGUI(this));
-  _content->Add(4, 0, 1, 4, FFMakeOsciGUI(this));
-  _content->Add(5, 0, 1, 4, FFMakeOsciModGUI(this));
-  _content->Add(6, 0, 1, 4, FFMakeEffectGUI(this));
-  _content->Add(7, 0, 1, 4, FFMakeEnvGUI(this));
+  _content->Add(1, 0, 1, 4, FFMakeOsciAndStringOsciGUI(this));
+  _content->Add(2, 0, 1, 4, FFMakeOsciModGUI(this));
+  _content->Add(3, 0, 1, 4, FFMakeEnvGUI(this));
+  _content->Add(4, 0, 1, 4, FFMakeEffectGUI(this));
   FB_LOG_INFO("Created GUI components.");
 
   FB_LOG_INFO("Making GUI visible.");

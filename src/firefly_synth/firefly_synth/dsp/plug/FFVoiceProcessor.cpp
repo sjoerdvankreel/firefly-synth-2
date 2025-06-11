@@ -3,10 +3,8 @@
 #include <firefly_synth/dsp/plug/FFVoiceProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
-#include <firefly_synth/modules/glfo/FFGLFOProcessor.hpp>
-#include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
-#include <firefly_synth/modules/gfilter/FFGFilterProcessor.hpp>
+#include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
 
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
@@ -37,7 +35,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;
-    procState->dsp.voice[voice].effect[i].processor->BeginVoice(false, -1, -1, state);
+    procState->dsp.voice[voice].vEffect[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, state);
   }
 }
 
@@ -63,7 +61,6 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   {
     state.moduleSlot = i;
     voiceDSP.osci[i].processor->Process(state);
-    //voiceDSP.output.Add(voiceDSP.osci[i].output); // todo
   }
   for (int i = 0; i < FFStringOsciCount; i++)
   {
@@ -75,9 +72,9 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.osci[i].output.CopyTo(voiceDSP.effect[i].input);
-    voiceDSP.effect[i].processor->Process(state);
-    voiceDSP.output.Add(voiceDSP.effect[i].output);
+    voiceDSP.osci[i].output.CopyTo(voiceDSP.vEffect[i].input);
+    voiceDSP.vEffect[i].processor->Process<false>(state);
+    voiceDSP.output.Add(voiceDSP.vEffect[i].output);
   }
 
   // TODO dont hardcode this to voice amp?

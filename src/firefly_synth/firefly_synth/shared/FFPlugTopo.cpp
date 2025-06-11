@@ -2,12 +2,10 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
-#include <firefly_synth/modules/glfo/FFGLFOTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
-#include <firefly_synth/modules/gfilter/FFGFilterTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
@@ -81,8 +79,8 @@ FFMakeTopo(FBPlugFormat format)
   auto result = std::make_unique<FBStaticTopo>();
   result->meta = FFPlugMeta(format);
   result->guiWidth = 900;
-  result->guiAspectRatioWidth = 12;
-  result->guiAspectRatioHeight = 7;
+  result->guiAspectRatioWidth = 50;
+  result->guiAspectRatioHeight = 19;
   result->guiFactory = [](FBHostGUIContext* hostContext) { return std::make_unique<FFPlugGUI>(hostContext); };
 
   result->specialSelector = SpecialParamsSelector;
@@ -102,14 +100,13 @@ FFMakeTopo(FBPlugFormat format)
 
   result->modules.resize((int)FFModuleType::Count);
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
-  result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeGLFOTopo());
   result->modules[(int)FFModuleType::StringOsci] = std::move(*FFMakeStringOsciTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
-  result->modules[(int)FFModuleType::Effect] = std::move(*FFMakeEffectTopo());
+  result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));
+  result->modules[(int)FFModuleType::GEffect] = std::move(*FFMakeEffectTopo(true));
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
-  result->modules[(int)FFModuleType::GFilter] = std::move(*FFMakeGFilterTopo());
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   return result;
 }

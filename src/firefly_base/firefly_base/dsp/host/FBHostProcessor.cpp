@@ -32,7 +32,9 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
+  _lastMIDINoteKey = 60.0f;
   _plugOut.procState = _procState;
+  _plugIn.lastMIDINoteKey.Fill(60.0f);
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
 }
@@ -59,8 +61,6 @@ FBHostProcessor::ProcessHost(
   int hostSmoothSamples = hostSmoothTimeTopo.Linear().NormalizedTimeToSamplesFast(hostSmoothTimeSpecial.state->Value(), _sampleRate);
   _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
-  _exchangeState->Host()->bpm = input.bpm;
-  _exchangeState->Host()->sampleRate = _sampleRate;
   for (int m = 0; m < _topo->modules.size(); m++)
   {
     auto const& indices = _topo->modules[m].topoIndices;
@@ -82,8 +82,17 @@ FBHostProcessor::ProcessHost(
   _hostToPlug->BufferFromHost(input);
   while ((fixedIn = _hostToPlug->ProcessToPlug()) != nullptr)
   {
-    _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
+    _plugIn.noteEvents = &fixedIn->noteEvents;
+    
+    int n = 0;
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      for (; n < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n].pos == s; n++)
+        _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n].note.key);
+      _plugIn.lastMIDINoteKey.Set(s, _lastMIDINoteKey);
+    }
+
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
@@ -95,6 +104,10 @@ FBHostProcessor::ProcessHost(
 
   for (auto const& entry : _plugOut.outputParamsNormalized)
     output.outputParams.push_back({ entry.first, entry.second });
+
+  _exchangeState->Host()->bpm = input.bpm;
+  _exchangeState->Host()->sampleRate = _sampleRate;
+  _exchangeState->Host()->lastMIDINoteKey = _plugIn.lastMIDINoteKey.Last();
 
   for (int v = 0; v < FBMaxVoices; v++)
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];

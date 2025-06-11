@@ -61,12 +61,10 @@ struct FBModuleGraphRenderData
   FBModuleGraphVoiceStereoOutputSelector voiceStereoOutputSelector = {};
   FBModuleGraphGlobalStereoOutputSelector globalStereoOutputSelector = {};
 
-  void Reset(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
-  { static_cast<Derived*>(this)->DoReset(state, graphIndex, exchange, exchangeVoice); }
   int Process(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
   { return static_cast<Derived*>(this)->DoProcess(state, graphIndex, exchange, exchangeVoice); }
-  void BeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
-  { static_cast<Derived*>(this)->DoBeginVoice(state, graphIndex, exchange, exchangeVoice); }
+  void BeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
+  { static_cast<Derived*>(this)->DoBeginVoiceOrBlock(state, graphIndex, exchange, exchangeVoice); }
   void ProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
   { return static_cast<Derived*>(this)->DoProcessIndicators(graphIndex, exchange, exchangeVoice, points); }
   void PostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
@@ -91,13 +89,9 @@ FBRenderModuleGraphSeries(
   auto renderState = renderData.graphData->renderState;
   auto moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
-  moduleProcState->input->note->clear();
+  moduleProcState->input->noteEvents->clear();
 
-  if constexpr (Global)
-    renderData.Reset(renderState, graphIndex, exchange, exchangeVoice);
-  else
-    renderData.BeginVoice(renderState, graphIndex, exchange, exchangeVoice);
-
+  renderData.BeginVoiceOrBlock(renderState, graphIndex, exchange, exchangeVoice);
   while (processed == FBFixedBlockSamples)
   {
     processed = renderData.Process(renderState, graphIndex, exchange, exchangeVoice);
@@ -213,7 +207,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   else
   {
     guiSampleRate = plotParams.sampleRate;
-    guiSampleCount = plotParams.sampleCount;
+    guiSampleCount = static_cast<float>(plotParams.sampleCount);
   }
   renderState->PrepareForRenderPrimary(guiSampleRate, hostExchange->bpm);
   if constexpr(!Global)
@@ -224,7 +218,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   if (guiRenderType == FBGUIRenderType::Basic)
     return;
 
-  renderState->PrepareForRenderExchange();
+  renderState->PrepareForRenderExchange(hostExchange->lastMIDINoteKey);
   if constexpr (Global)
   {
     auto moduleExchange = renderData.globalExchangeSelector(

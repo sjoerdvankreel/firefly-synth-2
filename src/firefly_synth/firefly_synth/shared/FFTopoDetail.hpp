@@ -59,3 +59,22 @@ FFSelectExchangeParamAddr(
 {
   return FFSelectParamAddr<FFExchangeState>(selectModule, selectParam);
 }
+
+template <bool Global>
+inline FBScalarParamAddrSelector
+FFSelectDualScalarParamAddrImpl(auto selectGlobalModule, auto selectVoiceModule, auto selectParam)
+{
+  if constexpr (Global)
+    return FFSelectScalarParamAddr(selectGlobalModule, selectParam);
+  else
+    return FFSelectScalarParamAddr(selectVoiceModule, selectParam);
+}
+
+inline FBScalarParamAddrSelector
+FFSelectDualScalarParamAddr(bool global, auto selectGlobalModule, auto selectVoiceModule, auto selectParam)
+{
+  if(global)
+    return FFSelectDualScalarParamAddrImpl<true>(selectGlobalModule, selectVoiceModule, selectParam);
+  else
+    return FFSelectDualScalarParamAddrImpl<false>(selectGlobalModule, selectVoiceModule, selectParam);
+}

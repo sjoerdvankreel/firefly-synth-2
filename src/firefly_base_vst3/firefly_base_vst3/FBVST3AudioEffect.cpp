@@ -208,14 +208,14 @@ FBVST3AudioEffect::process(ProcessData& data)
   return FBWithLogException([this, &data]()
   {
     Event event;
-    _input.note.clear();
+    _input.noteEvents.clear();
     if (data.inputEvents != nullptr)
       for (int i = 0; i < data.inputEvents->getEventCount(); i++)
         if (data.inputEvents->getEvent(i, event) == kResultOk)
           if (event.type == Event::kNoteOnEvent)
-            _input.note.push_back(MakeNoteOnEvent(event));
+            _input.noteEvents.push_back(MakeNoteOnEvent(event));
           else if (event.type == Event::kNoteOffEvent)
-            _input.note.push_back(MakeNoteOffEvent(event));
+            _input.noteEvents.push_back(MakeNoteOffEvent(event));
 
     int position;
     ParamValue value;

@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
+#include <firefly_synth/modules/shared/FFOscisGraph.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
-#include <firefly_synth/modules/oscis_graph/FFOscisGraph.hpp>
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBGraphing.hpp>
@@ -15,7 +15,7 @@ public FBModuleGraphRenderData<OscisGraphRenderData>
 {
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoice(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
@@ -27,7 +27,7 @@ OscisGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
 }
 
 void
-OscisGraphRenderData::DoBeginVoice(
+OscisGraphRenderData::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();

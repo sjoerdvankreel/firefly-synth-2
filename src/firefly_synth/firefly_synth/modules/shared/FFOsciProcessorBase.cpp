@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
-#include <firefly_synth/modules/osci_base/FFOsciTopoBase.hpp>
-#include <firefly_synth/modules/osci_base/FFOsciProcessorBase.hpp>
+#include <firefly_synth/modules/shared/FFOsciTopoBase.hpp>
+#include <firefly_synth/modules/shared/FFOsciProcessorBase.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>

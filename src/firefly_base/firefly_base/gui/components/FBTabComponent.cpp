@@ -17,37 +17,39 @@ TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
 }
 
 FBModuleTabComponent::
-FBModuleTabComponent(
-  FBPlugGUI* plugGUI, int moduleIndex, 
-  FBModuleTabFactory const& tabFactory) :
+FBModuleTabComponent(FBPlugGUI* plugGUI):
 FBTabComponent(),
-_plugGUI(plugGUI),
-_moduleIndex(moduleIndex)
-{ 
-  auto topo = plugGUI->HostContext()->Topo();
-  auto const& module = topo->static_.modules[moduleIndex];
-  if(module.slotCount == 1)
-    addTab(module.name, Colours::black, tabFactory(plugGUI, 0), false);
-  else
-  {
-    addTab(module.name, Colours::black, nullptr, false);
-    for (int i = 0; i < module.slotCount; i++)
-      addTab(std::to_string(i + 1), Colours::black, tabFactory(plugGUI, i), false);
-    setCurrentTabIndex(1);
-  }
+_plugGUI(plugGUI) {}
+
+int
+FBModuleTabComponent::FixedWidth(int height) const
+{
+  auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
+  return content.FixedWidth(height - 20);
 }
 
-void 
+void
+FBModuleTabComponent::AddModuleTab(
+  FBTopoIndices const& moduleIndices, Component* component)
+{
+  _moduleIndices.push_back(moduleIndices);
+  auto topo = _plugGUI->HostContext()->Topo();
+  auto const& module = topo->static_.modules[moduleIndices.index];
+  std::string header = std::to_string(moduleIndices.slot + 1);
+  if (moduleIndices.slot == 0)
+    if (module.slotCount > 1)
+      header = " " + module.name + " " + header;
+    else
+      header = " " + module.name;
+  addTab(header, Colours::black, component, false);
+}
+
+void
 FBModuleTabComponent::currentTabChanged(
   int newCurrentTabIndex, juce::String const& newCurrentTabName)
 {
-  // TODO
-  if(newCurrentTabIndex > 0)
-    _plugGUI->ActiveModuleSlotChanged(_moduleIndex, newCurrentTabIndex - 1);
-}
-
-int 
-FBModuleTabComponent::FixedWidth(int height) const
-{
-  return dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0)).FixedWidth(height - 20);
+  if (newCurrentTabIndex < 0 || newCurrentTabIndex >= _moduleIndices.size())
+    return;
+  auto const& indices = _moduleIndices[newCurrentTabIndex];
+  _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
 }

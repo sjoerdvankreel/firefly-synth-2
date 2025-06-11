@@ -8,7 +8,9 @@
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
+#include <bit>
 #include <cassert>
+#include <algorithm>
 
 static FBNoteEvent
 MakeNoteC4On()
@@ -35,8 +37,8 @@ _procState(std::make_unique<FBProcStateContainer>(*plugGUI->HostContext()->Topo(
 _primaryVoiceManager(std::make_unique<FBVoiceManager>(_procState.get())),
 _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
-  _input->note = &_notes;
   _input->audio = &_audio;
+  _input->noteEvents = &_noteEvents;
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)
@@ -75,6 +77,31 @@ FBGraphRenderState::ExchangeContainer() const
   return _plugGUI->HostContext()->ExchangeState();
 }
 
+void 
+FBGraphRenderState::FFT(std::vector<float>& data)
+{
+  auto nextPow2 = std::bit_ceil(data.size());
+  int order = std::bit_width(nextPow2) - 1;
+  if (!_fft || _fft->getSize() != (1 << order))
+    _fft = std::make_unique<juce::dsp::FFT>(order);
+  data.resize(nextPow2 * 2);
+  _fft->performFrequencyOnlyForwardTransform(data.data(), true);
+  data.resize(data.size() / 4);
+
+  float min = 0.0f;
+  float max = 1.0f;
+  for (int i = 0; i < data.size(); i++)
+  {
+    min = std::min(min, data[i]);
+    max = std::max(max, data[i]);
+  }
+  for (int i = 0; i < data.size(); i++)
+  {
+    data[i] = (data[i] - min) / (max - min);
+    assert(-0.01f <= data[i] && data[i] <= 1.01f);
+  }
+}
+
 void
 FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
 {
@@ -82,10 +109,11 @@ FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
 }
 
 void
-FBGraphRenderState::PrepareForRenderExchange()
+FBGraphRenderState::PrepareForRenderExchange(float lastMIDINoteKey)
 {
   _moduleState->voice = nullptr;
   _input->voiceManager = nullptr;
+  _input->lastMIDINoteKey.Fill(lastMIDINoteKey);
   _procState->InitProcessing(*ExchangeContainer());
   _moduleState->exchangeFromGUIRaw = ExchangeContainer()->Raw();
   _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->Voices());
@@ -95,8 +123,9 @@ void
 FBGraphRenderState::PrepareForRenderPrimary(float sampleRate, float bpm)
 {
   _input->bpm = bpm;
-  _input->sampleRate = sampleRate;
   _input->voiceManager = nullptr;
+  _input->sampleRate = sampleRate;
+  _input->lastMIDINoteKey.Fill(60.0f);
   _moduleState->voice = nullptr;
   _procState->InitProcessing(_plugGUI->HostContext());
 }

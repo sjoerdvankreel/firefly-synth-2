@@ -5,7 +5,7 @@
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciPhaseGenerator.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
-#include <firefly_synth/modules/osci_base/FFOsciProcessorBase.hpp>
+#include <firefly_synth/modules/shared/FFOsciProcessorBase.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <juce_dsp/juce_dsp.h>

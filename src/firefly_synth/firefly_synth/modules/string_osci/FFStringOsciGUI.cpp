@@ -140,8 +140,8 @@ MakeStringOsciSectionKS(FBPlugGUI* plugGUI, int moduleSlot)
   return grid;
 }
 
-static Component*
-StringOsciTabFactory(FBPlugGUI* plugGUI, int moduleSlot)
+Component*
+FFMakeStringOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 1 });
@@ -150,11 +150,4 @@ StringOsciTabFactory(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 2, MakeStringOsciSectionNoise(plugGUI, moduleSlot));
   grid->Add(0, 3, MakeStringOsciSectionKS(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
-}
-
-Component*
-FFMakeStringOsciGUI(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::StringOsci, StringOsciTabFactory);
 }

@@ -123,7 +123,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   float const slopeRange = 1.0f - 2.0f * minSlope;
   float const invLogHalf = 1.0f / std::log(0.5f);
 
-  auto const& noteEvents = *state.input->note;
+  auto const& noteEvents = *state.input->noteEvents;
   auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
   int loopEnd = _loopStart == 0 ? -1 : _loopStart - 1 + _loopLength;
   loopEnd = std::min(loopEnd, FFEnvStageCount);

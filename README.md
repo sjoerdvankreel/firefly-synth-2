@@ -2,7 +2,7 @@
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
-* Only osci, inter-osci mod, string osci, per-voice fx and envelopes implemented.
+* Only osci, inter-osci mod, string osci, per-voice fx, global fx and envelopes implemented.
 * Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, global fx, MTS-ESP, no routing matrices (routing is hardcoded),
 even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
@@ -54,13 +54,14 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 
 # The details
 
-## Voice FX
+## FX
 * A single FX slot is optionally oversampled "as a whole".
-* Keyboard tracking center key with -64 to +64 semis, 0 is C4.
 * A bit like osci, for each FX slot, take your pick of 4 sub-slots.
 * All waveshapers have a new bias param to allow for asymmetric shaping.
-* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter. 
+* 4x choice of wave folder, wave clipper, wave skewer, state var filter, comb filter.
 * These are processed in order. AKA "build your own distortion module".
+* Keyboard tracking center key with -64 to +64 semis, 0 is C4. Global tracks the last MIDI key.
+* For global FX, new smoothing param for incoming last-midi-key. Prevents jumps when keytracking global filters.
 
 ## Envelope
 * 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
@@ -69,7 +70,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
 
 ## Osci
-* Note: it would be wise to set the osci mod matrix to oversample if you use the FM generator.
+* Note: it would be wise to set the osci mod matrix to oversample if you use either the dedicated FM generator or the inter-osci FM mods.
 * Comes with unison stereo spread, detune, phase offset, 2 new ones: voice blend and phase offset randomization (gets rid off the phasing effect).
 * For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
 * For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
