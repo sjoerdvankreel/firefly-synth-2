@@ -88,7 +88,7 @@ FBHostProcessor::ProcessHost(
     int n = 0;
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      while (n < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n].pos == s)
+      for (; n < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n].pos == s; n++)
         _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n].note.key);
       _plugIn.lastMIDINoteKey.Set(s, _lastMIDINoteKey);
     }
