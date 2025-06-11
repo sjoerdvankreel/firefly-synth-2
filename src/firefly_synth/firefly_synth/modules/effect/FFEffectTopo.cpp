@@ -74,7 +74,7 @@ FFMakeEffectTopo(bool global)
   auto& lastKeySmoothTime = result->params[(int)FFEffectParam::LastKeySmoothTime];
   lastKeySmoothTime.acc = false;
   lastKeySmoothTime.defaultText = "0.1";
-  lastKeySmoothTime.display = "Smth";
+  lastKeySmoothTime.display = "Smooth";
   lastKeySmoothTime.name = "Last Key Smooth Time";
   lastKeySmoothTime.slotCount = 1;
   lastKeySmoothTime.unit = "Sec";
