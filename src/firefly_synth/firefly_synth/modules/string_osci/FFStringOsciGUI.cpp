@@ -156,5 +156,8 @@ Component*
 FFMakeStringOsciGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::StringOsci, StringOsciTabFactory);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent2>(plugGUI);
+  for (int i = 0; i < FFStringOsciCount; i++)
+    tabs->AddModuleTab({ (int)FFModuleType::StringOsci, i }, StringOsciTabFactory(plugGUI, i));
+  return tabs;
 }
