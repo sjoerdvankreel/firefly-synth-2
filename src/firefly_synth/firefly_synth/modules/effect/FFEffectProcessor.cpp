@@ -171,8 +171,9 @@ FFEffectProcessor::BeginVoiceOrBlock(
   _graphCombFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxCombFilterFreq);
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
-  // TODO want something with global fx keytracking?
-  _key = state.voice == nullptr? 60.0f: static_cast<float>(state.voice->event.note.key);
+  _key = state.input->lastNote;
+  if(!Global)
+    _key = static_cast<float>(state.voice->event.note.key);
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
   _oversampleTimes = !graph && oversample ? FFEffectOversampleTimes : 1;
@@ -495,7 +496,7 @@ FFEffectProcessor::ProcessStVar(
 
     _stVarFilters[block].Set(_stVarMode[block], oversampledRate, freq, res, gain);
     for (int c = 0; c < 2; c++)
-      oversampled[c].Set(s, _stVarFilters[block].Next(c, oversampled[c].Get(s)));
+      oversampled[c].Set(s, static_cast<float>(_stVarFilters[block].Next(c, oversampled[c].Get(s))));
   }
 }
 

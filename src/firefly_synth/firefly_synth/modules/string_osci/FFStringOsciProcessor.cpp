@@ -183,9 +183,9 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     {
       float nextVal = Next(topo, u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain);
       if (_hpOn)
-        nextVal = _hpFilter.Next(u, nextVal);
+        nextVal = static_cast<float>(_hpFilter.Next(u, nextVal));
       if (_lpOn)
-        nextVal = _lpFilter.Next(u, nextVal);
+        nextVal = static_cast<float>(_lpFilter.Next(u, nextVal));
       _uniState[u].delayLine.Push(nextVal);
     }
   }

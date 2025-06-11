@@ -207,7 +207,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   else
   {
     guiSampleRate = plotParams.sampleRate;
-    guiSampleCount = plotParams.sampleCount;
+    guiSampleCount = static_cast<float>(plotParams.sampleCount);
   }
   renderState->PrepareForRenderPrimary(guiSampleRate, hostExchange->bpm);
   if constexpr(!Global)

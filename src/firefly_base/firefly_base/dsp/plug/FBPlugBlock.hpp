@@ -11,6 +11,7 @@ class FBProcStateContainer;
 struct FBPlugInputBlock final
 {
   float bpm = {};
+  float lastNote = {};
   float sampleRate = {};
   FBVoiceManager* voiceManager = {};
   std::vector<FBNoteEvent>* note = {};

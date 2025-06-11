@@ -33,6 +33,8 @@ _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
   _plugOut.procState = _procState;
+  _lastNotePrevBlock = 60.0f;
+  _plugIn.lastNote = 60.0f;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
 }
@@ -84,6 +86,15 @@ FBHostProcessor::ProcessHost(
   {
     _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
+    _plugIn.lastNote = _lastNotePrevBlock;
+    for (int n = 0; n < _plugIn.note->size(); n++)
+    {
+      auto const& noteEvent = (*_plugIn.note)[n];
+      float noteKey = static_cast<float>(noteEvent.note.key);
+      if (noteEvent.pos == 0)
+        _plugIn.lastNote = noteKey;
+      _lastNotePrevBlock = noteKey;
+    }
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);

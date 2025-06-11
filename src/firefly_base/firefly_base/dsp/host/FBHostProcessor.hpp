@@ -25,6 +25,7 @@ class FBHostProcessor final
   FBPlugOutputBlock _plugOut = {};
 
   float const _sampleRate;
+  float _lastNotePrevBlock;
   FBRuntimeTopo const* const _topo;
   FBProcStateContainer* const _procState;
   FBExchangeStateContainer* const _exchangeState;
