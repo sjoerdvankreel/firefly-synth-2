@@ -1,7 +1,7 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBSArray.hpp>
-#include <firefly_synth/modules/osci_base/FFOsciTopoBase.hpp>
+#include <firefly_synth/modules/shared/FFOsciTopoBase.hpp>
 
 #include <memory>
 

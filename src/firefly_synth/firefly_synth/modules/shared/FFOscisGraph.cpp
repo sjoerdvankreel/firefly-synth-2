@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
+#include <firefly_synth/modules/shared/FFOscisGraph.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
-#include <firefly_synth/modules/oscis_graph/FFOscisGraph.hpp>
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBGraphing.hpp>

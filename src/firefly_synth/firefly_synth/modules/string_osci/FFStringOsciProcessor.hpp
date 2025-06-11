@@ -5,7 +5,7 @@
 #include <firefly_synth/dsp/shared/FFMarsagliaPRNG.hpp>
 #include <firefly_synth/dsp/shared/FFParkMillerPRNG.hpp>
 #include <firefly_synth/dsp/shared/FFStateVariableFilter.hpp>
-#include <firefly_synth/modules/osci_base/FFOsciProcessorBase.hpp>
+#include <firefly_synth/modules/shared/FFOsciProcessorBase.hpp>
 #include <firefly_synth/modules/string_osci/FFStringOsciTopo.hpp>
 #include <firefly_synth/modules/string_osci/FFStringOsciPhaseGenerator.hpp>
 
