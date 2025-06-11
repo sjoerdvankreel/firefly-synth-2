@@ -82,11 +82,11 @@ FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
 }
 
 void
-FBGraphRenderState::PrepareForRenderExchange(float lastNote)
+FBGraphRenderState::PrepareForRenderExchange(float lastMIDINoteKey)
 {
-  _input->lastNote = lastNote;
-  _input->voiceManager = nullptr;
   _moduleState->voice = nullptr;
+  _input->voiceManager = nullptr;
+  _input->lastMIDINoteKey = lastMIDINoteKey;
   _procState->InitProcessing(*ExchangeContainer());
   _moduleState->exchangeFromGUIRaw = ExchangeContainer()->Raw();
   _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->Voices());
@@ -96,9 +96,9 @@ void
 FBGraphRenderState::PrepareForRenderPrimary(float sampleRate, float bpm)
 {
   _input->bpm = bpm;
-  _input->lastNote = 60.0f;
-  _input->sampleRate = sampleRate;
   _input->voiceManager = nullptr;
+  _input->sampleRate = sampleRate;
+  _input->lastMIDINoteKey = 60.0f;
   _moduleState->voice = nullptr;
   _procState->InitProcessing(_plugGUI->HostContext());
 }

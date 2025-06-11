@@ -40,7 +40,7 @@ public:
 
   void PrepareForRenderPrimaryVoice();
   void PrepareForRenderExchangeVoice(int voice);
-  void PrepareForRenderExchange(float lastNote);
+  void PrepareForRenderExchange(float lastMIDINoteKey);
   void PrepareForRenderPrimary(float sampleRate, float bpm);
 
   FBPlugGUI const* PlugGUI() const;

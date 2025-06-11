@@ -174,7 +174,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
   _graphCombFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxCombFilterFreq);
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
-  _key = state.input->lastNote;
+  _key = state.input->lastMIDINoteKey;
   if(!Global)
     _key = static_cast<float>(state.voice->event.note.key);
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
