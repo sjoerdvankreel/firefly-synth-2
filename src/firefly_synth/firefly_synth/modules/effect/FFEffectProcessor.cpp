@@ -271,24 +271,18 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak, 
           FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice), s));
       }
-      else if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombPlus || _kind[i] == FFEffectKind::CombMin)
+      else if (_kind[i] == FFEffectKind::Comb)
       {
         combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk, 
           FFSelectDualProcAccParamNormalized<Global>(combKeyTrkNorm[i], voice), s));
-        if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombMin)
-        {
-          combResMinPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResMin,
-            FFSelectDualProcAccParamNormalized<Global>(combResMinNorm[i], voice), s));
-          combFreqMinPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqMin,
-            FFSelectDualProcAccParamNormalized<Global>(combFreqMinNorm[i], voice), s));
-        }
-        if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombPlus)
-        {
-          combResPlusPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResPlus,
-            FFSelectDualProcAccParamNormalized<Global>(combResPlusNorm[i], voice), s));
-          combFreqPlusPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqPlus,
-            FFSelectDualProcAccParamNormalized<Global>(combFreqPlusNorm[i], voice), s));
-        }
+        combFreqMinPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqMin, 
+          FFSelectDualProcAccParamNormalized<Global>(combFreqMinNorm[i], voice), s));
+        combFreqPlusPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqPlus, 
+          FFSelectDualProcAccParamNormalized<Global>(combFreqPlusNorm[i], voice), s));
+        combResMinPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResMin, 
+          FFSelectDualProcAccParamNormalized<Global>(combResMinNorm[i], voice), s));
+        combResPlusPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResPlus, 
+          FFSelectDualProcAccParamNormalized<Global>(combResPlusNorm[i], voice), s));
       }
       else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
       {
@@ -317,19 +311,13 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         stVarGainPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
         stVarKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
-      else if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombPlus || _kind[i] == FFEffectKind::CombMin)
+      else if (_kind[i] == FFEffectKind::Comb)
       {
         combKeyTrkPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
-        if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombMin)
-        {
-          combResMinPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
-          combFreqMinPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
-        }
-        if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombPlus)
-        {
-          combResPlusPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
-          combFreqPlusPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
-        }
+        combFreqMinPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        combFreqPlusPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        combResMinPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
+        combResPlusPlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
       else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
       {
@@ -378,13 +366,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       ProcessStVar(i, oversampledRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
       break;
     case FFEffectKind::Comb:
-      ProcessComb<true, true>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
-      break;
-    case FFEffectKind::CombPlus:
-      ProcessComb<true, false>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
-      break;
-    case FFEffectKind::CombMin:
-      ProcessComb<false, true>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
+      ProcessComb(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
       break;
     default:
       break;
@@ -442,7 +424,6 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   return FBFixedBlockSamples;
 }
 
-template <bool PlusOn, bool MinOn>
 void
 FFEffectProcessor::ProcessComb(
   int block, float oversampledRate,
@@ -464,26 +445,20 @@ FFEffectProcessor::ProcessComb(
     auto freqMin = combFreqMinPlain[block].Get(s);
     auto freqPlus = combFreqPlusPlain[block].Get(s);
     float freqMul = KeyboardTrackingMultiplier(_key, trkk, ktrk);
-
-    if constexpr(MinOn)
-      freqMin = MultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
-    if constexpr(PlusOn)
-      freqPlus = MultiplyClamp(freqPlus, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+    freqMin = MultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+    freqPlus = MultiplyClamp(freqPlus, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
 
     if (_graph)
     {
       float clampMin = 1.01f * _graphCombFilterFreqMultiplier * FFMinCombFilterFreq;
       float clampMax = 0.99f * _graphCombFilterFreqMultiplier * FFMaxCombFilterFreq;
-      if constexpr (MinOn)
-        freqMin = MultiplyClamp(freqMin, _graphCombFilterFreqMultiplier, clampMin, clampMax);
-      if constexpr (PlusOn)
-        freqPlus = MultiplyClamp(freqPlus, _graphCombFilterFreqMultiplier, clampMin, clampMax);
-    }
+      freqMin = MultiplyClamp(freqMin, _graphCombFilterFreqMultiplier, clampMin, clampMax);
+      freqPlus = MultiplyClamp(freqPlus, _graphCombFilterFreqMultiplier, clampMin, clampMax);
 
-    _combFilters[block].SetMin<MinOn>(oversampledRate, freqMin, resMin);
-    _combFilters[block].SetPlus<PlusOn>(oversampledRate, freqPlus, resPlus);
+    }
+    _combFilters[block].Set(oversampledRate, freqPlus, resPlus, freqMin, resMin);
     for (int c = 0; c < 2; c++)
-      oversampled[c].Set(s, _combFilters[block].Next<PlusOn, MinOn>(c, oversampled[c].Get(s)));
+      oversampled[c].Set(s, _combFilters[block].Next(c, oversampled[c].Get(s)));
   }
 }
 
