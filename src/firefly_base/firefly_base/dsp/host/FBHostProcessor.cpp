@@ -82,12 +82,12 @@ FBHostProcessor::ProcessHost(
   _hostToPlug->BufferFromHost(input);
   while ((fixedIn = _hostToPlug->ProcessToPlug()) != nullptr)
   {
-    _plugIn.note = &fixedIn->note;
     _plugIn.audio = &fixedIn->audio;
     _plugIn.lastNote = _lastNotePrevBlock;
-    for (int n = 0; n < _plugIn.note->size(); n++)
+    _plugIn.noteEvents = &fixedIn->noteEvents;
+    for (int n = 0; n < _plugIn.noteEvents->size(); n++)
     {
-      auto const& noteEvent = (*_plugIn.note)[n];
+      auto const& noteEvent = (*_plugIn.noteEvents)[n];
       float noteKey = static_cast<float>(noteEvent.note.key);
       if (noteEvent.pos == 0)
         _plugIn.lastNote = noteKey;

@@ -35,8 +35,8 @@ _procState(std::make_unique<FBProcStateContainer>(*plugGUI->HostContext()->Topo(
 _primaryVoiceManager(std::make_unique<FBVoiceManager>(_procState.get())),
 _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
-  _input->note = &_notes;
   _input->audio = &_audio;
+  _input->noteEvents = &_noteEvents;
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)

@@ -14,7 +14,7 @@ struct FBPlugInputBlock final
   float lastNote = {};
   float sampleRate = {};
   FBVoiceManager* voiceManager = {};
-  std::vector<FBNoteEvent>* note = {};
+  std::vector<FBNoteEvent>* noteEvents = {};
   FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};
 
   FB_NOCOPY_MOVE_DEFCTOR(FBPlugInputBlock);

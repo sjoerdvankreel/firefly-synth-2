@@ -89,7 +89,7 @@ FBRenderModuleGraphSeries(
   auto renderState = renderData.graphData->renderState;
   auto moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
-  moduleProcState->input->note->clear();
+  moduleProcState->input->noteEvents->clear();
 
   renderData.BeginVoiceOrBlock(renderState, graphIndex, exchange, exchangeVoice);
   while (processed == FBFixedBlockSamples)

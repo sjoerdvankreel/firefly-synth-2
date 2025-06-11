@@ -72,10 +72,10 @@ void
 FFPlugProcessor::LeaseVoices(
   FBPlugInputBlock const& input)
 {
-  for (int n = 0; n < input.note->size(); n++)
-    if ((*input.note)[n].on)
+  for (int n = 0; n < input.noteEvents->size(); n++)
+    if ((*input.noteEvents)[n].on)
     {
-      int voice = input.voiceManager->Lease((*input.note)[n]);
+      int voice = input.voiceManager->Lease((*input.noteEvents)[n]);
       auto state = MakeModuleVoiceState(input, voice);
       _procState->dsp.voice[voice].processor.BeginVoice(state);
     }
