@@ -199,7 +199,8 @@ FFEffectProcessor::BeginVoiceOrBlock(
   int smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
     FFEffectParam::LastKeySmoothTime, lastKeySmoothTimeNorm, state.input->sampleRate);
   _MIDINoteKeySmoother.SetCoeffs(smoothSamples);
-  _MIDINoteKeySmoother.State(_MIDINoteKey.Get(0));
+  if(graph)
+    _MIDINoteKeySmoother.State(_MIDINoteKey.Get(0));
 
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
