@@ -21,12 +21,19 @@ class alignas(FBSIMDAlign) FFCombFilter final
   std::array<FFDelayLine, Channels> _delayLinesMin = {};
   std::array<FFDelayLine, Channels> _delayLinesPlus = {};
 
+  void DebugCheck(float sampleRate, float freq);
+
 public:
   FB_NOCOPY_MOVE_DEFCTOR(FFCombFilter);
   void Reset();
-  float Next(int channel, float in);
   void Resize(float sampleRate, float minFreq);
-  void Set(float sampleRate, float freqPlus, float resPlus, float freqMin, float resMin);
+
+  template <bool PlusOn, bool MinOn>
+  float Next(int channel, float in);
+  template <bool MinOn>
+  void SetMin(float sampleRate, float freq, float res);
+  template <bool PlusOn>
+  void SetPlus(float sampleRate, float freq, float res);
 };
 
 template <int Channels>
@@ -58,26 +65,35 @@ FFCombFilter<Channels>::Resize(
 }
 
 template <int Channels>
+template <bool PlusOn, bool MinOn>
 inline float
 FFCombFilter<Channels>::Next(
   int channel, float in)
 {
   assert(!std::isnan(in));
   assert(!std::isinf(in));
-  float minOld = _delayLinesMin[channel].Pop();
-  float plusOld = _delayLinesPlus[channel].Pop();
-  float out = in + _resPlus * plusOld + _resMin * minOld;
-  _delayLinesMin[channel].Push(out);
-  _delayLinesPlus[channel].Push(in);
+  
+  float minOld = 0.0f;
+  if constexpr (MinOn)
+    minOld = _delayLinesMin[channel].Pop();
+
+  float plusOld = 0.0f;
+  if constexpr (PlusOn)
+    plusOld = _delayLinesPlus[channel].Pop();
+  
+  float out = in + _resPlus * plusOld + _resMin * minOld;  
+  if constexpr (MinOn)
+    _delayLinesMin[channel].Push(out);
+  if constexpr (PlusOn)
+    _delayLinesPlus[channel].Push(in);
+
   return out;
 }
 
 template <int Channels>
 inline void
-FFCombFilter<Channels>::Set(
-  float sampleRate,
-  float freqPlus, float resPlus,
-  float freqMin, float resMin)
+FFCombFilter<Channels>::DebugCheck(
+  float sampleRate, float freq)
 {
   // check for graphs
 #ifndef NDEBUG
@@ -89,15 +105,36 @@ FFCombFilter<Channels>::Set(
     minFilterFreq *= nyquist / FFMaxCombFilterFreq;
     maxFilterFreq *= nyquist / FFMaxCombFilterFreq;
   }
-  assert(minFilterFreq - 0.1f <= freqMin && freqMin <= maxFilterFreq + 0.1f);
-  assert(minFilterFreq - 0.1f <= freqPlus && freqPlus <= maxFilterFreq + 0.1f);
+  assert(minFilterFreq - 0.1f <= freq && freq <= maxFilterFreq + 0.1f);
 #endif
+}
 
-  _resMin = resMin * FFMaxCombFilterRes;
-  _resPlus = resPlus * FFMaxCombFilterRes;
-  for (int c = 0; c < Channels; c++)
+template <int Channels>
+template <bool MinOn>
+inline void
+FFCombFilter<Channels>::SetMin(
+  float sampleRate, float freq, float res)
+{
+  if constexpr (MinOn)
   {
-    _delayLinesMin[c].Delay(sampleRate / freqMin);
-    _delayLinesPlus[c].Delay(sampleRate / freqPlus);
+    DebugCheck(sampleRate, freq);
+    _resMin = res * FFMaxCombFilterRes;
+    for (int c = 0; c < Channels; c++)
+      _delayLinesMin[c].Delay(sampleRate / freq);
+  }
+}
+
+template <int Channels>
+template <bool PlusOn>
+inline void
+FFCombFilter<Channels>::SetPlus(
+  float sampleRate, float freq, float res)
+{
+  if constexpr (PlusOn)
+  {
+    DebugCheck(sampleRate, freq);
+    _resPlus = res * FFMaxCombFilterRes;
+    for (int c = 0; c < Channels; c++)
+      _delayLinesPlus[c].Delay(sampleRate / freq);
   }
 }

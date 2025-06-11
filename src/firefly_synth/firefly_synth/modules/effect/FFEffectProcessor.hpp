@@ -37,6 +37,7 @@ class FFEffectProcessor final
   std::array<FFCombFilter<2>, FFEffectBlockCount> _combFilters = {};
   std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
+  template <bool PlusOn, bool MinOn>
   void ProcessComb(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
