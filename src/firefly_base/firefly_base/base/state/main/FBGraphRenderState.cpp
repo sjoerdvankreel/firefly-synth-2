@@ -8,6 +8,7 @@
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
+#include <bit>
 #include <cassert>
 
 static FBNoteEvent
@@ -73,6 +74,26 @@ FBExchangeStateContainer const*
 FBGraphRenderState::ExchangeContainer() const
 {
   return _plugGUI->HostContext()->ExchangeState();
+}
+
+void 
+FBGraphRenderState::FFT(std::vector<float>& data)
+{
+  auto nextPow2 = std::bit_ceil(data.size());
+  int order = std::bit_width(nextPow2) - 1;
+  if (!_fft || _fft->getSize() != (1 << order))
+    _fft = std::make_unique<juce::dsp::FFT>(order);
+  data.resize(nextPow2 * 2);
+  _fft->performFrequencyOnlyForwardTransform(data.data(), true);
+  data.resize(data.size() / 4);
+
+  float min = 0.0f;
+  float max = 1.0f;
+  for (int i = 0; i < data.size(); i++)
+  {
+    min = std::min(min, data[i]);
+    max = std::max(max, data[i]);
+  }
 }
 
 void

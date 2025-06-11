@@ -75,22 +75,7 @@ EffectGraphRenderData<Global>::DoPostProcess(
   if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb && kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
     return;
 
-  auto nextPow2 = std::bit_ceil(points.l.size());
-  int order = std::bit_width(nextPow2) - 1;
-  // todo reuse?
-  juce::dsp::FFT fft(order);
-  points.l.resize(nextPow2 * 2);
-  fft.performFrequencyOnlyForwardTransform(points.l.data(), true);
-  points.l.resize(points.l.size() / 4);
-
-  float min = 0.0f;
-  float max = 1.0f;
-  for (int i = 0; i < points.l.size(); i++)
-  {
-    min = std::min(min, points.l[i]);
-    max = std::max(max, points.l[i]);
-  }
-
+  state->FFT(points.l);
   for (int i = 0; i < points.l.size(); i++)
   {
     points.l[i] = FBToBipolar(points.l[i] / (max - min) - min);

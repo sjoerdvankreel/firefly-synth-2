@@ -1,7 +1,6 @@
 check all the todos before out of alpha
 get rid of the lpf that is implied by the fractional delay line
 demo_pluckstring clicks
-store the graph fft somewhere
 should a voice receive events after its released (but still playing)?
 test clap, more hosts, winlinmac
 panning
