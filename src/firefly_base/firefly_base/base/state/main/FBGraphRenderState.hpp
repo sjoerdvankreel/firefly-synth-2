@@ -38,9 +38,9 @@ public:
   FBGraphRenderState(FBPlugGUI const* plugGUI);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBGraphRenderState);
 
-  void PrepareForRenderExchange();
   void PrepareForRenderPrimaryVoice();
   void PrepareForRenderExchangeVoice(int voice);
+  void PrepareForRenderExchange(float lastNote);
   void PrepareForRenderPrimary(float sampleRate, float bpm);
 
   FBPlugGUI const* PlugGUI() const;

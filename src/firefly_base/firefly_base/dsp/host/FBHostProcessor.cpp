@@ -61,8 +61,6 @@ FBHostProcessor::ProcessHost(
   int hostSmoothSamples = hostSmoothTimeTopo.Linear().NormalizedTimeToSamplesFast(hostSmoothTimeSpecial.state->Value(), _sampleRate);
   _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
-  _exchangeState->Host()->bpm = input.bpm;
-  _exchangeState->Host()->sampleRate = _sampleRate;
   for (int m = 0; m < _topo->modules.size(); m++)
   {
     auto const& indices = _topo->modules[m].topoIndices;
@@ -107,6 +105,9 @@ FBHostProcessor::ProcessHost(
   for (auto const& entry : _plugOut.outputParamsNormalized)
     output.outputParams.push_back({ entry.first, entry.second });
 
+  _exchangeState->Host()->bpm = input.bpm;
+  _exchangeState->Host()->sampleRate = _sampleRate;
+  _exchangeState->Host()->lastNote = _plugIn.lastNote;
   for (int v = 0; v < FBMaxVoices; v++)
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];
 
