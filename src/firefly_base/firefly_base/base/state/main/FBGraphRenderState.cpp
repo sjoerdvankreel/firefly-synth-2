@@ -10,6 +10,7 @@
 
 #include <bit>
 #include <cassert>
+#include <algorithm>
 
 static FBNoteEvent
 MakeNoteC4On()
@@ -93,6 +94,11 @@ FBGraphRenderState::FFT(std::vector<float>& data)
   {
     min = std::min(min, data[i]);
     max = std::max(max, data[i]);
+  }
+  for (int i = 0; i < data.size(); i++)
+  {
+    data[i] = (data[i] - min) / (max - min);
+    assert(-0.01f <= data[i] && data[i] <= 1.01f);
   }
 }
 
