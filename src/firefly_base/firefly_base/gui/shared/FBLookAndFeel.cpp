@@ -85,7 +85,7 @@ FBLookAndFeel::getTabButtonBestWidth(
 {
   auto text = button.getButtonText().toStdString();
   auto tw = FBGUIGetStringWidthCached(text);
-  return std::max(40, tw + 8);
+  return std::max(50, tw + 8);
 }
 
 void 

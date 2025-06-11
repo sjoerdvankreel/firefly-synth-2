@@ -74,7 +74,8 @@ EffectGraphRenderData<Global>::DoPostProcess(
   auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
   if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb && kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
     return;
-
+  if (points.l.size() == 0)
+    return;
   state->FFT(points.l);
   for (int i = 0; i < points.l.size(); i++)
     points.l[i] = FBToBipolar(points.l[i]);

@@ -1,7 +1,11 @@
 #pragma once
 
+#include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 #include <firefly_base/gui/shared/FBAutoSize.hpp>
+
 #include <juce_gui_basics/juce_gui_basics.h>
+
+#include <vector>
 #include <functional>
 
 class FBPlugGUI;
@@ -30,6 +34,28 @@ public:
     FBModuleTabFactory const& tabFactory);
   
   int FixedWidth(int height) const override;
+
+  void currentTabChanged(
+    int newCurrentTabIndex, 
+    juce::String const& newCurrentTabName) override;
+};
+
+class FBModuleTabComponent2:
+public FBTabComponent,
+public IFBHorizontalAutoSize
+{
+  FBPlugGUI* const _plugGUI;
+  std::vector<FBTopoIndices> _moduleIndices = {};
+
+public:
+  FBModuleTabComponent2(FBPlugGUI* plugGUI);
+  
+  int FixedWidth(
+    int height) const override;
+
+  void AddModuleTab(
+    FBTopoIndices const& moduleIndices,
+    juce::Component* component);
 
   void currentTabChanged(
     int newCurrentTabIndex, 
