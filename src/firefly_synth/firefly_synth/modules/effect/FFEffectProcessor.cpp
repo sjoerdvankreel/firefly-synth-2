@@ -136,6 +136,16 @@ _oversampler(
   _oversampler.initProcessing(FBFixedBlockSamples);
 }
 
+template <bool Global>
+float 
+FFEffectProcessor::NextMIDINoteKey(int sample)
+{
+  if constexpr (Global)
+    return _MIDINoteKeySmoother.Next(_MIDINoteKey.Get(sample));
+  else
+    return _MIDINoteKey.Get(sample);
+}
+
 void 
 FFEffectProcessor::InitializeBuffers(
   bool graph, float sampleRate)
@@ -167,6 +177,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
   auto const& stVarModeNorm = params.block.stVarMode;
   float onNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.on[0], voice);
   float oversampleNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.oversample[0], voice);
+  float lastKeySmoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.lastKeySmoothTime[0], voice);
 
   _graph = graph;
   _graphSamplesProcessed = 0;
@@ -185,6 +196,10 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _MIDINoteKey.Fill(static_cast<float>(state.voice->event.note.key));
   if (_oversampleTimes != 1)
     _MIDINoteKey.UpsampleStretch<FFEffectOversampleTimes>();
+  int smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
+    FFEffectParam::LastKeySmoothTime, lastKeySmoothTimeNorm, state.input->sampleRate);
+  _MIDINoteKeySmoother.SetCoeffs(smoothSamples);
+  _MIDINoteKeySmoother.State(_MIDINoteKey.Get(0));
 
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
@@ -384,16 +399,16 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       ProcessSkew(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
       break;
     case FFEffectKind::StVar:
-      ProcessStVar(i, oversampledRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
+      ProcessStVar<Global>(i, oversampledRate, oversampled, trackingKeyPlain, stVarResPlain, stVarFreqPlain, stVarGainPlain, stVarKeyTrkPlain);
       break;
     case FFEffectKind::Comb:
-      ProcessComb<true, true>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
+      ProcessComb<Global, true, true>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
       break;
     case FFEffectKind::CombPlus:
-      ProcessComb<true, false>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
+      ProcessComb<Global, true, false>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
       break;
     case FFEffectKind::CombMin:
-      ProcessComb<false, true>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
+      ProcessComb<Global, false, true>(i, oversampledRate, oversampled, trackingKeyPlain, combKeyTrkPlain, combResMinPlain, combResPlusPlain, combFreqMinPlain, combFreqPlusPlain);
       break;
     default:
       break;
@@ -451,7 +466,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   return FBFixedBlockSamples;
 }
 
-template <bool PlusOn, bool MinOn>
+template <bool Global, bool PlusOn, bool MinOn>
 void
 FFEffectProcessor::ProcessComb(
   int block, float oversampledRate,
@@ -472,7 +487,7 @@ FFEffectProcessor::ProcessComb(
     auto resPlus = combResPlusPlain[block].Get(s);
     auto freqMin = combFreqMinPlain[block].Get(s);
     auto freqPlus = combFreqPlusPlain[block].Get(s);
-    float freqMul = KeyboardTrackingMultiplier(_MIDINoteKey.Get(s), trkk, ktrk);
+    float freqMul = KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk);
 
     if constexpr(MinOn)
       freqMin = MultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
@@ -496,6 +511,7 @@ FFEffectProcessor::ProcessComb(
   }
 }
 
+template <bool Global>
 void
 FFEffectProcessor::ProcessStVar(
   int block, float oversampledRate,
@@ -514,7 +530,7 @@ FFEffectProcessor::ProcessStVar(
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq = MultiplyClamp(freq, KeyboardTrackingMultiplier(_MIDINoteKey.Get(s), trkk, ktrk),
+    freq = MultiplyClamp(freq, KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
 
     if (_graph)

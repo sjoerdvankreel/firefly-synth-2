@@ -5,6 +5,8 @@
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
+
 #include <juce_dsp/juce_dsp.h>
 #include <array>
 
@@ -21,7 +23,6 @@ class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
-  FBSArray<float, FFEffectFixedBlockOversamples> _MIDINoteKey = {};
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};
@@ -33,11 +34,16 @@ class FFEffectProcessor final
   int _graphSamplesProcessed = {};
   float _graphCombFilterFreqMultiplier = {};
   float _graphStVarFilterFreqMultiplier = {};
+  FBBasicLPFilter _MIDINoteKeySmoother = {};
   juce::dsp::Oversampling<float> _oversampler;
+  FBSArray<float, FFEffectFixedBlockOversamples> _MIDINoteKey = {};
   std::array<FFCombFilter<2>, FFEffectBlockCount> _combFilters = {};
   std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
-  template <bool PlusOn, bool MinOn>
+  template <bool Global>
+  float NextMIDINoteKey(int sample);
+
+  template <bool Global, bool PlusOn, bool MinOn>
   void ProcessComb(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
@@ -48,6 +54,7 @@ class FFEffectProcessor final
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqMinPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& combFreqPlusPlain);
 
+  template <bool Global>
   void ProcessStVar(
     int block, float oversampledRate,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
