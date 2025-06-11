@@ -11,9 +11,14 @@
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 void 
-FFGLFOProcessor::Reset(FBModuleProcState& state)
+FFGLFOProcessor::BeginBlock(bool graph, FBModuleProcState& state)
 {
-  _phase = {};
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
+  auto const& procParams = procState->param.global.gLFO[state.moduleSlot];  
+  _on = topo.NormalizedToBoolFast(FFGLFOParam::On, procParams.block.on[0].Value());
+  if(graph)
+    _phase = {};
 }
 
 int
@@ -23,11 +28,9 @@ FFGLFOProcessor::Process(FBModuleProcState& state)
   auto& output = procState->dsp.global.gLFO[state.moduleSlot].output;
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::GLFO];
   auto const& procParams = procState->param.global.gLFO[state.moduleSlot];
-  auto const& onNorm = procParams.block.on[0].Value();
   auto const& rateNorm = procParams.acc.rate[0].Global();
 
-  bool on = topo.NormalizedToBoolFast(FFGLFOParam::On, procParams.block.on[0].Value());  
-  if (!on)
+  if (!_on)
   {
     output.Fill(0.0f);
     return 0;

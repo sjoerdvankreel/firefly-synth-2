@@ -89,6 +89,7 @@ FFPlugProcessor::ProcessPreVoice(
   for (int s = 0; s < FFGLFOCount; s++)
   {
     state.moduleSlot = s;
+    _procState->dsp.global.gLFO[s].processor->BeginBlock(false, state);
     _procState->dsp.global.gLFO[s].processor->Process(state);
   }
 }

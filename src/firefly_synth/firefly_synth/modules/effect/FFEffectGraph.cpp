@@ -20,7 +20,7 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
 
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrReset(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
 };
@@ -39,12 +39,12 @@ PlotParams(FBModuleGraphComponentData const* data)
 
 template <bool Global>
 void 
-EffectGraphRenderData<Global>::DoBeginVoiceOrReset(
+EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).BeginVoiceOrReset<Global>(true, graphIndex, totalSamples, *moduleProcState);
+  GetProcessor(*moduleProcState).BeginVoiceOrBlock<Global>(true, graphIndex, totalSamples, *moduleProcState);
 }
 
 template <bool Global>

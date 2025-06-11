@@ -10,9 +10,10 @@ class FBGraphRenderState;
 
 class FFGLFOProcessor final
 {
+  bool _on = {};
   FFTrackingPhaseGenerator _phase = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGLFOProcessor);
-  void Reset(FBModuleProcState& state);
   int Process(FBModuleProcState& state);
+  void BeginBlock(bool graph, FBModuleProcState& state);
 };

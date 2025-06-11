@@ -63,8 +63,8 @@ struct FBModuleGraphRenderData
 
   int Process(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
   { return static_cast<Derived*>(this)->DoProcess(state, graphIndex, exchange, exchangeVoice); }
-  void BeginVoiceOrReset(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
-  { static_cast<Derived*>(this)->DoBeginVoiceOrReset(state, graphIndex, exchange, exchangeVoice); }
+  void BeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
+  { static_cast<Derived*>(this)->DoBeginVoiceOrBlock(state, graphIndex, exchange, exchangeVoice); }
   void ProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
   { return static_cast<Derived*>(this)->DoProcessIndicators(graphIndex, exchange, exchangeVoice, points); }
   void PostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
@@ -91,7 +91,7 @@ FBRenderModuleGraphSeries(
   int moduleSlot = moduleProcState->moduleSlot;
   moduleProcState->input->note->clear();
 
-  renderData.BeginVoiceOrReset(renderState, graphIndex, exchange, exchangeVoice);
+  renderData.BeginVoiceOrBlock(renderState, graphIndex, exchange, exchangeVoice);
   while (processed == FBFixedBlockSamples)
   {
     processed = renderData.Process(renderState, graphIndex, exchange, exchangeVoice);

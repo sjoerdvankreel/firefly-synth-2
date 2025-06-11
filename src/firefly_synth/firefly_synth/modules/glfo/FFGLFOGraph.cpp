@@ -15,7 +15,7 @@ public FBModuleGraphRenderData<GLFOGraphRenderData>
 {
   FFGLFOProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrReset(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(bool exchange, int exchangeVoice, int graphIndex, FBModuleGraphPoints& points) {}
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
@@ -28,11 +28,11 @@ GLFOGraphRenderData::GetProcessor(FBModuleProcState& state)
 }
 
 void 
-GLFOGraphRenderData::DoBeginVoiceOrReset(
+GLFOGraphRenderData::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).Reset(*moduleProcState);
+  GetProcessor(*moduleProcState).BeginBlock(true, *moduleProcState);
 }
 
 int 
@@ -53,7 +53,8 @@ PlotParams(FBModuleGraphComponentData const* data)
   auto const* state = data->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  result.sampleCount = state->AudioParamLinearFreqSamples({ (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 }, false, -1, sampleRate);
+  FBParamTopoIndices indices = { (int)FFModuleType::GLFO, moduleSlot, (int)FFGLFOParam::Rate, 0 };
+  result.sampleCount = state->AudioParamLinearFreqSamples(indices, false, -1, sampleRate);
   return result;
 }
 

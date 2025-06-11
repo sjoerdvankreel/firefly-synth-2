@@ -14,7 +14,7 @@ public FBModuleGraphRenderData<StringOsciGraphRenderData>
 {
   FFStringOsciProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoBeginVoiceOrReset(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
 };
@@ -28,7 +28,7 @@ StringOsciGraphRenderData::DoProcess(
 }
 
 void 
-StringOsciGraphRenderData::DoBeginVoiceOrReset(
+StringOsciGraphRenderData::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
@@ -54,7 +54,8 @@ PlotParams(FBModuleGraphComponentData const* data)
   auto const* state = data->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::Coarse, 0 }, false, -1));
+  FBParamTopoIndices indices = { (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::Coarse, 0 };
+  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear(indices, false, -1));
   pitch += state->AudioParamLinear({ (int)FFModuleType::StringOsci, moduleSlot, (int)FFStringOsciParam::Fine, 0 }, false, -1);
   result.sampleCount = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * FFStringOsciGraphRounds;
   return result;

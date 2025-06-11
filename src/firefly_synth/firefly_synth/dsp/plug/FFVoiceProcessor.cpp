@@ -36,7 +36,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;
-    procState->dsp.voice[voice].vEffect[i].processor->BeginVoiceOrReset<false>(false, -1, -1, state);
+    procState->dsp.voice[voice].vEffect[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, state);
   }
 }
 

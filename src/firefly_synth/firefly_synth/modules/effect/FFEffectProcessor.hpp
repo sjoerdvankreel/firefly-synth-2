@@ -88,5 +88,5 @@ public:
   template <bool Global>
   int Process(FBModuleProcState& state);
   template <bool Global>
-  void BeginVoiceOrReset(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+  void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 };
