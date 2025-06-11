@@ -15,7 +15,7 @@ enum class FFModuleType { GLFO, StringOsci, Osci, OsciMod, VEffect, GEffect, Env
 
 inline int constexpr FFEnvCount = 8;
 inline int constexpr FFOsciCount = 4;
-inline int constexpr FFGLFOCount = 1;
+inline int constexpr FFGLFOCount = 2;
 inline int constexpr FFEffectCount = 4;
 inline int constexpr FFStringOsciCount = 2;
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";

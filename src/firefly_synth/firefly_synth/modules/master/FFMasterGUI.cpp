@@ -17,15 +17,15 @@
 using namespace juce;
 
 static Component*
-MakeMasterSectionAll(FBPlugGUI* plugGUI, int moduleSlot)
+MakeMasterSectionAll(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0 } );
-  auto gain = topo->audio.ParamAtTopo({(int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::Gain, 0});
+  auto gain = topo->audio.ParamAtTopo({(int)FFModuleType::Master, 0, (int)FFMasterParam::Gain, 0});
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
-  auto hostSmoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Master, moduleSlot, (int)FFMasterParam::HostSmoothTime, 0 });
+  auto hostSmoothTime = topo->audio.ParamAtTopo({ (int)FFModuleType::Master, 0, (int)FFMasterParam::HostSmoothTime, 0 });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hostSmoothTime));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hostSmoothTime, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ 0, 0, 1, 4 });
@@ -36,5 +36,7 @@ Component*
 FFMakeMasterGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)FFModuleType::Master, MakeMasterSectionAll);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent2>(plugGUI);
+  tabs->AddModuleTab({ (int)FFModuleType::Master, 0 }, MakeMasterSectionAll(plugGUI));
+  return tabs;
 }

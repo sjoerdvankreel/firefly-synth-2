@@ -73,7 +73,10 @@ FBModuleTabComponent2::AddModuleTab(
   auto const& module = topo->static_.modules[moduleIndices.index];
   std::string header = std::to_string(moduleIndices.slot + 1);
   if (moduleIndices.slot == 0)
-    header = module.name + " " + header;
+    if (module.slotCount > 1)
+      header = module.name + " " + header;
+    else
+      header = module.name;
   addTab(header, Colours::black, component, false);
 }
 
