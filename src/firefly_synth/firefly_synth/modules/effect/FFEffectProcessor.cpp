@@ -142,10 +142,7 @@ FFEffectProcessor::InitializeBuffers(
 {
   float graphFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, sampleRate, FFMaxCombFilterFreq);
   for (int i = 0; i < FFEffectBlockCount; i++)
-  {
     _combFilters[i].Resize(sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier);
-    _combFilters[i].Reset();
-  }
 }
 
 template <bool Global>
