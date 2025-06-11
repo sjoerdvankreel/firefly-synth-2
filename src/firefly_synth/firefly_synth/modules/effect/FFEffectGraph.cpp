@@ -44,6 +44,7 @@ EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
+  GetProcessor(*moduleProcState).InitializeBuffers(true, moduleProcState->input->sampleRate);
   GetProcessor(*moduleProcState).BeginVoiceOrBlock<Global>(true, graphIndex, totalSamples, *moduleProcState);
 }
 
@@ -52,11 +53,9 @@ FFEffectProcessor&
 EffectGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  auto& processor = *FFSelectDualState<Global>(
+  return *FFSelectDualState<Global>(
     [procState, &state] { return procState->dsp.global.gEffect[state.moduleSlot].processor.get(); },
     [procState, &state] { return procState->dsp.voice[state.voice->slot].vEffect[state.moduleSlot].processor.get(); });
-  processor.InitializeBuffers(true, state.input->sampleRate);
-  return processor;
 }
 
 template <bool Global>
