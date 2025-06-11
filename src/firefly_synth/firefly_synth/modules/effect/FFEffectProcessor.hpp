@@ -21,7 +21,7 @@ class FFEffectProcessor final
 {
   bool _on = {};
   int _oversampleTimes = {};
-  FBSArray<float, FBFixedBlockSamples> _MIDINoteKey = {};
+  FBSArray<float, FFEffectFixedBlockOversamples> _MIDINoteKey = {};
   std::array<FFEffectKind, FFEffectBlockCount> _kind = {};
   std::array<FFEffectClipMode, FFEffectBlockCount> _clipMode = {};
   std::array<FFEffectFoldMode, FFEffectBlockCount> _foldMode = {};

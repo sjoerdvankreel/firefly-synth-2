@@ -174,13 +174,18 @@ FFEffectProcessor::BeginVoiceOrBlock(
   _graphCombFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxCombFilterFreq);
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
-  if constexpr(Global)
-    state.input->lastMIDINoteKey.CopyTo(_MIDINoteKey);
-  else
-    _MIDINoteKey.Fill(static_cast<float>(state.voice->event.note.key));
   _on = topo.NormalizedToBoolFast(FFEffectParam::On, onNorm);
   bool oversample = topo.NormalizedToBoolFast(FFEffectParam::Oversample, oversampleNorm);
   _oversampleTimes = !graph && oversample ? FFEffectOversampleTimes : 1;
+
+  if constexpr (Global)
+    for(int s = 0; s < FBFixedBlockSamples; s++)
+      _MIDINoteKey.Set(s, state.input->lastMIDINoteKey.Get(s));
+  else
+    _MIDINoteKey.Fill(static_cast<float>(state.voice->event.note.key));
+  if (_oversampleTimes != 1)
+    _MIDINoteKey.UpsampleStretch<FFEffectOversampleTimes>();
+
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
     bool blockActive = !graph || graphIndex == i || graphIndex == FFEffectBlockCount;
