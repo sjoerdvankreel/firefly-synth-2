@@ -444,22 +444,18 @@ FFEffectProcessor::ProcessComb(
     auto resPlus = combResPlusPlain[block].Get(s);
     auto freqMin = combFreqMinPlain[block].Get(s);
     auto freqPlus = combFreqPlusPlain[block].Get(s);
-    auto freqMul = std::pow(2.0f, (_key - 60.0f + trkk) / 12.0f * ktrk);
-    freqMin *= freqMul;
-    freqMin = std::clamp(freqMin, FFMinCombFilterFreq, FFMaxCombFilterFreq);
-    freqPlus *= freqMul;
-    freqPlus = std::clamp(freqPlus, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+    float freqMul = KeyboardTrackingMultiplier(_key, trkk, ktrk);
+    freqMin = MultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+    freqPlus = MultiplyClamp(freqPlus, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
 
     if (_graph)
     {
-      freqMin *= _graphCombFilterFreqMultiplier;
-      freqPlus *= _graphCombFilterFreqMultiplier;
       float clampMin = 1.01f * _graphCombFilterFreqMultiplier * FFMinCombFilterFreq;
       float clampMax = 0.99f * _graphCombFilterFreqMultiplier * FFMaxCombFilterFreq;
-      freqMin = std::clamp(freqMin, clampMin, clampMax);
-      freqPlus = std::clamp(freqPlus, clampMin, clampMax);
-    }
+      freqMin = MultiplyClamp(freqMin, _graphCombFilterFreqMultiplier, clampMin, clampMax);
+      freqPlus = MultiplyClamp(freqPlus, _graphCombFilterFreqMultiplier, clampMin, clampMax);
 
+    }
     _combFilters[block].Set(oversampledRate, freqPlus, resPlus, freqMin, resMin);
     for (int c = 0; c < 2; c++)
       oversampled[c].Set(s, _combFilters[block].Next(c, oversampled[c].Get(s)));
@@ -484,7 +480,8 @@ FFEffectProcessor::ProcessStVar(
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq = WithKeyboardTracking(freq, _key, trkk, ktrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+    freq = MultiplyClamp(freq, KeyboardTrackingMultiplier(_key, trkk, ktrk), 
+      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
 
     if (_graph)
     {

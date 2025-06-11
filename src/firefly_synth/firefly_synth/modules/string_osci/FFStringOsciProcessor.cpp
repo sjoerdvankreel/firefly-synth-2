@@ -149,18 +149,25 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _graphPosition = 0;
   _normalPrng = FFMarsagliaPRNG(_seed / (FFStringOsciMaxSeed + 1.0f));
   _uniformPrng = FFParkMillerPRNG(_seed / (FFStringOsciMaxSeed + 1.0f));
-  _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
+  _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
+    graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
   if (_lpOn)
   {
-    lpFreqPlain = WithKeyboardTracking(lpFreqPlain, _key, trackingKeyPlain, lpKTrkPlain, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain * _graphStVarFilterFreqMultiplier, lpResPlain, 0.0f);
+    lpFreqPlain = MultiplyClamp(lpFreqPlain, 
+      KeyboardTrackingMultiplier(_key, trackingKeyPlain, lpKTrkPlain),
+      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+    lpFreqPlain *= _graphStVarFilterFreqMultiplier;
+    _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0f);
   }
 
   if (_hpOn)
   {
-    hpFreqPlain = WithKeyboardTracking(hpFreqPlain, _key, trackingKeyPlain, -hpKTrkPlain, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-    _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain * _graphStVarFilterFreqMultiplier, hpResPlain, 0.0f);
+    hpFreqPlain = MultiplyClamp(hpFreqPlain,
+      KeyboardTrackingMultiplier(_key, trackingKeyPlain, -hpKTrkPlain),
+      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+    hpFreqPlain *= _graphStVarFilterFreqMultiplier;
+    _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0f);
   }
 
   int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringOsciMinFreq));
@@ -181,12 +188,12 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     float uniFreq = FBPitchToFreq(uniPitch);
     for (int i = 0; i < delayLineSize; i++)
     {
-      float nextVal = Next(topo, u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain);
+      double dNextVal = Next(topo, u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain);
       if (_hpOn)
-        nextVal = static_cast<float>(_hpFilter.Next(u, nextVal));
+        dNextVal = _hpFilter.Next(u, dNextVal);
       if (_lpOn)
-        nextVal = static_cast<float>(_lpFilter.Next(u, nextVal));
-      _uniState[u].delayLine.Push(nextVal);
+        dNextVal = _lpFilter.Next(u, dNextVal);
+      _uniState[u].delayLine.Push(static_cast<float>(dNextVal));
     }
   }
 }
@@ -315,8 +322,11 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
       float lpRes = lpResPlain.Get(s);
       float lpFreq = lpFreqPlain.Get(s);
       float lpKTrk = lpKTrkPlain.Get(s);
-      lpFreq = WithKeyboardTracking(lpFreq, _key, trackingKey, lpKTrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-      _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreq * _graphStVarFilterFreqMultiplier, lpRes, 0.0f);
+      lpFreq = MultiplyClamp(lpFreq, 
+        KeyboardTrackingMultiplier(_key, trackingKey, lpKTrk),
+        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+      lpFreq *= _graphStVarFilterFreqMultiplier;
+      _lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreq, lpRes, 0.0f);
     }
 
     if (_hpOn)
@@ -324,8 +334,11 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
       float hpRes = hpResPlain.Get(s);
       float hpFreq = hpFreqPlain.Get(s);
       float hpKTrk = hpKTrkPlain.Get(s);
-      hpFreq = WithKeyboardTracking(hpFreq, _key, trackingKey, -hpKTrk, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-      _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreq * _graphStVarFilterFreqMultiplier, hpRes, 0.0f);
+      hpFreq = MultiplyClamp(hpFreq, 
+        KeyboardTrackingMultiplier(_key, trackingKey, -hpKTrk),
+        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+      hpFreq *= _graphStVarFilterFreqMultiplier;
+      _hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreq, hpRes, 0.0f);
     }
 
     for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
