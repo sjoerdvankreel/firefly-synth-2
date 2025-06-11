@@ -107,11 +107,13 @@ FFPlugProcessor::ProcessPostVoice(
   auto state = MakeModuleState(input);
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;
+  _procState->dsp.global.gEffect[0].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
   _procState->dsp.global.gEffect[0].processor->Process<true>(state);
   for (int s = 1; s < FFEffectCount; s++)
   {
     state.moduleSlot = s;
     _procState->dsp.global.gEffect[s - 1].output.CopyTo(_procState->dsp.global.gEffect[s].input);
+    _procState->dsp.global.gEffect[s].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
     _procState->dsp.global.gEffect[s].processor->Process<true>(state);
   }
 
