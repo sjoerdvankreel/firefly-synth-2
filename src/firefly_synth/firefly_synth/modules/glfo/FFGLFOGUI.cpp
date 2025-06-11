@@ -42,7 +42,7 @@ MakeGLFOSectionParams(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-GLFOTabFactory(FBPlugGUI* plugGUI, int moduleSlot)
+MakeGLFOTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
@@ -57,6 +57,6 @@ FFMakeGLFOGUI(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   for (int i = 0; i < FFGLFOCount; i++)
-    tabs->AddModuleTab({ (int)FFModuleType::GLFO, i }, GLFOTabFactory(plugGUI, i));
+    tabs->AddModuleTab({ (int)FFModuleType::GLFO, i }, MakeGLFOTab(plugGUI, i));
   return tabs;
 }

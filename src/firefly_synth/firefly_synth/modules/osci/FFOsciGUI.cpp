@@ -189,7 +189,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
 }
 
 static Component*
-OsciTabFactory(FBPlugGUI* plugGUI, int moduleSlot)
+MakeOsciTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
@@ -206,6 +206,6 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   for (int i = 0; i < FFOsciCount; i++)
-    tabs->AddModuleTab({ (int)FFModuleType::Osci, i }, OsciTabFactory(plugGUI, i));
+    tabs->AddModuleTab({ (int)FFModuleType::Osci, i }, MakeOsciTab(plugGUI, i));
   return tabs;
 }

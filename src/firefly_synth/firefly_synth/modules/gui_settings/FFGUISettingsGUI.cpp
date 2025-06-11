@@ -15,7 +15,7 @@
 using namespace juce;
 
 static Component*
-GUISettingsTabFactory(FBPlugGUI* plugGUI)
+MakeGUISettingsTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -32,6 +32,6 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
-  tabs->AddModuleTab({ (int)FFModuleType::GUISettings, 0 }, GUISettingsTabFactory(plugGUI));
+  tabs->AddModuleTab({ (int)FFModuleType::GUISettings, 0 }, MakeGUISettingsTab(plugGUI));
   return tabs;
 }

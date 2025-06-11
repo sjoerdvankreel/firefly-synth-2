@@ -111,7 +111,7 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
 }
 
 static Component*
-EffectTabFactory(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
+MakeEffectTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
@@ -131,8 +131,8 @@ FFMakeEffectGUI(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   for (int i = 0; i < FFEffectCount; i++)
-    tabs->AddModuleTab({ (int)FFModuleType::VEffect, i }, EffectTabFactory(plugGUI, FFModuleType::VEffect, i));
+    tabs->AddModuleTab({ (int)FFModuleType::VEffect, i }, MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
   for (int i = 0; i < FFEffectCount; i++)
-    tabs->AddModuleTab({ (int)FFModuleType::GEffect, i }, EffectTabFactory(plugGUI, FFModuleType::GEffect, i));
+    tabs->AddModuleTab({ (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
   return tabs;
 }
