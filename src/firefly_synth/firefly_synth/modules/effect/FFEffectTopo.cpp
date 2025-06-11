@@ -349,7 +349,6 @@ FFMakeEffectTopo(bool global)
   clipMode.dependencies.enabled.audio.When({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Clip; });
 
-  // todo submenu
   auto& foldMode = result->params[(int)FFEffectParam::FoldMode];
   foldMode.acc = false;
   foldMode.defaultText = "Sin";
@@ -374,6 +373,10 @@ FFMakeEffectTopo(bool global)
     { prefix + "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", "CsS2" },
     { prefix + "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", "SCS" },
     { prefix + "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CSC" } };
+  foldMode.List().submenuStart[(int)FFEffectFoldMode::Fold] = "Fold";
+  foldMode.List().submenuStart[(int)FFEffectFoldMode::Sin] = "Trig1";
+  foldMode.List().submenuStart[(int)FFEffectFoldMode::Sin2] = "Trig2";
+  foldMode.List().submenuStart[(int)FFEffectFoldMode::Sin3] = "Trig3";
   auto selectFoldMode = [](auto& module) { return &module.block.foldMode; };
   foldMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFoldMode);
   foldMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFoldMode);
