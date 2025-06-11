@@ -64,7 +64,7 @@ Component*
 FFMakeOsciModGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent2>(plugGUI);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   tabs->AddModuleTab({ (int)FFModuleType::OsciMod, 0 }, MakeOsciModSectionAll(plugGUI));
   return tabs;
 }

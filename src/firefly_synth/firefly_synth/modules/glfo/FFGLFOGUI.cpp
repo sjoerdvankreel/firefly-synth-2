@@ -55,7 +55,7 @@ Component*
 FFMakeGLFOGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent2>(plugGUI);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   for (int i = 0; i < FFGLFOCount; i++)
     tabs->AddModuleTab({ (int)FFModuleType::GLFO, i }, GLFOTabFactory(plugGUI, i));
   return tabs;

@@ -204,7 +204,7 @@ Component*
 FFMakeOsciGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent2>(plugGUI);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   for (int i = 0; i < FFOsciCount; i++)
     tabs->AddModuleTab({ (int)FFModuleType::Osci, i }, OsciTabFactory(plugGUI, i));
   return tabs;

@@ -19,8 +19,10 @@
 using namespace juce;
 
 static Component*
-MakeSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
+MakeEffectSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
+
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 1 });
   auto on = topo->audio.ParamAtTopo({ (int)moduleType, moduleSlot, (int)FFEffectParam::On, 0 });
@@ -40,8 +42,10 @@ MakeSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 }
 
 static Component*
-MakeSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
+MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
+  FB_LOG_ENTRY_EXIT();
+
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto kind = topo->audio.ParamAtTopo({ (int)moduleType, moduleSlot, (int)FFEffectParam::Kind, block });
@@ -107,24 +111,28 @@ MakeSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, in
 }
 
 static Component*
-TabFactory(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
+EffectTabFactory(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
+  FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(1);
   for (int i = 0; i < FFEffectBlockCount; i++)
     columnSizes.push_back(0);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, columnSizes);
-  grid->Add(0, 0, MakeSectionMain(plugGUI, moduleType, moduleSlot));
+  grid->Add(0, 0, MakeEffectSectionMain(plugGUI, moduleType, moduleSlot));
   for(int i = 0; i < FFEffectBlockCount; i++)
-    grid->Add(0, 1 + i, MakeSectionBlock(plugGUI, moduleType, moduleSlot, i));
+    grid->Add(0, 1 + i, MakeEffectSectionBlock(plugGUI, moduleType, moduleSlot, i));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
 Component*
-FFMakeEffectGUI(FBPlugGUI* plugGUI, bool global)
+FFMakeEffectGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto moduleType = global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  auto tabFactory = [moduleType](FBPlugGUI* plugGUI, int moduleSlot) { return TabFactory(plugGUI, moduleType, moduleSlot); };
-  return plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, (int)moduleType, tabFactory);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
+  for (int i = 0; i < FFEffectCount; i++)
+    tabs->AddModuleTab({ (int)FFModuleType::VEffect, i }, EffectTabFactory(plugGUI, FFModuleType::VEffect, i));
+  for (int i = 0; i < FFEffectCount; i++)
+    tabs->AddModuleTab({ (int)FFModuleType::GEffect, i }, EffectTabFactory(plugGUI, FFModuleType::GEffect, i));
+  return tabs;
 }

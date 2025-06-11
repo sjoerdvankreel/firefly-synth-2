@@ -17,55 +17,19 @@ TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
 }
 
 FBModuleTabComponent::
-FBModuleTabComponent(
-  FBPlugGUI* plugGUI, int moduleIndex, 
-  FBModuleTabFactory const& tabFactory) :
-FBTabComponent(),
-_plugGUI(plugGUI),
-_moduleIndex(moduleIndex)
-{ 
-  auto topo = plugGUI->HostContext()->Topo();
-  auto const& module = topo->static_.modules[moduleIndex];
-  if(module.slotCount == 1)
-    addTab(module.name, Colours::black, tabFactory(plugGUI, 0), false);
-  else
-  {
-    addTab(module.name, Colours::black, nullptr, false);
-    for (int i = 0; i < module.slotCount; i++)
-      addTab(std::to_string(i + 1), Colours::black, tabFactory(plugGUI, i), false);
-    setCurrentTabIndex(1);
-  }
-}
-
-void 
-FBModuleTabComponent::currentTabChanged(
-  int newCurrentTabIndex, juce::String const& newCurrentTabName)
-{
-  // TODO
-  if(newCurrentTabIndex > 0)
-    _plugGUI->ActiveModuleSlotChanged(_moduleIndex, newCurrentTabIndex - 1);
-}
-
-int 
-FBModuleTabComponent::FixedWidth(int height) const
-{
-  return dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0)).FixedWidth(height - 20);
-}
-
-FBModuleTabComponent2::
-FBModuleTabComponent2(FBPlugGUI* plugGUI):
+FBModuleTabComponent(FBPlugGUI* plugGUI):
 FBTabComponent(),
 _plugGUI(plugGUI) {}
 
 int
-FBModuleTabComponent2::FixedWidth(int height) const
+FBModuleTabComponent::FixedWidth(int height) const
 {
   auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
   return content.FixedWidth(height - 20);
 }
 
 void
-FBModuleTabComponent2::AddModuleTab(
+FBModuleTabComponent::AddModuleTab(
   FBTopoIndices const& moduleIndices, Component* component)
 {
   _moduleIndices.push_back(moduleIndices);
@@ -81,7 +45,7 @@ FBModuleTabComponent2::AddModuleTab(
 }
 
 void
-FBModuleTabComponent2::currentTabChanged(
+FBModuleTabComponent::currentTabChanged(
   int newCurrentTabIndex, juce::String const& newCurrentTabName)
 {
   if (newCurrentTabIndex < 0 || newCurrentTabIndex >= _moduleIndices.size())

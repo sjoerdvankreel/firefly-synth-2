@@ -33,7 +33,7 @@ Component*
 FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent2>(plugGUI);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   tabs->AddModuleTab({ (int)FFModuleType::Output, 0 }, MakeOutputSectionAll(plugGUI));
   return tabs;
 }
