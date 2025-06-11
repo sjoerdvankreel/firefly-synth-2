@@ -3,7 +3,6 @@
 #include <firefly_synth/dsp/plug/FFPlugProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
-#include <firefly_synth/modules/glfo/FFGLFOProcessor.hpp>
 #include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
@@ -79,19 +78,6 @@ FFPlugProcessor::LeaseVoices(
       auto state = MakeModuleVoiceState(input, voice);
       _procState->dsp.voice[voice].processor.BeginVoice(state);
     }
-}
-
-void
-FFPlugProcessor::ProcessPreVoice(
-  FBPlugInputBlock const& input)
-{
-  auto state = MakeModuleState(input);
-  for (int s = 0; s < FFGLFOCount; s++)
-  {
-    state.moduleSlot = s;
-    _procState->dsp.global.gLFO[s].processor->BeginBlock(false, state);
-    _procState->dsp.global.gLFO[s].processor->Process(state);
-  }
 }
 
 void

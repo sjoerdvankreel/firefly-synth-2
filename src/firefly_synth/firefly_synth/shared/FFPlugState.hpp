@@ -2,7 +2,6 @@
 
 #include <firefly_synth/dsp/plug/FFVoiceProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvState.hpp>
-#include <firefly_synth/modules/glfo/FFGLFOState.hpp>
 #include <firefly_synth/modules/osci/FFOsciState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
@@ -32,9 +31,8 @@ struct FFGlobalExchangeState final
 {
   std::array<FBModuleProcExchangeState, 1> master = {};
   std::array<FBModuleProcExchangeState, 1> output = {};
-  std::array<FBModuleProcExchangeState, FFGLFOCount> gLFO = {};
   std::array<FBModuleProcExchangeState, FFEffectCount> gEffect = {};
-    FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
 
 struct FFVoiceExchangeState final
@@ -51,9 +49,8 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
   FFMasterDSPState master = {};
   FFOutputDSPState output = {};
-  std::array<FFGLFODSPState, FFGLFOCount> gLFO = {};
   std::array<FFEffectDSPState, FFEffectCount> gEffect = {};
-    FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
 };
 
 struct alignas(FBSIMDAlign) FFVoiceDSPState final
@@ -81,9 +78,8 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFMasterParamState<TBlock, TAccurate>, 1> master = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
-  std::array<FFGLFOParamState<TBlock, TAccurate>, FFGLFOCount> gLFO = {};
   std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> gEffect = {};
-  };
+};
 
 template <class TBlock, class TAccurate>
 struct alignas(alignof(TAccurate)) FFVoiceParamState final

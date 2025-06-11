@@ -3,7 +3,6 @@
 #include <firefly_synth/dsp/plug/FFVoiceProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
-#include <firefly_synth/modules/glfo/FFGLFOProcessor.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
 #include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
@@ -62,7 +61,6 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   {
     state.moduleSlot = i;
     voiceDSP.osci[i].processor->Process(state);
-    //voiceDSP.output.Add(voiceDSP.osci[i].output); // todo
   }
   for (int i = 0; i < FFStringOsciCount; i++)
   {
