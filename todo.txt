@@ -1,9 +1,8 @@
+demo_pluckstring clicks ??
 paint something always
-combine the osc/string graphs
 center the checkboxes
 check all the todos before out of alpha
 get rid of the lpf that is implied by the fractional delay line
-demo_pluckstring clicks
 should a voice receive events after its released (but still playing)?
 test clap, more hosts, winlinmac
 panning
