@@ -141,9 +141,9 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
     FBRenderModuleGraph<false, true>(renderData, FFOsciCount + o);
     FBTopoIndices modIndices = { (int)FFModuleType::StringOsci, o };
     FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFStringOsciParam::Type, 0 };
-    graphData->graphs[o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+    graphData->graphs[FFOsciCount + o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
     if (graphData->renderState->AudioParamList<FFStringOsciType>(paramIndices, false, -1) == FFStringOsciType::Off)
-      graphData->graphs[o].text += " OFF";
+      graphData->graphs[FFOsciCount + o].text += " OFF";
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }
