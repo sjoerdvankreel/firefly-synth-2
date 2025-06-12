@@ -21,9 +21,8 @@ class alignas(FBSIMDAlign) FFOsciModDSPState final
   friend struct OscisGraphRenderData;
   std::unique_ptr<FFOsciModProcessor> processor = {};
 public:
-  FFOsciModDSPState();
-  ~FFOsciModDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciModDSPState);
+  FFOsciModDSPState(): processor(std::make_unique<FFOsciModProcessor>()) {}
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputAMMix = {};
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciModSlotCount> outputFMIndex = {};
 };

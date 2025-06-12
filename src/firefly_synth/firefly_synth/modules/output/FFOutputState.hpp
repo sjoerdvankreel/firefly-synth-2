@@ -15,9 +15,8 @@ class alignas(FBSIMDAlign) FFOutputDSPState final
   friend class FFPlugProcessor;
   std::unique_ptr<FFOutputProcessor> processor = {};
 public:
-  FFOutputDSPState();
-  ~FFOutputDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOutputDSPState);
+  FFOutputDSPState(): processor(std::make_unique<FFOutputProcessor>()) {}
 };
 
 template <class TBlock>

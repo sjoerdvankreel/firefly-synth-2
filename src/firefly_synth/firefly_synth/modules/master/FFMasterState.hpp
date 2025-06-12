@@ -15,9 +15,8 @@ class alignas(FBSIMDAlign) FFMasterDSPState final
   friend class FFPlugProcessor;
   std::unique_ptr<FFMasterProcessor> processor = {};
 public:
-  FFMasterDSPState();
-  ~FFMasterDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFMasterDSPState);
+  FFMasterDSPState(): processor(std::make_unique<FFMasterProcessor>()) {}
   FBSArray2<float, FBFixedBlockSamples, 2> input = {};
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
 };
