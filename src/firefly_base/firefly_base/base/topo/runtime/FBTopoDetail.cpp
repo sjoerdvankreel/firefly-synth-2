@@ -17,7 +17,7 @@ FBMakeRuntimeGraphName(
 {
   std::string result = name;
   if (slotCount > 1)
-    result += std::to_string(slot + 1);
+    result += " " + std::to_string(slot + 1);
   return result;
 }
 
