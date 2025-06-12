@@ -8,6 +8,11 @@ FBMakeStableHash(
   std::string const& id);
 
 std::string
+FBMakeRuntimeGraphName(
+  std::string const& name, 
+  int slotCount, int slot);
+
+std::string
 FBMakeRuntimeShortName(
   std::string const& name, int slotCount, 
   int slot, FBParamSlotFormatter formatter);

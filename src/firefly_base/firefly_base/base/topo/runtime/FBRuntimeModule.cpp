@@ -32,7 +32,7 @@ FBRuntimeModule(
 topoIndices(topoIndices),
 runtimeModuleIndex(runtimeIndex),
 name(FBMakeRuntimeShortName(staticModule.name, staticModule.slotCount, topoIndices.slot, {})),
-graphName(FBMakeRuntimeShortName(staticModule.graphName.size()? staticModule.graphName: staticModule.name, staticModule.slotCount, topoIndices.slot, {})),
+graphName(FBMakeRuntimeGraphName(staticModule.graphName, staticModule.slotCount, topoIndices.slot)),
 params(MakeRuntimeParams<FBRuntimeParam>(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)),
 guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(staticModule, topoIndices, runtimeIndex, runtimeGUIParamStart, staticModule.guiParams))
 {

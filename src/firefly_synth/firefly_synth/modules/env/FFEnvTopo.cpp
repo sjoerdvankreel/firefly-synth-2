@@ -19,6 +19,7 @@ FFMakeEnvTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "Env";
+  result->graphName = "ENV";
   result->slotCount = FFEnvCount;
   result->graphRenderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
