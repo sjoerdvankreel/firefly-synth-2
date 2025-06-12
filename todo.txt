@@ -1,5 +1,4 @@
 paint something always
-drop the state.cpps
 combine the osc/string graphs
 center the checkboxes
 check all the todos before out of alpha
