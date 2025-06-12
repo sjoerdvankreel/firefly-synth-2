@@ -45,7 +45,7 @@ FFMakeOsciTopo()
   result->voice = true;
   result->name = "Osc";
   result->slotCount = FFOsciCount;
-  result->graphCount = FFOsciCount;
+  result->graphCount = FFOsciCount + FFStringOsciCount;
   result->graphRenderer = FFOscisRenderGraph;
   result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
   result->params.resize((int)FFOsciParam::Count);

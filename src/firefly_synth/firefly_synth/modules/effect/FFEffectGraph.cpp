@@ -26,7 +26,7 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
 };
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data)
+PlotParams(FBModuleGraphComponentData const* data, bool global, int graphIndex)
 {
   // Need to know SR for graphing because filters.
   // Plot a bit more than exact pixel width to make it look prettier.
@@ -34,6 +34,7 @@ PlotParams(FBModuleGraphComponentData const* data)
   result.autoSampleRate = false;
   result.sampleCount = data->pixelWidth * 4;
   result.sampleRate = data->pixelWidth * 4.0f / FFEffectPlotLengthSeconds;
+  result.staticModuleIndex = static_cast<int>(global ? FFModuleType::GEffect : FFModuleType::VEffect);
   return result;
 }
 
@@ -130,16 +131,15 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
-  renderData.totalSamples = PlotParams(graphData).sampleCount;
-  renderData.staticModuleIndex = (int)moduleType;
-  renderData.globalExchangeSelector = [](void const* exchangeState, int slot) {
+  renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
+  renderData.totalSamples = PlotParams(graphData, Global, -1).sampleCount;
+  renderData.globalExchangeSelector = [](void const* exchangeState, int slot, int graphIndex) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gEffect[slot]; };
-  renderData.globalMonoOutputSelector = [](void const* procState, int slot) {
+  renderData.globalMonoOutputSelector = [](void const* procState, int slot, int graphIndex) {
     return &static_cast<FFProcState const*>(procState)->dsp.global.gEffect[slot].output[0]; };
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int graphIndex) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].vEffect[slot]; };
-  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot) {
+  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int graphIndex) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vEffect[slot].output[0]; };
 
   auto* renderState = graphData->renderState;

@@ -56,12 +56,13 @@ StageLengthAudioSamples(
 }
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data)
+PlotParams(FBModuleGraphComponentData const* data, int graphIndex)
 {
   FBModuleGraphPlotParams result = {};
   result.sampleCount = 0;
   result.sampleRate = 0.0f;
   result.autoSampleRate = true;
+  result.staticModuleIndex = (int)FFModuleType::Env;
 
   int smoothLength = 0;
   std::vector<int> stageLengths;
@@ -105,10 +106,9 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawMarkers = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
-  renderData.staticModuleIndex = (int)FFModuleType::Env;
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int graphIndex) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
-  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot) {
+  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int graphIndex) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
   
   FBRenderModuleGraph<false, false>(renderData, 0);

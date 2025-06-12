@@ -23,35 +23,35 @@ struct FBModuleGraphPlotParams
   int sampleCount = {};
   float sampleRate = {};
   bool autoSampleRate = {};
+  int staticModuleIndex = -1;
 };
 
 typedef std::function<FBModuleGraphPlotParams(
-  FBModuleGraphComponentData const*)>
+  FBModuleGraphComponentData const*, int graphIndex)>
 FBModuleGraphPlotParamsSelector;
 typedef std::function<FBModuleProcExchangeState const* (
-  void const* exchangeState, int moduleSlot)>
+  void const* exchangeState, int moduleSlot, int graphIndex)>
 FBModuleGraphGlobalExchangeSelector;    
 typedef std::function<FBModuleProcExchangeState const* (
-  void const* exchangeState, int voice, int moduleSlot)>
+  void const* exchangeState, int voice, int moduleSlot, int graphIndex)>
 FBModuleGraphVoiceExchangeSelector;    
 
 typedef std::function<FBSArray<float, FBFixedBlockSamples> const* (
-  void const* procState, int moduleSlot)>
+  void const* procState, int moduleSlot, int graphIndex)>
 FBModuleGraphGlobalMonoOutputSelector;
 typedef std::function<FBSArray<float, FBFixedBlockSamples> const* (
-  void const* procState, int voice, int moduleSlot)>
+  void const* procState, int voice, int moduleSlot, int graphIndex)>
 FBModuleGraphVoiceMonoOutputSelector;
 typedef std::function<FBSArray2<float, FBFixedBlockSamples, 2> const* (
-  void const* procState, int voice, int moduleSlot)>
+  void const* procState, int voice, int moduleSlot, int graphIndex)>
 FBModuleGraphVoiceStereoOutputSelector;
 typedef std::function<FBSArray2<float, FBFixedBlockSamples, 2> const* (
-  void const* procState, int moduleSlot)>
+  void const* procState, int moduleSlot, int graphIndex)>
 FBModuleGraphGlobalStereoOutputSelector;
 
 template <class Derived>
 struct FBModuleGraphRenderData
 {
-  int staticModuleIndex = -1;
   FBModuleGraphComponentData* graphData = {};
   FBModuleGraphPlotParamsSelector plotParamsSelector = {};
   FBModuleGraphVoiceExchangeSelector voiceExchangeSelector = {};
@@ -100,11 +100,11 @@ FBRenderModuleGraphSeries(
       if constexpr(Stereo)
         renderData.globalStereoOutputSelector(
           moduleProcState->procRaw,
-          moduleSlot)->CopyTo(seriesStereoIn);
+          moduleSlot, graphIndex)->CopyTo(seriesStereoIn);
       else
         renderData.globalMonoOutputSelector(
           moduleProcState->procRaw,
-          moduleSlot)->CopyTo(seriesMonoIn);
+          moduleSlot, graphIndex)->CopyTo(seriesMonoIn);
     }
     else
     {
@@ -112,12 +112,12 @@ FBRenderModuleGraphSeries(
         renderData.voiceStereoOutputSelector(
           moduleProcState->procRaw,
           moduleProcState->voice->slot,
-          moduleSlot)->CopyTo(seriesStereoIn);
+          moduleSlot, graphIndex)->CopyTo(seriesStereoIn);
       else
         renderData.voiceMonoOutputSelector(
           moduleProcState->procRaw,
           moduleProcState->voice->slot,
-          moduleSlot)->CopyTo(seriesMonoIn);
+          moduleSlot, graphIndex)->CopyTo(seriesMonoIn);
     }
     if constexpr (Stereo)
     {
@@ -151,7 +151,6 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   auto exchangeState = renderState->ExchangeContainer()->Raw();
 
   assert(renderData.graphData != nullptr);
-  assert(renderData.staticModuleIndex != -1);
   assert(renderData.plotParamsSelector != nullptr);
 
   if constexpr (Global)
@@ -170,7 +169,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   }
 
   moduleProcState->anyExchangeActive = false;
-  auto plotParams = renderData.plotParamsSelector(graphData);
+  auto plotParams = renderData.plotParamsSelector(graphData, graphIndex);
   int maxDspSampleCount = plotParams.sampleCount;
   if (maxDspSampleCount == 0)
     return;
@@ -180,7 +179,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     if constexpr (Global)
     {
       auto moduleExchange = renderData.globalExchangeSelector(
-        exchangeState, moduleProcState->moduleSlot);
+        exchangeState, moduleProcState->moduleSlot, graphIndex);
       moduleProcState->anyExchangeActive |= moduleExchange->active;
       if (moduleExchange->active)
         maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
@@ -188,7 +187,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     else for (int v = 0; v < FBMaxVoices; v++)
     {
       auto moduleExchange = renderData.voiceExchangeSelector(
-        exchangeState, v, moduleProcState->moduleSlot);
+        exchangeState, v, moduleProcState->moduleSlot, graphIndex);
       moduleProcState->anyExchangeActive |= moduleExchange->active;
       if (moduleExchange->active)
         maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
@@ -222,13 +221,13 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   if constexpr (Global)
   {
     auto moduleExchange = renderData.globalExchangeSelector(
-      exchangeState, moduleProcState->moduleSlot);
+      exchangeState, moduleProcState->moduleSlot, graphIndex);
     if (!moduleExchange->ShouldGraph())
       return;
     float positionNormalized = moduleExchange->PositionNormalized();
     if (graphData->skipDrawOnEqualsPrimary &&
       renderState->GlobalModuleExchangeStateEqualsPrimary(
-      renderData.staticModuleIndex, moduleProcState->moduleSlot))
+      plotParams.staticModuleIndex, moduleProcState->moduleSlot))
     {
       graphData->graphs[graphIndex].primaryMarkers.push_back(
         static_cast<int>(positionNormalized * graphData->graphs[graphIndex].primarySeries.l.size()));
@@ -241,14 +240,14 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   } else for (int v = 0; v < FBMaxVoices; v++)
   {
     auto moduleExchange = renderData.voiceExchangeSelector(
-      exchangeState, v, moduleProcState->moduleSlot);
+      exchangeState, v, moduleProcState->moduleSlot, graphIndex);
     if (!moduleExchange->ShouldGraph())
       continue;
     renderState->PrepareForRenderExchangeVoice(v);
     float positionNormalized = moduleExchange->PositionNormalized();
     if (graphData->skipDrawOnEqualsPrimary &&
       renderState->VoiceModuleExchangeStateEqualsPrimary(
-      v, renderData.staticModuleIndex, moduleProcState->moduleSlot))
+      v, plotParams.staticModuleIndex, moduleProcState->moduleSlot))
     {
       graphData->graphs[graphIndex].primaryMarkers.push_back(
         static_cast<int>(positionNormalized * graphData->graphs[graphIndex].primarySeries.l.size()));

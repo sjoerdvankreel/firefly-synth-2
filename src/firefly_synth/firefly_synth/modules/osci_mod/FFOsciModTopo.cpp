@@ -41,6 +41,7 @@ FFMakeOsciModTopo()
   result->name = "Osc Mod";
   result->slotCount = 1;
   result->graphCount = FFOsciCount;
+  result->graphCount = FFOsciCount + FFStringOsciCount;
   result->graphRenderer = FFOscisRenderGraph;
   result->id = "{546F9D74-670A-463D-80B0-B4BBD061DA88}";
   result->params.resize((int)FFOsciModParam::Count);

@@ -31,52 +31,79 @@ OscisGraphRenderData::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
-  int osciSlot = moduleProcState->moduleSlot;
-  assert(osciSlot == graphIndex);
-  moduleProcState->moduleSlot = 0;
-  GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(true, *moduleProcState);
-  for (int i = 0; i <= graphIndex; i++)
+  if (graphIndex >= FFOsciCount)
   {
-    moduleProcState->moduleSlot = i;
-    GetVoiceDSPState(*moduleProcState).osci[i].processor->BeginVoice(true, *moduleProcState);
+    // dealing with string osci
+    int slot = graphIndex - FFOsciCount;
+    auto& processor = GetVoiceDSPState(*moduleProcState).stringOsci[slot].processor;
+    processor->InitializeBuffers(true, moduleProcState->input->sampleRate);
+    processor->BeginVoice(true, *moduleProcState);
+  } else
+  {
+    // dealing with osci + mod matrix
+    // need to handle all oscis up to this one
+    int slot = moduleProcState->moduleSlot;
+    moduleProcState->moduleSlot = 0;
+    GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(true, *moduleProcState);
+    for (int i = 0; i <= graphIndex; i++)
+    {
+      moduleProcState->moduleSlot = i;
+      GetVoiceDSPState(*moduleProcState).osci[i].processor->BeginVoice(true, *moduleProcState);
+    }
+    moduleProcState->moduleSlot = slot;
   }
-  moduleProcState->moduleSlot = osciSlot;
 }
 
 int 
 OscisGraphRenderData::DoProcess(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
-  int result = 0;
   auto* moduleProcState = state->ModuleProcState();
-  int osciSlot = moduleProcState->moduleSlot;
-  assert(osciSlot == graphIndex);
-  moduleProcState->moduleSlot = 0;
-  GetVoiceDSPState(*moduleProcState).osciMod.processor->Process(*moduleProcState);
-  for (int i = 0; i <= graphIndex; i++)
+  if (graphIndex >= FFOsciCount)
   {
-    moduleProcState->moduleSlot = i;
-    int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState);
-    if (i == osciSlot)
-      result = processed;
+    // dealing with string osci
+    int slot = graphIndex - FFOsciCount;
+    return GetVoiceDSPState(*moduleProcState).stringOsci[slot].processor->Process(*moduleProcState);
   }
-  moduleProcState->moduleSlot = osciSlot;
-  return result;
+  else
+  {
+    // dealing with osci + mod matrix
+    // need to handle all oscis up to this one
+    int result = 0;
+    int slot = moduleProcState->moduleSlot;
+    moduleProcState->moduleSlot = 0;
+    GetVoiceDSPState(*moduleProcState).osciMod.processor->Process(*moduleProcState);
+    for (int i = 0; i <= graphIndex; i++)
+    {
+      moduleProcState->moduleSlot = i;
+      int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState);
+      if (i == graphIndex) result = processed;
+    }
+    moduleProcState->moduleSlot = slot;
+    return result;
+  }
 }
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data)
+PlotParams(FBModuleGraphComponentData const* data, int graphIndex)
 {
   FBModuleGraphPlotParams result = {};
   result.sampleRate = 0.0f;
   result.autoSampleRate = true;
+  result.staticModuleIndex = static_cast<int>(graphIndex >= FFOsciCount ? FFModuleType::Osci : FFModuleType::Osci);
+
+  int rounds = graphIndex >= FFOsciCount ? FFStringOsciGraphRounds : 1;
+  auto moduleType = graphIndex >= FFOsciCount ? FFModuleType::StringOsci : FFModuleType::Osci;
+  int fineParam = graphIndex >= FFOsciCount ? (int)FFStringOsciParam::Fine : (int)FFOsciParam::Fine;
+  int coarseParam = graphIndex >= FFOsciCount ? (int)FFStringOsciParam::Coarse : (int)FFOsciParam::Coarse;
 
   auto const* state = data->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Coarse, 0 }, false, -1));
-  pitch += state->AudioParamLinear({ (int)FFModuleType::Osci, moduleSlot, (int)FFOsciParam::Fine, 0 }, false, -1);
-  result.sampleCount = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate);
+  FBParamTopoIndices indices = { (int)moduleType, moduleSlot, coarseParam, 0 };
+  float pitch = 60.0f + static_cast<float>(state->AudioParamLinear(indices, false, -1));
+  pitch += state->AudioParamLinear({ (int)moduleType, moduleSlot, fineParam, 0 }, false, -1);
+  result.sampleCount = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * rounds;
   return result;
 }
 
@@ -89,11 +116,14 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
-  renderData.staticModuleIndex = (int)FFModuleType::Osci;
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].osci[slot]; };
-  renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int slot) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
+
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int graphIndex) {
+    auto& voiceExchange = static_cast<FFExchangeState const*>(exchangeState)->voice[voice];
+    return graphIndex >= FFOsciCount ? &voiceExchange.stringOsci[slot] : &voiceExchange.osci[slot]; };
+  renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int slot, int graphIndex) {
+    auto& voiceDSP = static_cast<FFProcState const*>(procState)->dsp.voice[voice];
+    return graphIndex >= FFOsciCount ? &voiceDSP.stringOsci[slot].output : &voiceDSP.osci[slot].output; };
+
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   for (int o = 0; o < FFOsciCount; o++)
   {
@@ -103,6 +133,16 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
     FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFOsciParam::Type, 0 };
     graphData->graphs[o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
     if (graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1) == FFOsciType::Off)
+      graphData->graphs[o].text += " OFF";
+  }
+  for (int o = 0; o < FFStringOsciCount; o++)
+  {
+    graphData->renderState->ModuleProcState()->moduleSlot = o;
+    FBRenderModuleGraph<false, true>(renderData, FFOsciCount + o);
+    FBTopoIndices modIndices = { (int)FFModuleType::StringOsci, o };
+    FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFStringOsciParam::Type, 0 };
+    graphData->graphs[o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
+    if (graphData->renderState->AudioParamList<FFStringOsciType>(paramIndices, false, -1) == FFStringOsciType::Off)
       graphData->graphs[o].text += " OFF";
   }
   graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
