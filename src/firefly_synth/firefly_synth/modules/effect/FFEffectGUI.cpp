@@ -49,7 +49,7 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto kind = topo->audio.ParamAtTopo({ (int)moduleType, moduleSlot, (int)FFEffectParam::Kind, block });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, kind, std::to_string(block + 1)));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, kind, std::string(1, static_cast<char>('A' + block))));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
   
   auto combKeyTrk = topo->audio.ParamAtTopo({ (int)moduleType, moduleSlot, (int)FFEffectParam::CombKeyTrk, block });
