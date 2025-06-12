@@ -100,29 +100,8 @@ EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
 }
 
 void
-FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
-{
-  EnvGraphRenderData renderData = {};
-  graphData->drawMarkers = true;
-  renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int graphIndex) {
-    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
-  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int graphIndex) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
-  
-  FBRenderModuleGraph<false, false>(renderData, 0);
-  int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
-  FBTopoIndices modIndices = { (int)FFModuleType::Env, moduleSlot};
-  FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFEnvParam::Type, 0 };
-  graphData->graphs[0].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
-  if (graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1) == FFEnvType::Off)
-    graphData->graphs[0].text += " OFF";
-}
-
-void
 EnvGraphRenderData::DoProcessIndicators(
-  int graphIndex, bool exchange, 
+  int graphIndex, bool exchange,
   int exchangeVoice, FBModuleGraphPoints& points)
 {
   int smoothLengthAudio;
@@ -173,4 +152,30 @@ EnvGraphRenderData::DoProcessIndicators(
       points.verticalIndicators.push_back(loopStartSamples + loopLengthSamples);
     }
   }
+}
+
+void
+FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
+{
+  EnvGraphRenderData renderData = {};
+  graphData->drawMarkers = true;
+  renderData.graphData = graphData;
+  renderData.plotParamsSelector = PlotParams;
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int graphIndex) {
+    return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
+  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int graphIndex) {
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
+  
+  int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
+  for (int o = 0; o < FFEnvCount; o++)
+  {
+    graphData->renderState->ModuleProcState()->moduleSlot = o;
+    FBRenderModuleGraph<false, false>(renderData, o);
+    FBTopoIndices modIndices = { (int)FFModuleType::Env, o };
+    FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFEnvParam::Type, 0 };
+    graphData->graphs[o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
+    if (graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1) == FFEnvType::Off)
+      graphData->graphs[o].text += " OFF";
+  }
+  graphData->renderState->ModuleProcState()->moduleSlot = moduleSlot;
 }
