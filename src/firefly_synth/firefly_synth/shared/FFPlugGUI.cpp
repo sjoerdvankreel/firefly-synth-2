@@ -5,9 +5,9 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
+#include <firefly_synth/modules/shared/FFOscisGUI.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
 #include <firefly_synth/modules/string_osci/FFStringOsciGUI.hpp>
-#include <firefly_synth/modules/shared/FFOsciAndStringOsciGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
@@ -123,7 +123,7 @@ FFPlugGUI::SetupGUI()
   _content->Add(0, 1, 1, 1, FFMakeOutputGUI(this));
   _content->Add(0, 2, 1, 1, FFMakeGUISettingsGUI(this));
   _content->Add(0, 3, 1, 1, _graph);
-  _content->Add(1, 0, 1, 4, FFMakeOsciAndStringOsciGUI(this));
+  _content->Add(1, 0, 1, 4, FFMakeOscisGUI(this));
   _content->Add(2, 0, 1, 4, FFMakeOsciModGUI(this));
   _content->Add(3, 0, 1, 4, FFMakeEnvGUI(this));
   _content->Add(4, 0, 1, 4, FFMakeEffectGUI(this));
