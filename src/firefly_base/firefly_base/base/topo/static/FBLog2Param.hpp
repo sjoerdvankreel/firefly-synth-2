@@ -62,7 +62,10 @@ FBLog2Param::NormalizedToPlainFast(FBBatch<float> normalized) const
 inline FBBatch<double>
 FBLog2Param::NormalizedToPlainFast(FBBatch<double> normalized) const
 {
-  return _offset + _curveStart * xsimd::pow(FBBatch<double>(2.0f), _expo * normalized);
+#pragma warning(push)
+#pragma warning(disable: 4244)
+  return _offset + _curveStart * xsimd::pow(FBBatch<double>(2.0), _expo * normalized);
+#pragma warning(pop)
 }
 
 inline FBBatch<float>

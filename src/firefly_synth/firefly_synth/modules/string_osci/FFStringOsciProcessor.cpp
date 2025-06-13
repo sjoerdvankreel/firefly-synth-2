@@ -27,7 +27,7 @@ FFStringOsciProcessor::
 FFStringOsciProcessor() {}
 
 void
-FFStringOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
+FFStringOsciProcessor::InitializeBuffers(float sampleRate)
 {
   int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringOsciMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)

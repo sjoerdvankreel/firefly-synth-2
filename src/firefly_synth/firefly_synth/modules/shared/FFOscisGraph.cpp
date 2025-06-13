@@ -36,7 +36,7 @@ OscisGraphRenderData::DoBeginVoiceOrBlock(
     // dealing with string osci
     int slot = graphIndex - FFOsciCount;
     auto& processor = GetVoiceDSPState(*moduleProcState).stringOsci[slot].processor;
-    processor->InitializeBuffers(true, moduleProcState->input->sampleRate);
+    processor->InitializeBuffers(moduleProcState->input->sampleRate);
     processor->BeginVoice(true, *moduleProcState);
   } else
   {
