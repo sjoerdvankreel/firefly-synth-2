@@ -92,6 +92,7 @@ template <class T>
 inline void
 FBBatchNaNCheck(FBBatch<T> vec)
 {
+  (void)vec;
 #ifndef NDEBUG
   FBSArray<float, FBSIMDTraits<T>::Size> check;
   check.Store(0, vec);
