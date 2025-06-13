@@ -142,7 +142,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto bounds = getLocalBounds();
     auto x0 = PointXLocation(graph, 0.0f);
     auto x1 = PointXLocation(graph, 1.0f);
-    auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
+    auto graphBounds = Rectangle<int>(x0, bounds.getY(), static_cast<int>(x1 - x0), bounds.getHeight());
     g.setColour(Colour(0xFF181818));
     g.fillRoundedRectangle(graphBounds.toFloat(), 2.0f);
 
