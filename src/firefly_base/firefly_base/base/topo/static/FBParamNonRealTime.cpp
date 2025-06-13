@@ -1,5 +1,5 @@
+#include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/static/FBParamNonRealTime.hpp>
-#include <cassert>
 
 std::string
 FBEditTypeToString(FBEditType type)

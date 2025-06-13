@@ -1,7 +1,6 @@
 #include <firefly_base/base/topo/static/FBBarsParam.hpp>
 
 #include <set>
-#include <cassert>
 
 using namespace juce;
 

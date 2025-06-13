@@ -3,7 +3,6 @@
 #include <firefly_base/base/state/proc/FBVoiceBlockParamState.hpp>
 
 #include <limits>
-#include <cassert>
 
 FBVoiceManager::
 FBVoiceManager(FBProcStateContainer* procState) :

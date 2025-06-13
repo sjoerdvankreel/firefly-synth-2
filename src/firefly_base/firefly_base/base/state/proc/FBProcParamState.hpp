@@ -7,8 +7,6 @@
 #include <firefly_base/base/state/proc/FBVoiceBlockParamState.hpp>
 #include <firefly_base/base/state/proc/FBGlobalBlockParamState.hpp>
 
-#include <cassert>
-
 enum class FBProcParamType
 {
   VoiceAcc,

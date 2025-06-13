@@ -5,7 +5,6 @@
 
 #include <ctime>
 #include <memory>
-#include <cassert>
 #include <filesystem>
 
 using namespace juce;

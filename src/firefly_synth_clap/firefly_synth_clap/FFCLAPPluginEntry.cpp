@@ -14,7 +14,6 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <clap/clap.h>
 
-#include <cassert>
 #include <cstring>
 
 // Just to make it work with the moodycamel queue without

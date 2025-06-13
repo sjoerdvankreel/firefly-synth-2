@@ -6,7 +6,6 @@
 #include <array>
 #include <cmath>
 #include <numbers>
-#include <cassert>
 
 inline float constexpr FFMaxStateVariableFilterRes = 0.99f;
 inline float constexpr FFMinStateVariableFilterFreq = 20.0f;

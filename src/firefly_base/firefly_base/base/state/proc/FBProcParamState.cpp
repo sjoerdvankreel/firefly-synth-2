@@ -1,5 +1,4 @@
 #include <firefly_base/base/state/proc/FBProcParamState.hpp>
-#include <cassert>
 
 void
 FBProcParamState::InitProcessing(float value)

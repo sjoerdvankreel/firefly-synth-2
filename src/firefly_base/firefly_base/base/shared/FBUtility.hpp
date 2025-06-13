@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include <cassert>
 #include <cstdint>
 #include <optional>
 #include <filesystem>
@@ -81,8 +80,9 @@ FBDenormalState;
   x() = default
 
 // Just a cop-out to prevent unused variable warnings.
+template <class T>
 inline void 
-FB_ASSERT(bool cond)
+FB_ASSERT(T&& cond)
 {
   (void)cond;
   assert(cond);

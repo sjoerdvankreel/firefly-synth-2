@@ -12,7 +12,6 @@
 #include <firefly_base/gui/components/FBModuleGraphComponentData.hpp>
 
 #include <vector>
-#include <cassert>
 #include <functional>
 
 struct FBStaticTopo;

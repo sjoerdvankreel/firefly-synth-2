@@ -1,8 +1,6 @@
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 #include <firefly_base/dsp/buffer/FBBufferBlock.hpp>
 
-#include <cassert>
-
 void
 FBBufferAudioBlock::Drop(int count)
 {

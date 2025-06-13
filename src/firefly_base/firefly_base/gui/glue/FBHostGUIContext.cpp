@@ -2,7 +2,6 @@
 
 #include <stack>
 #include <memory>
-#include <cassert>
 
 using namespace juce;
 

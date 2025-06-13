@@ -5,7 +5,6 @@
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <set>
-#include <cassert>
 
 FBProcStateContainer::
 FBProcStateContainer(FBRuntimeTopo const& topo):

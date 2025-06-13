@@ -3,7 +3,6 @@
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 
 #include <set>
-#include <cassert>
 
 FBScalarStateContainer::
 FBScalarStateContainer(FBRuntimeTopo const& topo):

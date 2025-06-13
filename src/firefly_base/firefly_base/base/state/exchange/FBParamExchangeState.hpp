@@ -3,7 +3,6 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <array>
-#include <cassert>
 
 class FBParamExchangeState final
 {

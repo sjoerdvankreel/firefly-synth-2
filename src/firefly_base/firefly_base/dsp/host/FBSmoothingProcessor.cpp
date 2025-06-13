@@ -8,7 +8,6 @@
 #include <firefly_base/dsp/buffer/FBBufferBlock.hpp>
 #include <firefly_base/dsp/host/FBSmoothingProcessor.hpp>
 
-#include <cassert>
 #include <algorithm>
 
 template <class Event, class Compare>

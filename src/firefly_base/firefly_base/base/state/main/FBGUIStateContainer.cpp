@@ -2,7 +2,6 @@
 #include <firefly_base/base/state/main/FBGUIStateContainer.hpp>
 
 #include <set>
-#include <cassert>
 
 FBGUIStateContainer::
 FBGUIStateContainer(FBRuntimeTopo const& topo):

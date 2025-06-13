@@ -1,8 +1,6 @@
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 #include <firefly_base/dsp/buffer/FBBufferBlock.hpp>
 
-#include <cassert>
-
 FBHostAudioBlock::
 FBHostAudioBlock(float** channels, int count) :
   _count(count), _store({ channels[0], channels[1] }) {}

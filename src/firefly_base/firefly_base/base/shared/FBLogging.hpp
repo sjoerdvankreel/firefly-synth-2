@@ -5,7 +5,6 @@
 #include <chrono>
 #include <thread>
 #include <string>
-#include <cassert>
 
 #define FB_LOG_WRITE(lvl, msg) \
 FBLogWrite(lvl, __FILE__, __LINE__, __func__, msg)

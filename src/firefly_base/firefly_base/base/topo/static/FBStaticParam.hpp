@@ -15,7 +15,6 @@
 #include <array>
 #include <string>
 #include <vector>
-#include <cassert>
 #include <optional>
 #include <algorithm>
 #include <functional>

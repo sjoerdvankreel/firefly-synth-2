@@ -7,7 +7,6 @@
 #include <array>
 #include <cmath>
 #include <numbers>
-#include <cassert>
 
 inline float constexpr FFMaxCombFilterRes = 0.99f;
 inline float constexpr FFMinCombFilterFreq = 80.0f;

@@ -9,7 +9,6 @@
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <bit>
-#include <cassert>
 #include <algorithm>
 
 static FBNoteEvent

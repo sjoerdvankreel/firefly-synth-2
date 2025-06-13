@@ -9,8 +9,6 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
-#include <cassert>
-
 using namespace juce;
 
 FBPlugGUI::

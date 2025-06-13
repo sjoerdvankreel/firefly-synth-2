@@ -1,7 +1,7 @@
 #include <firefly_base_vst3/FBVST3Utility.hpp>
+#include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <public.sdk/source/vst/utility/stringconvert.h>
-#include <cassert>
 #include <cstring>
 
 void

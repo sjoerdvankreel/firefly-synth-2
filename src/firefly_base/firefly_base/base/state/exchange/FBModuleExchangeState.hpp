@@ -4,7 +4,6 @@
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 
 #include <array>
-#include <cassert>
 
 struct FBModuleProcExchangeState
 {

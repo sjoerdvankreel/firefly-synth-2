@@ -3,7 +3,6 @@
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 #include <cmath>
-#include <cassert>
 #include <numbers>
 
 // https://www.musicdsp.org/en/latest/Filters/117-one-pole-one-zero-lp-hp.html

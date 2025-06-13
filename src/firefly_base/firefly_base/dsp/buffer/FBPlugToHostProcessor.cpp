@@ -3,8 +3,6 @@
 #include <firefly_base/dsp/buffer/FBBufferBlock.hpp>
 #include <firefly_base/dsp/buffer/FBPlugToHostProcessor.hpp>
 
-#include <cassert>
-
 FBPlugToHostProcessor::
 FBPlugToHostProcessor(FBVoiceManager* voiceManager):
 _voiceManager(voiceManager)

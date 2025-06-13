@@ -7,7 +7,6 @@
 #include <cmath>
 #include <array>
 #include <numbers>
-#include <cassert>
 #include <algorithm>
 
 inline constexpr float FBPi = std::numbers::pi_v<float>;
