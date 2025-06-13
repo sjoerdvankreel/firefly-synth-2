@@ -33,7 +33,7 @@ FBLinearParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBLinearParamNonRealTime::TextToPlain(bool io, std::string const& text) const
+FBLinearParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)

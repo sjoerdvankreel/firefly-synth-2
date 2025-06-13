@@ -12,7 +12,7 @@ _text(text),
 _textSize(FBGUIGetStringSizeCached(text)) {}
 
 int 
-FBAutoSizeMultiLineLabel::FixedWidth(int height) const
+FBAutoSizeMultiLineLabel::FixedWidth(int /*height*/) const
 {
   return _textSize.x + 2;
 }
