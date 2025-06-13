@@ -19,8 +19,8 @@
 
 FFPlugProcessor::
 FFPlugProcessor(IFBHostDSPContext* hostContext) :
-_topo(hostContext->Topo()),
 _sampleRate(hostContext->SampleRate()),
+_topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {

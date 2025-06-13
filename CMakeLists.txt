@@ -63,7 +63,7 @@ add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3/pluginterfaces")
 
 # stuff that should apply to our code
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  add_compile_options(/W4 /WX /analyze:external- /fp:fast /utf-8)
+  add_compile_options(/W4 /w15038 /WX /analyze:external- /fp:fast /utf-8)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-sign-compare -Wno-parentheses -Werror -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

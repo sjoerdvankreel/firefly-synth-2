@@ -15,7 +15,7 @@ class FBDArray final
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBDArray);
-  FBDArray() : _data(nullptr), _count(0) {}
+  FBDArray() : _count(0), _data(nullptr) {}
   ~FBDArray() { FBAlignedFree(_data); _data = nullptr; _count = 0; }
 
   void Resize(int count);

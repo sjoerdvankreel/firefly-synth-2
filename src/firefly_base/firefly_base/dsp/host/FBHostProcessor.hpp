@@ -31,9 +31,9 @@ class FBHostProcessor final
   FBExchangeStateContainer* const _exchangeState;
   std::unique_ptr<IFBPlugProcessor> _plug;
   std::unique_ptr<FBVoiceManager> _voiceManager;
-  std::unique_ptr<FBSmoothingProcessor> _smoothing;
   std::unique_ptr<FBHostToPlugProcessor> _hostToPlug;
   std::unique_ptr<FBPlugToHostProcessor> _plugToHost;
+  std::unique_ptr<FBSmoothingProcessor> _smoothing;
 
   void ProcessVoices();
 
