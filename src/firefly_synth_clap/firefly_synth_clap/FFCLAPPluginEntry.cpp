@@ -29,14 +29,14 @@ struct alignas(alignof(FFExchangeState)) FFCLAPExchangeState final
 FFCLAPExchangeState::
 FFCLAPExchangeState(FFCLAPExchangeState const& rhs)
 {
-  assert(&rhs != this);
+  FB_ASSERT(&rhs != this);
   memcpy(&state, &rhs.state, sizeof(FFExchangeState));
 }
 
 FFCLAPExchangeState&
 FFCLAPExchangeState::operator=(FFCLAPExchangeState const& rhs)
 {
-  assert(&rhs != this);
+  FB_ASSERT(&rhs != this);
   memcpy(&state, &rhs.state, sizeof(FFExchangeState));
   return *this;
 }

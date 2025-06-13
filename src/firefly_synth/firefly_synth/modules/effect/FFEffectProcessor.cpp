@@ -328,7 +328,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           FFSelectDualProcAccParamNormalized<Global>(distDriveNorm[i], voice), s));
       }
       else
-        assert(_kind[i] == FFEffectKind::Off);
+        FB_ASSERT(_kind[i] == FFEffectKind::Off);
     }
 
   if (_oversampleTimes != 1)
@@ -365,7 +365,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         distDrivePlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
       else
-        assert(_kind[i] == FFEffectKind::Off);
+        FB_ASSERT(_kind[i] == FFEffectKind::Off);
     }
   }
 
@@ -585,7 +585,7 @@ FFEffectProcessor::ProcessSkew(
         shapedBatch = xsimd::select(compBatch, shapedBatch, exceedBatch);
         break;
       default:
-        assert(false);
+        FB_ASSERT(false);
         break;
       }
       auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
@@ -660,7 +660,7 @@ FFEffectProcessor::ProcessClip(
         shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
         break;
       default:
-        assert(false);
+        FB_ASSERT(false);
         break;
       }
       auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
@@ -704,7 +704,7 @@ FFEffectProcessor::ProcessFold(
       case FFEffectFoldMode::CsSn2: shapedBatch = CsSn2(shapedBatch); break;
       case FFEffectFoldMode::SnCsSn: shapedBatch = SnCsSn(shapedBatch); break;
       case FFEffectFoldMode::CsSnCs: shapedBatch = CsSnCs(shapedBatch); break;
-      default: assert(false); break;
+      default: FB_ASSERT(false); break;
       }
       auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
       oversampled[c].Store(s, mixedBatch);

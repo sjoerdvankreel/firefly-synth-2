@@ -91,21 +91,21 @@ public:
   double DefaultNormalizedByText(int moduleSlot, int paramSlot) const;
   std::string NormalizedToTextWithUnit(bool io, double normalized) const;
 
-  FBListParam& List() { assert(type == FBParamType::List); return list; }
-  FBBarsParam& Bars() { assert(type == FBParamType::Bars); return bars; }
-  FBLog2Param& Log2() { assert(type == FBParamType::Log2); return log2; }
-  FBBoolParam& Boolean() { assert(type == FBParamType::Boolean); return boolean; }
-  FBLinearParam& Linear() { assert(type == FBParamType::Linear); return linear; }
-  FBDiscreteParam& Discrete() { assert(type == FBParamType::Discrete); return discrete; }
-  FBIdentityParam& Identity() { assert(type == FBParamType::Identity); return identity; }
+  FBListParam& List() { FB_ASSERT(type == FBParamType::List); return list; }
+  FBBarsParam& Bars() { FB_ASSERT(type == FBParamType::Bars); return bars; }
+  FBLog2Param& Log2() { FB_ASSERT(type == FBParamType::Log2); return log2; }
+  FBBoolParam& Boolean() { FB_ASSERT(type == FBParamType::Boolean); return boolean; }
+  FBLinearParam& Linear() { FB_ASSERT(type == FBParamType::Linear); return linear; }
+  FBDiscreteParam& Discrete() { FB_ASSERT(type == FBParamType::Discrete); return discrete; }
+  FBIdentityParam& Identity() { FB_ASSERT(type == FBParamType::Identity); return identity; }
 
-  FBListParam const& List() const { assert(type == FBParamType::List); return list; }
-  FBBarsParam const& Bars() const { assert(type == FBParamType::Bars); return bars; }
-  FBLog2Param const& Log2() const { assert(type == FBParamType::Log2); return log2; }
-  FBBoolParam const& Boolean() const { assert(type == FBParamType::Boolean); return boolean; }
-  FBLinearParam const& Linear() const { assert(type == FBParamType::Linear); return linear; }
-  FBDiscreteParam const& Discrete() const { assert(type == FBParamType::Discrete); return discrete; }
-  FBIdentityParam const& Identity() const { assert(type == FBParamType::Identity); return identity; }
+  FBListParam const& List() const { FB_ASSERT(type == FBParamType::List); return list; }
+  FBBarsParam const& Bars() const { FB_ASSERT(type == FBParamType::Bars); return bars; }
+  FBLog2Param const& Log2() const { FB_ASSERT(type == FBParamType::Log2); return log2; }
+  FBBoolParam const& Boolean() const { FB_ASSERT(type == FBParamType::Boolean); return boolean; }
+  FBLinearParam const& Linear() const { FB_ASSERT(type == FBParamType::Linear); return linear; }
+  FBDiscreteParam const& Discrete() const { FB_ASSERT(type == FBParamType::Discrete); return discrete; }
+  FBIdentityParam const& Identity() const { FB_ASSERT(type == FBParamType::Identity); return identity; }
 };
 
 struct FBStaticGUIParam final:

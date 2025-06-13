@@ -68,7 +68,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     voiceDSP.stringOsci[i].processor->Process(state);
     voiceDSP.output.Add(voiceDSP.stringOsci[i].output);
   }
-  assert(FFOsciCount == FFEffectCount); // TODO for now
+  FB_ASSERT(FFOsciCount == FFEffectCount); // TODO for now
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;

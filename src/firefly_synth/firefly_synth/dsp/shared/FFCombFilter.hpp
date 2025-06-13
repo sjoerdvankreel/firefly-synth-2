@@ -56,7 +56,7 @@ FFCombFilter<Channels>::Resize(
   float fMaxSamples = maxSeconds * sampleRate;
   int maxSamples = static_cast<int>(std::ceil(fMaxSamples));
   int const safetyCheck = 20 * 192000;
-  assert(0 < maxSamples && maxSamples <= safetyCheck);
+  FB_ASSERT(0 < maxSamples && maxSamples <= safetyCheck);
   for (int c = 0; c < Channels; c++)
   {
     _delayLinesMin[c].Resize(maxSamples);
@@ -70,8 +70,8 @@ inline float
 FFCombFilter<Channels>::Next(
   int channel, float in)
 {
-  assert(!std::isnan(in));
-  assert(!std::isinf(in));
+  FB_ASSERT(!std::isnan(in));
+  FB_ASSERT(!std::isinf(in));
   
   float minOld = 0.0f;
   if constexpr (MinOn)
@@ -105,7 +105,7 @@ FFCombFilter<Channels>::DebugCheck(
     minFilterFreq *= nyquist / FFMaxCombFilterFreq;
     maxFilterFreq *= nyquist / FFMaxCombFilterFreq;
   }
-  assert(minFilterFreq - 0.1f <= freq && freq <= maxFilterFreq + 0.1f);
+  FB_ASSERT(minFilterFreq - 0.1f <= freq && freq <= maxFilterFreq + 0.1f);
 #endif
 }
 

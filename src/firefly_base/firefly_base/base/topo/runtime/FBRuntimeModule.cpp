@@ -39,6 +39,6 @@ guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(staticModule, topoIndices, runtim
 #ifndef NDEBUG
   std::set<std::string> paramNames = {};
   for (int p = 0; p < staticModule.params.size(); p++)
-    assert(paramNames.insert(staticModule.params[p].name).second);
+    FB_ASSERT(paramNames.insert(staticModule.params[p].name).second);
 #endif
 }

@@ -49,7 +49,7 @@ inline float
 FBLog2Param::NormalizedToPlainFast(float normalized) const
 {
   float result = _offset + _curveStart * std::pow(2.0f, _expo * normalized);
-  assert(result >= _curveStart + _offset);
+  FB_ASSERT(result >= _curveStart + _offset);
   return result;
 }
 

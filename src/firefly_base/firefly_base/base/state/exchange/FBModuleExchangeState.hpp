@@ -55,27 +55,27 @@ _voice(voice) {}
 inline FBModuleProcExchangeState*
 FBModuleExchangeState::Global()
 {
-  assert(IsGlobal());
+  FB_ASSERT(IsGlobal());
   return _global;
 }
 
 inline FBModuleProcExchangeState const*
 FBModuleExchangeState::Global() const
 {
-  assert(IsGlobal());
+  FB_ASSERT(IsGlobal());
   return _global;
 }
 
 inline std::array<FBModuleProcExchangeState*, FBMaxVoices>&
 FBModuleExchangeState::Voice()
 {
-  assert(!IsGlobal());
+  FB_ASSERT(!IsGlobal());
   return _voice;
 }
 
 inline std::array<FBModuleProcExchangeState*, FBMaxVoices> const&
 FBModuleExchangeState::Voice() const
 {
-  assert(!IsGlobal());
+  FB_ASSERT(!IsGlobal());
   return _voice;
 }

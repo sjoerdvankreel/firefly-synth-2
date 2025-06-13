@@ -25,7 +25,7 @@ inline float
 FBBasicLPFilter::Next(float in)
 {
   float out = (in * _b) + (_z * _a);
-  assert(!std::isnan(out));
+  FB_ASSERT(!std::isnan(out));
   return _z = out;
 }
 

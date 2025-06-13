@@ -54,7 +54,7 @@ auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
     eptr = std::current_exception(); 
   }
 
-  assert(eptr);
+  FB_ASSERT(eptr);
   if (!eptr) 
     return f(args...);
 
@@ -70,6 +70,6 @@ auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
     throw;
   }
 
-  assert(false);
+  FB_ASSERT(false);
   return f(args...);
 }

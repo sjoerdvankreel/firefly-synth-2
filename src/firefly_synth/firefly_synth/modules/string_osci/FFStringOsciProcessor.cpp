@@ -43,7 +43,7 @@ FFStringOsciProcessor::Draw()
 {
   if (_type == FFStringOsciType::Uni)
     return FBToBipolar(_uniformPrng.NextScalar());
-  assert(_type == FFStringOsciType::Norm);
+  FB_ASSERT(_type == FFStringOsciType::Norm);
   float result = 0.0f;
   do
   {

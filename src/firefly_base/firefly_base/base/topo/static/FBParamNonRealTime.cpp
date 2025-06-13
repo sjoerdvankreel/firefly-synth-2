@@ -9,7 +9,7 @@ FBEditTypeToString(FBEditType type)
   case FBEditType::Linear: return "Linear";
   case FBEditType::Stepped: return "Stepped";
   case FBEditType::Logarithmic: return "Logarithmic";
-  default: assert(false); return {};
+  default: FB_ASSERT(false); return {};
   }
 }
 

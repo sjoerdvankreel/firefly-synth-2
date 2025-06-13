@@ -11,21 +11,21 @@ FFOsciFMFormatRatioSlot(int slot)
   {
   case 0: return "2:1";
   case 1: return "3:2";
-  default: assert(false); return "";
+  default: FB_ASSERT(false); return "";
   }
 }
 
 static std::string
 FFOsciFMFormatRatioSubMenu(int subMenu)
 {
-  assert(0 <= subMenu && subMenu < FFOsciFMRatioCount);
+  FB_ASSERT(0 <= subMenu && subMenu < FFOsciFMRatioCount);
   return std::to_string(subMenu + 1);
 }
 
 static std::string
 FFOsciFMFormatRatioValue(int val)
 {
-  assert(0 <= val && val < FFOsciFMRatioCount * FFOsciFMRatioCount);
+  FB_ASSERT(0 <= val && val < FFOsciFMRatioCount * FFOsciFMRatioCount);
   return std::to_string(val / FFOsciFMRatioCount + 1) + ":" +
     std::to_string(val % FFOsciFMRatioCount + 1);
 }
@@ -33,7 +33,7 @@ FFOsciFMFormatRatioValue(int val)
 static std::string
 FFOsciFMFormatIndexSlot(int slot)
 {
-  assert(0 <= slot && slot < FFOsciFMMatrixSize);
+  FB_ASSERT(0 <= slot && slot < FFOsciFMMatrixSize);
   return std::to_string(slot / FFOsciFMOperatorCount + 1) + "\U00002192" + 
     std::to_string(slot % FFOsciFMOperatorCount + 1);
 }

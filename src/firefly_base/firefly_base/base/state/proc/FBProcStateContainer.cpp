@@ -49,9 +49,9 @@ _special(topo.static_.specialSelector(topo.static_, _rawState))
     case FBProcParamType::GlobalAcc: uniquePtrs.insert(&_params[p].GlobalAcc()); break;
     case FBProcParamType::VoiceBlock: uniquePtrs.insert(&_params[p].VoiceBlock()); break;
     case FBProcParamType::GlobalBlock: uniquePtrs.insert(&_params[p].GlobalBlock()); break;
-    default: assert(false); break;
+    default: FB_ASSERT(false); break;
     }
-  assert(uniquePtrs.size() == _params.size());
+  FB_ASSERT(uniquePtrs.size() == _params.size());
 #endif
 }
 

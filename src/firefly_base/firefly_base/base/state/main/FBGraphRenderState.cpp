@@ -98,7 +98,7 @@ FBGraphRenderState::FFT(std::vector<float>& data)
   for (int i = 0; i < data.size(); i++)
   {
     data[i] = (data[i] - min) / (max - min);
-    assert(-0.01f <= data[i] && data[i] <= 1.01f);
+    FB_ASSERT(-0.01f <= data[i] && data[i] <= 1.01f);
   }
 }
 

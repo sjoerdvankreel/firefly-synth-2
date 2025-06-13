@@ -32,7 +32,7 @@ float
 FBModuleGraphDisplayComponent::PointXLocation(
   int graph, float pointRelative) const
 {
-  assert(!std::isnan(pointRelative));
+  FB_ASSERT(!std::isnan(pointRelative));
   float graphCount = static_cast<float>(_data->graphs.size());
   float gapWidth = 3.0f;
   float gapCount = graphCount - 1.0f;
@@ -48,7 +48,7 @@ FBModuleGraphDisplayComponent::PointYLocation(
   float pointYValue, bool stereo, 
   bool left, float absMaxValueAllSeries) const
 {
-  assert(!std::isnan(pointYValue));
+  FB_ASSERT(!std::isnan(pointYValue));
   float pointValue = pointYValue / absMaxValueAllSeries;
   if (_data->bipolar)
     pointValue = FBToUnipolar(pointValue);
@@ -137,7 +137,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto const& secondarySeries = graphData.secondarySeries;
     bool stereo = !primarySeries.r.empty();
     graphData.GetLimits(maxSizeAllSeries, absMaxValueAllSeries);
-    assert(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
+    FB_ASSERT(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
     auto bounds = getLocalBounds();
     auto x0 = static_cast<int>(PointXLocation(graph, 0.0f));
@@ -151,7 +151,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
       auto const& pvi = graphData.primarySeries.verticalIndicators;
       for (int i = 0; i < pvi.size(); i++)
       {
-        assert(!stereo);
+        FB_ASSERT(!stereo);
         PaintVerticalIndicator(g, graph, pvi[i],
           true, maxSizeAllSeries, absMaxValueAllSeries);
       }
@@ -186,7 +186,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
 
         if (marker != -1 && _data->drawMarkers)
         {
-          assert(!stereo);
+          FB_ASSERT(!stereo);
           PaintMarker(g, graph, points.l, marker,
             false, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
         }
@@ -202,11 +202,11 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
         PaintMarker(g, graph, primarySeries.l, primarySeries.pointIndicators[i],
           true, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
-      assert(graphData.primaryMarkers.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
+      FB_ASSERT(graphData.primaryMarkers.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
       if (_data->drawMarkers)
         for (int i = 0; i < graphData.primaryMarkers.size(); i++)
         {
-          assert(!stereo);
+          FB_ASSERT(!stereo);
           PaintMarker(g, graph, primarySeries.l, graphData.primaryMarkers[i],
             true, false, false, true, maxSizeAllSeries, absMaxValueAllSeries);
         }

@@ -20,7 +20,7 @@ _special(topo.static_.specialGUISelector(topo.static_, _rawState))
     *_params[p] = topo.gui.params[p].DefaultNormalizedByText();
 #ifndef NDEBUG
   std::set<double*> uniquePtrs(_params.begin(), _params.end());
-  assert(uniquePtrs.size() == _params.size());
+  FB_ASSERT(uniquePtrs.size() == _params.size());
 #endif
 }
 

@@ -71,15 +71,15 @@ moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
   for (int m = 0; m < topo.modules.size(); m++)
   {
     auto const& module = topo.modules[m];
-    assert(allIds.insert(module.id).second);
-    assert(moduleNames.insert(module.name).second);
+    FB_ASSERT(allIds.insert(module.id).second);
+    FB_ASSERT(moduleNames.insert(module.name).second);
     for (int p = 0; p < module.params.size(); p++)
     {
       auto const& param = topo.modules[m].params[p];
-      assert(allIds.insert(param.id).second);
+      FB_ASSERT(allIds.insert(param.id).second);
       if (param.type == FBParamType::List)
         for (int i = 0; i < param.List().items.size(); i++)
-          assert(allIds.insert(param.List().items[i].id).second);
+          FB_ASSERT(allIds.insert(param.List().items[i].id).second);
     }
   }
 #endif

@@ -84,7 +84,7 @@ FBSmoothingProcessor::InsertMustNotExist(std::vector<int>& params, int param)
 {
 #ifndef NDEBUG
   auto iter = std::find(params.begin(), params.end(), param);
-  assert(iter == params.end());
+  FB_ASSERT(iter == params.end());
 #endif
   params.push_back(param);
 }

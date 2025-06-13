@@ -11,8 +11,8 @@ void
 FBHostAudioBlock::CopyFrom(
   FBBufferAudioBlock const& rhs, int count)
 {
-  assert(count <= Count());
-  assert(count <= rhs.Count());
+  FB_ASSERT(count <= Count());
+  FB_ASSERT(count <= rhs.Count());
   for (int ch = 0; ch < 2; ch++)
     for (int s = 0; s < count; s++)
       _store[ch][0 + s] = rhs[ch][s];

@@ -119,7 +119,7 @@ FBVST3GUIEditor::removed()
 #if SMTG_OS_LINUX
     IRunLoop* loop = {};
     auto ok = plugFrame->queryInterface(IRunLoop::iid, (void**)&loop);
-    assert(ok == kResultOk);
+    FB_ASSERT(ok == kResultOk);
     loop->unregisterEventHandler(this);
 #endif
     return EditorView::removed();
@@ -135,7 +135,7 @@ FBVST3GUIEditor::attached(void* parent, FIDString type)
 #if SMTG_OS_LINUX
     IRunLoop* loop = {};
     auto ok = plugFrame->queryInterface(IRunLoop::iid, (void**)&loop);
-    assert(ok == kResultOk);
+    FB_ASSERT(ok == kResultOk);
     for (int fd : LinuxEventLoopInternal::getRegisteredFds())
       loop->registerEventHandler(this, fd);
 #endif
@@ -220,7 +220,7 @@ FBVST3GUIEditor::MakeParamContextMenu(
     {
       if (vstMenu->getItem(i, vstItem, &target) != kResultOk)
       {
-        assert(false);
+        FB_ASSERT(false);
         return std::vector<FBHostContextMenuItem>();
       }
       FBVST3CopyFromString128(vstItem.name, item.name);

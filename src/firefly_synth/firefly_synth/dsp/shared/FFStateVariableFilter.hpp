@@ -42,8 +42,8 @@ inline double
 FFStateVariableFilter<Channels>::Next(
   int channel, double in)
 {
-  assert(!std::isnan(in));
-  assert(!std::isinf(in));
+  FB_ASSERT(!std::isnan(in));
+  FB_ASSERT(!std::isinf(in));
   double v0 = in;
   double v3 = v0 - this->_ic2eq[channel];
   double v1 = this->_a1 * this->_ic1eq[channel] + this->_a2 * v3;
@@ -51,10 +51,10 @@ FFStateVariableFilter<Channels>::Next(
   this->_ic1eq[channel] = 2 * v1 - this->_ic1eq[channel];
   this->_ic2eq[channel] = 2 * v2 - this->_ic2eq[channel];
   double result = this->_m0 * v0 + this->_m1 * v1 + this->_m2 * v2;
-  assert(!std::isnan(result));
-  assert(!std::isinf(result));
-  assert(!std::isnan(static_cast<float>(result)));
-  assert(!std::isinf(static_cast<float>(result)));
+  FB_ASSERT(!std::isnan(result));
+  FB_ASSERT(!std::isinf(result));
+  FB_ASSERT(!std::isnan(static_cast<float>(result)));
+  FB_ASSERT(!std::isinf(static_cast<float>(result)));
   return result;
 }
 
@@ -74,7 +74,7 @@ FFStateVariableFilter<Channels>::Set(
     minFilterFreq *= nyquist / FFMaxStateVariableFilterFreq;
     maxFilterFreq *= nyquist / FFMaxStateVariableFilterFreq;
   }
-  assert(minFilterFreq - 0.1 <= freqHz && freqHz <= maxFilterFreq + 0.1);
+  FB_ASSERT(minFilterFreq - 0.1 <= freqHz && freqHz <= maxFilterFreq + 0.1);
 #endif
 
   double a = 0.0;
@@ -89,7 +89,7 @@ FFStateVariableFilter<Channels>::Set(
     case FFStateVariableFilterMode::BLL: k = k / a; break;
     case FFStateVariableFilterMode::LSH: g = g / std::sqrt(a); break;
     case FFStateVariableFilterMode::HSH: g = g * std::sqrt(a); break;
-    default: assert(false); break;
+    default: FB_ASSERT(false); break;
     }
   }
 
@@ -111,6 +111,6 @@ FFStateVariableFilter<Channels>::Set(
   case FFStateVariableFilterMode::BLL: this->_m0 = 1.0; this->_m1 = k * (a * a - 1.0); break;
   case FFStateVariableFilterMode::LSH: this->_m0 = 1.0; this->_m1 = k * (a - 1.0); this->_m2 = a * a - 1.0; break;
   case FFStateVariableFilterMode::HSH: this->_m0 = a * a; this->_m1 = k * (1.0 - a * a); this->_m2 = 1.0 - a * a; break;
-  default: assert(false);  break;
+  default: FB_ASSERT(false);  break;
   }
 }

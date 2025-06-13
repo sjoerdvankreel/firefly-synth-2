@@ -21,7 +21,7 @@ FBProcParamState::InitProcessing(int voice, float value)
   {
   case FBProcParamType::VoiceBlock: VoiceBlock().BeginVoice(voice); break;
   case FBProcParamType::VoiceAcc: VoiceAcc().InitProcessing(voice, value); break;
-  default: assert(false); break;
+  default: FB_ASSERT(false); break;
   }
 }
 
@@ -34,6 +34,6 @@ FBProcParamState::SetSmoothingCoeffs(int sampleCount)
   case FBProcParamType::GlobalBlock: break;
   case FBProcParamType::VoiceAcc: VoiceAcc().SetSmoothingCoeffs(sampleCount); break;
   case FBProcParamType::GlobalAcc: GlobalAcc().SetSmoothingCoeffs(sampleCount); break;
-  default: assert(false);
+  default: FB_ASSERT(false);
   }
 }

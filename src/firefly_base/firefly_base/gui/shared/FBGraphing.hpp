@@ -150,22 +150,22 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   auto moduleProcState = renderState->ModuleProcState();
   auto exchangeState = renderState->ExchangeContainer()->Raw();
 
-  assert(renderData.graphData != nullptr);
-  assert(renderData.plotParamsSelector != nullptr);
+  FB_ASSERT(renderData.graphData != nullptr);
+  FB_ASSERT(renderData.plotParamsSelector != nullptr);
 
   if constexpr (Global)
   {
-    assert(renderData.globalExchangeSelector != nullptr);
+    FB_ASSERT(renderData.globalExchangeSelector != nullptr);
     if constexpr(Stereo)
-      assert(renderData.globalStereoOutputSelector != nullptr);
+      FB_ASSERT(renderData.globalStereoOutputSelector != nullptr);
     else
-      assert(renderData.globalMonoOutputSelector != nullptr);
+      FB_ASSERT(renderData.globalMonoOutputSelector != nullptr);
   } else {
-    assert(renderData.voiceExchangeSelector != nullptr);
+    FB_ASSERT(renderData.voiceExchangeSelector != nullptr);
     if constexpr (Stereo)
-      assert(renderData.voiceStereoOutputSelector != nullptr);
+      FB_ASSERT(renderData.voiceStereoOutputSelector != nullptr);
     else
-      assert(renderData.voiceMonoOutputSelector != nullptr);
+      FB_ASSERT(renderData.voiceMonoOutputSelector != nullptr);
   }
 
   moduleProcState->anyExchangeActive = false;

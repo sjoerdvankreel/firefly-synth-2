@@ -9,7 +9,7 @@ FBVST3CopyToString128(std::string const& in, TChar* out)
 {
   memset(out, 0, 128 * sizeof(TChar));
   bool ok = Vst::StringConvert::convert(in, out, 127);
-  assert(ok);
+  FB_ASSERT(ok);
 }
 
 void

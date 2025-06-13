@@ -37,7 +37,7 @@ FFDelayLine::Delay(float delay)
 {
   _delayWhole = static_cast<int>(delay);
   _delayFraction = delay - _delayWhole;
-  assert(0.0f <= delay && delay < _data.Count());
+  FB_ASSERT(0.0f <= delay && delay < _data.Count());
 }
 
 inline void
@@ -51,11 +51,11 @@ FFDelayLine::Resize(int count)
 inline void
 FFDelayLine::Push(float val)
 {
-  assert(!std::isnan(val));
-  assert(!std::isinf(val));
+  FB_ASSERT(!std::isnan(val));
+  FB_ASSERT(!std::isinf(val));
   _data.Set(_write, val);
   _write = (_write + Count() - 1) % Count();
-  assert(0 <= _write && _write < Count());
+  FB_ASSERT(0 <= _write && _write < Count());
 }
 
 inline float
@@ -66,6 +66,6 @@ FFDelayLine::Pop()
   float val1 = _data.Get(pos1);
   float val2 = _data.Get(pos2);
   _read = (_read + Count() - 1) % Count();
-  assert(0 <= _read && _read < Count());
+  FB_ASSERT(0 <= _read && _read < Count());
   return val1 + _delayFraction * (val2 - val1);
 }

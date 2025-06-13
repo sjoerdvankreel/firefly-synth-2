@@ -43,27 +43,27 @@ _voice(voice) {}
 inline float*
 FBParamExchangeState::Global()
 {
-  assert(IsGlobal());
+  FB_ASSERT(IsGlobal());
   return _global;
 }
 
 inline float const*
 FBParamExchangeState::Global() const
 {
-  assert(IsGlobal());
+  FB_ASSERT(IsGlobal());
   return _global;
 }
 
 inline std::array<float, FBMaxVoices>&
 FBParamExchangeState::Voice()
 {
-  assert(!IsGlobal());
+  FB_ASSERT(!IsGlobal());
   return *_voice;
 }
 
 inline std::array<float, FBMaxVoices> const&
 FBParamExchangeState::Voice() const
 {
-  assert(!IsGlobal());
+  FB_ASSERT(!IsGlobal());
   return *_voice;
 }

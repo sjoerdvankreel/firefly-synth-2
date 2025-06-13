@@ -23,9 +23,9 @@ FBPlugToHostProcessor::ProcessToHost(FBHostOutputBlock& hostBlock)
     _returnedVoices.begin(), 
     _returnedVoices.end());
   _returnedVoices.clear();
-  assert(hostBlock.returnedVoices.size() < FBMaxVoices);
+  FB_ASSERT(hostBlock.returnedVoices.size() < FBMaxVoices);
 
-  assert(hostBlock.audio.Count() <= _buffer.Count());
+  FB_ASSERT(hostBlock.audio.Count() <= _buffer.Count());
   hostBlock.audio.CopyFrom(_buffer, hostBlock.audio.Count());
   _buffer.Drop(hostBlock.audio.Count());
 }

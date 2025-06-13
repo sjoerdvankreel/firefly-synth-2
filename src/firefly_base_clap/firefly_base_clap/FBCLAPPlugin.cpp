@@ -251,7 +251,7 @@ FBCLAPPlugin::ProcessMainToAudioEvents(
         _procState->InitProcessing(uiEvent.paramIndex, uiEvent.normalized);
       break;
     default:
-      assert(false);
+      FB_ASSERT(false);
       break;
     }
   }

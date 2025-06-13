@@ -14,7 +14,7 @@ FFOsciModFormatSlot(int slot)
   case 3: return "1\U000021924";
   case 4: return "2\U000021924";
   case 5: return "3\U000021924";
-  default: assert(false); return "";
+  default: FB_ASSERT(false); return "";
   }
 }
 
@@ -29,7 +29,7 @@ FFOsciModFormatSlotVertical(int slot)
   case 3: return "1\n\U000021934";
   case 4: return "2\n\U000021934";
   case 5: return "3\n\U000021934";
-  default: assert(false); return "";
+  default: FB_ASSERT(false); return "";
   }
 }
 

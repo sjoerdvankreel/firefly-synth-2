@@ -83,7 +83,7 @@ FBParamControl*
 FBPlugGUI::GetControlForAudioParamIndex(int paramIndex) const
 {
   auto iter = _audioParamIndexToComponent.find(paramIndex);
-  assert(iter != _audioParamIndexToComponent.end());
+  FB_ASSERT(iter != _audioParamIndexToComponent.end());
   return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
 }
 

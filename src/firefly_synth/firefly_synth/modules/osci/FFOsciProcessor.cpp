@@ -30,14 +30,14 @@ OsciModStartSlot(int osciSlot)
   case 1: return 0;
   case 2: return 1;
   case 3: return 3;
-  default: assert(false); return -1;
+  default: FB_ASSERT(false); return -1;
   }
 }
 
 static inline float
 FMRatioRatio(int v)
 {
-  assert(0 <= v && v < FFOsciFMRatioCount * FFOsciFMRatioCount);
+  FB_ASSERT(0 <= v && v < FFOsciFMRatioCount * FFOsciFMRatioCount);
   return ((v / FFOsciFMRatioCount) + 1.0f) / ((v % FFOsciFMRatioCount) + 1.0f);
 }
 
@@ -911,7 +911,7 @@ GenerateWaveBasicCheck(
   case FFOsciWaveBasicMode::AltSin: return WaveBasicAltSin(phaseVec, incrVec);
   case FFOsciWaveBasicMode::Parabl: return WaveBasicParabl(phaseVec, incrVec);
   case FFOsciWaveBasicMode::HypTri: return WaveBasicHypTri(phaseVec, incrVec);
-  default: assert(false); return 0.0f;
+  default: FB_ASSERT(false); return 0.0f;
   }
 }
 
@@ -930,7 +930,7 @@ GenerateWavePWCheck(
   case FFOsciWavePWMode::TriSaw: return WavePWTriSaw(phaseVec, incrVec, pwVec);
   case FFOsciWavePWMode::TriPls: return WavePWTriPls(phaseVec, incrVec, pwVec);
   case FFOsciWavePWMode::TrapTri: return WavePWTrapTri(phaseVec, incrVec, pwVec);
-  default: assert(false); return 0.0f;
+  default: FB_ASSERT(false); return 0.0f;
   }
 }
 
@@ -946,7 +946,7 @@ GenerateWaveHSCheck(
   case FFOsciWaveHSMode::Saw: return WaveHSSaw(phaseVec, incrVec, freqRatioVec);
   case FFOsciWaveHSMode::Sqr: return WaveHSSqr(phaseVec, incrVec, freqRatioVec);
   case FFOsciWaveHSMode::Tri: return WaveHSTri(phaseVec, incrVec, freqRatioVec);
-  default: assert(false); return 0.0f;
+  default: FB_ASSERT(false); return 0.0f;
   }
 }
 
@@ -1250,7 +1250,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else
     {
-      assert(false);
+      FB_ASSERT(false);
     }
   }
   if (_oversampleTimes != 1)
@@ -1289,7 +1289,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else
     {
-      assert(false);
+      FB_ASSERT(false);
     }
   }
 
@@ -1355,16 +1355,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             else if (_waveDSFMode == FFOsciWaveDSFMode::BW)
               thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFBWPlain) * waveDSFGain;
             else
-              assert(false);
+              FB_ASSERT(false);
           }
         }
         else
         {
-          assert(false);
+          FB_ASSERT(false);
         }
         uniOutputOversampled[u].Store(s, thisUniOutput);
         for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
-          assert(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
+          FB_ASSERT(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
       }
     }
   }

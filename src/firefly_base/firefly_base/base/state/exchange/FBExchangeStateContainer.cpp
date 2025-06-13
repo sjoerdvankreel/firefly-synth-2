@@ -52,7 +52,7 @@ _voices(topo.static_.voicesExchangeAddr(_rawState))
       uniquePtrs.insert(_params[p].Global());
     else
       uniquePtrs.insert(&_params[p].Voice());
-  assert(uniquePtrs.size() == _params.size());
+  FB_ASSERT(uniquePtrs.size() == _params.size());
 #endif
 }
 

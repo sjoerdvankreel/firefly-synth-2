@@ -6,7 +6,7 @@
 void
 FBBufferAudioBlock::Drop(int count)
 {
-  assert(0 <= count && count <= Count());
+  FB_ASSERT(0 <= count && count <= Count());
   for (int ch = 0; ch < 2; ch++)
     _store[ch].erase(_store[ch].begin(), _store[ch].begin() + count);
 }
