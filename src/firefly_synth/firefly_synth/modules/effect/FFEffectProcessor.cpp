@@ -220,11 +220,12 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(
       FFEffectParam::StVarMode, 
       FFSelectDualProcBlockParamNormalized<Global>(stVarModeNorm[i], voice));
-    if (!Global || graph)
-    {
-      _stVarFilters[i] = {};
-      _combFilters[i].Reset();
-    }
+
+    if constexpr(Global)
+      if (!graph)
+        continue;
+    _stVarFilters[i] = {};
+    _combFilters[i].Reset();
   }
 }
 
