@@ -27,8 +27,8 @@ FBGridComponent::
 FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols):
 Component(), 
 _type(type),
-_autoSizeRow(autoSizeRow),
 _autoSizeCol(autoSizeCol),
+_autoSizeRow(autoSizeRow),
 _rows(rows),
 _cols(cols) {}
 
