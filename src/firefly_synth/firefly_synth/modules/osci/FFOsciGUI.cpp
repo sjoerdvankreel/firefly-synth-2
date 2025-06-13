@@ -36,7 +36,7 @@ MakeOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto fine = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::Fine, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fine));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fine, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 4 });
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } });
   return grid;
 }
 
@@ -64,7 +64,7 @@ MakeOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
   auto random = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::UniRandom, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, random));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, random, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 6 });
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
   return grid;
 }
 
@@ -123,7 +123,7 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     grid->Add(1, 16, plugGUI->StoreComponent<FBParamSlider>(plugGUI, decay, Slider::SliderStyle::RotaryVerticalDrag));
   }
 
-  grid->MarkSection({ 0, 0, 2, 17 });
+  grid->MarkSection({ { 0, 0 }, { 2, 17 } });
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };
@@ -180,7 +180,7 @@ MakeOsciSectionFM(FBPlugGUI* plugGUI, int moduleSlot)
   auto fmIndex33 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::FMIndex, 8 } });
   grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fmIndex33, Slider::SliderStyle::LinearHorizontal));
 
-  grid->MarkSection({ 0, 0, 2, 10 });
+  grid->MarkSection({ { 0, 0 }, { 2, 10 } });
 
   FBParamsDependencies dependencies = {};
   FBTopoIndices indices = { (int)FFModuleType::Osci, moduleSlot };

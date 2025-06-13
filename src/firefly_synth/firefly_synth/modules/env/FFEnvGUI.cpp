@@ -43,7 +43,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto loopLength = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopLength));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopLength));
-  grid->MarkSection({ 0, 0, 2, 6 });
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
   return grid;
 }
 
@@ -59,7 +59,7 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 0, -1, std::vector<int> { 1, 1 }, columnSizes);
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Seg Len"));
   grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Lvl/Slp"));
-  grid->MarkSection({ 0, 0, 2, 1 });
+  grid->MarkSection({ { 0, 0 }, { 2, 1 } });
   for (int i = 0; i < FFEnvStageCount; i++)
   {
     auto upper = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
@@ -75,7 +75,7 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
     lower->Add(0, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, level, Slider::SliderStyle::RotaryVerticalDrag));
     auto slope = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageSlope, i } });
     lower->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
-    grid->MarkSection({ 0, 1 + i, 2, 1 });
+    grid->MarkSection({ { 0, 1 + i }, { 2, 1 } });
   }
   return grid;
 }

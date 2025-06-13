@@ -36,7 +36,7 @@ MakeStringOsciSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   auto fine = topo->audio.ParamAtTopo({ { (int)FFModuleType::StringOsci, moduleSlot }, { (int)FFStringOsciParam::Fine, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fine));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fine, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 4 });
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } });
   return grid;
 }
 
@@ -58,7 +58,7 @@ MakeStringOsciSectionUni(FBPlugGUI* plugGUI, int moduleSlot)
   auto blend = topo->audio.ParamAtTopo({ { (int)FFModuleType::StringOsci, moduleSlot }, { (int)FFStringOsciParam::UniBlend, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, blend));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, blend, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 4 });
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } });
   return grid;
 }
 
@@ -86,7 +86,7 @@ MakeStringOsciSectionNoise(FBPlugGUI* plugGUI, int moduleSlot)
   auto y = topo->audio.ParamAtTopo({ { (int)FFModuleType::StringOsci, moduleSlot }, { (int)FFStringOsciParam::Y, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, y));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, y, Slider::SliderStyle::RotaryVerticalDrag));  
-  grid->MarkSection({ 0, 0, 2, 6 });
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
   return grid;
 }
 
@@ -136,7 +136,7 @@ MakeStringOsciSectionKS(FBPlugGUI* plugGUI, int moduleSlot)
   auto trackingRange = topo->audio.ParamAtTopo({ { (int)FFModuleType::StringOsci, moduleSlot }, { (int)FFStringOsciParam::TrackingRange, 0 } });
   grid->Add(1, 11, plugGUI->StoreComponent<FBParamLabel>(plugGUI, trackingRange));
   grid->Add(1, 12, plugGUI->StoreComponent<FBParamSlider>(plugGUI, trackingRange, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ 0, 0, 2, 13 });
+  grid->MarkSection({ { 0, 0 }, { 2, 13 } });
   return grid;
 }
 

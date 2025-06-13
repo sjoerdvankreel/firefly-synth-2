@@ -23,7 +23,7 @@ MakeGUISettingsTab(FBPlugGUI* plugGUI)
   auto graphMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphMode, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphMode));
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphMode));
-  grid->MarkSection({ 0, 0, 1, 2 });
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } });
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

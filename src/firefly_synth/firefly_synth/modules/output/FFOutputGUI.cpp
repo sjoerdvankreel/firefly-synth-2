@@ -25,7 +25,7 @@ MakeOutputSectionAll(FBPlugGUI* plugGUI)
   auto voices = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voices));
   grid->Add(0, 1, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, voices, "0", std::to_string(FBMaxVoices)));
-  grid->MarkSection({ 0, 0, 1, 2 });
+  grid->MarkSection({ { 0, 0 }, { 1, 2 } });
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 } 
 
