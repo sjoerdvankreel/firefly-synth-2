@@ -415,7 +415,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_ERROR("Plugin param state is missing id.");
       return false;
     }
-    var id = param->getProperty("id");
+    id = param->getProperty("id");
     if (!id.isString())
     {
       FB_LOG_ERROR("Plugin param state id is not a string.");

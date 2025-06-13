@@ -64,7 +64,6 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
   result.minValue = 1.0f;
   result.maxValue = 0.0f;
 
-  float exchangeValue = 0.0f;
   auto const& paramExchange = Params()[param->runtimeParamIndex];
   auto const& moduleExchange = Modules()[param->runtimeModuleIndex];
 

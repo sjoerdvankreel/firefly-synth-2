@@ -96,7 +96,7 @@ FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 }
 
 bool
-FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
+FBCLAPPlugin::guiCreate(const char* /*api*/, bool /*isFloating*/) noexcept
 {
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this]()

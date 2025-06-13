@@ -30,6 +30,14 @@ public juce::Timer,
 public FBHostGUIContext,
 public IFBHostDSPContext
 {
+#pragma warning(push)
+#pragma warning(disable: 4324)
+  moodycamel::ReaderWriterQueue<FBCLAPSyncToMainEvent,
+    FBCLAPSyncEventReserve> _audioToMainEvents;
+  moodycamel::ReaderWriterQueue<FBCLAPSyncToAudioEvent,
+    FBCLAPSyncEventReserve> _mainToAudioEvents;
+#pragma warning(pop)
+
   std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBRuntimeTopo> _topo;
   std::unique_ptr<FBGUIStateContainer> _guiState;
@@ -38,11 +46,6 @@ public IFBHostDSPContext
   std::unique_ptr<FBExchangeStateContainer> _dspExchangeState;
   std::unique_ptr<FBExchangeStateContainer> _guiExchangeState;
   std::unique_ptr<FBCLAPExchangeStateQueueBase> _exchangeStateQueue;
-
-  moodycamel::ReaderWriterQueue<FBCLAPSyncToMainEvent, 
-    FBCLAPSyncEventReserve> _audioToMainEvents;
-  moodycamel::ReaderWriterQueue<FBCLAPSyncToAudioEvent, 
-    FBCLAPSyncEventReserve> _mainToAudioEvents;
 
   float _sampleRate = 0.0f;
   FBHostInputBlock _input = {};

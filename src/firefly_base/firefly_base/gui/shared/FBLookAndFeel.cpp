@@ -13,8 +13,7 @@ getSliderThumbColor(Slider const& s)
 }
 
 static void createTabTextLayout(
-  const TabBarButton& button,
-  float length, float depth,
+  const TabBarButton& button, float length, 
   Colour colour, Font const& font,
   TextLayout& textLayout)
 {
@@ -81,10 +80,9 @@ FBLookAndFeel::getLabelBorderSize(
 
 int
 FBLookAndFeel::getTabButtonBestWidth(
-  juce::TabBarButton& button, int tabDepth)
+  juce::TabBarButton& button, int /*tabDepth*/)
 {
   auto text = button.getButtonText().toStdString();
-  auto tw = FBGUIGetStringWidthCached(text);
   return text.size() == 1 ? 32 : 64;
 }
 
@@ -115,8 +113,8 @@ FBLookAndFeel::drawLabel(
 
 void
 FBLookAndFeel::drawComboBox(Graphics& g,
-  int	width, int height, bool	isButtonDown,
-  int	buttonX, int buttonY, int	buttonW, int buttonH, ComboBox& box)
+  int	width, int height, bool	/*isButtonDown*/,
+  int	/*buttonX*/, int /*buttonY*/, int	/*buttonW*/, int /*buttonH*/, ComboBox& box)
 {
   auto cornerSize = 3.0f;
   Rectangle<int> boxBounds(2, 1, width - 4, height - 2);
@@ -133,9 +131,9 @@ FBLookAndFeel::drawTickBox(
   Graphics& g, Component& component,
   float x, float y, float w, float h,
   const bool ticked,
-  const bool isEnabled,
-  const bool shouldDrawButtonAsHighlighted,
-  const bool shouldDrawButtonAsDown)
+  const bool /*isEnabled*/,
+  const bool /*shouldDrawButtonAsHighlighted*/,
+  const bool /*shouldDrawButtonAsDown*/)
 {
   Rectangle<float> tickBounds(x, y, w, h);
   g.setColour(component.findColour(ToggleButton::tickDisabledColourId));
@@ -156,10 +154,9 @@ void
 FBLookAndFeel::drawLinearSlider(
   Graphics& g,
   int x, int y, int width, int height,
-  float sliderPos, float minSliderPos, float maxSliderPos,
+  float sliderPos, float /*minSliderPos*/, float /*maxSliderPos*/,
   Slider::SliderStyle style, Slider& slider)
 {
-  auto isTwoVal = (style == Slider::SliderStyle::TwoValueVertical || style == Slider::SliderStyle::TwoValueHorizontal);
   auto isThreeVal = (style == Slider::SliderStyle::ThreeValueVertical || style == Slider::SliderStyle::ThreeValueHorizontal);
   auto trackWidth = jmin(6.0f, slider.isHorizontal() ? (float)height * 0.25f : (float)width * 0.25f);
 
@@ -329,7 +326,7 @@ FBLookAndFeel::drawTabButton(
     std::swap(length, depth);
 
   TextLayout textLayout;
-  ::createTabTextLayout(button, length, depth, col, FBGUIGetFont(), textLayout);
+  ::createTabTextLayout(button, length, col, FBGUIGetFont(), textLayout);
 
   AffineTransform t;
   switch (o)

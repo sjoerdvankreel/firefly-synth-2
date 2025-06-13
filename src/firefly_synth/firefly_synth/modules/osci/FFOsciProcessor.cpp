@@ -1436,7 +1436,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         if (_fmMode == FFOsciFMMode::Exp)
         {
           op3UniPitch += op3UniPitch * fmTo3;
-          auto op3UniFreq = FBPitchToFreq(op3UniPitch);
+          op3UniFreq = FBPitchToFreq(op3UniPitch);
           op3UniPhase = _uniFMPhaseGens[2][block].Next(op3UniFreq / oversampledRate, 0.0f);
         }
         else

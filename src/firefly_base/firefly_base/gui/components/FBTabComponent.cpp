@@ -46,7 +46,7 @@ FBModuleTabComponent::AddModuleTab(
 
 void
 FBModuleTabComponent::currentTabChanged(
-  int newCurrentTabIndex, juce::String const& newCurrentTabName)
+  int newCurrentTabIndex, juce::String const& /*newCurrentTabName*/)
 {
   if (newCurrentTabIndex < 0 || newCurrentTabIndex >= _moduleIndices.size())
     return;

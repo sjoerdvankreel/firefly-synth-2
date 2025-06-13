@@ -11,7 +11,10 @@
 
 using namespace juce;
 
+#pragma warning (push)
+#pragma warning (disable: 4996)
 static Font _font = {};
+#pragma warning (pop)
 static Typeface::Ptr _typeface = {};
 static std::unique_ptr<FBLookAndFeel> _lookAndFeel = {};
 
@@ -27,7 +30,10 @@ FBGUITerminate()
   FB_LOG_INFO("Terminating GUI.");
   LookAndFeel::setDefaultLookAndFeel(nullptr);
   _lookAndFeel.reset();
+#pragma warning(push)
+#pragma warning(disable:4996)
   _font = {};
+#pragma warning(pop)
   _typeface.reset();
   FB_LOG_INFO("Terminating JUCE GUI.");
   shutdownJuce_GUI();

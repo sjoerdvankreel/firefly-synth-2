@@ -36,13 +36,13 @@ FBPlugGUI::InitAllDependencies()
 }
 
 void
-FBPlugGUI::GUIParamNormalizedChanged(int index, double value)
+FBPlugGUI::GUIParamNormalizedChanged(int index, double /*value*/)
 {
   GUIParamNormalizedChanged(index);
 }
 
 void
-FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
+FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double /*value*/)
 {
   AudioParamNormalizedChanged(index);
 }

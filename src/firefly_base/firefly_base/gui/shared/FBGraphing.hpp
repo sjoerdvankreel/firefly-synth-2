@@ -197,7 +197,6 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   float guiSampleRate;
   float guiSampleCount;
   auto hostExchange = renderState->ExchangeContainer()->Host();
-  float dspSampleRate = renderState->ExchangeContainer()->Host()->sampleRate;
   if (plotParams.autoSampleRate)
   {
     guiSampleCount = static_cast<float>(graphData->pixelWidth);

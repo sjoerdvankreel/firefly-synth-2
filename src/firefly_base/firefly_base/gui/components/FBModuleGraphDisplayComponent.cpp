@@ -140,9 +140,9 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     assert(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
     auto bounds = getLocalBounds();
-    auto x0 = PointXLocation(graph, 0.0f);
-    auto x1 = PointXLocation(graph, 1.0f);
-    auto graphBounds = Rectangle<int>(x0, bounds.getY(), static_cast<int>(x1 - x0), bounds.getHeight());
+    auto x0 = static_cast<int>(PointXLocation(graph, 0.0f));
+    auto x1 = static_cast<int>(PointXLocation(graph, 1.0f));
+    auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
     g.setColour(Colour(0xFF181818));
     g.fillRoundedRectangle(graphBounds.toFloat(), 2.0f);
 
@@ -180,8 +180,8 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
           PaintSeries(g, Colours::grey, graph, points.r,
             stereo, false, maxSizeAllSeries, absMaxValueAllSeries);
 
-        for (int i = 0; i < points.pointIndicators.size(); i++)
-          PaintMarker(g, graph, points.l, points.pointIndicators[i],
+        for (int j = 0; j < points.pointIndicators.size(); j++)
+          PaintMarker(g, graph, points.l, points.pointIndicators[j],
             false, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
         if (marker != -1 && _data->drawMarkers)

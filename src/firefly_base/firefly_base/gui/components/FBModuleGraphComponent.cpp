@@ -92,7 +92,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 }
 
 void
-FBModuleGraphComponent::paint(Graphics& g)
+FBModuleGraphComponent::paint(Graphics& /*g*/)
 {
   if (_tweakedModuleByUI == -1)
     return;
