@@ -27,7 +27,8 @@ public:
   std::pair<int, int> GetHostSize() const;
   int ClampHostWidthForScale(int width) const;
   int GetHeightForAspectRatio(int width) const;
-  FBHostGUIContext* const HostContext() const { return _hostContext; }
+  FBHostGUIContext* HostContext() { return _hostContext; }
+  FBHostGUIContext const* HostContext() const { return _hostContext; }
 
   virtual ~FBPlugGUIContext() {}
   virtual void RemoveFromDesktop() = 0;

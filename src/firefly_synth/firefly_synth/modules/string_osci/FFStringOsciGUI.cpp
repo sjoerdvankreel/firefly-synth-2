@@ -99,7 +99,7 @@ MakeStringOsciSectionKS(FBPlugGUI* plugGUI, int moduleSlot)
   auto lpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::StringOsci, moduleSlot }, { (int)FFStringOsciParam::LPOn, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpOn));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
-  auto lpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::StringOsci, moduleSlot }, (int)FFStringOsciParam::LPFreq, 0 });
+  auto lpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::StringOsci, moduleSlot }, { (int)FFStringOsciParam::LPFreq, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::LinearHorizontal));
   auto hpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::StringOsci, moduleSlot }, { (int)FFStringOsciParam::HPOn, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));

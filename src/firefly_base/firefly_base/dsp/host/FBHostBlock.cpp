@@ -3,7 +3,7 @@
 
 FBHostAudioBlock::
 FBHostAudioBlock(float** channels, int count) :
-  _count(count), _store({ channels[0], channels[1] }) {}
+  _count(count), _store({ { channels[0], channels[1] } }) {}
 
 void
 FBHostAudioBlock::CopyFrom(

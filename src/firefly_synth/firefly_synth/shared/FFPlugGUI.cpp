@@ -85,7 +85,7 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 FBGUIRenderType 
 FFPlugGUI::GetRenderType() const
 {
-  FBParamTopoIndices indices = { (int)FFModuleType::GUISettings, 0, (int)FFGUISettingsGUIParam::GraphMode, 0 };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphMode, 0 } };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
   float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
   auto mode = static_cast<FFGUISettingsGraphMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));

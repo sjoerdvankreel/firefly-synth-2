@@ -100,9 +100,9 @@ PlotParams(FBModuleGraphComponentData const* data, int graphIndex)
   auto const* state = data->renderState;
   int moduleSlot = state->ModuleProcState()->moduleSlot;
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
-  FBParamTopoIndices indices = { (int)moduleType, moduleSlot, coarseParam, 0 };
+  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { coarseParam, 0 } };
   float pitch = 60.0f + static_cast<float>(state->AudioParamLinear(indices, false, -1));
-  pitch += state->AudioParamLinear({ (int)moduleType, moduleSlot, fineParam, 0 }, false, -1);
+  pitch += state->AudioParamLinear({ { (int)moduleType, moduleSlot }, { fineParam, 0 } }, false, -1);
   result.sampleCount = FBFreqToSamples(FBPitchToFreq(pitch), sampleRate) * rounds;
   return result;
 }
@@ -130,7 +130,7 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
     graphData->renderState->ModuleProcState()->moduleSlot = o;
     FBRenderModuleGraph<false, true>(renderData, o);
     FBTopoIndices modIndices = { (int)FFModuleType::Osci, o };
-    FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFOsciParam::Type, 0 };
+    FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFOsciParam::Type, 0 } };
     graphData->graphs[o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
     if (graphData->renderState->AudioParamList<FFOsciType>(paramIndices, false, -1) == FFOsciType::Off)
       graphData->graphs[o].text += " OFF";
@@ -140,7 +140,7 @@ FFOscisRenderGraph(FBModuleGraphComponentData* graphData)
     graphData->renderState->ModuleProcState()->moduleSlot = o;
     FBRenderModuleGraph<false, true>(renderData, FFOsciCount + o);
     FBTopoIndices modIndices = { (int)FFModuleType::StringOsci, o };
-    FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFStringOsciParam::Type, 0 };
+    FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFStringOsciParam::Type, 0 } };
     graphData->graphs[FFOsciCount + o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
     if (graphData->renderState->AudioParamList<FFStringOsciType>(paramIndices, false, -1) == FFStringOsciType::Off)
       graphData->graphs[FFOsciCount + o].text += " OFF";

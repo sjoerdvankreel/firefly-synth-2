@@ -71,7 +71,7 @@ EffectGraphRenderData<Global>::DoPostProcess(
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  FBParamTopoIndices indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
+  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
   if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb && kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
     return;
@@ -91,14 +91,14 @@ EffectGraphRenderData<Global>::DoProcess(
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  FBParamTopoIndices indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::On, 0 };
+  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } };
   bool on = state->AudioParamBool(indices, false, -1);
   if (!on)
     return 0;
 
   if (graphIndex != FFEffectBlockCount)
   {
-    indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
+    indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
     plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin;
     if (kind == FFEffectKind::Off)
@@ -146,7 +146,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   auto* moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   FBTopoIndices modIndices = { (int)moduleType, moduleSlot };
-  FBParamTopoIndices paramIndices = { (int)moduleType, moduleSlot, (int)FFEffectParam::On, 0 };
+  FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } };
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
   bool on = renderState->AudioParamBool(paramIndices, false, -1);
   for (int i = 0; i <= FFEffectBlockCount; i++)
@@ -156,7 +156,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
       graphData->graphs[i].text = moduleName + (on? "ALL": "ALL OFF");
     else
     {
-      FBParamTopoIndices indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::Kind, i };
+      FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
       bool blockOn = on && kind != FFEffectKind::Off;
       graphData->graphs[i].text = moduleName + std::string(1, static_cast<char>('A' + i));

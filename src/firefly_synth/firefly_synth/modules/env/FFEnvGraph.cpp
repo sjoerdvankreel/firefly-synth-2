@@ -31,9 +31,9 @@ StageLengthAudioSamples(
   float sampleRate = state->ExchangeContainer()->Host()->sampleRate;
   
   auto type = state->AudioParamList<FFEnvType>(
-    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 }, exchange, exchangeVoice);
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } }, exchange, exchangeVoice);
   bool sync = state->AudioParamBool(
-    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Sync, 0 }, exchange, exchangeVoice);
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Sync, 0 } }, exchange, exchangeVoice);
   if (type == FFEnvType::Off)
     return;
 
@@ -41,17 +41,17 @@ StageLengthAudioSamples(
   {
     for (int i = 0; i < FFEnvStageCount; i++)
       stageLengths.push_back(state->AudioParamLinearTimeSamples(
-        { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageTime, i }, exchange, exchangeVoice, sampleRate));
+        { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } }, exchange, exchangeVoice, sampleRate));
     smoothLength = state->AudioParamLinearTimeSamples(
-      { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothTime, 0 }, exchange, exchangeVoice, sampleRate);
+      { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothTime, 0 } }, exchange, exchangeVoice, sampleRate);
   }
   else
   {
     for (int i = 0; i < FFEnvStageCount; i++)
       stageLengths.push_back(state->AudioParamBarsSamples(
-        { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::StageBars, i }, exchange, exchangeVoice, sampleRate, bpm));
+        { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } }, exchange, exchangeVoice, sampleRate, bpm));
     smoothLength = state->AudioParamBarsSamples(
-      { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::SmoothBars, 0 }, exchange, exchangeVoice, sampleRate, bpm);
+      { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::SmoothBars, 0 } }, exchange, exchangeVoice, sampleRate, bpm);
   }
 }
 
@@ -115,12 +115,12 @@ EnvGraphRenderData::DoProcessIndicators(
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
   auto type = graphData->renderState->AudioParamList<FFEnvType>(
-    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Type, 0 }, exchange, exchangeVoice);
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } }, exchange, exchangeVoice);
   if (type == FFEnvType::Off)
     return;
 
   int releasePoint = graphData->renderState->AudioParamDiscrete(
-    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::Release, 0 }, exchange, exchangeVoice);
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Release, 0 } }, exchange, exchangeVoice);
   if (releasePoint != 0)
   {
     int releasePointSamples = 0;
@@ -131,7 +131,7 @@ EnvGraphRenderData::DoProcessIndicators(
   }
 
   int loopStart = graphData->renderState->AudioParamDiscrete(
-    { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopStart, 0 }, exchange, exchangeVoice);
+    { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopStart, 0 } }, exchange, exchangeVoice);
   if (loopStart != 0)
   {
     int lp = 0;
@@ -142,7 +142,7 @@ EnvGraphRenderData::DoProcessIndicators(
     points.verticalIndicators.push_back(loopStartSamples);
 
     int loopLength = graphData->renderState->AudioParamDiscrete(
-      { (int)FFModuleType::Env, moduleSlot, (int)FFEnvParam::LoopLength, 0 }, exchange, exchangeVoice);
+      { { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::LoopLength, 0 } }, exchange, exchangeVoice);
     if (loopLength != 0 && lp < FFEnvStageCount)
     {
       int loopLengthSamples = 0;
@@ -172,7 +172,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     graphData->renderState->ModuleProcState()->moduleSlot = o;
     FBRenderModuleGraph<false, false>(renderData, o);
     FBTopoIndices modIndices = { (int)FFModuleType::Env, o };
-    FBParamTopoIndices paramIndices = { modIndices.index, modIndices.slot, (int)FFEnvParam::Type, 0 };
+    FBParamTopoIndices paramIndices = { { modIndices.index, modIndices.slot }, { (int)FFEnvParam::Type, 0 } };
     graphData->graphs[o].text = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
     if (graphData->renderState->AudioParamList<FFEnvType>(paramIndices, false, -1) == FFEnvType::Off)
       graphData->graphs[o].text += " OFF";
