@@ -1,0 +1,1 @@
+// just to allow to build a lib from juce and to link it elsewhere
