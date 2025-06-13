@@ -94,6 +94,8 @@ inline void
 FFCombFilter<Channels>::DebugCheck(
   float sampleRate, float freq)
 {
+  (void)freq;
+  (void)sampleRate;
   // check for graphs
 #ifndef NDEBUG
   float nyquist = sampleRate * 0.5f;
