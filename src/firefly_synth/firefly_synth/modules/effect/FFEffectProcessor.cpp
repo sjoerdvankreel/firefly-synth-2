@@ -390,11 +390,11 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   for(int i = 0; i < FFEffectBlockCount; i++)
     switch (_kind[i])
     {
+    case FFEffectKind::Fold:
+      ProcessFold(i, oversampled, distMixPlain, distBiasPlain, distDrivePlain);
+      break;
     case FFEffectKind::Clip:
       ProcessClip(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
-      break;
-    case FFEffectKind::Fold:
-      ProcessFold(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
       break;
     case FFEffectKind::Skew:
       ProcessSkew(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
@@ -672,7 +672,6 @@ void
 FFEffectProcessor::ProcessFold(
   int block,
   FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)

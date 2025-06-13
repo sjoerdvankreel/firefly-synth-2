@@ -10,7 +10,7 @@
 
 struct FBStaticModule;
 
-class alignas(FBSIMDAlign) FFOutputDSPState final
+class FFOutputDSPState final
 {
   friend class FFPlugProcessor;
   std::unique_ptr<FFOutputProcessor> processor = {};

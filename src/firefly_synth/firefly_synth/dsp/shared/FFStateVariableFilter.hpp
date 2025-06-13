@@ -77,7 +77,7 @@ FFStateVariableFilter<Channels>::Set(
   assert(minFilterFreq - 0.1 <= freqHz && freqHz <= maxFilterFreq + 0.1);
 #endif
 
-  double a;
+  double a = 0.0;
   double k = 2.0 - 2.0 * resNorm * FFMaxStateVariableFilterRes;
   double g = std::tan(std::numbers::pi * freqHz / sampleRate);
 

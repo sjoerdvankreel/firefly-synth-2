@@ -184,7 +184,6 @@ WaveBasicTri(
   {
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
-    float t0 = t;
     float t1 = FBPhaseWrap(t + 0.25f);
     float t2 = FBPhaseWrap(t + 0.75f);
     float y = t * 4.0f;
@@ -755,7 +754,7 @@ WaveHSSaw(
     if (n > 0)
       pw = (pw - 1.0f) / n + 1;
 
-    for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
     {
       t = FBPhaseWrap(t + pw);
       if (t < dt)
@@ -818,7 +817,7 @@ WaveHSSqr(
       scale = 1.0f;
     }
 
-    for (int i = 0; i < 2 * n; i++)
+    for (int j = 0; j < 2 * n; j++)
     {
       t = FBPhaseWrap(t);
       y += BLEP(t, dt) * scale;
@@ -873,7 +872,7 @@ WaveHSTri(
       scale = -scale;
     }
 
-    for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
     {
       t = FBPhaseWrap(t);
       y += BLAMP(t, dt) * scale;
@@ -1128,7 +1127,6 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   FBSArray<float, FFOsciBaseUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
   {
-    float random = _uniRandomPlain;
     float uniPhase = u * _uniOffsetPlain / _uniCount;
     uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _prng.NextScalar()) * uniPhase);
     _uniPhaseGens[u] = FFOsciPhaseGenerator(uniPhaseInit.Get(u));

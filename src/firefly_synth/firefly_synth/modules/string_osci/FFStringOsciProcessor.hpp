@@ -49,7 +49,7 @@ public FFOsciProcessorBase
 
   float Draw();
   float Next(
-    FBStaticModule const& topo, int uniVoice,
+    int uniVoice,
     float sampleRate, float uniFreq, 
     float excite, float colorNorm, 
     float xNorm, float yNorm);

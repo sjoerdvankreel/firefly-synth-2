@@ -99,7 +99,6 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
   auto const& procParams = procState->param.voice.env[state.moduleSlot];
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
   auto const& stageLevel = procParams.acc.stageLevel;

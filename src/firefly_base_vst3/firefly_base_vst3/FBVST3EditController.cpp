@@ -76,13 +76,13 @@ FBVST3EditController::ResetView()
 }
 
 void
-FBVST3EditController::EndAudioParamChange(int index)
+FBVST3EditController::EndAudioParamChange(int /*index*/)
 {
   // see PerformAudioParamEdit
 }
 
 void
-FBVST3EditController::BeginAudioParamChange(int index)
+FBVST3EditController::BeginAudioParamChange(int /*index*/)
 {
   // see PerformAudioParamEdit
 }

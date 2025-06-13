@@ -145,12 +145,12 @@ FBVST3GUIEditor::attached(void* parent, FIDString type)
 }
 
 tresult PLUGIN_API 
-FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect)
+FBVST3GUIEditor::checkSizeConstraint(ViewRect* rect_)
 {
-  return FBWithLogException([this, rect]()
+  return FBWithLogException([this, rect_]()
   {
-    rect->right = rect->left + _gui->ClampHostWidthForScale(rect->getWidth());
-    rect->bottom = rect->top + _gui->GetHeightForAspectRatio(rect->getWidth());
+    rect_->right = rect_->left + _gui->ClampHostWidthForScale(rect_->getWidth());
+    rect_->bottom = rect_->top + _gui->GetHeightForAspectRatio(rect_->getWidth());
     return kResultTrue;
   });
 }

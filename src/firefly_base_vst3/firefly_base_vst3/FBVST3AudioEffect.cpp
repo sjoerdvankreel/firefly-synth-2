@@ -207,37 +207,37 @@ FBVST3AudioEffect::process(ProcessData& data)
 {
   return FBWithLogException([this, &data]()
   {
-    Event event;
+    Event inEvent;
     _input.noteEvents.clear();
     if (data.inputEvents != nullptr)
       for (int i = 0; i < data.inputEvents->getEventCount(); i++)
-        if (data.inputEvents->getEvent(i, event) == kResultOk)
-          if (event.type == Event::kNoteOnEvent)
-            _input.noteEvents.push_back(MakeNoteOnEvent(event));
-          else if (event.type == Event::kNoteOffEvent)
-            _input.noteEvents.push_back(MakeNoteOffEvent(event));
+        if (data.inputEvents->getEvent(i, inEvent) == kResultOk)
+          if (inEvent.type == Event::kNoteOnEvent)
+            _input.noteEvents.push_back(MakeNoteOnEvent(inEvent));
+          else if (inEvent.type == Event::kNoteOffEvent)
+            _input.noteEvents.push_back(MakeNoteOffEvent(inEvent));
 
     int position;
     ParamValue value;
-    IParamValueQueue* queue;
+    IParamValueQueue* inQueue;
     std::unordered_map<int, int>::const_iterator iter;
     _input.blockAuto.clear();
     auto& accAuto = _input.accAutoByParamThenSample;
     accAuto.clear();
     if (data.inputParameterChanges != nullptr)
       for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
-        if ((queue = data.inputParameterChanges->getParameterData(p)) != nullptr)
-          if (queue->getPointCount() > 0)
-            if ((iter = _topo->audio.paramTagToIndex.find(queue->getParameterId())) != _topo->audio.paramTagToIndex.end())
+        if ((inQueue = data.inputParameterChanges->getParameterData(p)) != nullptr)
+          if (inQueue->getPointCount() > 0)
+            if ((iter = _topo->audio.paramTagToIndex.find(inQueue->getParameterId())) != _topo->audio.paramTagToIndex.end())
               if (_topo->audio.params[iter->second].static_.acc)
               {
-                for (int point = 0; point < queue->getPointCount(); point++)
-                  if (queue->getPoint(point, position, value) == kResultTrue)
+                for (int point = 0; point < inQueue->getPointCount(); point++)
+                  if (inQueue->getPoint(point, position, value) == kResultTrue)
                     accAuto.push_back(MakeAccAutoEvent(iter->second, position, value));
               }
               else
               {
-                if (queue->getPoint(queue->getPointCount() - 1, position, value) == kResultTrue)
+                if (inQueue->getPoint(inQueue->getPointCount() - 1, position, value) == kResultTrue)
                   _input.blockAuto.push_back(MakeBlockAutoEvent(iter->second, value));
               }
     std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
@@ -261,11 +261,11 @@ FBVST3AudioEffect::process(ProcessData& data)
       for (int i = 0; i < _output.outputParams.size(); i++)
       {
         int unused;
-        auto const& event = _output.outputParams[i];
-        int tag = _topo->audio.params[event.param].tag;
-        auto queue = data.outputParameterChanges->addParameterData(tag, unused);
-        if (queue != nullptr)
-          queue->addPoint(0, event.normalized, unused);
+        auto const& outEvent = _output.outputParams[i];
+        int tag = _topo->audio.params[outEvent.param].tag;
+        auto outQueue = data.outputParameterChanges->addParameterData(tag, unused);
+        if (outQueue != nullptr)
+          outQueue->addPoint(0, outEvent.normalized, unused);
       }
 
     if (_exchangeBlock.blockID == InvalidDataExchangeBlockID)

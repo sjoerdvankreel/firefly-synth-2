@@ -16,8 +16,8 @@ public FBModuleGraphRenderData<OscisGraphRenderData>
   FFVoiceDSPState& GetVoiceDSPState(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
-  void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
+  void DoProcessIndicators(int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
+  void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
 FFVoiceDSPState&
@@ -28,7 +28,7 @@ OscisGraphRenderData::GetVoiceDSPState(FBModuleProcState& state)
 
 void
 OscisGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
 {
   auto* moduleProcState = state->ModuleProcState();
   if (graphIndex >= FFOsciCount)
@@ -56,7 +56,7 @@ OscisGraphRenderData::DoBeginVoiceOrBlock(
 
 int 
 OscisGraphRenderData::DoProcess(
-  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
 {
   auto* moduleProcState = state->ModuleProcState();
   if (graphIndex >= FFOsciCount)

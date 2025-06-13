@@ -16,7 +16,7 @@ public FBModuleGraphRenderData<EnvGraphRenderData>
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
-  void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
+  void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
 static void
@@ -56,7 +56,7 @@ StageLengthAudioSamples(
 }
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, int graphIndex)
+PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
 {
   FBModuleGraphPlotParams result = {};
   result.sampleCount = 0;
@@ -76,8 +76,8 @@ PlotParams(FBModuleGraphComponentData const* data, int graphIndex)
 
 int 
 EnvGraphRenderData::DoProcess(
-  FBGraphRenderState* state, int graphIndex, 
-  bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, int /*graphIndex*/,
+  bool /*exchange*/, int /*exchangeVoice*/)
 { 
   auto* moduleProcState = state->ModuleProcState();
   return GetProcessor(*moduleProcState).Process(*moduleProcState);
@@ -85,8 +85,8 @@ EnvGraphRenderData::DoProcess(
 
 void 
 EnvGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, int graphIndex, 
-  bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, int /*graphIndex*/,
+  bool /*exchange*/, int /*exchangeVoice*/)
 { 
   auto* moduleProcState = state->ModuleProcState();
   GetProcessor(*moduleProcState).BeginVoice(*moduleProcState);
@@ -101,7 +101,7 @@ EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
 
 void
 EnvGraphRenderData::DoProcessIndicators(
-  int graphIndex, bool exchange,
+  int /*graphIndex*/, bool exchange,
   int exchangeVoice, FBModuleGraphPoints& points)
 {
   int smoothLengthAudio;
@@ -161,9 +161,9 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawMarkers = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int graphIndex) {
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
-  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int graphIndex) {
+  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
   
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;

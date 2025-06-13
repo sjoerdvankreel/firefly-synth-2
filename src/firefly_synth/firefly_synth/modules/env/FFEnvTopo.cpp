@@ -40,7 +40,7 @@ FFMakeEnvTopo()
     { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
     { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Lin" },
     { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Exp" } };
-  type.defaultTextSelector = [](int ms, int ps) { return ms == 0 ? "Lin" : "Off"; };
+  type.defaultTextSelector = [](int ms, int /*ps*/) { return ms == 0 ? "Lin" : "Off"; };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
@@ -147,7 +147,7 @@ FFMakeEnvTopo()
   stageLevel.slotCount = FFEnvStageCount;
   stageLevel.unit = "%";
   stageLevel.id = "{0E6A1B2B-AC57-473B-9B31-F67631C6B152}";
-  stageLevel.defaultTextSelector = [](int ms, int ps) { return ps == 0 ? "100" : ps == 1 ? "25" : "0"; };
+  stageLevel.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "100" : ps == 1 ? "25" : "0"; };
   stageLevel.type = FBParamType::Identity;
   auto selectStageLevel = [](auto& module) { return &module.acc.stageLevel; };
   stageLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageLevel);
@@ -175,7 +175,7 @@ FFMakeEnvTopo()
   stageTime.slotCount = FFEnvStageCount;
   stageTime.unit = "Sec";
   stageTime.id = "{3023BA36-07C3-422F-A894-5F6372603EEF}";
-  stageTime.defaultTextSelector = [](int ms, int ps) { return ps == 0 ? "0.1" : ps == 1 ? "0.2" : ps == 2 ? "0.4" : "0"; };
+  stageTime.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "0.1" : ps == 1 ? "0.2" : ps == 2 ? "0.4" : "0"; };
   stageTime.type = FBParamType::Linear;
   stageTime.Linear().min = 0.0f;
   stageTime.Linear().max = 10.0f;
@@ -193,7 +193,7 @@ FFMakeEnvTopo()
   stageBars.slotCount = FFEnvStageCount;
   stageBars.unit = "Bars";
   stageBars.id = "{43780C3A-3C23-4A94-8BDF-152FDF408A5F}";
-  stageBars.defaultTextSelector = [](int ms, int ps) { return ps == 0 ? "1/16" : ps == 1 ? "1/8" : ps == 2 ? "1/4" : "Off"; };
+  stageBars.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "1/16" : ps == 1 ? "1/8" : ps == 2 ? "1/4" : "Off"; };
   stageBars.type = FBParamType::Bars;
   stageBars.Bars().items = MakeEnvBarsItems();
   auto selectStageBars = [](auto& module) { return &module.block.stageBars; };

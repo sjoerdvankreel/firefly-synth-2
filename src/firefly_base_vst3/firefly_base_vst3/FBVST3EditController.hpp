@@ -62,8 +62,8 @@ public:
   IPlugView* PLUGIN_API createView(FIDString name) override;
   tresult PLUGIN_API initialize(FUnknown* context) override;
   tresult PLUGIN_API setComponentState(IBStream* state) override;
-  void PLUGIN_API queueClosed(DataExchangeUserContextID id) override {}
+  void PLUGIN_API queueClosed(DataExchangeUserContextID /*id*/) override {}
   tresult PLUGIN_API setParamNormalized(ParamID tag, ParamValue value) override;
-  void PLUGIN_API queueOpened(DataExchangeUserContextID id, uint32 blockSize, TBool& bg) override {}
+  void PLUGIN_API queueOpened(DataExchangeUserContextID /*id*/, uint32 /*blockSize*/, TBool& /*bg*/) override {}
   void PLUGIN_API onDataExchangeBlocksReceived(DataExchangeUserContextID id, uint32 numBlocks, DataExchangeBlock* blocks, TBool bg) override;
 };

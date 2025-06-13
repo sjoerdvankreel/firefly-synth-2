@@ -54,7 +54,7 @@ FFStringOsciProcessor::Draw()
 
 inline float
 FFStringOsciProcessor::Next(
-  FBStaticModule const& topo, int uniVoice,
+  int uniVoice,
   float sampleRate, float uniFreq, 
   float excite, float colorPlain, 
   float xPlain, float yPlain)
@@ -188,7 +188,7 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     float uniFreq = FBPitchToFreq(uniPitch);
     for (int i = 0; i < delayLineSize; i++)
     {
-      double dNextVal = Next(topo, u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain);
+      double dNextVal = Next(u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain);
       if (_hpOn)
         dNextVal = _hpFilter.Next(u, dNextVal);
       if (_lpOn)
@@ -358,7 +358,7 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
         newVal *= realFeedback;
         _uniState[u].prevDelayVal = newVal;
         
-        double dNextVal = Next(topo, u, sampleRate, uniFreq, excite, color, x, y);
+        double dNextVal = Next(u, sampleRate, uniFreq, excite, color, x, y);
         if (_hpOn)
           dNextVal = _hpFilter.Next(u, dNextVal);
         if(_lpOn)
