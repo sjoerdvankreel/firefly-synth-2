@@ -41,7 +41,7 @@ FBLog2ParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBLog2ParamNonRealTime::TextToPlain(bool io, std::string const& text) const
+FBLog2ParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)
