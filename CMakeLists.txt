@@ -43,7 +43,7 @@ endif ()
 
 # stuff that should only apply to our code
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  set (FF_COMPILE_OPTIONS /W4 /w15038 /w45246 /w45266 /WX /analyze:external- /fp:fast /utf-8)
+  set (FF_COMPILE_OPTIONS /W4 /w45038 /w45246 /w45266 /w45233 /WX /analyze:external- /fp:fast /utf-8)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (FF_COMPILE_OPTIONS -Wall -Wextra -pedantic -Wno-sign-compare -Wno-parentheses -Werror -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden)
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

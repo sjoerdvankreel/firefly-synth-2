@@ -90,11 +90,11 @@ GetPluginDescriptor(
 
 static clap_plugin_t const* CLAP_ABI
 CreatePlugin(
-  struct clap_plugin_factory const* factory,
+  struct clap_plugin_factory const* /*factory*/,
   clap_host_t const* host, char const* pluginId)
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([factory, host, pluginId]()
+  return FBWithLogException([host, pluginId]()
   {
     auto topo = FFMakeTopo(FBPlugFormat::CLAP);
     auto const* desc = GetPluginDescriptor(nullptr, 0);
