@@ -30,14 +30,14 @@ OsciModStartSlot(int osciSlot)
   case 1: return 0;
   case 2: return 1;
   case 3: return 3;
-  default: assert(false); return -1;
+  default: FB_ASSERT(false); return -1;
   }
 }
 
 static inline float
 FMRatioRatio(int v)
 {
-  assert(0 <= v && v < FFOsciFMRatioCount * FFOsciFMRatioCount);
+  FB_ASSERT(0 <= v && v < FFOsciFMRatioCount * FFOsciFMRatioCount);
   return ((v / FFOsciFMRatioCount) + 1.0f) / ((v % FFOsciFMRatioCount) + 1.0f);
 }
 
@@ -184,7 +184,6 @@ WaveBasicTri(
   {
     float t = tArr.Get(i);
     float dt = dtArr.Get(i);
-    float t0 = t;
     float t1 = FBPhaseWrap(t + 0.25f);
     float t2 = FBPhaseWrap(t + 0.75f);
     float y = t * 4.0f;
@@ -755,7 +754,7 @@ WaveHSSaw(
     if (n > 0)
       pw = (pw - 1.0f) / n + 1;
 
-    for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
     {
       t = FBPhaseWrap(t + pw);
       if (t < dt)
@@ -818,7 +817,7 @@ WaveHSSqr(
       scale = 1.0f;
     }
 
-    for (int i = 0; i < 2 * n; i++)
+    for (int j = 0; j < 2 * n; j++)
     {
       t = FBPhaseWrap(t);
       y += BLEP(t, dt) * scale;
@@ -873,7 +872,7 @@ WaveHSTri(
       scale = -scale;
     }
 
-    for (int i = 0; i < n; i++)
+    for (int j = 0; j < n; j++)
     {
       t = FBPhaseWrap(t);
       y += BLAMP(t, dt) * scale;
@@ -912,7 +911,7 @@ GenerateWaveBasicCheck(
   case FFOsciWaveBasicMode::AltSin: return WaveBasicAltSin(phaseVec, incrVec);
   case FFOsciWaveBasicMode::Parabl: return WaveBasicParabl(phaseVec, incrVec);
   case FFOsciWaveBasicMode::HypTri: return WaveBasicHypTri(phaseVec, incrVec);
-  default: assert(false); return 0.0f;
+  default: FB_ASSERT(false); return 0.0f;
   }
 }
 
@@ -931,7 +930,7 @@ GenerateWavePWCheck(
   case FFOsciWavePWMode::TriSaw: return WavePWTriSaw(phaseVec, incrVec, pwVec);
   case FFOsciWavePWMode::TriPls: return WavePWTriPls(phaseVec, incrVec, pwVec);
   case FFOsciWavePWMode::TrapTri: return WavePWTrapTri(phaseVec, incrVec, pwVec);
-  default: assert(false); return 0.0f;
+  default: FB_ASSERT(false); return 0.0f;
   }
 }
 
@@ -947,7 +946,7 @@ GenerateWaveHSCheck(
   case FFOsciWaveHSMode::Saw: return WaveHSSaw(phaseVec, incrVec, freqRatioVec);
   case FFOsciWaveHSMode::Sqr: return WaveHSSqr(phaseVec, incrVec, freqRatioVec);
   case FFOsciWaveHSMode::Tri: return WaveHSTri(phaseVec, incrVec, freqRatioVec);
-  default: assert(false); return 0.0f;
+  default: FB_ASSERT(false); return 0.0f;
   }
 }
 
@@ -1128,7 +1127,6 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   FBSArray<float, FFOsciBaseUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
   {
-    float random = _uniRandomPlain;
     float uniPhase = u * _uniOffsetPlain / _uniCount;
     uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _prng.NextScalar()) * uniPhase);
     _uniPhaseGens[u] = FFOsciPhaseGenerator(uniPhaseInit.Get(u));
@@ -1252,7 +1250,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else
     {
-      assert(false);
+      FB_ASSERT(false);
     }
   }
   if (_oversampleTimes != 1)
@@ -1291,7 +1289,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else
     {
-      assert(false);
+      FB_ASSERT(false);
     }
   }
 
@@ -1357,16 +1355,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
             else if (_waveDSFMode == FFOsciWaveDSFMode::BW)
               thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFBWPlain) * waveDSFGain;
             else
-              assert(false);
+              FB_ASSERT(false);
           }
         }
         else
         {
-          assert(false);
+          FB_ASSERT(false);
         }
         uniOutputOversampled[u].Store(s, thisUniOutput);
         for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
-          assert(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
+          FB_ASSERT(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
       }
     }
   }
@@ -1438,7 +1436,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         if (_fmMode == FFOsciFMMode::Exp)
         {
           op3UniPitch += op3UniPitch * fmTo3;
-          auto op3UniFreq = FBPitchToFreq(op3UniPitch);
+          op3UniFreq = FBPitchToFreq(op3UniPitch);
           op3UniPhase = _uniFMPhaseGens[2][block].Next(op3UniFreq / oversampledRate, 0.0f);
         }
         else

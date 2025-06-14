@@ -19,7 +19,7 @@ double
 FBLog2ParamNonRealTime::PlainToNormalized(double plain) const 
 {
   double result = std::log2((plain - _offset) / _curveStart) / _expo;
-  assert(0.0 <= result && result <= 1.0);
+  FB_ASSERT(0.0 <= result && result <= 1.0);
   return result;
 }
 
@@ -27,7 +27,7 @@ double
 FBLog2ParamNonRealTime::NormalizedToPlain(double normalized) const 
 {
   double result = _offset + _curveStart * std::pow(2.0, _expo * normalized);
-  assert(result >= _curveStart + _offset);
+  FB_ASSERT(result >= _curveStart + _offset);
   return result;
 }
 
@@ -41,7 +41,7 @@ FBLog2ParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBLog2ParamNonRealTime::TextToPlain(bool io, std::string const& text) const
+FBLog2ParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)

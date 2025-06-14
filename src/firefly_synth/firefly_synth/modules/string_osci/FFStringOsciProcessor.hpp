@@ -49,7 +49,7 @@ public FFOsciProcessorBase
 
   float Draw();
   float Next(
-    FBStaticModule const& topo, int uniVoice,
+    int uniVoice,
     float sampleRate, float uniFreq, 
     float excite, float colorNorm, 
     float xNorm, float yNorm);
@@ -57,7 +57,7 @@ public FFOsciProcessorBase
 public:
   FFStringOsciProcessor();
   int Process(FBModuleProcState& state);
-  void InitializeBuffers(bool graph, float sampleRate);
+  void InitializeBuffers(float sampleRate);
   void BeginVoice(bool graph, FBModuleProcState& state);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFStringOsciProcessor);
 };

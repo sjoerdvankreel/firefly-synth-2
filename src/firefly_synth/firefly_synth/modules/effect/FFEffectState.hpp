@@ -23,11 +23,10 @@ class alignas(FBSIMDAlign) FFEffectDSPState final
   friend struct EffectGraphRenderData<false>;
   std::unique_ptr<FFEffectProcessor> processor = {};
 public:
-  FFEffectDSPState();
-  ~FFEffectDSPState();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectDSPState);
+  FFEffectDSPState() : processor(std::make_unique<FFEffectProcessor>()) {}
   FBSArray2<float, FBFixedBlockSamples, 2> input = {};
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectDSPState);
 };
 
 template <class TBlock>

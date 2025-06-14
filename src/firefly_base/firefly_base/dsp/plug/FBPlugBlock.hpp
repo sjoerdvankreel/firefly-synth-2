@@ -17,7 +17,7 @@ struct FBPlugInputBlock final
   FBSArray<float, FBFixedBlockSamples> lastMIDINoteKey = {};
   FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};
 
-  FB_NOCOPY_MOVE_DEFCTOR(FBPlugInputBlock);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);
 };
 
 struct FBPlugOutputBlock final

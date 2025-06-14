@@ -23,7 +23,7 @@ FBAutoSizeComboBox::FixedHeight() const
 }
 
 int
-FBAutoSizeComboBox::FixedWidth(int height) const
+FBAutoSizeComboBox::FixedWidth(int /*height*/) const
 {
   return _maxTextWidth + 14;
 }
@@ -56,7 +56,7 @@ FBGUIParamComboBox::SetValueNormalizedFromPlug(double normalized)
 }
 
 void
-FBGUIParamComboBox::valueChanged(Value& value)
+FBGUIParamComboBox::valueChanged(Value& /*value*/)
 {
   double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
   _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
@@ -91,7 +91,7 @@ FBParamComboBox::SetValueNormalizedFromHost(double normalized)
 }
 
 void
-FBParamComboBox::valueChanged(Value& value)
+FBParamComboBox::valueChanged(Value& /*value*/)
 {
   double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
   _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);

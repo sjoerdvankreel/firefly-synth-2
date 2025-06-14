@@ -2,7 +2,6 @@
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <set>
-#include <cassert>
 
 FBExchangeStateContainer::
 FBExchangeStateContainer(FBRuntimeTopo const& topo):
@@ -52,7 +51,7 @@ _voices(topo.static_.voicesExchangeAddr(_rawState))
       uniquePtrs.insert(_params[p].Global());
     else
       uniquePtrs.insert(&_params[p].Voice());
-  assert(uniquePtrs.size() == _params.size());
+  FB_ASSERT(uniquePtrs.size() == _params.size());
 #endif
 }
 
@@ -64,7 +63,6 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
   result.minValue = 1.0f;
   result.maxValue = 0.0f;
 
-  float exchangeValue = 0.0f;
   auto const& paramExchange = Params()[param->runtimeParamIndex];
   auto const& moduleExchange = Modules()[param->runtimeModuleIndex];
 

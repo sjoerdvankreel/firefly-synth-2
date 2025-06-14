@@ -25,7 +25,7 @@ FBOutputParamLabel::parentHierarchyChanged()
 }
 
 int
-FBOutputParamLabel::FixedWidth(int height) const
+FBOutputParamLabel::FixedWidth(int /*height*/) const
 {
   return _maxTextWidth + getBorderSize().getLeftAndRight();
 }

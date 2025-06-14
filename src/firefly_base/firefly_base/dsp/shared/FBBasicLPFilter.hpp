@@ -3,7 +3,6 @@
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 #include <cmath>
-#include <cassert>
 #include <numbers>
 
 // https://www.musicdsp.org/en/latest/Filters/257-1-pole-lpf-for-smooth-parameter-changes.html
@@ -25,7 +24,7 @@ inline float
 FBBasicLPFilter::Next(float in)
 {
   float out = (in * _b) + (_z * _a);
-  assert(!std::isnan(out));
+  FB_ASSERT(!std::isnan(out));
   return _z = out;
 }
 

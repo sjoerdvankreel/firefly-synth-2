@@ -96,7 +96,7 @@ FBCLAPPlugin::guiSetParent(const clap_window* window) noexcept
 }
 
 bool
-FBCLAPPlugin::guiCreate(const char* api, bool isFloating) noexcept
+FBCLAPPlugin::guiCreate(const char* /*api*/, bool /*isFloating*/) noexcept
 {
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([this]()
@@ -158,7 +158,7 @@ FBCLAPPlugin::guiGetResizeHints(clap_gui_resize_hints_t* hints) noexcept
 }
 
 bool
-FBCLAPPlugin::guiIsApiSupported(const char* api, bool isFloating) noexcept 
+FBCLAPPlugin::guiIsApiSupported(const char* api, bool /*isFloating*/) noexcept
 {
   if (std::string(api) == CLAP_WINDOW_API_X11) return true;
   if (std::string(api) == CLAP_WINDOW_API_WIN32) return true;

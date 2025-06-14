@@ -7,7 +7,6 @@
 #include <cmath>
 #include <array>
 #include <numbers>
-#include <cassert>
 #include <algorithm>
 
 inline constexpr float FBPi = std::numbers::pi_v<float>;
@@ -79,7 +78,7 @@ FBTimeToSamples(float time, float sampleRate)
 inline int
 FBFreqToSamples(float freq, float sampleRate)
 {
-  assert(freq > 0.0f);
+  FB_ASSERT(freq > 0.0f);
   return static_cast<int>(std::round(1.0f / freq * sampleRate));
 }
 

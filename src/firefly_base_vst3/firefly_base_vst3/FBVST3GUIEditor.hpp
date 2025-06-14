@@ -34,7 +34,7 @@ public IPlugViewContentScaleSupport
   MakeVSTMenu(IPtr<IComponentHandler> handler, int paramIndex);
 
 public:
-  FB_NOCOPY_MOVE_NODEFCTOR(FBVST3GUIEditor);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3GUIEditor);
   ~FBVST3GUIEditor();
   FBVST3GUIEditor(FBVST3EditController* editController);
 

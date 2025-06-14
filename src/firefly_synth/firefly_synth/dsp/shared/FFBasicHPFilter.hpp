@@ -3,7 +3,6 @@
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 #include <cmath>
-#include <cassert>
 #include <numbers>
 
 // https://www.musicdsp.org/en/latest/Filters/117-one-pole-one-zero-lp-hp.html
@@ -24,7 +23,7 @@ inline float
 FFBasicHPFilter::Next(float in)
 {
   float out = _a0 * in + _a1 * _x1 + _b1 * _y1;
-  assert(!std::isnan(out));
+  FB_ASSERT(!std::isnan(out));
   _x1 = in;
   _y1 = out;
   return out;

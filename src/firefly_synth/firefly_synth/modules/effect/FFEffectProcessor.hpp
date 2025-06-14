@@ -83,7 +83,6 @@ class FFEffectProcessor final
   void ProcessFold(
     int block,
     FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-    FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
     FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain);

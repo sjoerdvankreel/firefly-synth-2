@@ -220,11 +220,12 @@ FFEffectProcessor::BeginVoiceOrBlock(
     _stVarMode[i] = topo.NormalizedToListFast<FFStateVariableFilterMode>(
       FFEffectParam::StVarMode, 
       FFSelectDualProcBlockParamNormalized<Global>(stVarModeNorm[i], voice));
-    if (!Global || graph)
-    {
-      _stVarFilters[i] = {};
-      _combFilters[i].Reset();
-    }
+
+    if constexpr(Global)
+      if (!graph)
+        continue;
+    _combFilters[i].Reset();
+    _stVarFilters[i].Reset();
   }
 }
 
@@ -235,10 +236,10 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
   auto const& procParams = *FFSelectDualState<Global>(
-    [procState, voice, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
-    [procState, voice, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
+    [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
+    [procState, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
   auto& dspState = *FFSelectDualState<Global>(
-    [procState, voice, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
+    [procState, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
     [procState, voice, &state]() { return &procState->dsp.voice[voice].vEffect[state.moduleSlot]; });
   auto& output = dspState.output;
   auto const& input = dspState.input;
@@ -327,7 +328,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           FFSelectDualProcAccParamNormalized<Global>(distDriveNorm[i], voice), s));
       }
       else
-        assert(_kind[i] == FFEffectKind::Off);
+        FB_ASSERT(_kind[i] == FFEffectKind::Off);
     }
 
   if (_oversampleTimes != 1)
@@ -364,7 +365,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
         distDrivePlain[i].UpsampleStretch<FFEffectOversampleTimes>();
       }
       else
-        assert(_kind[i] == FFEffectKind::Off);
+        FB_ASSERT(_kind[i] == FFEffectKind::Off);
     }
   }
 
@@ -390,11 +391,11 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   for(int i = 0; i < FFEffectBlockCount; i++)
     switch (_kind[i])
     {
+    case FFEffectKind::Fold:
+      ProcessFold(i, oversampled, distMixPlain, distBiasPlain, distDrivePlain);
+      break;
     case FFEffectKind::Clip:
       ProcessClip(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
-      break;
-    case FFEffectKind::Fold:
-      ProcessFold(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
       break;
     case FFEffectKind::Skew:
       ProcessSkew(i, oversampled, distAmtPlain, distMixPlain, distBiasPlain, distDrivePlain);
@@ -439,14 +440,14 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   }
 
   auto& exchangeDSP = *FFSelectDualState<Global>(
-    [exchangeToGUI, &state, voice]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
+    [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = *FFSelectDualState<Global>(
-    [exchangeToGUI, &state, voice] { return &exchangeToGUI->param.global.gEffect[state.moduleSlot]; },
-    [exchangeToGUI, &state, voice] { return &exchangeToGUI->param.voice.vEffect[state.moduleSlot]; });
+    [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gEffect[state.moduleSlot]; },
+    [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vEffect[state.moduleSlot]; });
   FFSelectDualExchangeState<Global>(exchangeParams.acc.trackingKey[0], voice) = trackingKeyNorm.Last();
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
@@ -584,7 +585,7 @@ FFEffectProcessor::ProcessSkew(
         shapedBatch = xsimd::select(compBatch, shapedBatch, exceedBatch);
         break;
       default:
-        assert(false);
+        FB_ASSERT(false);
         break;
       }
       auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
@@ -659,7 +660,7 @@ FFEffectProcessor::ProcessClip(
         shapedBatch = xsimd::select(compBatch1, signBatch, exceedBatch1);
         break;
       default:
-        assert(false);
+        FB_ASSERT(false);
         break;
       }
       auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
@@ -672,7 +673,6 @@ void
 FFEffectProcessor::ProcessFold(
   int block,
   FBSArray2<float, FFEffectFixedBlockOversamples, 2>& oversampled,
-  FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distAmtPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distMixPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distBiasPlain,
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> const& distDrivePlain)
@@ -704,7 +704,7 @@ FFEffectProcessor::ProcessFold(
       case FFEffectFoldMode::CsSn2: shapedBatch = CsSn2(shapedBatch); break;
       case FFEffectFoldMode::SnCsSn: shapedBatch = SnCsSn(shapedBatch); break;
       case FFEffectFoldMode::CsSnCs: shapedBatch = CsSnCs(shapedBatch); break;
-      default: assert(false); break;
+      default: FB_ASSERT(false); break;
       }
       auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
       oversampled[c].Store(s, mixedBatch);

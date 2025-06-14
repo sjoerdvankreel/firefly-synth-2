@@ -19,11 +19,10 @@ class alignas(FBSIMDAlign) FFOsciDSPState final
   friend struct OscisGraphRenderData;
   std::unique_ptr<FFOsciProcessor> processor = {};
 public:
-  FFOsciDSPState();
-  ~FFOsciDSPState();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
+  FFOsciDSPState(): processor(std::make_unique<FFOsciProcessor>()) {}
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciBaseUniMaxCount> uniOutputOversampled = {};
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
 };
 
 template <class TBlock>

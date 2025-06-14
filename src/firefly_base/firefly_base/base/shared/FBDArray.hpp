@@ -11,11 +11,11 @@ class FBDArray final
 {
   int _count = 0;
   T* _data = nullptr;
-  void BoundsCheck(int pos) const { assert(0 <= pos && pos < _count); }
+  void BoundsCheck(int pos) const { FB_ASSERT(0 <= pos && pos < _count); }
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBDArray);
-  FBDArray() : _data(nullptr), _count(0) {}
+  FBDArray() : _count(0), _data(nullptr) {}
   ~FBDArray() { FBAlignedFree(_data); _data = nullptr; _count = 0; }
 
   void Resize(int count);
@@ -33,7 +33,7 @@ template <class T>
 inline void
 FBDArray<T>::Resize(int count)
 {
-  assert(count % FBSIMDTraits<T>::Size == 0);
+  FB_ASSERT(count % FBSIMDTraits<T>::Size == 0);
   if (_count != count)
   {
     FBAlignedFree(_data);

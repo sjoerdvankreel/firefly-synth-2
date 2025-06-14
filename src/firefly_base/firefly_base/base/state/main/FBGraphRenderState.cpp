@@ -9,7 +9,6 @@
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
 #include <bit>
-#include <cassert>
 #include <algorithm>
 
 static FBNoteEvent
@@ -98,7 +97,7 @@ FBGraphRenderState::FFT(std::vector<float>& data)
   for (int i = 0; i < data.size(); i++)
   {
     data[i] = (data[i] - min) / (max - min);
-    assert(-0.01f <= data[i] && data[i] <= 1.01f);
+    FB_ASSERT(-0.01f <= data[i] && data[i] <= 1.01f);
   }
 }
 
@@ -252,7 +251,7 @@ FBGraphRenderState::GlobalModuleExchangeStateEqualsPrimary(
 {
   auto context = _plugGUI->HostContext();
   auto topo = _plugGUI->HostContext()->Topo();
-  auto paramIndex = topo->audio.paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
+  auto paramIndex = topo->audio.paramTopoToRuntime.at({ { moduleIndex, moduleSlot }, { 0, 0 } });
   auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
   for (; topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
     if (*ExchangeContainer()->Params()[paramIndex].Global() != static_cast<float>(context->GetAudioParamNormalized(paramIndex)))
@@ -266,7 +265,7 @@ FBGraphRenderState::VoiceModuleExchangeStateEqualsPrimary(
 {
   auto context = _plugGUI->HostContext();
   auto topo = _plugGUI->HostContext()->Topo();
-  auto paramIndex = topo->audio.paramTopoToRuntime.at({ moduleIndex, moduleSlot, 0, 0 });
+  auto paramIndex = topo->audio.paramTopoToRuntime.at({ { moduleIndex, moduleSlot }, { 0, 0 } });
   auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
   for (; topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
     if (ExchangeContainer()->Params()[paramIndex].Voice()[voice] != static_cast<float>(context->GetAudioParamNormalized(paramIndex)))

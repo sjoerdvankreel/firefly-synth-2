@@ -6,6 +6,12 @@
 #include <firefly_synth/modules/effect/FFEffectGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
+static std::string
+FormatBlockSlot(int slot)
+{
+  return std::string(1, static_cast<char>('A' + slot));
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEffectTopo(bool global)
 {
@@ -13,6 +19,7 @@ FFMakeEffectTopo(bool global)
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
   result->name = global? "GFX": "VFX";
+  result->graphName = result->name;
   result->slotCount = FFEffectCount;
   result->graphCount = FFEffectBlockCount + 1;
   result->graphRenderer = global? FFEffectRenderGraph<true>: FFEffectRenderGraph<false>;
@@ -95,8 +102,9 @@ FFMakeEffectTopo(bool global)
   kind.acc = false;
   kind.name = "Kind";
   kind.slotCount = FFEffectBlockCount;
+  kind.slotFormatter = FormatBlockSlot;
   kind.id = prefix + "{1585A19D-639E-4202-B60B-BD8560BC8B70}";
-  kind.defaultTextSelector = [](int ms, int ps) { return ps == 0 ? "StVar" : "Off"; };
+  kind.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "StVar" : "Off"; };
   kind.type = FBParamType::List;
   kind.List().items = {
     { prefix + "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", "Off" },
@@ -124,6 +132,7 @@ FFMakeEffectTopo(bool global)
   stVarMode.name = "StVar Mode";
   stVarMode.display = "Mod";
   stVarMode.slotCount = FFEffectBlockCount;
+  stVarMode.slotFormatter = FormatBlockSlot;
   stVarMode.id = prefix + "{275B2C8D-6D21-4741-AB69-D21FA95CD7F5}";
   stVarMode.type = FBParamType::List;
   stVarMode.List().items = {
@@ -153,6 +162,7 @@ FFMakeEffectTopo(bool global)
   stVarKeyTrk.name = "StVar KeyTrk";
   stVarKeyTrk.display = "KTr";
   stVarKeyTrk.slotCount = FFEffectBlockCount;
+  stVarKeyTrk.slotFormatter = FormatBlockSlot;
   stVarKeyTrk.unit = "%";
   stVarKeyTrk.id = prefix + "{CC91F0B0-9D53-4140-B698-0561D04F500C}";
   stVarKeyTrk.type = FBParamType::Linear;
@@ -176,6 +186,7 @@ FFMakeEffectTopo(bool global)
   stVarRes.name = "StVar Res";
   stVarRes.display = "Res";
   stVarRes.slotCount = FFEffectBlockCount;
+  stVarRes.slotFormatter = FormatBlockSlot;
   stVarRes.unit = "%";
   stVarRes.id = prefix + "{0B7CCB1C-FF95-46CD-9C93-1BAF5CE350E3}";
   stVarRes.type = FBParamType::Identity;
@@ -196,6 +207,7 @@ FFMakeEffectTopo(bool global)
   stVarFreq.name = "StVar Freq";
   stVarFreq.display = "Frq";
   stVarFreq.slotCount = FFEffectBlockCount;
+  stVarFreq.slotFormatter = FormatBlockSlot;
   stVarFreq.unit = "Hz";
   stVarFreq.id = prefix + "{4ACF9D3E-D1F0-4B3B-8F6F-6FEE6BCDE449}";
   stVarFreq.type = FBParamType::Log2;
@@ -217,6 +229,7 @@ FFMakeEffectTopo(bool global)
   stVarGain.name = "StVar Gain";
   stVarGain.display = "Gn";
   stVarGain.slotCount = FFEffectBlockCount;
+  stVarGain.slotFormatter = FormatBlockSlot;
   stVarGain.unit = "dB";
   stVarGain.id = prefix + "{CA06747B-F867-4E03-AF36-327662021440}";
   stVarGain.type = FBParamType::Linear;
@@ -239,6 +252,7 @@ FFMakeEffectTopo(bool global)
   combKeyTrk.name = "Comb KeyTrk";
   combKeyTrk.display = "KTr";
   combKeyTrk.slotCount = FFEffectBlockCount;
+  combKeyTrk.slotFormatter = FormatBlockSlot;
   combKeyTrk.unit = "%";
   combKeyTrk.id = prefix + "{77B1716F-4511-492B-A32E-F04CF668238B}";
   combKeyTrk.type = FBParamType::Linear;
@@ -262,6 +276,7 @@ FFMakeEffectTopo(bool global)
   combFreqPlus.name = "Comb Freq+";
   combFreqPlus.display = "Frq+";
   combFreqPlus.slotCount = FFEffectBlockCount;
+  combFreqPlus.slotFormatter = FormatBlockSlot;
   combFreqPlus.unit = "Hz";
   combFreqPlus.id = prefix + "{19B8B573-C49D-4D34-8078-02B2A30F40E8}";
   combFreqPlus.type = FBParamType::Log2;
@@ -283,6 +298,7 @@ FFMakeEffectTopo(bool global)
   combFreqMin.name = "Comb Freq-";
   combFreqMin.display = "Frq-";
   combFreqMin.slotCount = FFEffectBlockCount;
+  combFreqMin.slotFormatter = FormatBlockSlot;
   combFreqMin.unit = "Hz";
   combFreqMin.id = prefix + "{B2C0AEB8-F2C1-4553-961C-7B61021C8B70}";
   combFreqMin.type = FBParamType::Log2;
@@ -301,9 +317,10 @@ FFMakeEffectTopo(bool global)
   auto& combResPlus = result->params[(int)FFEffectParam::CombResPlus];
   combResPlus.acc = true;
   combResPlus.defaultText = "50";
-  combResPlus.name = "Comb Rz+";
+  combResPlus.name = "Comb Res+";
   combResPlus.display = "Res+";
   combResPlus.slotCount = FFEffectBlockCount;
+  combResPlus.slotFormatter = FormatBlockSlot;
   combResPlus.unit = "%";
   combResPlus.id = prefix + "{7DF779CB-794D-4419-9E7F-E68F3F3BCB57}";
   combResPlus.type = FBParamType::Linear;
@@ -327,6 +344,7 @@ FFMakeEffectTopo(bool global)
   combResMin.name = "Comb Res-";
   combResMin.display = "Res-";
   combResMin.slotCount = FFEffectBlockCount;
+  combResMin.slotFormatter = FormatBlockSlot;
   combResMin.unit = "%";
   combResMin.id = prefix + "{09588739-10E7-413E-9577-5A9BE8996A5D}";
   combResMin.type = FBParamType::Linear;
@@ -350,6 +368,7 @@ FFMakeEffectTopo(bool global)
   clipMode.name = "Clip Mode";
   clipMode.display = "Mod";
   clipMode.slotCount = FFEffectBlockCount;
+  clipMode.slotFormatter = FormatBlockSlot;
   clipMode.id = prefix + "{D1F80BB8-4076-4296-A678-94E8442C51A5}";
   clipMode.type = FBParamType::List;
   clipMode.List().items = {
@@ -377,6 +396,7 @@ FFMakeEffectTopo(bool global)
   foldMode.name = "Fold Mode";
   foldMode.display = "Mod";
   foldMode.slotCount = FFEffectBlockCount;
+  foldMode.slotFormatter = FormatBlockSlot;
   foldMode.id = prefix + "{317BA4AC-8E9A-47B9-A289-294047E29C78}";
   foldMode.type = FBParamType::List;
   foldMode.List().items = {
@@ -416,6 +436,7 @@ FFMakeEffectTopo(bool global)
   skewMode.name = "Skew Mode";
   skewMode.display = "Mod";
   skewMode.slotCount = FFEffectBlockCount;
+  skewMode.slotFormatter = FormatBlockSlot;
   skewMode.id = prefix + "{DCA38D64-3791-4542-A6C7-FCA66DA45FEE}";
   skewMode.type = FBParamType::List;
   skewMode.List().items = {
@@ -438,6 +459,7 @@ FFMakeEffectTopo(bool global)
   distDrive.name = "Dist Drive";
   distDrive.display = "Drv";
   distDrive.slotCount = FFEffectBlockCount;
+  distDrive.slotFormatter = FormatBlockSlot;
   distDrive.unit = "%";
   distDrive.id = prefix + "{971B9F5B-0348-4F56-A6A0-DC40FC4B32BD}";
   distDrive.type = FBParamType::Linear;
@@ -461,6 +483,7 @@ FFMakeEffectTopo(bool global)
   distMix.name = "Dist Mix";
   distMix.display = "Mix";
   distMix.slotCount = FFEffectBlockCount;
+  distMix.slotFormatter = FormatBlockSlot;
   distMix.id = prefix + "{CD542E15-A8DD-4A72-9B75-E8D8301D8F05}";
   distMix.type = FBParamType::Identity;
   auto selectDistMix = [](auto& module) { return &module.acc.distMix; };
@@ -481,6 +504,7 @@ FFMakeEffectTopo(bool global)
   distBias.display = "Bias";
   distBias.unit = "%";
   distBias.slotCount = FFEffectBlockCount;
+  distBias.slotFormatter = FormatBlockSlot;
   distBias.id = prefix + "{E3512478-1203-47D3-B5A3-F8BFBAAE264C}";
   distBias.type = FBParamType::Linear;
   distBias.Linear().min = -1.0f;
@@ -503,6 +527,7 @@ FFMakeEffectTopo(bool global)
   distAmt.name = "Dist Amt";
   distAmt.display = "Amt";
   distAmt.slotCount = FFEffectBlockCount;
+  distAmt.slotFormatter = FormatBlockSlot;
   distAmt.id = prefix + "{C78B596F-8059-44F0-B73D-A699AB647F54}";
   distAmt.type = FBParamType::Identity;
   auto selectDistAmt = [](auto& module) { return &module.acc.distAmt; };

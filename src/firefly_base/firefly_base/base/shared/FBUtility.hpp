@@ -3,9 +3,10 @@
 #include <array>
 #include <string>
 #include <vector>
+#include <cassert>
 #include <utility>
-#include <optional>
 #include <cstdint>
+#include <optional>
 #include <filesystem>
 
 #ifdef WIN32
@@ -79,7 +80,16 @@ FBDenormalState;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
-FBDenormalState 
+// To prevent unused variable warnings.
+template <class T>
+inline void 
+FB_ASSERT(T&& cond)
+{
+  (void)cond;
+  assert(cond);
+}
+
+FBDenormalState
 FBDisableDenormal();
 void 
 FBRestoreDenormal(FBDenormalState state);

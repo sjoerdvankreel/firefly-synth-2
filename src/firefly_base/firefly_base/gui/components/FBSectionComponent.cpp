@@ -1,5 +1,4 @@
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
-#include <cassert>
 
 using namespace juce;
 

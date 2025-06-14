@@ -1,7 +1,7 @@
 #include <firefly_base_vst3/FBVST3Utility.hpp>
+#include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <public.sdk/source/vst/utility/stringconvert.h>
-#include <cassert>
 #include <cstring>
 
 void
@@ -9,7 +9,7 @@ FBVST3CopyToString128(std::string const& in, TChar* out)
 {
   memset(out, 0, 128 * sizeof(TChar));
   bool ok = Vst::StringConvert::convert(in, out, 127);
-  assert(ok);
+  FB_ASSERT(ok);
 }
 
 void

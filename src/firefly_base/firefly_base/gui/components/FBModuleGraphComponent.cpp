@@ -20,9 +20,8 @@ FBModuleGraphComponent::
 ~FBModuleGraphComponent() {}
 
 FBModuleGraphComponent::
-FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState) :
+FBModuleGraphComponent(FBGraphRenderState* renderState) :
 Component(),
-_plugGUI(plugGUI),
 _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
@@ -92,7 +91,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
 }
 
 void
-FBModuleGraphComponent::paint(Graphics& g)
+FBModuleGraphComponent::paint(Graphics& /*g*/)
 {
   if (_tweakedModuleByUI == -1)
     return;

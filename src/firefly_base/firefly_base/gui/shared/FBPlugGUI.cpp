@@ -9,8 +9,6 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
-#include <cassert>
-
 using namespace juce;
 
 FBPlugGUI::
@@ -36,13 +34,13 @@ FBPlugGUI::InitAllDependencies()
 }
 
 void
-FBPlugGUI::GUIParamNormalizedChanged(int index, double value)
+FBPlugGUI::GUIParamNormalizedChanged(int index, double /*value*/)
 {
   GUIParamNormalizedChanged(index);
 }
 
 void
-FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
+FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double /*value*/)
 {
   AudioParamNormalizedChanged(index);
 }
@@ -83,7 +81,7 @@ FBParamControl*
 FBPlugGUI::GetControlForAudioParamIndex(int paramIndex) const
 {
   auto iter = _audioParamIndexToComponent.find(paramIndex);
-  assert(iter != _audioParamIndexToComponent.end());
+  FB_ASSERT(iter != _audioParamIndexToComponent.end());
   return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
 }
 

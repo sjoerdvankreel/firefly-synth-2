@@ -7,8 +7,6 @@
 #include <firefly_base/base/state/proc/FBVoiceBlockParamState.hpp>
 #include <firefly_base/base/state/proc/FBGlobalBlockParamState.hpp>
 
-#include <cassert>
-
 enum class FBProcParamType
 {
   VoiceAcc,
@@ -99,56 +97,56 @@ _globalBlock(globalBlock) {}
 inline FBVoiceAccParamState&
 FBProcParamState::VoiceAcc()
 {
-  assert(Type() == FBProcParamType::VoiceAcc);
+  FB_ASSERT(Type() == FBProcParamType::VoiceAcc);
   return *_voiceAcc;
 }
 
 inline FBVoiceAccParamState const&
 FBProcParamState::VoiceAcc() const
 {
-  assert(Type() == FBProcParamType::VoiceAcc);
+  FB_ASSERT(Type() == FBProcParamType::VoiceAcc);
   return *_voiceAcc;
 }
 
 inline FBGlobalAccParamState&
 FBProcParamState::GlobalAcc()
 {
-  assert(Type() == FBProcParamType::GlobalAcc);
+  FB_ASSERT(Type() == FBProcParamType::GlobalAcc);
   return *_globalAcc;
 }
 
 inline FBGlobalAccParamState const&
 FBProcParamState::GlobalAcc() const
 {
-  assert(Type() == FBProcParamType::GlobalAcc);
+  FB_ASSERT(Type() == FBProcParamType::GlobalAcc);
   return *_globalAcc;
 }
 
 inline FBVoiceBlockParamState&
 FBProcParamState::VoiceBlock()
 {
-  assert(Type() == FBProcParamType::VoiceBlock);
+  FB_ASSERT(Type() == FBProcParamType::VoiceBlock);
   return *_voiceBlock;
 }
 
 inline FBVoiceBlockParamState const&
 FBProcParamState::VoiceBlock() const
 {
-  assert(Type() == FBProcParamType::VoiceBlock);
+  FB_ASSERT(Type() == FBProcParamType::VoiceBlock);
   return *_voiceBlock;
 }
 
 inline FBGlobalBlockParamState&
 FBProcParamState::GlobalBlock()
 {
-  assert(Type() == FBProcParamType::GlobalBlock);
+  FB_ASSERT(Type() == FBProcParamType::GlobalBlock);
   return *_globalBlock;
 }
 
 inline FBGlobalBlockParamState const&
 FBProcParamState::GlobalBlock() const
 {
-  assert(Type() == FBProcParamType::GlobalBlock);
+  FB_ASSERT(Type() == FBProcParamType::GlobalBlock);
   return *_globalBlock;
 }
 
@@ -161,7 +159,7 @@ FBProcParamState::Value() const
   case FBProcParamType::GlobalAcc: return GlobalAcc().Value();
   case FBProcParamType::VoiceBlock: return VoiceBlock().Value();
   case FBProcParamType::GlobalBlock: return GlobalBlock().Value();
-  default: assert(false); return 0.0f;
+  default: FB_ASSERT(false); return 0.0f;
   }
 }
 
@@ -174,6 +172,6 @@ FBProcParamState::Value(float value)
   case FBProcParamType::GlobalAcc: GlobalAcc().Value(value); break;
   case FBProcParamType::VoiceBlock: VoiceBlock().Value(value); break;
   case FBProcParamType::GlobalBlock: GlobalBlock().Value(value); break;
-  default: assert(false);
+  default: FB_ASSERT(false);
   }
 }

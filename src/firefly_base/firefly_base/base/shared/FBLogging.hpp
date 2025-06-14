@@ -5,7 +5,6 @@
 #include <chrono>
 #include <thread>
 #include <string>
-#include <cassert>
 
 #define FB_LOG_WRITE(lvl, msg) \
 FBLogWrite(lvl, __FILE__, __LINE__, __func__, msg)
@@ -31,7 +30,7 @@ struct FBEntryExitLog
 
   ~FBEntryExitLog();
   FBEntryExitLog(char const* file, int line, char const* func);
-  FB_NOCOPY_MOVE_NODEFCTOR(FBEntryExitLog);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBEntryExitLog);
 };
 
 void FBLogTerminate();
@@ -54,7 +53,7 @@ auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
     eptr = std::current_exception(); 
   }
 
-  assert(eptr);
+  FB_ASSERT(eptr);
   if (!eptr) 
     return f(args...);
 
@@ -70,6 +69,6 @@ auto FBWithLogException(F f, Args... args) -> decltype(f(args...))
     throw;
   }
 
-  assert(false);
+  FB_ASSERT(false);
   return f(args...);
 }

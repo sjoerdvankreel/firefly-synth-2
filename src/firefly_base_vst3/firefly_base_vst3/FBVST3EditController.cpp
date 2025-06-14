@@ -76,13 +76,13 @@ FBVST3EditController::ResetView()
 }
 
 void
-FBVST3EditController::EndAudioParamChange(int index)
+FBVST3EditController::EndAudioParamChange(int /*index*/)
 {
   // see PerformAudioParamEdit
 }
 
 void
-FBVST3EditController::BeginAudioParamChange(int index)
+FBVST3EditController::BeginAudioParamChange(int /*index*/)
 {
   // see PerformAudioParamEdit
 }
@@ -240,9 +240,9 @@ FBVST3EditController::initialize(FUnknown* context)
 
 void PLUGIN_API
 FBVST3EditController::onDataExchangeBlocksReceived(
-  DataExchangeUserContextID id, uint32 numBlocks, DataExchangeBlock* blocks, TBool bg)
+  DataExchangeUserContextID /*id*/, uint32 numBlocks, DataExchangeBlock* blocks, TBool /*bg*/)
 {
-  FBWithLogException([this, id, numBlocks, blocks, bg]()
+  FBWithLogException([this, numBlocks, blocks]()
   {
     if (numBlocks == 0)
       return;

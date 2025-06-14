@@ -21,12 +21,12 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points) {}
+  void DoProcessIndicators(int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
 };
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data)
+PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex*/)
 {
   // Need to know SR for graphing because filters.
   // Plot a bit more than exact pixel width to make it look prettier.
@@ -34,13 +34,14 @@ PlotParams(FBModuleGraphComponentData const* data)
   result.autoSampleRate = false;
   result.sampleCount = data->pixelWidth * 4;
   result.sampleRate = data->pixelWidth * 4.0f / FFEffectPlotLengthSeconds;
+  result.staticModuleIndex = static_cast<int>(global ? FFModuleType::GEffect : FFModuleType::VEffect);
   return result;
 }
 
 template <bool Global>
 void 
 EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
+  FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
@@ -70,7 +71,7 @@ EffectGraphRenderData<Global>::DoPostProcess(
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  FBParamTopoIndices indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
+  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
   auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
   if (kind != FFEffectKind::StVar && kind != FFEffectKind::Comb && kind != FFEffectKind::CombPlus && kind != FFEffectKind::CombMin)
     return;
@@ -90,14 +91,14 @@ EffectGraphRenderData<Global>::DoProcess(
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
   auto moduleType = Global ? FFModuleType::GEffect : FFModuleType::VEffect;
-  FBParamTopoIndices indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::On, 0 };
+  FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } };
   bool on = state->AudioParamBool(indices, false, -1);
   if (!on)
     return 0;
 
   if (graphIndex != FFEffectBlockCount)
   {
-    indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::Kind, graphIndex };
+    indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, graphIndex } };
     auto kind = state->AudioParamList<FFEffectKind>(indices, exchange, exchangeVoice);
     plotSpecificFilter = kind == FFEffectKind::StVar || kind == FFEffectKind::Comb || kind == FFEffectKind::CombPlus || kind == FFEffectKind::CombMin;
     if (kind == FFEffectKind::Off)
@@ -130,34 +131,35 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = false; // midi note dependent
   renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
-  renderData.totalSamples = PlotParams(graphData).sampleCount;
-  renderData.staticModuleIndex = (int)moduleType;
-  renderData.globalExchangeSelector = [](void const* exchangeState, int slot) {
+  renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
+  renderData.totalSamples = PlotParams(graphData, Global, -1).sampleCount;
+  renderData.globalExchangeSelector = [](void const* exchangeState, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gEffect[slot]; };
-  renderData.globalMonoOutputSelector = [](void const* procState, int slot) {
+  renderData.globalMonoOutputSelector = [](void const* procState, int slot, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.global.gEffect[slot].output[0]; };
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot) {
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].vEffect[slot]; };
-  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot) {
+  renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vEffect[slot].output[0]; };
 
   auto* renderState = graphData->renderState;
   auto* moduleProcState = renderState->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
-  FBParamTopoIndices indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::On, 0 };
-  bool on = renderState->AudioParamBool(indices, false, -1);
+  FBTopoIndices modIndices = { (int)moduleType, moduleSlot };
+  FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } };
+  auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
+  bool on = renderState->AudioParamBool(paramIndices, false, -1);
   for (int i = 0; i <= FFEffectBlockCount; i++)
   {
     FBRenderModuleGraph<Global, false>(renderData, i);
     if (i == FFEffectBlockCount)
-      graphData->graphs[i].text = on? "ALL": "ALL OFF";
+      graphData->graphs[i].text = moduleName + (on? "ALL": "ALL OFF");
     else
     {
-      FBParamTopoIndices indices = { (int)moduleType, moduleSlot, (int)FFEffectParam::Kind, i };
+      FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
       bool blockOn = on && kind != FFEffectKind::Off;
-      graphData->graphs[i].text = std::to_string(i + 1);
+      graphData->graphs[i].text = moduleName + std::string(1, static_cast<char>('A' + i));
       if (!blockOn)
         graphData->graphs[i].text += " OFF";
     }

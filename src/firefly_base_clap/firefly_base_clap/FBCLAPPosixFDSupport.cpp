@@ -14,7 +14,7 @@ FBCLAPPlugin::implementsPosixFdSupport() const noexcept
 }
 
 void 
-FBCLAPPlugin::onPosixFd(int fd, clap_posix_fd_flags_t flags) noexcept
+FBCLAPPlugin::onPosixFd(int fd, clap_posix_fd_flags_t /*flags*/) noexcept
 {
   FBWithLogException([fd]() { LinuxEventLoopInternal::invokeEventLoopCallbackForFd(fd); });
 }

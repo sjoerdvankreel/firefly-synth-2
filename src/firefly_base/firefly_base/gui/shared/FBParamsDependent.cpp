@@ -17,7 +17,7 @@ RuntimeDependencies(
   {
     // Dependency should have slot count 0 or > slot.
     auto const& staticDependency = topo->static_.modules[staticModuleIndices.index].params[staticParamIndices[i]];
-    assert(staticDependency.slotCount == 1 || staticDependency.slotCount > slot);
+    FB_ASSERT(staticDependency.slotCount == 1 || staticDependency.slotCount > slot);
     int dependencySlot = staticDependency.slotCount == 1 ? 0 : slot;
 
     FBParamTopoIndices indices;
@@ -126,7 +126,7 @@ FBParamsDependent::RuntimeDependencies(bool audio, bool visible) const
 void 
 FBParamsDependent::DependenciesChanged(bool visible)
 {
-  assert(_initialParent != nullptr);
+  FB_ASSERT(_initialParent != nullptr);
   auto hostContext = _plugGUI->HostContext();
   auto& self = dynamic_cast<Component&>(*this);
   if (!visible)
@@ -159,5 +159,5 @@ FBParamsDependent::ParentHierarchyChanged()
   if (_initialParent == nullptr && newParent != nullptr)
     _initialParent = newParent;
   else if (_initialParent != nullptr && newParent != nullptr && _initialParent != newParent)
-    assert(false);
+    FB_ASSERT(false);
 }

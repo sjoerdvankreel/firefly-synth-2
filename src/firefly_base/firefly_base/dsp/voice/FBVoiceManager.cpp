@@ -3,7 +3,6 @@
 #include <firefly_base/base/state/proc/FBVoiceBlockParamState.hpp>
 
 #include <limits>
-#include <cassert>
 
 FBVoiceManager::
 FBVoiceManager(FBProcStateContainer* procState) :
@@ -12,11 +11,11 @@ _procState(procState) {}
 void
 FBVoiceManager::Return(int slot)
 {
-  assert(_voiceCount > 0);
+  FB_ASSERT(_voiceCount > 0);
   _voiceCount--;
   _voices[slot].state = FBVoiceState::Returned;
   _returnedVoices.push_back(_voices[slot].event.note);
-  assert(_returnedVoices.size() < FBMaxVoices);
+  FB_ASSERT(_returnedVoices.size() < FBMaxVoices);
 }
 
 void
@@ -51,7 +50,7 @@ FBVoiceManager::InitFromExchange(
 int
 FBVoiceManager::Lease(FBNoteEvent const& event)
 {
-  assert(event.on);
+  FB_ASSERT(event.on);
 
   int slot = -1;
   for (int v = 0; v < _voices.size() && slot == -1; v++)
@@ -59,7 +58,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
     {
       slot = v;
       _voiceCount++;
-      assert(_voiceCount <= FBMaxVoices);
+      FB_ASSERT(_voiceCount <= FBMaxVoices);
     }
 
   std::uint64_t oldest = std::numeric_limits<std::uint64_t>::max();
@@ -71,7 +70,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
         oldest = _num[v];
       }
 
-  assert(0 <= slot && slot < _voices.size());
+  FB_ASSERT(0 <= slot && slot < _voices.size());
   if (IsActive(slot))
     _returnedVoices.push_back(_voices[slot].event.note);
 

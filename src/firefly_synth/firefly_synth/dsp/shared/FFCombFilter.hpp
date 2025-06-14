@@ -7,7 +7,6 @@
 #include <array>
 #include <cmath>
 #include <numbers>
-#include <cassert>
 
 inline float constexpr FFMaxCombFilterRes = 0.99f;
 inline float constexpr FFMinCombFilterFreq = 80.0f;
@@ -24,7 +23,7 @@ class alignas(FBSIMDAlign) FFCombFilter final
   void DebugCheck(float sampleRate, float freq);
 
 public:
-  FB_NOCOPY_MOVE_DEFCTOR(FFCombFilter);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFCombFilter);
   void Reset();
   void Resize(float sampleRate, float minFreq);
 
@@ -56,7 +55,7 @@ FFCombFilter<Channels>::Resize(
   float fMaxSamples = maxSeconds * sampleRate;
   int maxSamples = static_cast<int>(std::ceil(fMaxSamples));
   int const safetyCheck = 20 * 192000;
-  assert(0 < maxSamples && maxSamples <= safetyCheck);
+  FB_ASSERT(0 < maxSamples && maxSamples <= safetyCheck);
   for (int c = 0; c < Channels; c++)
   {
     _delayLinesMin[c].Resize(maxSamples);
@@ -70,8 +69,8 @@ inline float
 FFCombFilter<Channels>::Next(
   int channel, float in)
 {
-  assert(!std::isnan(in));
-  assert(!std::isinf(in));
+  FB_ASSERT(!std::isnan(in));
+  FB_ASSERT(!std::isinf(in));
   
   float minOld = 0.0f;
   if constexpr (MinOn)
@@ -95,6 +94,8 @@ inline void
 FFCombFilter<Channels>::DebugCheck(
   float sampleRate, float freq)
 {
+  (void)freq;
+  (void)sampleRate;
   // check for graphs
 #ifndef NDEBUG
   float nyquist = sampleRate * 0.5f;
@@ -105,7 +106,7 @@ FFCombFilter<Channels>::DebugCheck(
     minFilterFreq *= nyquist / FFMaxCombFilterFreq;
     maxFilterFreq *= nyquist / FFMaxCombFilterFreq;
   }
-  assert(minFilterFreq - 0.1f <= freq && freq <= maxFilterFreq + 0.1f);
+  FB_ASSERT(minFilterFreq - 0.1f <= freq && freq <= maxFilterFreq + 0.1f);
 #endif
 }
 

@@ -6,7 +6,6 @@
 
 #include <cmath>
 #include <string>
-#include <cassert>
 #include <optional>
 #include <algorithm>
 
@@ -49,7 +48,7 @@ inline float
 FBLog2Param::NormalizedToPlainFast(float normalized) const
 {
   float result = _offset + _curveStart * std::pow(2.0f, _expo * normalized);
-  assert(result >= _curveStart + _offset);
+  FB_ASSERT(result >= _curveStart + _offset);
   return result;
 }
 
@@ -62,7 +61,14 @@ FBLog2Param::NormalizedToPlainFast(FBBatch<float> normalized) const
 inline FBBatch<double>
 FBLog2Param::NormalizedToPlainFast(FBBatch<double> normalized) const
 {
-  return _offset + _curveStart * xsimd::pow(FBBatch<double>(2.0f), _expo * normalized);
+#if _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4244)
+#endif
+  return _offset + _curveStart * xsimd::pow(FBBatch<double>(2.0), _expo * normalized);
+#if _MSC_VER
+#pragma warning(pop)
+#endif
 }
 
 inline FBBatch<float>

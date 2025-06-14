@@ -1,7 +1,6 @@
 #include <firefly_base/base/topo/static/FBBarsParam.hpp>
 
 #include <set>
-#include <cassert>
 
 using namespace juce;
 
@@ -24,14 +23,14 @@ FBBarsParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBBarsParamNonRealTime::PlainToText(bool io, double plain) const 
+FBBarsParamNonRealTime::PlainToText(bool /*io*/, double plain) const
 {
   int discrete = static_cast<int>(std::round(plain));
   return items[discrete].ToString();
 }
 
 std::optional<double>
-FBBarsParamNonRealTime::TextToPlain(bool io, std::string const& text) const
+FBBarsParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == items[i].ToString())

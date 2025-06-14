@@ -12,7 +12,7 @@ FBAutoSizeToggleButton::FixedHeight() const
 }
 
 int 
-FBAutoSizeToggleButton::FixedWidth(int height) const
+FBAutoSizeToggleButton::FixedWidth(int /*height*/) const
 {
   return 24;
 }

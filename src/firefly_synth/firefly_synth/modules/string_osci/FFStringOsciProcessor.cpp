@@ -27,7 +27,7 @@ FFStringOsciProcessor::
 FFStringOsciProcessor() {}
 
 void
-FFStringOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
+FFStringOsciProcessor::InitializeBuffers(float sampleRate)
 {
   int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringOsciMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
@@ -43,7 +43,7 @@ FFStringOsciProcessor::Draw()
 {
   if (_type == FFStringOsciType::Uni)
     return FBToBipolar(_uniformPrng.NextScalar());
-  assert(_type == FFStringOsciType::Norm);
+  FB_ASSERT(_type == FFStringOsciType::Norm);
   float result = 0.0f;
   do
   {
@@ -54,7 +54,7 @@ FFStringOsciProcessor::Draw()
 
 inline float
 FFStringOsciProcessor::Next(
-  FBStaticModule const& topo, int uniVoice,
+  int uniVoice,
   float sampleRate, float uniFreq, 
   float excite, float colorPlain, 
   float xPlain, float yPlain)
@@ -144,9 +144,9 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   float uniDetunePlain = topo.NormalizedToIdentityFast(FFStringOsciParam::UniDetune, uniDetuneNorm.CV().Get(0));
   float trackingKeyPlain = topo.NormalizedToLinearFast(FFStringOsciParam::TrackingKey, trackingKeyNorm.CV().Get(0));
 
-  _lpFilter = {};
-  _hpFilter = {};
   _graphPosition = 0;
+  _lpFilter.Reset();
+  _hpFilter.Reset();
   _normalPrng = FFMarsagliaPRNG(_seed / (FFStringOsciMaxSeed + 1.0f));
   _uniformPrng = FFParkMillerPRNG(_seed / (FFStringOsciMaxSeed + 1.0f));
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
@@ -188,7 +188,7 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     float uniFreq = FBPitchToFreq(uniPitch);
     for (int i = 0; i < delayLineSize; i++)
     {
-      double dNextVal = Next(topo, u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain);
+      double dNextVal = Next(u, sampleRate, uniFreq, excitePlain, colorPlain, xPlain, yPlain);
       if (_hpOn)
         dNextVal = _hpFilter.Next(u, dNextVal);
       if (_lpOn)
@@ -358,7 +358,7 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
         newVal *= realFeedback;
         _uniState[u].prevDelayVal = newVal;
         
-        double dNextVal = Next(topo, u, sampleRate, uniFreq, excite, color, x, y);
+        double dNextVal = Next(u, sampleRate, uniFreq, excite, color, x, y);
         if (_hpOn)
           dNextVal = _hpFilter.Next(u, dNextVal);
         if(_lpOn)

@@ -25,7 +25,7 @@ FBPlugFormatToString(FBPlugFormat format)
   {
   case FBPlugFormat::VST3: return "VST3";
   case FBPlugFormat::CLAP: return "CLAP";
-  default: assert(false); return {};
+  default: FB_ASSERT(false); return {};
   }
 }
 

@@ -23,7 +23,7 @@ FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBDiscreteParamNonRealTime::PlainToText(bool io, double plain) const
+FBDiscreteParamNonRealTime::PlainToText(bool /*io*/, double plain) const
 {
   int result = static_cast<int>(std::round(plain));
   if (valueFormatter != nullptr)

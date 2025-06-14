@@ -19,8 +19,8 @@
 
 FFPlugProcessor::
 FFPlugProcessor(IFBHostDSPContext* hostContext) :
-_topo(hostContext->Topo()),
 _sampleRate(hostContext->SampleRate()),
+_topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
@@ -31,7 +31,7 @@ _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()
     for (int i = 0; i < FFEffectCount; i++)
       _procState->dsp.voice[v].vEffect[i].processor->InitializeBuffers(false, _sampleRate);
     for (int i = 0; i < FFStringOsciCount; i++)
-      _procState->dsp.voice[v].stringOsci[i].processor->InitializeBuffers(false, _sampleRate);
+      _procState->dsp.voice[v].stringOsci[i].processor->InitializeBuffers(_sampleRate);
   }
 }
 

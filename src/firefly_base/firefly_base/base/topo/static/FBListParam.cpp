@@ -1,5 +1,4 @@
 #include <firefly_base/base/topo/static/FBListParam.hpp>
-#include <cassert>
 
 using namespace juce;
 

@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
+#include <firefly_synth/modules/shared/FFOscisGraph.hpp>
 #include <firefly_synth/modules/string_osci/FFStringOsciTopo.hpp>
-#include <firefly_synth/modules/string_osci/FFStringOsciGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 std::unique_ptr<FBStaticModule>
@@ -10,9 +10,10 @@ FFMakeStringOsciTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "String";
+  result->graphName = "STRING";
   result->slotCount = FFStringOsciCount;
-  result->graphCount = 1;
-  result->graphRenderer = FFStringOsciRenderGraph;
+  result->graphCount = FFOsciCount + FFStringOsciCount;
+  result->graphRenderer = FFOscisRenderGraph;
   result->id = "{3B4A03F2-0A04-425B-8BD5-D770AB4DC87E}";
   result->params.resize((int)FFStringOsciParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.stringOsci; });

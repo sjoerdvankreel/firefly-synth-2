@@ -73,9 +73,9 @@ MakeNoteEndEvent(FBNote const& note, int time)
   clap_event_note result = {};
   result.port_index = 0;
   result.velocity = 0.0f;
-  result.key = note.key;
   result.note_id = note.id;
-  result.channel = note.channel;
+  result.key = static_cast<std::int16_t>(note.key);
+  result.channel = static_cast<std::int16_t>(note.channel);
   result.header.flags = 0;
   result.header.time = time;
   result.header.type = CLAP_EVENT_NOTE_END;
@@ -126,6 +126,8 @@ FBCLAPPlugin(
   clap_host const* host,
   std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue):
 Plugin(desc, host),
+_audioToMainEvents(FBCLAPSyncEventReserve - 1),
+_mainToAudioEvents(FBCLAPSyncEventReserve - 1),
 _gui(),
 _topo(std::make_unique<FBRuntimeTopo>(topo)),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
@@ -133,9 +135,7 @@ _procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),
 _dspExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _guiExchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
-_exchangeStateQueue(std::move(exchangeStateQueue)),
-_audioToMainEvents(FBCLAPSyncEventReserve - 1),
-_mainToAudioEvents(FBCLAPSyncEventReserve - 1) 
+_exchangeStateQueue(std::move(exchangeStateQueue))
 {
   FB_LOG_ENTRY_EXIT();
 }
@@ -199,10 +199,10 @@ FBCLAPPlugin::isValidParamId(
 
 bool
 FBCLAPPlugin::activate(
-  double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept 
+  double sampleRate, uint32_t /*minFrameCount*/, uint32_t maxFrameCount) noexcept
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, sampleRate, minFrameCount, maxFrameCount]()
+  return FBWithLogException([this, sampleRate, maxFrameCount]()
   {
     _sampleRate = static_cast<float>(sampleRate);
     for (int ch = 0; ch < 2; ch++)
@@ -251,7 +251,7 @@ FBCLAPPlugin::ProcessMainToAudioEvents(
         _procState->InitProcessing(uiEvent.paramIndex, uiEvent.normalized);
       break;
     default:
-      assert(false);
+      FB_ASSERT(false);
       break;
     }
   }

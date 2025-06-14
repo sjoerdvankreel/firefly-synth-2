@@ -11,8 +11,8 @@
 
 using namespace juce;
 
-static Font _font = {};
 static Typeface::Ptr _typeface = {};
+static Font _font = Font(FontOptions());
 static std::unique_ptr<FBLookAndFeel> _lookAndFeel = {};
 
 Font const& FBGUIGetFont() { return _font; }
@@ -27,7 +27,7 @@ FBGUITerminate()
   FB_LOG_INFO("Terminating GUI.");
   LookAndFeel::setDefaultLookAndFeel(nullptr);
   _lookAndFeel.reset();
-  _font = {};
+  _font = Font(FontOptions());
   _typeface.reset();
   FB_LOG_INFO("Terminating JUCE GUI.");
   shutdownJuce_GUI();

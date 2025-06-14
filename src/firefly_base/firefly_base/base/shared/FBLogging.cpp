@@ -5,7 +5,6 @@
 
 #include <ctime>
 #include <memory>
-#include <cassert>
 #include <filesystem>
 
 using namespace juce;
@@ -50,7 +49,7 @@ FBLogLevelToString(FBLogLevel level)
   case FBLogLevel::Info: return "INFO";
   case FBLogLevel::Warn: return "WARN";
   case FBLogLevel::Error: return "ERROR";
-  default: assert(false); return "";
+  default: FB_ASSERT(false); return "";
   }
 }
 

@@ -14,7 +14,6 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <clap/clap.h>
 
-#include <cassert>
 #include <cstring>
 
 // Just to make it work with the moodycamel queue without
@@ -29,14 +28,14 @@ struct alignas(alignof(FFExchangeState)) FFCLAPExchangeState final
 FFCLAPExchangeState::
 FFCLAPExchangeState(FFCLAPExchangeState const& rhs)
 {
-  assert(&rhs != this);
+  FB_ASSERT(&rhs != this);
   memcpy(&state, &rhs.state, sizeof(FFExchangeState));
 }
 
 FFCLAPExchangeState&
 FFCLAPExchangeState::operator=(FFCLAPExchangeState const& rhs)
 {
-  assert(&rhs != this);
+  FB_ASSERT(&rhs != this);
   memcpy(&state, &rhs.state, sizeof(FFExchangeState));
   return *this;
 }
@@ -91,11 +90,11 @@ GetPluginDescriptor(
 
 static clap_plugin_t const* CLAP_ABI
 CreatePlugin(
-  struct clap_plugin_factory const* factory,
+  struct clap_plugin_factory const* /*factory*/,
   clap_host_t const* host, char const* pluginId)
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([factory, host, pluginId]()
+  return FBWithLogException([host, pluginId]()
   {
     auto topo = FFMakeTopo(FBPlugFormat::CLAP);
     auto const* desc = GetPluginDescriptor(nullptr, 0);

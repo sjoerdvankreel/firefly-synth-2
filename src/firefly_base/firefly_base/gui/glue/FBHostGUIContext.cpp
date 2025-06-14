@@ -2,7 +2,6 @@
 
 #include <stack>
 #include <memory>
-#include <cassert>
 
 using namespace juce;
 
@@ -45,6 +44,6 @@ FBMakeHostContextMenu(std::vector<FBHostContextMenuItem> const& items)
       builders.top().menu->addSeparator();
     else
       builders.top().menu->addItem(i + 1, items[i].name, items[i].enabled, items[i].checked);
-  assert(builders.size() == 1);
+  FB_ASSERT(builders.size() == 1);
   return std::move(builders.top().menu);
 }

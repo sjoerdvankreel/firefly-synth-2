@@ -18,9 +18,8 @@ class alignas(FBSIMDAlign) FFEnvDSPState final
   friend struct EnvGraphRenderData;
   std::unique_ptr<FFEnvProcessor> processor = {};
 public:
-  FFEnvDSPState();
-  ~FFEnvDSPState();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEnvDSPState);
+  FFEnvDSPState() : processor(std::make_unique<FFEnvProcessor>()) {}
   FBSArray<float, FBFixedBlockSamples> output = {};
 };
 

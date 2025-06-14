@@ -46,7 +46,7 @@ inline FBBatch<double>
 FBSArray<T, N>::LoadFloatToDouble(int pos) const
 {
   static_assert(std::is_same<T, float>::value);
-  assert(pos % FBSIMDTraits<double>::Size == 0);
+  FB_ASSERT(pos % FBSIMDTraits<double>::Size == 0);
   FBSArray<double, FBSIMDTraits<double>::Size> y;
   for (int i = 0; i < FBSIMDTraits<double>::Size; i++)
     y.Set(i, Get(pos + i));
@@ -58,7 +58,7 @@ inline void
 FBSArray<T, N>::StoreDoubleToFloat(int pos, FBBatch<double> val)  const
 {
   static_assert(std::is_same<T, float>::value);
-  assert(pos % FBSIMDTraits<double>::Size == 0);
+  FB_ASSERT(pos % FBSIMDTraits<double>::Size == 0);
   FBSArray<double, FBSIMDTraits<double>::Size> x(val);
   for (int i = 0; i < FBSIMDTraits<double>::Size; i++)
     Set(pos + i, static_cast<float>(x.Get(i)));
@@ -70,7 +70,7 @@ FBSArray<T, N>::NaNCheck() const
 {
 #ifndef NDEBUG
   for (int i = 0; i < N; i++)
-    assert(!std::isnan(Get(i)));
+    FB_ASSERT(!std::isnan(Get(i)));
 #endif
 }
 
@@ -92,6 +92,7 @@ template <class T>
 inline void
 FBBatchNaNCheck(FBBatch<T> vec)
 {
+  (void)vec;
 #ifndef NDEBUG
   FBSArray<float, FBSIMDTraits<T>::Size> check;
   check.Store(0, vec);

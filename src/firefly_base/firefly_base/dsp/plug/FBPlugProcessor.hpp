@@ -9,7 +9,7 @@ class IFBPlugProcessor
 {
 public:
   virtual ~IFBPlugProcessor() {}
-  FB_NOCOPY_MOVE_DEFCTOR(IFBPlugProcessor);
+  FB_NOCOPY_NOMOVE_DEFCTOR(IFBPlugProcessor);
 
   virtual void LeaseVoices(FBPlugInputBlock const& input) = 0;
   virtual void ProcessPreVoice(FBPlugInputBlock const& input) = 0;
