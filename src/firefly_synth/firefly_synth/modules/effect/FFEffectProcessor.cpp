@@ -236,10 +236,10 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
   auto const& procParams = *FFSelectDualState<Global>(
-    [procState, voice, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
-    [procState, voice, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
+    [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
+    [procState, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
   auto& dspState = *FFSelectDualState<Global>(
-    [procState, voice, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
+    [procState, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
     [procState, voice, &state]() { return &procState->dsp.voice[voice].vEffect[state.moduleSlot]; });
   auto& output = dspState.output;
   auto const& input = dspState.input;
@@ -440,14 +440,14 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   }
 
   auto& exchangeDSP = *FFSelectDualState<Global>(
-    [exchangeToGUI, &state, voice]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
+    [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = *FFSelectDualState<Global>(
-    [exchangeToGUI, &state, voice] { return &exchangeToGUI->param.global.gEffect[state.moduleSlot]; },
-    [exchangeToGUI, &state, voice] { return &exchangeToGUI->param.voice.vEffect[state.moduleSlot]; });
+    [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gEffect[state.moduleSlot]; },
+    [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vEffect[state.moduleSlot]; });
   FFSelectDualExchangeState<Global>(exchangeParams.acc.trackingKey[0], voice) = trackingKeyNorm.Last();
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
