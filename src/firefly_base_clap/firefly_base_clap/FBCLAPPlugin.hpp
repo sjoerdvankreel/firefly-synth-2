@@ -30,13 +30,17 @@ public juce::Timer,
 public FBHostGUIContext,
 public IFBHostDSPContext
 {
+#if _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4324)
+#endif
   moodycamel::ReaderWriterQueue<FBCLAPSyncToMainEvent,
     FBCLAPSyncEventReserve> _audioToMainEvents;
   moodycamel::ReaderWriterQueue<FBCLAPSyncToAudioEvent,
     FBCLAPSyncEventReserve> _mainToAudioEvents;
+#if _MSC_VER
 #pragma warning(pop)
+#endif
 
   std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBRuntimeTopo> _topo;
