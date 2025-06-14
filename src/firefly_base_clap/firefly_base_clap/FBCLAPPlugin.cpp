@@ -199,10 +199,10 @@ FBCLAPPlugin::isValidParamId(
 
 bool
 FBCLAPPlugin::activate(
-  double sampleRate, uint32_t minFrameCount, uint32_t maxFrameCount) noexcept 
+  double sampleRate, uint32_t /*minFrameCount*/, uint32_t maxFrameCount) noexcept
 {
   FB_LOG_ENTRY_EXIT();
-  return FBWithLogException([this, sampleRate, minFrameCount, maxFrameCount]()
+  return FBWithLogException([this, sampleRate, maxFrameCount]()
   {
     _sampleRate = static_cast<float>(sampleRate);
     for (int ch = 0; ch < 2; ch++)
