@@ -32,6 +32,8 @@ in the graph plot. See bottom of the page for screenshot.
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
 This is stuff that has to be built-in from the ground up, which would essentially mean a complete rewrite anyway.
 The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice audio engine state, and 3) support clap polyphonic modulation.
+
+* CLAP polymod is important because it is (supposedly, haven't tried yet) a superset of both MIDI MPE and VST3 note expressions. In theory it should be "easy;)" to add MPE support from here.
 * Finally bit the bullet and made it SIMD-friendly. Flat structs everywhere, proper alignment, no pointer chasing, and a bit of manual (x)simd where it makes sense.
 * Fixed internal block size (16) instead of maximum internal block size (so, PDC). This plays nicely into simd-friendly datastructures.
 * Both the audio engine and the GUI keep a copy of the per-voice parameter state to allow accurate reconstruction of the engine state in graphs. Synced each host (not internal) block.
