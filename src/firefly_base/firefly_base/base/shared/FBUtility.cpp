@@ -8,6 +8,7 @@
 #include <fstream>
 
 #if (defined __APPLE__) && defined(__aarch64__)
+#define SSE2NEON_SUPPRESS_WARNINGS 1
 #include <sse2neon.h>
 #else
 #include <immintrin.h>
