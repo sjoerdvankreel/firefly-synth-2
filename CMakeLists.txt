@@ -43,7 +43,7 @@ else ()
 endif ()
 
 # stuff that should only apply to our code
-# note: for GCC we can't turn on warnings as errors for the final .SO's because juce produces some, 
+# note: for GCC we can't turn on warnings as errors for the final .SO's because juce produces some,
 # and it's compiled with the dynamic library projects (i tried to factor out juce to separate project, but crash and burn on Linux)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   set (FF_COMPILE_OPTIONS_DYN /W4 /w45038 /w45246 /w45266 /w45233 /WX /analyze:external- /fp:fast /utf-8)
@@ -52,8 +52,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set (FF_COMPILE_OPTIONS_DYN -Wall -Wextra -pedantic -Wno-sign-compare -Wno-parentheses -Werror -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden)
   set (FF_COMPILE_OPTIONS_LIB "${FF_COMPILE_OPTIONS_DYN}")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set (FF_COMPILE_OPTIONS_DYN -Wall -Wextra -pedantic -Wno-sign-compare -Wno-parentheses -Wno-class-memaccess -ffast-math -fPIC -Wl,--no-undefined -
-fvisibility=hidden -fvisibility-inlines-hidden)
+  set (FF_COMPILE_OPTIONS_DYN -Wall -Wextra -pedantic -Wno-sign-compare -Wno-parentheses -Wno-class-memaccess -ffast-math -Wl,--no-undefined -fvisibility=hidden -fvisibility-inlines-hidden)
   set (FF_COMPILE_OPTIONS_LIB "${FF_COMPILE_OPTIONS_DYN} -Werror")
 else ()
   message (FATAL_ERROR "Unsupported compiler.")
