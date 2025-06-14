@@ -26,7 +26,6 @@ FFMakeEnvTopo()
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
-  auto selectGuiModule = [](auto& state) { return &state.env; };
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& type = result->params[(int)FFEnvParam::Type];
