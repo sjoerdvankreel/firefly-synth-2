@@ -43,7 +43,16 @@ FBStaticParamBase::NonRealTime() const
   case FBParamType::Boolean: return boolean;
   case FBParamType::Discrete: return discrete;
   case FBParamType::Identity: return identity;
-  default: FB_ASSERT(false); return *static_cast<FBParamNonRealTime const*>(nullptr);
+  default: 
+    FB_ASSERT(false); 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnull-dereference"
+#endif
+    return *static_cast<FBParamNonRealTime const*>(nullptr);
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
   }
 }
 
@@ -55,7 +64,16 @@ FBStaticParamBase::ItemsNonRealTime() const
   case FBParamType::List: return list;
   case FBParamType::Bars: return bars;
   case FBParamType::Discrete: return discrete;
-  default: FB_ASSERT(false); return *static_cast<FBItemsParamNonRealTime const*>(nullptr);
+  default: 
+    FB_ASSERT(false); 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnull-dereference"
+#endif
+    return *static_cast<FBItemsParamNonRealTime const*>(nullptr);
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
   }
 }
 

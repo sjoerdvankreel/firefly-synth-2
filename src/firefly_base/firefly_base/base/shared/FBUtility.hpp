@@ -80,7 +80,7 @@ FBDenormalState;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
 
-// Just a cop-out to prevent unused variable warnings.
+// To prevent unused variable warnings.
 template <class T>
 inline void 
 FB_ASSERT(T&& cond)
@@ -89,7 +89,7 @@ FB_ASSERT(T&& cond)
   assert(cond);
 }
 
-FBDenormalState 
+FBDenormalState
 FBDisableDenormal();
 void 
 FBRestoreDenormal(FBDenormalState state);
