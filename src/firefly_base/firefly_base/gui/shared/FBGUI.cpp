@@ -11,15 +11,8 @@
 
 using namespace juce;
 
-#pragma warning (push)
-#pragma GCC diagnostic push
-#pragma warning (disable: 4996)
-#pragma GCC diagnostic ignored "-Wdeprecated"
-static Font _font = {};
-#pragma warning (pop)
-#pragma GCC diagnostic pop
-
 static Typeface::Ptr _typeface = {};
+static Font _font = Font(FontOptions());
 static std::unique_ptr<FBLookAndFeel> _lookAndFeel = {};
 
 Font const& FBGUIGetFont() { return _font; }
@@ -34,14 +27,7 @@ FBGUITerminate()
   FB_LOG_INFO("Terminating GUI.");
   LookAndFeel::setDefaultLookAndFeel(nullptr);
   _lookAndFeel.reset();
-
-#pragma warning (push)
-#pragma GCC diagnostic push
-#pragma warning (disable: 4996)
-#pragma GCC diagnostic ignored "-Wdeprecated"
-  _font = {};
-#pragma warning (pop)
-#pragma GCC diagnostic pop
+  _font = Font(FontOptions());
   _typeface.reset();
   FB_LOG_INFO("Terminating JUCE GUI.");
   shutdownJuce_GUI();
