@@ -25,8 +25,6 @@ class FBGUIParamComboBox final:
 public FBAutoSizeComboBox,
 public FBGUIParamControl
 {
-  int _maxTextWidth = 0;
-
 public:
   juce::String getTooltip() override;
   void parentHierarchyChanged() override;
@@ -40,8 +38,6 @@ class FBParamComboBox final:
 public FBAutoSizeComboBox,
 public FBParamControl
 {
-  int _maxTextWidth = 0;
-
 public:
   juce::String getTooltip() override;
   void parentHierarchyChanged() override;
