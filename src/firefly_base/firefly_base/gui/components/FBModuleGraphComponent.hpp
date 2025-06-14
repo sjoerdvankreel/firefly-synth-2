@@ -22,7 +22,6 @@ public juce::Component
   std::unique_ptr<FBGridComponent> _grid = {};
   std::unique_ptr<FBSectionComponent> _section = {};
 
-  FBPlugGUI* const _plugGUI;
   std::unique_ptr<FBModuleGraphComponentData> _data;
   std::unique_ptr<FBModuleGraphDisplayComponent> _display;
   std::chrono::high_resolution_clock::time_point _updated = {};
@@ -39,5 +38,5 @@ public:
 
   ~FBModuleGraphComponent();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphComponent);
-  FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState);
+  FBModuleGraphComponent(FBGraphRenderState* renderState);
 };

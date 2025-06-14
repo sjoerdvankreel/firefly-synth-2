@@ -118,7 +118,7 @@ FFPlugGUI::SetupGUI()
   FB_LOG_INFO("Calculated GUI grid size.");
 
   FB_LOG_INFO("Creating GUI components.");
-  _graph = StoreComponent<FBModuleGraphComponent>(this, _graphRenderState.get());
+  _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
   _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 1, -1, rowSizes, std::vector<int> { 1, 0, 0 });
   _content->Add(0, 0, 1, 3, _graph);
   _content->Add(1, 0, 1, 1, FFMakeMasterGUI(this));

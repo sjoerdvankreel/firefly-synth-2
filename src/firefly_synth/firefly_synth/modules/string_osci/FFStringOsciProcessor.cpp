@@ -144,9 +144,9 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   float uniDetunePlain = topo.NormalizedToIdentityFast(FFStringOsciParam::UniDetune, uniDetuneNorm.CV().Get(0));
   float trackingKeyPlain = topo.NormalizedToLinearFast(FFStringOsciParam::TrackingKey, trackingKeyNorm.CV().Get(0));
 
-  _lpFilter = {};
-  _hpFilter = {};
   _graphPosition = 0;
+  _lpFilter.Reset();
+  _hpFilter.Reset();
   _normalPrng = FFMarsagliaPRNG(_seed / (FFStringOsciMaxSeed + 1.0f));
   _uniformPrng = FFParkMillerPRNG(_seed / (FFStringOsciMaxSeed + 1.0f));
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(

@@ -224,8 +224,8 @@ FFEffectProcessor::BeginVoiceOrBlock(
     if constexpr(Global)
       if (!graph)
         continue;
-    _stVarFilters[i] = {};
     _combFilters[i].Reset();
+    _stVarFilters[i].Reset();
   }
 }
 

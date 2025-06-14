@@ -29,12 +29,27 @@ class alignas(FBSIMDAlign) FFStateVariableFilter final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFStateVariableFilter);
+  void Reset();
   double Next(
     int channel, double in);
   void Set(
     FFStateVariableFilterMode mode, double sampleRate,
     double freqHz, double resNorm, double gainDb);
 };
+
+template <int Channels>
+inline void
+FFStateVariableFilter<Channels>::Reset()
+{
+  _m0 = {};
+  _m1 = {};
+  _m2 = {};
+  _a1 = {};
+  _a2 = {};
+  _a3 = {};
+  _ic1eq.fill(0.0);
+  _ic2eq.fill(0.0);
+}
 
 template <int Channels>
 inline double 

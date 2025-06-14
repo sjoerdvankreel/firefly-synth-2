@@ -20,9 +20,8 @@ FBModuleGraphComponent::
 ~FBModuleGraphComponent() {}
 
 FBModuleGraphComponent::
-FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState) :
+FBModuleGraphComponent(FBGraphRenderState* renderState) :
 Component(),
-_plugGUI(plugGUI),
 _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
