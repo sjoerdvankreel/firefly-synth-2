@@ -65,6 +65,9 @@ target_link_libraries(${PROJECT_NAME_BASE_JUCE} PRIVATE juce_core juce_events ju
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   source_group(TREE ${BASE_JUCE_SRC_DIR} FILES ${BASE_JUCE_SRC_FILES})
 endif()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(${PROJECT_NAME_BASE_JUCE} PUBLIC -fPIC)  
+endif()
 
 # vst3 sdk
 set(VST_SDK TRUE)
