@@ -36,7 +36,7 @@ public:
   FBModuleProcExchangeState const* Global() const;
   std::array<FBModuleProcExchangeState*, FBMaxVoices> const& Voice() const;
 
-  FB_NOCOPY_MOVE_DEFCTOR(FBModuleExchangeState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleExchangeState);
   explicit FBModuleExchangeState(FBModuleProcExchangeState* global);
   explicit FBModuleExchangeState(std::array<FBModuleProcExchangeState*, FBMaxVoices> const& voice);
 };

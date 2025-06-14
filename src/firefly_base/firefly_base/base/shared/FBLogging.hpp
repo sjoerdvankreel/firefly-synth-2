@@ -30,7 +30,7 @@ struct FBEntryExitLog
 
   ~FBEntryExitLog();
   FBEntryExitLog(char const* file, int line, char const* func);
-  FB_NOCOPY_MOVE_NODEFCTOR(FBEntryExitLog);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBEntryExitLog);
 };
 
 void FBLogTerminate();

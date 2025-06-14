@@ -9,7 +9,7 @@ public:
   virtual bool TryDequeue(void* data) = 0;
   virtual bool Enqueue(void const* data) = 0;
   virtual ~FBCLAPExchangeStateQueueBase() {}
-  FB_NOCOPY_MOVE_DEFCTOR(FBCLAPExchangeStateQueueBase);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBCLAPExchangeStateQueueBase);
 };
 
 template <class TExchangeState>

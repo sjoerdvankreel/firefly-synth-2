@@ -29,7 +29,7 @@ FBMakeHostContextMenu(
 class FBHostGUIContext
 {
 public:
-  FB_NOCOPY_MOVE_DEFCTOR(FBHostGUIContext);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostGUIContext);
 
   virtual FBGUIStateContainer* GUIState() = 0;
   virtual FBRuntimeTopo const* Topo() const = 0;

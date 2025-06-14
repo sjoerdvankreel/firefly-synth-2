@@ -23,7 +23,7 @@ class alignas(FBSIMDAlign) FFCombFilter final
   void DebugCheck(float sampleRate, float freq);
 
 public:
-  FB_NOCOPY_MOVE_DEFCTOR(FFCombFilter);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFCombFilter);
   void Reset();
   void Resize(float sampleRate, float minFreq);
 

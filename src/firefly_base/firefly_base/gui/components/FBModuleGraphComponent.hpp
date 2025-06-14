@@ -38,6 +38,6 @@ public:
   int TweakedModuleByUI() const { return _tweakedModuleByUI; }
 
   ~FBModuleGraphComponent();
-  FB_NOCOPY_MOVE_NODEFCTOR(FBModuleGraphComponent);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBModuleGraphComponent);
   FBModuleGraphComponent(FBPlugGUI* plugGUI, FBGraphRenderState* renderState);
 };

@@ -28,7 +28,7 @@ class alignas(FBSIMDAlign) FFStateVariableFilter final
   alignas(FBSIMDAlign) std::array<double, Channels> _ic2eq = {};
 
 public:
-  FB_NOCOPY_MOVE_DEFCTOR(FFStateVariableFilter);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFStateVariableFilter);
   double Next(
     int channel, double in);
   void Set(
