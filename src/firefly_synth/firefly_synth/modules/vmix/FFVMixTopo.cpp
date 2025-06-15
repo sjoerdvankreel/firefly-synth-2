@@ -47,6 +47,7 @@ FFMakeVMixTopo()
   osciToVFX.unit = "%";
   osciToVFX.id = "{1BC03120-9E8C-412B-81D4-17CC662BA72B}";
   osciToVFX.slotFormatter = FormatOsciToVFXSlot;
+  osciToVFX.slotFormatterOverrides = true;
   osciToVFX.type = FBParamType::Identity;
   auto selectOsciToVFX = [](auto& module) { return &module.acc.osciToVFX; };
   osciToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciToVFX);
@@ -61,6 +62,7 @@ FFMakeVMixTopo()
   stringOsciToVFX.unit = "%";
   stringOsciToVFX.id = "{5B98D130-B1BA-4E0D-877B-F5656A1EFBE8}";
   stringOsciToVFX.slotFormatter = FormatStringOsciToVFXSlot;
+  stringOsciToVFX.slotFormatterOverrides = true;
   stringOsciToVFX.type = FBParamType::Identity;
   auto selectStringOsciToVFX = [](auto& module) { return &module.acc.stringOsciToVFX; };
   stringOsciToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringOsciToVFX);

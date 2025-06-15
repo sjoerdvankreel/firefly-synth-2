@@ -77,6 +77,7 @@ public:
   std::string unit = {};
   std::string display = {};
   std::string defaultText = {};
+  bool slotFormatterOverrides = {};
   FBParamType type = (FBParamType)-1;
   FBParamsDependencies dependencies = {};
   FBParamSlotFormatter slotFormatter = {};

@@ -20,8 +20,8 @@ MakeRuntimeParamLongName(
   FBStaticParamBase const& param,
   FBParamTopoIndices const& indices)
 {
-  auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter);
-  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {});
+  auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
+  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {}, false);
   return moduleName + " " + paramName;
 }
 
@@ -36,8 +36,8 @@ runtimeModuleIndex(runtimeModuleIndex),
 runtimeParamIndex(runtimeParamIndex),
 topoIndices(topoIndices),
 longName(MakeRuntimeParamLongName(topo, staticModule, staticParam, topoIndices)),
-shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter)),
-displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter)),
+shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
+displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
 id(MakeRuntimeParamId(staticModule, staticParam, topoIndices)),
 tag(FBMakeStableHash(id)) {}
 

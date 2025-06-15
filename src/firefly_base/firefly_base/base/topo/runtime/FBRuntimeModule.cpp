@@ -31,7 +31,7 @@ FBRuntimeModule(
   FBStaticTopo const& topo, FBStaticModule const& staticModule, 
   FBTopoIndices const& topoIndices, int runtimeIndex, 
   int runtimeParamStart, int runtimeGUIParamStart):
-name(FBMakeRuntimeShortName(topo, staticModule.name, staticModule.slotCount, topoIndices.slot, {})),
+name(FBMakeRuntimeShortName(topo, staticModule.name, staticModule.slotCount, topoIndices.slot, {}, false)),
 tabName(FBMakeRuntimeGraphName(staticModule.tabName, staticModule.slotCount, topoIndices.slot)),
 graphName(FBMakeRuntimeGraphName(staticModule.graphName, staticModule.slotCount, topoIndices.slot)),
 runtimeModuleIndex(runtimeIndex),
