@@ -38,9 +38,9 @@ FBModuleTabComponent::AddModuleTab(
   std::string header = std::to_string(moduleIndices.slot + 1);
   if (moduleIndices.slot == 0)
     if (module.slotCount > 1)
-      header = " " + module.name + " " + header;
+      header = " " + module.tabName + " " + header;
     else
-      header = " " + module.name;
+      header = " " + module.tabName;
   addTab(header, Colours::black, component, false);
 }
 

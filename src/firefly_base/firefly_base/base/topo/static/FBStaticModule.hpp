@@ -27,10 +27,11 @@ FBModuleGraphRenderer;
 struct FBStaticModule final
 {
   bool voice = false;
-  int graphCount = 1;
+  int graphCount = 0;
   int slotCount = {};
   std::string id = {};
   std::string name = {};
+  std::string tabName = {};
   std::string graphName = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};

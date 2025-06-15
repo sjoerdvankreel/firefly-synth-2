@@ -10,6 +10,7 @@ FFMakeGUISettingsTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
   result->name = "UI";
+  result->tabName = "UI";
   result->slotCount = 1;
   result->id = "{2407B76A-7FB3-4BD6-B6FD-B1F610AF8147}";
   result->guiParams.resize((int)FFGUISettingsGUIParam::Count);

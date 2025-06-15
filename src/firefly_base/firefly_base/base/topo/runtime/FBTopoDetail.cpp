@@ -12,12 +12,22 @@ FBMakeStableHash(std::string const& id)
 }
 
 std::string
-FBMakeRuntimeGraphName(
+FBMakeRuntimeTabName(
   std::string const& name, int slotCount, int slot)
 {
   std::string result = name;
   if (slotCount > 1)
     result += " " + std::to_string(slot + 1);
+  return result;
+}
+
+std::string
+FBMakeRuntimeGraphName(
+  std::string const& name, int slotCount, int slot)
+{
+  std::string result = name;
+  if (slotCount > 1)
+    result += std::to_string(slot + 1);
   return result;
 }
 

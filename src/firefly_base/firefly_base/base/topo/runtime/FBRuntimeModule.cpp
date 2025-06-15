@@ -30,12 +30,16 @@ FBRuntimeModule(
   FBStaticModule const& staticModule, FBTopoIndices const& topoIndices,
   int runtimeIndex, int runtimeParamStart, int runtimeGUIParamStart):
 name(FBMakeRuntimeShortName(staticModule.name, staticModule.slotCount, topoIndices.slot, {})),
+tabName(FBMakeRuntimeGraphName(staticModule.tabName, staticModule.slotCount, topoIndices.slot)),
 graphName(FBMakeRuntimeGraphName(staticModule.graphName, staticModule.slotCount, topoIndices.slot)),
 runtimeModuleIndex(runtimeIndex),
 topoIndices(topoIndices),
 params(MakeRuntimeParams<FBRuntimeParam>(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)),
 guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(staticModule, topoIndices, runtimeIndex, runtimeGUIParamStart, staticModule.guiParams))
 {
+  assert(staticModule.name.size());
+  assert(staticModule.tabName.size());
+  assert(staticModule.graphCount == 0 || staticModule.graphName.size());
 #ifndef NDEBUG
   std::set<std::string> paramNames = {};
   for (int p = 0; p < staticModule.params.size(); p++)

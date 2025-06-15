@@ -18,8 +18,9 @@ FFMakeEffectTopo(bool global)
   std::string prefix = global ? "G" : ""; // TODO prefix should be V once we go out of alpha, but, dont want to refix the demos right now
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
-  result->name = global? "GFX": "VFX";
-  result->graphName = result->name;
+  result->name = global? "Global FX": "Voice FX";
+  result->tabName = global ? "GFX" : "VFX";
+  result->graphName = global ? "GFX" : "VFX";
   result->slotCount = FFEffectCount;
   result->graphCount = FFEffectBlockCount + 1;
   result->graphRenderer = global? FFEffectRenderGraph<true>: FFEffectRenderGraph<false>;

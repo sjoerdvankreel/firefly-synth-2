@@ -10,6 +10,7 @@ FFMakeStringOsciTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "String";
+  result->tabName = "STRING";
   result->graphName = "STRING";
   result->slotCount = FFStringOsciCount;
   result->graphCount = FFOsciCount + FFStringOsciCount;

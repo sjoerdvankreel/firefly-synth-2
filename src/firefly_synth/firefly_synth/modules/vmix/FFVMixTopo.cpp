@@ -9,7 +9,8 @@ FFMakeVMixTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
-  result->name = "VMix";
+  result->tabName = "VMIX";
+  result->name = "Voice Mix";
   result->slotCount = 1;
   result->id = "{5C91D5A0-3EC1-4142-935A-3FE83B60C04E}";
   result->params.resize((int)FFVMixParam::Count);

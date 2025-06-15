@@ -12,6 +12,7 @@ struct FBStaticModule;
 struct FBRuntimeModule final
 {
   std::string name;
+  std::string tabName;
   std::string graphName;
   int runtimeModuleIndex;
   FBTopoIndices topoIndices;
