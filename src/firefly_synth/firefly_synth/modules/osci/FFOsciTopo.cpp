@@ -5,7 +5,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FFOsciFMFormatRatioSlot(int slot)
+FFOsciFMFormatRatioSlot(FBStaticTopo const&, int slot)
 {
   switch (slot)
   {
@@ -31,7 +31,7 @@ FFOsciFMFormatRatioValue(int val)
 }
 
 static std::string
-FFOsciFMFormatIndexSlot(int slot)
+FFOsciFMFormatIndexSlot(FBStaticTopo const&, int slot)
 {
   FB_ASSERT(0 <= slot && slot < FFOsciFMMatrixSize);
   return std::to_string(slot / FFOsciFMOperatorCount + 1) + "\U00002192" + 

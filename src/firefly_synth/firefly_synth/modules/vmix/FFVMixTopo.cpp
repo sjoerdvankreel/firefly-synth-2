@@ -2,7 +2,17 @@
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/vmix/FFVMixTopo.hpp>
 #include <firefly_synth/modules/vmix/FFVMixState.hpp>
+#include <firefly_synth/modules/osci/FFOsciTopo.hpp>
+#include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
+
+static std::string
+FormatOsciToVFXSlot(FBStaticTopo const& topo, int mixSlot)
+{
+  int fxSlot = FFVMixOsciToVFXGetFXSlot(mixSlot);
+  int osciSlot = FFVMixOsciToVFXGetOsciSlot(mixSlot);
+  return {};
+}
 
 std::unique_ptr<FBStaticModule>
 FFMakeVMixTopo()
@@ -25,6 +35,7 @@ FFMakeVMixTopo()
   osciToVFX.unit = "%";
   osciToVFX.id = "{1BC03120-9E8C-412B-81D4-17CC662BA72B}";
   osciToVFX.type = FBParamType::Identity;
+  osciToVFX.slotFormatter = FormatOsciToVFXSlot;
   auto selectOsciToVFX = [](auto& module) { return &module.acc.osciToVFX; };
   osciToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciToVFX);
   osciToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciToVFX);

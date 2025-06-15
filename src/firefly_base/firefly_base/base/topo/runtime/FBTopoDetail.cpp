@@ -33,12 +33,12 @@ FBMakeRuntimeGraphName(
 
 std::string
 FBMakeRuntimeShortName(
-  std::string const& name, int slotCount, 
-  int slot, FBParamSlotFormatter formatter)
+  FBStaticTopo const& topo, std::string const& name, 
+  int slotCount, int slot, FBParamSlotFormatter formatter)
 {
   std::string result = name;
   if (formatter)
-    result += " " + formatter(slot);
+    result += " " + formatter(topo, slot);
   else if (slotCount > 1)
     result += " " + std::to_string(slot + 1);
   return result;
@@ -46,10 +46,10 @@ FBMakeRuntimeShortName(
 
 std::string
 FBMakeRuntimeDisplayName(
-  std::string const& name, std::string const& display, 
+  FBStaticTopo const& topo, std::string const& name, std::string const& display,
   int slotCount, int slot, FBParamSlotFormatter formatter)
 {
   if (!display.empty())
     return display;
-  return FBMakeRuntimeShortName(name, slotCount, slot, formatter);
+  return FBMakeRuntimeShortName(topo, name, slotCount, slot, formatter);
 }

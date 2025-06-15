@@ -1,5 +1,7 @@
 #pragma once
 
+struct FBStaticTopo;
+
 #include <string>
 #include <firefly_base/base/topo/static/FBStaticParam.hpp>
 
@@ -19,10 +21,10 @@ FBMakeRuntimeGraphName(
 
 std::string
 FBMakeRuntimeShortName(
-  std::string const& name, int slotCount, 
-  int slot, FBParamSlotFormatter formatter);
+  FBStaticTopo const& topo, std::string const& name, 
+  int slotCount, int slot, FBParamSlotFormatter formatter);
 
 std::string
 FBMakeRuntimeDisplayName(
-  std::string const& name, std::string const& display, 
+  FBStaticTopo const& topo, std::string const& name, std::string const& display,
   int slotCount, int slot, FBParamSlotFormatter formatter);

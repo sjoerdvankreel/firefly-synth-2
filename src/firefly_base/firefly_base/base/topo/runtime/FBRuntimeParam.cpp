@@ -15,17 +15,19 @@ MakeRuntimeParamId(
 
 static std::string
 MakeRuntimeParamLongName(
+  FBStaticTopo const& topo,
   FBStaticModule const& module,
   FBStaticParamBase const& param,
   FBParamTopoIndices const& indices)
 {
-  auto paramName = FBMakeRuntimeShortName(param.name, param.slotCount, indices.param.slot, param.slotFormatter);
-  auto moduleName = FBMakeRuntimeShortName(module.name, module.slotCount, indices.module.slot, {});
+  auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter);
+  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {});
   return moduleName + " " + paramName;
 }
 
 FBRuntimeParamBase::
 FBRuntimeParamBase(
+  FBStaticTopo const& topo,
   FBStaticModule const& staticModule,
   FBStaticParamBase const& staticParam,
   FBParamTopoIndices const& topoIndices,
@@ -33,28 +35,30 @@ FBRuntimeParamBase(
 runtimeModuleIndex(runtimeModuleIndex),
 runtimeParamIndex(runtimeParamIndex),
 topoIndices(topoIndices),
-longName(MakeRuntimeParamLongName(staticModule, staticParam, topoIndices)),
-shortName(FBMakeRuntimeShortName(staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter)),
-displayName(FBMakeRuntimeDisplayName(staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter)),
+longName(MakeRuntimeParamLongName(topo, staticModule, staticParam, topoIndices)),
+shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter)),
+displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter)),
 id(MakeRuntimeParamId(staticModule, staticParam, topoIndices)),
 tag(FBMakeStableHash(id)) {}
 
 FBRuntimeGUIParam::
 FBRuntimeGUIParam(
+  FBStaticTopo const& topo,
   FBStaticModule const& staticModule,
   FBStaticGUIParam const& staticParam,
   FBParamTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamIndex):
-FBRuntimeParamBase(staticModule, staticParam, topoIndices, runtimeModuleIndex, runtimeParamIndex),
+FBRuntimeParamBase(topo, staticModule, staticParam, topoIndices, runtimeModuleIndex, runtimeParamIndex),
 static_(staticParam) {}
 
 FBRuntimeParam::
 FBRuntimeParam(
+  FBStaticTopo const& topo,
   FBStaticModule const& staticModule,
   FBStaticParam const& staticParam,
   FBParamTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamIndex):
-FBRuntimeParamBase(staticModule, staticParam, topoIndices, runtimeModuleIndex, runtimeParamIndex),
+FBRuntimeParamBase(topo, staticModule, staticParam, topoIndices, runtimeModuleIndex, runtimeParamIndex),
 static_(staticParam)
 {
 #ifndef NDEBUG

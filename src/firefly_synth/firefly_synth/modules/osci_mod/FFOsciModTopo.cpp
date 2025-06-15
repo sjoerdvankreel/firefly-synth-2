@@ -1,10 +1,11 @@
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/shared/FFOscisGraph.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 std::string
-FFOsciModFormatSlot(int slot)
+FFOsciModFormatSlot(FBStaticTopo const&, int slot)
 {
   switch (slot)
   {

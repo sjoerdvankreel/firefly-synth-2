@@ -7,7 +7,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FormatBlockSlot(int slot)
+FormatBlockSlot(FBStaticTopo const&, int slot)
 {
   return std::string(1, static_cast<char>('A' + slot));
 }
