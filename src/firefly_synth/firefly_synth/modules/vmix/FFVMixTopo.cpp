@@ -7,6 +7,22 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
+FormatOsciToOutSlot(FBStaticTopo const& topo, int mixSlot)
+{
+  int osciSlot = mixSlot;
+  std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
+  return osciName + "\U00002192Out";
+}
+
+static std::string
+FormatVFXToOutSlot(FBStaticTopo const& topo, int mixSlot)
+{
+  int fxSlot = mixSlot;
+  std::string fxName = topo.modules[(int)FFModuleType::VEffect].name + " " + std::to_string(fxSlot + 1);
+  return fxName + "\U00002192Out";
+}
+
+static std::string
 FormatOsciToVFXSlot(FBStaticTopo const& topo, int mixSlot)
 {
   int fxSlot = FFVMixOsciToVFXGetFXSlot(mixSlot);
@@ -91,6 +107,8 @@ FFMakeVMixTopo()
   osciToOut.slotCount = FFOsciCount;
   osciToOut.unit = "%";
   osciToOut.id = "{FFBE0515-CF42-4E5F-B453-0CEA58A623D8}";
+  osciToOut.slotFormatter = FormatOsciToOutSlot;
+  osciToOut.slotFormatterOverrides = true;
   osciToOut.type = FBParamType::Identity;
   auto selectOsciToOut = [](auto& module) { return &module.acc.osciToOut; };
   osciToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciToOut);
@@ -119,6 +137,8 @@ FFMakeVMixTopo()
   vfxToOut.slotCount = FFEffectCount;
   vfxToOut.unit = "%";
   vfxToOut.id = "{D159D4DD-BF49-4208-BEAE-D5BE550AB9FA}";
+  vfxToOut.slotFormatter = FormatVFXToOutSlot;
+  vfxToOut.slotFormatterOverrides = true;
   vfxToOut.type = FBParamType::Identity;
   auto selectVFXToOut = [](auto& module) { return &module.acc.VFXToOut; };
   vfxToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVFXToOut);
