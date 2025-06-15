@@ -41,7 +41,7 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
     }
   }
   grid->MarkSection({ { 0, 0 }, { 2, FFVMixOsciToVFXCount / 2 + 2 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return grid;
 }
 
 static Component*
@@ -71,7 +71,7 @@ MakeVMixSectionStringOsciToVFX(FBPlugGUI* plugGUI)
     }
   }
   grid->MarkSection({ { 0, 0 }, { 2, FFVMixStringOsciToVFXCount / 2 + 2 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return grid;
 }
 
 static Component*
@@ -98,7 +98,7 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
     grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ { 0, 0 }, { 2, FFOsciCount + 1 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  return grid;
 }
 
 static Component*
