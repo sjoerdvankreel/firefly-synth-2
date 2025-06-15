@@ -11,5 +11,5 @@ inline int constexpr FFVMixStringOsciToVFXCount = FFStringOsciCount * FFEffectCo
 inline int constexpr FFVMixVFXToVFXCount = FFEffectCount * (FFEffectCount - 1) / 2;
 
 enum class FFVMixParam { 
-  OsciToVFX, StringOsciToVFX, /*VFXToVFX,
-  OsciToOut, StringOsciToOut, VFXToOut,*/ Count };
+  OsciToVFX, StringOsciToVFX, /*VFXToVFX,*/
+  OsciToOut, /*StringOsciToOut,*/ VFXToOut, Count };

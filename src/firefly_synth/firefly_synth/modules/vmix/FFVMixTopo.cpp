@@ -55,6 +55,7 @@ FFMakeVMixTopo()
   vfxToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVFXToVFX);
   vfxToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectVFXToVFX);
   vfxToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVFXToVFX);
+  */
 
   auto& osciToOut = result->params[(int)FFVMixParam::OsciToOut];
   osciToOut.acc = true;
@@ -69,6 +70,7 @@ FFMakeVMixTopo()
   osciToOut.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciToOut);
   osciToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciToOut);
 
+  /*
   auto& stringOsciToOut = result->params[(int)FFVMixParam::StringOsciToOut];
   stringOsciToOut.acc = true;
   stringOsciToOut.defaultText = "0";
@@ -81,6 +83,7 @@ FFMakeVMixTopo()
   stringOsciToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringOsciToOut);
   stringOsciToOut.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringOsciToOut);
   stringOsciToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringOsciToOut);
+  */
 
   auto& vfxToOut = result->params[(int)FFVMixParam::VFXToOut];
   vfxToOut.acc = true;
@@ -94,7 +97,6 @@ FFMakeVMixTopo()
   vfxToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVFXToOut);
   vfxToOut.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectVFXToOut);
   vfxToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVFXToOut);
-  */
 
   return result;
 }
