@@ -11,7 +11,19 @@ FormatOsciToVFXSlot(FBStaticTopo const& topo, int mixSlot)
 {
   int fxSlot = FFVMixOsciToVFXGetFXSlot(mixSlot);
   int osciSlot = FFVMixOsciToVFXGetOsciSlot(mixSlot);
-  return {};
+  std::string fxName = "FX " + std::to_string(fxSlot + 1);
+  std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
+  return osciName + "\U00002192" + fxName;
+}
+
+static std::string
+FormatStringOsciToVFXSlot(FBStaticTopo const& topo, int mixSlot)
+{
+  int fxSlot = FFVMixStringOsciToVFXGetFXSlot(mixSlot);
+  int stringOsciSlot = FFVMixStringOsciToVFXGetStringOsciSlot(mixSlot);
+  std::string fxName = "FX " + std::to_string(fxSlot + 1);
+  std::string stringOsciName = topo.modules[(int)FFModuleType::StringOsci].name + " " + std::to_string(stringOsciSlot + 1);
+  return stringOsciName + "\U00002192" + fxName;
 }
 
 std::unique_ptr<FBStaticModule>
@@ -34,8 +46,8 @@ FFMakeVMixTopo()
   osciToVFX.slotCount = FFVMixOsciToVFXCount;
   osciToVFX.unit = "%";
   osciToVFX.id = "{1BC03120-9E8C-412B-81D4-17CC662BA72B}";
-  osciToVFX.type = FBParamType::Identity;
   osciToVFX.slotFormatter = FormatOsciToVFXSlot;
+  osciToVFX.type = FBParamType::Identity;
   auto selectOsciToVFX = [](auto& module) { return &module.acc.osciToVFX; };
   osciToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciToVFX);
   osciToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciToVFX);
@@ -48,6 +60,7 @@ FFMakeVMixTopo()
   stringOsciToVFX.slotCount = FFVMixStringOsciToVFXCount;
   stringOsciToVFX.unit = "%";
   stringOsciToVFX.id = "{5B98D130-B1BA-4E0D-877B-F5656A1EFBE8}";
+  stringOsciToVFX.slotFormatter = FormatStringOsciToVFXSlot;
   stringOsciToVFX.type = FBParamType::Identity;
   auto selectStringOsciToVFX = [](auto& module) { return &module.acc.stringOsciToVFX; };
   stringOsciToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringOsciToVFX);

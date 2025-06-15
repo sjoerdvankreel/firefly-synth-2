@@ -4,7 +4,7 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-std::string
+static std::string
 FFOsciModFormatSlot(FBStaticTopo const&, int slot)
 {
   switch (slot)

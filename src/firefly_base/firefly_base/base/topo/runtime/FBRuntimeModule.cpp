@@ -5,6 +5,7 @@
 template <class RuntimeParam, class StaticParam>
 static std::vector<RuntimeParam>
 MakeRuntimeParams(
+  FBStaticTopo const& topo,
   FBStaticModule const& staticModule, 
   FBTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamStart,
@@ -19,7 +20,7 @@ MakeRuntimeParams(
       indices.param.index = p;
       indices.module = topoIndices;
       result.push_back(RuntimeParam(
-        staticModule, staticParams[p],
+        topo, staticModule, staticParams[p],
         indices, runtimeModuleIndex, runtimeParamStart++));
     }
   return result;
@@ -35,8 +36,8 @@ tabName(FBMakeRuntimeGraphName(staticModule.tabName, staticModule.slotCount, top
 graphName(FBMakeRuntimeGraphName(staticModule.graphName, staticModule.slotCount, topoIndices.slot)),
 runtimeModuleIndex(runtimeIndex),
 topoIndices(topoIndices),
-params(MakeRuntimeParams<FBRuntimeParam>(staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)),
-guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(staticModule, topoIndices, runtimeIndex, runtimeGUIParamStart, staticModule.guiParams))
+params(MakeRuntimeParams<FBRuntimeParam>(topo, staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)),
+guiParams(MakeRuntimeParams<FBRuntimeGUIParam>(topo, staticModule, topoIndices, runtimeIndex, runtimeGUIParamStart, staticModule.guiParams))
 {
   assert(staticModule.name.size());
   assert(staticModule.tabName.size());
