@@ -11,17 +11,17 @@ inline int constexpr FFVMixStringOsciToVFXCount = FFStringOsciCount * FFEffectCo
 inline int constexpr FFVMixVFXToVFXCount = FFEffectCount * (FFEffectCount - 1) / 2;
 
 inline int
+FFVMixOsciToVFXGetFXSlot(int mixSlot)
+{ return mixSlot / FFOsciCount; }
+inline int
 FFVMixOsciToVFXGetOsciSlot(int mixSlot)
 { return mixSlot % FFOsciCount; }
 inline int
-FFVMixOsciToVFXGetFXSlot(int mixSlot)
-{ return mixSlot / FFEffectCount; }
+FFVMixStringOsciToVFXGetFXSlot(int mixSlot)
+{ return mixSlot / FFStringOsciCount; }
 inline int
 FFVMixStringOsciToVFXGetStringOsciSlot(int mixSlot)
 { return mixSlot % FFStringOsciCount; }
-inline int
-FFVMixStringOsciToVFXGetFXSlot(int mixSlot)
-{ return mixSlot / FFEffectCount; }
 
 enum class FFVMixParam {
   OsciToVFX, StringOsciToVFX, /*VFXToVFX,*/
