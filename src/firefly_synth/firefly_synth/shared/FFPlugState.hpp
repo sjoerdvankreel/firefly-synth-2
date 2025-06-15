@@ -3,6 +3,7 @@
 #include <firefly_synth/dsp/plug/FFVoiceProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvState.hpp>
 #include <firefly_synth/modules/osci/FFOsciState.hpp>
+#include <firefly_synth/modules/vmix/FFVMixState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
@@ -37,6 +38,7 @@ struct FFGlobalExchangeState final
 
 struct FFVoiceExchangeState final
 {
+  std::array<FBModuleProcExchangeState, 1> vMix = {};
   std::array<FBModuleProcExchangeState, 1> osciMod = {};
   std::array<FBModuleProcExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
@@ -55,6 +57,7 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
 
 struct alignas(FBSIMDAlign) FFVoiceDSPState final
 {
+  FFVMixDSPState vMix = {};
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
@@ -85,6 +88,7 @@ template <class TBlock, class TAccurate>
 struct alignas(alignof(TAccurate)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
+  std::array<FFVMixParamState<TAccurate>, 1> vMix = {};
   std::array<FFOsciModParamState<TBlock, TAccurate>, 1> osciMod = {};
   std::array<FFEnvParamState<TBlock, TAccurate>, FFEnvCount> env = {};
   std::array<FFOsciParamState<TBlock, TAccurate>, FFOsciCount> osci = {};
