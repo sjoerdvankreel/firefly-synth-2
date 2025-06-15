@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
+#include <firefly_synth/modules/vmix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
@@ -115,6 +116,7 @@ FFPlugGUI::SetupGUI()
   rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
   rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
   rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
   FB_LOG_INFO("Calculated GUI grid size.");
 
   FB_LOG_INFO("Creating GUI components.");
@@ -128,6 +130,7 @@ FFPlugGUI::SetupGUI()
   _content->Add(3, 0, 1, 3, FFMakeOsciModGUI(this));
   _content->Add(4, 0, 1, 3, FFMakeEnvGUI(this));
   _content->Add(5, 0, 1, 3, FFMakeEffectGUI(this));
+  _content->Add(6, 0, 1, 3, FFMakeVMixGUI(this));
   FB_LOG_INFO("Created GUI components.");
 
   FB_LOG_INFO("Making GUI visible.");

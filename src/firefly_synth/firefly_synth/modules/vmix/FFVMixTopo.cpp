@@ -42,6 +42,7 @@ FFMakeVMixTopo()
   stringOsciToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringOsciToVFX);
   stringOsciToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringOsciToVFX);
 
+  /*
   auto& vfxToVFX = result->params[(int)FFVMixParam::VFXToVFX];
   vfxToVFX.acc = true;
   vfxToVFX.defaultText = "0";
@@ -93,6 +94,7 @@ FFMakeVMixTopo()
   vfxToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVFXToOut);
   vfxToOut.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectVFXToOut);
   vfxToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVFXToOut);
+  */
 
   return result;
 }
