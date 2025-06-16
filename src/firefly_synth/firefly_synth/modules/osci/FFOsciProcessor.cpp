@@ -1844,7 +1844,20 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     _oversampler.processSamplesDown(channelBlockDown);
   }
 
-  ProcessGainSpreadBlend(output);
+  for (int u = 0; u < _uniCount; u++)
+  {
+    float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
+    float uniPosAbsHalfToHalf = _uniPosAbsHalfToHalf.Get(u);
+    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    {
+      auto uniPanning = 0.5f + uniPosMHalfToHalf * _uniSpreadPlain.Load(s);
+      auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - _uniBlendPlain.Load(s)));
+      auto uniMono = _uniOutput[u].Load(s) * _gainPlain.Load(s) * uniBlend;
+      output[0].Add(s, (1.0f - uniPanning) * uniMono);
+      output[1].Add(s, uniPanning * uniMono);
+    }
+  }
+  output.NaNCheck();
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
