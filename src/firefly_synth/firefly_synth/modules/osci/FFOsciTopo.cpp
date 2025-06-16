@@ -575,7 +575,7 @@ FFMakeOsciTopo()
   stringSeed.defaultText = "0";
   stringSeed.name = "Seed";
   stringSeed.slotCount = 1;
-  stringSeed.id = "{147FBBB6-3C3B-471B-8BDA-A10DA068769E}";
+  stringSeed.id = "{D5715C38-3695-4572-B7C9-8B150FDC4EA5}";
   stringSeed.type = FBParamType::Discrete;
   stringSeed.Discrete().valueCount = FFOsciStringMaxSeed + 1;
   auto selectStringSeed = [](auto& module) { return &module.block.stringSeed; };
@@ -590,7 +590,7 @@ FFMakeOsciTopo()
   stringPoles.name = "Quality";
   stringPoles.display = "Qlty";
   stringPoles.slotCount = 1;
-  stringPoles.id = "{84B10EBF-E55D-43DF-8E80-3F1FCE093400}";
+  stringPoles.id = "{D3DFC350-647B-4492-A783-1373780023C6}";
   stringPoles.type = FBParamType::Discrete;
   stringPoles.Discrete().valueOffset = 1;
   stringPoles.Discrete().valueCount = FFOsciStringMaxPoles;
@@ -606,7 +606,7 @@ FFMakeOsciTopo()
   stringColor.name = "Color";
   stringColor.slotCount = 1;
   stringColor.unit = "%";
-  stringColor.id = "{32C65288-B8CD-4245-9ED1-818667C65253}";
+  stringColor.id = "{FB9AC808-8A86-45A9-8A4E-E7E1B3A8D112}";
   stringColor.type = FBParamType::Identity;
   auto selectStringColor = [](auto& module) { return &module.acc.stringColor; };
   stringColor.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringColor);
@@ -620,7 +620,7 @@ FFMakeOsciTopo()
   stringX.name = "X";
   stringX.slotCount = 1;
   stringX.unit = "%";
-  stringX.id = "{E911D100-EAD7-4915-AB3C-A27BA73396EC}";
+  stringX.id = "{1000958E-9D9E-475B-8EB1-246939A378C9}";
   stringX.type = FBParamType::Identity;
   auto selectStringX = [](auto& module) { return &module.acc.stringX; };
   stringX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringX);
@@ -634,7 +634,7 @@ FFMakeOsciTopo()
   stringY.name = "Y";
   stringY.slotCount = 1;
   stringY.unit = "%";
-  stringY.id = "{1979C7C6-F86E-40EE-8245-163C9F497469}";
+  stringY.id = "{1443614F-CE58-4666-BCD4-DE0F349AFB3E}";
   stringY.type = FBParamType::Identity;
   auto selectStringY = [](auto& module) { return &module.acc.stringY; };
   stringY.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringY);
@@ -648,7 +648,7 @@ FFMakeOsciTopo()
   stringExcite.name = "Excite";
   stringExcite.slotCount = 1;
   stringExcite.unit = "%";
-  stringExcite.id = "{7933FB74-1FEF-428B-A08A-33925174473B}";
+  stringExcite.id = "{02590DDB-B5B2-4FA6-94C5-8D0319450689}";
   stringExcite.type = FBParamType::Log2;
   stringExcite.Log2().displayMultiplier = 100.0f;
   stringExcite.Log2().Init(-0.01f, 0.01f, 1.01f);
@@ -664,7 +664,7 @@ FFMakeOsciTopo()
   stringLPOn.display = "LP";
   stringLPOn.slotCount = 1;
   stringLPOn.defaultText = "Off";
-  stringLPOn.id = "{2AE4576B-8611-498B-978B-53CD1E7EA1F4}";
+  stringLPOn.id = "{243E497E-2449-49BC-AA26-418743265570}";
   stringLPOn.type = FBParamType::Boolean;
   auto selectStringLPOn = [](auto& module) { return &module.block.stringLPOn; };
   stringLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPOn);
@@ -679,7 +679,7 @@ FFMakeOsciTopo()
   stringLPFreq.display = "LP";
   stringLPFreq.slotCount = 1;
   stringLPFreq.unit = "Hz";
-  stringLPFreq.id = "{06461261-A1A1-45B6-866A-CB932F2874B9}";
+  stringLPFreq.id = "{F8865388-AD37-4A9F-92DC-9AAB62BCF04E}";
   stringLPFreq.type = FBParamType::Log2;
   stringLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectStringLPFreq = [](auto& module) { return &module.acc.stringLPFreq; };
@@ -695,7 +695,7 @@ FFMakeOsciTopo()
   stringLPRes.display = "Res";
   stringLPRes.slotCount = 1;
   stringLPRes.unit = "%";
-  stringLPRes.id = "{2029BA86-6CA4-4DA8-B2AD-D4A06FF5002D}";
+  stringLPRes.id = "{A0FF6017-BF7D-446C-91E6-8893A696D2BA}";
   stringLPRes.type = FBParamType::Identity;
   auto selectStringLPRes = [](auto& module) { return &module.acc.stringLPRes; };
   stringLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPRes);
@@ -710,7 +710,7 @@ FFMakeOsciTopo()
   stringLPKTrk.display = "KTrk";
   stringLPKTrk.slotCount = 1;
   stringLPKTrk.unit = "%";
-  stringLPKTrk.id = "{7DC28A03-D1EE-4938-9F11-1D3996021662}";
+  stringLPKTrk.id = "{C6EFCD36-256A-4F2C-B772-D5966460E893}";
   stringLPKTrk.type = FBParamType::Linear;
   stringLPKTrk.Linear().min = -2.0f;
   stringLPKTrk.Linear().max = 2.0f;
@@ -727,7 +727,7 @@ FFMakeOsciTopo()
   stringHPOn.display = "HP";
   stringHPOn.slotCount = 1;
   stringHPOn.defaultText = "Off";
-  stringHPOn.id = "{32237430-13BF-4239-B570-E94E10913A88}";
+  stringHPOn.id = "{F03C6E50-01BB-4C61-9122-C6599C9D4CBA}";
   stringHPOn.type = FBParamType::Boolean;
   auto selectStringHPOn = [](auto& module) { return &module.block.stringHPOn; };
   stringHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPOn);
@@ -741,7 +741,7 @@ FFMakeOsciTopo()
   stringHPFreq.name = "HP";
   stringHPFreq.slotCount = 1;
   stringHPFreq.unit = "Hz";
-  stringHPFreq.id = "{1185219D-3A70-4B80-B542-C78704E09F85}";
+  stringHPFreq.id = "{1753A4C9-BE63-4079-A875-59C35F3BC584}";
   stringHPFreq.type = FBParamType::Log2;
   stringHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
   auto selectStringHPFreq = [](auto& module) { return &module.acc.stringHPFreq; };
@@ -757,7 +757,7 @@ FFMakeOsciTopo()
   stringHPRes.display = "Res";
   stringHPRes.slotCount = 1;
   stringHPRes.unit = "%";
-  stringHPRes.id = "{6F35E646-83A9-440C-B041-B747AD17A01C}";
+  stringHPRes.id = "{164AD99E-1C52-4302-8032-4E02F7A43224}";
   stringHPRes.type = FBParamType::Identity;
   auto selectStringHPRes = [](auto& module) { return &module.acc.stringHPRes; };
   stringHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPRes);
@@ -772,7 +772,7 @@ FFMakeOsciTopo()
   stringHPKTrk.display = "KTrk";
   stringHPKTrk.slotCount = 1;
   stringHPKTrk.unit = "%";
-  stringHPKTrk.id = "{DCF3E189-013E-4AE0-98F7-75AF83867CF4}";
+  stringHPKTrk.id = "{61BA0D46-9BC3-496C-A004-671F3465142E}";
   stringHPKTrk.type = FBParamType::Linear;
   stringHPKTrk.Linear().min = -2.0f;
   stringHPKTrk.Linear().max = 2.0f;
@@ -789,7 +789,7 @@ FFMakeOsciTopo()
   stringDamp.name = "Damp";
   stringDamp.slotCount = 1;
   stringDamp.unit = "%";
-  stringDamp.id = "{1FD56760-3837-4A1B-8CAF-8906BA0BC6A1}";
+  stringDamp.id = "{50FA6C2A-64FC-4B2B-BC64-55A8EA7472F4}";
   stringDamp.type = FBParamType::Identity;
   auto selectStringDamp = [](auto& module) { return &module.acc.stringDamp; };
   stringDamp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringDamp);
@@ -804,7 +804,7 @@ FFMakeOsciTopo()
   stringDampKTrk.display = "KTrk";
   stringDampKTrk.slotCount = 1;
   stringDampKTrk.unit = "%";
-  stringDampKTrk.id = "{050FADF1-C79E-4154-B219-C4970E029FE0}";
+  stringDampKTrk.id = "{5B4F67F9-30E9-482C-922A-33F5CB7F5A1F}";
   stringDampKTrk.type = FBParamType::Linear;
   stringDampKTrk.Linear().min = -1.0f;
   stringDampKTrk.Linear().max = 1.0f;
@@ -822,7 +822,7 @@ FFMakeOsciTopo()
   stringFeedback.display = "Fdbk";
   stringFeedback.slotCount = 1;
   stringFeedback.unit = "%";
-  stringFeedback.id = "{74C60E5D-C7FA-46E5-8ACC-083130E1C735}";
+  stringFeedback.id = "{280B9667-8DA5-4DD6-B7CD-695DF38AA857}";
   stringFeedback.type = FBParamType::Identity;
   auto selectStringFeedback = [](auto& module) { return &module.acc.stringFeedback; };
   stringFeedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringFeedback);
@@ -837,7 +837,7 @@ FFMakeOsciTopo()
   stringFeedbackKTrk.display = "KTrk";
   stringFeedbackKTrk.slotCount = 1;
   stringFeedbackKTrk.unit = "%";
-  stringFeedbackKTrk.id = "{7685CE3A-0F9F-41CF-9808-B6B8ABB726AC}";
+  stringFeedbackKTrk.id = "{239389B7-52BC-437F-909C-184621F69E79}";
   stringFeedbackKTrk.type = FBParamType::Linear;
   stringFeedbackKTrk.Linear().min = -1.0f;
   stringFeedbackKTrk.Linear().max = 1.0f;
@@ -855,7 +855,7 @@ FFMakeOsciTopo()
   stringTrackingKey.display = "Key";
   stringTrackingKey.slotCount = 1;
   stringTrackingKey.unit = "Semitones";
-  stringTrackingKey.id = "{988CB489-9062-4A1B-9C5E-B0674F4AAD4F}";
+  stringTrackingKey.id = "{469BF707-3F08-491B-95ED-F0C8DE75F8EA}";
   stringTrackingKey.type = FBParamType::Linear;
   stringTrackingKey.Linear().min = -64.0f;
   stringTrackingKey.Linear().max = 64.0f;
@@ -872,7 +872,7 @@ FFMakeOsciTopo()
   stringTrackingRange.display = "Range";
   stringTrackingRange.slotCount = 1;
   stringTrackingRange.unit = "Semitones";
-  stringTrackingRange.id = "{18D3BAE2-B9A6-4C02-B042-6DB92D17A0DA}}";
+  stringTrackingRange.id = "{31FFFDCC-6A5A-4D46-8209-C9C4F2540870}";
   stringTrackingRange.type = FBParamType::Linear;
   stringTrackingRange.Linear().min = 12.0f;
   stringTrackingRange.Linear().max = 128.0f;

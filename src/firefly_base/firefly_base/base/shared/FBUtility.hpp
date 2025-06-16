@@ -32,8 +32,12 @@ inline int const FBDefaultDisplayPrecision = 3;
 typedef std::pair<std::uint32_t, std::uint32_t>
 FBDenormalState;
 
-#define FB_ASSERT(e) \
-do { (void)(e); assert(e); } while(0)
+#ifdef NDEBUG
+#define FB_ASSERT(e) ((void)(e))
+#else
+#define FB_ASSERT(e) assert(e)
+#endif
+
 #define FB_STRINGIFY_(x) #x
 #define FB_STRINGIFY(x) FB_STRINGIFY_(x)
 
