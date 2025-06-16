@@ -18,6 +18,8 @@
 static inline float constexpr MinPW = 0.05f;
 static inline float const Exp2 = std::exp(2.0f);
 static inline float const SqrtPi = std::sqrt(FBPi);
+static inline float const StringMinFreq = 20.0f;
+static inline float const StringDCBlockFreq = 20.0f;
 
 using namespace juce::dsp;
 
@@ -1049,6 +1051,68 @@ _oversampler(
     _downsampledChannelPtrs[u] = _uniOutput[u].Ptr(0);
   _downsampledBlock = AudioBlock<float>(_downsampledChannelPtrs.data(), FFOsciBaseUniMaxCount, 0, FBFixedBlockSamples);
   _oversampledBlock = _oversampler.processSamplesUp(_downsampledBlock);
+}
+
+void
+FFOsciProcessor::InitializeBuffers(float sampleRate)
+{
+  int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringMinFreq));
+  for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
+  {
+    if (_stringUniState[i].delayLine.Count() < delayLineSize)
+      _stringUniState[i].delayLine.Resize(delayLineSize);
+    _stringUniState[i].dcFilter.SetCoeffs(StringDCBlockFreq, sampleRate);
+  }
+}
+
+float
+FFOsciProcessor::StringDraw()
+{
+  if (_stringMode == FFOsciStringMode::Uni)
+    return FBToBipolar(_uniformPrng.NextScalar());
+  FB_ASSERT(_stringMode == FFOsciStringMode::Norm);
+  float result = 0.0f;
+  do
+  {
+    result = _stringNormalPrng.NextScalar();
+  } while (result < -3.0f || result > 3.0f);
+  return result / 3.0f;
+}
+
+float
+FFOsciProcessor::StringNext(
+  int uniVoice,
+  float sampleRate, float uniFreq,
+  float excite, float colorPlain,
+  float xPlain, float yPlain)
+{
+  float const empirical1 = 0.75f;
+  float const empirical2 = 4.0f;
+  float x = xPlain;
+  float y = 0.01f + 0.99f * yPlain;
+  float color = 1.99f * (1.0f - colorPlain);
+  float scale = 1.0f - ((1.0f - colorPlain) * empirical1);
+  scale *= (1.0f + empirical2 * (1.0f - excite));
+
+  _stringUniState[uniVoice].phaseTowardsX += uniFreq / sampleRate;
+  if (_stringUniState[uniVoice].phaseTowardsX < 1.0f - x)
+    return _stringUniState[uniVoice].lastDraw * scale;
+
+  _stringUniState[uniVoice].phaseTowardsX = 0.0f;
+  if (_uniformPrng.NextScalar() > y)
+    return _stringUniState[uniVoice].lastDraw * scale;
+
+  _stringUniState[uniVoice].lastDraw = StringDraw();
+  float a = 1.0f;
+  for (int i = 0; i < _stringPoles; i++)
+  {
+    a = (i - color / 2.0f) * a / (i + 1.0f);
+    int colorFilterPos = (_stringUniState[uniVoice].colorFilterPosition + _stringPoles - i - 1) % _stringPoles;
+    _stringUniState[uniVoice].lastDraw -= a * _stringUniState[uniVoice].colorFilterBuffer.Get(colorFilterPos);
+  }
+  _stringUniState[uniVoice].colorFilterBuffer.Set(_stringUniState[uniVoice].colorFilterPosition, _stringUniState[uniVoice].lastDraw);
+  _stringUniState[uniVoice].colorFilterPosition = (_stringUniState[uniVoice].colorFilterPosition + 1) % _stringPoles;
+  return _stringUniState[uniVoice].lastDraw * scale;
 }
 
 void

@@ -82,9 +82,19 @@ public FFOsciProcessorBase
   FBSArray2<float, FFOsciBaseUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   std::array<std::array<FFOsciFMPhaseGenerator, FFOsciBaseUniMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
 
+  float 
+  StringDraw();
+  float 
+  StringNext(
+    int uniVoice,
+    float sampleRate, float uniFreq,
+    float excite, float colorNorm,
+    float xNorm, float yNorm);
+
 public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
   int Process(FBModuleProcState& state);
+  void InitializeBuffers(float sampleRate);
   void BeginVoice(bool graph, FBModuleProcState& state);
 };

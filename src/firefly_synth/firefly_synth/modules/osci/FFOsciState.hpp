@@ -15,6 +15,7 @@ struct FBStaticModule;
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
+  friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
   friend struct OscisGraphRenderData;
   std::unique_ptr<FFOsciProcessor> processor = {};
