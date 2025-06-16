@@ -1081,7 +1081,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   auto const& modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
 
   _phaseGen = {};
-  _prng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
+  _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   FFOsciProcessorBase::BeginVoice(state, topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm));
 
   _type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
@@ -1128,7 +1128,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   for (int u = 0; u < _uniCount; u++)
   {
     float uniPhase = u * _uniOffsetPlain / _uniCount;
-    uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _prng.NextScalar()) * uniPhase);
+    uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _uniformPrng.NextScalar()) * uniPhase);
     _uniWavePhaseGens[u] = FFOsciWavePhaseGenerator(uniPhaseInit.Get(u));
   }
 
