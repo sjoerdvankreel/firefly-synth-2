@@ -151,7 +151,7 @@ FFMakeOsciTopo()
   uniOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOffset);
-  uniOffset.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1; });
+  uniOffset.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1; });
 
   auto& uniRandom = result->params[(int)FFOsciParam::UniRandom];
   uniRandom.acc = false;
@@ -166,7 +166,7 @@ FFMakeOsciTopo()
   uniRandom.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniRandom);
-  uniRandom.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1; });
+  uniRandom.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1; });
 
   auto& uniDetune = result->params[(int)FFOsciParam::UniDetune];
   uniDetune.acc = true;
@@ -666,7 +666,7 @@ FFMakeOsciTopo()
   stringExcite.acc = true;
   stringExcite.defaultText = "0";
   stringExcite.name = "Excite";
-  stringExcite.display = "Exct";
+  stringExcite.display = "Xcte";
   stringExcite.slotCount = 1;
   stringExcite.unit = "%";
   stringExcite.id = "{02590DDB-B5B2-4FA6-94C5-8D0319450689}";
