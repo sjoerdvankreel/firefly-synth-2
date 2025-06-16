@@ -570,6 +570,22 @@ FFMakeOsciTopo()
   fmIndex.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
   fmIndex.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
 
+  auto& stringMode = result->params[(int)FFOsciParam::StringMode];
+  stringMode.acc = false;
+  stringMode.defaultText = "Uni";
+  stringMode.name = "String Mode";
+  stringMode.slotCount = 1;
+  stringMode.id = "{83BC3F01-EF0B-4BAE-AA95-012E246C87B3}";
+  stringMode.type = FBParamType::List;
+  stringMode.List().items = {
+    { "{604E32C2-B3E9-4547-88B0-601F0D3AD055}", "Uni" },
+    { "{B462657B-B0FB-47B1-AACA-0DF284E655E9}", "Norm" } };
+  auto selectStringMode = [](auto& module) { return &module.block.stringMode; };
+  stringMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringMode);
+  stringMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringMode);
+  stringMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringMode);
+  stringMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
   auto& stringSeed = result->params[(int)FFOsciParam::StringSeed];
   stringSeed.acc = false;
   stringSeed.defaultText = "0";

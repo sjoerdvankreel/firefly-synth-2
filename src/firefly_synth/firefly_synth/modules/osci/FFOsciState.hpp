@@ -44,9 +44,9 @@ class alignas(alignof(TBlock)) FFOsciBlockParamState final
   std::array<TBlock, 1> fmMode = {};
   std::array<TBlock, 1> fmRatioMode = {};
   std::array<TBlock, FFOsciFMOperatorCount - 1> fmRatioRatio = {};
+  std::array<TBlock, 1> stringMode = {};
   std::array<TBlock, 1> stringLPOn = {};
   std::array<TBlock, 1> stringHPOn = {};
-  std::array<TBlock, 1> stringMode = {};
   std::array<TBlock, 1> stringSeed = {};
   std::array<TBlock, 1> stringPoles = {};
 public:
