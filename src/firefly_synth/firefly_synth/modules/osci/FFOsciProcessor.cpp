@@ -1360,6 +1360,22 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& waveHSSyncNorm = procParams.acc.waveHSSync[0].Voice()[voice];
   auto const& waveDSFGainNorm = procParams.acc.waveDSFGain[0].Voice()[voice];
   auto const& waveDSFDecayNorm = procParams.acc.waveDSFDecay[0].Voice()[voice];
+  auto const& stringLPResNorm = procParams.acc.stringLPRes[0].Voice()[voice];
+  auto const& stringHPResNorm = procParams.acc.stringHPRes[0].Voice()[voice];
+  auto const& stringLPFreqNorm = procParams.acc.stringLPFreq[0].Voice()[voice];
+  auto const& stringHPFreqNorm = procParams.acc.stringHPFreq[0].Voice()[voice];
+  auto const& stringLPKTrkNorm = procParams.acc.stringLPKTrk[0].Voice()[voice];
+  auto const& stringHPKTrkNorm = procParams.acc.stringHPKTrk[0].Voice()[voice];
+  auto const& stringXNorm = procParams.acc.stringX[0].Voice()[voice];
+  auto const& stringYNorm = procParams.acc.stringY[0].Voice()[voice];
+  auto const& stringColorNorm = procParams.acc.stringColor[0].Voice()[voice];
+  auto const& stringTrackingRangeNorm = procParams.acc.stringTrackingRange[0].Voice()[voice];
+  auto const& stringTrackingKeyNorm = procParams.acc.stringTrackingKey[0].Voice()[voice];
+  auto const& stringExciteNorm = procParams.acc.stringExcite[0].Voice()[voice];
+  auto const& stringDampNorm = procParams.acc.stringDamp[0].Voice()[voice];
+  auto const& stringDampKTrkNorm = procParams.acc.stringDampKTrk[0].Voice()[voice];
+  auto const& stringFeedbackNorm = procParams.acc.stringFeedback[0].Voice()[voice];
+  auto const& stringFeedbackKTrkNorm = procParams.acc.stringFeedbackKTrk[0].Voice()[voice];
 
   FBSArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
@@ -1373,6 +1389,22 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveBasicCount> waveBasicGainPlain;
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> stringXPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringYPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringLPResPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringHPResPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringLPFreqPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringHPFreqPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringLPKTrkPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringHPKTrkPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringDampPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringColorPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringExcitePlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringFeedbackPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringDampKTrkPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringFeedbackKTrkPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringTrackingKeyPlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringTrackingRangePlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
