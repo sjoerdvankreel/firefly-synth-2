@@ -1147,10 +1147,6 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, uniRandomNorm);
 
-  _graphPosition = 0;
-  _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
-    graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
-
   FBSArray<float, FFOsciBaseUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
   {
@@ -1251,6 +1247,10 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     auto const& stringExciteNorm = params.acc.stringExcite[0].Voice()[voice];
     auto const& stringTrackingKeyNorm = params.acc.stringTrackingKey[0].Voice()[voice];
 
+    _stringGraphPosition = 0;
+    _stringGraphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
+      graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
+
     _stringLPOn = topo.NormalizedToBoolFast(FFOsciParam::StringLPOn, stringLPOnNorm);
     _stringHPOn = topo.NormalizedToBoolFast(FFOsciParam::StringHPOn, stringHPOnNorm);
     _stringSeed = topo.NormalizedToDiscreteFast(FFOsciParam::StringSeed, stringSeedNorm);
@@ -1283,7 +1283,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
       stringLPFreqPlain = MultiplyClamp(stringLPFreqPlain,
         KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, stringLPKTrkPlain),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-      stringLPFreqPlain *= _graphStVarFilterFreqMultiplier;
+      stringLPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
       _stringLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
     }
 
@@ -1292,7 +1292,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
       stringHPFreqPlain = MultiplyClamp(stringHPFreqPlain,
         KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, -stringHPKTrkPlain),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-      stringHPFreqPlain *= _graphStVarFilterFreqMultiplier;
+      stringHPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
       _stringHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
     }
 
@@ -1569,7 +1569,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
   float applyModMatrixLinearFM = _modMatrixExpoFM ? 0.0f : 1.0f;
-  if (_type != FFOsciType::FM)
+  if (_type == FFOsciType::Wave)
   {
     for (int u = 0; u < _uniCount; u++)
     {
@@ -1641,11 +1641,10 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           FB_ASSERT(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
       }
     }
-  }
-
-  if (_type == FFOsciType::FM)
+  } else if (_type == FFOsciType::FM)
   {
     for (int s = 0; s < totalSamples; s++)
+    {
       for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
       {
         int block = u / FBSIMDFloatCount;
@@ -1728,6 +1727,92 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         for (int v = 0; v < FBSIMDFloatCount; v++)
           uniOutputOversampled[u + v].Set(s, outputArray.Get(v));
       }
+    }
+  }
+  else if (_type == FFOsciType::String)
+  {
+    for (int s = 0; s < totalSamples; s++)
+    {
+      float x = stringXPlain.Get(s);
+      float y = stringYPlain.Get(s);
+      float damp = stringDampPlain.Get(s);
+      float trackingKey = stringTrackingKeyPlain.Get(s);
+      float trackingRange = stringTrackingRangePlain.Get(s);
+      float color = stringColorPlain.Get(s);
+      float excite = stringExcitePlain.Get(s);
+      float feedback = stringFeedbackPlain.Get(s);
+      float basePitch = basePitchPlain.Get(s);
+      float dampKTrk = stringDampKTrkPlain.Get(s);
+      float uniDetune = uniDetunePlain.Get(s);
+      float centerPitch = 60.0f + trackingKey;
+      float feedbackKTrk = stringFeedbackKTrkPlain.Get(s);
+
+      float pitchDiffSemis = _key - centerPitch;
+      float pitchDiffNorm = std::clamp(pitchDiffSemis / trackingRange, -1.0f, 1.0f);
+      damp = std::clamp(damp - 0.5f * dampKTrk * pitchDiffNorm, 0.0f, 1.0f);
+      feedback = std::clamp(feedback + 0.5f * feedbackKTrk * pitchDiffNorm, 0.0f, 1.0f);
+      float realFeedback = 0.9f + 0.1f * feedback;
+
+      if (_stringLPOn)
+      {
+        float lpRes = stringLPResPlain.Get(s);
+        float lpFreq = stringLPFreqPlain.Get(s);
+        float lpKTrk = stringLPKTrkPlain.Get(s);
+        lpFreq = MultiplyClamp(lpFreq,
+          KeyboardTrackingMultiplier(_key, trackingKey, lpKTrk),
+          FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+        lpFreq *= _stringGraphStVarFilterFreqMultiplier;
+        _stringLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreq, lpRes, 0.0f);
+      }
+
+      if (_stringHPOn)
+      {
+        float hpRes = stringHPResPlain.Get(s);
+        float hpFreq = stringHPFreqPlain.Get(s);
+        float hpKTrk = stringHPKTrkPlain.Get(s);
+        hpFreq = MultiplyClamp(hpFreq,
+          KeyboardTrackingMultiplier(_key, trackingKey, -hpKTrk),
+          FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+        hpFreq *= _stringGraphStVarFilterFreqMultiplier;
+        _stringHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreq, hpRes, 0.0f);
+      }
+
+      for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
+      {
+        auto uniPitchBatch = basePitch + _uniPosMHalfToHalf.Load(ub) * uniDetune;
+        auto uniFreqBatch = FBPitchToFreq(uniPitchBatch);
+        FBSArray<float, FBSIMDFloatCount> uniFreqArray(uniFreqBatch);
+
+        for (int u = ub; u < ub + FBSIMDFloatCount && u < _uniCount; u++)
+        {
+          float uniFreq = uniFreqArray.Get(u - ub);
+          _stringUniState[u].delayLine.Delay(sampleRate / uniFreq);
+          float thisVal = _stringUniState[u].delayLine.Pop();
+          float prevVal = _stringUniState[u].prevDelayVal;
+          float newVal = (1.0f - damp) * thisVal + damp * (prevVal + thisVal) * 0.5f;
+          float outVal = _stringUniState[u].dcFilter.Next(newVal);
+          newVal *= realFeedback;
+          _stringUniState[u].prevDelayVal = newVal;
+
+          double dNextVal = StringNext(u, sampleRate, uniFreq, excite, color, x, y);
+          if (_stringHPOn)
+            dNextVal = _stringHPFilter.Next(u, dNextVal);
+          if (_stringLPOn)
+            dNextVal = _stringLPFilter.Next(u, dNextVal);
+
+          float nextVal = static_cast<float>(dNextVal);
+          newVal = (1.0f - excite) * newVal + excite * nextVal;
+          _stringUniState[u].delayLine.Push(newVal);
+          _uniOutput[u].Set(s, outVal);
+        }
+      }
+
+      _stringGraphPosition++;
+    }
+  }
+  else
+  {
+    FB_ASSERT(false);
   }
 
   for (int u = 0; u < _uniCount; u++)

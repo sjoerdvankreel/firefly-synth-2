@@ -58,8 +58,8 @@ public FFOsciProcessorBase
   std::array<FFOsciWavePWMode, FFOsciWavePWCount> _wavePWMode = {};
   std::array<FFOsciWaveBasicMode, FFOsciWaveBasicCount> _waveBasicMode = {};
 
-  int _graphPosition = {};
-  float _graphStVarFilterFreqMultiplier = {};
+  int _stringGraphPosition = {};
+  float _stringGraphStVarFilterFreqMultiplier = {};
 
   bool _modMatrixExpoFM = false;
   std::array<bool, FFOsciCount - 1> _modSourceFMOn = {};
