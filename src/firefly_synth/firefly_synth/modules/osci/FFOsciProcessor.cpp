@@ -1125,11 +1125,15 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
 
+  auto const& typeNorm = params.block.type[0].Voice()[voice];
+  _type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
+  if (_type == FFOsciType::Off)
+    return;
+
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
   auto const& modParams = procState->param.voice.osciMod[0];
   auto const& modTopo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
 
-  auto const& typeNorm = params.block.type[0].Voice()[voice];
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
   auto const& uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
   auto const& uniRandomNorm = params.block.uniRandom[0].Voice()[voice];
@@ -1142,7 +1146,6 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
   _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
 
-  _type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
   _uniCount = topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm);
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, uniRandomNorm);
