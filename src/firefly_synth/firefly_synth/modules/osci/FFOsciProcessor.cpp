@@ -1129,7 +1129,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   {
     float uniPhase = u * _uniOffsetPlain / _uniCount;
     uniPhaseInit.Set(u, ((1.0f - _uniRandomPlain) + _uniRandomPlain * _prng.NextScalar()) * uniPhase);
-    _uniPhaseGens[u] = FFOsciPhaseGenerator(uniPhaseInit.Get(u));
+    _uniWavePhaseGens[u] = FFOsciWavePhaseGenerator(uniPhaseInit.Get(u));
   }
 
   if (_type == FFOsciType::FM)
@@ -1317,7 +1317,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
         auto uniFreq = FBPitchToFreq(uniPitch);
         auto uniIncr = uniFreq / oversampledRate;
-        auto uniPhase = _uniPhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
+        auto uniPhase = _uniWavePhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
 
         FBBatch<float> thisUniOutput = 0.0f;
         if (_type == FFOsciType::Wave)

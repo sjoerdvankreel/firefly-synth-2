@@ -6,12 +6,21 @@
 #include <xsimd/xsimd.hpp>
 #include <cmath>
 
-class FFOsciPhaseGenerator final
+class FFOsciStringPhaseGenerator final
 {
   float _x = 0.0f;
 public:
-  FFOsciPhaseGenerator() = default;
-  explicit FFOsciPhaseGenerator(float x) : _x(x) {}
+  float Next(float incr);
+  FFOsciStringPhaseGenerator() = default;
+  explicit FFOsciStringPhaseGenerator(float x) : _x(x) {}
+};
+
+class FFOsciWavePhaseGenerator final
+{
+  float _x = 0.0f;
+public:
+  FFOsciWavePhaseGenerator() = default;
+  explicit FFOsciWavePhaseGenerator(float x) : _x(x) {}
   FBBatch<float> Next(FBBatch<float> incr, FBBatch<float> fmModulator);
 };
 
@@ -24,8 +33,29 @@ public:
   FBBatch<float> Next(FBBatch<float> incrs, FBBatch<float> fmModulators);
 };
 
+inline float
+FFOsciStringPhaseGenerator::Next(float incr)
+{
+  float y = _x;
+  _x += incr;
+  if (_x >= 1.0f)
+    _x = 0.0f;
+  return y;
+}
+
 inline FBBatch<float>
-FFOsciPhaseGenerator::Next(FBBatch<float> incr, FBBatch<float> fmModulator)
+FFOsciFMPhaseGenerator::Next(FBBatch<float> incrs, FBBatch<float> fmModulators)
+{
+  auto y = _x;
+  _x += incrs;
+  _x -= xsimd::floor(_x);
+  y += fmModulators;
+  y -= xsimd::floor(y);
+  return y;
+}
+
+inline FBBatch<float>
+FFOsciWavePhaseGenerator::Next(FBBatch<float> incr, FBBatch<float> fmModulator)
 {
   FBSArray<float, FBSIMDFloatCount> yArray;
   FBSArray<float, FBSIMDFloatCount> incrArray;
@@ -42,15 +72,4 @@ FFOsciPhaseGenerator::Next(FBBatch<float> incr, FBBatch<float> fmModulator)
     yArray.Set(i, y);
   }
   return yArray.Load(0);
-}
-
-inline FBBatch<float>
-FFOsciFMPhaseGenerator::Next(FBBatch<float> incrs, FBBatch<float> fmModulators)
-{
-  auto y = _x;
-  _x += incrs;
-  _x -= xsimd::floor(_x);
-  y += fmModulators;
-  y -= xsimd::floor(y);
-  return y;
 }

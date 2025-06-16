@@ -9,6 +9,7 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+// todo drop
 class FFOsciProcessorBase
 {
 protected:
