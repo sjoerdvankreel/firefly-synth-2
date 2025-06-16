@@ -1250,7 +1250,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     }
     else
     {
-      FB_ASSERT(false);
+      // TODO FB_ASSERT(false);
     }
   }
   if (_oversampleTimes != 1)
@@ -1360,7 +1360,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
         else
         {
-          FB_ASSERT(false);
+          // TODO FB_ASSERT(false);
         }
         uniOutputOversampled[u].Store(s, thisUniOutput);
         for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
