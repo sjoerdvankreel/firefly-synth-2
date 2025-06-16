@@ -1468,9 +1468,36 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         }
       }
     }
+    else if(_type == FFOsciType::String)
+    {
+      if (_stringLPOn)
+      {
+        stringLPResPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringLPRes, stringLPResNorm, s));
+        stringLPFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringLPFreq, stringLPFreqNorm, s));
+        stringLPKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringLPKTrk, stringLPKTrkNorm, s));
+      }
+
+      if (_stringHPOn)
+      {
+        stringHPResPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringHPRes, stringHPResNorm, s));
+        stringHPFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringHPFreq, stringHPFreqNorm, s));
+        stringHPKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringHPKTrk, stringHPKTrkNorm, s));
+      }
+
+      stringXPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringX, stringXNorm, s));
+      stringYPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringY, stringYNorm, s));
+      stringDampPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringDamp, stringDampNorm, s));
+      stringColorPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringColor, stringColorNorm, s));
+      stringExcitePlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm, s));
+      stringTrackingRangePlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringTrackingRange, stringTrackingRangeNorm, s));
+      stringTrackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringTrackingKey, stringTrackingKeyNorm, s));
+      stringFeedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringFeedback, stringFeedbackNorm, s));
+      stringDampKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringDampKTrk, stringDampKTrkNorm, s));
+      stringFeedbackKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringFeedbackKTrk, stringFeedbackKTrkNorm, s));
+    }
     else
     {
-      // TODO FB_ASSERT(false);
+      FB_ASSERT(false);
     }
   }
   if (_oversampleTimes != 1)
@@ -1506,6 +1533,33 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         fmIndexPlain[m].UpsampleStretch<FFOsciOversampleTimes>();
       for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
         fmRatioPlain[o].UpsampleStretch<FFOsciOversampleTimes>();
+    }
+    else if (_type == FFOsciType::String)
+    {
+      if (_stringLPOn)
+      {
+        stringLPResPlain.UpsampleStretch<FFOsciOversampleTimes>();
+        stringLPFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
+        stringLPKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      }
+
+      if (_stringHPOn)
+      {
+        stringHPResPlain.UpsampleStretch<FFOsciOversampleTimes>();
+        stringHPFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
+        stringHPKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      }
+
+      stringXPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringYPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringDampPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringColorPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringExcitePlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringTrackingRangePlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringTrackingKeyPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringFeedbackPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringDampKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringFeedbackKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
     }
     else
     {
