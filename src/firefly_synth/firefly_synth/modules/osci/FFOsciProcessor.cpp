@@ -1195,7 +1195,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     baseFreqPlain.Store(s, baseFreq);
     _phaseGen.NextBatch(baseFreq / sampleRate);
 
-    _gainPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Gain, gainNorm, s));
+    _gainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::Gain, gainNorm, s));
     _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
     _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));

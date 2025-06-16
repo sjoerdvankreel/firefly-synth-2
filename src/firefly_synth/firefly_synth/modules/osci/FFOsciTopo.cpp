@@ -79,7 +79,10 @@ FFMakeOsciTopo()
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
-  gain.type = FBParamType::Identity;
+  gain.type = FBParamType::Linear;
+  gain.Linear().min = 0.0f;
+  gain.Linear().max = 2.0f;
+  gain.Linear().displayMultiplier = 100.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
@@ -573,13 +576,14 @@ FFMakeOsciTopo()
   auto& stringMode = result->params[(int)FFOsciParam::StringMode];
   stringMode.acc = false;
   stringMode.defaultText = "Uni";
-  stringMode.name = "String Mode";
+  stringMode.name = "Mode";
+  stringMode.display = "Mod";
   stringMode.slotCount = 1;
   stringMode.id = "{83BC3F01-EF0B-4BAE-AA95-012E246C87B3}";
   stringMode.type = FBParamType::List;
   stringMode.List().items = {
     { "{604E32C2-B3E9-4547-88B0-601F0D3AD055}", "Uni" },
-    { "{B462657B-B0FB-47B1-AACA-0DF284E655E9}", "Norm" } };
+    { "{B462657B-B0FB-47B1-AACA-0DF284E655E9}", "Nrm" } };
   auto selectStringMode = [](auto& module) { return &module.block.stringMode; };
   stringMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringMode);
   stringMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringMode);
@@ -662,6 +666,7 @@ FFMakeOsciTopo()
   stringExcite.acc = true;
   stringExcite.defaultText = "0";
   stringExcite.name = "Excite";
+  stringExcite.display = "Exct";
   stringExcite.slotCount = 1;
   stringExcite.unit = "%";
   stringExcite.id = "{02590DDB-B5B2-4FA6-94C5-8D0319450689}";
