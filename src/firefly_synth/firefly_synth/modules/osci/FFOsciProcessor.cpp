@@ -1260,21 +1260,17 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     _stringPoles = topo.NormalizedToDiscreteFast(FFOsciParam::StringPoles, stringPolesNorm);
     _stringMode = topo.NormalizedToListFast<FFOsciStringMode>(FFOsciParam::StringMode, stringModeNorm);
 
-    float finePlain = topo.NormalizedToLinearFast(FFStringOsciParam::Fine, fineNorm.CV().Get(0));
-    float coarsePlain = topo.NormalizedToLinearFast(FFStringOsciParam::Coarse, coarseNorm.CV().Get(0));
-    float uniDetunePlain = topo.NormalizedToIdentityFast(FFStringOsciParam::UniDetune, uniDetuneNorm.CV().Get(0));
-
-    float stringLPResPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::LPRes, stringLPResNorm.CV().Get(0));
-    float stringHPResPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::HPRes, stringHPResNorm.CV().Get(0));
-    float stringLPFreqPlain = topo.NormalizedToLog2Fast(FFStringOsciParam::LPFreq, stringLPFreqNorm.CV().Get(0));
-    float stringHPFreqPlain = topo.NormalizedToLog2Fast(FFStringOsciParam::HPFreq, stringHPFreqNorm.CV().Get(0));
-    float stringLPKTrkPlain = topo.NormalizedToLinearFast(FFStringOsciParam::LPKTrk, stringLPKTrkNorm.CV().Get(0));
-    float stringHPKTrkPlain = topo.NormalizedToLinearFast(FFStringOsciParam::HPKTrk, stringHPKTrkNorm.CV().Get(0));
-    float stringXPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::X, stringXNorm.CV().Get(0));
-    float stringYPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::Y, stringYNorm.CV().Get(0));
-    float stringExcitePlain = topo.NormalizedToLog2Fast(FFStringOsciParam::Excite, stringExciteNorm.CV().Get(0));
-    float stringColorPlain = topo.NormalizedToIdentityFast(FFStringOsciParam::Color, stringColorNorm.CV().Get(0));
-    float stringTrackingKeyPlain = topo.NormalizedToLinearFast(FFStringOsciParam::TrackingKey, stringTrackingKeyNorm.CV().Get(0));
+    float stringLPResPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringLPRes, stringLPResNorm.CV().Get(0));
+    float stringHPResPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringHPRes, stringHPResNorm.CV().Get(0));
+    float stringLPFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::StringLPFreq, stringLPFreqNorm.CV().Get(0));
+    float stringHPFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::StringHPFreq, stringHPFreqNorm.CV().Get(0));
+    float stringLPKTrkPlain = topo.NormalizedToLinearFast(FFOsciParam::StringLPKTrk, stringLPKTrkNorm.CV().Get(0));
+    float stringHPKTrkPlain = topo.NormalizedToLinearFast(FFOsciParam::StringHPKTrk, stringHPKTrkNorm.CV().Get(0));
+    float stringXPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringX, stringXNorm.CV().Get(0));
+    float stringYPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringY, stringYNorm.CV().Get(0));
+    float stringExcitePlain = topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm.CV().Get(0));
+    float stringColorPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringColor, stringColorNorm.CV().Get(0));
+    float stringTrackingKeyPlain = topo.NormalizedToLinearFast(FFOsciParam::StringTrackingKey, stringTrackingKeyNorm.CV().Get(0));
 
     _stringLPFilter.Reset();
     _stringHPFilter.Reset();
@@ -1863,7 +1859,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   {
     if (_type == FFOsciType::String)
     {
-      int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFStringOsciGraphRounds;
+      int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFOsciStringGraphRounds;
       return std::clamp(graphSamples - _stringGraphPosition, 0, FBFixedBlockSamples);
     }
     else
