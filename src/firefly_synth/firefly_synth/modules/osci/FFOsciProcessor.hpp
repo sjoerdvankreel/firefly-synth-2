@@ -31,10 +31,12 @@ struct FFOsciStringUniVoiceState final
   FBSArray<float, FFOsciStringMaxPoles> colorFilterBuffer = {};
 };
 
-class FFOsciProcessor final:
-public FFOsciProcessorBase
+class FFOsciProcessor final
 {
+  float _key = {};
+
   FFOsciType _type = {};
+  int _uniCount = {};
   int _oversampleTimes = {};
   float _uniOffsetPlain = {};
   float _uniRandomPlain = {};
@@ -81,6 +83,10 @@ public FFOsciProcessorBase
   std::array<FFOsciWavePhaseGenerator, FFOsciBaseUniMaxCount> _uniWavePhaseGens = {};
   FBSArray2<float, FFOsciBaseUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   std::array<std::array<FFOsciFMPhaseGenerator, FFOsciBaseUniMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
+
+  FBSArray<float, FFOsciBaseUniMaxCount> _uniPosMHalfToHalf = {};
+  FBSArray<float, FFOsciBaseUniMaxCount> _uniPosAbsHalfToHalf = {};
+  FBSArray2<float, FBFixedBlockSamples, FFOsciBaseUniMaxCount> _uniOutput = {};
 
   float 
   StringDraw();

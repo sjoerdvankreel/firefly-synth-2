@@ -1377,9 +1377,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& stringFeedbackNorm = procParams.acc.stringFeedback[0].Voice()[voice];
   auto const& stringFeedbackKTrkNorm = procParams.acc.stringFeedbackKTrk[0].Voice()[voice];
 
+  FBSArray<float, FFOsciFixedBlockOversamples> gainPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
   FBSArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
   FBSArray<float, FFOsciFixedBlockOversamples> waveHSGainPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> waveHSSyncPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> waveDSFGainPlain;
@@ -1415,9 +1418,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     baseFreqPlain.Store(s, baseFreq);
     _phaseGen.NextBatch(baseFreq / sampleRate);
 
-    _gainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::Gain, gainNorm, s));
-    _uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
-    _uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
+    gainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::Gain, gainNorm, s));
+    uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
+    uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
 
     if (_type == FFOsciType::Wave)
@@ -1850,9 +1853,9 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     float uniPosAbsHalfToHalf = _uniPosAbsHalfToHalf.Get(u);
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
-      auto uniPanning = 0.5f + uniPosMHalfToHalf * _uniSpreadPlain.Load(s);
-      auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - _uniBlendPlain.Load(s)));
-      auto uniMono = _uniOutput[u].Load(s) * _gainPlain.Load(s) * uniBlend;
+      auto uniPanning = 0.5f + uniPosMHalfToHalf * uniSpreadPlain.Load(s);
+      auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
+      auto uniMono = _uniOutput[u].Load(s) * gainPlain.Load(s) * uniBlend;
       output[0].Add(s, (1.0f - uniPanning) * uniMono);
       output[1].Add(s, uniPanning * uniMono);
     }
