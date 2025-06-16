@@ -32,6 +32,8 @@ inline int const FBDefaultDisplayPrecision = 3;
 typedef std::pair<std::uint32_t, std::uint32_t>
 FBDenormalState;
 
+#define FB_ASSERT(e) \
+do { (void)(e); assert(e); } while(0)
 #define FB_STRINGIFY_(x) #x
 #define FB_STRINGIFY(x) FB_STRINGIFY_(x)
 
@@ -79,15 +81,6 @@ FBDenormalState;
 #define FB_EXPLICIT_COPY_MOVE_DEFCTOR(x) \
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(x); \
   x() = default
-
-// To prevent unused variable warnings.
-template <class T>
-inline void 
-FB_ASSERT(T&& cond)
-{
-  (void)cond;
-  assert(cond);
-}
 
 FBDenormalState
 FBDisableDenormal();
