@@ -32,8 +32,7 @@ FFStringOsciProcessor::InitializeBuffers(float sampleRate)
   int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringOsciMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
   {
-    if (_uniState[i].delayLine.MaxBufferSize() < delayLineSize)
-      _uniState[i].delayLine.InitializeBuffers(delayLineSize);
+    _uniState[i].delayLine.InitializeBuffers(delayLineSize);
     _uniState[i].dcFilter.SetCoeffs(DCBlockFreq, sampleRate);
   }
 }

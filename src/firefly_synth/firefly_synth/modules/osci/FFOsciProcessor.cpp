@@ -1060,10 +1060,7 @@ FFOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
   int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
   int maxDelayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / StringMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
-  {
-    if (_stringUniState[i].delayLine.MaxBufferSize() < maxDelayLineSize)
-      _stringUniState[i].delayLine.InitializeBuffers(maxDelayLineSize);
-  }
+    _stringUniState[i].delayLine.InitializeBuffers(maxDelayLineSize);
 }
 
 float
