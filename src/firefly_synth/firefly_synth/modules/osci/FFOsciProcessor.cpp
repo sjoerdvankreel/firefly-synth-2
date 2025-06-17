@@ -1802,7 +1802,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           float nextVal = static_cast<float>(dNextVal);
           newVal = (1.0f - excite) * newVal + excite * nextVal;
           _stringUniState[u].delayLine.Push(newVal);
-          _uniOutput[u].Set(s, outVal);
+          uniOutputOversampled[u].Set(s, outVal);
         }
       }
 
@@ -1859,11 +1859,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   output.NaNCheck();
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  float lastBaseFreq = baseFreqPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1);
   if (exchangeToGUI == nullptr)
   {
     if (_type == FFOsciType::String)
     {
-      int graphSamples = FBFreqToSamples(baseFreqPlain.Last(), sampleRate) * FFOsciStringGraphRounds;
+      int graphSamples = FBFreqToSamples(lastBaseFreq, sampleRate) * FFOsciStringGraphRounds;
       return std::clamp(graphSamples - _stringGraphPosition, 0, FBFixedBlockSamples);
     }
     else
@@ -1872,7 +1873,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBFreqToSamples(baseFreqPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1), state.input->sampleRate);
+  exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.gain[0][voice] = gainNorm.Last();
