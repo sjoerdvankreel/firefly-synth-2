@@ -32,8 +32,8 @@ FFStringOsciProcessor::InitializeBuffers(float sampleRate)
   int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringOsciMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
   {
-    if (_uniState[i].delayLine.Count() < delayLineSize)
-      _uniState[i].delayLine.Resize(delayLineSize);
+    if (_uniState[i].delayLine.MaxBufferSize() < delayLineSize)
+      _uniState[i].delayLine.InitializeBuffers(delayLineSize);
     _uniState[i].dcFilter.SetCoeffs(DCBlockFreq, sampleRate);
   }
 }
@@ -178,7 +178,7 @@ FFStringOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     _uniState[u].prevDelayVal = 0.0f;
     _uniState[u].phaseTowardsX = 0.0f;
     _uniState[u].colorFilterPosition = 0;
-    _uniState[u].delayLine.Reset();
+    _uniState[u].delayLine.Reset(_uniState[u].delayLine.MaxBufferSize());
 
     for (int p = 0; p < _poles; p++)
       _uniState[u].colorFilterBuffer.Set(p, Draw());

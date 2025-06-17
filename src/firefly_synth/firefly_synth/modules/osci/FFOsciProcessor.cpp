@@ -1055,14 +1055,14 @@ _oversampler(
 }
 
 void
-FFOsciProcessor::InitializeBuffers(bool /*graph*/, float sampleRate)
+FFOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
 {
-  int oversampleTimes = 1;// graph ? 1 : FFOsciOversampleTimes;
-  int delayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / StringMinFreq));
+  int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
+  int maxDelayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / StringMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
   {
-    if (_stringUniState[i].delayLine.Count() < delayLineSize)
-      _stringUniState[i].delayLine.Resize(delayLineSize);
+    if (_stringUniState[i].delayLine.MaxBufferSize() < maxDelayLineSize)
+      _stringUniState[i].delayLine.InitializeBuffers(maxDelayLineSize);
     _stringUniState[i].dcFilter.SetCoeffs(StringDCBlockFreq, sampleRate);
   }
 }
@@ -1309,7 +1309,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
       _stringUniState[u].prevDelayVal = 0.0f;
       _stringUniState[u].phaseTowardsX = 0.0f;
       _stringUniState[u].colorFilterPosition = 0;
-      _stringUniState[u].delayLine.Reset();
+      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() / _oversampleTimes);
 
       for (int p = 0; p < _stringPoles; p++)
         _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
