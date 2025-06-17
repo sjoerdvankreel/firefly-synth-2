@@ -1055,9 +1055,10 @@ _oversampler(
 }
 
 void
-FFOsciProcessor::InitializeBuffers(float sampleRate)
+FFOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
 {
-  int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringMinFreq));
+  int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
+  int delayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / StringMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
   {
     if (_stringUniState[i].delayLine.Count() < delayLineSize)
@@ -1299,7 +1300,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
       _stringHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
     }
 
-    int delayLineSize = static_cast<int>(std::ceil(sampleRate / StringMinFreq));
+    int delayLineSize = static_cast<int>(std::ceil(sampleRate * _oversampleTimes / StringMinFreq));
     for (int u = 0; u < _uniCount; u++)
     {
       _stringUniState[u].phaseGen = {};
@@ -1761,7 +1762,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           KeyboardTrackingMultiplier(_key, trackingKey, lpKTrk),
           FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
         lpFreq *= _stringGraphStVarFilterFreqMultiplier;
-        _stringLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreq, lpRes, 0.0f);
+        _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, lpFreq, lpRes, 0.0f);
       }
 
       if (_stringHPOn)
@@ -1773,7 +1774,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           KeyboardTrackingMultiplier(_key, trackingKey, -hpKTrk),
           FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
         hpFreq *= _stringGraphStVarFilterFreqMultiplier;
-        _stringHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreq, hpRes, 0.0f);
+        _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, hpFreq, hpRes, 0.0f);
       }
 
       for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
@@ -1785,7 +1786,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
         for (int u = ub; u < ub + FBSIMDFloatCount && u < _uniCount; u++)
         {
           float uniFreq = uniFreqArray.Get(u - ub);
-          _stringUniState[u].delayLine.Delay(sampleRate / uniFreq);
+          _stringUniState[u].delayLine.Delay(oversampledRate / uniFreq);
           float thisVal = _stringUniState[u].delayLine.Pop();
           float prevVal = _stringUniState[u].prevDelayVal;
           float newVal = (1.0f - damp) * thisVal + damp * (prevVal + thisVal) * 0.5f;
@@ -1793,7 +1794,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
           newVal *= realFeedback;
           _stringUniState[u].prevDelayVal = newVal;
 
-          double dNextVal = StringNext(u, sampleRate, uniFreq, excite, color, x, y);
+          double dNextVal = StringNext(u, oversampledRate, uniFreq, excite, color, x, y);
           if (_stringHPOn)
             dNextVal = _stringHPFilter.Next(u, dNextVal);
           if (_stringLPOn)

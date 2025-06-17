@@ -101,6 +101,6 @@ public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
   int Process(FBModuleProcState& state);
-  void InitializeBuffers(float sampleRate);
+  void InitializeBuffers(bool graph, float sampleRate);
   void BeginVoice(bool graph, FBModuleProcState& state);
 };
