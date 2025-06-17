@@ -1063,7 +1063,6 @@ FFOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
   {
     if (_stringUniState[i].delayLine.MaxBufferSize() < maxDelayLineSize)
       _stringUniState[i].delayLine.InitializeBuffers(maxDelayLineSize);
-    _stringUniState[i].dcFilter.SetCoeffs(StringDCBlockFreq, sampleRate);
   }
 }
 
@@ -1309,6 +1308,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
       _stringUniState[u].prevDelayVal = 0.0f;
       _stringUniState[u].phaseTowardsX = 0.0f;
       _stringUniState[u].colorFilterPosition = 0;
+      _stringUniState[u].dcFilter.SetCoeffs(StringDCBlockFreq, oversampledRate);
       _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() / _oversampleTimes);
 
       for (int p = 0; p < _stringPoles; p++)
