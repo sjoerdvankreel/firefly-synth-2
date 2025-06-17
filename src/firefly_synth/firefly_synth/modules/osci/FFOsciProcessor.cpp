@@ -1309,7 +1309,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
       _stringUniState[u].phaseTowardsX = 0.0f;
       _stringUniState[u].colorFilterPosition = 0;
       _stringUniState[u].dcFilter.SetCoeffs(StringDCBlockFreq, oversampledRate);
-      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() / _oversampleTimes);
+      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
 
       for (int p = 0; p < _stringPoles; p++)
         _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
