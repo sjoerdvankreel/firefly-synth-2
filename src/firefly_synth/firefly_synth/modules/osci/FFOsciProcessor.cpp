@@ -1146,6 +1146,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
   _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
+  float oversampledRate = sampleRate * _oversampleTimes;
 
   _uniCount = topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm);
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
@@ -1288,7 +1289,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
         KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, stringLPKTrkPlain),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       stringLPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
-      _stringLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
+      _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
     }
 
     if (_stringHPOn)
@@ -1297,10 +1298,10 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
         KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, -stringHPKTrkPlain),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       stringHPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
-      _stringHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
+      _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
     }
 
-    int delayLineSize = static_cast<int>(std::ceil(sampleRate * _oversampleTimes / StringMinFreq));
+    int delayLineSize = static_cast<int>(std::ceil(oversampledRate / StringMinFreq));
     for (int u = 0; u < _uniCount; u++)
     {
       _stringUniState[u].phaseGen = {};
@@ -1318,7 +1319,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
       float uniFreq = FBPitchToFreq(uniPitch);
       for (int i = 0; i < delayLineSize; i++)
       {
-        double dNextVal = StringNext(u, sampleRate, uniFreq, stringExcitePlain, stringColorPlain, stringXPlain, stringYPlain);
+        double dNextVal = StringNext(u, oversampledRate, uniFreq, stringExcitePlain, stringColorPlain, stringXPlain, stringYPlain);
         if (_stringHPOn)
           dNextVal = _stringHPFilter.Next(u, dNextVal);
         if (_stringLPOn)
