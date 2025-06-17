@@ -1055,9 +1055,9 @@ _oversampler(
 }
 
 void
-FFOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
+FFOsciProcessor::InitializeBuffers(bool /*graph*/, float sampleRate)
 {
-  int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
+  int oversampleTimes = 1;// graph ? 1 : FFOsciOversampleTimes;
   int delayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / StringMinFreq));
   for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
   {
