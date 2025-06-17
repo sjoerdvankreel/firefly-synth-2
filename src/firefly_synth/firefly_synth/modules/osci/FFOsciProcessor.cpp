@@ -1228,15 +1228,19 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   }
   else if (_type == FFOsciType::String)
   {
+    auto const& fineNorm = params.acc.fine[0].Voice()[voice];
+    auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
+    auto const& uniDetuneNorm = params.acc.uniDetune[0].Voice()[voice];
+
+    float finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
+    float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
+    float uniDetunePlain = topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm.CV().Get(0));
+
     auto const& stringLPOnNorm = params.block.stringLPOn[0].Voice()[voice];
     auto const& stringHPOnNorm = params.block.stringHPOn[0].Voice()[voice];
     auto const& stringModeNorm = params.block.stringMode[0].Voice()[voice];
     auto const& stringSeedNorm = params.block.stringSeed[0].Voice()[voice];
     auto const& stringPolesNorm = params.block.stringPoles[0].Voice()[voice];
-
-    auto const& fineNorm = params.acc.fine[0].Voice()[voice];
-    auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
-    auto const& uniDetuneNorm = params.acc.uniDetune[0].Voice()[voice];
 
     auto const& stringXNorm = params.acc.stringX[0].Voice()[voice];
     auto const& stringYNorm = params.acc.stringY[0].Voice()[voice];
