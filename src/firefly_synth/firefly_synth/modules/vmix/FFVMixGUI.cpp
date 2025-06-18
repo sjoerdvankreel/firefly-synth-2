@@ -31,7 +31,7 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
   {
     int row = e / 2;
     int colStart = (e % 2) * (FFOsciCount + 1);
-    std::string name = "OSC\U00002192FX" + std::to_string(e + 1);
+    std::string name = "OSC\U00002192FX " + std::to_string(e + 1);
     grid->Add(row, colStart, plugGUI->StoreComponent<FBAutoSizeLabel>(name));
     for (int o = 0; o < FFOsciCount; o++)
     {
@@ -41,6 +41,24 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
     }
   }
   grid->MarkSection({ { 0, 0 }, { 2, FFVMixOsciToVFXCount / 2 + 2 } });
+  return grid;
+}
+
+static Component*
+MakeVMixSectionVFXToVFX(FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
+  for (int s = 0; s < FFVMixVFXToVFXCount; s++)
+  {
+    int row = s / (FFVMixVFXToVFXCount / 2);
+    int colStart = s % (FFVMixVFXToVFXCount / 2);
+    auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::VFXToVFX, s } });
+    grid->Add(row, colStart * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
+    grid->Add(row, colStart * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
+  }
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
   return grid;
 }
 
@@ -75,9 +93,10 @@ static Component*
 MakeVMixTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
   grid->Add(0, 0, MakeVMixSectionOsciToVFX(plugGUI));
-  grid->Add(0, 1, MakeVMixSectionOsciAndVFXToOut(plugGUI));
+  grid->Add(0, 1, MakeVMixSectionVFXToVFX(plugGUI));
+  grid->Add(0, 2, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

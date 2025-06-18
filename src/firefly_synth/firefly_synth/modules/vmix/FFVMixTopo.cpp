@@ -7,6 +7,21 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
+FormatVFXToVFXSlot(FBStaticTopo const&, int mixSlot)
+{
+  switch (mixSlot)
+  {
+  case 0: return "FX 1\U000021922";
+  case 1: return "FX 1\U000021923";
+  case 2: return "FX 2\U000021923";
+  case 3: return "FX 1\U000021924";
+  case 4: return "FX 2\U000021924";
+  case 5: return "FX 3\U000021924";
+  default: FB_ASSERT(false); return "";
+  }
+}
+
+static std::string
 FormatOsciToOutSlot(FBStaticTopo const& topo, int mixSlot)
 {
   int osciSlot = mixSlot;
@@ -60,7 +75,6 @@ FFMakeVMixTopo()
   osciToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciToVFX);
   osciToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciToVFX);
 
-  /*
   auto& vfxToVFX = result->params[(int)FFVMixParam::VFXToVFX];
   vfxToVFX.acc = true;
   vfxToVFX.defaultText = "0";
@@ -68,12 +82,13 @@ FFMakeVMixTopo()
   vfxToVFX.slotCount = FFVMixVFXToVFXCount;
   vfxToVFX.unit = "%";
   vfxToVFX.id = "{21EF058C-86B5-4E7B-B4A1-5CFE92F20065}";
+  vfxToVFX.slotFormatter = FormatVFXToVFXSlot;
+  vfxToVFX.slotFormatterOverrides = true;
   vfxToVFX.type = FBParamType::Identity;
   auto selectVFXToVFX = [](auto& module) { return &module.acc.VFXToVFX; };
   vfxToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVFXToVFX);
   vfxToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectVFXToVFX);
-  vfxToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVFXToVFX);
-  */
+  vfxToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVFXToVFX);  
 
   auto& osciToOut = result->params[(int)FFVMixParam::OsciToOut];
   osciToOut.acc = true;
