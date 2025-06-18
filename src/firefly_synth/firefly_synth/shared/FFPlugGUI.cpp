@@ -6,9 +6,6 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
-#include <firefly_synth/modules/shared/FFOscisGUI.hpp>
-#include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
-#include <firefly_synth/modules/string_osci/FFStringOsciGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 

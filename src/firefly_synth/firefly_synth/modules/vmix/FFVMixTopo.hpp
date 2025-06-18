@@ -7,7 +7,6 @@
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeVMixTopo();
 inline int constexpr FFVMixOsciToVFXCount = FFOsciCount * FFEffectCount;
-inline int constexpr FFVMixStringOsciToVFXCount = FFStringOsciCount * FFEffectCount;
 inline int constexpr FFVMixVFXToVFXCount = FFEffectCount * (FFEffectCount - 1) / 2;
 
 inline int
@@ -16,13 +15,7 @@ FFVMixOsciToVFXGetFXSlot(int mixSlot)
 inline int
 FFVMixOsciToVFXGetOsciSlot(int mixSlot)
 { return mixSlot % FFOsciCount; }
-inline int
-FFVMixStringOsciToVFXGetFXSlot(int mixSlot)
-{ return mixSlot / FFStringOsciCount; }
-inline int
-FFVMixStringOsciToVFXGetStringOsciSlot(int mixSlot)
-{ return mixSlot % FFStringOsciCount; }
 
 enum class FFVMixParam {
-  OsciToVFX, StringOsciToVFX, /*VFXToVFX,*/
-  OsciToOut, /*StringOsciToOut,*/ VFXToOut, Count };
+  OsciToVFX, /*VFXToVFX,*/
+  OsciToOut, VFXToOut, Count };

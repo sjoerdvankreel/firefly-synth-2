@@ -17,13 +17,13 @@ class alignas(FBSIMDAlign) FFOsciDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct OscisGraphRenderData;
+  friend struct OsciGraphRenderData;
   std::unique_ptr<FFOsciProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
   FFOsciDSPState(): processor(std::make_unique<FFOsciProcessor>()) {}
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
-  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciBaseUniMaxCount> uniOutputOversampled = {};
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciUniMaxCount> uniOutputOversampled = {};
 };
 
 template <class TBlock>

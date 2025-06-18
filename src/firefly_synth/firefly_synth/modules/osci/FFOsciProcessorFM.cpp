@@ -23,7 +23,7 @@ FMRatioRatio(int v)
 void 
 FFOsciProcessor::BeginVoiceFM(
   FBModuleProcState& state, 
-  FBSArray<float, FFOsciBaseUniMaxCount> const& uniPhaseInit)
+  FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();

@@ -87,22 +87,22 @@ class FFOsciProcessor final
   juce::dsp::Oversampling<float> _oversampler;
   juce::dsp::AudioBlock<float> _oversampledBlock = {};
   juce::dsp::AudioBlock<float> _downsampledBlock = {};
-  std::array<float*, FFOsciBaseUniMaxCount> _downsampledChannelPtrs = {};
+  std::array<float*, FFOsciUniMaxCount> _downsampledChannelPtrs = {};
 
   FFParkMillerPRNG _uniformPrng = {};
   FFMarsagliaPRNG _stringNormalPrng = {};
-  FFStateVariableFilter<FFOsciBaseUniMaxCount> _stringLPFilter = {};
-  FFStateVariableFilter<FFOsciBaseUniMaxCount> _stringHPFilter = {};
-  std::array<FFOsciStringUniVoiceState, FFOsciBaseUniMaxCount> _stringUniState = {};
+  FFStateVariableFilter<FFOsciUniMaxCount> _stringLPFilter = {};
+  FFStateVariableFilter<FFOsciUniMaxCount> _stringHPFilter = {};
+  std::array<FFOsciStringUniVoiceState, FFOsciUniMaxCount> _stringUniState = {};
 
   FFTrackingPhaseGenerator _phaseGen = {};
-  std::array<FFOsciWavePhaseGenerator, FFOsciBaseUniMaxCount> _uniWavePhaseGens = {};
-  FBSArray2<float, FFOsciBaseUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
-  std::array<std::array<FFOsciFMPhaseGenerator, FFOsciBaseUniMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
+  std::array<FFOsciWavePhaseGenerator, FFOsciUniMaxCount> _uniWavePhaseGens = {};
+  FBSArray2<float, FFOsciUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
+  std::array<std::array<FFOsciFMPhaseGenerator, FFOsciUniMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
 
-  FBSArray<float, FFOsciBaseUniMaxCount> _uniPosMHalfToHalf = {};
-  FBSArray<float, FFOsciBaseUniMaxCount> _uniPosAbsHalfToHalf = {};
-  FBSArray2<float, FBFixedBlockSamples, FFOsciBaseUniMaxCount> _uniOutput = {};
+  FBSArray<float, FFOsciUniMaxCount> _uniPosMHalfToHalf = {};
+  FBSArray<float, FFOsciUniMaxCount> _uniPosAbsHalfToHalf = {};
+  FBSArray2<float, FBFixedBlockSamples, FFOsciUniMaxCount> _uniOutput = {};
 
   float 
   StringDraw();
@@ -127,8 +127,8 @@ class FFOsciProcessor final
     FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
 
   void BeginVoiceString(bool graph, FBModuleProcState& state);
-  void BeginVoiceFM(FBModuleProcState& state, FBSArray<float, FFOsciBaseUniMaxCount> const& uniPhaseInit);
-  void BeginVoiceWave(FBModuleProcState& state, FBSArray<float, FFOsciBaseUniMaxCount> const& uniPhaseInit);
+  void BeginVoiceFM(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
+  void BeginVoiceWave(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
 
 public:
   FFOsciProcessor();

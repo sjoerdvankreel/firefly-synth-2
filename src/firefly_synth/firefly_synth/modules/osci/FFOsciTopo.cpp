@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
-#include <firefly_synth/modules/shared/FFOscisGraph.hpp>
+#include <firefly_synth/modules/osci/FFOsciGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
@@ -47,8 +47,8 @@ FFMakeOsciTopo()
   result->tabName = "OSC";
   result->graphName = "OSC";
   result->slotCount = FFOsciCount;
-  result->graphCount = FFOsciCount + FFStringOsciCount;
-  result->graphRenderer = FFOscisRenderGraph;
+  result->graphCount = FFOsciCount;
+  result->graphRenderer = FFOsciRenderGraph;
   result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
   result->params.resize((int)FFOsciParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osci; });
@@ -130,7 +130,7 @@ FFMakeOsciTopo()
   uniCount.slotCount = 1;
   uniCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
   uniCount.type = FBParamType::Discrete;
-  uniCount.Discrete().valueCount = FFOsciBaseUniMaxCount;
+  uniCount.Discrete().valueCount = FFOsciUniMaxCount;
   uniCount.Discrete().valueOffset = 1;
   auto selectUniCount = [](auto& module) { return &module.block.uniCount; };
   uniCount.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniCount);

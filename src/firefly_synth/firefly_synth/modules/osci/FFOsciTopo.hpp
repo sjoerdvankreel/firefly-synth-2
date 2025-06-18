@@ -7,6 +7,7 @@
 
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
+inline int constexpr FFOsciUniMaxCount = 8;
 
 enum class FFOsciFMMode { Linear, Exp };
 enum class FFOsciStringMode { Uni, Norm };

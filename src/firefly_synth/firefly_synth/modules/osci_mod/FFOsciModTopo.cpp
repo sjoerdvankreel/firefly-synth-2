@@ -1,5 +1,5 @@
 #include <firefly_synth/shared/FFTopoDetail.hpp>
-#include <firefly_synth/modules/shared/FFOscisGraph.hpp>
+#include <firefly_synth/modules/osci/FFOsciGraph.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
@@ -44,8 +44,8 @@ FFMakeOsciModTopo()
   result->graphName = "OSC MOD";
   result->slotCount = 1;
   result->graphCount = FFOsciCount;
-  result->graphCount = FFOsciCount + FFStringOsciCount;
-  result->graphRenderer = FFOscisRenderGraph;
+  result->graphCount = FFOsciCount;
+  result->graphRenderer = FFOsciRenderGraph;
   result->id = "{546F9D74-670A-463D-80B0-B4BBD061DA88}";
   result->params.resize((int)FFOsciModParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });

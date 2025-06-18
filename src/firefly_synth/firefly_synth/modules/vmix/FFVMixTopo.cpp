@@ -32,16 +32,6 @@ FormatOsciToVFXSlot(FBStaticTopo const& topo, int mixSlot)
   return osciName + "\U00002192" + fxName;
 }
 
-static std::string
-FormatStringOsciToVFXSlot(FBStaticTopo const& topo, int mixSlot)
-{
-  int fxSlot = FFVMixStringOsciToVFXGetFXSlot(mixSlot);
-  int stringOsciSlot = FFVMixStringOsciToVFXGetStringOsciSlot(mixSlot);
-  std::string fxName = "FX " + std::to_string(fxSlot + 1);
-  std::string stringOsciName = topo.modules[(int)FFModuleType::StringOsci].name + " " + std::to_string(stringOsciSlot + 1);
-  return stringOsciName + "\U00002192" + fxName;
-}
-
 std::unique_ptr<FBStaticModule>
 FFMakeVMixTopo()
 {
@@ -69,21 +59,6 @@ FFMakeVMixTopo()
   osciToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciToVFX);
   osciToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciToVFX);
   osciToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciToVFX);
-
-  auto& stringOsciToVFX = result->params[(int)FFVMixParam::StringOsciToVFX];
-  stringOsciToVFX.acc = true;
-  stringOsciToVFX.defaultText = "0";
-  stringOsciToVFX.name = "String To VFX";
-  stringOsciToVFX.slotCount = FFVMixStringOsciToVFXCount;
-  stringOsciToVFX.unit = "%";
-  stringOsciToVFX.id = "{5B98D130-B1BA-4E0D-877B-F5656A1EFBE8}";
-  stringOsciToVFX.slotFormatter = FormatStringOsciToVFXSlot;
-  stringOsciToVFX.slotFormatterOverrides = true;
-  stringOsciToVFX.type = FBParamType::Identity;
-  auto selectStringOsciToVFX = [](auto& module) { return &module.acc.stringOsciToVFX; };
-  stringOsciToVFX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringOsciToVFX);
-  stringOsciToVFX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringOsciToVFX);
-  stringOsciToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringOsciToVFX);
 
   /*
   auto& vfxToVFX = result->params[(int)FFVMixParam::VFXToVFX];
@@ -114,21 +89,6 @@ FFMakeVMixTopo()
   osciToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOsciToOut);
   osciToOut.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectOsciToOut);
   osciToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciToOut);
-
-  /*
-  auto& stringOsciToOut = result->params[(int)FFVMixParam::StringOsciToOut];
-  stringOsciToOut.acc = true;
-  stringOsciToOut.defaultText = "0";
-  stringOsciToOut.name = "String To Out";
-  stringOsciToOut.slotCount = FFStringOsciCount;
-  stringOsciToOut.unit = "%";
-  stringOsciToOut.id = "{251D3B54-1D6D-418B-88B0-E2E80B410F48}";
-  stringOsciToOut.type = FBParamType::Identity;
-  auto selectStringOsciToOut = [](auto& module) { return &module.acc.stringOsciToOut; };
-  stringOsciToOut.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringOsciToOut);
-  stringOsciToOut.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringOsciToOut);
-  stringOsciToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringOsciToOut);
-  */
 
   auto& vfxToOut = result->params[(int)FFVMixParam::VFXToOut];
   vfxToOut.acc = true;

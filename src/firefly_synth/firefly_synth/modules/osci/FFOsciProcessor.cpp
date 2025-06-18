@@ -21,13 +21,13 @@ using namespace juce::dsp;
 FFOsciProcessor::
 FFOsciProcessor() :
 _oversampler(
-  FFOsciBaseUniMaxCount, FFOsciOversampleFactor,
+  FFOsciUniMaxCount, FFOsciOversampleFactor,
   Oversampling<float>::filterHalfBandPolyphaseIIR, false, false)
 {
   _oversampler.initProcessing(FBFixedBlockSamples);
-  for (int u = 0; u < FFOsciBaseUniMaxCount; u++)
+  for (int u = 0; u < FFOsciUniMaxCount; u++)
     _downsampledChannelPtrs[u] = _uniOutput[u].Ptr(0);
-  _downsampledBlock = AudioBlock<float>(_downsampledChannelPtrs.data(), FFOsciBaseUniMaxCount, 0, FBFixedBlockSamples);
+  _downsampledBlock = AudioBlock<float>(_downsampledChannelPtrs.data(), FFOsciUniMaxCount, 0, FBFixedBlockSamples);
   _oversampledBlock = _oversampler.processSamplesUp(_downsampledBlock);
 }
 
@@ -36,7 +36,7 @@ FFOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
 {
   int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
   int maxDelayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / FFOsciStringMinFreq));
-  for (int i = 0; i < FFOsciBaseUniMaxCount; i++)
+  for (int i = 0; i < FFOsciUniMaxCount; i++)
     _stringUniState[i].delayLine.InitializeBuffers(maxDelayLineSize);
 }
 
@@ -73,7 +73,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
   _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, uniRandomNorm);
 
-  FBSArray<float, FFOsciBaseUniMaxCount> uniPhaseInit = {};
+  FBSArray<float, FFOsciUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
   {
     if (_uniCount == 1)

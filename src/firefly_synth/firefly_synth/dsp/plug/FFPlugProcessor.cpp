@@ -32,8 +32,6 @@ _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()
       _procState->dsp.voice[v].vEffect[i].processor->InitializeBuffers(false, _sampleRate);
     for (int i = 0; i < FFOsciCount; i++)
       _procState->dsp.voice[v].osci[i].processor->InitializeBuffers(false, _sampleRate);
-    for (int i = 0; i < FFStringOsciCount; i++)
-      _procState->dsp.voice[v].stringOsci[i].processor->InitializeBuffers(_sampleRate);
   }
 }
 

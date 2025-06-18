@@ -45,36 +45,6 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
 }
 
 static Component*
-MakeVMixSectionStringOsciToVFX(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  std::vector<int> columnSizes = {};
-  auto topo = plugGUI->HostContext()->Topo();
-  for (int i = 0; i < FFEffectCount / 2; i++)
-  {
-    columnSizes.push_back(0);
-    for (int j = 0; j < FFStringOsciCount; j++)
-      columnSizes.push_back(0);
-  }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
-  for (int e = 0; e < FFEffectCount; e++)
-  {
-    int row = e / 2;
-    int colStart = (e % 2) * (FFStringOsciCount + 1);
-    std::string name = "STR\U00002192FX" + std::to_string(e + 1);
-    grid->Add(row, colStart, plugGUI->StoreComponent<FBAutoSizeLabel>(name));
-    for (int o = 0; o < FFStringOsciCount; o++)
-    {
-      int route = e * FFStringOsciCount + o;
-      auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::StringOsciToVFX, route } });
-      grid->Add(row, colStart + 1 + o, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
-    }
-  }
-  grid->MarkSection({ { 0, 0 }, { 2, FFVMixStringOsciToVFXCount / 2 + 2 } });
-  return grid;
-}
-
-static Component*
 MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
@@ -105,10 +75,9 @@ static Component*
 MakeVMixTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   grid->Add(0, 0, MakeVMixSectionOsciToVFX(plugGUI));
-  grid->Add(0, 1, MakeVMixSectionStringOsciToVFX(plugGUI));
-  grid->Add(0, 2, MakeVMixSectionOsciAndVFXToOut(plugGUI));
+  grid->Add(0, 1, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
