@@ -98,6 +98,9 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 * All modulations are still per-unison-voice. Make sure the mod source has at least as many uni voices as the target.
 * FF1 was actually doing "real" FM instead of PM. That bit me when i was doing feedback FM on the dedicated FM osci, and the pitch went down.
 
+## Voice audio mixer matrix (VMIX)
+* Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
+
 # Build it
 As always. Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release.
 
