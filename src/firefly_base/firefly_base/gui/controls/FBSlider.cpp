@@ -16,6 +16,7 @@ Slider(style, Slider::NoTextBox)
 int 
 FBAutoSizeSlider::FixedWidth(int height) const
 {
+  FB_ASSERT(getSliderStyle() == SliderStyle::RotaryVerticalDrag || getSliderStyle() == SliderStyle::LinearHorizontal);
   if(getSliderStyle() == SliderStyle::RotaryVerticalDrag)
     return height;
   return 0;

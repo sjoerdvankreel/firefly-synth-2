@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
+#include <firefly_synth/modules/vmix/FFVMixTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
@@ -79,8 +80,8 @@ FFMakeTopo(FBPlugFormat format)
   auto result = std::make_unique<FBStaticTopo>();
   result->meta = FFPlugMeta(format);
   result->guiWidth = 900;
-  result->guiAspectRatioWidth = 50;
-  result->guiAspectRatioHeight = 21;
+  result->guiAspectRatioWidth = 25;
+  result->guiAspectRatioHeight = 11;
   result->guiFactory = [](FBHostGUIContext* hostContext) { return std::make_unique<FFPlugGUI>(hostContext); };
 
   result->specialSelector = SpecialParamsSelector;
@@ -99,8 +100,8 @@ FFMakeTopo(FBPlugFormat format)
   result->voicesExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voices; };
 
   result->modules.resize((int)FFModuleType::Count);
+  result->modules[(int)FFModuleType::VMix] = std::move(*FFMakeVMixTopo());
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
-  result->modules[(int)FFModuleType::StringOsci] = std::move(*FFMakeStringOsciTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
   result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));

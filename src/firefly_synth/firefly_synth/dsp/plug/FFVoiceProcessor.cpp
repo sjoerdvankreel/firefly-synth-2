@@ -27,11 +27,6 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     state.moduleSlot = i;
     procState->dsp.voice[voice].osci[i].processor->BeginVoice(false, state);
   }
-  for (int i = 0; i < FFStringOsciCount; i++)
-  {
-    state.moduleSlot = i;
-    procState->dsp.voice[voice].stringOsci[i].processor->BeginVoice(false, state);
-  }
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;
@@ -46,7 +41,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceDSP = procState->dsp.voice[voice];
-  voiceDSP.output.Fill(0.0f);
+  auto const& vMix = procState->param.voice.vMix[0];
 
   for (int i = 0; i < FFEnvCount; i++)
   {
@@ -55,6 +50,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     if (i == 0)
       voiceFinished = envProcessed != FBFixedBlockSamples;
   }
+
   state.moduleSlot = 0;
   voiceDSP.osciMod.processor->Process(state);
   for (int i = 0; i < FFOsciCount; i++)
@@ -62,19 +58,39 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     state.moduleSlot = i;
     voiceDSP.osci[i].processor->Process(state);
   }
-  for (int i = 0; i < FFStringOsciCount; i++)
-  {
-    state.moduleSlot = i;
-    voiceDSP.stringOsci[i].processor->Process(state);
-    voiceDSP.output.Add(voiceDSP.stringOsci[i].output);
-  }
-  FB_ASSERT(FFOsciCount == FFEffectCount); // TODO for now
+
+  FB_ASSERT(FFOsciCount == FFEffectCount);
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.osci[i].output.CopyTo(voiceDSP.vEffect[i].input);
+    voiceDSP.vEffect[i].input.Fill(0.0f);
+    for (int r = 0; r < FFVMixOsciToVFXCount; r++)
+      if (FFVMixOsciToVFXGetFXSlot(r) == i)
+      {
+        int o = FFVMixOsciToVFXGetOsciSlot(r);
+        auto const& mixAmt = vMix.acc.osciToVFX[r].Voice()[voice].CV();
+        voiceDSP.vEffect[i].input.AddMul(voiceDSP.osci[o].output, mixAmt);
+      }
+    for (int r = 0; r < FFVMixVFXToVFXCount; r++)
+      if (FFVMixVFXToVFXGetTargetSlot(r) == i)
+      {
+        int source = FFVMixVFXToVFXGetSourceSlot(r);
+        auto const& mixAmt = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
+        voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, mixAmt);
+      }
     voiceDSP.vEffect[i].processor->Process<false>(state);
-    voiceDSP.output.Add(voiceDSP.vEffect[i].output);
+  }
+
+  voiceDSP.output.Fill(0.0f);
+  for (int i = 0; i < FFOsciCount; i++)
+  {
+    auto const& mixAmt = vMix.acc.osciToOut[i].Voice()[voice].CV();
+    voiceDSP.output.AddMul(voiceDSP.osci[i].output, mixAmt);
+  }
+  for (int i = 0; i < FFEffectCount; i++)
+  {
+    auto const& mixAmt = vMix.acc.VFXToOut[i].Voice()[voice].CV();
+    voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, mixAmt);
   }
 
   // TODO dont hardcode this to voice amp?

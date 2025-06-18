@@ -14,8 +14,8 @@ class alignas(FBSIMDTraits<T>::Align) FBSArray final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBSArray);
-  FBSArray(FBBatch<T> val) { Fill(val); }
-  FBSArray(T val) { Fill(FBBatch<T>(val)); }
+  explicit FBSArray(FBBatch<T> val) { Fill(val); }
+  explicit FBSArray(T val) { Fill(FBBatch<T>(val)); }
 
   void NaNCheck() const;
   template <int Times> void UpsampleStretch();
@@ -39,6 +39,7 @@ public:
   void Mul(FBSArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Mul(i, rhs.Load(i)); }
   void Add(FBSArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Add(i, rhs.Load(i)); }
   void CopyTo(FBSArray<T, N>& rhs) const { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) rhs.Store(i, Load(i)); }
+  void AddMul(FBSArray<T, N> const& rhs, FBSArray<T, N> const& mul) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Add(i, rhs.Load(i) * mul.Load(i)); }
 };
 
 template <class T, int N>
@@ -110,7 +111,8 @@ public:
   void NaNCheck() const { for (int i = 0; i < N2; i++) _data[i].NaNCheck(); }
   void Fill(FBBatch<T> val) { for (int i = 0; i < N2; i++) _data[i].Fill(val); }
   void Mul(FBSArray<T, N1> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs); }
-  void Add(FBSArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Add(rhs._data[i]); }
   void Mul(FBSArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs._data[i]); }
+  void Add(FBSArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Add(rhs._data[i]); }
   void CopyTo(FBSArray2<T, N1, N2>& rhs) const { for (int i = 0; i < N2; i++) _data[i].CopyTo(rhs._data[i]); }
+  void AddMul(FBSArray2<T, N1, N2> const& rhs, FBSArray<T, N1> const& mul) { for (int i = 0; i < N2; i++) _data[i].AddMul(rhs._data[i], mul); }
 };

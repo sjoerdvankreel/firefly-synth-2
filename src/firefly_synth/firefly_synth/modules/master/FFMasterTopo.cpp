@@ -9,6 +9,7 @@ FFMakeMasterTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
   result->name = "Master";
+  result->tabName = "MASTER";
   result->slotCount = 1;
   result->id = "{83AA98D4-9D12-4D61-81A4-4FAA935EDF5D}";
   result->params.resize((int)FFMasterParam::Count);

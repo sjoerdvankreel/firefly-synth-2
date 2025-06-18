@@ -7,11 +7,13 @@
 #include <string>
 #include <vector>
 
+struct FBStaticTopo;
 struct FBStaticModule;
 
 struct FBRuntimeModule final
 {
   std::string name;
+  std::string tabName;
   std::string graphName;
   int runtimeModuleIndex;
   FBTopoIndices topoIndices;
@@ -19,7 +21,8 @@ struct FBRuntimeModule final
   std::vector<FBRuntimeGUIParam> guiParams;
 
   FBRuntimeModule(
-    FBStaticModule const& staticModule, FBTopoIndices const& topoIndices,
-    int runtimeIndex, int runtimeParamStart, int runtimeGUIParamStart);
+    FBStaticTopo const& topo, FBStaticModule const& staticModule,
+    FBTopoIndices const& topoIndices, int runtimeIndex, 
+    int runtimeParamStart, int runtimeGUIParamStart);
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeModule);
 };

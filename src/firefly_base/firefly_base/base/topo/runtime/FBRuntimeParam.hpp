@@ -6,6 +6,7 @@
 
 #include <string>
 
+struct FBStaticTopo;
 struct FBStaticModule;
 
 struct FBRuntimeParamBase
@@ -22,6 +23,7 @@ struct FBRuntimeParamBase
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParamBase);
   FBRuntimeParamBase(
+    FBStaticTopo const& topo,
     FBStaticModule const& staticModule,
     FBStaticParamBase const& staticParam,
     FBParamTopoIndices const& topoIndices,
@@ -37,6 +39,7 @@ public FBRuntimeParamBase
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeGUIParam);
   FBRuntimeGUIParam(
+    FBStaticTopo const& topo,
     FBStaticModule const& staticModule,
     FBStaticGUIParam const& staticParam,
     FBParamTopoIndices const& topoIndices,
@@ -52,6 +55,7 @@ public FBRuntimeParamBase
 
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
   FBRuntimeParam(
+    FBStaticTopo const& topo,
     FBStaticModule const& staticModule,
     FBStaticParam const& staticParam,
     FBParamTopoIndices const& topoIndices,

@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakeOscisGUI(FBPlugGUI* plugGUI);
+FFMakeVMixGUI(FBPlugGUI* plugGUI);

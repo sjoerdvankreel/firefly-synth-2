@@ -12,7 +12,7 @@ FBMakeStableHash(std::string const& id)
 }
 
 std::string
-FBMakeRuntimeGraphName(
+FBMakeRuntimeTabName(
   std::string const& name, int slotCount, int slot)
 {
   std::string result = name;
@@ -22,13 +22,29 @@ FBMakeRuntimeGraphName(
 }
 
 std::string
+FBMakeRuntimeGraphName(
+  std::string const& name, int slotCount, int slot)
+{
+  std::string result = name;
+  if (slotCount > 1)
+    result += std::to_string(slot + 1);
+  return result;
+}
+
+std::string
 FBMakeRuntimeShortName(
-  std::string const& name, int slotCount, 
-  int slot, FBParamSlotFormatter formatter)
+  FBStaticTopo const& topo, std::string const& name, 
+  int slotCount, int slot, 
+  FBParamSlotFormatter formatter, bool formatterOverrides)
 {
   std::string result = name;
   if (formatter)
-    result += " " + formatter(slot);
+  {
+    if (formatterOverrides)
+      result = formatter(topo, slot);
+    else
+      result += " " + formatter(topo, slot);
+  }
   else if (slotCount > 1)
     result += " " + std::to_string(slot + 1);
   return result;
@@ -36,10 +52,10 @@ FBMakeRuntimeShortName(
 
 std::string
 FBMakeRuntimeDisplayName(
-  std::string const& name, std::string const& display, 
-  int slotCount, int slot, FBParamSlotFormatter formatter)
+  FBStaticTopo const& topo, std::string const& name, std::string const& display,
+  int slotCount, int slot, FBParamSlotFormatter formatter, bool formatterOverrides)
 {
   if (!display.empty())
     return display;
-  return FBMakeRuntimeShortName(name, slotCount, slot, formatter);
+  return FBMakeRuntimeShortName(topo, name, slotCount, slot, formatter, formatterOverrides);
 }

@@ -1,3 +1,8 @@
+put "1/2/3/4" in front of the mixer matrix where it is not
+drop ktrk range
+exchange params to separate functions for effect
+softclip string 
+string timbre should not react to samplerate/oversample
 notify clap host if we steal a voice
 demo_pluckstring clicks ??
 paint something always
@@ -21,7 +26,6 @@ voice block start position (fake it by amp env?)
 not hardcode env1 to voice amp
 multitap fb delay
 rosetta is borked
-fix mac infoplist and the other thingy
 reaper voice off by disable plug not working
 retest voice stealing including clap return with > 64 voices
-clap + vst3 note expr + midi mpe + polymod + mark as done somewhere
+vst3 note expr + midi mpe

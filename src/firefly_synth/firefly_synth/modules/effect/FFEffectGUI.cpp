@@ -131,8 +131,8 @@ FFMakeEffectGUI(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   for (int i = 0; i < FFEffectCount; i++)
-    tabs->AddModuleTab({ (int)FFModuleType::VEffect, i }, MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
+    tabs->AddModuleTab(i != 0, { (int)FFModuleType::VEffect, i }, MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
   for (int i = 0; i < FFEffectCount; i++)
-    tabs->AddModuleTab({ (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
+    tabs->AddModuleTab(i != 0, { (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
   return tabs;
 }

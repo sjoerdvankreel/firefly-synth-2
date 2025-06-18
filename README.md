@@ -2,9 +2,9 @@
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
-* Only osci, inter-osci mod, string osci, per-voice fx, global fx and envelopes implemented.
-* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, MTS-ESP, no routing matrices (routing is hardcoded),
-even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
+* Only osci, inter-osci modulation, per-voice fx, global fx, envelopes and audio mixer matrix implemented.
+* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, MTS-ESP, no global audio routing (routing is hardcoded),
+no CV-routing, even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
 # Some demo material
 * Bowed strings
@@ -39,7 +39,7 @@ The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice 
 * Both the audio engine and the GUI keep a copy of the per-voice parameter state to allow accurate reconstruction of the engine state in graphs. Synced each host (not internal) block.
 * The actual audio engine state is now a dense buffer per-voice-per-parameter (for per voice params that are automatable/modulatable per sample).
 Not the most memory-efficient setup, but easily doable with 16 block size, and makes it really straightforward to do simd stuff.
-* Net result so far is something that's easily twice as fast (or less slow, if you will ;) and at the same time provides superior visualization.
+* Net result so far is something that's ballpark twice as fast (or less slow, if you will ;) and at the same time provides superior visualization.
 * I also took the opportunity to fix some other issues with FF1 that did not necessarily warrant a rewrite, but whatever. I got FM wrong (again) in FF1, hard-sync anything just doesn't work, and more.
 * And of course, the opportunity to improve upon existing stuff. Keyboard tracking comb filters, pitch modulatable karplus-strong, 
 continuous morphing white to pink to brown noise, looping envelopes, and more to come. See below for a more detailed overview of what's new and improved.
@@ -47,7 +47,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 # So whats the planning?
 * To finish it ;)
 * Instead of working in the dark for a year or more i figured, i have something that runs, let's build from here.
-* The idea is to do an alpha release per feature. New module (say echo, lfo), midi support, skin the gui, linux/mac, whatever.
+* The idea is to do an alpha release per feature. New module (say echo, lfo), midi support, skin the gui, whatever.
 * Untill the thing's finally KVR-ready, get it out of alpha, and add non-essential features from there.
 
 # Credits
@@ -78,27 +78,28 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 ## Osci
 * Note: it would be wise to set the osci mod matrix to oversample if you use either the dedicated FM generator or the inter-osci FM mods.
 * Comes with unison stereo spread, detune, phase offset, 2 new ones: voice blend and phase offset randomization (gets rid off the phasing effect).
-* For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
 * For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
+* For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
 * There are loads of new waveforms, see credits below. I stole a bunch of properly BLEP'ed algo's.
 These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
+* For "string" mode:
+  * Brought back the "frozen noise" from infernal synth.
+  * Continous white-to-pink-to-brown noise, uniform or gaussian.
+  * Comes with unison stereo spread, detune, voice blend (new unison param).
+  * Finally does proper pitch shifting. Accomplished by replacing circular buffer by fractional delay line.
+  * This one doubles as a noise osci and string osci. Turn the excite param all the way up for full-on noise.
+  * Don't know if this is still karplus-strong, or waveguides, or anywhere in between, or something else. It's different from the one in FF1 in any case.
+  * Also new, excite param controls how much new noise to feedback into the delay line (for bowed strings). Optional LPF/HPF for more control of the feedback loop.
 
 ## Osci mod matrix
-* Oversampling applies to all osci's (not string).
+* Oversampling applies to all osci's.
 * Inter-osci AM/RM/FM, with (new) exponential FM.
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
 * All modulations are still per-unison-voice. Make sure the mod source has at least as many uni voices as the target.
 * FF1 was actually doing "real" FM instead of PM. That bit me when i was doing feedback FM on the dedicated FM osci, and the pitch went down.
 
-## String osci
-* Brought back the "frozen noise" from infernal synth.
-* Continous white-to-pink-to-brown noise, uniform or gaussian.
-* Comes with unison stereo spread, detune, voice blend (new unison param).
-* Finally does proper pitch shifting. Accomplished by replacing circular buffer by fractional delay line.
-* This one doubles as a noise osci and string osci. Turn the excite param all the way up for full-on noise.
-* Don't know if this is still karplus-strong, or waveguides, or anywhere in between, or something else. It's different from the one in FF1 in any case.
-* Also new, excite param controls how much new noise to feedback into the delay line (for bowed strings). Optional LPF/HPF for more control of the feedback loop.
-* Separated out the string osci from the regular osci. The regular one is phase-based, this one is not. It does not participate in the osci mod matrix and it has less unison controls.
+## Voice audio mixer matrix (VMIX)
+* Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
 
 # Build it
 As always. Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release.

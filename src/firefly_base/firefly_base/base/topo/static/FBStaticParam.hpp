@@ -24,15 +24,16 @@ class FBGlobalAccParamState;
 class FBVoiceBlockParamState;
 class FBGlobalBlockParamState;
 
+struct FBStaticTopo;
 enum class FBAutomationTiming { Never, PerSample, AtVoiceStart };
 
 std::string
 FBAutomationTimingToString(FBAutomationTiming timing);
 
-typedef std::function<std::string(int slot)>
-FBParamSlotFormatter;
 typedef std::function<std::string(int moduleSlot, int paramSlot)>
 FBParamDefaultTextSelector;
+typedef std::function<std::string(FBStaticTopo const& topo, int slot)>
+FBParamSlotFormatter;
 
 typedef std::function<double* (
 int moduleSlot, int paramSlot, void* state)>
@@ -76,6 +77,7 @@ public:
   std::string unit = {};
   std::string display = {};
   std::string defaultText = {};
+  bool slotFormatterOverrides = {};
   FBParamType type = (FBParamType)-1;
   FBParamsDependencies dependencies = {};
   FBParamSlotFormatter slotFormatter = {};

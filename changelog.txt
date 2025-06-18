@@ -1,3 +1,10 @@
+June 18, 2025 - alpha 5.
+
+- Modules
+* Merged string osci into regular osci.
+* Added per-voice audio mixer matrix (no global yet, that's still fixed routing).
+* Known issue: segfaults on Linux+Bitwig+CLAP. This combination seems always difficult, i will not pursue it untill beta. (Linux+Reaper is good, Linux+Bitwig+VST3 is good).
+
 June 14, 2025 - alpha 4.
 
 - Core

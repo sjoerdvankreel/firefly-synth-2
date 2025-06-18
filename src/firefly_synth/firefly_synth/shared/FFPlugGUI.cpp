@@ -2,12 +2,10 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
+#include <firefly_synth/modules/vmix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
-#include <firefly_synth/modules/shared/FFOscisGUI.hpp>
-#include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
-#include <firefly_synth/modules/string_osci/FFStringOsciGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
@@ -124,10 +122,10 @@ FFPlugGUI::SetupGUI()
   _content->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
   _content->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
-  _content->Add(2, 0, 1, 3, FFMakeOscisGUI(this));
-  _content->Add(3, 0, 1, 3, FFMakeOsciModGUI(this));
-  _content->Add(4, 0, 1, 3, FFMakeEnvGUI(this));
-  _content->Add(5, 0, 1, 3, FFMakeEffectGUI(this));
+  _content->Add(2, 0, 1, 3, FFMakeOsciGUI(this));
+  _content->Add(3, 0, 1, 3, FFMakeEffectGUI(this));
+  _content->Add(4, 0, 1, 3, FFMakeVMixGUI(this));
+  _content->Add(5, 0, 1, 3, FFMakeEnvGUI(this));
   FB_LOG_INFO("Created GUI components.");
 
   FB_LOG_INFO("Making GUI visible.");

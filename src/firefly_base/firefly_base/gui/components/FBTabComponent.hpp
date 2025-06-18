@@ -8,11 +8,22 @@
 
 class FBPlugGUI;
 
+class FBTabBarButton:
+public juce::TabBarButton
+{
+public:
+  bool centerText;
+  FBTabBarButton(const juce::String& name, juce::TabbedButtonBar& bar);
+};
+
 class FBTabComponent:
 public juce::TabbedComponent
 {
 public:
   FBTabComponent();
+
+  juce::TabBarButton* 
+  createTabButton(const juce::String& tabName, int tabIndex) override;
 };
 
 class FBModuleTabComponent:
@@ -29,7 +40,8 @@ public:
     int height) const override;
 
   void AddModuleTab(
-    FBTopoIndices const& moduleIndices,
+    bool centerText, 
+    FBTopoIndices const& moduleIndices,    
     juce::Component* component);
 
   void currentTabChanged(

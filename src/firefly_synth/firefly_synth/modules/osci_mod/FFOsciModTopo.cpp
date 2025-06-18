@@ -1,10 +1,11 @@
 #include <firefly_synth/shared/FFTopoDetail.hpp>
-#include <firefly_synth/modules/shared/FFOscisGraph.hpp>
+#include <firefly_synth/modules/osci/FFOsciGraph.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
+#include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-std::string
-FFOsciModFormatSlot(int slot)
+static std::string
+FFOsciModFormatSlot(FBStaticTopo const&, int slot)
 {
   switch (slot)
   {
@@ -39,10 +40,12 @@ FFMakeOsciModTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "Osc Mod";
+  result->tabName = "MOD";
+  result->graphName = "MOD";
   result->slotCount = 1;
   result->graphCount = FFOsciCount;
-  result->graphCount = FFOsciCount + FFStringOsciCount;
-  result->graphRenderer = FFOscisRenderGraph;
+  result->graphCount = FFOsciCount;
+  result->graphRenderer = FFOsciRenderGraph;
   result->id = "{546F9D74-670A-463D-80B0-B4BBD061DA88}";
   result->params.resize((int)FFOsciModParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osciMod; });

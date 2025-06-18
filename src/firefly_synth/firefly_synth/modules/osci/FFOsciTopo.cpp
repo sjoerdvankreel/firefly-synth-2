@@ -1,11 +1,11 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
-#include <firefly_synth/modules/shared/FFOscisGraph.hpp>
+#include <firefly_synth/modules/osci/FFOsciGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FFOsciFMFormatRatioSlot(int slot)
+FFOsciFMFormatRatioSlot(FBStaticTopo const&, int slot)
 {
   switch (slot)
   {
@@ -31,7 +31,7 @@ FFOsciFMFormatRatioValue(int val)
 }
 
 static std::string
-FFOsciFMFormatIndexSlot(int slot)
+FFOsciFMFormatIndexSlot(FBStaticTopo const&, int slot)
 {
   FB_ASSERT(0 <= slot && slot < FFOsciFMMatrixSize);
   return std::to_string(slot / FFOsciFMOperatorCount + 1) + "\U00002192" + 
@@ -44,10 +44,11 @@ FFMakeOsciTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "Osc";
+  result->tabName = "OSC";
   result->graphName = "OSC";
   result->slotCount = FFOsciCount;
-  result->graphCount = FFOsciCount + FFStringOsciCount;
-  result->graphRenderer = FFOscisRenderGraph;
+  result->graphCount = FFOsciCount;
+  result->graphRenderer = FFOsciRenderGraph;
   result->id = "{73BABDF5-AF1C-436D-B3AD-3481FD1AB5D6}";
   result->params.resize((int)FFOsciParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.osci; });
@@ -64,7 +65,8 @@ FFMakeOsciTopo()
   type.List().items = {
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
     { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Wave" },
-    { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", "FM" } };
+    { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", "FM" } ,
+    { "{F4095D2B-688D-4A89-82FE-359A8902963C}", "String" } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
@@ -77,7 +79,10 @@ FFMakeOsciTopo()
   gain.slotCount = 1;
   gain.unit = "%";
   gain.id = "{211E04F8-2925-44BD-AA7C-9E8983F64AD5}";
-  gain.type = FBParamType::Identity;
+  gain.type = FBParamType::Linear;
+  gain.Linear().min = 0.0f;
+  gain.Linear().max = 2.0f;
+  gain.Linear().displayMultiplier = 100.0f;
   auto selectGain = [](auto& module) { return &module.acc.gain; };
   gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
@@ -125,7 +130,7 @@ FFMakeOsciTopo()
   uniCount.slotCount = 1;
   uniCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
   uniCount.type = FBParamType::Discrete;
-  uniCount.Discrete().valueCount = FFOsciBaseUniMaxCount;
+  uniCount.Discrete().valueCount = FFOsciUniMaxCount;
   uniCount.Discrete().valueOffset = 1;
   auto selectUniCount = [](auto& module) { return &module.block.uniCount; };
   uniCount.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniCount);
@@ -146,7 +151,7 @@ FFMakeOsciTopo()
   uniOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOffset);
-  uniOffset.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1; });
+  uniOffset.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1; });
 
   auto& uniRandom = result->params[(int)FFOsciParam::UniRandom];
   uniRandom.acc = false;
@@ -161,7 +166,7 @@ FFMakeOsciTopo()
   uniRandom.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniRandom);
-  uniRandom.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1; });
+  uniRandom.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1; });
 
   auto& uniDetune = result->params[(int)FFOsciParam::UniDetune];
   uniDetune.acc = true;
@@ -567,6 +572,336 @@ FFMakeOsciTopo()
   fmIndex.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFMIndex);
   fmIndex.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
   fmIndex.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
+
+  auto& stringMode = result->params[(int)FFOsciParam::StringMode];
+  stringMode.acc = false;
+  stringMode.defaultText = "Uni";
+  stringMode.name = "Mode";
+  stringMode.display = "Mod";
+  stringMode.slotCount = 1;
+  stringMode.id = "{83BC3F01-EF0B-4BAE-AA95-012E246C87B3}";
+  stringMode.type = FBParamType::List;
+  stringMode.List().items = {
+    { "{604E32C2-B3E9-4547-88B0-601F0D3AD055}", "Uni" },
+    { "{B462657B-B0FB-47B1-AACA-0DF284E655E9}", "Nrm" } };
+  auto selectStringMode = [](auto& module) { return &module.block.stringMode; };
+  stringMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringMode);
+  stringMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringMode);
+  stringMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringMode);
+  stringMode.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringSeed = result->params[(int)FFOsciParam::StringSeed];
+  stringSeed.acc = false;
+  stringSeed.defaultText = "0";
+  stringSeed.name = "Seed";
+  stringSeed.slotCount = 1;
+  stringSeed.id = "{D5715C38-3695-4572-B7C9-8B150FDC4EA5}";
+  stringSeed.type = FBParamType::Discrete;
+  stringSeed.Discrete().valueCount = FFOsciStringMaxSeed + 1;
+  auto selectStringSeed = [](auto& module) { return &module.block.stringSeed; };
+  stringSeed.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringSeed);
+  stringSeed.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringSeed);
+  stringSeed.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringSeed);
+  stringSeed.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringPoles = result->params[(int)FFOsciParam::StringPoles];
+  stringPoles.acc = false;
+  stringPoles.defaultText = "4";
+  stringPoles.name = "Quality";
+  stringPoles.display = "Qlty";
+  stringPoles.slotCount = 1;
+  stringPoles.id = "{D3DFC350-647B-4492-A783-1373780023C6}";
+  stringPoles.type = FBParamType::Discrete;
+  stringPoles.Discrete().valueOffset = 1;
+  stringPoles.Discrete().valueCount = FFOsciStringMaxPoles;
+  auto selectStringPoles = [](auto& module) { return &module.block.stringPoles; };
+  stringPoles.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringPoles);
+  stringPoles.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringPoles);
+  stringPoles.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringPoles);
+  stringPoles.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringColor = result->params[(int)FFOsciParam::StringColor];
+  stringColor.acc = true;
+  stringColor.defaultText = "0";
+  stringColor.name = "Color";
+  stringColor.slotCount = 1;
+  stringColor.unit = "%";
+  stringColor.id = "{FB9AC808-8A86-45A9-8A4E-E7E1B3A8D112}";
+  stringColor.type = FBParamType::Identity;
+  auto selectStringColor = [](auto& module) { return &module.acc.stringColor; };
+  stringColor.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringColor);
+  stringColor.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringColor);
+  stringColor.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringColor);
+  stringColor.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringX = result->params[(int)FFOsciParam::StringX];
+  stringX.acc = true;
+  stringX.defaultText = "100";
+  stringX.name = "X";
+  stringX.slotCount = 1;
+  stringX.unit = "%";
+  stringX.id = "{1000958E-9D9E-475B-8EB1-246939A378C9}";
+  stringX.type = FBParamType::Identity;
+  auto selectStringX = [](auto& module) { return &module.acc.stringX; };
+  stringX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringX);
+  stringX.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringX);
+  stringX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringX);
+  stringX.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringY = result->params[(int)FFOsciParam::StringY];
+  stringY.acc = true;
+  stringY.defaultText = "100";
+  stringY.name = "Y";
+  stringY.slotCount = 1;
+  stringY.unit = "%";
+  stringY.id = "{1443614F-CE58-4666-BCD4-DE0F349AFB3E}";
+  stringY.type = FBParamType::Identity;
+  auto selectStringY = [](auto& module) { return &module.acc.stringY; };
+  stringY.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringY);
+  stringY.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringY);
+  stringY.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringY);
+  stringY.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringExcite = result->params[(int)FFOsciParam::StringExcite];
+  stringExcite.acc = true;
+  stringExcite.defaultText = "0";
+  stringExcite.name = "Excite";
+  stringExcite.display = "Xcte";
+  stringExcite.slotCount = 1;
+  stringExcite.unit = "%";
+  stringExcite.id = "{02590DDB-B5B2-4FA6-94C5-8D0319450689}";
+  stringExcite.type = FBParamType::Log2;
+  stringExcite.Log2().displayMultiplier = 100.0f;
+  stringExcite.Log2().Init(-0.01f, 0.01f, 1.01f);
+  auto selectStringExcite = [](auto& module) { return &module.acc.stringExcite; };
+  stringExcite.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringExcite);
+  stringExcite.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringExcite);
+  stringExcite.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringExcite);
+  stringExcite.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringLPOn = result->params[(int)FFOsciParam::StringLPOn];
+  stringLPOn.acc = false;
+  stringLPOn.name = "LP On";
+  stringLPOn.display = "LP";
+  stringLPOn.slotCount = 1;
+  stringLPOn.defaultText = "Off";
+  stringLPOn.id = "{243E497E-2449-49BC-AA26-418743265570}";
+  stringLPOn.type = FBParamType::Boolean;
+  auto selectStringLPOn = [](auto& module) { return &module.block.stringLPOn; };
+  stringLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPOn);
+  stringLPOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringLPOn);
+  stringLPOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringLPOn);
+  stringLPOn.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringLPFreq = result->params[(int)FFOsciParam::StringLPFreq];
+  stringLPFreq.acc = true;
+  stringLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  stringLPFreq.name = "LP Freq";
+  stringLPFreq.display = "LP";
+  stringLPFreq.slotCount = 1;
+  stringLPFreq.unit = "Hz";
+  stringLPFreq.id = "{F8865388-AD37-4A9F-92DC-9AAB62BCF04E}";
+  stringLPFreq.type = FBParamType::Log2;
+  stringLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectStringLPFreq = [](auto& module) { return &module.acc.stringLPFreq; };
+  stringLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPFreq);
+  stringLPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringLPFreq);
+  stringLPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringLPFreq);
+  stringLPFreq.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
+
+  auto& stringLPRes = result->params[(int)FFOsciParam::StringLPRes];
+  stringLPRes.acc = true;
+  stringLPRes.defaultText = "0";
+  stringLPRes.name = "LP Res";
+  stringLPRes.display = "Res";
+  stringLPRes.slotCount = 1;
+  stringLPRes.unit = "%";
+  stringLPRes.id = "{A0FF6017-BF7D-446C-91E6-8893A696D2BA}";
+  stringLPRes.type = FBParamType::Identity;
+  auto selectStringLPRes = [](auto& module) { return &module.acc.stringLPRes; };
+  stringLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPRes);
+  stringLPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringLPRes);
+  stringLPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringLPRes);
+  stringLPRes.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
+
+  auto& stringLPKTrk = result->params[(int)FFOsciParam::StringLPKTrk];
+  stringLPKTrk.acc = true;
+  stringLPKTrk.defaultText = "0";
+  stringLPKTrk.name = "LP KeyTrk";
+  stringLPKTrk.display = "KTrk";
+  stringLPKTrk.slotCount = 1;
+  stringLPKTrk.unit = "%";
+  stringLPKTrk.id = "{C6EFCD36-256A-4F2C-B772-D5966460E893}";
+  stringLPKTrk.type = FBParamType::Linear;
+  stringLPKTrk.Linear().min = -2.0f;
+  stringLPKTrk.Linear().max = 2.0f;
+  stringLPKTrk.Linear().displayMultiplier = 100;
+  auto selectStringLPKeyTrk = [](auto& module) { return &module.acc.stringLPKTrk; };
+  stringLPKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringLPKeyTrk);
+  stringLPKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringLPKeyTrk);
+  stringLPKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringLPKeyTrk);
+  stringLPKTrk.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
+
+  auto& stringHPOn = result->params[(int)FFOsciParam::StringHPOn];
+  stringHPOn.acc = false;
+  stringHPOn.name = "HP On";
+  stringHPOn.display = "HP";
+  stringHPOn.slotCount = 1;
+  stringHPOn.defaultText = "Off";
+  stringHPOn.id = "{F03C6E50-01BB-4C61-9122-C6599C9D4CBA}";
+  stringHPOn.type = FBParamType::Boolean;
+  auto selectStringHPOn = [](auto& module) { return &module.block.stringHPOn; };
+  stringHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPOn);
+  stringHPOn.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringHPOn);
+  stringHPOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringHPOn);
+  stringHPOn.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringHPFreq = result->params[(int)FFOsciParam::StringHPFreq];
+  stringHPFreq.acc = true;
+  stringHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
+  stringHPFreq.name = "HP";
+  stringHPFreq.slotCount = 1;
+  stringHPFreq.unit = "Hz";
+  stringHPFreq.id = "{1753A4C9-BE63-4079-A875-59C35F3BC584}";
+  stringHPFreq.type = FBParamType::Log2;
+  stringHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectStringHPFreq = [](auto& module) { return &module.acc.stringHPFreq; };
+  stringHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPFreq);
+  stringHPFreq.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringHPFreq);
+  stringHPFreq.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringHPFreq);
+  stringHPFreq.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
+
+  auto& stringHPRes = result->params[(int)FFOsciParam::StringHPRes];
+  stringHPRes.acc = true;
+  stringHPRes.defaultText = "0";
+  stringHPRes.name = "HP Res";
+  stringHPRes.display = "Res";
+  stringHPRes.slotCount = 1;
+  stringHPRes.unit = "%";
+  stringHPRes.id = "{164AD99E-1C52-4302-8032-4E02F7A43224}";
+  stringHPRes.type = FBParamType::Identity;
+  auto selectStringHPRes = [](auto& module) { return &module.acc.stringHPRes; };
+  stringHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPRes);
+  stringHPRes.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringHPRes);
+  stringHPRes.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringHPRes);
+  stringHPRes.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
+
+  auto& stringHPKTrk = result->params[(int)FFOsciParam::StringHPKTrk];
+  stringHPKTrk.acc = true;
+  stringHPKTrk.defaultText = "0";
+  stringHPKTrk.name = "HP KeyTrk";
+  stringHPKTrk.display = "KTrk";
+  stringHPKTrk.slotCount = 1;
+  stringHPKTrk.unit = "%";
+  stringHPKTrk.id = "{61BA0D46-9BC3-496C-A004-671F3465142E}";
+  stringHPKTrk.type = FBParamType::Linear;
+  stringHPKTrk.Linear().min = -2.0f;
+  stringHPKTrk.Linear().max = 2.0f;
+  stringHPKTrk.Linear().displayMultiplier = 100;
+  auto selectStringHPKeyTrk = [](auto& module) { return &module.acc.stringHPKTrk; };
+  stringHPKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringHPKeyTrk);
+  stringHPKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringHPKeyTrk);
+  stringHPKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringHPKeyTrk);
+  stringHPKTrk.dependencies.enabled.audio.When({ (int)FFOsciParam::Type, (int)FFOsciParam::StringHPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
+
+  auto& stringDamp = result->params[(int)FFOsciParam::StringDamp];
+  stringDamp.acc = true;
+  stringDamp.defaultText = "67";
+  stringDamp.name = "Damp";
+  stringDamp.slotCount = 1;
+  stringDamp.unit = "%";
+  stringDamp.id = "{50FA6C2A-64FC-4B2B-BC64-55A8EA7472F4}";
+  stringDamp.type = FBParamType::Identity;
+  auto selectStringDamp = [](auto& module) { return &module.acc.stringDamp; };
+  stringDamp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringDamp);
+  stringDamp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringDamp);
+  stringDamp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringDamp);
+  stringDamp.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringDampKTrk = result->params[(int)FFOsciParam::StringDampKTrk];
+  stringDampKTrk.acc = true;
+  stringDampKTrk.defaultText = "0";
+  stringDampKTrk.name = "Damp KTrk";
+  stringDampKTrk.display = "KTrk";
+  stringDampKTrk.slotCount = 1;
+  stringDampKTrk.unit = "%";
+  stringDampKTrk.id = "{5B4F67F9-30E9-482C-922A-33F5CB7F5A1F}";
+  stringDampKTrk.type = FBParamType::Linear;
+  stringDampKTrk.Linear().min = -1.0f;
+  stringDampKTrk.Linear().max = 1.0f;
+  stringDampKTrk.Linear().displayMultiplier = 100;
+  auto selectStringDampKTrk = [](auto& module) { return &module.acc.stringDampKTrk; };
+  stringDampKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringDampKTrk);
+  stringDampKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringDampKTrk);
+  stringDampKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringDampKTrk);
+  stringDampKTrk.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringFeedback = result->params[(int)FFOsciParam::StringFeedback];
+  stringFeedback.acc = true;
+  stringFeedback.defaultText = "100";
+  stringFeedback.name = "Feedback";
+  stringFeedback.display = "Fdbk";
+  stringFeedback.slotCount = 1;
+  stringFeedback.unit = "%";
+  stringFeedback.id = "{280B9667-8DA5-4DD6-B7CD-695DF38AA857}";
+  stringFeedback.type = FBParamType::Identity;
+  auto selectStringFeedback = [](auto& module) { return &module.acc.stringFeedback; };
+  stringFeedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringFeedback);
+  stringFeedback.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringFeedback);
+  stringFeedback.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringFeedback);
+  stringFeedback.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringFeedbackKTrk = result->params[(int)FFOsciParam::StringFeedbackKTrk];
+  stringFeedbackKTrk.acc = true;
+  stringFeedbackKTrk.defaultText = "0";
+  stringFeedbackKTrk.name = "Feedback KTrk";
+  stringFeedbackKTrk.display = "KTrk";
+  stringFeedbackKTrk.slotCount = 1;
+  stringFeedbackKTrk.unit = "%";
+  stringFeedbackKTrk.id = "{239389B7-52BC-437F-909C-184621F69E79}";
+  stringFeedbackKTrk.type = FBParamType::Linear;
+  stringFeedbackKTrk.Linear().min = -1.0f;
+  stringFeedbackKTrk.Linear().max = 1.0f;
+  stringFeedbackKTrk.Linear().displayMultiplier = 100;
+  auto selectStringFeedbackKTrk = [](auto& module) { return &module.acc.stringFeedbackKTrk; };
+  stringFeedbackKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringFeedbackKTrk);
+  stringFeedbackKTrk.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringFeedbackKTrk);
+  stringFeedbackKTrk.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringFeedbackKTrk);
+  stringFeedbackKTrk.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringTrackingKey = result->params[(int)FFOsciParam::StringTrackingKey];
+  stringTrackingKey.acc = true;
+  stringTrackingKey.defaultText = "0";
+  stringTrackingKey.name = "Tracking Key";
+  stringTrackingKey.display = "Key";
+  stringTrackingKey.slotCount = 1;
+  stringTrackingKey.unit = "Semitones";
+  stringTrackingKey.id = "{469BF707-3F08-491B-95ED-F0C8DE75F8EA}";
+  stringTrackingKey.type = FBParamType::Linear;
+  stringTrackingKey.Linear().min = -64.0f;
+  stringTrackingKey.Linear().max = 64.0f;
+  auto selectStringTrackingKey = [](auto& module) { return &module.acc.stringTrackingKey; };
+  stringTrackingKey.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringTrackingKey);
+  stringTrackingKey.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringTrackingKey);
+  stringTrackingKey.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringTrackingKey);
+  stringTrackingKey.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
+
+  auto& stringTrackingRange = result->params[(int)FFOsciParam::StringTrackingRange];
+  stringTrackingRange.acc = true;
+  stringTrackingRange.defaultText = "24";
+  stringTrackingRange.name = "Tracking Range";
+  stringTrackingRange.display = "Range";
+  stringTrackingRange.slotCount = 1;
+  stringTrackingRange.unit = "Semitones";
+  stringTrackingRange.id = "{31FFFDCC-6A5A-4D46-8209-C9C4F2540870}";
+  stringTrackingRange.type = FBParamType::Linear;
+  stringTrackingRange.Linear().min = 12.0f;
+  stringTrackingRange.Linear().max = 128.0f;
+  auto selectStringTrackingRange = [](auto& module) { return &module.acc.stringTrackingRange; };
+  stringTrackingRange.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringTrackingRange);
+  stringTrackingRange.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringTrackingRange);
+  stringTrackingRange.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringTrackingRange);
+  stringTrackingRange.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   return result;
 }

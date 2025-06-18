@@ -8,12 +8,22 @@
 
 using namespace juce;
 
+FBTabBarButton::
+FBTabBarButton(const String& name, TabbedButtonBar& bar):
+TabBarButton(name, bar) {}
+
 FBTabComponent::
 FBTabComponent():
 TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
 {
   setTabBarDepth(20);
   setLookAndFeel(FBGetLookAndFeel());
+}
+
+TabBarButton*
+FBTabComponent::createTabButton(const juce::String& tabName, int /*tabIndex*/)
+{
+  return new FBTabBarButton(tabName, *tabs);
 }
 
 FBModuleTabComponent::
@@ -30,7 +40,9 @@ FBModuleTabComponent::FixedWidth(int height) const
 
 void
 FBModuleTabComponent::AddModuleTab(
-  FBTopoIndices const& moduleIndices, Component* component)
+  bool centerText, 
+  FBTopoIndices const& moduleIndices,
+  Component* component)
 {
   _moduleIndices.push_back(moduleIndices);
   auto topo = _plugGUI->HostContext()->Topo();
@@ -38,10 +50,12 @@ FBModuleTabComponent::AddModuleTab(
   std::string header = std::to_string(moduleIndices.slot + 1);
   if (moduleIndices.slot == 0)
     if (module.slotCount > 1)
-      header = " " + module.name + " " + header;
+      header = module.tabName + " " + header;
     else
-      header = " " + module.name;
+      header = module.tabName;
   addTab(header, Colours::black, component, false);
+  auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
+  dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
 }
 
 void

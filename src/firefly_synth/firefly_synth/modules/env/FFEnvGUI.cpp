@@ -96,6 +96,6 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   for (int i = 0; i < FFEnvCount; i++)
-    tabs->AddModuleTab({ (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i));
+    tabs->AddModuleTab(i != 0, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i));
   return tabs;
 }

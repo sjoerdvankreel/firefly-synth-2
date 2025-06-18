@@ -15,14 +15,15 @@ struct FBStaticModule;
 
 class alignas(FBSIMDAlign) FFOsciDSPState final
 {
+  friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  friend struct OscisGraphRenderData;
+  friend struct OsciGraphRenderData;
   std::unique_ptr<FFOsciProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciDSPState);
   FFOsciDSPState(): processor(std::make_unique<FFOsciProcessor>()) {}
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
-  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciBaseUniMaxCount> uniOutputOversampled = {};
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciUniMaxCount> uniOutputOversampled = {};
 };
 
 template <class TBlock>
@@ -44,6 +45,11 @@ class alignas(alignof(TBlock)) FFOsciBlockParamState final
   std::array<TBlock, 1> fmMode = {};
   std::array<TBlock, 1> fmRatioMode = {};
   std::array<TBlock, FFOsciFMOperatorCount - 1> fmRatioRatio = {};
+  std::array<TBlock, 1> stringMode = {};
+  std::array<TBlock, 1> stringLPOn = {};
+  std::array<TBlock, 1> stringHPOn = {};
+  std::array<TBlock, 1> stringSeed = {};
+  std::array<TBlock, 1> stringPoles = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciBlockParamState);
 };
@@ -68,6 +74,22 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
   std::array<TAccurate, FFOsciWaveBasicCount> waveBasicGain = {};
   std::array<TAccurate, FFOsciFMMatrixSize> fmIndex = {};
   std::array<TAccurate, FFOsciFMOperatorCount - 1> fmRatioFree = {};
+  std::array<TAccurate, 1> stringX = {};
+  std::array<TAccurate, 1> stringY = {};
+  std::array<TAccurate, 1> stringColor = {};
+  std::array<TAccurate, 1> stringExcite = {};
+  std::array<TAccurate, 1> stringLPRes = {};
+  std::array<TAccurate, 1> stringHPRes = {};
+  std::array<TAccurate, 1> stringLPFreq = {};
+  std::array<TAccurate, 1> stringHPFreq = {};
+  std::array<TAccurate, 1> stringLPKTrk = {};
+  std::array<TAccurate, 1> stringHPKTrk = {};
+  std::array<TAccurate, 1> stringDamp = {};
+  std::array<TAccurate, 1> stringDampKTrk = {};
+  std::array<TAccurate, 1> stringFeedback = {};
+  std::array<TAccurate, 1> stringFeedbackKTrk = {};
+  std::array<TAccurate, 1> stringTrackingKey = {};
+  std::array<TAccurate, 1> stringTrackingRange = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };

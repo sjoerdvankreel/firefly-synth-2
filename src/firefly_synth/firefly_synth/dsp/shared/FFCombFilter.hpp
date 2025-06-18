@@ -25,7 +25,7 @@ class alignas(FBSIMDAlign) FFCombFilter final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFCombFilter);
   void Reset();
-  void Resize(float sampleRate, float minFreq);
+  void InitializeBuffers(float sampleRate, float minFreq);
 
   template <bool PlusOn, bool MinOn>
   float Next(int channel, float in);
@@ -41,14 +41,14 @@ FFCombFilter<Channels>::Reset()
 {
   for (int c = 0; c < Channels; c++)
   {
-    this->_delayLinesMin[c].Reset();
-    this->_delayLinesPlus[c].Reset();
+    this->_delayLinesMin[c].Reset(this->_delayLinesMin[c].MaxBufferSize());
+    this->_delayLinesPlus[c].Reset(this->_delayLinesPlus[c].MaxBufferSize());
   }
 }
 
 template <int Channels>
 inline void
-FFCombFilter<Channels>::Resize(
+FFCombFilter<Channels>::InitializeBuffers(
   float sampleRate, float minFreq)
 {
   float maxSeconds = 1.0f / minFreq;
@@ -58,8 +58,8 @@ FFCombFilter<Channels>::Resize(
   FB_ASSERT(0 < maxSamples && maxSamples <= safetyCheck);
   for (int c = 0; c < Channels; c++)
   {
-    _delayLinesMin[c].Resize(maxSamples);
-    _delayLinesPlus[c].Resize(maxSamples);
+    _delayLinesMin[c].InitializeBuffers(maxSamples);
+    _delayLinesPlus[c].InitializeBuffers(maxSamples);
   }
 }
 
