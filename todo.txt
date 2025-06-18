@@ -1,6 +1,6 @@
 exchange params to separate functions for effect
 softclip string 
-kps samplerate should not react
+string timbre should not react to samplerate/oversample
 notify clap host if we steal a voice
 demo_pluckstring clicks ??
 paint something always
