@@ -1,3 +1,4 @@
+exchange params to separate functions for effect
 softclip string 
 kps samplerate should not react
 notify clap host if we steal a voice

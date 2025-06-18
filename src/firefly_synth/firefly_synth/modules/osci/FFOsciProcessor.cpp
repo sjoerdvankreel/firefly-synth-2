@@ -1113,11 +1113,184 @@ FFOsciProcessor::StringNext(
   return _stringUniState[uniVoice].lastDraw * scale;
 }
 
+void 
+FFOsciProcessor::BeginVoiceFM(
+  FBModuleProcState& state, 
+  FBSArray<float, FFOsciBaseUniMaxCount> const& uniPhaseInit)
+{
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+
+  auto const& fmModeNorm = params.block.fmMode[0].Voice()[voice];
+  auto const& fmRatioModeNorm = params.block.fmRatioMode[0].Voice()[voice];
+  auto const& fmRatioRatio12Norm = params.block.fmRatioRatio[0].Voice()[voice];
+  auto const& fmRatioRatio23Norm = params.block.fmRatioRatio[1].Voice()[voice];
+
+  _fmMode = topo.NormalizedToListFast<FFOsciFMMode>(FFOsciParam::FMMode, fmModeNorm);
+  _fmRatioMode = topo.NormalizedToListFast<FFOsciFMRatioMode>(FFOsciParam::FMRatioMode, fmRatioModeNorm);
+  _fmRatioRatio12 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio12Norm));
+  _fmRatioRatio23 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio23Norm));
+
+  _prevUniFMOutput.Fill(0.0f);
+  for (int o = 0; o < FFOsciFMOperatorCount; o++)
+    for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
+      _uniFMPhaseGens[o][u / FBSIMDFloatCount] = FFOsciFMPhaseGenerator(uniPhaseInit.Load(u));
+}
+
+void 
+FFOsciProcessor::BeginVoiceWave(
+  FBModuleProcState& state,
+  FBSArray<float, FFOsciBaseUniMaxCount> const& uniPhaseInit)
+{
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+
+  auto const& waveHSModeNorm = params.block.waveHSMode[0].Voice()[voice];
+  auto const& waveDSFBWNorm = params.block.waveDSFBW[0].Voice()[voice];
+  auto const& waveDSFModeNorm = params.block.waveDSFMode[0].Voice()[voice];
+  auto const& waveDSFOverNorm = params.block.waveDSFOver[0].Voice()[voice];
+  auto const& waveDSFDistanceNorm = params.block.waveDSFDistance[0].Voice()[voice];
+
+  _waveHSMode = topo.NormalizedToListFast<FFOsciWaveHSMode>(FFOsciParam::WaveHSMode, waveHSModeNorm);
+  _waveDSFBWPlain = topo.NormalizedToLog2Fast(FFOsciParam::WaveDSFBW, waveDSFBWNorm);
+  _waveDSFMode = topo.NormalizedToListFast<FFOsciWaveDSFMode>(FFOsciParam::WaveDSFMode, waveDSFModeNorm);
+  _waveDSFOver = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFOver, waveDSFOverNorm));
+  _waveDSFDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFDistance, waveDSFDistanceNorm));
+
+  for (int i = 0; i < FFOsciWavePWCount; i++)
+  {
+    auto const& wavePWModeNorm = params.block.wavePWMode[i].Voice()[voice];
+    _wavePWMode[i] = topo.NormalizedToListFast<FFOsciWavePWMode>(FFOsciParam::WavePWMode, wavePWModeNorm);
+  }
+  for (int i = 0; i < FFOsciWaveBasicCount; i++)
+  {
+    auto const& waveBasicModeNorm = params.block.waveBasicMode[i].Voice()[voice];
+    _waveBasicMode[i] = topo.NormalizedToListFast<FFOsciWaveBasicMode>(FFOsciParam::WaveBasicMode, waveBasicModeNorm);
+  }
+  for (int u = 0; u < _uniCount; u++)
+  {
+    _uniWavePhaseGens[u] = FFOsciWavePhaseGenerator(uniPhaseInit.Get(u));
+  }
+}
+
+void 
+FFOsciProcessor::BeginVoiceString(bool graph, FBModuleProcState& state)
+{
+  int voice = state.voice->slot;
+  float sampleRate = state.input->sampleRate;
+  float oversampledRate = sampleRate * _oversampleTimes;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+
+  auto const& fineNorm = params.acc.fine[0].Voice()[voice];
+  auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
+  auto const& uniDetuneNorm = params.acc.uniDetune[0].Voice()[voice];
+
+  float finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
+  float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
+  float uniDetunePlain = topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm.CV().Get(0));
+
+  auto const& stringLPOnNorm = params.block.stringLPOn[0].Voice()[voice];
+  auto const& stringHPOnNorm = params.block.stringHPOn[0].Voice()[voice];
+  auto const& stringModeNorm = params.block.stringMode[0].Voice()[voice];
+  auto const& stringSeedNorm = params.block.stringSeed[0].Voice()[voice];
+  auto const& stringPolesNorm = params.block.stringPoles[0].Voice()[voice];
+
+  auto const& stringXNorm = params.acc.stringX[0].Voice()[voice];
+  auto const& stringYNorm = params.acc.stringY[0].Voice()[voice];
+  auto const& stringLPResNorm = params.acc.stringLPRes[0].Voice()[voice];
+  auto const& stringHPResNorm = params.acc.stringHPRes[0].Voice()[voice];
+  auto const& stringLPFreqNorm = params.acc.stringLPFreq[0].Voice()[voice];
+  auto const& stringHPFreqNorm = params.acc.stringHPFreq[0].Voice()[voice];
+  auto const& stringLPKTrkNorm = params.acc.stringLPKTrk[0].Voice()[voice];
+  auto const& stringHPKTrkNorm = params.acc.stringHPKTrk[0].Voice()[voice];
+  auto const& stringColorNorm = params.acc.stringColor[0].Voice()[voice];
+  auto const& stringExciteNorm = params.acc.stringExcite[0].Voice()[voice];
+  auto const& stringTrackingKeyNorm = params.acc.stringTrackingKey[0].Voice()[voice];
+
+  _stringGraphPosition = 0;
+  _stringGraphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
+    graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
+
+  _stringLPOn = topo.NormalizedToBoolFast(FFOsciParam::StringLPOn, stringLPOnNorm);
+  _stringHPOn = topo.NormalizedToBoolFast(FFOsciParam::StringHPOn, stringHPOnNorm);
+  _stringSeed = topo.NormalizedToDiscreteFast(FFOsciParam::StringSeed, stringSeedNorm);
+  _stringPoles = topo.NormalizedToDiscreteFast(FFOsciParam::StringPoles, stringPolesNorm);
+  _stringMode = topo.NormalizedToListFast<FFOsciStringMode>(FFOsciParam::StringMode, stringModeNorm);
+
+  float stringLPResPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringLPRes, stringLPResNorm.CV().Get(0));
+  float stringHPResPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringHPRes, stringHPResNorm.CV().Get(0));
+  float stringLPFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::StringLPFreq, stringLPFreqNorm.CV().Get(0));
+  float stringHPFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::StringHPFreq, stringHPFreqNorm.CV().Get(0));
+  float stringLPKTrkPlain = topo.NormalizedToLinearFast(FFOsciParam::StringLPKTrk, stringLPKTrkNorm.CV().Get(0));
+  float stringHPKTrkPlain = topo.NormalizedToLinearFast(FFOsciParam::StringHPKTrk, stringHPKTrkNorm.CV().Get(0));
+  float stringXPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringX, stringXNorm.CV().Get(0));
+  float stringYPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringY, stringYNorm.CV().Get(0));
+  float stringExcitePlain = topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm.CV().Get(0));
+  float stringColorPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringColor, stringColorNorm.CV().Get(0));
+  float stringTrackingKeyPlain = topo.NormalizedToLinearFast(FFOsciParam::StringTrackingKey, stringTrackingKeyNorm.CV().Get(0));
+
+  _stringLPFilter.Reset();
+  _stringHPFilter.Reset();
+  _stringNormalPrng = FFMarsagliaPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
+  _uniformPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
+
+  if (_stringLPOn)
+  {
+    stringLPFreqPlain = MultiplyClamp(stringLPFreqPlain,
+      KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, stringLPKTrkPlain),
+      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+    stringLPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
+    _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
+  }
+
+  if (_stringHPOn)
+  {
+    stringHPFreqPlain = MultiplyClamp(stringHPFreqPlain,
+      KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, -stringHPKTrkPlain),
+      FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+    stringHPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
+    _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
+  }
+
+  int delayLineSize = static_cast<int>(std::ceil(oversampledRate / StringMinFreq));
+  for (int u = 0; u < _uniCount; u++)
+  {
+    _stringUniState[u].phaseGen = {};
+    _stringUniState[u].lastDraw = 0.0f;
+    _stringUniState[u].prevDelayVal = 0.0f;
+    _stringUniState[u].phaseTowardsX = 0.0f;
+    _stringUniState[u].colorFilterPosition = 0;
+    _stringUniState[u].dcFilter.SetCoeffs(StringDCBlockFreq, oversampledRate);
+    _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
+
+    for (int p = 0; p < _stringPoles; p++)
+      _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
+
+    float basePitch = _key + coarsePlain + finePlain;
+    float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain;
+    float uniFreq = FBPitchToFreq(uniPitch);
+    for (int i = 0; i < delayLineSize; i++)
+    {
+      double dNextVal = StringNext(u, oversampledRate, uniFreq, stringExcitePlain, stringColorPlain, stringXPlain, stringYPlain);
+      if (_stringHPOn)
+        dNextVal = _stringHPFilter.Next(u, dNextVal);
+      if (_stringLPOn)
+        dNextVal = _stringLPFilter.Next(u, dNextVal);
+      _stringUniState[u].delayLine.Push(static_cast<float>(dNextVal));
+    }
+  }
+}
+
 void
 FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 {
   int voice = state.voice->slot;
-  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
@@ -1142,7 +1315,6 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
   _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
-  float oversampledRate = sampleRate * _oversampleTimes;
 
   _uniCount = topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm);
   _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
@@ -1179,189 +1351,347 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   }
 
   if (_type == FFOsciType::Wave)
-  {
-    auto const& waveHSModeNorm = params.block.waveHSMode[0].Voice()[voice];
-    auto const& waveDSFBWNorm = params.block.waveDSFBW[0].Voice()[voice];
-    auto const& waveDSFModeNorm = params.block.waveDSFMode[0].Voice()[voice];
-    auto const& waveDSFOverNorm = params.block.waveDSFOver[0].Voice()[voice];
-    auto const& waveDSFDistanceNorm = params.block.waveDSFDistance[0].Voice()[voice];
-
-    _waveHSMode = topo.NormalizedToListFast<FFOsciWaveHSMode>(FFOsciParam::WaveHSMode, waveHSModeNorm);
-    _waveDSFBWPlain = topo.NormalizedToLog2Fast(FFOsciParam::WaveDSFBW, waveDSFBWNorm);
-    _waveDSFMode = topo.NormalizedToListFast<FFOsciWaveDSFMode>(FFOsciParam::WaveDSFMode, waveDSFModeNorm);
-    _waveDSFOver = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFOver, waveDSFOverNorm));
-    _waveDSFDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFDistance, waveDSFDistanceNorm));
-
-    for (int i = 0; i < FFOsciWavePWCount; i++)
-    {
-      auto const& wavePWModeNorm = params.block.wavePWMode[i].Voice()[voice];
-      _wavePWMode[i] = topo.NormalizedToListFast<FFOsciWavePWMode>(FFOsciParam::WavePWMode, wavePWModeNorm);
-    }
-    for (int i = 0; i < FFOsciWaveBasicCount; i++)
-    {
-      auto const& waveBasicModeNorm = params.block.waveBasicMode[i].Voice()[voice];
-      _waveBasicMode[i] = topo.NormalizedToListFast<FFOsciWaveBasicMode>(FFOsciParam::WaveBasicMode, waveBasicModeNorm);
-    }
-    for (int u = 0; u < _uniCount; u++)
-    {
-      _uniWavePhaseGens[u] = FFOsciWavePhaseGenerator(uniPhaseInit.Get(u));
-    }
-  }
+    BeginVoiceWave(state, uniPhaseInit);
   else if (_type == FFOsciType::FM)
-  {
-    auto const& fmModeNorm = params.block.fmMode[0].Voice()[voice];
-    auto const& fmRatioModeNorm = params.block.fmRatioMode[0].Voice()[voice];
-    auto const& fmRatioRatio12Norm = params.block.fmRatioRatio[0].Voice()[voice];
-    auto const& fmRatioRatio23Norm = params.block.fmRatioRatio[1].Voice()[voice];
-
-    _fmMode = topo.NormalizedToListFast<FFOsciFMMode>(FFOsciParam::FMMode, fmModeNorm);
-    _fmRatioMode = topo.NormalizedToListFast<FFOsciFMRatioMode>(FFOsciParam::FMRatioMode, fmRatioModeNorm);
-    _fmRatioRatio12 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio12Norm));
-    _fmRatioRatio23 = FMRatioRatio(topo.NormalizedToDiscreteFast(FFOsciParam::FMRatioRatio, fmRatioRatio23Norm));
-
-    _prevUniFMOutput.Fill(0.0f);
-    for (int o = 0; o < FFOsciFMOperatorCount; o++)
-      for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
-        _uniFMPhaseGens[o][u / FBSIMDFloatCount] = FFOsciFMPhaseGenerator(uniPhaseInit.Load(u));
-  }
+    BeginVoiceFM(state, uniPhaseInit);
   else if (_type == FFOsciType::String)
-  {
-    auto const& fineNorm = params.acc.fine[0].Voice()[voice];
-    auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
-    auto const& uniDetuneNorm = params.acc.uniDetune[0].Voice()[voice];
-
-    float finePlain = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm.CV().Get(0));
-    float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
-    float uniDetunePlain = topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm.CV().Get(0));
-
-    auto const& stringLPOnNorm = params.block.stringLPOn[0].Voice()[voice];
-    auto const& stringHPOnNorm = params.block.stringHPOn[0].Voice()[voice];
-    auto const& stringModeNorm = params.block.stringMode[0].Voice()[voice];
-    auto const& stringSeedNorm = params.block.stringSeed[0].Voice()[voice];
-    auto const& stringPolesNorm = params.block.stringPoles[0].Voice()[voice];
-
-    auto const& stringXNorm = params.acc.stringX[0].Voice()[voice];
-    auto const& stringYNorm = params.acc.stringY[0].Voice()[voice];
-    auto const& stringLPResNorm = params.acc.stringLPRes[0].Voice()[voice];
-    auto const& stringHPResNorm = params.acc.stringHPRes[0].Voice()[voice];
-    auto const& stringLPFreqNorm = params.acc.stringLPFreq[0].Voice()[voice];
-    auto const& stringHPFreqNorm = params.acc.stringHPFreq[0].Voice()[voice];
-    auto const& stringLPKTrkNorm = params.acc.stringLPKTrk[0].Voice()[voice];
-    auto const& stringHPKTrkNorm = params.acc.stringHPKTrk[0].Voice()[voice];
-    auto const& stringColorNorm = params.acc.stringColor[0].Voice()[voice];
-    auto const& stringExciteNorm = params.acc.stringExcite[0].Voice()[voice];
-    auto const& stringTrackingKeyNorm = params.acc.stringTrackingKey[0].Voice()[voice];
-
-    _stringGraphPosition = 0;
-    _stringGraphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(
-      graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
-
-    _stringLPOn = topo.NormalizedToBoolFast(FFOsciParam::StringLPOn, stringLPOnNorm);
-    _stringHPOn = topo.NormalizedToBoolFast(FFOsciParam::StringHPOn, stringHPOnNorm);
-    _stringSeed = topo.NormalizedToDiscreteFast(FFOsciParam::StringSeed, stringSeedNorm);
-    _stringPoles = topo.NormalizedToDiscreteFast(FFOsciParam::StringPoles, stringPolesNorm);
-    _stringMode = topo.NormalizedToListFast<FFOsciStringMode>(FFOsciParam::StringMode, stringModeNorm);
-
-    float stringLPResPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringLPRes, stringLPResNorm.CV().Get(0));
-    float stringHPResPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringHPRes, stringHPResNorm.CV().Get(0));
-    float stringLPFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::StringLPFreq, stringLPFreqNorm.CV().Get(0));
-    float stringHPFreqPlain = topo.NormalizedToLog2Fast(FFOsciParam::StringHPFreq, stringHPFreqNorm.CV().Get(0));
-    float stringLPKTrkPlain = topo.NormalizedToLinearFast(FFOsciParam::StringLPKTrk, stringLPKTrkNorm.CV().Get(0));
-    float stringHPKTrkPlain = topo.NormalizedToLinearFast(FFOsciParam::StringHPKTrk, stringHPKTrkNorm.CV().Get(0));
-    float stringXPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringX, stringXNorm.CV().Get(0));
-    float stringYPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringY, stringYNorm.CV().Get(0));
-    float stringExcitePlain = topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm.CV().Get(0));
-    float stringColorPlain = topo.NormalizedToIdentityFast(FFOsciParam::StringColor, stringColorNorm.CV().Get(0));
-    float stringTrackingKeyPlain = topo.NormalizedToLinearFast(FFOsciParam::StringTrackingKey, stringTrackingKeyNorm.CV().Get(0));
-
-    _stringLPFilter.Reset();
-    _stringHPFilter.Reset();
-    _stringNormalPrng = FFMarsagliaPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
-    _uniformPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
-
-    if (_stringLPOn)
-    {
-      stringLPFreqPlain = MultiplyClamp(stringLPFreqPlain,
-        KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, stringLPKTrkPlain),
-        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-      stringLPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
-      _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, stringLPFreqPlain, stringLPResPlain, 0.0f);
-    }
-
-    if (_stringHPOn)
-    {
-      stringHPFreqPlain = MultiplyClamp(stringHPFreqPlain,
-        KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, -stringHPKTrkPlain),
-        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-      stringHPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
-      _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, stringHPFreqPlain, stringHPResPlain, 0.0f);
-    }
-
-    int delayLineSize = static_cast<int>(std::ceil(oversampledRate / StringMinFreq));
-    for (int u = 0; u < _uniCount; u++)
-    {
-      _stringUniState[u].phaseGen = {};
-      _stringUniState[u].lastDraw = 0.0f;
-      _stringUniState[u].prevDelayVal = 0.0f;
-      _stringUniState[u].phaseTowardsX = 0.0f;
-      _stringUniState[u].colorFilterPosition = 0;
-      _stringUniState[u].dcFilter.SetCoeffs(StringDCBlockFreq, oversampledRate);
-      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
-
-      for (int p = 0; p < _stringPoles; p++)
-        _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
-
-      float basePitch = _key + coarsePlain + finePlain;
-      float uniPitch = basePitch + _uniPosMHalfToHalf.Get(u) * uniDetunePlain;
-      float uniFreq = FBPitchToFreq(uniPitch);
-      for (int i = 0; i < delayLineSize; i++)
-      {
-        double dNextVal = StringNext(u, oversampledRate, uniFreq, stringExcitePlain, stringColorPlain, stringXPlain, stringYPlain);
-        if (_stringHPOn)
-          dNextVal = _stringHPFilter.Next(u, dNextVal);
-        if (_stringLPOn)
-          dNextVal = _stringLPFilter.Next(u, dNextVal);
-        _stringUniState[u].delayLine.Push(static_cast<float>(dNextVal));
-      }
-    }
-  }
+    BeginVoiceString(graph, state);
   else
-  {
     FB_ASSERT(false);
-  }
 }
 
-int
-FFOsciProcessor::Process(FBModuleProcState& state)
+void 
+FFOsciProcessor::ProcessFM(
+  FBModuleProcState& state,
+  FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
+  FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-  auto& voiceState = procState->dsp.voice[voice];
-  auto& output = voiceState.osci[state.moduleSlot].output;
-  auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
-
-  output.Fill(0.0f);
-  uniOutputOversampled.Fill(0.0f);
-  if (_type == FFOsciType::Off)
-    return 0;
-
   float sampleRate = state.input->sampleRate;
   float oversampledRate = sampleRate * _oversampleTimes;
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
-  int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
+  auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
-  auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
-  auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
-  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
-  auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
-  auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
-  auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
+
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    for (int m = 0; m < FFOsciFMMatrixSize; m++)
+    {
+      auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
+      fmIndexPlain[m].Store(s, topo.NormalizedToLog2Fast(FFOsciParam::FMIndex, fmIndexNorm, s));
+    }
+    if (_fmRatioMode == FFOsciFMRatioMode::Ratio)
+    {
+      fmRatioPlain[0].Store(s, _fmRatioRatio12);
+      fmRatioPlain[1].Store(s, _fmRatioRatio23);
+    }
+    else
+    {
+      for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
+      {
+        auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
+        fmRatioPlain[o].Store(s, topo.NormalizedToLog2Fast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, s));
+      }
+    }
+  }
+  if (_oversampleTimes != 1)
+  {
+    for (int m = 0; m < FFOsciFMMatrixSize; m++)
+      fmIndexPlain[m].UpsampleStretch<FFOsciOversampleTimes>();
+    for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
+      fmRatioPlain[o].UpsampleStretch<FFOsciOversampleTimes>();
+  }
+
+  float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
+  for (int s = 0; s < totalSamples; s++)
+  {
+    for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
+    {
+      int block = u / FBSIMDFloatCount;
+      auto uniPosMHalfToHalf = _uniPosMHalfToHalf.Load(u);
+
+      FBBatch<float> matrixFMMod(0.0f);
+      for (int src = 0; src < state.moduleSlot; src++)
+        if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
+        {
+          int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+          float thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Get(s);
+          matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Get(s);
+        }
+
+      FBBatch<float> op3UniPitch = basePitchPlain.Get(s) + uniPosMHalfToHalf * uniDetunePlain.Get(s);
+      op3UniPitch += matrixFMMod * op3UniPitch * applyModMatrixExpoFM;
+      auto op3UniFreq = FBPitchToFreq(op3UniPitch);
+      
+      FBBatch<float> op1UniPhase;
+      FBBatch<float> fmTo1 = 0.0f;
+      fmTo1 += fmIndexPlain[0].Get(s) * _prevUniFMOutput[0].Load(u);
+      fmTo1 += fmIndexPlain[3].Get(s) * _prevUniFMOutput[1].Load(u);
+      fmTo1 += fmIndexPlain[6].Get(s) * _prevUniFMOutput[2].Load(u);
+      if (_fmMode == FFOsciFMMode::Exp)
+      {
+        auto op1UniPitch = op3UniPitch / fmRatioPlain[1].Get(s) / fmRatioPlain[0].Get(s);
+        op1UniPitch += op1UniPitch * fmTo1;
+        auto op1UniFreq = FBPitchToFreq(op1UniPitch);
+        op1UniPhase = _uniFMPhaseGens[0][block].Next(op1UniFreq / oversampledRate, 0.0f);
+      }
+      else
+      {
+        auto op1UniFreq = op3UniFreq / fmRatioPlain[1].Get(s) / fmRatioPlain[0].Get(s);
+        op1UniPhase = _uniFMPhaseGens[0][block].Next(op1UniFreq / oversampledRate, fmTo1);
+      }
+      auto output1 = xsimd::sin(op1UniPhase * FBTwoPi);
+
+      FBBatch<float> op2UniPhase;
+      FBBatch<float> fmTo2 = 0.0f;
+      fmTo2 += fmIndexPlain[1].Get(s) * output1;
+      fmTo2 += fmIndexPlain[4].Get(s) * _prevUniFMOutput[1].Load(u);
+      fmTo2 += fmIndexPlain[7].Get(s) * _prevUniFMOutput[2].Load(u);
+      if (_fmMode == FFOsciFMMode::Exp)
+      {
+        auto op2UniPitch = op3UniPitch / fmRatioPlain[1].Get(s);
+        op2UniPitch += op2UniPitch * fmTo2;
+        auto op2UniFreq = FBPitchToFreq(op2UniPitch);
+        op2UniPhase = _uniFMPhaseGens[1][block].Next(op2UniFreq / oversampledRate, 0.0f);
+      }
+      else
+      {
+        auto op2UniFreq = op3UniFreq / fmRatioPlain[1].Get(s);
+        op2UniPhase = _uniFMPhaseGens[1][block].Next(op2UniFreq / oversampledRate, fmTo2);
+      }
+      auto output2 = xsimd::sin(op2UniPhase * FBTwoPi);
+
+      FBBatch<float> op3UniPhase;
+      FBBatch<float> fmTo3 = 0.0f;
+      fmTo3 += fmIndexPlain[2].Get(s) * output1;
+      fmTo3 += fmIndexPlain[5].Get(s) * output2;
+      fmTo3 += fmIndexPlain[8].Get(s) * _prevUniFMOutput[2].Load(u);
+      if (_fmMode == FFOsciFMMode::Exp)
+      {
+        op3UniPitch += op3UniPitch * fmTo3;
+        op3UniFreq = FBPitchToFreq(op3UniPitch);
+        op3UniPhase = _uniFMPhaseGens[2][block].Next(op3UniFreq / oversampledRate, 0.0f);
+      }
+      else
+      {
+        op3UniPhase = _uniFMPhaseGens[2][block].Next(op3UniFreq / oversampledRate, fmTo3 + matrixFMMod);
+      }
+      auto output3 = xsimd::sin(op3UniPhase * FBTwoPi);
+
+      _prevUniFMOutput[0].Store(u, output1);
+      _prevUniFMOutput[1].Store(u, output2);
+      _prevUniFMOutput[2].Store(u, output3);
+
+      FBSArray<float, FBSIMDFloatCount> outputArray;
+      outputArray.Store(0, output3);
+      for (int v = 0; v < FBSIMDFloatCount; v++)
+        uniOutputOversampled[u + v].Set(s, outputArray.Get(v));
+    }
+  }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+  auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
+  for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
+  {
+    auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
+    exchangeParams.acc.fmRatioFree[o][voice] = fmRatioFreeNorm.Last();
+  }
+  for (int m = 0; m < FFOsciFMMatrixSize; m++)
+  {
+    auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
+    exchangeParams.acc.fmIndex[m][voice] = fmIndexNorm.Last();
+  }
+}
+
+void 
+FFOsciProcessor::ProcessWave(
+  FBModuleProcState& state,
+  FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
+  FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
+{
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  float sampleRate = state.input->sampleRate;
+  float oversampledRate = sampleRate * _oversampleTimes;
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  auto& voiceState = procState->dsp.voice[voice];
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
+
   auto const& waveHSGainNorm = procParams.acc.waveHSGain[0].Voice()[voice];
   auto const& waveHSSyncNorm = procParams.acc.waveHSSync[0].Voice()[voice];
   auto const& waveDSFGainNorm = procParams.acc.waveDSFGain[0].Voice()[voice];
   auto const& waveDSFDecayNorm = procParams.acc.waveDSFDecay[0].Voice()[voice];
+
+  FBSArray<float, FFOsciFixedBlockOversamples> waveHSGainPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> waveHSSyncPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> waveDSFGainPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> waveDSFDecayPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWPWPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWGainPlain;
+  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveBasicCount> waveBasicGainPlain;
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    for (int i = 0; i < FFOsciWaveBasicCount; i++)
+      if (_waveBasicMode[i] != FFOsciWaveBasicMode::Off)
+      {
+        auto const& waveBasicGainNorm = procParams.acc.waveBasicGain[i].Voice()[voice];
+        waveBasicGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveBasicGain, waveBasicGainNorm, s));
+      }
+    for (int i = 0; i < FFOsciWavePWCount; i++)
+      if (_wavePWMode[i] != FFOsciWavePWMode::Off)
+      {
+        auto const& wavePWPWNorm = procParams.acc.wavePWPW[i].Voice()[voice];
+        auto const& wavePWGainNorm = procParams.acc.wavePWGain[i].Voice()[voice];
+        wavePWPWPlain[i].Store(s, topo.NormalizedToIdentityFast(FFOsciParam::WavePWPW, wavePWPWNorm, s));
+        wavePWGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::WavePWGain, wavePWGainNorm, s));
+      }
+    if (_waveHSMode != FFOsciWaveHSMode::Off)
+    {
+      waveHSGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSGain, waveHSGainNorm, s));
+      waveHSSyncPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSSync, waveHSSyncNorm, s));
+    }
+    if (_waveDSFMode != FFOsciWaveDSFMode::Off)
+    {
+      waveDSFGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveDSFGain, waveDSFGainNorm, s));
+      waveDSFDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::WaveDSFDecay, waveDSFDecayNorm, s));
+    }    
+  }
+  if (_oversampleTimes != 1)
+  {  
+    for (int i = 0; i < FFOsciWaveBasicCount; i++)
+      if (_waveBasicMode[i] != FFOsciWaveBasicMode::Off)
+        waveBasicGainPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
+    for (int i = 0; i < FFOsciWavePWCount; i++)
+      if (_wavePWMode[i] != FFOsciWavePWMode::Off)
+      {
+        wavePWPWPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
+        wavePWGainPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
+      }
+    if (_waveHSMode != FFOsciWaveHSMode::Off)
+    {
+      waveHSGainPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      waveHSSyncPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    }
+    if (_waveDSFMode != FFOsciWaveDSFMode::Off)
+    {
+      waveDSFGainPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      waveDSFDecayPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    }
+  }
+
+  float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
+  float applyModMatrixLinearFM = _modMatrixExpoFM ? 0.0f : 1.0f;
+  for (int u = 0; u < _uniCount; u++)
+  {
+    float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
+    for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
+    {
+      FBBatch<float> matrixFMMod(0.0f);
+      for (int src = 0; src < state.moduleSlot; src++)
+        if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
+        {
+          int modSlot = OsciModStartSlot(state.moduleSlot) + src;
+          auto const& thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Load(s);
+          matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Load(s);
+        }
+
+      auto uniPitch = basePitchPlain.Load(s);
+      uniPitch += uniPosMHalfToHalf * uniDetunePlain.Load(s);
+      uniPitch += matrixFMMod * uniPitch * applyModMatrixExpoFM;
+      auto uniFreq = FBPitchToFreq(uniPitch);
+      auto uniIncr = uniFreq / oversampledRate;
+      auto uniPhase = _uniWavePhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
+
+      FBBatch<float> thisUniOutput = 0.0f;
+      for (int i = 0; i < FFOsciWaveBasicCount; i++)
+        if (_waveBasicMode[i] != FFOsciWaveBasicMode::Off)
+        {
+          auto waveBasicGain = waveBasicGainPlain[i].Load(s);
+          thisUniOutput += GenerateWaveBasic(_waveBasicMode[i], uniPhase, uniIncr) * waveBasicGain;
+        }
+      for (int i = 0; i < FFOsciWavePWCount; i++)
+        if (_wavePWMode[i] != FFOsciWavePWMode::Off)
+        {
+          auto wavePWPW = wavePWPWPlain[i].Load(s);
+          auto wavePWGain = wavePWGainPlain[i].Load(s);
+          wavePWPW = (MinPW + (1.0f - 2.0f * MinPW) * wavePWPW) * 0.5f;
+          thisUniOutput += GenerateWavePW(_wavePWMode[i], uniPhase, uniIncr, wavePWPW) * wavePWGain;
+        }
+      if (_waveHSMode != FFOsciWaveHSMode::Off)
+      {
+        auto waveHSGain = waveHSGainPlain.Load(s);
+        auto waveHSSync = waveHSSyncPlain.Load(s);
+        auto uniSyncFreq = FBPitchToFreq(uniPitch + waveHSSync);
+        auto uniSyncFreqRatio = uniSyncFreq / uniFreq;
+        thisUniOutput += GenerateWaveHS(_waveHSMode, uniPhase, uniIncr, uniSyncFreqRatio) * waveHSGain;
+      }
+      if (_waveDSFMode != FFOsciWaveDSFMode::Off)
+      {
+        auto waveDSFGain = waveDSFGainPlain.Load(s);
+        auto waveDSFDecay = waveDSFDecayPlain.Load(s);
+        auto distFreq = _waveDSFDistance * uniFreq;
+        auto maxOvertones = xsimd::max(FBBatch<float>(0.0f), (sampleRate * 0.5f - uniFreq) / distFreq);
+        if (_waveDSFMode == FFOsciWaveDSFMode::Over)
+          thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFOver) * waveDSFGain;
+        else if (_waveDSFMode == FFOsciWaveDSFMode::BW)
+          thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFBWPlain) * waveDSFGain;
+        else
+          FB_ASSERT(false);
+      }
+      uniOutputOversampled[u].Store(s, thisUniOutput);
+      for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
+        FB_ASSERT(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
+    }
+  }  
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+  auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
+  exchangeParams.acc.waveHSGain[0][voice] = waveHSGainNorm.Last();
+  exchangeParams.acc.waveHSSync[0][voice] = waveHSSyncNorm.Last();
+  exchangeParams.acc.waveDSFGain[0][voice] = waveDSFGainNorm.Last();
+  exchangeParams.acc.waveDSFDecay[0][voice] = waveDSFDecayNorm.Last();
+  for (int i = 0; i < FFOsciWaveBasicCount; i++)
+  {
+    auto const& waveBasicGainNorm = procParams.acc.waveBasicGain[i].Voice()[voice];
+    exchangeParams.acc.waveBasicGain[i][voice] = waveBasicGainNorm.Last();
+  }
+  for (int i = 0; i < FFOsciWavePWCount; i++)
+  {
+    auto const& wavePWPWNorm = procParams.acc.wavePWPW[i].Voice()[voice];
+    auto const& wavePWGainNorm = procParams.acc.wavePWGain[i].Voice()[voice];
+    exchangeParams.acc.wavePWPW[i][voice] = wavePWPWNorm.Last();
+    exchangeParams.acc.wavePWGain[i][voice] = wavePWGainNorm.Last();
+  }
+}
+
+void 
+FFOsciProcessor::ProcessString(
+  FBModuleProcState& state,
+  FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
+  FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain)
+{
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  float sampleRate = state.input->sampleRate;
+  float oversampledRate = sampleRate * _oversampleTimes;
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  auto& voiceState = procState->dsp.voice[voice];
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
+
   auto const& stringLPResNorm = procParams.acc.stringLPRes[0].Voice()[voice];
   auto const& stringHPResNorm = procParams.acc.stringHPRes[0].Voice()[voice];
   auto const& stringLPFreqNorm = procParams.acc.stringLPFreq[0].Voice()[voice];
@@ -1379,21 +1709,6 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& stringFeedbackNorm = procParams.acc.stringFeedback[0].Voice()[voice];
   auto const& stringFeedbackKTrkNorm = procParams.acc.stringFeedbackKTrk[0].Voice()[voice];
 
-  FBSArray<float, FFOsciFixedBlockOversamples> gainPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> waveHSGainPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> waveHSSyncPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> waveDSFGainPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> waveDSFDecayPlain;
-  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWPWPlain;
-  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWGainPlain;
-  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWaveBasicCount> waveBasicGainPlain;
-  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;
-  FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMOperatorCount - 1> fmRatioPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> stringXPlain = {};
   FBSArray<float, FFOsciFixedBlockOversamples> stringYPlain = {};
   FBSArray<float, FFOsciFixedBlockOversamples> stringLPResPlain = {};
@@ -1412,6 +1727,192 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   FBSArray<float, FFOsciFixedBlockOversamples> stringTrackingRangePlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
+    if (_stringLPOn)
+    {
+      stringLPResPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringLPRes, stringLPResNorm, s));
+      stringLPFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringLPFreq, stringLPFreqNorm, s));
+      stringLPKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringLPKTrk, stringLPKTrkNorm, s));
+    }
+
+    if (_stringHPOn)
+    {
+      stringHPResPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringHPRes, stringHPResNorm, s));
+      stringHPFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringHPFreq, stringHPFreqNorm, s));
+      stringHPKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringHPKTrk, stringHPKTrkNorm, s));
+    }
+
+    stringXPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringX, stringXNorm, s));
+    stringYPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringY, stringYNorm, s));
+    stringDampPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringDamp, stringDampNorm, s));
+    stringColorPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringColor, stringColorNorm, s));
+    stringExcitePlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm, s));
+    stringTrackingRangePlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringTrackingRange, stringTrackingRangeNorm, s));
+    stringTrackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringTrackingKey, stringTrackingKeyNorm, s));
+    stringFeedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringFeedback, stringFeedbackNorm, s));
+    stringDampKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringDampKTrk, stringDampKTrkNorm, s));
+    stringFeedbackKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringFeedbackKTrk, stringFeedbackKTrkNorm, s));
+  }
+  if (_oversampleTimes != 1)
+  {
+    if (_stringLPOn)
+    {
+      stringLPResPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringLPFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringLPKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    }
+
+    if (_stringHPOn)
+    {
+      stringHPResPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringHPFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      stringHPKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    }
+
+    stringXPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringYPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringDampPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringColorPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringExcitePlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringTrackingRangePlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringTrackingKeyPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringFeedbackPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringDampKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
+    stringFeedbackKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
+  }
+
+  for (int s = 0; s < totalSamples; s++)
+  {
+    float x = stringXPlain.Get(s);
+    float y = stringYPlain.Get(s);
+    float damp = stringDampPlain.Get(s);
+    float trackingKey = stringTrackingKeyPlain.Get(s);
+    float trackingRange = stringTrackingRangePlain.Get(s);
+    float color = stringColorPlain.Get(s);
+    float excite = stringExcitePlain.Get(s);
+    float feedback = stringFeedbackPlain.Get(s);
+    float basePitch = basePitchPlain.Get(s);
+    float dampKTrk = stringDampKTrkPlain.Get(s);
+    float uniDetune = uniDetunePlain.Get(s);
+    float centerPitch = 60.0f + trackingKey;
+    float feedbackKTrk = stringFeedbackKTrkPlain.Get(s);
+    float pitchDiffSemis = _key - centerPitch;
+    float pitchDiffNorm = std::clamp(pitchDiffSemis / trackingRange, -1.0f, 1.0f);
+    damp = std::clamp(damp - 0.5f * dampKTrk * pitchDiffNorm, 0.0f, 1.0f);
+    feedback = std::clamp(feedback + 0.5f * feedbackKTrk * pitchDiffNorm, 0.0f, 1.0f);
+    float realFeedback = 0.9f + 0.1f * feedback;
+
+    if (_stringLPOn)
+    {
+      float lpRes = stringLPResPlain.Get(s);
+      float lpFreq = stringLPFreqPlain.Get(s);
+      float lpKTrk = stringLPKTrkPlain.Get(s);
+      lpFreq = MultiplyClamp(lpFreq,
+        KeyboardTrackingMultiplier(_key, trackingKey, lpKTrk),
+        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+      lpFreq *= _stringGraphStVarFilterFreqMultiplier;
+      _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, lpFreq, lpRes, 0.0f);
+    }
+
+    if (_stringHPOn)
+    {
+      float hpRes = stringHPResPlain.Get(s);
+      float hpFreq = stringHPFreqPlain.Get(s);
+      float hpKTrk = stringHPKTrkPlain.Get(s);
+      hpFreq = MultiplyClamp(hpFreq,
+        KeyboardTrackingMultiplier(_key, trackingKey, -hpKTrk),
+        FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+      hpFreq *= _stringGraphStVarFilterFreqMultiplier;
+      _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, hpFreq, hpRes, 0.0f);
+    }
+
+    for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
+    {
+      auto uniPitchBatch = basePitch + _uniPosMHalfToHalf.Load(ub) * uniDetune;
+      auto uniFreqBatch = FBPitchToFreq(uniPitchBatch);
+      FBSArray<float, FBSIMDFloatCount> uniFreqArray(uniFreqBatch);
+      for (int u = ub; u < ub + FBSIMDFloatCount && u < _uniCount; u++)
+      {
+        float uniFreq = uniFreqArray.Get(u - ub);
+        _stringUniState[u].delayLine.Delay(oversampledRate / uniFreq);
+        float thisVal = _stringUniState[u].delayLine.Pop();
+        float prevVal = _stringUniState[u].prevDelayVal;
+        float newVal = (1.0f - damp) * thisVal + damp * (prevVal + thisVal) * 0.5f;
+        float outVal = _stringUniState[u].dcFilter.Next(newVal);
+        newVal *= realFeedback;
+        _stringUniState[u].prevDelayVal = newVal;
+
+        double dNextVal = StringNext(u, oversampledRate, uniFreq, excite, color, x, y);
+        if (_stringHPOn)
+          dNextVal = _stringHPFilter.Next(u, dNextVal);
+        if (_stringLPOn)
+          dNextVal = _stringLPFilter.Next(u, dNextVal);
+
+        float nextVal = static_cast<float>(dNextVal);
+        newVal = (1.0f - excite) * newVal + excite * nextVal;
+        _stringUniState[u].delayLine.Push(newVal);
+        uniOutputOversampled[u].Set(s, outVal);
+      }
+    }
+    _stringGraphPosition++;
+  }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+  auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
+  exchangeParams.acc.stringX[0][voice] = stringXNorm.Last();
+  exchangeParams.acc.stringY[0][voice] = stringYNorm.Last();
+  exchangeParams.acc.stringLPRes[0][voice] = stringLPResNorm.Last();
+  exchangeParams.acc.stringHPRes[0][voice] = stringHPResNorm.Last();
+  exchangeParams.acc.stringLPFreq[0][voice] = stringLPFreqNorm.Last();
+  exchangeParams.acc.stringHPFreq[0][voice] = stringHPFreqNorm.Last();
+  exchangeParams.acc.stringLPKTrk[0][voice] = stringLPKTrkNorm.Last();
+  exchangeParams.acc.stringHPKTrk[0][voice] = stringHPKTrkNorm.Last();
+  exchangeParams.acc.stringExcite[0][voice] = stringExciteNorm.Last();
+  exchangeParams.acc.stringDamp[0][voice] = stringDampNorm.Last();
+  exchangeParams.acc.stringDampKTrk[0][voice] = stringDampKTrkNorm.Last();
+  exchangeParams.acc.stringTrackingRange[0][voice] = stringTrackingRangeNorm.Last();
+  exchangeParams.acc.stringTrackingKey[0][voice] = stringTrackingKeyNorm.Last();
+  exchangeParams.acc.stringFeedback[0][voice] = stringFeedbackNorm.Last();
+  exchangeParams.acc.stringFeedbackKTrk[0][voice] = stringFeedbackKTrkNorm.Last();
+  exchangeParams.acc.stringColor[0][voice] = stringColorNorm.Last();
+}
+
+int
+FFOsciProcessor::Process(FBModuleProcState& state)
+{
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& voiceState = procState->dsp.voice[voice];
+  auto& output = voiceState.osci[state.moduleSlot].output;
+  auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
+
+  output.Fill(0.0f);
+  uniOutputOversampled.Fill(0.0f);
+  if (_type == FFOsciType::Off)
+    return 0;
+
+  float sampleRate = state.input->sampleRate;
+  int totalSamples = FBFixedBlockSamples * _oversampleTimes;
+  auto const& procParams = procState->param.voice.osci[state.moduleSlot];
+  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
+
+  auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
+  auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
+  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
+  auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
+  auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
+  auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
+
+  FBSArray<float, FFOsciFixedBlockOversamples> gainPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNorm, s);
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto pitch = _key + coarse + fine;
@@ -1424,393 +1925,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
     uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));
-
-    if (_type == FFOsciType::Wave)
-    {
-      for (int i = 0; i < FFOsciWaveBasicCount; i++)
-        if (_waveBasicMode[i] != FFOsciWaveBasicMode::Off)
-        {
-          auto const& waveBasicGainNorm = procParams.acc.waveBasicGain[i].Voice()[voice];
-          waveBasicGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveBasicGain, waveBasicGainNorm, s));
-        }
-      for (int i = 0; i < FFOsciWavePWCount; i++)
-        if (_wavePWMode[i] != FFOsciWavePWMode::Off)
-        {
-          auto const& wavePWPWNorm = procParams.acc.wavePWPW[i].Voice()[voice];
-          auto const& wavePWGainNorm = procParams.acc.wavePWGain[i].Voice()[voice];
-          wavePWPWPlain[i].Store(s, topo.NormalizedToIdentityFast(FFOsciParam::WavePWPW, wavePWPWNorm, s));
-          wavePWGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFOsciParam::WavePWGain, wavePWGainNorm, s));
-        }
-      if (_waveHSMode != FFOsciWaveHSMode::Off)
-      {
-        waveHSGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSGain, waveHSGainNorm, s));
-        waveHSSyncPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSSync, waveHSSyncNorm, s));
-      }
-      if (_waveDSFMode != FFOsciWaveDSFMode::Off)
-      {
-        waveDSFGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveDSFGain, waveDSFGainNorm, s));
-        waveDSFDecayPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::WaveDSFDecay, waveDSFDecayNorm, s));
-      }
-    }
-    else if (_type == FFOsciType::FM)
-    {
-      for (int m = 0; m < FFOsciFMMatrixSize; m++)
-      {
-        auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
-        fmIndexPlain[m].Store(s, topo.NormalizedToLog2Fast(FFOsciParam::FMIndex, fmIndexNorm, s));
-      }
-      if (_fmRatioMode == FFOsciFMRatioMode::Ratio)
-      {
-        fmRatioPlain[0].Store(s, _fmRatioRatio12);
-        fmRatioPlain[1].Store(s, _fmRatioRatio23);
-      }
-      else
-      {
-        for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
-        {
-          auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
-          fmRatioPlain[o].Store(s, topo.NormalizedToLog2Fast(FFOsciParam::FMRatioFree, fmRatioFreeNorm, s));
-        }
-      }
-    }
-    else if(_type == FFOsciType::String)
-    {
-      if (_stringLPOn)
-      {
-        stringLPResPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringLPRes, stringLPResNorm, s));
-        stringLPFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringLPFreq, stringLPFreqNorm, s));
-        stringLPKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringLPKTrk, stringLPKTrkNorm, s));
-      }
-
-      if (_stringHPOn)
-      {
-        stringHPResPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringHPRes, stringHPResNorm, s));
-        stringHPFreqPlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringHPFreq, stringHPFreqNorm, s));
-        stringHPKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringHPKTrk, stringHPKTrkNorm, s));
-      }
-
-      stringXPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringX, stringXNorm, s));
-      stringYPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringY, stringYNorm, s));
-      stringDampPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringDamp, stringDampNorm, s));
-      stringColorPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringColor, stringColorNorm, s));
-      stringExcitePlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm, s));
-      stringTrackingRangePlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringTrackingRange, stringTrackingRangeNorm, s));
-      stringTrackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringTrackingKey, stringTrackingKeyNorm, s));
-      stringFeedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringFeedback, stringFeedbackNorm, s));
-      stringDampKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringDampKTrk, stringDampKTrkNorm, s));
-      stringFeedbackKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringFeedbackKTrk, stringFeedbackKTrkNorm, s));
-    }
-    else
-    {
-      FB_ASSERT(false);
-    }
   }
   if (_oversampleTimes != 1)
   {
     uniDetunePlain.UpsampleStretch<FFOsciOversampleTimes>();
     baseFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
     basePitchPlain.UpsampleStretch<FFOsciOversampleTimes>();
-    if (_type == FFOsciType::Wave)
-    {
-      for (int i = 0; i < FFOsciWaveBasicCount; i++)
-        if (_waveBasicMode[i] != FFOsciWaveBasicMode::Off)
-          waveBasicGainPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
-      for (int i = 0; i < FFOsciWavePWCount; i++)
-        if (_wavePWMode[i] != FFOsciWavePWMode::Off)
-        {
-          wavePWPWPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
-          wavePWGainPlain[i].UpsampleStretch<FFOsciOversampleTimes>();
-        }
-      if (_waveHSMode != FFOsciWaveHSMode::Off)
-      {
-        waveHSGainPlain.UpsampleStretch<FFOsciOversampleTimes>();
-        waveHSSyncPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      }
-      if (_waveDSFMode != FFOsciWaveDSFMode::Off)
-      {
-        waveDSFGainPlain.UpsampleStretch<FFOsciOversampleTimes>();
-        waveDSFDecayPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      }
-    }
-    else if (_type == FFOsciType::FM)
-    {
-      for (int m = 0; m < FFOsciFMMatrixSize; m++)
-        fmIndexPlain[m].UpsampleStretch<FFOsciOversampleTimes>();
-      for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
-        fmRatioPlain[o].UpsampleStretch<FFOsciOversampleTimes>();
-    }
-    else if (_type == FFOsciType::String)
-    {
-      if (_stringLPOn)
-      {
-        stringLPResPlain.UpsampleStretch<FFOsciOversampleTimes>();
-        stringLPFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
-        stringLPKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      }
-
-      if (_stringHPOn)
-      {
-        stringHPResPlain.UpsampleStretch<FFOsciOversampleTimes>();
-        stringHPFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
-        stringHPKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      }
-
-      stringXPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringYPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringDampPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringColorPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringExcitePlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringTrackingRangePlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringTrackingKeyPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringFeedbackPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringDampKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      stringFeedbackKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
-    }
-    else
-    {
-      FB_ASSERT(false);
-    }
-  }
-
-  float applyModMatrixExpoFM = _modMatrixExpoFM ? 1.0f : 0.0f;
-  float applyModMatrixLinearFM = _modMatrixExpoFM ? 0.0f : 1.0f;
-  if (_type == FFOsciType::Wave)
-  {
-    for (int u = 0; u < _uniCount; u++)
-    {
-      float uniPosMHalfToHalf = _uniPosMHalfToHalf.Get(u);
-      for (int s = 0; s < totalSamples; s += FBSIMDFloatCount)
-      {
-        FBBatch<float> matrixFMMod(0.0f);
-        for (int src = 0; src < state.moduleSlot; src++)
-          if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
-          {
-            int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-            auto const& thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Load(s);
-            matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Load(s);
-          }
-
-        auto uniPitch = basePitchPlain.Load(s);
-        uniPitch += uniPosMHalfToHalf * uniDetunePlain.Load(s);
-        uniPitch += matrixFMMod * uniPitch * applyModMatrixExpoFM;
-
-        auto uniFreq = FBPitchToFreq(uniPitch);
-        auto uniIncr = uniFreq / oversampledRate;
-        auto uniPhase = _uniWavePhaseGens[u].Next(uniIncr, matrixFMMod * applyModMatrixLinearFM);
-
-        FBBatch<float> thisUniOutput = 0.0f;
-        for (int i = 0; i < FFOsciWaveBasicCount; i++)
-          if (_waveBasicMode[i] != FFOsciWaveBasicMode::Off)
-          {
-            auto waveBasicGain = waveBasicGainPlain[i].Load(s);
-            thisUniOutput += GenerateWaveBasic(_waveBasicMode[i], uniPhase, uniIncr) * waveBasicGain;
-          }
-        for (int i = 0; i < FFOsciWavePWCount; i++)
-          if (_wavePWMode[i] != FFOsciWavePWMode::Off)
-          {
-            auto wavePWPW = wavePWPWPlain[i].Load(s);
-            auto wavePWGain = wavePWGainPlain[i].Load(s);
-            wavePWPW = (MinPW + (1.0f - 2.0f * MinPW) * wavePWPW) * 0.5f;
-            thisUniOutput += GenerateWavePW(_wavePWMode[i], uniPhase, uniIncr, wavePWPW) * wavePWGain;
-          }
-        if (_waveHSMode != FFOsciWaveHSMode::Off)
-        {
-          auto waveHSGain = waveHSGainPlain.Load(s);
-          auto waveHSSync = waveHSSyncPlain.Load(s);
-          auto uniSyncFreq = FBPitchToFreq(uniPitch + waveHSSync);
-          auto uniSyncFreqRatio = uniSyncFreq / uniFreq;
-          thisUniOutput += GenerateWaveHS(_waveHSMode, uniPhase, uniIncr, uniSyncFreqRatio) * waveHSGain;
-        }
-        if (_waveDSFMode != FFOsciWaveDSFMode::Off)
-        {
-          auto waveDSFGain = waveDSFGainPlain.Load(s);
-          auto waveDSFDecay = waveDSFDecayPlain.Load(s);
-          auto distFreq = _waveDSFDistance * uniFreq;
-          auto maxOvertones = xsimd::max(FBBatch<float>(0.0f), (sampleRate * 0.5f - uniFreq) / distFreq);
-          if (_waveDSFMode == FFOsciWaveDSFMode::Over)
-            thisUniOutput += GenerateDSFOvertones(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFOver) * waveDSFGain;
-          else if (_waveDSFMode == FFOsciWaveDSFMode::BW)
-            thisUniOutput += GenerateDSFBandwidth(uniPhase, uniFreq, waveDSFDecay, distFreq, maxOvertones, _waveDSFBWPlain) * waveDSFGain;
-          else
-            FB_ASSERT(false);
-        }
-        uniOutputOversampled[u].Store(s, thisUniOutput);
-        for (int s2 = 0; s2 < FBSIMDFloatCount; s2++)
-          FB_ASSERT(!std::isnan(uniOutputOversampled[u].Get(s + s2)));
-      }
-    }
-  } else if (_type == FFOsciType::FM)
-  {
-    for (int s = 0; s < totalSamples; s++)
-    {
-      for (int u = 0; u < _uniCount; u += FBSIMDFloatCount)
-      {
-        int block = u / FBSIMDFloatCount;
-        auto uniPosMHalfToHalf = _uniPosMHalfToHalf.Load(u);
-
-        FBBatch<float> matrixFMMod(0.0f);
-        for (int src = 0; src < state.moduleSlot; src++)
-          if (_modSourceFMOn[src] && _modSourceUniCount[src] > u)
-          {
-            int modSlot = OsciModStartSlot(state.moduleSlot) + src;
-            float thatUniOutput = voiceState.osci[src].uniOutputOversampled[u].Get(s);
-            matrixFMMod += thatUniOutput * voiceState.osciMod.outputFMIndex[modSlot].Get(s);
-          }
-
-        FBBatch<float> op3UniPitch = basePitchPlain.Get(s) + uniPosMHalfToHalf * uniDetunePlain.Get(s);
-        op3UniPitch += matrixFMMod * op3UniPitch * applyModMatrixExpoFM;
-        auto op3UniFreq = FBPitchToFreq(op3UniPitch);
-
-        FBBatch<float> op1UniPhase;
-        FBBatch<float> fmTo1 = 0.0f;
-        fmTo1 += fmIndexPlain[0].Get(s) * _prevUniFMOutput[0].Load(u);
-        fmTo1 += fmIndexPlain[3].Get(s) * _prevUniFMOutput[1].Load(u);
-        fmTo1 += fmIndexPlain[6].Get(s) * _prevUniFMOutput[2].Load(u);
-        if (_fmMode == FFOsciFMMode::Exp)
-        {
-          auto op1UniPitch = op3UniPitch / fmRatioPlain[1].Get(s) / fmRatioPlain[0].Get(s);
-          op1UniPitch += op1UniPitch * fmTo1;
-          auto op1UniFreq = FBPitchToFreq(op1UniPitch);
-          op1UniPhase = _uniFMPhaseGens[0][block].Next(op1UniFreq / oversampledRate, 0.0f);
-        }
-        else
-        {
-          auto op1UniFreq = op3UniFreq / fmRatioPlain[1].Get(s) / fmRatioPlain[0].Get(s);
-          op1UniPhase = _uniFMPhaseGens[0][block].Next(op1UniFreq / oversampledRate, fmTo1);
-        }
-        auto output1 = xsimd::sin(op1UniPhase * FBTwoPi);
-
-        FBBatch<float> op2UniPhase;
-        FBBatch<float> fmTo2 = 0.0f;
-        fmTo2 += fmIndexPlain[1].Get(s) * output1;
-        fmTo2 += fmIndexPlain[4].Get(s) * _prevUniFMOutput[1].Load(u);
-        fmTo2 += fmIndexPlain[7].Get(s) * _prevUniFMOutput[2].Load(u);
-        if (_fmMode == FFOsciFMMode::Exp)
-        {
-          auto op2UniPitch = op3UniPitch / fmRatioPlain[1].Get(s);
-          op2UniPitch += op2UniPitch * fmTo2;
-          auto op2UniFreq = FBPitchToFreq(op2UniPitch);
-          op2UniPhase = _uniFMPhaseGens[1][block].Next(op2UniFreq / oversampledRate, 0.0f);
-        }
-        else
-        {
-          auto op2UniFreq = op3UniFreq / fmRatioPlain[1].Get(s);
-          op2UniPhase = _uniFMPhaseGens[1][block].Next(op2UniFreq / oversampledRate, fmTo2);
-        }
-        auto output2 = xsimd::sin(op2UniPhase * FBTwoPi);
-
-        FBBatch<float> op3UniPhase;
-        FBBatch<float> fmTo3 = 0.0f;
-        fmTo3 += fmIndexPlain[2].Get(s) * output1;
-        fmTo3 += fmIndexPlain[5].Get(s) * output2;
-        fmTo3 += fmIndexPlain[8].Get(s) * _prevUniFMOutput[2].Load(u);
-        if (_fmMode == FFOsciFMMode::Exp)
-        {
-          op3UniPitch += op3UniPitch * fmTo3;
-          op3UniFreq = FBPitchToFreq(op3UniPitch);
-          op3UniPhase = _uniFMPhaseGens[2][block].Next(op3UniFreq / oversampledRate, 0.0f);
-        }
-        else
-        {
-          op3UniPhase = _uniFMPhaseGens[2][block].Next(op3UniFreq / oversampledRate, fmTo3 + matrixFMMod);
-        }
-        auto output3 = xsimd::sin(op3UniPhase * FBTwoPi);
-
-        _prevUniFMOutput[0].Store(u, output1);
-        _prevUniFMOutput[1].Store(u, output2);
-        _prevUniFMOutput[2].Store(u, output3);
-
-        FBSArray<float, FBSIMDFloatCount> outputArray;
-        outputArray.Store(0, output3);
-        for (int v = 0; v < FBSIMDFloatCount; v++)
-          uniOutputOversampled[u + v].Set(s, outputArray.Get(v));
-      }
-    }
-  }
-  else if (_type == FFOsciType::String)
-  {
-    for (int s = 0; s < totalSamples; s++)
-    {
-      float x = stringXPlain.Get(s);
-      float y = stringYPlain.Get(s);
-      float damp = stringDampPlain.Get(s);
-      float trackingKey = stringTrackingKeyPlain.Get(s);
-      float trackingRange = stringTrackingRangePlain.Get(s);
-      float color = stringColorPlain.Get(s);
-      float excite = stringExcitePlain.Get(s);
-      float feedback = stringFeedbackPlain.Get(s);
-      float basePitch = basePitchPlain.Get(s);
-      float dampKTrk = stringDampKTrkPlain.Get(s);
-      float uniDetune = uniDetunePlain.Get(s);
-      float centerPitch = 60.0f + trackingKey;
-      float feedbackKTrk = stringFeedbackKTrkPlain.Get(s);
-
-      float pitchDiffSemis = _key - centerPitch;
-      float pitchDiffNorm = std::clamp(pitchDiffSemis / trackingRange, -1.0f, 1.0f);
-      damp = std::clamp(damp - 0.5f * dampKTrk * pitchDiffNorm, 0.0f, 1.0f);
-      feedback = std::clamp(feedback + 0.5f * feedbackKTrk * pitchDiffNorm, 0.0f, 1.0f);
-      float realFeedback = 0.9f + 0.1f * feedback;
-
-      if (_stringLPOn)
-      {
-        float lpRes = stringLPResPlain.Get(s);
-        float lpFreq = stringLPFreqPlain.Get(s);
-        float lpKTrk = stringLPKTrkPlain.Get(s);
-        lpFreq = MultiplyClamp(lpFreq,
-          KeyboardTrackingMultiplier(_key, trackingKey, lpKTrk),
-          FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-        lpFreq *= _stringGraphStVarFilterFreqMultiplier;
-        _stringLPFilter.Set(FFStateVariableFilterMode::LPF, oversampledRate, lpFreq, lpRes, 0.0f);
-      }
-
-      if (_stringHPOn)
-      {
-        float hpRes = stringHPResPlain.Get(s);
-        float hpFreq = stringHPFreqPlain.Get(s);
-        float hpKTrk = stringHPKTrkPlain.Get(s);
-        hpFreq = MultiplyClamp(hpFreq,
-          KeyboardTrackingMultiplier(_key, trackingKey, -hpKTrk),
-          FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-        hpFreq *= _stringGraphStVarFilterFreqMultiplier;
-        _stringHPFilter.Set(FFStateVariableFilterMode::HPF, oversampledRate, hpFreq, hpRes, 0.0f);
-      }
-
-      for (int ub = 0; ub < _uniCount; ub += FBSIMDFloatCount)
-      {
-        auto uniPitchBatch = basePitch + _uniPosMHalfToHalf.Load(ub) * uniDetune;
-        auto uniFreqBatch = FBPitchToFreq(uniPitchBatch);
-        FBSArray<float, FBSIMDFloatCount> uniFreqArray(uniFreqBatch);
-
-        for (int u = ub; u < ub + FBSIMDFloatCount && u < _uniCount; u++)
-        {
-          float uniFreq = uniFreqArray.Get(u - ub);
-          _stringUniState[u].delayLine.Delay(oversampledRate / uniFreq);
-          float thisVal = _stringUniState[u].delayLine.Pop();
-          float prevVal = _stringUniState[u].prevDelayVal;
-          float newVal = (1.0f - damp) * thisVal + damp * (prevVal + thisVal) * 0.5f;
-          float outVal = _stringUniState[u].dcFilter.Next(newVal);
-          newVal *= realFeedback;
-          _stringUniState[u].prevDelayVal = newVal;
-
-          double dNextVal = StringNext(u, oversampledRate, uniFreq, excite, color, x, y);
-          if (_stringHPOn)
-            dNextVal = _stringHPFilter.Next(u, dNextVal);
-          if (_stringLPOn)
-            dNextVal = _stringLPFilter.Next(u, dNextVal);
-
-          float nextVal = static_cast<float>(dNextVal);
-          newVal = (1.0f - excite) * newVal + excite * nextVal;
-          _stringUniState[u].delayLine.Push(newVal);
-          uniOutputOversampled[u].Set(s, outVal);
-        }
-      }
-
-      _stringGraphPosition++;
-    }
-  }
-  else
-  {
-    FB_ASSERT(false);
   }
 
   for (int u = 0; u < _uniCount; u++)
@@ -1881,63 +2001,5 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.uniBlend[0][voice] = uniBlendNorm.Last();
   exchangeParams.acc.uniDetune[0][voice] = uniDetuneNorm.Last();
   exchangeParams.acc.uniSpread[0][voice] = uniSpreadNorm.Last();
-
-  // todo also do this for fx
-  if (_type == FFOsciType::Wave)
-  {
-    exchangeParams.acc.waveHSGain[0][voice] = waveHSGainNorm.Last();
-    exchangeParams.acc.waveHSSync[0][voice] = waveHSSyncNorm.Last();
-    exchangeParams.acc.waveDSFGain[0][voice] = waveDSFGainNorm.Last();
-    exchangeParams.acc.waveDSFDecay[0][voice] = waveDSFDecayNorm.Last();
-    for (int i = 0; i < FFOsciWaveBasicCount; i++)
-    {
-      auto const& waveBasicGainNorm = procParams.acc.waveBasicGain[i].Voice()[voice];
-      exchangeParams.acc.waveBasicGain[i][voice] = waveBasicGainNorm.Last();
-    }
-    for (int i = 0; i < FFOsciWavePWCount; i++)
-    {
-      auto const& wavePWPWNorm = procParams.acc.wavePWPW[i].Voice()[voice];
-      auto const& wavePWGainNorm = procParams.acc.wavePWGain[i].Voice()[voice];
-      exchangeParams.acc.wavePWPW[i][voice] = wavePWPWNorm.Last();
-      exchangeParams.acc.wavePWGain[i][voice] = wavePWGainNorm.Last();
-    }
-  }
-  else if (_type == FFOsciType::FM)
-  {
-    for (int o = 0; o < FFOsciFMOperatorCount - 1; o++)
-    {
-      auto const& fmRatioFreeNorm = procParams.acc.fmRatioFree[o].Voice()[voice];
-      exchangeParams.acc.fmRatioFree[o][voice] = fmRatioFreeNorm.Last();
-    }
-    for (int m = 0; m < FFOsciFMMatrixSize; m++)
-    {
-      auto const& fmIndexNorm = procParams.acc.fmIndex[m].Voice()[voice];
-      exchangeParams.acc.fmIndex[m][voice] = fmIndexNorm.Last();
-    }
-  }
-  else if (_type == FFOsciType::String)
-  {
-    exchangeParams.acc.stringX[0][voice] = stringXNorm.Last();
-    exchangeParams.acc.stringY[0][voice] = stringYNorm.Last();
-    exchangeParams.acc.stringLPRes[0][voice] = stringLPResNorm.Last();
-    exchangeParams.acc.stringHPRes[0][voice] = stringHPResNorm.Last();
-    exchangeParams.acc.stringLPFreq[0][voice] = stringLPFreqNorm.Last();
-    exchangeParams.acc.stringHPFreq[0][voice] = stringHPFreqNorm.Last();
-    exchangeParams.acc.stringLPKTrk[0][voice] = stringLPKTrkNorm.Last();
-    exchangeParams.acc.stringHPKTrk[0][voice] = stringHPKTrkNorm.Last();
-    exchangeParams.acc.stringExcite[0][voice] = stringExciteNorm.Last();
-    exchangeParams.acc.stringDamp[0][voice] = stringDampNorm.Last();
-    exchangeParams.acc.stringDampKTrk[0][voice] = stringDampKTrkNorm.Last();
-    exchangeParams.acc.stringTrackingRange[0][voice] = stringTrackingRangeNorm.Last();
-    exchangeParams.acc.stringTrackingKey[0][voice] = stringTrackingKeyNorm.Last();
-    exchangeParams.acc.stringFeedback[0][voice] = stringFeedbackNorm.Last();
-    exchangeParams.acc.stringFeedbackKTrk[0][voice] = stringFeedbackKTrkNorm.Last();
-    exchangeParams.acc.stringColor[0][voice] = stringColorNorm.Last();
-  }
-  else
-  {
-    FB_ASSERT(false);
-  }
-
   return FBFixedBlockSamples;
 }

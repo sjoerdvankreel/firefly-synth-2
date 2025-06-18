@@ -9,6 +9,7 @@
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciPhaseGenerator.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
+#include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
 #include <firefly_synth/modules/shared/FFOsciProcessorBase.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -96,6 +97,23 @@ class FFOsciProcessor final
     float sampleRate, float uniFreq,
     float excite, float colorNorm,
     float xNorm, float yNorm);
+
+  void ProcessFM(
+    FBModuleProcState& state,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
+  void ProcessWave(
+    FBModuleProcState& state,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
+  void ProcessString(
+    FBModuleProcState& state,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
+    FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
+
+  void BeginVoiceString(bool graph, FBModuleProcState& state);
+  void BeginVoiceFM(FBModuleProcState& state, FBSArray<float, FFOsciBaseUniMaxCount> const& uniPhaseInit);
+  void BeginVoiceWave(FBModuleProcState& state, FBSArray<float, FFOsciBaseUniMaxCount> const& uniPhaseInit);
 
 public:
   FFOsciProcessor();
