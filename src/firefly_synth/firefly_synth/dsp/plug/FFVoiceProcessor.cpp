@@ -68,42 +68,30 @@ FFVoiceProcessor::Process(FBModuleProcState state)
       if (FFVMixOsciToVFXGetFXSlot(r) == i)
       {
         int o = FFVMixOsciToVFXGetOsciSlot(r);
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        {
-          auto mixAmt = vMix.acc.osciToVFX[r].Voice()[voice].CV().Load(s);
-          for(int c = 0; c < 2; c++)
-            voiceDSP.vEffect[i].input[c].Add(s, voiceDSP.osci[o].output[c].Load(s) * mixAmt);
-        }
+        auto const& mixAmt = vMix.acc.osciToVFX[r].Voice()[voice].CV();
+        voiceDSP.vEffect[i].input.AddMul(voiceDSP.osci[o].output, mixAmt);
       }
     for (int r = 0; r < FFVMixVFXToVFXCount; r++)
       if (FFVMixVFXToVFXGetTargetSlot(r) == i)
       {
         int source = FFVMixVFXToVFXGetSourceSlot(r);
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        {
-          auto mixAmt = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Load(s);
-          for (int c = 0; c < 2; c++)
-            voiceDSP.vEffect[i].input[c].Add(s, voiceDSP.vEffect[source].output[c].Load(s) * mixAmt);
-        }
+        auto const& mixAmt = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
+        voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, mixAmt);
       }
     voiceDSP.vEffect[i].processor->Process<false>(state);
   }
 
   voiceDSP.output.Fill(0.0f);
   for (int i = 0; i < FFOsciCount; i++)
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    {
-      auto mixAmt = vMix.acc.osciToOut[i].Voice()[voice].CV().Load(s);
-      for (int c = 0; c < 2; c++)
-        voiceDSP.output[c].Add(s, voiceDSP.osci[i].output[c].Load(s) * mixAmt);
-    }
+  {
+    auto const& mixAmt = vMix.acc.osciToOut[i].Voice()[voice].CV();
+    voiceDSP.output.AddMul(voiceDSP.osci[i].output, mixAmt);
+  }
   for (int i = 0; i < FFEffectCount; i++)
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    {
-      auto mixAmt = vMix.acc.VFXToOut[i].Voice()[voice].CV().Load(s);
-      for (int c = 0; c < 2; c++)
-        voiceDSP.output[c].Add(s, voiceDSP.vEffect[i].output[c].Load(s) * mixAmt);
-    }
+  {
+    auto const& mixAmt = vMix.acc.VFXToOut[i].Voice()[voice].CV();
+    voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, mixAmt);
+  }
 
   // TODO dont hardcode this to voice amp?
   voiceDSP.output.Mul(voiceDSP.env[0].output);
