@@ -350,7 +350,7 @@ FFStringOsciProcessor::Process(FBModuleProcState& state)
       {
         float uniFreq = uniFreqArray.Get(u - ub);
         _uniState[u].delayLine.Delay(sampleRate / uniFreq);
-        float thisVal = _uniState[u].delayLine.Pop();
+        float thisVal = _uniState[u].delayLine.Pop<true>();
         float prevVal = _uniState[u].prevDelayVal;
         float newVal = (1.0f - damp) * thisVal + damp * (prevVal + thisVal) * 0.5f;
         float outVal = _uniState[u].dcFilter.Next(newVal);
