@@ -19,6 +19,21 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+inline float constexpr FFOsciStringMinFreq = 20.0f;
+
+inline int
+OsciModStartSlot(int osciSlot)
+{
+  switch (osciSlot)
+  {
+  case 0: return -1;
+  case 1: return 0;
+  case 2: return 1;
+  case 3: return 3;
+  default: FB_ASSERT(false); return -1;
+  }
+}
+
 struct FFOsciStringUniVoiceState final
 {
   float lastDraw = 0.0f;
