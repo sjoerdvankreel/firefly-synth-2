@@ -26,7 +26,7 @@ static void createTabTextLayout(
       text = " " + text;
     s.setJustification(fbButton->centerText ? Justification::centred : Justification::centredLeft);
   }
-  s.append(button.getButtonText(), font, colour);
+  s.append(text, font, colour);
   textLayout.createLayout(s, length);
 }
 
