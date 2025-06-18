@@ -39,7 +39,7 @@ The big ones are 1) make it faster, 2) provide accurate graphs of the per-voice 
 * Both the audio engine and the GUI keep a copy of the per-voice parameter state to allow accurate reconstruction of the engine state in graphs. Synced each host (not internal) block.
 * The actual audio engine state is now a dense buffer per-voice-per-parameter (for per voice params that are automatable/modulatable per sample).
 Not the most memory-efficient setup, but easily doable with 16 block size, and makes it really straightforward to do simd stuff.
-* Net result so far is something that's easily twice as fast (or less slow, if you will ;) and at the same time provides superior visualization.
+* Net result so far is something that's ballpark twice as fast (or less slow, if you will ;) and at the same time provides superior visualization.
 * I also took the opportunity to fix some other issues with FF1 that did not necessarily warrant a rewrite, but whatever. I got FM wrong (again) in FF1, hard-sync anything just doesn't work, and more.
 * And of course, the opportunity to improve upon existing stuff. Keyboard tracking comb filters, pitch modulatable karplus-strong, 
 continuous morphing white to pink to brown noise, looping envelopes, and more to come. See below for a more detailed overview of what's new and improved.
