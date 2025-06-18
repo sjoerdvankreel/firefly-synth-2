@@ -41,7 +41,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceDSP = procState->dsp.voice[voice];
-  auto const& vMix = procState->param.voice.vMix[voice];
+  auto const& vMix = procState->param.voice.vMix[0];
 
   for (int i = 0; i < FFEnvCount; i++)
   {
