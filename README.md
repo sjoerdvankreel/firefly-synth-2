@@ -92,7 +92,7 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
   * Also new, excite param controls how much new noise to feedback into the delay line (for bowed strings). Optional LPF/HPF for more control of the feedback loop.
 
 ## Osci mod matrix
-* Oversampling applies to all osci's (not string).
+* Oversampling applies to all osci's.
 * Inter-osci AM/RM/FM, with (new) exponential FM.
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
 * All modulations are still per-unison-voice. Make sure the mod source has at least as many uni voices as the target.

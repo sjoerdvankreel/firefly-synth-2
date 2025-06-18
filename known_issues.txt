@@ -1,2 +1,3 @@
 * Linux+Bitwig+CLAP segfaults.
+* String osci responds to samplerate/oversampling. Pitch is good, timbre is not.
 * Direct-from-audio-engine visualization is broken on Linux+Bitwig+VST3 (CLAP is ok). Kinda impossible to debug, i suspect it has to do with VST3's processor/controller separation in combination with Bitwig's sandboxing model. See also https://forums.steinberg.net/t/dataexchange-on-linux/917660/5.
