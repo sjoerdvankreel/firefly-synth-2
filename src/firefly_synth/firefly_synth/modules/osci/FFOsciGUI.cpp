@@ -1,6 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
+#include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -287,5 +288,6 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
   for (int i = 0; i < FFOsciCount; i++)
     tabs->AddModuleTab({ (int)FFModuleType::Osci, i }, MakeOsciTab(plugGUI, i));
+  tabs->AddModuleTab({ (int)FFModuleType::OsciMod, 0 }, FFMakeOsciModGUISectionAll(plugGUI));
   return tabs;
 }

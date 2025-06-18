@@ -65,7 +65,7 @@ OsciGraphRenderData::DoProcess(
 }
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, int graphIndex)
+PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
 {
   FBModuleGraphPlotParams result = {};
   result.sampleRate = 0.0f;
@@ -94,9 +94,9 @@ FFOsciRenderGraph(FBModuleGraphComponentData* graphData)
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
 
-  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int graphIndex) {
+  renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].osci[slot]; };
-  renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int slot, int graphIndex) {
+  renderData.voiceStereoOutputSelector = [](void const* procState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].osci[slot].output; };
 
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
