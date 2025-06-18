@@ -1,3 +1,5 @@
+
+drop ktrk range
 exchange params to separate functions for effect
 softclip string 
 string timbre should not react to samplerate/oversample

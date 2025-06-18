@@ -168,6 +168,15 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     basePitchPlain.UpsampleStretch<FFOsciOversampleTimes>();
   }
 
+  if (_type == FFOsciType::Wave)
+    ProcessWave(state, basePitchPlain, uniDetunePlain);
+  else if (_type == FFOsciType::FM)
+    ProcessFM(state, basePitchPlain, uniDetunePlain);
+  else if (_type == FFOsciType::String)
+    ProcessString(state, basePitchPlain, uniDetunePlain);
+  else
+    FB_ASSERT(false);
+
   for (int u = 0; u < _uniCount; u++)
     for (int src = 0; src < state.moduleSlot; src++)
       if (_modSourceAMMode[src] != FFOsciModAMMode::Off && _modSourceUniCount[src] > u)
