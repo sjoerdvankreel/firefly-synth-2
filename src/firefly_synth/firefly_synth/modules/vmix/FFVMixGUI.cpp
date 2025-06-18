@@ -86,6 +86,6 @@ FFMakeVMixGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
-  tabs->AddModuleTab({ (int)FFModuleType::VMix, 0 }, MakeVMixTab(plugGUI));
+  tabs->AddModuleTab(false, { (int)FFModuleType::VMix, 0 }, MakeVMixTab(plugGUI));
   return tabs;
 }

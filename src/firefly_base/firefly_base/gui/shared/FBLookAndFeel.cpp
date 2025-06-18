@@ -1,6 +1,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/shared/FBLookAndFeel.hpp>
+#include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 using namespace juce;
@@ -18,7 +19,13 @@ static void createTabTextLayout(
   TextLayout& textLayout)
 {
   AttributedString s;
-  s.setJustification(button.getButtonText().length() == 1? Justification::centred: Justification::centredLeft);
+  String text = button.getButtonText();
+  if (auto* fbButton = dynamic_cast<FBTabBarButton const*>(&button))
+  {
+    if (!fbButton->centerText)
+      text = " " + text;
+    s.setJustification(fbButton->centerText ? Justification::centred : Justification::centredLeft);
+  }
   s.append(button.getButtonText(), font, colour);
   textLayout.createLayout(s, length);
 }
