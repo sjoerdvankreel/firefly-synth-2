@@ -14,8 +14,8 @@ class alignas(FBSIMDTraits<T>::Align) FBSArray final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FBSArray);
-  FBSArray(FBBatch<T> val) { Fill(val); }
-  FBSArray(T val) { Fill(FBBatch<T>(val)); }
+  explicit FBSArray(FBBatch<T> val) { Fill(val); }
+  explicit FBSArray(T val) { Fill(FBBatch<T>(val)); }
 
   void NaNCheck() const;
   template <int Times> void UpsampleStretch();
