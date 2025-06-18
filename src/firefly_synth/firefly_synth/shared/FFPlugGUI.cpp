@@ -123,9 +123,9 @@ FFPlugGUI::SetupGUI()
   _content->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
   _content->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
   _content->Add(2, 0, 1, 3, FFMakeOsciGUI(this));
-  _content->Add(3, 0, 1, 3, FFMakeEnvGUI(this));
-  _content->Add(4, 0, 1, 3, FFMakeEffectGUI(this));
-  _content->Add(5, 0, 1, 3, FFMakeVMixGUI(this));
+  _content->Add(3, 0, 1, 3, FFMakeEffectGUI(this));
+  _content->Add(4, 0, 1, 3, FFMakeVMixGUI(this));
+  _content->Add(5, 0, 1, 3, FFMakeEnvGUI(this));
   FB_LOG_INFO("Created GUI components.");
 
   FB_LOG_INFO("Making GUI visible.");
