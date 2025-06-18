@@ -92,7 +92,7 @@ FFMakeVMixTopo()
 
   auto& osciToOut = result->params[(int)FFVMixParam::OsciToOut];
   osciToOut.acc = true;
-  osciToOut.defaultText = "0";
+  osciToOut.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
   osciToOut.name = "Osci To Out";
   osciToOut.slotCount = FFOsciCount;
   osciToOut.unit = "%";
