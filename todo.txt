@@ -1,4 +1,3 @@
-
 drop ktrk range
 exchange params to separate functions for effect
 softclip string 
@@ -26,7 +25,6 @@ voice block start position (fake it by amp env?)
 not hardcode env1 to voice amp
 multitap fb delay
 rosetta is borked
-fix mac infoplist and the other thingy
 reaper voice off by disable plug not working
 retest voice stealing including clap return with > 64 voices
-clap + vst3 note expr + midi mpe + polymod + mark as done somewhere
+vst3 note expr + midi mpe
