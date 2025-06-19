@@ -100,10 +100,10 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   if (exchangeToGUI == nullptr)
     return voiceFinished;
 
-  auto& exchangeDSP = exchangeToGUI->voice[voice].vMix[state.moduleSlot];
+  auto& exchangeDSP = exchangeToGUI->voice[voice].vMix[0];
   exchangeDSP.active = true;
 
-  auto& exchangeParams = exchangeToGUI->param.voice.vMix[state.moduleSlot];
+  auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.VFXToVFX[r][voice] = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Last();
   for (int r = 0; r < FFVMixOsciToVFXCount; r++)
