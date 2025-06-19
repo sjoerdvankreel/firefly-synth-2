@@ -1,7 +1,7 @@
 #pragma once
 
 #include <firefly_synth/shared/FFPlugTopo.hpp>
-#include <firefly_synth/modules/vmix/FFVMixTopo.hpp>
+#include <firefly_synth/modules/mix/FFVMixTopo.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>

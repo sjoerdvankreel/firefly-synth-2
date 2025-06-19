@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
-#include <firefly_synth/modules/vmix/FFVMixTopo.hpp>
-#include <firefly_synth/modules/vmix/FFVMixState.hpp>
+#include <firefly_synth/modules/mix/FFVMixTopo.hpp>
+#include <firefly_synth/modules/mix/FFVMixState.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>

@@ -2,8 +2,8 @@
 
 #include <firefly_synth/dsp/plug/FFVoiceProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvState.hpp>
+#include <firefly_synth/modules/mix/FFVMixState.hpp>
 #include <firefly_synth/modules/osci/FFOsciState.hpp>
-#include <firefly_synth/modules/vmix/FFVMixState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
