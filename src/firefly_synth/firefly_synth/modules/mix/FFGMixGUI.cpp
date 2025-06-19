@@ -23,10 +23,10 @@ MakeGMixSectionVoiceToGFX(FBPlugGUI* plugGUI)
   for (int e = 0; e < FFEffectCount; e++)
   {
     int row = e / 2;
-    int colStart = (e % 2) * (FFEffectCount + 1);
+    int col = e % 2;
     auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::VoiceToGFX, e } });
-    grid->Add(row, colStart, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
-    grid->Add(row, colStart + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(row, col * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
+    grid->Add(row, col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
   return grid;
