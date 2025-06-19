@@ -7,34 +7,11 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FormatVFXToVFXSlot(FBStaticTopo const&, int mixSlot)
-{
-  switch (mixSlot)
-  {
-  case 0: return "FX 1\U000021922";
-  case 1: return "FX 1\U000021923";
-  case 2: return "FX 2\U000021923";
-  case 3: return "FX 1\U000021924";
-  case 4: return "FX 2\U000021924";
-  case 5: return "FX 3\U000021924";
-  default: FB_ASSERT(false); return "";
-  }
-}
-
-static std::string
 FormatOsciToOutSlot(FBStaticTopo const& topo, int mixSlot)
 {
   int osciSlot = mixSlot;
   std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
   return osciName + "\U00002192Out";
-}
-
-static std::string
-FormatVFXToOutSlot(FBStaticTopo const& topo, int mixSlot)
-{
-  int fxSlot = mixSlot;
-  std::string fxName = topo.modules[(int)FFModuleType::VEffect].name + " " + std::to_string(fxSlot + 1);
-  return fxName + "\U00002192Out";
 }
 
 static std::string
@@ -79,10 +56,10 @@ FFMakeVMixTopo()
   vfxToVFX.acc = true;
   vfxToVFX.defaultText = "0";
   vfxToVFX.name = "VFX To VFX";
-  vfxToVFX.slotCount = FFVMixVFXToVFXCount;
+  vfxToVFX.slotCount = FFMixFXToFXCount;
   vfxToVFX.unit = "%";
   vfxToVFX.id = "{21EF058C-86B5-4E7B-B4A1-5CFE92F20065}";
-  vfxToVFX.slotFormatter = FormatVFXToVFXSlot;
+  vfxToVFX.slotFormatter = FFMixFormatFXToFXSlot;
   vfxToVFX.slotFormatterOverrides = true;
   vfxToVFX.type = FBParamType::Identity;
   auto selectVFXToVFX = [](auto& module) { return &module.acc.VFXToVFX; };
@@ -112,7 +89,7 @@ FFMakeVMixTopo()
   vfxToOut.slotCount = FFEffectCount;
   vfxToOut.unit = "%";
   vfxToOut.id = "{D159D4DD-BF49-4208-BEAE-D5BE550AB9FA}";
-  vfxToOut.slotFormatter = FormatVFXToOutSlot;
+  vfxToOut.slotFormatter = FFMixFormatFXToOutSlot;
   vfxToOut.slotFormatterOverrides = true;
   vfxToOut.type = FBParamType::Identity;
   auto selectVFXToOut = [](auto& module) { return &module.acc.VFXToOut; };

@@ -26,7 +26,7 @@ class alignas(alignof(TAccurate)) FFVMixAccParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeVMixTopo();
   std::array<TAccurate, FFOsciCount> osciToOut = {};
   std::array<TAccurate, FFEffectCount> VFXToOut = {};
-  std::array<TAccurate, FFVMixVFXToVFXCount> VFXToVFX = {};
+  std::array<TAccurate, FFMixFXToFXCount> VFXToVFX = {};
   std::array<TAccurate, FFVMixOsciToVFXCount> osciToVFX = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVMixAccParamState);

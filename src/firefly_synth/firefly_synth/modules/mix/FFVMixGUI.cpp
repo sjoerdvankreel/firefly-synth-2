@@ -50,10 +50,10 @@ MakeVMixSectionVFXToVFX(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
-  for (int s = 0; s < FFVMixVFXToVFXCount; s++)
+  for (int s = 0; s < FFMixFXToFXCount; s++)
   {
-    int row = s / (FFVMixVFXToVFXCount / 2);
-    int colStart = s % (FFVMixVFXToVFXCount / 2);
+    int row = s / (FFMixFXToFXCount / 2);
+    int colStart = s % (FFMixFXToFXCount / 2);
     auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::VFXToVFX, s } });
     grid->Add(row, colStart * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
     grid->Add(row, colStart * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));

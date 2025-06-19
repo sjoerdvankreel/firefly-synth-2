@@ -71,10 +71,10 @@ FFVoiceProcessor::Process(FBModuleProcState state)
         auto const& mixAmt = vMix.acc.osciToVFX[r].Voice()[voice].CV();
         voiceDSP.vEffect[i].input.AddMul(voiceDSP.osci[o].output, mixAmt);
       }
-    for (int r = 0; r < FFVMixVFXToVFXCount; r++)
-      if (FFVMixVFXToVFXGetTargetSlot(r) == i)
+    for (int r = 0; r < FFMixFXToFXCount; r++)
+      if (FFMixFXToFXGetTargetSlot(r) == i)
       {
-        int source = FFVMixVFXToVFXGetSourceSlot(r);
+        int source = FFMixFXToFXGetSourceSlot(r);
         auto const& mixAmt = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
         voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, mixAmt);
       }
