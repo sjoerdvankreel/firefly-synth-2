@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFVMixTopo.hpp>
 
@@ -7,7 +8,6 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
-#include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -45,24 +45,6 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
 }
 
 static Component*
-MakeVMixSectionVFXToVFX(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
-  for (int s = 0; s < FFMixFXToFXCount; s++)
-  {
-    int row = s / (FFMixFXToFXCount / 2);
-    int colStart = s % (FFMixFXToFXCount / 2);
-    auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::VFXToVFX, s } });
-    grid->Add(row, colStart * 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
-    grid->Add(row, colStart * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
-  }
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
-  return grid;
-}
-
-static Component*
 MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
@@ -89,22 +71,13 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
   return grid;
 }
 
-static Component*
-MakeVMixTab(FBPlugGUI* plugGUI)
+Component*
+FFMakeVMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1 });
   grid->Add(0, 0, MakeVMixSectionOsciToVFX(plugGUI));
-  grid->Add(0, 1, MakeVMixSectionVFXToVFX(plugGUI));
+  grid->Add(0, 1, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::VMix, (int)FFVMixParam::VFXToVFX));
   grid->Add(0, 2, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
-}
-
-Component*
-FFMakeVMixGUI(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
-  tabs->AddModuleTab(false, { (int)FFModuleType::VMix, 0 }, MakeVMixTab(plugGUI));
-  return tabs;
 }
