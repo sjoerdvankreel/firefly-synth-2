@@ -59,7 +59,7 @@ FFMakeGMixTopo()
   voiceToOut.acc = true;
   voiceToOut.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
   voiceToOut.name = "VOICE\U00002192Out";
-  voiceToOut.slotCount = FFEffectCount;
+  voiceToOut.slotCount = 1;
   voiceToOut.unit = "%";
   voiceToOut.id = "{72FCC170-A112-401E-BF11-C91A59C26457}";
   voiceToOut.type = FBParamType::Identity;
