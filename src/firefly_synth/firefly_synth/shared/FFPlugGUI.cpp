@@ -1,8 +1,8 @@
 #include <firefly_synth/shared/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
+#include <firefly_synth/modules/mix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
-#include <firefly_synth/modules/vmix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
