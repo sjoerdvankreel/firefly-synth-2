@@ -1,3 +1,4 @@
+push mix params to gui
 put "1/2/3/4" in front of the mixer matrix where it is not
 drop ktrk range
 exchange params to separate functions for effect
