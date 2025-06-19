@@ -40,7 +40,7 @@ FFMakeVMixTopo()
   auto& osciToVFX = result->params[(int)FFVMixParam::OsciToVFX];
   osciToVFX.acc = true;
   osciToVFX.defaultText = "0";
-  osciToVFX.name = "Osci To VFX";
+  osciToVFX.name = "Osc To VFX";
   osciToVFX.slotCount = FFVMixOsciToVFXCount;
   osciToVFX.unit = "%";
   osciToVFX.id = "{1BC03120-9E8C-412B-81D4-17CC662BA72B}";
@@ -70,7 +70,7 @@ FFMakeVMixTopo()
   auto& osciToOut = result->params[(int)FFVMixParam::OsciToOut];
   osciToOut.acc = true;
   osciToOut.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
-  osciToOut.name = "Osci To Out";
+  osciToOut.name = "Osc To Out";
   osciToOut.slotCount = FFOsciCount;
   osciToOut.unit = "%";
   osciToOut.id = "{FFBE0515-CF42-4E5F-B453-0CEA58A623D8}";

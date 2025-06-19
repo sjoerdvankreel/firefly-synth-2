@@ -9,7 +9,7 @@ static std::string
 FormatVoiceToGFXSlot(FBStaticTopo const&, int mixSlot)
 {
   std::string fxName = "FX " + std::to_string(mixSlot + 1);
-  return std::string("VOICE\U00002192" + fxName);
+  return std::string("Voice\U00002192" + fxName);
 }
 
 std::unique_ptr<FBStaticModule>
@@ -58,7 +58,7 @@ FFMakeGMixTopo()
   auto& voiceToOut = result->params[(int)FFGMixParam::VoiceToOut];
   voiceToOut.acc = true;
   voiceToOut.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
-  voiceToOut.name = "VOICE\U00002192Out";
+  voiceToOut.name = "Voice\U00002192Out";
   voiceToOut.slotCount = 1;
   voiceToOut.unit = "%";
   voiceToOut.id = "{72FCC170-A112-401E-BF11-C91A59C26457}";

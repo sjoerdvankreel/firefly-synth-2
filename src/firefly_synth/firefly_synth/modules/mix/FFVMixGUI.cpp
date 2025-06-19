@@ -31,7 +31,7 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
   {
     int row = e / 2;
     int colStart = (e % 2) * (FFOsciCount + 1);
-    std::string name = "OSC\U00002192FX " + std::to_string(e + 1);
+    std::string name = "Osc\U00002192FX " + std::to_string(e + 1);
     grid->Add(row, colStart, plugGUI->StoreComponent<FBAutoSizeLabel>(name));
     for (int o = 0; o < FFOsciCount; o++)
     {
@@ -55,7 +55,7 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
   for (int i = 0; i < FFOsciCount; i++)
     columnSizes.push_back(1);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("OSC\U00002192Out"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Osc\U00002192Out"));
   for (int o = 0; o < FFOsciCount; o++)
   {
     auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::OsciToOut, o } });
