@@ -68,15 +68,15 @@ FFVoiceProcessor::Process(FBModuleProcState state)
       if (FFVMixOsciToVFXGetFXSlot(r) == i)
       {
         int o = FFVMixOsciToVFXGetOsciSlot(r);
-        auto const& mixAmt = vMix.acc.osciToVFX[r].Voice()[voice].CV();
-        voiceDSP.vEffect[i].input.AddMul(voiceDSP.osci[o].output, mixAmt);
+        auto const& osciToVFXNorm = vMix.acc.osciToVFX[r].Voice()[voice].CV();
+        voiceDSP.vEffect[i].input.AddMul(voiceDSP.osci[o].output, osciToVFXNorm);
       }
     for (int r = 0; r < FFMixFXToFXCount; r++)
       if (FFMixFXToFXGetTargetSlot(r) == i)
       {
         int source = FFMixFXToFXGetSourceSlot(r);
-        auto const& mixAmt = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
-        voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, mixAmt);
+        auto const& vfxToVFXNorm = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
+        voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, vfxToVFXNorm);
       }
     voiceDSP.vEffect[i].processor->Process<false>(state);
   }
@@ -84,16 +84,34 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   voiceDSP.output.Fill(0.0f);
   for (int i = 0; i < FFOsciCount; i++)
   {
-    auto const& mixAmt = vMix.acc.osciToOut[i].Voice()[voice].CV();
-    voiceDSP.output.AddMul(voiceDSP.osci[i].output, mixAmt);
+    auto const& osciToOutNorm = vMix.acc.osciToOut[i].Voice()[voice].CV();
+    voiceDSP.output.AddMul(voiceDSP.osci[i].output, osciToOutNorm);
   }
   for (int i = 0; i < FFEffectCount; i++)
   {
-    auto const& mixAmt = vMix.acc.VFXToOut[i].Voice()[voice].CV();
-    voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, mixAmt);
+    auto const& vfxToOutNorm = vMix.acc.VFXToOut[i].Voice()[voice].CV();
+    voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, vfxToOutNorm);
   }
 
   // TODO dont hardcode this to voice amp?
   voiceDSP.output.Mul(voiceDSP.env[0].output);
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return voiceFinished;
+
+  auto& exchangeDSP = exchangeToGUI->voice[voice].vMix[state.moduleSlot];
+  exchangeDSP.active = true;
+
+  auto& exchangeParams = exchangeToGUI->param.voice.vMix[state.moduleSlot];
+  for (int r = 0; r < FFMixFXToFXCount; r++)
+    exchangeParams.acc.VFXToVFX[r][voice] = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Last();
+  for (int r = 0; r < FFVMixOsciToVFXCount; r++)
+    exchangeParams.acc.osciToVFX[r][voice] = vMix.acc.osciToVFX[r].Voice()[voice].CV().Last();
+  for (int r = 0; r < FFEffectCount; r++)
+    exchangeParams.acc.VFXToOut[r][voice] = vMix.acc.VFXToOut[r].Voice()[voice].CV().Last();
+  for(int r = 0; r < FFOsciCount; r++)
+    exchangeParams.acc.osciToOut[r][voice] = vMix.acc.osciToOut[r].Voice()[voice].CV().Last();
+
   return voiceFinished;
 }

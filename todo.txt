@@ -1,5 +1,5 @@
 do env1-lfo1-env2-lfo2-etc in order to allow modulate both from both
-push mix params to gui
+push mix params to gui for global
 put "1/2/3/4" in front of the mixer matrix where it is not
 drop ktrk range
 exchange params to separate functions for effect
