@@ -20,28 +20,28 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   auto topo = plugGUI->HostContext()->Topo();
-  for (int i = 0; i < FFEffectCount / 2; i++)
+  for (int i = 0; i < FFOsciCount / 2; i++)
   {
     columnSizes.push_back(0);
-    for (int j = 0; j < FFOsciCount; j++)
+    for (int j = 0; j < FFEffectCount; j++)
     {
       columnSizes.push_back(0);
       columnSizes.push_back(0);
     }
   }
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
-  for (int e = 0; e < FFEffectCount; e++)
+  for (int o = 0; o < FFOsciCount; o++)
   {
-    int row = e / 2;
-    int colStart = (e % 2) * (2 * FFOsciCount + 1);
-    std::string name = "Osc\U00002192FX" + std::to_string(e + 1);
+    int row = o / 2;
+    int colStart = (o % 2) * (2 * FFEffectCount + 1);
+    std::string name = "Osc" + std::to_string(o + 1) + "\U00002192FX";
     grid->Add(row, colStart, plugGUI->StoreComponent<FBAutoSizeLabel>(name));
-    for (int o = 0; o < FFOsciCount; o++)
+    for (int e = 0; e < FFEffectCount; e++)
     {
-      int route = e * FFOsciCount + o;
+      int route = o * FFEffectCount + e;
       auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::OsciToVFX, route } });
-      grid->Add(row, colStart + 1 + o * 2, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(o + 1)));
-      grid->Add(row, colStart + 1 + o * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
+      grid->Add(row, colStart + 1 + e * 2, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(e + 1)));
+      grid->Add(row, colStart + 1 + e * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
     }
   }
   grid->MarkSection({ { 0, 0 }, { 2, FFVMixOsciToVFXCount + 2 } });
