@@ -98,11 +98,8 @@ FFPlugProcessor::ProcessPostVoice(
   {
     state.moduleSlot = i;
     globalDSP.gEffect[i].input.Fill(0.0f);
-    for (int r = 0; r < FFEffectCount; r++)
-    {
-      auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[r].Global().CV();
-      globalDSP.gEffect[i].input.AddMul(voiceMixdown, voiceToGFXNorm);
-    }
+    auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[i].Global().CV();
+    globalDSP.gEffect[i].input.AddMul(voiceMixdown, voiceToGFXNorm);
     for (int r = 0; r < FFMixFXToFXCount; r++)
       if (FFMixFXToFXGetTargetSlot(r) == i)
       {
