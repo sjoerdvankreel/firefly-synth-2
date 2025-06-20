@@ -1,7 +1,6 @@
 dont do -werror for non-dev builds
 run asan
 do env1-lfo1-env2-lfo2-etc in order to allow modulate both from both
-put "1/2/3/4" in front of the mixer matrix where it is not
 drop ktrk range
 softclip string 
 string timbre should not react to samplerate/oversample
