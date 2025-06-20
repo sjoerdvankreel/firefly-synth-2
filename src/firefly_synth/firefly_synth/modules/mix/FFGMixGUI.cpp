@@ -40,18 +40,22 @@ MakeGMixSectionVoiceAndVFXToOut(FBPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   columnSizes.push_back(0);
   for (int i = 0; i < FFEffectCount; i++)
+  {
+    columnSizes.push_back(0);
     columnSizes.push_back(1);
+  }
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
   auto voiceMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::VoiceToOut, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceMix));
-  grid->Add(0, 1, 1, FFEffectCount, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceMix, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 1, 1, FFEffectCount * 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceMix, Slider::SliderStyle::LinearHorizontal));
   grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("FX\U00002192Out"));
   for (int e = 0; e < FFEffectCount; e++)
   {
     auto fxMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::GFXToOut, e } });
-    grid->Add(1, 1 + e, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fxMix, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(1, 1 + e * 2, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(e + 1)));
+    grid->Add(1, 1 + e * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fxMix, Slider::SliderStyle::LinearHorizontal));
   }
-  grid->MarkSection({ { 0, 0 }, { 2, FFEffectCount + 1 } });
+  grid->MarkSection({ { 0, 0 }, { 2, FFEffectCount * 2 + 1 } });
   return grid;
 }
 
