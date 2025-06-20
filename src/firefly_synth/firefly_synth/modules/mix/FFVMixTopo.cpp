@@ -10,7 +10,7 @@ static std::string
 FormatOsciToOutSlot(FBStaticTopo const& topo, int mixSlot)
 {
   int osciSlot = mixSlot;
-  std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
+  std::string osciName = topo.modules[(int)FFModuleType::Osci].name + std::to_string(osciSlot + 1);
   return osciName + "\U00002192Out";
 }
 
@@ -19,8 +19,8 @@ FormatOsciToVFXSlot(FBStaticTopo const& topo, int mixSlot)
 {
   int fxSlot = FFVMixOsciToVFXGetFXSlot(mixSlot);
   int osciSlot = FFVMixOsciToVFXGetOsciSlot(mixSlot);
-  std::string fxName = "FX " + std::to_string(fxSlot + 1);
-  std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
+  std::string fxName = "FX" + std::to_string(fxSlot + 1);
+  std::string osciName = topo.modules[(int)FFModuleType::Osci].name + std::to_string(osciSlot + 1);
   return osciName + "\U00002192" + fxName;
 }
 

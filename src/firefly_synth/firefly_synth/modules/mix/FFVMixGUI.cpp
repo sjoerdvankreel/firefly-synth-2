@@ -34,7 +34,7 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
   {
     int row = e / 2;
     int colStart = (e % 2) * (2 * FFOsciCount + 1);
-    std::string name = "Osc\U00002192FX " + std::to_string(e + 1);
+    std::string name = "Osc\U00002192FX" + std::to_string(e + 1);
     grid->Add(row, colStart, plugGUI->StoreComponent<FBAutoSizeLabel>(name));
     for (int o = 0; o < FFOsciCount; o++)
     {

@@ -8,7 +8,7 @@
 static std::string
 FormatVoiceToGFXSlot(FBStaticTopo const&, int mixSlot)
 {
-  std::string fxName = "FX " + std::to_string(mixSlot + 1);
+  std::string fxName = "FX" + std::to_string(mixSlot + 1);
   return std::string("Voice\U00002192" + fxName);
 }
 
