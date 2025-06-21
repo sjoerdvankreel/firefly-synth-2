@@ -347,6 +347,9 @@ FFOsciProcessor::ProcessString(
         float nextVal = static_cast<float>(dNextVal);
         newVal = (1.0f - excite) * newVal + excite * nextVal;
         _stringUniState[u].delayLine.Push(newVal);
+
+        // dont go out of bounds unlimited
+        outVal = 10.0f * std::tanh(outVal * 0.1f);
         uniOutputOversampled[u].Set(s, outVal);
       }
     }
