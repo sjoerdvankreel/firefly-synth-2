@@ -194,7 +194,7 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0 };
+  std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
 
   auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringMode, 0 } });
@@ -247,13 +247,13 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 14, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpKTrk, Slider::SliderStyle::RotaryVerticalDrag));
   auto damp = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringDamp, 0 } });
   grid->Add(0, 15, plugGUI->StoreComponent<FBParamLabel>(plugGUI, damp));
-  grid->Add(0, 16, plugGUI->StoreComponent<FBParamSlider>(plugGUI, damp, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 16, plugGUI->StoreComponent<FBParamSlider>(plugGUI, damp, Slider::SliderStyle::LinearHorizontal));
   auto dampKTrk = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringDampKTrk, 0 } });
   grid->Add(0, 17, plugGUI->StoreComponent<FBParamLabel>(plugGUI, dampKTrk));
   grid->Add(0, 18, plugGUI->StoreComponent<FBParamSlider>(plugGUI, dampKTrk, Slider::SliderStyle::RotaryVerticalDrag));
   auto feedback = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringFeedback, 0 } });
   grid->Add(1, 15, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedback));
-  grid->Add(1, 16, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedback, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 16, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedback, Slider::SliderStyle::LinearHorizontal));
   auto feedbackKTrk = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringFeedbackKTrk, 0 } });
   grid->Add(1, 17, plugGUI->StoreComponent<FBParamLabel>(plugGUI, feedbackKTrk));
   grid->Add(1, 18, plugGUI->StoreComponent<FBParamSlider>(plugGUI, feedbackKTrk, Slider::SliderStyle::RotaryVerticalDrag));
