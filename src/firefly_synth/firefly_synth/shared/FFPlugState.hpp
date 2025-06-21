@@ -56,7 +56,6 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
 
 struct alignas(FBSIMDAlign) FFVoiceDSPState final
 {
-  FFVMixDSPState vMix = {};
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};

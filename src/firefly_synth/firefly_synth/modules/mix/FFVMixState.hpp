@@ -11,14 +11,6 @@
 
 struct FBStaticModule;
 
-class alignas(FBSIMDAlign) FFVMixDSPState final
-{
-  friend class FFVoiceProcessor;
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFVMixDSPState);
-  FBSArray2<float, FBFixedBlockSamples, 2> output = {};
-};
-
 template <class TAccurate>
 class alignas(alignof(TAccurate)) FFVMixAccParamState final
 {
