@@ -63,9 +63,10 @@ Component*
 FFMakeGMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 1, 1, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 1, 1, 0, 0 });
   grid->Add(0, 0, MakeGMixSectionVoiceAndVFXToOut(plugGUI));
   grid->Add(0, 1, MakeGMixSectionVoiceToGFX(plugGUI));
   grid->Add(0, 2, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::GMix, (int)FFGMixParam::GFXToGFX));
+  grid->Add(0, 3, FFMakeMixGUISectionGainPan(plugGUI, (int)FFModuleType::GMix, (int)FFGMixParam::Gain, (int)FFGMixParam::Pan));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }

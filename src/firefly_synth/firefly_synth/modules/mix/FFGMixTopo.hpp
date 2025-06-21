@@ -9,5 +9,6 @@ struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeGMixTopo();
 
 enum class FFGMixParam {
+  Gain, Pan,
   VoiceToGFX, GFXToGFX,
   VoiceToOut, GFXToOut, Count };

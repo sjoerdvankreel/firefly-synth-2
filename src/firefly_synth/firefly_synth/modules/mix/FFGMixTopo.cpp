@@ -25,6 +25,35 @@ FFMakeGMixTopo()
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gMix; });
   auto selectModule = [](auto& state) { return &state.global.gMix; };
 
+  auto& gain = result->params[(int)FFGMixParam::Gain];
+  gain.acc = true;
+  gain.defaultText = "33";
+  gain.name = "Gain";
+  gain.slotCount = 1;
+  gain.unit = "%";
+  gain.id = "{7A7248F3-570F-4AB4-B4FE-CA7D1B8531CF}";
+  gain.type = FBParamType::Identity;
+  auto selectGain = [](auto& module) { return &module.acc.gain; };
+  gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
+  gain.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
+  gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
+
+  auto& pan = result->params[(int)FFGMixParam::Pan];
+  pan.acc = true;
+  pan.defaultText = "0";
+  pan.name = "Pan";
+  pan.slotCount = 1;
+  pan.unit = "%";
+  pan.id = "{C85CEDAD-917D-444A-967C-6D9FCEA1828E}";
+  pan.type = FBParamType::Linear;
+  pan.Linear().displayMultiplier = 100;
+  pan.Linear().min = -1.0f;
+  pan.Linear().max = 1.0f;
+  auto selectPan = [](auto& module) { return &module.acc.pan; };
+  pan.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPan);
+  pan.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectPan);
+  pan.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPan);
+
   auto& voiceToGFX = result->params[(int)FFGMixParam::VoiceToGFX];
   voiceToGFX.acc = true;
   voiceToGFX.defaultText = "0";

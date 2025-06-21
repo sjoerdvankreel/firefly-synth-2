@@ -8,3 +8,5 @@ juce::Component*
 FFMakeMixGUI(FBPlugGUI* plugGUI);
 juce::Component*
 FFMakeMixGUISectionFXToFX(FBPlugGUI* plugGUI, int moduleType, int fxToFXParam);
+juce::Component*
+FFMakeMixGUISectionGainPan(FBPlugGUI* plugGUI, int moduleType, int gainParam, int panParam);
