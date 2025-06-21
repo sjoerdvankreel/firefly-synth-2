@@ -3,7 +3,6 @@
 #include <firefly_synth/dsp/plug/FFPlugProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
-#include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
  
@@ -111,19 +110,16 @@ FFPlugProcessor::ProcessPostVoice(
     globalDSP.gEffect[i].processor->Process<true>(state);
   }
 
-  globalDSP.master.input.Fill(0.0f);
+  output.audio.Fill(0.0f);
   auto const& voiceToOutNorm = gMix.acc.voiceToOut[0].Global().CV();
-  globalDSP.master.input.AddMul(voiceMixdown, voiceToOutNorm);
+  output.audio.AddMul(voiceMixdown, voiceToOutNorm);
   for (int i = 0; i < FFEffectCount; i++)
   {
     auto const& gfxToOutNorm = gMix.acc.GFXToOut[i].Global().CV();
-    globalDSP.master.input.AddMul(globalDSP.gEffect[i].output, gfxToOutNorm);
+    output.audio.AddMul(globalDSP.gEffect[i].output, gfxToOutNorm);
   }
 
   state.moduleSlot = 0;
-  _procState->dsp.global.master.processor->Process(state);
-  _procState->dsp.global.master.output.CopyTo(output.audio);
-
   state.outputParamsNormalized = &output.outputParamsNormalized;
   _procState->dsp.global.output.processor->Process(state);
 

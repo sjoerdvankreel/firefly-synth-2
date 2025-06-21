@@ -44,12 +44,11 @@ struct FFVoiceExchangeState final
   std::array<FBModuleProcExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState, FFOsciCount> osci = {};
   std::array<FBModuleProcExchangeState, FFEffectCount> vEffect = {};
-    FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
 
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
-  FFMasterDSPState master = {};
   FFOutputDSPState output = {};
   std::array<FFEffectDSPState, FFEffectCount> gEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
