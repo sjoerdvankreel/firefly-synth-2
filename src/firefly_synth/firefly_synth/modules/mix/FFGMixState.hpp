@@ -16,7 +16,7 @@ class alignas(alignof(TAccurate)) FFGMixAccParamState final
 {
   friend class FFPlugProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGMixTopo();
-  std::array<TAccurate, 1> pan = {};
+  std::array<TAccurate, 1> bal = {};
   std::array<TAccurate, 1> gain = {};
   std::array<TAccurate, 1> voiceToOut = {};
   std::array<TAccurate, FFEffectCount> GFXToOut = {};

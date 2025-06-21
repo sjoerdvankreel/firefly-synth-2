@@ -67,6 +67,6 @@ FFMakeGMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 0, MakeGMixSectionVoiceAndVFXToOut(plugGUI));
   grid->Add(0, 1, MakeGMixSectionVoiceToGFX(plugGUI));
   grid->Add(0, 2, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::GMix, (int)FFGMixParam::GFXToGFX));
-  grid->Add(0, 3, FFMakeMixGUISectionGainPan(plugGUI, (int)FFModuleType::GMix, (int)FFGMixParam::Gain, (int)FFGMixParam::Pan));
+  grid->Add(0, 3, FFMakeMixGUISectionGainBal(plugGUI, (int)FFModuleType::GMix, (int)FFGMixParam::Gain, (int)FFGMixParam::Bal));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }

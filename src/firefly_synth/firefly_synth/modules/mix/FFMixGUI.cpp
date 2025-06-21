@@ -33,7 +33,7 @@ FFMakeMixGUISectionFXToFX(FBPlugGUI* plugGUI, int moduleType, int fxToFXParam)
 }
 
 Component*
-FFMakeMixGUISectionGainPan(FBPlugGUI* plugGUI, int moduleType, int gainParam, int panParam)
+FFMakeMixGUISectionGainBal(FBPlugGUI* plugGUI, int moduleType, int gainParam, int balParam)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -41,9 +41,9 @@ FFMakeMixGUISectionGainPan(FBPlugGUI* plugGUI, int moduleType, int gainParam, in
   auto gain = topo->audio.ParamAtTopo({ { moduleType, 0 }, { gainParam, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
-  auto pan = topo->audio.ParamAtTopo({ { moduleType, 0 }, { panParam, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, pan));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, pan, Slider::SliderStyle::RotaryVerticalDrag));
+  auto bal = topo->audio.ParamAtTopo({ { moduleType, 0 }, { balParam, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bal));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, bal, Slider::SliderStyle::RotaryVerticalDrag));
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
   return grid;
 }

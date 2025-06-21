@@ -101,3 +101,14 @@ FBPitchToFreq(FBBatch<float> pitch)
   pitch = xsimd::clip(pitch, FBBatch<float>(FBMinPitch), FBBatch<float>(FBMaxPitch));
   return 440.0f * xsimd::pow(FBBatch<float>(2.0f), (pitch - 69.0f) / 12.0f);
 }
+
+inline float
+FBStereoBalance(int channel, float balance)
+{
+  FB_ASSERT(channel == 0 || channel == 1);
+  FB_ASSERT(-1 <= balance && balance <= 1);
+  if (channel == 0 && balance <= 0) return 1.0f;
+  if (channel == 1 && balance >= 0) return 1.0f;
+  if (channel == 0) return 1.0f - balance;
+  return 1.0f + balance;
+}

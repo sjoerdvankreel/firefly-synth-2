@@ -1,3 +1,4 @@
+make all gain params from 0-200
 dont do -werror for non-dev builds
 run asan
 do env1-lfo1-env2-lfo2-etc in order to allow modulate both from both
