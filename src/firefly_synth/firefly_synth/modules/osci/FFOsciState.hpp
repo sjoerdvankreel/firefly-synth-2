@@ -89,7 +89,6 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
   std::array<TAccurate, 1> stringFeedback = {};
   std::array<TAccurate, 1> stringFeedbackKTrk = {};
   std::array<TAccurate, 1> stringTrackingKey = {};
-  std::array<TAccurate, 1> stringTrackingRange = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };

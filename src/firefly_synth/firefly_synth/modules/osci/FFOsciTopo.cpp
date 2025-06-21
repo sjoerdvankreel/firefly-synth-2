@@ -827,8 +827,8 @@ FFMakeOsciTopo()
   stringDampKTrk.unit = "%";
   stringDampKTrk.id = "{5B4F67F9-30E9-482C-922A-33F5CB7F5A1F}";
   stringDampKTrk.type = FBParamType::Linear;
-  stringDampKTrk.Linear().min = -1.0f;
-  stringDampKTrk.Linear().max = 1.0f;
+  stringDampKTrk.Linear().min = -2.0f;
+  stringDampKTrk.Linear().max = 2.0f;
   stringDampKTrk.Linear().displayMultiplier = 100;
   auto selectStringDampKTrk = [](auto& module) { return &module.acc.stringDampKTrk; };
   stringDampKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringDampKTrk);
@@ -860,8 +860,8 @@ FFMakeOsciTopo()
   stringFeedbackKTrk.unit = "%";
   stringFeedbackKTrk.id = "{239389B7-52BC-437F-909C-184621F69E79}";
   stringFeedbackKTrk.type = FBParamType::Linear;
-  stringFeedbackKTrk.Linear().min = -1.0f;
-  stringFeedbackKTrk.Linear().max = 1.0f;
+  stringFeedbackKTrk.Linear().min = -2.0f;
+  stringFeedbackKTrk.Linear().max = 2.0f;
   stringFeedbackKTrk.Linear().displayMultiplier = 100;
   auto selectStringFeedbackKTrk = [](auto& module) { return &module.acc.stringFeedbackKTrk; };
   stringFeedbackKTrk.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringFeedbackKTrk);
@@ -885,23 +885,6 @@ FFMakeOsciTopo()
   stringTrackingKey.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringTrackingKey);
   stringTrackingKey.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringTrackingKey);
   stringTrackingKey.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
-
-  auto& stringTrackingRange = result->params[(int)FFOsciParam::StringTrackingRange];
-  stringTrackingRange.acc = true;
-  stringTrackingRange.defaultText = "24";
-  stringTrackingRange.name = "Tracking Range";
-  stringTrackingRange.display = "Range";
-  stringTrackingRange.slotCount = 1;
-  stringTrackingRange.unit = "Semitones";
-  stringTrackingRange.id = "{31FFFDCC-6A5A-4D46-8209-C9C4F2540870}";
-  stringTrackingRange.type = FBParamType::Linear;
-  stringTrackingRange.Linear().min = 12.0f;
-  stringTrackingRange.Linear().max = 128.0f;
-  auto selectStringTrackingRange = [](auto& module) { return &module.acc.stringTrackingRange; };
-  stringTrackingRange.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringTrackingRange);
-  stringTrackingRange.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStringTrackingRange);
-  stringTrackingRange.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStringTrackingRange);
-  stringTrackingRange.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   return result;
 }

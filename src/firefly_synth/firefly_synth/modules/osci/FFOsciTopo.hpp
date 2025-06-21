@@ -34,8 +34,8 @@ enum class FFOsciParam {
   WaveHSMode, WaveHSGain, WaveHSSync,
   WaveDSFMode, WaveDSFGain, WaveDSFOver, WaveDSFBW, WaveDSFDistance, WaveDSFDecay,
   FMMode, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex,
-  StringMode, StringSeed, StringPoles, StringX, StringY, StringColor, StringExcite,
+  StringMode, StringTrackingKey, StringSeed, StringPoles, 
+  StringX, StringY, StringColor, StringExcite,
   StringLPOn, StringLPFreq, StringLPRes, StringLPKTrk,
   StringHPOn, StringHPFreq, StringHPRes, StringHPKTrk,
-  StringDamp, StringDampKTrk, StringFeedback, StringFeedbackKTrk,
-  StringTrackingKey, StringTrackingRange, Count };
+  StringDamp, StringDampKTrk, StringFeedback, StringFeedbackKTrk, Count };
