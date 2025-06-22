@@ -56,7 +56,8 @@ FFMakeVMixTopo()
   auto& bal = result->params[(int)FFVMixParam::Bal];
   bal.acc = true;
   bal.defaultText = "0";
-  bal.name = "Bal";
+  bal.name = "Balance";
+  bal.display = "Bal";
   bal.slotCount = 1;
   bal.unit = "%";
   bal.id = "{51623C27-E29C-4877-B76D-D123B0D13F45}";
