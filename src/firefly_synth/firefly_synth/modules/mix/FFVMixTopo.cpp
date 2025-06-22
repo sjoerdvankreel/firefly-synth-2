@@ -37,6 +37,38 @@ FFMakeVMixTopo()
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vMix; });
   auto selectModule = [](auto& state) { return &state.voice.vMix; };
 
+  auto& gain = result->params[(int)FFVMixParam::Gain];
+  gain.acc = true;
+  gain.defaultText = "100";
+  gain.name = "Gain";
+  gain.slotCount = 1;
+  gain.unit = "%";
+  gain.id = "{02B3BE49-9ECC-4289-9488-CAB4252B6E9D}";
+  gain.type = FBParamType::Linear;
+  gain.Linear().min = 0.0f;
+  gain.Linear().max = 2.0f;
+  gain.Linear().displayMultiplier = 100;
+  auto selectGain = [](auto& module) { return &module.acc.gain; };
+  gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
+  gain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
+  gain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
+
+  auto& bal = result->params[(int)FFVMixParam::Bal];
+  bal.acc = true;
+  bal.defaultText = "0";
+  bal.name = "Bal";
+  bal.slotCount = 1;
+  bal.unit = "%";
+  bal.id = "{51623C27-E29C-4877-B76D-D123B0D13F45}";
+  bal.type = FBParamType::Linear;
+  bal.Linear().displayMultiplier = 100;
+  bal.Linear().min = -1.0f;
+  bal.Linear().max = 1.0f;
+  auto selectBal = [](auto& module) { return &module.acc.bal; };
+  bal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectBal);
+  bal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectBal);
+  bal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectBal); 
+  
   auto& osciToVFX = result->params[(int)FFVMixParam::OsciToVFX];
   osciToVFX.acc = true;
   osciToVFX.defaultText = "0";
