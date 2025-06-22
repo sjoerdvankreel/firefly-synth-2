@@ -8,6 +8,7 @@
 
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 void 
 FFVoiceProcessor::BeginVoice(FBModuleProcState state)
@@ -41,6 +42,9 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceDSP = procState->dsp.voice[voice];
   auto const& vMix = procState->param.voice.vMix[0];
+  auto const& balNorm = vMix.acc.bal[0].Voice()[voice];
+  auto const& gainNorm = vMix.acc.gain[0].Voice()[voice];
+  auto& moduleTopo = state.topo->static_.modules[(int)FFModuleType::GMix];
 
   for (int i = 0; i < FFEnvCount; i++)
   {
@@ -95,6 +99,14 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   // TODO dont hardcode this to voice amp?
   voiceDSP.output.Mul(voiceDSP.env[0].output);
 
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float balPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Bal, balNorm.CV().Get(s));
+    float gainPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Gain, gainNorm.CV().Get(s));
+    for (int c = 0; c < 2; c++)
+      voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * gainPlain * FBStereoBalance(c, balPlain));
+  }
+
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return voiceFinished;
@@ -103,6 +115,8 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
+  exchangeParams.acc.bal[0][voice] = balNorm.CV().Last();
+  exchangeParams.acc.gain[0][voice] = gainNorm.CV().Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.VFXToVFX[r][voice] = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Last();
   for (int r = 0; r < FFVMixOsciToVFXCount; r++)

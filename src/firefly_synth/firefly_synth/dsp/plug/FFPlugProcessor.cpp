@@ -86,9 +86,9 @@ FFPlugProcessor::ProcessPostVoice(
   auto state = MakeModuleState(input);
   auto& globalDSP = _procState->dsp.global;
   auto const& gMix = _procState->param.global.gMix[0];
-  auto& moduleTopo = state.topo->static_.modules[(int)FFModuleType::GMix];
   auto const& balNorm = gMix.acc.bal[0].Global();
   auto const& gainNorm = gMix.acc.gain[0].Global();
+  auto& moduleTopo = state.topo->static_.modules[(int)FFModuleType::GMix];
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
@@ -142,8 +142,8 @@ FFPlugProcessor::ProcessPostVoice(
   exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.global.gMix[0];
-  exchangeParams.acc.bal[0] = gMix.acc.bal[0].Global().CV().Last();
-  exchangeParams.acc.gain[0] = gMix.acc.gain[0].Global().CV().Last();
+  exchangeParams.acc.bal[0] = balNorm.CV().Last();
+  exchangeParams.acc.gain[0] = gainNorm.CV().Last();
   exchangeParams.acc.voiceToOut[0] = gMix.acc.voiceToOut[0].Global().CV().Last();
   for (int r = 0; r < FFEffectCount; r++)
     exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
