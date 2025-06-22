@@ -89,10 +89,25 @@ FFMakeOsciTopo()
   gain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
   gain.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& pan = result->params[(int)FFOsciParam::Pan];
+  pan.acc = true;
+  pan.defaultText = "50";
+  pan.name = "Pan";
+  pan.slotCount = 1;
+  pan.unit = "%";
+  pan.id = "{DDB77A46-7D26-442C-8A37-2BD231C8F8D8}";
+  pan.type = FBParamType::Identity;
+  auto selectPan = [](auto& module) { return &module.acc.pan; };
+  pan.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPan);
+  pan.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPan);
+  pan.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPan);
+  pan.dependencies.enabled.audio.When({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& coarse = result->params[(int)FFOsciParam::Coarse];
   coarse.acc = true;
   coarse.defaultText = "0";
   coarse.name = "Coarse";
+  coarse.display = "Crse";
   coarse.slotCount = 1;
   coarse.unit = "Semitones";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
