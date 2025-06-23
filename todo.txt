@@ -11,7 +11,6 @@ intel mac version
 midi smoothing (actual midi too)
 indiv param smoothing
 fix todos
-tooltip combo not show
 store the selected tab 
 todo document the thing a bit
 handle envelope offset (actual start index in block)
