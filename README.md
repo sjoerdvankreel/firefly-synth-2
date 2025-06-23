@@ -3,8 +3,8 @@
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
 * Only osci, inter-osci modulation, per-voice fx, global fx, envelopes and audio mixer matrix implemented.
-* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, MTS-ESP, no global audio routing (routing is hardcoded),
-no CV-routing, even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
+* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, MTS-ESP, no CV-routing, 
+even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
 # Some demo material
 * Bowed strings
@@ -97,7 +97,7 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 * All modulations are still per-unison-voice. Make sure the mod source has at least as many uni voices as the target.
 * FF1 was actually doing "real" FM instead of PM. That bit me when i was doing feedback FM on the dedicated FM osci, and the pitch went down.
 
-## Voice audio mixer matrix (VMIX)
+## Voice/global audio mixer matrix (VMIX/GMIX)
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
 
 # Build it
