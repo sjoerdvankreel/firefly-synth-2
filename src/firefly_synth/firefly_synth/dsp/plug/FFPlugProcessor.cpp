@@ -3,7 +3,6 @@
 #include <firefly_synth/dsp/plug/FFPlugProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
-#include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
  
@@ -84,28 +83,72 @@ void
 FFPlugProcessor::ProcessPostVoice(
   FBPlugInputBlock const& input, FBPlugOutputBlock& output)
 {
-  auto& gEffectIn = _procState->dsp.global.gEffect[0].input;
-  gEffectIn.Fill(0.0f);
+  auto state = MakeModuleState(input);
+  auto& globalDSP = _procState->dsp.global;
+  auto const& gMix = _procState->param.global.gMix[0];
+  auto const& balNorm = gMix.acc.bal[0].Global();
+  auto const& gainNorm = gMix.acc.gain[0].Global();
+  auto& moduleTopo = state.topo->static_.modules[(int)FFModuleType::GMix];
+
+  FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
+  voiceMixdown.Fill(0.0f);
   for (int v = 0; v < FBMaxVoices; v++)
     if (input.voiceManager->IsActive(v))
-      gEffectIn.Add(_procState->dsp.voice[v].output);
+      voiceMixdown.Add(_procState->dsp.voice[v].output);
 
-  auto state = MakeModuleState(input);
-  state.moduleSlot = 0;
-  state.outputParamsNormalized = &output.outputParamsNormalized;
-  _procState->dsp.global.gEffect[0].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
-  _procState->dsp.global.gEffect[0].processor->Process<true>(state);
-  for (int s = 1; s < FFEffectCount; s++)
+  for (int i = 0; i < FFEffectCount; i++)
   {
-    state.moduleSlot = s;
-    _procState->dsp.global.gEffect[s - 1].output.CopyTo(_procState->dsp.global.gEffect[s].input);
-    _procState->dsp.global.gEffect[s].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
-    _procState->dsp.global.gEffect[s].processor->Process<true>(state);
+    state.moduleSlot = i;
+    globalDSP.gEffect[i].input.Fill(0.0f);
+    auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[i].Global().CV();
+    globalDSP.gEffect[i].input.AddMul(voiceMixdown, voiceToGFXNorm);
+    for (int r = 0; r < FFMixFXToFXCount; r++)
+      if (FFMixFXToFXGetTargetSlot(r) == i)
+      {
+        int source = FFMixFXToFXGetSourceSlot(r);
+        auto const& gfxToGFXNorm = gMix.acc.GFXToGFX[r].Global().CV();
+        globalDSP.gEffect[i].input.AddMul(globalDSP.gEffect[source].output, gfxToGFXNorm);
+      }
+    globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
+    globalDSP.gEffect[i].processor->Process<true>(state);
+  }
+
+  output.audio.Fill(0.0f);
+  auto const& voiceToOutNorm = gMix.acc.voiceToOut[0].Global().CV();
+  output.audio.AddMul(voiceMixdown, voiceToOutNorm);
+  for (int i = 0; i < FFEffectCount; i++)
+  {
+    auto const& gfxToOutNorm = gMix.acc.GFXToOut[i].Global().CV();
+    output.audio.AddMul(globalDSP.gEffect[i].output, gfxToOutNorm);
+  }
+
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float balPlain = moduleTopo.NormalizedToLinearFast(FFGMixParam::Bal, balNorm.CV().Get(s));
+    float gainPlain = moduleTopo.NormalizedToLinearFast(FFGMixParam::Gain, gainNorm.CV().Get(s));
+    for (int c = 0; c < 2; c++)
+      output.audio[c].Set(s, output.audio[c].Get(s) * gainPlain * FBStereoBalance(c, balPlain));
   }
 
   state.moduleSlot = 0;
-  _procState->dsp.global.gEffect[FFEffectCount - 1].output.CopyTo(_procState->dsp.global.master.input);
-  _procState->dsp.global.master.processor->Process(state);
-  _procState->dsp.global.master.output.CopyTo(output.audio);
+  state.outputParamsNormalized = &output.outputParamsNormalized;
   _procState->dsp.global.output.processor->Process(state);
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+
+  auto& exchangeDSP = exchangeToGUI->global.gMix[0];
+  exchangeDSP.active = true;
+
+  auto& exchangeParams = exchangeToGUI->param.global.gMix[0];
+  exchangeParams.acc.bal[0] = balNorm.CV().Last();
+  exchangeParams.acc.gain[0] = gainNorm.CV().Last();
+  exchangeParams.acc.voiceToOut[0] = gMix.acc.voiceToOut[0].Global().CV().Last();
+  for (int r = 0; r < FFEffectCount; r++)
+    exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
+  for (int r = 0; r < FFEffectCount; r++)
+    exchangeParams.acc.voiceToGFX[r] = gMix.acc.voiceToGFX[r].Global().CV().Last();
+  for (int r = 0; r < FFMixFXToFXCount; r++)
+    exchangeParams.acc.GFXToGFX[r] = gMix.acc.GFXToGFX[r].Global().CV().Last();
 }

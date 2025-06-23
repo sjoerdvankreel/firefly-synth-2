@@ -155,7 +155,10 @@ FFOsciProcessor::BeginVoiceString(bool graph, FBModuleProcState& state)
     _stringUniState[u].phaseTowardsX = 0.0f;
     _stringUniState[u].colorFilterPosition = 0;
     _stringUniState[u].dcFilter.SetCoeffs(StringDCBlockFreq, oversampledRate);
-    _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
+    if (graph)
+      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize());
+    else
+      _stringUniState[u].delayLine.Reset(_stringUniState[u].delayLine.MaxBufferSize() * _oversampleTimes / FFOsciOversampleTimes);
 
     for (int p = 0; p < _stringPoles; p++)
       _stringUniState[u].colorFilterBuffer.Set(p, StringDraw());
@@ -200,7 +203,6 @@ FFOsciProcessor::ProcessString(
   auto const& stringXNorm = procParams.acc.stringX[0].Voice()[voice];
   auto const& stringYNorm = procParams.acc.stringY[0].Voice()[voice];
   auto const& stringColorNorm = procParams.acc.stringColor[0].Voice()[voice];
-  auto const& stringTrackingRangeNorm = procParams.acc.stringTrackingRange[0].Voice()[voice];
   auto const& stringTrackingKeyNorm = procParams.acc.stringTrackingKey[0].Voice()[voice];
   auto const& stringExciteNorm = procParams.acc.stringExcite[0].Voice()[voice];
   auto const& stringDampNorm = procParams.acc.stringDamp[0].Voice()[voice];
@@ -221,9 +223,8 @@ FFOsciProcessor::ProcessString(
   FBSArray<float, FFOsciFixedBlockOversamples> stringExcitePlain = {};
   FBSArray<float, FFOsciFixedBlockOversamples> stringFeedbackPlain = {};
   FBSArray<float, FFOsciFixedBlockOversamples> stringDampKTrkPlain = {};
-  FBSArray<float, FFOsciFixedBlockOversamples> stringFeedbackKTrkPlain = {};
   FBSArray<float, FFOsciFixedBlockOversamples> stringTrackingKeyPlain = {};
-  FBSArray<float, FFOsciFixedBlockOversamples> stringTrackingRangePlain = {};
+  FBSArray<float, FFOsciFixedBlockOversamples> stringFeedbackKTrkPlain = {};
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     if (_stringLPOn)
@@ -245,7 +246,6 @@ FFOsciProcessor::ProcessString(
     stringDampPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringDamp, stringDampNorm, s));
     stringColorPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringColor, stringColorNorm, s));
     stringExcitePlain.Store(s, topo.NormalizedToLog2Fast(FFOsciParam::StringExcite, stringExciteNorm, s));
-    stringTrackingRangePlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringTrackingRange, stringTrackingRangeNorm, s));
     stringTrackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringTrackingKey, stringTrackingKeyNorm, s));
     stringFeedbackPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::StringFeedback, stringFeedbackNorm, s));
     stringDampKTrkPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::StringDampKTrk, stringDampKTrkNorm, s));
@@ -272,7 +272,6 @@ FFOsciProcessor::ProcessString(
     stringDampPlain.UpsampleStretch<FFOsciOversampleTimes>();
     stringColorPlain.UpsampleStretch<FFOsciOversampleTimes>();
     stringExcitePlain.UpsampleStretch<FFOsciOversampleTimes>();
-    stringTrackingRangePlain.UpsampleStretch<FFOsciOversampleTimes>();
     stringTrackingKeyPlain.UpsampleStretch<FFOsciOversampleTimes>();
     stringFeedbackPlain.UpsampleStretch<FFOsciOversampleTimes>();
     stringDampKTrkPlain.UpsampleStretch<FFOsciOversampleTimes>();
@@ -285,7 +284,6 @@ FFOsciProcessor::ProcessString(
     float y = stringYPlain.Get(s);
     float damp = stringDampPlain.Get(s);
     float trackingKey = stringTrackingKeyPlain.Get(s);
-    float trackingRange = stringTrackingRangePlain.Get(s);
     float color = stringColorPlain.Get(s);
     float excite = stringExcitePlain.Get(s);
     float feedback = stringFeedbackPlain.Get(s);
@@ -295,7 +293,7 @@ FFOsciProcessor::ProcessString(
     float centerPitch = 60.0f + trackingKey;
     float feedbackKTrk = stringFeedbackKTrkPlain.Get(s);
     float pitchDiffSemis = _key - centerPitch;
-    float pitchDiffNorm = std::clamp(pitchDiffSemis / trackingRange, -1.0f, 1.0f);
+    float pitchDiffNorm = std::clamp(pitchDiffSemis / 24.0f, -1.0f, 1.0f);
     damp = std::clamp(damp - 0.5f * dampKTrk * pitchDiffNorm, 0.0f, 1.0f);
     feedback = std::clamp(feedback + 0.5f * feedbackKTrk * pitchDiffNorm, 0.0f, 1.0f);
     float realFeedback = 0.9f + 0.1f * feedback;
@@ -349,6 +347,9 @@ FFOsciProcessor::ProcessString(
         float nextVal = static_cast<float>(dNextVal);
         newVal = (1.0f - excite) * newVal + excite * nextVal;
         _stringUniState[u].delayLine.Push(newVal);
+
+        // dont go out of bounds unlimited
+        outVal = 10.0f * std::tanh(outVal * 0.1f);
         uniOutputOversampled[u].Set(s, outVal);
       }
     }
@@ -370,7 +371,6 @@ FFOsciProcessor::ProcessString(
   exchangeParams.acc.stringExcite[0][voice] = stringExciteNorm.Last();
   exchangeParams.acc.stringDamp[0][voice] = stringDampNorm.Last();
   exchangeParams.acc.stringDampKTrk[0][voice] = stringDampKTrkNorm.Last();
-  exchangeParams.acc.stringTrackingRange[0][voice] = stringTrackingRangeNorm.Last();
   exchangeParams.acc.stringTrackingKey[0][voice] = stringTrackingKeyNorm.Last();
   exchangeParams.acc.stringFeedback[0][voice] = stringFeedbackNorm.Last();
   exchangeParams.acc.stringFeedbackKTrk[0][voice] = stringFeedbackKTrkNorm.Last();

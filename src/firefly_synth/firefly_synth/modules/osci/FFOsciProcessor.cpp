@@ -133,13 +133,15 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
   int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
 
+  auto const& panNorm = procParams.acc.pan[0].Voice()[voice];
+  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
-  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
   auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
 
+  FBSArray<float, FFOsciFixedBlockOversamples> panPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> gainPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
@@ -156,6 +158,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     baseFreqPlain.Store(s, baseFreq);
     _phaseGen.NextBatch(baseFreq / sampleRate);
 
+    panPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Pan, panNorm, s));
     gainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::Gain, gainNorm, s));
     uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
     uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
@@ -212,11 +215,12 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     float uniPosAbsHalfToHalf = _uniPosAbsHalfToHalf.Get(u);
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     {
+      auto panning = panPlain.Load(s);
       auto uniPanning = 0.5f + uniPosMHalfToHalf * uniSpreadPlain.Load(s);
       auto uniBlend = 1.0f - (uniPosAbsHalfToHalf * 2.0f * (1.0f - uniBlendPlain.Load(s)));
       auto uniMono = _uniOutput[u].Load(s) * gainPlain.Load(s) * uniBlend;
-      output[0].Add(s, (1.0f - uniPanning) * uniMono);
-      output[1].Add(s, uniPanning * uniMono);
+      output[0].Add(s, (1.0f - uniPanning) * uniMono * xsimd::sqrt(1.0f - panning));
+      output[1].Add(s, uniPanning * uniMono * xsimd::sqrt(panning));
     }
   }
   output.NaNCheck();
@@ -239,6 +243,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
+  exchangeParams.acc.pan[0][voice] = panNorm.Last();
   exchangeParams.acc.gain[0][voice] = gainNorm.Last();
   exchangeParams.acc.fine[0][voice] = fineNorm.Last();
   exchangeParams.acc.coarse[0][voice] = coarseNorm.Last();

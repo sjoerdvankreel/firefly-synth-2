@@ -28,14 +28,14 @@ inline int constexpr FFOsciFMOperatorCount = 3;
 inline int constexpr FFOsciFMMatrixSize = FFOsciFMOperatorCount * FFOsciFMOperatorCount;
 
 enum class FFOsciParam {
-  Type, Gain, Coarse, Fine,
+  Type, Gain, Pan, Coarse, Fine,
   UniCount, UniOffset, UniRandom, UniDetune, UniSpread, UniBlend,
   WaveBasicMode, WaveBasicGain, WavePWMode, WavePWGain, WavePWPW,
   WaveHSMode, WaveHSGain, WaveHSSync,
   WaveDSFMode, WaveDSFGain, WaveDSFOver, WaveDSFBW, WaveDSFDistance, WaveDSFDecay,
   FMMode, FMRatioMode, FMRatioRatio, FMRatioFree, FMIndex,
-  StringMode, StringSeed, StringPoles, StringX, StringY, StringColor, StringExcite,
+  StringMode, StringTrackingKey, StringSeed, StringPoles, 
+  StringX, StringY, StringColor, StringExcite,
   StringLPOn, StringLPFreq, StringLPRes, StringLPKTrk,
   StringHPOn, StringHPFreq, StringHPRes, StringHPKTrk,
-  StringDamp, StringDampKTrk, StringFeedback, StringFeedbackKTrk,
-  StringTrackingKey, StringTrackingRange, Count };
+  StringDamp, StringDampKTrk, StringFeedback, StringFeedbackKTrk, Count };

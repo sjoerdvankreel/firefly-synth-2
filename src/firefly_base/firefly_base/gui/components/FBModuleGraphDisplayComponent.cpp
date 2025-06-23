@@ -53,7 +53,7 @@ FBModuleGraphDisplayComponent::PointYLocation(
   if (_data->bipolar)
     pointValue = FBToUnipolar(pointValue);
   if (stereo)
-    pointValue = left ? pointValue * 0.5f : 0.5f + pointValue * 0.5f;
+    pointValue = left ? 0.5f + pointValue * 0.5f: pointValue * 0.5f;
   return HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
 }
 

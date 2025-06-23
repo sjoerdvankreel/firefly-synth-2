@@ -1,25 +1,20 @@
-put "1/2/3/4" in front of the mixer matrix where it is not
-drop ktrk range
-exchange params to separate functions for effect
-softclip string 
+dont do -werror for non-dev builds
+run asan
+do env1-lfo1-env2-lfo2-etc in order to allow modulate both from both
 string timbre should not react to samplerate/oversample
 notify clap host if we steal a voice
-demo_pluckstring clicks ??
 paint something always
 center the checkboxes
 check all the todos before out of alpha
-get rid of the lpf that is implied by the fractional delay line
 should a voice receive events after its released (but still playing)?
-test clap, more hosts, winlinmac
-panning
 clip/autoadjust
 avx version
 intel mac version
 midi smoothing (actual midi too)
+indiv param smoothing
 fix todos
 tooltip combo not show
 store the selected tab 
-do a -Wall build
 todo document the thing a bit
 handle envelope offset (actual start index in block)
 voice block start position (fake it by amp env?)

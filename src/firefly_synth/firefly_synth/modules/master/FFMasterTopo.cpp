@@ -16,19 +16,6 @@ FFMakeMasterTopo()
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.master; });
   auto selectModule = [](auto& state) { return &state.global.master; };
 
-  auto& gain = result->params[(int)FFMasterParam::Gain];
-  gain.acc = true;
-  gain.defaultText = "33";
-  gain.name = "Gain";
-  gain.slotCount = 1;
-  gain.unit = "%";
-  gain.id = "{9CDC04BC-D0FF-43E6-A2C2-D6C822CFA3EA}";
-  gain.type = FBParamType::Identity;
-  auto selectGain = [](auto& module) { return &module.acc.gain; };
-  gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
-  gain.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
-  gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
-
   auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
   hostSmoothTime.acc = false;
   hostSmoothTime.defaultText = "2";

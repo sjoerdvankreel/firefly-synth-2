@@ -59,9 +59,10 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
-  std::array<TAccurate, 1> coarse = {};
-  std::array<TAccurate, 1> fine = {};
+  std::array<TAccurate, 1> pan = {};
   std::array<TAccurate, 1> gain = {};
+  std::array<TAccurate, 1> fine = {};
+  std::array<TAccurate, 1> coarse = {};
   std::array<TAccurate, 1> uniBlend = {};
   std::array<TAccurate, 1> uniDetune = {};
   std::array<TAccurate, 1> uniSpread = {};
@@ -89,7 +90,6 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
   std::array<TAccurate, 1> stringFeedback = {};
   std::array<TAccurate, 1> stringFeedbackKTrk = {};
   std::array<TAccurate, 1> stringTrackingKey = {};
-  std::array<TAccurate, 1> stringTrackingRange = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciAccParamState);
 };

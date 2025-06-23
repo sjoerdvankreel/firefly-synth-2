@@ -79,6 +79,7 @@ FFDelayLine::Reset(int currentBufferSize)
   _data.SetToZero();
 
   assert(0 < MaxBufferSize());
+  assert(0 < currentBufferSize);
   while (currentBufferSize % FBSIMDTraits<float>::Size != 0)
     currentBufferSize++;
   FB_ASSERT(0 <= currentBufferSize && currentBufferSize <= _data.Count());

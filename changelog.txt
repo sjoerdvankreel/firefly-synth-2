@@ -1,3 +1,17 @@
+June 23, 2025 - alpha 6.
+
+- Core
+* Bugfix: osci graph l/r was swapped.
+
+- Modules
+* Added global audio mixer matrix.
+* Added panning control to osci.
+* Added stereo balancing control to audio mixer matrices.
+* String osci: soft clip if it gets really loud.
+* String osci: dropped keytracking range, now fixed to +/-2 oct like everything else.
+* String osci: fixed buffer overflow in graph painting.
+* "Suddenly" Linux+Bitwig+CLAP starts working again! ;) Need to figure out a way to integrate asan into the workflow.
+
 June 18, 2025 - alpha 5.
 
 - Modules
