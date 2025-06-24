@@ -31,7 +31,7 @@ Component*
 FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, nullptr);
   tabs->AddModuleTab(false, { (int)FFModuleType::GUISettings, 0 }, MakeGUISettingsTab(plugGUI));
   return tabs;
 }

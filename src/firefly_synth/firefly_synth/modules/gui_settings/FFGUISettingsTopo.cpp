@@ -41,5 +41,45 @@ FFMakeGUISettingsTopo()
   auto selectGuiGraphMode = [](auto& module) { return &module.graphMode; };
   guiGraphMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphMode);
 
+  auto& guiOscSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::OscSelectedTab];
+  guiOscSelectedTab.defaultText = "0";
+  guiOscSelectedTab.name = "Osc Selected Tab";
+  guiOscSelectedTab.slotCount = 1;
+  guiOscSelectedTab.id = "{677ADE6F-E531-4FA0-AF84-1D31D78AACCB}";
+  guiOscSelectedTab.type = FBParamType::Discrete;
+  guiOscSelectedTab.Discrete().valueCount = FFOsciCount + 1;
+  auto selectGuiOscSelectedTab = [](auto& module) { return &module.oscSelectedTab; };
+  guiOscSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiOscSelectedTab);
+
+  auto& guiFxSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::FXSelectedTab];
+  guiFxSelectedTab.defaultText = "0";
+  guiFxSelectedTab.name = "FX Selected Tab";
+  guiFxSelectedTab.slotCount = 1;
+  guiFxSelectedTab.id = "{EA9332F9-2B1F-4D96-B67C-F632231F7C7B}";
+  guiFxSelectedTab.type = FBParamType::Discrete;
+  guiFxSelectedTab.Discrete().valueCount = FFEffectCount * 2;
+  auto selectGuiFXSelectedTab = [](auto& module) { return &module.fxSelectedTab; };
+  guiFxSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiFXSelectedTab);
+
+  auto& guiMixSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::MixSelectedTab];
+  guiMixSelectedTab.defaultText = "0";
+  guiMixSelectedTab.name = "Mix Selected Tab";
+  guiMixSelectedTab.slotCount = 1;
+  guiMixSelectedTab.id = "{862452C8-DA0C-4AB6-AB54-2922F8F00E7E}";
+  guiMixSelectedTab.type = FBParamType::Discrete;
+  guiMixSelectedTab.Discrete().valueCount = 2;
+  auto selectGuiMixSelectedTab = [](auto& module) { return &module.mixSelectedTab; };
+  guiMixSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMixSelectedTab);
+
+  auto& guiEnvSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::EnvSelectedTab];
+  guiEnvSelectedTab.defaultText = "0";
+  guiEnvSelectedTab.name = "Env Selected Tab";
+  guiEnvSelectedTab.slotCount = 1;
+  guiEnvSelectedTab.id = "{83D56B7F-28A7-4A02-AEBB-8D55E6CDB4D8}";
+  guiEnvSelectedTab.type = FBParamType::Discrete;
+  guiEnvSelectedTab.Discrete().valueCount = FFEnvCount;
+  auto selectGuiEnvSelectedTab = [](auto& module) { return &module.envSelectedTab; };
+  guiEnvSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEnvSelectedTab);
+
   return result;
 }

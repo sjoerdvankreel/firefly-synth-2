@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModGUI.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -285,7 +286,9 @@ Component*
 FFMakeOsciGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
+  auto topo = plugGUI->HostContext()->Topo();
+  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::OscSelectedTab, 0 } });
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   for (int i = 0; i < FFOsciCount; i++)
     tabs->AddModuleTab(i != 0, { (int)FFModuleType::Osci, i }, MakeOsciTab(plugGUI, i));
   tabs->AddModuleTab(true, { (int)FFModuleType::OsciMod, 0 }, FFMakeOsciModGUISectionAll(plugGUI));

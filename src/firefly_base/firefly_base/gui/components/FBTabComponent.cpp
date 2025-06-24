@@ -27,15 +27,31 @@ FBTabComponent::createTabButton(const juce::String& tabName, int /*tabIndex*/)
 }
 
 FBModuleTabComponent::
-FBModuleTabComponent(FBPlugGUI* plugGUI):
+FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
 FBTabComponent(),
-_plugGUI(plugGUI) {}
+_plugGUI(plugGUI),
+_param(param) {}
 
 int
 FBModuleTabComponent::FixedWidth(int height) const
 {
   auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
   return content.FixedWidth(height - 20);
+}
+
+void
+FBModuleTabComponent::currentTabChanged(
+  int newCurrentTabIndex, juce::String const& /*newCurrentTabName*/)
+{
+  if (newCurrentTabIndex < 0 || newCurrentTabIndex >= _moduleIndices.size())
+    return;
+  auto const& indices = _moduleIndices[newCurrentTabIndex];
+  _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
+  if (_param == nullptr)
+    return;
+  double normalized = _param->static_.Discrete().PlainToNormalizedFast(newCurrentTabIndex);
+  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
+  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }
 
 void
@@ -56,14 +72,11 @@ FBModuleTabComponent::AddModuleTab(
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
-}
 
-void
-FBModuleTabComponent::currentTabChanged(
-  int newCurrentTabIndex, juce::String const& /*newCurrentTabName*/)
-{
-  if (newCurrentTabIndex < 0 || newCurrentTabIndex >= _moduleIndices.size())
+  if (_param == nullptr)
     return;
-  auto const& indices = _moduleIndices[newCurrentTabIndex];
-  _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
+  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
+  int selectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
+  if (0 <= selectedTab && selectedTab < _moduleIndices.size() && getCurrentTabIndex() != selectedTab)
+    currentTabChanged(selectedTab, "");
 }

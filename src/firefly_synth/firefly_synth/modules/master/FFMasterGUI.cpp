@@ -33,7 +33,7 @@ Component*
 FFMakeMasterGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, nullptr);
   tabs->AddModuleTab(false, { (int)FFModuleType::Master, 0 }, MakeMasterSectionAll(plugGUI));
   return tabs;
 }

@@ -2,6 +2,7 @@
 #include <firefly_synth/modules/mix/FFMixTopo.hpp>
 #include <firefly_synth/modules/mix/FFVMixGUI.hpp>
 #include <firefly_synth/modules/mix/FFGMixGUI.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
@@ -52,7 +53,9 @@ Component*
 FFMakeMixGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
+  auto topo = plugGUI->HostContext()->Topo();
+  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::MixSelectedTab, 0 } });
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   tabs->AddModuleTab(false, { (int)FFModuleType::VMix, 0 }, FFMakeVMixGUITab(plugGUI));
   tabs->AddModuleTab(false, { (int)FFModuleType::GMix, 0 }, FFMakeGMixGUITab(plugGUI));
   return tabs;
