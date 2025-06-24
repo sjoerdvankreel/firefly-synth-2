@@ -5,7 +5,6 @@ notify clap host if we steal a voice
 paint something always
 center the checkboxes
 check all the todos before out of alpha
-clip/autoadjust
 intel mac version
 midi smoothing (actual midi too)
 indiv param smoothing
