@@ -30,13 +30,27 @@ FBModuleTabComponent::
 FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
 FBTabComponent(),
 _plugGUI(plugGUI),
-_param(param) {}
+_param(param)
+{
+  if (_param == nullptr)
+    return;
+  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
+  _storedSelectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
+}
 
 int
 FBModuleTabComponent::FixedWidth(int height) const
 {
   auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
   return content.FixedWidth(height - 20);
+}
+
+void
+FBModuleTabComponent::ActivateStoredSelectedTab()
+{
+  if (_param == nullptr || !(0 <= _storedSelectedTab && _storedSelectedTab < _moduleIndices.size()))
+    return;
+  setCurrentTabIndex(_storedSelectedTab);
 }
 
 void
@@ -72,11 +86,4 @@ FBModuleTabComponent::AddModuleTab(
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
-
-  if (_param == nullptr)
-    return;
-  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
-  int selectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
-  if (0 <= selectedTab && selectedTab < _moduleIndices.size() && getCurrentTabIndex() != selectedTab)
-    currentTabChanged(selectedTab, "");
 }

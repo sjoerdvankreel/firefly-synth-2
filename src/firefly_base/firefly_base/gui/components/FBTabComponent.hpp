@@ -32,6 +32,7 @@ public FBTabComponent,
 public IFBHorizontalAutoSize
 {
   FBPlugGUI* const _plugGUI;
+  int _storedSelectedTab = -1;
   FBRuntimeGUIParam const* const _param;
   std::vector<FBTopoIndices> _moduleIndices = {};
 
@@ -40,14 +41,14 @@ public:
     FBPlugGUI* plugGUI, 
     FBRuntimeGUIParam const* param);
   
+  void AddModuleTab(
+    bool centerText,
+    FBTopoIndices const& moduleIndices,
+    juce::Component* component);
+  void ActivateStoredSelectedTab();
+
   int FixedWidth(
     int height) const override;
-
-  void AddModuleTab(
-    bool centerText, 
-    FBTopoIndices const& moduleIndices,    
-    juce::Component* component);
-
   void currentTabChanged(
     int newCurrentTabIndex, 
     juce::String const& newCurrentTabName) override;

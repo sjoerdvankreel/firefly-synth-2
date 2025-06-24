@@ -58,5 +58,6 @@ FFMakeMixGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   tabs->AddModuleTab(false, { (int)FFModuleType::VMix, 0 }, FFMakeVMixGUITab(plugGUI));
   tabs->AddModuleTab(false, { (int)FFModuleType::GMix, 0 }, FFMakeGMixGUITab(plugGUI));
+  tabs->ActivateStoredSelectedTab();
   return tabs;
 }

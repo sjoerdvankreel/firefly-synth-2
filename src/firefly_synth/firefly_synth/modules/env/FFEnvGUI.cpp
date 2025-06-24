@@ -100,5 +100,6 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   for (int i = 0; i < FFEnvCount; i++)
     tabs->AddModuleTab(i != 0, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i));
+  tabs->ActivateStoredSelectedTab();
   return tabs;
 }

@@ -137,5 +137,6 @@ FFMakeEffectGUI(FBPlugGUI* plugGUI)
     tabs->AddModuleTab(i != 0, { (int)FFModuleType::VEffect, i }, MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
   for (int i = 0; i < FFEffectCount; i++)
     tabs->AddModuleTab(i != 0, { (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
+  tabs->ActivateStoredSelectedTab();
   return tabs;
 }
