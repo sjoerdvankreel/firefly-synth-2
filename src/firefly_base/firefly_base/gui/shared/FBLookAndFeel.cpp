@@ -119,6 +119,23 @@ FBLookAndFeel::drawLabel(
 }
 
 void
+FBLookAndFeel::drawToggleButton(
+  Graphics& g, ToggleButton& button,
+  bool shouldDrawButtonAsHighlighted,
+  bool shouldDrawButtonAsDown)
+{
+  auto fontSize = jmin(15.0f, (float)button.getHeight() * 0.75f);
+  auto tickWidth = fontSize * 1.1f;
+  float x = (button.getWidth() - tickWidth) * 0.5f;
+  drawTickBox(g, button, x, ((float)button.getHeight() - tickWidth) * 0.5f,
+    tickWidth, tickWidth,
+    button.getToggleState(),
+    button.isEnabled(),
+    shouldDrawButtonAsHighlighted,
+    shouldDrawButtonAsDown);
+}
+
+void
 FBLookAndFeel::drawComboBox(Graphics& g,
   int	width, int height, bool	/*isButtonDown*/,
   int	/*buttonX*/, int /*buttonY*/, int	/*buttonW*/, int /*buttonH*/, ComboBox& box)

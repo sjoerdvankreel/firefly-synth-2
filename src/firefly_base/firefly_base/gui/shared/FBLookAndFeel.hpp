@@ -48,6 +48,11 @@ public:
     int	buttonX, int buttonY, int	buttonW, int buttonH,
     juce::ComboBox&) override;
 
+  void drawToggleButton(
+    juce::Graphics& g, juce::ToggleButton& button,
+    bool shouldDrawButtonAsHighlighted, 
+    bool shouldDrawButtonAsDown) override;
+
   void drawLinearSlider(
     juce::Graphics&,
     int x, int y, int width, int height,
