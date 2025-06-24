@@ -14,7 +14,6 @@ static std::unique_ptr<FileLogger> _logger = {};
 FBEntryExitLog::
 ~FBEntryExitLog()
 {
-  int zork;
   FBLogWrite(FBLogLevel::Info, file, line, func, "Exit.");
 }
 
