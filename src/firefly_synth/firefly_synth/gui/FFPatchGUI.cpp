@@ -15,9 +15,15 @@ MakePatchTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeButton>("Load"));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeButton>("Save"));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeButton>("Clear"));
+  auto load = plugGUI->StoreComponent<FBAutoSizeButton>("Load");
+  load->onClick = [plugGUI]() { plugGUI->LoadEditStateFromFile(); };
+  grid->Add(0, 0, load);
+  auto save = plugGUI->StoreComponent<FBAutoSizeButton>("Save");
+  save->onClick = [plugGUI]() { plugGUI->SaveEditStateToFile(); };
+  grid->Add(0, 1, save);
+  auto init = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
+  init->onClick = [plugGUI]() { plugGUI->InitEditState(); };
+  grid->Add(0, 2, init);
   grid->MarkSection({ { 0, 0 }, { 1, 3 } });
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }

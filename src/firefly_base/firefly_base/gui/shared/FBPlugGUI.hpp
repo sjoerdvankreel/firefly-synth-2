@@ -31,6 +31,10 @@ public:
   std::string GetAudioParamActiveTooltip(
     FBStaticParam const& param, bool active, float value) const;
 
+  void InitEditState();
+  void SaveEditStateToFile();
+  void LoadEditStateFromFile();
+
   void UpdateExchangeState();
   void ShowHostMenuForAudioParam(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }

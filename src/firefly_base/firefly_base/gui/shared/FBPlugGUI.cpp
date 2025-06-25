@@ -6,6 +6,7 @@
 #include <firefly_base/gui/controls/FBSlider.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
@@ -206,4 +207,25 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\nAutomate: None";
   result += "\r\nAutomation: " + FBAutomationTimingToString(param.static_.AutomationTiming());
   return result;
+}
+
+void 
+FBPlugGUI::InitEditState()
+{
+  // todo undo/redo
+  FBScalarStateContainer defaultState(*HostContext()->Topo());
+  for (int i = 0; i < defaultState.Params().size(); i++)
+    HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+}
+
+void 
+FBPlugGUI::SaveEditStateToFile()
+{
+
+}
+
+void 
+FBPlugGUI::LoadEditStateFromFile()
+{
+
 }
