@@ -67,6 +67,10 @@ public:
   void drawButtonText(juce::Graphics& g, juce::TextButton& button,
     bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 
+  void drawButtonBackground(
+    juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
+    bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+
   juce::Font getPopupMenuFont() override { return FBGUIGetFont(); }
   juce::Font getLabelFont(juce::Label&) override { return FBGUIGetFont(); }
   juce::Font getComboBoxFont(juce::ComboBox&) override { return FBGUIGetFont(); }
