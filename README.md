@@ -101,7 +101,7 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
 
 # Build it
-As always. Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error).
+Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
 # Screenshot
 <img alt="Screenshot" src="demo/screenshot.png"/>
