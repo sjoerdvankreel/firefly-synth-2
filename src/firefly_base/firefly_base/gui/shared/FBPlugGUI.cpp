@@ -254,5 +254,10 @@ FBPlugGUI::LoadEditStateFromFile()
     FBScalarStateContainer editState(*HostContext()->Topo());
     if (HostContext()->Topo()->LoadEditStateFromString(text, editState))
       editState.CopyTo(HostContext());
+    else
+      AlertWindow::showMessageBoxAsync(
+        MessageBoxIconType::WarningIcon,
+        "Error",
+        "Failed to load patch. See log for details.\r\n" + FBGetLogPath(HostContext()->Topo()->static_.meta).string());
   });
 }

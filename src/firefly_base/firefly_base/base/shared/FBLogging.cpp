@@ -25,6 +25,12 @@ line(line), file(file), func(func)
   FBLogWrite(FBLogLevel::Info, file, line, func, "Enter.");
 }
 
+std::filesystem::path 
+FBGetLogPath(FBStaticTopoMeta const& meta)
+{
+  return FBGetUserPluginDataFolder(meta) / "lastrun.log";
+}
+
 void
 FBLogTerminate()
 {
@@ -35,7 +41,7 @@ FBLogTerminate()
 void
 FBLogInit(FBStaticTopoMeta const& meta)
 {
-  auto path = FBGetUserPluginDataFolder(meta) / "lastrun.log";
+  auto path = FBGetLogPath(meta);
   auto file = File(String(path.string()));
   _logger = std::make_unique<FileLogger>(file, meta.NameVersionAndFormat(), 0);
   FB_LOG_INFO("Initialized log.");

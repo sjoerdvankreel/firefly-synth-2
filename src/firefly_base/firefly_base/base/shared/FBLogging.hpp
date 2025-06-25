@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#include <filesystem>
 
 #define FB_LOG_WRITE(lvl, msg) \
 FBLogWrite(lvl, __FILE__, __LINE__, __func__, msg)
@@ -36,6 +37,7 @@ struct FBEntryExitLog
 void FBLogTerminate();
 void FBLogInit(FBStaticTopoMeta const& meta);
 void FBLogWrite(FBLogLevel level, char const* file, int line, char const* func, std::string const& message);
+std::filesystem::path FBGetLogPath(FBStaticTopoMeta const& meta);
 
 // Writes exception to log, if any.
 // Meant to be used for top level functions (so called from the host).
