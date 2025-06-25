@@ -16,13 +16,14 @@ enum class FBVoiceState { Free, Active, Returned };
 struct FBVoiceInfo final
 {
   int slot = {};
-  int initialOffset = {};
+  int offsetInBlock = {};
   FBNoteEvent event = {};
   FBVoiceState state = {};
 };
 
 class FBVoiceManager final
 {
+  friend class FBHostProcessor;
   friend class FBGraphRenderState;
 
   int _voiceCount = 0;

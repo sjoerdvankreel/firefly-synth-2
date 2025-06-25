@@ -7,11 +7,7 @@ midi smoothing (actual midi too)
 indiv param smoothing
 fix todos
 todo document the thing a bit
-handle envelope offset (actual start index in block)
-voice block start position (fake it by amp env?)
 not hardcode env1 to voice amp
 multitap fb delay
 rosetta is borked
-reaper voice off by disable plug not working
-retest voice stealing including clap return with > 64 voices
 vst3 note expr + midi mpe

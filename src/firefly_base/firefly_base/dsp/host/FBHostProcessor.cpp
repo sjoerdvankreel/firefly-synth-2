@@ -93,10 +93,18 @@ FBHostProcessor::ProcessHost(
       _plugIn.lastMIDINoteKey.Set(s, _lastMIDINoteKey);
     }
 
+    // Sets voice offsetInBlock to possibly nonzero.
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
+
     ProcessVoices();
+
+    // Voice offsetInBlock is 0 for the rest of the voice lifetime.
+    for (int v = 0; v < FBMaxVoices; v++)
+      if (_voiceManager->IsActive(v))
+        _voiceManager->_voices[v].offsetInBlock = 0;
+
     _plug->ProcessPostVoice(_plugIn, _plugOut);
     _plugToHost->BufferFromPlug(_plugOut.audio);
   }
