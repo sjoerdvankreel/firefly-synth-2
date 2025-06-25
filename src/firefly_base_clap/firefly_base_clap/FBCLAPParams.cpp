@@ -48,7 +48,7 @@ FBCLAPPlugin::paramsTextToValue(
     if (index == -1)
       return false;
     auto const& static_ = _topo->audio.params[index].static_;
-    auto normalized = static_.NonRealTime().TextToNormalized(false, display);
+    auto normalized = static_.TextToNormalized(false, display);
     if (!normalized.has_value())
       return false;
     *value = FBNormalizedToCLAP(static_, normalized.value());
