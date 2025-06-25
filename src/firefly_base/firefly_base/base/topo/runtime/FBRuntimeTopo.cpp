@@ -284,7 +284,12 @@ FBRuntimeTopo::SaveParamStateToVar(
   for (int p = 0; p < params.size(); p++)
   {
     auto param = new DynamicObject;
+    param->setProperty("tag", params[p].tag);
     param->setProperty("id", String(params[p].id));
+    param->setProperty("paramId", String(params[p].Static().id));
+    param->setProperty("moduleId", String(params[p].staticModuleId));
+    param->setProperty("paramSlot", params[p].topoIndices.param.slot);
+    param->setProperty("moduleSlot", params[p].topoIndices.module.slot);
     param->setProperty("val", String(params[p].static_.NonRealTime().NormalizedToText(true, *container.Params()[p])));
     state.append(var(param));
   }
