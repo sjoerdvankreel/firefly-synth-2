@@ -10,9 +10,10 @@
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
-#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBModuleGraphComponent.hpp>
@@ -99,20 +100,19 @@ FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
 
-  // TODO better move to reusable?
   FB_LOG_INFO("Calculating GUI grid size.");
   int vTabCount = 6;
-  float tabHeight = 28.0f; // TODO
+  float padding = FBTabBarDepth + 8;
   auto const& topo = HostContext()->Topo()->static_;
   int totalHeight = topo.guiWidth * topo.guiAspectRatioHeight / topo.guiAspectRatioWidth;
-  float availableHeight = static_cast<float>(totalHeight - vTabCount * tabHeight);
+  float availableHeight = static_cast<float>(totalHeight - vTabCount * padding);
   std::vector<int> rowSizes = {};
-  rowSizes.push_back(static_cast<int>(tabHeight + 1.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(tabHeight + 1.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(tabHeight + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(padding + 1.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(padding + 1.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
   FB_LOG_INFO("Calculated GUI grid size.");
 
   FB_LOG_INFO("Creating GUI components.");

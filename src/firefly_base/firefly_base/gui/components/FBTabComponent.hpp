@@ -9,6 +9,8 @@
 
 class FBPlugGUI;
 
+inline int constexpr FBTabBarDepth = 20;
+
 class FBTabBarButton:
 public juce::TabBarButton
 {
