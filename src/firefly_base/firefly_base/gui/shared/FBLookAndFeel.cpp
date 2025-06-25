@@ -89,6 +89,8 @@ int
 FBLookAndFeel::getTabButtonBestWidth(
   juce::TabBarButton& button, int /*tabDepth*/)
 {
+  if (button.getTabbedButtonBar().getNumTabs() == 1)
+    return button.getTabbedButtonBar().getWidth();
   auto text = button.getButtonText().toStdString();
   return text.size() == 1 ? 32 : 64;
 }
