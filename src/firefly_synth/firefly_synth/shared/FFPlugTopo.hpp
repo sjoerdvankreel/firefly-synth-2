@@ -3,6 +3,10 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <memory>
 
+#if !defined(FF_PLUG_VERSION_MAJOR) || !defined(FF_PLUG_VERSION_MINOR) || !defined(FF_PLUG_VERSION_PATCH)
+#error
+#endif
+
 #define FF_PLUG_VERSION FB_STRINGIFY(FF_PLUG_VERSION_MAJOR.FF_PLUG_VERSION_MINOR.FF_PLUG_VERSION_PATCH)
 
 struct FBStaticTopo;
