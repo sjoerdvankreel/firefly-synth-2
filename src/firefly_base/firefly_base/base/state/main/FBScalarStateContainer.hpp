@@ -20,13 +20,14 @@ public:
   FBScalarStateContainer(FBRuntimeTopo const& topo);
   ~FBScalarStateContainer() { _freeRawState(_rawState); }
 
+  void CopyTo(FBHostGUIContext* context) const;
   void CopyFrom(FBHostGUIContext const* context);
   void CopyFrom(FBProcStateContainer const& proc);
   void CopyFrom(FBScalarStateContainer const& scalar);
-  std::vector<double*> const& Params() const { return _params; }
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
+  std::vector<double*> const& Params() const { return _params; }
   template <class T> T* As() { return static_cast<T*>(_rawState); }
   template <class T> T const* As() const { return static_cast<T const*>(_rawState); }
 };

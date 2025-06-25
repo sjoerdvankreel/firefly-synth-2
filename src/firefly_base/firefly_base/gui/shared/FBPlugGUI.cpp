@@ -213,6 +213,7 @@ void
 FBPlugGUI::InitEditState()
 {
   // todo undo/redo
+  FB_LOG_ENTRY_EXIT();
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
@@ -221,12 +222,15 @@ FBPlugGUI::InitEditState()
 void 
 FBPlugGUI::SaveEditStateToFile()
 {
+  // todo undo/redo
+  FB_LOG_ENTRY_EXIT();
   int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
   auto extension = HostContext()->Topo()->static_.patchExtension;
   FileChooser* chooser = new FileChooser("Save Patch", File(), String("*.") + extension, true, false, this);
   chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
+    FB_LOG_ENTRY_EXIT();
     auto file = chooser.getResult();
-    delete& chooser;
+    delete &chooser;
     if (file.getFullPathName().length() == 0) return;
     FBScalarStateContainer editState(*HostContext()->Topo());
     editState.CopyFrom(HostContext());
@@ -237,5 +241,18 @@ FBPlugGUI::SaveEditStateToFile()
 void 
 FBPlugGUI::LoadEditStateFromFile()
 {
-
+  // todo undo/redo
+  FB_LOG_ENTRY_EXIT();
+  int loadFlags = FileBrowserComponent::openMode;
+  auto extension = HostContext()->Topo()->static_.patchExtension;
+  FileChooser* chooser = new FileChooser("Load Patch", File(), String("*.") + extension, true, false, this);
+  chooser->launchAsync(loadFlags, [this](FileChooser const& chooser) {
+    auto file = chooser.getResult();
+    delete &chooser;
+    if (file.getFullPathName().length() == 0) return;
+    auto text = file.loadFileAsString().toStdString();
+    FBScalarStateContainer editState(*HostContext()->Topo());
+    if (HostContext()->Topo()->LoadEditStateFromString(text, editState))
+      editState.CopyTo(HostContext());
+  });
 }

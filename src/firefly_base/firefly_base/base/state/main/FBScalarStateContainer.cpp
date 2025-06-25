@@ -25,6 +25,13 @@ _freeRawState(topo.static_.freeRawScalarState)
 }
 
 void 
+FBScalarStateContainer::CopyTo(FBHostGUIContext* context) const
+{
+  for (int p = 0; p < Params().size(); p++)
+    context->PerformImmediateAudioParamEdit(p, *Params()[p]);
+}
+
+void 
 FBScalarStateContainer::CopyFrom(FBHostGUIContext const* context)
 {
   for (int p = 0; p < Params().size(); p++)
