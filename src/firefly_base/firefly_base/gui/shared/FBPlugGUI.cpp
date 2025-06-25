@@ -221,7 +221,17 @@ FBPlugGUI::InitEditState()
 void 
 FBPlugGUI::SaveEditStateToFile()
 {
-
+  int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
+  auto extension = HostContext()->Topo()->static_.patchExtension;
+  FileChooser* chooser = new FileChooser("Save Patch", File(), String("*.") + extension, true, false, this);
+  chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
+    auto file = chooser.getResult();
+    delete& chooser;
+    if (file.getFullPathName().length() == 0) return;
+    FBScalarStateContainer editState(*HostContext()->Topo());
+    editState.CopyFrom(HostContext());
+    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState));
+  });
 }
 
 void 

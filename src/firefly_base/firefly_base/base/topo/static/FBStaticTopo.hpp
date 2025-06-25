@@ -90,6 +90,7 @@ struct FBStaticTopo final
   FBPlugGUIFactory guiFactory = {};
 
   FBStaticTopoMeta meta = {};
+  std::string patchExtension = {};
 
   void* (*allocRawGUIState)() = {};
   void* (*allocRawProcState)() = {};

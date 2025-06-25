@@ -84,6 +84,7 @@ FFMakeTopo(FBPlugFormat format)
   result->guiAspectRatioWidth = 25;
   result->guiAspectRatioHeight = 11;
   result->guiFactory = [](FBHostGUIContext* hostContext) { return std::make_unique<FFPlugGUI>(hostContext); };
+  result->patchExtension = "ff2preset";
 
   result->specialSelector = SpecialParamsSelector;
   result->specialGUISelector = SpecialGUIParamsSelector;

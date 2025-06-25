@@ -1,3 +1,4 @@
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
@@ -21,6 +22,13 @@ _freeRawState(topo.static_.freeRawScalarState)
   std::set<double*> uniquePtrs(_params.begin(), _params.end());
   FB_ASSERT(uniquePtrs.size() == _params.size());
 #endif
+}
+
+void 
+FBScalarStateContainer::CopyFrom(FBHostGUIContext const* context)
+{
+  for (int p = 0; p < Params().size(); p++)
+    *Params()[p] = context->GetAudioParamNormalized(p);
 }
 
 void
