@@ -89,8 +89,11 @@ public:
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
   std::string GetDefaultText(int moduleSlot, int paramSlot) const;
 
+  std::string DebugNameAndId() const;
   double DefaultNormalizedByText(int moduleSlot, int paramSlot) const;
   std::string NormalizedToTextWithUnit(bool io, double normalized) const;
+  std::optional<double> TextToPlain(bool io, std::string const& text) const;
+  std::optional<double> TextToNormalized(bool io, std::string const& text) const;
 
   FBListParam& List() { FB_ASSERT(type == FBParamType::List); return list; }
   FBBarsParam& Bars() { FB_ASSERT(type == FBParamType::Bars); return bars; }

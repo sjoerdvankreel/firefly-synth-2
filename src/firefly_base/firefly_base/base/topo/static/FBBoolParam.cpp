@@ -25,7 +25,7 @@ FBBoolParamNonRealTime::PlainToText(bool /*io*/, double plain) const
 }
 
 std::optional<double>
-FBBoolParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
+FBBoolParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
 {
   if (text == "On")
     return 1.0;

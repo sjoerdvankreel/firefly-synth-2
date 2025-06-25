@@ -30,7 +30,7 @@ FBBarsParamNonRealTime::PlainToText(bool /*io*/, double plain) const
 }
 
 std::optional<double>
-FBBarsParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
+FBBarsParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == items[i].ToString())

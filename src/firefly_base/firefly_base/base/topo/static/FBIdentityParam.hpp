@@ -33,7 +33,7 @@ public FBParamNonRealTime
   double PlainToNormalized(double plain) const override;
   double NormalizedToPlain(double normalized) const override;
   std::string PlainToText(bool io, double plain) const override;
-  std::optional<double> TextToPlain(bool io, std::string const& text) const override;
+  std::optional<double> TextToPlainInternal(bool io, std::string const& text) const override;
 };
 
 inline FBBatch<float>

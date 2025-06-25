@@ -29,7 +29,7 @@ FBIdentityParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBIdentityParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
+FBIdentityParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)
