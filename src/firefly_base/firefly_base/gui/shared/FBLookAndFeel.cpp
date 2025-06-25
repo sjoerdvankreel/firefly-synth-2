@@ -231,7 +231,6 @@ FBLookAndFeel::drawButtonBackground(
 {
   auto cornerSize = 6.0f;
   auto bounds = button.getLocalBounds().toFloat().reduced(1.0f, 1.0f);
-  bounds = bounds.withWidth(bounds.getWidth() - 2.0f);
 
   auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
     .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f);
