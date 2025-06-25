@@ -291,6 +291,22 @@ FBRuntimeTopo::SaveParamStateToVar(
     param->setProperty("paramSlot", params[p].topoIndices.param.slot);
     param->setProperty("moduleSlot", params[p].topoIndices.module.slot);
     param->setProperty("val", String(params[p].static_.NonRealTime().NormalizedToText(true, *container.Params()[p])));
+
+    // store the longname without funky chars
+    // i dont want to deal with charsets in stored-to-disk
+    // it's just meta anyway, maybe useful to aid conversion debugging
+    std::string longNameClean = "";
+    std::string longName = params[p].longName;
+    for (int i = 0; i < longName.size(); i++)
+    {
+      char c = longName[i];
+      if('0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == ' ' || c == '-' || c == '_')
+        longNameClean.push_back(longName[i]);
+      else
+        longNameClean.push_back('?');
+    }
+    param->setProperty("name", String(longNameClean));
+
     state.append(var(param));
   }
 
