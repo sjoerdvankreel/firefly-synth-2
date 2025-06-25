@@ -6,6 +6,7 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBSectionComponent.hpp>
 
 using namespace juce;
 
@@ -18,7 +19,7 @@ MakePatchTab(FBPlugGUI* plugGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeButton>("Save"));
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeButton>("Clear"));
   grid->MarkSection({ { 0, 0 }, { 1, 3 } });
-  return grid;
+  return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
 Component*

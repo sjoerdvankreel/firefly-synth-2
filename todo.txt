@@ -1,3 +1,4 @@
+get rid of sse2neon
 patch load/save
 context menus
 do env1-lfo1-env2-lfo2-etc in order to allow modulate both from both

@@ -21,5 +21,5 @@ FBAutoSizeButton::FixedHeight() const
 int 
 FBAutoSizeButton::FixedWidth(int /*height*/) const
 {
-  return _textWidth;
+  return _textWidth + 16;
 }

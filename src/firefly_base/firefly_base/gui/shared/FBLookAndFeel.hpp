@@ -64,6 +64,9 @@ public:
     int x, int y, int width, int height, float sliderPos,
     float rotaryStartAngle, float rotaryEndAngle, juce::Slider&) override;
 
+  void drawButtonText(juce::Graphics& g, juce::TextButton& button,
+    bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+
   juce::Font getPopupMenuFont() override { return FBGUIGetFont(); }
   juce::Font getLabelFont(juce::Label&) override { return FBGUIGetFont(); }
   juce::Font getComboBoxFont(juce::ComboBox&) override { return FBGUIGetFont(); }
