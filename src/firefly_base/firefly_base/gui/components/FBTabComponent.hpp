@@ -19,19 +19,21 @@ public:
   FBTabBarButton(const juce::String& name, juce::TabbedButtonBar& bar);
 };
 
-class FBTabComponent:
-public juce::TabbedComponent
+class FBAutoSizeTabComponent:
+public juce::TabbedComponent,
+public IFBHorizontalAutoSize
 {
 public:
-  FBTabComponent();
+  FBAutoSizeTabComponent();
+
+  int FixedWidth(int height) const override;
 
   juce::TabBarButton* 
   createTabButton(const juce::String& tabName, int tabIndex) override;
 };
 
 class FBModuleTabComponent:
-public FBTabComponent,
-public IFBHorizontalAutoSize
+public FBAutoSizeTabComponent
 {
   FBPlugGUI* const _plugGUI;
   int _storedSelectedTab = -1;
@@ -49,8 +51,6 @@ public:
     juce::Component* component);
   void ActivateStoredSelectedTab();
 
-  int FixedWidth(
-    int height) const override;
   void currentTabChanged(
     int newCurrentTabIndex, 
     juce::String const& newCurrentTabName) override;

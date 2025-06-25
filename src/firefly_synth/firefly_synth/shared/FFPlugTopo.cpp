@@ -1,4 +1,4 @@
-#include <firefly_synth/shared/FFPlugGUI.hpp>
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>

@@ -29,7 +29,7 @@ MakeVMixSectionOsciToVFX(FBPlugGUI* plugGUI)
       columnSizes.push_back(0);
     }
   }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
   for (int o = 0; o < FFOsciCount; o++)
   {
     int row = o / 2;
@@ -61,7 +61,7 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
     columnSizes.push_back(0);
     columnSizes.push_back(1);
   }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Osc\U00002192Out"));
   for (int o = 0; o < FFOsciCount; o++)
   {
@@ -84,7 +84,7 @@ Component*
 FFMakeVMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 1, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1, 0, 0, 0 });
   grid->Add(0, 0, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   grid->Add(0, 1, MakeVMixSectionOsciToVFX(plugGUI));
   grid->Add(0, 2, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::VMix, (int)FFVMixParam::VFXToVFX));

@@ -1,4 +1,5 @@
-#include <firefly_synth/shared/FFPlugGUI.hpp>
+#include <firefly_synth/gui/FFPlugGUI.hpp>
+#include <firefly_synth/gui/FFPatchGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
@@ -117,15 +118,16 @@ FFPlugGUI::SetupGUI()
 
   FB_LOG_INFO("Creating GUI components.");
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(FBGridType::Generic, 1, -1, rowSizes, std::vector<int> { 1, 0, 0 });
-  _content->Add(0, 0, 1, 3, _graph);
+  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 5, 0, 0, 0 });
+  _content->Add(0, 0, 1, 4, _graph);
   _content->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
   _content->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
-  _content->Add(2, 0, 1, 3, FFMakeOsciGUI(this));
-  _content->Add(3, 0, 1, 3, FFMakeEffectGUI(this));
-  _content->Add(4, 0, 1, 3, FFMakeMixGUI(this));
-  _content->Add(5, 0, 1, 3, FFMakeEnvGUI(this));
+  _content->Add(1, 3, 1, 1, FFMakePatchGUI(this));
+  _content->Add(2, 0, 1, 4, FFMakeOsciGUI(this));
+  _content->Add(3, 0, 1, 4, FFMakeEffectGUI(this));
+  _content->Add(4, 0, 1, 4, FFMakeMixGUI(this));
+  _content->Add(5, 0, 1, 4, FFMakeEnvGUI(this));
   FB_LOG_INFO("Created GUI components.");
 
   FB_LOG_INFO("Making GUI visible.");

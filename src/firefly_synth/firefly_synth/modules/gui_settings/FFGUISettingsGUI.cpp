@@ -19,7 +19,7 @@ MakeGUISettingsTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 });
   auto graphMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphMode, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, graphMode));
   grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, graphMode));
@@ -31,7 +31,8 @@ Component*
 FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, nullptr);
-  tabs->AddModuleTab(false, { (int)FFModuleType::GUISettings, 0 }, MakeGUISettingsTab(plugGUI));
+  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
+  auto name = plugGUI->HostContext()->Topo()->static_.modules[(int)FFModuleType::GUISettings].name;
+  tabs->addTab(name, {}, MakeGUISettingsTab(plugGUI), false);
   return tabs;
 }

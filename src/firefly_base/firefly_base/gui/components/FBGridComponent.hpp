@@ -9,8 +9,6 @@
 #include <vector>
 #include <utility>
 
-enum class FBGridType { Generic, Module };
-
 struct FBGridCell final
 {
   int row = -1;
@@ -36,7 +34,7 @@ public juce::Component,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
-  FBGridType const _type;
+  bool const _rowColGap;
   int const _autoSizeCol;
   int const _autoSizeRow;
   std::vector<int> const _rows;
@@ -62,8 +60,8 @@ public:
   void Add(int row, int col, int rowSpan, int colSpan, juce::Component* child);
 
   FBGridComponent() = delete;
-  FBGridComponent(FBGridType type, int rows, int cols);
-  FBGridComponent(FBGridType type, std::vector<int> const& rows, std::vector<int> const& cols);
-  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, int rows, int cols);
-  FBGridComponent(FBGridType type, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols);
+  FBGridComponent(bool rowColGap, int rows, int cols);
+  FBGridComponent(bool rowColGap, std::vector<int> const& rows, std::vector<int> const& cols);
+  FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, int rows, int cols);
+  FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols);
 };

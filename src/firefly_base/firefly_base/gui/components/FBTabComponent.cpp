@@ -12,43 +12,42 @@ FBTabBarButton::
 FBTabBarButton(const String& name, TabbedButtonBar& bar):
 TabBarButton(name, bar) {}
 
-FBTabComponent::
-FBTabComponent():
+FBAutoSizeTabComponent::
+FBAutoSizeTabComponent():
 TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
 {
   setTabBarDepth(FBTabBarDepth);
   setLookAndFeel(FBGetLookAndFeel());
 }
 
+int
+FBAutoSizeTabComponent::FixedWidth(int height) const
+{
+  auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
+  return content.FixedWidth(height - 20);
+}
+
 TabBarButton*
-FBTabComponent::createTabButton(const juce::String& tabName, int /*tabIndex*/)
+FBAutoSizeTabComponent::createTabButton(const juce::String& tabName, int /*tabIndex*/)
 {
   return new FBTabBarButton(tabName, *tabs);
 }
 
 FBModuleTabComponent::
 FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-FBTabComponent(),
+FBAutoSizeTabComponent(),
 _plugGUI(plugGUI),
 _param(param)
 {
-  if (_param == nullptr)
-    return;
+  assert(param != nullptr);
   double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
   _storedSelectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
-}
-
-int
-FBModuleTabComponent::FixedWidth(int height) const
-{
-  auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
-  return content.FixedWidth(height - 20);
 }
 
 void
 FBModuleTabComponent::ActivateStoredSelectedTab()
 {
-  if (_param == nullptr || !(0 <= _storedSelectedTab && _storedSelectedTab < _moduleIndices.size()))
+  if (!(0 <= _storedSelectedTab && _storedSelectedTab < _moduleIndices.size()))
     return;
   setCurrentTabIndex(_storedSelectedTab);
 }
@@ -61,8 +60,6 @@ FBModuleTabComponent::currentTabChanged(
     return;
   auto const& indices = _moduleIndices[newCurrentTabIndex];
   _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
-  if (_param == nullptr)
-    return;
   double normalized = _param->static_.Discrete().PlainToNormalizedFast(newCurrentTabIndex);
   _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
   _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
