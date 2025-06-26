@@ -507,6 +507,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
         FB_LOG_ERROR("Mapped old to new plugin parameter, but new id does not exist.");
         continue;
       }
+      FB_LOG_INFO("Mapped old to new parameter: '" + newId + "'.");
     }
 
     auto const& topo = params.params[iter->second];

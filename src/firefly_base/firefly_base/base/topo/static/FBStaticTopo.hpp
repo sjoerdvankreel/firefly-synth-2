@@ -27,6 +27,10 @@ struct FBPlugVersion final
   int major = 0;
   int minor = 0;
   int patch = 0;
+  
+  FBPlugVersion() = default;
+  FBPlugVersion(int major, int minor, int patch);
+
   std::string ToString() const;
   bool operator<(FBPlugVersion const& rhs) const;
 };

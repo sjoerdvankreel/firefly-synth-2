@@ -43,7 +43,11 @@ FBPlugVersion::ToString() const
   result += "." + std::to_string(minor);
   result += "." + std::to_string(patch);
   return result;
-}
+}  
+
+FBPlugVersion::
+FBPlugVersion(int major, int minor, int patch) :
+major(major), minor(minor), patch(patch) {}
 
 bool 
 FBPlugVersion::operator<(FBPlugVersion const& rhs) const
