@@ -15,7 +15,7 @@ FormatBlockSlot(FBStaticTopo const&, int slot)
 std::unique_ptr<FBStaticModule>
 FFMakeEffectTopo(bool global)
 {
-  std::string prefix = global ? "G" : ""; // TODO prefix should be V once we go out of alpha, but, dont want to refix the demos right now
+  std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
   result->name = global? "Global FX": "Voice FX";

@@ -398,9 +398,12 @@ FBRuntimeTopo::LoadParamStateFromVar(
     return false;
   }
 
-  if (static_cast<int>(major) > static_.meta.version.major ||
-    static_cast<int>(major) == static_.meta.version.major && static_cast<int>(minor) > static_.meta.version.minor ||
-    static_cast<int>(minor) == static_.meta.version.minor && static_cast<int>(patch) > static_.meta.version.patch)
+  FBPlugVersion loadingVersion = {};
+  loadingVersion.major = static_cast<int>(major);
+  loadingVersion.minor = static_cast<int>(minor);
+  loadingVersion.patch = static_cast<int>(patch);
+
+  if (static_.meta.version < loadingVersion)
   {
     FB_LOG_ERROR("Stored plugin version is newer than current plugin version.");
     return false;
@@ -427,6 +430,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
     *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
+  auto converter = static_.deserializationConverterFactory(loadingVersion, this);
   for (int sp = 0; sp < state.size(); sp++)
   {
     DynamicObject* param = state[sp].getDynamicObject();
@@ -456,11 +460,53 @@ FBRuntimeTopo::LoadParamStateFromVar(
     }
 
     std::unordered_map<int, int>::const_iterator iter;
-    int tag = FBMakeStableHash(id.toString().toStdString());
-    if ((iter = params.paramTagToIndex.find(tag)) == params.paramTagToIndex.end())
+    int oldTag = FBMakeStableHash(id.toString().toStdString());
+    if ((iter = params.paramTagToIndex.find(oldTag)) == params.paramTagToIndex.end())
     {
-      FB_LOG_WARN("Unknown plugin parameter.");
-      continue;
+      FB_LOG_WARN("Unknown plugin parameter: '" + id.toString().toStdString() + "', trying to map old to new.");
+      var oldModuleId = param->getProperty("moduleId");
+      if (!oldModuleId.isString())
+      {
+        FB_LOG_ERROR("Old module id is not a string.");
+        continue;
+      }
+      var oldModuleSlot = param->getProperty("moduleSlot");
+      if (!oldModuleSlot.isInt())
+      {
+        FB_LOG_ERROR("Old module slot is not an int.");
+        continue;
+      }
+      var oldParamId = param->getProperty("paramId");
+      if (!oldParamId.isString())
+      {
+        FB_LOG_ERROR("Old param id is not a string.");
+        continue;
+      }
+      var oldParamSlot = param->getProperty("paramSlot");
+      if (!oldParamSlot.isInt())
+      {
+        FB_LOG_ERROR("Old param slot is not an int.");
+        continue;
+      }
+      int newParamSlot = -1;
+      int newModuleSlot = -1;
+      std::string newParamId = {};
+      std::string newModuleId = {};
+      if (!converter->OnParamNotFound(
+        oldModuleId.toString().toStdString(), static_cast<int>(oldModuleSlot), 
+        oldParamId.toString().toStdString(), static_cast<int>(oldParamSlot),
+        newModuleId, newModuleSlot, newParamId, newParamSlot))
+      {
+        FB_LOG_ERROR("Failed to map old to new plugin parameter.");
+        continue;
+      }
+      std::string newId = FFMakeRuntimeParamId(newModuleId, newModuleSlot, newParamId, newParamSlot);
+      int newTag = FBMakeStableHash(newId);
+      if ((iter = params.paramTagToIndex.find(newTag)) == params.paramTagToIndex.end())
+      {
+        FB_LOG_ERROR("Mapped old to new plugin parameter, but new id does not exist.");
+        continue;
+      }
     }
 
     auto const& topo = params.params[iter->second];

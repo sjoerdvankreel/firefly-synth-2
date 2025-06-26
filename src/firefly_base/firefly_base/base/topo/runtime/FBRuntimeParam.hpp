@@ -9,6 +9,11 @@
 struct FBStaticTopo;
 struct FBStaticModule;
 
+std::string
+FFMakeRuntimeParamId(
+  std::string const& staticModuleId, int moduleSlot,
+  std::string const& staticParamId, int paramSlot);
+
 struct FBRuntimeParamBase
 {
   int runtimeModuleIndex;

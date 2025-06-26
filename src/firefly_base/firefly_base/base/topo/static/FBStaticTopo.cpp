@@ -1,5 +1,12 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
+FBDeserializationConverter::
+FBDeserializationConverter(
+FBPlugVersion const& oldVersion,
+FBRuntimeTopo const* topo) :
+_oldVersion(oldVersion),
+_topo(topo) {}
+
 FBStaticParam const&
 FBSpecialParam::ParamTopo(FBStaticTopo const& topo) const
 {
@@ -36,4 +43,14 @@ FBPlugVersion::ToString() const
   result += "." + std::to_string(minor);
   result += "." + std::to_string(patch);
   return result;
+}
+
+bool 
+FBPlugVersion::operator<(FBPlugVersion const& rhs) const
+{
+  if (major < rhs.major) return true;
+  if (major > rhs.major) return false;
+  if (minor < rhs.minor) return true;
+  if (minor > rhs.minor) return false;
+  return patch < rhs.patch;
 }
