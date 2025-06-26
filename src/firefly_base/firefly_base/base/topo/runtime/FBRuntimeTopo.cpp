@@ -78,8 +78,11 @@ moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
       auto const& param = topo.modules[m].params[p];
       FB_ASSERT(allIds.insert(param.id).second);
       if (param.type == FBParamType::List)
+      {
+        std::set<std::string> allListIds = {};
         for (int i = 0; i < param.List().items.size(); i++)
-          FB_ASSERT(allIds.insert(param.List().items[i].id).second);
+          FB_ASSERT(allListIds.insert(param.List().items[i].id).second);
+      }
     }
   }
 #endif
