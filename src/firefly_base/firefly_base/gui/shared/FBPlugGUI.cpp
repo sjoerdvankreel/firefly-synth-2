@@ -49,11 +49,9 @@ FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double /*value*/)
 void
 FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, double value)
 {
-  HostContext()->UndoState().BeginDiscard();
   auto control = GetControlForAudioParamIndex(index);
   control->SetValueNormalizedFromHost(value);
   AudioParamNormalizedChanged(index);
-  HostContext()->UndoState().EndDiscard();
 }
 
 void

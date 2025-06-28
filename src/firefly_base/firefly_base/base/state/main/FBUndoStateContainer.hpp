@@ -11,7 +11,6 @@ class FBUndoStateContainer final
 {
   int _pos = 0;
   int _activeActionCount = 0;
-  bool _discard = false;
   std::vector<std::string> _actions = {};
   std::vector<FBScalarStateContainer> _state = {};
   FBHostGUIContext* const _hostContext;
@@ -21,8 +20,6 @@ public:
   void Redo();
   void Clear();
   void EndAction();
-  void EndDiscard();
-  void BeginDiscard();
   void BeginAction(std::string const& name);
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBUndoStateContainer);

@@ -190,9 +190,9 @@ FBVST3EditController::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
-    UndoState().BeginDiscard();
+    UndoState().BeginAction("Load State");
     _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
-    UndoState().EndDiscard();
+    UndoState().EndAction();
     UndoState().Clear();
     return kResultTrue;
   });
@@ -210,10 +210,10 @@ FBVST3EditController::setComponentState(IBStream* state)
     FBScalarStateContainer edit(*_topo);
     if (!_topo->LoadEditStateFromString(json, edit))
       return kResultFalse;
-    UndoState().BeginDiscard();
+    UndoState().BeginAction("Load State");
     for (int i = 0; i < edit.Params().size(); i++)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
-    UndoState().EndDiscard();
+    UndoState().EndAction();
     UndoState().Clear();
     return kResultOk;
   });
