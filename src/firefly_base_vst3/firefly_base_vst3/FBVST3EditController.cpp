@@ -76,19 +76,19 @@ FBVST3EditController::ResetView()
 }
 
 void
-FBVST3EditController::EndAudioParamChange(int /*index*/)
+FBVST3EditController::DoEndAudioParamChange(int /*index*/)
 {
   // see PerformAudioParamEdit
 }
 
 void
-FBVST3EditController::BeginAudioParamChange(int /*index*/)
+FBVST3EditController::DoBeginAudioParamChange(int /*index*/)
 {
   // see PerformAudioParamEdit
 }
 
 void
-FBVST3EditController::PerformAudioParamEdit(int index, double normalized)
+FBVST3EditController::DoPerformAudioParamEdit(int index, double normalized)
 {
   int tag = _topo->audio.params[index].tag;
   setParamNormalized(tag, normalized);
@@ -190,7 +190,10 @@ FBVST3EditController::setState(IBStream* state)
     std::string json;
     if (!FBVST3LoadIBStream(state, json))
       return kResultFalse;
+    UndoState().BeginAction("Load State");
     _topo->LoadGUIStateFromStringWithDryRun(json, *_guiState);
+    UndoState().EndAction();
+    UndoState().Clear();
     return kResultTrue;
   });
 }
@@ -207,8 +210,11 @@ FBVST3EditController::setComponentState(IBStream* state)
     FBScalarStateContainer edit(*_topo);
     if (!_topo->LoadEditStateFromString(json, edit))
       return kResultFalse;
+    UndoState().BeginAction("Load State");
     for (int i = 0; i < edit.Params().size(); i++)
       setParamNormalized(_topo->audio.params[i].tag, *edit.Params()[i]);
+    UndoState().EndAction();
+    UndoState().Clear();
     return kResultOk;
   });
 }

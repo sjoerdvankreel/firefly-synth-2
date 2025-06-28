@@ -6,6 +6,25 @@
 #include <set>
 
 FBScalarStateContainer::
+FBScalarStateContainer(FBScalarStateContainer&& rhs) noexcept:
+_params(std::move(rhs._params)),
+_rawState(rhs._rawState),
+_freeRawState(rhs._freeRawState)
+{
+  rhs._rawState = nullptr;
+}
+
+FBScalarStateContainer&
+FBScalarStateContainer::operator=(FBScalarStateContainer&& rhs) noexcept
+{
+  _params = std::move(rhs._params);
+  _rawState = rhs._rawState;
+  _freeRawState = rhs._freeRawState;
+  rhs._rawState = nullptr;
+  return *this;
+}
+
+FBScalarStateContainer::
 FBScalarStateContainer(FBRuntimeTopo const& topo):
 _params(),
 _rawState(topo.static_.allocRawScalarState()),

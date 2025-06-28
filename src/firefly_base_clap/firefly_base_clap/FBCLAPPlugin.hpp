@@ -62,6 +62,11 @@ public IFBHostDSPContext
   void PushParamChangeToProcessorBlock(int index, double normalized, int pos);
   void ProcessMainToAudioEvents(const clap_output_events* out, bool pushToProcBlock);
 
+protected:
+  void DoEndAudioParamChange(int index) override;
+  void DoBeginAudioParamChange(int index) override;
+  void DoPerformAudioParamEdit(int index, double normalized) override;
+
 public:
   ~FBCLAPPlugin();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBCLAPPlugin);
@@ -104,10 +109,6 @@ public:
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeState() override { return _dspExchangeState.get(); }
-
-  void EndAudioParamChange(int index) override;
-  void BeginAudioParamChange(int index) override;
-  void PerformAudioParamEdit(int index, double normalized) override;
 
   double GetAudioParamNormalized(int index) const override;
   double GetGUIParamNormalized(int index) const override;

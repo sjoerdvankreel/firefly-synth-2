@@ -81,6 +81,7 @@ FFMakeTopo(FBPlugFormat format)
 {
   auto result = std::make_unique<FBStaticTopo>();
   result->meta = FFPlugMeta(format);
+  result->maxUndoSize = 2; // TODO
   result->patchExtension = "ff2preset";
   result->guiWidth = 900;
   result->guiAspectRatioWidth = 25;

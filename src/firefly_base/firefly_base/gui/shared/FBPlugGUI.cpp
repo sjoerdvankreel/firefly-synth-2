@@ -210,19 +210,19 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 }
 
 void 
-FBPlugGUI::InitEditState()
+FBPlugGUI::InitPatch()
 {
-  // todo undo/redo
   FB_LOG_ENTRY_EXIT();
+  HostContext()->UndoState().BeginAction("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  HostContext()->UndoState().EndAction();
 }
 
 void 
-FBPlugGUI::SaveEditStateToFile()
+FBPlugGUI::SavePatchToFile()
 {
-  // todo undo/redo
   FB_LOG_ENTRY_EXIT();
   int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
   auto extension = HostContext()->Topo()->static_.patchExtension;
@@ -239,7 +239,7 @@ FBPlugGUI::SaveEditStateToFile()
 }
 
 void 
-FBPlugGUI::LoadEditStateFromFile()
+FBPlugGUI::LoadPatchFromFile()
 {
   // todo undo/redo
   FB_LOG_ENTRY_EXIT();
@@ -253,7 +253,11 @@ FBPlugGUI::LoadEditStateFromFile()
     auto text = file.loadFileAsString().toStdString();
     FBScalarStateContainer editState(*HostContext()->Topo());
     if (HostContext()->Topo()->LoadEditStateFromString(text, editState))
+    {
+      HostContext()->UndoState().BeginAction("Load Patch");
       editState.CopyTo(HostContext());
+      HostContext()->UndoState().EndAction();
+    }
     else
       AlertWindow::showMessageBoxAsync(
         MessageBoxIconType::WarningIcon,

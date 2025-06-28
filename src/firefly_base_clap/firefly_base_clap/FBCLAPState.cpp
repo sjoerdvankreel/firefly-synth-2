@@ -48,6 +48,7 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       else
         json.append(buffer, read);
 
+    UndoState().BeginAction("Load State");
     _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState);
     for (int i = 0; i < _editState->Params().size(); i++)
     {
@@ -56,6 +57,8 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       if (_gui)
         _gui->SetAudioParamNormalizedFromHost(i, normalized);
     }
+    UndoState().EndAction();
+    UndoState().Clear();
     return true;
   });
 }

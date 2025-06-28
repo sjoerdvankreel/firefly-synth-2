@@ -119,6 +119,7 @@ struct FBStaticTopo final
   FBPlugGUIFactory guiFactory = {};
   FBDeserializationConverterFactory deserializationConverterFactory = {};
 
+  int maxUndoSize = {};
   FBStaticTopoMeta meta = {};
   std::string patchExtension = {};
 

@@ -31,9 +31,9 @@ public:
   std::string GetAudioParamActiveTooltip(
     FBStaticParam const& param, bool active, float value) const;
 
-  void InitEditState();
-  void SaveEditStateToFile();
-  void LoadEditStateFromFile();
+  void InitPatch();
+  void SavePatchToFile();
+  void LoadPatchFromFile();
 
   void UpdateExchangeState();
   void ShowHostMenuForAudioParam(int index);

@@ -29,6 +29,11 @@ public FBHostGUIContext
   std::unique_ptr<FBExchangeStateContainer> _exchangeState;
   DataExchangeReceiverHandler _exchangeHandler;
 
+protected:
+  void DoEndAudioParamChange(int index) override;
+  void DoBeginAudioParamChange(int index) override;
+  void DoPerformAudioParamEdit(int index, double normalized) override;
+
 public:
   DEFINE_INTERFACES
     DEF_INTERFACE(IDataExchangeReceiver)
@@ -40,10 +45,6 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
 
   void ResetView();
-
-  void EndAudioParamChange(int index) override;
-  void BeginAudioParamChange(int index) override;
-  void PerformAudioParamEdit(int index, double normalized) override;
 
   double GetAudioParamNormalized(int index) const override;
   double GetGUIParamNormalized(int index) const override;

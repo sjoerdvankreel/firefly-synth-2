@@ -16,9 +16,12 @@ class FBScalarStateContainer final
   void (*_freeRawState)(void*);
 
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBScalarStateContainer);
   FBScalarStateContainer(FBRuntimeTopo const& topo);
-  ~FBScalarStateContainer() { _freeRawState(_rawState); }
+  ~FBScalarStateContainer() { if(_rawState) _freeRawState(_rawState); }
+  FBScalarStateContainer(FBScalarStateContainer&&) noexcept;
+  FBScalarStateContainer& operator=(FBScalarStateContainer&&) noexcept;
+  FBScalarStateContainer(FBScalarStateContainer const&) = delete;
+  FBScalarStateContainer& operator=(FBScalarStateContainer const&) = delete;
 
   void CopyTo(FBHostGUIContext* context) const;
   void CopyFrom(FBHostGUIContext const* context);
