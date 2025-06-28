@@ -39,7 +39,7 @@ public:
   void ShowHostMenuForAudioParam(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
 
-  void mouseDown(const juce::MouseEvent& event) override;
+  void mouseUp(const juce::MouseEvent& event) override;
 
   virtual FBGUIRenderType GetRenderType() const = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;

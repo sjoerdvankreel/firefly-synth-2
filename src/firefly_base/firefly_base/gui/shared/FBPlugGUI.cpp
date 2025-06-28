@@ -18,6 +18,7 @@ _hostContext(hostContext)
 {
   _tooltipWindow = StoreComponent<TooltipWindow>();
   addAndMakeVisible(_tooltipWindow);
+  addMouseListener(this, true);
 }
 
 void
@@ -210,11 +211,11 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 }
 
 void 
-FBPlugGUI::mouseDown(const MouseEvent& event)
+FBPlugGUI::mouseUp(const MouseEvent& event)
 {
   if (!event.mods.isRightButtonDown())
   {
-    Component::mouseDown(event);
+    Component::mouseUp(event);
     return;
   }
 

@@ -33,6 +33,14 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   SetupGUI();
   InitAllDependencies();
   resized();
+  postCommandMessage(FFCommandActivateUndo);
+}
+
+void 
+FFPlugGUI::handleCommandMessage(int id)
+{
+  if (id == FFCommandActivateUndo)
+    HostContext()->UndoState().Activate();
 }
 
 void
