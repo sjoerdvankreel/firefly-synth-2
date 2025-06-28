@@ -36,16 +36,17 @@ public:
   virtual FBRuntimeTopo const* Topo() const = 0;
   virtual FBExchangeStateContainer const* ExchangeState() const = 0;
 
-  void ClearModuleAudioParams(FBTopoIndices const& moduleIndices);
-
   virtual void EndAudioParamChange(int index) = 0;
   virtual void BeginAudioParamChange(int index) = 0;
   virtual void PerformAudioParamEdit(int index, double normalized) = 0;
-  void PerformImmediateAudioParamEdit(int index, double normalized);
 
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual double GetGUIParamNormalized(int index) const = 0;
   virtual void SetGUIParamNormalized(int index, double normalized) = 0;
+
+  void PerformImmediateAudioParamEdit(int index, double normalized);
+  void ClearModuleAudioParams(FBTopoIndices const& moduleIndices);
+  void CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot);
 
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;

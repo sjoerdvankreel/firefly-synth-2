@@ -38,6 +38,23 @@ FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
   }
 }
 
+void 
+FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot)
+{
+  auto const& staticModule = Topo()->static_.modules[moduleIndices.index];
+  for (int p = 0; p < staticModule.params.size(); p++)
+  {
+    auto const& staticParam = staticModule.params[p];
+    for (int s = 0; s < staticParam.slotCount; s++)
+    {
+      auto fromRuntimeParam = Topo()->audio.ParamAtTopo({ moduleIndices, { p, s } });
+      auto toRuntimeParam = Topo()->audio.ParamAtTopo({ { moduleIndices.index, toSlot }, { p, s } });
+      auto fromValue = GetAudioParamNormalized(fromRuntimeParam->runtimeParamIndex);
+      PerformImmediateAudioParamEdit(toRuntimeParam->runtimeParamIndex, fromValue);
+    }
+  }
+}
+
 std::unique_ptr<PopupMenu>
 FBMakeHostContextMenu(std::vector<FBHostContextMenuItem> const& items)
 {

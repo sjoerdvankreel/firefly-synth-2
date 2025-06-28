@@ -102,18 +102,26 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
   if (tabIndex < 0 || tabIndex >= _moduleIndices.size())
     return;
   
-  std::vector<int> moduleSlots = {};
   auto moduleIndices = _moduleIndices[tabIndex];
-  for (int i = 0; i < _moduleIndices.size(); i++)
-    if (_moduleIndices[i].index == moduleIndices.index)
-      moduleSlots.push_back(_moduleIndices[i].slot);
+  int slotCount = _plugGUI->HostContext()->Topo()->static_.modules[moduleIndices.index].slotCount;
 
   PopupMenu menu;
   menu.addItem(1, "Clear");
+  if (slotCount > 1)
+  {
+    PopupMenu subMenu;
+    for (int i = 0; i < slotCount; i++)
+      subMenu.addItem(2 + i, std::to_string(i + 1), moduleIndices.slot != i);
+    menu.addSubMenu("Copy To", subMenu);
+  }
 
   PopupMenu::Options options;
   options = options.withParentComponent(_plugGUI);
   options = options.withTargetComponent(getTabbedButtonBar().getTabButton(tabIndex));
-  menu.showMenuAsync(options, [this, moduleIndices](int id) {
-    if (id == 1) _plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices); });
+  menu.showMenuAsync(options, [this, moduleIndices, slotCount](int id) {
+    if (id == 1) 
+      _plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices); 
+    else if(2 <= id && id < slotCount + 2) 
+      _plugGUI->HostContext()->CopyModuleAudioParams(moduleIndices, id - 2);
+  });
 }
