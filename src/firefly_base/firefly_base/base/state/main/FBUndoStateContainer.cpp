@@ -7,8 +7,25 @@ FBUndoStateContainer(FBHostGUIContext* hostContext):
 _hostContext(hostContext) {}
 
 void
+FBUndoStateContainer::EndDiscard()
+{
+  FB_ASSERT(_activeActionCount == 0);
+  FB_ASSERT(_discard);
+  _discard = false;
+}
+
+void
+FBUndoStateContainer::BeginDiscard()
+{
+  FB_ASSERT(_activeActionCount == 0);
+  FB_ASSERT(!_discard);
+  _discard = true;
+}
+
+void
 FBUndoStateContainer::Clear()
 {
+  FB_ASSERT(!_discard);
   FB_ASSERT(_activeActionCount == 0);
   _pos = 0;
   _state.clear();
@@ -18,6 +35,7 @@ FBUndoStateContainer::Clear()
 void 
 FBUndoStateContainer::Undo()
 {
+  FB_ASSERT(!_discard);
   FB_ASSERT(CanUndo());
   FB_ASSERT(_activeActionCount == 0);
   FB_ASSERT(0 < _pos && _pos <= _state.size());
@@ -28,6 +46,7 @@ FBUndoStateContainer::Undo()
 void 
 FBUndoStateContainer::Redo()
 {
+  FB_ASSERT(!_discard);
   FB_ASSERT(CanRedo());
   FB_ASSERT(_activeActionCount == 0);
   FB_ASSERT(0 <= _pos && _pos < _state.size());
@@ -38,6 +57,8 @@ FBUndoStateContainer::Redo()
 void 
 FBUndoStateContainer::BeginAction(std::string const& action)
 {
+  if (_discard)
+    return;
   if (_activeActionCount == 0)
   {
     _state.erase(_state.begin() + _pos, _state.end());
@@ -50,6 +71,8 @@ FBUndoStateContainer::BeginAction(std::string const& action)
 void
 FBUndoStateContainer::EndAction()
 {
+  if (_discard)
+    return;
   FB_ASSERT(_activeActionCount > 0);
   FB_ASSERT(_pos == _state.size());
   _activeActionCount--;
