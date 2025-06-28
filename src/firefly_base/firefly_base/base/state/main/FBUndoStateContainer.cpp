@@ -4,8 +4,7 @@
 
 FBUndoStateContainer::
 FBUndoStateContainer(FBHostGUIContext* hostContext):
-_hostContext(hostContext),
-_maxUndoSize(hostContext->Topo()->static_.maxUndoSize) {}
+_hostContext(hostContext) {}
 
 void
 FBUndoStateContainer::Clear()
@@ -59,7 +58,7 @@ FBUndoStateContainer::EndAction()
   _pos++;
   auto& state = _state.emplace_back(*_hostContext->Topo());
   state.CopyFrom(_hostContext);
-  if (_state.size() > _maxUndoSize)
+  if (_state.size() > _hostContext->Topo()->static_.maxUndoSize)
   {
     _state.erase(_state.begin());
     _actions.erase(_actions.begin());

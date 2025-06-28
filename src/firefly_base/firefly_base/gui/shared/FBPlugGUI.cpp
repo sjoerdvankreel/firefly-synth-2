@@ -210,6 +210,32 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 }
 
 void 
+FBPlugGUI::mouseDown(const MouseEvent& event)
+{
+  if (!event.mods.isRightButtonDown())
+  {
+    Component::mouseDown(event);
+    return;
+  }
+
+  auto& undoState = HostContext()->UndoState();
+  if (!undoState.CanUndo() && !undoState.CanRedo())
+    return;
+
+  PopupMenu menu;
+  if (undoState.CanUndo())
+    menu.addItem(1, "Undo " + undoState.UndoAction());
+  if (undoState.CanRedo())
+    menu.addItem(2, "Redo " + undoState.RedoAction());
+  PopupMenu::Options options;
+  options = options.withParentComponent(this);
+  options = options.withMousePosition();
+  menu.showMenuAsync(options, [this](int id) {
+    if (id == 1) HostContext()->UndoState().Undo();
+    if(id == 2) HostContext()->UndoState().Redo(); });
+}
+
+void 
 FBPlugGUI::InitPatch()
 {
   FB_LOG_ENTRY_EXIT();
@@ -241,7 +267,6 @@ FBPlugGUI::SavePatchToFile()
 void 
 FBPlugGUI::LoadPatchFromFile()
 {
-  // todo undo/redo
   FB_LOG_ENTRY_EXIT();
   int loadFlags = FileBrowserComponent::openMode;
   auto extension = HostContext()->Topo()->static_.patchExtension;
