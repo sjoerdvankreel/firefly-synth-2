@@ -4,6 +4,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 
+#include <map>
 #include <string>
 
 using namespace juce;
@@ -11,6 +12,16 @@ using namespace juce;
 FBTabBarButton::
 FBTabBarButton(const String& name, TabbedButtonBar& bar):
 TabBarButton(name, bar) {}
+
+void 
+FBTabBarButton::clicked(const ModifierKeys& modifiers)
+{
+  FBModuleTabComponent* tabs;
+  if (!modifiers.isRightButtonDown())
+    TabBarButton::clicked(modifiers);
+  else if ((tabs = findParentComponentOfClass<FBModuleTabComponent>()) != nullptr)
+    tabs->TabRightClicked(getIndex());
+}
 
 FBAutoSizeTabComponent::
 FBAutoSizeTabComponent():
@@ -83,4 +94,26 @@ FBModuleTabComponent::AddModuleTab(
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
+}
+
+void 
+FBModuleTabComponent::TabRightClicked(int tabIndex)
+{
+  if (tabIndex < 0 || tabIndex >= _moduleIndices.size())
+    return;
+  
+  std::vector<int> moduleSlots = {};
+  auto moduleIndices = _moduleIndices[tabIndex];
+  for (int i = 0; i < _moduleIndices.size(); i++)
+    if (_moduleIndices[i].index == moduleIndices.index)
+      moduleSlots.push_back(_moduleIndices[i].slot);
+
+  PopupMenu menu;
+  menu.addItem(1, "Clear");
+
+  PopupMenu::Options options;
+  options = options.withParentComponent(_plugGUI);
+  options = options.withTargetComponent(getTabbedButtonBar().getTabButton(tabIndex));
+  menu.showMenuAsync(options, [this, moduleIndices](int id) {
+    if (id == 1) _plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices); });
 }

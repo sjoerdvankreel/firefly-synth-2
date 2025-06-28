@@ -16,7 +16,11 @@ public juce::TabBarButton
 {
 public:
   bool centerText = false;
-  FBTabBarButton(const juce::String& name, juce::TabbedButtonBar& bar);
+  FBTabBarButton(
+    const juce::String& name, 
+    juce::TabbedButtonBar& bar);
+
+  void clicked(const juce::ModifierKeys& modifiers) override;
 };
 
 class FBAutoSizeTabComponent:
@@ -49,7 +53,9 @@ public:
     bool centerText,
     FBTopoIndices const& moduleIndices,
     juce::Component* component);
+  
   void ActivateStoredSelectedTab();
+  void TabRightClicked(int tabIndex);
 
   void currentTabChanged(
     int newCurrentTabIndex, 

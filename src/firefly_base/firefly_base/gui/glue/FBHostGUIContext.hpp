@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+struct FBTopoIndices;
 struct FBRuntimeTopo;
 class FBGUIStateContainer;
 class FBExchangeStateContainer;
@@ -34,6 +35,8 @@ public:
   virtual FBGUIStateContainer* GUIState() = 0;
   virtual FBRuntimeTopo const* Topo() const = 0;
   virtual FBExchangeStateContainer const* ExchangeState() const = 0;
+
+  void ClearModuleAudioParams(FBTopoIndices const& moduleIndices);
 
   virtual void EndAudioParamChange(int index) = 0;
   virtual void BeginAudioParamChange(int index) = 0;

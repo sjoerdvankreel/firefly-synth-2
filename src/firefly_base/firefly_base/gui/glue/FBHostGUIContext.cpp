@@ -1,4 +1,5 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <stack>
 #include <memory>
@@ -19,6 +20,22 @@ FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
   BeginAudioParamChange(index);
   PerformAudioParamEdit(index, normalized);
   EndAudioParamChange(index);
+}
+
+void 
+FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
+{
+  auto const& staticModule = Topo()->static_.modules[moduleIndices.index];
+  for (int p = 0; p < staticModule.params.size(); p++)
+  {
+    auto const& staticParam = staticModule.params[p];
+    for (int s = 0; s < staticParam.slotCount; s++)
+    {
+      auto runtimeParam = Topo()->audio.ParamAtTopo({ moduleIndices, { p, s } });
+      double normalized = staticParam.DefaultNormalizedByText(moduleIndices.slot, s);
+      PerformImmediateAudioParamEdit(runtimeParam->runtimeParamIndex, normalized);
+    }
+  }
 }
 
 std::unique_ptr<PopupMenu>
