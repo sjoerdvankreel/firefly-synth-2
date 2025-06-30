@@ -25,9 +25,8 @@ void
 FBUndoStateContainer::Clear()
 {
   if (!_isActive) return;
-  _position = -1;
-  _state.clear();
-  _actions.clear();
+  _undoStack = {};
+  _redoStack = {};
   _activeActionCount = 0;
 }
 
@@ -37,10 +36,13 @@ FBUndoStateContainer::Undo()
   if (!_isActive) return;
   FB_ASSERT(CanUndo());
   FB_ASSERT(_activeActionCount == 0);
-  FB_ASSERT(0 < _position && _position <= _state.size());
   _isActive = false;
-  _state[_position - 1].CopyTo(_hostContext);
-  _position--;
+  FBUndoItem item(*_hostContext->Topo());
+  item.action = _undoStack.top().action;
+  item.state.CopyFrom(_hostContext);
+  _redoStack.push(std::move(item));
+  _undoStack.top().state.CopyTo(_hostContext);
+  _undoStack.pop();
   ActivateAsync();
 }
 
@@ -50,10 +52,13 @@ FBUndoStateContainer::Redo()
   if (!_isActive) return;
   FB_ASSERT(CanRedo());
   FB_ASSERT(_activeActionCount == 0);
-  FB_ASSERT(0 <= _position && _position < _state.size());
   _isActive = false;
-  _state[_position + 1].CopyTo(_hostContext);
-  _position++;
+  FBUndoItem item(*_hostContext->Topo());
+  item.action = _redoStack.top().action;
+  item.state.CopyFrom(_hostContext);
+  _undoStack.push(std::move(item));
+  _redoStack.top().state.CopyTo(_hostContext);
+  _redoStack.pop();
   ActivateAsync();
 }
 
@@ -63,15 +68,11 @@ FBUndoStateContainer::BeginAction(std::string const& action)
   if (!_isActive) return;
   if (_activeActionCount == 0)
   {
-    if (_state.size() != 0)
-    {
-      _state.erase(_state.begin() + _position, _state.end());
-      _actions.erase(_actions.begin() + _position, _actions.end());
-    }
-    _actions.push_back(action);
-    auto& state = _state.emplace_back(*_hostContext->Topo());
-    state.CopyFrom(_hostContext);
-    _position = static_cast<int>(_state.size());
+    _redoStack = {};
+    FBUndoItem item(*_hostContext->Topo());
+    item.action = action;
+    item.state.CopyFrom(_hostContext);
+    _undoStack.push(std::move(item));
   }
   _activeActionCount++;
 }
@@ -81,15 +82,8 @@ FBUndoStateContainer::EndAction()
 {
   if (!_isActive) return;
   FB_ASSERT(_activeActionCount > 0);
-  FB_ASSERT(_position == _state.size());
   _activeActionCount--;
   if (_activeActionCount != 0)
     return;
-  if (_state.size() > _hostContext->Topo()->static_.maxUndoSize)
-  {
-    // TODO
-    _state.erase(_state.begin());
-    _actions.erase(_actions.begin());
-    _position--;
-  }
+  // todo maxsize
 }

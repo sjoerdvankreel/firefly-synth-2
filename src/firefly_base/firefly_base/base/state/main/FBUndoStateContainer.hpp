@@ -3,17 +3,26 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 
-#include <vector>
+#include <stack>
 
 class FBHostGUIContext;
 
+struct FBUndoItem final
+{
+  std::string action = {};
+  FBScalarStateContainer state;
+
+  FB_NOCOPY_MOVE_NODEFCTOR(FBUndoItem);
+  FBUndoItem(FBRuntimeTopo const& topo): state(topo) {}
+};
+
 class FBUndoStateContainer final
 {
-  int _position = -1;
-  int _activeActionCount = 0;
   bool _isActive = false;
-  std::vector<std::string> _actions = {};
-  std::vector<FBScalarStateContainer> _state = {};
+  int _activeActionCount = 0;
+  std::stack<FBUndoItem> _undoStack = {};
+  std::stack<FBUndoItem> _redoStack = {};
+
   FBHostGUIContext* const _hostContext;
 
 public:
@@ -30,8 +39,8 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBUndoStateContainer);
   FBUndoStateContainer(FBHostGUIContext* hostContext);
 
-  std::string const& RedoAction() { FB_ASSERT(CanRedo()); return _actions[_position]; }
-  std::string const& UndoAction() { FB_ASSERT(CanUndo()); return _actions[_position - 1]; }
-  bool CanRedo() const { return _state.size() > 0 && _position >= 0 && _position < _state.size(); }
-  bool CanUndo() const { return _state.size() > 0 && _position > 0 && _position <= _state.size(); };
+  bool CanRedo() const { return _redoStack.size() > 0; }
+  bool CanUndo() const { return _undoStack.size() > 0; }
+  std::string const& RedoAction() { FB_ASSERT(CanRedo()); return _redoStack.top().action; }
+  std::string const& UndoAction() { FB_ASSERT(CanUndo()); return _undoStack.top().action; }
 };
