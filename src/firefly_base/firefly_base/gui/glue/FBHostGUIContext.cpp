@@ -19,22 +19,23 @@ FBHostGUIContext():
 _undoState(this) {}
 
 void
-FBHostGUIContext::PerformAudioParamEdit(int index, double normalized)
-{
-  DoPerformAudioParamEdit(index, normalized);
-}
-
-void 
 FBHostGUIContext::BeginAudioParamChange(int index)
 {
-  std::string name = Topo()->audio.params[index].longName;
-  UndoState().BeginAction("Change " + name);
+  DoBeginAudioParamChange(index);
 }
 
 void
 FBHostGUIContext::EndAudioParamChange(int index)
 {
   DoEndAudioParamChange(index);
+}
+
+void
+FBHostGUIContext::PerformAudioParamEdit(int index, double normalized)
+{
+  std::string name = Topo()->audio.params[index].longName;
+  UndoState().BeginAction("Change " + name);
+  DoPerformAudioParamEdit(index, normalized);
   UndoState().EndAction();
 }
 

@@ -6,8 +6,6 @@
 #include <memory>
 #include <unordered_map>
 
-inline int constexpr FFCommandActivateUndo = 510936;
-
 class FBGridComponent;
 class FBHostGUIContext;
 class FBGraphRenderState;
@@ -28,8 +26,6 @@ public:
   FFPlugGUI(FBHostGUIContext* hostContext);
 
   void resized() override;
-  void handleCommandMessage(int id) override;
-
   void UpdateExchangeStateTick() override;
   FBGUIRenderType GetRenderType() const override;
   void ActiveModuleSlotChanged(int index, int slot) override;

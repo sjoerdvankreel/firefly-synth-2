@@ -47,6 +47,7 @@ FBPlugGUIContainer::paint(Graphics& g)
 void
 FBPlugGUIContainer::RemoveFromDesktop()
 {
+  _gui->HostContext()->UndoState().DeactivateNow();
   removeFromDesktop();
 }
 
