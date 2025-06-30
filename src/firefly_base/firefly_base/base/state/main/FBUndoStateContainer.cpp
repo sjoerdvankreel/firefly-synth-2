@@ -8,6 +8,21 @@ FBUndoStateContainer(FBHostGUIContext* hostContext):
 _hostContext(hostContext) {}
 
 void
+FBUndoStateContainer::Clear()
+{
+  _undoStack = {};
+  _redoStack = {};
+  _activeActionCount = 0;
+}
+
+void
+FBUndoStateContainer::ClearAsync()
+{
+  juce::MessageManager::callAsync(
+    [this]() { Clear(); });
+}
+
+void
 FBUndoStateContainer::DeactivateNow()
 {
   Clear();
@@ -19,15 +34,6 @@ FBUndoStateContainer::ActivateAsync()
 {
   juce::MessageManager::callAsync(
     [this]() { _isActive = true; });
-}
-
-void
-FBUndoStateContainer::Clear()
-{
-  if (!_isActive) return;
-  _undoStack = {};
-  _redoStack = {};
-  _activeActionCount = 0;
 }
 
 void 
@@ -63,7 +69,7 @@ FBUndoStateContainer::Redo()
 }
 
 void 
-FBUndoStateContainer::BeginAction(std::string const& action)
+FBUndoStateContainer::BeginActionNow(std::string const& action)
 {
   if (!_isActive) return;
   if (_activeActionCount == 0)
@@ -78,7 +84,7 @@ FBUndoStateContainer::BeginAction(std::string const& action)
 }
 
 void
-FBUndoStateContainer::EndAction()
+FBUndoStateContainer::EndActionAsync()
 {
   if (!_isActive) return;
   FB_ASSERT(_activeActionCount > 0);

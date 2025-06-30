@@ -22,19 +22,20 @@ class FBUndoStateContainer final
   int _activeActionCount = 0;
   std::stack<FBUndoItem> _undoStack = {};
   std::stack<FBUndoItem> _redoStack = {};
-
   FBHostGUIContext* const _hostContext;
+
+  void Clear();
 
 public:
   void Undo();
   void Redo();
-  void Clear();
-  
-  void DeactivateNow();
-  void ActivateAsync();
 
-  void EndAction();
-  void BeginAction(std::string const& name);
+  void ClearAsync();
+  void ActivateAsync();
+  void EndActionAsync();
+
+  void DeactivateNow();
+  void BeginActionNow(std::string const& name);
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBUndoStateContainer);
   FBUndoStateContainer(FBHostGUIContext* hostContext);
