@@ -50,9 +50,9 @@ FBUndoStateContainer::Redo()
   if (!_isActive) return;
   FB_ASSERT(CanRedo());
   FB_ASSERT(_activeActionCount == 0);
-  FB_ASSERT(0 <= _pos && _pos < _state.size());
+  FB_ASSERT(0 <= _pos && _pos < _state.size() - 1);
   _isActive = false;
-  _state[_pos].CopyTo(_hostContext);
+  _state[_pos + 1].CopyTo(_hostContext);
   _pos++;
   ActivateAsync();
 }
