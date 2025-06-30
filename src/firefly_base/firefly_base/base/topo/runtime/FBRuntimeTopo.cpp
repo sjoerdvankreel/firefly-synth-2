@@ -286,6 +286,9 @@ FBRuntimeTopo::SaveParamStateToVar(
   var state;
   for (int p = 0; p < params.size(); p++)
   {
+    if (params[p].static_.isOutput())
+      continue;
+
     auto param = new DynamicObject;
     param->setProperty("tag", params[p].tag);
     param->setProperty("id", String(params[p].id));
@@ -520,7 +523,8 @@ FBRuntimeTopo::LoadParamStateFromVar(
       FB_LOG_WARN("Failed to parse plugin parameter value.");
       normalized = topo.static_.TextToNormalized(false, topo.GetDefaultText());
     }
-    *container.Params()[iter->second] = static_cast<float>(normalized.value());
+    if(!topo.static_.isOutput())
+      *container.Params()[iter->second] = static_cast<float>(normalized.value());
   }
 
   return true;

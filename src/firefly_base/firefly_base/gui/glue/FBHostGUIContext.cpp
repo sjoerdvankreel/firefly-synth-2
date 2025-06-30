@@ -34,9 +34,11 @@ void
 FBHostGUIContext::PerformAudioParamEdit(int index, double normalized)
 {
   std::string name = Topo()->audio.params[index].longName;
-  UndoState().BeginAction("Change " + name);
+  if(!Topo()->audio.params[index].static_.output)
+    UndoState().BeginAction("Change " + name);
   DoPerformAudioParamEdit(index, normalized);
-  UndoState().EndAction();
+  if (!Topo()->audio.params[index].static_.output)
+    UndoState().EndAction();
 }
 
 void
