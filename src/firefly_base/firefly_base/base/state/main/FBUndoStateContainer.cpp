@@ -25,7 +25,7 @@ void
 FBUndoStateContainer::Clear()
 {
   if (!_isActive) return;
-  _pos = 0;
+  _position = -1;
   _state.clear();
   _actions.clear();
   _activeActionCount = 0;
@@ -37,10 +37,10 @@ FBUndoStateContainer::Undo()
   if (!_isActive) return;
   FB_ASSERT(CanUndo());
   FB_ASSERT(_activeActionCount == 0);
-  FB_ASSERT(0 < _pos && _pos <= _state.size());
+  FB_ASSERT(0 < _position && _position <= _state.size());
   _isActive = false;
-  _state[_pos - 1].CopyTo(_hostContext);
-  _pos--;
+  _state[_position - 1].CopyTo(_hostContext);
+  _position--;
   ActivateAsync();
 }
 
@@ -50,10 +50,10 @@ FBUndoStateContainer::Redo()
   if (!_isActive) return;
   FB_ASSERT(CanRedo());
   FB_ASSERT(_activeActionCount == 0);
-  FB_ASSERT(0 <= _pos && _pos < _state.size() - 1);
+  FB_ASSERT(0 <= _position && _position < _state.size());
   _isActive = false;
-  _state[_pos + 1].CopyTo(_hostContext);
-  _pos++;
+  _state[_position + 1].CopyTo(_hostContext);
+  _position++;
   ActivateAsync();
 }
 
@@ -63,12 +63,15 @@ FBUndoStateContainer::BeginAction(std::string const& action)
   if (!_isActive) return;
   if (_activeActionCount == 0)
   {
-    _state.erase(_state.begin() + _pos, _state.end());
-    _actions.erase(_actions.begin() + _pos, _actions.end());
+    if (_state.size() != 0)
+    {
+      _state.erase(_state.begin() + _position, _state.end());
+      _actions.erase(_actions.begin() + _position, _actions.end());
+    }
     _actions.push_back(action);
     auto& state = _state.emplace_back(*_hostContext->Topo());
     state.CopyFrom(_hostContext);
-    _pos++;
+    _position = static_cast<int>(_state.size());
   }
   _activeActionCount++;
 }
@@ -78,14 +81,15 @@ FBUndoStateContainer::EndAction()
 {
   if (!_isActive) return;
   FB_ASSERT(_activeActionCount > 0);
-  FB_ASSERT(_pos == _state.size());
+  FB_ASSERT(_position == _state.size());
   _activeActionCount--;
   if (_activeActionCount != 0)
     return;
   if (_state.size() > _hostContext->Topo()->static_.maxUndoSize)
   {
+    // TODO
     _state.erase(_state.begin());
     _actions.erase(_actions.begin());
-    _pos--;
+    _position--;
   }
 }
