@@ -240,11 +240,10 @@ void
 FBPlugGUI::InitPatch()
 {
   FB_LOG_ENTRY_EXIT();
-  HostContext()->UndoState().BeginActionNow("Init Patch");
+  HostContext()->UndoState().Snapshot("Init Patch");
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
-  HostContext()->UndoState().EndActionAsync();
 }
 
 void 
@@ -280,9 +279,8 @@ FBPlugGUI::LoadPatchFromFile()
     FBScalarStateContainer editState(*HostContext()->Topo());
     if (HostContext()->Topo()->LoadEditStateFromString(text, editState))
     {
-      HostContext()->UndoState().BeginActionNow("Load Patch");
+      HostContext()->UndoState().Snapshot("Load Patch");
       editState.CopyTo(HostContext());
-      HostContext()->UndoState().EndActionAsync();
     }
     else
       AlertWindow::showMessageBoxAsync(

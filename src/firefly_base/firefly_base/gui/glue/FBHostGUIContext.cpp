@@ -33,12 +33,7 @@ FBHostGUIContext::EndAudioParamChange(int index)
 void
 FBHostGUIContext::PerformAudioParamEdit(int index, double normalized)
 {
-  std::string name = Topo()->audio.params[index].longName;
-  if(!Topo()->audio.params[index].static_.output)
-    UndoState().BeginActionNow("Change " + name);
   DoPerformAudioParamEdit(index, normalized);
-  if (!Topo()->audio.params[index].static_.output)
-    UndoState().EndActionAsync();
 }
 
 void
@@ -53,7 +48,7 @@ void
 FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
 {
   std::string name = Topo()->ModuleAtTopo(moduleIndices)->name;
-  UndoState().BeginActionNow("Clear " + name);
+  UndoState().Snapshot("Clear " + name);
   auto const& staticModule = Topo()->static_.modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
   {
@@ -65,14 +60,13 @@ FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
       PerformImmediateAudioParamEdit(runtimeParam->runtimeParamIndex, normalized);
     }
   }
-  UndoState().EndActionAsync();
 }
 
 void 
 FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot)
 {
   std::string name = Topo()->ModuleAtTopo(moduleIndices)->name;
-  UndoState().BeginActionNow("Copy " + name);
+  UndoState().Snapshot("Copy " + name);
   auto const& staticModule = Topo()->static_.modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
   {
@@ -85,7 +79,6 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
       PerformImmediateAudioParamEdit(toRuntimeParam->runtimeParamIndex, fromValue);
     }
   }
-  UndoState().EndActionAsync();
 }
 
 std::unique_ptr<PopupMenu>

@@ -33,7 +33,6 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   SetupGUI();
   InitAllDependencies();
   resized();
-  HostContext()->UndoState().ActivateAsync();
 }
 
 void

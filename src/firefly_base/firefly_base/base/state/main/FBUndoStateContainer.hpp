@@ -18,24 +18,14 @@ struct FBUndoItem final
 
 class FBUndoStateContainer final
 {
-  bool _isActive = false;
-  int _activeActionCount = 0;
   std::stack<FBUndoItem> _undoStack = {};
   std::stack<FBUndoItem> _redoStack = {};
   FBHostGUIContext* const _hostContext;
 
-  void Clear();
-
 public:
   void Undo();
   void Redo();
-
-  void ClearAsync();
-  void ActivateAsync();
-  void EndActionAsync();
-
-  void DeactivateNow();
-  void BeginActionNow(std::string const& name);
+  void Snapshot(std::string const& action);
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBUndoStateContainer);
   FBUndoStateContainer(FBHostGUIContext* hostContext);

@@ -7,89 +7,36 @@ FBUndoStateContainer::
 FBUndoStateContainer(FBHostGUIContext* hostContext):
 _hostContext(hostContext) {}
 
-void
-FBUndoStateContainer::Clear()
-{
-  _undoStack = {};
-  _redoStack = {};
-  _activeActionCount = 0;
-}
-
-void
-FBUndoStateContainer::ClearAsync()
-{
-  juce::MessageManager::callAsync(
-    [this]() { Clear(); });
-}
-
-void
-FBUndoStateContainer::DeactivateNow()
-{
-  Clear();
-  _isActive = false;
-}
-
-void
-FBUndoStateContainer::ActivateAsync()
-{
-  juce::MessageManager::callAsync(
-    [this]() { _isActive = true; });
-}
-
 void 
 FBUndoStateContainer::Undo()
 {
-  if (!_isActive) return;
   FB_ASSERT(CanUndo());
-  FB_ASSERT(_activeActionCount == 0);
-  _isActive = false;
   FBUndoItem item(*_hostContext->Topo());
   item.action = _undoStack.top().action;
   item.state.CopyFrom(_hostContext);
   _redoStack.push(std::move(item));
   _undoStack.top().state.CopyTo(_hostContext);
   _undoStack.pop();
-  ActivateAsync();
 }
 
 void 
 FBUndoStateContainer::Redo()
 {
-  if (!_isActive) return;
   FB_ASSERT(CanRedo());
-  FB_ASSERT(_activeActionCount == 0);
-  _isActive = false;
   FBUndoItem item(*_hostContext->Topo());
   item.action = _redoStack.top().action;
   item.state.CopyFrom(_hostContext);
   _undoStack.push(std::move(item));
   _redoStack.top().state.CopyTo(_hostContext);
   _redoStack.pop();
-  ActivateAsync();
 }
 
 void 
-FBUndoStateContainer::BeginActionNow(std::string const& action)
+FBUndoStateContainer::Snapshot(std::string const& action)
 {
-  if (!_isActive) return;
-  if (_activeActionCount == 0)
-  {
-    _redoStack = {};
-    FBUndoItem item(*_hostContext->Topo());
-    item.action = action;
-    item.state.CopyFrom(_hostContext);
-    _undoStack.push(std::move(item));
-  }
-  _activeActionCount++;
-}
-
-void
-FBUndoStateContainer::EndActionAsync()
-{
-  if (!_isActive) return;
-  FB_ASSERT(_activeActionCount > 0);
-  _activeActionCount--;
-  if (_activeActionCount != 0)
-    return;
-  // todo maxsize
+  _redoStack = {};
+  FBUndoItem item(*_hostContext->Topo());
+  item.action = action;
+  item.state.CopyFrom(_hostContext);
+  _undoStack.push(std::move(item));
 }
