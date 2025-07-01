@@ -1,4 +1,5 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
+#include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -86,6 +87,8 @@ FBCLAPPlugin::DoPerformAudioParamEdit(int index, double normalized)
   *_editState->Params()[index] = normalized;
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized);
   _mainToAudioEvents.enqueue(event);
+  if (_gui)
+    _gui->SetAudioParamNormalizedFromHost(index, normalized);
   if (_host.canUseParams())
     _host.paramsRequestFlush();
 }
