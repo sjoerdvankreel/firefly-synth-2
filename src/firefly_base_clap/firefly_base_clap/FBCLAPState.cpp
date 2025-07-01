@@ -48,7 +48,6 @@ FBCLAPPlugin::stateLoad(const clap_istream* stream) noexcept
       else
         json.append(buffer, read);
 
-    UndoState().Snapshot("Load State");
     _topo->LoadEditAndGUIStateFromStringWithDryRun(json, *_editState, *_guiState);
     for (int i = 0; i < _editState->Params().size(); i++)
     {
