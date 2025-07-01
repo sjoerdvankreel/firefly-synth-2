@@ -4,6 +4,7 @@
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+#include <firefly_base/gui/components/FBTabComponent.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
@@ -218,6 +219,14 @@ FBPlugGUI::mouseUp(const MouseEvent& event)
     Component::mouseUp(event);
     return;
   }
+
+  // pops up host context menu
+  if (dynamic_cast<FBParamControl*>(event.eventComponent))
+    return;
+
+  // pops up module context menu
+  if (dynamic_cast<FBTabBarButton*>(event.eventComponent))
+    return;
 
   auto& undoState = HostContext()->UndoState();
   if (!undoState.CanUndo() && !undoState.CanRedo())
