@@ -12,11 +12,11 @@ FBUndoStateContainer::Undo()
 {
   FB_ASSERT(CanUndo());
   FBUndoItem item(*_hostContext->Topo());
-  item.action = _undoStack.top().action;
+  item.action = _undoDeque.front().action;
   item.state.CopyFrom(_hostContext);
   _redoStack.push(std::move(item));
-  _undoStack.top().state.CopyTo(_hostContext);
-  _undoStack.pop();
+  _undoDeque.front().state.CopyTo(_hostContext);
+  _undoDeque.pop_front();
 }
 
 void 
@@ -26,7 +26,7 @@ FBUndoStateContainer::Redo()
   FBUndoItem item(*_hostContext->Topo());
   item.action = _redoStack.top().action;
   item.state.CopyFrom(_hostContext);
-  _undoStack.push(std::move(item));
+  _undoDeque.push_front(std::move(item));
   _redoStack.top().state.CopyTo(_hostContext);
   _redoStack.pop();
 }
@@ -38,5 +38,7 @@ FBUndoStateContainer::Snapshot(std::string const& action)
   FBUndoItem item(*_hostContext->Topo());
   item.action = action;
   item.state.CopyFrom(_hostContext);
-  _undoStack.push(std::move(item));
+  _undoDeque.push_front(std::move(item));
+  while (_undoDeque.size() > _hostContext->Topo()->static_.maxUndoSize)
+    _undoDeque.pop_back();
 }

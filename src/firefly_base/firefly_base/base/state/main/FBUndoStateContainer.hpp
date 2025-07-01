@@ -4,6 +4,7 @@
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 
 #include <stack>
+#include <deque>
 
 class FBHostGUIContext;
 
@@ -18,7 +19,7 @@ struct FBUndoItem final
 
 class FBUndoStateContainer final
 {
-  std::stack<FBUndoItem> _undoStack = {};
+  std::deque<FBUndoItem> _undoDeque = {};
   std::stack<FBUndoItem> _redoStack = {};
   FBHostGUIContext* const _hostContext;
 
@@ -31,7 +32,7 @@ public:
   FBUndoStateContainer(FBHostGUIContext* hostContext);
 
   bool CanRedo() const { return _redoStack.size() > 0; }
-  bool CanUndo() const { return _undoStack.size() > 0; }
+  bool CanUndo() const { return _undoDeque.size() > 0; }
   std::string const& RedoAction() { FB_ASSERT(CanRedo()); return _redoStack.top().action; }
-  std::string const& UndoAction() { FB_ASSERT(CanUndo()); return _undoStack.top().action; }
+  std::string const& UndoAction() { FB_ASSERT(CanUndo()); return _undoDeque.front().action; }
 };
