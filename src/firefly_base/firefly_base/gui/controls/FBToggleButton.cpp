@@ -91,6 +91,14 @@ FBParamToggleButton::SetValueNormalizedFromHost(double normalized)
   _isOn = getToggleState();
 }
 
+void 
+FBParamToggleButton::mouseUp(const MouseEvent& e)
+{
+  // need to catch real user input for the undo state, not all kinds of async callbacks
+  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
+  ToggleButton::mouseUp(e);
+}
+
 void
 FBParamToggleButton::buttonStateChanged()
 {
@@ -98,7 +106,6 @@ FBParamToggleButton::buttonStateChanged()
   bool plain = _param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
   if (_isOn != plain)
   {
-    _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
     _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
     _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
   }

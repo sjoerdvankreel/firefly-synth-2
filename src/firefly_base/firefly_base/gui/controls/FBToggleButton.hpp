@@ -44,6 +44,7 @@ public:
   void buttonStateChanged() override;
   void parentHierarchyChanged() override;
 
+  void mouseUp(const juce::MouseEvent& e) override;
   void SetValueNormalizedFromHost(double normalized) override;
   FBParamToggleButton(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

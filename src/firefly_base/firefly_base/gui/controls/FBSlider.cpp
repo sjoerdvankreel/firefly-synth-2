@@ -143,6 +143,7 @@ FBParamSlider::stoppedDragging()
 void
 FBParamSlider::startedDragging()
 {
+  // need to catch real user input for the undo state, not all kinds of async callbacks
   _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
   _plugGUI->HostContext()->BeginAudioParamChange(_param->runtimeParamIndex);
 }
