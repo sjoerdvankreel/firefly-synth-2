@@ -98,6 +98,7 @@ FBParamToggleButton::buttonStateChanged()
   bool plain = _param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
   if (_isOn != plain)
   {
+    _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
     _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
     _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
   }
