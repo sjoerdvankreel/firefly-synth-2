@@ -84,6 +84,15 @@ FBParamComboBox::getTooltip()
   return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
 }
 
+void 
+FBParamComboBox::showPopup()
+{
+  // need to catch real user input for the undo state, not all kinds of async callbacks
+  // this will cause some spurious undo items if user opens popup but not changes it
+  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
+  ComboBox::showPopup();
+}
+
 void
 FBParamComboBox::SetValueNormalizedFromHost(double normalized)
 {
