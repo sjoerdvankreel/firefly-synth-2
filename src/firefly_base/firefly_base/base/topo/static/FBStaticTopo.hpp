@@ -80,6 +80,7 @@ protected:
   FBPlugVersion const& OldVersion() const { return _oldVersion; }
 
 public:
+  virtual ~FBDeserializationConverter() {}
   FBDeserializationConverter(
     FBPlugVersion const& oldVersion,
     FBRuntimeTopo const* topo);
