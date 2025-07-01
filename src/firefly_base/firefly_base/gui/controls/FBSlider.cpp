@@ -143,6 +143,7 @@ FBParamSlider::stoppedDragging()
 void
 FBParamSlider::startedDragging()
 {
+  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
   _plugGUI->HostContext()->BeginAudioParamChange(_param->runtimeParamIndex);
 }
 
