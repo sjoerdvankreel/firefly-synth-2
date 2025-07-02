@@ -1,3 +1,20 @@
+?, ?, 2025 - alpha 7.
+
+- Build
+* Opt into ASAN builds.
+* Opt out of warn-as-error.
+
+- Core
+* Add undo/redo support.
+* Checkboxes are now centered.
+* Add patch load/save/init support.
+* Bugfix: tooltips were not showing for comboboxes.
+* Selected tabs are now remembered across sessions.
+* Add conversion (old serialized-to-disk format) support.
+* Add "clear module"/"copy module to" context menu items.
+* Bugfix: last MIDI note was tracking note-off events (and on, both).
+* Voice envelope start position now snaps to 4 (actually floats-per-simd-register) samples instead of fixed block size (16).
+
 June 23, 2025 - alpha 6.
 
 - Core

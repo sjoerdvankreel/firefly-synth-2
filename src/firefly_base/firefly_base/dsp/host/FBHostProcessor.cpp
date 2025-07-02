@@ -89,14 +89,23 @@ FBHostProcessor::ProcessHost(
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       for (; n < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n].pos == s; n++)
-        _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n].note.key);
+        if((*_plugIn.noteEvents)[n].on)
+          _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n].note.key);
       _plugIn.lastMIDINoteKey.Set(s, _lastMIDINoteKey);
     }
 
+    // Sets voice offsetInBlock to possibly nonzero.
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
+
     ProcessVoices();
+
+    // Voice offsetInBlock is 0 for the rest of the voice lifetime.
+    for (int v = 0; v < FBMaxVoices; v++)
+      if (_voiceManager->IsActive(v))
+        _voiceManager->_voices[v].offsetInBlock = 0;
+
     _plug->ProcessPostVoice(_plugIn, _plugOut);
     _plugToHost->BufferFromPlug(_plugOut.audio);
   }

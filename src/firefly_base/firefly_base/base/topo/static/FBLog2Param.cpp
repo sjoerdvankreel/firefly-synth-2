@@ -41,7 +41,7 @@ FBLog2ParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBLog2ParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
+FBLog2ParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)
@@ -53,7 +53,5 @@ FBLog2ParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
   double plainMax = NormalizedToPlain(1.0);
   if (result < plainMin * 0.99 || result > plainMax * 1.01)
     return {};
-  if (result < plainMin || result > plainMax)
-    FB_LOG_INFO("Clamping " + text + " to [" + std::to_string(plainMin) + ", " + std::to_string(plainMax) + "].");
   return { std::clamp(result, plainMin, plainMax) };
 }

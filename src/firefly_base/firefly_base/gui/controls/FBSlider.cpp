@@ -74,7 +74,7 @@ FBGUIParamSlider::getTextFromValue(double value)
 double
 FBGUIParamSlider::getValueFromText(const String& text)
 {
-  auto parsed = _param->static_.NonRealTime().TextToNormalized(false, text.toStdString());
+  auto parsed = _param->static_.TextToNormalized(false, text.toStdString());
   return parsed.value_or(_param->DefaultNormalizedByText());
 }
 
@@ -130,7 +130,7 @@ FBParamSlider::getTextFromValue(double value)
 double
 FBParamSlider::getValueFromText(const String& text)
 {
-  auto parsed = _param->static_.NonRealTime().TextToNormalized(false, text.toStdString());
+  auto parsed = _param->static_.TextToNormalized(false, text.toStdString());
   return parsed.value_or(_param->DefaultNormalizedByText());
 }
 
@@ -143,6 +143,8 @@ FBParamSlider::stoppedDragging()
 void
 FBParamSlider::startedDragging()
 {
+  // need to catch real user input for the undo state, not all kinds of async callbacks
+  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
   _plugGUI->HostContext()->BeginAudioParamChange(_param->runtimeParamIndex);
 }
 

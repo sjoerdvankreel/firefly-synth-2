@@ -4,8 +4,10 @@
 #include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
+#include <firefly_base/gui/components/FBTabComponent.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
@@ -17,6 +19,7 @@ _hostContext(hostContext)
 {
   _tooltipWindow = StoreComponent<TooltipWindow>();
   addAndMakeVisible(_tooltipWindow);
+  addMouseListener(this, true);
 }
 
 void
@@ -206,4 +209,92 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\nAutomate: None";
   result += "\r\nAutomation: " + FBAutomationTimingToString(param.static_.AutomationTiming());
   return result;
+}
+
+void 
+FBPlugGUI::mouseUp(const MouseEvent& event)
+{
+  if (!event.mods.isRightButtonDown())
+  {
+    Component::mouseUp(event);
+    return;
+  }
+
+  // pops up host context menu
+  if (dynamic_cast<FBParamControl*>(event.eventComponent))
+    return;
+
+  // pops up module context menu
+  if (dynamic_cast<FBTabBarButton*>(event.eventComponent))
+    return;
+
+  auto& undoState = HostContext()->UndoState();
+  if (!undoState.CanUndo() && !undoState.CanRedo())
+    return;
+
+  PopupMenu menu;
+  if (undoState.CanUndo())
+    menu.addItem(1, "Undo " + undoState.UndoAction());
+  if (undoState.CanRedo())
+    menu.addItem(2, "Redo " + undoState.RedoAction());
+  PopupMenu::Options options;
+  options = options.withParentComponent(this);
+  options = options.withMousePosition();
+  menu.showMenuAsync(options, [this](int id) {
+    if (id == 1) HostContext()->UndoState().Undo();
+    if(id == 2) HostContext()->UndoState().Redo(); });
+}
+
+void 
+FBPlugGUI::InitPatch()
+{
+  FB_LOG_ENTRY_EXIT();
+  HostContext()->UndoState().Snapshot("Init Patch");
+  FBScalarStateContainer defaultState(*HostContext()->Topo());
+  for (int i = 0; i < defaultState.Params().size(); i++)
+    HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+}
+
+void 
+FBPlugGUI::SavePatchToFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
+  auto extension = HostContext()->Topo()->static_.patchExtension;
+  FileChooser* chooser = new FileChooser("Save Patch", File(), String("*.") + extension, true, false, this);
+  chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
+    FB_LOG_ENTRY_EXIT();
+    auto file = chooser.getResult();
+    delete &chooser;
+    if (file.getFullPathName().length() == 0) return;
+    FBScalarStateContainer editState(*HostContext()->Topo());
+    editState.CopyFrom(HostContext());
+    file.replaceWithText(HostContext()->Topo()->SaveEditStateToString(editState));
+  });
+}
+
+void 
+FBPlugGUI::LoadPatchFromFile()
+{
+  FB_LOG_ENTRY_EXIT();
+  int loadFlags = FileBrowserComponent::openMode;
+  auto extension = HostContext()->Topo()->static_.patchExtension;
+  FileChooser* chooser = new FileChooser("Load Patch", File(), String("*.") + extension, true, false, this);
+  chooser->launchAsync(loadFlags, [this](FileChooser const& chooser) {
+    auto file = chooser.getResult();
+    delete &chooser;
+    if (file.getFullPathName().length() == 0) return;
+    auto text = file.loadFileAsString().toStdString();
+    FBScalarStateContainer editState(*HostContext()->Topo());
+    if (HostContext()->Topo()->LoadEditStateFromString(text, editState))
+    {
+      HostContext()->UndoState().Snapshot("Load Patch");
+      editState.CopyTo(HostContext());
+    }
+    else
+      AlertWindow::showMessageBoxAsync(
+        MessageBoxIconType::WarningIcon,
+        "Error",
+        "Failed to load patch. See log for details.\r\n" + FBGetLogPath(HostContext()->Topo()->static_.meta).string());
+  });
 }

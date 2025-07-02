@@ -61,6 +61,7 @@ FBGUIParamComboBox::valueChanged(Value& /*value*/)
   double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
   _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
   _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
+  setTooltip(getTooltip()); // hack but needed
 }
 
 FBParamComboBox::
@@ -83,6 +84,15 @@ FBParamComboBox::getTooltip()
   return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
 }
 
+void 
+FBParamComboBox::showPopup()
+{
+  // need to catch real user input for the undo state, not all kinds of async callbacks
+  // this will cause some spurious undo items if user opens popup but not changes it
+  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
+  ComboBox::showPopup();
+}
+
 void
 FBParamComboBox::SetValueNormalizedFromHost(double normalized)
 {
@@ -96,4 +106,5 @@ FBParamComboBox::valueChanged(Value& /*value*/)
   double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
   _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
+  setTooltip(getTooltip()); // hack but needed
 }

@@ -9,6 +9,11 @@
 struct FBStaticTopo;
 struct FBStaticModule;
 
+std::string
+FFMakeRuntimeParamId(
+  std::string const& staticModuleId, int moduleSlot,
+  std::string const& staticParamId, int paramSlot);
+
 struct FBRuntimeParamBase
 {
   int runtimeModuleIndex;
@@ -19,9 +24,12 @@ struct FBRuntimeParamBase
   std::string shortName;
   std::string displayName;
   std::string id;
+  std::string staticModuleId;
   int tag;
 
+  virtual FBStaticParamBase const& Static() const = 0;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParamBase);
+
   FBRuntimeParamBase(
     FBStaticTopo const& topo,
     FBStaticModule const& staticModule,
@@ -37,7 +45,9 @@ public FBRuntimeParamBase
   std::string GetDefaultText() const;
   double DefaultNormalizedByText() const;
 
+  FBStaticParamBase const& Static() const override { return static_; }
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeGUIParam);
+
   FBRuntimeGUIParam(
     FBStaticTopo const& topo,
     FBStaticModule const& staticModule,
@@ -53,7 +63,9 @@ public FBRuntimeParamBase
   std::string GetDefaultText() const;
   double DefaultNormalizedByText() const;
 
+  FBStaticParamBase const& Static() const override { return static_; }
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParam);
+
   FBRuntimeParam(
     FBStaticTopo const& topo,
     FBStaticModule const& staticModule,

@@ -135,6 +135,14 @@ FFEnvProcessor::Process(FBModuleProcState& state)
     for (int i = 0; i < noteEvents.size(); i++)
       if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
         releaseAt = noteEvents[i].pos;
+
+  // Deal with voice start offset.
+  // In other words, the entire audio engine operates on
+  // 16-sample blocks, and we fake starting a voice at
+  // subblock position by delaying the voice amp envelope.
+  if (state.moduleSlot == 0)
+    for (; s < state.voice->offsetInBlock; s++)
+      output.Set(s, 0.0f);
   
   int stage = 0;
   while(stage < FFEnvStageCount)

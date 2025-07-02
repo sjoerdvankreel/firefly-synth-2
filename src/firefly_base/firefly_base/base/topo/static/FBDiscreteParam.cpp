@@ -60,7 +60,7 @@ FBDiscreteParamNonRealTime::MakePopupMenu() const
 }
 
 std::optional<double>
-FBDiscreteParamNonRealTime::TextToPlain(bool io, std::string const& text) const
+FBDiscreteParamNonRealTime::TextToPlainInternal(bool io, std::string const& text) const
 {
   if(valueFormatter != nullptr)
   { 

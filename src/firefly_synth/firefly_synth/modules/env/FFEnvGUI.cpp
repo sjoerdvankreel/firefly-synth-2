@@ -1,6 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
@@ -21,7 +22,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 1, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::Type, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
@@ -56,20 +57,20 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
   columnSizes.push_back(0);
   for (int i = 0; i < FFEnvStageCount; i++)
     columnSizes.push_back(0);
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 0, -1, std::vector<int> { 1, 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, columnSizes);
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Seg Len"));
   grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Lvl/Slp"));
   grid->MarkSection({ { 0, 0 }, { 2, 1 } });
   for (int i = 0; i < FFEnvStageCount; i++)
   {
-    auto upper = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+    auto upper = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
     grid->Add(0, 1 + i, upper);
     upper->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
     auto time = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
     upper->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, time, Slider::SliderStyle::LinearHorizontal));
     auto bars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
     upper->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bars));
-    auto lower = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, 0, -1, std::vector<int> { 1 }, std::vector<int> { 1, 1 });
+    auto lower = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 1, 1 });
     grid->Add(1, 1 + i, lower);
     auto level = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot} , { (int)FFEnvParam::StageLevel, i } });
     lower->Add(0, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, level, Slider::SliderStyle::RotaryVerticalDrag));
@@ -84,7 +85,7 @@ static Component*
 MakeEnvTab(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
   grid->Add(0, 0, MakeEnvSectionMain(plugGUI, moduleSlot));
   grid->Add(0, 1, MakeEnvSectionStage(plugGUI, moduleSlot));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
@@ -94,8 +95,11 @@ Component*
 FFMakeEnvGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
+  auto topo = plugGUI->HostContext()->Topo();
+  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::EnvSelectedTab, 0 } });
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   for (int i = 0; i < FFEnvCount; i++)
     tabs->AddModuleTab(i != 0, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i));
+  tabs->ActivateStoredSelectedTab();
   return tabs;
 }

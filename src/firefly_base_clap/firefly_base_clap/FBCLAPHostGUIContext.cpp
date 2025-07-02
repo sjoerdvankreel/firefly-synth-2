@@ -1,4 +1,5 @@
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
+#include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -63,7 +64,7 @@ FBCLAPPlugin::SetGUIParamNormalized(int index, double normalized)
 }
 
 void
-FBCLAPPlugin::EndAudioParamChange(int index)
+FBCLAPPlugin::DoEndAudioParamChange(int index)
 {
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::EndChange, index, 0.0f);
   _mainToAudioEvents.enqueue(event);
@@ -72,7 +73,7 @@ FBCLAPPlugin::EndAudioParamChange(int index)
 }
 
 void
-FBCLAPPlugin::BeginAudioParamChange(int index)
+FBCLAPPlugin::DoBeginAudioParamChange(int index)
 {
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::BeginChange, index, 0.0f);
   _mainToAudioEvents.enqueue(event);
@@ -81,11 +82,13 @@ FBCLAPPlugin::BeginAudioParamChange(int index)
 }
 
 void
-FBCLAPPlugin::PerformAudioParamEdit(int index, double normalized)
+FBCLAPPlugin::DoPerformAudioParamEdit(int index, double normalized)
 {
   *_editState->Params()[index] = normalized;
   auto event = FBMakeSyncToAudioEvent(FBCLAPSyncEventType::PerformEdit, index, normalized);
   _mainToAudioEvents.enqueue(event);
+  if (_gui)
+    _gui->SetAudioParamNormalizedFromHost(index, normalized);
   if (_host.canUseParams())
     _host.paramsRequestFlush();
 }

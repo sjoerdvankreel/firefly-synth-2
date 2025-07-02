@@ -15,7 +15,7 @@ FormatBlockSlot(FBStaticTopo const&, int slot)
 std::unique_ptr<FBStaticModule>
 FFMakeEffectTopo(bool global)
 {
-  std::string prefix = global ? "G" : ""; // TODO prefix should be V once we go out of alpha, but, dont want to refix the demos right now
+  std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
   result->name = global? "Global FX": "Voice FX";
@@ -108,14 +108,14 @@ FFMakeEffectTopo(bool global)
   kind.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "StVar" : "Off"; };
   kind.type = FBParamType::List;
   kind.List().items = {
-    { prefix + "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", "Off" },
-    { prefix + "{348FED12-9753-4C48-9D21-BB8D21E036AB}", "StVar" },
-    { prefix + "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", "Comb" },
-    { prefix + "{88898697-C102-4BDC-BF31-257553217696}", "Comb+" },
-    { prefix + "{37005D34-E2E4-4CCD-8783-135952515B41}", "Comb-" },
-    { prefix + "{FD072A47-EE67-4091-A687-7168B69A6E89}", "Clip" },
-    { prefix + "{06334343-5264-489E-ADF9-20ADCEF983FC}", "Fold" },
-    { prefix + "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", "Skew" } };
+    { "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", "Off" },
+    { "{348FED12-9753-4C48-9D21-BB8D21E036AB}", "StVar" },
+    { "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", "Comb" },
+    { "{88898697-C102-4BDC-BF31-257553217696}", "Comb+" },
+    { "{37005D34-E2E4-4CCD-8783-135952515B41}", "Comb-" },
+    { "{FD072A47-EE67-4091-A687-7168B69A6E89}", "Clip" },
+    { "{06334343-5264-489E-ADF9-20ADCEF983FC}", "Fold" },
+    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", "Skew" } };
   kind.List().submenuStart[(int)FFEffectKind::Off] = "Off";
   kind.List().submenuStart[(int)FFEffectKind::StVar] = "Filter";
   kind.List().submenuStart[(int)FFEffectKind::Clip] = "Shape";
@@ -137,15 +137,15 @@ FFMakeEffectTopo(bool global)
   stVarMode.id = prefix + "{275B2C8D-6D21-4741-AB69-D21FA95CD7F5}";
   stVarMode.type = FBParamType::List;
   stVarMode.List().items = {
-    { prefix + "{EAAE7102-9F6C-4EC2-8C39-B13BBDFF7AD1}", "LPF" },
-    { prefix + "{6A91C381-DB9F-4CAA-8155-4A407700661A}", "BPF" },
-    { prefix + "{747DA91C-C43D-4CFC-8EFD-353B0AC23E0E}", "HPF" },
-    { prefix + "{10FEE670-AB90-4DBF-A617-6F15F3E4602D}", "BSF" },
-    { prefix + "{EE9A4F79-B557-43B4-ABDF-320414D773D5}", "APF" },
-    { prefix + "{C9C3A3F5-5C5B-4331-8F6E-DDD2DC5A1D7B}", "PEQ" },
-    { prefix + "{8D885EEB-DF69-455A-9FFD-BA95E3E30596}", "BLL" },
-    { prefix + "{C4BBC616-CFDB-4E93-9315-D25552D85F71}", "LSH" },
-    { prefix + "{AF2550ED-90C5-4E09-996D-A4669728C744}", "HSH" } };
+    { "{EAAE7102-9F6C-4EC2-8C39-B13BBDFF7AD1}", "LPF" },
+    { "{6A91C381-DB9F-4CAA-8155-4A407700661A}", "BPF" },
+    { "{747DA91C-C43D-4CFC-8EFD-353B0AC23E0E}", "HPF" },
+    { "{10FEE670-AB90-4DBF-A617-6F15F3E4602D}", "BSF" },
+    { "{EE9A4F79-B557-43B4-ABDF-320414D773D5}", "APF" },
+    { "{C9C3A3F5-5C5B-4331-8F6E-DDD2DC5A1D7B}", "PEQ" },
+    { "{8D885EEB-DF69-455A-9FFD-BA95E3E30596}", "BLL" },
+    { "{C4BBC616-CFDB-4E93-9315-D25552D85F71}", "LSH" },
+    { "{AF2550ED-90C5-4E09-996D-A4669728C744}", "HSH" } };
   auto selectStVarMode = [](auto& module) { return &module.block.stVarMode; };
   stVarMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStVarMode);
   stVarMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStVarMode);
@@ -373,13 +373,13 @@ FFMakeEffectTopo(bool global)
   clipMode.id = prefix + "{D1F80BB8-4076-4296-A678-94E8442C51A5}";
   clipMode.type = FBParamType::List;
   clipMode.List().items = {
-    { prefix + "{32F53B15-54AC-44AE-8812-97D598B9928B}", "Hard" },
-    { prefix + "{E4ECBDA0-F14F-411D-81A8-C59CC9B7C2C6}", "TanH" },
-    { prefix + "{851F55D9-89E0-4B37-A6DA-A81692A716BD}", "Sin" },
-    { prefix + "{A629BC3E-4732-4A6A-AB79-38CE84F04B0D}", "TSQ" },
-    { prefix + "{C0E30CBB-596C-4267-96E9-9FBFD5D26C27}", "Cube" },
-    { prefix + "{192BF63E-663D-494C-956F-3A8BB2E22067}", "Inv" },
-    { prefix + "{8A58AAB2-0AE7-426E-B71F-A444653286A6}", "Exp" } };
+    { "{32F53B15-54AC-44AE-8812-97D598B9928B}", "Hard" },
+    { "{E4ECBDA0-F14F-411D-81A8-C59CC9B7C2C6}", "TanH" },
+    { "{851F55D9-89E0-4B37-A6DA-A81692A716BD}", "Sin" },
+    { "{A629BC3E-4732-4A6A-AB79-38CE84F04B0D}", "TSQ" },
+    { "{C0E30CBB-596C-4267-96E9-9FBFD5D26C27}", "Cube" },
+    { "{192BF63E-663D-494C-956F-3A8BB2E22067}", "Inv" },
+    { "{8A58AAB2-0AE7-426E-B71F-A444653286A6}", "Exp" } };
   auto selectClipMode = [](auto& module) { return &module.block.clipMode; };
   clipMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectClipMode);
   clipMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectClipMode);
@@ -401,21 +401,21 @@ FFMakeEffectTopo(bool global)
   foldMode.id = prefix + "{317BA4AC-8E9A-47B9-A289-294047E29C78}";
   foldMode.type = FBParamType::List;
   foldMode.List().items = {
-    { prefix + "{55167ED0-D050-403B-A061-CA4D0916E400}", "Fold" },
-    { prefix + "{129369F6-C303-4BBA-8573-06FC33972FD9}", "Sin" },
-    { prefix + "{8CFCDA01-C9A9-4231-9994-8480CC08A1CE}", "Cos" },
-    { prefix + "{549CC93F-C88A-4C3B-AD37-B3C818DFF573}", "Sin2" },
-    { prefix + "{544151DB-5403-4732-B416-6CA2C9C78066}", "Cos2" },
-    { prefix + "{C10D2D9B-53F1-4779-AE80-D463A0DD7278}", "SnCs" },
-    { prefix + "{D820E334-2D19-4306-914D-00AA7D048D48}", "CsSn" },
-    { prefix + "{BB19624C-893C-41F9-83AD-CB17DFD9FC60}", "Sin3" },
-    { prefix + "{66737A7F-6548-4881-B8F3-69FCF0EB1843}", "Cos3" },
-    { prefix + "{2133F2BE-95B6-4845-A622-5712F2747960}", "S2Cs" },
-    { prefix + "{5C572DE3-6197-4289-A009-573A88E2B09F}", "C2Sn" },
-    { prefix + "{7527549D-68FE-4D6F-B420-BA75F9097EEE}", "SnC2" },
-    { prefix + "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", "CsS2" },
-    { prefix + "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", "SCS" },
-    { prefix + "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CSC" } };
+    { "{55167ED0-D050-403B-A061-CA4D0916E400}", "Fold" },
+    { "{129369F6-C303-4BBA-8573-06FC33972FD9}", "Sin" },
+    { "{8CFCDA01-C9A9-4231-9994-8480CC08A1CE}", "Cos" },
+    { "{549CC93F-C88A-4C3B-AD37-B3C818DFF573}", "Sin2" },
+    { "{544151DB-5403-4732-B416-6CA2C9C78066}", "Cos2" },
+    { "{C10D2D9B-53F1-4779-AE80-D463A0DD7278}", "SnCs" },
+    { "{D820E334-2D19-4306-914D-00AA7D048D48}", "CsSn" },
+    { "{BB19624C-893C-41F9-83AD-CB17DFD9FC60}", "Sin3" },
+    { "{66737A7F-6548-4881-B8F3-69FCF0EB1843}", "Cos3" },
+    { "{2133F2BE-95B6-4845-A622-5712F2747960}", "S2Cs" },
+    { "{5C572DE3-6197-4289-A009-573A88E2B09F}", "C2Sn" },
+    { "{7527549D-68FE-4D6F-B420-BA75F9097EEE}", "SnC2" },
+    { "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", "CsS2" },
+    { "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", "SCS" },
+    { "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CSC" } };
   foldMode.List().submenuStart[(int)FFEffectFoldMode::Fold] = "Fold";
   foldMode.List().submenuStart[(int)FFEffectFoldMode::Sin] = "Trig1";
   foldMode.List().submenuStart[(int)FFEffectFoldMode::Sin2] = "Trig2";

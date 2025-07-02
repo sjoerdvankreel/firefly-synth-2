@@ -91,6 +91,14 @@ FBParamToggleButton::SetValueNormalizedFromHost(double normalized)
   _isOn = getToggleState();
 }
 
+void 
+FBParamToggleButton::mouseUp(const MouseEvent& e)
+{
+  // need to catch real user input for the undo state, not all kinds of async callbacks
+  _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
+  ToggleButton::mouseUp(e);
+}
+
 void
 FBParamToggleButton::buttonStateChanged()
 {

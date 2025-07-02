@@ -31,9 +31,15 @@ public:
   std::string GetAudioParamActiveTooltip(
     FBStaticParam const& param, bool active, float value) const;
 
+  void InitPatch();
+  void SavePatchToFile();
+  void LoadPatchFromFile();
+
   void UpdateExchangeState();
   void ShowHostMenuForAudioParam(int index);
   FBHostGUIContext* HostContext() const { return _hostContext; }
+
+  void mouseUp(const juce::MouseEvent& event) override;
 
   virtual FBGUIRenderType GetRenderType() const = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;

@@ -11,6 +11,7 @@
 struct FBStaticTopo;
 struct FBStaticParam;
 struct FBStaticGUIParam;
+struct FBRuntimeTopo;
 struct FBHostExchangeState;
 
 class FBPlugGUI;
@@ -26,7 +27,12 @@ struct FBPlugVersion final
   int major = 0;
   int minor = 0;
   int patch = 0;
+  
+  FBPlugVersion() = default;
+  FBPlugVersion(int major, int minor, int patch);
+
   std::string ToString() const;
+  bool operator<(FBPlugVersion const& rhs) const;
 };
 
 struct FBStaticTopoMeta final
@@ -65,22 +71,46 @@ struct FBSpecialGUIParams final
   FBSpecialGUIParam userScale = {};
 };
 
+class FBDeserializationConverter
+{
+protected:
+  FBPlugVersion const _oldVersion;
+  FBRuntimeTopo const* const _topo;
+  FBRuntimeTopo const* Topo() const { return _topo; }
+  FBPlugVersion const& OldVersion() const { return _oldVersion; }
+
+public:
+  virtual ~FBDeserializationConverter() {}
+  FBDeserializationConverter(
+    FBPlugVersion const& oldVersion,
+    FBRuntimeTopo const* topo);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBDeserializationConverter);
+
+  virtual bool OnParamNotFound(
+    std::string const& /*oldModuleId*/, int /*oldModuleSlot*/,
+    std::string const& /*oldParamId*/, int /*oldParamSlot*/,
+    std::string& /*newModuleId*/, int& /*newModuleSlot*/,
+    std::string& /*newParamId*/, int& /*newParamSlot*/) const { return false; }
+};
+
 typedef std::function<FBSpecialParams(
 FBStaticTopo const& topo, void* state)>
 FBSpecialParamsSelector;
 typedef std::function<FBSpecialGUIParams(
 FBStaticTopo const& topo, void* state)>
 FBSpecialGUIParamsSelector;
-typedef std::function<FBHostExchangeState* (
-void* state)>
+
+typedef std::function<FBHostExchangeState* (void* state)>
 FBHostExchangeAddrSelector;
-typedef std::function<std::array<FBVoiceInfo, FBMaxVoices>* (
-void* state)>
+typedef std::function<std::array<FBVoiceInfo, FBMaxVoices>* (void* state)>
 FBVoicesExchangeAddrSelector;
 
 typedef std::function<std::unique_ptr<FBPlugGUI>(
-FBHostGUIContext* context)>
+  FBHostGUIContext* context)>
 FBPlugGUIFactory;
+typedef std::function<std::unique_ptr<FBDeserializationConverter>(
+  FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo)>
+FBDeserializationConverterFactory;
 
 struct FBStaticTopo final
 {
@@ -88,8 +118,11 @@ struct FBStaticTopo final
   int guiAspectRatioWidth = {};
   int guiAspectRatioHeight = {};
   FBPlugGUIFactory guiFactory = {};
+  FBDeserializationConverterFactory deserializationConverterFactory = {};
 
+  int maxUndoSize = {};
   FBStaticTopoMeta meta = {};
+  std::string patchExtension = {};
 
   void* (*allocRawGUIState)() = {};
   void* (*allocRawProcState)() = {};

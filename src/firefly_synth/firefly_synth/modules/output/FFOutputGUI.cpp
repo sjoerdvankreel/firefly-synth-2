@@ -21,7 +21,7 @@ MakeOutputSectionAll(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 0 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 } );
   auto voices = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voices));
   grid->Add(0, 1, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, voices, "0", std::to_string(FBMaxVoices)));
@@ -33,7 +33,8 @@ Component*
 FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
-  tabs->AddModuleTab(false, { (int)FFModuleType::Output, 0 }, MakeOutputSectionAll(plugGUI));
+  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
+  auto name = plugGUI->HostContext()->Topo()->static_.modules[(int)FFModuleType::Output].name;
+  tabs->addTab(name, {}, MakeOutputSectionAll(plugGUI), false);
   return tabs;
 }

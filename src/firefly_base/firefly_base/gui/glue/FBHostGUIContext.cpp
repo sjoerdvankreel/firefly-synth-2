@@ -1,4 +1,5 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <stack>
 #include <memory>
@@ -13,12 +14,71 @@ struct MenuBuilder
   std::unique_ptr<PopupMenu> menu = {};
 };
 
+FBHostGUIContext::
+FBHostGUIContext():
+_undoState(this) {}
+
+void
+FBHostGUIContext::BeginAudioParamChange(int index)
+{
+  DoBeginAudioParamChange(index);
+}
+
+void
+FBHostGUIContext::EndAudioParamChange(int index)
+{
+  DoEndAudioParamChange(index);
+}
+
+void
+FBHostGUIContext::PerformAudioParamEdit(int index, double normalized)
+{
+  DoPerformAudioParamEdit(index, normalized);
+}
+
 void
 FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
 {
   BeginAudioParamChange(index);
   PerformAudioParamEdit(index, normalized);
   EndAudioParamChange(index);
+}
+
+void 
+FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
+{
+  std::string name = Topo()->ModuleAtTopo(moduleIndices)->name;
+  UndoState().Snapshot("Clear " + name);
+  auto const& staticModule = Topo()->static_.modules[moduleIndices.index];
+  for (int p = 0; p < staticModule.params.size(); p++)
+  {
+    auto const& staticParam = staticModule.params[p];
+    for (int s = 0; s < staticParam.slotCount; s++)
+    {
+      auto runtimeParam = Topo()->audio.ParamAtTopo({ moduleIndices, { p, s } });
+      double normalized = staticParam.DefaultNormalizedByText(moduleIndices.slot, s);
+      PerformImmediateAudioParamEdit(runtimeParam->runtimeParamIndex, normalized);
+    }
+  }
+}
+
+void 
+FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot)
+{
+  std::string name = Topo()->ModuleAtTopo(moduleIndices)->name;
+  UndoState().Snapshot("Copy " + name);
+  auto const& staticModule = Topo()->static_.modules[moduleIndices.index];
+  for (int p = 0; p < staticModule.params.size(); p++)
+  {
+    auto const& staticParam = staticModule.params[p];
+    for (int s = 0; s < staticParam.slotCount; s++)
+    {
+      auto fromRuntimeParam = Topo()->audio.ParamAtTopo({ moduleIndices, { p, s } });
+      auto toRuntimeParam = Topo()->audio.ParamAtTopo({ { moduleIndices.index, toSlot }, { p, s } });
+      auto fromValue = GetAudioParamNormalized(fromRuntimeParam->runtimeParamIndex);
+      PerformImmediateAudioParamEdit(toRuntimeParam->runtimeParamIndex, fromValue);
+    }
+  }
 }
 
 std::unique_ptr<PopupMenu>

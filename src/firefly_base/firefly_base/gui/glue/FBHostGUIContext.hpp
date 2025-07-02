@@ -1,12 +1,14 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/base/state/main/FBUndoStateContainer.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <memory>
 #include <string>
 #include <vector>
 
+struct FBTopoIndices;
 struct FBRuntimeTopo;
 class FBGUIStateContainer;
 class FBExchangeStateContainer;
@@ -28,17 +30,20 @@ FBMakeHostContextMenu(
 
 class FBHostGUIContext
 {
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostGUIContext);
+  FBUndoStateContainer _undoState;
 
+protected:
+  FBHostGUIContext();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostGUIContext);
+
+  virtual void DoEndAudioParamChange(int index) = 0;
+  virtual void DoBeginAudioParamChange(int index) = 0;
+  virtual void DoPerformAudioParamEdit(int index, double normalized) = 0;
+
+public:
   virtual FBGUIStateContainer* GUIState() = 0;
   virtual FBRuntimeTopo const* Topo() const = 0;
   virtual FBExchangeStateContainer const* ExchangeState() const = 0;
-
-  virtual void EndAudioParamChange(int index) = 0;
-  virtual void BeginAudioParamChange(int index) = 0;
-  virtual void PerformAudioParamEdit(int index, double normalized) = 0;
-  void PerformImmediateAudioParamEdit(int index, double normalized);
 
   virtual double GetAudioParamNormalized(int index) const = 0;
   virtual double GetGUIParamNormalized(int index) const = 0;
@@ -46,4 +51,14 @@ public:
 
   virtual void AudioParamContextMenuClicked(int paramIndex, int juceTag) = 0;
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
+
+  FBUndoStateContainer& UndoState() { return _undoState; }
+
+  void EndAudioParamChange(int index);
+  void BeginAudioParamChange(int index);
+  void PerformAudioParamEdit(int index, double normalized);
+
+  void PerformImmediateAudioParamEdit(int index, double normalized);
+  void ClearModuleAudioParams(FBTopoIndices const& moduleIndices);
+  void CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot);
 };

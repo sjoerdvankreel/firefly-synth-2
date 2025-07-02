@@ -26,7 +26,7 @@ _data(std::make_unique<FBModuleGraphComponentData>()),
 _display(std::make_unique<FBModuleGraphDisplayComponent>(_data.get()))
 {
   _data->renderState = renderState;
-  _grid = std::make_unique<FBGridComponent>(FBGridType::Module, 1, 1);
+  _grid = std::make_unique<FBGridComponent>(true, 1, 1);
   _grid->Add(0, 0, _display.get());
   _section = std::make_unique<FBSectionComponent>(_grid.get());
   addAndMakeVisible(_section.get());

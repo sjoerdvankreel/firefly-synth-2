@@ -3,7 +3,7 @@
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
 * Only osci, inter-osci modulation, per-voice fx, global fx, envelopes and audio mixer matrix implemented.
-* Stock JUCE GUI, no patch saving/loading, no presets, no delay, reverb, LFO's, MTS-ESP, no CV-routing, 
+* Stock JUCE GUI, no presets, no delay, reverb, LFO's, MTS-ESP, no CV-routing, 
 even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
 
 # Some demo material
@@ -101,7 +101,7 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
 
 # Build it
-As always. Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release.
+Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
 # Screenshot
 <img alt="Screenshot" src="demo/screenshot.png"/>

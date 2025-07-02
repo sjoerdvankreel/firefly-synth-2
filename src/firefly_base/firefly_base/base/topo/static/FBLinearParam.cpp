@@ -33,7 +33,7 @@ FBLinearParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBLinearParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) const
+FBLinearParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)
@@ -42,7 +42,5 @@ FBLinearParamNonRealTime::TextToPlain(bool /*io*/, std::string const& text) cons
   result /= displayMultiplier;
   if (result < min - 0.01 || result > max + 0.01)
     return {};
-  if (result < min || result > max)
-    FB_LOG_INFO("Clamping " + text + " to [" + std::to_string(min) + ", " + std::to_string(max) + "].");
   return { std::clamp(result, static_cast<double>(min),  static_cast<double>(max)) };
 }

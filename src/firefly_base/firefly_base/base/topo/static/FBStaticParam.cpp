@@ -77,17 +77,22 @@ FBStaticParamBase::ItemsNonRealTime() const
   }
 }
 
-double
-FBStaticParamBase::DefaultNormalizedByText(int moduleSlot, int paramSlot) const
+std::string 
+FBStaticParamBase::DebugNameAndId() const
 {
-  auto text = GetDefaultText(moduleSlot, paramSlot);
-  if (text.size() == 0)
-    return 0.0;
-  auto result = NonRealTime().TextToNormalized(false, text);
-  if (result)
-    return result.value();
-  FB_LOG_WARN("Failed to parse default text '" + text + "' for param '" + name + "'.");
-  return 0.0;
+  return std::string(name) + " (" + id + ")";
+}
+
+std::optional<double>
+FBStaticParamBase::TextToPlain(bool io, std::string const& text) const
+{
+  return NonRealTime().TextToPlain(*this, io, text);
+}
+
+std::optional<double>
+FBStaticParamBase::TextToNormalized(bool io, std::string const& text) const
+{
+  return NonRealTime().TextToNormalized(*this, io, text);
 }
 
 std::string
@@ -97,4 +102,17 @@ FBStaticParamBase::NormalizedToTextWithUnit(bool io, double normalized) const
   if (!io && !unit.empty())
     result += " " + unit;
   return result;
+}
+
+double
+FBStaticParamBase::DefaultNormalizedByText(int moduleSlot, int paramSlot) const
+{
+  auto text = GetDefaultText(moduleSlot, paramSlot);
+  if (text.size() == 0)
+    return 0.0;
+  auto result = TextToNormalized(false, text);
+  if (result)
+    return result.value();
+  FB_LOG_WARN("Failed to parse default text.");
+  return 0.0;
 }

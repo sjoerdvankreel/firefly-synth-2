@@ -39,6 +39,7 @@ public FBAutoSizeComboBox,
 public FBParamControl
 {
 public:
+  void showPopup() override;
   juce::String getTooltip() override;
   void parentHierarchyChanged() override;
   void valueChanged(juce::Value& value) override;

@@ -40,7 +40,7 @@ FBVoiceManager::InitFromExchange(
     _voices[i].slot = i;
     _voices[i].event = voices[i].event;
     _voices[i].state = voices[i].state;
-    _voices[i].initialOffset = voices[i].initialOffset;
+    _voices[i].offsetInBlock = voices[i].offsetInBlock;
     _counter++;
     if (_voices[i].state == FBVoiceState::Active)
       _voiceCount++;
@@ -77,7 +77,7 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
   _num[slot] = ++_counter;
   _voices[slot].slot = slot;
   _voices[slot].event = event;
-  _voices[slot].initialOffset = event.pos;
+  _voices[slot].offsetInBlock = event.pos;
   _voices[slot].state = FBVoiceState::Active;
 
   for (int p = 0; p < _procState->Params().size(); p++)

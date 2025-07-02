@@ -4,6 +4,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 
+#include <map>
 #include <string>
 
 using namespace juce;
@@ -12,30 +13,67 @@ FBTabBarButton::
 FBTabBarButton(const String& name, TabbedButtonBar& bar):
 TabBarButton(name, bar) {}
 
-FBTabComponent::
-FBTabComponent():
+void 
+FBTabBarButton::clicked(const ModifierKeys& modifiers)
+{
+  FBModuleTabComponent* tabs;
+  if (!modifiers.isRightButtonDown())
+    TabBarButton::clicked(modifiers);
+  else if ((tabs = findParentComponentOfClass<FBModuleTabComponent>()) != nullptr)
+    tabs->TabRightClicked(getIndex());
+}
+
+FBAutoSizeTabComponent::
+FBAutoSizeTabComponent():
 TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
 {
-  setTabBarDepth(20);
+  setTabBarDepth(FBTabBarDepth);
   setLookAndFeel(FBGetLookAndFeel());
 }
 
+int
+FBAutoSizeTabComponent::FixedWidth(int height) const
+{
+  auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
+  return content.FixedWidth(height - 20);
+}
+
 TabBarButton*
-FBTabComponent::createTabButton(const juce::String& tabName, int /*tabIndex*/)
+FBAutoSizeTabComponent::createTabButton(const juce::String& tabName, int /*tabIndex*/)
 {
   return new FBTabBarButton(tabName, *tabs);
 }
 
 FBModuleTabComponent::
-FBModuleTabComponent(FBPlugGUI* plugGUI):
-FBTabComponent(),
-_plugGUI(plugGUI) {}
-
-int
-FBModuleTabComponent::FixedWidth(int height) const
+FBModuleTabComponent(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
+FBAutoSizeTabComponent(),
+_plugGUI(plugGUI),
+_param(param)
 {
-  auto& content = dynamic_cast<IFBHorizontalAutoSize&>(*getTabContentComponent(0));
-  return content.FixedWidth(height - 20);
+  assert(param != nullptr);
+  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
+  _storedSelectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
+}
+
+void
+FBModuleTabComponent::ActivateStoredSelectedTab()
+{
+  if (!(0 <= _storedSelectedTab && _storedSelectedTab < _moduleIndices.size()))
+    return;
+  setCurrentTabIndex(_storedSelectedTab);
+}
+
+void
+FBModuleTabComponent::currentTabChanged(
+  int newCurrentTabIndex, juce::String const& /*newCurrentTabName*/)
+{
+  if (newCurrentTabIndex < 0 || newCurrentTabIndex >= _moduleIndices.size())
+    return;
+  auto const& indices = _moduleIndices[newCurrentTabIndex];
+  _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
+  double normalized = _param->static_.Discrete().PlainToNormalizedFast(newCurrentTabIndex);
+  _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
+  _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
 }
 
 void
@@ -58,12 +96,32 @@ FBModuleTabComponent::AddModuleTab(
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
 }
 
-void
-FBModuleTabComponent::currentTabChanged(
-  int newCurrentTabIndex, juce::String const& /*newCurrentTabName*/)
+void 
+FBModuleTabComponent::TabRightClicked(int tabIndex)
 {
-  if (newCurrentTabIndex < 0 || newCurrentTabIndex >= _moduleIndices.size())
+  if (tabIndex < 0 || tabIndex >= _moduleIndices.size())
     return;
-  auto const& indices = _moduleIndices[newCurrentTabIndex];
-  _plugGUI->ActiveModuleSlotChanged(indices.index, indices.slot);
+  
+  auto moduleIndices = _moduleIndices[tabIndex];
+  int slotCount = _plugGUI->HostContext()->Topo()->static_.modules[moduleIndices.index].slotCount;
+
+  PopupMenu menu;
+  menu.addItem(1, "Clear");
+  if (slotCount > 1)
+  {
+    PopupMenu subMenu;
+    for (int i = 0; i < slotCount; i++)
+      subMenu.addItem(2 + i, std::to_string(i + 1), moduleIndices.slot != i);
+    menu.addSubMenu("Copy To", subMenu);
+  }
+
+  PopupMenu::Options options;
+  options = options.withParentComponent(_plugGUI);
+  options = options.withTargetComponent(getTabbedButtonBar().getTabButton(tabIndex));
+  menu.showMenuAsync(options, [this, moduleIndices, slotCount](int id) {
+    if (id == 1) 
+      _plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices); 
+    else if(2 <= id && id < slotCount + 2) 
+      _plugGUI->HostContext()->CopyModuleAudioParams(moduleIndices, id - 2);
+  });
 }

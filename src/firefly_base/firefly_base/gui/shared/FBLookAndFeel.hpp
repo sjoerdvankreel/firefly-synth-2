@@ -48,6 +48,11 @@ public:
     int	buttonX, int buttonY, int	buttonW, int buttonH,
     juce::ComboBox&) override;
 
+  void drawToggleButton(
+    juce::Graphics& g, juce::ToggleButton& button,
+    bool shouldDrawButtonAsHighlighted, 
+    bool shouldDrawButtonAsDown) override;
+
   void drawLinearSlider(
     juce::Graphics&,
     int x, int y, int width, int height,
@@ -58,6 +63,13 @@ public:
     juce::Graphics&,
     int x, int y, int width, int height, float sliderPos,
     float rotaryStartAngle, float rotaryEndAngle, juce::Slider&) override;
+
+  void drawButtonText(juce::Graphics& g, juce::TextButton& button,
+    bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+
+  void drawButtonBackground(
+    juce::Graphics& g, juce::Button& button, const juce::Colour& backgroundColour,
+    bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 
   juce::Font getPopupMenuFont() override { return FBGUIGetFont(); }
   juce::Font getLabelFont(juce::Label&) override { return FBGUIGetFont(); }

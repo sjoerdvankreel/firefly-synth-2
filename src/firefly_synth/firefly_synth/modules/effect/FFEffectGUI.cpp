@@ -1,6 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
+#include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -24,7 +25,7 @@ MakeEffectSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlo
   FB_LOG_ENTRY_EXIT();
 
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 1 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
@@ -47,7 +48,7 @@ MakeEffectSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSl
   FB_LOG_ENTRY_EXIT();
 
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto kind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, block } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, kind, std::string(1, static_cast<char>('A' + block))));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
@@ -118,7 +119,7 @@ MakeEffectTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   columnSizes.push_back(1);
   for (int i = 0; i < FFEffectBlockCount; i++)
     columnSizes.push_back(0);
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeEffectSectionMain(plugGUI, moduleType, moduleSlot));
   for(int i = 0; i < FFEffectBlockCount; i++)
     grid->Add(0, 1 + i, MakeEffectSectionBlock(plugGUI, moduleType, moduleSlot, i));
@@ -129,10 +130,13 @@ Component*
 FFMakeEffectGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
+  auto topo = plugGUI->HostContext()->Topo();
+  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::FXSelectedTab, 0 } });
+  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   for (int i = 0; i < FFEffectCount; i++)
     tabs->AddModuleTab(i != 0, { (int)FFModuleType::VEffect, i }, MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
   for (int i = 0; i < FFEffectCount; i++)
     tabs->AddModuleTab(i != 0, { (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
+  tabs->ActivateStoredSelectedTab();
   return tabs;
 }

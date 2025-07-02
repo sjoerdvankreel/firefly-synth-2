@@ -21,7 +21,7 @@ MakeMasterSectionAll(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(FBGridType::Module, std::vector<int> { 1 }, std::vector<int> { 0, 1 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1 } );
   auto hostSmoothTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::HostSmoothTime, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hostSmoothTime));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hostSmoothTime, Slider::SliderStyle::LinearHorizontal));
@@ -33,7 +33,8 @@ Component*
 FFMakeMasterGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI);
-  tabs->AddModuleTab(false, { (int)FFModuleType::Master, 0 }, MakeMasterSectionAll(plugGUI));
+  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
+  auto name = plugGUI->HostContext()->Topo()->static_.modules[(int)FFModuleType::Master].name;
+  tabs->addTab(name, {}, MakeMasterSectionAll(plugGUI), false);
   return tabs;
 }

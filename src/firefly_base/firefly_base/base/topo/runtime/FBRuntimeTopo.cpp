@@ -78,8 +78,11 @@ moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
       auto const& param = topo.modules[m].params[p];
       FB_ASSERT(allIds.insert(param.id).second);
       if (param.type == FBParamType::List)
+      {
+        std::set<std::string> allListIds = {};
         for (int i = 0; i < param.List().items.size(); i++)
-          FB_ASSERT(allIds.insert(param.List().items[i].id).second);
+          FB_ASSERT(allListIds.insert(param.List().items[i].id).second);
+      }
     }
   }
 #endif
@@ -283,9 +286,33 @@ FBRuntimeTopo::SaveParamStateToVar(
   var state;
   for (int p = 0; p < params.size(); p++)
   {
+    if (params[p].static_.isOutput())
+      continue;
+
     auto param = new DynamicObject;
+    param->setProperty("tag", params[p].tag);
     param->setProperty("id", String(params[p].id));
+    param->setProperty("paramId", String(params[p].Static().id));
+    param->setProperty("moduleId", String(params[p].staticModuleId));
+    param->setProperty("paramSlot", params[p].topoIndices.param.slot);
+    param->setProperty("moduleSlot", params[p].topoIndices.module.slot);
     param->setProperty("val", String(params[p].static_.NonRealTime().NormalizedToText(true, *container.Params()[p])));
+
+    // store the longname without funky chars
+    // i dont want to deal with charsets in stored-to-disk
+    // it's just meta anyway, maybe useful to aid conversion debugging
+    std::string longNameClean = "";
+    std::string longName = params[p].longName;
+    for (int i = 0; i < longName.size(); i++)
+    {
+      char c = longName[i];
+      if('0' <= c && c <= '9' || 'a' <= c && c <= 'z' || 'A' <= c && c <= 'Z' || c == ' ' || c == '-' || c == '_')
+        longNameClean.push_back(longName[i]);
+      else
+        longNameClean.push_back('?');
+    }
+    param->setProperty("name", String(longNameClean));
+
     state.append(var(param));
   }
 
@@ -377,9 +404,12 @@ FBRuntimeTopo::LoadParamStateFromVar(
     return false;
   }
 
-  if (static_cast<int>(major) > static_.meta.version.major ||
-    static_cast<int>(major) == static_.meta.version.major && static_cast<int>(minor) > static_.meta.version.minor ||
-    static_cast<int>(minor) == static_.meta.version.minor && static_cast<int>(patch) > static_.meta.version.patch)
+  FBPlugVersion loadingVersion = {};
+  loadingVersion.major = static_cast<int>(major);
+  loadingVersion.minor = static_cast<int>(minor);
+  loadingVersion.patch = static_cast<int>(patch);
+
+  if (static_.meta.version < loadingVersion)
   {
     FB_LOG_ERROR("Stored plugin version is newer than current plugin version.");
     return false;
@@ -402,10 +432,11 @@ FBRuntimeTopo::LoadParamStateFromVar(
     double defaultNormalized = 0.0f;
     auto defaultText = params.params[p].GetDefaultText();
     if(defaultText.size())
-      defaultNormalized = params.params[p].static_.NonRealTime().TextToNormalized(false, defaultText).value();
+      defaultNormalized = params.params[p].static_.TextToNormalized(false, defaultText).value();
     *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
+  auto converter = static_.deserializationConverterFactory(loadingVersion, this);
   for (int sp = 0; sp < state.size(); sp++)
   {
     DynamicObject* param = state[sp].getDynamicObject();
@@ -435,21 +466,65 @@ FBRuntimeTopo::LoadParamStateFromVar(
     }
 
     std::unordered_map<int, int>::const_iterator iter;
-    int tag = FBMakeStableHash(id.toString().toStdString());
-    if ((iter = params.paramTagToIndex.find(tag)) == params.paramTagToIndex.end())
+    int oldTag = FBMakeStableHash(id.toString().toStdString());
+    if ((iter = params.paramTagToIndex.find(oldTag)) == params.paramTagToIndex.end())
     {
-      FB_LOG_WARN("Unknown plugin parameter.");
-      continue;
+      FB_LOG_WARN("Unknown plugin parameter: '" + id.toString().toStdString() + "', trying to map old to new.");
+      var oldModuleId = param->getProperty("moduleId");
+      if (!oldModuleId.isString())
+      {
+        FB_LOG_ERROR("Old module id is not a string.");
+        continue;
+      }
+      var oldModuleSlot = param->getProperty("moduleSlot");
+      if (!oldModuleSlot.isInt())
+      {
+        FB_LOG_ERROR("Old module slot is not an int.");
+        continue;
+      }
+      var oldParamId = param->getProperty("paramId");
+      if (!oldParamId.isString())
+      {
+        FB_LOG_ERROR("Old param id is not a string.");
+        continue;
+      }
+      var oldParamSlot = param->getProperty("paramSlot");
+      if (!oldParamSlot.isInt())
+      {
+        FB_LOG_ERROR("Old param slot is not an int.");
+        continue;
+      }
+      int newParamSlot = -1;
+      int newModuleSlot = -1;
+      std::string newParamId = {};
+      std::string newModuleId = {};
+      if (!converter->OnParamNotFound(
+        oldModuleId.toString().toStdString(), static_cast<int>(oldModuleSlot), 
+        oldParamId.toString().toStdString(), static_cast<int>(oldParamSlot),
+        newModuleId, newModuleSlot, newParamId, newParamSlot))
+      {
+        FB_LOG_ERROR("Failed to map old to new plugin parameter.");
+        continue;
+      }
+      std::string newId = FFMakeRuntimeParamId(newModuleId, newModuleSlot, newParamId, newParamSlot);
+      int newTag = FBMakeStableHash(newId);
+      if ((iter = params.paramTagToIndex.find(newTag)) == params.paramTagToIndex.end())
+      {
+        FB_LOG_ERROR("Mapped old to new plugin parameter, but new id does not exist.");
+        continue;
+      }
+      FB_LOG_INFO("Mapped old to new parameter: '" + newId + "'.");
     }
 
     auto const& topo = params.params[iter->second];
-    auto normalized = topo.static_.NonRealTime().TextToNormalized(true, val.toString().toStdString());
+    auto normalized = topo.static_.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
     {
       FB_LOG_WARN("Failed to parse plugin parameter value.");
-      normalized = topo.static_.NonRealTime().TextToNormalized(false, topo.GetDefaultText());
+      normalized = topo.static_.TextToNormalized(false, topo.GetDefaultText());
     }
-    *container.Params()[iter->second] = static_cast<float>(normalized.value());
+    if(!topo.static_.isOutput())
+      *container.Params()[iter->second] = static_cast<float>(normalized.value());
   }
 
   return true;

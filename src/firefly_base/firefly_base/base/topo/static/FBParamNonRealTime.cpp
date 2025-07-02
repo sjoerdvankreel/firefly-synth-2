@@ -1,4 +1,6 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/base/shared/FBLogging.hpp>
+#include <firefly_base/base/topo/static/FBStaticParam.hpp>
 #include <firefly_base/base/topo/static/FBParamNonRealTime.hpp>
 
 std::string
@@ -20,9 +22,19 @@ FBParamNonRealTime::NormalizedToText(bool io, double plain) const
 }
 
 std::optional<double> 
-FBParamNonRealTime::TextToNormalized(bool io, std::string const& text) const
+FBParamNonRealTime::TextToPlain(FBStaticParamBase const& param, bool io, std::string const& text) const
 {
-  auto plain = TextToPlain(io, text);
+  auto result = TextToPlainInternal(io, text);
+  if (result)
+    return result;
+  FB_LOG_INFO("Failed to parse text '" + text + "' for param '" + param.DebugNameAndId() + "'.");
+  return {};
+}
+
+std::optional<double> 
+FBParamNonRealTime::TextToNormalized(FBStaticParamBase const& param, bool io, std::string const& text) const
+{
+  auto plain = TextToPlain(param, io, text);
   if (!plain)
     return {};
   return PlainToNormalized(plain.value());

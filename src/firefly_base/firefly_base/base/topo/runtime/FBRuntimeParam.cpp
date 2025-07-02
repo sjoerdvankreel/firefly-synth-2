@@ -2,14 +2,13 @@
 #include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
-static std::string
-MakeRuntimeParamId(
-  FBStaticModule const& module, 
-  FBStaticParamBase const& param,
-  FBParamTopoIndices const& indices)
+std::string
+FFMakeRuntimeParamId(
+  std::string const& staticModuleId, int moduleSlot,
+  std::string const& staticParamId, int paramSlot)
 {
-  auto paramId = param.id + "-" + std::to_string(indices.param.slot);
-  auto moduleId = module.id + "-" + std::to_string(indices.module.slot);
+  auto paramId = staticParamId + "-" + std::to_string(paramSlot);
+  auto moduleId = staticModuleId + "-" + std::to_string(moduleSlot);
   return moduleId + "-" + paramId;
 }
 
@@ -38,7 +37,8 @@ topoIndices(topoIndices),
 longName(MakeRuntimeParamLongName(topo, staticModule, staticParam, topoIndices)),
 shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
 displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
-id(MakeRuntimeParamId(staticModule, staticParam, topoIndices)),
+id(FFMakeRuntimeParamId(staticModule.id, topoIndices.module.slot, staticParam.id, topoIndices.param.slot)),
+staticModuleId(staticModule.id),
 tag(FBMakeStableHash(id)) {}
 
 FBRuntimeGUIParam::

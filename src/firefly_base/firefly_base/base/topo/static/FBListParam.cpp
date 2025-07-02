@@ -50,7 +50,7 @@ FBListParamNonRealTime::MakePopupMenu() const
 }
 
 std::optional<double>
-FBListParamNonRealTime::TextToPlain(bool io, std::string const& text) const
+FBListParamNonRealTime::TextToPlainInternal(bool io, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == (io ? items[i].id : items[i].name))

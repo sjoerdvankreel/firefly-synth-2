@@ -6,6 +6,7 @@
 #include <utility>
 
 struct FBRuntimeTopo;
+class FBHostGUIContext;
 class FBProcStateContainer;
 
 class FBScalarStateContainer final
@@ -15,16 +16,21 @@ class FBScalarStateContainer final
   void (*_freeRawState)(void*);
 
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBScalarStateContainer);
   FBScalarStateContainer(FBRuntimeTopo const& topo);
-  ~FBScalarStateContainer() { _freeRawState(_rawState); }
+  ~FBScalarStateContainer() { if(_rawState) _freeRawState(_rawState); }
+  FBScalarStateContainer(FBScalarStateContainer&&) noexcept;
+  FBScalarStateContainer& operator=(FBScalarStateContainer&&) noexcept;
+  FBScalarStateContainer(FBScalarStateContainer const&) = delete;
+  FBScalarStateContainer& operator=(FBScalarStateContainer const&) = delete;
 
+  void CopyTo(FBHostGUIContext* context) const;
+  void CopyFrom(FBHostGUIContext const* context);
   void CopyFrom(FBProcStateContainer const& proc);
   void CopyFrom(FBScalarStateContainer const& scalar);
-  std::vector<double*> const& Params() const { return _params; }
 
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
+  std::vector<double*> const& Params() const { return _params; }
   template <class T> T* As() { return static_cast<T*>(_rawState); }
   template <class T> T const* As() const { return static_cast<T const*>(_rawState); }
 };

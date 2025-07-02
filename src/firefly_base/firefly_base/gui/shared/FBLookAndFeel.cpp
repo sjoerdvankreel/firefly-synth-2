@@ -89,6 +89,8 @@ int
 FBLookAndFeel::getTabButtonBestWidth(
   juce::TabBarButton& button, int /*tabDepth*/)
 {
+  if (button.getTabbedButtonBar().getNumTabs() == 1)
+    return button.getTabbedButtonBar().getWidth();
   auto text = button.getButtonText().toStdString();
   return text.size() == 1 ? 32 : 64;
 }
@@ -116,6 +118,23 @@ FBLookAndFeel::drawLabel(
   g.drawText(label.getText(), textArea, label.getJustificationType(), false);
   g.setColour(label.findColour(Label::outlineColourId).withMultipliedAlpha(alpha));
   g.drawRect(label.getLocalBounds());
+}
+
+void
+FBLookAndFeel::drawToggleButton(
+  Graphics& g, ToggleButton& button,
+  bool shouldDrawButtonAsHighlighted,
+  bool shouldDrawButtonAsDown)
+{
+  auto fontSize = jmin(15.0f, (float)button.getHeight() * 0.75f);
+  auto tickWidth = fontSize * 1.1f;
+  float x = (button.getWidth() - tickWidth) * 0.5f;
+  drawTickBox(g, button, x, ((float)button.getHeight() - tickWidth) * 0.5f,
+    tickWidth, tickWidth,
+    button.getToggleState(),
+    button.isEnabled(),
+    shouldDrawButtonAsHighlighted,
+    shouldDrawButtonAsDown);
 }
 
 void
@@ -202,6 +221,78 @@ FBLookAndFeel::drawLinearSlider(
   DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramActive.minValue);
   if (paramSlider->Param()->static_.IsVoice())
     DrawLinearSliderExchangeThumb(g, *paramSlider, y, height, paramActive.maxValue);
+}
+
+void 
+FBLookAndFeel::drawButtonBackground(
+  juce::Graphics& g, juce::Button& button, 
+  const juce::Colour& backgroundColour,
+  bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
+{
+  auto cornerSize = 6.0f;
+  auto bounds = button.getLocalBounds().toFloat().reduced(1.0f, 1.0f);
+
+  auto baseColour = backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
+    .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f);
+
+  if (shouldDrawButtonAsDown || shouldDrawButtonAsHighlighted)
+    baseColour = baseColour.contrasting(shouldDrawButtonAsDown ? 0.2f : 0.05f);
+
+  g.setColour(baseColour);
+
+  auto flatOnLeft = button.isConnectedOnLeft();
+  auto flatOnRight = button.isConnectedOnRight();
+  auto flatOnTop = button.isConnectedOnTop();
+  auto flatOnBottom = button.isConnectedOnBottom();
+
+  if (flatOnLeft || flatOnRight || flatOnTop || flatOnBottom)
+  {
+    Path path;
+    path.addRoundedRectangle(bounds.getX(), bounds.getY(),
+      bounds.getWidth(), bounds.getHeight(),
+      cornerSize, cornerSize,
+      !(flatOnLeft || flatOnTop),
+      !(flatOnRight || flatOnTop),
+      !(flatOnLeft || flatOnBottom),
+      !(flatOnRight || flatOnBottom));
+
+    g.fillPath(path);
+
+    g.setColour(button.findColour(ComboBox::outlineColourId));
+    g.strokePath(path, PathStrokeType(1.0f));
+  }
+  else
+  {
+    g.fillRoundedRectangle(bounds, cornerSize);
+
+    g.setColour(button.findColour(ComboBox::outlineColourId));
+    g.drawRoundedRectangle(bounds, cornerSize, 1.0f);
+  }
+}
+
+void 
+FBLookAndFeel::drawButtonText(
+  Graphics& g, TextButton& button,
+  bool /*shouldDrawButtonAsHighlighted*/, bool /*shouldDrawButtonAsDown*/)
+{
+  Font font(getTextButtonFont(button, button.getHeight()));
+  g.setFont(font);
+  g.setColour(button.findColour(button.getToggleState() ? TextButton::textColourOnId
+    : TextButton::textColourOffId)
+    .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+
+  const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
+  const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
+
+  const int fontHeight = roundToInt(font.getHeight() * 0.6f);
+  const int leftIndent = jmin(fontHeight, 1 + cornerSize / (button.isConnectedOnLeft() ? 4 : 2));
+  const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
+  const int textWidth = button.getWidth() - leftIndent - rightIndent;
+
+  if (textWidth > 0)
+    g.drawText(button.getButtonText(),
+      leftIndent, yIndent, textWidth, button.getHeight() - yIndent * 2,
+      Justification::centred, false);
 }
 
 void

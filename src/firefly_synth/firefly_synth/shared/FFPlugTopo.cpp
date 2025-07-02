@@ -1,6 +1,7 @@
-#include <firefly_synth/shared/FFPlugGUI.hpp>
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFPlugState.hpp>
+#include <firefly_synth/shared/FFDeserializationConverter.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
 #include <firefly_synth/modules/mix/FFVMixTopo.hpp>
 #include <firefly_synth/modules/mix/FFGMixTopo.hpp>
@@ -80,10 +81,15 @@ FFMakeTopo(FBPlugFormat format)
 {
   auto result = std::make_unique<FBStaticTopo>();
   result->meta = FFPlugMeta(format);
+  result->maxUndoSize = 15;
+  result->patchExtension = "ff2preset";
   result->guiWidth = 900;
   result->guiAspectRatioWidth = 25;
   result->guiAspectRatioHeight = 11;
-  result->guiFactory = [](FBHostGUIContext* hostContext) { return std::make_unique<FFPlugGUI>(hostContext); };
+  result->guiFactory = [](FBHostGUIContext* hostContext) { 
+    return std::make_unique<FFPlugGUI>(hostContext); };
+  result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
+    return std::make_unique<FFDeserializationConverter>(oldVersion, topo); };
 
   result->specialSelector = SpecialParamsSelector;
   result->specialGUISelector = SpecialGUIParamsSelector;

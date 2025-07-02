@@ -76,19 +76,19 @@ FBVST3EditController::ResetView()
 }
 
 void
-FBVST3EditController::EndAudioParamChange(int /*index*/)
+FBVST3EditController::DoEndAudioParamChange(int /*index*/)
 {
   // see PerformAudioParamEdit
 }
 
 void
-FBVST3EditController::BeginAudioParamChange(int /*index*/)
+FBVST3EditController::DoBeginAudioParamChange(int /*index*/)
 {
   // see PerformAudioParamEdit
 }
 
 void
-FBVST3EditController::PerformAudioParamEdit(int index, double normalized)
+FBVST3EditController::DoPerformAudioParamEdit(int index, double normalized)
 {
   int tag = _topo->audio.params[index].tag;
   setParamNormalized(tag, normalized);
