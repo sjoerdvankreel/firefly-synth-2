@@ -5,6 +5,7 @@
 
 struct FBStaticModule;
 
+inline int constexpr FFLFOMaxSeed = 255;
 inline int constexpr FFLFOBlockCount = 2;
 std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool global);
 
@@ -14,6 +15,6 @@ enum class FFLFOSkewMode { Off, ScaleUnipolar, ScaleBipolar, ExpUnipolar, ExpBip
 
 enum class FFLFOParam {
   On, Sync, OneShot, HostSnap, 
-  Phase, Steps, SmoothTime, SmoothBars, Seed,
+  Phase, Steps, Seed, SmoothTime, SmoothBars,
   Type, RateTime, RateBars, OpKind, Stack, Min, Max, 
   SkewXMode, SkewXAmt, SkewYMode, SkewYAmt, Count };

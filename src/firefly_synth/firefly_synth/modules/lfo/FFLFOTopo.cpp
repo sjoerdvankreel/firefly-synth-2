@@ -81,5 +81,51 @@ FFMakeLFOTopo(bool global)
   hostSnap.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectHostSnap);
   hostSnap.dependencies.enabled.audio.When({ (int)FFLFOParam::On }, [global](auto const& vs) { return global && vs[0] != 0; });
 
+  auto& phase = result->params[(int)FFLFOParam::Phase];
+  phase.acc = false;
+  phase.defaultText = "0";
+  phase.name = "Phase";
+  phase.slotCount = 1;
+  phase.unit = "%";
+  phase.id = prefix + "{88E80B77-86BF-49B0-9822-AACEFC6EAB03}";
+  phase.type = FBParamType::Identity;
+  auto selectPhase = [](auto& module) { return &module.block.phase; };
+  phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
+  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
+  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
+  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
+  phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase); 
+  
+  auto& steps = result->params[(int)FFLFOParam::Steps];
+  steps.acc = false;
+  steps.defaultText = "1";
+  steps.name = "Steps";
+  steps.slotCount = 1;
+  steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
+  steps.type = FBParamType::Discrete;
+  steps.Discrete().valueCount = 32;
+  steps.Discrete().valueOffset = 1;
+  auto selectSteps = [](auto& module) { return &module.block.steps; };
+  steps.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSteps);
+  steps.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSteps);
+  steps.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSteps);
+  steps.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSteps);
+  steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
+
+  auto& seed = result->params[(int)FFLFOParam::Seed];
+  seed.acc = false;
+  seed.defaultText = "0";
+  seed.name = "Seed";
+  seed.slotCount = 1;
+  seed.id = prefix + "{3283748D-70B7-41FC-986B-1B76D4E35F48}";
+  seed.type = FBParamType::Discrete;
+  seed.Discrete().valueCount = FFLFOMaxSeed + 1;
+  auto selectSeed = [](auto& module) { return &module.block.seed; };
+  seed.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSeed);
+  seed.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSeed);
+  seed.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSeed);
+  seed.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSeed);
+  seed.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSeed);
+
   return result;
 }
