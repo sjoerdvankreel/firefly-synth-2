@@ -1,6 +1,8 @@
 #pragma once
 
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
+
+#include <string>
 #include <memory>
 
 #if !defined(FF_PLUG_VERSION_MAJOR) || !defined(FF_PLUG_VERSION_MINOR) || !defined(FF_PLUG_VERSION_PATCH)
@@ -13,7 +15,9 @@ struct FBStaticTopo;
 struct FBStaticTopoMeta;
 
 FBStaticTopoMeta FFPlugMeta(FBPlugFormat format);
+std::string FFFormatBlockSlot(FBStaticTopo const&, int slot);
 std::unique_ptr<FBStaticTopo> FFMakeTopo(FBPlugFormat format);
+
 enum class FFModuleType { Output, GUISettings, Master, GMix, Osci, OsciMod, VEffect, GEffect, VMix, Env, Count };
 
 inline int constexpr FFEnvCount = 8;

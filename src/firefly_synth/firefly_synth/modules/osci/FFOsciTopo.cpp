@@ -232,6 +232,7 @@ FFMakeOsciTopo()
   waveBasicMode.acc = false;
   waveBasicMode.name = "Basic Mode";
   waveBasicMode.slotCount = FFOsciWaveBasicCount;
+  waveBasicMode.slotFormatter = FFFormatBlockSlot;
   waveBasicMode.id = "{296806B7-DEC4-47F5-AEE0-C35B119CF871}";
   waveBasicMode.type = FBParamType::List;
   waveBasicMode.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "Saw" : "Off"; };
@@ -273,6 +274,7 @@ FFMakeOsciTopo()
   waveBasicGain.name = "Basic Gain";
   waveBasicGain.display = "Gn";
   waveBasicGain.slotCount = FFOsciWaveBasicCount;
+  waveBasicGain.slotFormatter = FFFormatBlockSlot;
   waveBasicGain.unit = "%";
   waveBasicGain.id = "{9B04E634-D046-4117-A542-7E050F3B5FB5}";
   waveBasicGain.type = FBParamType::Linear;
@@ -290,6 +292,7 @@ FFMakeOsciTopo()
   wavePWMode.defaultText = "PW Off";
   wavePWMode.name = "PW Mode";
   wavePWMode.slotCount = FFOsciWavePWCount;
+  wavePWMode.slotFormatter = FFFormatBlockSlot;
   wavePWMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
   wavePWMode.type = FBParamType::List;
   wavePWMode.List().items = {
@@ -313,6 +316,7 @@ FFMakeOsciTopo()
   wavePWGain.name = "PW Gain";
   wavePWGain.display = "Gn";
   wavePWGain.slotCount = FFOsciWavePWCount;
+  wavePWGain.slotFormatter = FFFormatBlockSlot;
   wavePWGain.unit = "%";
   wavePWGain.id = "{CB7B0BA4-2182-4EA8-9895-1763A29DD9F0}";
   wavePWGain.type = FBParamType::Linear;
@@ -332,6 +336,7 @@ FFMakeOsciTopo()
   wavePWPW.name = "PW Pulse Width";
   wavePWPW.display = "PW";
   wavePWPW.slotCount = FFOsciWavePWCount;
+  wavePWPW.slotFormatter = FFFormatBlockSlot;
   wavePWPW.unit = "%";
   wavePWPW.id = "{17BF0368-AC81-45B5-87F3-95958A0C02B6}";
   wavePWPW.type = FBParamType::Identity;
