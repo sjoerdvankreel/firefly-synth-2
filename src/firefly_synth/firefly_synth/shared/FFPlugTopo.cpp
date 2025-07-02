@@ -3,6 +3,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFDeserializationConverter.hpp>
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
+#include <firefly_synth/modules/lfo/FFLFOTopo.hpp>
 #include <firefly_synth/modules/mix/FFVMixTopo.hpp>
 #include <firefly_synth/modules/mix/FFGMixTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
@@ -113,15 +114,17 @@ FFMakeTopo(FBPlugFormat format)
   result->voicesExchangeAddr = [](void* state) { return &static_cast<FFExchangeState*>(state)->voices; };
 
   result->modules.resize((int)FFModuleType::Count);
-  result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
-  result->modules[(int)FFModuleType::VMix] = std::move(*FFMakeVMixTopo());
-  result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo());
+  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
+  result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
+  result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
   result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));
   result->modules[(int)FFModuleType::GEffect] = std::move(*FFMakeEffectTopo(true));
-  result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
-  result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
-  result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
+  result->modules[(int)FFModuleType::VLFO] = std::move(*FFMakeLFOTopo(false));
+  result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeLFOTopo(true));
+  result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
+  result->modules[(int)FFModuleType::VMix] = std::move(*FFMakeVMixTopo());
+  result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo());
   return result;
 }

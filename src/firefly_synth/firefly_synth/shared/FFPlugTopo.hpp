@@ -18,9 +18,10 @@ FBStaticTopoMeta FFPlugMeta(FBPlugFormat format);
 std::string FFFormatBlockSlot(FBStaticTopo const&, int slot);
 std::unique_ptr<FBStaticTopo> FFMakeTopo(FBPlugFormat format);
 
-enum class FFModuleType { Output, GUISettings, Master, GMix, Osci, OsciMod, VEffect, GEffect, VMix, Env, Count };
+enum class FFModuleType { Master, Output, GUISettings, Osci, OsciMod, VEffect, GEffect, VLFO, GLFO, Env, VMix, GMix, Count };
 
 inline int constexpr FFEnvCount = 8;
+inline int constexpr FFLFOCount = 8;
 inline int constexpr FFOsciCount = 4;
 inline int constexpr FFEffectCount = 4;
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";
