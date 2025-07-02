@@ -13,6 +13,7 @@ enum class FFLFOOpKind { Add, Mul };
 enum class FFLFOSkewMode { Off, ScaleUnipolar, ScaleBipolar, ExpUnipolar, ExpBipolar };
 
 enum class FFLFOParam {
-  On, Sync, OneShot, HostSnap, Phase, Steps, Smooth, Seed,
+  On, Sync, OneShot, HostSnap, 
+  Phase, Steps, SmoothTime, SmoothBars, Seed,
   Type, RateTime, RateBars, OpKind, Stack, Min, Max, 
   SkewXMode, SkewXAmt, SkewYMode, SkewYAmt, Count };
