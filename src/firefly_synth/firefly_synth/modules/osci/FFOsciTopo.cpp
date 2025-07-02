@@ -580,7 +580,7 @@ FFMakeOsciTopo()
 
   auto& fmIndex = result->params[(int)FFOsciParam::FMIndex];
   fmIndex.acc = true;
-  fmIndex.defaultText = "0";
+  fmIndex.defaultTextSelector = [](int, int ps) { return ps == 5? "1": "0"; };
   fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciFMMatrixSize;
   fmIndex.id = "{5CEFAD50-CB71-4E79-B3D6-50B004AD7F03}";
