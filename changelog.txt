@@ -1,4 +1,4 @@
-?, ?, 2025 - alpha 7.
+July 2, 2025 - alpha 7.
 
 - Build
 * Opt into ASAN builds.
