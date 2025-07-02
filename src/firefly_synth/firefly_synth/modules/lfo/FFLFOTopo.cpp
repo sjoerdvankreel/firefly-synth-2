@@ -4,6 +4,12 @@
 #include <firefly_synth/modules/lfo/FFLFOTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
+static std::vector<FBBarsItem>
+MakeLFOBarsItems()
+{
+  return FBMakeBarsItems(true, { 1, 128 }, { 4, 1 });
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeLFOTopo(bool global)
 {
@@ -126,6 +132,46 @@ FFMakeLFOTopo(bool global)
   seed.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSeed);
   seed.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSeed);
   seed.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSeed);
+
+  auto& smoothTime = result->params[(int)FFLFOParam::SmoothTime];
+  smoothTime.acc = false;
+  smoothTime.defaultText = "0";
+  smoothTime.display = "Smth";
+  smoothTime.name = "Smooth Time";
+  smoothTime.slotCount = 1;
+  smoothTime.unit = "Sec";
+  smoothTime.id = prefix + "{6064C303-9588-433E-84FE-79B61FDD2ABE}";
+  smoothTime.type = FBParamType::Linear;
+  smoothTime.Linear().min = 0.0f;
+  smoothTime.Linear().max = 10.0f;
+  smoothTime.Linear().editSkewFactor = 0.5f;
+  auto selectSmoothTime = [](auto& module) { return &module.block.smoothTime; };
+  smoothTime.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSmoothTime);
+  smoothTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSmoothTime);
+  smoothTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSmoothTime);
+  smoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSmoothTime);
+  smoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSmoothTime);
+  smoothTime.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  smoothTime.dependencies.enabled.audio.When({ (int)FFLFOParam::On, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+
+  auto& smoothBars = result->params[(int)FFLFOParam::SmoothBars];
+  smoothBars.acc = false;
+  smoothBars.defaultText = "Off";
+  smoothBars.display = "Smth";
+  smoothBars.name = "Smooth Bars";
+  smoothBars.slotCount = 1;
+  smoothBars.unit = "Bars";
+  smoothBars.id = "{B1FEDD9E-47D0-4D3D-981C-E7C8D8A65BC7}";
+  smoothBars.type = FBParamType::Bars;
+  smoothBars.Bars().items = MakeLFOBarsItems();
+  auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
+  smoothBars.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSmoothBars);
+  smoothBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSmoothBars);
+  smoothBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSmoothBars);
+  smoothBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSmoothBars);
+  smoothBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSmoothBars);
+  smoothBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  smoothBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   return result;
 }
