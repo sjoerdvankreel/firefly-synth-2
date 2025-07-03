@@ -92,7 +92,7 @@ FFMakeTopo(FBPlugFormat format)
   result->patchExtension = "ff2preset";
   result->guiWidth = 900;
   result->guiAspectRatioWidth = 25;
-  result->guiAspectRatioHeight = 11;
+  result->guiAspectRatioHeight = 13;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
