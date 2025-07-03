@@ -89,10 +89,10 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
   auto skewYAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewYAmt, block } });
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewYAmt));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewYAmt, Slider::SliderStyle::RotaryVerticalDrag));
-  auto rateTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateTime, 0 } });
+  auto rateTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateTime, block } });
   grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateTime));
-  grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, rateTime, Slider::SliderStyle::LinearHorizontal));
-  auto rateBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, 0 } });
+  grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, rateTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto rateBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, block } });
   grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateBars));
   grid->Add(1, 9, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, rateBars));
   grid->MarkSection({ { 0, 0 }, { 2, 10 } });

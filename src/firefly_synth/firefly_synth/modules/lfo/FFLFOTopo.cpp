@@ -217,7 +217,7 @@ FFMakeLFOTopo(bool global)
   rateBars.defaultText = "1/4";
   rateBars.display = "Rate";
   rateBars.name = "Rate Bars";
-  rateBars.slotCount = 1;
+  rateBars.slotCount = FFLFOBlockCount;
   rateBars.unit = "Bars";
   rateBars.id = prefix + "{394760D6-D4CE-453F-9C95-29B788E1E284}";
   rateBars.type = FBParamType::Bars;

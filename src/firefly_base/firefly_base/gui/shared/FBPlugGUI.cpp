@@ -84,7 +84,14 @@ FBParamControl*
 FBPlugGUI::GetControlForAudioParamIndex(int paramIndex) const
 {
   auto iter = _audioParamIndexToComponent.find(paramIndex);
-  FB_ASSERT(iter != _audioParamIndexToComponent.end());
+#ifndef NDEBUG
+  if (iter == _audioParamIndexToComponent.end())
+  {
+    auto id = this->HostContext()->Topo()->audio.params[paramIndex].id;
+    (void)id;
+    FB_ASSERT(iter != _audioParamIndexToComponent.end());
+  }
+#endif
   return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
 }
 
