@@ -61,6 +61,16 @@ FFMakeGUISettingsTopo()
   auto selectGuiFXSelectedTab = [](auto& module) { return &module.fxSelectedTab; };
   guiFxSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiFXSelectedTab);
 
+  auto& guiLFOSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::LFOSelectedTab];
+  guiLFOSelectedTab.defaultText = "0";
+  guiLFOSelectedTab.name = "LFO Selected Tab";
+  guiLFOSelectedTab.slotCount = 1;
+  guiLFOSelectedTab.id = "{23C0E87A-9224-43BB-97CE-549586B39BF4}";
+  guiLFOSelectedTab.type = FBParamType::Discrete;
+  guiLFOSelectedTab.Discrete().valueCount = FFLFOCount * 2;
+  auto selectGuiLFOSelectedTab = [](auto& module) { return &module.lfoSelectedTab; };
+  guiLFOSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiLFOSelectedTab);
+
   auto& guiMixSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::MixSelectedTab];
   guiMixSelectedTab.defaultText = "0";
   guiMixSelectedTab.name = "Mix Selected Tab";
