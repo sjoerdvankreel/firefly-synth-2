@@ -5,9 +5,9 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::vector<FBBarsItem>
-MakeLFOBarsItems()
+MakeLFOBarsItems(bool withZero)
 {
-  return FBMakeBarsItems(true, { 1, 128 }, { 4, 1 });
+  return FBMakeBarsItems(withZero, { 1, 128 }, { 4, 1 });
 }
 
 std::unique_ptr<FBStaticModule>
@@ -161,9 +161,9 @@ FFMakeLFOTopo(bool global)
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
-  smoothBars.id = "{B1FEDD9E-47D0-4D3D-981C-E7C8D8A65BC7}";
+  smoothBars.id = prefix + "{B1FEDD9E-47D0-4D3D-981C-E7C8D8A65BC7}";
   smoothBars.type = FBParamType::Bars;
-  smoothBars.Bars().items = MakeLFOBarsItems();
+  smoothBars.Bars().items = MakeLFOBarsItems(true);
   auto selectSmoothBars = [](auto& module) { return &module.block.smoothBars; };
   smoothBars.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSmoothBars);
   smoothBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSmoothBars);
@@ -173,5 +173,125 @@ FFMakeLFOTopo(bool global)
   smoothBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   smoothBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& type = result->params[(int)FFLFOParam::Type];
+  type.acc = false;
+  type.defaultText = "Off";
+  type.name = "Type";
+  type.slotCount = FFLFOBlockCount;
+  type.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
+  type.defaultTextSelector = [](int, int ps) { return ps == 0 ? "Sin" : "Off"; };
+  type.type = FBParamType::List;
+  type.List().items = {
+    { "{CEFDD4B5-6BE3-44B8-8420-1B9AC59B59FE}", "Off" },
+    { "{54EF10FA-BF52-4C6A-B00F-F47BF2CE6FB5}", "Sin" } };
+  auto selectType = [](auto& module) { return &module.block.type; };
+  type.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectType);
+  type.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectType);
+  type.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectType);
+  type.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectType);
+  type.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectType);
+
+  auto& rateTime = result->params[(int)FFLFOParam::RateTime];
+  rateTime.acc = true;
+  rateTime.defaultText = "1";
+  rateTime.display = "Rate";
+  rateTime.name = "Rate Time";
+  rateTime.slotCount = FFLFOBlockCount;
+  rateTime.unit = "Sec";
+  rateTime.id = prefix + "{EFAAB971-9F51-4FFD-9873-D33D4591F606}";
+  rateTime.type = FBParamType::Linear;
+  rateTime.Linear().min = 0.05f;
+  rateTime.Linear().max = 10.0f;
+  rateTime.Linear().editSkewFactor = 0.5f;
+  auto selectRateTime = [](auto& module) { return &module.acc.rateTime; };
+  rateTime.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectRateTime);
+  rateTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectRateTime);
+  rateTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectRateTime);
+  rateTime.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateTime);
+  rateTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateTime);
+  rateTime.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  rateTime.dependencies.enabled.audio.When({ (int)FFLFOParam::On, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+
+  auto& rateBars = result->params[(int)FFLFOParam::RateBars];
+  rateBars.acc = false;
+  rateBars.defaultText = "1/4";
+  rateBars.display = "Rate";
+  rateBars.name = "Rate Bars";
+  rateBars.slotCount = 1;
+  rateBars.unit = "Bars";
+  rateBars.id = prefix + "{394760D6-D4CE-453F-9C95-29B788E1E284}";
+  rateBars.type = FBParamType::Bars;
+  rateBars.Bars().items = MakeLFOBarsItems(false);
+  auto selectRateBars = [](auto& module) { return &module.block.rateBars; };
+  rateBars.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectRateBars);
+  rateBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectRateBars);
+  rateBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectRateBars);
+  rateBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateBars);
+  rateBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateBars);
+  rateBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& opKind = result->params[(int)FFLFOParam::OpKind];
+  opKind.acc = false;
+  opKind.defaultText = "Mul";
+  opKind.name = "Op";
+  opKind.slotCount = FFLFOBlockCount;
+  opKind.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
+  opKind.type = FBParamType::List;
+  opKind.List().items = {
+    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
+    { "{64F2B20A-9769-433E-A5EF-91BDCEFA72B6}", "Mul" } };
+  auto selectOpKind = [](auto& module) { return &module.block.opKind; };
+  opKind.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpKind);
+  opKind.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpKind);
+  opKind.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOpKind);
+  opKind.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpKind);
+  opKind.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpKind);
+
+  auto& stack = result->params[(int)FFLFOParam::Stack];
+  stack.acc = false;
+  stack.name = "Stack";
+  stack.slotCount = FFLFOBlockCount;
+  stack.defaultText = "Off";
+  stack.id = prefix + "{33C1811D-FC4E-4B7A-A53B-9C8AC41C861C}";
+  stack.type = FBParamType::Boolean;
+  auto selectStack = [](auto& module) { return &module.block.stack; };
+  stack.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStack);
+  stack.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStack);
+  stack.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectStack);
+  stack.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStack);
+  stack.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStack);
+
+  auto& min = result->params[(int)FFLFOParam::Min];
+  min.acc = true;
+  min.defaultText = "0";
+  min.name = "Min";
+  min.slotCount = FFLFOBlockCount;
+  min.unit = "%";
+  min.id = prefix + "{6E12AC6E-B1C3-4DA4-A1C0-EEB7C2187208}";
+  min.type = FBParamType::Identity;
+  auto selectMin = [](auto& module) { return &module.acc.min; };
+  min.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectMin);
+  min.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectMin);
+  min.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectMin);
+  min.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectMin);
+  min.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectMin);
+
+  auto& max = result->params[(int)FFLFOParam::Max];
+  max.acc = true;
+  max.defaultText = "100";
+  max.name = "Max";
+  max.slotCount = FFLFOBlockCount;
+  max.unit = "%";
+  max.id = prefix + "{5811A65D-F772-44EE-A008-29CD26821D41}";
+  max.type = FBParamType::Identity;
+  auto selectMax = [](auto& module) { return &module.acc.max; };
+  max.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectMax);
+  max.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectMax);
+  max.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectMax);
+  max.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectMax);
+  max.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectMax);
+
+  // todo 'A' 'B'
   return result;
 }
