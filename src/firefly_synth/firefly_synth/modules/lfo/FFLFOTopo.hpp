@@ -6,7 +6,7 @@
 struct FBStaticModule;
 
 inline int constexpr FFLFOMaxSeed = 255;
-inline int constexpr FFLFOBlockCount = 2;
+inline int constexpr FFLFOBlockCount = 1; // TODO
 std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool global);
 
 enum class FFLFOType { Off, Sin };
