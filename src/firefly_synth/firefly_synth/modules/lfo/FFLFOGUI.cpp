@@ -60,68 +60,42 @@ static Component*
 MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
   FB_LOG_ENTRY_EXIT();
-
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
-  auto kind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, block } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, kind, std::string(1, static_cast<char>('A' + block))));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, kind));
-
-  auto combKeyTrk = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombKeyTrk, block } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combKeyTrk));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combKeyTrk, Slider::SliderStyle::LinearHorizontal));
-  auto combFreqPlus = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombFreqPlus, block } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combFreqPlus));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combFreqPlus, Slider::SliderStyle::RotaryVerticalDrag));
-  auto combFreqMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombFreqMin, block } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combFreqMin));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combFreqMin, Slider::SliderStyle::RotaryVerticalDrag));
-  auto combResPlus = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResPlus, block } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResPlus));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResPlus, Slider::SliderStyle::RotaryVerticalDrag));
-  auto combResMin = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::CombResMin, block } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, combResMin));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, combResMin, Slider::SliderStyle::RotaryVerticalDrag));
-
-  auto stVarMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarMode, block } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarMode));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, stVarMode));
-  auto stVarFreq = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarFreq, block } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarFreq));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarFreq, Slider::SliderStyle::RotaryVerticalDrag));
-  auto stVarRes = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarRes, block } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarRes));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarRes, Slider::SliderStyle::RotaryVerticalDrag));
-  auto stVarGain = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarGain, block } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarGain));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarGain, Slider::SliderStyle::RotaryVerticalDrag));
-  auto stVarKeyTrak = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::StVarKeyTrak, block } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stVarKeyTrak));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, stVarKeyTrak, Slider::SliderStyle::RotaryVerticalDrag));
-
-  auto clipMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::ClipMode, block } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, clipMode));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, clipMode));
-  auto foldMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::FoldMode, block } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, foldMode));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, foldMode));
-  auto skewMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::SkewMode, block } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewMode));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewMode));
-  auto distDrive = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistDrive, block } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distDrive));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distDrive, Slider::SliderStyle::RotaryVerticalDrag));
-  auto distMix = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistMix, block } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distMix));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distMix, Slider::SliderStyle::RotaryVerticalDrag));
-  auto distBias = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistBias, block } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distBias));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distBias, Slider::SliderStyle::RotaryVerticalDrag));
-  auto distAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFEffectParam::DistAmt, block } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, distAmt));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, distAmt, Slider::SliderStyle::RotaryVerticalDrag));
-
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto type = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, block } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type, std::string(1, static_cast<char>('A' + block))));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  auto opKind = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpKind, block } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, opKind));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opKind));
+  auto stack = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Stack, block } });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, stack));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, stack));
+  auto min = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Min, block } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, min));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, min, Slider::SliderStyle::RotaryVerticalDrag));
+  auto max = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Max, block } });
+  grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, max));
+  grid->Add(0, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, max, Slider::SliderStyle::RotaryVerticalDrag));
+  auto skewXMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewXMode, block } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewXMode));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewXMode));
+  auto skewXAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewXAmt, block } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewXAmt));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewXAmt, Slider::SliderStyle::RotaryVerticalDrag));
+  auto skewYMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewYMode, block } });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewYMode));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewYMode));
+  auto skewYAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewYAmt, block } });
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewYAmt));
+  grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewYAmt, Slider::SliderStyle::RotaryVerticalDrag));
+  auto rateTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateTime, 0 } });
+  grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateTime));
+  grid->Add(1, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, rateTime, Slider::SliderStyle::LinearHorizontal));
+  auto rateBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, 0 } });
+  grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateBars));
+  grid->Add(1, 9, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, rateBars));
+  grid->MarkSection({ { 0, 0 }, { 2, 10 } });
   return grid;
 }
 
