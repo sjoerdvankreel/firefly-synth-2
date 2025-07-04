@@ -65,9 +65,9 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-  auto type = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, block } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type, std::string(1, static_cast<char>('A' + block))));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  auto waveMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, block } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, waveMode, std::string(1, static_cast<char>('A' + block))));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, waveMode));
   auto opMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpMode, block } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, opMode));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opMode));

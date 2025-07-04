@@ -171,25 +171,26 @@ FFMakeLFOTopo(bool global)
   smoothBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSmoothBars);
   smoothBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSmoothBars);
   smoothBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  smoothBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  smoothBars.dependencies.enabled.audio.When({ (int)FFLFOParam::WaveMode, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  auto& type = result->params[(int)FFLFOParam::Type];
-  type.acc = false;
-  type.defaultText = "Off";
-  type.name = "Type";
-  type.slotCount = FFLFOBlockCount;
-  type.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
-  type.defaultTextSelector = [](int, int ps) { return ps == 0 ? "Sin" : "Off"; };
-  type.type = FBParamType::List;
-  type.List().items = {
+  auto& waveMode = result->params[(int)FFLFOParam::WaveMode];
+  waveMode.acc = false;
+  waveMode.defaultText = "Off";
+  waveMode.name = "Wave Mode";
+  waveMode.display = "Mode";
+  waveMode.slotCount = FFLFOBlockCount;
+  waveMode.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
+  waveMode.defaultTextSelector = [](int, int ps) { return ps == 0 ? "Sin" : "Off"; };
+  waveMode.type = FBParamType::List;
+  waveMode.List().items = {
     { "{CEFDD4B5-6BE3-44B8-8420-1B9AC59B59FE}", "Off" },
     { "{54EF10FA-BF52-4C6A-B00F-F47BF2CE6FB5}", "Sin" } };
-  auto selectType = [](auto& module) { return &module.block.type; };
-  type.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectType);
-  type.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectType);
-  type.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectType);
-  type.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectType);
-  type.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectType);
+  auto selectWaveMode = [](auto& module) { return &module.block.waveMode; };
+  waveMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectWaveMode);
+  waveMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectWaveMode);
+  waveMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectWaveMode);
+  waveMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectWaveMode);
+  waveMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectWaveMode);
 
   auto& rateTime = result->params[(int)FFLFOParam::RateTime];
   rateTime.acc = true;
@@ -229,7 +230,7 @@ FFMakeLFOTopo(bool global)
   rateBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateBars);
   rateBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateBars);
   rateBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::WaveMode, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& opMode = result->params[(int)FFLFOParam::OpMode];
   opMode.acc = false;
