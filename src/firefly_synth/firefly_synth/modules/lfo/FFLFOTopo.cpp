@@ -231,22 +231,22 @@ FFMakeLFOTopo(bool global)
   rateBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  auto& opKind = result->params[(int)FFLFOParam::OpKind];
-  opKind.acc = false;
-  opKind.defaultText = "Mul";
-  opKind.name = "Op";
-  opKind.slotCount = FFLFOBlockCount;
-  opKind.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
-  opKind.type = FBParamType::List;
-  opKind.List().items = {
+  auto& opMode = result->params[(int)FFLFOParam::OpMode];
+  opMode.acc = false;
+  opMode.defaultText = "Mul";
+  opMode.name = "Op";
+  opMode.slotCount = FFLFOBlockCount;
+  opMode.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
+  opMode.type = FBParamType::List;
+  opMode.List().items = {
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
     { "{64F2B20A-9769-433E-A5EF-91BDCEFA72B6}", "Mul" } };
-  auto selectOpKind = [](auto& module) { return &module.block.opKind; };
-  opKind.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpKind);
-  opKind.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpKind);
-  opKind.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOpKind);
-  opKind.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpKind);
-  opKind.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpKind);
+  auto selectOpMode = [](auto& module) { return &module.block.opMode; };
+  opMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpMode);
+  opMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpMode);
+  opMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOpMode);
+  opMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpMode);
+  opMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpMode);
 
   auto& stack = result->params[(int)FFLFOParam::Stack];
   stack.acc = false;
