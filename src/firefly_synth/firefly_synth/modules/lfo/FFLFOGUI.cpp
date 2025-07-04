@@ -25,6 +25,7 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1, 0, 1 });
+
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::On, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
@@ -32,17 +33,18 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
   auto oneShot = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OneShot, 0 } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oneShot));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oneShot));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, oneShot));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, oneShot));
   auto hostSnap = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::HostSnap, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hostSnap));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hostSnap));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hostSnap));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hostSnap));
+
   auto phase = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Phase, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::LinearHorizontal));
   auto steps = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Steps, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, steps));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, steps));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::LinearHorizontal));
   auto seed = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Seed, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::LinearHorizontal));
@@ -52,6 +54,7 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   auto smoothBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SmoothBars, 0 } });
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
+
   grid->MarkSection({ { 0, 0 }, { 2, 8 } });
   return grid;
 }
