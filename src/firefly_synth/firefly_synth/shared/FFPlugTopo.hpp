@@ -18,7 +18,10 @@ FBStaticTopoMeta FFPlugMeta(FBPlugFormat format);
 std::string FFFormatBlockSlot(FBStaticTopo const&, int slot);
 std::unique_ptr<FBStaticTopo> FFMakeTopo(FBPlugFormat format);
 
-enum class FFModuleType { Master, Output, GUISettings, Osci, OsciMod, VEffect, GEffect, VLFO, GLFO, Env, VMix, GMix, Count };
+// Be VERY AFRAID of reordering this.
+// Even REAPER the holy grail of plugin compatibility has problems reconnecting automation lanes if this changes.
+// And yes, i checked. Plugin param indexes were unstable, but param ids were stable. Still broke.
+enum class FFModuleType { Output, GUISettings, Master, GMix, Osci, OsciMod, VEffect, GEffect, VMix, Env, VLFO, GLFO, Count };
 
 inline int constexpr FFEnvCount = 8;
 inline int constexpr FFLFOCount = 8;
