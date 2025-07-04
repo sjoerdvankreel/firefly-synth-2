@@ -41,16 +41,16 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 
   auto phase = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Phase, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::LinearHorizontal));
-  auto steps = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Steps, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, steps));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::RotaryVerticalDrag));
   auto seed = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Seed, 0 } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
+  auto steps = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Steps, 0 } });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, steps));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, steps, Slider::SliderStyle::RotaryVerticalDrag));
   auto smoothTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SmoothTime, 0 } });
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
-  grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::RotaryVerticalDrag));
   auto smoothBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SmoothBars, 0 } });
   grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
@@ -107,9 +107,9 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
-  columnSizes.push_back(1);
+  columnSizes.push_back(0);
   for (int i = 0; i < FFLFOBlockCount; i++)
-    columnSizes.push_back(0);
+    columnSizes.push_back(1);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeLFOSectionMain(plugGUI, moduleType, moduleSlot));
   for (int i = 0; i < FFLFOBlockCount; i++)
