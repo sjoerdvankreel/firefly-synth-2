@@ -28,19 +28,23 @@ FFMakeLFOTopo(bool global)
   auto selectVoiceModule = [](auto& state) { return &state.voice.vLFO; };
   auto selectGlobalModule = [](auto& state) { return &state.global.gLFO; };
 
-  auto& on = result->params[(int)FFLFOParam::On];
-  on.acc = false;
-  on.name = "On";
-  on.slotCount = 1;
-  on.defaultText = "Off";
-  on.id = prefix + "{827146C8-2396-47B3-B521-4DEB17F3C321}";
-  on.type = FBParamType::Boolean;
-  auto selectOn = [](auto& module) { return &module.block.on; };
-  on.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOn);
-  on.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOn);
-  on.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOn);
-  on.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOn);
-  on.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOn);
+  auto& type = result->params[(int)FFLFOParam::Type];
+  type.acc = false;
+  type.defaultText = "Off";
+  type.name = "Type";
+  type.slotCount = 1;
+  type.id = prefix + "{D75D506B-3976-44C3-A609-3982D26B4F2D}";
+  type.type = FBParamType::List;
+  type.List().items = {
+    { "{EBD31B78-C404-4B86-A8BA-48788922F34B}", "Off" },
+    { "{20AA6ED6-A5F3-491D-9485-FBA7F2186632}", "Free" },
+    { "{6AFA440C-BBB6-4C19-A15B-1CEE038DE435}", "NotFree" } }; // todo not stupid name
+  auto selectType = [](auto& module) { return &module.block.type; };
+  type.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectType);
+  type.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectType);
+  type.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectType);
+  type.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectType);
+  type.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectType);
 
   auto& sync = result->params[(int)FFLFOParam::Sync];
   sync.acc = false;
@@ -56,36 +60,6 @@ FFMakeLFOTopo(bool global)
   sync.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSync);
   sync.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSync);
   sync.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSync);
-
-  auto& oneShot = result->params[(int)FFLFOParam::OneShot];
-  oneShot.acc = false;
-  oneShot.name = "One Shot";
-  oneShot.slotCount = 1;
-  oneShot.defaultText = "Off";
-  oneShot.id = prefix + "{3A6A7CB5-ACE3-4FB9-9A2C-4908EB3D050D}";
-  oneShot.type = FBParamType::Boolean;
-  auto selectOneShot = [](auto& module) { return &module.block.oneShot; };
-  oneShot.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOneShot);
-  oneShot.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOneShot);
-  oneShot.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOneShot);
-  oneShot.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOneShot);
-  oneShot.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOneShot);
-
-  auto& hostSnap = result->params[(int)FFLFOParam::HostSnap];
-  hostSnap.acc = false;
-  hostSnap.name = "Host Snap";
-  hostSnap.display = "Snap";
-  hostSnap.slotCount = 1;
-  hostSnap.defaultText = "Off";
-  hostSnap.id = prefix + "{512E8B8B-0724-49BD-BE42-E8877490B1BE}";
-  hostSnap.type = FBParamType::Boolean;
-  auto selectHostSnap = [](auto& module) { return &module.block.hostSnap; };
-  hostSnap.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectHostSnap);
-  hostSnap.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectHostSnap);
-  hostSnap.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectHostSnap);
-  hostSnap.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectHostSnap);
-  hostSnap.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectHostSnap);
-  hostSnap.dependencies.enabled.audio.When({ (int)FFLFOParam::On }, [global](auto const& vs) { return global && vs[0] != 0; });
 
   auto& phase = result->params[(int)FFLFOParam::Phase];
   phase.acc = false;
@@ -152,7 +126,7 @@ FFMakeLFOTopo(bool global)
   smoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSmoothTime);
   smoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSmoothTime);
   smoothTime.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  smoothTime.dependencies.enabled.audio.When({ (int)FFLFOParam::On, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  smoothTime.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& smoothBars = result->params[(int)FFLFOParam::SmoothBars];
   smoothBars.acc = false;
@@ -211,7 +185,7 @@ FFMakeLFOTopo(bool global)
   rateTime.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateTime);
   rateTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateTime);
   rateTime.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  rateTime.dependencies.enabled.audio.When({ (int)FFLFOParam::On, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  rateTime.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& rateBars = result->params[(int)FFLFOParam::RateBars];
   rateBars.acc = false;

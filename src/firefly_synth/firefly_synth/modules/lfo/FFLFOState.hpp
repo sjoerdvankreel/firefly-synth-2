@@ -28,13 +28,11 @@ class alignas(alignof(TBlock)) FFLFOBlockParamState final
 {
   friend class FFLFOProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool);
-  std::array<TBlock, 1> on = {};
+  std::array<TBlock, 1> type = {};
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> seed = {};
   std::array<TBlock, 1> phase = {};
   std::array<TBlock, 1> steps = {};
-  std::array<TBlock, 1> oneShot = {};
-  std::array<TBlock, 1> hostSnap = {};
   std::array<TBlock, 1> smoothTime = {};
   std::array<TBlock, 1> smoothBars = {};
   std::array<TBlock, FFLFOBlockCount> stack = {};
