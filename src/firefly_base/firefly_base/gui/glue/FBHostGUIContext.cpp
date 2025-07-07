@@ -56,7 +56,7 @@ FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
     for (int s = 0; s < staticParam.slotCount; s++)
     {
       auto runtimeParam = Topo()->audio.ParamAtTopo({ moduleIndices, { p, s } });
-      double normalized = staticParam.DefaultNormalizedByText(moduleIndices.slot, s);
+      double normalized = runtimeParam->DefaultNormalizedByText();
       PerformImmediateAudioParamEdit(runtimeParam->runtimeParamIndex, normalized);
     }
   }
