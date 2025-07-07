@@ -230,7 +230,8 @@ FFMakeLFOTopo(bool global)
   opMode.type = FBParamType::List;
   opMode.List().items = {
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
-    { "{64F2B20A-9769-433E-A5EF-91BDCEFA72B6}", "Mul" } };
+    { "{AD641260-F205-497E-B483-330CFA025378}", "Mul" },
+    { "{264BC462-B9F4-407E-BFFD-6A50B157C21E}", "Stk" } };
   auto selectOpMode = [](auto& module) { return &module.block.opMode; };
   opMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpMode);
   opMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpMode);
@@ -238,49 +239,20 @@ FFMakeLFOTopo(bool global)
   opMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpMode);
   opMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpMode);
 
-  auto& stack = result->params[(int)FFLFOParam::Stack];
-  stack.acc = false;
-  stack.name = "Stack";
-  stack.slotCount = FFLFOBlockCount;
-  stack.defaultText = "Off";
-  stack.id = prefix + "{33C1811D-FC4E-4B7A-A53B-9C8AC41C861C}";
-  stack.type = FBParamType::Boolean;
-  auto selectStack = [](auto& module) { return &module.block.stack; };
-  stack.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectStack);
-  stack.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectStack);
-  stack.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectStack);
-  stack.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectStack);
-  stack.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectStack);
-
-  auto& min = result->params[(int)FFLFOParam::Min];
-  min.acc = true;
-  min.defaultText = "0";
-  min.name = "Min";
-  min.slotCount = FFLFOBlockCount;
-  min.unit = "%";
-  min.id = prefix + "{6E12AC6E-B1C3-4DA4-A1C0-EEB7C2187208}";
-  min.type = FBParamType::Identity;
-  auto selectMin = [](auto& module) { return &module.acc.min; };
-  min.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectMin);
-  min.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectMin);
-  min.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectMin);
-  min.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectMin);
-  min.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectMin);
-
-  auto& max = result->params[(int)FFLFOParam::Max];
-  max.acc = true;
-  max.defaultText = "100";
-  max.name = "Max";
-  max.slotCount = FFLFOBlockCount;
-  max.unit = "%";
-  max.id = prefix + "{5811A65D-F772-44EE-A008-29CD26821D41}";
-  max.type = FBParamType::Identity;
-  auto selectMax = [](auto& module) { return &module.acc.max; };
-  max.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectMax);
-  max.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectMax);
-  max.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectMax);
-  max.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectMax);
-  max.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectMax);
+  auto& scale = result->params[(int)FFLFOParam::Scale];
+  scale.acc = true;
+  scale.defaultText = "0";
+  scale.name = "Scale";
+  scale.slotCount = FFLFOBlockCount;
+  scale.unit = "%";
+  scale.id = prefix + "{6E12AC6E-B1C3-4DA4-A1C0-EEB7C2187208}";
+  scale.type = FBParamType::Identity;
+  auto selectScale = [](auto& module) { return &module.acc.scale; };
+  scale.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScale);
+  scale.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectScale);
+  scale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScale);
+  scale.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScale);
+  scale.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScale);
 
   auto& skewXMode = result->params[(int)FFLFOParam::SkewXMode];
   skewXMode.acc = false;
