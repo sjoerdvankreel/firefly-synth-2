@@ -11,11 +11,11 @@ FBEditType FBListParamNonRealTime::AutomationEditType() const { return FBEditTyp
 
 std::string 
 FBListItem::GetName(int moduleIndex, int itemSlot) const
-{
-  FB_ASSERT(name2.empty() != (slotFormatter == nullptr));
+{ 
+  FB_ASSERT(name.empty() != (slotFormatter == nullptr));
   if (slotFormatter != nullptr)
     return slotFormatter(moduleIndex, itemSlot);
-  return name2;
+  return name;
 }
 
 double 
