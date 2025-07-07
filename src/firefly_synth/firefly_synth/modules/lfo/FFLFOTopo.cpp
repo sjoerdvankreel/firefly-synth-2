@@ -76,37 +76,6 @@ FFMakeLFOTopo(bool global)
   sync.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSync);
   sync.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSync);
 
-  auto& phase = result->params[(int)FFLFOParam::Phase];
-  phase.acc = false;
-  phase.defaultText = "0";
-  phase.name = "Phase";
-  phase.slotCount = 1;
-  phase.unit = "%";
-  phase.id = prefix + "{88E80B77-86BF-49B0-9822-AACEFC6EAB03}";
-  phase.type = FBParamType::Identity;
-  auto selectPhase = [](auto& module) { return &module.block.phase; };
-  phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
-  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
-  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
-  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
-  phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase); 
-  
-  auto& steps = result->params[(int)FFLFOParam::Steps];
-  steps.acc = false;
-  steps.defaultText = "1";
-  steps.name = "Steps";
-  steps.slotCount = 1;
-  steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
-  steps.type = FBParamType::Discrete;
-  steps.Discrete().valueCount = 32;
-  steps.Discrete().valueOffset = 1;
-  auto selectSteps = [](auto& module) { return &module.block.steps; };
-  steps.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSteps);
-  steps.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSteps);
-  steps.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSteps);
-  steps.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSteps);
-  steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
-
   auto& seed = result->params[(int)FFLFOParam::Seed];
   seed.acc = false;
   seed.defaultText = "0";
@@ -161,6 +130,78 @@ FFMakeLFOTopo(bool global)
   smoothBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSmoothBars);
   smoothBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   smoothBars.dependencies.enabled.audio.When({ (int)FFLFOParam::WaveMode, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& skewXMode = result->params[(int)FFLFOParam::SkewXMode];
+  skewXMode.acc = false;
+  skewXMode.defaultText = "Off";
+  skewXMode.display = "SkX";
+  skewXMode.name = "Skew X Mode";
+  skewXMode.slotCount = 1;
+  skewXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
+  skewXMode.type = FBParamType::List;
+  skewXMode.List().items = {
+    { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
+    { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "SclU" },
+    { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "SclB" },
+    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "ExpU" },
+    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "ExpB" } };
+  auto selectSkewXMode = [](auto& module) { return &module.block.skewXMode; };
+  skewXMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewXMode);
+  skewXMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewXMode);
+  skewXMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewXMode);
+  skewXMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewXMode);
+  skewXMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewXMode);
+
+  auto& skewXAmt = result->params[(int)FFLFOParam::SkewXAmt];
+  skewXAmt.acc = true;
+  skewXAmt.defaultText = "0";
+  skewXAmt.name = "Skew X Amt";
+  skewXAmt.slotCount = 1;
+  skewXAmt.unit = "%";
+  skewXAmt.id = prefix + "{49209170-5BA6-4B96-8E60-79A287680EAD}";
+  skewXAmt.type = FBParamType::Identity;
+  auto selectSkewXAmt = [](auto& module) { return &module.acc.skewXAmt; };
+  skewXAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewXAmt);
+  skewXAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewXAmt);
+  skewXAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewXAmt);
+  skewXAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewXAmt);
+  skewXAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewXAmt);
+
+  auto& skewYMode = result->params[(int)FFLFOParam::SkewYMode];
+  skewYMode.acc = false;
+  skewYMode.defaultText = "Off";
+  skewYMode.display = "SkY";
+  skewYMode.name = "Skew Y Mode";
+  skewYMode.slotCount = 1;
+  skewYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
+  skewYMode.type = FBParamType::List;
+  skewYMode.List().items = {
+    { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
+    { "{193A736F-073C-42DC-88EB-140D5D00BF87}", "SclU" },
+    { "{B3C72EC2-265B-4D8B-9295-AF3604A5D9CA}", "SclBi" },
+    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "ExpU" },
+    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "ExpB" } };
+  auto selectSkewYMode = [](auto& module) { return &module.block.skewYMode; };
+  skewYMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewYMode);
+  skewYMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewYMode);
+  skewYMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewYMode);
+  skewYMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewYMode);
+  skewYMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewYMode);
+
+  auto& skewYAmt = result->params[(int)FFLFOParam::SkewYAmt];
+  skewYAmt.acc = true;
+  skewYAmt.defaultText = "0";
+  skewYAmt.name = "Skew Y Amt";
+  skewYAmt.slotCount = 1;
+  skewYAmt.unit = "%";
+  skewYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";
+  skewYAmt.type = FBParamType::Identity;
+  auto selectSkewYAmt = [](auto& module) { return &module.acc.skewYAmt; };
+  skewYAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewYAmt);
+  skewYAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewYAmt);
+  skewYAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewYAmt);
+  skewYAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewYAmt);
+  skewYAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewYAmt);
 
   auto& waveMode = result->params[(int)FFLFOParam::WaveMode];
   waveMode.acc = false;
@@ -243,6 +284,7 @@ FFMakeLFOTopo(bool global)
   scale.acc = true;
   scale.defaultText = "0";
   scale.name = "Scale";
+  scale.display = "Scl";
   scale.slotCount = FFLFOBlockCount;
   scale.unit = "%";
   scale.id = prefix + "{6E12AC6E-B1C3-4DA4-A1C0-EEB7C2187208}";
@@ -252,79 +294,38 @@ FFMakeLFOTopo(bool global)
   scale.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectScale);
   scale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScale);
   scale.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScale);
-  scale.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScale);
+  scale.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScale);  
 
-  auto& skewXMode = result->params[(int)FFLFOParam::SkewXMode];
-  skewXMode.acc = false;
-  skewXMode.defaultText = "Off";
-  skewXMode.display = "Skew X";
-  skewXMode.name = "Skew X Mode";
-  skewXMode.slotCount = FFLFOBlockCount;
-  skewXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
-  skewXMode.type = FBParamType::List;
-  skewXMode.List().items = {
-    { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
-    { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "Scale Uni" },
-    { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "Scale Bi" },
-    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "Exp Uni" },
-    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "Exp Bi" } };
-  auto selectSkewXMode = [](auto& module) { return &module.block.skewXMode; };
-  skewXMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewXMode);
-  skewXMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewXMode);
-  skewXMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewXMode);
-  skewXMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewXMode);
-  skewXMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewXMode);
+  auto& phase = result->params[(int)FFLFOParam::Phase];
+  phase.acc = false;
+  phase.defaultText = "0";
+  phase.name = "Phase";
+  phase.slotCount = FFLFOBlockCount;
+  phase.unit = "%";
+  phase.id = prefix + "{88E80B77-86BF-49B0-9822-AACEFC6EAB03}";
+  phase.type = FBParamType::Identity;
+  auto selectPhase = [](auto& module) { return &module.block.phase; };
+  phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
+  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
+  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
+  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
+  phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase);
 
-  auto& skewXAmt = result->params[(int)FFLFOParam::SkewXAmt];
-  skewXAmt.acc = true;
-  skewXAmt.defaultText = "0";
-  skewXAmt.name = "Skew X Amt";
-  skewXAmt.slotCount = FFLFOBlockCount;
-  skewXAmt.unit = "%";
-  skewXAmt.id = prefix + "{49209170-5BA6-4B96-8E60-79A287680EAD}";
-  skewXAmt.type = FBParamType::Identity;
-  auto selectSkewXAmt = [](auto& module) { return &module.acc.skewXAmt; };
-  skewXAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewXAmt);
-  skewXAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewXAmt);
-  skewXAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewXAmt);
-  skewXAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewXAmt);
-  skewXAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewXAmt);
-
-  auto& skewYMode = result->params[(int)FFLFOParam::SkewYMode];
-  skewYMode.acc = false;
-  skewYMode.defaultText = "Off";
-  skewYMode.display = "Skew Y";
-  skewYMode.name = "Skew Y Mode";
-  skewYMode.slotCount = FFLFOBlockCount;
-  skewYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
-  skewYMode.type = FBParamType::List;
-  skewYMode.List().items = {
-    { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
-    { "{193A736F-073C-42DC-88EB-140D5D00BF87}", "Scale Uni" },
-    { "{B3C72EC2-265B-4D8B-9295-AF3604A5D9CA}", "Scale Bi" },
-    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "Exp Uni" },
-    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "Exp Bi" } };
-  auto selectSkewYMode = [](auto& module) { return &module.block.skewYMode; };
-  skewYMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewYMode);
-  skewYMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewYMode);
-  skewYMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewYMode);
-  skewYMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewYMode);
-  skewYMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewYMode);
-
-  auto& skewYAmt = result->params[(int)FFLFOParam::SkewYAmt];
-  skewYAmt.acc = true;
-  skewYAmt.defaultText = "0";
-  skewYAmt.name = "Skew Y Amt";
-  skewYAmt.slotCount = FFLFOBlockCount;
-  skewYAmt.unit = "%";
-  skewYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";
-  skewYAmt.type = FBParamType::Identity;
-  auto selectSkewYAmt = [](auto& module) { return &module.acc.skewYAmt; };
-  skewYAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewYAmt);
-  skewYAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewYAmt);
-  skewYAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewYAmt);
-  skewYAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewYAmt);
-  skewYAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewYAmt);
+  auto& steps = result->params[(int)FFLFOParam::Steps];
+  steps.acc = false;
+  steps.defaultText = "1";
+  steps.name = "Steps";
+  steps.slotCount = FFLFOBlockCount;
+  steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
+  steps.type = FBParamType::Discrete;
+  steps.Discrete().valueCount = 32;
+  steps.Discrete().valueOffset = 1;
+  auto selectSteps = [](auto& module) { return &module.block.steps; };
+  steps.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSteps);
+  steps.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSteps);
+  steps.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSteps);
+  steps.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSteps);
+  steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
   
   // todo 'A' 'B'
   // todo all the enabled stuff
