@@ -266,6 +266,7 @@ FFMakeLFOTopo(bool global)
   opMode.acc = false;
   opMode.defaultText = "Mul";
   opMode.name = "Op";
+  opMode.display = "Op";
   opMode.slotCount = FFLFOBlockCount;
   opMode.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
   opMode.type = FBParamType::List;
@@ -300,6 +301,7 @@ FFMakeLFOTopo(bool global)
   phase.acc = false;
   phase.defaultText = "0";
   phase.name = "Phase";
+  phase.display = "Phase";
   phase.slotCount = FFLFOBlockCount;
   phase.unit = "%";
   phase.id = prefix + "{88E80B77-86BF-49B0-9822-AACEFC6EAB03}";
@@ -315,6 +317,7 @@ FFMakeLFOTopo(bool global)
   steps.acc = false;
   steps.defaultText = "1";
   steps.name = "Steps";
+  steps.display = "Steps";
   steps.slotCount = FFLFOBlockCount;
   steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
   steps.type = FBParamType::Discrete;
