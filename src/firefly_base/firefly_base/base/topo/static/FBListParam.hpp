@@ -17,15 +17,16 @@ struct FBListItem final
 {
   std::string id = {};
   std::string name = {};
-  FBItemSlotFormatter slotFormatter = {};
-  std::string GetName(int moduleIndex, int itemSlot) const;
 };
 
 struct FBListParam
 {
   std::vector<FBListItem> items = {};
+  FBItemSlotFormatter slotFormatter = {};
   std::map<int, std::string> submenuStart = {};
+
   int NormalizedToPlainFast(float normalized) const;
+  std::string GetName(int moduleIndex, int itemSlot) const;
 };
 
 struct FBListParamNonRealTime final :

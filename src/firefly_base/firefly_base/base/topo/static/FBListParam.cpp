@@ -10,12 +10,11 @@ FBEditType FBListParamNonRealTime::GUIEditType() const { return FBEditType::Step
 FBEditType FBListParamNonRealTime::AutomationEditType() const { return FBEditType::Stepped; }
 
 std::string 
-FBListItem::GetName(int moduleIndex, int itemSlot) const
+FBListParam::GetName(int moduleIndex, int itemSlot) const
 { 
-  FB_ASSERT(name.empty() != (slotFormatter == nullptr));
   if (slotFormatter != nullptr)
     return slotFormatter(moduleIndex, itemSlot);
-  return name;
+  return items[itemSlot].name;
 }
 
 double 
@@ -63,7 +62,7 @@ std::optional<double>
 FBListParamNonRealTime::TextToPlainInternal(bool io, int moduleIndex, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
-    if (text == (io ? items[i].id : items[i].GetName(moduleIndex, i)))
+    if (text == (io ? items[i].id : GetName(moduleIndex, i)))
       return { i };
   return {};
 }
@@ -72,5 +71,5 @@ std::string
 FBListParamNonRealTime::PlainToText(bool io, int moduleIndex, double plain) const
 {
   int discrete = static_cast<int>(std::round(plain));
-  return io ? items[discrete].id : items[discrete].GetName(moduleIndex, discrete);
+  return io ? items[discrete].id : GetName(moduleIndex, discrete);
 }

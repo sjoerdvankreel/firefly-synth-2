@@ -36,9 +36,19 @@ FFMakeLFOTopo(bool global)
   type.id = prefix + "{D75D506B-3976-44C3-A609-3982D26B4F2D}";
   type.type = FBParamType::List;
   type.List().items = {
-    { "{EBD31B78-C404-4B86-A8BA-48788922F34B}", "Off" },
-    { "{20AA6ED6-A5F3-491D-9485-FBA7F2186632}", "Free" },
-    { "{6AFA440C-BBB6-4C19-A15B-1CEE038DE435}", "NotFree" } }; // todo not stupid name
+    { "{EBD31B78-C404-4B86-A8BA-48788922F34B}" },
+    { "{20AA6ED6-A5F3-491D-9485-FBA7F2186632}" },
+    { "{6AFA440C-BBB6-4C19-A15B-1CEE038DE435}" } };
+  type.List().slotFormatter = [](int mi, int is)
+  {
+      if (is == 0) return "Off";
+      if (is == 1) return "Free";
+      if (is == 2)
+        if (mi == (int)FFModuleType::GLFO)
+          return "Snap";
+        else
+
+  };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectType);
