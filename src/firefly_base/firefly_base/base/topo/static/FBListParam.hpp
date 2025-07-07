@@ -7,11 +7,18 @@
 #include <vector>
 #include <optional>
 #include <algorithm>
+#include <functional>
+
+typedef std::function<std::string(
+int moduleIndex, int itemSlot)>
+FBItemSlotFormatter;
 
 struct FBListItem final
 {
   std::string id = {};
   std::string name = {};
+  FBItemSlotFormatter slotFormatter = {};
+  std::string GetName(int moduleIndex, int itemSlot) const;
 };
 
 struct FBListParam
