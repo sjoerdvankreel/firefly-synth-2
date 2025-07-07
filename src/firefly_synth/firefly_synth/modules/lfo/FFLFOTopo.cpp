@@ -47,7 +47,12 @@ FFMakeLFOTopo(bool global)
         if (mi == (int)FFModuleType::GLFO)
           return "Snap";
         else
-
+        {
+          FB_ASSERT(mi == (int)FFModuleType::VLFO);
+          return "One Shot";
+        }
+      FB_ASSERT(false);
+      return "";
   };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectType);
