@@ -10,11 +10,11 @@ inline int constexpr FFLFOBlockCount = 3;
 std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool global);
 
 enum class FFLFOType { Off, Free, SnapOrOneShot };
-enum class FFLFOWaveMode { Off, Sin };
-enum class FFLFOOpMode { Add, Mul, Stack };
+enum class FFLFOOpType { Off, Add, Mul, Stack };
+enum class FFLFOWaveMode { Sin, Cos };
 enum class FFLFOSkewMode { Off, ScaleUnipolar, ScaleBipolar, ExpUnipolar, ExpBipolar };
 
 enum class FFLFOParam {
   Type, Sync, Seed, SmoothTime, SmoothBars,
   SkewXMode, SkewXAmt, SkewYMode, SkewYAmt,
-  WaveMode, RateTime, RateBars, Phase, Steps, OpMode, Scale, Count };
+  OpType, Scale, WaveMode, RateTime, RateBars, Phase, Steps, Count };

@@ -37,7 +37,7 @@ class alignas(alignof(TBlock)) FFLFOBlockParamState final
   std::array<TBlock, 1> smoothBars = {};
   std::array<TBlock, FFLFOBlockCount> phase = {};
   std::array<TBlock, FFLFOBlockCount> steps = {};
-  std::array<TBlock, FFLFOBlockCount> opMode = {};
+  std::array<TBlock, FFLFOBlockCount> opType = {};
   std::array<TBlock, FFLFOBlockCount> rateBars = {};
   std::array<TBlock, FFLFOBlockCount> waveMode = {};
 public:

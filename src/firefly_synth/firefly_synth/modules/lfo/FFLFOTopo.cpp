@@ -203,18 +203,53 @@ FFMakeLFOTopo(bool global)
   skewYAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewYAmt);
   skewYAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewYAmt);
 
+  auto& opType = result->params[(int)FFLFOParam::OpType];
+  opType.acc = false;
+  opType.name = "Op";
+  opType.display = "Op";
+  opType.slotCount = FFLFOBlockCount;
+  opType.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
+  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "Add" : "Off"; };
+  opType.type = FBParamType::List;
+  opType.List().items = {
+    { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
+    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
+    { "{AD641260-F205-497E-B483-330CFA025378}", "Mul" },
+    { "{264BC462-B9F4-407E-BFFD-6A50B157C21E}", "Stk" } };
+  auto selectOpType = [](auto& module) { return &module.block.opType; };
+  opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
+  opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);
+  opType.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOpType);
+  opType.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpType);
+  opType.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpType);
+
+  auto& scale = result->params[(int)FFLFOParam::Scale];
+  scale.acc = true;
+  scale.defaultText = "0";
+  scale.name = "Scale";
+  scale.display = "Scl";
+  scale.slotCount = FFLFOBlockCount;
+  scale.unit = "%";
+  scale.id = prefix + "{6E12AC6E-B1C3-4DA4-A1C0-EEB7C2187208}";
+  scale.type = FBParamType::Identity;
+  auto selectScale = [](auto& module) { return &module.acc.scale; };
+  scale.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScale);
+  scale.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectScale);
+  scale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScale);
+  scale.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScale);
+  scale.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScale);  
+
   auto& waveMode = result->params[(int)FFLFOParam::WaveMode];
   waveMode.acc = false;
-  waveMode.defaultText = "Off";
+  waveMode.defaultText = "Sin";
   waveMode.name = "Wave Mode";
   waveMode.display = "Mode";
   waveMode.slotCount = FFLFOBlockCount;
   waveMode.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
-  waveMode.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "Sin" : "Off"; };
   waveMode.type = FBParamType::List;
   waveMode.List().items = {
-    { "{CEFDD4B5-6BE3-44B8-8420-1B9AC59B59FE}", "Off" },
-    { "{54EF10FA-BF52-4C6A-B00F-F47BF2CE6FB5}", "Sin" } };
+    { "{CEFDD4B5-6BE3-44B8-8420-1B9AC59B59FE}", "Sin" },
+    { "{54EF10FA-BF52-4C6A-B00F-F47BF2CE6FB5}", "Cos" } };
   auto selectWaveMode = [](auto& module) { return &module.block.waveMode; };
   waveMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectWaveMode);
   waveMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectWaveMode);
@@ -260,42 +295,7 @@ FFMakeLFOTopo(bool global)
   rateBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateBars);
   rateBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateBars);
   rateBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::WaveMode, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
-  auto& opMode = result->params[(int)FFLFOParam::OpMode];
-  opMode.acc = false;
-  opMode.defaultText = "Mul";
-  opMode.name = "Op";
-  opMode.display = "Op";
-  opMode.slotCount = FFLFOBlockCount;
-  opMode.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
-  opMode.type = FBParamType::List;
-  opMode.List().items = {
-    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
-    { "{AD641260-F205-497E-B483-330CFA025378}", "Mul" },
-    { "{264BC462-B9F4-407E-BFFD-6A50B157C21E}", "Stk" } };
-  auto selectOpMode = [](auto& module) { return &module.block.opMode; };
-  opMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpMode);
-  opMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpMode);
-  opMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOpMode);
-  opMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpMode);
-  opMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpMode);
-
-  auto& scale = result->params[(int)FFLFOParam::Scale];
-  scale.acc = true;
-  scale.defaultText = "0";
-  scale.name = "Scale";
-  scale.display = "Scl";
-  scale.slotCount = FFLFOBlockCount;
-  scale.unit = "%";
-  scale.id = prefix + "{6E12AC6E-B1C3-4DA4-A1C0-EEB7C2187208}";
-  scale.type = FBParamType::Identity;
-  auto selectScale = [](auto& module) { return &module.acc.scale; };
-  scale.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScale);
-  scale.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectScale);
-  scale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScale);
-  scale.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScale);
-  scale.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScale);  
+  rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::WaveMode, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });  
 
   auto& phase = result->params[(int)FFLFOParam::Phase];
   phase.acc = false;
