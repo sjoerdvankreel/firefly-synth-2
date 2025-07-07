@@ -60,7 +60,7 @@ FFMakeOsciTopo()
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{9018865F-7B05-4835-B541-95014C0C63E6}";
-  type.defaultTextSelector = [](int ms, int /*ps*/) { return ms == 0 ? "Wave" : "Off"; };
+  type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == 0 ? "Wave" : "Off"; };
   type.type = FBParamType::List;
   type.List().items = {
     { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
@@ -235,7 +235,7 @@ FFMakeOsciTopo()
   waveBasicMode.slotFormatter = FFFormatBlockSlot;
   waveBasicMode.id = "{296806B7-DEC4-47F5-AEE0-C35B119CF871}";
   waveBasicMode.type = FBParamType::List;
-  waveBasicMode.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "Saw" : "Off"; };
+  waveBasicMode.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "Saw" : "Off"; };
   waveBasicMode.List().items = {
     { "{00880EBC-8E91-44C6-ADD4-4D2BB9B4E945}", "Off" },
     { "{FE9687FE-2A25-4FD3-8138-D775AC0103C6}", "Sin" },
@@ -580,7 +580,7 @@ FFMakeOsciTopo()
 
   auto& fmIndex = result->params[(int)FFOsciParam::FMIndex];
   fmIndex.acc = true;
-  fmIndex.defaultTextSelector = [](int, int ps) { return ps == 5? "1": "0"; };
+  fmIndex.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 5? "1": "0"; };
   fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciFMMatrixSize;
   fmIndex.id = "{5CEFAD50-CB71-4E79-B3D6-50B004AD7F03}";

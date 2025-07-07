@@ -47,11 +47,11 @@ FBCLAPPlugin::paramsTextToValue(
     int32_t index = getParamIndexForParamId(paramId);
     if (index == -1)
       return false;
-    auto const& static_ = _topo->audio.params[index].static_;
-    auto normalized = static_.TextToNormalized(false, display);
+    auto const& topo = _topo->audio.params[index];
+    auto normalized = topo.TextToNormalized(false, display);
     if (!normalized.has_value())
       return false;
-    *value = FBNormalizedToCLAP(static_, normalized.value());
+    *value = FBNormalizedToCLAP(topo.static_, normalized.value());
     return true;
   });
 }
@@ -66,7 +66,7 @@ FBCLAPPlugin::paramsValueToText(
     if (index == -1)
       return false;
     double norm = FBCLAPToNormalized(_topo->audio.params[index].static_, value);
-    std::string text = _topo->audio.params[index].static_.NonRealTime().NormalizedToText(false, norm);
+    std::string text = _topo->audio.params[index].NormalizedToText(false, norm);
     std::fill(display, display + size, 0);
     strncpy(display, text.c_str(), std::min(size - 1, static_cast<uint32_t>(text.size())));
     return true;

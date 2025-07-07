@@ -30,7 +30,7 @@ enum class FBAutomationTiming { Never, PerSample, AtVoiceStart };
 std::string
 FBAutomationTimingToString(FBAutomationTiming timing);
 
-typedef std::function<std::string(int moduleSlot, int paramSlot)>
+typedef std::function<std::string(int moduleIndex, int moduleSlot, int paramSlot)>
 FBParamDefaultTextSelector;
 typedef std::function<std::string(FBStaticTopo const& topo, int slot)>
 FBParamSlotFormatter;
@@ -85,15 +85,15 @@ public:
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);
 
+  std::string DebugNameAndId() const;
   FBParamNonRealTime const& NonRealTime() const;
   FBItemsParamNonRealTime const& ItemsNonRealTime() const;
-  std::string GetDefaultText(int moduleSlot, int paramSlot) const;
 
-  std::string DebugNameAndId() const;
-  double DefaultNormalizedByText(int moduleSlot, int paramSlot) const;
-  std::string NormalizedToTextWithUnit(bool io, double normalized) const;
-  std::optional<double> TextToPlain(bool io, std::string const& text) const;
-  std::optional<double> TextToNormalized(bool io, std::string const& text) const;
+  std::string GetDefaultText(int moduleIndex, int moduleSlot, int paramSlot) const;
+  double DefaultNormalizedByText(int moduleIndex, int moduleSlot, int paramSlot) const;
+  std::string NormalizedToTextWithUnit(bool io, int moduleIndex, double normalized) const;
+  std::optional<double> TextToPlain(bool io, int moduleIndex, std::string const& text) const;
+  std::optional<double> TextToNormalized(bool io, int moduleIndex, std::string const& text) const;
 
   FBListParam& List() { FB_ASSERT(type == FBParamType::List); return list; }
   FBBarsParam& Bars() { FB_ASSERT(type == FBParamType::Bars); return bars; }

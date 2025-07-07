@@ -154,7 +154,7 @@ FFMakeLFOTopo(bool global)
   waveMode.display = "Mode";
   waveMode.slotCount = FFLFOBlockCount;
   waveMode.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
-  waveMode.defaultTextSelector = [](int, int ps) { return ps == 0 ? "Sin" : "Off"; };
+  waveMode.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "Sin" : "Off"; };
   waveMode.type = FBParamType::List;
   waveMode.List().items = {
     { "{CEFDD4B5-6BE3-44B8-8420-1B9AC59B59FE}", "Off" },

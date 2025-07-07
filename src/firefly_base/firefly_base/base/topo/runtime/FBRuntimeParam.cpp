@@ -41,6 +41,36 @@ id(FFMakeRuntimeParamId(staticModule.id, topoIndices.module.slot, staticParam.id
 staticModuleId(staticModule.id),
 tag(FBMakeStableHash(id)) {}
 
+std::string 
+FBRuntimeParamBase::PlainToText(bool io, double plain) const
+{
+  return Static().NonRealTime().PlainToText(io, topoIndices.module.index, plain);
+}
+
+std::string
+FBRuntimeParamBase::NormalizedToText(bool io, double normalized) const
+{
+  return Static().NonRealTime().NormalizedToText(io, topoIndices.module.index, normalized);
+}
+
+std::string 
+FBRuntimeParamBase::NormalizedToTextWithUnit(bool io, double normalized) const
+{
+  return Static().NormalizedToTextWithUnit(io, topoIndices.module.index, normalized);
+}
+
+std::optional<double> 
+FBRuntimeParamBase::TextToPlain(bool io, std::string const& text) const
+{
+  return Static().TextToPlain(io, topoIndices.module.index, text);
+}
+
+std::optional<double> 
+FBRuntimeParamBase::TextToNormalized(bool io, std::string const& text) const
+{
+  return Static().TextToNormalized(io, topoIndices.module.index, text);
+}
+
 FBRuntimeGUIParam::
 FBRuntimeGUIParam(
   FBStaticTopo const& topo,
@@ -72,23 +102,23 @@ static_(staticParam)
 std::string
 FBRuntimeParam::GetDefaultText() const
 {
-  return static_.GetDefaultText(topoIndices.module.slot, topoIndices.param.slot);
+  return static_.GetDefaultText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
 }
 
 std::string
 FBRuntimeGUIParam::GetDefaultText() const
 {
-  return static_.GetDefaultText(topoIndices.module.slot, topoIndices.param.slot);
+  return static_.GetDefaultText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
 }
 
 double
 FBRuntimeParam::DefaultNormalizedByText() const
 {
-  return static_.DefaultNormalizedByText(topoIndices.module.slot, topoIndices.param.slot);
+  return static_.DefaultNormalizedByText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
 }
 
 double
 FBRuntimeGUIParam::DefaultNormalizedByText() const
 {
-  return static_.DefaultNormalizedByText(topoIndices.module.slot, topoIndices.param.slot);
+  return static_.DefaultNormalizedByText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
 }

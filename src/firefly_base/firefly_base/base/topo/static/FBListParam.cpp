@@ -21,13 +21,13 @@ FBListParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 PopupMenu
-FBListParamNonRealTime::MakePopupMenu() const
+FBListParamNonRealTime::MakePopupMenu(int moduleIndex) const
 {
   PopupMenu result;
   if (submenuStart.empty())
   {
     for (int i = 0; i < ValueCount(); i++)
-      result.addItem(i + 1, PlainToText(false, i));
+      result.addItem(i + 1, PlainToText(false, moduleIndex, i));
     return result;
   }
   PopupMenu submenu;
@@ -40,7 +40,7 @@ FBListParamNonRealTime::MakePopupMenu() const
       submenu = {};
       submenuHeader = submenuStart.at(i);
     }
-    submenu.addItem(i + 1, PlainToText(false, i));
+    submenu.addItem(i + 1, PlainToText(false, moduleIndex, i));
     if (i == ValueCount() - 1)
     {
       result.addSubMenu(submenuHeader, submenu);
@@ -50,7 +50,7 @@ FBListParamNonRealTime::MakePopupMenu() const
 }
 
 std::optional<double>
-FBListParamNonRealTime::TextToPlainInternal(bool io, std::string const& text) const
+FBListParamNonRealTime::TextToPlainInternal(bool io, int /*moduleIndex*/, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == (io ? items[i].id : items[i].name))
@@ -59,7 +59,7 @@ FBListParamNonRealTime::TextToPlainInternal(bool io, std::string const& text) co
 }
 
 std::string
-FBListParamNonRealTime::PlainToText(bool io, double plain) const
+FBListParamNonRealTime::PlainToText(bool io, int /*moduleIndex*/, double plain) const
 {
   int discrete = static_cast<int>(std::round(plain));
   return io ? items[discrete].id : items[discrete].name;

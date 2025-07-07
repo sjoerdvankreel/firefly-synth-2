@@ -99,7 +99,7 @@ FFMakeEffectTopo(bool global)
   kind.slotCount = FFEffectBlockCount;
   kind.slotFormatter = FFFormatBlockSlot;
   kind.id = prefix + "{1585A19D-639E-4202-B60B-BD8560BC8B70}";
-  kind.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "StVar" : "Off"; };
+  kind.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "StVar" : "Off"; };
   kind.type = FBParamType::List;
   kind.List().items = {
     { "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", "Off" },

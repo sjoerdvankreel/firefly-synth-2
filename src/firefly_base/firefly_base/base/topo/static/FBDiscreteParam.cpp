@@ -23,7 +23,7 @@ FBDiscreteParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBDiscreteParamNonRealTime::PlainToText(bool /*io*/, double plain) const
+FBDiscreteParamNonRealTime::PlainToText(bool /*io*/, int /*moduleIndex*/, double plain) const
 {
   int result = static_cast<int>(std::round(plain));
   if (valueFormatter != nullptr)
@@ -32,13 +32,13 @@ FBDiscreteParamNonRealTime::PlainToText(bool /*io*/, double plain) const
 }
 
 PopupMenu
-FBDiscreteParamNonRealTime::MakePopupMenu() const
+FBDiscreteParamNonRealTime::MakePopupMenu(int moduleIndex) const
 {
   PopupMenu result;
   if (!subMenuFormatter)
   {
     for (int i = 0; i < ValueCount(); i++)
-      result.addItem(i + 1, PlainToText(false, i + valueOffset));
+      result.addItem(i + 1, PlainToText(false, moduleIndex, i + valueOffset));
     return result;
   }
 
@@ -47,7 +47,7 @@ FBDiscreteParamNonRealTime::MakePopupMenu() const
   int subMenuIndex = 0;
   for (int i = 0; i < ValueCount(); i++, j++)
   {
-    subMenu.addItem(i + 1, PlainToText(false, i + valueOffset));
+    subMenu.addItem(i + 1, PlainToText(false, moduleIndex, i + valueOffset));
     if (j == ValueCount() - 1 || j == subMenuItemCount - 1)
     {
       result.addSubMenu(subMenuFormatter(subMenuIndex), subMenu);
@@ -60,12 +60,12 @@ FBDiscreteParamNonRealTime::MakePopupMenu() const
 }
 
 std::optional<double>
-FBDiscreteParamNonRealTime::TextToPlainInternal(bool io, std::string const& text) const
+FBDiscreteParamNonRealTime::TextToPlainInternal(bool io, int moduleIndex, std::string const& text) const
 {
   if(valueFormatter != nullptr)
   { 
     for (int i = 0; i < ValueCount(); i++)
-      if (PlainToText(io, i + valueOffset) == text)
+      if (PlainToText(io, moduleIndex, i + valueOffset) == text)
         return { i + valueOffset };
     return { };
   }
