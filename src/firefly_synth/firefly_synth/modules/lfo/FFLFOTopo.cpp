@@ -281,6 +281,7 @@ FFMakeLFOTopo(bool global)
     { "{CBCB1AF6-4CA2-4381-A5B8-42A7D2F92A36}", "SCS" },
     { "{B6E84130-CC0D-4270-B901-C69E778DAFD8}", "CSC" } };
   waveMode.List().submenuStart[(int)FFLFOWaveMode::Saw] = "Other";
+  waveMode.List().submenuStart[(int)FFLFOWaveMode::Random] = "Random";
   waveMode.List().submenuStart[(int)FFLFOWaveMode::Sin] = "Trig1";
   waveMode.List().submenuStart[(int)FFLFOWaveMode::Sin2] = "Trig2";
   waveMode.List().submenuStart[(int)FFLFOWaveMode::Sin3] = "Trig3";
