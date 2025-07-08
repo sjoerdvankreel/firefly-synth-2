@@ -134,7 +134,7 @@ FFMakeLFOTopo(bool global)
   auto& skewXMode = result->params[(int)FFLFOParam::SkewXMode];
   skewXMode.acc = false;
   skewXMode.defaultText = "Off";
-  skewXMode.display = "SkX";
+  skewXMode.display = "Skew X";
   skewXMode.name = "Skew X Mode";
   skewXMode.slotCount = 1;
   skewXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
@@ -170,7 +170,7 @@ FFMakeLFOTopo(bool global)
   auto& skewYMode = result->params[(int)FFLFOParam::SkewYMode];
   skewYMode.acc = false;
   skewYMode.defaultText = "Off";
-  skewYMode.display = "SkY";
+  skewYMode.display = "Skew Y";
   skewYMode.name = "Skew Y Mode";
   skewYMode.slotCount = 1;
   skewYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
@@ -215,8 +215,7 @@ FFMakeLFOTopo(bool global)
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
     { "{AD641260-F205-497E-B483-330CFA025378}", "Mul" },
-    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "Stack" },
-    { "{264BC462-B9F4-407E-BFFD-6A50B157C21E}", "Apply" } };
+    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "Stk" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);
@@ -249,8 +248,27 @@ FFMakeLFOTopo(bool global)
   waveMode.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
   waveMode.type = FBParamType::List;
   waveMode.List().items = {
-    { "{CEFDD4B5-6BE3-44B8-8420-1B9AC59B59FE}", "Sin" },
-    { "{54EF10FA-BF52-4C6A-B00F-F47BF2CE6FB5}", "Cos" } };
+    { "{0402BC62-9213-41D2-AFA3-885B3B0B046D}", "Saw" },
+    { "{78CD93BD-B3EF-41BA-A36B-BB24791D31F6}", "Tri" },
+    { "{BE0EF052-FA6B-422A-BF2B-6B9BE3430F9D}", "Sqr" },
+    { "{9BD329A7-3F02-4DDC-8A42-C21D6D780C28}", "Sin" },
+    { "{1A4E2DDB-2C58-4670-89BC-54AE6CD6EBC2}", "Cos" },
+    { "{9CF1B435-0A87-4F41-BA5A-7A596ED6ABC3}", "Sin2" },
+    { "{B1589DBB-756C-4EB2-B36C-758F45A42CBD}", "Cos2" },
+    { "{1948DE4C-FDE5-471E-A4B1-2FCCA23AA877}", "SnCs" },
+    { "{FB7AAA67-5893-466C-9EF8-0D2E1ACC50D1}", "CsSn" },
+    { "{F2C4032D-EAE9-490F-A58C-BF7F467260F4}", "Sin3" },
+    { "{8E871CFE-2311-45B7-9E96-AB531F0E7E30}", "Cos3" },
+    { "{A679AA50-A2EC-4D2F-AB10-A1185745287A}", "S2Cs" },
+    { "{90D388CD-38C8-4D7C-BAC5-0492274089DF}", "C2Sn" },
+    { "{5237B3A9-A85F-4392-8A0C-340B1A6A3E1B}", "SnC2" },
+    { "{7E804C32-169F-43C4-B87C-062FCB60DF26}", "CsS2" },
+    { "{CBCB1AF6-4CA2-4381-A5B8-42A7D2F92A36}", "SCS" },
+    { "{B6E84130-CC0D-4270-B901-C69E778DAFD8}", "CSC" } };
+  waveMode.List().submenuStart[(int)FFLFOWaveMode::Saw] = "Other";
+  waveMode.List().submenuStart[(int)FFLFOWaveMode::Sin] = "Trig1";
+  waveMode.List().submenuStart[(int)FFLFOWaveMode::Sin2] = "Trig2";
+  waveMode.List().submenuStart[(int)FFLFOWaveMode::Sin3] = "Trig3";
   auto selectWaveMode = [](auto& module) { return &module.block.waveMode; };
   waveMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectWaveMode);
   waveMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectWaveMode);
