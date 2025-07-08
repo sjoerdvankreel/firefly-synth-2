@@ -214,6 +214,7 @@ FFMakeLFOTopo(bool global)
   opType.name = "Op";
   opType.display = "Op";
   opType.slotCount = FFLFOBlockCount;
+  opType.slotFormatter = FFFormatBlockSlot;
   opType.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
   opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "Add" : "Off"; };
   opType.type = FBParamType::List;
@@ -235,6 +236,7 @@ FFMakeLFOTopo(bool global)
   scale.name = "Scale";
   scale.display = "Scl";
   scale.slotCount = FFLFOBlockCount;
+  scale.slotFormatter = FFFormatBlockSlot;
   scale.unit = "%";
   scale.id = prefix + "{6E12AC6E-B1C3-4DA4-A1C0-EEB7C2187208}";
   scale.type = FBParamType::Identity;
@@ -251,6 +253,7 @@ FFMakeLFOTopo(bool global)
   waveMode.name = "Wave Mode";
   waveMode.display = "Mode";
   waveMode.slotCount = FFLFOBlockCount;
+  waveMode.slotFormatter = FFFormatBlockSlot;
   waveMode.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
   waveMode.type = FBParamType::List;
   waveMode.List().items = {
@@ -292,6 +295,7 @@ FFMakeLFOTopo(bool global)
   rateTime.display = "Rate";
   rateTime.name = "Rate Time";
   rateTime.slotCount = FFLFOBlockCount;
+  rateTime.slotFormatter = FFFormatBlockSlot;
   rateTime.unit = "Sec";
   rateTime.id = prefix + "{EFAAB971-9F51-4FFD-9873-D33D4591F606}";
   rateTime.type = FBParamType::Linear;
@@ -313,6 +317,7 @@ FFMakeLFOTopo(bool global)
   rateBars.display = "Rate";
   rateBars.name = "Rate Bars";
   rateBars.slotCount = FFLFOBlockCount;
+  rateBars.slotFormatter = FFFormatBlockSlot;
   rateBars.unit = "Bars";
   rateBars.id = prefix + "{394760D6-D4CE-453F-9C95-29B788E1E284}";
   rateBars.type = FBParamType::Bars;
@@ -332,6 +337,7 @@ FFMakeLFOTopo(bool global)
   phase.name = "Phase";
   phase.display = "Phs";
   phase.slotCount = FFLFOBlockCount;
+  phase.slotFormatter = FFFormatBlockSlot;
   phase.unit = "%";
   phase.id = prefix + "{88E80B77-86BF-49B0-9822-AACEFC6EAB03}";
   phase.type = FBParamType::Identity;
@@ -348,6 +354,7 @@ FFMakeLFOTopo(bool global)
   steps.name = "Steps";
   steps.display = "Stp";
   steps.slotCount = FFLFOBlockCount;
+  steps.slotFormatter = FFFormatBlockSlot;
   steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
   steps.type = FBParamType::Discrete;
   steps.Discrete().valueCount = 32;
@@ -358,9 +365,6 @@ FFMakeLFOTopo(bool global)
   steps.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSteps);
   steps.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSteps);
   steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
-  
-  // todo 'A' 'B'
-  // todo all the enabled stuff
-  // todo add/mul/stack + drop stack + something bipolar
+
   return result;
 }
