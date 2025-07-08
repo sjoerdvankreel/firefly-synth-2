@@ -16,6 +16,7 @@
 
 using namespace juce::dsp;
 
+// TODO move to shared
 static inline FBBatch<float>
 Sin2(FBBatch<float> in)
 {

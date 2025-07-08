@@ -17,6 +17,10 @@ class FFLFOProcessor final
   std::array<FFLFOOpType, FFLFOBlockCount> _opType = {};
   std::array<FFLFOWaveMode, FFLFOBlockCount> _waveMode = {};
 
+  bool _graph = {};
+  int _graphSampleCount = {};
+  int _graphSamplesProcessed = {};
+
   std::array<FFTimeVectorPhaseGenerator, FFLFOBlockCount> _phaseGens = {};
 
 public:

@@ -35,6 +35,10 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& skewXModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewXMode[0], voice);
   auto const& skewYModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewYMode[0], voice);
 
+  _graph = graph;
+  _graphSamplesProcessed = 0;
+  _graphSampleCount = graphSampleCount;
+
   _sync = topo.NormalizedToBoolFast(FFLFOParam::Sync, syncNorm); // todo ?
   _seed = topo.NormalizedToDiscreteFast(FFLFOParam::Seed, seedNorm); // todo ?
   _type = topo.NormalizedToListFast<FFLFOType>(FFLFOParam::Type, typeNorm);
@@ -43,12 +47,13 @@ FFLFOProcessor::BeginVoiceOrBlock(
 
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
+    bool blockActive = !graph || graphIndex == i || graphIndex == FFLFOBlockCount;
+    _opType[i] = !blockActive ? FFLFOOpType::Off : topo.NormalizedToListFast<FFLFOOpType>(
+      FFLFOParam::OpType,
+      FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
     _steps[i] = topo.NormalizedToDiscreteFast(
       FFLFOParam::Steps,
       FFSelectDualProcBlockParamNormalized<Global>(stepsNorm[i], voice));
-    _opType[i] = topo.NormalizedToListFast<FFLFOOpType>(
-      FFLFOParam::OpType,
-      FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
     _waveMode[i] = topo.NormalizedToListFast<FFLFOWaveMode>(
       FFLFOParam::WaveMode,
       FFSelectDualProcBlockParamNormalized<Global>(waveModeNorm[i], voice));
@@ -100,7 +105,10 @@ FFLFOProcessor::Process(FBModuleProcState& state)
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return 0;
+  {
+    _graphSamplesProcessed += FBFixedBlockSamples;
+    return std::clamp(_graphSampleCount - _graphSamplesProcessed, 0, FBFixedBlockSamples);
+  }
 
   auto& exchangeDSP = *FFSelectDualState<Global>(
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gLFO[state.moduleSlot]; },
