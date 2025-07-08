@@ -10,7 +10,7 @@ inline int constexpr FFLFOBlockCount = 3;
 std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool global);
 
 enum class FFLFOType { Off, Free, SnapOrOneShot };
-enum class FFLFOOpType { Off, Add, Mul, Stack };
+enum class FFLFOOpType { Off, Add, Mul, Stack, Apply };
 enum class FFLFOWaveMode { Sin, Cos };
 enum class FFLFOSkewMode { Off, ScaleUnipolar, ScaleBipolar, ExpUnipolar, ExpBipolar };
 

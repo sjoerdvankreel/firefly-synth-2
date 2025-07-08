@@ -215,7 +215,8 @@ FFMakeLFOTopo(bool global)
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
     { "{AD641260-F205-497E-B483-330CFA025378}", "Mul" },
-    { "{264BC462-B9F4-407E-BFFD-6A50B157C21E}", "Stk" } };
+    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "Stack" },
+    { "{264BC462-B9F4-407E-BFFD-6A50B157C21E}", "Apply" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);
@@ -301,7 +302,7 @@ FFMakeLFOTopo(bool global)
   phase.acc = false;
   phase.defaultText = "0";
   phase.name = "Phase";
-  phase.display = "Phase";
+  phase.display = "Phs";
   phase.slotCount = FFLFOBlockCount;
   phase.unit = "%";
   phase.id = prefix + "{88E80B77-86BF-49B0-9822-AACEFC6EAB03}";
@@ -317,7 +318,7 @@ FFMakeLFOTopo(bool global)
   steps.acc = false;
   steps.defaultText = "1";
   steps.name = "Steps";
-  steps.display = "Steps";
+  steps.display = "Stp";
   steps.slotCount = FFLFOBlockCount;
   steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
   steps.type = FBParamType::Discrete;
