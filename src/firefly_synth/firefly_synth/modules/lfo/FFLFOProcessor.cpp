@@ -14,7 +14,9 @@
 
 template <bool Global>
 void
-FFLFOProcessor::BeginVoiceOrBlock(FBModuleProcState& state)
+FFLFOProcessor::BeginVoiceOrBlock(
+  bool graph, int graphIndex, 
+  int graphSampleCount /*todo auto*/, FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -117,5 +119,5 @@ FFLFOProcessor::Process(FBModuleProcState& state)
 
 template int FFLFOProcessor::Process<true>(FBModuleProcState& state);
 template int FFLFOProcessor::Process<false>(FBModuleProcState& state);
-template void FFLFOProcessor::BeginVoiceOrBlock<true>(FBModuleProcState& state);
-template void FFLFOProcessor::BeginVoiceOrBlock<false>(FBModuleProcState& state);
+template void FFLFOProcessor::BeginVoiceOrBlock<true>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+template void FFLFOProcessor::BeginVoiceOrBlock<false>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);

@@ -25,5 +25,5 @@ public:
   template <bool Global>
   int Process(FBModuleProcState& state);
   template <bool Global>
-  void BeginVoiceOrBlock(FBModuleProcState& state);
+  void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount /*todo auto*/, FBModuleProcState& state);
 };

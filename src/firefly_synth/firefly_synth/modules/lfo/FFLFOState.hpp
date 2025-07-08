@@ -10,12 +10,16 @@
 #include <array>
 #include <memory>
 
-struct FBStaticModule;
+struct FBStaticModule; 
+template <bool Global>
+struct LFOGraphRenderData;
 
 class alignas(FBSIMDAlign) FFLFODSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
+  friend struct LFOGraphRenderData<true>;
+  friend struct LFOGraphRenderData<false>;
   std::unique_ptr<FFLFOProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFLFODSPState);
