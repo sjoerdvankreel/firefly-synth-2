@@ -84,10 +84,10 @@ FFLFOProcessor::Process(FBModuleProcState& state)
 
   float sampleRate = state.input->sampleRate;
   auto const& rateTimeNorm = procParams.acc.rateTime;
-  FBSArray2<float, FBFixedBlockSamples, FFEffectBlockCount> rateTimePlain;
+  FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> rateTimePlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    for (int i = 0; i < FFEffectBlockCount; i++)
-      rateTimePlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::RateTime,
+    for (int i = 0; i < FFLFOBlockCount; i++)
+      rateTimePlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateTime,
         FFSelectDualProcAccParamNormalized<Global>(rateTimeNorm[i], voice), s));
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
