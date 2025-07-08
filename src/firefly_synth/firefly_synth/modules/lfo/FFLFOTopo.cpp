@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/lfo/FFLFOTopo.hpp>
+#include <firefly_synth/modules/lfo/FFLFOGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::vector<FBBarsItem>
@@ -21,6 +22,7 @@ FFMakeLFOTopo(bool global)
   result->graphName = global ? "GLFO" : "VLFO";
   result->slotCount = FFLFOCount;
   result->graphCount = FFLFOBlockCount + 1;
+  result->graphRenderer = global ? FFLFORenderGraph<true> : FFLFORenderGraph<false>;
   result->id = prefix + "{6E9EC930-5391-41BB-9EDA-C9B79F3BE745}";
   result->params.resize((int)FFLFOParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vLFO; });
