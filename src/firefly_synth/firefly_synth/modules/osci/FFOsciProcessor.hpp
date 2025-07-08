@@ -4,8 +4,8 @@
 #include <firefly_synth/dsp/shared/FFBasicHPFilter.hpp>
 #include <firefly_synth/dsp/shared/FFMarsagliaPRNG.hpp>
 #include <firefly_synth/dsp/shared/FFParkMillerPRNG.hpp>
+#include <firefly_synth/dsp/shared/FFPhaseGenerator.hpp>
 #include <firefly_synth/dsp/shared/FFStateVariableFilter.hpp>
-#include <firefly_synth/dsp/shared/FFTrackingPhaseGenerator.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciPhaseGenerator.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
@@ -42,7 +42,7 @@ struct FFOsciStringUniVoiceState final
 
   FFDelayLine delayLine = {};
   FFBasicHPFilter dcFilter = {};
-  FFOsciStringPhaseGenerator phaseGen = {};
+  FFScalarPhaseGenerator phaseGen = {};
   FBSArray<float, FFOsciStringMaxPoles> colorFilterBuffer = {};
 };
 

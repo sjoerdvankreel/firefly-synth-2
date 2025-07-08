@@ -6,15 +6,7 @@
 #include <xsimd/xsimd.hpp>
 #include <cmath>
 
-class FFOsciStringPhaseGenerator final
-{
-  float _x = 0.0f;
-public:
-  float Next(float incr);
-  FFOsciStringPhaseGenerator() = default;
-  explicit FFOsciStringPhaseGenerator(float x) : _x(x) {}
-};
-
+// fake vector over time phasegen with fm
 class FFOsciWavePhaseGenerator final
 {
   float _x = 0.0f;
@@ -24,6 +16,7 @@ public:
   FBBatch<float> Next(FBBatch<float> incr, FBBatch<float> fmModulator);
 };
 
+// real vector over voice phasegen with fm
 class alignas(FBSIMDAlign) FFOsciFMPhaseGenerator final
 {
   FBBatch<float> _x = 0.0f;
@@ -32,16 +25,6 @@ public:
   explicit FFOsciFMPhaseGenerator(FBBatch<float> x) : _x(x) {}
   FBBatch<float> Next(FBBatch<float> incrs, FBBatch<float> fmModulators);
 };
-
-inline float
-FFOsciStringPhaseGenerator::Next(float incr)
-{
-  float y = _x;
-  _x += incr;
-  if (_x >= 1.0f)
-    _x = 0.0f;
-  return y;
-}
 
 inline FBBatch<float>
 FFOsciFMPhaseGenerator::Next(FBBatch<float> incrs, FBBatch<float> fmModulators)
