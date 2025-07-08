@@ -229,6 +229,7 @@ FFMakeLFOTopo(bool global)
   opType.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOpType);
   opType.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpType);
   opType.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpType);
+  opType.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& scale = result->params[(int)FFLFOParam::Scale];
   scale.acc = true;
@@ -246,6 +247,7 @@ FFMakeLFOTopo(bool global)
   scale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScale);
   scale.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScale);
   scale.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScale);  
+  scale.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& waveMode = result->params[(int)FFLFOParam::WaveMode];
   waveMode.acc = false;
@@ -288,6 +290,7 @@ FFMakeLFOTopo(bool global)
   waveMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectWaveMode);
   waveMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectWaveMode);
   waveMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectWaveMode);
+  waveMode.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& rateTime = result->params[(int)FFLFOParam::RateTime];
   rateTime.acc = true;
@@ -309,7 +312,7 @@ FFMakeLFOTopo(bool global)
   rateTime.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateTime);
   rateTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateTime);
   rateTime.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  rateTime.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  rateTime.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0 && vs[2] != 0; });
 
   auto& rateBars = result->params[(int)FFLFOParam::RateBars];
   rateBars.acc = false;
@@ -329,7 +332,7 @@ FFMakeLFOTopo(bool global)
   rateBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateBars);
   rateBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateBars);
   rateBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::WaveMode, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });  
+  rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& phase = result->params[(int)FFLFOParam::Phase];
   phase.acc = false;
@@ -347,6 +350,7 @@ FFMakeLFOTopo(bool global)
   phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
   phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
   phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase);
+  phase.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& steps = result->params[(int)FFLFOParam::Steps];
   steps.acc = false;
@@ -365,6 +369,7 @@ FFMakeLFOTopo(bool global)
   steps.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSteps);
   steps.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSteps);
   steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
+  steps.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   return result;
 }
