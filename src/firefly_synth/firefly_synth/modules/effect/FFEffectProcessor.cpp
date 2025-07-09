@@ -16,99 +16,6 @@
 
 using namespace juce::dsp;
 
-// TODO move to shared
-static inline FBBatch<float>
-Sin2(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  return xsimd::sin(in * FBPi + sin1);
-}
-
-static inline FBBatch<float>
-Cos2(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  return xsimd::cos(in * FBPi + cos1);
-}
-
-static inline FBBatch<float>
-SinCos(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  return xsimd::sin(in * FBPi + cos1);
-}
-
-static inline FBBatch<float>
-CosSin(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  return xsimd::cos(in * FBPi + sin1);
-}
-
-static inline FBBatch<float>
-Sin3(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  auto sin2 = xsimd::sin(in * FBPi + sin1);
-  return xsimd::sin(in * FBPi + sin2);
-}
-
-static inline FBBatch<float>
-Cos3(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  auto cos2 = xsimd::cos(in * FBPi + cos1);
-  return xsimd::cos(in * FBPi + cos2);
-}
-
-static inline FBBatch<float>
-Sn2Cs(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  auto sin2 = xsimd::sin(in * FBPi + cos1);
-  return xsimd::sin(in * FBPi + sin2);
-}
-
-static inline FBBatch<float>
-Cs2Sn(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  auto cos2 = xsimd::cos(in * FBPi + sin1);
-  return xsimd::cos(in * FBPi + cos2);
-}
-
-static inline FBBatch<float>
-SnCs2(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  auto cos2 = xsimd::cos(in * FBPi + cos1);
-  return xsimd::sin(in * FBPi + cos2);
-}
-
-static inline FBBatch<float>
-CsSn2(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  auto sin2 = xsimd::sin(in * FBPi + sin1);
-  return xsimd::cos(in * FBPi + sin2);
-}
-
-static inline FBBatch<float>
-SnCsSn(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  auto cos2 = xsimd::cos(in * FBPi + sin1);
-  return xsimd::sin(in * FBPi + cos2);
-}
-
-static inline FBBatch<float>
-CsSnCs(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  auto sin2 = xsimd::sin(in * FBPi + cos1);
-  return xsimd::cos(in * FBPi + sin2);
-}
-
 static inline FBBatch<float>
 FoldBack(FBBatch<float> in)
 {
@@ -690,22 +597,8 @@ FFEffectProcessor::ProcessFold(
       auto shapedBatch = (inBatch + bias) * drive;
       switch (_foldMode[block])
       {
-      case FFEffectFoldMode::Fold: shapedBatch = FoldBack(shapedBatch); break;
-      case FFEffectFoldMode::Sin: shapedBatch = xsimd::sin(shapedBatch * FBPi); break;
-      case FFEffectFoldMode::Cos: shapedBatch = xsimd::cos(shapedBatch * FBPi); break;
-      case FFEffectFoldMode::Sin2: shapedBatch = Sin2(shapedBatch); break;
-      case FFEffectFoldMode::Cos2: shapedBatch = Cos2(shapedBatch); break;
-      case FFEffectFoldMode::SinCos: shapedBatch = SinCos(shapedBatch); break;
-      case FFEffectFoldMode::CosSin: shapedBatch = CosSin(shapedBatch); break;
-      case FFEffectFoldMode::Sin3: shapedBatch = Sin3(shapedBatch); break;
-      case FFEffectFoldMode::Cos3: shapedBatch = Cos3(shapedBatch); break;
-      case FFEffectFoldMode::Sn2Cs: shapedBatch = Sn2Cs(shapedBatch); break;
-      case FFEffectFoldMode::Cs2Sn: shapedBatch = Cs2Sn(shapedBatch); break;
-      case FFEffectFoldMode::SnCs2: shapedBatch = SnCs2(shapedBatch); break;
-      case FFEffectFoldMode::CsSn2: shapedBatch = CsSn2(shapedBatch); break;
-      case FFEffectFoldMode::SnCsSn: shapedBatch = SnCsSn(shapedBatch); break;
-      case FFEffectFoldMode::CsSnCs: shapedBatch = CsSnCs(shapedBatch); break;
-      default: FB_ASSERT(false); break;
+      case FFEffectFoldModeFold: shapedBatch = FoldBack(shapedBatch); break;
+      default: shapedBatch = FFCalcTrig(_foldMode[block], shapedBatch * FBPi); break;
       }
       auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
       oversampled[c].Store(s, mixedBatch);

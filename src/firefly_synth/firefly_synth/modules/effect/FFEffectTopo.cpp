@@ -395,7 +395,6 @@ FFMakeEffectTopo(bool global)
   foldMode.id = prefix + "{317BA4AC-8E9A-47B9-A289-294047E29C78}";
   foldMode.type = FBParamType::List;
   foldMode.List().items = {
-    { "{55167ED0-D050-403B-A061-CA4D0916E400}", "Fold" },
     { "{129369F6-C303-4BBA-8573-06FC33972FD9}", "Sin" },
     { "{8CFCDA01-C9A9-4231-9994-8480CC08A1CE}", "Cos" },
     { "{549CC93F-C88A-4C3B-AD37-B3C818DFF573}", "Sin2" },
@@ -409,11 +408,12 @@ FFMakeEffectTopo(bool global)
     { "{7527549D-68FE-4D6F-B420-BA75F9097EEE}", "SnC2" },
     { "{7DA4D108-2DCB-49C1-97D3-A3528A3BD715}", "CsS2" },
     { "{EAEFCA78-2779-484D-AC67-CD61786B64B5}", "SCS" },
-    { "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CSC" } };
-  foldMode.List().submenuStart[(int)FFEffectFoldMode::Fold] = "Fold";
-  foldMode.List().submenuStart[(int)FFEffectFoldMode::Sin] = "Trig1";
-  foldMode.List().submenuStart[(int)FFEffectFoldMode::Sin2] = "Trig2";
-  foldMode.List().submenuStart[(int)FFEffectFoldMode::Sin3] = "Trig3";
+    { "{4C0E5578-38F2-411C-A266-8FD9FFEA8612}", "CSC" },
+    { "{55167ED0-D050-403B-A061-CA4D0916E400}", "Fold" } };
+  foldMode.List().submenuStart[FFTrigSin] = "Trig1";
+  foldMode.List().submenuStart[FFTrigSin2] = "Trig2";
+  foldMode.List().submenuStart[FFTrigSin3] = "Trig3";
+  foldMode.List().submenuStart[FFEffectFoldModeFold] = "Fold";
   auto selectFoldMode = [](auto& module) { return &module.block.foldMode; };
   foldMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFoldMode);
   foldMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectFoldMode);
