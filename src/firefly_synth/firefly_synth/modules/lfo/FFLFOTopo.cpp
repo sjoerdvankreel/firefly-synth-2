@@ -95,23 +95,6 @@ FFMakeLFOTopo(bool global)
   seed.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSeed);
   seed.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
-  auto& phase = result->params[(int)FFLFOParam::Phase];
-  phase.acc = false;
-  phase.defaultText = "0";
-  phase.name = "Phase";
-  phase.display = "Phs";
-  phase.slotCount = 1;
-  phase.unit = "%";
-  phase.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
-  phase.type = FBParamType::Identity;
-  auto selectPhase = [](auto& module) { return &module.block.phase; };
-  phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
-  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
-  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
-  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
-  phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase);
-  phase.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
   auto& smoothTime = result->params[(int)FFLFOParam::SmoothTime];
   smoothTime.acc = false;
   smoothTime.defaultText = "0";
@@ -151,80 +134,6 @@ FFMakeLFOTopo(bool global)
   smoothBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSmoothBars);
   smoothBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   smoothBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
-  auto& skewAXMode = result->params[(int)FFLFOParam::SkewAXMode];
-  skewAXMode.acc = false;
-  skewAXMode.defaultText = "Off";
-  skewAXMode.display = "SkX";
-  skewAXMode.name = "Skew A X Mode";
-  skewAXMode.slotCount = 1;
-  skewAXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
-  skewAXMode.type = FBParamType::List;
-  skewAXMode.List().items = {
-    { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
-    { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "SclU" },
-    { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "SclB" },
-    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "ExpU" },
-    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "ExpB" } };
-  auto selectSkewAXMode = [](auto& module) { return &module.block.skewAXMode; };
-  skewAXMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXMode);
-  skewAXMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAXMode);
-  skewAXMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAXMode);
-  skewAXMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAXMode);
-  skewAXMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAXMode);
-  skewAXMode.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
-
-  auto& skewAXAmt = result->params[(int)FFLFOParam::SkewAXAmt];
-  skewAXAmt.acc = true;
-  skewAXAmt.defaultText = "0";
-  skewAXAmt.name = "Skew A X Amt";
-  skewAXAmt.slotCount = 1;
-  skewAXAmt.unit = "%";
-  skewAXAmt.id = prefix + "{49209170-5BA6-4B96-8E60-79A287680EAD}";
-  skewAXAmt.type = FBParamType::Identity;
-  auto selectSkewAXAmt = [](auto& module) { return &module.acc.skewAXAmt; };
-  skewAXAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXAmt);
-  skewAXAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAXAmt);
-  skewAXAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAXAmt);
-  skewAXAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAXAmt);
-  skewAXAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAXAmt);
-  skewAXAmt.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::SkewAXMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
-  auto& skewAYMode = result->params[(int)FFLFOParam::SkewAYMode];
-  skewAYMode.acc = false;
-  skewAYMode.defaultText = "Off";
-  skewAYMode.display = "SkY";
-  skewAYMode.name = "Skew Y Mode";
-  skewAYMode.slotCount = 1;
-  skewAYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
-  skewAYMode.type = FBParamType::List;
-  skewAYMode.List().items = {
-    { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
-    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "ExpU" },
-    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "ExpB" } };
-  auto selectSkewAYMode = [](auto& module) { return &module.block.skewAYMode; };
-  skewAYMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYMode);
-  skewAYMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAYMode);
-  skewAYMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAYMode);
-  skewAYMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAYMode);
-  skewAYMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAYMode);
-  skewAYMode.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
-
-  auto& skewAYAmt = result->params[(int)FFLFOParam::SkewAYAmt];
-  skewAYAmt.acc = true;
-  skewAYAmt.defaultText = "0";
-  skewAYAmt.name = "Skew Y Amt";
-  skewAYAmt.slotCount = 1;
-  skewAYAmt.unit = "%";
-  skewAYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";
-  skewAYAmt.type = FBParamType::Identity;
-  auto selectSkewAYAmt = [](auto& module) { return &module.acc.skewAYAmt; };
-  skewAYAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYAmt);
-  skewAYAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAYAmt);
-  skewAYAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAYAmt);
-  skewAYAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAYAmt);
-  skewAYAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAYAmt);
-  skewAYAmt.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::SkewAYMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& opType = result->params[(int)FFLFOParam::OpType];
   opType.acc = false;
@@ -389,5 +298,96 @@ FFMakeLFOTopo(bool global)
   steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
   steps.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& skewAXMode = result->params[(int)FFLFOParam::SkewAXMode];
+  skewAXMode.acc = false;
+  skewAXMode.defaultText = "Off";
+  skewAXMode.display = "SkX";
+  skewAXMode.name = "Skew A X Mode";
+  skewAXMode.slotCount = 1;
+  skewAXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
+  skewAXMode.type = FBParamType::List;
+  skewAXMode.List().items = {
+    { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
+    { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "SclU" },
+    { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "SclB" },
+    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "ExpU" },
+    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "ExpB" } };
+  auto selectSkewAXMode = [](auto& module) { return &module.block.skewAXMode; };
+  skewAXMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXMode);
+  skewAXMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAXMode);
+  skewAXMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAXMode);
+  skewAXMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAXMode);
+  skewAXMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAXMode);
+  skewAXMode.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& skewAXAmt = result->params[(int)FFLFOParam::SkewAXAmt];
+  skewAXAmt.acc = true;
+  skewAXAmt.defaultText = "0";
+  skewAXAmt.name = "Skew A X Amt";
+  skewAXAmt.slotCount = 1;
+  skewAXAmt.unit = "%";
+  skewAXAmt.id = prefix + "{49209170-5BA6-4B96-8E60-79A287680EAD}";
+  skewAXAmt.type = FBParamType::Identity;
+  auto selectSkewAXAmt = [](auto& module) { return &module.acc.skewAXAmt; };
+  skewAXAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXAmt);
+  skewAXAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAXAmt);
+  skewAXAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAXAmt);
+  skewAXAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAXAmt);
+  skewAXAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAXAmt);
+  skewAXAmt.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::SkewAXMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& skewAYMode = result->params[(int)FFLFOParam::SkewAYMode];
+  skewAYMode.acc = false;
+  skewAYMode.defaultText = "Off";
+  skewAYMode.display = "SkY";
+  skewAYMode.name = "Skew Y Mode";
+  skewAYMode.slotCount = 1;
+  skewAYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
+  skewAYMode.type = FBParamType::List;
+  skewAYMode.List().items = {
+    { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
+    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "ExpU" },
+    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "ExpB" } };
+  auto selectSkewAYMode = [](auto& module) { return &module.block.skewAYMode; };
+  skewAYMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYMode);
+  skewAYMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAYMode);
+  skewAYMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAYMode);
+  skewAYMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAYMode);
+  skewAYMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAYMode);
+  skewAYMode.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& skewAYAmt = result->params[(int)FFLFOParam::SkewAYAmt];
+  skewAYAmt.acc = true;
+  skewAYAmt.defaultText = "0";
+  skewAYAmt.name = "Skew Y Amt";
+  skewAYAmt.slotCount = 1;
+  skewAYAmt.unit = "%";
+  skewAYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";
+  skewAYAmt.type = FBParamType::Identity;
+  auto selectSkewAYAmt = [](auto& module) { return &module.acc.skewAYAmt; };
+  skewAYAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYAmt);
+  skewAYAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAYAmt);
+  skewAYAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAYAmt);
+  skewAYAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAYAmt);
+  skewAYAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAYAmt);
+  skewAYAmt.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::SkewAYMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& phaseB = result->params[(int)FFLFOParam::PhaseB];
+  phaseB.acc = false;
+  phaseB.defaultText = "0";
+  phaseB.name = "Phase B";
+  phaseB.display = "Phs";
+  phaseB.slotCount = 1;
+  phaseB.unit = "%";
+  phaseB.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
+  phaseB.type = FBParamType::Identity;
+  auto selectPhaseB = [](auto& module) { return &module.block.phaseB; };
+  phaseB.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhaseB);
+  phaseB.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhaseB);
+  phaseB.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhaseB);
+  phaseB.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhaseB);
+  phaseB.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhaseB);
+  phaseB.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  
   return result;
 }

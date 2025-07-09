@@ -24,46 +24,23 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
-  grid->Add(0, 1, 1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
   auto smoothTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SmoothTime, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothTime));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smoothTime, Slider::SliderStyle::LinearHorizontal));
   auto smoothBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SmoothBars, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
-  auto phase = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Phase, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::RotaryVerticalDrag));
   auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
   auto seed = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Seed, 0 } });
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
-  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
-  return grid;
-}
-
-static Component*
-MakeLFOSectionSkewA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
-  auto skewAXMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAXMode, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewAXMode));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewAXMode));
-  auto skewAXAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAXAmt, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewAXAmt, Slider::SliderStyle::RotaryVerticalDrag));
-  auto skewAYMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAYMode, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewAYMode));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewAYMode));
-  auto skewAYAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAYAmt, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewAYAmt, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 4 } });
   return grid;
 }
 
@@ -99,11 +76,45 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
 }
 
 static Component*
+MakeLFOSectionSkewA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
+  auto skewAXMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAXMode, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewAXMode));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewAXMode));
+  auto skewAXAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAXAmt, 0 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewAXAmt, Slider::SliderStyle::RotaryVerticalDrag));
+  auto skewAYMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAYMode, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewAYMode));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewAYMode));
+  auto skewAYAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAYAmt, 0 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewAYAmt, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
+  return grid;
+}
+
+static Component*
+MakeLFOSectionPhaseB(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0 });
+  auto phaseB = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::PhaseB, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phaseB));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phaseB, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 1 } });
+  return grid;
+}
+
+static Component*
 MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(1);
+  columnSizes.push_back(0);
   columnSizes.push_back(0);
   for (int i = 0; i < FFLFOBlockCount; i++)
     columnSizes.push_back(0);
@@ -111,8 +122,9 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   grid->Add(0, 0, MakeLFOSectionMain(plugGUI, moduleType, moduleSlot));
   grid->Add(0, 1, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, 0));
   grid->Add(0, 2, MakeLFOSectionSkewA(plugGUI, moduleType, moduleSlot));
-  for (int i = 1; i < FFLFOBlockCount; i++)
-    grid->Add(0, 2 + i, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, i));
+  grid->Add(0, 3, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, 1));
+  grid->Add(0, 4, MakeLFOSectionPhaseB(plugGUI, moduleType, moduleSlot));
+  grid->Add(0, 5, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, 2));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

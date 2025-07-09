@@ -80,7 +80,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& rateBarsNorm = params.block.rateBars;
   auto const& typeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.type[0], voice);
   auto const& syncNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.sync[0], voice);
-  auto const& phaseNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.phase[0], voice);
+  auto const& phaseBNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.phaseB[0], voice);
   auto const& skewAXModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAXMode[0], voice);
   auto const& skewAYModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAYMode[0], voice);
 
@@ -107,7 +107,11 @@ FFLFOProcessor::BeginVoiceOrBlock(
       FFLFOParam::WaveMode,
       FFSelectDualProcBlockParamNormalized<Global>(waveModeNorm[i], voice));
 
-    _phaseGens[i] = FFTimeVectorPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::Phase, phaseNorm));
+    if(i == 1)
+      _phaseGens[i] = FFTimeVectorPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
+    else
+      _phaseGens[i] = FFTimeVectorPhaseGenerator(0.0f);
+
     if (_sync)
       _rateHzByBars[i] = topo.NormalizedToBarsFreqFast(FFLFOParam::RateBars,
         FFSelectDualProcBlockParamNormalized<Global>(rateBarsNorm[i], voice), state.input->bpm);
@@ -245,7 +249,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vLFO[state.moduleSlot]; });
   for (int i = 0; i < FFLFOBlockCount; i++)
     FFSelectDualExchangeState<Global>(exchangeParams.acc.rateHz[i], voice) = FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice).Last();
-
+   
   return FBFixedBlockSamples;
 }
 
