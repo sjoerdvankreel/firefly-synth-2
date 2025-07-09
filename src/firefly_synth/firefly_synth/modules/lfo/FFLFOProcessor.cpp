@@ -304,9 +304,11 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   exchangeDSP.active = true;
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
-    exchangeDSP.lengthSamples[i] = FBFreqToSamples(rateHzPlain[i].Last(), sampleRate);
     exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
+    exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
   }
+  exchangeDSP.positionSamples[FFLFOBlockCount] = exchangeDSP.positionSamples[0];
+  exchangeDSP.lengthSamples[FFLFOBlockCount] = exchangeDSP.lengthSamples[0];
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },
