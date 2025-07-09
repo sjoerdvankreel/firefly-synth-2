@@ -95,9 +95,20 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     for (int i = 0; i < FFLFOBlockCount; i++)
       if (_opType[i] != FFLFOOpType::Off)
       {
+        FBBatch<float> lfo = {};
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
         auto phase = _phaseGens[i].Next(incr);
-        auto lfo = FBToUnipolar(xsimd::sin(phase * 2.0f * FBPi));
+        switch (_waveMode[i])
+        {
+        case FFLFOWaveModeSaw: lfo = phase; break;
+        case FFLFOWaveModeTri: break;
+        case FFLFOWaveModeSqr: break;
+        case FFLFOWaveModeRandom: break;
+        case FFLFOWaveModeFreeRandom: break;
+        case FFLFOWaveModeSmooth: break;
+        case FFLFOWaveModeFreeSmooth: break;
+        default: lfo = FBToUnipolar(FFCalcTrig(_waveMode[i], phase * 2.0f * FBPi)); break;
+        }
         output.Add(s, lfo);
       }
     output.Store(s, xsimd::clip(output.Load(s), FBBatch<float>(-1.0f), FBBatch<float>(1.0f)));
