@@ -138,9 +138,9 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     if(_skewXMode != FFLFOSkewMode::Off)
-      skewXAmtPlain.Store(s, topo.NormalizedToLinearFast(FFLFOParam::SkewXAmt, skewXAmtNorm, s));
+      skewXAmtPlain.Store(s, topo.NormalizedToIdentityFast(FFLFOParam::SkewXAmt, skewXAmtNorm, s));
     if(_skewYMode != FFLFOSkewMode::Off)
-      skewYAmtPlain.Store(s, topo.NormalizedToLinearFast(FFLFOParam::SkewYAmt, skewYAmtNorm, s));
+      skewYAmtPlain.Store(s, topo.NormalizedToIdentityFast(FFLFOParam::SkewYAmt, skewYAmtNorm, s));
 
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
