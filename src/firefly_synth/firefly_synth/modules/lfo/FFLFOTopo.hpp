@@ -12,7 +12,9 @@ std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool global);
 
 enum class FFLFOOpType { Off, Add, Mul, Stack };
 enum class FFLFOType { Off, Free, SnapOrOneShot };
-enum class FFLFOSkewMode { Off, ScaleUnipolar, ScaleBipolar, ExpUnipolar, ExpBipolar };
+enum class FFLFOSkewYMode { Off, ExpUnipolar, ExpBipolar };
+enum class FFLFOSkewXMode { Off, ScaleUnipolar, ScaleBipolar, ExpUnipolar, ExpBipolar };
+
 enum FFLFOWaveMode { 
   FFLFOWaveModeSaw = FFTrigCount, FFLFOWaveModeTri, FFLFOWaveModeSqr, 
   FFLFOWaveModeRandom, FFLFOWaveModeFreeRandom, 
@@ -20,5 +22,5 @@ enum FFLFOWaveMode {
 
 enum class FFLFOParam {
   Type, Sync, Seed, Phase, SmoothTime, SmoothBars,
-  SkewXMode, SkewXAmt, SkewYMode, SkewYAmt,
+  SkewAXMode, SkewAXAmt, SkewAYMode, SkewAYAmt,
   OpType, Min, Max, WaveMode, RateHz, RateBars, Steps, Count };

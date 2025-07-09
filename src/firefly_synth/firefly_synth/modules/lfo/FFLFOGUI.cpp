@@ -24,7 +24,7 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 0 });
   auto type = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, type));
   grid->Add(0, 1, 1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, type));
@@ -43,17 +43,27 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   auto seed = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Seed, 0 } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
-  auto skewXMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewXMode, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewXMode));
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewXMode));
-  auto skewXAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewXAmt, 0 } });
-  grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewXAmt, Slider::SliderStyle::RotaryVerticalDrag));
-  auto skewYMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewYMode, 0 } });
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewYMode));
-  grid->Add(1, 7, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewYMode));
-  auto skewYAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewYAmt, 0 } });
-  grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewYAmt, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 9 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
+  return grid;
+}
+
+static Component*
+MakeLFOSectionSkewA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
+  auto skewAXMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAXMode, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewAXMode));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewAXMode));
+  auto skewAXAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAXAmt, 0 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewAXAmt, Slider::SliderStyle::RotaryVerticalDrag));
+  auto skewAYMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAYMode, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, skewAYMode));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, skewAYMode));
+  auto skewAYAmt = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SkewAYAmt, 0 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, skewAYAmt, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
   return grid;
 }
 
@@ -94,12 +104,15 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
   columnSizes.push_back(1);
+  columnSizes.push_back(0);
   for (int i = 0; i < FFLFOBlockCount; i++)
     columnSizes.push_back(0);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeLFOSectionMain(plugGUI, moduleType, moduleSlot));
-  for (int i = 0; i < FFLFOBlockCount; i++)
-    grid->Add(0, 1 + i, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, i));
+  grid->Add(0, 1, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, 0));
+  grid->Add(0, 2, MakeLFOSectionSkewA(plugGUI, moduleType, moduleSlot));
+  for (int i = 1; i < FFLFOBlockCount; i++)
+    grid->Add(0, 2 + i, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, i));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

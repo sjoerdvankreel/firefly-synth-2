@@ -10,8 +10,8 @@ class FFLFOProcessor final
 {
   bool _sync = {};
   FFLFOType _type = {};
-  FFLFOSkewMode _skewXMode = {};
-  FFLFOSkewMode _skewYMode = {};
+  FFLFOSkewXMode _skewAXMode = {};
+  FFLFOSkewYMode _skewAYMode = {};
   std::array<int, FFLFOBlockCount> _steps = {};
   std::array<FFLFOOpType, FFLFOBlockCount> _opType = {};
   std::array<FFLFOWaveMode, FFLFOBlockCount> _waveMode = {};

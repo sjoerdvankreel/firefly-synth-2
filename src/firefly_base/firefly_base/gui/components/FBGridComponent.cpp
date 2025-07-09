@@ -81,6 +81,11 @@ FBGridComponent::Add(int row, int col, int rowSpan, int colSpan, Component* chil
     for (auto const& c : e.second.children)
       FB_ASSERT(c != child);
 
+  FB_ASSERT(rowSpan > 0);
+  FB_ASSERT(colSpan > 0);
+  FB_ASSERT(row + rowSpan <= _rows.size());
+  FB_ASSERT(col + colSpan <= _cols.size());
+
   addAndMakeVisible(child);
   FBGridCell cell = { row, col };
   auto iter = _cells.find(cell);

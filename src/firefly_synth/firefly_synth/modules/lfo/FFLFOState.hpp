@@ -36,8 +36,8 @@ class alignas(alignof(TBlock)) FFLFOBlockParamState final
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> seed = {};
   std::array<TBlock, 1> phase = {};
-  std::array<TBlock, 1> skewXMode = {};
-  std::array<TBlock, 1> skewYMode = {};
+  std::array<TBlock, 1> skewAXMode = {};
+  std::array<TBlock, 1> skewAYMode = {};
   std::array<TBlock, 1> smoothTime = {};
   std::array<TBlock, 1> smoothBars = {};
   std::array<TBlock, FFLFOBlockCount> steps = {};
@@ -53,8 +53,8 @@ class alignas(alignof(TAccurate)) FFLFOAccParamState final
 {
   friend class FFLFOProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool);
-  std::array<TAccurate, 1> skewXAmt = {};
-  std::array<TAccurate, 1> skewYAmt = {};
+  std::array<TAccurate, 1> skewAXAmt = {};
+  std::array<TAccurate, 1> skewAYAmt = {};
   std::array<TAccurate, FFLFOBlockCount> min = {};
   std::array<TAccurate, FFLFOBlockCount> max = {};
   std::array<TAccurate, FFLFOBlockCount> rateHz = {};
