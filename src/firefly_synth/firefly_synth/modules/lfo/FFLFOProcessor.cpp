@@ -158,7 +158,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     if (_finished)
     {
       output.Fill(_smoother.State());
-      return FBFixedBlockSamples;
+      return _graph? 0: FBFixedBlockSamples;
     }
   }
 
