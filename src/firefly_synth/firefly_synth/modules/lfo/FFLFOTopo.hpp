@@ -19,6 +19,6 @@ enum FFLFOWaveMode {
   FFLFOWaveModeSmooth, FFLFOWaveModeFreeSmooth };
 
 enum class FFLFOParam {
-  Type, Sync, Seed, SmoothTime, SmoothBars,
+  Type, Sync, Seed, Phase, SmoothTime, SmoothBars,
   SkewXMode, SkewXAmt, SkewYMode, SkewYAmt,
-  OpType, Scale, WaveMode, RateHz, RateBars, Phase, Steps, Count };
+  OpType, Scale, WaveMode, RateHz, RateBars, Steps, Count };

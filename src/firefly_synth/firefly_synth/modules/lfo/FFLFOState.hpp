@@ -35,11 +35,11 @@ class alignas(alignof(TBlock)) FFLFOBlockParamState final
   std::array<TBlock, 1> type = {};
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> seed = {};
+  std::array<TBlock, 1> phase = {};
   std::array<TBlock, 1> skewXMode = {};
   std::array<TBlock, 1> skewYMode = {};
   std::array<TBlock, 1> smoothTime = {};
   std::array<TBlock, 1> smoothBars = {};
-  std::array<TBlock, FFLFOBlockCount> phase = {};
   std::array<TBlock, FFLFOBlockCount> steps = {};
   std::array<TBlock, FFLFOBlockCount> opType = {};
   std::array<TBlock, FFLFOBlockCount> rateBars = {};

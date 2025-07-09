@@ -95,6 +95,23 @@ FFMakeLFOTopo(bool global)
   seed.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSeed);
   seed.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& phase = result->params[(int)FFLFOParam::Phase];
+  phase.acc = false;
+  phase.defaultText = "0";
+  phase.name = "Phase";
+  phase.display = "Phs";
+  phase.slotCount = 1;
+  phase.unit = "%";
+  phase.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
+  phase.type = FBParamType::Identity;
+  auto selectPhase = [](auto& module) { return &module.block.phase; };
+  phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
+  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
+  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
+  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
+  phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase);
+  phase.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
   auto& smoothTime = result->params[(int)FFLFOParam::SmoothTime];
   smoothTime.acc = false;
   smoothTime.defaultText = "0";
@@ -138,7 +155,7 @@ FFMakeLFOTopo(bool global)
   auto& skewXMode = result->params[(int)FFLFOParam::SkewXMode];
   skewXMode.acc = false;
   skewXMode.defaultText = "Off";
-  skewXMode.display = "Skew X";
+  skewXMode.display = "SkX";
   skewXMode.name = "Skew X Mode";
   skewXMode.slotCount = 1;
   skewXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
@@ -176,7 +193,7 @@ FFMakeLFOTopo(bool global)
   auto& skewYMode = result->params[(int)FFLFOParam::SkewYMode];
   skewYMode.acc = false;
   skewYMode.defaultText = "Off";
-  skewYMode.display = "Skew Y";
+  skewYMode.display = "SkY";
   skewYMode.name = "Skew Y Mode";
   skewYMode.slotCount = 1;
   skewYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
@@ -336,24 +353,6 @@ FFMakeLFOTopo(bool global)
   rateBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateBars);
   rateBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
-
-  auto& phase = result->params[(int)FFLFOParam::Phase];
-  phase.acc = false;
-  phase.defaultText = "0";
-  phase.name = "Phase";
-  phase.display = "Phs";
-  phase.slotCount = FFLFOBlockCount;
-  phase.slotFormatter = FFFormatBlockSlot;
-  phase.unit = "%";
-  phase.id = prefix + "{88E80B77-86BF-49B0-9822-AACEFC6EAB03}";
-  phase.type = FBParamType::Identity;
-  auto selectPhase = [](auto& module) { return &module.block.phase; };
-  phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
-  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
-  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
-  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
-  phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase);
-  phase.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& steps = result->params[(int)FFLFOParam::Steps];
   steps.acc = false;
