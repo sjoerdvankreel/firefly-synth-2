@@ -34,12 +34,12 @@ MakeLFOSectionMain(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   auto smoothBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::SmoothBars, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smoothBars));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, smoothBars));
-  auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
   auto seed = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Seed, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, seed));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, seed, Slider::SliderStyle::RotaryVerticalDrag));
+  auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
   grid->MarkSection({ { 0, 0 }, { 2, 4 } });
   return grid;
 }
