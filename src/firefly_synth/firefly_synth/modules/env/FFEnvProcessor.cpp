@@ -235,8 +235,8 @@ FFEnvProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].env[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = _lengthSamples;
-  exchangeDSP.positionSamples = _positionSamples;
+  exchangeDSP.lengthSamples[0] = _lengthSamples;
+  exchangeDSP.positionSamples[0] = _positionSamples;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
   for (int i = 0; i < FFEnvStageCount; i++)

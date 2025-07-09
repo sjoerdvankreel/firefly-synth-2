@@ -8,18 +8,21 @@
 struct FBModuleProcExchangeStateBase
 {
   bool active = {};
-  FB_COPY_MOVE_DEFCTOR(FBModuleProcExchangeStateBase);
+  virtual ~FBModuleProcExchangeStateBase() = 0 {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcExchangeStateBase);
+
   virtual bool ShouldGraph(int graphIndex) const = 0;
   virtual int LengthSamples(int graphIndex) const = 0;
   virtual float PositionNormalized(int graphIndex) const = 0;
 };
 
 template <int N>
-struct FBModuleProcExchangeState:
+struct FBModuleProcExchangeState final:
 public FBModuleProcExchangeStateBase
 {
   std::array<int, N> lengthSamples = {};
   std::array<int, N> positionSamples = {};
+  ~FBModuleProcExchangeState() = default;
   FB_COPY_MOVE_DEFCTOR(FBModuleProcExchangeState);
 
   int LengthSamples(int graphIndex) const override

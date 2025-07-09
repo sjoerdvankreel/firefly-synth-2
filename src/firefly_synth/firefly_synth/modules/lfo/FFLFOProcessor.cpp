@@ -96,9 +96,13 @@ FFLFOProcessor::BeginVoiceOrBlock(
     _finished = false;
     _firstSample = true;
     _smoothSamplesProcessed = 0;
-    _phaseGenA = FFTrackingPhaseGenerator(0.0f);
-    _phaseGensBC[1] = FFTimeVectorPhaseGenerator(0.0f);
-    _phaseGensBC[0] = FFTimeVectorPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
+    for (int i = 0; i < FFLFOBlockCount; i++)
+    {
+      if(i == 1)
+        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
+      else
+        _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
+    }
   }
 
   _graph = graph;
@@ -206,21 +210,15 @@ FFLFOProcessor::Process(FBModuleProcState& state)
 
   int s = 0;
   output.Fill(0.0f);
-  bool oneShotFinished = !Global && _type == FFLFOType::SnapOrOneShot && _phaseGenA.CycledOnce();
+  bool oneShotFinished = !Global && _type == FFLFOType::SnapOrOneShot && _phaseGens[0].CycledOnce();
   for (; s < FBFixedBlockSamples && !oneShotFinished; s += FBSIMDFloatCount)
   {
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
       if (_opType[i] != FFLFOOpType::Off)
       {
-        FBBatch<float> phase;
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
-
-        if (i == 0)
-          phase = _phaseGenA.NextBatch(incr);
-        else
-          phase = _phaseGensBC[i - 1].Next(incr);
-
+        auto phase = _phaseGens[i].NextBatch(incr);
         if (i == 0 && _skewAXMode != FFLFOSkewXMode::Off)
         {
           auto skewAXAmt = skewAXAmtPlain.Load(s);
@@ -268,7 +266,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     }
 
     _lastOutput = output.Get(s + FBSIMDFloatCount - 1);
-    oneShotFinished = !Global && _type == FFLFOType::SnapOrOneShot && _phaseGenA.CycledOnce();
+    oneShotFinished = !Global && _type == FFLFOType::SnapOrOneShot && _phaseGens[0].CycledOnce();
   }
 
   for (; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
@@ -304,8 +302,11 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gLFO[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vLFO[state.moduleSlot]; });
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBFreqToSamples(rateHzPlain[0].Last(), sampleRate);
-  exchangeDSP.positionSamples = _phaseGenA.PositionSamplesCurrentCycle();
+  for (int i = 0; i < FFLFOBlockCount; i++)
+  {
+    exchangeDSP.lengthSamples[i] = FBFreqToSamples(rateHzPlain[i].Last(), sampleRate);
+    exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
+  }
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },

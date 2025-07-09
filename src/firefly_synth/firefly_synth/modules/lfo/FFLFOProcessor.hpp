@@ -29,9 +29,8 @@ class FFLFOProcessor final
   int _smoothSamplesProcessed = 0;
   FBBasicLPFilter _smoother = {};
 
-  FFTrackingPhaseGenerator _phaseGenA = {};
   std::array<float, FFLFOBlockCount> _rateHzByBars = {};
-  std::array<FFTimeVectorPhaseGenerator, FFLFOBlockCount - 1> _phaseGensBC = {};
+  std::array<FFTrackingPhaseGenerator, FFLFOBlockCount> _phaseGens = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFLFOProcessor);
@@ -39,5 +38,5 @@ public:
   template <bool Global>
   int Process(FBModuleProcState& state);
   template <bool Global>
-  void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount /*todo auto*/, FBModuleProcState& state);
+  void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 };
