@@ -70,6 +70,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
   _smoother = {};
   _rateHzByBars = {};
   _smoothSamples = 0;
+  _firstSample = true;
 
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -245,7 +246,15 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
-    output.Set(s, _smoother.Next(output.Get(s)));
+  {
+    float in = output.Get(s);
+    if (_firstSample)
+    {
+      _smoother.State(in);
+      _firstSample = false;
+    }
+    output.Set(s, _smoother.Next(in));
+  }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

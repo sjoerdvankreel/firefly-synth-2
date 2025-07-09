@@ -22,6 +22,7 @@ class FFLFOProcessor final
   int _graphSamplesProcessed = {};
 
   int _smoothSamples = 0;
+  bool _firstSample = true;
   FBBasicLPFilter _smoother = {};
 
   std::array<float, FFLFOBlockCount> _rateHzByBars = {};
