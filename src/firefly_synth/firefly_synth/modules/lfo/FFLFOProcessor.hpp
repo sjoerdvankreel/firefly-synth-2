@@ -2,6 +2,7 @@
 
 #include <firefly_synth/dsp/shared/FFPhaseGenerator.hpp>
 #include <firefly_synth/modules/lfo/FFLFOTopo.hpp>
+#include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 struct FBModuleProcState;
@@ -19,6 +20,9 @@ class FFLFOProcessor final
   bool _graph = {};
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
+
+  int _smoothSamples = 0;
+  FBBasicLPFilter _smoother = {};
 
   std::array<float, FFLFOBlockCount> _rateHzByBars = {};
   std::array<FFTimeVectorPhaseGenerator, FFLFOBlockCount> _phaseGens = {};
