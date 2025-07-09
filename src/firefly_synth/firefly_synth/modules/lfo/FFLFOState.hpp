@@ -14,6 +14,12 @@ struct FBStaticModule;
 template <bool Global>
 struct LFOGraphRenderData;
 
+struct FFLFOExchangeState:
+public FBModuleProcExchangeState<FFLFOBlockCount + 1>
+{
+  std::array<float, FFLFOBlockCount> phases = {};
+};
+
 class alignas(FBSIMDAlign) FFLFODSPState final
 {
   friend class FFPlugProcessor;

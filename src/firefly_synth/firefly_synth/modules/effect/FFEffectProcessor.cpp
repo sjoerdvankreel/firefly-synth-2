@@ -608,7 +608,7 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-template int FFEffectProcessor::Process<true>(FBModuleProcState& state);
-template int FFEffectProcessor::Process<false>(FBModuleProcState& state);
-template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
-template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+template int FFEffectProcessor::Process<true>(FBModuleProcState&);
+template int FFEffectProcessor::Process<false>(FBModuleProcState&);
+template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool, int, int, FBModuleProcState&);
+template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool, int, int, FBModuleProcState&);

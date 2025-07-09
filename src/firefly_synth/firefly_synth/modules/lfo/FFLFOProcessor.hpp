@@ -6,6 +6,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 struct FBModuleProcState;
+struct FFLFOExchangeState;
 
 class FFLFOProcessor final
 {
@@ -38,5 +39,7 @@ public:
   template <bool Global>
   int Process(FBModuleProcState& state);
   template <bool Global>
-  void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+  void BeginVoiceOrBlock(
+    bool graph, int graphIndex, int graphSampleCount, 
+    FFLFOExchangeState const* exchangeState, FBModuleProcState& state);
 };

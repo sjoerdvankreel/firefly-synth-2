@@ -59,11 +59,21 @@ PlotParams(FBModuleGraphComponentData const* data, bool global, int graphIndex)
 template <bool Global>
 void 
 LFOGraphRenderData<Global>::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
+  FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 { 
   samplesProcessed[graphIndex] = 0;
+  FFLFOExchangeState const* exchangeState = nullptr;
   auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(true, graphIndex, totalSamples, *moduleProcState);
+  int moduleSlot = moduleProcState->moduleSlot;
+  int staticModuleIndex = (int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
+  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({staticModuleIndex, moduleSlot});
+  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+  if (exchange)
+    if constexpr (Global)
+      exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Global());
+    else
+      exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(true, graphIndex, totalSamples, exchangeState, *moduleProcState);
 }
 
 template <bool Global>
@@ -111,7 +121,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   graphData->bipolar = false;
   graphData->drawMarkers = true;
   graphData->drawClipBoundaries = false;
-  graphData->skipDrawOnEqualsPrimary = true;
+  graphData->skipDrawOnEqualsPrimary = false; // need exchange state for all sub-lfos
   renderData.graphData = graphData;
   renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
   renderData.totalSamples = PlotParams(graphData, Global, 0).sampleCount; // todo

@@ -17,7 +17,7 @@ struct FBModuleProcExchangeStateBase
 };
 
 template <int N>
-struct FBModuleProcExchangeState final:
+struct FBModuleProcExchangeState:
 public FBModuleProcExchangeStateBase
 {
   std::array<int, N> lengthSamples = {};

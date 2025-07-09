@@ -38,6 +38,7 @@ public:
   explicit FFTrackingPhaseGenerator(float x) : _x(x) {}
   
   float NextScalar(float incr);
+  float CurrentScalar() const { return _x; }
   FBBatch<float> NextBatch(FBBatch<float> incr);
 
   bool CycledOnce() const { return _cycledOnce; }

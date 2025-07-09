@@ -31,22 +31,22 @@ struct FFGUIState final
 
 struct FFGlobalExchangeState final
 {
+  std::array<FFLFOExchangeState, FFLFOCount> gLFO = {};
   std::array<FBModuleProcExchangeState<1>, 1> gMix = {};
   std::array<FBModuleProcExchangeState<1>, 1> master = {};
   std::array<FBModuleProcExchangeState<1>, 1> output = {};
   std::array<FBModuleProcExchangeState<1>, FFEffectCount> gEffect = {};
-  std::array<FBModuleProcExchangeState<FFLFOBlockCount + 1>, FFLFOCount> gLFO = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
 
 struct FFVoiceExchangeState final
 {
+  std::array<FFLFOExchangeState, FFLFOCount> vLFO = {};
   std::array<FBModuleProcExchangeState<1>, 1> vMix = {};
   std::array<FBModuleProcExchangeState<1>, 1> osciMod = {};
   std::array<FBModuleProcExchangeState<1>, FFEnvCount> env = {};
   std::array<FBModuleProcExchangeState<1>, FFOsciCount> osci = {};
   std::array<FBModuleProcExchangeState<1>, FFEffectCount> vEffect = {};
-  std::array<FBModuleProcExchangeState<FFLFOBlockCount + 1>, FFLFOCount> vLFO = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
 };
 

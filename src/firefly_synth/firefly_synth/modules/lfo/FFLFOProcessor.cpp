@@ -64,8 +64,8 @@ SkewX(FFLFOSkewXMode mode, FBBatch<float> in, FBBatch<float> amt)
 template <bool Global>
 void
 FFLFOProcessor::BeginVoiceOrBlock(
-  bool graph, int graphIndex, 
-  int graphSampleCount, FBModuleProcState& state)
+  bool graph, int graphIndex, int graphSampleCount, 
+  FFLFOExchangeState const* exchangeState, FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -96,13 +96,16 @@ FFLFOProcessor::BeginVoiceOrBlock(
     _finished = false;
     _firstSample = true;
     _smoothSamplesProcessed = 0;
-    for (int i = 0; i < FFLFOBlockCount; i++)
-    {
-      if(i == 1)
-        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
-      else
-        _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
-    }
+
+    if(exchangeState != nullptr)
+      for (int i = 0; i < FFLFOBlockCount; i++)
+        _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
+    else
+      for (int i = 0; i < FFLFOBlockCount; i++)
+        if(i == 1)
+          _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
+        else
+          _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
   }
 
   _graph = graph;
@@ -304,11 +307,12 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   exchangeDSP.active = true;
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
+    exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
     exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
   }
-  exchangeDSP.positionSamples[FFLFOBlockCount] = exchangeDSP.positionSamples[0];
   exchangeDSP.lengthSamples[FFLFOBlockCount] = exchangeDSP.lengthSamples[0];
+  exchangeDSP.positionSamples[FFLFOBlockCount] = exchangeDSP.positionSamples[0];
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },
@@ -325,7 +329,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   return FBFixedBlockSamples;
 }
 
-template int FFLFOProcessor::Process<true>(FBModuleProcState& state);
-template int FFLFOProcessor::Process<false>(FBModuleProcState& state);
-template void FFLFOProcessor::BeginVoiceOrBlock<true>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
-template void FFLFOProcessor::BeginVoiceOrBlock<false>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+template int FFLFOProcessor::Process<true>(FBModuleProcState&);
+template int FFLFOProcessor::Process<false>(FBModuleProcState&);
+template void FFLFOProcessor::BeginVoiceOrBlock<true>(bool, int, int, FFLFOExchangeState const*, FBModuleProcState&);
+template void FFLFOProcessor::BeginVoiceOrBlock<false>(bool, int, int, FFLFOExchangeState const*, FBModuleProcState&);
