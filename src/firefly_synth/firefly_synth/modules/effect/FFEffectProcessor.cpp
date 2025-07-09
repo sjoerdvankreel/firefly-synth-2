@@ -191,23 +191,24 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combFreqPlusPlain;
   
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
-      trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
       if (_kind[i] == FFEffectKind::StVar)
       {
-        stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq, 
+        stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq,
           FFSelectDualProcAccParamNormalized<Global>(stVarFreqNorm[i], voice), s));
-        stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes, 
+        stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes,
           FFSelectDualProcAccParamNormalized<Global>(stVarResNorm[i], voice), s));
-        stVarGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarGain, 
+        stVarGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarGain,
           FFSelectDualProcAccParamNormalized<Global>(stVarGainNorm[i], voice), s));
-        stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak, 
+        stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak,
           FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice), s));
       }
       else if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombPlus || _kind[i] == FFEffectKind::CombMin)
       {
-        combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk, 
+        combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk,
           FFSelectDualProcAccParamNormalized<Global>(combKeyTrkNorm[i], voice), s));
         if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombMin)
         {
@@ -226,18 +227,19 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       }
       else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
       {
-        distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt, 
+        distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt,
           FFSelectDualProcAccParamNormalized<Global>(distAmtNorm[i], voice), s));
-        distMixPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistMix, 
+        distMixPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistMix,
           FFSelectDualProcAccParamNormalized<Global>(distMixNorm[i], voice), s));
-        distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias, 
+        distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias,
           FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice), s));
-        distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, 
+        distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive,
           FFSelectDualProcAccParamNormalized<Global>(distDriveNorm[i], voice), s));
       }
       else
         FB_ASSERT(_kind[i] == FFEffectKind::Off);
     }
+  }
 
   if (_oversampleTimes != 1)
   {

@@ -12,6 +12,44 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+static inline FBBatch<float>
+SkewScaleUnipolar(FBBatch<float> in, FBBatch<float> amt)
+{
+  return in * amt;
+}
+
+static inline FBBatch<float>
+SkewScaleBipolar(FBBatch<float> in, FBBatch<float> amt)
+{
+  return FBToUnipolar(FBToBipolar(in) * amt);
+}
+
+static inline FBBatch<float>
+SkewExpUnipolar(FBBatch<float> in, FBBatch<float> amt)
+{
+  return xsimd::pow(in, amt);
+}
+
+static inline FBBatch<float>
+SkewExpBipolar(FBBatch<float> in, FBBatch<float> amt)
+{
+  auto bp = FBToBipolar(in);
+  return FBToUnipolar(xsimd::sign(bp) * xsimd::pow(xsimd::abs(bp), amt));
+}
+
+static inline FBBatch<float>
+Skew(FFLFOSkewMode mode, FBBatch<float> in, FBBatch<float> amt)
+{
+  switch (mode)
+  {
+  case FFLFOSkewMode::ExpBipolar: return SkewExpBipolar(in, amt);
+  case FFLFOSkewMode::ExpUnipolar: return SkewExpUnipolar(in, amt);
+  case FFLFOSkewMode::ScaleBipolar: return SkewScaleBipolar(in, amt);
+  case FFLFOSkewMode::ScaleUnipolar: return SkewScaleUnipolar(in, amt);
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 template <bool Global>
 void
 FFLFOProcessor::BeginVoiceOrBlock(
@@ -88,22 +126,38 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   auto const& minNorm = procParams.acc.min;
   auto const& maxNorm = procParams.acc.max;
   auto const& rateHzNorm = procParams.acc.rateHz;
+  auto const& skewXAmtNorm = FFSelectDualProcAccParamNormalized<Global>(procParams.acc.skewXAmt[0], voice);
+  auto const& skewYAmtNorm = FFSelectDualProcAccParamNormalized<Global>(procParams.acc.skewYAmt[0], voice);
+
+  FBSArray<float, FBFixedBlockSamples> skewXAmtPlain;
+  FBSArray<float, FBFixedBlockSamples> skewYAmtPlain;
   FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> minPlain;
   FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> maxPlain;
   FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> rateHzPlain;
+
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    if(_skewXMode != FFLFOSkewMode::Off)
+      skewXAmtPlain.Store(s, topo.NormalizedToLinearFast(FFLFOParam::SkewXAmt, skewXAmtNorm, s));
+    if(_skewYMode != FFLFOSkewMode::Off)
+      skewYAmtPlain.Store(s, topo.NormalizedToLinearFast(FFLFOParam::SkewYAmt, skewYAmtNorm, s));
+
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
-      minPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Min,
-        FFSelectDualProcAccParamNormalized<Global>(minNorm[i], voice), s));
-      maxPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Max,
-        FFSelectDualProcAccParamNormalized<Global>(maxNorm[i], voice), s));
-      if (_sync)
-        rateHzPlain[i].Store(s, _rateHzByBars[i]);
-      else
-        rateHzPlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateHz,
-          FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice), s));
+      if (_opType[i] != FFLFOOpType::Off)
+      {
+        minPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Min,
+          FFSelectDualProcAccParamNormalized<Global>(minNorm[i], voice), s));
+        maxPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Max,
+          FFSelectDualProcAccParamNormalized<Global>(maxNorm[i], voice), s));
+        if (_sync)
+          rateHzPlain[i].Store(s, _rateHzByBars[i]);
+        else
+          rateHzPlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateHz,
+            FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice), s));
+      }
     }
+  }
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
@@ -111,9 +165,14 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     {
       if (_opType[i] != FFLFOOpType::Off)
       {
-        FBBatch<float> lfo = {};
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
         auto phase = _phaseGens[i].Next(incr);
+
+        auto skewXAmt = skewXAmtPlain.Load(s);
+        if (_skewXMode != FFLFOSkewMode::Off)
+          phase = Skew(_skewXMode, phase, skewXAmt);
+
+        FBBatch<float> lfo = {};
         switch (_waveMode[i])
         {
         case FFLFOWaveModeSaw: lfo = phase; break;
@@ -125,6 +184,10 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         case FFLFOWaveModeFreeSmooth: break;
         default: lfo = FBToUnipolar(FFCalcTrig(_waveMode[i], phase * 2.0f * FBPi)); break;
         }
+
+        auto skewYAmt = skewYAmtPlain.Load(s);
+        if (_skewYMode != FFLFOSkewMode::Off)
+          lfo = Skew(_skewYMode, lfo, skewYAmt);
 
         // todo not always
         if (_steps[i] > 1)
@@ -148,6 +211,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     }
   }
 
+  // TODO alles
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
