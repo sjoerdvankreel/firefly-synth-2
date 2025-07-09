@@ -1,3 +1,5 @@
+hostsnap
+bolletjes
 lfo op = add when paint
 do env1-lfo1-env2-lfo2-etc in order to allow modulate both from both
 
