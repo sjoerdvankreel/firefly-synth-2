@@ -25,7 +25,7 @@ public:
   FFPlugProcessor(IFBHostDSPContext* hostContext);
 
   void LeaseVoices(FBPlugInputBlock const& input) override;
-  void ProcessPreVoice(FBPlugInputBlock const& /*input*/) override {}
+  void ProcessPreVoice(FBPlugInputBlock const& input) override;
   void ProcessVoice(FBPlugInputBlock const& input, int voice) override;
   void ProcessPostVoice(FBPlugInputBlock const& input, FBPlugOutputBlock& output) override;
 };

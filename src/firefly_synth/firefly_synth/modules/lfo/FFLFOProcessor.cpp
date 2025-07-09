@@ -67,14 +67,6 @@ FFLFOProcessor::BeginVoiceOrBlock(
   bool graph, int graphIndex, 
   int graphSampleCount /*todo auto*/, FBModuleProcState& state)
 {
-  _smoother = {};
-  _rateHzByBars = {};
-  _smoothSamples = 0;
-  _lastOutput = 0.0f;
-  _finished = false;
-  _firstSample = true;
-  _smoothSamplesProcessed = 0;
-
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
   auto const& params = *FFSelectDualState<Global>(
@@ -94,9 +86,25 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& smoothBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothBars[0], voice);
   auto const& smoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothTime[0], voice);
 
+  // Global inits each block.
+  if (_graph || !_wasInitOnce)
+  {
+    _smoother = {};
+    _rateHzByBars = {};
+    _smoothSamples = 0;
+    _lastOutput = 0.0f;
+    _finished = false;
+    _firstSample = true;
+    _smoothSamplesProcessed = 0;
+    _phaseGenA = FFTrackingPhaseGenerator(0.0f);
+    _phaseGensBC[1] = FFTimeVectorPhaseGenerator(0.0f);
+    _phaseGensBC[0] = FFTimeVectorPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
+  }
+
   _graph = graph;
   _graphSamplesProcessed = 0;
   _graphSampleCount = graphSampleCount;
+  _wasInitOnce = true;
 
   _sync = topo.NormalizedToBoolFast(FFLFOParam::Sync, syncNorm);
   _type = topo.NormalizedToListFast<FFLFOType>(FFLFOParam::Type, typeNorm);
@@ -111,9 +119,6 @@ FFLFOProcessor::BeginVoiceOrBlock(
       FFLFOParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
   _smoother.SetCoeffs(_smoothSamples);
 
-  _phaseGenA = FFTrackingPhaseGenerator(0.0f);
-  _phaseGensBC[1] = FFTimeVectorPhaseGenerator(0.0f);
-  _phaseGensBC[0] = FFTimeVectorPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     bool blockActive = !graph || graphIndex == i || graphIndex == FFLFOBlockCount;
@@ -300,6 +305,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vLFO[state.moduleSlot]; });
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(rateHzPlain[0].Last(), sampleRate);
+  exchangeDSP.positionSamples = _phaseGenA.PositionSamplesUpToFirstCycle();
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },

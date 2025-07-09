@@ -90,6 +90,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   auto moduleType = Global ? FFModuleType::GLFO : FFModuleType::VLFO;
 
   graphData->bipolar = false;
+  graphData->drawMarkers = true;
   graphData->drawClipBoundaries = false;
   graphData->skipDrawOnEqualsPrimary = true;
   renderData.graphData = graphData;
