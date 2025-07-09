@@ -67,14 +67,14 @@ FBHostProcessor::ProcessHost(
     auto const& static_ = _topo->static_.modules[indices.index];
     if (!static_.voice)
     {
-      if(_exchangeState->Modules()[m] != nullptr)
-        *_exchangeState->Modules()[m]->Global() = {};
+      if (_exchangeState->Modules()[m] != nullptr)
+        _exchangeState->Modules()[m]->Global()->active = false;
     }
     else
     {
       if (_exchangeState->Modules()[m] != nullptr)
         for (int v = 0; v < FBMaxVoices; v++)
-        *_exchangeState->Modules()[m]->Voice()[v] = {};
+        _exchangeState->Modules()[m]->Voice()[v]->active = false;
     }
   }
 

@@ -353,7 +353,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
+  exchangeDSP.lengthSamples[0] = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gEffect[state.moduleSlot]; },

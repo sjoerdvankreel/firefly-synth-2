@@ -28,10 +28,10 @@ struct FBModuleGraphPlotParams
 typedef std::function<FBModuleGraphPlotParams(
   FBModuleGraphComponentData const*, int graphIndex)>
 FBModuleGraphPlotParamsSelector;
-typedef std::function<FBModuleProcExchangeState const* (
+typedef std::function<FBModuleProcExchangeStateBase const* (
   void const* exchangeState, int moduleSlot, int graphIndex)>
 FBModuleGraphGlobalExchangeSelector;    
-typedef std::function<FBModuleProcExchangeState const* (
+typedef std::function<FBModuleProcExchangeStateBase const* (
   void const* exchangeState, int voice, int moduleSlot, int graphIndex)>
 FBModuleGraphVoiceExchangeSelector;    
 
@@ -181,7 +181,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
         exchangeState, moduleProcState->moduleSlot, graphIndex);
       moduleProcState->anyExchangeActive |= moduleExchange->active;
       if (moduleExchange->active)
-        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
+        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(graphIndex));
     }
     else for (int v = 0; v < FBMaxVoices; v++)
     {
@@ -189,7 +189,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
         exchangeState, v, moduleProcState->moduleSlot, graphIndex);
       moduleProcState->anyExchangeActive |= moduleExchange->active;
       if (moduleExchange->active)
-        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->lengthSamples);
+        maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(graphIndex));
     }
   }
 
@@ -220,9 +220,9 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   {
     auto moduleExchange = renderData.globalExchangeSelector(
       exchangeState, moduleProcState->moduleSlot, graphIndex);
-    if (!moduleExchange->ShouldGraph())
+    if (!moduleExchange->ShouldGraph(graphIndex))
       return;
-    float positionNormalized = moduleExchange->PositionNormalized();
+    float positionNormalized = moduleExchange->PositionNormalized(graphIndex);
     if (graphData->skipDrawOnEqualsPrimary &&
       renderState->GlobalModuleExchangeStateEqualsPrimary(
       plotParams.staticModuleIndex, moduleProcState->moduleSlot))
@@ -239,10 +239,10 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   {
     auto moduleExchange = renderData.voiceExchangeSelector(
       exchangeState, v, moduleProcState->moduleSlot, graphIndex);
-    if (!moduleExchange->ShouldGraph())
+    if (!moduleExchange->ShouldGraph(graphIndex))
       continue;
     renderState->PrepareForRenderExchangeVoice(v);
-    float positionNormalized = moduleExchange->PositionNormalized();
+    float positionNormalized = moduleExchange->PositionNormalized(graphIndex);
     if (graphData->skipDrawOnEqualsPrimary &&
       renderState->VoiceModuleExchangeStateEqualsPrimary(
       v, plotParams.staticModuleIndex, moduleProcState->moduleSlot))

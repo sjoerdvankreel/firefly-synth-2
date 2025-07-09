@@ -13,12 +13,12 @@
 
 class FBPlugGUI;
 struct FBModuleGraphComponentData;
-struct FBModuleProcExchangeState;
+struct FBModuleProcExchangeStateBase;
 
-typedef std::function<FBModuleProcExchangeState* (
+typedef std::function<FBModuleProcExchangeStateBase* (
   int moduleSlot, void* state)>
 FBGlobalModuleExchangeAddrSelector;
-typedef std::function<FBModuleProcExchangeState* (
+typedef std::function<FBModuleProcExchangeStateBase* (
   int voice, int moduleSlot, void* state)>
 FBVoiceModuleExchangeAddrSelector;
 typedef std::function<void(FBModuleGraphComponentData* graphData)>

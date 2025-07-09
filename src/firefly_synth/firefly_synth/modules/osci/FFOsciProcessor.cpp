@@ -240,7 +240,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
+  exchangeDSP.lengthSamples[0] = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.pan[0][voice] = panNorm.Last();
