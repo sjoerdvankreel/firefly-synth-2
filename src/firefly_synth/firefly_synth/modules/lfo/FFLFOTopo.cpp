@@ -201,7 +201,7 @@ FFMakeLFOTopo(bool global)
   skewYMode.List().items = {
     { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
     { "{193A736F-073C-42DC-88EB-140D5D00BF87}", "SclU" },
-    { "{B3C72EC2-265B-4D8B-9295-AF3604A5D9CA}", "SclBi" },
+    { "{B3C72EC2-265B-4D8B-9295-AF3604A5D9CA}", "SclB" },
     { "{077725EA-4293-48A3-8D1B-6EE452327255}", "ExpU" },
     { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "ExpB" } };
   auto selectSkewYMode = [](auto& module) { return &module.block.skewYMode; };
