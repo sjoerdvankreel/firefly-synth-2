@@ -21,19 +21,38 @@ public FBModuleGraphRenderData<LFOGraphRenderData<Global>>
   FFLFOProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoProcessIndicators(int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {} // TODO
+  void DoProcessIndicators(int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
   void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex*/)
+PlotParams(FBModuleGraphComponentData const* data, bool global, int graphIndex)
 {
-  // TODO - auto sr ?
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
-  result.sampleCount = data->pixelWidth * 4;
-  result.sampleRate = data->pixelWidth * 4.0f / 1.0f; // TODO
+  result.sampleCount = data->pixelWidth;
   result.staticModuleIndex = static_cast<int>(global ? FFModuleType::GLFO : FFModuleType::VLFO);
+  
+  int hostSampleCount;
+  auto const* state = data->renderState;
+  int moduleSlot = state->ModuleProcState()->moduleSlot;
+  float bpm = state->ExchangeContainer()->Host()->bpm;
+  float hostSampleRate = state->ExchangeContainer()->Host()->sampleRate;
+  int moduleType = (int)(global ? FFModuleType::GLFO : FFModuleType::VLFO);
+  int snapToLFO = graphIndex == FFLFOBlockCount ? 0 : graphIndex;
+  FBParamTopoIndices indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::Sync, 0 } };
+  bool sync = state->AudioParamBool(indices, false, -1);
+  if (sync)
+  {
+    indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, snapToLFO } };
+    hostSampleCount = state->AudioParamBarsSamples(indices, false, -1, hostSampleRate, bpm);
+  }
+  else
+  {
+    indices = { { moduleType, moduleSlot }, { (int)FFLFOParam::RateHz, snapToLFO } };
+    hostSampleCount = state->AudioParamLinearFreqSamples(indices, false, -1, hostSampleRate);
+  }
+  result.sampleRate = result.sampleCount * hostSampleRate / hostSampleCount;
   return result;
 }
 
@@ -95,7 +114,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   graphData->skipDrawOnEqualsPrimary = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
-  renderData.totalSamples = PlotParams(graphData, Global, -1).sampleCount;
+  renderData.totalSamples = PlotParams(graphData, Global, 0).sampleCount; // todo
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
   renderData.globalMonoOutputSelector = [](void const* procState, int slot, int /*graphIndex*/) {
