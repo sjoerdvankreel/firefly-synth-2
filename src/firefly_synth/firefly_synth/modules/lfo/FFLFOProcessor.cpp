@@ -83,19 +83,19 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     return FBFixedBlockSamples;
 
   float sampleRate = state.input->sampleRate;
-  auto const& rateTimeNorm = procParams.acc.rateTime;
-  FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> rateTimePlain;
+  auto const& rateHzNorm = procParams.acc.rateHz;
+  FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> rateHzPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     for (int i = 0; i < FFLFOBlockCount; i++)
-      rateTimePlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateTime,
-        FFSelectDualProcAccParamNormalized<Global>(rateTimeNorm[i], voice), s));
+      rateHzPlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateHz,
+        FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice), s));
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     for (int i = 0; i < FFLFOBlockCount; i++)
       if (_opType[i] != FFLFOOpType::Off)
       {
-        auto incr = rateTimePlain[i].Load(s) / sampleRate;
+        auto incr = rateHzPlain[i].Load(s) / sampleRate;
         auto phase = _phaseGens[i].Next(incr);
         auto lfo = FBToUnipolar(xsimd::sin(phase * 2.0f * FBPi));
         output.Add(s, lfo);
@@ -114,13 +114,13 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gLFO[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vLFO[state.moduleSlot]; });
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBFreqToSamples(rateTimePlain[0].Last(), sampleRate);
+  exchangeDSP.lengthSamples = FBFreqToSamples(rateHzPlain[0].Last(), sampleRate);
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },
     [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vLFO[state.moduleSlot]; });
   for (int i = 0; i < FFLFOBlockCount; i++)
-    FFSelectDualExchangeState<Global>(exchangeParams.acc.rateTime[i], voice) = FFSelectDualProcAccParamNormalized<Global>(rateTimeNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.rateHz[i], voice) = FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice).Last();
 
   return FBFixedBlockSamples;
 }

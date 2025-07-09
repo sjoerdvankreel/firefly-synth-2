@@ -56,7 +56,7 @@ class alignas(alignof(TAccurate)) FFLFOAccParamState final
   std::array<TAccurate, 1> skewXAmt = {};
   std::array<TAccurate, 1> skewYAmt = {};
   std::array<TAccurate, FFLFOBlockCount> scale = {};
-  std::array<TAccurate, FFLFOBlockCount> rateTime = {};
+  std::array<TAccurate, FFLFOBlockCount> rateHz = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFLFOAccParamState);

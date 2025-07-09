@@ -69,9 +69,9 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
   auto waveMode = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, block } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, waveMode));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, waveMode));
-  auto rateTime = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateTime, block } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateTime));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, rateTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto rateHz = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateHz, block } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateHz));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, rateHz, Slider::SliderStyle::RotaryVerticalDrag));
   auto rateBars = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::RateBars, block } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, rateBars));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, rateBars));
