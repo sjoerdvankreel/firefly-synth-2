@@ -254,6 +254,7 @@ FFMakeLFOTopo(bool global)
   min.acc = true;
   min.defaultText = "0";
   min.name = "Min";
+  min.display = "Min";
   min.slotCount = FFLFOBlockCount;
   min.slotFormatter = FFFormatBlockSlot;
   min.unit = "%";
@@ -269,8 +270,9 @@ FFMakeLFOTopo(bool global)
 
   auto& max = result->params[(int)FFLFOParam::Max];
   max.acc = true;
-  max.defaultText = "0";
-  max.name = "Min";
+  max.defaultText = "100";
+  max.name = "Max";
+  max.display = "Max";
   max.slotCount = FFLFOBlockCount;
   max.slotFormatter = FFFormatBlockSlot;
   max.unit = "%";
