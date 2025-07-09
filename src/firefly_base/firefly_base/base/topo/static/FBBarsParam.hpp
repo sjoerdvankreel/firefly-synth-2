@@ -16,6 +16,7 @@ struct FBBarsParam
 {
   std::vector<FBBarsItem> items = {};
   int NormalizedToPlainFast(float normalized) const;
+  float NormalizedToFreqFast(float normalized, float bpm) const;
   int NormalizedToSamplesFast(float normalized, float sampleRate, float bpm) const;
 };
 
@@ -41,6 +42,12 @@ FBBarsParam::NormalizedToPlainFast(float normalized) const
 {
   int count = static_cast<int>(items.size());
   return std::clamp(static_cast<int>(normalized * count), 0, count - 1);
+}
+
+inline float 
+FBBarsParam::NormalizedToFreqFast(float normalized, float bpm) const
+{
+  return FBBarsToFreq(items[NormalizedToPlainFast(normalized)], bpm);
 }
 
 inline int 

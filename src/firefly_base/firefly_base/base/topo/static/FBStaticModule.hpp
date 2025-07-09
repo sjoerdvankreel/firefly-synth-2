@@ -53,6 +53,8 @@ struct FBStaticModule final
   template <class ParamIndex>
   int NormalizedToBarsFast(ParamIndex index, float normalized) const;
   template <class ParamIndex>
+  float NormalizedToBarsFreqFast(ParamIndex index, float normalized, float bpm) const;
+  template <class ParamIndex>
   int NormalizedToBarsSamplesFast(ParamIndex index, float normalized, float sampleRate, float bpm) const;
 
   template <class ParamIndex>
@@ -126,6 +128,13 @@ inline int
 FBStaticModule::NormalizedToBarsFast(ParamIndex index, float normalized) const
 {
   return params[static_cast<int>(index)].Bars().NormalizedToPlainFast(normalized);
+}
+
+template <class ParamIndex> 
+inline float 
+FBStaticModule::NormalizedToBarsFreqFast(ParamIndex index, float normalized, float bpm) const
+{
+  return params[static_cast<int>(index)].Bars().NormalizedToFreqFast(normalized, bpm);
 }
 
 template <class ParamIndex>

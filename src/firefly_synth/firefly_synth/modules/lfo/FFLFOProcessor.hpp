@@ -8,7 +8,6 @@ struct FBModuleProcState;
 
 class FFLFOProcessor final
 {
-  int _seed = {};
   bool _sync = {};
   FFLFOType _type = {};
   FFLFOSkewMode _skewXMode = {};
@@ -21,6 +20,7 @@ class FFLFOProcessor final
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
 
+  std::array<float, FFLFOBlockCount> _rateHzByBars = {};
   std::array<FFTimeVectorPhaseGenerator, FFLFOBlockCount> _phaseGens = {};
 
 public:
