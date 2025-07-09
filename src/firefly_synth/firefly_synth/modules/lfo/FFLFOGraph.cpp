@@ -64,18 +64,15 @@ LFOGraphRenderData<Global>::DoBeginVoiceOrBlock(
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
   FFLFOExchangeState const* exchangeState = nullptr;
-  if (graphIndex == FFLFOBlockCount)
-  {
-    int moduleSlot = moduleProcState->moduleSlot;
-    int staticModuleIndex = (int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
-    int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ staticModuleIndex, moduleSlot });
-    auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
-    if (exchange)
-      if constexpr (Global)
-        exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Global());
-      else
-        exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
-  }
+  int moduleSlot = moduleProcState->moduleSlot;
+  int staticModuleIndex = (int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
+  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ staticModuleIndex, moduleSlot });
+  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+  if (exchange)
+    if constexpr (Global)
+      exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Global());
+    else
+      exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
   GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(true, graphIndex, totalSamples, exchangeState, *moduleProcState);
 }
 
