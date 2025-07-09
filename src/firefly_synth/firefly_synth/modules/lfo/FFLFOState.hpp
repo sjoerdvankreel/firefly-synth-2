@@ -55,7 +55,8 @@ class alignas(alignof(TAccurate)) FFLFOAccParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool);
   std::array<TAccurate, 1> skewXAmt = {};
   std::array<TAccurate, 1> skewYAmt = {};
-  std::array<TAccurate, FFLFOBlockCount> scale = {};
+  std::array<TAccurate, FFLFOBlockCount> min = {};
+  std::array<TAccurate, FFLFOBlockCount> max = {};
   std::array<TAccurate, FFLFOBlockCount> rateHz = {};
 
 public:

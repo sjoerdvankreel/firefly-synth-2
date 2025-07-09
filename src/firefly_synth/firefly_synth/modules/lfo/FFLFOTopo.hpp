@@ -21,4 +21,4 @@ enum FFLFOWaveMode {
 enum class FFLFOParam {
   Type, Sync, Seed, Phase, SmoothTime, SmoothBars,
   SkewXMode, SkewXAmt, SkewYMode, SkewYAmt,
-  OpType, Scale, WaveMode, RateHz, RateBars, Steps, Count };
+  OpType, Min, Max, WaveMode, RateHz, RateBars, Steps, Count };
