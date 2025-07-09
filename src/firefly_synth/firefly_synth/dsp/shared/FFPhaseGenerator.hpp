@@ -39,6 +39,8 @@ public:
   
   float NextScalar(float incr);
   FBBatch<float> NextBatch(FBBatch<float> incr);
+
+  bool CycledOnce() const { return _cycledOnce; }
   int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
   int PositionSamplesUpToFirstCycle() const { return _positionSamplesUpToFirstCycle; }
 };

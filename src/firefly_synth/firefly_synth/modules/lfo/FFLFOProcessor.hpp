@@ -21,12 +21,16 @@ class FFLFOProcessor final
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
 
-  int _smoothSamples = 0;
+  bool _finished = false;
   bool _firstSample = true;
+  float _lastOutput = 0.0f;
+  int _smoothSamples = 0;
+  int _smoothSamplesProcessed = 0;
   FBBasicLPFilter _smoother = {};
 
+  FFTrackingPhaseGenerator _phaseGenA = {};
   std::array<float, FFLFOBlockCount> _rateHzByBars = {};
-  std::array<FFTimeVectorPhaseGenerator, FFLFOBlockCount> _phaseGens = {};
+  std::array<FFTimeVectorPhaseGenerator, FFLFOBlockCount - 1> _phaseGensBC = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFLFOProcessor);
