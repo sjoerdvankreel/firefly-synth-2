@@ -305,7 +305,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vLFO[state.moduleSlot]; });
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(rateHzPlain[0].Last(), sampleRate);
-  exchangeDSP.positionSamples = _phaseGenA.PositionSamplesUpToFirstCycle();
+  exchangeDSP.positionSamples = _phaseGenA.PositionSamplesCurrentCycle();
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },
