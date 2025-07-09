@@ -85,15 +85,25 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     return FBFixedBlockSamples;
 
   float sampleRate = state.input->sampleRate;
+  auto const& minNorm = procParams.acc.min;
+  auto const& maxNorm = procParams.acc.max;
   auto const& rateHzNorm = procParams.acc.rateHz;
+  FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> minPlain;
+  FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> maxPlain;
   FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> rateHzPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     for (int i = 0; i < FFLFOBlockCount; i++)
+    {
+      minPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Min,
+        FFSelectDualProcAccParamNormalized<Global>(minNorm[i], voice), s));
+      maxPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Max,
+        FFSelectDualProcAccParamNormalized<Global>(maxNorm[i], voice), s));
       if (_sync)
         rateHzPlain[i].Store(s, _rateHzByBars[i]);
       else
         rateHzPlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateHz,
           FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice), s));
+    }
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
@@ -101,6 +111,8 @@ FFLFOProcessor::Process(FBModuleProcState& state)
       if (_opType[i] != FFLFOOpType::Off)
       {
         FBBatch<float> lfo = {};
+        auto min = minPlain[i].Load(s);
+        auto max = maxPlain[i].Load(s);
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
         auto phase = _phaseGens[i].Next(incr);
         switch (_waveMode[i])
@@ -114,7 +126,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         case FFLFOWaveModeFreeSmooth: break;
         default: lfo = FBToUnipolar(FFCalcTrig(_waveMode[i], phase * 2.0f * FBPi)); break;
         }
-        output.Add(s, lfo);
+        output.Add(s, min + (max - min) * lfo);
       }
     output.Store(s, xsimd::clip(output.Load(s), FBBatch<float>(-1.0f), FBBatch<float>(1.0f)));
   }
