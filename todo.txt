@@ -1,4 +1,4 @@
-cut down voices to 32
+lfo op = add when paint
 get rid of sse2neon
 make better section ui esp. for the a/b/c/ sections
 context menus

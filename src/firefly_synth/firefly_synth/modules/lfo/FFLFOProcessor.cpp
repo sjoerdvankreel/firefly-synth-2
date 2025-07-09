@@ -108,11 +108,10 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
     for (int i = 0; i < FFLFOBlockCount; i++)
+    {
       if (_opType[i] != FFLFOOpType::Off)
       {
         FBBatch<float> lfo = {};
-        auto min = minPlain[i].Load(s);
-        auto max = maxPlain[i].Load(s);
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
         auto phase = _phaseGens[i].Next(incr);
         switch (_waveMode[i])
@@ -126,9 +125,27 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         case FFLFOWaveModeFreeSmooth: break;
         default: lfo = FBToUnipolar(FFCalcTrig(_waveMode[i], phase * 2.0f * FBPi)); break;
         }
-        output.Add(s, min + (max - min) * lfo);
+
+        // todo not always
+        if (_steps[i] > 1)
+        {
+          lfo = xsimd::clip(lfo, FBBatch<float>(0.0f), FBBatch<float>(0.9999f));
+          lfo = xsimd::floor(lfo * static_cast<float>(_steps[i])) / (_steps[i] - 1.0f);
+        }
+
+        auto min = minPlain[i].Load(s);
+        auto max = maxPlain[i].Load(s);
+        lfo = min + (max - min) * lfo;
+
+        switch (_opType[i])
+        {
+        case FFLFOOpType::Mul: output.Mul(s, lfo); break;
+        case FFLFOOpType::Add: output.Store(s, xsimd::clip(output.Load(s) + lfo, FBBatch<float>(0.0f), FBBatch<float>(1.0f))); break;
+        case FFLFOOpType::Stack: output.Add(s, (1.0f - output.Load(s)) * lfo); break;
+        default: FB_ASSERT(false); break;
+        }
       }
-    output.Store(s, xsimd::clip(output.Load(s), FBBatch<float>(-1.0f), FBBatch<float>(1.0f)));
+    }
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
