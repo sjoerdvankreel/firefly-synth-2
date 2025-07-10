@@ -86,33 +86,28 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& smoothBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothBars[0], voice);
   auto const& smoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothTime[0], voice);
 
-  // Global inits each block.
-  // TODO this not work with voice
-  if (_graph || !_wasInitOnce)
-  {
-    _smoother = {};
-    _rateHzByBars = {};
-    _smoothSamples = 0;
-    _lastOutput = 0.0f;
-    _finished = false;
-    _firstSample = true;
-    _smoothSamplesProcessed = 0;
+  // todo get rid of the extra xchange?
+  _smoother = {};
+  _rateHzByBars = {};
+  _smoothSamples = 0;
+  _lastOutput = 0.0f;
+  _finished = false;
+  _firstSample = true;
+  _smoothSamplesProcessed = 0;
 
-    if(exchangeState != nullptr)
-      for (int i = 0; i < FFLFOBlockCount; i++)
-        _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
-    else
-      for (int i = 0; i < FFLFOBlockCount; i++)
-        if(i == 1)
-          _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
-        else
-          _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
-  }
+  if(exchangeState != nullptr)
+    for (int i = 0; i < FFLFOBlockCount; i++)
+      _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
+  else
+    for (int i = 0; i < FFLFOBlockCount; i++)
+      if(i == 1)
+        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
+      else
+        _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
 
   _graph = graph;
   _graphSamplesProcessed = 0;
   _graphSampleCount = graphSampleCount;
-  _wasInitOnce = true;
 
   _sync = topo.NormalizedToBoolFast(FFLFOParam::Sync, syncNorm);
   _type = topo.NormalizedToListFast<FFLFOType>(FFLFOParam::Type, typeNorm);
@@ -130,7 +125,11 @@ FFLFOProcessor::BeginVoiceOrBlock(
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     bool blockActive = !graph || graphIndex == i || graphIndex == FFLFOBlockCount;
-    _opType[i] = !blockActive ? FFLFOOpType::Off : topo.NormalizedToListFast<FFLFOOpType>(
+    _opType[i] = !blockActive ? 
+      FFLFOOpType::Off : 
+      graph && graphIndex != FFLFOBlockCount ?
+      FFLFOOpType::Add :
+      topo.NormalizedToListFast<FFLFOOpType>(
       FFLFOParam::OpType,
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
     _steps[i] = topo.NormalizedToDiscreteFast(

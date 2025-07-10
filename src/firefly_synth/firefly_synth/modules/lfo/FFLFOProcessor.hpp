@@ -24,7 +24,6 @@ class FFLFOProcessor final
 
   bool _finished = false;
   bool _firstSample = true;
-  bool _wasInitOnce = false;
   float _lastOutput = 0.0f;
   int _smoothSamples = 0;
   int _smoothSamplesProcessed = 0;
