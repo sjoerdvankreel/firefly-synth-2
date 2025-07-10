@@ -73,7 +73,6 @@ LFOGraphRenderData<Global>::DoBeginVoiceOrBlock(
       exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Global());
     else
       exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
-  exchangeState = nullptr;
   GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(true, graphIndex, totalSamples, exchangeState, *moduleProcState);
 }
 

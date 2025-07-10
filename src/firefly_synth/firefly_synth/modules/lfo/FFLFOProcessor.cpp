@@ -95,7 +95,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
   _firstSample = true;
   _smoothSamplesProcessed = 0;
 
-  if(exchangeState != nullptr)
+  if(exchangeState != nullptr && graphIndex == FFLFOBlockCount)
     for (int i = 0; i < FFLFOBlockCount; i++)
       _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
   else
