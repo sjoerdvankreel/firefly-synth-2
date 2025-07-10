@@ -87,6 +87,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& smoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothTime[0], voice);
 
   // Global inits each block.
+  // TODO this not work with voice
   if (_graph || !_wasInitOnce)
   {
     _smoother = {};

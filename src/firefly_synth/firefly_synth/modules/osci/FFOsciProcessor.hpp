@@ -75,6 +75,7 @@ class FFOsciProcessor final
   std::array<FFOsciWavePWMode, FFOsciWavePWCount> _wavePWMode = {};
   std::array<FFOsciWaveBasicMode, FFOsciWaveBasicCount> _waveBasicMode = {};
 
+  bool _graph = {};
   int _stringGraphPosition = {};
   float _stringGraphStVarFilterFreqMultiplier = {};
 
