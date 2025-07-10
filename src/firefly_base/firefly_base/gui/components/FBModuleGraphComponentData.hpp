@@ -6,6 +6,10 @@
 #include <vector>
 #include <string>
 #include <optional>
+#include <functional>
+
+typedef std::function<bool(int graphIndex)>
+FBModuleGraphDrawMarkersSelector;
 
 class FBGraphRenderState;
 
@@ -41,11 +45,11 @@ struct FBModuleGraphComponentData final
 {
   int pixelWidth = -1;
   bool bipolar = false;
-  bool drawMarkers = false;
   bool drawClipBoundaries = false;
   bool skipDrawOnEqualsPrimary = true;
   FBGraphRenderState* renderState = {};
   std::vector<FBModuleGraphData> graphs = {};
   FBGUIRenderType guiRenderType = FBGUIRenderType::Basic;
+  FBModuleGraphDrawMarkersSelector drawMarkersSelector = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleGraphComponentData);
 };

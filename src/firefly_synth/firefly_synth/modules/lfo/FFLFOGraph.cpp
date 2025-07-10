@@ -119,9 +119,9 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   auto moduleType = Global ? FFModuleType::GLFO : FFModuleType::VLFO;
 
   graphData->bipolar = false;
-  graphData->drawMarkers = true;
   graphData->drawClipBoundaries = false;
   graphData->skipDrawOnEqualsPrimary = false; // need exchange state for all sub-lfos
+  graphData->drawMarkersSelector = [](int graphIndex) { return graphIndex != FFLFOBlockCount; };
   renderData.graphData = graphData;
   renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
   renderData.totalSamples = PlotParams(graphData, Global, 0).sampleCount; // todo

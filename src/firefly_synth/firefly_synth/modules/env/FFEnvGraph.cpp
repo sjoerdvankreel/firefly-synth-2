@@ -158,9 +158,9 @@ void
 FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
 {
   EnvGraphRenderData renderData = {};
-  graphData->drawMarkers = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
+  graphData->drawMarkersSelector = [](int) { return true; };
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };
   renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int /*graphIndex*/) {
