@@ -335,12 +335,15 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gLFO[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vLFO[state.moduleSlot]; });
   exchangeDSP.active = true;
+  exchangeDSP.lengthSamples[FFLFOBlockCount] = 0;
+  exchangeDSP.positionSamples[FFLFOBlockCount] = 0;
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
     exchangeDSP.noiseState[i] = _noiseGens[i].PrngStateAtInit();
     exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].PrngStateAtInit();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
+    exchangeDSP.lengthSamples[FFLFOBlockCount] = std::max(exchangeDSP.lengthSamples[i], exchangeDSP.lengthSamples[FFLFOBlockCount]);
 
     // 0: the lines move, so the position indicator stays fixed.
     if (_waveMode[i] == FFLFOWaveModeFreeRandom || _waveMode[i] == FFLFOWaveModeFreeSmooth)
@@ -348,9 +351,6 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     else
       exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
   }
-
-  exchangeDSP.positionSamples[FFLFOBlockCount] = 0;
-  exchangeDSP.lengthSamples[FFLFOBlockCount] = exchangeDSP.lengthSamples[0];
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },
