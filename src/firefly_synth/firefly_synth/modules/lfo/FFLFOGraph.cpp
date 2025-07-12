@@ -121,7 +121,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   graphData->bipolar = false;
   graphData->drawClipBoundaries = false;
   graphData->skipDrawOnEqualsPrimary = false; // need exchange state for all sub-lfos
-  graphData->drawMarkersSelector = [](int graphIndex) { return graphIndex != FFLFOBlockCount; };
+  graphData->drawMarkersSelector = [](int) { return true; };
   renderData.graphData = graphData;
   renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
   renderData.totalSamples = PlotParams(graphData, Global, 0).sampleCount; // todo

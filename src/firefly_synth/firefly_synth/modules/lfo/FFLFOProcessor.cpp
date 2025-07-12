@@ -311,8 +311,9 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
   }
+  // 0: the lines move, so the position indicator stays fixed.
+  exchangeDSP.positionSamples[FFLFOBlockCount] = 0;
   exchangeDSP.lengthSamples[FFLFOBlockCount] = exchangeDSP.lengthSamples[0];
-  exchangeDSP.positionSamples[FFLFOBlockCount] = exchangeDSP.positionSamples[0];
 
   auto& exchangeParams = *FFSelectDualState<Global>(
     [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gLFO[state.moduleSlot]; },
