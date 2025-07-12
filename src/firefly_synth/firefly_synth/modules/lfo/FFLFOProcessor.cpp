@@ -232,8 +232,8 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         switch (_waveMode[i])
         {
         case FFLFOWaveModeSaw: lfo = phase; break;
-        case FFLFOWaveModeTri: break;
-        case FFLFOWaveModeSqr: break;
+        case FFLFOWaveModeTri: lfo = 1.0f - xsimd::abs(FBToBipolar(phase)); break;
+        case FFLFOWaveModeSqr: lfo = FBToUnipolar(xsimd::sign(FBToBipolar(phase))); break;
         case FFLFOWaveModeRandom: break;
         case FFLFOWaveModeFreeRandom: break;
         case FFLFOWaveModeSmooth: break;
