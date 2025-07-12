@@ -7,12 +7,12 @@
 
 class FFParkMillerPRNG final
 {
-  std::uint32_t _x = {};
+  std::uint32_t _state = {};
 
 public:
   float NextScalar();
   FBBatch<float> NextBatch();
-  std::uint32_t State() const { return _x; }
+  std::uint32_t State() const { return _state; }
 
   FFParkMillerPRNG();
   explicit FFParkMillerPRNG(float x);
@@ -20,12 +20,12 @@ public:
 };
 
 inline
-FFParkMillerPRNG::FFParkMillerPRNG(std::uint32_t x):
-_x(x) {}
+FFParkMillerPRNG::FFParkMillerPRNG(std::uint32_t seed):
+_state(seed) {}
 
 inline 
-FFParkMillerPRNG::FFParkMillerPRNG(float x):
-_x(static_cast<std::uint32_t>(1 + x * (std::numeric_limits<std::uint32_t>::max() - 1))) {}
+FFParkMillerPRNG::FFParkMillerPRNG(float seed):
+_state(static_cast<std::uint32_t>(1 + seed * (std::numeric_limits<std::uint32_t>::max() - 1))) {}
 
 inline
 FFParkMillerPRNG::FFParkMillerPRNG() :
@@ -34,8 +34,8 @@ FFParkMillerPRNG(0.0f) {}
 inline float
 FFParkMillerPRNG::NextScalar()
 {
-  float y = _x / static_cast<float>(std::numeric_limits<std::int32_t>::max());
-  _x = static_cast<std::uint64_t>(_x) * 48271 % std::numeric_limits<std::int32_t>::max();
+  float y = _state / static_cast<float>(std::numeric_limits<std::int32_t>::max());
+  _state = static_cast<std::uint64_t>(_state) * 48271 % std::numeric_limits<std::int32_t>::max();
   return y;
 }
 

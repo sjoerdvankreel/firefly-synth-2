@@ -19,6 +19,7 @@ class FFNoiseGenerator
 {
   int _steps = 2;
   FFParkMillerPRNG _prng = {};
+  std::uint32_t _prngStateAtInit = {};
   std::array<float, FFNoiseGeneratorMaxSteps> _r = {};
 
   void InitSteps(int steps);
@@ -32,7 +33,9 @@ public:
   void Init(std::uint32_t seed, int steps);
   float AtScalar(float phase) const;
   FBBatch<float> AtBatch(FBBatch<float> phases) const;
+
   FFParkMillerPRNG& Prng() { return _prng; }
+  std::uint32_t PrngStateAtInit() const { return _prngStateAtInit; }
 };
 
 template <bool Smooth>
@@ -62,6 +65,7 @@ inline void
 FFNoiseGenerator<Smooth>::Init(float seed, int steps)
 {
   _prng = FFParkMillerPRNG(seed);
+  _prngStateAtInit = _prng.State();
   InitSteps(steps);
 }
 
@@ -70,6 +74,7 @@ inline void
 FFNoiseGenerator<Smooth>::Init(std::uint32_t seed, int steps)
 {
   _prng = FFParkMillerPRNG(seed);
+  _prngStateAtInit = _prng.State();
   InitSteps(steps);
 }
 

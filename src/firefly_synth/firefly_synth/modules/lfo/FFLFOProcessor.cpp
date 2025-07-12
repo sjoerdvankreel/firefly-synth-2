@@ -98,16 +98,6 @@ FFLFOProcessor::BeginVoiceOrBlock(
   _firstSample = true;
   _smoothSamplesProcessed = 0;
 
-  if(exchangeState != nullptr && graphIndex == FFLFOBlockCount)
-    for (int i = 0; i < FFLFOBlockCount; i++)
-      _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
-  else
-    for (int i = 0; i < FFLFOBlockCount; i++)
-      if(i == 1)
-        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
-      else
-        _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
-
   _graph = graph;
   _graphSamplesProcessed = 0;
   _graphSampleCount = graphSampleCount;
@@ -149,8 +139,26 @@ FFLFOProcessor::BeginVoiceOrBlock(
       _rateHzByBars[i] = topo.NormalizedToBarsFreqFast(FFLFOParam::RateBars,
         FFSelectDualProcBlockParamNormalized<Global>(rateBarsNorm[i], voice), state.input->bpm);
 
-    _noiseGens[i].Init(floatSeed, _steps[i] + 1);
-    _smoothNoiseGens[i].Init(floatSeed, _steps[i] + 1);
+    bool movingGraph = exchangeState != nullptr && (
+      graphIndex == FFLFOBlockCount || 
+      _waveMode[i] == FFLFOWaveModeFreeRandom || 
+      _waveMode[i] == FFLFOWaveModeFreeSmooth);
+
+    if (movingGraph)
+    {
+      _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
+      _noiseGens[i].Init(exchangeState->noiseState[i], _steps[i] + 1);
+      _smoothNoiseGens[i].Init(exchangeState->smoothNoiseState[i], _steps[i] + 1);
+    }
+    else
+    {
+      _noiseGens[i].Init(floatSeed, _steps[i] + 1); 
+      _smoothNoiseGens[i].Init(floatSeed, _steps[i] + 1);
+      if(i == 1)
+        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
+      else
+        _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
+    }
   }
 }
 
@@ -323,8 +331,8 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
-    exchangeDSP.noiseState[i] = _noiseGens[i].Prng().State();
-    exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].Prng().State();
+    exchangeDSP.noiseState[i] = _noiseGens[i].PrngStateAtInit();
+    exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].PrngStateAtInit();
     exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
   }
