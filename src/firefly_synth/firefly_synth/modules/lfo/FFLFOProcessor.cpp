@@ -115,9 +115,24 @@ FFLFOProcessor::BeginVoiceOrBlock(
       FFLFOParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
   _smoother.SetCoeffs(_smoothSamples);
 
-  // todo xchange the rand state
+  bool shouldInit = true;
+  if constexpr (Global)
+  {
+    shouldInit = graph || !_globalWasInit;
+    shouldInit |= _prevSeedNorm != seedNorm;
+    shouldInit |= _prevPhaseBNorm != phaseBNorm;
+    _prevSeedNorm = seedNorm;
+    _prevPhaseBNorm = phaseBNorm;
+    for (int i = 0; i < FFLFOBlockCount; i++)
+    {
+      shouldInit |= _prevStepsNorm[i] != stepsNorm[i].Value();
+      _prevStepsNorm[i] = stepsNorm[i].Value();
+    }
+  }
+
   int seed = topo.NormalizedToDiscreteFast(FFLFOParam::Seed, seedNorm);
   float floatSeed = seed / (FFLFOMaxSeed + 1.0f);
+
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     bool blockActive = !graph || graphIndex == i || graphIndex == FFLFOBlockCount;
@@ -152,14 +167,18 @@ FFLFOProcessor::BeginVoiceOrBlock(
     }
     else
     {
-      _noiseGens[i].Init(floatSeed, _steps[i] + 1);
-      _smoothNoiseGens[i].Init(floatSeed, _steps[i] + 1);
-      if(i == 1)
-        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
-      else
-        _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
+      if (shouldInit)
+      {
+        _noiseGens[i].Init(floatSeed, _steps[i] + 1);
+        _smoothNoiseGens[i].Init(floatSeed, _steps[i] + 1);
+        if (i == 1)
+          _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
+        else
+          _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
+      }
     }
   }
+  _globalWasInit = true;
 }
 
 template <bool Global>

@@ -23,6 +23,11 @@ class FFLFOProcessor final
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
 
+  float _prevSeedNorm = {};
+  float _prevPhaseBNorm = {};
+  bool _globalWasInit = false;
+  std::array<float, FFLFOBlockCount> _prevStepsNorm = {};
+
   bool _finished = false;
   bool _firstSample = true;
   float _lastOutput = 0.0f;
