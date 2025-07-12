@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_synth/dsp/shared/FFPhaseGenerator.hpp>
+#include <firefly_synth/dsp/shared/FFNoiseGenerator.hpp>
 #include <firefly_synth/modules/lfo/FFLFOTopo.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -31,6 +32,8 @@ class FFLFOProcessor final
 
   std::array<float, FFLFOBlockCount> _rateHzByBars = {};
   std::array<FFTrackingPhaseGenerator, FFLFOBlockCount> _phaseGens = {};
+  std::array<FFNoiseGenerator<false>, FFLFOBlockCount> _noiseGens = {};
+  std::array<FFNoiseGenerator<true>, FFLFOBlockCount> _smoothNoiseGens = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFLFOProcessor);

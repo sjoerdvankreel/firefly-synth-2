@@ -12,10 +12,16 @@ class FFParkMillerPRNG final
 public:
   float NextScalar();
   FBBatch<float> NextBatch();
-  
+  std::uint32_t State() const { return _x; }
+
   FFParkMillerPRNG();
   explicit FFParkMillerPRNG(float x);
+  explicit FFParkMillerPRNG(std::uint32_t x);
 };
+
+inline
+FFParkMillerPRNG::FFParkMillerPRNG(std::uint32_t x):
+_x(x) {}
 
 inline 
 FFParkMillerPRNG::FFParkMillerPRNG(float x):
@@ -23,7 +29,7 @@ _x(static_cast<std::uint32_t>(1 + x * (std::numeric_limits<std::uint32_t>::max()
 
 inline
 FFParkMillerPRNG::FFParkMillerPRNG() :
-  FFParkMillerPRNG(0.0f) {}
+FFParkMillerPRNG(0.0f) {}
 
 inline float
 FFParkMillerPRNG::NextScalar()

@@ -78,15 +78,15 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& opTypeNorm = params.block.opType;
   auto const& waveModeNorm = params.block.waveMode;
   auto const& rateBarsNorm = params.block.rateBars;
-  auto const& typeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.type[0], voice);
-  auto const& syncNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.sync[0], voice);
-  auto const& phaseBNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.phaseB[0], voice);
-  auto const& skewAXModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAXMode[0], voice);
-  auto const& skewAYModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAYMode[0], voice);
-  auto const& smoothBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothBars[0], voice);
-  auto const& smoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothTime[0], voice);
+  float seedNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.seed[0], voice);
+  float typeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.type[0], voice);
+  float syncNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.sync[0], voice);
+  float phaseBNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.phaseB[0], voice);
+  float skewAXModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAXMode[0], voice);
+  float skewAYModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAYMode[0], voice);
+  float smoothBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothBars[0], voice);
+  float smoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothTime[0], voice);
 
-  // todo get rid of the extra xchange?
   _smoother = {};
   _rateHzByBars = {};
   _smoothSamples = 0;
@@ -122,6 +122,9 @@ FFLFOProcessor::BeginVoiceOrBlock(
       FFLFOParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
   _smoother.SetCoeffs(_smoothSamples);
 
+  // todo xchange the rand state
+  int seed = topo.NormalizedToDiscreteFast(FFLFOParam::Seed, seedNorm);
+  float floatSeed = seed / (FFLFOMaxSeed + 1.0f);
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     bool blockActive = !graph || graphIndex == i || graphIndex == FFLFOBlockCount;
@@ -138,9 +141,13 @@ FFLFOProcessor::BeginVoiceOrBlock(
     _waveMode[i] = topo.NormalizedToListFast<FFLFOWaveMode>(
       FFLFOParam::WaveMode,
       FFSelectDualProcBlockParamNormalized<Global>(waveModeNorm[i], voice));
+    
     if (_sync)
       _rateHzByBars[i] = topo.NormalizedToBarsFreqFast(FFLFOParam::RateBars,
         FFSelectDualProcBlockParamNormalized<Global>(rateBarsNorm[i], voice), state.input->bpm);
+
+    _noiseGens[i].Init(floatSeed, _steps[i] + 1);
+    _smoothNoiseGens[i].Init(floatSeed, _steps[i] + 1);
   }
 }
 
@@ -234,10 +241,10 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         case FFLFOWaveModeSaw: lfo = phase; break;
         case FFLFOWaveModeTri: lfo = 1.0f - xsimd::abs(FBToBipolar(phase)); break;
         case FFLFOWaveModeSqr: lfo = FBToUnipolar(xsimd::sign(FBToBipolar(phase))); break;
-        case FFLFOWaveModeRandom: break;
-        case FFLFOWaveModeFreeRandom: break;
-        case FFLFOWaveModeSmooth: break;
-        case FFLFOWaveModeFreeSmooth: break;
+        case FFLFOWaveModeRandom: lfo = _noiseGens[i].AtBatch(phase); break;
+        case FFLFOWaveModeFreeRandom: lfo = _noiseGens[i].AtBatch(phase); break;
+        case FFLFOWaveModeSmooth: lfo = _smoothNoiseGens[i].AtBatch(phase); break;
+        case FFLFOWaveModeFreeSmooth: lfo = _smoothNoiseGens[i].AtBatch(phase); break;
         default: lfo = FBToUnipolar(FFCalcTrig(_waveMode[i], phase * 2.0f * FBPi)); break;
         }
 
@@ -248,7 +255,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         }
 
         // todo not always
-        if (_steps[i] > 1)
+        if (_steps[i] > 1 && !(FFLFOWaveModeRandom <= _waveMode[i] && _waveMode[i] <= FFLFOWaveModeFreeSmooth))
         {
           lfo = xsimd::clip(lfo, FBBatch<float>(0.0f), FBBatch<float>(0.9999f));
           lfo = xsimd::floor(lfo * static_cast<float>(_steps[i])) / (_steps[i] - 1.0f);
@@ -308,9 +315,12 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
+    exchangeDSP.noiseState[i] = _noiseGens[i].PrngState();
+    exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].PrngState();
     exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
   }
+
   // 0: the lines move, so the position indicator stays fixed.
   exchangeDSP.positionSamples[FFLFOBlockCount] = 0;
   exchangeDSP.lengthSamples[FFLFOBlockCount] = exchangeDSP.lengthSamples[0];

@@ -9,6 +9,7 @@
 
 #include <array>
 #include <memory>
+#include <cstdint>
 
 struct FBStaticModule; 
 template <bool Global>
@@ -18,6 +19,8 @@ struct FFLFOExchangeState:
 public FBModuleProcExchangeState<FFLFOBlockCount + 1>
 {
   std::array<float, FFLFOBlockCount> phases = {};
+  std::array<std::uint32_t, FFLFOBlockCount> noiseState = {};
+  std::array<std::uint32_t, FFLFOBlockCount> smoothNoiseState = {};
 };
 
 class alignas(FBSIMDAlign) FFLFODSPState final
