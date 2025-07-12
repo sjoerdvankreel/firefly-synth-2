@@ -12,6 +12,8 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+static auto const InvLogHalf = 1.0f / std::log(0.5f);
+
 static inline FBBatch<float>
 SkewScaleUnipolar(FBBatch<float> in, FBBatch<float> amt)
 {
@@ -26,15 +28,16 @@ SkewScaleBipolar(FBBatch<float> in, FBBatch<float> amt)
 
 static inline FBBatch<float>
 SkewExpUnipolar(FBBatch<float> in, FBBatch<float> amt)
-{
-  return xsimd::pow(in, (1.0f - amt));
+{ 
+  return xsimd::pow(in, xsimd::log(0.001f + (amt * 0.999f)) * InvLogHalf);
 }
 
 static inline FBBatch<float>
 SkewExpBipolar(FBBatch<float> in, FBBatch<float> amt)
 {
   auto bp = FBToBipolar(in);
-  return FBToUnipolar(xsimd::sign(bp) * xsimd::pow(xsimd::abs(bp), (1.0f - amt)));
+  auto exp = xsimd::log(0.001f + (amt * 0.999f)) * InvLogHalf;
+  return FBToUnipolar(xsimd::sign(bp) * xsimd::pow(xsimd::abs(bp), exp));
 }
 
 static inline FBBatch<float>
