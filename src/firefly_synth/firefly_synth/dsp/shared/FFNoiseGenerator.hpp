@@ -32,7 +32,7 @@ public:
   void Init(std::uint32_t seed, int steps);
   float AtScalar(float phase) const;
   FBBatch<float> AtBatch(FBBatch<float> phases) const;
-  std::uint32_t PrngState() const { return _prng.State(); }
+  FFParkMillerPRNG& Prng() { return _prng; }
 };
 
 template <bool Smooth>

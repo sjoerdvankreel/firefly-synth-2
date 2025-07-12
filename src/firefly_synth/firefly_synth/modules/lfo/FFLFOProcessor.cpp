@@ -230,8 +230,9 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     {
       if (_opType[i] != FFLFOOpType::Off)
       {
+        bool wrapped;
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
-        auto phase = _phaseGens[i].NextBatch(incr);
+        auto phase = _phaseGens[i].NextBatch(incr, wrapped);
         if (i == 0 && _skewAXMode != FFLFOSkewXMode::Off)
         {
           auto skewAXAmt = skewAXAmtPlain.Load(s);
@@ -251,13 +252,17 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         default: lfo = FBToUnipolar(FFCalcTrig(_waveMode[i], phase * 2.0f * FBPi)); break;
         }
 
+        if (wrapped && _waveMode[i] == FFLFOWaveModeFreeRandom)
+          _noiseGens[i].Init(_noiseGens[i].Prng().NextScalar(), _steps[i]);
+        if (wrapped && _waveMode[i] == FFLFOWaveModeFreeSmooth)
+          _smoothNoiseGens[i].Init(_smoothNoiseGens[i].Prng().NextScalar(), _steps[i]);
+
         if (i == 0 && _skewAYMode != FFLFOSkewYMode::Off)
         {
           auto skewAYAmt = skewAYAmtPlain.Load(s);
           lfo = SkewY(_skewAYMode, lfo, skewAYAmt);
         }
 
-        // todo not always
         if (_steps[i] > 1 && !(FFLFOWaveModeRandom <= _waveMode[i] && _waveMode[i] <= FFLFOWaveModeFreeSmooth))
         {
           lfo = xsimd::clip(lfo, FBBatch<float>(0.0f), FBBatch<float>(0.9999f));
@@ -318,8 +323,8 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
-    exchangeDSP.noiseState[i] = _noiseGens[i].PrngState();
-    exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].PrngState();
+    exchangeDSP.noiseState[i] = _noiseGens[i].Prng().State();
+    exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].Prng().State();
     exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
   }
