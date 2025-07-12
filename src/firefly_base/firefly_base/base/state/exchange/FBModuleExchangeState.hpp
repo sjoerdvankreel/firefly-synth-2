@@ -16,14 +16,30 @@ struct FBModuleProcExchangeStateBase
   virtual float PositionNormalized(int graphIndex) const = 0;
 };
 
+struct FBModuleProcSingleExchangeState:
+public FBModuleProcExchangeStateBase
+{
+  int lengthSamples = {};
+  int positionSamples = {};
+  ~FBModuleProcSingleExchangeState() = default;
+  FB_COPY_MOVE_DEFCTOR(FBModuleProcSingleExchangeState);
+
+  int LengthSamples(int /*graphIndex*/) const override 
+  { return lengthSamples; }
+  bool ShouldGraph(int /*graphIndex*/) const override 
+  { return active && positionSamples < lengthSamples; }
+  float PositionNormalized(int /*graphIndex*/) const override 
+  { return positionSamples / static_cast<float>(lengthSamples); }
+};
+
 template <int N>
-struct FBModuleProcExchangeState:
+struct FBModuleProcMultiExchangeState:
 public FBModuleProcExchangeStateBase
 {
   std::array<int, N> lengthSamples = {};
   std::array<int, N> positionSamples = {};
-  ~FBModuleProcExchangeState() = default;
-  FB_COPY_MOVE_DEFCTOR(FBModuleProcExchangeState);
+  ~FBModuleProcMultiExchangeState() = default;
+  FB_COPY_MOVE_DEFCTOR(FBModuleProcMultiExchangeState);
 
   int LengthSamples(int graphIndex) const override
   { return lengthSamples[graphIndex]; }

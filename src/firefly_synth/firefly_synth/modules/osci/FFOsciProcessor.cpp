@@ -142,13 +142,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
 
-  // TODO TEMP - add vlfo1 to osc1 gain
+  // TODO TEMP - add vlfo1 to osc1 gain and glfo1 to osc2 gain
   FBSArray<float, FBFixedBlockSamples> gainNorm;
   for (int i = 0; i < FBFixedBlockSamples; i++)
     gainNorm.Set(i, gainNorm0.CV().Get(i));
   if (state.moduleSlot == 0 && !_graph)
     for (int i = 0; i < FBFixedBlockSamples; i++)
       gainNorm.Set(i, std::clamp(gainNorm.Get(i) + voiceState.vLFO[0].output.Get(i), 0.0f, 1.0f));
+  if (state.moduleSlot == 1 && !_graph)
+    for (int i = 0; i < FBFixedBlockSamples; i++)
+      gainNorm.Set(i, std::clamp(gainNorm.Get(i) + procState->dsp.global.gLFO[0].output.Get(i), 0.0f, 1.0f));
 
   FBSArray<float, FFOsciFixedBlockOversamples> panPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> gainPlain;
@@ -249,7 +252,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples[0] = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
+  exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.pan[0][voice] = panNorm.Last();

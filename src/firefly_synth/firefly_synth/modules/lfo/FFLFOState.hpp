@@ -16,7 +16,7 @@ template <bool Global>
 struct LFOGraphRenderData;
 
 struct FFLFOExchangeState:
-public FBModuleProcExchangeState<FFLFOBlockCount + 1>
+public FBModuleProcMultiExchangeState<FFLFOBlockCount + 1>
 {
   std::array<float, FFLFOBlockCount> phases = {};
   std::array<std::uint32_t, FFLFOBlockCount> noiseState = {};
