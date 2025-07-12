@@ -152,7 +152,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
     }
     else
     {
-      _noiseGens[i].Init(floatSeed, _steps[i] + 1); 
+      _noiseGens[i].Init(floatSeed, _steps[i] + 1);
       _smoothNoiseGens[i].Init(floatSeed, _steps[i] + 1);
       if(i == 1)
         _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
@@ -241,6 +241,18 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         bool wrapped;
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
         auto phase = _phaseGens[i].NextBatch(incr, wrapped);
+
+        // reset before wrap point, otherwise we get a tiny piece of the new random table
+        if (wrapped && (_waveMode[i] == FFLFOWaveModeFreeRandom || _waveMode[i] == FFLFOWaveModeFreeSmooth))
+        {
+          _phaseGens[i].Reset();
+          phase = _phaseGens[i].NextBatch(incr, wrapped);
+          if(_waveMode[i] == FFLFOWaveModeFreeRandom)
+            _noiseGens[i].Init(_noiseGens[i].Prng().NextScalar(), _steps[i]);
+          if(_waveMode[i] == FFLFOWaveModeFreeSmooth)
+            _smoothNoiseGens[i].Init(_smoothNoiseGens[i].Prng().NextScalar(), _steps[i]);
+        }
+
         if (i == 0 && _skewAXMode != FFLFOSkewXMode::Off)
         {
           auto skewAXAmt = skewAXAmtPlain.Load(s);
@@ -259,11 +271,6 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         case FFLFOWaveModeFreeSmooth: lfo = _smoothNoiseGens[i].AtBatch(phase); break;
         default: lfo = FBToUnipolar(FFCalcTrig(_waveMode[i], phase * 2.0f * FBPi)); break;
         }
-
-        if (wrapped && _waveMode[i] == FFLFOWaveModeFreeRandom)
-          _noiseGens[i].Init(_noiseGens[i].Prng().NextScalar(), _steps[i]);
-        if (wrapped && _waveMode[i] == FFLFOWaveModeFreeSmooth)
-          _smoothNoiseGens[i].Init(_smoothNoiseGens[i].Prng().NextScalar(), _steps[i]);
 
         if (i == 0 && _skewAYMode != FFLFOSkewYMode::Off)
         {
@@ -333,11 +340,15 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
     exchangeDSP.noiseState[i] = _noiseGens[i].PrngStateAtInit();
     exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].PrngStateAtInit();
-    exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
+
+    // 0: the lines move, so the position indicator stays fixed.
+    if (_waveMode[i] == FFLFOWaveModeFreeRandom || _waveMode[i] == FFLFOWaveModeFreeSmooth)
+      exchangeDSP.positionSamples[i] = 0;
+    else
+      exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();
   }
 
-  // 0: the lines move, so the position indicator stays fixed.
   exchangeDSP.positionSamples[FFLFOBlockCount] = 0;
   exchangeDSP.lengthSamples[FFLFOBlockCount] = exchangeDSP.lengthSamples[0];
 
