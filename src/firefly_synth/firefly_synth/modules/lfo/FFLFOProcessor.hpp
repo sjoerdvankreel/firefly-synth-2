@@ -25,6 +25,7 @@ class FFLFOProcessor final
 
   float _prevSeedNorm = {};
   float _prevPhaseBNorm = {};
+  int _prevSmoothSamples = {};
   bool _globalWasInit = false;
   std::array<float, FFLFOBlockCount> _prevStepsNorm = {};
 

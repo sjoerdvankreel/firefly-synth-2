@@ -90,12 +90,10 @@ FFLFOProcessor::BeginVoiceOrBlock(
   float smoothBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothBars[0], voice);
   float smoothTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothTime[0], voice);
 
-  _smoother = {};
   _rateHzByBars = {};
   _smoothSamples = 0;
   _lastOutput = 0.0f;
   _finished = false;
-  _firstSample = true;
   _smoothSamplesProcessed = 0;
 
   _graph = graph;
@@ -113,21 +111,33 @@ FFLFOProcessor::BeginVoiceOrBlock(
   else
     _smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
       FFLFOParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
-  _smoother.SetCoeffs(_smoothSamples);
 
-  bool shouldInit = true;
-  if constexpr (Global)
+  bool shouldInit = false;
+  if constexpr (!Global)
+  {
+    shouldInit = true;
+  }
+  else
   {
     shouldInit = graph || !_globalWasInit;
     shouldInit |= _prevSeedNorm != seedNorm;
     shouldInit |= _prevPhaseBNorm != phaseBNorm;
+    shouldInit |= _prevSmoothSamples != _smoothSamples;
     _prevSeedNorm = seedNorm;
     _prevPhaseBNorm = phaseBNorm;
+    _prevSmoothSamples = _smoothSamples;
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
       shouldInit |= _prevStepsNorm[i] != stepsNorm[i].Value();
       _prevStepsNorm[i] = stepsNorm[i].Value();
     }
+  }
+
+  if (shouldInit)
+  {
+    _firstSample = true;
+    _smoother = {};
+    _smoother.SetCoeffs(_smoothSamples);
   }
 
   int seed = topo.NormalizedToDiscreteFast(FFLFOParam::Seed, seedNorm);
