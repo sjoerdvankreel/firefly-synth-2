@@ -277,7 +277,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
           std::int64_t phaseSamples = state.input->projectTimeSamples % samples0;
           float newPhase = phaseSamples / (float)samples0 + phaseOffset;
           newPhase -= std::floor(newPhase);
-          _phaseGens[i].Reset(newPhase);
+          _phaseGens[i].Reset(newPhase, (int)samples0);
         }
       }
     }

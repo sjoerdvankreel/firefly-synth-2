@@ -37,10 +37,10 @@ public:
   FFTrackingPhaseGenerator() = default;
   explicit FFTrackingPhaseGenerator(float x) : _x(x) {}
 
-  void Reset(float phase) { _x = phase; }
   float CurrentScalar() const { return _x; }
 
   float NextScalar(float incr);
+  void Reset(float phase, int lengthSamples);
   FBBatch<float> NextBatch(FBBatch<float> incr);
 
   bool CycledOnce() const { return _cycledOnce; }
@@ -102,4 +102,13 @@ FFTrackingPhaseGenerator::NextBatch(FBBatch<float> incr)
   for (int i = 0; i < FBSIMDTraits<float>::Size; i++)
     y.Set(i, NextScalar(x.Get(i)));
   return y.Load(0);
+}
+
+inline void
+FFTrackingPhaseGenerator::Reset(float phase, int lengthSamples)
+{
+  _x = phase;
+  _cycledOnce = false;
+  _positionSamplesCurrentCycle = (int)(phase * lengthSamples);
+  _positionSamplesUpToFirstCycle = _positionSamplesCurrentCycle;
 }
