@@ -269,18 +269,8 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     {
       if (_opType[i] != FFLFOOpType::Off)
       {
-        bool wrapped;
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
-        auto phase = _phaseGens[i].NextBatch(incr, wrapped);
-
-        // todo need this ?
-        // reset before wrap point, otherwise we get a tiny piece of the new random table
-        if (wrapped && (_waveMode[i] == FFLFOWaveModeFreeRandom || _waveMode[i] == FFLFOWaveModeFreeSmooth))
-        {
-          _phaseGens[i].Reset();
-          phase = _phaseGens[i].NextBatch(incr, wrapped);
-        }
-
+        auto phase = _phaseGens[i].NextBatch(incr);
         if (i == 0 && _skewAXMode != FFLFOSkewXMode::Off)
         {
           auto skewAXAmt = skewAXAmtPlain.Load(s);

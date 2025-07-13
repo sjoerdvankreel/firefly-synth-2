@@ -124,7 +124,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawMarkersSelector = [](int) { return true; };
   renderData.graphData = graphData;
   renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
-  renderData.totalSamples = PlotParams(graphData, Global, 0).sampleCount; // todo
+  renderData.totalSamples = PlotParams(graphData, Global, 0).sampleCount; // just pick one
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
   renderData.globalMonoOutputSelector = [](void const* procState, int slot, int /*graphIndex*/) {

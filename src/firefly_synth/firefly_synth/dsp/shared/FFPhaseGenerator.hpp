@@ -42,8 +42,6 @@ public:
 
   float NextScalar(float incr);
   FBBatch<float> NextBatch(FBBatch<float> incr);
-  float NextScalar(float incr, bool&wrapped);
-  FBBatch<float> NextBatch(FBBatch<float> incr, bool& wrapped);
 
   bool CycledOnce() const { return _cycledOnce; }
   int PositionSamplesCurrentCycle() const { return _positionSamplesCurrentCycle; }
@@ -77,11 +75,11 @@ FFTimeVectorPhaseGenerator::Next(FBBatch<float> incr)
 }
 
 inline float
-FFTrackingPhaseGenerator::NextScalar(float incr, bool& wrapped)
+FFTrackingPhaseGenerator::NextScalar(float incr)
 {
   float y = _x;
   _x += incr;
-  wrapped = FBPhaseWrap2(_x);
+  bool wrapped = FBPhaseWrap2(_x);
   if (wrapped)
   {
     _cycledOnce = true;
@@ -96,31 +94,12 @@ FFTrackingPhaseGenerator::NextScalar(float incr, bool& wrapped)
   return y;
 }
 
-inline float
-FFTrackingPhaseGenerator::NextScalar(float incr)
-{
-  bool wrapped;
-  return NextScalar(incr, wrapped);
-}
-
-inline FBBatch<float>
-FFTrackingPhaseGenerator::NextBatch(FBBatch<float> incr, bool& wrapped)
-{
-  wrapped = false;
-  FBSArray<float, FBSIMDTraits<float>::Size> y;
-  FBSArray<float, FBSIMDTraits<float>::Size> x(incr);
-  for (int i = 0; i < FBSIMDTraits<float>::Size; i++)
-  {
-    bool w;
-    y.Set(i, NextScalar(x.Get(i), w));
-    wrapped |= w;
-  }
-  return y.Load(0);
-}
-
 inline FBBatch<float>
 FFTrackingPhaseGenerator::NextBatch(FBBatch<float> incr)
 {
-  bool wrapped;
-  return NextBatch(incr, wrapped);
+  FBSArray<float, FBSIMDTraits<float>::Size> y;
+  FBSArray<float, FBSIMDTraits<float>::Size> x(incr);
+  for (int i = 0; i < FBSIMDTraits<float>::Size; i++)
+    y.Set(i, NextScalar(x.Get(i)));
+  return y.Load(0);
 }
