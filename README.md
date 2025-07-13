@@ -2,9 +2,9 @@
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
-* Only osci, inter-osci modulation, per-voice fx, global fx, envelopes and audio mixer matrix implemented.
-* Stock JUCE GUI, no presets, no delay, reverb, LFO's, MTS-ESP, no CV-routing, 
-even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
+* Only osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos and audio mixer matrix implemented.
+* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP, no CV-routing,
+only ENV1 is only connected to per-voice amp, some LFO routing is temporarily hardcoded. All else routes nowhere. Let alone stuff like an arpeggiator.
 
 # Some demo material
 * Bowed strings
