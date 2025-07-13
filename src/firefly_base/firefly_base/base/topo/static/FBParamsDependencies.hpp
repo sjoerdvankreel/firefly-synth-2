@@ -12,10 +12,10 @@ struct FBParamsDependency final
 {
   std::vector<FBTopoIndices> staticParamIndices = {};
   FBParamsDependencyEvaluator evaluate = {};
-  void When(
+  void WhenSimple(
     std::vector<int> const& staticParamIndices,
     FBParamsDependencyEvaluator const& evaluate);
-  void When(
+  void WhenSlots(
     std::vector<FBTopoIndices> const& staticParamIndices,
     FBParamsDependencyEvaluator const& evaluate);
 };

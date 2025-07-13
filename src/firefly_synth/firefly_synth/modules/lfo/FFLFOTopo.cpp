@@ -77,7 +77,7 @@ FFMakeLFOTopo(bool global)
   sync.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSync);
   sync.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSync);
   sync.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSync);
-  sync.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  sync.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& seed = result->params[(int)FFLFOParam::Seed];
   seed.acc = false;
@@ -93,7 +93,7 @@ FFMakeLFOTopo(bool global)
   seed.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSeed);
   seed.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSeed);
   seed.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSeed);
-  seed.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  seed.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& smoothTime = result->params[(int)FFLFOParam::SmoothTime];
   smoothTime.acc = false;
@@ -113,8 +113,8 @@ FFMakeLFOTopo(bool global)
   smoothTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSmoothTime);
   smoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSmoothTime);
   smoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSmoothTime);
-  smoothTime.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  smoothTime.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  smoothTime.dependencies.visible.audio.WhenSimple({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  smoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& smoothBars = result->params[(int)FFLFOParam::SmoothBars];
   smoothBars.acc = false;
@@ -132,8 +132,8 @@ FFMakeLFOTopo(bool global)
   smoothBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSmoothBars);
   smoothBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSmoothBars);
   smoothBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSmoothBars);
-  smoothBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  smoothBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  smoothBars.dependencies.visible.audio.WhenSimple({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  smoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& opType = result->params[(int)FFLFOParam::OpType];
   opType.acc = false;
@@ -155,7 +155,7 @@ FFMakeLFOTopo(bool global)
   opType.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOpType);
   opType.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpType);
   opType.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpType);
-  opType.dependencies.enabled.audio.When({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  opType.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& min = result->params[(int)FFLFOParam::Min];
   min.acc = true;
@@ -173,7 +173,7 @@ FFMakeLFOTopo(bool global)
   min.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectMin);
   min.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectMin);
   min.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectMin);
-  min.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  min.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& max = result->params[(int)FFLFOParam::Max];
   max.acc = true;
@@ -191,7 +191,7 @@ FFMakeLFOTopo(bool global)
   max.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectMax);
   max.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectMax);
   max.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectMax);
-  max.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  max.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& waveMode = result->params[(int)FFLFOParam::WaveMode];
   waveMode.acc = false;
@@ -235,7 +235,7 @@ FFMakeLFOTopo(bool global)
   waveMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectWaveMode);
   waveMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectWaveMode);
   waveMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectWaveMode);
-  waveMode.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  waveMode.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& rateHz = result->params[(int)FFLFOParam::RateHz];
   rateHz.acc = true;
@@ -256,8 +256,8 @@ FFMakeLFOTopo(bool global)
   rateHz.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectRateHz);
   rateHz.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateHz);
   rateHz.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateHz);
-  rateHz.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  rateHz.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0 && vs[2] != 0; });
+  rateHz.dependencies.visible.audio.WhenSimple({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  rateHz.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0 && vs[2] != 0; });
 
   auto& rateBars = result->params[(int)FFLFOParam::RateBars];
   rateBars.acc = false;
@@ -276,8 +276,8 @@ FFMakeLFOTopo(bool global)
   rateBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectRateBars);
   rateBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectRateBars);
   rateBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectRateBars);
-  rateBars.dependencies.visible.audio.When({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  rateBars.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  rateBars.dependencies.visible.audio.WhenSimple({ (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  rateBars.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& steps = result->params[(int)FFLFOParam::Steps];
   steps.acc = false;
@@ -296,7 +296,7 @@ FFMakeLFOTopo(bool global)
   steps.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSteps);
   steps.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSteps);
   steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
-  steps.dependencies.enabled.audio.When({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  steps.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& skewAXMode = result->params[(int)FFLFOParam::SkewAXMode];
   skewAXMode.acc = false;
@@ -318,7 +318,7 @@ FFMakeLFOTopo(bool global)
   skewAXMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAXMode);
   skewAXMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAXMode);
   skewAXMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAXMode);
-  skewAXMode.dependencies.enabled.audio.When({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  skewAXMode.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& skewAXAmt = result->params[(int)FFLFOParam::SkewAXAmt];
   skewAXAmt.acc = true;
@@ -334,7 +334,7 @@ FFMakeLFOTopo(bool global)
   skewAXAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAXAmt);
   skewAXAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAXAmt);
   skewAXAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAXAmt);
-  skewAXAmt.dependencies.enabled.audio.When({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 }, { (int)FFLFOParam::SkewAXMode, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  skewAXAmt.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 }, { (int)FFLFOParam::SkewAXMode, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& skewAYMode = result->params[(int)FFLFOParam::SkewAYMode];
   skewAYMode.acc = false;
@@ -354,7 +354,7 @@ FFMakeLFOTopo(bool global)
   skewAYMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAYMode);
   skewAYMode.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAYMode);
   skewAYMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAYMode);
-  skewAYMode.dependencies.enabled.audio.When({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  skewAYMode.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& skewAYAmt = result->params[(int)FFLFOParam::SkewAYAmt];
   skewAYAmt.acc = true;
@@ -370,7 +370,7 @@ FFMakeLFOTopo(bool global)
   skewAYAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSkewAYAmt);
   skewAYAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAYAmt);
   skewAYAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAYAmt);
-  skewAYAmt.dependencies.enabled.audio.When({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 }, { (int)FFLFOParam::SkewAYMode, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  skewAYAmt.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 }, { (int)FFLFOParam::SkewAYMode, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& phaseB = result->params[(int)FFLFOParam::PhaseB];
   phaseB.acc = false;
@@ -387,7 +387,7 @@ FFMakeLFOTopo(bool global)
   phaseB.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhaseB);
   phaseB.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhaseB);
   phaseB.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhaseB);
-  phaseB.dependencies.enabled.audio.When({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 1 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  phaseB.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 1 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   return result;
 }

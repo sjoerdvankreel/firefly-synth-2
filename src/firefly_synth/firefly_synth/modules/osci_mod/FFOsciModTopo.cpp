@@ -104,7 +104,7 @@ FFMakeOsciModTopo()
   amMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAMMix);
   amMix.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectAMMix);
   amMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAMMix);
-  amMix.dependencies.enabled.audio.When({ (int)FFOsciModParam::AMMode }, [](auto const& vs) { return vs[0] != (int)FFOsciModAMMode::Off; });
+  amMix.dependencies.enabled.audio.WhenSimple({ (int)FFOsciModParam::AMMode }, [](auto const& vs) { return vs[0] != (int)FFOsciModAMMode::Off; });
 
   auto& fmOn = result->params[(int)FFOsciModParam::FMOn];
   fmOn.acc = false;
@@ -132,7 +132,7 @@ FFMakeOsciModTopo()
   fmIndex.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFMIndex);
   fmIndex.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFMIndex);
   fmIndex.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFMIndex);
-  fmIndex.dependencies.enabled.audio.When({ (int)FFOsciModParam::FMOn }, [](auto const& vs) { return vs[0] != 0; });
+  fmIndex.dependencies.enabled.audio.WhenSimple({ (int)FFOsciModParam::FMOn }, [](auto const& vs) { return vs[0] != 0; });
 
   return result;
 }

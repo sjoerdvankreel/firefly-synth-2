@@ -57,7 +57,7 @@ FFMakeEnvTopo()
   sync.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSync);
   sync.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSync);
   sync.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSync);
-  sync.dependencies.enabled.audio.When({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  sync.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& release = result->params[(int)FFEnvParam::Release];
   release.acc = false;
@@ -73,7 +73,7 @@ FFMakeEnvTopo()
   release.scalarAddr = FFSelectScalarParamAddr(selectModule, selectRelease);
   release.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectRelease);
   release.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectRelease);
-  release.dependencies.enabled.audio.When({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  release.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& loopStart = result->params[(int)FFEnvParam::LoopStart];
   loopStart.acc = false;
@@ -89,7 +89,7 @@ FFMakeEnvTopo()
   loopStart.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLoopStart);
   loopStart.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectLoopStart);
   loopStart.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLoopStart);
-  loopStart.dependencies.enabled.audio.When({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  loopStart.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& loopLength = result->params[(int)FFEnvParam::LoopLength];
   loopLength.acc = false;
@@ -104,7 +104,7 @@ FFMakeEnvTopo()
   loopLength.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLoopLength);
   loopLength.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectLoopLength);
   loopLength.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLoopLength);
-  loopLength.dependencies.enabled.audio.When({ (int)FFEnvParam::Type, (int)FFEnvParam::LoopStart }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  loopLength.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::LoopStart }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
   smoothTime.acc = false;
@@ -122,8 +122,8 @@ FFMakeEnvTopo()
   smoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSmoothTime);
   smoothTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSmoothTime);
   smoothTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSmoothTime);
-  smoothTime.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  smoothTime.dependencies.enabled.audio.When({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  smoothTime.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  smoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.acc = false;
@@ -139,8 +139,8 @@ FFMakeEnvTopo()
   smoothBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSmoothBars);
   smoothBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSmoothBars);
   smoothBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSmoothBars);
-  smoothBars.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  smoothBars.dependencies.enabled.audio.When({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  smoothBars.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  smoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& stageLevel = result->params[(int)FFEnvParam::StageLevel];
   stageLevel.acc = true;
@@ -154,7 +154,7 @@ FFMakeEnvTopo()
   stageLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageLevel);
   stageLevel.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStageLevel);
   stageLevel.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageLevel);
-  stageLevel.dependencies.enabled.audio.When({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  stageLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& stageSlope = result->params[(int)FFEnvParam::StageSlope];
   stageSlope.acc = true;
@@ -168,7 +168,7 @@ FFMakeEnvTopo()
   stageSlope.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageSlope);
   stageSlope.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStageSlope);
   stageSlope.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageSlope);
-  stageSlope.dependencies.enabled.audio.When({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEnvType::Exp; });
+  stageSlope.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEnvType::Exp; });
 
   auto& stageTime = result->params[(int)FFEnvParam::StageTime];
   stageTime.acc = false;
@@ -185,8 +185,8 @@ FFMakeEnvTopo()
   stageTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageTime);
   stageTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStageTime);
   stageTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageTime);
-  stageTime.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  stageTime.dependencies.enabled.audio.When({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
+  stageTime.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  stageTime.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& stageBars = result->params[(int)FFEnvParam::StageBars];
   stageBars.acc = false;
@@ -201,8 +201,8 @@ FFMakeEnvTopo()
   stageBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageBars);
   stageBars.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStageBars);
   stageBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageBars);
-  stageBars.dependencies.visible.audio.When({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  stageBars.dependencies.enabled.audio.When({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  stageBars.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  stageBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   return result;
 }

@@ -1,7 +1,7 @@
 #include <firefly_base/base/topo/static/FBParamsDependencies.hpp>
 
 void
-FBParamsDependency::When(
+FBParamsDependency::WhenSlots(
   std::vector<FBTopoIndices> const& staticParamIndices_,
   FBParamsDependencyEvaluator const& evaluate_)
 {
@@ -10,7 +10,7 @@ FBParamsDependency::When(
 }
 
 void
-FBParamsDependency::When(
+FBParamsDependency::WhenSimple(
   std::vector<int> const& staticParamIndices_,
   FBParamsDependencyEvaluator const& evaluate_)
 {
