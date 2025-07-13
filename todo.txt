@@ -1,4 +1,3 @@
-dist demo is borked
 get rid of sse2neon
 make better section ui esp. for the a/b/c/ sections
 context menus
