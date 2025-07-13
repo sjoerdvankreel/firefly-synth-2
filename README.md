@@ -74,6 +74,17 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Stage length per-voice-start automate/modulate when not tempo-synced.
 * Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
 
+## LFO
+* For voice, regular or one-shot.
+* For global, regular or snap-to-host-project-time.
+* Optional tempo sync and smoothing filter.
+* 3x choice of various trig functions, saw/tri/sqr, repeating or free-running random noise or smooth noise.
+* Per-subslot step function (quantize) and rate control.
+* Per-subslot choice of add/multiply/stack + continous min/max params.
+* For slot A, horizontal and vertical skewing + continous amount params.
+* For slot B, phase offset control.
+* Unlike FF1, free-running smooth noise is now finally actually smooth.
+
 ## Osci
 * Note: it would be wise to set the osci mod matrix to oversample if you use either the dedicated FM generator or the inter-osci FM mods.
 * Comes with unison stereo spread, detune, phase offset, 2 new ones: voice blend and phase offset randomization (gets rid off the phasing effect).
