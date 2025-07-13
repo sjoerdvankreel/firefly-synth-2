@@ -28,6 +28,7 @@ class FFLFOProcessor final
   int _prevSmoothSamples = {};
   bool _globalWasInit = false;
   std::array<float, FFLFOBlockCount> _prevStepsNorm = {};
+  std::array<float, FFLFOBlockCount> _prevWaveModeNorm = {};
 
   bool _finished = false;
   bool _firstSample = true;

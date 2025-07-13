@@ -18,6 +18,8 @@ template <bool Smooth>
 class FFNoiseGenerator
 {
   int _steps = 2;
+  int _prevXMin = 0;
+  bool _freeRunning = false;
   FFParkMillerPRNG _prng = {};
   std::uint32_t _prngStateAtInit = {};
   std::array<float, FFNoiseGeneratorMaxSteps> _r = {};
@@ -29,10 +31,10 @@ class FFNoiseGenerator
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFNoiseGenerator);
 
-  void Init(float seed, int steps);
-  void Init(std::uint32_t seed, int steps);
-  float AtScalar(float phase) const;
-  FBBatch<float> AtBatch(FBBatch<float> phases) const;
+  float NextScalar(float phase);
+  FBBatch<float> NextBatch(FBBatch<float> phases);
+  void Init(float seed, int steps, bool freeRunning);
+  void Init(std::uint32_t seed, int steps, bool freeRunning);
 
   FFParkMillerPRNG& Prng() { return _prng; }
   std::uint32_t PrngStateAtInit() const { return _prngStateAtInit; }
@@ -55,6 +57,7 @@ template <bool Smooth>
 inline void
 FFNoiseGenerator<Smooth>::InitSteps(int steps)
 {
+  _prevXMin = 0;
   _steps = std::clamp(steps, 2, FFNoiseGeneratorMaxSteps);
   for (int i = 0; i < _steps; ++i)
     _r[i] = _prng.NextScalar();
@@ -62,8 +65,9 @@ FFNoiseGenerator<Smooth>::InitSteps(int steps)
 
 template <bool Smooth> 
 inline void 
-FFNoiseGenerator<Smooth>::Init(float seed, int steps)
+FFNoiseGenerator<Smooth>::Init(float seed, int steps, bool freeRunning)
 {
+  _freeRunning = freeRunning;
   _prng = FFParkMillerPRNG(seed);
   _prngStateAtInit = _prng.State();
   InitSteps(steps);
@@ -71,8 +75,9 @@ FFNoiseGenerator<Smooth>::Init(float seed, int steps)
 
 template <bool Smooth>
 inline void
-FFNoiseGenerator<Smooth>::Init(std::uint32_t seed, int steps)
+FFNoiseGenerator<Smooth>::Init(std::uint32_t seed, int steps, bool freeRunning)
 {
+  _freeRunning = freeRunning;
   _prng = FFParkMillerPRNG(seed);
   _prngStateAtInit = _prng.State();
   InitSteps(steps);
@@ -80,29 +85,34 @@ FFNoiseGenerator<Smooth>::Init(std::uint32_t seed, int steps)
 
 template <bool Smooth> 
 inline float
-FFNoiseGenerator<Smooth>::AtScalar(float phase) const
+FFNoiseGenerator<Smooth>::NextScalar(float phase)
 {
   FB_ASSERT(_steps >= 2);
   float x = phase * _steps;
   int xi = (int)x - (x < 0 && x != (int)x);
-  int x_min = xi % _steps;
+  int xMin = xi % _steps;
   if constexpr (!Smooth)
-    return _r[x_min];
+    return _r[xMin];
   else
   {
-    int x_max = (x_min + 1) % _steps;
+    if (_freeRunning && _prevXMin != xMin)
+    {
+      _r[_prevXMin] = _prng.NextScalar();
+      _prevXMin = xMin;
+    }
+    int xMax = (xMin + 1) % _steps;
     float t = x - xi;
-    return CosineRemap(_r[x_min], _r[x_max], t);
+    return CosineRemap(_r[xMin], _r[xMax], t);
   }
 }
 
 template <bool Smooth>
 inline FBBatch<float>
-FFNoiseGenerator<Smooth>::AtBatch(FBBatch<float> phase) const
+FFNoiseGenerator<Smooth>::NextBatch(FBBatch<float> phase)
 {
   FBSArray<float, FBSIMDFloatCount> arr;
   arr.Store(0, phase);
   for (int i = 0; i < FBSIMDFloatCount; i++)
-    arr.Set(i, AtScalar(arr.Get(i)));
+    arr.Set(i, NextScalar(arr.Get(i)));
   return arr.Load(0);
 }
