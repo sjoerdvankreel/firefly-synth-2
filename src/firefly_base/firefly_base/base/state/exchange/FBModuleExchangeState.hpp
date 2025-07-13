@@ -22,7 +22,7 @@ public FBModuleProcExchangeStateBase
   int lengthSamples = {};
   int positionSamples = {};
   ~FBModuleProcSingleExchangeState() = default;
-  FB_COPY_MOVE_DEFCTOR(FBModuleProcSingleExchangeState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcSingleExchangeState);
 
   int LengthSamples(int /*graphIndex*/) const override 
   { return lengthSamples; }
@@ -39,7 +39,7 @@ public FBModuleProcExchangeStateBase
   std::array<int, N> lengthSamples = {};
   std::array<int, N> positionSamples = {};
   ~FBModuleProcMultiExchangeState() = default;
-  FB_COPY_MOVE_DEFCTOR(FBModuleProcMultiExchangeState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcMultiExchangeState);
 
   int LengthSamples(int graphIndex) const override
   { return lengthSamples[graphIndex]; }
