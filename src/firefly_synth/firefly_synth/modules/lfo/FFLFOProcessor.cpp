@@ -101,6 +101,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
   _graphSampleCount = graphSampleCount;
 
   _sync = topo.NormalizedToBoolFast(FFLFOParam::Sync, syncNorm);
+  _phaseB = topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm);
   _type = topo.NormalizedToListFast<FFLFOType>(FFLFOParam::Type, typeNorm);
   _skewAXMode = topo.NormalizedToListFast<FFLFOSkewXMode>(FFLFOParam::SkewAXMode, skewAXModeNorm);
   _skewAYMode = topo.NormalizedToListFast<FFLFOSkewYMode>(FFLFOParam::SkewAYMode, skewAYModeNorm);
@@ -256,6 +257,28 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         else
           rateHzPlain[i].Store(s, topo.NormalizedToLinearFast(FFLFOParam::RateHz,
             FFSelectDualProcAccParamNormalized<Global>(rateHzNorm[i], voice), s));
+      }
+    }
+  }
+
+  if constexpr (Global)
+  {
+    // Snap to project time.
+    if (!_graph && _type == FFLFOType::SnapOrOneShot)
+    {
+      for (int i = 0; i < FFLFOBlockCount; i++)
+      {
+        // Rate can go zero by modulation.
+        float rate0 = rateHzPlain[i].Get(0);
+        if (rate0 > 0.0f)
+        {
+          float phaseOffset = i != 1 ? 0.0f : _phaseB;
+          std::int64_t samples0 = (std::int64_t)(sampleRate / rate0);
+          std::int64_t phaseSamples = state.input->projectTimeSamples % samples0;
+          float newPhase = phaseSamples / (float)samples0 + phaseOffset;
+          newPhase -= std::floor(newPhase);
+          _phaseGens[i].Reset(newPhase);
+        }
       }
     }
   }

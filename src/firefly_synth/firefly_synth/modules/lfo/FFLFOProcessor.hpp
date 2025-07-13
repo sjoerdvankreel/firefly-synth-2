@@ -12,6 +12,7 @@ struct FFLFOExchangeState;
 class FFLFOProcessor final
 {
   bool _sync = {};
+  float _phaseB = {};
   FFLFOType _type = {};
   FFLFOSkewXMode _skewAXMode = {};
   FFLFOSkewYMode _skewAYMode = {};

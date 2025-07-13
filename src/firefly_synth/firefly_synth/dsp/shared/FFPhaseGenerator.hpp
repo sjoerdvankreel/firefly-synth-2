@@ -37,7 +37,7 @@ public:
   FFTrackingPhaseGenerator() = default;
   explicit FFTrackingPhaseGenerator(float x) : _x(x) {}
 
-  void Reset() { _x = 0.0f; }
+  void Reset(float phase) { _x = phase; }
   float CurrentScalar() const { return _x; }
 
   float NextScalar(float incr);

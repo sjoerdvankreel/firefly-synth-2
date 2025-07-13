@@ -2,6 +2,8 @@
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+
+#include <cstdint>
 #include <unordered_map>
 
 struct FBNoteEvent;
@@ -12,6 +14,8 @@ struct FBPlugInputBlock final
 {
   float bpm = {};
   float sampleRate = {};
+  std::uint64_t projectTimeSamples = {};
+
   FBVoiceManager* voiceManager = {};
   std::vector<FBNoteEvent>* noteEvents = {};
   FBSArray<float, FBFixedBlockSamples> lastMIDINoteKey = {};

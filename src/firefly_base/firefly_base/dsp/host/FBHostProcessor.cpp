@@ -52,6 +52,8 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostOutputBlock& output)
 {
   _plugIn.bpm = input.bpm;
+  _plugIn.projectTimeSamples = input.projectTimeSamples;
+
   auto denormalState = FBDisableDenormal(); 
   for (auto const& be : input.blockAuto)
     _procState->Params()[be.param].Value(be.normalized);
@@ -108,6 +110,7 @@ FBHostProcessor::ProcessHost(
 
     _plug->ProcessPostVoice(_plugIn, _plugOut);
     _plugToHost->BufferFromPlug(_plugOut.audio);
+    _plugIn.projectTimeSamples += FBFixedBlockSamples;
   }
   _plugToHost->ProcessToHost(output);
 

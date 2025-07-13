@@ -64,6 +64,7 @@ struct FBHostInputBlock final
 {
   float bpm = {};
   FBHostAudioBlock audio = {};
+  std::uint64_t projectTimeSamples = {};
   std::vector<FBNoteEvent> noteEvents = {};
   std::vector<FBBlockAutoEvent> blockAuto = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};

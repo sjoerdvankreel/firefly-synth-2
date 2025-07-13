@@ -76,6 +76,7 @@ _exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo))
   FB_LOG_ENTRY_EXIT();
   setControllerClass(controllerId);
   processContextRequirements.needTempo();
+  processContextRequirements.needContinousTimeSamples();
 }
 
 tresult PLUGIN_API 
@@ -245,9 +246,14 @@ FBVST3AudioEffect::process(ProcessData& data)
     _output.outputParams.clear();
     _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
 
+    _input.projectTimeSamples = 0;
     _input.bpm = FBHostInputBlock::DefaultBPM;
-    if (data.processContext != nullptr && (data.processContext->state & ProcessContext::kTempoValid) != 0)
-      _input.bpm = static_cast<float>(data.processContext->tempo);
+    if (data.processContext != nullptr)
+    {
+      if ((data.processContext->state & ProcessContext::kTempoValid) != 0)
+        _input.bpm = static_cast<float>(data.processContext->tempo);
+      _input.projectTimeSamples = static_cast<float>(data.processContext->projectTimeSamples);
+    }
 
     float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
     if (data.numInputs != 1)
