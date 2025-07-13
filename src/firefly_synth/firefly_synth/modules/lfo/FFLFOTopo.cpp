@@ -248,7 +248,7 @@ FFMakeLFOTopo(bool global)
   rateHz.id = prefix + "{EFAAB971-9F51-4FFD-9873-D33D4591F606}";
   rateHz.type = FBParamType::Linear;
   rateHz.Linear().min = 0.05f;
-  rateHz.Linear().max = 10.0f;
+  rateHz.Linear().max = 20.0f;
   rateHz.Linear().editSkewFactor = 0.5f;
   auto selectRateHz = [](auto& module) { return &module.acc.rateHz; };
   rateHz.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectRateHz);
