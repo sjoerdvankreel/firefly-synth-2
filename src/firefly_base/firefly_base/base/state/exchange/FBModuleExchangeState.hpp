@@ -8,7 +8,7 @@
 struct FBModuleProcExchangeStateBase
 {
   bool active = {};
-  virtual ~FBModuleProcExchangeStateBase() = 0 {};
+  virtual ~FBModuleProcExchangeStateBase() {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcExchangeStateBase);
 
   virtual bool ShouldGraph(int graphIndex) const = 0;
