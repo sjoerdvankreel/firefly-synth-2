@@ -68,13 +68,13 @@ FBGUIParamSlider::valueChanged()
 String
 FBGUIParamSlider::getTextFromValue(double value)
 {
-  return _param->static_.NormalizedToTextWithUnit(false, value);
+  return _param->NormalizedToTextWithUnit(false, value);
 }
 
 double
 FBGUIParamSlider::getValueFromText(const String& text)
 {
-  auto parsed = _param->static_.TextToNormalized(false, text.toStdString());
+  auto parsed = _param->TextToNormalized(false, text.toStdString());
   return parsed.value_or(_param->DefaultNormalizedByText());
 }
 
@@ -124,13 +124,13 @@ FBParamSlider::mouseUp(MouseEvent const& event)
 String
 FBParamSlider::getTextFromValue(double value)
 {
-  return _param->static_.NormalizedToTextWithUnit(false, value);
+  return _param->NormalizedToTextWithUnit(false, value);
 }
 
 double
 FBParamSlider::getValueFromText(const String& text)
 {
-  auto parsed = _param->static_.TextToNormalized(false, text.toStdString());
+  auto parsed = _param->TextToNormalized(false, text.toStdString());
   return parsed.value_or(_param->DefaultNormalizedByText());
 }
 

@@ -34,6 +34,7 @@ class FFEffectProcessor final
   int _graphSamplesProcessed = {};
   float _graphCombFilterFreqMultiplier = {};
   float _graphStVarFilterFreqMultiplier = {};
+
   FBBasicLPFilter _MIDINoteKeySmoother = {};
   juce::dsp::Oversampling<float> _oversampler;
   FBSArray<float, FFEffectFixedBlockOversamples> _MIDINoteKey = {};

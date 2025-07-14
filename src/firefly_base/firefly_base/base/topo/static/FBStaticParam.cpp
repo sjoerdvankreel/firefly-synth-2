@@ -24,10 +24,10 @@ FBAutomationTimingToString(FBAutomationTiming timing)
 }
 
 std::string
-FBStaticParamBase::GetDefaultText(int moduleSlot, int paramSlot) const
+FBStaticParamBase::GetDefaultText(int moduleIndex, int moduleSlot, int paramSlot) const
 {
   if (defaultTextSelector)
-    return defaultTextSelector(moduleSlot, paramSlot);
+    return defaultTextSelector(moduleIndex, moduleSlot, paramSlot);
   return defaultText;
 }
 
@@ -84,33 +84,33 @@ FBStaticParamBase::DebugNameAndId() const
 }
 
 std::optional<double>
-FBStaticParamBase::TextToPlain(bool io, std::string const& text) const
+FBStaticParamBase::TextToPlain(bool io, int moduleIndex, std::string const& text) const
 {
-  return NonRealTime().TextToPlain(*this, io, text);
+  return NonRealTime().TextToPlain(*this, io, moduleIndex, text);
 }
 
 std::optional<double>
-FBStaticParamBase::TextToNormalized(bool io, std::string const& text) const
+FBStaticParamBase::TextToNormalized(bool io, int moduleIndex, std::string const& text) const
 {
-  return NonRealTime().TextToNormalized(*this, io, text);
+  return NonRealTime().TextToNormalized(*this, io, moduleIndex, text);
 }
 
 std::string
-FBStaticParamBase::NormalizedToTextWithUnit(bool io, double normalized) const
+FBStaticParamBase::NormalizedToTextWithUnit(bool io, int moduleIndex, double normalized) const
 {
-  std::string result = NonRealTime().NormalizedToText(io, normalized);
+  std::string result = NonRealTime().NormalizedToText(io, moduleIndex, normalized);
   if (!io && !unit.empty())
     result += " " + unit;
   return result;
 }
 
 double
-FBStaticParamBase::DefaultNormalizedByText(int moduleSlot, int paramSlot) const
+FBStaticParamBase::DefaultNormalizedByText(int moduleIndex, int moduleSlot, int paramSlot) const
 {
-  auto text = GetDefaultText(moduleSlot, paramSlot);
+  auto text = GetDefaultText(moduleIndex, moduleSlot, paramSlot);
   if (text.size() == 0)
     return 0.0;
-  auto result = TextToNormalized(false, text);
+  auto result = TextToNormalized(false, moduleIndex, text);
   if (result)
     return result.value();
   FB_LOG_WARN("Failed to parse default text.");

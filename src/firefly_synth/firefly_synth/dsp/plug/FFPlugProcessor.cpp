@@ -79,6 +79,19 @@ FFPlugProcessor::LeaseVoices(
     }
 }
 
+void 
+FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
+{
+  auto state = MakeModuleState(input);
+  auto& globalDSP = _procState->dsp.global;
+  for (int i = 0; i < FFLFOCount; i++)
+  {
+    state.moduleSlot = i;
+    globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, nullptr, state);
+    globalDSP.gLFO[i].processor->Process<true>(state);
+  }
+}
+
 void
 FFPlugProcessor::ProcessPostVoice(
   FBPlugInputBlock const& input, FBPlugOutputBlock& output)

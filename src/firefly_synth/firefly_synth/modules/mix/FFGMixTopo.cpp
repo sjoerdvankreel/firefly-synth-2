@@ -90,7 +90,7 @@ FFMakeGMixTopo()
 
   auto& voiceToOut = result->params[(int)FFGMixParam::VoiceToOut];
   voiceToOut.acc = true;
-  voiceToOut.defaultTextSelector = [](int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
+  voiceToOut.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
   voiceToOut.name = "Voice\U00002192Out";
   voiceToOut.slotCount = 1;
   voiceToOut.unit = "%";

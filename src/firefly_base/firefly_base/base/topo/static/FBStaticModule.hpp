@@ -13,12 +13,12 @@
 
 class FBPlugGUI;
 struct FBModuleGraphComponentData;
-struct FBModuleProcExchangeState;
+struct FBModuleProcExchangeStateBase;
 
-typedef std::function<FBModuleProcExchangeState* (
+typedef std::function<FBModuleProcExchangeStateBase* (
   int moduleSlot, void* state)>
 FBGlobalModuleExchangeAddrSelector;
-typedef std::function<FBModuleProcExchangeState* (
+typedef std::function<FBModuleProcExchangeStateBase* (
   int voice, int moduleSlot, void* state)>
 FBVoiceModuleExchangeAddrSelector;
 typedef std::function<void(FBModuleGraphComponentData* graphData)>
@@ -52,6 +52,8 @@ struct FBStaticModule final
 
   template <class ParamIndex>
   int NormalizedToBarsFast(ParamIndex index, float normalized) const;
+  template <class ParamIndex>
+  float NormalizedToBarsFreqFast(ParamIndex index, float normalized, float bpm) const;
   template <class ParamIndex>
   int NormalizedToBarsSamplesFast(ParamIndex index, float normalized, float sampleRate, float bpm) const;
 
@@ -126,6 +128,13 @@ inline int
 FBStaticModule::NormalizedToBarsFast(ParamIndex index, float normalized) const
 {
   return params[static_cast<int>(index)].Bars().NormalizedToPlainFast(normalized);
+}
+
+template <class ParamIndex> 
+inline float 
+FBStaticModule::NormalizedToBarsFreqFast(ParamIndex index, float normalized, float bpm) const
+{
+  return params[static_cast<int>(index)].Bars().NormalizedToFreqFast(normalized, bpm);
 }
 
 template <class ParamIndex>

@@ -20,7 +20,7 @@ FBIdentityParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBIdentityParamNonRealTime::PlainToText(bool io, double plain) const
+FBIdentityParamNonRealTime::PlainToText(bool io, int /*moduleIndex*/, double plain) const
 {
   double displayPlain = plain * displayMultiplier;
   if (io)
@@ -29,7 +29,7 @@ FBIdentityParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBIdentityParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
+FBIdentityParamNonRealTime::TextToPlainInternal(bool /*io*/, int /*moduleIndex*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)

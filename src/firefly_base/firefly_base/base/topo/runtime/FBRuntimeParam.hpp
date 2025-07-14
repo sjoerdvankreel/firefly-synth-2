@@ -27,8 +27,14 @@ struct FBRuntimeParamBase
   std::string staticModuleId;
   int tag;
 
-  virtual FBStaticParamBase const& Static() const = 0;
   FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeParamBase);
+  virtual FBStaticParamBase const& Static() const = 0;
+
+  std::string PlainToText(bool io, double plain) const;
+  std::string NormalizedToText(bool io, double normalized) const;
+  std::string NormalizedToTextWithUnit(bool io, double normalized) const;
+  std::optional<double> TextToPlain(bool io, std::string const& text) const;
+  std::optional<double> TextToNormalized(bool io, std::string const& text) const;
 
   FBRuntimeParamBase(
     FBStaticTopo const& topo,

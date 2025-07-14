@@ -24,7 +24,7 @@ FBLinearParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBLinearParamNonRealTime::PlainToText(bool io, double plain) const
+FBLinearParamNonRealTime::PlainToText(bool io, int /*moduleIndex*/, double plain) const
 {
   double displayPlain = plain * displayMultiplier;
   if (io)
@@ -33,7 +33,7 @@ FBLinearParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBLinearParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
+FBLinearParamNonRealTime::TextToPlainInternal(bool /*io*/, int /*moduleIndex*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)

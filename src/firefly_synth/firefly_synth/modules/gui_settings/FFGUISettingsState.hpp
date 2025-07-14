@@ -15,6 +15,7 @@ class FFGUISettingsGUIState final
   std::array<double, 1> oscSelectedTab = {};
   std::array<double, 1> mixSelectedTab = {};
   std::array<double, 1> envSelectedTab = {};
+  std::array<double, 1> lfoSelectedTab = {};
   friend std::unique_ptr<FBStaticModule> FFMakeGUISettingsTopo();
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUISettingsGUIState);

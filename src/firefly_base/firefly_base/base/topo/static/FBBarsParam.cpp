@@ -23,14 +23,14 @@ FBBarsParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBBarsParamNonRealTime::PlainToText(bool /*io*/, double plain) const
+FBBarsParamNonRealTime::PlainToText(bool /*io*/, int /*moduleIndex*/, double plain) const
 {
   int discrete = static_cast<int>(std::round(plain));
   return items[discrete].ToString();
 }
 
 std::optional<double>
-FBBarsParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
+FBBarsParamNonRealTime::TextToPlainInternal(bool /*io*/, int /*moduleIndex*/, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
     if (text == items[i].ToString())
@@ -39,13 +39,13 @@ FBBarsParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text
 }
 
 PopupMenu
-FBBarsParamNonRealTime::MakePopupMenu() const
+FBBarsParamNonRealTime::MakePopupMenu(int moduleIndex) const
 {
   PopupMenu result;
   PopupMenu subMenu;
   for (int i = 0; i < items.size(); i++)
   {
-    subMenu.addItem(i + 1, PlainToText(false, i));
+    subMenu.addItem(i + 1, PlainToText(false, moduleIndex, i));
     if (i == items.size() - 1 || items[i].num != items[i + 1].num)
     {
       result.addSubMenu(items[i].num == 0? "Off": std::to_string(items[i].num), subMenu);

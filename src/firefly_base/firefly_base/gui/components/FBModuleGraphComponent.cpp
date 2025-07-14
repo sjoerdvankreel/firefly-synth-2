@@ -102,7 +102,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
   int staticIndex = topo->modules[_tweakedModuleByUI].topoIndices.index;
 
   _data->bipolar = false;
-  _data->drawMarkers = false;
+  _data->drawMarkersSelector = {};
   _data->drawClipBoundaries = false;
   _data->skipDrawOnEqualsPrimary = true;
   _data->guiRenderType = FBGUIRenderType::Basic;

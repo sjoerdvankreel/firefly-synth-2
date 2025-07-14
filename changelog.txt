@@ -1,3 +1,9 @@
+July 14, 2025 - alpha 8.
+
+- Modules
+* Add global and per-voice lfo.
+* Just for fun, VLFO1 temporarily adds to osci 1 gain and GLFO1 adds to osci 2 gain (since, no modmatrix yet).
+
 July 2, 2025 - alpha 7.
 
 - Build

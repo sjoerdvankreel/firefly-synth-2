@@ -30,7 +30,7 @@ FBAutoSizeComboBox::FixedWidth(int /*height*/) const
 
 FBGUIParamComboBox::
 FBGUIParamComboBox(FBPlugGUI* plugGUI, FBRuntimeGUIParam const* param):
-FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu()),
+FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index)),
 FBGUIParamControl(plugGUI, param)
 {
   SetValueNormalizedFromPlug(plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex));
@@ -66,7 +66,7 @@ FBGUIParamComboBox::valueChanged(Value& /*value*/)
 
 FBParamComboBox::
 FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param) :
-  FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu()),
+  FBAutoSizeComboBox(param->static_.ItemsNonRealTime().MakePopupMenu(param->topoIndices.module.index)),
   FBParamControl(plugGUI, param)
 {
   SetValueNormalizedFromHost(plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex));

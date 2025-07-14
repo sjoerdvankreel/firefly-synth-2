@@ -32,7 +32,7 @@ FBLog2ParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 std::string
-FBLog2ParamNonRealTime::PlainToText(bool io, double plain) const
+FBLog2ParamNonRealTime::PlainToText(bool io, int /*moduleIndex*/, double plain) const
 {
   double displayPlain = plain * displayMultiplier;
   if (io)
@@ -41,7 +41,7 @@ FBLog2ParamNonRealTime::PlainToText(bool io, double plain) const
 }
 
 std::optional<double>
-FBLog2ParamNonRealTime::TextToPlainInternal(bool /*io*/, std::string const& text) const
+FBLog2ParamNonRealTime::TextToPlainInternal(bool /*io*/, int /*moduleIndex*/, std::string const& text) const
 {
   auto resultOpt = FBStringToDoubleOptCLocale(text);
   if (!resultOpt)

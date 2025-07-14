@@ -52,6 +52,8 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostOutputBlock& output)
 {
   _plugIn.bpm = input.bpm;
+  _plugIn.projectTimeSamples = input.projectTimeSamples;
+
   auto denormalState = FBDisableDenormal(); 
   for (auto const& be : input.blockAuto)
     _procState->Params()[be.param].Value(be.normalized);
@@ -67,14 +69,14 @@ FBHostProcessor::ProcessHost(
     auto const& static_ = _topo->static_.modules[indices.index];
     if (!static_.voice)
     {
-      if(_exchangeState->Modules()[m] != nullptr)
-        *_exchangeState->Modules()[m]->Global() = {};
+      if (_exchangeState->Modules()[m] != nullptr)
+        _exchangeState->Modules()[m]->Global()->active = false;
     }
     else
     {
       if (_exchangeState->Modules()[m] != nullptr)
         for (int v = 0; v < FBMaxVoices; v++)
-        *_exchangeState->Modules()[m]->Voice()[v] = {};
+        _exchangeState->Modules()[m]->Voice()[v]->active = false;
     }
   }
 
@@ -108,6 +110,7 @@ FBHostProcessor::ProcessHost(
 
     _plug->ProcessPostVoice(_plugIn, _plugOut);
     _plugToHost->BufferFromPlug(_plugOut.audio);
+    _plugIn.projectTimeSamples += FBFixedBlockSamples;
   }
   _plugToHost->ProcessToHost(output);
 

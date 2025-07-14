@@ -16,15 +16,15 @@ FBEditTypeToString(FBEditType type)
 }
 
 std::string
-FBParamNonRealTime::NormalizedToText(bool io, double plain) const
+FBParamNonRealTime::NormalizedToText(bool io, int moduleIndex, double normalized) const
 {
-  return PlainToText(io, NormalizedToPlain(plain));
+  return PlainToText(io, moduleIndex, NormalizedToPlain(normalized));
 }
 
 std::optional<double> 
-FBParamNonRealTime::TextToPlain(FBStaticParamBase const& param, bool io, std::string const& text) const
+FBParamNonRealTime::TextToPlain(FBStaticParamBase const& param, bool io, int moduleIndex, std::string const& text) const
 {
-  auto result = TextToPlainInternal(io, text);
+  auto result = TextToPlainInternal(io, moduleIndex, text);
   if (result)
     return result;
   FB_LOG_INFO("Failed to parse text '" + text + "' for param '" + param.DebugNameAndId() + "'.");
@@ -32,9 +32,9 @@ FBParamNonRealTime::TextToPlain(FBStaticParamBase const& param, bool io, std::st
 }
 
 std::optional<double> 
-FBParamNonRealTime::TextToNormalized(FBStaticParamBase const& param, bool io, std::string const& text) const
+FBParamNonRealTime::TextToNormalized(FBStaticParamBase const& param, bool io, int moduleIndex, std::string const& text) const
 {
-  auto plain = TextToPlain(param, io, text);
+  auto plain = TextToPlain(param, io, moduleIndex, text);
   if (!plain)
     return {};
   return PlainToNormalized(plain.value());

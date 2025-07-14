@@ -297,7 +297,7 @@ FBRuntimeTopo::SaveParamStateToVar(
     param->setProperty("moduleId", String(params[p].staticModuleId));
     param->setProperty("paramSlot", params[p].topoIndices.param.slot);
     param->setProperty("moduleSlot", params[p].topoIndices.module.slot);
-    param->setProperty("val", String(params[p].static_.NonRealTime().NormalizedToText(true, *container.Params()[p])));
+    param->setProperty("val", String(params[p].NormalizedToText(true, *container.Params()[p])));
 
     // store the longname without funky chars
     // i dont want to deal with charsets in stored-to-disk
@@ -433,7 +433,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
     double defaultNormalized = 0.0f;
     auto defaultText = params.params[p].GetDefaultText();
     if(defaultText.size())
-      defaultNormalized = params.params[p].static_.TextToNormalized(false, defaultText).value();
+      defaultNormalized = params.params[p].TextToNormalized(false, defaultText).value();
     *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
@@ -518,11 +518,11 @@ FBRuntimeTopo::LoadParamStateFromVar(
     }
 
     auto const& topo = params.params[iter->second];
-    auto normalized = topo.static_.TextToNormalized(true, val.toString().toStdString());
+    auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
     {
       FB_LOG_WARN("Failed to parse plugin parameter value.");
-      normalized = topo.static_.TextToNormalized(false, topo.GetDefaultText());
+      normalized = topo.TextToNormalized(false, topo.GetDefaultText());
     }
     if(!topo.static_.isOutput())
       *container.Params()[iter->second] = static_cast<float>(normalized.value());

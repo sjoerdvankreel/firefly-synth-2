@@ -17,98 +17,6 @@
 using namespace juce::dsp;
 
 static inline FBBatch<float>
-Sin2(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  return xsimd::sin(in * FBPi + sin1);
-}
-
-static inline FBBatch<float>
-Cos2(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  return xsimd::cos(in * FBPi + cos1);
-}
-
-static inline FBBatch<float>
-SinCos(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  return xsimd::sin(in * FBPi + cos1);
-}
-
-static inline FBBatch<float>
-CosSin(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  return xsimd::cos(in * FBPi + sin1);
-}
-
-static inline FBBatch<float>
-Sin3(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  auto sin2 = xsimd::sin(in * FBPi + sin1);
-  return xsimd::sin(in * FBPi + sin2);
-}
-
-static inline FBBatch<float>
-Cos3(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  auto cos2 = xsimd::cos(in * FBPi + cos1);
-  return xsimd::cos(in * FBPi + cos2);
-}
-
-static inline FBBatch<float>
-Sn2Cs(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  auto sin2 = xsimd::sin(in * FBPi + cos1);
-  return xsimd::sin(in * FBPi + sin2);
-}
-
-static inline FBBatch<float>
-Cs2Sn(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  auto cos2 = xsimd::cos(in * FBPi + sin1);
-  return xsimd::cos(in * FBPi + cos2);
-}
-
-static inline FBBatch<float>
-SnCs2(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  auto cos2 = xsimd::cos(in * FBPi + cos1);
-  return xsimd::sin(in * FBPi + cos2);
-}
-
-static inline FBBatch<float>
-CsSn2(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  auto sin2 = xsimd::sin(in * FBPi + sin1);
-  return xsimd::cos(in * FBPi + sin2);
-}
-
-static inline FBBatch<float>
-SnCsSn(FBBatch<float> in)
-{
-  auto sin1 = xsimd::sin(in * FBPi);
-  auto cos2 = xsimd::cos(in * FBPi + sin1);
-  return xsimd::sin(in * FBPi + cos2);
-}
-
-static inline FBBatch<float>
-CsSnCs(FBBatch<float> in)
-{
-  auto cos1 = xsimd::cos(in * FBPi);
-  auto sin2 = xsimd::sin(in * FBPi + cos1);
-  return xsimd::cos(in * FBPi + sin2);
-}
-
-static inline FBBatch<float>
 FoldBack(FBBatch<float> in)
 {
   FBSArray<float, FBSIMDFloatCount> out;
@@ -283,23 +191,24 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   FBSArray2<float, FFEffectFixedBlockOversamples, FFEffectBlockCount> combFreqPlusPlain;
   
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
-      trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
       if (_kind[i] == FFEffectKind::StVar)
       {
-        stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq, 
+        stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq,
           FFSelectDualProcAccParamNormalized<Global>(stVarFreqNorm[i], voice), s));
-        stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes, 
+        stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes,
           FFSelectDualProcAccParamNormalized<Global>(stVarResNorm[i], voice), s));
-        stVarGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarGain, 
+        stVarGainPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarGain,
           FFSelectDualProcAccParamNormalized<Global>(stVarGainNorm[i], voice), s));
-        stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak, 
+        stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak,
           FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice), s));
       }
       else if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombPlus || _kind[i] == FFEffectKind::CombMin)
       {
-        combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk, 
+        combKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombKeyTrk,
           FFSelectDualProcAccParamNormalized<Global>(combKeyTrkNorm[i], voice), s));
         if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombMin)
         {
@@ -318,18 +227,19 @@ FFEffectProcessor::Process(FBModuleProcState& state)
       }
       else if (_kind[i] == FFEffectKind::Clip || _kind[i] == FFEffectKind::Fold || _kind[i] == FFEffectKind::Skew)
       {
-        distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt, 
+        distAmtPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistAmt,
           FFSelectDualProcAccParamNormalized<Global>(distAmtNorm[i], voice), s));
-        distMixPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistMix, 
+        distMixPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::DistMix,
           FFSelectDualProcAccParamNormalized<Global>(distMixNorm[i], voice), s));
-        distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias, 
+        distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias,
           FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice), s));
-        distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, 
+        distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive,
           FFSelectDualProcAccParamNormalized<Global>(distDriveNorm[i], voice), s));
       }
       else
         FB_ASSERT(_kind[i] == FFEffectKind::Off);
     }
+  }
 
   if (_oversampleTimes != 1)
   {
@@ -689,22 +599,8 @@ FFEffectProcessor::ProcessFold(
       auto shapedBatch = (inBatch + bias) * drive;
       switch (_foldMode[block])
       {
-      case FFEffectFoldMode::Fold: shapedBatch = FoldBack(shapedBatch); break;
-      case FFEffectFoldMode::Sin: shapedBatch = xsimd::sin(shapedBatch * FBPi); break;
-      case FFEffectFoldMode::Cos: shapedBatch = xsimd::cos(shapedBatch * FBPi); break;
-      case FFEffectFoldMode::Sin2: shapedBatch = Sin2(shapedBatch); break;
-      case FFEffectFoldMode::Cos2: shapedBatch = Cos2(shapedBatch); break;
-      case FFEffectFoldMode::SinCos: shapedBatch = SinCos(shapedBatch); break;
-      case FFEffectFoldMode::CosSin: shapedBatch = CosSin(shapedBatch); break;
-      case FFEffectFoldMode::Sin3: shapedBatch = Sin3(shapedBatch); break;
-      case FFEffectFoldMode::Cos3: shapedBatch = Cos3(shapedBatch); break;
-      case FFEffectFoldMode::Sn2Cs: shapedBatch = Sn2Cs(shapedBatch); break;
-      case FFEffectFoldMode::Cs2Sn: shapedBatch = Cs2Sn(shapedBatch); break;
-      case FFEffectFoldMode::SnCs2: shapedBatch = SnCs2(shapedBatch); break;
-      case FFEffectFoldMode::CsSn2: shapedBatch = CsSn2(shapedBatch); break;
-      case FFEffectFoldMode::SnCsSn: shapedBatch = SnCsSn(shapedBatch); break;
-      case FFEffectFoldMode::CsSnCs: shapedBatch = CsSnCs(shapedBatch); break;
-      default: FB_ASSERT(false); break;
+      case FFEffectFoldModeFold: shapedBatch = FoldBack(shapedBatch); break;
+      default: shapedBatch = FFCalcTrig(_foldMode[block], shapedBatch * FBPi); break;
       }
       auto mixedBatch = (1.0f - mix) * inBatch + mix * shapedBatch;
       oversampled[c].Store(s, mixedBatch);
@@ -712,7 +608,7 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-template int FFEffectProcessor::Process<true>(FBModuleProcState& state);
-template int FFEffectProcessor::Process<false>(FBModuleProcState& state);
-template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
-template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+template int FFEffectProcessor::Process<true>(FBModuleProcState&);
+template int FFEffectProcessor::Process<false>(FBModuleProcState&);
+template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool, int, int, FBModuleProcState&);
+template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool, int, int, FBModuleProcState&);

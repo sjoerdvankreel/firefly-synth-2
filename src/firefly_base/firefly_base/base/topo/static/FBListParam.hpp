@@ -7,6 +7,11 @@
 #include <vector>
 #include <optional>
 #include <algorithm>
+#include <functional>
+
+typedef std::function<std::string(
+int moduleIndex, int itemSlot)>
+FBItemSlotFormatter;
 
 struct FBListItem final
 {
@@ -17,8 +22,11 @@ struct FBListItem final
 struct FBListParam
 {
   std::vector<FBListItem> items = {};
+  FBItemSlotFormatter slotFormatter = {};
   std::map<int, std::string> submenuStart = {};
+
   int NormalizedToPlainFast(float normalized) const;
+  std::string GetName(int moduleIndex, int itemSlot) const;
 };
 
 struct FBListParamNonRealTime final :
@@ -30,12 +38,12 @@ public FBItemsParamNonRealTime
   int ValueCount() const override;
   FBEditType GUIEditType() const override;
   FBEditType AutomationEditType() const override;
-  juce::PopupMenu MakePopupMenu() const override;
+  juce::PopupMenu MakePopupMenu(int moduleIndex) const override;
 
   double PlainToNormalized(double plain) const override;
   double NormalizedToPlain(double normalized) const override;
-  std::string PlainToText(bool io, double plain) const override;
-  std::optional<double> TextToPlainInternal(bool io, std::string const& text) const override;
+  std::string PlainToText(bool io, int moduleIndex, double plain) const override;
+  std::optional<double> TextToPlainInternal(bool io, int moduleIndex, std::string const& text) const override;
 };
 
 inline int

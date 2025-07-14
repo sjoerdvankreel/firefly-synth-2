@@ -2,30 +2,35 @@
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Only tested on reaper and bitwig.
-* Only osci, inter-osci modulation, per-voice fx, global fx, envelopes and audio mixer matrix implemented.
-* Stock JUCE GUI, no presets, no delay, reverb, LFO's, MTS-ESP, no CV-routing, 
-even ENV1 is only connected to per-voice amp, the others route nowhere. Let alone stuff like an arpeggiator.
+* Only osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos and audio mixer matrix implemented.
+* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP, no CV-routing,
+only ENV1 is only connected to per-voice amp, some LFO routing is temporarily hardcoded. All else routes nowhere. Let alone stuff like an arpeggiator.
 
 # Some demo material
 * Bowed strings
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_bowstring.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_bowstring.rpp)
 [video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_bowstring_video.mp4)
+* Plucked strings
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_pluckstring.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_pluckstring.rpp)
 * Distortion (still love it)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_distortion.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_distortion.rpp)
 [video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_distortion_video.mp4)
-* Plucked strings
-[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_pluckstring.mp3)
-[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_pluckstring.rpp)
+* FM + lfo demo
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_fm_lfo_filter.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_fm_lfo_filter.rpp)
+[video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_fm_lfo_filter.mp4)
 * GUI Reacting to Bitwig per-voice-modulation demo
 [video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_bitwig_clap_polymod.mp4)
-* TODO demo the new dedicated FM osci. It does feedback FM, too.
 
 The distortion demo is actually interesting to look at the reaper/video file. It makes use of envelope loop points,
 keytracking state variable filters and keytracking comb filters. Because of the keytracking each engine voice
 shows up as a different line (frequency response in the filter case, but the same applies to oscis and envelopes)
 in the graph plot. See bottom of the page for screenshot.
+
+LFO demo shows plotting of per-voice LFO to gain for the osci. In case CLAP per-voice modulation is applied too, things get stacked.
 
 # Why yet another one?
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
@@ -73,6 +78,17 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Per stage amp and slope, per-sample automate/modulate.
 * Stage length per-voice-start automate/modulate when not tempo-synced.
 * Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
+
+## LFO
+* For voice, regular or one-shot.
+* For global, regular or snap-to-host-project-time.
+* Optional tempo sync and smoothing filter.
+* 3x choice of various trig functions, saw/tri/sqr, repeating or free-running random noise or smooth noise.
+* Per-subslot step function (quantize/stairstep) and continuous rate control.
+* Per-subslot choice of add/multiply/stack + continous min/max params.
+* For slot A, horizontal and vertical skewing + continous amount params.
+* For slot B, phase offset control.
+* Unlike FF1, free-running smooth noise is now finally actually smooth.
 
 ## Osci
 * Note: it would be wise to set the osci mod matrix to oversample if you use either the dedicated FM generator or the inter-osci FM mods.

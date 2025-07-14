@@ -1,6 +1,6 @@
 get rid of sse2neon
+make better section ui esp. for the a/b/c/ sections
 context menus
-do env1-lfo1-env2-lfo2-etc in order to allow modulate both from both
 string timbre should not react to samplerate/oversample
 paint something always
 check all the todos before out of alpha

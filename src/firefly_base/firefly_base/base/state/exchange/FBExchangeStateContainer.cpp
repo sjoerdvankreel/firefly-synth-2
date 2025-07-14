@@ -21,7 +21,7 @@ _voices(topo.static_.voicesExchangeAddr(_rawState))
     }
     else if(static_.voice && static_.voiceModuleExchangeAddr)
     {
-      std::array<FBModuleProcExchangeState*, FBMaxVoices> moduleExchange = {};
+      std::array<FBModuleProcExchangeStateBase*, FBMaxVoices> moduleExchange = {};
       for (int v = 0; v < FBMaxVoices; v++)
         moduleExchange[v] = static_.voiceModuleExchangeAddr(v, indices.slot, _rawState);
       _modules.push_back(std::make_unique<FBModuleExchangeState>(moduleExchange));

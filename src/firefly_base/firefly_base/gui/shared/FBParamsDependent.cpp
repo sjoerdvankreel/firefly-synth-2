@@ -10,19 +10,24 @@ RuntimeDependencies(
   FBRuntimeTopo const* topo,
   int slot, bool audio,
   FBTopoIndices const& staticModuleIndices,
-  std::vector<int> const& staticParamIndices)
+  std::vector<FBTopoIndices> const& staticParamIndices)
 {
   std::vector<int> result;
   for (int i = 0; i < staticParamIndices.size(); i++)
   {
-    // Dependency should have slot count 0 or > slot.
-    auto const& staticDependency = topo->static_.modules[staticModuleIndices.index].params[staticParamIndices[i]];
-    FB_ASSERT(staticDependency.slotCount == 1 || staticDependency.slotCount > slot);
-    int dependencySlot = staticDependency.slotCount == 1 ? 0 : slot;
+    // Slot == -1: Dependency should have slot count 0 or > slot.
+    // Else: user picks a specific slot.
+    int dependencySlot = staticParamIndices[i].slot;
+    if (dependencySlot == -1)
+    {
+      auto const& staticDependency = topo->static_.modules[staticModuleIndices.index].params[staticParamIndices[i].index];
+      FB_ASSERT(staticDependency.slotCount == 1 || staticDependency.slotCount > slot);
+      dependencySlot = staticDependency.slotCount == 1 ? 0 : slot;
+    }
 
     FBParamTopoIndices indices;
     indices.param.slot = dependencySlot;
-    indices.param.index = staticParamIndices[i];
+    indices.param.index = staticParamIndices[i].index;
     indices.module = staticModuleIndices;
     if(audio)
       result.push_back(topo->audio.ParamAtTopo(indices)->runtimeParamIndex);

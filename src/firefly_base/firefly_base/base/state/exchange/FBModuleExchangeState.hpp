@@ -5,15 +5,48 @@
 
 #include <array>
 
-struct FBModuleProcExchangeState
+struct FBModuleProcExchangeStateBase
 {
   bool active = {};
+  virtual ~FBModuleProcExchangeStateBase() {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcExchangeStateBase);
+
+  virtual bool ShouldGraph(int graphIndex) const = 0;
+  virtual int LengthSamples(int graphIndex) const = 0;
+  virtual float PositionNormalized(int graphIndex) const = 0;
+};
+
+struct FBModuleProcSingleExchangeState:
+public FBModuleProcExchangeStateBase
+{
   int lengthSamples = {};
   int positionSamples = {};
-  FB_COPY_MOVE_DEFCTOR(FBModuleProcExchangeState);
+  ~FBModuleProcSingleExchangeState() = default;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcSingleExchangeState);
 
-  bool ShouldGraph() const { return active && positionSamples < lengthSamples; }
-  float PositionNormalized() const { return positionSamples / static_cast<float>(lengthSamples); }
+  int LengthSamples(int /*graphIndex*/) const override 
+  { return lengthSamples; }
+  bool ShouldGraph(int /*graphIndex*/) const override 
+  { return active && positionSamples < lengthSamples; }
+  float PositionNormalized(int /*graphIndex*/) const override 
+  { return positionSamples / static_cast<float>(lengthSamples); }
+};
+
+template <int N>
+struct FBModuleProcMultiExchangeState:
+public FBModuleProcExchangeStateBase
+{
+  std::array<int, N> lengthSamples = {};
+  std::array<int, N> positionSamples = {};
+  ~FBModuleProcMultiExchangeState() = default;
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcMultiExchangeState);
+
+  int LengthSamples(int graphIndex) const override
+  { return lengthSamples[graphIndex]; }
+  bool ShouldGraph(int graphIndex) const override 
+  { return active && positionSamples[graphIndex] < lengthSamples[graphIndex]; }
+  float PositionNormalized(int graphIndex) const override 
+  { return positionSamples[graphIndex] / static_cast<float>(lengthSamples[graphIndex]); }
 };
 
 class FBModuleExchangeState final
@@ -21,54 +54,54 @@ class FBModuleExchangeState final
   friend class FBHostProcessor;
   friend class FBExchangeStateContainer;
 
-  FBModuleProcExchangeState* _global;
-  std::array<FBModuleProcExchangeState*, FBMaxVoices> _voice;
+  FBModuleProcExchangeStateBase* _global;
+  std::array<FBModuleProcExchangeStateBase*, FBMaxVoices> _voice;
 
-  FBModuleProcExchangeState* Global();
-  std::array<FBModuleProcExchangeState*, FBMaxVoices>& Voice();
+  FBModuleProcExchangeStateBase* Global();
+  std::array<FBModuleProcExchangeStateBase*, FBMaxVoices>& Voice();
 
 public:
   bool IsGlobal() const { return _global != nullptr; }
-  FBModuleProcExchangeState const* Global() const;
-  std::array<FBModuleProcExchangeState*, FBMaxVoices> const& Voice() const;
+  FBModuleProcExchangeStateBase const* Global() const;
+  std::array<FBModuleProcExchangeStateBase*, FBMaxVoices> const& Voice() const;
 
   FB_NOCOPY_MOVE_DEFCTOR(FBModuleExchangeState);
-  explicit FBModuleExchangeState(FBModuleProcExchangeState* global);
-  explicit FBModuleExchangeState(std::array<FBModuleProcExchangeState*, FBMaxVoices> const& voice);
+  explicit FBModuleExchangeState(FBModuleProcExchangeStateBase* global);
+  explicit FBModuleExchangeState(std::array<FBModuleProcExchangeStateBase*, FBMaxVoices> const& voice);
 };
 
 inline FBModuleExchangeState::
-FBModuleExchangeState(FBModuleProcExchangeState* global) :
+FBModuleExchangeState(FBModuleProcExchangeStateBase* global) :
 _global(global),
 _voice() {}
 
 inline FBModuleExchangeState::
-FBModuleExchangeState(std::array<FBModuleProcExchangeState*, FBMaxVoices> const& voice) :
+FBModuleExchangeState(std::array<FBModuleProcExchangeStateBase*, FBMaxVoices> const& voice) :
 _global(nullptr),
 _voice(voice) {}
 
-inline FBModuleProcExchangeState*
+inline FBModuleProcExchangeStateBase*
 FBModuleExchangeState::Global()
 {
   FB_ASSERT(IsGlobal());
   return _global;
 }
 
-inline FBModuleProcExchangeState const*
+inline FBModuleProcExchangeStateBase const*
 FBModuleExchangeState::Global() const
 {
   FB_ASSERT(IsGlobal());
   return _global;
 }
 
-inline std::array<FBModuleProcExchangeState*, FBMaxVoices>&
+inline std::array<FBModuleProcExchangeStateBase*, FBMaxVoices>&
 FBModuleExchangeState::Voice()
 {
   FB_ASSERT(!IsGlobal());
   return _voice;
 }
 
-inline std::array<FBModuleProcExchangeState*, FBMaxVoices> const&
+inline std::array<FBModuleProcExchangeStateBase*, FBMaxVoices> const&
 FBModuleExchangeState::Voice() const
 {
   FB_ASSERT(!IsGlobal());

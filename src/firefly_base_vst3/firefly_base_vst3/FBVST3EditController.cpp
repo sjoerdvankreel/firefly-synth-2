@@ -230,7 +230,7 @@ FBVST3EditController::initialize(FUnknown* context)
       {
         auto const& topo = _topo->modules[m].params[p];
         auto info = MakeParamInfo(topo, unitId);
-        parameters.addParameter(new FBVST3Parameter(&topo.static_, info));
+        parameters.addParameter(new FBVST3Parameter(&topo, info));
       }
       unitId++;
     }

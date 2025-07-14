@@ -84,17 +84,15 @@ FBParamControl*
 FBPlugGUI::GetControlForAudioParamIndex(int paramIndex) const
 {
   auto iter = _audioParamIndexToComponent.find(paramIndex);
-  FB_ASSERT(iter != _audioParamIndexToComponent.end());
+#ifndef NDEBUG
+  if (iter == _audioParamIndexToComponent.end())
+  {
+    auto id = this->HostContext()->Topo()->audio.params[paramIndex].id;
+    (void)id;
+    FB_ASSERT(iter != _audioParamIndexToComponent.end());
+  }
+#endif
   return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
-}
-
-std::string
-FBPlugGUI::GetAudioParamActiveTooltip(
-  FBStaticParam const& param, bool active, float value) const
-{
-  if (!active)
-    return "N/A";
-  return param.NormalizedToTextWithUnit(false, value);
 }
 
 void
@@ -179,7 +177,7 @@ FBPlugGUI::GetTooltipForGUIParam(int index) const
 {
   auto const& param = HostContext()->Topo()->gui.params[index];
   double normalized = HostContext()->GetGUIParamNormalized(index);
-  std::string result = param.shortName + ": " + param.static_.NormalizedToTextWithUnit(false, normalized);
+  std::string result = param.shortName + ": " + param.NormalizedToTextWithUnit(false, normalized);
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   return result;
 }
@@ -194,13 +192,13 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
   auto result = param.shortName + ": ";
-  result += param.static_.NormalizedToTextWithUnit(false, normalized);  
+  result += param.NormalizedToTextWithUnit(false, normalized);  
   if (!param.static_.IsVoice())
-    result += "\r\nEngine: " + param.static_.NormalizedToTextWithUnit(false, engineMin);
+    result += "\r\nEngine: " + param.NormalizedToTextWithUnit(false, engineMin);
   else
   {
-    result += "\r\nEngine min: " + param.static_.NormalizedToTextWithUnit(false, engineMin);
-    result += "\r\nEngine max: " + param.static_.NormalizedToTextWithUnit(false, engineMax);
+    result += "\r\nEngine min: " + param.NormalizedToTextWithUnit(false, engineMin);
+    result += "\r\nEngine max: " + param.NormalizedToTextWithUnit(false, engineMax);
   }
   result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
   if (param.static_.AutomationTiming() != FBAutomationTiming::Never)

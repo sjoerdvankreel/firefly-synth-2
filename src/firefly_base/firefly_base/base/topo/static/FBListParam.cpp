@@ -1,3 +1,4 @@
+#include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/static/FBListParam.hpp>
 
 using namespace juce;
@@ -7,6 +8,14 @@ bool FBListParamNonRealTime::IsStepped() const { return true; }
 int FBListParamNonRealTime::ValueCount() const { return static_cast<int>(items.size()); }
 FBEditType FBListParamNonRealTime::GUIEditType() const { return FBEditType::Stepped; }
 FBEditType FBListParamNonRealTime::AutomationEditType() const { return FBEditType::Stepped; }
+
+std::string 
+FBListParam::GetName(int moduleIndex, int itemSlot) const
+{ 
+  if (slotFormatter != nullptr)
+    return slotFormatter(moduleIndex, itemSlot);
+  return items[itemSlot].name;
+}
 
 double 
 FBListParamNonRealTime::PlainToNormalized(double plain) const 
@@ -21,13 +30,13 @@ FBListParamNonRealTime::NormalizedToPlain(double normalized) const
 }
 
 PopupMenu
-FBListParamNonRealTime::MakePopupMenu() const
+FBListParamNonRealTime::MakePopupMenu(int moduleIndex) const
 {
   PopupMenu result;
   if (submenuStart.empty())
   {
     for (int i = 0; i < ValueCount(); i++)
-      result.addItem(i + 1, PlainToText(false, i));
+      result.addItem(i + 1, PlainToText(false, moduleIndex, i));
     return result;
   }
   PopupMenu submenu;
@@ -40,7 +49,7 @@ FBListParamNonRealTime::MakePopupMenu() const
       submenu = {};
       submenuHeader = submenuStart.at(i);
     }
-    submenu.addItem(i + 1, PlainToText(false, i));
+    submenu.addItem(i + 1, PlainToText(false, moduleIndex, i));
     if (i == ValueCount() - 1)
     {
       result.addSubMenu(submenuHeader, submenu);
@@ -50,17 +59,17 @@ FBListParamNonRealTime::MakePopupMenu() const
 }
 
 std::optional<double>
-FBListParamNonRealTime::TextToPlainInternal(bool io, std::string const& text) const
+FBListParamNonRealTime::TextToPlainInternal(bool io, int moduleIndex, std::string const& text) const
 {
   for (int i = 0; i < items.size(); i++)
-    if (text == (io ? items[i].id : items[i].name))
+    if (text == (io ? items[i].id : GetName(moduleIndex, i)))
       return { i };
   return {};
 }
 
 std::string
-FBListParamNonRealTime::PlainToText(bool io, double plain) const
+FBListParamNonRealTime::PlainToText(bool io, int moduleIndex, double plain) const
 {
   int discrete = static_cast<int>(std::round(plain));
-  return io ? items[discrete].id : items[discrete].name;
+  return io ? items[discrete].id : GetName(moduleIndex, discrete);
 }

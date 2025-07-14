@@ -184,7 +184,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
           PaintMarker(g, graph, points.l, points.pointIndicators[j],
             false, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
-        if (marker != -1 && _data->drawMarkers)
+        if (marker != -1 && _data->drawMarkersSelector != nullptr && _data->drawMarkersSelector(graph))
         {
           FB_ASSERT(!stereo);
           PaintMarker(g, graph, points.l, marker,
@@ -203,7 +203,7 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
           true, true, false, true, maxSizeAllSeries, absMaxValueAllSeries);
 
       FB_ASSERT(graphData.primaryMarkers.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
-      if (_data->drawMarkers)
+      if (_data->drawMarkersSelector != nullptr && _data->drawMarkersSelector(graph))
         for (int i = 0; i < graphData.primaryMarkers.size(); i++)
         {
           FB_ASSERT(!stereo);

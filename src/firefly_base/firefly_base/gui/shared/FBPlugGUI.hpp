@@ -26,14 +26,12 @@ public:
     juce::PopupMenu menu,
     std::function<void(int)> callback);
 
-  std::string GetTooltipForGUIParam(int index) const;
-  std::string GetTooltipForAudioParam(int index) const;
-  std::string GetAudioParamActiveTooltip(
-    FBStaticParam const& param, bool active, float value) const;
-
   void InitPatch();
   void SavePatchToFile();
   void LoadPatchFromFile();
+
+  std::string GetTooltipForGUIParam(int index) const;
+  std::string GetTooltipForAudioParam(int index) const;
 
   void UpdateExchangeState();
   void ShowHostMenuForAudioParam(int index);

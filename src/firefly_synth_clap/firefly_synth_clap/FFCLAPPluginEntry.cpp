@@ -29,14 +29,28 @@ FFCLAPExchangeState::
 FFCLAPExchangeState(FFCLAPExchangeState const& rhs)
 {
   FB_ASSERT(&rhs != this);
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdynamic-class-memaccess"
+#endif
   memcpy(&state, &rhs.state, sizeof(FFExchangeState));
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 }
 
 FFCLAPExchangeState&
 FFCLAPExchangeState::operator=(FFCLAPExchangeState const& rhs)
 {
   FB_ASSERT(&rhs != this);
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdynamic-class-memaccess"
+#endif
   memcpy(&state, &rhs.state, sizeof(FFExchangeState));
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
   return *this;
 }
 

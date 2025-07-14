@@ -316,9 +316,18 @@ FBCLAPPlugin::process(
       _input.accModByParamThenNoteThenSample.end(),
       FBAccModEventOrderByParamThenNoteThenPos);
 
+    _input.projectTimeSamples = 0;
     _input.bpm = FBHostInputBlock::DefaultBPM;
     if (process->transport != nullptr)
-      _input.bpm = static_cast<float>(process->transport->tempo);
+    {
+      if((process->transport->flags & CLAP_TRANSPORT_HAS_TEMPO) != 0)
+        _input.bpm = static_cast<float>(process->transport->tempo);
+      if ((process->transport->flags & CLAP_TRANSPORT_HAS_SECONDS_TIMELINE) != 0)
+      {
+        double positionSeconds = (double)process->transport->song_pos_seconds / (double)CLAP_SECTIME_FACTOR;
+        _input.projectTimeSamples = (std::int64_t)std::round(positionSeconds * _sampleRate);
+      }
+    }
 
     _output.outputParams.clear();
     _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);
