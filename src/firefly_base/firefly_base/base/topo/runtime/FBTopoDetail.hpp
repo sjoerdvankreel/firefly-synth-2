@@ -20,6 +20,11 @@ FBMakeRuntimeGraphName(
   int slotCount, int slot);
 
 std::string
+FBMakeRuntimeId(
+  std::string const& staticModuleId, int moduleSlot,
+  std::string const& staticId, int slot); 
+
+std::string
 FBMakeRuntimeShortName(
   FBStaticTopo const& topo, std::string const& name, 
   int slotCount, int slot, 

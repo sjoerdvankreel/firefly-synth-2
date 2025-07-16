@@ -2,14 +2,17 @@
 #include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
-std::string
-FFMakeRuntimeParamId(
-  std::string const& staticModuleId, int moduleSlot,
-  std::string const& staticParamId, int paramSlot)
+static void
+ValidateItemsParam(
+  FBStaticParamBase const& staticParam, 
+  int moduleIndex)
 {
-  auto paramId = staticParamId + "-" + std::to_string(paramSlot);
-  auto moduleId = staticModuleId + "-" + std::to_string(moduleSlot);
-  return moduleId + "-" + paramId;
+#ifndef NDEBUG
+  std::set<std::string> itemNames = {};
+  if (staticParam.type == FBParamType::List)
+    for (int i = 0; i < staticParam.List().items.size(); i++)
+      FB_ASSERT(itemNames.insert(staticParam.List().GetName(moduleIndex, i)).second);
+#endif
 }
 
 static std::string
@@ -37,7 +40,7 @@ topoIndices(topoIndices),
 longName(MakeRuntimeParamLongName(topo, staticModule, staticParam, topoIndices)),
 shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
 displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
-id(FFMakeRuntimeParamId(staticModule.id, topoIndices.module.slot, staticParam.id, topoIndices.param.slot)),
+id(FBMakeRuntimeId(staticModule.id, topoIndices.module.slot, staticParam.id, topoIndices.param.slot)),
 staticModuleId(staticModule.id),
 tag(FBMakeStableHash(id)) {}
 
@@ -79,7 +82,10 @@ FBRuntimeGUIParam(
   FBParamTopoIndices const& topoIndices,
   int runtimeModuleIndex, int runtimeParamIndex):
 FBRuntimeParamBase(topo, staticModule, staticParam, topoIndices, runtimeModuleIndex, runtimeParamIndex),
-static_(staticParam) {}
+static_(staticParam)
+{
+  ValidateItemsParam(staticParam, topoIndices.module.index);
+}
 
 FBRuntimeParam::
 FBRuntimeParam(
@@ -91,12 +97,7 @@ FBRuntimeParam(
 FBRuntimeParamBase(topo, staticModule, staticParam, topoIndices, runtimeModuleIndex, runtimeParamIndex),
 static_(staticParam)
 {
-#ifndef NDEBUG
-  std::set<std::string> itemNames = {};
-  if(staticParam.type == FBParamType::List)
-    for (int i = 0; i < staticParam.List().items.size(); i++)
-      FB_ASSERT(itemNames.insert(staticParam.List().GetName(topoIndices.module.index, i)).second);
-#endif
+  ValidateItemsParam(staticParam, topoIndices.module.index);
 }
 
 std::string

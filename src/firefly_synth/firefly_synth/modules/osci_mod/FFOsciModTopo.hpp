@@ -1,7 +1,6 @@
 #pragma once
 
 #include <firefly_synth/shared/FFPlugTopo.hpp>
-#include <juce_core/juce_core.h>
 
 #include <string>
 #include <memory>

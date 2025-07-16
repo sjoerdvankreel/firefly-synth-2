@@ -2,6 +2,7 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/static/FBStaticParam.hpp>
+#include <firefly_base/base/topo/static/FBStaticCVOutput.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
@@ -35,6 +36,7 @@ struct FBStaticModule final
   std::string graphName = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
+  std::vector<FBStaticCVOutput> cvOutputs = {};
   FBModuleGraphRenderer graphRenderer = {};
   FBVoiceModuleExchangeAddrSelector voiceModuleExchangeAddr = {};
   FBGlobalModuleExchangeAddrSelector globalModuleExchangeAddr = {};

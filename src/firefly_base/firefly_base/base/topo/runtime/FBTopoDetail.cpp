@@ -1,6 +1,16 @@
 #include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <cstdint>
 
+std::string
+FBMakeRuntimeId(
+  std::string const& staticModuleId, int moduleSlot,
+  std::string const& staticId, int slot)
+{
+  auto id = staticId + "-" + std::to_string(slot);
+  auto moduleId = staticModuleId + "-" + std::to_string(moduleSlot);
+  return moduleId + "-" + id;
+}
+
 int
 FBMakeStableHash(std::string const& id)
 {

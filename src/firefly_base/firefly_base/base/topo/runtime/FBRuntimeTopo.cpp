@@ -42,6 +42,7 @@ MakeRuntimeModules(FBStaticTopo const& topo)
   int runtimeIndex = 0;
   int runtimeParamStart = 0;
   int runtimeGUIParamStart = 0;
+  int runtimeCVOutputStart = 0;
   std::vector<FBRuntimeModule> result;
   for (int m = 0; m < topo.modules.size(); m++)
     for (int s = 0; s < topo.modules[m].slotCount; s++)
@@ -49,10 +50,11 @@ MakeRuntimeModules(FBStaticTopo const& topo)
       FBTopoIndices topoIndices;
       topoIndices.slot = s;
       topoIndices.index = m;
-      auto module = FBRuntimeModule(topo, topo.modules[m], topoIndices, runtimeIndex++, runtimeParamStart, runtimeGUIParamStart);
+      auto module = FBRuntimeModule(topo, topo.modules[m], topoIndices, runtimeIndex++, runtimeParamStart, runtimeGUIParamStart, runtimeCVOutputStart);
       result.push_back(module);
       runtimeParamStart += static_cast<int>(module.params.size());
       runtimeGUIParamStart += static_cast<int>(module.guiParams.size());
+      runtimeCVOutputStart += static_cast<int>(module.cvOutputs.size());
     }
   return result;
 }
@@ -507,7 +509,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
         FB_LOG_ERROR("Failed to map old to new plugin parameter.");
         continue;
       }
-      std::string newId = FFMakeRuntimeParamId(newModuleId, newModuleSlot, newParamId, newParamSlot);
+      std::string newId = FBMakeRuntimeId(newModuleId, newModuleSlot, newParamId, newParamSlot);
       int newTag = FBMakeStableHash(newId);
       if ((iter = params.paramTagToIndex.find(newTag)) == params.paramTagToIndex.end())
       {
