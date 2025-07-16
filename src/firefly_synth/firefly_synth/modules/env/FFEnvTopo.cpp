@@ -26,6 +26,7 @@ FFMakeEnvTopo()
   result->graphRenderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
+  result->cvOutputs.resize((int)FFEnvCVOutput::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
@@ -203,6 +204,11 @@ FFMakeEnvTopo()
   stageBars.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageBars);
   stageBars.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   stageBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& output = result->cvOutputs[(int)FFEnvCVOutput::Output];
+  output.slotCount = 1;
+  output.name = "Output";
+  output.id = "{4C86B531-321C-46C7-AF9C-D13B92572F48}";
 
   return result;
 }

@@ -25,6 +25,7 @@ FFMakeLFOTopo(bool global)
   result->graphRenderer = global ? FFLFORenderGraph<true> : FFLFORenderGraph<false>;
   result->id = prefix + "{6E9EC930-5391-41BB-9EDA-C9B79F3BE745}";
   result->params.resize((int)FFLFOParam::Count);
+  result->cvOutputs.resize((int)FFLFOCVOutput::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vLFO; });
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gLFO; });
   auto selectVoiceModule = [](auto& state) { return &state.voice.vLFO; };
@@ -388,6 +389,11 @@ FFMakeLFOTopo(bool global)
   phaseB.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhaseB);
   phaseB.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhaseB);
   phaseB.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 1 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& output = result->cvOutputs[(int)FFLFOCVOutput::Output];
+  output.slotCount = 1;
+  output.name = "Output";
+  output.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
 
   return result;
 }
