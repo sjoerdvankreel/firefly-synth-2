@@ -46,7 +46,7 @@ MakeModMatrixSectionAll(FBPlugGUI* plugGUI, FFModuleType moduleType)
     auto target = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Target, i } });
     grid->Add(1 + i, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target));
     auto bipolar = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Bipolar, i } });
-    grid->Add(1 + i, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bipolar));
+    grid->Add(1 + i, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, bipolar));
     auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Amount, i } });
     grid->Add(1 + i, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
   }
