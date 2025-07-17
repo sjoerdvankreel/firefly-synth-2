@@ -4,7 +4,7 @@
 #include <memory>
 #include <utility>
 
-inline int constexpr FFModMatrixSlotCount = 8; // TODO
+inline int constexpr FFModMatrixSlotCount = 6; // TODO
 
 struct FBStaticTopo;
 struct FBStaticModule;
