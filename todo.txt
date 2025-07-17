@@ -1,5 +1,8 @@
 make env1 to amp explicit
 mod indicators for vmatrix
+filter out unsupported targets
+do onnote
+refix all behind-the-scenes mod sources and targets
 
 paint env1 to vmix
 get rid of sse2neon

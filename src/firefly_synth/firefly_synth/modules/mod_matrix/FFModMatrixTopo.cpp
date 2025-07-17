@@ -7,6 +7,18 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeCVOutput.hpp>
 
+static std::string
+MakeRuntimeParamModName(
+  FBStaticTopo const& topo,
+  FBStaticModule const& module,
+  FBStaticParamBase const& param,
+  FBParamTopoIndices const& indices)
+{
+  auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
+  auto moduleName = FBMakeRuntimeShortName(topo, module.tabName, module.slotCount, indices.module.slot, {}, false);
+  return moduleName + " " + paramName;
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
 {
@@ -99,7 +111,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
       for (int ms = 0; ms < module.slotCount; ms++)
       {
         if (ms == 0)
-          source.List().submenuStart[sourceIndex] = module.name;
+          source.List().submenuStart[sourceIndex] = module.tabName;
         for (int o = 0; o < module.cvOutputs.size(); o++)
         {
           auto const& cvOutput = module.cvOutputs[o];
@@ -107,7 +119,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
           {
             FBCVOutputTopoIndices indices = { { m, ms }, { o, os } };
             auto id = FBMakeRuntimeId(module.id, ms, cvOutput.id, os);
-            auto name = MakeRuntimeCVOutputName(*topo, module, cvOutput, indices);
+            auto name = FBMakeRuntimeCVOutputName(*topo, module, cvOutput, indices);
             source.List().items.push_back({ id, name });
             sourceIndex++;
           }
@@ -129,23 +141,32 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   target.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectTarget);
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTarget);
   target.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+
+  int targetIndex = 0;
   for (int m = 0; m < topo->modules.size(); m++)
   {
     auto const& module = topo->modules[m];
     if(global != module.voice)
       for (int ms = 0; ms < module.slotCount; ms++)
+      {
+        std::string subMenuName = module.tabName;
+        if (module.slotCount != 1)
+          subMenuName += " " + std::to_string(ms + 1);
+        target.List().submenuStart[targetIndex] = subMenuName;
         for (int p = 0; p < module.params.size(); p++)
         {
           auto const& param = module.params[p];
-          if(param.AutomationTiming() == FBAutomationTiming::PerSample)
+          if (param.AutomationTiming() == FBAutomationTiming::PerSample)
             for (int ps = 0; ps < param.slotCount; ps++)
             {
               FBParamTopoIndices indices = { { m, ms }, { p, ps } };
               auto id = FBMakeRuntimeId(module.id, ms, param.id, ps);
-              auto name = MakeRuntimeParamLongName(*topo, module, param, indices);
+              auto name = MakeRuntimeParamModName(*topo, module, param, indices);
               target.List().items.push_back({ id, name });
+              targetIndex++;
             }
         }
+      }
   }
 
   return result;

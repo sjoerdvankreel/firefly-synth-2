@@ -3,7 +3,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeCVOutput.hpp>
 
 std::string
-MakeRuntimeCVOutputName(
+FBMakeRuntimeCVOutputName(
   FBStaticTopo const&,
   FBStaticModule const& module,
   FBStaticCVOutput const& cvOutput,
@@ -33,6 +33,6 @@ runtimeModuleIndex(runtimeModuleIndex),
 runtimeCVOutputIndex(runtimeCVOutputIndex),
 topoIndices(topoIndices),
 id(FBMakeRuntimeId(staticModule.id, topoIndices.cvOutput.slot, staticCVOutput.id, topoIndices.cvOutput.slot)),
-name(MakeRuntimeCVOutputName(topo, staticModule, staticCVOutput, topoIndices)),
+name(FBMakeRuntimeCVOutputName(topo, staticModule, staticCVOutput, topoIndices)),
 staticModuleId(staticModule.id),
 tag(FBMakeStableHash(id)) {}

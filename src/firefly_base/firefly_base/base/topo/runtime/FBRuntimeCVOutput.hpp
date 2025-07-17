@@ -10,7 +10,7 @@ struct FBStaticTopo;
 struct FBStaticModule;
 
 std::string
-MakeRuntimeCVOutputName(
+FBMakeRuntimeCVOutputName(
   FBStaticTopo const& topo,
   FBStaticModule const& module,
   FBStaticCVOutput const& cvOutput,

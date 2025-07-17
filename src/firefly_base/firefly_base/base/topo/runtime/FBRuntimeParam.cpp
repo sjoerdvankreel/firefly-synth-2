@@ -16,7 +16,7 @@ ValidateItemsParam(
 }
 
 std::string
-MakeRuntimeParamLongName(
+FBMakeRuntimeParamLongName(
   FBStaticTopo const& topo,
   FBStaticModule const& module,
   FBStaticParamBase const& param,
@@ -37,7 +37,7 @@ FBRuntimeParamBase(
 runtimeModuleIndex(runtimeModuleIndex),
 runtimeParamIndex(runtimeParamIndex),
 topoIndices(topoIndices),
-longName(MakeRuntimeParamLongName(topo, staticModule, staticParam, topoIndices)),
+longName(FBMakeRuntimeParamLongName(topo, staticModule, staticParam, topoIndices)),
 shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
 displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
 id(FBMakeRuntimeId(staticModule.id, topoIndices.module.slot, staticParam.id, topoIndices.param.slot)),

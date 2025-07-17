@@ -341,7 +341,7 @@ FFMakeLFOTopo(bool global)
   skewAYMode.acc = false;
   skewAYMode.defaultText = "Off";
   skewAYMode.display = "SkY";
-  skewAYMode.name = "Skew Y Mode";
+  skewAYMode.name = "Skew A Y Mode";
   skewAYMode.slotCount = 1;
   skewAYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
   skewAYMode.type = FBParamType::List;
@@ -360,7 +360,7 @@ FFMakeLFOTopo(bool global)
   auto& skewAYAmt = result->params[(int)FFLFOParam::SkewAYAmt];
   skewAYAmt.acc = true;
   skewAYAmt.defaultText = "0";
-  skewAYAmt.name = "Skew Y Amt";
+  skewAYAmt.name = "Skew A Y Amt";
   skewAYAmt.slotCount = 1;
   skewAYAmt.unit = "%";
   skewAYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";
