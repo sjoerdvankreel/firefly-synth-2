@@ -1,4 +1,5 @@
 make env1 to amp explicit
+mod indicators for vmatrix
 
 paint env1 to vmix
 get rid of sse2neon

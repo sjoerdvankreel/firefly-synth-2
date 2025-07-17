@@ -118,12 +118,11 @@ FFPlugGUI::SetupGUI()
   rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
   rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
   rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 4.0f / 9.0f * availableHeight));
   FB_LOG_INFO("Calculated GUI grid size.");
 
   FB_LOG_INFO("Creating GUI components.");
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 5, 0, 0, 0 });
+  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 5, 0, 0, 0, 2 }); // todo autosize
   _content->Add(0, 0, 1, 4, _graph);
   _content->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
@@ -134,7 +133,7 @@ FFPlugGUI::SetupGUI()
   _content->Add(4, 0, 1, 4, FFMakeLFOGUI(this));
   _content->Add(5, 0, 1, 4, FFMakeEnvGUI(this));
   _content->Add(6, 0, 1, 4, FFMakeMixGUI(this));
-  _content->Add(7, 0, 1, 4, FFMakeModMatrixGUI(this));
+  _content->Add(0, 4, (int)rowSizes.size(), 1, FFMakeModMatrixGUI(this));
 
   FB_LOG_INFO("Created GUI components.");
   FB_LOG_INFO("Making GUI visible.");
