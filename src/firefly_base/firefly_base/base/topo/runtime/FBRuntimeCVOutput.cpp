@@ -2,7 +2,7 @@
 #include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeCVOutput.hpp>
 
-static std::string
+std::string
 MakeRuntimeCVOutputLongName(
   FBStaticTopo const& topo,
   FBStaticModule const& module,

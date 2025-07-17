@@ -15,7 +15,7 @@ ValidateItemsParam(
 #endif
 }
 
-static std::string
+std::string
 MakeRuntimeParamLongName(
   FBStaticTopo const& topo,
   FBStaticModule const& module,

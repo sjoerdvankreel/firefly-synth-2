@@ -8,6 +8,7 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
@@ -109,6 +110,7 @@ FFPlugGUI::SetupGUI()
   int totalHeight = topo.guiWidth * topo.guiAspectRatioHeight / topo.guiAspectRatioWidth;
   float availableHeight = static_cast<float>(totalHeight - vTabCount * padding);
   std::vector<int> rowSizes = {};
+  // todo what is /9?
   rowSizes.push_back(static_cast<int>(padding + 1.0f / 9.0f * availableHeight));
   rowSizes.push_back(static_cast<int>(padding + 1.0f / 9.0f * availableHeight));
   rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
@@ -116,6 +118,7 @@ FFPlugGUI::SetupGUI()
   rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
   rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
   rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
+  rowSizes.push_back(static_cast<int>(padding + 4.0f / 9.0f * availableHeight));
   FB_LOG_INFO("Calculated GUI grid size.");
 
   FB_LOG_INFO("Creating GUI components.");
@@ -131,8 +134,9 @@ FFPlugGUI::SetupGUI()
   _content->Add(4, 0, 1, 4, FFMakeLFOGUI(this));
   _content->Add(5, 0, 1, 4, FFMakeEnvGUI(this));
   _content->Add(6, 0, 1, 4, FFMakeMixGUI(this));
-  FB_LOG_INFO("Created GUI components.");
+  _content->Add(7, 0, 1, 4, FFMakeModMatrixGUI(this));
 
+  FB_LOG_INFO("Created GUI components.");
   FB_LOG_INFO("Making GUI visible.");
   addAndMakeVisible(_content);
   FB_LOG_INFO("Made GUI visible.");

@@ -11,7 +11,8 @@
 #include <memory>
 #include <cstdint>
 
-struct FBStaticModule; 
+struct FBStaticTopo;
+struct FBStaticModule;
 
 class FFModMatrixDSPState final
 {
@@ -27,11 +28,11 @@ template <class TBlock>
 class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
 {
   friend class FFModMatrixProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool);
-  std::array<TBlock, 1> opType = {};
-  std::array<TBlock, 1> source = {};
-  std::array<TBlock, 1> target = {};
-  std::array<TBlock, 1> bipolar = {};
+  friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FBStaticTopo const*);
+  std::array<TBlock, FFModMatrixSlotCount> opType = {};
+  std::array<TBlock, FFModMatrixSlotCount> source = {};
+  std::array<TBlock, FFModMatrixSlotCount> target = {};
+  std::array<TBlock, FFModMatrixSlotCount> bipolar = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixBlockParamState);
 };
@@ -40,8 +41,8 @@ template <class TAccurate>
 class alignas(alignof(TAccurate)) FFModMatrixAccParamState final
 {
   friend class FFModMatrixProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool);
-  std::array<TAccurate, 1> amount = {};
+  friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FBStaticTopo const*);
+  std::array<TAccurate, FFModMatrixSlotCount> amount = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixAccParamState);
 };
@@ -50,7 +51,7 @@ template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFModMatrixParamState final
 {
   friend class FFModMatrixProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool);
+  friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FBStaticTopo const*);
   FFModMatrixAccParamState<TAccurate> acc = {};
   FFModMatrixBlockParamState<TBlock> block = {};
 public:

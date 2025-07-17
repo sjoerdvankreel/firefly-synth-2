@@ -9,6 +9,13 @@
 struct FBStaticTopo;
 struct FBStaticModule;
 
+std::string
+MakeRuntimeParamLongName(
+  FBStaticTopo const& topo,
+  FBStaticModule const& module,
+  FBStaticParamBase const& param,
+  FBParamTopoIndices const& indices);
+
 struct FBRuntimeParamBase
 {
   int runtimeModuleIndex;

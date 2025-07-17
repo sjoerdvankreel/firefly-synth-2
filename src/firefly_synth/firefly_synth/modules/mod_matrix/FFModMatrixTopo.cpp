@@ -2,10 +2,13 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
+#include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeCVOutput.hpp>
 
 std::unique_ptr<FBStaticModule>
-FFMakeModMatrixTopo(bool global)
+FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
 {
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
@@ -71,6 +74,66 @@ FFMakeModMatrixTopo(bool global)
   amount.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectAmount);
   amount.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectAmount);
   amount.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& source = result->params[(int)FFModMatrixParam::Source];
+  source.acc = false;
+  source.name = "Source";
+  source.slotCount = FFModMatrixSlotCount;
+  source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
+  source.type = FBParamType::List;
+  auto selectSource = [](auto& module) { return &module.block.source; };
+  source.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSource);
+  source.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSource);
+  source.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSource);
+  source.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSource);
+  source.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
+  source.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+  for (int m = 0; m < topo->modules.size(); m++)
+  {
+    auto const& module = topo->modules[m];
+    for (int ms = 0; ms < module.slotCount; ms++)
+      for (int o = 0; o < module.cvOutputs.size(); o++)
+      {
+        auto const& cvOutput = module.cvOutputs[o];
+        for (int os = 0; os < cvOutput.slotCount; os++)
+        {
+          FBCVOutputTopoIndices indices = { { m, ms }, { o, os } };
+          auto id = FBMakeRuntimeId(module.id, ms, cvOutput.id, os);
+          auto name = MakeRuntimeCVOutputLongName(*topo, module, cvOutput, indices);
+          source.List().items.push_back({ id, name });
+        }
+      }
+  }
+
+  auto& target = result->params[(int)FFModMatrixParam::Target];
+  target.acc = false;
+  target.name = "Target";
+  target.slotCount = FFModMatrixSlotCount;
+  target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
+  target.type = FBParamType::List;
+  auto selectTarget = [](auto& module) { return &module.block.target; };
+  target.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSource);
+  target.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSource);
+  target.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSource);
+  target.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSource);
+  target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
+  target.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+  for (int m = 0; m < topo->modules.size(); m++)
+  {
+    auto const& module = topo->modules[m];
+    for (int ms = 0; ms < module.slotCount; ms++)
+      for (int p = 0; p < module.params.size(); p++)
+      {
+        auto const& param = module.params[p];
+        for (int ps = 0; ps < param.slotCount; ps++)
+        {
+          FBParamTopoIndices indices = { { m, ms }, { p, ps } };
+          auto id = FBMakeRuntimeId(module.id, ms, param.id, ps);
+          auto name = MakeRuntimeParamLongName(*topo, module, param, indices);
+          target.List().items.push_back({ id, name });
+        }
+      }
+  }
 
   return result;
 }

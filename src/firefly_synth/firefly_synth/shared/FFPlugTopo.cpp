@@ -11,6 +11,7 @@
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 
@@ -126,5 +127,9 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
   result->modules[(int)FFModuleType::VMix] = std::move(*FFMakeVMixTopo());
   result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo());
+
+  // These need to go last.
+  result->modules[(int)FFModuleType::GMatrix] = std::move(*FFMakeModMatrixTopo(true, result.get()));
+  result->modules[(int)FFModuleType::VMatrix] = std::move(*FFMakeModMatrixTopo(false, result.get()));
   return result;
 }
