@@ -112,11 +112,11 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
   auto selectTarget = [](auto& module) { return &module.block.target; };
-  target.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSource);
-  target.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSource);
-  target.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSource);
-  target.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSource);
-  target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
+  target.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTarget);
+  target.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTarget);
+  target.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTarget);
+  target.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectTarget);
+  target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTarget);
   target.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
   for (int m = 0; m < topo->modules.size(); m++)
   {
