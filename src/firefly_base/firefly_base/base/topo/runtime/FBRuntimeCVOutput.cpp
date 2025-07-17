@@ -3,15 +3,23 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeCVOutput.hpp>
 
 std::string
-MakeRuntimeCVOutputLongName(
-  FBStaticTopo const& topo,
+MakeRuntimeCVOutputName(
+  FBStaticTopo const&,
   FBStaticModule const& module,
   FBStaticCVOutput const& cvOutput,
   FBCVOutputTopoIndices const& indices)
 {
-  auto cvOutputName = FBMakeRuntimeShortName(topo, cvOutput.name, cvOutput.slotCount, indices.cvOutput.slot, {}, false);
-  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {}, false);
-  return moduleName + " " + cvOutputName;
+  std::string result = module.tabName;
+  if (module.slotCount != 1)
+    result += " " + std::to_string(indices.module.slot + 1);
+  if (module.cvOutputs.size() != 1)
+  {
+    result += " ";
+    result += cvOutput.name;
+    if(cvOutput.slotCount != 1)
+      result += std::to_string(indices.cvOutput.slot + 1);
+  }
+  return result;
 }
 
 FBRuntimeCVOutput::
@@ -25,7 +33,6 @@ runtimeModuleIndex(runtimeModuleIndex),
 runtimeCVOutputIndex(runtimeCVOutputIndex),
 topoIndices(topoIndices),
 id(FBMakeRuntimeId(staticModule.id, topoIndices.cvOutput.slot, staticCVOutput.id, topoIndices.cvOutput.slot)),
-longName(MakeRuntimeCVOutputLongName(topo, staticModule, staticCVOutput, topoIndices)),
-shortName(FBMakeRuntimeShortName(topo, staticCVOutput.name, staticCVOutput.slotCount, topoIndices.cvOutput.slot, {}, false)),
+name(MakeRuntimeCVOutputName(topo, staticModule, staticCVOutput, topoIndices)),
 staticModuleId(staticModule.id),
 tag(FBMakeStableHash(id)) {}

@@ -23,7 +23,7 @@ MakeModMatrixSectionAll(FBPlugGUI* plugGUI, FFModuleType moduleType)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> rowSizes(FFModMatrixSlotCount + 1, 1);
-  std::vector<int> columnSizes = { 0, 1, 1, 0, 0 };
+  std::vector<int> columnSizes = { 0, 0, 1, 0, 0 };
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, rowSizes, columnSizes);
   auto opType0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, 0 } });

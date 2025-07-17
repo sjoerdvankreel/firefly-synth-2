@@ -46,6 +46,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   auto& bipolar = result->params[(int)FFModMatrixParam::Bipolar];
   bipolar.acc = false;
   bipolar.name = "Bipolar";
+  bipolar.display = "Bi";
   bipolar.slotCount = FFModMatrixSlotCount;
   bipolar.defaultText = "Off";
   bipolar.id = prefix + "{1D86D50C-12DC-4DDF-A471-780921BE837E}";
@@ -78,6 +79,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   auto& source = result->params[(int)FFModMatrixParam::Source];
   source.acc = false;
   source.name = "Source";
+  source.display = "Source";
   source.slotCount = FFModMatrixSlotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
@@ -99,7 +101,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
         {
           FBCVOutputTopoIndices indices = { { m, ms }, { o, os } };
           auto id = FBMakeRuntimeId(module.id, ms, cvOutput.id, os);
-          auto name = MakeRuntimeCVOutputLongName(*topo, module, cvOutput, indices);
+          auto name = MakeRuntimeCVOutputName(*topo, module, cvOutput, indices);
           source.List().items.push_back({ id, name });
         }
       }
@@ -108,6 +110,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   auto& target = result->params[(int)FFModMatrixParam::Target];
   target.acc = false;
   target.name = "Target";
+  target.display = "Target";
   target.slotCount = FFModMatrixSlotCount;
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
@@ -121,18 +124,20 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   for (int m = 0; m < topo->modules.size(); m++)
   {
     auto const& module = topo->modules[m];
-    for (int ms = 0; ms < module.slotCount; ms++)
-      for (int p = 0; p < module.params.size(); p++)
-      {
-        auto const& param = module.params[p];
-        for (int ps = 0; ps < param.slotCount; ps++)
+    if(global != module.voice)
+      for (int ms = 0; ms < module.slotCount; ms++)
+        for (int p = 0; p < module.params.size(); p++)
         {
-          FBParamTopoIndices indices = { { m, ms }, { p, ps } };
-          auto id = FBMakeRuntimeId(module.id, ms, param.id, ps);
-          auto name = MakeRuntimeParamLongName(*topo, module, param, indices);
-          target.List().items.push_back({ id, name });
+          auto const& param = module.params[p];
+          if(param.AutomationTiming() == FBAutomationTiming::PerSample)
+            for (int ps = 0; ps < param.slotCount; ps++)
+            {
+              FBParamTopoIndices indices = { { m, ms }, { p, ps } };
+              auto id = FBMakeRuntimeId(module.id, ms, param.id, ps);
+              auto name = MakeRuntimeParamLongName(*topo, module, param, indices);
+              target.List().items.push_back({ id, name });
+            }
         }
-      }
   }
 
   return result;

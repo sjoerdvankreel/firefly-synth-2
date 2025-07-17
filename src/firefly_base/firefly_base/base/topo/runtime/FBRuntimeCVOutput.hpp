@@ -10,7 +10,7 @@ struct FBStaticTopo;
 struct FBStaticModule;
 
 std::string
-MakeRuntimeCVOutputLongName(
+MakeRuntimeCVOutputName(
   FBStaticTopo const& topo,
   FBStaticModule const& module,
   FBStaticCVOutput const& cvOutput,
@@ -23,8 +23,7 @@ struct FBRuntimeCVOutput final
   FBCVOutputTopoIndices topoIndices;
 
   std::string id;
-  std::string longName;
-  std::string shortName;
+  std::string name;
   std::string staticModuleId;
   int tag;
 
