@@ -90,19 +90,27 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   source.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSource);
   source.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
   source.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+  
+  int sourceIndex = 0;
   for (int m = 0; m < topo->modules.size(); m++)
   {
     auto const& module = topo->modules[m];
-    for (int ms = 0; ms < module.slotCount; ms++)
-      for (int o = 0; o < module.cvOutputs.size(); o++)
+    if(!module.voice || !global)
+      for (int ms = 0; ms < module.slotCount; ms++)
       {
-        auto const& cvOutput = module.cvOutputs[o];
-        for (int os = 0; os < cvOutput.slotCount; os++)
+        if (ms == 0)
+          source.List().submenuStart[sourceIndex] = module.name;
+        for (int o = 0; o < module.cvOutputs.size(); o++)
         {
-          FBCVOutputTopoIndices indices = { { m, ms }, { o, os } };
-          auto id = FBMakeRuntimeId(module.id, ms, cvOutput.id, os);
-          auto name = MakeRuntimeCVOutputName(*topo, module, cvOutput, indices);
-          source.List().items.push_back({ id, name });
+          auto const& cvOutput = module.cvOutputs[o];
+          for (int os = 0; os < cvOutput.slotCount; os++)
+          {
+            FBCVOutputTopoIndices indices = { { m, ms }, { o, os } };
+            auto id = FBMakeRuntimeId(module.id, ms, cvOutput.id, os);
+            auto name = MakeRuntimeCVOutputName(*topo, module, cvOutput, indices);
+            source.List().items.push_back({ id, name });
+            sourceIndex++;
+          }
         }
       }
   }
