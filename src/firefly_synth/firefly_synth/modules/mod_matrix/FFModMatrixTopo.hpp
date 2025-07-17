@@ -7,6 +7,6 @@
 inline int constexpr FFModMatrixSlotCount = 32;
 
 struct FBStaticModule;
-enum class FFModMatrixOpType { Add, Mul, Stack };
-enum class FFModMatrixParam { On, Source, Target, OpType, Bipolar, Amount, Count };
+enum class FFModMatrixOpType { Off, Add, Mul, Stack };
+enum class FFModMatrixParam { OpType, Source, Target, Bipolar, Amount, Count };
 std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool global);

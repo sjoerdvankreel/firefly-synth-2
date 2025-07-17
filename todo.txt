@@ -1,3 +1,5 @@
+make env1 to amp explicit
+
 paint env1 to vmix
 get rid of sse2neon
 make better section ui esp. for the a/b/c/ sections

@@ -13,7 +13,7 @@
 
 struct FBStaticModule; 
 
-class alignas(FBSIMDAlign) FFModMatrixDSPState final
+class FFModMatrixDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
@@ -28,10 +28,9 @@ class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
 {
   friend class FFModMatrixProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool);
-  std::array<TBlock, 1> on = {};
+  std::array<TBlock, 1> opType = {};
   std::array<TBlock, 1> source = {};
   std::array<TBlock, 1> target = {};
-  std::array<TBlock, 1> opType = {};
   std::array<TBlock, 1> bipolar = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixBlockParamState);
