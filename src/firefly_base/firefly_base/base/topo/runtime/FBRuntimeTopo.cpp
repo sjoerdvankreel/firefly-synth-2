@@ -87,6 +87,16 @@ moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
       }
     }
   }
+  std::set<FBTopoIndices> allProcessorOrder = {};
+  for (int m = 0; m < topo.modules.size(); m++)
+    for (int s = 0; s < topo.modules[m].slotCount; s++)
+      allProcessorOrder.insert({ m, s });
+  std::set<FBTopoIndices> plugProcessorOrder = {};
+  for (int o = 0; o < topo.moduleProcessOrder.size(); o++)
+    FB_ASSERT(plugProcessorOrder.insert(topo.moduleProcessOrder[o]).second);
+  FB_ASSERT(allProcessorOrder.size() == plugProcessorOrder.size());
+  for (auto const& e : allProcessorOrder)
+    FB_ASSERT(plugProcessorOrder.contains(e));
 #endif
 }
 
