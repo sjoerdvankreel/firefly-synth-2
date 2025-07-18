@@ -3,6 +3,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
+#include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
 #include <vector>
 #include <memory>
@@ -139,6 +140,9 @@ struct FBStaticTopo final
   FBSpecialGUIParamsSelector specialGUISelector = {};
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
+
+  // This is used for the mod matrix so make sure it lines up with what the audio engine is doing.
+  std::vector<FBTopoIndices> moduleProcessOrder = {};
 
   std::vector<FBStaticModule> modules = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);

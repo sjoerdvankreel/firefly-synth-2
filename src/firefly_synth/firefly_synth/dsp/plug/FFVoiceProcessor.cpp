@@ -15,8 +15,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-  FB_ASSERT(FFEnvCount == FFLFOCount);
-  for (int i = 0; i < FFEnvCount; i++)
+  for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;
     procState->dsp.voice[voice].env[i].processor->BeginVoice(state);
@@ -48,8 +47,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto const& gainNorm = vMix.acc.gain[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_.modules[(int)FFModuleType::GMix];
 
-  FB_ASSERT(FFEnvCount == FFLFOCount);
-  for (int i = 0; i < FFEnvCount; i++)
+  for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;
     int envProcessed = voiceDSP.env[i].processor->Process(state);

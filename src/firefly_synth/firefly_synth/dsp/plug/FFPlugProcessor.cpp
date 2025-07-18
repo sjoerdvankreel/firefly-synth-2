@@ -84,7 +84,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
 {
   auto state = MakeModuleState(input);
   auto& globalDSP = _procState->dsp.global;
-  for (int i = 0; i < FFLFOCount; i++)
+  for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;
     globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, nullptr, state);

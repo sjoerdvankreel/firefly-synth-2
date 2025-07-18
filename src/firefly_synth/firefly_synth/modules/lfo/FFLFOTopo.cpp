@@ -20,7 +20,7 @@ FFMakeLFOTopo(bool global)
   result->name = global ? "Global LFO" : "Voice LFO";
   result->tabName = global ? "GLFO" : "VLFO";
   result->graphName = global ? "GLFO" : "VLFO";
-  result->slotCount = FFLFOCount;
+  result->slotCount = FFLFOAndEnvCount;
   result->graphCount = FFLFOBlockCount + 1;
   result->graphRenderer = global ? FFLFORenderGraph<true> : FFLFORenderGraph<false>;
   result->id = prefix + "{6E9EC930-5391-41BB-9EDA-C9B79F3BE745}";

@@ -25,10 +25,9 @@ enum class FFModuleType {
   Output, GUISettings, Master, GMix, Osci, OsciMod, 
   VEffect, GEffect, VMix, Env, VLFO, GLFO, GMatrix, VMatrix, Count };
 
-inline int constexpr FFEnvCount = 4;
-inline int constexpr FFLFOCount = FFEnvCount; // because interleaving
 inline int constexpr FFOsciCount = 4;
 inline int constexpr FFEffectCount = 4;
+inline int constexpr FFLFOAndEnvCount = 4; // because interleaving
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";
 inline constexpr char FFVendorMail[] = "sjoerdvankreel@gmail.com";
 inline constexpr char FFVendorURL[] = "https://github.com/sjoerdvankreel";
