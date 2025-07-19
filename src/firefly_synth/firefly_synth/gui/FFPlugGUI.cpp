@@ -122,7 +122,7 @@ FFPlugGUI::SetupGUI()
 
   FB_LOG_INFO("Creating GUI components.");
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 5, 0, 0, 0, 2 }); // todo autosize
+  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 5, 0, 0, 0 });
   _content->Add(0, 0, 1, 4, _graph);
   _content->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
@@ -133,7 +133,8 @@ FFPlugGUI::SetupGUI()
   _content->Add(4, 0, 1, 4, FFMakeLFOGUI(this));
   _content->Add(5, 0, 1, 4, FFMakeEnvGUI(this));
   _content->Add(6, 0, 1, 4, FFMakeMixGUI(this));
-  _content->Add(0, 4, (int)rowSizes.size(), 1, FFMakeModMatrixGUI(this));
+  _voiceMatrix = FFMakeModMatrixGUI(false, this);
+  _globalMatrix = FFMakeModMatrixGUI(true, this);
 
   FB_LOG_INFO("Created GUI components.");
   FB_LOG_INFO("Making GUI visible.");

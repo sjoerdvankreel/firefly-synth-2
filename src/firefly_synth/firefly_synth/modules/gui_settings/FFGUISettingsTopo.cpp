@@ -91,15 +91,5 @@ FFMakeGUISettingsTopo()
   auto selectGuiEnvSelectedTab = [](auto& module) { return &module.envSelectedTab; };
   guiEnvSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEnvSelectedTab);
 
-  auto& guiMatrixSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::MatrixSelectedTab];
-  guiMatrixSelectedTab.defaultText = "0";
-  guiMatrixSelectedTab.name = "Matrix Selected Tab";
-  guiMatrixSelectedTab.slotCount = 1;
-  guiMatrixSelectedTab.id = "{D93F36D6-3E0C-4D8E-A027-53E851311362}";
-  guiMatrixSelectedTab.type = FBParamType::Discrete;
-  guiMatrixSelectedTab.Discrete().valueCount = 2;
-  auto selectGuiMatrixSelectedTab = [](auto& module) { return &module.matrixSelectedTab; };
-  guiMatrixSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiMatrixSelectedTab);
-
   return result;
 }

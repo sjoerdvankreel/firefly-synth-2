@@ -15,6 +15,8 @@ class FFPlugGUI final:
 public FBPlugGUI
 {
   FBGridComponent* _content = {};
+  juce::Component* _voiceMatrix = {};
+  juce::Component* _globalMatrix = {};
   FBModuleGraphComponent* _graph = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 

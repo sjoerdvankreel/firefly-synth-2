@@ -18,10 +18,11 @@
 
 using namespace juce;
 
-static Component*
-MakeModMatrixSectionAll(FBPlugGUI* plugGUI, FFModuleType moduleType)
+Component*
+FFMakeModMatrixGUI(bool global, FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
+  auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   std::vector<int> rowSizes(FFModMatrixSlotCount + 1, 1);
   std::vector<int> columnSizes = { 0, 0, 1, 0, 0 };
   auto topo = plugGUI->HostContext()->Topo();
@@ -51,17 +52,4 @@ MakeModMatrixSectionAll(FBPlugGUI* plugGUI, FFModuleType moduleType)
   }
   grid->MarkSection({ { 0, 0 }, { FFModMatrixSlotCount + 1, (int)FFModMatrixParam::Count } });
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
-}
-
-Component*
-FFMakeModMatrixGUI(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::MatrixSelectedTab, 0 } });
-  auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
-  tabs->AddModuleTab(false, { (int)FFModuleType::VMatrix, 0 }, MakeModMatrixSectionAll(plugGUI, FFModuleType::VMatrix));
-  tabs->AddModuleTab(false, { (int)FFModuleType::GMatrix, 0 }, MakeModMatrixSectionAll(plugGUI, FFModuleType::GMatrix));
-  tabs->ActivateStoredSelectedTab();
-  return tabs;
 }

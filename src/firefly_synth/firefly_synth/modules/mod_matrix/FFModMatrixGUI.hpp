@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakeModMatrixGUI(FBPlugGUI* plugGUI);
+FFMakeModMatrixGUI(bool global, FBPlugGUI* plugGUI);
