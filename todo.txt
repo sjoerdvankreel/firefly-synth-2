@@ -1,4 +1,6 @@
 easy access mod controls
+modmat on separate screen
+widen the gui for the easy access stuff
 make env1 to amp explicit
 mod indicators for vmatrix
 filter out unsupported targets
