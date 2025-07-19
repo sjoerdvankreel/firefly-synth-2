@@ -27,6 +27,9 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
 
+  void ShowVoiceMatrix();
+  void ShowGlobalMatrix();
+
   void resized() override;
   void UpdateExchangeStateTick() override;
   FBGUIRenderType GetRenderType() const override;

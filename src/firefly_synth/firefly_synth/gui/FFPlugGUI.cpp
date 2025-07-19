@@ -1,5 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/gui/FFPatchGUI.hpp>
+#include <firefly_synth/gui/FFPlugMatrixGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
@@ -98,6 +99,26 @@ FFPlugGUI::GetRenderType() const
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
 
+void
+FFPlugGUI::ShowVoiceMatrix()
+{
+  DialogWindow::LaunchOptions options;
+  options.dialogTitle = "Voice Matrix";
+  options.resizable = false;
+  options.useNativeTitleBar = false;
+  options.componentToCentreAround = this;
+  options.content = OptionalScopedPointer(_voiceMatrix, false);
+  auto window = options.launchAsync();
+  window->setSize(400, getHeight() * 3 / 4);
+  window->setLookAndFeel(FBGetLookAndFeel());
+  window->setTopLeftPosition(getScreenBounds().getTopLeft());
+}
+
+void
+FFPlugGUI::ShowGlobalMatrix()
+{
+}
+
 void 
 FFPlugGUI::SetupGUI()
 {
@@ -122,17 +143,18 @@ FFPlugGUI::SetupGUI()
 
   FB_LOG_INFO("Creating GUI components.");
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 5, 0, 0, 0 });
-  _content->Add(0, 0, 1, 4, _graph);
+  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 1, 0, 0, 0, 0 });
+  _content->Add(0, 0, 1, 5, _graph);
   _content->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
   _content->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
   _content->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
-  _content->Add(1, 3, 1, 1, FFMakePatchGUI(this));
-  _content->Add(2, 0, 1, 4, FFMakeOsciGUI(this));
-  _content->Add(3, 0, 1, 4, FFMakeEffectGUI(this));
-  _content->Add(4, 0, 1, 4, FFMakeLFOGUI(this));
-  _content->Add(5, 0, 1, 4, FFMakeEnvGUI(this));
-  _content->Add(6, 0, 1, 4, FFMakeMixGUI(this));
+  _content->Add(1, 3, 1, 1, FFMakePlugMatrixGUI(this));
+  _content->Add(1, 4, 1, 1, FFMakePatchGUI(this));
+  _content->Add(2, 0, 1, 5, FFMakeOsciGUI(this));
+  _content->Add(3, 0, 1, 5, FFMakeEffectGUI(this));
+  _content->Add(4, 0, 1, 5, FFMakeLFOGUI(this));
+  _content->Add(5, 0, 1, 5, FFMakeEnvGUI(this));
+  _content->Add(6, 0, 1, 5, FFMakeMixGUI(this));
   _voiceMatrix = FFMakeModMatrixGUI(false, this);
   _globalMatrix = FFMakeModMatrixGUI(true, this);
 
