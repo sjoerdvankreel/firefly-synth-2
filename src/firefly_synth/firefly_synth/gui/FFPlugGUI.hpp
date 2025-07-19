@@ -1,7 +1,8 @@
 #pragma once
 
-#include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <memory>
 #include <unordered_map>
@@ -14,9 +15,12 @@ class FBModuleGraphComponent;
 class FFPlugGUI final:
 public FBPlugGUI
 {
-  FBGridComponent* _content = {};
   juce::Component* _voiceMatrix = {};
   juce::Component* _globalMatrix = {};
+  FBGridComponent* _synthContent = {};
+  FBGridComponent* _totalContent = {};
+  FBContentComponent* _synthOrMatrix = {};
+
   FBModuleGraphComponent* _graph = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 

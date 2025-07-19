@@ -143,18 +143,19 @@ FFPlugGUI::SetupGUI()
 
   FB_LOG_INFO("Creating GUI components.");
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 1, 0, 0, 0, 0 });
-  _content->Add(0, 0, 1, 5, _graph);
-  _content->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
-  _content->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
-  _content->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
-  _content->Add(1, 3, 1, 1, FFMakePlugMatrixGUI(this));
-  _content->Add(1, 4, 1, 1, FFMakePatchGUI(this));
-  _content->Add(2, 0, 1, 5, FFMakeOsciGUI(this));
-  _content->Add(3, 0, 1, 5, FFMakeEffectGUI(this));
-  _content->Add(4, 0, 1, 5, FFMakeLFOGUI(this));
-  _content->Add(5, 0, 1, 5, FFMakeEnvGUI(this));
-  _content->Add(6, 0, 1, 5, FFMakeMixGUI(this));
+  _synthOrMatrix = StoreComponent<FBContentComponent>();
+  _synthContent = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 1, 0, 0, 0, 0 });
+  _synthContent->Add(0, 0, 1, 5, _graph);
+  _synthContent->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
+  _synthContent->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
+  _synthContent->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
+  _synthContent->Add(1, 3, 1, 1, FFMakePlugMatrixGUI(this));
+  _synthContent->Add(1, 4, 1, 1, FFMakePatchGUI(this));
+  _synthContent->Add(2, 0, 1, 5, FFMakeOsciGUI(this));
+  _synthContent->Add(3, 0, 1, 5, FFMakeEffectGUI(this));
+  _synthContent->Add(4, 0, 1, 5, FFMakeLFOGUI(this));
+  _synthContent->Add(5, 0, 1, 5, FFMakeEnvGUI(this));
+  _synthContent->Add(6, 0, 1, 5, FFMakeMixGUI(this));
   _voiceMatrix = FFMakeModMatrixGUI(false, this);
   _globalMatrix = FFMakeModMatrixGUI(true, this);
 
