@@ -1,3 +1,4 @@
+another round of cpu and memory profiling
 6 env/lfo?
 do addbp also for lfos
 factory presets
