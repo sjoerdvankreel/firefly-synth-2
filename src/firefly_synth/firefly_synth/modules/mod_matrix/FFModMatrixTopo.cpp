@@ -42,6 +42,7 @@ std::vector<FBParamTopoIndices>
 FFModMatrixMakeTargets(bool global, FBStaticTopo const* topo)
 {
   std::vector<FBParamTopoIndices> result = {};
+  result.push_back({ { -1, -1 }, { -1, -1 } });
   for (int m = 0; m < topo->modules.size(); m++)
   {
     auto const& module = topo->modules[m];
@@ -161,7 +162,9 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
 
   FBTopoIndices prevModule = { -1, -1 };
   auto const& targets = global ? topo->gMatrixTargets : topo->vMatrixTargets;
-  for (int i = 0; i < targets.size(); i++)
+  target.List().submenuStart[0] = "Off";
+  target.List().items.push_back({ "{068FDE01-F1B1-4A4D-83FF-BD8B3D4E43C9}", "Off" });
+  for (int i = 1; i < targets.size(); i++)
   {
     int paramSlot = targets[i].param.slot;
     int moduleSlot = targets[i].module.slot;
@@ -180,7 +183,9 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     target.List().items.push_back({ id, name });
   }
 
-  target.List().targetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) { 
+  target.List().targetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
+    if (runtimeTargetValue == 0)
+      return true; // Off
     auto const& targetParams = global ? topo->gMatrixTargets : topo->vMatrixTargets;
     auto const& sourceCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
     FB_ASSERT(0 <= runtimeTargetValue && runtimeTargetValue < targetParams.size());
