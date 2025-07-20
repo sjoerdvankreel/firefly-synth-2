@@ -113,7 +113,7 @@ typedef std::function<std::unique_ptr<FBDeserializationConverter>(
   FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo)>
 FBDeserializationConverterFactory;
 
-struct FBStaticTopo final
+struct FBStaticTopo
 {
   int guiWidth = {};
   int guiAspectRatioWidth = {};
@@ -134,6 +134,9 @@ struct FBStaticTopo final
   void (*freeRawScalarState)(void* state) = {};
   void (*freeRawExchangeState)(void* state) = {};
 
+  std::vector<FBStaticModule> modules = {};
+  std::vector<FBTopoIndices> moduleProcessOrder = {};
+
   int exchangeStateSize = {};
   int exchangeStateAlignment = {};
   FBSpecialParamsSelector specialSelector = {};
@@ -141,9 +144,6 @@ struct FBStaticTopo final
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 
-  // This is used for the mod matrix so make sure it lines up with what the audio engine is doing.
-  std::vector<FBTopoIndices> moduleProcessOrder = {};
-
-  std::vector<FBStaticModule> modules = {};
+  virtual ~FBStaticTopo() = 0;
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };

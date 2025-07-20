@@ -121,7 +121,7 @@ FBCLAPPlugin::
 
 FBCLAPPlugin::
 FBCLAPPlugin(
-  FBStaticTopo const& topo,
+  std::unique_ptr<FBStaticTopo>&& topo,
   clap_plugin_descriptor const* desc,
   clap_host const* host,
   std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue):
@@ -129,7 +129,7 @@ Plugin(desc, host),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
 _gui(),
-_topo(std::make_unique<FBRuntimeTopo>(topo)),
+_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
 _procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _editState(std::make_unique<FBScalarStateContainer>(*_topo)),

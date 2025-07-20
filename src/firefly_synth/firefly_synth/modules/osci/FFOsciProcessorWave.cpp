@@ -1022,7 +1022,7 @@ FFOsciProcessor::BeginVoiceWave(
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
   auto const& waveHSModeNorm = params.block.waveHSMode[0].Voice()[voice];
   auto const& waveDSFBWNorm = params.block.waveDSFBW[0].Voice()[voice];
@@ -1065,7 +1065,7 @@ FFOsciProcessor::ProcessWave(
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
   auto const& waveHSGainNorm = procParams.acc.waveHSGain[0].Voice()[voice];

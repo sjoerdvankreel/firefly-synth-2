@@ -60,9 +60,9 @@ MakeRuntimeModules(FBStaticTopo const& topo)
 }
 
 FBRuntimeTopo::
-FBRuntimeTopo(FBStaticTopo const& topo) :
-static_(topo),
-modules(MakeRuntimeModules(topo)),
+FBRuntimeTopo(std::unique_ptr<FBStaticTopo>&& topo_) :
+static_(std::move(topo_)),
+modules(MakeRuntimeModules(*static_)),
 audio(FBRuntimeParamsTopo<FBRuntimeParam>(modules)),
 gui(FBRuntimeParamsTopo<FBRuntimeGUIParam>(modules)),
 moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
@@ -70,14 +70,14 @@ moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
 #ifndef NDEBUG
   std::set<std::string> allIds = {};
   std::set<std::string> moduleNames = {};
-  for (int m = 0; m < topo.modules.size(); m++)
+  for (int m = 0; m < static_->modules.size(); m++)
   {
-    auto const& module = topo.modules[m];
+    auto const& module = static_->modules[m];
     FB_ASSERT(allIds.insert(module.id).second);
     FB_ASSERT(moduleNames.insert(module.name).second);
     for (int p = 0; p < module.params.size(); p++)
     {
-      auto const& param = topo.modules[m].params[p];
+      auto const& param = static_->modules[m].params[p];
       FB_ASSERT(allIds.insert(param.id).second);
       if (param.type == FBParamType::List)
       {
@@ -88,12 +88,12 @@ moduleTopoToRuntime(MakeModuleTopoToRuntime(modules))
     }
   }
   std::set<FBTopoIndices> allProcessorOrder = {};
-  for (int m = 0; m < topo.modules.size(); m++)
-    for (int s = 0; s < topo.modules[m].slotCount; s++)
+  for (int m = 0; m < static_->modules.size(); m++)
+    for (int s = 0; s < static_->modules[m].slotCount; s++)
       allProcessorOrder.insert({ m, s });
   std::set<FBTopoIndices> plugProcessorOrder = {};
-  for (int o = 0; o < topo.moduleProcessOrder.size(); o++)
-    FB_ASSERT(plugProcessorOrder.insert(topo.moduleProcessOrder[o]).second);
+  for (int o = 0; o < static_->moduleProcessOrder.size(); o++)
+    FB_ASSERT(plugProcessorOrder.insert(static_->moduleProcessOrder[o]).second);
   FB_ASSERT(allProcessorOrder.size() == plugProcessorOrder.size());
   for (auto const& e : allProcessorOrder)
     FB_ASSERT(plugProcessorOrder.contains(e));
@@ -331,10 +331,10 @@ FBRuntimeTopo::SaveParamStateToVar(
 
   auto result = new DynamicObject;
   result->setProperty("magic", String(Magic));
-  result->setProperty("id", String(static_.meta.id));
-  result->setProperty("major", static_.meta.version.major);
-  result->setProperty("minor", static_.meta.version.minor);
-  result->setProperty("patch", static_.meta.version.patch);
+  result->setProperty("id", String(static_->meta.id));
+  result->setProperty("major", static_->meta.version.major);
+  result->setProperty("minor", static_->meta.version.minor);
+  result->setProperty("patch", static_->meta.version.patch);
   result->setProperty("state", state);
   return var(result);
 }
@@ -375,7 +375,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
     FB_LOG_ERROR("Plugin id is not a string.");
     return false;
   }
-  if (id.toString().toStdString() != static_.meta.id)
+  if (id.toString().toStdString() != static_->meta.id)
   {
     FB_LOG_ERROR("Plugin id mismatch.");
     return false;
@@ -422,7 +422,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
   loadingVersion.minor = static_cast<int>(minor);
   loadingVersion.patch = static_cast<int>(patch);
 
-  if (static_.meta.version < loadingVersion)
+  if (static_->meta.version < loadingVersion)
   {
     FB_LOG_ERROR("Stored plugin version is newer than current plugin version.");
     return false;
@@ -449,7 +449,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
     *container.Params()[p] = static_cast<float>(defaultNormalized);
   }
 
-  auto converter = static_.deserializationConverterFactory(loadingVersion, this);
+  auto converter = static_->deserializationConverterFactory(loadingVersion, this);
   for (int sp = 0; sp < state.size(); sp++)
   {
     DynamicObject* param = state[sp].getDynamicObject();

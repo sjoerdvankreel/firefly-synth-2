@@ -46,7 +46,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
   auto const& typeNorm = params.block.type[0].Voice()[voice];
   _type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
@@ -55,7 +55,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
   auto const& modParams = procState->param.voice.osciMod[0];
-  auto const& modTopo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
+  auto const& modTopo = state.topo->static_->modules[(int)FFModuleType::OsciMod];
 
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
   auto const& uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
@@ -131,7 +131,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   float sampleRate = state.input->sampleRate;
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
   int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
 
   auto const& panNorm = procParams.acc.pan[0].Voice()[voice];

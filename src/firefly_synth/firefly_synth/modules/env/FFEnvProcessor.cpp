@@ -25,7 +25,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.env[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Env];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Env];
   auto const& stageBarsNorm = params.block.stageBars;
   auto const& stageTimeNorm = params.block.stageTime;
   auto const& syncNorm = params.block.sync[0].Voice()[voice];

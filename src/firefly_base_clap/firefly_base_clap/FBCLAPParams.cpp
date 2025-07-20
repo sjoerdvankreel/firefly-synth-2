@@ -116,7 +116,7 @@ FBCLAPPlugin::paramsInfo(
     auto const& runtimeParam = _topo->audio.params[paramIndex];
     auto const& staticParam = runtimeParam.static_;
     auto const& runtimeModule = _topo->modules[runtimeParam.runtimeModuleIndex];
-    auto const& staticModule = _topo->static_.modules[runtimeParam.topoIndices.module.index];
+    auto const& staticModule = _topo->static_->modules[runtimeParam.topoIndices.module.index];
     if (paramIndex >= _topo->audio.params.size())
       return false;
 

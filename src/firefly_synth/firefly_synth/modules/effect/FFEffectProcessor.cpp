@@ -76,7 +76,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
   auto const& params = *FFSelectDualState<Global>(
     [procState, &state]() { return &procState->param.global.gEffect[state.moduleSlot]; },
     [procState, &state]() { return &procState->param.voice.vEffect[state.moduleSlot]; });
-  auto const& topo = state.topo->static_.modules[(int)(Global? FFModuleType::GEffect: FFModuleType::VEffect)];
+  auto const& topo = state.topo->static_->modules[(int)(Global? FFModuleType::GEffect: FFModuleType::VEffect)];
   
   auto const& kindNorm = params.block.kind;
   auto const& clipModeNorm = params.block.clipMode;
@@ -151,7 +151,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     [procState, voice, &state]() { return &procState->dsp.voice[voice].vEffect[state.moduleSlot]; });
   auto& output = dspState.output;
   auto const& input = dspState.input;
-  auto const& topo = state.topo->static_.modules[(int)(Global ? FFModuleType::GEffect : FFModuleType::VEffect)];
+  auto const& topo = state.topo->static_->modules[(int)(Global ? FFModuleType::GEffect : FFModuleType::VEffect)];
 
   if (!_on)
   {

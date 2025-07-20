@@ -71,7 +71,7 @@ public:
   ~FBCLAPPlugin();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBCLAPPlugin);
   FBCLAPPlugin(
-    FBStaticTopo const& topo,
+    std::unique_ptr<FBStaticTopo>&& topo,
     clap_plugin_descriptor const* desc, 
     clap_host const* host,    
     std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue);

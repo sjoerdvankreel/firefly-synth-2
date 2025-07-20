@@ -20,7 +20,7 @@ RuntimeDependencies(
     int dependencySlot = staticParamIndices[i].slot;
     if (dependencySlot == -1)
     {
-      auto const& staticDependency = topo->static_.modules[staticModuleIndices.index].params[staticParamIndices[i].index];
+      auto const& staticDependency = topo->static_->modules[staticModuleIndices.index].params[staticParamIndices[i].index];
       FB_ASSERT(staticDependency.slotCount == 1 || staticDependency.slotCount > slot);
       dependencySlot = staticDependency.slotCount == 1 ? 0 : slot;
     }

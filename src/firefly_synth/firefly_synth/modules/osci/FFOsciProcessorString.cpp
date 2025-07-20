@@ -73,7 +73,7 @@ FFOsciProcessor::BeginVoiceString(bool graph, FBModuleProcState& state)
   float oversampledRate = sampleRate * _oversampleTimes;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
   auto const& fineNorm = params.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = params.acc.coarse[0].Voice()[voice];
@@ -191,7 +191,7 @@ FFOsciProcessor::ProcessString(
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
   auto const& stringLPResNorm = procParams.acc.stringLPRes[0].Voice()[voice];

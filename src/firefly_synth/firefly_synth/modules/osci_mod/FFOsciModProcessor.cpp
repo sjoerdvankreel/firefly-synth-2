@@ -11,7 +11,7 @@ FFOsciModProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::OsciMod];
 
   auto const& oversampleNorm = procParams.block.oversample[0].Voice()[voice];
   _oversample = !graph && topo.NormalizedToBoolFast(FFOsciModParam::Oversample, oversampleNorm);
@@ -33,7 +33,7 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   auto& outputAMMix = voiceState.osciMod.outputAMMix;
   auto& outputFMIndex = voiceState.osciMod.outputFMIndex;
   auto const& procParams = procState->param.voice.osciMod[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::OsciMod];
 
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {

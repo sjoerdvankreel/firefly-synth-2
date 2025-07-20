@@ -84,10 +84,10 @@ FFPlugMeta(FBPlugFormat format)
   return result;
 }
 
-std::unique_ptr<FBStaticTopo>
+std::unique_ptr<FFStaticTopo>
 FFMakeTopo(FBPlugFormat format)
 {
-  auto result = std::make_unique<FBStaticTopo>();
+  auto result = std::make_unique<FFStaticTopo>();
   result->meta = FFPlugMeta(format);
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
@@ -131,51 +131,27 @@ FFMakeTopo(FBPlugFormat format)
   // These need to go last.
   result->modules[(int)FFModuleType::GMatrix] = std::move(*FFMakeModMatrixTopo(true, result.get()));
   result->modules[(int)FFModuleType::VMatrix] = std::move(*FFMakeModMatrixTopo(false, result.get()));
+  result->gMatrixSources = FFModMatrixMakeSources(true, result.get());
+  result->vMatrixSources = FFModMatrixMakeSources(false, result.get());
 
   // This better lines up with the audio engine.
-  // There's some unneeded stuff in here like gui_settings but we need a total ordering.
-  
-  // GMatrix is kinda the entry point to entire plug mod matrix.
-  // It has no cv outputs and it cannot itself be modulated by anything.
-  // It would be nice to let the amount param be controlled by GLFOX
-  // but that gets us in a loop (GLFOA->GLFOB rate amount-controlled GLFOC).
-  // Technically doable provided C < B < A, but tricky bookkeeping.
-  // Also we can with this setup already allow GLFO N+1 rate controlled by GLFO N,
-  // just not amount-controlled by GLFO N-1. Since amount control is still
-  // automatable and (in CLAP case) modulatable, seems like a good deal to me.
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMatrix, 0 });
-
-  // Just for completeness.
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GUISettings, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Master, 0 });
-
-  // These are the backbone of the modmatrix -- processed first, anyone can sample them.
   for (int s = 0; s < result->modules[(int)FFModuleType::GLFO].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GLFO, s });
-
-  // Entry point to the per-voice mod matrix.
-  // It can be modulated by the global cv outputs only, and has no cv outputs.
-  // So VLFO1 to whatever voice param 
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VMatrix, 0 });
-
-  // Per-voice ENV and LFO are processed interleaved, so
-  // Env 1, LFO 1, Env 2, LFO 2, etc. This gives user an option
-  // to env-modulate and LFO and also the other way around.
   for (int s = 0; s < FFLFOAndEnvCount; s++)
   {
     result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, s });
     result->moduleProcessOrder.push_back({ (int)FFModuleType::VLFO, s });
   }
-
-  // This voice stuff doesn't produce any cv outputs themselves, so just follow dsp order.
   result->moduleProcessOrder.push_back({ (int)FFModuleType::OsciMod, 0 });
   for (int s = 0; s < result->modules[(int)FFModuleType::Osci].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::Osci, s });
   for (int s = 0; s < result->modules[(int)FFModuleType::VEffect].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::VEffect, s });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VMix, 0 });
-
-  // Same, but for global.
   for (int s = 0; s < result->modules[(int)FFModuleType::GEffect].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GEffect, s });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMix, 0 });

@@ -5,15 +5,15 @@
 
 FBExchangeStateContainer::
 FBExchangeStateContainer(FBRuntimeTopo const& topo):
-_rawState(topo.static_.allocRawExchangeState()),
-_freeRawState(topo.static_.freeRawExchangeState),
-_host(topo.static_.hostExchangeAddr(_rawState)),
-_voices(topo.static_.voicesExchangeAddr(_rawState))
+_rawState(topo.static_->allocRawExchangeState()),
+_freeRawState(topo.static_->freeRawExchangeState),
+_host(topo.static_->hostExchangeAddr(_rawState)),
+_voices(topo.static_->voicesExchangeAddr(_rawState))
 {
   for (int m = 0; m < topo.modules.size(); m++)
   {
     auto const& indices = topo.modules[m].topoIndices;
-    auto const& static_ = topo.static_.modules[indices.index];
+    auto const& static_ = topo.static_->modules[indices.index];
     if (!static_.voice && static_.globalModuleExchangeAddr)
     {
       _modules.push_back(std::make_unique<FBModuleExchangeState>(
@@ -33,7 +33,7 @@ _voices(topo.static_.voicesExchangeAddr(_rawState))
   }
 
   for (int p = 0; p < topo.audio.params.size(); p++)
-    if (topo.static_.modules[topo.audio.params[p].topoIndices.module.index].voice)
+    if (topo.static_->modules[topo.audio.params[p].topoIndices.module.index].voice)
       _params.push_back(FBParamExchangeState(
         topo.audio.params[p].static_.voiceExchangeAddr(
           topo.audio.params[p].topoIndices.module.slot,

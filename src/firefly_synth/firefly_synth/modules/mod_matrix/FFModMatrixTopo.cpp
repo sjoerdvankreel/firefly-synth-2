@@ -19,6 +19,45 @@ MakeRuntimeParamModName(
   return moduleName + " " + paramName;
 }
 
+std::vector<FBCVOutputTopoIndices>
+FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
+{
+  std::vector<FBCVOutputTopoIndices> result = {};
+  for (int m = 0; m < topo->modules.size(); m++)
+  {
+    auto const& module = topo->modules[m];
+    if (!module.voice || !global)
+      for (int ms = 0; ms < module.slotCount; ms++)
+        for (int o = 0; o < module.cvOutputs.size(); o++)
+        {
+          auto const& cvOutput = module.cvOutputs[o];
+          for (int os = 0; os < cvOutput.slotCount; os++)
+            result.push_back({ { m, ms }, { o, os } });
+        }
+  }
+  return result;
+}
+
+std::vector<FBParamTopoIndices> 
+FFModMatrixMakeTargets(bool global, FBStaticTopo const* topo)
+{
+  std::vector<FBParamTopoIndices> result = {};
+  for (int m = 0; m < topo->modules.size(); m++)
+  {
+    auto const& module = topo->modules[m];
+    if (global != module.voice)
+      for (int ms = 0; ms < module.slotCount; ms++)
+        for (int p = 0; p < module.params.size(); p++)
+        {
+          auto const& param = module.params[p];
+          if (param.AutomationTiming() == FBAutomationTiming::PerSample)
+            for (int ps = 0; ps < param.slotCount; ps++)
+              result.push_back({ { m, ms }, { p, ps } });
+        }
+  }
+  return result;
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
 {
@@ -89,28 +128,18 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   source.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
   source.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
   
-  int sourceIndex = 0;
-  for (int m = 0; m < topo->modules.size(); m++)
+  auto sources = FFModMatrixMakeSources(global, topo);
+  for (int i = 0; i < sources.size(); i++)
   {
-    auto const& module = topo->modules[m];
-    if(!module.voice || !global)
-      for (int ms = 0; ms < module.slotCount; ms++)
-      {
-        if (ms == 0)
-          source.List().submenuStart[sourceIndex] = module.name;
-        for (int o = 0; o < module.cvOutputs.size(); o++)
-        {
-          auto const& cvOutput = module.cvOutputs[o];
-          for (int os = 0; os < cvOutput.slotCount; os++)
-          {
-            FBCVOutputTopoIndices indices = { { m, ms }, { o, os } };
-            auto id = FBMakeRuntimeId(module.id, ms, cvOutput.id, os);
-            auto name = FBMakeRuntimeCVOutputName(*topo, module, cvOutput, indices);
-            source.List().items.push_back({ id, name });
-            sourceIndex++;
-          }
-        }
-      }
+    int moduleSlot = sources[i].module.slot;
+    int cvOutputSlot = sources[i].cvOutput.slot;
+    auto const& module = topo->modules[sources[i].module.index];
+    auto const& cvOutput = module.cvOutputs[sources[i].cvOutput.index];
+    if (moduleSlot == 0)
+      source.List().submenuStart[i] = module.name;
+    auto id = FBMakeRuntimeId(module.id, moduleSlot, cvOutput.id, cvOutputSlot);
+    auto name = FBMakeRuntimeCVOutputName(*topo, module, cvOutput, sources[i]);
+    source.List().items.push_back({ id, name });
   }
 
   auto& target = result->params[(int)FFModMatrixParam::Target];
@@ -128,31 +157,20 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTarget);
   target.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
 
-  int targetIndex = 0;
-  for (int m = 0; m < topo->modules.size(); m++)
+  auto targets = FFModMatrixMakeTargets(global, topo);
+  for (int i = 0; i < targets.size(); i++)
   {
-    auto const& module = topo->modules[m];
-    if(global != module.voice)
-      for (int ms = 0; ms < module.slotCount; ms++)
-      {
-        std::string subMenuName = module.name;
-        if (module.slotCount != 1)
-          subMenuName += " " + std::to_string(ms + 1);
-        target.List().submenuStart[targetIndex] = subMenuName;
-        for (int p = 0; p < module.params.size(); p++)
-        {
-          auto const& param = module.params[p];
-          if (param.AutomationTiming() == FBAutomationTiming::PerSample)
-            for (int ps = 0; ps < param.slotCount; ps++)
-            {
-              FBParamTopoIndices indices = { { m, ms }, { p, ps } };
-              auto id = FBMakeRuntimeId(module.id, ms, param.id, ps);
-              auto name = MakeRuntimeParamModName(*topo, module, param, indices);
-              target.List().items.push_back({ id, name });
-              targetIndex++;
-            }
-        }
-      }
+    int paramSlot = targets[i].param.slot;
+    int moduleSlot = targets[i].module.slot;
+    auto const& module = topo->modules[targets[i].module.index];
+    auto const& param = module.params[targets[i].param.index];
+    std::string subMenuName = module.name;
+    if (module.slotCount != 1)
+      subMenuName += " " + std::to_string(moduleSlot + 1);
+    target.List().submenuStart[i] = subMenuName;
+    auto id = FBMakeRuntimeId(module.id, moduleSlot, param.id, paramSlot);
+    auto name = MakeRuntimeParamModName(*topo, module, param, targets[i]);
+    target.List().items.push_back({ id, name });
   }
 
   return result;

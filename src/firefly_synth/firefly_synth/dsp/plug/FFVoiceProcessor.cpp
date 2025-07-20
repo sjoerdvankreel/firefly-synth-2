@@ -45,7 +45,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto const& vMix = procState->param.voice.vMix[0];
   auto const& balNorm = vMix.acc.bal[0].Voice()[voice];
   auto const& gainNorm = vMix.acc.gain[0].Voice()[voice];
-  auto& moduleTopo = state.topo->static_.modules[(int)FFModuleType::GMix];
+  auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
 
   for (int i = 0; i < FFLFOAndEnvCount; i++)
   {

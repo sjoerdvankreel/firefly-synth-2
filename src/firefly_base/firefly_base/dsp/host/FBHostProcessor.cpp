@@ -59,14 +59,14 @@ FBHostProcessor::ProcessHost(
     _procState->Params()[be.param].Value(be.normalized);
 
   auto const& hostSmoothTimeSpecial = _procState->Special().hostSmoothTime;
-  auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(_topo->static_);
+  auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(*_topo->static_);
   int hostSmoothSamples = hostSmoothTimeTopo.Linear().NormalizedTimeToSamplesFast(hostSmoothTimeSpecial.state->Value(), _sampleRate);
   _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
   for (int m = 0; m < _topo->modules.size(); m++)
   {
     auto const& indices = _topo->modules[m].topoIndices;
-    auto const& static_ = _topo->static_.modules[indices.index];
+    auto const& static_ = _topo->static_->modules[indices.index];
     if (!static_.voice)
     {
       if (_exchangeState->Modules()[m] != nullptr)

@@ -41,7 +41,7 @@ public IFBHostDSPContext
 public:
   ~FBVST3AudioEffect();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
-  FBVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId);
+  FBVST3AudioEffect(std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId);
   uint32 PLUGIN_API getLatencySamples() override { return FBFixedBlockSamples; }
 
   float SampleRate() const override { return _sampleRate; }

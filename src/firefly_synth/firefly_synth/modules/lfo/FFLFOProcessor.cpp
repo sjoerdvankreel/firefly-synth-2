@@ -75,7 +75,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& params = *FFSelectDualState<Global>(
     [procState, &state]() { return &procState->param.global.gLFO[state.moduleSlot]; },
     [procState, &state]() { return &procState->param.voice.vLFO[state.moduleSlot]; });
-  auto const& topo = state.topo->static_.modules[(int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO)];
+  auto const& topo = state.topo->static_->modules[(int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO)];
 
   auto const& stepsNorm = params.block.steps;
   auto const& opTypeNorm = params.block.opType;
@@ -207,7 +207,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
     [procState, &state]() { return &procState->dsp.global.gLFO[state.moduleSlot]; },
     [procState, voice, &state]() { return &procState->dsp.voice[voice].vLFO[state.moduleSlot]; });
   auto& output = dspState.output;
-  auto const& topo = state.topo->static_.modules[(int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO)];
+  auto const& topo = state.topo->static_->modules[(int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO)];
 
   if (_type == FFLFOType::Off)
   {

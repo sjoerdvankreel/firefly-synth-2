@@ -101,7 +101,7 @@ FFPlugProcessor::ProcessPostVoice(
   auto const& gMix = _procState->param.global.gMix[0];
   auto const& balNorm = gMix.acc.bal[0].Global();
   auto const& gainNorm = gMix.acc.gain[0].Global();
-  auto& moduleTopo = state.topo->static_.modules[(int)FFModuleType::GMix];
+  auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);

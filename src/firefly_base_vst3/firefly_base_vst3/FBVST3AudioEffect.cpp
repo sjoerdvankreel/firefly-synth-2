@@ -68,8 +68,8 @@ FBVST3AudioEffect::
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
-  FBStaticTopo const& topo, FUID const& controllerId):
-_topo(std::make_unique<FBRuntimeTopo>(topo)),
+  std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId):
+_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo))
 {
@@ -189,13 +189,13 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
     auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
       config.numBlocks = 1;
       config.userContextID = 0;
-      config.blockSize = _topo->static_.exchangeStateSize;
+      config.blockSize = _topo->static_->exchangeStateSize;
 
       // If this is set to the natural alignment of the struct being transmitted
       // this stuff totally breaks down on MacOS. The 32 magic number is not AFAIK
       // documented anywhere except being mentioned in the sample code at 
       // https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Data+Exchange/Index.html.
-      config.alignment = std::max(32, _topo->static_.exchangeStateAlignment);
+      config.alignment = std::max(32, _topo->static_->exchangeStateAlignment);
       return true; };
     _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
     _exchangeHandler->onConnect(other, getHostContext());
