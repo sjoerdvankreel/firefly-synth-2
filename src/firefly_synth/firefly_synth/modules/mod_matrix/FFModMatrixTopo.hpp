@@ -4,8 +4,8 @@
 #include <memory>
 #include <utility>
 
-inline int constexpr FFModMatrixVoiceSlotCount = 32;
-inline int constexpr FFModMatrixGlobalSlotCount = 16;
+inline int constexpr FFModMatrixGlobalSlotCount = 14;
+inline int constexpr FFModMatrixVoiceSlotCount = 2 * FFModMatrixGlobalSlotCount;
 
 struct FBStaticTopo;
 struct FBStaticModule;

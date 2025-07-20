@@ -22,7 +22,7 @@ static Component*
 MakeModMatrixGUI(bool global, int offset, FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  std::vector<int> rowSizes(17, 1);
+  std::vector<int> rowSizes(FFModMatrixGlobalSlotCount + 1, 1);
   std::vector<int> columnSizes = { 0, 0, 1, 0 };
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   auto topo = plugGUI->HostContext()->Topo();
@@ -30,8 +30,8 @@ MakeModMatrixGUI(bool global, int offset, FBPlugGUI* plugGUI)
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Op"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>("Source"));
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(global? "Global Target": "Voice Target"));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Amount"));
-  for (int i = 0; i < 16; i++)
+  grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));
+  for (int i = 0; i < FFModMatrixGlobalSlotCount; i++)
   {
     auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, offset + i } });
     grid->Add(1 + i, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
@@ -42,16 +42,16 @@ MakeModMatrixGUI(bool global, int offset, FBPlugGUI* plugGUI)
     auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Amount, offset + i } });
     grid->Add(1 + i, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 17, (int)FFModMatrixParam::Count } });
+  grid->MarkSection({ { 0, 0 }, { FFModMatrixGlobalSlotCount + 1, (int)FFModMatrixParam::Count } });
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
 Component*
 FFMakeModMatrixGUI(FBPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1, 1 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1, 1 } });
   grid->Add(0, 0, MakeModMatrixGUI(false, 0, plugGUI));
-  grid->Add(0, 1, MakeModMatrixGUI(false, 16, plugGUI));
+  grid->Add(0, 1, MakeModMatrixGUI(false, FFModMatrixGlobalSlotCount, plugGUI));
   grid->Add(0, 2, MakeModMatrixGUI(true, 0, plugGUI));
   return grid;
 }
