@@ -7,6 +7,8 @@ ValidateItemsParam(
   FBStaticParamBase const& staticParam, 
   int moduleIndex)
 {
+  (void)moduleIndex;
+  (void)staticParam;
 #ifndef NDEBUG
   std::set<std::string> itemNames = {};
   if (staticParam.type == FBParamType::List)
