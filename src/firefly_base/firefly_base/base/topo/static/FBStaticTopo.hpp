@@ -144,6 +144,6 @@ struct FBStaticTopo
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 
-  virtual ~FBStaticTopo() = 0;
+  virtual ~FBStaticTopo() {}
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };
