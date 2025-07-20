@@ -25,6 +25,7 @@ struct FBListItem final
 
 struct FBListParam
 {
+  int sourceEnabledTarget = -1;
   int targetEnabledSource = -1;
   std::vector<FBListItem> items = {};
   FBItemSlotFormatter slotFormatter = {};

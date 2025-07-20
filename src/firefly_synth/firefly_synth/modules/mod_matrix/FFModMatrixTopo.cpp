@@ -120,6 +120,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.slotCount = slotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
+  source.List().sourceEnabledTarget = (int)FFModMatrixParam::Target;
   auto selectSource = [](auto& module) { return &module.block.source; };
   source.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSource);
   source.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSource);

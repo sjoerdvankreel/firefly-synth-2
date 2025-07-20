@@ -38,7 +38,8 @@ class FBParamComboBox final:
 public FBAutoSizeComboBox,
 public FBParamControl
 {
-  void EnableItems(juce::PopupMenu* menu, int runtimeSourceValue);
+  void UpdateDependentComboboxTarget();
+  void EnableDependentItems(juce::PopupMenu* menu, int runtimeSourceValue);
 
 public:
   void showPopup() override;
