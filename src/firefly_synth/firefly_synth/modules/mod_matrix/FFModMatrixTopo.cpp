@@ -98,7 +98,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
 
   auto& amount = result->params[(int)FFModMatrixParam::Amount];
   amount.acc = true;
-  amount.defaultText = "0";
+  amount.defaultText = "100";
   amount.name = "Amount";
   amount.display = "Amt";
   amount.slotCount = slotCount;
