@@ -59,7 +59,7 @@ FFModMatrixMakeTargets(bool global, FBStaticTopo const* topo)
 }
 
 std::unique_ptr<FBStaticModule>
-FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
+FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
 {
   int slotCount = global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
   std::string prefix = global ? "G" : "V";
@@ -128,7 +128,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   source.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
   source.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
   
-  auto sources = FFModMatrixMakeSources(global, topo);
+  auto const& sources = global ? topo->gMatrixSources : topo->vMatrixSources;
   for (int i = 0; i < sources.size(); i++)
   {
     int moduleSlot = sources[i].module.slot;
@@ -157,7 +157,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTarget);
   target.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
 
-  auto targets = FFModMatrixMakeTargets(global, topo);
+  auto const& targets = global ? topo->gMatrixTargets : topo->vMatrixTargets;
   for (int i = 0; i < targets.size(); i++)
   {
     int paramSlot = targets[i].param.slot;

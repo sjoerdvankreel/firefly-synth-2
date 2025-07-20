@@ -37,7 +37,6 @@ public FBStaticTopo
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FFStaticTopo);
 
   // These are used for the mod matrix so make sure it lines up with what the audio engine is doing.
-  std::vector<FBTopoIndices> moduleProcessOrder = {};
   std::vector<FBParamTopoIndices> gMatrixTargets = {};
   std::vector<FBParamTopoIndices> vMatrixTargets = {};
   std::vector<FBCVOutputTopoIndices> gMatrixSources = {};

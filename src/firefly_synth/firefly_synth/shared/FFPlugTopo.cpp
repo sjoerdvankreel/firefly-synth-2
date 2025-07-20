@@ -129,10 +129,12 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo());
 
   // These need to go last.
-  result->modules[(int)FFModuleType::GMatrix] = std::move(*FFMakeModMatrixTopo(true, result.get()));
-  result->modules[(int)FFModuleType::VMatrix] = std::move(*FFMakeModMatrixTopo(false, result.get()));
   result->gMatrixSources = FFModMatrixMakeSources(true, result.get());
   result->vMatrixSources = FFModMatrixMakeSources(false, result.get());
+  result->gMatrixTargets = FFModMatrixMakeTargets(true, result.get());
+  result->vMatrixTargets = FFModMatrixMakeTargets(false, result.get());
+  result->modules[(int)FFModuleType::GMatrix] = std::move(*FFMakeModMatrixTopo(true, result.get()));
+  result->modules[(int)FFModuleType::VMatrix] = std::move(*FFMakeModMatrixTopo(false, result.get()));
 
   // This better lines up with the audio engine.
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMatrix, 0 });
