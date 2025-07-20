@@ -2,12 +2,12 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
+#include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <memory>
 #include <unordered_map>
 
-class FBGridComponent;
 class FBHostGUIContext;
 class FBGraphRenderState;
 class FBModuleGraphComponent;
@@ -15,11 +15,11 @@ class FBModuleGraphComponent;
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  FBGridComponent* _modules = {};
+  FBGridComponent* _container = {};
+  FBContentComponent* _content = {};
   juce::Component* _voiceMatrix = {};
   juce::Component* _globalMatrix = {};
-  FBGridComponent* _synthContent = {};
-  FBGridComponent* _totalContent = {};
-  FBContentComponent* _synthOrMatrix = {};
 
   FBModuleGraphComponent* _graph = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
@@ -31,8 +31,8 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
 
-  void ShowVoiceMatrix();
-  void ShowGlobalMatrix();
+  void HideMatrix() { _content->SetContent(_modules); }
+  void ShowMatrix() { _content->SetContent(_voiceMatrix); }
 
   void resized() override;
   void UpdateExchangeStateTick() override;

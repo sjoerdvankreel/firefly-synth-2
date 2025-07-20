@@ -99,68 +99,28 @@ FFPlugGUI::GetRenderType() const
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
 
-void
-FFPlugGUI::ShowVoiceMatrix()
-{
-  DialogWindow::LaunchOptions options;
-  options.dialogTitle = "Voice Matrix";
-  options.resizable = false;
-  options.useNativeTitleBar = false;
-  options.componentToCentreAround = this;
-  options.content = OptionalScopedPointer(_voiceMatrix, false);
-  auto window = options.launchAsync();
-  window->setSize(400, getHeight() * 3 / 4);
-  window->setLookAndFeel(FBGetLookAndFeel());
-  window->setTopLeftPosition(getScreenBounds().getTopLeft());
-}
-
-void
-FFPlugGUI::ShowGlobalMatrix()
-{
-}
-
 void 
 FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
-
-  FB_LOG_INFO("Calculating GUI grid size.");
-  int vTabCount = 6;
-  float padding = FBTabBarDepth + 8;
-  auto const& topo = HostContext()->Topo()->static_;
-  int totalHeight = topo.guiWidth * topo.guiAspectRatioHeight / topo.guiAspectRatioWidth;
-  float availableHeight = static_cast<float>(totalHeight - vTabCount * padding);
-  std::vector<int> rowSizes = {};
-  // todo what is /9?
-  rowSizes.push_back(static_cast<int>(padding + 1.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 1.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  FB_LOG_INFO("Calculated GUI grid size.");
-
-  FB_LOG_INFO("Creating GUI components.");
-  _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _synthOrMatrix = StoreComponent<FBContentComponent>();
-  _synthContent = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 1, 0, 0, 0, 0 });
-  _synthContent->Add(0, 0, 1, 5, _graph);
-  _synthContent->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
-  _synthContent->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
-  _synthContent->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
-  _synthContent->Add(1, 3, 1, 1, FFMakePlugMatrixGUI(this));
-  _synthContent->Add(1, 4, 1, 1, FFMakePatchGUI(this));
-  _synthContent->Add(2, 0, 1, 5, FFMakeOsciGUI(this));
-  _synthContent->Add(3, 0, 1, 5, FFMakeEffectGUI(this));
-  _synthContent->Add(4, 0, 1, 5, FFMakeLFOGUI(this));
-  _synthContent->Add(5, 0, 1, 5, FFMakeEnvGUI(this));
-  _synthContent->Add(6, 0, 1, 5, FFMakeMixGUI(this));
   _voiceMatrix = FFMakeModMatrixGUI(false, this);
   _globalMatrix = FFMakeModMatrixGUI(true, this);
-
-  FB_LOG_INFO("Created GUI components.");
-  FB_LOG_INFO("Making GUI visible.");
-  addAndMakeVisible(_content);
-  FB_LOG_INFO("Made GUI visible.");
+  _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
+  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
+  _modules->Add(0, 0, FFMakeOsciGUI(this));
+  _modules->Add(1, 0, FFMakeEffectGUI(this));
+  _modules->Add(2, 0, FFMakeLFOGUI(this));
+  _modules->Add(3, 0, FFMakeEnvGUI(this));
+  _modules->Add(4, 0, FFMakeMixGUI(this));
+  _content = StoreComponent<FBContentComponent>();
+  _content->SetContent(_modules);
+  _container = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 2, 2, 15 } }, std::vector<int> { { 1, 0, 0, 0, 0 } });
+  _container->Add(0, 0, 1, 5, _graph);
+  _container->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
+  _container->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
+  _container->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
+  _container->Add(1, 3, 1, 1, FFMakePlugMatrixGUI(this));
+  _container->Add(1, 4, 1, 1, FFMakePatchGUI(this));
+  _container->Add(2, 0, 1, 5, _content);
+  addAndMakeVisible(_container);
 }

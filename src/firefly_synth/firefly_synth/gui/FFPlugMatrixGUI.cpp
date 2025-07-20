@@ -16,11 +16,11 @@ MakePlugMatrixTab(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
-  auto voice = plugGUI->StoreComponent<FBAutoSizeButton>("Voice");
-  voice->onClick = [plugGUI]() { plugGUI->ShowVoiceMatrix(); };
+  auto voice = plugGUI->StoreComponent<FBAutoSizeButton>("Show");
+  voice->onClick = [plugGUI]() { plugGUI->ShowMatrix(); };
   grid->Add(0, 0, voice);
-  auto global = plugGUI->StoreComponent<FBAutoSizeButton>("Global");
-  global->onClick = [plugGUI]() { plugGUI->ShowGlobalMatrix(); };
+  auto global = plugGUI->StoreComponent<FBAutoSizeButton>("Hide");
+  global->onClick = [plugGUI]() { plugGUI->HideMatrix(); };
   grid->Add(0, 1, global);
   grid->MarkSection({ { 0, 0 }, { 1, 2 } });
   return plugGUI->StoreComponent<FBSectionComponent>(grid);

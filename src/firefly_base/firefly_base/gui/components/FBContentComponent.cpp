@@ -13,6 +13,14 @@ FBContentComponent::resized()
   }
 }
 
+void
+FBContentComponent::SetContent(Component* content)
+{
+  removeAllChildren();
+  addAndMakeVisible(content);
+  resized();
+}
+
 int
 FBContentComponent::FixedHeight() const
 {
