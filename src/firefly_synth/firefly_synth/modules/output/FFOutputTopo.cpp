@@ -8,7 +8,7 @@ FFMakeOutputTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
-  result->name = "Out";
+  result->name = "Output";
   result->slotCount = 1;
   result->id = "{6BDA100B-8E99-4108-B38C-E5C6418EAF4B}";
   result->params.resize((int)FFOutputParam::Count);

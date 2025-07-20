@@ -15,14 +15,15 @@ static Component*
 MakePlugMatrixTab(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
-  auto voice = plugGUI->StoreComponent<FBAutoSizeButton>("Show");
-  voice->onClick = [plugGUI]() { plugGUI->ShowMatrix(); };
-  grid->Add(0, 0, voice);
-  auto global = plugGUI->StoreComponent<FBAutoSizeButton>("Hide");
-  global->onClick = [plugGUI]() { plugGUI->HideMatrix(); };
-  grid->Add(0, 1, global);
-  grid->MarkSection({ { 0, 0 }, { 1, 2 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1 });
+  auto toggle = plugGUI->StoreComponent<FBAutoSizeButton>(" Show ");
+  toggle->onClick = [plugGUI, toggle]() { 
+    if (plugGUI->ToggleMatrix())
+      toggle->setButtonText(" Hide ");
+    else
+      toggle->setButtonText(" Show "); };
+  grid->Add(0, 0, toggle);
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

@@ -15,6 +15,7 @@ class FBModuleGraphComponent;
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  bool _showMatrix = false;
   juce::Component* _matrix = {};
   FBGridComponent* _modules = {};
   FBGridComponent* _container = {};
@@ -30,9 +31,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
 
-  void ShowMatrix() { _content->SetContent(_matrix); }
-  void HideMatrix() { _content->SetContent(_modules); }
-
+  bool ToggleMatrix();
   void resized() override;
   void UpdateExchangeStateTick() override;
   FBGUIRenderType GetRenderType() const override;

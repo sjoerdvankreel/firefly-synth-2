@@ -99,6 +99,17 @@ FFPlugGUI::GetRenderType() const
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
 
+bool
+FFPlugGUI::ToggleMatrix()
+{
+  if (_showMatrix)
+    _content->SetContent(_modules);
+  else
+    _content->SetContent(_matrix);
+  _showMatrix = !_showMatrix;
+  return _showMatrix;
+}
+
 void 
 FFPlugGUI::SetupGUI()
 {
