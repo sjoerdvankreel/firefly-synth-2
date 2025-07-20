@@ -149,6 +149,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.slotCount = slotCount;
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
+  target.List().targetEnabledSource = (int)FFModMatrixParam::Source;
   auto selectTarget = [](auto& module) { return &module.block.target; };
   target.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTarget);
   target.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTarget);
@@ -177,6 +178,20 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     auto name = MakeRuntimeParamModName(*topo, module, param, targets[i]);
     target.List().items.push_back({ id, name });
   }
+
+  target.List().targetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) { 
+    auto const& targetParams = global ? topo->gMatrixTargets : topo->vMatrixTargets;
+    auto const& sourceCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
+    FB_ASSERT(0 <= runtimeTargetValue && runtimeTargetValue < targetParams.size());
+    FB_ASSERT(0 <= runtimeSourceValue && runtimeSourceValue < sourceCvOutputs.size());
+    auto const& targetParam = targetParams[runtimeTargetValue];
+    auto const& sourceCvOutput = sourceCvOutputs[runtimeSourceValue];
+    auto targetProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), targetParam.module);
+    auto sourceProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), sourceCvOutput.module);
+    FB_ASSERT(targetProcessIter != topo->moduleProcessOrder.end());
+    FB_ASSERT(sourceProcessIter != topo->moduleProcessOrder.end());
+    return sourceProcessIter < targetProcessIter;
+  };
 
   return result;
 }

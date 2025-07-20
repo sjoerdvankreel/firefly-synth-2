@@ -13,6 +13,10 @@ typedef std::function<std::string(
 int moduleIndex, int itemSlot)>
 FBItemSlotFormatter;
 
+typedef std::function<bool(
+int runtimeSourceValue, int runtimeTargetValue)>
+FBItemTargetEnabledSelector;
+
 struct FBListItem final
 {
   std::string id = {};
@@ -21,9 +25,11 @@ struct FBListItem final
 
 struct FBListParam
 {
+  int targetEnabledSource = -1;
   std::vector<FBListItem> items = {};
   FBItemSlotFormatter slotFormatter = {};
   std::map<int, std::string> submenuStart = {};
+  FBItemTargetEnabledSelector targetEnabledSelector = {};
 
   int NormalizedToPlainFast(float normalized) const;
   std::string GetName(int moduleIndex, int itemSlot) const;
