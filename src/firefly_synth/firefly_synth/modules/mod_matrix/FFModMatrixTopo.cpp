@@ -22,6 +22,7 @@ MakeRuntimeParamModName(
 std::unique_ptr<FBStaticModule>
 FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
 {
+  int slotCount = global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
@@ -39,7 +40,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   opType.acc = false;
   opType.name = "Op";
   opType.display = "Op";
-  opType.slotCount = FFModMatrixSlotCount;
+  opType.slotCount = slotCount;
   opType.defaultText = "Off";
   opType.id = prefix + "{8D28D968-8585-4A4D-B636-F365C5873973}";
   opType.type = FBParamType::List;
@@ -47,7 +48,9 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
     { "{8E7F2BE6-12B7-483E-8308-DD96F63C7743}", "Off" },
     { "{33CE627C-A02D-43C0-A533-257E4D03EA1E}", "Add" },
     { "{F01ABE4C-C22E-47F2-900E-7E913906A740}", "Mul" },
-    { "{91B784D0-E47A-46DC-ACD8-15A502E68A9A}", "Stk" } };
+    { "{91B784D0-E47A-46DC-ACD8-15A502E68A9A}", "Stack" },
+    { "{23F72708-1F63-4AAB-9970-9F1D77FC5245}", "BP Add" },
+    { "{98709D78-A6A9-4836-A64A-50B30167497B}", "BP Stk" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);
@@ -55,28 +58,12 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   opType.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpType);
   opType.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpType);
 
-  auto& bipolar = result->params[(int)FFModMatrixParam::Bipolar];
-  bipolar.acc = false;
-  bipolar.name = "Bipolar";
-  bipolar.display = "Bi";
-  bipolar.slotCount = FFModMatrixSlotCount;
-  bipolar.defaultText = "Off";
-  bipolar.id = prefix + "{1D86D50C-12DC-4DDF-A471-780921BE837E}";
-  bipolar.type = FBParamType::Boolean;
-  auto selectBipolar = [](auto& module) { return &module.block.bipolar; };
-  bipolar.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectBipolar);
-  bipolar.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectBipolar);
-  bipolar.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectBipolar);
-  bipolar.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectBipolar);
-  bipolar.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectBipolar);
-  bipolar.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
-
   auto& amount = result->params[(int)FFModMatrixParam::Amount];
   amount.acc = true;
   amount.defaultText = "0";
   amount.name = "Amount";
   amount.display = "Amt";
-  amount.slotCount = FFModMatrixSlotCount;
+  amount.slotCount = slotCount;
   amount.unit = "%";
   amount.id = prefix + "{880BC229-2794-45CC-859E-608E85A51D72}";
   amount.type = FBParamType::Identity;
@@ -92,7 +79,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   source.acc = false;
   source.name = "Source";
   source.display = "Source";
-  source.slotCount = FFModMatrixSlotCount;
+  source.slotCount = slotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
   auto selectSource = [](auto& module) { return &module.block.source; };
@@ -131,7 +118,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   target.acc = false;
   target.name = "Target";
   target.display = "Target";
-  target.slotCount = FFModMatrixSlotCount;
+  target.slotCount = slotCount;
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
   auto selectTarget = [](auto& module) { return &module.block.target; };

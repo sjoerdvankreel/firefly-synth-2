@@ -103,8 +103,7 @@ void
 FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
-  _voiceMatrix = FFMakeModMatrixGUI(false, this);
-  _globalMatrix = FFMakeModMatrixGUI(true, this);
+  _matrix = FFMakeModMatrixGUI(this);
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
   _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, FFMakeOsciGUI(this));

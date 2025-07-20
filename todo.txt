@@ -1,3 +1,4 @@
+do addbp also for lfos
 factory presets
 easy access mod controls
 modmat on separate screen

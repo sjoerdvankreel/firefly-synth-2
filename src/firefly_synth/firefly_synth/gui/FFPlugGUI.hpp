@@ -15,11 +15,10 @@ class FBModuleGraphComponent;
 class FFPlugGUI final:
 public FBPlugGUI
 {
+  juce::Component* _matrix = {};
   FBGridComponent* _modules = {};
   FBGridComponent* _container = {};
   FBContentComponent* _content = {};
-  juce::Component* _voiceMatrix = {};
-  juce::Component* _globalMatrix = {};
 
   FBModuleGraphComponent* _graph = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
@@ -31,8 +30,8 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
 
+  void ShowMatrix() { _content->SetContent(_matrix); }
   void HideMatrix() { _content->SetContent(_modules); }
-  void ShowMatrix() { _content->SetContent(_voiceMatrix); }
 
   void resized() override;
   void UpdateExchangeStateTick() override;
