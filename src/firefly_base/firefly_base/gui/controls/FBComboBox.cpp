@@ -93,26 +93,20 @@ FBParamComboBox::SetValueNormalizedFromHost(double normalized)
 }
 
 void
-FBParamComboBox::valueChanged(Value& /*value*/)
-{
-  double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
-  _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
-  _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
-  setTooltip(getTooltip()); // hack but needed
-}
-
-void
 FBParamComboBox::showPopup()
 {
   // need to catch real user input for the undo state, not all kinds of async callbacks
   // this will cause some spurious undo items if user opens popup but not changes it
   _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
+
+  // dependent comboboxes
   if (_param->static_.type == FBParamType::List && _param->static_.List().targetEnabledSelector != nullptr)
     UpdateDependentComboboxTarget();
+
   ComboBox::showPopup();
 }
 
-void 
+void
 FBParamComboBox::EnableDependentItems(PopupMenu* menu, int runtimeSourceValue)
 {
   PopupMenu::MenuItemIterator iter(*menu);
@@ -122,6 +116,25 @@ FBParamComboBox::EnableDependentItems(PopupMenu* menu, int runtimeSourceValue)
       EnableDependentItems(iter.getItem().subMenu.get(), runtimeSourceValue);
     else
       iter.getItem().isEnabled = _param->static_.List().targetEnabledSelector(runtimeSourceValue, iter.getItem().itemID - 1);
+  }
+}
+
+void
+FBParamComboBox::valueChanged(Value& /*value*/)
+{
+  double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
+  _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
+  _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
+  setTooltip(getTooltip()); // hack but needed
+
+  // dependent comboboxes
+  if (_param->static_.type == FBParamType::List && _param->static_.List().sourceEnabledTarget != -1)
+  {
+    auto const* topo = _plugGUI->HostContext()->Topo();
+    auto const& list = _param->static_.List();
+    FBParamTopoIndices targetIndices = { _param->topoIndices.module, { list.sourceEnabledTarget, _param->topoIndices.param.slot } };
+    int runtimeTargetIndex = topo->audio.ParamAtTopo(targetIndices)->runtimeParamIndex;
+    dynamic_cast<FBParamComboBox&>(*_plugGUI->GetControlForAudioParamIndex(runtimeTargetIndex)).UpdateDependentComboboxTarget();
   }
 }
 

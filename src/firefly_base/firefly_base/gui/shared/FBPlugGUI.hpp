@@ -32,6 +32,7 @@ public:
 
   std::string GetTooltipForGUIParam(int index) const;
   std::string GetTooltipForAudioParam(int index) const;
+  FBParamControl* GetControlForAudioParamIndex(int paramIndex) const;
 
   void UpdateExchangeState();
   void ShowHostMenuForAudioParam(int index);
@@ -51,7 +52,6 @@ protected:
 
   void InitAllDependencies();
   virtual void UpdateExchangeStateTick() = 0;
-  FBParamControl* GetControlForAudioParamIndex(int paramIndex) const;
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
