@@ -17,9 +17,7 @@ FFMakeLFOTopo(bool global)
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
-  result->name = global ? "Global LFO" : "Voice LFO";
-  result->tabName = global ? "GLFO" : "VLFO";
-  result->graphName = global ? "GLFO" : "VLFO";
+  result->name = global ? "GLFO" : "VLFO";
   result->slotCount = FFLFOAndEnvCount;
   result->graphCount = FFLFOBlockCount + 1;
   result->graphRenderer = global ? FFLFORenderGraph<true> : FFLFORenderGraph<false>;

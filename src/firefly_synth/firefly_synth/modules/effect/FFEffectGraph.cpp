@@ -147,7 +147,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   int moduleSlot = moduleProcState->moduleSlot;
   FBTopoIndices modIndices = { (int)moduleType, moduleSlot };
   FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::On, 0 } };
-  auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
+  auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
   bool on = renderState->AudioParamBool(paramIndices, false, -1);
   for (int i = 0; i <= FFEffectBlockCount; i++)
   {

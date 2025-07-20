@@ -17,8 +17,7 @@ FFMakeGMixTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
-  result->tabName = "GMIX";
-  result->name = "Global Mix";
+  result->name = "GMix";
   result->slotCount = 1;
   result->id = "{09ED2CCE-3AC5-455E-935C-A684BEBC154D}";
   result->params.resize((int)FFGMixParam::Count);

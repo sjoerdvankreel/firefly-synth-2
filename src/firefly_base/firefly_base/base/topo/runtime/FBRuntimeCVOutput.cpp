@@ -9,7 +9,7 @@ FBMakeRuntimeCVOutputName(
   FBStaticCVOutput const& cvOutput,
   FBCVOutputTopoIndices const& indices)
 {
-  std::string result = module.tabName;
+  std::string result = module.name;
   if (module.slotCount != 1)
     result += " " + std::to_string(indices.module.slot + 1);
   if (module.cvOutputs.size() != 1)

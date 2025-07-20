@@ -15,7 +15,7 @@ MakeRuntimeParamModName(
   FBParamTopoIndices const& indices)
 {
   auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
-  auto moduleName = FBMakeRuntimeShortName(topo, module.tabName, module.slotCount, indices.module.slot, {}, false);
+  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {}, false);
   return moduleName + " " + paramName;
 }
 
@@ -26,9 +26,8 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
-  result->name = global ? "Global Matrix" : "Voice Matrix";
-  result->tabName = global ? "GMATRIX" : "VMATRIX";
   result->slotCount = 1;
+  result->name = global ? "GMatrix" : "VMatrix";
   result->id = prefix + "{19758BF4-241B-4A59-A943-3AE7426C7CC9}";
   result->params.resize((int)FFModMatrixParam::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vMatrix; });
@@ -98,7 +97,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
       for (int ms = 0; ms < module.slotCount; ms++)
       {
         if (ms == 0)
-          source.List().submenuStart[sourceIndex] = module.tabName;
+          source.List().submenuStart[sourceIndex] = module.name;
         for (int o = 0; o < module.cvOutputs.size(); o++)
         {
           auto const& cvOutput = module.cvOutputs[o];
@@ -136,7 +135,7 @@ FFMakeModMatrixTopo(bool global, FBStaticTopo const* topo)
     if(global != module.voice)
       for (int ms = 0; ms < module.slotCount; ms++)
       {
-        std::string subMenuName = module.tabName;
+        std::string subMenuName = module.name;
         if (module.slotCount != 1)
           subMenuName += " " + std::to_string(ms + 1);
         target.List().submenuStart[targetIndex] = subMenuName;

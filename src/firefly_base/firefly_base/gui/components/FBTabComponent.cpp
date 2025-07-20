@@ -88,9 +88,9 @@ FBModuleTabComponent::AddModuleTab(
   std::string header = std::to_string(moduleIndices.slot + 1);
   if (moduleIndices.slot == 0)
     if (module.slotCount > 1)
-      header = module.tabName + " " + header;
+      header = module.name + " " + header;
     else
-      header = module.tabName;
+      header = module.name;
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;

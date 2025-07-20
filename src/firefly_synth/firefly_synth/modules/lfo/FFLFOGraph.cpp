@@ -139,7 +139,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   int moduleSlot = moduleProcState->moduleSlot;
   FBTopoIndices modIndices = { (int)moduleType, moduleSlot };
   FBParamTopoIndices paramIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Type, 0 } };
-  auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->graphName;
+  auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
   auto type = renderState->AudioParamList<FFLFOType>(paramIndices, false, -1);
   for (int i = 0; i <= FFLFOBlockCount; i++)
   {

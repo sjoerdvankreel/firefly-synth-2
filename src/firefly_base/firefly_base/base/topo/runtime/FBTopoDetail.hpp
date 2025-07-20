@@ -10,16 +10,6 @@ FBMakeStableHash(
   std::string const& id);
 
 std::string
-FBMakeRuntimeTabName(
-  std::string const& name,
-  int slotCount, int slot);
-
-std::string
-FBMakeRuntimeGraphName(
-  std::string const& name, 
-  int slotCount, int slot);
-
-std::string
 FBMakeRuntimeId(
   std::string const& staticModuleId, int moduleSlot,
   std::string const& staticId, int slot); 
