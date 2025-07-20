@@ -157,6 +157,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTarget);
   target.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
 
+  FBTopoIndices prevModule = { -1, -1 };
   auto const& targets = global ? topo->gMatrixTargets : topo->vMatrixTargets;
   for (int i = 0; i < targets.size(); i++)
   {
@@ -164,10 +165,14 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     int moduleSlot = targets[i].module.slot;
     auto const& module = topo->modules[targets[i].module.index];
     auto const& param = module.params[targets[i].param.index];
-    std::string subMenuName = module.name;
-    if (module.slotCount != 1)
-      subMenuName += " " + std::to_string(moduleSlot + 1);
-    target.List().submenuStart[i] = subMenuName;
+    if (targets[i].module != prevModule)
+    {
+      std::string subMenuName = module.name;
+      if (module.slotCount != 1)
+        subMenuName += " " + std::to_string(moduleSlot + 1);
+      target.List().submenuStart[i] = subMenuName;
+      prevModule = targets[i].module;
+    }
     auto id = FBMakeRuntimeId(module.id, moduleSlot, param.id, paramSlot);
     auto name = MakeRuntimeParamModName(*topo, module, param, targets[i]);
     target.List().items.push_back({ id, name });

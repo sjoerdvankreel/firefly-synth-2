@@ -27,9 +27,9 @@ MakeModMatrixGUI(bool global, int offset, FBPlugGUI* plugGUI)
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, rowSizes, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Op"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(global? "Global": "Voice"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>("Source"));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>(global? "Global Target": "Voice Target"));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
   grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));
   for (int i = 0; i < FFModMatrixGlobalSlotCount; i++)
   {
