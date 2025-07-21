@@ -47,6 +47,7 @@ std::vector<FFModMatrixSource>
 FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
 {
   std::vector<FFModMatrixSource> result = {};
+  result.push_back({ false, { { -1, -1 }, { -1, -1 } } });
   for (int m = 0; m < topo->modules.size(); m++)
   {
     auto const& module = topo->modules[m];
@@ -165,7 +166,11 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scale.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
 
   auto const& sources = global ? topo->gMatrixSources : topo->vMatrixSources;
-  for (int i = 0; i < sources.size(); i++)
+  scale.List().submenuStart[0] = "Off";
+  scale.List().items.push_back({ "{A6EA4A7B-162E-4AFC-A806-18478D71EAFA}", "Off" });
+  source.List().submenuStart[0] = "Off";
+  source.List().items.push_back({ "{A6EA4A7B-162E-4AFC-A806-18478D71EAFA}", "Off" });
+  for (int i = 1; i < sources.size(); i++)
   {
     int moduleSlot = sources[i].indices.module.slot;
     int cvOutputSlot = sources[i].indices.cvOutput.slot;
@@ -241,7 +246,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   };
 
   target.List().linkedTargetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
-    if (runtimeTargetValue == 0)
+    if (runtimeSourceValue == 0 || runtimeTargetValue == 0)
       return true; // Off
     auto const& targetParams = global ? topo->gMatrixTargets : topo->vMatrixTargets;
     auto const& sourceCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
