@@ -31,11 +31,12 @@ ComboBox()
 {
   *getRootMenu() = rootMenu;
   PopupMenu::MenuItemIterator iter(*getRootMenu(), true);
-  while (iter.next())
-    iter.getItem().customCallback = new FBComboMenuCloseListener(this, iter.getItem().itemID);
   for (int i = 0; i < getNumItems(); i++)
     _maxTextWidth = std::max(_maxTextWidth, 
       FBGUIGetStringWidthCached(getItemText(i).toStdString()));
+  while (iter.next())
+    if (!iter.getItem().subMenu)
+      iter.getItem().customCallback = new FBComboMenuCloseListener(this, iter.getItem().itemID);
 }
 
 int 
@@ -129,6 +130,17 @@ FBParamComboBox::showPopup()
   // this will cause some spurious undo items if user opens popup but not changes it
   _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
 
+  // enable/disable items based on the generic selector
+  if (_param->static_.type == FBParamType::List &&
+    _param->static_.List().enabledSelector != nullptr)
+  {
+    PopupMenu::MenuItemIterator iter(*getRootMenu(), true);
+    while (iter.next())
+      if (!iter.getItem().subMenu)
+        iter.getItem().isEnabled = _param->static_.List().enabledSelector(
+          _plugGUI->HostContext(), iter.getItem().itemID - 1);
+  }
+
   // enable/disable items based on the source combo
   if (_param->static_.type == FBParamType::List && 
     _param->static_.List().linkedTargetEnabledSelector != nullptr)
@@ -146,7 +158,7 @@ FBParamComboBox::EnableDependentItems(PopupMenu* menu, int runtimeSourceValue)
     if (iter.getItem().subMenu != nullptr)
       EnableDependentItems(iter.getItem().subMenu.get(), runtimeSourceValue);
     else
-      iter.getItem().isEnabled = _param->static_.List().linkedTargetEnabledSelector(
+      iter.getItem().isEnabled &= _param->static_.List().linkedTargetEnabledSelector(
         runtimeSourceValue, iter.getItem().itemID - 1);
   }
 }
