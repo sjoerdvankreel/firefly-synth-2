@@ -1,5 +1,4 @@
 allow to modulate the matrix itself
-check all list items for detailed descriptions (or drop it)
 another round of cpu and memory profiling
 6 env/lfo?
 do addbp also for lfos
