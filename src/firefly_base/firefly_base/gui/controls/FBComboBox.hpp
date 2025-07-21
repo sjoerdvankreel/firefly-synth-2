@@ -18,6 +18,7 @@ public IFBHorizontalAutoSize
 public:
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
+  virtual void OnPopupMenuClosing(int /*itemResultId*/) {}
   FBAutoSizeComboBox(juce::PopupMenu const& rootMenu);
 };
 
@@ -47,6 +48,7 @@ public:
   void parentHierarchyChanged() override;
   void valueChanged(juce::Value& value) override;
 
+  void OnPopupMenuClosing(int itemResultId) override;
   void SetValueNormalizedFromHost(double normalized) override;
   FBParamComboBox(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
 };

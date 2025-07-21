@@ -7,11 +7,32 @@
 
 using namespace juce;
 
+class FBComboMenuCloseListener:
+public PopupMenu::CustomCallback
+{
+  int const _itemResultId;
+  FBAutoSizeComboBox* const _box;
+public:
+  bool menuItemTriggered() override;
+  FBComboMenuCloseListener(FBAutoSizeComboBox* box, int itemResultId) : 
+  _itemResultId(itemResultId), _box(box) {}
+};
+
+bool 
+FBComboMenuCloseListener::menuItemTriggered()
+{
+  _box->OnPopupMenuClosing(_itemResultId);
+  return true;
+}
+
 FBAutoSizeComboBox::
 FBAutoSizeComboBox(PopupMenu const& rootMenu):
 ComboBox()
 {
   *getRootMenu() = rootMenu;
+  PopupMenu::MenuItemIterator iter(*getRootMenu(), true);
+  while (iter.next())
+    iter.getItem().customCallback = new FBComboMenuCloseListener(this, iter.getItem().itemID);
   for (int i = 0; i < getNumItems(); i++)
     _maxTextWidth = std::max(_maxTextWidth, 
       FBGUIGetStringWidthCached(getItemText(i).toStdString()));
@@ -107,8 +128,11 @@ FBParamComboBox::showPopup()
   // need to catch real user input for the undo state, not all kinds of async callbacks
   // this will cause some spurious undo items if user opens popup but not changes it
   _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
+
+  // enable/disable items based on the source combo
   if (_param->static_.type == FBParamType::List && _param->static_.List().targetEnabledSelector != nullptr)
     UpdateDependentComboboxTarget();
+
   ComboBox::showPopup();
 }
 
@@ -139,4 +163,27 @@ FBParamComboBox::UpdateDependentComboboxTarget()
   auto const& sourceParam = sourceModule.params[sourceIndices.param.index];
   int runtimeSourcePlain = sourceParam.List().NormalizedToPlainFast((float)runtimeSourceNormalized);
   EnableDependentItems(getRootMenu(), runtimeSourcePlain);
+}
+
+void
+FBParamComboBox::OnPopupMenuClosing(int itemResultId)
+{
+  if (_param->static_.type != FBParamType::List)
+    return;
+  auto const& list = _param->static_.List();
+  if (list.sourceEnabledTarget == -1)
+    return;
+
+  // If we're about to close the source of a dependent combo, 
+  // set target to 0 (assumed to be default) if it's not allowed.
+  auto const* topo = _plugGUI->HostContext()->Topo();
+  FBParamTopoIndices targetIndices = { _param->topoIndices.module, { list.sourceEnabledTarget, _param->topoIndices.param.slot } };
+  int runtimeTargetIndex = topo->audio.ParamAtTopo(targetIndices)->runtimeParamIndex;
+  double runtimeTargetNormalized = _plugGUI->HostContext()->GetAudioParamNormalized(runtimeTargetIndex);
+  auto const& targetModule = topo->static_->modules[targetIndices.module.index];
+  auto const& targetParam = targetModule.params[targetIndices.param.index];
+  int runtimeTargetPlain = targetParam.List().NormalizedToPlainFast((float)runtimeTargetNormalized);
+  bool targetIsAllowed = targetParam.List().targetEnabledSelector(itemResultId - 1, runtimeTargetPlain);
+  if (!targetIsAllowed)
+    MessageManager::callAsync([this, runtimeTargetIndex] { _plugGUI->HostContext()->PerformImmediateAudioParamEdit(runtimeTargetIndex, 0.0); });
 }
