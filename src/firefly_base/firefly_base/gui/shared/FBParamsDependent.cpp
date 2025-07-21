@@ -37,23 +37,6 @@ RuntimeDependencies(
   return result;
 }
 
-struct FBParamsDependentDependency final
-{
-  std::vector<int> evaluations = {};
-  FBParamsDependency dependency;
-  std::vector<int> const runtimeDependencies;
-  
-  bool EvaluateGUI(FBHostGUIContext const* hostContext);
-  bool EvaluateAudio(FBHostGUIContext const* hostContext);
-
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependentDependency);  
-  FBParamsDependentDependency(
-    FBRuntimeTopo const* topo,
-    int slot, bool audio,
-    FBTopoIndices const& moduleIndices,
-    FBParamsDependency const& dependency);
-};
-
 FBParamsDependentDependency::
 FBParamsDependentDependency(
   FBRuntimeTopo const* topo, 

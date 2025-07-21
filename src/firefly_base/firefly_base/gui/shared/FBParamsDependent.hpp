@@ -1,16 +1,36 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/base/topo/static/FBParamsDependencies.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
 #include <vector>
 #include <memory>
 
 class FBPlugGUI;
+class FBHostGUIContext;
+
+struct FBRuntimeTopo;
 struct FBTopoIndices;
 struct FBParamsDependency;
 struct FBParamsDependencies;
-struct FBParamsDependentDependency;
+
+struct FBParamsDependentDependency final
+{
+  std::vector<int> evaluations = {};
+  FBParamsDependency dependency;
+  std::vector<int> const runtimeDependencies;
+  
+  bool EvaluateGUI(FBHostGUIContext const* hostContext);
+  bool EvaluateAudio(FBHostGUIContext const* hostContext);
+
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependentDependency);  
+  FBParamsDependentDependency(
+    FBRuntimeTopo const* topo,
+    int slot, bool audio,
+    FBTopoIndices const& moduleIndices,
+    FBParamsDependency const& dependency);
+};
 
 class FBParamsDependent
 {

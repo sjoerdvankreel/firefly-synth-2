@@ -3,8 +3,10 @@
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/shared/FBParamsDependent.hpp>
 #include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeCVOutput.hpp>
 
@@ -184,11 +186,21 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     target.List().items.push_back({ id, name });
   }
 
-  target.List().enabledSelector = [](auto const* context, int runtimeTargetValue)
+  target.List().enabledSelector = [global](FBHostGUIContext const* context, int runtimeTargetValue)
   {
     if (runtimeTargetValue == 0)
       return true; // Off
-    return true;
+    auto const& topo = dynamic_cast<FFStaticTopo const&>(*context->Topo()->static_);
+    auto const& targets = global ? topo.gMatrixTargets : topo.vMatrixTargets;
+    auto const& targetParamIndices = targets[runtimeTargetValue];
+    auto const& targetParam = context->Topo()->audio.ParamAtTopo(targetParamIndices);
+    FBParamsDependentDependency visible(
+      context->Topo(), targetParamIndices.param.slot, true, 
+      targetParamIndices.module, targetParam->static_.dependencies.visible.audio);
+    FBParamsDependentDependency enabled(
+      context->Topo(), targetParamIndices.param.slot, true,
+      targetParamIndices.module, targetParam->static_.dependencies.enabled.audio);
+    return visible.EvaluateAudio(context) && enabled.EvaluateAudio(context);
   };
 
   target.List().linkedTargetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
