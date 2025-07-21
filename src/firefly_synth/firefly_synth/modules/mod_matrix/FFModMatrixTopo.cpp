@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
@@ -182,6 +183,13 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     auto name = MakeRuntimeParamModName(*topo, module, param, targets[i]);
     target.List().items.push_back({ id, name });
   }
+
+  target.List().enabledSelector = [](auto const* context, int runtimeTargetValue)
+  {
+    if (runtimeTargetValue == 0)
+      return true; // Off
+    return true;
+  };
 
   target.List().linkedTargetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
     if (runtimeTargetValue == 0)
