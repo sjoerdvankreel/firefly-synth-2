@@ -21,7 +21,7 @@ struct FFModMatrixSource
 struct FFStaticTopo;
 struct FBStaticModule;
 enum class FFModMatrixOpType { Off, Add, Mul, Stack, BPAdd, BPStack };
-enum class FFModMatrixParam { OpType, Source, Target, Amount, Count };
+enum class FFModMatrixParam { OpType, Source, Scale, Target, Amount, Count };
 
 std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo);
 std::vector<FFModMatrixSource> FFModMatrixMakeSources(bool global, FBStaticTopo const* topo);

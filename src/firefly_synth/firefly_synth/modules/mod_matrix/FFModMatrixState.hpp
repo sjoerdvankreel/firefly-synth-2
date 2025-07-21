@@ -29,6 +29,7 @@ class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
 {
   friend class FFModMatrixProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
+  std::array<TBlock, SlotCount> scale = {};
   std::array<TBlock, SlotCount> opType = {};
   std::array<TBlock, SlotCount> source = {};
   std::array<TBlock, SlotCount> target = {};

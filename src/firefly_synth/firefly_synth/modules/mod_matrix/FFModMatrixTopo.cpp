@@ -147,7 +147,23 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSource);
   source.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
   source.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
-  
+
+  auto& scale = result->params[(int)FFModMatrixParam::Scale];
+  scale.acc = false;
+  scale.name = "Scale";
+  scale.slotCount = slotCount;
+  scale.id = prefix + "{4A166295-A1EF-4354-AA2E-3F14B98A70CE}";
+  scale.type = FBParamType::List;
+  // TODO scale.List().linkedSource = (int)FFModMatrixParam::Source;
+  // TODO scale.List().linkedTarget = (int)FFModMatrixParam::Target; 
+  auto selectScale = [](auto& module) { return &module.block.scale; };
+  scale.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScale);
+  scale.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectScale);
+  scale.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScale);
+  scale.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScale);
+  scale.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScale);
+  scale.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+
   auto const& sources = global ? topo->gMatrixSources : topo->vMatrixSources;
   for (int i = 0; i < sources.size(); i++)
   {
@@ -158,9 +174,13 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     std::string onNoteIdPrefix = sources[i].onNote ? (FBOnNotePrefix + "-") : "";
     std::string onNoteNamePrefix = sources[i].onNote ? (FBOnNotePrefix + " ") : "";
     if (moduleSlot == 0)
+    {
+      scale.List().submenuStart[i] = onNoteNamePrefix + module.name;
       source.List().submenuStart[i] = onNoteNamePrefix + module.name;
+    }
     auto id = FBMakeRuntimeId(module.id, moduleSlot, onNoteIdPrefix + cvOutput.id, cvOutputSlot);
     auto name = FBMakeRuntimeCVOutputName(*topo, module, cvOutput, sources[i].indices, sources[i].onNote);
+    scale.List().items.push_back({ id, name });
     source.List().items.push_back({ id, name });
   }
 
