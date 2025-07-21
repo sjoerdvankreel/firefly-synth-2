@@ -9,12 +9,17 @@
 struct FBStaticTopo;
 struct FBStaticModule;
 
+// Guess this one is set in stone.
+// It gets serialized with the item ids.
+inline std::string const FBOnNotePrefix = "ON";
+
 std::string
 FBMakeRuntimeCVOutputName(
   FBStaticTopo const& topo,
   FBStaticModule const& module,
   FBStaticCVOutput const& cvOutput,
-  FBCVOutputTopoIndices const& indices);
+  FBCVOutputTopoIndices const& indices,
+  bool onNote);
 
 struct FBRuntimeCVOutput final
 {

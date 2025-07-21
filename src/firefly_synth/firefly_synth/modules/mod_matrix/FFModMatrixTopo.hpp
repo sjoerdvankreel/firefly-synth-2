@@ -7,8 +7,16 @@
 #include <vector>
 #include <utility>
 
+struct FBStaticTopo;
+
 inline int constexpr FFModMatrixGlobalSlotCount = 14;
 inline int constexpr FFModMatrixVoiceSlotCount = 2 * FFModMatrixGlobalSlotCount;
+
+struct FFModMatrixSource
+{
+  bool onNote = {};
+  FBCVOutputTopoIndices indices = {};
+};
 
 struct FFStaticTopo;
 struct FBStaticModule;
@@ -16,5 +24,5 @@ enum class FFModMatrixOpType { Off, Add, Mul, Stack, BPAdd, BPStack };
 enum class FFModMatrixParam { OpType, Source, Target, Amount, Count };
 
 std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo);
+std::vector<FFModMatrixSource> FFModMatrixMakeSources(bool global, FBStaticTopo const* topo);
 std::vector<FBParamTopoIndices> FFModMatrixMakeTargets(bool global, FBStaticTopo const* topo);
-std::vector<FBCVOutputTopoIndices> FFModMatrixMakeSources(bool global, FBStaticTopo const* topo);

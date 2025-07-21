@@ -7,7 +7,8 @@ FBMakeRuntimeCVOutputName(
   FBStaticTopo const&,
   FBStaticModule const& module,
   FBStaticCVOutput const& cvOutput,
-  FBCVOutputTopoIndices const& indices)
+  FBCVOutputTopoIndices const& indices,
+  bool onNote)
 {
   std::string result = module.name;
   if (module.slotCount != 1)
@@ -19,7 +20,8 @@ FBMakeRuntimeCVOutputName(
     if(cvOutput.slotCount != 1)
       result += std::to_string(indices.cvOutput.slot + 1);
   }
-  return result;
+  std::string prefix = onNote ? (FBOnNotePrefix + " ") : "";
+  return prefix + result;
 }
 
 FBRuntimeCVOutput::
@@ -33,6 +35,6 @@ runtimeModuleIndex(runtimeModuleIndex),
 runtimeCVOutputIndex(runtimeCVOutputIndex),
 topoIndices(topoIndices),
 id(FBMakeRuntimeId(staticModule.id, topoIndices.cvOutput.slot, staticCVOutput.id, topoIndices.cvOutput.slot)),
-name(FBMakeRuntimeCVOutputName(topo, staticModule, staticCVOutput, topoIndices)),
+name(FBMakeRuntimeCVOutputName(topo, staticModule, staticCVOutput, topoIndices, false)),
 staticModuleId(staticModule.id),
 tag(FBMakeStableHash(id)) {}

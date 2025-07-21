@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
 #include <string>
@@ -37,10 +38,10 @@ public FBStaticTopo
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FFStaticTopo);
 
   // These are used for the mod matrix so make sure it lines up with what the audio engine is doing.
+  std::vector<FFModMatrixSource> gMatrixSources = {};
+  std::vector<FFModMatrixSource> vMatrixSources = {};
   std::vector<FBParamTopoIndices> gMatrixTargets = {};
   std::vector<FBParamTopoIndices> vMatrixTargets = {};
-  std::vector<FBCVOutputTopoIndices> gMatrixSources = {};
-  std::vector<FBCVOutputTopoIndices> vMatrixSources = {};
 };
 
 FBStaticTopoMeta FFPlugMeta(FBPlugFormat format);

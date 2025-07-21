@@ -22,25 +22,6 @@ MakeRuntimeParamModName(
   return moduleName + " " + paramName;
 }
 
-std::vector<FBCVOutputTopoIndices>
-FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
-{
-  std::vector<FBCVOutputTopoIndices> result = {};
-  for (int m = 0; m < topo->modules.size(); m++)
-  {
-    auto const& module = topo->modules[m];
-    if (!module.voice || !global)
-      for (int ms = 0; ms < module.slotCount; ms++)
-        for (int o = 0; o < module.cvOutputs.size(); o++)
-        {
-          auto const& cvOutput = module.cvOutputs[o];
-          for (int os = 0; os < cvOutput.slotCount; os++)
-            result.push_back({ { m, ms }, { o, os } });
-        }
-  }
-  return result;
-}
-
 std::vector<FBParamTopoIndices> 
 FFModMatrixMakeTargets(bool global, FBStaticTopo const* topo)
 {
@@ -58,6 +39,40 @@ FFModMatrixMakeTargets(bool global, FBStaticTopo const* topo)
             for (int ps = 0; ps < param.slotCount; ps++)
               result.push_back({ { m, ms }, { p, ps } });
         }
+  }
+  return result;
+}
+
+std::vector<FFModMatrixSource>
+FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
+{
+  std::vector<FFModMatrixSource> result = {};
+  for (int m = 0; m < topo->modules.size(); m++)
+  {
+    auto const& module = topo->modules[m];
+    if (!module.voice || !global)
+      for (int ms = 0; ms < module.slotCount; ms++)
+        for (int o = 0; o < module.cvOutputs.size(); o++)
+        {
+          auto const& cvOutput = module.cvOutputs[o];
+          for (int os = 0; os < cvOutput.slotCount; os++)
+            result.push_back({ false, { { m, ms }, { o, os } } });
+        }
+  }
+  if (!global)
+  {
+    for (int m = 0; m < topo->modules.size(); m++)
+    {
+      auto const& module = topo->modules[m];
+      if (!module.voice)
+        for (int ms = 0; ms < module.slotCount; ms++)
+          for (int o = 0; o < module.cvOutputs.size(); o++)
+          {
+            auto const& cvOutput = module.cvOutputs[o];
+            for (int os = 0; os < cvOutput.slotCount; os++)
+              result.push_back({ true, { { m, ms }, { o, os } } });
+          }
+    }
   }
   return result;
 }
@@ -136,14 +151,16 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   auto const& sources = global ? topo->gMatrixSources : topo->vMatrixSources;
   for (int i = 0; i < sources.size(); i++)
   {
-    int moduleSlot = sources[i].module.slot;
-    int cvOutputSlot = sources[i].cvOutput.slot;
-    auto const& module = topo->modules[sources[i].module.index];
-    auto const& cvOutput = module.cvOutputs[sources[i].cvOutput.index];
+    int moduleSlot = sources[i].indices.module.slot;
+    int cvOutputSlot = sources[i].indices.cvOutput.slot;
+    auto const& module = topo->modules[sources[i].indices.module.index];
+    auto const& cvOutput = module.cvOutputs[sources[i].indices.cvOutput.index];
+    std::string onNoteIdPrefix = sources[i].onNote ? (FBOnNotePrefix + "-") : "";
+    std::string onNoteNamePrefix = sources[i].onNote ? (FBOnNotePrefix + " ") : "";
     if (moduleSlot == 0)
-      source.List().submenuStart[i] = module.name;
-    auto id = FBMakeRuntimeId(module.id, moduleSlot, cvOutput.id, cvOutputSlot);
-    auto name = FBMakeRuntimeCVOutputName(*topo, module, cvOutput, sources[i]);
+      source.List().submenuStart[i] = onNoteNamePrefix + module.name;
+    auto id = FBMakeRuntimeId(module.id, moduleSlot, onNoteIdPrefix + cvOutput.id, cvOutputSlot);
+    auto name = FBMakeRuntimeCVOutputName(*topo, module, cvOutput, sources[i].indices, sources[i].onNote);
     source.List().items.push_back({ id, name });
   }
 
@@ -213,7 +230,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     auto const& targetParam = targetParams[runtimeTargetValue];
     auto const& sourceCvOutput = sourceCvOutputs[runtimeSourceValue];
     auto targetProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), targetParam.module);
-    auto sourceProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), sourceCvOutput.module);
+    auto sourceProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), sourceCvOutput.indices.module);
     FB_ASSERT(targetProcessIter != topo->moduleProcessOrder.end());
     FB_ASSERT(sourceProcessIter != topo->moduleProcessOrder.end());
     return sourceProcessIter < targetProcessIter;
