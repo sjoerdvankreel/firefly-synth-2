@@ -197,13 +197,13 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     FB_ASSERT(0 <= runtimeSourceValue && runtimeSourceValue < sourceCvOutputs.size());
     auto const& scaleCvOutput = scaleCvOutputs[runtimeTargetValue];
     auto const& sourceCvOutput = sourceCvOutputs[runtimeSourceValue];
-    auto targetProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), scaleCvOutput.indices.module);
+    auto scaleProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), scaleCvOutput.indices.module);
     auto sourceProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), sourceCvOutput.indices.module);
-    FB_ASSERT(targetProcessIter != topo->moduleProcessOrder.end());
+    FB_ASSERT(scaleProcessIter != topo->moduleProcessOrder.end());
     FB_ASSERT(sourceProcessIter != topo->moduleProcessOrder.end());
 
     // Mind <=, we're allowed to scale by source.
-    return sourceProcessIter <= targetProcessIter;
+    return scaleProcessIter <= sourceProcessIter;
   };
 
   auto& target = result->params[(int)FFModMatrixParam::Target];
