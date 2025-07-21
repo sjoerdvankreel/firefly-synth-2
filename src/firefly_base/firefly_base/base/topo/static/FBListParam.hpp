@@ -32,11 +32,11 @@ struct FBListItem final
 struct FBListParam
 {
   int linkedSource = -1;
-  int linkedTarget = -1;
   std::vector<FBListItem> items = {};
-  std::map<int, std::string> submenuStart = {};
+  std::vector<int> linkedTargets = {};
   FBItemSlotFormatter slotFormatter = {};
   FBItemEnabledSelector enabledSelector = {};
+  std::map<int, std::string> submenuStart = {};
   FBItemLinkedTargetEnabledSelector linkedTargetEnabledSelector = {};
 
   int NormalizedToPlainFast(float normalized) const;

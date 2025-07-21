@@ -140,7 +140,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.slotCount = slotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
-  source.List().linkedTarget = (int)FFModMatrixParam::Target;
+  source.List().linkedTargets = { (int)FFModMatrixParam::Scale, (int)FFModMatrixParam::Target };
   auto selectSource = [](auto& module) { return &module.block.source; };
   source.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSource);
   source.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSource);
@@ -155,8 +155,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scale.slotCount = slotCount;
   scale.id = prefix + "{4A166295-A1EF-4354-AA2E-3F14B98A70CE}";
   scale.type = FBParamType::List;
-  // TODO scale.List().linkedSource = (int)FFModMatrixParam::Source;
-  // TODO scale.List().linkedTarget = (int)FFModMatrixParam::Target; 
+  scale.List().linkedSource = (int)FFModMatrixParam::Source;
   auto selectScale = [](auto& module) { return &module.block.scale; };
   scale.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScale);
   scale.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectScale);
@@ -188,6 +187,24 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     scale.List().items.push_back({ id, name });
     source.List().items.push_back({ id, name });
   }
+
+  scale.List().linkedTargetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
+    if (runtimeSourceValue == 0 || runtimeTargetValue == 0)
+      return true; // Off
+    auto const& scaleCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
+    auto const& sourceCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
+    FB_ASSERT(0 <= runtimeTargetValue && runtimeTargetValue < scaleCvOutputs.size());
+    FB_ASSERT(0 <= runtimeSourceValue && runtimeSourceValue < sourceCvOutputs.size());
+    auto const& scaleCvOutput = scaleCvOutputs[runtimeTargetValue];
+    auto const& sourceCvOutput = sourceCvOutputs[runtimeSourceValue];
+    auto targetProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), scaleCvOutput.indices.module);
+    auto sourceProcessIter = std::find(topo->moduleProcessOrder.begin(), topo->moduleProcessOrder.end(), sourceCvOutput.indices.module);
+    FB_ASSERT(targetProcessIter != topo->moduleProcessOrder.end());
+    FB_ASSERT(sourceProcessIter != topo->moduleProcessOrder.end());
+
+    // Mind <=, we're allowed to scale by source.
+    return sourceProcessIter <= targetProcessIter;
+  };
 
   auto& target = result->params[(int)FFModMatrixParam::Target];
   target.acc = false;

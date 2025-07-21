@@ -171,7 +171,7 @@ FBParamComboBox::UpdateDependentComboboxTarget()
   FB_ASSERT(list.linkedSource != -1);
   FBParamTopoIndices sourceIndices = { _param->topoIndices.module, { list.linkedSource, _param->topoIndices.param.slot } };
   int runtimeSourceIndex = topo->audio.ParamAtTopo(sourceIndices)->runtimeParamIndex;
-  FB_ASSERT(topo->audio.params[runtimeSourceIndex].static_.List().linkedTarget != -1);
+  FB_ASSERT(topo->audio.params[runtimeSourceIndex].static_.List().linkedTargets.size());
   double runtimeSourceNormalized = _plugGUI->HostContext()->GetAudioParamNormalized(runtimeSourceIndex);
   auto const& sourceModule = topo->static_->modules[sourceIndices.module.index];
   auto const& sourceParam = sourceModule.params[sourceIndices.param.index];
@@ -184,20 +184,21 @@ FBParamComboBox::OnPopupMenuClosing(int itemResultId)
 {
   if (_param->static_.type != FBParamType::List)
     return;
-  auto const& list = _param->static_.List();
-  if (list.linkedTarget == -1)
-    return;
 
   // If we're about to close the source of a dependent combo, 
-  // set target to 0 (assumed to be default) if it's not allowed.
+  // set targets to 0 (assumed to be default) if it's not allowed.
+  auto const& list = _param->static_.List();
   auto const* topo = _plugGUI->HostContext()->Topo();
-  FBParamTopoIndices targetIndices = { _param->topoIndices.module, { list.linkedTarget, _param->topoIndices.param.slot } };
-  int runtimeTargetIndex = topo->audio.ParamAtTopo(targetIndices)->runtimeParamIndex;
-  double runtimeTargetNormalized = _plugGUI->HostContext()->GetAudioParamNormalized(runtimeTargetIndex);
-  auto const& targetModule = topo->static_->modules[targetIndices.module.index];
-  auto const& targetParam = targetModule.params[targetIndices.param.index];
-  int runtimeTargetPlain = targetParam.List().NormalizedToPlainFast((float)runtimeTargetNormalized);
-  bool targetIsAllowed = targetParam.List().linkedTargetEnabledSelector(itemResultId - 1, runtimeTargetPlain);
-  if (!targetIsAllowed)
-    MessageManager::callAsync([this, runtimeTargetIndex] { _plugGUI->HostContext()->PerformImmediateAudioParamEdit(runtimeTargetIndex, 0.0); });
+  for (int targetIndex : list.linkedTargets)
+  {
+    FBParamTopoIndices targetIndices = { _param->topoIndices.module, { targetIndex, _param->topoIndices.param.slot } };
+    int runtimeTargetIndex = topo->audio.ParamAtTopo(targetIndices)->runtimeParamIndex;
+    double runtimeTargetNormalized = _plugGUI->HostContext()->GetAudioParamNormalized(runtimeTargetIndex);
+    auto const& targetModule = topo->static_->modules[targetIndices.module.index];
+    auto const& targetParam = targetModule.params[targetIndices.param.index];
+    int runtimeTargetPlain = targetParam.List().NormalizedToPlainFast((float)runtimeTargetNormalized);
+    bool targetIsAllowed = targetParam.List().linkedTargetEnabledSelector(itemResultId - 1, runtimeTargetPlain);
+    if (!targetIsAllowed)
+      MessageManager::callAsync([this, runtimeTargetIndex] { _plugGUI->HostContext()->PerformImmediateAudioParamEdit(runtimeTargetIndex, 0.0); });
+  }
 }
