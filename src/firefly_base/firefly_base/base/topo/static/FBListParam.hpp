@@ -9,13 +9,19 @@
 #include <algorithm>
 #include <functional>
 
+class FBHostGUIContext;
+
 typedef std::function<std::string(
 int moduleIndex, int itemSlot)>
 FBItemSlotFormatter;
 
 typedef std::function<bool(
+FBHostGUIContext const*, int runtimeValue)>
+FBItemEnabledSelector;
+
+typedef std::function<bool(
 int runtimeSourceValue, int runtimeTargetValue)>
-FBItemTargetEnabledSelector;
+FBItemLinkedTargetEnabledSelector;
 
 struct FBListItem final
 {
@@ -25,12 +31,13 @@ struct FBListItem final
 
 struct FBListParam
 {
-  int sourceEnabledTarget = -1;
-  int targetEnabledSource = -1;
+  int linkedSource = -1;
+  int linkedTarget = -1;
   std::vector<FBListItem> items = {};
-  FBItemSlotFormatter slotFormatter = {};
   std::map<int, std::string> submenuStart = {};
-  FBItemTargetEnabledSelector targetEnabledSelector = {};
+  FBItemSlotFormatter slotFormatter = {};
+  FBItemEnabledSelector enabledSelector = {};
+  FBItemLinkedTargetEnabledSelector linkedTargetEnabledSelector = {};
 
   int NormalizedToPlainFast(float normalized) const;
   std::string GetName(int moduleIndex, int itemSlot) const;

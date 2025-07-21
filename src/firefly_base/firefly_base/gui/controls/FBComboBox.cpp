@@ -130,7 +130,8 @@ FBParamComboBox::showPopup()
   _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
 
   // enable/disable items based on the source combo
-  if (_param->static_.type == FBParamType::List && _param->static_.List().targetEnabledSelector != nullptr)
+  if (_param->static_.type == FBParamType::List && 
+    _param->static_.List().linkedTargetEnabledSelector != nullptr)
     UpdateDependentComboboxTarget();
 
   ComboBox::showPopup();
@@ -145,7 +146,8 @@ FBParamComboBox::EnableDependentItems(PopupMenu* menu, int runtimeSourceValue)
     if (iter.getItem().subMenu != nullptr)
       EnableDependentItems(iter.getItem().subMenu.get(), runtimeSourceValue);
     else
-      iter.getItem().isEnabled = _param->static_.List().targetEnabledSelector(runtimeSourceValue, iter.getItem().itemID - 1);
+      iter.getItem().isEnabled = _param->static_.List().linkedTargetEnabledSelector(
+        runtimeSourceValue, iter.getItem().itemID - 1);
   }
 }
 
@@ -154,10 +156,10 @@ FBParamComboBox::UpdateDependentComboboxTarget()
 {
   auto const& list = _param->static_.List();
   auto const* topo = _plugGUI->HostContext()->Topo();
-  FB_ASSERT(list.targetEnabledSource != -1);
-  FBParamTopoIndices sourceIndices = { _param->topoIndices.module, { list.targetEnabledSource, _param->topoIndices.param.slot } };
+  FB_ASSERT(list.linkedSource != -1);
+  FBParamTopoIndices sourceIndices = { _param->topoIndices.module, { list.linkedSource, _param->topoIndices.param.slot } };
   int runtimeSourceIndex = topo->audio.ParamAtTopo(sourceIndices)->runtimeParamIndex;
-  FB_ASSERT(topo->audio.params[runtimeSourceIndex].static_.List().sourceEnabledTarget != -1);
+  FB_ASSERT(topo->audio.params[runtimeSourceIndex].static_.List().linkedTarget != -1);
   double runtimeSourceNormalized = _plugGUI->HostContext()->GetAudioParamNormalized(runtimeSourceIndex);
   auto const& sourceModule = topo->static_->modules[sourceIndices.module.index];
   auto const& sourceParam = sourceModule.params[sourceIndices.param.index];
@@ -171,19 +173,19 @@ FBParamComboBox::OnPopupMenuClosing(int itemResultId)
   if (_param->static_.type != FBParamType::List)
     return;
   auto const& list = _param->static_.List();
-  if (list.sourceEnabledTarget == -1)
+  if (list.linkedTarget == -1)
     return;
 
   // If we're about to close the source of a dependent combo, 
   // set target to 0 (assumed to be default) if it's not allowed.
   auto const* topo = _plugGUI->HostContext()->Topo();
-  FBParamTopoIndices targetIndices = { _param->topoIndices.module, { list.sourceEnabledTarget, _param->topoIndices.param.slot } };
+  FBParamTopoIndices targetIndices = { _param->topoIndices.module, { list.linkedTarget, _param->topoIndices.param.slot } };
   int runtimeTargetIndex = topo->audio.ParamAtTopo(targetIndices)->runtimeParamIndex;
   double runtimeTargetNormalized = _plugGUI->HostContext()->GetAudioParamNormalized(runtimeTargetIndex);
   auto const& targetModule = topo->static_->modules[targetIndices.module.index];
   auto const& targetParam = targetModule.params[targetIndices.param.index];
   int runtimeTargetPlain = targetParam.List().NormalizedToPlainFast((float)runtimeTargetNormalized);
-  bool targetIsAllowed = targetParam.List().targetEnabledSelector(itemResultId - 1, runtimeTargetPlain);
+  bool targetIsAllowed = targetParam.List().linkedTargetEnabledSelector(itemResultId - 1, runtimeTargetPlain);
   if (!targetIsAllowed)
     MessageManager::callAsync([this, runtimeTargetIndex] { _plugGUI->HostContext()->PerformImmediateAudioParamEdit(runtimeTargetIndex, 0.0); });
 }

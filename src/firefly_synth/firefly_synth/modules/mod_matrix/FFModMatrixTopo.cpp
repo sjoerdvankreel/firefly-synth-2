@@ -121,7 +121,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.slotCount = slotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
-  source.List().sourceEnabledTarget = (int)FFModMatrixParam::Target;
+  source.List().linkedTarget = (int)FFModMatrixParam::Target;
   auto selectSource = [](auto& module) { return &module.block.source; };
   source.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSource);
   source.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSource);
@@ -151,7 +151,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.slotCount = slotCount;
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
-  target.List().targetEnabledSource = (int)FFModMatrixParam::Source;
+  target.List().linkedSource = (int)FFModMatrixParam::Source;
   auto selectTarget = [](auto& module) { return &module.block.target; };
   target.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTarget);
   target.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTarget);
@@ -183,7 +183,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     target.List().items.push_back({ id, name });
   }
 
-  target.List().targetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
+  target.List().linkedTargetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
     if (runtimeTargetValue == 0)
       return true; // Off
     auto const& targetParams = global ? topo->gMatrixTargets : topo->vMatrixTargets;
