@@ -17,8 +17,8 @@ struct FBPlugInputBlock final
   std::uint64_t projectTimeSamples = {};
 
   FBVoiceManager* voiceManager = {};
+  FBProcStateContainer* procState = {};
   std::vector<FBNoteEvent>* noteEvents = {};
-  FBProcStateContainer* procStateContainer = {};
   FBSArray<float, FBFixedBlockSamples> lastMIDINoteKey = {};
   FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};
 
@@ -27,7 +27,7 @@ struct FBPlugInputBlock final
 
 struct FBPlugOutputBlock final
 {
-  FBProcStateContainer* procStateContainer = {};
+  FBProcStateContainer* procState = {};
   FBSArray2<float, FBFixedBlockSamples, 2> audio = {};
   std::unordered_map<int, float> outputParamsNormalized = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugOutputBlock);

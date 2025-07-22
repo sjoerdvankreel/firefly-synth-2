@@ -52,14 +52,13 @@ void
 FFModMatrixProcessor<Global>::ApplyModulation(
   FBModuleProcState& state, FBTopoIndices const& currentModule)
 {
-
   // TODO no need to make this O(N^whatever)
   // todo on note
   // todo validate if possible
   // todo scale
   // todo not only add
   // todo not overwrite external modulation
-  auto* procStateContainer = state.input->procStateContainer;
+  auto* procStateContainer = state.input->procState;
   auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*state.topo->static_);
   auto const& sources = Global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
   auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
@@ -72,7 +71,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       {
         auto const& target = targets[_target[i]];
         int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
-        procStateContainer->foo();
+        //procStateContainer->Params()[runtimeTargetParamIndex].GlobalAcc().Global().Mo
       }
     }
   }
