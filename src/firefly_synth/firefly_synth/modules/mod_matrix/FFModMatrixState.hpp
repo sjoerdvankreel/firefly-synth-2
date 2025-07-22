@@ -14,47 +14,53 @@
 struct FFStaticTopo;
 struct FBStaticModule;
 
+template <bool Global>
+class FFModMatrixProcessor;
+
+template <bool Global>
 class FFModMatrixDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
-  std::unique_ptr<FFModMatrixProcessor> processor = {};
+  std::unique_ptr<FFModMatrixProcessor<Global>> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFModMatrixDSPState);
-  FFModMatrixDSPState() : processor(std::make_unique<FFModMatrixProcessor>()) {}
+  FFModMatrixDSPState() : processor(std::make_unique<FFModMatrixProcessor<Global>>()) {}
 };
 
-template <class TBlock, int SlotCount>
+template <class TBlock, bool Global>
 class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
 {
-  friend class FFModMatrixProcessor;
+  friend class FFModMatrixProcessor<Global>;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
+  static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+
   std::array<TBlock, SlotCount> scale = {};
   std::array<TBlock, SlotCount> opType = {};
   std::array<TBlock, SlotCount> source = {};
   std::array<TBlock, SlotCount> target = {};
-  std::array<TBlock, SlotCount> bipolar = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixBlockParamState);
 };
 
-template <class TAccurate, int SlotCount>
+template <class TAccurate, bool Global>
 class alignas(alignof(TAccurate)) FFModMatrixAccParamState final
 {
-  friend class FFModMatrixProcessor;
+  friend class FFModMatrixProcessor<Global>;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
+  static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
   std::array<TAccurate, SlotCount> amount = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixAccParamState);
 };
 
-template <class TBlock, class TAccurate, int SlotCount>
+template <class TBlock, class TAccurate, bool Global>
 class alignas(alignof(TAccurate)) FFModMatrixParamState final
 {
-  friend class FFModMatrixProcessor;
+  friend class FFModMatrixProcessor<Global>;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
-  FFModMatrixAccParamState<TAccurate, SlotCount> acc = {};
-  FFModMatrixBlockParamState<TBlock, SlotCount> block = {};
+  FFModMatrixAccParamState<TAccurate, Global> acc = {};
+  FFModMatrixBlockParamState<TBlock, Global> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixParamState);
 };

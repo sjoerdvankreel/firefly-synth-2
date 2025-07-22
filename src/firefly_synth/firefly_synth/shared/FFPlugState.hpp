@@ -56,7 +56,7 @@ struct FFVoiceExchangeState final
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
   FFOutputDSPState output = {};
-  FFModMatrixDSPState gMatrix = {};
+  FFModMatrixDSPState<true> gMatrix = {};
   std::array<FFLFODSPState, FFLFOAndEnvCount> gLFO = {};
   std::array<FFEffectDSPState, FFEffectCount> gEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalDSPState);
@@ -66,7 +66,7 @@ struct alignas(FBSIMDAlign) FFVoiceDSPState final
 {
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
-  FFModMatrixDSPState vMatrix = {};
+  FFModMatrixDSPState<false> vMatrix = {};
   std::array<FFOsciDSPState, FFOsciCount> osci = {};
   std::array<FFEnvDSPState, FFLFOAndEnvCount> env = {};
   std::array<FFLFODSPState, FFLFOAndEnvCount> vLFO = {};
@@ -91,7 +91,7 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOAndEnvCount> gLFO = {};
   std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> gEffect = {};
-  std::array<FFModMatrixParamState<TBlock, TAccurate, FFModMatrixGlobalSlotCount>, 1> gMatrix = {};
+  std::array<FFModMatrixParamState<TBlock, TAccurate, true>, 1> gMatrix = {};
 };
 
 template <class TBlock, class TAccurate>
@@ -104,7 +104,7 @@ struct alignas(alignof(TAccurate)) FFVoiceParamState final
   std::array<FFEnvParamState<TBlock, TAccurate>, FFLFOAndEnvCount> env = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOAndEnvCount> vLFO = {};
   std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> vEffect = {};
-  std::array<FFModMatrixParamState<TBlock, TAccurate, FFModMatrixVoiceSlotCount>, 1> vMatrix = {};
+  std::array<FFModMatrixParamState<TBlock, TAccurate, false>, 1> vMatrix = {};
 };
 
 struct FFScalarParamState final

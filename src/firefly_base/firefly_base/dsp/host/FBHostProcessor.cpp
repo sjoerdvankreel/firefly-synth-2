@@ -35,6 +35,7 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
   _lastMIDINoteKey = 60.0f;
   _plugOut.procState = _procState;
   _plugIn.lastMIDINoteKey.Fill(60.0f);
+  _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
 }
