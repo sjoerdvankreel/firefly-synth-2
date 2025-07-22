@@ -1,16 +1,11 @@
-more envs and lfos
-allow to modulate the matrix itself?
-another round of cpu and memory profiling
-6 env/lfo?
 do addbp also for lfos
+mod indicators for vmatrix
+
+another round of cpu and memory profiling
 factory presets
 easy access mod controls
-modmat on separate screen
 widen the gui for the easy access stuff
 make env1 to amp explicit
-mod indicators for vmatrix
-filter out unsupported targets
-do onnote
 refix all behind-the-scenes mod sources and targets
 
 paint env1 to vmix
