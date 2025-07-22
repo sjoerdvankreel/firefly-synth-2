@@ -130,16 +130,19 @@ FBParamComboBox::showPopup()
   // this will cause some spurious undo items if user opens popup but not changes it
   _plugGUI->HostContext()->UndoState().Snapshot("Change " + _param->longName);
 
-  // enable/disable items based on the generic selector
-  if (_param->static_.type == FBParamType::List &&
-    _param->static_.List().enabledSelector != nullptr)
-  {
-    PopupMenu::MenuItemIterator iter(*getRootMenu(), true);
-    while (iter.next())
-      if (!iter.getItem().subMenu)
-        iter.getItem().isEnabled = _param->static_.List().enabledSelector(
+  // enable/disable items based on the generic selector, if any
+  PopupMenu::MenuItemIterator iter(*getRootMenu(), true);
+  while (iter.next())
+    if (!iter.getItem().subMenu)
+    {
+      iter.getItem().isEnabled = true;
+      if (_param->static_.type == FBParamType::List &&
+        _param->static_.List().enabledSelector != nullptr)
+      {
+        iter.getItem().isEnabled &= _param->static_.List().enabledSelector(
           _plugGUI->HostContext(), iter.getItem().itemID - 1);
-  }
+      }
+    }
 
   // enable/disable items based on the source combo
   if (_param->static_.type == FBParamType::List && 
