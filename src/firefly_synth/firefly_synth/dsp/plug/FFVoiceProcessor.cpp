@@ -15,6 +15,8 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
+  state.moduleSlot = 0;
+  procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
   for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;
@@ -51,9 +53,15 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   {
     state.moduleSlot = i;
     int envProcessed = voiceDSP.env[i].processor->Process(state);
+    state.moduleSlot = 0;
+    procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, i });
     if (i == 0)
       voiceFinished = envProcessed != FBFixedBlockSamples;
+
+    state.moduleSlot = i;
     voiceDSP.vLFO[i].processor->Process<false>(state);
+    state.moduleSlot = 0;
+    procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VLFO, i });
   }
 
   state.moduleSlot = 0;
