@@ -116,7 +116,7 @@ struct FBStaticGUIParam final:
 public FBStaticParamBase
 {
 public:
-  bool isOutput() const { return false; }
+  bool IsOutput() const { return false; }
   FBScalarParamAddrSelector scalarAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticGUIParam);
 };
@@ -139,7 +139,7 @@ public:
   FBVoiceBlockProcParamAddrSelector voiceBlockProcAddr = {};
   FBGlobalBlockProcParamAddrSelector globalBlockProcAddr = {};
 
-  bool isOutput() const { return output; }
+  bool IsOutput() const { return output; }
   bool IsAcc() const { return IsVoiceAcc() || IsGlobalAcc(); }
   bool IsVoice() const { return IsVoiceAcc() || IsVoiceBlock(); }
   bool IsVoiceAcc() const { return voiceAccProcAddr != nullptr; }

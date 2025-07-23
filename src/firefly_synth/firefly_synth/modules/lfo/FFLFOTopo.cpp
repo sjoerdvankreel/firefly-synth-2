@@ -392,6 +392,7 @@ FFMakeLFOTopo(bool global)
   output.slotCount = 1;
   output.name = "Output";
   output.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
-
+  output.globalAddr = [](int ms, int os, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].output; };
+  output.voiceAddr = [](int ms, int os, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].output; };
   return result;
 }
