@@ -112,6 +112,17 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPostVoice(_plugIn, _plugOut);
     _plugToHost->BufferFromPlug(_plugOut.audio);
     _plugIn.projectTimeSamples += FBFixedBlockSamples;
+
+    // Clear plug modulation (modmatrix).
+    for (int i = 0; i < _procState->Params().size(); i++)
+      if (_procState->Params()[i].IsAcc())
+      {
+        if (!_procState->Params()[i].IsVoice())
+          _procState->Params()[i].GlobalAcc().Global().ClearPlugModulation();
+        else
+          for (int v = 0; v < FBMaxVoices; v++)
+            _procState->Params()[i].VoiceAcc().Voice()[v].ClearPlugModulation();
+      }
   }
   _plugToHost->ProcessToHost(output);
 
@@ -126,16 +137,7 @@ FBHostProcessor::ProcessHost(
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];
 
   for (int i = 0; i < _procState->Params().size(); i++)
-  {
-    if (_procState->Params()[i].IsAcc())
-    {
-      if (!_procState->Params()[i].IsVoice())
-        _procState->Params()[i].GlobalAcc().Global().ClearPlugModulation();
-      else
-        for (int v = 0; v < FBMaxVoices; v++)
-          _procState->Params()[i].VoiceAcc().Voice()[v].ClearPlugModulation();
-    }
-    else
+    if (!_procState->Params()[i].IsAcc())
     {
       if (!_procState->Params()[i].IsVoice())
         *_exchangeState->Params()[i].Global() =
@@ -146,7 +148,6 @@ FBHostProcessor::ProcessHost(
             _exchangeState->Params()[i].Voice()[v] =
             _procState->Params()[i].VoiceBlock().Voice()[v];
     }
-  }
 
   FBRestoreDenormal(denormalState);
 }

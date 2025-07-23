@@ -75,13 +75,13 @@ FFModMatrixProcessor<Global>::ApplyModulation(
     if (_opType[i] != FFModMatrixOpType::Off)
     {
       auto const& source = sources[_source[i]];
-      if (source.indices.module == currentModule)
+      auto const& target = targets[_target[i]];
+      if (source.indices.module == currentModule && target.module.index != -1)
       {
         int sms = source.indices.module.slot;
         int smi = source.indices.module.index;
         int sos = source.indices.cvOutput.slot;
         int soi = source.indices.cvOutput.index;
-        auto const& target = targets[_target[i]];
         auto const& sourceCvOutput = state.topo->static_->modules[smi].cvOutputs[soi];
         int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
         if constexpr (Global)
