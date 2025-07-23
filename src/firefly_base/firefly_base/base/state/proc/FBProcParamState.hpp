@@ -46,8 +46,6 @@ class FBProcParamState final
   friend class FBSmoothingProcessor;
   friend class FBProcStateContainer;
 
-  FBVoiceAccParamState& VoiceAcc();
-  FBGlobalAccParamState& GlobalAcc();
   FBVoiceBlockParamState& VoiceBlock();
   FBGlobalBlockParamState& GlobalBlock();
 
@@ -64,6 +62,11 @@ public:
   explicit FBProcParamState(FBGlobalBlockParamState* globalBlock);
 
   float Value() const;
+
+  // public to allow modulation by the plug itself (aka modmatrix)
+  FBVoiceAccParamState& VoiceAcc();
+  FBGlobalAccParamState& GlobalAcc();
+
   FBVoiceAccParamState const& VoiceAcc() const;
   FBGlobalAccParamState const& GlobalAcc() const;
   FBVoiceBlockParamState const& VoiceBlock() const;

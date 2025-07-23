@@ -18,11 +18,15 @@ template <bool Global>
 class FFModMatrixProcessor;
 
 template <bool Global>
-class FFModMatrixDSPState final
+class alignas(FBSIMDAlign) FFModMatrixDSPState final
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
+  friend class FFModMatrixProcessor<Global>;
+  static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+
   std::unique_ptr<FFModMatrixProcessor<Global>> processor = {};
+  FBSArray2<float, FBFixedBlockSamples, SlotCount> modulatedCV = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFModMatrixDSPState);
   FFModMatrixDSPState() : processor(std::make_unique<FFModMatrixProcessor<Global>>()) {}
@@ -49,6 +53,7 @@ class alignas(alignof(TAccurate)) FFModMatrixAccParamState final
   friend class FFModMatrixProcessor<Global>;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
   static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+
   std::array<TAccurate, SlotCount> amount = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixAccParamState);

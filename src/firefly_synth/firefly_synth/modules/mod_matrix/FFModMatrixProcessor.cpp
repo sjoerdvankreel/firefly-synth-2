@@ -56,14 +56,20 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   // todo on note
   // todo validate if possible
   // todo scale
+  // todo amount
   // todo not only add
-  // todo not overwrite external modulation
+
+  FBAccParamState* targetParamState = nullptr;
+  FBSArray<float, FBFixedBlockSamples> const* sourceBuffer = nullptr;
+  FBSArray<float, FBFixedBlockSamples>* plugModulationBuffer = nullptr;
+
   auto* procState = state.ProcAs<FFProcState>();
   auto* procStateContainer = state.input->procState;
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
   auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*state.topo->static_);
   auto const& sources = Global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
   auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
+
   for (int i = 0; i < SlotCount; i++)
   {
     if (_opType[i] != FFModMatrixOpType::Off)
@@ -71,17 +77,28 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       auto const& source = sources[_source[i]];
       if (source.indices.module == currentModule)
       {
+        int sms = source.indices.module.slot;
+        int smi = source.indices.module.index;
+        int sos = source.indices.cvOutput.slot;
+        int soi = source.indices.cvOutput.index;
         auto const& target = targets[_target[i]];
+        auto const& sourceCvOutput = state.topo->static_->modules[smi].cvOutputs[soi];
         int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
         if constexpr (Global)
         {
-
+          sourceBuffer = sourceCvOutput.globalAddr(sms, sos, procState);
+          plugModulationBuffer = &procState->dsp.global.gMatrix.modulatedCV[i];
+          targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].GlobalAcc().Global();
         }
         else
         {
-          //auto const& output = procState->dsp.voice[]
-          procStateContainer->Params()[runtimeTargetParamIndex].GlobalAcc().ModulateInternal();//
+          sourceBuffer = sourceCvOutput.voiceAddr(sms, sos, voice, procState);
+          plugModulationBuffer = &procState->dsp.voice[voice].vMatrix.modulatedCV[i];
+          targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].VoiceAcc().Voice()[voice];
         }
+        targetParamState->CV().CopyTo(*plugModulationBuffer);
+        plugModulationBuffer->Mul(*sourceBuffer);
+        targetParamState->ApplyPlugModulation(plugModulationBuffer);
       }
     }
   }

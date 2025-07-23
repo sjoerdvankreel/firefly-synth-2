@@ -10,23 +10,29 @@
 class alignas(FBSIMDAlign) FBAccParamState final
 {
   friend class FBVoiceManager;
+  friend class FBHostProcessor;
   friend class FBSmoothingProcessor;
   friend class FBVoiceAccParamState;
   friend class FBGlobalAccParamState;
 
-  float _modulation = {};
-  FBBasicLPFilter _smoother = {};
-  FBSArray<float, FBFixedBlockSamples> _cv = {};
+  float _hostModulation = {};
+  FBBasicLPFilter _hostSmoother = {};
+  FBSArray<float, FBFixedBlockSamples> _hostCV = {};
+  FBSArray<float, FBFixedBlockSamples> const* _modulatedByPlugCV;
 
-  void Modulate(float offset) { _modulation = offset; }
-  void InitProcessing(float value) { _cv.Fill(value); }
-  void SetSmoothingCoeffs(int sampleCount) { _smoother.SetCoeffs(sampleCount); }
+  void InitProcessing(float value) { _hostCV.Fill(value); }
+  void ClearPlugModulation() { _modulatedByPlugCV = &_hostCV; }
+  void ModulateByHost(float offset) { _hostModulation = offset; }
+  void SetSmoothingCoeffs(int sampleCount) { _hostSmoother.SetCoeffs(sampleCount); }
   
-  void SmoothNext(int sample, float automation) 
-  { _cv.Set(sample, _smoother.Next(std::clamp(automation + _modulation, 0.0f, 1.0f))); }
+  void SmoothNextHostValue(int sample, float automation) 
+  { _hostCV.Set(sample, _hostSmoother.Next(std::clamp(automation + _hostModulation, 0.0f, 1.0f))); }
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBAccParamState);
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccParamState);
+  FBAccParamState() : _modulatedByPlugCV(&_hostCV) {}
+
   float Last() const { return CV().Get(FBFixedBlockSamples - 1); }
-  FBSArray<float, FBFixedBlockSamples> const& CV() const { return _cv; }
+  FBSArray<float, FBFixedBlockSamples> const& CV() const { return *_modulatedByPlugCV; }
+  void ApplyPlugModulation(FBSArray<float, FBFixedBlockSamples> const* modulatedByPlugCV) { _modulatedByPlugCV = modulatedByPlugCV; }
 };

@@ -7,25 +7,26 @@
 class alignas(FBSIMDAlign) FBVoiceAccParamState final
 {
   friend class FBVoiceManager;
+  friend class FBHostProcessor;
   friend class FBProcParamState;
   friend class FBSmoothingProcessor;
 
   float _value = {};
   std::array<FBAccParamState, FBMaxVoices> _voice = {};
 
-  float Value() const { return _value; }
-  void Value(float value) { _value = value; }
-  std::array<FBAccParamState, FBMaxVoices>& Voice() { return _voice; }
-  void Modulate(int slot, float offset) { _voice[slot].Modulate(offset); }
-  void SmoothNext(int slot, int sample) { _voice[slot].SmoothNext(sample, _value); }
-
   void InitProcessing(float value);
   void SetSmoothingCoeffs(int sampleCount);
+
+  float Value() const { return _value; }
+  void Value(float value) { _value = value; }
   void InitProcessing(int voice, float value) { _voice[voice].InitProcessing(value); }
+  void ModulateByHost(int slot, float offset) { _voice[slot].ModulateByHost(offset); }
+  void SmoothNextHostValue(int slot, int sample) { _voice[slot].SmoothNextHostValue(sample, _value); }
 
 public:
   FBVoiceAccParamState(float sampleRate);
   FB_NOCOPY_NOMOVE_DEFCTOR(FBVoiceAccParamState);
+  std::array<FBAccParamState, FBMaxVoices>& Voice() { return _voice; }
   std::array<FBAccParamState, FBMaxVoices> const& Voice() const { return _voice; }
 };
 

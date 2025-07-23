@@ -207,7 +207,7 @@ FFMakeEnvTopo()
   output.slotCount = 1;
   output.name = "Output";
   output.id = "{4C86B531-321C-46C7-AF9C-D13B92572F48}";
-  output.voiceAddr = [](int ms, int os, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].env[ms].output; };
+  output.voiceAddr = [](int ms, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].env[ms].output; };
 
   return result;
 }

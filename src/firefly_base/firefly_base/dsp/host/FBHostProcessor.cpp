@@ -126,15 +126,27 @@ FBHostProcessor::ProcessHost(
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];
 
   for (int i = 0; i < _procState->Params().size(); i++)
-    if (!_procState->Params()[i].IsAcc())
+  {
+    if (_procState->Params()[i].IsAcc())
+    {
       if (!_procState->Params()[i].IsVoice())
-        *_exchangeState->Params()[i].Global() = 
-          _procState->Params()[i].GlobalBlock().Value();
+        _procState->Params()[i].GlobalAcc().Global().ClearPlugModulation();
+      else
+        for (int v = 0; v < FBMaxVoices; v++)
+          _procState->Params()[i].VoiceAcc().Voice()[v].ClearPlugModulation();
+    }
+    else
+    {
+      if (!_procState->Params()[i].IsVoice())
+        *_exchangeState->Params()[i].Global() =
+        _procState->Params()[i].GlobalBlock().Value();
       else
         for (int v = 0; v < FBMaxVoices; v++)
           if (_voiceManager->IsActive(v))
-            _exchangeState->Params()[i].Voice()[v] = 
-              _procState->Params()[i].VoiceBlock().Voice()[v];
+            _exchangeState->Params()[i].Voice()[v] =
+            _procState->Params()[i].VoiceBlock().Voice()[v];
+    }
+  }
 
   FBRestoreDenormal(denormalState);
 }

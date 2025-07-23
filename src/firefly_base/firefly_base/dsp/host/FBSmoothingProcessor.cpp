@@ -95,14 +95,14 @@ FBSmoothingProcessor::ProcessSmoothing(
   auto& params = output.procState->Params();
   for (int param : _finishedGlobalSmoothing)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      params[param].GlobalAcc().SmoothNext(s);
+      params[param].GlobalAcc().SmoothNextHostValue(s);
   _finishedGlobalSmoothing.clear();
   for (int v = 0; v < FBMaxVoices; v++)
   {
     if (_voiceManager->IsActive(v))
       for (int param : _finishedVoiceSmoothing[v])
         for (int s = 0; s < FBFixedBlockSamples; s++)
-          params[param].VoiceAcc().SmoothNext(v, s);
+          params[param].VoiceAcc().SmoothNextHostValue(v, s);
     _finishedVoiceSmoothing[v].clear();
   }
 
@@ -141,7 +141,7 @@ FBSmoothingProcessor::ProcessSmoothing(
       auto const& event = myAccMod[eventIndex];
       if (!params[event.param].IsVoice())
       {
-        params[event.param].GlobalAcc().Modulate(event.value);
+        params[event.param].GlobalAcc().ModulateByHost(event.value);
         BeginGlobalSmoothing(event.param, smoothingSamples);
       }
       else
@@ -150,7 +150,7 @@ FBSmoothingProcessor::ProcessSmoothing(
           auto const& voice = _voiceManager->Voices()[v];
           if (_voiceManager->IsActive(v) && event.note.Matches(voice.event.note))
           {
-            params[event.param].VoiceAcc().Modulate(v, event.value);
+            params[event.param].VoiceAcc().ModulateByHost(v, event.value);
             BeginVoiceSmoothing(v, event.param, smoothingSamples);
           }
         }
@@ -158,7 +158,7 @@ FBSmoothingProcessor::ProcessSmoothing(
 
     for(auto iter = _activeGlobalSmoothing.begin(); iter != _activeGlobalSmoothing.end(); )
     {
-      params[*iter].GlobalAcc().SmoothNext(s);
+      params[*iter].GlobalAcc().SmoothNextHostValue(s);
       if (--_activeGlobalSmoothingSamples[*iter] <= 0)
         iter = FinishGlobalSmoothing(iter);
       else
@@ -169,7 +169,7 @@ FBSmoothingProcessor::ProcessSmoothing(
       if (_voiceManager->IsActive(v))
         for (auto iter = _activeVoiceSmoothing[v].begin(); iter != _activeVoiceSmoothing[v].end(); )
         {
-          params[*iter].VoiceAcc().SmoothNext(v, s);
+          params[*iter].VoiceAcc().SmoothNextHostValue(v, s);
           if (--_activeVoiceSmoothingSamples[v][*iter] <= 0)
             iter = FinishVoiceSmoothing(v, iter);
           else
