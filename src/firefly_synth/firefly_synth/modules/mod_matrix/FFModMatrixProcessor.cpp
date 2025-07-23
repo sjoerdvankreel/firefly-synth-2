@@ -14,25 +14,35 @@
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
 template <bool Global>
+void
+FFModMatrixProcessor<Global>::InitializeBuffers(FBProcStateContainer* container)
+{
+  _allPossibleTargetParams.clear();
+  for (int i = 0; i < container->Params().size(); i++)
+    if (container->Params()[i].IsAcc())
+      if constexpr (Global)
+      {
+        if (!container->Params()[i].IsVoice())
+          _allPossibleTargetParams.push_back(i);
+      }
+      else
+      {
+        if (container->Params()[i].IsVoice())
+          _allPossibleTargetParams.push_back(i);
+      }
+}
+
+template <bool Global>
 void 
 FFModMatrixProcessor<Global>::ClearModulation(FBModuleProcState& state)
 {
   auto* procStateContainer = state.input->procState;
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
-  if constexpr (Global)
-  {
-    for (int i = 0; i < procStateContainer->Params().size(); i++)
-      if (procStateContainer->Params()[i].IsAcc())
-        if (!procStateContainer->Params()[i].IsVoice())
-          procStateContainer->Params()[i].GlobalAcc().Global().ClearPlugModulation();
-  }
-  else
-  {
-    for (int i = 0; i < procStateContainer->Params().size(); i++)
-      if (procStateContainer->Params()[i].IsAcc())
-        if (procStateContainer->Params()[i].IsVoice())
-          procStateContainer->Params()[i].VoiceAcc().Voice()[voice].ClearPlugModulation();
-  }
+  for(int i = 0; i < _allPossibleTargetParams.size(); i++)
+    if constexpr(Global)
+      procStateContainer->Params()[_allPossibleTargetParams[i]].GlobalAcc().Global().ClearPlugModulation();
+    else
+      procStateContainer->Params()[_allPossibleTargetParams[i]].VoiceAcc().Voice()[voice].ClearPlugModulation();
 }
 
 template <bool Global>

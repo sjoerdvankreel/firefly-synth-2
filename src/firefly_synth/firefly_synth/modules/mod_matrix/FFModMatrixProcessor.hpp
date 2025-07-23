@@ -5,14 +5,18 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <array>
+#include <vector>
 
 struct FBTopoIndices;
 struct FBModuleProcState;
+class FBProcStateContainer;
 
 template <bool Global>
 class FFModMatrixProcessor final
 {
   static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+
+  std::vector<int> _allPossibleTargetParams = {};
 
   std::array<int, SlotCount> _scale = {};
   std::array<int, SlotCount> _source = {};
@@ -24,5 +28,6 @@ public:
 
   void ClearModulation(FBModuleProcState& state);
   void BeginVoiceOrBlock(FBModuleProcState& state);
+  void InitializeBuffers(FBProcStateContainer* container);
   void ApplyModulation(FBModuleProcState& state, FBTopoIndices const& currentModule);
 };
