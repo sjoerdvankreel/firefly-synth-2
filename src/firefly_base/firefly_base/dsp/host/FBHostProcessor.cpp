@@ -120,8 +120,18 @@ FBHostProcessor::ProcessHost(
         if (!_procState->Params()[i].IsVoice())
           _procState->Params()[i].GlobalAcc().Global().ClearPlugModulation();
         else
+        {
           for (int v = 0; v < FBMaxVoices; v++)
-            _procState->Params()[i].VoiceAcc().Voice()[v].ClearPlugModulation();
+          {
+            // this was giving performance troubles so i made it profile-able
+            auto& param = _procState->Params()[i];
+            auto& voiceAcc = param.VoiceAcc();
+            auto& voiceAccVoice = voiceAcc.Voice();
+            auto& voiceState = voiceAccVoice[v];
+            (void)voiceState;
+            //voiceState.ClearPlugModulation();
+          }
+        }
       }
   }
   _plugToHost->ProcessToHost(output);
