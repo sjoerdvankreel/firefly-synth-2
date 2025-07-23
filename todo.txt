@@ -1,3 +1,5 @@
+matrix global to voice no workie
+when play with matrix then toggle the graph
 do addbp also for lfos
 mod indicators for vmatrix
 
