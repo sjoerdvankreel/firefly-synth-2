@@ -50,7 +50,6 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
 
   state.moduleSlot = 0;
-  procState->dsp.voice[voice].vMatrix.processor->ClearModulation(state);
   for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;
@@ -118,6 +117,8 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     for (int c = 0; c < 2; c++)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * gainPlain * FBStereoBalance(c, balPlain));
   }
+
+  procState->dsp.voice[voice].vMatrix.processor->ClearModulation(state);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

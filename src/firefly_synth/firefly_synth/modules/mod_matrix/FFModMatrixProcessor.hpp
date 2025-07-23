@@ -15,9 +15,6 @@ template <bool Global>
 class FFModMatrixProcessor final
 {
   static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
-
-  std::vector<int> _allPossibleTargetParams = {};
-
   std::array<int, SlotCount> _scale = {};
   std::array<int, SlotCount> _source = {};
   std::array<int, SlotCount> _target = {};
@@ -28,6 +25,5 @@ public:
 
   void ClearModulation(FBModuleProcState& state);
   void BeginVoiceOrBlock(FBModuleProcState& state);
-  void InitializeBuffers(FBProcStateContainer* container);
   void ApplyModulation(FBModuleProcState& state, FBTopoIndices const& currentModule);
 };
