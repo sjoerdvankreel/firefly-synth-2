@@ -21,7 +21,6 @@ class alignas(FBSIMDAlign) FBAccParamState final
   FBSArray<float, FBFixedBlockSamples> const* _modulatedByPlugCV;
 
   void InitProcessing(float value) { _hostCV.Fill(value); }
-  void ClearPlugModulation() { _modulatedByPlugCV = &_hostCV; }
   void ModulateByHost(float offset) { _hostModulation = offset; }
   void SetSmoothingCoeffs(int sampleCount) { _hostSmoother.SetCoeffs(sampleCount); }
   
@@ -32,6 +31,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccParamState);
   FBAccParamState() : _modulatedByPlugCV(&_hostCV) {}
 
+  void ClearPlugModulation() { _modulatedByPlugCV = &_hostCV; }
   float Last() const { return CV().Get(FBFixedBlockSamples - 1); }
   FBSArray<float, FBFixedBlockSamples> const& CV() const { return *_modulatedByPlugCV; }
   void ApplyPlugModulation(FBSArray<float, FBFixedBlockSamples> const* modulatedByPlugCV) { _modulatedByPlugCV = modulatedByPlugCV; }

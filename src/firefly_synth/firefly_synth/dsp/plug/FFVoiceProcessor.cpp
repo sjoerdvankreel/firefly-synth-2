@@ -49,6 +49,8 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto const& gainNorm = vMix.acc.gain[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
 
+  state.moduleSlot = 0;
+  procState->dsp.voice[voice].vMatrix.processor->ClearModulation(state);
   for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;

@@ -15,6 +15,28 @@
 
 template <bool Global>
 void 
+FFModMatrixProcessor<Global>::ClearModulation(FBModuleProcState& state)
+{
+  auto* procStateContainer = state.input->procState;
+  int voice = state.voice == nullptr ? -1 : state.voice->slot;
+  if constexpr (Global)
+  {
+    for (int i = 0; i < procStateContainer->Params().size(); i++)
+      if (procStateContainer->Params()[i].IsAcc())
+        if (!procStateContainer->Params()[i].IsVoice())
+          procStateContainer->Params()[i].GlobalAcc().Global().ClearPlugModulation();
+  }
+  else
+  {
+    for (int i = 0; i < procStateContainer->Params().size(); i++)
+      if (procStateContainer->Params()[i].IsAcc())
+        if (procStateContainer->Params()[i].IsVoice())
+          procStateContainer->Params()[i].VoiceAcc().Voice()[voice].ClearPlugModulation();
+  }
+}
+
+template <bool Global>
+void 
 FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   FBModuleProcState& state)
 {

@@ -112,27 +112,6 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPostVoice(_plugIn, _plugOut);
     _plugToHost->BufferFromPlug(_plugOut.audio);
     _plugIn.projectTimeSamples += FBFixedBlockSamples;
-
-    // Clear plug modulation (modmatrix).
-    for (int i = 0; i < _procState->Params().size(); i++)
-      if (_procState->Params()[i].IsAcc())
-      {
-        if (!_procState->Params()[i].IsVoice())
-          _procState->Params()[i].GlobalAcc().Global().ClearPlugModulation();
-        else
-        {
-          for (int v = 0; v < FBMaxVoices; v++)
-          {
-            // this was giving performance troubles so i made it profile-able
-            auto& param = _procState->Params()[i];
-            auto& voiceAcc = param.VoiceAcc();
-            auto& voiceAccVoice = voiceAcc.Voice();
-            auto& voiceState = voiceAccVoice[v];
-            (void)voiceState;
-            //voiceState.ClearPlugModulation();
-          }
-        }
-      }
   }
   _plugToHost->ProcessToHost(output);
 

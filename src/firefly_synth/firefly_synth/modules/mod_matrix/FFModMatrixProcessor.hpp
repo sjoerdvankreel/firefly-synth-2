@@ -22,6 +22,7 @@ class FFModMatrixProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixProcessor);
 
+  void ClearModulation(FBModuleProcState& state);
   void BeginVoiceOrBlock(FBModuleProcState& state);
   void ApplyModulation(FBModuleProcState& state, FBTopoIndices const& currentModule);
 };
