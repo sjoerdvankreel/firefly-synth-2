@@ -106,15 +106,17 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         int soi = source.indices.cvOutput.index;
         auto const& sourceCvOutput = state.topo->static_->modules[smi].cvOutputs[soi];
         int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
+        if(state.topo->static_->modules[smi].voice)
+          sourceBuffer = sourceCvOutput.voiceAddr(sms, sos, voice, procState);
+        else
+          sourceBuffer = sourceCvOutput.globalAddr(sms, sos, procState);        
         if constexpr (Global)
         {
-          sourceBuffer = sourceCvOutput.globalAddr(sms, sos, procState);
           plugModulationBuffer = &procState->dsp.global.gMatrix.modulatedCV[i];
           targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].GlobalAcc().Global();
         }
         else
         {
-          sourceBuffer = sourceCvOutput.voiceAddr(sms, sos, voice, procState);
           plugModulationBuffer = &procState->dsp.voice[voice].vMatrix.modulatedCV[i];
           targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].VoiceAcc().Voice()[voice];
         }

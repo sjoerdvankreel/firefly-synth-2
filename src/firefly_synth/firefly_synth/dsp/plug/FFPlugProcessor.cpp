@@ -93,6 +93,12 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
     globalDSP.gLFO[i].processor->Process<true>(state);
     state.moduleSlot = 0;
     globalDSP.gMatrix.processor->ApplyModulation(state, { (int)FFModuleType::GLFO, i });
+    for (int v = 0; v < FBMaxVoices; v++)
+      if (input.voiceManager->IsActive(v))
+      {
+        state.voice = &state.input->voiceManager->Voices()[v];
+        _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::GLFO, i });
+      }
   }
 }
 
