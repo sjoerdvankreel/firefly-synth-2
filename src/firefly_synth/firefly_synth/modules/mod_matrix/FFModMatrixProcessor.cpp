@@ -96,7 +96,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
           _scaleOnNoteValues[i] = GetSourceCVBuffer(state, scale, voice)->Get(state.voice->offsetInBlock);
         auto const& source = sources[_source[i]];
         if (source.onNote)
-          _sourceOnNoteValues[i] = GetSourceCVBuffer(state, scale, voice)->Get(state.voice->offsetInBlock);
+          _sourceOnNoteValues[i] = GetSourceCVBuffer(state, source, voice)->Get(state.voice->offsetInBlock);
       }
     }
   }

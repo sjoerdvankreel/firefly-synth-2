@@ -43,8 +43,9 @@ MakeModMatrixGUI(bool global, int offset, FFPlugGUI* plugGUI)
       {
         auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*plugGUI->HostContext()->Topo()->static_);
         auto const& sources = global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
-        auto const& moduleIndices = sources[itemResultId].indices.module;
-        plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
+        auto const& moduleIndices = sources[itemResultId - 1].indices.module;
+        if(moduleIndices.index != -1)
+          plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
       }
     };
 
@@ -65,8 +66,9 @@ MakeModMatrixGUI(bool global, int offset, FFPlugGUI* plugGUI)
       {
         auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*plugGUI->HostContext()->Topo()->static_);
         auto const& targets = global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
-        auto const& moduleIndices = targets[itemResultId].module;
-        plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
+        auto const& moduleIndices = targets[itemResultId - 1].module;
+        if (moduleIndices.index != -1)
+          plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
       }
     };
       
