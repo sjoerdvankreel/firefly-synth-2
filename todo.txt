@@ -1,4 +1,4 @@
-when play with matrix then toggle the graph
+scale is borked
 do addbp also for lfos
 another round of cpu and memory profiling
 factory presets
