@@ -116,6 +116,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   FBAccParamState* targetParamState = nullptr;
   FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
+  FBSArray<float, FBFixedBlockSamples> scaledSourceBuffer = {};
   FBSArray<float, FBFixedBlockSamples> const* scaleBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples> const* sourceBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples>* plugModulationBuffer = nullptr;
@@ -123,6 +124,11 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   auto* procState = state.ProcAs<FFProcState>();
   auto* procStateContainer = state.input->procState;
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
+  auto const& procParams = *FFSelectDualState<Global>(
+    [procState, &state]() { return &procState->param.global.gMatrix[state.moduleSlot]; },
+    [procState, &state]() { return &procState->param.voice.vMatrix[state.moduleSlot]; });
+
+  auto const& amountNorm = procParams.acc.amount;
   auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*state.topo->static_);
   auto const& sources = Global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
   auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
@@ -144,13 +150,14 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           sourceBuffer = &onNoteSourceBuffer;
         }
         
-        if (!scale.onNote)
-          scaleBuffer = GetSourceCVBuffer(state, scale, voice);
-        else
-        {
-          onNoteScaleBuffer.Fill(_scaleOnNoteValues[i]);
-          scaleBuffer = &onNoteScaleBuffer;
-        }
+        if(scale.indices.module.index != -1)
+          if (!scale.onNote)
+            scaleBuffer = GetSourceCVBuffer(state, scale, voice);
+          else
+          {
+            onNoteScaleBuffer.Fill(_scaleOnNoteValues[i]);
+            scaleBuffer = &onNoteScaleBuffer;
+          }
 
         int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
         if constexpr (Global)
@@ -164,8 +171,13 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].VoiceAcc().Voice()[voice];
         }
 
+        auto const& amount = FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV();
+        sourceBuffer->CopyTo(scaledSourceBuffer);
+        scaledSourceBuffer.Mul(amount);
+        if (scaleBuffer != nullptr)
+          scaledSourceBuffer.Mul(*scaleBuffer);
         targetParamState->CV().CopyTo(*plugModulationBuffer);
-        plugModulationBuffer->Mul(*sourceBuffer);
+        plugModulationBuffer->Mul(scaledSourceBuffer);
         targetParamState->ApplyPlugModulation(plugModulationBuffer);
       }
     }
