@@ -67,6 +67,30 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
       FFModMatrixParam::OpType,
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
   }
+
+  if constexpr (!Global)
+  {
+    auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*state.topo->static_);
+    auto const& sources = ffTopo.vMatrixSources;
+    for (int i = 0; i < SlotCount; i++)
+    {
+      if (_opType[i] != FFModMatrixOpType::Off)
+      {
+        auto const& source = sources[_source[i]];
+        if (source.onNote)
+        {
+          int sms = source.indices.module.slot;
+          int smi = source.indices.module.index;
+          int sos = source.indices.cvOutput.slot;
+          int soi = source.indices.cvOutput.index;
+          auto const& sourceCvOutput = state.topo->static_->modules[smi].cvOutputs[soi];
+          FB_ASSERT(!state.topo->static_->modules[smi].voice);
+          auto const& sourceBuffer = *sourceCvOutput.globalAddr(sms, sos, procState);
+          _onNoteValues[i] = sourceBuffer.Get(state.voice->offsetInBlock);
+        }
+      }
+    }
+  }
 }
 
 template <bool Global>
@@ -75,13 +99,13 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   FBModuleProcState& state, FBTopoIndices const& currentModule)
 {
   // TODO no need to make this O(N^whatever)
-  // todo on note
   // todo validate if possible
   // todo scale
   // todo amount
   // todo not only add
 
   FBAccParamState* targetParamState = nullptr;
+  FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
   FBSArray<float, FBFixedBlockSamples> const* sourceBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples>* plugModulationBuffer = nullptr;
 
@@ -108,8 +132,13 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
         if(state.topo->static_->modules[smi].voice)
           sourceBuffer = sourceCvOutput.voiceAddr(sms, sos, voice, procState);
-        else
+        else if(!source.onNote)
           sourceBuffer = sourceCvOutput.globalAddr(sms, sos, procState);        
+        else
+        {
+          onNoteSourceBuffer.Fill(_onNoteValues[i]);
+          sourceBuffer = &onNoteSourceBuffer;
+        }
         if constexpr (Global)
         {
           plugModulationBuffer = &procState->dsp.global.gMatrix.modulatedCV[i];

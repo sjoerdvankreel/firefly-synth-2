@@ -18,6 +18,7 @@ class FFModMatrixProcessor final
   std::array<int, SlotCount> _scale = {};
   std::array<int, SlotCount> _source = {};
   std::array<int, SlotCount> _target = {};
+  std::array<float, SlotCount> _onNoteValues = {}; // voice only
   std::array<FFModMatrixOpType, SlotCount> _opType = {};
 
 public:

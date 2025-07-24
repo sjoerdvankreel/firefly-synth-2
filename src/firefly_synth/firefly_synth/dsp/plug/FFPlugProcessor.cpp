@@ -93,6 +93,8 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
     globalDSP.gLFO[i].processor->Process<true>(state);
     state.moduleSlot = 0;
     globalDSP.gMatrix.processor->ApplyModulation(state, { (int)FFModuleType::GLFO, i });
+
+    // We can get away with this because FBHostProcessor does LeaseVoices() first.
     for (int v = 0; v < FBMaxVoices; v++)
       if (input.voiceManager->IsActive(v))
       {
