@@ -13,6 +13,21 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
+static inline FBSArray<float, FBFixedBlockSamples> const*
+GetSourceCVBuffer(FBModuleProcState& state, FFModMatrixSource const& source, int voice)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  int ms = source.indices.module.slot;
+  int mi = source.indices.module.index;
+  int os = source.indices.cvOutput.slot;
+  int oi = source.indices.cvOutput.index;
+  auto const& sourceCvOutput = state.topo->static_->modules[mi].cvOutputs[oi];
+  if (state.topo->static_->modules[mi].voice)
+    return sourceCvOutput.voiceAddr(ms, os, voice, procState);
+  else
+    return sourceCvOutput.globalAddr(ms, os, procState);
+}
+
 template <bool Global>
 void 
 FFModMatrixProcessor<Global>::ClearModulation(FBModuleProcState& state)
@@ -76,18 +91,12 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
     {
       if (_opType[i] != FFModMatrixOpType::Off)
       {
+        auto const& scale = sources[_scale[i]];
+        if (scale.onNote)
+          _scaleOnNoteValues[i] = GetSourceCVBuffer(state, scale, voice)->Get(state.voice->offsetInBlock);
         auto const& source = sources[_source[i]];
         if (source.onNote)
-        {
-          int sms = source.indices.module.slot;
-          int smi = source.indices.module.index;
-          int sos = source.indices.cvOutput.slot;
-          int soi = source.indices.cvOutput.index;
-          auto const& sourceCvOutput = state.topo->static_->modules[smi].cvOutputs[soi];
-          FB_ASSERT(!state.topo->static_->modules[smi].voice);
-          auto const& sourceBuffer = *sourceCvOutput.globalAddr(sms, sos, procState);
-          _onNoteValues[i] = sourceBuffer.Get(state.voice->offsetInBlock);
-        }
+          _sourceOnNoteValues[i] = GetSourceCVBuffer(state, scale, voice)->Get(state.voice->offsetInBlock);
       }
     }
   }
@@ -105,7 +114,9 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   // todo not only add
 
   FBAccParamState* targetParamState = nullptr;
+  FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
+  FBSArray<float, FBFixedBlockSamples> const* scaleBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples> const* sourceBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples>* plugModulationBuffer = nullptr;
 
@@ -120,25 +131,28 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   {
     if (_opType[i] != FFModMatrixOpType::Off)
     {
+      auto const& scale = sources[_scale[i]];
       auto const& source = sources[_source[i]];
       auto const& target = targets[_target[i]];
       if (source.indices.module == currentModule && target.module.index != -1)
       {
-        int sms = source.indices.module.slot;
-        int smi = source.indices.module.index;
-        int sos = source.indices.cvOutput.slot;
-        int soi = source.indices.cvOutput.index;
-        auto const& sourceCvOutput = state.topo->static_->modules[smi].cvOutputs[soi];
-        int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
-        if(state.topo->static_->modules[smi].voice)
-          sourceBuffer = sourceCvOutput.voiceAddr(sms, sos, voice, procState);
-        else if(!source.onNote)
-          sourceBuffer = sourceCvOutput.globalAddr(sms, sos, procState);        
-        else
+        if(!source.onNote)
+          sourceBuffer = GetSourceCVBuffer(state, source, voice);
+        else 
         {
-          onNoteSourceBuffer.Fill(_onNoteValues[i]);
+          onNoteSourceBuffer.Fill(_sourceOnNoteValues[i]);
           sourceBuffer = &onNoteSourceBuffer;
         }
+        
+        if (!scale.onNote)
+          scaleBuffer = GetSourceCVBuffer(state, scale, voice);
+        else
+        {
+          onNoteScaleBuffer.Fill(_scaleOnNoteValues[i]);
+          scaleBuffer = &onNoteScaleBuffer;
+        }
+
+        int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
         if constexpr (Global)
         {
           plugModulationBuffer = &procState->dsp.global.gMatrix.modulatedCV[i];
@@ -149,6 +163,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           plugModulationBuffer = &procState->dsp.voice[voice].vMatrix.modulatedCV[i];
           targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].VoiceAcc().Voice()[voice];
         }
+
         targetParamState->CV().CopyTo(*plugModulationBuffer);
         plugModulationBuffer->Mul(*sourceBuffer);
         targetParamState->ApplyPlugModulation(plugModulationBuffer);
