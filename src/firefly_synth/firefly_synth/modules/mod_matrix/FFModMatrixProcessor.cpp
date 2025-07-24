@@ -117,6 +117,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
   FBSArray<float, FBFixedBlockSamples> scaledSourceBuffer = {};
+  FBSArray<float, FBFixedBlockSamples> scaledAmountBuffer = {};
   FBSArray<float, FBFixedBlockSamples> const* scaleBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples> const* sourceBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples>* plugModulationBuffer = nullptr;
@@ -172,13 +173,27 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         }
 
         auto const& amount = FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV();
-        sourceBuffer->CopyTo(scaledSourceBuffer);
-        scaledSourceBuffer.Mul(amount);
+        amount.CopyTo(scaledAmountBuffer);
         if (scaleBuffer != nullptr)
-          scaledSourceBuffer.Mul(*scaleBuffer);
+          scaledAmountBuffer.Mul(*scaleBuffer);
+        sourceBuffer->CopyTo(scaledSourceBuffer);
+        scaledSourceBuffer.Mul(scaledAmountBuffer);
         targetParamState->CV().CopyTo(*plugModulationBuffer);
         plugModulationBuffer->Mul(scaledSourceBuffer);
         targetParamState->ApplyPlugModulation(plugModulationBuffer);
+
+        auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+        if (exchangeToGUI != nullptr)
+        {
+          auto& exchangeDSP = *FFSelectDualState<Global>(
+            [exchangeToGUI, &state]() { return &exchangeToGUI->global.gMatrix[state.moduleSlot]; },
+            [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vMatrix[state.moduleSlot]; });
+          exchangeDSP.active = true;
+          auto& exchangeParams = *FFSelectDualState<Global>(
+            [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
+            [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
+          FFSelectDualExchangeState<Global>(exchangeParams.acc.amount[i], voice) = scaledAmountBuffer.Last();
+        }
       }
     }
   }
