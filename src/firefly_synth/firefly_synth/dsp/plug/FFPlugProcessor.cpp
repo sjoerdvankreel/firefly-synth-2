@@ -158,11 +158,13 @@ FFPlugProcessor::ProcessPostVoice(
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;
   _procState->dsp.global.output.processor->Process(state);
-  globalDSP.gMatrix.processor->ClearModulation(state);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
+  {
+    globalDSP.gMatrix.processor->ClearModulation(state);
     return;
+  }
 
   auto& exchangeDSP = exchangeToGUI->global.gMix[0];
   exchangeDSP.active = true;
@@ -177,4 +179,6 @@ FFPlugProcessor::ProcessPostVoice(
     exchangeParams.acc.voiceToGFX[r] = gMix.acc.voiceToGFX[r].Global().CV().Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.GFXToGFX[r] = gMix.acc.GFXToGFX[r].Global().CV().Last();
+  
+  globalDSP.gMatrix.processor->ClearModulation(state);
 }

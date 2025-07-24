@@ -118,11 +118,12 @@ FFVoiceProcessor::Process(FBModuleProcState state)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * gainPlain * FBStereoBalance(c, balPlain));
   }
 
-  procState->dsp.voice[voice].vMatrix.processor->ClearModulation(state);
-
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
+  {
+    procState->dsp.voice[voice].vMatrix.processor->ClearModulation(state);
     return voiceFinished;
+  }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].vMix[0];
   exchangeDSP.active = true;
@@ -139,5 +140,6 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   for(int r = 0; r < FFOsciCount; r++)
     exchangeParams.acc.osciToOut[r][voice] = vMix.acc.osciToOut[r].Voice()[voice].CV().Last();
 
+  procState->dsp.voice[voice].vMatrix.processor->ClearModulation(state);
   return voiceFinished;
 }
