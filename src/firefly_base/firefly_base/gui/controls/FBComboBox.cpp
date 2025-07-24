@@ -185,6 +185,9 @@ FBParamComboBox::UpdateDependentComboboxTarget()
 void
 FBParamComboBox::OnPopupMenuClosing(int itemResultId)
 {
+  if (valueChangedByUserAction != nullptr)
+    MessageManager::callAsync([this, itemResultId]() { valueChangedByUserAction(itemResultId); });
+
   if (_param->static_.type != FBParamType::List)
     return;
 

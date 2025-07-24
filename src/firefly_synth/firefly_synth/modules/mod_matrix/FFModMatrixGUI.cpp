@@ -1,3 +1,4 @@
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
@@ -19,7 +20,7 @@
 using namespace juce;
 
 static Component*
-MakeModMatrixGUI(bool global, int offset, FBPlugGUI* plugGUI)
+MakeModMatrixGUI(bool global, int offset, FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> rowSizes(FFModMatrixGlobalSlotCount + 1, 1);
@@ -36,12 +37,41 @@ MakeModMatrixGUI(bool global, int offset, FBPlugGUI* plugGUI)
   {
     auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, offset + i } });
     grid->Add(1 + i, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
+    
+    std::function<void(int)> sourceOrScaleChanged = [plugGUI, global](int itemResultId) {
+      if (itemResultId != 0)
+      {
+        auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*plugGUI->HostContext()->Topo()->static_);
+        auto const& sources = global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
+        auto const& moduleIndices = sources[itemResultId].indices.module;
+        plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
+      }
+    };
+
     auto source = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Source, offset + i } });
-    grid->Add(1 + i, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, source));
+    auto* sourceCombo = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, source);
+    sourceCombo->valueChangedByUserAction = sourceOrScaleChanged;
+    grid->Add(1 + i, 1, sourceCombo);
+    
     auto scale = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Scale, offset + i } });
-    grid->Add(1 + i, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, scale));
+    auto* scaleCombo = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, scale);
+    scaleCombo->valueChangedByUserAction = sourceOrScaleChanged;
+    grid->Add(1 + i, 2, scaleCombo);
+
     auto target = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Target, offset + i } });
-    grid->Add(1 + i, 3, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target));
+    auto* targetCombo = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target);
+    targetCombo->valueChangedByUserAction = [plugGUI, global](int itemResultId) {
+      if (itemResultId != 0)
+      {
+        auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*plugGUI->HostContext()->Topo()->static_);
+        auto const& targets = global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
+        auto const& moduleIndices = targets[itemResultId].module;
+        plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
+      }
+    };
+      
+    grid->Add(1 + i, 3, targetCombo);
+
     auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Amount, offset + i } });
     grid->Add(1 + i, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
   }
@@ -50,7 +80,7 @@ MakeModMatrixGUI(bool global, int offset, FBPlugGUI* plugGUI)
 }
 
 Component*
-FFMakeModMatrixGUI(FBPlugGUI* plugGUI)
+FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(false, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1, 1 } });
   grid->Add(0, 0, MakeModMatrixGUI(false, 0, plugGUI));

@@ -4,6 +4,8 @@
 #include <firefly_base/gui/shared/FBParamComponent.hpp>
 #include <juce_gui_basics/juce_gui_basics.h>
 
+#include <functional>
+
 class FBPlugGUI;
 struct FBRuntimeParam;
 struct FBRuntimeGUIParam;
@@ -43,6 +45,10 @@ public FBParamControl
   void EnableDependentItems(juce::PopupMenu* menu, int runtimeSourceValue);
 
 public:
+  // Well this is kind of lame but for the time being, i really 
+  // don't need a full-blown register/deregister callback mechanism.
+  std::function<void(int itemResultId)> valueChangedByUserAction = {};
+
   void showPopup() override;
   juce::String getTooltip() override;
   void parentHierarchyChanged() override;

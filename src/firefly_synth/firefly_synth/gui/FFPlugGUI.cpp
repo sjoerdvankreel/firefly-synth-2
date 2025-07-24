@@ -52,11 +52,17 @@ FFPlugGUI::resized()
   getChildComponent(0)->resized();
 }
 
-void 
-FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
+void
+FFPlugGUI::SwitchGraphToModule(int index, int slot)
 {
   auto topo = HostContext()->Topo()->ModuleAtTopo({ index, slot });
   _graph->RequestRerender(topo->runtimeModuleIndex);
+}
+
+void 
+FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
+{
+  SwitchGraphToModule(index, slot);
 }
 
 void 
@@ -114,7 +120,7 @@ void
 FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
-  _matrix = FFMakeModMatrixGUI(this);
+  _matrix = FFMakeModMatrixGUI(this); 
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
   _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, FFMakeOsciGUI(this));

@@ -32,6 +32,8 @@ public:
   FFPlugGUI(FBHostGUIContext* hostContext);
 
   bool ToggleMatrix();
+  void SwitchGraphToModule(int index, int slot);
+
   void resized() override;
   void UpdateExchangeStateTick() override;
   FBGUIRenderType GetRenderType() const override;

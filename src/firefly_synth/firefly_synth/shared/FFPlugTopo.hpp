@@ -1,6 +1,6 @@
 #pragma once
 
-#include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixSource.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 
 #include <string>
