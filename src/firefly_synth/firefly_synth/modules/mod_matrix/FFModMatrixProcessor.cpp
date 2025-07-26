@@ -52,7 +52,8 @@ FFModMatrixProcessor<Global>::EndModulationBlock(FBModuleProcState& state)
 {
   auto* procStateContainer = state.input->procState;
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
-  auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*state.topo->static_);
+  // static_cast for perf
+  auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
   auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
   for (int i = 0; i < SlotCount; i++)
   {
@@ -105,7 +106,8 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   // snapshot on-note values
   if constexpr (!Global)
   {
-    auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*state.topo->static_);
+    // static_cast for perf
+    auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
     auto const& sources = ffTopo.vMatrixSources;
     for (int i = 0; i < SlotCount; i++)
     {
@@ -156,7 +158,8 @@ FFModMatrixProcessor<Global>::ApplyModulation(
     [procState, &state]() { return &procState->param.voice.vMatrix[state.moduleSlot]; });
 
   auto const& amountNorm = procParams.acc.amount;
-  auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*state.topo->static_);
+  // static_cast for perf
+  auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
   auto const& sources = Global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
   auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
 
