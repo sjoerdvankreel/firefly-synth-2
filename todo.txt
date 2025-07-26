@@ -1,4 +1,5 @@
 autoclip
+optional mod indicators
 scale is borked
 do addbp also for lfos
 another round of cpu and memory profiling
