@@ -23,6 +23,7 @@ class alignas(FBSIMDAlign) FFModMatrixDSPState final
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
   friend class FFModMatrixProcessor<Global>;
+  friend class FFModMatrixProcessor<!Global>; // clang
   static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
 
   std::unique_ptr<FFModMatrixProcessor<Global>> processor = {};
