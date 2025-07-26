@@ -170,93 +170,111 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   }
 
   _modSourceIsReady[currentModule] = true;
+
+  // need all slots with same target ready before we begin processing
   for (int i = 0; i < SlotCount; i++)
   {
-    _allModSourcesAreReadyForSlot[i] = true;
-    if (_opType[i] != FFModMatrixOpType::Off)
+    _allModSourcesAreReadyForSlot[i] = _opType[i] != FFModMatrixOpType::Off;
+    if (_allModSourcesAreReadyForSlot[i])
+    {
+      auto const& thisTarget = targets[_target[i]];
+      auto const& thisSource = sources[_source[i]];
+      _allModSourcesAreReadyForSlot[i] &= thisTarget.module.index != -1;
+      _allModSourcesAreReadyForSlot[i] &= thisSource.indices.module.index != -1;
+      if (_allModSourcesAreReadyForSlot[i])
+        for (int j = 0; j < SlotCount; j++)
+          if (_opType[i] != FFModMatrixOpType::Off)
+          {
+            auto const& thatSource = sources[_source[j]];
+            auto const& thatTarget = targets[_target[j]];
+            if (thatSource.indices.module.index != -1 && thatTarget.module == thisTarget.module)
+              _allModSourcesAreReadyForSlot[i] &= _modSourceIsReady[thatSource.indices.module];
+          }
+    }
+  }
+
+  for (int i = 0; i < SlotCount; i++)
+  {
+    if (_allModSourcesAreReadyForSlot[i] && !_slotHasBeenProcessed[i])
     {
       auto const& scale = sources[_scale[i]];
       auto const& source = sources[_source[i]];
       auto const& target = targets[_target[i]];
-      _allModSourcesAreReadyForSlot[i] &= _modSourceIsReady[source.indices.module];
-      if (!_slotHasBeenProcessed[i] && _allModSourcesAreReadyForSlot[i] && target.module.index != -1)
+      _slotHasBeenProcessed[i] = true;
+
+      if(!source.onNote)
+        sourceBuffer = GetSourceCVBuffer(state, source, voice);
+      else 
       {
-        _slotHasBeenProcessed[i] = true;
-
-        if(!source.onNote)
-          sourceBuffer = GetSourceCVBuffer(state, source, voice);
-        else 
-        {
-          onNoteSourceBuffer.Fill(_sourceOnNoteValues[i]);
-          sourceBuffer = &onNoteSourceBuffer;
-        }
+        onNoteSourceBuffer.Fill(_sourceOnNoteValues[i]);
+        sourceBuffer = &onNoteSourceBuffer;
+      }
         
-        scaleBuffer = nullptr;
-        if(scale.indices.module.index != -1)
-          if (!scale.onNote)
-            scaleBuffer = GetSourceCVBuffer(state, scale, voice);
-          else
-          {
-            onNoteScaleBuffer.Fill(_scaleOnNoteValues[i]);
-            scaleBuffer = &onNoteScaleBuffer;
-          }
-
-        int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
-        if constexpr (Global)
-        {
-          plugModulationBuffer = &procState->dsp.global.gMatrix.modulatedCV[i];
-          targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].GlobalAcc().Global();
-        }
+      scaleBuffer = nullptr;
+      if(scale.indices.module.index != -1)
+        if (!scale.onNote)
+          scaleBuffer = GetSourceCVBuffer(state, scale, voice);
         else
         {
-          plugModulationBuffer = &procState->dsp.voice[voice].vMatrix.modulatedCV[i];
-          targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].VoiceAcc().Voice()[voice];
+          onNoteScaleBuffer.Fill(_scaleOnNoteValues[i]);
+          scaleBuffer = &onNoteScaleBuffer;
         }
 
-        auto const& amount = FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV();
-        amount.CopyTo(scaledAmountBuffer);
-        if (scaleBuffer != nullptr)
-          scaledAmountBuffer.Mul(*scaleBuffer);
-        sourceBuffer->CopyTo(scaledSourceBuffer);
-        targetParamState->CV().CopyTo(*plugModulationBuffer);
+      int runtimeTargetParamIndex = state.topo->audio.ParamAtTopo(target)->runtimeParamIndex;
+      if constexpr (Global)
+      {
+        plugModulationBuffer = &procState->dsp.global.gMatrix.modulatedCV[i];
+        targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].GlobalAcc().Global();
+      }
+      else
+      {
+        plugModulationBuffer = &procState->dsp.voice[voice].vMatrix.modulatedCV[i];
+        targetParamState = &procStateContainer->Params()[runtimeTargetParamIndex].VoiceAcc().Voice()[voice];
+      }
 
-        switch (_opType[i])
-        {
-        case FFModMatrixOpType::Mul:
-          for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-            plugModulationBuffer->Store(s, 
-              (1.0f - scaledAmountBuffer.Load(s)) * plugModulationBuffer->Load(s) + 
-              scaledAmountBuffer.Load(s) * scaledSourceBuffer.Load(s) * plugModulationBuffer->Load(s));
-          break;
-        case FFModMatrixOpType::Add:
-          scaledSourceBuffer.Mul(scaledAmountBuffer);
-          plugModulationBuffer->Add(scaledSourceBuffer);
-          for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-            plugModulationBuffer->Store(s, xsimd::clip(plugModulationBuffer->Load(s), FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
-          break;
-        case FFModMatrixOpType::Stack:
-          scaledSourceBuffer.Mul(scaledAmountBuffer);
-          for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-            plugModulationBuffer->Add(s, (1.0f - plugModulationBuffer->Load(s)) * scaledSourceBuffer.Load(s));
-          break;
-        case FFModMatrixOpType::BPAdd:
-          break;
-        case FFModMatrixOpType::BPStack:
-          break;
-        default:
-          FB_ASSERT(false);
-          break;
-        }
+      auto const& amount = FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV();
+      amount.CopyTo(scaledAmountBuffer);
+      if (scaleBuffer != nullptr)
+        scaledAmountBuffer.Mul(*scaleBuffer);
+      sourceBuffer->CopyTo(scaledSourceBuffer);
+      targetParamState->CV().CopyTo(*plugModulationBuffer);
 
-        targetParamState->ApplyPlugModulation(plugModulationBuffer);
+      switch (_opType[i])
+      {
+      case FFModMatrixOpType::Mul:
+        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+          plugModulationBuffer->Store(s, 
+            (1.0f - scaledAmountBuffer.Load(s)) * plugModulationBuffer->Load(s) + 
+            scaledAmountBuffer.Load(s) * scaledSourceBuffer.Load(s) * plugModulationBuffer->Load(s));
+        break;
+      case FFModMatrixOpType::Add:
+        scaledSourceBuffer.Mul(scaledAmountBuffer);
+        plugModulationBuffer->Add(scaledSourceBuffer);
+        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+          plugModulationBuffer->Store(s, xsimd::clip(plugModulationBuffer->Load(s), FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+        break;
+      case FFModMatrixOpType::Stack:
+        scaledSourceBuffer.Mul(scaledAmountBuffer);
+        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+          plugModulationBuffer->Add(s, (1.0f - plugModulationBuffer->Load(s)) * scaledSourceBuffer.Load(s));
+        break;
+      case FFModMatrixOpType::BPAdd:
+        break;
+      case FFModMatrixOpType::BPStack:
+        break;
+      default:
+        FB_ASSERT(false);
+        break;
+      }
 
-        if (exchangeToGUI != nullptr)
-        {
-          auto& exchangeParams = *FFSelectDualState<Global>(
-            [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
-            [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
-          FFSelectDualExchangeState<Global>(exchangeParams.acc.amount[i], voice) = scaledAmountBuffer.Last();
-        }
+      targetParamState->ApplyPlugModulation(plugModulationBuffer);
+
+      if (exchangeToGUI != nullptr)
+      {
+        auto& exchangeParams = *FFSelectDualState<Global>(
+          [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
+          [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
+        FFSelectDualExchangeState<Global>(exchangeParams.acc.amount[i], voice) = scaledAmountBuffer.Last();
       }
     }
   }
