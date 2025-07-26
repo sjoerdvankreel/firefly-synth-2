@@ -270,6 +270,15 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         }
         break;
       case FFModMatrixOpType::BPStack:
+        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        {
+          auto bpScaledSource = FBToBipolar(scaledSourceBuffer.Load(s));
+          bpScaledSource *= scaledAmountBuffer.Load(s);
+          auto bpScaledTarget = FBToBipolar(plugModulationBuffer->Load(s));
+          auto headroom = 1.0f - xsimd::abs(bpScaledTarget);
+          bpScaledTarget += bpScaledSource * headroom;
+          plugModulationBuffer->Store(s, FBToUnipolar(bpScaledTarget));
+        }
         break;
       default:
         FB_ASSERT(false);
