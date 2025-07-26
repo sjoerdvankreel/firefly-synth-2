@@ -13,6 +13,12 @@ struct FBStaticTopo;
 inline int constexpr FFModMatrixGlobalSlotCount = 14;
 inline int constexpr FFModMatrixVoiceSlotCount = 2 * FFModMatrixGlobalSlotCount;
 
+template <bool Global>
+struct FFModMatrixTraits
+{
+  static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+};
+
 struct FFStaticTopo;
 struct FBStaticModule;
 enum class FFModMatrixOpType { Off, Add, Mul, Stack, BPAdd, BPStack };

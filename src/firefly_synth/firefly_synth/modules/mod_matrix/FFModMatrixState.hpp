@@ -23,7 +23,7 @@ class alignas(FBSIMDAlign) FFModMatrixDSPState final
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
   friend class FFModMatrixProcessor<Global>;
-  static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+  static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
 
   std::unique_ptr<FFModMatrixProcessor<Global>> processor = {};
   FBSArray2<float, FBFixedBlockSamples, SlotCount> modulatedCV = {};
@@ -37,7 +37,7 @@ class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
 {
   friend class FFModMatrixProcessor<Global>;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
-  static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+  static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
 
   std::array<TBlock, SlotCount> scale = {};
   std::array<TBlock, SlotCount> opType = {};
@@ -52,7 +52,7 @@ class alignas(alignof(TAccurate)) FFModMatrixAccParamState final
 {
   friend class FFModMatrixProcessor<Global>;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
-  static inline int constexpr SlotCount = Global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+  static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
 
   std::array<TAccurate, SlotCount> amount = {};
 public:
