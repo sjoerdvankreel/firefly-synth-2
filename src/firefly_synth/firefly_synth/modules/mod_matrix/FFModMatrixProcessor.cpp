@@ -121,12 +121,6 @@ void
 FFModMatrixProcessor<Global>::ApplyModulation(
   FBModuleProcState& state, FBTopoIndices const& currentModule)
 {
-  // TODO no need to make this O(N^whatever)
-  // todo validate if possible
-  // todo scale
-  // todo amount
-  // todo not only add
-
   FBAccParamState* targetParamState = nullptr;
   FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
@@ -201,9 +195,36 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         if (scaleBuffer != nullptr)
           scaledAmountBuffer.Mul(*scaleBuffer);
         sourceBuffer->CopyTo(scaledSourceBuffer);
-        scaledSourceBuffer.Mul(scaledAmountBuffer);
         targetParamState->CV().CopyTo(*plugModulationBuffer);
-        plugModulationBuffer->Mul(scaledSourceBuffer);
+
+        switch (_opType[i])
+        {
+        case FFModMatrixOpType::Mul:
+          for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+            plugModulationBuffer->Store(s, 
+              (1.0f - scaledAmountBuffer.Load(s)) * plugModulationBuffer->Load(s) + 
+              scaledAmountBuffer.Load(s) * scaledSourceBuffer.Load(s) * plugModulationBuffer->Load(s));
+          break;
+        case FFModMatrixOpType::Add:
+          scaledSourceBuffer.Mul(scaledAmountBuffer);
+          plugModulationBuffer->Add(scaledSourceBuffer);
+          for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+            plugModulationBuffer->Store(s, xsimd::clip(plugModulationBuffer->Load(s), FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
+          break;
+        case FFModMatrixOpType::Stack:
+          scaledSourceBuffer.Mul(scaledAmountBuffer);
+          for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+            plugModulationBuffer->Add(s, (1.0f - plugModulationBuffer->Load(s)) * scaledSourceBuffer.Load(s));
+          break;
+        case FFModMatrixOpType::BPAdd:
+          break;
+        case FFModMatrixOpType::BPStack:
+          break;
+        default:
+          FB_ASSERT(false);
+          break;
+        }
+
         targetParamState->ApplyPlugModulation(plugModulationBuffer);
 
         if (exchangeToGUI != nullptr)
