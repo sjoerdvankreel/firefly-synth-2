@@ -29,8 +29,26 @@ GetSourceCVBuffer(FBModuleProcState& state, FFModMatrixSource const& source, int
 }
 
 template <bool Global>
+void
+FFModMatrixProcessor<Global>::BeginModulationBlock()
+{
+  // On ApplyModulation, we can't do it right away.
+  // For each slot, need to wait untill all slots with the same
+  // target param have cleared their modsource, and then apply.
+  // Otherwise, the stacked modes are stacking against something that has yet to come.
+  // Scale is ok because it can never be "later" than the modsource.
+  for (auto& kv : _modSourceIsReady)
+    _modSourceIsReady[kv.first] = false;
+  for (int i = 0; i < SlotCount; i++)
+  {
+    _slotHasBeenProcessed[i] = false;
+    _allModSourcesAreReadyForSlot[i] = false;
+  }
+}
+
+template <bool Global>
 void 
-FFModMatrixProcessor<Global>::ClearModulation(FBModuleProcState& state)
+FFModMatrixProcessor<Global>::EndModulationBlock(FBModuleProcState& state)
 {
   auto* procStateContainer = state.input->procState;
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -151,15 +169,20 @@ FFModMatrixProcessor<Global>::ApplyModulation(
     exchangeDSP.active = true;
   }
 
+  _modSourceIsReady[currentModule] = true;
   for (int i = 0; i < SlotCount; i++)
   {
+    _allModSourcesAreReadyForSlot[i] = true;
     if (_opType[i] != FFModMatrixOpType::Off)
     {
       auto const& scale = sources[_scale[i]];
       auto const& source = sources[_source[i]];
       auto const& target = targets[_target[i]];
-      if (source.indices.module == currentModule && target.module.index != -1)
+      _allModSourcesAreReadyForSlot[i] &= _modSourceIsReady[source.indices.module];
+      if (!_slotHasBeenProcessed[i] && _allModSourcesAreReadyForSlot[i] && target.module.index != -1)
       {
+        _slotHasBeenProcessed[i] = true;
+
         if(!source.onNote)
           sourceBuffer = GetSourceCVBuffer(state, source, voice);
         else 

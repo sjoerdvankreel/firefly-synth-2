@@ -85,6 +85,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   auto state = MakeModuleState(input);
   auto& globalDSP = _procState->dsp.global;
   state.moduleSlot = 0;
+  globalDSP.gMatrix.processor->BeginModulationBlock();
   globalDSP.gMatrix.processor->BeginVoiceOrBlock(state);
   for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
@@ -162,7 +163,7 @@ FFPlugProcessor::ProcessPostVoice(
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
-    globalDSP.gMatrix.processor->ClearModulation(state);
+    globalDSP.gMatrix.processor->EndModulationBlock(state);
     return;
   }
 
@@ -180,5 +181,5 @@ FFPlugProcessor::ProcessPostVoice(
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.GFXToGFX[r] = gMix.acc.GFXToGFX[r].Global().CV().Last();
   
-  globalDSP.gMatrix.processor->ClearModulation(state);
+  globalDSP.gMatrix.processor->EndModulationBlock(state);
 }

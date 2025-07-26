@@ -50,6 +50,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
 
   state.moduleSlot = 0;
+  procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
   for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;
@@ -121,7 +122,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
   {
-    procState->dsp.voice[voice].vMatrix.processor->ClearModulation(state);
+    procState->dsp.voice[voice].vMatrix.processor->EndModulationBlock(state);
     return voiceFinished;
   }
 
@@ -140,6 +141,6 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   for(int r = 0; r < FFOsciCount; r++)
     exchangeParams.acc.osciToOut[r][voice] = vMix.acc.osciToOut[r].Voice()[voice].CV().Last();
 
-  procState->dsp.voice[voice].vMatrix.processor->ClearModulation(state);
+  procState->dsp.voice[voice].vMatrix.processor->EndModulationBlock(state);
   return voiceFinished;
 }
