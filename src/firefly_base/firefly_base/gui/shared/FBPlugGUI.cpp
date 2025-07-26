@@ -191,8 +191,10 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   double engineMin = paramActive.active ? paramActive.minValue : normalized;
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
-  auto result = param.shortName + ": ";
-  result += param.NormalizedToTextWithUnit(false, normalized);  
+  std::string result = param.shortName + ": ";
+  result += param.NormalizedToTextWithUnit(false, normalized);
+  result += "\r\nParam index: " + std::to_string(index);
+  result += "\r\nParam tag: " + std::to_string(param.tag);
   if (!param.static_.IsVoice())
     result += "\r\nEngine: " + param.NormalizedToTextWithUnit(false, engineMin);
   else

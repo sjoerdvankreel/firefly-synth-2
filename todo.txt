@@ -10,6 +10,7 @@ widen the gui for the easy access stuff
 make env1 to amp explicit
 refix all behind-the-scenes mod sources and targets
 
+echo
 paint env1 to vmix
 get rid of sse2neon
 make better section ui esp. for the a/b/c/ sections
