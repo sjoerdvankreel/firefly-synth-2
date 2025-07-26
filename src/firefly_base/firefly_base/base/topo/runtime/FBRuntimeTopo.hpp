@@ -32,7 +32,7 @@ public:
   FBRuntimeParamsTopo<FBRuntimeGUIParam> gui;
   std::map<FBTopoIndices, int> moduleTopoToRuntime;
 
-  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
+  FB_NOCOPY_MOVE_NODEFCTOR(FBRuntimeTopo);
   FBRuntimeTopo(std::unique_ptr<FBStaticTopo>&& topo);
   FBRuntimeModule const* ModuleAtTopo(FBTopoIndices const& topoIndices) const;
 
