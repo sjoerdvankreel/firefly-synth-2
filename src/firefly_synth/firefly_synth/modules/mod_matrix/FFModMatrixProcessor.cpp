@@ -151,6 +151,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           sourceBuffer = &onNoteSourceBuffer;
         }
         
+        scaleBuffer = nullptr;
         if(scale.indices.module.index != -1)
           if (!scale.onNote)
             scaleBuffer = GetSourceCVBuffer(state, scale, voice);
