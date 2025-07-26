@@ -66,6 +66,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   auto const& sourceNorm = params.block.source;
   auto const& targetNorm = params.block.target;
   auto const& opTypeNorm = params.block.opType;
+  auto const& amountNorm = params.acc.amount;
 
   for (int i = 0; i < SlotCount; i++)
   {
@@ -83,6 +84,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
   }
 
+  // snapshot on-note values
   if constexpr (!Global)
   {
     auto const& ffTopo = dynamic_cast<FFStaticTopo const&>(*state.topo->static_);
@@ -99,6 +101,22 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
           _sourceOnNoteValues[i] = GetSourceCVBuffer(state, source, voice)->Get(state.voice->offsetInBlock);
       }
     }
+  }
+
+  // Prevent unscaled param from showing up as 0.
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI != nullptr)
+  {
+    auto& exchangeDSP = *FFSelectDualState<Global>(
+      [exchangeToGUI, &state]() { return &exchangeToGUI->global.gMatrix[state.moduleSlot]; },
+      [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vMatrix[state.moduleSlot]; });
+    exchangeDSP.active = true;
+    auto& exchangeParams = *FFSelectDualState<Global>(
+      [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
+      [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
+    for(int i = 0; i < SlotCount; i++)
+      FFSelectDualExchangeState<Global>(exchangeParams.acc.amount[i], voice) =
+        FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV().Get(0);
   }
 }
 
@@ -186,10 +204,6 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
         if (exchangeToGUI != nullptr)
         {
-          auto& exchangeDSP = *FFSelectDualState<Global>(
-            [exchangeToGUI, &state]() { return &exchangeToGUI->global.gMatrix[state.moduleSlot]; },
-            [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vMatrix[state.moduleSlot]; });
-          exchangeDSP.active = true;
           auto& exchangeParams = *FFSelectDualState<Global>(
             [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
             [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
