@@ -259,6 +259,15 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           plugModulationBuffer->Add(s, (1.0f - plugModulationBuffer->Load(s)) * scaledSourceBuffer.Load(s));
         break;
       case FFModMatrixOpType::BPAdd:
+        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        {
+          auto bpScaledSource = FBToBipolar(scaledSourceBuffer.Load(s));
+          bpScaledSource *= scaledAmountBuffer.Load(s);
+          auto bpScaledTarget = FBToBipolar(plugModulationBuffer->Load(s));
+          bpScaledTarget += bpScaledSource;
+          bpScaledTarget = xsimd::clip(bpScaledTarget, FBBatch<float>(-1.0f), FBBatch<float>(1.0f));
+          plugModulationBuffer->Store(s, FBToUnipolar(bpScaledTarget));
+        }
         break;
       case FFModMatrixOpType::BPStack:
         break;
