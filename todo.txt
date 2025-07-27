@@ -1,4 +1,4 @@
-bug with retrigger same note
+stuck notes on bitwig after fixing unwanted note release on reaper
 vgmix->mixer
 autoclip
 optional mod indicators
