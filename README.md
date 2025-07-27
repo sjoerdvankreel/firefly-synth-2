@@ -119,5 +119,6 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
-# Screenshot
+# Screenshots
 <img alt="Screenshot" src="demo/screenshot.png"/>
+<img alt="Screenshot Matrix" src="demo/screenshot_matrix.png"/>

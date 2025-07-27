@@ -10045,7 +10045,7 @@
       "moduleId": "{5C91D5A0-3EC1-4142-935A-3FE83B60C04E}",
       "paramSlot": 0,
       "moduleSlot": 0,
-      "val": "100.000000",
+      "val": "200.000000",
       "name": "VMix Gain"
     },
     {
@@ -10331,7 +10331,7 @@
       "moduleId": "{5C91D5A0-3EC1-4142-935A-3FE83B60C04E}",
       "paramSlot": 2,
       "moduleSlot": 0,
-      "val": "73.199999",
+      "val": "86.799999",
       "name": "VMix Osc3???Out"
     },
     {
@@ -10342,7 +10342,7 @@
       "moduleId": "{5C91D5A0-3EC1-4142-935A-3FE83B60C04E}",
       "paramSlot": 3,
       "moduleSlot": 0,
-      "val": "87.199998",
+      "val": "35.999998",
       "name": "VMix Osc4???Out"
     },
     {
@@ -10353,7 +10353,7 @@
       "moduleId": "{5C91D5A0-3EC1-4142-935A-3FE83B60C04E}",
       "paramSlot": 0,
       "moduleSlot": 0,
-      "val": "50.400001",
+      "val": "43.200001",
       "name": "VMix FX 1???Out"
     },
     {
