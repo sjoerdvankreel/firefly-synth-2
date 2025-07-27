@@ -138,6 +138,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
       if (!noteEvents[i].on && 
         noteEvents[i].note.Matches(myVoiceNoteEvent.note) &&
         (noteEvents[i].timeStampSamples == 0 || // running outside transport, just kill any match
+         myVoiceNoteEvent.timeStampSamples == 0 ||
         noteEvents[i].timeStampSamples > myVoiceNoteEvent.timeStampSamples))
       {
         releaseAt = noteEvents[i].pos;
