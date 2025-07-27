@@ -30,6 +30,25 @@ GetSourceCVBuffer(FBModuleProcState& state, FFModMatrixSource const& source, int
 
 template <bool Global>
 void
+FFModMatrixProcessor<Global>::InitializeBuffers(FBRuntimeTopo const* topo)
+{
+  // static_cast for perf
+  // 2d vector beats map performance
+  auto const& ffTopo = static_cast<FFStaticTopo const&>(*topo->static_);
+  auto const& sources = Global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
+  for (int i = 0; i < sources.size(); i++)
+  {
+    auto const& modIndices = sources[i].indices.module;
+    if (modIndices.index != -1)
+    {
+      _modSourceIsReady.resize(std::max((int)_modSourceIsReady.size(), modIndices.index + 1));
+      _modSourceIsReady[modIndices.index].resize(std::max((int)_modSourceIsReady[modIndices.index].size(), modIndices.slot + 1));
+    }
+  }
+}
+
+template <bool Global>
+void
 FFModMatrixProcessor<Global>::BeginModulationBlock()
 {
   // On ApplyModulation, we can't do it right away.
@@ -37,8 +56,9 @@ FFModMatrixProcessor<Global>::BeginModulationBlock()
   // target param have cleared their modsource, and then apply.
   // Otherwise, the stacked modes are stacking against something that has yet to come.
   // Scale is ok because it can never be "later" than the modsource.
-  for (auto& kv : _modSourceIsReady)
-    _modSourceIsReady[kv.first] = false;
+  for (int i = 0; i < _modSourceIsReady.size(); i++)
+    for (int j = 0; j < _modSourceIsReady[i].size(); j++)
+      _modSourceIsReady[i][j] = 0;
   for (int i = 0; i < SlotCount; i++)
   {
     _slotHasBeenProcessed[i] = false;
@@ -172,7 +192,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
     exchangeDSP.active = true;
   }
 
-  _modSourceIsReady[currentModule] = true;
+  _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
 
   // need all slots with same target ready before we begin processing
   for (int i = 0; i < SlotCount; i++)
@@ -191,7 +211,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
             auto const& thatSource = sources[_source[j]];
             auto const& thatTarget = targets[_target[j]];
             if (thatSource.indices.module.index != -1 && thatTarget.module == thisTarget.module)
-              _allModSourcesAreReadyForSlot[i] &= _modSourceIsReady[thatSource.indices.module];
+              _allModSourcesAreReadyForSlot[i] &= _modSourceIsReady[thatSource.indices.module.index][thatSource.indices.module.slot] != 0;
           }
     }
   }

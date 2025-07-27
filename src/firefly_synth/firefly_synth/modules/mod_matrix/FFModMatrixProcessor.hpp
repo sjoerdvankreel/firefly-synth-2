@@ -8,6 +8,7 @@
 #include <array>
 #include <vector>
 
+struct FBRuntimeTopo;
 struct FBTopoIndices;
 struct FBModuleProcState;
 class FBProcStateContainer;
@@ -25,8 +26,8 @@ class FFModMatrixProcessor final
   std::array<float, SlotCount> _scaleOnNoteValues = {};
   std::array<float, SlotCount> _sourceOnNoteValues = {};
 
-  // mind the bookkeeping - also don't clear it because alloc, just set to false
-  std::map<FBTopoIndices, bool> _modSourceIsReady = {};
+  // mind the bookkeeping
+  std::vector<std::vector<int>> _modSourceIsReady = {}; // index * slot, map was slow, 0/1, vector<bool> sucks
   std::array<bool, SlotCount> _slotHasBeenProcessed = {};
   std::array<bool, SlotCount> _allModSourcesAreReadyForSlot = {};
 
@@ -34,7 +35,8 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixProcessor);
 
   void BeginModulationBlock();
-  void EndModulationBlock(FBModuleProcState& state);
   void BeginVoiceOrBlock(FBModuleProcState& state);
+  void InitializeBuffers(FBRuntimeTopo const* topo);
+  void EndModulationBlock(FBModuleProcState& state);
   void ApplyModulation(FBModuleProcState& state, FBTopoIndices const& currentModule);
 };
