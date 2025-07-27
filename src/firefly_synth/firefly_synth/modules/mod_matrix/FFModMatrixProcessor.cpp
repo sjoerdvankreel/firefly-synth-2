@@ -33,67 +33,37 @@ void
 FFModMatrixProcessor<Global>::InitializeBuffers(FBRuntimeTopo const* topo)
 {
   // static_cast for perf
-  // 2/3d vectors beat map performance
+  // 2d vector beats map performance
   auto const& ffTopo = static_cast<FFStaticTopo const&>(*topo->static_);
   auto const& sources = Global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
-
-  _slotsWithSameTarget.resize(SlotCount);
-  for (int i = 0; i < SlotCount; i++)
-    _slotsWithSameTarget[i].resize(SlotCount);
-
   for (int i = 0; i < sources.size(); i++)
   {
     auto const& modIndices = sources[i].indices.module;
     if (modIndices.index != -1)
     {
-      _modSourceState.resize(
-        std::max((int)_modSourceState.size(), modIndices.index + 1));
-      _modSourceState[modIndices.index].resize(
-        std::max((int)_modSourceState[modIndices.index].size(), modIndices.slot + 1));
-      _modSourceState[modIndices.index][modIndices.slot].resize(SlotCount);
+      _modSourceIsReady.resize(std::max((int)_modSourceIsReady.size(), modIndices.index + 1));
+      _modSourceIsReady[modIndices.index].resize(std::max((int)_modSourceIsReady[modIndices.index].size(), modIndices.slot + 1));
     }
   }
 }
 
 template <bool Global>
 void
-FFModMatrixProcessor<Global>::BeginModulationBlock(FBModuleProcState& state)
+FFModMatrixProcessor<Global>::BeginModulationBlock()
 {
   // On ApplyModulation, we can't do it right away.
   // For each slot, need to wait untill all slots with the same
   // target param have cleared their modsource, and then apply.
   // Otherwise, the stacked modes are stacking against something that has yet to come.
   // Scale is ok because it can never be "later" than the modsource.
-
-  // static_cast for perf
-  auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
-  auto const& sources = Global ? ffTopo.gMatrixSources : ffTopo.vMatrixSources;
-  auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
-
+  for (int i = 0; i < _modSourceIsReady.size(); i++)
+    for (int j = 0; j < _modSourceIsReady[i].size(); j++)
+      _modSourceIsReady[i][j] = 0;
   for (int i = 0; i < SlotCount; i++)
   {
     _slotHasBeenProcessed[i] = false;
     _allModSourcesAreReadyForSlot[i] = false;
-    _slotsWithSameTarget[i].clear();
-    auto const& thisTarget = targets[_target[i]];
-    if (thisTarget.module.index != -1)
-      for (int j = 0; j < SlotCount; j++)
-        if (thisTarget == targets[_target[j]])
-          _slotsWithSameTarget[i].push_back(j);
   }
-
-  for (int i = 0; i < _modSourceState.size(); i++)
-    for (int j = 0; j < _modSourceState[i].size(); j++)
-    {
-      _modSourceState[i][j].isReady = false;
-      _modSourceState[i][j].relevantSlots.clear();
-      for (int s = 0; s < SlotCount; s++)
-      {
-        auto const& modIndices = sources[_source[s]].indices.module;
-        if (modIndices.index == i && modIndices.slot == j)
-          _modSourceState[i][j].relevantSlots.push_back(s);
-      }
-    }
 }
 
 template <bool Global>
@@ -222,10 +192,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
     exchangeDSP.active = true;
   }
 
-  auto& modSourceState = _modSourceState[currentModule.index][currentModule.slot];
-  modSourceState.isReady = true;
-  for(int i = 0; i < modSourceState.slotsWithThisSource.size(); i++)
-
+  _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
 
   // need all slots with same target ready before we begin processing
   for (int i = 0; i < SlotCount; i++)
