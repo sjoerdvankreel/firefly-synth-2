@@ -131,19 +131,12 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   bool forcedRelease = _releasePoint == 0 && _loopStart != 0 && state.moduleSlot == 0;
   int releasePoint = forcedRelease ? FFEnvStageCount : _releasePoint;
 
-  // Be sure to only release a voice by a note off event that comes strictly 
-  // after (in time) the note on event that triggered the current voice.
+  // TODO reaper and bitwig are in disagreement here.
+  // Fixing early release on the one causes stuck notes on the other.
   if (releasePoint != 0 && !graphingExchange)
     for (int i = 0; i < noteEvents.size(); i++)
-      if (!noteEvents[i].on && 
-        noteEvents[i].note.Matches(myVoiceNoteEvent.note) &&
-        (noteEvents[i].timeStampSamples == 0 || // running outside transport, just kill any match
-         myVoiceNoteEvent.timeStampSamples == 0 ||
-        noteEvents[i].timeStampSamples > myVoiceNoteEvent.timeStampSamples))
-      {
+      if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNoteEvent.note))
         releaseAt = noteEvents[i].pos;
-        break;
-      }
 
   // Deal with voice start offset.
   // In other words, the entire audio engine operates on

@@ -1,4 +1,4 @@
-stuck notes on bitwig after fixing unwanted note release on reaper
+todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
 vgmix->mixer
 autoclip
 optional mod indicators
