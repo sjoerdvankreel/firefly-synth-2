@@ -1,10 +1,9 @@
 # This is not a finished product
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
-* Only tested on reaper and bitwig.
-* Only osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos and audio mixer matrix implemented.
-* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP, no CV-routing,
-only ENV1 is only connected to per-voice amp, some LFO routing is temporarily hardcoded. All else routes nowhere. Let alone stuff like an arpeggiator.
+* Tested on reaper, renoise, fruity and bitwig.
+* Osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
+* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP, no MIDI CC.
 
 # Some demo material
 * Bowed strings
@@ -119,6 +118,13 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 
 ## Voice/global audio mixer matrix (VMIX/GMIX)
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
+
+## CV Mod Matrix
+* 1 for voice, 1 for global.
+* Like FF1, on-note support for voice.
+* Much like FF1, select add/mul/stack + bipolar add/stack.
+* New Scale parameter which allows the mod amount to be controlled by an additional CV source.
+* Single matrix for audio and cv. Env and LFO are now processed in lock-step, so env can modulate LFO and the other way around.
 
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
