@@ -27,7 +27,8 @@ class FFModMatrixProcessor final
   std::array<float, SlotCount> _sourceOnNoteValues = {};
 
   // mind the bookkeeping
-  std::vector<std::vector<int>> _modSourceIsReady = {}; // index * slot, map was slow, 0/1, vector<bool> sucks
+  // source index * source slot, map was slow, 0/1 = bool
+  std::vector<std::vector<int>> _modSourceIsReady = {};
   std::array<bool, SlotCount> _slotHasBeenProcessed = {};
   std::array<bool, SlotCount> _allModSourcesAreReadyForSlot = {};
 
