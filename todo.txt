@@ -1,5 +1,5 @@
+bug with retrigger same note
 vgmix->mixer
-profile the modmat
 autoclip
 optional mod indicators
 do addbp also for lfos
