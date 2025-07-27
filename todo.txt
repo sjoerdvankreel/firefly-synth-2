@@ -1,3 +1,4 @@
+patch load and edit is broken on bitwig
 todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
 vgmix->mixer
 autoclip
