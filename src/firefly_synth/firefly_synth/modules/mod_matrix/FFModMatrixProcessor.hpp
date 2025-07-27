@@ -14,6 +14,15 @@ struct FBModuleProcState;
 class FBProcStateContainer;
 
 template <bool Global>
+struct FFModMatrixSourceState
+{
+  static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
+
+  bool isReady = {};
+  std::vector<int> slotsWithThisSource = {};
+};
+
+template <bool Global>
 class FFModMatrixProcessor final
 {
   static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
@@ -27,16 +36,19 @@ class FFModMatrixProcessor final
   std::array<float, SlotCount> _sourceOnNoteValues = {};
 
   // mind the bookkeeping
-  std::vector<std::vector<int>> _modSourceIsReady = {}; // index * slot, map was slow, 0/1, vector<bool> sucks
   std::array<bool, SlotCount> _slotHasBeenProcessed = {};
   std::array<bool, SlotCount> _allModSourcesAreReadyForSlot = {};
+  // (mod matrix slot * mod matrix slot)
+  std::vector<std::vector<int>> _slotsWithSameTarget = {};
+  // (source module index * source module slot), map was slow 
+  std::vector<std::vector<FFModMatrixSourceState<Global>>> _modSourceState = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixProcessor);
 
-  void BeginModulationBlock();
   void BeginVoiceOrBlock(FBModuleProcState& state);
   void InitializeBuffers(FBRuntimeTopo const* topo);
   void EndModulationBlock(FBModuleProcState& state);
+  void BeginModulationBlock(FBModuleProcState& state);
   void ApplyModulation(FBModuleProcState& state, FBTopoIndices const& currentModule);
 };
