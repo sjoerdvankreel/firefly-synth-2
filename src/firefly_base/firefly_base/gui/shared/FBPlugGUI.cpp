@@ -191,8 +191,10 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
   double engineMin = paramActive.active ? paramActive.minValue : normalized;
   double engineMax = paramActive.active ? paramActive.maxValue : normalized;
 
-  auto result = param.shortName + ": ";
-  result += param.NormalizedToTextWithUnit(false, normalized);  
+  std::string result = param.shortName + ": ";
+  result += param.NormalizedToTextWithUnit(false, normalized);
+  result += "\r\nParam index: " + std::to_string(index);
+  result += "\r\nParam tag: " + std::to_string(param.tag);
   if (!param.static_.IsVoice())
     result += "\r\nEngine: " + param.NormalizedToTextWithUnit(false, engineMin);
   else
@@ -258,7 +260,7 @@ FBPlugGUI::SavePatchToFile()
 {
   FB_LOG_ENTRY_EXIT();
   int saveFlags = FileBrowserComponent::saveMode | FileBrowserComponent::warnAboutOverwriting;
-  auto extension = HostContext()->Topo()->static_.patchExtension;
+  auto extension = HostContext()->Topo()->static_->patchExtension;
   FileChooser* chooser = new FileChooser("Save Patch", File(), String("*.") + extension, true, false, this);
   chooser->launchAsync(saveFlags, [this](FileChooser const& chooser) {
     FB_LOG_ENTRY_EXIT();
@@ -276,7 +278,7 @@ FBPlugGUI::LoadPatchFromFile()
 {
   FB_LOG_ENTRY_EXIT();
   int loadFlags = FileBrowserComponent::openMode;
-  auto extension = HostContext()->Topo()->static_.patchExtension;
+  auto extension = HostContext()->Topo()->static_->patchExtension;
   FileChooser* chooser = new FileChooser("Load Patch", File(), String("*.") + extension, true, false, this);
   chooser->launchAsync(loadFlags, [this](FileChooser const& chooser) {
     auto file = chooser.getResult();
@@ -293,6 +295,6 @@ FBPlugGUI::LoadPatchFromFile()
       AlertWindow::showMessageBoxAsync(
         MessageBoxIconType::WarningIcon,
         "Error",
-        "Failed to load patch. See log for details.\r\n" + FBGetLogPath(HostContext()->Topo()->static_.meta).string());
+        "Failed to load patch. See log for details.\r\n" + FBGetLogPath(HostContext()->Topo()->static_->meta).string());
   });
 }

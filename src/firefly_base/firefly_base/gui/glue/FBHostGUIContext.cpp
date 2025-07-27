@@ -49,7 +49,7 @@ FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
 {
   std::string name = Topo()->ModuleAtTopo(moduleIndices)->name;
   UndoState().Snapshot("Clear " + name);
-  auto const& staticModule = Topo()->static_.modules[moduleIndices.index];
+  auto const& staticModule = Topo()->static_->modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
   {
     auto const& staticParam = staticModule.params[p];
@@ -67,7 +67,7 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
 {
   std::string name = Topo()->ModuleAtTopo(moduleIndices)->name;
   UndoState().Snapshot("Copy " + name);
-  auto const& staticModule = Topo()->static_.modules[moduleIndices.index];
+  auto const& staticModule = Topo()->static_->modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
   {
     auto const& staticParam = staticModule.params[p];

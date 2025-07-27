@@ -62,8 +62,8 @@ public:
   { return std::make_unique<FFPlugProcessor>(this); }
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFCLAPPlugin);
-  FFCLAPPlugin(FBStaticTopo const& topo, clap_plugin_descriptor const* desc, clap_host const* host):
-  FBCLAPPlugin(topo, desc, host, std::make_unique<FBCLAPExchangeStateQueue<FFCLAPExchangeState>>()) {}
+  FFCLAPPlugin(std::unique_ptr<FFStaticTopo>&& topo, clap_plugin_descriptor const* desc, clap_host const* host):
+  FBCLAPPlugin(std::move(topo), desc, host, std::make_unique<FBCLAPExchangeStateQueue<FFCLAPExchangeState>>()) {}
 };
 
 static void CLAP_ABI 
@@ -110,11 +110,10 @@ CreatePlugin(
   FB_LOG_ENTRY_EXIT();
   return FBWithLogException([host, pluginId]()
   {
-    auto topo = FFMakeTopo(FBPlugFormat::CLAP);
     auto const* desc = GetPluginDescriptor(nullptr, 0);
     if (strcmp(desc->id, pluginId))
       return static_cast<clap_plugin_t const*>(nullptr);
-    return (new FFCLAPPlugin(*topo, desc, host))->clapPlugin();
+    return (new FFCLAPPlugin(FFMakeTopo(FBPlugFormat::CLAP), desc, host))->clapPlugin();
   });
 }
 

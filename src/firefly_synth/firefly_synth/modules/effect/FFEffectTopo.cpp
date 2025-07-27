@@ -12,9 +12,7 @@ FFMakeEffectTopo(bool global)
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
-  result->name = global? "Global FX": "Voice FX";
-  result->tabName = global ? "GFX" : "VFX";
-  result->graphName = global ? "GFX" : "VFX";
+  result->name = global ? "GFX" : "VFX";
   result->slotCount = FFEffectCount;
   result->graphCount = FFEffectBlockCount + 1;
   result->graphRenderer = global? FFEffectRenderGraph<true>: FFEffectRenderGraph<false>;

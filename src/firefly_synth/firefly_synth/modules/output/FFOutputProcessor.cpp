@@ -11,7 +11,7 @@
 void
 FFOutputProcessor::Process(FBModuleProcState& state)
 {
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Output];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Output];
   auto const* voicesParam = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } });
   float voicesNorm = topo.DiscreteToNormalizedFast(FFOutputParam::Voices, state.input->voiceManager->VoiceCount());
   (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = voicesNorm;

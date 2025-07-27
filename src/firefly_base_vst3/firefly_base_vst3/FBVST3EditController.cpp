@@ -59,10 +59,10 @@ FBVST3EditController::
 }
 
 FBVST3EditController::
-FBVST3EditController(FBStaticTopo const& topo) :
-_topo(std::make_unique<FBRuntimeTopo>(topo)),
-_guiState(std::make_unique<FBGUIStateContainer>(topo)),
-_exchangeState(std::make_unique<FBExchangeStateContainer>(topo)),
+FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo) :
+_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
+_guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
+_exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo)),
 _exchangeHandler(this)
 {
   FB_LOG_ENTRY_EXIT();
@@ -246,7 +246,7 @@ FBVST3EditController::onDataExchangeBlocksReceived(
   {
     if (numBlocks == 0)
       return;
-    memcpy(_exchangeState->Raw(), blocks[numBlocks - 1].data, _topo->static_.exchangeStateSize);
+    memcpy(_exchangeState->Raw(), blocks[numBlocks - 1].data, _topo->static_->exchangeStateSize);
     if (_guiEditor != nullptr)
       _guiEditor->UpdateExchangeState();
   });

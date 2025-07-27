@@ -41,7 +41,7 @@ public:
   DELEGATE_REFCOUNT(EditController)
 
   ~FBVST3EditController();
-  FBVST3EditController(FBStaticTopo const& topo);
+  FBVST3EditController(std::unique_ptr<FBStaticTopo>&& topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3EditController);
 
   void ResetView();

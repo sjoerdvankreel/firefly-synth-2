@@ -17,14 +17,13 @@ FFMakeLFOTopo(bool global)
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
-  result->name = global ? "Global LFO" : "Voice LFO";
-  result->tabName = global ? "GLFO" : "VLFO";
-  result->graphName = global ? "GLFO" : "VLFO";
-  result->slotCount = FFLFOCount;
+  result->name = global ? "GLFO" : "VLFO";
+  result->slotCount = FFLFOAndEnvCount;
   result->graphCount = FFLFOBlockCount + 1;
   result->graphRenderer = global ? FFLFORenderGraph<true> : FFLFORenderGraph<false>;
   result->id = prefix + "{6E9EC930-5391-41BB-9EDA-C9B79F3BE745}";
   result->params.resize((int)FFLFOParam::Count);
+  result->cvOutputs.resize((int)FFLFOCVOutput::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vLFO; });
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gLFO; });
   auto selectVoiceModule = [](auto& state) { return &state.voice.vLFO; };
@@ -340,7 +339,7 @@ FFMakeLFOTopo(bool global)
   skewAYMode.acc = false;
   skewAYMode.defaultText = "Off";
   skewAYMode.display = "SkY";
-  skewAYMode.name = "Skew Y Mode";
+  skewAYMode.name = "Skew A Y Mode";
   skewAYMode.slotCount = 1;
   skewAYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
   skewAYMode.type = FBParamType::List;
@@ -359,7 +358,7 @@ FFMakeLFOTopo(bool global)
   auto& skewAYAmt = result->params[(int)FFLFOParam::SkewAYAmt];
   skewAYAmt.acc = true;
   skewAYAmt.defaultText = "0";
-  skewAYAmt.name = "Skew Y Amt";
+  skewAYAmt.name = "Skew A Y Amt";
   skewAYAmt.slotCount = 1;
   skewAYAmt.unit = "%";
   skewAYAmt.id = prefix + "{E8E4BD9E-7E2A-4B26-AA42-87157C5246BF}";
@@ -389,5 +388,11 @@ FFMakeLFOTopo(bool global)
   phaseB.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhaseB);
   phaseB.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 1 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& output = result->cvOutputs[(int)FFLFOCVOutput::Output];
+  output.slotCount = 1;
+  output.name = "Output";
+  output.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
+  output.globalAddr = [](int ms, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].output; };
+  output.voiceAddr = [](int ms, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].output; };
   return result;
 }

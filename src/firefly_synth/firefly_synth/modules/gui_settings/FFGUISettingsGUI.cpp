@@ -32,7 +32,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
-  auto name = plugGUI->HostContext()->Topo()->static_.modules[(int)FFModuleType::GUISettings].name;
+  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::GUISettings].name;
   tabs->addTab(name, {}, MakeGUISettingsTab(plugGUI), false);
   return tabs;
 }

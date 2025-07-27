@@ -39,6 +39,6 @@ FBUndoStateContainer::Snapshot(std::string const& action)
   item.action = action;
   item.state.CopyFrom(_hostContext);
   _undoDeque.push_front(std::move(item));
-  while (_undoDeque.size() > _hostContext->Topo()->static_.maxUndoSize)
+  while (_undoDeque.size() > _hostContext->Topo()->static_->maxUndoSize)
     _undoDeque.pop_back();
 }

@@ -44,8 +44,6 @@ FFMakeOsciTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "Osc";
-  result->tabName = "OSC";
-  result->graphName = "OSC";
   result->slotCount = FFOsciCount;
   result->graphCount = FFOsciCount;
   result->graphRenderer = FFOsciRenderGraph;
@@ -141,7 +139,7 @@ FFMakeOsciTopo()
   uniCount.acc = false;
   uniCount.defaultText = "1";
   uniCount.display = "Uni";
-  uniCount.name = "Unison Count";
+  uniCount.name = "Uni Count";
   uniCount.slotCount = 1;
   uniCount.id = "{60313673-95FE-4B6D-99A6-B628ACDE6D56}";
   uniCount.type = FBParamType::Discrete;
@@ -157,7 +155,7 @@ FFMakeOsciTopo()
   uniOffset.acc = false;
   uniOffset.defaultText = "50";
   uniOffset.display = "Ofst";
-  uniOffset.name = "Unison Offset";
+  uniOffset.name = "Uni Offset";
   uniOffset.slotCount = 1;
   uniOffset.unit = "%";
   uniOffset.id = "{6F5754E1-BDF4-4685-98FC-8C613128EE8D}";
@@ -172,7 +170,7 @@ FFMakeOsciTopo()
   uniRandom.acc = false;
   uniRandom.defaultText = "50";
   uniRandom.display = "Rand";
-  uniRandom.name = "Unison Random";
+  uniRandom.name = "Uni Random";
   uniRandom.slotCount = 1;
   uniRandom.unit = "%";
   uniRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
@@ -187,7 +185,7 @@ FFMakeOsciTopo()
   uniDetune.acc = true;
   uniDetune.defaultText = "33";
   uniDetune.display = "Dtn";
-  uniDetune.name = "Unison Detune";
+  uniDetune.name = "Uni Detune";
   uniDetune.slotCount = 1;
   uniDetune.unit = "%";
   uniDetune.id = "{C73A2DFD-0C6D-47FF-A524-CA14A75DF418}";
@@ -202,7 +200,7 @@ FFMakeOsciTopo()
   uniSpread.acc = true;
   uniSpread.defaultText = "50";
   uniSpread.display = "Sprd";
-  uniSpread.name = "Unison Spread";
+  uniSpread.name = "Uni Spread";
   uniSpread.slotCount = 1;
   uniSpread.unit = "%";
   uniSpread.id = "{9F71BAA5-00A2-408B-8CFC-B70D84A7654E}";
@@ -217,7 +215,7 @@ FFMakeOsciTopo()
   uniBlend.acc = true;
   uniBlend.defaultText = "100";
   uniBlend.display = "Blnd";
-  uniBlend.name = "Unison Blend";
+  uniBlend.name = "Uni Blend";
   uniBlend.slotCount = 1;
   uniBlend.unit = "%";
   uniBlend.id = "{68974AC4-57ED-41E4-9B0F-6DB29E0B6BBB}";
@@ -779,7 +777,8 @@ FFMakeOsciTopo()
   auto& stringHPFreq = result->params[(int)FFOsciParam::StringHPFreq];
   stringHPFreq.acc = true;
   stringHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  stringHPFreq.name = "HP";
+  stringHPFreq.name = "HP Freq";
+  stringHPFreq.display = "HP";
   stringHPFreq.slotCount = 1;
   stringHPFreq.unit = "Hz";
   stringHPFreq.id = "{1753A4C9-BE63-4079-A875-59C35F3BC584}";

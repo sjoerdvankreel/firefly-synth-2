@@ -35,6 +35,7 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
   _lastMIDINoteKey = 60.0f;
   _plugOut.procState = _procState;
   _plugIn.lastMIDINoteKey.Fill(60.0f);
+  _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
 }
@@ -59,14 +60,14 @@ FBHostProcessor::ProcessHost(
     _procState->Params()[be.param].Value(be.normalized);
 
   auto const& hostSmoothTimeSpecial = _procState->Special().hostSmoothTime;
-  auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(_topo->static_);
+  auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(*_topo->static_);
   int hostSmoothSamples = hostSmoothTimeTopo.Linear().NormalizedTimeToSamplesFast(hostSmoothTimeSpecial.state->Value(), _sampleRate);
   _procState->SetSmoothingCoeffs(hostSmoothSamples);
 
   for (int m = 0; m < _topo->modules.size(); m++)
   {
     auto const& indices = _topo->modules[m].topoIndices;
-    auto const& static_ = _topo->static_.modules[indices.index];
+    auto const& static_ = _topo->static_->modules[indices.index];
     if (!static_.voice)
     {
       if (_exchangeState->Modules()[m] != nullptr)
@@ -126,14 +127,16 @@ FBHostProcessor::ProcessHost(
 
   for (int i = 0; i < _procState->Params().size(); i++)
     if (!_procState->Params()[i].IsAcc())
+    {
       if (!_procState->Params()[i].IsVoice())
-        *_exchangeState->Params()[i].Global() = 
-          _procState->Params()[i].GlobalBlock().Value();
+        *_exchangeState->Params()[i].Global() =
+        _procState->Params()[i].GlobalBlock().Value();
       else
         for (int v = 0; v < FBMaxVoices; v++)
           if (_voiceManager->IsActive(v))
-            _exchangeState->Params()[i].Voice()[v] = 
-              _procState->Params()[i].VoiceBlock().Voice()[v];
+            _exchangeState->Params()[i].Voice()[v] =
+            _procState->Params()[i].VoiceBlock().Voice()[v];
+    }
 
   FBRestoreDenormal(denormalState);
 }

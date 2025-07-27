@@ -39,9 +39,7 @@ FFMakeOsciModTopo()
 {
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
-  result->name = "Osc Mod";
-  result->tabName = "MOD";
-  result->graphName = "MOD";
+  result->name = "Mod";
   result->slotCount = 1;
   result->graphCount = FFOsciCount;
   result->graphCount = FFOsciCount;

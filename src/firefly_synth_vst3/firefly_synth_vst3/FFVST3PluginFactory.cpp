@@ -23,8 +23,8 @@ public FBVST3AudioEffect
 {
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3AudioEffect);
-  FFVST3AudioEffect(FBStaticTopo const& topo, FUID const& controllerId):
-  FBVST3AudioEffect(topo, controllerId) {}
+  FFVST3AudioEffect(std::unique_ptr<FFStaticTopo>&& topo, FUID const& controllerId):
+  FBVST3AudioEffect(std::move(topo), controllerId) {}
 
   std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() override
   { return std::make_unique<FFPlugProcessor>(this); }
@@ -59,8 +59,7 @@ ControllerFactory(void*)
 {
   return FBWithLogException([]() 
   {
-    auto topo = FFMakeTopo(FBPlugFormat::VST3);
-    auto result = new FBVST3EditController(*topo);
+    auto result = new FBVST3EditController(FFMakeTopo(FBPlugFormat::VST3));
     return static_cast<IEditController*>(result);
   });
 }
@@ -70,9 +69,8 @@ ComponentFactory(void*)
 {
   return FBWithLogException([]() 
   {
-    auto topo = FFMakeTopo(FBPlugFormat::VST3);
     auto controllerFuid = TextToFUID(FFPlugControllerId);
-    auto result = new FFVST3AudioEffect(*topo, controllerFuid);
+    auto result = new FFVST3AudioEffect(FFMakeTopo(FBPlugFormat::VST3), controllerFuid);
     return static_cast<IAudioProcessor*>(result);
   });
 }

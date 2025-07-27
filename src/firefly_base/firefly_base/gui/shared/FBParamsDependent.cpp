@@ -20,7 +20,7 @@ RuntimeDependencies(
     int dependencySlot = staticParamIndices[i].slot;
     if (dependencySlot == -1)
     {
-      auto const& staticDependency = topo->static_.modules[staticModuleIndices.index].params[staticParamIndices[i].index];
+      auto const& staticDependency = topo->static_->modules[staticModuleIndices.index].params[staticParamIndices[i].index];
       FB_ASSERT(staticDependency.slotCount == 1 || staticDependency.slotCount > slot);
       dependencySlot = staticDependency.slotCount == 1 ? 0 : slot;
     }
@@ -36,23 +36,6 @@ RuntimeDependencies(
   }
   return result;
 }
-
-struct FBParamsDependentDependency final
-{
-  std::vector<int> evaluations = {};
-  FBParamsDependency dependency;
-  std::vector<int> const runtimeDependencies;
-  
-  bool EvaluateGUI(FBHostGUIContext const* hostContext);
-  bool EvaluateAudio(FBHostGUIContext const* hostContext);
-
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FBParamsDependentDependency);  
-  FBParamsDependentDependency(
-    FBRuntimeTopo const* topo,
-    int slot, bool audio,
-    FBTopoIndices const& moduleIndices,
-    FBParamsDependency const& dependency);
-};
 
 FBParamsDependentDependency::
 FBParamsDependentDependency(

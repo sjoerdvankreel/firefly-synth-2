@@ -24,7 +24,6 @@ class FBProcStateContainer final
 
   int _smoothingDurationSamples = {};
   std::vector<FBProcParamState> _params = {};
-  std::vector<FBProcParamState>& Params() { return _params; }
 
   void InitProcessing(int index, int voice, float value);
 
@@ -42,6 +41,7 @@ public:
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
   FBSpecialParams const& Special() const { return _special; }
+  std::vector<FBProcParamState>& Params() { return _params; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
   template <class T> T* As() { return static_cast<T*>(Raw()); }
   template <class T> T const* As() const { return static_cast<T const*>(Raw()); }

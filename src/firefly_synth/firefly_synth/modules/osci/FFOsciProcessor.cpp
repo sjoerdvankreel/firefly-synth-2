@@ -46,7 +46,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
   auto const& typeNorm = params.block.type[0].Voice()[voice];
   _type = topo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
@@ -55,7 +55,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 
   int modStartSlot = OsciModStartSlot(state.moduleSlot);
   auto const& modParams = procState->param.voice.osciMod[0];
-  auto const& modTopo = state.topo->static_.modules[(int)FFModuleType::OsciMod];
+  auto const& modTopo = state.topo->static_->modules[(int)FFModuleType::OsciMod];
 
   auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
   auto const& uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
@@ -131,27 +131,16 @@ FFOsciProcessor::Process(FBModuleProcState& state)
   float sampleRate = state.input->sampleRate;
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
   int prevPositionSamplesUpToFirstCycle = _phaseGen.PositionSamplesUpToFirstCycle();
 
   auto const& panNorm = procParams.acc.pan[0].Voice()[voice];
-  auto const& gainNorm0 = procParams.acc.gain[0].Voice()[voice]; // TODO TEMP
+  auto const& gainNorm = procParams.acc.gain[0].Voice()[voice];
   auto const& fineNorm = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNorm = procParams.acc.coarse[0].Voice()[voice];
   auto const& uniBlendNorm = procParams.acc.uniBlend[0].Voice()[voice];
   auto const& uniDetuneNorm = procParams.acc.uniDetune[0].Voice()[voice];
   auto const& uniSpreadNorm = procParams.acc.uniSpread[0].Voice()[voice];
-
-  // TODO TEMP - add vlfo1 to osc1 gain and glfo1 to osc2 gain
-  FBSArray<float, FBFixedBlockSamples> gainNorm;
-  for (int i = 0; i < FBFixedBlockSamples; i++)
-    gainNorm.Set(i, gainNorm0.CV().Get(i));
-  if (state.moduleSlot == 0 && !_graph)
-    for (int i = 0; i < FBFixedBlockSamples; i++)
-      gainNorm.Set(i, std::clamp(gainNorm.Get(i) + voiceState.vLFO[0].output.Get(i), 0.0f, 1.0f));
-  if (state.moduleSlot == 1 && !_graph)
-    for (int i = 0; i < FBFixedBlockSamples; i++)
-      gainNorm.Set(i, std::clamp(gainNorm.Get(i) + procState->dsp.global.gLFO[0].output.Get(i), 0.0f, 1.0f));
 
   FBSArray<float, FFOsciFixedBlockOversamples> panPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> gainPlain;
@@ -171,7 +160,7 @@ FFOsciProcessor::Process(FBModuleProcState& state)
     _phaseGen.NextBatch(baseFreq / sampleRate);
 
     panPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Pan, panNorm, s));
-    gainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::Gain, gainNorm.Load(s))); // TODO temp
+    gainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::Gain, gainNorm, s));
     uniBlendPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniBlend, uniBlendNorm, s));
     uniSpreadPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniSpread, uniSpreadNorm, s));
     uniDetunePlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm, s));

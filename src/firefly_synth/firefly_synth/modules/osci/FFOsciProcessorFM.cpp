@@ -28,7 +28,7 @@ FFOsciProcessor::BeginVoiceFM(
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
   auto const& fmModeNorm = params.block.fmMode[0].Voice()[voice];
   auto const& fmRatioModeNorm = params.block.fmRatioMode[0].Voice()[voice];
@@ -59,7 +59,7 @@ FFOsciProcessor::ProcessFM(
   int totalSamples = FBFixedBlockSamples * _oversampleTimes;
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.osci[state.moduleSlot];
-  auto const& topo = state.topo->static_.modules[(int)FFModuleType::Osci];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciFMMatrixSize> fmIndexPlain;

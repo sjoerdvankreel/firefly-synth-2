@@ -54,7 +54,7 @@ FBModuleGraphComponent::StaticModuleFor(int moduleIndex) const
 {
   int staticIndex = TopoIndicesFor(moduleIndex).index;
   auto moduleProcState = _data->renderState->ModuleProcState();
-  return moduleProcState->topo->static_.modules[staticIndex];
+  return moduleProcState->topo->static_->modules[staticIndex];
 }
 
 bool
@@ -110,7 +110,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
     _data->guiRenderType = parent->GetRenderType();
 
   _data->graphs.clear();
-  _data->graphs.resize(topo->static_.modules[staticIndex].graphCount);
+  _data->graphs.resize(topo->static_->modules[staticIndex].graphCount);
   _data->pixelWidth = getWidth() / static_cast<int>(_data->graphs.size());
-  topo->static_.modules[staticIndex].graphRenderer(_data.get());
+  topo->static_->modules[staticIndex].graphRenderer(_data.get());
 }

@@ -15,3 +15,10 @@ struct FBParamTopoIndices final
   FBTopoIndices param = {};
   auto operator<=>(FBParamTopoIndices const&) const = default;
 };
+
+struct FBCVOutputTopoIndices final
+{
+  FBTopoIndices module = {};
+  FBTopoIndices cvOutput = {};
+  auto operator<=>(FBCVOutputTopoIndices const&) const = default;
+};

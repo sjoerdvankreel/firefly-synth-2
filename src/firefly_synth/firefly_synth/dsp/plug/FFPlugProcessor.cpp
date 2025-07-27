@@ -23,10 +23,12 @@ _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
+  _procState->dsp.global.gMatrix.processor->InitializeBuffers(_topo);
   for (int i = 0; i < FFEffectCount; i++)
     _procState->dsp.global.gEffect[i].processor->InitializeBuffers(false, _sampleRate);
   for (int v = 0; v < FBMaxVoices; v++)
   {
+    _procState->dsp.voice[v].vMatrix.processor->InitializeBuffers(_topo);
     for (int i = 0; i < FFEffectCount; i++)
       _procState->dsp.voice[v].vEffect[i].processor->InitializeBuffers(false, _sampleRate);
     for (int i = 0; i < FFOsciCount; i++)
@@ -84,11 +86,24 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
 {
   auto state = MakeModuleState(input);
   auto& globalDSP = _procState->dsp.global;
-  for (int i = 0; i < FFLFOCount; i++)
+  state.moduleSlot = 0;
+  globalDSP.gMatrix.processor->BeginVoiceOrBlock(state);
+  globalDSP.gMatrix.processor->BeginModulationBlock();
+  for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;
     globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, nullptr, state);
     globalDSP.gLFO[i].processor->Process<true>(state);
+    state.moduleSlot = 0;
+    globalDSP.gMatrix.processor->ApplyModulation(state, { (int)FFModuleType::GLFO, i });
+
+    // We can get away with this because FBHostProcessor does LeaseVoices() first.
+    for (int v = 0; v < FBMaxVoices; v++)
+      if (input.voiceManager->IsActive(v))
+      {
+        state.voice = &state.input->voiceManager->Voices()[v];
+        _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::GLFO, i });
+      }
   }
 }
 
@@ -101,7 +116,7 @@ FFPlugProcessor::ProcessPostVoice(
   auto const& gMix = _procState->param.global.gMix[0];
   auto const& balNorm = gMix.acc.bal[0].Global();
   auto const& gainNorm = gMix.acc.gain[0].Global();
-  auto& moduleTopo = state.topo->static_.modules[(int)FFModuleType::GMix];
+  auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
@@ -149,7 +164,10 @@ FFPlugProcessor::ProcessPostVoice(
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
+  {
+    globalDSP.gMatrix.processor->EndModulationBlock(state);
     return;
+  }
 
   auto& exchangeDSP = exchangeToGUI->global.gMix[0];
   exchangeDSP.active = true;
@@ -164,4 +182,6 @@ FFPlugProcessor::ProcessPostVoice(
     exchangeParams.acc.voiceToGFX[r] = gMix.acc.voiceToGFX[r].Global().CV().Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.GFXToGFX[r] = gMix.acc.GFXToGFX[r].Global().CV().Last();
+  
+  globalDSP.gMatrix.processor->EndModulationBlock(state);
 }

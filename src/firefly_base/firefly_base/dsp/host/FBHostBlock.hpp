@@ -9,14 +9,6 @@
 
 class FBBufferAudioBlock;
 
-struct FBNoteEvent final
-{
-  int pos = -1;
-  bool on = false;
-  FBNote note = {};
-  float velo = 0.0f;
-};
-
 struct FBBlockAutoEvent final
 {
   int param = -1;
@@ -36,6 +28,15 @@ struct FBAccModEvent final
   int param = -1;
   FBNote note = {};
   float value = 0.0f; // [-1, 1]
+};
+
+struct FBNoteEvent final
+{
+  int pos = -1;
+  bool on = false;
+  FBNote note = {};
+  float velo = 0.0f;
+  std::int64_t timeStampSamples = -1;
 };
 
 class FBHostAudioBlock final

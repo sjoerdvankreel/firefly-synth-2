@@ -11,6 +11,7 @@
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 
@@ -83,10 +84,10 @@ FFPlugMeta(FBPlugFormat format)
   return result;
 }
 
-std::unique_ptr<FBStaticTopo>
+std::unique_ptr<FFStaticTopo>
 FFMakeTopo(FBPlugFormat format)
 {
-  auto result = std::make_unique<FBStaticTopo>();
+  auto result = std::make_unique<FFStaticTopo>();
   result->meta = FFPlugMeta(format);
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
@@ -126,5 +127,37 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
   result->modules[(int)FFModuleType::VMix] = std::move(*FFMakeVMixTopo());
   result->modules[(int)FFModuleType::GMix] = std::move(*FFMakeGMixTopo());
+
+  // These need to go last.
+  result->gMatrixSources = FFModMatrixMakeSources(true, result.get());
+  result->vMatrixSources = FFModMatrixMakeSources(false, result.get());
+  result->gMatrixTargets = FFModMatrixMakeTargets(true, result.get());
+  result->vMatrixTargets = FFModMatrixMakeTargets(false, result.get());
+  result->modules[(int)FFModuleType::GMatrix] = std::move(*FFMakeModMatrixTopo(true, result.get()));
+  result->modules[(int)FFModuleType::VMatrix] = std::move(*FFMakeModMatrixTopo(false, result.get()));
+
+  // This better lines up with the audio engine.
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::GMatrix, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::GUISettings, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::Master, 0 });
+  for (int s = 0; s < result->modules[(int)FFModuleType::GLFO].slotCount; s++)
+    result->moduleProcessOrder.push_back({ (int)FFModuleType::GLFO, s });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::VMatrix, 0 });
+  for (int s = 0; s < FFLFOAndEnvCount; s++)
+  {
+    result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, s });
+    result->moduleProcessOrder.push_back({ (int)FFModuleType::VLFO, s });
+  }
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::OsciMod, 0 });
+  for (int s = 0; s < result->modules[(int)FFModuleType::Osci].slotCount; s++)
+    result->moduleProcessOrder.push_back({ (int)FFModuleType::Osci, s });
+  for (int s = 0; s < result->modules[(int)FFModuleType::VEffect].slotCount; s++)
+    result->moduleProcessOrder.push_back({ (int)FFModuleType::VEffect, s });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::VMix, 0 });
+  for (int s = 0; s < result->modules[(int)FFModuleType::GEffect].slotCount; s++)
+    result->moduleProcessOrder.push_back({ (int)FFModuleType::GEffect, s });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::GMix, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::Output, 0 });
+
   return result;
 }

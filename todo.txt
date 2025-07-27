@@ -1,3 +1,18 @@
+drop matrixselectedtab
+todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
+also releaseing a note by playing the same just doesn't work
+vgmix->mixer
+autoclip
+optional mod indicators
+do addbp also for lfos
+another round of cpu and memory profiling
+factory presets
+easy access mod controls
+widen the gui for the easy access stuff
+make env1 to amp explicit
+refix all behind-the-scenes mod sources and targets
+
+echo
 paint env1 to vmix
 get rid of sse2neon
 make better section ui esp. for the a/b/c/ sections

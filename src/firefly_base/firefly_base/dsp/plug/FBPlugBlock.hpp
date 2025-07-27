@@ -17,6 +17,7 @@ struct FBPlugInputBlock final
   std::uint64_t projectTimeSamples = {};
 
   FBVoiceManager* voiceManager = {};
+  FBProcStateContainer* procState = {};
   std::vector<FBNoteEvent>* noteEvents = {};
   FBSArray<float, FBFixedBlockSamples> lastMIDINoteKey = {};
   FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};

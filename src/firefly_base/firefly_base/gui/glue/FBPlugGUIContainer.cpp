@@ -14,14 +14,14 @@ FBPlugGUIContainer::
 FBPlugGUIContainer::
 FBPlugGUIContainer(FBHostGUIContext* hostContext):
 FBPlugGUIContext(hostContext),
-_gui(hostContext->Topo()->static_.guiFactory(hostContext))
+_gui(hostContext->Topo()->static_->guiFactory(hostContext))
 {
   FB_LOG_ENTRY_EXIT();
   setOpaque(true);
   setVisible(true);
   
   FB_LOG_INFO("Calculating GUI size.");
-  int plugWidth = hostContext->Topo()->static_.guiWidth;
+  int plugWidth = hostContext->Topo()->static_->guiWidth;
   int plugHeight = GetHeightForAspectRatio(plugWidth);
   FB_LOG_INFO("Calculated GUI size.");
 

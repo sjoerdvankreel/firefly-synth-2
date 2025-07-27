@@ -3,6 +3,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
+#include <firefly_base/base/topo/runtime/FBTopoIndices.hpp>
 
 #include <vector>
 #include <memory>
@@ -112,7 +113,7 @@ typedef std::function<std::unique_ptr<FBDeserializationConverter>(
   FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo)>
 FBDeserializationConverterFactory;
 
-struct FBStaticTopo final
+struct FBStaticTopo
 {
   int guiWidth = {};
   int guiAspectRatioWidth = {};
@@ -133,6 +134,9 @@ struct FBStaticTopo final
   void (*freeRawScalarState)(void* state) = {};
   void (*freeRawExchangeState)(void* state) = {};
 
+  std::vector<FBStaticModule> modules = {};
+  std::vector<FBTopoIndices> moduleProcessOrder = {};
+
   int exchangeStateSize = {};
   int exchangeStateAlignment = {};
   FBSpecialParamsSelector specialSelector = {};
@@ -140,6 +144,6 @@ struct FBStaticTopo final
   FBHostExchangeAddrSelector hostExchangeAddr = {};
   FBVoicesExchangeAddrSelector voicesExchangeAddr = {};
 
-  std::vector<FBStaticModule> modules = {};
+  virtual ~FBStaticTopo() {}
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticTopo);
 };

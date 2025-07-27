@@ -35,7 +35,7 @@ MakeAccAutoEvent(int param, int pos, ParamValue value)
 }
 
 static FBNoteEvent
-MakeNoteOnEvent(Event const& event)
+MakeNoteOnEvent(Event const& event, std::int64_t projectTimeSamples)
 {
   FBNoteEvent result;
   result.on = true;
@@ -44,11 +44,12 @@ MakeNoteOnEvent(Event const& event)
   result.note.id = event.noteOn.noteId;
   result.note.key = event.noteOn.pitch;
   result.note.channel = event.noteOn.channel;
+  result.timeStampSamples = projectTimeSamples + event.sampleOffset;
   return result;
 }
 
 static FBNoteEvent
-MakeNoteOffEvent(Event const& event)
+MakeNoteOffEvent(Event const& event, std::int64_t projectTimeSamples)
 {
   FBNoteEvent result;
   result.on = false;
@@ -57,6 +58,7 @@ MakeNoteOffEvent(Event const& event)
   result.note.id = event.noteOff.noteId;
   result.note.key = event.noteOff.pitch;
   result.note.channel = event.noteOff.channel;
+  result.timeStampSamples = projectTimeSamples + event.sampleOffset;
   return result;
 }
 
@@ -68,8 +70,8 @@ FBVST3AudioEffect::
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
-  FBStaticTopo const& topo, FUID const& controllerId):
-_topo(std::make_unique<FBRuntimeTopo>(topo)),
+  std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId):
+_topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo))
 {
@@ -189,13 +191,13 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
     auto callback = [this](DataExchangeHandler::Config& config, ProcessSetup const&) {
       config.numBlocks = 1;
       config.userContextID = 0;
-      config.blockSize = _topo->static_.exchangeStateSize;
+      config.blockSize = _topo->static_->exchangeStateSize;
 
       // If this is set to the natural alignment of the struct being transmitted
       // this stuff totally breaks down on MacOS. The 32 magic number is not AFAIK
       // documented anywhere except being mentioned in the sample code at 
       // https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Data+Exchange/Index.html.
-      config.alignment = std::max(32, _topo->static_.exchangeStateAlignment);
+      config.alignment = std::max(32, _topo->static_->exchangeStateAlignment);
       return true; };
     _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
     _exchangeHandler->onConnect(other, getHostContext());
@@ -208,15 +210,24 @@ FBVST3AudioEffect::process(ProcessData& data)
 {
   return FBWithLogException([this, &data]()
   {
+    _input.projectTimeSamples = 0;
+    _input.bpm = FBHostInputBlock::DefaultBPM;
+    if (data.processContext != nullptr)
+    {
+      if ((data.processContext->state & ProcessContext::kTempoValid) != 0)
+        _input.bpm = static_cast<float>(data.processContext->tempo);
+      _input.projectTimeSamples = static_cast<float>(data.processContext->projectTimeSamples);
+    }
+
     Event inEvent;
     _input.noteEvents.clear();
     if (data.inputEvents != nullptr)
       for (int i = 0; i < data.inputEvents->getEventCount(); i++)
         if (data.inputEvents->getEvent(i, inEvent) == kResultOk)
           if (inEvent.type == Event::kNoteOnEvent)
-            _input.noteEvents.push_back(MakeNoteOnEvent(inEvent));
+            _input.noteEvents.push_back(MakeNoteOnEvent(inEvent, _input.projectTimeSamples));
           else if (inEvent.type == Event::kNoteOffEvent)
-            _input.noteEvents.push_back(MakeNoteOffEvent(inEvent));
+            _input.noteEvents.push_back(MakeNoteOffEvent(inEvent, _input.projectTimeSamples));
 
     int position;
     ParamValue value;
@@ -245,15 +256,6 @@ FBVST3AudioEffect::process(ProcessData& data)
 
     _output.outputParams.clear();
     _output.audio = FBHostAudioBlock(data.outputs->channelBuffers32, data.numSamples);
-
-    _input.projectTimeSamples = 0;
-    _input.bpm = FBHostInputBlock::DefaultBPM;
-    if (data.processContext != nullptr)
-    {
-      if ((data.processContext->state & ProcessContext::kTempoValid) != 0)
-        _input.bpm = static_cast<float>(data.processContext->tempo);
-      _input.projectTimeSamples = static_cast<float>(data.processContext->projectTimeSamples);
-    }
 
     float* zeroIn[2] = { _zeroIn[0].data(), _zeroIn[1].data() };
     if (data.numInputs != 1)

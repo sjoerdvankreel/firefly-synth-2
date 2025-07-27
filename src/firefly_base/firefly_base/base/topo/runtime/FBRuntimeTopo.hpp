@@ -10,6 +10,7 @@
 
 #include <map>
 #include <vector>
+#include <memory>
 #include <unordered_map>
 
 class FBGUIStateContainer;
@@ -25,14 +26,14 @@ private:
   bool LoadParamStateFromVar(juce::var const& json, TContainer& container, TParamsTopo& params) const;
 
 public:
-  FBStaticTopo static_;
+  std::unique_ptr<FBStaticTopo> static_;
   std::vector<FBRuntimeModule> modules;
   FBRuntimeParamsTopo<FBRuntimeParam> audio;
   FBRuntimeParamsTopo<FBRuntimeGUIParam> gui;
   std::map<FBTopoIndices, int> moduleTopoToRuntime;
 
-  FBRuntimeTopo(FBStaticTopo const& static_);
-  FB_EXPLICIT_COPY_MOVE_NODEFCTOR(FBRuntimeTopo);
+  FB_NOCOPY_MOVE_NODEFCTOR(FBRuntimeTopo);
+  FBRuntimeTopo(std::unique_ptr<FBStaticTopo>&& topo);
   FBRuntimeModule const* ModuleAtTopo(FBTopoIndices const& topoIndices) const;
 
   juce::var SaveGUIStateToVar(FBGUIStateContainer const& guiState) const;

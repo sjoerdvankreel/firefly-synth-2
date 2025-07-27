@@ -84,13 +84,13 @@ FBModuleTabComponent::AddModuleTab(
 {
   _moduleIndices.push_back(moduleIndices);
   auto topo = _plugGUI->HostContext()->Topo();
-  auto const& module = topo->static_.modules[moduleIndices.index];
+  auto const& module = topo->static_->modules[moduleIndices.index];
   std::string header = std::to_string(moduleIndices.slot + 1);
   if (moduleIndices.slot == 0)
     if (module.slotCount > 1)
-      header = module.tabName + " " + header;
+      header = module.name + " " + header;
     else
-      header = module.tabName;
+      header = module.name;
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
@@ -103,7 +103,7 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
     return;
   
   auto moduleIndices = _moduleIndices[tabIndex];
-  int slotCount = _plugGUI->HostContext()->Topo()->static_.modules[moduleIndices.index].slotCount;
+  int slotCount = _plugGUI->HostContext()->Topo()->static_->modules[moduleIndices.index].slotCount;
 
   PopupMenu menu;
   menu.addItem(1, "Clear");

@@ -1,5 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/gui/FFPatchGUI.hpp>
+#include <firefly_synth/gui/FFPlugMatrixGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
@@ -8,6 +9,7 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
@@ -50,11 +52,17 @@ FFPlugGUI::resized()
   getChildComponent(0)->resized();
 }
 
-void 
-FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
+void
+FFPlugGUI::SwitchGraphToModule(int index, int slot)
 {
   auto topo = HostContext()->Topo()->ModuleAtTopo({ index, slot });
   _graph->RequestRerender(topo->runtimeModuleIndex);
+}
+
+void 
+FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
+{
+  SwitchGraphToModule(index, slot);
 }
 
 void 
@@ -97,43 +105,38 @@ FFPlugGUI::GetRenderType() const
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
 
+bool
+FFPlugGUI::ToggleMatrix()
+{
+  if (_showMatrix)
+    _content->SetContent(_modules);
+  else
+    _content->SetContent(_matrix);
+  _showMatrix = !_showMatrix;
+  return _showMatrix;
+}
+
 void 
 FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
-
-  FB_LOG_INFO("Calculating GUI grid size.");
-  int vTabCount = 6;
-  float padding = FBTabBarDepth + 8;
-  auto const& topo = HostContext()->Topo()->static_;
-  int totalHeight = topo.guiWidth * topo.guiAspectRatioHeight / topo.guiAspectRatioWidth;
-  float availableHeight = static_cast<float>(totalHeight - vTabCount * padding);
-  std::vector<int> rowSizes = {};
-  rowSizes.push_back(static_cast<int>(padding + 1.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 1.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  rowSizes.push_back(static_cast<int>(padding + 2.0f / 9.0f * availableHeight));
-  FB_LOG_INFO("Calculated GUI grid size.");
-
-  FB_LOG_INFO("Creating GUI components.");
+  _matrix = FFMakeModMatrixGUI(this); 
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _content = StoreComponent<FBGridComponent>(false, 1, -1, rowSizes, std::vector<int> { 5, 0, 0, 0 });
-  _content->Add(0, 0, 1, 4, _graph);
-  _content->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
-  _content->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
-  _content->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
-  _content->Add(1, 3, 1, 1, FFMakePatchGUI(this));
-  _content->Add(2, 0, 1, 4, FFMakeOsciGUI(this));
-  _content->Add(3, 0, 1, 4, FFMakeEffectGUI(this));
-  _content->Add(4, 0, 1, 4, FFMakeLFOGUI(this));
-  _content->Add(5, 0, 1, 4, FFMakeEnvGUI(this));
-  _content->Add(6, 0, 1, 4, FFMakeMixGUI(this));
-  FB_LOG_INFO("Created GUI components.");
-
-  FB_LOG_INFO("Making GUI visible.");
-  addAndMakeVisible(_content);
-  FB_LOG_INFO("Made GUI visible.");
+  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
+  _modules->Add(0, 0, FFMakeOsciGUI(this));
+  _modules->Add(1, 0, FFMakeEffectGUI(this));
+  _modules->Add(2, 0, FFMakeLFOGUI(this));
+  _modules->Add(3, 0, FFMakeEnvGUI(this));
+  _modules->Add(4, 0, FFMakeMixGUI(this));
+  _content = StoreComponent<FBContentComponent>();
+  _content->SetContent(_modules);
+  _container = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 2, 2, 15 } }, std::vector<int> { { 1, 0, 0, 0, 0 } });
+  _container->Add(0, 0, 1, 5, _graph);
+  _container->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
+  _container->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
+  _container->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
+  _container->Add(1, 3, 1, 1, FFMakePlugMatrixGUI(this));
+  _container->Add(1, 4, 1, 1, FFMakePatchGUI(this));
+  _container->Add(2, 0, 1, 5, _content);
+  addAndMakeVisible(_container);
 }

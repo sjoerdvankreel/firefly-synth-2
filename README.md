@@ -1,10 +1,9 @@
 # This is not a finished product
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
-* Only tested on reaper and bitwig.
-* Only osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos and audio mixer matrix implemented.
-* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP, no CV-routing,
-only ENV1 is only connected to per-voice amp, some LFO routing is temporarily hardcoded. All else routes nowhere. Let alone stuff like an arpeggiator.
+* Tested on reaper, renoise, fruity and bitwig.
+* Osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
+* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP, no MIDI CC.
 
 # Some demo material
 * Bowed strings
@@ -24,6 +23,10 @@ only ENV1 is only connected to per-voice amp, some LFO routing is temporarily ha
 [video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_fm_lfo_filter.mp4)
 * GUI Reacting to Bitwig per-voice-modulation demo
 [video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_bitwig_clap_polymod.mp4)
+* Mod matrix demo
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_matrix_pad.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_matrix_pad.rpp)
+[video](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/video/demo_matrix_pad.mp4)
 
 The distortion demo is actually interesting to look at the reaper/video file. It makes use of envelope loop points,
 keytracking state variable filters and keytracking comb filters. Because of the keytracking each engine voice
@@ -116,8 +119,16 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 ## Voice/global audio mixer matrix (VMIX/GMIX)
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
 
+## CV Mod Matrix
+* 1 for voice, 1 for global.
+* Like FF1, on-note support for voice.
+* Much like FF1, select add/mul/stack + bipolar add/stack.
+* New Scale parameter which allows the mod amount to be controlled by an additional CV source.
+* Single matrix for audio and cv. Env and LFO are now processed in lock-step, so env can modulate LFO and the other way around.
+
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
-# Screenshot
+# Screenshots
 <img alt="Screenshot" src="demo/screenshot.png"/>
+<img alt="Screenshot Matrix" src="demo/screenshot_matrix.png"/>
