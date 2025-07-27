@@ -3071,7 +3071,7 @@
       "moduleId": "{546F9D74-670A-463D-80B0-B4BBD061DA88}",
       "paramSlot": 0,
       "moduleSlot": 0,
-      "val": "On",
+      "val": "Off",
       "name": "Mod Oversample"
     },
     {
@@ -19483,7 +19483,7 @@
       "moduleId": "V{19758BF4-241B-4A59-A943-3AE7426C7CC9}",
       "paramSlot": 14,
       "moduleSlot": 0,
-      "val": "51.600000",
+      "val": "51.599997",
       "name": "VMatrix Amount 15"
     },
     {
@@ -19494,7 +19494,7 @@
       "moduleId": "V{19758BF4-241B-4A59-A943-3AE7426C7CC9}",
       "paramSlot": 15,
       "moduleSlot": 0,
-      "val": "50.800000",
+      "val": "50.800002",
       "name": "VMatrix Amount 16"
     },
     {
@@ -19505,7 +19505,7 @@
       "moduleId": "V{19758BF4-241B-4A59-A943-3AE7426C7CC9}",
       "paramSlot": 16,
       "moduleSlot": 0,
-      "val": "51.200000",
+      "val": "51.200002",
       "name": "VMatrix Amount 17"
     },
     {
