@@ -264,12 +264,13 @@ FBCLAPPlugin::process(
 {
   return FBWithLogException([this, process]()
   {
-    ProcessMainToAudioEvents(process->out_events, true);
-
     _input.blockAuto.clear();
     _input.noteEvents.clear();
     _input.accAutoByParamThenSample.clear();
     _input.accModByParamThenNoteThenSample.clear();
+
+    // this needs to be after clear()
+    ProcessMainToAudioEvents(process->out_events, true);
 
     _input.projectTimeSamples = 0;
     _input.bpm = FBHostInputBlock::DefaultBPM;
