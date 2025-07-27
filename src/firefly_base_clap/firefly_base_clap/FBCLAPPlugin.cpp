@@ -54,7 +54,7 @@ MakeAccModEvent(
 
 static FBNoteEvent
 MakeNoteEvent(
-  clap_event_header_t const* header)
+  clap_event_header_t const* header, std::int64_t projectTimeSamples)
 {
   FBNoteEvent result;
   auto event = reinterpret_cast<clap_event_note_t const*>(header);
@@ -64,6 +64,7 @@ MakeNoteEvent(
   result.note.channel = event->channel;
   result.velo = static_cast<float>(event->velocity);
   result.on = header->type == CLAP_EVENT_NOTE_ON;
+  result.timeStampSamples = projectTimeSamples + header->time;
   return result;
 }
 
@@ -263,12 +264,25 @@ FBCLAPPlugin::process(
 {
   return FBWithLogException([this, process]()
   {
+    ProcessMainToAudioEvents(process->out_events, true);
+
     _input.blockAuto.clear();
     _input.noteEvents.clear();
     _input.accAutoByParamThenSample.clear();
     _input.accModByParamThenNoteThenSample.clear();
 
-    ProcessMainToAudioEvents(process->out_events, true);
+    _input.projectTimeSamples = 0;
+    _input.bpm = FBHostInputBlock::DefaultBPM;
+    if (process->transport != nullptr)
+    {
+      if ((process->transport->flags & CLAP_TRANSPORT_HAS_TEMPO) != 0)
+        _input.bpm = static_cast<float>(process->transport->tempo);
+      if ((process->transport->flags & CLAP_TRANSPORT_HAS_SECONDS_TIMELINE) != 0)
+      {
+        double positionSeconds = (double)process->transport->song_pos_seconds / (double)CLAP_SECTIME_FACTOR;
+        _input.projectTimeSamples = (std::int64_t)std::round(positionSeconds * _sampleRate);
+      }
+    }
 
     double normalized;
     auto inEvents = process->in_events;
@@ -285,7 +299,7 @@ FBCLAPPlugin::process(
       {
       case CLAP_EVENT_NOTE_ON:
       case CLAP_EVENT_NOTE_OFF:
-        _input.noteEvents.push_back(MakeNoteEvent(header));
+        _input.noteEvents.push_back(MakeNoteEvent(header, _input.projectTimeSamples));
         break;
       case CLAP_EVENT_PARAM_MOD:
         modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
@@ -315,19 +329,6 @@ FBCLAPPlugin::process(
       _input.accModByParamThenNoteThenSample.begin(),
       _input.accModByParamThenNoteThenSample.end(),
       FBAccModEventOrderByParamThenNoteThenPos);
-
-    _input.projectTimeSamples = 0;
-    _input.bpm = FBHostInputBlock::DefaultBPM;
-    if (process->transport != nullptr)
-    {
-      if((process->transport->flags & CLAP_TRANSPORT_HAS_TEMPO) != 0)
-        _input.bpm = static_cast<float>(process->transport->tempo);
-      if ((process->transport->flags & CLAP_TRANSPORT_HAS_SECONDS_TIMELINE) != 0)
-      {
-        double positionSeconds = (double)process->transport->song_pos_seconds / (double)CLAP_SECTIME_FACTOR;
-        _input.projectTimeSamples = (std::int64_t)std::round(positionSeconds * _sampleRate);
-      }
-    }
 
     _output.outputParams.clear();
     _output.audio = FBHostAudioBlock(process->audio_outputs[0].data32, process->frames_count);

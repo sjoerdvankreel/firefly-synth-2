@@ -123,7 +123,7 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   float const invLogHalf = 1.0f / std::log(0.5f);
 
   auto const& noteEvents = *state.input->noteEvents;
-  auto const& myVoiceNote = state.input->voiceManager->Voices()[voice].event.note;
+  auto const& myVoiceNoteEvent = state.input->voiceManager->Voices()[voice].event;
   int loopEnd = _loopStart == 0 ? -1 : _loopStart - 1 + _loopLength;
   loopEnd = std::min(loopEnd, FFEnvStageCount);
   bool graphing = state.renderType != FBRenderType::Audio;
@@ -131,10 +131,17 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   bool forcedRelease = _releasePoint == 0 && _loopStart != 0 && state.moduleSlot == 0;
   int releasePoint = forcedRelease ? FFEnvStageCount : _releasePoint;
 
+  // Be sure to only release a voice by a note off event that comes strictly 
+  // after (in time) the note on event that triggered the current voice.
   if (releasePoint != 0 && !graphingExchange)
     for (int i = 0; i < noteEvents.size(); i++)
-      if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNote))
+      if (!noteEvents[i].on && 
+        noteEvents[i].note.Matches(myVoiceNoteEvent.note) &&
+        noteEvents[i].timeStampSamples > myVoiceNoteEvent.timeStampSamples)
+      {
         releaseAt = noteEvents[i].pos;
+        break;
+      }
 
   // Deal with voice start offset.
   // In other words, the entire audio engine operates on
