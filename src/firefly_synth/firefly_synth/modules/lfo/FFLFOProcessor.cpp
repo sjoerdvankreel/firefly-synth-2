@@ -107,12 +107,17 @@ FFLFOProcessor::BeginVoiceOrBlock(
   _skewAXMode = topo.NormalizedToListFast<FFLFOSkewXMode>(FFLFOParam::SkewAXMode, skewAXModeNorm);
   _skewAYMode = topo.NormalizedToListFast<FFLFOSkewYMode>(FFLFOParam::SkewAYMode, skewAYModeNorm);
 
-  if (_sync)
-    _smoothSamples = topo.NormalizedToBarsSamplesFast(
-      FFLFOParam::SmoothBars, smoothBarsNorm, state.input->sampleRate, state.input->bpm);
+  if (graph && graphIndex != FFLFOBlockCount)
+    _smoothSamples = 0;
   else
-    _smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
-      FFLFOParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
+  {
+    if (_sync)
+      _smoothSamples = topo.NormalizedToBarsSamplesFast(
+        FFLFOParam::SmoothBars, smoothBarsNorm, state.input->sampleRate, state.input->bpm);
+    else
+      _smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
+        FFLFOParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
+  }
 
   bool shouldInit = false;
   if constexpr (!Global)
