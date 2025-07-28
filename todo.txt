@@ -12,14 +12,26 @@ TODOLIST for alpha-10
 [ ] refix all behind-the-scenes mod sources and targets
 [ ] paint env1 to vmix
 [ ] not hardcode env1 to voice amp
+[ ] floating notes
+[ ] all output controls -> cpu indicator, gain indicator, need not be pretty yet
+[ ] master input (aux, modwheel, pb + range)
+[ ] portamento controls + all-osci coarse/fine
+[ ] basic midi input
+[ ] version info and firefly icon
+[ ] global set-exact-value UI (+ context menu item?)
+[ ] separate midi, bpm, automation smoothing, auto should be global + per-param override
+[ ] MIDI key, velo (voice), low/high/last (global, optional)
+[ ] show the version and plugformat and icon
 
+global unison TODO IF we do per-voice echo, this should not be on the subvoice level
 autoclip
+MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating (not on-note but continuous)
 another round of cpu and memory profiling
 factory presets
-echo
+echo -> combined reverb + multitap feedback delay (see if i can pull it off) + per-voice delay module (lets see if memory allows)
 get rid of sse2neon
 make better section ui esp. for the a/b/c/ sections
-context menus
+more context menus, clear matrix etc
 string timbre should not react to samplerate/oversample
 paint something always
 check all the todos before out of alpha
