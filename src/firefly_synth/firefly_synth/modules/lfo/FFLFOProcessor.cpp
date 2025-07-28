@@ -92,7 +92,8 @@ FFLFOProcessor::BeginVoiceOrBlock(
 
   _rateHzByBars = {};
   _smoothSamples = 0;
-  _lastOutput = 0.0f;
+  _lastOutputAll = 0.0f;
+  _lastOutputRaw = {};
   _finished = false;
   _smoothSamplesProcessed = 0;
 
@@ -206,12 +207,15 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   auto& dspState = *FFSelectDualState<Global>(
     [procState, &state]() { return &procState->dsp.global.gLFO[state.moduleSlot]; },
     [procState, voice, &state]() { return &procState->dsp.voice[voice].vLFO[state.moduleSlot]; });
-  auto& output = dspState.output;
+  auto& outputAll = dspState.outputAll;
+  auto& outputRaw = dspState.outputRaw;
   auto const& topo = state.topo->static_->modules[(int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO)];
 
   if (_type == FFLFOType::Off)
   {
-    output.Fill(0.0f);
+    outputAll.Fill(0.0f);
+    for (int i = 0; i < FFLFOBlockCount; i++)
+      outputRaw[i].Fill(0.0f);
     return FBFixedBlockSamples;
   }
 
@@ -219,7 +223,9 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   {
     if (_finished)
     {
-      output.Fill(_smoother.State());
+      outputAll.Fill(_smoother.State());
+      for (int i = 0; i < FFLFOBlockCount; i++)
+        outputRaw[i].Fill(_lastOutputRaw[i]);
       return _graph? 0: FBFixedBlockSamples;
     }
   }
@@ -284,7 +290,9 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   }
 
   int s = 0;
-  output.Fill(0.0f);
+  outputAll.Fill(0.0f);
+  for (int i = 0; i < FFLFOBlockCount; i++)
+    outputRaw[i].Fill(0.0f);
   bool oneShotFinished = !Global && _type == FFLFOType::SnapOrOneShot && _phaseGens[0].CycledOnce();
   for (; s < FBFixedBlockSamples && !oneShotFinished; s += FBSIMDFloatCount)
   {
@@ -329,32 +337,40 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         auto max = maxPlain[i].Load(s);
         lfo = min + (max - min) * lfo;
 
+        outputRaw[i].Store(s, lfo);
+
         switch (_opType[i])
         {
-        case FFLFOOpType::Mul: output.Mul(s, lfo); break;
-        case FFLFOOpType::Add: output.Store(s, xsimd::clip(output.Load(s) + lfo, FBBatch<float>(0.0f), FBBatch<float>(1.0f))); break;
-        case FFLFOOpType::Stack: output.Add(s, (1.0f - output.Load(s)) * lfo); break;
+        case FFLFOOpType::Mul: outputAll.Mul(s, lfo); break;
+        case FFLFOOpType::Add: outputAll.Store(s, xsimd::clip(outputAll.Load(s) + lfo, FBBatch<float>(0.0f), FBBatch<float>(1.0f))); break;
+        case FFLFOOpType::Stack: outputAll.Add(s, (1.0f - outputAll.Load(s)) * lfo); break;
         default: FB_ASSERT(false); break;
         }
       }
+
+      _lastOutputRaw[i] = outputRaw[i].Get(s + FBSIMDFloatCount - 1);
     }
 
-    _lastOutput = output.Get(s + FBSIMDFloatCount - 1);
+    _lastOutputAll = outputAll.Get(s + FBSIMDFloatCount - 1);
     oneShotFinished = !Global && _type == FFLFOType::SnapOrOneShot && _phaseGens[0].CycledOnce();
   }
 
   for (; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-    output.Store(s, _lastOutput);
+  {
+    outputAll.Store(s, _lastOutputAll);
+    for (int i = 0; i < FFLFOBlockCount; i++)
+      outputRaw[i].Store(s, _lastOutputRaw[i]);
+  }
 
   for (s = 0; s < FBFixedBlockSamples; s++)
   {
-    float in = output.Get(s);
+    float in = outputAll.Get(s);
     if (_firstSample)
     {
       _smoother.State(in);
       _firstSample = false;
     }
-    output.Set(s, _smoother.Next(in));
+    outputAll.Set(s, _smoother.Next(in));
     if constexpr (!Global)
     {
       if (oneShotFinished)

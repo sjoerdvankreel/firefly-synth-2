@@ -33,7 +33,8 @@ class FFLFOProcessor final
 
   bool _finished = false;
   bool _firstSample = true;
-  float _lastOutput = 0.0f;
+  float _lastOutputAll = 0.0f;
+  std::array<float, FFLFOBlockCount> _lastOutputRaw = {};
   int _smoothSamples = 0;
   int _smoothSamplesProcessed = 0;
   FBBasicLPFilter _smoother = {};

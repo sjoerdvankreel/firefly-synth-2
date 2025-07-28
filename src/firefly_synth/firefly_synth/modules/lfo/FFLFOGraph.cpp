@@ -128,11 +128,11 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
   renderData.globalMonoOutputSelector = [](void const* procState, int slot, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].output; };
+    return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].outputAll; };
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].vLFO[slot]; };
   renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vLFO[slot].output; };
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vLFO[slot].outputAll; };
 
   auto* renderState = graphData->renderState;
   auto* moduleProcState = renderState->ModuleProcState();

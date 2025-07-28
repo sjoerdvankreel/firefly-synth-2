@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBSArray.hpp>
+#include <firefly_base/base/topo/static/FBSlotFormatter.hpp>
 
 #include <string>
 #include <functional>
@@ -17,6 +18,7 @@ struct FBStaticCVOutput final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
+  FBSlotFormatter slotFormatter = {};
 
   FBVoiceProcCVOutputAddrSelector voiceAddr = {};
   FBGlobalProcCVOutputAddrSelector globalAddr = {};

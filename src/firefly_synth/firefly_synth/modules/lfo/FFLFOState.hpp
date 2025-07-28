@@ -33,7 +33,8 @@ class alignas(FBSIMDAlign) FFLFODSPState final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFLFODSPState);
   FFLFODSPState() : processor(std::make_unique<FFLFOProcessor>()) {}
-  FBSArray<float, FBFixedBlockSamples> output = {};
+  FBSArray<float, FBFixedBlockSamples> outputAll = {};
+  FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> outputRaw = {};
 };
 
 template <class TBlock>

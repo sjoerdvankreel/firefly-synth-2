@@ -4,7 +4,7 @@
 
 std::string
 FBMakeRuntimeCVOutputName(
-  FBStaticTopo const&,
+  FBStaticTopo const& topo,
   FBStaticModule const& module,
   FBStaticCVOutput const& cvOutput,
   FBCVOutputTopoIndices const& indices,
@@ -17,8 +17,13 @@ FBMakeRuntimeCVOutputName(
   {
     result += " ";
     result += cvOutput.name;
-    if(cvOutput.slotCount != 1)
-      result += std::to_string(indices.cvOutput.slot + 1);
+    if (cvOutput.slotCount != 1)
+    {
+      if (cvOutput.slotFormatter == nullptr)
+        result += " " + std::to_string(indices.cvOutput.slot + 1);
+      else
+        result += " " + cvOutput.slotFormatter(topo, indices.cvOutput.slot);
+    }
   }
   std::string prefix = onNote ? (FBOnNotePrefix + " ") : "";
   return prefix + result;

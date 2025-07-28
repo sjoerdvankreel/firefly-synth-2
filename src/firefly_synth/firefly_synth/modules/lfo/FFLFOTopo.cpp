@@ -388,11 +388,20 @@ FFMakeLFOTopo(bool global)
   phaseB.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhaseB);
   phaseB.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 1 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  auto& output = result->cvOutputs[(int)FFLFOCVOutput::Output];
-  output.slotCount = 1;
-  output.name = "Output";
-  output.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
-  output.globalAddr = [](int ms, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].output; };
-  output.voiceAddr = [](int ms, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].output; };
+  auto& outputAll = result->cvOutputs[(int)FFLFOCVOutput::All];
+  outputAll.slotCount = 1;
+  outputAll.name = "All";
+  outputAll.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
+  outputAll.globalAddr = [](int ms, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].outputAll; };
+  outputAll.voiceAddr = [](int ms, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].outputAll; };
+
+  auto& outputRaw = result->cvOutputs[(int)FFLFOCVOutput::Raw];
+  outputRaw.name = "Raw";
+  outputRaw.slotCount = FFLFOBlockCount;
+  outputRaw.slotFormatter = [](FBStaticTopo const& topo, int slot) { return FFFormatBlockSlot(topo, slot); };
+  outputRaw.id = "{C592BE19-6D8C-4A85-800E-7A292D8433D8}";
+  outputRaw.globalAddr = [](int ms, int os, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].outputRaw[os]; };
+  outputRaw.voiceAddr = [](int ms, int os, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].outputRaw[os]; };
+
   return result;
 }

@@ -8,6 +8,7 @@
 #include <firefly_base/base/topo/static/FBListParam.hpp>
 #include <firefly_base/base/topo/static/FBBarsParam.hpp>
 #include <firefly_base/base/topo/static/FBLinearParam.hpp>
+#include <firefly_base/base/topo/static/FBSlotFormatter.hpp>
 #include <firefly_base/base/topo/static/FBIdentityParam.hpp>
 #include <firefly_base/base/topo/static/FBDiscreteParam.hpp>
 #include <firefly_base/base/topo/static/FBParamsDependencies.hpp>
@@ -32,8 +33,6 @@ FBAutomationTimingToString(FBAutomationTiming timing);
 
 typedef std::function<std::string(int moduleIndex, int moduleSlot, int paramSlot)>
 FBParamDefaultTextSelector;
-typedef std::function<std::string(FBStaticTopo const& topo, int slot)>
-FBParamSlotFormatter;
 
 typedef std::function<double* (
 int moduleSlot, int paramSlot, void* state)>
@@ -79,8 +78,8 @@ public:
   std::string defaultText = {};
   bool slotFormatterOverrides = {};
   FBParamType type = (FBParamType)-1;
+  FBSlotFormatter slotFormatter = {};
   FBParamsDependencies dependencies = {};
-  FBParamSlotFormatter slotFormatter = {};
   FBParamDefaultTextSelector defaultTextSelector = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);

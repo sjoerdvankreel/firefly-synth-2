@@ -171,13 +171,17 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.List().items.push_back({ "{A6EA4A7B-162E-4AFC-A806-18478D71EAFA}", "Off" });
   for (int i = 1; i < sources.size(); i++)
   {
+    bool onNote = sources[i].onNote;
+    bool prevOnNote = sources[i - 1].onNote;
     int moduleSlot = sources[i].indices.module.slot;
+    int moduleIndex = sources[i].indices.module.index;
     int cvOutputSlot = sources[i].indices.cvOutput.slot;
+    int prevModuleIndex = sources[i - 1].indices.module.index;
     auto const& module = topo->modules[sources[i].indices.module.index];
     auto const& cvOutput = module.cvOutputs[sources[i].indices.cvOutput.index];
     std::string onNoteIdPrefix = sources[i].onNote ? (FBOnNotePrefix + "-") : "";
     std::string onNoteNamePrefix = sources[i].onNote ? (FBOnNotePrefix + " ") : "";
-    if (moduleSlot == 0)
+    if (moduleIndex != prevModuleIndex || onNote != prevOnNote)
     {
       scale.List().submenuStart[i] = onNoteNamePrefix + module.name;
       source.List().submenuStart[i] = onNoteNamePrefix + module.name;

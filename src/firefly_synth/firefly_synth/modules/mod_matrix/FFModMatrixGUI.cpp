@@ -24,7 +24,7 @@ MakeModMatrixGUI(bool global, int offset, FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> rowSizes(FFModMatrixGlobalSlotCount + 1, 1);
-  std::vector<int> columnSizes = { 0, 0, 0, 1, 0 };
+  std::vector<int> columnSizes = { 0, 1, 1, 2, 0 };
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, rowSizes, columnSizes);
