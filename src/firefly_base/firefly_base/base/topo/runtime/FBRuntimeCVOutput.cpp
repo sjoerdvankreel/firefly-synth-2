@@ -15,13 +15,13 @@ FBMakeRuntimeCVOutputName(
     result += " " + std::to_string(indices.module.slot + 1);
   if (module.cvOutputs.size() != 1)
   {
-    result += " ";
-    result += cvOutput.name;
-    if (cvOutput.slotCount != 1)
+    if (cvOutput.slotFormatter != nullptr)
+      result += " " + cvOutput.slotFormatter(topo, indices.cvOutput.slot);
+    else
     {
-      if (cvOutput.slotFormatter == nullptr)
-        result += " " + std::to_string(indices.cvOutput.slot + 1);
-      else
+      result += " ";
+      result += cvOutput.name;
+      if (cvOutput.slotCount != 1)
         result += " " + cvOutput.slotFormatter(topo, indices.cvOutput.slot);
     }
   }
