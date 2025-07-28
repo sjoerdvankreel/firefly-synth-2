@@ -20,9 +20,10 @@ TODOLIST for alpha-10
 [ ] version info and firefly icon
 [ ] global set-exact-value UI (+ context menu item?)
 [ ] separate midi, bpm, automation smoothing, auto should be global + per-param override
-[ ] MIDI key, velo (voice), low/high/last (global, optional)
+[ ] MIDI key, velo (voice), low/high/last
 [ ] show the version and plugformat and icon
-[ ] 3x on note random as a cheap mod source
+[ ] 3x on note random as a cheap mod source, uni + normal
+[ ] allow lfo separate outputs as modsources
 
 global unison TODO IF we do per-voice echo, this should not be on the subvoice level
 autoclip
