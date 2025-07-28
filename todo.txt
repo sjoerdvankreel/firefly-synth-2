@@ -23,7 +23,7 @@ TODOLIST for alpha-10
 [ ] MIDI key, velo (voice), low/high/last
 [ ] show the version and plugformat and icon
 [ ] 3x on note random as a cheap mod source, uni + normal
-[ ] allow lfo separate outputs as modsources, not filtered output, call it raw
+[x] allow lfo separate outputs as modsources, not filtered output, call it raw
 
 still a bug in glfo free rand painting
 global unison TODO IF we do per-voice echo, this should not be on the subvoice level
