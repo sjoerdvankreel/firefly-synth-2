@@ -262,12 +262,13 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       sourceBuffer->CopyTo(scaledSourceBuffer);
       targetParamState->CV().CopyTo(*plugModulationBuffer);
 
+      // TODO move all this crap to generic and share with lfo
       switch (_opType[i])
       {
       case FFModMatrixOpType::Mul:
         for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-          plugModulationBuffer->Store(s, 
-            (1.0f - scaledAmountBuffer.Load(s)) * plugModulationBuffer->Load(s) + 
+          plugModulationBuffer->Store(s,
+            (1.0f - scaledAmountBuffer.Load(s)) * plugModulationBuffer->Load(s) +
             scaledAmountBuffer.Load(s) * scaledSourceBuffer.Load(s) * plugModulationBuffer->Load(s));
         break;
       case FFModMatrixOpType::Add:
@@ -289,6 +290,16 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           auto bpScaledTarget = FBToBipolar(plugModulationBuffer->Load(s));
           bpScaledTarget += bpScaledSource;
           bpScaledTarget = xsimd::clip(bpScaledTarget, FBBatch<float>(-1.0f), FBBatch<float>(1.0f));
+          plugModulationBuffer->Store(s, FBToUnipolar(bpScaledTarget));
+        }
+        break;
+      case FFModMatrixOpType::BPMul:
+        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        {
+          auto bpScaledSource = FBToBipolar(scaledSourceBuffer.Load(s));
+          auto bpScaledTarget = FBToBipolar(plugModulationBuffer->Load(s));
+          bpScaledTarget = (1.0f - scaledAmountBuffer.Load(s)) * bpScaledTarget +
+            scaledAmountBuffer.Load(s) * bpScaledSource * bpScaledTarget;
           plugModulationBuffer->Store(s, FBToUnipolar(bpScaledTarget));
         }
         break;
