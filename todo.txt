@@ -14,7 +14,8 @@ TODOLIST for alpha-10
 [ ] not hardcode env1 to voice amp
 [ ] floating notes
 [ ] all output controls -> cpu indicator, gain indicator, need not be pretty yet
-[ ] master input (aux, modwheel, pb + range)
+[x] master input (aux)
+[ ] master input (modwheel, pb + range)
 [ ] portamento controls + all-osci coarse/fine
 [ ] basic midi input
 [ ] version info and firefly icon
