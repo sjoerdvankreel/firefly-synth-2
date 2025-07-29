@@ -27,6 +27,7 @@ TODOLIST for alpha-10
 [x] allow lfo separate outputs as modsources, not filtered output, call it raw
 [x] need bpmul
 [ ] move all crap to generic and share with lfo
+[ ] how many auxes?
 
 still a bug in glfo free rand painting
 global unison TODO IF we do per-voice echo, this should not be on the subvoice level

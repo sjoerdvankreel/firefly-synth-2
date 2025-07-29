@@ -2,7 +2,7 @@
 
 #include <memory>
 
-inline int constexpr FFMasterAuxCount = 4;
+inline int constexpr FFMasterAuxCount = 6;
 
 struct FBStaticModule;
 enum class FFMasterCVOutput { Aux, Count };
