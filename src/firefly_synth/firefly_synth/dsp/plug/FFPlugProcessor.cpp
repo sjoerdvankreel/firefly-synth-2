@@ -81,6 +81,23 @@ FFPlugProcessor::LeaseVoices(
     }
 }
 
+void
+FFPlugProcessor::ApplyGlobalModulation(
+  FBPlugInputBlock const& input, FBModuleProcState& state, FBTopoIndices moduleIndices)
+{
+  state.moduleSlot = 0;
+  auto& globalDSP = _procState->dsp.global;
+  globalDSP.gMatrix.processor->ApplyModulation(state, moduleIndices);
+
+  // We can get away with this because FBHostProcessor does LeaseVoices() first.
+  for (int v = 0; v < FBMaxVoices; v++)
+    if (input.voiceManager->IsActive(v))
+    {
+      state.voice = &state.input->voiceManager->Voices()[v];
+      _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state, moduleIndices);
+    }
+}
+
 void 
 FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
 {
@@ -90,22 +107,13 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   globalDSP.gMatrix.processor->BeginVoiceOrBlock(state);
   globalDSP.gMatrix.processor->BeginModulationBlock();
   globalDSP.master.processor->Process(state);
-  globalDSP.gMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Master, 0 });
+  ApplyGlobalModulation(input, state, { (int)FFModuleType::Master, 0 });
   for (int i = 0; i < FFLFOAndEnvCount; i++)
   {
     state.moduleSlot = i;
     globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, nullptr, state);
     globalDSP.gLFO[i].processor->Process<true>(state);
-    state.moduleSlot = 0;
-    globalDSP.gMatrix.processor->ApplyModulation(state, { (int)FFModuleType::GLFO, i });
-
-    // We can get away with this because FBHostProcessor does LeaseVoices() first.
-    for (int v = 0; v < FBMaxVoices; v++)
-      if (input.voiceManager->IsActive(v))
-      {
-        state.voice = &state.input->voiceManager->Voices()[v];
-        _procState->dsp.voice[v].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::GLFO, i });
-      }
+    ApplyGlobalModulation(input, state, { (int)FFModuleType::GLFO, i });
   }
 }
 

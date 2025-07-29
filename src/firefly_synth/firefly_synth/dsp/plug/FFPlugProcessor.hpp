@@ -19,6 +19,7 @@ public IFBPlugProcessor
 
   FBModuleProcState MakeModuleState(FBPlugInputBlock const& input) const;
   FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice) const;
+  void ApplyGlobalModulation(FBPlugInputBlock const& input, FBModuleProcState& state, FBTopoIndices moduleIndices);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);
