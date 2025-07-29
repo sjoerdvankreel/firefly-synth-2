@@ -43,6 +43,7 @@ public:
 template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFMasterParamState final
 {
+  friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   FFMasterBlockParamState<TBlock> block = {};
   FFMasterAccParamState<TAccurate> acc = {};

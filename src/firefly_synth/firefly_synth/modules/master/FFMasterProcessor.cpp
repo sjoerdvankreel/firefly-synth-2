@@ -16,5 +16,20 @@
 void
 FFMasterProcessor::Process(FBModuleProcState& state)
 {
-  (void)state;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& outputAux = procState->dsp.global.master.outputAux;
+  auto const& procParams = procState->param.global.master[state.moduleSlot];
+
+  for (int i = 0; i < FFMasterAuxCount; i++)
+    procParams.acc.aux[i].Global().CV().CopyTo(outputAux[i]);
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+
+  auto& exchangeDSP = exchangeToGUI->global.master[0];
+  exchangeDSP.active = true;
+  auto& exchangeParams = exchangeToGUI->param.global.master[0];
+  for (int i = 0; i < FFMasterAuxCount; i++)
+    exchangeParams.acc.aux[i] = procParams.acc.aux[i].Global().Last();
 }
