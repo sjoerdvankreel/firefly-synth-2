@@ -296,10 +296,9 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       case FFModMatrixOpType::BPMul:
         for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
         {
-          auto bpScaledSource = FBToBipolar(scaledSourceBuffer.Load(s));
           auto bpScaledTarget = FBToBipolar(plugModulationBuffer->Load(s));
           bpScaledTarget = (1.0f - scaledAmountBuffer.Load(s)) * bpScaledTarget +
-            scaledAmountBuffer.Load(s) * bpScaledSource * bpScaledTarget;
+            scaledAmountBuffer.Load(s) * scaledSourceBuffer.Load(s) * bpScaledTarget;
           plugModulationBuffer->Store(s, FBToUnipolar(bpScaledTarget));
         }
         break;
