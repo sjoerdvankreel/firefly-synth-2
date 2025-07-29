@@ -32,6 +32,7 @@ struct FBStaticModule final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
+  std::string matrixName = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
   std::vector<FBStaticCVOutput> cvOutputs = {};

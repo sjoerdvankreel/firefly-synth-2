@@ -10,7 +10,9 @@ FBMakeRuntimeCVOutputName(
   FBCVOutputTopoIndices const& indices,
   bool onNote)
 {
-  std::string result = module.name;
+  std::string result = module.matrixName;
+  if (result.empty())
+    result = module.name;
   if (module.slotCount != 1)
     result += " " + std::to_string(indices.module.slot + 1);
   if (module.cvOutputs.size() != 1)
