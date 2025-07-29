@@ -13,7 +13,10 @@ ValidateItemsParam(
   std::set<std::string> itemNames = {};
   if (staticParam.type == FBParamType::List)
     for (int i = 0; i < staticParam.List().items.size(); i++)
-      FB_ASSERT(itemNames.insert(staticParam.List().GetName(moduleIndex, i)).second);
+    {
+      auto name = staticParam.List().GetName(moduleIndex, i);
+      FB_ASSERT(itemNames.insert(name).second);
+    }
 #endif
 }
 

@@ -56,6 +56,7 @@ struct FFVoiceExchangeState final
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
   FFOutputDSPState output = {};
+  FFMasterDSPState master = {};
   FFModMatrixDSPState<true> gMatrix = {};
   std::array<FFLFODSPState, FFLFOAndEnvCount> gLFO = {};
   std::array<FFEffectDSPState, FFEffectCount> gEffect = {};

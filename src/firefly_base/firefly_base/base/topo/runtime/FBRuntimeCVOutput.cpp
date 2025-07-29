@@ -22,8 +22,12 @@ FBMakeRuntimeCVOutputName(
       result += " ";
       result += cvOutput.name;
       if (cvOutput.slotCount != 1)
-        result += " " + cvOutput.slotFormatter(topo, indices.cvOutput.slot);
+        result += " " + std::to_string(indices.cvOutput.slot + 1);
     }
+  }
+  else if (cvOutput.slotCount != 1)
+  {
+    result += " " + module.cvOutputs[0].name + " " + std::to_string(indices.cvOutput.slot + 1);
   }
   std::string prefix = onNote ? (FBOnNotePrefix + " ") : "";
   return prefix + result;
