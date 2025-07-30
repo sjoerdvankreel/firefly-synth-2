@@ -536,6 +536,14 @@ FBRuntimeTopo::LoadParamStateFromVar(
     {
       FB_LOG_WARN("Failed to parse plugin parameter value.");
       normalized = topo.TextToNormalized(false, topo.GetDefaultText());
+#ifndef NDEBUG
+      if (!normalized)
+      {
+        auto defaultText = topo.GetDefaultText();
+        topo.TextToNormalized(false, defaultText);
+        FB_ASSERT(normalized);
+      }
+#endif
     }
     if(!topo.static_.IsOutput())
       *container.Params()[iter->second] = static_cast<float>(normalized.value());

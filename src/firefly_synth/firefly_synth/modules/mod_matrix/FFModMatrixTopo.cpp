@@ -142,6 +142,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.acc = false;
   source.name = "Source";
   source.display = "Source";
+  source.defaultText = "Off";
   source.slotCount = slotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
@@ -158,6 +159,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scale.acc = false;
   scale.name = "Scale";
   scale.slotCount = slotCount;
+  scale.defaultText = "Off";
   scale.id = prefix + "{4A166295-A1EF-4354-AA2E-3F14B98A70CE}";
   scale.type = FBParamType::List;
   scale.List().linkedSource = (int)FFModMatrixParam::Source;
@@ -220,6 +222,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.name = "Target";
   target.display = "Target";
   target.slotCount = slotCount;
+  target.defaultText = "Off";
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
   target.List().linkedSource = (int)FFModMatrixParam::Source;

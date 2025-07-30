@@ -54,7 +54,6 @@ FFMakeOsciTopo()
 
   auto& type = result->params[(int)FFOsciParam::Type];
   type.acc = false;
-  type.defaultText = "Off";
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{9018865F-7B05-4835-B541-95014C0C63E6}";

@@ -76,6 +76,7 @@ FFMakeOsciModTopo()
   auto& amMode = result->params[(int)FFOsciModParam::AMMode];
   amMode.acc = false;
   amMode.name = "AM Mode";
+  amMode.defaultText = "Off";
   amMode.slotCount = FFOsciModSlotCount;
   amMode.id = "{AE135DBF-A88E-49A4-9205-08C908E6FC12}";
   amMode.type = FBParamType::List;

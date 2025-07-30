@@ -33,7 +33,6 @@ FFMakeEnvTopo()
 
   auto& type = result->params[(int)FFEnvParam::Type];
   type.acc = false;
-  type.defaultText = "Off";
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{40F1DCF0-03B1-4ABE-B6B5-A29BF2C8C229}";
@@ -54,6 +53,7 @@ FFMakeEnvTopo()
   sync.display = "Sync";
   sync.slotCount = 1;
   sync.id = "{B1128167-2EB6-4AFA-81B7-C4B7606502BB}";
+  sync.defaultText = "Off";
   sync.type = FBParamType::Boolean;
   auto selectSync = [](auto& module) { return &module.block.sync; };
   sync.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSync);

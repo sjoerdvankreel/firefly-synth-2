@@ -28,6 +28,7 @@ TODOLIST for alpha-10
 [ ] move all crap to generic and share with lfo
 [x] how many auxes?
 [ ] drop freesmth, not work. do uni/gaus everywhere
+[x] make sure can parse default always
 
 drop all the conversion before going beta/rc
 still a bug in glfo free rand painting

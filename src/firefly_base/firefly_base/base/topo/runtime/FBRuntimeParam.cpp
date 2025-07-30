@@ -47,7 +47,13 @@ shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, 
 displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
 id(FBMakeRuntimeId(staticModule.id, topoIndices.module.slot, staticParam.id, topoIndices.param.slot)),
 staticModuleId(staticModule.id),
-tag(FBMakeStableHash(id)) {}
+tag(FBMakeStableHash(id))
+{
+  FB_ASSERT((staticParam.defaultText.size() == 0) != (staticParam.defaultTextSelector == nullptr));
+#ifndef NDEBUG
+  staticParam.GetDefaultText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
+#endif
+}
 
 std::string 
 FBRuntimeParamBase::PlainToText(bool io, double plain) const
