@@ -17,8 +17,12 @@ MakeRuntimeParamModName(
   FBStaticParamBase const& param,
   FBParamTopoIndices const& indices)
 {
-  auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
-  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {}, false);
+  auto paramName = FBMakeRuntimeShortName(
+    topo, param.name, param.slotCount, indices.param.slot,
+    param.slotFormatter, param.slotFormatterOverrides);
+  auto moduleName = FBMakeRuntimeShortName(
+    topo, module.name, module.slotCount, indices.module.slot,
+    module.slotFormatter, module.slotFormatterOverrides);
   return moduleName + " " + paramName;
 }
 
@@ -239,9 +243,9 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     auto const& param = module.params[targets[i].param.index];
     if (targets[i].module != prevModule)
     {
-      std::string subMenuName = module.name;
-      if (module.slotCount != 1)
-        subMenuName += " " + std::to_string(moduleSlot + 1);
+      std::string subMenuName = FBMakeRuntimeShortName(
+        *topo, module.name, module.slotCount, moduleSlot, 
+        module.slotFormatter, module.slotFormatterOverrides);
       target.List().submenuStart[i] = subMenuName;
       prevModule = targets[i].module;
     }
