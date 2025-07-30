@@ -29,6 +29,7 @@ TODOLIST for alpha-10
 [x] how many auxes?
 [ ] drop freesmth, not work. do uni/gaus everywhere
 [x] make sure can parse default always
+[ ] make it clear alpha breaks the demos
 
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
