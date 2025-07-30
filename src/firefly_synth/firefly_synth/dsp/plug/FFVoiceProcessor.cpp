@@ -15,16 +15,19 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
+
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
-  procState->dsp.voice[voice].env[0].processor->BeginVoice(state);
   for (int i = 0; i < FFLFOCount; i++)
   {
-    state.moduleSlot = i + 1;
-    procState->dsp.voice[voice].env[i + 1].processor->BeginVoice(state);
+    state.moduleSlot = i;
+    procState->dsp.voice[voice].env[i].processor->BeginVoice(state);
     state.moduleSlot = i;
     procState->dsp.voice[voice].vLFO[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, nullptr, state);
   }
+  state.moduleSlot = FFAmpEnvSlot;
+  procState->dsp.voice[voice].env[FFAmpEnvSlot].processor->BeginVoice(state);
+
   state.moduleSlot = 0;
   procState->dsp.voice[voice].osciMod.processor->BeginVoice(false, state);
   for (int i = 0; i < FFOsciCount; i++)
@@ -52,20 +55,21 @@ FFVoiceProcessor::Process(FBModuleProcState state)
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
-  int ampEnvProcessed = voiceDSP.env[0].processor->Process(state);
-  bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
-  procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, 0 });
   for (int i = 0; i < FFLFOCount; i++)
   {
-    state.moduleSlot = i + 1;
-    voiceDSP.env[i + 1].processor->Process(state);
+    state.moduleSlot = i;
+    voiceDSP.env[i].processor->Process(state);
     state.moduleSlot = 0;
-    procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, i + 1 });
+    procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, i });
     state.moduleSlot = i;
     voiceDSP.vLFO[i].processor->Process<false>(state);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VLFO, i });
   }
+  state.moduleSlot = FFAmpEnvSlot;
+  int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state);
+  bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
+  procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, FFAmpEnvSlot });
 
   state.moduleSlot = 0;
   voiceDSP.osciMod.processor->Process(state);
