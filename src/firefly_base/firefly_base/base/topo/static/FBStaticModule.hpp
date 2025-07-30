@@ -36,6 +36,7 @@ struct FBStaticModule final
   std::string matrixName = {};
   bool slotFormatterOverrides = {};
   FBSlotFormatter slotFormatter = {};
+  FBSlotFormatter tabSlotFormatter = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
   std::vector<FBStaticCVOutput> cvOutputs = {};

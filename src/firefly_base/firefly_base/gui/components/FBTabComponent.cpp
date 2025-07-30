@@ -1,8 +1,9 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
-#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <map>
 #include <string>
@@ -85,12 +86,24 @@ FBModuleTabComponent::AddModuleTab(
   _moduleIndices.push_back(moduleIndices);
   auto topo = _plugGUI->HostContext()->Topo();
   auto const& module = topo->static_->modules[moduleIndices.index];
-  std::string header = std::to_string(moduleIndices.slot + 1);
-  if (moduleIndices.slot == 0)
-    if (module.slotCount > 1)
-      header = module.name + " " + header;
-    else
-      header = module.name;
+
+  std::string header = {};
+  if (module.tabSlotFormatter != nullptr)
+  {
+    header = FBMakeRuntimeShortName(
+      *topo->static_, module.name, module.slotCount,
+      moduleIndices.slot, module.tabSlotFormatter, module.slotFormatterOverrides);
+  }
+  else
+  {
+    header = std::to_string(moduleIndices.slot + 1);
+    if (moduleIndices.slot == 0)
+      if (module.slotCount > 1)
+        header = module.name + " " + header;
+      else
+        header = module.name;
+  }
+
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;

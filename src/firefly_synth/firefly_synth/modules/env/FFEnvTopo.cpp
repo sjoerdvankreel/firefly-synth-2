@@ -19,15 +19,16 @@ FFMakeEnvTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "Env";
-  result->slotFormatterOverrides = true;
-  result->slotFormatter = [](FBStaticTopo const&, int s) { return s == 0 ? "Amp Env" : "Env " + std::to_string(s); };
   result->slotCount = FFEnvCount;
   result->graphCount = FFEnvCount;
+  result->slotFormatterOverrides = true;
   result->graphRenderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
   result->cvOutputs.resize((int)FFEnvCVOutput::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
+  result->tabSlotFormatter = [](FBStaticTopo const&, int s) { return s == 0 ? "Amp Env" : std::to_string(s); };
+  result->slotFormatter = [](FBStaticTopo const&, int s) { return s == 0 ? "Amp Env" : "Env " + std::to_string(s); };
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& type = result->params[(int)FFEnvParam::Type];
