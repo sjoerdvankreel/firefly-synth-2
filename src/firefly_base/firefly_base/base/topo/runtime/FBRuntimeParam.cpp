@@ -28,7 +28,7 @@ FBMakeRuntimeParamLongName(
   FBParamTopoIndices const& indices)
 {
   auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
-  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {}, false);
+  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, module.slotFormatter, module.slotFormatterOverrides);
   return moduleName + " " + paramName;
 }
 

@@ -167,7 +167,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].env[slot].output; };
   
   int moduleSlot = graphData->renderState->ModuleProcState()->moduleSlot;
-  for (int o = 0; o < FFLFOAndEnvCount; o++)
+  for (int o = 0; o < FFEnvCount; o++)
   {
     graphData->renderState->ModuleProcState()->moduleSlot = o;
     FBRenderModuleGraph<false, false>(renderData, o);

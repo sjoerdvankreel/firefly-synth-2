@@ -66,7 +66,7 @@ FFMakeGUISettingsTopo()
   guiLFOSelectedTab.slotCount = 1;
   guiLFOSelectedTab.id = "{23C0E87A-9224-43BB-97CE-549586B39BF4}";
   guiLFOSelectedTab.type = FBParamType::Discrete;
-  guiLFOSelectedTab.Discrete().valueCount = FFLFOAndEnvCount * 2;
+  guiLFOSelectedTab.Discrete().valueCount = FFLFOCount * 2;
   auto selectGuiLFOSelectedTab = [](auto& module) { return &module.lfoSelectedTab; };
   guiLFOSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiLFOSelectedTab);
 
@@ -86,7 +86,7 @@ FFMakeGUISettingsTopo()
   guiEnvSelectedTab.slotCount = 1;
   guiEnvSelectedTab.id = "{83D56B7F-28A7-4A02-AEBB-8D55E6CDB4D8}";
   guiEnvSelectedTab.type = FBParamType::Discrete;
-  guiEnvSelectedTab.Discrete().valueCount = FFLFOAndEnvCount;
+  guiEnvSelectedTab.Discrete().valueCount = FFEnvCount;
   auto selectGuiEnvSelectedTab = [](auto& module) { return &module.envSelectedTab; };
   guiEnvSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEnvSelectedTab);
 

@@ -16,7 +16,8 @@ struct FBStaticTopoMeta;
 
 inline int constexpr FFOsciCount = 4;
 inline int constexpr FFEffectCount = 4;
-inline int constexpr FFLFOAndEnvCount = 6; // because interleaving
+inline int constexpr FFLFOCount = 4;
+inline int constexpr FFEnvCount = FFLFOCount + 1; // interleaving & amp env
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";
 inline constexpr char FFVendorMail[] = "sjoerdvankreel@gmail.com";
 inline constexpr char FFVendorURL[] = "https://github.com/sjoerdvankreel";
