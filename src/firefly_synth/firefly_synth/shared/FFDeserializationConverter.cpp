@@ -20,6 +20,8 @@ FFDeserializationConverter::OnParamNotFound(
     return false;
 
   // 2.0.1 - added "V" prefix to per-voice effect module and params
+  // NOTE TO SELF: this changed the param tags, so broke automation lanes.
+  // Let's not ever do that again.
   if (OldVersion() < FBPlugVersion(2, 0, 1))
   {
     auto const& vEffectModule = Topo()->static_->modules[(int)FFModuleType::VEffect];
