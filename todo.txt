@@ -1,9 +1,8 @@
 TODOLIST for alpha-10
 
-[ ] drop matrixselectedtab
+[x] drop matrixselectedtab
 [ ] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
 [ ] also releaseing a note by playing the same just doesn't work
-[ ] vgmix->mixer
 [ ] optional mod indicators
 [ ] do addbp also for lfos
 [ ] easy access mod controls
@@ -27,7 +26,7 @@ TODOLIST for alpha-10
 [x] allow lfo separate outputs as modsources, not filtered output, call it raw
 [x] need bpmul
 [ ] move all crap to generic and share with lfo
-[ ] how many auxes?
+[x] how many auxes?
 [ ] drop freesmth, not work. do uni/gaus everywhere
 
 drop all the conversion before going beta/rc

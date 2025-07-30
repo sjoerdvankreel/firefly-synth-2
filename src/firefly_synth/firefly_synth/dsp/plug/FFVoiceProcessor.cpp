@@ -114,8 +114,8 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, vfxToOutNorm);
   }
 
-  // TODO dont hardcode this to voice amp?
-  voiceDSP.output.Mul(voiceDSP.env[0].output);
+  // TODO scale it
+  voiceDSP.output.Mul(voiceDSP.env[FFAmpEnvSlot].output);
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
