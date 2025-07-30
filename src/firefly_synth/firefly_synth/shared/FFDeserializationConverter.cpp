@@ -10,11 +10,15 @@ FBDeserializationConverter(oldVersion, topo) {}
 
 bool 
 FFDeserializationConverter::OnParamNotFound(
+  bool isGuiState,
   std::string const& oldModuleId, int oldModuleSlot,
   std::string const& oldParamId, int oldParamSlot,
   std::string& newModuleId, int& newModuleSlot,
   std::string& newParamId, int& newParamSlot) const
 {
+  if (isGuiState)
+    return false;
+
   // 2.0.1 - added "V" prefix to per-voice effect module and params
   if (OldVersion() < FBPlugVersion(2, 0, 1))
   {
@@ -36,4 +40,14 @@ FFDeserializationConverter::OnParamNotFound(
     }
   }
   return false;
+}
+
+void
+FFDeserializationConverter::PostProcess(
+  bool isGuiState,
+  std::vector<double*> const& paramValues) const
+{
+  if (isGuiState)
+    return;
+  (void)paramValues;
 }
