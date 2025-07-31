@@ -54,7 +54,7 @@ FFMakeVMixTopo()
 
   auto& ampEnvToAmp = result->params[(int)FFVMixParam::AmpEnvToAmp];
   ampEnvToAmp.acc = true;
-  ampEnvToAmp.name = "Level";
+  ampEnvToAmp.name = "Amp Env";
   ampEnvToAmp.defaultText = "100";
   ampEnvToAmp.slotCount = 1;
   ampEnvToAmp.unit = "%";

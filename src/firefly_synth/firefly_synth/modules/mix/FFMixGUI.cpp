@@ -34,22 +34,6 @@ FFMakeMixGUISectionFXToFX(FBPlugGUI* plugGUI, int moduleType, int fxToFXParam)
 }
 
 Component*
-FFMakeMixGUISectionAmpBal(FBPlugGUI* plugGUI, int moduleType, int ampParam, int balParam)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0 });
-  auto amp = topo->audio.ParamAtTopo({ { moduleType, 0 }, { ampParam, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amp));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amp, Slider::SliderStyle::RotaryVerticalDrag));
-  auto bal = topo->audio.ParamAtTopo({ { moduleType, 0 }, { balParam, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bal));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, bal, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 2 } });
-  return grid;
-}
-
-Component*
 FFMakeMixGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();

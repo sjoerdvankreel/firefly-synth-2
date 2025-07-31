@@ -80,6 +80,25 @@ MakeVMixSectionOsciAndVFXToOut(FBPlugGUI* plugGUI)
   return grid;
 }
 
+static Component*
+MakeVMixGUISectionAmpAmpEnvBal(FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
+  auto amp = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0}, { (int)FFVMixParam::Amp, 0} });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amp));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amp, Slider::SliderStyle::RotaryVerticalDrag));
+  auto bal = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::Bal, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bal));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, bal, Slider::SliderStyle::RotaryVerticalDrag));
+  auto ampEnvToAmp = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::AmpEnvToAmp, 0 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, ampEnvToAmp));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ampEnvToAmp, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
+  return grid;
+}
+
 Component*
 FFMakeVMixGUITab(FBPlugGUI* plugGUI)
 {
@@ -88,6 +107,6 @@ FFMakeVMixGUITab(FBPlugGUI* plugGUI)
   grid->Add(0, 0, MakeVMixSectionOsciAndVFXToOut(plugGUI));
   grid->Add(0, 1, MakeVMixSectionOsciToVFX(plugGUI));
   grid->Add(0, 2, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::VMix, (int)FFVMixParam::VFXToVFX));
-  grid->Add(0, 3, FFMakeMixGUISectionAmpBal(plugGUI, (int)FFModuleType::VMix, (int)FFVMixParam::Amp, (int)FFVMixParam::Bal));
+  grid->Add(0, 3, MakeVMixGUISectionAmpAmpEnvBal(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
