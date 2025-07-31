@@ -260,15 +260,8 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         scaledAmountBuffer.Mul(*scaleBuffer);
       targetParamState->CV().CopyTo(*plugModulationBuffer);
 
-      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        plugModulationBuffer->Store(s,
-          FFApplyModulation(
-            _opType[i],
-            sourceBuffer->Load(s),
-            scaledAmountBuffer.Load(s),
-            plugModulationBuffer->Load(s)));
+      FFApplyModulation(_opType[i], *sourceBuffer, scaledAmountBuffer, *plugModulationBuffer);
       targetParamState->ApplyPlugModulation(plugModulationBuffer);
-
       if (exchangeToGUI != nullptr)
       {
         auto& exchangeParams = *FFSelectDualState<Global>(

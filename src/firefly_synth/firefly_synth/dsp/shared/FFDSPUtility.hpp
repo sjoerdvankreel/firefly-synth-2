@@ -33,7 +33,7 @@ KeyboardTrackingMultiplier(
 }
 
 inline FBBatch<float>
-FFApplyModulationStack(
+FFModulateStack(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -41,7 +41,7 @@ FFApplyModulationStack(
 }
 
 inline FBBatch<float>
-FFApplyModulationMul(
+FFModulateMul(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -49,7 +49,7 @@ FFApplyModulationMul(
 }
 
 inline FBBatch<float>
-FFApplyModulationAdd(
+FFModulateAdd(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -57,7 +57,7 @@ FFApplyModulationAdd(
 }
 
 inline FBBatch<float>
-FFApplyModulationBPMul(
+FFModulateBPMul(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -66,7 +66,7 @@ FFApplyModulationBPMul(
 }
 
 inline FBBatch<float>
-FFApplyModulationBPAdd(
+FFModulateBPAdd(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -75,7 +75,7 @@ FFApplyModulationBPAdd(
 }
 
 inline FBBatch<float>
-FFApplyModulationBPStack(
+FFModulateBPStack(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -85,26 +85,37 @@ FFApplyModulationBPStack(
 }
 
 inline FBBatch<float>
-FFApplyModulation(
+FFModulate(
   FFModulationOpType opType, FBBatch<float> source, 
   FBBatch<float> amount, FBBatch<float> target)
 {
   switch (opType)
   {
   case FFModulationOpType::Add: 
-    return FFApplyModulationAdd(source, amount, target);
+    return FFModulateAdd(source, amount, target);
   case FFModulationOpType::Mul: 
-    return FFApplyModulationMul(source, amount, target);
+    return FFModulateMul(source, amount, target);
   case FFModulationOpType::Stack: 
-    return FFApplyModulationStack(source, amount, target);
+    return FFModulateStack(source, amount, target);
   case FFModulationOpType::BPAdd: 
-    return FFApplyModulationBPAdd(source, amount, target);
+    return FFModulateBPAdd(source, amount, target);
   case FFModulationOpType::BPMul:
-    return FFApplyModulationBPMul(source, amount, target);
+    return FFModulateBPMul(source, amount, target);
   case FFModulationOpType::BPStack:
-    return FFApplyModulationBPStack(source, amount, target);
+    return FFModulateBPStack(source, amount, target);
   case FFModulationOpType::Off:
   default: 
     FB_ASSERT(false); return {};
   }
+}
+
+inline void
+FFApplyModulation(
+  FFModulationOpType opType, 
+  FBSArray<float, FBFixedBlockSamples> const& source,
+  FBSArray<float, FBFixedBlockSamples> const& amount,
+  FBSArray<float, FBFixedBlockSamples>& target)
+{
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    target.Store(s, FFModulate(opType, source.Load(s), amount.Load(s), target.Load(s)));
 }
