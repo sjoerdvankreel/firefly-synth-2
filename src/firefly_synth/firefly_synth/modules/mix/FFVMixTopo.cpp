@@ -36,21 +36,21 @@ FFMakeVMixTopo()
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vMix; });
   auto selectModule = [](auto& state) { return &state.voice.vMix; };
 
-  auto& gain = result->params[(int)FFVMixParam::Gain];
-  gain.acc = true;
-  gain.defaultText = "100";
-  gain.name = "Gain";
-  gain.slotCount = 1;
-  gain.unit = "%";
-  gain.id = "{02B3BE49-9ECC-4289-9488-CAB4252B6E9D}";
-  gain.type = FBParamType::Linear;
-  gain.Linear().min = 0.0f;
-  gain.Linear().max = 2.0f;
-  gain.Linear().displayMultiplier = 100;
-  auto selectGain = [](auto& module) { return &module.acc.gain; };
-  gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
-  gain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
-  gain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
+  auto& amp = result->params[(int)FFVMixParam::Amp];
+  amp.acc = true;
+  amp.defaultText = "100";
+  amp.name = "Amp";
+  amp.slotCount = 1;
+  amp.unit = "%";
+  amp.id = "{02B3BE49-9ECC-4289-9488-CAB4252B6E9D}";
+  amp.type = FBParamType::Linear;
+  amp.Linear().min = 0.0f;
+  amp.Linear().max = 2.0f;
+  amp.Linear().displayMultiplier = 100;
+  auto selectAmp = [](auto& module) { return &module.acc.amp; };
+  amp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAmp);
+  amp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectAmp);
+  amp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmp);
 
   auto& bal = result->params[(int)FFVMixParam::Bal];
   bal.acc = true;
