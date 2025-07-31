@@ -50,8 +50,10 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto& voiceDSP = procState->dsp.voice[voice];
   auto const& vMix = procState->param.voice.vMix[0];
   auto const& balNorm = vMix.acc.bal[0].Voice()[voice];
-  auto const& ampNorm = vMix.acc.amp[0].Voice()[voice];
+  auto const& ampNormIn = vMix.acc.amp[0].Voice()[voice];
+  auto const& ampEnvToAmpNorm = vMix.acc.ampEnvToAmp[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
+  FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
@@ -114,13 +116,12 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, vfxToOutNorm);
   }
 
-  // TODO scale it
-  voiceDSP.output.Mul(voiceDSP.env[FFAmpEnvSlot].output);
-
+  ampNormIn.CV().CopyTo(ampNormModulated);
+  FFApplyModulation(FFModulationOpType::Mul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float balPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Bal, balNorm.CV().Get(s));
-    float ampPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNorm.CV().Get(s));
+    float ampPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Get(s));
     for (int c = 0; c < 2; c++)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
@@ -137,7 +138,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
 
   auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
   exchangeParams.acc.bal[0][voice] = balNorm.CV().Last();
-  exchangeParams.acc.amp[0][voice] = ampNorm.CV().Last();
+  exchangeParams.acc.amp[0][voice] = ampNormModulated.Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.VFXToVFX[r][voice] = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Last();
   for (int r = 0; r < FFVMixOsciToVFXCount; r++)

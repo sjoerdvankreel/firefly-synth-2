@@ -57,3 +57,4 @@ todo document the thing a bit
 multitap fb delay
 rosetta is borked
 vst3 note expr + midi mpe
+explain processing order and modulation order including auto/external/internal
