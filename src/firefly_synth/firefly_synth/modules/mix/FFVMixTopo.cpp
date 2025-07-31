@@ -52,6 +52,19 @@ FFMakeVMixTopo()
   amp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectAmp);
   amp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmp);
 
+  auto& ampEnvToAmp = result->params[(int)FFVMixParam::AmpEnvToAmp];
+  ampEnvToAmp.acc = true;
+  ampEnvToAmp.name = "Level";
+  ampEnvToAmp.defaultText = "100";
+  ampEnvToAmp.slotCount = 1;
+  ampEnvToAmp.unit = "%";
+  ampEnvToAmp.id = "{6C0E8516-778A-47FB-BDC5-0A6F132C13B8}";
+  ampEnvToAmp.type = FBParamType::Identity;
+  auto selectAmpEnvToAmp = [](auto& module) { return &module.acc.ampEnvToAmp; };
+  ampEnvToAmp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAmpEnvToAmp);
+  ampEnvToAmp.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectAmpEnvToAmp);
+  ampEnvToAmp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmpEnvToAmp);
+
   auto& bal = result->params[(int)FFVMixParam::Bal];
   bal.acc = true;
   bal.defaultText = "0";
