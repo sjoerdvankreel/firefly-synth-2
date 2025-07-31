@@ -51,7 +51,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto const& vMix = procState->param.voice.vMix[0];
   auto const& balNorm = vMix.acc.bal[0].Voice()[voice];
   auto const& ampNorm = vMix.acc.amp[0].Voice()[voice];
-  auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
+  auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
