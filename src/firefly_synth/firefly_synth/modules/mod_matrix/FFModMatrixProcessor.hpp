@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixProcessor.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -20,7 +21,7 @@ class FFModMatrixProcessor final
   std::array<int, SlotCount> _scale = {};
   std::array<int, SlotCount> _source = {};
   std::array<int, SlotCount> _target = {};
-  std::array<FFModMatrixOpType, SlotCount> _opType = {};
+  std::array<FFModulationOpType, SlotCount> _opType = {};
 
   // voice only
   std::array<float, SlotCount> _scaleOnNoteValues = {};

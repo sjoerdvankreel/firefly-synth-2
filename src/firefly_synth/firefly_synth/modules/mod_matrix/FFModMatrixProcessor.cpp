@@ -118,7 +118,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
     _source[i] = topo.NormalizedToListFast<int>(
       FFModMatrixParam::Source,
       FFSelectDualProcBlockParamNormalized<Global>(sourceNorm[i], voice));
-    _opType[i] = topo.NormalizedToListFast<FFModMatrixOpType>(
+    _opType[i] = topo.NormalizedToListFast<FFModulationOpType>(
       FFModMatrixParam::OpType,
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
   }
@@ -131,7 +131,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
     auto const& sources = ffTopo.vMatrixSources;
     for (int i = 0; i < SlotCount; i++)
     {
-      if (_opType[i] != FFModMatrixOpType::Off)
+      if (_opType[i] != FFModulationOpType::Off)
       {
         auto const& scale = sources[_scale[i]];
         if (scale.onNote)
@@ -164,7 +164,6 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   FBAccParamState* targetParamState = nullptr;
   FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
-  FBSArray<float, FBFixedBlockSamples> scaledSourceBuffer = {};
   FBSArray<float, FBFixedBlockSamples> scaledAmountBuffer = {};
   FBSArray<float, FBFixedBlockSamples> const* scaleBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples> const* sourceBuffer = nullptr;
@@ -197,7 +196,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   // need all slots with same target ready before we begin processing
   for (int i = 0; i < SlotCount; i++)
   {
-    _allModSourcesAreReadyForSlot[i] = _opType[i] != FFModMatrixOpType::Off;
+    _allModSourcesAreReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
     if (_allModSourcesAreReadyForSlot[i])
     {
       auto const& thisTarget = targets[_target[i]];
@@ -206,7 +205,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       _allModSourcesAreReadyForSlot[i] &= thisSource.indices.module.index != -1;
       if (_allModSourcesAreReadyForSlot[i])
         for (int j = 0; j < SlotCount; j++)
-          if (_opType[i] != FFModMatrixOpType::Off)
+          if (_opType[i] != FFModulationOpType::Off)
           {
             auto const& thatSource = sources[_source[j]];
             auto const& thatTarget = targets[_target[j]];
@@ -259,65 +258,15 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       amount.CopyTo(scaledAmountBuffer);
       if (scaleBuffer != nullptr)
         scaledAmountBuffer.Mul(*scaleBuffer);
-      sourceBuffer->CopyTo(scaledSourceBuffer);
       targetParamState->CV().CopyTo(*plugModulationBuffer);
 
-      // TODO move all this crap to generic and share with lfo
-      switch (_opType[i])
-      {
-      case FFModMatrixOpType::Mul:
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-          plugModulationBuffer->Store(s,
-            (1.0f - scaledAmountBuffer.Load(s)) * plugModulationBuffer->Load(s) +
-            scaledAmountBuffer.Load(s) * scaledSourceBuffer.Load(s) * plugModulationBuffer->Load(s));
-        break;
-      case FFModMatrixOpType::Add:
-        scaledSourceBuffer.Mul(scaledAmountBuffer);
-        plugModulationBuffer->Add(scaledSourceBuffer);
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-          plugModulationBuffer->Store(s, xsimd::clip(plugModulationBuffer->Load(s), FBBatch<float>(0.0f), FBBatch<float>(1.0f)));
-        break;
-      case FFModMatrixOpType::Stack:
-        scaledSourceBuffer.Mul(scaledAmountBuffer);
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-          plugModulationBuffer->Add(s, (1.0f - plugModulationBuffer->Load(s)) * scaledSourceBuffer.Load(s));
-        break;
-      case FFModMatrixOpType::BPAdd:
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        {
-          auto bpScaledSource = FBToBipolar(scaledSourceBuffer.Load(s));
-          bpScaledSource *= scaledAmountBuffer.Load(s);
-          auto bpScaledTarget = FBToBipolar(plugModulationBuffer->Load(s));
-          bpScaledTarget += bpScaledSource;
-          bpScaledTarget = xsimd::clip(bpScaledTarget, FBBatch<float>(-1.0f), FBBatch<float>(1.0f));
-          plugModulationBuffer->Store(s, FBToUnipolar(bpScaledTarget));
-        }
-        break;
-      case FFModMatrixOpType::BPMul:
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        {
-          auto bpScaledTarget = FBToBipolar(plugModulationBuffer->Load(s));
-          bpScaledTarget = (1.0f - scaledAmountBuffer.Load(s)) * bpScaledTarget +
-            scaledAmountBuffer.Load(s) * scaledSourceBuffer.Load(s) * bpScaledTarget;
-          plugModulationBuffer->Store(s, FBToUnipolar(bpScaledTarget));
-        }
-        break;
-      case FFModMatrixOpType::BPStack:
-        for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-        {
-          auto bpScaledSource = FBToBipolar(scaledSourceBuffer.Load(s));
-          bpScaledSource *= scaledAmountBuffer.Load(s);
-          auto bpScaledTarget = FBToBipolar(plugModulationBuffer->Load(s));
-          auto headroom = 1.0f - xsimd::abs(bpScaledTarget);
-          bpScaledTarget += bpScaledSource * headroom;
-          plugModulationBuffer->Store(s, FBToUnipolar(bpScaledTarget));
-        }
-        break;
-      default:
-        FB_ASSERT(false);
-        break;
-      }
-
+      for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+        plugModulationBuffer->Store(s,
+          FFApplyModulation(
+            _opType[i],
+            sourceBuffer->Load(s),
+            scaledAmountBuffer.Load(s),
+            plugModulationBuffer->Load(s)));
       targetParamState->ApplyPlugModulation(plugModulationBuffer);
 
       if (exchangeToGUI != nullptr)
