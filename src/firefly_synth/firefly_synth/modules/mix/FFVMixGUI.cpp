@@ -94,7 +94,7 @@ MakeVMixGUISectionAmpAmpEnvBal(FBPlugGUI* plugGUI)
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, bal, Slider::SliderStyle::RotaryVerticalDrag));
   auto ampEnvToAmp = topo->audio.ParamAtTopo({ { (int)FFModuleType::VMix, 0 }, { (int)FFVMixParam::AmpEnvToAmp, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, ampEnvToAmp));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ampEnvToAmp, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, ampEnvToAmp, Slider::SliderStyle::LinearHorizontal));
   grid->MarkSection({ { 0, 0 }, { 2, 3 } });
   return grid;
 }
