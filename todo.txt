@@ -33,6 +33,7 @@ TODOLIST for alpha-10
 [x] rename mix gain to amp to match amp envelope
 [ ] not show the 1234 in the mixers
 [ ] re-check all the shortcuts "frq" "gn" "ktr" etc, maybe new screenspace allows more
+[ ] allow modulate env stage lengths on voice start
 
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
