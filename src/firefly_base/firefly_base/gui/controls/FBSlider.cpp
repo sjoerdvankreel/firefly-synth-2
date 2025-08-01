@@ -158,8 +158,12 @@ FBParamSlider::valueChanged()
 void
 FBParamSlider::UpdateExchangeState()
 {
-  auto const* exchangeState = _plugGUI->HostContext()->ExchangeState();
-  auto paramActive = exchangeState->GetParamActiveState(_param);
+  FBParamActiveExchangeState paramActive = {};
+  if (_plugGUI->GetKnobRenderType() == FBGUIRenderType::Full)
+  {
+    auto const* exchangeState = _plugGUI->HostContext()->ExchangeState();
+    paramActive = exchangeState->GetParamActiveState(_param);
+  }
   if (paramActive != _paramActive)
     repaint();
   _paramActive = paramActive;

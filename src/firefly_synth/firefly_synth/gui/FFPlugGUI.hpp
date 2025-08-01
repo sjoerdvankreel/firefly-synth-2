@@ -25,6 +25,7 @@ public FBPlugGUI
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
 
   void SetupGUI();
+  FBGUIRenderType GetRenderType(int paramIndex) const;
 
 public:
   ~FFPlugGUI();
@@ -36,7 +37,8 @@ public:
 
   void resized() override;
   void UpdateExchangeStateTick() override;
-  FBGUIRenderType GetRenderType() const override;
+  FBGUIRenderType GetKnobRenderType() const override;
+  FBGUIRenderType GetGraphRenderType() const override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;
   void AudioParamNormalizedChangedFromUI(int index, double normalized) override;

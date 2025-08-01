@@ -91,16 +91,28 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
     _graph->RequestRerender(_graph->TweakedModuleByUI());
 }
 
-FBGUIRenderType 
-FFPlugGUI::GetRenderType() const
+FBGUIRenderType
+FFPlugGUI::GetKnobRenderType() const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphMode, 0 } };
+  return GetRenderType((int)FFGUISettingsGUIParam::KnobRenderMode);
+}
+
+FBGUIRenderType
+FFPlugGUI::GetGraphRenderType() const
+{
+  return GetRenderType((int)FFGUISettingsGUIParam::GraphRenderMode);
+}
+
+FBGUIRenderType 
+FFPlugGUI::GetRenderType(int paramIndex) const
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { paramIndex, 0 } };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
   float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
-  auto mode = static_cast<FFGUISettingsGraphMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
-  if (mode == FFGUISettingsGraphMode::Basic)
+  auto mode = static_cast<FFGUISettingsRenderMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
+  if (mode == FFGUISettingsRenderMode::Basic)
     return FBGUIRenderType::Basic;
-  if (mode == FFGUISettingsGraphMode::Always)
+  if (mode == FFGUISettingsRenderMode::Always)
     return FBGUIRenderType::Full;
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
