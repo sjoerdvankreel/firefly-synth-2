@@ -14,6 +14,7 @@ struct FBPlugInputBlock final
 {
   float bpm = {};
   float sampleRate = {};
+  float prevRoundCpuUsage = {};
   std::uint64_t projectTimeSamples = {};
 
   FBVoiceManager* voiceManager = {};

@@ -211,6 +211,7 @@ FBVST3AudioEffect::process(ProcessData& data)
   return FBWithLogException([this, &data]()
   {
     _input.projectTimeSamples = 0;
+    _input.sampleCount = data.numSamples;
     _input.bpm = FBHostInputBlock::DefaultBPM;
     if (data.processContext != nullptr)
     {

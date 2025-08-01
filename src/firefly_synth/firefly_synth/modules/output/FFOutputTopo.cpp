@@ -29,5 +29,19 @@ FFMakeOutputTopo()
   voices.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoices);
   voices.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoices);
 
+  auto& cpu = result->params[(int)FFOutputParam::Cpu];
+  cpu.acc = false;
+  cpu.output = true;
+  cpu.defaultText = "0";
+  cpu.name = "Cpu";
+  cpu.slotCount = 1;
+  cpu.id = "{F7E383FA-61A6-4CDB-898B-C62C248633A0}";
+  cpu.type = FBParamType::Discrete;
+  cpu.Discrete().valueCount = FFMaxCpu + 1;
+  auto selectCpu = [](auto& module) { return &module.block.cpu; };
+  cpu.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCpu);
+  cpu.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectCpu);
+  cpu.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCpu);
+
   return result;
 }
