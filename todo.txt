@@ -7,10 +7,10 @@ TODOLIST for alpha-10
 [ ] do addbp also for lfos
 [ ] easy access mod controls
 [ ] widen the gui for the easy access stuff
-[ ] make env1 to amp explicit
+[x] make env1 to amp explicit
 [ ] refix all behind-the-scenes mod sources and targets
-[ ] paint env1 to vmix
-[ ] not hardcode env1 to voice amp
+[x] paint env1 to vmix
+[x] not hardcode env1 to voice amp
 [ ] floating notes
 [ ] all output controls -> cpu indicator, gain indicator, need not be pretty yet
 [x] master input (aux)

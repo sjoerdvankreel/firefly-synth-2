@@ -139,6 +139,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
   exchangeParams.acc.bal[0][voice] = balNorm.CV().Last();
   exchangeParams.acc.amp[0][voice] = ampNormModulated.Last();
+  exchangeParams.acc.ampEnvToAmp[0][voice] = ampEnvToAmpNorm.Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.VFXToVFX[r][voice] = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Last();
   for (int r = 0; r < FFVMixOsciToVFXCount; r++)
