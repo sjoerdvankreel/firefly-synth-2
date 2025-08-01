@@ -102,8 +102,8 @@ LFOGraphRenderData<Global>::DoProcess(
   if (graphIndex != FFLFOBlockCount)
   {
     indices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, graphIndex } };
-    auto opType = state->AudioParamList<FFLFOOpType>(indices, exchange, exchangeVoice);
-    if (opType == FFLFOOpType::Off)
+    auto opType = state->AudioParamList<FFModulationOpType>(indices, exchange, exchangeVoice);
+    if (opType == FFModulationOpType::Off)
       return 0;
   }
 
@@ -149,8 +149,8 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
     else
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
-      auto opType = renderState->AudioParamList<FFLFOOpType>(indices, false, -1);
-      bool blockOn = type != FFLFOType::Off && opType != FFLFOOpType::Off;
+      auto opType = renderState->AudioParamList<FFModulationOpType>(indices, false, -1);
+      bool blockOn = type != FFLFOType::Off && opType != FFModulationOpType::Off;
       graphData->graphs[i].text = moduleName + std::string(1, static_cast<char>('A' + i));
       if (!blockOn)
         graphData->graphs[i].text += " OFF";

@@ -25,7 +25,7 @@ TODOLIST for alpha-10
 [ ] 3x on note random as a cheap mod source, uni + normal
 [x] allow lfo separate outputs as modsources, not filtered output, call it raw
 [x] need bpmul
-[ ] move all crap to generic and share with lfo
+[x] move all crap to generic and share with lfo
 [x] how many auxes?
 [ ] drop freesmth, not work. do uni/gaus everywhere
 [x] make sure can parse default always

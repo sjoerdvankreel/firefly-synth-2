@@ -17,8 +17,8 @@ class FFLFOProcessor final
   FFLFOSkewXMode _skewAXMode = {};
   FFLFOSkewYMode _skewAYMode = {};
   std::array<int, FFLFOBlockCount> _steps = {};
-  std::array<FFLFOOpType, FFLFOBlockCount> _opType = {};
   std::array<FFLFOWaveMode, FFLFOBlockCount> _waveMode = {};
+  std::array<FFModulationOpType, FFLFOBlockCount> _opType = {};
 
   bool _graph = {};
   int _graphSampleCount = {};

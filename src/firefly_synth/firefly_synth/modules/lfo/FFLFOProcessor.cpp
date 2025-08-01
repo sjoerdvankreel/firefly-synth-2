@@ -156,10 +156,10 @@ FFLFOProcessor::BeginVoiceOrBlock(
   {
     bool blockActive = !graph || graphIndex == i || graphIndex == FFLFOBlockCount;
     _opType[i] = !blockActive ? 
-      FFLFOOpType::Off : 
+      FFModulationOpType::Off :
       graph && graphIndex != FFLFOBlockCount ?
-      FFLFOOpType::Add :
-      topo.NormalizedToListFast<FFLFOOpType>(
+      FFModulationOpType::Add :
+      topo.NormalizedToListFast<FFModulationOpType>(
       FFLFOParam::OpType,
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
     _steps[i] = topo.NormalizedToDiscreteFast(
@@ -257,7 +257,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
 
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
-      if (_opType[i] != FFLFOOpType::Off)
+      if (_opType[i] != FFModulationOpType::Off)
       {
         minPlain[i].Store(s, topo.NormalizedToIdentityFast(FFLFOParam::Min,
           FFSelectDualProcAccParamNormalized<Global>(minNorm[i], voice), s));
@@ -303,7 +303,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   {
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
-      if (_opType[i] != FFLFOOpType::Off)
+      if (_opType[i] != FFModulationOpType::Off)
       {
         auto incr = rateHzPlain[i].Load(s) / sampleRate;
         auto phase = _phaseGens[i].NextBatch(incr);
@@ -343,14 +343,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         lfo = min + (max - min) * lfo;
 
         outputRaw[i].Store(s, lfo);
-
-        switch (_opType[i])
-        {
-        case FFLFOOpType::Mul: outputAll.Mul(s, lfo); break;
-        case FFLFOOpType::Add: outputAll.Store(s, xsimd::clip(outputAll.Load(s) + lfo, FBBatch<float>(0.0f), FBBatch<float>(1.0f))); break;
-        case FFLFOOpType::Stack: outputAll.Add(s, (1.0f - outputAll.Load(s)) * lfo); break;
-        default: FB_ASSERT(false); break;
-        }
+        outputAll.Store(s, FFModulate(_opType[i], lfo, 1.0f, outputAll.Load(s)));
       }
 
       _lastOutputRaw[i] = outputRaw[i].Get(s + FBSIMDFloatCount - 1);

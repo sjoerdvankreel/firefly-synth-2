@@ -147,7 +147,10 @@ FFMakeLFOTopo(bool global)
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
     { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
     { "{AD641260-F205-497E-B483-330CFA025378}", "Mul" },
-    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "Stk" } };
+    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "Stack" },
+    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", "BP Add" },
+    { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", "BP Mul" },
+    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);
