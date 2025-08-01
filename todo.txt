@@ -4,7 +4,7 @@ TODOLIST for alpha-10
 [ ] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
 [ ] also releaseing a note by playing the same just doesn't work
 [ ] optional mod indicators
-[ ] do addbp also for lfos
+[x] do addbp also for lfos
 [ ] easy access mod controls
 [ ] widen the gui for the easy access stuff
 [x] make env1 to amp explicit
@@ -27,7 +27,8 @@ TODOLIST for alpha-10
 [x] need bpmul
 [x] move all crap to generic and share with lfo
 [x] how many auxes?
-[ ] drop freesmth, not work. do uni/gaus everywhere
+[ ] drop freesmth, not work???. do uni/gaus everywhere
+[ ] fix free-random
 [x] make sure can parse default always
 [ ] make it clear alpha breaks the demos
 [x] rename mix gain to amp to match amp envelope
