@@ -37,11 +37,25 @@ FFMakeOutputTopo()
   cpu.slotCount = 1;
   cpu.id = "{F7E383FA-61A6-4CDB-898B-C62C248633A0}";
   cpu.type = FBParamType::Discrete;
-  cpu.Discrete().valueCount = FFMaxCpu + 1;
+  cpu.Discrete().valueCount = FFOutputMaxCpu + 1;
   auto selectCpu = [](auto& module) { return &module.block.cpu; };
   cpu.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCpu);
   cpu.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectCpu);
   cpu.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCpu);
+
+  auto& gain = result->params[(int)FFOutputParam::Gain];
+  gain.acc = false;
+  gain.output = true;
+  gain.defaultText = "0";
+  gain.name = "Gain";
+  gain.slotCount = 1;
+  gain.id = "{F0F8F4CA-8F90-4C6D-B685-24119817CC1D}";
+  gain.type = FBParamType::Discrete;
+  gain.Discrete().valueCount = FFOutputMaxGain + 1;
+  auto selectGain = [](auto& module) { return &module.block.gain; };
+  gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
+  gain.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
+  gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
 
   return result;
 }

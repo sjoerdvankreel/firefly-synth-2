@@ -170,7 +170,7 @@ FFPlugProcessor::ProcessPostVoice(
 
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;
-  _procState->dsp.global.output.processor->Process(state);
+  _procState->dsp.global.output.processor->Process(state, output);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
