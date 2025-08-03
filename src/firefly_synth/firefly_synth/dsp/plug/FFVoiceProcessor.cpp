@@ -101,7 +101,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
         auto const& vfxToVFXNorm = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
         voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, vfxToVFXNorm);
       }
-    voiceDSP.vEffect[i].processor->Process<false>(state);
+    voiceDSP.vEffect[i].processor->Process<false>(false, state);
   }
 
   voiceDSP.output.Fill(0.0f);

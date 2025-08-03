@@ -148,7 +148,7 @@ FFPlugProcessor::ProcessPostVoice(
         globalDSP.gEffect[i].input.AddMul(globalDSP.gEffect[source].output, gfxToGFXNorm);
       }
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
-    globalDSP.gEffect[i].processor->Process<true>(state);
+    globalDSP.gEffect[i].processor->Process<true>(false, state);
   }
 
   output.audio.Fill(0.0f);

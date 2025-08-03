@@ -117,7 +117,7 @@ EffectGraphRenderData<Global>::DoProcess(
         input[c].Set(s, ((samplesProcessed[graphIndex] + s) / static_cast<float>(totalSamples)) * 2.0f - 1.0f);
   
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
-  return GetProcessor(*moduleProcState).template Process<Global>(*moduleProcState);
+  return GetProcessor(*moduleProcState).template Process<Global>(true, *moduleProcState);
 }
 
 template <bool Global>
