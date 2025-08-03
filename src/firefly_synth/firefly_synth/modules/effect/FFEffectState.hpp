@@ -52,6 +52,8 @@ class alignas(alignof(TAccurate)) FFEffectAccParamState final
   friend class FFEffectProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool);
   std::array<TAccurate, 1> trackingKey = {};
+  std::array<TAccurate, FFEffectBlockCount> envAmt = {};
+  std::array<TAccurate, FFEffectBlockCount> lfoAmt = {};
   std::array<TAccurate, FFEffectBlockCount> distMix = {};
   std::array<TAccurate, FFEffectBlockCount> distAmt = {};
   std::array<TAccurate, FFEffectBlockCount> distBias = {};

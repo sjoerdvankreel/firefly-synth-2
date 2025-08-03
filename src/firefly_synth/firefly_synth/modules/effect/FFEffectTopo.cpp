@@ -119,6 +119,40 @@ FFMakeEffectTopo(bool global)
   kind.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectKind);
   kind.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& envAmt = result->params[(int)FFEffectParam::EnvAmt];
+  envAmt.acc = true;
+  envAmt.defaultText = "0";
+  envAmt.name = "Env Amt";
+  envAmt.slotCount = FFEffectBlockCount;
+  envAmt.unit = "%";
+  envAmt.id = prefix + "{1064F27D-F3A6-469F-93AA-ABA548179947}";
+  envAmt.type = FBParamType::Identity;
+  auto selectEnvAmt = [](auto& module) { return &module.acc.envAmt; };
+  envAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectEnvAmt);
+  envAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectEnvAmt);
+  envAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectEnvAmt);
+  envAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectEnvAmt);
+  envAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectEnvAmt);
+  envAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On },
+    [](auto const& vs) { return vs[0] != 0; });
+
+  auto& lfoAmt = result->params[(int)FFEffectParam::LFOAmt];
+  lfoAmt.acc = true;
+  lfoAmt.defaultText = "0";
+  lfoAmt.name = "LFO Amt";
+  lfoAmt.slotCount = FFEffectBlockCount;
+  lfoAmt.unit = "%";
+  lfoAmt.id = prefix + "{3139FC96-AB7F-4402-8508-2EFCC558AD1C}";
+  lfoAmt.type = FBParamType::Identity;
+  auto selectLFOAmt = [](auto& module) { return &module.acc.lfoAmt; };
+  lfoAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectLFOAmt);
+  lfoAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectLFOAmt);
+  lfoAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectLFOAmt);
+  lfoAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectLFOAmt);
+  lfoAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectLFOAmt);
+  lfoAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On },
+    [](auto const& vs) { return vs[0] != 0; });
+
   auto& stVarMode = result->params[(int)FFEffectParam::StVarMode];
   stVarMode.acc = false;
   stVarMode.defaultText = "LPF";
