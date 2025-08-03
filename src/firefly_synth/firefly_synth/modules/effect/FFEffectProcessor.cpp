@@ -261,7 +261,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
             FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
             FFSelectDualProcAccParamNormalized<Global>(distDriveNormIn[i], voice).CV().Load(s)));
-        distDrivePlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::DistDrive, distDriveNormModulated[i].Load(s)));
+        distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, distDriveNormModulated[i].Load(s)));
       }
       else
         FB_ASSERT(_kind[i] == FFEffectKind::Off);
