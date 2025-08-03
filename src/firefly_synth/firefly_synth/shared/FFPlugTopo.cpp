@@ -91,8 +91,8 @@ FFMakeTopo(FBPlugFormat format)
   result->meta = FFPlugMeta(format);
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
-  result->guiWidth = 900;
-  result->guiAspectRatioWidth = 27; // TODO fix once re-layout
+  result->guiWidth = 1080;
+  result->guiAspectRatioWidth = 32; // TODO fix once re-layout
   result->guiAspectRatioHeight = 13;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
     return std::make_unique<FFPlugGUI>(hostContext); };

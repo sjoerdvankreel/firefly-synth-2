@@ -40,7 +40,8 @@ FFMakeEffectTopo(bool global)
   auto& oversample = result->params[(int)FFEffectParam::Oversample];
   oversample.acc = false;
   oversample.defaultText = "Off";
-  oversample.name = "Ovrsmp";
+  oversample.name = "Oversample";
+  oversample.display = "OS";
   oversample.slotCount = 1;
   oversample.id = prefix + "{28875DF7-255B-4190-80CE-D0A9ED20F263}";
   oversample.type = FBParamType::Boolean;
@@ -74,7 +75,7 @@ FFMakeEffectTopo(bool global)
   auto& lastKeySmoothTime = result->params[(int)FFEffectParam::LastKeySmoothTime];
   lastKeySmoothTime.acc = false;
   lastKeySmoothTime.defaultText = "0.1";
-  lastKeySmoothTime.display = "Smooth";
+  lastKeySmoothTime.display = "Smth";
   lastKeySmoothTime.name = "Last Key Smooth Time";
   lastKeySmoothTime.slotCount = 1;
   lastKeySmoothTime.unit = "Sec";
@@ -124,6 +125,8 @@ FFMakeEffectTopo(bool global)
   envAmt.defaultText = "0";
   envAmt.name = "Env Amt";
   envAmt.slotCount = FFEffectBlockCount;
+  envAmt.slotFormatterOverrides = true;
+  envAmt.slotFormatter = [](auto const&, int ps) { return "Env " + std::to_string(ps + 1); };
   envAmt.unit = "%";
   envAmt.id = prefix + "{1064F27D-F3A6-469F-93AA-ABA548179947}";
   envAmt.type = FBParamType::Identity;
@@ -134,13 +137,15 @@ FFMakeEffectTopo(bool global)
   envAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectEnvAmt);
   envAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectEnvAmt);
   envAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On },
-    [](auto const& vs) { return vs[0] != 0; });
+    [global](auto const& vs) { return !global && vs[0] != 0; });
 
   auto& lfoAmt = result->params[(int)FFEffectParam::LFOAmt];
   lfoAmt.acc = true;
   lfoAmt.defaultText = "0";
   lfoAmt.name = "LFO Amt";
   lfoAmt.slotCount = FFEffectBlockCount;
+  lfoAmt.slotFormatterOverrides = true;
+  lfoAmt.slotFormatter = [](auto const&, int ps) { return "LFO " + std::to_string(ps + 1); };
   lfoAmt.unit = "%";
   lfoAmt.id = prefix + "{3139FC96-AB7F-4402-8508-2EFCC558AD1C}";
   lfoAmt.type = FBParamType::Identity;
