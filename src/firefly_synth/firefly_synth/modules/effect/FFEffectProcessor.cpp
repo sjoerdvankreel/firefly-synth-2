@@ -175,7 +175,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     [procState]() { return &procState->dsp.global.gLFO; },
     [procState, voice]() { return &procState->dsp.voice[voice].vLFO; });
 
-  //auto const& envAmtNorm = procParams.acc.envAmt;
+  auto const& envAmtNorm = procParams.acc.envAmt;
   auto const& lfoAmtNorm = procParams.acc.lfoAmt;
   auto const& distDriveNormIn = procParams.acc.distDrive;
   auto const& stVarFreqNormIn = procParams.acc.stVarFreq;
@@ -206,6 +206,10 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     trackingKeyPlain.Store(s, topo.NormalizedToLinearFast(FFEffectParam::TrackingKey, trackingKeyNorm, s));
     for (int i = 0; i < FFEffectBlockCount; i++)
     {
+      distDriveNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(distDriveNormIn[i], voice).CV().Load(s));
+      stVarFreqNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(stVarFreqNormIn[i], voice).CV().Load(s));
+      combFreqMinNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(combFreqMinNormIn[i], voice).CV().Load(s));
+      combFreqPlusNormModulated[i].Store(s, FFSelectDualProcAccParamNormalized<Global>(combFreqPlusNormIn[i], voice).CV().Load(s));
       if (_kind[i] == FFEffectKind::StVar)
       {
         stVarResPlain[i].Store(s, topo.NormalizedToIdentityFast(FFEffectParam::StVarRes,
@@ -392,6 +396,8 @@ FFEffectProcessor::Process(FBModuleProcState& state)
     FFSelectDualExchangeState<Global>(exchangeParams.acc.stVarFreq[i], voice) = stVarFreqNormModulated[i].Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.combFreqMin[i], voice) = combFreqMinNormModulated[i].Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.combFreqPlus[i], voice) = combFreqPlusNormModulated[i].Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.envAmt[i], voice) = FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).Last();
+    FFSelectDualExchangeState<Global>(exchangeParams.acc.lfoAmt[i], voice) = FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.distAmt[i], voice) = FFSelectDualProcAccParamNormalized<Global>(distAmtNorm[i], voice).Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.distMix[i], voice) = FFSelectDualProcAccParamNormalized<Global>(distMixNorm[i], voice).Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.distBias[i], voice) = FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice).Last();
