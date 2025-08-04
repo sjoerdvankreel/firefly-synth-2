@@ -14,3 +14,17 @@ public:
   int FixedWidth(int height) const override;
   FBSectionComponent(juce::Component* content);
 };
+
+class FBSubSectionComponent:
+public juce::Component,
+public IFBHorizontalAutoSize,
+public IFBVerticalAutoSize
+{
+public:
+  void resized() override;
+  void paint(juce::Graphics& g) override;
+
+  int FixedHeight() const override;
+  int FixedWidth(int height) const override;
+  FBSubSectionComponent(juce::Component* content);
+};
