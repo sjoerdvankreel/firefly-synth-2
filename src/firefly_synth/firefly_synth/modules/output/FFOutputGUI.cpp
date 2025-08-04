@@ -32,7 +32,8 @@ MakeOutputSectionAll(FBPlugGUI* plugGUI)
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voices));
   grid->Add(0, 5, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, voices, "0", std::to_string(FBMaxVoices)));
   grid->MarkSection({ { 0, 0 }, { 1, 6 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(section);
 } 
 
 Component*

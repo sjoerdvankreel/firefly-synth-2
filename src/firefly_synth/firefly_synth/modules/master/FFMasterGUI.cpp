@@ -38,7 +38,8 @@ MakeMasterSectionAll(FBPlugGUI* plugGUI)
     grid->Add(0, 2 + (i * 2) + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
   grid->MarkSection({ { 0, 0 }, { 1, 2 + 2 * FFMasterAuxCount } });
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
 
 Component*

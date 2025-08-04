@@ -27,7 +27,8 @@ MakeGUISettingsTab(FBPlugGUI* plugGUI)
   grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobRenderMode));
   grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobRenderMode));
   grid->MarkSection({ { 0, 0 }, { 1, 4 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
 
 Component*

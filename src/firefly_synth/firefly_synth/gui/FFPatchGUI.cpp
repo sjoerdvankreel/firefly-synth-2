@@ -25,7 +25,8 @@ MakePatchTab(FBPlugGUI* plugGUI)
   init->onClick = [plugGUI]() { plugGUI->InitPatch(); };
   grid->Add(0, 2, init);
   grid->MarkSection({ { 0, 0 }, { 1, 3 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
 
 Component*
