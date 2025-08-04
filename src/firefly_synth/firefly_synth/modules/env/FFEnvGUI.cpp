@@ -45,7 +45,7 @@ MakeEnvSectionMain(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, loopLength));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, loopLength));
   grid->MarkSection({ { 0, 0 }, { 2, 6 } });
-  return grid;
+  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
 static Component*
@@ -79,7 +79,7 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
     lower->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slope, Slider::SliderStyle::RotaryVerticalDrag));
     grid->MarkSection({ { 0, 1 + i }, { 2, 1 } });
   }
-  return grid;
+  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
 static Component*
