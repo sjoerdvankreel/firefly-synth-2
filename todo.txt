@@ -35,6 +35,7 @@ TODOLIST for alpha-10
 [ ] not show the 1234 in the mixers
 [ ] re-check all the shortcuts "frq" "gn" "ktr" etc, maybe new screenspace allows more
 [ ] allow modulate env stage lengths on voice start
+[ ] fix all the tooltips (name/display)
 
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
