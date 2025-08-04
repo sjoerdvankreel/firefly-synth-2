@@ -142,7 +142,7 @@ FFPlugGUI::SetupGUI()
   _modules->Add(4, 0, FFMakeMixGUI(this));
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
-  _container = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 2, 2, 15 } }, std::vector<int> { { 1, 0, 0, 0, 0 } });
+  _container = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1, 1, 7 } }, std::vector<int> { { 1, 0, 0, 0, 0 } });
   _container->Add(0, 0, 1, 5, _graph);
   _container->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
   _container->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
