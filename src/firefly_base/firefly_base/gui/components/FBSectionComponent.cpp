@@ -32,7 +32,7 @@ FBSubSectionComponent(Component* content) :
 void 
 FBSubSectionComponent::paint(Graphics& g)
 {
-  g.setColour(Colour(0xFF808080));
+  g.setColour(Colour(0xFFA0A0A0));
   g.drawRoundedRectangle(0.0f, 0.0f, (float)getWidth(), (float)getHeight(), 6.0f, 2.0f);
 }
 

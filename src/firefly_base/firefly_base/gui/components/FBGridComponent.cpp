@@ -209,7 +209,7 @@ FBGridComponent::paint(Graphics& g)
 {
   float x0, x1, y0, y1;
   x0 = x1 = y0 = y1 = -1.0f;
-  g.setColour(Colour(0xFF202020));
+  g.setColour(Colour(0xFF181818));
   for (int i = 0; i < _sections.size(); i++)
   {
     for (int j = 0; j < _grid.items.size(); j++)
