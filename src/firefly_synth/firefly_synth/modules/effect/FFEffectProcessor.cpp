@@ -219,11 +219,21 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
         stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak,
           FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice), s));
 
-        if(!graph)
+        if (!graph)
+        {
           stVarFreqNormModulated[i].Store(s,
             FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
               FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
               FFSelectDualProcAccParamNormalized<Global>(stVarFreqNormIn[i], voice).CV().Load(s)));
+
+          if constexpr (!Global)
+          {
+            stVarFreqNormModulated[i].Store(s,
+              FFModulate(FFModulationOpType::Mul, procState->dsp.voice[voice].env[i].output.Load(s),
+                FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
+                stVarFreqNormModulated[i].Load(s)));
+          }
+        }
         stVarFreqPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::StVarFreq, stVarFreqNormModulated[i].Load(s)));
       }
       else if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombPlus || _kind[i] == FFEffectKind::CombMin)
@@ -235,11 +245,21 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
           combResMinPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResMin,
             FFSelectDualProcAccParamNormalized<Global>(combResMinNorm[i], voice), s));
 
-          if(!graph)
+          if (!graph)
+          {
             combFreqMinNormModulated[i].Store(s,
               FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(combFreqMinNormIn[i], voice).CV().Load(s)));
+
+            if constexpr (!Global)
+            {
+              combFreqMinNormModulated[i].Store(s,
+                FFModulate(FFModulationOpType::Mul, procState->dsp.voice[voice].env[i].output.Load(s),
+                  FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
+                  combFreqMinNormModulated[i].Load(s)));
+            }
+          }
           combFreqMinPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqMin, combFreqMinNormModulated[i].Load(s)));
         }
         if (_kind[i] == FFEffectKind::Comb || _kind[i] == FFEffectKind::CombPlus)
@@ -247,11 +267,21 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
           combResPlusPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResPlus,
             FFSelectDualProcAccParamNormalized<Global>(combResPlusNorm[i], voice), s));
 
-          if(!graph)
+          if (!graph)
+          {
             combFreqPlusNormModulated[i].Store(s,
               FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(combFreqPlusNormIn[i], voice).CV().Load(s)));
+
+            if constexpr (!Global)
+            {
+              combFreqPlusNormModulated[i].Store(s,
+                FFModulate(FFModulationOpType::Mul, procState->dsp.voice[voice].env[i].output.Load(s),
+                  FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
+                  combFreqPlusNormModulated[i].Load(s)));
+            }
+          }
           combFreqPlusPlain[i].Store(s, topo.NormalizedToLog2Fast(FFEffectParam::CombFreqPlus, combFreqPlusNormModulated[i].Load(s)));
         }
       }
@@ -264,11 +294,21 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
         distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias,
           FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice), s));
         
-        if(!graph)
+        if (!graph)
+        {
           distDriveNormModulated[i].Store(s,
             FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
               FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
               FFSelectDualProcAccParamNormalized<Global>(distDriveNormIn[i], voice).CV().Load(s)));
+
+          if constexpr (!Global)
+          {
+            distDriveNormModulated[i].Store(s,
+              FFModulate(FFModulationOpType::Mul, procState->dsp.voice[voice].env[i].output.Load(s),
+                FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
+                distDriveNormModulated[i].Load(s)));
+          }
+        }
         distDrivePlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistDrive, distDriveNormModulated[i].Load(s)));
       }
       else
