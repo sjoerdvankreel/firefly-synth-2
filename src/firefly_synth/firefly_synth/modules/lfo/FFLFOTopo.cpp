@@ -97,7 +97,7 @@ FFMakeLFOTopo(bool global)
   auto& smoothTime = result->params[(int)FFLFOParam::SmoothTime];
   smoothTime.acc = false;
   smoothTime.defaultText = "0";
-  smoothTime.display = "Smth";
+  smoothTime.display = "Smooth";
   smoothTime.name = "Smooth Time";
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
@@ -118,7 +118,7 @@ FFMakeLFOTopo(bool global)
   auto& smoothBars = result->params[(int)FFLFOParam::SmoothBars];
   smoothBars.acc = false;
   smoothBars.defaultText = "Off";
-  smoothBars.display = "Smth";
+  smoothBars.display = "Smooth";
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
@@ -141,13 +141,13 @@ FFMakeLFOTopo(bool global)
   opType.slotCount = FFLFOBlockCount;
   opType.slotFormatter = FFFormatBlockSlot;
   opType.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
-  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "Add" : "Off"; };
+  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP Add" : "Off"; };
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
-    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
-    { "{AD641260-F205-497E-B483-330CFA025378}", "Mul" },
-    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "Stack" },
+    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "UP Add" },
+    { "{AD641260-F205-497E-B483-330CFA025378}", "UP Mul" },
+    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "UP Stk" },
     { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", "BP Add" },
     { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", "BP Mul" },
     { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" } };
@@ -306,6 +306,7 @@ FFMakeLFOTopo(bool global)
   phase.name = "Phase";
   phase.display = "Phase";
   phase.slotCount = FFLFOBlockCount;
+  phase.slotFormatter = FFFormatBlockSlot;
   phase.unit = "%";
   phase.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
   phase.type = FBParamType::Identity;
@@ -327,10 +328,10 @@ FFMakeLFOTopo(bool global)
   skewAXMode.type = FBParamType::List;
   skewAXMode.List().items = {
     { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
-    { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "SclU" },
-    { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "SclB" },
-    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "ExpU" },
-    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "ExpB" } };
+    { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "UP Scale" },
+    { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "BP Scale" },
+    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "UP Exp" },
+    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "BP Exp" } };
   auto selectSkewAXMode = [](auto& module) { return &module.block.skewAXMode; };
   skewAXMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXMode);
   skewAXMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAXMode);
@@ -365,8 +366,8 @@ FFMakeLFOTopo(bool global)
   skewAYMode.type = FBParamType::List;
   skewAYMode.List().items = {
     { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
-    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "ExpU" },
-    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "ExpB" } };
+    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "UP Exp" },
+    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "BP Exp" } };
   auto selectSkewAYMode = [](auto& module) { return &module.block.skewAYMode; };
   skewAYMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYMode);
   skewAYMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAYMode);

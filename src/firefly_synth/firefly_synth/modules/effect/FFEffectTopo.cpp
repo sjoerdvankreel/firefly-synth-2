@@ -464,7 +464,7 @@ FFMakeEffectTopo(bool global)
   
   auto& skewMode = result->params[(int)FFEffectParam::SkewMode];
   skewMode.acc = false;
-  skewMode.defaultText = "Uni";
+  skewMode.defaultText = "UP";
   skewMode.name = "Skew Mode";
   skewMode.display = "Mod";
   skewMode.slotCount = FFEffectBlockCount;
@@ -472,8 +472,8 @@ FFMakeEffectTopo(bool global)
   skewMode.id = prefix + "{DCA38D64-3791-4542-A6C7-FCA66DA45FEE}";
   skewMode.type = FBParamType::List;
   skewMode.List().items = {
-    { prefix + "{247BC86E-078E-409F-99B7-870F1B011C3B}", "Uni" },
-    { prefix + "{C7689457-2AE9-4730-A341-5CB7B27047DE}", "Bi" } };
+    { prefix + "{247BC86E-078E-409F-99B7-870F1B011C3B}", "UP" },
+    { prefix + "{C7689457-2AE9-4730-A341-5CB7B27047DE}", "BP" } };
   auto selectSkewMode = [](auto& module) { return &module.block.skewMode; };
   skewMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewMode);
   skewMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewMode);
