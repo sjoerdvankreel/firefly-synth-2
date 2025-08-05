@@ -15,7 +15,7 @@ FBMakeRuntimeCVOutputName(
   if (module.cvOutputs.size() != 1)
   {
     if (cvOutput.slotFormatter != nullptr)
-      result += " " + cvOutput.slotFormatter(topo, indices.cvOutput.slot);
+      result += cvOutput.slotFormatter(topo, indices.cvOutput.slot);
     else
     {
       result += " ";
