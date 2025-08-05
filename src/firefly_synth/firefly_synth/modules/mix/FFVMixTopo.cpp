@@ -54,7 +54,7 @@ FFMakeVMixTopo()
 
   auto& ampEnvToAmp = result->params[(int)FFVMixParam::AmpEnvToAmp];
   ampEnvToAmp.acc = true;
-  ampEnvToAmp.name = "Amp Env";
+  ampEnvToAmp.name = "Amp Env\U00002192Amp";
   ampEnvToAmp.defaultText = "100";
   ampEnvToAmp.slotCount = 1;
   ampEnvToAmp.unit = "%";
@@ -81,6 +81,19 @@ FFMakeVMixTopo()
   bal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectBal);
   bal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectBal);
   bal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectBal); 
+
+  auto& lfo1ToBal = result->params[(int)FFVMixParam::LFO1ToBal];
+  lfo1ToBal.acc = true;
+  lfo1ToBal.name = "VLFO1\U00002192Bal";
+  lfo1ToBal.defaultText = "0";
+  lfo1ToBal.slotCount = 1;
+  lfo1ToBal.unit = "%";
+  lfo1ToBal.id = "{A389D686-A435-4263-B82D-C177D081FB64}";
+  lfo1ToBal.type = FBParamType::Identity;
+  auto selectLFO1ToBal = [](auto& module) { return &module.acc.lfo1ToBal; };
+  lfo1ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO1ToBal);
+  lfo1ToBal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO1ToBal);
+  lfo1ToBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO1ToBal);
   
   auto& osciToVFX = result->params[(int)FFVMixParam::OsciToVFX];
   osciToVFX.acc = true;

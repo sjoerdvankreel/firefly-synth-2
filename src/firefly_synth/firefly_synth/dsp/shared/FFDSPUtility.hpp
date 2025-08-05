@@ -4,7 +4,7 @@
 
 enum class FFModulationOpType { 
   Off, 
-  Add, Mul, Stack, 
+  UPAdd, UPMul, UPStack, 
   BPAdd, BPMul, BPStack };
 
 inline float
@@ -33,7 +33,7 @@ KeyboardTrackingMultiplier(
 }
 
 inline FBBatch<float>
-FFModulateStack(
+FFModulateUPStack(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -41,7 +41,7 @@ FFModulateStack(
 }
 
 inline FBBatch<float>
-FFModulateMul(
+FFModulateUPMul(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -49,7 +49,7 @@ FFModulateMul(
 }
 
 inline FBBatch<float>
-FFModulateAdd(
+FFModulateUPAdd(
   FBBatch<float> source,
   FBBatch<float> amount, FBBatch<float> target)
 {
@@ -91,12 +91,12 @@ FFModulate(
 {
   switch (opType)
   {
-  case FFModulationOpType::Add: 
-    return FFModulateAdd(source, amount, target);
-  case FFModulationOpType::Mul: 
-    return FFModulateMul(source, amount, target);
-  case FFModulationOpType::Stack: 
-    return FFModulateStack(source, amount, target);
+  case FFModulationOpType::UPAdd: 
+    return FFModulateUPAdd(source, amount, target);
+  case FFModulationOpType::UPMul:
+    return FFModulateUPMul(source, amount, target);
+  case FFModulationOpType::UPStack:
+    return FFModulateUPStack(source, amount, target);
   case FFModulationOpType::BPAdd: 
     return FFModulateBPAdd(source, amount, target);
   case FFModulationOpType::BPMul:

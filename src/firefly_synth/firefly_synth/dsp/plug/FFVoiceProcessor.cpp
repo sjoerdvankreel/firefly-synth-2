@@ -49,11 +49,13 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceDSP = procState->dsp.voice[voice];
   auto const& vMix = procState->param.voice.vMix[0];
-  auto const& balNorm = vMix.acc.bal[0].Voice()[voice];
+  auto const& balNormIn = vMix.acc.bal[0].Voice()[voice];
   auto const& ampNormIn = vMix.acc.amp[0].Voice()[voice];
+  auto const& lfo1ToBalNorm = vMix.acc.lfo1ToBal[0].Voice()[voice];
   auto const& ampEnvToAmpNorm = vMix.acc.ampEnvToAmp[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
+  FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
@@ -116,11 +118,13 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, vfxToOutNorm);
   }
 
+  balNormIn.CV().CopyTo(balNormModulated);
   ampNormIn.CV().CopyTo(ampNormModulated);
-  FFApplyModulation(FFModulationOpType::Mul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
+  FFApplyModulation(FFModulationOpType::BPMul, voiceDSP.vLFO[0].outputAll, lfo1ToBalNorm.CV(), balNormModulated);
+  FFApplyModulation(FFModulationOpType::UPMul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float balPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Bal, balNorm.CV().Get(s));
+    float balPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Bal, balNormModulated.Get(s));
     float ampPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Get(s));
     for (int c = 0; c < 2; c++)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
@@ -137,7 +141,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
-  exchangeParams.acc.bal[0][voice] = balNorm.CV().Last();
+  exchangeParams.acc.bal[0][voice] = balNormModulated.Last();
   exchangeParams.acc.amp[0][voice] = ampNormModulated.Last();
   exchangeParams.acc.ampEnvToAmp[0][voice] = ampEnvToAmpNorm.Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
