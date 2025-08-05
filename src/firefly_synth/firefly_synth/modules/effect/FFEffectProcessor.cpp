@@ -270,7 +270,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
           if (!graph)
           {
             combFreqPlusNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
+              FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(combFreqPlusNormIn[i], voice).CV().Load(s)));
 
