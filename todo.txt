@@ -43,6 +43,7 @@ TODOLIST for alpha-10
 [ ] draw a box around the popup/tooltip
 [x] lfo phase per slot
 [x] up env seg count
+[ ] keep taps on the mod matrix
 
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
