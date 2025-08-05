@@ -33,7 +33,7 @@ MakeGMixSectionVoiceToGFX(FBPlugGUI* plugGUI)
 }
 
 static Component*
-MakeGMixSectionVoiceAndVFXToOut(FBPlugGUI* plugGUI)
+MakeGMixSectionGFXToOut(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> columnSizes = {};
@@ -44,16 +44,13 @@ MakeGMixSectionVoiceAndVFXToOut(FBPlugGUI* plugGUI)
     columnSizes.push_back(0);
     columnSizes.push_back(1);
   }
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
-  auto voiceMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::VoiceToOut, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceMix));
-  grid->Add(0, 1, 1, FFEffectCount * 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceMix, Slider::SliderStyle::LinearHorizontal));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("FX\U00002192Out"));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("FX\U00002192Out"));
   for (int e = 0; e < FFEffectCount; e++)
   {
     auto fxMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::GFXToOut, e } });
-    grid->Add(1, 1 + e * 2, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(e + 1)));
-    grid->Add(1, 1 + e * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fxMix, Slider::SliderStyle::LinearHorizontal));
+    grid->Add(0, 1 + e * 2, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(e + 1)));
+    grid->Add(0, 1 + e * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fxMix, Slider::SliderStyle::LinearHorizontal));
   }
   grid->MarkSection({ { 0, 0 }, { 2, FFEffectCount * 2 + 1 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
@@ -89,7 +86,7 @@ FFMakeGMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1, 1, 0, 0 });
-  grid->Add(0, 0, MakeGMixSectionVoiceAndVFXToOut(plugGUI));
+  grid->Add(0, 0, MakeGMixSectionGFXToOut(plugGUI));
   grid->Add(0, 1, MakeGMixSectionVoiceToGFX(plugGUI));
   grid->Add(0, 2, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::GMix, (int)FFGMixParam::GFXToGFX));
   grid->Add(0, 3, MakeGMixGUISectionVoiceAmpBal(plugGUI));
