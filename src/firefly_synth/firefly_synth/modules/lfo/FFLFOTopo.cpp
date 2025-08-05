@@ -304,6 +304,7 @@ FFMakeLFOTopo(bool global)
   phase.acc = false;
   phase.defaultText = "0";
   phase.name = "Phase";
+  phase.display = "Phase";
   phase.slotCount = FFLFOBlockCount;
   phase.unit = "%";
   phase.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
