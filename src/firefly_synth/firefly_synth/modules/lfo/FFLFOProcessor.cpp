@@ -78,13 +78,13 @@ FFLFOProcessor::BeginVoiceOrBlock(
   auto const& topo = state.topo->static_->modules[(int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO)];
 
   auto const& stepsNorm = params.block.steps;
+  auto const& phaseNorm = params.block.phase;
   auto const& opTypeNorm = params.block.opType;
   auto const& waveModeNorm = params.block.waveMode;
   auto const& rateBarsNorm = params.block.rateBars;
   float seedNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.seed[0], voice);
   float typeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.type[0], voice);
   float syncNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.sync[0], voice);
-  float phaseBNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.phaseB[0], voice);
   float skewAXModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAXMode[0], voice);
   float skewAYModeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.skewAYMode[0], voice);
   float smoothBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.smoothBars[0], voice);
@@ -102,7 +102,6 @@ FFLFOProcessor::BeginVoiceOrBlock(
   _graphSampleCount = graphSampleCount;
 
   _sync = topo.NormalizedToBoolFast(FFLFOParam::Sync, syncNorm);
-  _phaseB = topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm);
   _type = topo.NormalizedToListFast<FFLFOType>(FFLFOParam::Type, typeNorm);
   _skewAXMode = topo.NormalizedToListFast<FFLFOSkewXMode>(FFLFOParam::SkewAXMode, skewAXModeNorm);
   _skewAYMode = topo.NormalizedToListFast<FFLFOSkewYMode>(FFLFOParam::SkewAYMode, skewAYModeNorm);
@@ -128,16 +127,16 @@ FFLFOProcessor::BeginVoiceOrBlock(
   {
     shouldInit = graph || !_globalWasInit;
     shouldInit |= _prevSeedNorm != seedNorm;
-    shouldInit |= _prevPhaseBNorm != phaseBNorm;
     shouldInit |= _prevSmoothSamples != _smoothSamples;
     _prevSeedNorm = seedNorm;
-    _prevPhaseBNorm = phaseBNorm;
     _prevSmoothSamples = _smoothSamples;
     for (int i = 0; i < FFLFOBlockCount; i++)
     {
+      shouldInit |= _prevPhaseNorm[i] != phaseNorm[i].Value();
       shouldInit |= _prevStepsNorm[i] != stepsNorm[i].Value();
       shouldInit |= _prevWaveModeNorm[i] != waveModeNorm[i].Value();
       _prevStepsNorm[i] = stepsNorm[i].Value();
+      _prevPhaseNorm[i] = phaseNorm[i].Value();
       _prevWaveModeNorm[i] = waveModeNorm[i].Value();
     }
   }
@@ -165,6 +164,9 @@ FFLFOProcessor::BeginVoiceOrBlock(
     _steps[i] = topo.NormalizedToDiscreteFast(
       FFLFOParam::Steps,
       FFSelectDualProcBlockParamNormalized<Global>(stepsNorm[i], voice));
+    _phase[i] = topo.NormalizedToIdentityFast(
+      FFLFOParam::Phase,
+      FFSelectDualProcBlockParamNormalized<Global>(phaseNorm[i], voice));
     _waveMode[i] = topo.NormalizedToListFast<FFLFOWaveMode>(
       FFLFOParam::WaveMode,
       FFSelectDualProcBlockParamNormalized<Global>(waveModeNorm[i], voice));
@@ -190,10 +192,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
       {
         _noiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeRandom);
         _smoothNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeSmooth);
-        if (i == 1)
-          _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::PhaseB, phaseBNorm));
-        else
-          _phaseGens[i] = FFTrackingPhaseGenerator(0.0f);
+        _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::Phase, _phase[i]));
       }
     }
   }
@@ -283,7 +282,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         float rate0 = rateHzPlain[i].Get(0);
         if (rate0 > 0.0f)
         {
-          float phaseOffset = i != 1 ? 0.0f : _phaseB;
+          float phaseOffset = _phase[i];
           std::int64_t samples0 = (std::int64_t)(sampleRate / rate0);
           std::int64_t phaseSamples = state.input->projectTimeSamples % samples0;
           float newPhase = phaseSamples / (float)samples0 + phaseOffset;

@@ -49,7 +49,7 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0 });
   auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, block } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, opType, std::string(1, static_cast<char>('A' + block))));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
@@ -71,7 +71,10 @@ MakeLFOSectionBlock(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot,
   auto max = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Max, block } });
   grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, max));
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, max, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 6 } });
+  auto phase = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::Phase, block } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phase));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phase, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 7 } });
   return grid;
 }
 
@@ -96,19 +99,6 @@ MakeLFOSectionSkewA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 }
 
 static Component*
-MakeLFOSectionPhaseB(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0 });
-  auto phaseB = topo->audio.ParamAtTopo({ { (int)moduleType, moduleSlot }, { (int)FFLFOParam::PhaseB, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, phaseB));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamSlider>(plugGUI, phaseB, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->MarkSection({ { 0, 0 }, { 2, 1 } });
-  return grid;
-}
-
-static Component*
 MakeLFOSectionA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
@@ -119,21 +109,11 @@ MakeLFOSectionA(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
 }
 
 static Component*
-MakeLFOSectionB(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
-  grid->Add(0, 0, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, 1));
-  grid->Add(0, 1, MakeLFOSectionPhaseB(plugGUI, moduleType, moduleSlot));
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-}
-
-static Component*
-MakeLFOSectionC(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
+MakeLFOSectionBC(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot, int block)
 {
   FB_LOG_ENTRY_EXIT();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0 });
-  grid->Add(0, 0, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, 2));
+  grid->Add(0, 0, MakeLFOSectionBlock(plugGUI, moduleType, moduleSlot, block));
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
@@ -148,8 +128,8 @@ MakeLFOTab(FBPlugGUI* plugGUI, FFModuleType moduleType, int moduleSlot)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeLFOSectionMain(plugGUI, moduleType, moduleSlot));
   grid->Add(0, 1, MakeLFOSectionA(plugGUI, moduleType, moduleSlot));
-  grid->Add(0, 2, MakeLFOSectionB(plugGUI, moduleType, moduleSlot));
-  grid->Add(0, 3, MakeLFOSectionC(plugGUI, moduleType, moduleSlot));
+  grid->Add(0, 2, MakeLFOSectionBC(plugGUI, moduleType, moduleSlot, 1));
+  grid->Add(0, 3, MakeLFOSectionBC(plugGUI, moduleType, moduleSlot, 2));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

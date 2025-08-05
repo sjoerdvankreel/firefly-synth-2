@@ -300,6 +300,22 @@ FFMakeLFOTopo(bool global)
   steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
   steps.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& phase = result->params[(int)FFLFOParam::Phase];
+  phase.acc = false;
+  phase.defaultText = "0";
+  phase.name = "Phase";
+  phase.slotCount = FFLFOBlockCount;
+  phase.unit = "%";
+  phase.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
+  phase.type = FBParamType::Identity;
+  auto selectPhase = [](auto& module) { return &module.block.phase; };
+  phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
+  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
+  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
+  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
+  phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase);
+  phase.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
   auto& skewAXMode = result->params[(int)FFLFOParam::SkewAXMode];
   skewAXMode.acc = false;
   skewAXMode.defaultText = "Off";
@@ -373,23 +389,6 @@ FFMakeLFOTopo(bool global)
   skewAYAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSkewAYAmt);
   skewAYAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAYAmt);
   skewAYAmt.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 }, { (int)FFLFOParam::SkewAYMode, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
-
-  auto& phaseB = result->params[(int)FFLFOParam::PhaseB];
-  phaseB.acc = false;
-  phaseB.defaultText = "0";
-  phaseB.name = "Phase B";
-  phaseB.display = "Phase";
-  phaseB.slotCount = 1;
-  phaseB.unit = "%";
-  phaseB.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
-  phaseB.type = FBParamType::Identity;
-  auto selectPhaseB = [](auto& module) { return &module.block.phaseB; };
-  phaseB.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhaseB);
-  phaseB.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhaseB);
-  phaseB.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhaseB);
-  phaseB.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhaseB);
-  phaseB.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhaseB);
-  phaseB.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 1 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& outputAll = result->cvOutputs[(int)FFLFOCVOutput::All];
   outputAll.slotCount = 1;

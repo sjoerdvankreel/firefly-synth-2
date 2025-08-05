@@ -12,11 +12,11 @@ struct FFLFOExchangeState;
 class FFLFOProcessor final
 {
   bool _sync = {};
-  float _phaseB = {};
   FFLFOType _type = {};
   FFLFOSkewXMode _skewAXMode = {};
   FFLFOSkewYMode _skewAYMode = {};
   std::array<int, FFLFOBlockCount> _steps = {};
+  std::array<float, FFLFOBlockCount> _phase = {};
   std::array<FFLFOWaveMode, FFLFOBlockCount> _waveMode = {};
   std::array<FFModulationOpType, FFLFOBlockCount> _opType = {};
 
@@ -25,9 +25,9 @@ class FFLFOProcessor final
   int _graphSamplesProcessed = {};
 
   float _prevSeedNorm = {};
-  float _prevPhaseBNorm = {};
   int _prevSmoothSamples = {};
   bool _globalWasInit = false;
+  std::array<float, FFLFOBlockCount> _prevPhaseNorm = {};
   std::array<float, FFLFOBlockCount> _prevStepsNorm = {};
   std::array<float, FFLFOBlockCount> _prevWaveModeNorm = {};
 
