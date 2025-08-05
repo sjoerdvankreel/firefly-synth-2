@@ -222,14 +222,14 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
         if (!graph)
         {
           stVarFreqNormModulated[i].Store(s,
-            FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
+            FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
               FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
               FFSelectDualProcAccParamNormalized<Global>(stVarFreqNormIn[i], voice).CV().Load(s)));
 
           if constexpr (!Global)
           {
             stVarFreqNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::Mul, procState->dsp.voice[voice].env[i].output.Load(s),
+              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                 stVarFreqNormModulated[i].Load(s)));
           }
@@ -248,14 +248,14 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
           if (!graph)
           {
             combFreqMinNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
+              FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(combFreqMinNormIn[i], voice).CV().Load(s)));
 
             if constexpr (!Global)
             {
               combFreqMinNormModulated[i].Store(s,
-                FFModulate(FFModulationOpType::Mul, procState->dsp.voice[voice].env[i].output.Load(s),
+                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   combFreqMinNormModulated[i].Load(s)));
             }
@@ -277,7 +277,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
             if constexpr (!Global)
             {
               combFreqPlusNormModulated[i].Store(s,
-                FFModulate(FFModulationOpType::Mul, procState->dsp.voice[voice].env[i].output.Load(s),
+                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   combFreqPlusNormModulated[i].Load(s)));
             }
@@ -297,14 +297,14 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
         if (!graph)
         {
           distDriveNormModulated[i].Store(s,
-            FFModulate(FFModulationOpType::Mul, lfoOutput[i].outputAll.Load(s),
+            FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
               FFSelectDualProcAccParamNormalized<Global>(lfoAmtNorm[i], voice).CV().Load(s),
               FFSelectDualProcAccParamNormalized<Global>(distDriveNormIn[i], voice).CV().Load(s)));
 
           if constexpr (!Global)
           {
             distDriveNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::Mul, procState->dsp.voice[voice].env[i].output.Load(s),
+              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                 distDriveNormModulated[i].Load(s)));
           }
