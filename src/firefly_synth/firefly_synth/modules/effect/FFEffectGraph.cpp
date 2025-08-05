@@ -153,7 +153,7 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   {
     FBRenderModuleGraph<Global, false>(renderData, i);
     if (i == FFEffectBlockCount)
-      graphData->graphs[i].text = moduleName + (on? "ALL": "ALL OFF");
+      graphData->graphs[i].text = moduleName + (on? "": " OFF");
     else
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };

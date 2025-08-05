@@ -145,7 +145,7 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   {
     FBRenderModuleGraph<Global, false>(renderData, i);
     if (i == FFLFOBlockCount)
-      graphData->graphs[i].text = moduleName + (type != FFLFOType::Off? "ALL": "ALL OFF");
+      graphData->graphs[i].text = moduleName + (type != FFLFOType::Off? "": " OFF");
     else
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };

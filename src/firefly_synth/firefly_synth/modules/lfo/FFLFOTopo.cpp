@@ -394,7 +394,7 @@ FFMakeLFOTopo(bool global)
 
   auto& outputAll = result->cvOutputs[(int)FFLFOCVOutput::All];
   outputAll.slotCount = 1;
-  outputAll.name = "All";
+  outputAll.name = "";
   outputAll.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
   outputAll.globalAddr = [](int ms, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].outputAll; };
   outputAll.voiceAddr = [](int ms, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].outputAll; };
