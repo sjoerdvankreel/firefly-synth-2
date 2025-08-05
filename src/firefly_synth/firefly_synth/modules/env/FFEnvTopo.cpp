@@ -39,9 +39,9 @@ FFMakeEnvTopo()
   type.type = FBParamType::List;
   type.List().items = {
     { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
-    { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Lin" },
+    { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Linear" },
     { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Exp" } };
-  type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == FFAmpEnvSlot ? "Lin" : "Off"; }; 
+  type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == FFAmpEnvSlot ? "Linear" : "Off"; }; 
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
@@ -65,7 +65,6 @@ FFMakeEnvTopo()
   release.acc = false;
   release.defaultText = "2";
   release.name = "Release";
-  release.display = "Rls";
   release.slotCount = 1;
   release.id = "{38670133-4372-461F-ACB8-0E1E156BD3DF}";
   release.type = FBParamType::Discrete;
@@ -111,7 +110,7 @@ FFMakeEnvTopo()
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
   smoothTime.acc = false;
   smoothTime.defaultText = "0";
-  smoothTime.display = "Smth";
+  smoothTime.display = "Smooth";
   smoothTime.name = "Smooth Time";
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
@@ -130,7 +129,7 @@ FFMakeEnvTopo()
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.acc = false;
   smoothBars.defaultText = "Off";
-  smoothBars.display = "Smth";
+  smoothBars.display = "Smooth";
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";

@@ -42,6 +42,7 @@ TODOLIST for alpha-10
 [ ] switch graph on click not change
 [ ] draw a box around the popup/tooltip
 [x] lfo phase per slot
+[x] up env seg count
 
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
