@@ -124,9 +124,13 @@ FFPlugProcessor::ProcessPostVoice(
   auto state = MakeModuleState(input);
   auto& globalDSP = _procState->dsp.global;
   auto const& gMix = _procState->param.global.gMix[0];
-  auto const& balNorm = gMix.acc.bal[0].Global();
-  auto const& ampNorm = gMix.acc.amp[0].Global();
+  auto const& balNormIn = gMix.acc.bal[0].Global();
+  auto const& ampNormIn = gMix.acc.amp[0].Global();
+  auto const& lfo1ToAmpNorm = gMix.acc.lfo1ToAmp[0].Global();
+  auto const& lfo2ToBalNorm = gMix.acc.lfo2ToBal[0].Global();
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
+  FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
+  FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
@@ -160,10 +164,14 @@ FFPlugProcessor::ProcessPostVoice(
     output.audio.AddMul(globalDSP.gEffect[i].output, gfxToOutNorm);
   }
 
+  ampNormIn.CV().CopyTo(ampNormModulated);
+  balNormIn.CV().CopyTo(balNormModulated);
+  FFApplyModulation(FFModulationOpType::UPMul, globalDSP.gLFO[0].outputAll, lfo1ToAmpNorm.CV(), ampNormModulated);
+  FFApplyModulation(FFModulationOpType::BPStack, globalDSP.gLFO[1].outputAll, lfo2ToBalNorm.CV(), balNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float balPlain = moduleTopo.NormalizedToLinearFast(FFGMixParam::Bal, balNorm.CV().Get(s));
-    float ampPlain = moduleTopo.NormalizedToLinearFast(FFGMixParam::Amp, ampNorm.CV().Get(s));
+    float balPlain = moduleTopo.NormalizedToLinearFast(FFGMixParam::Bal, balNormModulated.Get(s));
+    float ampPlain = moduleTopo.NormalizedToLinearFast(FFGMixParam::Amp, ampNormModulated.Get(s));
     for (int c = 0; c < 2; c++)
       output.audio[c].Set(s, output.audio[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
@@ -183,8 +191,10 @@ FFPlugProcessor::ProcessPostVoice(
   exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.global.gMix[0];
-  exchangeParams.acc.bal[0] = balNorm.CV().Last();
-  exchangeParams.acc.amp[0] = ampNorm.CV().Last();
+  exchangeParams.acc.bal[0] = balNormModulated.Last();
+  exchangeParams.acc.amp[0] = ampNormModulated.Last();
+  exchangeParams.acc.lfo1ToAmp[0] = lfo1ToAmpNorm.Last();
+  exchangeParams.acc.lfo2ToBal[0] = lfo2ToBalNorm.Last();
   exchangeParams.acc.voiceToOut[0] = gMix.acc.voiceToOut[0].Global().CV().Last();
   for (int r = 0; r < FFEffectCount; r++)
     exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
