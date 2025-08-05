@@ -26,4 +26,5 @@ std::string
 FBMakeRuntimeDisplayName(
   FBStaticTopo const& topo, std::string const& name,
   std::string const& display, int slotCount, int slot, 
-  FBSlotFormatter formatter, bool formatterOverrides);
+  FBSlotFormatter formatter, 
+  bool formatterOverrides, bool slotFormatDisplay);

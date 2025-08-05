@@ -124,9 +124,9 @@ FFMakeEffectTopo(bool global)
   envAmt.acc = true;
   envAmt.defaultText = "0";
   envAmt.name = "Env Amt";
+  envAmt.display = "Env";
+  envAmt.slotFormatDisplay = true;
   envAmt.slotCount = FFEffectBlockCount;
-  envAmt.slotFormatterOverrides = true;
-  envAmt.slotFormatter = [](auto const&, int ps) { return "Env " + std::to_string(ps + 1); };
   envAmt.unit = "%";
   envAmt.id = prefix + "{1064F27D-F3A6-469F-93AA-ABA548179947}";
   envAmt.type = FBParamType::Identity;
@@ -142,10 +142,10 @@ FFMakeEffectTopo(bool global)
   auto& lfoAmt = result->params[(int)FFEffectParam::LFOAmt];
   lfoAmt.acc = true;
   lfoAmt.defaultText = "0";
-  lfoAmt.name = "LFO Amt";
+  lfoAmt.name = global? "GLFO Amt": "VLFO Amt";
+  lfoAmt.display = global ? "GLFO": "VLFO";
+  lfoAmt.slotFormatDisplay = true;
   lfoAmt.slotCount = FFEffectBlockCount;
-  lfoAmt.slotFormatterOverrides = true;
-  lfoAmt.slotFormatter = [](auto const&, int ps) { return "LFO " + std::to_string(ps + 1); };
   lfoAmt.unit = "%";
   lfoAmt.id = prefix + "{3139FC96-AB7F-4402-8508-2EFCC558AD1C}";
   lfoAmt.type = FBParamType::Identity;

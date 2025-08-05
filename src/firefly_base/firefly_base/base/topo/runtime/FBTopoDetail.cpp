@@ -43,9 +43,11 @@ FBMakeRuntimeShortName(
 std::string
 FBMakeRuntimeDisplayName(
   FBStaticTopo const& topo, std::string const& name, std::string const& display,
-  int slotCount, int slot, FBSlotFormatter formatter, bool formatterOverrides)
+  int slotCount, int slot, FBSlotFormatter formatter, bool formatterOverrides, bool slotFormatDisplay)
 {
-  if (!display.empty())
-    return display;
-  return FBMakeRuntimeShortName(topo, name, slotCount, slot, formatter, formatterOverrides);
+  if (display.empty())
+    return FBMakeRuntimeShortName(topo, name, slotCount, slot, formatter, formatterOverrides);
+  if(slotFormatDisplay)
+    return FBMakeRuntimeShortName(topo, display, slotCount, slot, formatter, formatterOverrides);
+  return display;
 }
