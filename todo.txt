@@ -6,13 +6,13 @@ TODOLIST for alpha-10
 [x] optional mod indicators
 [x] do addbp also for lfos
 [ ] easy access mod controls
-[ ] widen the gui for the easy access stuff
+[x] widen the gui for the easy access stuff
 [x] make env1 to amp explicit
 [ ] refix all behind-the-scenes mod sources and targets
 [x] paint env1 to vmix
 [x] not hardcode env1 to voice amp
 [ ] floating notes
-[ ] all output controls -> cpu indicator, gain indicator, need not be pretty yet
+[x] all output controls -> cpu indicator, gain indicator, need not be pretty yet
 [x] master input (aux)
 [ ] master input (modwheel, pb + range)
 [ ] portamento controls + all-osci coarse/fine
@@ -37,13 +37,11 @@ TODOLIST for alpha-10
 [ ] allow modulate env stage lengths on voice start
 [ ] fix all the tooltips (name/display)
 [ ] mark v/g for easy access
-[ ] "A"->"LFO A"/"FX A"
 [ ] v/gmix easy more access
 [ ] can do more matrix routes?
 [ ] switch graph on click not change
 [ ] draw a box around the popup/tooltip
-[ ] lfo phase per slot
-[ ] center abc
+[x] lfo phase per slot
 
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
