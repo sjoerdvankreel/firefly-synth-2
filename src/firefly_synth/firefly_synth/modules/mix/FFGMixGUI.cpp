@@ -19,7 +19,7 @@ MakeGMixSectionVoiceToGFXAndGFXToOut(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 1, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 1, 1, 1 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice\U00002192FX"));
   grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("FX\U00002192Out"));
   for (int e = 0; e < FFEffectCount; e++)
@@ -62,9 +62,9 @@ Component*
 FFMakeGMixGUITab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1, 0, 0 });
-  grid->Add(0, 0, MakeGMixSectionVoiceToGFXAndGFXToOut(plugGUI));
-  grid->Add(0, 1, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::GMix, (int)FFGMixParam::GFXToGFX));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0 });
+  grid->Add(0, 0, FFMakeMixGUISectionFXToFX(plugGUI, (int)FFModuleType::GMix, (int)FFGMixParam::GFXToGFX));
+  grid->Add(0, 1, MakeGMixSectionVoiceToGFXAndGFXToOut(plugGUI));
   grid->Add(0, 2, MakeGMixGUISectionVoiceAmpBal(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
