@@ -285,7 +285,7 @@ FFMakeLFOTopo(bool global)
   steps.acc = false;
   steps.defaultText = "1";
   steps.name = "Steps";
-  steps.display = "Stp";
+  steps.display = "Steps";
   steps.slotCount = FFLFOBlockCount;
   steps.slotFormatter = FFFormatBlockSlot;
   steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
@@ -303,7 +303,7 @@ FFMakeLFOTopo(bool global)
   auto& skewAXMode = result->params[(int)FFLFOParam::SkewAXMode];
   skewAXMode.acc = false;
   skewAXMode.defaultText = "Off";
-  skewAXMode.display = "SkX";
+  skewAXMode.display = "Skew X";
   skewAXMode.name = "Skew A X Mode";
   skewAXMode.slotCount = 1;
   skewAXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
@@ -341,7 +341,7 @@ FFMakeLFOTopo(bool global)
   auto& skewAYMode = result->params[(int)FFLFOParam::SkewAYMode];
   skewAYMode.acc = false;
   skewAYMode.defaultText = "Off";
-  skewAYMode.display = "SkY";
+  skewAYMode.display = "Skew Y";
   skewAYMode.name = "Skew A Y Mode";
   skewAYMode.slotCount = 1;
   skewAYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
@@ -378,7 +378,7 @@ FFMakeLFOTopo(bool global)
   phaseB.acc = false;
   phaseB.defaultText = "0";
   phaseB.name = "Phase B";
-  phaseB.display = "Phs";
+  phaseB.display = "Phase";
   phaseB.slotCount = 1;
   phaseB.unit = "%";
   phaseB.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
