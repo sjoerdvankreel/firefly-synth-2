@@ -84,7 +84,7 @@ FFMakeVMixTopo()
 
   auto& lfo1ToBal = result->params[(int)FFVMixParam::LFO1ToBal];
   lfo1ToBal.acc = true;
-  lfo1ToBal.name = "VLFO1\U00002192Bal";
+  lfo1ToBal.name = "VLFO 1\U00002192Bal";
   lfo1ToBal.defaultText = "0";
   lfo1ToBal.slotCount = 1;
   lfo1ToBal.unit = "%";

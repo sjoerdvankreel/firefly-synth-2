@@ -120,7 +120,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
 
   balNormIn.CV().CopyTo(balNormModulated);
   ampNormIn.CV().CopyTo(ampNormModulated);
-  FFApplyModulation(FFModulationOpType::BPMul, voiceDSP.vLFO[0].outputAll, lfo1ToBalNorm.CV(), balNormModulated);
+  FFApplyModulation(FFModulationOpType::BPStack, voiceDSP.vLFO[0].outputAll, lfo1ToBalNorm.CV(), balNormModulated);
   FFApplyModulation(FFModulationOpType::UPMul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
@@ -143,6 +143,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
   exchangeParams.acc.bal[0][voice] = balNormModulated.Last();
   exchangeParams.acc.amp[0][voice] = ampNormModulated.Last();
+  exchangeParams.acc.lfo1ToBal[0][voice] = lfo1ToBalNorm.Last();
   exchangeParams.acc.ampEnvToAmp[0][voice] = ampEnvToAmpNorm.Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.VFXToVFX[r][voice] = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Last();
