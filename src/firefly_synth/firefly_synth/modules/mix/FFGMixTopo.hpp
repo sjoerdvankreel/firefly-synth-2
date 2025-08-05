@@ -9,6 +9,6 @@ struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeGMixTopo();
 
 enum class FFGMixParam {
-  Amp, Bal,
+  Amp, LFO1ToAmp, Bal, LFO2ToBal,
   VoiceToGFX, GFXToGFX,
   VoiceToOut, GFXToOut, Count };
