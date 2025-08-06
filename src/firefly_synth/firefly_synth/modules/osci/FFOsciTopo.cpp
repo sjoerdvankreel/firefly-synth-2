@@ -90,7 +90,7 @@ FFMakeOsciTopo()
   envToGain.acc = true;
   envToGain.name = "Env\U00002192Gain";
   envToGain.defaultText = "0";
-  envToGain.slotCount = FFLFOCount;
+  envToGain.slotCount = 1;
   envToGain.unit = "%";
   envToGain.id = "{3AAA882F-A89F-4523-A47F-857B508D849F}";
   envToGain.type = FBParamType::Identity;
@@ -152,7 +152,7 @@ FFMakeOsciTopo()
   lfoToFine.acc = true;
   lfoToFine.name = "LFO\U00002192Fine";
   lfoToFine.defaultText = "0";
-  lfoToFine.slotCount = FFLFOCount;
+  lfoToFine.slotCount = 1;
   lfoToFine.unit = "%";
   lfoToFine.id = "{9AB82C08-CBCB-4817-9746-6B5AD3F212F4}";
   lfoToFine.type = FBParamType::Identity;
