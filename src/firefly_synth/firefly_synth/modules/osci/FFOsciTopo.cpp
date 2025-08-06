@@ -86,6 +86,20 @@ FFMakeOsciTopo()
   gain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
   gain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& envToGain = result->params[(int)FFOsciParam::EnvToGain];
+  envToGain.acc = true;
+  envToGain.name = "Env\U00002192Gain";
+  envToGain.defaultText = "0";
+  envToGain.slotCount = FFLFOCount;
+  envToGain.unit = "%";
+  envToGain.id = "{3AAA882F-A89F-4523-A47F-857B508D849F}";
+  envToGain.type = FBParamType::Identity;
+  auto selectEnvToGain = [](auto& module) { return &module.acc.envToGain; };
+  envToGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectEnvToGain);
+  envToGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectEnvToGain);
+  envToGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectEnvToGain);
+  envToGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& pan = result->params[(int)FFOsciParam::Pan];
   pan.acc = true;
   pan.defaultText = "50";
@@ -133,6 +147,20 @@ FFMakeOsciTopo()
   fine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFine);
   fine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFine);
   fine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& lfoToFine = result->params[(int)FFOsciParam::LFOToFine];
+  lfoToFine.acc = true;
+  lfoToFine.name = "LFO\U00002192Fine";
+  lfoToFine.defaultText = "0";
+  lfoToFine.slotCount = FFLFOCount;
+  lfoToFine.unit = "%";
+  lfoToFine.id = "{9AB82C08-CBCB-4817-9746-6B5AD3F212F4}";
+  lfoToFine.type = FBParamType::Identity;
+  auto selectLFOToFine = [](auto& module) { return &module.acc.lfoToFine; };
+  lfoToFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFOToFine);
+  lfoToFine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFOToFine);
+  lfoToFine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFOToFine);
+  lfoToFine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& uniCount = result->params[(int)FFOsciParam::UniCount];
   uniCount.acc = false;

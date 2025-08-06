@@ -61,7 +61,9 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   std::array<TAccurate, 1> pan = {};
   std::array<TAccurate, 1> gain = {};
+  std::array<TAccurate, 1> envToGain = {};
   std::array<TAccurate, 1> fine = {};
+  std::array<TAccurate, 1> lfoToFine = {};
   std::array<TAccurate, 1> coarse = {};
   std::array<TAccurate, 1> uniBlend = {};
   std::array<TAccurate, 1> uniDetune = {};
