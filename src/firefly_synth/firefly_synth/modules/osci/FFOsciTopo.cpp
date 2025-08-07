@@ -735,8 +735,8 @@ FFMakeOsciTopo()
 
   auto& stringLPOn = result->params[(int)FFOsciParam::StringLPOn];
   stringLPOn.acc = false;
-  stringLPOn.name = "LP On";
-  stringLPOn.display = "LP";
+  stringLPOn.name = "LPF On";
+  stringLPOn.display = "LPF";
   stringLPOn.slotCount = 1;
   stringLPOn.defaultText = "Off";
   stringLPOn.id = "{243E497E-2449-49BC-AA26-418743265570}";
@@ -750,8 +750,8 @@ FFMakeOsciTopo()
   auto& stringLPFreq = result->params[(int)FFOsciParam::StringLPFreq];
   stringLPFreq.acc = true;
   stringLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  stringLPFreq.name = "LP Freq";
-  stringLPFreq.display = "LP";
+  stringLPFreq.name = "LPF Freq";
+  stringLPFreq.display = "Frq";
   stringLPFreq.slotCount = 1;
   stringLPFreq.unit = "Hz";
   stringLPFreq.id = "{F8865388-AD37-4A9F-92DC-9AAB62BCF04E}";
@@ -798,8 +798,8 @@ FFMakeOsciTopo()
 
   auto& stringHPOn = result->params[(int)FFOsciParam::StringHPOn];
   stringHPOn.acc = false;
-  stringHPOn.name = "HP On";
-  stringHPOn.display = "HP";
+  stringHPOn.name = "HPF On";
+  stringHPOn.display = "HPF";
   stringHPOn.slotCount = 1;
   stringHPOn.defaultText = "Off";
   stringHPOn.id = "{F03C6E50-01BB-4C61-9122-C6599C9D4CBA}";
@@ -813,8 +813,8 @@ FFMakeOsciTopo()
   auto& stringHPFreq = result->params[(int)FFOsciParam::StringHPFreq];
   stringHPFreq.acc = true;
   stringHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  stringHPFreq.name = "HP Freq";
-  stringHPFreq.display = "HP";
+  stringHPFreq.name = "HPF Freq";
+  stringHPFreq.display = "Frq";
   stringHPFreq.slotCount = 1;
   stringHPFreq.unit = "Hz";
   stringHPFreq.id = "{1753A4C9-BE63-4079-A875-59C35F3BC584}";
