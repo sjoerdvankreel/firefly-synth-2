@@ -383,7 +383,7 @@ FFMakeOsciTopo()
   waveHSMode.acc = false;
   waveHSMode.defaultText = "Off";
   waveHSMode.name = "HS Mode";
-  waveHSMode.display = "HardSync";
+  waveHSMode.display = "HSync";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
@@ -448,8 +448,8 @@ FFMakeOsciTopo()
   waveDSFMode.type = FBParamType::List;
   waveDSFMode.List().items = {
     { "{1CB6EE7D-3DAA-446F-82BF-4FADFD244EBE}", "Off" },
-    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Over" },
-    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "BW" } };
+    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Overtones" },
+    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "Bandwidth" } };
   auto selectWaveDSFMode = [](auto& module) { return &module.block.waveDSFMode; };
   waveDSFMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveDSFMode);
   waveDSFMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectWaveDSFMode);
@@ -479,7 +479,7 @@ FFMakeOsciTopo()
   waveDSFOver.acc = false;
   waveDSFOver.defaultText = "1";
   waveDSFOver.name = "DSF Overtones";
-  waveDSFOver.display = "Over";
+  waveDSFOver.display = "Tones";
   waveDSFOver.slotCount = 1;
   waveDSFOver.id = "{9A42FADE-5E48-49B8-804B-0C61E17AC3BB}";
   waveDSFOver.type = FBParamType::Discrete;
