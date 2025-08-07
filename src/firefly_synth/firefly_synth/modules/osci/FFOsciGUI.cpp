@@ -210,7 +210,7 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 };
+  std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
 
   auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringMode, 0 } });
@@ -244,13 +244,13 @@ MakeOsciSectionString(FBPlugGUI* plugGUI, int moduleSlot)
   grid->Add(0, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, lpOn));
   auto lpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringLPFreq, 0 } });
   grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
-  grid->Add(0, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::LinearHorizontal));
   auto hpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringHPOn, 0 } });
   grid->Add(1, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpOn));
   grid->Add(1, 9, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, hpOn));
   auto hpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringHPFreq, 0 } });
   grid->Add(1, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
-  grid->Add(1, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 11, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::LinearHorizontal));
   auto lpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::StringLPRes, 0 } });
   grid->Add(0, 12, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
   grid->Add(0, 13, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
