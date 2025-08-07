@@ -91,6 +91,8 @@ FFMakeOsciTopo()
   envToGain.name = "Env\U00002192Gain";
   envToGain.defaultText = "0";
   envToGain.slotCount = 1;
+  envToGain.slotFormatter = [](auto const&, int ms, int) { return "Env " + std::to_string(ms + 1) + "\U00002192Gain"; };
+  envToGain.slotFormatterOverrides = true;
   envToGain.unit = "%";
   envToGain.id = "{3AAA882F-A89F-4523-A47F-857B508D849F}";
   envToGain.type = FBParamType::Identity;
@@ -118,7 +120,6 @@ FFMakeOsciTopo()
   coarse.acc = true;
   coarse.defaultText = "0";
   coarse.name = "Coarse";
-  coarse.display = "Crse";
   coarse.slotCount = 1;
   coarse.unit = "Semitones";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
@@ -153,6 +154,8 @@ FFMakeOsciTopo()
   lfoToFine.name = "LFO\U00002192Fine";
   lfoToFine.defaultText = "0";
   lfoToFine.slotCount = 1;
+  lfoToFine.slotFormatter = [](auto const&, int ms, int) { return "LFO " + std::to_string(ms + 1) + "\U00002192Fine"; };
+  lfoToFine.slotFormatterOverrides = true;
   lfoToFine.unit = "%";
   lfoToFine.id = "{9AB82C08-CBCB-4817-9746-6B5AD3F212F4}";
   lfoToFine.type = FBParamType::Identity;
