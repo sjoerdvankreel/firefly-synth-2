@@ -259,6 +259,8 @@ FFMakeOsciTopo()
   auto& waveBasicMode = result->params[(int)FFOsciParam::WaveBasicMode];
   waveBasicMode.acc = false;
   waveBasicMode.name = "Basic Mode";
+  waveBasicMode.display = "Bsc";
+  waveBasicMode.slotFormatDisplay = true;
   waveBasicMode.slotCount = FFOsciWaveBasicCount;
   waveBasicMode.slotFormatter = FFFormatBlockSlot;
   waveBasicMode.id = "{296806B7-DEC4-47F5-AEE0-C35B119CF871}";
@@ -317,20 +319,22 @@ FFMakeOsciTopo()
 
   auto& wavePWMode = result->params[(int)FFOsciParam::WavePWMode];
   wavePWMode.acc = false;
-  wavePWMode.defaultText = "PW Off";
+  wavePWMode.defaultText = "Off";
   wavePWMode.name = "PW Mode";
+  wavePWMode.display = "PW";
+  wavePWMode.slotFormatDisplay = true;
   wavePWMode.slotCount = FFOsciWavePWCount;
   wavePWMode.slotFormatter = FFFormatBlockSlot;
   wavePWMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
   wavePWMode.type = FBParamType::List;
   wavePWMode.List().items = {
-    { "{BAAB3335-9DF4-4D97-957A-6FBF47D5089E}", "PW Off" },
-    { "{DFD55382-FBA0-4080-B179-98385452528B}", "PW Sqr" },
-    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "PW Rect" },
-    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PW TriPls" },
-    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PW TriSaw" },
-    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PW TrapTri" },
-    { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "PW HWSaw" },
+    { "{BAAB3335-9DF4-4D97-957A-6FBF47D5089E}", "Off" },
+    { "{DFD55382-FBA0-4080-B179-98385452528B}", "Sqr" },
+    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "Rect" },
+    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "TriPls" },
+    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "TriSaw" },
+    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "TrapTri" },
+    { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "HWSaw" },
   };
   auto selectWavePWMode = [](auto& module) { return &module.block.wavePWMode; };
   wavePWMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWavePWMode);
@@ -377,16 +381,18 @@ FFMakeOsciTopo()
 
   auto& waveHSMode = result->params[(int)FFOsciParam::WaveHSMode];
   waveHSMode.acc = false;
-  waveHSMode.defaultText = "HS Off";
-  waveHSMode.name = "HS Mode";
+  waveHSMode.defaultText = "Off";
+  waveHSMode.name = "HSync Mode";
+  waveHSMode.display = "HSync";
+  waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
   waveHSMode.type = FBParamType::List;
   waveHSMode.List().items = {
-    { "{F68B6202-6C23-4049-B0DD-2565694B1C45}", "HS Off" },
-    { "{2BBF8E97-0D2A-4F12-B608-47E241A5E125}", "HS Saw" },
-    { "{4B99FF6B-9848-4F4E-8D97-0F0C3BA4F74C}", "HS Sqr" },
-    { "{C7843450-2A2F-4FD0-A6C9-0B44F67F3170}", "HS Tri" }
+    { "{F68B6202-6C23-4049-B0DD-2565694B1C45}", "Off" },
+    { "{2BBF8E97-0D2A-4F12-B608-47E241A5E125}", "Saw" },
+    { "{4B99FF6B-9848-4F4E-8D97-0F0C3BA4F74C}", "Sqr" },
+    { "{C7843450-2A2F-4FD0-A6C9-0B44F67F3170}", "Tri" }
   };
   auto selectWaveHSMode = [](auto& module) { return &module.block.waveHSMode; };
   waveHSMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveHSMode);
@@ -433,15 +439,17 @@ FFMakeOsciTopo()
 
   auto& waveDSFMode = result->params[(int)FFOsciParam::WaveDSFMode];
   waveDSFMode.acc = false;
-  waveDSFMode.defaultText = "DSF Off";
+  waveDSFMode.defaultText = "Off";
   waveDSFMode.name = "DSF Mode";
+  waveDSFMode.display = "DSF";
+  waveDSFMode.slotFormatDisplay = true;
   waveDSFMode.slotCount = 1;
   waveDSFMode.id = "{D66E2800-CFBD-4B4E-B22E-D5D7572FEF6E}";
   waveDSFMode.type = FBParamType::List;
   waveDSFMode.List().items = {
-    { "{1CB6EE7D-3DAA-446F-82BF-4FADFD244EBE}", "DSF Off" },
-    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "DSF Over" },
-    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "DSF BW" } };
+    { "{1CB6EE7D-3DAA-446F-82BF-4FADFD244EBE}", "Off" },
+    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Over" },
+    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "BW" } };
   auto selectWaveDSFMode = [](auto& module) { return &module.block.waveDSFMode; };
   waveDSFMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveDSFMode);
   waveDSFMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectWaveDSFMode);
