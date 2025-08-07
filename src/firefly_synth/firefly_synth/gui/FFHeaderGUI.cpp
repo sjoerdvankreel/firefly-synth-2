@@ -1,5 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/gui/FFPlugMatrixGUI.hpp>
+#include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
@@ -14,9 +15,18 @@ Component*
 FFMakeHeaderGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("FOO"));
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1, 1 } }, std::vector<int> { { 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(FF_PLUG_VERSION));
+  auto format = plugGUI->HostContext()->Topo()->static_->meta.format;
+  std::string formatName = format == FBPlugFormat::VST3 ? "VST3" : "CLAP";
+  // TODO apple does not equal ARM, but we dont support intel-mac right now
+#ifdef __APPLE__
+  std::string archName = "ARM";
+#else
+  std::string archName = "X64";
+#endif
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(formatName + " " + archName));
+  grid->MarkSection({ { 0, 0 }, { 2, 1 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
-}
+};
