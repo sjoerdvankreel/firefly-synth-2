@@ -151,10 +151,10 @@ FFMakeOsciTopo()
 
   auto& lfoToFine = result->params[(int)FFOsciParam::LFOToFine];
   lfoToFine.acc = true;
-  lfoToFine.name = "LFO\U00002192Fine";
+  lfoToFine.name = "VLFO\U00002192Fine";
   lfoToFine.defaultText = "0";
   lfoToFine.slotCount = 1;
-  lfoToFine.slotFormatter = [](auto const&, int ms, int) { return "LFO " + std::to_string(ms + 1) + "\U00002192Fine"; };
+  lfoToFine.slotFormatter = [](auto const&, int ms, int) { return "VLFO " + std::to_string(ms + 1) + "\U00002192Fine"; };
   lfoToFine.slotFormatterOverrides = true;
   lfoToFine.unit = "%";
   lfoToFine.id = "{9AB82C08-CBCB-4817-9746-6B5AD3F212F4}";

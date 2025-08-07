@@ -81,7 +81,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.osci[i].processor->Process(state);
+    voiceDSP.osci[i].processor->Process(false, state);
   }
 
   FB_ASSERT(FFOsciCount == FFEffectCount);

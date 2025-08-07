@@ -133,7 +133,7 @@ class FFOsciProcessor final
 public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
-  int Process(FBModuleProcState& state);
+  int Process(bool graph, FBModuleProcState& state);
   void InitializeBuffers(bool graph, float sampleRate);
   void BeginVoice(bool graph, FBModuleProcState& state);
 };
