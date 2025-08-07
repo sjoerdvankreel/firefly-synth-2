@@ -302,7 +302,7 @@ FFMakeOsciTopo()
   waveBasicGain.acc = true;
   waveBasicGain.defaultText = "100";
   waveBasicGain.name = "Basic Gain";
-  waveBasicGain.display = "Gn";
+  waveBasicGain.display = "Gain";
   waveBasicGain.slotCount = FFOsciWaveBasicCount;
   waveBasicGain.slotFormatter = FFFormatBlockSlot;
   waveBasicGain.unit = "%";
@@ -346,7 +346,7 @@ FFMakeOsciTopo()
   wavePWGain.acc = true;
   wavePWGain.defaultText = "100";
   wavePWGain.name = "PW Gain";
-  wavePWGain.display = "Gn";
+  wavePWGain.display = "Gain";
   wavePWGain.slotCount = FFOsciWavePWCount;
   wavePWGain.slotFormatter = FFFormatBlockSlot;
   wavePWGain.unit = "%";
@@ -404,7 +404,7 @@ FFMakeOsciTopo()
   waveHSGain.acc = true;
   waveHSGain.defaultText = "100";
   waveHSGain.name = "HS Gain";
-  waveHSGain.display = "Gn";
+  waveHSGain.display = "Gain";
   waveHSGain.slotCount = 1;
   waveHSGain.unit = "%";
   waveHSGain.id = "{7AFF257F-165E-427B-A4BF-9DC4BFE48528}";
@@ -460,7 +460,7 @@ FFMakeOsciTopo()
   waveDSFGain.acc = true;
   waveDSFGain.defaultText = "100";
   waveDSFGain.name = "DSF Gain";
-  waveDSFGain.display = "Gn";
+  waveDSFGain.display = "Gain";
   waveDSFGain.slotCount = 1;
   waveDSFGain.unit = "%";
   waveDSFGain.id = "{8B92892C-4B53-4628-8266-CCED37867F99}";
