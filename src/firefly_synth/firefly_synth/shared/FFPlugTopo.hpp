@@ -48,5 +48,5 @@ public FBStaticTopo
 };
 
 FBStaticTopoMeta FFPlugMeta(FBPlugFormat format);
-std::string FFFormatBlockSlot(FBStaticTopo const&, int slot);
 std::unique_ptr<FFStaticTopo> FFMakeTopo(FBPlugFormat format);
+std::string FFFormatBlockSlot(FBStaticTopo const&, int moduleSlot, int itemSlot);

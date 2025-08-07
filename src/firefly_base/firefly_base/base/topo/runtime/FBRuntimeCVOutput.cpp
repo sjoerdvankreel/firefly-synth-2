@@ -11,11 +11,13 @@ FBMakeRuntimeCVOutputName(
   bool onNote)
 {
   auto const& name = module.matrixName.size() ? module.matrixName : module.name;
-  std::string result = FBMakeRuntimeShortName(topo, name, module.slotCount, indices.module.slot, module.slotFormatter, module.slotFormatterOverrides);
+  std::string result = FBMakeRuntimeModuleShortName(
+    topo, name, module.slotCount, indices.module.slot, 
+    module.slotFormatter, module.slotFormatterOverrides);
   if (module.cvOutputs.size() != 1)
   {
     if (cvOutput.slotFormatter != nullptr)
-      result += cvOutput.slotFormatter(topo, indices.cvOutput.slot);
+      result += cvOutput.slotFormatter(topo, indices.module.slot, indices.cvOutput.slot);
     else
     {
       result += " ";

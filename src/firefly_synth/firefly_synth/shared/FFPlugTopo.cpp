@@ -65,9 +65,9 @@ SpecialGUIParamsSelector(
 }
 
 std::string
-FFFormatBlockSlot(FBStaticTopo const&, int slot)
+FFFormatBlockSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
-  return std::string(1, static_cast<char>('A' + slot));
+  return std::string(1, static_cast<char>('A' + itemSlot));
 }
 
 FBStaticTopoMeta

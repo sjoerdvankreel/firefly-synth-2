@@ -27,8 +27,12 @@ FBMakeRuntimeParamLongName(
   FBStaticParamBase const& param,
   FBParamTopoIndices const& indices)
 {
-  auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
-  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, module.slotFormatter, module.slotFormatterOverrides);
+  auto paramName = FBMakeRuntimeModuleItemShortName(
+    topo, param.name, indices.module.slot, param.slotCount, 
+    indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
+  auto moduleName = FBMakeRuntimeModuleShortName(
+    topo, module.name, module.slotCount, indices.module.slot, 
+    module.slotFormatter, module.slotFormatterOverrides);
   return moduleName + " " + paramName;
 }
 
@@ -43,8 +47,13 @@ runtimeModuleIndex(runtimeModuleIndex),
 runtimeParamIndex(runtimeParamIndex),
 topoIndices(topoIndices),
 longName(FBMakeRuntimeParamLongName(topo, staticModule, staticParam, topoIndices)),
-shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
-displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides, staticParam.slotFormatDisplay)),
+shortName(FBMakeRuntimeModuleItemShortName(
+  topo, staticParam.name, topoIndices.module.slot, staticParam.slotCount, 
+  topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
+displayName(FBMakeRuntimeModuleItemDisplayName(
+  topo, staticParam.name, staticParam.display, 
+  topoIndices.module.slot, staticParam.slotCount, topoIndices.param.slot, 
+  staticParam.slotFormatter, staticParam.slotFormatterOverrides, staticParam.slotFormatDisplay)),
 id(FBMakeRuntimeId(staticModule.id, topoIndices.module.slot, staticParam.id, topoIndices.param.slot)),
 staticModuleId(staticModule.id),
 tag(FBMakeStableHash(id))

@@ -18,8 +18,8 @@ struct FBStaticCVOutput final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
-  FBSlotFormatter slotFormatter = {};
 
+  FBModuleItemSlotFormatter slotFormatter = {};
   FBVoiceProcCVOutputAddrSelector voiceAddr = {};
   FBGlobalProcCVOutputAddrSelector globalAddr = {};
 };

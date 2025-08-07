@@ -7,7 +7,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FormatOsciToOutSlot(FBStaticTopo const& topo, int mixSlot)
+FormatOsciToOutSlot(FBStaticTopo const& topo, int /* moduleSlot */, int mixSlot)
 {
   int osciSlot = mixSlot;
   std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
@@ -15,7 +15,7 @@ FormatOsciToOutSlot(FBStaticTopo const& topo, int mixSlot)
 }
 
 static std::string
-FormatOsciToVFXSlot(FBStaticTopo const& topo, int mixSlot)
+FormatOsciToVFXSlot(FBStaticTopo const& topo, int /* moduleSlot */, int mixSlot)
 {
   int fxSlot = FFVMixOsciToVFXGetFXSlot(mixSlot);
   int osciSlot = FFVMixOsciToVFXGetOsciSlot(mixSlot);

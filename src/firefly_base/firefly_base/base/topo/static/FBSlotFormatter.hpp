@@ -5,5 +5,7 @@
 
 struct FBStaticTopo;
 
-typedef std::function<std::string(FBStaticTopo const& topo, int slot)>
-FBSlotFormatter;
+typedef std::function<std::string(FBStaticTopo const& topo, int moduleSlot)>
+FBModuleSlotFormatter;
+typedef std::function<std::string(FBStaticTopo const& topo, int moduleSlot, int itemSlot)>
+FBModuleItemSlotFormatter;

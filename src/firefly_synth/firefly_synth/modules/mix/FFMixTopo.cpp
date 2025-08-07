@@ -1,7 +1,7 @@
 #include <firefly_synth/modules/mix/FFMixTopo.hpp>
 
 std::string
-FFMixFormatFXToFXSlot(FBStaticTopo const&, int mixSlot)
+FFMixFormatFXToFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
   switch (mixSlot)
   {
@@ -16,7 +16,7 @@ FFMixFormatFXToFXSlot(FBStaticTopo const&, int mixSlot)
 }
 
 std::string
-FFMixFormatFXToOutSlot(FBStaticTopo const&, int mixSlot)
+FFMixFormatFXToOutSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
   return "FX " + std::to_string(mixSlot + 1) + "\U00002192Out";
 }

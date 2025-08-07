@@ -6,7 +6,7 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FormatVoiceToGFXSlot(FBStaticTopo const&, int mixSlot)
+FormatVoiceToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
   std::string fxName = "FX " + std::to_string(mixSlot + 1);
   return std::string("Voice\U00002192" + fxName);

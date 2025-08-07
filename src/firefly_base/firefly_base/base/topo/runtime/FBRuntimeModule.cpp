@@ -55,7 +55,9 @@ FBRuntimeModule(
   FBTopoIndices const& topoIndices, int runtimeIndex, 
   int runtimeParamStart, int runtimeGUIParamStart,
   int runtimeCVOutputStart):
-name(FBMakeRuntimeShortName(topo, staticModule.name, staticModule.slotCount, topoIndices.slot, staticModule.slotFormatter, staticModule.slotFormatterOverrides)),
+name(FBMakeRuntimeModuleShortName(
+  topo, staticModule.name, staticModule.slotCount, topoIndices.slot, 
+  staticModule.slotFormatter, staticModule.slotFormatterOverrides)),
 runtimeModuleIndex(runtimeIndex),
 topoIndices(topoIndices),
 params(MakeRuntimeParams<FBRuntimeParam>(topo, staticModule, topoIndices, runtimeIndex, runtimeParamStart, staticModule.params)),

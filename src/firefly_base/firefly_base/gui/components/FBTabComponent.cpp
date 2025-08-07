@@ -90,7 +90,7 @@ FBModuleTabComponent::AddModuleTab(
   std::string header = {};
   if (module.tabSlotFormatter != nullptr)
   {
-    header = FBMakeRuntimeShortName(
+    header = FBMakeRuntimeModuleShortName(
       *topo->static_, module.name, module.slotCount,
       moduleIndices.slot, module.tabSlotFormatter, module.slotFormatterOverrides);
   }
@@ -126,7 +126,7 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
     PopupMenu subMenu;
     for (int i = 0; i < staticModule.slotCount; i++)
     {
-      auto name = FBMakeRuntimeShortName(
+      auto name = FBMakeRuntimeModuleShortName(
         staticTopo, staticModule.name, staticModule.slotCount, i, 
         staticModule.slotFormatter, staticModule.slotFormatterOverrides);
       subMenu.addItem(2 + i, name, moduleIndices.slot != i);

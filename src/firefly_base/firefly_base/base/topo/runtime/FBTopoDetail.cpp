@@ -22,10 +22,10 @@ FBMakeStableHash(std::string const& id)
 }
 
 std::string
-FBMakeRuntimeShortName(
-  FBStaticTopo const& topo, std::string const& name, 
-  int slotCount, int slot, 
-  FBSlotFormatter formatter, bool formatterOverrides)
+FBMakeRuntimeModuleShortName(
+  FBStaticTopo const& topo, std::string const& name,
+  int slotCount, int slot,
+  FBModuleSlotFormatter formatter, bool formatterOverrides)
 {
   std::string result = name;
   if (formatter)
@@ -41,13 +41,33 @@ FBMakeRuntimeShortName(
 }
 
 std::string
-FBMakeRuntimeDisplayName(
+FBMakeRuntimeModuleItemShortName(
+  FBStaticTopo const& topo, std::string const& name,
+  int moduleSlot, int itemSlotCount, int itemSlot,
+  FBModuleItemSlotFormatter formatter, bool formatterOverrides)
+{
+  std::string result = name;
+  if (formatter)
+  {
+    if (formatterOverrides)
+      result = formatter(topo, moduleSlot, itemSlot);
+    else
+      result += " " + formatter(topo, moduleSlot, itemSlot);
+  }
+  else if (itemSlotCount > 1)
+    result += " " + std::to_string(itemSlot + 1);
+  return result;
+}
+
+std::string
+FBMakeRuntimeModuleItemDisplayName(
   FBStaticTopo const& topo, std::string const& name, std::string const& display,
-  int slotCount, int slot, FBSlotFormatter formatter, bool formatterOverrides, bool slotFormatDisplay)
+  int moduleSlot, int itemSlotCount, int itemSlot,
+  FBModuleItemSlotFormatter formatter, bool formatterOverrides, bool slotFormatDisplay)
 {
   if (display.empty())
-    return FBMakeRuntimeShortName(topo, name, slotCount, slot, formatter, formatterOverrides);
+    return FBMakeRuntimeModuleItemShortName(topo, name, moduleSlot, itemSlotCount, itemSlot, formatter, formatterOverrides);
   if(slotFormatDisplay)
-    return FBMakeRuntimeShortName(topo, display, slotCount, slot, formatter, formatterOverrides);
+    return FBMakeRuntimeModuleItemShortName(topo, display, moduleSlot, itemSlotCount, itemSlot, formatter, formatterOverrides);
   return display;
 }

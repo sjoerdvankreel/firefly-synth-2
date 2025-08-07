@@ -35,12 +35,12 @@ struct FBStaticModule final
   std::string name = {};
   std::string matrixName = {};
   bool slotFormatterOverrides = {};
-  FBSlotFormatter slotFormatter = {};
-  FBSlotFormatter tabSlotFormatter = {};
+  FBModuleGraphRenderer graphRenderer = {};
+  FBModuleSlotFormatter slotFormatter = {};
+  FBModuleSlotFormatter tabSlotFormatter = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
   std::vector<FBStaticCVOutput> cvOutputs = {};
-  FBModuleGraphRenderer graphRenderer = {};
   FBVoiceModuleExchangeAddrSelector voiceModuleExchangeAddr = {};
   FBGlobalModuleExchangeAddrSelector globalModuleExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);

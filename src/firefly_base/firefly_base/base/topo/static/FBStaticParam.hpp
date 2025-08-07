@@ -79,8 +79,8 @@ public:
   bool slotFormatDisplay = {};
   bool slotFormatterOverrides = {};
   FBParamType type = (FBParamType)-1;
-  FBSlotFormatter slotFormatter = {};
   FBParamsDependencies dependencies = {};
+  FBModuleItemSlotFormatter slotFormatter = {};
   FBParamDefaultTextSelector defaultTextSelector = {};
 
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParamBase);

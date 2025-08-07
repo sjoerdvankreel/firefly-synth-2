@@ -5,9 +5,9 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FFOsciFMFormatRatioSlot(FBStaticTopo const&, int slot)
+FFOsciFMFormatRatioSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
-  switch (slot)
+  switch (itemSlot)
   {
   case 0: return "2:1";
   case 1: return "3:2";
@@ -31,11 +31,11 @@ FFOsciFMFormatRatioValue(int val)
 }
 
 static std::string
-FFOsciFMFormatIndexSlot(FBStaticTopo const&, int slot)
+FFOsciFMFormatIndexSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
-  FB_ASSERT(0 <= slot && slot < FFOsciFMMatrixSize);
-  return std::to_string(slot / FFOsciFMOperatorCount + 1) + "\U00002192" + 
-    std::to_string(slot % FFOsciFMOperatorCount + 1);
+  FB_ASSERT(0 <= itemSlot && itemSlot < FFOsciFMMatrixSize);
+  return std::to_string(itemSlot / FFOsciFMOperatorCount + 1) + "\U00002192" +
+    std::to_string(itemSlot % FFOsciFMOperatorCount + 1);
 }
 
 std::unique_ptr<FBStaticModule>

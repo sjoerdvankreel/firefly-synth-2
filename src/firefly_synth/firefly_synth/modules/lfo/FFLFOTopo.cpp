@@ -402,7 +402,7 @@ FFMakeLFOTopo(bool global)
   auto& outputRaw = result->cvOutputs[(int)FFLFOCVOutput::Raw];
   outputRaw.name = "Raw";
   outputRaw.slotCount = FFLFOBlockCount;
-  outputRaw.slotFormatter = [](FBStaticTopo const& topo, int slot) { return FFFormatBlockSlot(topo, slot); };
+  outputRaw.slotFormatter = FFFormatBlockSlot;
   outputRaw.id = "{C592BE19-6D8C-4A85-800E-7A292D8433D8}";
   outputRaw.globalAddr = [](int ms, int os, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].outputRaw[os]; };
   outputRaw.voiceAddr = [](int ms, int os, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].outputRaw[os]; };

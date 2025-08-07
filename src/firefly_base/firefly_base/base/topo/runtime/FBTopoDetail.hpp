@@ -17,14 +17,19 @@ FBMakeRuntimeId(
   std::string const& staticId, int slot); 
 
 std::string
-FBMakeRuntimeShortName(
+FBMakeRuntimeModuleShortName(
   FBStaticTopo const& topo, std::string const& name, 
-  int slotCount, int slot, 
-  FBSlotFormatter formatter, bool formatterOverrides);
+  int slotCount, int slot,
+  FBModuleSlotFormatter formatter, bool formatterOverrides);
 
 std::string
-FBMakeRuntimeDisplayName(
+FBMakeRuntimeModuleItemShortName(
   FBStaticTopo const& topo, std::string const& name,
-  std::string const& display, int slotCount, int slot, 
-  FBSlotFormatter formatter, 
-  bool formatterOverrides, bool slotFormatDisplay);
+  int moduleSlot, int itemSlotCount, int itemSlot,
+  FBModuleItemSlotFormatter formatter, bool formatterOverrides);
+
+std::string
+FBMakeRuntimeModuleItemDisplayName(
+  FBStaticTopo const& topo, std::string const& name, std::string const& display,
+  int moduleSlot, int itemSlotCount, int itemSlot,
+  FBModuleItemSlotFormatter formatter, bool formatterOverrides, bool slotFormatDisplay);
