@@ -1,19 +1,32 @@
 TODOLIST for alpha-10
 
 [x] drop matrixselectedtab
-[ ] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
-[ ] also releaseing a note by playing the same just doesn't work
 [x] optional mod indicators
 [x] do addbp also for lfos
-[ ] easy access mod controls
+[x] easy access mod controls
 [x] widen the gui for the easy access stuff
 [x] make env1 to amp explicit
-[ ] refix all behind-the-scenes mod sources and targets
 [x] paint env1 to vmix
 [x] not hardcode env1 to voice amp
-[ ] floating notes
 [x] all output controls -> cpu indicator, gain indicator, need not be pretty yet
 [x] master input (aux)
+[x] allow lfo separate outputs as modsources, not filtered output, call it raw
+[x] need bpmul
+[x] move all crap to generic and share with lfo
+[x] how many auxes?
+[x] make sure can parse default always
+[x] rename mix gain to amp to match amp envelope
+[x] not show the 1234 in the mixers
+[x] re-check all the shortcuts "frq" "gn" "ktr" etc, maybe new screenspace allows more
+[x] fix all the tooltips (name/display)
+[x] mark v/g for easy access
+[x] v/gmix easy more access
+[x] lfo phase per slot
+[x] up env seg count
+[ ] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
+[ ] also releaseing a note by playing the same just doesn't work
+[ ] refix all behind-the-scenes mod sources and targets
+[ ] floating notes
 [ ] master input (modwheel, pb + range)
 [ ] portamento controls + all-osci coarse/fine
 [ ] basic midi input
@@ -23,26 +36,12 @@ TODOLIST for alpha-10
 [ ] MIDI key, velo (voice), low/high/last
 [ ] show the version and plugformat and icon
 [ ] 3x on note random as a cheap mod source, uni + normal
-[x] allow lfo separate outputs as modsources, not filtered output, call it raw
-[x] need bpmul
-[x] move all crap to generic and share with lfo
-[x] how many auxes?
 [ ] drop freesmth, not work???. do uni/gaus everywhere
 [ ] fix free-random
-[x] make sure can parse default always
 [ ] make it clear alpha breaks the demos
-[x] rename mix gain to amp to match amp envelope
-[ ] not show the 1234 in the mixers
-[ ] re-check all the shortcuts "frq" "gn" "ktr" etc, maybe new screenspace allows more
 [ ] allow modulate env stage lengths on voice start
-[ ] fix all the tooltips (name/display)
-[ ] mark v/g for easy access
-[ ] v/gmix easy more access
-[ ] can do more matrix routes?
 [ ] switch graph on click not change
 [ ] draw a box around the popup/tooltip
-[x] lfo phase per slot
-[x] up env seg count
 [ ] keep taps on the mod matrix
 
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
