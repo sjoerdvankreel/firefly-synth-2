@@ -113,9 +113,9 @@ MakeOsciSectionWave(FBPlugGUI* plugGUI, int moduleSlot)
     auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveHSGain, 0 } });
     grid->Add(0, 12, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
     grid->Add(0, 13, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
-    auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveHSSync, 0 } });
-    grid->Add(0, 14, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
-    grid->Add(0, 15, 1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, sync, Slider::SliderStyle::LinearHorizontal));
+    auto pitch = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveHSPitch, 0 } });
+    grid->Add(0, 14, plugGUI->StoreComponent<FBParamLabel>(plugGUI, pitch));
+    grid->Add(0, 15, 1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, pitch, Slider::SliderStyle::LinearHorizontal));
   }
   {
     auto mode = topo->audio.ParamAtTopo({ { (int)FFModuleType::Osci, moduleSlot }, { (int)FFOsciParam::WaveDSFMode, 0  } });

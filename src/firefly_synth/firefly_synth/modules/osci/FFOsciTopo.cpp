@@ -382,8 +382,8 @@ FFMakeOsciTopo()
   auto& waveHSMode = result->params[(int)FFOsciParam::WaveHSMode];
   waveHSMode.acc = false;
   waveHSMode.defaultText = "Off";
-  waveHSMode.name = "HSync Mode";
-  waveHSMode.display = "HSync";
+  waveHSMode.name = "HS Mode";
+  waveHSMode.display = "HardSync";
   waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
@@ -419,22 +419,22 @@ FFMakeOsciTopo()
   waveHSGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
-  auto& waveHSSync = result->params[(int)FFOsciParam::WaveHSSync];
-  waveHSSync.acc = true;
-  waveHSSync.defaultText = "0";
-  waveHSSync.name = "HS Sync Pitch";
-  waveHSSync.display = "HSync";
-  waveHSSync.slotCount = 1;
-  waveHSSync.unit = "Semitones";
-  waveHSSync.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
-  waveHSSync.type = FBParamType::Linear;
-  waveHSSync.Linear().min = 0.0f;
-  waveHSSync.Linear().max = 48.0f;
-  auto selectWaveHSSync = [](auto& module) { return &module.acc.waveHSSync; };
-  waveHSSync.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveHSSync);
-  waveHSSync.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectWaveHSSync);
-  waveHSSync.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectWaveHSSync);
-  waveHSSync.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
+  auto& waveHSPitch = result->params[(int)FFOsciParam::WaveHSPitch];
+  waveHSPitch.acc = true;
+  waveHSPitch.defaultText = "0";
+  waveHSPitch.name = "HS Pitch";
+  waveHSPitch.display = "Pitch";
+  waveHSPitch.slotCount = 1;
+  waveHSPitch.unit = "Semitones";
+  waveHSPitch.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
+  waveHSPitch.type = FBParamType::Linear;
+  waveHSPitch.Linear().min = 0.0f;
+  waveHSPitch.Linear().max = 48.0f;
+  auto selectWaveHSPitch = [](auto& module) { return &module.acc.waveHSPitch; };
+  waveHSPitch.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveHSPitch);
+  waveHSPitch.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectWaveHSPitch);
+  waveHSPitch.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectWaveHSPitch);
+  waveHSPitch.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
   auto& waveDSFMode = result->params[(int)FFOsciParam::WaveDSFMode];

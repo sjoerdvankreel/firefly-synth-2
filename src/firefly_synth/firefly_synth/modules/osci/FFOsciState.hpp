@@ -69,7 +69,7 @@ class alignas(alignof(TAccurate)) FFOsciAccParamState final
   std::array<TAccurate, 1> uniDetune = {};
   std::array<TAccurate, 1> uniSpread = {};
   std::array<TAccurate, 1> waveHSGain = {};
-  std::array<TAccurate, 1> waveHSSync = {};
+  std::array<TAccurate, 1> waveHSPitch = {};
   std::array<TAccurate, 1> waveDSFGain = {};
   std::array<TAccurate, 1> waveDSFDecay = {};
   std::array<TAccurate, FFOsciWavePWCount> wavePWPW = {};
