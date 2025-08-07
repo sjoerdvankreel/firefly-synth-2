@@ -631,15 +631,14 @@ FFMakeOsciTopo()
 
   auto& stringMode = result->params[(int)FFOsciParam::StringMode];
   stringMode.acc = false;
-  stringMode.defaultText = "Uni";
+  stringMode.defaultText = "Uniform";
   stringMode.name = "Mode";
-  stringMode.display = "Mod";
   stringMode.slotCount = 1;
   stringMode.id = "{83BC3F01-EF0B-4BAE-AA95-012E246C87B3}";
   stringMode.type = FBParamType::List;
   stringMode.List().items = {
-    { "{604E32C2-B3E9-4547-88B0-601F0D3AD055}", "Uni" },
-    { "{B462657B-B0FB-47B1-AACA-0DF284E655E9}", "Nrm" } };
+    { "{604E32C2-B3E9-4547-88B0-601F0D3AD055}", "Uniform" },
+    { "{B462657B-B0FB-47B1-AACA-0DF284E655E9}", "Normal" } };
   auto selectStringMode = [](auto& module) { return &module.block.stringMode; };
   stringMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringMode);
   stringMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringMode);
@@ -722,7 +721,6 @@ FFMakeOsciTopo()
   stringExcite.acc = true;
   stringExcite.defaultText = "0";
   stringExcite.name = "Excite";
-  stringExcite.display = "Xcte";
   stringExcite.slotCount = 1;
   stringExcite.unit = "%";
   stringExcite.id = "{02590DDB-B5B2-4FA6-94C5-8D0319450689}";

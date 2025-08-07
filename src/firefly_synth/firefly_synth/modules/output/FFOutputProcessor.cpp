@@ -23,7 +23,7 @@ FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& ou
   (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = voicesNorm;
 
   auto const* cpuParam = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } });
-  float cpuNorm = topo.DiscreteToNormalizedFast(FFOutputParam::Cpu, std::clamp((int)(state.input->prevRoundCpuUsage * FFOutputMaxCpu), 0, FFOutputMaxCpu));
+  float cpuNorm = topo.DiscreteToNormalizedFast(FFOutputParam::Cpu, std::clamp((int)(state.input->prevRoundCpuUsage * 0.1f * FFOutputMaxCpu), 0, FFOutputMaxCpu));
   (*state.outputParamsNormalized)[cpuParam->runtimeParamIndex] = cpuNorm;
 
   float maxOutput = std::max(std::abs(output.audio[0].First()), std::abs(output.audio[1].First()));

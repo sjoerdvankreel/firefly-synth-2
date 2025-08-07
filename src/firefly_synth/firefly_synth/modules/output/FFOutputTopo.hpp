@@ -2,7 +2,7 @@
 
 #include <memory>
 
-inline int constexpr FFOutputMaxCpu = 99;
+inline int constexpr FFOutputMaxCpu = 999;
 inline int constexpr FFOutputMaxGain = 999;
 inline int constexpr FFOutputSamplingRate = 3;
 
