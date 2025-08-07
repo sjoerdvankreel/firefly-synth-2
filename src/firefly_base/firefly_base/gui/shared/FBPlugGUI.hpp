@@ -41,6 +41,7 @@ public:
 
   virtual FBGUIRenderType GetKnobRenderType() const = 0;
   virtual FBGUIRenderType GetGraphRenderType() const = 0;
+  virtual void ModuleSlotClicked(int index, int slot) = 0;
   virtual void ActiveModuleSlotChanged(int index, int slot) = 0;
   virtual void GUIParamNormalizedChanged(int index, double normalized);
   virtual void AudioParamNormalizedChangedFromUI(int index, double normalized);

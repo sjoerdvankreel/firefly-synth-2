@@ -60,6 +60,12 @@ FFPlugGUI::SwitchGraphToModule(int index, int slot)
 }
 
 void 
+FFPlugGUI::ModuleSlotClicked(int index, int slot)
+{
+  SwitchGraphToModule(index, slot);
+}
+
+void
 FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 {
   SwitchGraphToModule(index, slot);

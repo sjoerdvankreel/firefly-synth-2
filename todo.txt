@@ -23,6 +23,7 @@ TODOLIST for alpha-10
 [x] v/gmix easy more access
 [x] lfo phase per slot
 [x] up env seg count
+[x] switch graph on click and change
 [ ] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
 [ ] also releaseing a note by playing the same just doesn't work
 [ ] refix all behind-the-scenes mod sources and targets
@@ -40,7 +41,6 @@ TODOLIST for alpha-10
 [ ] fix free-random
 [ ] make it clear alpha breaks the demos
 [ ] allow modulate env stage lengths on voice start
-[ ] switch graph on click not change
 [ ] draw a box around the popup/tooltip
 [ ] keep taps on the mod matrix
 

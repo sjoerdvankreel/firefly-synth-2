@@ -39,6 +39,7 @@ public:
   void UpdateExchangeStateTick() override;
   FBGUIRenderType GetKnobRenderType() const override;
   FBGUIRenderType GetGraphRenderType() const override;
+  void ModuleSlotClicked(int index, int slot) override;
   void ActiveModuleSlotChanged(int index, int slot) override;
   void GUIParamNormalizedChanged(int index, double normalized) override;
   void AudioParamNormalizedChangedFromUI(int index, double normalized) override;

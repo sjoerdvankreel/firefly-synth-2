@@ -24,6 +24,23 @@ FBTabBarButton::clicked(const ModifierKeys& modifiers)
     tabs->TabRightClicked(getIndex());
 }
 
+FBModuleTabBarButton::
+FBModuleTabBarButton(
+FBPlugGUI* plugGUI,
+const juce::String& name,
+juce::TabbedButtonBar& bar,
+FBTopoIndices const& moduleIndices):
+FBTabBarButton(name, bar),
+_plugGUI(plugGUI),
+_moduleIndices(moduleIndices) {}
+
+void
+FBModuleTabBarButton::clicked(const ModifierKeys& modifiers)
+{
+  FBTabBarButton::clicked(modifiers);
+  _plugGUI->ModuleSlotClicked(_moduleIndices.index, _moduleIndices.slot);
+}
+
 FBAutoSizeTabComponent::
 FBAutoSizeTabComponent():
 TabbedComponent(TabbedButtonBar::Orientation::TabsAtTop)
@@ -54,6 +71,12 @@ _param(param)
   assert(param != nullptr);
   double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
   _storedSelectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
+}
+
+TabBarButton*
+FBModuleTabComponent::createTabButton(const juce::String& tabName, int tabIndex)
+{
+  return new FBModuleTabBarButton(_plugGUI, tabName, *tabs, _moduleIndices[tabIndex]);
 }
 
 void
