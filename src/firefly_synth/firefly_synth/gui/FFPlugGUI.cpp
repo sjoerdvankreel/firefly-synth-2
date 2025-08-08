@@ -141,22 +141,22 @@ FFPlugGUI::SetupGUI()
   FB_LOG_ENTRY_EXIT();
   _matrix = FFMakeModMatrixGUI(this); 
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
+  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(4, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, FFMakeOsciGUI(this));
   _modules->Add(1, 0, FFMakeEffectGUI(this));
   _modules->Add(2, 0, FFMakeLFOGUI(this));
   _modules->Add(3, 0, FFMakeEnvGUI(this));
-  _modules->Add(4, 0, FFMakeMixGUI(this));
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 1, 1, 7 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0 } });
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 1, 1, 1, 5 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0 } });
   _container->Add(0, 0, 1, 1, FFMakeHeaderGUI(this));
   _container->Add(0, 1, 1, 1, FFMakeMasterGUI(this));
   _container->Add(0, 2, 1, 1, FFMakeOutputGUI(this));
   _container->Add(0, 3, 1, 1, FFMakeGUISettingsGUI(this));
   _container->Add(0, 4, 1, 1, FFMakePlugMatrixGUI(this));
   _container->Add(0, 5, 1, 1, FFMakePatchGUI(this));
-  _container->Add(1, 0, 1, 6, _graph);
-  _container->Add(2, 0, 1, 6, _content);
+  _container->Add(1, 0, 1, 6, FFMakeMixGUI(this));
+  _container->Add(2, 0, 1, 6, _graph);
+  _container->Add(3, 0, 1, 6, _content);
   addAndMakeVisible(_container);
 }
