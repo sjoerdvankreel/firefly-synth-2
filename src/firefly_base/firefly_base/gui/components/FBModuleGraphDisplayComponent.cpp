@@ -144,7 +144,9 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     auto x1 = static_cast<int>(PointXLocation(graph, 1.0f));
     auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
     g.setColour(Colour(0xFF181818));
-    g.fillRoundedRectangle(graphBounds.toFloat(), 2.0f);
+    g.fillRoundedRectangle(graphBounds.toFloat(), 6.0f);
+    g.setColour(Colour(0xFFA0A0A0));
+    g.drawRoundedRectangle(graphBounds.toFloat(), 6.0f, 2.0f);
 
     if (maxSizeAllSeries != 0)
     {
