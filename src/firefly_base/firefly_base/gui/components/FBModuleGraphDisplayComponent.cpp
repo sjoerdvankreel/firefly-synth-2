@@ -8,7 +8,7 @@
 
 using namespace juce;
 
-static float constexpr Padding = 10.0f;
+static float constexpr Padding = 3.0f;
 static float constexpr MarkerSize = 8.0f;
 static float constexpr HalfMarkerSize = MarkerSize / 2.0f;
 
@@ -33,7 +33,6 @@ float
 FBModuleGraphDisplayComponent::PointXLocation(
   int graph, float pointRelative, bool withPadding) const
 {
-  (void)withPadding;
   FB_ASSERT(!std::isnan(pointRelative));
   float graphCount = static_cast<float>(_data->graphs.size());
   float gapWidth = 3.0f;
@@ -42,6 +41,8 @@ FBModuleGraphDisplayComponent::PointXLocation(
   float graphLeft = graph * (graphWidth + gapWidth);
   if (graph == graphCount - 1)
     graphWidth += (getWidth() - gapCount * gapWidth - graphCount * graphWidth);
+  if(withPadding)
+    return graphLeft + Padding + pointRelative * (graphWidth - 2.0f * Padding);
   return graphLeft + pointRelative * graphWidth;
 }
 
