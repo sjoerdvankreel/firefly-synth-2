@@ -8,6 +8,7 @@
 
 using namespace juce;
 
+static float constexpr Padding = 10.0f;
 static float constexpr MarkerSize = 8.0f;
 static float constexpr HalfMarkerSize = MarkerSize / 2.0f;
 
@@ -23,15 +24,16 @@ FBModuleGraphDisplayComponent::PointLocation(
   int maxSizeAllSeries, float absMaxValueAllSeries) const
 {
   point = std::clamp(point, 0, static_cast<int>(points.size()) - 1);
-  float y = PointYLocation(points[point], stereo, left, absMaxValueAllSeries);
-  float x = PointXLocation(graph, static_cast<float>(point) / maxSizeAllSeries);
+  float y = PointYLocation(points[point], stereo, left, absMaxValueAllSeries, true);
+  float x = PointXLocation(graph, static_cast<float>(point) / maxSizeAllSeries, true);
   return { x, y };
 }
 
 float
 FBModuleGraphDisplayComponent::PointXLocation(
-  int graph, float pointRelative) const
+  int graph, float pointRelative, bool withPadding) const
 {
+  (void)withPadding;
   FB_ASSERT(!std::isnan(pointRelative));
   float graphCount = static_cast<float>(_data->graphs.size());
   float gapWidth = 3.0f;
@@ -46,7 +48,7 @@ FBModuleGraphDisplayComponent::PointXLocation(
 float 
 FBModuleGraphDisplayComponent::PointYLocation(
   float pointYValue, bool stereo, 
-  bool left, float absMaxValueAllSeries) const
+  bool left, float absMaxValueAllSeries, bool withPadding) const
 {
   FB_ASSERT(!std::isnan(pointYValue));
   float pointValue = pointYValue / absMaxValueAllSeries;
@@ -54,6 +56,8 @@ FBModuleGraphDisplayComponent::PointYLocation(
     pointValue = FBToUnipolar(pointValue);
   if (stereo)
     pointValue = left ? 0.5f + pointValue * 0.5f: pointValue * 0.5f;
+  if(withPadding)
+    return HalfMarkerSize + Padding + (1.0f - pointValue) * (getHeight() - MarkerSize - 2.0f * Padding);
   return HalfMarkerSize + (1.0f - pointValue) * (getHeight() - MarkerSize);
 }
 
@@ -66,9 +70,9 @@ FBModuleGraphDisplayComponent::PaintVerticalIndicator(
   g.setColour(Colours::white);
   if (!primary)
     g.setColour(Colours::white.withAlpha(0.5f));
-  float x = PointXLocation(graph, point / static_cast<float>(maxSizeAllSeries));
-  float y0 = PointYLocation(0.0f, false, false, absMaxValueAllSeries);
-  float y1 = PointYLocation(absMaxValueAllSeries, false, false, absMaxValueAllSeries);
+  float x = PointXLocation(graph, point / static_cast<float>(maxSizeAllSeries), true);
+  float y0 = PointYLocation(0.0f, false, false, absMaxValueAllSeries, true);
+  float y1 = PointYLocation(absMaxValueAllSeries, false, false, absMaxValueAllSeries, true);
   g.drawDashedLine(Line<float>(x, y0, x, y1), dashes, 2);
 }
 
@@ -98,10 +102,10 @@ FBModuleGraphDisplayComponent::PaintClipBoundaries(
   float absMaxValueAllSeries)
 {
   float dashes[2] = { 4.0, 2.0 };
-  float x0 = PointXLocation(graph, 0.0f);
-  float x1 = PointXLocation(graph, 1.0f);
-  float upperY = PointYLocation(1.0f, stereo, left, absMaxValueAllSeries);
-  float lowerY = PointYLocation(_data->bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries);
+  float x0 = PointXLocation(graph, 0.0f, true);
+  float x1 = PointXLocation(graph, 1.0f, true);
+  float upperY = PointYLocation(1.0f, stereo, left, absMaxValueAllSeries, true);
+  float lowerY = PointYLocation(_data->bipolar? -1.0f: 0.0f, stereo, left, absMaxValueAllSeries, true);
   g.setColour(Colours::white);
   g.drawDashedLine(Line<float>(x0, upperY, x1, upperY), dashes, 2);
   g.drawDashedLine(Line<float>(x0, lowerY, x1, lowerY), dashes, 2);
@@ -140,8 +144,8 @@ FBModuleGraphDisplayComponent::paint(Graphics& g)
     FB_ASSERT(graphData.secondarySeries.size() == 0 || _data->guiRenderType == FBGUIRenderType::Full);
 
     auto bounds = getLocalBounds();
-    auto x0 = static_cast<int>(PointXLocation(graph, 0.0f));
-    auto x1 = static_cast<int>(PointXLocation(graph, 1.0f));
+    auto x0 = static_cast<int>(PointXLocation(graph, 0.0f, false));
+    auto x1 = static_cast<int>(PointXLocation(graph, 1.0f, false));
     auto graphBounds = Rectangle<int>(x0, bounds.getY(), x1 - x0, bounds.getHeight());
     g.setColour(Colour(0xFF181818));
     g.fillRoundedRectangle(graphBounds.toFloat(), 6.0f);
