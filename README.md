@@ -91,6 +91,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * These are processed in order. AKA "build your own distortion module".
 * Keyboard tracking center key with -64 to +64 semis, 0 is C4. Global tracks the last MIDI key.
 * For global FX, new smoothing param for incoming last-midi-key. Prevents jumps when keytracking global filters.
+* Easy-access mod controls for env/lfo to filter freq/shaper gain.
 
 ## Envelope
 * 12 stage EG. I guess this classifies as an MSEG, but, no visual editor.
@@ -115,6 +116,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
 * For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
 * There are loads of new waveforms, see credits below. I stole a bunch of properly BLEP'ed algo's.
+* Easy access mod controls for env to gain and lfo to fine pitch.
 These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
 * For "string" mode:
   * Brought back the "frozen noise" from infernal synth.
