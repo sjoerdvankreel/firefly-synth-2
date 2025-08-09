@@ -18,10 +18,15 @@ August 9, 2025 - Alpha 10.
 * Increased envelope segment count to 12 (honestly just b/c spare UI space).
 * Each LFO subslot now has individual phase control.
 * LFO A/B/C subslots are now accessible as additional mod sources in the matrix.
-
-[x] easy access mod controls
-
-[x] up env seg count
+* Added a bunch of easy-access modulation controls that work on top of the mod matrix. Mod order is now 1) host automation, 2) CLAP host modulation, 3) mod matrix, 4) easy-access controls.
+** Dedicated amp env to VMix amp (was already there, just made it explicit)
+** VLFO1 -> VMix balance
+** GLFO1 -> GMix amp
+** GLFO2 -> GMix balance
+** Env N -> Osci N gain
+** VLFO N -> Osci N fine pitch
+** GLFO 1/2/3/4 -> GFX A/B/C/D control parameter (stvar/cmb filter frq or shaper gain)
+** Env 1/2/3/4 and VLFO 1/2/3/4 -> VFX A/B/C/D control parameter (stvar/cmb filter frq or shaper gain)
 
 July 27, 2025 - alpha 9.
 
