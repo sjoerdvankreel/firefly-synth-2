@@ -136,8 +136,9 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 
 ## Voice/global audio mixer matrix (VMIX/GMIX)
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
+* Easy access mod controls for voice amp/balance and global amp/balance.
 
-## CV Mod Matrix
+## Mod Matrix
 * 1 for voice, 1 for global.
 * Like FF1, on-note support for voice.
 * Much like FF1, select add/mul/stack + bipolar add/stack.
