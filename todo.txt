@@ -1,32 +1,3 @@
-TODOLIST for alpha-10
-
-[x] drop matrixselectedtab
-[x] optional mod indicators
-[x] do addbp also for lfos
-[x] easy access mod controls
-[x] widen the gui for the easy access stuff
-[x] make env1 to amp explicit
-[x] paint env1 to vmix
-[x] not hardcode env1 to voice amp
-[x] all output controls -> cpu indicator, gain indicator, need not be pretty yet
-[x] master input (aux)
-[x] allow lfo separate outputs as modsources, not filtered output, call it raw
-[x] need bpmul
-[x] move all crap to generic and share with lfo
-[x] how many auxes?
-[x] make sure can parse default always
-[x] rename mix gain to amp to match amp envelope
-[x] not show the 1234 in the mixers
-[x] re-check all the shortcuts "frq" "gn" "ktr" etc, maybe new screenspace allows more
-[x] fix all the tooltips (name/display)
-[x] mark v/g for easy access
-[x] v/gmix easy more access
-[x] lfo phase per slot
-[x] up env seg count
-[x] switch graph on click and change
-[x] version info and firefly icon
-[x] paint the graph boundaries
-
 TODOLIST for alpha-11
 
 [ ] less matrix routes

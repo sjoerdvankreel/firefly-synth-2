@@ -5,12 +5,10 @@ using namespace juce;
 
 FBImageComponent::
 FBImageComponent(
-  FBPlugGUI* plugGUI, 
   int width,
   std::string const& resourceName, 
   juce::RectanglePlacement placement):
-_width(width),
-_plugGUI(plugGUI)
+_width(width)
 {
   _image = std::make_unique<ImageComponent>();
   String path((FBGUIGetResourcesFolderPath() / resourceName).string());

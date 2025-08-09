@@ -13,12 +13,10 @@ public juce::Component,
 public IFBHorizontalAutoSize
 {
   int const _width;
-  FBPlugGUI* const _plugGUI;
   std::unique_ptr<juce::ImageComponent> _image = {};
 
 public:
   FBImageComponent(
-    FBPlugGUI* plugGUI, 
     int width,
     std::string const& resourceName, 
     juce::RectanglePlacement placement);

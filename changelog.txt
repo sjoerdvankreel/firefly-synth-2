@@ -1,3 +1,28 @@
+August 9, 2025 - Alpha 10.
+
+- Core
+* Made visual mod indicators optional.
+* Bugfix - made sure default param value is always valid.
+
+- UI
+* Group related parameter sections together.
+* Activate graph plot on click, not only change. 
+* Remove osci/fx slot number from parts of the mixer UI.
+* Display icon/version/plug type (VST3/CLAP)/build type (X64/ARM).
+
+- Modules
+* Add dedicated voice-amp envelope.
+* Add more output parameters (cpu, gain).
+* Add master auxiliary parameters like FF1, use through mod matrix.
+* Add bipolar modulation types to LFO subslots to match the mod matrix.
+* Increased envelope segment count to 12 (honestly just b/c spare UI space).
+* Each LFO subslot now has individual phase control.
+* LFO A/B/C subslots are now accessible as additional mod sources in the matrix.
+
+[x] easy access mod controls
+
+[x] up env seg count
+
 July 27, 2025 - alpha 9.
 
 - Modules
