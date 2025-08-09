@@ -103,10 +103,10 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * For global, regular or snap-to-host-project-time.
 * Optional tempo sync and smoothing filter.
 * 3x choice of various trig functions, saw/tri/sqr, repeating or free-running random noise or smooth noise.
+* Per-subslot phase offset parameter.
 * Per-subslot step function (quantize/stairstep) and continuous rate control.
 * Per-subslot choice of add/multiply/stack + continous min/max params.
 * For slot A, horizontal and vertical skewing + continous amount params.
-* For slot B, phase offset control.
 * Unlike FF1, free-running smooth noise is now finally actually smooth.
 
 ## Osci
