@@ -18,7 +18,7 @@ FFMakeLFOTopo(bool global)
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
   result->name = global ? "GLFO" : "VLFO";
-  result->slotCount = FFLFOAndEnvCount;
+  result->slotCount = FFLFOCount;
   result->graphCount = FFLFOBlockCount + 1;
   result->graphRenderer = global ? FFLFORenderGraph<true> : FFLFORenderGraph<false>;
   result->id = prefix + "{6E9EC930-5391-41BB-9EDA-C9B79F3BE745}";
@@ -97,7 +97,7 @@ FFMakeLFOTopo(bool global)
   auto& smoothTime = result->params[(int)FFLFOParam::SmoothTime];
   smoothTime.acc = false;
   smoothTime.defaultText = "0";
-  smoothTime.display = "Smth";
+  smoothTime.display = "Smooth";
   smoothTime.name = "Smooth Time";
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
@@ -118,7 +118,7 @@ FFMakeLFOTopo(bool global)
   auto& smoothBars = result->params[(int)FFLFOParam::SmoothBars];
   smoothBars.acc = false;
   smoothBars.defaultText = "Off";
-  smoothBars.display = "Smth";
+  smoothBars.display = "Smooth";
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";
@@ -141,13 +141,16 @@ FFMakeLFOTopo(bool global)
   opType.slotCount = FFLFOBlockCount;
   opType.slotFormatter = FFFormatBlockSlot;
   opType.id = prefix + "{B60CF69F-B21F-4BB6-891A-9E1493D0E40E}";
-  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "Add" : "Off"; };
+  opType.defaultTextSelector = [](int /*mi*/, int, int ps) { return ps == 0 ? "UP Add" : "Off"; };
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{A1E456A1-05D9-4915-8C90-0076FFD9DADF}", "Off" },
-    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "Add" },
-    { "{AD641260-F205-497E-B483-330CFA025378}", "Mul" },
-    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "Stk" } };
+    { "{68818E5D-62D3-433A-A81A-7FAA7EA11018}", "UP Add" },
+    { "{AD641260-F205-497E-B483-330CFA025378}", "UP Mul" },
+    { "{5D97E841-675B-423F-B30C-06AD60AC0A54}", "UP Stk" },
+    { "{C18F6A70-944C-4A9B-8A01-561E1B6B93D4}", "BP Add" },
+    { "{3130BBE8-D204-450D-A3D2-AC4266FB8E4B}", "BP Mul" },
+    { "{69D5AD4B-BD0B-42A6-A252-A0A43D425F89}", "BP Stk" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
   opType.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOpType);
@@ -282,7 +285,7 @@ FFMakeLFOTopo(bool global)
   steps.acc = false;
   steps.defaultText = "1";
   steps.name = "Steps";
-  steps.display = "Stp";
+  steps.display = "Steps";
   steps.slotCount = FFLFOBlockCount;
   steps.slotFormatter = FFFormatBlockSlot;
   steps.id = prefix + "{F356CD96-80FD-4A45-A2BE-76785CC5463F}";
@@ -297,20 +300,38 @@ FFMakeLFOTopo(bool global)
   steps.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSteps);
   steps.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& phase = result->params[(int)FFLFOParam::Phase];
+  phase.acc = false;
+  phase.defaultText = "0";
+  phase.name = "Phase";
+  phase.display = "Phase";
+  phase.slotCount = FFLFOBlockCount;
+  phase.slotFormatter = FFFormatBlockSlot;
+  phase.unit = "%";
+  phase.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
+  phase.type = FBParamType::Identity;
+  auto selectPhase = [](auto& module) { return &module.block.phase; };
+  phase.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhase);
+  phase.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhase);
+  phase.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhase);
+  phase.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhase);
+  phase.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhase);
+  phase.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
   auto& skewAXMode = result->params[(int)FFLFOParam::SkewAXMode];
   skewAXMode.acc = false;
   skewAXMode.defaultText = "Off";
-  skewAXMode.display = "SkX";
+  skewAXMode.display = "Skew X";
   skewAXMode.name = "Skew A X Mode";
   skewAXMode.slotCount = 1;
   skewAXMode.id = prefix + "{AA602AF4-882F-49E0-AA2B-B4D00C1723C2}";
   skewAXMode.type = FBParamType::List;
   skewAXMode.List().items = {
     { "{D057104A-C083-4BA4-9799-63307147B2E2}", "Off" },
-    { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "SclU" },
-    { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "SclB" },
-    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "ExpU" },
-    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "ExpB" } };
+    { "{D1FD1E7B-E20F-47DA-9FB8-F03DE80BB109}", "UP Scale" },
+    { "{1556925C-34F8-44F7-A1C9-62E4C4A40265}", "BP Scale" },
+    { "{ECCADB9A-4735-4916-93B0-BB179C78247B}", "UP Exp" },
+    { "{E2E3B133-B375-4F83-BAE3-EEAD6FF10FF8}", "BP Exp" } };
   auto selectSkewAXMode = [](auto& module) { return &module.block.skewAXMode; };
   skewAXMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAXMode);
   skewAXMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAXMode);
@@ -338,15 +359,15 @@ FFMakeLFOTopo(bool global)
   auto& skewAYMode = result->params[(int)FFLFOParam::SkewAYMode];
   skewAYMode.acc = false;
   skewAYMode.defaultText = "Off";
-  skewAYMode.display = "SkY";
+  skewAYMode.display = "Skew Y";
   skewAYMode.name = "Skew A Y Mode";
   skewAYMode.slotCount = 1;
   skewAYMode.id = prefix + "{20D3F79F-F727-4164-AE04-27D9D254CE60}";
   skewAYMode.type = FBParamType::List;
   skewAYMode.List().items = {
     { "{ADE99968-98D3-4314-BDE4-09A440FADB45}", "Off" },
-    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "ExpU" },
-    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "ExpB" } };
+    { "{077725EA-4293-48A3-8D1B-6EE452327255}", "UP Exp" },
+    { "{47B2CD10-27B4-40BE-AD54-053F4DCBCFA0}", "BP Exp" } };
   auto selectSkewAYMode = [](auto& module) { return &module.block.skewAYMode; };
   skewAYMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewAYMode);
   skewAYMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewAYMode);
@@ -371,28 +392,20 @@ FFMakeLFOTopo(bool global)
   skewAYAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSkewAYAmt);
   skewAYAmt.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 }, { (int)FFLFOParam::SkewAYMode, 0 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
-  auto& phaseB = result->params[(int)FFLFOParam::PhaseB];
-  phaseB.acc = false;
-  phaseB.defaultText = "0";
-  phaseB.name = "Phase B";
-  phaseB.display = "Phs";
-  phaseB.slotCount = 1;
-  phaseB.unit = "%";
-  phaseB.id = prefix + "{4BFEC447-4A16-4AE4-9E73-4FDC889046D1}";
-  phaseB.type = FBParamType::Identity;
-  auto selectPhaseB = [](auto& module) { return &module.block.phaseB; };
-  phaseB.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectPhaseB);
-  phaseB.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectPhaseB);
-  phaseB.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectPhaseB);
-  phaseB.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectPhaseB);
-  phaseB.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectPhaseB);
-  phaseB.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 1 } }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  auto& outputAll = result->cvOutputs[(int)FFLFOCVOutput::All];
+  outputAll.slotCount = 1;
+  outputAll.name = "";
+  outputAll.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
+  outputAll.globalAddr = [](int ms, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].outputAll; };
+  outputAll.voiceAddr = [](int ms, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].outputAll; };
 
-  auto& output = result->cvOutputs[(int)FFLFOCVOutput::Output];
-  output.slotCount = 1;
-  output.name = "Output";
-  output.id = "{5A1F30AC-8B2C-47E2-88D2-92E16CA743A4}";
-  output.globalAddr = [](int ms, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].output; };
-  output.voiceAddr = [](int ms, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].output; };
+  auto& outputRaw = result->cvOutputs[(int)FFLFOCVOutput::Raw];
+  outputRaw.name = "Raw";
+  outputRaw.slotCount = FFLFOBlockCount;
+  outputRaw.slotFormatter = FFFormatBlockSlot;
+  outputRaw.id = "{C592BE19-6D8C-4A85-800E-7A292D8433D8}";
+  outputRaw.globalAddr = [](int ms, int os, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gLFO[ms].outputRaw[os]; };
+  outputRaw.voiceAddr = [](int ms, int os, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vLFO[ms].outputRaw[os]; };
+
   return result;
 }

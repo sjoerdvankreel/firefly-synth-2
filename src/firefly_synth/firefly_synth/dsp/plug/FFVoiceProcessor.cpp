@@ -15,14 +15,19 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
+
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
-  for (int i = 0; i < FFLFOAndEnvCount; i++)
+  for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i;
     procState->dsp.voice[voice].env[i].processor->BeginVoice(state);
+    state.moduleSlot = i;
     procState->dsp.voice[voice].vLFO[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, nullptr, state);
   }
+  state.moduleSlot = FFAmpEnvSlot;
+  procState->dsp.voice[voice].env[FFAmpEnvSlot].processor->BeginVoice(state);
+
   state.moduleSlot = 0;
   procState->dsp.voice[voice].osciMod.processor->BeginVoice(false, state);
   for (int i = 0; i < FFOsciCount; i++)
@@ -40,38 +45,43 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 bool 
 FFVoiceProcessor::Process(FBModuleProcState state)
 {
-  bool voiceFinished = false;
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceDSP = procState->dsp.voice[voice];
   auto const& vMix = procState->param.voice.vMix[0];
-  auto const& balNorm = vMix.acc.bal[0].Voice()[voice];
-  auto const& gainNorm = vMix.acc.gain[0].Voice()[voice];
-  auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
+  auto const& balNormIn = vMix.acc.bal[0].Voice()[voice];
+  auto const& ampNormIn = vMix.acc.amp[0].Voice()[voice];
+  auto const& lfo1ToBalNorm = vMix.acc.lfo1ToBal[0].Voice()[voice];
+  auto const& ampEnvToAmpNorm = vMix.acc.ampEnvToAmp[0].Voice()[voice];
+  auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
+  FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
+  FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
-  for (int i = 0; i < FFLFOAndEnvCount; i++)
+  for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i;
-    int envProcessed = voiceDSP.env[i].processor->Process(state);
+    voiceDSP.env[i].processor->Process(state);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, i });
-    if (i == 0)
-      voiceFinished = envProcessed != FBFixedBlockSamples;
-
     state.moduleSlot = i;
     voiceDSP.vLFO[i].processor->Process<false>(state);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VLFO, i });
   }
+  state.moduleSlot = FFAmpEnvSlot;
+  int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state);
+  bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
+  state.moduleSlot = 0;
+  procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, FFAmpEnvSlot });
 
   state.moduleSlot = 0;
   voiceDSP.osciMod.processor->Process(state);
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.osci[i].processor->Process(state);
+    voiceDSP.osci[i].processor->Process(false, state);
   }
 
   FB_ASSERT(FFOsciCount == FFEffectCount);
@@ -93,7 +103,7 @@ FFVoiceProcessor::Process(FBModuleProcState state)
         auto const& vfxToVFXNorm = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
         voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, vfxToVFXNorm);
       }
-    voiceDSP.vEffect[i].processor->Process<false>(state);
+    voiceDSP.vEffect[i].processor->Process<false>(false, state);
   }
 
   voiceDSP.output.Fill(0.0f);
@@ -108,15 +118,16 @@ FFVoiceProcessor::Process(FBModuleProcState state)
     voiceDSP.output.AddMul(voiceDSP.vEffect[i].output, vfxToOutNorm);
   }
 
-  // TODO dont hardcode this to voice amp?
-  voiceDSP.output.Mul(voiceDSP.env[0].output);
-
+  balNormIn.CV().CopyTo(balNormModulated);
+  ampNormIn.CV().CopyTo(ampNormModulated);
+  FFApplyModulation(FFModulationOpType::BPStack, voiceDSP.vLFO[0].outputAll, lfo1ToBalNorm.CV(), balNormModulated);
+  FFApplyModulation(FFModulationOpType::UPMul, voiceDSP.env[FFAmpEnvSlot].output, ampEnvToAmpNorm.CV(), ampNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float balPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Bal, balNorm.CV().Get(s));
-    float gainPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Gain, gainNorm.CV().Get(s));
+    float balPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Bal, balNormModulated.Get(s));
+    float ampPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Get(s));
     for (int c = 0; c < 2; c++)
-      voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * gainPlain * FBStereoBalance(c, balPlain));
+      voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
@@ -130,8 +141,10 @@ FFVoiceProcessor::Process(FBModuleProcState state)
   exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
-  exchangeParams.acc.bal[0][voice] = balNorm.CV().Last();
-  exchangeParams.acc.gain[0][voice] = gainNorm.CV().Last();
+  exchangeParams.acc.bal[0][voice] = balNormModulated.Last();
+  exchangeParams.acc.amp[0][voice] = ampNormModulated.Last();
+  exchangeParams.acc.lfo1ToBal[0][voice] = lfo1ToBalNorm.Last();
+  exchangeParams.acc.ampEnvToAmp[0][voice] = ampEnvToAmpNorm.Last();
   for (int r = 0; r < FFMixFXToFXCount; r++)
     exchangeParams.acc.VFXToVFX[r][voice] = vMix.acc.VFXToVFX[r].Voice()[voice].CV().Last();
   for (int r = 0; r < FFVMixOsciToVFXCount; r++)

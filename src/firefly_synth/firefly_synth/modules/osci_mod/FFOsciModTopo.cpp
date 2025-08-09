@@ -5,9 +5,9 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FFOsciModFormatSlot(FBStaticTopo const&, int slot)
+FFOsciModFormatSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
-  switch (slot)
+  switch (itemSlot)
   {
   case 0: return "1\U000021922";
   case 1: return "1\U000021923";
@@ -76,6 +76,7 @@ FFMakeOsciModTopo()
   auto& amMode = result->params[(int)FFOsciModParam::AMMode];
   amMode.acc = false;
   amMode.name = "AM Mode";
+  amMode.defaultText = "Off";
   amMode.slotCount = FFOsciModSlotCount;
   amMode.id = "{AE135DBF-A88E-49A4-9205-08C908E6FC12}";
   amMode.type = FBParamType::List;

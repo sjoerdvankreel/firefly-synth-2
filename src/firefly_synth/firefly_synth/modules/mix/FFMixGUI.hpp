@@ -7,6 +7,4 @@ class FBPlugGUI;
 juce::Component*
 FFMakeMixGUI(FBPlugGUI* plugGUI);
 juce::Component*
-FFMakeMixGUISectionFXToFX(FBPlugGUI* plugGUI, int moduleType, int fxToFXParam);
-juce::Component*
-FFMakeMixGUISectionGainBal(FBPlugGUI* plugGUI, int moduleType, int gainParam, int balParam);
+FFMakeMixGUISectionFXToFX(FBPlugGUI* plugGUI, int moduleType, int fxToFXParam, juce::Slider::SliderStyle sliderStyle);

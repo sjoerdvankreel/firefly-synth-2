@@ -13,6 +13,12 @@
 * Plucked strings
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_pluckstring.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_pluckstring.rpp)
+* FM + distortion 1
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_fm_distortion_1.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_fm_distortion_1.rpp)
+* FM + distortion 2
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_fm_distortion_2.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_fm_distortion_2.rpp)
 * Distortion (still love it)
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_distortion.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_distortion.rpp)
@@ -85,9 +91,10 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * These are processed in order. AKA "build your own distortion module".
 * Keyboard tracking center key with -64 to +64 semis, 0 is C4. Global tracks the last MIDI key.
 * For global FX, new smoothing param for incoming last-midi-key. Prevents jumps when keytracking global filters.
+* Easy-access mod controls for env/lfo to filter freq/shaper gain.
 
 ## Envelope
-* 9 stage EG. I guess this classifies as an MSEG, but, no visual editor.
+* 12 stage EG. I guess this classifies as an MSEG, but, no visual editor.
 * Per stage amp and slope, per-sample automate/modulate.
 * Stage length per-voice-start automate/modulate when not tempo-synced.
 * Linear/expo mode, 2 loop points for the sustain stage, any point can be release point, optional tempo sync, optional signal smoothing.
@@ -97,10 +104,10 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * For global, regular or snap-to-host-project-time.
 * Optional tempo sync and smoothing filter.
 * 3x choice of various trig functions, saw/tri/sqr, repeating or free-running random noise or smooth noise.
+* Per-subslot phase offset parameter.
 * Per-subslot step function (quantize/stairstep) and continuous rate control.
 * Per-subslot choice of add/multiply/stack + continous min/max params.
 * For slot A, horizontal and vertical skewing + continous amount params.
-* For slot B, phase offset control.
 * Unlike FF1, free-running smooth noise is now finally actually smooth.
 
 ## Osci
@@ -109,7 +116,8 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
 * For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
 * There are loads of new waveforms, see credits below. I stole a bunch of properly BLEP'ed algo's.
-These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
+* These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
+* Easy access mod controls for env to gain and lfo to fine pitch.
 * For "string" mode:
   * Brought back the "frozen noise" from infernal synth.
   * Continous white-to-pink-to-brown noise, uniform or gaussian.
@@ -128,8 +136,9 @@ These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are sup
 
 ## Voice/global audio mixer matrix (VMIX/GMIX)
 * Like FF1's, but no need to point-and-click, just drag the sliders, because the matrix is already set up.
+* Easy access mod controls for voice amp/balance and global amp/balance.
 
-## CV Mod Matrix
+## Mod Matrix
 * 1 for voice, 1 for global.
 * Like FF1, on-note support for voice.
 * Much like FF1, select add/mul/stack + bipolar add/stack.

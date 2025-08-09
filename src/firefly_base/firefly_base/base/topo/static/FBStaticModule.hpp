@@ -2,6 +2,7 @@
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/static/FBStaticParam.hpp>
+#include <firefly_base/base/topo/static/FBSlotFormatter.hpp>
 #include <firefly_base/base/topo/static/FBStaticCVOutput.hpp>
 
 #include <juce_gui_basics/juce_gui_basics.h>
@@ -32,10 +33,14 @@ struct FBStaticModule final
   int slotCount = {};
   std::string id = {};
   std::string name = {};
+  std::string matrixName = {};
+  bool slotFormatterOverrides = {};
+  FBModuleGraphRenderer graphRenderer = {};
+  FBModuleSlotFormatter slotFormatter = {};
+  FBModuleSlotFormatter tabSlotFormatter = {};
   std::vector<FBStaticParam> params = {};
   std::vector<FBStaticGUIParam> guiParams = {};
   std::vector<FBStaticCVOutput> cvOutputs = {};
-  FBModuleGraphRenderer graphRenderer = {};
   FBVoiceModuleExchangeAddrSelector voiceModuleExchangeAddr = {};
   FBGlobalModuleExchangeAddrSelector globalModuleExchangeAddr = {};
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticModule);

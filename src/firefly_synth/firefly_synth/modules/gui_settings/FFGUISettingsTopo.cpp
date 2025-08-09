@@ -26,19 +26,31 @@ FFMakeGUISettingsTopo()
   auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
   guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
-  auto& guiGraphMode = result->guiParams[(int)FFGUISettingsGUIParam::GraphMode];
-  guiGraphMode.defaultText = "If Focus";
-  guiGraphMode.name = "Graph Mode";
-  guiGraphMode.display = "Graph";
-  guiGraphMode.slotCount = 1;
-  guiGraphMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
-  guiGraphMode.type = FBParamType::List;
-  guiGraphMode.List().items = {
+  auto& guiGraphRenderMode = result->guiParams[(int)FFGUISettingsGUIParam::GraphRenderMode];
+  guiGraphRenderMode.defaultText = "If Focus";
+  guiGraphRenderMode.name = "Graph";
+  guiGraphRenderMode.slotCount = 1;
+  guiGraphRenderMode.id = "{6C5F2DC2-C796-444C-8D43-077708580609}";
+  guiGraphRenderMode.type = FBParamType::List;
+  guiGraphRenderMode.List().items = {
     { "{D5C9FC77-0DE8-4077-9D07-073B44F5076F}", "Basic" },
     { "{8291740E-D7DC-4481-B430-9C73F3343E10}", "Always" },
     { "{A5369260-7E9F-4C23-8FED-0C42CAA9DD91}", "If Focus" } };
-  auto selectGuiGraphMode = [](auto& module) { return &module.graphMode; };
-  guiGraphMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphMode);
+  auto selectGuiGraphRenderMode = [](auto& module) { return &module.graphRenderMode; };
+  guiGraphRenderMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiGraphRenderMode);
+
+  auto& guiKnobRenderMode = result->guiParams[(int)FFGUISettingsGUIParam::KnobRenderMode];
+  guiKnobRenderMode.defaultText = "If Focus";
+  guiKnobRenderMode.name = "Knob Mod";
+  guiKnobRenderMode.slotCount = 1;
+  guiKnobRenderMode.id = "{586DE12C-6D53-48C0-B5EE-CBAE92985465}";
+  guiKnobRenderMode.type = FBParamType::List;
+  guiKnobRenderMode.List().items = {
+    { "{28EDDEC0-2CB0-422F-B786-8804EE311F43}", "Never" },
+    { "{F682B536-34F4-4BAC-90A9-CF23E23BE0B1}", "Always" },
+    { "{F6DA89D0-A8FE-42F3-A7F2-C83FCFE6DE19}", "If Focus" } };
+  auto selectGuiKnobRenderMode = [](auto& module) { return &module.knobRenderMode; };
+  guiKnobRenderMode.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiKnobRenderMode);
 
   auto& guiOscSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::OscSelectedTab];
   guiOscSelectedTab.defaultText = "0";
@@ -66,7 +78,7 @@ FFMakeGUISettingsTopo()
   guiLFOSelectedTab.slotCount = 1;
   guiLFOSelectedTab.id = "{23C0E87A-9224-43BB-97CE-549586B39BF4}";
   guiLFOSelectedTab.type = FBParamType::Discrete;
-  guiLFOSelectedTab.Discrete().valueCount = FFLFOAndEnvCount * 2;
+  guiLFOSelectedTab.Discrete().valueCount = FFLFOCount * 2;
   auto selectGuiLFOSelectedTab = [](auto& module) { return &module.lfoSelectedTab; };
   guiLFOSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiLFOSelectedTab);
 
@@ -86,7 +98,7 @@ FFMakeGUISettingsTopo()
   guiEnvSelectedTab.slotCount = 1;
   guiEnvSelectedTab.id = "{83D56B7F-28A7-4A02-AEBB-8D55E6CDB4D8}";
   guiEnvSelectedTab.type = FBParamType::Discrete;
-  guiEnvSelectedTab.Discrete().valueCount = FFLFOAndEnvCount;
+  guiEnvSelectedTab.Discrete().valueCount = FFEnvCount;
   auto selectGuiEnvSelectedTab = [](auto& module) { return &module.envSelectedTab; };
   guiEnvSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEnvSelectedTab);
 

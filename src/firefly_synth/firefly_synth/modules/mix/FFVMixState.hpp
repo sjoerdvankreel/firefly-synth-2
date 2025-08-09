@@ -17,7 +17,9 @@ class alignas(alignof(TAccurate)) FFVMixAccParamState final
   friend class FFVoiceProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeVMixTopo();
   std::array<TAccurate, 1> bal = {};
-  std::array<TAccurate, 1> gain = {};
+  std::array<TAccurate, 1> lfo1ToBal = {};
+  std::array<TAccurate, 1> amp = {};
+  std::array<TAccurate, 1> ampEnvToAmp = {};
   std::array<TAccurate, FFOsciCount> osciToOut = {};
   std::array<TAccurate, FFEffectCount> VFXToOut = {};
   std::array<TAccurate, FFMixFXToFXCount> VFXToVFX = {};

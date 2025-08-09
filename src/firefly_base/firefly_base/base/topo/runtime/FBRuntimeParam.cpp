@@ -13,7 +13,10 @@ ValidateItemsParam(
   std::set<std::string> itemNames = {};
   if (staticParam.type == FBParamType::List)
     for (int i = 0; i < staticParam.List().items.size(); i++)
-      FB_ASSERT(itemNames.insert(staticParam.List().GetName(moduleIndex, i)).second);
+    {
+      auto name = staticParam.List().GetName(moduleIndex, i);
+      FB_ASSERT(itemNames.insert(name).second);
+    }
 #endif
 }
 
@@ -24,8 +27,12 @@ FBMakeRuntimeParamLongName(
   FBStaticParamBase const& param,
   FBParamTopoIndices const& indices)
 {
-  auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
-  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {}, false);
+  auto paramName = FBMakeRuntimeModuleItemShortName(
+    topo, param.name, indices.module.slot, param.slotCount, 
+    indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
+  auto moduleName = FBMakeRuntimeModuleShortName(
+    topo, module.name, module.slotCount, indices.module.slot, 
+    module.slotFormatter, module.slotFormatterOverrides);
   return moduleName + " " + paramName;
 }
 
@@ -40,11 +47,22 @@ runtimeModuleIndex(runtimeModuleIndex),
 runtimeParamIndex(runtimeParamIndex),
 topoIndices(topoIndices),
 longName(FBMakeRuntimeParamLongName(topo, staticModule, staticParam, topoIndices)),
-shortName(FBMakeRuntimeShortName(topo, staticParam.name, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
-displayName(FBMakeRuntimeDisplayName(topo, staticParam.name, staticParam.display, staticParam.slotCount, topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
+shortName(FBMakeRuntimeModuleItemShortName(
+  topo, staticParam.name, topoIndices.module.slot, staticParam.slotCount, 
+  topoIndices.param.slot, staticParam.slotFormatter, staticParam.slotFormatterOverrides)),
+displayName(FBMakeRuntimeModuleItemDisplayName(
+  topo, staticParam.name, staticParam.display, 
+  topoIndices.module.slot, staticParam.slotCount, topoIndices.param.slot, 
+  staticParam.slotFormatter, staticParam.slotFormatterOverrides, staticParam.slotFormatDisplay)),
 id(FBMakeRuntimeId(staticModule.id, topoIndices.module.slot, staticParam.id, topoIndices.param.slot)),
 staticModuleId(staticModule.id),
-tag(FBMakeStableHash(id)) {}
+tag(FBMakeStableHash(id))
+{
+  FB_ASSERT((staticParam.defaultText.size() == 0) != (staticParam.defaultTextSelector == nullptr));
+#ifndef NDEBUG
+  staticParam.GetDefaultText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
+#endif
+}
 
 std::string 
 FBRuntimeParamBase::PlainToText(bool io, double plain) const

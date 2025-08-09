@@ -9,9 +9,9 @@ struct FBStaticTopo;
 inline int constexpr FFMixFXToFXCount = FFEffectCount * (FFEffectCount - 1) / 2;
 
 std::string
-FFMixFormatFXToFXSlot(FBStaticTopo const&, int mixSlot);
+FFMixFormatFXToFXSlot(FBStaticTopo const&, int moduleSlot, int mixSlot);
 std::string
-FFMixFormatFXToOutSlot(FBStaticTopo const& topo, int mixSlot);
+FFMixFormatFXToOutSlot(FBStaticTopo const& topo, int moduleSlot, int mixSlot);
 
 inline int
 FFMixFXToFXGetSourceSlot(int mixSlot)

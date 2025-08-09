@@ -87,7 +87,13 @@ public:
     FBRuntimeTopo const* topo);
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBDeserializationConverter);
 
+  // Generic catch-all.
+  virtual void PostProcess(
+    bool /* isGuiState */,
+    std::vector<double*> const& /*paramValues*/) const { }
+
   virtual bool OnParamNotFound(
+    bool /* isGuiState */,
     std::string const& /*oldModuleId*/, int /*oldModuleSlot*/,
     std::string const& /*oldParamId*/, int /*oldParamSlot*/,
     std::string& /*newModuleId*/, int& /*newModuleSlot*/,

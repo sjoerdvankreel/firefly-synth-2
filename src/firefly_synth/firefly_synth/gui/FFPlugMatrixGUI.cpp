@@ -24,7 +24,8 @@ MakePlugMatrixTab(FFPlugGUI* plugGUI)
       toggle->setButtonText(" Show "); };
   grid->Add(0, 0, toggle);
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
-  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
 
 Component*

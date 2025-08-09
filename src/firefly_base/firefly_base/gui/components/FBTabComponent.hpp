@@ -23,6 +23,22 @@ public:
   void clicked(const juce::ModifierKeys& modifiers) override;
 };
 
+class FBModuleTabBarButton:
+public FBTabBarButton
+{
+  FBPlugGUI* const _plugGUI;
+  FBTopoIndices const _moduleIndices;
+
+public:
+  FBModuleTabBarButton(
+    FBPlugGUI* plugGUI,
+    const juce::String& name,
+    juce::TabbedButtonBar& bar,
+    FBTopoIndices const& moduleIndices);
+
+  void clicked(const juce::ModifierKeys& modifiers) override;
+};
+
 class FBAutoSizeTabComponent:
 public juce::TabbedComponent,
 public IFBHorizontalAutoSize
@@ -60,4 +76,7 @@ public:
   void currentTabChanged(
     int newCurrentTabIndex, 
     juce::String const& newCurrentTabName) override;
+
+  juce::TabBarButton*
+  createTabButton(const juce::String& tabName, int tabIndex) override;
 };

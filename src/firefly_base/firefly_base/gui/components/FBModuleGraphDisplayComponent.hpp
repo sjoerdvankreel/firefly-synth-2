@@ -17,11 +17,11 @@ public:
 
 private:
   float PointXLocation(
-    int graph, float pointRelative) const;
+    int graph, float pointRelative, bool withPadding) const;
 
   float PointYLocation(
     float pointYValue, bool stereo, bool left, 
-    float absMaxValueAllSeries) const;
+    float absMaxValueAllSeries, bool withPadding) const;
 
   juce::Point<float> PointLocation(
     int graph, std::vector<float> const& points,

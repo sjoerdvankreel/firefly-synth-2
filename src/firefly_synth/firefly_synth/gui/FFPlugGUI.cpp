@@ -1,5 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/gui/FFPatchGUI.hpp>
+#include <firefly_synth/gui/FFHeaderGUI.hpp>
 #include <firefly_synth/gui/FFPlugMatrixGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
@@ -60,6 +61,12 @@ FFPlugGUI::SwitchGraphToModule(int index, int slot)
 }
 
 void 
+FFPlugGUI::ModuleSlotClicked(int index, int slot)
+{
+  SwitchGraphToModule(index, slot);
+}
+
+void
 FFPlugGUI::ActiveModuleSlotChanged(int index, int slot)
 {
   SwitchGraphToModule(index, slot);
@@ -91,16 +98,28 @@ FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
     _graph->RequestRerender(_graph->TweakedModuleByUI());
 }
 
-FBGUIRenderType 
-FFPlugGUI::GetRenderType() const
+FBGUIRenderType
+FFPlugGUI::GetKnobRenderType() const
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::GraphMode, 0 } };
+  return GetRenderType((int)FFGUISettingsGUIParam::KnobRenderMode);
+}
+
+FBGUIRenderType
+FFPlugGUI::GetGraphRenderType() const
+{
+  return GetRenderType((int)FFGUISettingsGUIParam::GraphRenderMode);
+}
+
+FBGUIRenderType 
+FFPlugGUI::GetRenderType(int paramIndex) const
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { paramIndex, 0 } };
   auto const* paramTopo = HostContext()->Topo()->gui.ParamAtTopo(indices);
   float normalized = static_cast<float>(HostContext()->GetGUIParamNormalized(paramTopo->runtimeParamIndex));
-  auto mode = static_cast<FFGUISettingsGraphMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
-  if (mode == FFGUISettingsGraphMode::Basic)
+  auto mode = static_cast<FFGUISettingsRenderMode>(paramTopo->static_.List().NormalizedToPlainFast(normalized));
+  if (mode == FFGUISettingsRenderMode::Basic)
     return FBGUIRenderType::Basic;
-  if (mode == FFGUISettingsGraphMode::Always)
+  if (mode == FFGUISettingsRenderMode::Always)
     return FBGUIRenderType::Full;
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
@@ -122,21 +141,22 @@ FFPlugGUI::SetupGUI()
   FB_LOG_ENTRY_EXIT();
   _matrix = FFMakeModMatrixGUI(this); 
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
+  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(4, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, FFMakeOsciGUI(this));
   _modules->Add(1, 0, FFMakeEffectGUI(this));
   _modules->Add(2, 0, FFMakeLFOGUI(this));
   _modules->Add(3, 0, FFMakeEnvGUI(this));
-  _modules->Add(4, 0, FFMakeMixGUI(this));
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
-  _container = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 2, 2, 15 } }, std::vector<int> { { 1, 0, 0, 0, 0 } });
-  _container->Add(0, 0, 1, 5, _graph);
-  _container->Add(1, 0, 1, 1, FFMakeMasterGUI(this));
-  _container->Add(1, 1, 1, 1, FFMakeOutputGUI(this));
-  _container->Add(1, 2, 1, 1, FFMakeGUISettingsGUI(this));
-  _container->Add(1, 3, 1, 1, FFMakePlugMatrixGUI(this));
-  _container->Add(1, 4, 1, 1, FFMakePatchGUI(this));
-  _container->Add(2, 0, 1, 5, _content);
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 12, 9, 50 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0 } });
+  _container->Add(0, 0, 1, 1, FFMakeHeaderGUI(this));
+  _container->Add(0, 1, 1, 1, FFMakeMasterGUI(this));
+  _container->Add(0, 2, 1, 1, FFMakeOutputGUI(this));
+  _container->Add(0, 3, 1, 1, FFMakeGUISettingsGUI(this));
+  _container->Add(0, 4, 1, 1, FFMakePlugMatrixGUI(this));
+  _container->Add(0, 5, 1, 1, FFMakePatchGUI(this));
+  _container->Add(1, 0, 1, 6, FFMakeMixGUI(this));
+  _container->Add(2, 0, 1, 6, _graph);
+  _container->Add(3, 0, 1, 6, _content);
   addAndMakeVisible(_container);
 }

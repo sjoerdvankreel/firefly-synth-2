@@ -6,9 +6,9 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FormatVoiceToGFXSlot(FBStaticTopo const&, int mixSlot)
+FormatVoiceToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
-  std::string fxName = "FX" + std::to_string(mixSlot + 1);
+  std::string fxName = "FX " + std::to_string(mixSlot + 1);
   return std::string("Voice\U00002192" + fxName);
 }
 
@@ -24,21 +24,34 @@ FFMakeGMixTopo()
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gMix; });
   auto selectModule = [](auto& state) { return &state.global.gMix; };
 
-  auto& gain = result->params[(int)FFGMixParam::Gain];
-  gain.acc = true;
-  gain.defaultText = "50";
-  gain.name = "Gain";
-  gain.slotCount = 1;
-  gain.unit = "%";
-  gain.id = "{7A7248F3-570F-4AB4-B4FE-CA7D1B8531CF}";
-  gain.type = FBParamType::Linear;
-  gain.Linear().min = 0.0f;
-  gain.Linear().max = 2.0f;
-  gain.Linear().displayMultiplier = 100;
-  auto selectGain = [](auto& module) { return &module.acc.gain; };
-  gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
-  gain.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
-  gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
+  auto& amp = result->params[(int)FFGMixParam::Amp];
+  amp.acc = true;
+  amp.defaultText = "50";
+  amp.name = "Amp";
+  amp.slotCount = 1;
+  amp.unit = "%";
+  amp.id = "{7A7248F3-570F-4AB4-B4FE-CA7D1B8531CF}";
+  amp.type = FBParamType::Linear;
+  amp.Linear().min = 0.0f;
+  amp.Linear().max = 2.0f;
+  amp.Linear().displayMultiplier = 100;
+  auto selectAmp = [](auto& module) { return &module.acc.amp; };
+  amp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectAmp);
+  amp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAmp);
+  amp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmp);
+
+  auto& lfo1ToAmp = result->params[(int)FFGMixParam::LFO1ToAmp];
+  lfo1ToAmp.acc = true;
+  lfo1ToAmp.name = "GLFO 1\U00002192Amp";
+  lfo1ToAmp.defaultText = "0";
+  lfo1ToAmp.slotCount = 1;
+  lfo1ToAmp.unit = "%";
+  lfo1ToAmp.id = "{EF9C4C3E-C0F8-4050-BE77-DAFFFEC31756}";
+  lfo1ToAmp.type = FBParamType::Identity;
+  auto selectLFO1ToAmp = [](auto& module) { return &module.acc.lfo1ToAmp; };
+  lfo1ToAmp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO1ToAmp);
+  lfo1ToAmp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO1ToAmp);
+  lfo1ToAmp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO1ToAmp);
 
   auto& bal = result->params[(int)FFGMixParam::Bal];
   bal.acc = true;
@@ -56,6 +69,19 @@ FFMakeGMixTopo()
   bal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectBal);
   bal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectBal);
   bal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectBal);
+
+  auto& lfo2ToBal = result->params[(int)FFGMixParam::LFO2ToBal];
+  lfo2ToBal.acc = true;
+  lfo2ToBal.name = "GLFO 2\U00002192Bal";
+  lfo2ToBal.defaultText = "0";
+  lfo2ToBal.slotCount = 1;
+  lfo2ToBal.unit = "%";
+  lfo2ToBal.id = "{B4A71A47-EA18-416C-89CC-38C66A2A17E5}";
+  lfo2ToBal.type = FBParamType::Identity;
+  auto selectLFO2ToBal = [](auto& module) { return &module.acc.lfo2ToBal; };
+  lfo2ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO2ToBal);
+  lfo2ToBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO2ToBal);
+  lfo2ToBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO2ToBal);
 
   auto& voiceToGFX = result->params[(int)FFGMixParam::VoiceToGFX];
   voiceToGFX.acc = true;

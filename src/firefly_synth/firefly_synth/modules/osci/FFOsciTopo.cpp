@@ -5,9 +5,9 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::string
-FFOsciFMFormatRatioSlot(FBStaticTopo const&, int slot)
+FFOsciFMFormatRatioSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
-  switch (slot)
+  switch (itemSlot)
   {
   case 0: return "2:1";
   case 1: return "3:2";
@@ -31,11 +31,11 @@ FFOsciFMFormatRatioValue(int val)
 }
 
 static std::string
-FFOsciFMFormatIndexSlot(FBStaticTopo const&, int slot)
+FFOsciFMFormatIndexSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
-  FB_ASSERT(0 <= slot && slot < FFOsciFMMatrixSize);
-  return std::to_string(slot / FFOsciFMOperatorCount + 1) + "\U00002192" + 
-    std::to_string(slot % FFOsciFMOperatorCount + 1);
+  FB_ASSERT(0 <= itemSlot && itemSlot < FFOsciFMMatrixSize);
+  return std::to_string(itemSlot / FFOsciFMOperatorCount + 1) + "\U00002192" +
+    std::to_string(itemSlot % FFOsciFMOperatorCount + 1);
 }
 
 std::unique_ptr<FBStaticModule>
@@ -54,7 +54,6 @@ FFMakeOsciTopo()
 
   auto& type = result->params[(int)FFOsciParam::Type];
   type.acc = false;
-  type.defaultText = "Off";
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{9018865F-7B05-4835-B541-95014C0C63E6}";
@@ -87,6 +86,22 @@ FFMakeOsciTopo()
   gain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
   gain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
+  auto& envToGain = result->params[(int)FFOsciParam::EnvToGain];
+  envToGain.acc = true;
+  envToGain.name = "Env\U00002192Gain";
+  envToGain.defaultText = "0";
+  envToGain.slotCount = 1;
+  envToGain.slotFormatter = [](auto const&, int ms, int) { return "Env " + std::to_string(ms + 1) + "\U00002192Gain"; };
+  envToGain.slotFormatterOverrides = true;
+  envToGain.unit = "%";
+  envToGain.id = "{3AAA882F-A89F-4523-A47F-857B508D849F}";
+  envToGain.type = FBParamType::Identity;
+  auto selectEnvToGain = [](auto& module) { return &module.acc.envToGain; };
+  envToGain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectEnvToGain);
+  envToGain.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectEnvToGain);
+  envToGain.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectEnvToGain);
+  envToGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& pan = result->params[(int)FFOsciParam::Pan];
   pan.acc = true;
   pan.defaultText = "50";
@@ -105,7 +120,6 @@ FFMakeOsciTopo()
   coarse.acc = true;
   coarse.defaultText = "0";
   coarse.name = "Coarse";
-  coarse.display = "Crse";
   coarse.slotCount = 1;
   coarse.unit = "Semitones";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
@@ -134,6 +148,22 @@ FFMakeOsciTopo()
   fine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFine);
   fine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFine);
   fine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& lfoToFine = result->params[(int)FFOsciParam::LFOToFine];
+  lfoToFine.acc = true;
+  lfoToFine.name = "VLFO\U00002192Fine";
+  lfoToFine.defaultText = "0";
+  lfoToFine.slotCount = 1;
+  lfoToFine.slotFormatter = [](auto const&, int ms, int) { return "VLFO " + std::to_string(ms + 1) + "\U00002192Fine"; };
+  lfoToFine.slotFormatterOverrides = true;
+  lfoToFine.unit = "%";
+  lfoToFine.id = "{9AB82C08-CBCB-4817-9746-6B5AD3F212F4}";
+  lfoToFine.type = FBParamType::Identity;
+  auto selectLFOToFine = [](auto& module) { return &module.acc.lfoToFine; };
+  lfoToFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFOToFine);
+  lfoToFine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFOToFine);
+  lfoToFine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFOToFine);
+  lfoToFine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& uniCount = result->params[(int)FFOsciParam::UniCount];
   uniCount.acc = false;
@@ -229,6 +259,8 @@ FFMakeOsciTopo()
   auto& waveBasicMode = result->params[(int)FFOsciParam::WaveBasicMode];
   waveBasicMode.acc = false;
   waveBasicMode.name = "Basic Mode";
+  waveBasicMode.display = "Bsc";
+  waveBasicMode.slotFormatDisplay = true;
   waveBasicMode.slotCount = FFOsciWaveBasicCount;
   waveBasicMode.slotFormatter = FFFormatBlockSlot;
   waveBasicMode.id = "{296806B7-DEC4-47F5-AEE0-C35B119CF871}";
@@ -270,7 +302,7 @@ FFMakeOsciTopo()
   waveBasicGain.acc = true;
   waveBasicGain.defaultText = "100";
   waveBasicGain.name = "Basic Gain";
-  waveBasicGain.display = "Gn";
+  waveBasicGain.display = "Gain";
   waveBasicGain.slotCount = FFOsciWaveBasicCount;
   waveBasicGain.slotFormatter = FFFormatBlockSlot;
   waveBasicGain.unit = "%";
@@ -287,20 +319,22 @@ FFMakeOsciTopo()
 
   auto& wavePWMode = result->params[(int)FFOsciParam::WavePWMode];
   wavePWMode.acc = false;
-  wavePWMode.defaultText = "PW Off";
+  wavePWMode.defaultText = "Off";
   wavePWMode.name = "PW Mode";
+  wavePWMode.display = "PW";
+  wavePWMode.slotFormatDisplay = true;
   wavePWMode.slotCount = FFOsciWavePWCount;
   wavePWMode.slotFormatter = FFFormatBlockSlot;
   wavePWMode.id = "{E4159ACA-C4A9-4430-8E4A-44EB5DB8557A}";
   wavePWMode.type = FBParamType::List;
   wavePWMode.List().items = {
-    { "{BAAB3335-9DF4-4D97-957A-6FBF47D5089E}", "PW Off" },
-    { "{DFD55382-FBA0-4080-B179-98385452528B}", "PW Sqr" },
-    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "PW Rect" },
-    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "PW TriPls" },
-    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "PW TriSaw" },
-    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "PW TrapTri" },
-    { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "PW HWSaw" },
+    { "{BAAB3335-9DF4-4D97-957A-6FBF47D5089E}", "Off" },
+    { "{DFD55382-FBA0-4080-B179-98385452528B}", "Sqr" },
+    { "{4C9F71AC-ECC2-4D07-8058-2D29FB967BF6}", "Rect" },
+    { "{FAFD0A34-62D0-4A85-B450-BAEA8B5AA35C}", "TriPls" },
+    { "{C69D964F-926E-4100-9558-2D43CCE01853}", "TriSaw" },
+    { "{465F6A72-2EA2-4EB7-974E-600F5A724CE4}", "TrapTri" },
+    { "{7DB51B2E-0C60-438C-B285-82D05855057F}", "HWSaw" },
   };
   auto selectWavePWMode = [](auto& module) { return &module.block.wavePWMode; };
   wavePWMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWavePWMode);
@@ -312,7 +346,7 @@ FFMakeOsciTopo()
   wavePWGain.acc = true;
   wavePWGain.defaultText = "100";
   wavePWGain.name = "PW Gain";
-  wavePWGain.display = "Gn";
+  wavePWGain.display = "Gain";
   wavePWGain.slotCount = FFOsciWavePWCount;
   wavePWGain.slotFormatter = FFFormatBlockSlot;
   wavePWGain.unit = "%";
@@ -347,16 +381,18 @@ FFMakeOsciTopo()
 
   auto& waveHSMode = result->params[(int)FFOsciParam::WaveHSMode];
   waveHSMode.acc = false;
-  waveHSMode.defaultText = "HS Off";
+  waveHSMode.defaultText = "Off";
   waveHSMode.name = "HS Mode";
+  waveHSMode.display = "HSync";
+  waveHSMode.slotFormatDisplay = true;
   waveHSMode.slotCount = 1;
   waveHSMode.id = "{F239E1E3-8889-4B36-B909-77205ACD00DA}";
   waveHSMode.type = FBParamType::List;
   waveHSMode.List().items = {
-    { "{F68B6202-6C23-4049-B0DD-2565694B1C45}", "HS Off" },
-    { "{2BBF8E97-0D2A-4F12-B608-47E241A5E125}", "HS Saw" },
-    { "{4B99FF6B-9848-4F4E-8D97-0F0C3BA4F74C}", "HS Sqr" },
-    { "{C7843450-2A2F-4FD0-A6C9-0B44F67F3170}", "HS Tri" }
+    { "{F68B6202-6C23-4049-B0DD-2565694B1C45}", "Off" },
+    { "{2BBF8E97-0D2A-4F12-B608-47E241A5E125}", "Saw" },
+    { "{4B99FF6B-9848-4F4E-8D97-0F0C3BA4F74C}", "Sqr" },
+    { "{C7843450-2A2F-4FD0-A6C9-0B44F67F3170}", "Tri" }
   };
   auto selectWaveHSMode = [](auto& module) { return &module.block.waveHSMode; };
   waveHSMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveHSMode);
@@ -368,7 +404,7 @@ FFMakeOsciTopo()
   waveHSGain.acc = true;
   waveHSGain.defaultText = "100";
   waveHSGain.name = "HS Gain";
-  waveHSGain.display = "Gn";
+  waveHSGain.display = "Gain";
   waveHSGain.slotCount = 1;
   waveHSGain.unit = "%";
   waveHSGain.id = "{7AFF257F-165E-427B-A4BF-9DC4BFE48528}";
@@ -383,35 +419,37 @@ FFMakeOsciTopo()
   waveHSGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
-  auto& waveHSSync = result->params[(int)FFOsciParam::WaveHSSync];
-  waveHSSync.acc = true;
-  waveHSSync.defaultText = "0";
-  waveHSSync.name = "HS Sync Pitch";
-  waveHSSync.display = "HSync";
-  waveHSSync.slotCount = 1;
-  waveHSSync.unit = "Semitones";
-  waveHSSync.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
-  waveHSSync.type = FBParamType::Linear;
-  waveHSSync.Linear().min = 0.0f;
-  waveHSSync.Linear().max = 48.0f;
-  auto selectWaveHSSync = [](auto& module) { return &module.acc.waveHSSync; };
-  waveHSSync.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveHSSync);
-  waveHSSync.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectWaveHSSync);
-  waveHSSync.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectWaveHSSync);
-  waveHSSync.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
+  auto& waveHSPitch = result->params[(int)FFOsciParam::WaveHSPitch];
+  waveHSPitch.acc = true;
+  waveHSPitch.defaultText = "0";
+  waveHSPitch.name = "HS Pitch";
+  waveHSPitch.display = "Pitch";
+  waveHSPitch.slotCount = 1;
+  waveHSPitch.unit = "Semitones";
+  waveHSPitch.id = "{8551E49B-1D61-482D-8C2D-B766084C31D7}";
+  waveHSPitch.type = FBParamType::Linear;
+  waveHSPitch.Linear().min = 0.0f;
+  waveHSPitch.Linear().max = 48.0f;
+  auto selectWaveHSPitch = [](auto& module) { return &module.acc.waveHSPitch; };
+  waveHSPitch.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveHSPitch);
+  waveHSPitch.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectWaveHSPitch);
+  waveHSPitch.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectWaveHSPitch);
+  waveHSPitch.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveHSMode },
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
   auto& waveDSFMode = result->params[(int)FFOsciParam::WaveDSFMode];
   waveDSFMode.acc = false;
-  waveDSFMode.defaultText = "DSF Off";
+  waveDSFMode.defaultText = "Off";
   waveDSFMode.name = "DSF Mode";
+  waveDSFMode.display = "DSF";
+  waveDSFMode.slotFormatDisplay = true;
   waveDSFMode.slotCount = 1;
   waveDSFMode.id = "{D66E2800-CFBD-4B4E-B22E-D5D7572FEF6E}";
   waveDSFMode.type = FBParamType::List;
   waveDSFMode.List().items = {
-    { "{1CB6EE7D-3DAA-446F-82BF-4FADFD244EBE}", "DSF Off" },
-    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "DSF Over" },
-    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "DSF BW" } };
+    { "{1CB6EE7D-3DAA-446F-82BF-4FADFD244EBE}", "Off" },
+    { "{738D0080-1F95-4FBD-AA50-DBA62CA25655}", "Overtones" },
+    { "{653EE5D8-D27D-4094-84EB-7FB6336F2DAB}", "Bandwidth" } };
   auto selectWaveDSFMode = [](auto& module) { return &module.block.waveDSFMode; };
   waveDSFMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveDSFMode);
   waveDSFMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectWaveDSFMode);
@@ -422,7 +460,7 @@ FFMakeOsciTopo()
   waveDSFGain.acc = true;
   waveDSFGain.defaultText = "100";
   waveDSFGain.name = "DSF Gain";
-  waveDSFGain.display = "Gn";
+  waveDSFGain.display = "Gain";
   waveDSFGain.slotCount = 1;
   waveDSFGain.unit = "%";
   waveDSFGain.id = "{8B92892C-4B53-4628-8266-CCED37867F99}";
@@ -441,7 +479,7 @@ FFMakeOsciTopo()
   waveDSFOver.acc = false;
   waveDSFOver.defaultText = "1";
   waveDSFOver.name = "DSF Overtones";
-  waveDSFOver.display = "Over";
+  waveDSFOver.display = "Tones";
   waveDSFOver.slotCount = 1;
   waveDSFOver.id = "{9A42FADE-5E48-49B8-804B-0C61E17AC3BB}";
   waveDSFOver.type = FBParamType::Discrete;
@@ -593,15 +631,14 @@ FFMakeOsciTopo()
 
   auto& stringMode = result->params[(int)FFOsciParam::StringMode];
   stringMode.acc = false;
-  stringMode.defaultText = "Uni";
+  stringMode.defaultText = "Uniform";
   stringMode.name = "Mode";
-  stringMode.display = "Mod";
   stringMode.slotCount = 1;
   stringMode.id = "{83BC3F01-EF0B-4BAE-AA95-012E246C87B3}";
   stringMode.type = FBParamType::List;
   stringMode.List().items = {
-    { "{604E32C2-B3E9-4547-88B0-601F0D3AD055}", "Uni" },
-    { "{B462657B-B0FB-47B1-AACA-0DF284E655E9}", "Nrm" } };
+    { "{604E32C2-B3E9-4547-88B0-601F0D3AD055}", "Uniform" },
+    { "{B462657B-B0FB-47B1-AACA-0DF284E655E9}", "Normal" } };
   auto selectStringMode = [](auto& module) { return &module.block.stringMode; };
   stringMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStringMode);
   stringMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStringMode);
@@ -684,7 +721,6 @@ FFMakeOsciTopo()
   stringExcite.acc = true;
   stringExcite.defaultText = "0";
   stringExcite.name = "Excite";
-  stringExcite.display = "Xcte";
   stringExcite.slotCount = 1;
   stringExcite.unit = "%";
   stringExcite.id = "{02590DDB-B5B2-4FA6-94C5-8D0319450689}";
@@ -699,8 +735,8 @@ FFMakeOsciTopo()
 
   auto& stringLPOn = result->params[(int)FFOsciParam::StringLPOn];
   stringLPOn.acc = false;
-  stringLPOn.name = "LP On";
-  stringLPOn.display = "LP";
+  stringLPOn.name = "LPF On";
+  stringLPOn.display = "LPF";
   stringLPOn.slotCount = 1;
   stringLPOn.defaultText = "Off";
   stringLPOn.id = "{243E497E-2449-49BC-AA26-418743265570}";
@@ -714,8 +750,8 @@ FFMakeOsciTopo()
   auto& stringLPFreq = result->params[(int)FFOsciParam::StringLPFreq];
   stringLPFreq.acc = true;
   stringLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  stringLPFreq.name = "LP Freq";
-  stringLPFreq.display = "LP";
+  stringLPFreq.name = "LPF Freq";
+  stringLPFreq.display = "Frq";
   stringLPFreq.slotCount = 1;
   stringLPFreq.unit = "Hz";
   stringLPFreq.id = "{F8865388-AD37-4A9F-92DC-9AAB62BCF04E}";
@@ -762,8 +798,8 @@ FFMakeOsciTopo()
 
   auto& stringHPOn = result->params[(int)FFOsciParam::StringHPOn];
   stringHPOn.acc = false;
-  stringHPOn.name = "HP On";
-  stringHPOn.display = "HP";
+  stringHPOn.name = "HPF On";
+  stringHPOn.display = "HPF";
   stringHPOn.slotCount = 1;
   stringHPOn.defaultText = "Off";
   stringHPOn.id = "{F03C6E50-01BB-4C61-9122-C6599C9D4CBA}";
@@ -777,8 +813,8 @@ FFMakeOsciTopo()
   auto& stringHPFreq = result->params[(int)FFOsciParam::StringHPFreq];
   stringHPFreq.acc = true;
   stringHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  stringHPFreq.name = "HP Freq";
-  stringHPFreq.display = "HP";
+  stringHPFreq.name = "HPF Freq";
+  stringHPFreq.display = "Frq";
   stringHPFreq.slotCount = 1;
   stringHPFreq.unit = "Hz";
   stringHPFreq.id = "{1753A4C9-BE63-4079-A875-59C35F3BC584}";

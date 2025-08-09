@@ -274,6 +274,7 @@ FBCLAPPlugin::process(
 
     _input.projectTimeSamples = 0;
     _input.bpm = FBHostInputBlock::DefaultBPM;
+    _input.sampleCount = process->frames_count;
     if (process->transport != nullptr)
     {
       if ((process->transport->flags & CLAP_TRANSPORT_HAS_TEMPO) != 0)

@@ -10,12 +10,18 @@ FBDeserializationConverter(oldVersion, topo) {}
 
 bool 
 FFDeserializationConverter::OnParamNotFound(
+  bool isGuiState,
   std::string const& oldModuleId, int oldModuleSlot,
   std::string const& oldParamId, int oldParamSlot,
   std::string& newModuleId, int& newModuleSlot,
   std::string& newParamId, int& newParamSlot) const
 {
+  if (isGuiState)
+    return false;
+
   // 2.0.1 - added "V" prefix to per-voice effect module and params
+  // NOTE TO SELF: this changed the param tags, so broke automation lanes.
+  // Let's not ever do that again.
   if (OldVersion() < FBPlugVersion(2, 0, 1))
   {
     auto const& vEffectModule = Topo()->static_->modules[(int)FFModuleType::VEffect];
@@ -36,4 +42,30 @@ FFDeserializationConverter::OnParamNotFound(
     }
   }
   return false;
+}
+
+void
+FFDeserializationConverter::PostProcess(
+  bool isGuiState,
+  std::vector<double*> const& paramValues) const
+{
+  if (isGuiState)
+    return;
+  
+  // 2.0.2 - Added dedicated amp envelope. That used to be env0, and since this
+  // is a non-fixable breaking change, best we can do is just copy over env0 to ampEnv.
+  if (OldVersion() < FBPlugVersion(2, 0, 2))
+  {
+    auto const& envModule = Topo()->static_->modules[(int)FFModuleType::Env];
+    for (int p = 0; p < envModule.params.size(); p++)
+    {
+      auto const& envParam = envModule.params[p];
+      for (int s = 0; s < envParam.slotCount; s++)
+      {
+        int rtEnv0ParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, 0 }, { p, s } })->runtimeParamIndex;
+        int rtAmpEnvParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, FFAmpEnvSlot }, { p, s } })->runtimeParamIndex;
+        *paramValues[rtAmpEnvParamIndex] = *paramValues[rtEnv0ParamIndex];
+      }
+    }
+  }
 }

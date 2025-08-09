@@ -15,6 +15,7 @@
 #include <firefly_base/dsp/buffer/FBHostToPlugProcessor.hpp>
 #include <firefly_base/dsp/buffer/FBPlugToHostProcessor.hpp>
 
+#include <chrono>
 #include <utility>
 
 FBHostProcessor::
@@ -52,7 +53,10 @@ void
 FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostOutputBlock& output)
 {
+  auto processBeginTime = std::chrono::high_resolution_clock::now();
+
   _plugIn.bpm = input.bpm;
+  _plugIn.prevRoundCpuUsage = _prevRoundCpuUsage;
   _plugIn.projectTimeSamples = input.projectTimeSamples;
 
   auto denormalState = FBDisableDenormal(); 
@@ -139,4 +143,10 @@ FBHostProcessor::ProcessHost(
     }
 
   FBRestoreDenormal(denormalState);
+
+  auto processEndTime = std::chrono::high_resolution_clock::now();
+  auto processDuration = std::chrono::duration_cast<std::chrono::microseconds>(processEndTime - processBeginTime);
+  float durationSeconds = processDuration.count() / (1000.0f * 1000.0f);
+  float windowTimeSeconds = input.sampleCount / _sampleRate;
+  _prevRoundCpuUsage = durationSeconds / windowTimeSeconds;
 }

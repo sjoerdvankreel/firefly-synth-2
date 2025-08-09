@@ -33,7 +33,8 @@ class alignas(FBSIMDAlign) FFLFODSPState final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFLFODSPState);
   FFLFODSPState() : processor(std::make_unique<FFLFOProcessor>()) {}
-  FBSArray<float, FBFixedBlockSamples> output = {};
+  FBSArray<float, FBFixedBlockSamples> outputAll = {};
+  FBSArray2<float, FBFixedBlockSamples, FFLFOBlockCount> outputRaw = {};
 };
 
 template <class TBlock>
@@ -44,11 +45,11 @@ class alignas(alignof(TBlock)) FFLFOBlockParamState final
   std::array<TBlock, 1> type = {};
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> seed = {};
-  std::array<TBlock, 1> phaseB = {};
   std::array<TBlock, 1> skewAXMode = {};
   std::array<TBlock, 1> skewAYMode = {};
   std::array<TBlock, 1> smoothTime = {};
   std::array<TBlock, 1> smoothBars = {};
+  std::array<TBlock, FFLFOBlockCount> phase = {};
   std::array<TBlock, FFLFOBlockCount> steps = {};
   std::array<TBlock, FFLFOBlockCount> opType = {};
   std::array<TBlock, FFLFOBlockCount> rateBars = {};

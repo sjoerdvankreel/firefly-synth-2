@@ -1,22 +1,36 @@
-drop matrixselectedtab
-todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
-also releaseing a note by playing the same just doesn't work
-vgmix->mixer
+TODOLIST for alpha-11
+
+[ ] less matrix routes
+[ ] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
+[ ] also releaseing a note by playing the same just doesn't work
+[ ] refix all behind-the-scenes mod sources and targets
+[ ] floating notes
+[ ] master input (modwheel, pb + range)
+[ ] portamento controls + all-osci coarse/fine
+[ ] basic midi input
+[ ] global set-exact-value UI (+ context menu item?)
+[ ] separate midi, bpm, automation smoothing, auto should be global + per-param override
+[ ] MIDI key, velo (voice), low/high/last
+[ ] 3x on note random as a cheap mod source, uni + normal
+[ ] drop freesmth, not work???. do uni/gaus everywhere
+[ ] fix free-random
+[ ] make it clear alpha breaks the demos
+[ ] allow modulate env stage lengths on voice start
+[ ] draw a box around the popup/tooltip
+[ ] keep taps on the mod matrix
+
+drop+recreate all the demos before going rc (not allow breaking changes anymore)
+drop all the conversion before going beta/rc
+still a bug in glfo free rand painting
+global unison TODO IF we do per-voice echo, this should not be on the subvoice level
 autoclip
-optional mod indicators
-do addbp also for lfos
+MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating (not on-note but continuous)
 another round of cpu and memory profiling
 factory presets
-easy access mod controls
-widen the gui for the easy access stuff
-make env1 to amp explicit
-refix all behind-the-scenes mod sources and targets
-
-echo
-paint env1 to vmix
+echo -> combined reverb + multitap feedback delay (see if i can pull it off) + per-voice delay module (lets see if memory allows)
 get rid of sse2neon
 make better section ui esp. for the a/b/c/ sections
-context menus
+more context menus, clear matrix etc
 string timbre should not react to samplerate/oversample
 paint something always
 check all the todos before out of alpha
@@ -25,7 +39,7 @@ midi smoothing (actual midi too)
 indiv param smoothing
 fix todos
 todo document the thing a bit
-not hardcode env1 to voice amp
 multitap fb delay
 rosetta is borked
 vst3 note expr + midi mpe
+explain processing order and modulation order including auto/external/internal

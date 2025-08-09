@@ -40,7 +40,8 @@ FFMakeEffectTopo(bool global)
   auto& oversample = result->params[(int)FFEffectParam::Oversample];
   oversample.acc = false;
   oversample.defaultText = "Off";
-  oversample.name = "Ovrsmp";
+  oversample.name = "Oversample";
+  oversample.display = "Ovsmp";
   oversample.slotCount = 1;
   oversample.id = prefix + "{28875DF7-255B-4190-80CE-D0A9ED20F263}";
   oversample.type = FBParamType::Boolean;
@@ -74,7 +75,7 @@ FFMakeEffectTopo(bool global)
   auto& lastKeySmoothTime = result->params[(int)FFEffectParam::LastKeySmoothTime];
   lastKeySmoothTime.acc = false;
   lastKeySmoothTime.defaultText = "0.1";
-  lastKeySmoothTime.display = "Smooth";
+  lastKeySmoothTime.display = "Smth";
   lastKeySmoothTime.name = "Last Key Smooth Time";
   lastKeySmoothTime.slotCount = 1;
   lastKeySmoothTime.unit = "Sec";
@@ -118,6 +119,44 @@ FFMakeEffectTopo(bool global)
   kind.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectKind);
   kind.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectKind);
   kind.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& envAmt = result->params[(int)FFEffectParam::EnvAmt];
+  envAmt.acc = true;
+  envAmt.defaultText = "0";
+  envAmt.name = "Env Amt";
+  envAmt.display = "Env";
+  envAmt.slotFormatDisplay = true;
+  envAmt.slotCount = FFEffectBlockCount;
+  envAmt.unit = "%";
+  envAmt.id = prefix + "{1064F27D-F3A6-469F-93AA-ABA548179947}";
+  envAmt.type = FBParamType::Identity;
+  auto selectEnvAmt = [](auto& module) { return &module.acc.envAmt; };
+  envAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectEnvAmt);
+  envAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectEnvAmt);
+  envAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectEnvAmt);
+  envAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectEnvAmt);
+  envAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectEnvAmt);
+  envAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On },
+    [global](auto const& vs) { return !global && vs[0] != 0; });
+
+  auto& lfoAmt = result->params[(int)FFEffectParam::LFOAmt];
+  lfoAmt.acc = true;
+  lfoAmt.defaultText = "0";
+  lfoAmt.name = global? "GLFO Amt": "VLFO Amt";
+  lfoAmt.display = global ? "GLFO": "VLFO";
+  lfoAmt.slotFormatDisplay = true;
+  lfoAmt.slotCount = FFEffectBlockCount;
+  lfoAmt.unit = "%";
+  lfoAmt.id = prefix + "{3139FC96-AB7F-4402-8508-2EFCC558AD1C}";
+  lfoAmt.type = FBParamType::Identity;
+  auto selectLFOAmt = [](auto& module) { return &module.acc.lfoAmt; };
+  lfoAmt.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectLFOAmt);
+  lfoAmt.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectLFOAmt);
+  lfoAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectLFOAmt);
+  lfoAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectLFOAmt);
+  lfoAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectLFOAmt);
+  lfoAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On },
+    [](auto const& vs) { return vs[0] != 0; });
 
   auto& stVarMode = result->params[(int)FFEffectParam::StVarMode];
   stVarMode.acc = false;
@@ -425,7 +464,7 @@ FFMakeEffectTopo(bool global)
   
   auto& skewMode = result->params[(int)FFEffectParam::SkewMode];
   skewMode.acc = false;
-  skewMode.defaultText = "Uni";
+  skewMode.defaultText = "UP";
   skewMode.name = "Skew Mode";
   skewMode.display = "Mod";
   skewMode.slotCount = FFEffectBlockCount;
@@ -433,8 +472,8 @@ FFMakeEffectTopo(bool global)
   skewMode.id = prefix + "{DCA38D64-3791-4542-A6C7-FCA66DA45FEE}";
   skewMode.type = FBParamType::List;
   skewMode.List().items = {
-    { prefix + "{247BC86E-078E-409F-99B7-870F1B011C3B}", "Uni" },
-    { prefix + "{C7689457-2AE9-4730-A341-5CB7B27047DE}", "Bi" } };
+    { prefix + "{247BC86E-078E-409F-99B7-870F1B011C3B}", "UP" },
+    { prefix + "{C7689457-2AE9-4730-A341-5CB7B27047DE}", "BP" } };
   auto selectSkewMode = [](auto& module) { return &module.block.skewMode; };
   skewMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSkewMode);
   skewMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSkewMode);

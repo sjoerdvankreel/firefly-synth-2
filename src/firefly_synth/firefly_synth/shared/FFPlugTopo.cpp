@@ -65,9 +65,9 @@ SpecialGUIParamsSelector(
 }
 
 std::string
-FFFormatBlockSlot(FBStaticTopo const&, int slot)
+FFFormatBlockSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
-  return std::string(1, static_cast<char>('A' + slot));
+  return std::string(1, static_cast<char>('A' + itemSlot));
 }
 
 FBStaticTopoMeta
@@ -91,9 +91,9 @@ FFMakeTopo(FBPlugFormat format)
   result->meta = FFPlugMeta(format);
   result->maxUndoSize = 15;
   result->patchExtension = "ff2preset";
-  result->guiWidth = 900;
-  result->guiAspectRatioWidth = 25;
-  result->guiAspectRatioHeight = 13;
+  result->guiWidth = 1200;
+  result->guiAspectRatioWidth = 32;
+  result->guiAspectRatioHeight = 14;
   result->guiFactory = [](FBHostGUIContext* hostContext) { 
     return std::make_unique<FFPlugGUI>(hostContext); };
   result->deserializationConverterFactory = [](FBPlugVersion const& oldVersion, FBRuntimeTopo const* topo) { 
@@ -137,17 +137,18 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::VMatrix] = std::move(*FFMakeModMatrixTopo(false, result.get()));
 
   // This better lines up with the audio engine.
-  result->moduleProcessOrder.push_back({ (int)FFModuleType::GMatrix, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GUISettings, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::GMatrix, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Master, 0 });
   for (int s = 0; s < result->modules[(int)FFModuleType::GLFO].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GLFO, s });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VMatrix, 0 });
-  for (int s = 0; s < FFLFOAndEnvCount; s++)
+  for (int s = 0; s < FFLFOCount; s++)
   {
     result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, s });
     result->moduleProcessOrder.push_back({ (int)FFModuleType::VLFO, s });
   }
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, FFAmpEnvSlot });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::OsciMod, 0 });
   for (int s = 0; s < result->modules[(int)FFModuleType::Osci].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::Osci, s });

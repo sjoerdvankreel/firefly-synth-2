@@ -82,7 +82,7 @@ FBModuleGraphComponent::RequestRerender(int moduleIndex)
   auto now = high_resolution_clock::now();
   auto elapsedMillis = duration_cast<milliseconds>(now - _updated);
   if (auto* parent = findParentComponentOfClass<FBPlugGUI>())
-    if(parent->GetRenderType() == FBGUIRenderType::Basic)
+    if(parent->GetGraphRenderType() == FBGUIRenderType::Basic)
       fps = 1;
   if (elapsedMillis.count() < 1000.0 / fps)
     return;
@@ -107,7 +107,7 @@ FBModuleGraphComponent::paint(Graphics& /*g*/)
   _data->skipDrawOnEqualsPrimary = true;
   _data->guiRenderType = FBGUIRenderType::Basic;
   if(auto* parent = findParentComponentOfClass<FBPlugGUI>())
-    _data->guiRenderType = parent->GetRenderType();
+    _data->guiRenderType = parent->GetGraphRenderType();
 
   _data->graphs.clear();
   _data->graphs.resize(topo->static_->modules[staticIndex].graphCount);

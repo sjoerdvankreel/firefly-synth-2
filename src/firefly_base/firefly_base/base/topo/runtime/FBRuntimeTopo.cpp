@@ -125,14 +125,14 @@ bool
 FBRuntimeTopo::LoadEditStateFromVar(
   var const& json, FBScalarStateContainer& editState) const
 {
-  return LoadParamStateFromVar(json, editState, audio);
+  return LoadParamStateFromVar(false, json, editState, audio);
 }
 
 bool
 FBRuntimeTopo::LoadGUIStateFromVar(
   var const& json, FBGUIStateContainer& guiState) const
 {
-  return LoadParamStateFromVar(json, guiState, this->gui);
+  return LoadParamStateFromVar(true, json, guiState, this->gui);
 }
 
 std::string 
@@ -342,7 +342,7 @@ FBRuntimeTopo::SaveParamStateToVar(
 template <class TContainer, class TParamsTopo>
 bool 
 FBRuntimeTopo::LoadParamStateFromVar(
-  var const& json, TContainer& container, TParamsTopo& params) const
+  bool isGuiState, var const& json, TContainer& container, TParamsTopo& params) const
 {
   FB_LOG_ENTRY_EXIT();
 
@@ -512,6 +512,7 @@ FBRuntimeTopo::LoadParamStateFromVar(
       std::string newParamId = {};
       std::string newModuleId = {};
       if (!converter->OnParamNotFound(
+        isGuiState,
         oldModuleId.toString().toStdString(), static_cast<int>(oldModuleSlot), 
         oldParamId.toString().toStdString(), static_cast<int>(oldParamSlot),
         newModuleId, newModuleSlot, newParamId, newParamSlot))
@@ -535,10 +536,22 @@ FBRuntimeTopo::LoadParamStateFromVar(
     {
       FB_LOG_WARN("Failed to parse plugin parameter value.");
       normalized = topo.TextToNormalized(false, topo.GetDefaultText());
+#ifndef NDEBUG
+      if (!normalized)
+      {
+        auto defaultText = topo.GetDefaultText();
+        topo.TextToNormalized(false, defaultText);
+        FB_ASSERT(normalized);
+      }
+#endif
     }
     if(!topo.static_.IsOutput())
       *container.Params()[iter->second] = static_cast<float>(normalized.value());
   }
+
+  FB_LOG_INFO("Start deserialization post-processing.");
+  converter->PostProcess(isGuiState, container.Params());
+  FB_LOG_INFO("End deserialization post-processing.");
 
   return true;
 }

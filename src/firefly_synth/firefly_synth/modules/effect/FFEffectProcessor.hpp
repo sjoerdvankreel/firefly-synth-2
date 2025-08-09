@@ -94,7 +94,7 @@ public:
   void InitializeBuffers(bool graph, float sampleRate);
 
   template <bool Global>
-  int Process(FBModuleProcState& state);
+  int Process(bool graph, FBModuleProcState& state);
   template <bool Global>
   void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 };

@@ -24,6 +24,8 @@ class alignas(alignof(TBlock)) FFOutputBlockParamState final
 {
   friend class FFOutputProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOutputTopo();
+  std::array<TBlock, 1> cpu = {};
+  std::array<TBlock, 1> gain = {};
   std::array<TBlock, 1> voices = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOutputBlockParamState);

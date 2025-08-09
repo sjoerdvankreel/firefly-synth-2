@@ -19,27 +19,29 @@ FFMakeEnvTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = true;
   result->name = "Env";
-  result->slotCount = FFLFOAndEnvCount;
-  result->graphCount = FFLFOAndEnvCount;
+  result->slotCount = FFEnvCount;
+  result->graphCount = FFEnvCount;
+  result->slotFormatterOverrides = true;
   result->graphRenderer = FFEnvRenderGraph;
   result->id = "{FC1DC75A-200C-4465-8CBE-0100E2C8FAF2}";
   result->params.resize((int)FFEnvParam::Count);
   result->cvOutputs.resize((int)FFEnvCVOutput::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
+  result->tabSlotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp Env" : std::to_string(s + 1); };
+  result->slotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp Env" : "Env " + std::to_string(s + 1); };
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& type = result->params[(int)FFEnvParam::Type];
   type.acc = false;
-  type.defaultText = "Off";
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{40F1DCF0-03B1-4ABE-B6B5-A29BF2C8C229}";
   type.type = FBParamType::List;
   type.List().items = {
     { "{6F0DA153-9544-4EFB-BC6D-88F761583F39}", "Off" },
-    { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Lin" },
+    { "{BD01A08E-5639-4DB3-87CD-3276BCDB54E1}", "Linear" },
     { "{30BF083A-81F1-477C-BC6B-5AA4DFB111A8}", "Exp" } };
-  type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == 0 ? "Lin" : "Off"; };
+  type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == FFAmpEnvSlot ? "Linear" : "Off"; }; 
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
@@ -51,6 +53,7 @@ FFMakeEnvTopo()
   sync.display = "Sync";
   sync.slotCount = 1;
   sync.id = "{B1128167-2EB6-4AFA-81B7-C4B7606502BB}";
+  sync.defaultText = "Off";
   sync.type = FBParamType::Boolean;
   auto selectSync = [](auto& module) { return &module.block.sync; };
   sync.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSync);
@@ -62,7 +65,6 @@ FFMakeEnvTopo()
   release.acc = false;
   release.defaultText = "2";
   release.name = "Release";
-  release.display = "Rls";
   release.slotCount = 1;
   release.id = "{38670133-4372-461F-ACB8-0E1E156BD3DF}";
   release.type = FBParamType::Discrete;
@@ -108,7 +110,7 @@ FFMakeEnvTopo()
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
   smoothTime.acc = false;
   smoothTime.defaultText = "0";
-  smoothTime.display = "Smth";
+  smoothTime.display = "Smooth";
   smoothTime.name = "Smooth Time";
   smoothTime.slotCount = 1;
   smoothTime.unit = "Sec";
@@ -127,7 +129,7 @@ FFMakeEnvTopo()
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
   smoothBars.acc = false;
   smoothBars.defaultText = "Off";
-  smoothBars.display = "Smth";
+  smoothBars.display = "Smooth";
   smoothBars.name = "Smooth Bars";
   smoothBars.slotCount = 1;
   smoothBars.unit = "Bars";

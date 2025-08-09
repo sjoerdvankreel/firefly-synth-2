@@ -17,8 +17,13 @@ MakeRuntimeParamModName(
   FBStaticParamBase const& param,
   FBParamTopoIndices const& indices)
 {
-  auto paramName = FBMakeRuntimeShortName(topo, param.name, param.slotCount, indices.param.slot, param.slotFormatter, param.slotFormatterOverrides);
-  auto moduleName = FBMakeRuntimeShortName(topo, module.name, module.slotCount, indices.module.slot, {}, false);
+  auto paramName = FBMakeRuntimeModuleItemShortName(
+    topo, param.name, indices.module.slot,
+    param.slotCount, indices.param.slot,
+    param.slotFormatter, param.slotFormatterOverrides);
+  auto moduleName = FBMakeRuntimeModuleShortName(
+    topo, module.name, module.slotCount, indices.module.slot,
+    module.slotFormatter, module.slotFormatterOverrides);
   return moduleName + " " + paramName;
 }
 
@@ -104,10 +109,11 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   opType.type = FBParamType::List;
   opType.List().items = {
     { "{8E7F2BE6-12B7-483E-8308-DD96F63C7743}", "Off" },
-    { "{33CE627C-A02D-43C0-A533-257E4D03EA1E}", "Add" },
-    { "{F01ABE4C-C22E-47F2-900E-7E913906A740}", "Mul" },
-    { "{91B784D0-E47A-46DC-ACD8-15A502E68A9A}", "Stack" },
+    { "{33CE627C-A02D-43C0-A533-257E4D03EA1E}", "UP Add" },
+    { "{F01ABE4C-C22E-47F2-900E-7E913906A740}", "UP Mul" },
+    { "{91B784D0-E47A-46DC-ACD8-15A502E68A9A}", "UP Stk" },
     { "{23F72708-1F63-4AAB-9970-9F1D77FC5245}", "BP Add" },
+    { "{B85CFA28-8107-417C-B6E6-0DBF16D6AFE8}", "BP Mul" },
     { "{98709D78-A6A9-4836-A64A-50B30167497B}", "BP Stk" } };
   auto selectOpType = [](auto& module) { return &module.block.opType; };
   opType.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOpType);
@@ -137,6 +143,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.acc = false;
   source.name = "Source";
   source.display = "Source";
+  source.defaultText = "Off";
   source.slotCount = slotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
@@ -153,6 +160,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scale.acc = false;
   scale.name = "Scale";
   scale.slotCount = slotCount;
+  scale.defaultText = "Off";
   scale.id = prefix + "{4A166295-A1EF-4354-AA2E-3F14B98A70CE}";
   scale.type = FBParamType::List;
   scale.List().linkedSource = (int)FFModMatrixParam::Source;
@@ -171,13 +179,17 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.List().items.push_back({ "{A6EA4A7B-162E-4AFC-A806-18478D71EAFA}", "Off" });
   for (int i = 1; i < sources.size(); i++)
   {
+    bool onNote = sources[i].onNote;
+    bool prevOnNote = sources[i - 1].onNote;
     int moduleSlot = sources[i].indices.module.slot;
+    int moduleIndex = sources[i].indices.module.index;
     int cvOutputSlot = sources[i].indices.cvOutput.slot;
+    int prevModuleIndex = sources[i - 1].indices.module.index;
     auto const& module = topo->modules[sources[i].indices.module.index];
     auto const& cvOutput = module.cvOutputs[sources[i].indices.cvOutput.index];
     std::string onNoteIdPrefix = sources[i].onNote ? (FBOnNotePrefix + "-") : "";
     std::string onNoteNamePrefix = sources[i].onNote ? (FBOnNotePrefix + " ") : "";
-    if (moduleSlot == 0)
+    if (moduleIndex != prevModuleIndex || onNote != prevOnNote)
     {
       scale.List().submenuStart[i] = onNoteNamePrefix + module.name;
       source.List().submenuStart[i] = onNoteNamePrefix + module.name;
@@ -211,6 +223,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.name = "Target";
   target.display = "Target";
   target.slotCount = slotCount;
+  target.defaultText = "Off";
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
   target.List().linkedSource = (int)FFModMatrixParam::Source;
@@ -234,9 +247,9 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     auto const& param = module.params[targets[i].param.index];
     if (targets[i].module != prevModule)
     {
-      std::string subMenuName = module.name;
-      if (module.slotCount != 1)
-        subMenuName += " " + std::to_string(moduleSlot + 1);
+      std::string subMenuName = FBMakeRuntimeModuleShortName(
+        *topo, module.name, module.slotCount, moduleSlot, 
+        module.slotFormatter, module.slotFormatterOverrides);
       target.List().submenuStart[i] = subMenuName;
       prevModule = targets[i].module;
     }

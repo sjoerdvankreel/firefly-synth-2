@@ -1,12 +1,16 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <chrono>
 
 struct FBModuleProcState;
+struct FBPlugOutputBlock;
 
 class FFOutputProcessor final
 {
+  std::chrono::steady_clock::time_point _updated = {};
+
 public:
-  void Process(FBModuleProcState& state);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOutputProcessor);
+  void Process(FBModuleProcState& state, FBPlugOutputBlock const& output);
 };

@@ -1069,12 +1069,12 @@ FFOsciProcessor::ProcessWave(
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
 
   auto const& waveHSGainNorm = procParams.acc.waveHSGain[0].Voice()[voice];
-  auto const& waveHSSyncNorm = procParams.acc.waveHSSync[0].Voice()[voice];
+  auto const& waveHSPitchNorm = procParams.acc.waveHSPitch[0].Voice()[voice];
   auto const& waveDSFGainNorm = procParams.acc.waveDSFGain[0].Voice()[voice];
   auto const& waveDSFDecayNorm = procParams.acc.waveDSFDecay[0].Voice()[voice];
 
   FBSArray<float, FFOsciFixedBlockOversamples> waveHSGainPlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> waveHSSyncPlain;
+  FBSArray<float, FFOsciFixedBlockOversamples> waveHSPitchPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> waveDSFGainPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> waveDSFDecayPlain;
   FBSArray2<float, FFOsciFixedBlockOversamples, FFOsciWavePWCount> wavePWPWPlain;
@@ -1099,7 +1099,7 @@ FFOsciProcessor::ProcessWave(
     if (_waveHSMode != FFOsciWaveHSMode::Off)
     {
       waveHSGainPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSGain, waveHSGainNorm, s));
-      waveHSSyncPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSSync, waveHSSyncNorm, s));
+      waveHSPitchPlain.Store(s, topo.NormalizedToLinearFast(FFOsciParam::WaveHSPitch, waveHSPitchNorm, s));
     }
     if (_waveDSFMode != FFOsciWaveDSFMode::Off)
     {
@@ -1121,7 +1121,7 @@ FFOsciProcessor::ProcessWave(
     if (_waveHSMode != FFOsciWaveHSMode::Off)
     {
       waveHSGainPlain.UpsampleStretch<FFOsciOversampleTimes>();
-      waveHSSyncPlain.UpsampleStretch<FFOsciOversampleTimes>();
+      waveHSPitchPlain.UpsampleStretch<FFOsciOversampleTimes>();
     }
     if (_waveDSFMode != FFOsciWaveDSFMode::Off)
     {
@@ -1171,8 +1171,8 @@ FFOsciProcessor::ProcessWave(
       if (_waveHSMode != FFOsciWaveHSMode::Off)
       {
         auto waveHSGain = waveHSGainPlain.Load(s);
-        auto waveHSSync = waveHSSyncPlain.Load(s);
-        auto uniSyncFreq = FBPitchToFreq(uniPitch + waveHSSync);
+        auto waveHSPitch = waveHSPitchPlain.Load(s);
+        auto uniSyncFreq = FBPitchToFreq(uniPitch + waveHSPitch);
         auto uniSyncFreqRatio = uniSyncFreq / uniFreq;
         thisUniOutput += GenerateWaveHS(_waveHSMode, uniPhase, uniIncr, uniSyncFreqRatio) * waveHSGain;
       }
@@ -1200,7 +1200,7 @@ FFOsciProcessor::ProcessWave(
     return;
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
   exchangeParams.acc.waveHSGain[0][voice] = waveHSGainNorm.Last();
-  exchangeParams.acc.waveHSSync[0][voice] = waveHSSyncNorm.Last();
+  exchangeParams.acc.waveHSPitch[0][voice] = waveHSPitchNorm.Last();
   exchangeParams.acc.waveDSFGain[0][voice] = waveDSFGainNorm.Last();
   exchangeParams.acc.waveDSFDecay[0][voice] = waveDSFDecayNorm.Last();
   for (int i = 0; i < FFOsciWaveBasicCount; i++)

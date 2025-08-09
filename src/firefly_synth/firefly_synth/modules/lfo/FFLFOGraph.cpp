@@ -102,8 +102,8 @@ LFOGraphRenderData<Global>::DoProcess(
   if (graphIndex != FFLFOBlockCount)
   {
     indices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, graphIndex } };
-    auto opType = state->AudioParamList<FFLFOOpType>(indices, exchange, exchangeVoice);
-    if (opType == FFLFOOpType::Off)
+    auto opType = state->AudioParamList<FFModulationOpType>(indices, exchange, exchangeVoice);
+    if (opType == FFModulationOpType::Off)
       return 0;
   }
 
@@ -128,11 +128,11 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   renderData.globalExchangeSelector = [](void const* exchangeState, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gLFO[slot]; };
   renderData.globalMonoOutputSelector = [](void const* procState, int slot, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].output; };
+    return &static_cast<FFProcState const*>(procState)->dsp.global.gLFO[slot].outputAll; };
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].vLFO[slot]; };
   renderData.voiceMonoOutputSelector = [](void const* procState, int voice, int slot, int /*graphIndex*/) {
-    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vLFO[slot].output; };
+    return &static_cast<FFProcState const*>(procState)->dsp.voice[voice].vLFO[slot].outputAll; };
 
   auto* renderState = graphData->renderState;
   auto* moduleProcState = renderState->ModuleProcState();
@@ -145,12 +145,12 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   {
     FBRenderModuleGraph<Global, false>(renderData, i);
     if (i == FFLFOBlockCount)
-      graphData->graphs[i].text = moduleName + (type != FFLFOType::Off? "ALL": "ALL OFF");
+      graphData->graphs[i].text = moduleName + (type != FFLFOType::Off? "": " OFF");
     else
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
-      auto opType = renderState->AudioParamList<FFLFOOpType>(indices, false, -1);
-      bool blockOn = type != FFLFOType::Off && opType != FFLFOOpType::Off;
+      auto opType = renderState->AudioParamList<FFModulationOpType>(indices, false, -1);
+      bool blockOn = type != FFLFOType::Off && opType != FFModulationOpType::Off;
       graphData->graphs[i].text = moduleName + std::string(1, static_cast<char>('A' + i));
       if (!blockOn)
         graphData->graphs[i].text += " OFF";

@@ -57,7 +57,7 @@ OsciGraphRenderData::DoProcess(
   for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
-    int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState);
+    int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(true, *moduleProcState);
     if (i == graphIndex) result = processed;
   }
   moduleProcState->moduleSlot = slot;

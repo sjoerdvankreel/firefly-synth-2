@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
+
 #include <juce_gui_basics/juce_gui_basics.h>
 
 inline int constexpr FBGUIFPS = 30;
@@ -15,5 +17,6 @@ float FBGUIGetFontHeightFloat();
 juce::Font const& FBGUIGetFont();
 juce::LookAndFeel* FBGetLookAndFeel();
 
+std::filesystem::path FBGUIGetResourcesFolderPath();
 int FBGUIGetStringWidthCached(std::string const& text);
 juce::Point<int> FBGUIGetStringSizeCached(std::string const& text);

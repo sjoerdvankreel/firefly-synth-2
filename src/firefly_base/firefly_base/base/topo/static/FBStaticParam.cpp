@@ -108,11 +108,11 @@ double
 FBStaticParamBase::DefaultNormalizedByText(int moduleIndex, int moduleSlot, int paramSlot) const
 {
   auto text = GetDefaultText(moduleIndex, moduleSlot, paramSlot);
-  if (text.size() == 0)
-    return 0.0;
+  FB_ASSERT(text.size());
   auto result = TextToNormalized(false, moduleIndex, text);
   if (result)
     return result.value();
+  FB_ASSERT(false);
   FB_LOG_WARN("Failed to parse default text.");
   return 0.0;
 }

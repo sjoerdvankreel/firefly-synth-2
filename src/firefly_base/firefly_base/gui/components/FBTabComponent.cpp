@@ -1,8 +1,9 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
-#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
+#include <firefly_base/base/topo/runtime/FBTopoDetail.hpp>
+#include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 #include <map>
 #include <string>
@@ -21,6 +22,23 @@ FBTabBarButton::clicked(const ModifierKeys& modifiers)
     TabBarButton::clicked(modifiers);
   else if ((tabs = findParentComponentOfClass<FBModuleTabComponent>()) != nullptr)
     tabs->TabRightClicked(getIndex());
+}
+
+FBModuleTabBarButton::
+FBModuleTabBarButton(
+FBPlugGUI* plugGUI,
+const juce::String& name,
+juce::TabbedButtonBar& bar,
+FBTopoIndices const& moduleIndices):
+FBTabBarButton(name, bar),
+_plugGUI(plugGUI),
+_moduleIndices(moduleIndices) {}
+
+void
+FBModuleTabBarButton::clicked(const ModifierKeys& modifiers)
+{
+  FBTabBarButton::clicked(modifiers);
+  _plugGUI->ModuleSlotClicked(_moduleIndices.index, _moduleIndices.slot);
 }
 
 FBAutoSizeTabComponent::
@@ -55,6 +73,12 @@ _param(param)
   _storedSelectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
 }
 
+TabBarButton*
+FBModuleTabComponent::createTabButton(const juce::String& tabName, int tabIndex)
+{
+  return new FBModuleTabBarButton(_plugGUI, tabName, *tabs, _moduleIndices[tabIndex]);
+}
+
 void
 FBModuleTabComponent::ActivateStoredSelectedTab()
 {
@@ -85,12 +109,24 @@ FBModuleTabComponent::AddModuleTab(
   _moduleIndices.push_back(moduleIndices);
   auto topo = _plugGUI->HostContext()->Topo();
   auto const& module = topo->static_->modules[moduleIndices.index];
-  std::string header = std::to_string(moduleIndices.slot + 1);
-  if (moduleIndices.slot == 0)
-    if (module.slotCount > 1)
-      header = module.name + " " + header;
-    else
-      header = module.name;
+
+  std::string header = {};
+  if (module.tabSlotFormatter != nullptr)
+  {
+    header = FBMakeRuntimeModuleShortName(
+      *topo->static_, module.name, module.slotCount,
+      moduleIndices.slot, module.tabSlotFormatter, module.slotFormatterOverrides);
+  }
+  else
+  {
+    header = std::to_string(moduleIndices.slot + 1);
+    if (moduleIndices.slot == 0)
+      if (module.slotCount > 1)
+        header = module.name + " " + header;
+      else
+        header = module.name;
+  }
+
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
@@ -103,22 +139,28 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
     return;
   
   auto moduleIndices = _moduleIndices[tabIndex];
-  int slotCount = _plugGUI->HostContext()->Topo()->static_->modules[moduleIndices.index].slotCount;
+  auto const& staticTopo = *_plugGUI->HostContext()->Topo()->static_;
+  auto const& staticModule = staticTopo.modules[moduleIndices.index];
 
   PopupMenu menu;
   menu.addItem(1, "Clear");
-  if (slotCount > 1)
+  if (staticModule.slotCount > 1)
   {
     PopupMenu subMenu;
-    for (int i = 0; i < slotCount; i++)
-      subMenu.addItem(2 + i, std::to_string(i + 1), moduleIndices.slot != i);
+    for (int i = 0; i < staticModule.slotCount; i++)
+    {
+      auto name = FBMakeRuntimeModuleShortName(
+        staticTopo, staticModule.name, staticModule.slotCount, i, 
+        staticModule.slotFormatter, staticModule.slotFormatterOverrides);
+      subMenu.addItem(2 + i, name, moduleIndices.slot != i);
+    }
     menu.addSubMenu("Copy To", subMenu);
   }
 
   PopupMenu::Options options;
   options = options.withParentComponent(_plugGUI);
   options = options.withTargetComponent(getTabbedButtonBar().getTabButton(tabIndex));
-  menu.showMenuAsync(options, [this, moduleIndices, slotCount](int id) {
+  menu.showMenuAsync(options, [this, moduleIndices, slotCount = staticModule.slotCount](int id) {
     if (id == 1) 
       _plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices); 
     else if(2 <= id && id < slotCount + 2) 
