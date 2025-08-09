@@ -116,8 +116,8 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * For "fm" mode, a 3-op FM generator with 3x3 matrix, unit delay on the feedback path, free or rational (0.25 or 1:4) C:M ratios, choice of linear or exponential FM.
 * For "wave" mode, get 6 sub-oscis, 2 fixed waveforms, 2 pwm-modulatable waveforms, 1 hardsync-capable waveform, and 1 dsf generator.
 * There are loads of new waveforms, see credits below. I stole a bunch of properly BLEP'ed algo's.
+* These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
 * Easy access mod controls for env to gain and lfo to fine pitch.
-These also include fully BLEP'ed hardsync versions of saw/sqr/tri. These are superior to FF1's hardsync-anything, so hardsync-anything is out.
 * For "string" mode:
   * Brought back the "frozen noise" from infernal synth.
   * Continous white-to-pink-to-brown noise, uniform or gaussian.
