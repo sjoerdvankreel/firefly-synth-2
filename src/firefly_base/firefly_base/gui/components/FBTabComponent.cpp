@@ -10,48 +10,6 @@
 
 using namespace juce;
 
-class FBModuleTabbedButtonBar:
-public TabbedButtonBar
-{
-  FBModuleTabComponent* const _owner;
-
-public:
-  FBModuleTabbedButtonBar(FBModuleTabComponent* owner, TabbedButtonBar::Orientation o);
-
-  Colour getTabBackgroundColour(int tabIndex);
-  TabBarButton* createTabButton(const String& tabName, int tabIndex);
-  void popupMenuClickOnTab(int tabIndex, const String& tabName) override;
-  void currentTabChanged(int newCurrentTabIndex, const String& newTabName) override;
-};
-
-FBModuleTabbedButtonBar::
-FBModuleTabbedButtonBar(FBModuleTabComponent* owner, TabbedButtonBar::Orientation o) :
-TabbedButtonBar(o), _owner(owner) {}
-
-Colour
-FBModuleTabbedButtonBar::getTabBackgroundColour(int tabIndex)
-{
-  return _owner->getTabs()->getTabBackgroundColour(tabIndex);
-}
-
-TabBarButton*
-FBModuleTabbedButtonBar::createTabButton(const String& tabName, int tabIndex)
-{
-  return _owner->createTabButton(tabName, tabIndex);
-}
-
-void
-FBModuleTabbedButtonBar::popupMenuClickOnTab(int tabIndex, const String& tabName)
-{
-  _owner->popupMenuClickOnTab(tabIndex, tabName);
-}
-
-void 
-FBModuleTabbedButtonBar::currentTabChanged(int newCurrentTabIndex, const String& newTabName)
-{
-  _owner->changeCallback(newCurrentTabIndex, newTabName);
-}
-
 FBTabBarButton::
 FBTabBarButton(const String& name, TabbedButtonBar& bar):
 TabBarButton(name, bar) {}
@@ -110,9 +68,6 @@ FBAutoSizeTabComponent(),
 _plugGUI(plugGUI),
 _param(param)
 {
-  removeChildComponent(tabs.get());
-  tabs.reset(new FBModuleTabbedButtonBar(this, TabbedButtonBar::Orientation::TabsAtTop));
-  addAndMakeVisible(tabs.get());
   assert(param != nullptr);
   double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(_param->runtimeParamIndex);
   _storedSelectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
@@ -175,40 +130,6 @@ FBModuleTabComponent::AddModuleTab(
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
   dynamic_cast<FBTabBarButton&>(*button).centerText = centerText;
-}
-
-void
-FBModuleTabComponent::changeCallback(
-  int newCurrentTabIndex,
-  juce::String const& newTabName)
-{
-  auto* newPanelComp = getTabContentComponent(getCurrentTabIndex());
-
-  if (newPanelComp != _panelComponent)
-  {
-    if (_panelComponent != nullptr)
-    {
-      _panelComponent->setVisible(false);
-      removeChildComponent(_panelComponent);
-    }
-
-    _panelComponent = newPanelComp;
-
-    if (_panelComponent != nullptr)
-    {
-      // do these ops as two stages instead of addAndMakeVisible() so that the
-      // component has always got a parent when it gets the visibilityChanged() callback
-      addChildComponent(_panelComponent);
-      _panelComponent->sendLookAndFeelChange();
-      _panelComponent->setVisible(true);
-      _panelComponent->toFront(true);
-    }
-
-    repaint();
-  }
-
-  resized();
-  currentTabChanged(newCurrentTabIndex, newTabName);
 }
 
 void 
