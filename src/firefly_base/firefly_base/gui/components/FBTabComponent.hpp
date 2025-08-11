@@ -60,6 +60,10 @@ public FBAutoSizeTabComponent
   FBRuntimeGUIParam const* const _param;
   std::vector<FBTopoIndices> _moduleIndices = {};
 
+  // Mind clearTabs() and getCurrentContentComponent(), but we don't use them.
+  // But re-implementation of changeCallback does.
+  juce::WeakReference<Component> _panelComponent = {}; 
+
 public:
   FBModuleTabComponent(
     FBPlugGUI* plugGUI, 
@@ -68,15 +72,18 @@ public:
   void AddModuleTab(
     bool centerText,
     FBTopoIndices const& moduleIndices,
-    juce::Component* component);
-  
+    juce::Component* component);  
   void ActivateStoredSelectedTab();
   void TabRightClicked(int tabIndex);
-
+  
+  void changeCallback(
+    int newCurrentTabIndex, 
+    juce::String const& newTabName);
   void currentTabChanged(
     int newCurrentTabIndex, 
     juce::String const& newCurrentTabName) override;
-
+  
+  juce::TabbedButtonBar* getTabs() { return tabs.get(); }
   juce::TabBarButton*
   createTabButton(const juce::String& tabName, int tabIndex) override;
 };
