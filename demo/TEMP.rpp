@@ -1,4 +1,4 @@
-<REAPER_PROJECT 0.1 "7.42/win64" 1755102702
+<REAPER_PROJECT 0.1 "7.42/win64" 1755106045
   <NOTES 0 2
   >
   RIPPLE 0 0
@@ -41,6 +41,7 @@
   RENDER_ADDTOPROJ 0
   RENDER_STEMS 0
   RENDER_DITHER 0
+  RENDER_TRIM 0 0 0 0
   TIMELOCKMODE 1
   TEMPOENVLOCKMODE 1
   ITEMMIX 1
@@ -7478,10 +7479,10 @@
         POOLEDEVTS {C24F9F0E-7BE6-40F1-AEE5-CA64A326692D}
         E 0 90 3c 7f
         E 960 80 3c 00
-        e 0 90 3d 7f
-        e 960 80 3d 00
-        E 0 90 3c 7f
-        E 960 80 3c 00
+        E 0 90 3d 7f
+        E 960 80 3d 00
+        e 0 90 3c 7f
+        e 960 80 3c 00
         E 0 90 3c 7f
         E 960 80 3c 00
         E 0 b0 7b 00

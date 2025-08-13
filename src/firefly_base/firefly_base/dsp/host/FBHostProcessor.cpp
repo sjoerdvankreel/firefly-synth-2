@@ -41,26 +41,6 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
   _plugIn.voiceManager = _voiceManager.get();
 }
 
-void
-FBHostProcessor::ProcessVoices()
-{
-  std::array<bool, FBMaxVoices> seenVoiceOff = {};
-  std::array<bool, FBMaxVoices> voiceOffPositions = {};
-  for(int n = 0; n < _plugIn.noteEvents->size(); n++)
-    if (!(*_plugIn.noteEvents)[n].on)
-      for (int v = 0; v < FBMaxVoices; v++)
-        if(_plugIn.voiceManager->IsActive(v))
-          if ((*_plugIn.noteEvents)[n].note.Matches(_plugIn.voiceManager->Voices()[v].event.note))
-          {
-            seenVoiceOff[v] = true;
-            voiceOffPositions[v] = (*_plugIn.noteEvents)[n].pos;
-          }
-
-  for (int v = 0; v < FBMaxVoices; v++)
-    if (_plugIn.voiceManager->IsActive(v))
-      _plug->ProcessVoice(_plugIn, v, seenVoiceOff[v]? voiceOffPositions[v]: -1);
-}
-
 void 
 FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostOutputBlock& output)
@@ -104,21 +84,37 @@ FBHostProcessor::ProcessHost(
     _plugIn.audio = &fixedIn->audio;
     _plugIn.noteEvents = &fixedIn->noteEvents;
     
-    int n = 0;
+    int n1 = 0;
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      for (; n < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n].pos == s; n++)
-        if((*_plugIn.noteEvents)[n].on)
-          _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n].note.key);
+      for (; n1 < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n1].pos == s; n1++)
+        if((*_plugIn.noteEvents)[n1].on)
+          _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n1].note.key);
       _plugIn.lastMIDINoteKey.Set(s, _lastMIDINoteKey);
     }
 
-    // Sets voice offsetInBlock to possibly nonzero.
+    // release old voices
+    std::array<bool, FBMaxVoices> seenVoiceOff = {};
+    std::array<bool, FBMaxVoices> voiceOffPositions = {};
+    for (int n2 = 0; n2 < _plugIn.noteEvents->size(); n2++)
+      if (!(*_plugIn.noteEvents)[n2].on)
+        for (int v = 0; v < FBMaxVoices; v++)
+          if (_plugIn.voiceManager->IsActive(v))
+            if ((*_plugIn.noteEvents)[n2].note.Matches(_plugIn.voiceManager->Voices()[v].event.note))
+            {
+              seenVoiceOff[v] = true;
+              voiceOffPositions[v] = (*_plugIn.noteEvents)[n2].pos;
+            }
+
+    // aquire new voices, set voice offsetInBlock to possibly nonzero.
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
 
-    ProcessVoices();
+    // process active voices including newly acquired AND newly released
+    for (int v = 0; v < FBMaxVoices; v++)
+      if (_plugIn.voiceManager->IsActive(v))
+        _plug->ProcessVoice(_plugIn, v, seenVoiceOff[v] ? voiceOffPositions[v] : -1);
 
     // Voice offsetInBlock is 0 for the rest of the voice lifetime.
     for (int v = 0; v < FBMaxVoices; v++)
