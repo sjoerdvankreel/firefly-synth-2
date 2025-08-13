@@ -54,7 +54,7 @@ MakeAccModEvent(
 
 static FBNoteEvent
 MakeNoteEvent(
-  clap_event_header_t const* header, std::int64_t projectTimeSamples)
+  clap_event_header_t const* header)
 {
   FBNoteEvent result;
   auto event = reinterpret_cast<clap_event_note_t const*>(header);
@@ -64,7 +64,6 @@ MakeNoteEvent(
   result.note.channel = event->channel;
   result.velo = static_cast<float>(event->velocity);
   result.on = header->type == CLAP_EVENT_NOTE_ON;
-  result.timeStampSamples = projectTimeSamples + header->time;
   return result;
 }
 
@@ -301,7 +300,7 @@ FBCLAPPlugin::process(
       {
       case CLAP_EVENT_NOTE_ON:
       case CLAP_EVENT_NOTE_OFF:
-        _input.noteEvents.push_back(MakeNoteEvent(header, _input.projectTimeSamples));
+        _input.noteEvents.push_back(MakeNoteEvent(header));
         break;
       case CLAP_EVENT_PARAM_MOD:
         modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
