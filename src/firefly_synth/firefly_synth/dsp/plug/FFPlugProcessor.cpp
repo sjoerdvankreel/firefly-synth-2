@@ -61,10 +61,10 @@ FFPlugProcessor::MakeModuleVoiceState(
 
 void
 FFPlugProcessor::ProcessVoice(
-  FBPlugInputBlock const& input, int voice)
+  FBPlugInputBlock const& input, int voice, int releaseAt)
 {
   auto state = MakeModuleVoiceState(input, voice);
-  if(_procState->dsp.voice[voice].processor.Process(state))
+  if(_procState->dsp.voice[voice].processor.Process(state, releaseAt))
     input.voiceManager->Return(voice);
 }
 

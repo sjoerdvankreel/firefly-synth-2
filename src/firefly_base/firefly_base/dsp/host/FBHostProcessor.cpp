@@ -44,9 +44,21 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
 void
 FBHostProcessor::ProcessVoices()
 {
+  std::array<bool, FBMaxVoices> seenNoteOff = {};
+  std::array<bool, FBMaxVoices> noteOffPositions = {};
+  for(int n = 0; n < _plugIn.noteEvents->size(); n++)
+    if (!(*_plugIn.noteEvents)[n].on)
+      for (int v = 0; v < FBMaxVoices; v++)
+        if(_plugIn.voiceManager->IsActive(v))
+          if (!seenNoteOff[v] && (*_plugIn.noteEvents)[n].note.Matches(_plugIn.voiceManager->Voices()[v].event.note))
+          {
+            seenNoteOff[v] = true;
+            noteOffPositions[v] = (*_plugIn.noteEvents)[n].pos;
+          }
+
   for (int v = 0; v < FBMaxVoices; v++)
     if (_plugIn.voiceManager->IsActive(v))
-      _plug->ProcessVoice(_plugIn, v);
+      _plug->ProcessVoice(_plugIn, v, seenNoteOff[v]? noteOffPositions[v]: -1);
 }
 
 void 

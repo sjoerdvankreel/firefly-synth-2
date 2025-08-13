@@ -8,7 +8,7 @@ struct FBPlugInputBlock;
 class FFVoiceProcessor final
 {
 public:
-  bool Process(FBModuleProcState state);
-  void BeginVoice(FBModuleProcState state);
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceProcessor);
+  void BeginVoice(FBModuleProcState state);
+  bool Process(FBModuleProcState state, int releaseAt);
 };

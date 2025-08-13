@@ -80,7 +80,7 @@ EnvGraphRenderData::DoProcess(
   bool /*exchange*/, int /*exchangeVoice*/)
 { 
   auto* moduleProcState = state->ModuleProcState();
-  return GetProcessor(*moduleProcState).Process(*moduleProcState);
+  return GetProcessor(*moduleProcState).Process(*moduleProcState, -1);
 }
 
 void 

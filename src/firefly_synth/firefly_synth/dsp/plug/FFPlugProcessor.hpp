@@ -27,6 +27,6 @@ public:
 
   void LeaseVoices(FBPlugInputBlock const& input) override;
   void ProcessPreVoice(FBPlugInputBlock const& input) override;
-  void ProcessVoice(FBPlugInputBlock const& input, int voice) override;
+  void ProcessVoice(FBPlugInputBlock const& input, int voice, int releaseAt) override;
   void ProcessPostVoice(FBPlugInputBlock const& input, FBPlugOutputBlock& output) override;
 };
