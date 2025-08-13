@@ -21,7 +21,8 @@ public juce::LookAndFeel_V4
   void DrawTabButtonPart(
     juce::TabBarButton& button, juce::Graphics& g,
     bool isMouseOver, bool isMouseDown,
-    bool toggleState, std::string const& text,
+    bool toggleState, bool centerText,
+    std::string const& text,
     juce::Rectangle<int> const& activeArea);
 
 public:  

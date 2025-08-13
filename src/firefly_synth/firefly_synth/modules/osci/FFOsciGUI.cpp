@@ -306,7 +306,7 @@ FFMakeOsciGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   tabs->SetTabSeparatorText(0, "Osc");
   for (int i = 0; i < FFOsciCount; i++)
-    tabs->AddModuleTab(i != 0, { (int)FFModuleType::Osci, i }, MakeOsciTab(plugGUI, i));
+    tabs->AddModuleTab(true, { (int)FFModuleType::Osci, i }, MakeOsciTab(plugGUI, i));
   tabs->AddModuleTab(true, { (int)FFModuleType::OsciMod, 0 }, FFMakeOsciModGUISectionAll(plugGUI));
   tabs->ActivateStoredSelectedTab();
   return tabs;

@@ -14,16 +14,17 @@ getSliderThumbColor(Slider const& s)
 }
 
 static void createTabTextLayout(
-  const TabBarButton& button, float length, 
-  Colour colour, Font const& font,
+  const TabBarButton& button, 
+  float length, Colour colour, 
+  Font const& font, bool centerText, 
   std::string text, TextLayout& textLayout)
 {
   AttributedString s;
   if (auto* fbButton = dynamic_cast<FBTabBarButton const*>(&button))
   {
-    if (!fbButton->centerText)
+    if (!centerText)
       text = " " + text;
-    s.setJustification(fbButton->centerText ? Justification::centred : Justification::centredLeft);
+    s.setJustification(centerText ? Justification::centred : Justification::centredLeft);
   }
   s.append(text, font, colour);
   textLayout.createLayout(s, length);
@@ -81,7 +82,8 @@ void
 FBLookAndFeel::DrawTabButtonPart(
   TabBarButton& button, Graphics& g,
   bool isMouseOver, bool isMouseDown,
-  bool toggleState, std::string const& text,
+  bool toggleState, bool centerText,
+  std::string const& text,
   Rectangle<int> const& activeArea)
 {
   const Colour bkg(button.getTabBackgroundColour());
@@ -117,7 +119,7 @@ FBLookAndFeel::DrawTabButtonPart(
   const Rectangle<float> area(activeArea.toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  ::createTabTextLayout(button, length, col, FBGUIGetFont(), text, textLayout);
+  ::createTabTextLayout(button, length, col, FBGUIGetFont(), centerText, text, textLayout);
 
   g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
@@ -402,10 +404,14 @@ FBLookAndFeel::drawTabButton(
   TabBarButton& button, Graphics& g,
   bool isMouseOver, bool isMouseDown)
 {
+  bool centerText = {};
   std::string separatorText = {};
   FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
   if (fbButton != nullptr)
+  {
+    centerText = fbButton->centerText;
     separatorText = fbButton->GetSeparatorText();
+  }
 
   bool toggleState = button.getToggleState();
   Rectangle<int> activeArea(button.getActiveArea());
@@ -413,12 +419,12 @@ FBLookAndFeel::drawTabButton(
 
   if (separatorText.empty())
   {
-    DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, buttonText, activeArea);
+    DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, buttonText, activeArea);
     return;
   }
 
-  auto separatorArea = Rectangle<int>(activeArea.getX(), activeArea.getY(), 64, activeArea.getHeight());
-  DrawTabButtonPart(button, g, false, false, false, separatorText, separatorArea);
+  auto separatorArea = Rectangle<int>(activeArea.getX(), activeArea.getY(), 63, activeArea.getHeight());
+  DrawTabButtonPart(button, g, false, false, false, false, separatorText, separatorArea);
   auto buttonArea = Rectangle<int>(activeArea.getX() + 64, activeArea.getY(), 32, activeArea.getHeight());
-  DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, buttonText, buttonArea);
+  DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, buttonText, buttonArea);
 }
