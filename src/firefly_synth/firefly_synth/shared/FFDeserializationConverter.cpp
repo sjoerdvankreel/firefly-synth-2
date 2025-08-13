@@ -41,6 +41,29 @@ FFDeserializationConverter::OnParamNotFound(
       }
     }
   }
+
+  // 2.0.3 - changed FX oversample guid to fit outside of VST3 MIDI parameter range.
+  // Block param, so no automation lanes.
+  if (OldVersion() < FBPlugVersion(2, 0, 3))
+  {
+    auto const& vEffectModule = Topo()->static_->modules[(int)FFModuleType::VEffect];
+    if (oldModuleId == vEffectModule.id && oldParamId == "V{28875DF7-255B-4190-80CE-D0A9ED20F263}")
+    {
+      newModuleId = oldModuleId;
+      newParamSlot = oldParamSlot;
+      newParamId = "V{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
+      return true;
+    }
+    auto const& gEffectModule = Topo()->static_->modules[(int)FFModuleType::GEffect];
+    if (oldModuleId == gEffectModule.id && oldParamId == "G{28875DF7-255B-4190-80CE-D0A9ED20F263}")
+    {
+      newModuleId = oldModuleId;
+      newParamSlot = oldParamSlot;
+      newParamId = "G{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
+      return true;
+    }
+  }
+
   return false;
 }
 
