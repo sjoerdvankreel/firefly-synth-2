@@ -415,6 +415,10 @@ FBLookAndFeel::drawTabButton(
   }
 
   bool toggleState = button.getToggleState();
+  isMouseOver &= button.getTabbedButtonBar().getNumTabs() > 1;
+  isMouseDown &= button.getTabbedButtonBar().getNumTabs() > 1;
+  toggleState &= button.getTabbedButtonBar().getNumTabs() > 1;
+
   Rectangle<int> activeArea(
     button.getActiveArea().getX(), button.getActiveArea().getY(),
     button.getActiveArea().getWidth(), button.getActiveArea().getHeight());
