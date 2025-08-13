@@ -43,7 +43,7 @@ FFMakeEffectTopo(bool global)
   oversample.name = "Oversample";
   oversample.display = "Ovsmp";
   oversample.slotCount = 1;
-  oversample.id = prefix + "{28875DF7-255B-4190-80CE-D0A9ED20F263}";
+  oversample.id = prefix + "{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
   oversample.type = FBParamType::Boolean;
   auto selectOversample = [](auto& module) { return &module.block.oversample; };
   oversample.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOversample);
