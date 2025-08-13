@@ -42,6 +42,10 @@ public:
     juce::TabBarButton& button, juce::Graphics& g,
     bool isMouseOver, bool isMouseDown) override;
 
+  void drawTabAreaBehindFrontButton(
+    juce::TabbedButtonBar& bar, juce::Graphics& g,
+    const int w, const int h) override;
+
   void drawTickBox(
     juce::Graphics& g, juce::Component& component,
     float x, float y, float w, float h,

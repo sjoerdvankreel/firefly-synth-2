@@ -400,6 +400,17 @@ FBLookAndFeel::drawRotarySlider(
     DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }
 
+void 
+FBLookAndFeel::drawTabAreaBehindFrontButton(
+  juce::TabbedButtonBar& bar, Graphics& g,
+  const int w, const int h)
+{
+  (void)bar;
+  (void)g;
+  (void)w;
+  (void)h;
+}
+
 void
 FBLookAndFeel::drawTabButton(
   TabBarButton& button, Graphics& g,
