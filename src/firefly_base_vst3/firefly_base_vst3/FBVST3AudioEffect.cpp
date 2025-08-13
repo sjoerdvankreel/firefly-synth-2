@@ -35,7 +35,7 @@ MakeAccAutoEvent(int param, int pos, ParamValue value)
 }
 
 static FBNoteEvent
-MakeNoteOnEvent(Event const& event)
+MakeNoteOnEvent(Event const& event, std::int64_t projectTimeSamples)
 {
   FBNoteEvent result;
   result.on = true;
@@ -44,11 +44,12 @@ MakeNoteOnEvent(Event const& event)
   result.note.id = event.noteOn.noteId;
   result.note.key = event.noteOn.pitch;
   result.note.channel = event.noteOn.channel;
+  result.timeStampSamples = projectTimeSamples + event.sampleOffset;
   return result;
 }
 
 static FBNoteEvent
-MakeNoteOffEvent(Event const& event)
+MakeNoteOffEvent(Event const& event, std::int64_t projectTimeSamples)
 {
   FBNoteEvent result;
   result.on = false;
@@ -57,6 +58,7 @@ MakeNoteOffEvent(Event const& event)
   result.note.id = event.noteOff.noteId;
   result.note.key = event.noteOff.pitch;
   result.note.channel = event.noteOff.channel;
+  result.timeStampSamples = projectTimeSamples + event.sampleOffset;
   return result;
 }
 
@@ -224,9 +226,9 @@ FBVST3AudioEffect::process(ProcessData& data)
       for (int i = 0; i < data.inputEvents->getEventCount(); i++)
         if (data.inputEvents->getEvent(i, inEvent) == kResultOk)
           if (inEvent.type == Event::kNoteOnEvent)
-            _input.noteEvents.push_back(MakeNoteOnEvent(inEvent));
+            _input.noteEvents.push_back(MakeNoteOnEvent(inEvent, _input.projectTimeSamples));
           else if (inEvent.type == Event::kNoteOffEvent)
-            _input.noteEvents.push_back(MakeNoteOffEvent(inEvent));
+            _input.noteEvents.push_back(MakeNoteOffEvent(inEvent, _input.projectTimeSamples));
 
     int position;
     ParamValue value;

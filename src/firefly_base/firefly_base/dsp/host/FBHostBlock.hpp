@@ -36,6 +36,7 @@ struct FBNoteEvent final
   bool on = false;
   FBNote note = {};
   float velo = 0.0f;
+  std::int64_t timeStampSamples = -1;
 };
 
 class FBHostAudioBlock final
