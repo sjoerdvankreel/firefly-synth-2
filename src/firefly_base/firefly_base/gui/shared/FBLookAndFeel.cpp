@@ -102,6 +102,7 @@ FBLookAndFeel::DrawTabButtonPart(
   g.fillRect(r.removeFromTop(1));
   g.fillRect(r.removeFromLeft(1));
   g.fillRect(r.removeFromRight(1));
+  g.fillRect(r.removeFromBottom(1));
 
   const float alpha = button.isEnabled() ? ((isMouseOver || isMouseDown) ? 1.0f : 0.8f) : 0.3f;
   Colour col(bkg.contrasting().withMultipliedAlpha(alpha));
