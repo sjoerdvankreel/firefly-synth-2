@@ -38,6 +38,10 @@ public:
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
 
+  void drawTooltip(
+    juce::Graphics& g, const juce::String& text,
+    int width, int height) override;
+
   void drawTabButton(
     juce::TabBarButton& button, juce::Graphics& g,
     bool isMouseOver, bool isMouseDown) override;

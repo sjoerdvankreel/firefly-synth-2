@@ -410,6 +410,18 @@ FBLookAndFeel::drawRotarySlider(
     DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }
 
+void 
+FBLookAndFeel::drawTooltip(
+  Graphics& g, const String& text,
+  int width, int height)
+{
+  auto cornerSize = 5.0f;
+  Rectangle<int> bounds(width, height);
+  LookAndFeel_V4::drawTooltip(g, text, width, height);
+  g.setColour(Colours::white);
+  g.drawRoundedRectangle(bounds.toFloat(), cornerSize, 2.0f);
+}
+
 void
 FBLookAndFeel::drawTabButton(
   TabBarButton& button, Graphics& g,

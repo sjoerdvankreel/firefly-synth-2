@@ -3,6 +3,7 @@ TODOLIST for alpha-11
 [x] fix up the tab headers
 [x] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
 [x] also releaseing a note by playing the same just doesn't work
+[x] draw a box around the popup/tooltip
 [ ] less matrix routes
 [ ] refix all behind-the-scenes mod sources and targets
 [ ] floating notes
@@ -17,7 +18,6 @@ TODOLIST for alpha-11
 [ ] fix free-random
 [ ] make it clear alpha breaks the demos
 [ ] allow modulate env stage lengths on voice start
-[ ] draw a box around the popup/tooltip
 [ ] keep taps on the mod matrix
 
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
