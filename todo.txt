@@ -1,9 +1,9 @@
 TODOLIST for alpha-11
 
 [x] fix up the tab headers
+[x] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
+[x] also releaseing a note by playing the same just doesn't work
 [ ] less matrix routes
-[ ] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
-[ ] also releaseing a note by playing the same just doesn't work
 [ ] refix all behind-the-scenes mod sources and targets
 [ ] floating notes
 [ ] master input (modwheel, pb + range)
