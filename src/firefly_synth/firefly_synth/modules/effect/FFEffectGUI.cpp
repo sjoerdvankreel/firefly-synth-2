@@ -142,10 +142,10 @@ FFMakeEffectGUI(FBPlugGUI* plugGUI)
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
   tabs->SetTabSeparatorText(0, "VFX");
   for (int i = 0; i < FFEffectCount; i++)
-    tabs->AddModuleTab(true, { (int)FFModuleType::VEffect, i }, MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
+    tabs->AddModuleTab(true, false, { (int)FFModuleType::VEffect, i }, MakeEffectTab(plugGUI, FFModuleType::VEffect, i));
   tabs->SetTabSeparatorText(FFEffectCount, "GFX");
   for (int i = 0; i < FFEffectCount; i++)
-    tabs->AddModuleTab(true, { (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
+    tabs->AddModuleTab(true, false, { (int)FFModuleType::GEffect, i }, MakeEffectTab(plugGUI, FFModuleType::GEffect, i));
   tabs->ActivateStoredSelectedTab();
   return tabs;
 }

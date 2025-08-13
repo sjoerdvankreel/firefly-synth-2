@@ -6,6 +6,9 @@
 
 using namespace juce;
 
+static const int TabSizeSmall = 40;
+static const int TabSizeLarge = 60;
+
 static Colour
 getSliderThumbColor(Slider const& s)
 {
@@ -142,8 +145,8 @@ FBLookAndFeel::getTabButtonBestWidth(
   auto text = button.getButtonText().toStdString();
   FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
   if (fbButton != nullptr && !fbButton->GetSeparatorText().empty())
-    return 96;
-  return text.size() == 1 ? 32 : 64;
+    return TabSizeLarge + (fbButton->large? TabSizeLarge: TabSizeSmall);
+  return TabSizeSmall;
 }
 
 void 
@@ -405,11 +408,13 @@ FBLookAndFeel::drawTabButton(
   TabBarButton& button, Graphics& g,
   bool isMouseOver, bool isMouseDown)
 {
+  bool large = {};
   bool centerText = {};
   std::string separatorText = {};
   FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
   if (fbButton != nullptr)
   {
+    large = fbButton->large;
     centerText = fbButton->centerText;
     separatorText = fbButton->GetSeparatorText();
   }
@@ -430,8 +435,9 @@ FBLookAndFeel::drawTabButton(
     return;
   }
 
-  auto separatorArea = Rectangle<int>(activeArea.getX(), activeArea.getY(), 63, activeArea.getHeight());
+  int size = large ? TabSizeLarge : TabSizeSmall;
+  auto separatorArea = Rectangle<int>(activeArea.getX(), activeArea.getY(), TabSizeLarge - 1, activeArea.getHeight());
   DrawTabButtonPart(button, g, false, false, false, false, separatorText, separatorArea);
-  auto buttonArea = Rectangle<int>(activeArea.getX() + 64, activeArea.getY(), 32, activeArea.getHeight());
+  auto buttonArea = Rectangle<int>(activeArea.getX() + TabSizeLarge, activeArea.getY(), size, activeArea.getHeight());
   DrawTabButtonPart(button, g, isMouseOver, isMouseDown, toggleState, centerText, buttonText, buttonArea);
 }

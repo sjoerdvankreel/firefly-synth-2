@@ -16,6 +16,7 @@ class FBTabBarButton:
 public juce::TabBarButton
 {
 public:
+  bool large = false;
   bool centerText = false;
   FBTabBarButton(
     const juce::String& name, 
@@ -71,7 +72,7 @@ public:
     FBRuntimeGUIParam const* param);
   
   void AddModuleTab(
-    bool centerText,
+    bool centerText, bool large,
     FBTopoIndices const& moduleIndices,
     juce::Component* component);
   
