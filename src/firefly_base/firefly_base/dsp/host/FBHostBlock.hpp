@@ -39,19 +39,6 @@ struct FBNoteEvent final
   std::int64_t timeStampSamples = -1;
 };
 
-struct FBMIDIEvent final
-{
-  static int constexpr CPEventId = 128;
-  static int constexpr PBEventId = 129;
-  static int constexpr EventCount = 130;
-  static int constexpr CCEventCount = 128;
-
-  int pos = -1;
-  int majorId = -1;
-  int minorId = -1; // for cc
-  float normalized = 0.0f;
-};
-
 class FBHostAudioBlock final
 {
   int _count = 0;
@@ -80,7 +67,6 @@ struct FBHostInputBlock final
   int sampleCount = {};
   FBHostAudioBlock audio = {};
   std::uint64_t projectTimeSamples = {};
-  std::vector<FBMIDIEvent> midiEvents = {};
   std::vector<FBNoteEvent> noteEvents = {};
   std::vector<FBBlockAutoEvent> blockAuto = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};

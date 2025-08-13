@@ -228,7 +228,6 @@ FBVST3EditController::initialize(FUnknown* context)
       addUnit(new Unit(MakeUnitInfo(_topo->modules[m], unitId)));
       for (int p = 0; p < _topo->modules[m].params.size(); p++)
       {
-        FB_ASSERT(_topo->modules[m].params[p].tag < FBVST3MIDIParameterMappingBegin);
         auto const& topo = _topo->modules[m].params[p];
         auto info = MakeParamInfo(topo, unitId);
         parameters.addParameter(new FBVST3Parameter(&topo, info));
