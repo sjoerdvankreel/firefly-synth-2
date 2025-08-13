@@ -43,8 +43,8 @@ public:
     bool isMouseOver, bool isMouseDown) override;
 
   void drawTabAreaBehindFrontButton(
-    juce::TabbedButtonBar& bar, juce::Graphics& g,
-    const int w, const int h) override;
+    juce::TabbedButtonBar&, juce::Graphics&,
+    const int, const int) override {}
 
   void drawTickBox(
     juce::Graphics& g, juce::Component& component,

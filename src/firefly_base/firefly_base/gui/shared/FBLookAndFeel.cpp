@@ -400,17 +400,6 @@ FBLookAndFeel::drawRotarySlider(
     DrawRotarySliderExchangeThumb(g, *paramSlider, x, y, width, height, rotaryStartAngle, rotaryEndAngle, paramActive.maxValue);
 }
 
-void 
-FBLookAndFeel::drawTabAreaBehindFrontButton(
-  juce::TabbedButtonBar& bar, Graphics& g,
-  const int w, const int h)
-{
-  (void)bar;
-  (void)g;
-  (void)w;
-  (void)h;
-}
-
 void
 FBLookAndFeel::drawTabButton(
   TabBarButton& button, Graphics& g,
@@ -426,7 +415,9 @@ FBLookAndFeel::drawTabButton(
   }
 
   bool toggleState = button.getToggleState();
-  Rectangle<int> activeArea(button.getActiveArea());
+  Rectangle<int> activeArea(
+    button.getActiveArea().getX(), button.getActiveArea().getY(),
+    button.getActiveArea().getWidth(), button.getActiveArea().getHeight());
   std::string buttonText = button.getButtonText().toStdString();
 
   if (separatorText.empty())
