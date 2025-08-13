@@ -27,7 +27,6 @@ class FBHostProcessor final
   float const _sampleRate;
   float _lastMIDINoteKey = 60.0f;
   float _prevRoundCpuUsage = 0.0f;
-  std::vector<int> _seenNoteOff = {}; // vector bool
   FBRuntimeTopo const* const _topo;
   FBProcStateContainer* const _procState;
   FBExchangeStateContainer* const _exchangeState;

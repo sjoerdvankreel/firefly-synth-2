@@ -39,30 +39,26 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
-  _seenNoteOff.resize(FBMaxVoices);
 }
 
 void
 FBHostProcessor::ProcessVoices()
 {
-  _seenNoteOff.clear();
-  _seenNoteOff.resize(_plugIn.noteEvents->size());
-  std::array<bool, FBMaxVoices> noteOffPositions = {};
+  std::array<bool, FBMaxVoices> seenVoiceOff = {};
+  std::array<bool, FBMaxVoices> voiceOffPositions = {};
   for(int n = 0; n < _plugIn.noteEvents->size(); n++)
     if (!(*_plugIn.noteEvents)[n].on)
-      if(!_seenNoteOff[n])
-        for (int v = 0; v < FBMaxVoices; v++)
-          if(_plugIn.voiceManager->IsActive(v))
-            if ((*_plugIn.noteEvents)[n].note.Matches(_plugIn.voiceManager->Voices()[v].event.note))
-            {
-              _seenNoteOff[n] = true;
-              noteOffPositions[v] = (*_plugIn.noteEvents)[n].pos;
-              break;
-            }
+      for (int v = 0; v < FBMaxVoices; v++)
+        if(_plugIn.voiceManager->IsActive(v))
+          if ((*_plugIn.noteEvents)[n].note.Matches(_plugIn.voiceManager->Voices()[v].event.note))
+          {
+            seenVoiceOff[v] = true;
+            voiceOffPositions[v] = (*_plugIn.noteEvents)[n].pos;
+          }
 
   for (int v = 0; v < FBMaxVoices; v++)
     if (_plugIn.voiceManager->IsActive(v))
-      _plug->ProcessVoice(_plugIn, v, _seenNoteOff[v]? noteOffPositions[v]: -1);
+      _plug->ProcessVoice(_plugIn, v, seenVoiceOff[v]? voiceOffPositions[v]: -1);
 }
 
 void 
