@@ -92,6 +92,9 @@ FBLookAndFeel::getTabButtonBestWidth(
   if (button.getTabbedButtonBar().getNumTabs() == 1)
     return button.getTabbedButtonBar().getWidth();
   auto text = button.getButtonText().toStdString();
+  FBModuleTabBarButton* fbButton = dynamic_cast<FBModuleTabBarButton*>(&button);
+  if (fbButton != nullptr && !fbButton->GetSeparatorText().empty())
+    return 96;
   return text.size() == 1 ? 32 : 64;
 }
 
@@ -354,56 +357,23 @@ FBLookAndFeel::drawTabButton(
   TabBarButton& button, Graphics& g,
   bool isMouseOver, bool isMouseDown)
 {
-  const Rectangle<int> activeArea(button.getActiveArea());
-  const TabbedButtonBar::Orientation o = button.getTabbedButtonBar().getOrientation();
   const Colour bkg(button.getTabBackgroundColour());
+  const Rectangle<int> activeArea(button.getActiveArea());
 
   if (button.getToggleState())
-  {
     g.setColour(bkg);
-  }
   else
-  {
-    Point<int> p1, p2;
-    switch (o)
-    {
-    case TabbedButtonBar::TabsAtBottom:   
-      p1 = activeArea.getBottomLeft(); 
-      p2 = activeArea.getTopLeft();    
-      break;
-    case TabbedButtonBar::TabsAtTop:      
-      p1 = activeArea.getTopLeft();    
-      p2 = activeArea.getBottomLeft(); 
-      break;
-    case TabbedButtonBar::TabsAtRight:    
-      p1 = activeArea.getTopRight();   
-      p2 = activeArea.getTopLeft();    
-      break;
-    case TabbedButtonBar::TabsAtLeft:     
-      p1 = activeArea.getTopLeft();    
-      p2 = activeArea.getTopRight();   
-      break;
-    default:                              
-      jassertfalse; break;
-    }
-
     g.setGradientFill(ColourGradient(
-      bkg.brighter(0.2f), p1.toFloat(),
-      bkg.darker(0.1f), p2.toFloat(), false));
-  }
+      bkg.brighter(0.2f), activeArea.getTopLeft().toFloat(),
+      bkg.darker(0.1f), activeArea.getBottomLeft().toFloat(), false));
 
   g.fillRect(activeArea);
   g.setColour(button.findColour(TabbedButtonBar::tabOutlineColourId));
 
   Rectangle<int> r(activeArea);
-  if (o != TabbedButtonBar::TabsAtBottom)  
-    g.fillRect(r.removeFromTop(1));
-  if (o != TabbedButtonBar::TabsAtTop)     
-    g.fillRect(r.removeFromBottom(1));
-  if (o != TabbedButtonBar::TabsAtRight)   
-    g.fillRect(r.removeFromLeft(1));
-  if (o != TabbedButtonBar::TabsAtLeft)    
-    g.fillRect(r.removeFromRight(1));
+  g.fillRect(r.removeFromTop(1));
+  g.fillRect(r.removeFromLeft(1));
+  g.fillRect(r.removeFromRight(1));
 
   const float alpha = button.isEnabled() ? ((isMouseOver || isMouseDown) ? 1.0f : 0.8f) : 0.3f;
   Colour col(bkg.contrasting().withMultipliedAlpha(alpha));
@@ -417,33 +387,12 @@ FBLookAndFeel::drawTabButton(
       col = findColour(colID);
   }
 
+  TextLayout textLayout;
   const Rectangle<float> area(button.getTextArea().toFloat());
   float length = area.getWidth();
   float depth = area.getHeight();
-  if (button.getTabbedButtonBar().isVertical())
-    std::swap(length, depth);
-
-  TextLayout textLayout;
   ::createTabTextLayout(button, length, col, FBGUIGetFont(), textLayout);
 
-  AffineTransform t;
-  switch (o)
-  {
-  case TabbedButtonBar::TabsAtLeft:  
-    t = t.rotated(MathConstants<float>::pi * -0.5f).translated(area.getX(), area.getBottom()); 
-    break;
-  case TabbedButtonBar::TabsAtRight: 
-    t = t.rotated(MathConstants<float>::pi * 0.5f).translated(area.getRight(), area.getY()); 
-    break;
-  case TabbedButtonBar::TabsAtTop:
-  case TabbedButtonBar::TabsAtBottom:
-    t = t.translated(area.getX(), area.getY()); 
-    break;
-  default:             
-    jassertfalse; 
-    break;
-  }
-
-  g.addTransform(t);
+  g.addTransform(AffineTransform::translation(area.getX(), area.getY()));
   textLayout.draw(g, Rectangle<float>(length, depth));
 }

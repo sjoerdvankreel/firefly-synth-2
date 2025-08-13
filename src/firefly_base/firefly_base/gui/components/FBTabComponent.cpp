@@ -27,11 +27,13 @@ FBTabBarButton::clicked(const ModifierKeys& modifiers)
 FBModuleTabBarButton::
 FBModuleTabBarButton(
 FBPlugGUI* plugGUI,
+std::string const& separatorText,
 const juce::String& name,
 juce::TabbedButtonBar& bar,
 FBTopoIndices const& moduleIndices):
 FBTabBarButton(name, bar),
 _plugGUI(plugGUI),
+_separatorText(separatorText),
 _moduleIndices(moduleIndices) {}
 
 void
@@ -73,10 +75,16 @@ _param(param)
   _storedSelectedTab = _param->static_.Discrete().NormalizedToPlainFast((float)normalized);
 }
 
+void 
+FBModuleTabComponent::SetTabSeparatorText(int tabIndex, std::string const& text)
+{
+  _tabSeparatorText[tabIndex] = text;
+}
+
 TabBarButton*
 FBModuleTabComponent::createTabButton(const juce::String& tabName, int tabIndex)
 {
-  return new FBModuleTabBarButton(_plugGUI, tabName, *tabs, _moduleIndices[tabIndex]);
+  return new FBModuleTabBarButton(_plugGUI, _tabSeparatorText[tabIndex], tabName, *tabs, _moduleIndices[tabIndex]);
 }
 
 void
@@ -112,20 +120,13 @@ FBModuleTabComponent::AddModuleTab(
 
   std::string header = {};
   if (module.tabSlotFormatter != nullptr)
-  {
     header = FBMakeRuntimeModuleShortName(
       *topo->static_, module.name, module.slotCount,
       moduleIndices.slot, module.tabSlotFormatter, module.slotFormatterOverrides);
-  }
-  else
-  {
+  else if(module.slotCount > 1)
     header = std::to_string(moduleIndices.slot + 1);
-    if (moduleIndices.slot == 0)
-      if (module.slotCount > 1)
-        header = module.name + " " + header;
-      else
-        header = module.name;
-  }
+  else
+    header = module.name;
 
   addTab(header, Colours::black, component, false);
   auto button = getTabbedButtonBar().getTabButton(static_cast<int>(_moduleIndices.size() - 1));
