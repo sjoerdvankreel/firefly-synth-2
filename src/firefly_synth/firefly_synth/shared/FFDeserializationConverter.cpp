@@ -51,6 +51,7 @@ FFDeserializationConverter::OnParamNotFound(
     {
       newModuleId = oldModuleId;
       newParamSlot = oldParamSlot;
+      newModuleSlot = oldModuleSlot;
       newParamId = "V{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
       return true;
     }
@@ -59,6 +60,7 @@ FFDeserializationConverter::OnParamNotFound(
     {
       newModuleId = oldModuleId;
       newParamSlot = oldParamSlot;
+      newModuleSlot = oldModuleSlot;
       newParamId = "G{D8AA4B9D-EAFD-4E87-9DC9-108B8894A4D0}";
       return true;
     }
