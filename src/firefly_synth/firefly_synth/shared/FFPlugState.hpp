@@ -6,6 +6,7 @@
 #include <firefly_synth/modules/mix/FFVMixState.hpp>
 #include <firefly_synth/modules/mix/FFGMixState.hpp>
 #include <firefly_synth/modules/osci/FFOsciState.hpp>
+#include <firefly_synth/modules/midi/FFMIDIState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
@@ -55,6 +56,7 @@ struct FFVoiceExchangeState final
 
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
+  FFMIDIDSPState midi = {};
   FFOutputDSPState output = {};
   FFMasterDSPState master = {};
   FFModMatrixDSPState<true> gMatrix = {};
