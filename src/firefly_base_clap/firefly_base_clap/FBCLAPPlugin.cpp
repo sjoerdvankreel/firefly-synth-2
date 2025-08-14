@@ -17,11 +17,17 @@
 #include <clap/helpers/plugin.hxx>
 #include <algorithm>
 
+static int const MIDIMessageCC = 176;
+static int const MIDIMessageCP = 208;
+static int const MIDIMessagePB = 224;
+static int const MIDIMessageNoteOn = 0x90;
+static int const MIDIMessageNoteOff = 0x80;
+
 static FBBlockAutoEvent
 MakeBlockAutoEvent(
   int param, double normalized)
 {
-  FBBlockAutoEvent result;
+  FBBlockAutoEvent result = {};
   result.param = param;
   result.normalized = static_cast<float>(normalized);
   return result;
@@ -31,7 +37,7 @@ static FBAccAutoEvent
 MakeAccAutoEvent(
   int param, double normalized, int pos)
 {
-  FBAccAutoEvent result;
+  FBAccAutoEvent result = {};
   result.pos = pos;
   result.param = param;
   result.value = static_cast<float>(normalized);
@@ -42,7 +48,7 @@ static FBAccModEvent
 MakeAccModEvent(
   int param, clap_event_param_mod const* event)
 {
-  FBAccModEvent result;
+  FBAccModEvent result = {};
   result.param = param;
   result.pos = event->header.time;
   result.note.key = event->key;
@@ -53,10 +59,24 @@ MakeAccModEvent(
 }
 
 static FBNoteEvent
-MakeNoteEvent(
-  clap_event_header_t const* header, std::int64_t projectTimeSamples)
+MakeMIDINoteEvent(
+  clap_event_midi const* event)
 {
-  FBNoteEvent result;
+  FBNoteEvent result = {};
+  int message = event->data[0] & 0xF0;
+  result.pos = event->header.time;
+  result.note.key = event->data[1];
+  result.note.channel = event->data[0] & 0x0F;
+  result.velo = event->data[2] / 127.0f;
+  result.on = message == MIDIMessageNoteOn;
+  return result;
+}
+
+static FBNoteEvent
+MakeNoteEvent(
+  clap_event_header_t const* header)
+{
+  FBNoteEvent result = {};
   auto event = reinterpret_cast<clap_event_note_t const*>(header);
   result.pos = header->time;
   result.note.key = event->key;
@@ -64,7 +84,6 @@ MakeNoteEvent(
   result.note.channel = event->channel;
   result.velo = static_cast<float>(event->velocity);
   result.on = header->type == CLAP_EVENT_NOTE_ON;
-  result.timeStampSamples = projectTimeSamples + header->time;
   return result;
 }
 
@@ -267,6 +286,7 @@ FBCLAPPlugin::process(
     _input.blockAuto.clear();
     _input.noteEvents.clear();
     _input.accAutoByParamThenSample.clear();
+    _input.midiByMessageThenCCThenSample.clear();
     _input.accModByParamThenNoteThenSample.clear();
 
     // this needs to be after clear()
@@ -286,9 +306,11 @@ FBCLAPPlugin::process(
       }
     }
 
+    int midiMessage;
     double normalized;
     auto inEvents = process->in_events;
     int inEventCount = inEvents->size(inEvents);
+    clap_event_midi const* midiFromHost;
     clap_event_param_mod const* modFromHost;
     clap_event_param_value const* valueFromHost;
     std::unordered_map<int, int>::const_iterator iter;
@@ -301,7 +323,7 @@ FBCLAPPlugin::process(
       {
       case CLAP_EVENT_NOTE_ON:
       case CLAP_EVENT_NOTE_OFF:
-        _input.noteEvents.push_back(MakeNoteEvent(header, _input.projectTimeSamples));
+        _input.noteEvents.push_back(MakeNoteEvent(header));
         break;
       case CLAP_EVENT_PARAM_MOD:
         modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
@@ -316,6 +338,20 @@ FBCLAPPlugin::process(
           normalized = FBCLAPToNormalized(_topo->audio.params[iter->second].static_, valueFromHost->value);
           PushParamChangeToProcessorBlock(iter->second, normalized, valueFromHost->header.time);
           _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(iter->second, normalized));
+        }
+        break;
+      case CLAP_EVENT_MIDI:
+        midiFromHost = reinterpret_cast<clap_event_midi const*>(header);
+        if (midiFromHost->port_index != 0) continue;
+        midiMessage = midiFromHost->data[0] & 0xF0;
+        switch (midiMessage)
+        {
+        case MIDIMessageNoteOn:
+        case MIDIMessageNoteOff:
+          _input.noteEvents.push_back(MakeMIDINoteEvent(midiFromHost));
+          break;
+        default:
+          break;
         }
         break;
       default:
