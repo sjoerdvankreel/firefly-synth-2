@@ -132,6 +132,37 @@ MakeGestureEvent(int paramTag, bool begin)
   return result;
 }
 
+static FBMIDIEvent
+MakeMIDIEvent(
+  clap_event_midi const* event)
+{
+  FBMIDIEvent result = {};
+  result.pos = event->header.time;
+  int message = event->data[0] & 0xF0;
+  switch (message)
+  {
+  case MIDIMessageCP:
+    result.controlChange = 0;
+    result.value = event->data[1] / 127.0f;
+    result.message = FBMIDIEvent::CPMessageId;
+    break;
+  case MIDIMessageCC:
+    result.controlChange = event->data[1];
+    result.value = event->data[2] / 127.0f;
+    result.message = FBMIDIEvent::CCMessageId;
+    break;
+  case MIDIMessagePB:
+    result.controlChange = 0;
+    result.message = FBMIDIEvent::PBMessageId;
+    result.value = ((event->data[2] << 7) | event->data[1]) / static_cast<float>(1U << 14);
+    break;
+  default:
+    FB_ASSERT(false);
+    break;
+  }
+  return result;
+}
+
 FBCLAPPlugin::
 ~FBCLAPPlugin() 
 {
@@ -350,6 +381,11 @@ FBCLAPPlugin::process(
         case MIDIMessageNoteOff:
           _input.noteEvents.push_back(MakeMIDINoteEvent(midiFromHost));
           break;
+        case MIDIMessageCC:
+        case MIDIMessageCP:
+        case MIDIMessagePB:
+          _input.midiByMessageThenCCThenSample.push_back(MakeMIDIEvent(midiFromHost));
+          break;
         default:
           break;
         }
@@ -359,6 +395,10 @@ FBCLAPPlugin::process(
       }
     }
 
+    std::sort(
+      _input.midiByMessageThenCCThenSample.begin(),
+      _input.midiByMessageThenCCThenSample.end(),
+      FBMIDIEventOrderByMessageThenCCThenPos);
     std::sort(
       _input.accAutoByParamThenSample.begin(),
       _input.accAutoByParamThenSample.end(),
