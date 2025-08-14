@@ -28,6 +28,7 @@ struct FBBufferInputBlock final
   FBBufferAudioBlock audio = {};
   std::vector<FBNoteEvent> noteEvents = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
+  std::vector<FBMIDIEvent> midiByMessageThenCCThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBBufferInputBlock);
 };
@@ -36,6 +37,7 @@ struct FBFixedInputBlock final
 {
   std::vector<FBNoteEvent> noteEvents = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
+  std::vector<FBMIDIEvent> midiByMessageThenCCThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
   FBSArray2<float, FBFixedBlockSamples, 2> audio = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);

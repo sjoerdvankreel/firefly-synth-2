@@ -18,6 +18,7 @@ class FBSmoothingProcessor final
   std::vector<int> _finishedGlobalSmoothing = {};
   std::vector<int> _activeGlobalSmoothingSamples = {};
   std::vector<FBAccAutoEvent> _accAutoBySampleThenParam = {};
+  std::vector<FBMIDIEvent> _midiBySampleThenMessageThenCC = {};
   std::vector<FBAccModEvent> _accModBySampleThenParamThenNote = {};
   std::array<std::vector<int>, FBMaxVoices> _activeVoiceSmoothing = {};
   std::array<std::vector<int>, FBMaxVoices> _finishedVoiceSmoothing = {};

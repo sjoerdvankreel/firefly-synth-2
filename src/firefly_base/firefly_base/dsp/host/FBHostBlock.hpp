@@ -41,14 +41,15 @@ struct FBNoteEvent final
 
 struct FBMIDIEvent final
 {
-  static int constexpr CPEventId = 128;
-  static int constexpr PBEventId = 129;
-  static int constexpr EventCount = 130;
-  static int constexpr CCEventCount = 128;
+  static int constexpr CCMessageId = 0;
+  static int constexpr CCMessageCount = 128;
+  static int constexpr CPMessageId = CCMessageCount;
+  static int constexpr PBMessageId = 129;
+  static int constexpr MessageCount = 130;
 
   int pos = -1;
-  int majorId = -1;
-  int minorId = -1; // for cc
+  int message = -1;
+  int controlChange = 0;
   float normalized = 0.0f;
 };
 
@@ -80,10 +81,10 @@ struct FBHostInputBlock final
   int sampleCount = {};
   FBHostAudioBlock audio = {};
   std::uint64_t projectTimeSamples = {};
-  std::vector<FBMIDIEvent> midiEvents = {};
   std::vector<FBNoteEvent> noteEvents = {};
   std::vector<FBBlockAutoEvent> blockAuto = {};
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
+  std::vector<FBMIDIEvent> midiByMessageThenCCThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostInputBlock);
@@ -142,4 +143,33 @@ FBAccModEventOrderByPosThenParamThenNote(
   if (l.param != r.param)
     return l.param < r.param;
   return l.note < r.note;
+}
+
+inline bool
+FBMIDIEventIsSameStream(
+  FBMIDIEvent const& l, FBMIDIEvent const& r)
+{
+  return l.message == r.message && l.controlChange == r.controlChange;
+}
+
+inline bool
+FBMIDIEventOrderByMessageThenCCThenPos(
+  FBMIDIEvent const& l, FBMIDIEvent const& r)
+{
+  if (l.message != r.message)
+    return l.message < r.message;
+  if (l.controlChange != r.controlChange)
+    return l.controlChange < r.controlChange;
+  return l.pos < r.pos;
+}
+
+inline bool
+FBMIDIEventOrderByPosThenMessageThenCC(
+  FBMIDIEvent const& l, FBMIDIEvent const& r)
+{
+  if (l.pos != r.pos)
+    return l.pos < r.pos;
+  if (l.message != r.message)
+    return l.message < r.message;
+  return l.controlChange < r.controlChange;
 }

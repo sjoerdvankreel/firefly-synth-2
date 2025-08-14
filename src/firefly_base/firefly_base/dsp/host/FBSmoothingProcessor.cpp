@@ -108,9 +108,12 @@ FBSmoothingProcessor::ProcessSmoothing(
 
   SortSampleLastToSampleFirst(input.accAutoByParamThenSample,
     _accAutoBySampleThenParam, FBAccAutoEventOrderByPosThenParam);
-  SortSampleLastToSampleFirst(input.accModByParamThenNoteThenSample, 
+  SortSampleLastToSampleFirst(input.midiByMessageThenCCThenSample,
+    _midiBySampleThenMessageThenCC, FBMIDIEventOrderByPosThenMessageThenCC);
+  SortSampleLastToSampleFirst(input.accModByParamThenNoteThenSample,
     _accModBySampleThenParamThenNote, FBAccModEventOrderByPosThenParamThenNote);
 
+  auto const& myMIDI = _midiBySampleThenMessageThenCC;
   auto const& myAccAuto = _accAutoBySampleThenParam;
   auto const& myAccMod = _accModBySampleThenParamThenNote;
   for (int s = 0; s < FBFixedBlockSamples; s++)

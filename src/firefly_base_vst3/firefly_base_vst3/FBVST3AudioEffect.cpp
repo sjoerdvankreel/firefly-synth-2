@@ -62,6 +62,25 @@ MakeNoteOffEvent(Event const& event, std::int64_t projectTimeSamples)
   return result;
 }
 
+static FBMIDIEvent
+MakeMIDIEvent(int tag, int pos, ParamValue value)
+{
+  FBMIDIEvent result;
+  result.pos = pos;
+  result.normalized = value;
+  int message = tag - FBVST3MIDIParameterMappingBegin;
+  if (0 <= message && message < FBMIDIEvent::CCMessageCount)
+  {
+    result.controlChange = message;
+    result.message = FBMIDIEvent::CCMessageId;
+    return result;
+  }
+  FB_ASSERT(0 <= message && message < FBMIDIEvent::MessageCount);
+  result.controlChange = 0;
+  result.message = message;
+  return result;
+}
+
 FBVST3AudioEffect::
 ~FBVST3AudioEffect()
 {
@@ -237,11 +256,22 @@ FBVST3AudioEffect::process(ProcessData& data)
     _input.blockAuto.clear();
     auto& accAuto = _input.accAutoByParamThenSample;
     accAuto.clear();
+    auto& midi = _input.midiByMessageThenCCThenSample;
+    midi.clear();
     if (data.inputParameterChanges != nullptr)
       for (int p = 0; p < data.inputParameterChanges->getParameterCount(); p++)
         if ((inQueue = data.inputParameterChanges->getParameterData(p)) != nullptr)
           if (inQueue->getPointCount() > 0)
-            if ((iter = _topo->audio.paramTagToIndex.find(inQueue->getParameterId())) != _topo->audio.paramTagToIndex.end())
+          {
+            int paramId = inQueue->getParameterId();
+            if (paramId >= FBVST3MIDIParameterMappingBegin && paramId < FBVST3MIDIParameterMappingBegin + FBMIDIEvent::MessageCount)
+            {
+              for (int point = 0; point < inQueue->getPointCount(); point++)
+                if (inQueue->getPoint(point, position, value) == kResultTrue)
+                  midi.push_back(MakeMIDIEvent(iter->second, position, value));
+            }
+            else if ((iter = _topo->audio.paramTagToIndex.find(paramId)) != _topo->audio.paramTagToIndex.end())
+            {
               if (_topo->audio.params[iter->second].static_.acc)
               {
                 for (int point = 0; point < inQueue->getPointCount(); point++)
@@ -253,6 +283,10 @@ FBVST3AudioEffect::process(ProcessData& data)
                 if (inQueue->getPoint(inQueue->getPointCount() - 1, position, value) == kResultTrue)
                   _input.blockAuto.push_back(MakeBlockAutoEvent(iter->second, value));
               }
+            }
+          }
+    
+    std::sort(midi.begin(), midi.end(), FBMIDIEventOrderByMessageThenCCThenPos);
     std::sort(accAuto.begin(), accAuto.end(), FBAccAutoEventOrderByParamThenPos);
 
     _output.outputParams.clear();

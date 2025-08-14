@@ -20,6 +20,7 @@ class FBExchangeStateContainer;
 
 class FBVST3EditController final:
 public EditControllerEx1,
+public IMidiMapping,
 public IDataExchangeReceiver,
 public FBHostGUIContext
 {
@@ -36,6 +37,7 @@ protected:
 
 public:
   DEFINE_INTERFACES
+    DEF_INTERFACE(IMidiMapping)
     DEF_INTERFACE(IDataExchangeReceiver)
   END_DEFINE_INTERFACES(EditController)
   DELEGATE_REFCOUNT(EditController)
@@ -66,5 +68,6 @@ public:
   void PLUGIN_API queueClosed(DataExchangeUserContextID /*id*/) override {}
   tresult PLUGIN_API setParamNormalized(ParamID tag, ParamValue value) override;
   void PLUGIN_API queueOpened(DataExchangeUserContextID /*id*/, uint32 /*blockSize*/, TBool& /*bg*/) override {}
+  tresult PLUGIN_API getMidiControllerAssignment(int32 bus, int16 channel, CtrlNumber number, ParamID& id) override;
   void PLUGIN_API onDataExchangeBlocksReceived(DataExchangeUserContextID id, uint32 numBlocks, DataExchangeBlock* blocks, TBool bg) override;
 };

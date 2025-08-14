@@ -9,7 +9,9 @@
 #include <firefly_base/base/state/main/FBScalarStateContainer.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
+#include <pluginterfaces/vst/ivstmidicontrollers.h>
 #include <base/source/fstring.h>
+
 #include <utility>
 #include <algorithm>
 
@@ -27,7 +29,19 @@ MakeUnitInfo(FBRuntimeModule const& module, int id)
 }
 
 static ParameterInfo
-MakeParamInfo(FBRuntimeParam const& param, int unitId)
+MakeMIDIParamInfo(int message, int controlChange)
+{
+  ParameterInfo result = {};
+  result.stepCount = 0;
+  result.unitId = kRootUnitId;
+  result.id = FBVST3MIDIParameterMappingBegin + message + controlChange;
+  result.defaultNormalizedValue = 0.0;
+  result.flags = ParameterInfo::kIsHidden;
+  return result;
+}
+
+static ParameterInfo
+MakePlugParamInfo(FBRuntimeParam const& param, int unitId)
 {
   ParameterInfo result;
   result.id = param.tag;
@@ -136,8 +150,9 @@ FBVST3EditController::AudioParamContextMenuClicked(int paramIndex, int juceTag)
 tresult PLUGIN_API 
 FBVST3EditController::setParamNormalized(ParamID tag, ParamValue value)
 {
-  if(EditControllerEx1::setParamNormalized(tag, value) != kResultTrue)
-    return kResultFalse;
+  tresult result = EditControllerEx1::setParamNormalized(tag, value);
+  if(result != kResultTrue || tag >= FBVST3MIDIParameterMappingBegin)
+    return result;
   if (_guiEditor != nullptr)
     _guiEditor->SetAudioParamNormalizedFromHost(_topo->audio.paramTagToIndex[tag], value);
   return kResultTrue;
@@ -230,11 +245,31 @@ FBVST3EditController::initialize(FUnknown* context)
       {
         FB_ASSERT(_topo->modules[m].params[p].tag < FBVST3MIDIParameterMappingBegin);
         auto const& topo = _topo->modules[m].params[p];
-        auto info = MakeParamInfo(topo, unitId);
+        auto info = MakePlugParamInfo(topo, unitId);
         parameters.addParameter(new FBVST3Parameter(&topo, info));
       }
       unitId++;
     }
+
+    for (int i = 0; i < FBMIDIEvent::CCMessageCount; i++)
+      parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::CCMessageId, i)));
+    parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::CPMessageId, 0)));
+    parameters.addParameter(new Parameter(MakeMIDIParamInfo(FBMIDIEvent::PBMessageId, 0)));
+
+    return kResultTrue;
+  });
+}
+
+tresult PLUGIN_API 
+FBVST3EditController::getMidiControllerAssignment(
+  int32 bus, int16, CtrlNumber number, ParamID& id)
+{
+  return FBWithLogException([bus, number, &id]() {
+    if (bus != 0)
+      return kResultFalse;
+    if (!(0 <= number && number < kCountCtrlNumber))
+      return kResultFalse;
+    id = FBVST3MIDIParameterMappingBegin + number;
     return kResultTrue;
   });
 }
