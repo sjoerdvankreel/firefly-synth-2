@@ -68,6 +68,10 @@ FFNoiseGenerator<Smooth>::Init(float seed, int steps, bool freeRunning)
   _freeRunning = freeRunning;
   _prng = FFParkMillerPRNG(seed);
   InitSteps(steps);
+
+  // For graphing.
+  if (steps == 1)
+    _r[0] = seed;
 }
 
 template <bool Smooth>
