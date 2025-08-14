@@ -63,21 +63,19 @@ MakeNoteOffEvent(Event const& event, std::int64_t projectTimeSamples)
 }
 
 static FBMIDIEvent
-MakeMIDIEvent(int tag, int pos, ParamValue value)
+MakeMIDIEvent(int eventId, int pos, ParamValue value)
 {
   FBMIDIEvent result;
   result.pos = pos;
   result.value = value;
-  int message = tag - FBVST3MIDIParameterMappingBegin;
-  if (0 <= message && message < FBMIDIEvent::CCMessageCount)
+  if (0 <= eventId && eventId < FBMIDIEvent::CCMessageCount)
   {
-    result.controlChange = message;
+    result.controlChange = eventId;
     result.message = FBMIDIEvent::CCMessageId;
     return result;
   }
-  FB_ASSERT(0 <= message && message < FBMIDIEvent::MessageCount);
   result.controlChange = 0;
-  result.message = message;
+  result.message = eventId;
   return result;
 }
 
@@ -268,7 +266,7 @@ FBVST3AudioEffect::process(ProcessData& data)
             {
               for (int point = 0; point < inQueue->getPointCount(); point++)
                 if (inQueue->getPoint(point, position, value) == kResultTrue)
-                  midi.push_back(MakeMIDIEvent(iter->second, position, value));
+                  midi.push_back(MakeMIDIEvent(paramId - FBVST3MIDIParameterMappingBegin, position, value));
             }
             else if ((iter = _topo->audio.paramTagToIndex.find(paramId)) != _topo->audio.paramTagToIndex.end())
             {
