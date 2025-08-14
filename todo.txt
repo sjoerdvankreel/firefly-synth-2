@@ -22,6 +22,7 @@ TODOLIST for alpha-11
 [ ] keep taps on the mod matrix
 
 pck support
+midi learn
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
 still a bug in glfo free rand painting
