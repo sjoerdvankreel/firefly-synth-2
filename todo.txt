@@ -4,12 +4,13 @@ TODOLIST for alpha-11
 [x] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
 [x] also releaseing a note by playing the same just doesn't work
 [x] draw a box around the popup/tooltip
+[ ] basic midi input
 [ ] less matrix routes
 [ ] refix all behind-the-scenes mod sources and targets
 [ ] floating notes
 [ ] master input (modwheel, pb + range)
 [ ] portamento controls + all-osci coarse/fine
-[ ] basic midi input
+[ ] CLAP midi note dialect
 [ ] global set-exact-value UI (+ context menu item?)
 [ ] separate midi, bpm, automation smoothing, auto should be global + per-param override
 [ ] MIDI key, velo (voice), low/high/last

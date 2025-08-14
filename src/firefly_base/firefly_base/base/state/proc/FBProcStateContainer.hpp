@@ -23,7 +23,7 @@ class FBProcStateContainer final
   void (*_freeRawState)(void*);
   FBSpecialParams _special;
 
-  int _smoothingDurationSamples = {};
+  int _smoothingDurationSamples = -1;
   std::vector<FBProcParamState> _params = {};
 
   // Very VST3-centric,
