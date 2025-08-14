@@ -105,4 +105,6 @@ FBProcStateContainer::SetSmoothingCoeffs(int sampleCount)
   _smoothingDurationSamples = sampleCount;
   for (int p = 0; p < Params().size(); p++)
     Params()[p].SetSmoothingCoeffs(sampleCount);
+  for (int m = 0; m < MIDIParams().size(); m++)
+    MIDIParams()[m].Global().SetSmoothingCoeffs(sampleCount);
 }

@@ -67,7 +67,7 @@ MakeMIDIEvent(int tag, int pos, ParamValue value)
 {
   FBMIDIEvent result;
   result.pos = pos;
-  result.normalized = value;
+  result.value = value;
   int message = tag - FBVST3MIDIParameterMappingBegin;
   if (0 <= message && message < FBMIDIEvent::CCMessageCount)
   {

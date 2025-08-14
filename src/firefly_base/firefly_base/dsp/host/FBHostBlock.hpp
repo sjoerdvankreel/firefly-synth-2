@@ -50,7 +50,9 @@ struct FBMIDIEvent final
   int pos = -1;
   int message = -1;
   int controlChange = 0;
-  float normalized = 0.0f;
+  float value = 0.0f; // [0, 1]
+
+  int EventId() const { return message + controlChange; }
 };
 
 class FBHostAudioBlock final
