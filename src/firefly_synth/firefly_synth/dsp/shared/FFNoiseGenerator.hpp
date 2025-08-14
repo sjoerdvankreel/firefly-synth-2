@@ -91,15 +91,15 @@ FFNoiseGenerator<Smooth>::NextScalar(float phase)
   float x = phase * _steps;
   int xi = (int)x - (x < 0 && x != (int)x);
   int xMin = xi % _steps;
+  if (_freeRunning && _prevXMin != xMin)
+  {
+    _r[_prevXMin] = _prng.NextScalar();
+    _prevXMin = xMin;
+  }
   if constexpr (!Smooth)
     return _r[xMin];
   else
   {
-    if (_freeRunning && _prevXMin != xMin)
-    {
-      _r[_prevXMin] = _prng.NextScalar();
-      _prevXMin = xMin;
-    }
     int xMax = (xMin + 1) % _steps;
     float t = x - xi;
     return CosineRemap(_r[xMin], _r[xMax], t);
