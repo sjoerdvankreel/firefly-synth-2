@@ -183,8 +183,8 @@ FFLFOProcessor::BeginVoiceOrBlock(
     if (movingGraph)
     {
       _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
-      _noiseGens[i].Init(exchangeState->noiseState[i], _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeRandom);
-      _smoothNoiseGens[i].Init(exchangeState->smoothNoiseState[i], _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeSmooth);
+      _noiseGens[i].Init(exchangeState->noiseLastDraw[i], 1, false);
+      _smoothNoiseGens[i].Init(exchangeState->smoothNoiseLastDraw[i], 1, false);
     }
     else
     {
@@ -394,8 +394,8 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
-    exchangeDSP.noiseState[i] = _noiseGens[i].PrngStateAtInit();
-    exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].PrngStateAtInit();
+    exchangeDSP.noiseLastDraw[i] = _noiseGens[i].LastDraw();
+    exchangeDSP.smoothNoiseLastDraw[i] = _smoothNoiseGens[i].LastDraw();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
     exchangeDSP.lengthSamples[FFLFOBlockCount] = std::max(exchangeDSP.lengthSamples[i], exchangeDSP.lengthSamples[FFLFOBlockCount]);
 

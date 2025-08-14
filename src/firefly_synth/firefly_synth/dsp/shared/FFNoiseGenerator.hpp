@@ -19,9 +19,9 @@ class FFNoiseGenerator
 {
   int _steps = 2;
   int _prevXMin = 0;
+  float _lastDraw = 0.0f;
   bool _freeRunning = false;
   FFParkMillerPRNG _prng = {};
-  std::uint32_t _prngStateAtInit = {};
   std::array<float, FFNoiseGeneratorMaxSteps> _r = {};
 
   void InitSteps(int steps);
@@ -30,14 +30,12 @@ class FFNoiseGenerator
   
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFNoiseGenerator);
+  float LastDraw() const { return _lastDraw; }
 
   float NextScalar(float phase);
   FBBatch<float> NextBatch(FBBatch<float> phases);
   void Init(float seed, int steps, bool freeRunning);
   void Init(std::uint32_t seed, int steps, bool freeRunning);
-
-  FFParkMillerPRNG& Prng() { return _prng; }
-  std::uint32_t PrngStateAtInit() const { return _prngStateAtInit; }
 };
 
 template <bool Smooth>
@@ -58,7 +56,7 @@ inline void
 FFNoiseGenerator<Smooth>::InitSteps(int steps)
 {
   _prevXMin = 0;
-  _steps = std::clamp(steps, 2, FFNoiseGeneratorMaxSteps);
+  _steps = std::clamp(steps, 1, FFNoiseGeneratorMaxSteps);
   for (int i = 0; i < _steps; ++i)
     _r[i] = _prng.NextScalar();
 }
@@ -69,7 +67,6 @@ FFNoiseGenerator<Smooth>::Init(float seed, int steps, bool freeRunning)
 {
   _freeRunning = freeRunning;
   _prng = FFParkMillerPRNG(seed);
-  _prngStateAtInit = _prng.State();
   InitSteps(steps);
 }
 
@@ -79,7 +76,6 @@ FFNoiseGenerator<Smooth>::Init(std::uint32_t seed, int steps, bool freeRunning)
 {
   _freeRunning = freeRunning;
   _prng = FFParkMillerPRNG(seed);
-  _prngStateAtInit = _prng.State();
   InitSteps(steps);
 }
 
@@ -87,7 +83,8 @@ template <bool Smooth>
 inline float
 FFNoiseGenerator<Smooth>::NextScalar(float phase)
 {
-  FB_ASSERT(_steps >= 2);
+  if (_steps == 1)
+    return _r[0];
   float x = phase * _steps;
   int xi = (int)x - (x < 0 && x != (int)x);
   int xMin = xi % _steps;
@@ -97,13 +94,14 @@ FFNoiseGenerator<Smooth>::NextScalar(float phase)
     _prevXMin = xMin;
   }
   if constexpr (!Smooth)
-    return _r[xMin];
+    _lastDraw = _r[xMin];
   else
   {
     int xMax = (xMin + 1) % _steps;
     float t = x - xi;
-    return CosineRemap(_r[xMin], _r[xMax], t);
+    _lastDraw = CosineRemap(_r[xMin], _r[xMax], t);
   }
+  return _lastDraw;
 }
 
 template <bool Smooth>
