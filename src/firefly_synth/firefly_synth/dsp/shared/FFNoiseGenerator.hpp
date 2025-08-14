@@ -1,6 +1,5 @@
 #pragma once
 
-#include <firefly_synth/dsp/shared/FFParkMillerPRNG.hpp>
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -14,14 +13,15 @@
 
 inline int constexpr FFNoiseGeneratorMaxSteps = 100;
 
-template <bool Smooth>
+template <class PRNG, bool Smooth>
 class FFNoiseGenerator
 {
   int _steps = 2;
   int _prevXMin = 0;
   float _lastDraw = 0.0f;
   bool _freeRunning = false;
-  FFParkMillerPRNG _prng = {};
+
+  PRNG _prng = {};
   std::array<float, FFNoiseGeneratorMaxSteps> _r = {};
 
   void InitSteps(int steps);
@@ -38,22 +38,22 @@ public:
   void Init(std::uint32_t seed, int steps, bool freeRunning);
 };
 
-template <bool Smooth>
+template <class PRNG, bool Smooth>
 inline float
-FFNoiseGenerator<Smooth>::Lerp(float lo, float hi, float t) const
+FFNoiseGenerator<PRNG, Smooth>::Lerp(float lo, float hi, float t) const
 { return lo * (1 - t) + hi * t; }
 
-template <bool Smooth>
+template <class PRNG, bool Smooth>
 inline float
-FFNoiseGenerator<Smooth>::CosineRemap(float a, float b, float t) const
+FFNoiseGenerator<PRNG, Smooth>::CosineRemap(float a, float b, float t) const
 {
   FB_ASSERT(t >= 0 && t <= 1);
   return Lerp(a, b, (1 - std::cos(t * FBPi)) * 0.5f);
 }
 
-template <bool Smooth>
+template <class PRNG, bool Smooth>
 inline void
-FFNoiseGenerator<Smooth>::InitSteps(int steps)
+FFNoiseGenerator<PRNG, Smooth>::InitSteps(int steps)
 {
   _prevXMin = 0;
   _steps = std::clamp(steps, 1, FFNoiseGeneratorMaxSteps);
@@ -61,12 +61,12 @@ FFNoiseGenerator<Smooth>::InitSteps(int steps)
     _r[i] = _prng.NextScalar();
 }
 
-template <bool Smooth> 
+template <class PRNG, bool Smooth>
 inline void 
-FFNoiseGenerator<Smooth>::Init(float seed, int steps, bool freeRunning)
+FFNoiseGenerator<PRNG, Smooth>::Init(float seed, int steps, bool freeRunning)
 {
   _freeRunning = freeRunning;
-  _prng = FFParkMillerPRNG(seed);
+  _prng = PRNG(seed);
   InitSteps(steps);
 
   // For graphing.
@@ -74,18 +74,18 @@ FFNoiseGenerator<Smooth>::Init(float seed, int steps, bool freeRunning)
     _r[0] = seed;
 }
 
-template <bool Smooth>
+template <class PRNG, bool Smooth>
 inline void
-FFNoiseGenerator<Smooth>::Init(std::uint32_t seed, int steps, bool freeRunning)
+FFNoiseGenerator<PRNG, Smooth>::Init(std::uint32_t seed, int steps, bool freeRunning)
 {
   _freeRunning = freeRunning;
-  _prng = FFParkMillerPRNG(seed);
+  _prng = PRNG(seed);
   InitSteps(steps);
 }
 
-template <bool Smooth> 
+template <class PRNG, bool Smooth>
 inline float
-FFNoiseGenerator<Smooth>::NextScalar(float phase)
+FFNoiseGenerator<PRNG, Smooth>::NextScalar(float phase)
 {
   if (_steps == 1)
     return _r[0];
@@ -108,9 +108,9 @@ FFNoiseGenerator<Smooth>::NextScalar(float phase)
   return _lastDraw;
 }
 
-template <bool Smooth>
+template <class PRNG, bool Smooth>
 inline FBBatch<float>
-FFNoiseGenerator<Smooth>::NextBatch(FBBatch<float> phase)
+FFNoiseGenerator<PRNG, Smooth>::NextBatch(FBBatch<float> phase)
 {
   FBSArray<float, FBSIMDFloatCount> arr;
   arr.Store(0, phase);

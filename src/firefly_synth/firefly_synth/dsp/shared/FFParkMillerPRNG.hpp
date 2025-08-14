@@ -12,7 +12,6 @@ class FFParkMillerPRNG final
 public:
   float NextScalar();
   FBBatch<float> NextBatch();
-  std::uint32_t State() const { return _state; }
 
   FFParkMillerPRNG();
   explicit FFParkMillerPRNG(float x);

@@ -222,15 +222,19 @@ FFMakeLFOTopo(bool global)
     { "{0402BC62-9213-41D2-AFA3-885B3B0B046D}", "Saw" },
     { "{78CD93BD-B3EF-41BA-A36B-BB24791D31F6}", "Tri" },
     { "{BE0EF052-FA6B-422A-BF2B-6B9BE3430F9D}", "Sqr" },
-    { "{BDDA97A8-05A0-4E50-A775-5BA66A9D25C8}", "Rnd" },
-    { "{B6B47502-BA24-42A6-80D7-D41FE62F06DF}", "RndF" },
-    { "{3D6C2670-3862-4E1D-9010-0D9A36DB5B26}", "Smth" },
-    { "{B48C5047-3ABD-4D03-86C9-0B4700E6B035}", "SmthF" } };
+    { "{BDDA97A8-05A0-4E50-A775-5BA66A9D25C8}", "RndUni" },
+    { "{5E5FF10F-A7C9-4552-B68F-0C8059661A8F}", "RndNrm" },
+    { "{B6B47502-BA24-42A6-80D7-D41FE62F06DF}", "RndUniFree" },
+    { "{C0E5ED50-832C-4375-BB9A-B868893583E8}", "RndNrmFree" },
+    { "{3D6C2670-3862-4E1D-9010-0D9A36DB5B26}", "SmthUni" },
+    { "{9F652B6C-EF0F-49E9-B1AA-124230F1632D}", "SmthNrm" },
+    { "{B48C5047-3ABD-4D03-86C9-0B4700E6B035}", "SmthUniFree" },
+    { "{C93F4537-7A79-4FE2-908A-A5811767E425}", "SmthNrmFree" } };
   waveMode.List().submenuStart[FFTrigSin] = "Trig1";
   waveMode.List().submenuStart[FFTrigSin2] = "Trig2";
   waveMode.List().submenuStart[FFTrigSin3] = "Trig3";
   waveMode.List().submenuStart[FFLFOWaveModeSaw] = "Other";
-  waveMode.List().submenuStart[FFLFOWaveModeRandom] = "Random";
+  waveMode.List().submenuStart[FFLFOWaveModeUniRandom] = "Random";
   auto selectWaveMode = [](auto& module) { return &module.block.waveMode; };
   waveMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectWaveMode);
   waveMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectWaveMode);

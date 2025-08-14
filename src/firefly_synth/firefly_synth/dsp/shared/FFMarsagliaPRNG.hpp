@@ -15,18 +15,24 @@ class FFMarsagliaPRNG final
 
 public:
   float NextScalar();
+  FBBatch<float> NextBatch();
 
   FFMarsagliaPRNG();
   explicit FFMarsagliaPRNG(float x);
+  explicit FFMarsagliaPRNG(std::uint32_t x);
 };
+
+inline
+FFMarsagliaPRNG::FFMarsagliaPRNG() :
+_uniform(0.0f) {}
 
 inline 
 FFMarsagliaPRNG::FFMarsagliaPRNG(float x):
 _uniform(x) {}
 
-inline
-FFMarsagliaPRNG::FFMarsagliaPRNG() :
-_uniform(0.0f) {}
+inline 
+FFMarsagliaPRNG::FFMarsagliaPRNG(std::uint32_t x):
+_uniform(x) {}
 
 inline float
 FFMarsagliaPRNG::NextScalar()
@@ -50,4 +56,13 @@ FFMarsagliaPRNG::NextScalar()
   _spare = v * s;
   _haveSpare = true;
   return mean + stdev * u * s;
+}
+
+inline FBBatch<float>
+FFMarsagliaPRNG::NextBatch()
+{
+  FBSArray<float, FBSIMDFloatCount> y;
+  for (int i = 0; i < FBSIMDFloatCount; i++)
+    y.Set(i, NextScalar());
+  return y.Load(0);
 }
