@@ -7,12 +7,10 @@ TODOLIST for alpha-11
 [x] basic midi input
 [x] CLAP midi note dialect
 [ ] less matrix routes
-[ ] refix all behind-the-scenes mod sources and targets
 [ ] floating notes
 [ ] master input (modwheel, pb + range)
 [ ] portamento controls + all-osci coarse/fine
 [ ] global set-exact-value UI (+ context menu item?)
-[ ] separate midi, bpm, automation smoothing, auto should be global + per-param override
 [ ] MIDI key, velo (voice), low/high/last
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] drop freesmth, not work???. do uni/gaus everywhere
@@ -20,10 +18,11 @@ TODOLIST for alpha-11
 [ ] make it clear alpha breaks the demos
 [ ] allow modulate env stage lengths on voice start
 [ ] keep taps on the mod matrix
-[ ] smooth longer
+[ ] refix all behind-the-scenes mod sources and targets
+[ ] smooth longer + on separate tab
 
 pck support
-midi learn
+separate midi, bpm, automation smoothing, auto should be global + per-param override
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
 still a bug in glfo free rand painting
