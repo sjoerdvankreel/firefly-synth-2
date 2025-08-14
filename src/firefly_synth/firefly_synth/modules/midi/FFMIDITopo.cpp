@@ -30,6 +30,7 @@ FFMakeMIDITopo()
   outputCC.name = "CC";
   outputCC.slotCount = FBMIDIEvent::CCMessageCount;
   outputCC.id = "{74C125F5-67FC-4674-8AF9-F303856BCFD7}";
+  outputCC.slotFormatter = [](auto const&, int, int is) { return " CC " + std::to_string(is); };
   outputCC.globalAddr = [](int, int os, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.midi.outputCC[os]; };
 
   return result;
