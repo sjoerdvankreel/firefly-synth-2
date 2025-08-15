@@ -1,16 +1,20 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBSArray.hpp>
+
 #include <memory>
+#include <string>
 
 struct FBStaticModule;
-std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 inline int constexpr FFOsciUniMaxCount = 8;
+std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 
 enum class FFOsciFMMode { Linear, Exp };
 enum class FFOsciStringMode { Uni, Norm };
 enum class FFOsciFMRatioMode { Ratio, Free };
+
 enum class FFOsciType { Off, Wave, FM, String };
+std::string FFOsciTypeToString(FFOsciType type);
 
 enum class FFOsciWaveDSFMode { Off, Over, BW };
 enum class FFOsciWaveHSMode { Off, Saw, Sqr, Tri };

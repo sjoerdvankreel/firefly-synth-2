@@ -38,6 +38,19 @@ FFOsciFMFormatIndexSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
     std::to_string(itemSlot % FFOsciFMOperatorCount + 1);
 }
 
+std::string 
+FFOsciTypeToString(FFOsciType type)
+{
+  switch (type)
+  {
+  case FFOsciType::FM: return "FM";
+  case FFOsciType::Off: return "Off";
+  case FFOsciType::Wave: return "Wave";
+  case FFOsciType::String: return "String";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeOsciTopo()
 {
@@ -60,10 +73,10 @@ FFMakeOsciTopo()
   type.defaultTextSelector = [](int /*mi*/, int ms, int /*ps*/) { return ms == 0 ? "Wave" : "Off"; };
   type.type = FBParamType::List;
   type.List().items = {
-    { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", "Off" },
-    { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", "Wave" },
-    { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", "FM" } ,
-    { "{F4095D2B-688D-4A89-82FE-359A8902963C}", "String" } };
+    { "{449E467A-2DC0-43B0-8487-57C4492F9FE2}", FFOsciTypeToString(FFOsciType::Off) },
+    { "{3F55D6D7-5BDF-4B7F-B1E0-2E59B96EA5C0}", FFOsciTypeToString(FFOsciType::Wave)  },
+    { "{83E9DBC4-5CBF-4C96-93EB-AB16C2E7C769}", FFOsciTypeToString(FFOsciType::FM)  } ,
+    { "{F4095D2B-688D-4A89-82FE-359A8902963C}", FFOsciTypeToString(FFOsciType::String)  } };
   auto selectType = [](auto& module) { return &module.block.type; };
   type.scalarAddr = FFSelectScalarParamAddr(selectModule, selectType);
   type.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
