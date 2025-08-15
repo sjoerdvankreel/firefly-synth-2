@@ -23,6 +23,7 @@ enum FFLFOWaveMode {
   FFLFOWaveModeFreeUniRandom, FFLFOWaveModeFreeNormRandom,
   FFLFOWaveModeUniSmooth, FFLFOWaveModeNormSmooth,
   FFLFOWaveModeFreeUniSmooth, FFLFOWaveModeFreeNormSmooth };
+std::string FFLFOWaveModeToString(int mode);
 
 enum class FFLFOParam {
   Type, Sync, Seed, SmoothTime, SmoothBars,
