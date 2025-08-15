@@ -3,7 +3,7 @@ August 15, 2025 - Alpha 11.
 - Core
 * MIDI: support CLAP MIDI note dialect.
 * MIDI: allow access to CC/Channel Pressure/Pitch Bend (mod matrix only for now).
-* Bugfix: active voice was not retriggered by the same MIDI key.
+* Bugfix: active voice was not retriggered by the same note key.
 
 - UI
 * Moved MIDI and automation smoothing control to separate module.
