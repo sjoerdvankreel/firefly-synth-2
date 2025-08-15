@@ -23,7 +23,7 @@ static void createTabTextLayout(
   std::string text, TextLayout& textLayout)
 {
   AttributedString s;
-  if (auto* fbButton = dynamic_cast<FBTabBarButton const*>(&button))
+  if (dynamic_cast<FBTabBarButton const*>(&button))
   {
     if (!centerText)
       text = " " + text;
