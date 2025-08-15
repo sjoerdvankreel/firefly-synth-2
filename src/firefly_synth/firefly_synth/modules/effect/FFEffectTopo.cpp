@@ -6,6 +6,23 @@
 #include <firefly_synth/modules/effect/FFEffectGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
+std::string 
+FFEffectKindToString(FFEffectKind kind)
+{
+  switch (kind)
+  {
+  case FFEffectKind::Off: return "Off";
+  case FFEffectKind::Clip: return "Clip";
+  case FFEffectKind::Fold: return "Fold";
+  case FFEffectKind::Skew: return "Skew";
+  case FFEffectKind::Comb: return "Comb";
+  case FFEffectKind::StVar: return "StVar";
+  case FFEffectKind::CombMin: return "Comb-";
+  case FFEffectKind::CombPlus: return "Comb+";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeEffectTopo(bool global)
 {
@@ -101,14 +118,14 @@ FFMakeEffectTopo(bool global)
   kind.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "StVar" : "Off"; };
   kind.type = FBParamType::List;
   kind.List().items = {
-    { "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", "Off" },
-    { "{348FED12-9753-4C48-9D21-BB8D21E036AB}", "StVar" },
-    { "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", "Comb" },
-    { "{88898697-C102-4BDC-BF31-257553217696}", "Comb+" },
-    { "{37005D34-E2E4-4CCD-8783-135952515B41}", "Comb-" },
-    { "{FD072A47-EE67-4091-A687-7168B69A6E89}", "Clip" },
-    { "{06334343-5264-489E-ADF9-20ADCEF983FC}", "Fold" },
-    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", "Skew" } };
+    { "{46A4BE9B-1072-4811-B3A1-3A463D0BA534}", FFEffectKindToString(FFEffectKind::Off) },
+    { "{348FED12-9753-4C48-9D21-BB8D21E036AB}", FFEffectKindToString(FFEffectKind::StVar)  },
+    { "{B74E9485-459E-4017-ACF4-8466FBBF51EF}", FFEffectKindToString(FFEffectKind::Comb)  },
+    { "{88898697-C102-4BDC-BF31-257553217696}", FFEffectKindToString(FFEffectKind::CombPlus)  },
+    { "{37005D34-E2E4-4CCD-8783-135952515B41}", FFEffectKindToString(FFEffectKind::CombMin)  },
+    { "{FD072A47-EE67-4091-A687-7168B69A6E89}", FFEffectKindToString(FFEffectKind::Clip) },
+    { "{06334343-5264-489E-ADF9-20ADCEF983FC}", FFEffectKindToString(FFEffectKind::Fold) },
+    { "{3DA2A1FC-6683-4F38-9443-18D9CBB7A684}", FFEffectKindToString(FFEffectKind::Skew) } };
   kind.List().submenuStart[(int)FFEffectKind::Off] = "Off";
   kind.List().submenuStart[(int)FFEffectKind::StVar] = "Filter";
   kind.List().submenuStart[(int)FFEffectKind::Clip] = "Shape";

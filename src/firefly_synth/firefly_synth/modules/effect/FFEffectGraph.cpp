@@ -153,15 +153,13 @@ FFEffectRenderGraph(FBModuleGraphComponentData* graphData)
   {
     FBRenderModuleGraph<Global, false>(renderData, i);
     if (i == FFEffectBlockCount)
-      graphData->graphs[i].text = moduleName + (on? "": " OFF");
+      graphData->graphs[i].text = moduleName + (on? "": " Off");
     else
     {
       FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFEffectParam::Kind, i } };
       auto kind = renderState->AudioParamList<FFEffectKind>(indices, false, -1);
-      bool blockOn = on && kind != FFEffectKind::Off;
       graphData->graphs[i].text = moduleName + std::string(1, static_cast<char>('A' + i));
-      if (!blockOn)
-        graphData->graphs[i].text += " OFF";
+      graphData->graphs[i].text += " " + (on? FFEffectKindToString(kind): "Off");
     }
   }
 }
