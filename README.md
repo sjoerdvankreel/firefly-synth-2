@@ -103,7 +103,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * For voice, regular or one-shot.
 * For global, regular or snap-to-host-project-time.
 * Optional tempo sync and smoothing filter.
-* 3x choice of various trig functions, saw/tri/sqr, repeating or free-running random noise or smooth noise.
+* 3x choice of various trig functions, saw/tri/sqr, repeating or free-running random noise or smooth noise, both uniform and gaussian.
 * Per-subslot phase offset parameter.
 * Per-subslot step function (quantize/stairstep) and continuous rate control.
 * Per-subslot choice of add/multiply/stack + continous min/max params.
