@@ -141,9 +141,10 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 ## Mod Matrix
 * 1 for voice, 1 for global.
 * Like FF1, on-note support for voice.
-* Much like FF1, select add/mul/stack + bipolar add/stack.
+* Much like FF1, select add/mul/stack + bipolar add/mul/stack.
 * New Scale parameter which allows the mod amount to be controlled by an additional CV source.
 * Single matrix for audio and cv. Env and LFO are now processed in lock-step, so env can modulate LFO and the other way around.
+* Env/VLFO/GLFO/Master Aux inputs plus MIDI CC, Pitch Bend, Channel Pressure.
 
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
