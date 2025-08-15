@@ -9,6 +9,8 @@ TODOLIST for alpha-11
 [x] fix free-random
 [x] do uni/gaus everywhere
 [ ] smooth longer + on separate tab
+[ ] highlight graphs that are on
+
 
 [ ] less matrix routes
 [ ] floating notes
@@ -26,7 +28,6 @@ pck support
 separate midi, bpm, automation smoothing, auto should be global + per-param override
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
-still a bug in glfo free rand painting
 global unison TODO IF we do per-voice echo, this should not be on the subvoice level
 autoclip
 MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating (not on-note but continuous)
@@ -34,14 +35,10 @@ another round of cpu and memory profiling
 factory presets
 echo -> combined reverb + multitap feedback delay (see if i can pull it off) + per-voice delay module (lets see if memory allows)
 get rid of sse2neon
-make better section ui esp. for the a/b/c/ sections
 more context menus, clear matrix etc
 string timbre should not react to samplerate/oversample
-paint something always
 check all the todos before out of alpha
 intel mac version
-midi smoothing (actual midi too)
-indiv param smoothing
 fix todos
 todo document the thing a bit
 multitap fb delay
