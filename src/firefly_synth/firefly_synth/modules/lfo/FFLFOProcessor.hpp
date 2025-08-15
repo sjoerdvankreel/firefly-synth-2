@@ -44,10 +44,10 @@ class FFLFOProcessor final
 
   std::array<float, FFLFOBlockCount> _rateHzByBars = {};
   std::array<FFTrackingPhaseGenerator, FFLFOBlockCount> _phaseGens = {};
-  std::array<FFNoiseGenerator<FFMarsagliaPRNG, false>, FFLFOBlockCount> _normNoiseGens = {};
   std::array<FFNoiseGenerator<FFParkMillerPRNG, false>, FFLFOBlockCount> _uniNoiseGens = {};
-  std::array<FFNoiseGenerator<FFMarsagliaPRNG, true>, FFLFOBlockCount> _smoothNormNoiseGens = {};
   std::array<FFNoiseGenerator<FFParkMillerPRNG, true>, FFLFOBlockCount> _smoothUniNoiseGens = {};
+  std::array<FFNoiseGenerator<FFMarsagliaPRNG<false>, false>, FFLFOBlockCount> _normNoiseGens = {};
+  std::array<FFNoiseGenerator<FFMarsagliaPRNG<false>, true>, FFLFOBlockCount> _smoothNormNoiseGens = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFLFOProcessor);

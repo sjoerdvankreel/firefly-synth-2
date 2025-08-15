@@ -7,12 +7,12 @@ TODOLIST for alpha-11
 [x] basic midi input
 [x] CLAP midi note dialect
 [x] fix free-random
-[ ] do uni/gaus everywhere
+[x] do uni/gaus everywhere
 [ ] smooth longer + on separate tab
 
 [ ] less matrix routes
 [ ] floating notes
-[ ] master input (modwheel, pb + range)
+[ ] master input (modwheel, pb + range) + easy-access midi somehow
 [ ] portamento controls + all-osci coarse/fine
 [ ] global set-exact-value UI (+ context menu item?)
 [ ] MIDI key, velo (voice), low/high/last

@@ -7,11 +7,14 @@
 #include <limits>
 #include <cstdint>
 
+template <bool Bipolar>
 class FFMarsagliaPRNG final
 {
   float _spare = {};
   bool _haveSpare = {};
   FFParkMillerPRNG _uniform = {};
+
+  float NextScalarGaussian();
 
 public:
   float NextScalar();
@@ -22,20 +25,24 @@ public:
   explicit FFMarsagliaPRNG(std::uint32_t x);
 };
 
+template <bool Bipolar>
 inline
-FFMarsagliaPRNG::FFMarsagliaPRNG() :
+FFMarsagliaPRNG<Bipolar>::FFMarsagliaPRNG() :
 _uniform(0.0f) {}
 
+template <bool Bipolar>
 inline 
-FFMarsagliaPRNG::FFMarsagliaPRNG(float x):
+FFMarsagliaPRNG<Bipolar>::FFMarsagliaPRNG(float x):
 _uniform(x) {}
 
+template <bool Bipolar>
 inline 
-FFMarsagliaPRNG::FFMarsagliaPRNG(std::uint32_t x):
+FFMarsagliaPRNG<Bipolar>::FFMarsagliaPRNG(std::uint32_t x):
 _uniform(x) {}
 
+template <bool Bipolar>
 inline float
-FFMarsagliaPRNG::NextScalar()
+FFMarsagliaPRNG<Bipolar>::NextScalarGaussian()
 {
   float constexpr mean = 0.0f;
   float constexpr stdev = 1.0f;
@@ -58,8 +65,24 @@ FFMarsagliaPRNG::NextScalar()
   return mean + stdev * u * s;
 }
 
+template <bool Bipolar>
+inline float
+FFMarsagliaPRNG<Bipolar>::NextScalar()
+{
+  float result = 0.0f;
+  do
+  {
+    result = NextScalarGaussian();
+  } while (result < -3.0f || result > 3.0f);
+  result /= 3.0f;
+  if constexpr (!Bipolar)
+    result = FBToUnipolar(result);
+  return result;
+}
+
+template <bool Bipolar>
 inline FBBatch<float>
-FFMarsagliaPRNG::NextBatch()
+FFMarsagliaPRNG<Bipolar>::NextBatch()
 {
   FBSArray<float, FBSIMDFloatCount> y;
   for (int i = 0; i < FBSIMDFloatCount; i++)

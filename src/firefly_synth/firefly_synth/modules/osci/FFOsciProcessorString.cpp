@@ -21,12 +21,7 @@ FFOsciProcessor::StringDraw()
   if (_stringMode == FFOsciStringMode::Uni)
     return FBToBipolar(_uniformPrng.NextScalar());
   FB_ASSERT(_stringMode == FFOsciStringMode::Norm);
-  float result = 0.0f;
-  do
-  {
-    result = _stringNormalPrng.NextScalar();
-  } while (result < -3.0f || result > 3.0f);
-  return result / 3.0f;
+  return _stringNormalPrng.NextScalar();
 }
 
 float
@@ -125,7 +120,7 @@ FFOsciProcessor::BeginVoiceString(bool graph, FBModuleProcState& state)
 
   _stringLPFilter.Reset();
   _stringHPFilter.Reset();
-  _stringNormalPrng = FFMarsagliaPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
+  _stringNormalPrng = FFMarsagliaPRNG<true>(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
   _uniformPrng = FFParkMillerPRNG(_stringSeed / (FFOsciStringMaxSeed + 1.0f));
 
   if (_stringLPOn)
