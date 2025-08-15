@@ -12,7 +12,6 @@ FFMakeMIDITopo()
   result->slotCount = 1;
   result->id = "{969C6643-6CCB-488A-AD82-00C525161D93}";
   result->cvOutputs.resize((int)FFMIDICVOutput::Count);
-  auto selectModule = [](auto& state) { return &state.global.midi; };
 
   auto& outputCP = result->cvOutputs[(int)FFMIDICVOutput::CP];
   outputCP.name = "CP";
