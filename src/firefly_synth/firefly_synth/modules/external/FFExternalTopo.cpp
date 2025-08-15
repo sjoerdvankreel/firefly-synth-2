@@ -17,7 +17,8 @@ FFMakeExternalTopo()
   auto& hostSmoothTime = result->params[(int)FFExternalParam::HostSmoothTime];
   hostSmoothTime.acc = false;
   hostSmoothTime.defaultText = "2";
-  hostSmoothTime.name = "Smooth";
+  hostSmoothTime.name = "MIDI/Automation Smoothing";
+  hostSmoothTime.display = "Smooth";
   hostSmoothTime.slotCount = 1;
   hostSmoothTime.unit = "Ms";
   hostSmoothTime.id = "{47B38412-40B9-474E-9305-062E7FF7C800}";
