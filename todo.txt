@@ -1,16 +1,4 @@
-TODOLIST for alpha-11
-
-[x] fix up the tab headers
-[x] todo stuck notes on bitwig after fixing unwanted note release on reaper, reverted
-[x] also releaseing a note by playing the same just doesn't work
-[x] draw a box around the popup/tooltip
-[x] basic midi input
-[x] CLAP midi note dialect
-[x] fix free-random
-[x] do uni/gaus everywhere
-[x] smooth longer + on separate tab
-[x] better graph names
-[x] disconnect the tabs
+TODOLIST for alpha-12
 
 [ ] less matrix routes
 [ ] floating notes
