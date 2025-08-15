@@ -9,8 +9,8 @@ TODOLIST for alpha-11
 [x] fix free-random
 [x] do uni/gaus everywhere
 [x] smooth longer + on separate tab
-[ ] better graph names
-[ ] disconnect the tabs
+[x] better graph names
+[x] disconnect the tabs
 
 [ ] less matrix routes
 [ ] floating notes
