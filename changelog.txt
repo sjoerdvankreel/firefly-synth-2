@@ -12,7 +12,7 @@ August 15, 2025 - Alpha 11.
 
 - Modules
 * Increased MIDI/automation smoothing max from 50 to 200ms.
-* LFO: added gaussian counterparts to uniform random and smooth random generators.
+* LFO: added gaussian counterparts to uniform random and uniform smooth random generators.
 * Bugfix: LFO free-running random was not actually free running.
 * Bugfix: LFO free-running random and smooth random plotted the graph incorrect, simplified.
 
