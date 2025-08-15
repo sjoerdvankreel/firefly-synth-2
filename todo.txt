@@ -10,7 +10,7 @@ TODOLIST for alpha-11
 [x] do uni/gaus everywhere
 [x] smooth longer + on separate tab
 [ ] highlight graphs that are on
-
+[ ] disconnect the tabs
 
 [ ] less matrix routes
 [ ] floating notes
