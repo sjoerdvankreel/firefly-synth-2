@@ -12,29 +12,29 @@ FFLFOWaveModeToString(int mode)
   {
   case FFTrigSin: return "Sin";
   case FFTrigCos: return "Cos";
-  case FFTrigSin2: return "SinSin";
-  case FFTrigCos2: return "CosCos";
-  case FFTrigSinCos: return "SinCos";
-  case FFTrigCosSin: return "CosSin";
-  case FFTrigSin3: return "SinSinSin";
-  case FFTrigCos3: return "CosCosCos";
-  case FFTrigSn2Cs: return "SinSinCos";
-  case FFTrigCs2Sn: return "CosCosSin";
-  case FFTrigSnCs2: return "SinCosCos";
-  case FFTrigCsSn2: return "CosSinSin";
-  case FFTrigSnCsSn: return "SinCosSin";
-  case FFTrigCsSnCs: return "CosSinCos";
+  case FFTrigSin2: return "SnSn";
+  case FFTrigCos2: return "CsCs";
+  case FFTrigSinCos: return "SnCs";
+  case FFTrigCosSin: return "CsSn";
+  case FFTrigSin3: return "SnSnSn";
+  case FFTrigCos3: return "CsCsCs";
+  case FFTrigSn2Cs: return "SnSnCs";
+  case FFTrigCs2Sn: return "CsCsSn";
+  case FFTrigSnCs2: return "SnCsCs";
+  case FFTrigCsSn2: return "CsSnSn";
+  case FFTrigSnCsSn: return "SnCsSn";
+  case FFTrigCsSnCs: return "CsSnCs";
   case FFLFOWaveModeSaw: return "Saw";
   case FFLFOWaveModeTri: return "Tri";
   case FFLFOWaveModeSqr: return "Sqr";
   case FFLFOWaveModeUniRandom: return "RndUni";
   case FFLFOWaveModeNormRandom: return "RndNrm";
-  case FFLFOWaveModeFreeUniRandom: return "RndUniFree";
-  case FFLFOWaveModeFreeNormRandom: return "RndNrmFree";
+  case FFLFOWaveModeFreeUniRandom: return "RndUniF";
+  case FFLFOWaveModeFreeNormRandom: return "RndNrmF";
   case FFLFOWaveModeUniSmooth: return "SmthUni";
   case FFLFOWaveModeNormSmooth: return "SmthNrm";
-  case FFLFOWaveModeFreeUniSmooth: return "SmthUniFree";
-  case FFLFOWaveModeFreeNormSmooth: return "SmthNrmFree";
+  case FFLFOWaveModeFreeUniSmooth: return "SmthUniF";
+  case FFLFOWaveModeFreeNormSmooth: return "SmthNrmF";
   default: FB_ASSERT(false); return {};
   }
 }
