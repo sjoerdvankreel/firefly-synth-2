@@ -66,6 +66,9 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
   auto const& paramExchange = Params()[param->runtimeParamIndex];
   auto const& moduleExchange = Modules()[param->runtimeModuleIndex];
 
+  if (moduleExchange.get() == nullptr)
+    return result;
+
   if (paramExchange.IsGlobal())
     if (moduleExchange->Global()->active)
     {

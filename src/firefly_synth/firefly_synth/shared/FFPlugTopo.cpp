@@ -12,6 +12,7 @@
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
+#include <firefly_synth/modules/external/FFExternalTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
@@ -51,7 +52,7 @@ SpecialParamsSelector(
 {
   FBSpecialParams result = {};
   result.hostSmoothTime = MakeSpecialParam(
-    topo, state, (int)FFModuleType::Master, (int)FFMasterParam::HostSmoothTime);
+    topo, state, (int)FFModuleType::External, (int)FFExternalParam::HostSmoothTime);
   return result;
 }
 
@@ -117,6 +118,7 @@ FFMakeTopo(FBPlugFormat format)
 
   result->modules.resize((int)FFModuleType::Count);
   result->modules[(int)FFModuleType::MIDI] = std::move(*FFMakeMIDITopo());
+  result->modules[(int)FFModuleType::External] = std::move(*FFMakeExternalTopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
@@ -142,6 +144,7 @@ FFMakeTopo(FBPlugFormat format)
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GUISettings, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMatrix, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::MIDI, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::External, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Master, 0 });
   for (int s = 0; s < result->modules[(int)FFModuleType::GLFO].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GLFO, s });
