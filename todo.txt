@@ -1,5 +1,6 @@
 TODOLIST for alpha-12
 
+[ ] figure out bitwig dataexchange on linux
 [ ] less matrix routes
 [ ] floating notes
 [ ] master input (modwheel, pb + range) + easy-access midi somehow
