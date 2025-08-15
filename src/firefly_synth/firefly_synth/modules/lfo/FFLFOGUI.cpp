@@ -141,10 +141,12 @@ FFMakeLFOGUI(FBPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   auto tabParam = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::LFOSelectedTab, 0 } });
   auto tabs = plugGUI->StoreComponent<FBModuleTabComponent>(plugGUI, tabParam);
+  tabs->SetTabSeparatorText(0, "VLFO");
   for (int i = 0; i < FFLFOCount; i++)
-    tabs->AddModuleTab(i != 0, { (int)FFModuleType::VLFO, i }, MakeLFOTab(plugGUI, FFModuleType::VLFO, i));
+    tabs->AddModuleTab(true, false, { (int)FFModuleType::VLFO, i }, MakeLFOTab(plugGUI, FFModuleType::VLFO, i));
+  tabs->SetTabSeparatorText(FFLFOCount, "GLFO");
   for (int i = 0; i < FFLFOCount; i++)
-    tabs->AddModuleTab(i != 0, { (int)FFModuleType::GLFO, i }, MakeLFOTab(plugGUI, FFModuleType::GLFO, i));
+    tabs->AddModuleTab(true, false, { (int)FFModuleType::GLFO, i }, MakeLFOTab(plugGUI, FFModuleType::GLFO, i));
   tabs->ActivateStoredSelectedTab();
   return tabs;
 }

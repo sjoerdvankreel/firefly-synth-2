@@ -95,7 +95,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
 }
 
 int 
-FFEnvProcessor::Process(FBModuleProcState& state)
+FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -117,13 +117,10 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   }
 
   int s = 0;
-  int releaseAt = -1;
   float const minSlope = 0.001f;
   float const slopeRange = 1.0f - 2.0f * minSlope;
   float const invLogHalf = 1.0f / std::log(0.5f);
 
-  auto const& noteEvents = *state.input->noteEvents;
-  auto const& myVoiceNoteEvent = state.input->voiceManager->Voices()[voice].event;
   int loopEnd = _loopStart == 0 ? -1 : _loopStart - 1 + _loopLength;
   loopEnd = std::min(loopEnd, FFEnvStageCount);
   bool graphing = state.renderType != FBRenderType::Audio;
@@ -131,12 +128,8 @@ FFEnvProcessor::Process(FBModuleProcState& state)
   bool forcedRelease = _releasePoint == 0 && _loopStart != 0 && state.moduleSlot == 0;
   int releasePoint = forcedRelease ? FFEnvStageCount : _releasePoint;
 
-  // TODO reaper and bitwig are in disagreement here.
-  // Fixing early release on the one causes stuck notes on the other.
-  if (releasePoint != 0 && !graphingExchange)
-    for (int i = 0; i < noteEvents.size(); i++)
-      if (!noteEvents[i].on && noteEvents[i].note.Matches(myVoiceNoteEvent.note))
-        releaseAt = noteEvents[i].pos;
+  if (releasePoint == 0 || graphingExchange)
+    releaseAt = -1;
 
   // Deal with voice start offset.
   // In other words, the entire audio engine operates on

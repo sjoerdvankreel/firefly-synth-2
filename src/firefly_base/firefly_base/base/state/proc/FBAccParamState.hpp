@@ -11,6 +11,7 @@ class alignas(FBSIMDAlign) FBAccParamState final
 {
   friend class FBVoiceManager;
   friend class FBHostProcessor;
+  friend class FBProcStateContainer;
   friend class FBSmoothingProcessor;
   friend class FBVoiceAccParamState;
   friend class FBGlobalAccParamState;

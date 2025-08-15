@@ -18,6 +18,13 @@ public juce::LookAndFeel_V4
     float rotaryStartAngle, float rotaryEndAngle, 
     float exchangeValue);
 
+  void DrawTabButtonPart(
+    juce::TabBarButton& button, juce::Graphics& g,
+    bool isMouseOver, bool isMouseDown,
+    bool toggleState, bool centerText,
+    std::string const& text,
+    juce::Rectangle<int> const& activeArea);
+
 public:  
   juce::BorderSize<int> getLabelBorderSize(
     juce::Label&) override;
@@ -31,9 +38,17 @@ public:
   void drawLabel(
     juce::Graphics&, juce::Label&) override;
 
+  void drawTooltip(
+    juce::Graphics& g, const juce::String& text,
+    int width, int height) override;
+
   void drawTabButton(
     juce::TabBarButton& button, juce::Graphics& g,
     bool isMouseOver, bool isMouseDown) override;
+
+  void drawTabAreaBehindFrontButton(
+    juce::TabbedButtonBar&, juce::Graphics&,
+    const int, const int) override {}
 
   void drawTickBox(
     juce::Graphics& g, juce::Component& component,

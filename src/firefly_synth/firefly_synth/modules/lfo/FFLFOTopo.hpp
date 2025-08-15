@@ -19,8 +19,11 @@ enum class FFLFOSkewXMode { Off, ScaleUnipolar, ScaleBipolar, ExpUnipolar, ExpBi
 
 enum FFLFOWaveMode { 
   FFLFOWaveModeSaw = FFTrigCount, FFLFOWaveModeTri, FFLFOWaveModeSqr, 
-  FFLFOWaveModeRandom, FFLFOWaveModeFreeRandom, 
-  FFLFOWaveModeSmooth, FFLFOWaveModeFreeSmooth };
+  FFLFOWaveModeUniRandom, FFLFOWaveModeNormRandom,
+  FFLFOWaveModeFreeUniRandom, FFLFOWaveModeFreeNormRandom,
+  FFLFOWaveModeUniSmooth, FFLFOWaveModeNormSmooth,
+  FFLFOWaveModeFreeUniSmooth, FFLFOWaveModeFreeNormSmooth };
+std::string FFLFOWaveModeToString(int mode);
 
 enum class FFLFOParam {
   Type, Sync, Seed, SmoothTime, SmoothBars,

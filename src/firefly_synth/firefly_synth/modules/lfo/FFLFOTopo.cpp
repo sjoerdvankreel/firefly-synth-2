@@ -5,6 +5,40 @@
 #include <firefly_synth/modules/lfo/FFLFOGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
+std::string 
+FFLFOWaveModeToString(int mode)
+{
+  switch (mode)
+  {
+  case FFTrigSin: return "Sin";
+  case FFTrigCos: return "Cos";
+  case FFTrigSin2: return "SnSn";
+  case FFTrigCos2: return "CsCs";
+  case FFTrigSinCos: return "SnCs";
+  case FFTrigCosSin: return "CsSn";
+  case FFTrigSin3: return "SnSnSn";
+  case FFTrigCos3: return "CsCsCs";
+  case FFTrigSn2Cs: return "SnSnCs";
+  case FFTrigCs2Sn: return "CsCsSn";
+  case FFTrigSnCs2: return "SnCsCs";
+  case FFTrigCsSn2: return "CsSnSn";
+  case FFTrigSnCsSn: return "SnCsSn";
+  case FFTrigCsSnCs: return "CsSnCs";
+  case FFLFOWaveModeSaw: return "Saw";
+  case FFLFOWaveModeTri: return "Tri";
+  case FFLFOWaveModeSqr: return "Sqr";
+  case FFLFOWaveModeUniRandom: return "RndUni";
+  case FFLFOWaveModeNormRandom: return "RndNrm";
+  case FFLFOWaveModeFreeUniRandom: return "RndUniF";
+  case FFLFOWaveModeFreeNormRandom: return "RndNrmF";
+  case FFLFOWaveModeUniSmooth: return "SmthUni";
+  case FFLFOWaveModeNormSmooth: return "SmthNrm";
+  case FFLFOWaveModeFreeUniSmooth: return "SmthUniF";
+  case FFLFOWaveModeFreeNormSmooth: return "SmthNrmF";
+  default: FB_ASSERT(false); return {};
+  }
+}
+
 static std::vector<FBBarsItem>
 MakeLFOBarsItems(bool withZero)
 {
@@ -205,32 +239,36 @@ FFMakeLFOTopo(bool global)
   waveMode.id = prefix + "{140C3465-BD6A-495A-BA65-17A82290571E}";
   waveMode.type = FBParamType::List;
   waveMode.List().items = {
-    { "{9BD329A7-3F02-4DDC-8A42-C21D6D780C28}", "Sin" },
-    { "{1A4E2DDB-2C58-4670-89BC-54AE6CD6EBC2}", "Cos" },
-    { "{9CF1B435-0A87-4F41-BA5A-7A596ED6ABC3}", "Sin2" },
-    { "{B1589DBB-756C-4EB2-B36C-758F45A42CBD}", "Cos2" },
-    { "{1948DE4C-FDE5-471E-A4B1-2FCCA23AA877}", "SnCs" },
-    { "{FB7AAA67-5893-466C-9EF8-0D2E1ACC50D1}", "CsSn" },
-    { "{F2C4032D-EAE9-490F-A58C-BF7F467260F4}", "Sin3" },
-    { "{8E871CFE-2311-45B7-9E96-AB531F0E7E30}", "Cos3" },
-    { "{A679AA50-A2EC-4D2F-AB10-A1185745287A}", "S2Cs" },
-    { "{90D388CD-38C8-4D7C-BAC5-0492274089DF}", "C2Sn" },
-    { "{5237B3A9-A85F-4392-8A0C-340B1A6A3E1B}", "SnC2" },
-    { "{7E804C32-169F-43C4-B87C-062FCB60DF26}", "CsS2" },
-    { "{CBCB1AF6-4CA2-4381-A5B8-42A7D2F92A36}", "SCS" },
-    { "{B6E84130-CC0D-4270-B901-C69E778DAFD8}", "CSC" },
-    { "{0402BC62-9213-41D2-AFA3-885B3B0B046D}", "Saw" },
-    { "{78CD93BD-B3EF-41BA-A36B-BB24791D31F6}", "Tri" },
-    { "{BE0EF052-FA6B-422A-BF2B-6B9BE3430F9D}", "Sqr" },
-    { "{BDDA97A8-05A0-4E50-A775-5BA66A9D25C8}", "Rnd" },
-    { "{B6B47502-BA24-42A6-80D7-D41FE62F06DF}", "RndF" },
-    { "{3D6C2670-3862-4E1D-9010-0D9A36DB5B26}", "Smth" },
-    { "{B48C5047-3ABD-4D03-86C9-0B4700E6B035}", "SmthF" } };
+    { "{9BD329A7-3F02-4DDC-8A42-C21D6D780C28}", FFLFOWaveModeToString(FFTrigSin) },
+    { "{1A4E2DDB-2C58-4670-89BC-54AE6CD6EBC2}", FFLFOWaveModeToString(FFTrigCos) },
+    { "{9CF1B435-0A87-4F41-BA5A-7A596ED6ABC3}", FFLFOWaveModeToString(FFTrigSin2) },
+    { "{B1589DBB-756C-4EB2-B36C-758F45A42CBD}", FFLFOWaveModeToString(FFTrigCos2) },
+    { "{1948DE4C-FDE5-471E-A4B1-2FCCA23AA877}", FFLFOWaveModeToString(FFTrigSinCos) },
+    { "{FB7AAA67-5893-466C-9EF8-0D2E1ACC50D1}", FFLFOWaveModeToString(FFTrigCosSin) },
+    { "{F2C4032D-EAE9-490F-A58C-BF7F467260F4}", FFLFOWaveModeToString(FFTrigSin3) },
+    { "{8E871CFE-2311-45B7-9E96-AB531F0E7E30}", FFLFOWaveModeToString(FFTrigCos3) },
+    { "{A679AA50-A2EC-4D2F-AB10-A1185745287A}", FFLFOWaveModeToString(FFTrigSn2Cs) },
+    { "{90D388CD-38C8-4D7C-BAC5-0492274089DF}", FFLFOWaveModeToString(FFTrigCs2Sn) },
+    { "{5237B3A9-A85F-4392-8A0C-340B1A6A3E1B}", FFLFOWaveModeToString(FFTrigSnCs2) },
+    { "{7E804C32-169F-43C4-B87C-062FCB60DF26}", FFLFOWaveModeToString(FFTrigCsSn2) },
+    { "{CBCB1AF6-4CA2-4381-A5B8-42A7D2F92A36}", FFLFOWaveModeToString(FFTrigSnCsSn) },
+    { "{B6E84130-CC0D-4270-B901-C69E778DAFD8}", FFLFOWaveModeToString(FFTrigCsSnCs) },
+    { "{0402BC62-9213-41D2-AFA3-885B3B0B046D}", FFLFOWaveModeToString(FFLFOWaveModeSaw) },
+    { "{78CD93BD-B3EF-41BA-A36B-BB24791D31F6}", FFLFOWaveModeToString(FFLFOWaveModeTri) },
+    { "{BE0EF052-FA6B-422A-BF2B-6B9BE3430F9D}", FFLFOWaveModeToString(FFLFOWaveModeSqr) },
+    { "{BDDA97A8-05A0-4E50-A775-5BA66A9D25C8}", FFLFOWaveModeToString(FFLFOWaveModeUniRandom) },
+    { "{5E5FF10F-A7C9-4552-B68F-0C8059661A8F}", FFLFOWaveModeToString(FFLFOWaveModeNormRandom) },
+    { "{B6B47502-BA24-42A6-80D7-D41FE62F06DF}", FFLFOWaveModeToString(FFLFOWaveModeFreeUniRandom) },
+    { "{C0E5ED50-832C-4375-BB9A-B868893583E8}", FFLFOWaveModeToString(FFLFOWaveModeFreeNormRandom) },
+    { "{3D6C2670-3862-4E1D-9010-0D9A36DB5B26}", FFLFOWaveModeToString(FFLFOWaveModeUniSmooth) },
+    { "{9F652B6C-EF0F-49E9-B1AA-124230F1632D}", FFLFOWaveModeToString(FFLFOWaveModeNormSmooth) },
+    { "{B48C5047-3ABD-4D03-86C9-0B4700E6B035}", FFLFOWaveModeToString(FFLFOWaveModeFreeUniSmooth) },
+    { "{C93F4537-7A79-4FE2-908A-A5811767E425}", FFLFOWaveModeToString(FFLFOWaveModeFreeNormSmooth) } };
   waveMode.List().submenuStart[FFTrigSin] = "Trig1";
   waveMode.List().submenuStart[FFTrigSin2] = "Trig2";
   waveMode.List().submenuStart[FFTrigSin3] = "Trig3";
   waveMode.List().submenuStart[FFLFOWaveModeSaw] = "Other";
-  waveMode.List().submenuStart[FFLFOWaveModeRandom] = "Random";
+  waveMode.List().submenuStart[FFLFOWaveModeUniRandom] = "Random";
   auto selectWaveMode = [](auto& module) { return &module.block.waveMode; };
   waveMode.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectWaveMode);
   waveMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectWaveMode);

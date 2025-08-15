@@ -177,21 +177,27 @@ FFLFOProcessor::BeginVoiceOrBlock(
 
     bool movingGraph = exchangeState != nullptr && (
       graphIndex == FFLFOBlockCount || 
-      _waveMode[i] == FFLFOWaveModeFreeRandom || 
-      _waveMode[i] == FFLFOWaveModeFreeSmooth);
+      _waveMode[i] == FFLFOWaveModeFreeUniRandom || 
+      _waveMode[i] == FFLFOWaveModeFreeNormRandom ||
+      _waveMode[i] == FFLFOWaveModeFreeUniSmooth ||
+      _waveMode[i] == FFLFOWaveModeFreeNormSmooth);
 
     if (movingGraph)
     {
       _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
-      _noiseGens[i].Init(exchangeState->noiseState[i], _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeRandom);
-      _smoothNoiseGens[i].Init(exchangeState->smoothNoiseState[i], _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeSmooth);
+      _uniNoiseGens[i].Init(exchangeState->uniNoiseLastDraw[i], 1, false);
+      _normNoiseGens[i].Init(exchangeState->normNoiseLastDraw[i], 1, false);
+      _smoothUniNoiseGens[i].Init(exchangeState->smoothUniNoiseLastDraw[i], 1, false);
+      _smoothNormNoiseGens[i].Init(exchangeState->smoothNormNoiseLastDraw[i], 1, false);
     }
     else
     {
       if (shouldInit)
       {
-        _noiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeRandom);
-        _smoothNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeSmooth);
+        _uniNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeUniRandom);
+        _normNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeNormRandom);
+        _smoothUniNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeUniSmooth);
+        _smoothNormNoiseGens[i].Init(floatSeed, _steps[i] + 1, _waveMode[i] == FFLFOWaveModeFreeNormSmooth);
         _phaseGens[i] = FFTrackingPhaseGenerator(topo.NormalizedToIdentityFast(FFLFOParam::Phase, _phase[i]));
       }
     }
@@ -318,10 +324,14 @@ FFLFOProcessor::Process(FBModuleProcState& state)
         case FFLFOWaveModeSaw: lfo = phase; break;
         case FFLFOWaveModeTri: lfo = 1.0f - xsimd::abs(FBToBipolar(phase)); break;
         case FFLFOWaveModeSqr: lfo = FBToUnipolar(xsimd::sign(FBToBipolar(phase))); break;
-        case FFLFOWaveModeRandom: lfo = _noiseGens[i].NextBatch(phase); break;
-        case FFLFOWaveModeFreeRandom: lfo = _noiseGens[i].NextBatch(phase); break;
-        case FFLFOWaveModeSmooth: lfo = _smoothNoiseGens[i].NextBatch(phase); break;
-        case FFLFOWaveModeFreeSmooth: lfo = _smoothNoiseGens[i].NextBatch(phase); break;
+        case FFLFOWaveModeUniRandom: lfo = _uniNoiseGens[i].NextBatch(phase); break;
+        case FFLFOWaveModeNormRandom: lfo = _normNoiseGens[i].NextBatch(phase); break;
+        case FFLFOWaveModeFreeUniRandom: lfo = _uniNoiseGens[i].NextBatch(phase); break;
+        case FFLFOWaveModeFreeNormRandom: lfo = _normNoiseGens[i].NextBatch(phase); break;
+        case FFLFOWaveModeUniSmooth: lfo = _smoothUniNoiseGens[i].NextBatch(phase); break;
+        case FFLFOWaveModeNormSmooth: lfo = _smoothNormNoiseGens[i].NextBatch(phase); break;
+        case FFLFOWaveModeFreeUniSmooth: lfo = _smoothUniNoiseGens[i].NextBatch(phase); break;
+        case FFLFOWaveModeFreeNormSmooth: lfo = _smoothNormNoiseGens[i].NextBatch(phase); break;
         default: lfo = FBToUnipolar(FFCalcTrig(_waveMode[i], phase * 2.0f * FBPi)); break;
         }
 
@@ -331,7 +341,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
           lfo = SkewY(_skewAYMode, lfo, skewAYAmt);
         }
 
-        if (_steps[i] > 1 && !(FFLFOWaveModeRandom <= _waveMode[i] && _waveMode[i] <= FFLFOWaveModeFreeSmooth))
+        if (_steps[i] > 1 && !(FFLFOWaveModeUniRandom <= _waveMode[i] && _waveMode[i] <= FFLFOWaveModeFreeNormSmooth))
         {
           lfo = xsimd::clip(lfo, FBBatch<float>(0.0f), FBBatch<float>(0.9999f));
           lfo = xsimd::floor(lfo * static_cast<float>(_steps[i])) / (_steps[i] - 1.0f);
@@ -394,13 +404,18 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   for (int i = 0; i < FFLFOBlockCount; i++)
   {
     exchangeDSP.phases[i] = _phaseGens[i].CurrentScalar();
-    exchangeDSP.noiseState[i] = _noiseGens[i].PrngStateAtInit();
-    exchangeDSP.smoothNoiseState[i] = _smoothNoiseGens[i].PrngStateAtInit();
+    exchangeDSP.uniNoiseLastDraw[i] = _uniNoiseGens[i].LastDraw();
+    exchangeDSP.normNoiseLastDraw[i] = _normNoiseGens[i].LastDraw();
+    exchangeDSP.smoothUniNoiseLastDraw[i] = _smoothUniNoiseGens[i].LastDraw();
+    exchangeDSP.smoothNormNoiseLastDraw[i] = _smoothNormNoiseGens[i].LastDraw();
     exchangeDSP.lengthSamples[i] = rateHzPlain[i].Last() > 0.0f ? FBFreqToSamples(rateHzPlain[i].Last(), sampleRate) : 0;
     exchangeDSP.lengthSamples[FFLFOBlockCount] = std::max(exchangeDSP.lengthSamples[i], exchangeDSP.lengthSamples[FFLFOBlockCount]);
 
     // 0: the lines move, so the position indicator stays fixed.
-    if (_waveMode[i] == FFLFOWaveModeFreeRandom || _waveMode[i] == FFLFOWaveModeFreeSmooth)
+    if (_waveMode[i] == FFLFOWaveModeFreeUniRandom ||
+      _waveMode[i] == FFLFOWaveModeFreeNormRandom ||
+      _waveMode[i] == FFLFOWaveModeFreeUniSmooth ||
+      _waveMode[i] == FFLFOWaveModeFreeNormSmooth)
       exchangeDSP.positionSamples[i] = 0;
     else
       exchangeDSP.positionSamples[i] = _phaseGens[i].PositionSamplesCurrentCycle();

@@ -6,10 +6,12 @@
 #include <firefly_synth/modules/mix/FFVMixState.hpp>
 #include <firefly_synth/modules/mix/FFGMixState.hpp>
 #include <firefly_synth/modules/osci/FFOsciState.hpp>
+#include <firefly_synth/modules/midi/FFMIDIState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
+#include <firefly_synth/modules/external/FFExternalState.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixState.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 
@@ -55,6 +57,7 @@ struct FFVoiceExchangeState final
 
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
+  FFMIDIDSPState midi = {};
   FFOutputDSPState output = {};
   FFMasterDSPState master = {};
   FFModMatrixDSPState<true> gMatrix = {};
@@ -88,7 +91,8 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalParamState);
   std::array<FFGMixParamState<TAccurate>, 1> gMix = {};
-  std::array<FFMasterParamState<TBlock, TAccurate>, 1> master = {};
+  std::array<FFMasterParamState<TAccurate>, 1> master = {};
+  std::array<FFExternalParamState<TBlock>, 1> external = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOCount> gLFO = {};
   std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> gEffect = {};

@@ -19,8 +19,10 @@ struct FFLFOExchangeState final:
 public FBModuleProcMultiExchangeState<FFLFOBlockCount + 1>
 {
   std::array<float, FFLFOBlockCount> phases = {};
-  std::array<std::uint32_t, FFLFOBlockCount> noiseState = {};
-  std::array<std::uint32_t, FFLFOBlockCount> smoothNoiseState = {};
+  std::array<float, FFLFOBlockCount> uniNoiseLastDraw = {};
+  std::array<float, FFLFOBlockCount> normNoiseLastDraw = {};
+  std::array<float, FFLFOBlockCount> smoothUniNoiseLastDraw = {};
+  std::array<float, FFLFOBlockCount> smoothNormNoiseLastDraw = {};
 };
 
 class alignas(FBSIMDAlign) FFLFODSPState final

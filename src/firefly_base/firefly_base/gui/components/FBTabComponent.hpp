@@ -6,6 +6,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <vector>
+#include <map>
 
 class FBPlugGUI;
 
@@ -15,6 +16,7 @@ class FBTabBarButton:
 public juce::TabBarButton
 {
 public:
+  bool large = false;
   bool centerText = false;
   FBTabBarButton(
     const juce::String& name, 
@@ -27,16 +29,19 @@ class FBModuleTabBarButton:
 public FBTabBarButton
 {
   FBPlugGUI* const _plugGUI;
+  std::string const _separatorText;
   FBTopoIndices const _moduleIndices;
 
 public:
   FBModuleTabBarButton(
     FBPlugGUI* plugGUI,
+    std::string const& separatorText,
     const juce::String& name,
     juce::TabbedButtonBar& bar,
     FBTopoIndices const& moduleIndices);
 
   void clicked(const juce::ModifierKeys& modifiers) override;
+  std::string const GetSeparatorText() const { return _separatorText; }
 };
 
 class FBAutoSizeTabComponent:
@@ -56,9 +61,10 @@ class FBModuleTabComponent:
 public FBAutoSizeTabComponent
 {
   FBPlugGUI* const _plugGUI;
-  int _storedSelectedTab = -1;
   FBRuntimeGUIParam const* const _param;
+  int _storedSelectedTab = -1;
   std::vector<FBTopoIndices> _moduleIndices = {};
+  std::map<int, std::string> _tabSeparatorText = {};
 
 public:
   FBModuleTabComponent(
@@ -66,12 +72,13 @@ public:
     FBRuntimeGUIParam const* param);
   
   void AddModuleTab(
-    bool centerText,
+    bool centerText, bool large,
     FBTopoIndices const& moduleIndices,
     juce::Component* component);
   
   void ActivateStoredSelectedTab();
   void TabRightClicked(int tabIndex);
+  void SetTabSeparatorText(int tabIndex, std::string const& text);
 
   void currentTabChanged(
     int newCurrentTabIndex, 

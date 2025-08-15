@@ -74,6 +74,7 @@ FBHostToPlugProcessor::ProcessToPlug()
   _buffer.audio.Drop(FBFixedBlockSamples);
   GatherAccToFixed(_buffer.noteEvents, _fixed.noteEvents);
   GatherAccToFixed(_buffer.accAutoByParamThenSample, _fixed.accAutoByParamThenSample);
+  GatherAccToFixed(_buffer.midiByMessageThenCCThenSample, _fixed.midiByMessageThenCCThenSample);
   GatherAccToFixed(_buffer.accModByParamThenNoteThenSample, _fixed.accModByParamThenNoteThenSample);
   return &_fixed;
 }
@@ -91,6 +92,9 @@ FBHostToPlugProcessor::BufferFromHost(FBHostInputBlock const& hostBlock)
   GatherAccFromHost(
     hostBlock.accAutoByParamThenSample, _buffer.accAutoByParamThenSample,
     FBAccAutoEventIsSameStream, _buffer.audio.Count());
+  GatherAccFromHost(
+    hostBlock.midiByMessageThenCCThenSample, _buffer.midiByMessageThenCCThenSample,
+    FBMIDIEventIsSameStream, _buffer.audio.Count());
   GatherAccFromHost(
     hostBlock.accModByParamThenNoteThenSample, _buffer.accModByParamThenNoteThenSample,
     FBAccModEventIsSameStream, _buffer.audio.Count());

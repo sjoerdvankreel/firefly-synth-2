@@ -36,8 +36,6 @@ class FBHostProcessor final
   std::unique_ptr<FBPlugToHostProcessor> _plugToHost;
   std::unique_ptr<FBSmoothingProcessor> _smoothing;
 
-  void ProcessVoices();
-
 public:
   ~FBHostProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostProcessor);

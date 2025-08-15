@@ -90,7 +90,7 @@ class FFOsciProcessor final
   std::array<float*, FFOsciUniMaxCount> _downsampledChannelPtrs = {};
 
   FFParkMillerPRNG _uniformPrng = {};
-  FFMarsagliaPRNG _stringNormalPrng = {};
+  FFMarsagliaPRNG<true> _stringNormalPrng = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringLPFilter = {};
   FFStateVariableFilter<FFOsciUniMaxCount> _stringHPFilter = {};
   std::array<FFOsciStringUniVoiceState, FFOsciUniMaxCount> _stringUniState = {};

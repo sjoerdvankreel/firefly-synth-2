@@ -61,10 +61,10 @@ FFPlugProcessor::MakeModuleVoiceState(
 
 void
 FFPlugProcessor::ProcessVoice(
-  FBPlugInputBlock const& input, int voice)
+  FBPlugInputBlock const& input, int voice, int releaseAt)
 {
   auto state = MakeModuleVoiceState(input, voice);
-  if(_procState->dsp.voice[voice].processor.Process(state))
+  if(_procState->dsp.voice[voice].processor.Process(state, releaseAt))
     input.voiceManager->Return(voice);
 }
 
@@ -106,6 +106,8 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   state.moduleSlot = 0;
   globalDSP.gMatrix.processor->BeginVoiceOrBlock(state);
   globalDSP.gMatrix.processor->BeginModulationBlock();
+  globalDSP.midi.processor->Process(state);
+  ApplyGlobalModulation(input, state, { (int)FFModuleType::MIDI, 0 });
   globalDSP.master.processor->Process(state);
   ApplyGlobalModulation(input, state, { (int)FFModuleType::Master, 0 });
   for (int i = 0; i < FFLFOCount; i++)

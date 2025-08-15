@@ -32,6 +32,22 @@ _voiceManager(voiceManager)
 }
 
 void
+FBSmoothingProcessor::BeginMIDISmoothing(int eventId, int smoothingSamples)
+{
+  InsertIfNotExists(_activeMIDISmoothing, eventId);
+  RemoveIfNotExists(_finishedMIDISmoothing, eventId);
+  _activeMIDISmoothingSamples[eventId] = smoothingSamples;
+}
+
+std::vector<int>::iterator
+FBSmoothingProcessor::FinishMIDISmoothing(std::vector<int>::iterator iter)
+{
+  _activeMIDISmoothingSamples[*iter] = 0;
+  InsertMustNotExist(_finishedMIDISmoothing, *iter);
+  return _activeMIDISmoothing.erase(iter);
+}
+
+void
 FBSmoothingProcessor::BeginGlobalSmoothing(int param, int smoothingSamples)
 {
   InsertIfNotExists(_activeGlobalSmoothing, param);
@@ -93,10 +109,18 @@ FBSmoothingProcessor::ProcessSmoothing(
   FBFixedInputBlock const& input, FBPlugOutputBlock& output, int smoothingSamples)
 {
   auto& params = output.procState->Params();
+  auto& midiParams = output.procState->MIDIParams();
+
+  for (int midiParam : _finishedMIDISmoothing)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      midiParams[midiParam].SmoothNextHostValue(s);
+  _finishedMIDISmoothing.clear();
+
   for (int param : _finishedGlobalSmoothing)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       params[param].GlobalAcc().SmoothNextHostValue(s);
   _finishedGlobalSmoothing.clear();
+
   for (int v = 0; v < FBMaxVoices; v++)
   {
     if (_voiceManager->IsActive(v))
@@ -108,13 +132,25 @@ FBSmoothingProcessor::ProcessSmoothing(
 
   SortSampleLastToSampleFirst(input.accAutoByParamThenSample,
     _accAutoBySampleThenParam, FBAccAutoEventOrderByPosThenParam);
-  SortSampleLastToSampleFirst(input.accModByParamThenNoteThenSample, 
+  SortSampleLastToSampleFirst(input.midiByMessageThenCCThenSample,
+    _midiBySampleThenMessageThenCC, FBMIDIEventOrderByPosThenMessageThenCC);
+  SortSampleLastToSampleFirst(input.accModByParamThenNoteThenSample,
     _accModBySampleThenParamThenNote, FBAccModEventOrderByPosThenParamThenNote);
 
+  auto const& myMIDI = _midiBySampleThenMessageThenCC;
   auto const& myAccAuto = _accAutoBySampleThenParam;
   auto const& myAccMod = _accModBySampleThenParamThenNote;
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
+    for (int eventIndex = 0;
+      eventIndex < myMIDI.size() && myMIDI[eventIndex].pos == s;
+      eventIndex++)
+    {
+      auto const& event = myMIDI[eventIndex];
+      midiParams[event.EventId()].Value(event.value);
+      BeginMIDISmoothing(event.EventId(), smoothingSamples);
+    }
+
     for (int eventIndex = 0;
       eventIndex < myAccAuto.size() && myAccAuto[eventIndex].pos == s;
       eventIndex++)
@@ -154,6 +190,15 @@ FBSmoothingProcessor::ProcessSmoothing(
             BeginVoiceSmoothing(v, event.param, smoothingSamples);
           }
         }
+    }
+
+    for (auto iter = _activeMIDISmoothing.begin(); iter != _activeMIDISmoothing.end(); )
+    {
+      midiParams[*iter].SmoothNextHostValue(s);
+      if (--_activeMIDISmoothingSamples[*iter] <= 0)
+        iter = FinishMIDISmoothing(iter);
+      else
+        iter++;
     }
 
     for(auto iter = _activeGlobalSmoothing.begin(); iter != _activeGlobalSmoothing.end(); )

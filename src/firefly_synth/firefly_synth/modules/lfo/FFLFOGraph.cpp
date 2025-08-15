@@ -145,15 +145,16 @@ FFLFORenderGraph(FBModuleGraphComponentData* graphData)
   {
     FBRenderModuleGraph<Global, false>(renderData, i);
     if (i == FFLFOBlockCount)
-      graphData->graphs[i].text = moduleName + (type != FFLFOType::Off? "": " OFF");
+      graphData->graphs[i].text = moduleName + (type != FFLFOType::Off? "": " Off");
     else
     {
-      FBParamTopoIndices indices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
-      auto opType = renderState->AudioParamList<FFModulationOpType>(indices, false, -1);
+      FBParamTopoIndices opTypeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::OpType, i } };
+      FBParamTopoIndices waveModeIndices = { { (int)moduleType, moduleSlot }, { (int)FFLFOParam::WaveMode, i } };
+      auto waveMode = renderState->AudioParamList<FFLFOWaveMode>(waveModeIndices, false, -1);
+      auto opType = renderState->AudioParamList<FFModulationOpType>(opTypeIndices, false, -1);
       bool blockOn = type != FFLFOType::Off && opType != FFModulationOpType::Off;
       graphData->graphs[i].text = moduleName + std::string(1, static_cast<char>('A' + i));
-      if (!blockOn)
-        graphData->graphs[i].text += " OFF";
+      graphData->graphs[i].text += " " + (blockOn ? FFLFOWaveModeToString(waveMode) : "Off");
     }
   }
 }

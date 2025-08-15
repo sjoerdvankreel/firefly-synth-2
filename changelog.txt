@@ -1,3 +1,21 @@
+August 15, 2025 - Alpha 11.
+
+- Core
+* MIDI: support CLAP MIDI note dialect.
+* MIDI: allow access to CC/Channel Pressure/Pitch Bend (mod matrix only for now).
+* Bugfix: active voice was not retriggered by the same note key.
+
+- UI
+* Moved MIDI and automation smoothing control to separate module.
+* Add more info to graph plots (e.g. "Osc 1 FM", "Osc 2 String", "LFO 1A Saw", "VFX 1A Clip").
+* Add dedicated tab header area for module type (e.g. "Osc", "1, "2" instead of "Osc 1", "2").
+
+- Modules
+* Increased MIDI/automation smoothing max from 50 to 200ms.
+* LFO: added gaussian counterparts to uniform random and uniform smooth random generators.
+* Bugfix: LFO free-running random was not actually free running.
+* Bugfix: LFO free-running random and smooth random plotted the graph incorrect, simplified.
+
 August 9, 2025 - Alpha 10.
 
 - Core

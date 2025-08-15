@@ -3,7 +3,7 @@
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Tested on reaper, renoise, fruity and bitwig.
 * Osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
-* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP, no MIDI CC.
+* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP.
 
 # Some demo material
 * Bowed strings
@@ -103,7 +103,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * For voice, regular or one-shot.
 * For global, regular or snap-to-host-project-time.
 * Optional tempo sync and smoothing filter.
-* 3x choice of various trig functions, saw/tri/sqr, repeating or free-running random noise or smooth noise.
+* 3x choice of various trig functions, saw/tri/sqr, repeating or free-running random noise or smooth noise, both uniform and gaussian.
 * Per-subslot phase offset parameter.
 * Per-subslot step function (quantize/stairstep) and continuous rate control.
 * Per-subslot choice of add/multiply/stack + continous min/max params.
@@ -141,9 +141,10 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 ## Mod Matrix
 * 1 for voice, 1 for global.
 * Like FF1, on-note support for voice.
-* Much like FF1, select add/mul/stack + bipolar add/stack.
+* Much like FF1, select add/mul/stack + bipolar add/mul/stack.
 * New Scale parameter which allows the mod amount to be controlled by an additional CV source.
 * Single matrix for audio and cv. Env and LFO are now processed in lock-step, so env can modulate LFO and the other way around.
+* Env/VLFO/GLFO/Master Aux inputs plus MIDI CC, Pitch Bend, Channel Pressure.
 
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).

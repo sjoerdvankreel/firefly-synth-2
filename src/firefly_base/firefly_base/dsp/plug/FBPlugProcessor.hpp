@@ -13,6 +13,6 @@ public:
 
   virtual void LeaseVoices(FBPlugInputBlock const& input) = 0;
   virtual void ProcessPreVoice(FBPlugInputBlock const& input) = 0;
-  virtual void ProcessVoice(FBPlugInputBlock const& input, int voice) = 0;
+  virtual void ProcessVoice(FBPlugInputBlock const& input, int voice, int releaseAt) = 0;
   virtual void ProcessPostVoice(FBPlugInputBlock const& input, FBPlugOutputBlock& output) = 0;
 };

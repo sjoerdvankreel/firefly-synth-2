@@ -10,6 +10,7 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
+#include <firefly_synth/modules/external/FFExternalGUI.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
@@ -148,15 +149,16 @@ FFPlugGUI::SetupGUI()
   _modules->Add(3, 0, FFMakeEnvGUI(this));
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 12, 9, 50 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0 } });
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 12, 9, 50 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0, 0 } });
   _container->Add(0, 0, 1, 1, FFMakeHeaderGUI(this));
-  _container->Add(0, 1, 1, 1, FFMakeMasterGUI(this));
-  _container->Add(0, 2, 1, 1, FFMakeOutputGUI(this));
-  _container->Add(0, 3, 1, 1, FFMakeGUISettingsGUI(this));
-  _container->Add(0, 4, 1, 1, FFMakePlugMatrixGUI(this));
-  _container->Add(0, 5, 1, 1, FFMakePatchGUI(this));
-  _container->Add(1, 0, 1, 6, FFMakeMixGUI(this));
-  _container->Add(2, 0, 1, 6, _graph);
-  _container->Add(3, 0, 1, 6, _content);
+  _container->Add(0, 1, 1, 1, FFMakeExternalGUI(this));
+  _container->Add(0, 2, 1, 1, FFMakeMasterGUI(this));
+  _container->Add(0, 3, 1, 1, FFMakeOutputGUI(this));
+  _container->Add(0, 4, 1, 1, FFMakeGUISettingsGUI(this));
+  _container->Add(0, 5, 1, 1, FFMakePlugMatrixGUI(this));
+  _container->Add(0, 6, 1, 1, FFMakePatchGUI(this));
+  _container->Add(1, 0, 1, 7, FFMakeMixGUI(this));
+  _container->Add(2, 0, 1, 7, _graph);
+  _container->Add(3, 0, 1, 7, _content);
   addAndMakeVisible(_container);
 }

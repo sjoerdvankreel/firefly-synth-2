@@ -4,6 +4,7 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/state/proc/FBProcParamState.hpp>
 
+#include <array>
 #include <vector>
 #include <utility>
 
@@ -22,8 +23,12 @@ class FBProcStateContainer final
   void (*_freeRawState)(void*);
   FBSpecialParams _special;
 
-  int _smoothingDurationSamples = {};
+  int _smoothingDurationSamples = -1;
   std::vector<FBProcParamState> _params = {};
+
+  // Very VST3-centric,
+  // we treat all midi messages like continuous global params.
+  std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount> _midiParams = {};
 
   void InitProcessing(int index, int voice, float value);
 
@@ -41,8 +46,11 @@ public:
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
   FBSpecialParams const& Special() const { return _special; }
-  std::vector<FBProcParamState>& Params() { return _params; }
-  std::vector<FBProcParamState> const& Params() const { return _params; }
   template <class T> T* As() { return static_cast<T*>(Raw()); }
   template <class T> T const* As() const { return static_cast<T const*>(Raw()); }
+
+  std::vector<FBProcParamState>& Params() { return _params; }
+  std::vector<FBProcParamState> const& Params() const { return _params; }
+  std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount>& MIDIParams() { return _midiParams; }
+  std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount> const& MIDIParams() const { return _midiParams; }
 };
