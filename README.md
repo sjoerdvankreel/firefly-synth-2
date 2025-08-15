@@ -3,7 +3,7 @@
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Tested on reaper, renoise, fruity and bitwig.
 * Osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
-* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP, no MIDI CC.
+* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP.
 
 # Some demo material
 * Bowed strings
