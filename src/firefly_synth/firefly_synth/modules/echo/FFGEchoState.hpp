@@ -34,6 +34,7 @@ class alignas(alignof(TBlock)) FFGEchoBlockParamState final
   std::array<TBlock, FFGEchoTapCount> tapHPOn = {};
   std::array<TBlock, FFGEchoTapCount> tapFBLPOn = {};
   std::array<TBlock, FFGEchoTapCount> tapFBHPOn = {};
+  std::array<TBlock, FFGEchoTapCount> tapDelayTime = {};
   std::array<TBlock, FFGEchoTapCount> tapDelayBars = {};
   std::array<TBlock, FFGEchoTapCount> tapLengthBars = {};
 public:
@@ -59,7 +60,6 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, FFGEchoTapCount> tapFeedback = {};
   std::array<TAccurate, FFGEchoTapCount> tapCrossOver = {};
   std::array<TAccurate, FFGEchoTapCount> tapFBCrossOver = {};
-  std::array<TAccurate, FFGEchoTapCount> tapDelayTime = {};
   std::array<TAccurate, FFGEchoTapCount> tapLengthTime = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoAccParamState);

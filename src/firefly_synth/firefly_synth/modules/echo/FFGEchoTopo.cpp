@@ -4,9 +4,9 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::vector<FBBarsItem>
-MakeGEchoBarsItems()
+MakeGEchoBarsItems(bool withZero)
 {
-  return FBMakeBarsItems(true, { 1, 128 }, { 1, 1 });
+  return FBMakeBarsItems(withZero, { 1, 128 }, { 1, 1 });
 }
 
 std::unique_ptr<FBStaticModule>
@@ -328,7 +328,7 @@ FFMakeGEchoTopo()
   tapFBHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPRes);
 
   auto& tapDelayTime = result->params[(int)FFGEchoParam::TapDelayTime];
-  tapDelayTime.acc = true;
+  tapDelayTime.acc = false;
   tapDelayTime.defaultText = "0";
   tapDelayTime.display = "Dly";
   tapDelayTime.name = "Tap Delay Time";
@@ -339,9 +339,9 @@ FFMakeGEchoTopo()
   tapDelayTime.Linear().min = 0.0f;
   tapDelayTime.Linear().max = 10.0f;
   tapDelayTime.Linear().editSkewFactor = 0.5f;
-  auto selectTapDelayTime = [](auto& module) { return &module.acc.tapDelayTime; };
+  auto selectTapDelayTime = [](auto& module) { return &module.block.tapDelayTime; };
   tapDelayTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayTime);
-  tapDelayTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayTime);
+  tapDelayTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayTime);
   tapDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayTime);
 
   auto& tapDelayBars = result->params[(int)FFGEchoParam::TapDelayBars];
@@ -353,11 +353,43 @@ FFMakeGEchoTopo()
   tapDelayBars.unit = "Bars";
   tapDelayBars.id = "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
   tapDelayBars.type = FBParamType::Bars;
-  tapDelayBars.Bars().items = MakeGEchoBarsItems();
+  tapDelayBars.Bars().items = MakeGEchoBarsItems(true);
   auto selectTapDelayBars = [](auto& module) { return &module.block.tapDelayBars; };
   tapDelayBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayBars);
   tapDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayBars);
   tapDelayBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayBars);
+
+  auto& tapLengthTime = result->params[(int)FFGEchoParam::TapLengthTime];
+  tapLengthTime.acc = true;
+  tapLengthTime.defaultText = "1";
+  tapLengthTime.display = "Len";
+  tapLengthTime.name = "Tap Length Time";
+  tapLengthTime.slotCount = FFGEchoTapCount;
+  tapLengthTime.unit = "Sec";
+  tapLengthTime.id = "{B18BA21F-3190-49A7-A584-C93EF76CC100}";
+  tapLengthTime.type = FBParamType::Linear;
+  tapLengthTime.Linear().min = 0.0f;
+  tapLengthTime.Linear().max = 10.0f;
+  tapLengthTime.Linear().editSkewFactor = 0.5f;
+  auto selectTapLengthTime = [](auto& module) { return &module.acc.tapLengthTime; };
+  tapLengthTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthTime);
+  tapLengthTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthTime);
+  tapLengthTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthTime);
+
+  auto& tapLengthBars = result->params[(int)FFGEchoParam::TapLengthBars];
+  tapLengthBars.acc = false;
+  tapLengthBars.defaultText = "1/4";
+  tapLengthBars.display = "Len";
+  tapLengthBars.name = "Tap Length Bars";
+  tapLengthBars.slotCount = FFGEchoTapCount;
+  tapLengthBars.unit = "Bars";
+  tapLengthBars.id = "{785550ED-7885-449B-8F26-91BC4AE28B58}";
+  tapLengthBars.type = FBParamType::Bars;
+  tapLengthBars.Bars().items = MakeGEchoBarsItems(false);
+  auto selectTapLengthBars = [](auto& module) { return &module.block.tapLengthBars; };
+  tapLengthBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthBars);
+  tapLengthBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthBars);
+  tapLengthBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthBars);
 
   return result;
 }
