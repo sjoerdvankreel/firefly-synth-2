@@ -63,11 +63,11 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, 1> reverbAPF = {};
   std::array<TAccurate, 1> reverbSize = {};
   std::array<TAccurate, 1> reverbDamp = {};
+  std::array<TAccurate, 1> reverbSpread = {};
   std::array<TAccurate, 1> reverbLPRes = {};
   std::array<TAccurate, 1> reverbHPRes = {};
   std::array<TAccurate, 1> reverbLPFreq = {};
   std::array<TAccurate, 1> reverbHPFreq = {};
-  std::array<TAccurate, 1> reverbSpread = {};
   std::array<TAccurate, FFGEchoTapCount> tapLPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapHPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapLPFreq = {};
