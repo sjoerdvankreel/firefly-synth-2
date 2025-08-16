@@ -151,7 +151,7 @@ FFPlugGUI::SetupGUI()
   _modules->Add(4, 0, FFMakeEnvGUI(this));
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 10, 12, 10, 65 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0, 0 } });
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 13, 10, 65 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0, 0 } });
   _container->Add(0, 0, 1, 1, FFMakeHeaderGUI(this));
   _container->Add(0, 1, 1, 1, FFMakeExternalGUI(this));
   _container->Add(0, 2, 1, 1, FFMakeMasterGUI(this));
