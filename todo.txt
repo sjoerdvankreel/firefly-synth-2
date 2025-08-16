@@ -4,6 +4,7 @@ alpha 12 - echo
 [ ] vecho
 [ ] reverb
 [ ] store selected tab
+[ ] check defaults
 
 TODOLIST for alpha-13
 

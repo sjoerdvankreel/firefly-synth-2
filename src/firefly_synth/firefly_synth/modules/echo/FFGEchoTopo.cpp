@@ -517,5 +517,47 @@ FFMakeGEchoTopo()
   reverbLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbLPRes);
   reverbLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbLPRes);
 
+  auto& reverbHPOn = result->params[(int)FFGEchoParam::ReverbHPOn];
+  reverbHPOn.acc = false;
+  reverbHPOn.name = "Reverb HPF On";
+  reverbHPOn.display = "HPF";
+  reverbHPOn.slotCount = 1;
+  reverbHPOn.defaultText = "Off";
+  reverbHPOn.id = "{29C5F4A5-F769-46D4-BBA9-0880235D7E19}";
+  reverbHPOn.type = FBParamType::Boolean;
+  auto selectReverbHPOn = [](auto& module) { return &module.block.reverbHPOn; };
+  reverbHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbHPOn);
+  reverbHPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbHPOn);
+  reverbHPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbHPOn);
+
+  auto& reverbHPFreq = result->params[(int)FFGEchoParam::ReverbHPFreq];
+  reverbHPFreq.acc = true;
+  reverbHPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  reverbHPFreq.name = "Reverb HPF Freq";
+  reverbHPFreq.display = "Frq";
+  reverbHPFreq.slotCount = 1;
+  reverbHPFreq.unit = "Hz";
+  reverbHPFreq.id = "{1CB4ACC6-1EA4-4693-B4D5-D93A73E1E01B}";
+  reverbHPFreq.type = FBParamType::Log2;
+  reverbHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectReverbHPFreq = [](auto& module) { return &module.acc.reverbHPFreq; };
+  reverbHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbHPFreq);
+  reverbHPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbHPFreq);
+  reverbHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbHPFreq);
+
+  auto& reverbHPRes = result->params[(int)FFGEchoParam::ReverbHPRes];
+  reverbHPRes.acc = true;
+  reverbHPRes.defaultText = "0";
+  reverbHPRes.name = "Reverb HP Res";
+  reverbHPRes.display = "Res";
+  reverbHPRes.slotCount = 1;
+  reverbHPRes.unit = "%";
+  reverbHPRes.id = "{AE3A50D6-187E-4C20-84DF-C9311103950C}";
+  reverbHPRes.type = FBParamType::Identity;
+  auto selectReverbHPRes = [](auto& module) { return &module.acc.reverbHPRes; };
+  reverbHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbHPRes);
+  reverbHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbHPRes);
+  reverbHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbHPRes);
+
   return result;
 }
