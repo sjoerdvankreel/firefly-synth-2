@@ -475,5 +475,47 @@ FFMakeGEchoTopo()
   reverbSize.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbSize);
   reverbSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbSize);
 
+  auto& reverbLPOn = result->params[(int)FFGEchoParam::ReverbLPOn];
+  reverbLPOn.acc = false;
+  reverbLPOn.name = "Reverb LPF On";
+  reverbLPOn.display = "LPF";
+  reverbLPOn.slotCount = 1;
+  reverbLPOn.defaultText = "Off";
+  reverbLPOn.id = "{56AD0533-9A6E-403D-8648-15F46FBEF36A}";
+  reverbLPOn.type = FBParamType::Boolean;
+  auto selectReverbLPOn = [](auto& module) { return &module.block.reverbLPOn; };
+  reverbLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbLPOn);
+  reverbLPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbLPOn);
+  reverbLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbLPOn);
+
+  auto& reverbLPFreq = result->params[(int)FFGEchoParam::ReverbLPFreq];
+  reverbLPFreq.acc = true;
+  reverbLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  reverbLPFreq.name = "Reverb LPF Freq";
+  reverbLPFreq.display = "Frq";
+  reverbLPFreq.slotCount = 1;
+  reverbLPFreq.unit = "Hz";
+  reverbLPFreq.id = "{9B215206-8C8A-4F37-9F54-60EF7AAA67E1}";
+  reverbLPFreq.type = FBParamType::Log2;
+  reverbLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectReverbLPFreq = [](auto& module) { return &module.acc.reverbLPFreq; };
+  reverbLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbLPFreq);
+  reverbLPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbLPFreq);
+  reverbLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbLPFreq);
+
+  auto& reverbLPRes = result->params[(int)FFGEchoParam::ReverbLPRes];
+  reverbLPRes.acc = true;
+  reverbLPRes.defaultText = "0";
+  reverbLPRes.name = "Reverb LP Res";
+  reverbLPRes.display = "Res";
+  reverbLPRes.slotCount = 1;
+  reverbLPRes.unit = "%";
+  reverbLPRes.id = "{94A61E63-8CEA-48B0-A2C1-AE170F8812D7}";
+  reverbLPRes.type = FBParamType::Identity;
+  auto selectReverbLPRes = [](auto& module) { return &module.acc.reverbLPRes; };
+  reverbLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbLPRes);
+  reverbLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbLPRes);
+  reverbLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbLPRes);
+
   return result;
 }
