@@ -779,7 +779,7 @@ FFMakeOsciTopo()
   auto& stringLPRes = result->params[(int)FFOsciParam::StringLPRes];
   stringLPRes.acc = true;
   stringLPRes.defaultText = "0";
-  stringLPRes.name = "LP Res";
+  stringLPRes.name = "LPF Res";
   stringLPRes.display = "Res";
   stringLPRes.slotCount = 1;
   stringLPRes.unit = "%";
@@ -794,7 +794,7 @@ FFMakeOsciTopo()
   auto& stringLPKTrk = result->params[(int)FFOsciParam::StringLPKTrk];
   stringLPKTrk.acc = true;
   stringLPKTrk.defaultText = "0";
-  stringLPKTrk.name = "LP KeyTrk";
+  stringLPKTrk.name = "LPF KeyTrk";
   stringLPKTrk.display = "KTrk";
   stringLPKTrk.slotCount = 1;
   stringLPKTrk.unit = "%";
@@ -842,7 +842,7 @@ FFMakeOsciTopo()
   auto& stringHPRes = result->params[(int)FFOsciParam::StringHPRes];
   stringHPRes.acc = true;
   stringHPRes.defaultText = "0";
-  stringHPRes.name = "HP Res";
+  stringHPRes.name = "HPF Res";
   stringHPRes.display = "Res";
   stringHPRes.slotCount = 1;
   stringHPRes.unit = "%";
@@ -857,7 +857,7 @@ FFMakeOsciTopo()
   auto& stringHPKTrk = result->params[(int)FFOsciParam::StringHPKTrk];
   stringHPKTrk.acc = true;
   stringHPKTrk.defaultText = "0";
-  stringHPKTrk.name = "HP KeyTrk";
+  stringHPKTrk.name = "HPF KeyTrk";
   stringHPKTrk.display = "KTrk";
   stringHPKTrk.slotCount = 1;
   stringHPKTrk.unit = "%";

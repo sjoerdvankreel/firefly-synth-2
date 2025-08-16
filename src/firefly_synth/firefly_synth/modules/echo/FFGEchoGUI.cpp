@@ -28,11 +28,11 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI)
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, target));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target));
   auto guiTapSelect = topo->gui.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, guiTapSelect, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, guiTapSelect, Slider::SliderStyle::RotaryVerticalDrag));
   auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Mix, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
   auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Sync, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
@@ -86,7 +86,7 @@ MakeGEchoSectionTap(FBPlugGUI* plugGUI, int tap)
 
   auto tapFBLpOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapFBLPOn, tap } });
   grid->Add(0, 12, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapFBLpOn));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapFBLpOn));
+  grid->Add(0, 13, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapFBLpOn));
   auto tapFBLpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapFBLPFreq, tap } });
   grid->Add(0, 14, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapFBLpFreq));
   grid->Add(0, 15, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapFBLpFreq, Slider::SliderStyle::RotaryVerticalDrag));

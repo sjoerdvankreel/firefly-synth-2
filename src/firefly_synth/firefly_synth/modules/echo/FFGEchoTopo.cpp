@@ -181,7 +181,7 @@ FFMakeGEchoTopo()
   auto& tapLPRes = result->params[(int)FFGEchoParam::TapLPRes];
   tapLPRes.acc = true;
   tapLPRes.defaultText = "0";
-  tapLPRes.name = "Tap LP Res";
+  tapLPRes.name = "Tap LPF Res";
   tapLPRes.display = "Res";
   tapLPRes.slotCount = FFGEchoTapCount;
   tapLPRes.unit = "%";
@@ -223,7 +223,7 @@ FFMakeGEchoTopo()
   auto& tapHPRes = result->params[(int)FFGEchoParam::TapHPRes];
   tapHPRes.acc = true;
   tapHPRes.defaultText = "0";
-  tapHPRes.name = "Tap HP Res";
+  tapHPRes.name = "Tap HPF Res";
   tapHPRes.display = "Res";
   tapHPRes.slotCount = FFGEchoTapCount;
   tapHPRes.unit = "%";
@@ -265,7 +265,7 @@ FFMakeGEchoTopo()
   auto& tapFBLPRes = result->params[(int)FFGEchoParam::TapFBLPRes];
   tapFBLPRes.acc = true;
   tapFBLPRes.defaultText = "0";
-  tapFBLPRes.name = "Tap Fdbk LP Res";
+  tapFBLPRes.name = "Tap Fdbk LPF Res";
   tapFBLPRes.display = "Res";
   tapFBLPRes.slotCount = FFGEchoTapCount;
   tapFBLPRes.unit = "%";
@@ -279,7 +279,7 @@ FFMakeGEchoTopo()
   auto& tapFBHPOn = result->params[(int)FFGEchoParam::TapFBHPOn];
   tapFBHPOn.acc = false;
   tapFBHPOn.name = "Tap Fdbk HPF On";
-  tapFBHPOn.display = "HPF";
+  tapFBHPOn.display = "Fdbk HPF";
   tapFBHPOn.slotCount = FFGEchoTapCount;
   tapFBHPOn.defaultText = "Off";
   tapFBHPOn.id = "{90188FE8-AE2E-4FD3-9185-44F976D350A5}";
@@ -307,7 +307,7 @@ FFMakeGEchoTopo()
   auto& tapFBHPRes = result->params[(int)FFGEchoParam::TapFBHPRes];
   tapFBHPRes.acc = true;
   tapFBHPRes.defaultText = "0";
-  tapFBHPRes.name = "Tap Fdbk HP Res";
+  tapFBHPRes.name = "Tap Fdbk HPF Res";
   tapFBHPRes.display = "Res";
   tapFBHPRes.slotCount = FFGEchoTapCount;
   tapFBHPRes.unit = "%";
@@ -384,9 +384,8 @@ FFMakeGEchoTopo()
 
   auto& guiTapSelect = result->guiParams[(int)FFGEchoGUIParam::TapSelect];
   guiTapSelect.defaultText = "1";
-  guiTapSelect.display = "Tap";
-  guiTapSelect.id = "{FB146F89-2B8D-448F-8B38-EA213B4FC84D}";
   guiTapSelect.name = "Tap Select";
+  guiTapSelect.id = "{FB146F89-2B8D-448F-8B38-EA213B4FC84D}";
   guiTapSelect.slotCount = 1;
   guiTapSelect.type = FBParamType::Discrete;
   guiTapSelect.Discrete().valueOffset = 1;
@@ -506,7 +505,7 @@ FFMakeGEchoTopo()
   auto& reverbLPRes = result->params[(int)FFGEchoParam::ReverbLPRes];
   reverbLPRes.acc = true;
   reverbLPRes.defaultText = "0";
-  reverbLPRes.name = "Reverb LP Res";
+  reverbLPRes.name = "Reverb LPF Res";
   reverbLPRes.display = "Res";
   reverbLPRes.slotCount = 1;
   reverbLPRes.unit = "%";
@@ -548,7 +547,7 @@ FFMakeGEchoTopo()
   auto& reverbHPRes = result->params[(int)FFGEchoParam::ReverbHPRes];
   reverbHPRes.acc = true;
   reverbHPRes.defaultText = "0";
-  reverbHPRes.name = "Reverb HP Res";
+  reverbHPRes.name = "Reverb HPF Res";
   reverbHPRes.display = "Res";
   reverbHPRes.slotCount = 1;
   reverbHPRes.unit = "%";
