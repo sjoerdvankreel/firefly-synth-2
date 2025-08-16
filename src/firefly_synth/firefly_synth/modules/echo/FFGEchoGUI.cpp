@@ -43,12 +43,6 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI)
 static Component*
 MakeGEchoSectionTap(FBPlugGUI* plugGUI, int tap)
 {
-  /*
-  TapDelayTime, TapDelayBars, TapLengthTime, TapLengthBars,
-  TapLPOn, TapLPFreq, TapLPRes, TapFBLPOn, TapFBLPFreq, TapFBLPRes,
-  TapHPOn, TapHPFreq, TapHPRes, TapFBHPOn, TapFBHPFreq, TapFBHPRes*/
-
-
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
@@ -108,6 +102,19 @@ MakeGEchoSectionTap(FBPlugGUI* plugGUI, int tap)
   auto tapFBHpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapFBHPRes, tap } });
   grid->Add(1, 16, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapFBHpRes));
   grid->Add(1, 17, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapFBHpRes, Slider::SliderStyle::RotaryVerticalDrag));
+
+  auto tapDelayTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapDelayTime, tap } });
+  grid->Add(0, 18, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapDelayTime));
+  grid->Add(0, 19, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapDelayTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto tapDelayBars = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapDelayBars, tap } });
+  grid->Add(0, 18, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapDelayBars));
+  grid->Add(0, 19, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, tapDelayBars));
+  auto tapLengthTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapLengthTime, tap } });
+  grid->Add(1, 18, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLengthTime));
+  grid->Add(1, 19, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLengthTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto tapLengthBars = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapLengthBars, tap } });
+  grid->Add(1, 18, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLengthBars));
+  grid->Add(1, 19, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, tapLengthBars));
 
   grid->MarkSection({ { 0, 0 }, { 2, 20 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
