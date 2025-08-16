@@ -119,3 +119,26 @@ MakeGEchoSectionTap(FBPlugGUI* plugGUI, int tap)
   grid->MarkSection({ { 0, 0 }, { 2, 20 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
+
+static Component*
+MakeGEchoTab(FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  std::vector<int> columnSizes = { 0, 1 };
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
+  grid->Add(0, 0, MakeGEchoSectionMain(plugGUI));
+  grid->Add(0, 1, MakeGEchoSectionTap(plugGUI, 0));
+  for (int i = 1; i < FFGEchoTapCount; i++)
+    MakeGEchoSectionTap(plugGUI, i); // TODO
+  return plugGUI->StoreComponent<FBSectionComponent>(grid);
+}
+
+Component*
+FFMakeGEchoGUI(FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
+  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::GEcho].name;
+  tabs->addTab(name, {}, MakeGEchoTab(plugGUI), false);
+  return tabs;
+}
