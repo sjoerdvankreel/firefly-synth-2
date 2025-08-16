@@ -394,5 +394,86 @@ FFMakeGEchoTopo()
   auto selectGuiTapSelect = [](auto& module) { return &module.tapSelect; };
   guiTapSelect.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiTapSelect);
 
+  auto& reverbPlacement = result->params[(int)FFGEchoParam::ReverbPlacement];
+  reverbPlacement.acc = false;
+  reverbPlacement.defaultText = "Off";
+  reverbPlacement.name = "Reverb";
+  reverbPlacement.slotCount = 1;
+  reverbPlacement.id = "{EC5479CD-0BD0-46D2-AD39-D6CE167FFE4C}";
+  reverbPlacement.type = FBParamType::List;
+  reverbPlacement.List().items = {
+    { "{2063E052-591E-4F6A-8A72-8149779014BB}", "Off" },
+    { "{9E345475-BE48-4D61-BD24-BC0B47E0E413}", "BeforeTaps" },
+    { "{3DC9AB2F-A2E5-4344-A6B9-2D23E96190A9}", "AfterTaps" } };
+  auto selectReverbPlacement = [](auto& module) { return &module.block.reverbPlacement; };
+  reverbPlacement.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbPlacement);
+  reverbPlacement.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbPlacement);
+  reverbPlacement.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbPlacement);
+
+  auto& reverbMix = result->params[(int)FFGEchoParam::ReverbMix];
+  reverbMix.acc = true;
+  reverbMix.defaultText = "50";
+  reverbMix.name = "Reverb Mix";
+  reverbMix.display = "Mix";
+  reverbMix.slotCount = 1;
+  reverbMix.id = "{D40CAAA2-186D-4296-BE87-7DFCCA33C4AF}";
+  reverbMix.type = FBParamType::Identity;
+  auto selectReverbMix = [](auto& module) { return &module.acc.reverbMix; };
+  reverbMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbMix);
+  reverbMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbMix);
+  reverbMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbMix);
+
+  auto& reverbSpread = result->params[(int)FFGEchoParam::ReverbSpread];
+  reverbSpread.acc = true;
+  reverbSpread.defaultText = "50";
+  reverbSpread.name = "Reverb Spread";
+  reverbSpread.display = "Sprd";
+  reverbSpread.slotCount = 1;
+  reverbSpread.id = "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
+  reverbSpread.type = FBParamType::Identity;
+  auto selectReverbSpread = [](auto& module) { return &module.acc.reverbSpread; };
+  reverbSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbSpread);
+  reverbSpread.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbSpread);
+  reverbSpread.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbSpread);
+
+  auto& reverbAPF = result->params[(int)FFGEchoParam::ReverbAPF];
+  reverbAPF.acc = true;
+  reverbAPF.defaultText = "50";
+  reverbAPF.name = "Reverb APF";
+  reverbAPF.display = "APF";
+  reverbAPF.slotCount = 1;
+  reverbAPF.id = "{3D12C8EF-6891-4980-8BAD-33E74AD79298}";
+  reverbAPF.type = FBParamType::Identity;
+  auto selectReverbAPF = [](auto& module) { return &module.acc.reverbAPF; };
+  reverbAPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbAPF);
+  reverbAPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbAPF);
+  reverbAPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbAPF);
+
+  auto& reverbDamp = result->params[(int)FFGEchoParam::ReverbDamp];
+  reverbDamp.acc = true;
+  reverbDamp.defaultText = "50";
+  reverbDamp.name = "Reverb Damp";
+  reverbDamp.display = "Damp";
+  reverbDamp.slotCount = 1;
+  reverbDamp.id = "{5E33AA4C-F65E-432A-9DCB-E67F4AF46770}";
+  reverbDamp.type = FBParamType::Identity;
+  auto selectReverbDamp = [](auto& module) { return &module.acc.reverbDamp; };
+  reverbDamp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbDamp);
+  reverbDamp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbDamp);
+  reverbDamp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbDamp);
+
+  auto& reverbSize = result->params[(int)FFGEchoParam::ReverbSize];
+  reverbSize.acc = true;
+  reverbSize.defaultText = "50";
+  reverbSize.name = "Reverb Size";
+  reverbSize.display = "Size";
+  reverbSize.slotCount = 1;
+  reverbSize.id = "{2B4B1255-6875-49B3-B52D-CC9711C6D7A4}";
+  reverbSize.type = FBParamType::Identity;
+  auto selectReverbSize = [](auto& module) { return &module.acc.reverbSize; };
+  reverbSize.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbSize);
+  reverbSize.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbSize);
+  reverbSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbSize);
+
   return result;
 }
