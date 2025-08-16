@@ -84,6 +84,19 @@ FFMakeGEchoTopo()
   tapOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapOn);
   tapOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapOn);
 
+  auto& tapLevel = result->params[(int)FFGEchoParam::TapLevel];
+  tapLevel.acc = true;
+  tapLevel.defaultText = "50";
+  tapLevel.name = "Tap Level";
+  tapLevel.display = "Lvl";
+  tapLevel.slotCount = FFGEchoTapCount;
+  tapLevel.id = "{E3633411-F79D-4D2A-A748-82E03A35434E}";
+  tapLevel.type = FBParamType::Identity;
+  auto selectTapLevel = [](auto& module) { return &module.acc.tapLevel; };
+  tapLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLevel);
+  tapLevel.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLevel);
+  tapLevel.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLevel);
+
   auto& tapFeedback = result->params[(int)FFGEchoParam::TapFeedback];
   tapFeedback.acc = true;
   tapFeedback.defaultText = "50";
@@ -113,6 +126,32 @@ FFMakeGEchoTopo()
   tapBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapBal);
   tapBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapBal);
   tapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapBal);
+
+  auto& tapXOver = result->params[(int)FFGEchoParam::TapXOver];
+  tapXOver.acc = true;
+  tapXOver.defaultText = "0";
+  tapXOver.name = "Tap Crossover";
+  tapXOver.display = "XOver";
+  tapXOver.slotCount = FFGEchoTapCount;
+  tapXOver.id = "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
+  tapXOver.type = FBParamType::Identity;
+  auto selectTapXOver = [](auto& module) { return &module.acc.tapCrossOver; };
+  tapXOver.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapXOver);
+  tapXOver.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapXOver);
+  tapXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapXOver);
+
+  auto& tapFBXOver = result->params[(int)FFGEchoParam::TapFBXOver];
+  tapFBXOver.acc = true;
+  tapFBXOver.defaultText = "0";
+  tapFBXOver.name = "Tap Fdbk Crossover";
+  tapFBXOver.display = "FB XOver";
+  tapFBXOver.slotCount = FFGEchoTapCount;
+  tapFBXOver.id = "{D60097D8-8F7A-4F05-9F35-65D41E2A4516}";
+  tapFBXOver.type = FBParamType::Identity;
+  auto selectTapFBXOver = [](auto& module) { return &module.acc.tapFBCrossOver; };
+  tapFBXOver.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBXOver);
+  tapFBXOver.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBXOver);
+  tapFBXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBXOver);
 
   auto& tapLPOn = result->params[(int)FFGEchoParam::TapLPOn];
   tapLPOn.acc = false;

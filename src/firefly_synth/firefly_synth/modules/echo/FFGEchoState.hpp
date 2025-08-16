@@ -54,8 +54,11 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, FFGEchoTapCount> tapFBHPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapFBLPFreq = {};
   std::array<TAccurate, FFGEchoTapCount> tapFBHPFreq = {};
+  std::array<TAccurate, FFGEchoTapCount> tapLevel = {};
   std::array<TAccurate, FFGEchoTapCount> tapBalance = {};
   std::array<TAccurate, FFGEchoTapCount> tapFeedback = {};
+  std::array<TAccurate, FFGEchoTapCount> tapCrossOver = {};
+  std::array<TAccurate, FFGEchoTapCount> tapFBCrossOver = {};
   std::array<TAccurate, FFGEchoTapCount> tapDelaySeconds = {};
   std::array<TAccurate, FFGEchoTapCount> tapLengthSeconds = {};
 public:
