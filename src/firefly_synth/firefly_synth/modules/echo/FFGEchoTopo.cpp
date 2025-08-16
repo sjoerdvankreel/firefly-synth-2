@@ -124,8 +124,8 @@ FFMakeGEchoTopo()
   tapLPOn.type = FBParamType::Boolean;
   auto selectTapLPOn = [](auto& module) { return &module.block.tapLPOn; };
   tapLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPOn);
-  tapLPOn.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapBal);
-  tapLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapBal);
+  tapLPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPOn);
+  tapLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPOn);
 
   auto& tapLPFreq = result->params[(int)FFGEchoParam::TapLPFreq];
   tapLPFreq.acc = true;
@@ -155,6 +155,48 @@ FFMakeGEchoTopo()
   tapLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPRes);
   tapLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPRes);
   tapLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPRes);
+
+  auto& tapHPOn = result->params[(int)FFGEchoParam::TapHPOn];
+  tapHPOn.acc = false;
+  tapHPOn.name = "Tap HPF On";
+  tapHPOn.display = "HPF";
+  tapHPOn.slotCount = FFGEchoTapCount;
+  tapHPOn.defaultText = "Off";
+  tapHPOn.id = "{999DC4BF-C87C-471D-A251-29D2CDE9B7CD}";
+  tapHPOn.type = FBParamType::Boolean;
+  auto selectTapHPOn = [](auto& module) { return &module.block.tapHPOn; };
+  tapHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapHPOn);
+  tapHPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapHPOn);
+  tapHPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPOn);
+
+  auto& tapHPFreq = result->params[(int)FFGEchoParam::TapHPFreq];
+  tapHPFreq.acc = true;
+  tapHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
+  tapHPFreq.name = "Tap HPF Freq";
+  tapHPFreq.display = "Frq";
+  tapHPFreq.slotCount = FFGEchoTapCount;
+  tapHPFreq.unit = "Hz";
+  tapHPFreq.id = "{3B3F90D7-CAF0-45ED-8316-D21BE4508E05}";
+  tapHPFreq.type = FBParamType::Log2;
+  tapHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectTapHPFreq = [](auto& module) { return &module.acc.tapHPFreq; };
+  tapHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapHPFreq);
+  tapHPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapHPFreq);
+  tapHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPFreq);
+
+  auto& tapHPRes = result->params[(int)FFGEchoParam::TapHPRes];
+  tapHPRes.acc = true;
+  tapHPRes.defaultText = "0";
+  tapHPRes.name = "Tap HP Res";
+  tapHPRes.display = "Res";
+  tapHPRes.slotCount = FFGEchoTapCount;
+  tapHPRes.unit = "%";
+  tapHPRes.id = "{E8174982-FF15-4375-84BA-1C8AFBE8CF28}";
+  tapHPRes.type = FBParamType::Identity;
+  auto selectTapHPRes = [](auto& module) { return &module.acc.tapHPRes; };
+  tapHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapHPRes);
+  tapHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapHPRes);
+  tapHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPRes);
 
   return result;
 }
