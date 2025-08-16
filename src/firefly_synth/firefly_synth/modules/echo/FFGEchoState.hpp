@@ -32,6 +32,8 @@ class alignas(alignof(TBlock)) FFGEchoBlockParamState final
   std::array<TBlock, FFGEchoTapCount> tapOn = {};
   std::array<TBlock, FFGEchoTapCount> tapLPOn = {};
   std::array<TBlock, FFGEchoTapCount> tapHPOn = {};
+  std::array<TBlock, FFGEchoTapCount> tapFBLPOn = {};
+  std::array<TBlock, FFGEchoTapCount> tapFBHPOn = {};
   std::array<TBlock, FFGEchoTapCount> tapDelayBars = {};
   std::array<TBlock, FFGEchoTapCount> tapLengthBars = {};
 public:

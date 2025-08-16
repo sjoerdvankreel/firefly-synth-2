@@ -198,5 +198,89 @@ FFMakeGEchoTopo()
   tapHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapHPRes);
   tapHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPRes);
 
+  auto& tapFBLPOn = result->params[(int)FFGEchoParam::TapFBLPOn];
+  tapFBLPOn.acc = false;
+  tapFBLPOn.name = "Tap Fdbk LPF On";
+  tapFBLPOn.display = "Fdbk LPF";
+  tapFBLPOn.slotCount = FFGEchoTapCount;
+  tapFBLPOn.defaultText = "Off";
+  tapFBLPOn.id = "{9EE6E317-8039-4E6B-BE6E-1B9F287D1F6E}";
+  tapFBLPOn.type = FBParamType::Boolean;
+  auto selectTapFBLPOn = [](auto& module) { return &module.block.tapFBLPOn; };
+  tapFBLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPOn);
+  tapFBLPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPOn);
+  tapFBLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPOn);
+
+  auto& tapFBLPFreq = result->params[(int)FFGEchoParam::TapFBLPFreq];
+  tapFBLPFreq.acc = true;
+  tapFBLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  tapFBLPFreq.name = "Tap Fdbk LPF Freq";
+  tapFBLPFreq.display = "Frq";
+  tapFBLPFreq.slotCount = FFGEchoTapCount;
+  tapFBLPFreq.unit = "Hz";
+  tapFBLPFreq.id = "{BD78678C-EDC1-4808-90A1-8969534170F4}";
+  tapFBLPFreq.type = FBParamType::Log2;
+  tapFBLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectTapFBLPFreq = [](auto& module) { return &module.acc.tapFBLPFreq; };
+  tapFBLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPFreq);
+  tapFBLPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPFreq);
+  tapFBLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPFreq);
+
+  auto& tapFBLPRes = result->params[(int)FFGEchoParam::TapFBLPRes];
+  tapFBLPRes.acc = true;
+  tapFBLPRes.defaultText = "0";
+  tapFBLPRes.name = "Tap Fdbk LP Res";
+  tapFBLPRes.display = "Res";
+  tapFBLPRes.slotCount = FFGEchoTapCount;
+  tapFBLPRes.unit = "%";
+  tapFBLPRes.id = "{B9C9D5CA-8258-4A04-A172-524C0B1A072F}";
+  tapFBLPRes.type = FBParamType::Identity;
+  auto selectTapFBLPRes = [](auto& module) { return &module.acc.tapFBLPRes; };
+  tapFBLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPRes);
+  tapFBLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPRes);
+  tapFBLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPRes);
+
+  auto& tapFBHPOn = result->params[(int)FFGEchoParam::TapFBHPOn];
+  tapFBHPOn.acc = false;
+  tapFBHPOn.name = "Tap Fdbk HPF On";
+  tapFBHPOn.display = "HPF";
+  tapFBHPOn.slotCount = FFGEchoTapCount;
+  tapFBHPOn.defaultText = "Off";
+  tapFBHPOn.id = "{90188FE8-AE2E-4FD3-9185-44F976D350A5}";
+  tapFBHPOn.type = FBParamType::Boolean;
+  auto selectTapFBHPOn = [](auto& module) { return &module.block.tapFBHPOn; };
+  tapFBHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPOn);
+  tapFBHPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPOn);
+  tapFBHPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPOn);
+
+  auto& tapFBHPFreq = result->params[(int)FFGEchoParam::TapFBHPFreq];
+  tapFBHPFreq.acc = true;
+  tapFBHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
+  tapFBHPFreq.name = "Tap Fdbk HPF Freq";
+  tapFBHPFreq.display = "Frq";
+  tapFBHPFreq.slotCount = FFGEchoTapCount;
+  tapFBHPFreq.unit = "Hz";
+  tapFBHPFreq.id = "{18789F3C-57F6-45D6-BD6B-C2FD2763C998}";
+  tapFBHPFreq.type = FBParamType::Log2;
+  tapFBHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectTapFBHPFreq = [](auto& module) { return &module.acc.tapFBHPFreq; };
+  tapFBHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPFreq);
+  tapFBHPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPFreq);
+  tapFBHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPFreq);
+
+  auto& tapFBHPRes = result->params[(int)FFGEchoParam::TapFBHPRes];
+  tapFBHPRes.acc = true;
+  tapFBHPRes.defaultText = "0";
+  tapFBHPRes.name = "Tap Fdbk HP Res";
+  tapFBHPRes.display = "Res";
+  tapFBHPRes.slotCount = FFGEchoTapCount;
+  tapFBHPRes.unit = "%";
+  tapFBHPRes.id = "{EE282F55-6537-4DAE-B8F9-DBD9F5C61811}";
+  tapFBHPRes.type = FBParamType::Identity;
+  auto selectTapFBHPRes = [](auto& module) { return &module.acc.tapFBHPRes; };
+  tapFBHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPRes);
+  tapFBHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPRes);
+  tapFBHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPRes);
+
   return result;
 }
