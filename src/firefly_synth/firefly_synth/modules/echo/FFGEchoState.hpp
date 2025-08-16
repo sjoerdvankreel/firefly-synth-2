@@ -59,8 +59,8 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, FFGEchoTapCount> tapFeedback = {};
   std::array<TAccurate, FFGEchoTapCount> tapCrossOver = {};
   std::array<TAccurate, FFGEchoTapCount> tapFBCrossOver = {};
-  std::array<TAccurate, FFGEchoTapCount> tapDelaySeconds = {};
-  std::array<TAccurate, FFGEchoTapCount> tapLengthSeconds = {};
+  std::array<TAccurate, FFGEchoTapCount> tapDelayTime = {};
+  std::array<TAccurate, FFGEchoTapCount> tapLengthTime = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoAccParamState);
 };

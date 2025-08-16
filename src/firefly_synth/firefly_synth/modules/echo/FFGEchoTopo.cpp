@@ -3,6 +3,12 @@
 #include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
+static std::vector<FBBarsItem>
+MakeGEchoBarsItems()
+{
+  return FBMakeBarsItems(true, { 1, 128 }, { 1, 1 });
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeGEchoTopo()
 {
@@ -320,6 +326,38 @@ FFMakeGEchoTopo()
   tapFBHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPRes);
   tapFBHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPRes);
   tapFBHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPRes);
+
+  auto& tapDelayTime = result->params[(int)FFGEchoParam::TapDelayTime];
+  tapDelayTime.acc = true;
+  tapDelayTime.defaultText = "0";
+  tapDelayTime.display = "Dly";
+  tapDelayTime.name = "Tap Delay Time";
+  tapDelayTime.slotCount = FFGEchoTapCount;
+  tapDelayTime.unit = "Sec";
+  tapDelayTime.id = "{7ADA9075-213B-4809-B32E-39B2794B010F}";
+  tapDelayTime.type = FBParamType::Linear;
+  tapDelayTime.Linear().min = 0.0f;
+  tapDelayTime.Linear().max = 10.0f;
+  tapDelayTime.Linear().editSkewFactor = 0.5f;
+  auto selectTapDelayTime = [](auto& module) { return &module.acc.tapDelayTime; };
+  tapDelayTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayTime);
+  tapDelayTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayTime);
+  tapDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayTime);
+
+  auto& tapDelayBars = result->params[(int)FFGEchoParam::TapDelayBars];
+  tapDelayBars.acc = false;
+  tapDelayBars.defaultText = "Off";
+  tapDelayBars.display = "Dly";
+  tapDelayBars.name = "Tap Delay Bars";
+  tapDelayBars.slotCount = FFGEchoTapCount;
+  tapDelayBars.unit = "Bars";
+  tapDelayBars.id = "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
+  tapDelayBars.type = FBParamType::Bars;
+  tapDelayBars.Bars().items = MakeGEchoBarsItems();
+  auto selectTapDelayBars = [](auto& module) { return &module.block.tapDelayBars; };
+  tapDelayBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayBars);
+  tapDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayBars);
+  tapDelayBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayBars);
 
   return result;
 }

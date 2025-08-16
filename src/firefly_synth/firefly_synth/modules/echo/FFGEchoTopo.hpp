@@ -15,6 +15,6 @@ enum class FFGEchoTarget { Voice, FX1, FX2, FX3, FX4, Out };
 enum class FFGEchoParam {
   On, Target, Mix, Sync, 
   TapOn, TapFeedback, TapBalance, TapLevel, TapXOver, TapFBXOver,
-  TapDelaySeconds, TapDelayBars, TapLengthSeconds, TapLengthBars,
+  TapDelayTime, TapDelayBars, TapLengthTime, TapLengthBars,
   TapLPOn, TapLPFreq, TapLPRes, TapFBLPOn, TapFBLPFreq, TapFBLPRes,
   TapHPOn, TapHPFreq, TapHPRes, TapFBHPOn, TapFBHPFreq, TapFBHPRes, Count };
