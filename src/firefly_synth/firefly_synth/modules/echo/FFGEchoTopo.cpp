@@ -71,5 +71,48 @@ FFMakeGEchoTopo()
   target.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTarget);
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTarget);
 
+  auto& tapOn = result->params[(int)FFGEchoParam::TapOn];
+  tapOn.acc = false;
+  tapOn.name = "Tap On";
+  tapOn.display = "On";
+  tapOn.slotCount = FFGEchoTapCount;
+  tapOn.defaultText = "Off";
+  tapOn.id = "{0EA26FE5-F45F-431E-9421-0FDD9E508CB8}";
+  tapOn.type = FBParamType::Boolean;
+  auto selectTapOn = [](auto& module) { return &module.block.tapOn; };
+  tapOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapOn);
+  tapOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapOn);
+  tapOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapOn);
+
+  auto& tapFeedback = result->params[(int)FFGEchoParam::TapFeedback];
+  tapFeedback.acc = true;
+  tapFeedback.defaultText = "50";
+  tapFeedback.name = "Tap Fdbk";
+  tapFeedback.display = "Fdbk";
+  tapFeedback.slotCount = FFGEchoTapCount;
+  tapFeedback.id = "{4E922DA7-ECAE-412E-AFED-BAA94205CF97}";
+  tapFeedback.type = FBParamType::Identity;
+  auto selectTapFeedback = [](auto& module) { return &module.acc.tapFeedback; };
+  tapFeedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFeedback);
+  tapFeedback.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFeedback);
+  tapFeedback.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFeedback);
+
+  auto& tapBal = result->params[(int)FFGEchoParam::TapBalance];
+  tapBal.acc = true;
+  tapBal.defaultText = "0";
+  tapBal.name = "Tap Bal";
+  tapBal.display = "Bal";
+  tapBal.slotCount = FFGEchoTapCount;
+  tapBal.unit = "%";
+  tapBal.id = "{2DCCEE86-4381-4E7F-98B6-FA94059F253B}";
+  tapBal.type = FBParamType::Linear;
+  tapBal.Linear().displayMultiplier = 100;
+  tapBal.Linear().min = -1.0f;
+  tapBal.Linear().max = 1.0f;
+  auto selectTapBal = [](auto& module) { return &module.acc.tapBalance; };
+  tapBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapBal);
+  tapBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapBal);
+  tapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapBal);
+
   return result;
 }
