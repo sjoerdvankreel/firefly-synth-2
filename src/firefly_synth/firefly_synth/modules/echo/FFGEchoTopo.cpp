@@ -18,20 +18,30 @@ FFMakeGEchoTopo()
   result->slotCount = 1;
   result->id = "{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}";
   result->params.resize((int)FFGEchoParam::Count);
+  result->guiParams.resize((int)FFGEchoGUIParam::Count);
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gEcho; });
+  auto selectGuiModule = [](auto& state) { return &state.gEcho; };
   auto selectModule = [](auto& state) { return &state.global.gEcho; };
 
-  auto& on = result->params[(int)FFGEchoParam::On];
-  on.acc = false;
-  on.name = "On";
-  on.slotCount = 1;
-  on.defaultText = "Off";
-  on.id = "{5E624DFB-42F6-44B8-800D-B2382D8BC062}";
-  on.type = FBParamType::Boolean;
-  auto selectOn = [](auto& module) { return &module.block.on; };
-  on.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOn);
-  on.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOn);
-  on.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOn);
+  auto& target = result->params[(int)FFGEchoParam::Target];
+  target.acc = false;
+  target.defaultText = "Off";
+  target.name = "Target";
+  target.slotCount = 1;
+  target.id = "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
+  target.type = FBParamType::List;
+  target.List().items = {
+    { "{3B1FC348-4F80-4CD5-8F3D-E762C0373EAB}", "Off" },
+    { "{84DBE1D7-B703-4E7A-BBDC-70A0F98EBB43}", "Voice" },
+    { "{3F334789-DA27-442D-81CF-EF87C73067E5}", "FX1" },
+    { "{6888AC49-5381-4B1E-9E92-F78D49AB203A}", "FX2" },
+    { "{877E72D7-F9CA-441E-B675-800B4015E900}", "FX3" },
+    { "{C1ADFC32-1DD5-4CA8-B514-374E8306A2A1}", "FX4" },
+    { "{F0E3771C-D1FE-4544-BA9B-2D3C9C4E7CF4}", "Out" } };
+  auto selectTarget = [](auto& module) { return &module.block.target; };
+  target.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTarget);
+  target.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTarget);
+  target.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTarget);
 
   auto& sync = result->params[(int)FFGEchoParam::Sync];
   sync.acc = false;
@@ -57,25 +67,6 @@ FFMakeGEchoTopo()
   mix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMix);
   mix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectMix);
   mix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMix);
-
-  auto& target = result->params[(int)FFGEchoParam::Target];
-  target.acc = false;
-  target.defaultText = "Out";
-  target.name = "Target";
-  target.slotCount = 1;
-  target.id = "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
-  target.type = FBParamType::List;
-  target.List().items = {
-    { "{84DBE1D7-B703-4E7A-BBDC-70A0F98EBB43}", "Voice" },
-    { "{3F334789-DA27-442D-81CF-EF87C73067E5}", "FX1" },
-    { "{6888AC49-5381-4B1E-9E92-F78D49AB203A}", "FX2" },
-    { "{877E72D7-F9CA-441E-B675-800B4015E900}", "FX3" },
-    { "{C1ADFC32-1DD5-4CA8-B514-374E8306A2A1}", "FX4" },
-    { "{F0E3771C-D1FE-4544-BA9B-2D3C9C4E7CF4}", "Out" } };
-  auto selectTarget = [](auto& module) { return &module.block.target; };
-  target.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTarget);
-  target.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTarget);
-  target.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTarget);
 
   auto& tapOn = result->params[(int)FFGEchoParam::TapOn];
   tapOn.acc = false;
@@ -390,6 +381,18 @@ FFMakeGEchoTopo()
   tapLengthBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthBars);
   tapLengthBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthBars);
   tapLengthBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthBars);
+
+  auto& guiTapSelect = result->guiParams[(int)FFGEchoGUIParam::TapSelect];
+  guiTapSelect.defaultText = "1";
+  guiTapSelect.display = "Tap";
+  guiTapSelect.id = "{FB146F89-2B8D-448F-8B38-EA213B4FC84D}";
+  guiTapSelect.name = "Tap Select";
+  guiTapSelect.slotCount = 1;
+  guiTapSelect.type = FBParamType::Discrete;
+  guiTapSelect.Discrete().valueOffset = 1;
+  guiTapSelect.Discrete().valueCount = FFGEchoTapCount;
+  auto selectGuiTapSelect = [](auto& module) { return &module.tapSelect; };
+  guiTapSelect.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiTapSelect);
 
   return result;
 }

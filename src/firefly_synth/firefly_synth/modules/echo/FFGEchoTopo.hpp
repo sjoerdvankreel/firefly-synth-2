@@ -4,16 +4,17 @@
 #include <memory>
 
 struct FBStaticModule;
-inline int constexpr FFGEchoTapCount = 6;
+inline int constexpr FFGEchoTapCount = 8;
 inline int constexpr FFGEchoMaxSeconds = 10;
 std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
 
-enum class FFGEchoTarget { Voice, FX1, FX2, FX3, FX4, Out };
+enum class FFGEchoGUIParam { TapSelect, Count };
+enum class FFGEchoTarget { Off, Voice, FX1, FX2, FX3, FX4, Out };
 
 // todo taps->reverb/reverb->taps
 // per-tap spread/lr-interaction
 enum class FFGEchoParam {
-  On, Target, Mix, Sync, 
+  Target, Mix, Sync, 
   TapOn, TapFeedback, TapBalance, TapLevel, TapXOver, TapFBXOver,
   TapDelayTime, TapDelayBars, TapLengthTime, TapLengthBars,
   TapLPOn, TapLPFreq, TapLPRes, TapFBLPOn, TapFBLPFreq, TapFBLPRes,

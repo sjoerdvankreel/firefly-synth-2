@@ -12,6 +12,15 @@
 
 struct FBStaticModule;
 
+class FFGEchoGUIState final
+{
+  friend struct FFGEchoState;
+  friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
+  std::array<double, 1> tapSelect = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoGUIState);
+};
+
 class FFGEchoDSPState final
 {
   friend class FFPlugProcessor;

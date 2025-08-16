@@ -29,6 +29,7 @@
 
 struct FFGUIState final
 {
+  std::array<FFGEchoGUIState, 1> gEcho = {};
   std::array<FFGUISettingsGUIState, 1> guiSettings = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };
