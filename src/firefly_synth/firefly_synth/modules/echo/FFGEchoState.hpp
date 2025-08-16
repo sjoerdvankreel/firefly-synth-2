@@ -30,6 +30,8 @@ class alignas(alignof(TBlock)) FFGEchoBlockParamState final
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> target = {};
   std::array<TBlock, FFGEchoTapCount> tapOn = {};
+  std::array<TBlock, FFGEchoTapCount> tapLPOn = {};
+  std::array<TBlock, FFGEchoTapCount> tapHPOn = {};
   std::array<TBlock, FFGEchoTapCount> tapDelayBars = {};
   std::array<TBlock, FFGEchoTapCount> tapLengthBars = {};
 public:
@@ -46,6 +48,10 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, FFGEchoTapCount> tapHPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapLPFreq = {};
   std::array<TAccurate, FFGEchoTapCount> tapHPFreq = {};
+  std::array<TAccurate, FFGEchoTapCount> tapFBLPRes = {};
+  std::array<TAccurate, FFGEchoTapCount> tapFBHPRes = {};
+  std::array<TAccurate, FFGEchoTapCount> tapFBLPFreq = {};
+  std::array<TAccurate, FFGEchoTapCount> tapFBHPFreq = {};
   std::array<TAccurate, FFGEchoTapCount> tapBalance = {};
   std::array<TAccurate, FFGEchoTapCount> tapFeedback = {};
   std::array<TAccurate, FFGEchoTapCount> tapDelaySeconds = {};

@@ -114,5 +114,47 @@ FFMakeGEchoTopo()
   tapBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapBal);
   tapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapBal);
 
+  auto& tapLPOn = result->params[(int)FFGEchoParam::TapLPOn];
+  tapLPOn.acc = false;
+  tapLPOn.name = "Tap LPF On";
+  tapLPOn.display = "LPF";
+  tapLPOn.slotCount = FFGEchoTapCount;
+  tapLPOn.defaultText = "Off";
+  tapLPOn.id = "{F3400A25-4444-4865-823B-AA104A2D8ADB}";
+  tapLPOn.type = FBParamType::Boolean;
+  auto selectTapLPOn = [](auto& module) { return &module.block.tapLPOn; };
+  tapLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPOn);
+  tapLPOn.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapBal);
+  tapLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapBal);
+
+  auto& tapLPFreq = result->params[(int)FFGEchoParam::TapLPFreq];
+  tapLPFreq.acc = true;
+  tapLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  tapLPFreq.name = "Tap LPF Freq";
+  tapLPFreq.display = "Frq";
+  tapLPFreq.slotCount = FFGEchoTapCount;
+  tapLPFreq.unit = "Hz";
+  tapLPFreq.id = "{D8CA3B61-6335-4457-9A4F-71F5A912C0D7}";
+  tapLPFreq.type = FBParamType::Log2;
+  tapLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectTapLPFreq = [](auto& module) { return &module.acc.tapLPFreq; };
+  tapLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPFreq);
+  tapLPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPFreq);
+  tapLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPFreq);
+
+  auto& tapLPRes = result->params[(int)FFGEchoParam::TapLPRes];
+  tapLPRes.acc = true;
+  tapLPRes.defaultText = "0";
+  tapLPRes.name = "Tap LP Res";
+  tapLPRes.display = "Res";
+  tapLPRes.slotCount = FFGEchoTapCount;
+  tapLPRes.unit = "%";
+  tapLPRes.id = "{38991C7F-01FB-459B-9086-1F19E876D3CA}";
+  tapLPRes.type = FBParamType::Identity;
+  auto selectTapLPRes = [](auto& module) { return &module.acc.tapLPRes; };
+  tapLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPRes);
+  tapLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPRes);
+  tapLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPRes);
+
   return result;
 }
