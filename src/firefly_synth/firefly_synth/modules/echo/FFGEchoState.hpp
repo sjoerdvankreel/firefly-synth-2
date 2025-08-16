@@ -38,6 +38,9 @@ class alignas(alignof(TBlock)) FFGEchoBlockParamState final
   std::array<TBlock, 1> on = {};
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> target = {};
+  std::array<TBlock, 1> reverbLPOn = {};
+  std::array<TBlock, 1> reverbHPOn = {};
+  std::array<TBlock, 1> reverbPlacement = {};
   std::array<TBlock, FFGEchoTapCount> tapOn = {};
   std::array<TBlock, FFGEchoTapCount> tapLPOn = {};
   std::array<TBlock, FFGEchoTapCount> tapHPOn = {};
@@ -56,6 +59,15 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   friend class FFGEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
   std::array<TAccurate, 1> mix = {};
+  std::array<TAccurate, 1> reverbMix = {};
+  std::array<TAccurate, 1> reverbAPF = {};
+  std::array<TAccurate, 1> reverbSize = {};
+  std::array<TAccurate, 1> reverbDamp = {};
+  std::array<TAccurate, 1> reverbLPRes = {};
+  std::array<TAccurate, 1> reverbHPRes = {};
+  std::array<TAccurate, 1> reverbLPFreq = {};
+  std::array<TAccurate, 1> reverbHPFreq = {};
+  std::array<TAccurate, 1> reverbSpread = {};
   std::array<TAccurate, FFGEchoTapCount> tapLPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapHPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapLPFreq = {};
