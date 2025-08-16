@@ -1,4 +1,11 @@
-TODOLIST for alpha-12
+alpha 12 - echo
+
+[ ] gecho
+[ ] vecho
+[ ] reverb
+[ ] store selected tab
+
+TODOLIST for alpha-13
 
 [ ] figure out bitwig dataexchange on linux
 [ ] less matrix routes

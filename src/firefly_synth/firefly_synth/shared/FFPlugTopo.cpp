@@ -8,6 +8,7 @@
 #include <firefly_synth/modules/mix/FFGMixTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/midi/FFMIDITopo.hpp>
+#include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
@@ -126,6 +127,7 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
   result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));
   result->modules[(int)FFModuleType::GEffect] = std::move(*FFMakeEffectTopo(true));
+  result->modules[(int)FFModuleType::GEcho] = std::move(*FFMakeGEchoTopo());
   result->modules[(int)FFModuleType::VLFO] = std::move(*FFMakeLFOTopo(false));
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeLFOTopo(true));
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
@@ -164,6 +166,7 @@ FFMakeTopo(FBPlugFormat format)
   for (int s = 0; s < result->modules[(int)FFModuleType::GEffect].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GEffect, s });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMix, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::GEcho, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Output, 0 });
 
   return result;
