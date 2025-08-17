@@ -528,6 +528,7 @@ FFMakeEffectTopo(bool global)
 
   auto& distMix = result->params[(int)FFEffectParam::DistMix];
   distMix.acc = true;
+  distMix.unit = "%";
   distMix.defaultText = "100";
   distMix.name = "Dist Mix";
   distMix.display = "Mix";
@@ -572,6 +573,7 @@ FFMakeEffectTopo(bool global)
 
   auto& distAmt = result->params[(int)FFEffectParam::DistAmt];
   distAmt.acc = true;
+  distAmt.unit = "%";
   distAmt.defaultText = "50";
   distAmt.name = "Dist Amt";
   distAmt.display = "Amt";
