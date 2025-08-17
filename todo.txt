@@ -26,6 +26,7 @@ TODOLIST for alpha-13
 [ ] refix all behind-the-scenes mod sources and targets
 
 pck support
+per-module presets
 external audio input
 separate midi, bpm, automation smoothing, auto should be global + per-param override
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
