@@ -9,7 +9,8 @@ alpha 12 - echo
 [ ] vecho
 [ ] reverb
 [ ] reverb-at-each-tab
-[ ] fb out of the taps
+[ ] fb out of the taps?
+[ ] dedicated lfo for tap balance + speed
 [ ] popout editor + some set-default buttons
 
 TODOLIST for alpha-13
