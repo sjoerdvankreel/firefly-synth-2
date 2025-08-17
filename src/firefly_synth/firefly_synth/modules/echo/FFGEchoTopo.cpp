@@ -349,6 +349,8 @@ FFMakeGEchoTopo()
   tapDelayTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayTime);
   tapDelayTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayTime);
   tapDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayTime);
+  tapDelayTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  tapDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& tapDelayBars = result->params[(int)FFGEchoParam::TapDelayBars];
   tapDelayBars.acc = false;
@@ -364,6 +366,8 @@ FFMakeGEchoTopo()
   tapDelayBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayBars);
   tapDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayBars);
   tapDelayBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayBars);
+  tapDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  tapDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapLengthTime = result->params[(int)FFGEchoParam::TapLengthTime];
   tapLengthTime.acc = true;
@@ -382,6 +386,8 @@ FFMakeGEchoTopo()
   tapLengthTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthTime);
   tapLengthTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthTime);
   tapLengthTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthTime);
+  tapLengthTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  tapLengthTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& tapLengthBars = result->params[(int)FFGEchoParam::TapLengthBars];
   tapLengthBars.acc = false;
@@ -397,6 +403,8 @@ FFMakeGEchoTopo()
   tapLengthBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthBars);
   tapLengthBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthBars);
   tapLengthBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthBars);
+  tapLengthBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  tapLengthBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& guiTapSelect = result->guiParams[(int)FFGEchoGUIParam::TapSelect];
   guiTapSelect.defaultText = "1";
