@@ -55,6 +55,7 @@ FFMakeGEchoTopo()
   sync.scalarAddr = FFSelectScalarParamAddr(selectModule, selectSync);
   sync.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectSync);
   sync.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSync);
+  sync.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& mix = result->params[(int)FFGEchoParam::Mix];
   mix.acc = true;
@@ -68,6 +69,19 @@ FFMakeGEchoTopo()
   mix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMix);
   mix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectMix);
   mix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMix);
+  mix.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& guiTapSelect = result->guiParams[(int)FFGEchoGUIParam::TapSelect];
+  guiTapSelect.defaultText = "1";
+  guiTapSelect.name = "Tap Select";
+  guiTapSelect.id = "{FB146F89-2B8D-448F-8B38-EA213B4FC84D}";
+  guiTapSelect.slotCount = 1;
+  guiTapSelect.type = FBParamType::Discrete;
+  guiTapSelect.Discrete().valueOffset = 1;
+  guiTapSelect.Discrete().valueCount = FFGEchoTapCount;
+  auto selectGuiTapSelect = [](auto& module) { return &module.tapSelect; };
+  guiTapSelect.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiTapSelect);
+  guiTapSelect.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& tapOn = result->params[(int)FFGEchoParam::TapOn];
   tapOn.acc = false;
@@ -405,17 +419,6 @@ FFMakeGEchoTopo()
   tapLengthBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthBars);
   tapLengthBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   tapLengthBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
-  auto& guiTapSelect = result->guiParams[(int)FFGEchoGUIParam::TapSelect];
-  guiTapSelect.defaultText = "1";
-  guiTapSelect.name = "Tap Select";
-  guiTapSelect.id = "{FB146F89-2B8D-448F-8B38-EA213B4FC84D}";
-  guiTapSelect.slotCount = 1;
-  guiTapSelect.type = FBParamType::Discrete;
-  guiTapSelect.Discrete().valueOffset = 1;
-  guiTapSelect.Discrete().valueCount = FFGEchoTapCount;
-  auto selectGuiTapSelect = [](auto& module) { return &module.tapSelect; };
-  guiTapSelect.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiTapSelect);
 
   auto& reverbPlacement = result->params[(int)FFGEchoParam::ReverbPlacement];
   reverbPlacement.acc = false;
