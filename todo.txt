@@ -1,12 +1,13 @@
 alpha 12 - echo
 
+[x] check matrix names
+[x] store selected tab
+[x] check defaults
 [ ] gecho
 [ ] vecho
 [ ] reverb
-[ ] check matrix names
-[x] store selected tab
-[ ] check defaults
 [ ] delay length LFO/chorus
+[ ] better interpolation algo for delayline
 
 TODOLIST for alpha-13
 

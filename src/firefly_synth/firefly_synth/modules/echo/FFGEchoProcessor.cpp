@@ -19,7 +19,10 @@ FFGEchoProcessor::InitializeBuffers(float sampleRate)
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   for (int t = 0; t < FFGEchoTapCount; t++)
     for (int c = 0; c < 2; c++)
+    {
       _delayLines[t][c].InitializeBuffers(maxSamples);
+      _delayLines[t][c].Reset(_delayLines[t][c].MaxBufferSize());
+    }
 }
 
 void 
@@ -66,9 +69,27 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
 void 
 FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout)
 {
-  (void)state;
-  if (_target != FFGEchoTarget::Off)
-    for (int s = 0; s < FBFixedBlockSamples; s++)
-      for (int c = 0; c < 2; c++)
-        inout[c].Set(s, inout[c].Get(s) > 0? 0.2f: -0.2f);
+  float sampleRate = state.input->sampleRate;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.global.gEcho[0];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
+
+  if (_target == FFGEchoTarget::Off)
+    return;
+
+  auto const& lengthTimeNorm = params.acc.tapLengthTime;
+
+  for (int s = 0; s < FBFixedBlockSamples; s++)
+  {
+    float lengthTimePlain = topo.NormalizedToLinearFast(FFGEchoParam::TapLengthTime, lengthTimeNorm[0].Global().CV().Get(s));
+
+    for (int c = 0; c < 2; c++)
+    {
+      float in = inout[c].Get(s);
+      _delayLines[0][c].Delay(lengthTimePlain * sampleRate);
+      float out = _delayLines[0][c].Pop();
+      _delayLines[0][c].Push(in);
+      inout[c].Set(s, out);
+    }
+  }
 }
