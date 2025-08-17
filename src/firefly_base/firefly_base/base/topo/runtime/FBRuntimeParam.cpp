@@ -61,7 +61,7 @@ tag(FBMakeStableHash(id))
   FB_ASSERT((staticParam.defaultText.size() == 0) != (staticParam.defaultTextSelector == nullptr));
 #ifndef NDEBUG
   staticParam.GetDefaultText(topoIndices.module.index, topoIndices.module.slot, topoIndices.param.slot);
-  if (staticParam.type == FBParamType::Identity || staticParam.type == FBParamType::Linear || staticParam.type == FBParamType::Log2)
+  if (staticParam.type == FBParamType::Identity || staticParam.type == FBParamType::Linear)
     FB_ASSERT(!staticParam.unit.empty());
 #endif
 }
