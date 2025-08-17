@@ -3,7 +3,8 @@ alpha 12 - echo
 [ ] gecho
 [ ] vecho
 [ ] reverb
-[ ] store selected tab
+[ ] check matrix names
+[x] store selected tab
 [ ] check defaults
 [ ] delay length LFO/chorus
 

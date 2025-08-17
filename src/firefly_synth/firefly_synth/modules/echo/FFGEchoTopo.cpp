@@ -71,13 +71,12 @@ FFMakeGEchoTopo()
   auto& tapOn = result->params[(int)FFGEchoParam::TapOn];
   tapOn.acc = false;
   tapOn.name = "Tap On";
-  tapOn.display = "On";
+  tapOn.display = "Tap";
   tapOn.slotCount = FFGEchoTapCount;
   tapOn.defaultText = "Off";
   tapOn.id = "{0EA26FE5-F45F-431E-9421-0FDD9E508CB8}";
   tapOn.type = FBParamType::Boolean;
   tapOn.slotFormatDisplay = true;
-  tapOn.slotFormatter = [](FBStaticTopo const&, int, int is) { return "Tap " + std::to_string(is + 1) + " On"; };
   auto selectTapOn = [](auto& module) { return &module.block.tapOn; };
   tapOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapOn);
   tapOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapOn);
@@ -99,7 +98,7 @@ FFMakeGEchoTopo()
   auto& tapFeedback = result->params[(int)FFGEchoParam::TapFeedback];
   tapFeedback.acc = true;
   tapFeedback.defaultText = "50";
-  tapFeedback.name = "Tap Fdbk";
+  tapFeedback.name = "Tap Feedback";
   tapFeedback.display = "Fdbk";
   tapFeedback.slotCount = FFGEchoTapCount;
   tapFeedback.id = "{4E922DA7-ECAE-412E-AFED-BAA94205CF97}";
@@ -112,7 +111,7 @@ FFMakeGEchoTopo()
   auto& tapBal = result->params[(int)FFGEchoParam::TapBalance];
   tapBal.acc = true;
   tapBal.defaultText = "0";
-  tapBal.name = "Tap Bal";
+  tapBal.name = "Tap Balance";
   tapBal.display = "Bal";
   tapBal.slotCount = FFGEchoTapCount;
   tapBal.unit = "%";
@@ -129,7 +128,7 @@ FFMakeGEchoTopo()
   auto& tapXOver = result->params[(int)FFGEchoParam::TapXOver];
   tapXOver.acc = true;
   tapXOver.defaultText = "0";
-  tapXOver.name = "Tap Crossover";
+  tapXOver.name = "Tap L/R Crossover";
   tapXOver.display = "XOver";
   tapXOver.slotCount = FFGEchoTapCount;
   tapXOver.id = "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
@@ -142,7 +141,7 @@ FFMakeGEchoTopo()
   auto& tapFBXOver = result->params[(int)FFGEchoParam::TapFBXOver];
   tapFBXOver.acc = true;
   tapFBXOver.defaultText = "0";
-  tapFBXOver.name = "Tap Fdbk Crossover";
+  tapFBXOver.name = "Tap Feedback L/R Crossover";
   tapFBXOver.display = "FB XOver";
   tapFBXOver.slotCount = FFGEchoTapCount;
   tapFBXOver.id = "{D60097D8-8F7A-4F05-9F35-65D41E2A4516}";
