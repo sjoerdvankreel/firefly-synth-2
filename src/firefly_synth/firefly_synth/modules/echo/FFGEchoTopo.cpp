@@ -454,6 +454,7 @@ FFMakeGEchoTopo()
   reverbPlacement.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbPlacement);
   reverbPlacement.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbPlacement);
   reverbPlacement.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbPlacement);
+  reverbPlacement.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& reverbMix = result->params[(int)FFGEchoParam::ReverbMix];
   reverbMix.acc = true;
@@ -469,6 +470,7 @@ FFMakeGEchoTopo()
   reverbMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbMix);
   reverbMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbMix);
   reverbMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbMix);
+  reverbMix.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbSpread = result->params[(int)FFGEchoParam::ReverbSpread];
   reverbSpread.unit = "%";
@@ -484,6 +486,7 @@ FFMakeGEchoTopo()
   reverbSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbSpread);
   reverbSpread.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbSpread);
   reverbSpread.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbSpread);
+  reverbSpread.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbAPF = result->params[(int)FFGEchoParam::ReverbAPF];
   reverbAPF.unit = "%";
@@ -499,6 +502,7 @@ FFMakeGEchoTopo()
   reverbAPF.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbAPF);
   reverbAPF.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbAPF);
   reverbAPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbAPF);
+  reverbAPF.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbDamp = result->params[(int)FFGEchoParam::ReverbDamp];
   reverbDamp.unit = "%";
@@ -514,6 +518,7 @@ FFMakeGEchoTopo()
   reverbDamp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbDamp);
   reverbDamp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbDamp);
   reverbDamp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbDamp);
+  reverbDamp.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbSize = result->params[(int)FFGEchoParam::ReverbSize];
   reverbSize.unit = "%";
@@ -529,6 +534,7 @@ FFMakeGEchoTopo()
   reverbSize.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbSize);
   reverbSize.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbSize);
   reverbSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbSize);
+  reverbSize.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbLPOn = result->params[(int)FFGEchoParam::ReverbLPOn];
   reverbLPOn.acc = false;
