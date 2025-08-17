@@ -86,7 +86,7 @@ FFMakeGEchoTopo()
   tapLevel.acc = true;
   tapLevel.defaultText = "50";
   tapLevel.name = "Tap Level";
-  tapLevel.display = "Lvl";
+  tapLevel.display = "Level";
   tapLevel.slotCount = FFGEchoTapCount;
   tapLevel.id = "{E3633411-F79D-4D2A-A748-82E03A35434E}";
   tapLevel.type = FBParamType::Identity;
