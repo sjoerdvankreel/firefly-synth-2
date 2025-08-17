@@ -40,6 +40,7 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   auto const& tapLengthBarsNorm = params.block.tapLengthBars;
 
   auto const& syncNorm = params.block.sync[0].Value();
+  auto const& targetNorm = params.block.target[0].Value();
   auto const& reverbLPOnNorm = params.block.reverbLPOn[0].Value();
   auto const& reverbHPOnNorm = params.block.reverbHPOn[0].Value();
   auto const& reverbPlacementNorm = params.block.reverbPlacement[0].Value();
@@ -47,6 +48,7 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   _sync = topo.NormalizedToBoolFast(FFGEchoParam::Sync, syncNorm);
   _reverbLPOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbLPOn, reverbLPOnNorm);
   _reverbHPOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbHPOn, reverbHPOnNorm);
+  _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
   _reverbPlacement = topo.NormalizedToListFast<FFGEchoReverbPlacement>(FFGEchoParam::ReverbPlacement, reverbPlacementNorm);
 
   for (int t = 0; t < FFGEchoTapCount; t++)
@@ -64,5 +66,9 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
 void 
 FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout)
 {
-
+  (void)state;
+  if (_target != FFGEchoTarget::Off)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      for (int c = 0; c < 2; c++)
+        inout[c].Set(s, std::sin(inout[c].Get(s)));
 }
