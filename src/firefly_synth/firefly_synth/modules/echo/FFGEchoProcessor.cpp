@@ -16,6 +16,7 @@
 void
 FFGEchoProcessor::InitializeBuffers(float sampleRate)
 {
+  _delayTimeSmoother.SetCoeffs((int)std::ceil(0.2f * sampleRate));
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   for (int t = 0; t < FFGEchoTapCount; t++)
     for (int c = 0; c < 2; c++)
@@ -82,8 +83,9 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
+    float lengthTimeNormSmooth = _delayTimeSmoother.Next(lengthTimeNorm[0].Global().CV().Get(s));
     float mixPlain = topo.NormalizedToIdentityFast(FFGEchoParam::Mix, mixNorm[0].Global().CV().Get(s));
-    float lengthTimePlain = topo.NormalizedToLinearFast(FFGEchoParam::TapLengthTime, lengthTimeNorm[0].Global().CV().Get(s));
+    float lengthTimePlain = topo.NormalizedToLinearFast(FFGEchoParam::TapLengthTime, lengthTimeNormSmooth);
 
     for (int c = 0; c < 2; c++)
     {

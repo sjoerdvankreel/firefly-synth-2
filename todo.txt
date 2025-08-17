@@ -8,6 +8,7 @@ alpha 12 - echo
 [ ] reverb
 [ ] delay length LFO/chorus
 [ ] better interpolation algo for delayline
+[ ] smooth delay time changes
 
 TODOLIST for alpha-13
 

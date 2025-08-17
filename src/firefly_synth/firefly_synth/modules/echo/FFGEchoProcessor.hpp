@@ -2,7 +2,9 @@
 
 #include <firefly_synth/dsp/shared/FFDelayLine.hpp>
 #include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
+
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 #include <array>
@@ -24,6 +26,9 @@ class FFGEchoProcessor final
   std::array<bool, FFGEchoTapCount> _tapFBHPOn = {};
   std::array<int, FFGEchoTapCount> _tapDelayBarsSamples = {};
   std::array<int, FFGEchoTapCount> _tapLengthBarsSamples = {};
+
+  // https://forum.juce.com/t/delay-line-artifacts/46781/4
+  FBBasicLPFilter _delayTimeSmoother = {};
   std::array<std::array<FFDelayLine, 2>, FFGEchoTapCount> _delayLines = {};
 
 public:
