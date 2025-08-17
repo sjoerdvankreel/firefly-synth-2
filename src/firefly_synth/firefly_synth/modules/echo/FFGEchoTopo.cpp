@@ -237,8 +237,8 @@ FFMakeGEchoTopo()
 
   auto& tapFBLPOn = result->params[(int)FFGEchoParam::TapFBLPOn];
   tapFBLPOn.acc = false;
-  tapFBLPOn.name = "Tap Fdbk LPF On";
-  tapFBLPOn.display = "Fdbk LPF";
+  tapFBLPOn.name = "Tap Feedback LPF On";
+  tapFBLPOn.display = "FB LPF";
   tapFBLPOn.slotCount = FFGEchoTapCount;
   tapFBLPOn.defaultText = "Off";
   tapFBLPOn.id = "{9EE6E317-8039-4E6B-BE6E-1B9F287D1F6E}";
@@ -251,7 +251,7 @@ FFMakeGEchoTopo()
   auto& tapFBLPFreq = result->params[(int)FFGEchoParam::TapFBLPFreq];
   tapFBLPFreq.acc = true;
   tapFBLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  tapFBLPFreq.name = "Tap Fdbk LPF Freq";
+  tapFBLPFreq.name = "Tap Feedback LPF Freq";
   tapFBLPFreq.display = "Frq";
   tapFBLPFreq.slotCount = FFGEchoTapCount;
   tapFBLPFreq.unit = "Hz";
@@ -266,7 +266,7 @@ FFMakeGEchoTopo()
   auto& tapFBLPRes = result->params[(int)FFGEchoParam::TapFBLPRes];
   tapFBLPRes.acc = true;
   tapFBLPRes.defaultText = "0";
-  tapFBLPRes.name = "Tap Fdbk LPF Res";
+  tapFBLPRes.name = "Tap Feedback LPF Res";
   tapFBLPRes.display = "Res";
   tapFBLPRes.slotCount = FFGEchoTapCount;
   tapFBLPRes.unit = "%";
@@ -279,8 +279,8 @@ FFMakeGEchoTopo()
 
   auto& tapFBHPOn = result->params[(int)FFGEchoParam::TapFBHPOn];
   tapFBHPOn.acc = false;
-  tapFBHPOn.name = "Tap Fdbk HPF On";
-  tapFBHPOn.display = "Fdbk HPF";
+  tapFBHPOn.name = "Tap Feedback HPF On";
+  tapFBHPOn.display = "FB HPF";
   tapFBHPOn.slotCount = FFGEchoTapCount;
   tapFBHPOn.defaultText = "Off";
   tapFBHPOn.id = "{90188FE8-AE2E-4FD3-9185-44F976D350A5}";
@@ -293,7 +293,7 @@ FFMakeGEchoTopo()
   auto& tapFBHPFreq = result->params[(int)FFGEchoParam::TapFBHPFreq];
   tapFBHPFreq.acc = true;
   tapFBHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  tapFBHPFreq.name = "Tap Fdbk HPF Freq";
+  tapFBHPFreq.name = "Tap Feedback HPF Freq";
   tapFBHPFreq.display = "Frq";
   tapFBHPFreq.slotCount = FFGEchoTapCount;
   tapFBHPFreq.unit = "Hz";
@@ -308,7 +308,7 @@ FFMakeGEchoTopo()
   auto& tapFBHPRes = result->params[(int)FFGEchoParam::TapFBHPRes];
   tapFBHPRes.acc = true;
   tapFBHPRes.defaultText = "0";
-  tapFBHPRes.name = "Tap Fdbk HPF Res";
+  tapFBHPRes.name = "Tap Feedback HPF Res";
   tapFBHPRes.display = "Res";
   tapFBHPRes.slotCount = FFGEchoTapCount;
   tapFBHPRes.unit = "%";
