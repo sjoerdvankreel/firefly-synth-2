@@ -60,3 +60,9 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
     _tapLengthBarsSamples[t] = topo.NormalizedToBarsSamplesFast(FFGEchoParam::TapLengthBars, tapLengthBarsNorm[t].Value(), sampleRate, bpm);
   }
 }
+
+void 
+FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout)
+{
+
+}
