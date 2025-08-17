@@ -77,10 +77,12 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
   if (_target == FFGEchoTarget::Off)
     return;
 
+  auto const& mixNorm = params.acc.mix;
   auto const& lengthTimeNorm = params.acc.tapLengthTime;
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
+    float mixPlain = topo.NormalizedToIdentityFast(FFGEchoParam::Mix, mixNorm[0].Global().CV().Get(s));
     float lengthTimePlain = topo.NormalizedToLinearFast(FFGEchoParam::TapLengthTime, lengthTimeNorm[0].Global().CV().Get(s));
 
     for (int c = 0; c < 2; c++)
@@ -89,7 +91,7 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
       _delayLines[0][c].Delay(lengthTimePlain * sampleRate);
       float out = _delayLines[0][c].Pop();
       _delayLines[0][c].Push(in);
-      inout[c].Set(s, out);
+      inout[c].Set(s, (1.0f - mixPlain) * in + mixPlain * out);
     }
   }
 }
