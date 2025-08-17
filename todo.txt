@@ -9,6 +9,7 @@ alpha 12 - echo
 [ ] vecho
 [ ] reverb
 [ ] reverb-at-each-tab
+[ ] popout editor
 
 TODOLIST for alpha-13
 

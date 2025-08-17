@@ -4,7 +4,7 @@
 #include <memory>
 
 struct FBStaticModule;
-inline int constexpr FFGEchoTapCount = 6;
+inline int constexpr FFGEchoTapCount = 8;
 inline int constexpr FFGEchoMaxSeconds = 10;
 std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
 

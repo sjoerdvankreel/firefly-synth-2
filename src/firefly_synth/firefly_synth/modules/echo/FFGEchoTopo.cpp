@@ -101,11 +101,11 @@ FFMakeGEchoTopo()
   auto& tapLevel = result->params[(int)FFGEchoParam::TapLevel];
   tapLevel.acc = true;
   tapLevel.unit = "%";
-  tapLevel.defaultText = "50";
   tapLevel.name = "Tap Level";
   tapLevel.display = "Level";
   tapLevel.slotCount = FFGEchoTapCount;
   tapLevel.id = "{E3633411-F79D-4D2A-A748-82E03A35434E}";
+  tapLevel.defaultTextSelector = [](int, int, int ps) { return std::to_string((int)((1.0f - ps / (float)FFGEchoTapCount) * 100)); };
   tapLevel.type = FBParamType::Identity;
   auto selectTapLevel = [](auto& module) { return &module.acc.tapLevel; };
   tapLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLevel);
