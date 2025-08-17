@@ -60,7 +60,7 @@ FFMakeGEchoTopo()
   auto& mix = result->params[(int)FFGEchoParam::Mix];
   mix.acc = true;
   mix.unit = "%";
-  mix.defaultText = "50";
+  mix.defaultText = "33";
   mix.name = "Mix";
   mix.slotCount = 1;
   mix.id = "{56DF16E6-A079-4E97-92D9-DA65826DB20F}";
