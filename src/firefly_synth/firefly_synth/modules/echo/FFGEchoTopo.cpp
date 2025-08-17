@@ -33,10 +33,10 @@ FFMakeGEchoTopo()
   target.List().items = {
     { "{3B1FC348-4F80-4CD5-8F3D-E762C0373EAB}", "Off" },
     { "{84DBE1D7-B703-4E7A-BBDC-70A0F98EBB43}", "Voice" },
-    { "{3F334789-DA27-442D-81CF-EF87C73067E5}", "FX1" },
-    { "{6888AC49-5381-4B1E-9E92-F78D49AB203A}", "FX2" },
-    { "{877E72D7-F9CA-441E-B675-800B4015E900}", "FX3" },
-    { "{C1ADFC32-1DD5-4CA8-B514-374E8306A2A1}", "FX4" },
+    { "{3F334789-DA27-442D-81CF-EF87C73067E5}", "GFX1" },
+    { "{6888AC49-5381-4B1E-9E92-F78D49AB203A}", "GFX2" },
+    { "{877E72D7-F9CA-441E-B675-800B4015E900}", "GFX3" },
+    { "{C1ADFC32-1DD5-4CA8-B514-374E8306A2A1}", "GFX4" },
     { "{F0E3771C-D1FE-4544-BA9B-2D3C9C4E7CF4}", "Out" } };
   auto selectTarget = [](auto& module) { return &module.block.target; };
   target.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTarget);
@@ -76,6 +76,8 @@ FFMakeGEchoTopo()
   tapOn.defaultText = "Off";
   tapOn.id = "{0EA26FE5-F45F-431E-9421-0FDD9E508CB8}";
   tapOn.type = FBParamType::Boolean;
+  tapOn.slotFormatDisplay = true;
+  tapOn.slotFormatter = [](FBStaticTopo const&, int, int is) { return "Tap " + std::to_string(is + 1) + " On"; };
   auto selectTapOn = [](auto& module) { return &module.block.tapOn; };
   tapOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapOn);
   tapOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapOn);
