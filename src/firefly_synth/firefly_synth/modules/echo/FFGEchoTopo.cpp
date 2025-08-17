@@ -88,7 +88,7 @@ FFMakeGEchoTopo()
   tapOn.name = "Tap On";
   tapOn.display = "Tap";
   tapOn.slotCount = FFGEchoTapCount;
-  tapOn.defaultText = "Off";
+  tapOn.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "On" : "Off"; };
   tapOn.id = "{0EA26FE5-F45F-431E-9421-0FDD9E508CB8}";
   tapOn.type = FBParamType::Boolean;
   tapOn.slotFormatDisplay = true;
