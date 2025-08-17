@@ -265,6 +265,7 @@ FFMakeGEchoTopo()
   tapLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPOn);
   tapLPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPOn);
   tapLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPOn);
+  tapLPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapLPFreq = result->params[(int)FFGEchoParam::TapLPFreq];
   tapLPFreq.acc = true;
@@ -280,6 +281,7 @@ FFMakeGEchoTopo()
   tapLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPFreq);
   tapLPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPFreq);
   tapLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPFreq);
+  tapLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapLPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapLPRes = result->params[(int)FFGEchoParam::TapLPRes];
   tapLPRes.acc = true;
@@ -294,6 +296,7 @@ FFMakeGEchoTopo()
   tapLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPRes);
   tapLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPRes);
   tapLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPRes);
+  tapLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapLPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapHPOn = result->params[(int)FFGEchoParam::TapHPOn];
   tapHPOn.acc = false;
@@ -307,6 +310,7 @@ FFMakeGEchoTopo()
   tapHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapHPOn);
   tapHPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapHPOn);
   tapHPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPOn);
+  tapHPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapHPFreq = result->params[(int)FFGEchoParam::TapHPFreq];
   tapHPFreq.acc = true;
@@ -322,6 +326,7 @@ FFMakeGEchoTopo()
   tapHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapHPFreq);
   tapHPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapHPFreq);
   tapHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPFreq);
+  tapHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapHPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapHPRes = result->params[(int)FFGEchoParam::TapHPRes];
   tapHPRes.acc = true;
@@ -336,6 +341,7 @@ FFMakeGEchoTopo()
   tapHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapHPRes);
   tapHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapHPRes);
   tapHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPRes);
+  tapHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapHPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapFBLPOn = result->params[(int)FFGEchoParam::TapFBLPOn];
   tapFBLPOn.acc = false;
@@ -350,6 +356,7 @@ FFMakeGEchoTopo()
   tapFBLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPOn);
   tapFBLPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPOn);
   tapFBLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPOn);
+  tapFBLPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapFBLPFreq = result->params[(int)FFGEchoParam::TapFBLPFreq];
   tapFBLPFreq.acc = true;
@@ -366,6 +373,7 @@ FFMakeGEchoTopo()
   tapFBLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPFreq);
   tapFBLPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPFreq);
   tapFBLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPFreq);
+  tapFBLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapFBLPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapFBLPRes = result->params[(int)FFGEchoParam::TapFBLPRes];
   tapFBLPRes.acc = true;
@@ -381,6 +389,7 @@ FFMakeGEchoTopo()
   tapFBLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPRes);
   tapFBLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPRes);
   tapFBLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPRes);
+  tapFBLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapFBLPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapFBHPOn = result->params[(int)FFGEchoParam::TapFBHPOn];
   tapFBHPOn.acc = false;
@@ -394,6 +403,7 @@ FFMakeGEchoTopo()
   tapFBHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPOn);
   tapFBHPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPOn);
   tapFBHPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPOn);
+  tapFBHPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapFBHPFreq = result->params[(int)FFGEchoParam::TapFBHPFreq];
   tapFBHPFreq.acc = true;
@@ -410,6 +420,7 @@ FFMakeGEchoTopo()
   tapFBHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPFreq);
   tapFBHPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPFreq);
   tapFBHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPFreq);
+  tapFBHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapFBHPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapFBHPRes = result->params[(int)FFGEchoParam::TapFBHPRes];
   tapFBHPRes.acc = true;
@@ -425,7 +436,8 @@ FFMakeGEchoTopo()
   tapFBHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPRes);
   tapFBHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPRes);
   tapFBHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPRes);
-   
+  tapFBHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapFBHPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+
   auto& reverbPlacement = result->params[(int)FFGEchoParam::ReverbPlacement];
   reverbPlacement.acc = false;
   reverbPlacement.defaultText = "Off";
