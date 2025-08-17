@@ -10,6 +10,8 @@
 
 struct FBTopoIndices;
 struct FBRuntimeTopo;
+struct FBParamTopoIndices;
+
 class FBGUIStateContainer;
 class FBExchangeStateContainer;
 
@@ -53,6 +55,7 @@ public:
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 
   FBUndoStateContainer& UndoState() { return _undoState; }
+  int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;
 
   void EndAudioParamChange(int index);
   void BeginAudioParamChange(int index);

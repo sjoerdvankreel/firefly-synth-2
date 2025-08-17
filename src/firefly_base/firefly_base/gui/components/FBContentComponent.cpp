@@ -35,9 +35,16 @@ FBContentComponent::FixedWidth(int height) const
   return dynamic_cast<IFBHorizontalAutoSize*>(getChildComponent(0))->FixedWidth(height);
 }
 
+FBMultiContentComponent::
+FBMultiContentComponent()
+{
+  addAndMakeVisible(_component);
+}
+
 void 
 FBMultiContentComponent::resized()
 {
+  _component.setBounds(getLocalBounds());
   _component.resized();
 }
 
@@ -56,11 +63,9 @@ FBMultiContentComponent::FixedWidth(int height) const
 void
 FBMultiContentComponent::SelectContentIndex(int index)
 {
-  if (0 <= index && index < _content.size())
-  {
-    _component.SetContent(_content[index]);
-    resized();
-  }
+  index = std::clamp(index, 0, (int)_content.size() - 1);
+  _component.SetContent(_content[index]);
+  resized();
 }
 
 void 
@@ -69,5 +74,4 @@ FBMultiContentComponent::SetContent(int index, Component* content)
   if (index >= _content.size())
     _content.resize(index + 1);
   _content[index] = content;
-  resized();
 }

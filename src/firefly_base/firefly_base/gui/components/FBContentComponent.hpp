@@ -29,6 +29,8 @@ public IFBVerticalAutoSize
   std::vector<juce::Component*> _content = {};
 
 public:  
+  FBMultiContentComponent();
+
   void resized() override;
   int FixedHeight() const override;
   int FixedWidth(int height) const override;

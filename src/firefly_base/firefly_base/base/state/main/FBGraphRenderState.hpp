@@ -55,11 +55,6 @@ public:
   bool GlobalModuleExchangeStateEqualsPrimary(int moduleIndex, int moduleSlot) const;
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
 
-  bool GUIParamBool(FBParamTopoIndices const& indices) const;
-  float GUIParamLinear(FBParamTopoIndices const& indices) const;
-  int GUIParamLinearTimeSamples(FBParamTopoIndices const& indices, float sampleRate) const;
-  int GUIParamBarsSamples(FBParamTopoIndices const& indices, float sampleRate, float bpm) const;
-
   bool AudioParamBool(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   int AudioParamDiscrete(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
   float AudioParamLinear(FBParamTopoIndices const& indices, bool exchange, int exchangeVoice) const;
