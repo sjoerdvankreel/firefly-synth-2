@@ -20,10 +20,10 @@ struct FBLinearParam
   float NormalizedToPlainFast(float normalized) const;
   int NormalizedTimeToSamplesFast(float normalized, float sampleRate) const;
   int NormalizedFreqToSamplesFast(float normalized, float sampleRate) const;
+  float NormalizedTimeToFloatSamplesFast(float normalized, float sampleRate) const;
   FBBatch<float> NormalizedToPlainFast(FBBatch<float> normalized) const;
   FBBatch<double> NormalizedToPlainFast(FBBatch<double> normalized) const;
   FBBatch<float> NormalizedToPlainFast(FBAccParamState const& normalized, int pos) const;
-  FBBatch<float> NormalizedTimeToFloatSamplesFast(FBBatch<float> normalized, float sampleRate) const;
 };
 
 struct FBLinearParamNonRealTime final :
@@ -78,8 +78,8 @@ FBLinearParam::NormalizedFreqToSamplesFast(float normalized, float sampleRate) c
   return FBFreqToSamples(NormalizedToPlainFast(normalized), sampleRate);
 }
 
-inline FBBatch<float>
-FBLinearParam::NormalizedTimeToFloatSamplesFast(FBBatch<float> normalized, float sampleRate) const
+inline float
+FBLinearParam::NormalizedTimeToFloatSamplesFast(float normalized, float sampleRate) const
 {
   return FBTimeToFloatSamples(NormalizedToPlainFast(normalized), sampleRate);
 }

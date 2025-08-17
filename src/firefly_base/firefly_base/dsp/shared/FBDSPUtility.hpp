@@ -81,12 +81,6 @@ FBTimeToFloatSamples(float time, float sampleRate)
   return time * sampleRate;
 }
 
-inline FBBatch<float>
-FBTimeToFloatSamples(FBBatch<float> time, float sampleRate)
-{
-  return time * sampleRate;
-}
-
 inline int
 FBFreqToSamples(float freq, float sampleRate)
 {

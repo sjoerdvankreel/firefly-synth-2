@@ -29,8 +29,8 @@ class FFGEchoProcessor final
 
   // https://forum.juce.com/t/delay-line-artifacts/46781/4
   int _preDelayBufferPosition = {};
-  FBBasicLPFilter _delayTimeSmoother = {};
   std::array<std::vector<float>, 2> _preDelayBuffer = {};
+  std::array<FBBasicLPFilter, FFGEchoTapCount> _delayTimeSmoothers = {};
   std::array<std::array<FFDelayLine, 2>, FFGEchoTapCount> _delayLines = {};
 
 public:

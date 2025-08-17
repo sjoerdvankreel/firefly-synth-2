@@ -16,8 +16,9 @@
 void
 FFGEchoProcessor::InitializeBuffers(float sampleRate)
 {
-  _delayTimeSmoother.SetCoeffs((int)std::ceil(0.2f * sampleRate));
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
+  for (int t = 0; t < FFGEchoTapCount; t++)
+    _delayTimeSmoothers[t].SetCoeffs((int)std::ceil(0.2f * sampleRate));
   for (int c = 0; c < 2; c++)
   {
     _preDelayBuffer[c].resize(maxSamples);
@@ -89,31 +90,44 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
   auto const& mixNorm = params.acc.mix;
   auto const& tapFeedbackNorm = params.acc.tapFeedback;
   auto const& tapLengthTimeNorm = params.acc.tapLengthTime;
-
-  FBSArray<float, FBFixedBlockSamples> lengthTimeSamples = {};
-  if (_sync)
-    lengthTimeSamples.Fill((float)_tapLengthBarsSamples[0]);
-  else
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      lengthTimeSamples.Store(s, topo.NormalizedToLinearTimeFloatSamplesFast(
-        FFGEchoParam::TapLengthTime, tapLengthTimeNorm[0].Global().CV().Load(s), sampleRate));
-
+  
+  FBSArray2<float, FBFixedBlockSamples, 2> tapsOut = {};
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float lengthTimeSamplesSmooth = _delayTimeSmoother.Next(lengthTimeSamples.Get(s));
+    float realIn[2];
+    realIn[0] = inout[0].Get(s);
+    realIn[1] = inout[1].Get(s);
+    _preDelayBuffer[0][_preDelayBufferPosition] = realIn[0];
+    _preDelayBuffer[1][_preDelayBufferPosition] = realIn[1];
+
     float mixPlain = topo.NormalizedToIdentityFast(FFGEchoParam::Mix, mixNorm[0].Global().CV().Get(s));
-    float feedbackPlain = topo.NormalizedToIdentityFast(FFGEchoParam::TapFeedback, tapFeedbackNorm[0].Global().CV().Get(s));
-    for (int c = 0; c < 2; c++)
+    for (int t = 0; t < FFGEchoTapCount; t++)
     {
-      float realIn = inout[c].Get(s);
-      _preDelayBuffer[c][_preDelayBufferPosition] = realIn;
-      int preDelayPos = _preDelayBufferPosition + (int)_preDelayBuffer[c].size() - _tapDelaySamples[0];
-      float delayedIn = _preDelayBuffer[c][preDelayPos % _preDelayBuffer[c].size()];
-      _delayLines[0][c].Delay(lengthTimeSamplesSmooth);
-      float out = _delayLines[0][c].PopLagrangeInterpolate();
-      _delayLines[0][c].Push(delayedIn + feedbackPlain * out * 0.99f);
-      inout[c].Set(s, (1.0f - mixPlain) * realIn + mixPlain * out);
+      if (_tapOn[t])
+      {
+        float lengthTimeSamples;
+        if (_sync)
+          lengthTimeSamples = _tapLengthBarsSamples[t];
+        else
+          lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+            FFGEchoParam::TapLengthTime, tapLengthTimeNorm[t].Global().CV().Get(s), sampleRate);
+
+        float lengthTimeSamplesSmooth = _delayTimeSmoothers[t].Next(lengthTimeSamples);
+        int preDelayPos = _preDelayBufferPosition + (int)_preDelayBuffer[0].size() - _tapDelaySamples[t];
+        float tapFeedbackPlain = topo.NormalizedToIdentityFast(FFGEchoParam::TapFeedback, tapFeedbackNorm[t].Global().CV().Get(s));
+        for (int c = 0; c < 2; c++)
+        {
+          float delayedIn = _preDelayBuffer[c][preDelayPos % _preDelayBuffer[c].size()];
+          _delayLines[t][c].Delay(lengthTimeSamplesSmooth);
+          float thisTapOut = _delayLines[t][c].PopLagrangeInterpolate();
+          _delayLines[t][c].Push(delayedIn + tapFeedbackPlain * thisTapOut * 0.99f);
+          tapsOut[c].Set(s, tapsOut[c].Get(s) + thisTapOut);
+        }
+      }
     }
+
     _preDelayBufferPosition = (_preDelayBufferPosition + 1) % _preDelayBuffer[0].size();
+    for(int c = 0; c < 2; c++)
+      inout[c].Set(s, (1.0f - mixPlain) * realIn[c] + mixPlain * tapsOut[c].Get(s));
   }
 }
