@@ -326,7 +326,7 @@ FFOsciProcessor::ProcessString(
       {
         float uniFreq = uniFreqArray.Get(u - ub);
         _stringUniState[u].delayLine.Delay(oversampledRate / uniFreq);
-        float thisVal = _stringUniState[u].delayLine.Pop();
+        float thisVal = _stringUniState[u].delayLine.PopLinearInterpolate();
         float prevVal = _stringUniState[u].prevDelayVal;
         float newVal = (1.0f - damp) * thisVal + damp * (prevVal + thisVal) * 0.5f;
         float outVal = _stringUniState[u].dcFilter.Next(newVal);

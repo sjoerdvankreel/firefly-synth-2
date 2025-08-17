@@ -91,7 +91,7 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
     {
       float in = inout[c].Get(s);
       _delayLines[0][c].Delay(lengthTimePlain * sampleRate);
-      float out = _delayLines[0][c].Pop();
+      float out = _delayLines[0][c].PopLagrangeInterpolate();
       _delayLines[0][c].Push(in);
       inout[c].Set(s, (1.0f - mixPlain) * in + mixPlain * out);
     }

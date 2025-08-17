@@ -4,6 +4,7 @@
 #include <firefly_base/base/shared/FBDArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
+// Rip-off from JUCE, just tailored a bit.
 class FFDelayLine final
 {
   int _read = {};
@@ -15,11 +16,15 @@ class FFDelayLine final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFDelayLine);
-  float Pop();
+
+
   void Push(float val);
   void Delay(float delay);
   void Reset(int currentBufferSize);
   void InitializeBuffers(int maxBufferSize);
+
+  float PopLinearInterpolate();
+  float PopLagrangeInterpolate();
   int MaxBufferSize() const { return _data.Count(); }
   int CurrentBufferSize() const { return _currentBufferSize; }
 };
@@ -56,7 +61,7 @@ FFDelayLine::Push(float val)
 }
 
 inline float
-FFDelayLine::Pop()
+FFDelayLine::PopLinearInterpolate()
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
@@ -67,6 +72,38 @@ FFDelayLine::Pop()
   _read = (_read + CurrentBufferSize() - 1) % CurrentBufferSize();
   FB_ASSERT(0 <= _read && _read < CurrentBufferSize());
   return val1 + _delayFraction * (val2 - val1);
+}
+
+inline float
+FFDelayLine::PopLagrangeInterpolate()
+{
+  assert(0 < MaxBufferSize());
+  assert(0 < _currentBufferSize);
+  int pos1 = (_read + _delayWhole);
+  int pos2 = pos1 + 1;
+  int pos3 = pos1 + 2;
+  int pos4 = pos1 + 3;
+  if (pos4 >= _currentBufferSize)
+  {
+    pos1 %= _currentBufferSize;
+    pos2 %= _currentBufferSize;
+    pos3 %= _currentBufferSize;
+    pos4 %= _currentBufferSize;
+  }
+  float val1 = _data.Get(pos1);
+  float val2 = _data.Get(pos2);
+  float val3 = _data.Get(pos3);
+  float val4 = _data.Get(pos4);
+  float d1 = _delayFraction - 1.0f;
+  float d2 = _delayFraction - 2.0f;
+  float d3 = _delayFraction - 3.0f;
+  float c1 = -d1 * d2 * d3 / 6.0f;
+  float c2 = d2 * d3 * 0.5f;
+  float c3 = -d1 * d3 * 0.5f;
+  float c4 = d1 * d2 / 6.0f;
+  _read = (_read + CurrentBufferSize() - 1) % CurrentBufferSize();
+  FB_ASSERT(0 <= _read && _read < CurrentBufferSize());
+  return val1 * c1 + _delayFraction * (val2 * c2 + val3 * c3 + val4 * c4);
 }
 
 inline void

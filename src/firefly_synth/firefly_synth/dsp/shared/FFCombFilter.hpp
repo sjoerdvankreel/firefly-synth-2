@@ -74,11 +74,11 @@ FFCombFilter<Channels>::Next(
   
   float minOld = 0.0f;
   if constexpr (MinOn)
-    minOld = _delayLinesMin[channel].Pop();
+    minOld = _delayLinesMin[channel].PopLinearInterpolate();
 
   float plusOld = 0.0f;
   if constexpr (PlusOn)
-    plusOld = _delayLinesPlus[channel].Pop();
+    plusOld = _delayLinesPlus[channel].PopLinearInterpolate();
   
   float out = in + _resPlus * plusOld + _resMin * minOld;  
   if constexpr (MinOn)
