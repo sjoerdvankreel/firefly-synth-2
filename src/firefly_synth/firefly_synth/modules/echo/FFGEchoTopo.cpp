@@ -102,6 +102,7 @@ FFMakeGEchoTopo()
   tapFeedback.unit = "%";
   tapFeedback.defaultText = "50";
   tapFeedback.name = "Tap Feedback";
+  tapFeedback.matrixName = "Tap Fdbk";
   tapFeedback.display = "Fdbk";
   tapFeedback.slotCount = FFGEchoTapCount;
   tapFeedback.id = "{4E922DA7-ECAE-412E-AFED-BAA94205CF97}";
@@ -115,6 +116,7 @@ FFMakeGEchoTopo()
   tapBal.acc = true;
   tapBal.defaultText = "0";
   tapBal.name = "Tap Balance";
+  tapBal.matrixName = "Tap Bal";
   tapBal.display = "Bal";
   tapBal.slotCount = FFGEchoTapCount;
   tapBal.unit = "%";
@@ -133,6 +135,7 @@ FFMakeGEchoTopo()
   tapXOver.unit = "%";
   tapXOver.defaultText = "0";
   tapXOver.name = "Tap L/R Crossover";
+  tapXOver.matrixName = "Tap XOver";
   tapXOver.display = "XOver";
   tapXOver.slotCount = FFGEchoTapCount;
   tapXOver.id = "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
@@ -148,6 +151,7 @@ FFMakeGEchoTopo()
   tapFBXOver.defaultText = "0";
   tapFBXOver.name = "Tap Feedback L/R Crossover";
   tapFBXOver.display = "FB XOver";
+  tapFBXOver.matrixName = "Tap FB XOver";
   tapFBXOver.slotCount = FFGEchoTapCount;
   tapFBXOver.id = "{D60097D8-8F7A-4F05-9F35-65D41E2A4516}";
   tapFBXOver.type = FBParamType::Identity;
@@ -243,6 +247,7 @@ FFMakeGEchoTopo()
   auto& tapFBLPOn = result->params[(int)FFGEchoParam::TapFBLPOn];
   tapFBLPOn.acc = false;
   tapFBLPOn.name = "Tap Feedback LPF On";
+  tapFBLPOn.matrixName = "Tap FB LPF On";
   tapFBLPOn.display = "FB LPF";
   tapFBLPOn.slotCount = FFGEchoTapCount;
   tapFBLPOn.defaultText = "Off";
@@ -257,6 +262,7 @@ FFMakeGEchoTopo()
   tapFBLPFreq.acc = true;
   tapFBLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   tapFBLPFreq.name = "Tap Feedback LPF Freq";
+  tapFBLPFreq.matrixName = "Tap FB LPF Freq";
   tapFBLPFreq.display = "Frq";
   tapFBLPFreq.slotCount = FFGEchoTapCount;
   tapFBLPFreq.unit = "Hz";
@@ -272,6 +278,7 @@ FFMakeGEchoTopo()
   tapFBLPRes.acc = true;
   tapFBLPRes.defaultText = "0";
   tapFBLPRes.name = "Tap Feedback LPF Res";
+  tapFBLPRes.matrixName = "Tap FB LPF Res";
   tapFBLPRes.display = "Res";
   tapFBLPRes.slotCount = FFGEchoTapCount;
   tapFBLPRes.unit = "%";
@@ -299,6 +306,7 @@ FFMakeGEchoTopo()
   tapFBHPFreq.acc = true;
   tapFBHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   tapFBHPFreq.name = "Tap Feedback HPF Freq";
+  tapFBHPFreq.matrixName = "Tap FB HPF Freq";
   tapFBHPFreq.display = "Frq";
   tapFBHPFreq.slotCount = FFGEchoTapCount;
   tapFBHPFreq.unit = "Hz";
@@ -314,6 +322,7 @@ FFMakeGEchoTopo()
   tapFBHPRes.acc = true;
   tapFBHPRes.defaultText = "0";
   tapFBHPRes.name = "Tap Feedback HPF Res";
+  tapFBHPRes.matrixName = "Tap FB HPF Res";
   tapFBHPRes.display = "Res";
   tapFBHPRes.slotCount = FFGEchoTapCount;
   tapFBHPRes.unit = "%";
@@ -361,6 +370,7 @@ FFMakeGEchoTopo()
   tapLengthTime.defaultText = "1";
   tapLengthTime.display = "Len";
   tapLengthTime.name = "Tap Length Time";
+  tapLengthTime.matrixName = "Tap Length";
   tapLengthTime.slotCount = FFGEchoTapCount;
   tapLengthTime.unit = "Sec";
   tapLengthTime.id = "{B18BA21F-3190-49A7-A584-C93EF76CC100}";
@@ -421,6 +431,7 @@ FFMakeGEchoTopo()
   reverbMix.unit = "%";
   reverbMix.defaultText = "50";
   reverbMix.name = "Reverb Mix";
+  reverbMix.matrixName = "Rvrb Mix";
   reverbMix.display = "Mix";
   reverbMix.slotCount = 1;
   reverbMix.id = "{D40CAAA2-186D-4296-BE87-7DFCCA33C4AF}";
@@ -435,6 +446,7 @@ FFMakeGEchoTopo()
   reverbSpread.acc = true;
   reverbSpread.defaultText = "50";
   reverbSpread.name = "Reverb Spread";
+  reverbSpread.matrixName = "Rvrb Spread";
   reverbSpread.display = "Sprd";
   reverbSpread.slotCount = 1;
   reverbSpread.id = "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
@@ -449,6 +461,7 @@ FFMakeGEchoTopo()
   reverbAPF.acc = true;
   reverbAPF.defaultText = "50";
   reverbAPF.name = "Reverb APF";
+  reverbAPF.matrixName = "Rvrb APF";
   reverbAPF.display = "APF";
   reverbAPF.slotCount = 1;
   reverbAPF.id = "{3D12C8EF-6891-4980-8BAD-33E74AD79298}";
@@ -463,6 +476,7 @@ FFMakeGEchoTopo()
   reverbDamp.acc = true;
   reverbDamp.defaultText = "50";
   reverbDamp.name = "Reverb Damp";
+  reverbDamp.matrixName = "Rvrb Damp";
   reverbDamp.display = "Damp";
   reverbDamp.slotCount = 1;
   reverbDamp.id = "{5E33AA4C-F65E-432A-9DCB-E67F4AF46770}";
@@ -477,6 +491,7 @@ FFMakeGEchoTopo()
   reverbSize.acc = true;
   reverbSize.defaultText = "50";
   reverbSize.name = "Reverb Size";
+  reverbSize.matrixName = "Rvrb Size";
   reverbSize.display = "Size";
   reverbSize.slotCount = 1;
   reverbSize.id = "{2B4B1255-6875-49B3-B52D-CC9711C6D7A4}";
@@ -503,6 +518,7 @@ FFMakeGEchoTopo()
   reverbLPFreq.acc = true;
   reverbLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   reverbLPFreq.name = "Reverb LPF Freq";
+  reverbLPFreq.matrixName = "Rvrb LPF Freq";
   reverbLPFreq.display = "Frq";
   reverbLPFreq.slotCount = 1;
   reverbLPFreq.unit = "Hz";
@@ -518,6 +534,7 @@ FFMakeGEchoTopo()
   reverbLPRes.acc = true;
   reverbLPRes.defaultText = "0";
   reverbLPRes.name = "Reverb LPF Res";
+  reverbLPRes.matrixName = "Rvrb LPF Res";
   reverbLPRes.display = "Res";
   reverbLPRes.slotCount = 1;
   reverbLPRes.unit = "%";
@@ -545,6 +562,7 @@ FFMakeGEchoTopo()
   reverbHPFreq.acc = true;
   reverbHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   reverbHPFreq.name = "Reverb HPF Freq";
+  reverbHPFreq.matrixName = "Rvrb HPF Freq";
   reverbHPFreq.display = "Frq";
   reverbHPFreq.slotCount = 1;
   reverbHPFreq.unit = "Hz";
@@ -560,6 +578,7 @@ FFMakeGEchoTopo()
   reverbHPRes.acc = true;
   reverbHPRes.defaultText = "0";
   reverbHPRes.name = "Reverb HPF Res";
+  reverbHPRes.matrixName = "Rvrb HPF Res";
   reverbHPRes.display = "Res";
   reverbHPRes.slotCount = 1;
   reverbHPRes.unit = "%";
