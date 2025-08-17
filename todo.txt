@@ -8,6 +8,7 @@ alpha 12 - echo
 [ ] gecho
 [ ] vecho
 [ ] reverb
+[ ] reverb-at-each-tab
 
 TODOLIST for alpha-13
 
