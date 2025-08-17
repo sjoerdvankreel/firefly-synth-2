@@ -21,8 +21,8 @@ class FFGEchoProcessor final
   std::array<bool, FFGEchoTapCount> _tapHPOn = {};
   std::array<bool, FFGEchoTapCount> _tapFBLPOn = {};
   std::array<bool, FFGEchoTapCount> _tapFBHPOn = {};
-  std::array<int, FFGEchoTapCount> _tapDelayBars = {};
-  std::array<int, FFGEchoTapCount> _tapLengthBars = {};
+  std::array<int, FFGEchoTapCount> _tapDelayBarsSamples = {};
+  std::array<int, FFGEchoTapCount> _tapLengthBarsSamples = {};
   std::array<std::array<FFDelayLine, 2>, FFGEchoTapCount> _delayLines = {};
 
 public:
