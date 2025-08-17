@@ -24,6 +24,7 @@ _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
   _procState->dsp.global.gMatrix.processor->InitializeBuffers(_topo);
+  _procState->dsp.global.gEcho.processor->InitializeBuffers(_sampleRate);
   for (int i = 0; i < FFEffectCount; i++)
     _procState->dsp.global.gEffect[i].processor->InitializeBuffers(false, _sampleRate);
   for (int v = 0; v < FBMaxVoices; v++)
