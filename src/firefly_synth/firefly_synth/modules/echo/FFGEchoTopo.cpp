@@ -397,7 +397,8 @@ FFMakeGEchoTopo()
   auto& reverbPlacement = result->params[(int)FFGEchoParam::ReverbPlacement];
   reverbPlacement.acc = false;
   reverbPlacement.defaultText = "Off";
-  reverbPlacement.name = "Reverb";
+  reverbPlacement.name = "Reverb Placement";
+  reverbPlacement.display = "Reverb";
   reverbPlacement.slotCount = 1;
   reverbPlacement.id = "{EC5479CD-0BD0-46D2-AD39-D6CE167FFE4C}";
   reverbPlacement.type = FBParamType::List;
@@ -532,7 +533,7 @@ FFMakeGEchoTopo()
 
   auto& reverbHPFreq = result->params[(int)FFGEchoParam::ReverbHPFreq];
   reverbHPFreq.acc = true;
-  reverbHPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  reverbHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   reverbHPFreq.name = "Reverb HPF Freq";
   reverbHPFreq.display = "Frq";
   reverbHPFreq.slotCount = 1;
