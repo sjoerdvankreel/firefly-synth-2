@@ -58,6 +58,7 @@ FFMakeGEchoTopo()
 
   auto& mix = result->params[(int)FFGEchoParam::Mix];
   mix.acc = true;
+  mix.unit = "%";
   mix.defaultText = "50";
   mix.name = "Mix";
   mix.slotCount = 1;
@@ -84,6 +85,7 @@ FFMakeGEchoTopo()
 
   auto& tapLevel = result->params[(int)FFGEchoParam::TapLevel];
   tapLevel.acc = true;
+  tapLevel.unit = "%";
   tapLevel.defaultText = "50";
   tapLevel.name = "Tap Level";
   tapLevel.display = "Level";
@@ -97,6 +99,7 @@ FFMakeGEchoTopo()
 
   auto& tapFeedback = result->params[(int)FFGEchoParam::TapFeedback];
   tapFeedback.acc = true;
+  tapFeedback.unit = "%";
   tapFeedback.defaultText = "50";
   tapFeedback.name = "Tap Feedback";
   tapFeedback.display = "Fdbk";
@@ -127,6 +130,7 @@ FFMakeGEchoTopo()
 
   auto& tapXOver = result->params[(int)FFGEchoParam::TapXOver];
   tapXOver.acc = true;
+  tapXOver.unit = "%";
   tapXOver.defaultText = "0";
   tapXOver.name = "Tap L/R Crossover";
   tapXOver.display = "XOver";
@@ -140,6 +144,7 @@ FFMakeGEchoTopo()
 
   auto& tapFBXOver = result->params[(int)FFGEchoParam::TapFBXOver];
   tapFBXOver.acc = true;
+  tapFBXOver.unit = "%";
   tapFBXOver.defaultText = "0";
   tapFBXOver.name = "Tap Feedback L/R Crossover";
   tapFBXOver.display = "FB XOver";
@@ -413,6 +418,7 @@ FFMakeGEchoTopo()
 
   auto& reverbMix = result->params[(int)FFGEchoParam::ReverbMix];
   reverbMix.acc = true;
+  reverbMix.unit = "%";
   reverbMix.defaultText = "50";
   reverbMix.name = "Reverb Mix";
   reverbMix.display = "Mix";
@@ -425,6 +431,7 @@ FFMakeGEchoTopo()
   reverbMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbMix);
 
   auto& reverbSpread = result->params[(int)FFGEchoParam::ReverbSpread];
+  reverbSpread.unit = "%";
   reverbSpread.acc = true;
   reverbSpread.defaultText = "50";
   reverbSpread.name = "Reverb Spread";
@@ -438,6 +445,7 @@ FFMakeGEchoTopo()
   reverbSpread.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbSpread);
 
   auto& reverbAPF = result->params[(int)FFGEchoParam::ReverbAPF];
+  reverbAPF.unit = "%";
   reverbAPF.acc = true;
   reverbAPF.defaultText = "50";
   reverbAPF.name = "Reverb APF";
@@ -451,6 +459,7 @@ FFMakeGEchoTopo()
   reverbAPF.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbAPF);
 
   auto& reverbDamp = result->params[(int)FFGEchoParam::ReverbDamp];
+  reverbDamp.unit = "%";
   reverbDamp.acc = true;
   reverbDamp.defaultText = "50";
   reverbDamp.name = "Reverb Damp";
@@ -464,6 +473,7 @@ FFMakeGEchoTopo()
   reverbDamp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbDamp);
 
   auto& reverbSize = result->params[(int)FFGEchoParam::ReverbSize];
+  reverbSize.unit = "%";
   reverbSize.acc = true;
   reverbSize.defaultText = "50";
   reverbSize.name = "Reverb Size";
