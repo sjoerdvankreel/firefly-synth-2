@@ -5,6 +5,7 @@ alpha 12 - echo
 [ ] reverb
 [ ] store selected tab
 [ ] check defaults
+[ ] delay length LFO/chorus
 
 TODOLIST for alpha-13
 

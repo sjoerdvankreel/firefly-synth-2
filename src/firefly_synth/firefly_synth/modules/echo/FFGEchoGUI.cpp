@@ -13,13 +13,14 @@
 #include <firefly_base/gui/controls/FBMultiLineLabel.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBContentComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
 using namespace juce;
 
 static Component*
-MakeGEchoSectionMain(FBPlugGUI* plugGUI)
+MakeGEchoSectionMain(FBPlugGUI* plugGUI, FBMultiContentComponent* tapsGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -28,8 +29,10 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI)
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, target));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target));
   auto guiTapSelect = topo->gui.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } });
+  auto tapSelectSlider = plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, guiTapSelect, Slider::SliderStyle::RotaryVerticalDrag);
   grid->Add(1, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, guiTapSelect, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 1, tapSelectSlider);
+  // TODO tapSelectSlider->onValueChange = [plugGUI, tapsGUI]() { tapsGUI->SelectContentIndex(tapSelectSlider->getvalue) }
   auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Mix, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
@@ -172,13 +175,21 @@ static Component*
 MakeGEchoTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
+
+  auto taps = plugGUI->StoreComponent<FBMultiContentComponent>();
+  for(int i = 0; i < FFGEchoTapCount; i++)
+    taps->SetContent(i, MakeGEchoSectionTap(plugGUI, i));
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } };
+  FBRuntimeGUIParam const* param = plugGUI->HostContext()->Topo()->gui.ParamAtTopo(indices);
+  double normalized = plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
+  int selectedTap = param->static_.Discrete().NormalizedToPlainFast((float)normalized);
+  taps->SelectContentIndex(selectedTap);
+
   std::vector<int> columnSizes = { 0, 1, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
-  grid->Add(0, 0, MakeGEchoSectionMain(plugGUI));
-  grid->Add(0, 1, MakeGEchoSectionTap(plugGUI, 0));
+  grid->Add(0, 0, MakeGEchoSectionMain(plugGUI, taps));
+  grid->Add(0, 1, taps);
   grid->Add(0, 2, MakeGEchoSectionReverb(plugGUI));
-  for (int i = 1; i < FFGEchoTapCount; i++)
-    MakeGEchoSectionTap(plugGUI, i); // TODO
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
