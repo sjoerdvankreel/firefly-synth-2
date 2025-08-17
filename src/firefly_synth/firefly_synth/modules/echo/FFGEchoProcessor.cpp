@@ -70,5 +70,5 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
   if (_target != FFGEchoTarget::Off)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       for (int c = 0; c < 2; c++)
-        inout[c].Set(s, std::sin(inout[c].Get(s) * FBPi));
+        inout[c].Set(s, inout[c].Get(s) > 0? 0.2f: -0.2f);
 }
