@@ -61,6 +61,8 @@ struct FBStaticModule final
   float NormalizedToBarsFreqFast(ParamIndex index, float normalized, float bpm) const;
   template <class ParamIndex>
   int NormalizedToBarsSamplesFast(ParamIndex index, float normalized, float sampleRate, float bpm) const;
+  template <class ParamIndex>
+  float NormalizedToBarsFloatSamplesFast(ParamIndex index, float normalized, float sampleRate, float bpm) const;
 
   template <class ParamIndex>
   float NormalizedToLinearFast(ParamIndex index, float normalized) const;
@@ -75,6 +77,8 @@ struct FBStaticModule final
   int NormalizedToLinearTimeSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
   template <class ParamIndex>
   int NormalizedToLinearFreqSamplesFast(ParamIndex index, float normalized, float sampleRate) const;
+  template <class ParamIndex>
+  FBBatch<float> NormalizedToLinearTimeFloatSamplesFast(ParamIndex index, FBBatch<float> normalized, float sampleRate) const;
 
   template <class ParamIndex>
   float NormalizedToLog2Fast(ParamIndex index, float normalized) const;
@@ -150,6 +154,13 @@ FBStaticModule::NormalizedToBarsSamplesFast(ParamIndex index, float normalized, 
 }
 
 template <class ParamIndex>
+inline float
+FBStaticModule::NormalizedToBarsFloatSamplesFast(ParamIndex index, float normalized, float sampleRate, float bpm) const
+{
+  return params[static_cast<int>(index)].Bars().NormalizedToFloatSamplesFast(normalized, sampleRate, bpm);
+}
+
+template <class ParamIndex>
 inline float 
 FBStaticModule::NormalizedToLinearFast(ParamIndex index, float normalized) const
 {
@@ -182,6 +193,13 @@ inline int
 FBStaticModule::NormalizedToLinearTimeSamplesFast(ParamIndex index, float normalized, float sampleRate) const
 {
   return params[static_cast<int>(index)].Linear().NormalizedTimeToSamplesFast(normalized, sampleRate);
+}
+
+template <class ParamIndex>
+FBBatch<float> 
+FBStaticModule::NormalizedToLinearTimeFloatSamplesFast(ParamIndex index, FBBatch<float> normalized, float sampleRate) const
+{
+  return params[static_cast<int>(index)].Linear().NormalizedTimeToFloatSamplesFast(normalized, sampleRate);
 }
 
 template <class ParamIndex>

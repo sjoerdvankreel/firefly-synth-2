@@ -25,7 +25,7 @@ class FFGEchoProcessor final
   std::array<bool, FFGEchoTapCount> _tapFBLPOn = {};
   std::array<bool, FFGEchoTapCount> _tapFBHPOn = {};
   std::array<int, FFGEchoTapCount> _tapDelaySamples = {};
-  std::array<int, FFGEchoTapCount> _tapLengthBarsSamples = {};
+  std::array<float, FFGEchoTapCount> _tapLengthBarsSamples = {};
 
   // https://forum.juce.com/t/delay-line-artifacts/46781/4
   int _preDelayBufferPosition = {};

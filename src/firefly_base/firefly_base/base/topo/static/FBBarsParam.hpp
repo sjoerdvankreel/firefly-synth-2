@@ -18,6 +18,7 @@ struct FBBarsParam
   int NormalizedToPlainFast(float normalized) const;
   float NormalizedToFreqFast(float normalized, float bpm) const;
   int NormalizedToSamplesFast(float normalized, float sampleRate, float bpm) const;
+  float NormalizedToFloatSamplesFast(float normalized, float sampleRate, float bpm) const;
 };
 
 struct FBBarsParamNonRealTime final :
@@ -54,4 +55,10 @@ inline int
 FBBarsParam::NormalizedToSamplesFast(float normalized, float sampleRate, float bpm) const
 {
   return FBBarsToSamples(items[NormalizedToPlainFast(normalized)], sampleRate, bpm);
+}
+
+inline float
+FBBarsParam::NormalizedToFloatSamplesFast(float normalized, float sampleRate, float bpm) const
+{
+  return FBBarsToFloatSamples(items[NormalizedToPlainFast(normalized)], sampleRate, bpm);
 }

@@ -66,7 +66,7 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
     _tapHPOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapHPOn, tapHPOnNorm[t].Value());
     _tapFBLPOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapFBLPOn, tapFBLPOnNorm[t].Value());
     _tapFBHPOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapFBHPOn, tapFBHPOnNorm[t].Value());
-    _tapLengthBarsSamples[t] = topo.NormalizedToBarsSamplesFast(FFGEchoParam::TapLengthBars, tapLengthBarsNorm[t].Value(), sampleRate, bpm);
+    _tapLengthBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(FFGEchoParam::TapLengthBars, tapLengthBarsNorm[t].Value(), sampleRate, bpm);
 
     if(_sync)
       _tapDelaySamples[t] = topo.NormalizedToBarsSamplesFast(FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
@@ -87,28 +87,31 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
     return;
 
   auto const& mixNorm = params.acc.mix;
-  auto const& lengthTimeNorm = params.acc.tapLengthTime;
+  auto const& tapFeedbackNorm = params.acc.tapFeedback;
+  auto const& tapLengthTimeNorm = params.acc.tapLengthTime;
 
   FBSArray<float, FBFixedBlockSamples> lengthTimeSamples = {};
   if (_sync)
     lengthTimeSamples.Fill((float)_tapLengthBarsSamples[0]);
   else
     for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      lengthTimeSamples.Store(s, topo.NormalizedToLinearFast(FFGEchoParam::TapLengthTime, lengthTimeNorm[0].Global(), s));
+      lengthTimeSamples.Store(s, topo.NormalizedToLinearTimeFloatSamplesFast(
+        FFGEchoParam::TapLengthTime, tapLengthTimeNorm[0].Global().CV().Load(s), sampleRate));
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float lengthTimePlainSmooth = _delayTimeSmoother.Next(lengthTimeSamples.Get(s));
+    float lengthTimeSamplesSmooth = _delayTimeSmoother.Next(lengthTimeSamples.Get(s));
     float mixPlain = topo.NormalizedToIdentityFast(FFGEchoParam::Mix, mixNorm[0].Global().CV().Get(s));
+    float feedbackPlain = topo.NormalizedToIdentityFast(FFGEchoParam::TapFeedback, tapFeedbackNorm[0].Global().CV().Get(s));
     for (int c = 0; c < 2; c++)
     {
       float realIn = inout[c].Get(s);
       _preDelayBuffer[c][_preDelayBufferPosition] = realIn;
       int preDelayPos = _preDelayBufferPosition + (int)_preDelayBuffer[c].size() - _tapDelaySamples[0];
       float delayedIn = _preDelayBuffer[c][preDelayPos % _preDelayBuffer[c].size()];
-      _delayLines[0][c].Delay(lengthTimePlainSmooth * sampleRate);
+      _delayLines[0][c].Delay(lengthTimeSamplesSmooth);
       float out = _delayLines[0][c].PopLagrangeInterpolate();
-      _delayLines[0][c].Push(delayedIn);
+      _delayLines[0][c].Push(delayedIn + feedbackPlain * out * 0.99f);
       inout[c].Set(s, (1.0f - mixPlain) * realIn + mixPlain * out);
     }
     _preDelayBufferPosition = (_preDelayBufferPosition + 1) % _preDelayBuffer[0].size();
