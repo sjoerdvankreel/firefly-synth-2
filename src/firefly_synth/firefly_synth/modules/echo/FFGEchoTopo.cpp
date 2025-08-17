@@ -96,6 +96,7 @@ FFMakeGEchoTopo()
   tapOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapOn);
   tapOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapOn);
   tapOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapOn);
+  tapOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& tapLevel = result->params[(int)FFGEchoParam::TapLevel];
   tapLevel.acc = true;
@@ -110,6 +111,80 @@ FFMakeGEchoTopo()
   tapLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLevel);
   tapLevel.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLevel);
   tapLevel.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLevel);
+  tapLevel.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& tapDelayTime = result->params[(int)FFGEchoParam::TapDelayTime];
+  tapDelayTime.acc = false;
+  tapDelayTime.defaultText = "0";
+  tapDelayTime.display = "Dly";
+  tapDelayTime.name = "Tap Delay Time";
+  tapDelayTime.slotCount = FFGEchoTapCount;
+  tapDelayTime.unit = "Sec";
+  tapDelayTime.id = "{7ADA9075-213B-4809-B32E-39B2794B010F}";
+  tapDelayTime.type = FBParamType::Linear;
+  tapDelayTime.Linear().min = 0.0f;
+  tapDelayTime.Linear().max = 10.0f;
+  tapDelayTime.Linear().editSkewFactor = 0.5f;
+  auto selectTapDelayTime = [](auto& module) { return &module.block.tapDelayTime; };
+  tapDelayTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayTime);
+  tapDelayTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayTime);
+  tapDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayTime);
+  tapDelayTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  tapDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
+
+  auto& tapDelayBars = result->params[(int)FFGEchoParam::TapDelayBars];
+  tapDelayBars.acc = false;
+  tapDelayBars.defaultText = "Off";
+  tapDelayBars.display = "Dly";
+  tapDelayBars.name = "Tap Delay Bars";
+  tapDelayBars.slotCount = FFGEchoTapCount;
+  tapDelayBars.unit = "Bars";
+  tapDelayBars.id = "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
+  tapDelayBars.type = FBParamType::Bars;
+  tapDelayBars.Bars().items = MakeGEchoBarsItems(true);
+  auto selectTapDelayBars = [](auto& module) { return &module.block.tapDelayBars; };
+  tapDelayBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayBars);
+  tapDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayBars);
+  tapDelayBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayBars);
+  tapDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  tapDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+
+  auto& tapLengthTime = result->params[(int)FFGEchoParam::TapLengthTime];
+  tapLengthTime.acc = true;
+  tapLengthTime.defaultText = "1";
+  tapLengthTime.display = "Len";
+  tapLengthTime.name = "Tap Length Time";
+  tapLengthTime.matrixName = "Tap Length";
+  tapLengthTime.slotCount = FFGEchoTapCount;
+  tapLengthTime.unit = "Sec";
+  tapLengthTime.id = "{B18BA21F-3190-49A7-A584-C93EF76CC100}";
+  tapLengthTime.type = FBParamType::Linear;
+  tapLengthTime.Linear().min = 0.0f;
+  tapLengthTime.Linear().max = 10.0f;
+  tapLengthTime.Linear().editSkewFactor = 0.5f;
+  auto selectTapLengthTime = [](auto& module) { return &module.acc.tapLengthTime; };
+  tapLengthTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthTime);
+  tapLengthTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthTime);
+  tapLengthTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthTime);
+  tapLengthTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  tapLengthTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
+
+  auto& tapLengthBars = result->params[(int)FFGEchoParam::TapLengthBars];
+  tapLengthBars.acc = false;
+  tapLengthBars.defaultText = "1/4";
+  tapLengthBars.display = "Len";
+  tapLengthBars.name = "Tap Length Bars";
+  tapLengthBars.slotCount = FFGEchoTapCount;
+  tapLengthBars.unit = "Bars";
+  tapLengthBars.id = "{785550ED-7885-449B-8F26-91BC4AE28B58}";
+  tapLengthBars.type = FBParamType::Bars;
+  tapLengthBars.Bars().items = MakeGEchoBarsItems(false);
+  auto selectTapLengthBars = [](auto& module) { return &module.block.tapLengthBars; };
+  tapLengthBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthBars);
+  tapLengthBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthBars);
+  tapLengthBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthBars);
+  tapLengthBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  tapLengthBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapFeedback = result->params[(int)FFGEchoParam::TapFeedback];
   tapFeedback.acc = true;
@@ -125,6 +200,7 @@ FFMakeGEchoTopo()
   tapFeedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFeedback);
   tapFeedback.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFeedback);
   tapFeedback.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFeedback);
+  tapFeedback.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapBal = result->params[(int)FFGEchoParam::TapBalance];
   tapBal.acc = true;
@@ -143,6 +219,7 @@ FFMakeGEchoTopo()
   tapBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapBal);
   tapBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapBal);
   tapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapBal);
+  tapBal.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapXOver = result->params[(int)FFGEchoParam::TapXOver];
   tapXOver.acc = true;
@@ -158,6 +235,7 @@ FFMakeGEchoTopo()
   tapXOver.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapXOver);
   tapXOver.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapXOver);
   tapXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapXOver);
+  tapXOver.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapFBXOver = result->params[(int)FFGEchoParam::TapFBXOver];
   tapFBXOver.acc = true;
@@ -173,6 +251,7 @@ FFMakeGEchoTopo()
   tapFBXOver.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBXOver);
   tapFBXOver.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBXOver);
   tapFBXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBXOver);
+  tapFBXOver.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapLPOn = result->params[(int)FFGEchoParam::TapLPOn];
   tapLPOn.acc = false;
@@ -346,80 +425,7 @@ FFMakeGEchoTopo()
   tapFBHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPRes);
   tapFBHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPRes);
   tapFBHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPRes);
-
-  auto& tapDelayTime = result->params[(int)FFGEchoParam::TapDelayTime];
-  tapDelayTime.acc = false;
-  tapDelayTime.defaultText = "0";
-  tapDelayTime.display = "Dly";
-  tapDelayTime.name = "Tap Delay Time";
-  tapDelayTime.slotCount = FFGEchoTapCount;
-  tapDelayTime.unit = "Sec";
-  tapDelayTime.id = "{7ADA9075-213B-4809-B32E-39B2794B010F}";
-  tapDelayTime.type = FBParamType::Linear;
-  tapDelayTime.Linear().min = 0.0f;
-  tapDelayTime.Linear().max = 10.0f;
-  tapDelayTime.Linear().editSkewFactor = 0.5f;
-  auto selectTapDelayTime = [](auto& module) { return &module.block.tapDelayTime; };
-  tapDelayTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayTime);
-  tapDelayTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayTime);
-  tapDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayTime);
-  tapDelayTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  tapDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
-
-  auto& tapDelayBars = result->params[(int)FFGEchoParam::TapDelayBars];
-  tapDelayBars.acc = false;
-  tapDelayBars.defaultText = "Off";
-  tapDelayBars.display = "Dly";
-  tapDelayBars.name = "Tap Delay Bars";
-  tapDelayBars.slotCount = FFGEchoTapCount;
-  tapDelayBars.unit = "Bars";
-  tapDelayBars.id = "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
-  tapDelayBars.type = FBParamType::Bars;
-  tapDelayBars.Bars().items = MakeGEchoBarsItems(true);
-  auto selectTapDelayBars = [](auto& module) { return &module.block.tapDelayBars; };
-  tapDelayBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayBars);
-  tapDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayBars);
-  tapDelayBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayBars);
-  tapDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  tapDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
-  auto& tapLengthTime = result->params[(int)FFGEchoParam::TapLengthTime];
-  tapLengthTime.acc = true;
-  tapLengthTime.defaultText = "1";
-  tapLengthTime.display = "Len";
-  tapLengthTime.name = "Tap Length Time";
-  tapLengthTime.matrixName = "Tap Length";
-  tapLengthTime.slotCount = FFGEchoTapCount;
-  tapLengthTime.unit = "Sec";
-  tapLengthTime.id = "{B18BA21F-3190-49A7-A584-C93EF76CC100}";
-  tapLengthTime.type = FBParamType::Linear;
-  tapLengthTime.Linear().min = 0.0f;
-  tapLengthTime.Linear().max = 10.0f;
-  tapLengthTime.Linear().editSkewFactor = 0.5f;
-  auto selectTapLengthTime = [](auto& module) { return &module.acc.tapLengthTime; };
-  tapLengthTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthTime);
-  tapLengthTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthTime);
-  tapLengthTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthTime);
-  tapLengthTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  tapLengthTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
-
-  auto& tapLengthBars = result->params[(int)FFGEchoParam::TapLengthBars];
-  tapLengthBars.acc = false;
-  tapLengthBars.defaultText = "1/4";
-  tapLengthBars.display = "Len";
-  tapLengthBars.name = "Tap Length Bars";
-  tapLengthBars.slotCount = FFGEchoTapCount;
-  tapLengthBars.unit = "Bars";
-  tapLengthBars.id = "{785550ED-7885-449B-8F26-91BC4AE28B58}";
-  tapLengthBars.type = FBParamType::Bars;
-  tapLengthBars.Bars().items = MakeGEchoBarsItems(false);
-  auto selectTapLengthBars = [](auto& module) { return &module.block.tapLengthBars; };
-  tapLengthBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthBars);
-  tapLengthBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthBars);
-  tapLengthBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthBars);
-  tapLengthBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  tapLengthBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
+   
   auto& reverbPlacement = result->params[(int)FFGEchoParam::ReverbPlacement];
   reverbPlacement.acc = false;
   reverbPlacement.defaultText = "Off";
