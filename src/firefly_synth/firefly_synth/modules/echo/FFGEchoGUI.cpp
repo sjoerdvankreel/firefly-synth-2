@@ -92,6 +92,46 @@ MakeGEchoSectionTap(FBPlugGUI* plugGUI, int tap)
 }
 
 static Component*
+MakeGEchoSectionFeedback(FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto on = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackOn, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
+  auto delayTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackDelayTime, 0 } });
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delayTime));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delayTime, Slider::SliderStyle::RotaryVerticalDrag));
+  auto delayBars = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackDelayBars, 0 } });
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delayBars));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delayBars));
+  auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackMix, 0 } });
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
+  auto amount = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackAmount, 0 } });
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amount));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
+  auto xOver = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackXOver, 0 } });
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, xOver));
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, xOver, Slider::SliderStyle::RotaryVerticalDrag));
+  auto lpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackLPFreq, 0 } });
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  auto lpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackLPRes, 0 } });
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  auto hpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackHPFreq, 0 } });
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  auto hpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackHPRes, 0 } });
+  grid->Add(1, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
+  grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->MarkSection({ { 0, 0 }, { 2, 9 } });
+  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+}
+
+static Component*
 MakeGEchoSectionReverb(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
@@ -142,11 +182,12 @@ MakeGEchoTab(FBPlugGUI* plugGUI)
   FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } };
   taps->SelectContentIndex(plugGUI->HostContext()->GetGUIParamDiscrete(indices) - 1);
 
-  std::vector<int> columnSizes = { 0, 0, 1 };
+  std::vector<int> columnSizes = { 0, 0, 0, 1 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeGEchoSectionMain(plugGUI, taps));
   grid->Add(0, 1, taps);
-  grid->Add(0, 2, MakeGEchoSectionReverb(plugGUI));
+  grid->Add(0, 2, MakeGEchoSectionFeedback(plugGUI));
+  grid->Add(0, 3, MakeGEchoSectionReverb(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
