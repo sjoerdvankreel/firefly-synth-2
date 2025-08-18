@@ -79,6 +79,7 @@ FFGEchoProcessor::ProcessTaps(
   auto const& tapsMixNorm = params.acc.tapsMix;
   auto const& tapLevelNorm = params.acc.tapLevel;
   auto const& tapBalNorm = params.acc.tapBalance;
+  auto const& tapXOverNorm = params.acc.tapXOver;
   auto const& tapLPResNorm = params.acc.tapLPRes;
   auto const& tapHPResNorm = params.acc.tapHPRes;
   auto const& tapLPFreqNorm = params.acc.tapLPFreq;
@@ -104,6 +105,8 @@ FFGEchoProcessor::ProcessTaps(
 
         float tapBalPlain = topo.NormalizedToLinearFast(
           FFGEchoParam::TapBalance, tapBalNorm[t].Global().CV().Get(s));
+        float tapXOverPlain = topo.NormalizedToIdentityFast(
+          FFGEchoParam::TapXOver, tapXOverNorm[t].Global().CV().Get(s));
         float tapLevelPlain = topo.NormalizedToIdentityFast(
           FFGEchoParam::TapLevel, tapLevelNorm[t].Global().CV().Get(s));
         float tapLPResPlain = topo.NormalizedToIdentityFast(
@@ -115,12 +118,18 @@ FFGEchoProcessor::ProcessTaps(
         float tapHPFreqPlain = topo.NormalizedToLog2Fast(
           FFGEchoParam::TapHPFreq, tapHPFreqNorm[t].Global().CV().Get(s));
 
+        float thisTapOutLR[2];
+        for (int c = 0; c < 2; c++)
+        {
+          _tapDelayLines[t][c].Delay(lengthTimeSamplesSmooth);
+          thisTapOutLR[c] = _tapDelayLines[t][c].PopLagrangeInterpolate();
+        }
+
         _tapLPFilters[t].Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);
         _tapHPFilters[t].Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain, tapHPResPlain, 0.0);
         for (int c = 0; c < 2; c++)
         {
-          _tapDelayLines[t][c].Delay(lengthTimeSamplesSmooth);
-          double thisTapOut = _tapDelayLines[t][c].PopLagrangeInterpolate();
+          double thisTapOut = (1.0f - tapXOverPlain) * thisTapOutLR[c] + tapXOverPlain * thisTapOutLR[c == 0 ? 1 : 0];
           thisTapOut = _tapLPFilters[t].Next(c, thisTapOut);
           thisTapOut = _tapHPFilters[t].Next(c, thisTapOut);
           _tapDelayLines[t][c].Push(inout[c].Get(s));
