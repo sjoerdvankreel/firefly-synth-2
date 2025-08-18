@@ -74,10 +74,24 @@ FFGEchoProcessor::Process(
   FBModuleProcState& state, 
   FBSArray2<float, FBFixedBlockSamples, 2>& inout)
 {
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.global.gEcho[0];
+  auto const& tapsMixNorm = params.acc.tapsMix;
+
   if (_target == FFGEchoTarget::Off)
     return;  
   //ProcessTaps(state, inout);
   ProcessFeedback(state, inout);
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+
+  auto& exchangeDSP = exchangeToGUI->global.gEcho[0];
+  exchangeDSP.active = true;
+
+  auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
+  exchangeParams.acc.tapsMix[0] = tapsMixNorm[0].Global().CV().Last();
 }
 
 void 
@@ -153,9 +167,6 @@ FFGEchoProcessor::ProcessFeedback(
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
-
-  auto& exchangeDSP = exchangeToGUI->global.gEcho[0];
-  exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
   exchangeParams.acc.feedbackLPRes[0] = lpResNorm.Last();
@@ -249,9 +260,6 @@ FFGEchoProcessor::ProcessTaps(
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
     return;
-
-  auto& exchangeDSP = exchangeToGUI->global.gEcho[0];
-  exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
   for (int t = 0; t < FFGEchoTapCount; t++)

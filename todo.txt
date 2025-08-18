@@ -6,13 +6,13 @@ alpha 12 - echo
 [x] better interpolation algo for delayline
 [x] smooth delay time changes
 [x] soft clip it like string osci
+[x] paint the knobs
 [ ] gecho
 [ ] vecho -- how with global uni? share delay line between 1 tap / fdbck, no modulation
 [ ] reverb
 [ ] popout editor + some set-default buttons
 [ ] better defaults
 [ ] check the perf
-[ ] paint the knobs
 
 TODOLIST for alpha-13
 
