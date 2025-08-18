@@ -11,6 +11,8 @@ alpha 12 - echo
 [ ] popout editor + some set-default buttons
 [ ] better defaults
 [ ] check the perf
+[ ] paint the knobs
+[ ] soft clip it like string osci
 
 TODOLIST for alpha-13
 
