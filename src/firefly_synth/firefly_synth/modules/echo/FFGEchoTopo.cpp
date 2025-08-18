@@ -4,9 +4,9 @@
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::vector<FBBarsItem>
-MakeGEchoBarsItems(bool withZero)
+MakeGEchoBarsItems()
 {
-  return FBMakeBarsItems(withZero, { 1, 128 }, { 1, 1 });
+  return FBMakeBarsItems(true, { 1, 128 }, { 1, 1 });
 }
 
 std::unique_ptr<FBStaticModule>
@@ -138,7 +138,7 @@ FFMakeGEchoTopo()
     
   auto& tapDelayTime = result->params[(int)FFGEchoParam::TapDelayTime];
   tapDelayTime.acc = true;
-  tapDelayTime.defaultText = "0";
+  tapDelayTime.defaultText = "1";
   tapDelayTime.display = "Dly";
   tapDelayTime.name = "Tap Delay Time";
   tapDelayTime.slotCount = FFGEchoTapCount;
@@ -157,14 +157,14 @@ FFMakeGEchoTopo()
 
   auto& tapDelayBars = result->params[(int)FFGEchoParam::TapDelayBars];
   tapDelayBars.acc = false;
-  tapDelayBars.defaultText = "Off";
+  tapDelayBars.defaultText = "1/4";
   tapDelayBars.display = "Dly";
   tapDelayBars.name = "Tap Delay Bars";
   tapDelayBars.slotCount = FFGEchoTapCount;
   tapDelayBars.unit = "Bars";
   tapDelayBars.id = "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
   tapDelayBars.type = FBParamType::Bars;
-  tapDelayBars.Bars().items = MakeGEchoBarsItems(true);
+  tapDelayBars.Bars().items = MakeGEchoBarsItems();
   auto selectTapDelayBars = [](auto& module) { return &module.block.tapDelayBars; };
   tapDelayBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayBars);
   tapDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayBars);
@@ -493,12 +493,49 @@ FFMakeGEchoTopo()
   feedbackAmount.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackAmount);
   feedbackAmount.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& feedbackDelayTime = result->params[(int)FFGEchoParam::FeedbackDelayTime];
+  feedbackDelayTime.acc = true;
+  feedbackDelayTime.defaultText = "1";
+  feedbackDelayTime.display = "Dly";
+  feedbackDelayTime.name = "Feedback Delay Time";
+  feedbackDelayTime.matrixName = "Fdbk Delay Time";
+  feedbackDelayTime.slotCount = 1;
+  feedbackDelayTime.unit = "Sec";
+  feedbackDelayTime.id = "{CBD0A273-5E74-460E-A327-5EE9EE1C6F49}";
+  feedbackDelayTime.type = FBParamType::Linear;
+  feedbackDelayTime.Linear().min = 0.0f;
+  feedbackDelayTime.Linear().max = 10.0f;
+  feedbackDelayTime.Linear().editSkewFactor = 0.5f;
+  auto selectFeedbackDelayTime = [](auto& module) { return &module.acc.feedbackDelayTime; };
+  feedbackDelayTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackDelayTime);
+  feedbackDelayTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackDelayTime);
+  feedbackDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackDelayTime);
+  feedbackDelayTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  feedbackDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
+
+  auto& feedbackDelayBars = result->params[(int)FFGEchoParam::FeedbackDelayBars];
+  feedbackDelayBars.acc = false;
+  feedbackDelayBars.defaultText = "1/4";
+  feedbackDelayBars.display = "Dly";
+  feedbackDelayBars.name = "Feedback Delay Bars";
+  feedbackDelayBars.matrixName = "Fdbk Delay Bars";
+  feedbackDelayBars.slotCount = 1;
+  feedbackDelayBars.unit = "Bars";
+  feedbackDelayBars.id = "{BAC85A14-5F60-4692-9D45-81AB29477F61}";
+  feedbackDelayBars.type = FBParamType::Bars;
+  feedbackDelayBars.Bars().items = MakeGEchoBarsItems();
+  auto selectFeedbackDelayBars = [](auto& module) { return &module.block.feedbackDelayBars; };
+  feedbackDelayBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackDelayBars);
+  feedbackDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackDelayBars);
+  feedbackDelayBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackDelayBars);
+  feedbackDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  feedbackDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+
 
   /*
 
  enum class FFGEchoParam {
   
-   FeedbackDelayTime, FeedbackDelayBars,
    FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
    Count };
    */
