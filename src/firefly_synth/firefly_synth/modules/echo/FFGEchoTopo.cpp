@@ -31,17 +31,40 @@ FFMakeGEchoTopo()
   target.id = "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
   target.type = FBParamType::List;
   target.List().items = {
-    { "{3B1FC348-4F80-4CD5-8F3D-E762C0373EAB}", "Off" },
-    { "{84DBE1D7-B703-4E7A-BBDC-70A0F98EBB43}", "Voice" },
-    { "{3F334789-DA27-442D-81CF-EF87C73067E5}", "GFX1" },
-    { "{6888AC49-5381-4B1E-9E92-F78D49AB203A}", "GFX2" },
-    { "{877E72D7-F9CA-441E-B675-800B4015E900}", "GFX3" },
-    { "{C1ADFC32-1DD5-4CA8-B514-374E8306A2A1}", "GFX4" },
-    { "{F0E3771C-D1FE-4544-BA9B-2D3C9C4E7CF4}", "Out" } };
+    { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "Off" },
+    { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "Voice" },
+    { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "Out" },
+    { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "GFX1In" },
+    { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "GFX1Out" },
+    { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "GFX2In" },
+    { "{A043114B-C471-46A8-A526-B93E1897B1A0}", "GFX2Out" },
+    { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "GFX3In" },
+    { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "GFX3Out" },
+    { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "GFX4In" },
+    { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "GFX4Out" } };
   auto selectTarget = [](auto& module) { return &module.block.target; };
   target.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTarget);
   target.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTarget);
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTarget);
+
+  auto& order = result->params[(int)FFGEchoParam::Order];
+  order.acc = false;
+  order.defaultText = "T\U00002192F\U00002192R";
+  order.name = "Order";
+  order.slotCount = 1;
+  order.id = "{D84A623A-7F5C-40C6-A892-A441497783CD}";
+  order.type = FBParamType::List;
+  order.List().items = {
+    { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "T\U00002192F\U00002192R" },
+    { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "T\U00002192R\U00002192F" },
+    { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "F\U00002192T\U00002192R" },
+    { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "F\U00002192R\U00002192T" },
+    { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "R\U00002192T\U00002192F" },
+    { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "R\U00002192F\U00002192T" } };
+  auto selectOrder = [](auto& module) { return &module.block.order; };
+  order.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOrder);
+  order.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOrder);
+  order.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOrder);
 
   auto& sync = result->params[(int)FFGEchoParam::Sync];
   sync.acc = false;
@@ -57,19 +80,19 @@ FFMakeGEchoTopo()
   sync.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectSync);
   sync.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
-  auto& mix = result->params[(int)FFGEchoParam::Mix];
-  mix.acc = true;
-  mix.unit = "%";
-  mix.defaultText = "33";
-  mix.name = "Mix";
-  mix.slotCount = 1;
-  mix.id = "{56DF16E6-A079-4E97-92D9-DA65826DB20F}";
-  mix.type = FBParamType::Identity;
-  auto selectMix = [](auto& module) { return &module.acc.mix; };
-  mix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMix);
-  mix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectMix);
-  mix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMix);
-  mix.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
+  auto& tapsMix = result->params[(int)FFGEchoParam::TapsMix];
+  tapsMix.acc = true;
+  tapsMix.unit = "%";
+  tapsMix.defaultText = "33";
+  tapsMix.name = "Mix";
+  tapsMix.slotCount = 1;
+  tapsMix.id = "{56DF16E6-A079-4E97-92D9-DA65826DB20F}";
+  tapsMix.type = FBParamType::Identity;
+  auto selectTapsMix = [](auto& module) { return &module.acc.tapsMix; };
+  tapsMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapsMix);
+  tapsMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapsMix);
+  tapsMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapsMix);
+  tapsMix.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& guiTapSelect = result->guiParams[(int)FFGEchoGUIParam::TapSelect];
   guiTapSelect.defaultText = "1";
@@ -112,7 +135,7 @@ FFMakeGEchoTopo()
   tapLevel.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLevel);
   tapLevel.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLevel);
   tapLevel.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
+    
   auto& tapDelayTime = result->params[(int)FFGEchoParam::TapDelayTime];
   tapDelayTime.acc = false;
   tapDelayTime.defaultText = "0";
@@ -149,59 +172,6 @@ FFMakeGEchoTopo()
   tapDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   tapDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
-  auto& tapLengthTime = result->params[(int)FFGEchoParam::TapLengthTime];
-  tapLengthTime.acc = true;
-  tapLengthTime.defaultText = "1";
-  tapLengthTime.display = "Len";
-  tapLengthTime.name = "Tap Length Time";
-  tapLengthTime.matrixName = "Tap Length";
-  tapLengthTime.slotCount = FFGEchoTapCount;
-  tapLengthTime.unit = "Sec";
-  tapLengthTime.id = "{B18BA21F-3190-49A7-A584-C93EF76CC100}";
-  tapLengthTime.type = FBParamType::Linear;
-  tapLengthTime.Linear().min = 0.0f;
-  tapLengthTime.Linear().max = 10.0f;
-  tapLengthTime.Linear().editSkewFactor = 0.5f;
-  auto selectTapLengthTime = [](auto& module) { return &module.acc.tapLengthTime; };
-  tapLengthTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthTime);
-  tapLengthTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthTime);
-  tapLengthTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthTime);
-  tapLengthTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
-  tapLengthTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
-
-  auto& tapLengthBars = result->params[(int)FFGEchoParam::TapLengthBars];
-  tapLengthBars.acc = false;
-  tapLengthBars.defaultText = "1/4";
-  tapLengthBars.display = "Len";
-  tapLengthBars.name = "Tap Length Bars";
-  tapLengthBars.slotCount = FFGEchoTapCount;
-  tapLengthBars.unit = "Bars";
-  tapLengthBars.id = "{785550ED-7885-449B-8F26-91BC4AE28B58}";
-  tapLengthBars.type = FBParamType::Bars;
-  tapLengthBars.Bars().items = MakeGEchoBarsItems(false);
-  auto selectTapLengthBars = [](auto& module) { return &module.block.tapLengthBars; };
-  tapLengthBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLengthBars);
-  tapLengthBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLengthBars);
-  tapLengthBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLengthBars);
-  tapLengthBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
-  tapLengthBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
-
-  auto& tapFeedback = result->params[(int)FFGEchoParam::TapFeedback];
-  tapFeedback.acc = true;
-  tapFeedback.unit = "%";
-  tapFeedback.defaultText = "50";
-  tapFeedback.name = "Tap Feedback";
-  tapFeedback.matrixName = "Tap Fdbk";
-  tapFeedback.display = "Fdbk";
-  tapFeedback.slotCount = FFGEchoTapCount;
-  tapFeedback.id = "{4E922DA7-ECAE-412E-AFED-BAA94205CF97}";
-  tapFeedback.type = FBParamType::Identity;
-  auto selectTapFeedback = [](auto& module) { return &module.acc.tapFeedback; };
-  tapFeedback.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFeedback);
-  tapFeedback.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFeedback);
-  tapFeedback.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFeedback);
-  tapFeedback.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
   auto& tapBal = result->params[(int)FFGEchoParam::TapBalance];
   tapBal.acc = true;
   tapBal.defaultText = "0";
@@ -237,36 +207,6 @@ FFMakeGEchoTopo()
   tapXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapXOver);
   tapXOver.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  auto& tapFBXOver = result->params[(int)FFGEchoParam::TapFBXOver];
-  tapFBXOver.acc = true;
-  tapFBXOver.unit = "%";
-  tapFBXOver.defaultText = "0";
-  tapFBXOver.name = "Tap Feedback L/R Crossover";
-  tapFBXOver.display = "FB XOver";
-  tapFBXOver.matrixName = "Tap FB XOver";
-  tapFBXOver.slotCount = FFGEchoTapCount;
-  tapFBXOver.id = "{D60097D8-8F7A-4F05-9F35-65D41E2A4516}";
-  tapFBXOver.type = FBParamType::Identity;
-  auto selectTapFBXOver = [](auto& module) { return &module.acc.tapFBCrossOver; };
-  tapFBXOver.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBXOver);
-  tapFBXOver.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBXOver);
-  tapFBXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBXOver);
-  tapFBXOver.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
-  auto& tapLPOn = result->params[(int)FFGEchoParam::TapLPOn];
-  tapLPOn.acc = false;
-  tapLPOn.name = "Tap LPF On";
-  tapLPOn.display = "LPF";
-  tapLPOn.slotCount = FFGEchoTapCount;
-  tapLPOn.defaultText = "Off";
-  tapLPOn.id = "{F3400A25-4444-4865-823B-AA104A2D8ADB}";
-  tapLPOn.type = FBParamType::Boolean;
-  auto selectTapLPOn = [](auto& module) { return &module.block.tapLPOn; };
-  tapLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLPOn);
-  tapLPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPOn);
-  tapLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPOn);
-  tapLPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
   auto& tapLPFreq = result->params[(int)FFGEchoParam::TapLPFreq];
   tapLPFreq.acc = true;
   tapLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
@@ -297,20 +237,6 @@ FFMakeGEchoTopo()
   tapLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapLPRes);
   tapLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapLPRes);
   tapLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapLPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
-
-  auto& tapHPOn = result->params[(int)FFGEchoParam::TapHPOn];
-  tapHPOn.acc = false;
-  tapHPOn.name = "Tap HPF On";
-  tapHPOn.display = "HPF";
-  tapHPOn.slotCount = FFGEchoTapCount;
-  tapHPOn.defaultText = "Off";
-  tapHPOn.id = "{999DC4BF-C87C-471D-A251-29D2CDE9B7CD}";
-  tapHPOn.type = FBParamType::Boolean;
-  auto selectTapHPOn = [](auto& module) { return &module.block.tapHPOn; };
-  tapHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapHPOn);
-  tapHPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapHPOn);
-  tapHPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPOn);
-  tapHPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapHPFreq = result->params[(int)FFGEchoParam::TapHPFreq];
   tapHPFreq.acc = true;
@@ -343,118 +269,20 @@ FFMakeGEchoTopo()
   tapHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapHPRes);
   tapHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapHPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
-  auto& tapFBLPOn = result->params[(int)FFGEchoParam::TapFBLPOn];
-  tapFBLPOn.acc = false;
-  tapFBLPOn.name = "Tap Feedback LPF On";
-  tapFBLPOn.matrixName = "Tap FB LPF On";
-  tapFBLPOn.display = "FB LPF";
-  tapFBLPOn.slotCount = FFGEchoTapCount;
-  tapFBLPOn.defaultText = "Off";
-  tapFBLPOn.id = "{9EE6E317-8039-4E6B-BE6E-1B9F287D1F6E}";
-  tapFBLPOn.type = FBParamType::Boolean;
-  auto selectTapFBLPOn = [](auto& module) { return &module.block.tapFBLPOn; };
-  tapFBLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPOn);
-  tapFBLPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPOn);
-  tapFBLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPOn);
-  tapFBLPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
-  auto& tapFBLPFreq = result->params[(int)FFGEchoParam::TapFBLPFreq];
-  tapFBLPFreq.acc = true;
-  tapFBLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
-  tapFBLPFreq.name = "Tap Feedback LPF Freq";
-  tapFBLPFreq.matrixName = "Tap FB LPF Freq";
-  tapFBLPFreq.display = "Frq";
-  tapFBLPFreq.slotCount = FFGEchoTapCount;
-  tapFBLPFreq.unit = "Hz";
-  tapFBLPFreq.id = "{BD78678C-EDC1-4808-90A1-8969534170F4}";
-  tapFBLPFreq.type = FBParamType::Log2;
-  tapFBLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-  auto selectTapFBLPFreq = [](auto& module) { return &module.acc.tapFBLPFreq; };
-  tapFBLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPFreq);
-  tapFBLPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPFreq);
-  tapFBLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPFreq);
-  tapFBLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapFBLPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
-
-  auto& tapFBLPRes = result->params[(int)FFGEchoParam::TapFBLPRes];
-  tapFBLPRes.acc = true;
-  tapFBLPRes.defaultText = "0";
-  tapFBLPRes.name = "Tap Feedback LPF Res";
-  tapFBLPRes.matrixName = "Tap FB LPF Res";
-  tapFBLPRes.display = "Res";
-  tapFBLPRes.slotCount = FFGEchoTapCount;
-  tapFBLPRes.unit = "%";
-  tapFBLPRes.id = "{B9C9D5CA-8258-4A04-A172-524C0B1A072F}";
-  tapFBLPRes.type = FBParamType::Identity;
-  auto selectTapFBLPRes = [](auto& module) { return &module.acc.tapFBLPRes; };
-  tapFBLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBLPRes);
-  tapFBLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBLPRes);
-  tapFBLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBLPRes);
-  tapFBLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapFBLPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
-
-  auto& tapFBHPOn = result->params[(int)FFGEchoParam::TapFBHPOn];
-  tapFBHPOn.acc = false;
-  tapFBHPOn.name = "Tap Feedback HPF On";
-  tapFBHPOn.display = "FB HPF";
-  tapFBHPOn.slotCount = FFGEchoTapCount;
-  tapFBHPOn.defaultText = "Off";
-  tapFBHPOn.id = "{90188FE8-AE2E-4FD3-9185-44F976D350A5}";
-  tapFBHPOn.type = FBParamType::Boolean;
-  auto selectTapFBHPOn = [](auto& module) { return &module.block.tapFBHPOn; };
-  tapFBHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPOn);
-  tapFBHPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPOn);
-  tapFBHPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPOn);
-  tapFBHPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
-  auto& tapFBHPFreq = result->params[(int)FFGEchoParam::TapFBHPFreq];
-  tapFBHPFreq.acc = true;
-  tapFBHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
-  tapFBHPFreq.name = "Tap Feedback HPF Freq";
-  tapFBHPFreq.matrixName = "Tap FB HPF Freq";
-  tapFBHPFreq.display = "Frq";
-  tapFBHPFreq.slotCount = FFGEchoTapCount;
-  tapFBHPFreq.unit = "Hz";
-  tapFBHPFreq.id = "{18789F3C-57F6-45D6-BD6B-C2FD2763C998}";
-  tapFBHPFreq.type = FBParamType::Log2;
-  tapFBHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
-  auto selectTapFBHPFreq = [](auto& module) { return &module.acc.tapFBHPFreq; };
-  tapFBHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPFreq);
-  tapFBHPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPFreq);
-  tapFBHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPFreq);
-  tapFBHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapFBHPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
-
-  auto& tapFBHPRes = result->params[(int)FFGEchoParam::TapFBHPRes];
-  tapFBHPRes.acc = true;
-  tapFBHPRes.defaultText = "0";
-  tapFBHPRes.name = "Tap Feedback HPF Res";
-  tapFBHPRes.matrixName = "Tap FB HPF Res";
-  tapFBHPRes.display = "Res";
-  tapFBHPRes.slotCount = FFGEchoTapCount;
-  tapFBHPRes.unit = "%";
-  tapFBHPRes.id = "{EE282F55-6537-4DAE-B8F9-DBD9F5C61811}";
-  tapFBHPRes.type = FBParamType::Identity;
-  auto selectTapFBHPRes = [](auto& module) { return &module.acc.tapFBHPRes; };
-  tapFBHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapFBHPRes);
-  tapFBHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapFBHPRes);
-  tapFBHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapFBHPRes);
-  tapFBHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::TapFBHPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
-
-  auto& reverbPlacement = result->params[(int)FFGEchoParam::ReverbPlacement];
-  reverbPlacement.acc = false;
-  reverbPlacement.defaultText = "Off";
-  reverbPlacement.name = "Reverb Placement";
-  reverbPlacement.display = "Reverb";
-  reverbPlacement.slotCount = 1;
-  reverbPlacement.id = "{EC5479CD-0BD0-46D2-AD39-D6CE167FFE4C}";
-  reverbPlacement.type = FBParamType::List;
-  reverbPlacement.List().items = {
-    { "{2063E052-591E-4F6A-8A72-8149779014BB}", "Off" },
-    { "{9E345475-BE48-4D61-BD24-BC0B47E0E413}", "BeforeTaps" },
-    { "{3DC9AB2F-A2E5-4344-A6B9-2D23E96190A9}", "AfterTaps" } };
-  auto selectReverbPlacement = [](auto& module) { return &module.block.reverbPlacement; };
-  reverbPlacement.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbPlacement);
-  reverbPlacement.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbPlacement);
-  reverbPlacement.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbPlacement);
-  reverbPlacement.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
+  auto& reverbOn = result->params[(int)FFGEchoParam::ReverbOn];
+  reverbOn.acc = false;
+  reverbOn.name = "Reverb On";
+  reverbOn.display = "Reverb";
+  reverbOn.slotCount = 1;
+  reverbOn.defaultText = "Off";
+  reverbOn.id = "{8C47863D-5184-4412-9802-9918DF25DA02}";
+  reverbOn.type = FBParamType::Boolean;
+  reverbOn.slotFormatDisplay = true;
+  auto selectReverbOn = [](auto& module) { return &module.block.reverbOn; };
+  reverbOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbOn);
+  reverbOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbOn);
+  reverbOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbOn);
+  reverbOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& reverbMix = result->params[(int)FFGEchoParam::ReverbMix];
   reverbMix.acc = true;
@@ -536,20 +364,6 @@ FFMakeGEchoTopo()
   reverbSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbSize);
   reverbSize.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  auto& reverbLPOn = result->params[(int)FFGEchoParam::ReverbLPOn];
-  reverbLPOn.acc = false;
-  reverbLPOn.name = "Reverb LPF On";
-  reverbLPOn.display = "LPF";
-  reverbLPOn.slotCount = 1;
-  reverbLPOn.defaultText = "Off";
-  reverbLPOn.id = "{56AD0533-9A6E-403D-8648-15F46FBEF36A}";
-  reverbLPOn.type = FBParamType::Boolean;
-  auto selectReverbLPOn = [](auto& module) { return &module.block.reverbLPOn; };
-  reverbLPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbLPOn);
-  reverbLPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbLPOn);
-  reverbLPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbLPOn);
-  reverbLPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
   auto& reverbLPFreq = result->params[(int)FFGEchoParam::ReverbLPFreq];
   reverbLPFreq.acc = true;
   reverbLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
@@ -583,20 +397,6 @@ FFMakeGEchoTopo()
   reverbLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbLPRes);
   reverbLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement, (int)FFGEchoParam::ReverbLPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
-  auto& reverbHPOn = result->params[(int)FFGEchoParam::ReverbHPOn];
-  reverbHPOn.acc = false;
-  reverbHPOn.name = "Reverb HPF On";
-  reverbHPOn.display = "HPF";
-  reverbHPOn.slotCount = 1;
-  reverbHPOn.defaultText = "Off";
-  reverbHPOn.id = "{29C5F4A5-F769-46D4-BBA9-0880235D7E19}";
-  reverbHPOn.type = FBParamType::Boolean;
-  auto selectReverbHPOn = [](auto& module) { return &module.block.reverbHPOn; };
-  reverbHPOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbHPOn);
-  reverbHPOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbHPOn);
-  reverbHPOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbHPOn);
-  reverbHPOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
-
   auto& reverbHPFreq = result->params[(int)FFGEchoParam::ReverbHPFreq];
   reverbHPFreq.acc = true;
   reverbHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
@@ -629,6 +429,17 @@ FFMakeGEchoTopo()
   reverbHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbHPRes);
   reverbHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbHPRes);
   reverbHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbPlacement, (int)FFGEchoParam::ReverbHPOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+
+  /*
+
+ enum class FFGEchoParam {
+  
+   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
+   FeedbackDelayTime, FeedbackDelayBars,
+   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
+   Count };
+   */
+
 
   return result;
 }

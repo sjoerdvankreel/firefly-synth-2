@@ -35,20 +35,15 @@ class alignas(alignof(TBlock)) FFGEchoBlockParamState final
 {
   friend class FFGEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
-  std::array<TBlock, 1> on = {};
   std::array<TBlock, 1> sync = {};
+  std::array<TBlock, 1> order = {};
   std::array<TBlock, 1> target = {};
-  std::array<TBlock, 1> reverbLPOn = {};
-  std::array<TBlock, 1> reverbHPOn = {};
-  std::array<TBlock, 1> reverbPlacement = {};
+  std::array<TBlock, 1> reverbOn = {};
+  std::array<TBlock, 1> feedbackOn = {};
+  std::array<TBlock, 1> feedbackDelayBars = {};
   std::array<TBlock, FFGEchoTapCount> tapOn = {};
-  std::array<TBlock, FFGEchoTapCount> tapLPOn = {};
-  std::array<TBlock, FFGEchoTapCount> tapHPOn = {};
-  std::array<TBlock, FFGEchoTapCount> tapFBLPOn = {};
-  std::array<TBlock, FFGEchoTapCount> tapFBHPOn = {};
   std::array<TBlock, FFGEchoTapCount> tapDelayTime = {};
   std::array<TBlock, FFGEchoTapCount> tapDelayBars = {};
-  std::array<TBlock, FFGEchoTapCount> tapLengthBars = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoBlockParamState);
 };
@@ -58,7 +53,7 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
 {
   friend class FFGEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
-  std::array<TAccurate, 1> mix = {};
+  std::array<TAccurate, 1> tapsMix = {};
   std::array<TAccurate, 1> reverbMix = {};
   std::array<TAccurate, 1> reverbAPF = {};
   std::array<TAccurate, 1> reverbSize = {};
@@ -68,20 +63,21 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, 1> reverbHPRes = {};
   std::array<TAccurate, 1> reverbLPFreq = {};
   std::array<TAccurate, 1> reverbHPFreq = {};
+  std::array<TAccurate, 1> feedbackMix = {};
+  std::array<TAccurate, 1> feedbackAmount = {};
+  std::array<TAccurate, 1> feedbackXOver = {};
+  std::array<TAccurate, 1> feedbackDelayTime = {};
+  std::array<TAccurate, 1> feedbackLPFreq = {};
+  std::array<TAccurate, 1> feedbackLPRes = {};
+  std::array<TAccurate, 1> feedbackHPFreq = {};
+  std::array<TAccurate, 1> feedbackHPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapLPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapHPRes = {};
   std::array<TAccurate, FFGEchoTapCount> tapLPFreq = {};
   std::array<TAccurate, FFGEchoTapCount> tapHPFreq = {};
-  std::array<TAccurate, FFGEchoTapCount> tapFBLPRes = {};
-  std::array<TAccurate, FFGEchoTapCount> tapFBHPRes = {};
-  std::array<TAccurate, FFGEchoTapCount> tapFBLPFreq = {};
-  std::array<TAccurate, FFGEchoTapCount> tapFBHPFreq = {};
   std::array<TAccurate, FFGEchoTapCount> tapLevel = {};
   std::array<TAccurate, FFGEchoTapCount> tapBalance = {};
-  std::array<TAccurate, FFGEchoTapCount> tapFeedback = {};
   std::array<TAccurate, FFGEchoTapCount> tapCrossOver = {};
-  std::array<TAccurate, FFGEchoTapCount> tapFBCrossOver = {};
-  std::array<TAccurate, FFGEchoTapCount> tapLengthTime = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoAccParamState);
 };

@@ -9,16 +9,21 @@ inline int constexpr FFGEchoMaxSeconds = 10;
 std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
 
 enum class FFGEchoGUIParam { TapSelect, Count };
-enum class FFGEchoTarget { Off, Voice, FX1, FX2, FX3, FX4, Out };
-enum class FFGEchoReverbPlacement { Off, BeforeTaps, AfterTaps };
+enum class FFGEchoOrder {
+  TapsToFeedbackToReverb, TapsToReverbToFeedback,
+  FeedbackToTapsToReverb, FeedbackToReverbToTaps,
+  ReverbToTapsToFeedback, ReverbToFeedbackToTaps };
+enum class FFGEchoTarget { 
+  Off, Voice, Out, 
+  FX1In, FX1Out, FX2In, FX2Out, FX3In, FX3Out, FX4In, FX4Out };
 
 enum class FFGEchoParam {
-  Target, Mix, Sync, 
-  ReverbPlacement, ReverbMix, ReverbAPF, 
+  Target, Order, TapsMix, Sync, 
+  ReverbOn, ReverbMix, ReverbAPF,
   ReverbSpread, ReverbSize, ReverbDamp,
-  ReverbLPOn, ReverbLPFreq, ReverbLPRes,
-  ReverbHPOn, ReverbHPFreq, ReverbHPRes,
-  TapOn, TapFeedback, TapBalance, TapLevel, TapXOver, TapFBXOver,
-  TapDelayTime, TapDelayBars, TapLengthTime, TapLengthBars,
-  TapLPOn, TapLPFreq, TapLPRes, TapFBLPOn, TapFBLPFreq, TapFBLPRes,
-  TapHPOn, TapHPFreq, TapHPRes, TapFBHPOn, TapFBHPFreq, TapFBHPRes, Count };
+  ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
+  FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
+  FeedbackDelayTime, FeedbackDelayBars,
+  FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
+  TapOn, TapBalance, TapLevel, TapXOver, TapDelayTime, TapDelayBars,
+  TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, Count };

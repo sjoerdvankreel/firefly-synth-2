@@ -12,6 +12,7 @@ alpha 12 - echo
 [ ] fb out of the taps?
 [ ] dedicated lfo for tap balance + speed
 [ ] popout editor + some set-default buttons
+[ ] better defaults
 
 TODOLIST for alpha-13
 
