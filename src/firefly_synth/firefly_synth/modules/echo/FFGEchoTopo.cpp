@@ -141,6 +141,7 @@ FFMakeGEchoTopo()
   tapDelayTime.acc = true;
   tapDelayTime.display = "Dly";
   tapDelayTime.name = "Tap Delay Time";
+  tapDelayTime.matrixName = "Tap Delay";
   tapDelayTime.slotCount = FFGEchoTapCount;
   tapDelayTime.unit = "Sec";
   tapDelayTime.id = "{7ADA9075-213B-4809-B32E-39B2794B010F}";
@@ -212,7 +213,7 @@ FFMakeGEchoTopo()
   tapLPFreq.acc = true;
   tapLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   tapLPFreq.name = "Tap LPF Freq";
-  tapLPFreq.display = "Frq";
+  tapLPFreq.display = "LPF";
   tapLPFreq.slotCount = FFGEchoTapCount;
   tapLPFreq.unit = "Hz";
   tapLPFreq.id = "{D8CA3B61-6335-4457-9A4F-71F5A912C0D7}";
@@ -243,7 +244,7 @@ FFMakeGEchoTopo()
   tapHPFreq.acc = true;
   tapHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   tapHPFreq.name = "Tap HPF Freq";
-  tapHPFreq.display = "Frq";
+  tapHPFreq.display = "HPF";
   tapHPFreq.slotCount = FFGEchoTapCount;
   tapHPFreq.unit = "Hz";
   tapHPFreq.id = "{3B3F90D7-CAF0-45ED-8316-D21BE4508E05}";
