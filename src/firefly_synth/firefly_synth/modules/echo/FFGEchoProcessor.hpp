@@ -18,7 +18,7 @@ class FFGEchoProcessor final
   bool _reverbLPOn = {};
   bool _reverbHPOn = {};
   FFGEchoTarget _target = {};
-  FFGEchoReverbPlacement _reverbPlacement = {};
+  //FFGEchoReverbPlacement _reverbPlacement = {};
   std::array<bool, FFGEchoTapCount> _tapOn = {};
   std::array<bool, FFGEchoTapCount> _tapLPOn = {};
   std::array<bool, FFGEchoTapCount> _tapHPOn = {};

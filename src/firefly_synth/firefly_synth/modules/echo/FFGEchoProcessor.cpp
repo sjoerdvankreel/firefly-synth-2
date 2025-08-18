@@ -33,6 +33,9 @@ FFGEchoProcessor::InitializeBuffers(float sampleRate)
 void 
 FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
 {
+  (void)state;
+
+#if 0
   float bpm = state.input->bpm;
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -40,6 +43,7 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
   auto const& tapOnNorm = params.block.tapOn;
+  /*
   auto const& tapLPOnNorm = params.block.tapLPOn;
   auto const& tapHPOnNorm = params.block.tapHPOn;
   auto const& tapFBLPOnNorm = params.block.tapFBLPOn;
@@ -47,6 +51,7 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
   auto const& tapDelayTimeNorm = params.block.tapDelayTime;
   auto const& tapLengthBarsNorm = params.block.tapLengthBars;
+  */
 
   auto const& syncNorm = params.block.sync[0].Value();
   auto const& targetNorm = params.block.target[0].Value();
@@ -74,11 +79,16 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
     else
       _tapDelaySamples[t] = topo.NormalizedToLinearTimeSamplesFast(FFGEchoParam::TapDelayTime, tapDelayTimeNorm[t].Value(), sampleRate);
   }
+
+#endif
 }
 
 void 
 FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout)
 {
+  (void)state;
+  (void)inout;
+#if 0
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.global.gEcho[0];
@@ -136,4 +146,6 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
     for(int c = 0; c < 2; c++)
       inout[c].Set(s, (1.0f - mixPlain) * realIn[c] + mixPlain * tapsOut[c].Get(s));
   }
+
+#endif
 }
