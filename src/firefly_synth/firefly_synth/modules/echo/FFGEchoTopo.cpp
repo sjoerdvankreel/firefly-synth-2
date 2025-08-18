@@ -164,7 +164,7 @@ FFMakeGEchoTopo()
   tapDelayBars.slotCount = FFGEchoTapCount;
   tapDelayBars.unit = "Bars";
   tapDelayBars.id = "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
-  tapDelayBars.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "1/8" : ps == 1 ? "1/4" : ps == 2 ? "3/8" : ps == 3 ? "1/2" : "Off"; };
+  tapDelayBars.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "1/4" : ps == 1 ? "1/2" : ps == 2 ? "3/4" : ps == 3 ? "1/1" : "Off"; };
   tapDelayBars.type = FBParamType::Bars;
   tapDelayBars.Bars().items = MakeGEchoBarsItems();
   auto selectTapDelayBars = [](auto& module) { return &module.block.tapDelayBars; };
