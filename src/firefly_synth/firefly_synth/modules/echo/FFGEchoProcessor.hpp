@@ -15,23 +15,14 @@ struct FBModuleProcState;
 class FFGEchoProcessor final
 {
   bool _sync = {};
-  bool _reverbLPOn = {};
-  bool _reverbHPOn = {};
+  FFGEchoOrder _order = {}; // todo
   FFGEchoTarget _target = {};
-  //FFGEchoReverbPlacement _reverbPlacement = {};
-  std::array<bool, FFGEchoTapCount> _tapOn = {};
-  std::array<bool, FFGEchoTapCount> _tapLPOn = {};
-  std::array<bool, FFGEchoTapCount> _tapHPOn = {};
-  std::array<bool, FFGEchoTapCount> _tapFBLPOn = {};
-  std::array<bool, FFGEchoTapCount> _tapFBHPOn = {};
-  std::array<int, FFGEchoTapCount> _tapDelaySamples = {};
-  std::array<float, FFGEchoTapCount> _tapLengthBarsSamples = {};
 
-  // https://forum.juce.com/t/delay-line-artifacts/46781/4
-  int _preDelayBufferPosition = {};
-  std::array<std::vector<float>, 2> _preDelayBuffer = {};
-  std::array<FBBasicLPFilter, FFGEchoTapCount> _delayTimeSmoothers = {};
-  std::array<std::array<FFDelayLine, 2>, FFGEchoTapCount> _delayLines = {};
+  std::array<bool, FFGEchoTapCount> _tapOn = {};
+  std::array<int, FFGEchoTapCount> _tapDelayBarsSamples = {};
+
+  std::array<FBBasicLPFilter, FFGEchoTapCount> _tapDelayTimeSmoothers = {};
+  std::array<std::array<FFDelayLine, 2>, FFGEchoTapCount> _tapDelayLines = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoProcessor);

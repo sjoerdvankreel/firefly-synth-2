@@ -18,14 +18,12 @@ FFGEchoProcessor::InitializeBuffers(float sampleRate)
 {
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   for (int t = 0; t < FFGEchoTapCount; t++)
-    _delayTimeSmoothers[t].SetCoeffs((int)std::ceil(0.2f * sampleRate));
-  for (int c = 0; c < 2; c++)
   {
-    _preDelayBuffer[c].resize(maxSamples);
-    for (int t = 0; t < FFGEchoTapCount; t++)
+    _tapDelayTimeSmoothers[t].SetCoeffs((int)std::ceil(0.2f * sampleRate));
+    for (int c = 0; c < 2; c++)
     {
-      _delayLines[t][c].InitializeBuffers(maxSamples);
-      _delayLines[t][c].Reset(_delayLines[t][c].MaxBufferSize());
+      _tapDelayLines[t][c].InitializeBuffers(maxSamples);
+      _tapDelayLines[t][c].Reset(_tapDelayLines[t][c].MaxBufferSize());
     }
   }
 }
@@ -33,54 +31,28 @@ FFGEchoProcessor::InitializeBuffers(float sampleRate)
 void 
 FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
 {
-  (void)state;
-
-#if 0
   float bpm = state.input->bpm;
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.global.gEcho[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
-  auto const& tapOnNorm = params.block.tapOn;
-  /*
-  auto const& tapLPOnNorm = params.block.tapLPOn;
-  auto const& tapHPOnNorm = params.block.tapHPOn;
-  auto const& tapFBLPOnNorm = params.block.tapFBLPOn;
-  auto const& tapFBHPOnNorm = params.block.tapFBHPOn;
-  auto const& tapDelayBarsNorm = params.block.tapDelayBars;
-  auto const& tapDelayTimeNorm = params.block.tapDelayTime;
-  auto const& tapLengthBarsNorm = params.block.tapLengthBars;
-  */
-
   auto const& syncNorm = params.block.sync[0].Value();
+  auto const& orderNorm = params.block.order[0].Value();
   auto const& targetNorm = params.block.target[0].Value();
-  auto const& reverbLPOnNorm = params.block.reverbLPOn[0].Value();
-  auto const& reverbHPOnNorm = params.block.reverbHPOn[0].Value();
-  auto const& reverbPlacementNorm = params.block.reverbPlacement[0].Value();
+  
+  auto const& tapOnNorm = params.block.tapOn;
+  auto const& tapDelayBarsNorm = params.block.tapDelayBars;
 
   _sync = topo.NormalizedToBoolFast(FFGEchoParam::Sync, syncNorm);
-  _reverbLPOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbLPOn, reverbLPOnNorm);
-  _reverbHPOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbHPOn, reverbHPOnNorm);
+  _order = topo.NormalizedToListFast<FFGEchoOrder>(FFGEchoParam::Order, orderNorm);
   _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
-  _reverbPlacement = topo.NormalizedToListFast<FFGEchoReverbPlacement>(FFGEchoParam::ReverbPlacement, reverbPlacementNorm);
 
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
     _tapOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
-    _tapLPOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapLPOn, tapLPOnNorm[t].Value());
-    _tapHPOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapHPOn, tapHPOnNorm[t].Value());
-    _tapFBLPOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapFBLPOn, tapFBLPOnNorm[t].Value());
-    _tapFBHPOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapFBHPOn, tapFBHPOnNorm[t].Value());
-    _tapLengthBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(FFGEchoParam::TapLengthBars, tapLengthBarsNorm[t].Value(), sampleRate, bpm);
-
-    if(_sync)
-      _tapDelaySamples[t] = topo.NormalizedToBarsSamplesFast(FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
-    else
-      _tapDelaySamples[t] = topo.NormalizedToLinearTimeSamplesFast(FFGEchoParam::TapDelayTime, tapDelayTimeNorm[t].Value(), sampleRate);
+    _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
   }
-
-#endif
 }
 
 void 
