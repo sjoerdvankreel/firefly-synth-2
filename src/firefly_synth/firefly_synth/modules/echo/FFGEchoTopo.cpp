@@ -435,7 +435,7 @@ FFMakeGEchoTopo()
   auto& feedbackOn = result->params[(int)FFGEchoParam::FeedbackOn];
   feedbackOn.acc = false;
   feedbackOn.name = "Feedback On";
-  feedbackOn.display = "Feedback";
+  feedbackOn.display = "Fdbk";
   feedbackOn.slotCount = 1;
   feedbackOn.defaultText = "Off";
   feedbackOn.id = "{E28CD2D5-59B4-4C77-830F-BC961239299C}";
@@ -450,7 +450,7 @@ FFMakeGEchoTopo()
   auto& feedbackMix = result->params[(int)FFGEchoParam::FeedbackMix];
   feedbackMix.acc = true;
   feedbackMix.unit = "%";
-  feedbackMix.defaultText = "50";
+  feedbackMix.defaultText = "33";
   feedbackMix.name = "Feedback Mix";
   feedbackMix.matrixName = "Fdbk Mix";
   feedbackMix.display = "Mix";
@@ -497,10 +497,10 @@ FFMakeGEchoTopo()
 
   auto& feedbackDelayTime = result->params[(int)FFGEchoParam::FeedbackDelayTime];
   feedbackDelayTime.acc = true;
-  feedbackDelayTime.defaultText = "1";
+  feedbackDelayTime.defaultText = "0.5";
   feedbackDelayTime.display = "Dly";
   feedbackDelayTime.name = "Feedback Delay Time";
-  feedbackDelayTime.matrixName = "Fdbk Delay Time";
+  feedbackDelayTime.matrixName = "Fdbk Delay";
   feedbackDelayTime.slotCount = 1;
   feedbackDelayTime.unit = "Sec";
   feedbackDelayTime.id = "{CBD0A273-5E74-460E-A327-5EE9EE1C6F49}";
@@ -517,7 +517,7 @@ FFMakeGEchoTopo()
 
   auto& feedbackDelayBars = result->params[(int)FFGEchoParam::FeedbackDelayBars];
   feedbackDelayBars.acc = false;
-  feedbackDelayBars.defaultText = "1/4";
+  feedbackDelayBars.defaultText = "1/8";
   feedbackDelayBars.display = "Dly";
   feedbackDelayBars.name = "Feedback Delay Bars";
   feedbackDelayBars.matrixName = "Fdbk Delay Bars";
@@ -538,7 +538,7 @@ FFMakeGEchoTopo()
   feedbackLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
   feedbackLPFreq.name = "Feedback LPF Freq";
   feedbackLPFreq.matrixName = "Fdbk LPF Freq";
-  feedbackLPFreq.display = "Frq";
+  feedbackLPFreq.display = "LPF";
   feedbackLPFreq.slotCount = 1;
   feedbackLPFreq.unit = "Hz";
   feedbackLPFreq.id = "{E4D8EB30-BF2A-4935-AE14-053F6CF9C446}";
@@ -571,7 +571,7 @@ FFMakeGEchoTopo()
   feedbackHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   feedbackHPFreq.name = "Feedback HPF Freq";
   feedbackHPFreq.matrixName = "Fdbk HPF Freq";
-  feedbackHPFreq.display = "Frq";
+  feedbackHPFreq.display = "HPF";
   feedbackHPFreq.slotCount = 1;
   feedbackHPFreq.unit = "Hz";
   feedbackHPFreq.id = "{FE81A57D-1D98-4D3D-B563-8A63B099DB99}";
