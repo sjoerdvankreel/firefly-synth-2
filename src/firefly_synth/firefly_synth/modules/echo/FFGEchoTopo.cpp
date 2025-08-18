@@ -531,15 +531,71 @@ FFMakeGEchoTopo()
   feedbackDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   feedbackDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
+  auto& feedbackLPFreq = result->params[(int)FFGEchoParam::FeedbackLPFreq];
+  feedbackLPFreq.acc = true;
+  feedbackLPFreq.defaultText = std::to_string((int)FFMaxStateVariableFilterFreq);
+  feedbackLPFreq.name = "Feedback LPF Freq";
+  feedbackLPFreq.matrixName = "Fdbk LPF Freq";
+  feedbackLPFreq.display = "Frq";
+  feedbackLPFreq.slotCount = 1;
+  feedbackLPFreq.unit = "Hz";
+  feedbackLPFreq.id = "{E4D8EB30-BF2A-4935-AE14-053F6CF9C446}";
+  feedbackLPFreq.type = FBParamType::Log2;
+  feedbackLPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectFeedbackLPFreq = [](auto& module) { return &module.acc.feedbackLPFreq; };
+  feedbackLPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackLPFreq);
+  feedbackLPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackLPFreq);
+  feedbackLPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackLPFreq);
+  feedbackLPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  /*
+  auto& feedbackLPRes = result->params[(int)FFGEchoParam::FeedbackLPRes];
+  feedbackLPRes.acc = true;
+  feedbackLPRes.defaultText = "0";
+  feedbackLPRes.name = "Feedback LPF Res";
+  feedbackLPRes.matrixName = "Fdbk LPF Res";
+  feedbackLPRes.display = "Res";
+  feedbackLPRes.slotCount = 1;
+  feedbackLPRes.unit = "%";
+  feedbackLPRes.id = "{178C853C-F11C-45C6-A8D3-D62FFA202D9E}";
+  feedbackLPRes.type = FBParamType::Identity;
+  auto selectFeedbackLPRes = [](auto& module) { return &module.acc.feedbackLPRes; };
+  feedbackLPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackLPRes);
+  feedbackLPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackLPRes);
+  feedbackLPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackLPRes);
+  feedbackLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
- enum class FFGEchoParam {
-  
-   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
-   Count };
-   */
+  auto& feedbackHPFreq = result->params[(int)FFGEchoParam::FeedbackHPFreq];
+  feedbackHPFreq.acc = true;
+  feedbackHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
+  feedbackHPFreq.name = "Feedback HPF Freq";
+  feedbackHPFreq.matrixName = "Fdbk HPF Freq";
+  feedbackHPFreq.display = "Frq";
+  feedbackHPFreq.slotCount = 1;
+  feedbackHPFreq.unit = "Hz";
+  feedbackHPFreq.id = "{FE81A57D-1D98-4D3D-B563-8A63B099DB99}";
+  feedbackHPFreq.type = FBParamType::Log2;
+  feedbackHPFreq.Log2().Init(0.0f, FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
+  auto selectFeedbackHPFreq = [](auto& module) { return &module.acc.feedbackHPFreq; };
+  feedbackHPFreq.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackHPFreq);
+  feedbackHPFreq.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackHPFreq);
+  feedbackHPFreq.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackHPFreq);
+  feedbackHPFreq.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& feedbackHPRes = result->params[(int)FFGEchoParam::FeedbackHPRes];
+  feedbackHPRes.acc = true;
+  feedbackHPRes.defaultText = "0";
+  feedbackHPRes.name = "Feedback HPF Res";
+  feedbackHPRes.matrixName = "Fdbk HPF Res";
+  feedbackHPRes.display = "Res";
+  feedbackHPRes.slotCount = 1;
+  feedbackHPRes.unit = "%";
+  feedbackHPRes.id = "{FD6F1412-EE09-4A50-835E-A8051AC39411}";
+  feedbackHPRes.type = FBParamType::Identity;
+  auto selectFeedbackHPRes = [](auto& module) { return &module.acc.feedbackHPRes; };
+  feedbackHPRes.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackHPRes);
+  feedbackHPRes.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackHPRes);
+  feedbackHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackHPRes);
+  feedbackHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   return result;
 }
