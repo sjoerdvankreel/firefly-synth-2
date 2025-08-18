@@ -112,7 +112,7 @@ FFMakeGEchoTopo()
   tapOn.name = "Tap On";
   tapOn.display = "Tap";
   tapOn.slotCount = FFGEchoTapCount;
-  tapOn.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "On" : "Off"; };
+  tapOn.defaultTextSelector = [](int, int, int ps) { return ps < 4 ? "On" : "Off"; };
   tapOn.id = "{0EA26FE5-F45F-431E-9421-0FDD9E508CB8}";
   tapOn.type = FBParamType::Boolean;
   tapOn.slotFormatDisplay = true;
@@ -129,7 +129,7 @@ FFMakeGEchoTopo()
   tapLevel.display = "Level";
   tapLevel.slotCount = FFGEchoTapCount;
   tapLevel.id = "{E3633411-F79D-4D2A-A748-82E03A35434E}";
-  tapLevel.defaultTextSelector = [](int, int, int ps) { return std::to_string((int)((1.0f - ps / (float)FFGEchoTapCount) * 100)); };
+  tapLevel.defaultTextSelector = [](int, int, int ps) { return ps == 0? "100": ps == 1? "80": ps == 2? "60": ps == 3? "40": "0"; };
   tapLevel.type = FBParamType::Identity;
   auto selectTapLevel = [](auto& module) { return &module.acc.tapLevel; };
   tapLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapLevel);
@@ -139,12 +139,12 @@ FFMakeGEchoTopo()
     
   auto& tapDelayTime = result->params[(int)FFGEchoParam::TapDelayTime];
   tapDelayTime.acc = true;
-  tapDelayTime.defaultText = "1";
   tapDelayTime.display = "Dly";
   tapDelayTime.name = "Tap Delay Time";
   tapDelayTime.slotCount = FFGEchoTapCount;
   tapDelayTime.unit = "Sec";
   tapDelayTime.id = "{7ADA9075-213B-4809-B32E-39B2794B010F}";
+  tapDelayTime.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "0.5" : ps == 1 ? "1" : ps == 2 ? "1.5" : ps == 3 ? "2" : "0"; };
   tapDelayTime.type = FBParamType::Linear;
   tapDelayTime.Linear().min = 0.0f;
   tapDelayTime.Linear().max = 10.0f;
@@ -158,12 +158,12 @@ FFMakeGEchoTopo()
 
   auto& tapDelayBars = result->params[(int)FFGEchoParam::TapDelayBars];
   tapDelayBars.acc = false;
-  tapDelayBars.defaultText = "1/4";
   tapDelayBars.display = "Dly";
   tapDelayBars.name = "Tap Delay Bars";
   tapDelayBars.slotCount = FFGEchoTapCount;
   tapDelayBars.unit = "Bars";
   tapDelayBars.id = "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
+  tapDelayBars.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "1/8" : ps == 1 ? "1/4" : ps == 2 ? "3/8" : ps == 3 ? "1/2" : "Off"; };
   tapDelayBars.type = FBParamType::Bars;
   tapDelayBars.Bars().items = MakeGEchoBarsItems();
   auto selectTapDelayBars = [](auto& module) { return &module.block.tapDelayBars; };
@@ -175,13 +175,13 @@ FFMakeGEchoTopo()
 
   auto& tapBal = result->params[(int)FFGEchoParam::TapBalance];
   tapBal.acc = true;
-  tapBal.defaultText = "0";
   tapBal.name = "Tap Balance";
   tapBal.matrixName = "Tap Bal";
   tapBal.display = "Bal";
   tapBal.slotCount = FFGEchoTapCount;
   tapBal.unit = "%";
   tapBal.id = "{2DCCEE86-4381-4E7F-98B6-FA94059F253B}";
+  tapBal.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "-33" : ps == 1 ? "33" : ps == 2 ? "-67" : ps == 3 ? "67" : "0"; };
   tapBal.type = FBParamType::Linear;
   tapBal.Linear().displayMultiplier = 100;
   tapBal.Linear().min = -1.0f;
