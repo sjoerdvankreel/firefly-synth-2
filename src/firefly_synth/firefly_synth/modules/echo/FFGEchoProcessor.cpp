@@ -141,8 +141,8 @@ FFGEchoProcessor::ProcessFeedback(
       double out = (1.0f - xOverPlain) * outLR[c] + xOverPlain * outLR[c == 0 ? 1 : 0];
       out = _feedbackLPFilter.Next(c, out);
       out = _feedbackHPFilter.Next(c, out);
-      _feedbackDelayLine[c].Push(inout[c].Get(s) + amountPlain * 0.99f * out);
-      inout[c].Set(s, (1.0f - mixPlain) * inout[c].Get(s) + mixPlain * out);
+      _feedbackDelayLine[c].Push(inout[c].Get(s) + amountPlain * 0.99f * (float)out);
+      inout[c].Set(s, (1.0f - mixPlain) * inout[c].Get(s) + mixPlain * (float)out);
     }
   }
 }
