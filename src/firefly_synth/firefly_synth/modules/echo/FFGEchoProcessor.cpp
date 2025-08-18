@@ -90,14 +90,14 @@ FFGEchoProcessor::ProcessFeedback(
   auto const& params = procState->param.global.gEcho[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
-  auto const& mixNorm = params.acc.feedbackMix;
-  auto const& xOverNorm = params.acc.feedbackXOver;
-  auto const& lpResNorm = params.acc.feedbackLPRes;
-  auto const& hpResNorm = params.acc.feedbackHPRes;
-  auto const& lpFreqNorm = params.acc.feedbackLPFreq;
-  auto const& hpFreqNorm = params.acc.feedbackHPFreq;
-  auto const& amountNorm = params.acc.feedbackAmount;
-  auto const& delayTimeNorm = params.acc.feedbackDelayTime;
+  auto const& mixNorm = params.acc.feedbackMix[0].Global().CV();
+  auto const& xOverNorm = params.acc.feedbackXOver[0].Global().CV();
+  auto const& lpResNorm = params.acc.feedbackLPRes[0].Global().CV();
+  auto const& hpResNorm = params.acc.feedbackHPRes[0].Global().CV();
+  auto const& lpFreqNorm = params.acc.feedbackLPFreq[0].Global().CV();
+  auto const& hpFreqNorm = params.acc.feedbackHPFreq[0].Global().CV();
+  auto const& amountNorm = params.acc.feedbackAmount[0].Global().CV();
+  auto const& delayTimeNorm = params.acc.feedbackDelayTime[0].Global().CV();
 
   if (!_feedbackOn)
     return;
@@ -109,23 +109,23 @@ FFGEchoProcessor::ProcessFeedback(
       lengthTimeSamples = _feedbackDelayBarsSamples;
     else
       lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-        FFGEchoParam::FeedbackDelayTime, delayTimeNorm[0].Global().CV().Get(s), sampleRate);
+        FFGEchoParam::FeedbackDelayTime, delayTimeNorm.Get(s), sampleRate);
     float lengthTimeSamplesSmooth = _feedbackDelayTimeSmoother.Next(lengthTimeSamples);
 
     float mixPlain = topo.NormalizedToIdentityFast(
-      FFGEchoParam::FeedbackMix, mixNorm[0].Global().CV().Get(s));
+      FFGEchoParam::FeedbackMix, mixNorm.Get(s));
     float xOverPlain = topo.NormalizedToIdentityFast(
-      FFGEchoParam::FeedbackXOver, xOverNorm[0].Global().CV().Get(s));
+      FFGEchoParam::FeedbackXOver, xOverNorm.Get(s));
     float amountPlain = topo.NormalizedToIdentityFast(
-      FFGEchoParam::FeedbackAmount, amountNorm[0].Global().CV().Get(s));
+      FFGEchoParam::FeedbackAmount, amountNorm.Get(s));
     float lpResPlain = topo.NormalizedToIdentityFast(
-      FFGEchoParam::FeedbackLPRes, lpResNorm[0].Global().CV().Get(s));
+      FFGEchoParam::FeedbackLPRes, lpResNorm.Get(s));
     float hpResPlain = topo.NormalizedToIdentityFast(
-      FFGEchoParam::FeedbackHPRes, hpResNorm[0].Global().CV().Get(s));
+      FFGEchoParam::FeedbackHPRes, hpResNorm.Get(s));
     float lpFreqPlain = topo.NormalizedToLog2Fast(
-      FFGEchoParam::FeedbackLPFreq, lpFreqNorm[0].Global().CV().Get(s));
+      FFGEchoParam::FeedbackLPFreq, lpFreqNorm.Get(s));
     float hpFreqPlain = topo.NormalizedToLog2Fast(
-      FFGEchoParam::FeedbackHPFreq, hpFreqNorm[0].Global().CV().Get(s));
+      FFGEchoParam::FeedbackHPFreq, hpFreqNorm.Get(s));
 
     float outLR[2];
     for (int c = 0; c < 2; c++)
@@ -141,10 +141,31 @@ FFGEchoProcessor::ProcessFeedback(
       double out = (1.0f - xOverPlain) * outLR[c] + xOverPlain * outLR[c == 0 ? 1 : 0];
       out = _feedbackLPFilter.Next(c, out);
       out = _feedbackHPFilter.Next(c, out);
-      _feedbackDelayLine[c].Push(inout[c].Get(s) + amountPlain * 0.99f * (float)out);
+      
+      // because resonant filter inside feedback path
+      float feedbackVal = inout[c].Get(s) + amountPlain * 0.99f * (float)out;
+      feedbackVal = 10.0f * std::tanh(feedbackVal * 0.1f);
+      _feedbackDelayLine[c].Push(feedbackVal);
       inout[c].Set(s, (1.0f - mixPlain) * inout[c].Get(s) + mixPlain * (float)out);
     }
   }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+
+  auto& exchangeDSP = exchangeToGUI->global.gEcho[0];
+  exchangeDSP.active = true;
+
+  auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
+  exchangeParams.acc.feedbackLPRes[0] = lpResNorm.Last();
+  exchangeParams.acc.feedbackLPFreq[0] = lpFreqNorm.Last();
+  exchangeParams.acc.feedbackHPRes[0] = hpResNorm.Last();
+  exchangeParams.acc.feedbackHPFreq[0] = hpFreqNorm.Last();
+  exchangeParams.acc.feedbackMix[0] = mixNorm.Last();
+  exchangeParams.acc.feedbackXOver[0] = xOverNorm.Last();
+  exchangeParams.acc.feedbackAmount[0] = amountNorm.Last();
+  exchangeParams.acc.feedbackDelayTime[0] = delayTimeNorm.Last();
 }
 
 void
@@ -223,5 +244,25 @@ FFGEchoProcessor::ProcessTaps(
 
     for (int c = 0; c < 2; c++)
       inout[c].Set(s, (1.0f - tapsMixPlain) * inout[c].Get(s) + tapsMixPlain * tapsOut[c].Get(s));
+  }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+
+  auto& exchangeDSP = exchangeToGUI->global.gEcho[0];
+  exchangeDSP.active = true;
+
+  auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
+  for (int t = 0; t < FFGEchoTapCount; t++)
+  {
+    exchangeParams.acc.tapLPRes[t] = tapLPResNorm[t].Global().CV().Last();
+    exchangeParams.acc.tapLPFreq[t] = tapLPFreqNorm[t].Global().CV().Last();
+    exchangeParams.acc.tapHPRes[t] = tapHPResNorm[t].Global().CV().Last();
+    exchangeParams.acc.tapHPFreq[t] = tapHPFreqNorm[t].Global().CV().Last();
+    exchangeParams.acc.tapLevel[t] = tapLevelNorm[t].Global().CV().Last();
+    exchangeParams.acc.tapXOver[t] = tapXOverNorm[t].Global().CV().Last();
+    exchangeParams.acc.tapBalance[t] = tapBalNorm[t].Global().CV().Last();
+    exchangeParams.acc.tapDelayTime[t] = tapDelayTimeNorm[t].Global().CV().Last();
   }
 }

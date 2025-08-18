@@ -5,6 +5,7 @@ alpha 12 - echo
 [x] check defaults
 [x] better interpolation algo for delayline
 [x] smooth delay time changes
+[x] soft clip it like string osci
 [ ] gecho
 [ ] vecho -- how with global uni? share delay line between 1 tap / fdbck, no modulation
 [ ] reverb
@@ -12,8 +13,6 @@ alpha 12 - echo
 [ ] better defaults
 [ ] check the perf
 [ ] paint the knobs
-[ ] soft clip it like string osci
-[ ] do res(!)
 
 TODOLIST for alpha-13
 
