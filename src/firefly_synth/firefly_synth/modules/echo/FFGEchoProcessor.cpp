@@ -51,30 +51,45 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
     _tapOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
-    _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
+    _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
+      FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
   }
 }
 
 void 
-FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout)
+FFGEchoProcessor::Process(
+  FBModuleProcState& state, 
+  FBSArray2<float, FBFixedBlockSamples, 2>& inout)
+{
+  if (_target == FFGEchoTarget::Off)
+    return;  
+  ProcessTaps(state, inout);
+}
+
+void
+FFGEchoProcessor::ProcessTaps(
+  FBModuleProcState& state, 
+  FBSArray2<float, FBFixedBlockSamples, 2>& inout)
 {
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.global.gEcho[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
-  if (_target == FFGEchoTarget::Off)
-    return;
-
   auto const& tapsMixNorm = params.acc.tapsMix;
   auto const& tapLevelNorm = params.acc.tapLevel;
   auto const& tapBalNorm = params.acc.tapBalance;
+  auto const& tapLPResNorm = params.acc.tapLPRes;
+  auto const& tapHPResNorm = params.acc.tapHPRes;
+  auto const& tapLPFreqNorm = params.acc.tapLPFreq;
+  auto const& tapHPFreqNorm = params.acc.tapHPFreq;
   auto const& tapDelayTimeNorm = params.acc.tapDelayTime;
 
   FBSArray2<float, FBFixedBlockSamples, 2> tapsOut = {};
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    float tapsMixPlain = topo.NormalizedToIdentityFast(FFGEchoParam::TapsMix, tapsMixNorm[0].Global().CV().Get(s));
+    float tapsMixPlain = topo.NormalizedToIdentityFast(
+      FFGEchoParam::TapsMix, tapsMixNorm[0].Global().CV().Get(s));
     for (int t = 0; t < FFGEchoTapCount; t++)
     {
       if (_tapOn[t])
@@ -87,21 +102,36 @@ FFGEchoProcessor::Process(FBModuleProcState& state, FBSArray2<float, FBFixedBloc
             FFGEchoParam::TapDelayTime, tapDelayTimeNorm[t].Global().CV().Get(s), sampleRate);
         float lengthTimeSamplesSmooth = _tapDelayTimeSmoothers[t].Next(lengthTimeSamples);
 
-        float tapBalPlain = topo.NormalizedToLinearFast(FFGEchoParam::TapBalance, tapBalNorm[t].Global().CV().Get(s));
-        float tapLevelPlain = topo.NormalizedToIdentityFast(FFGEchoParam::TapLevel, tapLevelNorm[t].Global().CV().Get(s));
+        float tapBalPlain = topo.NormalizedToLinearFast(
+          FFGEchoParam::TapBalance, tapBalNorm[t].Global().CV().Get(s));
+        float tapLevelPlain = topo.NormalizedToIdentityFast(
+          FFGEchoParam::TapLevel, tapLevelNorm[t].Global().CV().Get(s));
+        float tapLPResPlain = topo.NormalizedToIdentityFast(
+          FFGEchoParam::TapLPRes, tapLPResNorm[t].Global().CV().Get(s));
+        float tapHPResPlain = topo.NormalizedToIdentityFast(
+          FFGEchoParam::TapHPRes, tapHPResNorm[t].Global().CV().Get(s));
+        float tapLPFreqPlain = topo.NormalizedToLog2Fast(
+          FFGEchoParam::TapLPFreq, tapLPFreqNorm[t].Global().CV().Get(s));
+        float tapHPFreqPlain = topo.NormalizedToLog2Fast(
+          FFGEchoParam::TapHPFreq, tapHPFreqNorm[t].Global().CV().Get(s));
+
+        _tapLPFilters[t].Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);
+        _tapHPFilters[t].Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain, tapHPResPlain, 0.0);
         for (int c = 0; c < 2; c++)
         {
           _tapDelayLines[t][c].Delay(lengthTimeSamplesSmooth);
-          float thisTapOut = _tapDelayLines[t][c].PopLagrangeInterpolate();
+          double thisTapOut = _tapDelayLines[t][c].PopLagrangeInterpolate();
+          thisTapOut = _tapLPFilters[t].Next(c, thisTapOut);
+          thisTapOut = _tapHPFilters[t].Next(c, thisTapOut);
           _tapDelayLines[t][c].Push(inout[c].Get(s));
           thisTapOut *= tapLevelPlain;
           thisTapOut *= FBStereoBalance(c, tapBalPlain);
-          tapsOut[c].Set(s, tapsOut[c].Get(s) + thisTapOut);
+          tapsOut[c].Set(s, tapsOut[c].Get(s) + (float)thisTapOut);
         }
       }
     }
 
-    for(int c = 0; c < 2; c++)
+    for (int c = 0; c < 2; c++)
       inout[c].Set(s, (1.0f - tapsMixPlain) * inout[c].Get(s) + tapsMixPlain * tapsOut[c].Get(s));
   }
 }

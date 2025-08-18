@@ -22,7 +22,11 @@ class FFGEchoProcessor final
   std::array<float, FFGEchoTapCount> _tapDelayBarsSamples = {};
 
   std::array<FBBasicLPFilter, FFGEchoTapCount> _tapDelayTimeSmoothers = {};
+  std::array<FFStateVariableFilter<2>, FFGEchoTapCount> _tapLPFilters = {};
+  std::array<FFStateVariableFilter<2>, FFGEchoTapCount> _tapHPFilters = {};
   std::array<std::array<FFDelayLine, 2>, FFGEchoTapCount> _tapDelayLines = {};
+
+  void ProcessTaps(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoProcessor);
