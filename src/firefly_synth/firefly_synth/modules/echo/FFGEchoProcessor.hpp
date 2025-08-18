@@ -19,7 +19,7 @@ class FFGEchoProcessor final
   FFGEchoTarget _target = {};
 
   std::array<bool, FFGEchoTapCount> _tapOn = {};
-  std::array<int, FFGEchoTapCount> _tapDelayBarsSamples = {};
+  std::array<float, FFGEchoTapCount> _tapDelayBarsSamples = {};
 
   std::array<FBBasicLPFilter, FFGEchoTapCount> _tapDelayTimeSmoothers = {};
   std::array<std::array<FFDelayLine, 2>, FFGEchoTapCount> _tapDelayLines = {};
