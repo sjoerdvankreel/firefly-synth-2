@@ -430,11 +430,74 @@ FFMakeGEchoTopo()
   reverbHPRes.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbHPRes);
   reverbHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
+  auto& feedbackOn = result->params[(int)FFGEchoParam::FeedbackOn];
+  feedbackOn.acc = false;
+  feedbackOn.name = "Feedback On";
+  feedbackOn.display = "Feedback";
+  feedbackOn.slotCount = 1;
+  feedbackOn.defaultText = "Off";
+  feedbackOn.id = "{E28CD2D5-59B4-4C77-830F-BC961239299C}";
+  feedbackOn.type = FBParamType::Boolean;
+  feedbackOn.slotFormatDisplay = true;
+  auto selectFeedbackOn = [](auto& module) { return &module.block.feedbackOn; };
+  feedbackOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackOn);
+  feedbackOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackOn);
+  feedbackOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackOn);
+  feedbackOn.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
+
+  auto& feedbackMix = result->params[(int)FFGEchoParam::FeedbackMix];
+  feedbackMix.acc = true;
+  feedbackMix.unit = "%";
+  feedbackMix.defaultText = "50";
+  feedbackMix.name = "Feedback Mix";
+  feedbackMix.matrixName = "Fdbk Mix";
+  feedbackMix.display = "Mix";
+  feedbackMix.slotCount = 1;
+  feedbackMix.id = "{47D9FE5B-D161-4198-9AC2-44089966575E}";
+  feedbackMix.type = FBParamType::Identity;
+  auto selectFeedbackMix = [](auto& module) { return &module.acc.feedbackMix; };
+  feedbackMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackMix);
+  feedbackMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackMix);
+  feedbackMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackMix);
+  feedbackMix.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& feedbackXOver = result->params[(int)FFGEchoParam::FeedbackXOver];
+  feedbackXOver.unit = "%";
+  feedbackXOver.acc = true;
+  feedbackXOver.defaultText = "0";
+  feedbackXOver.name = "Feedback L/R Crossover";
+  feedbackXOver.matrixName = "Fdbk XOver";
+  feedbackXOver.display = "XOver";
+  feedbackXOver.slotCount = 1;
+  feedbackXOver.id = "{C4D67CA6-41FE-4B54-8C2B-9C87F0DA6F0C}";
+  feedbackXOver.type = FBParamType::Identity;
+  auto selectFeedbackXOver = [](auto& module) { return &module.acc.feedbackXOver; };
+  feedbackXOver.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackXOver);
+  feedbackXOver.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackXOver);
+  feedbackXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackXOver);
+  feedbackXOver.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+  auto& feedbackAmount = result->params[(int)FFGEchoParam::FeedbackAmount];
+  feedbackAmount.unit = "%";
+  feedbackAmount.acc = true;
+  feedbackAmount.defaultText = "50";
+  feedbackAmount.name = "Feedback Amount";
+  feedbackAmount.matrixName = "Fdbk Amt";
+  feedbackAmount.display = "Amt";
+  feedbackAmount.slotCount = 1;
+  feedbackAmount.id = "{56017DC9-4B7D-44A5-AB7C-B6158BA584C3}";
+  feedbackAmount.type = FBParamType::Identity;
+  auto selectFeedbackAmount = [](auto& module) { return &module.acc.feedbackAmount; };
+  feedbackAmount.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackAmount);
+  feedbackAmount.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackAmount);
+  feedbackAmount.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackAmount);
+  feedbackAmount.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+
+
   /*
 
  enum class FFGEchoParam {
   
-   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
    FeedbackDelayTime, FeedbackDelayBars,
    FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
    Count };
