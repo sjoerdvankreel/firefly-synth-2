@@ -19,8 +19,8 @@ enum class FFGEchoTarget {
 
 enum class FFGEchoParam {
   Target, Order, TapsMix, Sync, 
-  ReverbOn, ReverbMix, ReverbAPF,
-  ReverbSpread, ReverbSize, ReverbDamp,
+  ReverbOn, ReverbMix, ReverbXOver, 
+  ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
   FeedbackDelayTime, FeedbackDelayBars,

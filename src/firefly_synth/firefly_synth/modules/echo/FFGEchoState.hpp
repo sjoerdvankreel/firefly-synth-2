@@ -42,7 +42,6 @@ class alignas(alignof(TBlock)) FFGEchoBlockParamState final
   std::array<TBlock, 1> feedbackOn = {};
   std::array<TBlock, 1> feedbackDelayBars = {};
   std::array<TBlock, FFGEchoTapCount> tapOn = {};
-  std::array<TBlock, FFGEchoTapCount> tapDelayTime = {};
   std::array<TBlock, FFGEchoTapCount> tapDelayBars = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoBlockParamState);
@@ -58,7 +57,7 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, 1> reverbAPF = {};
   std::array<TAccurate, 1> reverbSize = {};
   std::array<TAccurate, 1> reverbDamp = {};
-  std::array<TAccurate, 1> reverbSpread = {};
+  std::array<TAccurate, 1> reverbXOver = {};
   std::array<TAccurate, 1> reverbLPRes = {};
   std::array<TAccurate, 1> reverbHPRes = {};
   std::array<TAccurate, 1> reverbLPFreq = {};
@@ -76,8 +75,9 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, FFGEchoTapCount> tapLPFreq = {};
   std::array<TAccurate, FFGEchoTapCount> tapHPFreq = {};
   std::array<TAccurate, FFGEchoTapCount> tapLevel = {};
+  std::array<TAccurate, FFGEchoTapCount> tapXOver = {};
+  std::array<TAccurate, FFGEchoTapCount> tapDelayTime = {};
   std::array<TAccurate, FFGEchoTapCount> tapBalance = {};
-  std::array<TAccurate, FFGEchoTapCount> tapCrossOver = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoAccParamState);
 };

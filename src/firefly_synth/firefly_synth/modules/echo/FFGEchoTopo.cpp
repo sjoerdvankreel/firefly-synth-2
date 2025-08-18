@@ -137,7 +137,7 @@ FFMakeGEchoTopo()
   tapLevel.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
     
   auto& tapDelayTime = result->params[(int)FFGEchoParam::TapDelayTime];
-  tapDelayTime.acc = false;
+  tapDelayTime.acc = true;
   tapDelayTime.defaultText = "0";
   tapDelayTime.display = "Dly";
   tapDelayTime.name = "Tap Delay Time";
@@ -148,9 +148,9 @@ FFMakeGEchoTopo()
   tapDelayTime.Linear().min = 0.0f;
   tapDelayTime.Linear().max = 10.0f;
   tapDelayTime.Linear().editSkewFactor = 0.5f;
-  auto selectTapDelayTime = [](auto& module) { return &module.block.tapDelayTime; };
+  auto selectTapDelayTime = [](auto& module) { return &module.acc.tapDelayTime; };
   tapDelayTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelayTime);
-  tapDelayTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayTime);
+  tapDelayTime.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelayTime);
   tapDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayTime);
   tapDelayTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
   tapDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
@@ -201,7 +201,7 @@ FFMakeGEchoTopo()
   tapXOver.slotCount = FFGEchoTapCount;
   tapXOver.id = "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
   tapXOver.type = FBParamType::Identity;
-  auto selectTapXOver = [](auto& module) { return &module.acc.tapCrossOver; };
+  auto selectTapXOver = [](auto& module) { return &module.acc.tapXOver; };
   tapXOver.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapXOver);
   tapXOver.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectTapXOver);
   tapXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapXOver);
@@ -300,21 +300,21 @@ FFMakeGEchoTopo()
   reverbMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbMix);
   reverbMix.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
-  auto& reverbSpread = result->params[(int)FFGEchoParam::ReverbSpread];
-  reverbSpread.unit = "%";
-  reverbSpread.acc = true;
-  reverbSpread.defaultText = "50";
-  reverbSpread.name = "Reverb Spread";
-  reverbSpread.matrixName = "Rvrb Spread";
-  reverbSpread.display = "Sprd";
-  reverbSpread.slotCount = 1;
-  reverbSpread.id = "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
-  reverbSpread.type = FBParamType::Identity;
-  auto selectReverbSpread = [](auto& module) { return &module.acc.reverbSpread; };
-  reverbSpread.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbSpread);
-  reverbSpread.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbSpread);
-  reverbSpread.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbSpread);
-  reverbSpread.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
+  auto& reverbXOver = result->params[(int)FFGEchoParam::ReverbXOver];
+  reverbXOver.unit = "%";
+  reverbXOver.acc = true;
+  reverbXOver.defaultText = "50";
+  reverbXOver.name = "Reverb L/R Crossover";
+  reverbXOver.matrixName = "Rvrb XOver";
+  reverbXOver.display = "XOver";
+  reverbXOver.slotCount = 1;
+  reverbXOver.id = "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
+  reverbXOver.type = FBParamType::Identity;
+  auto selectReverbXOver = [](auto& module) { return &module.acc.reverbXOver; };
+  reverbXOver.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbXOver);
+  reverbXOver.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectReverbXOver);
+  reverbXOver.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectReverbXOver);
+  reverbXOver.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::ReverbOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbAPF = result->params[(int)FFGEchoParam::ReverbAPF];
   reverbAPF.unit = "%";

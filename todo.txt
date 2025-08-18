@@ -6,13 +6,14 @@ alpha 12 - echo
 [x] better interpolation algo for delayline
 [x] smooth delay time changes
 [ ] gecho
-[ ] vecho
+[ ] vecho -- how with global uni? share delay line between 1 tap / fdbck, no modulation
 [ ] reverb
 [ ] reverb-at-each-tab
 [ ] fb out of the taps?
 [ ] dedicated lfo for tap balance + speed
 [ ] popout editor + some set-default buttons
 [ ] better defaults
+
 
 TODOLIST for alpha-13
 
