@@ -25,28 +25,28 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI, FBMultiContentComponent* tapsGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 });
   auto target = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Target, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, target));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target));
   auto order = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Order, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, order));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, order));
-  auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Sync, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  auto tapsMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapsMix, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapsMix));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapsMix, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto guiTapSelect = topo->gui.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } });
   auto tapSelectSlider = plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, guiTapSelect, Slider::SliderStyle::RotaryVerticalDrag);
-  grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
-  grid->Add(0, 5, tapSelectSlider);
+  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
+  grid->Add(0, 3, tapSelectSlider);
   FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } };
   tapSelectSlider->onValueChange = [plugGUI, tapsGUI, indices]() { tapsGUI->SelectContentIndex(plugGUI->HostContext()->GetGUIParamDiscrete(indices) - 1); };
 
-  grid->Add(1, 4, 1, 2, plugGUI->StoreComponent<FBAutoSizeButton>("Edit Taps"));
+  auto tapsMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapsMix, 0 } });
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapsMix));
+  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapsMix, Slider::SliderStyle::RotaryVerticalDrag));
+  auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Sync, 0 } });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
+  grid->Add(1, 4, 1, 2, plugGUI->StoreComponent<FBAutoSizeButton>("Taps"));
   grid->MarkSection({ { 0, 0 }, { 2, 6 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }

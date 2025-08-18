@@ -85,7 +85,7 @@ FFMakeGEchoTopo()
   tapsMix.acc = true;
   tapsMix.unit = "%";
   tapsMix.defaultText = "33";
-  tapsMix.name = "Mix";
+  tapsMix.name = "Taps Mix";
   tapsMix.slotCount = 1;
   tapsMix.id = "{56DF16E6-A079-4E97-92D9-DA65826DB20F}";
   tapsMix.type = FBParamType::Identity;
