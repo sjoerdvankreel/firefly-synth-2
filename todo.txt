@@ -13,6 +13,7 @@ alpha 12 - echo
 [ ] dedicated lfo for tap balance + speed
 [ ] popout editor + some set-default buttons
 [ ] better defaults
+[ ] check the perf
 
 
 TODOLIST for alpha-13
