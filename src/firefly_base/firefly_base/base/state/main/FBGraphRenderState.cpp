@@ -58,13 +58,25 @@ FBGraphRenderState::PlugGUI() const
   return _plugGUI;
 }
 
-FBModuleProcState* 
+FBProcStateContainer* 
+FBGraphRenderState::ProcContainer()
+{
+  return _procState.get();
+}
+
+FBProcStateContainer const*
+FBGraphRenderState::ProcContainer() const
+{
+  return _procState.get();
+}
+
+FBModuleProcState*
 FBGraphRenderState::ModuleProcState()
 {
   return _moduleState.get();
 }
 
-FBModuleProcState const* 
+FBModuleProcState const*
 FBGraphRenderState::ModuleProcState() const
 {
   return _moduleState.get();

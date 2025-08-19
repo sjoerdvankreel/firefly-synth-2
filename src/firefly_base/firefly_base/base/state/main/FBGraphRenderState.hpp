@@ -50,7 +50,9 @@ public:
 
   FBPlugGUI const* PlugGUI() const;
   FBModuleProcState* ModuleProcState();
+  FBProcStateContainer* ProcContainer();
   FBModuleProcState const* ModuleProcState() const;
+  FBProcStateContainer const* ProcContainer() const;
   FBExchangeStateContainer const* ExchangeContainer() const;
   bool GlobalModuleExchangeStateEqualsPrimary(int moduleIndex, int moduleSlot) const;
   bool VoiceModuleExchangeStateEqualsPrimary(int voice, int moduleIndex, int moduleSlot) const;
