@@ -64,6 +64,8 @@ struct FBModuleGraphRenderData
   { return static_cast<Derived*>(this)->DoProcess(state, graphIndex, exchange, exchangeVoice); }
   void BeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice) 
   { static_cast<Derived*>(this)->DoBeginVoiceOrBlock(state, graphIndex, exchange, exchangeVoice); }
+  void ReleaseOnDemandBuffers(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
+  { static_cast<Derived*>(this)->DoReleaseOnDemandBuffers(state, graphIndex, exchange, exchangeVoice); }
   void ProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
   { return static_cast<Derived*>(this)->DoProcessIndicators(graphIndex, exchange, exchangeVoice, points); }
   void PostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points)
@@ -137,6 +139,7 @@ FBRenderModuleGraphSeries(
 
   renderData.ProcessIndicators(graphIndex, exchange, exchangeVoice, seriesOut);
   renderData.PostProcess(renderState, graphIndex, exchange, exchangeVoice, seriesOut);
+  renderData.ReleaseOnDemandBuffers(renderState, graphIndex, exchange, exchangeVoice);
 }
 
 template <bool Global, bool Stereo, class Derived>

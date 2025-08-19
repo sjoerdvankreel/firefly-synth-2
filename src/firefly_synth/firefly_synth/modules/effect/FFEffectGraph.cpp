@@ -21,6 +21,7 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   FFEffectProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
+  void DoReleaseOnDemandBuffers(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoProcessIndicators(int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
 };
@@ -39,6 +40,17 @@ PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex
 }
 
 template <bool Global>
+void
+EffectGraphRenderData<Global>::DoReleaseOnDemandBuffers(
+  FBGraphRenderState* state, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  GetProcessor(*moduleProcState).ReleaseOnDemandBuffers(
+    state->PlugGUI()->HostContext()->Topo(),
+    state->ProcContainer());
+}
+
+template <bool Global>
 void 
 EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
@@ -49,7 +61,8 @@ EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
     state->PlugGUI()->HostContext()->Topo(), 
     state->ProcContainer(), moduleProcState->moduleSlot, 
     true, moduleProcState->input->sampleRate);
-  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(true, graphIndex, totalSamples, *moduleProcState);
+  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(
+    true, graphIndex, totalSamples, *moduleProcState);
 }
 
 template <bool Global>
