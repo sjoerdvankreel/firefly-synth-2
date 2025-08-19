@@ -13,6 +13,7 @@ alpha 12 - echo
 [ ] popout editor + some set-default buttons
 [ ] better defaults
 [ ] check the perf
+[ ] bolletjes not paint good
 
 TODOLIST for alpha-13
 
