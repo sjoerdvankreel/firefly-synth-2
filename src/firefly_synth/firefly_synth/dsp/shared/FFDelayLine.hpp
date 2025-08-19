@@ -131,11 +131,6 @@ FFDelayLine::Reset(int currentBufferSize)
   _delayWhole = 0;
   _delayFraction = 0;
   std::fill(_data, _data + _maxBufferSize, 0.0f);
-
-  assert(0 < MaxBufferSize());
-  assert(0 < currentBufferSize);
-  while (currentBufferSize % FBSIMDTraits<float>::Size != 0)
-    currentBufferSize++;
   FB_ASSERT(0 <= currentBufferSize && currentBufferSize <= _maxBufferSize);
   _currentBufferSize = currentBufferSize;
 }

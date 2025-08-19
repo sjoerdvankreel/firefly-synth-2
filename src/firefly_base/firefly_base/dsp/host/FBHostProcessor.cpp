@@ -48,8 +48,6 @@ FBHostProcessor::ProcessHost(
 {
   auto processBeginTime = std::chrono::high_resolution_clock::now();
 
-  _plug->InitOnDemandBuffers(_topo, _procState, _sampleRate);
-
   _plugIn.bpm = input.bpm;
   _plugIn.prevRoundCpuUsage = _prevRoundCpuUsage;
   _plugIn.projectTimeSamples = input.projectTimeSamples;
@@ -57,6 +55,9 @@ FBHostProcessor::ProcessHost(
   auto denormalState = FBDisableDenormal(); 
   for (auto const& be : input.blockAuto)
     _procState->Params()[be.param].Value(be.normalized);
+
+  // Must be AFTER setting block automation value to parameter state!
+  _plug->InitOnDemandBuffers(_topo, _procState, _sampleRate);
 
   auto const& hostSmoothTimeSpecial = _procState->Special().hostSmoothTime;
   auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(*_topo->static_);
