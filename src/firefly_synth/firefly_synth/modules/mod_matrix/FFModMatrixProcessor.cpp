@@ -30,7 +30,7 @@ GetSourceCVBuffer(FBModuleProcState& state, FFModMatrixSource const& source, int
 
 template <bool Global>
 void
-FFModMatrixProcessor<Global>::InitializeBuffers(FBRuntimeTopo const* topo)
+FFModMatrixProcessor<Global>::InitBuffers(FBRuntimeTopo const* topo)
 {
   // static_cast for perf
   // 2d vector beats map performance

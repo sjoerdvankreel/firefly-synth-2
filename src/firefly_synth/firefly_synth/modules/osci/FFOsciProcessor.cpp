@@ -10,6 +10,7 @@
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
+#include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
 #include <xsimd/xsimd.hpp>
 
@@ -31,13 +32,32 @@ _oversampler(
   _oversampledBlock = _oversampler.processSamplesUp(_downsampledBlock);
 }
 
-void
-FFOsciProcessor::InitializeBuffers(bool graph, float sampleRate)
+void 
+FFOsciProcessor::ReleaseOnDemandBuffers(
+  FBRuntimeTopo const*, FBProcStateContainer* state)
 {
+  for (int i = 0; i < FFOsciUniMaxCount; i++)
+    _stringUniState[i].delayLine.ReleaseBuffers(state->MemoryPool());
+}
+
+void 
+FFOsciProcessor::InitOnDemandBuffers(
+  FBRuntimeTopo const* topo, FBProcStateContainer* state, 
+  int moduleSlot, bool graph, float sampleRate)
+{
+  auto* procState = state->RawAs<FFProcState>();
+  auto const& params = procState->param.voice.osci[moduleSlot];
+  auto const& typeNorm = params.block.type[0].GlobalValue();
+  auto const& uniCountNorm = params.block.uniCount[0].GlobalValue();
+  auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::Osci];
+
+  auto type = moduleTopo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
+  int uniCount = moduleTopo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm); 
   int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
   int maxDelayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / FFOsciStringMinFreq));
-  for (int i = 0; i < FFOsciUniMaxCount; i++)
-    _stringUniState[i].delayLine.InitializeBuffers(maxDelayLineSize);
+  if(type == FFOsciType::String)
+    for (int i = 0; i < uniCount; i++)
+      _stringUniState[i].delayLine.InitBuffers(state->MemoryPool(), maxDelayLineSize);
 }
 
 void

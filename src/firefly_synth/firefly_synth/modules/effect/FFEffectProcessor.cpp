@@ -11,6 +11,7 @@
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
+#include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
 #include <xsimd/xsimd.hpp>
 
@@ -55,14 +56,40 @@ FFEffectProcessor::NextMIDINoteKey(int sample)
 }
 
 void 
-FFEffectProcessor::InitializeBuffers(
-  bool graph, float sampleRate)
+FFEffectProcessor::ReleaseOnDemandBuffers(
+  FBRuntimeTopo const*, FBProcStateContainer* state)
 {
+  for (int i = 0; i < FFEffectBlockCount; i++)
+    _combFilters[i].ReleaseBuffers(state->MemoryPool());
+}
+
+template <bool Global>
+void 
+FFEffectProcessor::InitOnDemandBuffers(
+  FBRuntimeTopo const* topo, FBProcStateContainer* state,
+  int moduleSlot, bool graph, float sampleRate)
+{
+  auto* procState = state->RawAs<FFProcState>();
+  auto const& params = *FFSelectDualState<Global>(
+    [procState, moduleSlot]() { return &procState->param.global.gEffect[moduleSlot]; },
+    [procState, moduleSlot]() { return &procState->param.voice.vEffect[moduleSlot]; });
+  auto const& kindNorm = params.block.kind;
+  float onNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.on[0]);
+  auto const& moduleTopo = topo->static_->modules[(int)(Global ? FFModuleType::GEffect : FFModuleType::VEffect)];
+
+  if (!moduleTopo.NormalizedToBoolFast(FFEffectParam::On, onNorm))
+    return;
+
   float graphFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, sampleRate, FFMaxCombFilterFreq);
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
-    _combFilters[i].InitializeBuffers(sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier);
-    _combFilters[i].Reset();
+    auto kind = moduleTopo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind,
+      FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
+    if (kind == FFEffectKind::Comb || kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus)
+    {
+      _combFilters[i].InitBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier);
+      _combFilters[i].Reset();
+    }
   }
 }
 
@@ -689,3 +716,5 @@ template int FFEffectProcessor::Process<true>(bool, FBModuleProcState&);
 template int FFEffectProcessor::Process<false>(bool, FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool, int, int, FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool, int, int, FBModuleProcState&);
+template void FFEffectProcessor::InitOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);
+template void FFEffectProcessor::InitOnDemandBuffers<false>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);

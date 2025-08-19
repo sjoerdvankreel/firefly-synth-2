@@ -6,33 +6,62 @@
 #include <firefly_synth/modules/echo/FFGEchoProcessor.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
-#include <firefly_base/base/shared/FBMemoryPool.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
+#include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
 #include <cmath>
 
 void
-FFGEchoProcessor::DemandInitBuffers(FBModuleProcState& state, float sampleRate)
+FFGEchoProcessor::InitBuffers(float sampleRate)
 {
-  int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   _feedbackDelayTimeSmoother.SetCoeffs((int)std::ceil(0.2f * sampleRate));
-  for (int c = 0; c < 2; c++)
-  {
-    _feedbackDelayLine[c].InitializeBuffers(maxSamples);
-    _feedbackDelayLine[c].Reset(_feedbackDelayLine[c].MaxBufferSize());
-  }
   for (int t = 0; t < FFGEchoTapCount; t++)
-  {
     _tapDelayTimeSmoothers[t].SetCoeffs((int)std::ceil(0.2f * sampleRate));
+}
+
+void
+FFGEchoProcessor::ReleaseOnDemandBuffers(
+  FBRuntimeTopo const*, FBProcStateContainer* state)
+{
+  for (int c = 0; c < 2; c++)
+    _feedbackDelayLine[c].ReleaseBuffers(state->MemoryPool());
+  for (int t = 0; t < FFGEchoTapCount; t++)
+    for (int c = 0; c < 2; c++)
+      _tapDelayLines[t][c].ReleaseBuffers(state->MemoryPool());
+}
+
+void
+FFGEchoProcessor::InitOnDemandBuffers(
+  FBRuntimeTopo const* topo, FBProcStateContainer* state, float sampleRate)
+{
+  auto* procState = state->RawAs<FFProcState>();
+  auto const& params = procState->param.global.gEcho[0];
+  auto const& tapOnNorm = params.block.tapOn;
+  auto const& targetNorm = params.block.target[0].Value();
+  auto const& feedbackOnNorm = params.block.feedbackOn[0].Value();
+  auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::GEcho];
+
+  if (moduleTopo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm) == FFGEchoTarget::Off)
+    return;
+
+  int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
+  if(moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm))
     for (int c = 0; c < 2; c++)
     {
-      _tapDelayLines[t][c].InitializeBuffers(maxSamples);
-      _tapDelayLines[t][c].Reset(_tapDelayLines[t][c].MaxBufferSize());
+      _feedbackDelayLine[c].InitBuffers(state->MemoryPool(), maxSamples);
+      _feedbackDelayLine[c].Reset(_feedbackDelayLine[c].MaxBufferSize());
     }
-  }
+
+  for (int t = 0; t < FFGEchoTapCount; t++)
+    if (moduleTopo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value()))
+      for (int c = 0; c < 2; c++)
+      {
+        _tapDelayLines[t][c].InitBuffers(state->MemoryPool(), maxSamples);
+        _tapDelayLines[t][c].Reset(_tapDelayLines[t][c].MaxBufferSize());
+      }
 }
 
 void 

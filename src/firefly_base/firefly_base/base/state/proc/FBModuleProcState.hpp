@@ -2,8 +2,6 @@
 
 #include <unordered_map>
 
-class FBMemoryPool;
-
 struct FBVoiceInfo;
 struct FBRuntimeTopo;
 struct FBPlugInputBlock;
@@ -21,7 +19,6 @@ struct FBModuleProcState final
   int moduleSlot = {};
   bool anyExchangeActive = {};
   void* exchangeToGUIRaw = {};
-  FBMemoryPool* memoryPool = {};
   FBVoiceInfo const* voice = {};
   FBRuntimeTopo const* topo = {};
   FBPlugInputBlock const* input = {};

@@ -39,6 +39,7 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
+  _plug->InitOnDemandBuffers(_topo, _procState, _sampleRate);
 }
 
 void 
@@ -46,6 +47,8 @@ FBHostProcessor::ProcessHost(
   FBHostInputBlock const& input, FBHostOutputBlock& output)
 {
   auto processBeginTime = std::chrono::high_resolution_clock::now();
+
+  _plug->InitOnDemandBuffers(_topo, _procState, _sampleRate);
 
   _plugIn.bpm = input.bpm;
   _plugIn.prevRoundCpuUsage = _prevRoundCpuUsage;

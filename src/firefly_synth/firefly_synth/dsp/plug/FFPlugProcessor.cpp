@@ -23,19 +23,10 @@ _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
-  // TODO move to DemandInit
-  _procState->dsp.global.gMatrix.processor->InitializeBuffers(_topo);
-  _procState->dsp.global.gEcho.processor->InitializeBuffers(_sampleRate);
-  for (int i = 0; i < FFEffectCount; i++)
-    _procState->dsp.global.gEffect[i].processor->InitializeBuffers(false, _sampleRate);
+  _procState->dsp.global.gMatrix.processor->InitBuffers(_topo);
+  _procState->dsp.global.gEcho.processor->InitBuffers(_sampleRate);
   for (int v = 0; v < FBMaxVoices; v++)
-  {
-    _procState->dsp.voice[v].vMatrix.processor->InitializeBuffers(_topo);
-    for (int i = 0; i < FFEffectCount; i++)
-      _procState->dsp.voice[v].vEffect[i].processor->InitializeBuffers(false, _sampleRate);
-    for (int i = 0; i < FFOsciCount; i++)
-      _procState->dsp.voice[v].osci[i].processor->InitializeBuffers(false, _sampleRate);
-  }
+    _procState->dsp.voice[v].vMatrix.processor->InitBuffers(_topo);
 }
 
 FBModuleProcState
@@ -46,7 +37,6 @@ FFPlugProcessor::MakeModuleState(
   result.topo = _topo;
   result.input = &input;
   result.procRaw = _procState;
-  result.memoryPool = &_memoryPool;
   result.exchangeFromGUIRaw = nullptr;
   result.exchangeToGUIRaw = _exchangeState;
   result.renderType = FBRenderType::Audio;
@@ -82,6 +72,22 @@ FFPlugProcessor::LeaseVoices(
       auto state = MakeModuleVoiceState(input, voice);
       _procState->dsp.voice[voice].processor.BeginVoice(state);
     }
+}
+
+void 
+FFPlugProcessor::InitOnDemandBuffers(
+  FBRuntimeTopo const* topo, FBProcStateContainer* procState, float sampleRate)
+{
+  _procState->dsp.global.gEcho.processor->InitOnDemandBuffers(topo, procState, sampleRate);
+  for (int i = 0; i < FFEffectCount; i++)
+    _procState->dsp.global.gEffect[i].processor->InitOnDemandBuffers<true>(topo, procState, i, false, _sampleRate);
+  for (int v = 0; v < FBMaxVoices; v++)
+  {
+    for (int i = 0; i < FFOsciCount; i++)
+      _procState->dsp.voice[v].osci[i].processor->InitOnDemandBuffers(topo, procState, i, false, _sampleRate);
+    for (int i = 0; i < FFEffectCount; i++)
+      _procState->dsp.voice[v].vEffect[i].processor->InitOnDemandBuffers<false>(topo, procState, i, false, _sampleRate);
+  }
 }
 
 void

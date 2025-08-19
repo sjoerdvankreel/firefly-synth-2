@@ -38,7 +38,7 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
   {
     moduleProcState->moduleSlot = i;
     auto& processor = GetVoiceDSPState(*moduleProcState).osci[i].processor;
-    processor->InitializeBuffers(true, moduleProcState->input->sampleRate);
+    processor->InitBuffers(true, moduleProcState->input->sampleRate);
     processor->BeginVoice(true, *moduleProcState);
   }
   moduleProcState->moduleSlot = slot;

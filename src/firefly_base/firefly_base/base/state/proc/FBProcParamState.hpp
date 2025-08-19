@@ -158,10 +158,10 @@ FBProcParamState::Value() const
 {
   switch (Type())
   {
-  case FBProcParamType::VoiceAcc: return VoiceAcc().Value();
   case FBProcParamType::GlobalAcc: return GlobalAcc().Value();
-  case FBProcParamType::VoiceBlock: return VoiceBlock().Value();
   case FBProcParamType::GlobalBlock: return GlobalBlock().Value();
+  case FBProcParamType::VoiceAcc: return VoiceAcc().GlobalValue();
+  case FBProcParamType::VoiceBlock: return VoiceBlock().GlobalValue();
   default: FB_ASSERT(false); return 0.0f;
   }
 }
@@ -171,10 +171,10 @@ FBProcParamState::Value(float value)
 {
   switch (Type())
   {
-  case FBProcParamType::VoiceAcc: VoiceAcc().Value(value); break;
   case FBProcParamType::GlobalAcc: GlobalAcc().Value(value); break;
-  case FBProcParamType::VoiceBlock: VoiceBlock().Value(value); break;
   case FBProcParamType::GlobalBlock: GlobalBlock().Value(value); break;
+  case FBProcParamType::VoiceAcc: VoiceAcc().GlobalValue(value); break;
+  case FBProcParamType::VoiceBlock: VoiceBlock().GlobalValue(value); break;
   default: FB_ASSERT(false);
   }
 }

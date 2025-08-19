@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/base/shared/FBMemoryPool.hpp>
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/state/proc/FBProcParamState.hpp>
 
@@ -23,6 +24,7 @@ class FBProcStateContainer final
   void (*_freeRawState)(void*);
   FBSpecialParams _special;
 
+  FBMemoryPool _memoryPool = {};
   int _smoothingDurationSamples = -1;
   std::vector<FBProcParamState> _params = {};
 
@@ -46,9 +48,10 @@ public:
   void* Raw() { return _rawState; }
   void const* Raw() const { return _rawState; }
   FBSpecialParams const& Special() const { return _special; }
-  template <class T> T* As() { return static_cast<T*>(Raw()); }
-  template <class T> T const* As() const { return static_cast<T const*>(Raw()); }
+  template <class T> T* RawAs() { return static_cast<T*>(Raw()); }
+  template <class T> T const* RawAs() const { return static_cast<T const*>(Raw()); }
 
+  FBMemoryPool* MemoryPool() { return &_memoryPool; }
   std::vector<FBProcParamState>& Params() { return _params; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount>& MIDIParams() { return _midiParams; }

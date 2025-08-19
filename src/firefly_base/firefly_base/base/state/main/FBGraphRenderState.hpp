@@ -2,7 +2,6 @@
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
-#include <firefly_base/base/shared/FBMemoryPool.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
 
@@ -23,7 +22,6 @@ class FBGraphRenderState final
 {
   friend class FBModuleGraphDisplayComponent;
 
-  FBMemoryPool _memoryPool = {};
   std::vector<FBNoteEvent> _noteEvents = {};
   FBSArray2<float, FBFixedBlockSamples, 2> _audio = {};
 

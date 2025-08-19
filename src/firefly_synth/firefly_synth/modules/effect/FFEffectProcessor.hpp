@@ -91,7 +91,13 @@ class FFEffectProcessor final
 public:
   FFEffectProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
-  void InitializeBuffers(bool graph, float sampleRate);
+
+  template <bool Global>
+  void InitOnDemandBuffers(
+    FBRuntimeTopo const* topo, FBProcStateContainer* state,
+    int moduleSlot, bool graph, float sampleRate);
+  void ReleaseOnDemandBuffers(
+    FBRuntimeTopo const* topo, FBProcStateContainer* state);
 
   template <bool Global>
   int Process(bool graph, FBModuleProcState& state);

@@ -163,7 +163,7 @@ FBSmoothingProcessor::ProcessSmoothing(
       }
       else
       {
-        params[event.param].VoiceAcc().Value(event.value);
+        params[event.param].VoiceAcc().GlobalValue(event.value);
         for (int v = 0; v < FBMaxVoices; v++)
           if (_voiceManager->IsActive(v))
             BeginVoiceSmoothing(v, event.param, smoothingSamples);
