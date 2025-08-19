@@ -23,6 +23,7 @@ _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
+  // TODO move to DemandInit
   _procState->dsp.global.gMatrix.processor->InitializeBuffers(_topo);
   _procState->dsp.global.gEcho.processor->InitializeBuffers(_sampleRate);
   for (int i = 0; i < FFEffectCount; i++)
@@ -39,12 +40,13 @@ _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()
 
 FBModuleProcState
 FFPlugProcessor::MakeModuleState(
-  FBPlugInputBlock const& input) const
+  FBPlugInputBlock const& input)
 {
   FBModuleProcState result = {};
   result.topo = _topo;
   result.input = &input;
   result.procRaw = _procState;
+  result.memoryPool = &_memoryPool;
   result.exchangeFromGUIRaw = nullptr;
   result.exchangeToGUIRaw = _exchangeState;
   result.renderType = FBRenderType::Audio;
@@ -53,7 +55,7 @@ FFPlugProcessor::MakeModuleState(
 
 FBModuleProcState
 FFPlugProcessor::MakeModuleVoiceState(
-  FBPlugInputBlock const& input, int voice) const
+  FBPlugInputBlock const& input, int voice)
 {
   auto result = MakeModuleState(input);
   result.voice = &result.input->voiceManager->Voices()[voice];

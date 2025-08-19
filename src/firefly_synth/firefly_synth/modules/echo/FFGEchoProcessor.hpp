@@ -9,6 +9,7 @@
 #include <juce_dsp/juce_dsp.h>
 #include <array>
 
+class FBMemoryPool;
 class FBAccParamState;
 struct FBModuleProcState;
 
@@ -39,8 +40,8 @@ class FFGEchoProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoProcessor);
-  void InitializeBuffers(float sampleRate);
-
+  
   void BeginBlock(FBModuleProcState& state);
+  void DemandInitBuffers(FBModuleProcState& state, float sampleRate);
   void Process(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
 };

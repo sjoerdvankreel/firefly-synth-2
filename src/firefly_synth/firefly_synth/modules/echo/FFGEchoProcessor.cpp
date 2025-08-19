@@ -6,6 +6,7 @@
 #include <firefly_synth/modules/echo/FFGEchoProcessor.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
+#include <firefly_base/base/shared/FBMemoryPool.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
 #include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
@@ -14,7 +15,7 @@
 #include <cmath>
 
 void
-FFGEchoProcessor::InitializeBuffers(float sampleRate)
+FFGEchoProcessor::DemandInitBuffers(FBModuleProcState& state, float sampleRate)
 {
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   _feedbackDelayTimeSmoother.SetCoeffs((int)std::ceil(0.2f * sampleRate));

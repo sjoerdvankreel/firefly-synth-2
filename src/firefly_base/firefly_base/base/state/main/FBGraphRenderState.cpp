@@ -45,6 +45,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 
   _moduleState->moduleSlot = -1;
   _moduleState->input = _input.get();
+  _moduleState->memoryPool = &_memoryPool;
   _moduleState->topo = hostContext->Topo();
   _moduleState->procRaw = _procState->Raw();
   _moduleState->exchangeToGUIRaw = nullptr;

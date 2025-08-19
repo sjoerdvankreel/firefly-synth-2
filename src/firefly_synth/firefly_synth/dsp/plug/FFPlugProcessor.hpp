@@ -1,5 +1,6 @@
 #pragma once
 
+#include <firefly_base/base/shared/FBMemoryPool.hpp>
 #include <firefly_base/dsp/plug/FBPlugProcessor.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
@@ -16,9 +17,10 @@ public IFBPlugProcessor
   FBRuntimeTopo const* const _topo;
   FFProcState* const _procState;
   FFExchangeState* const _exchangeState;
+  FBMemoryPool _memoryPool = {};
 
-  FBModuleProcState MakeModuleState(FBPlugInputBlock const& input) const;
-  FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice) const;
+  FBModuleProcState MakeModuleState(FBPlugInputBlock const& input);
+  FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice);
   void ApplyGlobalModulation(FBPlugInputBlock const& input, FBModuleProcState& state, FBTopoIndices moduleIndices);
 
 public:
