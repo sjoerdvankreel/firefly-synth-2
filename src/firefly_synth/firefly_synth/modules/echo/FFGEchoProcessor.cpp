@@ -19,10 +19,10 @@ FFGEchoProcessor::ReleaseOnDemandBuffers(
   FBRuntimeTopo const*, FBProcStateContainer* state)
 {
   for (int c = 0; c < 2; c++)
-    _feedbackDelayLine[c].ReleaseBuffers(state->MemoryPool());
+    _feedbackDelayState.delayLine[c].ReleaseBuffers(state->MemoryPool());
   for (int t = 0; t < FFGEchoTapCount; t++)
     for (int c = 0; c < 2; c++)
-      _tapDelayLines[t][c].ReleaseBuffers(state->MemoryPool());
+      _tapDelayStates[t].delayLine[c].ReleaseBuffers(state->MemoryPool());
 }
 
 void
@@ -43,14 +43,14 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   auto feedbackType = moduleTopo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
   if(feedbackType == FFGEchoFeedbackType::On)
     for (int c = 0; c < 2; c++)
-      if(_feedbackDelayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
-        _feedbackDelayLine[c].Reset(_feedbackDelayLine[c].MaxBufferSize());
+      if(_feedbackDelayState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
+        _feedbackDelayState.delayLine[c].Reset(_feedbackDelayState.delayLine[c].MaxBufferSize());
 
   for (int t = 0; t < FFGEchoTapCount; t++)
     if (moduleTopo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value()))
       for (int c = 0; c < 2; c++)
-        if(_tapDelayLines[t][c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
-          _tapDelayLines[t][c].Reset(_tapDelayLines[t][c].MaxBufferSize());
+        if(_tapDelayStates[t].delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
+          _tapDelayStates[t].delayLine[c].Reset(_tapDelayStates[t].delayLine[c].MaxBufferSize());
 }
 
 void 
@@ -183,22 +183,22 @@ FFGEchoProcessor::ProcessFeedback(
     float outLR[2];
     for (int c = 0; c < 2; c++)
     {
-      _feedbackDelayLine[c].Delay(lengthTimeSamplesSmooth);
-      outLR[c] = _feedbackDelayLine[c].PopLagrangeInterpolate();
+      _feedbackDelayState.delayLine[c].Delay(lengthTimeSamplesSmooth);
+      outLR[c] = _feedbackDelayState.delayLine[c].PopLagrangeInterpolate();
     }
 
-    _feedbackLPFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
-    _feedbackHPFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
+    _feedbackDelayState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
+    _feedbackDelayState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
     for (int c = 0; c < 2; c++)
     {
       double out = (1.0f - xOverPlain) * outLR[c] + xOverPlain * outLR[c == 0 ? 1 : 0];
-      out = _feedbackLPFilter.Next(c, out);
-      out = _feedbackHPFilter.Next(c, out);
+      out = _feedbackDelayState.lpFilter.Next(c, out);
+      out = _feedbackDelayState.hpFilter.Next(c, out);
       
       float feedbackVal = inout[c].Get(s) + amountPlain * 0.99f * (float)out;
       // because resonant filter inside feedback path
       feedbackVal = FFSoftClip10(feedbackVal);
-      _feedbackDelayLine[c].Push(feedbackVal);
+      _feedbackDelayState.delayLine[c].Push(feedbackVal);
       inout[c].Set(s, (1.0f - mixPlain) * inout[c].Get(s) + mixPlain * (float)out);
     }
   }
@@ -273,18 +273,18 @@ FFGEchoProcessor::ProcessTaps(
         float thisTapOutLR[2];
         for (int c = 0; c < 2; c++)
         {
-          _tapDelayLines[t][c].Delay(lengthTimeSamplesSmooth);
-          thisTapOutLR[c] = _tapDelayLines[t][c].PopLagrangeInterpolate();
+          _tapDelayStates[t].delayLine[c].Delay(lengthTimeSamplesSmooth);
+          thisTapOutLR[c] = _tapDelayStates[t].delayLine[c].PopLagrangeInterpolate();
         }
 
-        _tapLPFilters[t].Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);
-        _tapHPFilters[t].Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain, tapHPResPlain, 0.0);
+        _tapDelayStates[t].lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);
+        _tapDelayStates[t].hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, tapHPFreqPlain, tapHPResPlain, 0.0);
         for (int c = 0; c < 2; c++)
         {
           double thisTapOut = (1.0f - tapXOverPlain) * thisTapOutLR[c] + tapXOverPlain * thisTapOutLR[c == 0 ? 1 : 0];
-          thisTapOut = _tapLPFilters[t].Next(c, thisTapOut);
-          thisTapOut = _tapHPFilters[t].Next(c, thisTapOut);
-          _tapDelayLines[t][c].Push(inout[c].Get(s));
+          thisTapOut = _tapDelayStates[t].lpFilter.Next(c, thisTapOut);
+          thisTapOut = _tapDelayStates[t].hpFilter.Next(c, thisTapOut);
+          _tapDelayStates[t].delayLine[c].Push(inout[c].Get(s));
           thisTapOut *= tapLevelPlain;
           thisTapOut *= FBStereoBalance(c, tapBalPlain);
           tapsOut[c].Set(s, tapsOut[c].Get(s) + (float)thisTapOut);

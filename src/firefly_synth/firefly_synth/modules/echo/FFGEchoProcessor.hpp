@@ -12,27 +12,27 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+struct FFGEchoDelayState
+{
+  FFStateVariableFilter<2> lpFilter = {};
+  FFStateVariableFilter<2> hpFilter = {};
+  std::array<FFDelayLine, 2> delayLine = {};
+};
+
 class FFGEchoProcessor final
 {
   bool _sync = {};
   FFGEchoOrder _order = {}; // todo
   FFGEchoTarget _target = {};
-
   FFGEchoFeedbackType _feedbackType = {};
   float _feedbackDelayBarsSamples = {};
-
   std::array<bool, FFGEchoTapCount> _tapOn = {};
   std::array<float, FFGEchoTapCount> _tapDelayBarsSamples = {};
 
+  FFGEchoDelayState _feedbackDelayState = {};
   FBBasicLPFilter _feedbackDelayTimeSmoother = {};
-  FFStateVariableFilter<2> _feedbackLPFilter = {};
-  FFStateVariableFilter<2> _feedbackHPFilter = {};
-  std::array<FFDelayLine, 2> _feedbackDelayLine = {};
-
+  std::array<FFGEchoDelayState, FFGEchoTapCount> _tapDelayStates = {};
   std::array<FBBasicLPFilter, FFGEchoTapCount> _tapDelayTimeSmoothers = {};
-  std::array<FFStateVariableFilter<2>, FFGEchoTapCount> _tapLPFilters = {};
-  std::array<FFStateVariableFilter<2>, FFGEchoTapCount> _tapHPFilters = {};
-  std::array<std::array<FFDelayLine, 2>, FFGEchoTapCount> _tapDelayLines = {};
 
   void ProcessTaps(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
   void ProcessFeedback(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
