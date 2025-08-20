@@ -33,14 +33,15 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   auto const& params = procState->param.global.gEcho[0];
   auto const& tapOnNorm = params.block.tapOn;
   auto const& targetNorm = params.block.target[0].Value();
-  auto const& feedbackOnNorm = params.block.feedbackOn[0].Value();
+  auto const& feedbackTypeNorm = params.block.feedbackType[0].Value();
   auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::GEcho];
 
   if (moduleTopo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm) == FFGEchoTarget::Off)
     return;
 
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
-  if(moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm))
+  auto feedbackType = moduleTopo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
+  if(feedbackType == FFGEchoFeedbackType::On)
     for (int c = 0; c < 2; c++)
       if(_feedbackDelayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayLine[c].Reset(_feedbackDelayLine[c].MaxBufferSize());
@@ -65,7 +66,7 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   float orderNorm = params.block.order[0].Value();
   float targetNorm = params.block.target[0].Value();
 
-  float feedbackOnNorm = params.block.feedbackOn[0].Value();
+  float feedbackTypeNorm = params.block.feedbackType[0].Value();
   float feedbackDelayBarsNorm = params.block.feedbackDelayBars[0].Value();
   float feedbackDelaySmoothTimeNorm = params.block.feedbackDelaySmoothTime[0].Value();
   float feedbackDelaySmoothBarsNorm = params.block.feedbackDelaySmoothBars[0].Value();
@@ -80,7 +81,7 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
 
   float feedbackDelaySmoothSamples;
-  _feedbackOn = topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
+  _feedbackType = topo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
   if(_sync)
@@ -151,7 +152,7 @@ FFGEchoProcessor::ProcessFeedback(
   auto const& amountNorm = params.acc.feedbackAmount[0].Global().CV();
   auto const& delayTimeNorm = params.acc.feedbackDelayTime[0].Global().CV();
 
-  if (!_feedbackOn)
+  if (_feedbackType != FFGEchoFeedbackType::On)
     return;
 
   for (int s = 0; s < FBFixedBlockSamples; s++)

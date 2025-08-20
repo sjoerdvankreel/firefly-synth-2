@@ -18,7 +18,7 @@ class FFGEchoProcessor final
   FFGEchoOrder _order = {}; // todo
   FFGEchoTarget _target = {};
 
-  bool _feedbackOn = {};
+  FFGEchoFeedbackType _feedbackType = {};
   float _feedbackDelayBarsSamples = {};
 
   std::array<bool, FFGEchoTapCount> _tapOn = {};
