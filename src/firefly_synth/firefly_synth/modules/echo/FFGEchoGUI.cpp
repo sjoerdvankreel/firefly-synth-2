@@ -56,6 +56,9 @@ MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
   auto tapXOver0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapXOver, 0 } });
   grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapXOver0));
 
+  for(int i = 0; i < 10; i++)
+    grid->MarkSection({ { 0, 1 + i }, { 1, 1 } });  
+
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
     grid->Add(t + 1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(t + 1)));
@@ -83,7 +86,13 @@ MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
     grid->Add(1 + t, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpRes, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapXOver = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapXOver, t } });
     grid->Add(1 + t, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapXOver, Slider::SliderStyle::RotaryVerticalDrag));
+
+    for (int i = 0; i < 10; i++)
+      grid->MarkSection({ { 1 + t, 1 + i }, { 1, 1 } });
   }
+
+  for(int t = 0; t < FFGEchoTapCount; t++)
+    grid->MarkSection({ { 1 + t, 0 }, { 1, 1 } });
 
   return grid;
 }
@@ -117,7 +126,7 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI, FBMultiContentComponent* tapsGUI)
   
   auto tapsEditor = MakeGEchoTapsEditor(plugGUI);
   auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Taps");
-  showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(tapsEditor, 400, 250); };
+  showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(tapsEditor, 360, 250); };
   grid->Add(1, 4, 1, 2, showTapsEditor);
 
   grid->MarkSection({ { 0, 0 }, { 2, 6 } });
