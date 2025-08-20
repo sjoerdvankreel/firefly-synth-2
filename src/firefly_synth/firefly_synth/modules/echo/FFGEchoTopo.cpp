@@ -527,7 +527,7 @@ FFMakeGEchoTopo()
   auto& reverbType = result->params[(int)FFGEchoParam::ReverbType];
   reverbType.acc = false;
   reverbType.name = "Reverb Type";
-  reverbType.display = "Reverb";
+  reverbType.display = "Rvrb";
   reverbType.slotCount = 1;
   reverbType.defaultText = "Off";
   reverbType.id = "{935D11F3-1131-40DE-81E5-FC3DCDCBAE73}";
