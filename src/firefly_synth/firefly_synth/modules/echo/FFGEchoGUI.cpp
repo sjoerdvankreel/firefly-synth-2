@@ -59,10 +59,10 @@ MakeGEchoSectionTap(FBPlugGUI* plugGUI, int tap)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
   auto tapOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapOn, tap } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapOn));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapOn));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapOn));
   auto tapLevel = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapLevel, tap } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLevel));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLevel, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLevel, Slider::SliderStyle::RotaryVerticalDrag));
   auto tapDelayTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapDelayTime, tap } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapDelayTime));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapDelayTime, Slider::SliderStyle::LinearHorizontal));
@@ -108,7 +108,7 @@ MakeGEchoSectionFeedback(FBPlugGUI* plugGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
   auto mix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackMix, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::LinearHorizontal));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
   auto delayTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackDelayTime, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delayTime));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delayTime, Slider::SliderStyle::LinearHorizontal));
