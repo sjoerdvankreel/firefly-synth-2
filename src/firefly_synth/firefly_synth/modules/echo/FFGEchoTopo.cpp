@@ -182,16 +182,17 @@ FFMakeGEchoTopo()
 
   auto& tapDelaySmoothTime = result->params[(int)FFGEchoParam::TapDelaySmoothTime];
   tapDelaySmoothTime.acc = false;
-  tapDelaySmoothTime.defaultText = "200";
+  tapDelaySmoothTime.defaultText = "500";
   tapDelaySmoothTime.display = "Smth";
   tapDelaySmoothTime.name = "Tap Delay Smooth Time";
   tapDelaySmoothTime.slotCount = FFGEchoTapCount;
   tapDelaySmoothTime.unit = "Ms";
   tapDelaySmoothTime.id = "{C3DE24FA-C015-4CF7-8D75-2B3D71EF0CD4}";
   tapDelaySmoothTime.type = FBParamType::Linear;
-  tapDelaySmoothTime.Linear().min = 0.05f;
+  tapDelaySmoothTime.Linear().min = 0.02f;
   tapDelaySmoothTime.Linear().max = 5.0f;
   tapDelaySmoothTime.Linear().editSkewFactor = 0.5f;
+  tapDelaySmoothTime.Linear().displayMultiplier = 1000;
   auto selectTapDelaySmoothTime = [](auto& module) { return &module.block.tapDelaySmoothTime; };
   tapDelaySmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelaySmoothTime);
   tapDelaySmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelaySmoothTime);
@@ -418,16 +419,17 @@ FFMakeGEchoTopo()
 
   auto& feedbackDelaySmoothTime = result->params[(int)FFGEchoParam::FeedbackDelaySmoothTime];
   feedbackDelaySmoothTime.acc = false;
-  feedbackDelaySmoothTime.defaultText = "200";
+  feedbackDelaySmoothTime.defaultText = "500";
   feedbackDelaySmoothTime.display = "Smth";
   feedbackDelaySmoothTime.name = "Feedback Delay Smooth Time";
   feedbackDelaySmoothTime.slotCount = 1;
   feedbackDelaySmoothTime.unit = "Ms";
   feedbackDelaySmoothTime.id = "{8694FBC8-003F-47B3-BB0E-8FB610CD4BD1}";
   feedbackDelaySmoothTime.type = FBParamType::Linear;
-  feedbackDelaySmoothTime.Linear().min = 0.05f;
+  feedbackDelaySmoothTime.Linear().min = 0.02f;
   feedbackDelaySmoothTime.Linear().max = 5.0f;
   feedbackDelaySmoothTime.Linear().editSkewFactor = 0.5f;
+  feedbackDelaySmoothTime.Linear().displayMultiplier = 1000;
   auto selectFeedbackDelaySmoothTime = [](auto& module) { return &module.block.feedbackDelaySmoothTime; };
   feedbackDelaySmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackDelaySmoothTime);
   feedbackDelaySmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackDelaySmoothTime);
