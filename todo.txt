@@ -19,6 +19,7 @@ alpha 12 - echo
 
 TODOLIST for alpha-13
 
+[ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
 [ ] less matrix routes
 [ ] floating notes

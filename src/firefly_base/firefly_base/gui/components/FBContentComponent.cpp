@@ -19,7 +19,8 @@ void
 FBContentComponent::SetContent(Component* content)
 {
   removeAllChildren();
-  addAndMakeVisible(content);
+  if(content != nullptr)
+    addAndMakeVisible(content);
   resized();
 }
 

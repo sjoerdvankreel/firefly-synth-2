@@ -1,3 +1,4 @@
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/echo/FFGEchoGUI.hpp>
 #include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
@@ -19,6 +20,12 @@
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
 using namespace juce;
+
+static Component* 
+MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
+{
+  return plugGUI->StoreComponent<FBAutoSizeLabel>("fubar");
+}
 
 static Component*
 MakeGEchoSectionMain(FBPlugGUI* plugGUI, FBMultiContentComponent* tapsGUI)
@@ -46,7 +53,12 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI, FBMultiContentComponent* tapsGUI)
   auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Sync, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  grid->Add(1, 4, 1, 2, plugGUI->StoreComponent<FBAutoSizeButton>("Taps"));
+  
+  auto tapsEditor = MakeGEchoTapsEditor(plugGUI);
+  auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Taps");
+  showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(tapsEditor, 400, 250); };
+  grid->Add(1, 4, 1, 2, showTapsEditor);
+
   grid->MarkSection({ { 0, 0 }, { 2, 6 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
