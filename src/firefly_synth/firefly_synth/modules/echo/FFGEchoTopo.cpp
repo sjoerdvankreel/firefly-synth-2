@@ -9,6 +9,12 @@ MakeGEchoBarsItems()
   return FBMakeBarsItems(true, { 1, 128 }, { 1, 1 });
 }
 
+static std::vector<FBBarsItem>
+MakeGEchoSmoothBarsItems()
+{
+  return FBMakeBarsItems(false, { 1, 16 }, { 4, 1 });
+}
+
 std::unique_ptr<FBStaticModule>
 FFMakeGEchoTopo()
 {
@@ -173,6 +179,43 @@ FFMakeGEchoTopo()
   tapDelayBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelayBars);
   tapDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   tapDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+
+  auto& tapDelaySmoothTime = result->params[(int)FFGEchoParam::TapDelaySmoothTime];
+  tapDelaySmoothTime.acc = false;
+  tapDelaySmoothTime.defaultText = "200";
+  tapDelaySmoothTime.display = "Smth";
+  tapDelaySmoothTime.name = "Tap Delay Smooth Time";
+  tapDelaySmoothTime.slotCount = FFGEchoTapCount;
+  tapDelaySmoothTime.unit = "Ms";
+  tapDelaySmoothTime.id = "{C3DE24FA-C015-4CF7-8D75-2B3D71EF0CD4}";
+  tapDelaySmoothTime.type = FBParamType::Linear;
+  tapDelaySmoothTime.Linear().min = 0.05f;
+  tapDelaySmoothTime.Linear().max = 5.0f;
+  tapDelaySmoothTime.Linear().editSkewFactor = 0.5f;
+  auto selectTapDelaySmoothTime = [](auto& module) { return &module.block.tapDelaySmoothTime; };
+  tapDelaySmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelaySmoothTime);
+  tapDelaySmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelaySmoothTime);
+  tapDelaySmoothTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  tapDelaySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
+
+  auto& tapDelaySmoothBars = result->params[(int)FFGEchoParam::TapDelaySmoothBars];
+  tapDelaySmoothBars.acc = false;
+  tapDelaySmoothBars.display = "Smth";
+  tapDelaySmoothBars.name = "Tap Delay Smooth Bars";
+  tapDelaySmoothBars.slotCount = FFGEchoTapCount;
+  tapDelaySmoothBars.unit = "Bars";
+  tapDelaySmoothBars.id = "{F4C2108D-400E-4AA3-95A8-EF91C70D9D1A}";
+  tapDelaySmoothBars.defaultText = "1/4";
+  tapDelaySmoothBars.type = FBParamType::Bars;
+  tapDelaySmoothBars.Bars().items = MakeGEchoSmoothBarsItems();
+  auto selectTapDelaySmoothBars = [](auto& module) { return &module.block.tapDelaySmoothBars; };
+  tapDelaySmoothBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelaySmoothBars);
+  tapDelaySmoothBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelaySmoothBars);
+  tapDelaySmoothBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelaySmoothBars);
+  tapDelaySmoothBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  tapDelaySmoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+  tapDelaySmoothBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  tapDelaySmoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapBal = result->params[(int)FFGEchoParam::TapBalance];
   tapBal.acc = true;
@@ -371,6 +414,41 @@ FFMakeGEchoTopo()
   feedbackDelayBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackDelayBars);
   feedbackDelayBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
   feedbackDelayBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
+
+  auto& feedbackDelaySmoothTime = result->params[(int)FFGEchoParam::FeedbackDelaySmoothTime];
+  feedbackDelaySmoothTime.acc = false;
+  feedbackDelaySmoothTime.defaultText = "200";
+  feedbackDelaySmoothTime.display = "Smth";
+  feedbackDelaySmoothTime.name = "Feedback Delay Smooth Time";
+  feedbackDelaySmoothTime.slotCount = 1;
+  feedbackDelaySmoothTime.unit = "Ms";
+  feedbackDelaySmoothTime.id = "{8694FBC8-003F-47B3-BB0E-8FB610CD4BD1}";
+  feedbackDelaySmoothTime.type = FBParamType::Linear;
+  feedbackDelaySmoothTime.Linear().min = 0.05f;
+  feedbackDelaySmoothTime.Linear().max = 5.0f;
+  feedbackDelaySmoothTime.Linear().editSkewFactor = 0.5f;
+  auto selectFeedbackDelaySmoothTime = [](auto& module) { return &module.block.feedbackDelaySmoothTime; };
+  feedbackDelaySmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackDelaySmoothTime);
+  feedbackDelaySmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackDelaySmoothTime);
+  feedbackDelaySmoothTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
+  feedbackDelaySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
+
+  auto& feedbackDelaySmoothBars = result->params[(int)FFGEchoParam::FeedbackDelaySmoothBars];
+  feedbackDelaySmoothBars.acc = false;
+  feedbackDelaySmoothBars.display = "Smth";
+  feedbackDelaySmoothBars.name = "Feedback Delay Smooth Bars";
+  feedbackDelaySmoothBars.slotCount = 1;
+  feedbackDelaySmoothBars.unit = "Bars";
+  feedbackDelaySmoothBars.id = "{5554CC4B-29E6-4F3C-8FFE-95947033676C}";
+  feedbackDelaySmoothBars.defaultText = "1/4";
+  feedbackDelaySmoothBars.type = FBParamType::Bars;
+  feedbackDelaySmoothBars.Bars().items = MakeGEchoSmoothBarsItems();
+  auto selectFeedbackDelaySmoothBars = [](auto& module) { return &module.block.feedbackDelaySmoothBars; };
+  feedbackDelaySmoothBars.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackDelaySmoothBars);
+  feedbackDelaySmoothBars.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackDelaySmoothBars);
+  feedbackDelaySmoothBars.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackDelaySmoothBars);
+  feedbackDelaySmoothBars.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0; });
+  feedbackDelaySmoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& feedbackLPFreq = result->params[(int)FFGEchoParam::FeedbackLPFreq];
   feedbackLPFreq.acc = true;

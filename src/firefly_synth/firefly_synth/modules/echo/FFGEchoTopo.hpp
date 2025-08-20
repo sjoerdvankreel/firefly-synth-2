@@ -23,7 +23,8 @@ enum class FFGEchoParam {
   ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
-  FeedbackDelayTime, FeedbackDelayBars,
+  FeedbackDelayTime, FeedbackDelayBars, FeedbackDelaySmoothTime, FeedbackDelaySmoothBars,
   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
-  TapOn, TapBalance, TapLevel, TapXOver, TapDelayTime, TapDelayBars,
+  TapOn, TapBalance, TapLevel, TapXOver, 
+  TapDelayTime, TapDelayBars, TapDelaySmoothTime, TapDelaySmoothBars,
   TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, Count };

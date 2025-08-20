@@ -41,8 +41,12 @@ class alignas(alignof(TBlock)) FFGEchoBlockParamState final
   std::array<TBlock, 1> reverbOn = {};
   std::array<TBlock, 1> feedbackOn = {};
   std::array<TBlock, 1> feedbackDelayBars = {};
+  std::array<TBlock, 1> feedbackDelaySmoothTime = {};
+  std::array<TBlock, 1> feedbackDelaySmoothBars = {};
   std::array<TBlock, FFGEchoTapCount> tapOn = {};
   std::array<TBlock, FFGEchoTapCount> tapDelayBars = {};
+  std::array<TBlock, FFGEchoTapCount> tapDelaySmoothTime = {};
+  std::array<TBlock, FFGEchoTapCount> tapDelaySmoothBars = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoBlockParamState);
 };
