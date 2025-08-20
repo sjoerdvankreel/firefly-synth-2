@@ -75,18 +75,18 @@ FFPlugProcessor::LeaseVoices(
 }
 
 void 
-FFPlugProcessor::InitOnDemandBuffers(
+FFPlugProcessor::AllocOnDemandBuffers(
   FBRuntimeTopo const* topo, FBProcStateContainer* procState, float sampleRate)
 {
-  _procState->dsp.global.gEcho.processor->InitOnDemandBuffers(topo, procState, sampleRate);
+  _procState->dsp.global.gEcho.processor->AllocOnDemandBuffers(topo, procState, sampleRate);
   for (int i = 0; i < FFEffectCount; i++)
-    _procState->dsp.global.gEffect[i].processor->InitOnDemandBuffers<true>(topo, procState, i, false, _sampleRate);
+    _procState->dsp.global.gEffect[i].processor->AllocOnDemandBuffers<true>(topo, procState, i, false, _sampleRate);
   for (int v = 0; v < FBMaxVoices; v++)
   {
     for (int i = 0; i < FFOsciCount; i++)
-      _procState->dsp.voice[v].osci[i].processor->InitOnDemandBuffers(topo, procState, i, false, _sampleRate);
+      _procState->dsp.voice[v].osci[i].processor->AllocOnDemandBuffers(topo, procState, i, false, _sampleRate);
     for (int i = 0; i < FFEffectCount; i++)
-      _procState->dsp.voice[v].vEffect[i].processor->InitOnDemandBuffers<false>(topo, procState, i, false, _sampleRate);
+      _procState->dsp.voice[v].vEffect[i].processor->AllocOnDemandBuffers<false>(topo, procState, i, false, _sampleRate);
   }
 }
 

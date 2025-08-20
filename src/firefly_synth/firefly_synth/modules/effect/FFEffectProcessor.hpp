@@ -93,7 +93,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEffectProcessor);
 
   template <bool Global>
-  void InitOnDemandBuffers(
+  void AllocOnDemandBuffers(
     FBRuntimeTopo const* topo, FBProcStateContainer* state,
     int moduleSlot, bool graph, float sampleRate);
   void ReleaseOnDemandBuffers(

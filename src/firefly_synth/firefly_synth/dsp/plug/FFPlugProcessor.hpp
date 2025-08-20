@@ -31,5 +31,5 @@ public:
   void ProcessPostVoice(FBPlugInputBlock const& input, FBPlugOutputBlock& output) override;
 
   void LeaseVoices(FBPlugInputBlock const& input) override;
-  void InitOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* procState, float sampleRate) override;
+  void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* procState, float sampleRate) override;
 };

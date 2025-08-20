@@ -57,7 +57,7 @@ EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).InitOnDemandBuffers<Global>(
+  GetProcessor(*moduleProcState).AllocOnDemandBuffers<Global>(
     state->PlugGUI()->HostContext()->Topo(), 
     state->ProcContainer(), moduleProcState->moduleSlot, 
     true, moduleProcState->input->sampleRate);

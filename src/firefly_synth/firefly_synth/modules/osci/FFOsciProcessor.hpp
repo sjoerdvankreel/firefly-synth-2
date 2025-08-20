@@ -136,7 +136,7 @@ public:
   int Process(bool graph, FBModuleProcState& state);
   void BeginVoice(bool graph, FBModuleProcState& state);
 
-  void InitOnDemandBuffers(
+  void AllocOnDemandBuffers(
     FBRuntimeTopo const* topo, FBProcStateContainer* state,
     int moduleSlot, bool graph, float sampleRate);
   void ReleaseOnDemandBuffers(

@@ -41,7 +41,7 @@ FFOsciProcessor::ReleaseOnDemandBuffers(
 }
 
 void 
-FFOsciProcessor::InitOnDemandBuffers(
+FFOsciProcessor::AllocOnDemandBuffers(
   FBRuntimeTopo const* topo, FBProcStateContainer* state, 
   int moduleSlot, bool graph, float sampleRate)
 {
@@ -57,7 +57,7 @@ FFOsciProcessor::InitOnDemandBuffers(
   int maxDelayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / FFOsciStringMinFreq));
   if(type == FFOsciType::String)
     for (int i = 0; i < uniCount; i++)
-      _stringUniState[i].delayLine.InitBuffers(state->MemoryPool(), maxDelayLineSize);
+      _stringUniState[i].delayLine.AllocBuffersIfChanged(state->MemoryPool(), maxDelayLineSize);
 }
 
 void

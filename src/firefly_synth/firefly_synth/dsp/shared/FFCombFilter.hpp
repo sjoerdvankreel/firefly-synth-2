@@ -35,7 +35,7 @@ public:
 
   void Reset();
   void ReleaseBuffers(FBMemoryPool* pool);
-  void InitBuffers(FBMemoryPool* pool, float sampleRate, float minFreq);
+  void AllocBuffers(FBMemoryPool* pool, float sampleRate, float minFreq);
 };
 
 template <int Channels>
@@ -63,7 +63,7 @@ FFCombFilter<Channels>::ReleaseBuffers(
 
 template <int Channels>
 inline void
-FFCombFilter<Channels>::InitBuffers(
+FFCombFilter<Channels>::AllocBuffers(
   FBMemoryPool* pool, float sampleRate, float minFreq)
 {
   float maxSeconds = 1.0f / minFreq;
@@ -73,8 +73,8 @@ FFCombFilter<Channels>::InitBuffers(
   FB_ASSERT(0 < maxSamples && maxSamples <= safetyCheck);
   for (int c = 0; c < Channels; c++)
   {
-    _delayLinesMin[c].InitBuffers(pool, maxSamples);
-    _delayLinesPlus[c].InitBuffers(pool, maxSamples);
+    _delayLinesMin[c].AllocBuffersIfChanged(pool, maxSamples);
+    _delayLinesPlus[c].AllocBuffersIfChanged(pool, maxSamples);
   }
 }
 

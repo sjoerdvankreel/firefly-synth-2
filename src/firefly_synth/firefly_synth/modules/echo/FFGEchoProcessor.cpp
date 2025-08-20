@@ -34,7 +34,7 @@ FFGEchoProcessor::ReleaseOnDemandBuffers(
 }
 
 void
-FFGEchoProcessor::InitOnDemandBuffers(
+FFGEchoProcessor::AllocOnDemandBuffers(
   FBRuntimeTopo const* topo, FBProcStateContainer* state, float sampleRate)
 {
   auto* procState = state->RawAs<FFProcState>();
@@ -50,18 +50,14 @@ FFGEchoProcessor::InitOnDemandBuffers(
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   if(moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm))
     for (int c = 0; c < 2; c++)
-    {
-      _feedbackDelayLine[c].InitBuffers(state->MemoryPool(), maxSamples);
-      _feedbackDelayLine[c].Reset(_feedbackDelayLine[c].MaxBufferSize());
-    }
+      if(_feedbackDelayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
+        _feedbackDelayLine[c].Reset(_feedbackDelayLine[c].MaxBufferSize());
 
   for (int t = 0; t < FFGEchoTapCount; t++)
     if (moduleTopo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value()))
       for (int c = 0; c < 2; c++)
-      {
-        _tapDelayLines[t][c].InitBuffers(state->MemoryPool(), maxSamples);
-        _tapDelayLines[t][c].Reset(_tapDelayLines[t][c].MaxBufferSize());
-      }
+        if(_tapDelayLines[t][c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
+          _tapDelayLines[t][c].Reset(_tapDelayLines[t][c].MaxBufferSize());
 }
 
 void 

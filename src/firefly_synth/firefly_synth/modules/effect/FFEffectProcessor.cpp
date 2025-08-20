@@ -65,7 +65,7 @@ FFEffectProcessor::ReleaseOnDemandBuffers(
 
 template <bool Global>
 void 
-FFEffectProcessor::InitOnDemandBuffers(
+FFEffectProcessor::AllocOnDemandBuffers(
   FBRuntimeTopo const* topo, FBProcStateContainer* state,
   int moduleSlot, bool graph, float sampleRate)
 {
@@ -86,10 +86,8 @@ FFEffectProcessor::InitOnDemandBuffers(
     auto kind = moduleTopo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind,
       FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
     if (kind == FFEffectKind::Comb || kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus)
-    {
-      _combFilters[i].InitBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier);
+      if(_combFilters[i].AllocBuffersIfChanged(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier))
       _combFilters[i].Reset();
-    }
   }
 }
 
@@ -716,5 +714,5 @@ template int FFEffectProcessor::Process<true>(bool, FBModuleProcState&);
 template int FFEffectProcessor::Process<false>(bool, FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool, int, int, FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool, int, int, FBModuleProcState&);
-template void FFEffectProcessor::InitOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);
-template void FFEffectProcessor::InitOnDemandBuffers<false>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);
+template void FFEffectProcessor::AllocOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);
+template void FFEffectProcessor::AllocOnDemandBuffers<false>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);

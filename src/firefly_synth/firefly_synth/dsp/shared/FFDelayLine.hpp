@@ -26,7 +26,7 @@ public:
   void Reset(int currentBufferSize);
 
   void ReleaseBuffers(FBMemoryPool* pool);
-  void InitBuffers(FBMemoryPool* pool, int maxBufferSize);
+  bool AllocBuffersIfChanged(FBMemoryPool* pool, int maxBufferSize);
 
   float PopLinearInterpolate();
   float PopLagrangeInterpolate();
@@ -43,16 +43,17 @@ FFDelayLine::ReleaseBuffers(FBMemoryPool* pool)
   _data = nullptr;
 }
 
-inline void
-FFDelayLine::InitBuffers(FBMemoryPool* pool, int maxBufferSize)
+inline bool
+FFDelayLine::AllocBuffersIfChanged(FBMemoryPool* pool, int maxBufferSize)
 {
   if (_maxBufferSize == maxBufferSize)
-    return;
+    return false;
   if (_data != nullptr)
     pool->Return(_data);
   _data = static_cast<float*>(pool->Lease(maxBufferSize * sizeof(float)));
   _maxBufferSize = maxBufferSize;
   _currentBufferSize = 0;
+  return true;
 }
 
 inline void
