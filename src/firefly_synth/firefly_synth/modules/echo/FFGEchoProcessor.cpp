@@ -128,27 +128,34 @@ FFGEchoProcessor::Process(
   if (_target == FFGEchoTarget::Off)
     return;
 
+  bool reverbAfterFeedback = false;
   enum SlotType { STTaps, STFeedback, STReverb, STCount };
   SlotType slots[3];
 
   switch (_order)
   {
   case FFGEchoOrder::TapsToFeedbackToReverb: 
+    reverbAfterFeedback = true;
     slots[0] = STTaps; slots[1] = STFeedback; slots[2] = STReverb; 
     break;
   case FFGEchoOrder::TapsToReverbToFeedback:
+    reverbAfterFeedback = false;
     slots[0] = STTaps; slots[1] = STReverb; slots[2] = STFeedback;
     break;
   case FFGEchoOrder::FeedbackToTapsToReverb:
+    reverbAfterFeedback = true;
     slots[0] = STFeedback; slots[1] = STTaps; slots[2] = STReverb;
     break;
   case FFGEchoOrder::FeedbackToReverbToTaps:
+    reverbAfterFeedback = true;
     slots[0] = STFeedback; slots[1] = STReverb; slots[2] = STTaps;
     break;
   case FFGEchoOrder::ReverbToTapsToFeedback:
+    reverbAfterFeedback = false;
     slots[0] = STReverb; slots[1] = STTaps; slots[2] = STFeedback;
     break;
   case FFGEchoOrder::ReverbToFeedbackToTaps:
+    reverbAfterFeedback = false;
     slots[0] = STReverb; slots[1] = STFeedback; slots[2] = STTaps;
     break;
   default:
@@ -161,7 +168,7 @@ FFGEchoProcessor::Process(
     switch (slots[i])
     {
     case STTaps: 
-      ProcessTaps(state, inout, true);
+      ProcessTaps(state, inout, reverbAfterFeedback, true);
       break;
     case STFeedback:
       if (_feedbackType == FFGEchoFeedbackType::On)
@@ -186,7 +193,7 @@ FFGEchoProcessor::Process(
   exchangeParams.acc.tapsMix[0] = tapsMixNorm[0].Global().CV().Last();
 
   // Only to push the exchange state.
-  ProcessTaps(state, inout, false);
+  ProcessTaps(state, inout, reverbAfterFeedback, false);
   ProcessFeedback(state, _feedbackDelayGlobalState, inout, false);
 }
 
@@ -283,6 +290,7 @@ void
 FFGEchoProcessor::ProcessTaps(
   FBModuleProcState& state, 
   FBSArray2<float, FBFixedBlockSamples, 2>& inout,
+  bool reverbAfterFeedback,
   bool processAudioOrExchangeState)
 {
   float sampleRate = state.input->sampleRate;
@@ -302,7 +310,7 @@ FFGEchoProcessor::ProcessTaps(
 
   if (processAudioOrExchangeState)
   {
-    FBSArray2<float, FBFixedBlockSamples, 2> tapsOut = {};
+    std::array<FBSArray2<float, FBFixedBlockSamples, 2>, FFGEchoTapCount> tapsOut = {};
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       float tapsMixPlain = topo.NormalizedToIdentityFast(
@@ -351,13 +359,30 @@ FFGEchoProcessor::ProcessTaps(
             _tapDelayStates[t].delayLine[c].Push(inout[c].Get(s));
             thisTapOut *= tapLevelPlain;
             thisTapOut *= FBStereoBalance(c, tapBalPlain);
-            tapsOut[c].Set(s, tapsOut[c].Get(s) + (float)thisTapOut);
+            tapsOut[t][c].Set(s, (float)thisTapOut);
           }
         }
       }
+    }
 
+    if (_feedbackType == FFGEchoFeedbackType::Taps)
+      for (int t = 0; t < FFGEchoTapCount; t++)
+        if (_tapOn[t])
+          ProcessFeedback(state, _feedbackDelayPerTapStates[t], tapsOut[t], true);
+
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      float thisTapsOut[2];
+      thisTapsOut[0] = 0.0f;
+      thisTapsOut[1] = 0.0f;
+      float tapsMixPlain = topo.NormalizedToIdentityFast(
+        FFGEchoParam::TapsMix, tapsMixNorm[0].Global().CV().Get(s));
+      for (int t = 0; t < FFGEchoTapCount; t++)
+        if (_tapOn[t])
+          for (int c = 0; c < 2; c++)
+            thisTapsOut[c] += tapsOut[t][c].Get(s);
       for (int c = 0; c < 2; c++)
-        inout[c].Set(s, (1.0f - tapsMixPlain) * inout[c].Get(s) + tapsMixPlain * tapsOut[c].Get(s));
+        inout[c].Set(s, (1.0f - tapsMixPlain) * inout[c].Get(s) + tapsMixPlain * thisTapsOut[c]);
     }
 
     return;

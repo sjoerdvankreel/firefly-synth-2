@@ -38,6 +38,7 @@ class FFGEchoProcessor final
   void ProcessTaps(
     FBModuleProcState& state,
     FBSArray2<float, FBFixedBlockSamples, 2>& inout,
+    bool reverbAfterFeedback,
     bool processAudioOrExchangeState);
 
   void ProcessFeedback(
