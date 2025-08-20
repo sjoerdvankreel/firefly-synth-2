@@ -20,6 +20,7 @@ public IFBPlugProcessor
 
   FBModuleProcState MakeModuleState(FBPlugInputBlock const& input);
   FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice);
+  void ProcessGEcho(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
   void ApplyGlobalModulation(FBPlugInputBlock const& input, FBModuleProcState& state, FBTopoIndices moduleIndices);
 
 public:

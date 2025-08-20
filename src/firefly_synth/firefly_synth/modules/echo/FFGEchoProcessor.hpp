@@ -22,7 +22,7 @@ struct FFGEchoDelayState
 class FFGEchoProcessor final
 {
   bool _sync = {};
-  FFGEchoOrder _order = {}; // todo
+  FFGEchoOrder _order = {};
   FFGEchoTarget _target = {};
   FFGEchoFeedbackType _feedbackType = {};
   float _feedbackDelayBarsSamples = {};

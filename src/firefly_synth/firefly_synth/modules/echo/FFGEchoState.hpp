@@ -33,6 +33,7 @@ public:
 template <class TBlock>
 class alignas(alignof(TBlock)) FFGEchoBlockParamState final
 {
+  friend class FFPlugProcessor;
   friend class FFGEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
   std::array<TBlock, 1> sync = {};
@@ -89,6 +90,7 @@ public:
 template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFGEchoParamState final
 {
+  friend class FFPlugProcessor;
   friend class FFGEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
   FFGEchoAccParamState<TAccurate> acc = {};
