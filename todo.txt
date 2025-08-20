@@ -7,14 +7,16 @@ alpha 12 - echo
 [x] smooth delay time changes
 [x] soft clip it like string osci
 [x] paint the knobs
+[x] per-tap feedback
+[x] popout editor
+[x] better defaults
+[x] check the perf
+[x] bolletjes not paint good
+
 [ ] gecho
-[ ] per-tap feedback/reverb
 [ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation
 [ ] reverb
-[ ] popout editor + some set-default buttons
-[ ] better defaults
-[x] check the perf
-[ ] bolletjes not paint good
+[ ] per-tap reverb
 [ ] do we really need the order ?
 
 TODOLIST for alpha-13
