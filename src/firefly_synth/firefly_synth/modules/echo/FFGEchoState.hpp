@@ -38,8 +38,8 @@ class alignas(alignof(TBlock)) FFGEchoBlockParamState final
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> order = {};
   std::array<TBlock, 1> target = {};
-  std::array<TBlock, 1> reverbOn = {};
-  std::array<TBlock, 1> feedbackOn = {};
+  std::array<TBlock, 1> reverbType = {};
+  std::array<TBlock, 1> feedbackType = {};
   std::array<TBlock, 1> feedbackDelayBars = {};
   std::array<TBlock, 1> feedbackDelaySmoothTime = {};
   std::array<TBlock, 1> feedbackDelaySmoothBars = {};
