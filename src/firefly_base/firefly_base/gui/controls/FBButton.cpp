@@ -15,7 +15,7 @@ _textWidth(FBGUIGetStringWidthCached(text))
 int 
 FBAutoSizeButton::FixedHeight() const
 {
-  return 20;
+  return 24;
 }
 
 int 
