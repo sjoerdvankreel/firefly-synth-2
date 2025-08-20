@@ -53,7 +53,8 @@ protected:
 
   void InitAllDependencies();
   virtual void UpdateExchangeStateTick() = 0;
-  FBParamControl* GetControlForAudioParamIndex(int paramIndex) const;
+  int GetControlCountForAudioParamIndex(int paramIndex) const;
+  FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;
   juce::Component* StoreComponent(std::unique_ptr<juce::Component>&& component);
 
 private:
@@ -64,7 +65,7 @@ private:
   juce::TooltipWindow* _tooltipWindow = {};
   std::vector<std::unique_ptr<juce::Component>> _store = {};
   std::unordered_map<int, int> _guiParamIndexToComponent = {};
-  std::unordered_map<int, int> _audioParamIndexToComponent = {};
+  std::unordered_map<int, std::vector<int>> _audioParamIndexToComponents = {};
   std::chrono::high_resolution_clock::time_point _exchangeUpdated = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _guiParamsVisibleDependents = {};
   std::unordered_map<int, std::unordered_set<FBParamsDependent*>> _guiParamsEnabledDependents = {};
