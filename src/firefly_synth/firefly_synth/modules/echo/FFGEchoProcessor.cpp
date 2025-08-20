@@ -293,6 +293,8 @@ FFGEchoProcessor::ProcessTaps(
   bool reverbAfterFeedback,
   bool processAudioOrExchangeState)
 {
+  (void)reverbAfterFeedback; // todo
+
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.global.gEcho[0];
@@ -313,8 +315,6 @@ FFGEchoProcessor::ProcessTaps(
     std::array<FBSArray2<float, FBFixedBlockSamples, 2>, FFGEchoTapCount> tapsOut = {};
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      float tapsMixPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::TapsMix, tapsMixNorm[0].Global().CV().Get(s));
       for (int t = 0; t < FFGEchoTapCount; t++)
       {
         if (_tapOn[t])
