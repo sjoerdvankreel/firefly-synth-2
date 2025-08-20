@@ -42,8 +42,6 @@ public:
 
   void BeginBlock(FBModuleProcState& state);
   void Process(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
-
-  void InitBuffers(float sampleRate);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, float sampleRate);
 };

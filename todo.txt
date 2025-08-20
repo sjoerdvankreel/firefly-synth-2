@@ -9,7 +9,7 @@ alpha 12 - echo
 [x] paint the knobs
 [ ] gecho
 [ ] per-tap feedback/reverb
-[ ] vecho -- how with global uni? share delay line between 1 tap / fdbck, no modulation
+[ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation
 [ ] reverb
 [ ] popout editor + some set-default buttons
 [ ] better defaults

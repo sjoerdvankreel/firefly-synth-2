@@ -15,14 +15,6 @@
 #include <cmath>
 
 void
-FFGEchoProcessor::InitBuffers(float sampleRate)
-{
-  _feedbackDelayTimeSmoother.SetCoeffs((int)std::ceil(0.2f * sampleRate));
-  for (int t = 0; t < FFGEchoTapCount; t++)
-    _tapDelayTimeSmoothers[t].SetCoeffs((int)std::ceil(0.2f * sampleRate));
-}
-
-void
 FFGEchoProcessor::ReleaseOnDemandBuffers(
   FBRuntimeTopo const*, FBProcStateContainer* state)
 {
@@ -69,29 +61,49 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   auto const& params = procState->param.global.gEcho[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
-  auto const& syncNorm = params.block.sync[0].Value();
-  auto const& orderNorm = params.block.order[0].Value();
-  auto const& targetNorm = params.block.target[0].Value();
+  float syncNorm = params.block.sync[0].Value();
+  float orderNorm = params.block.order[0].Value();
+  float targetNorm = params.block.target[0].Value();
 
-  auto const& feedbackOnNorm = params.block.feedbackOn[0].Value();
-  auto const& feedbackDelayBarsNorm = params.block.feedbackDelayBars[0].Value();
+  float feedbackOnNorm = params.block.feedbackOn[0].Value();
+  float feedbackDelayBarsNorm = params.block.feedbackDelayBars[0].Value();
+  float feedbackDelaySmoothTimeNorm = params.block.feedbackDelaySmoothTime[0].Value();
+  float feedbackDelaySmoothBarsNorm = params.block.feedbackDelaySmoothBars[0].Value();
   
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
+  auto const& tapDelaySmoothTimeNorm = params.block.tapDelaySmoothTime;
+  auto const& tapDelaySmoothBarsNorm = params.block.tapDelaySmoothBars;
 
   _sync = topo.NormalizedToBoolFast(FFGEchoParam::Sync, syncNorm);
   _order = topo.NormalizedToListFast<FFGEchoOrder>(FFGEchoParam::Order, orderNorm);
   _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
 
+  float feedbackDelaySmoothSamples;
   _feedbackOn = topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
+  if(_sync)
+    feedbackDelaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+      FFGEchoParam::FeedbackDelaySmoothTime, feedbackDelaySmoothTimeNorm, sampleRate);
+  else
+    feedbackDelaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
+      FFGEchoParam::FeedbackDelaySmoothBars, feedbackDelaySmoothBarsNorm, sampleRate, bpm);
+  _feedbackDelayTimeSmoother.SetCoeffs((int)std::ceil(feedbackDelaySmoothSamples));
 
+  float tapDelaySmoothSamples;
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
     _tapOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
       FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
+    if (_sync)
+      tapDelaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+        FFGEchoParam::TapDelaySmoothTime, tapDelaySmoothTimeNorm[t].Value(), sampleRate);
+    else
+      tapDelaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
+        FFGEchoParam::TapDelaySmoothBars, tapDelaySmoothBarsNorm[t].Value(), sampleRate, bpm);
+    _tapDelayTimeSmoothers[t].SetCoeffs((int)std::ceil(tapDelaySmoothSamples));
   }
 }
 
