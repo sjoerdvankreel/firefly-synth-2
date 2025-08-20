@@ -23,8 +23,9 @@ FBSectionComponent::FixedWidth(int height) const
 }
 
 FBSubSectionComponent::
-FBSubSectionComponent(Component* content) :
-  Component()
+FBSubSectionComponent(Component* content, bool topLevel) :
+Component(),
+_topLevel(topLevel)
 {
   addAndMakeVisible(content);
 }
@@ -32,6 +33,11 @@ FBSubSectionComponent(Component* content) :
 void 
 FBSubSectionComponent::paint(Graphics& g)
 {
+  if (_topLevel)
+  {
+    g.setColour(Colours::black);
+    g.fillAll();
+  }
   g.setColour(Colour(0xFFA0A0A0));
   g.drawRoundedRectangle(0.0f, 0.0f, (float)getWidth(), (float)getHeight(), 6.0f, 2.0f);
 }

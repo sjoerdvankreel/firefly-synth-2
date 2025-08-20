@@ -160,6 +160,7 @@ FFPlugGUI::ShowOverlayComponent(Component* overlay, int w, int h)
   _overlayContainer->setBounds(x, y, w, h);
   addAndMakeVisible(_overlayContainer, 1);
   _overlayContainer->resized();
+  _overlayComponent = overlay;
 }
 
 void 
@@ -190,12 +191,13 @@ FFPlugGUI::SetupGUI()
   _container->Add(3, 0, 1, 7, _content);
   addAndMakeVisible(_container);
 
-  auto overlayGrid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1 }});
+  auto overlayGrid = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1, 0 } });
   _overlayContent = StoreComponent<FBContentComponent>();
-  overlayGrid->Add(0, 0, _overlayContent);
-  overlayGrid->MarkSection({ { 0, 0 }, { 1, 1 } });
+  overlayGrid->Add(0, 0, 1, 2, _overlayContent);
+  overlayGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
   auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
-  overlayGrid->Add(1, 0, overlayClose);
-  _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid);
-  overlayGrid->MarkSection({ { 1, 0 }, { 1, 1 } });
+  overlayClose->onClick = [this] { HideOverlayComponent(); };
+  overlayGrid->Add(1, 1, overlayClose);
+  _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid, true);
+  overlayGrid->MarkSection({ { 1, 0 }, { 1, 2 } });
 }

@@ -20,11 +20,13 @@ public juce::Component,
 public IFBHorizontalAutoSize,
 public IFBVerticalAutoSize
 {
+  bool const _topLevel;
+
 public:
   void resized() override;
   void paint(juce::Graphics& g) override;
 
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  FBSubSectionComponent(juce::Component* content);
+  FBSubSectionComponent(juce::Component* content, bool topLevel = false);
 };
