@@ -8,6 +8,7 @@ alpha 12 - echo
 [x] soft clip it like string osci
 [x] paint the knobs
 [ ] gecho
+[ ] per-tap feedback/reverb
 [ ] vecho -- how with global uni? share delay line between 1 tap / fdbck, no modulation
 [ ] reverb
 [ ] popout editor + some set-default buttons
