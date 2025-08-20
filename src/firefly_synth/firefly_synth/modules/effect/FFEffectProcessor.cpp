@@ -503,18 +503,18 @@ FFEffectProcessor::ProcessComb(
     float freqMul = KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk);
 
     if constexpr(MinOn)
-      freqMin = MultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+      freqMin = FFMultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
     if constexpr(PlusOn)
-      freqPlus = MultiplyClamp(freqPlus, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+      freqPlus = FFMultiplyClamp(freqPlus, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
 
     if (_graph)
     {
       float clampMin = 1.01f * _graphCombFilterFreqMultiplier * FFMinCombFilterFreq;
       float clampMax = 0.99f * _graphCombFilterFreqMultiplier * FFMaxCombFilterFreq;
       if constexpr (MinOn)
-        freqMin = MultiplyClamp(freqMin, _graphCombFilterFreqMultiplier, clampMin, clampMax);
+        freqMin = FFMultiplyClamp(freqMin, _graphCombFilterFreqMultiplier, clampMin, clampMax);
       if constexpr (PlusOn)
-        freqPlus = MultiplyClamp(freqPlus, _graphCombFilterFreqMultiplier, clampMin, clampMax);
+        freqPlus = FFMultiplyClamp(freqPlus, _graphCombFilterFreqMultiplier, clampMin, clampMax);
     }
 
     _combFilters[block].SetMin<MinOn>(oversampledRate, freqMin, resMin);
@@ -543,7 +543,7 @@ FFEffectProcessor::ProcessStVar(
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq = MultiplyClamp(freq, KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk),
+    freq = FFMultiplyClamp(freq, KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
 
     if (_graph)

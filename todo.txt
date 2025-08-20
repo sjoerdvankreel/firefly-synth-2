@@ -14,7 +14,6 @@ alpha 12 - echo
 [ ] better defaults
 [x] check the perf
 [ ] bolletjes not paint good
-[ ] master aux gui to small
 
 TODOLIST for alpha-13
 
@@ -30,6 +29,7 @@ TODOLIST for alpha-13
 [ ] allow modulate env stage lengths on voice start
 [ ] keep taps on the mod matrix
 [ ] refix all behind-the-scenes mod sources and targets
+[ ] master aux gui to small
 
 pck support
 per-module presets
@@ -38,7 +38,7 @@ separate midi, bpm, automation smoothing, auto should be global + per-param over
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
 global unison TODO IF we do per-voice echo, this should not be on the subvoice level
-autoclip
+autosoftclip
 MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating (not on-note but continuous)
 another round of cpu and memory profiling
 factory presets

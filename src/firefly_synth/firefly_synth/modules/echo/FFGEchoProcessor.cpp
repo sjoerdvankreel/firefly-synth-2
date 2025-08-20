@@ -182,9 +182,9 @@ FFGEchoProcessor::ProcessFeedback(
       out = _feedbackLPFilter.Next(c, out);
       out = _feedbackHPFilter.Next(c, out);
       
-      // because resonant filter inside feedback path
       float feedbackVal = inout[c].Get(s) + amountPlain * 0.99f * (float)out;
-      feedbackVal = 10.0f * std::tanh(feedbackVal * 0.1f);
+      // because resonant filter inside feedback path
+      feedbackVal = FFSoftClip10(feedbackVal);
       _feedbackDelayLine[c].Push(feedbackVal);
       inout[c].Set(s, (1.0f - mixPlain) * inout[c].Get(s) + mixPlain * (float)out);
     }
