@@ -44,7 +44,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
 
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   auto feedbackType = moduleTopo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
-  if(feedbackType == FFGEchoFeedbackType::Main || feedbackType == FFGEchoFeedbackType::Both)
+  if(feedbackType == FFGEchoFeedbackType::On)
     for (int c = 0; c < 2; c++)
       if(_feedbackDelayGlobalState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayGlobalState.delayLine[c].Reset(_feedbackDelayGlobalState.delayLine[c].MaxBufferSize());
@@ -55,7 +55,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
       {
         if (_tapDelayStates[t].delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
           _tapDelayStates[t].delayLine[c].Reset(_tapDelayStates[t].delayLine[c].MaxBufferSize());
-        if (feedbackType == FFGEchoFeedbackType::Taps || feedbackType == FFGEchoFeedbackType::Both)
+        if (feedbackType == FFGEchoFeedbackType::Taps)
           if (_feedbackDelayPerTapStates[t].delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
             _feedbackDelayPerTapStates[t].delayLine[c].Reset(_feedbackDelayPerTapStates[t].delayLine[c].MaxBufferSize());
       }
@@ -171,7 +171,7 @@ FFGEchoProcessor::Process(
       ProcessTaps(state, inout, reverbAfterFeedback, true);
       break;
     case STFeedback:
-      if (_feedbackType == FFGEchoFeedbackType::Main || _feedbackType == FFGEchoFeedbackType::Both)
+      if (_feedbackType == FFGEchoFeedbackType::On)
         ProcessFeedback(state, _feedbackDelayGlobalState, inout, true);
       break;
     case STReverb:
@@ -365,7 +365,7 @@ FFGEchoProcessor::ProcessTaps(
       }
     }
 
-    if (_feedbackType == FFGEchoFeedbackType::Taps || _feedbackType == FFGEchoFeedbackType::Both)
+    if (_feedbackType == FFGEchoFeedbackType::Taps)
       for (int t = 0; t < FFGEchoTapCount; t++)
         if (_tapOn[t])
           ProcessFeedback(state, _feedbackDelayPerTapStates[t], tapsOut[t], true);

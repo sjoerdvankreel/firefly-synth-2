@@ -327,9 +327,8 @@ FFMakeGEchoTopo()
   feedbackType.slotFormatDisplay = true;
   feedbackType.List().items = {
     { "{3F3920B9-0DE0-4BFC-A8AB-637B1A1C6368}", "Off" },
-    { "{5F210CBA-8A64-4847-88EF-8CAD3BFCB62D}", "Main" },
-    { "{F5949382-B5B1-4055-A9D6-F818B873EC8B}", "Taps" },
-    { "{31F0E0C5-1D3D-49D5-962C-C1572C9C478C}", "Both" } };
+    { "{5F210CBA-8A64-4847-88EF-8CAD3BFCB62D}", "On" },
+    { "{31F0E0C5-1D3D-49D5-962C-C1572C9C478C}", "Taps" } };
   auto selectFeedbackType = [](auto& module) { return &module.block.feedbackType; };
   feedbackType.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackType);
   feedbackType.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackType);
@@ -536,9 +535,8 @@ FFMakeGEchoTopo()
   reverbType.type = FBParamType::List;
   reverbType.List().items = {
     { "{DCB92D9E-7E97-4E7E-AE47-69E4CD1C23B5}", "Off" },
-    { "{8B581AB2-599B-41D6-810A-CE8B08C9FAE2}", "Main" },
-    { "{F58B3B4B-B2ED-4308-B1A4-3AD71021A9BE}", "Taps" },
-    { "{9FFB56B0-3FC7-40CE-9D54-109A0952C227}", "Both" } };
+    { "{8B581AB2-599B-41D6-810A-CE8B08C9FAE2}", "On" },
+    { "{9FFB56B0-3FC7-40CE-9D54-109A0952C227}", "Taps" } };
   auto selectReverbType = [](auto& module) { return &module.block.reverbType; };
   reverbType.scalarAddr = FFSelectScalarParamAddr(selectModule, selectReverbType);
   reverbType.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectReverbType);
