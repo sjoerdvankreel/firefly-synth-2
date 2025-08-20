@@ -84,11 +84,11 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
   if(_sync)
-    feedbackDelaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-      FFGEchoParam::FeedbackDelaySmoothTime, feedbackDelaySmoothTimeNorm, sampleRate);
-  else
     feedbackDelaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
       FFGEchoParam::FeedbackDelaySmoothBars, feedbackDelaySmoothBarsNorm, sampleRate, bpm);
+  else
+    feedbackDelaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+      FFGEchoParam::FeedbackDelaySmoothTime, feedbackDelaySmoothTimeNorm, sampleRate);
   _feedbackDelayTimeSmoother.SetCoeffs((int)std::ceil(feedbackDelaySmoothSamples));
 
   float tapDelaySmoothSamples;
@@ -98,11 +98,11 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
       FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
     if (_sync)
-      tapDelaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-        FFGEchoParam::TapDelaySmoothTime, tapDelaySmoothTimeNorm[t].Value(), sampleRate);
-    else
       tapDelaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
         FFGEchoParam::TapDelaySmoothBars, tapDelaySmoothBarsNorm[t].Value(), sampleRate, bpm);
+    else
+      tapDelaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+        FFGEchoParam::TapDelaySmoothTime, tapDelaySmoothTimeNorm[t].Value(), sampleRate);
     _tapDelayTimeSmoothers[t].SetCoeffs((int)std::ceil(tapDelaySmoothSamples));
   }
 }
