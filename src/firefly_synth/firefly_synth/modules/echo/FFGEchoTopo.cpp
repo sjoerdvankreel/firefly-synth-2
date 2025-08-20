@@ -194,6 +194,7 @@ FFMakeGEchoTopo()
   tapDelaySmoothTime.Linear().editSkewFactor = 0.5f;
   auto selectTapDelaySmoothTime = [](auto& module) { return &module.block.tapDelaySmoothTime; };
   tapDelaySmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTapDelaySmoothTime);
+  tapDelaySmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTapDelaySmoothTime);
   tapDelaySmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTapDelaySmoothTime);
   tapDelaySmoothTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
   tapDelaySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::TapOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
@@ -429,6 +430,7 @@ FFMakeGEchoTopo()
   feedbackDelaySmoothTime.Linear().editSkewFactor = 0.5f;
   auto selectFeedbackDelaySmoothTime = [](auto& module) { return &module.block.feedbackDelaySmoothTime; };
   feedbackDelaySmoothTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFeedbackDelaySmoothTime);
+  feedbackDelaySmoothTime.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFeedbackDelaySmoothTime);
   feedbackDelaySmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFeedbackDelaySmoothTime);
   feedbackDelaySmoothTime.dependencies.visible.audio.WhenSimple({ (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
   feedbackDelaySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target, (int)FFGEchoParam::FeedbackOn, (int)FFGEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
