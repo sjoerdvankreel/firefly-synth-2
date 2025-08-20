@@ -30,13 +30,11 @@ MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
   rowSizes.push_back(1);
   for (int i = 0; i < FFGEchoTapCount; i++)
     rowSizes.push_back(1);
-  auto columnSizes = std::vector<int> { { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+  auto columnSizes = std::vector<int> { { 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 } };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
 
-  auto tapOn0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapOn, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapOn0));
-  auto tapLevel0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapLevel, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLevel0));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>("On"));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Lvl"));
   auto tapDelayTime0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapDelayTime, 0 } });
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapDelayTime0));
   auto tapDelayBars0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapDelayBars, 0 } });
