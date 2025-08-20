@@ -15,6 +15,7 @@ alpha 12 - echo
 [ ] better defaults
 [x] check the perf
 [ ] bolletjes not paint good
+[ ] do we really need the order ?
 
 TODOLIST for alpha-13
 
