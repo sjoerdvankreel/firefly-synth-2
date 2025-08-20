@@ -169,7 +169,6 @@ FFPlugProcessor::ProcessPostVoice(
 
   for (int i = 0; i < FFEffectCount; i++)
   {
-    state.moduleSlot = i;
     globalDSP.gEffect[i].input.Fill(0.0f);
     auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[i].Global().CV();
     globalDSP.gEffect[i].input.AddMul(voiceMixdown, voiceToGFXNorm);
@@ -190,6 +189,7 @@ FFPlugProcessor::ProcessPostVoice(
     else if (i == 3 && gEchoTarget == FFGEchoTarget::FX4In)
       ProcessGEcho(state, globalDSP.gEffect[i].input);
     
+    state.moduleSlot = i; // gecho changes it!
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
     globalDSP.gEffect[i].processor->Process<true>(false, state);
 
