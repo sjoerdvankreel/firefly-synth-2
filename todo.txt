@@ -12,8 +12,9 @@ alpha 12 - echo
 [ ] reverb
 [ ] popout editor + some set-default buttons
 [ ] better defaults
-[ ] check the perf
+[x] check the perf
 [ ] bolletjes not paint good
+[ ] master aux gui to small
 
 TODOLIST for alpha-13
 
