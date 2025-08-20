@@ -86,8 +86,7 @@ FFEffectProcessor::AllocOnDemandBuffers(
     auto kind = moduleTopo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind,
       FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
     if (kind == FFEffectKind::Comb || kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus)
-      if(_combFilters[i].AllocBuffersIfChanged(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier))
-      _combFilters[i].Reset();
+      _combFilters[i].AllocBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier); 
   }
 }
 

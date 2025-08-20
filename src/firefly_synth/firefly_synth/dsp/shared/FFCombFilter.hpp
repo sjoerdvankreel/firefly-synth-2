@@ -73,8 +73,10 @@ FFCombFilter<Channels>::AllocBuffers(
   FB_ASSERT(0 < maxSamples && maxSamples <= safetyCheck);
   for (int c = 0; c < Channels; c++)
   {
-    _delayLinesMin[c].AllocBuffersIfChanged(pool, maxSamples);
-    _delayLinesPlus[c].AllocBuffersIfChanged(pool, maxSamples);
+    if (_delayLinesMin[c].AllocBuffersIfChanged(pool, maxSamples))
+      _delayLinesMin[c].Reset(_delayLinesMin[c].MaxBufferSize());
+    if(_delayLinesPlus[c].AllocBuffersIfChanged(pool, maxSamples))
+      _delayLinesPlus[c].Reset(_delayLinesPlus[c].MaxBufferSize());
   }
 }
 
