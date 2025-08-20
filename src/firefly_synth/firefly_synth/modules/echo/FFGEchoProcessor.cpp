@@ -163,16 +163,25 @@ FFGEchoProcessor::Process(
     break;
   }
 
+  FBSArray2<float, FBFixedBlockSamples, 2> mainIn = {};
+  inout.CopyTo(mainIn);
   for (int i = 0; i < STCount; i++)
   {
     switch (slots[i])
     {
     case STTaps: 
-      ProcessTaps(state, inout, reverbAfterFeedback, true);
+      ProcessTaps(state, reverbAfterFeedback, true, inout);
       break;
     case STFeedback:
-      if (_feedbackType == FFGEchoFeedbackType::Main || _feedbackType == FFGEchoFeedbackType::Both)
-        ProcessFeedback(state, _feedbackDelayGlobalState, inout, true);
+      // be sure to not feedback the feedback in case of both taps and main
+      if (_feedbackType == FFGEchoFeedbackType::Main)
+        ProcessFeedback(state, _feedbackDelayGlobalState, true, true, inout);
+      else if (_feedbackType == FFGEchoFeedbackType::Both)
+      {
+        // mixInDry = false because the taps already did that
+        ProcessFeedback(state, _feedbackDelayGlobalState, false, true, mainIn);
+        inout.Add(mainIn);
+      }
       break;
     case STReverb:
       break;
@@ -193,16 +202,17 @@ FFGEchoProcessor::Process(
   exchangeParams.acc.tapsMix[0] = tapsMixNorm[0].Global().CV().Last();
 
   // Only to push the exchange state.
-  ProcessTaps(state, inout, reverbAfterFeedback, false);
-  ProcessFeedback(state, _feedbackDelayGlobalState, inout, false);
+  ProcessTaps(state, reverbAfterFeedback, false, inout);
+  ProcessFeedback(state, _feedbackDelayGlobalState, true, false, inout);
 }
 
 void 
 FFGEchoProcessor::ProcessFeedback(
   FBModuleProcState& state,
   FFGEchoDelayState& delayState,
-  FBSArray2<float, FBFixedBlockSamples, 2>& inout,
-  bool processAudioOrExchangeState)
+  bool mixInDry,
+  bool processAudioOrExchangeState,
+  FBSArray2<float, FBFixedBlockSamples, 2>& inout)
 {
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -264,7 +274,11 @@ FFGEchoProcessor::ProcessFeedback(
         // because resonant filter inside feedback path
         feedbackVal = FFSoftClip10(feedbackVal);
         delayState.delayLine[c].Push(feedbackVal);
-        inout[c].Set(s, (1.0f - mixPlain) * inout[c].Get(s) + mixPlain * (float)out);
+
+        float dryWet = mixPlain * (float)out;
+        if (mixInDry)
+          dryWet += (1.0f - mixPlain) * inout[c].Get(s);
+        inout[c].Set(s, dryWet);
       }
     }
 
@@ -289,9 +303,9 @@ FFGEchoProcessor::ProcessFeedback(
 void
 FFGEchoProcessor::ProcessTaps(
   FBModuleProcState& state, 
-  FBSArray2<float, FBFixedBlockSamples, 2>& inout,
   bool reverbAfterFeedback,
-  bool processAudioOrExchangeState)
+  bool processAudioOrExchangeState,
+  FBSArray2<float, FBFixedBlockSamples, 2>& inout)
 {
   (void)reverbAfterFeedback; // todo
 
@@ -368,7 +382,7 @@ FFGEchoProcessor::ProcessTaps(
     if (_feedbackType == FFGEchoFeedbackType::Taps || _feedbackType == FFGEchoFeedbackType::Both)
       for (int t = 0; t < FFGEchoTapCount; t++)
         if (_tapOn[t])
-          ProcessFeedback(state, _feedbackDelayPerTapStates[t], tapsOut[t], true);
+          ProcessFeedback(state, _feedbackDelayPerTapStates[t], true, true, tapsOut[t]);
 
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {

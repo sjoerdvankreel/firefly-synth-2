@@ -37,15 +37,16 @@ class FFGEchoProcessor final
 
   void ProcessTaps(
     FBModuleProcState& state,
-    FBSArray2<float, FBFixedBlockSamples, 2>& inout,
     bool reverbAfterFeedback,
-    bool processAudioOrExchangeState);
+    bool processAudioOrExchangeState,
+    FBSArray2<float, FBFixedBlockSamples, 2>& inout);
 
   void ProcessFeedback(
     FBModuleProcState& state,
     FFGEchoDelayState& delayState,
-    FBSArray2<float, FBFixedBlockSamples, 2>& inout,
-    bool processAudioOrExchangeState);
+    bool mixInDry,
+    bool processAudioOrExchangeState,
+    FBSArray2<float, FBFixedBlockSamples, 2>& inout);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoProcessor);
