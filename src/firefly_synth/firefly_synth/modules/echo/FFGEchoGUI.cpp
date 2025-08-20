@@ -45,16 +45,16 @@ MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapDelaySmoothBars0));
   auto tapBalance0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapBalance, 0 } });
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapBalance0));
-  auto tapXOver0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapXOver, 0 } });
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapXOver0));
   auto tapLpFreq0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapLPFreq, 0 } });
-  grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLpFreq0));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLpFreq0));
   auto tapLpRes0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapLPRes, 0 } });
-  grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLpRes0));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLpRes0));
   auto tapHpFreq0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapHPFreq, 0 } });
-  grid->Add(0, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapHpFreq0));
+  grid->Add(0, 8, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapHpFreq0));
   auto tapHpRes0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapHPRes, 0 } });
-  grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapHpRes0));
+  grid->Add(0, 9, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapHpRes0));
+  auto tapXOver0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapXOver, 0 } });
+  grid->Add(0, 10, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapXOver0));
 
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
@@ -73,19 +73,18 @@ MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
     grid->Add(1 + t, 4, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, tapDelaySmoothBars));
     auto tapBalance = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapBalance, t } });
     grid->Add(1 + t, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapBalance, Slider::SliderStyle::RotaryVerticalDrag));
-    auto tapXOver = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapXOver, t } });
-    grid->Add(1 + t, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapXOver, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapLpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapLPFreq, t } });
-    grid->Add(1 + t, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1 + t, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpFreq, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapLpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapLPRes, t } });
-    grid->Add(1 + t, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpRes, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1 + t, 7, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpRes, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapHpFreq = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapHPFreq, t } });
-    grid->Add(1 + t, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1 + t, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpFreq, Slider::SliderStyle::RotaryVerticalDrag));
     auto tapHpRes = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapHPRes, t } });
-    grid->Add(1 + t, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpRes, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(1 + t, 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpRes, Slider::SliderStyle::RotaryVerticalDrag));
+    auto tapXOver = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapXOver, t } });
+    grid->Add(1 + t, 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapXOver, Slider::SliderStyle::RotaryVerticalDrag));
   }
 
-  grid->MarkSection({ { 0, 0 }, { FFGEchoTapCount + 1, 11 } });
   return grid;
 }
 

@@ -194,7 +194,6 @@ FFPlugGUI::SetupGUI()
   auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1, 0 } });
   _overlayContent = StoreComponent<FBContentComponent>();
   overlayGrid->Add(0, 0, 1, 2, _overlayContent);
-  overlayGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
   auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
   auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
