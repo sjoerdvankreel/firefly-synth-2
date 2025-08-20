@@ -29,13 +29,22 @@ class FFGEchoProcessor final
   std::array<bool, FFGEchoTapCount> _tapOn = {};
   std::array<float, FFGEchoTapCount> _tapDelayBarsSamples = {};
 
-  FFGEchoDelayState _feedbackDelayState = {};
   FBBasicLPFilter _feedbackDelayTimeSmoother = {};
+  FFGEchoDelayState _feedbackDelayGlobalState = {};
+  std::array<FFGEchoDelayState, FFGEchoTapCount> _feedbackDelayPerTapStates = {};
   std::array<FFGEchoDelayState, FFGEchoTapCount> _tapDelayStates = {};
   std::array<FBBasicLPFilter, FFGEchoTapCount> _tapDelayTimeSmoothers = {};
 
-  void ProcessTaps(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
-  void ProcessFeedback(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
+  void ProcessTaps(
+    FBModuleProcState& state,
+    FBSArray2<float, FBFixedBlockSamples, 2>& inout,
+    bool processAudioOrExchangeState);
+
+  void ProcessFeedback(
+    FBModuleProcState& state,
+    FFGEchoDelayState& delayState,
+    FBSArray2<float, FBFixedBlockSamples, 2>& inout,
+    bool processAudioOrExchangeState);
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoProcessor);
