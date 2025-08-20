@@ -11,9 +11,9 @@ std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
 enum class FFGEchoGUIParam { 
   TapSelect, Count };
 enum class FFGEchoReverbType {
-  Off, On, Taps };
+  Off, Main, Taps };
 enum class FFGEchoFeedbackType {
-  Off, On, Taps };
+  Off, Main, Taps };
 enum class FFGEchoTarget { 
   Off, Voice, Out, 
   FX1In, FX1Out, FX2In, FX2Out, 

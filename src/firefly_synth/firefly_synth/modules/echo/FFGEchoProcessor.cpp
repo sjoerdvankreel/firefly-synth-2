@@ -44,7 +44,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
 
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   auto feedbackType = moduleTopo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
-  if(feedbackType == FFGEchoFeedbackType::On)
+  if(feedbackType == FFGEchoFeedbackType::Main)
     for (int c = 0; c < 2; c++)
       if(_feedbackDelayGlobalState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayGlobalState.delayLine[c].Reset(_feedbackDelayGlobalState.delayLine[c].MaxBufferSize());
@@ -171,7 +171,7 @@ FFGEchoProcessor::Process(
       ProcessTaps(state, inout, reverbAfterFeedback, true);
       break;
     case STFeedback:
-      if (_feedbackType == FFGEchoFeedbackType::On)
+      if (_feedbackType == FFGEchoFeedbackType::Main)
         ProcessFeedback(state, _feedbackDelayGlobalState, inout, true);
       break;
     case STReverb:
