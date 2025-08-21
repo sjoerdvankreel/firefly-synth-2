@@ -13,6 +13,9 @@ alpha 12 - gecho
 [x] check the perf
 [x] bolletjes not paint good
 
+[ ] get the text out of the graphs
+[ ] lr->lrx
+[ ] res(!)
 [ ] gecho
 [ ] reverb
 [ ] per-tap reverb
