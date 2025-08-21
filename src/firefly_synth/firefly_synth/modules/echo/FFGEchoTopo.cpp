@@ -56,26 +56,6 @@ FFMakeGEchoTopo()
   target.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTarget);
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTarget);
 
-  auto& order = result->params[(int)FFGEchoParam::Order];
-  order.acc = false;
-  order.defaultText = "T\U00002192F\U00002192R";
-  order.name = "Order";
-  order.slotCount = 1;
-  order.id = "{D84A623A-7F5C-40C6-A892-A441497783CD}";
-  order.type = FBParamType::List;
-  order.List().items = {
-    { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "T\U00002192F\U00002192R" },
-    { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "T\U00002192R\U00002192F" },
-    { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "F\U00002192T\U00002192R" },
-    { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "F\U00002192R\U00002192T" },
-    { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "R\U00002192T\U00002192F" },
-    { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "R\U00002192F\U00002192T" } };
-  auto selectOrder = [](auto& module) { return &module.block.order; };
-  order.scalarAddr = FFSelectScalarParamAddr(selectModule, selectOrder);
-  order.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectOrder);
-  order.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOrder);
-  order.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
-
   auto& sync = result->params[(int)FFGEchoParam::Sync];
   sync.acc = false;
   sync.name = "Tempo Sync";

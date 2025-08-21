@@ -25,7 +25,6 @@ struct FFGEchoDelayState
 class FFGEchoProcessor final
 {
   bool _sync = {};
-  FFGEchoOrder _order = {};
   FFGEchoTarget _target = {};
   FFGEchoFeedbackType _feedbackType = {};
   float _feedbackDelayBarsSamples = {};
@@ -46,7 +45,6 @@ class FFGEchoProcessor final
   void ProcessTaps(
     FBModuleProcState& state,
     FBSArray2<float, FBFixedBlockSamples, 2>& inout,
-    bool reverbAfterFeedback,
     bool processAudioOrExchangeState);
 
   void ProcessFeedback(

@@ -83,7 +83,6 @@ FFGEchoProcessor::BeginBlock(
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
   float syncNorm = params.block.sync[0].Value();
-  float orderNorm = params.block.order[0].Value();
   float targetNorm = params.block.target[0].Value();
 
   float feedbackTypeNorm = params.block.feedbackType[0].Value();
@@ -102,7 +101,6 @@ FFGEchoProcessor::BeginBlock(
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
   _sync = topo.NormalizedToBoolFast(FFGEchoParam::Sync, syncNorm);
-  _order = topo.NormalizedToListFast<FFGEchoOrder>(FFGEchoParam::Order, orderNorm);
   _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
 
   bool feedbackOn = !graph || graphIndex == 1 || graphIndex == 3;
@@ -159,59 +157,9 @@ FFGEchoProcessor::Process(
   if (_target == FFGEchoTarget::Off)
     return 0;
 
-  bool reverbAfterFeedback = false;
-  enum SlotType { STTaps, STFeedback, STReverb, STCount };
-  SlotType slots[3];
-
-  switch (_order)
-  {
-  case FFGEchoOrder::TapsToFeedbackToReverb: 
-    reverbAfterFeedback = true;
-    slots[0] = STTaps; slots[1] = STFeedback; slots[2] = STReverb; 
-    break;
-  case FFGEchoOrder::TapsToReverbToFeedback:
-    reverbAfterFeedback = false;
-    slots[0] = STTaps; slots[1] = STReverb; slots[2] = STFeedback;
-    break;
-  case FFGEchoOrder::FeedbackToTapsToReverb:
-    reverbAfterFeedback = true;
-    slots[0] = STFeedback; slots[1] = STTaps; slots[2] = STReverb;
-    break;
-  case FFGEchoOrder::FeedbackToReverbToTaps:
-    reverbAfterFeedback = true;
-    slots[0] = STFeedback; slots[1] = STReverb; slots[2] = STTaps;
-    break;
-  case FFGEchoOrder::ReverbToTapsToFeedback:
-    reverbAfterFeedback = false;
-    slots[0] = STReverb; slots[1] = STTaps; slots[2] = STFeedback;
-    break;
-  case FFGEchoOrder::ReverbToFeedbackToTaps:
-    reverbAfterFeedback = false;
-    slots[0] = STReverb; slots[1] = STFeedback; slots[2] = STTaps;
-    break;
-  default:
-    FB_ASSERT(false);
-    break;
-  }
-
-  for (int i = 0; i < STCount; i++)
-  {
-    switch (slots[i])
-    {
-    case STTaps: 
-      ProcessTaps(state, output, reverbAfterFeedback, true);
-      break;
-    case STFeedback:
-      if (_feedbackType == FFGEchoFeedbackType::Main)
-        ProcessFeedback(state, _feedbackDelayGlobalState, output, true);
-      break;
-    case STReverb:
-      break;
-    default:
-      FB_ASSERT(false);
-      break;
-    }
-  }
+  ProcessTaps(state, output, true);
+  if (_feedbackType == FFGEchoFeedbackType::Main)
+    ProcessFeedback(state, _feedbackDelayGlobalState, output, true);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
@@ -228,7 +176,7 @@ FFGEchoProcessor::Process(
   exchangeParams.acc.tapsMix[0] = tapsMixNorm[0].Global().CV().Last();
 
   // Only to push the exchange state.
-  ProcessTaps(state, output, reverbAfterFeedback, false);
+  ProcessTaps(state, output, false);
   ProcessFeedback(state, _feedbackDelayGlobalState, output, false);
 
   return FBFixedBlockSamples;
@@ -333,11 +281,8 @@ void
 FFGEchoProcessor::ProcessTaps(
   FBModuleProcState& state, 
   FBSArray2<float, FBFixedBlockSamples, 2>& inout,
-  bool reverbAfterFeedback,
   bool processAudioOrExchangeState)
 {
-  (void)reverbAfterFeedback; // todo
-
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto const& params = procState->param.global.gEcho[0];

@@ -18,13 +18,9 @@ enum class FFGEchoTarget {
   Off, Voice, Out, 
   FX1In, FX1Out, FX2In, FX2Out, 
   FX3In, FX3Out, FX4In, FX4Out };
-enum class FFGEchoOrder {
-  TapsToFeedbackToReverb, TapsToReverbToFeedback,
-  FeedbackToTapsToReverb, FeedbackToReverbToTaps,
-  ReverbToTapsToFeedback, ReverbToFeedbackToTaps };
 
 enum class FFGEchoParam {
-  Target, Order, TapsMix, Sync, 
+  Target, TapsMix, Sync, 
   ReverbType, ReverbMix, ReverbXOver, 
   ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
