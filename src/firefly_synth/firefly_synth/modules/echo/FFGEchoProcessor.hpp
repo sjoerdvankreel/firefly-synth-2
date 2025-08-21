@@ -12,6 +12,8 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+inline float constexpr FFGEchoPlotLengthSeconds = 5.0f;
+
 struct FFGEchoDelayState
 {
   FFStateVariableFilter<2> lpFilter = {};

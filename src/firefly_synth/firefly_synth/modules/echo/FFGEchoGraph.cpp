@@ -8,8 +8,6 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 
-static int const GEchoGraphSamples = 1000; // todo
-
 static bool
 IsFeedbackOn(
   FBGraphRenderState* state,
@@ -49,12 +47,12 @@ public FBModuleGraphRenderData<GEchoGraphRenderData>
 };
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* /*data*/, int /*graphIndex*/)
+PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
 {
   FBModuleGraphPlotParams result = {};
-  result.sampleRate = 0.0f;
-  result.autoSampleRate = true;
-  result.sampleCount = GEchoGraphSamples;
+  result.autoSampleRate = false;
+  result.sampleCount = data->pixelWidth;
+  result.sampleRate = data->pixelWidth / FFGEchoPlotLengthSeconds;
   result.staticModuleIndex = (int)FFModuleType::GEcho;
   return result;
 }
@@ -124,7 +122,7 @@ FFGEchoRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->skipDrawOnEqualsPrimary = true;
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
-  renderData.totalSamples = GEchoGraphSamples;
+  renderData.totalSamples = PlotParams(graphData, -1).sampleCount;
   renderData.globalExchangeSelector = [](void const* exchangeState, int /*slot*/, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gEcho[0]; };
   renderData.globalStereoOutputSelector = [](void const* procState, int /*slot*/, int /*graphIndex*/) {

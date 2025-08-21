@@ -131,6 +131,7 @@ int
 FFGEchoProcessor::Process(
   FBModuleProcState& state)
 {
+  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto& output = procState->dsp.global.gEcho.output;
   auto const& input = procState->dsp.global.gEcho.input;
@@ -204,6 +205,7 @@ FFGEchoProcessor::Process(
 
   auto& exchangeDSP = exchangeToGUI->global.gEcho[0];
   exchangeDSP.active = true;
+  exchangeDSP.lengthSamples = FBTimeToSamples(FFGEchoPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
   exchangeParams.acc.tapsMix[0] = tapsMixNorm[0].Global().CV().Last();
