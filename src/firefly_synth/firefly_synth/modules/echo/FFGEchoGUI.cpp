@@ -108,18 +108,19 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI, FBMultiContentComponent* tapsGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target));
   auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Gain, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+
+  auto tapsMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapsMix, 0 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapsMix));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapsMix, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto guiTapSelect = topo->gui.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } });
   auto tapSelectSlider = plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, guiTapSelect, Slider::SliderStyle::RotaryVerticalDrag);
-  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
-  grid->Add(0, 3, tapSelectSlider);
+  grid->Add(1, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
+  grid->Add(1, 3, tapSelectSlider);
   FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } };
   tapSelectSlider->onValueChange = [plugGUI, tapsGUI, indices]() { tapsGUI->SelectContentIndex(plugGUI->HostContext()->GetGUIParamDiscrete(indices) - 1); };
-
-  auto tapsMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapsMix, 0 } });
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapsMix));
-  grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapsMix, Slider::SliderStyle::RotaryVerticalDrag));
+  
   auto sync = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Sync, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));

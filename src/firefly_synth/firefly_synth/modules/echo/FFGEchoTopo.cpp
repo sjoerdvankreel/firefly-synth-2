@@ -321,7 +321,7 @@ FFMakeGEchoTopo()
   feedbackType.name = "Feedback Type";
   feedbackType.display = "Fdbk";
   feedbackType.slotCount = 1;
-  feedbackType.defaultText = "Off";
+  feedbackType.defaultText = "Main";
   feedbackType.id = "{E28CD2D5-59B4-4C77-830F-BC961239299C}";
   feedbackType.type = FBParamType::List;
   feedbackType.slotFormatDisplay = true;
@@ -370,7 +370,7 @@ FFMakeGEchoTopo()
   auto& feedbackAmount = result->params[(int)FFGEchoParam::FeedbackAmount];
   feedbackAmount.unit = "%";
   feedbackAmount.acc = true;
-  feedbackAmount.defaultText = "50";
+  feedbackAmount.defaultText = "67";
   feedbackAmount.name = "Feedback Amount";
   feedbackAmount.matrixName = "Fdbk Amt";
   feedbackAmount.display = "Amt";
@@ -385,7 +385,7 @@ FFMakeGEchoTopo()
 
   auto& feedbackDelayTime = result->params[(int)FFGEchoParam::FeedbackDelayTime];
   feedbackDelayTime.acc = true;
-  feedbackDelayTime.defaultText = "0.5";
+  feedbackDelayTime.defaultText = "0.375";
   feedbackDelayTime.display = "Dly";
   feedbackDelayTime.name = "Feedback Delay Time";
   feedbackDelayTime.matrixName = "Fdbk Delay";
@@ -405,7 +405,7 @@ FFMakeGEchoTopo()
 
   auto& feedbackDelayBars = result->params[(int)FFGEchoParam::FeedbackDelayBars];
   feedbackDelayBars.acc = false;
-  feedbackDelayBars.defaultText = "1/8";
+  feedbackDelayBars.defaultText = "3/16";
   feedbackDelayBars.display = "Dly";
   feedbackDelayBars.name = "Feedback Delay Bars";
   feedbackDelayBars.matrixName = "Fdbk Delay Bars";
