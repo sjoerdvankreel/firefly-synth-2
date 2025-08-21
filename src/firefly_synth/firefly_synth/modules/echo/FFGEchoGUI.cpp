@@ -94,7 +94,7 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI, FBMultiContentComponent* tapsGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 0, 0, 0, 0 });
   auto target = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Target, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, target));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target));

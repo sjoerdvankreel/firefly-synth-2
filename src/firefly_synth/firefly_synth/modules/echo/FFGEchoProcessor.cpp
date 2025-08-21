@@ -114,12 +114,11 @@ FFGEchoProcessor::BeginBlock(
     delaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
       FFGEchoParam::DelaySmoothTime, delaySmoothTimeNorm, sampleRate);
 
-  bool feedbackGraphOn = !graph || graphIndex == 1 || graphIndex == 3;
-  _feedbackOn = !feedbackGraphOn ? false:
-    graph && graphIndex == 1? true:
-    topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
-  _feedbackPerTap = graph? false:
-    topo.NormalizedToBoolFast(FFGEchoParam::FeedbackPerTap, feedbackPerTapNorm);
+  _feedbackOn = topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
+  _feedbackOn &= !graph || graphIndex == 1 || graphIndex == 3;
+  _feedbackPerTap = topo.NormalizedToBoolFast(FFGEchoParam::FeedbackPerTap, feedbackPerTapNorm);
+  _feedbackPerTap &= !graph || graphIndex == 3;
+
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
   _feedbackDelaySmoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
@@ -127,10 +126,10 @@ FFGEchoProcessor::BeginBlock(
   if (_graph)
     _feedbackDelayGlobalState.Reset();
 
-  bool tapsOn = !graph || graphIndex == 0 || graphIndex == 3;
+  bool tapsGraphOn = !graph || graphIndex == 0 || graphIndex == 3;
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
-    _tapOn[t] = tapsOn && topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
+    _tapOn[t] = tapsGraphOn && topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
       FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
     _tapDelaySmoothers[t].SetCoeffs((int)std::ceil(delaySmoothSamples));
