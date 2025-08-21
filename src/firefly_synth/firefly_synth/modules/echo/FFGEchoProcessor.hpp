@@ -36,11 +36,11 @@ class FFGEchoProcessor final
   int _graphSamplesProcessed = {};
   float _graphStVarFilterFreqMultiplier = {};
 
-  FBBasicLPFilter _feedbackDelayTimeSmoother = {};
+  FBBasicLPFilter _feedbackDelaySmoother = {};
   FFGEchoDelayState _feedbackDelayGlobalState = {};
-  std::array<FFGEchoDelayState, FFGEchoTapCount> _feedbackDelayPerTapStates = {};
   std::array<FFGEchoDelayState, FFGEchoTapCount> _tapDelayStates = {};
-  std::array<FBBasicLPFilter, FFGEchoTapCount> _tapDelayTimeSmoothers = {};
+  std::array<FBBasicLPFilter, FFGEchoTapCount> _tapDelaySmoothers = {};
+  std::array<FFGEchoDelayState, FFGEchoTapCount> _feedbackDelayPerTapStates = {};
 
   void ProcessTaps(
     FBModuleProcState& state,

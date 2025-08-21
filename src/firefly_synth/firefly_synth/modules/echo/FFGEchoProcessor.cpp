@@ -84,16 +84,13 @@ FFGEchoProcessor::BeginBlock(
 
   float syncNorm = params.block.sync[0].Value();
   float targetNorm = params.block.target[0].Value();
+  float delaySmoothTimeNorm = params.block.delaySmoothTime[0].Value();
+  float delaySmoothBarsNorm = params.block.delaySmoothBars[0].Value();
 
-  float feedbackTypeNorm = params.block.feedbackType[0].Value();
-  float feedbackDelayBarsNorm = params.block.feedbackDelayBars[0].Value();
-  float feedbackDelaySmoothTimeNorm = params.block.feedbackDelaySmoothTime[0].Value();
-  float feedbackDelaySmoothBarsNorm = params.block.feedbackDelaySmoothBars[0].Value();
-  
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
-  auto const& tapDelaySmoothTimeNorm = params.block.tapDelaySmoothTime;
-  auto const& tapDelaySmoothBarsNorm = params.block.tapDelaySmoothBars;
+  float feedbackTypeNorm = params.block.feedbackType[0].Value();
+  float feedbackDelayBarsNorm = params.block.feedbackDelayBars[0].Value();
 
   _graph = graph;
   _graphSamplesProcessed = 0;
@@ -103,39 +100,33 @@ FFGEchoProcessor::BeginBlock(
   _sync = topo.NormalizedToBoolFast(FFGEchoParam::Sync, syncNorm);
   _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
 
+  float delaySmoothSamples;
+  if (_sync)
+    delaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
+      FFGEchoParam::DelaySmoothBars, delaySmoothBarsNorm, sampleRate, bpm);
+  else
+    delaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+      FFGEchoParam::DelaySmoothTime, delaySmoothTimeNorm, sampleRate);
+
   bool feedbackOn = !graph || graphIndex == 1 || graphIndex == 3;
-  float feedbackDelaySmoothSamples;
   _feedbackType = !feedbackOn? 
     FFGEchoFeedbackType::Off:
     graph && graphIndex == 1? FFGEchoFeedbackType::Main:
     topo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
-  if(_sync)
-    feedbackDelaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
-      FFGEchoParam::FeedbackDelaySmoothBars, feedbackDelaySmoothBarsNorm, sampleRate, bpm);
-  else
-    feedbackDelaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-      FFGEchoParam::FeedbackDelaySmoothTime, feedbackDelaySmoothTimeNorm, sampleRate);
-  _feedbackDelayTimeSmoother.SetCoeffs((int)std::ceil(feedbackDelaySmoothSamples));
+  _feedbackDelaySmoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
 
   if (_graph)
     _feedbackDelayGlobalState.Reset();
 
-  float tapDelaySmoothSamples;
   bool tapsOn = !graph || graphIndex == 0 || graphIndex == 3;
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
     _tapOn[t] = tapsOn && topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
       FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
-    if (_sync)
-      tapDelaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
-        FFGEchoParam::TapDelaySmoothBars, tapDelaySmoothBarsNorm[t].Value(), sampleRate, bpm);
-    else
-      tapDelaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-        FFGEchoParam::TapDelaySmoothTime, tapDelaySmoothTimeNorm[t].Value(), sampleRate);
-    _tapDelayTimeSmoothers[t].SetCoeffs((int)std::ceil(tapDelaySmoothSamples));
+    _tapDelaySmoothers[t].SetCoeffs((int)std::ceil(delaySmoothSamples));
 
     if (_graph)
       _tapDelayStates[t].Reset();
@@ -221,7 +212,7 @@ FFGEchoProcessor::ProcessFeedback(
       else
         lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
           FFGEchoParam::FeedbackDelayTime, delayTimeNorm.Get(s), sampleRate);
-      float lengthTimeSamplesSmooth = _feedbackDelayTimeSmoother.Next(lengthTimeSamples);
+      float lengthTimeSamplesSmooth = _feedbackDelaySmoother.Next(lengthTimeSamples);
 
       float mixPlain = topo.NormalizedToIdentityFast(
         FFGEchoParam::FeedbackMix, mixNorm.Get(s));
@@ -321,7 +312,7 @@ FFGEchoProcessor::ProcessTaps(
           else
             lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
               FFGEchoParam::TapDelayTime, tapDelayTimeNorm[t].Global().CV().Get(s), sampleRate);
-          float lengthTimeSamplesSmooth = _tapDelayTimeSmoothers[t].Next(lengthTimeSamples);
+          float lengthTimeSamplesSmooth = _tapDelaySmoothers[t].Next(lengthTimeSamples);
 
           float tapBalPlain = topo.NormalizedToLinearFast(
             FFGEchoParam::TapBalance, tapBalNorm[t].Global().CV().Get(s));

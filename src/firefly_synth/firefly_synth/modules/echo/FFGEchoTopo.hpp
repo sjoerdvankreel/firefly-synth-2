@@ -21,12 +21,13 @@ enum class FFGEchoTarget {
 
 enum class FFGEchoParam {
   Target, Gain, TapsMix, Sync, 
+  DelaySmoothTime, DelaySmoothBars,
   ReverbType, ReverbMix, ReverbXOver, 
   ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
   FeedbackType, FeedbackMix, FeedbackAmount, FeedbackXOver,
-  FeedbackDelayTime, FeedbackDelayBars, FeedbackDelaySmoothTime, FeedbackDelaySmoothBars,
+  FeedbackDelayTime, FeedbackDelayBars,
   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
   TapOn, TapBalance, TapLevel, TapXOver, 
-  TapDelayTime, TapDelayBars, TapDelaySmoothTime, TapDelaySmoothBars,
+  TapDelayTime, TapDelayBars,
   TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, Count };
