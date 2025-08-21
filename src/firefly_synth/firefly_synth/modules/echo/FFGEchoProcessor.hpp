@@ -16,6 +16,7 @@ inline float constexpr FFGEchoPlotLengthSeconds = 5.0f;
 
 struct FFGEchoDelayState
 {
+  void Reset();
   FFStateVariableFilter<2> lpFilter = {};
   FFStateVariableFilter<2> hpFilter = {};
   std::array<FFDelayLine, 2> delayLine = {};

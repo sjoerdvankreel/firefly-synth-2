@@ -107,7 +107,10 @@ GEchoGraphRenderData::DoProcess(
   auto& input = procState->dsp.global.gEcho.input;
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-        input[c].Set(s, (samplesProcessed[graphIndex] + s) == 0 ? 1.0f : 0.0f);
+    {
+      float sawIn = FBToBipolar(s / (float)FBFixedBlockSamples);
+      input[c].Set(s, (samplesProcessed[graphIndex] + s) <= FBFixedBlockSamples ? sawIn : 0.0f);
+    }
   
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
   return GetProcessor(*moduleProcState).Process(*moduleProcState);

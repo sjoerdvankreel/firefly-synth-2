@@ -16,7 +16,7 @@ alpha 12 - gecho
 [ ] gecho
 [ ] reverb
 [ ] per-tap reverb
-[ ] do we really need the order ?
+[ ] do we really need the order ? and if so, plot it too
 
 alph 13 - vecho
 

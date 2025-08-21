@@ -166,10 +166,8 @@ FFPlugProcessor::ProcessPostVoice(
     if (input.voiceManager->IsActive(v))
       voiceMixdown.Add(_procState->dsp.voice[v].output);
 
-  /* TODO
   if (gEchoTarget == FFGEchoTarget::Voice)
     ProcessGEcho(state, voiceMixdown);
-    */
 
   for (int i = 0; i < FFEffectCount; i++)
   {
