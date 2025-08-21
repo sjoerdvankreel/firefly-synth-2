@@ -59,7 +59,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   bool feedbackOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
   bool feedbackPerTap = moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackPerTap, feedbackPerTapNorm);
-  if(graph || (feedbackOn && !feedbackPerTap))
+  if(graph || feedbackOn)
     for (int c = 0; c < 2; c++)
       if(_feedbackDelayGlobalState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayGlobalState.delayLine[c].Reset(_feedbackDelayGlobalState.delayLine[c].MaxBufferSize());
