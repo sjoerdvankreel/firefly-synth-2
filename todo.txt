@@ -1,4 +1,4 @@
-alpha 12 - echo
+alpha 12 - gecho
 
 [x] check matrix names
 [x] store selected tab
@@ -14,12 +14,15 @@ alpha 12 - echo
 [x] bolletjes not paint good
 
 [ ] gecho
-[ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation
 [ ] reverb
 [ ] per-tap reverb
 [ ] do we really need the order ?
 
-TODOLIST for alpha-13
+alph 13 - vecho
+
+[ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation -> cannot place anywhere in the pipeline but thats ok
+
+TODOLIST for alpha-14
 
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
