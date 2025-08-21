@@ -20,7 +20,7 @@ enum class FFGEchoTarget {
   FX3In, FX3Out, FX4In, FX4Out };
 
 enum class FFGEchoParam {
-  Target, TapsMix, Sync, 
+  Target, Gain, TapsMix, Sync, 
   ReverbType, ReverbMix, ReverbXOver, 
   ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,

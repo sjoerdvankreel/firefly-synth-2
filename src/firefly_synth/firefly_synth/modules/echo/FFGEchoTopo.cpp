@@ -56,6 +56,23 @@ FFMakeGEchoTopo()
   target.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTarget);
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTarget);
 
+  auto& gain = result->params[(int)FFGEchoParam::Gain];
+  gain.acc = true;
+  gain.defaultText = "200";
+  gain.name = "Gain";
+  gain.slotCount = 1;
+  gain.unit = "%";
+  gain.id = "{557D9FBC-0EA3-4DDD-914F-7C9E647E25E0}";
+  gain.type = FBParamType::Linear;
+  gain.Linear().min = 0.0f;
+  gain.Linear().max = 4.0f;
+  gain.Linear().displayMultiplier = 100.0f;
+  auto selectGain = [](auto& module) { return &module.acc.gain; };
+  gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
+  gain.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
+  gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
+  gain.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Gain }, [](auto const& vs) { return vs[0] != 0; });
+
   auto& sync = result->params[(int)FFGEchoParam::Sync];
   sync.acc = false;
   sync.name = "Tempo Sync";

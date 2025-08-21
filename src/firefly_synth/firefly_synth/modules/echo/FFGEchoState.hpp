@@ -59,6 +59,7 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
 {
   friend class FFGEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
+  std::array<TAccurate, 1> gain = {};
   std::array<TAccurate, 1> tapsMix = {};
   std::array<TAccurate, 1> reverbMix = {};
   std::array<TAccurate, 1> reverbAPF = {};

@@ -151,11 +151,18 @@ FFGEchoProcessor::Process(
   auto& output = procState->dsp.global.gEcho.output;
   auto const& input = procState->dsp.global.gEcho.input;
   auto const& params = procState->param.global.gEcho[0];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
   auto const& tapsMixNorm = params.acc.tapsMix;
+  auto const& gainNorm = params.acc.gain[0].Global().CV();
 
   input.CopyTo(output);
   if (_target == FFGEchoTarget::Off)
     return 0;
+
+  // make-up gain to offset all the dry/wet mixing
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+    for (int c = 0; c < 2; c++)
+      output[c].Mul(s, topo.NormalizedToLinearFast(FFGEchoParam::Gain, gainNorm.Load(s)));
 
   ProcessTaps(state, output, true);
   if (_feedbackType == FFGEchoFeedbackType::Main)
