@@ -152,8 +152,8 @@ FFGEchoProcessor::Process(
   auto const& input = procState->dsp.global.gEcho.input;
   auto const& params = procState->param.global.gEcho[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
-  auto const& tapsMixNorm = params.acc.tapsMix;
   auto const& gainNorm = params.acc.gain[0].Global().CV();
+  auto const& tapsMixNorm = params.acc.tapsMix[0].Global().CV();
 
   input.CopyTo(output);
   if (_target == FFGEchoTarget::Off)
@@ -180,7 +180,8 @@ FFGEchoProcessor::Process(
   exchangeDSP.lengthSamples = FBTimeToSamples(FFGEchoPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
-  exchangeParams.acc.tapsMix[0] = tapsMixNorm[0].Global().CV().Last();
+  exchangeParams.acc.gain[0] = gainNorm.Last();
+  exchangeParams.acc.tapsMix[0] = tapsMixNorm.Last();
 
   // Only to push the exchange state.
   ProcessTaps(state, output, false);
