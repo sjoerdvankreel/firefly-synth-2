@@ -242,8 +242,8 @@ FFMakeGEchoTopo()
   tapXOver.unit = "%";
   tapXOver.defaultText = "0";
   tapXOver.name = "Tap L/R Crossover";
-  tapXOver.matrixName = "Tap XOver";
-  tapXOver.display = "XOver";
+  tapXOver.matrixName = "Tap LR";
+  tapXOver.display = "LR";
   tapXOver.slotCount = FFGEchoTapCount;
   tapXOver.id = "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
   tapXOver.type = FBParamType::Identity;
@@ -355,8 +355,8 @@ FFMakeGEchoTopo()
   feedbackXOver.acc = true;
   feedbackXOver.defaultText = "0";
   feedbackXOver.name = "Feedback L/R Crossover";
-  feedbackXOver.matrixName = "Fdbk XOver";
-  feedbackXOver.display = "XOver";
+  feedbackXOver.matrixName = "Fdbk LR";
+  feedbackXOver.display = "LR";
   feedbackXOver.slotCount = 1;
   feedbackXOver.id = "{C4D67CA6-41FE-4B54-8C2B-9C87F0DA6F0C}";
   feedbackXOver.type = FBParamType::Identity;
@@ -526,8 +526,8 @@ FFMakeGEchoTopo()
   reverbXOver.acc = true;
   reverbXOver.defaultText = "0";
   reverbXOver.name = "Reverb L/R Crossover";
-  reverbXOver.matrixName = "Rvrb XOver";
-  reverbXOver.display = "XOver";
+  reverbXOver.matrixName = "Rvrb LR";
+  reverbXOver.display = "LR";
   reverbXOver.slotCount = 1;
   reverbXOver.id = "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
   reverbXOver.type = FBParamType::Identity;
