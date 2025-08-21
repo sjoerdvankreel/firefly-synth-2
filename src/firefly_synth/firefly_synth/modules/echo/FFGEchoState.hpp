@@ -24,10 +24,13 @@ public:
 class FFGEchoDSPState final
 {
   friend class FFPlugProcessor;
+  friend struct GEchoGraphRenderData;
   std::unique_ptr<FFGEchoProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGEchoDSPState);
   FFGEchoDSPState() : processor(std::make_unique<FFGEchoProcessor>()) {}
+  FBSArray2<float, FBFixedBlockSamples, 2> input = {};
+  FBSArray2<float, FBFixedBlockSamples, 2> output = {};
 };
 
 template <class TBlock>

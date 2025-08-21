@@ -163,7 +163,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
 template <bool Global>
 int
-FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
+FFEffectProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -243,7 +243,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
         stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak,
           FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice), s));
 
-        if (!graph)
+        if (!_graph)
         {
           stVarFreqNormModulated[i].Store(s,
             FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
@@ -269,7 +269,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
           combResMinPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResMin,
             FFSelectDualProcAccParamNormalized<Global>(combResMinNorm[i], voice), s));
 
-          if (!graph)
+          if (!_graph)
           {
             combFreqMinNormModulated[i].Store(s,
               FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
@@ -291,7 +291,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
           combResPlusPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResPlus,
             FFSelectDualProcAccParamNormalized<Global>(combResPlusNorm[i], voice), s));
 
-          if (!graph)
+          if (!_graph)
           {
             combFreqPlusNormModulated[i].Store(s,
               FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
@@ -318,7 +318,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
         distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias,
           FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice), s));
         
-        if (!graph)
+        if (!_graph)
         {
           distDriveNormModulated[i].Store(s,
             FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
@@ -709,8 +709,8 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-template int FFEffectProcessor::Process<true>(bool, FBModuleProcState&);
-template int FFEffectProcessor::Process<false>(bool, FBModuleProcState&);
+template int FFEffectProcessor::Process<true>(FBModuleProcState&);
+template int FFEffectProcessor::Process<false>(FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool, int, int, FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool, int, int, FBModuleProcState&);
 template void FFEffectProcessor::AllocOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);

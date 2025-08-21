@@ -1,6 +1,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFTopoDetail.hpp>
 #include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
+#include <firefly_synth/modules/echo/FFGEchoGraph.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
 static std::vector<FBBarsItem>
@@ -22,6 +23,8 @@ FFMakeGEchoTopo()
   result->voice = false;
   result->name = "GEcho";
   result->slotCount = 1;
+  result->graphCount = 4;
+  result->graphRenderer = FFGEchoRenderGraph;
   result->id = "{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}";
   result->params.resize((int)FFGEchoParam::Count);
   result->guiParams.resize((int)FFGEchoGUIParam::Count);

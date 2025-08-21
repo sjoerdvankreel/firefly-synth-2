@@ -29,6 +29,11 @@ class FFGEchoProcessor final
   std::array<bool, FFGEchoTapCount> _tapOn = {};
   std::array<float, FFGEchoTapCount> _tapDelayBarsSamples = {};
 
+  bool _graph = {};
+  int _graphSampleCount = {};
+  int _graphSamplesProcessed = {};
+  float _graphStVarFilterFreqMultiplier = {};
+
   FBBasicLPFilter _feedbackDelayTimeSmoother = {};
   FFGEchoDelayState _feedbackDelayGlobalState = {};
   std::array<FFGEchoDelayState, FFGEchoTapCount> _feedbackDelayPerTapStates = {};
@@ -50,8 +55,8 @@ class FFGEchoProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoProcessor);
 
-  void BeginBlock(FBModuleProcState& state);
-  void Process(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
+  int Process(FBModuleProcState& state);
+  void BeginBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, float sampleRate);
 };

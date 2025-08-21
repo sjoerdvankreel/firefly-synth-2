@@ -58,7 +58,7 @@ FFPlugProcessor::ProcessGEcho(
 {
   auto& globalDSP = _procState->dsp.global;
   state.moduleSlot = 0;
-  globalDSP.gEcho.processor->BeginBlock(state);
+  globalDSP.gEcho.processor->BeginBlock(false, -1, -1, state);
   globalDSP.gEcho.processor->Process(state, inout);
 }
 
@@ -191,7 +191,7 @@ FFPlugProcessor::ProcessPostVoice(
     
     state.moduleSlot = i; // gecho changes it!
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
-    globalDSP.gEffect[i].processor->Process<true>(false, state);
+    globalDSP.gEffect[i].processor->Process<true>(state);
 
     if (i == 0 && gEchoTarget == FFGEchoTarget::FX1Out)
       ProcessGEcho(state, globalDSP.gEffect[i].output);

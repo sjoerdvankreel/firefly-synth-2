@@ -13,6 +13,7 @@
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
 #include <cmath>
+#include <algorithm>
 
 void
 FFGEchoProcessor::ReleaseOnDemandBuffers(
@@ -62,7 +63,9 @@ FFGEchoProcessor::AllocOnDemandBuffers(
 }
 
 void 
-FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
+FFGEchoProcessor::BeginBlock(
+  bool graph, int graphIndex, 
+  int graphSampleCount, FBModuleProcState& state)
 {
   float bpm = state.input->bpm;
   float sampleRate = state.input->sampleRate;
@@ -84,12 +87,19 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   auto const& tapDelaySmoothTimeNorm = params.block.tapDelaySmoothTime;
   auto const& tapDelaySmoothBarsNorm = params.block.tapDelaySmoothBars;
 
+  _graph = graph;
+  _graphSamplesProcessed = 0;
+  _graphSampleCount = graphSampleCount;
+  _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
+
   _sync = topo.NormalizedToBoolFast(FFGEchoParam::Sync, syncNorm);
   _order = topo.NormalizedToListFast<FFGEchoOrder>(FFGEchoParam::Order, orderNorm);
   _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
 
+  bool feedbackOn = !graph || graphIndex == 1 || graphIndex == 3;
   float feedbackDelaySmoothSamples;
-  _feedbackType = topo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
+  _feedbackType = !feedbackOn? FFGEchoFeedbackType::Off:
+    topo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
   if(_sync)
@@ -101,9 +111,10 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   _feedbackDelayTimeSmoother.SetCoeffs((int)std::ceil(feedbackDelaySmoothSamples));
 
   float tapDelaySmoothSamples;
+  bool tapsOn = !graph || graphIndex == 0 || graphIndex == 3;
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
-    _tapOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
+    _tapOn[t] = tapsOn && topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
       FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
     if (_sync)
@@ -116,7 +127,7 @@ FFGEchoProcessor::BeginBlock(FBModuleProcState& state)
   }
 }
 
-void 
+int 
 FFGEchoProcessor::Process(
   FBModuleProcState& state, 
   FBSArray2<float, FBFixedBlockSamples, 2>& inout)
@@ -126,7 +137,7 @@ FFGEchoProcessor::Process(
   auto const& tapsMixNorm = params.acc.tapsMix;
 
   if (_target == FFGEchoTarget::Off)
-    return;
+    return 0;
 
   bool reverbAfterFeedback = false;
   enum SlotType { STTaps, STFeedback, STReverb, STCount };
@@ -184,7 +195,10 @@ FFGEchoProcessor::Process(
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
-    return;
+  {
+    _graphSamplesProcessed += FBFixedBlockSamples;
+    return std::clamp(_graphSampleCount - _graphSamplesProcessed, 0, FBFixedBlockSamples);
+  }
 
   auto& exchangeDSP = exchangeToGUI->global.gEcho[0];
   exchangeDSP.active = true;
@@ -195,6 +209,8 @@ FFGEchoProcessor::Process(
   // Only to push the exchange state.
   ProcessTaps(state, inout, reverbAfterFeedback, false);
   ProcessFeedback(state, _feedbackDelayGlobalState, inout, false);
+
+  return FBFixedBlockSamples;
 }
 
 void 
@@ -250,6 +266,12 @@ FFGEchoProcessor::ProcessFeedback(
       {
         delayState.delayLine[c].Delay(lengthTimeSamplesSmooth);
         outLR[c] = delayState.delayLine[c].PopLagrangeInterpolate();
+      }
+
+      if (_graph)
+      {
+        lpFreqPlain *= _graphStVarFilterFreqMultiplier;
+        hpFreqPlain *= _graphStVarFilterFreqMultiplier;
       }
 
       delayState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
@@ -347,6 +369,12 @@ FFGEchoProcessor::ProcessTaps(
           {
             _tapDelayStates[t].delayLine[c].Delay(lengthTimeSamplesSmooth);
             thisTapOutLR[c] = _tapDelayStates[t].delayLine[c].PopLagrangeInterpolate();
+          }
+
+          if (_graph)
+          {
+            tapLPFreqPlain *= _graphStVarFilterFreqMultiplier;
+            tapHPFreqPlain *= _graphStVarFilterFreqMultiplier;
           }
 
           _tapDelayStates[t].lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, tapLPFreqPlain, tapLPResPlain, 0.0);

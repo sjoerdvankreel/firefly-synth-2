@@ -100,7 +100,7 @@ public:
     FBRuntimeTopo const* topo, FBProcStateContainer* state);
 
   template <bool Global>
-  int Process(bool graph, FBModuleProcState& state);
+  int Process(FBModuleProcState& state);
   template <bool Global>
   void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
 };
