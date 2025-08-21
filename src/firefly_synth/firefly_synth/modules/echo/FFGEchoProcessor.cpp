@@ -40,8 +40,11 @@ FFGEchoProcessor::ReleaseOnDemandBuffers(
 
 void
 FFGEchoProcessor::AllocOnDemandBuffers(
-  FBRuntimeTopo const* topo, FBProcStateContainer* state, float sampleRate)
+  FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate)
 {
+  // for graphing we are toying with the parameters to fit the plots
+  // just make it easy and allocate it all, we'll release soon and sample rate is low anyway
+
   auto* procState = state->RawAs<FFProcState>();
   auto const& params = procState->param.global.gEcho[0];
   auto const& tapOnNorm = params.block.tapOn;
@@ -56,7 +59,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
   bool feedbackOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
   bool feedbackPerTap = moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackPerTap, feedbackPerTapNorm);
-  if(feedbackOn && !feedbackPerTap)
+  if(graph || (feedbackOn && !feedbackPerTap))
     for (int c = 0; c < 2; c++)
       if(_feedbackDelayGlobalState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayGlobalState.delayLine[c].Reset(_feedbackDelayGlobalState.delayLine[c].MaxBufferSize());
@@ -67,7 +70,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
       {
         if (_tapDelayStates[t].delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
           _tapDelayStates[t].delayLine[c].Reset(_tapDelayStates[t].delayLine[c].MaxBufferSize());
-        if (feedbackOn && feedbackPerTap)
+        if (graph || (feedbackOn && feedbackPerTap))
           if (_feedbackDelayPerTapStates[t].delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
             _feedbackDelayPerTapStates[t].delayLine[c].Reset(_feedbackDelayPerTapStates[t].delayLine[c].MaxBufferSize());
       }

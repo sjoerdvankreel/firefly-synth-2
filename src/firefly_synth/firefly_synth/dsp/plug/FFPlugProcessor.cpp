@@ -88,9 +88,9 @@ FFPlugProcessor::LeaseVoices(
 
 void 
 FFPlugProcessor::AllocOnDemandBuffers(
-  FBRuntimeTopo const* topo, FBProcStateContainer* procState, float sampleRate)
+  FBRuntimeTopo const* topo, FBProcStateContainer* procState)
 {
-  _procState->dsp.global.gEcho.processor->AllocOnDemandBuffers(topo, procState, sampleRate);
+  _procState->dsp.global.gEcho.processor->AllocOnDemandBuffers(topo, procState, false, _sampleRate);
   for (int i = 0; i < FFEffectCount; i++)
     _procState->dsp.global.gEffect[i].processor->AllocOnDemandBuffers<true>(topo, procState, i, false, _sampleRate);
   for (int v = 0; v < FBMaxVoices; v++)

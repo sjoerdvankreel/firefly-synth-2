@@ -60,5 +60,5 @@ public:
   int Process(FBModuleProcState& state);
   void BeginBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
-  void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, float sampleRate);
+  void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate);
 };

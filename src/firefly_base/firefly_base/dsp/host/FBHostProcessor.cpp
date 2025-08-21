@@ -39,7 +39,7 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
-  _plug->AllocOnDemandBuffers(_topo, _procState, _sampleRate);
+  _plug->AllocOnDemandBuffers(_topo, _procState);
 }
 
 void 
@@ -57,7 +57,7 @@ FBHostProcessor::ProcessHost(
     _procState->Params()[be.param].Value(be.normalized);
 
   // Must be AFTER setting block automation value to parameter state!
-  _plug->AllocOnDemandBuffers(_topo, _procState, _sampleRate);
+  _plug->AllocOnDemandBuffers(_topo, _procState);
 
   auto const& hostSmoothTimeSpecial = _procState->Special().hostSmoothTime;
   auto const& hostSmoothTimeTopo = hostSmoothTimeSpecial.ParamTopo(*_topo->static_);

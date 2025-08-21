@@ -75,7 +75,7 @@ GEchoGraphRenderData::DoBeginVoiceOrBlock(
   GetProcessor(*moduleProcState).AllocOnDemandBuffers(
     state->PlugGUI()->HostContext()->Topo(), 
     state->ProcContainer(),
-    moduleProcState->input->sampleRate);
+    true, moduleProcState->input->sampleRate);
   GetProcessor(*moduleProcState).BeginBlock(
     true, graphIndex, totalSamples, *moduleProcState);
 }

@@ -17,5 +17,5 @@ public:
   virtual void ProcessPostVoice(FBPlugInputBlock const& input, FBPlugOutputBlock& output) = 0;
 
   virtual void LeaseVoices(FBPlugInputBlock const& input) = 0;
-  virtual void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* procState, float sampleRate) = 0;
+  virtual void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* procState) = 0;
 };
