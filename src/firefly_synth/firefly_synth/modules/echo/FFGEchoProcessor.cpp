@@ -129,13 +129,15 @@ FFGEchoProcessor::BeginBlock(
 
 int 
 FFGEchoProcessor::Process(
-  FBModuleProcState& state, 
-  FBSArray2<float, FBFixedBlockSamples, 2>& inout)
+  FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
+  auto& output = procState->dsp.global.gEcho.output;
+  auto const& input = procState->dsp.global.gEcho.input;
   auto const& params = procState->param.global.gEcho[0];
   auto const& tapsMixNorm = params.acc.tapsMix;
 
+  input.CopyTo(output);
   if (_target == FFGEchoTarget::Off)
     return 0;
 
@@ -179,11 +181,11 @@ FFGEchoProcessor::Process(
     switch (slots[i])
     {
     case STTaps: 
-      ProcessTaps(state, inout, reverbAfterFeedback, true);
+      ProcessTaps(state, output, reverbAfterFeedback, true);
       break;
     case STFeedback:
       if (_feedbackType == FFGEchoFeedbackType::Main)
-        ProcessFeedback(state, _feedbackDelayGlobalState, inout, true);
+        ProcessFeedback(state, _feedbackDelayGlobalState, output, true);
       break;
     case STReverb:
       break;
@@ -207,8 +209,8 @@ FFGEchoProcessor::Process(
   exchangeParams.acc.tapsMix[0] = tapsMixNorm[0].Global().CV().Last();
 
   // Only to push the exchange state.
-  ProcessTaps(state, inout, reverbAfterFeedback, false);
-  ProcessFeedback(state, _feedbackDelayGlobalState, inout, false);
+  ProcessTaps(state, output, reverbAfterFeedback, false);
+  ProcessFeedback(state, _feedbackDelayGlobalState, output, false);
 
   return FBFixedBlockSamples;
 }

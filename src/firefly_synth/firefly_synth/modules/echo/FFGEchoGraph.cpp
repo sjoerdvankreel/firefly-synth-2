@@ -131,7 +131,6 @@ FFGEchoRenderGraph(FBModuleGraphComponentData* graphData)
     return &static_cast<FFProcState const*>(procState)->dsp.global.gEcho.output; };
 
   auto* renderState = graphData->renderState;
-  auto* moduleProcState = renderState->ModuleProcState();
   FBTopoIndices modIndices = { (int)FFModuleType::GEcho, 0 };
   FBParamTopoIndices paramIndices = { modIndices, { (int)FFGEchoParam::Target, 0 } };
   auto target = renderState->AudioParamList<FFGEchoTarget>(paramIndices, false, -1);
