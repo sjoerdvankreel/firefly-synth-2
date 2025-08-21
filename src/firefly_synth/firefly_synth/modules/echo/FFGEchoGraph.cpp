@@ -108,8 +108,10 @@ GEchoGraphRenderData::DoProcess(
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      float sawIn = FBToBipolar(s / (float)FBFixedBlockSamples);
-      input[c].Set(s, (samplesProcessed[graphIndex] + s) <= FBFixedBlockSamples ? sawIn : 0.0f);
+      int delaySamples = FBFixedBlockSamples * c;
+      int inputSample = samplesProcessed[graphIndex] + s;
+      float sawIn = FBToBipolar((inputSample - delaySamples) / (float)FBFixedBlockSamples);
+      input[c].Set(s, delaySamples <= inputSample && inputSample <= FBFixedBlockSamples + delaySamples ? sawIn : 0.0f);
     }
   
   samplesProcessed[graphIndex] += FBFixedBlockSamples;
