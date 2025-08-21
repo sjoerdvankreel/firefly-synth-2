@@ -13,9 +13,8 @@ IsFeedbackOn(
   FBGraphRenderState* state,
   bool exchange, int exchangeVoice)
 {
-  FBParamTopoIndices  indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackType, 0 } };
-  auto feedbackType = state->AudioParamList<FFGEchoFeedbackType>(indices, exchange, exchangeVoice);
-  return feedbackType != FFGEchoFeedbackType::Off;
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackOn, 0 } };
+  return state->AudioParamBool(indices, exchange, exchangeVoice);
 }
 
 static bool 

@@ -46,15 +46,17 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   auto const& params = procState->param.global.gEcho[0];
   auto const& tapOnNorm = params.block.tapOn;
   auto const& targetNorm = params.block.target[0].Value();
-  auto const& feedbackTypeNorm = params.block.feedbackType[0].Value();
+  auto const& feedbackOnNorm = params.block.feedbackOn[0].Value();
+  auto const& feedbackPerTapNorm = params.block.feedbackPerTap[0].Value();
   auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::GEcho];
 
   if (moduleTopo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm) == FFGEchoTarget::Off)
     return;
 
   int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
-  auto feedbackType = moduleTopo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
-  if(feedbackType == FFGEchoFeedbackType::Main)
+  bool feedbackOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
+  bool feedbackPerTap = moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackPerTap, feedbackPerTapNorm);
+  if(feedbackOn && !feedbackPerTap)
     for (int c = 0; c < 2; c++)
       if(_feedbackDelayGlobalState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayGlobalState.delayLine[c].Reset(_feedbackDelayGlobalState.delayLine[c].MaxBufferSize());
@@ -65,7 +67,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
       {
         if (_tapDelayStates[t].delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
           _tapDelayStates[t].delayLine[c].Reset(_tapDelayStates[t].delayLine[c].MaxBufferSize());
-        if (feedbackType == FFGEchoFeedbackType::Taps)
+        if (feedbackOn && feedbackPerTap)
           if (_feedbackDelayPerTapStates[t].delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
             _feedbackDelayPerTapStates[t].delayLine[c].Reset(_feedbackDelayPerTapStates[t].delayLine[c].MaxBufferSize());
       }
@@ -89,7 +91,8 @@ FFGEchoProcessor::BeginBlock(
 
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
-  float feedbackTypeNorm = params.block.feedbackType[0].Value();
+  float feedbackOnNorm = params.block.feedbackOn[0].Value();
+  float feedbackPerTapNorm = params.block.feedbackPerTap[0].Value();
   float feedbackDelayBarsNorm = params.block.feedbackDelayBars[0].Value();
 
   _graph = graph;
@@ -108,11 +111,12 @@ FFGEchoProcessor::BeginBlock(
     delaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
       FFGEchoParam::DelaySmoothTime, delaySmoothTimeNorm, sampleRate);
 
-  bool feedbackOn = !graph || graphIndex == 1 || graphIndex == 3;
-  _feedbackType = !feedbackOn? 
-    FFGEchoFeedbackType::Off:
-    graph && graphIndex == 1? FFGEchoFeedbackType::Main:
-    topo.NormalizedToListFast<FFGEchoFeedbackType>(FFGEchoParam::FeedbackType, feedbackTypeNorm);
+  bool feedbackGraphOn = !graph || graphIndex == 1 || graphIndex == 3;
+  _feedbackOn = !feedbackGraphOn ? false:
+    graph && graphIndex == 1? true:
+    topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
+  _feedbackPerTap = graph? false:
+    topo.NormalizedToBoolFast(FFGEchoParam::FeedbackPerTap, feedbackPerTapNorm);
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
   _feedbackDelaySmoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
@@ -156,7 +160,7 @@ FFGEchoProcessor::Process(
       output[c].Mul(s, topo.NormalizedToLinearFast(FFGEchoParam::Gain, gainNorm.Load(s)));
 
   ProcessTaps(state, output, true);
-  if (_feedbackType == FFGEchoFeedbackType::Main)
+  if (_feedbackOn && !_feedbackPerTap)
     ProcessFeedback(state, _feedbackDelayGlobalState, output, true);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
@@ -358,7 +362,7 @@ FFGEchoProcessor::ProcessTaps(
       }
     }
 
-    if (_feedbackType == FFGEchoFeedbackType::Taps)
+    if (_feedbackOn && _feedbackPerTap)
       for (int t = 0; t < FFGEchoTapCount; t++)
         if (_tapOn[t])
           ProcessFeedback(state, _feedbackDelayPerTapStates[t], tapsOut[t], true);
