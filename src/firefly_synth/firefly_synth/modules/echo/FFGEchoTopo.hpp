@@ -10,10 +10,6 @@ std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
 
 enum class FFGEchoGUIParam { 
   TapSelect, Count };
-enum class FFGEchoReverbType {
-  Off, Main, Taps };
-enum class FFGEchoFeedbackType {
-  Off, Main, Taps };
 enum class FFGEchoTarget { 
   Off, Voice, Out, 
   FX1In, FX1Out, FX2In, FX2Out, 
@@ -21,11 +17,12 @@ enum class FFGEchoTarget {
 
 enum class FFGEchoParam {
   Target, Gain, TapsMix, Sync, 
+  FeedbackPerTap, ReverbPerTap,
   DelaySmoothTime, DelaySmoothBars,
-  ReverbType, ReverbMix, ReverbXOver, 
+  ReverbOn, ReverbMix, ReverbXOver, 
   ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
-  FeedbackType, FeedbackMix, FeedbackAmount, FeedbackXOver,
+  FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
   FeedbackDelayTime, FeedbackDelayBars,
   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
   TapOn, TapBalance, TapLevel, TapXOver, 

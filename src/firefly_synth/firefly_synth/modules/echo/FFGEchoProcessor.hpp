@@ -25,8 +25,9 @@ struct FFGEchoDelayState
 class FFGEchoProcessor final
 {
   bool _sync = {};
+  bool _feedbackOn = {};
+  bool _feedbackPerTap = {};
   FFGEchoTarget _target = {};
-  FFGEchoFeedbackType _feedbackType = {};
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFGEchoTapCount> _tapOn = {};
   std::array<float, FFGEchoTapCount> _tapDelayBarsSamples = {};
