@@ -71,7 +71,7 @@ FFMakeGEchoTopo()
   gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
   gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
-  gain.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Gain }, [](auto const& vs) { return vs[0] != 0; });
+  gain.dependencies.enabled.audio.WhenSimple({ (int)FFGEchoParam::Target }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& sync = result->params[(int)FFGEchoParam::Sync];
   sync.acc = false;
@@ -104,7 +104,7 @@ FFMakeGEchoTopo()
   auto& delaySmoothTime = result->params[(int)FFGEchoParam::DelaySmoothTime];
   delaySmoothTime.acc = false;
   delaySmoothTime.defaultText = "500";
-  delaySmoothTime.display = "Dly Smth";
+  delaySmoothTime.display = "Smth";
   delaySmoothTime.name = "Delay Smooth Time";
   delaySmoothTime.slotCount = 1;
   delaySmoothTime.unit = "Ms";
@@ -123,7 +123,7 @@ FFMakeGEchoTopo()
 
   auto& delaySmoothBars = result->params[(int)FFGEchoParam::DelaySmoothBars];
   delaySmoothBars.acc = false;
-  delaySmoothBars.display = "Dly Smth";
+  delaySmoothBars.display = "Smth";
   delaySmoothBars.name = "Delay Smooth Bars";
   delaySmoothBars.slotCount = 1;
   delaySmoothBars.unit = "Bars";
@@ -169,7 +169,7 @@ FFMakeGEchoTopo()
   tapLevel.acc = true;
   tapLevel.unit = "%";
   tapLevel.name = "Tap Level";
-  tapLevel.display = "Level";
+  tapLevel.display = "Lvl";
   tapLevel.slotCount = FFGEchoTapCount;
   tapLevel.id = "{E3633411-F79D-4D2A-A748-82E03A35434E}";
   tapLevel.defaultTextSelector = [](int, int, int ps) { return ps == 0? "100": ps == 1? "80": ps == 2? "60": ps == 3? "40": "0"; };

@@ -94,19 +94,19 @@ MakeGEchoSectionMain(FBPlugGUI* plugGUI, FBMultiContentComponent* tapsGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0 });
   auto target = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Target, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, target));
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target));
-  auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Gain, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
   auto delaySmoothTime = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::DelaySmoothTime, 0 } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothTime));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delaySmoothTime, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothTime));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delaySmoothTime, Slider::SliderStyle::RotaryVerticalDrag));
   auto delaySmoothBars = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::DelaySmoothBars, 0 } });
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothBars));
-  grid->Add(1, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delaySmoothBars));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothBars));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, delaySmoothBars));
+  auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Gain, 0 } });
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::RotaryVerticalDrag));
   auto tapsMix = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapsMix, 0 } });
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapsMix));
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapsMix, Slider::SliderStyle::RotaryVerticalDrag));
