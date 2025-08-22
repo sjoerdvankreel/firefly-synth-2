@@ -156,7 +156,7 @@ FFMakeGEchoTopo()
 
   auto& guiTapSelect = result->guiParams[(int)FFGEchoGUIParam::TapSelect];
   guiTapSelect.defaultText = "1";
-  guiTapSelect.name = "Tap Edit";
+  guiTapSelect.name = "Tap Select";
   guiTapSelect.id = "{FB146F89-2B8D-448F-8B38-EA213B4FC84D}";
   guiTapSelect.slotCount = 1;
   guiTapSelect.type = FBParamType::Discrete;
