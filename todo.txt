@@ -20,6 +20,7 @@ TODOLIST for alpha-14
 [ ] refix all behind-the-scenes mod sources and targets
 [ ] master aux gui to small
 
+list all the dependencies!
 pck support
 per-module presets
 external audio input

@@ -89,6 +89,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Same soft clippers: https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf.
 * Same DSF algorithm: https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html.
 * Same state variable filter: https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf.
+* Same (modified) Freeverb: https://github.com/sinshu/freeverb.
 * Stole the color-morphing noise algo from here: https://sampo.kapsi.fi/PinkNoise/.
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/. You have to download the zip to get at the PolyBLEP source for all waveforms.
 
