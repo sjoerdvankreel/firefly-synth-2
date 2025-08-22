@@ -158,6 +158,18 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Single matrix for audio and cv. Env and LFO are now processed in lock-step, so env can modulate LFO and the other way around.
 * Env/VLFO/GLFO/Master Aux inputs plus MIDI CC, Pitch Bend, Channel Pressure.
 
+## Echo
+* Combined multitap delay / feedback delay / reverb.
+* Adjustable ordering of taps / feedback / reverb.
+* Adjustable placement in the processing pipeline: before all fx, after all fx, or apply to input / output of any of the effect modules.
+* Time or tempo-synced versions of multitap and feedback delay.
+* Smoothing parameter for delay time changes. Applies to time, bars, host bpm changes etc etc.
+* Unlike FF1, all delay times are now modulatable.
+* 8-tap multitap delay with per-tap modulatable level, delay, stereo balance, L/R crossover and resonant LP/HP filters.
+* Feedback delay with modulatable dry/wet mix, delay time, feedback amount, L/R crossover and resonant LP/HP filters.
+* Note: reso filters for the feedback delay are placed INSIDE the feedback loop! So that's feedback-filters themselves inside the feedback path of the delay line. 
+These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 1000%. Still, if you get them to sustain at just the sweet spot, you can get some great results.
+
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
