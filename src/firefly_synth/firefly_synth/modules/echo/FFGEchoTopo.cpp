@@ -36,7 +36,6 @@ FFMakeGEchoTopo()
   target.acc = false;
   target.defaultText = "Off";
   target.name = "Target";
-  target.display = "Tgt";
   target.slotCount = 1;
   target.id = "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
   target.type = FBParamType::List;

@@ -16,6 +16,7 @@ alpha 12 - gecho
 [x] reverb
 [ ] gecho
 [ ] aaahhhhhhh order 
+[ ] graph + order
 
 alph 13 - vecho
 

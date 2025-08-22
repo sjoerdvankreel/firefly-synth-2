@@ -8,6 +8,9 @@ inline int constexpr FFGEchoTapCount = 8;
 inline int constexpr FFGEchoMaxSeconds = 10;
 std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
 
+enum class FFGEchoModule {
+  Taps, Feedback, Reverb, Count };
+
 enum class FFGEchoGUIParam { 
   TapSelect, Count };
 enum class FFGEchoTarget { 
@@ -32,3 +35,60 @@ enum class FFGEchoParam {
   TapOn, TapBalance, TapLevel, TapXOver,
   TapDelayTime, TapDelayBars,
   TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, Count };
+
+inline int 
+FFGEchoGetProcessingOrder(FFGEchoOrder order, FFGEchoModule module)
+{
+  switch (order)
+  {
+  case FFGEchoOrder::TapsToFeedbackToReverb:
+    switch (module)
+    {
+    case FFGEchoModule::Taps: return 0;
+    case FFGEchoModule::Feedback: return 1;
+    case FFGEchoModule::Reverb: return 2;
+    default: FB_ASSERT(false); return -1;
+    }
+  case FFGEchoOrder::TapsToReverbToFeedback:
+    switch (module)
+    {
+    case FFGEchoModule::Taps: return 0;
+    case FFGEchoModule::Feedback: return 2;
+    case FFGEchoModule::Reverb: return 1;
+    default: FB_ASSERT(false); return -1;
+    }
+  case FFGEchoOrder::FeedbackToTapsToReverb:
+    switch (module)
+    {
+    case FFGEchoModule::Taps: return 1;
+    case FFGEchoModule::Feedback: return 0;
+    case FFGEchoModule::Reverb: return 2;
+    default: FB_ASSERT(false); return -1;
+    }
+  case FFGEchoOrder::FeedbackToReverbToTaps:
+    switch (module)
+    {
+    case FFGEchoModule::Taps: return 2;
+    case FFGEchoModule::Feedback: return 0;
+    case FFGEchoModule::Reverb: return 1;
+    default: FB_ASSERT(false); return -1;
+    }
+  case FFGEchoOrder::ReverbToTapsToFeedback:
+    switch (module)
+    {
+    case FFGEchoModule::Taps: return 1;
+    case FFGEchoModule::Feedback: return 2;
+    case FFGEchoModule::Reverb: return 0;
+    default: FB_ASSERT(false); return -1;
+    }
+  case FFGEchoOrder::ReverbToFeedbackToTaps:
+    switch (module)
+    {
+    case FFGEchoModule::Taps: return 2;
+    case FFGEchoModule::Feedback: return 1;
+    case FFGEchoModule::Reverb: return 0;
+    default: FB_ASSERT(false); return -1;
+    }
+  default: FB_ASSERT(false); return -1;
+  }
+}

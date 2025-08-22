@@ -51,6 +51,7 @@ class FFGEchoProcessor final
   bool _tapsOn = {};
   bool _feedbackOn = {};
   bool _reverbOn = {};
+  FFGEchoOrder _order = {};
   FFGEchoTarget _target = {};
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFGEchoTapCount> _tapOn = {};
@@ -79,6 +80,7 @@ class FFGEchoProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoProcessor);
+
 
   int Process(FBModuleProcState& state);
   void BeginBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);

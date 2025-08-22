@@ -145,6 +145,7 @@ FFGEchoProcessor::BeginBlock(
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
   float syncNorm = params.block.sync[0].Value();
+  float orderNorm = params.block.order[0].Value();
   float targetNorm = params.block.target[0].Value();
   float delaySmoothTimeNorm = params.block.delaySmoothTime[0].Value();
   float delaySmoothBarsNorm = params.block.delaySmoothBars[0].Value();
@@ -162,6 +163,7 @@ FFGEchoProcessor::BeginBlock(
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
   _sync = topo.NormalizedToBoolFast(FFGEchoParam::Sync, syncNorm);
+  _order = topo.NormalizedToListFast<FFGEchoOrder>(FFGEchoParam::Order, orderNorm);
   _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
 
   float delaySmoothSamples;
@@ -224,12 +226,15 @@ FFGEchoProcessor::Process(
     for (int c = 0; c < 2; c++)
       output[c].Mul(s, topo.NormalizedToLinearFast(FFGEchoParam::Gain, gainNorm.Load(s)));
 
-  if(_tapsOn)
-    ProcessTaps(state, true);
-  if (_feedbackOn)
-    ProcessFeedback(state, true);
-  if(_reverbOn)
-    ProcessReverb(state, true);
+  for (int m = 0; m < (int)FFGEchoModule::Count; m++)
+  {
+    if(_tapsOn && FFGEchoGetProcessingOrder(_order, FFGEchoModule::Taps) == m)
+      ProcessTaps(state, true);
+    else if (_feedbackOn && FFGEchoGetProcessingOrder(_order, FFGEchoModule::Feedback) == m)
+      ProcessFeedback(state, true);
+    else if (_reverbOn && FFGEchoGetProcessingOrder(_order, FFGEchoModule::Reverb) == m)
+      ProcessReverb(state, true);
+  }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
