@@ -13,10 +13,9 @@ alpha 12 - gecho
 [x] check the perf
 [x] bolletjes not paint good
 [x] lr->lrx
+[x] reverb
 [ ] gecho
-[ ] reverb
 [ ] aaahhhhhhh order 
-[ ] scale it down revrb wet
 
 alph 13 - vecho
 
