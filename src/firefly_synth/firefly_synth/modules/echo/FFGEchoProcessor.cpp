@@ -100,8 +100,8 @@ FFGEchoProcessor::AllocOnDemandBuffers(
     {
       float allPassSamplesL = ReverbAllpassLength[i] * sampleRate;
       float allPassSamplesR = (ReverbAllpassLength[i] + ReverbSpread) * sampleRate;
-      _reverbState.combState[0][i].resize((int)std::ceil(allPassSamplesL));
-      _reverbState.combState[1][i].resize((int)std::ceil(allPassSamplesR));
+      _reverbState.allPassState[0][i].resize((int)std::ceil(allPassSamplesL));
+      _reverbState.allPassState[1][i].resize((int)std::ceil(allPassSamplesR));
     }
   }
 
