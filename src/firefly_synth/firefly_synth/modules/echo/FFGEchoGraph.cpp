@@ -9,26 +9,21 @@
 #include <firefly_base/gui/glue/FBPlugGUIContext.hpp>
 
 static bool
+IsTapsOn(
+  FBGraphRenderState* state,
+  bool exchange, int exchangeVoice)
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapsOn, 0 } };
+  return state->AudioParamBool(indices, exchange, exchangeVoice);
+}
+
+static bool
 IsFeedbackOn(
   FBGraphRenderState* state,
   bool exchange, int exchangeVoice)
 {
   FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackOn, 0 } };
   return state->AudioParamBool(indices, exchange, exchangeVoice);
-}
-
-static bool 
-IsAnyTapOn(
-  FBGraphRenderState* state, 
-  bool exchange, int exchangeVoice)
-{
-  bool result = false;
-  for (int i = 0; i < FFGEchoTapCount; i++)
-  {
-    FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapOn, i } };
-    result |= state->AudioParamBool(indices, exchange, exchangeVoice);
-  }
-  return result;
 }
 
 struct GEchoGraphRenderData final:
@@ -97,10 +92,10 @@ GEchoGraphRenderData::DoProcess(
   if (target == FFGEchoTarget::Off)
     return 0;
 
-  if (graphIndex == 0 && !IsAnyTapOn(state, exchange, exchangeVoice))
+  if (graphIndex == 0 && !IsTapsOn(state, exchange, exchangeVoice))
     return 0;
   if (graphIndex == 1 && !IsFeedbackOn(state, exchange, exchangeVoice))
-      return 0;
+    return 0;
 
   auto* procState = moduleProcState->ProcAs<FFProcState>();
   auto& input = procState->dsp.global.gEcho.input;
@@ -141,7 +136,7 @@ FFGEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
   FBRenderModuleGraph<true, true>(renderData, 0);
   graphData->graphs[0].text = moduleName + " Taps";
-  if(!on || !IsAnyTapOn(renderState, false, -1))
+  if(!on || !IsTapsOn(renderState, false, -1))
     graphData->graphs[0].text += " Off";
 
   FBRenderModuleGraph<true, true>(renderData, 1);
