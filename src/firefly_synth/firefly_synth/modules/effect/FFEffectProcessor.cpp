@@ -69,6 +69,9 @@ FFEffectProcessor::AllocOnDemandBuffers(
   FBRuntimeTopo const* topo, FBProcStateContainer* state,
   int moduleSlot, bool graph, float sampleRate)
 {
+  // for graphing we are toying with the parameters to fit the plots
+  // just make it easy and allocate it all, we'll release soon and sample rate is low anyway
+
   auto* procState = state->RawAs<FFProcState>();
   auto const& params = *FFSelectDualState<Global>(
     [procState, moduleSlot]() { return &procState->param.global.gEffect[moduleSlot]; },
@@ -85,7 +88,7 @@ FFEffectProcessor::AllocOnDemandBuffers(
   {
     auto kind = moduleTopo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind,
       FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
-    if (kind == FFEffectKind::Comb || kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus)
+    if (graph || (kind == FFEffectKind::Comb || kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus))
       _combFilters[i].AllocBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier); 
   }
 }
