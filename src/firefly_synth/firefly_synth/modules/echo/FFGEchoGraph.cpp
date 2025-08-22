@@ -18,6 +18,15 @@ IsTapsOn(
 }
 
 static bool
+IsReverbOn(
+  FBGraphRenderState* state,
+  bool exchange, int exchangeVoice)
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::ReverbOn, 0 } };
+  return state->AudioParamBool(indices, exchange, exchangeVoice);
+}
+
+static bool
 IsFeedbackOn(
   FBGraphRenderState* state,
   bool exchange, int exchangeVoice)
@@ -96,6 +105,8 @@ GEchoGraphRenderData::DoProcess(
     return 0;
   if (graphIndex == 1 && !IsFeedbackOn(state, exchange, exchangeVoice))
     return 0;
+  if (graphIndex == 2 && !IsReverbOn(state, exchange, exchangeVoice))
+    return 0;
 
   auto* procState = moduleProcState->ProcAs<FFProcState>();
   auto& input = procState->dsp.global.gEcho.input;
@@ -143,6 +154,11 @@ FFGEchoRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->graphs[1].text = moduleName + " Feedback";
   if (!on || !IsFeedbackOn(renderState, false, -1))
     graphData->graphs[1].text += " Off";
+
+  FBRenderModuleGraph<true, true>(renderData, 2);
+  graphData->graphs[2].text = moduleName + " Reverb";
+  if (!on || !IsReverbOn(renderState, false, -1))
+    graphData->graphs[2].text += " Off";
 
   FBRenderModuleGraph<true, true>(renderData, 3);
   graphData->graphs[3].text = moduleName;
