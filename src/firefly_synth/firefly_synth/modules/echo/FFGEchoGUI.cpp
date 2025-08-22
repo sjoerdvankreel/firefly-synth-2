@@ -136,7 +136,7 @@ MakeGEchoSectionTaps(FBPlugGUI* plugGUI, FBMultiContentComponent* inidividualTap
     inidividualTapsGUI->SelectContentIndex(plugGUI->HostContext()->GetGUIParamDiscrete(indices) - 1); };
 
   auto tapsEditor = MakeGEchoTapsEditor(plugGUI);
-  auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Taps");
+  auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit Taps");
   showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(tapsEditor, 360, 250); };
   grid->Add(1, 2, 1, 2, showTapsEditor);
 

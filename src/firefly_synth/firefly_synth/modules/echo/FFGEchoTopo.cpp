@@ -130,6 +130,7 @@ FFMakeGEchoTopo()
   tapsMix.unit = "%";
   tapsMix.defaultText = "33";
   tapsMix.name = "Taps Mix";
+  tapsMix.display = "Mix";
   tapsMix.slotCount = 1;
   tapsMix.id = "{56DF16E6-A079-4E97-92D9-DA65826DB20F}";
   tapsMix.type = FBParamType::Identity;
@@ -257,7 +258,7 @@ FFMakeGEchoTopo()
   tapXOver.defaultText = "0";
   tapXOver.name = "Tap L/R Crossover";
   tapXOver.matrixName = "Tap LR";
-  tapXOver.display = "LR";
+  tapXOver.display = "LRX";
   tapXOver.slotCount = FFGEchoTapCount;
   tapXOver.id = "{C26420EA-2838-44E8-AA57-A4CA8E1A4759}";
   tapXOver.type = FBParamType::Identity;
@@ -332,7 +333,7 @@ FFMakeGEchoTopo()
   auto& feedbackOn = result->params[(int)FFGEchoParam::FeedbackOn];
   feedbackOn.acc = false;
   feedbackOn.name = "Feedback On";
-  feedbackOn.display = "Fdbk";
+  feedbackOn.display = "Feedback";
   feedbackOn.slotCount = 1;
   feedbackOn.defaultText = "On";
   feedbackOn.id = "{E28CD2D5-59B4-4C77-830F-BC961239299C}";
@@ -365,7 +366,7 @@ FFMakeGEchoTopo()
   feedbackXOver.defaultText = "0";
   feedbackXOver.name = "Feedback L/R Crossover";
   feedbackXOver.matrixName = "Fdbk LR";
-  feedbackXOver.display = "LR";
+  feedbackXOver.display = "LRX";
   feedbackXOver.slotCount = 1;
   feedbackXOver.id = "{C4D67CA6-41FE-4B54-8C2B-9C87F0DA6F0C}";
   feedbackXOver.type = FBParamType::Identity;
@@ -498,7 +499,7 @@ FFMakeGEchoTopo()
   auto& reverbOn = result->params[(int)FFGEchoParam::ReverbOn];
   reverbOn.acc = false;
   reverbOn.name = "Reverb On";
-  reverbOn.display = "Rvrb";
+  reverbOn.display = "Reverb";
   reverbOn.slotCount = 1;
   reverbOn.defaultText = "Off";
   reverbOn.id = "{935D11F3-1131-40DE-81E5-FC3DCDCBAE73}";
@@ -531,7 +532,7 @@ FFMakeGEchoTopo()
   reverbXOver.defaultText = "0";
   reverbXOver.name = "Reverb L/R Crossover";
   reverbXOver.matrixName = "Rvrb LR";
-  reverbXOver.display = "LR";
+  reverbXOver.display = "LRX";
   reverbXOver.slotCount = 1;
   reverbXOver.id = "{F31A5809-1558-4B9C-A953-EAC108530E3E}";
   reverbXOver.type = FBParamType::Identity;
