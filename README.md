@@ -2,8 +2,8 @@
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Tested on reaper, renoise, fruity and bitwig.
-* Osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
-* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP.
+* Osci, inter-osci modulation, per-voice fx, global fx, global echo, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
+* Stock JUCE GUI, no presets, no MTS-ESP, no portamento, no global unison.
 
 # Some demo material
 * Bowed strings
