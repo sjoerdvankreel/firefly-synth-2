@@ -1,3 +1,7 @@
+alpha 12
+new screenshots 3x
+new demo 2x (saw/piano)
+
 alph 13 - vecho
 
 [ ] get the text out of the graphs
