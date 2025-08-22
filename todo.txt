@@ -12,17 +12,13 @@ alpha 12 - gecho
 [x] better defaults
 [x] check the perf
 [x] bolletjes not paint good
-
-[ ] get the text out of the graphs
-[ ] lr->lrx
-[ ] res(!)
+[x] lr->lrx
 [ ] gecho
 [ ] reverb
-[ ] per-tap reverb
-[ ] drop taps mix, replace by taps on/off, feedback now needs global ui + per-tap ui ONLY if taps are on AND feedback mode is per-tap, tap 0 can be main
 
 alph 13 - vecho
 
+[ ] get the text out of the graphs
 [ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation -> cannot place anywhere in the pipeline but thats ok
 
 TODOLIST for alpha-14
