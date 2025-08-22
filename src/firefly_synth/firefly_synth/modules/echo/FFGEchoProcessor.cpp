@@ -39,6 +39,23 @@ FFGEchoDelayState::Reset()
 }
 
 void
+FFGEchoReverbState::Reset()
+{
+  lpFilter.Reset();
+  hpFilter.Reset();
+  combFilter = {};
+  combPosition = {};
+  allPassPosition = {};
+  for (int c = 0; c < 2; c++)
+  {
+    for (int i = 0; i < FFGEchoReverbCombCount; i++)
+      std::fill(combState[c][i].begin(), combState[c][i].end(), 0.0f);
+    for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
+      std::fill(allPassState[c][i].begin(), allPassState[c][i].end(), 0.0f);
+  }
+}
+
+void
 FFGEchoProcessor::ReleaseOnDemandBuffers(
   FBRuntimeTopo const*, FBProcStateContainer* state)
 {
@@ -157,6 +174,9 @@ FFGEchoProcessor::BeginBlock(
 
   _reverbOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbOn, reverbOnNorm);
   _reverbOn &= !graph || graphIndex == 2 || graphIndex == 3;
+
+  if (_graph)
+    _reverbState.Reset();
 
   _feedbackOn = topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
   _feedbackOn &= !graph || graphIndex == 1 || graphIndex == 3;
@@ -445,6 +465,7 @@ FFGEchoProcessor::ProcessReverb(
   FBModuleProcState& state,
   bool processAudioOrExchangeState)
 {
+  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto& output = procState->dsp.global.gEcho.output;
   auto const& params = procState->param.global.gEcho[0];
@@ -474,8 +495,6 @@ FFGEchoProcessor::ProcessReverb(
         FFGEchoParam::ReverbDamp, dampNorm.Get(s));
       float xOverPlain = topo.NormalizedToIdentityFast(
         FFGEchoParam::ReverbXOver, xOverNorm.Get(s));
-
-#if 0 // todo
       float lpResPlain = topo.NormalizedToIdentityFast(
         FFGEchoParam::ReverbLPRes, lpResNorm.Get(s));
       float hpResPlain = topo.NormalizedToIdentityFast(
@@ -484,7 +503,12 @@ FFGEchoProcessor::ProcessReverb(
         FFGEchoParam::ReverbLPFreq, lpFreqNorm.Get(s));
       float hpFreqPlain = topo.NormalizedToLog2Fast(
         FFGEchoParam::ReverbHPFreq, hpFreqNorm.Get(s));
-#endif
+
+      if (_graph)
+      {
+        lpFreqPlain *= _graphStVarFilterFreqMultiplier;
+        hpFreqPlain *= _graphStVarFilterFreqMultiplier;
+      }
 
       // Size doesnt respond linear.
       // By just testing by listening 80% is about the midpoint.
@@ -492,9 +516,6 @@ FFGEchoProcessor::ProcessReverb(
       float size = (std::cbrt(sizePlain) * ReverbRoomScale) + ReverbRoomOffset;
       float damp = dampPlain * ReverbDampScale;
       float reverbIn = (output[0].Get(s) + output[1].Get(s)) * ReverbGain;
-      
-      // TODO filter
-      // TODO check default xover
 
       std::array<float, 2> reverbOut = { 0.0f, 0.0f };
 
@@ -527,10 +548,18 @@ FFGEchoProcessor::ProcessReverb(
       float dry = (1.0f - mixPlain) * ReverbDryScale;
       float wet1 = wet * xOverPlain;
       float wet2 = wet * (1.0f - xOverPlain);
-      float outL = reverbOut[0] * wet1 + reverbOut[1] * wet2;
-      float outR = reverbOut[1] * wet1 + reverbOut[0] * wet2;
-      output[0].Set(s, output[0].Get(s) * dry + outL);
-      output[1].Set(s, output[1].Get(s) * dry + outR);
+      double outL = reverbOut[0] * wet1 + reverbOut[1] * wet2;
+      double outR = reverbOut[1] * wet1 + reverbOut[0] * wet2;
+
+      _reverbState.lpFilter.Set(FFStateVariableFilterMode::LPF, sampleRate, lpFreqPlain, lpResPlain, 0.0);
+      _reverbState.hpFilter.Set(FFStateVariableFilterMode::HPF, sampleRate, hpFreqPlain, hpResPlain, 0.0);
+      outL = _reverbState.lpFilter.Next(0, outL);
+      outL = _reverbState.hpFilter.Next(0, outL);
+      outR = _reverbState.lpFilter.Next(1, outR);
+      outR = _reverbState.hpFilter.Next(1, outR);
+
+      output[0].Set(s, output[0].Get(s) * dry + (float)outL);
+      output[1].Set(s, output[1].Get(s) * dry + (float)outR);
     }
 
     return;

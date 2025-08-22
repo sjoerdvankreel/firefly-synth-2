@@ -35,6 +35,9 @@ struct FFGEchoDelayState
 // be mapped to the Cytomic state variable filter in allpass mode.
 struct FFGEchoReverbState
 {
+  void Reset();
+  FFStateVariableFilter<2> lpFilter = {};
+  FFStateVariableFilter<2> hpFilter = {};
   std::array<std::array<int, FFGEchoReverbCombCount>, 2> combPosition = {};
   std::array<std::array<float, FFGEchoReverbCombCount>, 2> combFilter = {};
   std::array<std::array<std::vector<float>, FFGEchoReverbCombCount>, 2> combState = {};
