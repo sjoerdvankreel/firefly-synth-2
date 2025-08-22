@@ -16,8 +16,7 @@ enum class FFGEchoTarget {
   FX3In, FX3Out, FX4In, FX4Out };
 
 enum class FFGEchoParam {
-  Target, Gain, TapsMix, Sync, 
-  FeedbackPerTap, ReverbPerTap,
+  Target, Gain, Sync,
   DelaySmoothTime, DelaySmoothBars,
   ReverbOn, ReverbMix, ReverbXOver, 
   ReverbSize, ReverbDamp, ReverbAPF,
@@ -25,6 +24,7 @@ enum class FFGEchoParam {
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
   FeedbackDelayTime, FeedbackDelayBars,
   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
-  TapOn, TapBalance, TapLevel, TapXOver, 
+  TapsOn, TapsMix,
+  TapOn, TapBalance, TapLevel, TapXOver,
   TapDelayTime, TapDelayBars,
   TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, Count };
