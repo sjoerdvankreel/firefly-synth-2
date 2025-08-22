@@ -1,3 +1,11 @@
+August 22, 2025 - Alpha 12.
+
+- Core
+* Add memory pool for recycling and on-demand allocation.
+
+- Modules
+* Add global echo module (multitap delay + feedback delay + reverb).
+
 August 15, 2025 - Alpha 11.
 
 - Core
