@@ -49,13 +49,13 @@ FFGEchoProcessor::ReleaseOnDemandBuffers(
       _tapDelayStates[t].delayLine[c].ReleaseBuffers(state->MemoryPool());
     for (int i = 0; i < FFGEchoReverbCombCount; i++)
     {
-      _reverbState.combState[i][c].clear();
-      _reverbState.combState[i][c].shrink_to_fit();
+      _reverbState.combState[c][i].clear();
+      _reverbState.combState[c][i].shrink_to_fit();
     }
     for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
     {
-      _reverbState.allPassState[i][c].clear();
-      _reverbState.allPassState[i][c].shrink_to_fit();
+      _reverbState.allPassState[c][i].clear();
+      _reverbState.allPassState[c][i].shrink_to_fit();
     }
   }
 }
