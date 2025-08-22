@@ -46,6 +46,7 @@ class FFGEchoProcessor final
   bool _sync = {};
   bool _tapsOn = {};
   bool _feedbackOn = {};
+  bool _reverbOn = {};
   FFGEchoTarget _target = {};
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFGEchoTapCount> _tapOn = {};
@@ -65,6 +66,10 @@ class FFGEchoProcessor final
     bool processAudioOrExchangeState);
 
   void ProcessFeedback(
+    FBModuleProcState& state,
+    bool processAudioOrExchangeState);
+
+  void ProcessReverb(
     FBModuleProcState& state,
     bool processAudioOrExchangeState);
 

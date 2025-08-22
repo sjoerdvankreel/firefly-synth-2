@@ -135,6 +135,7 @@ FFGEchoProcessor::BeginBlock(
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
   float tapsOnNorm = params.block.tapsOn[0].Value();
+  float reverbOnNorm = params.block.reverbOn[0].Value();
   float feedbackOnNorm = params.block.feedbackOn[0].Value();
   float feedbackDelayBarsNorm = params.block.feedbackDelayBars[0].Value();
 
@@ -153,6 +154,9 @@ FFGEchoProcessor::BeginBlock(
   else
     delaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
       FFGEchoParam::DelaySmoothTime, delaySmoothTimeNorm, sampleRate);
+
+  _reverbOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbOn, reverbOnNorm);
+  _reverbOn &= !graph || graphIndex == 2 || graphIndex == 3;
 
   _feedbackOn = topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
   _feedbackOn &= !graph || graphIndex == 1 || graphIndex == 3;
@@ -204,6 +208,8 @@ FFGEchoProcessor::Process(
     ProcessTaps(state, true);
   if (_feedbackOn)
     ProcessFeedback(state, true);
+  if(_reverbOn)
+    ProcessReverb(state, true);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
@@ -223,6 +229,7 @@ FFGEchoProcessor::Process(
   // Only to push the exchange state.
   ProcessTaps(state, false);
   ProcessFeedback(state, false);
+  ProcessReverb(state, false);
 
   return FBFixedBlockSamples;
 }
@@ -431,4 +438,68 @@ FFGEchoProcessor::ProcessTaps(
     exchangeParams.acc.tapBalance[t] = tapBalNorm[t].Global().CV().Last();
     exchangeParams.acc.tapDelayTime[t] = tapDelayTimeNorm[t].Global().CV().Last();
   }
+}
+
+void
+FFGEchoProcessor::ProcessReverb(
+  FBModuleProcState& state,
+  bool processAudioOrExchangeState)
+{
+  float sampleRate = state.input->sampleRate;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& output = procState->dsp.global.gEcho.output;
+  auto const& params = procState->param.global.gEcho[0];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
+
+  auto const& apfNorm = params.acc.reverbAPF[0].Global().CV();
+  auto const& mixNorm = params.acc.reverbMix[0].Global().CV();
+  auto const& sizeNorm = params.acc.reverbSize[0].Global().CV();
+  auto const& dampNorm = params.acc.reverbDamp[0].Global().CV();
+  auto const& xOverNorm = params.acc.reverbXOver[0].Global().CV();
+  auto const& lpResNorm = params.acc.reverbLPRes[0].Global().CV();
+  auto const& hpResNorm = params.acc.reverbHPRes[0].Global().CV();
+  auto const& lpFreqNorm = params.acc.reverbLPFreq[0].Global().CV();
+  auto const& hpFreqNorm = params.acc.reverbHPFreq[0].Global().CV();
+
+  if (processAudioOrExchangeState)
+  {
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      float mixPlain = topo.NormalizedToIdentityFast(
+        FFGEchoParam::ReverbMix, mixNorm.Get(s));
+      float apfPlain = topo.NormalizedToIdentityFast(
+        FFGEchoParam::ReverbAPF, apfNorm.Get(s));
+      float sizePlain = topo.NormalizedToIdentityFast(
+        FFGEchoParam::ReverbSize, sizeNorm.Get(s));
+      float dampPlain = topo.NormalizedToIdentityFast(
+        FFGEchoParam::ReverbDamp, dampNorm.Get(s));
+      float xOverPlain = topo.NormalizedToIdentityFast(
+        FFGEchoParam::ReverbXOver, xOverNorm.Get(s));
+      float lpResPlain = topo.NormalizedToIdentityFast(
+        FFGEchoParam::ReverbLPRes, lpResNorm.Get(s));
+      float hpResPlain = topo.NormalizedToIdentityFast(
+        FFGEchoParam::ReverbHPRes, hpResNorm.Get(s));
+      float lpFreqPlain = topo.NormalizedToLog2Fast(
+        FFGEchoParam::ReverbLPFreq, lpFreqNorm.Get(s));
+      float hpFreqPlain = topo.NormalizedToLog2Fast(
+        FFGEchoParam::ReverbHPFreq, hpFreqNorm.Get(s));
+    }
+
+    return;
+  }
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+
+  auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
+  exchangeParams.acc.reverbAPF[0] = apfNorm.Last();
+  exchangeParams.acc.reverbMix[0] = mixNorm.Last();
+  exchangeParams.acc.reverbDamp[0] = dampNorm.Last();
+  exchangeParams.acc.reverbSize[0] = sizeNorm.Last();
+  exchangeParams.acc.reverbXOver[0] = xOverNorm.Last();
+  exchangeParams.acc.reverbLPRes[0] = lpResNorm.Last();
+  exchangeParams.acc.reverbHPRes[0] = hpResNorm.Last();
+  exchangeParams.acc.reverbLPFreq[0] = lpFreqNorm.Last();
+  exchangeParams.acc.reverbHPFreq[0] = hpFreqNorm.Last();
 }
