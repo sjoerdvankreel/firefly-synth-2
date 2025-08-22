@@ -70,6 +70,7 @@ FFEffectProcessor::AllocOnDemandBuffers(
   int moduleSlot, bool graph, float sampleRate)
 {
   // for graphing we are toying with the parameters to fit the plots
+  // also engine state may not match the main state
   // just make it easy and allocate it all, we'll release soon and sample rate is low anyway
 
   auto* procState = state->RawAs<FFProcState>();
