@@ -166,6 +166,10 @@ FFGEchoProcessor::BeginBlock(
   _order = topo.NormalizedToListFast<FFGEchoOrder>(FFGEchoParam::Order, orderNorm);
   _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
 
+  int tapsOrder = FFGEchoGetProcessingOrder(_order, FFGEchoModule::Taps);
+  int reverbOrder = FFGEchoGetProcessingOrder(_order, FFGEchoModule::Reverb);
+  int feedbackOrder = FFGEchoGetProcessingOrder(_order, FFGEchoModule::Feedback);
+
   float delaySmoothSamples;
   if (_sync)
     delaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
@@ -175,13 +179,13 @@ FFGEchoProcessor::BeginBlock(
       FFGEchoParam::DelaySmoothTime, delaySmoothTimeNorm, sampleRate);
 
   _reverbOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbOn, reverbOnNorm);
-  _reverbOn &= !graph || graphIndex == 2 || graphIndex == 3;
+  _reverbOn &= !graph || graphIndex == reverbOrder || graphIndex == (int)FFGEchoModule::Count;
 
   if (_graph)
     _reverbState.Reset();
 
   _feedbackOn = topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
-  _feedbackOn &= !graph || graphIndex == 1 || graphIndex == 3;
+  _feedbackOn &= !graph || graphIndex == feedbackOrder || graphIndex == (int)FFGEchoModule::Count;
 
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
@@ -191,7 +195,7 @@ FFGEchoProcessor::BeginBlock(
     _feedbackDelayState.Reset();
 
   _tapsOn = topo.NormalizedToBoolFast(FFGEchoParam::TapsOn, tapsOnNorm);
-  _tapsOn &= !graph || graphIndex == 0 || graphIndex == 3;
+  _tapsOn &= !graph || graphIndex == tapsOrder || graphIndex == (int)FFGEchoModule::Count;
   for (int t = 0; t < FFGEchoTapCount; t++)
   {
     _tapOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
