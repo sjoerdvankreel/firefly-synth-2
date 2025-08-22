@@ -491,7 +491,7 @@ FFGEchoProcessor::ProcessReverb(
       // Do cube root so that 0.5 ~= 0.79.
       float size = (std::cbrt(sizePlain) * ReverbRoomScale) + ReverbRoomOffset;
       float damp = dampPlain * ReverbDampScale;
-      float reverbIn = output[0].Get(s) + output[1].Get(s) * ReverbGain;
+      float reverbIn = (output[0].Get(s) + output[1].Get(s)) * ReverbGain;
       
       // TODO filter
       // TODO check default xover
