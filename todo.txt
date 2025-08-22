@@ -1,8 +1,4 @@
-alpha 12
-new screenshots 3x
-new demo 2x (saw/piano)
-
-alph 13 - vecho
+TODOLIST for alpha 13 - vecho
 
 [ ] get the text out of the graphs
 [ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation -> cannot place anywhere in the pipeline but thats ok
