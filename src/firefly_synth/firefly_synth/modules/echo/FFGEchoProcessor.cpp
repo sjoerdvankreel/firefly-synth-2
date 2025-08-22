@@ -15,6 +15,20 @@
 #include <cmath>
 #include <algorithm>
 
+static float const ReverbGain = 0.015f;
+static float const ReverbDryScale = 2.0f;
+static float const ReverbWetScale = 3.0f;
+static float const ReverbDampScale = 0.4f;
+static float const ReverbRoomScale = 0.28f;
+static float const ReverbRoomOffset = 0.7f;
+static float const ReverbSpread = 23.0f / 44100.0f;
+
+static std::array<float, FFGEchoReverbAllPassCount> const ReverbAllpassLength = {
+  556.0f / 44100.0f, 441.0f / 44100.0f, 341.0f / 44100.0f, 225.0f / 44100.0f };
+static std::array<float, FFGEchoReverbCombCount> const ReverbCombLength = {
+  1116.0f / 44100.0f, 1188.0f / 44100.0f, 1277.0f / 44100.0f, 1356.0f / 44100.0f,
+  1422.0f / 44100.0f, 1491.0f / 44100.0f, 1557.0f / 44100.0f, 1617.0f / 44100.0f };
+
 void 
 FFGEchoDelayState::Reset()
 {
@@ -29,10 +43,21 @@ FFGEchoProcessor::ReleaseOnDemandBuffers(
   FBRuntimeTopo const*, FBProcStateContainer* state)
 {
   for (int c = 0; c < 2; c++)
+  {
     _feedbackDelayState.delayLine[c].ReleaseBuffers(state->MemoryPool());
-  for (int t = 0; t < FFGEchoTapCount; t++)
-    for (int c = 0; c < 2; c++)
+    for (int t = 0; t < FFGEchoTapCount; t++)
       _tapDelayStates[t].delayLine[c].ReleaseBuffers(state->MemoryPool());
+    for (int i = 0; i < FFGEchoReverbCombCount; i++)
+    {
+      _reverbState.combState[i][c].clear();
+      _reverbState.combState[i][c].shrink_to_fit();
+    }
+    for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
+    {
+      _reverbState.allPassState[i][c].clear();
+      _reverbState.allPassState[i][c].shrink_to_fit();
+    }
+  }
 }
 
 void
@@ -47,6 +72,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapsOnNorm = params.block.tapsOn[0].Value();
   auto const& targetNorm = params.block.target[0].Value();
+  auto const& reverbOnNorm = params.block.reverbOn[0].Value();
   auto const& feedbackOnNorm = params.block.feedbackOn[0].Value();
   auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::GEcho];
 
@@ -59,6 +85,25 @@ FFGEchoProcessor::AllocOnDemandBuffers(
     for (int c = 0; c < 2; c++)
       if(_feedbackDelayState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayState.delayLine[c].Reset(_feedbackDelayState.delayLine[c].MaxBufferSize());
+
+  bool reverbOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::ReverbOn, reverbOnNorm);
+  if(graph || reverbOn)
+  {
+    for (int i = 0; i < FFGEchoReverbCombCount; i++)
+    {
+      float combSamplesL = ReverbCombLength[i] * sampleRate;
+      float combSamplesR = (ReverbCombLength[i] + ReverbSpread) * sampleRate;
+      _reverbState.combState[0][i].resize((int)std::ceil(combSamplesL));
+      _reverbState.combState[1][i].resize((int)std::ceil(combSamplesR));
+    }
+    for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
+    {
+      float allPassSamplesL = ReverbAllpassLength[i] * sampleRate;
+      float allPassSamplesR = (ReverbAllpassLength[i] + ReverbSpread) * sampleRate;
+      _reverbState.combState[0][i].resize((int)std::ceil(allPassSamplesL));
+      _reverbState.combState[1][i].resize((int)std::ceil(allPassSamplesR));
+    }
+  }
 
   bool tapsOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::TapsOn, tapsOnNorm);
   for (int t = 0; t < FFGEchoTapCount; t++)

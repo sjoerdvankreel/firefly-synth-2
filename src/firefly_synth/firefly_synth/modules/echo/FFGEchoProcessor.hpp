@@ -7,11 +7,15 @@
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 
 #include <juce_dsp/juce_dsp.h>
+
 #include <array>
+#include <vector>
 
 class FBAccParamState;
 struct FBModuleProcState;
 
+inline int constexpr FFGEchoReverbCombCount = 8;
+inline int constexpr FFGEchoReverbAllPassCount = 4;
 inline float constexpr FFGEchoPlotLengthSeconds = 5.0f;
 
 struct FFGEchoDelayState
@@ -21,6 +25,20 @@ struct FFGEchoDelayState
   FFStateVariableFilter<2> lpFilter = {};
   FFStateVariableFilter<2> hpFilter = {};
   std::array<FFDelayLine, 2> delayLine = {};
+};
+
+// https://github.com/sinshu/freeverb
+// Would be better to use FFCombFilter here but i had a working reverb 
+// implementation from FF1 and I don't feel like rewriting it. 
+// Also i'd have to figure out if Freeverb uses feedback or feedforward
+// combs and also figure out if the allpass filter below can somehow
+// be mapped to the Cytomic state variable filter in allpass mode.
+struct FFGEchoReverbState
+{
+  std::array<std::array<int, FFGEchoReverbCombCount>, 2> combPosition = {};
+  std::array<std::array<std::int32_t, FFGEchoReverbAllPassCount>, 2> allPassPosition = {};
+  std::array<std::array<std::vector<float>, FFGEchoReverbCombCount>, 2> combState = {};
+  std::array<std::array<std::vector<float>, FFGEchoReverbAllPassCount>, 2> allPassState = {};
 };
 
 class FFGEchoProcessor final
@@ -38,6 +56,7 @@ class FFGEchoProcessor final
   int _graphSamplesProcessed = {};
   float _graphStVarFilterFreqMultiplier = {};
 
+  FFGEchoReverbState _reverbState = {};
   FFGEchoDelayState _feedbackDelayState = {};
   std::array<FFGEchoDelayState, FFGEchoTapCount> _tapDelayStates = {};
 
