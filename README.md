@@ -169,7 +169,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Pop-out matrix editor for the individual taps.
 * Feedback delay with modulatable dry/wet mix, delay time, feedback amount, L/R crossover and resonant LP/HP filters.
 * Note: reso filters for the feedback delay are placed INSIDE the feedback loop! So that's feedback-filters themselves inside the feedback path of the delay line.
-These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 1000%. Still, if you get them to sustain at just the sweet spot, you can get some great results.
+These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 1000%. But if you get them to sustain at just the sweet spot, you can get some great results.
 * (F)Re(e)verb with modulatable dry/wet mix, room size, damping, L/R crossover, all-pass filter control and resonant LP/HP filters.
 
 # Build it
