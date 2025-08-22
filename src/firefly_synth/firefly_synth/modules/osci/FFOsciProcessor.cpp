@@ -45,6 +45,9 @@ FFOsciProcessor::AllocOnDemandBuffers(
   FBRuntimeTopo const* topo, FBProcStateContainer* state, 
   int moduleSlot, bool graph, float sampleRate)
 {
+  // for graphing we need ALL unison voice delay lines for string since some voice states may not match the main state.
+  // just make it easy and allocate it all, we'll release soon and sample rate is low anyway
+
   auto* procState = state->RawAs<FFProcState>();
   auto const& params = procState->param.voice.osci[moduleSlot];
   auto const& typeNorm = params.block.type[0].GlobalValue();
@@ -56,7 +59,7 @@ FFOsciProcessor::AllocOnDemandBuffers(
   int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
   int maxDelayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / FFOsciStringMinFreq));
   if(type == FFOsciType::String)
-    for (int i = 0; i < uniCount; i++)
+    for (int i = 0; i < (graph? FFOsciUniMaxCount: uniCount); i++)
       _stringUniState[i].delayLine.AllocBuffersIfChanged(state->MemoryPool(), maxDelayLineSize);
 }
 
