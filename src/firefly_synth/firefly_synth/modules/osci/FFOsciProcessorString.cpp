@@ -125,7 +125,7 @@ FFOsciProcessor::BeginVoiceString(bool graph, FBModuleProcState& state)
 
   if (_stringLPOn)
   {
-    stringLPFreqPlain = MultiplyClamp(stringLPFreqPlain,
+    stringLPFreqPlain = FFMultiplyClamp(stringLPFreqPlain,
       KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, stringLPKTrkPlain),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
     stringLPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
@@ -134,7 +134,7 @@ FFOsciProcessor::BeginVoiceString(bool graph, FBModuleProcState& state)
 
   if (_stringHPOn)
   {
-    stringHPFreqPlain = MultiplyClamp(stringHPFreqPlain,
+    stringHPFreqPlain = FFMultiplyClamp(stringHPFreqPlain,
       KeyboardTrackingMultiplier(_key, stringTrackingKeyPlain, -stringHPKTrkPlain),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
     stringHPFreqPlain *= _stringGraphStVarFilterFreqMultiplier;
@@ -298,7 +298,7 @@ FFOsciProcessor::ProcessString(
       float lpRes = stringLPResPlain.Get(s);
       float lpFreq = stringLPFreqPlain.Get(s);
       float lpKTrk = stringLPKTrkPlain.Get(s);
-      lpFreq = MultiplyClamp(lpFreq,
+      lpFreq = FFMultiplyClamp(lpFreq,
         KeyboardTrackingMultiplier(_key, trackingKey, lpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       lpFreq *= _stringGraphStVarFilterFreqMultiplier;
@@ -310,7 +310,7 @@ FFOsciProcessor::ProcessString(
       float hpRes = stringHPResPlain.Get(s);
       float hpFreq = stringHPFreqPlain.Get(s);
       float hpKTrk = stringHPKTrkPlain.Get(s);
-      hpFreq = MultiplyClamp(hpFreq,
+      hpFreq = FFMultiplyClamp(hpFreq,
         KeyboardTrackingMultiplier(_key, trackingKey, -hpKTrk),
         FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
       hpFreq *= _stringGraphStVarFilterFreqMultiplier;
@@ -326,7 +326,7 @@ FFOsciProcessor::ProcessString(
       {
         float uniFreq = uniFreqArray.Get(u - ub);
         _stringUniState[u].delayLine.Delay(oversampledRate / uniFreq);
-        float thisVal = _stringUniState[u].delayLine.Pop();
+        float thisVal = _stringUniState[u].delayLine.PopLinearInterpolate();
         float prevVal = _stringUniState[u].prevDelayVal;
         float newVal = (1.0f - damp) * thisVal + damp * (prevVal + thisVal) * 0.5f;
         float outVal = _stringUniState[u].dcFilter.Next(newVal);
@@ -344,7 +344,7 @@ FFOsciProcessor::ProcessString(
         _stringUniState[u].delayLine.Push(newVal);
 
         // dont go out of bounds unlimited
-        outVal = 10.0f * std::tanh(outVal * 0.1f);
+        outVal = FFSoftClip10(outVal);
         uniOutputOversampled[u].Set(s, outVal);
       }
     }

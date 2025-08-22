@@ -58,13 +58,25 @@ FBGraphRenderState::PlugGUI() const
   return _plugGUI;
 }
 
-FBModuleProcState* 
+FBProcStateContainer* 
+FBGraphRenderState::ProcContainer()
+{
+  return _procState.get();
+}
+
+FBProcStateContainer const*
+FBGraphRenderState::ProcContainer() const
+{
+  return _procState.get();
+}
+
+FBModuleProcState*
 FBGraphRenderState::ModuleProcState()
 {
   return _moduleState.get();
 }
 
-FBModuleProcState const* 
+FBModuleProcState const*
 FBGraphRenderState::ModuleProcState() const
 {
   return _moduleState.get();
@@ -153,42 +165,6 @@ FBGraphRenderState::GetAudioParamNormalized(
   if (exchangeVoice == -1)
     return *ExchangeContainer()->Params()[param->runtimeParamIndex].Global();
   return ExchangeContainer()->Params()[param->runtimeParamIndex].Voice()[exchangeVoice];
-}
-
-bool 
-FBGraphRenderState::GUIParamBool(
-  FBParamTopoIndices const& indices) const
-{
-  auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
-  return param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
-}
-
-float
-FBGraphRenderState::GUIParamLinear(
-  FBParamTopoIndices const& indices) const
-{
-  auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
-  return param->static_.Linear().NormalizedToPlainFast(static_cast<float>(normalized));
-}
-
-int 
-FBGraphRenderState::GUIParamLinearTimeSamples(
-  FBParamTopoIndices const& indices, float sampleRate) const
-{
-  auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
-  return param->static_.Linear().NormalizedTimeToSamplesFast(static_cast<float>(normalized), sampleRate);
-}
-
-int 
-FBGraphRenderState::GUIParamBarsSamples(
-  FBParamTopoIndices const& indices, float sampleRate, float bpm) const
-{
-  auto param = ModuleProcState()->topo->gui.ParamAtTopo(indices);
-  double normalized = _plugGUI->HostContext()->GetGUIParamNormalized(param->runtimeParamIndex);
-  return param->static_.Bars().NormalizedToSamplesFast(static_cast<float>(normalized), sampleRate, bpm);
 }
 
 bool 

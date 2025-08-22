@@ -75,6 +75,12 @@ FBTimeToSamples(float time, float sampleRate)
   return static_cast<int>(std::round(time * sampleRate));
 }
 
+inline float
+FBTimeToFloatSamples(float time, float sampleRate)
+{
+  return time * sampleRate;
+}
+
 inline int
 FBFreqToSamples(float freq, float sampleRate)
 {
@@ -92,6 +98,12 @@ inline int
 FBBarsToSamples(FBBarsItem const& bars, float sampleRate, float bpm)
 {
   return FBTimeToSamples((bars.num * 240.0f) / (bars.denom * bpm), sampleRate);
+}
+
+inline float
+FBBarsToFloatSamples(FBBarsItem const& bars, float sampleRate, float bpm)
+{
+  return FBTimeToFloatSamples((bars.num * 240.0f) / (bars.denom * bpm), sampleRate);
 }
 
 inline float

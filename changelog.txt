@@ -1,3 +1,12 @@
+August 22, 2025 - Alpha 12.
+
+- Core
+* Add memory pool for recycling and on-demand allocation.
+* Really this thing is just here so you don't pay the price of allocating delay lines when not using them.
+
+- Modules
+* Add global echo module (multitap delay + feedback delay + reverb).
+
 August 15, 2025 - Alpha 11.
 
 - Core

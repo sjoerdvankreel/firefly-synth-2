@@ -7,6 +7,7 @@
 #include <firefly_synth/modules/mix/FFGMixState.hpp>
 #include <firefly_synth/modules/osci/FFOsciState.hpp>
 #include <firefly_synth/modules/midi/FFMIDIState.hpp>
+#include <firefly_synth/modules/echo/FFGEchoState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
@@ -28,6 +29,7 @@
 
 struct FFGUIState final
 {
+  std::array<FFGEchoGUIState, 1> gEcho = {};
   std::array<FFGUISettingsGUIState, 1> guiSettings = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };
@@ -35,9 +37,10 @@ struct FFGUIState final
 struct FFGlobalExchangeState final
 {
   std::array<FFLFOExchangeState, FFLFOCount> gLFO = {};
+  std::array<FBModuleProcSingleExchangeState, 1> gMix = {};
+  std::array<FBModuleProcSingleExchangeState, 1> gEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> master = {};
   std::array<FBModuleProcSingleExchangeState, 1> output = {};
-  std::array<FBModuleProcSingleExchangeState, 1> gMix = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMatrix = {};
   std::array<FBModuleProcSingleExchangeState, FFEffectCount> gEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
@@ -58,6 +61,7 @@ struct FFVoiceExchangeState final
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
   FFMIDIDSPState midi = {};
+  FFGEchoDSPState gEcho = {};
   FFOutputDSPState output = {};
   FFMasterDSPState master = {};
   FFModMatrixDSPState<true> gMatrix = {};
@@ -93,10 +97,11 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
   std::array<FFGMixParamState<TAccurate>, 1> gMix = {};
   std::array<FFMasterParamState<TAccurate>, 1> master = {};
   std::array<FFExternalParamState<TBlock>, 1> external = {};
+  std::array<FFGEchoParamState<TBlock, TAccurate>, 1> gEcho = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOCount> gLFO = {};
-  std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> gEffect = {};
   std::array<FFModMatrixParamState<TBlock, TAccurate, true>, 1> gMatrix = {};
+  std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> gEffect = {};
 };
 
 template <class TBlock, class TAccurate>

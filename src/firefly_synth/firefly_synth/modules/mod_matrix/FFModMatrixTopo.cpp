@@ -17,8 +17,9 @@ MakeRuntimeParamModName(
   FBStaticParamBase const& param,
   FBParamTopoIndices const& indices)
 {
+  std::string name = param.matrixName.empty() ? param.name : param.matrixName;
   auto paramName = FBMakeRuntimeModuleItemShortName(
-    topo, param.name, indices.module.slot,
+    topo, name, indices.module.slot,
     param.slotCount, indices.param.slot,
     param.slotFormatter, param.slotFormatterOverrides);
   auto moduleName = FBMakeRuntimeModuleShortName(

@@ -7,6 +7,7 @@ struct FFProcState;
 struct FBRuntimeTopo;
 struct FFExchangeState;
 struct FBPlugOutputBlock;
+
 class IFBHostDSPContext;
 
 class FFPlugProcessor final:
@@ -17,16 +18,19 @@ public IFBPlugProcessor
   FFProcState* const _procState;
   FFExchangeState* const _exchangeState;
 
-  FBModuleProcState MakeModuleState(FBPlugInputBlock const& input) const;
-  FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice) const;
+  FBModuleProcState MakeModuleState(FBPlugInputBlock const& input);
+  FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice);
+  void ProcessGEcho(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);
   void ApplyGlobalModulation(FBPlugInputBlock const& input, FBModuleProcState& state, FBTopoIndices moduleIndices);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);
   FFPlugProcessor(IFBHostDSPContext* hostContext);
 
-  void LeaseVoices(FBPlugInputBlock const& input) override;
   void ProcessPreVoice(FBPlugInputBlock const& input) override;
   void ProcessVoice(FBPlugInputBlock const& input, int voice, int releaseAt) override;
   void ProcessPostVoice(FBPlugInputBlock const& input, FBPlugOutputBlock& output) override;
+
+  void LeaseVoices(FBPlugInputBlock const& input) override;
+  void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* procState) override;
 };

@@ -11,6 +11,7 @@
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
+#include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
 #include <xsimd/xsimd.hpp>
 
@@ -55,14 +56,41 @@ FFEffectProcessor::NextMIDINoteKey(int sample)
 }
 
 void 
-FFEffectProcessor::InitializeBuffers(
-  bool graph, float sampleRate)
+FFEffectProcessor::ReleaseOnDemandBuffers(
+  FBRuntimeTopo const*, FBProcStateContainer* state)
 {
+  for (int i = 0; i < FFEffectBlockCount; i++)
+    _combFilters[i].ReleaseBuffers(state->MemoryPool());
+}
+
+template <bool Global>
+void 
+FFEffectProcessor::AllocOnDemandBuffers(
+  FBRuntimeTopo const* topo, FBProcStateContainer* state,
+  int moduleSlot, bool graph, float sampleRate)
+{
+  // for graphing we are toying with the parameters to fit the plots
+  // also engine state may not match the main state
+  // just make it easy and allocate it all, we'll release soon and sample rate is low anyway
+
+  auto* procState = state->RawAs<FFProcState>();
+  auto const& params = *FFSelectDualState<Global>(
+    [procState, moduleSlot]() { return &procState->param.global.gEffect[moduleSlot]; },
+    [procState, moduleSlot]() { return &procState->param.voice.vEffect[moduleSlot]; });
+  auto const& kindNorm = params.block.kind;
+  float onNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.on[0]);
+  auto const& moduleTopo = topo->static_->modules[(int)(Global ? FFModuleType::GEffect : FFModuleType::VEffect)];
+
+  if (!moduleTopo.NormalizedToBoolFast(FFEffectParam::On, onNorm))
+    return;
+
   float graphFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, sampleRate, FFMaxCombFilterFreq);
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
-    _combFilters[i].InitializeBuffers(sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier);
-    _combFilters[i].Reset();
+    auto kind = moduleTopo.NormalizedToListFast<FFEffectKind>(FFEffectParam::Kind,
+      FFSelectDualProcBlockParamNormalizedGlobal<Global>(kindNorm[i]));
+    if (graph || (kind == FFEffectKind::Comb || kind == FFEffectKind::CombMin || kind == FFEffectKind::CombPlus))
+      _combFilters[i].AllocBuffers(state->MemoryPool(), sampleRate * FFEffectOversampleTimes, FFMinCombFilterFreq * graphFilterFreqMultiplier); 
   }
 }
 
@@ -139,7 +167,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
 template <bool Global>
 int
-FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
+FFEffectProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -219,7 +247,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
         stVarKeyTrkPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::StVarKeyTrak,
           FFSelectDualProcAccParamNormalized<Global>(stVarKeyTrkNorm[i], voice), s));
 
-        if (!graph)
+        if (!_graph)
         {
           stVarFreqNormModulated[i].Store(s,
             FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
@@ -245,7 +273,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
           combResMinPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResMin,
             FFSelectDualProcAccParamNormalized<Global>(combResMinNorm[i], voice), s));
 
-          if (!graph)
+          if (!_graph)
           {
             combFreqMinNormModulated[i].Store(s,
               FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
@@ -267,7 +295,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
           combResPlusPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::CombResPlus,
             FFSelectDualProcAccParamNormalized<Global>(combResPlusNorm[i], voice), s));
 
-          if (!graph)
+          if (!_graph)
           {
             combFreqPlusNormModulated[i].Store(s,
               FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
@@ -294,7 +322,7 @@ FFEffectProcessor::Process(bool graph, FBModuleProcState& state)
         distBiasPlain[i].Store(s, topo.NormalizedToLinearFast(FFEffectParam::DistBias,
           FFSelectDualProcAccParamNormalized<Global>(distBiasNorm[i], voice), s));
         
-        if (!graph)
+        if (!_graph)
         {
           distDriveNormModulated[i].Store(s,
             FFModulate(FFModulationOpType::UPMul, lfoOutput[i].outputAll.Load(s),
@@ -479,18 +507,18 @@ FFEffectProcessor::ProcessComb(
     float freqMul = KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk);
 
     if constexpr(MinOn)
-      freqMin = MultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+      freqMin = FFMultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
     if constexpr(PlusOn)
-      freqPlus = MultiplyClamp(freqPlus, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
+      freqPlus = FFMultiplyClamp(freqPlus, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
 
     if (_graph)
     {
       float clampMin = 1.01f * _graphCombFilterFreqMultiplier * FFMinCombFilterFreq;
       float clampMax = 0.99f * _graphCombFilterFreqMultiplier * FFMaxCombFilterFreq;
       if constexpr (MinOn)
-        freqMin = MultiplyClamp(freqMin, _graphCombFilterFreqMultiplier, clampMin, clampMax);
+        freqMin = FFMultiplyClamp(freqMin, _graphCombFilterFreqMultiplier, clampMin, clampMax);
       if constexpr (PlusOn)
-        freqPlus = MultiplyClamp(freqPlus, _graphCombFilterFreqMultiplier, clampMin, clampMax);
+        freqPlus = FFMultiplyClamp(freqPlus, _graphCombFilterFreqMultiplier, clampMin, clampMax);
     }
 
     _combFilters[block].SetMin<MinOn>(oversampledRate, freqMin, resMin);
@@ -519,7 +547,7 @@ FFEffectProcessor::ProcessStVar(
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq = MultiplyClamp(freq, KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk),
+    freq = FFMultiplyClamp(freq, KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
 
     if (_graph)
@@ -685,7 +713,9 @@ FFEffectProcessor::ProcessFold(
   }
 }
 
-template int FFEffectProcessor::Process<true>(bool, FBModuleProcState&);
-template int FFEffectProcessor::Process<false>(bool, FBModuleProcState&);
+template int FFEffectProcessor::Process<true>(FBModuleProcState&);
+template int FFEffectProcessor::Process<false>(FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool, int, int, FBModuleProcState&);
 template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool, int, int, FBModuleProcState&);
+template void FFEffectProcessor::AllocOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);
+template void FFEffectProcessor::AllocOnDemandBuffers<false>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);

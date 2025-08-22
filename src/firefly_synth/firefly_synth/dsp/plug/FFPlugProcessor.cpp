@@ -23,22 +23,14 @@ _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
-  _procState->dsp.global.gMatrix.processor->InitializeBuffers(_topo);
-  for (int i = 0; i < FFEffectCount; i++)
-    _procState->dsp.global.gEffect[i].processor->InitializeBuffers(false, _sampleRate);
+  _procState->dsp.global.gMatrix.processor->InitBuffers(_topo);
   for (int v = 0; v < FBMaxVoices; v++)
-  {
-    _procState->dsp.voice[v].vMatrix.processor->InitializeBuffers(_topo);
-    for (int i = 0; i < FFEffectCount; i++)
-      _procState->dsp.voice[v].vEffect[i].processor->InitializeBuffers(false, _sampleRate);
-    for (int i = 0; i < FFOsciCount; i++)
-      _procState->dsp.voice[v].osci[i].processor->InitializeBuffers(false, _sampleRate);
-  }
+    _procState->dsp.voice[v].vMatrix.processor->InitBuffers(_topo);
 }
 
 FBModuleProcState
 FFPlugProcessor::MakeModuleState(
-  FBPlugInputBlock const& input) const
+  FBPlugInputBlock const& input)
 {
   FBModuleProcState result = {};
   result.topo = _topo;
@@ -52,11 +44,24 @@ FFPlugProcessor::MakeModuleState(
 
 FBModuleProcState
 FFPlugProcessor::MakeModuleVoiceState(
-  FBPlugInputBlock const& input, int voice) const
+  FBPlugInputBlock const& input, int voice)
 {
   auto result = MakeModuleState(input);
   result.voice = &result.input->voiceManager->Voices()[voice];
   return result;
+}
+
+void
+FFPlugProcessor::ProcessGEcho(
+  FBModuleProcState& state,
+  FBSArray2<float, FBFixedBlockSamples, 2>& inout)
+{
+  auto& globalDSP = _procState->dsp.global;
+  state.moduleSlot = 0;
+  inout.CopyTo(globalDSP.gEcho.input);
+  globalDSP.gEcho.processor->BeginBlock(false, -1, -1, state);
+  globalDSP.gEcho.processor->Process(state);
+  globalDSP.gEcho.output.CopyTo(inout);
 }
 
 void
@@ -79,6 +84,22 @@ FFPlugProcessor::LeaseVoices(
       auto state = MakeModuleVoiceState(input, voice);
       _procState->dsp.voice[voice].processor.BeginVoice(state);
     }
+}
+
+void 
+FFPlugProcessor::AllocOnDemandBuffers(
+  FBRuntimeTopo const* topo, FBProcStateContainer* procState)
+{
+  _procState->dsp.global.gEcho.processor->AllocOnDemandBuffers(topo, procState, false, _sampleRate);
+  for (int i = 0; i < FFEffectCount; i++)
+    _procState->dsp.global.gEffect[i].processor->AllocOnDemandBuffers<true>(topo, procState, i, false, _sampleRate);
+  for (int v = 0; v < FBMaxVoices; v++)
+  {
+    for (int i = 0; i < FFOsciCount; i++)
+      _procState->dsp.voice[v].osci[i].processor->AllocOnDemandBuffers(topo, procState, i, false, _sampleRate);
+    for (int i = 0; i < FFEffectCount; i++)
+      _procState->dsp.voice[v].vEffect[i].processor->AllocOnDemandBuffers<false>(topo, procState, i, false, _sampleRate);
+  }
 }
 
 void
@@ -126,13 +147,18 @@ FFPlugProcessor::ProcessPostVoice(
   auto state = MakeModuleState(input);
   auto& globalDSP = _procState->dsp.global;
   auto const& gMix = _procState->param.global.gMix[0];
+  auto const& gEcho = _procState->param.global.gEcho[0];
   auto const& balNormIn = gMix.acc.bal[0].Global();
   auto const& ampNormIn = gMix.acc.amp[0].Global();
   auto const& lfo1ToAmpNorm = gMix.acc.lfo1ToAmp[0].Global();
   auto const& lfo2ToBalNorm = gMix.acc.lfo2ToBal[0].Global();
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
+  auto& gEchoModuleTopo = state.topo->static_->modules[(int)FFModuleType::GEcho];
+
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
+  float gEchoTargetNorm = gEcho.block.target[0].Value();
+  auto gEchoTarget = gEchoModuleTopo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, gEchoTargetNorm);
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);
@@ -140,9 +166,11 @@ FFPlugProcessor::ProcessPostVoice(
     if (input.voiceManager->IsActive(v))
       voiceMixdown.Add(_procState->dsp.voice[v].output);
 
+  if (gEchoTarget == FFGEchoTarget::Voice)
+    ProcessGEcho(state, voiceMixdown);
+
   for (int i = 0; i < FFEffectCount; i++)
   {
-    state.moduleSlot = i;
     globalDSP.gEffect[i].input.Fill(0.0f);
     auto const& voiceToGFXNorm = gMix.acc.voiceToGFX[i].Global().CV();
     globalDSP.gEffect[i].input.AddMul(voiceMixdown, voiceToGFXNorm);
@@ -153,8 +181,28 @@ FFPlugProcessor::ProcessPostVoice(
         auto const& gfxToGFXNorm = gMix.acc.GFXToGFX[r].Global().CV();
         globalDSP.gEffect[i].input.AddMul(globalDSP.gEffect[source].output, gfxToGFXNorm);
       }
+    
+    if(i == 0 && gEchoTarget == FFGEchoTarget::FX1In)
+      ProcessGEcho(state, globalDSP.gEffect[i].input);
+    else if (i == 1 && gEchoTarget == FFGEchoTarget::FX2In)
+      ProcessGEcho(state, globalDSP.gEffect[i].input);
+    else if (i == 2 && gEchoTarget == FFGEchoTarget::FX3In)
+      ProcessGEcho(state, globalDSP.gEffect[i].input);
+    else if (i == 3 && gEchoTarget == FFGEchoTarget::FX4In)
+      ProcessGEcho(state, globalDSP.gEffect[i].input);
+    
+    state.moduleSlot = i; // gecho changes it!
     globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
-    globalDSP.gEffect[i].processor->Process<true>(false, state);
+    globalDSP.gEffect[i].processor->Process<true>(state);
+
+    if (i == 0 && gEchoTarget == FFGEchoTarget::FX1Out)
+      ProcessGEcho(state, globalDSP.gEffect[i].output);
+    else if (i == 1 && gEchoTarget == FFGEchoTarget::FX2Out)
+      ProcessGEcho(state, globalDSP.gEffect[i].output);
+    else if (i == 2 && gEchoTarget == FFGEchoTarget::FX3Out)
+      ProcessGEcho(state, globalDSP.gEffect[i].output);
+    else if (i == 3 && gEchoTarget == FFGEchoTarget::FX4Out)
+      ProcessGEcho(state, globalDSP.gEffect[i].output);
   }
 
   output.audio.Fill(0.0f);
@@ -177,6 +225,9 @@ FFPlugProcessor::ProcessPostVoice(
     for (int c = 0; c < 2; c++)
       output.audio[c].Set(s, output.audio[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
+
+  if (gEchoTarget == FFGEchoTarget::Out)
+    ProcessGEcho(state, output.audio);
 
   state.moduleSlot = 0;
   state.outputParamsNormalized = &output.outputParamsNormalized;

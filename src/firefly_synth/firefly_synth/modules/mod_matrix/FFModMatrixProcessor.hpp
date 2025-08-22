@@ -37,8 +37,9 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixProcessor);
 
   void BeginModulationBlock();
-  void BeginVoiceOrBlock(FBModuleProcState& state);
-  void InitializeBuffers(FBRuntimeTopo const* topo);
   void EndModulationBlock(FBModuleProcState& state);
+
+  void InitBuffers(FBRuntimeTopo const* topo);
+  void BeginVoiceOrBlock(FBModuleProcState& state);
   void ApplyModulation(FBModuleProcState& state, FBTopoIndices const& currentModule);
 };

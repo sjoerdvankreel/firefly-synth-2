@@ -46,3 +46,14 @@ FFSelectDualProcBlockParamNormalized(
   else
     return state.Voice()[voice];
 }
+
+template <bool Global, class TBlockParamState>
+inline float
+FFSelectDualProcBlockParamNormalizedGlobal(
+  TBlockParamState const& state)
+{
+  if constexpr (Global)
+    return state.Value();
+  else
+    return state.GlobalValue();
+}

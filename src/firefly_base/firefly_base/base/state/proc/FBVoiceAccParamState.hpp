@@ -11,17 +11,17 @@ class alignas(FBSIMDAlign) FBVoiceAccParamState final
   friend class FBProcParamState;
   friend class FBSmoothingProcessor;
 
-  float _value = {};
+  float _globalValue = {};
   std::array<FBAccParamState, FBMaxVoices> _voice = {};
 
   void InitProcessing(float value);
   void SetSmoothingCoeffs(int sampleCount);
 
-  float Value() const { return _value; }
-  void Value(float value) { _value = value; }
+  float GlobalValue() const { return _globalValue; }
+  void GlobalValue(float value) { _globalValue = value; }
   void InitProcessing(int voice, float value) { _voice[voice].InitProcessing(value); }
   void ModulateByHost(int slot, float offset) { _voice[slot].ModulateByHost(offset); }
-  void SmoothNextHostValue(int slot, int sample) { _voice[slot].SmoothNextHostValue(sample, _value); }
+  void SmoothNextHostValue(int slot, int sample) { _voice[slot].SmoothNextHostValue(sample, _globalValue); }
 
 public:
   FBVoiceAccParamState(float sampleRate);

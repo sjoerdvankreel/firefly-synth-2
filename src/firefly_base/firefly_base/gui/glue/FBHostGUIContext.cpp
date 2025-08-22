@@ -44,6 +44,14 @@ FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
   EndAudioParamChange(index);
 }
 
+int 
+FBHostGUIContext::GetGUIParamDiscrete(FBParamTopoIndices const& indices) const
+{
+  auto param = Topo()->gui.ParamAtTopo(indices);
+  double normalized = GetGUIParamNormalized(param->runtimeParamIndex);
+  return param->static_.Discrete().NormalizedToPlainFast(static_cast<float>(normalized));
+}
+
 void 
 FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
 {

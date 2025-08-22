@@ -3,6 +3,7 @@
 #include <firefly_synth/dsp/shared/FFDelayLine.hpp>
 #include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/base/shared/FBMemoryPool.hpp>
 
 #include <array>
 #include <cmath>
@@ -24,8 +25,6 @@ class alignas(FBSIMDAlign) FFCombFilter final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFCombFilter);
-  void Reset();
-  void InitializeBuffers(float sampleRate, float minFreq);
 
   template <bool PlusOn, bool MinOn>
   float Next(int channel, float in);
@@ -33,6 +32,10 @@ public:
   void SetMin(float sampleRate, float freq, float res);
   template <bool PlusOn>
   void SetPlus(float sampleRate, float freq, float res);
+
+  void Reset();
+  void ReleaseBuffers(FBMemoryPool* pool);
+  void AllocBuffers(FBMemoryPool* pool, float sampleRate, float minFreq);
 };
 
 template <int Channels>
@@ -48,8 +51,20 @@ FFCombFilter<Channels>::Reset()
 
 template <int Channels>
 inline void
-FFCombFilter<Channels>::InitializeBuffers(
-  float sampleRate, float minFreq)
+FFCombFilter<Channels>::ReleaseBuffers(
+  FBMemoryPool* pool)
+{
+  for (int c = 0; c < Channels; c++)
+  {
+    _delayLinesMin[c].ReleaseBuffers(pool);
+    _delayLinesPlus[c].ReleaseBuffers(pool);
+  }
+}
+
+template <int Channels>
+inline void
+FFCombFilter<Channels>::AllocBuffers(
+  FBMemoryPool* pool, float sampleRate, float minFreq)
 {
   float maxSeconds = 1.0f / minFreq;
   float fMaxSamples = maxSeconds * sampleRate;
@@ -58,8 +73,10 @@ FFCombFilter<Channels>::InitializeBuffers(
   FB_ASSERT(0 < maxSamples && maxSamples <= safetyCheck);
   for (int c = 0; c < Channels; c++)
   {
-    _delayLinesMin[c].InitializeBuffers(maxSamples);
-    _delayLinesPlus[c].InitializeBuffers(maxSamples);
+    if (_delayLinesMin[c].AllocBuffersIfChanged(pool, maxSamples))
+      _delayLinesMin[c].Reset(_delayLinesMin[c].MaxBufferSize());
+    if(_delayLinesPlus[c].AllocBuffersIfChanged(pool, maxSamples))
+      _delayLinesPlus[c].Reset(_delayLinesPlus[c].MaxBufferSize());
   }
 }
 
@@ -74,11 +91,11 @@ FFCombFilter<Channels>::Next(
   
   float minOld = 0.0f;
   if constexpr (MinOn)
-    minOld = _delayLinesMin[channel].Pop();
+    minOld = _delayLinesMin[channel].PopLinearInterpolate();
 
   float plusOld = 0.0f;
   if constexpr (PlusOn)
-    plusOld = _delayLinesPlus[channel].Pop();
+    plusOld = _delayLinesPlus[channel].PopLinearInterpolate();
   
   float out = in + _resPlus * plusOld + _resMin * minOld;  
   if constexpr (MinOn)

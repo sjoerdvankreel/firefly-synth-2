@@ -51,8 +51,12 @@ FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double /*value*/)
 void
 FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, double value)
 {
-  auto control = GetControlForAudioParamIndex(index);
-  control->SetValueNormalizedFromHost(value);
+  auto controlCount = GetControlCountForAudioParamIndex(index);
+  for (int i = 0; i < controlCount; i++)
+  {
+    auto control = GetControlForAudioParamIndex(index, i);
+    control->SetValueNormalizedFromHost(value);
+  }
   AudioParamNormalizedChanged(index);
 }
 
@@ -80,19 +84,27 @@ FBPlugGUI::AudioParamNormalizedChanged(int index)
     target->DependenciesChanged(false);
 }
 
-FBParamControl*
-FBPlugGUI::GetControlForAudioParamIndex(int paramIndex) const
+int 
+FBPlugGUI::GetControlCountForAudioParamIndex(int paramIndex) const
 {
-  auto iter = _audioParamIndexToComponent.find(paramIndex);
+  auto iter = _audioParamIndexToComponents.find(paramIndex);
 #ifndef NDEBUG
-  if (iter == _audioParamIndexToComponent.end())
+  if (iter == _audioParamIndexToComponents.end())
   {
     auto id = this->HostContext()->Topo()->audio.params[paramIndex].id;
     (void)id;
-    FB_ASSERT(iter != _audioParamIndexToComponent.end());
+    FB_ASSERT(iter != _audioParamIndexToComponents.end());
   }
 #endif
-  return &dynamic_cast<FBParamControl&>(*_store[iter->second].get());
+  return (int)iter->second.size();
+}
+
+FBParamControl*
+FBPlugGUI::GetControlForAudioParamIndex(int paramIndex, int controlIndex) const
+{
+  int count = GetControlCountForAudioParamIndex(paramIndex);
+  FB_ASSERT(0 <= controlIndex && controlIndex < count);
+  return &dynamic_cast<FBParamControl&>(*_store[_audioParamIndexToComponents.at(paramIndex)[controlIndex]].get());
 }
 
 void
@@ -101,7 +113,11 @@ FBPlugGUI::UpdateExchangeStateTick()
   auto const& params = HostContext()->Topo()->audio.params;
   for (int i = 0; i < params.size(); i++)
     if (!params[i].static_.NonRealTime().IsStepped())
-      dynamic_cast<FBParamSlider&>(*GetControlForAudioParamIndex(i)).UpdateExchangeState();
+    {
+      auto controlCount = GetControlCountForAudioParamIndex(i);
+      for(int j = 0; j < controlCount; j++)
+        dynamic_cast<FBParamSlider&>(*GetControlForAudioParamIndex(i, j)).UpdateExchangeState();
+    }
 }
 
 void
@@ -155,7 +171,7 @@ FBPlugGUI::StoreComponent(std::unique_ptr<Component>&& component)
   int componentIndex = (int)_store.size();
   _store.emplace_back(std::move(component));
   if ((audioParamControl = dynamic_cast<FBParamControl*>(result)) != nullptr)
-    _audioParamIndexToComponent[audioParamControl->Param()->runtimeParamIndex] = componentIndex;
+    _audioParamIndexToComponents[audioParamControl->Param()->runtimeParamIndex].push_back(componentIndex);
   if ((guiParamControl = dynamic_cast<FBGUIParamControl*>(result)) != nullptr)
     _guiParamIndexToComponent[guiParamControl->Param()->runtimeParamIndex] = componentIndex;
   if ((paramsDependent = dynamic_cast<FBParamsDependent*>(result)) != nullptr)

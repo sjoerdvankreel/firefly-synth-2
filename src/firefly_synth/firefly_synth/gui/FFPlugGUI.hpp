@@ -20,6 +20,9 @@ public FBPlugGUI
   FBGridComponent* _modules = {};
   FBGridComponent* _container = {};
   FBContentComponent* _content = {};
+  juce::Component* _overlayComponent = {};
+  juce::Component* _overlayContainer = {};
+  FBContentComponent* _overlayContent = {};
 
   FBModuleGraphComponent* _graph = {};
   std::unique_ptr<FBGraphRenderState> _graphRenderState;
@@ -34,6 +37,9 @@ public:
 
   bool ToggleMatrix();
   void SwitchGraphToModule(int index, int slot);
+  
+  void HideOverlayComponent();
+  void ShowOverlayComponent(juce::Component* overlay, int w, int h);
 
   void resized() override;
   void UpdateExchangeStateTick() override;

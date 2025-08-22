@@ -7,6 +7,7 @@
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
+#include <firefly_synth/modules/echo/FFGEchoGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
@@ -19,6 +20,7 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/main/FBGraphRenderState.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
@@ -137,19 +139,46 @@ FFPlugGUI::ToggleMatrix()
 }
 
 void 
+FFPlugGUI::HideOverlayComponent()
+{
+  if (_overlayComponent == nullptr)
+    return;
+  _overlayComponent->setVisible(false);
+  _overlayContent->SetContent(nullptr);
+  _overlayContainer->setVisible(false);
+  removeChildComponent(_overlayContainer);
+}
+
+void 
+FFPlugGUI::ShowOverlayComponent(Component* overlay, int w, int h)
+{
+  if (_overlayComponent != nullptr)
+    HideOverlayComponent();
+  int x = (getWidth() - w) / 2;
+  int y = (getHeight() - h) / 2;
+  _overlayContent->SetContent(overlay);
+  _overlayContainer->setBounds(x, y, w, h);
+  addAndMakeVisible(_overlayContainer, 1);
+  _overlayContainer->resized();
+  _overlayComponent = overlay;
+}
+
+void 
 FFPlugGUI::SetupGUI()
 {
   FB_LOG_ENTRY_EXIT();
+
   _matrix = FFMakeModMatrixGUI(this); 
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(4, 1), std::vector<int> { { 1 } });
+  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, FFMakeOsciGUI(this));
   _modules->Add(1, 0, FFMakeEffectGUI(this));
-  _modules->Add(2, 0, FFMakeLFOGUI(this));
-  _modules->Add(3, 0, FFMakeEnvGUI(this));
+  _modules->Add(2, 0, FFMakeGEchoGUI(this));
+  _modules->Add(3, 0, FFMakeLFOGUI(this));
+  _modules->Add(4, 0, FFMakeEnvGUI(this));
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 12, 9, 50 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0, 0 } });
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 13, 10, 65 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0, 0 } });
   _container->Add(0, 0, 1, 1, FFMakeHeaderGUI(this));
   _container->Add(0, 1, 1, 1, FFMakeExternalGUI(this));
   _container->Add(0, 2, 1, 1, FFMakeMasterGUI(this));
@@ -161,4 +190,14 @@ FFPlugGUI::SetupGUI()
   _container->Add(2, 0, 1, 7, _graph);
   _container->Add(3, 0, 1, 7, _content);
   addAndMakeVisible(_container);
+
+  auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1, 0 } });
+  _overlayContent = StoreComponent<FBContentComponent>();
+  overlayGrid->Add(0, 0, 1, 2, _overlayContent);
+  auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
+  overlayClose->onClick = [this] { HideOverlayComponent(); };
+  auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
+  overlayGrid->Add(1, 1, overlayCloseSection);
+  _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid, true);
+  overlayGrid->MarkSection({ { 1, 0 }, { 1, 2 } });
 }

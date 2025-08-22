@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_base/base/shared/FBSIMD.hpp>
+#include <cmath>
 
 enum class FFModulationOpType { 
   Off, 
@@ -8,7 +9,15 @@ enum class FFModulationOpType {
   BPAdd, BPMul, BPStack };
 
 inline float
-MultiplyClamp(
+FFSoftClip10(float val)
+{
+  if (val > 1.0f || val < -1.0f)
+    val = 10.0f * std::tanh(val * 0.1f);
+  return val;
+}
+
+inline float
+FFMultiplyClamp(
   float val, float mul, float min, float max)
 {
   return std::clamp(val * mul, min, max);

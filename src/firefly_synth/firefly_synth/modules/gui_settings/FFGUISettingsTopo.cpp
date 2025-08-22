@@ -16,6 +16,7 @@ FFMakeGUISettingsTopo()
   auto selectGuiModule = [](auto& state) { return &state.guiSettings; }; 
 
   auto& guiUserScale = result->guiParams[(int)FFGUISettingsGUIParam::UserScale];
+  guiUserScale.unit = "%";
   guiUserScale.defaultText = "1";
   guiUserScale.name = "User Scale";
   guiUserScale.slotCount = 1;

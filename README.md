@@ -2,8 +2,8 @@
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Tested on reaper, renoise, fruity and bitwig.
-* Osci, inter-osci modulation, per-voice fx, global fx, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
-* Stock JUCE GUI, no presets, no delay, reverb, MTS-ESP.
+* Osci, inter-osci modulation, per-voice fx, global fx, global echo, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
+* Stock JUCE GUI, no presets, no MTS-ESP, no portamento, no global unison.
 
 # Some demo material
 * Bowed strings
@@ -43,6 +43,15 @@
 [strings](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_matrix_pad_strings.rpp)
 [fm](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_matrix_pad_fm.rpp)
 [hardsync](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_matrix_pad_hardsync.rpp)
+* Plucked strings + echo
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_echo_pluckstring.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_echo_pluckstring.rpp)
+* Saw + echo + echo mod
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_echo_saw_and_echo_mod.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_echo_saw_and_echo_mod.rpp)
+* FM + echo + echo mod
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_echo_fm_and_echo_mod.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_echo_fm_and_echo_mod.rpp)
 
 The distortion demo is actually interesting to look at the reaper/video file. It makes use of envelope loop points,
 keytracking state variable filters and keytracking comb filters. Because of the keytracking each engine voice
@@ -50,6 +59,8 @@ shows up as a different line (frequency response in the filter case, but the sam
 in the graph plot. See bottom of the page for screenshot.
 
 LFO demo shows plotting of per-voice LFO to gain for the osci. In case CLAP per-voice modulation is applied too, things get stacked.
+
+And the FM + echo demo just kicks ass.
 
 # Why yet another one?
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
@@ -78,6 +89,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Same soft clippers: https://dafx.de/paper-archive/2012/papers/dafx12_submission_45.pdf.
 * Same DSF algorithm: https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html.
 * Same state variable filter: https://www.cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf.
+* Same (modified) Freeverb: https://github.com/sinshu/freeverb.
 * Stole the color-morphing noise algo from here: https://sampo.kapsi.fi/PinkNoise/.
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/. You have to download the zip to get at the PolyBLEP source for all waveforms.
 
@@ -146,9 +158,24 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Single matrix for audio and cv. Env and LFO are now processed in lock-step, so env can modulate LFO and the other way around.
 * Env/VLFO/GLFO/Master Aux inputs plus MIDI CC, Pitch Bend, Channel Pressure.
 
+## Echo
+* Combined multitap delay / feedback delay / reverb.
+* Adjustable ordering of taps / feedback / reverb.
+* Adjustable placement in the processing pipeline: before all fx, after all fx, or apply to input / output of any of the effect modules.
+* Time or tempo-synced versions of multitap and feedback delay.
+* Smoothing parameter for delay time changes. Applies to time, bars, host bpm changes etc etc.
+* Unlike FF1, all delay times are now modulatable.
+* 8-tap multitap delay with per-tap modulatable level, delay, stereo balance, L/R crossover and resonant LP/HP filters.
+* Pop-out matrix editor for the individual taps.
+* Feedback delay with modulatable dry/wet mix, delay time, feedback amount, L/R crossover and resonant LP/HP filters.
+* Note: reso filters for the feedback delay are placed INSIDE the feedback loop! So that's feedback-filters themselves inside the feedback path of the delay line.
+These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 1000%. But if you get them to sustain at just the sweet spot, you can get some great results.
+* (F)Re(e)verb with modulatable dry/wet mix, room size, damping, L/R crossover, all-pass filter control and resonant LP/HP filters.
+
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
 # Screenshots
 <img alt="Screenshot" src="demo/screenshot.png"/>
 <img alt="Screenshot Matrix" src="demo/screenshot_matrix.png"/>
+<img alt="Screenshot Multitap" src="demo/screenshot_multitap.png"/>

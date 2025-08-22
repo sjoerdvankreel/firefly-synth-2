@@ -134,6 +134,11 @@ public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
   int Process(bool graph, FBModuleProcState& state);
-  void InitializeBuffers(bool graph, float sampleRate);
   void BeginVoice(bool graph, FBModuleProcState& state);
+
+  void AllocOnDemandBuffers(
+    FBRuntimeTopo const* topo, FBProcStateContainer* state,
+    int moduleSlot, bool graph, float sampleRate);
+  void ReleaseOnDemandBuffers(
+    FBRuntimeTopo const* topo, FBProcStateContainer* state);
 };
