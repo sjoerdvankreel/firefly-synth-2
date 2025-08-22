@@ -445,7 +445,6 @@ FFGEchoProcessor::ProcessReverb(
   FBModuleProcState& state,
   bool processAudioOrExchangeState)
 {
-  float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
   auto& output = procState->dsp.global.gEcho.output;
   auto const& params = procState->param.global.gEcho[0];
@@ -475,6 +474,8 @@ FFGEchoProcessor::ProcessReverb(
         FFGEchoParam::ReverbDamp, dampNorm.Get(s));
       float xOverPlain = topo.NormalizedToIdentityFast(
         FFGEchoParam::ReverbXOver, xOverNorm.Get(s));
+
+#if 0 // todo
       float lpResPlain = topo.NormalizedToIdentityFast(
         FFGEchoParam::ReverbLPRes, lpResNorm.Get(s));
       float hpResPlain = topo.NormalizedToIdentityFast(
@@ -483,6 +484,53 @@ FFGEchoProcessor::ProcessReverb(
         FFGEchoParam::ReverbLPFreq, lpFreqNorm.Get(s));
       float hpFreqPlain = topo.NormalizedToLog2Fast(
         FFGEchoParam::ReverbHPFreq, hpFreqNorm.Get(s));
+#endif
+
+      // Size doesnt respond linear.
+      // By just testing by listening 80% is about the midpoint.
+      // Do cube root so that 0.5 ~= 0.79.
+      float size = (std::cbrt(sizePlain) * ReverbRoomScale) + ReverbRoomOffset;
+      float damp = dampPlain * ReverbDampScale;
+      float reverbIn = output[0].Get(s) + output[1].Get(s) * ReverbGain;
+      
+      // TODO filter
+      // TODO check default xover
+
+      std::array<float, 2> reverbOut = { 0.0f, 0.0f };
+
+      for (int c = 0; c < 2; c++)
+      {
+        for (int i = 0; i < FFGEchoReverbCombCount; i++)
+        {
+          int pos = _reverbState.combPosition[c][i];
+          int length = (int)_reverbState.combState[c][i].size();
+          float combVal = _reverbState.combState[c][i][pos];
+          _reverbState.combFilter[c][i] = (combVal * (1.0f - damp)) + (_reverbState.combFilter[c][i] * damp);
+          _reverbState.combState[c][i][pos] = reverbIn + (_reverbState.combFilter[c][i] * size);
+          _reverbState.combPosition[c][i] = (pos + 1) % length;
+          reverbOut[c] += combVal;
+        }
+
+        for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
+        {
+          float outputIn = reverbOut[c];
+          int pos = _reverbState.allPassPosition[c][i];
+          int length = (int)_reverbState.allPassState[c][i].size();
+          float allPassVal = _reverbState.allPassState[c][i][pos];
+          reverbOut[c] = -reverbOut[c] + allPassVal;
+          _reverbState.allPassState[c][i][pos] = outputIn + (allPassVal * apfPlain * 0.5f);
+          _reverbState.allPassPosition[c][i] = (pos + 1) % length;
+        }
+      }
+
+      float wet = mixPlain * ReverbWetScale;
+      float dry = (1.0f - mixPlain) * ReverbDryScale;
+      float wet1 = wet * xOverPlain;
+      float wet2 = wet * (1.0f - xOverPlain);
+      float outL = reverbOut[0] * wet1 + reverbOut[1] * wet2;
+      float outR = reverbOut[1] * wet1 + reverbOut[0] * wet2;
+      output[0].Set(s, output[0].Get(s) * dry + outL);
+      output[1].Set(s, output[1].Get(s) * dry + outR);
     }
 
     return;

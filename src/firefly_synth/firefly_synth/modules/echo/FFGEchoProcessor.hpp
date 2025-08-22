@@ -36,8 +36,9 @@ struct FFGEchoDelayState
 struct FFGEchoReverbState
 {
   std::array<std::array<int, FFGEchoReverbCombCount>, 2> combPosition = {};
-  std::array<std::array<std::int32_t, FFGEchoReverbAllPassCount>, 2> allPassPosition = {};
+  std::array<std::array<float, FFGEchoReverbCombCount>, 2> combFilter = {};
   std::array<std::array<std::vector<float>, FFGEchoReverbCombCount>, 2> combState = {};
+  std::array<std::array<std::int32_t, FFGEchoReverbAllPassCount>, 2> allPassPosition = {};
   std::array<std::array<std::vector<float>, FFGEchoReverbAllPassCount>, 2> allPassState = {};
 };
 
