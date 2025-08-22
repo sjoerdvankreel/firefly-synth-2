@@ -43,6 +43,9 @@
 [strings](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_matrix_pad_strings.rpp)
 [fm](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_matrix_pad_fm.rpp)
 [hardsync](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_matrix_pad_hardsync.rpp)
+* Plucked strings + echo
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_echo_pluckstring.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_echo_pluckstring.rpp)
 
 The distortion demo is actually interesting to look at the reaper/video file. It makes use of envelope loop points,
 keytracking state variable filters and keytracking comb filters. Because of the keytracking each engine voice
