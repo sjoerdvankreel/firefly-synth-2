@@ -60,6 +60,8 @@ in the graph plot. See bottom of the page for screenshot.
 
 LFO demo shows plotting of per-voice LFO to gain for the osci. In case CLAP per-voice modulation is applied too, things get stacked.
 
+And the FM + echo demo just kicks ass.
+
 # Why yet another one?
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
 This is stuff that has to be built-in from the ground up, which would essentially mean a complete rewrite anyway.
