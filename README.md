@@ -58,9 +58,8 @@ keytracking state variable filters and keytracking comb filters. Because of the 
 shows up as a different line (frequency response in the filter case, but the same applies to oscis and envelopes)
 in the graph plot. See bottom of the page for screenshot.
 
-LFO demo shows plotting of per-voice LFO to gain for the osci. In case CLAP per-voice modulation is applied too, things get stacked.
-
-And the FM + echo demo just kicks ass.
+LFO demo shows plotting of per-voice LFO to gain for the osci.
+In case CLAP per-voice modulation is applied too, things get stacked.
 
 # Why yet another one?
 There's a couple things i wanted to do that prove difficult to retrofit onto FF1.
