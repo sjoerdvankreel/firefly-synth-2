@@ -55,7 +55,9 @@ public:
   virtual std::vector<FBHostContextMenuItem> MakeAudioParamContextMenu(int index) = 0;
 
   FBUndoStateContainer& UndoState() { return _undoState; }
+  bool GetAudioParamBool(FBParamTopoIndices const& indices) const;
   int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;
+  template <class T> T GetAudioParamList(FBParamTopoIndices const& indices) const;
 
   void EndAudioParamChange(int index);
   void BeginAudioParamChange(int index);
@@ -65,3 +67,11 @@ public:
   void ClearModuleAudioParams(FBTopoIndices const& moduleIndices);
   void CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot);
 };
+
+template <class T>
+T FBHostGUIContext::GetAudioParamList(FBParamTopoIndices const& indices) const
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
+  return static_cast<T>(param->static_.List().NormalizedToPlainFast(static_cast<float>(normalized)));
+}
