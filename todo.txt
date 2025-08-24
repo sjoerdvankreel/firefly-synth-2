@@ -1,6 +1,7 @@
 TODOLIST for alpha 13 - vecho
 
 [x] conversion
+[ ] add new gecho target
 [ ] vecho delay not accurate -- block param
 [ ] note breaking change on auto lanes
 [ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation -> cannot place anywhere in the pipeline but thats ok
