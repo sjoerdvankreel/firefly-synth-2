@@ -41,7 +41,7 @@ public FBModuleGraphRenderData<GEchoGraphRenderData>
   int totalSamples = {};
   std::array<int, 4> samplesProcessed = {};
 
-  FFGEchoProcessor& GetProcessor(FBModuleProcState& state);
+  FFEchoProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
@@ -55,7 +55,7 @@ PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
   result.sampleCount = data->pixelWidth;
-  result.sampleRate = data->pixelWidth / FFGEchoPlotLengthSeconds;
+  result.sampleRate = data->pixelWidth / FFEchoPlotLengthSeconds;
   result.staticModuleIndex = (int)FFModuleType::GEcho;
   return result;
 }
@@ -84,7 +84,7 @@ GEchoGraphRenderData::DoBeginVoiceOrBlock(
     true, graphIndex, totalSamples, *moduleProcState);
 }
 
-FFGEchoProcessor&
+FFEchoProcessor&
 GEchoGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();

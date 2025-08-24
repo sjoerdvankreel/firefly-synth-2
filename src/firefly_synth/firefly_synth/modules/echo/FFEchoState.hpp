@@ -25,10 +25,10 @@ class FFEchoDSPState final
 {
   friend class FFPlugProcessor;
   friend struct GEchoGraphRenderData;
-  std::unique_ptr<FFGEchoProcessor> processor = {};
+  std::unique_ptr<FFEchoProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEchoDSPState);
-  FFEchoDSPState() : processor(std::make_unique<FFGEchoProcessor>()) {}
+  FFEchoDSPState() : processor(std::make_unique<FFEchoProcessor>()) {}
   FBSArray2<float, FBFixedBlockSamples, 2> input = {};
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
 };
@@ -37,7 +37,7 @@ template <class TBlock>
 class alignas(alignof(TBlock)) FFEchoBlockParamState final
 {
   friend class FFPlugProcessor;
-  friend class FFGEchoProcessor;
+  friend class FFEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> tapsOn = {};
@@ -57,7 +57,7 @@ public:
 template <class TAccurate>
 class alignas(alignof(TAccurate)) FFEchoAccParamState final
 {
-  friend class FFGEchoProcessor;
+  friend class FFEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<TAccurate, 1> gain = {};
   std::array<TAccurate, 1> tapsMix = {};
@@ -94,7 +94,7 @@ template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFEchoParamState final
 {
   friend class FFPlugProcessor;
-  friend class FFGEchoProcessor;
+  friend class FFEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   FFEchoAccParamState<TAccurate> acc = {};
   FFEchoBlockParamState<TBlock> block = {};

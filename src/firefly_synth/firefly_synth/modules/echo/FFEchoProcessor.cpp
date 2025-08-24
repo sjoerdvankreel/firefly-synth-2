@@ -23,14 +23,14 @@ static float const ReverbRoomScale = 0.28f;
 static float const ReverbRoomOffset = 0.7f;
 static float const ReverbSpread = 23.0f / 44100.0f;
 
-static std::array<float, FFGEchoReverbAllPassCount> const ReverbAllpassLength = {
+static std::array<float, FFEchoReverbAllPassCount> const ReverbAllpassLength = {
   556.0f / 44100.0f, 441.0f / 44100.0f, 341.0f / 44100.0f, 225.0f / 44100.0f };
-static std::array<float, FFGEchoReverbCombCount> const ReverbCombLength = {
+static std::array<float, FFEchoReverbCombCount> const ReverbCombLength = {
   1116.0f / 44100.0f, 1188.0f / 44100.0f, 1277.0f / 44100.0f, 1356.0f / 44100.0f,
   1422.0f / 44100.0f, 1491.0f / 44100.0f, 1557.0f / 44100.0f, 1617.0f / 44100.0f };
 
 void 
-FFGEchoDelayState::Reset()
+FFEchoModulatableDelayState::Reset()
 {
   lpFilter.Reset();
   hpFilter.Reset();
@@ -39,7 +39,7 @@ FFGEchoDelayState::Reset()
 }
 
 void
-FFGEchoReverbState::Reset()
+FFEchoReverbState::Reset()
 {
   lpFilter.Reset();
   hpFilter.Reset();
@@ -48,15 +48,15 @@ FFGEchoReverbState::Reset()
   allPassPosition = {};
   for (int c = 0; c < 2; c++)
   {
-    for (int i = 0; i < FFGEchoReverbCombCount; i++)
+    for (int i = 0; i < FFEchoReverbCombCount; i++)
       std::fill(combState[c][i].begin(), combState[c][i].end(), 0.0f);
-    for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
+    for (int i = 0; i < FFEchoReverbAllPassCount; i++)
       std::fill(allPassState[c][i].begin(), allPassState[c][i].end(), 0.0f);
   }
 }
 
 void
-FFGEchoProcessor::ReleaseOnDemandBuffers(
+FFEchoProcessor::ReleaseOnDemandBuffers(
   FBRuntimeTopo const*, FBProcStateContainer* state)
 {
   for (int c = 0; c < 2; c++)
@@ -64,12 +64,12 @@ FFGEchoProcessor::ReleaseOnDemandBuffers(
     _feedbackDelayState.delayLine[c].ReleaseBuffers(state->MemoryPool());
     for (int t = 0; t < FFEchoTapCount; t++)
       _tapDelayStates[t].delayLine[c].ReleaseBuffers(state->MemoryPool());
-    for (int i = 0; i < FFGEchoReverbCombCount; i++)
+    for (int i = 0; i < FFEchoReverbCombCount; i++)
     {
       _reverbState.combState[c][i].clear();
       _reverbState.combState[c][i].shrink_to_fit();
     }
-    for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
+    for (int i = 0; i < FFEchoReverbAllPassCount; i++)
     {
       _reverbState.allPassState[c][i].clear();
       _reverbState.allPassState[c][i].shrink_to_fit();
@@ -78,7 +78,7 @@ FFGEchoProcessor::ReleaseOnDemandBuffers(
 }
 
 void
-FFGEchoProcessor::AllocOnDemandBuffers(
+FFEchoProcessor::AllocOnDemandBuffers(
   FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate)
 {
   // for graphing we are toying with the parameters to fit the plots
@@ -107,14 +107,14 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   bool reverbOn = moduleTopo.NormalizedToBoolFast(FFEchoParam::ReverbOn, reverbOnNorm);
   if(graph || reverbOn)
   {
-    for (int i = 0; i < FFGEchoReverbCombCount; i++)
+    for (int i = 0; i < FFEchoReverbCombCount; i++)
     {
       float combSamplesL = ReverbCombLength[i] * sampleRate;
       float combSamplesR = (ReverbCombLength[i] + ReverbSpread) * sampleRate;
       _reverbState.combState[0][i].resize((int)std::ceil(combSamplesL));
       _reverbState.combState[1][i].resize((int)std::ceil(combSamplesR));
     }
-    for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
+    for (int i = 0; i < FFEchoReverbAllPassCount; i++)
     {
       float allPassSamplesL = ReverbAllpassLength[i] * sampleRate;
       float allPassSamplesR = (ReverbAllpassLength[i] + ReverbSpread) * sampleRate;
@@ -135,7 +135,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
 }
 
 void 
-FFGEchoProcessor::BeginBlock(
+FFEchoProcessor::BeginBlock(
   bool graph, int graphIndex, 
   int graphSampleCount, FBModuleProcState& state)
 {
@@ -210,7 +210,7 @@ FFGEchoProcessor::BeginBlock(
 }
 
 int 
-FFGEchoProcessor::Process(
+FFEchoProcessor::Process(
   FBModuleProcState& state)
 {
   float sampleRate = state.input->sampleRate;
@@ -250,7 +250,7 @@ FFGEchoProcessor::Process(
 
   auto& exchangeDSP = exchangeToGUI->global.gEcho[0];
   exchangeDSP.active = true;
-  exchangeDSP.lengthSamples = FBTimeToSamples(FFGEchoPlotLengthSeconds, sampleRate);
+  exchangeDSP.lengthSamples = FBTimeToSamples(FFEchoPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
   exchangeParams.acc.gain[0] = gainNorm.Last();
@@ -265,7 +265,7 @@ FFGEchoProcessor::Process(
 }
 
 void 
-FFGEchoProcessor::ProcessFeedback(
+FFEchoProcessor::ProcessFeedback(
   FBModuleProcState& state,
   bool processAudioOrExchangeState)
 {
@@ -359,7 +359,7 @@ FFGEchoProcessor::ProcessFeedback(
 }
 
 void
-FFGEchoProcessor::ProcessTaps(
+FFEchoProcessor::ProcessTaps(
   FBModuleProcState& state, 
   bool processAudioOrExchangeState)
 {
@@ -471,7 +471,7 @@ FFGEchoProcessor::ProcessTaps(
 }
 
 void
-FFGEchoProcessor::ProcessReverb(
+FFEchoProcessor::ProcessReverb(
   FBModuleProcState& state,
   bool processAudioOrExchangeState)
 {
@@ -531,7 +531,7 @@ FFGEchoProcessor::ProcessReverb(
 
       for (int c = 0; c < 2; c++)
       {
-        for (int i = 0; i < FFGEchoReverbCombCount; i++)
+        for (int i = 0; i < FFEchoReverbCombCount; i++)
         {
           int pos = _reverbState.combPosition[c][i];
           int length = (int)_reverbState.combState[c][i].size();
@@ -542,7 +542,7 @@ FFGEchoProcessor::ProcessReverb(
           reverbOut[c] += combVal;
         }
 
-        for (int i = 0; i < FFGEchoReverbAllPassCount; i++)
+        for (int i = 0; i < FFEchoReverbAllPassCount; i++)
         {
           float outputIn = reverbOut[c];
           int pos = _reverbState.allPassPosition[c][i];
