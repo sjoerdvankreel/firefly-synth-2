@@ -25,7 +25,7 @@ enum class FFEchoOrder {
 enum class FFEchoParam {
   VOnOrGTarget, VOrderOrGOrder, Gain, Sync,
   DelaySmoothTime, DelaySmoothBars,
-  ReverbOn = FFEchoParam::Count, ReverbMix, ReverbXOver,
+  ReverbOn, ReverbMix, ReverbXOver,
   ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
