@@ -13,7 +13,7 @@ IsTapsOn(
   FBGraphRenderState* state,
   bool exchange, int exchangeVoice)
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapsOn, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::TapsOn, 0 } };
   return state->AudioParamBool(indices, exchange, exchangeVoice);
 }
 
@@ -31,7 +31,7 @@ IsFeedbackOn(
   FBGraphRenderState* state,
   bool exchange, int exchangeVoice)
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::FeedbackOn, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } };
   return state->AudioParamBool(indices, exchange, exchangeVoice);
 }
 
@@ -96,12 +96,12 @@ GEchoGraphRenderData::DoProcess(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
-  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Target, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VOnOrGTarget, 0 } };
   auto target = state->AudioParamList<FFGEchoTarget>(indices, false, -1);
   if (target == FFGEchoTarget::Off)
     return 0;
 
-  indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::Order, 0 } };
+  indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VOrderOrGOrder, 0 } };
   auto order = state->AudioParamList<FFGEchoOrder>(indices, false, -1);
   if (graphIndex == FFGEchoGetProcessingOrder(order, FFGEchoModule::Taps) && !IsTapsOn(state, exchange, exchangeVoice))
     return 0;
@@ -142,9 +142,9 @@ FFGEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
   auto* renderState = graphData->renderState;
   FBTopoIndices modIndices = { (int)FFModuleType::GEcho, 0 };
-  FBParamTopoIndices paramIndices = { modIndices, { (int)FFGEchoParam::Target, 0 } };
+  FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::VOnOrGTarget, 0 } };
   auto target = renderState->AudioParamList<FFGEchoTarget>(paramIndices, false, -1);
-  paramIndices = { modIndices, { (int)FFGEchoParam::Order, 0 } };
+  paramIndices = { modIndices, { (int)FFEchoParam::VOrderOrGOrder, 0 } };
   auto order = renderState->AudioParamList<FFGEchoOrder>(paramIndices, false, -1);
   bool on = target != FFGEchoTarget::Off;
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
