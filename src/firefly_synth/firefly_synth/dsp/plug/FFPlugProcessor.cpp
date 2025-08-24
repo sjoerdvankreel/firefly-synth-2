@@ -95,6 +95,7 @@ FFPlugProcessor::AllocOnDemandBuffers(
     _procState->dsp.global.gEffect[i].processor->AllocOnDemandBuffers<true>(topo, procState, i, false, _sampleRate);
   for (int v = 0; v < FBMaxVoices; v++)
   {
+    _procState->dsp.voice[v].vEcho.processor->AllocOnDemandBuffers(topo, procState, false, _sampleRate);
     for (int i = 0; i < FFOsciCount; i++)
       _procState->dsp.voice[v].osci[i].processor->AllocOnDemandBuffers(topo, procState, i, false, _sampleRate);
     for (int i = 0; i < FFEffectCount; i++)

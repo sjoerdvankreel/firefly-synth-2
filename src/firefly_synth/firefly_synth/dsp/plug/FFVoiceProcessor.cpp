@@ -49,13 +49,18 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceDSP = procState->dsp.voice[voice];
   auto const& vMix = procState->param.voice.vMix[0];
+  auto const& vEcho = procState->param.voice.vEcho[0];
   auto const& balNormIn = vMix.acc.bal[0].Voice()[voice];
   auto const& ampNormIn = vMix.acc.amp[0].Voice()[voice];
   auto const& lfo1ToBalNorm = vMix.acc.lfo1ToBal[0].Voice()[voice];
   auto const& ampEnvToAmpNorm = vMix.acc.ampEnvToAmp[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
+  auto& vEchoModuleTopo = state.topo->static_->modules[(int)FFModuleType::VEcho];
+  
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
+  float vEchoTargetNorm = vEcho.block.vTargetOrGTarget[0].Voice()[voice];
+  auto vEchoTarget = vEchoModuleTopo.NormalizedToListFast<FFVEchoTarget>(FFEchoParam::VTargetOrGTarget, vEchoTargetNorm);
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
@@ -128,6 +133,15 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     float ampPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Get(s));
     for (int c = 0; c < 2; c++)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
+  }
+
+  if (vEchoTarget == FFVEchoTarget::AfterMix)
+  {
+    state.moduleSlot = 0;
+    voiceDSP.output.CopyTo(voiceDSP.vEcho.input);
+    voiceDSP.vEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
+    voiceDSP.vEcho.processor->Process(state);
+    voiceDSP.vEcho.output.CopyTo(voiceDSP.vEcho.input);
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

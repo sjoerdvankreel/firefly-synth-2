@@ -30,6 +30,7 @@ template <bool Global>
 class FFEchoDSPState final
 {
   friend class FFPlugProcessor;
+  friend class FFVoiceProcessor;
   friend struct EchoGraphRenderData<true>;
   friend struct EchoGraphRenderData<false>;
   std::unique_ptr<FFEchoProcessor<Global>> processor = {};
@@ -44,6 +45,7 @@ template <class TBlock>
 class alignas(alignof(TBlock)) FFEchoBlockParamState final
 {
   friend class FFPlugProcessor;
+  friend class FFVoiceProcessor;
   friend class FFEchoProcessor<true>;
   friend class FFEchoProcessor<false>;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
@@ -103,6 +105,7 @@ template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFEchoParamState final
 {
   friend class FFPlugProcessor;
+  friend class FFVoiceProcessor;
   friend class FFEchoProcessor<true>;
   friend class FFEchoProcessor<false>;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
