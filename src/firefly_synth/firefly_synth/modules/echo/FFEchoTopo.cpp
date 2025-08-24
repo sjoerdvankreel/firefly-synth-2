@@ -53,6 +53,7 @@ FFMakeEchoTopo(bool global)
       { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "Off" },
       { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "Pre GFX" },
       { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "Post GFX" },
+      { "{C510F9C1-13A6-4929-A7EA-7C5F79BA6E42}", "Post GMix" },
       { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "Pre GFX1" },
       { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "Post GFX1" },
       { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "Pre GFX2" },
@@ -64,7 +65,8 @@ FFMakeEchoTopo(bool global)
   else
     vTargetOrGTarget.List().items = {
       { "{0EFCD973-BAA5-47B9-B61B-23FC8B82DC03}", "Off" },
-      { "{49FD9558-2BD8-4C75-9C0E-F4E0707329AD}", "Post VFX" } };
+      { "{0EFCD973-BAA5-47B9-B61B-23FC8B82DC03}", "Post VFX" },
+      { "{4E37CD52-00B3-455A-9958-99F7ACBE544E}", "Post VMix" } };
 
   auto& order = result->params[(int)FFEchoParam::Order];
   order.acc = false;

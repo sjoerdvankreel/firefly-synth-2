@@ -214,6 +214,9 @@ FFPlugProcessor::ProcessPostVoice(
     output.audio.AddMul(globalDSP.gEffect[i].output, gfxToOutNorm);
   }
 
+  if (gEchoTarget == FFGEchoTarget::AfterFX)
+    ProcessGEcho(state, output.audio);
+
   ampNormIn.CV().CopyTo(ampNormModulated);
   balNormIn.CV().CopyTo(balNormModulated);
   FFApplyModulation(FFModulationOpType::UPMul, globalDSP.gLFO[0].outputAll, lfo1ToAmpNorm.CV(), ampNormModulated);
@@ -226,7 +229,7 @@ FFPlugProcessor::ProcessPostVoice(
       output.audio[c].Set(s, output.audio[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
   }
 
-  if (gEchoTarget == FFGEchoTarget::AfterFX)
+  if (gEchoTarget == FFGEchoTarget::AfterMix)
     ProcessGEcho(state, output.audio);
 
   state.moduleSlot = 0;
