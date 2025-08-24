@@ -120,7 +120,7 @@ class alignas(alignof(TAccurate)) FFVEchoParamState final
   FFEchoAccParamState<TAccurate> acc = {};
   FFEchoBlockParamState<TBlock> block = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFVEchoParamState);
 };
 
 template <class TBlock, class TAccurate>

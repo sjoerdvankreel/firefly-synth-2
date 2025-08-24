@@ -63,7 +63,6 @@ FFMakeEchoTopo(bool global)
   }
   else
   {
-    auto& vOnOrGTarget = result->params[(int)FFGEchoParam::ReverbOn];
     vOnOrGTarget.name = "On";
     vOnOrGTarget.defaultText = "Off";
     vOnOrGTarget.type = FBParamType::Boolean;
@@ -511,7 +510,7 @@ FFMakeEchoTopo(bool global)
   feedbackDelayBars.unit = "Bars";
   feedbackDelayBars.id = prefix + "{BAC85A14-5F60-4692-9D45-81AB29477F61}";
   feedbackDelayBars.type = FBParamType::Bars;
-  feedbackDelayBars.Bars().items = MakeGEchoBarsItems();
+  feedbackDelayBars.Bars().items = MakeEchoBarsItems();
   auto selectFeedbackDelayBars = [](auto& module) { return &module.block.feedbackDelayBars; };
   feedbackDelayBars.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectFeedbackDelayBars);
   feedbackDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectFeedbackDelayBars);

@@ -61,7 +61,7 @@ FFSelectExchangeParamAddr(
 }
 
 template <bool Global>
-inline auto
+inline FBScalarParamAddrSelector
 FFSelectDualGUIParamAddrImpl(auto selectGlobalModule, auto selectVoiceModule, auto selectParam)
 {
   if constexpr (Global)
@@ -70,7 +70,7 @@ FFSelectDualGUIParamAddrImpl(auto selectGlobalModule, auto selectVoiceModule, au
     return FFSelectGUIParamAddr(selectVoiceModule, selectParam);
 }
 
-inline auto
+inline FBScalarParamAddrSelector
 FFSelectDualGUIParamAddr(bool global, auto selectGlobalModule, auto selectVoiceModule, auto selectParam)
 {
   if (global)
