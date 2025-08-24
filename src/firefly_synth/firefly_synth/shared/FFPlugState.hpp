@@ -29,7 +29,8 @@
 
 struct FFGUIState final
 {
-  std::array<FFGEchoGUIState, 1> gEcho = {};
+  std::array<FFEchoGUIState, 1> vEcho = {};
+  std::array<FFEchoGUIState, 1> gEcho = {};
   std::array<FFGUISettingsGUIState, 1> guiSettings = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };
@@ -50,6 +51,7 @@ struct FFVoiceExchangeState final
 {
   std::array<FFLFOExchangeState, FFLFOCount> vLFO = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMix = {};
+  std::array<FBModuleProcSingleExchangeState, 1> vEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMatrix = {};
   std::array<FBModuleProcSingleExchangeState, 1> osciMod = {};
   std::array<FBModuleProcSingleExchangeState, FFEnvCount> env = {};
@@ -61,7 +63,7 @@ struct FFVoiceExchangeState final
 struct alignas(FBSIMDAlign) FFGlobalDSPState final
 {
   FFMIDIDSPState midi = {};
-  FFGEchoDSPState gEcho = {};
+  FFEchoDSPState gEcho = {};
   FFOutputDSPState output = {};
   FFMasterDSPState master = {};
   FFModMatrixDSPState<true> gMatrix = {};
@@ -72,6 +74,7 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
 
 struct alignas(FBSIMDAlign) FFVoiceDSPState final
 {
+  FFEchoDSPState vEcho = {};
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
   FFModMatrixDSPState<false> vMatrix = {};
@@ -109,6 +112,7 @@ struct alignas(alignof(TAccurate)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
   std::array<FFVMixParamState<TAccurate>, 1> vMix = {};
+  std::array<FFVEchoParamState<TBlock, TAccurate>, 1> vEcho = {};
   std::array<FFOsciModParamState<TBlock, TAccurate>, 1> osciMod = {};
   std::array<FFEnvParamState<TBlock, TAccurate>, FFEnvCount> env = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOCount> vLFO = {};

@@ -62,7 +62,7 @@ FFGEchoProcessor::ReleaseOnDemandBuffers(
   for (int c = 0; c < 2; c++)
   {
     _feedbackDelayState.delayLine[c].ReleaseBuffers(state->MemoryPool());
-    for (int t = 0; t < FFGEchoTapCount; t++)
+    for (int t = 0; t < FFEchoTapCount; t++)
       _tapDelayStates[t].delayLine[c].ReleaseBuffers(state->MemoryPool());
     for (int i = 0; i < FFGEchoReverbCombCount; i++)
     {
@@ -124,7 +124,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   }
 
   bool tapsOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::TapsOn, tapsOnNorm);
-  for (int t = 0; t < FFGEchoTapCount; t++)
+  for (int t = 0; t < FFEchoTapCount; t++)
   {
     bool tapOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
     if (graph || (tapsOn && tapOn))
@@ -197,7 +197,7 @@ FFGEchoProcessor::BeginBlock(
 
   _tapsOn = topo.NormalizedToBoolFast(FFGEchoParam::TapsOn, tapsOnNorm);
   _tapsOn &= !graph || graphIndex == tapsOrder || graphIndex == (int)FFGEchoModule::Count;
-  for (int t = 0; t < FFGEchoTapCount; t++)
+  for (int t = 0; t < FFEchoTapCount; t++)
   {
     _tapOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
@@ -390,7 +390,7 @@ FFGEchoProcessor::ProcessTaps(
       float tapsMixPlain = topo.NormalizedToIdentityFast(
         FFGEchoParam::TapsMix, tapsMixNorm[0].Global().CV().Get(s));
 
-      for (int t = 0; t < FFGEchoTapCount; t++)
+      for (int t = 0; t < FFEchoTapCount; t++)
       {
         if (_tapOn[t])
         {
@@ -457,7 +457,7 @@ FFGEchoProcessor::ProcessTaps(
     return;
 
   auto& exchangeParams = exchangeToGUI->param.global.gEcho[0];
-  for (int t = 0; t < FFGEchoTapCount; t++)
+  for (int t = 0; t < FFEchoTapCount; t++)
   {
     exchangeParams.acc.tapLPRes[t] = tapLPResNorm[t].Global().CV().Last();
     exchangeParams.acc.tapLPFreq[t] = tapLPFreqNorm[t].Global().CV().Last();

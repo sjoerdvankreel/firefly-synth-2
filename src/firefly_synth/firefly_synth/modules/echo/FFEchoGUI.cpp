@@ -28,7 +28,7 @@ MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
   auto topo = plugGUI->HostContext()->Topo();
   auto rowSizes = std::vector<int>();
   rowSizes.push_back(1);
-  for (int i = 0; i < FFGEchoTapCount; i++)
+  for (int i = 0; i < FFEchoTapCount; i++)
     rowSizes.push_back(1);
   auto columnSizes = std::vector<int> { { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 } };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
@@ -55,7 +55,7 @@ MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
   for(int i = 0; i < 9; i++)
     grid->MarkSection({ { 0, 1 + i }, { 1, 1 } });  
 
-  for (int t = 0; t < FFGEchoTapCount; t++)
+  for (int t = 0; t < FFEchoTapCount; t++)
   {
     grid->Add(t + 1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(t + 1)));
     auto tapOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::TapOn, t } });
@@ -83,7 +83,7 @@ MakeGEchoTapsEditor(FBPlugGUI* plugGUI)
       grid->MarkSection({ { 1 + t, 1 + i }, { 1, 1 } });
   }
 
-  for(int t = 0; t < FFGEchoTapCount; t++)
+  for(int t = 0; t < FFEchoTapCount; t++)
     grid->MarkSection({ { 1 + t, 0 }, { 1, 1 } });
 
   return grid;
@@ -273,7 +273,7 @@ MakeGEchoTab(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
 
   auto individualTapsGUI = plugGUI->StoreComponent<FBMultiContentComponent>();
-  for(int i = 0; i < FFGEchoTapCount; i++)
+  for(int i = 0; i < FFEchoTapCount; i++)
     individualTapsGUI->SetContent(i, MakeGEchoSectionTap(plugGUI, i));
   FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoGUIParam::TapSelect, 0 } };
   individualTapsGUI->SelectContentIndex(plugGUI->HostContext()->GetGUIParamDiscrete(indices) - 1);

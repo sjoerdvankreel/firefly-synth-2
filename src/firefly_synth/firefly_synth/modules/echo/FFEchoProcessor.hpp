@@ -54,8 +54,8 @@ class FFGEchoProcessor final
   FFGEchoOrder _order = {};
   FFGEchoTarget _target = {};
   float _feedbackDelayBarsSamples = {};
-  std::array<bool, FFGEchoTapCount> _tapOn = {};
-  std::array<float, FFGEchoTapCount> _tapDelayBarsSamples = {};
+  std::array<bool, FFEchoTapCount> _tapOn = {};
+  std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
 
   bool _graph = {};
   int _graphSampleCount = {};
@@ -64,7 +64,7 @@ class FFGEchoProcessor final
 
   FFGEchoReverbState _reverbState = {};
   FFGEchoDelayState _feedbackDelayState = {};
-  std::array<FFGEchoDelayState, FFGEchoTapCount> _tapDelayStates = {};
+  std::array<FFGEchoDelayState, FFEchoTapCount> _tapDelayStates = {};
 
   void ProcessTaps(
     FBModuleProcState& state,

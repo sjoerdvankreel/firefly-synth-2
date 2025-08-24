@@ -12,55 +12,92 @@
 
 struct FBStaticModule;
 
-class FFGEchoGUIState final
+class FFEchoGUIState final
 {
   friend struct FFGEchoState;
-  friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<double, 1> tapSelect = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoGUIState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoGUIState);
 };
 
-class FFGEchoDSPState final
+class FFEchoDSPState final
 {
   friend class FFPlugProcessor;
   friend struct GEchoGraphRenderData;
   std::unique_ptr<FFGEchoProcessor> processor = {};
 public:
-  FB_NOCOPY_NOMOVE_NODEFCTOR(FFGEchoDSPState);
-  FFGEchoDSPState() : processor(std::make_unique<FFGEchoProcessor>()) {}
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FFEchoDSPState);
+  FFEchoDSPState() : processor(std::make_unique<FFGEchoProcessor>()) {}
   FBSArray2<float, FBFixedBlockSamples, 2> input = {};
   FBSArray2<float, FBFixedBlockSamples, 2> output = {};
 };
 
 template <class TBlock>
-class alignas(alignof(TBlock)) FFGEchoBlockParamState final
+class alignas(alignof(TBlock)) FFEchoBlockParamState
 {
   friend class FFPlugProcessor;
   friend class FFGEchoProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<TBlock, 1> sync = {};
-  std::array<TBlock, 1> order = {};
-  std::array<TBlock, 1> target = {};
   std::array<TBlock, 1> tapsOn = {};
-  std::array<TBlock, 1> reverbOn = {};
   std::array<TBlock, 1> feedbackOn = {};
+  std::array<TBlock, 1> vOnOrGTarget = {};
+  std::array<TBlock, 1> vOrderOrGOrder = {};
   std::array<TBlock, 1> feedbackDelayBars = {};
-  std::array<TBlock, 1> delaySmoothTime = {};
-  std::array<TBlock, 1> delaySmoothBars = {};
-  std::array<TBlock, FFGEchoTapCount> tapOn = {};
-  std::array<TBlock, FFGEchoTapCount> tapDelayBars = {};
+  std::array<TBlock, 1> gDelaySmoothTime = {};
+  std::array<TBlock, 1> gDelaySmoothBars = {};
+  std::array<TBlock, FFEchoTapCount> tapOn = {};
+  std::array<TBlock, FFEchoTapCount> tapDelayBars = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoBlockParamState);
+};
+
+template <class TBlock>
+class alignas(alignof(TBlock)) FFGEchoBlockParamState final:
+public FFEchoBlockParamState<TBlock>
+{
+  friend class FFPlugProcessor;
+  friend class FFGEchoProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  std::array<TBlock, 1> reverbOn = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoBlockParamState);
 };
 
 template <class TAccurate>
-class alignas(alignof(TAccurate)) FFGEchoAccParamState final
+class alignas(alignof(TAccurate)) FFEchoAccParamState
 {
   friend class FFGEchoProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<TAccurate, 1> gain = {};
   std::array<TAccurate, 1> tapsMix = {};
+  std::array<TAccurate, 1> feedbackMix = {};
+  std::array<TAccurate, 1> feedbackAmount = {};
+  std::array<TAccurate, 1> feedbackXOver = {};
+  std::array<TAccurate, 1> feedbackDelayTime = {};
+  std::array<TAccurate, 1> feedbackLPFreq = {};
+  std::array<TAccurate, 1> feedbackLPRes = {};
+  std::array<TAccurate, 1> feedbackHPFreq = {};
+  std::array<TAccurate, 1> feedbackHPRes = {};
+  std::array<TAccurate, FFEchoTapCount> tapLPRes = {};
+  std::array<TAccurate, FFEchoTapCount> tapHPRes = {};
+  std::array<TAccurate, FFEchoTapCount> tapLPFreq = {};
+  std::array<TAccurate, FFEchoTapCount> tapHPFreq = {};
+  std::array<TAccurate, FFEchoTapCount> tapLevel = {};
+  std::array<TAccurate, FFEchoTapCount> tapXOver = {};
+  std::array<TAccurate, FFEchoTapCount> tapDelayTime = {};
+  std::array<TAccurate, FFEchoTapCount> tapBalance = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoAccParamState);
+};
+
+template <class TAccurate>
+class alignas(alignof(TAccurate)) FFGEchoAccParamState final:
+public FFEchoAccParamState<TAccurate>
+{
+  friend class FFGEchoProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<TAccurate, 1> reverbMix = {};
   std::array<TAccurate, 1> reverbAPF = {};
   std::array<TAccurate, 1> reverbSize = {};
@@ -70,24 +107,20 @@ class alignas(alignof(TAccurate)) FFGEchoAccParamState final
   std::array<TAccurate, 1> reverbHPRes = {};
   std::array<TAccurate, 1> reverbLPFreq = {};
   std::array<TAccurate, 1> reverbHPFreq = {};
-  std::array<TAccurate, 1> feedbackMix = {};
-  std::array<TAccurate, 1> feedbackAmount = {};
-  std::array<TAccurate, 1> feedbackXOver = {};
-  std::array<TAccurate, 1> feedbackDelayTime = {};
-  std::array<TAccurate, 1> feedbackLPFreq = {};
-  std::array<TAccurate, 1> feedbackLPRes = {};
-  std::array<TAccurate, 1> feedbackHPFreq = {};
-  std::array<TAccurate, 1> feedbackHPRes = {};
-  std::array<TAccurate, FFGEchoTapCount> tapLPRes = {};
-  std::array<TAccurate, FFGEchoTapCount> tapHPRes = {};
-  std::array<TAccurate, FFGEchoTapCount> tapLPFreq = {};
-  std::array<TAccurate, FFGEchoTapCount> tapHPFreq = {};
-  std::array<TAccurate, FFGEchoTapCount> tapLevel = {};
-  std::array<TAccurate, FFGEchoTapCount> tapXOver = {};
-  std::array<TAccurate, FFGEchoTapCount> tapDelayTime = {};
-  std::array<TAccurate, FFGEchoTapCount> tapBalance = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoAccParamState);
+};
+
+template <class TBlock, class TAccurate>
+class alignas(alignof(TAccurate)) FFVEchoParamState final
+{
+  friend class FFPlugProcessor;
+  friend class FFGEchoProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  FFEchoAccParamState<TAccurate> acc = {};
+  FFEchoBlockParamState<TBlock> block = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoParamState);
 };
 
 template <class TBlock, class TAccurate>
@@ -95,7 +128,7 @@ class alignas(alignof(TAccurate)) FFGEchoParamState final
 {
   friend class FFPlugProcessor;
   friend class FFGEchoProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeGEchoTopo();
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   FFGEchoAccParamState<TAccurate> acc = {};
   FFGEchoBlockParamState<TBlock> block = {};
 public:

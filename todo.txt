@@ -1,10 +1,11 @@
 TODOLIST for alpha 13 - vecho
 
-[ ] get the text out of the graphs
+[ ] conversion
 [ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation -> cannot place anywhere in the pipeline but thats ok
 
 TODOLIST for alpha-14
 
+[ ] get the text out of the graphs
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
 [ ] less matrix routes
