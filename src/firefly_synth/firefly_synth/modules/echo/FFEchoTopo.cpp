@@ -65,7 +65,6 @@ FFMakeEchoTopo(bool global)
   else
     vTargetOrGTarget.List().items = {
       { "{0EFCD973-BAA5-47B9-B61B-23FC8B82DC03}", "Off" },
-      { "{B0EBF533-2388-4807-BCA2-21B72151DF05}", "Post VFX" },
       { "{4E37CD52-00B3-455A-9958-99F7ACBE544E}", "Post VMix" } };
 
   auto& order = result->params[(int)FFEchoParam::Order];

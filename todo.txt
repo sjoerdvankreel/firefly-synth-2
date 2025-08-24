@@ -24,6 +24,7 @@ TODOLIST for alpha-14
 [ ] refix all behind-the-scenes mod sources and targets
 [ ] master aux gui to small
 
+pre/post VMIX echo or not ?
 list all the dependencies!
 pck support
 per-module presets
