@@ -89,16 +89,16 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   auto const& params = procState->param.global.gEcho[0];
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapsOnNorm = params.block.tapsOn[0].Value();
-  auto const& targetNorm = params.block.target[0].Value();
+  auto const& targetNorm = params.block.vOnOrGTarget[0].Value();
   auto const& reverbOnNorm = params.block.reverbOn[0].Value();
   auto const& feedbackOnNorm = params.block.feedbackOn[0].Value();
   auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::GEcho];
 
-  if (moduleTopo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm) == FFGEchoTarget::Off)
+  if (moduleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VOnOrGTarget, targetNorm) == FFGEchoTarget::Off)
     return;
 
-  int maxSamples = (int)std::ceil(sampleRate * FFGEchoMaxSeconds);
-  bool feedbackOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
+  int maxSamples = (int)std::ceil(sampleRate * FFEchoMaxSeconds);
+  bool feedbackOn = moduleTopo.NormalizedToBoolFast(FFEchoParam::FeedbackOn, feedbackOnNorm);
   if(graph || feedbackOn)
     for (int c = 0; c < 2; c++)
       if(_feedbackDelayState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
@@ -123,10 +123,10 @@ FFGEchoProcessor::AllocOnDemandBuffers(
     }
   }
 
-  bool tapsOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::TapsOn, tapsOnNorm);
+  bool tapsOn = moduleTopo.NormalizedToBoolFast(FFEchoParam::TapsOn, tapsOnNorm);
   for (int t = 0; t < FFEchoTapCount; t++)
   {
-    bool tapOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
+    bool tapOn = moduleTopo.NormalizedToBoolFast(FFEchoParam::TapOn, tapOnNorm[t].Value());
     if (graph || (tapsOn && tapOn))
       for (int c = 0; c < 2; c++)
         if (_tapDelayStates[t].delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
@@ -146,8 +146,8 @@ FFGEchoProcessor::BeginBlock(
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
   float syncNorm = params.block.sync[0].Value();
-  float orderNorm = params.block.order[0].Value();
-  float targetNorm = params.block.target[0].Value();
+  float orderNorm = params.block.vOrderOrGOrder[0].Value();
+  float targetNorm = params.block.vOnOrGTarget[0].Value();
   float delaySmoothTimeNorm = params.block.delaySmoothTime[0].Value();
   float delaySmoothBarsNorm = params.block.delaySmoothBars[0].Value();
 
@@ -163,9 +163,9 @@ FFGEchoProcessor::BeginBlock(
   _graphSampleCount = graphSampleCount;
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
-  _sync = topo.NormalizedToBoolFast(FFGEchoParam::Sync, syncNorm);
-  _order = topo.NormalizedToListFast<FFGEchoOrder>(FFGEchoParam::Order, orderNorm);
-  _target = topo.NormalizedToListFast<FFGEchoTarget>(FFGEchoParam::Target, targetNorm);
+  _sync = topo.NormalizedToBoolFast(FFEchoParam::Sync, syncNorm);
+  _order = topo.NormalizedToListFast<FFGEchoOrder>(FFEchoParam::VOrderOrGOrder, orderNorm);
+  _target = topo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VOnOrGTarget, targetNorm);
 
   int tapsOrder = FFGEchoGetProcessingOrder(_order, FFGEchoModule::Taps);
   int reverbOrder = FFGEchoGetProcessingOrder(_order, FFGEchoModule::Reverb);
@@ -174,10 +174,10 @@ FFGEchoProcessor::BeginBlock(
   float delaySmoothSamples;
   if (_sync)
     delaySmoothSamples = topo.NormalizedToBarsFloatSamplesFast(
-      FFGEchoParam::DelaySmoothBars, delaySmoothBarsNorm, sampleRate, bpm);
+      FFEchoParam::DelaySmoothBars, delaySmoothBarsNorm, sampleRate, bpm);
   else
     delaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-      FFGEchoParam::DelaySmoothTime, delaySmoothTimeNorm, sampleRate);
+      FFEchoParam::DelaySmoothTime, delaySmoothTimeNorm, sampleRate);
 
   _reverbOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbOn, reverbOnNorm);
   _reverbOn &= !graph || graphIndex == reverbOrder || graphIndex == (int)FFGEchoModule::Count;
@@ -185,23 +185,23 @@ FFGEchoProcessor::BeginBlock(
   if (_graph)
     _reverbState.Reset();
 
-  _feedbackOn = topo.NormalizedToBoolFast(FFGEchoParam::FeedbackOn, feedbackOnNorm);
+  _feedbackOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackOn, feedbackOnNorm);
   _feedbackOn &= !graph || graphIndex == feedbackOrder || graphIndex == (int)FFGEchoModule::Count;
 
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
-    FFGEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
+    FFEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
   _feedbackDelayState.smoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
 
   if (_graph)
     _feedbackDelayState.Reset();
 
-  _tapsOn = topo.NormalizedToBoolFast(FFGEchoParam::TapsOn, tapsOnNorm);
+  _tapsOn = topo.NormalizedToBoolFast(FFEchoParam::TapsOn, tapsOnNorm);
   _tapsOn &= !graph || graphIndex == tapsOrder || graphIndex == (int)FFGEchoModule::Count;
   for (int t = 0; t < FFEchoTapCount; t++)
   {
-    _tapOn[t] = topo.NormalizedToBoolFast(FFGEchoParam::TapOn, tapOnNorm[t].Value());
+    _tapOn[t] = topo.NormalizedToBoolFast(FFEchoParam::TapOn, tapOnNorm[t].Value());
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
-      FFGEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
+      FFEchoParam::TapDelayBars, tapDelayBarsNorm[t].Value(), sampleRate, bpm);
     _tapDelayStates[t].smoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
 
     if (_graph)
@@ -229,7 +229,7 @@ FFGEchoProcessor::Process(
   // make-up gain to offset all the dry/wet mixing
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
     for (int c = 0; c < 2; c++)
-      output[c].Mul(s, topo.NormalizedToLinearFast(FFGEchoParam::Gain, gainNorm.Load(s)));
+      output[c].Mul(s, topo.NormalizedToLinearFast(FFEchoParam::Gain, gainNorm.Load(s)));
 
   for (int m = 0; m < (int)FFGEchoModule::Count; m++)
   {
@@ -293,23 +293,23 @@ FFGEchoProcessor::ProcessFeedback(
         lengthTimeSamples = _feedbackDelayBarsSamples;
       else
         lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-          FFGEchoParam::FeedbackDelayTime, delayTimeNorm.Get(s), sampleRate);
+          FFEchoParam::FeedbackDelayTime, delayTimeNorm.Get(s), sampleRate);
       float lengthTimeSamplesSmooth = _feedbackDelayState.smoother.Next(lengthTimeSamples);
 
       float mixPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::FeedbackMix, mixNorm.Get(s));
+        FFEchoParam::FeedbackMix, mixNorm.Get(s));
       float xOverPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::FeedbackXOver, xOverNorm.Get(s));
+        FFEchoParam::FeedbackXOver, xOverNorm.Get(s));
       float amountPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::FeedbackAmount, amountNorm.Get(s));
+        FFEchoParam::FeedbackAmount, amountNorm.Get(s));
       float lpResPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::FeedbackLPRes, lpResNorm.Get(s));
+        FFEchoParam::FeedbackLPRes, lpResNorm.Get(s));
       float hpResPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::FeedbackHPRes, hpResNorm.Get(s));
+        FFEchoParam::FeedbackHPRes, hpResNorm.Get(s));
       float lpFreqPlain = topo.NormalizedToLog2Fast(
-        FFGEchoParam::FeedbackLPFreq, lpFreqNorm.Get(s));
+        FFEchoParam::FeedbackLPFreq, lpFreqNorm.Get(s));
       float hpFreqPlain = topo.NormalizedToLog2Fast(
-        FFGEchoParam::FeedbackHPFreq, hpFreqNorm.Get(s));
+        FFEchoParam::FeedbackHPFreq, hpFreqNorm.Get(s));
 
       float outLR[2];
       for (int c = 0; c < 2; c++)
@@ -388,7 +388,7 @@ FFGEchoProcessor::ProcessTaps(
       thisTapsOut[1] = 0.0f;
 
       float tapsMixPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::TapsMix, tapsMixNorm[0].Global().CV().Get(s));
+        FFEchoParam::TapsMix, tapsMixNorm[0].Global().CV().Get(s));
 
       for (int t = 0; t < FFEchoTapCount; t++)
       {
@@ -399,23 +399,23 @@ FFGEchoProcessor::ProcessTaps(
             lengthTimeSamples = _tapDelayBarsSamples[t];
           else
             lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-              FFGEchoParam::TapDelayTime, tapDelayTimeNorm[t].Global().CV().Get(s), sampleRate);
+              FFEchoParam::TapDelayTime, tapDelayTimeNorm[t].Global().CV().Get(s), sampleRate);
           float lengthTimeSamplesSmooth = _tapDelayStates[t].smoother.Next(lengthTimeSamples);
 
           float tapBalPlain = topo.NormalizedToLinearFast(
-            FFGEchoParam::TapBalance, tapBalNorm[t].Global().CV().Get(s));
+            FFEchoParam::TapBalance, tapBalNorm[t].Global().CV().Get(s));
           float tapXOverPlain = topo.NormalizedToIdentityFast(
-            FFGEchoParam::TapXOver, tapXOverNorm[t].Global().CV().Get(s));
+            FFEchoParam::TapXOver, tapXOverNorm[t].Global().CV().Get(s));
           float tapLevelPlain = topo.NormalizedToIdentityFast(
-            FFGEchoParam::TapLevel, tapLevelNorm[t].Global().CV().Get(s));
+            FFEchoParam::TapLevel, tapLevelNorm[t].Global().CV().Get(s));
           float tapLPResPlain = topo.NormalizedToIdentityFast(
-            FFGEchoParam::TapLPRes, tapLPResNorm[t].Global().CV().Get(s));
+            FFEchoParam::TapLPRes, tapLPResNorm[t].Global().CV().Get(s));
           float tapHPResPlain = topo.NormalizedToIdentityFast(
-            FFGEchoParam::TapHPRes, tapHPResNorm[t].Global().CV().Get(s));
+            FFEchoParam::TapHPRes, tapHPResNorm[t].Global().CV().Get(s));
           float tapLPFreqPlain = topo.NormalizedToLog2Fast(
-            FFGEchoParam::TapLPFreq, tapLPFreqNorm[t].Global().CV().Get(s));
+            FFEchoParam::TapLPFreq, tapLPFreqNorm[t].Global().CV().Get(s));
           float tapHPFreqPlain = topo.NormalizedToLog2Fast(
-            FFGEchoParam::TapHPFreq, tapHPFreqNorm[t].Global().CV().Get(s));
+            FFEchoParam::TapHPFreq, tapHPFreqNorm[t].Global().CV().Get(s));
 
           float thisTapOutLR[2];
           for (int c = 0; c < 2; c++)
