@@ -97,7 +97,7 @@ EchoGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   return *FFSelectDualState<Global>(
     [procState] { return procState->dsp.global.gEcho.processor.get(); },
-    [procState] { return procState->dsp.voice[state.voice->slot].vEcho.processor.get(); });
+    [procState, &state] { return procState->dsp.voice[state.voice->slot].vEcho.processor.get(); });
 }
 
 template <bool Global>
@@ -187,3 +187,5 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
 template struct EchoGraphRenderData<true>;
 template struct EchoGraphRenderData<false>;
+template void FFEchoRenderGraph<true>(FBModuleGraphComponentData*);
+template void FFEchoRenderGraph<false>(FBModuleGraphComponentData*);
