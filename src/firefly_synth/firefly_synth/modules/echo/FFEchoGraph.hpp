@@ -2,5 +2,6 @@
 
 struct FBModuleGraphComponentData;
 
+template <bool Global>
 void
-FFGEchoRenderGraph(FBModuleGraphComponentData* graphData);
+FFEchoRenderGraph(FBModuleGraphComponentData* graphData);

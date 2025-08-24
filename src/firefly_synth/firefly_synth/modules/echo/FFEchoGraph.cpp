@@ -10,38 +10,42 @@
 
 static bool
 IsTapsOn(
-  FBGraphRenderState* state,
+  FBGraphRenderState* state, bool global,
   bool exchange, int exchangeVoice)
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::TapsOn, 0 } };
+  auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
+  FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } };
   return state->AudioParamBool(indices, exchange, exchangeVoice);
 }
 
 static bool
 IsReverbOn(
-  FBGraphRenderState* state,
+  FBGraphRenderState* state, bool global,
   bool exchange, int exchangeVoice)
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::ReverbOn, 0 } };
+  auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
+  FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::ReverbOn, 0 } };
   return state->AudioParamBool(indices, exchange, exchangeVoice);
 }
 
 static bool
 IsFeedbackOn(
-  FBGraphRenderState* state,
+  FBGraphRenderState* state, bool global,
   bool exchange, int exchangeVoice)
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } };
+  auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
+  FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } };
   return state->AudioParamBool(indices, exchange, exchangeVoice);
 }
 
-struct GEchoGraphRenderData final:
+template <bool Global>
+struct EchoGraphRenderData final:
 public FBModuleGraphRenderData<GEchoGraphRenderData>
 {
   int totalSamples = {};
   std::array<int, 4> samplesProcessed = {};
 
-  FFEchoProcessor& GetProcessor(FBModuleProcState& state);
+  FFEchoProcessor<Global>& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
@@ -60,8 +64,9 @@ PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
   return result;
 }
 
+template <bool Global>
 void
-GEchoGraphRenderData::DoReleaseOnDemandBuffers(
+EchoGraphRenderData<Global>::DoReleaseOnDemandBuffers(
   FBGraphRenderState* state, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/)
 {
   auto* moduleProcState = state->ModuleProcState();
@@ -70,8 +75,9 @@ GEchoGraphRenderData::DoReleaseOnDemandBuffers(
     state->ProcContainer());
 }
 
+template <bool Global>
 void 
-GEchoGraphRenderData::DoBeginVoiceOrBlock(
+EchoGraphRenderData<Global>::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int graphIndex, bool /*exchange*/, int /*exchangeVoice*/)
 { 
   samplesProcessed[graphIndex] = 0;
@@ -84,15 +90,17 @@ GEchoGraphRenderData::DoBeginVoiceOrBlock(
     true, graphIndex, totalSamples, *moduleProcState);
 }
 
-FFEchoProcessor&
-GEchoGraphRenderData::GetProcessor(FBModuleProcState& state)
+template <bool Global>
+FFEchoProcessor<Global>&
+EchoGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   return *procState->dsp.global.gEcho.processor.get();
 }
 
+template <bool Global>
 int 
-GEchoGraphRenderData::DoProcess(
+EchoGraphRenderData<Global>::DoProcess(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
@@ -125,8 +133,9 @@ GEchoGraphRenderData::DoProcess(
   return GetProcessor(*moduleProcState).Process(*moduleProcState);
 }
 
+template <bool Global>
 void
-FFGEchoRenderGraph(FBModuleGraphComponentData* graphData)
+FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 {
   GEchoGraphRenderData renderData = {};
   graphData->bipolar = true;

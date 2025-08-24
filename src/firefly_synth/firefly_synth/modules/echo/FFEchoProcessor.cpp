@@ -432,7 +432,7 @@ FFEchoProcessor<Global>::ProcessTaps(
           else
             lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
               FFEchoParam::TapDelayTime,
-              FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).Get(s));
+              FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).Get(s),
               sampleRate);
           float lengthTimeSamplesSmooth = _tapDelayStates[t].smoother.Next(lengthTimeSamples);
 
