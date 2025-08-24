@@ -47,12 +47,12 @@ struct FFGEchoReverbState
 
 class FFGEchoProcessor final
 {
+  bool _on = {};
   bool _sync = {};
   bool _tapsOn = {};
   bool _feedbackOn = {};
   bool _reverbOn = {};
-  FFGEchoOrder _order = {};
-  FFGEchoTarget _target = {};
+  FFEchoOrder _order = {};
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFEchoTapCount> _tapOn = {};
   std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
