@@ -45,6 +45,7 @@ struct FFEchoReverbState
   std::array<std::array<std::vector<float>, FFEchoReverbAllPassCount>, 2> allPassState = {};
 };
 
+template <bool Global>
 class FFEchoProcessor final
 {
   bool _on = {};
@@ -82,7 +83,7 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoProcessor);
 
   int Process(FBModuleProcState& state);
-  void BeginBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+  void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate);
 };
