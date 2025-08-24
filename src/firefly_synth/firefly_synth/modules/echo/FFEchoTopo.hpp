@@ -25,7 +25,7 @@ enum class FFEchoOrder {
   ReverbToTapsToFeedback, ReverbToFeedbackToTaps };
 
 enum class FFEchoParam {
-  VTargetOrGTarget, VOrderOrGOrder, Gain, Sync,
+  VTargetOrGTarget, Order, Gain, Sync,
   DelaySmoothTime, DelaySmoothBars,
   ReverbOn, ReverbMix, ReverbXOver,
   ReverbSize, ReverbDamp, ReverbAPF,

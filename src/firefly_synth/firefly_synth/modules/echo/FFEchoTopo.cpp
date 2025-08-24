@@ -66,38 +66,27 @@ FFMakeEchoTopo(bool global)
       { "{0EFCD973-BAA5-47B9-B61B-23FC8B82DC03}", "Off" },
       { "{49FD9558-2BD8-4C75-9C0E-F4E0707329AD}", "Post VFX" } };
 
-  auto& vOrderOrGOrder = result->params[(int)FFEchoParam::VOrderOrGOrder];
-  vOrderOrGOrder.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
-  vOrderOrGOrder.acc = false;
-  vOrderOrGOrder.slotCount = 1;
-  vOrderOrGOrder.name = "Order";
-  vOrderOrGOrder.id = prefix + "{D84A623A-7F5C-40C6-A892-A441497783CD}";
-  auto selectVOrderOrGOrder = [](auto& module) { return &module.block.vOrderOrGOrder; };
-  vOrderOrGOrder.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectVOrderOrGOrder);
-  if (global)
-  {
-    vOrderOrGOrder.defaultText = "T\U00002192F\U00002192R";
-    vOrderOrGOrder.type = FBParamType::List;
-    vOrderOrGOrder.List().items = {
-      { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "T\U00002192F\U00002192R" },
-      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "T\U00002192R\U00002192F" },
-      { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "F\U00002192T\U00002192R" },
-      { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "F\U00002192R\U00002192T" },
-      { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "R\U00002192T\U00002192F" },
-      { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "R\U00002192F\U00002192T" } };
-    vOrderOrGOrder.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectVOrderOrGOrder);
-    vOrderOrGOrder.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVOrderOrGOrder);
-  }
-  else
-  {
-    vOrderOrGOrder.defaultText = "T\U00002192F";
-    vOrderOrGOrder.type = FBParamType::List;
-    vOrderOrGOrder.List().items = {
-      { "{25C92192-05D9-470A-BBF9-DBD6B6B2D666}", "T\U00002192F" },
-      { "{31F6E72F-4F26-48EC-B292-044DD5F1A97F}", "F\U00002192T" } };
-    vOrderOrGOrder.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVOrderOrGOrder);
-    vOrderOrGOrder.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVOrderOrGOrder);
-  }
+  auto& order = result->params[(int)FFEchoParam::Order];
+  order.acc = false;
+  order.slotCount = 1;
+  order.name = "Order";
+  order.defaultText = "T\U00002192F\U00002192R";
+  order.id = prefix + "{D84A623A-7F5C-40C6-A892-A441497783CD}";
+  order.type = FBParamType::List;
+  order.List().items = {
+    { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "T\U00002192F\U00002192R" },
+    { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "T\U00002192R\U00002192F" },
+    { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "F\U00002192T\U00002192R" },
+    { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "F\U00002192R\U00002192T" },
+    { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "R\U00002192T\U00002192F" },
+    { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "R\U00002192F\U00002192T" } };
+  auto selectOrder = [](auto& module) { return &module.block.order; };
+  order.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectOrder);
+  order.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOrder);
+  order.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOrder);
+  order.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectOrder);
+  order.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOrder);
+  order.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& gain = result->params[(int)FFEchoParam::Gain];
   gain.acc = true;

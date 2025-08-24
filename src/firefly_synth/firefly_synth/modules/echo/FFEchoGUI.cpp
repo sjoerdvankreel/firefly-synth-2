@@ -106,9 +106,9 @@ MakeEchoSectionMain(
   auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget);
   grid->Add(0, 1, targetBox);
   *targetBoxOut = targetBox;
-  auto vOrderOrGOrder = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VOrderOrGOrder, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vOrderOrGOrder));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vOrderOrGOrder));
+  auto order = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Order, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, order));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, order));
   auto delaySmoothTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::DelaySmoothTime, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, delaySmoothTime));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, delaySmoothTime, Slider::SliderStyle::LinearHorizontal));

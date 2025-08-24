@@ -48,10 +48,10 @@ class alignas(alignof(TBlock)) FFEchoBlockParamState final
   friend class FFEchoProcessor<false>;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<TBlock, 1> sync = {};
+  std::array<TBlock, 1> order = {};
   std::array<TBlock, 1> tapsOn = {};
   std::array<TBlock, 1> reverbOn = {};
   std::array<TBlock, 1> feedbackOn = {};
-  std::array<TBlock, 1> vOrderOrGOrder = {};
   std::array<TBlock, 1> vTargetOrGTarget = {};
   std::array<TBlock, 1> feedbackDelayBars = {};
   std::array<TBlock, 1> delaySmoothTime = {};
