@@ -14,6 +14,8 @@ struct FBStaticModule;
 
 template <bool Global>
 class FFEchoProcessor;
+template <bool Global>
+struct EchoGraphRenderData;
 
 class FFEchoGUIState final
 {
@@ -28,7 +30,8 @@ template <bool Global>
 class FFEchoDSPState final
 {
   friend class FFPlugProcessor;
-  friend struct GEchoGraphRenderData;
+  friend struct EchoGraphRenderData<true>;
+  friend struct EchoGraphRenderData<false>;
   std::unique_ptr<FFEchoProcessor<Global>> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFEchoDSPState);

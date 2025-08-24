@@ -40,7 +40,7 @@ IsFeedbackOn(
 
 template <bool Global>
 struct EchoGraphRenderData final:
-public FBModuleGraphRenderData<GEchoGraphRenderData>
+public FBModuleGraphRenderData<EchoGraphRenderData<Global>>
 {
   int totalSamples = {};
   std::array<int, 4> samplesProcessed = {};
@@ -111,11 +111,11 @@ EchoGraphRenderData<Global>::DoProcess(
 
   indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VOrderOrGOrder, 0 } };
   auto order = state->AudioParamList<FFEchoOrder>(indices, false, -1);
-  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps) && !IsTapsOn(state, exchange, exchangeVoice))
+  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps) && !IsTapsOn(state, Global, exchange, exchangeVoice))
     return 0;
-  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback) && !IsFeedbackOn(state, exchange, exchangeVoice))
+  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback) && !IsFeedbackOn(state, Global, exchange, exchangeVoice))
     return 0;
-  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb) && !IsReverbOn(state, exchange, exchangeVoice))
+  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb) && !IsReverbOn(state, Global, exchange, exchangeVoice))
     return 0;
 
   auto* procState = moduleProcState->ProcAs<FFProcState>();
@@ -137,7 +137,7 @@ template <bool Global>
 void
 FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
 {
-  GEchoGraphRenderData renderData = {};
+  EchoGraphRenderData<Global> renderData = {};
   graphData->bipolar = true;
   graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = true;
@@ -159,26 +159,29 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
 
   int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
-  FBRenderModuleGraph<true, true>(renderData, tapsOrder);
+  FBRenderModuleGraph<Global, true>(renderData, tapsOrder);
   graphData->graphs[tapsOrder].text = moduleName + " Taps";
-  if(!on || !IsTapsOn(renderState, false, -1))
+  if(!on || !IsTapsOn(renderState, Global, false, -1))
     graphData->graphs[tapsOrder].text += " Off";
 
   int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
-  FBRenderModuleGraph<true, true>(renderData, feedbackOrder);
+  FBRenderModuleGraph<Global, true>(renderData, feedbackOrder);
   graphData->graphs[feedbackOrder].text = moduleName + " Feedback";
-  if (!on || !IsFeedbackOn(renderState, false, -1))
+  if (!on || !IsFeedbackOn(renderState, Global, false, -1))
     graphData->graphs[feedbackOrder].text += " Off";
 
   int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
-  FBRenderModuleGraph<true, true>(renderData, reverbOrder);
+  FBRenderModuleGraph<Global, true>(renderData, reverbOrder);
   graphData->graphs[reverbOrder].text = moduleName + " Reverb";
-  if (!on || !IsReverbOn(renderState, false, -1))
+  if (!on || !IsReverbOn(renderState, Global, false, -1))
     graphData->graphs[reverbOrder].text += " Off";
 
   int allOrder = (int)FFEchoModule::Count;
-  FBRenderModuleGraph<true, true>(renderData, allOrder);
+  FBRenderModuleGraph<Global, true>(renderData, allOrder);
   graphData->graphs[allOrder].text = moduleName;
   if (!on)
     graphData->graphs[allOrder].text += " Off";
 }
+
+template struct EchoGraphRenderData<true>;
+template struct EchoGraphRenderData<false>;
