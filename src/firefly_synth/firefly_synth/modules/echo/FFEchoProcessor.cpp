@@ -233,8 +233,8 @@ FFEchoProcessor<Global>::Process(
     [procState]() { return &procState->param.global.gEcho[0]; },
     [procState]() { return &procState->param.voice.vEcho[0]; });
   auto& dspState = *FFSelectDualState<Global>(
-    [procState, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
-    [procState, voice, &state]() { return &procState->dsp.voice[voice].vEffect[state.moduleSlot]; });
+    [procState]() { return &procState->dsp.global.gEcho; },
+    [procState, voice]() { return &procState->dsp.voice[voice].vEcho; });
   auto& output = dspState.output;
   auto const& input = dspState.input;
   auto const& topo = state.topo->static_->modules[(int)(Global ? FFModuleType::GEcho : FFModuleType::VEcho)];
@@ -302,8 +302,8 @@ FFEchoProcessor<Global>::ProcessFeedback(
     [procState]() { return &procState->param.global.gEcho[0]; },
     [procState]() { return &procState->param.voice.vEcho[0]; });
   auto& dspState = *FFSelectDualState<Global>(
-    [procState, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
-    [procState, voice, &state]() { return &procState->dsp.voice[voice].vEffect[state.moduleSlot]; });
+    [procState]() { return &procState->dsp.global.gEcho; },
+    [procState, voice]() { return &procState->dsp.voice[voice].vEcho; });
   auto& output = dspState.output;  
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
@@ -406,8 +406,8 @@ FFEchoProcessor<Global>::ProcessTaps(
     [procState]() { return &procState->param.global.gEcho[0]; },
     [procState]() { return &procState->param.voice.vEcho[0]; });
   auto& dspState = *FFSelectDualState<Global>(
-    [procState, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
-    [procState, voice, &state]() { return &procState->dsp.voice[voice].vEffect[state.moduleSlot]; });
+    [procState]() { return &procState->dsp.global.gEcho; },
+    [procState, voice]() { return &procState->dsp.voice[voice].vEcho; });
   auto& output = dspState.output;
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
@@ -536,8 +536,8 @@ FFEchoProcessor<Global>::ProcessReverb(
     [procState]() { return &procState->param.global.gEcho[0]; },
     [procState]() { return &procState->param.voice.vEcho[0]; });
   auto& dspState = *FFSelectDualState<Global>(
-    [procState, &state]() { return &procState->dsp.global.gEffect[state.moduleSlot]; },
-    [procState, voice, &state]() { return &procState->dsp.voice[voice].vEffect[state.moduleSlot]; });
+    [procState]() { return &procState->dsp.global.gEcho; },
+    [procState, voice]() { return &procState->dsp.voice[voice].vEcho; });
   auto& output = dspState.output;
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
