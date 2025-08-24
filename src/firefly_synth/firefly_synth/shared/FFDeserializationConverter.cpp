@@ -68,6 +68,7 @@ FFDeserializationConverter::OnParamNotFound(
 
   // 2.0.4 - added "G" prefix to global echo module and params
   // NOTE TO SELF: this changed the param tags, so broke automation lanes.
+  // NOTE TO SELF 2: this changed the mod matrix list item values, so broke modulation too.
   // Let's REALLY not ever do that again.
   if (OldVersion() < FBPlugVersion(2, 0, 4))
   {
@@ -116,4 +117,17 @@ FFDeserializationConverter::PostProcess(
       }
     }
   }
+}
+
+bool 
+FFDeserializationConverter::OnParamListItemNotFound(
+  bool isGuiState,
+  std::string const& moduleId, int moduleSlot,
+  std::string const& paramId, int paramSlot,
+  std::string const& oldParamValue, std::string& newParamValue) const
+{
+  if (isGuiState)
+    return;
+
+
 }

@@ -534,17 +534,49 @@ FBRuntimeTopo::LoadParamStateFromVar(
     auto normalized = topo.TextToNormalized(true, val.toString().toStdString());
     if (!normalized)
     {
-      FB_LOG_WARN("Failed to parse plugin parameter value.");
-      normalized = topo.TextToNormalized(false, topo.GetDefaultText());
-#ifndef NDEBUG
+      int paramSlot = topo.topoIndices.param.slot;
+      int moduleSlot = topo.topoIndices.module.slot;
+      std::string paramId = topo.Static().id;
+      std::string moduleId = static_->modules[modules[topo.runtimeModuleIndex].topoIndices.index].id;
+
+      FB_LOG_INFO(
+        "Invalid param value found for " +
+        moduleId + ", param " +
+        paramId + ": " +
+        val.toString().toStdString());
+
+      if (topo.Static().type == FBParamType::List)
+      {
+        FB_LOG_INFO("Trying to map old to new list-valued parameter value.");
+        std::string newParamValue = {};
+        if (converter->OnParamListItemNotFound(isGuiState,
+          moduleId, moduleSlot, paramId, paramSlot,
+          val.toString().toStdString(), newParamValue))
+        {
+          normalized = topo.TextToNormalized(true, newParamValue);
+          FB_LOG_INFO("Mapped old to new list-valued parameter value: " + val.toString().toStdString() + " to " + newParamValue + ".");
+        }
+        else
+        {
+          FB_LOG_WARN("Failed to map old to new list-valued parameter value.");
+        }
+      }
+
       if (!normalized)
       {
-        auto defaultText = topo.GetDefaultText();
-        topo.TextToNormalized(false, defaultText);
-        FB_ASSERT(normalized);
-      }
+        FB_LOG_WARN("Failed to parse plugin parameter value.");
+        normalized = topo.TextToNormalized(false, topo.GetDefaultText());
+#ifndef NDEBUG
+        if (!normalized)
+        {
+          auto defaultText = topo.GetDefaultText();
+          topo.TextToNormalized(false, defaultText);
+          FB_ASSERT(normalized);
+        }
 #endif
+      }
     }
+
     if(!topo.static_.IsOutput())
       *container.Params()[iter->second] = static_cast<float>(normalized.value());
   }

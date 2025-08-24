@@ -98,6 +98,12 @@ public:
     std::string const& /*oldParamId*/, int /*oldParamSlot*/,
     std::string& /*newModuleId*/, int& /*newModuleSlot*/,
     std::string& /*newParamId*/, int& /*newParamSlot*/) const { return false; }
+
+  virtual bool OnParamListItemNotFound(
+    bool /* isGuiState */,
+    std::string const& /*moduleId*/, int /*moduleSlot*/,
+    std::string const& /*paramId*/, int /*paramSlot*/,
+    std::string const& /*oldParamValue*/, std::string& /* newParamValue*/) const { return false;  }
 };
 
 typedef std::function<FBSpecialParams(
