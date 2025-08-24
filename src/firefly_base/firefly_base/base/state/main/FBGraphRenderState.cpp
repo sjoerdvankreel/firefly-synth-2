@@ -229,7 +229,7 @@ FBGraphRenderState::GlobalModuleExchangeStateEqualsPrimary(
   auto topo = _plugGUI->HostContext()->Topo();
   auto paramIndex = topo->audio.paramTopoToRuntime.at({ { moduleIndex, moduleSlot }, { 0, 0 } });
   auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
-  for (; topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
+  for (; paramIndex < topo->audio.params.size() && topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
     if (*ExchangeContainer()->Params()[paramIndex].Global() != static_cast<float>(context->GetAudioParamNormalized(paramIndex)))
       return false;
   return true;
@@ -243,7 +243,7 @@ FBGraphRenderState::VoiceModuleExchangeStateEqualsPrimary(
   auto topo = _plugGUI->HostContext()->Topo();
   auto paramIndex = topo->audio.paramTopoToRuntime.at({ { moduleIndex, moduleSlot }, { 0, 0 } });
   auto runtimeModuleIndex = topo->audio.params[paramIndex].runtimeModuleIndex;
-  for (; topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
+  for (; paramIndex < topo->audio.params.size() && topo->audio.params[paramIndex].runtimeModuleIndex == runtimeModuleIndex; paramIndex++)
     if (ExchangeContainer()->Params()[paramIndex].Voice()[voice] != static_cast<float>(context->GetAudioParamNormalized(paramIndex)))
       return false;
   return true;
