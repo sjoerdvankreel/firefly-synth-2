@@ -126,8 +126,9 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
   result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));
+  result->modules[(int)FFModuleType::VEcho] = std::move(*FFMakeEchoTopo(false));
   result->modules[(int)FFModuleType::GEffect] = std::move(*FFMakeEffectTopo(true));
-  result->modules[(int)FFModuleType::GEcho] = std::move(*FFMakeGEchoTopo());
+  result->modules[(int)FFModuleType::GEcho] = std::move(*FFMakeEchoTopo(true));
   result->modules[(int)FFModuleType::VLFO] = std::move(*FFMakeLFOTopo(false));
   result->modules[(int)FFModuleType::GLFO] = std::move(*FFMakeLFOTopo(true));
   result->modules[(int)FFModuleType::Env] = std::move(*FFMakeEnvTopo());
@@ -163,6 +164,7 @@ FFMakeTopo(FBPlugFormat format)
   for (int s = 0; s < result->modules[(int)FFModuleType::VEffect].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::VEffect, s });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VMix, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::VEcho, 0 });
   for (int s = 0; s < result->modules[(int)FFModuleType::GEffect].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GEffect, s });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMix, 0 });
