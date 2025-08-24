@@ -54,13 +54,13 @@ public FBModuleGraphRenderData<EchoGraphRenderData<Global>>
 };
 
 static FBModuleGraphPlotParams
-PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
+PlotParams(FBModuleGraphComponentData const* data, bool global, int /*graphIndex*/)
 {
   FBModuleGraphPlotParams result = {};
   result.autoSampleRate = false;
   result.sampleCount = data->pixelWidth;
   result.sampleRate = data->pixelWidth / FFEchoPlotLengthSeconds;
-  result.staticModuleIndex = (int)FFModuleType::GEcho;
+  result.staticModuleIndex = (int)(global ? FFModuleType::GEcho : FFModuleType::VEcho);
   return result;
 }
 
@@ -147,8 +147,8 @@ FFEchoRenderGraph(FBModuleGraphComponentData* graphData)
   graphData->drawClipBoundaries = true;
   graphData->skipDrawOnEqualsPrimary = true;
   renderData.graphData = graphData;
-  renderData.plotParamsSelector = PlotParams;
-  renderData.totalSamples = PlotParams(graphData, -1).sampleCount;
+  renderData.plotParamsSelector = [](auto graphData, int graphIndex) { return PlotParams(graphData, Global, graphIndex); };
+  renderData.totalSamples = PlotParams(graphData, Global, -1).sampleCount;
   renderData.globalExchangeSelector = [](void const* exchangeState, int /*slot*/, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->global.gEcho[0]; };
   renderData.globalStereoOutputSelector = [](void const* procState, int /*slot*/, int /*graphIndex*/) {

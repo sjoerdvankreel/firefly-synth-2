@@ -1,7 +1,8 @@
 TODOLIST for alpha 13 - vecho
 
 [x] conversion
-[ ] add new gecho target
+[x] add new gecho target
+[ ] recheck if order works
 [ ] not per-tap delay line for voice
 [ ] vecho delay not accurate -- block param
 [ ] note breaking change on auto lanes

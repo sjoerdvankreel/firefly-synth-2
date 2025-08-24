@@ -141,7 +141,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     voiceDSP.output.CopyTo(voiceDSP.vEcho.input);
     voiceDSP.vEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
     voiceDSP.vEcho.processor->Process(state);
-    voiceDSP.vEcho.output.CopyTo(voiceDSP.vEcho.input);
+    voiceDSP.vEcho.output.CopyTo(voiceDSP.output);
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
