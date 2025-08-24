@@ -86,7 +86,7 @@ EchoGraphRenderData<Global>::DoBeginVoiceOrBlock(
     state->PlugGUI()->HostContext()->Topo(), 
     state->ProcContainer(),
     true, moduleProcState->input->sampleRate);
-  GetProcessor(*moduleProcState).BeginBlock(
+  GetProcessor(*moduleProcState).BeginVoiceOrBlock(
     true, graphIndex, totalSamples, *moduleProcState);
 }
 
@@ -95,7 +95,9 @@ FFEchoProcessor<Global>&
 EchoGraphRenderData<Global>::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  return *procState->dsp.global.gEcho.processor.get();
+  return *FFSelectDualState<Global>(
+    [procState] { return procState->dsp.global.gEcho.processor.get(); },
+    [procState] { return procState->dsp.voice[state.voice->slot].vEcho.processor.get(); });
 }
 
 template <bool Global>
