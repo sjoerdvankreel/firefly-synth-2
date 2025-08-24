@@ -158,9 +158,11 @@ static Component*
 MakeEchoSectionTap(FBPlugGUI* plugGUI, bool global, int tap)
 {
   FB_LOG_ENTRY_EXIT();
+  int col46Size = global ? 0 : 1;
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto col46SliderStyle = global ? Slider::SliderStyle::RotaryVerticalDrag : Slider::SliderStyle::LinearHorizontal;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, col46Size, 0, col46Size, 0, 0 });
   auto tapOn = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapOn, tap } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapOn));
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, tapOn));
@@ -175,19 +177,19 @@ MakeEchoSectionTap(FBPlugGUI* plugGUI, bool global, int tap)
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLevel, Slider::SliderStyle::LinearHorizontal));
   auto tapBalance = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapBalance, tap } });
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapBalance));
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapBalance, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapBalance, col46SliderStyle));
   auto tapXOver = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapXOver, tap } });
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapXOver));
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapXOver, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapXOver, col46SliderStyle));
   auto tapLpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPFreq, tap } });
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLpFreq));
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpFreq, col46SliderStyle));
   auto tapLpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLPRes, tap } });
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapLpRes));
   grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapLpRes, Slider::SliderStyle::RotaryVerticalDrag));
   auto tapHpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPFreq, tap } });
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapHpFreq));
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpFreq, col46SliderStyle));
   auto tapHpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapHPRes, tap } });
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tapHpRes));
   grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, tapHpRes, Slider::SliderStyle::RotaryVerticalDrag));
@@ -199,9 +201,11 @@ static Component*
 MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
 {
   FB_LOG_ENTRY_EXIT();
+  int col46Size = global ? 0 : 1;
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+  auto col46SliderStyle = global ? Slider::SliderStyle::RotaryVerticalDrag : Slider::SliderStyle::LinearHorizontal;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0, col46Size, 0, col46Size, 0, 0 });
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackOn, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on));
@@ -216,19 +220,19 @@ MakeEchoSectionFeedback(FBPlugGUI* plugGUI, bool global)
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::LinearHorizontal));
   auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackAmount, 0 } });
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, amount));
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, col46SliderStyle));
   auto xOver = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackXOver, 0 } });
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, xOver));
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, xOver, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, xOver, col46SliderStyle));
   auto lpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPFreq, 0 } });
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpFreq));
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpFreq, col46SliderStyle));
   auto lpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackLPRes, 0 } });
   grid->Add(0, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, lpRes));
   grid->Add(0, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, lpRes, Slider::SliderStyle::RotaryVerticalDrag));
   auto hpFreq = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPFreq, 0 } });
   grid->Add(1, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpFreq));
-  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpFreq, col46SliderStyle));
   auto hpRes = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::FeedbackHPRes, 0 } });
   grid->Add(1, 7, plugGUI->StoreComponent<FBParamLabel>(plugGUI, hpRes));
   grid->Add(1, 8, plugGUI->StoreComponent<FBParamSlider>(plugGUI, hpRes, Slider::SliderStyle::RotaryVerticalDrag));
@@ -287,9 +291,11 @@ MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
   FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoGUIParam::TapSelect, 0 } };
   individualTapsGUI->SelectContentIndex(plugGUI->HostContext()->GetGUIParamDiscrete(indices) - 1);
 
-  std::vector<int> columnSizes = { 1, 0, 0, 0 };
+  std::vector<int> columnSizes;
   if (global)
-    columnSizes.push_back(0);
+    columnSizes = { 1, 0, 0, 0, 0 };
+  else
+    columnSizes = { 0, 0, 1, 1 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
   grid->Add(0, 0, MakeEchoSectionMain(plugGUI, global));
   grid->Add(0, 1, MakeEchoSectionTaps(plugGUI, global, individualTapsGUI));
