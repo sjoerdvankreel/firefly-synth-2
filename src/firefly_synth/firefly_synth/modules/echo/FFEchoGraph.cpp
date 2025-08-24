@@ -22,7 +22,7 @@ IsReverbOn(
   FBGraphRenderState* state,
   bool exchange, int exchangeVoice)
 {
-  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFGEchoParam::ReverbOn, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::ReverbOn, 0 } };
   return state->AudioParamBool(indices, exchange, exchangeVoice);
 }
 
@@ -102,12 +102,12 @@ GEchoGraphRenderData::DoProcess(
     return 0;
 
   indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VOrderOrGOrder, 0 } };
-  auto order = state->AudioParamList<FFGEchoOrder>(indices, false, -1);
-  if (graphIndex == FFGEchoGetProcessingOrder(order, FFGEchoModule::Taps) && !IsTapsOn(state, exchange, exchangeVoice))
+  auto order = state->AudioParamList<FFEchoOrder>(indices, false, -1);
+  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Taps) && !IsTapsOn(state, exchange, exchangeVoice))
     return 0;
-  if (graphIndex == FFGEchoGetProcessingOrder(order, FFGEchoModule::Feedback) && !IsFeedbackOn(state, exchange, exchangeVoice))
+  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Feedback) && !IsFeedbackOn(state, exchange, exchangeVoice))
     return 0;
-  if (graphIndex == FFGEchoGetProcessingOrder(order, FFGEchoModule::Reverb) && !IsReverbOn(state, exchange, exchangeVoice))
+  if (graphIndex == FFEchoGetProcessingOrder(order, FFEchoModule::Reverb) && !IsReverbOn(state, exchange, exchangeVoice))
     return 0;
 
   auto* procState = moduleProcState->ProcAs<FFProcState>();
@@ -145,29 +145,29 @@ FFGEchoRenderGraph(FBModuleGraphComponentData* graphData)
   FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::VOnOrGTarget, 0 } };
   auto target = renderState->AudioParamList<FFGEchoTarget>(paramIndices, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::VOrderOrGOrder, 0 } };
-  auto order = renderState->AudioParamList<FFGEchoOrder>(paramIndices, false, -1);
+  auto order = renderState->AudioParamList<FFEchoOrder>(paramIndices, false, -1);
   bool on = target != FFGEchoTarget::Off;
   auto moduleName = graphData->renderState->ModuleProcState()->topo->ModuleAtTopo(modIndices)->name;
 
-  int tapsOrder = FFGEchoGetProcessingOrder(order, FFGEchoModule::Taps);
+  int tapsOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Taps);
   FBRenderModuleGraph<true, true>(renderData, tapsOrder);
   graphData->graphs[tapsOrder].text = moduleName + " Taps";
   if(!on || !IsTapsOn(renderState, false, -1))
     graphData->graphs[tapsOrder].text += " Off";
 
-  int feedbackOrder = FFGEchoGetProcessingOrder(order, FFGEchoModule::Feedback);
+  int feedbackOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Feedback);
   FBRenderModuleGraph<true, true>(renderData, feedbackOrder);
   graphData->graphs[feedbackOrder].text = moduleName + " Feedback";
   if (!on || !IsFeedbackOn(renderState, false, -1))
     graphData->graphs[feedbackOrder].text += " Off";
 
-  int reverbOrder = FFGEchoGetProcessingOrder(order, FFGEchoModule::Reverb);
+  int reverbOrder = FFEchoGetProcessingOrder(order, FFEchoModule::Reverb);
   FBRenderModuleGraph<true, true>(renderData, reverbOrder);
   graphData->graphs[reverbOrder].text = moduleName + " Reverb";
   if (!on || !IsReverbOn(renderState, false, -1))
     graphData->graphs[reverbOrder].text += " Off";
 
-  int allOrder = (int)FFGEchoModule::Count;
+  int allOrder = (int)FFEchoModule::Count;
   FBRenderModuleGraph<true, true>(renderData, allOrder);
   graphData->graphs[allOrder].text = moduleName;
   if (!on)

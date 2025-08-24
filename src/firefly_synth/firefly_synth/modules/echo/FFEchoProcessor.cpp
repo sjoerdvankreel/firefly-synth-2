@@ -104,7 +104,7 @@ FFGEchoProcessor::AllocOnDemandBuffers(
       if(_feedbackDelayState.delayLine[c].AllocBuffersIfChanged(state->MemoryPool(), maxSamples))
         _feedbackDelayState.delayLine[c].Reset(_feedbackDelayState.delayLine[c].MaxBufferSize());
 
-  bool reverbOn = moduleTopo.NormalizedToBoolFast(FFGEchoParam::ReverbOn, reverbOnNorm);
+  bool reverbOn = moduleTopo.NormalizedToBoolFast(FFEchoParam::ReverbOn, reverbOnNorm);
   if(graph || reverbOn)
   {
     for (int i = 0; i < FFGEchoReverbCombCount; i++)
@@ -164,12 +164,12 @@ FFGEchoProcessor::BeginBlock(
   _graphStVarFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, state.input->sampleRate, FFMaxStateVariableFilterFreq);
 
   _sync = topo.NormalizedToBoolFast(FFEchoParam::Sync, syncNorm);
-  _order = topo.NormalizedToListFast<FFGEchoOrder>(FFEchoParam::VOrderOrGOrder, orderNorm);
-  _target = topo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VOnOrGTarget, targetNorm);
+  _order = topo.NormalizedToListFast<FFEchoOrder>(FFEchoParam::VOrderOrGOrder, orderNorm);
+  _on = topo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VOnOrGTarget, targetNorm) != FFGEchoTarget::Off;
 
-  int tapsOrder = FFGEchoGetProcessingOrder(_order, FFGEchoModule::Taps);
-  int reverbOrder = FFGEchoGetProcessingOrder(_order, FFGEchoModule::Reverb);
-  int feedbackOrder = FFGEchoGetProcessingOrder(_order, FFGEchoModule::Feedback);
+  int tapsOrder = FFEchoGetProcessingOrder(_order, FFEchoModule::Taps);
+  int reverbOrder = FFEchoGetProcessingOrder(_order, FFEchoModule::Reverb);
+  int feedbackOrder = FFEchoGetProcessingOrder(_order, FFEchoModule::Feedback);
 
   float delaySmoothSamples;
   if (_sync)
@@ -179,14 +179,14 @@ FFGEchoProcessor::BeginBlock(
     delaySmoothSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
       FFEchoParam::DelaySmoothTime, delaySmoothTimeNorm, sampleRate);
 
-  _reverbOn = topo.NormalizedToBoolFast(FFGEchoParam::ReverbOn, reverbOnNorm);
-  _reverbOn &= !graph || graphIndex == reverbOrder || graphIndex == (int)FFGEchoModule::Count;
+  _reverbOn = topo.NormalizedToBoolFast(FFEchoParam::ReverbOn, reverbOnNorm);
+  _reverbOn &= !graph || graphIndex == reverbOrder || graphIndex == (int)FFEchoModule::Count;
 
   if (_graph)
     _reverbState.Reset();
 
   _feedbackOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackOn, feedbackOnNorm);
-  _feedbackOn &= !graph || graphIndex == feedbackOrder || graphIndex == (int)FFGEchoModule::Count;
+  _feedbackOn &= !graph || graphIndex == feedbackOrder || graphIndex == (int)FFEchoModule::Count;
 
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
@@ -196,7 +196,7 @@ FFGEchoProcessor::BeginBlock(
     _feedbackDelayState.Reset();
 
   _tapsOn = topo.NormalizedToBoolFast(FFEchoParam::TapsOn, tapsOnNorm);
-  _tapsOn &= !graph || graphIndex == tapsOrder || graphIndex == (int)FFGEchoModule::Count;
+  _tapsOn &= !graph || graphIndex == tapsOrder || graphIndex == (int)FFEchoModule::Count;
   for (int t = 0; t < FFEchoTapCount; t++)
   {
     _tapOn[t] = topo.NormalizedToBoolFast(FFEchoParam::TapOn, tapOnNorm[t].Value());
@@ -223,7 +223,7 @@ FFGEchoProcessor::Process(
   auto const& tapsMixNorm = params.acc.tapsMix[0].Global().CV();
 
   input.CopyTo(output);
-  if (_target == FFGEchoTarget::Off)
+  if (!_on)
     return 0;
 
   // make-up gain to offset all the dry/wet mixing
@@ -231,13 +231,13 @@ FFGEchoProcessor::Process(
     for (int c = 0; c < 2; c++)
       output[c].Mul(s, topo.NormalizedToLinearFast(FFEchoParam::Gain, gainNorm.Load(s)));
 
-  for (int m = 0; m < (int)FFGEchoModule::Count; m++)
+  for (int m = 0; m < (int)FFEchoModule::Count; m++)
   {
-    if(_tapsOn && FFGEchoGetProcessingOrder(_order, FFGEchoModule::Taps) == m)
+    if(_tapsOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Taps) == m)
       ProcessTaps(state, true);
-    else if (_feedbackOn && FFGEchoGetProcessingOrder(_order, FFGEchoModule::Feedback) == m)
+    else if (_feedbackOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Feedback) == m)
       ProcessFeedback(state, true);
-    else if (_reverbOn && FFGEchoGetProcessingOrder(_order, FFGEchoModule::Reverb) == m)
+    else if (_reverbOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Reverb) == m)
       ProcessReverb(state, true);
   }
 
@@ -496,23 +496,23 @@ FFGEchoProcessor::ProcessReverb(
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       float mixPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::ReverbMix, mixNorm.Get(s));
+        FFEchoParam::ReverbMix, mixNorm.Get(s));
       float apfPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::ReverbAPF, apfNorm.Get(s));
+        FFEchoParam::ReverbAPF, apfNorm.Get(s));
       float sizePlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::ReverbSize, sizeNorm.Get(s));
+        FFEchoParam::ReverbSize, sizeNorm.Get(s));
       float dampPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::ReverbDamp, dampNorm.Get(s));
+        FFEchoParam::ReverbDamp, dampNorm.Get(s));
       float xOverPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::ReverbXOver, xOverNorm.Get(s));
+        FFEchoParam::ReverbXOver, xOverNorm.Get(s));
       float lpResPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::ReverbLPRes, lpResNorm.Get(s));
+        FFEchoParam::ReverbLPRes, lpResNorm.Get(s));
       float hpResPlain = topo.NormalizedToIdentityFast(
-        FFGEchoParam::ReverbHPRes, hpResNorm.Get(s));
+        FFEchoParam::ReverbHPRes, hpResNorm.Get(s));
       float lpFreqPlain = topo.NormalizedToLog2Fast(
-        FFGEchoParam::ReverbLPFreq, lpFreqNorm.Get(s));
+        FFEchoParam::ReverbLPFreq, lpFreqNorm.Get(s));
       float hpFreqPlain = topo.NormalizedToLog2Fast(
-        FFGEchoParam::ReverbHPFreq, hpFreqNorm.Get(s));
+        FFEchoParam::ReverbHPFreq, hpFreqNorm.Get(s));
 
       if (_graph)
       {
