@@ -34,13 +34,14 @@ public:
 };
 
 template <class TBlock>
-class alignas(alignof(TBlock)) FFEchoBlockParamState
+class alignas(alignof(TBlock)) FFEchoBlockParamState final
 {
   friend class FFPlugProcessor;
   friend class FFGEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<TBlock, 1> sync = {};
   std::array<TBlock, 1> tapsOn = {};
+  std::array<TBlock, 1> reverbOn = {};
   std::array<TBlock, 1> feedbackOn = {};
   std::array<TBlock, 1> vOnOrGTarget = {};
   std::array<TBlock, 1> vOrderOrGOrder = {};
@@ -53,25 +54,22 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoBlockParamState);
 };
 
-template <class TBlock>
-class alignas(alignof(TBlock)) FFGEchoBlockParamState final:
-public FFEchoBlockParamState<TBlock>
-{
-  friend class FFPlugProcessor;
-  friend class FFGEchoProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
-  std::array<TBlock, 1> reverbOn = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoBlockParamState);
-};
-
 template <class TAccurate>
-class alignas(alignof(TAccurate)) FFEchoAccParamState
+class alignas(alignof(TAccurate)) FFEchoAccParamState final
 {
   friend class FFGEchoProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   std::array<TAccurate, 1> gain = {};
   std::array<TAccurate, 1> tapsMix = {};
+  std::array<TAccurate, 1> reverbMix = {};
+  std::array<TAccurate, 1> reverbAPF = {};
+  std::array<TAccurate, 1> reverbSize = {};
+  std::array<TAccurate, 1> reverbDamp = {};
+  std::array<TAccurate, 1> reverbXOver = {};
+  std::array<TAccurate, 1> reverbLPRes = {};
+  std::array<TAccurate, 1> reverbHPRes = {};
+  std::array<TAccurate, 1> reverbLPFreq = {};
+  std::array<TAccurate, 1> reverbHPFreq = {};
   std::array<TAccurate, 1> feedbackMix = {};
   std::array<TAccurate, 1> feedbackAmount = {};
   std::array<TAccurate, 1> feedbackXOver = {};
@@ -92,27 +90,8 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoAccParamState);
 };
 
-template <class TAccurate>
-class alignas(alignof(TAccurate)) FFGEchoAccParamState final:
-public FFEchoAccParamState<TAccurate>
-{
-  friend class FFGEchoProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
-  std::array<TAccurate, 1> reverbMix = {};
-  std::array<TAccurate, 1> reverbAPF = {};
-  std::array<TAccurate, 1> reverbSize = {};
-  std::array<TAccurate, 1> reverbDamp = {};
-  std::array<TAccurate, 1> reverbXOver = {};
-  std::array<TAccurate, 1> reverbLPRes = {};
-  std::array<TAccurate, 1> reverbHPRes = {};
-  std::array<TAccurate, 1> reverbLPFreq = {};
-  std::array<TAccurate, 1> reverbHPFreq = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoAccParamState);
-};
-
 template <class TBlock, class TAccurate>
-class alignas(alignof(TAccurate)) FFVEchoParamState final
+class alignas(alignof(TAccurate)) FFEchoParamState final
 {
   friend class FFPlugProcessor;
   friend class FFGEchoProcessor;
@@ -120,17 +99,5 @@ class alignas(alignof(TAccurate)) FFVEchoParamState final
   FFEchoAccParamState<TAccurate> acc = {};
   FFEchoBlockParamState<TBlock> block = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFVEchoParamState);
-};
-
-template <class TBlock, class TAccurate>
-class alignas(alignof(TAccurate)) FFGEchoParamState final
-{
-  friend class FFPlugProcessor;
-  friend class FFGEchoProcessor;
-  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
-  FFGEchoAccParamState<TAccurate> acc = {};
-  FFGEchoBlockParamState<TBlock> block = {};
-public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoParamState);
 };

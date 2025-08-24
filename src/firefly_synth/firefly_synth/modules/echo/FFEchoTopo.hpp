@@ -15,14 +15,9 @@ enum class FFGEchoTarget {
   FX1In, FX1Out, FX2In, FX2Out, 
   FX3In, FX3Out, FX4In, FX4Out };
 
-enum class FFVEchoModule {
-  Taps, Feedback, Count };
-enum class FFGEchoModule {
+enum class FFEchoModule {
   Taps, Feedback, Reverb, Count };
-
-enum class FFVEchoOrder {
-  TapsToFeedback, FeedbackToTaps };
-enum class FFGEchoOrder {
+enum class FFEchoOrder {
   TapsToFeedbackToReverb, TapsToReverbToFeedback,
   FeedbackToTapsToReverb, FeedbackToReverbToTaps,
   ReverbToTapsToFeedback, ReverbToFeedbackToTaps };
@@ -30,70 +25,67 @@ enum class FFGEchoOrder {
 enum class FFEchoParam {
   VOnOrGTarget, VOrderOrGOrder, Gain, Sync,
   DelaySmoothTime, DelaySmoothBars,
+  ReverbOn = FFEchoParam::Count, ReverbMix, ReverbXOver,
+  ReverbSize, ReverbDamp, ReverbAPF,
+  ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
   FeedbackDelayTime, FeedbackDelayBars,
   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
-  TapsOn, TapsMix,
-  TapOn, TapBalance, TapLevel, TapXOver,
-  TapDelayTime, TapDelayBars,
+  TapsOn, TapsMix, TapOn, TapBalance, 
+  TapLevel, TapXOver, TapDelayTime, TapDelayBars,
   TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, Count };
 
-enum class FFGEchoParam {
-  ReverbOn = FFEchoParam::Count, ReverbMix, ReverbXOver,
-  ReverbSize, ReverbDamp, ReverbAPF,
-  ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes, Count };
-
 inline int 
-FFGEchoGetProcessingOrder(FFGEchoOrder order, FFGEchoModule module)
+FFEchoGetProcessingOrder(FFEchoOrder order, FFEchoModule module)
 {
   switch (order)
   {
-  case FFGEchoOrder::TapsToFeedbackToReverb:
+  case FFEchoOrder::TapsToFeedbackToReverb:
     switch (module)
     {
-    case FFGEchoModule::Taps: return 0;
-    case FFGEchoModule::Feedback: return 1;
-    case FFGEchoModule::Reverb: return 2;
+    case FFEchoModule::Taps: return 0;
+    case FFEchoModule::Feedback: return 1;
+    case FFEchoModule::Reverb: return 2;
     default: FB_ASSERT(false); return -1;
     }
-  case FFGEchoOrder::TapsToReverbToFeedback:
+  case FFEchoOrder::TapsToReverbToFeedback:
     switch (module)
     {
-    case FFGEchoModule::Taps: return 0;
-    case FFGEchoModule::Feedback: return 2;
-    case FFGEchoModule::Reverb: return 1;
+    case FFEchoModule::Taps: return 0;
+    case FFEchoModule::Feedback: return 2;
+    case FFEchoModule::Reverb: return 1;
     default: FB_ASSERT(false); return -1;
     }
-  case FFGEchoOrder::FeedbackToTapsToReverb:
+  case FFEchoOrder::FeedbackToTapsToReverb:
     switch (module)
     {
-    case FFGEchoModule::Taps: return 1;
-    case FFGEchoModule::Feedback: return 0;
-    case FFGEchoModule::Reverb: return 2;
+    case FFEchoModule::Taps: return 1;
+    case FFEchoModule::Feedback: return 0;
+    case FFEchoModule::Reverb: return 2;
     default: FB_ASSERT(false); return -1;
     }
-  case FFGEchoOrder::FeedbackToReverbToTaps:
+  case FFEchoOrder::FeedbackToReverbToTaps:
     switch (module)
     {
-    case FFGEchoModule::Taps: return 2;
-    case FFGEchoModule::Feedback: return 0;
-    case FFGEchoModule::Reverb: return 1;
+    case FFEchoModule::Taps: return 2;
+    case FFEchoModule::Feedback: return 0;
+    case FFEchoModule::Reverb: return 1;
     default: FB_ASSERT(false); return -1;
     }
-  case FFGEchoOrder::ReverbToTapsToFeedback:
+  case FFEchoOrder::ReverbToTapsToFeedback:
     switch (module)
     {
-    case FFGEchoModule::Taps: return 1;
-    case FFGEchoModule::Feedback: return 2;
-    case FFGEchoModule::Reverb: return 0;
+    case FFEchoModule::Taps: return 1;
+    case FFEchoModule::Feedback: return 2;
+    case FFEchoModule::Reverb: return 0;
     default: FB_ASSERT(false); return -1;
     }
-  case FFGEchoOrder::ReverbToFeedbackToTaps:
+  case FFEchoOrder::ReverbToFeedbackToTaps:
     switch (module)
     {
-    case FFGEchoModule::Taps: return 2;
-    case FFGEchoModule::Feedback: return 1;
-    case FFGEchoModule::Reverb: return 0;
+    case FFEchoModule::Taps: return 2;
+    case FFEchoModule::Feedback: return 1;
+    case FFEchoModule::Reverb: return 0;
     default: FB_ASSERT(false); return -1;
     }
   default: FB_ASSERT(false); return -1;
