@@ -7,7 +7,7 @@
 #include <firefly_synth/modules/mix/FFGMixState.hpp>
 #include <firefly_synth/modules/osci/FFOsciState.hpp>
 #include <firefly_synth/modules/midi/FFMIDIState.hpp>
-#include <firefly_synth/modules/echo/FFGEchoState.hpp>
+#include <firefly_synth/modules/echo/FFEchoState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>

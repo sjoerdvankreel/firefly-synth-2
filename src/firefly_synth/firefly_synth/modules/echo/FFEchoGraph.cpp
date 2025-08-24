@@ -1,7 +1,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFStateDetail.hpp>
-#include <firefly_synth/modules/echo/FFGEchoGraph.hpp>
-#include <firefly_synth/modules/echo/FFGEchoProcessor.hpp>
+#include <firefly_synth/modules/echo/FFEchoGraph.hpp>
+#include <firefly_synth/modules/echo/FFEchoProcessor.hpp>
 
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/shared/FBGraphing.hpp>

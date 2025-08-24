@@ -7,7 +7,7 @@
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
-#include <firefly_synth/modules/echo/FFGEchoGUI.hpp>
+#include <firefly_synth/modules/echo/FFEchoGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>

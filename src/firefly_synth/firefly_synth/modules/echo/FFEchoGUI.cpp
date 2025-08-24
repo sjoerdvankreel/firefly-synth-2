@@ -1,7 +1,7 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
-#include <firefly_synth/modules/echo/FFGEchoGUI.hpp>
-#include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
+#include <firefly_synth/modules/echo/FFEchoGUI.hpp>
+#include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>

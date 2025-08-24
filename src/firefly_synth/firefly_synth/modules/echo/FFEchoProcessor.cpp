@@ -2,8 +2,8 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/shared/FFStateDetail.hpp>
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
-#include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
-#include <firefly_synth/modules/echo/FFGEchoProcessor.hpp>
+#include <firefly_synth/modules/echo/FFEchoTopo.hpp>
+#include <firefly_synth/modules/echo/FFEchoProcessor.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>

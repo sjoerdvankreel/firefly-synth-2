@@ -8,7 +8,7 @@
 #include <firefly_synth/modules/mix/FFGMixTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/midi/FFMIDITopo.hpp>
-#include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
+#include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>

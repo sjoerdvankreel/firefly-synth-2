@@ -1,7 +1,7 @@
 #pragma once
 
 #include <firefly_synth/dsp/shared/FFDelayLine.hpp>
-#include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
+#include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
