@@ -66,6 +66,29 @@ FFDeserializationConverter::OnParamNotFound(
     }
   }
 
+  // 2.0.4 - added "G" prefix to global echo module and params
+  // NOTE TO SELF: this changed the param tags, so broke automation lanes.
+  // Let's REALLY not ever do that again.
+  if (OldVersion() < FBPlugVersion(2, 0, 4))
+  {
+    auto const& gEchoModule = Topo()->static_->modules[(int)FFModuleType::GEcho];
+    if ("G" + oldModuleId == gEchoModule.id)
+    {
+      newModuleId = gEchoModule.id;
+      for (int p = 0; p < gEchoModule.params.size(); p++)
+      {
+        auto const& gEchoParam = gEchoModule.params[p];
+        if ("G" + oldParamId == gEchoParam.id)
+        {
+          newParamId = gEchoParam.id;
+          newParamSlot = oldParamSlot;
+          newModuleSlot = oldModuleSlot;
+          return true;
+        }
+      }
+    }
+  }
+
   return false;
 }
 
