@@ -157,8 +157,8 @@ FFPlugProcessor::ProcessPostVoice(
 
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
-  float gEchoTargetNorm = gEcho.block.vOnOrGTarget[0].Value();
-  auto gEchoTarget = gEchoModuleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VOnOrGTarget, gEchoTargetNorm);
+  float gEchoTargetNorm = gEcho.block.vTargetOrGTarget[0].Value();
+  auto gEchoTarget = gEchoModuleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VTargetOrGTarget, gEchoTargetNorm);
 
   FBSArray2<float, FBFixedBlockSamples, 2> voiceMixdown = {};
   voiceMixdown.Fill(0.0f);

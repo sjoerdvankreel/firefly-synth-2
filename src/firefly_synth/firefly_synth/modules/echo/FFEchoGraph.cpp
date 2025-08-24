@@ -96,7 +96,7 @@ GEchoGraphRenderData::DoProcess(
   FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice)
 {
   auto* moduleProcState = state->ModuleProcState();
-  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VOnOrGTarget, 0 } };
+  FBParamTopoIndices indices = { { (int)FFModuleType::GEcho, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
   auto target = state->AudioParamList<FFGEchoTarget>(indices, false, -1);
   if (target == FFGEchoTarget::Off)
     return 0;
@@ -142,7 +142,7 @@ FFGEchoRenderGraph(FBModuleGraphComponentData* graphData)
 
   auto* renderState = graphData->renderState;
   FBTopoIndices modIndices = { (int)FFModuleType::GEcho, 0 };
-  FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::VOnOrGTarget, 0 } };
+  FBParamTopoIndices paramIndices = { modIndices, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
   auto target = renderState->AudioParamList<FFGEchoTarget>(paramIndices, false, -1);
   paramIndices = { modIndices, { (int)FFEchoParam::VOrderOrGOrder, 0 } };
   auto order = renderState->AudioParamList<FFEchoOrder>(paramIndices, false, -1);

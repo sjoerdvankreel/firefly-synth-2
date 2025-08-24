@@ -89,12 +89,12 @@ FFGEchoProcessor::AllocOnDemandBuffers(
   auto const& params = procState->param.global.gEcho[0];
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapsOnNorm = params.block.tapsOn[0].Value();
-  auto const& targetNorm = params.block.vOnOrGTarget[0].Value();
   auto const& reverbOnNorm = params.block.reverbOn[0].Value();
   auto const& feedbackOnNorm = params.block.feedbackOn[0].Value();
+  auto const& vTargetOrGargetNorm = params.block.vTargetOrGTarget[0].Value();
   auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::GEcho];
 
-  if (moduleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VOnOrGTarget, targetNorm) == FFGEchoTarget::Off)
+  if (moduleTopo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VTargetOrGTarget, vTargetOrGargetNorm) == FFGEchoTarget::Off)
     return;
 
   int maxSamples = (int)std::ceil(sampleRate * FFEchoMaxSeconds);
@@ -147,9 +147,9 @@ FFGEchoProcessor::BeginBlock(
 
   float syncNorm = params.block.sync[0].Value();
   float orderNorm = params.block.vOrderOrGOrder[0].Value();
-  float targetNorm = params.block.vOnOrGTarget[0].Value();
   float delaySmoothTimeNorm = params.block.delaySmoothTime[0].Value();
   float delaySmoothBarsNorm = params.block.delaySmoothBars[0].Value();
+  float vTargetOrGTargetNorm = params.block.vTargetOrGTarget[0].Value();
 
   auto const& tapOnNorm = params.block.tapOn;
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
@@ -165,7 +165,7 @@ FFGEchoProcessor::BeginBlock(
 
   _sync = topo.NormalizedToBoolFast(FFEchoParam::Sync, syncNorm);
   _order = topo.NormalizedToListFast<FFEchoOrder>(FFEchoParam::VOrderOrGOrder, orderNorm);
-  _on = topo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VOnOrGTarget, targetNorm) != FFGEchoTarget::Off;
+  _on = topo.NormalizedToListFast<FFGEchoTarget>(FFEchoParam::VTargetOrGTarget, vTargetOrGTargetNorm) != FFGEchoTarget::Off;
 
   int tapsOrder = FFEchoGetProcessingOrder(_order, FFEchoModule::Taps);
   int reverbOrder = FFEchoGetProcessingOrder(_order, FFEchoModule::Reverb);

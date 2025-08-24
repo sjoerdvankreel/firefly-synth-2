@@ -95,27 +95,17 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
 static Component*
 MakeEchoSectionMain(
   FBPlugGUI* plugGUI, bool global,
-  FBParamComboBox** gTargetBoxOut,
-  FBParamToggleButton** vOnToggleOut)
+  FBParamComboBox** targetBoxOut)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0 });
-  auto vOnOrGTarget = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VOnOrGTarget, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vOnOrGTarget));
-  if (global)
-  {
-    auto gTargetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vOnOrGTarget);
-    grid->Add(0, 1, gTargetBox);
-    *gTargetBoxOut = gTargetBox;
-  }
-  else
-  {
-    auto vOnToggle = plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, vOnOrGTarget);
-    grid->Add(0, 1, vOnToggle);
-    *vOnToggleOut = vOnToggle;
-  }
+  auto vTargetOrGTarget = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vTargetOrGTarget));
+  auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget);
+  grid->Add(0, 1, targetBox);
+  *targetBoxOut = targetBox;
   auto vOrderOrGOrder = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VOrderOrGOrder, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vOrderOrGOrder));
   grid->Add(1, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vOrderOrGOrder));
@@ -301,9 +291,8 @@ MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
 {
   FB_LOG_ENTRY_EXIT();
 
-  FBParamComboBox* gEchoTargetBox = {};
+  FBParamComboBox* echoTargetBox = {};
   FBParamToggleButton* tapsOnToggle = {};
-  FBParamToggleButton* vEchoOnToggle = {};
   FBAutoSizeButton* showTapsEditorButton = {};
   std::vector<int> columnSizes = { 1, 0, 0, 0, 0 };
 
@@ -315,30 +304,22 @@ MakeGEchoTab(FBPlugGUI* plugGUI, bool global)
   individualTapsGUI->SelectContentIndex(plugGUI->HostContext()->GetGUIParamDiscrete(indices) - 1);
 
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
-  grid->Add(0, 0, MakeEchoSectionMain(plugGUI, global, &gEchoTargetBox, &vEchoOnToggle));
+  grid->Add(0, 0, MakeEchoSectionMain(plugGUI, global, &echoTargetBox));
   grid->Add(0, 1, MakeEchoSectionTaps(plugGUI, global, individualTapsGUI, &tapsOnToggle, &showTapsEditorButton));
   grid->Add(0, 2, individualTapsGUI);
   grid->Add(0, 3, MakeEchoSectionFeedback(plugGUI, global));
   grid->Add(0, 4, MakeEchoSectionReverb(plugGUI, global));
 
   FBParamTopoIndices tapsOnIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } };
-  FBParamTopoIndices onOrTargetIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::VOnOrGTarget, 0 } };
-  std::function<void()> updateTapEditEnabled = [plugGUI, global, showTapsEditorButton, onOrTargetIndices, tapsOnIndices]() {
-    bool echoOn;
+  FBParamTopoIndices vTargetOrGTargetIndices = { { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } };
+  std::function<void()> updateTapEditEnabled = [plugGUI, showTapsEditorButton, vTargetOrGTargetIndices, tapsOnIndices]() {
     bool tapsOn = plugGUI->HostContext()->GetAudioParamBool(tapsOnIndices);
-    if (global)
-      echoOn = plugGUI->HostContext()->GetAudioParamList<int>(onOrTargetIndices) != 0;
-    else
-      echoOn = plugGUI->HostContext()->GetAudioParamBool(onOrTargetIndices);
+    bool echoOn = plugGUI->HostContext()->GetAudioParamList<int>(vTargetOrGTargetIndices) != 0;
     showTapsEditorButton->setEnabled(echoOn && tapsOn); };
   updateTapEditEnabled();
 
   tapsOnToggle->onStateChange = updateTapEditEnabled;
-  if(global)
-    gEchoTargetBox->onChange = updateTapEditEnabled;
-  else
-    vEchoOnToggle->onStateChange = updateTapEditEnabled;
-
+  echoTargetBox->onChange = updateTapEditEnabled;
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
