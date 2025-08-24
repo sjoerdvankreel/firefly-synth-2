@@ -21,13 +21,13 @@ FFMakeEchoTopo(bool global)
 {
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
-  result->voice = false;
-  result->name = "GEcho";
+  result->voice = !global;
+  result->name = global? "GEcho": "VEcho";
   result->slotCount = 1;
-  result->graphCount = 4;
-  result->graphRenderer = FFGEchoRenderGraph;
+  result->graphCount = global? 4: 0;
+  result->graphRenderer = global ? FFGEchoRenderGraph : nullptr;
   result->id = prefix + "{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}";
-  result->params.resize((int)FFGEchoParam::Count);
+  result->params.resize(global? (int)FFGEchoParam::Count: (int)FFEchoParam::Count);
   result->guiParams.resize((int)FFEchoGUIParam::Count);
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gEcho; });
   auto selectGuiVoiceModule = [](auto& state) { return &state.vEcho; };

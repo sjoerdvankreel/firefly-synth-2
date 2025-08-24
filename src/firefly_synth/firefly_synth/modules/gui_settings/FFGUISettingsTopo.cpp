@@ -103,5 +103,15 @@ FFMakeGUISettingsTopo()
   auto selectGuiEnvSelectedTab = [](auto& module) { return &module.envSelectedTab; };
   guiEnvSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEnvSelectedTab);
 
+  auto& guiEchoSelectedTab = result->guiParams[(int)FFGUISettingsGUIParam::EchoSelectedTab];
+  guiEchoSelectedTab.defaultText = "0";
+  guiEchoSelectedTab.name = "Echo Selected Tab";
+  guiEchoSelectedTab.slotCount = 1;
+  guiEchoSelectedTab.id = "{0087ED9D-5B24-4A22-9F3D-738AF0605136}";
+  guiEchoSelectedTab.type = FBParamType::Discrete;
+  guiEchoSelectedTab.Discrete().valueCount = 2;
+  auto selectGuiEchoSelectedTab = [](auto& module) { return &module.echoSelectedTab; };
+  guiEchoSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEchoSelectedTab);
+
   return result;
 }
