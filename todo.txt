@@ -6,6 +6,7 @@ TODOLIST for alpha 13 - vecho
 [ ] not per-tap delay line for voice
 [ ] vecho delay not accurate -- block param
 [ ] note breaking change on auto lanes
+[ ] oh ja shit it is before the vamp env
 [ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation -> cannot place anywhere in the pipeline but thats ok
 
 TODOLIST for alpha-14
