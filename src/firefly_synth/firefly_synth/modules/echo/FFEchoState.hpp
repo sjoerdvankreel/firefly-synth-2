@@ -45,8 +45,8 @@ class alignas(alignof(TBlock)) FFEchoBlockParamState
   std::array<TBlock, 1> vOnOrGTarget = {};
   std::array<TBlock, 1> vOrderOrGOrder = {};
   std::array<TBlock, 1> feedbackDelayBars = {};
-  std::array<TBlock, 1> gDelaySmoothTime = {};
-  std::array<TBlock, 1> gDelaySmoothBars = {};
+  std::array<TBlock, 1> delaySmoothTime = {};
+  std::array<TBlock, 1> delaySmoothBars = {};
   std::array<TBlock, FFEchoTapCount> tapOn = {};
   std::array<TBlock, FFEchoTapCount> tapDelayBars = {};
 public:

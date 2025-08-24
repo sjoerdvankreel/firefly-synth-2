@@ -29,7 +29,7 @@ enum class FFGEchoOrder {
 
 enum class FFEchoParam {
   VOnOrGTarget, VOrderOrGOrder, Gain, Sync,
-  GDelaySmoothTime, GDelaySmoothBars,
+  DelaySmoothTime, DelaySmoothBars,
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
   FeedbackDelayTime, FeedbackDelayBars,
   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,

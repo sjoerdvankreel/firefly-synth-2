@@ -170,7 +170,7 @@ FFMakeEchoTopo(bool global)
   delaySmoothBars.id = prefix + "{5554CC4B-29E6-4F3C-8FFE-95947033676C}";
   delaySmoothBars.defaultText = "1/4";
   delaySmoothBars.type = FBParamType::Bars;
-  delaySmoothBars.Bars().items = MakeGEchoSmoothBarsItems();
+  delaySmoothBars.Bars().items = MakeEchoSmoothBarsItems();
   auto selectDelaySmoothBars = [](auto& module) { return &module.block.delaySmoothBars; };
   delaySmoothBars.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectDelaySmoothBars);
   delaySmoothBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectDelaySmoothBars);
@@ -222,7 +222,7 @@ FFMakeEchoTopo(bool global)
   guiTapSelect.Discrete().valueOffset = 1;
   guiTapSelect.Discrete().valueCount = FFEchoTapCount;
   auto selectGuiTapSelect = [](auto& module) { return &module.tapSelect; };
-  guiTapSelect.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiTapSelect);
+  guiTapSelect.scalarAddr = FFSelectDualGUIParamAddr(global, selectGuiGlobalModule, selectGuiVoiceModule, selectGuiTapSelect);
   guiTapSelect.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VOnOrGTarget, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapOn = result->params[(int)FFEchoParam::TapOn];
@@ -290,7 +290,7 @@ FFMakeEchoTopo(bool global)
   tapDelayBars.id = prefix + "{BEDF76D3-211D-4A1F-AF42-85E9C4E5374F}";
   tapDelayBars.defaultTextSelector = [](int, int, int ps) { return ps == 0 ? "1/4" : ps == 1 ? "1/2" : ps == 2 ? "3/4" : ps == 3 ? "1/1" : "Off"; };
   tapDelayBars.type = FBParamType::Bars;
-  tapDelayBars.Bars().items = MakeGEchoBarsItems();
+  tapDelayBars.Bars().items = MakeEchoBarsItems();
   auto selectTapDelayBars = [](auto& module) { return &module.block.tapDelayBars; };
   tapDelayBars.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapDelayBars);
   tapDelayBars.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectTapDelayBars);
