@@ -122,7 +122,9 @@ EchoGraphRenderData<Global>::DoProcess(
     return 0;
 
   auto* procState = moduleProcState->ProcAs<FFProcState>();
-  auto& input = procState->dsp.global.gEcho.input;
+  auto& input = *FFSelectDualState<Global>(
+    [procState]() { return &procState->dsp.global.gEcho.input; },
+    [procState, moduleProcState]() { return &procState->dsp.voice[moduleProcState->voice->slot].vEcho.input; });
   for (int c = 0; c < 2; c++)
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
