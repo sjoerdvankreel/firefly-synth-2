@@ -48,16 +48,16 @@ FFMakeEchoTopo(bool global)
     vOnOrGTarget.type = FBParamType::List;
     vOnOrGTarget.List().items = {
       { "{90701058-1399-4D0A-B098-AE5AFFB9123C}", "Off" },
-      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "Voice" },
-      { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "Out" },
-      { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "GFX1 In" },
-      { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "GFX1 Out" },
-      { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "GFX2 In" },
-      { "{A043114B-C471-46A8-A526-B93E1897B1A0}", "GFX2 Out" },
-      { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "GFX3 In" },
-      { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "GFX3 Out" },
-      { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "GFX4 In" },
-      { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "GFX4 Out" } };
+      { "{9A195809-A9A8-454A-ACD1-5376892EE416}", "Before GFX" },
+      { "{38A69D55-AB3E-49F2-9CCD-44917FD24597}", "After GFX" },
+      { "{CDE64B50-C65D-43E9-B52E-325F544E5175}", "Before GFX1" },
+      { "{1C7AA2CC-2116-45E4-B7C2-AA9678CC15B5}", "After GFX1" },
+      { "{68C1469F-96FF-47D7-8A2E-B24309E10031}", "Before GFX2" },
+      { "{A043114B-C471-46A8-A526-B93E1897B1A0}", "After GFX2" },
+      { "{883FA130-AB68-42D5-B56A-C61039DAD9A6}", "Before GFX3" },
+      { "{56CE90EE-F9D0-4CCF-93B8-9BB0501DCBEF}", "After GFX3" },
+      { "{80ECC9AA-AC6B-44DC-B305-43057720A4AC}", "Before GFX4" },
+      { "{050E8D54-BFD2-4821-B14F-717D161D69DB}", "After GFX4" } };
     vOnOrGTarget.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectVOnOrGTarget);
     vOnOrGTarget.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVOnOrGTarget);
   }

@@ -11,9 +11,9 @@ std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
 enum class FFEchoGUIParam { 
   TapSelect, Count };
 enum class FFGEchoTarget { 
-  Off, Voice, Out, 
-  FX1In, FX1Out, FX2In, FX2Out, 
-  FX3In, FX3Out, FX4In, FX4Out };
+  Off, BeforeFX, AfterFX,
+  BeforeFX1, AfterFX1, BeforeFX2, AfterFX2,
+  BeforeFX3, AfterFX3, BeforeFX4, AfterFX4 };
 
 enum class FFEchoModule {
   Taps, Feedback, Reverb, Count };
