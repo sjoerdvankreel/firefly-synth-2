@@ -163,7 +163,8 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 ## Echo
 * Combined multitap delay / feedback delay / reverb.
 * Adjustable ordering of taps / feedback / reverb.
-* Adjustable placement in the processing pipeline: before all fx, after all fx, or apply to input / output of any of the effect modules.
+* For per-voice: can only apply to the end of the pipeline (so, after audio mixer (vmix)).
+* For global: adjustable placement in the processing pipeline: before all fx, after all fx, after audio mixer, or apply to input / output of any of the effect modules.
 * Time or tempo-synced versions of multitap and feedback delay.
 * Smoothing parameter for delay time changes. Applies to time, bars, host bpm changes etc etc.
 * Unlike FF1, all delay times are now modulatable.
