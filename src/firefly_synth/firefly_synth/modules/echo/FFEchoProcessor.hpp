@@ -26,13 +26,12 @@ inline int constexpr FFEchoReverbCombCount = 8;
 inline int constexpr FFEchoReverbAllPassCount = 4;
 inline float constexpr FFEchoPlotLengthSeconds = 5.0f;
 
-struct FFEchoModulatableDelayState
+struct FFEchoDelayState
 {
   void Reset();
   FBBasicLPFilter smoother = {};
   FFStateVariableFilter<2> lpFilter = {};
   FFStateVariableFilter<2> hpFilter = {};
-  std::array<FFDelayLine<1>, 2> delayLine = {};
 };
 
 // https://github.com/sinshu/freeverb
@@ -78,8 +77,10 @@ class FFEchoProcessor final
   FFEchoVoiceExtensionStage _voiceExtensionStage = {};
 
   FFEchoReverbState _reverbState = {};
-  FFEchoModulatableDelayState _feedbackDelayState = {};
-  std::array<FFEchoModulatableDelayState, FFEchoTapCount> _tapDelayStates = {};
+  FFEchoDelayState _feedbackDelayState = {};
+  std::array<FFDelayLine<1>, 2> _feedbackDelayLine = {};
+  std::array<FFDelayLine<FFEchoTapCount>, 2> _tapsDelayLine = {};
+  std::array<FFEchoDelayState, FFEchoTapCount> _tapDelayStates = {};
 
   void ProcessTaps(
     FBModuleProcState& state,
