@@ -4,12 +4,12 @@ TODOLIST for alpha 13 - vecho
 [x] add new gecho target
 [x] smooth filter -- start with good val
 [x] it crashes -- just keep change off / postvmix fast enough
-[ ] extend
-[ ] recheck if order works
+[x] extend
+[x] recheck if order works
 [ ] not per-tap delay line for voice
 [ ] vecho delay not accurate -- block param
 [ ] note breaking change on auto lanes
-[ ] oh ja shit it is before the vamp env
+[x] oh ja shit it is before the vamp env
 [ ] vecho -- how with global uni? share delay line between 8 taps / + 1 fdbck line, no modulation -> cannot place anywhere in the pipeline but thats ok
 
 TODOLIST for alpha-14
