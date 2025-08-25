@@ -205,7 +205,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       _allModSourcesAreReadyForSlot[i] &= thisSource.indices.module.index != -1;
       if (_allModSourcesAreReadyForSlot[i])
         for (int j = 0; j < SlotCount; j++)
-          if (_opType[i] != FFModulationOpType::Off)
+          if (_opType[j] != FFModulationOpType::Off)
           {
             auto const& thatSource = sources[_source[j]];
             auto const& thatTarget = targets[_target[j]];

@@ -6,6 +6,8 @@ TODOLIST for alpha 13 - vecho
 [x] it crashes -- just keep change off / postvmix fast enough
 [x] extend
 [x] recheck if order works
+[x] nasty modmatrix bug
+[x] decreased the mem usage for gecho
 
 TODOLIST for alpha-14
 
