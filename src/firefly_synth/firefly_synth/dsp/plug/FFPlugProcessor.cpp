@@ -60,7 +60,7 @@ FFPlugProcessor::ProcessGEcho(
   state.moduleSlot = 0;
   inout.CopyTo(globalDSP.gEcho.input);
   globalDSP.gEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
-  globalDSP.gEcho.processor->Process(state);
+  globalDSP.gEcho.processor->Process(state, -1);
   globalDSP.gEcho.output.CopyTo(inout);
 }
 

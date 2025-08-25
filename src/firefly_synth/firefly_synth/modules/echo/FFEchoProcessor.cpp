@@ -238,12 +238,37 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
       _tapDelayStates[t].smoother.State(tapDelayInitSamples);
     }
   }
+
+  if constexpr (!Global)
+  {
+    _voiceFadeSamplesProcessed = 0;
+    _voiceExtendSamplesProcessed = 0;
+    _voiceExtensionStage = FFEchoVoiceExtensionStage::NotStarted;
+    float voiceFadeTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceFadeTime[0], voice);
+    float voiceFadeBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceFadeBars[0], voice);
+    float voiceExtendTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceExtendTime[0], voice);
+    float voiceExtendBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceExtendBars[0], voice);
+    if (_sync)
+    {
+      _voiceFadeSamples = topo.NormalizedToBarsSamplesFast(
+        FFEchoParam::VoiceFadeBars, voiceFadeBarsNorm, sampleRate, bpm);
+      _voiceExtendSamples = topo.NormalizedToBarsSamplesFast(
+        FFEchoParam::VoiceExtendBars, voiceExtendBarsNorm, sampleRate, bpm);
+    }
+    else
+    {
+      _voiceFadeSamples = topo.NormalizedToLinearTimeSamplesFast(
+        FFEchoParam::VoiceFadeTime, voiceFadeTimeNorm, sampleRate);
+      _voiceExtendSamples = topo.NormalizedToLinearTimeSamplesFast(
+        FFEchoParam::VoiceExtendTime, voiceExtendTimeNorm, sampleRate);
+    }
+  }
 }
 
 template <bool Global>
 int
 FFEchoProcessor<Global>::Process(
-  FBModuleProcState& state)
+  FBModuleProcState& state, int ampEnvFinishedAt)
 {
   float sampleRate = state.input->sampleRate;
   auto* procState = state.ProcAs<FFProcState>();
@@ -264,6 +289,9 @@ FFEchoProcessor<Global>::Process(
   input.CopyTo(output);
   if (!_on)
     return 0;
+  if constexpr (!Global)
+    if (_voiceExtensionStage == FFEchoVoiceExtensionStage::Finished)
+      return 0;
 
   // make-up gain to offset all the dry/wet mixing
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
@@ -278,6 +306,37 @@ FFEchoProcessor<Global>::Process(
       ProcessFeedback(state, true);
     else if (_reverbOn && FFEchoGetProcessingOrder(_order, FFEchoModule::Reverb) == m)
       ProcessReverb(state, true);
+  }
+
+  int samplesProcessed = FBFixedBlockSamples;
+  if constexpr (!Global)
+  {
+    // Voice extend/fade-out.
+    // Not for per-voice echo we operate AFTER the amp env.
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+    {
+      if (_voiceExtensionStage == FFEchoVoiceExtensionStage::NotStarted && s == ampEnvFinishedAt)
+        _voiceExtensionStage = FFEchoVoiceExtensionStage::Extending;
+      if (_voiceExtensionStage == FFEchoVoiceExtensionStage::Extending && _voiceExtendSamplesProcessed < _voiceExtendSamples)
+        _voiceExtendSamplesProcessed++;
+      if (_voiceExtensionStage == FFEchoVoiceExtensionStage::Extending && _voiceExtendSamplesProcessed == _voiceExtendSamples)
+        _voiceExtensionStage = FFEchoVoiceExtensionStage::Fading;
+      if (_voiceExtensionStage == FFEchoVoiceExtensionStage::Fading && _voiceFadeSamplesProcessed < _voiceFadeSamples)
+      {
+        float fade = 1.0f - (_voiceFadeSamplesProcessed / (float)_voiceFadeSamples);
+        for (int c = 0; c < 2; c++)
+          output[c].Mul(s, fade);
+        _voiceFadeSamplesProcessed++;
+      }
+      if (_voiceExtensionStage == FFEchoVoiceExtensionStage::Fading && _voiceFadeSamplesProcessed == _voiceFadeSamples)
+      {
+        _voiceExtensionStage = FFEchoVoiceExtensionStage::Finished;
+        samplesProcessed = 0;
+      }
+      if(_voiceExtensionStage == FFEchoVoiceExtensionStage::Finished)
+        for (int c = 0; c < 2; c++)
+          output[c].Set(s, 0.0f);
+    }
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
@@ -305,7 +364,7 @@ FFEchoProcessor<Global>::Process(
   ProcessFeedback(state, false);
   ProcessReverb(state, false);
 
-  return FBFixedBlockSamples;
+  return samplesProcessed;
 }
 
 template <bool Global>

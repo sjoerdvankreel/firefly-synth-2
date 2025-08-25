@@ -152,7 +152,8 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   {
     state.moduleSlot = 0;
     voiceDSP.output.CopyTo(voiceDSP.vEcho.input);
-    voiceDSP.vEcho.processor->Process(state);
+    int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, ampEnvProcessed);
+    voiceFinished = vEchoProcessed != FBFixedBlockSamples;
     voiceDSP.vEcho.output.CopyTo(voiceDSP.output);
   }
 

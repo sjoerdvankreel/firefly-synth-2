@@ -14,6 +14,14 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
+enum class FFEchoVoiceExtensionStage
+{
+  NotStarted,
+  Extending,
+  Fading,
+  Finished
+};
+
 inline int constexpr FFEchoReverbCombCount = 8;
 inline int constexpr FFEchoReverbAllPassCount = 4;
 inline float constexpr FFEchoPlotLengthSeconds = 5.0f;
@@ -54,6 +62,8 @@ class FFEchoProcessor final
   bool _feedbackOn = {};
   bool _reverbOn = {};
   FFEchoOrder _order = {};
+  int _voiceFadeSamples = {};
+  int _voiceExtendSamples = {};
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFEchoTapCount> _tapOn = {};
   std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
@@ -62,6 +72,10 @@ class FFEchoProcessor final
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
   float _graphStVarFilterFreqMultiplier = {};
+
+  int _voiceFadeSamplesProcessed = {};
+  int _voiceExtendSamplesProcessed = {};
+  FFEchoVoiceExtensionStage _voiceExtensionStage = {};
 
   FFEchoReverbState _reverbState = {};
   FFEchoModulatableDelayState _feedbackDelayState = {};
@@ -82,7 +96,7 @@ class FFEchoProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoProcessor);
 
-  int Process(FBModuleProcState& state);
+  int Process(FBModuleProcState& state, int ampEnvFinishedAt);
   void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate);
