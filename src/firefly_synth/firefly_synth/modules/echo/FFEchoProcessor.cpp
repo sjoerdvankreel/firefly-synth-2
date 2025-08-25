@@ -162,11 +162,17 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
   float vTargetOrGTargetNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.vTargetOrGTarget[0], voice);
 
   auto const& tapOnNorm = params.block.tapOn;
+  auto const& tapDelayTimeNorm = params.acc.tapDelayTime;
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
   float tapsOnNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.tapsOn[0], voice);
   float reverbOnNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.reverbOn[0], voice);
   float feedbackOnNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.feedbackOn[0], voice);
   float feedbackDelayBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.feedbackDelayBars[0], voice);
+  float feedbackDelayTimeNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.feedbackDelayTime[0], voice).First();
+
+  bool init = _graph;
+  if constexpr (!Global)
+    init = true;
 
   _graph = graph;
   _graphSamplesProcessed = 0;
@@ -192,24 +198,23 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
   _reverbOn = topo.NormalizedToBoolFast(FFEchoParam::ReverbOn, reverbOnNorm);
   _reverbOn &= !graph || graphIndex == reverbOrder || graphIndex == (int)FFEchoModule::Count;
 
-  if constexpr (!Global)
+  if(init)
     _reverbState.Reset();
-  else
-    if(_graph)
-      _reverbState.Reset();
 
   _feedbackOn = topo.NormalizedToBoolFast(FFEchoParam::FeedbackOn, feedbackOnNorm);
   _feedbackOn &= !graph || graphIndex == feedbackOrder || graphIndex == (int)FFEchoModule::Count;
-
   _feedbackDelayBarsSamples = topo.NormalizedToBarsFloatSamplesFast(
     FFEchoParam::FeedbackDelayBars, feedbackDelayBarsNorm, sampleRate, bpm);
   _feedbackDelayState.smoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
 
-  if constexpr (!Global)
+  if (init)
+  {
     _feedbackDelayState.Reset();
-  else
-    if (_graph)
-      _feedbackDelayState.Reset();
+    float feedbackDelayTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+      FFEchoParam::FeedbackDelayTime, feedbackDelayTimeNorm, sampleRate);
+    float feedbackDelayInitSamples = _sync ? _feedbackDelayBarsSamples : feedbackDelayTimeSamples;
+    _feedbackDelayState.smoother.State(feedbackDelayInitSamples);
+  }
 
   _tapsOn = topo.NormalizedToBoolFast(FFEchoParam::TapsOn, tapsOnNorm);
   _tapsOn &= !graph || graphIndex == tapsOrder || graphIndex == (int)FFEchoModule::Count;
@@ -222,11 +227,16 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
       FFSelectDualProcBlockParamNormalized<Global>(tapDelayBarsNorm[t], voice), sampleRate, bpm);
     _tapDelayStates[t].smoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
 
-    if constexpr (!Global)
+    if (init)
+    {
       _tapDelayStates[t].Reset();
-    else
-      if (_graph)
-        _tapDelayStates[t].Reset();
+      float tapDelayTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+        FFEchoParam::TapDelayTime,        
+        FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).First(),
+        sampleRate);
+      float tapDelayInitSamples = _sync ? _tapDelayBarsSamples[t] : tapDelayTimeSamples;
+      _tapDelayStates[t].smoother.State(tapDelayInitSamples);
+    }
   }
 }
 

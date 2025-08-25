@@ -32,8 +32,9 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBAccParamState);
   FBAccParamState() : _modulatedByPlugCV(&_hostCV) {}
 
-  void ClearPlugModulation() { _modulatedByPlugCV = &_hostCV; }
+  float First() const { return CV().Get(0); }
   float Last() const { return CV().Get(FBFixedBlockSamples - 1); }
+  void ClearPlugModulation() { _modulatedByPlugCV = &_hostCV; }
   FBSArray<float, FBFixedBlockSamples> const& CV() const { return *_modulatedByPlugCV; }
   void ApplyPlugModulation(FBSArray<float, FBFixedBlockSamples> const* modulatedByPlugCV) { _modulatedByPlugCV = modulatedByPlugCV; }
 };
