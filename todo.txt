@@ -1,14 +1,3 @@
-TODOLIST for alpha 13 - vecho
-
-[x] conversion
-[x] add new gecho target
-[x] smooth filter -- start with good val
-[x] it crashes -- just keep change off / postvmix fast enough
-[x] extend
-[x] recheck if order works
-[x] nasty modmatrix bug
-[x] decreased the mem usage for gecho
-
 TODOLIST for alpha-14
 
 [ ] 8x env/lfo
