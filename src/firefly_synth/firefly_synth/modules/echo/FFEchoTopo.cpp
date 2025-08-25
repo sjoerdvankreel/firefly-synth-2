@@ -29,6 +29,7 @@ FFMakeEchoTopo(bool global)
   result->id = prefix + "{B979D7BD-65A2-42E4-A7B2-3A48BBFFDE23}";
   result->params.resize((int)FFEchoParam::Count);
   result->guiParams.resize((int)FFEchoGUIParam::Count);
+  result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.vEcho; });
   result->globalModuleExchangeAddr = FFSelectGlobalModuleExchangeAddr([](auto& state) { return &state.gEcho; });
   auto selectGuiVoiceModule = [](auto& state) { return &state.vEcho; };
   auto selectGuiGlobalModule = [](auto& state) { return &state.gEcho; };
