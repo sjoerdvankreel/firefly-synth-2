@@ -1,3 +1,11 @@
+August 25, 2025 - Alpha 13.
+
+- Modules
+* Add new per-voice echo module.
+* Add new global echo target: after GFX but before GMix.
+* Bugfix: global echo used a full-blown delay line per tap which is not necessary, cut down on memory usage.
+* Bugfix: error in the mod matrix which caused the modulation signal to be delayed by 1 block and probably other stuff.
+
 August 22, 2025 - Alpha 12.
 
 - Core
