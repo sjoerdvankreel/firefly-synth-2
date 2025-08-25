@@ -1,5 +1,6 @@
 TODOLIST for alpha-14
 
+[ ] something random is not repeatable see demo_voice_echo_pluckstring_and_voice_echo_mod
 [ ] 8x env/lfo
 [ ] get the text out of the graphs
 [ ] make a tune before release
