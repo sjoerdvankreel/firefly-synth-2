@@ -99,7 +99,7 @@ FFEchoProcessor<Global>::AllocOnDemandBuffers(
   float feedbackOnNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.feedbackOn[0]);
   float vTargetOrGTargetNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.vTargetOrGTarget[0]);
 
-  if (moduleTopo.NormalizedToListFast<int>(FFEchoParam::VTargetOrGTarget, vTargetOrGTargetNorm) == 0)
+  if (!graph && moduleTopo.NormalizedToListFast<int>(FFEchoParam::VTargetOrGTarget, vTargetOrGTargetNorm) == 0)
     return;
 
   int maxSamples = (int)std::ceil(sampleRate * FFEchoMaxSeconds);

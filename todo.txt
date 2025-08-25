@@ -3,7 +3,8 @@ TODOLIST for alpha 13 - vecho
 [x] conversion
 [x] add new gecho target
 [x] smooth filter -- start with good val
-[ ] it crashes -- just keep change off / postvmix fast enough
+[x] it crashes -- just keep change off / postvmix fast enough
+[ ] extend
 [ ] recheck if order works
 [ ] not per-tap delay line for voice
 [ ] vecho delay not accurate -- block param
