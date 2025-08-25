@@ -14,43 +14,27 @@ _special(topo.static_->specialSelector(*topo.static_, _rawState))
 {
   for (int p = 0; p < topo.audio.params.size(); p++)
     if (topo.static_->modules[topo.audio.params[p].topoIndices.module.index].voice)
-    {
       if (topo.audio.params[p].static_.acc)
-      {
-        FB_ASSERT(topo.audio.params[p].static_.voiceAccProcAddr != nullptr);
         _params.push_back(FBProcParamState(
           topo.audio.params[p].static_.voiceAccProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
-      }
       else
-      {
-        FB_ASSERT(topo.audio.params[p].static_.voiceBlockProcAddr != nullptr);
         _params.push_back(FBProcParamState(
           topo.audio.params[p].static_.voiceBlockProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
-      }
-    }
     else
-    {
       if (topo.audio.params[p].static_.acc)
-      {
-        FB_ASSERT(topo.audio.params[p].static_.globalAccProcAddr != nullptr);
         _params.push_back(FBProcParamState(
           topo.audio.params[p].static_.globalAccProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
-      }
       else
-      {
-        FB_ASSERT(topo.audio.params[p].static_.globalBlockProcAddr != nullptr);
         _params.push_back(FBProcParamState(
           topo.audio.params[p].static_.globalBlockProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
-      }
-    }
 
   for (int p = 0; p < Params().size(); p++)
     Params()[p].InitProcessing(static_cast<float>(topo.audio.params[p].DefaultNormalizedByText()));

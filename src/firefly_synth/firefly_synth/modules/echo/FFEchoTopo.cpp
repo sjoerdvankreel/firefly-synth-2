@@ -328,10 +328,8 @@ FFMakeEchoTopo(bool global)
   tapLevel.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapLevel);
   tapLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
     
-  // Accurate (because modulatable) for global, block (voice start) for voice.
-  // This allows to share a single delay line across all taps for the per-voice echo.
   auto& tapDelayTime = result->params[(int)FFEchoParam::TapDelayTime];
-  tapDelayTime.acc = global;
+  tapDelayTime.acc = true;
   tapDelayTime.display = "Dly";
   tapDelayTime.name = "Tap Delay Time";
   tapDelayTime.matrixName = "Tap Delay";
