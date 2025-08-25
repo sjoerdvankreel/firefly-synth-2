@@ -284,7 +284,7 @@ FFMakeEchoTopo(bool global)
 
   auto& guiTapSelect = result->guiParams[(int)FFEchoGUIParam::TapSelect];
   guiTapSelect.defaultText = "1";
-  guiTapSelect.name = "Select";
+  guiTapSelect.name = "Edit";
   guiTapSelect.id = prefix + "{FB146F89-2B8D-448F-8B38-EA213B4FC84D}";
   guiTapSelect.slotCount = 1;
   guiTapSelect.type = FBParamType::Discrete;
