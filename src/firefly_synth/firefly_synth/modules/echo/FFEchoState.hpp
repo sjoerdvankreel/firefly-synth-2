@@ -42,7 +42,7 @@ public:
 };
 
 template <class TBlock>
-class alignas(alignof(TBlock)) FFEchoBlockParamState final
+class alignas(alignof(TBlock)) FFEchoBlockParamState
 {
   friend class FFPlugProcessor;
   friend class FFVoiceProcessor;
@@ -68,8 +68,20 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoBlockParamState);
 };
 
+template <class TBlock>
+class alignas(alignof(TBlock)) FFVEchoBlockParamState final:
+public FFEchoBlockParamState<TBlock>
+{
+  friend class FFVoiceProcessor;
+  friend class FFEchoProcessor<false>;
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  std::array<TBlock, FFEchoTapCount> tapDelayTime = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFVEchoBlockParamState);
+};
+
 template <class TAccurate>
-class alignas(alignof(TAccurate)) FFEchoAccParamState final
+class alignas(alignof(TAccurate)) FFEchoAccParamState
 {
   friend class FFEchoProcessor<true>;
   friend class FFEchoProcessor<false>;
@@ -99,22 +111,42 @@ class alignas(alignof(TAccurate)) FFEchoAccParamState final
   std::array<TAccurate, FFEchoTapCount> tapHPFreq = {};
   std::array<TAccurate, FFEchoTapCount> tapLevel = {};
   std::array<TAccurate, FFEchoTapCount> tapXOver = {};
-  std::array<TAccurate, FFEchoTapCount> tapDelayTime = {};
   std::array<TAccurate, FFEchoTapCount> tapBalance = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoAccParamState);
 };
 
-template <class TBlock, class TAccurate>
-class alignas(alignof(TAccurate)) FFEchoParamState final
+template <class TAccurate>
+class alignas(alignof(TAccurate)) FFGEchoAccParamState final:
+public FFEchoAccParamState<TAccurate>
 {
-  friend class FFPlugProcessor;
-  friend class FFVoiceProcessor;
   friend class FFEchoProcessor<true>;
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  std::array<TAccurate, FFEchoTapCount> tapDelayTime = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoAccParamState);
+};
+
+template <class TBlock, class TAccurate>
+class alignas(alignof(TAccurate)) FFVEchoParamState final
+{
+  friend class FFVoiceProcessor;
   friend class FFEchoProcessor<false>;
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   FFEchoAccParamState<TAccurate> acc = {};
+  FFVEchoBlockParamState<TBlock> block = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFVEchoParamState);
+};
+
+template <class TBlock, class TAccurate>
+class alignas(alignof(TAccurate)) FFGEchoParamState final
+{
+  friend class FFPlugProcessor;
+  friend class FFEchoProcessor<true>;
+  friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
+  FFGEchoAccParamState<TAccurate> acc = {};
   FFEchoBlockParamState<TBlock> block = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoParamState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoParamState);
 };

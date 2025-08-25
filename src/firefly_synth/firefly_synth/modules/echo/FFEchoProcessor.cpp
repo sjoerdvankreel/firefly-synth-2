@@ -162,7 +162,6 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
   float vTargetOrGTargetNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.vTargetOrGTarget[0], voice);
 
   auto const& tapOnNorm = params.block.tapOn;
-  auto const& tapDelayTimeNorm = params.acc.tapDelayTime;
   auto const& tapDelayBarsNorm = params.block.tapDelayBars;
   float tapsOnNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.tapsOn[0], voice);
   float reverbOnNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.reverbOn[0], voice);
@@ -225,15 +224,24 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
     _tapDelayBarsSamples[t] = topo.NormalizedToBarsFloatSamplesFast(
       FFEchoParam::TapDelayBars, 
       FFSelectDualProcBlockParamNormalized<Global>(tapDelayBarsNorm[t], voice), sampleRate, bpm);
+    if constexpr (!Global)
+      _voiceTapDelayTimeSamples[t] = topo.NormalizedToLinearTimeFloatSamplesFast(
+        FFEchoParam::TapDelayTime,
+        FFSelectDualProcBlockParamNormalized<Global>(params.block.tapDelayTime[t], voice),
+        sampleRate);
     _tapDelayStates[t].smoother.SetCoeffs((int)std::ceil(delaySmoothSamples));
 
     if (init)
     {
+      float tapDelayTimeSamples;
       _tapDelayStates[t].Reset();
-      float tapDelayTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-        FFEchoParam::TapDelayTime,        
-        FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).First(),
-        sampleRate);
+      if constexpr (Global)
+        tapDelayTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+          FFEchoParam::TapDelayTime,
+          FFSelectDualProcAccParamNormalized<Global>(params.acc.tapDelayTime[t], voice).First(),
+          sampleRate);
+      else
+        tapDelayTimeSamples = _voiceTapDelayTimeSamples[t];
       float tapDelayInitSamples = _sync ? _tapDelayBarsSamples[t] : tapDelayTimeSamples;
       _tapDelayStates[t].smoother.State(tapDelayInitSamples);
     }
@@ -496,7 +504,6 @@ FFEchoProcessor<Global>::ProcessTaps(
   auto const& tapHPResNorm = params.acc.tapHPRes;
   auto const& tapLPFreqNorm = params.acc.tapLPFreq;
   auto const& tapHPFreqNorm = params.acc.tapHPFreq;
-  auto const& tapDelayTimeNorm = params.acc.tapDelayTime;
   auto const& tapsMixNorm = FFSelectDualProcAccParamNormalized<Global>(params.acc.tapsMix[0], voice);
 
   if (processAudioOrExchangeState)
@@ -518,10 +525,15 @@ FFEchoProcessor<Global>::ProcessTaps(
           if (_sync)
             lengthTimeSamples = _tapDelayBarsSamples[t];
           else
-            lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
-              FFEchoParam::TapDelayTime,
-              FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).CV().Get(s),
-              sampleRate);
+          {
+            if constexpr (Global)
+              lengthTimeSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+                FFEchoParam::TapDelayTime,
+                FFSelectDualProcAccParamNormalized<Global>(params.acc.tapDelayTime[t], voice).CV().Get(s),
+                sampleRate);
+            else
+              lengthTimeSamples = _voiceTapDelayTimeSamples[t];
+          }
           float lengthTimeSamplesSmooth = _tapDelayStates[t].smoother.Next(lengthTimeSamples);
 
           float tapBalPlain = topo.NormalizedToLinearFast(
@@ -597,7 +609,8 @@ FFEchoProcessor<Global>::ProcessTaps(
     FFSelectDualExchangeState<Global>(exchangeParams.acc.tapLevel[t], voice) = FFSelectDualProcAccParamNormalized<Global>(tapLevelNorm[t], voice).Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.tapXOver[t], voice) = FFSelectDualProcAccParamNormalized<Global>(tapXOverNorm[t], voice).Last();
     FFSelectDualExchangeState<Global>(exchangeParams.acc.tapBalance[t], voice) = FFSelectDualProcAccParamNormalized<Global>(tapBalNorm[t], voice).Last();
-    FFSelectDualExchangeState<Global>(exchangeParams.acc.tapDelayTime[t], voice) = FFSelectDualProcAccParamNormalized<Global>(tapDelayTimeNorm[t], voice).Last();
+    if constexpr (Global)
+      FFSelectDualExchangeState<Global>(exchangeParams.acc.tapDelayTime[t], voice) = FFSelectDualProcAccParamNormalized<Global>(params.acc.tapDelayTime[t], voice).Last();
   }
 }
 

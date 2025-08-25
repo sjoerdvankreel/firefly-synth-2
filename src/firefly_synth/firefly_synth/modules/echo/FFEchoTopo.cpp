@@ -341,12 +341,16 @@ FFMakeEchoTopo(bool global)
   tapDelayTime.Linear().min = 0.0f;
   tapDelayTime.Linear().max = 10.0f;
   tapDelayTime.Linear().editSkewFactor = 0.5f;
-  auto selectTapDelayTime = [](auto& module) { return &module.acc.tapDelayTime; };
-  tapDelayTime.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectTapDelayTime);
-  tapDelayTime.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectTapDelayTime);
-  tapDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapDelayTime);
-  tapDelayTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapDelayTime);
-  tapDelayTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapDelayTime);
+  auto selectGTapDelayTime = [](auto& module) { return &module.acc.tapDelayTime; };
+  auto selectVTapDelayTime = [](auto& module) { return &module.block.tapDelayTime; };
+  if (global)
+    tapDelayTime.scalarAddr = FFSelectScalarParamAddr(selectGlobalModule, selectGTapDelayTime);
+  else
+    tapDelayTime.scalarAddr = FFSelectScalarParamAddr(selectVoiceModule, selectVTapDelayTime);
+  tapDelayTime.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectGTapDelayTime);
+  tapDelayTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectGTapDelayTime);
+  tapDelayTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVTapDelayTime);
+  tapDelayTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVTapDelayTime);
   tapDelayTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
   tapDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0 && vs[3] == 0; });
 
