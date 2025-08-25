@@ -72,6 +72,7 @@ class FFEchoProcessor final
   int _graphSamplesProcessed = {};
   float _graphStVarFilterFreqMultiplier = {};
 
+  bool _firstProcess = {};
   int _voiceFadeSamplesProcessed = {};
   int _voiceExtendSamplesProcessed = {};
   FFEchoVoiceExtensionStage _voiceExtensionStage = {};
