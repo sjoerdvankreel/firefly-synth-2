@@ -264,7 +264,7 @@ FFMakeEchoTopo(bool global)
   tapsMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTapsMix);
   tapsMix.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectTapsMix);
   tapsMix.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTapsMix);
-  tapsMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
+  tapsMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapsOn = result->params[(int)FFEchoParam::TapsOn];
   tapsOn.acc = false;
