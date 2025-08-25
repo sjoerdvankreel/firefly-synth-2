@@ -10,6 +10,17 @@
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
+FFVEchoTarget 
+FFVoiceProcessor::GetCurrentVEchoTarget(FBModuleProcState const& state)
+{
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& vEcho = procState->param.voice.vEcho[0];
+  auto& vEchoModuleTopo = state.topo->static_->modules[(int)FFModuleType::VEcho];
+  float vEchoTargetNorm = vEcho.block.vTargetOrGTarget[0].Voice()[voice];
+  return vEchoModuleTopo.NormalizedToListFast<FFVEchoTarget>(FFEchoParam::VTargetOrGTarget, vEchoTargetNorm);
+}
+
 void 
 FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
@@ -40,6 +51,12 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     state.moduleSlot = i;
     procState->dsp.voice[voice].vEffect[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, state);
   }
+
+  if (GetCurrentVEchoTarget(state) == FFVEchoTarget::AfterMix)
+  {
+    state.moduleSlot = 0;
+    procState->dsp.voice[voice].vEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
+  }
 }
 
 bool 
@@ -54,6 +71,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   auto const& lfo1ToBalNorm = vMix.acc.lfo1ToBal[0].Voice()[voice];
   auto const& ampEnvToAmpNorm = vMix.acc.ampEnvToAmp[0].Voice()[voice];
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::VMix];
+
   FBSArray<float, FBFixedBlockSamples> ampNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
 
@@ -128,6 +146,15 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     float ampPlain = moduleTopo.NormalizedToLinearFast(FFVMixParam::Amp, ampNormModulated.Get(s));
     for (int c = 0; c < 2; c++)
       voiceDSP.output[c].Set(s, voiceDSP.output[c].Get(s) * ampPlain * FBStereoBalance(c, balPlain));
+  }
+
+  if (GetCurrentVEchoTarget(state) == FFVEchoTarget::AfterMix)
+  {
+    state.moduleSlot = 0;
+    voiceDSP.output.CopyTo(voiceDSP.vEcho.input);
+    int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, ampEnvProcessed);
+    voiceFinished = vEchoProcessed != FBFixedBlockSamples;
+    voiceDSP.vEcho.output.CopyTo(voiceDSP.output);
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

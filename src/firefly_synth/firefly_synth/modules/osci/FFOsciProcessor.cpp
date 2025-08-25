@@ -58,7 +58,7 @@ FFOsciProcessor::AllocOnDemandBuffers(
   int uniCount = moduleTopo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm); 
   int oversampleTimes = graph ? 1 : FFOsciOversampleTimes;
   int maxDelayLineSize = static_cast<int>(std::ceil(sampleRate * oversampleTimes / FFOsciStringMinFreq));
-  if(type == FFOsciType::String)
+  if(graph || type == FFOsciType::String)
     for (int i = 0; i < (graph? FFOsciUniMaxCount: uniCount); i++)
       _stringUniState[i].delayLine.AllocBuffersIfChanged(state->MemoryPool(), maxDelayLineSize);
 }

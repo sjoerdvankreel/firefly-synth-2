@@ -1,7 +1,7 @@
 #pragma once
 
 #include <firefly_synth/dsp/shared/FFDelayLine.hpp>
-#include <firefly_synth/modules/echo/FFGEchoTopo.hpp>
+#include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
@@ -14,17 +14,24 @@
 class FBAccParamState;
 struct FBModuleProcState;
 
-inline int constexpr FFGEchoReverbCombCount = 8;
-inline int constexpr FFGEchoReverbAllPassCount = 4;
-inline float constexpr FFGEchoPlotLengthSeconds = 5.0f;
+enum class FFEchoVoiceExtensionStage
+{
+  NotStarted,
+  Extending,
+  Fading,
+  Finished
+};
 
-struct FFGEchoDelayState
+inline int constexpr FFEchoReverbCombCount = 8;
+inline int constexpr FFEchoReverbAllPassCount = 4;
+inline float constexpr FFEchoPlotLengthSeconds = 5.0f;
+
+struct FFEchoDelayState
 {
   void Reset();
   FBBasicLPFilter smoother = {};
   FFStateVariableFilter<2> lpFilter = {};
   FFStateVariableFilter<2> hpFilter = {};
-  std::array<FFDelayLine, 2> delayLine = {};
 };
 
 // https://github.com/sinshu/freeverb
@@ -33,38 +40,48 @@ struct FFGEchoDelayState
 // Also i'd have to figure out if Freeverb uses feedback or feedforward
 // combs and also figure out if the allpass filter below can somehow
 // be mapped to the Cytomic state variable filter in allpass mode.
-struct FFGEchoReverbState
+struct FFEchoReverbState
 {
   void Reset();
   FFStateVariableFilter<2> lpFilter = {};
   FFStateVariableFilter<2> hpFilter = {};
-  std::array<std::array<int, FFGEchoReverbCombCount>, 2> combPosition = {};
-  std::array<std::array<float, FFGEchoReverbCombCount>, 2> combFilter = {};
-  std::array<std::array<std::vector<float>, FFGEchoReverbCombCount>, 2> combState = {};
-  std::array<std::array<std::int32_t, FFGEchoReverbAllPassCount>, 2> allPassPosition = {};
-  std::array<std::array<std::vector<float>, FFGEchoReverbAllPassCount>, 2> allPassState = {};
+  std::array<std::array<int, FFEchoReverbCombCount>, 2> combPosition = {};
+  std::array<std::array<float, FFEchoReverbCombCount>, 2> combFilter = {};
+  std::array<std::array<std::vector<float>, FFEchoReverbCombCount>, 2> combState = {};
+  std::array<std::array<std::int32_t, FFEchoReverbAllPassCount>, 2> allPassPosition = {};
+  std::array<std::array<std::vector<float>, FFEchoReverbAllPassCount>, 2> allPassState = {};
 };
 
-class FFGEchoProcessor final
+template <bool Global>
+class FFEchoProcessor final
 {
+  bool _on = {};
   bool _sync = {};
   bool _tapsOn = {};
   bool _feedbackOn = {};
   bool _reverbOn = {};
-  FFGEchoOrder _order = {};
-  FFGEchoTarget _target = {};
+  FFEchoOrder _order = {};
+  int _voiceFadeSamples = {};
+  int _voiceExtendSamples = {};
   float _feedbackDelayBarsSamples = {};
-  std::array<bool, FFGEchoTapCount> _tapOn = {};
-  std::array<float, FFGEchoTapCount> _tapDelayBarsSamples = {};
+  std::array<bool, FFEchoTapCount> _tapOn = {};
+  std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
 
   bool _graph = {};
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
   float _graphStVarFilterFreqMultiplier = {};
 
-  FFGEchoReverbState _reverbState = {};
-  FFGEchoDelayState _feedbackDelayState = {};
-  std::array<FFGEchoDelayState, FFGEchoTapCount> _tapDelayStates = {};
+  bool _firstProcess = {};
+  int _voiceFadeSamplesProcessed = {};
+  int _voiceExtendSamplesProcessed = {};
+  FFEchoVoiceExtensionStage _voiceExtensionStage = {};
+
+  FFEchoReverbState _reverbState = {};
+  FFEchoDelayState _feedbackDelayState = {};
+  std::array<FFDelayLine<1>, 2> _feedbackDelayLine = {};
+  std::array<FFDelayLine<FFEchoTapCount>, 2> _tapsDelayLine = {};
+  std::array<FFEchoDelayState, FFEchoTapCount> _tapDelayStates = {};
 
   void ProcessTaps(
     FBModuleProcState& state,
@@ -79,11 +96,10 @@ class FFGEchoProcessor final
     bool processAudioOrExchangeState);
 
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFGEchoProcessor);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoProcessor);
 
-
-  int Process(FBModuleProcState& state);
-  void BeginBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+  int Process(FBModuleProcState& state, int ampEnvFinishedAt);
+  void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate);
 };

@@ -18,8 +18,8 @@ class alignas(FBSIMDAlign) FFCombFilter final
 {
   float _resMin = 0.0f;
   float _resPlus = 0.0f;
-  std::array<FFDelayLine, Channels> _delayLinesMin = {};
-  std::array<FFDelayLine, Channels> _delayLinesPlus = {};
+  std::array<FFDelayLine<1>, Channels> _delayLinesMin = {};
+  std::array<FFDelayLine<1>, Channels> _delayLinesPlus = {};
 
   void DebugCheck(float sampleRate, float freq);
 
@@ -91,11 +91,17 @@ FFCombFilter<Channels>::Next(
   
   float minOld = 0.0f;
   if constexpr (MinOn)
-    minOld = _delayLinesMin[channel].PopLinearInterpolate();
+  {
+    minOld = _delayLinesMin[channel].GetLinearInterpolate(0);
+    _delayLinesMin[channel].Pop();
+  }
 
   float plusOld = 0.0f;
   if constexpr (PlusOn)
-    plusOld = _delayLinesPlus[channel].PopLinearInterpolate();
+  {
+    plusOld = _delayLinesPlus[channel].GetLinearInterpolate(0);
+    _delayLinesPlus[channel].Pop();
+  }
   
   float out = in + _resPlus * plusOld + _resMin * minOld;  
   if constexpr (MinOn)
@@ -138,7 +144,7 @@ FFCombFilter<Channels>::SetMin(
     DebugCheck(sampleRate, freq);
     _resMin = res * FFMaxCombFilterRes;
     for (int c = 0; c < Channels; c++)
-      _delayLinesMin[c].Delay(sampleRate / freq);
+      _delayLinesMin[c].Delay(0, sampleRate / freq);
   }
 }
 
@@ -153,6 +159,6 @@ FFCombFilter<Channels>::SetPlus(
     DebugCheck(sampleRate, freq);
     _resPlus = res * FFMaxCombFilterRes;
     for (int c = 0; c < Channels; c++)
-      _delayLinesPlus[c].Delay(sampleRate / freq);
+      _delayLinesPlus[c].Delay(0, sampleRate / freq);
   }
 }

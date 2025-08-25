@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakeGEchoGUI(FBPlugGUI* plugGUI);
+FFMakeEchoGUI(FBPlugGUI* plugGUI);

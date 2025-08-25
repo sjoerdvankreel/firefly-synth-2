@@ -4,38 +4,42 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/shared/FBMemoryPool.hpp>
 
+#include <array>
+
 class FBMemoryPool;
 
 // Rip-off from JUCE, just tailored a bit.
+template <int TapCount>
 class FFDelayLine final
 {
   int _read = {};
   int _write = {};
-  int _delayWhole = {};
-  float _delayFraction = {};
-
   float* _data = {};
   int _maxBufferSize = {};
   int _currentBufferSize = {};
+  std::array<int, TapCount> _delayWhole = {};
+  std::array<float, TapCount> _delayFraction = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFDelayLine);
 
+  void Pop();
   void Push(float val);
-  void Delay(float delay);
+  void Delay(int tap, float delay);
   void Reset(int currentBufferSize);
 
   void ReleaseBuffers(FBMemoryPool* pool);
   bool AllocBuffersIfChanged(FBMemoryPool* pool, int maxBufferSize);
 
-  float PopLinearInterpolate();
-  float PopLagrangeInterpolate();
+  float GetLinearInterpolate(int tap);
+  float GetLagrangeInterpolate(int tap);
   int MaxBufferSize() const { return _maxBufferSize; }
   int CurrentBufferSize() const { return _currentBufferSize; }
 };
 
+template <int TapCount>
 inline void
-FFDelayLine::ReleaseBuffers(FBMemoryPool* pool)
+FFDelayLine<TapCount>::ReleaseBuffers(FBMemoryPool* pool)
 {
   _maxBufferSize = 0;
   if (_data != nullptr)
@@ -43,8 +47,9 @@ FFDelayLine::ReleaseBuffers(FBMemoryPool* pool)
   _data = nullptr;
 }
 
+template <int TapCount>
 inline bool
-FFDelayLine::AllocBuffersIfChanged(FBMemoryPool* pool, int maxBufferSize)
+FFDelayLine<TapCount>::AllocBuffersIfChanged(FBMemoryPool* pool, int maxBufferSize)
 {
   if (_maxBufferSize == maxBufferSize)
     return false;
@@ -56,18 +61,20 @@ FFDelayLine::AllocBuffersIfChanged(FBMemoryPool* pool, int maxBufferSize)
   return true;
 }
 
+template <int TapCount>
 inline void
-FFDelayLine::Delay(float delay)
+FFDelayLine<TapCount>::Delay(int tap, float delay)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
-  _delayWhole = static_cast<int>(delay);
-  _delayFraction = delay - _delayWhole;
+  _delayWhole[tap] = static_cast<int>(delay);
+  _delayFraction[tap] = delay - _delayWhole[tap];
   FB_ASSERT(0.0f <= delay && delay < CurrentBufferSize());
 }
 
+template <int TapCount>
 inline void
-FFDelayLine::Push(float val)
+FFDelayLine<TapCount>::Push(float val)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
@@ -78,26 +85,36 @@ FFDelayLine::Push(float val)
   FB_ASSERT(0 <= _write && _write < CurrentBufferSize());
 }
 
-inline float
-FFDelayLine::PopLinearInterpolate()
+template <int TapCount>
+inline void
+FFDelayLine<TapCount>::Pop()
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
-  int pos1 = (_read + _delayWhole) % CurrentBufferSize();
+  _read = (_read + CurrentBufferSize() - 1) % CurrentBufferSize();
+  FB_ASSERT(0 <= _read && _read < CurrentBufferSize());
+}
+
+template <int TapCount>
+inline float
+FFDelayLine<TapCount>::GetLinearInterpolate(int tap)
+{
+  assert(0 < MaxBufferSize());
+  assert(0 < _currentBufferSize);
+  int pos1 = (_read + _delayWhole[tap]) % CurrentBufferSize();
   int pos2 = (pos1 + 1) % CurrentBufferSize();
   float val1 = _data[pos1];
   float val2 = _data[pos2];
-  _read = (_read + CurrentBufferSize() - 1) % CurrentBufferSize();
-  FB_ASSERT(0 <= _read && _read < CurrentBufferSize());
-  return val1 + _delayFraction * (val2 - val1);
+  return val1 + _delayFraction[tap] * (val2 - val1);
 }
 
+template <int TapCount>
 inline float
-FFDelayLine::PopLagrangeInterpolate()
+FFDelayLine<TapCount>::GetLagrangeInterpolate(int tap)
 {
   assert(0 < MaxBufferSize());
   assert(0 < _currentBufferSize);
-  int pos1 = (_read + _delayWhole);
+  int pos1 = (_read + _delayWhole[tap]);
   int pos2 = pos1 + 1;
   int pos3 = pos1 + 2;
   int pos4 = pos1 + 3;
@@ -112,25 +129,24 @@ FFDelayLine::PopLagrangeInterpolate()
   float val2 = _data[pos2];
   float val3 = _data[pos3];
   float val4 = _data[pos4];
-  float d1 = _delayFraction - 1.0f;
-  float d2 = _delayFraction - 2.0f;
-  float d3 = _delayFraction - 3.0f;
+  float d1 = _delayFraction[tap] - 1.0f;
+  float d2 = _delayFraction[tap] - 2.0f;
+  float d3 = _delayFraction[tap] - 3.0f;
   float c1 = -d1 * d2 * d3 / 6.0f;
   float c2 = d2 * d3 * 0.5f;
   float c3 = -d1 * d3 * 0.5f;
   float c4 = d1 * d2 / 6.0f;
-  _read = (_read + CurrentBufferSize() - 1) % CurrentBufferSize();
-  FB_ASSERT(0 <= _read && _read < CurrentBufferSize());
-  return val1 * c1 + _delayFraction * (val2 * c2 + val3 * c3 + val4 * c4);
+  return val1 * c1 + _delayFraction[tap] * (val2 * c2 + val3 * c3 + val4 * c4);
 }
 
+template <int TapCount>
 inline void
-FFDelayLine::Reset(int currentBufferSize)
+FFDelayLine<TapCount>::Reset(int currentBufferSize)
 {
   _read = 0;
   _write = 0;
-  _delayWhole = 0;
-  _delayFraction = 0;
+  _delayWhole = {};
+  _delayFraction = {};
   std::fill(_data, _data + _maxBufferSize, 0.0f);
   FB_ASSERT(0 <= currentBufferSize && currentBufferSize <= _maxBufferSize);
   _currentBufferSize = currentBufferSize;

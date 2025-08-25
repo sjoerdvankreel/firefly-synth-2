@@ -40,7 +40,7 @@ struct FFOsciStringUniVoiceState final
   float phaseTowardsX = 0.0f;
   int colorFilterPosition = 0;
 
-  FFDelayLine delayLine = {};
+  FFDelayLine<1> delayLine = {};
   FFBasicHPFilter dcFilter = {};
   FFScalarPhaseGenerator phaseGen = {};
   FBSArray<float, FFOsciStringMaxPoles> colorFilterBuffer = {};

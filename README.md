@@ -2,7 +2,7 @@
 * But it is a functioning clap and vst3 plugin.
 * Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
 * Tested on reaper, renoise, fruity and bitwig.
-* Osci, inter-osci modulation, per-voice fx, global fx, global echo, envelopes, lfos, cv mod matrix and audio mixer matrix implemented.
+* Osci, inter-osci modulation, envelopes, per-voice and global fx/echo/lfos/modmatrix/audiomixer matrix implemented.
 * Stock JUCE GUI, no presets, no MTS-ESP, no portamento, no global unison.
 
 # Some demo material
@@ -52,6 +52,9 @@
 * FM + echo + echo mod
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_echo_fm_and_echo_mod.mp3)
 [reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_echo_fm_and_echo_mod.rpp)
+* Plucked strings + per-voice echo mod
+[mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_voice_echo_pluckstring_and_voice_echo_mod.mp3)
+[reaper](https://github.com/sjoerdvankreel/firefly-synth-2/raw/main/demo/demo_voice_echo_pluckstring_and_voice_echo_mod.rpp)
 
 The distortion demo is actually interesting to look at the reaper/video file. It makes use of envelope loop points,
 keytracking state variable filters and keytracking comb filters. Because of the keytracking each engine voice
@@ -160,7 +163,8 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 ## Echo
 * Combined multitap delay / feedback delay / reverb.
 * Adjustable ordering of taps / feedback / reverb.
-* Adjustable placement in the processing pipeline: before all fx, after all fx, or apply to input / output of any of the effect modules.
+* For per-voice: can only apply to the end of the pipeline (so, after audio mixer (vmix)).
+* For global: adjustable placement in the processing pipeline: before all fx, after all fx, after audio mixer, or apply to input / output of any of the effect modules.
 * Time or tempo-synced versions of multitap and feedback delay.
 * Smoothing parameter for delay time changes. Applies to time, bars, host bpm changes etc etc.
 * Unlike FF1, all delay times are now modulatable.

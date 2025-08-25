@@ -1,5 +1,9 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/shared/FFDeserializationConverter.hpp>
+#include <firefly_synth/modules/echo/FFEchoTopo.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
+
+#include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 FFDeserializationConverter::
@@ -66,6 +70,29 @@ FFDeserializationConverter::OnParamNotFound(
     }
   }
 
+  // 2.0.4 - added "G" prefix to global echo module and params
+  // NOTE TO SELF: this changed the param tags, so broke automation lanes.
+  // Let's REALLY not ever do that again.
+  if (OldVersion() < FBPlugVersion(2, 0, 4))
+  {
+    auto const& gEchoModule = Topo()->static_->modules[(int)FFModuleType::GEcho];
+    if ("G" + oldModuleId == gEchoModule.id)
+    {
+      newModuleId = gEchoModule.id;
+      for (int p = 0; p < gEchoModule.params.size(); p++)
+      {
+        auto const& gEchoParam = gEchoModule.params[p];
+        if ("G" + oldParamId == gEchoParam.id)
+        {
+          newParamId = gEchoParam.id;
+          newParamSlot = oldParamSlot;
+          newModuleSlot = oldModuleSlot;
+          return true;
+        }
+      }
+    }
+  }
+
   return false;
 }
 
@@ -93,4 +120,53 @@ FFDeserializationConverter::PostProcess(
       }
     }
   }
+}
+
+bool 
+FFDeserializationConverter::OnParamListItemNotFound(
+  bool isGuiState,
+  std::string const& moduleId, int /*moduleSlot*/,
+  std::string const& paramId, int /*paramSlot*/,
+  std::string const& oldParamValue, std::string& newParamValue) const
+{
+  if (isGuiState)
+    return false;
+
+  // 2.0.4 - added "G" prefix to global echo module and params
+  // NOTE TO SELF: this changed the mod matrix list item values, so broke modulation too.
+  // Let's REALLY not ever do that again.
+  if (OldVersion() < FBPlugVersion(2, 0, 4))
+  {
+    auto const& gEchoModule = Topo()->static_->modules[(int)FFModuleType::GEcho];
+    auto const& gMatrixModule = Topo()->static_->modules[(int)FFModuleType::GMatrix];
+    if (moduleId == gMatrixModule.id)
+    {
+      auto const& gMatrixTargetParam = gMatrixModule.params[(int)FFModMatrixParam::Target];
+      if (paramId == gMatrixTargetParam.id)
+      {
+        // {guid}-slot-{guid}-{slot}
+        if (oldParamValue.size() == 81)
+        {
+          std::string moduleGuid = oldParamValue.substr(0, 38);
+          if ("G" + moduleGuid == gEchoModule.id)
+          {
+            std::string paramGuid = oldParamValue.substr(41, 38);
+            for (int p = 0; p < (int)FFEchoParam::Count; p++)
+            {
+              auto const& gEchoParam = gEchoModule.params[p];
+              if ("G" + paramGuid == gEchoParam.id)
+              {
+                std::string paramSlot = oldParamValue.substr(80, 1);
+                std::string moduleSlot = oldParamValue.substr(39, 1);
+                newParamValue = "G" + moduleGuid + "-" + moduleSlot + "-G" + paramGuid + "-" + paramSlot;
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return false;
 }

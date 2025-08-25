@@ -81,7 +81,7 @@ FFEffectProcessor::AllocOnDemandBuffers(
   float onNorm = FFSelectDualProcBlockParamNormalizedGlobal<Global>(params.block.on[0]);
   auto const& moduleTopo = topo->static_->modules[(int)(Global ? FFModuleType::GEffect : FFModuleType::VEffect)];
 
-  if (!moduleTopo.NormalizedToBoolFast(FFEffectParam::On, onNorm))
+  if (!graph && !moduleTopo.NormalizedToBoolFast(FFEffectParam::On, onNorm))
     return;
 
   float graphFilterFreqMultiplier = FFGraphFilterFreqMultiplier(graph, sampleRate, FFMaxCombFilterFreq);

@@ -7,7 +7,7 @@
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
 #include <firefly_synth/modules/mix/FFMixGUI.hpp>
 #include <firefly_synth/modules/osci/FFOsciGUI.hpp>
-#include <firefly_synth/modules/echo/FFGEchoGUI.hpp>
+#include <firefly_synth/modules/echo/FFEchoGUI.hpp>
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
@@ -173,7 +173,7 @@ FFPlugGUI::SetupGUI()
   _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, FFMakeOsciGUI(this));
   _modules->Add(1, 0, FFMakeEffectGUI(this));
-  _modules->Add(2, 0, FFMakeGEchoGUI(this));
+  _modules->Add(2, 0, FFMakeEchoGUI(this));
   _modules->Add(3, 0, FFMakeLFOGUI(this));
   _modules->Add(4, 0, FFMakeEnvGUI(this));
   _content = StoreComponent<FBContentComponent>();
