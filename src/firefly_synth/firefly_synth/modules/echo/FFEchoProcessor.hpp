@@ -32,7 +32,7 @@ struct FFEchoModulatableDelayState
   FBBasicLPFilter smoother = {};
   FFStateVariableFilter<2> lpFilter = {};
   FFStateVariableFilter<2> hpFilter = {};
-  std::array<FFDelayLine, 2> delayLine = {};
+  std::array<FFDelayLine<1>, 2> delayLine = {};
 };
 
 // https://github.com/sinshu/freeverb

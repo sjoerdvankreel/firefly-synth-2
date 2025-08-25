@@ -424,8 +424,9 @@ FFEchoProcessor<Global>::ProcessFeedback(
       float outLR[2];
       for (int c = 0; c < 2; c++)
       {
-        _feedbackDelayState.delayLine[c].Delay(lengthTimeSamplesSmooth);
-        outLR[c] = _feedbackDelayState.delayLine[c].PopLagrangeInterpolate();
+        _feedbackDelayState.delayLine[c].Delay(0, lengthTimeSamplesSmooth);
+        outLR[c] = _feedbackDelayState.delayLine[c].GetLagrangeInterpolate(0);
+        _feedbackDelayState.delayLine[c].Pop();
       }
 
       if (_graph)
@@ -549,8 +550,9 @@ FFEchoProcessor<Global>::ProcessTaps(
           float thisTapOutLR[2];
           for (int c = 0; c < 2; c++)
           {
-            _tapDelayStates[t].delayLine[c].Delay(lengthTimeSamplesSmooth);
-            thisTapOutLR[c] = _tapDelayStates[t].delayLine[c].PopLagrangeInterpolate();
+            _tapDelayStates[t].delayLine[c].Delay(0, lengthTimeSamplesSmooth);
+            thisTapOutLR[c] = _tapDelayStates[t].delayLine[c].GetLagrangeInterpolate(0);
+            _tapDelayStates[t].delayLine[c].Pop();
           }
 
           if (_graph)
