@@ -27,6 +27,7 @@ enum class FFEchoOrder {
 enum class FFEchoParam {
   VTargetOrGTarget, Order, Gain, Sync,
   DelaySmoothTime, DelaySmoothBars,
+  VoiceExtendTime, VoiceExtendBars, VoiceFadeTime, VoiceFadeBars,
   ReverbOn, ReverbMix, ReverbXOver,
   ReverbSize, ReverbDamp, ReverbAPF,
   ReverbLPFreq, ReverbLPRes, ReverbHPFreq, ReverbHPRes,

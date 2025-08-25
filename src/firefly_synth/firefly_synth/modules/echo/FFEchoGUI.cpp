@@ -100,7 +100,7 @@ MakeEchoSectionMain(
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 0, 0, 0, 0, 0 });
   auto vTargetOrGTarget = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VTargetOrGTarget, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, vTargetOrGTarget));
   auto targetBox = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, vTargetOrGTarget);
@@ -118,10 +118,22 @@ MakeEchoSectionMain(
   auto gain = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Gain, 0 } });
   grid->Add(1, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(1, 3, plugGUI->StoreComponent<FBParamSlider>(plugGUI, gain, Slider::SliderStyle::LinearHorizontal));
+  auto voiceExtendTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceExtendTime, 0 } });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceExtendTime));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceExtendTime, Slider::SliderStyle::LinearHorizontal));
+  auto voiceExtendBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceExtendBars, 0 } });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceExtendBars));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceExtendBars));
+  auto voiceFadeTime = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceFadeTime, 0 } });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceFadeTime));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, voiceFadeTime, Slider::SliderStyle::LinearHorizontal));
+  auto voiceFadeBars = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::VoiceFadeBars, 0 } });
+  grid->Add(1, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voiceFadeBars));
+  grid->Add(1, 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, voiceFadeBars));
   auto sync = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::Sync, 0 } });
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
-  grid->Add(1, 4, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
-  grid->MarkSection({ { 0, 0 }, { 2, 5 } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, sync));
+  grid->Add(1, 6, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, sync));
+  grid->MarkSection({ { 0, 0 }, { 2, 7 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
