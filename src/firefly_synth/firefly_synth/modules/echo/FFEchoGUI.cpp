@@ -147,31 +147,32 @@ MakeEchoSectionTaps(
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
+
+  auto tapsEditor = MakeEchoTapsEditor(plugGUI, global);
+  auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Taps");
+  showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(tapsEditor, 360, 250); };
+  grid->Add(0, 0, showTapsEditor);
+  *showTapsEditorOut = showTapsEditor;
+
   auto on = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapsOn, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, on));
   auto tapsOnToggle = plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, on);
-  grid->Add(0, 1, tapsOnToggle);
+  grid->Add(1, 0, tapsOnToggle);
   *tapsOnToggleOut = tapsOnToggle;
-  auto mix = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapsMix, 0 } });
-  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto guiTapSelect = topo->gui.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoGUIParam::TapSelect, 0 } });
   auto tapSelectSlider = plugGUI->StoreComponent<FBGUIParamSlider>(plugGUI, guiTapSelect, Slider::SliderStyle::RotaryVerticalDrag);
-  grid->Add(0, 2, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
-  grid->Add(0, 3, tapSelectSlider);
+  grid->Add(0, 1, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, guiTapSelect));
+  grid->Add(0, 2, tapSelectSlider);
   FBParamTopoIndices indices = { { (int)moduleType, 0 }, { (int)FFEchoGUIParam::TapSelect, 0 } };
   tapSelectSlider->onValueChange = [plugGUI, inidividualTapsGUI, indices]() {
     inidividualTapsGUI->SelectContentIndex(plugGUI->HostContext()->GetGUIParamDiscrete(indices) - 1); };
 
-  auto tapsEditor = MakeEchoTapsEditor(plugGUI, global);
-  auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Edit All");
-  showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(tapsEditor, 360, 250); };
-  grid->Add(1, 2, 1, 2, showTapsEditor);
-  *showTapsEditorOut = showTapsEditor;
+  auto mix = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapsMix, 0 } });
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mix));
+  grid->Add(1, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, mix, Slider::SliderStyle::RotaryVerticalDrag));
 
-  grid->MarkSection({ { 0, 0 }, { 2, 4 } });
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
