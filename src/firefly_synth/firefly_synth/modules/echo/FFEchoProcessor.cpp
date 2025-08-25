@@ -325,7 +325,7 @@ FFEchoProcessor<Global>::Process(
       {
         float fade = 1.0f - (_voiceFadeSamplesProcessed / (float)_voiceFadeSamples);
         for (int c = 0; c < 2; c++)
-          output[c].Mul(s, fade);
+          output[c].Set(s, output[c].Get(s) * fade);
         _voiceFadeSamplesProcessed++;
       }
       if (_voiceExtensionStage == FFEchoVoiceExtensionStage::Fading && _voiceFadeSamplesProcessed == _voiceFadeSamples)
