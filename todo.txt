@@ -1,6 +1,7 @@
 TODOLIST for alpha-14
 
 [ ] 8x env/lfo
+[ ] lower the delay smooth for vecho
 [ ] get the text out of the graphs
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
@@ -12,7 +13,7 @@ TODOLIST for alpha-14
 [ ] MIDI key, velo (voice), low/high/last
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] make it clear alpha breaks the demos
-[ ] allow modulate env stage lengths on voice start
+[ ] allow modulate env stage lengths on voice start => any per-voice-start-automatable
 [ ] keep taps on the mod matrix
 [ ] refix all behind-the-scenes mod sources and targets
 [ ] master aux gui to small
@@ -30,15 +31,12 @@ autosoftclip
 MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating (not on-note but continuous)
 another round of cpu and memory profiling
 factory presets
-echo -> combined reverb + multitap feedback delay (see if i can pull it off) + per-voice delay module (lets see if memory allows)
 get rid of sse2neon
 more context menus, clear matrix etc
 string timbre should not react to samplerate/oversample
-check all the todos before out of alpha
 intel mac version
 fix todos
 todo document the thing a bit
-multitap fb delay
 rosetta is borked
 vst3 note expr + midi mpe
 explain processing order and modulation order including auto/external/internal
