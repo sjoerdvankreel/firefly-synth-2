@@ -11,6 +11,7 @@ TODOLIST for alpha 13 - vecho
 
 TODOLIST for alpha-14
 
+[ ] 8x env/lfo
 [ ] get the text out of the graphs
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
