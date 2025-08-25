@@ -67,7 +67,6 @@ class FFEchoProcessor final
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFEchoTapCount> _tapOn = {};
   std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
-  std::array<float, FFEchoTapCount> _voiceTapDelayTimeSamples = {};
 
   bool _graph = {};
   int _graphSampleCount = {};

@@ -100,7 +100,7 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
   std::array<FFGMixParamState<TAccurate>, 1> gMix = {};
   std::array<FFMasterParamState<TAccurate>, 1> master = {};
   std::array<FFExternalParamState<TBlock>, 1> external = {};
-  std::array<FFGEchoParamState<TBlock, TAccurate>, 1> gEcho = {};
+  std::array<FFEchoParamState<TBlock, TAccurate>, 1> gEcho = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOCount> gLFO = {};
   std::array<FFModMatrixParamState<TBlock, TAccurate, true>, 1> gMatrix = {};
@@ -112,7 +112,7 @@ struct alignas(alignof(TAccurate)) FFVoiceParamState final
 {
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceParamState);
   std::array<FFVMixParamState<TAccurate>, 1> vMix = {};
-  std::array<FFVEchoParamState<TBlock, TAccurate>, 1> vEcho = {};
+  std::array<FFEchoParamState<TBlock, TAccurate>, 1> vEcho = {};
   std::array<FFOsciModParamState<TBlock, TAccurate>, 1> osciMod = {};
   std::array<FFEnvParamState<TBlock, TAccurate>, FFEnvCount> env = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOCount> vLFO = {};
