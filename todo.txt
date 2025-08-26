@@ -15,6 +15,7 @@ TODOLIST for alpha-14
 [ ] merge ui/matrix/patch
 [ ] global unison with chord mode
 [ ] global set-exact-value UI (+ context menu item?)
+[ ] ctrl+drag for fine control
 
 TODOLIST for alpha-15
 
