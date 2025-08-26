@@ -1,21 +1,30 @@
 TODOLIST for alpha-14
 
+[ ] osci coarse->pitch
+[ ] master modwheel + midi link
+[ ] master pitch bend + midi link + range + target off/voice/oscN
+[ ] external smooth into master
+[ ] MTS into master: off / note / continuous 
+[ ] MTS into output
+[ ] voice + pitch + cent + porta off/on/auto + sync
+[ ] get the text out of the graphs
+[ ] floating notes
+[ ] MIDI key, velo (voice), low/high/last
+[ ] 3x on note random as a cheap mod source, uni + normal
+[ ] refix all behind-the-scenes mod sources and targets
+[ ] merge ui/matrix/patch
+
+TODOLIST for alpha-15
+
 [ ] 8x env/lfo
 [ ] lower the delay smooth for vecho
-[ ] get the text out of the graphs
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
 [ ] less matrix routes
-[ ] floating notes
-[ ] master input (modwheel, pb + range) + easy-access midi somehow
-[ ] portamento controls + all-osci coarse/fine
 [ ] global set-exact-value UI (+ context menu item?)
-[ ] MIDI key, velo (voice), low/high/last
-[ ] 3x on note random as a cheap mod source, uni + normal
 [ ] make it clear alpha breaks the demos
 [ ] allow modulate env stage lengths on voice start => any per-voice-start-automatable
 [ ] keep taps on the mod matrix
-[ ] refix all behind-the-scenes mod sources and targets
 [ ] master aux gui to small
 
 pre/post VMIX echo or not ?
