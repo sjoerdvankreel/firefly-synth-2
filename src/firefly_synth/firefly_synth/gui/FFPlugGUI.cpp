@@ -1,7 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/gui/FFPatchGUI.hpp>
 #include <firefly_synth/gui/FFHeaderGUI.hpp>
-#include <firefly_synth/gui/FFPlugMatrixGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
@@ -174,11 +173,10 @@ FFPlugGUI::SetupGUI()
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _graph);
 
-  _outputGUIAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0, 0 } });
+  _outputGUIAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
   _outputGUIAndPatch->Add(0, 0, FFMakeOutputGUI(this));
   _outputGUIAndPatch->Add(0, 1, FFMakeGUISettingsGUI(this));
-  _outputGUIAndPatch->Add(0, 2, FFMakePlugMatrixGUI(this));
-  _outputGUIAndPatch->Add(0, 3, FFMakePatchGUI(this));
+  _outputGUIAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
   _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0 } });
   _topModules->Add(0, 0, FFMakeExternalGUI(this));

@@ -27,6 +27,15 @@ FFMakeGUISettingsTopo()
   auto selectGuiUserScale = [](auto& module) { return &module.userScale; };
   guiUserScale.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiUserScale);
 
+  auto& guiShowMatrix = result->guiParams[(int)FFGUISettingsGUIParam::ShowMatrix];
+  guiShowMatrix.defaultText = "Off";
+  guiShowMatrix.name = "Show Matrix";
+  guiShowMatrix.slotCount = 1;
+  guiShowMatrix.id = "{FEB66217-BE68-4B94-A8D3-009EE307BBB5}";
+  guiShowMatrix.type = FBParamType::Boolean;
+  auto selectGuiShowMatrix = [](auto& module) { return &module.showMatrix; };
+  guiShowMatrix.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiShowMatrix);
+
   auto& guiGraphRenderMode = result->guiParams[(int)FFGUISettingsGUIParam::GraphRenderMode];
   guiGraphRenderMode.defaultText = "If Focus";
   guiGraphRenderMode.name = "Graph";
