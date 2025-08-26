@@ -16,18 +16,19 @@ FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& ou
     return;
   _updated = now;
 
-  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Output];
-
   auto const* voicesParam = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } });
-  float voicesNorm = topo.DiscreteToNormalizedFast(FFOutputParam::Voices, state.input->voiceManager->VoiceCount());
-  (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = voicesNorm;
+  float voicesNorm = state.input->voiceManager->VoiceCount() / (float)FBMaxVoices;
+  _maxVoices = std::max(_maxVoices, voicesNorm);
+  (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = _maxVoices;
 
   auto const* cpuParam = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } });
-  float cpuNorm = topo.DiscreteToNormalizedFast(FFOutputParam::Cpu, std::clamp((int)(state.input->prevRoundCpuUsage * 0.1f * FFOutputMaxCpu), 0, FFOutputMaxCpu));
-  (*state.outputParamsNormalized)[cpuParam->runtimeParamIndex] = cpuNorm;
+  float cpuNorm = std::clamp(state.input->prevRoundCpuUsage, 0.0f, 1.0f);
+  _maxCpu = std::max(_maxCpu, cpuNorm);
+  (*state.outputParamsNormalized)[cpuParam->runtimeParamIndex] = _maxCpu;
 
   float maxOutput = std::max(std::abs(output.audio[0].First()), std::abs(output.audio[1].First()));
   auto const* gainParam = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Gain, 0 } });
-  float gainNorm = topo.DiscreteToNormalizedFast(FFOutputParam::Gain, std::clamp((int)(maxOutput * FFOutputMaxGain), 0, FFOutputMaxGain));
-  (*state.outputParamsNormalized)[gainParam->runtimeParamIndex] = gainNorm;
+  float gainNorm = std::clamp(maxOutput, 0.0f, 1.0f);
+  _maxGain = std::max(_maxGain, gainNorm);
+  (*state.outputParamsNormalized)[gainParam->runtimeParamIndex] = _maxGain;
 }
