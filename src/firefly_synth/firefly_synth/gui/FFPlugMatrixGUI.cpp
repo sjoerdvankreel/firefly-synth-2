@@ -11,28 +11,19 @@
 
 using namespace juce;
 
-static Component*
-MakePlugMatrixTab(FFPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1 });
-  auto toggle = plugGUI->StoreComponent<FBAutoSizeButton>(" Show ");
-  toggle->onClick = [plugGUI, toggle]() { 
-    if (plugGUI->ToggleMatrix())
-      toggle->setButtonText(" Hide ");
-    else
-      toggle->setButtonText(" Show "); };
-  grid->Add(0, 0, toggle);
-  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
-  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-  return plugGUI->StoreComponent<FBSectionComponent>(section);
-}
-
 Component*
 FFMakePlugMatrixGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
-  tabs->addTab("Matrix", {}, MakePlugMatrixTab(plugGUI), false);
-  return tabs;
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1 });
+  auto toggle = plugGUI->StoreComponent<FBAutoSizeButton>("Show Matrix");
+  toggle->onClick = [plugGUI, toggle]() { 
+    if (plugGUI->ToggleMatrix())
+      toggle->setButtonText("Hide Matrix");
+    else
+      toggle->setButtonText("Show Matrix"); };
+  grid->Add(0, 0, toggle);
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
+  auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+  return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
