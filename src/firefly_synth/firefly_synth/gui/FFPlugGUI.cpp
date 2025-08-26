@@ -126,15 +126,10 @@ FFPlugGUI::GetRenderType(int paramIndex) const
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
 
-bool
-FFPlugGUI::ToggleMatrix()
+void
+FFPlugGUI::ToggleMatrix(bool on)
 {
-  if (_showMatrix)
-    _content->SetContent(_modules);
-  else
-    _content->SetContent(_matrix);
-  _showMatrix = !_showMatrix;
-  return _showMatrix;
+  _content->SetContent(on? _matrix: _modules);
 }
 
 void 
@@ -199,6 +194,9 @@ FFPlugGUI::SetupGUI()
   _container->Add(1, 0, _headerAndGraph);
   _container->Add(2, 0, _content);
   addAndMakeVisible(_container);
+
+  bool matrixOn = HostContext()->GetGUIParamBool({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
+  ToggleMatrix(matrixOn);
 
   auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1, 0 } });
   _overlayContent = StoreComponent<FBContentComponent>();

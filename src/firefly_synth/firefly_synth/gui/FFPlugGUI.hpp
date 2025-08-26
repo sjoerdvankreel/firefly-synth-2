@@ -39,7 +39,7 @@ public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
 
-  bool ToggleMatrix();
+  void ToggleMatrix(bool on);
   void SwitchGraphToModule(int index, int slot);
   
   void HideOverlayComponent();
