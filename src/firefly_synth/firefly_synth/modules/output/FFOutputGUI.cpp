@@ -21,16 +21,16 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1 } );
   auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Gain, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, gain, "0", std::to_string(FFOutputMaxGain)));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, gain, "0", "1"));
   auto cpu = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } });
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, cpu));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, cpu, "0", std::to_string(FFOutputMaxCpu)));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, cpu, "0", "1"));
   auto voices = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voices));
-  grid->Add(0, 5, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, voices, "0", std::to_string(FBMaxVoices)));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, voices, "0", "1"));
   grid->MarkSection({ { 0, 0 }, { 1, 6 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
