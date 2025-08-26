@@ -1,5 +1,6 @@
 TODOLIST for alpha-14
 
+[ ] showmatrix to gui control
 [ ] osci coarse->pitch
 [ ] master modwheel + midi link
 [ ] master pitch bend + midi link + range + target off/voice/oscN
