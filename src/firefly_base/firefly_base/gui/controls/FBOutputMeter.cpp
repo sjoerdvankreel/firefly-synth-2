@@ -5,6 +5,8 @@
 
 using namespace juce;
 
+static int const BarCount = 20;
+
 FBOutputParamMeter::
 FBOutputParamMeter(
   FBPlugGUI* plugGUI, 
@@ -27,30 +29,32 @@ FBOutputParamMeter::getTooltip()
 void
 FBOutputParamMeter::SetValueNormalizedFromHost(double normalized)
 {
-  _valueNormalized = normalized;
-  repaint();
+  double barsFilledFloat = normalized * BarCount;
+  int fillCount = (int)std::round(barsFilledFloat);
+  if (_fillCount != fillCount)
+  {
+    _fillCount = fillCount;
+    //repaint(); // TODO why so slow??
+  }
 }
 
 void 
-FBOutputParamMeter::paint(Graphics& g)
+FBOutputParamMeter::paint(Graphics&)
 {
-  int const barCount = 20;
-  int const gapCount = barCount - 1;
-  
+#if 0 // TODO SLOOOOOOOOOOOOOOOOOW
   float const gapSize = 2.0f;
   float const barHeight = 10.0f;
+  int const gapCount = BarCount - 1;
   float const totalGapSize = gapCount * gapSize;
   float const barY = (getLocalBounds().getHeight() - barHeight) * 0.5f;
-  float const barSize = (getLocalBounds().getWidth() - totalGapSize) / barCount;
-
-  double barsFilledFloat = _valueNormalized * barCount;
-  int barsFilled = (int)std::round(barsFilledFloat);
+  float const barSize = (getLocalBounds().getWidth() - totalGapSize) / BarCount;
 
   int i = 0;
   g.setColour(Colours::lightgrey);
-  for (; i < barsFilled; i++)
+  for (; i < _fillCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
   g.setColour(Colours::darkgrey);
-  for (; i < barCount; i++)
+  for (; i < BarCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
+#endif
 }

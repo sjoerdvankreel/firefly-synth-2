@@ -12,7 +12,7 @@ public juce::Component,
 public juce::TooltipClient,
 public FBParamControl
 {
-  double _valueNormalized = {};
+  int _fillCount = 0;
 
 public:
   FBOutputParamMeter(

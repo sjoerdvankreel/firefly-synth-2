@@ -8,9 +8,15 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+static int constexpr OutputSamplingRate = 10;
+
 void
 FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& output)
 {
+  (void)state;
+  (void)output;
+#if 0//TODO SLOOOOOW
+
   auto const* voicesParam = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } });
   float voicesNorm = state.input->voiceManager->VoiceCount() / (float)FBMaxVoices;
   _maxVoices = std::max(_maxVoices, voicesNorm);
@@ -25,7 +31,7 @@ FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& ou
   _maxGain = std::max(_maxGain, gainNorm);
 
   auto now = std::chrono::steady_clock::now();
-  if (std::chrono::duration_cast<std::chrono::milliseconds>(now - _updated).count() < 1000.0f / FFOutputSamplingRate)
+  if (std::chrono::duration_cast<std::chrono::milliseconds>(now - _updated).count() < 1000.0f / OutputSamplingRate)
     return;
   (*state.outputParamsNormalized)[voicesParam->runtimeParamIndex] = _maxVoices;
   (*state.outputParamsNormalized)[cpuParam->runtimeParamIndex] = _maxCpu;
@@ -35,4 +41,5 @@ FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& ou
   _maxCpu = 0.0f;
   _maxGain = 0.0f;
   _maxVoices = 0.0f;
+#endif
 }
