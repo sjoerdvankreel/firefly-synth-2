@@ -34,11 +34,14 @@ FBOutputParamMeter::SetValueNormalizedFromHost(double normalized)
 void 
 FBOutputParamMeter::paint(Graphics& g)
 {
-  int const gapSize = 3;
   int const barCount = 20;
   int const gapCount = barCount - 1;
-  int const totalGapSize = gapCount * gapSize;
-  int const barSize = (getLocalBounds().getWidth() - totalGapSize) / barCount;
+  
+  float const gapSize = 2.0f;
+  float const barHeight = 10.0f;
+  float const totalGapSize = gapCount * gapSize;
+  float const barY = (getLocalBounds().getHeight() - barHeight) * 0.5f;
+  float const barSize = (getLocalBounds().getWidth() - totalGapSize) / barCount;
 
   double barsFilledFloat = _valueNormalized * barCount;
   int barsFilled = (int)std::round(barsFilledFloat);
@@ -46,8 +49,8 @@ FBOutputParamMeter::paint(Graphics& g)
   int i = 0;
   g.setColour(Colours::lightgrey);
   for (; i < barsFilled; i++)
-    g.fillRect(i * (barSize + gapSize), 0, barSize, getHeight());
+    g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
   g.setColour(Colours::darkgrey);
   for (; i < barCount; i++)
-    g.fillRect(i * (barSize + gapSize), 0, barSize, getHeight());
+    g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
 }
