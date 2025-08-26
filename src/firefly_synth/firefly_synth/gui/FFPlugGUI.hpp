@@ -21,6 +21,7 @@ public FBPlugGUI
   FBGridComponent* _container = {};
   FBGridComponent* _topModules = {};
   FBGridComponent* _headerAndGraph = {};
+  FBGridComponent* _outputGUIAndPatch = {};
 
   FBContentComponent* _content = {};
   juce::Component* _overlayComponent = {};

@@ -174,13 +174,15 @@ FFPlugGUI::SetupGUI()
   _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
   _headerAndGraph->Add(0, 1, _graph);
 
-  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0, 0, 0, 0 } });
+  _outputGUIAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0, 0 } });
+  _outputGUIAndPatch->Add(0, 0, FFMakeOutputGUI(this));
+  _outputGUIAndPatch->Add(0, 1, FFMakeGUISettingsGUI(this));
+  _outputGUIAndPatch->Add(0, 2, FFMakePlugMatrixGUI(this));
+  _outputGUIAndPatch->Add(0, 3, FFMakePatchGUI(this));
+
+  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0 } });
   _topModules->Add(0, 0, FFMakeExternalGUI(this));
   _topModules->Add(0, 1, FFMakeMasterGUI(this));
-  _topModules->Add(0, 2, FFMakeOutputGUI(this));
-  _topModules->Add(0, 3, FFMakeGUISettingsGUI(this));
-  _topModules->Add(0, 4, FFMakePlugMatrixGUI(this));
-  _topModules->Add(0, 5, FFMakePatchGUI(this));
 
   _modules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, _topModules);
@@ -194,9 +196,10 @@ FFPlugGUI::SetupGUI()
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
 
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 92 } }, std::vector<int> { { 1 } });
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 6, 92 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _headerAndGraph);
-  _container->Add(1, 0, _content);
+  _container->Add(1, 0, _outputGUIAndPatch);
+  _container->Add(2, 0, _content);
   addAndMakeVisible(_container);
 
   auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1, 0 } });
