@@ -194,7 +194,7 @@ FFPlugGUI::SetupGUI()
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
 
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 10, 91 } }, std::vector<int> { { 1 } });
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 92 } }, std::vector<int> { { 1 } });
   _container->Add(0, 0, _headerAndGraph);
   _container->Add(1, 0, _content);
   addAndMakeVisible(_container);
