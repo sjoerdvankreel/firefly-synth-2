@@ -15,7 +15,7 @@ Component*
 FFMakePatchGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0 });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Patch"));
   auto load = plugGUI->StoreComponent<FBAutoSizeButton>("Load");
   load->onClick = [plugGUI]() { plugGUI->LoadPatchFromFile(); };
@@ -26,7 +26,10 @@ FFMakePatchGUI(FBPlugGUI* plugGUI)
   auto init = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
   init->onClick = [plugGUI]() { plugGUI->InitPatch(); };
   grid->Add(0, 3, init);
-  grid->MarkSection({ { 0, 0 }, { 1, 4 } });
+  auto factory = plugGUI->StoreComponent<FBAutoSizeButton>("Factory");
+  factory->setEnabled(false);
+  grid->Add(0, 4, factory);
+  grid->MarkSection({ { 0, 0 }, { 1, 5 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
