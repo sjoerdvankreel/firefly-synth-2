@@ -16,8 +16,8 @@
 
 using namespace juce;
 
-static Component*
-MakeOutputSectionAll(FBPlugGUI* plugGUI)
+Component*
+FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
@@ -34,14 +34,4 @@ MakeOutputSectionAll(FBPlugGUI* plugGUI)
   grid->MarkSection({ { 0, 0 }, { 1, 6 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
-} 
-
-Component*
-FFMakeOutputGUI(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto tabs = plugGUI->StoreComponent<FBAutoSizeTabComponent>();
-  auto name = plugGUI->HostContext()->Topo()->static_->modules[(int)FFModuleType::Output].name;
-  tabs->addTab(name, {}, MakeOutputSectionAll(plugGUI), false);
-  return tabs;
 }
