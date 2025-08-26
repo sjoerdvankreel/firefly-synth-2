@@ -13,6 +13,8 @@ TODOLIST for alpha-14
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] refix all behind-the-scenes mod sources and targets
 [ ] merge ui/matrix/patch
+[ ] global unison with chord mode
+[ ] global set-exact-value UI (+ context menu item?)
 
 TODOLIST for alpha-15
 
@@ -21,7 +23,6 @@ TODOLIST for alpha-15
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
 [ ] less matrix routes
-[ ] global set-exact-value UI (+ context menu item?)
 [ ] make it clear alpha breaks the demos
 [ ] allow modulate env stage lengths on voice start => any per-voice-start-automatable
 [ ] keep taps on the mod matrix
