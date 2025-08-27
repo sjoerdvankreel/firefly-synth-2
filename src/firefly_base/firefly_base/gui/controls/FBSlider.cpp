@@ -163,6 +163,9 @@ FBParamSlider::UpdateExchangeState()
   {
     auto const* exchangeState = _plugGUI->HostContext()->ExchangeState();
     paramActive = exchangeState->GetParamActiveState(_param);
+
+    // So we can get away in the dsp code with not processing exchange data for unused stuff.
+    paramActive.active &= isEnabled();
   }
   if (paramActive != _paramActive)
     repaint();

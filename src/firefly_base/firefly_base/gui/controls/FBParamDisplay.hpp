@@ -18,7 +18,6 @@ public:
   FBParamDisplayLabel(
     FBPlugGUI* plugGUI,
     FBRuntimeParam const* param,
-    std::string const& defaultText,
     std::string const& maxWidthText);
 
   juce::String getTooltip() override;

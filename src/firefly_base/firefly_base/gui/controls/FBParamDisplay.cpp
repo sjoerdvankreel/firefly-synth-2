@@ -1,6 +1,7 @@
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBParamDisplay.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
 static int const MeterBarCount = 20;
@@ -11,13 +12,14 @@ FBParamDisplayLabel::
 FBParamDisplayLabel(
   FBPlugGUI* plugGUI, 
   FBRuntimeParam const* param, 
-  std::string const& defaultText,
   std::string const& maxWidthText):
 Label(),
 FBParamControl(plugGUI, param),
 _maxTextWidth(FBGUIGetStringWidthCached(maxWidthText))
 {
-  setText(defaultText, dontSendNotification);
+  double normalized = plugGUI->HostContext()->GetAudioParamNormalized(param->runtimeParamIndex);
+  auto text = plugGUI->HostContext()->Topo()->audio.params[param->runtimeParamIndex].NormalizedToTextWithUnit(false, normalized);
+  setText(text, dontSendNotification);
 }
 
 void

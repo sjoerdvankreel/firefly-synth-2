@@ -34,7 +34,7 @@ MakeModMatrixTopGUI(bool global, FFPlugGUI* plugGUI)
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(global ? "Global" : "Voice"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, slots));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slots, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots, "0", std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots, std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
   
   auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
   grid->Add(0, 5, clean);
