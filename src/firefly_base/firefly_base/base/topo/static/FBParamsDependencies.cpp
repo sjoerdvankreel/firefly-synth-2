@@ -3,7 +3,7 @@
 void
 FBParamsDependency::WhenSlots(
   std::vector<FBTopoIndices> const& staticParamIndices_,
-  FBParamsDependencyEvaluator const& evaluate_)
+  FBSlotParamsDependencyEvaluator const& evaluate_)
 {
   evaluate = evaluate_;
   staticParamIndices = staticParamIndices_;
@@ -12,9 +12,9 @@ FBParamsDependency::WhenSlots(
 void
 FBParamsDependency::WhenSimple(
   std::vector<int> const& staticParamIndices_,
-  FBParamsDependencyEvaluator const& evaluate_)
+  FBSimpleParamsDependencyEvaluator const& evaluateSimple)
 {
-  evaluate = evaluate_;
+  evaluate = [evaluateSimple](auto const&, auto const& vals) { return evaluateSimple(vals); };
   staticParamIndices.clear();
   for (int i = 0; i < staticParamIndices_.size(); i++)
     staticParamIndices.push_back({ staticParamIndices_[i], -1 });
