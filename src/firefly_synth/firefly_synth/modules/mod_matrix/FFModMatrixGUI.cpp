@@ -12,7 +12,7 @@
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
-#include <firefly_base/gui/controls/FBOutputLabel.hpp>
+#include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
@@ -34,7 +34,7 @@ MakeModMatrixTopGUI(bool global, FFPlugGUI* plugGUI)
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(global ? "Global" : "Voice"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, slots));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slots, Slider::SliderStyle::RotaryVerticalDrag));
-  grid->Add(0, 3, plugGUI->StoreComponent<FBOutputParamLabel>(plugGUI, slots, "0", std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots, "0", std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
   auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
   grid->Add(0, 4, clean);
   auto clear = plugGUI->StoreComponent<FBAutoSizeButton>("Clear");
