@@ -43,6 +43,7 @@ template <class TBlock>
 class alignas(alignof(TBlock)) FFLFOBlockParamState final
 {
   friend class FFLFOProcessor;
+  friend class FFPlugProcessor; // TEMP TODO
   friend std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool);
   std::array<TBlock, 1> type = {};
   std::array<TBlock, 1> sync = {};
@@ -79,6 +80,7 @@ template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFLFOParamState final
 {
   friend class FFLFOProcessor;
+  friend class FFPlugProcessor; // TEMP TODO
   friend std::unique_ptr<FBStaticModule> FFMakeLFOTopo(bool);
   FFLFOAccParamState<TAccurate> acc = {};
   FFLFOBlockParamState<TBlock> block = {};

@@ -18,6 +18,9 @@ public IFBPlugProcessor
   FFProcState* const _procState;
   FFExchangeState* const _exchangeState;
 
+  // connect to manual-click button, sick of dealing with this
+  bool _prevFlushDelayToggle = false;
+
   FBModuleProcState MakeModuleState(FBPlugInputBlock const& input);
   FBModuleProcState MakeModuleVoiceState(FBPlugInputBlock const& input, int voice);
   void ProcessGEcho(FBModuleProcState& state, FBSArray2<float, FBFixedBlockSamples, 2>& inout);

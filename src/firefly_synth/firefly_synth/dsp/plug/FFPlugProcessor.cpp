@@ -125,6 +125,16 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
 {
   auto state = MakeModuleState(input);
   auto& globalDSP = _procState->dsp.global;
+  auto const& globalParam = _procState->param.global;
+
+  // manual flush
+  bool flushToggle = globalParam.gLFO[0].block.type[0].Value() > 0.5f;
+  if (flushToggle != _prevFlushDelayToggle)
+  {
+    _prevFlushDelayToggle = flushToggle;
+    globalDSP.gEcho.processor->FlushDelayLines();
+  }
+
   state.moduleSlot = 0;
   globalDSP.gMatrix.processor->BeginVoiceOrBlock(state);
   globalDSP.gMatrix.processor->BeginModulationBlock();

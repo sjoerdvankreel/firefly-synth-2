@@ -98,6 +98,7 @@ class FFEchoProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoProcessor);
 
+  void FlushDelayLines();
   int Process(FBModuleProcState& state, int ampEnvFinishedAt);
   void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
