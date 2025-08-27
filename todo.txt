@@ -1,5 +1,6 @@
 TODOLIST for alpha-14
 
+[ ] output tooltips broken
 [x] output meters
 [x] make matrix faster -> breaking change
 [x] not paint modulation for disabled
