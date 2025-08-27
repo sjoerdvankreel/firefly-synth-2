@@ -34,12 +34,6 @@ FBParamDisplayLabel::FixedWidth(int /*height*/) const
   return _maxTextWidth + getBorderSize().getLeftAndRight();
 }
 
-String
-FBParamDisplayLabel::getTooltip()
-{
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
-}
-
 void
 FBParamDisplayLabel::SetValueNormalizedFromHost(double normalized)
 {
@@ -57,12 +51,6 @@ void
 FBParamDisplayMeter::parentHierarchyChanged()
 {
   ParentHierarchyChanged();
-}
-
-String
-FBParamDisplayMeter::getTooltip()
-{
-  return _plugGUI->GetTooltipForAudioParam(_param->runtimeParamIndex);
 }
 
 void

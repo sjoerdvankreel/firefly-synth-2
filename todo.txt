@@ -1,10 +1,11 @@
 TODOLIST for alpha-14
 
 [x] output meters
+[x] make output faster
 [x] make matrix faster -> breaking change
 [x] not paint modulation for disabled
 [x] showmatrix to gui control
-[ ] output tooltips broken for clap
+[x] output tooltips broken for clap => just disable them, no use
 [ ] do something to clean the delay lines
 [ ] make a cpu details popup
 [ ] osci coarse->pitch

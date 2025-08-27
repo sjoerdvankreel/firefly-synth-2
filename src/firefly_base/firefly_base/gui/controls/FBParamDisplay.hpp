@@ -20,7 +20,6 @@ public:
     FBRuntimeParam const* param,
     std::string const& maxWidthText);
 
-  juce::String getTooltip() override;
   void parentHierarchyChanged() override;
   int FixedWidth(int height) const override;
   void SetValueNormalizedFromHost(double normalized) override;
@@ -28,7 +27,6 @@ public:
 
 class FBParamDisplayMeter final:
 public juce::Component,
-public juce::TooltipClient,
 public FBParamControl
 {
   int _fillCount = 0;
@@ -38,7 +36,6 @@ public:
     FBPlugGUI* plugGUI,
     FBRuntimeParam const* param);
 
-  juce::String getTooltip() override;
   void paint(juce::Graphics& g) override;
   void parentHierarchyChanged() override;
   void SetValueNormalizedFromHost(double normalized) override;
