@@ -9,6 +9,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
@@ -24,15 +25,19 @@ MakeModMatrixTopGUI(bool global, FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> rowSizes = { { 1 } };
-  std::vector<int> columnSizes = { 0, 0, 0 };
+  std::vector<int> columnSizes = { 0, 0, 0, 0, 0 };
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, rowSizes, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, 4, rowSizes, columnSizes);
   auto slots = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(global ? "Global" : "Voice"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, slots));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, slots));
-  grid->MarkSection({ { 0, 0 }, { 1, 3 } });
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slots, Slider::SliderStyle::RotaryVerticalDrag));
+  auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
+  grid->Add(0, 3, clean);
+  auto clear = plugGUI->StoreComponent<FBAutoSizeButton>("Clear");
+  grid->Add(0, 4, clear);
+  grid->MarkSection({ { 0, 0 }, { 1, 5 } });
   return grid;
 }
   
