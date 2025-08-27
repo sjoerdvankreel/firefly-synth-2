@@ -27,9 +27,9 @@ FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& ou
 
   if(_cpuParamIndex == -1)
   {
-    _cpuParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } })->runtimeModuleIndex;
-    _gainParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Gain, 0 } })->runtimeModuleIndex;
-    _voicesParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } })->runtimeModuleIndex;
+    _cpuParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } })->runtimeParamIndex;
+    _gainParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Gain, 0 } })->runtimeParamIndex;
+    _voicesParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } })->runtimeParamIndex;
   }
 
   (*state.outputParamsNormalized)[_cpuParamIndex] = _maxCpu;
