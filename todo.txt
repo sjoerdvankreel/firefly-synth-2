@@ -1,5 +1,6 @@
 TODOLIST for alpha-14
 
+[ ] make matrix faster
 [x] showmatrix to gui control
 [ ] osci coarse->pitch
 [ ] master modwheel + midi link
