@@ -39,7 +39,7 @@ FBOutputParamMeter::SetValueNormalizedFromHost(double normalized)
 }
 
 void 
-FBOutputParamMeter::paint(Graphics&)
+FBOutputParamMeter::paint(Graphics& g)
 {
   float const gapSize = 2.0f;
   float const barHeight = 10.0f;
