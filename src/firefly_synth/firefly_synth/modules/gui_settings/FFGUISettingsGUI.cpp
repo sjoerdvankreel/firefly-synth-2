@@ -12,6 +12,7 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
@@ -22,7 +23,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 1, 0, 1, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 0, 0, 0, 0, 0 });
   auto showMatrix = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, showMatrix));
   auto showMatrixToggle = plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, showMatrix);
@@ -34,8 +35,8 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   auto knobRenderMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::KnobRenderMode, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobRenderMode));
   grid->Add(0, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobRenderMode));
-  auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush");
-  flushDelayButton->setTooltip("Flush delay lines");
+  auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Audio");
+  flushDelayButton->setTooltip("Flush delays and reverbs");
   grid->Add(0, 6, flushDelayButton);
   flushDelayButton->onClick = [plugGUI]() {
     FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsParam::FlushDelayToggle, 0 } };
@@ -43,7 +44,8 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
     double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
     plugGUI->HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
   };
-  grid->MarkSection({ { 0, 0 }, { 1, 7 } });
+  grid->Add(0, 7, plugGUI->StoreComponent<FBFillerComponent>(10, 1));
+  grid->MarkSection({ { 0, 0 }, { 1, 8 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
