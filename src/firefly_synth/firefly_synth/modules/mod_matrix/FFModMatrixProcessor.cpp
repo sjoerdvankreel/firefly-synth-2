@@ -274,6 +274,16 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       }
     }
   }
+
+  if (exchangeToGUI != nullptr)
+    for (int i = _activeSlotCount; i < MaxSlotCount; i++)
+    {
+      auto& exchangeParams = *FFSelectDualState<Global>(
+        [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
+        [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
+      auto const& amount = FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV();
+      FFSelectDualExchangeState<Global>(exchangeParams.acc.amount[i], voice) = amount.Last();
+    }
 }
 
 template class FFModMatrixProcessor<true>;
