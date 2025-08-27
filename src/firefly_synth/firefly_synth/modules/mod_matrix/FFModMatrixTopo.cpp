@@ -100,6 +100,21 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   auto selectVoiceModule = [](auto& state) { return &state.voice.vMatrix; };
   auto selectGlobalModule = [](auto& state) { return &state.global.gMatrix; };
 
+  auto& slots = result->params[(int)FFModMatrixParam::Slots];
+  slots.acc = false;
+  slots.defaultText = "0";
+  slots.name = "Slots";
+  slots.slotCount = 1;
+  slots.id = prefix + "{511B2721-2733-4BB4-BA75-C55AB8B6C54D}";
+  slots.type = FBParamType::Discrete;
+  slots.Discrete().valueCount = maxSlotCount + 1;
+  auto selectSlots = [](auto& module) { return &module.block.slots; };
+  slots.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSlots);
+  slots.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSlots);
+  slots.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSlots);
+  slots.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSlots);
+  slots.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSlots);
+
   auto& opType = result->params[(int)FFModMatrixParam::OpType];
   opType.acc = false;
   opType.name = "Op";

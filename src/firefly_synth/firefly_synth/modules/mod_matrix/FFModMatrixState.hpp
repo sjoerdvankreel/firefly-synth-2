@@ -40,6 +40,7 @@ class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
   static inline int constexpr MaxSlotCount = FFModMatrixTraits<Global>::MaxSlotCount;
 
+  std::array<TBlock, 1> slots = {};
   std::array<TBlock, MaxSlotCount> scale = {};
   std::array<TBlock, MaxSlotCount> opType = {};
   std::array<TBlock, MaxSlotCount> source = {};
