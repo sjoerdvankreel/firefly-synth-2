@@ -88,6 +88,13 @@ int
 FBPlugGUI::GetControlCountForAudioParamIndex(int paramIndex) const
 {
   auto iter = _audioParamIndexToComponents.find(paramIndex);
+  if (iter == _audioParamIndexToComponents.end())
+  {
+    // Allow opt-out of otherwise obligatory minimum of 1 controller for param.
+    auto const& paramTopo = HostContext()->Topo()->audio.params[paramIndex];
+    if (paramTopo.static_.thisIsNotARealParameter)
+      return 0;
+  }
 #ifndef NDEBUG
   if (iter == _audioParamIndexToComponents.end())
   {

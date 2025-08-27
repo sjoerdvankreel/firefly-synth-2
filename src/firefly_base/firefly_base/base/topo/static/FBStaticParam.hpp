@@ -129,6 +129,17 @@ public:
   bool acc = false;
   bool output = false;
 
+  // So sue me.
+  // Used to provide a toggle which we check in 
+  // realtime to flush delay lines when it changed. 
+  // But there's a bunch of checks in the base code
+  // which assert that an audio parameter has some
+  // sort of controller assigned to it, which i want to keep in.
+  // Also doing this the "right" way involves sending non-parameter
+  // data from controller to processor which i imagine differs quite
+  // a bit between vst3 and clap.
+  bool thisIsNotARealParameter = false;
+
   FBAutomationTiming AutomationTiming() const;
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 

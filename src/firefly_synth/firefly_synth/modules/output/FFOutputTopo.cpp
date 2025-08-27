@@ -63,6 +63,7 @@ FFMakeOutputTopo()
   // dummy which we check on the audio if it changed
   auto& flushDelayToggle = result->params[(int)FFOutputParam::FlushDelayToggle];
   flushDelayToggle.acc = false;
+  flushDelayToggle.thisIsNotARealParameter = true;
   flushDelayToggle.name = "Flush Delay";
   flushDelayToggle.slotCount = 1;
   flushDelayToggle.defaultText = "Off";
