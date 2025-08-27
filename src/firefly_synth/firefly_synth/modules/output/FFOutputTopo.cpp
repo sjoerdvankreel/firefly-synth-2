@@ -23,7 +23,8 @@ FFMakeOutputTopo()
   voices.unit = "%";
   voices.slotCount = 1;
   voices.id = "{54C6CAD4-FA5A-4395-8131-C768E0AD48CF}";
-  voices.type = FBParamType::Identity;
+  voices.type = FBParamType::Discrete;
+  voices.Discrete().valueCount = 101;
   auto selectVoices = [](auto& module) { return &module.block.voices; };
   voices.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVoices);
   voices.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoices);
@@ -37,7 +38,8 @@ FFMakeOutputTopo()
   cpu.unit = "%";
   cpu.slotCount = 1;
   cpu.id = "{F7E383FA-61A6-4CDB-898B-C62C248633A0}";
-  cpu.type = FBParamType::Identity;
+  cpu.type = FBParamType::Discrete;
+  cpu.Discrete().valueCount = 101;
   auto selectCpu = [](auto& module) { return &module.block.cpu; };
   cpu.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCpu);
   cpu.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectCpu);
@@ -51,7 +53,8 @@ FFMakeOutputTopo()
   gain.unit = "%";
   gain.slotCount = 1;
   gain.id = "{F0F8F4CA-8F90-4C6D-B685-24119817CC1D}";
-  gain.type = FBParamType::Identity;
+  gain.type = FBParamType::Discrete;
+  gain.Discrete().valueCount = 101;
   auto selectGain = [](auto& module) { return &module.block.gain; };
   gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
