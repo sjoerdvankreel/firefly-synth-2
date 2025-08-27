@@ -1,7 +1,7 @@
 TODOLIST for alpha-14
 
-[ ] make matrix faster
-[ ] not paint modulation for disabled
+[x] make matrix faster
+[x] not paint modulation for disabled
 [x] showmatrix to gui control
 [ ] osci coarse->pitch
 [ ] master modwheel + midi link
