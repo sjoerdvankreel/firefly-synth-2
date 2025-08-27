@@ -66,9 +66,10 @@ public:
   void BeginAudioParamChange(int index);
   void PerformAudioParamEdit(int index, double normalized);
 
-  void PerformImmediateAudioParamEdit(int index, double normalized);
   void ClearModuleAudioParams(FBTopoIndices const& moduleIndices);
   void CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot);
+  void PerformImmediateAudioParamEdit(int index, double normalized);
+  void PerformImmediateAudioParamEdit(FBParamTopoIndices const& indices, double normalized);
 };
 
 template <class T>

@@ -37,6 +37,13 @@ FBHostGUIContext::PerformAudioParamEdit(int index, double normalized)
 }
 
 void
+FBHostGUIContext::PerformImmediateAudioParamEdit(FBParamTopoIndices const& indices, double normalized)
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  PerformImmediateAudioParamEdit(param->runtimeParamIndex, normalized);
+}
+
+void
 FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
 {
   BeginAudioParamChange(index);

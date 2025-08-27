@@ -65,6 +65,17 @@ MakeModMatrixTopGUI(bool global, FFPlugGUI* plugGUI)
       }
     }
     plugGUI->HostContext()->ClearModuleAudioParams(modIndices);
+    for (int i = 0; i < amtNorm.size(); i++)
+    {
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Amount, } }, amtNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Scale, } }, scaleNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Target, } }, targetNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::OpType, } }, opTypeNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Source, } }, sourceNorm[i]);
+    }
+    auto const* slotsParam = hostContext->Topo()->audio.ParamAtTopo({ modIndices, { (int)FFModMatrixParam::Slots, 0 } });
+    double slotsNorm = slotsParam->static_.Discrete().PlainToNormalizedFast((int)amtNorm.size());
+    hostContext->PerformImmediateAudioParamEdit(slotsParam->runtimeParamIndex, slotsNorm);
   };
 
   auto clear = plugGUI->StoreComponent<FBAutoSizeButton>("Clear");
