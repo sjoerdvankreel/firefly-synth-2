@@ -13,10 +13,6 @@ static int constexpr OutputSamplingRate = 10;
 void
 FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& output)
 {
-  (void)state;
-  (void)output;
-#if 0//TODO SLOOOOOW
-
   auto const* voicesParam = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } });
   float voicesNorm = state.input->voiceManager->VoiceCount() / (float)FBMaxVoices;
   _maxVoices = std::max(_maxVoices, voicesNorm);
@@ -41,5 +37,4 @@ FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& ou
   _maxCpu = 0.0f;
   _maxGain = 0.0f;
   _maxVoices = 0.0f;
-#endif
 }

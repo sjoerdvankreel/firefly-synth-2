@@ -34,14 +34,13 @@ FBOutputParamMeter::SetValueNormalizedFromHost(double normalized)
   if (_fillCount != fillCount)
   {
     _fillCount = fillCount;
-    //repaint(); // TODO why so slow??
+    repaint();
   }
 }
 
 void 
 FBOutputParamMeter::paint(Graphics&)
 {
-#if 0 // TODO SLOOOOOOOOOOOOOOOOOW
   float const gapSize = 2.0f;
   float const barHeight = 10.0f;
   int const gapCount = BarCount - 1;
@@ -56,5 +55,4 @@ FBOutputParamMeter::paint(Graphics&)
   g.setColour(Colours::darkgrey);
   for (; i < BarCount; i++)
     g.fillRect(i * (barSize + gapSize), barY, barSize, barHeight);
-#endif
 }
