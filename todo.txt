@@ -1,5 +1,6 @@
 TODOLIST for alpha-14
 
+[ ] make a cpu details popup
 [ ] output tooltips broken
 [x] output meters
 [x] make matrix faster -> breaking change
