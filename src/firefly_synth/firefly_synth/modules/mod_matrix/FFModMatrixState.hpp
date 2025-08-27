@@ -24,10 +24,10 @@ class alignas(FBSIMDAlign) FFModMatrixDSPState final
   friend class FFVoiceProcessor;
   friend class FFModMatrixProcessor<Global>;
   friend class FFModMatrixProcessor<!Global>; // clang
-  static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
+  static inline int constexpr MaxSlotCount = FFModMatrixTraits<Global>::MaxSlotCount;
 
   std::unique_ptr<FFModMatrixProcessor<Global>> processor = {};
-  FBSArray2<float, FBFixedBlockSamples, SlotCount> modulatedCV = {};
+  FBSArray2<float, FBFixedBlockSamples, MaxSlotCount> modulatedCV = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFModMatrixDSPState);
   FFModMatrixDSPState() : processor(std::make_unique<FFModMatrixProcessor<Global>>()) {}
@@ -38,12 +38,12 @@ class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
 {
   friend class FFModMatrixProcessor<Global>;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
-  static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
+  static inline int constexpr MaxSlotCount = FFModMatrixTraits<Global>::MaxSlotCount;
 
-  std::array<TBlock, SlotCount> scale = {};
-  std::array<TBlock, SlotCount> opType = {};
-  std::array<TBlock, SlotCount> source = {};
-  std::array<TBlock, SlotCount> target = {};
+  std::array<TBlock, MaxSlotCount> scale = {};
+  std::array<TBlock, MaxSlotCount> opType = {};
+  std::array<TBlock, MaxSlotCount> source = {};
+  std::array<TBlock, MaxSlotCount> target = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixBlockParamState);
 };
@@ -53,9 +53,9 @@ class alignas(alignof(TAccurate)) FFModMatrixAccParamState final
 {
   friend class FFModMatrixProcessor<Global>;
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
-  static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
+  static inline int constexpr MaxSlotCount = FFModMatrixTraits<Global>::MaxSlotCount;
 
-  std::array<TAccurate, SlotCount> amount = {};
+  std::array<TAccurate, MaxSlotCount> amount = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixAccParamState);
 };

@@ -23,7 +23,7 @@ static Component*
 MakeModMatrixGUI(bool global, int offset, FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  std::vector<int> rowSizes(FFModMatrixGlobalSlotCount + 1, 1);
+  std::vector<int> rowSizes(FFModMatrixGlobalMaxSlotCount + 1, 1);
   std::vector<int> columnSizes = { 0, 0, 0, 1, 0 };
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   auto topo = plugGUI->HostContext()->Topo();
@@ -33,7 +33,7 @@ MakeModMatrixGUI(bool global, int offset, FFPlugGUI* plugGUI)
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Scale"));
   grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
   grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));
-  for (int i = 0; i < FFModMatrixGlobalSlotCount; i++)
+  for (int i = 0; i < FFModMatrixGlobalMaxSlotCount; i++)
   {
     auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, offset + i } });
     grid->Add(1 + i, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
@@ -77,7 +77,7 @@ MakeModMatrixGUI(bool global, int offset, FFPlugGUI* plugGUI)
     auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Amount, offset + i } });
     grid->Add(1 + i, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { FFModMatrixGlobalSlotCount + 1, (int)FFModMatrixParam::Count } });
+  grid->MarkSection({ { 0, 0 }, { FFModMatrixGlobalMaxSlotCount + 1, (int)FFModMatrixParam::Count } });
   return grid;
 }
 
@@ -86,7 +86,7 @@ MakeModMatrixGUIVoice(FFPlugGUI* plugGUI)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
   grid->Add(0, 0, MakeModMatrixGUI(false, 0, plugGUI));
-  grid->Add(0, 1, MakeModMatrixGUI(false, FFModMatrixGlobalSlotCount, plugGUI));
+  grid->Add(0, 1, MakeModMatrixGUI(false, FFModMatrixGlobalMaxSlotCount, plugGUI));
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 

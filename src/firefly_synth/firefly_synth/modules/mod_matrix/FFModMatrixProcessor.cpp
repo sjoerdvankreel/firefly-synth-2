@@ -59,7 +59,7 @@ FFModMatrixProcessor<Global>::BeginModulationBlock()
   for (int i = 0; i < _modSourceIsReady.size(); i++)
     for (int j = 0; j < _modSourceIsReady[i].size(); j++)
       _modSourceIsReady[i][j] = 0;
-  for (int i = 0; i < SlotCount; i++)
+  for (int i = 0; i < MaxSlotCount; i++)
   {
     _slotHasBeenProcessed[i] = false;
     _allModSourcesAreReadyForSlot[i] = false;
@@ -75,7 +75,7 @@ FFModMatrixProcessor<Global>::EndModulationBlock(FBModuleProcState& state)
   // static_cast for perf
   auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
   auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
-  for (int i = 0; i < SlotCount; i++)
+  for (int i = 0; i < MaxSlotCount; i++)
   {
     auto const& target = targets[_target[i]];
     if (target.module.index != -1)
@@ -107,7 +107,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   auto const& opTypeNorm = params.block.opType;
   auto const& amountNorm = params.acc.amount;
 
-  for (int i = 0; i < SlotCount; i++)
+  for (int i = 0; i < MaxSlotCount; i++)
   {
     _scale[i] = topo.NormalizedToListFast<int>(
       FFModMatrixParam::Scale,
@@ -129,7 +129,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
     // static_cast for perf
     auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
     auto const& sources = ffTopo.vMatrixSources;
-    for (int i = 0; i < SlotCount; i++)
+    for (int i = 0; i < MaxSlotCount; i++)
     {
       if (_opType[i] != FFModulationOpType::Off)
       {
@@ -150,7 +150,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
     auto& exchangeParams = *FFSelectDualState<Global>(
       [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
       [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
-    for (int i = 0; i < SlotCount; i++)
+    for (int i = 0; i < MaxSlotCount; i++)
       FFSelectDualExchangeState<Global>(exchangeParams.acc.amount[i], voice) =
       FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV().Get(0);
   }
@@ -194,7 +194,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
 
   // need all slots with same target ready before we begin processing
-  for (int i = 0; i < SlotCount; i++)
+  for (int i = 0; i < MaxSlotCount; i++)
   {
     _allModSourcesAreReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
     if (_allModSourcesAreReadyForSlot[i])
@@ -204,7 +204,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       _allModSourcesAreReadyForSlot[i] &= thisTarget.module.index != -1;
       _allModSourcesAreReadyForSlot[i] &= thisSource.indices.module.index != -1;
       if (_allModSourcesAreReadyForSlot[i])
-        for (int j = 0; j < SlotCount; j++)
+        for (int j = 0; j < MaxSlotCount; j++)
           if (_opType[j] != FFModulationOpType::Off)
           {
             auto const& thatSource = sources[_source[j]];
@@ -215,7 +215,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
     }
   }
 
-  for (int i = 0; i < SlotCount; i++)
+  for (int i = 0; i < MaxSlotCount; i++)
   {
     if (_allModSourcesAreReadyForSlot[i] && !_slotHasBeenProcessed[i])
     {

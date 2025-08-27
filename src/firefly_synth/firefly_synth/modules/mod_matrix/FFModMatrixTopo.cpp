@@ -87,7 +87,7 @@ FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
 std::unique_ptr<FBStaticModule>
 FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
 {
-  int slotCount = global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+  int maxSlotCount = global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount;
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
@@ -104,7 +104,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   opType.acc = false;
   opType.name = "Op";
   opType.display = "Op";
-  opType.slotCount = slotCount;
+  opType.slotCount = maxSlotCount;
   opType.defaultText = "Off";
   opType.id = prefix + "{8D28D968-8585-4A4D-B636-F365C5873973}";
   opType.type = FBParamType::List;
@@ -128,7 +128,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   amount.defaultText = "100";
   amount.name = "Amount";
   amount.display = "Amt";
-  amount.slotCount = slotCount;
+  amount.slotCount = maxSlotCount;
   amount.unit = "%";
   amount.id = prefix + "{880BC229-2794-45CC-859E-608E85A51D72}";
   amount.type = FBParamType::Identity;
@@ -145,7 +145,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.name = "Source";
   source.display = "Source";
   source.defaultText = "Off";
-  source.slotCount = slotCount;
+  source.slotCount = maxSlotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
   source.List().linkedTargets = { (int)FFModMatrixParam::Scale, (int)FFModMatrixParam::Target };
@@ -160,7 +160,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   auto& scale = result->params[(int)FFModMatrixParam::Scale];
   scale.acc = false;
   scale.name = "Scale";
-  scale.slotCount = slotCount;
+  scale.slotCount = maxSlotCount;
   scale.defaultText = "Off";
   scale.id = prefix + "{4A166295-A1EF-4354-AA2E-3F14B98A70CE}";
   scale.type = FBParamType::List;
@@ -223,7 +223,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.acc = false;
   target.name = "Target";
   target.display = "Target";
-  target.slotCount = slotCount;
+  target.slotCount = maxSlotCount;
   target.defaultText = "Off";
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;

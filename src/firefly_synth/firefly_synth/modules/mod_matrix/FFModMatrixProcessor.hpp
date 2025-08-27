@@ -17,21 +17,21 @@ class FBProcStateContainer;
 template <bool Global>
 class FFModMatrixProcessor final
 {
-  static inline int constexpr SlotCount = FFModMatrixTraits<Global>::SlotCount;
-  std::array<int, SlotCount> _scale = {};
-  std::array<int, SlotCount> _source = {};
-  std::array<int, SlotCount> _target = {};
-  std::array<FFModulationOpType, SlotCount> _opType = {};
+  static inline int constexpr MaxSlotCount = FFModMatrixTraits<Global>::MaxSlotCount;
+  std::array<int, MaxSlotCount> _scale = {};
+  std::array<int, MaxSlotCount> _source = {};
+  std::array<int, MaxSlotCount> _target = {};
+  std::array<FFModulationOpType, MaxSlotCount> _opType = {};
 
   // voice only
-  std::array<float, SlotCount> _scaleOnNoteValues = {};
-  std::array<float, SlotCount> _sourceOnNoteValues = {};
+  std::array<float, MaxSlotCount> _scaleOnNoteValues = {};
+  std::array<float, MaxSlotCount> _sourceOnNoteValues = {};
 
   // mind the bookkeeping
   // source index * source slot, map was slow, 0/1 = bool
   std::vector<std::vector<int>> _modSourceIsReady = {};
-  std::array<bool, SlotCount> _slotHasBeenProcessed = {};
-  std::array<bool, SlotCount> _allModSourcesAreReadyForSlot = {};
+  std::array<bool, MaxSlotCount> _slotHasBeenProcessed = {};
+  std::array<bool, MaxSlotCount> _allModSourcesAreReadyForSlot = {};
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixProcessor);
