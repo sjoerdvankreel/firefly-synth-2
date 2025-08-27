@@ -1,5 +1,6 @@
 TODOLIST for alpha-14
 
+[ ] do something to clean the delay lines
 [ ] make a cpu details popup
 [ ] output tooltips broken
 [x] output meters
