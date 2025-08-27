@@ -26,20 +26,20 @@ MakeModMatrixTopGUI(bool global, FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   std::vector<int> rowSizes = { { 1 } };
-  std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0 };
+  std::vector<int> columnSizes = { 0, 0, 0, 0, 1, 0, 0 };
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, 5, rowSizes, columnSizes);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, 6, rowSizes, columnSizes);
   auto slots = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Slots, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>(global ? "Global" : "Voice"));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, slots));
   grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, slots, Slider::SliderStyle::RotaryVerticalDrag));
   grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayLabel>(plugGUI, slots, "0", std::to_string(global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount)));
   auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
-  grid->Add(0, 4, clean);
+  grid->Add(0, 5, clean);
   auto clear = plugGUI->StoreComponent<FBAutoSizeButton>("Clear");
-  grid->Add(0, 5, clear);
-  grid->MarkSection({ { 0, 0 }, { 1, 6 } });
+  grid->Add(0, 6, clear);
+  grid->MarkSection({ { 0, 0 }, { 1, 7 } });
   return grid;
 }
   
