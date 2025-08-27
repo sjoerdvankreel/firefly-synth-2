@@ -51,6 +51,10 @@ template <bool Global>
 void
 FFModMatrixProcessor<Global>::BeginModulationBlock()
 {
+  // perf
+  if (_activeSlotCount == 0)
+    return;
+
   // On ApplyModulation, we can't do it right away.
   // For each slot, need to wait untill all slots with the same
   // target param have cleared their modsource, and then apply.
@@ -70,6 +74,10 @@ template <bool Global>
 void 
 FFModMatrixProcessor<Global>::EndModulationBlock(FBModuleProcState& state)
 {
+  // perf
+  if (_activeSlotCount == 0)
+    return;
+
   auto* procStateContainer = state.input->procState;
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
   // static_cast for perf
@@ -164,6 +172,10 @@ void
 FFModMatrixProcessor<Global>::ApplyModulation(
   FBModuleProcState& state, FBTopoIndices const& currentModule)
 {
+  // perf
+  if (_activeSlotCount == 0)
+    return;
+
   FBAccParamState* targetParamState = nullptr;
   FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
@@ -274,16 +286,6 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       }
     }
   }
-
-  if (exchangeToGUI != nullptr)
-    for (int i = _activeSlotCount; i < MaxSlotCount; i++)
-    {
-      auto& exchangeParams = *FFSelectDualState<Global>(
-        [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
-        [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
-      auto const& amount = FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV();
-      FFSelectDualExchangeState<Global>(exchangeParams.acc.amount[i], voice) = amount.Last();
-    }
 }
 
 template class FFModMatrixProcessor<true>;
