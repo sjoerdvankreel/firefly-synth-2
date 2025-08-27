@@ -1,13 +1,12 @@
 TODOLIST for alpha-14
 
-[ ] add the filter on/off for the delay flt
-[ ] do something to clean the delay lines
-[ ] make a cpu details popup
-[ ] output tooltips broken
 [x] output meters
 [x] make matrix faster -> breaking change
 [x] not paint modulation for disabled
 [x] showmatrix to gui control
+[ ] do something to clean the delay lines
+[ ] make a cpu details popup
+[ ] output tooltips broken
 [ ] osci coarse->pitch
 [ ] master modwheel + midi link
 [ ] master pitch bend + midi link + range + target off/voice/oscN
