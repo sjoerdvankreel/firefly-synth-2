@@ -58,6 +58,7 @@ public:
   FBUndoStateContainer& UndoState() { return _undoState; }
   bool GetGUIParamBool(FBParamTopoIndices const& indices) const;
   bool GetAudioParamBool(FBParamTopoIndices const& indices) const;
+  double GetAudioParamNormalized(FBParamTopoIndices const& indices) const;
   int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;
   template <class T> T GetAudioParamList(FBParamTopoIndices const& indices) const;
 

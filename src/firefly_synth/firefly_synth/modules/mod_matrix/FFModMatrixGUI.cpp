@@ -38,14 +38,45 @@ MakeModMatrixTopGUI(bool global, FFPlugGUI* plugGUI)
   
   auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
   grid->Add(0, 5, clean);
-
-  auto clear = plugGUI->StoreComponent<FBAutoSizeButton>("Clear");
-  clear->onClick = [plugGUI, global]() {
+  clean->onClick = [plugGUI, global]() {
+    std::vector<double> amtNorm = {};
+    std::vector<double> scaleNorm = {};
+    std::vector<double> targetNorm = {};
+    std::vector<double> opTypeNorm = {};
+    std::vector<double> sourceNorm = {};
+    auto* hostContext = plugGUI->HostContext();
     int moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
-    plugGUI->HostContext()->ClearModuleAudioParams({ moduleType, 0 });
+    int maxSlotCount = global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount;
+    FBTopoIndices modIndices = { moduleType, 0 };
+    std::string name = hostContext->Topo()->ModuleAtTopo(modIndices)->name;
+    hostContext->UndoState().Snapshot("Clean " + name);
+    for (int i = 0; i < maxSlotCount; i++)
+    {
+      bool opTypeOn = hostContext->GetAudioParamList<int>({ modIndices, { (int)FFModMatrixParam::OpType, } }) != 0;
+      bool sourceOn = hostContext->GetAudioParamList<int>({ modIndices, { (int)FFModMatrixParam::Source, } }) != 0;
+      bool targetOn = hostContext->GetAudioParamList<int>({ modIndices, { (int)FFModMatrixParam::Target, } }) != 0;
+      if (opTypeOn && sourceOn && targetOn)
+      {
+        amtNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Amount, } }));
+        scaleNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Scale, } }));
+        targetNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Target, } }));
+        opTypeNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::OpType, } }));
+        sourceNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Source, } }));
+      }
+    }
+    plugGUI->HostContext()->ClearModuleAudioParams(modIndices);
   };
 
+  auto clear = plugGUI->StoreComponent<FBAutoSizeButton>("Clear");
   grid->Add(0, 6, clear);
+  clear->onClick = [plugGUI, global]() {
+    int moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
+    FBTopoIndices moduleIndices = { moduleType, 0 };
+    std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
+    plugGUI->HostContext()->UndoState().Snapshot("Clear " + name);
+    plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices);
+  };
+
   grid->MarkSection({ { 0, 0 }, { 1, 7 } });
   return grid;
 }
