@@ -22,11 +22,13 @@ public:
 template <class TBlock>
 class alignas(alignof(TBlock)) FFOutputBlockParamState final
 {
+  friend class FFPlugProcessor;
   friend class FFOutputProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOutputTopo();
   std::array<TBlock, 1> cpu = {};
   std::array<TBlock, 1> gain = {};
   std::array<TBlock, 1> voices = {};
+  std::array<TBlock, 1> flushDelayToggle = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOutputBlockParamState);
 };
@@ -34,6 +36,7 @@ public:
 template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFOutputParamState final
 {
+  friend class FFPlugProcessor;
   friend class FFOutputProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOutputTopo();
   FFOutputBlockParamState<TBlock> block = {};

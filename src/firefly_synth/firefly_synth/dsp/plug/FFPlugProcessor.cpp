@@ -128,11 +128,13 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   auto const& globalParam = _procState->param.global;
 
   // manual flush
-  bool flushToggle = globalParam.gLFO[0].block.type[0].Value() > 0.5f;
+  bool flushToggle = globalParam.output[0].block.flushDelayToggle[0].Value() > 0.5f;
   if (flushToggle != _prevFlushDelayToggle)
   {
     _prevFlushDelayToggle = flushToggle;
     globalDSP.gEcho.processor->FlushDelayLines();
+    for (int i = 0; i < FBMaxVoices; i++)
+      _procState->dsp.voice[i].vEcho.processor->FlushDelayLines();
   }
 
   state.moduleSlot = 0;

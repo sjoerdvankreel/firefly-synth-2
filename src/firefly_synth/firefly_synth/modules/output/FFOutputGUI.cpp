@@ -6,6 +6,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBParamDisplay.hpp>
@@ -21,7 +22,7 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1, 1 } );
   auto cpu = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, cpu));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, cpu));
@@ -31,7 +32,16 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
   auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Gain, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, gain));
-  grid->MarkSection({ { 0, 0 }, { 1, 6 } });
+  auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Delays");
+  grid->Add(0, 6, flushDelayButton);
+  flushDelayButton->onClick = [plugGUI]() {
+    FBParamTopoIndices indices = { { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::FlushDelayToggle, 0 } };
+    double flushNorm = plugGUI->HostContext()->GetAudioParamNormalized(indices);
+    double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
+    plugGUI->HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
+  };
+
+  grid->MarkSection({ { 0, 0 }, { 1, 7 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
