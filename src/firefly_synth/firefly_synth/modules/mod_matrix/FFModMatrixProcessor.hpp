@@ -18,6 +18,10 @@ template <bool Global>
 class FFModMatrixProcessor final
 {
   static inline int constexpr MaxSlotCount = FFModMatrixTraits<Global>::MaxSlotCount;
+
+  // user selectable, this was a perf opt
+  int _activeSlotCount = {};
+
   std::array<int, MaxSlotCount> _scale = {};
   std::array<int, MaxSlotCount> _source = {};
   std::array<int, MaxSlotCount> _target = {};
