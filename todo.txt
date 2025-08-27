@@ -4,9 +4,9 @@ TODOLIST for alpha-14
 [x] make matrix faster -> breaking change
 [x] not paint modulation for disabled
 [x] showmatrix to gui control
+[ ] output tooltips broken for clap
 [ ] do something to clean the delay lines
 [ ] make a cpu details popup
-[ ] output tooltips broken
 [ ] osci coarse->pitch
 [ ] master modwheel + midi link
 [ ] master pitch bend + midi link + range + target off/voice/oscN
