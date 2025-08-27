@@ -52,6 +52,7 @@ protected:
   FBPlugGUI(FBHostGUIContext* hostContext);
 
   void InitAllDependencies();
+  virtual void OnPatchChanged() = 0;
   virtual void UpdateExchangeStateTick() = 0;
   int GetControlCountForAudioParamIndex(int paramIndex) const;
   FBParamControl* GetControlForAudioParamIndex(int paramIndex, int controlIndex) const;

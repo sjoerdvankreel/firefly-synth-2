@@ -37,13 +37,8 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobRenderMode));
   auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Audio");
   flushDelayButton->setTooltip("Flush delays and reverbs");
+  flushDelayButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushDelayLines(); };
   grid->Add(0, 6, flushDelayButton);
-  flushDelayButton->onClick = [plugGUI]() {
-    FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsParam::FlushDelayToggle, 0 } };
-    double flushNorm = plugGUI->HostContext()->GetAudioParamNormalized(indices);
-    double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
-    plugGUI->HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
-  };
   grid->Add(0, 7, plugGUI->StoreComponent<FBFillerComponent>(10, 1));
   grid->MarkSection({ { 0, 0 }, { 1, 8 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);

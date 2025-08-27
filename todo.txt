@@ -6,7 +6,7 @@ TODOLIST for alpha-14
 [x] not paint modulation for disabled
 [x] showmatrix to gui control
 [x] output tooltips broken for clap => just disable them, no use
-[ ] do something to clean the delay lines + flush on patch swap
+[x] do something to clean the delay lines + flush on patch swap
 [ ] make a cpu details popup
 [ ] osci coarse->pitch
 [ ] master modwheel + midi link

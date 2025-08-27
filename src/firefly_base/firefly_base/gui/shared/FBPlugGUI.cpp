@@ -276,6 +276,7 @@ FBPlugGUI::InitPatch()
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  OnPatchChanged();
 }
 
 void 
@@ -313,6 +314,7 @@ FBPlugGUI::LoadPatchFromFile()
     {
       HostContext()->UndoState().Snapshot("Load Patch");
       editState.CopyTo(HostContext());
+      OnPatchChanged();
     }
     else
       AlertWindow::showMessageBoxAsync(

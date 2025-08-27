@@ -42,6 +42,12 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
 }
 
 void
+FFPlugGUI::OnPatchChanged()
+{
+  FlushDelayLines();
+}
+
+void
 FFPlugGUI::UpdateExchangeStateTick()
 {
   FBPlugGUI::UpdateExchangeStateTick();
@@ -155,6 +161,15 @@ FFPlugGUI::ShowOverlayComponent(Component* overlay, int w, int h)
   addAndMakeVisible(_overlayContainer, 1);
   _overlayContainer->resized();
   _overlayComponent = overlay;
+}
+
+void
+FFPlugGUI::FlushDelayLines()
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsParam::FlushDelayToggle, 0 } };
+  double flushNorm = HostContext()->GetAudioParamNormalized(indices);
+  double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
+  HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
 }
 
 void 
