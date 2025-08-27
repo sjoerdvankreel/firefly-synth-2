@@ -1,5 +1,6 @@
 TODOLIST for alpha-14
 
+[ ] add the filter on/off for the delay flt
 [ ] do something to clean the delay lines
 [ ] make a cpu details popup
 [ ] output tooltips broken
