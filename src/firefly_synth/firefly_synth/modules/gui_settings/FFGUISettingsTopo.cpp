@@ -12,8 +12,10 @@ FFMakeGUISettingsTopo()
   result->name = "UI";
   result->slotCount = 1;
   result->id = "{2407B76A-7FB3-4BD6-B6FD-B1F610AF8147}";
+  result->params.resize((int)FFGUISettingsParam::Count);
   result->guiParams.resize((int)FFGUISettingsGUIParam::Count);
   auto selectGuiModule = [](auto& state) { return &state.guiSettings; }; 
+  auto selectModule = [](auto& state) { return &state.global.guiSettings; };
 
   auto& guiUserScale = result->guiParams[(int)FFGUISettingsGUIParam::UserScale];
   guiUserScale.unit = "%";
@@ -121,6 +123,20 @@ FFMakeGUISettingsTopo()
   guiEchoSelectedTab.Discrete().valueCount = 2;
   auto selectGuiEchoSelectedTab = [](auto& module) { return &module.echoSelectedTab; };
   guiEchoSelectedTab.scalarAddr = FFSelectGUIParamAddr(selectGuiModule, selectGuiEchoSelectedTab);
+
+  // dummy which we check on the audio if it changed
+  auto& flushDelayToggle = result->params[(int)FFGUISettingsParam::FlushDelayToggle];
+  flushDelayToggle.acc = false;
+  flushDelayToggle.thisIsNotARealParameter = true;
+  flushDelayToggle.name = "Flush Delay";
+  flushDelayToggle.slotCount = 1;
+  flushDelayToggle.defaultText = "Off";
+  flushDelayToggle.id = "{22F4FB2F-BAD8-43A0-BC28-88F5F3A3B7CF}";
+  flushDelayToggle.type = FBParamType::Boolean;
+  auto selectFlushDelayToggle = [](auto& module) { return &module.block.flushDelayToggle; };
+  flushDelayToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFlushDelayToggle);
+  flushDelayToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFlushDelayToggle);
+  flushDelayToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFlushDelayToggle);
 
   return result;
 }

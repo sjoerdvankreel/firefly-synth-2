@@ -4,4 +4,4 @@
 
 struct FBStaticModule;
 std::unique_ptr<FBStaticModule> FFMakeOutputTopo();
-enum class FFOutputParam { Voices, Cpu, Gain, FlushDelayToggle, Count };
+enum class FFOutputParam { Voices, Cpu, Gain, Count };

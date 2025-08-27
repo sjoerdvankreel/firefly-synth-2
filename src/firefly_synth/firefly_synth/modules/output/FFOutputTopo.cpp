@@ -60,19 +60,5 @@ FFMakeOutputTopo()
   gain.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
   gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
 
-  // dummy which we check on the audio if it changed
-  auto& flushDelayToggle = result->params[(int)FFOutputParam::FlushDelayToggle];
-  flushDelayToggle.acc = false;
-  flushDelayToggle.thisIsNotARealParameter = true;
-  flushDelayToggle.name = "Flush Delay";
-  flushDelayToggle.slotCount = 1;
-  flushDelayToggle.defaultText = "Off";
-  flushDelayToggle.id = "{22F4FB2F-BAD8-43A0-BC28-88F5F3A3B7CF}";
-  flushDelayToggle.type = FBParamType::Boolean;
-  auto selectFlushDelayToggle = [](auto& module) { return &module.block.flushDelayToggle; };
-  flushDelayToggle.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFlushDelayToggle);
-  flushDelayToggle.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectFlushDelayToggle);
-  flushDelayToggle.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFlushDelayToggle);
-
   return result;
 }

@@ -22,28 +22,17 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 1, 0, 1, 0, 1, 0 } );
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Output"));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1 } );
   auto cpu = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } });
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, cpu));
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, cpu));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, cpu));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, cpu));
   auto voices = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } });
-  grid->Add(0, 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voices));
-  grid->Add(0, 4, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, voices));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, voices));
+  grid->Add(0, 3, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, voices));
   auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Gain, 0 } });
-  grid->Add(0, 5, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
-  grid->Add(0, 6, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, gain));
-  auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush");
-  flushDelayButton->setTooltip("Flush delay lines");
-  grid->Add(0, 7, flushDelayButton);
-  flushDelayButton->onClick = [plugGUI]() {
-    FBParamTopoIndices indices = { { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::FlushDelayToggle, 0 } };
-    double flushNorm = plugGUI->HostContext()->GetAudioParamNormalized(indices);
-    double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
-    plugGUI->HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
-  };
-
-  grid->MarkSection({ { 0, 0 }, { 1, 8 } });
+  grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
+  grid->Add(0, 5, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, gain));
+  grid->MarkSection({ { 0, 0 }, { 1, 6 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }

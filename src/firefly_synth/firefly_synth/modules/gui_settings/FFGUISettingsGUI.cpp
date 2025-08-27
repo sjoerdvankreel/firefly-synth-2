@@ -6,6 +6,7 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
@@ -21,7 +22,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 1, 0, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0, 0, 1, 0, 1, 1 });
   auto showMatrix = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, showMatrix));
   auto showMatrixToggle = plugGUI->StoreComponent<FBGUIParamToggleButton>(plugGUI, showMatrix);
@@ -33,7 +34,16 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   auto knobRenderMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::KnobRenderMode, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobRenderMode));
   grid->Add(0, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobRenderMode));
-  grid->MarkSection({ { 0, 0 }, { 1, 6 } });
+  auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush");
+  flushDelayButton->setTooltip("Flush delay lines");
+  grid->Add(0, 6, flushDelayButton);
+  flushDelayButton->onClick = [plugGUI]() {
+    FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsParam::FlushDelayToggle, 0 } };
+    double flushNorm = plugGUI->HostContext()->GetAudioParamNormalized(indices);
+    double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
+    plugGUI->HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
+  };
+  grid->MarkSection({ { 0, 0 }, { 1, 7 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }

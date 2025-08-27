@@ -101,6 +101,7 @@ struct alignas(alignof(TAccurate)) FFGlobalParamState final
   std::array<FFMasterParamState<TAccurate>, 1> master = {};
   std::array<FFExternalParamState<TBlock>, 1> external = {};
   std::array<FFEchoParamState<TBlock, TAccurate>, 1> gEcho = {};
+  std::array<FFGUISettingsParamState<TBlock>, 1> guiSettings = {};
   std::array<FFOutputParamState<TBlock, TAccurate>, 1> output = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOCount> gLFO = {};
   std::array<FFModMatrixParamState<TBlock, TAccurate, true>, 1> gMatrix = {};

@@ -23,3 +23,23 @@ class FFGUISettingsGUIState final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUISettingsGUIState);
 };
+
+template <class TBlock>
+class alignas(alignof(TBlock)) FFGUISettingsBlockParamState final
+{
+  friend class FFPlugProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeGUISettingsTopo();
+  std::array<TBlock, 1> flushDelayToggle = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGUISettingsBlockParamState);
+};
+
+template <class TBlock>
+class FFGUISettingsParamState final
+{
+  friend class FFPlugProcessor;
+  friend std::unique_ptr<FBStaticModule> FFMakeGUISettingsTopo();
+  FFGUISettingsBlockParamState<TBlock> block = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFGUISettingsParamState);
+};
