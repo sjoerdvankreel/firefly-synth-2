@@ -7,6 +7,8 @@ TODOLIST for alpha-14
 [x] showmatrix to gui control
 [x] output tooltips broken for clap => just disable them, no use
 [x] do something to clean the delay lines + flush on patch swap
+[x] merge ui/matrix
+[x] ctrl+drag for fine control
 [ ] make a cpu details popup
 [ ] osci coarse->pitch
 [ ] master modwheel + midi link
@@ -20,10 +22,8 @@ TODOLIST for alpha-14
 [ ] MIDI key, velo (voice), low/high/last
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] refix all behind-the-scenes mod sources and targets
-[ ] merge ui/matrix/patch
 [ ] global unison with chord mode
 [ ] global set-exact-value UI (+ context menu item?)
-[ ] ctrl+drag for fine control
 
 TODOLIST for alpha-15
 

@@ -21,6 +21,16 @@ public:
   FBSArray2<float, FBFixedBlockSamples, FFMasterAuxCount> outputAux = {};
 };
 
+template <class TBlock>
+class alignas(alignof(TBlock)) FFMasterBlockParamState final
+{
+  friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  std::array<TBlock, 1> tuningMode = {};
+  std::array<TBlock, 1> hostSmoothTime = {};
+public:
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterBlockParamState);
+};
+
 template <class TAccurate>
 class alignas(alignof(TAccurate)) FFMasterAccParamState final
 {
@@ -31,12 +41,13 @@ public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
 };
 
-template <class TAccurate>
+template <class TBlock, class TAccurate>
 class alignas(alignof(TAccurate)) FFMasterParamState final
 {
   friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   FFMasterAccParamState<TAccurate> acc = {};
+  FFMasterBlockParamState<TBlock> block = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterParamState);
 };

@@ -20,20 +20,28 @@ MakeMasterSectionAll(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  std::vector<int> columnSizes = {};
-  for (int i = 0; i < FFMasterAuxCount; i++)
+  std::vector<int> columnSizes = { 0, 1 };
+  for (int i = 0; i < FFMasterAuxCount / 2; i++)
   {
     columnSizes.push_back(0);
     columnSizes.push_back(0);
   }
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, columnSizes);
+  auto tuning = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::TuningMode, 0 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, tuning));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, tuning));
+  auto smooth = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::HostSmoothTime, 0 } });
+  grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, smooth));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, smooth, Slider::SliderStyle::LinearHorizontal));
   for (int i = 0; i < FFMasterAuxCount; i++)
   {
+    int row = i / FFMasterAuxCount;
+    int col = i % FFMasterAuxCount;
     auto aux = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::Aux, i } });
-    grid->Add(0, (i * 2) + 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, aux));
-    grid->Add(0, (i * 2) + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
+    grid->Add(row, 2 + col * 2 + 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, aux));
+    grid->Add(row, 2 + col * 2 + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, aux, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { 1, 2 * FFMasterAuxCount } });
+  grid->MarkSection({ { 0, 0 }, { 1, 2 + 2 * FFMasterAuxCount } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
