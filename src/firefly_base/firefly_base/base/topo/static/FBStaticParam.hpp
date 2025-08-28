@@ -92,6 +92,7 @@ public:
 
   std::string GetDefaultText(int moduleIndex, int moduleSlot, int paramSlot) const;
   double DefaultNormalizedByText(int moduleIndex, int moduleSlot, int paramSlot) const;
+  std::string NormalizedToText(bool io, int moduleIndex, double normalized) const;
   std::string NormalizedToTextWithUnit(bool io, int moduleIndex, double normalized) const;
   std::optional<double> TextToPlain(bool io, int moduleIndex, std::string const& text) const;
   std::optional<double> TextToNormalized(bool io, int moduleIndex, std::string const& text) const;

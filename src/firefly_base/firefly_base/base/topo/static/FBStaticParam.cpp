@@ -96,6 +96,12 @@ FBStaticParamBase::TextToNormalized(bool io, int moduleIndex, std::string const&
 }
 
 std::string
+FBStaticParamBase::NormalizedToText(bool io, int moduleIndex, double normalized) const
+{
+  return NonRealTime().NormalizedToText(io, moduleIndex, normalized);
+}
+
+std::string
 FBStaticParamBase::NormalizedToTextWithUnit(bool io, int moduleIndex, double normalized) const
 {
   std::string result = NonRealTime().NormalizedToText(io, moduleIndex, normalized);
@@ -110,9 +116,23 @@ FBStaticParamBase::DefaultNormalizedByText(int moduleIndex, int moduleSlot, int 
   auto text = GetDefaultText(moduleIndex, moduleSlot, paramSlot);
   FB_ASSERT(text.size());
   auto result = TextToNormalized(false, moduleIndex, text);
+#ifndef NDEBUG
+  if (result.has_value())
+  {
+    std::string roundtrip = NormalizedToText(false, moduleIndex, result.value());
+    if (roundtrip != text)
+    {
+      FB_ASSERT(false);
+      NormalizedToText(false, moduleIndex, result.value());
+    }
+  }
+#endif
   if (result)
     return result.value();
+#ifndef NDEBUG
   FB_ASSERT(false);
+  TextToNormalized(false, moduleIndex, text);
+#endif
   FB_LOG_WARN("Failed to parse default text.");
   return 0.0;
 }

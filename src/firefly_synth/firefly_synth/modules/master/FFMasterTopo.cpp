@@ -104,7 +104,8 @@ FFMakeMasterTopo()
   bendRange.type = FBParamType::Discrete;
   bendRange.Discrete().valueCount = 24;
   bendRange.Discrete().valueOffset = 1;
-  bendRange.Discrete().valueFormatter = [](int v) { return "+/-" + v; };
+  bendRange.Discrete().valueFormatter = [](int v) { 
+    return "+/-" + std::to_string(v); };
   auto selectBendRange = [](auto& module) { return &module.block.pitchBendRange; };
   bendRange.scalarAddr = FFSelectScalarParamAddr(selectModule, selectBendRange);
   bendRange.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectBendRange);
