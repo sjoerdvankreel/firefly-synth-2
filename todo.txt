@@ -10,6 +10,7 @@ TODOLIST for alpha-14
 [x] merge ui/matrix
 [x] ctrl+drag for fine control
 [x] external smooth into master
+[ ] bright text when graph on
 [ ] make a cpu details popup
 [ ] osci coarse->pitch
 [ ] master modwheel + midi link
