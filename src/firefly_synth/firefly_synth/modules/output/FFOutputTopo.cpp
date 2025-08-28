@@ -60,5 +60,18 @@ FFMakeOutputTopo()
   gain.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
   gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
 
+  auto& mtsEspOn = result->params[(int)FFOutputParam::MtsEspOn];
+  mtsEspOn.acc = false;
+  mtsEspOn.output = true;
+  mtsEspOn.name = "MTS-ESP";
+  mtsEspOn.slotCount = 1;
+  mtsEspOn.defaultText = "Off";
+  mtsEspOn.id = "{9803DBBB-E1C9-4FAC-ACEA-B0E7F9E28979}";
+  mtsEspOn.type = FBParamType::Boolean;
+  auto selectMtsEspOn = [](auto& module) { return &module.block.mtsEspOn; };
+  mtsEspOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMtsEspOn);
+  mtsEspOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMtsEspOn);
+  mtsEspOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMtsEspOn);
+
   return result;
 }

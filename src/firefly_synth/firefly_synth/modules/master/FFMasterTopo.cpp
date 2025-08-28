@@ -138,13 +138,13 @@ FFMakeMasterTopo()
   outputAux.globalAddr = [](int, int os, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputAux[os]; };
 
   auto& outputMod = result->cvOutputs[(int)FFMasterCVOutput::ModWheel];
-  outputMod.name = "Mod Wheel";
+  outputMod.name = "Mod";
   outputMod.slotCount = 1;
   outputMod.id = "{385776EE-4199-4100-8EEB-CDC0F6E9C6FF}";
   outputMod.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputMod; };
 
   auto& outputPitchBend = result->cvOutputs[(int)FFMasterCVOutput::PitchBend];
-  outputPitchBend.name = "Pitch Bend";
+  outputPitchBend.name = "PB";
   outputPitchBend.slotCount = 1;
   outputPitchBend.id = "{73FB762F-0C59-4DD3-86D2-D61076C81779}";
   outputPitchBend.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputBend; };

@@ -9,6 +9,7 @@
 #include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
+#include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/controls/FBParamDisplay.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
@@ -22,7 +23,7 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1 } );
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 1, 0, 1, 0, 1, 0, 0 } );
   auto cpu = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, cpu));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, cpu));
@@ -32,7 +33,10 @@ FFMakeOutputGUI(FBPlugGUI* plugGUI)
   auto gain = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Gain, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, gain));
   grid->Add(0, 5, plugGUI->StoreComponent<FBParamDisplayMeter>(plugGUI, gain));
-  grid->MarkSection({ { 0, 0 }, { 1, 6 } });
+  auto mtsEspOn = topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::MtsEspOn, 0 } });
+  grid->Add(0, 6, plugGUI->StoreComponent<FBParamLabel>(plugGUI, mtsEspOn));
+  grid->Add(0, 7, plugGUI->StoreComponent<FBParamToggleButton>(plugGUI, mtsEspOn));
+  grid->MarkSection({ { 0, 0 }, { 1, 8 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
 }
