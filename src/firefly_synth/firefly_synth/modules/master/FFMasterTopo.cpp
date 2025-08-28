@@ -27,7 +27,7 @@ FFMakeMasterTopo()
   tuningMode.List().items = {
     { "{056E5528-280F-4D99-A1D3-41F459609558}", "Off" },
     { "{6FE4A9F0-F12E-49FE-BB23-78BD839A6E99}", "Note" },
-    { "{138A84B2-29D3-487C-A8EE-A1A1EE0B0C2C}", "Continuous" } };
+    { "{138A84B2-29D3-487C-A8EE-A1A1EE0B0C2C}", "Slide" } };
   auto selectTuningMode = [](auto& module) { return &module.block.tuningMode; };
   tuningMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuningMode);
   tuningMode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuningMode);
@@ -88,6 +88,7 @@ FFMakeMasterTopo()
   pitchBend.type = FBParamType::Linear;
   pitchBend.Linear().min = -1.0f;
   pitchBend.Linear().max = 1.0f;
+  pitchBend.Linear().displayMultiplier = 100;
   auto selectPitchBend = [](auto& module) { return &module.acc.pitchBend; };
   pitchBend.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPitchBend);
   pitchBend.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectPitchBend);
