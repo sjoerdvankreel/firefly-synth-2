@@ -10,14 +10,14 @@ TODOLIST for alpha-14
 [x] merge ui/matrix
 [x] ctrl+drag for fine control
 [x] external smooth into master
-[ ] bright text when graph on
-[ ] make a cpu details popup
-[ ] osci coarse->pitch
+[ ] osci coarse->pitch also voice (not rename, just raw pitch)
 [ ] master modwheel + midi link
 [ ] master pitch bend + midi link + range + target off/voice/oscN + MW/PB outputs + figure out all places where is used midi note
 [ ] MTS into master: off / note / continuous 
 [ ] MTS into output
-[ ] voice + pitch + cent + porta off/on/auto + sync + porta-when-section
+[ ] voice + pitch + cent + porta off/on/auto + sync +  + porta time + porta-when-section
+[ ] bright text when graph on
+[ ] make a cpu details popup
 [ ] get the text out of the graphs
 [ ] floating notes
 [ ] MIDI key, velo (voice), low/high/last

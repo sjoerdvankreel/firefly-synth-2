@@ -14,6 +14,7 @@
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixState.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
+#include <firefly_synth/modules/voice_module/FFVoiceModuleState.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
@@ -53,6 +54,7 @@ struct FFVoiceExchangeState final
   std::array<FBModuleProcSingleExchangeState, 1> vEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMatrix = {};
   std::array<FBModuleProcSingleExchangeState, 1> osciMod = {};
+  std::array<FBModuleProcSingleExchangeState, 1> voiceModule = {};
   std::array<FBModuleProcSingleExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcSingleExchangeState, FFOsciCount> osci = {};
   std::array<FBModuleProcSingleExchangeState, FFEffectCount> vEffect = {};
@@ -76,6 +78,7 @@ struct alignas(FBSIMDAlign) FFVoiceDSPState final
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
   FFEchoDSPState<false> vEcho = {};
+  FFVoiceModuleDSPState voiceModule = {};
   FFModMatrixDSPState<false> vMatrix = {};
   std::array<FFEnvDSPState, FFEnvCount> env = {};
   std::array<FFLFODSPState, FFLFOCount> vLFO = {};
@@ -116,8 +119,9 @@ struct alignas(alignof(TAccurate)) FFVoiceParamState final
   std::array<FFEnvParamState<TBlock, TAccurate>, FFEnvCount> env = {};
   std::array<FFLFOParamState<TBlock, TAccurate>, FFLFOCount> vLFO = {};
   std::array<FFOsciParamState<TBlock, TAccurate>, FFOsciCount> osci = {};
-  std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> vEffect = {};
+  std::array<FFVoiceModuleParamState<TBlock, TAccurate>, 1> voiceModule = {};
   std::array<FFModMatrixParamState<TBlock, TAccurate, false>, 1> vMatrix = {};
+  std::array<FFEffectParamState<TBlock, TAccurate>, FFEffectCount> vEffect = {};
 };
 
 struct FFScalarParamState final
