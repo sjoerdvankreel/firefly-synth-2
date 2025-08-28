@@ -18,6 +18,8 @@ class alignas(FBSIMDAlign) FFMasterDSPState final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFMasterDSPState);
   FFMasterDSPState() : processor(std::make_unique<FFMasterProcessor>()) {}
+  FBSArray<float, FBFixedBlockSamples> outputMod = {};
+  FBSArray<float, FBFixedBlockSamples> outputBend = {};
   FBSArray2<float, FBFixedBlockSamples, FFMasterAuxCount> outputAux = {};
 };
 
@@ -27,6 +29,8 @@ class alignas(alignof(TBlock)) FFMasterBlockParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   std::array<TBlock, 1> tuningMode = {};
   std::array<TBlock, 1> hostSmoothTime = {};
+  std::array<TBlock, 1> pitchBendRange = {};
+  std::array<TBlock, 1> pitchBendTarget = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterBlockParamState);
 };
@@ -36,6 +40,8 @@ class alignas(alignof(TAccurate)) FFMasterAccParamState final
 {
   friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  std::array<TAccurate, 1> modWheel = {};
+  std::array<TAccurate, 1> pitchBend = {};
   std::array<TAccurate, FFMasterAuxCount> aux = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
