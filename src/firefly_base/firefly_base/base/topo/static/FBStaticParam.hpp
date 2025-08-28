@@ -35,28 +35,28 @@ typedef std::function<std::string(int moduleIndex, int moduleSlot, int paramSlot
 FBParamDefaultTextSelector;
 
 typedef std::function<double* (
-int moduleSlot, int paramSlot, void* state)>
-FBScalarParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBScalarParamAddrSelector;
 
 typedef std::function<float* (
-int moduleSlot, int paramSlot, void* state)>
-FBGlobalExchangeParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBGlobalExchangeParamAddrSelector;
 typedef std::function<std::array<float, FBMaxVoices>* (
-int moduleSlot, int paramSlot, void* state)>
-FBVoiceExchangeParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBVoiceExchangeParamAddrSelector;
 
 typedef std::function<FBVoiceAccParamState* (
-int moduleSlot, int paramSlot, void* state)>
-FBVoiceAccProcParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBVoiceAccProcParamAddrSelector;
 typedef std::function<FBGlobalAccParamState* (
-int moduleSlot, int paramSlot, void* state)>
-FBGlobalAccProcParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBGlobalAccProcParamAddrSelector;
 typedef std::function<FBVoiceBlockParamState* (
-int moduleSlot, int paramSlot, void* state)>
-FBVoiceBlockProcParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBVoiceBlockProcParamAddrSelector;
 typedef std::function<FBGlobalBlockParamState* (
-int moduleSlot, int paramSlot, void* state)>
-FBGlobalBlockProcParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBGlobalBlockProcParamAddrSelector;
 
 struct FBStaticParamBase
 {
@@ -92,7 +92,6 @@ public:
 
   std::string GetDefaultText(int moduleIndex, int moduleSlot, int paramSlot) const;
   double DefaultNormalizedByText(int moduleIndex, int moduleSlot, int paramSlot) const;
-  std::string NormalizedToText(bool io, int moduleIndex, double normalized) const;
   std::string NormalizedToTextWithUnit(bool io, int moduleIndex, double normalized) const;
   std::optional<double> TextToPlain(bool io, int moduleIndex, std::string const& text) const;
   std::optional<double> TextToNormalized(bool io, int moduleIndex, std::string const& text) const;
@@ -114,8 +113,8 @@ public:
   FBIdentityParam const& Identity() const { FB_ASSERT(type == FBParamType::Identity); return identity; }
 };
 
-struct FBStaticGUIParam final:
-public FBStaticParamBase
+struct FBStaticGUIParam final :
+  public FBStaticParamBase
 {
 public:
   bool IsOutput() const { return false; }
@@ -123,8 +122,8 @@ public:
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticGUIParam);
 };
 
-struct FBStaticParam final:
-public FBStaticParamBase
+struct FBStaticParam final :
+  public FBStaticParamBase
 {
 public:
   bool acc = false;
