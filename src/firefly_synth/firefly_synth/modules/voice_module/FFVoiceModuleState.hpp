@@ -1,7 +1,7 @@
 #pragma once
 
-#include <firefly_synth/modules/voice/FFVoiceModuleTopo.hpp>
-#include <firefly_synth/modules/voice/FFVoiceModuleProcessor.hpp>
+#include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
+#include <firefly_synth/modules/voice_module/FFVoiceModuleProcessor.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -11,7 +11,7 @@
 
 struct FBStaticModule;
 
-class alignas(FBSIMDAlign) FFVoiceModuleDSPState final
+class FFVoiceModuleDSPState final
 {
   friend class FFVoiceModuleProcessor;
   std::unique_ptr<FFVoiceModuleProcessor> processor = {};

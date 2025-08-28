@@ -5,4 +5,4 @@
 class FBPlugGUI;
 
 juce::Component*
-FFMakeMasterGUI(FBPlugGUI* plugGUI);
+FFMakeVoiceModuleGUI(FBPlugGUI* plugGUI);
