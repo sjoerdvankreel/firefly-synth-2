@@ -144,7 +144,7 @@ FFMakeMasterTopo()
   outputMod.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputMod; };
 
   auto& outputPitchBend = result->cvOutputs[(int)FFMasterCVOutput::PitchBend];
-  outputPitchBend.name = "Bend";
+  outputPitchBend.name = "Pitch Bend";
   outputPitchBend.slotCount = 1;
   outputPitchBend.id = "{73FB762F-0C59-4DD3-86D2-D61076C81779}";
   outputPitchBend.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputBend; };
