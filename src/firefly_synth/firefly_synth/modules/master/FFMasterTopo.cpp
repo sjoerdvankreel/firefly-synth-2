@@ -67,7 +67,7 @@ FFMakeMasterTopo()
   auto& modWheel = result->params[(int)FFMasterParam::ModWheel];
   modWheel.acc = true;
   modWheel.defaultText = "0";
-  modWheel.name = "Mod";
+  modWheel.name = "Mod Wheel";
   modWheel.slotCount = 1;
   modWheel.unit = "%";
   modWheel.id = "{74F8A030-AD5A-4CF9-96D7-82123D2DCF24}";
@@ -81,7 +81,6 @@ FFMakeMasterTopo()
   pitchBend.acc = true;
   pitchBend.defaultText = "0";
   pitchBend.name = "Pitch Bend";
-  pitchBend.display = "Bend";
   pitchBend.slotCount = 1;
   pitchBend.unit = "%";
   pitchBend.id = "{381145EE-9595-460F-937F-9078F40DBD65}";
@@ -139,7 +138,7 @@ FFMakeMasterTopo()
   outputAux.globalAddr = [](int, int os, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputAux[os]; };
 
   auto& outputMod = result->cvOutputs[(int)FFMasterCVOutput::ModWheel];
-  outputMod.name = "Mod";
+  outputMod.name = "Mod Wheel";
   outputMod.slotCount = 1;
   outputMod.id = "{385776EE-4199-4100-8EEB-CDC0F6E9C6FF}";
   outputMod.globalAddr = [](int, int, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.master.outputMod; };
