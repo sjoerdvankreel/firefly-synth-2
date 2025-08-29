@@ -31,7 +31,7 @@ FBLastTweakedLabel::FixedWidth(int /*height*/) const
 }
 
 void 
-FBLastTweakedLabel::AudioParamChangedFromUI(int index, double normalized)
+FBLastTweakedLabel::AudioParamChangedFromUI(int index, double /*normalized*/)
 {
   auto const& param = _plugGUI->HostContext()->Topo()->audio.params[index];
   setText(param.displayName, dontSendNotification);
