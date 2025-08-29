@@ -8,6 +8,8 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+#include <libMTSClient.h>
+
 static int constexpr OutputSamplingRate = 10;
 
 void

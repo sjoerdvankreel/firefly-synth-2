@@ -33,6 +33,7 @@ public:
 bool
 DeinitModule()
 {
+  FFPlugTerminate();
   FBGUITerminate();
   FBLogTerminate();
   return true;
@@ -43,6 +44,7 @@ InitModule()
 {
   FBLogInit(FFPlugMeta(FBPlugFormat::VST3));
   FBGUIInit();
+  FFPlugInit();
   return true;
 }
 

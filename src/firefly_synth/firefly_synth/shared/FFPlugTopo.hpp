@@ -44,6 +44,9 @@ public FBStaticTopo
   std::vector<FBParamTopoIndices> vMatrixTargets = {};
 };
 
+void FFPlugInit();
+void FFPlugTerminate();
+
 FBStaticTopoMeta FFPlugMeta(FBPlugFormat format);
 std::unique_ptr<FFStaticTopo> FFMakeTopo(FBPlugFormat format);
 std::string FFFormatBlockSlot(FBStaticTopo const&, int moduleSlot, int itemSlot);
