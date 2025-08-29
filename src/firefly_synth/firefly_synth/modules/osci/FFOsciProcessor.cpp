@@ -98,24 +98,41 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   double keyPlus1FreqNormal = FBPitchToFreq((float)_key+1.0f);
   
   double keyFreqRetunedDirect = MTS_NoteToFrequency(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
-  double keyFreqRetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
-  double keyFreqRetunedSemisFreq = FBPitchToFreq((float)(_key + keyFreqRetunedSemis));
+  double keyRetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
+  double keyFreqRetunedSemisFreq = FBPitchToFreq((float)(_key + keyRetunedSemis));
+  double keyRetunedRatio = MTS_RetuningAsRatio(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
+  double keyRetunedSemisByRatio = 12.0 / std::log(2.0) * std::log(keyRetunedRatio);
+  double keyFreqRetunedSemisByRatio = FBPitchToFreq((float)(keyRetunedSemisByRatio));
+
+  (void)keyRetunedRatio;
+  (void)keyRetunedSemisByRatio;
+  (void)keyFreqRetunedSemisByRatio;
+
   // keyFreqRetunedDirect == keyFreqRetunedSemisFreq
 
   double keyPlus1FreqRetunedDirect = MTS_NoteToFrequency(procState->mtsClient, (char)noteEvent.key + 1, (char)noteEvent.channel);
-  double keyPlus1FreqRetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key + 1, (char)noteEvent.channel);
-  double keyPlus1FreqRetunedSemisFreq = FBPitchToFreq((float)(_key + 1 + keyPlus1FreqRetunedSemis));
+  double keyPlus1RetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key + 1, (char)noteEvent.channel);
+  double keyPlus1FreqRetunedSemisFreq = FBPitchToFreq((float)(_key + 1 + keyPlus1RetunedSemis));
   // keyPlus1FreqRetunedDirect == keyPlus1FreqRetunedSemisFreq
+
+  for (int i = 0; i < 4; i++)
+  {
+    double keyPlusABit = _key + 0.125f + i / (float)4;
+    double keyPlusABitFreqNormal = FBPitchToFreq((float)keyPlusABit);
+
+    (void)keyPlusABit;
+    (void)keyPlusABitFreqNormal;
+  }
 
   (void)keyFreqNormal;
   (void)keyPlus1FreqNormal;
 
   (void)keyFreqRetunedDirect;
-  (void)keyFreqRetunedSemis;
+  (void)keyRetunedSemis;
   (void)keyFreqRetunedSemisFreq;
 
   (void)keyPlus1FreqRetunedDirect;
-  (void)keyPlus1FreqRetunedSemis;
+  (void)keyPlus1RetunedSemis;
   (void)keyPlus1FreqRetunedSemisFreq;
 
   _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
