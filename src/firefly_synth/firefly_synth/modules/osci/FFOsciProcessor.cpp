@@ -12,6 +12,7 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 
+#include <libMTSClient.h>
 #include <xsimd/xsimd.hpp>
 
 // blep https://www.taletn.com/reaper/mono_synth/
@@ -88,7 +89,18 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
 
   _graph = graph;
   _phaseGen = {};
-  _key = static_cast<float>(state.voice->event.note.key);
+
+  auto const& noteEvent = state.voice->event.note;
+  _key = static_cast<float>(noteEvent.key);
+
+  // todo note filtering.
+  double retunedKey = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
+  double freq1 = MTS_NoteToFrequency(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
+  double freq2 = FBPitchToFreq((float)retunedKey);
+  (void)retunedKey;
+  (void)freq1;
+  (void)freq2;
+
   _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
   _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
