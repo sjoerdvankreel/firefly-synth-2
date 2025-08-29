@@ -1,7 +1,18 @@
+#include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLastTweaked.hpp>
 
 using namespace juce;
+
+static bool
+IsTweakableParam(FBRuntimeTopo const* topo, int index)
+{
+  if (topo->audio.params[index].static_.output)
+    return false;
+  if (topo->audio.params[index].static_.thisIsNotARealParameter)
+    return false;
+  return true;
+}
 
 FBLastTweakedLabel::
 ~FBLastTweakedLabel()
@@ -15,7 +26,10 @@ _plugGUI(plugGUI)
 {
   setText("Tweak", dontSendNotification);
   plugGUI->AddParamListener(this);
-  _maxWidth = 80;
+  auto const* topo = plugGUI->HostContext()->Topo();
+  for (int i = 0; i < topo->audio.params.size(); i++)
+    if (IsTweakableParam(topo, i))
+      _maxWidth = std::max(_maxWidth, FBGUIGetStringWidthCached(topo->audio.params[i].displayName));
 }
 
 int
@@ -67,7 +81,7 @@ void
 FBLastTweakedTextBox::AudioParamChangedFromUI(int index, double normalized)
 {
   _paramIndex = index;
-  if (index < 0)
+  if (index < 0 || !IsTweakableParam(_plugGUI->HostContext()->Topo(), index))
     return;
   auto const& param = _plugGUI->HostContext()->Topo()->audio.params[index];
   setText(param.NormalizedToText(false, normalized));
