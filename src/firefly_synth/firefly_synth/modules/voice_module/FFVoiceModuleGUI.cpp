@@ -47,14 +47,14 @@ MakeVoiceModuleSectionPitch(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  std::vector<int> columnSizes = { 0, 0 };
+  std::vector<int> columnSizes = { 0, 1 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, columnSizes);
   auto coarse = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Coarse, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, coarse));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, coarse, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, coarse, Slider::SliderStyle::LinearHorizontal));
   auto fine = topo->audio.ParamAtTopo({ { (int)FFModuleType::VoiceModule, 0 }, { (int)FFVoiceModuleParam::Fine, 0 } });
   grid->Add(1, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, fine));
-  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fine, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(1, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, fine, Slider::SliderStyle::LinearHorizontal));
   grid->MarkSection({ { 0, 0 }, { 2, 2 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
@@ -63,7 +63,7 @@ static Component*
 MakeVoiceModuleTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1, 0 });
   grid->Add(0, 0, MakeVoiceModuleSectionPitch(plugGUI));
   grid->Add(0, 1, MakeVoiceModuleSectionPorta(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);

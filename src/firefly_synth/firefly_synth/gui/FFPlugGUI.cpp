@@ -188,7 +188,7 @@ FFPlugGUI::SetupGUI()
   _outputGUIAndPatch->Add(0, 1, FFMakeGUISettingsGUI(this));
   _outputGUIAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
-  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0 } });
+  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 2, 1 } });
   _topModules->Add(0, 0, FFMakeMasterGUI(this));
   _topModules->Add(0, 1, FFMakeVoiceModuleGUI(this));
 
