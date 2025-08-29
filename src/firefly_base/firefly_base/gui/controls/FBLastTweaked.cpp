@@ -89,6 +89,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
 {
   setText("Knob...", dontSendNotification);
   plugGUI->AddParamListener(this);
+  addListener(this);
 }
 
 int
@@ -111,4 +112,15 @@ FBLastTweakedTextBox::AudioParamChangedFromUI(int index, double normalized)
     return;
   auto const& param = _plugGUI->HostContext()->Topo()->audio.params[index];
   setText(param.NormalizedToText(false, normalized));
+}
+
+void 
+FBLastTweakedTextBox::textEditorTextChanged(TextEditor&)
+{
+  if (_paramIndex == -1)
+    return;
+  auto const& param = _plugGUI->HostContext()->Topo()->audio.params[_paramIndex];
+  auto normalized = param.TextToNormalized(false, getText().toStdString());
+  if (normalized.has_value())
+    _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_paramIndex, normalized.value());
 }

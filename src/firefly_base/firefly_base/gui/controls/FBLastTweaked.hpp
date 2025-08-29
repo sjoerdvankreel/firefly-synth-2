@@ -27,7 +27,8 @@ class FBLastTweakedTextBox:
 public juce::TextEditor,
 public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize,
-public IFBParamListener
+public IFBParamListener,
+public juce::TextEditor::Listener
 {
   int _paramIndex = -1;
   int const _fixedWidth;
@@ -36,6 +37,11 @@ public IFBParamListener
 public:
   ~FBLastTweakedTextBox();
   FBLastTweakedTextBox(FBPlugGUI* plugGUI, int fixedWidth);
+
+  void textEditorTextChanged(juce::TextEditor&) override;
+  void textEditorFocusLost(juce::TextEditor&) override {}
+  void textEditorReturnKeyPressed(juce::TextEditor&) override {}
+  void textEditorEscapeKeyPressed(juce::TextEditor&) override {}
 
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
