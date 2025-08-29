@@ -4,7 +4,7 @@
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeParam.hpp>
 
-static int const MeterBarCount = 20;
+static int const MeterBarCount = 16;
 
 using namespace juce;
 
