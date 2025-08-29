@@ -150,8 +150,8 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
     double keyHighRetunedRatio = MTS_RetuningAsRatio(procState->mtsClient, (char)keyHigh, (char)noteEvent.channel);
     double keyPlusABitRetunedRatio = (1 - lerp) * (keyLowRetunedRatio) + lerp * (keyHighRetunedRatio);
     double keyPlusABitRetunedSemisByRatio = 12.0 / std::log(2.0) * std::log(keyPlusABitRetunedRatio);
-    double keyPlusABitFreqRetunedSemisByRatio = FBPitchToFreq((float)(_key + keyPlusABitRetunedSemisByRatio));
-    retunedPitchLog[i] = _key + keyPlusABitRetunedSemisByRatio;
+    double keyPlusABitFreqRetunedSemisByRatio = FBPitchToFreq((float)(keyPlusABit + keyPlusABitRetunedSemisByRatio));
+    retunedPitchLog[i] = keyPlusABit + keyPlusABitRetunedSemisByRatio;
     retunedFreqLog[i] = keyPlusABitFreqRetunedSemisByRatio;
 
     (void)keyPlusABit;
