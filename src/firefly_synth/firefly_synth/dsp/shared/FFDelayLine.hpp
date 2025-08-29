@@ -69,7 +69,7 @@ FFDelayLine<TapCount>::Delay(int tap, float delay)
   assert(0 < _currentBufferSize);
   _delayWhole[tap] = static_cast<int>(delay);
   _delayFraction[tap] = delay - _delayWhole[tap];
-  FB_ASSERT(0.0f <= delay && delay < CurrentBufferSize());
+  FB_ASSERT(0.0f <= delay && delay <= CurrentBufferSize());
 }
 
 template <int TapCount>
