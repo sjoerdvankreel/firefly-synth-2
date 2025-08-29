@@ -17,18 +17,20 @@ TODOLIST for alpha-14
 [ ] MTS into output
 [ ] voice + pitch + cent + porta off/on/auto + sync +  + porta time + porta-when-section
 [ ] bright text when graph on
-[ ] make a cpu details popup
 [ ] get the text out of the graphs
 [ ] floating notes
 [ ] MIDI key, velo (voice), low/high/last
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] refix all behind-the-scenes mod sources and targets
-[ ] global unison with chord mode
 [ ] global set-exact-value UI (+ context menu item?)
 
 TODOLIST for alpha-15
 
-[ ] 8x env/lfo
+[ ] 8x env/lfo?
+[ ] make a cpu details popup
+[ ] global unison with chord mode
+[ ] show visual clue if knob is being modulated
+[ ] show modulation amount int terms of the mod target unit
 [ ] lower the delay smooth for vecho
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
