@@ -11,6 +11,7 @@ TODOLIST for alpha-14
 [x] ctrl+drag for fine control
 [x] external smooth into master
 [x] osci coarse->pitch also voice (not rename, just raw pitch)
+[ ] vlfo1->bal=>vlfo2->bal
 [ ] master modwheel + midi link
 [ ] master pitch bend + midi link + range + target off/voice/oscN + MW/PB outputs + figure out all places where is used midi note
 [ ] MTS into master: off / note / continuous 
@@ -30,7 +31,7 @@ TODOLIST for alpha-15
 [ ] make a cpu details popup
 [ ] global unison with chord mode
 [ ] show visual clue if knob is being modulated
-[ ] show modulation amount int terms of the mod target unit
+[ ] show modulation amount int terms of the mod target unit for matrix and easy access
 [ ] lower the delay smooth for vecho
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
