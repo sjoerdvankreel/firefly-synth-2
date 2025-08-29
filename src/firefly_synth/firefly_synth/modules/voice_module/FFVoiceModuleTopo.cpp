@@ -37,6 +37,19 @@ FFMakeVoiceModuleTopo()
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);
   coarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCoarse);
 
+  auto& env1ToCoarse = result->params[(int)FFVoiceModuleParam::Env1ToCoarse];
+  env1ToCoarse.acc = true;
+  env1ToCoarse.name = "Env 1\U00002192Coarse";
+  env1ToCoarse.defaultText = "0";
+  env1ToCoarse.slotCount = 1;
+  env1ToCoarse.unit = "%";
+  env1ToCoarse.id = "{7A005131-8806-4815-AEAB-A4B4861B707F}";
+  env1ToCoarse.type = FBParamType::Identity;
+  auto selectEnv1ToCoarse = [](auto& module) { return &module.acc.env1ToCoarse; };
+  env1ToCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectEnv1ToCoarse);
+  env1ToCoarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectEnv1ToCoarse);
+  env1ToCoarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectEnv1ToCoarse);
+
   auto& fine = result->params[(int)FFVoiceModuleParam::Fine];
   fine.acc = true;
   fine.defaultText = "0";
@@ -52,6 +65,19 @@ FFMakeVoiceModuleTopo()
   fine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectFine);
   fine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFine);
   fine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFine);
+
+  auto& lfo1ToFine = result->params[(int)FFVoiceModuleParam::LFO1ToFine];
+  lfo1ToFine.acc = true;
+  lfo1ToFine.name = "VLFO 1\U00002192Fine";
+  lfo1ToFine.defaultText = "0";
+  lfo1ToFine.slotCount = 1;
+  lfo1ToFine.unit = "%";
+  lfo1ToFine.id = "{DAF25F23-63B2-4120-98B7-EE28D054CA43}";
+  lfo1ToFine.type = FBParamType::Identity;
+  auto selectLFO1ToFine = [](auto& module) { return &module.acc.lfo1ToFine; };
+  lfo1ToFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO1ToFine);
+  lfo1ToFine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO1ToFine);
+  lfo1ToFine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO1ToFine);
 
   auto& portaType = result->params[(int)FFVoiceModuleParam::PortaType];
   portaType.acc = false;
