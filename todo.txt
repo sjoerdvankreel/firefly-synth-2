@@ -28,6 +28,7 @@ TODOLIST for alpha-14
 
 TODOLIST for alpha-15
 
+[ ] update all dependencies
 [ ] 8x env/lfo?
 [ ] make a cpu details popup
 [ ] global unison with chord mode
