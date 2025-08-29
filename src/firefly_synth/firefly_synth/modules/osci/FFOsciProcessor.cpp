@@ -93,6 +93,8 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   auto const& noteEvent = state.voice->event.note;
   _key = static_cast<float>(noteEvent.key);
 
+#if 0 TODO
+
   // todo note filtering.
   double keyFreqNormal = FBPitchToFreq((float)_key);
   double keyPlus1FreqNormal = FBPitchToFreq((float)_key+1.0f);
@@ -175,6 +177,8 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   (void)keyPlus1FreqRetunedDirect;
   (void)keyPlus1RetunedSemis;
   (void)keyPlus1FreqRetunedSemisFreq;
+
+#endif
 
   _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
