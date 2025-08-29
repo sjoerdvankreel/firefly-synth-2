@@ -16,6 +16,7 @@ class FFOutputProcessor final
   int _cpuParamIndex = -1;
   int _gainParamIndex = -1;
   int _voicesParamIndex = -1;
+  int _mtsEspOnParamIndex = -1;
 
   std::chrono::steady_clock::time_point _updated = {};
 

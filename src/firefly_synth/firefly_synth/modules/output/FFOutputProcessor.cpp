@@ -8,11 +8,14 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+#include <libMTSClient.h>
+
 static int constexpr OutputSamplingRate = 10;
 
 void
 FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& output)
 {
+  auto procState = state.ProcAs<FFProcState>();
   float voicesNorm = state.input->voiceManager->VoiceCount() / (float)FBMaxVoices;
   _maxVoices = std::max(_maxVoices, voicesNorm);
   float cpuNorm = std::clamp(state.input->prevRoundCpuUsage, 0.0f, 1.0f);
@@ -30,11 +33,13 @@ FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& ou
     _cpuParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Cpu, 0 } })->runtimeParamIndex;
     _gainParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Gain, 0 } })->runtimeParamIndex;
     _voicesParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::Voices, 0 } })->runtimeParamIndex;
+    _mtsEspOnParamIndex = state.topo->audio.ParamAtTopo({ { (int)FFModuleType::Output, 0 }, { (int)FFOutputParam::MtsEspOn, 0 } })->runtimeParamIndex;
   }
 
   (*state.outputParamsNormalized)[_cpuParamIndex] = _maxCpu;
   (*state.outputParamsNormalized)[_gainParamIndex] = _maxGain;
   (*state.outputParamsNormalized)[_voicesParamIndex] = _maxVoices;
+  (*state.outputParamsNormalized)[_mtsEspOnParamIndex] = MTS_HasMaster(procState->mtsClient);
 
   _updated = now;
   _maxCpu = 0.0f;
