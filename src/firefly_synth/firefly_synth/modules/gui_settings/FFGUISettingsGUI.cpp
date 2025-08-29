@@ -37,7 +37,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobRenderMode));
   grid->Add(0, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobRenderMode));
   grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Tweak"));
-  auto tweakEditor = plugGUI->StoreComponent<FBAutoSizeTextBox>(80);
+  auto tweakEditor = plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 80);
   grid->Add(0, 7, tweakEditor);
   auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Audio");
   flushDelayButton->setTooltip("Flush delays and reverbs");
