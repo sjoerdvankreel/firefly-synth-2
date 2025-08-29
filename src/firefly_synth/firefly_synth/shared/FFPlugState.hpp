@@ -27,6 +27,8 @@
 
 #include <array>
 
+class MTSClient;
+
 struct FFGUIState final
 {
   std::array<FFEchoGUIState, 1> vEcho = {};
@@ -165,6 +167,7 @@ struct alignas(FBSIMDAlign) FFProcParamState final
 struct alignas(FBSIMDAlign) FFProcState final
 {
   FFProcDSPState dsp = {};
+  MTSClient* mtsClient = {};
   FFProcParamState param = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
 };
