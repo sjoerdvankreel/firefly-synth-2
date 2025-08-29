@@ -114,6 +114,15 @@ FBLastTweakedTextBox::AudioParamChangedFromUI(int index, double normalized)
   setText(param.NormalizedToText(false, normalized));
 }
 
+void
+FBLastTweakedTextBox::textEditorFocusLost(TextEditor&)
+{
+  if (_paramIndex == -1)
+    return;
+  auto const& param = _plugGUI->HostContext()->Topo()->audio.params[_paramIndex];
+  setText(param.NormalizedToText(false, _plugGUI->HostContext()->GetAudioParamNormalized(_paramIndex)));
+}
+
 void 
 FBLastTweakedTextBox::textEditorTextChanged(TextEditor&)
 {
