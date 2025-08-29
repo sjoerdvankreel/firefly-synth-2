@@ -1,0 +1,43 @@
+How to properly do modulation on microtuned pitch?
+
+For reference, let's set the stage:
+I got a "regular" Pitch2Freq function defined as "440 * pow(2, (pitch - 69) / 12)".
+I got a tuning which maps 12-TET MIDI notes 60, 61, 62 to re-tuned values 70, 73, 78 (read: base key + MTS_RetuningInSemitones).
+Now, 70, 73, 78 are the "correct" values in the sense that Pitch2Freq produces the desired result. 
+HOWEVER these values are still expressed as 12-TET! It's just a mapping from 12-TET to the corresponding pitch in the retuned scale.
+And whats worse, its not even a linear mapping, its a log one.
+
+Now, here goes, just for example:
+I got 2 modulators on the osci pitch, each one goes from -1 to +1 semis. Totally bogus, but imagine master mod wheel followed by 
+osci coarse pitch offset, osci fine pitch offset, osci unison detune etc etc.
+Also lets say both of them are set to +1 semis.
+
+Now the problem is this: "retune(60) + 1" IS NOT "retune (60 + 1)"
+
+I can imagine 3 implementations:
+
+1) Retune at voice start: 60 becomes 70, modulate #1 in 12-tet => 71, modulate #2 in 12-tet => 72. 
+This feels weird to me, because "2 semis up" in the retuned scale is not 72 in 12-TET, but it is 78.
+
+2) Retune right before PitchToFreq: 60 modulate #1 => 61, 61 modulate #2 => 62, retune 62 = 78, PitchToFreq comes out "ok".
+At first glance this seems correct but i believe it is actually not.
+Reason: lets swap mod #2 for a continuous morphing signal -1/+1 semis.
+So now after mod# 2, the pitch comes out as between [60, 62] in 12-TET.
+But, this is modulating in 12-TET! So now PitchToFreq gets handed something between [70, 78].
+This ALSO feels weird, because after mod #1 (which is fixed to +1) we should be modulating +/-1 semi in terms of the retuned pitch around the re-mapped 73 value.
+In other words, apply fixed mod #1 first, get 73, apply dynamic mod #2 second, get 73-X .. 73+X, where X is not 1, 
+but rather a value that takes both into account the modulated pitch value AND the modulation value. So, X depends on both "73" AND the tuning in use.
+
+Which brings me to option
+3) Retune not only the incoming pitch at voice start, but also retune ALL modulators at each step of the way:
+- Incoming => 60 becomes 70
+- After mod #1 => 70 becomes 70 + X1, where X1 is "+1 semitones defined in terms of the retuned scale", and the whole of 70 + X1 is expressed as 12-tet
+- After mod #2 => 70 + X1 becomes 70 + X1 +/- X2, where again X2 is -1/+1 IF it was 12-tet, but instead it is -1/+1 (log) remapped based on the tuning table
+
+All in all i can see option #3 being both doable and correct, but difficult, and possibly slow in terms of cpu.
+It feels to me problems arise from modulating in "fake" 12-tet. 
+If we had a [0, 128] MIDI table which was tuned beforehand by the host, then a plug could easily do "+/-1" 1 cent on that instead.
+
+
+
+
