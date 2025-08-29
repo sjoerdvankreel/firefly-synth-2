@@ -94,12 +94,29 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _key = static_cast<float>(noteEvent.key);
 
   // todo note filtering.
-  double retunedKey = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
-  double freq1 = MTS_NoteToFrequency(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
-  double freq2 = FBPitchToFreq((float)retunedKey);
-  (void)retunedKey;
-  (void)freq1;
-  (void)freq2;
+  double keyFreqNormal = FBPitchToFreq((float)_key);
+  double keyPlus1FreqNormal = FBPitchToFreq((float)_key+1.0f);
+  
+  double keyFreqRetunedDirect = MTS_NoteToFrequency(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
+  double keyFreqRetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
+  double keyFreqRetunedSemisFreq = FBPitchToFreq((float)(_key + keyFreqRetunedSemis));
+  // keyFreqRetunedDirect == keyFreqRetunedSemisFreq
+
+  double keyPlus1FreqRetunedDirect = MTS_NoteToFrequency(procState->mtsClient, (char)noteEvent.key + 1, (char)noteEvent.channel);
+  double keyPlus1FreqRetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key + 1, (char)noteEvent.channel);
+  double keyPlus1FreqRetunedSemisFreq = FBPitchToFreq((float)(_key + 1 + keyPlus1FreqRetunedSemis));
+  // keyPlus1FreqRetunedDirect == keyPlus1FreqRetunedSemisFreq
+
+  (void)keyFreqNormal;
+  (void)keyPlus1FreqNormal;
+
+  (void)keyFreqRetunedDirect;
+  (void)keyFreqRetunedSemis;
+  (void)keyFreqRetunedSemisFreq;
+
+  (void)keyPlus1FreqRetunedDirect;
+  (void)keyPlus1FreqRetunedSemis;
+  (void)keyPlus1FreqRetunedSemisFreq;
 
   _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
