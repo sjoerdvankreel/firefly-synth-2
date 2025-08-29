@@ -10,7 +10,7 @@ TODOLIST for alpha-14
 [x] merge ui/matrix
 [x] ctrl+drag for fine control
 [x] external smooth into master
-[ ] osci coarse->pitch also voice (not rename, just raw pitch)
+[x] osci coarse->pitch also voice (not rename, just raw pitch)
 [ ] master modwheel + midi link
 [ ] master pitch bend + midi link + range + target off/voice/oscN + MW/PB outputs + figure out all places where is used midi note
 [ ] MTS into master: off / note / continuous 
