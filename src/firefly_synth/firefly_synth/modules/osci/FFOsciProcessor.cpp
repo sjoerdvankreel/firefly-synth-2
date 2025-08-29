@@ -102,18 +102,25 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   double keyFreqRetunedSemisFreq = FBPitchToFreq((float)(_key + keyRetunedSemis));
   double keyRetunedRatio = MTS_RetuningAsRatio(procState->mtsClient, (char)noteEvent.key, (char)noteEvent.channel);
   double keyRetunedSemisByRatio = 12.0 / std::log(2.0) * std::log(keyRetunedRatio);
-  double keyFreqRetunedSemisByRatio = FBPitchToFreq((float)(keyRetunedSemisByRatio));
+  double keyFreqRetunedSemisByRatio = FBPitchToFreq((float)(_key + keyRetunedSemisByRatio));
+  // keyFreqRetunedDirect == keyFreqRetunedSemisFreq == keyFreqRetunedSemisByRatio
 
   (void)keyRetunedRatio;
   (void)keyRetunedSemisByRatio;
   (void)keyFreqRetunedSemisByRatio;
 
-  // keyFreqRetunedDirect == keyFreqRetunedSemisFreq
 
   double keyPlus1FreqRetunedDirect = MTS_NoteToFrequency(procState->mtsClient, (char)noteEvent.key + 1, (char)noteEvent.channel);
   double keyPlus1RetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)noteEvent.key + 1, (char)noteEvent.channel);
   double keyPlus1FreqRetunedSemisFreq = FBPitchToFreq((float)(_key + 1 + keyPlus1RetunedSemis));
-  // keyPlus1FreqRetunedDirect == keyPlus1FreqRetunedSemisFreq
+  double keyPlus1RetunedRatio = MTS_RetuningAsRatio(procState->mtsClient, (char)noteEvent.key + 1, (char)noteEvent.channel);
+  double keyPlus1RetunedSemisByRatio = 12.0 / std::log(2.0) * std::log(keyPlus1RetunedRatio);
+  double keyPlus1FreqRetunedSemisByRatio = FBPitchToFreq((float)(_key + 1 + keyRetunedSemisByRatio));
+  // keyPlus1FreqRetunedDirect == keyPlus1FreqRetunedSemisFreq == keyPlus1FreqRetunedSemisByRatio
+
+  (void)keyPlus1RetunedRatio;
+  (void)keyPlus1RetunedSemisByRatio;
+  (void)keyPlus1FreqRetunedSemisByRatio;
 
   for (int i = 0; i < 4; i++)
   {
