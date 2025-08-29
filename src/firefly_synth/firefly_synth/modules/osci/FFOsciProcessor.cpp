@@ -122,14 +122,44 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   (void)keyPlus1RetunedSemisByRatio;
   (void)keyPlus1FreqRetunedSemisByRatio;
 
-  for (int i = 0; i < 4; i++)
+  double retunedFreqLog[5];
+  double retunedPitchLog[5];
+  double retunedFreqLinear[5];
+  double retunedPitchLinear[5];
+  for (int i = 0; i <= 4; i++)
   {
-    double keyPlusABit = _key + 0.125f + i / (float)4;
+    double keyPlusABit = _key + i / (float)4;
     double keyPlusABitFreqNormal = FBPitchToFreq((float)keyPlusABit);
+
+    int keyLow = (int)keyPlusABit;
+    int keyHigh = keyLow + 1;
+    double lerp = keyPlusABit - keyLow;
+
+    double keyLowRetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)keyLow, (char)noteEvent.channel);
+    double keyHighRetunedSemis = MTS_RetuningInSemitones(procState->mtsClient, (char)keyHigh, (char)noteEvent.channel);
+    double keyPlusABitPitchLinear = (1 - lerp) * (keyLow + keyLowRetunedSemis) + lerp * (keyHigh + keyHighRetunedSemis);
+    double keyPlusABitFreqLinear = FBPitchToFreq((float)keyPlusABitPitchLinear);
+    retunedPitchLinear[i] = keyPlusABitPitchLinear;
+    retunedFreqLinear[i] = keyPlusABitFreqLinear;
+
+    double keyLowRetunedRatio = MTS_RetuningAsRatio(procState->mtsClient, (char)keyLow, (char)noteEvent.channel);
+    double keyHighRetunedRatio = MTS_RetuningAsRatio(procState->mtsClient, (char)keyHigh, (char)noteEvent.channel);
+    double keyPlusABitRetunedRatio = (1 - lerp) * (keyLowRetunedRatio) + lerp * (keyHighRetunedRatio);
+    double keyPlusABitRetunedSemisByRatio = 12.0 / std::log(2.0) * std::log(keyPlusABitRetunedRatio);
+    double keyPlusABitFreqRetunedSemisByRatio = FBPitchToFreq((float)(_key + keyPlusABitRetunedSemisByRatio));
+    retunedPitchLog[i] = _key + keyPlusABitRetunedSemisByRatio;
+    retunedFreqLog[i] = keyPlusABitFreqRetunedSemisByRatio;
 
     (void)keyPlusABit;
     (void)keyPlusABitFreqNormal;
+    (void)keyPlusABitFreqNormal;
+
+    int x = 0;
+    x++;
   }
+
+  int y = 0;
+  y++;
 
   (void)keyFreqNormal;
   (void)keyPlus1FreqNormal;
