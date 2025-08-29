@@ -51,7 +51,7 @@ FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
 }
 
 void
-FBPlugGUI::AddParamListener(FBParamListener* listener)
+FBPlugGUI::AddParamListener(IFBParamListener* listener)
 {
   auto iter = std::find(_paramListeners.begin(), _paramListeners.end(), listener);
   FB_ASSERT(iter == _paramListeners.end());
@@ -59,7 +59,7 @@ FBPlugGUI::AddParamListener(FBParamListener* listener)
 }
 
 void
-FBPlugGUI::RemoveParamListener(FBParamListener* listener)
+FBPlugGUI::RemoveParamListener(IFBParamListener* listener)
 {
   auto iter = std::find(_paramListeners.begin(), _paramListeners.end(), listener);
   FB_ASSERT(iter != _paramListeners.end());

@@ -3,6 +3,40 @@
 
 using namespace juce;
 
+FBLastTweakedLabel::
+~FBLastTweakedLabel()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FBLastTweakedLabel::
+FBLastTweakedLabel(FBPlugGUI* plugGUI) :
+_plugGUI(plugGUI)
+{
+  setText("Tweak", dontSendNotification);
+  plugGUI->AddParamListener(this);
+  _maxWidth = 80;
+}
+
+int
+FBLastTweakedLabel::FixedHeight() const
+{
+  return 20;
+}
+
+int
+FBLastTweakedLabel::FixedWidth(int /*height*/) const
+{
+  return getBorderSize().getLeftAndRight() + _maxWidth;
+}
+
+void 
+FBLastTweakedLabel::AudioParamChangedFromUI(int index, double normalized)
+{
+  auto const& param = _plugGUI->HostContext()->Topo()->audio.params[index];
+  setText(param.displayName, dontSendNotification);
+}
+
 FBLastTweakedTextBox::
 ~FBLastTweakedTextBox()
 {

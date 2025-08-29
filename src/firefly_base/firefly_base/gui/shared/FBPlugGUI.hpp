@@ -14,17 +14,17 @@
 
 class FBHostGUIContext;
 
-class FBParamListener
+class IFBParamListener
 {
 public:
-  virtual ~FBParamListener() {}
+  virtual ~IFBParamListener() {}
   virtual void AudioParamChangedFromUI(int index, double normalized) = 0;
 };
 
 class FBPlugGUI:
 public juce::Component
 {
-  std::vector<FBParamListener*> _paramListeners = {};
+  std::vector<IFBParamListener*> _paramListeners = {};
 
 public:
   template <class TComponent, class... Args>
@@ -39,8 +39,8 @@ public:
   void SavePatchToFile();
   void LoadPatchFromFile();
 
-  void AddParamListener(FBParamListener* listener);
-  void RemoveParamListener(FBParamListener* listener);
+  void AddParamListener(IFBParamListener* listener);
+  void RemoveParamListener(IFBParamListener* listener);
 
   std::string GetTooltipForGUIParam(int index) const;
   std::string GetTooltipForAudioParam(int index) const;

@@ -36,7 +36,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   auto knobRenderMode = topo->gui.ParamAtTopo({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::KnobRenderMode, 0 } });
   grid->Add(0, 4, plugGUI->StoreComponent<FBGUIParamLabel>(plugGUI, knobRenderMode));
   grid->Add(0, 5, plugGUI->StoreComponent<FBGUIParamComboBox>(plugGUI, knobRenderMode));
-  grid->Add(0, 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Tweak"));
+  grid->Add(0, 6, plugGUI->StoreComponent<FBLastTweakedLabel>(plugGUI));
   auto tweakEditor = plugGUI->StoreComponent<FBLastTweakedTextBox>(plugGUI, 80);
   grid->Add(0, 7, tweakEditor);
   auto flushDelayButton = plugGUI->StoreComponent<FBAutoSizeButton>("Flush Audio");
