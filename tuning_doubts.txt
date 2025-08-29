@@ -36,7 +36,7 @@ Which brings me to option
 
 All in all i can see option #3 being both doable and correct, but difficult, and possibly slow in terms of cpu.
 It feels to me problems arise from modulating in "fake" 12-tet. 
-If we had a [0, 128] MIDI table which was tuned beforehand by the host, then a plug could easily do "+/-1" semi on that instead.
+If we had a [0, 128] MIDI table which was tuned beforehand by the host, then a plug could maybe do "+/-1" semi on that instead?
 
 
 
