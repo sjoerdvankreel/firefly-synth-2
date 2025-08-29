@@ -27,9 +27,9 @@ FFMakePatchGUI(FBPlugGUI* plugGUI)
   auto init = plugGUI->StoreComponent<FBAutoSizeButton>("Init");
   init->onClick = [plugGUI]() { plugGUI->InitPatch(); };
   grid->Add(0, 3, init);
-  auto factory = plugGUI->StoreComponent<FBAutoSizeButton>("Factory");
-  factory->setEnabled(false);
-  grid->Add(0, 4, factory);
+  auto preset = plugGUI->StoreComponent<FBAutoSizeButton>("Preset");
+  preset->setEnabled(false);
+  grid->Add(0, 4, preset);
   grid->Add(0, 5, plugGUI->StoreComponent<FBFillerComponent>(6, 1));
   grid->MarkSection({ { 0, 0 }, { 1, 6 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);

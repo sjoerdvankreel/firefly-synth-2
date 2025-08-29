@@ -31,7 +31,7 @@ FFMakeGUISettingsTopo()
 
   auto& guiShowMatrix = result->guiParams[(int)FFGUISettingsGUIParam::ShowMatrix];
   guiShowMatrix.defaultText = "Off";
-  guiShowMatrix.name = "Show Matrix";
+  guiShowMatrix.name = "Matrix";
   guiShowMatrix.slotCount = 1;
   guiShowMatrix.id = "{FEB66217-BE68-4B94-A8D3-009EE307BBB5}";
   guiShowMatrix.type = FBParamType::Boolean;
