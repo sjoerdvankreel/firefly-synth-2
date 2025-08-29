@@ -43,7 +43,7 @@ FFMakeGUISettingsGUI(FBPlugGUI* plugGUI)
   flushDelayButton->setTooltip("Flush delays and reverbs");
   flushDelayButton->onClick = [plugGUI]() { dynamic_cast<FFPlugGUI&>(*plugGUI).FlushDelayLines(); };
   grid->Add(0, 8, flushDelayButton);
-  grid->Add(0, 9, plugGUI->StoreComponent<FBFillerComponent>(10, 1));
+  grid->Add(0, 9, plugGUI->StoreComponent<FBFillerComponent>(15, 1));
   grid->MarkSection({ { 0, 0 }, { 1, 10 } });
   auto section = plugGUI->StoreComponent<FBSubSectionComponent>(grid);
   return plugGUI->StoreComponent<FBSectionComponent>(section);
