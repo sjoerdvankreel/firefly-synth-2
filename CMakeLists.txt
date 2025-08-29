@@ -93,6 +93,14 @@ add_definitions(-DJUCE_USE_CURL=0)
 add_definitions(-DJUCE_MODAL_LOOPS_PERMITTED=0)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib/JUCE)
 
+# mts-esp
+set (MTS_ESP_SRC_DIR "${CMAKE_SOURCE_DIR}/lib/MTS-ESP/Client")
+file(GLOB_RECURSE MTS_ESP_SRC_FILES "${MTS_ESP_SRC_DIR}/*.*")
+add_library(MTS-ESP STATIC ${MTS_ESP_SRC_FILES})
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  source_group(TREE ${MTS_ESP_SRC_DIR} FILES ${MTS_ESP_SRC_FILES})
+endif()
+
 # vst3 sdk
 set(VST_SDK TRUE)
 set(SMTG_USE_STATIC_CRT ON)
@@ -109,7 +117,7 @@ smtg_setup_platform_toolset()
 # vst3 cmake changes this
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   add_compile_options($<$<CONFIG:Debug>:/Zi>)
-endif()  
+endif()
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release;RelWithDebInfo")
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3/base")
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/vst3/public.sdk")
