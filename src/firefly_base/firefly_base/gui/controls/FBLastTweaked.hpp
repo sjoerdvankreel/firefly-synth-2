@@ -5,28 +5,21 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class FBAutoSizeTextBox:
+class FBLastTweakedTextBox:
 public juce::TextEditor,
 public IFBVerticalAutoSize,
-public IFBHorizontalAutoSize
-{
-  int const _fixedWidth;
-
-public:
-  int FixedHeight() const override;
-  int FixedWidth(int height) const override;
-  FBAutoSizeTextBox(int fixedWidth);
-};
-
-class FBLastTweakedTextBox:
-public FBAutoSizeTextBox,
+public IFBHorizontalAutoSize,
 public FBParamListener
 {
   int _paramIndex = -1;
+  int const _fixedWidth;
   FBPlugGUI* const _plugGUI;
 
 public:
   ~FBLastTweakedTextBox();
   FBLastTweakedTextBox(FBPlugGUI* plugGUI, int fixedWidth);
+
+  int FixedHeight() const override;
+  int FixedWidth(int height) const override;
   void AudioParamChangedFromUI(int index, double normalized) override;
 };
