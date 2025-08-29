@@ -27,10 +27,9 @@ inline constexpr char FFPlugName[] = "Firefly Synth 2";
 inline constexpr char FFPlugUniqueId[] = "754068B351A04DB4813B58D562BDFC1F";
 inline constexpr char FFPlugControllerId[] = "959E6302402B461A8C9AA5A6737BCAAD"; 
 
-// TODO rearrange
 enum class FFModuleType {
-  Output, GUISettings, Master, GMix, Osci, OsciMod, VEffect, GEffect, 
-  VMix, Env, VLFO, GLFO, GMatrix, VMatrix, MIDI, VEcho, GEcho, Count }; 
+  GUISettings, MIDI, Master, VoiceModule, Osci, OsciMod, Env, VEffect, GEffect,
+  VLFO, GLFO, VMix, GMix, VEcho, GEcho, VMatrix, GMatrix, Output, Count };
 
 struct FFStaticTopo:
 public FBStaticTopo

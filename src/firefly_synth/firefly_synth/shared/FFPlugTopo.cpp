@@ -14,6 +14,7 @@
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
+#include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsState.hpp>
 
@@ -119,6 +120,7 @@ FFMakeTopo(FBPlugFormat format)
   result->modules.resize((int)FFModuleType::Count);
   result->modules[(int)FFModuleType::MIDI] = std::move(*FFMakeMIDITopo());
   result->modules[(int)FFModuleType::Master] = std::move(*FFMakeMasterTopo());
+  result->modules[(int)FFModuleType::VoiceModule] = std::move(*FFMakeVoiceModuleTopo());
   result->modules[(int)FFModuleType::Output] = std::move(*FFMakeOutputTopo());
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
@@ -155,6 +157,7 @@ FFMakeTopo(FBPlugFormat format)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::VLFO, s });
   }
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, FFAmpEnvSlot });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::VoiceModule, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::OsciMod, 0 });
   for (int s = 0; s < result->modules[(int)FFModuleType::Osci].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::Osci, s });
