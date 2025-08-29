@@ -72,7 +72,7 @@ static Component*
 MakeMasterTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 1, 1 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 3, 2 });
   grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
   grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
