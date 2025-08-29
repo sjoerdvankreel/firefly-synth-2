@@ -21,10 +21,6 @@
 #include <firefly_base/base/topo/static/FBStaticTopo.hpp>
 #include <firefly_base/base/topo/static/FBStaticModule.hpp>
 
-#include <libMTSClient.h>
-
-static MTSClient* _MTSClient = {};
-
 static FBSpecialParam
 MakeSpecialParam(
   FBStaticTopo const& topo, void* state, 
@@ -75,19 +71,6 @@ std::string
 FFFormatBlockSlot(FBStaticTopo const&, int /* moduleSlot */, int itemSlot)
 {
   return std::string(1, static_cast<char>('A' + itemSlot));
-}
-
-void 
-FFPlugInit()
-{
-  _MTSClient = MTS_RegisterClient();
-}
-
-void
-FFPlugTerminate()
-{
-  MTS_DeregisterClient(_MTSClient);
-  _MTSClient = nullptr;
 }
 
 FBStaticTopoMeta

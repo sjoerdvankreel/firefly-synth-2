@@ -69,7 +69,6 @@ public:
 static void CLAP_ABI 
 Deinit()
 {
-  FFPlugTerminate();
   FBGUITerminate();
   FBLogTerminate();
 }
@@ -79,7 +78,6 @@ Init(char const*)
 { 
   FBLogInit(FFPlugMeta(FBPlugFormat::CLAP));
   FBGUIInit();
-  FFPlugInit();
   return true; 
 }
 
