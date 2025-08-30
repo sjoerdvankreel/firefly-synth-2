@@ -9,6 +9,7 @@
 #include <array>
 #include <memory>
 
+class MTSClient;
 struct FBStaticModule;
 
 class alignas(FBSIMDAlign) FFMasterDSPState final
@@ -18,6 +19,11 @@ class alignas(FBSIMDAlign) FFMasterDSPState final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFMasterDSPState);
   FFMasterDSPState() : processor(std::make_unique<FFMasterProcessor>()) {}
+
+  bool mtsEspOn = {};
+  MTSClient* mtsClient = {};
+  FFMasterTuningMode tuningMode = {};
+
   FBSArray<float, FBFixedBlockSamples> outputMod = {};
   FBSArray<float, FBFixedBlockSamples> outputBend = {};
   FBSArray2<float, FBFixedBlockSamples, FFMasterAuxCount> outputAux = {};
@@ -26,6 +32,7 @@ public:
 template <class TBlock>
 class alignas(alignof(TBlock)) FFMasterBlockParamState final
 {
+  friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   std::array<TBlock, 1> tuningMode = {};
   std::array<TBlock, 1> hostSmoothTime = {};

@@ -11,17 +11,23 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
+#include <libMTSClient.h>
 #include <xsimd/xsimd.hpp>
 
 void
 FFMasterProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  auto& outputAux = procState->dsp.global.master.outputAux;
-  auto const& procParams = procState->param.global.master[state.moduleSlot];
+  auto& dspState = procState->dsp.global.master;
+  auto const& params = procState->param.global.master[0];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Master];
+
+  float tuningModeNorm = procState->param.global.master[0].block.tuningMode[0].Value();
+  dspState.mtsEspOn = MTS_HasMaster(dspState.mtsClient);
+  dspState.tuningMode = topo.NormalizedToListFast<FFMasterTuningMode>(FFMasterParam::TuningMode, tuningModeNorm);
 
   for (int i = 0; i < FFMasterAuxCount; i++)
-    procParams.acc.aux[i].Global().CV().CopyTo(outputAux[i]);
+    params.acc.aux[i].Global().CV().CopyTo(dspState.outputAux[i]);
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
@@ -31,5 +37,5 @@ FFMasterProcessor::Process(FBModuleProcState& state)
   exchangeDSP.active = true;
   auto& exchangeParams = exchangeToGUI->param.global.master[0];
   for (int i = 0; i < FFMasterAuxCount; i++)
-    exchangeParams.acc.aux[i] = procParams.acc.aux[i].Global().Last();
+    exchangeParams.acc.aux[i] = params.acc.aux[i].Global().Last();
 }

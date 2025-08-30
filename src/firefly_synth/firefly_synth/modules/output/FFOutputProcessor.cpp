@@ -8,8 +8,6 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
-#include <libMTSClient.h>
-
 static int constexpr OutputSamplingRate = 10;
 
 void
@@ -39,7 +37,7 @@ FFOutputProcessor::Process(FBModuleProcState& state, FBPlugOutputBlock const& ou
   (*state.outputParamsNormalized)[_cpuParamIndex] = _maxCpu;
   (*state.outputParamsNormalized)[_gainParamIndex] = _maxGain;
   (*state.outputParamsNormalized)[_voicesParamIndex] = _maxVoices;
-  (*state.outputParamsNormalized)[_mtsEspOnParamIndex] = MTS_HasMaster(procState->mtsClient);
+  (*state.outputParamsNormalized)[_mtsEspOnParamIndex] = procState->dsp.global.master.mtsEspOn;
 
   _updated = now;
   _maxCpu = 0.0f;

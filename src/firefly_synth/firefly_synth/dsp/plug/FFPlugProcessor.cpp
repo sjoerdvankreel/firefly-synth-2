@@ -21,7 +21,7 @@
 FFPlugProcessor::
 ~FFPlugProcessor()
 {
-  MTS_DeregisterClient(_procState->mtsClient);
+  MTS_DeregisterClient(_procState->dsp.global.master.mtsClient);
 }
 
 FFPlugProcessor::
@@ -31,7 +31,7 @@ _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
-  _procState->mtsClient = MTS_RegisterClient();
+  _procState->dsp.global.master.mtsClient = MTS_RegisterClient();
   _procState->dsp.global.gMatrix.processor->InitBuffers(_topo);
   for (int v = 0; v < FBMaxVoices; v++)
     _procState->dsp.voice[v].vMatrix.processor->InitBuffers(_topo);

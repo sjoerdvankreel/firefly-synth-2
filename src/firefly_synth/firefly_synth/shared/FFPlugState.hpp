@@ -167,7 +167,6 @@ struct alignas(FBSIMDAlign) FFProcParamState final
 struct alignas(FBSIMDAlign) FFProcState final
 {
   FFProcDSPState dsp = {};
-  MTSClient* mtsClient = {};
   FFProcParamState param = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFProcState);
 };
