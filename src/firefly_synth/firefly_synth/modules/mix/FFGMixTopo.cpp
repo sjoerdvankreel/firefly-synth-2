@@ -40,18 +40,18 @@ FFMakeGMixTopo()
   amp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectAmp);
   amp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmp);
 
-  auto& lfo1ToAmp = result->params[(int)FFGMixParam::LFO1ToAmp];
-  lfo1ToAmp.acc = true;
-  lfo1ToAmp.name = "GLFO 1\U00002192Amp";
-  lfo1ToAmp.defaultText = "0";
-  lfo1ToAmp.slotCount = 1;
-  lfo1ToAmp.unit = "%";
-  lfo1ToAmp.id = "{EF9C4C3E-C0F8-4050-BE77-DAFFFEC31756}";
-  lfo1ToAmp.type = FBParamType::Identity;
-  auto selectLFO1ToAmp = [](auto& module) { return &module.acc.lfo1ToAmp; };
-  lfo1ToAmp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO1ToAmp);
-  lfo1ToAmp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO1ToAmp);
-  lfo1ToAmp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO1ToAmp);
+  auto& lfo5ToAmp = result->params[(int)FFGMixParam::LFO5ToAmp];
+  lfo5ToAmp.acc = true;
+  lfo5ToAmp.name = "GLFO 5\U00002192Amp";
+  lfo5ToAmp.defaultText = "0";
+  lfo5ToAmp.slotCount = 1;
+  lfo5ToAmp.unit = "%";
+  lfo5ToAmp.id = "{EF9C4C3E-C0F8-4050-BE77-DAFFFEC31756}";
+  lfo5ToAmp.type = FBParamType::Identity;
+  auto selectLFO5ToAmp = [](auto& module) { return &module.acc.lfo5ToAmp; };
+  lfo5ToAmp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO5ToAmp);
+  lfo5ToAmp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO5ToAmp);
+  lfo5ToAmp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO5ToAmp);
 
   auto& bal = result->params[(int)FFGMixParam::Bal];
   bal.acc = true;
@@ -70,18 +70,18 @@ FFMakeGMixTopo()
   bal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectBal);
   bal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectBal);
 
-  auto& lfo2ToBal = result->params[(int)FFGMixParam::LFO2ToBal];
-  lfo2ToBal.acc = true;
-  lfo2ToBal.name = "GLFO 2\U00002192Bal";
-  lfo2ToBal.defaultText = "0";
-  lfo2ToBal.slotCount = 1;
-  lfo2ToBal.unit = "%";
-  lfo2ToBal.id = "{B4A71A47-EA18-416C-89CC-38C66A2A17E5}";
-  lfo2ToBal.type = FBParamType::Identity;
-  auto selectLFO2ToBal = [](auto& module) { return &module.acc.lfo2ToBal; };
-  lfo2ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO2ToBal);
-  lfo2ToBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO2ToBal);
-  lfo2ToBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO2ToBal);
+  auto& lfo6ToBal = result->params[(int)FFGMixParam::LFO6ToBal];
+  lfo6ToBal.acc = true;
+  lfo6ToBal.name = "GLFO 6\U00002192Bal";
+  lfo6ToBal.defaultText = "0";
+  lfo6ToBal.slotCount = 1;
+  lfo6ToBal.unit = "%";
+  lfo6ToBal.id = "{B4A71A47-EA18-416C-89CC-38C66A2A17E5}";
+  lfo6ToBal.type = FBParamType::Identity;
+  auto selectLFO6ToBal = [](auto& module) { return &module.acc.lfo6ToBal; };
+  lfo6ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO6ToBal);
+  lfo6ToBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO6ToBal);
+  lfo6ToBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO6ToBal);
 
   auto& voiceToGFX = result->params[(int)FFGMixParam::VoiceToGFX];
   voiceToGFX.acc = true;
