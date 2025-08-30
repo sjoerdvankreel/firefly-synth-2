@@ -20,7 +20,8 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   auto* procState = state.ProcAs<FFProcState>();
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.voiceModule[0];
-  
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
+
   auto const& fineNormIn = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNormIn = procParams.acc.coarse[0].Voice()[voice];
   auto const& lfo1ToFine = procParams.acc.lfo1ToFine[0].Voice()[voice];
@@ -32,6 +33,13 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   coarseNormIn.CV().CopyTo(coarseNormModulated);
   FFApplyModulation(FFModulationOpType::UPStack, voiceState.env[0].output, env1ToCoarse.CV(), coarseNormModulated);
   FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[0].outputAll, lfo1ToFine.CV(), fineNormModulated);
+
+  for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
+  {
+    auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
+    auto finePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Fine, fineNormModulated.Load(s));
+    voiceState.voiceModule.pitchOffsetInSemis.Store(s, coarsePlain + finePlain);
+  }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
