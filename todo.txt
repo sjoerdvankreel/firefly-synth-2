@@ -12,8 +12,8 @@ TODOLIST for alpha-14
 [x] external smooth into master
 [x] osci coarse->pitch also voice (not rename, just raw pitch)
 [x] vlfo1->bal=>vlfo2->bal
+[x] do the midi linking => MODULATE NOT AUTOMATE
 [ ] tune the filters
-[ ] do the midi linking => checkboxes for enable
 [ ] easy-access mod: env1tocoarse at only 50%
 [ ] master modwheel + midi link
 [ ] master pitch bend + midi link + range + target off/voice/oscN + MW/PB outputs + figure out all places where is used midi note
