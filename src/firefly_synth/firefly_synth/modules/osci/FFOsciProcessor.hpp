@@ -79,6 +79,7 @@ class FFOsciProcessor final
   bool _graph = {};
   int _stringGraphPosition = {};
   float _stringGraphStVarFilterFreqMultiplier = {};
+  FFTrackingPhaseGenerator _graphPhaseGen = {};
 
   bool _modMatrixExpoFM = false;
   std::array<bool, FFOsciCount - 1> _modSourceFMOn = {};
@@ -96,7 +97,6 @@ class FFOsciProcessor final
   FFStateVariableFilter<FFOsciUniMaxCount> _stringHPFilter = {};
   std::array<FFOsciStringUniVoiceState, FFOsciUniMaxCount> _stringUniState = {};
 
-  FFTrackingPhaseGenerator _phaseGen = {};
   std::array<FFOsciWavePhaseGenerator, FFOsciUniMaxCount> _uniWavePhaseGens = {};
   FBSArray2<float, FFOsciUniMaxCount, FFOsciFMOperatorCount> _prevUniFMOutput = {};
   std::array<std::array<FFOsciFMPhaseGenerator, FFOsciUniMaxCount / FBSIMDFloatCount>, FFOsciFMOperatorCount> _uniFMPhaseGens = {};
