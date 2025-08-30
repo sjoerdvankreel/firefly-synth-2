@@ -17,7 +17,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 # project
 set (PROJECT_VERSION_MAJOR 2)
 set (PROJECT_VERSION_MINOR 0)
-set (PROJECT_VERSION_PATCH 4)
+set (PROJECT_VERSION_PATCH 5)
 set (PROJECT_NAME_BASE firefly_base)
 set (PROJECT_NAME_PLUG firefly_synth)
 set (PROJECT_NAME_BASE_JUCE firefly_base_juce)

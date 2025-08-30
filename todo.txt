@@ -19,6 +19,7 @@ TODOLIST for alpha-14
 [x] YAY we can do kicks now
 [x] easy-access mod: env1tocoarse at only 50%
 [x] global set-exact-value UI (+ context menu item?)
+[ ] upped the vno
 [ ] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
