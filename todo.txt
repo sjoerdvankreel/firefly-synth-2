@@ -13,12 +13,13 @@ TODOLIST for alpha-14
 [x] osci coarse->pitch also voice (not rename, just raw pitch)
 [x] vlfo1->bal=>vlfo2->bal
 [x] do the midi linking => MODULATE NOT AUTOMATE
+[x] master modwheel + midi link
+[x] master pitch bend + midi link + range + target off/voice/oscN + MW/PB outputs
+[x] MTS into output
 [ ] tune the filters
 [ ] easy-access mod: env1tocoarse at only 50%
-[ ] master modwheel + midi link
-[ ] master pitch bend + midi link + range + target off/voice/oscN + MW/PB outputs + figure out all places where is used midi note
+[ ] figure out all places where is used midi note
 [ ] MTS into master: off / note / continuous 
-[ ] MTS into output
 [ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
 [ ] voice + pitch + cent + porta off/on/auto + sync +  + porta time + porta-when-section
 [ ] bright text when graph on
