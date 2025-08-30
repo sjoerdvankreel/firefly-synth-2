@@ -126,8 +126,8 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     if (ps > 1)
       return "Off";
     if (ps == 0)
-      return "UP Stk";
-    return "Off"; // TODO
+      return "UP Stk"; // mod wheel
+    return "BP Stk"; // pitch bend
   };
   opType.id = prefix + "{8D28D968-8585-4A4D-B636-F365C5873973}";
   opType.type = FBParamType::List;
@@ -174,8 +174,8 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     if (ps > 1)
       return "Off";
     if (ps == 0)
-      return "MIDI CC 1";
-    return "Off"; // TODO
+      return "MIDI CC 1"; // mod wheel
+    return "MIDI PB"; // pitch bend
   };
   source.slotCount = maxSlotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
@@ -263,8 +263,8 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
     if (ps > 1)
       return "Off";
     if (ps == 0)
-      return "Master Mod Wheel";
-    return "Off"; // TODO
+      return "Master Mod Wheel"; // mod wheel
+    return "Master Pitch Bend"; // pitch bend
   };
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
