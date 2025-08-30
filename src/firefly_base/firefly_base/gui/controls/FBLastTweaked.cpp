@@ -93,6 +93,7 @@ _fixedWidth(fixedWidth), _plugGUI(plugGUI)
   setText("Knob...", dontSendNotification);
   plugGUI->AddParamListener(this);
   addListener(this);
+  setFont(FBGUIGetFont());
 }
 
 int

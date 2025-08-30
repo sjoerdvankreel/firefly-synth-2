@@ -26,8 +26,10 @@ FFMakeMasterTopo()
   tuningMode.type = FBParamType::List;
   tuningMode.List().items = {
     { "{056E5528-280F-4D99-A1D3-41F459609558}", "Off" },
-    { "{6FE4A9F0-F12E-49FE-BB23-78BD839A6E99}", "Note" },
-    { "{138A84B2-29D3-487C-A8EE-A1A1EE0B0C2C}", "Slide" } };
+    { "{34899A66-AB72-4421-9CFB-E692C9F8ACAE}", "Note Once" },
+    { "{FB1A7294-D527-4492-B4E9-E0D31EA74409}", "Note Slide" },
+    { "{6FE4A9F0-F12E-49FE-BB23-78BD839A6E99}", "Mod Once" },
+    { "{138A84B2-29D3-487C-A8EE-A1A1EE0B0C2C}", "Mod Slide" } };
   auto selectTuningMode = [](auto& module) { return &module.block.tuningMode; };
   tuningMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuningMode);
   tuningMode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuningMode);
