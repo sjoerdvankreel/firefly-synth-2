@@ -8,6 +8,7 @@ class alignas(FBSIMDAlign) FBGlobalAccParamState final
   friend class FBHostProcessor;
   friend class FBProcParamState;
   friend class FBSmoothingProcessor;
+  friend class FBProcStateContainer;
 
   float _value = {};
   FBAccParamState _global = {};
