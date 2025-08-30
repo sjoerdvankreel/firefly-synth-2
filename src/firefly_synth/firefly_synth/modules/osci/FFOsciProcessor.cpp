@@ -149,8 +149,8 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   auto& voiceState = procState->dsp.voice[voice];
   auto& output = voiceState.osci[state.moduleSlot].output;
   auto& uniOutputOversampled = voiceState.osci[state.moduleSlot].uniOutputOversampled;
-  //auto const& pitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
-  //auto pitchBendTarget = procState->dsp.global.master.bendTarget;
+  auto const& pitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
+  auto pitchBendTarget = procState->dsp.global.master.bendTarget;
 
   output.Fill(0.0f);
   uniOutputOversampled.Fill(0.0f);
@@ -195,6 +195,12 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Load(s));
     auto pitch = _key + coarse + fine;
+    if (pitchBendTarget == FFMasterPitchBendTarget::Voice ||
+      pitchBendTarget == FFMasterPitchBendTarget::Osc1 && state.moduleSlot == 0 ||
+      pitchBendTarget == FFMasterPitchBendTarget::Osc2 && state.moduleSlot == 1 ||
+      pitchBendTarget == FFMasterPitchBendTarget::Osc3 && state.moduleSlot == 2 ||
+      pitchBendTarget == FFMasterPitchBendTarget::Osc4 && state.moduleSlot == 3)
+      pitch += pitchBendSemis.Load(s);
 
     auto baseFreq = FBPitchToFreq(pitch);
     basePitchPlain.Store(s, pitch);
