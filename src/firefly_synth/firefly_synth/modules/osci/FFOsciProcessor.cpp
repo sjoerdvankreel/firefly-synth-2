@@ -187,7 +187,6 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   FBSArray<float, FFOsciFixedBlockOversamples> uniBlendPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> uniSpreadPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> uniDetunePlain;
-  FBSArray<float, FFOsciFixedBlockOversamples> baseFreqPlain;
   FBSArray<float, FFOsciFixedBlockOversamples> basePitchPlain;
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
@@ -196,7 +195,6 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
     auto pitch = _key + coarse + fine;
     auto baseFreq = FBPitchToFreq(pitch);
     basePitchPlain.Store(s, pitch);
-    baseFreqPlain.Store(s, baseFreq);
     _phaseGen.NextBatch(baseFreq / sampleRate);
 
     panPlain.Store(s, topo.NormalizedToIdentityFast(FFOsciParam::Pan, panNorm, s));
@@ -208,7 +206,6 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   if (_oversampleTimes != 1)
   {
     uniDetunePlain.UpsampleStretch<FFOsciOversampleTimes>();
-    baseFreqPlain.UpsampleStretch<FFOsciOversampleTimes>();
     basePitchPlain.UpsampleStretch<FFOsciOversampleTimes>();
   }
 
@@ -267,7 +264,7 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   output.NaNCheck();
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
-  float lastBaseFreq = baseFreqPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1);
+  float lastBaseFreq = FBPitchToFreq(basePitchPlain.Get(_oversampleTimes * FBFixedBlockSamples - 1));
   if (exchangeToGUI == nullptr)
   {
     if (_type == FFOsciType::String)

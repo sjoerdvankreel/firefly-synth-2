@@ -48,6 +48,7 @@ struct FFOsciStringUniVoiceState final
 
 class FFOsciProcessor final
 {
+  // TODO get rid of this thing everywhere
   float _key = {};
 
   FFOsciType _type = {};
