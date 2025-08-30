@@ -102,7 +102,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
 
   auto& slots = result->params[(int)FFModMatrixParam::Slots];
   slots.acc = false;
-  slots.defaultText = "0";
+  slots.defaultText = global? "2": "0"; // modulate PB/ModWheel default
   slots.name = "Slots";
   slots.slotCount = 1;
   slots.id = prefix + "{511B2721-2733-4BB4-BA75-C55AB8B6C54D}";
@@ -120,7 +120,15 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   opType.name = "Op";
   opType.display = "Op";
   opType.slotCount = maxSlotCount;
-  opType.defaultText = "Off";
+  opType.defaultTextSelector = [global](int, int, int ps) {
+    if (!global)
+      return "Off";
+    if (ps > 1)
+      return "Off";
+    if (ps == 0)
+      return "UP Stk";
+    return "Off"; // TODO
+  };
   opType.id = prefix + "{8D28D968-8585-4A4D-B636-F365C5873973}";
   opType.type = FBParamType::List;
   opType.List().items = {
@@ -160,7 +168,15 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.acc = false;
   source.name = "Source";
   source.display = "Source";
-  source.defaultText = "Off";
+  source.defaultTextSelector = [global](int, int, int ps) {
+    if (!global)
+      return "Off";
+    if (ps > 1)
+      return "Off";
+    if (ps == 0)
+      return "MIDI CC 1";
+    return "Off"; // TODO
+  };
   source.slotCount = maxSlotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
@@ -241,7 +257,15 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.name = "Target";
   target.display = "Target";
   target.slotCount = maxSlotCount;
-  target.defaultText = "Off";
+  target.defaultTextSelector = [global](int, int, int ps) {
+    if (!global)
+      return "Off";
+    if (ps > 1)
+      return "Off";
+    if (ps == 0)
+      return "Master Mod Wheel";
+    return "Off"; // TODO
+  };
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
   target.List().linkedSource = (int)FFModMatrixParam::Source;
