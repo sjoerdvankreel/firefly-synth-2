@@ -14,9 +14,9 @@
 
 struct FBStaticTopoMeta;
 
-inline int constexpr FFLFOCount = 4;
-inline int constexpr FFOsciCount = FFLFOCount; // easy access mod
-inline int constexpr FFEffectCount = FFLFOCount; // easy access mod
+inline int constexpr FFLFOCount = 6;
+inline int constexpr FFOsciCount = 4; // easy access mod needs env/lfo >= this
+inline int constexpr FFEffectCount = FFOsciCount; // easy access mod needs env/lfo >= this, also GUI needs these to be equal
 inline int constexpr FFEnvCount = FFLFOCount + 1; // easy access mod, interleaving & amp env
 inline int constexpr FFAmpEnvSlot = FFLFOCount;
 

@@ -19,8 +19,8 @@ TODOLIST for alpha-14
 [x] YAY we can do kicks now
 [x] easy-access mod: env1tocoarse at only 50%
 [x] global set-exact-value UI (+ context menu item?)
-[ ] make a percussion demo
 [ ] want 6! lfo/env, so +4 for regular stuff, +2 for additional
+[ ] make a percussion demo
 [ ] tune the filters
 [ ] figure out all places where is used midi note
 [ ] MTS into master: off / note / continuous 
