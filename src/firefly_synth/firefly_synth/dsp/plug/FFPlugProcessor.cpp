@@ -172,8 +172,8 @@ FFPlugProcessor::ProcessPostVoice(
   auto const& gEcho = _procState->param.global.gEcho[0];
   auto const& balNormIn = gMix.acc.bal[0].Global();
   auto const& ampNormIn = gMix.acc.amp[0].Global();
-  auto const& lfo1ToAmpNorm = gMix.acc.lfo1ToAmp[0].Global();
-  auto const& lfo2ToBalNorm = gMix.acc.lfo2ToBal[0].Global();
+  auto const& lfo5ToAmpNorm = gMix.acc.lfo5ToAmp[0].Global();
+  auto const& lfo6ToBalNorm = gMix.acc.lfo6ToBal[0].Global();
   auto& moduleTopo = state.topo->static_->modules[(int)FFModuleType::GMix];
   auto& gEchoModuleTopo = state.topo->static_->modules[(int)FFModuleType::GEcho];
 
@@ -241,8 +241,8 @@ FFPlugProcessor::ProcessPostVoice(
 
   ampNormIn.CV().CopyTo(ampNormModulated);
   balNormIn.CV().CopyTo(balNormModulated);
-  FFApplyModulation(FFModulationOpType::UPMul, globalDSP.gLFO[0].outputAll, lfo1ToAmpNorm.CV(), ampNormModulated);
-  FFApplyModulation(FFModulationOpType::BPStack, globalDSP.gLFO[1].outputAll, lfo2ToBalNorm.CV(), balNormModulated);
+  FFApplyModulation(FFModulationOpType::UPMul, globalDSP.gLFO[4].outputAll, lfo5ToAmpNorm.CV(), ampNormModulated);
+  FFApplyModulation(FFModulationOpType::BPStack, globalDSP.gLFO[5].outputAll, lfo6ToBalNorm.CV(), balNormModulated);
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
     float balPlain = moduleTopo.NormalizedToLinearFast(FFGMixParam::Bal, balNormModulated.Get(s));
@@ -271,8 +271,8 @@ FFPlugProcessor::ProcessPostVoice(
   auto& exchangeParams = exchangeToGUI->param.global.gMix[0];
   exchangeParams.acc.bal[0] = balNormModulated.Last();
   exchangeParams.acc.amp[0] = ampNormModulated.Last();
-  exchangeParams.acc.lfo1ToAmp[0] = lfo1ToAmpNorm.Last();
-  exchangeParams.acc.lfo2ToBal[0] = lfo2ToBalNorm.Last();
+  exchangeParams.acc.lfo5ToAmp[0] = lfo5ToAmpNorm.Last();
+  exchangeParams.acc.lfo6ToBal[0] = lfo6ToBalNorm.Last();
   exchangeParams.acc.voiceToOut[0] = gMix.acc.voiceToOut[0].Global().CV().Last();
   for (int r = 0; r < FFEffectCount; r++)
     exchangeParams.acc.GFXToOut[r] = gMix.acc.GFXToOut[r].Global().CV().Last();
