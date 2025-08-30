@@ -16,8 +16,12 @@ TODOLIST for alpha-14
 [x] master modwheel + midi link
 [x] master pitch bend + midi link + range + target off/voice/oscN + MW/PB outputs
 [x] MTS into output
+[x] YAY we can do kicks now
+[x] easy-access mod: env1tocoarse at only 50%
+[x] global set-exact-value UI (+ context menu item?)
+[ ] make a percussion demo
+[ ] want 6! lfo/env, so +4 for regular stuff, +2 for additional
 [ ] tune the filters
-[ ] easy-access mod: env1tocoarse at only 50%
 [ ] figure out all places where is used midi note
 [ ] MTS into master: off / note / continuous 
 [ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
@@ -28,7 +32,6 @@ TODOLIST for alpha-14
 [ ] MIDI key, velo (voice), low/high/last
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] refix all behind-the-scenes mod sources and targets
-[ ] global set-exact-value UI (+ context menu item?)
 
 TODOLIST for alpha-15
 
