@@ -151,12 +151,12 @@ FFMakeTopo(FBPlugFormat format)
   for (int s = 0; s < result->modules[(int)FFModuleType::GLFO].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GLFO, s });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VMatrix, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, FFAmpEnvSlot });
   for (int s = 0; s < FFLFOCount; s++)
   {
-    result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, s });
+    result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, s + FFEnvSlotOffset });
     result->moduleProcessOrder.push_back({ (int)FFModuleType::VLFO, s });
   }
-  result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, FFAmpEnvSlot });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VoiceModule, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::OsciMod, 0 });
   for (int s = 0; s < result->modules[(int)FFModuleType::Osci].slotCount; s++)

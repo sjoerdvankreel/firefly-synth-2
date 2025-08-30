@@ -19,7 +19,7 @@ TODOLIST for alpha-14
 [x] YAY we can do kicks now
 [x] easy-access mod: env1tocoarse at only 50%
 [x] global set-exact-value UI (+ context menu item?)
-[ ] want 6! lfo/env, so +4 for regular stuff, +2 for additional
+[ ] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
 [ ] make a percussion demo
 [ ] tune the filters
 [ ] figure out all places where is used midi note

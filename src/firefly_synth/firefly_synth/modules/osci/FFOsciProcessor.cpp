@@ -182,7 +182,7 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   fineNormIn.CV().CopyTo(fineNormModulated);
   if (!graph)
   {
-    FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot].output, envToGain.CV(), gainNormModulated);
+    FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
   }
 

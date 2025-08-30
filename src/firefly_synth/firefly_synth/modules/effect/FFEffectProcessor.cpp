@@ -257,7 +257,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           if constexpr (!Global)
           {
             stVarFreqNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
+              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                 stVarFreqNormModulated[i].Load(s)));
           }
@@ -283,7 +283,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
             if constexpr (!Global)
             {
               combFreqMinNormModulated[i].Store(s,
-                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
+                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   combFreqMinNormModulated[i].Load(s)));
             }
@@ -305,7 +305,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
             if constexpr (!Global)
             {
               combFreqPlusNormModulated[i].Store(s,
-                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
+                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   combFreqPlusNormModulated[i].Load(s)));
             }
@@ -332,7 +332,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           if constexpr (!Global)
           {
             distDriveNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
+              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                 distDriveNormModulated[i].Load(s)));
           }

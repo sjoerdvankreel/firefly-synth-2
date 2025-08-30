@@ -24,15 +24,15 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 
   auto const& fineNormIn = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNormIn = procParams.acc.coarse[0].Voice()[voice];
-  auto const& lfo1ToFine = procParams.acc.lfo1ToFine[0].Voice()[voice];
-  auto const& env1ToCoarse = procParams.acc.env1ToCoarse[0].Voice()[voice];
+  auto const& lfo5ToFine = procParams.acc.lfo5ToFine[0].Voice()[voice];
+  auto const& env5ToCoarse = procParams.acc.env5ToCoarse[0].Voice()[voice];
   FBSArray<float, FBFixedBlockSamples> fineNormModulated = {};
   FBSArray<float, FBFixedBlockSamples> coarseNormModulated = {};
 
   fineNormIn.CV().CopyTo(fineNormModulated);
   coarseNormIn.CV().CopyTo(coarseNormModulated);
-  FFApplyModulation(FFModulationOpType::UPStack, voiceState.env[0].output, env1ToCoarse.CV(), coarseNormModulated);
-  FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[0].outputAll, lfo1ToFine.CV(), fineNormModulated);
+  FFApplyModulation(FFModulationOpType::UPStack, voiceState.env[FFEnvSlotOffset + 4].output, env5ToCoarse.CV(), coarseNormModulated);
+  FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[4].outputAll, lfo5ToFine.CV(), fineNormModulated);
 
   for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
   {
@@ -50,7 +50,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 
   auto& exchangeParams = exchangeToGUI->param.voice.voiceModule[0];
   exchangeParams.acc.coarse[0][voice] = coarseNormModulated.Last();
-  exchangeParams.acc.env1ToCoarse[0][voice] = env1ToCoarse.Last();
+  exchangeParams.acc.env5ToCoarse[0][voice] = env5ToCoarse.Last();
   exchangeParams.acc.fine[0][voice] = fineNormModulated.Last();
-  exchangeParams.acc.lfo1ToFine[0][voice] = lfo1ToFine.Last();
+  exchangeParams.acc.lfo5ToFine[0][voice] = lfo5ToFine.Last();
 }

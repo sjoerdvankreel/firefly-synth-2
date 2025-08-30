@@ -37,18 +37,18 @@ FFMakeVoiceModuleTopo()
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);
   coarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCoarse);
 
-  auto& env1ToCoarse = result->params[(int)FFVoiceModuleParam::Env1ToCoarse];
-  env1ToCoarse.acc = true;
-  env1ToCoarse.name = "Env 1\U00002192Coarse";
-  env1ToCoarse.defaultText = "0";
-  env1ToCoarse.slotCount = 1;
-  env1ToCoarse.unit = "%";
-  env1ToCoarse.id = "{7A005131-8806-4815-AEAB-A4B4861B707F}";
-  env1ToCoarse.type = FBParamType::Identity;
-  auto selectEnv1ToCoarse = [](auto& module) { return &module.acc.env1ToCoarse; };
-  env1ToCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectEnv1ToCoarse);
-  env1ToCoarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectEnv1ToCoarse);
-  env1ToCoarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectEnv1ToCoarse);
+  auto& env5ToCoarse = result->params[(int)FFVoiceModuleParam::Env5ToCoarse];
+  env5ToCoarse.acc = true;
+  env5ToCoarse.name = "Env 5\U00002192Coarse";
+  env5ToCoarse.defaultText = "0";
+  env5ToCoarse.slotCount = 1;
+  env5ToCoarse.unit = "%";
+  env5ToCoarse.id = "{7A005131-8806-4815-AEAB-A4B4861B707F}";
+  env5ToCoarse.type = FBParamType::Identity;
+  auto selectEnv5ToCoarse = [](auto& module) { return &module.acc.env5ToCoarse; };
+  env5ToCoarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectEnv5ToCoarse);
+  env5ToCoarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectEnv5ToCoarse);
+  env5ToCoarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectEnv5ToCoarse);
 
   auto& fine = result->params[(int)FFVoiceModuleParam::Fine];
   fine.acc = true;
@@ -66,18 +66,18 @@ FFMakeVoiceModuleTopo()
   fine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectFine);
   fine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFine);
 
-  auto& lfo1ToFine = result->params[(int)FFVoiceModuleParam::LFO1ToFine];
-  lfo1ToFine.acc = true;
-  lfo1ToFine.name = "VLFO 1\U00002192Fine";
-  lfo1ToFine.defaultText = "0";
-  lfo1ToFine.slotCount = 1;
-  lfo1ToFine.unit = "%";
-  lfo1ToFine.id = "{DAF25F23-63B2-4120-98B7-EE28D054CA43}";
-  lfo1ToFine.type = FBParamType::Identity;
-  auto selectLFO1ToFine = [](auto& module) { return &module.acc.lfo1ToFine; };
-  lfo1ToFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO1ToFine);
-  lfo1ToFine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO1ToFine);
-  lfo1ToFine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO1ToFine);
+  auto& lfo5ToFine = result->params[(int)FFVoiceModuleParam::LFO5ToFine];
+  lfo5ToFine.acc = true;
+  lfo5ToFine.name = "VLFO 5\U00002192Fine";
+  lfo5ToFine.defaultText = "0";
+  lfo5ToFine.slotCount = 1;
+  lfo5ToFine.unit = "%";
+  lfo5ToFine.id = "{DAF25F23-63B2-4120-98B7-EE28D054CA43}";
+  lfo5ToFine.type = FBParamType::Identity;
+  auto selectLFO5ToFine = [](auto& module) { return &module.acc.lfo5ToFine; };
+  lfo5ToFine.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO5ToFine);
+  lfo5ToFine.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO5ToFine);
+  lfo5ToFine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO5ToFine);
 
   auto& portaType = result->params[(int)FFVoiceModuleParam::PortaType];
   portaType.acc = false;

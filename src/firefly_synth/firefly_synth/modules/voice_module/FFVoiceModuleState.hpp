@@ -42,8 +42,8 @@ class alignas(alignof(TAccurate)) FFVoiceModuleAccParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeVoiceModuleTopo();
   std::array<TAccurate, 1> fine = {};
   std::array<TAccurate, 1> coarse = {};
-  std::array<TAccurate, 1> lfo1ToFine = {};
-  std::array<TAccurate, 1> env1ToCoarse = {};
+  std::array<TAccurate, 1> lfo5ToFine = {};
+  std::array<TAccurate, 1> env5ToCoarse = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceModuleAccParamState);
 };

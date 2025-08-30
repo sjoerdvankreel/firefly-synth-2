@@ -7,7 +7,7 @@
 #include <memory>
 
 struct FBStaticModule;
-inline int constexpr FFEffectBlockCount = FFLFOCount; // easy access mod
+inline int constexpr FFEffectBlockCount = 4; // must be <= lfo count and env count minus amp env for easy access mod
 std::unique_ptr<FBStaticModule> FFMakeEffectTopo(bool global);
 
 enum FFEffectFoldMode { FFEffectFoldModeFold = FFTrigCount };
