@@ -82,18 +82,18 @@ FFMakeVMixTopo()
   bal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectBal);
   bal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectBal); 
 
-  auto& lfo2ToBal = result->params[(int)FFVMixParam::LFO2ToBal];
-  lfo2ToBal.acc = true;
-  lfo2ToBal.name = "VLFO 2\U00002192Bal";
-  lfo2ToBal.defaultText = "0";
-  lfo2ToBal.slotCount = 1;
-  lfo2ToBal.unit = "%";
-  lfo2ToBal.id = "{1B17DA72-4E2E-4D47-91C4-B9858ED85640}";
-  lfo2ToBal.type = FBParamType::Identity;
-  auto selectLFO2ToBal = [](auto& module) { return &module.acc.lfo2ToBal; };
-  lfo2ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO2ToBal);
-  lfo2ToBal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO2ToBal);
-  lfo2ToBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO2ToBal);
+  auto& lfo6ToBal = result->params[(int)FFVMixParam::LFO6ToBal];
+  lfo6ToBal.acc = true;
+  lfo6ToBal.name = "VLFO 6\U00002192Bal";
+  lfo6ToBal.defaultText = "0";
+  lfo6ToBal.slotCount = 1;
+  lfo6ToBal.unit = "%";
+  lfo6ToBal.id = "{1B17DA72-4E2E-4D47-91C4-B9858ED85640}";
+  lfo6ToBal.type = FBParamType::Identity;
+  auto selectLFO6ToBal = [](auto& module) { return &module.acc.lfo6ToBal; };
+  lfo6ToBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectLFO6ToBal);
+  lfo6ToBal.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectLFO6ToBal);
+  lfo6ToBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO6ToBal);
   
   auto& osciToVFX = result->params[(int)FFVMixParam::OsciToVFX];
   osciToVFX.acc = true;
