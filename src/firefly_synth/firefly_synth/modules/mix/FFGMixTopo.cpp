@@ -8,7 +8,7 @@
 static std::string
 FormatVoiceToGFXSlot(FBStaticTopo const&, int /* moduleSlot */, int mixSlot)
 {
-  std::string fxName = "FX " + std::to_string(mixSlot + 1);
+  std::string fxName = "GFX " + std::to_string(mixSlot + 1);
   return std::string("Voice\U00002192" + fxName);
 }
 
@@ -105,7 +105,7 @@ FFMakeGMixTopo()
   gfxToGFX.slotCount = FFMixFXToFXCount;
   gfxToGFX.unit = "%";
   gfxToGFX.id = "{4F4C11F4-94B9-4685-B44F-70BCC96B1F3C}";
-  gfxToGFX.slotFormatter = FFMixFormatFXToFXSlot;
+  gfxToGFX.slotFormatter = [](auto const& topo, int moduleSlot, int mixSlot) { return FFMixFormatFXToFXSlot(topo, true, moduleSlot, mixSlot); };
   gfxToGFX.slotFormatterOverrides = true;
   gfxToGFX.type = FBParamType::Identity;
   auto selectGFXToGFX = [](auto& module) { return &module.acc.GFXToGFX; };
@@ -133,7 +133,7 @@ FFMakeGMixTopo()
   gfxToOut.slotCount = FFEffectCount;
   gfxToOut.unit = "%";
   gfxToOut.id = "{009211F4-37C6-4FE6-B563-F2636A7C3587}";
-  gfxToOut.slotFormatter = FFMixFormatFXToOutSlot;
+  gfxToOut.slotFormatter = [](auto const& topo, int moduleSlot, int mixSlot) { return FFMixFormatFXToOutSlot(topo, true, moduleSlot, mixSlot); };
   gfxToOut.slotFormatterOverrides = true;
   gfxToOut.type = FBParamType::Identity;
   auto selectGFXToOut = [](auto& module) { return &module.acc.GFXToOut; };

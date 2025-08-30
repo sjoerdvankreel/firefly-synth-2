@@ -19,7 +19,7 @@ FormatOsciToVFXSlot(FBStaticTopo const& topo, int /* moduleSlot */, int mixSlot)
 {
   int fxSlot = FFVMixOsciToVFXGetFXSlot(mixSlot);
   int osciSlot = FFVMixOsciToVFXGetOsciSlot(mixSlot);
-  std::string fxName = "FX " + std::to_string(fxSlot + 1);
+  std::string fxName = "VFX " + std::to_string(fxSlot + 1);
   std::string osciName = topo.modules[(int)FFModuleType::Osci].name + " " + std::to_string(osciSlot + 1);
   return osciName + "\U00002192" + fxName;
 }
@@ -117,7 +117,7 @@ FFMakeVMixTopo()
   vfxToVFX.slotCount = FFMixFXToFXCount;
   vfxToVFX.unit = "%";
   vfxToVFX.id = "{21EF058C-86B5-4E7B-B4A1-5CFE92F20065}";
-  vfxToVFX.slotFormatter = FFMixFormatFXToFXSlot;
+  vfxToVFX.slotFormatter = [](auto const& topo, int moduleSlot, int mixSlot) { return FFMixFormatFXToFXSlot(topo, false, moduleSlot, mixSlot); };
   vfxToVFX.slotFormatterOverrides = true;
   vfxToVFX.type = FBParamType::Identity;
   auto selectVFXToVFX = [](auto& module) { return &module.acc.VFXToVFX; };
@@ -147,7 +147,7 @@ FFMakeVMixTopo()
   vfxToOut.slotCount = FFEffectCount;
   vfxToOut.unit = "%";
   vfxToOut.id = "{D159D4DD-BF49-4208-BEAE-D5BE550AB9FA}";
-  vfxToOut.slotFormatter = FFMixFormatFXToOutSlot;
+  vfxToOut.slotFormatter = [](auto const& topo, int moduleSlot, int mixSlot) { return FFMixFormatFXToOutSlot(topo, false, moduleSlot, mixSlot); };
   vfxToOut.slotFormatterOverrides = true;
   vfxToOut.type = FBParamType::Identity;
   auto selectVFXToOut = [](auto& module) { return &module.acc.VFXToOut; };

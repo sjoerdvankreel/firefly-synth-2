@@ -20,8 +20,8 @@ MakeGMixSectionVoiceToGFXAndGFXToOut(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1, 1 }, std::vector<int> { 0, 1, 1, 1, 1 });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice\U00002192FX"));
-  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("FX\U00002192Out"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice\U00002192GFX"));
+  grid->Add(1, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("GFX\U00002192Out"));
   for (int e = 0; e < FFEffectCount; e++)
   {
     auto voiceToGFX = topo->audio.ParamAtTopo({ { (int)FFModuleType::GMix, 0 }, { (int)FFGMixParam::VoiceToGFX, e } });
