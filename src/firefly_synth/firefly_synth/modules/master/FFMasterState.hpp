@@ -23,6 +23,8 @@ public:
   bool mtsEspOn = {};
   MTSClient* mtsClient = {};
   FFMasterTuningMode tuningMode = {};
+  FFMasterPitchBendTarget bendTarget = {};
+  FBSArray<float, FBFixedBlockSamples> bendAmountInSemis = {};
 
   FBSArray<float, FBFixedBlockSamples> outputMod = {};
   FBSArray<float, FBFixedBlockSamples> outputBend = {};
