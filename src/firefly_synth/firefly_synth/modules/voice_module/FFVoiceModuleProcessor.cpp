@@ -14,6 +14,35 @@
 #include <xsimd/xsimd.hpp>
 
 void
-FFVoiceModuleProcessor::Process(FBModuleProcState&)
+FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 {
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto& voiceState = procState->dsp.voice[voice];
+  auto const& procParams = procState->param.voice.voiceModule[0];
+  
+  auto const& fineNormIn = procParams.acc.fine[0].Voice()[voice];
+  auto const& coarseNormIn = procParams.acc.coarse[0].Voice()[voice];
+  auto const& lfo1ToFine = procParams.acc.lfo1ToFine[0].Voice()[voice];
+  auto const& env1ToCoarse = procParams.acc.env1ToCoarse[0].Voice()[voice];
+  FBSArray<float, FBFixedBlockSamples> fineNormModulated = {};
+  FBSArray<float, FBFixedBlockSamples> coarseNormModulated = {};
+
+  fineNormIn.CV().CopyTo(fineNormModulated);
+  coarseNormIn.CV().CopyTo(coarseNormModulated);
+  FFApplyModulation(FFModulationOpType::UPStack, voiceState.env[0].output, env1ToCoarse.CV(), coarseNormModulated);
+  FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[0].outputAll, lfo1ToFine.CV(), fineNormModulated);
+
+  auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
+  if (exchangeToGUI == nullptr)
+    return;
+
+  auto& exchangeDSP = exchangeToGUI->voice[voice].voiceModule[0];
+  exchangeDSP.active = true;
+
+  auto& exchangeParams = exchangeToGUI->param.voice.voiceModule[0];
+  exchangeParams.acc.coarse[0][voice] = coarseNormModulated.Last();
+  exchangeParams.acc.env1ToCoarse[0][voice] = env1ToCoarse.Last();
+  exchangeParams.acc.fine[0][voice] = fineNormModulated.Last();
+  exchangeParams.acc.lfo1ToFine[0][voice] = lfo1ToFine.Last();
 }

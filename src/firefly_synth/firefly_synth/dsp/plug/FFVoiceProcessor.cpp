@@ -95,6 +95,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, FFAmpEnvSlot });
 
   state.moduleSlot = 0;
+  voiceDSP.voiceModule.processor->Process(state);
   voiceDSP.osciMod.processor->Process(state);
   for (int i = 0; i < FFOsciCount; i++)
   {

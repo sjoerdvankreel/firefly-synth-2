@@ -13,11 +13,13 @@ struct FBStaticModule;
 
 class FFVoiceModuleDSPState final
 {
+  friend class FFVoiceProcessor;
   friend class FFVoiceModuleProcessor;
   std::unique_ptr<FFVoiceModuleProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVoiceModuleDSPState);
   FFVoiceModuleDSPState() : processor(std::make_unique<FFVoiceModuleProcessor>()) {}
+  FBSArray<float, FBFixedBlockSamples> pitchOffsetInSemis = {};
 };
 
 template <class TBlock>
