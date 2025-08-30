@@ -20,6 +20,7 @@ TODOLIST for alpha-14
 [x] easy-access mod: env1tocoarse at only 50%
 [x] global set-exact-value UI (+ context menu item?)
 [ ] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
+[ ] filters should track the actual pitch when possible (string osci)
 [ ] make a percussion demo
 [ ] tune the filters
 [ ] figure out all places where is used midi note
