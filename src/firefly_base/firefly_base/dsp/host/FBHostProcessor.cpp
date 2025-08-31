@@ -68,12 +68,12 @@ FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
       if (i < _noteMatrix.lowKey.keyUntuned.raw)
       {
         _noteMatrix.lowKey.keyUntuned.raw = (float)i;
-        _noteMatrix.lowKey.velo.raw = _keyVelo[i];
+        _noteMatrix.lowKey.velo.raw = _noteVelo[i];
       }
       if (i > _noteMatrix.highKey.keyUntuned.raw)
       {
         _noteMatrix.highKey.keyUntuned.raw = (float)i;
-        _noteMatrix.highKey.velo.raw = _keyVelo[i];
+        _noteMatrix.highKey.velo.raw = _noteVelo[i];
       }
       if (_noteVelo[i] < _noteMatrix.lowVelo.velo.raw)
       {
