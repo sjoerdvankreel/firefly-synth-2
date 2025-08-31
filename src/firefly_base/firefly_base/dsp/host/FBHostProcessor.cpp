@@ -33,9 +33,9 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
-  _lastMIDINoteKey = 60.0f;
+  _lastMIDIKeyUntuned = 60.0f;
   _plugOut.procState = _procState;
-  _plugIn.lastMIDINoteKey.Fill(60.0f);
+  _plugIn.lastMIDIKeyUntuned.Fill(60.0f);
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
@@ -93,8 +93,8 @@ FBHostProcessor::ProcessHost(
     {
       for (; n1 < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n1].pos == s; n1++)
         if((*_plugIn.noteEvents)[n1].on)
-          _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n1].note.key);
-      _plugIn.lastMIDINoteKey.Set(s, _lastMIDINoteKey);
+          _lastMIDIKeyUntuned = static_cast<float>((*_plugIn.noteEvents)[n1].note.keyUntuned);
+      _plugIn.lastMIDIKeyUntuned.Set(s, _lastMIDIKeyUntuned);
     }
 
     // release old voices
@@ -136,7 +136,7 @@ FBHostProcessor::ProcessHost(
 
   _exchangeState->Host()->bpm = input.bpm;
   _exchangeState->Host()->sampleRate = _sampleRate;
-  _exchangeState->Host()->lastMIDINoteKey = _plugIn.lastMIDINoteKey.Last();
+  _exchangeState->Host()->lastMIDIKeyUntuned = _plugIn.lastMIDIKeyUntuned.Last();
 
   for (int v = 0; v < FBMaxVoices; v++)
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];

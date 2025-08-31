@@ -127,7 +127,7 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
   if constexpr (Global)
     for(int s = 0; s < FBFixedBlockSamples; s++)
-      _MIDINoteKey.Set(s, state.input->lastMIDINoteKey.Get(s));
+      _MIDINoteKey.Set(s, state.input->lastMIDIKeyUntuned.Get(s));
   else
     _MIDINoteKey.Fill(static_cast<float>(state.voice->event.note.key));
   if (_oversampleTimes != 1)

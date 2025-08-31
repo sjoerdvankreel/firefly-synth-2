@@ -20,8 +20,8 @@ struct FBPlugInputBlock final
   FBVoiceManager* voiceManager = {};
   FBProcStateContainer* procState = {};
   std::vector<FBNoteEvent>* noteEvents = {};
-  FBSArray<float, FBFixedBlockSamples> lastMIDINoteKey = {};
   FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};
+  FBSArray<float, FBFixedBlockSamples> lastMIDIKeyUntuned = {};
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);
 };

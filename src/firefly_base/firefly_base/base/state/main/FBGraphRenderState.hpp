@@ -45,7 +45,7 @@ public:
   void FFT(std::vector<float>& data);
   void PrepareForRenderPrimaryVoice();
   void PrepareForRenderExchangeVoice(int voice);
-  void PrepareForRenderExchange(float lastMIDINoteKey);
+  void PrepareForRenderExchange(float lastMIDIKeyUntuned);
   void PrepareForRenderPrimary(float sampleRate, float bpm);
 
   FBPlugGUI const* PlugGUI() const;

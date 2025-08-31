@@ -17,7 +17,7 @@ struct FBHostExchangeState final
 {
   float bpm = {};
   float sampleRate = {};
-  float lastMIDINoteKey = {};
+  float lastMIDIKeyUntuned = {};
 };
 
 struct FBParamActiveExchangeState final
