@@ -9,21 +9,19 @@ struct FBKeyFilterStateTraits;
 template <>
 struct FBKeyFilterStateTraits<float>
 { 
-  static void 
-  Init(float& target, float val) 
-  { 
-    target = val;
-  } 
+  static void Init(float& target, float val) 
+  { target = val; } 
+  static void DivBy(float& target, float val) 
+  { target /= val; }
 };
 
 template <>
 struct FBKeyFilterStateTraits<FBSArray<float, FBFixedBlockSamples>>
 { 
-  static void 
-  Init(FBSArray<float, FBFixedBlockSamples>& target, float val) 
-  { 
-    target.Fill(val);
-  } 
+  static void Init(FBSArray<float, FBFixedBlockSamples>& target, float val) 
+  { target.Fill(val); } 
+  static void DivBy(FBSArray<float, FBFixedBlockSamples>& target, float val) 
+  { for (int s = 0; s < FBFixedBlockSamples; s++) target.Set(s, target.Get(s) / val); }
 };
 
 template <class T>
@@ -33,10 +31,22 @@ struct alignas(alignof(T)) FBKeyFilterState final
   T smooth = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBKeyFilterState);
 
-  void Init(float val) 
-  { 
+  void CopyTo(FBKeyFilterState& rhs) const
+  {
+    raw = rhs.raw;
+    smooth = rhs.smooth;
+  }
+
+  void Init(float val)
+  {
     FBKeyFilterStateTraits<T>::Init(raw, val);
     FBKeyFilterStateTraits<T>::Init(smooth, val);
+  }
+
+  void DivBy(float val)
+  {
+    FBKeyFilterStateTraits<T>::DivBy(raw, val);
+    FBKeyFilterStateTraits<T>::DivBy(smooth, val);
   }
 };
 
@@ -47,10 +57,21 @@ struct alignas(alignof(T)) FBKeyState final
   FBKeyFilterState<T> keyUntuned = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBKeyState);
 
+  void DivKeyBy(float val)
+  {
+    keyUntuned.DivBy(val);
+  }
+
   void Init(float keyUntuned_)
   {
     velo.Init(0.0f);
     keyUntuned.Init(keyUntuned_);
+  }
+
+  void CopyTo(FBKeyState& rhs) const
+  {
+    velo.CopyTo(rhs.velo);
+    keyUntuned.CopyTo(rhs.keyUntuned);
   }
 };
 
@@ -64,6 +85,15 @@ struct alignas(alignof(T)) FBKeyMatrix final
   FBKeyState<T> highVelo = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBKeyMatrix);
 
+  void DivKeyBy(float val)
+  {
+    last.DivKeyBy(val);
+    lowKey.DivKeyBy(val);
+    highKey.DivKeyBy(val);
+    lowVelo.DivKeyBy(val);
+    highVelo.DivKeyBy(val);
+  }
+
   void Init(float keyUntuned)
   {
     last.Init(keyUntuned);
@@ -71,6 +101,15 @@ struct alignas(alignof(T)) FBKeyMatrix final
     highKey.Init(keyUntuned);
     lowVelo.Init(keyUntuned);
     highVelo.Init(keyUntuned);
+  }
+
+  void CopyTo(FBKeyMatrix& rhs) const
+  {
+    last.CopyTo(rhs.last);
+    lowKey.CopyTo(rhs.lowKey);
+    highKey.CopyTo(rhs.highKey);
+    lowVelo.CopyTo(rhs.lowVelo);
+    highVelo.CopyTo(rhs.highVelo);
   }
 };
 
