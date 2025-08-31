@@ -9,7 +9,6 @@ FFMakeGNoteTopo()
   auto result = std::make_unique<FBStaticModule>();
   result->voice = false;
   result->name = "GNote";
-  result->matrixName = "Notes";
   result->slotCount = 1;
   result->id = "{F3DD66BB48734}";
   result->cvOutputs.resize((int)FFGNoteCVOutput::Count);
