@@ -13,6 +13,8 @@ struct FBKeyFilterStateTraits<float>
   { target = val; } 
   static void DivBy(float& target, float val) 
   { target /= val; }
+  static void CopyTo(float val, float& target)
+  { target = val; }
 };
 
 template <>
@@ -22,6 +24,8 @@ struct FBKeyFilterStateTraits<FBSArray<float, FBFixedBlockSamples>>
   { target.Fill(val); } 
   static void DivBy(FBSArray<float, FBFixedBlockSamples>& target, float val) 
   { for (int s = 0; s < FBFixedBlockSamples; s++) target.Set(s, target.Get(s) / val); }
+  static void CopyTo(FBSArray<float, FBFixedBlockSamples> const& val, FBSArray<float, FBFixedBlockSamples>& target)
+  { val.CopyTo(target); } 
 };
 
 template <class T>
@@ -30,12 +34,6 @@ struct alignas(alignof(T)) FBKeyFilterState final
   T raw = {};
   T smooth = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBKeyFilterState);
-
-  void CopyTo(FBKeyFilterState& rhs) const
-  {
-    raw = rhs.raw;
-    smooth = rhs.smooth;
-  }
 
   void Init(float val)
   {
@@ -47,6 +45,12 @@ struct alignas(alignof(T)) FBKeyFilterState final
   {
     FBKeyFilterStateTraits<T>::DivBy(raw, val);
     FBKeyFilterStateTraits<T>::DivBy(smooth, val);
+  }
+
+  void CopyTo(FBKeyFilterState& rhs) const
+  {
+    FBKeyFilterStateTraits<T>::CopyTo(raw, rhs.raw);
+    FBKeyFilterStateTraits<T>::CopyTo(smooth, rhs.smooth);
   }
 };
 
