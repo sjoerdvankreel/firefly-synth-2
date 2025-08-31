@@ -120,14 +120,14 @@ FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
 }
 
 void
-FBGraphRenderState::PrepareForRenderExchange(float lastMIDIKeyUntuned)
+FBGraphRenderState::PrepareForRenderExchange(FBKeyMatrix<float> const& keyMatrix)
 {
   _moduleState->voice = nullptr;
   _input->voiceManager = nullptr;
-  _input->lastMIDIKeyUntuned.Fill(lastMIDIKeyUntuned);
   _procState->InitProcessing(*ExchangeContainer());
   _moduleState->exchangeFromGUIRaw = ExchangeContainer()->Raw();
   _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->Voices());
+  FBKeyMatrixInitArrayFromScalar(_input->keyMatrix, keyMatrix);
 }
 
 void
@@ -136,7 +136,7 @@ FBGraphRenderState::PrepareForRenderPrimary(float sampleRate, float bpm)
   _input->bpm = bpm;
   _input->voiceManager = nullptr;
   _input->sampleRate = sampleRate;
-  _input->lastMIDIKeyUntuned.Fill(60.0f);
+  _input->keyMatrix.Init(60.0f);
   _moduleState->voice = nullptr;
   _procState->InitProcessing(_plugGUI->HostContext());
 }

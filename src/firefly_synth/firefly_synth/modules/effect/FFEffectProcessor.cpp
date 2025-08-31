@@ -127,7 +127,8 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
   if constexpr (Global)
     for(int s = 0; s < FBFixedBlockSamples; s++)
-      _MIDIKeyUntuned.Set(s, state.input->lastMIDIKeyUntuned.Get(s));
+      // raw because we provide our own smoothing filter
+      _MIDIKeyUntuned.Set(s, state.input->keyMatrix.last.keyUntuned.raw.Get(s));
   else
     _MIDIKeyUntuned.Fill(static_cast<float>(state.voice->event.note.keyUntuned));
   if (_oversampleTimes != 1)

@@ -33,12 +33,12 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
-  _keyMatrix.SetKeyUntuned(60.0f);
+  _keyMatrix.Init(60.0f);
   _plugOut.procState = _procState;
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
-  _plugIn.keyMatrix.SetKeyUntuned(60.0f);
+  _plugIn.keyMatrix.Init(60.0f);
   _plug->AllocOnDemandBuffers(_topo, _procState);
 }
 
@@ -191,7 +191,7 @@ FBHostProcessor::ProcessHost(
 
   _exchangeState->Host()->bpm = input.bpm;
   _exchangeState->Host()->sampleRate = _sampleRate;
-  _exchangeState->Host()->lastMIDIKeyUntuned = _plugIn.lastMIDIKeyUntuned.Last();
+  FBKeyMatrixInitScalarFromArrayLast(_exchangeState->Host()->keyMatrix, _plugIn.keyMatrix);
 
   for (int v = 0; v < FBMaxVoices; v++)
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];

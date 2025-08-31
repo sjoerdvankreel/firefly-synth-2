@@ -3,7 +3,9 @@
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
+
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
+#include <firefly_base/dsp/shared/FBKeyMatrix.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 
@@ -45,8 +47,8 @@ public:
   void FFT(std::vector<float>& data);
   void PrepareForRenderPrimaryVoice();
   void PrepareForRenderExchangeVoice(int voice);
-  void PrepareForRenderExchange(float lastMIDIKeyUntuned);
   void PrepareForRenderPrimary(float sampleRate, float bpm);
+  void PrepareForRenderExchange(FBKeyMatrix<float> const& keyMatrix);
 
   FBPlugGUI const* PlugGUI() const;
   FBModuleProcState* ModuleProcState();
