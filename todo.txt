@@ -20,6 +20,7 @@ TODOLIST for alpha-14
 [x] easy-access mod: env1tocoarse at only 50%
 [x] global set-exact-value UI (+ context menu item?)
 [x] upped the vno
+[x] breaking change: more coarse (breaks matrix)
 [x] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
 [ ] fruity clicks when pb mod enabled
 [ ] how the heck is the mod menu ordered?
