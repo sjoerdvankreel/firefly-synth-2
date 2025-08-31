@@ -19,8 +19,8 @@ MakeNoteC4On()
   result.on = true;
   result.velo = 1.0f;
   result.note.id = 0;
-  result.note.key = 60;
   result.note.channel = 0;
+  result.note.keyUntuned = 60;
   return result;
 }
 

@@ -91,7 +91,7 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _graphPhaseGen = {};
 
   auto const& noteEvent = state.voice->event.note;
-  _key = static_cast<float>(noteEvent.key);
+  _keyUntuned = static_cast<float>(noteEvent.keyUntuned);
 
   _uniformPrng = FFParkMillerPRNG(state.moduleSlot / static_cast<float>(FFOsciCount));
   bool oversample = modTopo.NormalizedToBoolFast(FFOsciModParam::Oversample, modOversampleNorm);
@@ -196,7 +196,7 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   {
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Load(s));
-    auto pitch = _key + coarse + fine + voicePitchOffsetSemis.Load(s);
+    auto pitch = _keyUntuned + coarse + fine + voicePitchOffsetSemis.Load(s);
     if (masterPitchBendTarget == FFMasterPitchBendTarget::Voice ||
       masterPitchBendTarget == FFMasterPitchBendTarget::Osc1 && state.moduleSlot == 0 ||
       masterPitchBendTarget == FFMasterPitchBendTarget::Osc2 && state.moduleSlot == 1 ||

@@ -42,8 +42,8 @@ MakeNoteOnEvent(Event const& event)
   result.pos = event.sampleOffset;
   result.velo = event.noteOn.velocity;
   result.note.id = event.noteOn.noteId;
-  result.note.key = event.noteOn.pitch;
   result.note.channel = event.noteOn.channel;
+  result.note.keyUntuned = event.noteOn.pitch;
   return result;
 }
 
@@ -55,8 +55,8 @@ MakeNoteOffEvent(Event const& event)
   result.pos = event.sampleOffset;
   result.velo = event.noteOff.velocity;
   result.note.id = event.noteOff.noteId;
-  result.note.key = event.noteOff.pitch;
   result.note.channel = event.noteOff.channel;
+  result.note.keyUntuned = event.noteOff.pitch;
   return result;
 }
 
