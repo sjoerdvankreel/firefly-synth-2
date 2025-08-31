@@ -22,6 +22,9 @@ TODOLIST for alpha-14
 [x] upped the vno
 [x] breaking change: more coarse (breaks matrix)
 [x] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
+[ ] minmax in the modmatrix 
+[ ] flowover ui because less routes
+[ ] default map velo to voice amp
 [ ] fruity clicks when pb mod enabled
 [ ] note filtering
 [ ] how the heck is the mod menu ordered?
