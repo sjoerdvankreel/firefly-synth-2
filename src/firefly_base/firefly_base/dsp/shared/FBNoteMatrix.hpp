@@ -72,7 +72,7 @@ struct alignas(alignof(T)) FBNoteState final
     keyUntuned.Init(keyUntuned_);
   }
 
-  void CopyTo(FBKeyState& rhs) const
+  void CopyTo(FBNoteState& rhs) const
   {
     velo.CopyTo(rhs.velo);
     keyUntuned.CopyTo(rhs.keyUntuned);
