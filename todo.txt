@@ -23,6 +23,7 @@ TODOLIST for alpha-14
 [x] breaking change: more coarse (breaks matrix)
 [x] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
 [ ] fruity clicks when pb mod enabled
+[ ] note filtering
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
 [ ] filters should track the actual pitch when possible (string osci)

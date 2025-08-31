@@ -33,13 +33,59 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
-  _lastMIDIKeyUntuned = 60.0f;
+  _keyMatrix.SetKeyUntuned(60.0f);
   _plugOut.procState = _procState;
-  _plugIn.lastMIDIKeyUntuned.Fill(60.0f);
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
+  _plugIn.keyMatrix.SetKeyUntuned(60.0f);
   _plug->AllocOnDemandBuffers(_topo, _procState);
+}
+
+void
+FBHostProcessor::UpdateKeyMatrix(FBNoteEvent const& event)
+{
+  // todo smooth versions of all
+  _keyVelo[event.note.keyUntuned] = 0.0f;
+  _keyOn[event.note.keyUntuned] = event.on;
+  if (event.on)
+  {
+    _keyVelo[event.note.keyUntuned] = event.velo;
+    _keyMatrix.last.velo.raw = event.velo;
+    _keyMatrix.last.keyUntuned.raw = (float)event.note.keyUntuned;
+    _keyMatrix.lowKey.velo.raw = event.velo;
+    _keyMatrix.lowKey.keyUntuned.raw = (float)event.note.keyUntuned;
+    _keyMatrix.highKey.velo.raw = event.velo;
+    _keyMatrix.highKey.keyUntuned.raw = (float)event.note.keyUntuned;
+    _keyMatrix.lowVelo.velo.raw = event.velo;
+    _keyMatrix.lowVelo.keyUntuned.raw = (float)event.note.keyUntuned;
+    _keyMatrix.highVelo.velo.raw = event.velo;
+    _keyMatrix.highVelo.keyUntuned.raw = (float)event.note.keyUntuned;
+  }
+  for (int i = 0; i < 128; i++)
+    if (_keyOn[i])
+    {
+      if (i < _keyMatrix.lowKey.keyUntuned.raw)
+      {
+        _keyMatrix.lowKey.keyUntuned.raw = (float)i;
+        _keyMatrix.lowKey.velo.raw = _keyVelo[i];
+      }
+      if (i > _keyMatrix.highKey.keyUntuned.raw)
+      {
+        _keyMatrix.highKey.keyUntuned.raw = (float)i;
+        _keyMatrix.highKey.velo.raw = _keyVelo[i];
+      }
+      if (_keyVelo[i] < _keyMatrix.lowVelo.velo.raw)
+      {
+        _keyMatrix.lowVelo.keyUntuned.raw = (float)i;
+        _keyMatrix.lowVelo.velo.raw = _keyVelo[i];
+      }
+      if (_keyVelo[i] > _keyMatrix.highVelo.velo.raw)
+      {
+        _keyMatrix.highVelo.keyUntuned.raw = (float)i;
+        _keyMatrix.highVelo.velo.raw = _keyVelo[i];
+      }
+    }
 }
 
 void 
@@ -88,13 +134,22 @@ FBHostProcessor::ProcessHost(
     _plugIn.audio = &fixedIn->audio;
     _plugIn.noteEvents = &fixedIn->noteEvents;
     
+    // update key matrix
     int n1 = 0;
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       for (; n1 < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n1].pos == s; n1++)
-        if((*_plugIn.noteEvents)[n1].on)
-          _lastMIDIKeyUntuned = static_cast<float>((*_plugIn.noteEvents)[n1].note.keyUntuned);
-      _plugIn.lastMIDIKeyUntuned.Set(s, _lastMIDIKeyUntuned);
+        UpdateKeyMatrix((*_plugIn.noteEvents)[n1]);
+      _plugIn.keyMatrix.last.velo.raw.Set(s, _keyMatrix.last.velo.raw);
+      _plugIn.keyMatrix.last.keyUntuned.raw.Set(s, _keyMatrix.last.keyUntuned.raw);
+      _plugIn.keyMatrix.lowVelo.velo.raw.Set(s, _keyMatrix.lowVelo.velo.raw);
+      _plugIn.keyMatrix.lowVelo.keyUntuned.raw.Set(s, _keyMatrix.lowVelo.keyUntuned.raw);
+      _plugIn.keyMatrix.highVelo.velo.raw.Set(s, _keyMatrix.highVelo.velo.raw);
+      _plugIn.keyMatrix.highVelo.keyUntuned.raw.Set(s, _keyMatrix.highVelo.keyUntuned.raw);
+      _plugIn.keyMatrix.lowKey.velo.raw.Set(s, _keyMatrix.lowKey.velo.raw);
+      _plugIn.keyMatrix.lowKey.keyUntuned.raw.Set(s, _keyMatrix.lowKey.keyUntuned.raw);
+      _plugIn.keyMatrix.highKey.velo.raw.Set(s, _keyMatrix.highKey.velo.raw);
+      _plugIn.keyMatrix.highKey.keyUntuned.raw.Set(s, _keyMatrix.highKey.keyUntuned.raw);
     }
 
     // release old voices
