@@ -1,6 +1,6 @@
 #pragma once
 
-#include <firefly_base/dsp/shared/FBKeyMatrix.hpp>
+#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/state/exchange/FBParamExchangeState.hpp>
@@ -18,7 +18,7 @@ struct FBHostExchangeState final
 {
   float bpm = {};
   float sampleRate = {};
-  FBKeyMatrix<float> keyMatrix = {};
+  FBNoteMatrix<float> noteMatrix = {};
 };
 
 struct FBParamActiveExchangeState final

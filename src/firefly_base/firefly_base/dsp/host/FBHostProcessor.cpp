@@ -33,57 +33,57 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
-  _keyMatrix.Init(60.0f);
+  _noteMatrix.Init(60.0f);
   _plugOut.procState = _procState;
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
-  _plugIn.keyMatrix.Init(60.0f);
+  _plugIn.noteMatrix.Init(60.0f);
   _plug->AllocOnDemandBuffers(_topo, _procState);
 }
 
 void
-FBHostProcessor::UpdateKeyMatrix(FBNoteEvent const& event)
+FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
 {
   // todo smooth versions of all
-  _keyVelo[event.note.keyUntuned] = 0.0f;
-  _keyOn[event.note.keyUntuned] = event.on;
+  _noteVelo[event.note.keyUntuned] = 0.0f;
+  _noteOn[event.note.keyUntuned] = event.on;
   if (event.on)
   {
-    _keyVelo[event.note.keyUntuned] = event.velo;
-    _keyMatrix.last.velo.raw = event.velo;
-    _keyMatrix.last.keyUntuned.raw = (float)event.note.keyUntuned;
-    _keyMatrix.lowKey.velo.raw = event.velo;
-    _keyMatrix.lowKey.keyUntuned.raw = (float)event.note.keyUntuned;
-    _keyMatrix.highKey.velo.raw = event.velo;
-    _keyMatrix.highKey.keyUntuned.raw = (float)event.note.keyUntuned;
-    _keyMatrix.lowVelo.velo.raw = event.velo;
-    _keyMatrix.lowVelo.keyUntuned.raw = (float)event.note.keyUntuned;
-    _keyMatrix.highVelo.velo.raw = event.velo;
-    _keyMatrix.highVelo.keyUntuned.raw = (float)event.note.keyUntuned;
+    _noteVelo[event.note.keyUntuned] = event.velo;
+    _noteMatrix.last.velo.raw = event.velo;
+    _noteMatrix.last.keyUntuned.raw = (float)event.note.keyUntuned;
+    _noteMatrix.lowKey.velo.raw = event.velo;
+    _noteMatrix.lowKey.keyUntuned.raw = (float)event.note.keyUntuned;
+    _noteMatrix.highKey.velo.raw = event.velo;
+    _noteMatrix.highKey.keyUntuned.raw = (float)event.note.keyUntuned;
+    _noteMatrix.lowVelo.velo.raw = event.velo;
+    _noteMatrix.lowVelo.keyUntuned.raw = (float)event.note.keyUntuned;
+    _noteMatrix.highVelo.velo.raw = event.velo;
+    _noteMatrix.highVelo.keyUntuned.raw = (float)event.note.keyUntuned;
   }
   for (int i = 0; i < 128; i++)
-    if (_keyOn[i])
+    if (_noteOn[i])
     {
-      if (i < _keyMatrix.lowKey.keyUntuned.raw)
+      if (i < _noteMatrix.lowKey.keyUntuned.raw)
       {
-        _keyMatrix.lowKey.keyUntuned.raw = (float)i;
-        _keyMatrix.lowKey.velo.raw = _keyVelo[i];
+        _noteMatrix.lowKey.keyUntuned.raw = (float)i;
+        _noteMatrix.lowKey.velo.raw = _keyVelo[i];
       }
-      if (i > _keyMatrix.highKey.keyUntuned.raw)
+      if (i > _noteMatrix.highKey.keyUntuned.raw)
       {
-        _keyMatrix.highKey.keyUntuned.raw = (float)i;
-        _keyMatrix.highKey.velo.raw = _keyVelo[i];
+        _noteMatrix.highKey.keyUntuned.raw = (float)i;
+        _noteMatrix.highKey.velo.raw = _keyVelo[i];
       }
-      if (_keyVelo[i] < _keyMatrix.lowVelo.velo.raw)
+      if (_noteVelo[i] < _noteMatrix.lowVelo.velo.raw)
       {
-        _keyMatrix.lowVelo.keyUntuned.raw = (float)i;
-        _keyMatrix.lowVelo.velo.raw = _keyVelo[i];
+        _noteMatrix.lowVelo.keyUntuned.raw = (float)i;
+        _noteMatrix.lowVelo.velo.raw = _noteVelo[i];
       }
-      if (_keyVelo[i] > _keyMatrix.highVelo.velo.raw)
+      if (_noteVelo[i] > _noteMatrix.highVelo.velo.raw)
       {
-        _keyMatrix.highVelo.keyUntuned.raw = (float)i;
-        _keyMatrix.highVelo.velo.raw = _keyVelo[i];
+        _noteMatrix.highVelo.keyUntuned.raw = (float)i;
+        _noteMatrix.highVelo.velo.raw = _noteVelo[i];
       }
     }
 }
@@ -139,17 +139,17 @@ FBHostProcessor::ProcessHost(
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       for (; n1 < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n1].pos == s; n1++)
-        UpdateKeyMatrix((*_plugIn.noteEvents)[n1]);
-      _plugIn.keyMatrix.last.velo.raw.Set(s, _keyMatrix.last.velo.raw);
-      _plugIn.keyMatrix.last.keyUntuned.raw.Set(s, _keyMatrix.last.keyUntuned.raw);
-      _plugIn.keyMatrix.lowVelo.velo.raw.Set(s, _keyMatrix.lowVelo.velo.raw);
-      _plugIn.keyMatrix.lowVelo.keyUntuned.raw.Set(s, _keyMatrix.lowVelo.keyUntuned.raw);
-      _plugIn.keyMatrix.highVelo.velo.raw.Set(s, _keyMatrix.highVelo.velo.raw);
-      _plugIn.keyMatrix.highVelo.keyUntuned.raw.Set(s, _keyMatrix.highVelo.keyUntuned.raw);
-      _plugIn.keyMatrix.lowKey.velo.raw.Set(s, _keyMatrix.lowKey.velo.raw);
-      _plugIn.keyMatrix.lowKey.keyUntuned.raw.Set(s, _keyMatrix.lowKey.keyUntuned.raw);
-      _plugIn.keyMatrix.highKey.velo.raw.Set(s, _keyMatrix.highKey.velo.raw);
-      _plugIn.keyMatrix.highKey.keyUntuned.raw.Set(s, _keyMatrix.highKey.keyUntuned.raw);
+        UpdateNoteMatrix((*_plugIn.noteEvents)[n1]);
+      _plugIn.noteMatrix.last.velo.raw.Set(s, _noteMatrix.last.velo.raw);
+      _plugIn.noteMatrix.last.keyUntuned.raw.Set(s, _noteMatrix.last.keyUntuned.raw);
+      _plugIn.noteMatrix.lowVelo.velo.raw.Set(s, _noteMatrix.lowVelo.velo.raw);
+      _plugIn.noteMatrix.lowVelo.keyUntuned.raw.Set(s, _noteMatrix.lowVelo.keyUntuned.raw);
+      _plugIn.noteMatrix.highVelo.velo.raw.Set(s, _noteMatrix.highVelo.velo.raw);
+      _plugIn.noteMatrix.highVelo.keyUntuned.raw.Set(s, _noteMatrix.highVelo.keyUntuned.raw);
+      _plugIn.noteMatrix.lowKey.velo.raw.Set(s, _noteMatrix.lowKey.velo.raw);
+      _plugIn.noteMatrix.lowKey.keyUntuned.raw.Set(s, _noteMatrix.lowKey.keyUntuned.raw);
+      _plugIn.noteMatrix.highKey.velo.raw.Set(s, _noteMatrix.highKey.velo.raw);
+      _plugIn.noteMatrix.highKey.keyUntuned.raw.Set(s, _noteMatrix.highKey.keyUntuned.raw);
     }
 
     // release old voices
@@ -191,7 +191,7 @@ FBHostProcessor::ProcessHost(
 
   _exchangeState->Host()->bpm = input.bpm;
   _exchangeState->Host()->sampleRate = _sampleRate;
-  FBKeyMatrixInitScalarFromArrayLast(_exchangeState->Host()->keyMatrix, _plugIn.keyMatrix);
+  FBNoteMatrixInitScalarFromArrayLast(_exchangeState->Host()->noteMatrix, _plugIn.noteMatrix);
 
   for (int v = 0; v < FBMaxVoices; v++)
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];

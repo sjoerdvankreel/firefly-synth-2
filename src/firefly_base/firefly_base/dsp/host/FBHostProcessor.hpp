@@ -1,7 +1,7 @@
 #pragma once
 
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
-#include <firefly_base/dsp/shared/FBKeyMatrix.hpp>
+#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <memory>
@@ -24,9 +24,9 @@ class FBHostProcessor final
 {
   FBPlugInputBlock _plugIn = {};
   FBPlugOutputBlock _plugOut = {};
-  FBKeyMatrix<float> _keyMatrix = {};
-  std::array<bool, 128> _keyOn = {};
-  std::array<float, 128> _keyVelo = {};
+  FBNoteMatrix<float> _noteMatrix = {};
+  std::array<bool, 128> _noteOn = {};
+  std::array<float, 128> _noteVelo = {};
 
   float const _sampleRate;
   float _prevRoundCpuUsage = 0.0f;
@@ -39,7 +39,7 @@ class FBHostProcessor final
   std::unique_ptr<FBPlugToHostProcessor> _plugToHost;
   std::unique_ptr<FBSmoothingProcessor> _smoothing;
 
-  void UpdateKeyMatrix(FBNoteEvent const& event);
+  void UpdateNoteMatrix(FBNoteEvent const& event);
 
 public:
   ~FBHostProcessor();

@@ -218,7 +218,7 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
   if (guiRenderType == FBGUIRenderType::Basic)
     return;
 
-  renderState->PrepareForRenderExchange(hostExchange->keyMatrix);
+  renderState->PrepareForRenderExchange(hostExchange->noteMatrix);
   if constexpr (Global)
   {
     auto moduleExchange = renderData.globalExchangeSelector(

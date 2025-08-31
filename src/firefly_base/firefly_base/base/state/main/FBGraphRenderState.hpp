@@ -5,7 +5,7 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
-#include <firefly_base/dsp/shared/FBKeyMatrix.hpp>
+#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 
@@ -48,7 +48,7 @@ public:
   void PrepareForRenderPrimaryVoice();
   void PrepareForRenderExchangeVoice(int voice);
   void PrepareForRenderPrimary(float sampleRate, float bpm);
-  void PrepareForRenderExchange(FBKeyMatrix<float> const& keyMatrix);
+  void PrepareForRenderExchange(FBNoteMatrix<float> const& noteMatrix);
 
   FBPlugGUI const* PlugGUI() const;
   FBModuleProcState* ModuleProcState();

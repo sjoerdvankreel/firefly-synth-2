@@ -4,10 +4,10 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 template <class T>
-struct FBKeyFilterStateTraits;
+struct FBNoteFilterStateTraits;
 
 template <>
-struct FBKeyFilterStateTraits<float>
+struct FBNoteFilterStateTraits<float>
 { 
   static void Init(float& target, float val) 
   { target = val; } 
@@ -18,7 +18,7 @@ struct FBKeyFilterStateTraits<float>
 };
 
 template <>
-struct FBKeyFilterStateTraits<FBSArray<float, FBFixedBlockSamples>>
+struct FBNoteFilterStateTraits<FBSArray<float, FBFixedBlockSamples>>
 { 
   static void Init(FBSArray<float, FBFixedBlockSamples>& target, float val) 
   { target.Fill(val); } 
@@ -29,37 +29,37 @@ struct FBKeyFilterStateTraits<FBSArray<float, FBFixedBlockSamples>>
 };
 
 template <class T>
-struct alignas(alignof(T)) FBKeyFilterState final
+struct alignas(alignof(T)) FBNoteFilterState final
 {
   T raw = {};
   T smooth = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBKeyFilterState);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteFilterState);
 
   void Init(float val)
   {
-    FBKeyFilterStateTraits<T>::Init(raw, val);
-    FBKeyFilterStateTraits<T>::Init(smooth, val);
+    FBNoteFilterStateTraits<T>::Init(raw, val);
+    FBNoteFilterStateTraits<T>::Init(smooth, val);
   }
 
   void DivBy(float val)
   {
-    FBKeyFilterStateTraits<T>::DivBy(raw, val);
-    FBKeyFilterStateTraits<T>::DivBy(smooth, val);
+    FBNoteFilterStateTraits<T>::DivBy(raw, val);
+    FBNoteFilterStateTraits<T>::DivBy(smooth, val);
   }
 
-  void CopyTo(FBKeyFilterState& rhs) const
+  void CopyTo(FBNoteFilterState& rhs) const
   {
-    FBKeyFilterStateTraits<T>::CopyTo(raw, rhs.raw);
-    FBKeyFilterStateTraits<T>::CopyTo(smooth, rhs.smooth);
+    FBNoteFilterStateTraits<T>::CopyTo(raw, rhs.raw);
+    FBNoteFilterStateTraits<T>::CopyTo(smooth, rhs.smooth);
   }
 };
 
 template <class T>
-struct alignas(alignof(T)) FBKeyState final
+struct alignas(alignof(T)) FBNoteState final
 {
-  FBKeyFilterState<T> velo = {};
-  FBKeyFilterState<T> keyUntuned = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBKeyState);
+  FBNoteFilterState<T> velo = {};
+  FBNoteFilterState<T> keyUntuned = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteState);
 
   void DivKeyBy(float val)
   {
@@ -80,14 +80,14 @@ struct alignas(alignof(T)) FBKeyState final
 };
 
 template <class T>
-struct alignas(alignof(T)) FBKeyMatrix final
+struct alignas(alignof(T)) FBNoteMatrix final
 {
-  FBKeyState<T> last = {};
-  FBKeyState<T> lowKey = {};
-  FBKeyState<T> highKey = {};
-  FBKeyState<T> lowVelo = {};
-  FBKeyState<T> highVelo = {};
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBKeyMatrix);
+  FBNoteState<T> last = {};
+  FBNoteState<T> lowKey = {};
+  FBNoteState<T> highKey = {};
+  FBNoteState<T> lowVelo = {};
+  FBNoteState<T> highVelo = {};
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteMatrix);
 
   void DivKeyBy(float val)
   {
@@ -107,7 +107,7 @@ struct alignas(alignof(T)) FBKeyMatrix final
     highVelo.Init(keyUntuned);
   }
 
-  void CopyTo(FBKeyMatrix& rhs) const
+  void CopyTo(FBNoteMatrix& rhs) const
   {
     last.CopyTo(rhs.last);
     lowKey.CopyTo(rhs.lowKey);
@@ -118,11 +118,11 @@ struct alignas(alignof(T)) FBKeyMatrix final
 };
 
 void
-FBKeyMatrixInitArrayFromScalar(
-  FBKeyMatrix<FBSArray<float, FBFixedBlockSamples>>& array,
-  FBKeyMatrix<float> const& scalar);
+FBNoteMatrixInitArrayFromScalar(
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>& array,
+  FBNoteMatrix<float> const& scalar);
 
 void
-FBKeyMatrixInitScalarFromArrayLast(
-  FBKeyMatrix<float>& scalar,
-  FBKeyMatrix<FBSArray<float, FBFixedBlockSamples>>& array);
+FBNoteMatrixInitScalarFromArrayLast(
+  FBNoteMatrix<float>& scalar,
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>& array);

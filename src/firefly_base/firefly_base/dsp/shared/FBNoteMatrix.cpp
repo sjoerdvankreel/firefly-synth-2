@@ -1,11 +1,11 @@
 #pragma once
 
-#include <firefly_base/dsp/shared/FBKeyMatrix.hpp>
+#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
 
 void
-FBKeyMatrixInitArrayFromScalar(
-  FBKeyMatrix<FBSArray<float, FBFixedBlockSamples>>& array,
-  FBKeyMatrix<float> const& scalar)
+FBNoteMatrixInitArrayFromScalar(
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>& array,
+  FBNoteMatrix<float> const& scalar)
 {
   array.last.velo.raw.Fill(scalar.last.velo.raw);
   array.last.velo.smooth.Fill(scalar.last.velo.smooth);
@@ -30,9 +30,9 @@ FBKeyMatrixInitArrayFromScalar(
 }
 
 void
-FBKeyMatrixInitScalarFromArrayLast(
-  FBKeyMatrix<float>& scalar,
-  FBKeyMatrix<FBSArray<float, FBFixedBlockSamples>>& array)
+FBNoteMatrixInitScalarFromArrayLast(
+  FBNoteMatrix<float>& scalar,
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>& array)
 {
   scalar.last.velo.raw = array.last.velo.raw.Last();
   scalar.last.velo.smooth = array.last.velo.smooth.Last();

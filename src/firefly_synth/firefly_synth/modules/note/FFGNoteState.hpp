@@ -5,7 +5,7 @@
 #include <firefly_base/base/shared/FBUtility.hpp>
 
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
-#include <firefly_base/dsp/shared/FBKeyMatrix.hpp>
+#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
 
 #include <array>
 #include <memory>
@@ -19,5 +19,5 @@ class FFGNoteDSPState final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGNoteDSPState);
   FFGNoteDSPState(): processor(std::make_unique<FFGNoteProcessor>()) {}
-  FBKeyMatrix<FBSArray<float, FBFixedBlockSamples>> outputKeyMatrix = {};
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> outputNoteMatrix = {};
 };
