@@ -46,25 +46,23 @@ void
 FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
 {
   // todo smooth versions of all
+  bool anyNoteOn = false;
   _noteVelo[event.note.keyUntuned] = 0.0f;
   _noteOn[event.note.keyUntuned] = event.on;
   if (event.on)
   {
     _noteVelo[event.note.keyUntuned] = event.velo;
     _noteMatrix.last.velo.raw = event.velo;
-    _noteMatrix.last.keyUntuned.raw = (float)event.note.keyUntuned;
-    _noteMatrix.lowKey.velo.raw = event.velo;
-    _noteMatrix.lowKey.keyUntuned.raw = (float)event.note.keyUntuned;
-    _noteMatrix.highKey.velo.raw = event.velo;
-    _noteMatrix.highKey.keyUntuned.raw = (float)event.note.keyUntuned;
-    _noteMatrix.lowVelo.velo.raw = event.velo;
-    _noteMatrix.lowVelo.keyUntuned.raw = (float)event.note.keyUntuned;
-    _noteMatrix.highVelo.velo.raw = event.velo;
-    _noteMatrix.highVelo.keyUntuned.raw = (float)event.note.keyUntuned;
+    _noteMatrix.last.keyUntuned.raw = (float)event.note.keyUntuned;    
   }
+  _noteMatrix.lowVelo.velo.raw = 1.0f;
+  _noteMatrix.highVelo.velo.raw = 0.0f;
+  _noteMatrix.lowKey.keyUntuned.raw = 127.0f;
+  _noteMatrix.highKey.keyUntuned.raw = 0.0f;
   for (int i = 0; i < 128; i++)
     if (_noteOn[i])
     {
+      anyNoteOn = true;
       if (i < _noteMatrix.lowKey.keyUntuned.raw)
       {
         _noteMatrix.lowKey.keyUntuned.raw = (float)i;
@@ -86,6 +84,17 @@ FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
         _noteMatrix.highVelo.velo.raw = _noteVelo[i];
       }
     }
+  if (!anyNoteOn)
+  {
+    _noteMatrix.lowKey.velo.raw = _noteMatrix.last.velo.raw;
+    _noteMatrix.lowKey.keyUntuned.raw = (float)_noteMatrix.last.keyUntuned.raw;
+    _noteMatrix.highKey.velo.raw = _noteMatrix.last.velo.raw;
+    _noteMatrix.highKey.keyUntuned.raw = (float)_noteMatrix.last.keyUntuned.raw;
+    _noteMatrix.lowVelo.velo.raw = _noteMatrix.last.velo.raw;
+    _noteMatrix.lowVelo.keyUntuned.raw = (float)_noteMatrix.last.keyUntuned.raw;
+    _noteMatrix.highVelo.velo.raw = _noteMatrix.last.velo.raw;
+    _noteMatrix.highVelo.keyUntuned.raw = (float)_noteMatrix.last.keyUntuned.raw;
+  }
 }
 
 void 
