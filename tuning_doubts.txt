@@ -5,7 +5,7 @@ I got a "regular" Pitch2Freq function defined as "440 * pow(2, (pitch - 69) / 12
 I got a tuning which maps 12-TET MIDI notes 60, 61, 62 to re-tuned values 70, 73, 78 (read: base key + MTS_RetuningInSemitones).
 Now, 70, 73, 78 are the "correct" values in the sense that Pitch2Freq produces the desired result. 
 HOWEVER these values are still expressed as 12-TET! It's just a mapping from 12-TET to the corresponding pitch in the retuned scale.
-And whats worse, its not even a linear mapping, its a log one.
+And whats worse, its not even a linear mapping, its a log one (or is it? can it be even worse/ completely free-form? piecewise polynomials? is it even required to be monotonically increasing when the corresponding 12-tet scale is monotonically increasing?)
 
 Now, here goes, just for example:
 I got 2 modulators on the osci pitch, each one goes from -1 to +1 semis. Totally bogus, but imagine master mod wheel followed by 
