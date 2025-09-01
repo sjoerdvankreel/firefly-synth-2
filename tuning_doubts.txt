@@ -44,6 +44,16 @@ EXTRA THOUGHTS Sep 1 2025
 That then becomes 70 + "2-in-12-tet-but-retuning-the-mod-value-itself" which should come out (in my mind at least)
 to anything between 72 and 78 expressed as 12-tet.
 
+EXTRA EXTRA THOUGHTS Sep 1 2025
+* This might just be it? We do tuning of incoming completely separate from tuning of modulators.
+Tuning incoming is tuning a fixed value (with the caveat of continous-morphing vs on-note in MTS terms).
+IF it makes sense (i think it does) to treat the retuned scale as linear in its own right (so 60 + 1 semis is just that BUT in terms of the retuned scale),
+whereas it is NOT linear when mapped onto 12-tet, but then it becomes totally easy to do "+ 1 octave, -3 semis, + 4 octaves, +6 semis, -80 cents"
+etc etc. This comes out to a final MODULATOR value (not MODULATED value) expressed as linear in its hypothetical own domain.
+All that leaves us is (cough cough) we now have a way to do MODULATED=>12-tet, IF we can do MODULATOR=>12-tet,
+we should be able to sum them. I just dont know the magic that is required (or even possible within the bounds of MTSESP)
+to do the MODULATOR=>12-tet calculation...
+
 NOTE-TO-SELF everything here is still just about osci tuning. Have to figure out filter keytrack etc separately.
 
 
