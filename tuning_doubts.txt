@@ -38,6 +38,12 @@ All in all i can see option #3 being both doable and correct, but difficult, and
 It feels to me problems arise from modulating in "fake" 12-tet. 
 If we had a [0, 128] MIDI table which was tuned beforehand by the host, then a plug could maybe do "+/-1" semi on that instead?
 
+EXTRA THOUGHTS Sep 1 2025
+* How about we do both before and after mod, but not "every step of the way": we tune incoming right at voice start, 
+60 becomes 70, then we STACK all modulators, so in this case 1+1=2, then we retune THE SUM OF ALL MODULATORS together.
+That then becomes 70 + "2-in-12-tet-but-retuning-the-mod-value-itself" which should come out (in my mind at least)
+to anything between 72 and 78 expressed as 12-tet.
 
+NOTE-TO-SELF everything here is still just about osci tuning. Have to figure out filter keytrack etc separately.
 
 
