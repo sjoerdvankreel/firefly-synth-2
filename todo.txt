@@ -22,6 +22,7 @@ TODOLIST for alpha-14
 [x] upped the vno
 [x] breaking change: more coarse (breaks matrix)
 [x] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
+[ ] disable the tune button for now
 [ ] need per-instance params for microtuning
 [ ] save modulation as actual value not normalized + display that way too
 [ ] scale out of the matrix?, lo-hi or min-max into it
