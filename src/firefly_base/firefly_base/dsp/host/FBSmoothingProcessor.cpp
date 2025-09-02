@@ -22,86 +22,62 @@ SortSampleLastToSampleFirst(
   std::sort(output.begin(), output.end(), compare);
 }
 
-FBSmoothingProcessor::
-FBSmoothingProcessor(FBVoiceManager* voiceManager, int paramCount) :
-_voiceManager(voiceManager)
-{
-  _activeGlobalSmoothingSamples.resize(paramCount);
-  for (int v = 0; v < FBMaxVoices; v++)
-    _activeVoiceSmoothingSamples[v].resize(paramCount);
-}
-
-void
-FBSmoothingProcessor::BeginMIDISmoothing(int eventId, int smoothingSamples)
-{
-  InsertIfNotExists(_activeMIDISmoothing, eventId);
-  RemoveIfNotExists(_finishedMIDISmoothing, eventId);
-  _activeMIDISmoothingSamples[eventId] = smoothingSamples;
-}
-
-std::vector<int>::iterator
-FBSmoothingProcessor::FinishMIDISmoothing(std::vector<int>::iterator iter)
-{
-  _activeMIDISmoothingSamples[*iter] = 0;
-  InsertMustNotExist(_finishedMIDISmoothing, *iter);
-  return _activeMIDISmoothing.erase(iter);
-}
-
-void
-FBSmoothingProcessor::BeginGlobalSmoothing(int param, int smoothingSamples)
-{
-  InsertIfNotExists(_activeGlobalSmoothing, param);
-  RemoveIfNotExists(_finishedGlobalSmoothing, param);
-  _activeGlobalSmoothingSamples[param] = smoothingSamples;
-}
-
-std::vector<int>::iterator
-FBSmoothingProcessor::FinishGlobalSmoothing(std::vector<int>::iterator iter)
-{
-  _activeGlobalSmoothingSamples[*iter] = 0;
-  InsertMustNotExist(_finishedGlobalSmoothing, *iter);
-  return _activeGlobalSmoothing.erase(iter);
-}
-
-void
-FBSmoothingProcessor::BeginVoiceSmoothing(int voice, int param, int smoothingSamples)
-{
-  InsertIfNotExists(_activeVoiceSmoothing[voice], param);
-  RemoveIfNotExists(_finishedVoiceSmoothing[voice], param);
-  _activeVoiceSmoothingSamples[voice][param] = smoothingSamples;
-}
-
-std::vector<int>::iterator
-FBSmoothingProcessor::FinishVoiceSmoothing(int voice, std::vector<int>::iterator iter)
-{
-  _activeVoiceSmoothingSamples[voice][*iter] = 0;
-  InsertMustNotExist(_finishedVoiceSmoothing[voice], *iter);
-  return _activeVoiceSmoothing[voice].erase(iter);
-}
-
-void
-FBSmoothingProcessor::RemoveIfNotExists(std::vector<int>& params, int param)
+static void
+RemoveIfNotExists(std::vector<int>& params, int param)
 {
   auto iter = std::find(params.begin(), params.end(), param);
-  if(iter != params.end())
+  if (iter != params.end())
     params.erase(iter);
 }
 
-void
-FBSmoothingProcessor::InsertIfNotExists(std::vector<int>& params, int param)
+static void
+InsertIfNotExists(std::vector<int>& params, int param)
 {
   if (std::find(params.begin(), params.end(), param) == params.end())
     params.push_back(param);
 }
 
-void
-FBSmoothingProcessor::InsertMustNotExist(std::vector<int>& params, int param)
+static void
+InsertMustNotExist(std::vector<int>& params, int param)
 {
 #ifndef NDEBUG
   auto iter = std::find(params.begin(), params.end(), param);
   FB_ASSERT(iter == params.end());
 #endif
   params.push_back(param);
+}
+
+FBSmoothingState::
+FBSmoothingState(int paramCount)
+{
+  activeSamples.resize(paramCount);
+}
+
+void 
+FBSmoothingState::Begin(int param, int smoothingSamples)
+{
+  InsertIfNotExists(active, param);
+  RemoveIfNotExists(finished, param);
+  activeSamples[param] = smoothingSamples;
+}
+
+std::vector<int>::iterator 
+FBSmoothingState::Finish(std::vector<int>::iterator iter)
+{
+  activeSamples[*iter] = 0;
+  InsertMustNotExist(finished, *iter);
+  return active.erase(iter);
+}
+
+FBSmoothingProcessor::
+FBSmoothingProcessor(FBVoiceManager* voiceManager, int paramCount) :
+_voiceManager(voiceManager),
+_midi(FBMIDIEvent::MessageCount),
+_global(paramCount),
+_voice()
+{
+  for (int i = 0; i < FBMaxVoices; i++)
+    _voice[i].activeSamples.resize(paramCount);
 }
 
 void 
@@ -111,23 +87,23 @@ FBSmoothingProcessor::ProcessSmoothing(
   auto& params = output.procState->Params();
   auto& midiParams = output.procState->MIDIParams();
 
-  for (int midiParam : _finishedMIDISmoothing)
+  for (int midiParam : _midi.finished)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       midiParams[midiParam].SmoothNextHostValue(s);
-  _finishedMIDISmoothing.clear();
+  _midi.finished.clear();
 
-  for (int param : _finishedGlobalSmoothing)
+  for (int param : _global.finished)
     for (int s = 0; s < FBFixedBlockSamples; s++)
       params[param].GlobalAcc().SmoothNextHostValue(s);
-  _finishedGlobalSmoothing.clear();
+  _global.finished.clear();
 
   for (int v = 0; v < FBMaxVoices; v++)
   {
     if (_voiceManager->IsActive(v))
-      for (int param : _finishedVoiceSmoothing[v])
+      for (int param : _voice[v].finished)
         for (int s = 0; s < FBFixedBlockSamples; s++)
           params[param].VoiceAcc().SmoothNextHostValue(v, s);
-    _finishedVoiceSmoothing[v].clear();
+    _voice[v].finished.clear();
   }
 
   SortSampleLastToSampleFirst(input.accAutoByParamThenSample,
@@ -148,7 +124,7 @@ FBSmoothingProcessor::ProcessSmoothing(
     {
       auto const& event = myMIDI[eventIndex];
       midiParams[event.EventId()].Value(event.value);
-      BeginMIDISmoothing(event.EventId(), smoothingSamples);
+      _midi.Begin(event.EventId(), smoothingSamples);
     }
 
     for (int eventIndex = 0;
@@ -159,14 +135,14 @@ FBSmoothingProcessor::ProcessSmoothing(
       if (!params[event.param].IsVoice())
       {
         params[event.param].GlobalAcc().Value(event.value);
-        BeginGlobalSmoothing(event.param, smoothingSamples);
+        _global.Begin(event.param, smoothingSamples);
       }
       else
       {
         params[event.param].VoiceAcc().GlobalValue(event.value);
         for (int v = 0; v < FBMaxVoices; v++)
           if (_voiceManager->IsActive(v))
-            BeginVoiceSmoothing(v, event.param, smoothingSamples);
+            _voice[v].Begin(event.param, smoothingSamples);
       }
     }
 
@@ -178,7 +154,7 @@ FBSmoothingProcessor::ProcessSmoothing(
       if (!params[event.param].IsVoice())
       {
         params[event.param].GlobalAcc().ModulateByHost(event.value);
-        BeginGlobalSmoothing(event.param, smoothingSamples);
+        _global.Begin(event.param, smoothingSamples);
       }
       else
         for (int v = 0; v < FBMaxVoices; v++)
@@ -187,36 +163,36 @@ FBSmoothingProcessor::ProcessSmoothing(
           if (_voiceManager->IsActive(v) && event.note.Matches(voice.event.note))
           {
             params[event.param].VoiceAcc().ModulateByHost(v, event.value);
-            BeginVoiceSmoothing(v, event.param, smoothingSamples);
+            _voice[v].Begin(event.param, smoothingSamples);
           }
         }
     }
 
-    for (auto iter = _activeMIDISmoothing.begin(); iter != _activeMIDISmoothing.end(); )
+    for (auto iter = _midi.active.begin(); iter != _midi.active.end(); )
     {
       midiParams[*iter].SmoothNextHostValue(s);
-      if (--_activeMIDISmoothingSamples[*iter] <= 0)
-        iter = FinishMIDISmoothing(iter);
+      if (--_midi.activeSamples[*iter] <= 0)
+        iter = _midi.Finish(iter);
       else
         iter++;
     }
 
-    for(auto iter = _activeGlobalSmoothing.begin(); iter != _activeGlobalSmoothing.end(); )
+    for(auto iter = _global.active.begin(); iter != _global.active.end(); )
     {
       params[*iter].GlobalAcc().SmoothNextHostValue(s);
-      if (--_activeGlobalSmoothingSamples[*iter] <= 0)
-        iter = FinishGlobalSmoothing(iter);
+      if (--_global.activeSamples[*iter] <= 0)
+        iter = _global.Finish(iter);
       else
         iter++;      
     }
 
     for (int v = 0; v < FBMaxVoices; v++)
       if (_voiceManager->IsActive(v))
-        for (auto iter = _activeVoiceSmoothing[v].begin(); iter != _activeVoiceSmoothing[v].end(); )
+        for (auto iter = _voice[v].active.begin(); iter != _voice[v].active.end(); )
         {
           params[*iter].VoiceAcc().SmoothNextHostValue(v, s);
-          if (--_activeVoiceSmoothingSamples[v][*iter] <= 0)
-            iter = FinishVoiceSmoothing(v, iter);
+          if (--_voice[v].activeSamples[*iter] <= 0)
+            iter = _voice[v].Finish(iter);
           else
             iter++;
         }

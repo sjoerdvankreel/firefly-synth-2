@@ -11,35 +11,32 @@ class FBVoiceManager;
 struct FBFixedInputBlock;
 struct FBPlugOutputBlock;
 
+struct FBSmoothingState final
+{
+  std::vector<int> active = {};
+  std::vector<int> finished = {};
+  std::vector<int> activeSamples = {};
+
+  FBSmoothingState(int paramCount);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FBSmoothingState);
+
+  void Begin(int param, int smoothingSamples);
+  std::vector<int>::iterator Finish(std::vector<int>::iterator iter);
+};
+
 class FBSmoothingProcessor final
 {
   FBVoiceManager* const _voiceManager;
-  std::vector<int> _activeGlobalSmoothing = {};
-  std::vector<int> _finishedGlobalSmoothing = {};
-  std::vector<int> _activeGlobalSmoothingSamples = {};
-  std::vector<int> _activeMIDISmoothing = {};
-  std::vector<int> _finishedMIDISmoothing = {};
-  std::array<int, FBMIDIEvent::MessageCount> _activeMIDISmoothingSamples = {};
-  std::array<std::vector<int>, FBMaxVoices> _activeVoiceSmoothing = {};
-  std::array<std::vector<int>, FBMaxVoices> _finishedVoiceSmoothing = {};
-  std::array<std::vector<int>, FBMaxVoices> _activeVoiceSmoothingSamples = {};
+  FBSmoothingState _midi;
+  FBSmoothingState _global;
+  std::array<FBSmoothingState, FBMaxVoices> _voice;
+
   std::vector<FBAccAutoEvent> _accAutoBySampleThenParam = {};
   std::vector<FBMIDIEvent> _midiBySampleThenMessageThenCC = {};
   std::vector<FBAccModEvent> _accModBySampleThenParamThenNote = {};
-
-  void RemoveIfNotExists(std::vector<int>& params, int param); 
-  void InsertIfNotExists(std::vector<int>& params, int param);
-  void InsertMustNotExist(std::vector<int>& params, int param); 
-
-  void BeginMIDISmoothing(int eventId, int smoothingSamples);
-  void BeginGlobalSmoothing(int param, int smoothingSamples);
-  void BeginVoiceSmoothing(int voice, int param, int smoothingSamples);
-  std::vector<int>::iterator FinishMIDISmoothing(std::vector<int>::iterator iter);
-  std::vector<int>::iterator FinishGlobalSmoothing(std::vector<int>::iterator iter);
-  std::vector<int>::iterator FinishVoiceSmoothing(int voice, std::vector<int>::iterator iter);
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBSmoothingProcessor);
   FBSmoothingProcessor(FBVoiceManager* voiceManager, int paramCount);
   void ProcessSmoothing(FBFixedInputBlock const& input, FBPlugOutputBlock& output, int smoothingSamples);
-}; 
+};
