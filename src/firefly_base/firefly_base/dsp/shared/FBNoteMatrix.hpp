@@ -5,28 +5,18 @@
 
 enum class FBNoteMatrixEntry
 {
-  LastVeloRaw,
-  LastVeloSmooth,
-  LowKeyVeloRaw,
-  LowKeyVeloSmooth,
-  HighKeyVeloRaw,
-  HighKeyVeloSmooth,
-  LowVeloVeloRaw,
-  LowVeloVeloSmooth,
-  HighVeloVeloRaw,
-  HighVeloVeloSmooth,
+  LastVelo,
+  LowKeyVelo,
+  HighKeyVelo,
+  LowVeloVelo,
+  HighVeloVelo,
   VeloCount,
 
-  LastKeyUntunedRaw = VeloCount,
-  LastKeyUntunedSmooth,
-  LowKeyKeyUntunedRaw,
-  LowKeyKeyUntunedSmooth,
-  HighKeyKeyUntunedRaw,
-  HighKeyKeyUntunedSmooth,
-  LowVeloKeyUntunedRaw,
-  LowVeloKeyUntunedSmooth,
-  HighVeloKeyUntunedRaw,
-  HighVeloKeyUntunedSmooth,
+  LastKeyUntuned = VeloCount,
+  LowKeyKeyUntuned,
+  HighKeyKeyUntuned,
+  LowVeloKeyUntuned,
+  HighVeloKeyUntuned,
   Count
 };
 

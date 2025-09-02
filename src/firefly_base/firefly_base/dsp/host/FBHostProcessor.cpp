@@ -52,48 +52,48 @@ FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
   if (event.on)
   {
     _noteVelo[event.note.keyUntuned] = event.velo;
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVeloRaw] = event.velo;
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntunedRaw] = (float)event.note.keyUntuned;
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo] = event.velo;
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned] = (float)event.note.keyUntuned;
   }
-  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVeloRaw] = 1.0f;
-  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVeloRaw] = 0.0f;
-  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntunedRaw] = 127.0f;
-  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntunedRaw] = 0.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = 1.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = 0.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = 127.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = 0.0f;
   for (int i = 0; i < 128; i++)
     if (_noteOn[i])
     {
       anyNoteOn = true;
-      if (i < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntunedRaw])
+      if (i < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntunedRaw] = (float)i;
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVeloRaw] = _noteVelo[i];
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = (float)i;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteVelo[i];
       }
-      if (i > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntunedRaw])
+      if (i > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntunedRaw] = (float)i;
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVeloRaw] = _noteVelo[i];
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = (float)i;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteVelo[i];
       }
-      if (_noteVelo[i] < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVeloRaw])
+      if (_noteVelo[i] < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntunedRaw] = (float)i;
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVeloRaw] = _noteVelo[i];
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned] = (float)i;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteVelo[i];
       }
-      if (_noteVelo[i] > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVeloRaw])
+      if (_noteVelo[i] > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntunedRaw] = (float)i;
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVeloRaw] = _noteVelo[i];
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned] = (float)i;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteVelo[i];
       }
     }
   if (!anyNoteOn)
   {
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVeloRaw] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVeloRaw];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntunedRaw] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntunedRaw];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVeloRaw] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVeloRaw];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntunedRaw] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntunedRaw];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVeloRaw] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVeloRaw];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntunedRaw] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntunedRaw];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVeloRaw] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVeloRaw];
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntunedRaw] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntunedRaw];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
   }
 }
 
@@ -142,23 +142,24 @@ FBHostProcessor::ProcessHost(
   {
     _plugIn.audio = &fixedIn->audio;
     _plugIn.noteEvents = &fixedIn->noteEvents;
+    _plugIn.noteMatrixRaw = &fixedIn->noteMatrixRaw;
     
     // update key matrix
     int n1 = 0;
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      for (; n1 < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n1].pos == s; n1++)
-        UpdateNoteMatrix((*_plugIn.noteEvents)[n1]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::LastVeloRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVeloRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntunedRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntunedRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVeloRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVeloRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntunedRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntunedRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVeloRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVeloRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntunedRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntunedRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVeloRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVeloRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntunedRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntunedRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVeloRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVeloRaw]);
-      _plugIn.noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntunedRaw].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntunedRaw]);
+      for (; n1 < fixedIn->noteEvents.size() && (fixedIn->noteEvents)[n1].pos == s; n1++)
+        UpdateNoteMatrix((fixedIn->noteEvents)[n1]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LastVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowVeloVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighVeloVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowKeyVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighKeyVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo]);
+      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned]);
     }
 
     // release old voices
@@ -200,7 +201,7 @@ FBHostProcessor::ProcessHost(
 
   _exchangeState->Host()->bpm = input.bpm;
   _exchangeState->Host()->sampleRate = _sampleRate;
-  FBNoteMatrixInitScalarFromArrayLast(_exchangeState->Host()->noteMatrix, _plugIn.noteMatrix);
+  FBNoteMatrixInitScalarFromArrayLast(_exchangeState->Host()->noteMatrix, *_plugIn.noteMatrixRaw);
 
   for (int v = 0; v < FBMaxVoices; v++)
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];

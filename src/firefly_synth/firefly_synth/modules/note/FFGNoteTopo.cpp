@@ -22,26 +22,16 @@ FFMakeGNoteTopo()
   outputMatrix.slotFormatter = [](FBStaticTopo const&, int, int os) {
     switch ((FBNoteMatrixEntry)os)
     {
-    case FBNoteMatrixEntry::LastVeloRaw: return "Last VeloRaw";
-    case FBNoteMatrixEntry::LastVeloSmooth: return "Last VeloSmth";
-    case FBNoteMatrixEntry::LowKeyVeloRaw: return "LowKey VeloRaw";
-    case FBNoteMatrixEntry::LowKeyVeloSmooth: return "LowKey VeloSmth";
-    case FBNoteMatrixEntry::HighKeyVeloRaw: return "HighKey VeloRaw";
-    case FBNoteMatrixEntry::HighKeyVeloSmooth: return "HighKey VeloSmth";
-    case FBNoteMatrixEntry::LowVeloVeloRaw: return "LowVelo VeloRaw";
-    case FBNoteMatrixEntry::LowVeloVeloSmooth: return "LowVelo VeloSmth";
-    case FBNoteMatrixEntry::HighVeloVeloRaw: return "HighVelo VeloRaw";
-    case FBNoteMatrixEntry::HighVeloVeloSmooth: return "HighVelo VeloSmth";
-    case FBNoteMatrixEntry::LastKeyUntunedRaw: return "Last KeyRaw";
-    case FBNoteMatrixEntry::LastKeyUntunedSmooth: return "Last KeySmth";
-    case FBNoteMatrixEntry::LowKeyKeyUntunedRaw: return "LowKey KeyRaw";
-    case FBNoteMatrixEntry::LowKeyKeyUntunedSmooth: return "LowKey KeySmth";
-    case FBNoteMatrixEntry::HighKeyKeyUntunedRaw: return "HighKey KeyRaw";
-    case FBNoteMatrixEntry::HighKeyKeyUntunedSmooth: return "HighKey KeySmth";
-    case FBNoteMatrixEntry::LowVeloKeyUntunedRaw: return "LowVelo KeyRaw";
-    case FBNoteMatrixEntry::LowVeloKeyUntunedSmooth: return "LowVelo KeySmth";
-    case FBNoteMatrixEntry::HighVeloKeyUntunedRaw: return "HighVelo KeyRaw";
-    case FBNoteMatrixEntry::HighVeloKeyUntunedSmooth: return "HighVelo KeySmth";
+    case FBNoteMatrixEntry::LastVelo: return "Last Velo";
+    case FBNoteMatrixEntry::LowKeyVelo: return "LowKey Velo";
+    case FBNoteMatrixEntry::HighKeyVelo: return "HighKey Velo";
+    case FBNoteMatrixEntry::LowVeloVelo: return "LowVelo Velo";
+    case FBNoteMatrixEntry::HighVeloVelo: return "HighVelo Velo";
+    case FBNoteMatrixEntry::LastKeyUntuned: return "Last Key";
+    case FBNoteMatrixEntry::LowKeyKeyUntuned: return "LowKey Key";
+    case FBNoteMatrixEntry::HighKeyKeyUntuned: return "HighKey Key";
+    case FBNoteMatrixEntry::LowVeloKeyUntuned: return "LowVelo Key";
+    case FBNoteMatrixEntry::HighVeloKeyUntuned: return "HighVelo Key";
     default: FB_ASSERT(false); return "";
     }
   };

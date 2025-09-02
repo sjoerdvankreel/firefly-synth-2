@@ -74,6 +74,7 @@ FBSmoothingProcessor(FBVoiceManager* voiceManager, int paramCount) :
 _voiceManager(voiceManager),
 _midi(FBMIDIEvent::MessageCount),
 _global(paramCount),
+_noteMatrix((int)FBNoteMatrixEntry::Count),
 _voice()
 {
   for (int i = 0; i < FBMaxVoices; i++)
@@ -86,6 +87,7 @@ FBSmoothingProcessor::ProcessSmoothing(
 {
   auto& params = output.procState->Params();
   auto& midiParams = output.procState->MIDIParams();
+  auto& noteMatrixSmth = output.procState->NoteMatrixSmth();
 
   for (int midiParam : _midi.finished)
     for (int s = 0; s < FBFixedBlockSamples; s++)
@@ -96,6 +98,11 @@ FBSmoothingProcessor::ProcessSmoothing(
     for (int s = 0; s < FBFixedBlockSamples; s++)
       params[param].GlobalAcc().SmoothNextHostValue(s);
   _global.finished.clear();
+
+  for (int noteEntry : _noteMatrix.finished)
+    for (int s = 0; s < FBFixedBlockSamples; s++)
+      noteMatrixSmth[noteEntry].SmoothNextHostValue(s);
+  _noteMatrix.finished.clear();
 
   for (int v = 0; v < FBMaxVoices; v++)
   {
@@ -125,6 +132,19 @@ FBSmoothingProcessor::ProcessSmoothing(
       auto const& event = myMIDI[eventIndex];
       midiParams[event.EventId()].Value(event.value);
       _midi.Begin(event.EventId(), smoothingSamples);
+    }
+
+    for (int eventIndex = 0;
+      eventIndex < input.noteEvents.size() && input.noteEvents[eventIndex].pos == s;
+      eventIndex++)
+    {
+      // took a shortcut here, note event invalidates the filter state of the entire matrix
+      auto const& event = input.noteEvents[eventIndex];
+      for (int i = 0; i < (int)FBNoteMatrixEntry::Count; i++)
+      {
+        noteMatrixSmth[i].Value(input.noteMatrixRaw.entries[i].Get(s));
+        _noteMatrix.Begin(i, smoothingSamples);
+      }
     }
 
     for (int eventIndex = 0;
@@ -173,6 +193,15 @@ FBSmoothingProcessor::ProcessSmoothing(
       midiParams[*iter].SmoothNextHostValue(s);
       if (--_midi.activeSamples[*iter] <= 0)
         iter = _midi.Finish(iter);
+      else
+        iter++;
+    }
+    
+    for (auto iter = _noteMatrix.active.begin(); iter != _noteMatrix.active.end(); )
+    {
+      noteMatrixSmth[*iter].SmoothNextHostValue(s);
+      if (--_noteMatrix.activeSamples[*iter] <= 0)
+        iter = _noteMatrix.Finish(iter);
       else
         iter++;
     }
