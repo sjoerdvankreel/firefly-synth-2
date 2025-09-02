@@ -10,7 +10,9 @@ class FBHostToPlugProcessor final
   FBBufferInputBlock _buffer = {};
 
 public:
+  FBHostToPlugProcessor();
+  FB_NOCOPY_NOMOVE_NODEFCTOR(FBHostToPlugProcessor);
+
   FBFixedInputBlock* ProcessToPlug();
   void BufferFromHost(FBHostInputBlock const& hostBlock);
-  FB_NOCOPY_NOMOVE_DEFCTOR(FBHostToPlugProcessor);
 };

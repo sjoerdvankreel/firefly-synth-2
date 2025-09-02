@@ -26,6 +26,7 @@ class FBGraphRenderState final
 
   std::vector<FBNoteEvent> _noteEvents = {};
   FBSArray2<float, FBFixedBlockSamples, 2> _audio = {};
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> _noteMatrixRaw = {};
 
   FBPlugGUI const* const _plugGUI;
   std::unique_ptr<juce::dsp::FFT> _fft = {};

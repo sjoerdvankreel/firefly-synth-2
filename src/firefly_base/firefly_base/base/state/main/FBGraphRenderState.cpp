@@ -38,6 +38,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
   _input->audio = &_audio;
   _input->noteEvents = &_noteEvents;
+  _input->noteMatrixRaw = &_noteMatrixRaw;
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)
@@ -127,7 +128,7 @@ FBGraphRenderState::PrepareForRenderExchange(FBNoteMatrix<float> const& noteMatr
   _procState->InitProcessing(*ExchangeContainer());
   _moduleState->exchangeFromGUIRaw = ExchangeContainer()->Raw();
   _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->Voices());
-  FBNoteMatrixInitArrayFromScalar(_input->noteMatrix, noteMatrix);
+  FBNoteMatrixInitArrayFromScalar(*_input->noteMatrixRaw, noteMatrix);
 }
 
 void
@@ -136,7 +137,7 @@ FBGraphRenderState::PrepareForRenderPrimary(float sampleRate, float bpm)
   _input->bpm = bpm;
   _input->voiceManager = nullptr;
   _input->sampleRate = sampleRate;
-  _input->noteMatrix.SetKey(60.0f);
+  _input->noteMatrixRaw->SetKey(60.0f);
   _moduleState->voice = nullptr;
   _procState->InitProcessing(_plugGUI->HostContext());
 }

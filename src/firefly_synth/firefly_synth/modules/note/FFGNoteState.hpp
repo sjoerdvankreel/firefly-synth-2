@@ -19,5 +19,5 @@ class FFGNoteDSPState final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFGNoteDSPState);
   FFGNoteDSPState(): processor(std::make_unique<FFGNoteProcessor>()) {}
-  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> outputNoteMatrix = {};
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> outputNoteMatrixRaw = {};
 };

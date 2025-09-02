@@ -22,7 +22,7 @@ struct FBPlugInputBlock final
   FBProcStateContainer* procState = {};
   std::vector<FBNoteEvent>* noteEvents = {};
   FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};
-  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> noteMatrixRaw = {};
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>* noteMatrixRaw = {};
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);
 };

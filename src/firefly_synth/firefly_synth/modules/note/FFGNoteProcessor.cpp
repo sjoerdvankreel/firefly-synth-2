@@ -11,6 +11,6 @@ void
 FFGNoteProcessor::Process(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
-  state.input->noteMatrix.CopyTo(procState->dsp.global.gNote.outputNoteMatrix);
-  procState->dsp.global.gNote.outputNoteMatrix.DivKeyBy(127.0f);
+  state.input->noteMatrixRaw->CopyTo(procState->dsp.global.gNote.outputNoteMatrixRaw);
+  procState->dsp.global.gNote.outputNoteMatrixRaw.DivKeyBy(127.0f);
 }

@@ -14,12 +14,12 @@ FFMakeGNoteTopo()
   result->id = "{F3DD66BB48734}";
   result->cvOutputs.resize((int)FFGNoteCVOutput::Count);
 
-  auto& outputMatrix = result->cvOutputs[(int)FFGNoteCVOutput::NoteMatrix];
-  outputMatrix.name = "GNote";
-  outputMatrix.slotCount = (int)FBNoteMatrixEntry::Count;
-  outputMatrix.id = "{FACE9023-643D-4DE8-B3E9-A9CFCD4B821B}";
-  outputMatrix.globalAddr = [](int, int cs, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gNote.outputNoteMatrix.entries[cs]; };
-  outputMatrix.slotFormatter = [](FBStaticTopo const&, int, int os) {
+  auto& outputMatrixRaw = result->cvOutputs[(int)FFGNoteCVOutput::NoteMatrixRaw];
+  outputMatrixRaw.name = "GNote Raw";
+  outputMatrixRaw.slotCount = (int)FBNoteMatrixEntry::Count;
+  outputMatrixRaw.id = "{FACE9023-643D-4DE8-B3E9-A9CFCD4B821B}";
+  outputMatrixRaw.globalAddr = [](int, int cs, void* state) { return &static_cast<FFProcState*>(state)->dsp.global.gNote.outputNoteMatrixRaw.entries[cs]; };
+  outputMatrixRaw.slotFormatter = [](FBStaticTopo const&, int, int os) {
     switch ((FBNoteMatrixEntry)os)
     {
     case FBNoteMatrixEntry::LastVelo: return "Last Velo";

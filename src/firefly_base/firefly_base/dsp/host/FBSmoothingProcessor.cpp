@@ -138,8 +138,7 @@ FBSmoothingProcessor::ProcessSmoothing(
       eventIndex < input.noteEvents.size() && input.noteEvents[eventIndex].pos == s;
       eventIndex++)
     {
-      // took a shortcut here, note event invalidates the filter state of the entire matrix
-      auto const& event = input.noteEvents[eventIndex];
+      // took a shortcut here, every note event invalidates the filter state of the entire matrix
       for (int i = 0; i < (int)FBNoteMatrixEntry::Count; i++)
       {
         noteMatrixSmth[i].Value(input.noteMatrixRaw.entries[i].Get(s));

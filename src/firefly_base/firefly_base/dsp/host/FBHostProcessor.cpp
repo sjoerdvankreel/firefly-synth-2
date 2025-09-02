@@ -38,7 +38,6 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
-  _plugIn.noteMatrix.SetKey(60.0f);
   _plug->AllocOnDemandBuffers(_topo, _procState);
 }
 
@@ -150,16 +149,8 @@ FBHostProcessor::ProcessHost(
     {
       for (; n1 < fixedIn->noteEvents.size() && (fixedIn->noteEvents)[n1].pos == s; n1++)
         UpdateNoteMatrix((fixedIn->noteEvents)[n1]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LastVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowVeloVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighVeloVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowKeyVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighKeyVelo].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo]);
-      fixedIn->noteMatrixRaw.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned].Set(s, _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned]);
+      for (int nme = 0; nme < (int)FBNoteMatrixEntry::Count; nme++)
+        fixedIn->noteMatrixRaw.entries[nme].Set(s, _noteMatrix.entries[nme]);
     }
 
     // release old voices
