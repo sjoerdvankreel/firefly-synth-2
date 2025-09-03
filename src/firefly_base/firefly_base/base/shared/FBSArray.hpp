@@ -33,10 +33,12 @@ public:
   void Store(int pos, FBBatch<T> val) { val.store_aligned(Ptr(pos)); }
   void Add(int pos, FBBatch<T> val) { (Load(pos) + val).store_aligned(Ptr(pos)); }
   void Mul(int pos, FBBatch<T> val) { (Load(pos) * val).store_aligned(Ptr(pos)); }
+  void Div(int pos, FBBatch<T> val) { (Load(pos) / val).store_aligned(Ptr(pos)); }
   FBBatch<T> Load(int pos) const { return FBBatch<T>::load_aligned(Ptr(pos)); }
 
   void Fill(FBBatch<T> val) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Store(i, val); }
   void Mul(FBSArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Mul(i, rhs.Load(i)); }
+  void Div(FBSArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Div(i, rhs.Load(i)); }
   void Add(FBSArray<T, N> const& rhs) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Add(i, rhs.Load(i)); }
   void CopyTo(FBSArray<T, N>& rhs) const { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) rhs.Store(i, Load(i)); }
   void AddMul(FBSArray<T, N> const& rhs, FBSArray<T, N> const& mul) { for (int i = 0; i < N; i += FBSIMDTraits<T>::Size) Add(i, rhs.Load(i) * mul.Load(i)); }
@@ -111,7 +113,9 @@ public:
   void NaNCheck() const { for (int i = 0; i < N2; i++) _data[i].NaNCheck(); }
   void Fill(FBBatch<T> val) { for (int i = 0; i < N2; i++) _data[i].Fill(val); }
   void Mul(FBSArray<T, N1> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs); }
+  void Div(FBSArray<T, N1> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Div(rhs); }
   void Mul(FBSArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Mul(rhs._data[i]); }
+  void Div(FBSArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Div(rhs._data[i]); }
   void Add(FBSArray2<T, N1, N2> const& rhs) { for (int i = 0; i < N2; i++) _data[i].Add(rhs._data[i]); }
   void CopyTo(FBSArray2<T, N1, N2>& rhs) const { for (int i = 0; i < N2; i++) _data[i].CopyTo(rhs._data[i]); }
   void AddMul(FBSArray2<T, N1, N2> const& rhs, FBSArray<T, N1> const& mul) { for (int i = 0; i < N2; i++) _data[i].AddMul(rhs._data[i], mul); }
