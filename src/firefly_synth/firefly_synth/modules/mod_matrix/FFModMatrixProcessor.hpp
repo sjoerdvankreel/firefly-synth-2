@@ -28,13 +28,15 @@ class FFModMatrixProcessor final
   std::array<FFModulationOpType, MaxSlotCount> _opType = {};
 
   // voice only
-  std::array<float, MaxSlotCount> _scaleOnNoteValues = {};
-  std::array<float, MaxSlotCount> _sourceOnNoteValues = {};
+  std::array<bool, MaxSlotCount> _onNoteWasSnapshotted = {};
+  std::array<float, MaxSlotCount> _scaleOnNoteSnapshot = {};
+  std::array<float, MaxSlotCount> _sourceOnNoteSnapshot = {};
 
   // mind the bookkeeping
   // source index * source slot, map was slow, 0/1 = bool
   std::vector<std::vector<int>> _modSourceIsReady = {};
   std::array<bool, MaxSlotCount> _slotHasBeenProcessed = {};
+  std::array<bool, MaxSlotCount> _ownModSourceIsReadyForSlot = {};
   std::array<bool, MaxSlotCount> _allModSourcesAreReadyForSlot = {};
 
 public:

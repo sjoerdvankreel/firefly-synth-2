@@ -66,6 +66,7 @@ FFModMatrixProcessor<Global>::BeginModulationBlock()
   for (int i = 0; i < _activeSlotCount; i++)
   {
     _slotHasBeenProcessed[i] = false;
+    _ownModSourceIsReadyForSlot[i] = false;
     _allModSourcesAreReadyForSlot[i] = false;
   }
 }
@@ -115,6 +116,9 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   auto const& opTypeNorm = params.block.opType;
   auto const& amountNorm = params.acc.amount;
 
+  if constexpr (!Global)
+    _onNoteWasSnapshotted.fill(false);
+
   float activeSlotsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.slots[0], voice);
   _activeSlotCount = topo.NormalizedToDiscreteFast(FFModMatrixParam::Slots, activeSlotsNorm);
 
@@ -132,26 +136,6 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
     _opType[i] = topo.NormalizedToListFast<FFModulationOpType>(
       FFModMatrixParam::OpType,
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
-  }
-
-  // snapshot on-note values
-  if constexpr (!Global)
-  {
-    // static_cast for perf
-    auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
-    auto const& sources = ffTopo.vMatrixSources;
-    for (int i = 0; i < _activeSlotCount; i++)
-    {
-      if (_opType[i] != FFModulationOpType::Off)
-      {
-        auto const& scale = sources[_scale[i]];
-        if (scale.onNote)
-          _scaleOnNoteValues[i] = GetSourceCVBuffer(state, scale, voice)->Get(state.voice->offsetInBlock);
-        auto const& source = sources[_source[i]];
-        if (source.onNote)
-          _sourceOnNoteValues[i] = GetSourceCVBuffer(state, source, voice)->Get(state.voice->offsetInBlock);
-      }
-    }
   }
 
   // Prevent unscaled amount from showing up as 0.
@@ -208,16 +192,18 @@ FFModMatrixProcessor<Global>::ApplyModulation(
 
   _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
 
-  // need all slots with same target ready before we begin processing
+  // need all slots with same target ready before we begin processing because stacking modulators
   for (int i = 0; i < _activeSlotCount; i++)
   {
+    _ownModSourceIsReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
     _allModSourcesAreReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
-    if (_allModSourcesAreReadyForSlot[i])
+    if (_ownModSourceIsReadyForSlot[i])
     {
       auto const& thisTarget = targets[_target[i]];
       auto const& thisSource = sources[_source[i]];
-      _allModSourcesAreReadyForSlot[i] &= thisTarget.module.index != -1;
-      _allModSourcesAreReadyForSlot[i] &= thisSource.indices.module.index != -1;
+      _ownModSourceIsReadyForSlot[i] &= thisTarget.module.index != -1;
+      _ownModSourceIsReadyForSlot[i] &= thisSource.indices.module.index != -1;
+      _allModSourcesAreReadyForSlot[i] &= _ownModSourceIsReadyForSlot[i];
       if (_allModSourcesAreReadyForSlot[i])
         for (int j = 0; j < _activeSlotCount; j++)
           if (_opType[j] != FFModulationOpType::Off)
@@ -232,18 +218,37 @@ FFModMatrixProcessor<Global>::ApplyModulation(
 
   for (int i = 0; i < _activeSlotCount; i++)
   {
+    auto const& scale = sources[_scale[i]];
+    auto const& source = sources[_source[i]];
+    auto const& target = targets[_target[i]];
+
+    if constexpr (!Global)
+    {
+      // We can only fix the on-note values once the global 
+      // mod source has cleared. Note to self: this caused
+      // off-by-1-block error when we did this inside BeginVoice.
+      if (_ownModSourceIsReadyForSlot[i])
+      {
+        if (!_onNoteWasSnapshotted[i])
+        {
+          _onNoteWasSnapshotted[i] = true;
+          if (scale.onNote)
+            _scaleOnNoteSnapshot[i] = GetSourceCVBuffer(state, scale, voice)->Get(state.voice->offsetInBlock);
+          if (source.onNote)
+            _sourceOnNoteSnapshot[i] = GetSourceCVBuffer(state, source, voice)->Get(state.voice->offsetInBlock);
+        }
+      }
+    }
+
     if (_allModSourcesAreReadyForSlot[i] && !_slotHasBeenProcessed[i])
     {
-      auto const& scale = sources[_scale[i]];
-      auto const& source = sources[_source[i]];
-      auto const& target = targets[_target[i]];
       _slotHasBeenProcessed[i] = true;
 
       if(!source.onNote)
         sourceBuffer = GetSourceCVBuffer(state, source, voice);
       else 
       {
-        onNoteSourceBuffer.Fill(_sourceOnNoteValues[i]);
+        onNoteSourceBuffer.Fill(_sourceOnNoteSnapshot[i]);
         sourceBuffer = &onNoteSourceBuffer;
       }
         
@@ -253,7 +258,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           scaleBuffer = GetSourceCVBuffer(state, scale, voice);
         else
         {
-          onNoteScaleBuffer.Fill(_scaleOnNoteValues[i]);
+          onNoteScaleBuffer.Fill(_scaleOnNoteSnapshot[i]);
           scaleBuffer = &onNoteScaleBuffer;
         }
 
