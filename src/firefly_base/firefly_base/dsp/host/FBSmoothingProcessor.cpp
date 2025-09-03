@@ -101,7 +101,7 @@ FBSmoothingProcessor::ProcessSmoothing(
 
   for (int noteEntry : _noteMatrix.finished)
     for (int s = 0; s < FBFixedBlockSamples; s++)
-      noteMatrixSmth[noteEntry].SmoothNextHostValue(s);
+      noteMatrixSmth.entries[noteEntry].SmoothNextHostValue(s);
   _noteMatrix.finished.clear();
 
   for (int v = 0; v < FBMaxVoices; v++)
@@ -141,7 +141,7 @@ FBSmoothingProcessor::ProcessSmoothing(
       // took a shortcut here, every note event invalidates the filter state of the entire matrix
       for (int i = 0; i < (int)FBNoteMatrixEntry::Count; i++)
       {
-        noteMatrixSmth[i].Value(input.noteMatrixRaw.entries[i].Get(s));
+        noteMatrixSmth.entries[i].Value(input.noteMatrixRaw.entries[i].Get(s));
         _noteMatrix.Begin(i, smoothingSamples);
       }
     }
@@ -198,7 +198,7 @@ FBSmoothingProcessor::ProcessSmoothing(
     
     for (auto iter = _noteMatrix.active.begin(); iter != _noteMatrix.active.end(); )
     {
-      noteMatrixSmth[*iter].SmoothNextHostValue(s);
+      noteMatrixSmth.entries[*iter].SmoothNextHostValue(s);
       if (--_noteMatrix.activeSamples[*iter] <= 0)
         iter = _noteMatrix.Finish(iter);
       else

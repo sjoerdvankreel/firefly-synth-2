@@ -15,9 +15,9 @@ _special(topo.static_->specialSelector(*topo.static_, _rawState))
   // MIDI PB is special as it defaults to 0.5
   _midiParams[FBMIDIEvent::PBMessageId].Global().InitProcessing(0.5f);
   for (int i = 0; i < (int)FBNoteMatrixEntry::VeloCount; i++)
-    _noteMatrixSmth[i].Global().InitProcessing(0.0f);
+    _noteMatrixSmth.entries[i].Global().InitProcessing(0.0f);
   for (int i = (int)FBNoteMatrixEntry::VeloCount; i < (int)FBNoteMatrixEntry::Count; i++)
-    _noteMatrixSmth[i].Global().InitProcessing(60.0f);
+    _noteMatrixSmth.entries[i].Global().InitProcessing(60.0f);
 
   for (int p = 0; p < topo.audio.params.size(); p++)
     if (topo.static_->modules[topo.audio.params[p].topoIndices.module.index].voice)
@@ -115,5 +115,5 @@ FBProcStateContainer::SetSmoothingCoeffs(int sampleCount)
   for (int m = 0; m < MIDIParams().size(); m++)
     MIDIParams()[m].Global().SetSmoothingCoeffs(sampleCount);
   for (int n = 0; n < (int)FBNoteMatrixEntry::Count; n++)
-    NoteMatrixSmth()[n].Global().SetSmoothingCoeffs(sampleCount);
+    NoteMatrixSmth().entries[n].Global().SetSmoothingCoeffs(sampleCount);
 }

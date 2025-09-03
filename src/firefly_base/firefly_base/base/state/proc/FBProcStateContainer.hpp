@@ -31,8 +31,8 @@ class FBProcStateContainer final
 
   // Very VST3-centric,
   // we treat all midi messages like continuous global params.
+  FBNoteMatrix<FBGlobalAccParamState> _noteMatrixSmth = {};
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount> _midiParams = {};
-  std::array<FBGlobalAccParamState, (int)FBNoteMatrixEntry::Count> _noteMatrixSmth = {};
 
   void InitProcessing(int index, int voice, float value);
 
@@ -56,8 +56,8 @@ public:
   FBMemoryPool* MemoryPool() { return &_memoryPool; }
   std::vector<FBProcParamState>& Params() { return _params; }
   std::vector<FBProcParamState> const& Params() const { return _params; }
+  FBNoteMatrix<FBGlobalAccParamState>& NoteMatrixSmth() { return _noteMatrixSmth; }
+  FBNoteMatrix<FBGlobalAccParamState> const& NoteMatrixSmth() const { return _noteMatrixSmth; }
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount>& MIDIParams() { return _midiParams; }
   std::array<FBGlobalAccParamState, FBMIDIEvent::MessageCount> const& MIDIParams() const { return _midiParams; }
-  std::array<FBGlobalAccParamState, (int)FBNoteMatrixEntry::Count>& NoteMatrixSmth() { return _noteMatrixSmth; }
-  std::array<FBGlobalAccParamState, (int)FBNoteMatrixEntry::Count> const& NoteMatrixSmth() const { return _noteMatrixSmth; }
 };
