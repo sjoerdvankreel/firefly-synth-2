@@ -102,7 +102,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
 
   auto& slots = result->params[(int)FFModMatrixParam::Slots];
   slots.acc = false;
-  slots.defaultText = global? "2": "0"; // modulate PB/ModWheel default
+  slots.defaultText = global? "2": "1"; // global: modulate PB/ModWheel default, voice: velocity to voice amp
   slots.name = "Slots";
   slots.slotCount = 1;
   slots.id = prefix + "{511B2721-2733-4BB4-BA75-C55AB8B6C54D}";
@@ -122,7 +122,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   opType.slotCount = maxSlotCount;
   opType.defaultTextSelector = [global](int, int, int ps) {
     if (!global)
-      return "Off";
+      return ps > 0? "Off": "UP Mul"; // velocity
     if (ps > 1)
       return "Off";
     if (ps == 0)
@@ -170,7 +170,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.display = "Source";
   source.defaultTextSelector = [global](int, int, int ps) {
     if (!global)
-      return "Off";
+      return ps > 0? "Off": "VNote Velo"; // velocity
     if (ps > 1)
       return "Off";
     if (ps == 0)
@@ -259,7 +259,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.slotCount = maxSlotCount;
   target.defaultTextSelector = [global](int, int, int ps) {
     if (!global)
-      return "Off";
+      return ps > 0? "Off": "VMix Amp"; // velocity
     if (ps > 1)
       return "Off";
     if (ps == 0)
