@@ -23,6 +23,7 @@ TODOLIST for alpha-14
 [x] breaking change: more coarse (breaks matrix)
 [x] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
 [x] midi/gnote on/off
+[ ] special param stuff maybe not using params but return struct from virtual?
 [ ] disable the tune button for now
 [ ] need per-instance params for microtuning
 [ ] save modulation as actual value not normalized + display that way too
