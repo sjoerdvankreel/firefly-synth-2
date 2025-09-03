@@ -35,6 +35,8 @@ TODOLIST for alpha-14
 [ ] filters should track the actual pitch when possible (string osci)
 [ ] fruity clicks when pb mod enabled => known issues
 
+TODOLIST for alpha-15
+
 [ ] special param stuff maybe not using params but return struct from virtual?
 [ ] need per-instance params for microtuning
 [ ] save modulation as actual value not normalized + display that way too
@@ -51,7 +53,7 @@ TODOLIST for alpha-14
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] refix all behind-the-scenes mod sources and targets
 
-TODOLIST for alpha-15
+TODOLIST for alpha-16
 
 [ ] update all dependencies
 [ ] 8x env/lfo?
@@ -68,7 +70,7 @@ TODOLIST for alpha-15
 [ ] keep taps on the mod matrix
 [ ] master aux gui to small
 
-pre/post VMIX echo or not ?
+pre/post VMIX echo or not ? => NOT, bc VMIX will be on global uni subvoice level -- or will it ?
 list all the dependencies!
 pck support
 per-module presets
@@ -76,13 +78,12 @@ external audio input
 separate midi, bpm, automation smoothing, auto should be global + per-param override
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
-global unison TODO IF we do per-voice echo, this should not be on the subvoice level
+global unison TODO per voice echo should not be on the subvoice level
 autosoftclip
-MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating (not on-note but continuous)
+MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating optional (on-note and continuous both)
 another round of cpu and memory profiling
 factory presets
 get rid of sse2neon
-more context menus, clear matrix etc
 string timbre should not react to samplerate/oversample
 intel mac version
 fix todos
