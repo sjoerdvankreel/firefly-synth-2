@@ -44,7 +44,6 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
 void
 FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
 {
-  // todo smooth versions of all
   bool anyNoteOn = false;
   _noteVelo[event.note.keyUntuned] = 0.0f;
   _noteOn[event.note.keyUntuned] = event.on;
