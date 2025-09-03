@@ -193,6 +193,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
 
   // need all slots with same target ready before we begin processing because stacking modulators
+  // dont you just love the bookkeeping?
   for (int i = 0; i < _activeSlotCount; i++)
   {
     _ownModSourceIsReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
@@ -203,6 +204,8 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       auto const& thisSource = sources[_source[i]];
       _ownModSourceIsReadyForSlot[i] &= thisTarget.module.index != -1;
       _ownModSourceIsReadyForSlot[i] &= thisSource.indices.module.index != -1;
+      if (thisSource.indices.module.index != -1)
+        _ownModSourceIsReadyForSlot[i] &= _modSourceIsReady[thisSource.indices.module.index][thisSource.indices.module.slot] != 0;
       _allModSourcesAreReadyForSlot[i] &= _ownModSourceIsReadyForSlot[i];
       if (_allModSourcesAreReadyForSlot[i])
         for (int j = 0; j < _activeSlotCount; j++)
