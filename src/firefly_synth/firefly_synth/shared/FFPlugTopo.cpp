@@ -10,6 +10,7 @@
 #include <firefly_synth/modules/midi/FFMIDITopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/note/FFGNoteTopo.hpp>
+#include <firefly_synth/modules/note/FFVNoteTopo.hpp>
 #include <firefly_synth/modules/effect/FFEffectTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
 #include <firefly_synth/modules/output/FFOutputTopo.hpp>
@@ -127,6 +128,7 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::GUISettings] = std::move(*FFMakeGUISettingsTopo());
   result->modules[(int)FFModuleType::Osci] = std::move(*FFMakeOsciTopo());
   result->modules[(int)FFModuleType::OsciMod] = std::move(*FFMakeOsciModTopo());
+  result->modules[(int)FFModuleType::VNote] = std::move(*FFMakeVNoteTopo());
   result->modules[(int)FFModuleType::VEffect] = std::move(*FFMakeEffectTopo(false));
   result->modules[(int)FFModuleType::VEcho] = std::move(*FFMakeEchoTopo(false));
   result->modules[(int)FFModuleType::GEffect] = std::move(*FFMakeEffectTopo(true));
@@ -146,6 +148,8 @@ FFMakeTopo(FBPlugFormat format)
   result->modules[(int)FFModuleType::VMatrix] = std::move(*FFMakeModMatrixTopo(false, result.get()));
 
   // This better lines up with the audio engine.
+  // Process order is used to determine what-can-modulate-what when building the
+  // mod matrix. So if we get it wrong you get stuff like "lfo2 can mod lfo1".
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GUISettings, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::GMatrix, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::MIDI, 0 });
@@ -154,6 +158,7 @@ FFMakeTopo(FBPlugFormat format)
   for (int s = 0; s < result->modules[(int)FFModuleType::GLFO].slotCount; s++)
     result->moduleProcessOrder.push_back({ (int)FFModuleType::GLFO, s });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::VMatrix, 0 });
+  result->moduleProcessOrder.push_back({ (int)FFModuleType::VNote, 0 });
   result->moduleProcessOrder.push_back({ (int)FFModuleType::Env, FFAmpEnvSlot });
   for (int s = 0; s < FFLFOCount; s++)
   {

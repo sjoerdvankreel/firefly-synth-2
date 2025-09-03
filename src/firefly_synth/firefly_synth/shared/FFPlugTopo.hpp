@@ -29,8 +29,8 @@ inline constexpr char FFPlugUniqueId[] = "754068B351A04DB4813B58D562BDFC1F";
 inline constexpr char FFPlugControllerId[] = "959E6302402B461A8C9AA5A6737BCAAD"; 
 
 enum class FFModuleType {
-  GUISettings, MIDI, GNote, Master, VoiceModule, Osci, OsciMod, Env, VEffect, GEffect,
-  VLFO, GLFO, VMix, GMix, VEcho, GEcho, VMatrix, GMatrix, Output, Count };
+  GUISettings, MIDI, GNote, Master, VoiceModule, Osci, OsciMod, VNote, Env, VEffect, 
+  GEffect, VLFO, GLFO, VMix, GMix, VEcho, GEcho, VMatrix, GMatrix, Output, Count };
 
 struct FFStaticTopo:
 public FBStaticTopo

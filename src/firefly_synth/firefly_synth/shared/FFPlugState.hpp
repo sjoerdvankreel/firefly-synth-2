@@ -9,6 +9,7 @@
 #include <firefly_synth/modules/midi/FFMIDIState.hpp>
 #include <firefly_synth/modules/echo/FFEchoState.hpp>
 #include <firefly_synth/modules/note/FFGNoteState.hpp>
+#include <firefly_synth/modules/note/FFVNoteState.hpp>
 #include <firefly_synth/modules/effect/FFEffectState.hpp>
 #include <firefly_synth/modules/master/FFMasterState.hpp>
 #include <firefly_synth/modules/output/FFOutputState.hpp>
@@ -79,6 +80,7 @@ struct alignas(FBSIMDAlign) FFGlobalDSPState final
 
 struct alignas(FBSIMDAlign) FFVoiceDSPState final
 {
+  FFVNoteDSPState vNote = {};
   FFOsciModDSPState osciMod = {};
   FFVoiceProcessor processor = {};
   FFEchoDSPState<false> vEcho = {};

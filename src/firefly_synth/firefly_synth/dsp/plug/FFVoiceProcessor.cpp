@@ -3,6 +3,7 @@
 #include <firefly_synth/dsp/plug/FFVoiceProcessor.hpp>
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
+#include <firefly_synth/modules/note/FFVNoteProcessor.hpp>
 #include <firefly_synth/modules/output/FFOutputProcessor.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModProcessor.hpp>
 
@@ -29,6 +30,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
+  procState->dsp.voice[voice].vNote.processor->BeginVoice(state);
   state.moduleSlot = FFAmpEnvSlot;
   procState->dsp.voice[voice].env[FFAmpEnvSlot].processor->BeginVoice(state);
   for (int i = 0; i < FFLFOCount; i++)
@@ -77,6 +79,9 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
+
+  // No need to process first, values are fixed at BeginVoice.
+  procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VNote, 0 });
 
   state.moduleSlot = FFAmpEnvSlot;
   int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state, releaseAt);
