@@ -51,7 +51,7 @@ FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
   {
     _noteVelo[event.note.keyUntuned] = event.velo;
     _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo] = event.velo;
-    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned] = (float)event.note.keyUntuned;
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned] = (float)event.note.keyUntuned / 127.0f;
   }
   _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = 1.0f;
   _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = 0.0f;
