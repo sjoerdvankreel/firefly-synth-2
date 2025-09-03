@@ -13,5 +13,5 @@ FFVNoteProcessor::BeginVoice(FBModuleProcState& state)
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
   procState->dsp.voice[voice].vNote.outputVelo.Fill(state.voice->event.velo);
-  procState->dsp.voice[voice].vNote.outputKeyUntuned.Fill((float)state.voice->event.note.keyUntuned);
+  procState->dsp.voice[voice].vNote.outputKeyUntuned.Fill(state.voice->event.note.keyUntuned / 127.0f);
 }
