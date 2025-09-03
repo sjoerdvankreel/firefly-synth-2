@@ -137,7 +137,7 @@ FBGraphRenderState::PrepareForRenderPrimary(float sampleRate, float bpm)
   _input->bpm = bpm;
   _input->voiceManager = nullptr;
   _input->sampleRate = sampleRate;
-  _input->noteMatrixRaw->SetKey(60.0f);
+  _input->noteMatrixRaw->SetKey(60.0f / 127.0f);
   _moduleState->voice = nullptr;
   _procState->InitProcessing(_plugGUI->HostContext());
 }

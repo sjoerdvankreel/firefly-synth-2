@@ -33,7 +33,7 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
-  _noteMatrix.SetKey(60.0f);
+  _noteMatrix.SetKey(60.0f / 127.0f);
   _plugOut.procState = _procState;
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
@@ -55,30 +55,30 @@ FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
   }
   _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = 1.0f;
   _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = 0.0f;
-  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = 127.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = 1.0f;
   _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = 0.0f;
   for (int i = 0; i < 128; i++)
     if (_noteOn[i])
     {
       anyNoteOn = true;
-      if (i < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned])
+      if (i / 127.0f < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = (float)i;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = i / 127.0f;
         _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteVelo[i];
       }
-      if (i > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned])
+      if (i / 127.0f > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = (float)i;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = i / 127.0f;
         _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteVelo[i];
       }
       if (_noteVelo[i] < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned] = (float)i;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned] = i / 127.0f;
         _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteVelo[i];
       }
       if (_noteVelo[i] > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo])
       {
-        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned] = (float)i;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned] = i / 127.0f;
         _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteVelo[i];
       }
     }

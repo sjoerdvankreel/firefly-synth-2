@@ -17,7 +17,7 @@ _special(topo.static_->specialSelector(*topo.static_, _rawState))
   for (int i = 0; i < (int)FBNoteMatrixEntry::VeloCount; i++)
     _noteMatrixSmth.entries[i].Global().InitProcessing(0.0f);
   for (int i = (int)FBNoteMatrixEntry::VeloCount; i < (int)FBNoteMatrixEntry::Count; i++)
-    _noteMatrixSmth.entries[i].Global().InitProcessing(60.0f);
+    _noteMatrixSmth.entries[i].Global().InitProcessing(60.0f / 127.0f);
 
   for (int p = 0; p < topo.audio.params.size(); p++)
     if (topo.static_->modules[topo.audio.params[p].topoIndices.module.index].voice)

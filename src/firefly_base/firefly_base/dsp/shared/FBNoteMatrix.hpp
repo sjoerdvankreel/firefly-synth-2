@@ -27,7 +27,6 @@ template <>
 struct FBNoteMatrixTraits<float>
 {
   static void Set(float& target, float val) { target = val; }
-  static void Div(float& target, float val) { target /= val; }
   static void CopyTo(float source, float& target) { target = source; }
 };
 
@@ -36,8 +35,6 @@ struct FBNoteMatrixTraits<FBSArray<float, FBFixedBlockSamples>>
 {
   static void Set(FBSArray<float, FBFixedBlockSamples>& target, float val) {
     for (int i = 0; i < FBFixedBlockSamples; i++) target.Set(i, val); }
-  static void Div(FBSArray<float, FBFixedBlockSamples>& target, float val) {
-    for (int i = 0; i < FBFixedBlockSamples; i++) target.Set(i, target.Get(i) / val); }
   static void CopyTo(
     FBSArray<float, FBFixedBlockSamples> const& source, 
     FBSArray<float, FBFixedBlockSamples>& target) {
@@ -49,12 +46,6 @@ struct alignas(alignof(T)) FBNoteMatrix final
 {
   std::array<T, (int)FBNoteMatrixEntry::Count> entries = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBNoteMatrix);
-
-  void DivKeyBy(float val)
-  {
-    for (int i = (int)FBNoteMatrixEntry::VeloCount; i < (int)FBNoteMatrixEntry::Count; i++)
-      FBNoteMatrixTraits<T>::Div(entries[i], val);
-  }
 
   void SetKey(float keyUntuned)
   {

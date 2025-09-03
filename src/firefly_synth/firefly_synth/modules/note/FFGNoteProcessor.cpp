@@ -13,10 +13,6 @@ FFGNoteProcessor::Process(FBModuleProcState& state)
   auto* container = state.input->procState;
   auto* procState = state.ProcAs<FFProcState>();
   state.input->noteMatrixRaw->CopyTo(procState->dsp.global.gNote.outputNoteMatrixRaw);
-  procState->dsp.global.gNote.outputNoteMatrixRaw.DivKeyBy(127.0f);
   for(int i = 0; i < (int)FBNoteMatrixEntry::Count; i++)
     container->NoteMatrixSmth().entries[i].Global().CV().CopyTo(procState->dsp.global.gNote.outputNoteMatrixSmth.entries[i]);
-  for (int i = (int)FBNoteMatrixEntry::VeloCount; i < (int)FBNoteMatrixEntry::Count; i++)
-    for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
-      procState->dsp.global.gNote.outputNoteMatrixSmth.entries[i].Div(s, FBBatch<float>(127.0f));
 }

@@ -65,7 +65,7 @@ static void GatherAccFromHost(
 FBHostToPlugProcessor::
 FBHostToPlugProcessor()
 {
-  _fixed.noteMatrixRaw.SetKey(60.0f);
+  _fixed.noteMatrixRaw.SetKey(60.0f / 127.0f);
 }
 
 FBFixedInputBlock*
