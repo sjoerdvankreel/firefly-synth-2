@@ -165,7 +165,14 @@ FBHostProcessor::ProcessHost(
               voiceOffPositions[v] = (*_plugIn.noteEvents)[n2].pos;
             }
 
-    // aquire new voices, set voice offsetInBlock to possibly nonzero.
+    // Aquire new voices, set voice offsetInBlock to possibly nonzero.
+    // LeaseVoices MUST be done before processing the pre-voice section
+    // because pre-voice needs access to all active voices even if they just
+    // started. This is so the plug can apply global modulators to per-voice
+    // params. This also means snapshot of on-note values of modulators
+    // CANNOT be done during voice activation, since then global mods have not run yet.
+    // Bookkeeping is done by the plug itself. So much for clean separation of base/plug.
+    // But whatever, just glad i found it. Delayed-by-1-block errors are hard.
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
