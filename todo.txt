@@ -23,16 +23,20 @@ TODOLIST for alpha-14
 [x] breaking change: more coarse (breaks matrix)
 [x] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
 [x] midi/gnote on/off
+[x] floating notes
+[x] MIDI key, velo (voice), low/high/last
+[ ] default map velo to voice amp
+[ ] on-note stuff not exactly matches the voice start
+
 [ ] special param stuff maybe not using params but return struct from virtual?
 [ ] disable the tune button for now
 [ ] need per-instance params for microtuning
 [ ] save modulation as actual value not normalized + display that way too
 [ ] scale out of the matrix?, lo-hi or min-max into it
 [ ] waveshaper-like graph source / scale / target
-[ ] on-note stuff not exactly matches the voice start
+
 [ ] minmax in the modmatrix 
 [ ] flowover ui because less routes
-[ ] default map velo to voice amp
 [ ] fruity clicks when pb mod enabled
 [ ] note filtering
 [ ] how the heck is the mod menu ordered?
@@ -46,8 +50,6 @@ TODOLIST for alpha-14
 [ ] voice + pitch + cent + porta off/on/auto + sync +  + porta time + porta-when-section
 [ ] bright text when graph on
 [ ] get the text out of the graphs
-[ ] floating notes
-[ ] MIDI key, velo (voice), low/high/last
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] refix all behind-the-scenes mod sources and targets
 
