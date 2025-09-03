@@ -34,6 +34,8 @@ FFMakeMasterTopo()
   tuningMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectTuningMode);
   tuningMode.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectTuningMode);
   tuningMode.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectTuningMode);
+  // TODO once we actually do tuning
+  tuningMode.dependencies.enabled.audio.WhenSimple({ (int)FFMasterParam::TuningMode }, [](auto const&) { return false; });
 
   auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
   hostSmoothTime.acc = false;
