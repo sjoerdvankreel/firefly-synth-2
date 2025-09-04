@@ -106,7 +106,7 @@ FFMakeVoiceModuleTopo()
   portaMode.type = FBParamType::List;
   portaMode.List().items = {
     { "{9632987C-7DF1-4B3C-86A7-40FB254D8A97}", "Always" },
-    { "{E864BC41-6BC0-491C-9A95-8890A2F94A62}", "Release" } };
+    { "{E864BC41-6BC0-491C-9A95-8890A2F94A62}", "Section" } };
   auto selectPortaMode = [](auto& module) { return &module.block.portaMode; };
   portaMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaMode);
   portaMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPortaMode);
