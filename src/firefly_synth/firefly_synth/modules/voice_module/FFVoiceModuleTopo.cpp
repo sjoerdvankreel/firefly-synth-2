@@ -146,7 +146,7 @@ FFMakeVoiceModuleTopo()
 
   auto& portaBars = result->params[(int)FFVoiceModuleParam::PortaBars];
   portaBars.acc = false;
-  portaBars.defaultText = "3/16";
+  portaBars.defaultText = "1/16";
   portaBars.display = "Length";
   portaBars.name = "Porta Length Bars";
   portaBars.slotCount = 1;
