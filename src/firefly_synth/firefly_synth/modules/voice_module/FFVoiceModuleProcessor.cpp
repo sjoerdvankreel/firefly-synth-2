@@ -52,7 +52,7 @@ FFVoiceModuleProcessor::BeginVoice(
       FFVoiceModuleParam::PortaTime, portaTimeNorm, sampleRate);
 
   int portaDiffSemis = state.voice->event.note.keyUntuned - (int)std::round(_portaPitchStart);
-  int slideMultiplier = portaType == FFVoiceModulePortaType::Auto ? 1 : portaDiffSemis;
+  int slideMultiplier = portaType == FFVoiceModulePortaType::Auto ? 1 : std::abs(portaDiffSemis);
   _portaPitchSamplesTotal *= slideMultiplier;
   _portaPitchSamplesProcessed = 0;
   _portaPitchDelta = portaDiffSemis / (float)_portaPitchSamplesTotal;
@@ -87,9 +87,10 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     pitchOffsetInSemis.Store(s, coarsePlain + finePlain);
   }
 
-  for (int s = 0; s < FBFixedBlockSamples && _portaPitchSamplesProcessed < _portaPitchSamplesTotal; s++, _portaPitchSamplesProcessed++)
+  for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    _portaPitchCurrent += _portaPitchDelta;
+    if(_portaPitchSamplesProcessed++ < _portaPitchSamplesTotal)
+      _portaPitchCurrent += _portaPitchDelta;
     float portaPitchOffset = _portaPitchCurrent - _portaPitchStart;
     pitchOffsetInSemis.Set(s, pitchOffsetInSemis.Get(s) + portaPitchOffset);
   }

@@ -29,6 +29,7 @@ TODOLIST for alpha-14
 [x] on-note stuff not exactly matches the voice start => was 1 block behind pffft
 [x] disable the tune button for now
 [x] fruity clicks when pb mod enabled => known issues
+[ ] make porta lead demo
 [ ] portamento start/end section multiplier
 [ ] voice + pitch + cent + porta off/on/auto + sync +  + porta time + porta-when-section
 [ ] scale out of the matrix?, lo-hi or min-max into it
