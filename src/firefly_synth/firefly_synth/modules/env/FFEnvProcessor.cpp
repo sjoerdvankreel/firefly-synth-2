@@ -47,17 +47,27 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
     _smoothSamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::SmoothBars, smoothBarsNorm, state.input->sampleRate, state.input->bpm);
     for (int i = 0; i < FFEnvStageCount; i++)
-      _stageSamples[i] = topo.NormalizedToBarsSamplesFast(
-        FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice], 
+    {
+      float stageSamples = topo.NormalizedToBarsFloatSamplesFast(
+        FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
         state.input->sampleRate, state.input->bpm);
+      if (state.moduleSlot == FFAmpEnvSlot)
+        stageSamples *= procState->dsp.voice[voice].voiceModule.thisVoicePortaSectionAttackMultiplier;
+      _stageSamples[i] = (int)std::round(stageSamples);
+    }
   }
   else
   {
     _smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
     for (int i = 0; i < FFEnvStageCount; i++)
-      _stageSamples[i] = topo.NormalizedToLinearTimeSamplesFast(
+    {
+      float stageSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
         FFEnvParam::StageTime, stageTimeNorm[i].Voice()[voice], state.input->sampleRate);
+      if (state.moduleSlot == FFAmpEnvSlot)
+        stageSamples *= procState->dsp.voice[voice].voiceModule.thisVoicePortaSectionAttackMultiplier;
+      _stageSamples[i] = (int)std::round(stageSamples);
+    }
   }
 
   _lengthSamples = 0;

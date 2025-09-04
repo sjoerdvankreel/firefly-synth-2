@@ -31,6 +31,7 @@ FFVoiceModuleProcessor::BeginVoice(
   float portaSyncNorm = params.block.portaSync[0].Voice()[voice];
   float portaTimeNorm = params.block.portaTime[0].Voice()[voice];
   float portaBarsNorm = params.block.portaBars[0].Voice()[voice];
+  float portaSectionAmpAttackNorm = params.block.portaSectionAmpAttack[0].Voice()[voice];
 
   bool portaSync = topo.NormalizedToBoolFast(FFVoiceModuleParam::PortaSync, portaSyncNorm);
   auto portaType = topo.NormalizedToListFast<FFVoiceModulePortaType>(FFVoiceModuleParam::PortaType, portaTypeNorm);
@@ -40,9 +41,15 @@ FFVoiceModuleProcessor::BeginVoice(
   if (previousMidiKeyUntuned < 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
+  {
     portaPitchStart = (float)state.voice->event.note.keyUntuned;
+    procState->dsp.voice[voice].voiceModule.thisVoicePortaSectionAttackMultiplier = 1.0f;
+  }
   else
+  {
     portaPitchStart = previousMidiKeyUntuned;
+    procState->dsp.voice[voice].voiceModule.thisVoicePortaSectionAttackMultiplier = portaSectionAmpAttackNorm;
+  }
 
   if (portaSync)
     _portaPitchSamplesTotal = topo.NormalizedToBarsSamplesFast(

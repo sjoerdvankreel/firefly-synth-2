@@ -19,6 +19,7 @@ class FFVoiceModuleDSPState final
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVoiceModuleDSPState);
   FFVoiceModuleDSPState() : processor(std::make_unique<FFVoiceModuleProcessor>()) {}
+  float thisVoicePortaSectionAttackMultiplier = 1.0f;
   FBSArray<float, FBFixedBlockSamples> pitchOffsetInSemis = {};
 };
 

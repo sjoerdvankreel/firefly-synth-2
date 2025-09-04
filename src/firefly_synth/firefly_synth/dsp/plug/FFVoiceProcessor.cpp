@@ -45,6 +45,8 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
     previousMidiKeyUntuned = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(voiceStartSamplesInBlock - 1) * 127.0f;
   }
+
+  // This needs to be before init of the voice-amp, because of the porta section attack.
   procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
 
   state.moduleSlot = FFAmpEnvSlot;
