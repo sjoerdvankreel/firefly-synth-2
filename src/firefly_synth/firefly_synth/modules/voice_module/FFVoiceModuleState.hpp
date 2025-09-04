@@ -25,6 +25,7 @@ public:
 template <class TBlock>
 class alignas(alignof(TBlock)) FFVoiceModuleBlockParamState final
 {
+  friend class FFVoiceModuleProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeVoiceModuleTopo();
   std::array<TBlock, 1> portaType = {};
   std::array<TBlock, 1> portaMode = {};

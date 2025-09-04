@@ -15,11 +15,47 @@
 
 void 
 FFVoiceModuleProcessor::BeginVoice(
+  FBModuleProcState& state,
   float previousMidiKeyUntuned, 
   bool anyNoteWasOnAlready)
 {
-  _anyNoteWasOnAlready = anyNoteWasOnAlready;
-  _previousMidiKeyUntuned = previousMidiKeyUntuned;
+  int voice = state.voice->slot;
+  float bpm = state.input->bpm;
+  float sampleRate = state.input->sampleRate;
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.voice.voiceModule[0];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
+ 
+  float portaTypeNorm = params.block.portaType[0].Voice()[voice];
+  float portaModeNorm = params.block.portaMode[0].Voice()[voice];
+  float portaSyncNorm = params.block.portaSync[0].Voice()[voice];
+  float portaTimeNorm = params.block.portaTime[0].Voice()[voice];
+  float portaBarsNorm = params.block.portaBars[0].Voice()[voice];
+
+  bool portaSync = topo.NormalizedToBoolFast(FFVoiceModuleParam::PortaSync, portaSyncNorm);
+  auto portaType = topo.NormalizedToListFast<FFVoiceModulePortaType>(FFVoiceModuleParam::PortaType, portaTypeNorm);
+  auto portaMode = topo.NormalizedToListFast<FFVoiceModulePortaMode>(FFVoiceModuleParam::PortaMode, portaModeNorm);
+
+  if (previousMidiKeyUntuned < 0.0f
+    || portaType == FFVoiceModulePortaType::Off
+    || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
+    _portaPitchStart = (float)state.voice->event.note.keyUntuned;
+  else
+    _portaPitchStart = previousMidiKeyUntuned;
+  _portaPitchCurrent = _portaPitchStart;
+
+  if (portaSync)
+    _portaPitchSamplesTotal = topo.NormalizedToBarsSamplesFast(
+      FFVoiceModuleParam::PortaBars, portaBarsNorm, sampleRate, bpm);
+  else
+    _portaPitchSamplesTotal = topo.NormalizedToLinearTimeSamplesFast(
+      FFVoiceModuleParam::PortaTime, portaTimeNorm, sampleRate);
+
+  int portaDiffSemis = state.voice->event.note.keyUntuned - (int)std::round(_portaPitchStart);
+  int slideMultiplier = portaType == FFVoiceModulePortaType::Auto ? 1 : portaDiffSemis;
+  _portaPitchSamplesTotal *= slideMultiplier;
+  _portaPitchSamplesProcessed = 0;
+  _portaPitchDelta = portaDiffSemis / (float)_portaPitchSamplesTotal;
 }
 
 void
@@ -30,6 +66,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   auto& voiceState = procState->dsp.voice[voice];
   auto const& procParams = procState->param.voice.voiceModule[0];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
+  auto& pitchOffsetInSemis = voiceState.voiceModule.pitchOffsetInSemis;
 
   auto const& fineNormIn = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNormIn = procParams.acc.coarse[0].Voice()[voice];
@@ -47,7 +84,14 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   {
     auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
     auto finePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Fine, fineNormModulated.Load(s));
-    voiceState.voiceModule.pitchOffsetInSemis.Store(s, coarsePlain + finePlain);
+    pitchOffsetInSemis.Store(s, coarsePlain + finePlain);
+  }
+
+  for (int s = 0; s < FBFixedBlockSamples && _portaPitchSamplesProcessed < _portaPitchSamplesTotal; s++, _portaPitchSamplesProcessed++)
+  {
+    _portaPitchCurrent += _portaPitchDelta;
+    float portaPitchOffset = _portaPitchCurrent - _portaPitchStart;
+    pitchOffsetInSemis.Set(s, pitchOffsetInSemis.Get(s) + portaPitchOffset);
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();

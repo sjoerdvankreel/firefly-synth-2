@@ -9,11 +9,14 @@ struct FBModuleProcState;
 
 class FFVoiceModuleProcessor final
 {
-  bool _anyNoteWasOnAlready = false;
-  float _previousMidiKeyUntuned = -1.0f;
+  float _portaPitchStart = 0.0f;
+  float _portaPitchDelta = 0.0f;
+  float _portaPitchCurrent = 0.0f;
+  int _portaPitchSamplesTotal = 0;
+  int _portaPitchSamplesProcessed = 0;
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceModuleProcessor);
   void Process(FBModuleProcState& state);
-  void BeginVoice(float previousMidiKeyUntuned, bool anyNoteWasOnAlready);
+  void BeginVoice(FBModuleProcState& state, float previousMidiKeyUntuned, bool anyNoteWasOnAlready);
 };

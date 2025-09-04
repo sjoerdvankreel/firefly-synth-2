@@ -45,7 +45,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
     previousMidiKeyUntuned = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(voiceStartSamplesInBlock - 1) * 127.0f;
   }
-  procState->dsp.voice[voice].voiceModule.processor->BeginVoice(previousMidiKeyUntuned, anyNoteWasOnAlready);
+  procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
 
   state.moduleSlot = FFAmpEnvSlot;
   procState->dsp.voice[voice].env[FFAmpEnvSlot].processor->BeginVoice(state);

@@ -81,11 +81,11 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   auto const& modParams = procState->param.voice.osciMod[0];
   auto const& modTopo = state.topo->static_->modules[(int)FFModuleType::OsciMod];
 
-  auto const& uniCountNorm = params.block.uniCount[0].Voice()[voice];
-  auto const& uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
-  auto const& uniRandomNorm = params.block.uniRandom[0].Voice()[voice];
-  auto const& modExpoFMNorm = modParams.block.expoFM[0].Voice()[voice];
-  auto const& modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
+  float uniCountNorm = params.block.uniCount[0].Voice()[voice];
+  float uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
+  float uniRandomNorm = params.block.uniRandom[0].Voice()[voice];
+  float modExpoFMNorm = modParams.block.expoFM[0].Voice()[voice];
+  float modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
 
   _graph = graph;
   _graphPhaseGen = {};
