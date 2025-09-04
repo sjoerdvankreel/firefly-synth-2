@@ -60,6 +60,7 @@ TODOLIST for alpha-15
 
 TODOLIST for alpha-16
 
+[ ] ubuntu 18 + check mint and whatnot (dont forget to update mts lib .so)
 [ ] update all dependencies
 [ ] 8x env/lfo?
 [ ] make a cpu details popup
