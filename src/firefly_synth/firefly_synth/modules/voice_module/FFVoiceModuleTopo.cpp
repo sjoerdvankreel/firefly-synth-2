@@ -115,7 +115,7 @@ FFMakeVoiceModuleTopo()
 
   auto& portaSync = result->params[(int)FFVoiceModuleParam::PortaSync];
   portaSync.acc = false;
-  portaSync.name = "Tempo Sync";
+  portaSync.name = "Portamento Tempo Sync";
   portaSync.display = "Sync";
   portaSync.slotCount = 1;
   portaSync.id = "{779E0303-8799-40C6-B654-85FC75FD8DEC}";
@@ -131,7 +131,7 @@ FFMakeVoiceModuleTopo()
   portaTime.acc = false;
   portaTime.defaultText = "0.1";
   portaTime.display = "Length";
-  portaTime.name = "Porta Length Time";
+  portaTime.name = "Portamento Length Time";
   portaTime.slotCount = 1;
   portaTime.unit = "Sec";
   portaTime.id = "{C3EF7F24-84C9-4F92-8D18-F4332E0BB874}";
@@ -150,7 +150,7 @@ FFMakeVoiceModuleTopo()
   portaBars.acc = false;
   portaBars.defaultText = "1/16";
   portaBars.display = "Length";
-  portaBars.name = "Porta Length Bars";
+  portaBars.name = "Portamento Length Bars";
   portaBars.slotCount = 1;
   portaBars.unit = "Bars";
   portaBars.id = "{983E1FAD-94A6-413C-A24B-0178D38A84B0}";
@@ -166,7 +166,8 @@ FFMakeVoiceModuleTopo()
   auto& portaSectionAmpAttack = result->params[(int)FFVoiceModuleParam::PortaSectionAmpAttack];
   portaSectionAmpAttack.acc = false;
   portaSectionAmpAttack.defaultText = "50";
-  portaSectionAmpAttack.name = "Amp Attack";
+  portaSectionAmpAttack.name = "Portamento Section Amp Attack";
+  portaSectionAmpAttack.display = "Amp Attack";
   portaSectionAmpAttack.slotCount = 1;
   portaSectionAmpAttack.unit = "%";
   portaSectionAmpAttack.id = "{C035EBA5-D5E6-4B3B-A40A-2BD5B500ACCA}";
@@ -180,7 +181,8 @@ FFMakeVoiceModuleTopo()
   auto& portaSectionAmpRelease = result->params[(int)FFVoiceModuleParam::PortaSectionAmpRelease];
   portaSectionAmpRelease.acc = false;
   portaSectionAmpRelease.defaultText = "50";
-  portaSectionAmpRelease.name = "Amp Release";
+  portaSectionAmpRelease.name = "Portamento Section Amp Release";
+  portaSectionAmpRelease.display = "Amp Release";
   portaSectionAmpRelease.slotCount = 1;
   portaSectionAmpRelease.unit = "%";
   portaSectionAmpRelease.id = "{227ACA77-CD6E-488B-86BB-9802FDF2D2F2}";
