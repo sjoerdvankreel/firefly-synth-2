@@ -29,6 +29,7 @@ class FBHostProcessor final
   FBNoteMatrix<float> _noteMatrix = {};
 
   bool _anyNoteIsOn = {};
+  bool _anyNoteEverReceived = false;
   bool _anyNoteWasOnLastSamplePrevRound = {};
   float _lastKeyRawLastSamplePrevRound = -1.0f;
 

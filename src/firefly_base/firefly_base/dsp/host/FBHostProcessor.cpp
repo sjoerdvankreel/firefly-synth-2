@@ -150,7 +150,11 @@ FBHostProcessor::ProcessHost(
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
       for (; n1 < fixedIn->noteEvents.size() && (fixedIn->noteEvents)[n1].pos == s; n1++)
+      {
         UpdateNoteMatrix((fixedIn->noteEvents)[n1]);
+        if ((fixedIn->noteEvents)[n1].on)
+          _anyNoteEverReceived = true;
+      }
       fixedIn->anyNoteIsOn[s] = _anyNoteIsOn;
       for (int nme = 0; nme < (int)FBNoteMatrixEntry::Count; nme++)
         fixedIn->noteMatrixRaw.entries[nme].Set(s, _noteMatrix.entries[nme]);
@@ -198,7 +202,8 @@ FBHostProcessor::ProcessHost(
     _plugIn.projectTimeSamples += FBFixedBlockSamples;
 
     _anyNoteWasOnLastSamplePrevRound = _anyNoteIsOn;
-    _lastKeyRawLastSamplePrevRound = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    if(_anyNoteEverReceived)
+      _lastKeyRawLastSamplePrevRound = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
   }
   _plugToHost->ProcessToHost(output);
 
