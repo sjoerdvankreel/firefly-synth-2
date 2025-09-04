@@ -42,6 +42,7 @@ struct FBFixedInputBlock final
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
   
   FBSArray2<float, FBFixedBlockSamples, 2> audio = {};
+  std::array<bool, FBFixedBlockSamples> anyNoteIsOn = {};
   FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> noteMatrixRaw = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBFixedInputBlock);
 };

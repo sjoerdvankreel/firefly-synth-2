@@ -24,9 +24,13 @@ class FBHostProcessor final
 {
   FBPlugInputBlock _plugIn = {};
   FBPlugOutputBlock _plugOut = {};
-  FBNoteMatrix<float> _noteMatrix = {};
   std::array<bool, 128> _noteOn = {};
   std::array<float, 128> _noteVelo = {};
+  FBNoteMatrix<float> _noteMatrix = {};
+
+  bool _anyNoteIsOn = {};
+  bool _anyNoteWasOnLastSamplePrevRound = {};
+  float _lastKeyRawLastSamplePrevRound = -1.0f;
 
   float const _sampleRate;
   float _prevRoundCpuUsage = 0.0f;

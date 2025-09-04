@@ -21,7 +21,10 @@ struct FBPlugInputBlock final
   FBVoiceManager* voiceManager = {};
   FBProcStateContainer* procState = {};
   std::vector<FBNoteEvent>* noteEvents = {};
+  bool anyNoteWasOnLastSamplePrevRound = {};
+  float lastKeyRawLastSamplePrevRound = -1.0f;
   FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};
+  std::array<bool, FBFixedBlockSamples> const* anyNoteIsOn = {};
   FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>* noteMatrixRaw = {};
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);

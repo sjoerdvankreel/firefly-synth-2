@@ -31,6 +31,22 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
   procState->dsp.voice[voice].vNote.processor->BeginVoice(state);
+
+  bool anyNoteWasOnAlready = false;
+  float previousMidiKeyUntuned = -1.0f;
+  int voiceStartSamplesInBlock = state.voice->offsetInBlock;
+  if (voiceStartSamplesInBlock == 0)
+  {
+    anyNoteWasOnAlready = state.input->anyNoteWasOnLastSamplePrevRound;
+    previousMidiKeyUntuned = state.input->lastKeyRawLastSamplePrevRound * 127.0f;
+  }
+  else
+  {
+    anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
+    previousMidiKeyUntuned = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(voiceStartSamplesInBlock - 1) * 127.0f;
+  }
+  procState->dsp.voice[voice].voiceModule.processor->BeginVoice(previousMidiKeyUntuned, anyNoteWasOnAlready);
+
   state.moduleSlot = FFAmpEnvSlot;
   procState->dsp.voice[voice].env[FFAmpEnvSlot].processor->BeginVoice(state);
   for (int i = 0; i < FFLFOCount; i++)

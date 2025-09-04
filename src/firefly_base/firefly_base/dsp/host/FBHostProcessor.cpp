@@ -44,7 +44,7 @@ _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_ca
 void
 FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
 {
-  bool anyNoteOn = false;
+  _anyNoteIsOn = false;
   _noteVelo[event.note.keyUntuned] = 0.0f;
   _noteOn[event.note.keyUntuned] = event.on;
   if (event.on)
@@ -60,7 +60,7 @@ FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
   for (int i = 0; i < 128; i++)
     if (_noteOn[i])
     {
-      anyNoteOn = true;
+      _anyNoteIsOn = true;
       if (i / 127.0f < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned])
       {
         _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = i / 127.0f;
@@ -82,7 +82,7 @@ FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
         _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteVelo[i];
       }
     }
-  if (!anyNoteOn)
+  if (!_anyNoteIsOn)
   {
     _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
     _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
@@ -140,7 +140,10 @@ FBHostProcessor::ProcessHost(
   {
     _plugIn.audio = &fixedIn->audio;
     _plugIn.noteEvents = &fixedIn->noteEvents;
+    _plugIn.anyNoteIsOn = &fixedIn->anyNoteIsOn;
     _plugIn.noteMatrixRaw = &fixedIn->noteMatrixRaw;
+    _plugIn.lastKeyRawLastSamplePrevRound = _lastKeyRawLastSamplePrevRound;
+    _plugIn.anyNoteWasOnLastSamplePrevRound = _anyNoteWasOnLastSamplePrevRound;
     
     // update key matrix
     int n1 = 0;
@@ -148,6 +151,7 @@ FBHostProcessor::ProcessHost(
     {
       for (; n1 < fixedIn->noteEvents.size() && (fixedIn->noteEvents)[n1].pos == s; n1++)
         UpdateNoteMatrix((fixedIn->noteEvents)[n1]);
+      fixedIn->anyNoteIsOn[s] = _anyNoteIsOn;
       for (int nme = 0; nme < (int)FBNoteMatrixEntry::Count; nme++)
         fixedIn->noteMatrixRaw.entries[nme].Set(s, _noteMatrix.entries[nme]);
     }
@@ -192,6 +196,9 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPostVoice(_plugIn, _plugOut);
     _plugToHost->BufferFromPlug(_plugOut.audio);
     _plugIn.projectTimeSamples += FBFixedBlockSamples;
+
+    _anyNoteWasOnLastSamplePrevRound = _anyNoteIsOn;
+    _lastKeyRawLastSamplePrevRound = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
   }
   _plugToHost->ProcessToHost(output);
 
