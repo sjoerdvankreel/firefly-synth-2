@@ -32,6 +32,8 @@ class alignas(alignof(TBlock)) FFVoiceModuleBlockParamState final
   std::array<TBlock, 1> portaSync = {};
   std::array<TBlock, 1> portaTime = {};
   std::array<TBlock, 1> portaBars = {};
+  std::array<TBlock, 1> portaSectionAmpAttack = {};
+  std::array<TBlock, 1> portaSectionAmpRelease = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceModuleBlockParamState);
 };

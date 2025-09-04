@@ -8,5 +8,6 @@ enum class FFVoiceModulePortaType { Off, On, Auto };
 enum class FFVoiceModulePortaMode { Always, Section };
 enum class FFVoiceModuleParam { 
   Coarse, Env5ToCoarse, Fine, LFO5ToFine, 
-  PortaType, PortaMode, PortaSync, PortaTime, PortaBars, Count };
+  PortaType, PortaMode, PortaSync, PortaTime, PortaBars, 
+  PortaSectionAmpAttack, PortaSectionAmpRelease, Count };
 std::unique_ptr<FBStaticModule> FFMakeVoiceModuleTopo();
