@@ -173,6 +173,8 @@ FBHostProcessor::ProcessHost(
     // CANNOT be done during voice activation, since then global mods have not run yet.
     // Bookkeeping is done by the plug itself. So much for clean separation of base/plug.
     // But whatever, just glad i found it. Delayed-by-1-block errors are hard.
+    // Also it's a good thing we updated the global note matrix already,
+    // since portamento needs the very last last-key (1 sample before voice start).
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
