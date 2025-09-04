@@ -55,8 +55,16 @@ FFVoiceModuleProcessor::BeginVoice(
   int slideMultiplier = portaType == FFVoiceModulePortaType::Auto ? 1 : std::abs(portaDiffSemis);
   _portaPitchSamplesTotal *= slideMultiplier;
   _portaPitchSamplesProcessed = 0;
-  _portaPitchDelta = portaDiffSemis / (float)_portaPitchSamplesTotal;
-  _portaPitchOffsetCurrent = (float)portaDiffSemis;
+  if (_portaPitchSamplesTotal == 0)
+  {
+    _portaPitchDelta = 0.0f;
+    _portaPitchOffsetCurrent = 0.0f;
+  }
+  else
+  {
+    _portaPitchDelta = portaDiffSemis / (float)_portaPitchSamplesTotal;
+    _portaPitchOffsetCurrent = (float)portaDiffSemis;
+  }
 }
 
 void

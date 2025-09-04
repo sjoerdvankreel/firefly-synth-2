@@ -1,4 +1,4 @@
-<REAPER_PROJECT 0.1 "7.42/win64" 1757013647
+<REAPER_PROJECT 0.1 "7.42/win64" 1757015357
   <NOTES 0 2
   >
   RIPPLE 0 0
@@ -41,6 +41,7 @@
   RENDER_ADDTOPROJ 0
   RENDER_STEMS 0
   RENDER_DITHER 0
+  RENDER_TRIM 0 0 0 0
   TIMELOCKMODE 1
   TEMPOENVLOCKMODE 1
   ITEMMIX 1
@@ -9890,15 +9891,21 @@
         E 240 80 33 00
         E 240 90 37 7f
         E 240 80 37 00
-        e 0 90 34 7f
-        e 240 80 34 00
+        E 0 90 34 7f
+        E 240 80 34 00
+        E 240 90 30 60
+        E 240 80 30 00
+        E 240 90 30 60
+        E 240 80 30 00
+        E 0 90 30 60
+        E 240 80 30 00
         E 240 90 30 60
         E 480 80 30 00
-        E 480 90 30 60
-        E 480 80 30 00
-        E 0 90 30 60
-        E 480 80 30 00
-        E 1920 b0 7b 00
+        E 0 90 31 60
+        E 480 80 31 00
+        e 0 90 3c 60
+        e 480 80 3c 00
+        E 1200 b0 7b 00
         CCINTERP 32
         CHASE_CC_TAKEOFFS 1
         GUID {8C029856-ECF5-44D7-BBD8-7C3B87E203B3}
