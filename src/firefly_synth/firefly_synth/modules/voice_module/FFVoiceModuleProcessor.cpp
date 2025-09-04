@@ -13,6 +13,15 @@
 
 #include <xsimd/xsimd.hpp>
 
+void 
+FFVoiceModuleProcessor::BeginVoice(
+  float previousMidiKeyUntuned, 
+  bool anyNoteWasOnAlready)
+{
+  _anyNoteWasOnAlready = anyNoteWasOnAlready;
+  _previousMidiKeyUntuned = previousMidiKeyUntuned;
+}
+
 void
 FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 {
