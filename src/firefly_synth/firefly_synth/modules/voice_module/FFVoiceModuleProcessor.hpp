@@ -9,11 +9,10 @@ struct FBModuleProcState;
 
 class FFVoiceModuleProcessor final
 {
-  float _portaPitchStart = 0.0f;
-  float _portaPitchDelta = 0.0f;
-  float _portaPitchCurrent = 0.0f;
   int _portaPitchSamplesTotal = 0;
   int _portaPitchSamplesProcessed = 0;
+  float _portaPitchDelta = 0.0f;
+  float _portaPitchOffsetCurrent = 0.0f;
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceModuleProcessor);

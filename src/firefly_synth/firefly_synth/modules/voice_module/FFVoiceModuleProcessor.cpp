@@ -36,13 +36,13 @@ FFVoiceModuleProcessor::BeginVoice(
   auto portaType = topo.NormalizedToListFast<FFVoiceModulePortaType>(FFVoiceModuleParam::PortaType, portaTypeNorm);
   auto portaMode = topo.NormalizedToListFast<FFVoiceModulePortaMode>(FFVoiceModuleParam::PortaMode, portaModeNorm);
 
+  float portaPitchStart;
   if (previousMidiKeyUntuned < 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
-    _portaPitchStart = (float)state.voice->event.note.keyUntuned;
+    portaPitchStart = (float)state.voice->event.note.keyUntuned;
   else
-    _portaPitchStart = previousMidiKeyUntuned;
-  _portaPitchCurrent = _portaPitchStart;
+    portaPitchStart = previousMidiKeyUntuned;
 
   if (portaSync)
     _portaPitchSamplesTotal = topo.NormalizedToBarsSamplesFast(
@@ -51,11 +51,12 @@ FFVoiceModuleProcessor::BeginVoice(
     _portaPitchSamplesTotal = topo.NormalizedToLinearTimeSamplesFast(
       FFVoiceModuleParam::PortaTime, portaTimeNorm, sampleRate);
 
-  int portaDiffSemis = state.voice->event.note.keyUntuned - (int)std::round(_portaPitchStart);
+  int portaDiffSemis = state.voice->event.note.keyUntuned - (int)std::round(portaPitchStart);
   int slideMultiplier = portaType == FFVoiceModulePortaType::Auto ? 1 : std::abs(portaDiffSemis);
   _portaPitchSamplesTotal *= slideMultiplier;
   _portaPitchSamplesProcessed = 0;
   _portaPitchDelta = portaDiffSemis / (float)_portaPitchSamplesTotal;
+  _portaPitchOffsetCurrent = (float)portaDiffSemis;
 }
 
 void
@@ -89,10 +90,9 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
   {
-    if(_portaPitchSamplesProcessed++ < _portaPitchSamplesTotal)
-      _portaPitchCurrent += _portaPitchDelta;
-    float portaPitchOffset = _portaPitchCurrent - _portaPitchStart;
-    pitchOffsetInSemis.Set(s, pitchOffsetInSemis.Get(s) + portaPitchOffset);
+    if(_portaPitchSamplesProcessed++ <= _portaPitchSamplesTotal)
+      _portaPitchOffsetCurrent -= _portaPitchDelta;
+    pitchOffsetInSemis.Set(s, pitchOffsetInSemis.Get(s) - _portaPitchOffsetCurrent);
   }
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
