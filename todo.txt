@@ -32,13 +32,13 @@ TODOLIST for alpha-14
 [x] voice + pitch + cent + porta off/on/auto + sync +  + porta time + porta-when-section
 [ ] portamento start/end section multiplier
 [ ] make porta lead demo
+
+TODOLIST for alpha-15
+
 [ ] scale out of the matrix?, lo-hi or min-max into it
 [ ] waveshaper-like graph source / scale / target
 [ ] minmax in the modmatrix 
 [ ] filters should track the actual pitch when possible (string osci)
-
-TODOLIST for alpha-15
-
 [ ] move flush audio to somewhere else
 [ ] make a dedicated tuning section with some options
 [ ] special param stuff maybe not using params but return struct from virtual?

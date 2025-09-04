@@ -111,7 +111,7 @@ FFMakeVoiceModuleTopo()
   portaMode.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaMode);
   portaMode.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPortaMode);
   portaMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaMode);
-  portaMode.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType }, [](auto const& vs) { return vs[0] == 0; });
+  portaMode.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& portaSync = result->params[(int)FFVoiceModuleParam::PortaSync];
   portaSync.acc = false;
@@ -125,7 +125,7 @@ FFMakeVoiceModuleTopo()
   portaSync.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaSync);
   portaSync.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPortaSync);
   portaSync.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaSync);
-  portaSync.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType }, [](auto const& vs) { return vs[0] == 0; });
+  portaSync.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& portaTime = result->params[(int)FFVoiceModuleParam::PortaTime];
   portaTime.acc = false;
