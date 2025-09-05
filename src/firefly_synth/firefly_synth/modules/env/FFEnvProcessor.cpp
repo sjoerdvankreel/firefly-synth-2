@@ -47,27 +47,17 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
     _smoothSamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::SmoothBars, smoothBarsNorm, state.input->sampleRate, state.input->bpm);
     for (int i = 0; i < FFEnvStageCount; i++)
-    {
-      float stageSamples = topo.NormalizedToBarsFloatSamplesFast(
+      _stageSamples[i] = topo.NormalizedToBarsSamplesFast(
         FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
         state.input->sampleRate, state.input->bpm);
-      if (state.moduleSlot == FFAmpEnvSlot)
-        stageSamples *= procState->dsp.voice[voice].voiceModule.thisVoicePortaSectionAttackMultiplier;
-      _stageSamples[i] = (int)std::round(stageSamples);
-    }
   }
   else
   {
     _smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
     for (int i = 0; i < FFEnvStageCount; i++)
-    {
-      float stageSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
+      _stageSamples[i] = topo.NormalizedToLinearTimeSamplesFast(
         FFEnvParam::StageTime, stageTimeNorm[i].Voice()[voice], state.input->sampleRate);
-      if (state.moduleSlot == FFAmpEnvSlot)
-        stageSamples *= procState->dsp.voice[voice].voiceModule.thisVoicePortaSectionAttackMultiplier;
-      _stageSamples[i] = (int)std::round(stageSamples);
-    }
   }
 
   _lengthSamples = 0;
@@ -78,7 +68,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
     _lengthSamplesUpToStage[i] = _lengthSamples;
     _lengthSamples += _stageSamples[i];
     if (i < _releasePoint)
-      _lengthSamplesUpToRelease += _stageSamples[i];    
+      _lengthSamplesUpToRelease += _stageSamples[i];
   }
   _lengthSamples += _smoothSamples;
 
@@ -104,7 +94,7 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   _smoother.State(_lastOverall);
 }
 
-int 
+int
 FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
 {
   int voice = state.voice->slot;
@@ -148,9 +138,9 @@ FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
   if (state.moduleSlot == 0)
     for (; s < state.voice->offsetInBlock; s++)
       output.Set(s, 0.0f);
-  
+
   int stage = 0;
-  while(stage < FFEnvStageCount)
+  while (stage < FFEnvStageCount)
   {
     bool stageReset = false;
     int& stagePos = _stagePositions[stage];
@@ -165,7 +155,7 @@ FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
       else
         stageStart = stage == 0 ? 0.0f : stageLevel[stage - 1].Voice()[voice].CV().Get(s);
 
-      if(_type == FFEnvType::Linear)
+      if (_type == FFEnvType::Linear)
         _lastOverall = stageStart + (stageEnd - stageStart) * pos;
       else
       {
@@ -219,7 +209,7 @@ FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
 
       stagePos++;
       _positionSamples++;
-    }      
+    }
 
     if (!stageReset)
       stage++;
