@@ -31,7 +31,7 @@ TODOLIST for alpha-14
 [x] fruity clicks when pb mod enabled => known issues
 [x] voice + pitch + cent + porta off/on/auto + sync +  + porta time + porta-when-section
 [ ] envelope should loop at very last ?
-[ ] portamento start/end section multiplier
+[ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
 [ ] make porta lead demo
 
 TODOLIST for alpha-15
