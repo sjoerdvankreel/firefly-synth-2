@@ -15,7 +15,6 @@ class FBModuleGraphComponent;
 class FFPlugGUI final:
 public FBPlugGUI
 {
-  bool _showMatrix = false;
   juce::Component* _matrix = {};
   FBGridComponent* _modules = {};
   FBGridComponent* _container = {};
