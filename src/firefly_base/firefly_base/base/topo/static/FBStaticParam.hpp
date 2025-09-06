@@ -35,28 +35,28 @@ typedef std::function<std::string(int moduleIndex, int moduleSlot, int paramSlot
 FBParamDefaultTextSelector;
 
 typedef std::function<double* (
-int moduleSlot, int paramSlot, void* state)>
-FBScalarParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBScalarParamAddrSelector;
 
 typedef std::function<float* (
-int moduleSlot, int paramSlot, void* state)>
-FBGlobalExchangeParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBGlobalExchangeParamAddrSelector;
 typedef std::function<std::array<float, FBMaxVoices>* (
-int moduleSlot, int paramSlot, void* state)>
-FBVoiceExchangeParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBVoiceExchangeParamAddrSelector;
 
 typedef std::function<FBVoiceAccParamState* (
-int moduleSlot, int paramSlot, void* state)>
-FBVoiceAccProcParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBVoiceAccProcParamAddrSelector;
 typedef std::function<FBGlobalAccParamState* (
-int moduleSlot, int paramSlot, void* state)>
-FBGlobalAccProcParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBGlobalAccProcParamAddrSelector;
 typedef std::function<FBVoiceBlockParamState* (
-int moduleSlot, int paramSlot, void* state)>
-FBVoiceBlockProcParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBVoiceBlockProcParamAddrSelector;
 typedef std::function<FBGlobalBlockParamState* (
-int moduleSlot, int paramSlot, void* state)>
-FBGlobalBlockProcParamAddrSelector;
+  int moduleSlot, int paramSlot, void* state)>
+  FBGlobalBlockProcParamAddrSelector;
 
 struct FBStaticParamBase
 {
@@ -113,8 +113,8 @@ public:
   FBIdentityParam const& Identity() const { FB_ASSERT(type == FBParamType::Identity); return identity; }
 };
 
-struct FBStaticGUIParam final:
-public FBStaticParamBase
+struct FBStaticGUIParam final :
+  public FBStaticParamBase
 {
 public:
   bool IsOutput() const { return false; }
@@ -122,12 +122,23 @@ public:
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticGUIParam);
 };
 
-struct FBStaticParam final:
-public FBStaticParamBase
+struct FBStaticParam final :
+  public FBStaticParamBase
 {
 public:
   bool acc = false;
   bool output = false;
+
+  // So sue me.
+  // Used to provide a toggle which we check in 
+  // realtime to flush delay lines when it changed. 
+  // But there's a bunch of checks in the base code
+  // which assert that an audio parameter has some
+  // sort of controller assigned to it, which i want to keep in.
+  // Also doing this the "right" way involves sending non-parameter
+  // data from controller to processor which i imagine differs quite
+  // a bit between vst3 and clap.
+  bool thisIsNotARealParameter = false;
 
   FBAutomationTiming AutomationTiming() const;
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);

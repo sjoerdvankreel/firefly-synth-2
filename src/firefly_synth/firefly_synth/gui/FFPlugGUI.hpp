@@ -15,10 +15,13 @@ class FBModuleGraphComponent;
 class FFPlugGUI final:
 public FBPlugGUI
 {
-  bool _showMatrix = false;
   juce::Component* _matrix = {};
   FBGridComponent* _modules = {};
   FBGridComponent* _container = {};
+  FBGridComponent* _topModules = {};
+  FBGridComponent* _headerAndGraph = {};
+  FBGridComponent* _outputGUIAndPatch = {};
+
   FBContentComponent* _content = {};
   juce::Component* _overlayComponent = {};
   juce::Component* _overlayContainer = {};
@@ -30,19 +33,23 @@ public FBPlugGUI
   void SetupGUI();
   FBGUIRenderType GetRenderType(int paramIndex) const;
 
+protected:
+  void OnPatchChanged() override;
+  void UpdateExchangeStateTick() override;
+
 public:
   ~FFPlugGUI();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugGUI);
   FFPlugGUI(FBHostGUIContext* hostContext);
 
-  bool ToggleMatrix();
+  void FlushDelayLines();
+  void ToggleMatrix(bool on);
   void SwitchGraphToModule(int index, int slot);
   
   void HideOverlayComponent();
   void ShowOverlayComponent(juce::Component* overlay, int w, int h);
 
   void resized() override;
-  void UpdateExchangeStateTick() override;
   FBGUIRenderType GetKnobRenderType() const override;
   FBGUIRenderType GetGraphRenderType() const override;
   void ModuleSlotClicked(int index, int slot) override;

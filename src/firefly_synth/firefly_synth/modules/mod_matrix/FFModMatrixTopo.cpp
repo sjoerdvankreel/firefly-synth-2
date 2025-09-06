@@ -87,7 +87,7 @@ FFModMatrixMakeSources(bool global, FBStaticTopo const* topo)
 std::unique_ptr<FBStaticModule>
 FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
 {
-  int slotCount = global ? FFModMatrixGlobalSlotCount : FFModMatrixVoiceSlotCount;
+  int maxSlotCount = global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount;
   std::string prefix = global ? "G" : "V";
   auto result = std::make_unique<FBStaticModule>();
   result->voice = !global;
@@ -100,12 +100,35 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   auto selectVoiceModule = [](auto& state) { return &state.voice.vMatrix; };
   auto selectGlobalModule = [](auto& state) { return &state.global.gMatrix; };
 
+  auto& slots = result->params[(int)FFModMatrixParam::Slots];
+  slots.acc = false;
+  slots.defaultText = global? "2": "1"; // global: modulate PB/ModWheel default, voice: velocity to voice amp
+  slots.name = "Slots";
+  slots.slotCount = 1;
+  slots.id = prefix + "{511B2721-2733-4BB4-BA75-C55AB8B6C54D}";
+  slots.type = FBParamType::Discrete;
+  slots.Discrete().valueCount = maxSlotCount + 1;
+  auto selectSlots = [](auto& module) { return &module.block.slots; };
+  slots.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSlots);
+  slots.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSlots);
+  slots.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSlots);
+  slots.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSlots);
+  slots.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSlots);
+
   auto& opType = result->params[(int)FFModMatrixParam::OpType];
   opType.acc = false;
   opType.name = "Op";
   opType.display = "Op";
-  opType.slotCount = slotCount;
-  opType.defaultText = "Off";
+  opType.slotCount = maxSlotCount;
+  opType.defaultTextSelector = [global](int, int, int ps) {
+    if (!global)
+      return ps > 0? "Off": "UP Mul"; // velocity
+    if (ps > 1)
+      return "Off";
+    if (ps == 0)
+      return "UP Stk"; // mod wheel
+    return "BP Stk"; // pitch bend
+  };
   opType.id = prefix + "{8D28D968-8585-4A4D-B636-F365C5873973}";
   opType.type = FBParamType::List;
   opType.List().items = {
@@ -122,13 +145,14 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   opType.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectOpType);
   opType.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectOpType);
   opType.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOpType);
+  opType.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0]; });
 
   auto& amount = result->params[(int)FFModMatrixParam::Amount];
   amount.acc = true;
   amount.defaultText = "100";
   amount.name = "Amount";
   amount.display = "Amt";
-  amount.slotCount = slotCount;
+  amount.slotCount = maxSlotCount;
   amount.unit = "%";
   amount.id = prefix + "{880BC229-2794-45CC-859E-608E85A51D72}";
   amount.type = FBParamType::Identity;
@@ -138,14 +162,22 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   amount.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectAmount);
   amount.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectAmount);
   amount.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectAmount);
-  amount.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+  amount.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::Amount, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   auto& source = result->params[(int)FFModMatrixParam::Source];
   source.acc = false;
   source.name = "Source";
   source.display = "Source";
-  source.defaultText = "Off";
-  source.slotCount = slotCount;
+  source.defaultTextSelector = [global](int, int, int ps) {
+    if (!global)
+      return ps > 0? "Off": "VNote Velo"; // velocity
+    if (ps > 1)
+      return "Off";
+    if (ps == 0)
+      return "MIDI CC 1"; // mod wheel
+    return "MIDI PB"; // pitch bend
+  };
+  source.slotCount = maxSlotCount;
   source.id = prefix + "{08DB9477-1B3A-4EC8-88C9-AF3A9ABA9CD8}";
   source.type = FBParamType::List;
   source.List().linkedTargets = { (int)FFModMatrixParam::Scale, (int)FFModMatrixParam::Target };
@@ -155,12 +187,12 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSource);
   source.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSource);
   source.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSource);
-  source.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+  source.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::Source, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   auto& scale = result->params[(int)FFModMatrixParam::Scale];
   scale.acc = false;
   scale.name = "Scale";
-  scale.slotCount = slotCount;
+  scale.slotCount = maxSlotCount;
   scale.defaultText = "Off";
   scale.id = prefix + "{4A166295-A1EF-4354-AA2E-3F14B98A70CE}";
   scale.type = FBParamType::List;
@@ -172,6 +204,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scale.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScale);
   scale.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScale);
   scale.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+  scale.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::Scale, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   auto const& sources = global ? topo->gMatrixSources : topo->vMatrixSources;
   scale.List().submenuStart[0] = "Off";
@@ -223,8 +256,16 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.acc = false;
   target.name = "Target";
   target.display = "Target";
-  target.slotCount = slotCount;
-  target.defaultText = "Off";
+  target.slotCount = maxSlotCount;
+  target.defaultTextSelector = [global](int, int, int ps) {
+    if (!global)
+      return ps > 0? "Off": "VMix Amp"; // velocity
+    if (ps > 1)
+      return "Off";
+    if (ps == 0)
+      return "Master Mod Wheel"; // mod wheel
+    return "Master Pitch Bend"; // pitch bend
+  };
   target.id = prefix + "{DB2C381F-7CA5-49FA-83C1-93DFECF9F97C}";
   target.type = FBParamType::List;
   target.List().linkedSource = (int)FFModMatrixParam::Source;
@@ -234,7 +275,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   target.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTarget);
   target.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectTarget);
   target.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTarget);
-  target.dependencies.enabled.audio.WhenSimple({ (int)FFModMatrixParam::OpType }, [](auto const& vs) { return vs[0] != 0; });
+  target.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::Target, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   FBTopoIndices prevModule = { -1, -1 };
   auto const& targets = global ? topo->gMatrixTargets : topo->vMatrixTargets;

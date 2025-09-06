@@ -53,14 +53,16 @@ FBParamsDependentDependency::EvaluateGUI(FBHostGUIContext const* hostContext)
   if (dependency.evaluate == nullptr)
     return true;
   evaluations.clear();
+  evaluatedSlots.clear();
   for (int i = 0; i < runtimeDependencies.size(); i++)
   {
     auto const& param = hostContext->Topo()->gui.params[runtimeDependencies[i]];
     double norm = hostContext->GetGUIParamNormalized(runtimeDependencies[i]);
     double plain = param.static_.NonRealTime().NormalizedToPlain(norm);
     evaluations.push_back(static_cast<int>(plain));
+    evaluatedSlots.push_back(param.topoIndices.param.slot);
   }
-  return dependency.evaluate(evaluations);
+  return dependency.evaluate(evaluatedSlots, evaluations);
 }
 
 bool
@@ -69,14 +71,16 @@ FBParamsDependentDependency::EvaluateAudio(FBHostGUIContext const* hostContext)
   if (dependency.evaluate == nullptr)
     return true;
   evaluations.clear();
+  evaluatedSlots.clear();
   for (int i = 0; i < runtimeDependencies.size(); i++)
   {
     auto const& param = hostContext->Topo()->audio.params[runtimeDependencies[i]];
     double norm = hostContext->GetAudioParamNormalized(runtimeDependencies[i]);
     double plain = param.static_.NonRealTime().NormalizedToPlain(norm);
     evaluations.push_back(static_cast<int>(plain));
+    evaluatedSlots.push_back(param.topoIndices.param.slot);
   }
-  return dependency.evaluate(evaluations);
+  return dependency.evaluate(evaluatedSlots, evaluations);
 }
 
 FBParamsDependent::

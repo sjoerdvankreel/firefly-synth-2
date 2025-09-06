@@ -47,12 +47,12 @@ _oversampler(
 
 template <bool Global>
 float 
-FFEffectProcessor::NextMIDINoteKey(int sample)
+FFEffectProcessor::NextMIDIKeyUntuned(int sample)
 {
   if constexpr (Global)
-    return _MIDINoteKeySmoother.Next(_MIDINoteKey.Get(sample));
+    return _MIDIKeyUntunedSmoother.Next(_MIDIKeyUntuned.Get(sample));
   else
-    return _MIDINoteKey.Get(sample);
+    return _MIDIKeyUntuned.Get(sample);
 }
 
 void 
@@ -127,16 +127,17 @@ FFEffectProcessor::BeginVoiceOrBlock(
 
   if constexpr (Global)
     for(int s = 0; s < FBFixedBlockSamples; s++)
-      _MIDINoteKey.Set(s, state.input->lastMIDINoteKey.Get(s));
+      // raw because we provide our own smoothing filter
+      _MIDIKeyUntuned.Set(s, state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(s));
   else
-    _MIDINoteKey.Fill(static_cast<float>(state.voice->event.note.key));
+    _MIDIKeyUntuned.Fill(static_cast<float>(state.voice->event.note.keyUntuned));
   if (_oversampleTimes != 1)
-    _MIDINoteKey.UpsampleStretch<FFEffectOversampleTimes>();
+    _MIDIKeyUntuned.UpsampleStretch<FFEffectOversampleTimes>();
   int smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
     FFEffectParam::LastKeySmoothTime, lastKeySmoothTimeNorm, state.input->sampleRate);
-  _MIDINoteKeySmoother.SetCoeffs(smoothSamples);
+  _MIDIKeyUntunedSmoother.SetCoeffs(smoothSamples);
   if(graph)
-    _MIDINoteKeySmoother.State(_MIDINoteKey.Get(0));
+    _MIDIKeyUntunedSmoother.State(_MIDIKeyUntuned.Get(0));
 
   for (int i = 0; i < FFEffectBlockCount; i++)
   {
@@ -257,7 +258,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           if constexpr (!Global)
           {
             stVarFreqNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
+              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                 stVarFreqNormModulated[i].Load(s)));
           }
@@ -283,7 +284,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
             if constexpr (!Global)
             {
               combFreqMinNormModulated[i].Store(s,
-                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
+                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   combFreqMinNormModulated[i].Load(s)));
             }
@@ -305,7 +306,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
             if constexpr (!Global)
             {
               combFreqPlusNormModulated[i].Store(s,
-                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
+                FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                   FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                   combFreqPlusNormModulated[i].Load(s)));
             }
@@ -332,7 +333,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
           if constexpr (!Global)
           {
             distDriveNormModulated[i].Store(s,
-              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i].output.Load(s),
+              FFModulate(FFModulationOpType::UPMul, procState->dsp.voice[voice].env[i + FFEnvSlotOffset].output.Load(s),
                 FFSelectDualProcAccParamNormalized<Global>(envAmtNorm[i], voice).CV().Load(s),
                 distDriveNormModulated[i].Load(s)));
           }
@@ -504,7 +505,7 @@ FFEffectProcessor::ProcessComb(
     auto resPlus = combResPlusPlain[block].Get(s);
     auto freqMin = combFreqMinPlain[block].Get(s);
     auto freqPlus = combFreqPlusPlain[block].Get(s);
-    float freqMul = KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk);
+    float freqMul = KeyboardTrackingMultiplier(NextMIDIKeyUntuned<Global>(s), trkk, ktrk);
 
     if constexpr(MinOn)
       freqMin = FFMultiplyClamp(freqMin, freqMul, FFMinCombFilterFreq, FFMaxCombFilterFreq);
@@ -547,7 +548,7 @@ FFEffectProcessor::ProcessStVar(
     auto freq = stVarFreqPlain[block].Get(s);
     auto gain = stVarGainPlain[block].Get(s);
     auto ktrk = stVarKeyTrkPlain[block].Get(s);
-    freq = FFMultiplyClamp(freq, KeyboardTrackingMultiplier(NextMIDINoteKey<Global>(s), trkk, ktrk),
+    freq = FFMultiplyClamp(freq, KeyboardTrackingMultiplier(NextMIDIKeyUntuned<Global>(s), trkk, ktrk),
       FFMinStateVariableFilterFreq, FFMaxStateVariableFilterFreq);
 
     if (_graph)

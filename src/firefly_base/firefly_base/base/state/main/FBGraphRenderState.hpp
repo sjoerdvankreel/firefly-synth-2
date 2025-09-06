@@ -3,7 +3,9 @@
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
+
 #include <firefly_base/dsp/host/FBHostBlock.hpp>
+#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
 
 #include <juce_dsp/juce_dsp.h>
 
@@ -24,6 +26,7 @@ class FBGraphRenderState final
 
   std::vector<FBNoteEvent> _noteEvents = {};
   FBSArray2<float, FBFixedBlockSamples, 2> _audio = {};
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>> _noteMatrixRaw = {};
 
   FBPlugGUI const* const _plugGUI;
   std::unique_ptr<juce::dsp::FFT> _fft = {};
@@ -45,8 +48,8 @@ public:
   void FFT(std::vector<float>& data);
   void PrepareForRenderPrimaryVoice();
   void PrepareForRenderExchangeVoice(int voice);
-  void PrepareForRenderExchange(float lastMIDINoteKey);
   void PrepareForRenderPrimary(float sampleRate, float bpm);
+  void PrepareForRenderExchange(FBNoteMatrix<float> const& noteMatrix);
 
   FBPlugGUI const* PlugGUI() const;
   FBModuleProcState* ModuleProcState();

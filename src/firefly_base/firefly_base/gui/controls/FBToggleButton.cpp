@@ -69,6 +69,7 @@ FBParamControl(plugGUI, param)
   auto* context = plugGUI->HostContext();
   SetValueNormalizedFromHost(context->GetAudioParamNormalized(param->runtimeParamIndex));
   _isOn = getToggleState();
+  setEnabled(!param->static_.output);
 }
 
 void 

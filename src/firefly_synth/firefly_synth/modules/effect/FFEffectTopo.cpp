@@ -153,8 +153,8 @@ FFMakeEffectTopo(bool global)
   envAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectEnvAmt);
   envAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectEnvAmt);
   envAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectEnvAmt);
-  envAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On },
-    [global](auto const& vs) { return !global && vs[0] != 0; });
+  envAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
 
   auto& lfoAmt = result->params[(int)FFEffectParam::LFOAmt];
   lfoAmt.acc = true;
@@ -172,8 +172,8 @@ FFMakeEffectTopo(bool global)
   lfoAmt.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectLFOAmt);
   lfoAmt.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectLFOAmt);
   lfoAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectLFOAmt);
-  lfoAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On },
-    [](auto const& vs) { return vs[0] != 0; });
+  lfoAmt.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On, (int)FFEffectParam::Kind },
+    [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& stVarMode = result->params[(int)FFEffectParam::StVarMode];
   stVarMode.acc = false;

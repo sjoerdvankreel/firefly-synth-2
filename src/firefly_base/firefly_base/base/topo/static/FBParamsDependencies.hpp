@@ -6,18 +6,23 @@
 
 typedef std::function<bool(
   std::vector<int> const& runtimeParamValues)>
-FBParamsDependencyEvaluator;
+FBSimpleParamsDependencyEvaluator;
+
+typedef std::function<bool(
+  std::vector<int> const& runtimeParamSlots,
+  std::vector<int> const& runtimeParamValues)>
+  FBSlotParamsDependencyEvaluator;
 
 struct FBParamsDependency final
 {
   std::vector<FBTopoIndices> staticParamIndices = {};
-  FBParamsDependencyEvaluator evaluate = {};
+  FBSlotParamsDependencyEvaluator evaluate = {};
   void WhenSimple(
     std::vector<int> const& staticParamIndices,
-    FBParamsDependencyEvaluator const& evaluate);
+    FBSimpleParamsDependencyEvaluator const& evaluate);
   void WhenSlots(
     std::vector<FBTopoIndices> const& staticParamIndices,
-    FBParamsDependencyEvaluator const& evaluate);
+    FBSlotParamsDependencyEvaluator const& evaluate);
 };
 
 struct FBAnyParamsDependencies final

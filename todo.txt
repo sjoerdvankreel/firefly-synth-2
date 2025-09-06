@@ -1,24 +1,50 @@
-TODOLIST for alpha-14
+TODOLIST for alpha-15
 
-[ ] 8x env/lfo
-[ ] lower the delay smooth for vecho
+[ ] separate names for clap/vst3 (flstudio not like it) and maybe separate guids?
+[ ] envelope should loop at very last ?
+[ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
+[ ] make porta lead demo
+[ ] scale out of the matrix?, lo-hi or min-max into it
+[ ] waveshaper-like graph source / scale / target
+[ ] minmax in the modmatrix 
+[ ] filters should track the actual pitch when possible (string osci)
+[ ] move flush audio to somewhere else
+[ ] make a dedicated tuning section with some options
+[ ] special param stuff maybe not using params but return struct from virtual?
+[ ] need per-instance params for microtuning
+[ ] save modulation as actual value not normalized + display that way too
+[ ] note filtering
+[ ] how the heck is the mod menu ordered?
+[ ] do display disabled/impossible items different in the mod matrix
+[ ] make a percussion demo
+[ ] tune the filters
+[ ] figure out all places where is used midi note
+[ ] MTS into master: off / note / continuous 
+[ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
+[ ] bright text when graph on
 [ ] get the text out of the graphs
+[ ] 3x on note random as a cheap mod source, uni + normal
+[ ] refix all behind-the-scenes mod sources and targets
+
+TODOLIST for alpha-16
+
+[ ] ubuntu 18 + check mint and whatnot (dont forget to update mts lib .so)
+[ ] update all dependencies
+[ ] 8x env/lfo?
+[ ] make a cpu details popup
+[ ] global unison with chord mode
+[ ] show visual clue if knob is being modulated
+[ ] show modulation amount int terms of the mod target unit for matrix and easy access
+[ ] lower the delay smooth for vecho
 [ ] make a tune before release
 [ ] figure out bitwig dataexchange on linux
 [ ] less matrix routes
-[ ] floating notes
-[ ] master input (modwheel, pb + range) + easy-access midi somehow
-[ ] portamento controls + all-osci coarse/fine
-[ ] global set-exact-value UI (+ context menu item?)
-[ ] MIDI key, velo (voice), low/high/last
-[ ] 3x on note random as a cheap mod source, uni + normal
 [ ] make it clear alpha breaks the demos
 [ ] allow modulate env stage lengths on voice start => any per-voice-start-automatable
 [ ] keep taps on the mod matrix
-[ ] refix all behind-the-scenes mod sources and targets
 [ ] master aux gui to small
 
-pre/post VMIX echo or not ?
+pre/post VMIX echo or not ? => NOT, bc VMIX will be on global uni subvoice level -- or will it ?
 list all the dependencies!
 pck support
 per-module presets
@@ -26,13 +52,12 @@ external audio input
 separate midi, bpm, automation smoothing, auto should be global + per-param override
 drop+recreate all the demos before going rc (not allow breaking changes anymore)
 drop all the conversion before going beta/rc
-global unison TODO IF we do per-voice echo, this should not be on the subvoice level
+global unison TODO per voice echo should not be on the subvoice level
 autosoftclip
-MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating (not on-note but continuous)
+MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating optional (on-note and continuous both)
 another round of cpu and memory profiling
 factory presets
 get rid of sse2neon
-more context menus, clear matrix etc
 string timbre should not react to samplerate/oversample
 intel mac version
 fix todos

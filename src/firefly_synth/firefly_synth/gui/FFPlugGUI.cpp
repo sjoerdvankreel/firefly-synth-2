@@ -1,7 +1,6 @@
 #include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/gui/FFPatchGUI.hpp>
 #include <firefly_synth/gui/FFHeaderGUI.hpp>
-#include <firefly_synth/gui/FFPlugMatrixGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/env/FFEnvGUI.hpp>
 #include <firefly_synth/modules/lfo/FFLFOGUI.hpp>
@@ -11,8 +10,8 @@
 #include <firefly_synth/modules/effect/FFEffectGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/output/FFOutputGUI.hpp>
-#include <firefly_synth/modules/external/FFExternalGUI.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
+#include <firefly_synth/modules/voice_module/FFVoiceModuleGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsGUI.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
@@ -40,6 +39,12 @@ _graphRenderState(std::make_unique<FBGraphRenderState>(this))
   SetupGUI();
   InitAllDependencies();
   resized();
+}
+
+void
+FFPlugGUI::OnPatchChanged()
+{
+  FlushDelayLines();
 }
 
 void
@@ -127,15 +132,10 @@ FFPlugGUI::GetRenderType(int paramIndex) const
   return hasKeyboardFocus(true) ? FBGUIRenderType::Full : FBGUIRenderType::Basic;
 }
 
-bool
-FFPlugGUI::ToggleMatrix()
+void
+FFPlugGUI::ToggleMatrix(bool on)
 {
-  if (_showMatrix)
-    _content->SetContent(_modules);
-  else
-    _content->SetContent(_matrix);
-  _showMatrix = !_showMatrix;
-  return _showMatrix;
+  _content->SetContent(on? _matrix: _modules);
 }
 
 void 
@@ -163,6 +163,15 @@ FFPlugGUI::ShowOverlayComponent(Component* overlay, int w, int h)
   _overlayComponent = overlay;
 }
 
+void
+FFPlugGUI::FlushDelayLines()
+{
+  FBParamTopoIndices indices = { { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsParam::FlushDelayToggle, 0 } };
+  double flushNorm = HostContext()->GetAudioParamNormalized(indices);
+  double newFlushNorm = flushNorm > 0.5 ? 0.0 : 1.0;
+  HostContext()->PerformImmediateAudioParamEdit(indices, newFlushNorm);
+}
+
 void 
 FFPlugGUI::SetupGUI()
 {
@@ -170,26 +179,39 @@ FFPlugGUI::SetupGUI()
 
   _matrix = FFMakeModMatrixGUI(this); 
   _graph = StoreComponent<FBModuleGraphComponent>(_graphRenderState.get());
-  _modules = StoreComponent<FBGridComponent>(false, 1, -1, std::vector<int>(5, 1), std::vector<int> { { 1 } });
-  _modules->Add(0, 0, FFMakeOsciGUI(this));
-  _modules->Add(1, 0, FFMakeEffectGUI(this));
+  _headerAndGraph = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
+  _headerAndGraph->Add(0, 0, FFMakeHeaderGUI(this));
+  _headerAndGraph->Add(0, 1, _graph);
+
+  _outputGUIAndPatch = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 1, 0, 0 } });
+  _outputGUIAndPatch->Add(0, 0, FFMakeOutputGUI(this));
+  _outputGUIAndPatch->Add(0, 1, FFMakeGUISettingsGUI(this));
+  _outputGUIAndPatch->Add(0, 2, FFMakePatchGUI(this));
+
+  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 5, 4 } });
+  _topModules->Add(0, 0, FFMakeMasterGUI(this));
+  _topModules->Add(0, 1, FFMakeVoiceModuleGUI(this));
+
+  _modules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
+  _modules->Add(0, 0, _topModules);
+  _modules->Add(1, 0, FFMakeMixGUI(this));
   _modules->Add(2, 0, FFMakeEchoGUI(this));
-  _modules->Add(3, 0, FFMakeLFOGUI(this));
-  _modules->Add(4, 0, FFMakeEnvGUI(this));
+  _modules->Add(3, 0, FFMakeOsciGUI(this));
+  _modules->Add(4, 0, FFMakeEffectGUI(this));
+  _modules->Add(5, 0, FFMakeLFOGUI(this));
+  _modules->Add(6, 0, FFMakeEnvGUI(this));
+
   _content = StoreComponent<FBContentComponent>();
   _content->SetContent(_modules);
-  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 9, 13, 10, 65 } }, std::vector<int> { { 0, 1, 0, 0, 0, 0, 0 } });
-  _container->Add(0, 0, 1, 1, FFMakeHeaderGUI(this));
-  _container->Add(0, 1, 1, 1, FFMakeExternalGUI(this));
-  _container->Add(0, 2, 1, 1, FFMakeMasterGUI(this));
-  _container->Add(0, 3, 1, 1, FFMakeOutputGUI(this));
-  _container->Add(0, 4, 1, 1, FFMakeGUISettingsGUI(this));
-  _container->Add(0, 5, 1, 1, FFMakePlugMatrixGUI(this));
-  _container->Add(0, 6, 1, 1, FFMakePatchGUI(this));
-  _container->Add(1, 0, 1, 7, FFMakeMixGUI(this));
-  _container->Add(2, 0, 1, 7, _graph);
-  _container->Add(3, 0, 1, 7, _content);
+
+  _container = StoreComponent<FBGridComponent>(false, 0, -1, std::vector<int> { { 6, 9, 92 } }, std::vector<int> { { 1 } });
+  _container->Add(0, 0, _outputGUIAndPatch);
+  _container->Add(1, 0, _headerAndGraph);
+  _container->Add(2, 0, _content);
   addAndMakeVisible(_container);
+
+  bool matrixOn = HostContext()->GetGUIParamBool({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
+  ToggleMatrix(matrixOn);
 
   auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1, 0 } });
   _overlayContent = StoreComponent<FBContentComponent>();

@@ -28,3 +28,6 @@
 [submodule "lib/xsimd"]
 	path = lib/xsimd
 	url = https://github.com/sjoerdvankreel/xsimd.git
+[submodule "lib/MTS-ESP"]
+	path = lib/MTS-ESP
+	url = https://github.com/sjoerdvankreel/MTS-ESP.git

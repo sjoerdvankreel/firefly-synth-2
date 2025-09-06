@@ -1,3 +1,5 @@
 * Graphs are not painted on Linux+Renoise.
 * String osci responds to samplerate/oversampling. Pitch is good, timbre is not.
 * Direct-from-audio-engine visualization is broken on Linux+Bitwig+VST3 (CLAP is ok). Kinda impossible to debug, i suspect it has to do with VST3's processor/controller separation in combination with Bitwig's sandboxing model. See also https://forums.steinberg.net/t/dataexchange-on-linux/917660/5.
+* FLStudio clicks when midi modwheel is enabled in FF2 (probably it uses a default other than 0.5 and FF2 cant handle that). It's enabled by default in the
+global mod matrix, clicking goes away when you turn it off. I havent tested yet what actually happens when you really do use MIDI modwheel through FLStudio.

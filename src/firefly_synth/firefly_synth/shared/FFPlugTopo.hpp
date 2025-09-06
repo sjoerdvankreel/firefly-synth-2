@@ -14,11 +14,12 @@
 
 struct FBStaticTopoMeta;
 
-inline int constexpr FFLFOCount = 4;
-inline int constexpr FFOsciCount = FFLFOCount; // easy access mod
-inline int constexpr FFEffectCount = FFLFOCount; // easy access mod
+inline int constexpr FFLFOCount = 6;
+inline int constexpr FFOsciCount = 4; // easy access mod needs env/lfo >= this
+inline int constexpr FFEffectCount = FFOsciCount; // easy access mod needs env/lfo >= this, also GUI needs these to be equal
 inline int constexpr FFEnvCount = FFLFOCount + 1; // easy access mod, interleaving & amp env
-inline int constexpr FFAmpEnvSlot = FFLFOCount;
+inline int constexpr FFAmpEnvSlot = 0;
+inline int constexpr FFEnvSlotOffset = 1;
 
 inline constexpr char FFVendorName[] = "Sjoerd van Kreel";
 inline constexpr char FFVendorMail[] = "sjoerdvankreel@gmail.com";
@@ -27,10 +28,9 @@ inline constexpr char FFPlugName[] = "Firefly Synth 2";
 inline constexpr char FFPlugUniqueId[] = "754068B351A04DB4813B58D562BDFC1F";
 inline constexpr char FFPlugControllerId[] = "959E6302402B461A8C9AA5A6737BCAAD"; 
 
-// TODO rearrange
 enum class FFModuleType {
-  Output, GUISettings, Master, GMix, Osci, OsciMod, VEffect, GEffect, 
-  VMix, Env, VLFO, GLFO, GMatrix, VMatrix, MIDI, External, VEcho, GEcho, Count }; 
+  GUISettings, MIDI, GNote, Master, VoiceModule, Osci, OsciMod, VNote, Env, VEffect, 
+  GEffect, VLFO, GLFO, VMix, GMix, VEcho, GEcho, VMatrix, GMatrix, Output, Count };
 
 struct FFStaticTopo:
 public FBStaticTopo

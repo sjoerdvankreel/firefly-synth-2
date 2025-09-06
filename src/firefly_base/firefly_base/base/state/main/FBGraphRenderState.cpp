@@ -19,8 +19,8 @@ MakeNoteC4On()
   result.on = true;
   result.velo = 1.0f;
   result.note.id = 0;
-  result.note.key = 60;
   result.note.channel = 0;
+  result.note.keyUntuned = 60;
   return result;
 }
 
@@ -38,6 +38,7 @@ _exchangeVoiceManager(std::make_unique<FBVoiceManager>(_procState.get()))
 {
   _input->audio = &_audio;
   _input->noteEvents = &_noteEvents;
+  _input->noteMatrixRaw = &_noteMatrixRaw;
 
   auto hostContext = plugGUI->HostContext();
   for (int i = 0; i < hostContext->Topo()->audio.params.size(); i++)
@@ -120,14 +121,14 @@ FBGraphRenderState::PrepareForRenderExchangeVoice(int voice)
 }
 
 void
-FBGraphRenderState::PrepareForRenderExchange(float lastMIDINoteKey)
+FBGraphRenderState::PrepareForRenderExchange(FBNoteMatrix<float> const& noteMatrix)
 {
   _moduleState->voice = nullptr;
   _input->voiceManager = nullptr;
-  _input->lastMIDINoteKey.Fill(lastMIDINoteKey);
   _procState->InitProcessing(*ExchangeContainer());
   _moduleState->exchangeFromGUIRaw = ExchangeContainer()->Raw();
   _exchangeVoiceManager->InitFromExchange(ExchangeContainer()->Voices());
+  FBNoteMatrixInitArrayFromScalar(*_input->noteMatrixRaw, noteMatrix);
 }
 
 void
@@ -136,7 +137,7 @@ FBGraphRenderState::PrepareForRenderPrimary(float sampleRate, float bpm)
   _input->bpm = bpm;
   _input->voiceManager = nullptr;
   _input->sampleRate = sampleRate;
-  _input->lastMIDINoteKey.Fill(60.0f);
+  _input->noteMatrixRaw->SetKey(60.0f / 127.0f);
   _moduleState->voice = nullptr;
   _procState->InitProcessing(_plugGUI->HostContext());
 }

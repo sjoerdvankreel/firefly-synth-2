@@ -4,6 +4,7 @@
 bool FBIdentityParamNonRealTime::IsItems() const { return false; }
 bool FBIdentityParamNonRealTime::IsStepped() const { return false; }
 int FBIdentityParamNonRealTime::ValueCount() const { return 0; }
+int FBIdentityParamNonRealTime::ValueOffset() const { return 0; }
 FBEditType FBIdentityParamNonRealTime::GUIEditType() const { return FBEditType::Linear; }
 FBEditType FBIdentityParamNonRealTime::AutomationEditType() const { return FBEditType::Linear; }
 

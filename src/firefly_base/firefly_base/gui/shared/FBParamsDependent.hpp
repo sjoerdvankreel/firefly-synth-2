@@ -18,6 +18,8 @@ struct FBParamsDependencies;
 struct FBParamsDependentDependency final
 {
   std::vector<int> evaluations = {};
+  std::vector<int> evaluatedSlots = {};
+
   FBParamsDependency dependency;
   std::vector<int> const runtimeDependencies;
   

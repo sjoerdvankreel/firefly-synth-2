@@ -20,10 +20,11 @@ FFMakeOutputTopo()
   voices.output = true;
   voices.defaultText = "0";
   voices.name = "Voices";
+  voices.unit = "%";
   voices.slotCount = 1;
   voices.id = "{54C6CAD4-FA5A-4395-8131-C768E0AD48CF}";
   voices.type = FBParamType::Discrete;
-  voices.Discrete().valueCount = FBMaxVoices + 1;
+  voices.Discrete().valueCount = 101;
   auto selectVoices = [](auto& module) { return &module.block.voices; };
   voices.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVoices);
   voices.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoices);
@@ -33,11 +34,12 @@ FFMakeOutputTopo()
   cpu.acc = false;
   cpu.output = true;
   cpu.defaultText = "0";
-  cpu.name = "Cpu";
+  cpu.name = "CPU";
+  cpu.unit = "%";
   cpu.slotCount = 1;
   cpu.id = "{F7E383FA-61A6-4CDB-898B-C62C248633A0}";
   cpu.type = FBParamType::Discrete;
-  cpu.Discrete().valueCount = FFOutputMaxCpu + 1;
+  cpu.Discrete().valueCount = 101;
   auto selectCpu = [](auto& module) { return &module.block.cpu; };
   cpu.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCpu);
   cpu.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectCpu);
@@ -48,14 +50,28 @@ FFMakeOutputTopo()
   gain.output = true;
   gain.defaultText = "0";
   gain.name = "Gain";
+  gain.unit = "%";
   gain.slotCount = 1;
   gain.id = "{F0F8F4CA-8F90-4C6D-B685-24119817CC1D}";
   gain.type = FBParamType::Discrete;
-  gain.Discrete().valueCount = FFOutputMaxGain + 1;
+  gain.Discrete().valueCount = 101;
   auto selectGain = [](auto& module) { return &module.block.gain; };
   gain.scalarAddr = FFSelectScalarParamAddr(selectModule, selectGain);
   gain.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectGain);
   gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
+
+  auto& mtsEspOn = result->params[(int)FFOutputParam::MtsEspOn];
+  mtsEspOn.acc = false;
+  mtsEspOn.output = true;
+  mtsEspOn.name = "MTS-ESP";
+  mtsEspOn.slotCount = 1;
+  mtsEspOn.defaultText = "Off";
+  mtsEspOn.id = "{9803DBBB-E1C9-4FAC-ACEA-B0E7F9E28979}";
+  mtsEspOn.type = FBParamType::Boolean;
+  auto selectMtsEspOn = [](auto& module) { return &module.block.mtsEspOn; };
+  mtsEspOn.scalarAddr = FFSelectScalarParamAddr(selectModule, selectMtsEspOn);
+  mtsEspOn.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectMtsEspOn);
+  mtsEspOn.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectMtsEspOn);
 
   return result;
 }

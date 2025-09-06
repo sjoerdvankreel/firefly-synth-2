@@ -12,6 +12,8 @@
 using namespace clap;
 using namespace clap::helpers;
 
+class MTSClient;
+
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
@@ -42,6 +44,7 @@ public IFBHostDSPContext
 #pragma warning(pop)
 #endif
 
+  MTSClient* const _mtsClient;
   std::unique_ptr<FBPlugGUIContext> _gui;
   std::unique_ptr<FBRuntimeTopo> _topo;
   std::unique_ptr<FBGUIStateContainer> _guiState;
@@ -74,6 +77,7 @@ public:
     std::unique_ptr<FBStaticTopo>&& topo,
     clap_plugin_descriptor const* desc, 
     clap_host const* host,    
+    MTSClient* mtsClient,
     std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue);
 
   bool init() noexcept override;
@@ -106,6 +110,7 @@ public:
   bool guiIsApiSupported(const char* api, bool isFloating) noexcept override;
 
   float SampleRate() const override { return _sampleRate; }
+  MTSClient* GetMTSClient() override { return _mtsClient; }
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeState() override { return _dspExchangeState.get(); }

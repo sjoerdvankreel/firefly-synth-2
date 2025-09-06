@@ -7,7 +7,7 @@
 class FBPlugGUI;
 struct FBRuntimeParam;
 
-class FBOutputParamLabel final:
+class FBParamDisplayLabel final:
 public juce::Label,
 public FBParamControl,
 public IFBHorizontalAutoSize
@@ -15,14 +15,28 @@ public IFBHorizontalAutoSize
   int const _maxTextWidth;
 
 public:
-  FBOutputParamLabel(
+  FBParamDisplayLabel(
     FBPlugGUI* plugGUI,
     FBRuntimeParam const* param,
-    std::string const& defaultText,
     std::string const& maxWidthText);
 
-  juce::String getTooltip() override;
   void parentHierarchyChanged() override;
   int FixedWidth(int height) const override;
+  void SetValueNormalizedFromHost(double normalized) override;
+};
+
+class FBParamDisplayMeter final:
+public juce::Component,
+public FBParamControl
+{
+  int _fillCount = 0;
+
+public:
+  FBParamDisplayMeter(
+    FBPlugGUI* plugGUI,
+    FBRuntimeParam const* param);
+
+  void paint(juce::Graphics& g) override;
+  void parentHierarchyChanged() override;
   void SetValueNormalizedFromHost(double normalized) override;
 };

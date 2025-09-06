@@ -33,13 +33,66 @@ _hostToPlug(std::make_unique<FBHostToPlugProcessor>()),
 _plugToHost(std::make_unique<FBPlugToHostProcessor>(_voiceManager.get())),
 _smoothing(std::make_unique<FBSmoothingProcessor>(_voiceManager.get(), static_cast<int>(hostContext->ProcState()->Params().size())))
 {
-  _lastMIDINoteKey = 60.0f;
+  _noteMatrix.SetKey(60.0f / 127.0f);
   _plugOut.procState = _procState;
-  _plugIn.lastMIDINoteKey.Fill(60.0f);
   _plugIn.procState = _procState;
   _plugIn.sampleRate = _sampleRate;
   _plugIn.voiceManager = _voiceManager.get();
   _plug->AllocOnDemandBuffers(_topo, _procState);
+}
+
+void
+FBHostProcessor::UpdateNoteMatrix(FBNoteEvent const& event)
+{
+  _anyNoteIsOn = false;
+  _noteVelo[event.note.keyUntuned] = 0.0f;
+  _noteOn[event.note.keyUntuned] = event.on;
+  if (event.on)
+  {
+    _noteVelo[event.note.keyUntuned] = event.velo;
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo] = event.velo;
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned] = (float)event.note.keyUntuned / 127.0f;
+  }
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = 1.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = 0.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = 1.0f;
+  _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = 0.0f;
+  for (int i = 0; i < 128; i++)
+    if (_noteOn[i])
+    {
+      _anyNoteIsOn = true;
+      if (i / 127.0f < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned])
+      {
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteVelo[i];
+      }
+      if (i / 127.0f > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned])
+      {
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteVelo[i];
+      }
+      if (_noteVelo[i] < _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo])
+      {
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteVelo[i];
+      }
+      if (_noteVelo[i] > _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo])
+      {
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned] = i / 127.0f;
+        _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteVelo[i];
+      }
+    }
+  if (!_anyNoteIsOn)
+  {
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowKeyKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighKeyKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::LowVeloKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloVelo] = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastVelo];
+    _noteMatrix.entries[(int)FBNoteMatrixEntry::HighVeloKeyUntuned] = (float)_noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
+  }
 }
 
 void 
@@ -87,14 +140,24 @@ FBHostProcessor::ProcessHost(
   {
     _plugIn.audio = &fixedIn->audio;
     _plugIn.noteEvents = &fixedIn->noteEvents;
+    _plugIn.anyNoteIsOn = &fixedIn->anyNoteIsOn;
+    _plugIn.noteMatrixRaw = &fixedIn->noteMatrixRaw;
+    _plugIn.lastKeyRawLastSamplePrevRound = _lastKeyRawLastSamplePrevRound;
+    _plugIn.anyNoteWasOnLastSamplePrevRound = _anyNoteWasOnLastSamplePrevRound;
     
+    // update key matrix
     int n1 = 0;
     for (int s = 0; s < FBFixedBlockSamples; s++)
     {
-      for (; n1 < _plugIn.noteEvents->size() && (*_plugIn.noteEvents)[n1].pos == s; n1++)
-        if((*_plugIn.noteEvents)[n1].on)
-          _lastMIDINoteKey = static_cast<float>((*_plugIn.noteEvents)[n1].note.key);
-      _plugIn.lastMIDINoteKey.Set(s, _lastMIDINoteKey);
+      for (; n1 < fixedIn->noteEvents.size() && (fixedIn->noteEvents)[n1].pos == s; n1++)
+      {
+        UpdateNoteMatrix((fixedIn->noteEvents)[n1]);
+        if ((fixedIn->noteEvents)[n1].on)
+          _anyNoteEverReceived = true;
+      }
+      fixedIn->anyNoteIsOn[s] = _anyNoteIsOn;
+      for (int nme = 0; nme < (int)FBNoteMatrixEntry::Count; nme++)
+        fixedIn->noteMatrixRaw.entries[nme].Set(s, _noteMatrix.entries[nme]);
     }
 
     // release old voices
@@ -110,7 +173,16 @@ FBHostProcessor::ProcessHost(
               voiceOffPositions[v] = (*_plugIn.noteEvents)[n2].pos;
             }
 
-    // aquire new voices, set voice offsetInBlock to possibly nonzero.
+    // Aquire new voices, set voice offsetInBlock to possibly nonzero.
+    // LeaseVoices MUST be done before processing the pre-voice section
+    // because pre-voice needs access to all active voices even if they just
+    // started. This is so the plug can apply global modulators to per-voice
+    // params. This also means snapshot of on-note values of modulators
+    // CANNOT be done during voice activation, since then global mods have not run yet.
+    // Bookkeeping is done by the plug itself. So much for clean separation of base/plug.
+    // But whatever, just glad i found it. Delayed-by-1-block errors are hard.
+    // Also it's a good thing we updated the global note matrix already,
+    // since portamento needs the very last last-key (1 sample before voice start).
     _plug->LeaseVoices(_plugIn);
     _smoothing->ProcessSmoothing(*fixedIn, _plugOut, hostSmoothSamples);
     _plug->ProcessPreVoice(_plugIn);
@@ -128,6 +200,10 @@ FBHostProcessor::ProcessHost(
     _plug->ProcessPostVoice(_plugIn, _plugOut);
     _plugToHost->BufferFromPlug(_plugOut.audio);
     _plugIn.projectTimeSamples += FBFixedBlockSamples;
+
+    _anyNoteWasOnLastSamplePrevRound = _anyNoteIsOn;
+    if(_anyNoteEverReceived)
+      _lastKeyRawLastSamplePrevRound = _noteMatrix.entries[(int)FBNoteMatrixEntry::LastKeyUntuned];
   }
   _plugToHost->ProcessToHost(output);
 
@@ -136,7 +212,7 @@ FBHostProcessor::ProcessHost(
 
   _exchangeState->Host()->bpm = input.bpm;
   _exchangeState->Host()->sampleRate = _sampleRate;
-  _exchangeState->Host()->lastMIDINoteKey = _plugIn.lastMIDINoteKey.Last();
+  FBNoteMatrixInitScalarFromArrayLast(_exchangeState->Host()->noteMatrix, *_plugIn.noteMatrixRaw);
 
   for (int v = 0; v < FBMaxVoices; v++)
     _exchangeState->Voices()[v] = _voiceManager->Voices()[v];

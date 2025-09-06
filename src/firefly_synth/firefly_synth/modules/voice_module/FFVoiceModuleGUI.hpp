@@ -2,7 +2,7 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class FFPlugGUI;
+class FBPlugGUI;
 
 juce::Component*
-FFMakePlugMatrixGUI(FFPlugGUI* plugGUI);
+FFMakeVoiceModuleGUI(FBPlugGUI* plugGUI);

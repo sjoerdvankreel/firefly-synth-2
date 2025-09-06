@@ -43,8 +43,8 @@ FBStaticParamBase::NonRealTime() const
   case FBParamType::Boolean: return boolean;
   case FBParamType::Discrete: return discrete;
   case FBParamType::Identity: return identity;
-  default: 
-    FB_ASSERT(false); 
+  default:
+    FB_ASSERT(false);
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnull-dereference"
@@ -64,8 +64,8 @@ FBStaticParamBase::ItemsNonRealTime() const
   case FBParamType::List: return list;
   case FBParamType::Bars: return bars;
   case FBParamType::Discrete: return discrete;
-  default: 
-    FB_ASSERT(false); 
+  default:
+    FB_ASSERT(false);
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnull-dereference"
@@ -77,7 +77,7 @@ FBStaticParamBase::ItemsNonRealTime() const
   }
 }
 
-std::string 
+std::string
 FBStaticParamBase::DebugNameAndId() const
 {
   return std::string(name) + " (" + id + ")";

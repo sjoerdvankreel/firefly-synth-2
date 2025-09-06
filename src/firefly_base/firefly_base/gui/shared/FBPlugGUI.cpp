@@ -43,9 +43,27 @@ FBPlugGUI::GUIParamNormalizedChanged(int index, double /*value*/)
 }
 
 void
-FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double /*value*/)
+FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
 {
   AudioParamNormalizedChanged(index);
+  for (int i = 0; i < _paramListeners.size(); i++)
+    _paramListeners[i]->AudioParamChangedFromUI(index, value);
+}
+
+void
+FBPlugGUI::AddParamListener(IFBParamListener* listener)
+{
+  auto iter = std::find(_paramListeners.begin(), _paramListeners.end(), listener);
+  FB_ASSERT(iter == _paramListeners.end());
+  _paramListeners.push_back(listener);
+}
+
+void
+FBPlugGUI::RemoveParamListener(IFBParamListener* listener)
+{
+  auto iter = std::find(_paramListeners.begin(), _paramListeners.end(), listener);
+  FB_ASSERT(iter != _paramListeners.end());
+  _paramListeners.erase(iter);
 }
 
 void
@@ -88,6 +106,13 @@ int
 FBPlugGUI::GetControlCountForAudioParamIndex(int paramIndex) const
 {
   auto iter = _audioParamIndexToComponents.find(paramIndex);
+  if (iter == _audioParamIndexToComponents.end())
+  {
+    // Allow opt-out of otherwise obligatory minimum of 1 controller for param.
+    auto const& paramTopo = HostContext()->Topo()->audio.params[paramIndex];
+    if (paramTopo.static_.thisIsNotARealParameter)
+      return 0;
+  }
 #ifndef NDEBUG
   if (iter == _audioParamIndexToComponents.end())
   {
@@ -269,6 +294,7 @@ FBPlugGUI::InitPatch()
   FBScalarStateContainer defaultState(*HostContext()->Topo());
   for (int i = 0; i < defaultState.Params().size(); i++)
     HostContext()->PerformImmediateAudioParamEdit(i, *defaultState.Params()[i]);
+  OnPatchChanged();
 }
 
 void 
@@ -306,6 +332,7 @@ FBPlugGUI::LoadPatchFromFile()
     {
       HostContext()->UndoState().Snapshot("Load Patch");
       editState.CopyTo(HostContext());
+      OnPatchChanged();
     }
     else
       AlertWindow::showMessageBoxAsync(

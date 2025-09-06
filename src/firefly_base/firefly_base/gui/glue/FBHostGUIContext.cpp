@@ -37,6 +37,13 @@ FBHostGUIContext::PerformAudioParamEdit(int index, double normalized)
 }
 
 void
+FBHostGUIContext::PerformImmediateAudioParamEdit(FBParamTopoIndices const& indices, double normalized)
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  PerformImmediateAudioParamEdit(param->runtimeParamIndex, normalized);
+}
+
+void
 FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
 {
   BeginAudioParamChange(index);
@@ -44,11 +51,26 @@ FBHostGUIContext::PerformImmediateAudioParamEdit(int index, double normalized)
   EndAudioParamChange(index);
 }
 
+double
+FBHostGUIContext::GetAudioParamNormalized(FBParamTopoIndices const& indices) const
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  return GetAudioParamNormalized(param->runtimeParamIndex);
+}
+
 bool 
 FBHostGUIContext::GetAudioParamBool(FBParamTopoIndices const& indices) const
 {
   auto param = Topo()->audio.ParamAtTopo(indices);
   double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
+}
+
+bool
+FBHostGUIContext::GetGUIParamBool(FBParamTopoIndices const& indices) const
+{
+  auto param = Topo()->gui.ParamAtTopo(indices);
+  double normalized = GetGUIParamNormalized(param->runtimeParamIndex);
   return param->static_.Boolean().NormalizedToPlainFast(static_cast<float>(normalized));
 }
 
@@ -62,9 +84,7 @@ FBHostGUIContext::GetGUIParamDiscrete(FBParamTopoIndices const& indices) const
 
 void 
 FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
-{
-  std::string name = Topo()->ModuleAtTopo(moduleIndices)->name;
-  UndoState().Snapshot("Clear " + name);
+{  
   auto const& staticModule = Topo()->static_->modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
   {
@@ -80,9 +100,7 @@ FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
 
 void 
 FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot)
-{
-  std::string name = Topo()->ModuleAtTopo(moduleIndices)->name;
-  UndoState().Snapshot("Copy " + name);
+{  
   auto const& staticModule = Topo()->static_->modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
   {

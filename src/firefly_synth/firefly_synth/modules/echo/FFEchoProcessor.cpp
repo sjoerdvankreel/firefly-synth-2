@@ -55,6 +55,20 @@ FFEchoReverbState::Reset()
 
 template <bool Global>
 void
+FFEchoProcessor<Global>::FlushDelayLines()
+{
+  _reverbState.Reset();
+  _feedbackDelayState.Reset();
+  _feedbackDelayLine[0].Reset(_feedbackDelayLine[0].MaxBufferSize());
+  _feedbackDelayLine[1].Reset(_feedbackDelayLine[0].MaxBufferSize());
+  _tapsDelayLine[0].Reset(_tapsDelayLine[0].MaxBufferSize());
+  _tapsDelayLine[1].Reset(_tapsDelayLine[0].MaxBufferSize());
+  for (int i = 0; i < FFEchoTapCount; i++)
+    _tapDelayStates[i].Reset();
+}
+
+template <bool Global>
+void
 FFEchoProcessor<Global>::ReleaseOnDemandBuffers(
   FBRuntimeTopo const*, FBProcStateContainer* state)
 {

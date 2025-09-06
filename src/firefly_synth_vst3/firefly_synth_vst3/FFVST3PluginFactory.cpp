@@ -3,6 +3,7 @@
 
 #include <firefly_base/gui/shared/FBGUI.hpp>
 #include <firefly_base/dsp/host/FBHostProcessor.hpp>
+#include <firefly_base/dsp/shared/FBTuning.hpp>
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
@@ -18,13 +19,15 @@
 using namespace Steinberg;
 using namespace Steinberg::Vst;
 
+class MTSClient;
+
 class FFVST3AudioEffect:
 public FBVST3AudioEffect
 {
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFVST3AudioEffect);
-  FFVST3AudioEffect(std::unique_ptr<FFStaticTopo>&& topo, FUID const& controllerId):
-  FBVST3AudioEffect(std::move(topo), controllerId) {}
+  FFVST3AudioEffect(std::unique_ptr<FFStaticTopo>&& topo, FUID const& controllerId, MTSClient* mtsClient):
+  FBVST3AudioEffect(std::move(topo), controllerId, mtsClient) {}
 
   std::unique_ptr<IFBPlugProcessor> MakePlugProcessor() override
   { return std::make_unique<FFPlugProcessor>(this); }
@@ -33,6 +36,7 @@ public:
 bool
 DeinitModule()
 {
+  FBTuningTerminate();
   FBGUITerminate();
   FBLogTerminate();
   return true;
@@ -43,6 +47,7 @@ InitModule()
 {
   FBLogInit(FFPlugMeta(FBPlugFormat::VST3));
   FBGUIInit();
+  FBTuningInit();
   return true;
 }
 
@@ -70,7 +75,7 @@ ComponentFactory(void*)
   return FBWithLogException([]() 
   {
     auto controllerFuid = TextToFUID(FFPlugControllerId);
-    auto result = new FFVST3AudioEffect(FFMakeTopo(FBPlugFormat::VST3), controllerFuid);
+    auto result = new FFVST3AudioEffect(FFMakeTopo(FBPlugFormat::VST3), controllerFuid, FBTuningGetMTSClient());
     return static_cast<IAudioProcessor*>(result);
   });
 }

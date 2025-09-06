@@ -50,6 +50,7 @@ public FBItemsParamNonRealTime
   bool IsItems() const override;
   bool IsStepped() const override;
   int ValueCount() const override;
+  int ValueOffset() const override;
   FBEditType GUIEditType() const override;
   FBEditType AutomationEditType() const override;
   juce::PopupMenu MakePopupMenu(int moduleIndex) const override;

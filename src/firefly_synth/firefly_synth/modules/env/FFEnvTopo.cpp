@@ -27,8 +27,8 @@ FFMakeEnvTopo()
   result->params.resize((int)FFEnvParam::Count);
   result->cvOutputs.resize((int)FFEnvCVOutput::Count);
   result->voiceModuleExchangeAddr = FFSelectVoiceModuleExchangeAddr([](auto& state) { return &state.env; });
-  result->tabSlotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp" : std::to_string(s + 1); };
-  result->slotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp Env" : "Env " + std::to_string(s + 1); };
+  result->tabSlotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp" : std::to_string(s); };
+  result->slotFormatter = [](FBStaticTopo const&, int s) { return s == FFAmpEnvSlot ? "Amp Env" : "Env " + std::to_string(s); };
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& type = result->params[(int)FFEnvParam::Type];

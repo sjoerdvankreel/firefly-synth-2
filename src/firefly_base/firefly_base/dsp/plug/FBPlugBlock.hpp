@@ -2,6 +2,7 @@
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
+#include <firefly_base/dsp/shared/FBNoteMatrix.hpp>
 
 #include <cstdint>
 #include <unordered_map>
@@ -20,8 +21,11 @@ struct FBPlugInputBlock final
   FBVoiceManager* voiceManager = {};
   FBProcStateContainer* procState = {};
   std::vector<FBNoteEvent>* noteEvents = {};
-  FBSArray<float, FBFixedBlockSamples> lastMIDINoteKey = {};
+  bool anyNoteWasOnLastSamplePrevRound = {};
+  float lastKeyRawLastSamplePrevRound = -1.0f;
   FBSArray2<float, FBFixedBlockSamples, 2> const* audio = {};
+  std::array<bool, FBFixedBlockSamples> const* anyNoteIsOn = {};
+  FBNoteMatrix<FBSArray<float, FBFixedBlockSamples>>* noteMatrixRaw = {};
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBPlugInputBlock);
 };

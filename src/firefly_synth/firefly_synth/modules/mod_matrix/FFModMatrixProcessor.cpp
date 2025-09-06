@@ -51,6 +51,10 @@ template <bool Global>
 void
 FFModMatrixProcessor<Global>::BeginModulationBlock()
 {
+  // perf
+  if (_activeSlotCount == 0)
+    return;
+
   // On ApplyModulation, we can't do it right away.
   // For each slot, need to wait untill all slots with the same
   // target param have cleared their modsource, and then apply.
@@ -59,9 +63,10 @@ FFModMatrixProcessor<Global>::BeginModulationBlock()
   for (int i = 0; i < _modSourceIsReady.size(); i++)
     for (int j = 0; j < _modSourceIsReady[i].size(); j++)
       _modSourceIsReady[i][j] = 0;
-  for (int i = 0; i < SlotCount; i++)
+  for (int i = 0; i < _activeSlotCount; i++)
   {
     _slotHasBeenProcessed[i] = false;
+    _ownModSourceIsReadyForSlot[i] = false;
     _allModSourcesAreReadyForSlot[i] = false;
   }
 }
@@ -70,12 +75,16 @@ template <bool Global>
 void 
 FFModMatrixProcessor<Global>::EndModulationBlock(FBModuleProcState& state)
 {
+  // perf
+  if (_activeSlotCount == 0)
+    return;
+
   auto* procStateContainer = state.input->procState;
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
   // static_cast for perf
   auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
   auto const& targets = Global ? ffTopo.gMatrixTargets : ffTopo.vMatrixTargets;
-  for (int i = 0; i < SlotCount; i++)
+  for (int i = 0; i < _activeSlotCount; i++)
   {
     auto const& target = targets[_target[i]];
     if (target.module.index != -1)
@@ -107,7 +116,13 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   auto const& opTypeNorm = params.block.opType;
   auto const& amountNorm = params.acc.amount;
 
-  for (int i = 0; i < SlotCount; i++)
+  if constexpr (!Global)
+    _onNoteWasSnapshotted.fill(false);
+
+  float activeSlotsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.slots[0], voice);
+  _activeSlotCount = topo.NormalizedToDiscreteFast(FFModMatrixParam::Slots, activeSlotsNorm);
+
+  for (int i = 0; i < _activeSlotCount; i++)
   {
     _scale[i] = topo.NormalizedToListFast<int>(
       FFModMatrixParam::Scale,
@@ -123,26 +138,6 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
       FFSelectDualProcBlockParamNormalized<Global>(opTypeNorm[i], voice));
   }
 
-  // snapshot on-note values
-  if constexpr (!Global)
-  {
-    // static_cast for perf
-    auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
-    auto const& sources = ffTopo.vMatrixSources;
-    for (int i = 0; i < SlotCount; i++)
-    {
-      if (_opType[i] != FFModulationOpType::Off)
-      {
-        auto const& scale = sources[_scale[i]];
-        if (scale.onNote)
-          _scaleOnNoteValues[i] = GetSourceCVBuffer(state, scale, voice)->Get(state.voice->offsetInBlock);
-        auto const& source = sources[_source[i]];
-        if (source.onNote)
-          _sourceOnNoteValues[i] = GetSourceCVBuffer(state, source, voice)->Get(state.voice->offsetInBlock);
-      }
-    }
-  }
-
   // Prevent unscaled amount from showing up as 0.
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI != nullptr)
@@ -150,7 +145,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
     auto& exchangeParams = *FFSelectDualState<Global>(
       [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
       [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
-    for (int i = 0; i < SlotCount; i++)
+    for (int i = 0; i < _activeSlotCount; i++)
       FFSelectDualExchangeState<Global>(exchangeParams.acc.amount[i], voice) =
       FFSelectDualProcAccParamNormalized<Global>(amountNorm[i], voice).CV().Get(0);
   }
@@ -161,6 +156,10 @@ void
 FFModMatrixProcessor<Global>::ApplyModulation(
   FBModuleProcState& state, FBTopoIndices const& currentModule)
 {
+  // perf
+  if (_activeSlotCount == 0)
+    return;
+
   FBAccParamState* targetParamState = nullptr;
   FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
@@ -193,18 +192,23 @@ FFModMatrixProcessor<Global>::ApplyModulation(
 
   _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
 
-  // need all slots with same target ready before we begin processing
-  for (int i = 0; i < SlotCount; i++)
+  // need all slots with same target ready before we begin processing because stacking modulators
+  // dont you just love the bookkeeping?
+  for (int i = 0; i < _activeSlotCount; i++)
   {
+    _ownModSourceIsReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
     _allModSourcesAreReadyForSlot[i] = _opType[i] != FFModulationOpType::Off;
-    if (_allModSourcesAreReadyForSlot[i])
+    if (_ownModSourceIsReadyForSlot[i])
     {
       auto const& thisTarget = targets[_target[i]];
       auto const& thisSource = sources[_source[i]];
-      _allModSourcesAreReadyForSlot[i] &= thisTarget.module.index != -1;
-      _allModSourcesAreReadyForSlot[i] &= thisSource.indices.module.index != -1;
+      _ownModSourceIsReadyForSlot[i] &= thisTarget.module.index != -1;
+      _ownModSourceIsReadyForSlot[i] &= thisSource.indices.module.index != -1;
+      if (thisSource.indices.module.index != -1)
+        _ownModSourceIsReadyForSlot[i] &= _modSourceIsReady[thisSource.indices.module.index][thisSource.indices.module.slot] != 0;
+      _allModSourcesAreReadyForSlot[i] &= _ownModSourceIsReadyForSlot[i];
       if (_allModSourcesAreReadyForSlot[i])
-        for (int j = 0; j < SlotCount; j++)
+        for (int j = 0; j < _activeSlotCount; j++)
           if (_opType[j] != FFModulationOpType::Off)
           {
             auto const& thatSource = sources[_source[j]];
@@ -215,20 +219,39 @@ FFModMatrixProcessor<Global>::ApplyModulation(
     }
   }
 
-  for (int i = 0; i < SlotCount; i++)
+  for (int i = 0; i < _activeSlotCount; i++)
   {
+    auto const& scale = sources[_scale[i]];
+    auto const& source = sources[_source[i]];
+    auto const& target = targets[_target[i]];
+
+    if constexpr (!Global)
+    {
+      // We can only fix the on-note values once the global 
+      // mod source has cleared. Note to self: this caused
+      // off-by-1-block error when we did this inside BeginVoice.
+      if (_ownModSourceIsReadyForSlot[i])
+      {
+        if (!_onNoteWasSnapshotted[i])
+        {
+          _onNoteWasSnapshotted[i] = true;
+          if (scale.onNote)
+            _scaleOnNoteSnapshot[i] = GetSourceCVBuffer(state, scale, voice)->Get(state.voice->offsetInBlock);
+          if (source.onNote)
+            _sourceOnNoteSnapshot[i] = GetSourceCVBuffer(state, source, voice)->Get(state.voice->offsetInBlock);
+        }
+      }
+    }
+
     if (_allModSourcesAreReadyForSlot[i] && !_slotHasBeenProcessed[i])
     {
-      auto const& scale = sources[_scale[i]];
-      auto const& source = sources[_source[i]];
-      auto const& target = targets[_target[i]];
       _slotHasBeenProcessed[i] = true;
 
       if(!source.onNote)
         sourceBuffer = GetSourceCVBuffer(state, source, voice);
       else 
       {
-        onNoteSourceBuffer.Fill(_sourceOnNoteValues[i]);
+        onNoteSourceBuffer.Fill(_sourceOnNoteSnapshot[i]);
         sourceBuffer = &onNoteSourceBuffer;
       }
         
@@ -238,7 +261,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           scaleBuffer = GetSourceCVBuffer(state, scale, voice);
         else
         {
-          onNoteScaleBuffer.Fill(_scaleOnNoteValues[i]);
+          onNoteScaleBuffer.Fill(_scaleOnNoteSnapshot[i]);
           scaleBuffer = &onNoteScaleBuffer;
         }
 

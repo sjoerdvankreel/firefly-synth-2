@@ -120,6 +120,48 @@ FFDeserializationConverter::PostProcess(
       }
     }
   }
+
+  // 2.0.5 - Upped lfo and env count from 4/5 to 6/7, and moved amp env from last slot to first.
+  // This conversion will not catch everything, in particular not host automation and internal modulation matrix.
+  // The conversion itself is to shift env0...3 to 1..4 and move 4 to 0. We have 2 new free slots to use as scratch space.
+  if (OldVersion() < FBPlugVersion(2, 0, 5))
+  {
+    auto const& envModule = Topo()->static_->modules[(int)FFModuleType::Env];
+
+    // shift all to the right
+    for (int i = 4; i >= 0; i--)
+    {
+      if (envModule.slotCount > i + 1)
+      {
+        for (int p = 0; p < envModule.params.size(); p++)
+        {
+          auto const& envParam = envModule.params[p];
+          for (int s = 0; s < envParam.slotCount; s++)
+          {
+            int rtOldParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, i }, { p, s } })->runtimeParamIndex;
+            int rtNewParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, i + 1 }, { p, s } })->runtimeParamIndex;
+            *paramValues[rtNewParamIndex] = *paramValues[rtOldParamIndex];
+          }
+        }
+      }
+    }
+
+    // slot 5 is now what used to be amp env, copy over to 0 and clear
+    if (envModule.slotCount > 5)
+    {
+      for (int p = 0; p < envModule.params.size(); p++)
+      {
+        auto const& envParam = envModule.params[p];
+        for (int s = 0; s < envParam.slotCount; s++)
+        {
+          int rtOldParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, 5 }, { p, s } })->runtimeParamIndex;
+          int rtNewParamIndex = Topo()->audio.ParamAtTopo({ { (int)FFModuleType::Env, 0 }, { p, s } })->runtimeParamIndex;
+          *paramValues[rtNewParamIndex] = *paramValues[rtOldParamIndex];
+          *paramValues[rtOldParamIndex] = envParam.DefaultNormalizedByText((int)FFModuleType::Env, 5, s);
+        }
+      }
+    }
+  }
 }
 
 bool 

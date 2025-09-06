@@ -35,14 +35,14 @@ class FFEffectProcessor final
   float _graphCombFilterFreqMultiplier = {};
   float _graphStVarFilterFreqMultiplier = {};
 
-  FBBasicLPFilter _MIDINoteKeySmoother = {};
+  FBBasicLPFilter _MIDIKeyUntunedSmoother = {};
   juce::dsp::Oversampling<float> _oversampler;
-  FBSArray<float, FFEffectFixedBlockOversamples> _MIDINoteKey = {};
   std::array<FFCombFilter<2>, FFEffectBlockCount> _combFilters = {};
+  FBSArray<float, FFEffectFixedBlockOversamples> _MIDIKeyUntuned = {};
   std::array<FFStateVariableFilter<2>, FFEffectBlockCount> _stVarFilters = {};
 
   template <bool Global>
-  float NextMIDINoteKey(int sample);
+  float NextMIDIKeyUntuned(int sample);
 
   template <bool Global, bool PlusOn, bool MinOn>
   void ProcessComb(

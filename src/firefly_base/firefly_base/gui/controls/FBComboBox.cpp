@@ -75,13 +75,15 @@ void
 FBGUIParamComboBox::SetValueNormalizedFromPlug(double normalized)
 {
   double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);
+  plain -= _param->static_.NonRealTime().ValueOffset();
   setSelectedId(static_cast<int>(plain) + 1, dontSendNotification);
 }
 
 void
 FBGUIParamComboBox::valueChanged(Value& /*value*/)
 {
-  double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
+  int plain = getSelectedId() - 1 + _param->static_.NonRealTime().ValueOffset();
+  double normalized = _param->static_.NonRealTime().PlainToNormalized(plain);
   _plugGUI->HostContext()->SetGUIParamNormalized(_param->runtimeParamIndex, normalized);
   _plugGUI->GUIParamNormalizedChanged(_param->runtimeParamIndex, normalized);
   setTooltip(getTooltip()); // hack but needed
@@ -111,13 +113,15 @@ void
 FBParamComboBox::SetValueNormalizedFromHost(double normalized)
 {
   double plain = _param->static_.NonRealTime().NormalizedToPlain(normalized);
+  plain -= _param->static_.NonRealTime().ValueOffset();
   setSelectedId(static_cast<int>(plain) + 1, dontSendNotification);
 }
 
 void
 FBParamComboBox::valueChanged(Value& /*value*/)
 {
-  double normalized = _param->static_.NonRealTime().PlainToNormalized(getSelectedId() - 1);
+  int plain = getSelectedId() - 1 + _param->static_.NonRealTime().ValueOffset();
+  double normalized = _param->static_.NonRealTime().PlainToNormalized(plain);
   _plugGUI->HostContext()->PerformImmediateAudioParamEdit(_param->runtimeParamIndex, normalized);
   _plugGUI->AudioParamNormalizedChangedFromUI(_param->runtimeParamIndex, normalized);
   setTooltip(getTooltip()); // hack but needed

@@ -1,6 +1,7 @@
 #include <firefly_base/base/topo/static/FBBoolParam.hpp>
 
 int FBBoolParamNonRealTime::ValueCount() const { return 2; }
+int FBBoolParamNonRealTime::ValueOffset() const { return 0; }
 bool FBBoolParamNonRealTime::IsItems() const { return false; }
 bool FBBoolParamNonRealTime::IsStepped() const { return true; }
 FBEditType FBBoolParamNonRealTime::GUIEditType() const { return FBEditType::Stepped; }

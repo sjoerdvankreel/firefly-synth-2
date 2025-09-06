@@ -137,8 +137,8 @@ FFMakeOsciTopo()
   coarse.unit = "Semitones";
   coarse.id = "{E122CA2C-C1B1-47E5-A1BB-DEAC6A4030E0}";
   coarse.type = FBParamType::Linear;
-  coarse.Linear().min = -24.0f;
-  coarse.Linear().max = 24.0f;
+  coarse.Linear().min = -128.0f;
+  coarse.Linear().max = 128.0f;
   auto selectCoarse = [](auto& module) { return &module.acc.coarse; };
   coarse.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCoarse);
   coarse.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectCoarse);
@@ -598,6 +598,7 @@ FFMakeOsciTopo()
   fmRatioFree.acc = true;
   fmRatioFree.defaultText = "1";
   fmRatioFree.name = "FM Ratio Free";
+  fmRatioFree.display = "Free";
   fmRatioFree.slotCount = FFOsciFMOperatorCount - 1;
   fmRatioFree.id = "{0188A986-8FA9-4BA2-BF84-A1A463712A40}";
   fmRatioFree.type = FBParamType::Log2;
@@ -613,6 +614,7 @@ FFMakeOsciTopo()
   fmRatioRatio.acc = false;
   fmRatioRatio.defaultText = "1:1";
   fmRatioRatio.name = "FM Ratio Ratio";
+  fmRatioRatio.display = "Ratio";
   fmRatioRatio.slotCount = FFOsciFMOperatorCount - 1;
   fmRatioRatio.id = "{9F79D937-E295-41FC-ACFE-F085E12DFF90}";
   fmRatioRatio.type = FBParamType::Discrete;

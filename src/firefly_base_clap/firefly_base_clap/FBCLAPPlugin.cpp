@@ -51,8 +51,8 @@ MakeAccModEvent(
   FBAccModEvent result = {};
   result.param = param;
   result.pos = event->header.time;
-  result.note.key = event->key;
   result.note.id = event->note_id;
+  result.note.keyUntuned = event->key;
   result.note.channel = event->channel;
   result.value = static_cast<float>(event->amount);
   return result;
@@ -65,7 +65,7 @@ MakeMIDINoteEvent(
   FBNoteEvent result = {};
   int message = event->data[0] & 0xF0;
   result.pos = event->header.time;
-  result.note.key = event->data[1];
+  result.note.keyUntuned = event->data[1];
   result.note.channel = event->data[0] & 0x0F;
   result.velo = event->data[2] / 127.0f;
   result.on = message == MIDIMessageNoteOn;
@@ -79,8 +79,8 @@ MakeNoteEvent(
   FBNoteEvent result = {};
   auto event = reinterpret_cast<clap_event_note_t const*>(header);
   result.pos = header->time;
-  result.note.key = event->key;
   result.note.id = event->note_id;
+  result.note.keyUntuned = event->key;
   result.note.channel = event->channel;
   result.velo = static_cast<float>(event->velocity);
   result.on = header->type == CLAP_EVENT_NOTE_ON;
@@ -94,7 +94,7 @@ MakeNoteEndEvent(FBNote const& note, int time)
   result.port_index = 0;
   result.velocity = 0.0f;
   result.note_id = note.id;
-  result.key = static_cast<std::int16_t>(note.key);
+  result.key = static_cast<std::int16_t>(note.keyUntuned);
   result.channel = static_cast<std::int16_t>(note.channel);
   result.header.flags = 0;
   result.header.time = time;
@@ -175,10 +175,12 @@ FBCLAPPlugin(
   std::unique_ptr<FBStaticTopo>&& topo,
   clap_plugin_descriptor const* desc,
   clap_host const* host,
+  MTSClient* mtsClient,
   std::unique_ptr<FBCLAPExchangeStateQueueBase>&& exchangeStateQueue):
 Plugin(desc, host),
 _audioToMainEvents(FBCLAPSyncEventReserve - 1),
 _mainToAudioEvents(FBCLAPSyncEventReserve - 1),
+_mtsClient(mtsClient),
 _gui(),
 _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _guiState(std::make_unique<FBGUIStateContainer>(*_topo)),
