@@ -1,5 +1,6 @@
 TODOLIST for alpha-15
 
+[ ] implement voice target for pitchbend in voice, not osci
 [ ] separate names for clap/vst3 (flstudio not like it) and maybe separate guids?
 [ ] envelope should loop at very last ?
 [ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
