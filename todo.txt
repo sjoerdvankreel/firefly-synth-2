@@ -1,36 +1,3 @@
-TODOLIST for alpha-14
-
-[x] output meters
-[x] make output faster
-[x] make matrix faster -> breaking change
-[x] not paint modulation for disabled
-[x] showmatrix to gui control
-[x] output tooltips broken for clap => just disable them, no use
-[x] do something to clean the delay lines + flush on patch swap
-[x] merge ui/matrix
-[x] ctrl+drag for fine control
-[x] external smooth into master
-[x] osci coarse->pitch also voice (not rename, just raw pitch)
-[x] vlfo1->bal=>vlfo2->bal
-[x] do the midi linking => MODULATE NOT AUTOMATE
-[x] master modwheel + midi link
-[x] master pitch bend + midi link + range + target off/voice/oscN + MW/PB outputs
-[x] MTS into output
-[x] YAY we can do kicks now
-[x] easy-access mod: env1tocoarse at only 50%
-[x] global set-exact-value UI (+ context menu item?)
-[x] upped the vno
-[x] breaking change: more coarse (breaks matrix)
-[x] want 6! lfo/env, so +4 for regular stuff, +2 for additional + breaking change - juggle processing order
-[x] midi/gnote on/off
-[x] floating notes
-[x] MIDI key, velo (voice), low/high/last
-[x] default map velo to voice amp
-[x] on-note stuff not exactly matches the voice start => was 1 block behind pffft
-[x] disable the tune button for now
-[x] fruity clicks when pb mod enabled => known issues
-[x] voice + pitch + cent + porta off/on/auto + sync + porta time + porta-when-section
-
 TODOLIST for alpha-15
 
 [ ] separate names for clap/vst3 (flstudio not like it) and maybe separate guids?

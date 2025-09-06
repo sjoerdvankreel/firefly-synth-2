@@ -1,6 +1,30 @@
 September 06, 2025 - Alpha 14.
 
 - Loads of small stuff.
+* Changed output parameter labels to meters.
+* Breaking change + performance fix: it is now necessary to manually specify the slot count for the mod matrix.
+* Bugfix: don't paint modulation status for disabled parameters.
+* Hide/show matrix state is now saved within the host project.
+* Bugfix: tooltips for output parameters where broken for CLAP. Just disabled them.
+* New button to flush all delay lines (manual action) + auto-triggered on patch change.
+* Breaking change: coarse pitch controls now range from -128 to +128 (so, you can finally do kicks).
+* Breaking change: set env/lfo count to 6 again + added some new easy-access modulation controls.
+* New master params: pitch bend + bend range + bend target (off, all osci, single osci).
+* New master param: mod wheel. Only to be used through the mod matrix.
+* Master PB and modwheel are by default (init patch) modulated by their corresponding midi parameters (so, non-destructive).
+* New master mod sources pitchbend and modwheel.
+* New per-voice module params: all-osci coarse/fine pitch + easy-access modulators.
+* New per-voice module params: portamento + specify glide length in time or bars.
+** Like FF1, select off, on (constant pitch, variable time), auto (constant time, variable pitch).
+** Unlike FF1, select always or "section" mode (only when previous note has not received note-off event yet).
+** Section mode has 2 disabled params for now (amp attack/release), plan is to connect those to all but the first/last note in portamento section.
+** NO monophonic mode, and probably never will be.
+* UI: add exact-value editor tracking the last tweaked parameter.
+* MTS-ESP: not really. There's a checkbox that shows if a master is connected. There's a tuning mode selection in the master module, but it's disabled.
+* Bugfix: on-note modulators where one (internal) block (16 samples) behind.
+* New mod source: GNote (global note stream). Tracks last/low-key/low-velocity/high-key/high-velocity notes and provides key and velocity value for them as [0..100%].
+* New mod source: VNote (whatever triggered the voice). Key and velocity.
+* VNote velocity by default (init patch) maps to VMix amp.
 
 August 25, 2025 - Alpha 13.
 
