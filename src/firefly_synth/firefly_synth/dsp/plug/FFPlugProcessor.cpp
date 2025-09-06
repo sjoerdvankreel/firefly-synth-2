@@ -13,16 +13,8 @@
 #include <firefly_base/base/state/proc/FBProcStateContainer.hpp>
 #include <firefly_base/base/state/exchange/FBExchangeStateContainer.hpp>
 
-#include <libMTSClient.h>
-
 #include <cmath>
 #include <numbers>
-
-FFPlugProcessor::
-~FFPlugProcessor()
-{
-  MTS_DeregisterClient(_procState->dsp.global.master.mtsClient);
-}
 
 FFPlugProcessor::
 FFPlugProcessor(IFBHostDSPContext* hostContext) :
@@ -31,7 +23,7 @@ _topo(hostContext->Topo()),
 _procState(static_cast<FFProcState*>(hostContext->ProcState()->Raw())),
 _exchangeState(static_cast<FFExchangeState*>(hostContext->ExchangeState()->Raw()))
 {
-  _procState->dsp.global.master.mtsClient = MTS_RegisterClient();
+  _procState->dsp.global.master.mtsClient = hostContext->GetMTSClient();
   _procState->dsp.global.gMatrix.processor->InitBuffers(_topo);
   for (int v = 0; v < FBMaxVoices; v++)
     _procState->dsp.voice[v].vMatrix.processor->InitBuffers(_topo);

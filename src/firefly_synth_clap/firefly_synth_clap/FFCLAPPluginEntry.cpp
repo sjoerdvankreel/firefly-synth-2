@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugState.hpp>
 #include <firefly_synth/dsp/plug/FFPlugProcessor.hpp>
 
+#include <firefly_base/dsp/shared/FBTuning.hpp>
 #include <firefly_base_clap/FBCLAPPlugin.hpp>
 #include <firefly_base_clap/FBCLAPExchangeStateQueue.hpp>
 
@@ -63,12 +64,13 @@ public:
 
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFCLAPPlugin);
   FFCLAPPlugin(std::unique_ptr<FFStaticTopo>&& topo, clap_plugin_descriptor const* desc, clap_host const* host):
-  FBCLAPPlugin(std::move(topo), desc, host, std::make_unique<FBCLAPExchangeStateQueue<FFCLAPExchangeState>>()) {}
+  FBCLAPPlugin(std::move(topo), desc, host, FBTuningGetMTSClient(), std::make_unique<FBCLAPExchangeStateQueue<FFCLAPExchangeState>>()) {}
 };
 
 static void CLAP_ABI 
 Deinit()
 {
+  FBTuningTerminate();
   FBGUITerminate();
   FBLogTerminate();
 }
@@ -78,7 +80,8 @@ Init(char const*)
 { 
   FBLogInit(FFPlugMeta(FBPlugFormat::CLAP));
   FBGUIInit();
-  return true; 
+  FBTuningInit();
+  return true;
 }
 
 static char const*

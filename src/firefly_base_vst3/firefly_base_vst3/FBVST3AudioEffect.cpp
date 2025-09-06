@@ -85,7 +85,9 @@ FBVST3AudioEffect::
 
 FBVST3AudioEffect::
 FBVST3AudioEffect(
-  std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId):
+  std::unique_ptr<FBStaticTopo>&& topo, 
+  FUID const& controllerId, MTSClient* mtsClient):
+_mtsClient(mtsClient),
 _topo(std::make_unique<FBRuntimeTopo>(std::move(topo))),
 _procState(std::make_unique<FBProcStateContainer>(*_topo)),
 _exchangeState(std::make_unique<FBExchangeStateContainer>(*_topo))

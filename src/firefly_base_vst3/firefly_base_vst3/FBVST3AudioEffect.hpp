@@ -17,6 +17,7 @@ using namespace Steinberg::Vst;
 struct FBStaticTopo;
 struct FBRuntimeTopo;
 
+class MTSClient;
 class FBHostProcessor;
 class IFBPlugProcessor;
 class FBProcStateContainer;
@@ -26,6 +27,7 @@ class FBVST3AudioEffect:
 public AudioEffect,
 public IFBHostDSPContext
 {
+  MTSClient* _mtsClient;
   std::unique_ptr<FBRuntimeTopo> _topo;
   std::unique_ptr<FBProcStateContainer> _procState;
   std::unique_ptr<FBExchangeStateContainer> _exchangeState;
@@ -41,10 +43,11 @@ public IFBHostDSPContext
 public:
   ~FBVST3AudioEffect();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FBVST3AudioEffect);
-  FBVST3AudioEffect(std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId);
+  FBVST3AudioEffect(std::unique_ptr<FBStaticTopo>&& topo, FUID const& controllerId, MTSClient* mtsClient);
   uint32 PLUGIN_API getLatencySamples() override { return FBFixedBlockSamples; }
 
   float SampleRate() const override { return _sampleRate; }
+  MTSClient* GetMTSClient() override { return _mtsClient; }
   FBRuntimeTopo const* Topo() const override { return _topo.get(); }
   FBProcStateContainer* ProcState() override { return _procState.get(); }
   FBExchangeStateContainer* ExchangeState() override { return _exchangeState.get(); }

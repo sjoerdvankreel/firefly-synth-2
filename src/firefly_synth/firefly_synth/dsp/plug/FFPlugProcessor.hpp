@@ -28,7 +28,6 @@ public IFBPlugProcessor
 
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFPlugProcessor);
-  ~FFPlugProcessor();
   FFPlugProcessor(IFBHostDSPContext* hostContext);
 
   void ProcessPreVoice(FBPlugInputBlock const& input) override;
