@@ -10,6 +10,7 @@ TODOLIST for alpha-15
 
 TODOLIST for alpha-16
 
+[ ] make a normalize button
 [ ] implement voice target for pitchbend in voice, not osci
 [ ] envelope should loop at very last ?
 [ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
