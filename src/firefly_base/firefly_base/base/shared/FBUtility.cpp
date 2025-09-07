@@ -37,7 +37,7 @@ FBStringToDoubleOptCLocale(std::string const& text)
 void
 FBRestoreDenormal(FBDenormalState state)
 {
-#if (defined __APPLE__) && defined(__aarch64__)
+#if FB_APPLE_AARCH64
   if (state.wasApplied)
     fesetenv(&state.env);
 #else
@@ -49,7 +49,7 @@ FBRestoreDenormal(FBDenormalState state)
 FBDenormalState
 FBDisableDenormal()
 {
-#if (defined __APPLE__) && defined(__aarch64__)
+#if FB_APPLE_AARCH64
   FBDenormalState result = {};
   result.wasApplied = fegetenv(&result.env) == 0;
   if (result.wasApplied)

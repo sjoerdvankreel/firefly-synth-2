@@ -10,6 +10,12 @@
 #include <filesystem>
 
 #if (defined __APPLE__) && defined(__aarch64__)
+#define FB_APPLE_AARCH64 1
+#else
+#define FB_APPLE_AARCH64 0
+#endif
+
+#if FB_APPLE_AARCH64
 #include <fenv.h>
 struct FBDenormalState { fenv_t env; bool wasApplied; };
 #else
