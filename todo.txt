@@ -1,7 +1,8 @@
 TODOLIST for alpha-15
 
-[ ] get rid of sse2neon
-[ ] intel mac version
+[ ] update the libs
+[x] get rid of sse2neon
+[ ] intel mac version => still borked on rosetta
 [ ] figure out bitwig dataexchange on linux
 [ ] separate names for clap/vst3 (flstudio not like it) and maybe separate guids?
 [ ] ubuntu 18 + check mint and whatnot (dont forget to update mts lib .so)
