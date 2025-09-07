@@ -1,7 +1,15 @@
 TODOLIST for alpha-15
 
-[ ] implement voice target for pitchbend in voice, not osci
+[ ] get rid of sse2neon
+[ ] intel mac version
+[ ] figure out bitwig dataexchange on linux
 [ ] separate names for clap/vst3 (flstudio not like it) and maybe separate guids?
+[ ] ubuntu 18 + check mint and whatnot (dont forget to update mts lib .so)
+[ ] list all the dependencies!
+
+TODOLIST for alpha-16
+
+[ ] implement voice target for pitchbend in voice, not osci
 [ ] envelope should loop at very last ?
 [ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
 [ ] make porta lead demo
@@ -26,10 +34,6 @@ TODOLIST for alpha-15
 [ ] get the text out of the graphs
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] refix all behind-the-scenes mod sources and targets
-
-TODOLIST for alpha-16
-
-[ ] ubuntu 18 + check mint and whatnot (dont forget to update mts lib .so)
 [ ] update all dependencies
 [ ] 8x env/lfo?
 [ ] make a cpu details popup
@@ -38,7 +42,6 @@ TODOLIST for alpha-16
 [ ] show modulation amount int terms of the mod target unit for matrix and easy access
 [ ] lower the delay smooth for vecho
 [ ] make a tune before release
-[ ] figure out bitwig dataexchange on linux
 [ ] less matrix routes
 [ ] make it clear alpha breaks the demos
 [ ] allow modulate env stage lengths on voice start => any per-voice-start-automatable
@@ -46,7 +49,6 @@ TODOLIST for alpha-16
 [ ] master aux gui to small
 
 pre/post VMIX echo or not ? => NOT, bc VMIX will be on global uni subvoice level -- or will it ?
-list all the dependencies!
 pck support
 per-module presets
 external audio input
@@ -58,11 +60,8 @@ autosoftclip
 MTS-ESP (check with SST again, go with the osci only? or filters and stuff as well?) in any case make it floating optional (on-note and continuous both)
 another round of cpu and memory profiling
 factory presets
-get rid of sse2neon
 string timbre should not react to samplerate/oversample
-intel mac version
 fix todos
 todo document the thing a bit
-rosetta is borked
 vst3 note expr + midi mpe
 explain processing order and modulation order including auto/external/internal
