@@ -1,3 +1,9 @@
+September 08, 2025 - Alpha 15.
+
+- Support Intel Mac.
+- Drop dependency on sse2neon.
+- Update all dependencies to latest.
+
 September 06, 2025 - Alpha 14.
 
 - Core
