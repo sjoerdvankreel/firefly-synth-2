@@ -106,6 +106,14 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Stole the color-morphing noise algo from here: https://sampo.kapsi.fi/PinkNoise/.
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/. You have to download the zip to get at the PolyBLEP source for all waveforms.
 
+# Dependencies
+- CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
+- MTS-ESP: [https://github.com/ODDSound/MTS-ESP](https://github.com/ODDSound/MTS-ESP)
+- JUCE: [https://github.com/juce-framework/JUCE](https://github.com/juce-framework/JUCE)
+- Xsimd: [https://github.com/xtensor-stack/xsimd](https://github.com/xtensor-stack/xsimd)
+- Steinberg VST3 SDK: [https://github.com/steinbergmedia/vst3sdk](https://github.com/steinbergmedia/vst3sdk)
+- Readerwriterqueue: [https://github.com/cameron314/readerwriterqueue](https://github.com/cameron314/readerwriterqueue)
+
 # The details
 
 ## FX
