@@ -7,13 +7,6 @@
 #include <sstream>
 #include <fstream>
 
-#if (defined __APPLE__) && defined(__aarch64__)
-#define SSE2NEON_SUPPRESS_WARNINGS 1
-#include <sse2neon.h>
-#else
-#include <immintrin.h>
-#endif
-
 using namespace juce;
 
 std::string
@@ -44,18 +37,32 @@ FBStringToDoubleOptCLocale(std::string const& text)
 void
 FBRestoreDenormal(FBDenormalState state)
 {
-  _MM_SET_FLUSH_ZERO_MODE(state.first);
-  _MM_SET_DENORMALS_ZERO_MODE(state.second);
+#if FB_APPLE_AARCH64
+  if (state.wasApplied)
+    fesetenv(&state.env);
+#else
+  _MM_SET_FLUSH_ZERO_MODE(state.ftz);
+  _MM_SET_DENORMALS_ZERO_MODE(state.daz);
+#endif
 }
 
 FBDenormalState
 FBDisableDenormal()
 {
-  std::uint32_t ftz = _MM_GET_FLUSH_ZERO_MODE();
-  std::uint32_t daz = _MM_GET_DENORMALS_ZERO_MODE();
+#if FB_APPLE_AARCH64
+  FBDenormalState result = {};
+  result.wasApplied = fegetenv(&result.env) == 0;
+  if (result.wasApplied)
+    result.wasApplied = fesetenv(FE_DFL_DISABLE_DENORMS_ENV) == 0;
+  return result;
+#else
+  FBDenormalState result;
+  result.ftz = _MM_GET_FLUSH_ZERO_MODE();
+  result.daz = _MM_GET_DENORMALS_ZERO_MODE();
   _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
   _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
-  return std::make_pair(ftz, daz);
+  return result;
+#endif
 }
 
 std::filesystem::path

@@ -20,8 +20,7 @@ FFMakeHeaderGUI(FFPlugGUI* plugGUI)
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>(FF_PLUG_VERSION));
   auto format = plugGUI->HostContext()->Topo()->static_->meta.format;
   std::string formatName = format == FBPlugFormat::VST3 ? "VST3" : "CLAP";
-  // TODO apple does not equal ARM, but we dont support intel-mac right now
-#ifdef __APPLE__
+#if FB_APPLE_AARCH64
   std::string archName = "ARM";
 #else
   std::string archName = "X64";

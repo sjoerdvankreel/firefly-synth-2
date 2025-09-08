@@ -9,11 +9,22 @@
 #include <optional>
 #include <filesystem>
 
+#if (defined __APPLE__) && defined(__aarch64__)
+#define FB_APPLE_AARCH64 1
+#else
+#define FB_APPLE_AARCH64 0
+#endif
+
+#if FB_APPLE_AARCH64
+#include <fenv.h>
+struct FBDenormalState { fenv_t env; bool wasApplied; };
+#else
+#include <immintrin.h>
+struct FBDenormalState { std::uint32_t ftz; std::uint32_t daz; };
+#endif
+
 struct FBStaticTopoMeta;
 inline int const FBDefaultDisplayPrecision = 3;
-
-typedef std::pair<std::uint32_t, std::uint32_t>
-FBDenormalState;
 
 #ifdef NDEBUG
 #define FB_ASSERT(e) ((void)(e))

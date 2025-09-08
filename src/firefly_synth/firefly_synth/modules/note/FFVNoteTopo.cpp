@@ -13,7 +13,6 @@ FFMakeVNoteTopo()
   result->id = "{CE604F90-99E9-43D0-BF49-A7EE53BB1F4F}";
   result->cvOutputs.resize((int)FFVNoteCVOutput::Count);
 
-  // todo link to matrix default
   auto& outputKeyUntuned = result->cvOutputs[(int)FFVNoteCVOutput::KeyUntuned];
   outputKeyUntuned.name = "Key";
   outputKeyUntuned.slotCount = 1;

@@ -1,6 +1,17 @@
+# Legal
+
+<table>
+  <tr>
+    <td><img alt="CLAP logo" src="static/clap_logo.png"/></td>
+    <td><a href="https://github.com/free-audio/clap">https://github.com/free-audio/clap</a></td>
+    <td><img alt="VST logo" src="static/vst_logo.png"/></td>
+    <td>VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.</td>
+  </tr>
+</table>
+
 # This is not a finished product
 * But it is a functioning clap and vst3 plugin.
-* Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
+* Builds and runs on win/lin (ubuntu 22+)/mac (both Intel and ARM).
 * Tested on reaper, renoise, fruity and bitwig.
 * Osci, inter-osci modulation, envelopes, per-voice and global fx/echo/lfos/modmatrix/audiomixer matrix, global pitchbend/modwheel, voice level (all osci) coarse/fine and portamento implemented.
 * Stock JUCE GUI, no presets, no MTS-ESP, no global unison.
@@ -95,6 +106,14 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Stole the color-morphing noise algo from here: https://sampo.kapsi.fi/PinkNoise/.
 * Stole the new osci algos from here: https://www.taletn.com/reaper/mono_synth/. You have to download the zip to get at the PolyBLEP source for all waveforms.
 
+# Dependencies
+- CLAP SDK: [https://github.com/free-audio/clap](https://github.com/free-audio/clap)
+- MTS-ESP: [https://github.com/ODDSound/MTS-ESP](https://github.com/ODDSound/MTS-ESP)
+- JUCE: [https://github.com/juce-framework/JUCE](https://github.com/juce-framework/JUCE)
+- Xsimd: [https://github.com/xtensor-stack/xsimd](https://github.com/xtensor-stack/xsimd)
+- Steinberg VST3 SDK: [https://github.com/steinbergmedia/vst3sdk](https://github.com/steinbergmedia/vst3sdk)
+- Readerwriterqueue: [https://github.com/cameron314/readerwriterqueue](https://github.com/cameron314/readerwriterqueue)
+
 # The details
 
 ## FX
@@ -179,6 +198,6 @@ These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
 # Screenshots
-<img alt="Screenshot" src="demo/screenshot.png"/>
-<img alt="Screenshot Matrix" src="demo/screenshot_matrix.png"/>
-<img alt="Screenshot Multitap" src="demo/screenshot_multitap.png"/>
+<img alt="Screenshot" src="static/screenshot.png"/>
+<img alt="Screenshot Matrix" src="static/screenshot_matrix.png"/>
+<img alt="Screenshot Multitap" src="static/screenshot_multitap.png"/>

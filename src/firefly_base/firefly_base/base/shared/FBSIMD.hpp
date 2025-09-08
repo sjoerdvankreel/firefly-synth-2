@@ -4,7 +4,7 @@
 #include <xsimd/xsimd.hpp>
 
 // better make sure this all lines up
-#ifdef __APPLE__
+#if FB_APPLE_AARCH64
 typedef xsimd::neon64 FBXSIMDBatchType;
 #else
 typedef xsimd::sse2 FBXSIMDBatchType;
