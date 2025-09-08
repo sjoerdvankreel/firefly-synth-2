@@ -1,10 +1,3 @@
-# This is not a finished product
-* But it is a functioning clap and vst3 plugin.
-* Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
-* Tested on reaper, renoise, fruity and bitwig.
-* Osci, inter-osci modulation, envelopes, per-voice and global fx/echo/lfos/modmatrix/audiomixer matrix, global pitchbend/modwheel, voice level (all osci) coarse/fine and portamento implemented.
-* Stock JUCE GUI, no presets, no MTS-ESP, no global unison.
-
 # Legal
 
 <table>
@@ -15,6 +8,13 @@
     <td>VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.</td>
   </tr>
 </table>
+
+# This is not a finished product
+* But it is a functioning clap and vst3 plugin.
+* Builds and runs on win/lin (ubuntu 22+)/mac. ARM mac only, no intel.
+* Tested on reaper, renoise, fruity and bitwig.
+* Osci, inter-osci modulation, envelopes, per-voice and global fx/echo/lfos/modmatrix/audiomixer matrix, global pitchbend/modwheel, voice level (all osci) coarse/fine and portamento implemented.
+* Stock JUCE GUI, no presets, no MTS-ESP, no global unison.
 
 # Some demo material
 * Bowed strings
