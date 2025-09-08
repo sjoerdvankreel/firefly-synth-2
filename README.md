@@ -5,6 +5,17 @@
 * Osci, inter-osci modulation, envelopes, per-voice and global fx/echo/lfos/modmatrix/audiomixer matrix, global pitchbend/modwheel, voice level (all osci) coarse/fine and portamento implemented.
 * Stock JUCE GUI, no presets, no MTS-ESP, no global unison.
 
+# Legal
+
+<table>
+  <tr>
+    <td><img alt="CLAP logo" src="static/clap_logo.png"/></td>
+    <td><a href="https://github.com/free-audio/clap">https://github.com/free-audio/clap</a></td>
+    <td><img alt="VST logo" src="static/vst_logo.png"/></td>
+    <td>VST is a trademark of Steinberg Media Technologies GmbH, registered in Europe and other countries.</td>
+  </tr>
+</table>
+
 # Some demo material
 * Bowed strings
 [mp3](https://github.com/sjoerdvankreel/firefly-synth-storage/raw/main/firefly-2/render/demo_bowstring.mp3)
@@ -179,6 +190,6 @@ These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
 
 # Screenshots
-<img alt="Screenshot" src="demo/screenshot.png"/>
-<img alt="Screenshot Matrix" src="demo/screenshot_matrix.png"/>
-<img alt="Screenshot Multitap" src="demo/screenshot_multitap.png"/>
+<img alt="Screenshot" src="static/screenshot.png"/>
+<img alt="Screenshot Matrix" src="static/screenshot_matrix.png"/>
+<img alt="Screenshot Multitap" src="static/screenshot_multitap.png"/>
