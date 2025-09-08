@@ -1,10 +1,3 @@
-TODOLIST for alpha-15
-
-[x] update the libs
-[x] get rid of sse2neon
-[x] intel mac version => finally works on rosetta after libs update, probably was xsimd
-[x] list all the dependencies!
-
 TODOLIST for alpha-16
 
 [ ] figure out bitwig dataexchange on Linux
