@@ -4,13 +4,14 @@
 #include <firefly_base/base/state/proc/FBAccParamState.hpp>
 #include <firefly_base/base/state/proc/FBVoiceAccParamState.hpp>
 #include <firefly_base/base/state/proc/FBGlobalAccParamState.hpp>
-#include <firefly_base/base/state/proc/FBVoiceBlockParamState.hpp>
+#include <firefly_base/base/state/proc/FBVoiceScalarParamState.hpp>
 #include <firefly_base/base/state/proc/FBGlobalBlockParamState.hpp>
 
 enum class FBProcParamType
 {
   VoiceAcc,
   GlobalAcc,
+  VoieStart,
   VoiceBlock,
   GlobalBlock
 };
@@ -36,7 +37,7 @@ class FBProcParamState final
   {
     FBVoiceAccParamState* _voiceAcc;
     FBGlobalAccParamState* _globalAcc;
-    FBVoiceBlockParamState* _voiceBlock;
+    FBVoiceScalarParamState* _voiceScalar;
     FBGlobalBlockParamState* _globalBlock;
   };
 
@@ -46,7 +47,7 @@ class FBProcParamState final
   friend class FBSmoothingProcessor;
   friend class FBProcStateContainer;
 
-  FBVoiceBlockParamState& VoiceBlock();
+  FBVoiceScalarParamState& VoiceScalar();
   FBGlobalBlockParamState& GlobalBlock();
 
   void Value(float value);
@@ -58,8 +59,8 @@ public:
   FB_COPY_MOVE_DEFCTOR(FBProcParamState);
   explicit FBProcParamState(FBVoiceAccParamState* voiceAcc);
   explicit FBProcParamState(FBGlobalAccParamState* globalAcc);
-  explicit FBProcParamState(FBVoiceBlockParamState* voiceBlock);
   explicit FBProcParamState(FBGlobalBlockParamState* globalBlock);
+  FBProcParamState(FBVoiceScalarParamState* voiceScalar, bool isVoiceStart);
 
   float Value() const;
 
@@ -88,14 +89,14 @@ _type(FBProcParamType::GlobalAcc),
 _globalAcc(globalAcc) {}
 
 inline FBProcParamState::
-FBProcParamState(FBVoiceBlockParamState* voiceBlock) :
-_type(FBProcParamType::VoiceBlock),
-_voiceBlock(voiceBlock) {}
-
-inline FBProcParamState::
 FBProcParamState(FBGlobalBlockParamState* globalBlock) :
 _type(FBProcParamType::GlobalBlock), 
 _globalBlock(globalBlock) {}
+
+inline FBProcParamState::
+FBProcParamState(FBVoiceScalarParamState* voiceScalar, bool isVoiceStart) :
+_type(FBProcParamType::VoiceBlock),
+_voiceBlock(voiceBlock) {}
 
 inline FBVoiceAccParamState&
 FBProcParamState::VoiceAcc()
