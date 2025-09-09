@@ -1,22 +1,8 @@
 TODOLIST for alpha-16
 
-[ ] figure out bitwig dataexchange on Linux
-[ ] make a normalize button
 [ ] move flush audio to somewhere else
-[ ] make a dedicated tuning section with some options
-[ ] need per-instance params for microtuning
-[ ] note filtering
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
-[ ] make a percussion demo
-[ ] tune the filters
-[ ] figure out all places where is used midi note
-[ ] MTS into master: off / note / continuous 
-[ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
-[ ] global unison with chord mode
-
-TODOLIST for alpha-17
-
 [ ] implement voice target for pitchbend in voice, not osci
 [ ] envelope should loop at very last ?
 [ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
@@ -24,7 +10,6 @@ TODOLIST for alpha-17
 [ ] scale out of the matrix?, lo-hi or min-max into it
 [ ] waveshaper-like graph source / scale / target
 [ ] minmax in the modmatrix 
-[ ] filters should track the actual pitch when possible (string osci)
 [ ] special param stuff maybe not using params but return struct from virtual?
 [ ] save modulation as actual value not normalized + display that way too
 [ ] bright text when graph on
@@ -34,6 +19,21 @@ TODOLIST for alpha-17
 [ ] show visual clue if knob is being modulated
 [ ] show modulation amount in terms of the mod target unit for matrix and easy access
 [ ] allow modulate env stage lengths on voice start => any per-voice-start-automatable
+
+TODOLIST for alpha-17
+
+[ ] make a normalize button
+[ ] make a dedicated tuning section with some options
+[ ] need per-instance params for microtuning
+[ ] note filtering
+[ ] make a percussion demo
+[ ] tune the filters
+[ ] figure out all places where is used midi note
+[ ] MTS into master: off / note / continuous 
+[ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
+[ ] global unison with chord mode
+[ ] figure out bitwig dataexchange on Linux
+[ ] filters should track the actual pitch when possible (string osci)
 
 make a tune before release
 pre/post VMIX echo or not ? => NOT, bc VMIX will be on global uni subvoice level -- or will it ?
