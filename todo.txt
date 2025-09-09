@@ -1,5 +1,6 @@
 TODOLIST for alpha-16
 
+[ ] assert automationtiming
 [ ] param index/tag tooltip only for debug
 [ ] default to if-focus ?
 [ ] voice start : mark in base, not derive it (for tooltips etc since it is now acc)
