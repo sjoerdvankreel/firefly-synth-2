@@ -1,5 +1,7 @@
 TODOLIST for alpha-16
 
+[ ] param index/tag tooltip only for debug
+[ ] default to if-focus ?
 [ ] voice start : mark in base, not derive it (for tooltips etc since it is now acc)
 [ ] move flush audio to somewhere else
 [ ] how the heck is the mod menu ordered?
