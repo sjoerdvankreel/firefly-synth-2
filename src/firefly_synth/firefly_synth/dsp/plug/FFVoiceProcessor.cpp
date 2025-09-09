@@ -103,7 +103,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
 
-  // No need to process first, values are fixed at BeginVoice.
+  // No need to process VNote first, values are fixed at BeginVoice.
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VNote, 0 });
 
   state.moduleSlot = FFAmpEnvSlot;
