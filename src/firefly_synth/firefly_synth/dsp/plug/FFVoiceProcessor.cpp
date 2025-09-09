@@ -25,6 +25,8 @@ FFVoiceProcessor::GetCurrentVEchoTarget(FBModuleProcState const& state)
 void 
 FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
+  _firstRoundThisVoice = true;
+
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
 
@@ -61,11 +63,14 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].osciMod.processor->BeginVoice(false, state);
+  
+  /* TODO 
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
     procState->dsp.voice[voice].osci[i].processor->BeginVoice(false, state);
   }
+  */
   for (int i = 0; i < FFEffectCount; i++)
   {
     state.moduleSlot = i;
@@ -125,6 +130,8 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
+    if(_firstRoundThisVoice)
+      voiceDSP.osci[i].processor->BeginVoice(false, state);
     voiceDSP.osci[i].processor->Process(false, state);
   }
 
@@ -182,6 +189,8 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
     voiceFinished = vEchoProcessed != FBFixedBlockSamples;
     voiceDSP.vEcho.output.CopyTo(voiceDSP.output);
   }
+
+  _firstRoundThisVoice = false;
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)

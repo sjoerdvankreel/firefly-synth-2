@@ -8,6 +8,8 @@ struct FBPlugInputBlock;
 
 class FFVoiceProcessor final
 {
+  // Need this for on-voice-start modulation.
+  bool _firstRoundThisVoice = true;
   FFVEchoTarget GetCurrentVEchoTarget(FBModuleProcState const& state);
 
 public:
