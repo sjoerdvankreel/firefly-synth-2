@@ -363,8 +363,6 @@ FBCLAPPlugin::process(
         if ((iter = _topo->audio.paramTagToIndex.find(modFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
           if (_topo->audio.params[iter->second].static_.acc)
             _input.accModByParamThenNoteThenSample.push_back(MakeAccModEvent(iter->second, modFromHost));
-          else if(_topo->audio.params[iter->second].static_.AutomationTiming() == FBAutomationTiming::AtVoiceStart)
-            _input.voiceStartModByParamThenNoteThenSample.push_back(MakeAccModEvent(iter->second, modFromHost));
         break;
       case CLAP_EVENT_PARAM_VALUE:
         valueFromHost = reinterpret_cast<clap_event_param_value const*>(header);

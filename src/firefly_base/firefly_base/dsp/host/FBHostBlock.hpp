@@ -87,7 +87,6 @@ struct FBHostInputBlock final
   std::vector<FBAccAutoEvent> accAutoByParamThenSample = {};
   std::vector<FBMIDIEvent> midiByMessageThenCCThenSample = {};
   std::vector<FBAccModEvent> accModByParamThenNoteThenSample = {};
-  std::vector<FBAccModEvent> voiceStartModByParamThenNoteThenSample = {};
 
   FB_NOCOPY_NOMOVE_DEFCTOR(FBHostInputBlock);
   static inline float constexpr DefaultBPM = 120.0f;
