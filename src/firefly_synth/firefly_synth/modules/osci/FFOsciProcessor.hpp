@@ -7,6 +7,7 @@
 #include <firefly_synth/dsp/shared/FFPhaseGenerator.hpp>
 #include <firefly_synth/dsp/shared/FFStateVariableFilter.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
+#include <firefly_synth/modules/osci/FFOsciStateVoiceStart.hpp>
 #include <firefly_synth/modules/osci/FFOsciPhaseGenerator.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
@@ -75,6 +76,8 @@ class FFOsciProcessor final
   FFOsciWaveHSMode _waveHSMode = {};
   std::array<FFOsciWavePWMode, FFOsciWavePWCount> _wavePWMode = {};
   std::array<FFOsciWaveBasicMode, FFOsciWaveBasicCount> _waveBasicMode = {};
+
+  FFOsciParamStateVoiceStart<float> _voiceStartSnapshotNorm = {};
 
   bool _graph = {};
   int _stringGraphPosition = {};

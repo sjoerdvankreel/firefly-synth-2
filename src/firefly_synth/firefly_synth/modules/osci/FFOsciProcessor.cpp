@@ -82,10 +82,10 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   auto const& modTopo = state.topo->static_->modules[(int)FFModuleType::OsciMod];
 
   float uniCountNorm = params.block.uniCount[0].Voice()[voice];
-  float uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
-  float uniRandomNorm = params.block.uniRandom[0].Voice()[voice];
   float modExpoFMNorm = modParams.block.expoFM[0].Voice()[voice];
   float modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
+  _voiceStartSnapshotNorm.uniOffset[0] = params.voiceStart.uniOffset[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
+  _voiceStartSnapshotNorm.uniRandom[0] = params.voiceStart.uniRandom[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
   _graph = graph;
   _graphPhaseGen = {};
@@ -98,8 +98,8 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
 
   _uniCount = topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm);
-  _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
-  _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, uniRandomNorm);
+  _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, _voiceStartSnapshotNorm.uniOffset[0]);
+  _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, _voiceStartSnapshotNorm.uniRandom[0]);
 
   FBSArray<float, FFOsciUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
@@ -302,5 +302,7 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   exchangeParams.acc.fine[0][voice] = fineNormModulated.Last();
   exchangeParams.acc.envToGain[0][voice] = envToGain.Last();
   exchangeParams.acc.lfoToFine[0][voice] = lfoToFine.Last();
+  exchangeParams.voiceStart.uniOffset[0][voice] = _voiceStartSnapshotNorm.uniOffset[0];
+  exchangeParams.voiceStart.uniRandom[0][voice] = _voiceStartSnapshotNorm.uniRandom[0];
   return FBFixedBlockSamples;
 }

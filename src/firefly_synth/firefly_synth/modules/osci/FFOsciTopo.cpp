@@ -195,7 +195,7 @@ FFMakeOsciTopo()
   uniCount.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
-  uniOffset.acc = false;
+  uniOffset.acc = true; // todo not really
   uniOffset.defaultText = "50";
   uniOffset.display = "Ofst";
   uniOffset.name = "Uni Offset";
@@ -203,14 +203,14 @@ FFMakeOsciTopo()
   uniOffset.unit = "%";
   uniOffset.id = "{6F5754E1-BDF4-4685-98FC-8C613128EE8D}";
   uniOffset.type = FBParamType::Identity;
-  auto selectUniOffset = [](auto& module) { return &module.block.uniOffset; };
+  auto selectUniOffset = [](auto& module) { return &module.voiceStart.uniOffset; };
   uniOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniOffset);
-  uniOffset.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniOffset);
+  uniOffset.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniOffset);
   uniOffset.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOffset);
   uniOffset.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1; });
 
   auto& uniRandom = result->params[(int)FFOsciParam::UniRandom];
-  uniRandom.acc = false;
+  uniRandom.acc = true;
   uniRandom.defaultText = "50";
   uniRandom.display = "Rand";
   uniRandom.name = "Uni Random";
@@ -218,9 +218,9 @@ FFMakeOsciTopo()
   uniRandom.unit = "%";
   uniRandom.id = "{6F7F6D55-5740-44AB-8442-267A5730E2DA}";
   uniRandom.type = FBParamType::Identity;
-  auto selectUniRandom = [](auto& module) { return &module.block.uniRandom; };
+  auto selectUniRandom = [](auto& module) { return &module.voiceStart.uniRandom; };
   uniRandom.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniRandom);
-  uniRandom.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniRandom);
+  uniRandom.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniRandom);
   uniRandom.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniRandom);
   uniRandom.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[0] != (int)FFOsciType::String && vs[1] != 1; });
 
