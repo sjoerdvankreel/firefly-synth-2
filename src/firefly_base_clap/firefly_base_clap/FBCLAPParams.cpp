@@ -149,15 +149,12 @@ FBCLAPPlugin::paramsInfo(
     else
     {
       info->flags |= CLAP_PARAM_IS_AUTOMATABLE;
-      if (timing == FBAutomationTiming::PerSample)
+      info->flags |= CLAP_PARAM_IS_MODULATABLE;
+      if (staticModule.voice)
       {
-        info->flags |= CLAP_PARAM_IS_MODULATABLE;
-        if (staticModule.voice)
-        {
-          info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_KEY;
-          info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
-          info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
-        }
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_KEY;
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
       }
     }
     return true;
