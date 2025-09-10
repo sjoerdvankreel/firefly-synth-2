@@ -154,8 +154,9 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   int controlCount = 6;
+  int rowCount = (FFModMatrixGlobalMaxSlotCount + FFModMatrixVoiceMaxSlotCount) / 2;
   std::vector<int> columnSizes = { 0, 0, 2, 2, 3, 0, 0, 0, 2, 2, 3, 0 };
-  std::vector<int> rowSizes((FFModMatrixGlobalMaxSlotCount + FFModMatrixVoiceMaxSlotCount) / 2 + 1, 1);
+  std::vector<int> rowSizes(rowCount + 1, 1);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, rowSizes, columnSizes);
 
   for (int c = 0; c < 2; c++)
@@ -167,17 +168,12 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
     grid->Add(0, c * controlCount + 5, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));
   }
 
-  for (int r = 0; r < FFModMatrixGlobalMaxSlotCount / 2; r++)
-  {
+  for (int r = 0; r < FFModMatrixGlobalMaxSlotCount; r++)
     AddMatrixSlotRow(plugGUI, grid, true, 1 + r, 0, r);
-    AddMatrixSlotRow(plugGUI, grid, true, 1 + r, controlCount, FFModMatrixGlobalMaxSlotCount / 2 + r);
-  }
-
-  for (int r = 0; r < FFModMatrixVoiceMaxSlotCount / 2; r++)
-  {
-    AddMatrixSlotRow(plugGUI, grid, false, 1 + FFModMatrixGlobalMaxSlotCount / 2 + r, 0, r);
-    AddMatrixSlotRow(plugGUI, grid, false, 1 + FFModMatrixGlobalMaxSlotCount / 2 + r, controlCount, FFModMatrixVoiceMaxSlotCount / 2 + r);
-  }
+  for (int r = FFModMatrixGlobalMaxSlotCount; r < rowCount; r++)
+    AddMatrixSlotRow(plugGUI, grid, false, 1 + r, 0, r - FFModMatrixGlobalMaxSlotCount);
+  for (int r = 0; r < rowCount; r++)
+    AddMatrixSlotRow(plugGUI, grid, false, 1 + r, controlCount, r + rowCount - FFModMatrixGlobalMaxSlotCount);
 
   grid->MarkSection({ { 0, 0 }, { (int)rowSizes.size(), 2 * controlCount}});
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
