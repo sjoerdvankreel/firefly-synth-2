@@ -510,7 +510,8 @@ FFMakeOsciTopo()
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] == (int)FFOsciWaveDSFMode::Over; });
 
   auto& waveDSFBW = result->params[(int)FFOsciParam::WaveDSFBW];
-  waveDSFBW.acc = false;
+  waveDSFBW.acc = true;
+  waveDSFBW.voiceStart = true;
   waveDSFBW.defaultText = "50";
   waveDSFBW.name = "DSF Bandwidth";
   waveDSFBW.display = "BW";
@@ -520,9 +521,9 @@ FFMakeOsciTopo()
   waveDSFBW.type = FBParamType::Log2;
   waveDSFBW.Log2().displayMultiplier = 100.0f;
   waveDSFBW.Log2().Init(-0.01f, 0.01f, 1.01f);
-  auto selectWaveDSFBW = [](auto& module) { return &module.block.waveDSFBW; };
+  auto selectWaveDSFBW = [](auto& module) { return &module.voiceStart.waveDSFBW; };
   waveDSFBW.scalarAddr = FFSelectScalarParamAddr(selectModule, selectWaveDSFBW);
-  waveDSFBW.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectWaveDSFBW);
+  waveDSFBW.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectWaveDSFBW);
   waveDSFBW.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectWaveDSFBW);
   waveDSFBW.dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveDSFMode },
     [](auto const& vs) { return vs[0] != (int)FFOsciType::FM && vs[1] == (int)FFOsciWaveDSFMode::BW; });

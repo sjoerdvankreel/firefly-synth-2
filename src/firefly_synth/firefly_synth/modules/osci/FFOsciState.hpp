@@ -37,7 +37,6 @@ class alignas(alignof(TBlock)) FFOsciBlockParamState final
   std::array<TBlock, 1> waveHSMode = {};
   std::array<TBlock, FFOsciWavePWCount> wavePWMode = {};
   std::array<TBlock, FFOsciWaveBasicCount> waveBasicMode = {};
-  std::array<TBlock, 1> waveDSFBW = {};
   std::array<TBlock, 1> waveDSFMode = {};
   std::array<TBlock, 1> waveDSFOver = {};
   std::array<TBlock, 1> waveDSFDistance = {};
