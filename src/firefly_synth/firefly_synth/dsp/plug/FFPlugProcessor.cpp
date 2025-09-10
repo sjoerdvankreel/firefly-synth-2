@@ -82,7 +82,8 @@ FFPlugProcessor::LeaseVoices(
     if ((*input.noteEvents)[n].on)
     {
       int voice = input.voiceManager->Lease((*input.noteEvents)[n]);
-      _procState->dsp.voice[voice].processor.BeginVoice();
+      auto state = MakeModuleVoiceState(input, voice);
+      _procState->dsp.voice[voice].processor.BeginVoice(state);
     }
 }
 

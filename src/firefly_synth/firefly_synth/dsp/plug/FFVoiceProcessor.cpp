@@ -23,13 +23,19 @@ FFVoiceProcessor::GetCurrentVEchoTarget(FBModuleProcState const& state)
 }
 
 void 
-FFVoiceProcessor::BeginVoice()
+FFVoiceProcessor::BeginVoice(FBModuleProcState state)
 {
   // We need to handle modules BeginVoice inside process
   // because of the on-voice-start modulation feature.
   // F.e. lfo output can be targeted to env stage length
   // which is handle in env's beginvoice, not process.
   _firstRoundThisVoice = true;
+
+  // This one actually needs to be here.
+  state.moduleSlot = 0;
+  int voice = state.voice->slot;
+  auto* procState = state.ProcAs<FFProcState>();
+  procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
 }
 
 bool 
@@ -49,8 +55,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
 
   state.moduleSlot = 0;
-  if(_firstRoundThisVoice)
-    procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
+  procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
 
   // No need to process VNote, values are fixed at BeginVoice.
