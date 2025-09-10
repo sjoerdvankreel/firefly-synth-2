@@ -34,6 +34,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
   procState->dsp.voice[voice].vNote.processor->BeginVoice(state);
 
+  /*
   bool anyNoteWasOnAlready = false;
   float previousMidiKeyUntuned = -1.0f;
   int voiceStartSamplesInBlock = state.voice->offsetInBlock;
@@ -47,9 +48,12 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
     previousMidiKeyUntuned = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(voiceStartSamplesInBlock - 1) * 127.0f;
   }
+  */
 
+  /* TODO
   // This needs to be before init of the voice-amp, because of the porta section attack.
   procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
+  */
 
   /* TODO
   state.moduleSlot = FFAmpEnvSlot;
@@ -109,6 +113,25 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
   // No need to process VNote first, values are fixed at BeginVoice.
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VNote, 0 });
+
+  // This needs to be before init of the voice-amp, because of the porta section attack.
+  if (_firstRoundThisVoice)
+  {
+    bool anyNoteWasOnAlready = false;
+    float previousMidiKeyUntuned = -1.0f;
+    int voiceStartSamplesInBlock = state.voice->offsetInBlock;
+    if (voiceStartSamplesInBlock == 0)
+    {
+      anyNoteWasOnAlready = state.input->anyNoteWasOnLastSamplePrevRound;
+      previousMidiKeyUntuned = state.input->lastKeyRawLastSamplePrevRound * 127.0f;
+    }
+    else
+    {
+      anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
+      previousMidiKeyUntuned = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(voiceStartSamplesInBlock - 1) * 127.0f;
+    }
+    procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
+  }
 
   state.moduleSlot = FFAmpEnvSlot;
   if (_firstRoundThisVoice)
