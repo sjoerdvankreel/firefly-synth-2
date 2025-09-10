@@ -101,7 +101,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   auto selectGlobalModule = [](auto& state) { return &state.global.gMatrix; };
 
   auto& slots = result->params[(int)FFModMatrixParam::Slots];
-  slots.acc = false;
+  slots.mode = FBParamMode::Block;
   slots.defaultText = global? "2": "1"; // global: modulate PB/ModWheel default, voice: velocity to voice amp
   slots.name = "Slots";
   slots.slotCount = 1;
@@ -116,7 +116,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   slots.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSlots);
 
   auto& opType = result->params[(int)FFModMatrixParam::OpType];
-  opType.acc = false;
+  opType.mode = FBParamMode::Block;
   opType.name = "Op";
   opType.display = "Op";
   opType.slotCount = maxSlotCount;
@@ -165,7 +165,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   amount.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::Amount, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   auto& source = result->params[(int)FFModMatrixParam::Source];
-  source.acc = false;
+  source.mode = FBParamMode::Block;
   source.name = "Source";
   source.display = "Source";
   source.defaultTextSelector = [global](int, int, int ps) {
@@ -190,7 +190,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   source.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::Source, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   auto& scale = result->params[(int)FFModMatrixParam::Scale];
-  scale.acc = false;
+  scale.mode = FBParamMode::Block;
   scale.name = "Scale";
   scale.slotCount = maxSlotCount;
   scale.defaultText = "Off";
@@ -253,7 +253,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   };
 
   auto& target = result->params[(int)FFModMatrixParam::Target];
-  target.acc = false;
+  target.mode = FBParamMode::Block;
   target.name = "Target";
   target.display = "Target";
   target.slotCount = maxSlotCount;

@@ -32,7 +32,7 @@ FFMakeEnvTopo()
   auto selectModule = [](auto& state) { return &state.voice.env; };
 
   auto& type = result->params[(int)FFEnvParam::Type];
-  type.acc = false;
+  type.mode = FBParamMode::Block;
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{40F1DCF0-03B1-4ABE-B6B5-A29BF2C8C229}";
@@ -48,7 +48,7 @@ FFMakeEnvTopo()
   type.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectType);
 
   auto& sync = result->params[(int)FFEnvParam::Sync];
-  sync.acc = false;
+  sync.mode = FBParamMode::Block;
   sync.name = "Tempo Sync";
   sync.display = "Sync";
   sync.slotCount = 1;
@@ -62,7 +62,7 @@ FFMakeEnvTopo()
   sync.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& release = result->params[(int)FFEnvParam::Release];
-  release.acc = false;
+  release.mode = FBParamMode::Block;
   release.defaultText = "2";
   release.name = "Release";
   release.slotCount = 1;
@@ -77,7 +77,7 @@ FFMakeEnvTopo()
   release.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& loopStart = result->params[(int)FFEnvParam::LoopStart];
-  loopStart.acc = false;
+  loopStart.mode = FBParamMode::Block;
   loopStart.defaultText = "2";
   loopStart.name = "Loop Start";
   loopStart.display = "Loop";
@@ -93,7 +93,7 @@ FFMakeEnvTopo()
   loopStart.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& loopLength = result->params[(int)FFEnvParam::LoopLength];
-  loopLength.acc = false;
+  loopLength.mode = FBParamMode::Block;
   loopLength.defaultText = "0";
   loopLength.name = "Loop Length";
   loopLength.display = "Length";
@@ -108,7 +108,7 @@ FFMakeEnvTopo()
   loopLength.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::LoopStart }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& smoothTime = result->params[(int)FFEnvParam::SmoothTime];
-  smoothTime.acc = false;
+  smoothTime.mode = FBParamMode::Block;
   smoothTime.defaultText = "0";
   smoothTime.display = "Smooth";
   smoothTime.name = "Smooth Time";
@@ -127,7 +127,7 @@ FFMakeEnvTopo()
   smoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& smoothBars = result->params[(int)FFEnvParam::SmoothBars];
-  smoothBars.acc = false;
+  smoothBars.mode = FBParamMode::Block;
   smoothBars.defaultText = "Off";
   smoothBars.display = "Smooth";
   smoothBars.name = "Smooth Bars";
@@ -190,7 +190,7 @@ FFMakeEnvTopo()
   stageTime.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& stageBars = result->params[(int)FFEnvParam::StageBars];
-  stageBars.acc = false;
+  stageBars.mode = FBParamMode::Block;
   stageBars.name = "Bars";
   stageBars.slotCount = FFEnvStageCount;
   stageBars.unit = "Bars";

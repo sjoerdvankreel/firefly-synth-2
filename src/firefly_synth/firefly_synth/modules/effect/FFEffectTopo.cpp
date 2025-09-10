@@ -41,7 +41,7 @@ FFMakeEffectTopo(bool global)
   auto selectGlobalModule = [](auto& state) { return &state.global.gEffect; };
 
   auto& on = result->params[(int)FFEffectParam::On];
-  on.acc = false;
+  on.mode = FBParamMode::Block;
   on.name = "On";
   on.slotCount = 1;
   on.defaultText = "Off";
@@ -55,7 +55,7 @@ FFMakeEffectTopo(bool global)
   on.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectOn);
 
   auto& oversample = result->params[(int)FFEffectParam::Oversample];
-  oversample.acc = false;
+  oversample.mode = FBParamMode::Block;
   oversample.defaultText = "Off";
   oversample.name = "Oversample";
   oversample.display = "Ovsmp";
@@ -90,7 +90,7 @@ FFMakeEffectTopo(bool global)
   trackingKey.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& lastKeySmoothTime = result->params[(int)FFEffectParam::LastKeySmoothTime];
-  lastKeySmoothTime.acc = false;
+  lastKeySmoothTime.mode = FBParamMode::Block;
   lastKeySmoothTime.defaultText = "0.1";
   lastKeySmoothTime.display = "Smth";
   lastKeySmoothTime.name = "Last Key Smooth Time";
@@ -110,7 +110,7 @@ FFMakeEffectTopo(bool global)
   lastKeySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFEffectParam::On }, [global](auto const& vs) { return global && vs[0] != 0; });
 
   auto& kind = result->params[(int)FFEffectParam::Kind];
-  kind.acc = false;
+  kind.mode = FBParamMode::Block;
   kind.name = "Kind";
   kind.slotCount = FFEffectBlockCount;
   kind.slotFormatter = FFFormatBlockSlot;
@@ -176,7 +176,7 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& stVarMode = result->params[(int)FFEffectParam::StVarMode];
-  stVarMode.acc = false;
+  stVarMode.mode = FBParamMode::Block;
   stVarMode.defaultText = "LPF";
   stVarMode.name = "StVar Mode";
   stVarMode.display = "Mod";
@@ -412,7 +412,7 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return vs[0] != 0 && (vs[1] == (int)FFEffectKind::Comb || vs[1] == (int)FFEffectKind::CombMin); });
 
   auto& clipMode = result->params[(int)FFEffectParam::ClipMode];
-  clipMode.acc = false;
+  clipMode.mode = FBParamMode::Block;
   clipMode.defaultText = "TanH";
   clipMode.name = "Clip Mode";
   clipMode.display = "Mod";
@@ -440,7 +440,7 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Clip; });
 
   auto& foldMode = result->params[(int)FFEffectParam::FoldMode];
-  foldMode.acc = false;
+  foldMode.mode = FBParamMode::Block;
   foldMode.defaultText = "Sin";
   foldMode.name = "Fold Mode";
   foldMode.display = "Mod";
@@ -480,7 +480,7 @@ FFMakeEffectTopo(bool global)
     [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFEffectKind::Fold; });
   
   auto& skewMode = result->params[(int)FFEffectParam::SkewMode];
-  skewMode.acc = false;
+  skewMode.mode = FBParamMode::Block;
   skewMode.defaultText = "UP";
   skewMode.name = "Skew Mode";
   skewMode.display = "Mod";

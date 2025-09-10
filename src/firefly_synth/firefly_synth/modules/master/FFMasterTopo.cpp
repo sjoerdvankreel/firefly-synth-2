@@ -18,7 +18,7 @@ FFMakeMasterTopo()
   auto selectModule = [](auto& state) { return &state.global.master; };
 
   auto& tuningMode = result->params[(int)FFMasterParam::TuningMode];
-  tuningMode.acc = false;
+  tuningMode.mode = FBParamMode::Block;
   tuningMode.name = "Tuning";
   tuningMode.slotCount = 1;
   tuningMode.id = "{90D901C3-CAFE-492A-89F8-FD081D366B75}";
@@ -38,7 +38,7 @@ FFMakeMasterTopo()
   tuningMode.dependencies.enabled.audio.WhenSimple({ (int)FFMasterParam::TuningMode }, [](auto const&) { return false; });
 
   auto& hostSmoothTime = result->params[(int)FFMasterParam::HostSmoothTime];
-  hostSmoothTime.acc = false;
+  hostSmoothTime.mode = FBParamMode::Block;
   hostSmoothTime.defaultText = "2";
   hostSmoothTime.name = "External MIDI/Automation Smoothing";
   hostSmoothTime.display = "Ext. Smth";
@@ -98,7 +98,7 @@ FFMakeMasterTopo()
   pitchBend.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPitchBend);
 
   auto& bendRange = result->params[(int)FFMasterParam::PitchBendRange];
-  bendRange.acc = false;
+  bendRange.mode = FBParamMode::Block;
   bendRange.name = "Bend Range";
   bendRange.display = "Range";
   bendRange.slotCount = 1;
@@ -116,7 +116,7 @@ FFMakeMasterTopo()
   bendRange.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectBendRange);
 
   auto& bendTarget = result->params[(int)FFMasterParam::PitchBendTarget];
-  bendTarget.acc = false;
+  bendTarget.mode = FBParamMode::Block;
   bendTarget.name = "Bend Target";
   bendTarget.display = "Target";
   bendTarget.slotCount = 1;

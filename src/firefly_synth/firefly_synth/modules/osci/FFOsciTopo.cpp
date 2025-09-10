@@ -66,7 +66,7 @@ FFMakeOsciTopo()
   auto selectModule = [](auto& state) { return &state.voice.osci; };
 
   auto& type = result->params[(int)FFOsciParam::Type];
-  type.acc = false;
+  type.mode = FBParamMode::Block;
   type.name = "Type";
   type.slotCount = 1;
   type.id = "{9018865F-7B05-4835-B541-95014C0C63E6}";
@@ -179,7 +179,7 @@ FFMakeOsciTopo()
   lfoToFine.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& uniCount = result->params[(int)FFOsciParam::UniCount];
-  uniCount.acc = false;
+  uniCount.mode = FBParamMode::Block;
   uniCount.defaultText = "1";
   uniCount.display = "Uni";
   uniCount.name = "Uni Count";
@@ -270,7 +270,7 @@ FFMakeOsciTopo()
   uniBlend.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::UniCount }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 1; });
 
   auto& waveBasicMode = result->params[(int)FFOsciParam::WaveBasicMode];
-  waveBasicMode.acc = false;
+  waveBasicMode.mode = FBParamMode::Block;
   waveBasicMode.name = "Basic Mode";
   waveBasicMode.display = "Bsc";
   waveBasicMode.slotFormatDisplay = true;
@@ -331,7 +331,7 @@ FFMakeOsciTopo()
   waveBasicGain.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::WaveBasicMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
   auto& wavePWMode = result->params[(int)FFOsciParam::WavePWMode];
-  wavePWMode.acc = false;
+  wavePWMode.mode = FBParamMode::Block;
   wavePWMode.defaultText = "Off";
   wavePWMode.name = "PW Mode";
   wavePWMode.display = "PW";
@@ -393,7 +393,7 @@ FFMakeOsciTopo()
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
   auto& waveHSMode = result->params[(int)FFOsciParam::WaveHSMode];
-  waveHSMode.acc = false;
+  waveHSMode.mode = FBParamMode::Block;
   waveHSMode.defaultText = "Off";
   waveHSMode.name = "HS Mode";
   waveHSMode.display = "HSync";
@@ -451,7 +451,7 @@ FFMakeOsciTopo()
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
   auto& waveDSFMode = result->params[(int)FFOsciParam::WaveDSFMode];
-  waveDSFMode.acc = false;
+  waveDSFMode.mode = FBParamMode::Block;
   waveDSFMode.defaultText = "Off";
   waveDSFMode.name = "DSF Mode";
   waveDSFMode.display = "DSF";
@@ -489,7 +489,7 @@ FFMakeOsciTopo()
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
   auto& waveDSFOver = result->params[(int)FFOsciParam::WaveDSFOver];
-  waveDSFOver.acc = false;
+  waveDSFOver.mode = FBParamMode::Block;
   waveDSFOver.defaultText = "1";
   waveDSFOver.name = "DSF Overtones";
   waveDSFOver.display = "Tones";
@@ -528,7 +528,7 @@ FFMakeOsciTopo()
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] == (int)FFOsciWaveDSFMode::BW; });
 
   auto& waveDSFDistance = result->params[(int)FFOsciParam::WaveDSFDistance];
-  waveDSFDistance.acc = false;
+  waveDSFDistance.mode = FBParamMode::Block;
   waveDSFDistance.defaultText = "1";
   waveDSFDistance.name = "DSF Distance";
   waveDSFDistance.display = "Dist";
@@ -561,7 +561,7 @@ FFMakeOsciTopo()
     [](auto const& vs) { return vs[0] == (int)FFOsciType::Wave && vs[1] != 0; });
 
   auto& fmMode = result->params[(int)FFOsciParam::FMMode];
-  fmMode.acc = false;
+  fmMode.mode = FBParamMode::Block;
   fmMode.defaultText = "Linear";
   fmMode.name = "FM Mode";
   fmMode.display = "Mode";
@@ -578,7 +578,7 @@ FFMakeOsciTopo()
   fmMode.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
 
   auto& fmRatioMode = result->params[(int)FFOsciParam::FMRatioMode];
-  fmRatioMode.acc = false;
+  fmRatioMode.mode = FBParamMode::Block;
   fmRatioMode.defaultText = "Ratio";
   fmRatioMode.name = "FM Ratio Mode";
   fmRatioMode.display = "Ratio";
@@ -611,7 +611,7 @@ FFMakeOsciTopo()
   fmRatioFree.dependencies.visible.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::FMRatioMode }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM && vs[1] == (int)FFOsciFMRatioMode::Free; });
 
   auto& fmRatioRatio = result->params[(int)FFOsciParam::FMRatioRatio];
-  fmRatioRatio.acc = false;
+  fmRatioRatio.mode = FBParamMode::Block;
   fmRatioRatio.defaultText = "1:1";
   fmRatioRatio.name = "FM Ratio Ratio";
   fmRatioRatio.display = "Ratio";
@@ -645,7 +645,7 @@ FFMakeOsciTopo()
   fmIndex.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::FM; });
 
   auto& stringMode = result->params[(int)FFOsciParam::StringMode];
-  stringMode.acc = false;
+  stringMode.mode = FBParamMode::Block;
   stringMode.defaultText = "Uniform";
   stringMode.name = "Mode";
   stringMode.slotCount = 1;
@@ -661,7 +661,7 @@ FFMakeOsciTopo()
   stringMode.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringSeed = result->params[(int)FFOsciParam::StringSeed];
-  stringSeed.acc = false;
+  stringSeed.mode = FBParamMode::Block;
   stringSeed.defaultText = "0";
   stringSeed.name = "Seed";
   stringSeed.slotCount = 1;
@@ -675,7 +675,7 @@ FFMakeOsciTopo()
   stringSeed.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringPoles = result->params[(int)FFOsciParam::StringPoles];
-  stringPoles.acc = false;
+  stringPoles.mode = FBParamMode::Block;
   stringPoles.defaultText = "4";
   stringPoles.name = "Quality";
   stringPoles.display = "Qlty";
@@ -749,7 +749,7 @@ FFMakeOsciTopo()
   stringExcite.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String; });
 
   auto& stringLPOn = result->params[(int)FFOsciParam::StringLPOn];
-  stringLPOn.acc = false;
+  stringLPOn.mode = FBParamMode::Block;
   stringLPOn.name = "LPF On";
   stringLPOn.display = "LPF";
   stringLPOn.slotCount = 1;
@@ -812,7 +812,7 @@ FFMakeOsciTopo()
   stringLPKTrk.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type, (int)FFOsciParam::StringLPOn }, [](auto const& vs) { return vs[0] == (int)FFOsciType::String && vs[1] != 0; });
 
   auto& stringHPOn = result->params[(int)FFOsciParam::StringHPOn];
-  stringHPOn.acc = false;
+  stringHPOn.mode = FBParamMode::Block;
   stringHPOn.name = "HPF On";
   stringHPOn.display = "HPF";
   stringHPOn.slotCount = 1;

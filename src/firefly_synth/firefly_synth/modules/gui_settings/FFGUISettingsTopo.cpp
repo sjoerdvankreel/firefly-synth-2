@@ -126,8 +126,7 @@ FFMakeGUISettingsTopo()
 
   // dummy which we check on the audio if it changed
   auto& flushDelayToggle = result->params[(int)FFGUISettingsParam::FlushDelayToggle];
-  flushDelayToggle.acc = false;
-  flushDelayToggle.thisIsNotARealParameter = true;
+  flushDelayToggle.mode = FBParamMode::Fake;
   flushDelayToggle.name = "Flush Delay";
   flushDelayToggle.slotCount = 1;
   flushDelayToggle.defaultText = "Off";

@@ -30,6 +30,8 @@ class FBGlobalBlockParamState;
 // VoiceStart: sample-accurate from the host side, snapshot at voice start on the plug side.
 // Bit wasteful, but allows to reuse existing machinery for modulation. And, there's not many of those params.
 // Fake: i use it to provide a toggle which we check on realtime if changed, to flush delay lines.
+// Accurate: sample-accurate, per-voice if the module is per-voice.
+// Block: update per block for global, snap to global value at voice start for voice (so more efficient than VoiceStart, but not modulatable).
 enum class FBParamMode { Block, Accurate, VoiceStart, Output, Fake };
 
 typedef std::function<std::string(int moduleIndex, int moduleSlot, int paramSlot)>

@@ -37,7 +37,7 @@ FFMakeEchoTopo(bool global)
   auto selectGlobalModule = [](auto& state) { return &state.global.gEcho; };
 
   auto& vTargetOrGTarget = result->params[(int)FFEchoParam::VTargetOrGTarget];
-  vTargetOrGTarget.acc = false;
+  vTargetOrGTarget.mode = FBParamMode::Block;
   vTargetOrGTarget.slotCount = 1;
   vTargetOrGTarget.id = prefix + "{60F7D173-C5F9-46AD-A108-D17D40FE4C1D}";
   vTargetOrGTarget.name = "Target";
@@ -69,7 +69,7 @@ FFMakeEchoTopo(bool global)
       { "{4E37CD52-00B3-455A-9958-99F7ACBE544E}", "Post VMix" } };
 
   auto& order = result->params[(int)FFEchoParam::Order];
-  order.acc = false;
+  order.mode = FBParamMode::Block;
   order.slotCount = 1;
   order.name = "Order";
   order.defaultText = "T\U00002192F\U00002192R";
@@ -110,7 +110,7 @@ FFMakeEchoTopo(bool global)
   gain.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& sync = result->params[(int)FFEchoParam::Sync];
-  sync.acc = false;
+  sync.mode = FBParamMode::Block;
   sync.name = "Tempo Sync";
   sync.display = "Sync";
   sync.slotCount = 1;
@@ -126,7 +126,7 @@ FFMakeEchoTopo(bool global)
   sync.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& delaySmoothTime = result->params[(int)FFEchoParam::DelaySmoothTime];
-  delaySmoothTime.acc = false;
+  delaySmoothTime.mode = FBParamMode::Block;
   delaySmoothTime.defaultText = "500";
   delaySmoothTime.display = "Smth";
   delaySmoothTime.name = "Delay Smooth Time";
@@ -148,7 +148,7 @@ FFMakeEchoTopo(bool global)
   delaySmoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& delaySmoothBars = result->params[(int)FFEchoParam::DelaySmoothBars];
-  delaySmoothBars.acc = false;
+  delaySmoothBars.mode = FBParamMode::Block;
   delaySmoothBars.display = "Smth";
   delaySmoothBars.name = "Delay Smooth Bars";
   delaySmoothBars.slotCount = 1;
@@ -190,7 +190,7 @@ FFMakeEchoTopo(bool global)
   voiceExtendTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
 
   auto& voiceExtendBars = result->params[(int)FFEchoParam::VoiceExtendBars];
-  voiceExtendBars.acc = false;
+  voiceExtendBars.mode = FBParamMode::Block;
   voiceExtendBars.display = "Extend";
   voiceExtendBars.name = "Voice Extend Bars";
   voiceExtendBars.slotCount = 1;
@@ -231,7 +231,7 @@ FFMakeEchoTopo(bool global)
   voiceFadeTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
 
   auto& voiceFadeBars = result->params[(int)FFEchoParam::VoiceFadeBars];
-  voiceFadeBars.acc = false;
+  voiceFadeBars.mode = FBParamMode::Block;
   voiceFadeBars.display = "Fade";
   voiceFadeBars.name = "Voice Fade Bars";
   voiceFadeBars.slotCount = 1;
@@ -267,7 +267,7 @@ FFMakeEchoTopo(bool global)
   tapsMix.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapsOn = result->params[(int)FFEchoParam::TapsOn];
-  tapsOn.acc = false;
+  tapsOn.mode = FBParamMode::Block;
   tapsOn.name = "Taps On";
   tapsOn.display = "Taps";
   tapsOn.slotCount = 1;
@@ -295,7 +295,7 @@ FFMakeEchoTopo(bool global)
   guiTapSelect.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& tapOn = result->params[(int)FFEchoParam::TapOn];
-  tapOn.acc = false;
+  tapOn.mode = FBParamMode::Block;
   tapOn.name = "Tap On";
   tapOn.display = "Tap";
   tapOn.slotCount = FFEchoTapCount;
@@ -351,7 +351,7 @@ FFMakeEchoTopo(bool global)
   tapDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0 && vs[3] == 0; });
 
   auto& tapDelayBars = result->params[(int)FFEchoParam::TapDelayBars];
-  tapDelayBars.acc = false;
+  tapDelayBars.mode = FBParamMode::Block;
   tapDelayBars.display = "Dly";
   tapDelayBars.name = "Tap Delay Bars";
   tapDelayBars.slotCount = FFEchoTapCount;
@@ -479,7 +479,7 @@ FFMakeEchoTopo(bool global)
   tapHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& feedbackOn = result->params[(int)FFEchoParam::FeedbackOn];
-  feedbackOn.acc = false;
+  feedbackOn.mode = FBParamMode::Block;
   feedbackOn.name = "Feedback On";
   feedbackOn.display = "Fdbk";
   feedbackOn.slotCount = 1;
@@ -571,7 +571,7 @@ FFMakeEchoTopo(bool global)
   feedbackDelayTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn, (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] == 0; });
 
   auto& feedbackDelayBars = result->params[(int)FFEchoParam::FeedbackDelayBars];
-  feedbackDelayBars.acc = false;
+  feedbackDelayBars.mode = FBParamMode::Block;
   feedbackDelayBars.defaultText = "3/16";
   feedbackDelayBars.display = "Dly";
   feedbackDelayBars.name = "Feedback Delay Bars";
@@ -665,7 +665,7 @@ FFMakeEchoTopo(bool global)
   feedbackHPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::FeedbackOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& reverbOn = result->params[(int)FFEchoParam::ReverbOn];
-  reverbOn.acc = false;
+  reverbOn.mode = FBParamMode::Block;
   reverbOn.name = "Reverb On";
   reverbOn.display = "Rvrb";
   reverbOn.slotCount = 1;

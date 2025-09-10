@@ -80,7 +80,7 @@ FFMakeVoiceModuleTopo()
   lfo5ToFine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO5ToFine);
 
   auto& portaType = result->params[(int)FFVoiceModuleParam::PortaType];
-  portaType.acc = false;
+  portaType.mode = FBParamMode::Block;
   portaType.name = "Portamento Type";
   portaType.display = "Porta";
   portaType.slotCount = 1;
@@ -97,7 +97,7 @@ FFMakeVoiceModuleTopo()
   portaType.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaType);
 
   auto& portaMode = result->params[(int)FFVoiceModuleParam::PortaMode];
-  portaMode.acc = false;
+  portaMode.mode = FBParamMode::Block;
   portaMode.name = "Portamento Mode";
   portaMode.display = "Mode";
   portaMode.slotCount = 1;
@@ -114,7 +114,7 @@ FFMakeVoiceModuleTopo()
   portaMode.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& portaSync = result->params[(int)FFVoiceModuleParam::PortaSync];
-  portaSync.acc = false;
+  portaSync.mode = FBParamMode::Block;
   portaSync.name = "Portamento Tempo Sync";
   portaSync.display = "Sync";
   portaSync.slotCount = 1;
@@ -147,7 +147,7 @@ FFMakeVoiceModuleTopo()
   portaTime.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaSync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& portaBars = result->params[(int)FFVoiceModuleParam::PortaBars];
-  portaBars.acc = false;
+  portaBars.mode = FBParamMode::Block;
   portaBars.defaultText = "1/16";
   portaBars.display = "Length";
   portaBars.name = "Portamento Length Bars";
