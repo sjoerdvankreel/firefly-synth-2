@@ -1,6 +1,7 @@
 TODOLIST for alpha-16
 
 [x] perf fix clap exchange
+[x] less matrix slots (break)
 [x] insert/delete env stage
 [x] assert automation timing
 [x] param index/tag tooltip only for debug
