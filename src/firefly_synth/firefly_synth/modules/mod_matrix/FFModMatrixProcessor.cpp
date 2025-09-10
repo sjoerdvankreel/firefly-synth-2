@@ -116,7 +116,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   auto const& opTypeNorm = params.block.opType;
   auto const& scaleMinNorm = params.acc.scaleMin;
   auto const& scaleMaxNorm = params.acc.scaleMax;
-  auto const& targetMinNorm = params.acc.targetMax;
+  auto const& targetMinNorm = params.acc.targetMin;
   auto const& targetMaxNorm = params.acc.targetMax;
   auto const& sourceLowNorm = params.acc.sourceLow;
   auto const& sourceHighNorm = params.acc.sourceHigh;
@@ -194,7 +194,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
 
   auto const& scaleMinNorm = procParams.acc.scaleMin;
   auto const& scaleMaxNorm = procParams.acc.scaleMax;
-  auto const& targetMinNorm = procParams.acc.targetMax;
+  auto const& targetMinNorm = procParams.acc.targetMin;
   auto const& targetMaxNorm = procParams.acc.targetMax; // todo connect them all
   auto const& sourceLowNorm = procParams.acc.sourceLow;
   auto const& sourceHighNorm = procParams.acc.sourceHigh;
