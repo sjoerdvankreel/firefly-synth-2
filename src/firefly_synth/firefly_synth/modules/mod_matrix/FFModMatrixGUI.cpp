@@ -107,8 +107,9 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   
+  grid->Add(r, c + 0, plugGUI->StoreComponent<FBAutoSizeLabel>(global ? "G" : "V"));
   auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, slot } });
-  grid->Add(r, c + 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
+  grid->Add(r, c + 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
 
   std::function<void(int)> sourceOrScaleChanged = [plugGUI, global](int itemResultId) {
     if (itemResultId != 0)
@@ -123,12 +124,12 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   auto source = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Source, slot } });
   auto* sourceCombo = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, source);
   sourceCombo->valueChangedByUserAction = sourceOrScaleChanged;
-  grid->Add(r, c + 1, sourceCombo);
+  grid->Add(r, c + 2, sourceCombo);
 
   auto scale = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Scale, slot } });
   auto* scaleCombo = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, scale);
   scaleCombo->valueChangedByUserAction = sourceOrScaleChanged;
-  grid->Add(r, c + 2, scaleCombo);
+  grid->Add(r, c + 3, scaleCombo);
 
   auto target = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Target, slot } });
   auto* targetCombo = plugGUI->StoreComponent<FBParamComboBox>(plugGUI, target);
@@ -142,28 +143,28 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
         plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
     } };
 
-  grid->Add(r, c + 3, targetCombo);
+  grid->Add(r, c + 4, targetCombo);
 
   auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Amount, slot } });
-  grid->Add(r, c + 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
+  grid->Add(r, c + 5, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
 }
   
 static Component*
 MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  int controlCount = 5;
-  std::vector<int> columnSizes = { 0, 2, 2, 3, 0, 0, 2, 2, 3, 0 };
+  int controlCount = 6;
+  std::vector<int> columnSizes = { 0, 0, 2, 2, 3, 0, 0, 0, 2, 2, 3, 0 };
   std::vector<int> rowSizes((FFModMatrixGlobalMaxSlotCount + FFModMatrixVoiceMaxSlotCount) / 2 + 1, 1);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, rowSizes, columnSizes);
 
   for (int c = 0; c < 2; c++)
   {
-    grid->Add(0, c * controlCount + 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Op"));
-    grid->Add(0, c * controlCount + 1, plugGUI->StoreComponent<FBAutoSizeLabel>("Source"));
-    grid->Add(0, c * controlCount + 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Scale"));
-    grid->Add(0, c * controlCount + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
-    grid->Add(0, c * controlCount + 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));
+    grid->Add(0, c * controlCount + 1, plugGUI->StoreComponent<FBAutoSizeLabel>("Op"));
+    grid->Add(0, c * controlCount + 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Source"));
+    grid->Add(0, c * controlCount + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Scale"));
+    grid->Add(0, c * controlCount + 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
+    grid->Add(0, c * controlCount + 5, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));
   }
 
   for (int r = 0; r < FFModMatrixGlobalMaxSlotCount / 2; r++)
