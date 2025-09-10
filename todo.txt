@@ -1,5 +1,6 @@
 TODOLIST for alpha-16
 
+[ ] insert/delete env stage
 [ ] assert automationtiming
 [ ] param index/tag tooltip only for debug
 [ ] default to if-focus ?

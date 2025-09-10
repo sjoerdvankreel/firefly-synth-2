@@ -158,6 +158,9 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
     }
     menu.addSubMenu("Copy To", subMenu);
   }
+  auto iter = PopupMenu::MenuItemIterator(extendedMenu);
+  while (iter.next())
+    menu.addItem(iter.getItem());
 
   PopupMenu::Options options;
   options = options.withParentComponent(_plugGUI);
@@ -174,6 +177,10 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
       std::string name = _plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
       _plugGUI->HostContext()->UndoState().Snapshot("Copy " + name);
       _plugGUI->HostContext()->CopyModuleAudioParams(moduleIndices, id - 2);
+    }
+    else if (extendedMenuHandler)
+    {
+      extendedMenuHandler(moduleIndices, id);
     }
   });
 }

@@ -104,5 +104,19 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
   for (int i = FFEnvSlotOffset; i < FFEnvCount; i++)
     tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i));
   tabs->ActivateStoredSelectedTab();
+
+  PopupMenu insertMenu;
+  PopupMenu removeMenu;
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    insertMenu.addItem(1000 + i, std::to_string(i + 1));
+    removeMenu.addItem(2000 + i, std::to_string(i + 1));
+  }
+  tabs->extendedMenu.addSubMenu("Remove At", removeMenu);
+  tabs->extendedMenu.addSubMenu("Insert Before", insertMenu);
+  tabs->extendedMenuHandler = [](FBTopoIndices const&, int) {
+
+  };
+
   return tabs;
 }

@@ -67,6 +67,9 @@ public FBAutoSizeTabComponent
   std::map<int, std::string> _tabSeparatorText = {};
 
 public:
+  juce::PopupMenu extendedMenu = {};
+  std::function<void(FBTopoIndices const&, int)> extendedMenuHandler = {};
+
   FBModuleTabComponent(
     FBPlugGUI* plugGUI, 
     FBRuntimeGUIParam const* param);
