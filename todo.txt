@@ -1,7 +1,8 @@
 TODOLIST for alpha-16
 
+[x] perf fix clap exchange
 [x] insert/delete env stage
-[x] assert automationtiming
+[x] assert automation timing
 [x] param index/tag tooltip only for debug
 [x] voice start : mark in base, not derive it (for tooltips etc since it is now acc)
 [x] allow modulate env stage lengths on voice start => any per-voice-start-automatable
