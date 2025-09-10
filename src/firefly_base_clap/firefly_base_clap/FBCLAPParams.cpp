@@ -134,8 +134,8 @@ FBCLAPPlugin::paramsInfo(
       std::min(sizeof(info->name) - 1, runtimeParam.longName.size()));
 
     info->flags = CLAP_PARAM_REQUIRES_PROCESS;
-    auto timing = runtimeParam.static_.AutomationTiming();
-    if (timing == FBAutomationTiming::Never)
+    auto mode = runtimeParam.static_.mode;
+    if (mode == FBParamMode::Block || mode == FBParamMode::Fake || mode == FBParamMode::Output)
     {
       info->flags |= CLAP_PARAM_IS_READONLY;
       if (runtimeParam.static_.NonRealTime().IsStepped())
@@ -149,15 +149,12 @@ FBCLAPPlugin::paramsInfo(
     else
     {
       info->flags |= CLAP_PARAM_IS_AUTOMATABLE;
-      if (timing == FBAutomationTiming::PerSample)
+      info->flags |= CLAP_PARAM_IS_MODULATABLE;
+      if (staticModule.voice)
       {
-        info->flags |= CLAP_PARAM_IS_MODULATABLE;
-        if (staticModule.voice)
-        {
-          info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_KEY;
-          info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
-          info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
-        }
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_KEY;
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_CHANNEL;
+        info->flags |= CLAP_PARAM_IS_MODULATABLE_PER_NOTE_ID;
       }
     }
     return true;

@@ -41,7 +41,7 @@ FFModMatrixMakeTargets(bool global, FBStaticTopo const* topo)
         for (int p = 0; p < module.params.size(); p++)
         {
           auto const& param = module.params[p];
-          if (param.AutomationTiming() == FBAutomationTiming::PerSample)
+          if (param.mode == FBParamMode::Accurate || param.mode == FBParamMode::VoiceStart)
             for (int ps = 0; ps < param.slotCount; ps++)
               result.push_back({ { m, ms }, { p, ps } });
         }

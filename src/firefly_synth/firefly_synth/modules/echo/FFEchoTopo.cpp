@@ -444,7 +444,7 @@ FFMakeEchoTopo(bool global)
   tapLPRes.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::TapsOn, (int)FFEchoParam::TapOn }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& tapHPFreq = result->params[(int)FFEchoParam::TapHPFreq];
-  tapHPFreq.acc = true;
+  tapHPFreq.mode = FBParamMode::Accurate;
   tapHPFreq.defaultText = std::to_string((int)FFMinStateVariableFilterFreq);
   tapHPFreq.name = "Tap HPF Freq";
   tapHPFreq.display = "HPF";
