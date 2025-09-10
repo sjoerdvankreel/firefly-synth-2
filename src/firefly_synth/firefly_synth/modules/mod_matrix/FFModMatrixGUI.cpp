@@ -39,11 +39,16 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
   auto clean = plugGUI->StoreComponent<FBAutoSizeButton>("Clean");
   grid->Add(0, 5, clean);
   clean->onClick = [plugGUI, global]() {
-    std::vector<double> amtNorm = {};
     std::vector<double> scaleNorm = {};
+    std::vector<double> sourceNorm = {};
     std::vector<double> targetNorm = {};
     std::vector<double> opTypeNorm = {};
-    std::vector<double> sourceNorm = {};
+    std::vector<double> scaleMinNorm = {};
+    std::vector<double> scaleMaxNorm = {};
+    std::vector<double> targetMinNorm = {};
+    std::vector<double> targetMaxNorm = {};
+    std::vector<double> sourceLowNorm = {};
+    std::vector<double> sourceHighNorm = {};
     auto* hostContext = plugGUI->HostContext();
     int moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
     int maxSlotCount = global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount;
@@ -57,24 +62,34 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
       bool targetOn = hostContext->GetAudioParamList<int>({ modIndices, { (int)FFModMatrixParam::Target, i } }) != 0;
       if (opTypeOn && sourceOn && targetOn)
       {
-        amtNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Amount, i } }));
         scaleNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Scale, i } }));
         targetNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Target, i } }));
         opTypeNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::OpType, i } }));
         sourceNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Source, i } }));
+        scaleMinNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::ScaleMin, i } }));
+        scaleMaxNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::ScaleMax, i } }));
+        targetMinNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::TargetMin, i } }));
+        targetMaxNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::TargetMax, i } }));
+        sourceLowNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::SourceLow, i } }));
+        sourceHighNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::SourceHigh, i } }));
       }
     }
     plugGUI->HostContext()->ClearModuleAudioParams(modIndices);
-    for (int i = 0; i < amtNorm.size(); i++)
+    for (int i = 0; i < sourceNorm.size(); i++)
     {
-      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Amount, i } }, amtNorm[i]);
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Scale, i } }, scaleNorm[i]);
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Target, i } }, targetNorm[i]);
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::OpType, i } }, opTypeNorm[i]);
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Source, i } }, sourceNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::ScaleMin, i } }, scaleMinNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::ScaleMax, i } }, scaleMaxNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::TargetMin, i } }, targetMinNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::TargetMax, i } }, targetMaxNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::SourceLow, i } }, sourceLowNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::SourceHigh, i } }, sourceHighNorm[i]);
     }
     auto const* slotsParam = hostContext->Topo()->audio.ParamAtTopo({ modIndices, { (int)FFModMatrixParam::Slots, 0 } });
-    double slotsNorm = slotsParam->static_.Discrete().PlainToNormalizedFast((int)amtNorm.size());
+    double slotsNorm = slotsParam->static_.Discrete().PlainToNormalizedFast((int)sourceNorm.size());
     hostContext->PerformImmediateAudioParamEdit(slotsParam->runtimeParamIndex, slotsNorm);
   };
 
