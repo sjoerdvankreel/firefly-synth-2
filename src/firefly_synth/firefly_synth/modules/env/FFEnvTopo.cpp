@@ -144,7 +144,7 @@ FFMakeEnvTopo()
   smoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& stageLevel = result->params[(int)FFEnvParam::StageLevel];
-  stageLevel.acc = true;
+  stageLevel.mode = FBParamMode::Accurate;
   stageLevel.name = "Level";
   stageLevel.slotCount = FFEnvStageCount;
   stageLevel.unit = "%";
@@ -158,7 +158,7 @@ FFMakeEnvTopo()
   stageLevel.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& stageSlope = result->params[(int)FFEnvParam::StageSlope];
-  stageSlope.acc = true;
+  stageSlope.mode = FBParamMode::Accurate;
   stageSlope.defaultText = "50";
   stageSlope.name = "Slope";
   stageSlope.slotCount = FFEnvStageCount;
@@ -172,8 +172,7 @@ FFMakeEnvTopo()
   stageSlope.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEnvType::Exp; });
 
   auto& stageTime = result->params[(int)FFEnvParam::StageTime];
-  stageTime.acc = true;
-  stageTime.voiceStart = true;
+  stageTime.mode = FBParamMode::VoiceStart;
   stageTime.name = "Time";
   stageTime.slotCount = FFEnvStageCount;
   stageTime.unit = "Sec";

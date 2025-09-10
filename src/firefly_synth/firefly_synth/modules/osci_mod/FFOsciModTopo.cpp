@@ -91,7 +91,7 @@ FFMakeOsciModTopo()
   amMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAMMode);
 
   auto& amMix = result->params[(int)FFOsciModParam::AMMix];
-  amMix.acc = true;
+  amMix.mode = FBParamMode::Accurate;
   amMix.defaultText = "1";
   amMix.name = "AM Mix";
   amMix.slotCount = FFOsciModSlotCount;
@@ -119,7 +119,7 @@ FFMakeOsciModTopo()
   fmOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFMOn);
 
   auto& fmIndex = result->params[(int)FFOsciModParam::FMIndex];
-  fmIndex.acc = true;
+  fmIndex.mode = FBParamMode::Accurate;
   fmIndex.defaultText = "0";
   fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciModSlotCount;

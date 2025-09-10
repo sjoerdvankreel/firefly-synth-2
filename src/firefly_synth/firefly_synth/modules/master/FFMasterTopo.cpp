@@ -56,7 +56,7 @@ FFMakeMasterTopo()
   hostSmoothTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectHostSmoothTime);;
 
   auto& aux = result->params[(int)FFMasterParam::Aux];
-  aux.acc = true;
+  aux.mode = FBParamMode::Accurate;
   aux.defaultText = "100";
   aux.name = "Aux";
   aux.slotCount = FFMasterAuxCount;
@@ -69,7 +69,7 @@ FFMakeMasterTopo()
   aux.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAux);
 
   auto& modWheel = result->params[(int)FFMasterParam::ModWheel];
-  modWheel.acc = true;
+  modWheel.mode = FBParamMode::Accurate;
   modWheel.defaultText = "0";
   modWheel.name = "Mod Wheel";
   modWheel.slotCount = 1;
@@ -82,7 +82,7 @@ FFMakeMasterTopo()
   modWheel.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectModWheel);
 
   auto& pitchBend = result->params[(int)FFMasterParam::PitchBend];
-  pitchBend.acc = true;
+  pitchBend.mode = FBParamMode::Accurate;
   pitchBend.defaultText = "0";
   pitchBend.name = "Pitch Bend";
   pitchBend.slotCount = 1;

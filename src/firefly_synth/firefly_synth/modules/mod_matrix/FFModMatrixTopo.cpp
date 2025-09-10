@@ -148,7 +148,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   opType.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0]; });
 
   auto& amount = result->params[(int)FFModMatrixParam::Amount];
-  amount.acc = true;
+  amount.mode = FBParamMode::Accurate;
   amount.defaultText = "100";
   amount.name = "Amount";
   amount.display = "Amt";

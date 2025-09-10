@@ -37,7 +37,7 @@ FFMakeVMixTopo()
   auto selectModule = [](auto& state) { return &state.voice.vMix; };
 
   auto& amp = result->params[(int)FFVMixParam::Amp];
-  amp.acc = true;
+  amp.mode = FBParamMode::Accurate;
   amp.defaultText = "100";
   amp.name = "Amp";
   amp.slotCount = 1;
@@ -53,7 +53,7 @@ FFMakeVMixTopo()
   amp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmp);
 
   auto& ampEnvToAmp = result->params[(int)FFVMixParam::AmpEnvToAmp];
-  ampEnvToAmp.acc = true;
+  ampEnvToAmp.mode = FBParamMode::Accurate;
   ampEnvToAmp.name = "Amp Env\U00002192Amp";
   ampEnvToAmp.defaultText = "100";
   ampEnvToAmp.slotCount = 1;
@@ -66,7 +66,7 @@ FFMakeVMixTopo()
   ampEnvToAmp.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmpEnvToAmp);
 
   auto& bal = result->params[(int)FFVMixParam::Bal];
-  bal.acc = true;
+  bal.mode = FBParamMode::Accurate;
   bal.defaultText = "0";
   bal.name = "Balance";
   bal.display = "Bal";
@@ -83,7 +83,7 @@ FFMakeVMixTopo()
   bal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectBal); 
 
   auto& lfo6ToBal = result->params[(int)FFVMixParam::LFO6ToBal];
-  lfo6ToBal.acc = true;
+  lfo6ToBal.mode = FBParamMode::Accurate;
   lfo6ToBal.name = "VLFO 6\U00002192Bal";
   lfo6ToBal.defaultText = "0";
   lfo6ToBal.slotCount = 1;
@@ -96,7 +96,7 @@ FFMakeVMixTopo()
   lfo6ToBal.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO6ToBal);
   
   auto& osciToVFX = result->params[(int)FFVMixParam::OsciToVFX];
-  osciToVFX.acc = true;
+  osciToVFX.mode = FBParamMode::Accurate;
   osciToVFX.defaultText = "0";
   osciToVFX.name = "Osc To VFX";
   osciToVFX.slotCount = FFVMixOsciToVFXCount;
@@ -111,7 +111,7 @@ FFMakeVMixTopo()
   osciToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciToVFX);
 
   auto& vfxToVFX = result->params[(int)FFVMixParam::VFXToVFX];
-  vfxToVFX.acc = true;
+  vfxToVFX.mode = FBParamMode::Accurate;
   vfxToVFX.defaultText = "0";
   vfxToVFX.name = "VFX To VFX";
   vfxToVFX.slotCount = FFMixFXToFXCount;
@@ -126,7 +126,7 @@ FFMakeVMixTopo()
   vfxToVFX.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVFXToVFX);  
 
   auto& osciToOut = result->params[(int)FFVMixParam::OsciToOut];
-  osciToOut.acc = true;
+  osciToOut.mode = FBParamMode::Accurate;
   osciToOut.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
   osciToOut.name = "Osc To Out";
   osciToOut.slotCount = FFOsciCount;
@@ -141,7 +141,7 @@ FFMakeVMixTopo()
   osciToOut.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOsciToOut);
 
   auto& vfxToOut = result->params[(int)FFVMixParam::VFXToOut];
-  vfxToOut.acc = true;
+  vfxToOut.mode = FBParamMode::Accurate;
   vfxToOut.defaultText = "0";
   vfxToOut.name = "VFX To Out";
   vfxToOut.slotCount = FFEffectCount;

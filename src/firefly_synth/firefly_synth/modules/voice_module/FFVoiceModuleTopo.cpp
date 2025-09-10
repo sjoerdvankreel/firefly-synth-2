@@ -23,7 +23,7 @@ FFMakeVoiceModuleTopo()
   auto selectModule = [](auto& state) { return &state.voice.voiceModule; };
 
   auto& coarse = result->params[(int)FFVoiceModuleParam::Coarse];
-  coarse.acc = true;
+  coarse.mode = FBParamMode::Accurate;
   coarse.defaultText = "0";
   coarse.name = "Coarse";
   coarse.slotCount = 1;
@@ -38,7 +38,7 @@ FFMakeVoiceModuleTopo()
   coarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCoarse);
 
   auto& env5ToCoarse = result->params[(int)FFVoiceModuleParam::Env5ToCoarse];
-  env5ToCoarse.acc = true;
+  env5ToCoarse.mode = FBParamMode::Accurate;
   env5ToCoarse.name = "Env 5\U00002192Coarse";
   env5ToCoarse.defaultText = "0";
   env5ToCoarse.slotCount = 1;
@@ -51,7 +51,7 @@ FFMakeVoiceModuleTopo()
   env5ToCoarse.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectEnv5ToCoarse);
 
   auto& fine = result->params[(int)FFVoiceModuleParam::Fine];
-  fine.acc = true;
+  fine.mode = FBParamMode::Accurate;
   fine.defaultText = "0";
   fine.name = "Fine";
   fine.slotCount = 1;
@@ -67,7 +67,7 @@ FFMakeVoiceModuleTopo()
   fine.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFine);
 
   auto& lfo5ToFine = result->params[(int)FFVoiceModuleParam::LFO5ToFine];
-  lfo5ToFine.acc = true;
+  lfo5ToFine.mode = FBParamMode::Accurate;
   lfo5ToFine.name = "VLFO 5\U00002192Fine";
   lfo5ToFine.defaultText = "0";
   lfo5ToFine.slotCount = 1;
@@ -128,8 +128,7 @@ FFMakeVoiceModuleTopo()
   portaSync.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& portaTime = result->params[(int)FFVoiceModuleParam::PortaTime];
-  portaTime.acc = true;
-  portaTime.voiceStart = true;
+  portaTime.mode = FBParamMode::VoiceStart;
   portaTime.defaultText = "0.1";
   portaTime.display = "Length";
   portaTime.name = "Portamento Length Time";
@@ -165,8 +164,7 @@ FFMakeVoiceModuleTopo()
   portaBars.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaSync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& portaSectionAmpAttack = result->params[(int)FFVoiceModuleParam::PortaSectionAmpAttack];
-  portaSectionAmpAttack.acc = true;
-  portaSectionAmpAttack.voiceStart = true;
+  portaSectionAmpAttack.mode = FBParamMode::VoiceStart;
   portaSectionAmpAttack.defaultText = "50";
   portaSectionAmpAttack.name = "Portamento Section Amp Attack";
   portaSectionAmpAttack.display = "Amp Attack";
@@ -184,8 +182,7 @@ FFMakeVoiceModuleTopo()
   //portaSectionAmpAttack.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFVoiceModulePortaMode::Section; });
 
   auto& portaSectionAmpRelease = result->params[(int)FFVoiceModuleParam::PortaSectionAmpRelease];
-  portaSectionAmpRelease.acc = true;
-  portaSectionAmpRelease.voiceStart = true;
+  portaSectionAmpRelease.mode = FBParamMode::VoiceStart;
   portaSectionAmpRelease.defaultText = "50";
   portaSectionAmpRelease.name = "Portamento Section Amp Release";
   portaSectionAmpRelease.display = "Amp Release";

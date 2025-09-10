@@ -194,7 +194,7 @@ FFMakeLFOTopo(bool global)
   opType.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& min = result->params[(int)FFLFOParam::Min];
-  min.acc = true;
+  min.mode = FBParamMode::Accurate;
   min.defaultText = "0";
   min.name = "Min";
   min.display = "Min";
@@ -212,7 +212,7 @@ FFMakeLFOTopo(bool global)
   min.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& max = result->params[(int)FFLFOParam::Max];
-  max.acc = true;
+  max.mode = FBParamMode::Accurate;
   max.defaultText = "100";
   max.name = "Max";
   max.display = "Max";
@@ -278,7 +278,7 @@ FFMakeLFOTopo(bool global)
   waveMode.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& rateHz = result->params[(int)FFLFOParam::RateHz];
-  rateHz.acc = true;
+  rateHz.mode = FBParamMode::Accurate;
   rateHz.defaultText = "1";
   rateHz.display = "Rate";
   rateHz.name = "Rate Hz";
@@ -379,7 +379,7 @@ FFMakeLFOTopo(bool global)
   skewAXMode.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 } }, [](auto const&, auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& skewAXAmt = result->params[(int)FFLFOParam::SkewAXAmt];
-  skewAXAmt.acc = true;
+  skewAXAmt.mode = FBParamMode::Accurate;
   skewAXAmt.defaultText = "0";
   skewAXAmt.name = "Skew A X Amt";
   skewAXAmt.slotCount = 1;
@@ -415,7 +415,7 @@ FFMakeLFOTopo(bool global)
   skewAYMode.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 } }, [](auto const&, auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& skewAYAmt = result->params[(int)FFLFOParam::SkewAYAmt];
-  skewAYAmt.acc = true;
+  skewAYAmt.mode = FBParamMode::Accurate;
   skewAYAmt.defaultText = "0";
   skewAYAmt.name = "Skew A Y Amt";
   skewAYAmt.slotCount = 1;

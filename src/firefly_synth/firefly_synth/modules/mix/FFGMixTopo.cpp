@@ -25,7 +25,7 @@ FFMakeGMixTopo()
   auto selectModule = [](auto& state) { return &state.global.gMix; };
 
   auto& amp = result->params[(int)FFGMixParam::Amp];
-  amp.acc = true;
+  amp.mode = FBParamMode::Accurate;
   amp.defaultText = "50";
   amp.name = "Amp";
   amp.slotCount = 1;
@@ -41,7 +41,7 @@ FFMakeGMixTopo()
   amp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAmp);
 
   auto& lfo5ToAmp = result->params[(int)FFGMixParam::LFO5ToAmp];
-  lfo5ToAmp.acc = true;
+  lfo5ToAmp.mode = FBParamMode::Accurate;
   lfo5ToAmp.name = "GLFO 5\U00002192Amp";
   lfo5ToAmp.defaultText = "0";
   lfo5ToAmp.slotCount = 1;
@@ -54,7 +54,7 @@ FFMakeGMixTopo()
   lfo5ToAmp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO5ToAmp);
 
   auto& bal = result->params[(int)FFGMixParam::Bal];
-  bal.acc = true;
+  bal.mode = FBParamMode::Accurate;
   bal.defaultText = "0";
   bal.name = "Balance";
   bal.display = "Bal";
@@ -71,7 +71,7 @@ FFMakeGMixTopo()
   bal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectBal);
 
   auto& lfo6ToBal = result->params[(int)FFGMixParam::LFO6ToBal];
-  lfo6ToBal.acc = true;
+  lfo6ToBal.mode = FBParamMode::Accurate;
   lfo6ToBal.name = "GLFO 6\U00002192Bal";
   lfo6ToBal.defaultText = "0";
   lfo6ToBal.slotCount = 1;
@@ -84,7 +84,7 @@ FFMakeGMixTopo()
   lfo6ToBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectLFO6ToBal);
 
   auto& voiceToGFX = result->params[(int)FFGMixParam::VoiceToGFX];
-  voiceToGFX.acc = true;
+  voiceToGFX.mode = FBParamMode::Accurate;
   voiceToGFX.defaultText = "0";
   voiceToGFX.name = "Voice To GFX";
   voiceToGFX.slotCount = FFEffectCount;
@@ -99,7 +99,7 @@ FFMakeGMixTopo()
   voiceToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceToGFX);
 
   auto& gfxToGFX = result->params[(int)FFGMixParam::GFXToGFX];
-  gfxToGFX.acc = true;
+  gfxToGFX.mode = FBParamMode::Accurate;
   gfxToGFX.defaultText = "0";
   gfxToGFX.name = "GFX To GFX";
   gfxToGFX.slotCount = FFMixFXToFXCount;
@@ -114,7 +114,7 @@ FFMakeGMixTopo()
   gfxToGFX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGFXToGFX);
 
   auto& voiceToOut = result->params[(int)FFGMixParam::VoiceToOut];
-  voiceToOut.acc = true;
+  voiceToOut.mode = FBParamMode::Accurate;
   voiceToOut.defaultTextSelector = [](int /*mi*/, int /*ms*/, int ps) { return ps == 0 ? "100" : "0"; };
   voiceToOut.name = "Voice\U00002192Out";
   voiceToOut.slotCount = 1;
@@ -127,7 +127,7 @@ FFMakeGMixTopo()
   voiceToOut.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceToOut);
 
   auto& gfxToOut = result->params[(int)FFGMixParam::GFXToOut];
-  gfxToOut.acc = true;
+  gfxToOut.mode = FBParamMode::Accurate;
   gfxToOut.defaultText = "0";
   gfxToOut.name = "GFX To Out";
   gfxToOut.slotCount = FFEffectCount;

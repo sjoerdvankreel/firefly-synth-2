@@ -20,16 +20,17 @@
 #include <algorithm>
 #include <functional>
 
+struct FBStaticTopo;
+
 class FBVoiceAccParamState;
 class FBGlobalAccParamState;
 class FBVoiceBlockParamState;
 class FBGlobalBlockParamState;
 
-struct FBStaticTopo;
-enum class FBAutomationTiming { Never, PerSample, AtVoiceStart };
-
-std::string
-FBAutomationTimingToString(FBAutomationTiming timing);
+// VoiceStart: sample-accurate from the host side, snapshot at voice start on the plug side.
+// Bit wasteful, but allows to reuse existing machinery for modulation. And, there's not many of those params.
+// Fake: i use it to provide a toggle which we check on realtime if changed, to flush delay lines.
+enum class FBParamMode { Block, Accurate, VoiceStart, Output, Fake };
 
 typedef std::function<std::string(int moduleIndex, int moduleSlot, int paramSlot)>
 FBParamDefaultTextSelector;
@@ -126,25 +127,9 @@ struct FBStaticParam final :
   public FBStaticParamBase
 {
 public:
-  // TODO merge all these flags, mutually exclusive except for voicestart implies acc
-  bool acc = false;
-  bool output = false;
-  bool voiceStart = false;
-
-  // So sue me.
-  // Used to provide a toggle which we check in 
-  // realtime to flush delay lines when it changed. 
-  // But there's a bunch of checks in the base code
-  // which assert that an audio parameter has some
-  // sort of controller assigned to it, which i want to keep in.
-  // Also doing this the "right" way involves sending non-parameter
-  // data from controller to processor which i imagine differs quite
-  // a bit between vst3 and clap.
-  bool thisIsNotARealParameter = false;
-
-  FBAutomationTiming AutomationTiming() const;
   FB_EXPLICIT_COPY_MOVE_DEFCTOR(FBStaticParam);
 
+  FBParamMode mode = {};
   FBScalarParamAddrSelector scalarAddr = {};
   FBVoiceExchangeParamAddrSelector voiceExchangeAddr = {};
   FBGlobalExchangeParamAddrSelector globalExchangeAddr = {};
@@ -153,7 +138,7 @@ public:
   FBVoiceBlockProcParamAddrSelector voiceBlockProcAddr = {};
   FBGlobalBlockProcParamAddrSelector globalBlockProcAddr = {};
 
-  bool IsOutput() const { return output; }
+  bool IsOutput() const { return mode == FBParamMode::Output; }
   bool IsAcc() const { return IsVoiceAcc() || IsGlobalAcc(); }
   bool IsVoice() const { return IsVoiceAcc() || IsVoiceBlock(); }
   bool IsVoiceAcc() const { return voiceAccProcAddr != nullptr; }

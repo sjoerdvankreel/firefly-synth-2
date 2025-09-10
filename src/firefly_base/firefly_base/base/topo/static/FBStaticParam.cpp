@@ -1,52 +1,6 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBStaticParam.hpp>
 
-// TODO cleanup this mess
-struct stuff
-{
-  std::string guid;
-  std::string name;
-  bool operator==(stuff const&) const = default;
-};
-
-static std::vector<stuff> _My_stuff = {};
-
-FBAutomationTiming
-FBStaticParam::AutomationTiming() const
-{
-  if (acc)
-    return FBAutomationTiming::PerSample;
-  if (!NonRealTime().IsStepped() && IsVoiceBlock())
-  {
-    stuff nstuff = { this->id, this->name };
-    bool found = false;
-    for (int i = 0; i < _My_stuff.size(); i++)
-      if (_My_stuff[i] == nstuff)
-        found = true;
-    if (!found)
-    {
-      _My_stuff.push_back(nstuff);
-      juce::File filetje("c:\\temp\\stuff.txt");
-      filetje.appendText(nstuff.guid + " " + nstuff.name + "\r\n");
-    }
-
-    return FBAutomationTiming::AtVoiceStart;
-  }
-  return FBAutomationTiming::Never;
-}
-
-std::string
-FBAutomationTimingToString(FBAutomationTiming timing)
-{
-  switch (timing)
-  {
-  case FBAutomationTiming::Never: return "Never";
-  case FBAutomationTiming::PerSample: return "Per Sample";
-  case FBAutomationTiming::AtVoiceStart: return "At Voice Start";
-  default: FB_ASSERT(false); return {};
-  }
-}
-
 std::string
 FBStaticParamBase::GetDefaultText(int moduleIndex, int moduleSlot, int paramSlot) const
 {
