@@ -42,9 +42,9 @@ class alignas(alignof(TBlock)) FFModMatrixBlockParamState final
 
   std::array<TBlock, 1> slots = {};
   std::array<TBlock, MaxSlotCount> scale = {};
-  std::array<TBlock, MaxSlotCount> opType = {};
   std::array<TBlock, MaxSlotCount> source = {};
   std::array<TBlock, MaxSlotCount> target = {};
+  std::array<TBlock, MaxSlotCount> opType = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixBlockParamState);
 };
@@ -56,7 +56,12 @@ class alignas(alignof(TAccurate)) FFModMatrixAccParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool, FFStaticTopo const*);
   static inline int constexpr MaxSlotCount = FFModMatrixTraits<Global>::MaxSlotCount;
 
-  std::array<TAccurate, MaxSlotCount> amount = {};
+  std::array<TAccurate, MaxSlotCount> scaleMin = {};
+  std::array<TAccurate, MaxSlotCount> scaleMax = {};
+  std::array<TAccurate, MaxSlotCount> targetMin = {};
+  std::array<TAccurate, MaxSlotCount> targetMax = {};
+  std::array<TAccurate, MaxSlotCount> sourceLow = {};
+  std::array<TAccurate, MaxSlotCount> sourceHigh = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixAccParamState);
 };
