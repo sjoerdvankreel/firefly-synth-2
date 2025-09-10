@@ -126,8 +126,10 @@ struct FBStaticParam final :
   public FBStaticParamBase
 {
 public:
+  // TODO merge all these flags, mutually exclusive except for voicestart implies acc
   bool acc = false;
   bool output = false;
+  bool voiceStart = false;
 
   // So sue me.
   // Used to provide a toggle which we check in 

@@ -195,7 +195,8 @@ FFMakeOsciTopo()
   uniCount.dependencies.enabled.audio.WhenSimple({ (int)FFOsciParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& uniOffset = result->params[(int)FFOsciParam::UniOffset];
-  uniOffset.acc = true; // todo not really
+  uniOffset.acc = true;
+  uniOffset.voiceStart = true;
   uniOffset.defaultText = "50";
   uniOffset.display = "Ofst";
   uniOffset.name = "Uni Offset";
@@ -211,6 +212,7 @@ FFMakeOsciTopo()
 
   auto& uniRandom = result->params[(int)FFOsciParam::UniRandom];
   uniRandom.acc = true;
+  uniRandom.voiceStart = true;
   uniRandom.defaultText = "50";
   uniRandom.display = "Rand";
   uniRandom.name = "Uni Random";
