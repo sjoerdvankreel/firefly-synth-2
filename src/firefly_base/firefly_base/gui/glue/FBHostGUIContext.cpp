@@ -83,19 +83,29 @@ FBHostGUIContext::GetGUIParamDiscrete(FBParamTopoIndices const& indices) const
 }
 
 void 
+FBHostGUIContext::DefaultAudioParam(FBParamTopoIndices const& indices)
+{
+  auto runtimeParam = Topo()->audio.ParamAtTopo(indices);
+  double normalized = runtimeParam->DefaultNormalizedByText();
+  PerformImmediateAudioParamEdit(runtimeParam->runtimeParamIndex, normalized);
+}
+
+void 
+FBHostGUIContext::CopyAudioParam(FBParamTopoIndices const& from, FBParamTopoIndices const& to)
+{
+  auto fromRuntimeParam = Topo()->audio.ParamAtTopo(from);
+  auto toRuntimeParam = Topo()->audio.ParamAtTopo(to);
+  auto fromValue = GetAudioParamNormalized(fromRuntimeParam->runtimeParamIndex);
+  PerformImmediateAudioParamEdit(toRuntimeParam->runtimeParamIndex, fromValue);
+}
+
+void 
 FBHostGUIContext::ClearModuleAudioParams(FBTopoIndices const& moduleIndices)
 {  
   auto const& staticModule = Topo()->static_->modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
-  {
-    auto const& staticParam = staticModule.params[p];
-    for (int s = 0; s < staticParam.slotCount; s++)
-    {
-      auto runtimeParam = Topo()->audio.ParamAtTopo({ moduleIndices, { p, s } });
-      double normalized = runtimeParam->DefaultNormalizedByText();
-      PerformImmediateAudioParamEdit(runtimeParam->runtimeParamIndex, normalized);
-    }
-  }
+    for (int s = 0; s < staticModule.params[p].slotCount; s++)
+      DefaultAudioParam({ moduleIndices, { p, s } });
 }
 
 void 
@@ -103,16 +113,8 @@ FBHostGUIContext::CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int 
 {  
   auto const& staticModule = Topo()->static_->modules[moduleIndices.index];
   for (int p = 0; p < staticModule.params.size(); p++)
-  {
-    auto const& staticParam = staticModule.params[p];
-    for (int s = 0; s < staticParam.slotCount; s++)
-    {
-      auto fromRuntimeParam = Topo()->audio.ParamAtTopo({ moduleIndices, { p, s } });
-      auto toRuntimeParam = Topo()->audio.ParamAtTopo({ { moduleIndices.index, toSlot }, { p, s } });
-      auto fromValue = GetAudioParamNormalized(fromRuntimeParam->runtimeParamIndex);
-      PerformImmediateAudioParamEdit(toRuntimeParam->runtimeParamIndex, fromValue);
-    }
-  }
+    for (int s = 0; s < staticModule.params[p].slotCount; s++)
+      CopyAudioParam({ moduleIndices, { p, s } }, { { moduleIndices.index, toSlot }, { p, s } });
 }
 
 std::unique_ptr<PopupMenu>

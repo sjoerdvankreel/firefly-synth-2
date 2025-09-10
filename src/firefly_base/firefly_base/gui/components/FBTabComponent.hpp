@@ -68,7 +68,7 @@ public FBAutoSizeTabComponent
 
 public:
   juce::PopupMenu extendedMenu = {};
-  std::function<void(FBTopoIndices const&, int)> extendedMenuHandler = {};
+  std::function<void(FBPlugGUI* plugGUI, FBTopoIndices const&, int)> extendedMenuHandler = {};
 
   FBModuleTabComponent(
     FBPlugGUI* plugGUI, 

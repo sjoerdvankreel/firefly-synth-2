@@ -166,21 +166,20 @@ FBModuleTabComponent::TabRightClicked(int tabIndex)
   options = options.withParentComponent(_plugGUI);
   options = options.withTargetComponent(getTabbedButtonBar().getTabButton(tabIndex));
   menu.showMenuAsync(options, [this, moduleIndices, slotCount = staticModule.slotCount](int id) {
+    std::string name = _plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
     if (id == 1)
     {
-      std::string name = _plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
       _plugGUI->HostContext()->UndoState().Snapshot("Clear " + name);
       _plugGUI->HostContext()->ClearModuleAudioParams(moduleIndices);
     }
     else if (2 <= id && id < slotCount + 2)
     {
-      std::string name = _plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
       _plugGUI->HostContext()->UndoState().Snapshot("Copy " + name);
       _plugGUI->HostContext()->CopyModuleAudioParams(moduleIndices, id - 2);
     }
     else if (extendedMenuHandler)
     {
-      extendedMenuHandler(moduleIndices, id);
+      extendedMenuHandler(_plugGUI, moduleIndices, id);
     }
   });
 }

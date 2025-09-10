@@ -66,8 +66,10 @@ public:
   void BeginAudioParamChange(int index);
   void PerformAudioParamEdit(int index, double normalized);
 
+  void DefaultAudioParam(FBParamTopoIndices const& indices);
   void ClearModuleAudioParams(FBTopoIndices const& moduleIndices);
   void CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot);
+  void CopyAudioParam(FBParamTopoIndices const& from, FBParamTopoIndices const& to);
   void PerformImmediateAudioParamEdit(int index, double normalized);
   void PerformImmediateAudioParamEdit(FBParamTopoIndices const& indices, double normalized);
 };

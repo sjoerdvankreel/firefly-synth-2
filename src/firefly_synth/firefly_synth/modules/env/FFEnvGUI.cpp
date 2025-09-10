@@ -112,10 +112,33 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
     insertMenu.addItem(1000 + i, std::to_string(i + 1));
     removeMenu.addItem(2000 + i, std::to_string(i + 1));
   }
-  tabs->extendedMenu.addSubMenu("Remove At", removeMenu);
-  tabs->extendedMenu.addSubMenu("Insert Before", insertMenu);
-  tabs->extendedMenuHandler = [](FBTopoIndices const&, int) {
+  tabs->extendedMenu.addSubMenu("Remove Stage At", removeMenu);
+  tabs->extendedMenu.addSubMenu("Insert Stage Before", insertMenu);
+  tabs->extendedMenuHandler = [](FBPlugGUI* plugGUI, FBTopoIndices const& indices, int id) {
 
+    std::vector<FFEnvParam> stageParams = { 
+      FFEnvParam::StageTime, FFEnvParam::StageBars, 
+      FFEnvParam::StageLevel, FFEnvParam::StageSlope };
+
+    if (1000 <= id && id < 1000 + FFEnvStageCount)
+    {
+      int stage = id - 1000;
+      plugGUI->HostContext()->UndoState().Snapshot("Insert Stage Before " + std::to_string(stage + 1));
+      for (int i = FFEnvStageCount - 1; i > stage; i++)
+        for (int j = 0; j < stageParams.size(); j++)
+          plugGUI->HostContext()->CopyAudioParam(
+            { indices, { (int)stageParams[j], i - 1 } }, { indices, { (int)stageParams[j], i } });
+    }
+
+    else if (2000 <= id && id < 2000 + FFEnvStageCount)
+    {
+      int stage = id - 2000;
+      plugGUI->HostContext()->UndoState().Snapshot("Remove Stage At " + std::to_string(stage + 1));
+      for (int i = stage; i < FFEnvStageCount - 1; i++)
+        for (int j = 0; j < stageParams.size(); j++)
+          plugGUI->HostContext()->CopyAudioParam(
+            { indices, { (int)stageParams[j], i + 1 } }, { indices, { (int)stageParams[j], i } });
+    }
   };
 
   return tabs;
