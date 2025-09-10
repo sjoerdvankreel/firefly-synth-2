@@ -205,11 +205,11 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
   for (int r = FFModMatrixGlobalMaxSlotCount; r < rowCount; r++)
     AddMatrixSlotRow(plugGUI, grid, false, 1 + r, controlCount, r + rowCount - FFModMatrixGlobalMaxSlotCount);
 
-  //grid->MarkSection({ { 0, 0 }, { 1, controlCount } });
-  //grid->MarkSection({ { 0, controlCount }, { 1, controlCount } });
-  //grid->MarkSection({ { 1, controlCount }, { rowCount, controlCount } });
-  //grid->MarkSection({ { 1, 0 }, { FFModMatrixGlobalMaxSlotCount, controlCount } });
-  //grid->MarkSection({ { 1 + FFModMatrixGlobalMaxSlotCount, 0 }, { rowCount - FFModMatrixGlobalMaxSlotCount, controlCount } });
+  grid->MarkSection({ { 0, 0 }, { 1, controlCount } });
+  grid->MarkSection({ { 0, controlCount }, { 1, controlCount } });
+  grid->MarkSection({ { 1, 0 }, { rowCount, controlCount } });
+  grid->MarkSection({ { 1, controlCount }, { FFModMatrixGlobalMaxSlotCount, controlCount } });
+  grid->MarkSection({ { 1 + FFModMatrixGlobalMaxSlotCount, controlCount }, { rowCount - FFModMatrixGlobalMaxSlotCount, controlCount } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
