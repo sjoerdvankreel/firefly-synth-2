@@ -10,8 +10,8 @@
 
 struct FBStaticTopo;
 
+inline int constexpr FFModMatrixVoiceMaxSlotCount = 26;
 inline int constexpr FFModMatrixGlobalMaxSlotCount = 12;
-inline int constexpr FFModMatrixVoiceMaxSlotCount = 2 * FFModMatrixGlobalMaxSlotCount;
 
 template <bool Global>
 struct FFModMatrixTraits
