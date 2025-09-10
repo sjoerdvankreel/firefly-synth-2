@@ -13,6 +13,6 @@ class FFVoiceProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceProcessor);
-  void BeginVoice(FBModuleProcState state);
+  void BeginVoice();
   bool Process(FBModuleProcState state, int releaseAt);
 };

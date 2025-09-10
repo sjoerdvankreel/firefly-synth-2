@@ -23,7 +23,7 @@ FFVoiceProcessor::GetCurrentVEchoTarget(FBModuleProcState const& state)
 }
 
 void 
-FFVoiceProcessor::BeginVoice(FBModuleProcState state)
+FFVoiceProcessor::BeginVoice()
 {
   // We need to handle modules BeginVoice inside process
   // because of the on-voice-start modulation feature.
