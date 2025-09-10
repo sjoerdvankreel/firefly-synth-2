@@ -51,6 +51,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
   // This needs to be before init of the voice-amp, because of the porta section attack.
   procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
 
+  /* TODO
   state.moduleSlot = FFAmpEnvSlot;
   procState->dsp.voice[voice].env[FFAmpEnvSlot].processor->BeginVoice(state);
   for (int i = 0; i < FFLFOCount; i++)
@@ -60,6 +61,7 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     state.moduleSlot = i;
     procState->dsp.voice[voice].vLFO[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, nullptr, state);
   }
+  */
 
   state.moduleSlot = 0;
   procState->dsp.voice[voice].osciMod.processor->BeginVoice(false, state);
@@ -107,6 +109,8 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VNote, 0 });
 
   state.moduleSlot = FFAmpEnvSlot;
+  if (_firstRoundThisVoice)
+    voiceDSP.env[FFAmpEnvSlot].processor->BeginVoice(state);
   int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state, releaseAt);
   bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
   state.moduleSlot = 0;
@@ -115,10 +119,15 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i + FFEnvSlotOffset;
+    if(_firstRoundThisVoice)
+      voiceDSP.env[i + FFEnvSlotOffset].processor->BeginVoice(state);
     voiceDSP.env[i + FFEnvSlotOffset].processor->Process(state, releaseAt);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, i + FFEnvSlotOffset });
+
     state.moduleSlot = i;
+    if(_firstRoundThisVoice)
+      voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, nullptr, state);
     voiceDSP.vLFO[i].processor->Process<false>(state);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VLFO, i });

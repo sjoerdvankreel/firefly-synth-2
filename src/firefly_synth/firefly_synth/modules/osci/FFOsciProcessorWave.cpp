@@ -1038,12 +1038,12 @@ FFOsciProcessor::BeginVoiceWave(
 
   for (int i = 0; i < FFOsciWavePWCount; i++)
   {
-    auto const& wavePWModeNorm = params.block.wavePWMode[i].Voice()[voice];
+    float wavePWModeNorm = params.block.wavePWMode[i].Voice()[voice];
     _wavePWMode[i] = topo.NormalizedToListFast<FFOsciWavePWMode>(FFOsciParam::WavePWMode, wavePWModeNorm);
   }
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
   {
-    auto const& waveBasicModeNorm = params.block.waveBasicMode[i].Voice()[voice];
+    float waveBasicModeNorm = params.block.waveBasicMode[i].Voice()[voice];
     _waveBasicMode[i] = topo.NormalizedToListFast<FFOsciWaveBasicMode>(FFOsciParam::WaveBasicMode, waveBasicModeNorm);
   }
   for (int u = 0; u < _uniCount; u++)

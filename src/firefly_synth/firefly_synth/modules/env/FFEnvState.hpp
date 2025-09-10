@@ -1,6 +1,7 @@
 #pragma once
 
 #include <firefly_synth/modules/env/FFEnvProcessor.hpp>
+#include <firefly_synth/modules/env/FFEnvStateVoiceStart.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -35,7 +36,6 @@ class alignas(alignof(TBlock)) FFEnvBlockParamState final
   std::array<TBlock, 1> loopLength = {};
   std::array<TBlock, 1> smoothTime = {};
   std::array<TBlock, 1> smoothBars = {};
-  std::array<TBlock, FFEnvStageCount> stageTime = {};
   std::array<TBlock, FFEnvStageCount> stageBars = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvBlockParamState);
@@ -57,8 +57,9 @@ class alignas(alignof(TAccurate)) FFEnvParamState final
 {
   friend class FFEnvProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeEnvTopo();
-  FFEnvAccParamState<TAccurate> acc = {};
   FFEnvBlockParamState<TBlock> block = {};
+  FFEnvAccParamState<TAccurate> acc = {};
+  FFEnvVoiceStartParamState<TAccurate> voiceStart = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvParamState);
 };

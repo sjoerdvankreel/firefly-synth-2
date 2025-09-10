@@ -77,7 +77,7 @@ class FFOsciProcessor final
   std::array<FFOsciWavePWMode, FFOsciWavePWCount> _wavePWMode = {};
   std::array<FFOsciWaveBasicMode, FFOsciWaveBasicCount> _waveBasicMode = {};
 
-  FFOsciParamStateVoiceStart<float> _voiceStartSnapshotNorm = {};
+  FFOsciVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
   bool _graph = {};
   int _stringGraphPosition = {};

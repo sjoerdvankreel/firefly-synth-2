@@ -1,7 +1,7 @@
 #pragma once
 
 template <class TAccurate>
-class alignas(alignof(TAccurate)) FFOsciParamStateVoiceStart final
+class alignas(alignof(TAccurate)) FFOsciVoiceStartParamState final
 {
   friend class FFOsciProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
@@ -9,5 +9,5 @@ class alignas(alignof(TAccurate)) FFOsciParamStateVoiceStart final
   std::array<TAccurate, 1> uniOffset = {};
   std::array<TAccurate, 1> uniRandom = {};
 public:
-  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciParamStateVoiceStart);
+  FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciVoiceStartParamState);
 };

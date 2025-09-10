@@ -27,14 +27,15 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   auto const& params = procState->param.voice.env[state.moduleSlot];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Env];
   auto const& stageBarsNorm = params.block.stageBars;
-  auto const& stageTimeNorm = params.block.stageTime;
-  auto const& syncNorm = params.block.sync[0].Voice()[voice];
-  auto const& typeNorm = params.block.type[0].Voice()[voice];
-  auto const& releaseNorm = params.block.release[0].Voice()[voice];
-  auto const& loopStartNorm = params.block.loopStart[0].Voice()[voice];
-  auto const& loopLengthNorm = params.block.loopLength[0].Voice()[voice];
-  auto const& smoothBarsNorm = params.block.smoothBars[0].Voice()[voice];
-  auto const& smoothTimeNorm = params.block.smoothTime[0].Voice()[voice];
+  auto const& stageTimeNorm = params.voiceStart.stageTime;
+
+  float syncNorm = params.block.sync[0].Voice()[voice];
+  float typeNorm = params.block.type[0].Voice()[voice];
+  float releaseNorm = params.block.release[0].Voice()[voice];
+  float loopStartNorm = params.block.loopStart[0].Voice()[voice];
+  float loopLengthNorm = params.block.loopLength[0].Voice()[voice];
+  float smoothBarsNorm = params.block.smoothBars[0].Voice()[voice];
+  float smoothTimeNorm = params.block.smoothTime[0].Voice()[voice];
 
   _sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, syncNorm);
   _type = topo.NormalizedToListFast<FFEnvType>(FFEnvParam::Type, typeNorm);
@@ -56,8 +57,11 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
     _smoothSamples = topo.NormalizedToLinearTimeSamplesFast(
       FFEnvParam::SmoothTime, smoothTimeNorm, state.input->sampleRate);
     for (int i = 0; i < FFEnvStageCount; i++)
+    {
+      _voiceStartSnapshotNorm.stageTime[i] = stageTimeNorm[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
       _stageSamples[i] = topo.NormalizedToLinearTimeSamplesFast(
-        FFEnvParam::StageTime, stageTimeNorm[i].Voice()[voice], state.input->sampleRate);
+        FFEnvParam::StageTime, _voiceStartSnapshotNorm.stageTime[i], state.input->sampleRate);
+    }
   }
 
   _lengthSamples = 0;
@@ -238,6 +242,7 @@ FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
   {
     exchangeParams.acc.stageLevel[i][voice] = stageLevel[i].Voice()[voice].Last();
     exchangeParams.acc.stageSlope[i][voice] = stageSlope[i].Voice()[voice].Last();
+    exchangeParams.voiceStart.stageTime[i][voice] = _voiceStartSnapshotNorm.stageTime[i];
   }
   return processed;
 }

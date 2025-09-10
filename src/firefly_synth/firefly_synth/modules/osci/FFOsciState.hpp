@@ -101,7 +101,7 @@ class alignas(alignof(TAccurate)) FFOsciParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   FFOsciAccParamState<TAccurate> acc = {};
   FFOsciBlockParamState<TBlock> block = {};
-  FFOsciParamStateVoiceStart<TAccurate> voiceStart = {};
+  FFOsciVoiceStartParamState<TAccurate> voiceStart = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciParamState);
 };

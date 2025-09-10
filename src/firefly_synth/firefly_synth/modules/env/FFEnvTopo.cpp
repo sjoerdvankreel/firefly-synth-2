@@ -172,7 +172,8 @@ FFMakeEnvTopo()
   stageSlope.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type }, [](auto const& vs) { return vs[0] == (int)FFEnvType::Exp; });
 
   auto& stageTime = result->params[(int)FFEnvParam::StageTime];
-  stageTime.acc = false;
+  stageTime.acc = true;
+  stageTime.voiceStart = true;
   stageTime.name = "Time";
   stageTime.slotCount = FFEnvStageCount;
   stageTime.unit = "Sec";
@@ -182,9 +183,9 @@ FFMakeEnvTopo()
   stageTime.Linear().min = 0.0f;
   stageTime.Linear().max = 10.0f;
   stageTime.Linear().editSkewFactor = 0.5f;
-  auto selectStageTime = [](auto& module) { return &module.block.stageTime; };
+  auto selectStageTime = [](auto& module) { return &module.voiceStart.stageTime; };
   stageTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectStageTime);
-  stageTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectStageTime);
+  stageTime.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectStageTime);
   stageTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectStageTime);
   stageTime.dependencies.visible.audio.WhenSimple({ (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
   stageTime.dependencies.enabled.audio.WhenSimple({ (int)FFEnvParam::Type, (int)FFEnvParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });

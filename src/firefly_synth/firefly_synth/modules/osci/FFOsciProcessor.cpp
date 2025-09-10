@@ -51,9 +51,9 @@ FFOsciProcessor::AllocOnDemandBuffers(
 
   auto* procState = state->RawAs<FFProcState>();
   auto const& params = procState->param.voice.osci[moduleSlot];
-  auto const& typeNorm = params.block.type[0].GlobalValue();
-  auto const& uniCountNorm = params.block.uniCount[0].GlobalValue();
   auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::Osci];
+  float typeNorm = params.block.type[0].GlobalValue();
+  float  uniCountNorm = params.block.uniCount[0].GlobalValue();
 
   auto type = moduleTopo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
   int uniCount = moduleTopo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm); 

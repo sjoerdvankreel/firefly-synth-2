@@ -78,11 +78,11 @@ FFOsciProcessor::BeginVoiceString(bool graph, FBModuleProcState& state)
   float coarsePlain = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm.CV().Get(0));
   float uniDetunePlain = topo.NormalizedToIdentityFast(FFOsciParam::UniDetune, uniDetuneNorm.CV().Get(0));
 
-  auto const& stringLPOnNorm = params.block.stringLPOn[0].Voice()[voice];
-  auto const& stringHPOnNorm = params.block.stringHPOn[0].Voice()[voice];
-  auto const& stringModeNorm = params.block.stringMode[0].Voice()[voice];
-  auto const& stringSeedNorm = params.block.stringSeed[0].Voice()[voice];
-  auto const& stringPolesNorm = params.block.stringPoles[0].Voice()[voice];
+  float stringLPOnNorm = params.block.stringLPOn[0].Voice()[voice];
+  float stringHPOnNorm = params.block.stringHPOn[0].Voice()[voice];
+  float stringModeNorm = params.block.stringMode[0].Voice()[voice];
+  float stringSeedNorm = params.block.stringSeed[0].Voice()[voice];
+  float stringPolesNorm = params.block.stringPoles[0].Voice()[voice];
 
   auto const& stringXNorm = params.acc.stringX[0].Voice()[voice];
   auto const& stringYNorm = params.acc.stringY[0].Voice()[voice];

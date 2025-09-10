@@ -1,6 +1,8 @@
 #pragma once
 
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
+#include <firefly_synth/modules/env/FFEnvStateVoiceStart.hpp>
+
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 
@@ -27,6 +29,8 @@ class FFEnvProcessor final
   int _lengthSamplesUpToRelease = 0;
   float _lastOverall = 0.0f;
   float _lastBeforeRelease = 0.0f;
+
+  FFEnvVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
   int _smoothPosition = {};
   FBBasicLPFilter _smoother = {};
