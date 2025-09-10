@@ -2,6 +2,7 @@
 
 #include <firefly_synth/dsp/shared/FFDelayLine.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
+#include <firefly_synth/modules/echo/FFEchoStateVoiceStart.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
@@ -66,6 +67,8 @@ class FFEchoProcessor final
   float _feedbackDelayBarsSamples = {};
   std::array<bool, FFEchoTapCount> _tapOn = {};
   std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
+
+  FFEchoVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
   bool _graph = {};
   int _graphSampleCount = {};

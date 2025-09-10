@@ -168,7 +168,8 @@ FFMakeEchoTopo(bool global)
 
   // only used for voice, but we still share the gui
   auto& voiceExtendTime = result->params[(int)FFEchoParam::VoiceExtendTime];
-  voiceExtendTime.acc = false;
+  voiceExtendTime.acc = true;
+  voiceExtendTime.voiceStart = true;
   voiceExtendTime.defaultText = "1000";
   voiceExtendTime.display = "Extend";
   voiceExtendTime.name = "Voice Extend Time";
@@ -180,11 +181,11 @@ FFMakeEchoTopo(bool global)
   voiceExtendTime.Linear().max = 5.0f;
   voiceExtendTime.Linear().editSkewFactor = 0.5f;
   voiceExtendTime.Linear().displayMultiplier = 1000;
-  auto selectVoiceExtendTime = [](auto& module) { return &module.block.voiceExtendTime; };
+  auto selectVoiceExtendTime = [](auto& module) { return &module.voiceStart.voiceExtendTime; };
   voiceExtendTime.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectVoiceExtendTime);
-  voiceExtendTime.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectVoiceExtendTime);
+  voiceExtendTime.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectVoiceExtendTime);
   voiceExtendTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVoiceExtendTime);
-  voiceExtendTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceExtendTime);
+  voiceExtendTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceExtendTime);
   voiceExtendTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceExtendTime);
   voiceExtendTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
   voiceExtendTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });
@@ -209,7 +210,8 @@ FFMakeEchoTopo(bool global)
   voiceExtendBars.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] != 0; });
   
   auto& voiceFadeTime = result->params[(int)FFEchoParam::VoiceFadeTime];
-  voiceFadeTime.acc = false;
+  voiceFadeTime.acc = true;
+  voiceFadeTime.voiceStart = true;
   voiceFadeTime.defaultText = "1000";
   voiceFadeTime.display = "Fade";
   voiceFadeTime.name = "Voice Fade Time";
@@ -221,11 +223,11 @@ FFMakeEchoTopo(bool global)
   voiceFadeTime.Linear().max = 5.0f;
   voiceFadeTime.Linear().editSkewFactor = 0.5f;
   voiceFadeTime.Linear().displayMultiplier = 1000;
-  auto selectVoiceFadeTime = [](auto& module) { return &module.block.voiceFadeTime; };
+  auto selectVoiceFadeTime = [](auto& module) { return &module.voiceStart.voiceFadeTime; };
   voiceFadeTime.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectVoiceFadeTime);
-  voiceFadeTime.globalBlockProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectVoiceFadeTime);
+  voiceFadeTime.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectVoiceFadeTime);
   voiceFadeTime.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectVoiceFadeTime);
-  voiceFadeTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceFadeTime);
+  voiceFadeTime.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectVoiceFadeTime);
   voiceFadeTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectVoiceFadeTime);
   voiceFadeTime.dependencies.visible.audio.WhenSimple({ (int)FFEchoParam::Sync }, [](auto const& vs) { return vs[0] == 0; });
   voiceFadeTime.dependencies.enabled.audio.WhenSimple({ (int)FFEchoParam::VTargetOrGTarget, (int)FFEchoParam::Sync }, [global](auto const& vs) { return !global && vs[0] != 0 && vs[1] == 0; });

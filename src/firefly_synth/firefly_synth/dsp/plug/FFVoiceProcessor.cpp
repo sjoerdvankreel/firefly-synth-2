@@ -79,11 +79,13 @@ FFVoiceProcessor::BeginVoice(FBModuleProcState state)
     procState->dsp.voice[voice].vEffect[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, state);
   }
 
+  /*
   if (GetCurrentVEchoTarget(state) == FFVEchoTarget::AfterMix)
   {
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
   }
+  */
 }
 
 bool 
@@ -193,6 +195,8 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   if (GetCurrentVEchoTarget(state) == FFVEchoTarget::AfterMix)
   {
     state.moduleSlot = 0;
+    if(_firstRoundThisVoice)
+      voiceDSP.vEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
     voiceDSP.output.CopyTo(voiceDSP.vEcho.input);
     int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, ampEnvProcessed);
     voiceFinished = vEchoProcessed != FBFixedBlockSamples;

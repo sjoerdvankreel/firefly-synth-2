@@ -247,10 +247,10 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
     _voiceFadeSamplesProcessed = 0;
     _voiceExtendSamplesProcessed = 0;
     _voiceExtensionStage = FFEchoVoiceExtensionStage::NotStarted;
-    float voiceFadeTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceFadeTime[0], voice);
     float voiceFadeBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceFadeBars[0], voice);
-    float voiceExtendTimeNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceExtendTime[0], voice);
     float voiceExtendBarsNorm = FFSelectDualProcBlockParamNormalized<Global>(params.block.voiceExtendBars[0], voice);
+    _voiceStartSnapshotNorm.voiceFadeTime[0] = FFSelectDualProcAccParamNormalized<Global>(params.voiceStart.voiceFadeTime[0], voice).CV().Get(state.voice->offsetInBlock);
+    _voiceStartSnapshotNorm.voiceExtendTime[0] = FFSelectDualProcAccParamNormalized<Global>(params.voiceStart.voiceExtendTime[0], voice).CV().Get(state.voice->offsetInBlock);
     if (_sync)
     {
       _voiceFadeSamples = topo.NormalizedToBarsSamplesFast(
@@ -261,9 +261,9 @@ FFEchoProcessor<Global>::BeginVoiceOrBlock(
     else
     {
       _voiceFadeSamples = topo.NormalizedToLinearTimeSamplesFast(
-        FFEchoParam::VoiceFadeTime, voiceFadeTimeNorm, sampleRate);
+        FFEchoParam::VoiceFadeTime, _voiceStartSnapshotNorm.voiceFadeTime[0], sampleRate);
       _voiceExtendSamples = topo.NormalizedToLinearTimeSamplesFast(
-        FFEchoParam::VoiceExtendTime, voiceExtendTimeNorm, sampleRate);
+        FFEchoParam::VoiceExtendTime, _voiceStartSnapshotNorm.voiceExtendTime[0], sampleRate);
     }
   }
 }
@@ -760,6 +760,12 @@ FFEchoProcessor<Global>::ProcessReverb(
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbHPRes[0], voice) = hpResNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbLPFreq[0], voice) = lpFreqNorm.Last();
   FFSelectDualExchangeState<Global>(exchangeParams.acc.reverbHPFreq[0], voice) = hpFreqNorm.Last();
+
+  if constexpr (!Global)
+  {
+    FFSelectDualExchangeState<Global>(exchangeParams.voiceStart.voiceFadeTime[0], voice) = _voiceStartSnapshotNorm.voiceFadeTime[0];
+    FFSelectDualExchangeState<Global>(exchangeParams.voiceStart.voiceExtendTime[0], voice) = _voiceStartSnapshotNorm.voiceExtendTime[0];
+  }
 }
 
 template class FFEchoProcessor<true>;
