@@ -128,7 +128,8 @@ FFMakeVoiceModuleTopo()
   portaSync.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& portaTime = result->params[(int)FFVoiceModuleParam::PortaTime];
-  portaTime.acc = false;
+  portaTime.acc = true;
+  portaTime.voiceStart = true;
   portaTime.defaultText = "0.1";
   portaTime.display = "Length";
   portaTime.name = "Portamento Length Time";
@@ -139,9 +140,9 @@ FFMakeVoiceModuleTopo()
   portaTime.Linear().min = 0.0f;
   portaTime.Linear().max = 10.0f;
   portaTime.Linear().editSkewFactor = 0.5f;
-  auto selectPortaTime = [](auto& module) { return &module.block.portaTime; };
+  auto selectPortaTime = [](auto& module) { return &module.voiceStart.portaTime; };
   portaTime.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaTime);
-  portaTime.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPortaTime);
+  portaTime.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPortaTime);
   portaTime.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaTime);
   portaTime.dependencies.visible.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaSync }, [](auto const& vs) { return vs[0] == 0; });
   portaTime.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaSync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
@@ -164,7 +165,8 @@ FFMakeVoiceModuleTopo()
   portaBars.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaSync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& portaSectionAmpAttack = result->params[(int)FFVoiceModuleParam::PortaSectionAmpAttack];
-  portaSectionAmpAttack.acc = false;
+  portaSectionAmpAttack.acc = true;
+  portaSectionAmpAttack.voiceStart = true;
   portaSectionAmpAttack.defaultText = "50";
   portaSectionAmpAttack.name = "Portamento Section Amp Attack";
   portaSectionAmpAttack.display = "Amp Attack";
@@ -172,9 +174,9 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpAttack.unit = "%";
   portaSectionAmpAttack.id = "{C035EBA5-D5E6-4B3B-A40A-2BD5B500ACCA}";
   portaSectionAmpAttack.type = FBParamType::Identity;
-  auto selectPortaSectionAmpAttack = [](auto& module) { return &module.block.portaSectionAmpAttack; };
+  auto selectPortaSectionAmpAttack = [](auto& module) { return &module.voiceStart.portaSectionAmpAttack; };
   portaSectionAmpAttack.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaSectionAmpAttack);
-  portaSectionAmpAttack.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPortaSectionAmpAttack);
+  portaSectionAmpAttack.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPortaSectionAmpAttack);
   portaSectionAmpAttack.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaSectionAmpAttack);
 
   // TODO: this needs cooperation from on-voice-start-modulation
@@ -182,7 +184,8 @@ FFMakeVoiceModuleTopo()
   //portaSectionAmpAttack.dependencies.enabled.audio.WhenSimple({ (int)FFVoiceModuleParam::PortaType, (int)FFVoiceModuleParam::PortaMode }, [](auto const& vs) { return vs[0] != 0 && vs[1] == (int)FFVoiceModulePortaMode::Section; });
 
   auto& portaSectionAmpRelease = result->params[(int)FFVoiceModuleParam::PortaSectionAmpRelease];
-  portaSectionAmpRelease.acc = false;
+  portaSectionAmpRelease.acc = true;
+  portaSectionAmpRelease.voiceStart = true;
   portaSectionAmpRelease.defaultText = "50";
   portaSectionAmpRelease.name = "Portamento Section Amp Release";
   portaSectionAmpRelease.display = "Amp Release";
@@ -190,9 +193,9 @@ FFMakeVoiceModuleTopo()
   portaSectionAmpRelease.unit = "%";
   portaSectionAmpRelease.id = "{227ACA77-CD6E-488B-86BB-9802FDF2D2F2}";
   portaSectionAmpRelease.type = FBParamType::Identity;
-  auto selectPortaSectionAmpRelease = [](auto& module) { return &module.block.portaSectionAmpRelease; };
+  auto selectPortaSectionAmpRelease = [](auto& module) { return &module.voiceStart.portaSectionAmpRelease; };
   portaSectionAmpRelease.scalarAddr = FFSelectScalarParamAddr(selectModule, selectPortaSectionAmpRelease);
-  portaSectionAmpRelease.voiceBlockProcAddr = FFSelectProcParamAddr(selectModule, selectPortaSectionAmpRelease);
+  portaSectionAmpRelease.voiceAccProcAddr = FFSelectProcParamAddr(selectModule, selectPortaSectionAmpRelease);
   portaSectionAmpRelease.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectPortaSectionAmpRelease);
 
   // TODO: this needs cooperation from on-voice-start-modulation

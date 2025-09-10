@@ -2,6 +2,7 @@
 
 #include <firefly_synth/modules/voice_module/FFVoiceModuleTopo.hpp>
 #include <firefly_synth/modules/voice_module/FFVoiceModuleProcessor.hpp>
+#include <firefly_synth/modules/voice_module/FFVoiceModuleStateVoiceStart.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -30,10 +31,7 @@ class alignas(alignof(TBlock)) FFVoiceModuleBlockParamState final
   std::array<TBlock, 1> portaType = {};
   std::array<TBlock, 1> portaMode = {};
   std::array<TBlock, 1> portaSync = {};
-  std::array<TBlock, 1> portaTime = {};
   std::array<TBlock, 1> portaBars = {};
-  std::array<TBlock, 1> portaSectionAmpAttack = {};
-  std::array<TBlock, 1> portaSectionAmpRelease = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceModuleBlockParamState);
 };
@@ -58,6 +56,7 @@ class alignas(alignof(TAccurate)) FFVoiceModuleParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeVoiceModuleTopo();
   FFVoiceModuleAccParamState<TAccurate> acc = {};
   FFVoiceModuleBlockParamState<TBlock> block = {};
+  FFVoiceModuleVoiceStartParamState<TAccurate> voiceStart = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceModuleParamState);
 };

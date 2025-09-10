@@ -29,8 +29,8 @@ FFVoiceModuleProcessor::BeginVoice(
   float portaTypeNorm = params.block.portaType[0].Voice()[voice];
   float portaModeNorm = params.block.portaMode[0].Voice()[voice];
   float portaSyncNorm = params.block.portaSync[0].Voice()[voice];
-  float portaTimeNorm = params.block.portaTime[0].Voice()[voice];
   float portaBarsNorm = params.block.portaBars[0].Voice()[voice];
+  _voiceStartSnapshotNorm.portaTime[0] = params.voiceStart.portaTime[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
   bool portaSync = topo.NormalizedToBoolFast(FFVoiceModuleParam::PortaSync, portaSyncNorm);
   auto portaType = topo.NormalizedToListFast<FFVoiceModulePortaType>(FFVoiceModuleParam::PortaType, portaTypeNorm);
@@ -49,7 +49,7 @@ FFVoiceModuleProcessor::BeginVoice(
       FFVoiceModuleParam::PortaBars, portaBarsNorm, sampleRate, bpm);
   else
     _portaPitchSamplesTotal = topo.NormalizedToLinearTimeSamplesFast(
-      FFVoiceModuleParam::PortaTime, portaTimeNorm, sampleRate);
+      FFVoiceModuleParam::PortaTime, _voiceStartSnapshotNorm.portaTime[0], sampleRate);
 
   int portaDiffSemis = state.voice->event.note.keyUntuned - (int)std::round(portaPitchStart);
   int slideMultiplier = portaType == FFVoiceModulePortaType::Auto ? 1 : std::abs(portaDiffSemis);
@@ -115,4 +115,5 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.env5ToCoarse[0][voice] = env5ToCoarse.Last();
   exchangeParams.acc.fine[0][voice] = fineNormModulated.Last();
   exchangeParams.acc.lfo5ToFine[0][voice] = lfo5ToFine.Last();
+  exchangeParams.voiceStart.portaTime[0][voice] = _voiceStartSnapshotNorm.portaTime[0];
 }
