@@ -55,7 +55,6 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   FBSArray<float, FBFixedBlockSamples> balNormModulated = {};
 
   state.moduleSlot = 0;
-  procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
 
   // No need to process VNote, values are fixed at BeginVoice.
