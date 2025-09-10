@@ -93,10 +93,10 @@ MakeModMatrixTopGUI(bool global, FFPlugGUI* plugGUI)
 }
   
 static Component*
-MakeModMatrixSlotsGUI(bool global, int offset, FFPlugGUI* plugGUI)
+MakeModMatrixSlotsGUI(bool global, int offset, int count, FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  std::vector<int> rowSizes(FFModMatrixGlobalMaxSlotCount + 1, 1);
+  std::vector<int> rowSizes(count + 1, 1);
   std::vector<int> columnSizes = { 0, 2, 2, 3, 0 };
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   auto topo = plugGUI->HostContext()->Topo();
@@ -106,7 +106,7 @@ MakeModMatrixSlotsGUI(bool global, int offset, FFPlugGUI* plugGUI)
   grid->Add(0, 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Scale"));
   grid->Add(0, 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
   grid->Add(0, 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));
-  for (int i = 0; i < FFModMatrixGlobalMaxSlotCount; i++)
+  for (int i = 0; i < count; i++)
   {
     auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, offset + i } });
     grid->Add(1 + i, 0, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
@@ -150,7 +150,7 @@ MakeModMatrixSlotsGUI(bool global, int offset, FFPlugGUI* plugGUI)
     auto amount = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::Amount, offset + i } });
     grid->Add(1 + i, 4, plugGUI->StoreComponent<FBParamSlider>(plugGUI, amount, Slider::SliderStyle::RotaryVerticalDrag));
   }
-  grid->MarkSection({ { 0, 0 }, { FFModMatrixGlobalMaxSlotCount + 1, (int)FFModMatrixParam::Count - 1 } });
+  grid->MarkSection({ { 0, 0 }, { count + 1, (int)FFModMatrixParam::Count - 1 } });
   return grid;
 }
 
@@ -159,25 +159,26 @@ MakeModMatrixGUIVoice(FFPlugGUI* plugGUI)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 1 } });
   grid->Add(0, 0, 1, 2, MakeModMatrixTopGUI(false, plugGUI));
-  grid->Add(1, 0, MakeModMatrixSlotsGUI(false, 0, plugGUI));
-  grid->Add(1, 1, MakeModMatrixSlotsGUI(false, FFModMatrixGlobalMaxSlotCount, plugGUI));
+  grid->Add(1, 0, MakeModMatrixSlotsGUI(false, 0, FFModMatrixGlobalMaxSlotCount, plugGUI));
+  grid->Add(1, 1, MakeModMatrixSlotsGUI(false, FFModMatrixGlobalMaxSlotCount, FFModMatrixGlobalMaxSlotCount, plugGUI));
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
 static Component*
 MakeModMatrixGUIGlobal(FFPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1 } });
-  grid->Add(0, 0, MakeModMatrixTopGUI(true, plugGUI));
-  grid->Add(1, 0, MakeModMatrixSlotsGUI(true, 0, plugGUI));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 1 } });
+  grid->Add(0, 0, 1, 2, MakeModMatrixTopGUI(true, plugGUI));
+  grid->Add(1, 0, MakeModMatrixSlotsGUI(true, 0, FFModMatrixGlobalMaxSlotCount / 2, plugGUI));
+  grid->Add(1, 1, MakeModMatrixSlotsGUI(true, FFModMatrixGlobalMaxSlotCount / 2, FFModMatrixGlobalMaxSlotCount / 2, plugGUI));
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
 Component*
 FFMakeModMatrixGUI(FFPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 2, 1 } });
-  grid->Add(0, 0, MakeModMatrixGUIVoice(plugGUI));
-  grid->Add(0, 1, MakeModMatrixGUIGlobal(plugGUI));
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1, 2 } }, std::vector<int> { { 1 } });
+  grid->Add(0, 0, MakeModMatrixGUIGlobal(plugGUI));
+  grid->Add(1, 0, MakeModMatrixGUIVoice(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
