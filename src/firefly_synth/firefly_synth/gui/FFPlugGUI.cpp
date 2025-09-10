@@ -100,7 +100,7 @@ void
 FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 {
   FBPlugGUI::AudioParamNormalizedChangedFromHost(index, normalized);
-  if (HostContext()->Topo()->audio.params[index].static_.output)
+  if (HostContext()->Topo()->audio.params[index].static_.mode == FBParamMode::Output)
     return;
   if (_graph->TweakedModuleByUI() == HostContext()->Topo()->audio.params[index].runtimeModuleIndex)
     _graph->RequestRerender(_graph->TweakedModuleByUI());

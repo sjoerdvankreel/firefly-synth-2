@@ -21,7 +21,8 @@ _special(topo.static_->specialSelector(*topo.static_, _rawState))
 
   for (int p = 0; p < topo.audio.params.size(); p++)
     if (topo.static_->modules[topo.audio.params[p].topoIndices.module.index].voice)
-      if (topo.audio.params[p].static_.acc)
+      if (topo.audio.params[p].static_.mode == FBParamMode::Accurate || 
+        topo.audio.params[p].static_.mode == FBParamMode::VoiceStart)
         _params.push_back(FBProcParamState(
           topo.audio.params[p].static_.voiceAccProcAddr(
             topo.audio.params[p].topoIndices.module.slot,
@@ -32,7 +33,8 @@ _special(topo.static_->specialSelector(*topo.static_, _rawState))
             topo.audio.params[p].topoIndices.module.slot,
             topo.audio.params[p].topoIndices.param.slot, _rawState)));
     else
-      if (topo.audio.params[p].static_.acc)
+      if (topo.audio.params[p].static_.mode == FBParamMode::Accurate ||
+        topo.audio.params[p].static_.mode == FBParamMode::VoiceStart)
         _params.push_back(FBProcParamState(
           topo.audio.params[p].static_.globalAccProcAddr(
             topo.audio.params[p].topoIndices.module.slot,

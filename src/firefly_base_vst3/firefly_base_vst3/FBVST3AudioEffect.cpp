@@ -270,7 +270,8 @@ FBVST3AudioEffect::process(ProcessData& data)
             }
             else if ((iter = _topo->audio.paramTagToIndex.find(paramId)) != _topo->audio.paramTagToIndex.end())
             {
-              if (_topo->audio.params[iter->second].static_.acc)
+              if (_topo->audio.params[iter->second].static_.mode == FBParamMode::Accurate ||
+                _topo->audio.params[iter->second].static_.mode == FBParamMode::VoiceStart)
               {
                 for (int point = 0; point < inQueue->getPointCount(); point++)
                   if (inQueue->getPoint(point, position, value) == kResultTrue)
