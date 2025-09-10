@@ -124,7 +124,7 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
     {
       int stage = id - 1000;
       plugGUI->HostContext()->UndoState().Snapshot("Insert Stage Before " + std::to_string(stage + 1));
-      for (int i = FFEnvStageCount - 1; i > stage; i++)
+      for (int i = FFEnvStageCount - 1; i > stage; i--)
         for (int j = 0; j < stageParams.size(); j++)
           plugGUI->HostContext()->CopyAudioParam(
             { indices, { (int)stageParams[j], i - 1 } }, { indices, { (int)stageParams[j], i } });
