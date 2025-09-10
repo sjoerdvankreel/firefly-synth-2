@@ -8,6 +8,7 @@ TODOLIST for alpha-16
 [x] voice start : mark in base, not derive it (for tooltips etc since it is now acc)
 [x] allow modulate env stage lengths on voice start => any per-voice-start-automatable
 
+[ ] maybe drop matrixname
 [ ] bipolar mod amt
 [ ] implement voice target for pitchbend in voice, not osci
 [ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
