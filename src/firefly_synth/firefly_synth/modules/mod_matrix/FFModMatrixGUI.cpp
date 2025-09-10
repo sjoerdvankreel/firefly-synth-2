@@ -95,9 +95,11 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
 static Component*
 MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1, 1 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 1 } });
   grid->Add(0, 0, MakeModMatrixSlotControlGUI(true, plugGUI));
   grid->Add(0, 1, MakeModMatrixSlotControlGUI(false, plugGUI));
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
+  grid->MarkSection({ { 0, 1 }, { 1, 1 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
