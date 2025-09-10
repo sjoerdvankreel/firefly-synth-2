@@ -421,7 +421,7 @@ FBCLAPPlugin::process(
       _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
 
     _hostProcessor->ProcessHost(_input, _output);
-    _exchangeStateQueue->Enqueue(_dspExchangeState->Raw());
+    _exchangeStateQueue->TryEnqueue(_dspExchangeState->Raw());
 
     for (auto const& op : _output.outputParams)
       _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));
