@@ -187,7 +187,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   sourceLow.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSourceLow);
   sourceLow.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSourceLow);
   sourceLow.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSourceLow);
-  sourceLow.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::SourceLow, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
+  sourceLow.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::SourceLow, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Source, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
 
   auto& sourceHigh = result->params[(int)FFModMatrixParam::SourceHigh];
   sourceHigh.mode = FBParamMode::Accurate;
@@ -204,7 +204,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   sourceHigh.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectSourceHigh);
   sourceHigh.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectSourceHigh);
   sourceHigh.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectSourceHigh);
-  sourceHigh.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::SourceHigh, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
+  sourceHigh.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::SourceHigh, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Source, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
 
   auto& scale = result->params[(int)FFModMatrixParam::Scale];
   scale.mode = FBParamMode::Block;
@@ -287,7 +287,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scaleMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScaleMin);
   scaleMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScaleMin);
   scaleMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScaleMin);
-  scaleMin.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::ScaleMin, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
+  scaleMin.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::ScaleMin, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Scale, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
 
   auto& scaleMax = result->params[(int)FFModMatrixParam::ScaleMax];
   scaleMax.mode = FBParamMode::Accurate;
@@ -307,7 +307,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scaleMax.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScaleMax);
   scaleMax.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScaleMax);
   scaleMax.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScaleMax);
-  scaleMax.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::ScaleMax, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
+  scaleMax.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::ScaleMax, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Scale, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
 
   auto& target = result->params[(int)FFModMatrixParam::Target];
   target.mode = FBParamMode::Block;
@@ -408,7 +408,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   targetMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTargetMin);
   targetMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectTargetMin);
   targetMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTargetMin);
-  targetMin.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::TargetMin, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
+  targetMin.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::TargetMin, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Target, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
 
   auto& targetMax = result->params[(int)FFModMatrixParam::TargetMax];
   targetMax.mode = FBParamMode::Accurate;
@@ -428,7 +428,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   targetMax.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectTargetMax);
   targetMax.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectTargetMax);
   targetMax.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectTargetMax);
-  targetMax.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::TargetMax, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
+  targetMax.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::TargetMax, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Target, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
   
   return result;
 }
