@@ -2,6 +2,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGUI.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixGraph.hpp>
 #include <firefly_synth/modules/gui_settings/FFGUISettingsTopo.hpp>
 
 #include <firefly_base/base/shared/FBLogging.hpp>
