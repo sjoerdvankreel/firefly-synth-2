@@ -112,7 +112,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
 }
 
 static Component*
-MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
+MakeModMatrixSlotControlGUI(FFPlugGUI* plugGUI)
 {
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 1 } });
   grid->Add(0, 0, MakeModMatrixSlotControlGUI(false, plugGUI));
@@ -120,6 +120,24 @@ MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
   grid->MarkSection({ { 0, 1 }, { 1, 1 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+}
+
+static Component*
+MakeModMatrixGraphGUI(FFPlugGUI* plugGUI)
+{
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 1 } });
+  grid->Add(0, 0, plugGUI->StoreComponent<FFModMatrixGraph>());
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
+  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+}
+
+static Component*
+MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
+{
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 0, 1 } });
+  grid->Add(0, 0, MakeModMatrixSlotControlGUI(plugGUI));
+  grid->Add(0, 1, MakeModMatrixGraphGUI(plugGUI));
+  return grid;
 }
 
 static void
