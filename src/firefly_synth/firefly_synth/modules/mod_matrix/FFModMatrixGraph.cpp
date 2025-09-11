@@ -1,16 +1,58 @@
+#include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGraph.hpp>
-#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
+
 #include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
 
 using namespace juce;
 
 FFModMatrixGraph::
+~FFModMatrixGraph()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFModMatrixGraph::
 FFModMatrixGraph(FFPlugGUI* plugGUI, FFModMatrixGraphType type) :
-_plugGUI(plugGUI), _type(type) {}
+_plugGUI(plugGUI), _type(type)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFModMatrixGraph::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const* param = &_plugGUI->HostContext()->Topo()->audio.params[index];
+  if (param->topoIndices.module.index == (int)FFModuleType::VMatrix &&
+    param->static_.slotCount == FFModMatrixVoiceMaxSlotCount)
+  {
+    _trackingParam = param;
+    repaint();
+  }
+  if (param->topoIndices.module.index == (int)FFModuleType::GMatrix &&
+    param->static_.slotCount == FFModMatrixGlobalMaxSlotCount)
+  {
+    _trackingParam = param;
+    repaint();
+  }
+}
 
 void
 FFModMatrixGraph::paint(Graphics& g)
 {
+  float sourceLow = 0.0f;
+  float sourceHigh = 1.0f;
+  if (_trackingParam != nullptr)
+  {
+    int slot = _trackingParam->topoIndices.param.slot;
+    FBTopoIndices module = _trackingParam->topoIndices.module;
+    sourceLow = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceLow, slot } });
+    sourceHigh = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceHigh, slot } });
+  }
+
   std::string text = {};
   std::vector<float> yNormalized = {};
   auto bounds = getBounds().toFloat().reduced(2.0f);
@@ -20,6 +62,17 @@ FFModMatrixGraph::paint(Graphics& g)
     text = "Source";
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth())));
+    break;
+  case FFModMatrixGraphType::SourceLowHigh:
+    text = "Low/High"; // TODO use the actual algos (not data) from dsp
+    for (int i = 0; i < bounds.getWidth(); i++)
+    {
+      // todo deal with the division ==> OFFSET + RANGE
+      float norm = FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth()));
+      float lohiIn = norm < sourceLow ? sourceLow : norm > sourceHigh ? sourceHigh : norm;
+      float lohiOut = (lohiIn - sourceLow) / (sourceHigh - sourceLow);
+      yNormalized.push_back(std::clamp(lohiOut, 0.0f, 1.0f));
+    }
     break;
   default:
     yNormalized.push_back(0.5);

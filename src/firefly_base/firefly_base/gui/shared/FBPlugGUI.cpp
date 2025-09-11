@@ -47,7 +47,7 @@ FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
 {
   AudioParamNormalizedChanged(index);
   for (int i = 0; i < _paramListeners.size(); i++)
-    _paramListeners[i]->AudioParamChangedFromUI(index, value);
+    _paramListeners[i]->AudioParamChanged(index, value, true);
 }
 
 void
@@ -76,6 +76,8 @@ FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, double value)
     control->SetValueNormalizedFromHost(value);
   }
   AudioParamNormalizedChanged(index);
+  for (int i = 0; i < _paramListeners.size(); i++)
+    _paramListeners[i]->AudioParamChanged(index, value, false);
 }
 
 void

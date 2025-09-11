@@ -58,6 +58,22 @@ FBHostGUIContext::GetAudioParamNormalized(FBParamTopoIndices const& indices) con
   return GetAudioParamNormalized(param->runtimeParamIndex);
 }
 
+double
+FBHostGUIContext::GetAudioParamLinear(FBParamTopoIndices const& indices) const
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Linear().NormalizedToPlainFast(static_cast<float>(normalized));
+}
+
+double
+FBHostGUIContext::GetAudioParamIdentity(FBParamTopoIndices const& indices) const
+{
+  auto param = Topo()->audio.ParamAtTopo(indices);
+  double normalized = GetAudioParamNormalized(param->runtimeParamIndex);
+  return param->static_.Identity().NormalizedToPlainFast(static_cast<float>(normalized));
+}
+
 bool 
 FBHostGUIContext::GetAudioParamBool(FBParamTopoIndices const& indices) const
 {

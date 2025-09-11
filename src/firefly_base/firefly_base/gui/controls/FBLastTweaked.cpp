@@ -57,8 +57,11 @@ FBLastTweakedLabel::FixedWidth(int /*height*/) const
 }
 
 void 
-FBLastTweakedLabel::AudioParamChangedFromUI(int index, double /*normalized*/)
+FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool changedFromUI)
 {
+  if (!changedFromUI)
+    return;
+
   auto const* topo = _plugGUI->HostContext()->Topo();
   if (!IsTweakableParam(topo, index))
     return;
@@ -110,8 +113,10 @@ FBLastTweakedTextBox::FixedWidth(int /*height*/) const
 }
 
 void 
-FBLastTweakedTextBox::AudioParamChangedFromUI(int index, double normalized)
+FBLastTweakedTextBox::AudioParamChanged(int index, double normalized, bool changedFromUI)
 {
+  if (!changedFromUI)
+    return;
   if (index < 0 || !IsTweakableParam(_plugGUI->HostContext()->Topo(), index))
     return;
   _paramIndex = index;
