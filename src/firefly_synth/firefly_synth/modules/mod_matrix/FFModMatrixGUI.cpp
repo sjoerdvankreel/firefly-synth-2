@@ -17,6 +17,7 @@
 #include <firefly_base/gui/controls/FBToggleButton.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
 #include <firefly_base/gui/components/FBGridComponent.hpp>
+#include <firefly_base/gui/components/FBFillerComponent.hpp>
 #include <firefly_base/gui/components/FBSectionComponent.hpp>
 #include <firefly_base/gui/components/FBParamsDependentComponent.hpp>
 
@@ -114,11 +115,12 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
 static Component*
 MakeModMatrixSlotControlGUI(FFPlugGUI* plugGUI)
 {
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 1 } });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { { 1 } }, std::vector<int> { { 0, 0, 0 } });
   grid->Add(0, 0, MakeModMatrixSlotControlGUI(false, plugGUI));
   grid->Add(0, 1, MakeModMatrixSlotControlGUI(true, plugGUI));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBFillerComponent>(26, 1));
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
-  grid->MarkSection({ { 0, 1 }, { 1, 1 } });
+  grid->MarkSection({ { 0, 1 }, { 1, 2 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 

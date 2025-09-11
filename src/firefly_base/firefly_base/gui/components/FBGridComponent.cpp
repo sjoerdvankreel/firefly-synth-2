@@ -121,8 +121,14 @@ FBGridComponent::FixedRowHeight(int row) const
       if(sizingChild != nullptr)
         fixedCellHeight = std::max(fixedCellHeight, sizingChild->FixedHeight());
     }
-    FB_ASSERT(fixedCellHeight != 0);
     result = std::max(result, fixedCellHeight);
+  }
+  if (result == 0)
+  {
+    if (_rows.size() == 1 && _cols.size() == 1)
+      result = getBounds().getHeight();
+    else
+      FB_ASSERT(false);
   }
   return result;
 }
