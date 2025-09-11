@@ -21,6 +21,9 @@
 
 using namespace juce;
 
+// +1 for "V"/"G"
+static int const MatrixControlCount = 11;
+
 static Component*
 MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
 {
@@ -119,6 +122,21 @@ MakeModMatrixTopGUI(FFPlugGUI* plugGUI)
 }
 
 static void
+AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, int r, int c)
+{
+  grid->Add(r, c + 1, plugGUI->StoreComponent<FBAutoSizeLabel>("Op"));
+  grid->Add(r, c + 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Source"));
+  grid->Add(r, c + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Lo"));
+  grid->Add(r, c + 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Hi"));
+  grid->Add(r, c + 5, plugGUI->StoreComponent<FBAutoSizeLabel>("Scale"));
+  grid->Add(r, c + 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Min"));
+  grid->Add(r, c + 7, plugGUI->StoreComponent<FBAutoSizeLabel>("Max"));
+  grid->Add(r, c + 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
+  grid->Add(r, c + 9, plugGUI->StoreComponent<FBAutoSizeLabel>("Min"));
+  grid->Add(r, c + 10, plugGUI->StoreComponent<FBAutoSizeLabel>("Max"));
+}
+
+static void
 AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, int c, int slot)
 {
   auto topo = plugGUI->HostContext()->Topo();
@@ -178,7 +196,6 @@ static Component*
 MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  int controlCount = 11;
   // + 1 for repeat header
   int rowCount = (FFModMatrixGlobalMaxSlotCount + FFModMatrixVoiceMaxSlotCount + 1) / 2;
   std::vector<int> columnSizes = { 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0 };
@@ -186,31 +203,20 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, rowSizes, columnSizes);
 
   for (int c = 0; c < 2; c++)
-  {
-    grid->Add(0, c * controlCount + 1, plugGUI->StoreComponent<FBAutoSizeLabel>("Op"));
-    grid->Add(0, c * controlCount + 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Source"));
-    grid->Add(0, c * controlCount + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Lo"));
-    grid->Add(0, c * controlCount + 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Hi"));
-    grid->Add(0, c * controlCount + 5, plugGUI->StoreComponent<FBAutoSizeLabel>("Scale"));
-    grid->Add(0, c * controlCount + 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Min"));
-    grid->Add(0, c * controlCount + 7, plugGUI->StoreComponent<FBAutoSizeLabel>("Max"));
-    grid->Add(0, c * controlCount + 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
-    grid->Add(0, c * controlCount + 9, plugGUI->StoreComponent<FBAutoSizeLabel>("Min"));
-    grid->Add(0, c * controlCount + 10, plugGUI->StoreComponent<FBAutoSizeLabel>("Max"));
-  }
-
+    AddMatrixHeaderRow(plugGUI, grid, 0, c * MatrixControlCount);
   for (int r = 0; r < rowCount; r++)
     AddMatrixSlotRow(plugGUI, grid, false, 1 + r, 0, r);
   for (int r = 0; r < FFModMatrixGlobalMaxSlotCount; r++)
-    AddMatrixSlotRow(plugGUI, grid, true, 1 + r, controlCount, r);
+    AddMatrixSlotRow(plugGUI, grid, true, 1 + r, MatrixControlCount, r);
+  AddMatrixHeaderRow(plugGUI, grid, FFModMatrixGlobalMaxSlotCount + 1, MatrixControlCount);
   for (int r = FFModMatrixGlobalMaxSlotCount; r < rowCount - 1; r++)
-    AddMatrixSlotRow(plugGUI, grid, false, 2 + r, controlCount, r + rowCount - FFModMatrixGlobalMaxSlotCount);
+    AddMatrixSlotRow(plugGUI, grid, false, 2 + r, MatrixControlCount, r + rowCount - FFModMatrixGlobalMaxSlotCount);
 
-  grid->MarkSection({ { 0, 0 }, { 1, controlCount } });
-  grid->MarkSection({ { 0, controlCount }, { 1, controlCount } });
-  grid->MarkSection({ { 1, 0 }, { rowCount, controlCount } });
-  grid->MarkSection({ { 1, controlCount }, { FFModMatrixGlobalMaxSlotCount, controlCount } });
-  grid->MarkSection({ { 1 + FFModMatrixGlobalMaxSlotCount, controlCount }, { rowCount - FFModMatrixGlobalMaxSlotCount, controlCount } });
+  grid->MarkSection({ { 0, 0 }, { 1, MatrixControlCount } });
+  grid->MarkSection({ { 0, MatrixControlCount }, { 1, MatrixControlCount } });
+  grid->MarkSection({ { 1, 0 }, { rowCount, MatrixControlCount } });
+  grid->MarkSection({ { 1, MatrixControlCount }, { FFModMatrixGlobalMaxSlotCount, MatrixControlCount } });
+  grid->MarkSection({ { 1 + FFModMatrixGlobalMaxSlotCount, MatrixControlCount }, { rowCount - FFModMatrixGlobalMaxSlotCount, MatrixControlCount } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
