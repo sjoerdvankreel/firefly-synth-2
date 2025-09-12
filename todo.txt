@@ -7,6 +7,8 @@ TODOLIST for alpha-16
 [x] param index/tag tooltip only for debug
 [x] voice start : mark in base, not derive it (for tooltips etc since it is now acc)
 [x] allow modulate env stage lengths on voice start => any per-voice-start-automatable
+[ ] matrix insert item
+[ ] matrix test clean/clear new controls
 
 [ ] maybe drop matrixname
 [ ] bipolar mod amt

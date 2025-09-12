@@ -23,7 +23,7 @@ struct FFStaticTopo;
 struct FBStaticModule;
 enum class FFModMatrixParam { 
   Slots, OpType, 
-  Source, SourceLow, SourceHigh,
+  Source, SourceOffset, SourceRange,
   Scale, ScaleMin, ScaleMax,
   Target, TargetMin, TargetMax, Count };
 

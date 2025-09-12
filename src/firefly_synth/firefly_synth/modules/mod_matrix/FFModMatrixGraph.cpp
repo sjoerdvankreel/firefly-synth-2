@@ -43,14 +43,14 @@ FFModMatrixGraph::AudioParamChanged(
 void
 FFModMatrixGraph::paint(Graphics& g)
 {
-  float sourceLow = 0.0f;
-  float sourceHigh = 1.0f;
+  float sourceRange = 1.0f;
+  float sourceOffset = 0.0f;
   if (_trackingParam != nullptr)
   {
     int slot = _trackingParam->topoIndices.param.slot;
     FBTopoIndices module = _trackingParam->topoIndices.module;
-    sourceLow = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceLow, slot } });
-    sourceHigh = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceHigh, slot } });
+    sourceRange = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceRange, slot } });
+    sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
   }
 
   std::string text = {};
@@ -67,11 +67,9 @@ FFModMatrixGraph::paint(Graphics& g)
     text = "Low/High"; // TODO use the actual algos (not data) from dsp
     for (int i = 0; i < bounds.getWidth(); i++)
     {
-      // todo deal with the division ==> OFFSET + RANGE
-      float norm = FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth()));
-      float lohiIn = norm < sourceLow ? sourceLow : norm > sourceHigh ? sourceHigh : norm;
-      float lohiOut = (lohiIn - sourceLow) / (sourceHigh - sourceLow);
-      yNormalized.push_back(std::clamp(lohiOut, 0.0f, 1.0f));
+      float sourceNorm = FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth()));
+      sourceNorm = std::clamp(sourceNorm, sourceOffset, sourceOffset + (1.0f - sourceOffset) * sourceRange);
+      yNormalized.push_back(sourceNorm);
     }
     break;
   default:
