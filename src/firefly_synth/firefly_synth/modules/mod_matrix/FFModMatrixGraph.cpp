@@ -106,6 +106,5 @@ FFModMatrixGraph::paint(Graphics& g)
     FB_ASSERT(false);
     break;
   }
-  g.setColour(Colours::white);
   g.strokePath(path, PathStrokeType(1.0f));  
 }
