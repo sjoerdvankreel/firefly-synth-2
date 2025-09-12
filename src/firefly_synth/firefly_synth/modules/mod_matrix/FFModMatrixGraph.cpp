@@ -63,18 +63,27 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::Source:
     text = "Source";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth())));
-    break;
-  case FFModMatrixGraphType::SourceLowHigh:
-    text = "Ofst/Rnge"; // TODO use the actual algos (not data) from dsp
-    for (int i = 0; i < bounds.getWidth(); i++)
     {
       float sourceMin = sourceOffset;
       float sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
       float sourceNorm = FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth()));
-      float sourceBounded = std::clamp(sourceNorm, sourceMin, sourceMax);
-      yNormalized.push_back((sourceBounded - sourceMin) / (sourceMax - sourceMin));
+      yNormalized.push_back(sourceMin + sourceNorm * (sourceMax - sourceMin));
     }
+    break;
+  case FFModMatrixGraphType::SourceLowHigh:
+    text = "Ofst/Rnge";
+    for (int i = 0; i < bounds.getWidth(); i++)
+      yNormalized.push_back(FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth())));
+    break;
+  case FFModMatrixGraphType::Scale:
+    text = "Scale";
+    for (int i = 0; i < bounds.getWidth(); i++)
+      yNormalized.push_back(FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth())));
+    break;
+  case FFModMatrixGraphType::SourceScaled:
+    text = "Src Scaled";
+    for (int i = 0; i < bounds.getWidth(); i++)
+      yNormalized.push_back(FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth())));
     break;
   default:
     yNormalized.push_back(0.5);
