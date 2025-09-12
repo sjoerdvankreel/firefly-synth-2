@@ -180,7 +180,10 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   sourceOffset.slotCount = maxSlotCount;
   sourceOffset.unit = "%";
   sourceOffset.id = prefix + "{4508141F-3677-43DA-A58A-BB2F941105C0}";
-  sourceOffset.type = FBParamType::Identity;
+  sourceOffset.type = FBParamType::Linear;
+  sourceOffset.Linear().min = 0.0f;
+  sourceOffset.Linear().max = 0.99f;  // prevent div by 0
+  sourceOffset.Linear().displayMultiplier = 100.0f;
   auto selectSourceOffset = [](auto& module) { return &module.acc.sourceOffset; };
   sourceOffset.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSourceOffset);
   sourceOffset.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSourceOffset);
@@ -197,7 +200,10 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   sourceRange.slotCount = maxSlotCount;
   sourceRange.unit = "%";
   sourceRange.id = prefix + "{6154B7B8-A2F4-42FD-948B-7D0F0AAE2530}";
-  sourceRange.type = FBParamType::Identity;
+  sourceRange.type = FBParamType::Linear;
+  sourceRange.Linear().min = 0.01f; // prevent div by 0
+  sourceRange.Linear().max = 1.0f;
+  sourceRange.Linear().displayMultiplier = 100.0f;
   auto selectSourceRange = [](auto& module) { return &module.acc.sourceRange; };
   sourceRange.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectSourceRange);
   sourceRange.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectSourceRange);

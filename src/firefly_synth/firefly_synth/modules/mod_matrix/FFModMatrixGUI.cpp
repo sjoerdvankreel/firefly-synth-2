@@ -148,8 +148,8 @@ AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, int r, int c)
 {
   grid->Add(r, c + 1, plugGUI->StoreComponent<FBAutoSizeLabel>("Op"));
   grid->Add(r, c + 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Source"));
-  grid->Add(r, c + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Lo"));
-  grid->Add(r, c + 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Hi"));
+  grid->Add(r, c + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("Ofst"));
+  grid->Add(r, c + 4, plugGUI->StoreComponent<FBAutoSizeLabel>("Rnge"));
   grid->Add(r, c + 5, plugGUI->StoreComponent<FBAutoSizeLabel>("Scale"));
   grid->Add(r, c + 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Min"));
   grid->Add(r, c + 7, plugGUI->StoreComponent<FBAutoSizeLabel>("Max"));

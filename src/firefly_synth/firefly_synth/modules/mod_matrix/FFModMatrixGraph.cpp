@@ -49,8 +49,8 @@ FFModMatrixGraph::paint(Graphics& g)
   {
     int slot = _trackingParam->topoIndices.param.slot;
     FBTopoIndices module = _trackingParam->topoIndices.module;
-    sourceRange = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceRange, slot } });
-    sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
+    sourceRange = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceRange, slot } });
+    sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
   }
 
   std::string text = {};
@@ -64,12 +64,14 @@ FFModMatrixGraph::paint(Graphics& g)
       yNormalized.push_back(FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth())));
     break;
   case FFModMatrixGraphType::SourceLowHigh:
-    text = "Low/High"; // TODO use the actual algos (not data) from dsp
+    text = "Ofst/Rnge"; // TODO use the actual algos (not data) from dsp
     for (int i = 0; i < bounds.getWidth(); i++)
     {
+      float sourceMin = sourceOffset;
+      float sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
       float sourceNorm = FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth()));
-      sourceNorm = std::clamp(sourceNorm, sourceOffset, sourceOffset + (1.0f - sourceOffset) * sourceRange);
-      yNormalized.push_back(sourceNorm);
+      float sourceBounded = std::clamp(sourceNorm, sourceMin, sourceMax);
+      yNormalized.push_back((sourceBounded - sourceMin) / (sourceMax - sourceMin));
     }
     break;
   default:
