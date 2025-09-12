@@ -7,9 +7,8 @@ class FFPlugGUI;
 struct FBRuntimeParam;
 
 enum class FFModMatrixGraphType {
-  Source, SourceLowHigh, Scale, 
-  SourceScaled, Target, TargetModulated,
-  Count };
+  Source, SourceLowHigh, Scale, ScaleMinMax,
+  Target, TargetModulated, Count };
 
 // Custom graph, not tied to audio engine state.
 // If it was, we'd need to basically calculate the entire synth to plot this.

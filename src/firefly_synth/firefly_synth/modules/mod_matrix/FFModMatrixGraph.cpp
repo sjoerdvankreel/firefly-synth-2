@@ -44,12 +44,14 @@ void
 FFModMatrixGraph::paint(Graphics& g)
 {
   std::string prefix = "";
+  int scaleBy = 0;
   float sourceRange = 1.0f;
   float sourceOffset = 0.0f;
   if (_trackingParam != nullptr)
   {
     int slot = _trackingParam->topoIndices.param.slot;
     FBTopoIndices module = _trackingParam->topoIndices.module;
+    scaleBy = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, slot } });
     sourceRange = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceRange, slot } });
     sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
     prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
@@ -78,10 +80,10 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::Scale:
     text = "Scale";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth())));
+      yNormalized.push_back(scaleBy == 0? 1.0f: FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth())));
     break;
-  case FFModMatrixGraphType::SourceScaled:
-    text = "Src Scaled";
+  case FFModMatrixGraphType::ScaleMinMax:
+    text = "Min/Max";
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth())));
     break;
@@ -101,13 +103,13 @@ FFModMatrixGraph::paint(Graphics& g)
     path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
   switch (_type)
   {
-  case FFModMatrixGraphType::Source:
   case FFModMatrixGraphType::Scale:
   case FFModMatrixGraphType::Target:
+  case FFModMatrixGraphType::SourceLowHigh:
     g.setColour(Colours::grey);
     break;
-  case FFModMatrixGraphType::SourceLowHigh:
-  case FFModMatrixGraphType::SourceScaled:
+  case FFModMatrixGraphType::Source:
+  case FFModMatrixGraphType::ScaleMinMax:
   case FFModMatrixGraphType::TargetModulated:
     g.setColour(Colours::white);
     break;

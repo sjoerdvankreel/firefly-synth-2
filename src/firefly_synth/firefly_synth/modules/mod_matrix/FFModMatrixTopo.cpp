@@ -216,7 +216,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scale.mode = FBParamMode::Block;
   scale.name = "Scale";
   scale.slotCount = maxSlotCount;
-  scale.defaultText = "Off";
+  scale.defaultText = "None";
   scale.id = prefix + "{4A166295-A1EF-4354-AA2E-3F14B98A70CE}";
   scale.type = FBParamType::List;
   scale.List().linkedSource = (int)FFModMatrixParam::Source;
@@ -230,8 +230,8 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scale.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::Scale, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   auto const& sources = global ? topo->gMatrixSources : topo->vMatrixSources;
-  scale.List().submenuStart[0] = "Off";
-  scale.List().items.push_back({ "{A6EA4A7B-162E-4AFC-A806-18478D71EAFA}", "Off" });
+  scale.List().submenuStart[0] = "None";
+  scale.List().items.push_back({ "{A6EA4A7B-162E-4AFC-A806-18478D71EAFA}", "None" });
   source.List().submenuStart[0] = "Off";
   source.List().items.push_back({ "{A6EA4A7B-162E-4AFC-A806-18478D71EAFA}", "Off" });
   for (int i = 1; i < sources.size(); i++)
@@ -259,7 +259,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
 
   scale.List().linkedTargetEnabledSelector = [global, topo](int runtimeSourceValue, int runtimeTargetValue) {
     if (runtimeSourceValue == 0 || runtimeTargetValue == 0)
-      return true; // Off
+      return true; // None
     auto const& scaleCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
     auto const& sourceCvOutputs = global ? topo->gMatrixSources : topo->vMatrixSources;
     FB_ASSERT(0 <= runtimeTargetValue && runtimeTargetValue < scaleCvOutputs.size());
@@ -293,7 +293,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scaleMin.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScaleMin);
   scaleMin.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScaleMin);
   scaleMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScaleMin);
-  scaleMin.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::ScaleMin, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Scale, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
+  scaleMin.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::ScaleMin, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   auto& scaleMax = result->params[(int)FFModMatrixParam::ScaleMax];
   scaleMax.mode = FBParamMode::Accurate;
@@ -313,7 +313,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scaleMax.voiceExchangeAddr = FFSelectExchangeParamAddr(selectVoiceModule, selectScaleMax);
   scaleMax.globalAccProcAddr = FFSelectProcParamAddr(selectGlobalModule, selectScaleMax);
   scaleMax.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectScaleMax);
-  scaleMax.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::ScaleMax, -1 }, { (int)FFModMatrixParam::OpType, -1 }, { (int)FFModMatrixParam::Scale, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0 && vs[3] != 0; });
+  scaleMax.dependencies.enabled.audio.WhenSlots({ { (int)FFModMatrixParam::Slots, -1 }, { (int)FFModMatrixParam::ScaleMax, -1 }, { (int)FFModMatrixParam::OpType, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[2] != 0; });
 
   auto& target = result->params[(int)FFModMatrixParam::Target];
   target.mode = FBParamMode::Block;
