@@ -43,6 +43,7 @@ FFModMatrixGraph::AudioParamChanged(
 void
 FFModMatrixGraph::paint(Graphics& g)
 {
+  std::string prefix = "";
   float sourceRange = 1.0f;
   float sourceOffset = 0.0f;
   if (_trackingParam != nullptr)
@@ -51,6 +52,7 @@ FFModMatrixGraph::paint(Graphics& g)
     FBTopoIndices module = _trackingParam->topoIndices.module;
     sourceRange = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceRange, slot } });
     sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
+    prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
   }
 
   std::string text = {};
@@ -82,12 +84,28 @@ FFModMatrixGraph::paint(Graphics& g)
 
   g.setColour(Colours::darkgrey);
   g.setFont(FBGUIGetFont().withHeight(16.0f));
-  g.drawText(text, bounds, Justification::centred, false);
+  g.drawText(prefix + text, bounds, Justification::centred, false);
 
   Path path;
   path.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
   for (int i = 1; i < yNormalized.size(); i++)
     path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
+  switch (_type)
+  {
+  case FFModMatrixGraphType::Source:
+  case FFModMatrixGraphType::Scale:
+  case FFModMatrixGraphType::Target:
+    g.setColour(Colours::grey);
+    break;
+  case FFModMatrixGraphType::SourceLowHigh:
+  case FFModMatrixGraphType::SourceScaled:
+  case FFModMatrixGraphType::TargetModulated:
+    g.setColour(Colours::white);
+    break;
+  default:
+    FB_ASSERT(false);
+    break;
+  }
   g.setColour(Colours::white);
   g.strokePath(path, PathStrokeType(1.0f));  
 }
