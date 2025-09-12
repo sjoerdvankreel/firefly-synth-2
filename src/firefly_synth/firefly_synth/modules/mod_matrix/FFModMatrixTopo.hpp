@@ -25,7 +25,7 @@ enum class FFModMatrixParam {
   Slots, OpType, 
   Source, SourceOffset, SourceRange,
   Scale, ScaleMin, ScaleMax,
-  Target, TargetMin, TargetMax, Count };
+  Target, TargetAmt, Count };
 
 std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo);
 std::vector<FFModMatrixSource> FFModMatrixMakeSources(bool global, FBStaticTopo const* topo);

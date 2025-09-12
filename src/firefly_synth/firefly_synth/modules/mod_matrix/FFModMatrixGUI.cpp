@@ -24,7 +24,7 @@
 using namespace juce;
 
 // +1 for "V"/"G"
-static int const MatrixControlCount = 11;
+static int const MatrixControlCount = 10;
 
 static Component*
 MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
@@ -50,10 +50,9 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
     std::vector<double> opTypeNorm = {};
     std::vector<double> scaleMinNorm = {};
     std::vector<double> scaleMaxNorm = {};
-    std::vector<double> targetMinNorm = {};
-    std::vector<double> targetMaxNorm = {};
-    std::vector<double> sourceOffsetNorm = {};
+    std::vector<double> targetAmtNorm = {};
     std::vector<double> sourceRangeNorm = {};
+    std::vector<double> sourceOffsetNorm = {};
     auto* hostContext = plugGUI->HostContext();
     int moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
     int maxSlotCount = global ? FFModMatrixGlobalMaxSlotCount : FFModMatrixVoiceMaxSlotCount;
@@ -73,8 +72,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
         sourceNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::Source, i } }));
         scaleMinNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::ScaleMin, i } }));
         scaleMaxNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::ScaleMax, i } }));
-        targetMinNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::TargetMin, i } }));
-        targetMaxNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::TargetMax, i } }));
+        targetAmtNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::TargetAmt, i } }));
         sourceRangeNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::SourceRange, i } }));
         sourceOffsetNorm.push_back(hostContext->GetAudioParamNormalized({ modIndices, { (int)FFModMatrixParam::SourceOffset, i } }));
       }
@@ -88,8 +86,7 @@ MakeModMatrixSlotControlGUI(bool global, FFPlugGUI* plugGUI)
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::Source, i } }, sourceNorm[i]);
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::ScaleMin, i } }, scaleMinNorm[i]);
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::ScaleMax, i } }, scaleMaxNorm[i]);
-      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::TargetMin, i } }, targetMinNorm[i]);
-      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::TargetMax, i } }, targetMaxNorm[i]);
+      hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::TargetAmt, i } }, targetAmtNorm[i]);
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::SourceRange, i } }, sourceRangeNorm[i]);
       hostContext->PerformImmediateAudioParamEdit({ modIndices, { (int)FFModMatrixParam::SourceOffset, i } }, sourceOffsetNorm[i]);
     }
@@ -154,8 +151,7 @@ AddMatrixHeaderRow(FFPlugGUI* plugGUI, FBGridComponent* grid, int r, int c)
   grid->Add(r, c + 6, plugGUI->StoreComponent<FBAutoSizeLabel>("Min"));
   grid->Add(r, c + 7, plugGUI->StoreComponent<FBAutoSizeLabel>("Max"));
   grid->Add(r, c + 8, plugGUI->StoreComponent<FBAutoSizeLabel>("Target"));
-  grid->Add(r, c + 9, plugGUI->StoreComponent<FBAutoSizeLabel>("Min"));
-  grid->Add(r, c + 10, plugGUI->StoreComponent<FBAutoSizeLabel>("Max"));
+  grid->Add(r, c + 9, plugGUI->StoreComponent<FBAutoSizeLabel>("Amt"));;
 }
 
 static void
@@ -208,10 +204,8 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
         plugGUI->SwitchGraphToModule(moduleIndices.index, moduleIndices.slot);
     } };
   grid->Add(r, c + 8, targetCombo);
-  auto targetMin = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::TargetMin, slot } });
-  grid->Add(r, c + 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, targetMin, Slider::SliderStyle::RotaryVerticalDrag));
-  auto targetMax = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::TargetMax, slot } });
-  grid->Add(r, c + 10, plugGUI->StoreComponent<FBParamSlider>(plugGUI, targetMax, Slider::SliderStyle::RotaryVerticalDrag));
+  auto targetAmt = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::TargetAmt, slot } });
+  grid->Add(r, c + 9, plugGUI->StoreComponent<FBParamSlider>(plugGUI, targetAmt, Slider::SliderStyle::RotaryVerticalDrag));;
 }
   
 static Component*
@@ -220,7 +214,7 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   // + 1 for repeat header
   int rowCount = (FFModMatrixGlobalMaxSlotCount + FFModMatrixVoiceMaxSlotCount + 1) / 2;
-  std::vector<int> columnSizes = { 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0 };
+  std::vector<int> columnSizes = { 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 };
   std::vector<int> rowSizes(rowCount + 1, 1);
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, rowSizes, columnSizes);
 

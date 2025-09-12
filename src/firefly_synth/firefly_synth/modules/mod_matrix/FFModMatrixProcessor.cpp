@@ -116,8 +116,7 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   auto const& opTypeNorm = params.block.opType;
   auto const& scaleMinNorm = params.acc.scaleMin;
   auto const& scaleMaxNorm = params.acc.scaleMax;
-  auto const& targetMinNorm = params.acc.targetMin;
-  auto const& targetMaxNorm = params.acc.targetMax;
+  auto const& targetAmtNorm = params.acc.targetAmt;
   auto const& sourceRangeNorm = params.acc.sourceRange;
   auto const& sourceOffsetNorm = params.acc.sourceOffset;
 
@@ -156,10 +155,8 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
         FFSelectDualProcAccParamNormalized<Global>(scaleMinNorm[i], voice).CV().Get(0);
       FFSelectDualExchangeState<Global>(exchangeParams.acc.scaleMax[i], voice) =
         FFSelectDualProcAccParamNormalized<Global>(scaleMaxNorm[i], voice).CV().Get(0);
-      FFSelectDualExchangeState<Global>(exchangeParams.acc.targetMin[i], voice) =
-        FFSelectDualProcAccParamNormalized<Global>(targetMinNorm[i], voice).CV().Get(0);
-      FFSelectDualExchangeState<Global>(exchangeParams.acc.targetMax[i], voice) =
-        FFSelectDualProcAccParamNormalized<Global>(targetMaxNorm[i], voice).CV().Get(0);
+      FFSelectDualExchangeState<Global>(exchangeParams.acc.targetAmt[i], voice) =
+        FFSelectDualProcAccParamNormalized<Global>(targetAmtNorm[i], voice).CV().Get(0);
       FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceRange[i], voice) =
         FFSelectDualProcAccParamNormalized<Global>(sourceRangeNorm[i], voice).CV().Get(0);
       FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceOffset[i], voice) =
@@ -180,7 +177,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   FBAccParamState* targetParamState = nullptr;
   FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
-  FBSArray<float, FBFixedBlockSamples> scaledTargetMaxBuffer = {};
+  FBSArray<float, FBFixedBlockSamples> scaledTargetAmtBuffer = {};
   FBSArray<float, FBFixedBlockSamples> const* scaleBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples> const* sourceBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples>* plugModulationBuffer = nullptr;
@@ -194,8 +191,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
 
   auto const& scaleMinNorm = procParams.acc.scaleMin;
   auto const& scaleMaxNorm = procParams.acc.scaleMax;
-  auto const& targetMinNorm = procParams.acc.targetMin;
-  auto const& targetMaxNorm = procParams.acc.targetMax; // todo connect them all
+  auto const& targetAmtNorm = procParams.acc.targetAmt;
   auto const& sourceRangeNorm = procParams.acc.sourceRange;
   auto const& sourceOffsetNorm = procParams.acc.sourceOffset;
 
@@ -301,13 +297,13 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       }
 
       // TODO here goes the magic
-      auto const& targetMax = FFSelectDualProcAccParamNormalized<Global>(targetMaxNorm[i], voice).CV();
-      targetMax.CopyTo(scaledTargetMaxBuffer);
-      if (scaleBuffer != nullptr)
-        scaledTargetMaxBuffer.Mul(*scaleBuffer);
+      auto const& targetAmt = FFSelectDualProcAccParamNormalized<Global>(targetAmtNorm[i], voice).CV();
+      targetAmt.CopyTo(scaledTargetAmtBuffer);
+      if (scaleBuffer != nullptr) // TODO also if it is
+        scaledTargetAmtBuffer.Mul(*scaleBuffer);
       targetParamState->CV().CopyTo(*plugModulationBuffer);
 
-      FFApplyModulation(_opType[i], *sourceBuffer, scaledTargetMaxBuffer, *plugModulationBuffer);
+      FFApplyModulation(_opType[i], *sourceBuffer, scaledTargetAmtBuffer, *plugModulationBuffer);
       targetParamState->ApplyPlugModulation(plugModulationBuffer);
       if (exchangeToGUI != nullptr)
       {
@@ -315,12 +311,11 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           [exchangeToGUI, &state] { return &exchangeToGUI->param.global.gMatrix[state.moduleSlot]; },
           [exchangeToGUI, &state] { return &exchangeToGUI->param.voice.vMatrix[state.moduleSlot]; });
 
-        // TODO need to rethink this
+        // TODO need to rethink this -- no not really
         //FFSelectDualExchangeState<Global>(exchangeParams.acc.targetMax[i], voice) = scaledTargetMaxBuffer.Last();
         FFSelectDualExchangeState<Global>(exchangeParams.acc.scaleMin[i], voice) = FFSelectDualProcAccParamNormalized<Global>(scaleMinNorm[i], voice).Last();
         FFSelectDualExchangeState<Global>(exchangeParams.acc.scaleMax[i], voice) = FFSelectDualProcAccParamNormalized<Global>(scaleMaxNorm[i], voice).Last();
-        FFSelectDualExchangeState<Global>(exchangeParams.acc.targetMin[i], voice) = FFSelectDualProcAccParamNormalized<Global>(targetMinNorm[i], voice).Last();
-        FFSelectDualExchangeState<Global>(exchangeParams.acc.targetMax[i], voice) = FFSelectDualProcAccParamNormalized<Global>(targetMaxNorm[i], voice).Last();
+        FFSelectDualExchangeState<Global>(exchangeParams.acc.targetAmt[i], voice) = FFSelectDualProcAccParamNormalized<Global>(targetAmtNorm[i], voice).Last();
         FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceRange[i], voice) = FFSelectDualProcAccParamNormalized<Global>(sourceRangeNorm[i], voice).Last();
         FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceOffset[i], voice) = FFSelectDualProcAccParamNormalized<Global>(sourceOffsetNorm[i], voice).Last();
       }
