@@ -283,10 +283,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scaleMin.slotCount = maxSlotCount;
   scaleMin.unit = "%";
   scaleMin.id = prefix + "{07BE86E6-B3A7-4088-9E45-D0961B704E72}";
-  scaleMin.type = FBParamType::Linear;
-  scaleMin.Linear().displayMultiplier = 100;
-  scaleMin.Linear().min = -1.0f;
-  scaleMin.Linear().max = 1.0f;
+  scaleMin.type = FBParamType::Identity;
   auto selectScaleMin = [](auto& module) { return &module.acc.scaleMin; };
   scaleMin.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScaleMin);
   scaleMin.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectScaleMin);
@@ -303,10 +300,7 @@ FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo)
   scaleMax.slotCount = maxSlotCount;
   scaleMax.unit = "%";
   scaleMax.id = prefix + "{CCB21DD2-7060-4C13-B7F5-2B23A47C0991}";
-  scaleMax.type = FBParamType::Linear;
-  scaleMax.Linear().displayMultiplier = 100;
-  scaleMax.Linear().min = -1.0f;
-  scaleMax.Linear().max = 1.0f;
+  scaleMax.type = FBParamType::Identity;
   auto selectScaleMax = [](auto& module) { return &module.acc.scaleMax; };
   scaleMax.scalarAddr = FFSelectDualScalarParamAddr(global, selectGlobalModule, selectVoiceModule, selectScaleMax);
   scaleMax.voiceAccProcAddr = FFSelectProcParamAddr(selectVoiceModule, selectScaleMax);

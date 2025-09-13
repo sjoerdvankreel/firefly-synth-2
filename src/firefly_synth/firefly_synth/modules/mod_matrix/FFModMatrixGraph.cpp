@@ -45,6 +45,8 @@ FFModMatrixGraph::paint(Graphics& g)
 {
   std::string prefix = "";
   int scaleBy = 0;
+  float scaleMin = 0.0f;
+  float scaleMax = 1.0f;
   float sourceRange = 1.0f;
   float sourceOffset = 0.0f;
   if (_trackingParam != nullptr)
@@ -52,6 +54,8 @@ FFModMatrixGraph::paint(Graphics& g)
     int slot = _trackingParam->topoIndices.param.slot;
     FBTopoIndices module = _trackingParam->topoIndices.module;
     scaleBy = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, slot } });
+    scaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, slot } });
+    scaleMax = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMax, slot } });
     sourceRange = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceRange, slot } });
     sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
     prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
@@ -85,7 +89,10 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::ScaleMinMax:
     text = "Min/Max";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth())));
+    {
+      float scale = scaleBy == 0 ? 1.0f : FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth()));
+      yNormalized.push_back(scaleMin + (scaleMax - scaleMin) * scale);
+    }
     break;
   default:
     yNormalized.push_back(0.5);
