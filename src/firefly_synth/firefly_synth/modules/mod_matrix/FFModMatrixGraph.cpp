@@ -8,6 +8,42 @@
 
 using namespace juce;
 
+static float
+GraphGetSourceOffsetRange(float x)
+{
+  return FBToUnipolar(std::sin(2.0f * FBPi * x));
+}
+
+static float
+GraphGetSource(float x, float sourceOffset, float sourceRange)
+{
+  float sourceMin = sourceOffset;
+  float sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
+  float sourceNorm = GraphGetSourceOffsetRange(x);
+  return sourceMin + sourceNorm * (sourceMax - sourceMin);
+}
+
+static float
+GraphGetScale(float x, int scaleBy)
+{
+  if (scaleBy == 0)
+    return 1.0f;
+  return FBToUnipolar(std::sin(4.0f * FBPi * x));
+}
+
+static float
+GraphGetScaleMinMax(float x, int scaleBy, float min, float max)
+{
+  float scale = scaleBy == 0 ? 1.0f : FBToUnipolar(std::sin(4.0f * FBPi * x));
+  return min + (max - min) * scale;
+}
+
+static float
+GraphGetTarget(float x)
+{
+  return x;
+}
+
 FFModMatrixGraph::
 ~FFModMatrixGraph()
 {
@@ -69,34 +105,35 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::Source:
     text = "Source";
     for (int i = 0; i < bounds.getWidth(); i++)
-    {
-      float sourceMin = sourceOffset;
-      float sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
-      float sourceNorm = FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth()));
-      yNormalized.push_back(sourceMin + sourceNorm * (sourceMax - sourceMin));
-    }
+      yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth(), sourceOffset, sourceRange));
     break;
   case FFModMatrixGraphType::SourceLowHigh:
     text = "Ofst/Rnge";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(FBToUnipolar(std::sin(2.0f * FBPi * i / (float)bounds.getWidth())));
+      yNormalized.push_back(GraphGetSourceOffsetRange(i / (float)bounds.getWidth()));
     break;
   case FFModMatrixGraphType::Scale:
     text = "Scale";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(scaleBy == 0? 1.0f: FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth())));
+      yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth(), scaleBy));
     break;
   case FFModMatrixGraphType::ScaleMinMax:
     text = "Min/Max";
     for (int i = 0; i < bounds.getWidth(); i++)
-    {
-      float scale = scaleBy == 0 ? 1.0f : FBToUnipolar(std::sin(4.0f * FBPi * i / (float)bounds.getWidth()));
-      yNormalized.push_back(scaleMin + (scaleMax - scaleMin) * scale);
-    }
+      yNormalized.push_back(GraphGetScaleMinMax(i / (float)bounds.getWidth(), scaleBy, scaleMin, scaleMax));
+    break;
+  case FFModMatrixGraphType::Target:
+    text = "Target";
+    for (int i = 0; i < bounds.getWidth(); i++)
+      yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
+    break;
+  case FFModMatrixGraphType::TargetModulated:
+    text = "Modulated";
+    for (int i = 0; i < bounds.getWidth(); i++)
+      yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
     break;
   default:
-    yNormalized.push_back(0.5);
-    yNormalized.push_back(0.5);
+    FB_ASSERT(false);
     break;
   }
 
