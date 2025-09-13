@@ -139,11 +139,13 @@ FFModMatrixGraph::paint(Graphics& g)
     text = "Modulated";
     for (int i = 0; i < bounds.getWidth(); i++)
     {
+      // todo show all on/off in the graphs
       float x = i / (float)bounds.getWidth();
       float target = GraphGetTarget(x);
       float source = GraphGetSource(x, sourceOffset, sourceRange);
       float scaleMinMax = GraphGetScaleMinMax(x, scaleBy, scaleMin, scaleMax);
-      FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);
+      if(opType != FFModulationOpType::Off)
+        FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);
       yNormalized.push_back(target);
     }
     break;

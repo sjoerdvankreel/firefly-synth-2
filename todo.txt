@@ -9,6 +9,7 @@ TODOLIST for alpha-16
 [x] allow modulate env stage lengths on voice start => any per-voice-start-automatable
 [ ] matrix insert item
 [ ] matrix test clean/clear new controls
+"raw source/scale/tgt"->"source/scale/tgt"
 
 [ ] maybe drop matrixname
 [ ] bipolar mod amt
