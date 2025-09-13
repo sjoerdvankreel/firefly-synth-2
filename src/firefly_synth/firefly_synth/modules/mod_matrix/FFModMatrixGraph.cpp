@@ -1,4 +1,5 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
 #include <firefly_synth/modules/mod_matrix/FFModMatrixGraph.hpp>
 
@@ -17,6 +18,7 @@ GraphGetSourceOffsetRange(float x)
 static float
 GraphGetSource(float x, float sourceOffset, float sourceRange)
 {
+  // TODO share
   float sourceMin = sourceOffset;
   float sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
   float sourceNorm = GraphGetSourceOffsetRange(x);
@@ -26,6 +28,7 @@ GraphGetSource(float x, float sourceOffset, float sourceRange)
 static float
 GraphGetScale(float x, int scaleBy)
 {
+  // TODO share
   if (scaleBy == 0)
     return 1.0f;
   return FBToUnipolar(std::sin(4.0f * FBPi * x));
@@ -34,6 +37,7 @@ GraphGetScale(float x, int scaleBy)
 static float
 GraphGetScaleMinMax(float x, int scaleBy, float min, float max)
 {
+  // TODO share
   float scale = scaleBy == 0 ? 1.0f : FBToUnipolar(std::sin(4.0f * FBPi * x));
   return min + (max - min) * scale;
 }
@@ -83,8 +87,10 @@ FFModMatrixGraph::paint(Graphics& g)
   int scaleBy = 0;
   float scaleMin = 0.0f;
   float scaleMax = 1.0f;
+  float targetAmt = 1.0f;
   float sourceRange = 1.0f;
   float sourceOffset = 0.0f;
+  FFModulationOpType opType = FFModulationOpType::UPAdd;
   if (_trackingParam != nullptr)
   {
     int slot = _trackingParam->topoIndices.param.slot;
@@ -92,8 +98,10 @@ FFModMatrixGraph::paint(Graphics& g)
     scaleBy = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, slot } });
     scaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, slot } });
     scaleMax = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMax, slot } });
+    targetAmt = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::TargetAmt, slot } });
     sourceRange = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceRange, slot } });
     sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
+    opType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, slot } });
     prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
   }
 
@@ -131,7 +139,12 @@ FFModMatrixGraph::paint(Graphics& g)
     text = "Modulated";
     for (int i = 0; i < bounds.getWidth(); i++)
     {
-      yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
+      float x = i / (float)bounds.getWidth();
+      float target = GraphGetTarget(x);
+      float source = GraphGetSource(x, sourceOffset, sourceRange);
+      float scaleMinMax = GraphGetScaleMinMax(x, scaleBy, scaleMin, scaleMax);
+      FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);
+      yNormalized.push_back(target);
     }
     break;
   default:
