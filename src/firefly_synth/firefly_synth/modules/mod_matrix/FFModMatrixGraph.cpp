@@ -130,7 +130,9 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::TargetModulated:
     text = "Modulated";
     for (int i = 0; i < bounds.getWidth(); i++)
+    {
       yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
+    }
     break;
   default:
     FB_ASSERT(false);
