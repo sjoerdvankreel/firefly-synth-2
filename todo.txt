@@ -13,6 +13,7 @@ TODOLIST for alpha-16
 [x] waveshaper-like graph source / scale / target
 [x] minmax in the modmatrix 
 [x] refix all behind-the-scenes mod sources and targets
+[ ] modmatrix +-up/down
 
 [ ] matrix insert item
 [ ] matrix test clean/clear new controls
