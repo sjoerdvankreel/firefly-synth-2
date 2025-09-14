@@ -129,12 +129,12 @@ FFModMatrixGraph::paint(Graphics& g)
         yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
     break;
   case FFModMatrixGraphType::Scale:
-    text = "Scale";
+    text = opType == FFModulationOpType::Off? "Scale Off": "Scale";
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth(), scaleType));
     break;
   case FFModMatrixGraphType::ScaleOn:
-    text = "Scale On";
+    text = opType == FFModulationOpType::Off ? "Scale Off" : "Scale On";
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetScaleMinMax(i / (float)bounds.getWidth(), scaleType, scaleMin, scaleMax));
     break;
