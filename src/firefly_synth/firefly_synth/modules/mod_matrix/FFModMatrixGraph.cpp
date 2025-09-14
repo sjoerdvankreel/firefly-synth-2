@@ -124,19 +124,21 @@ FFModMatrixGraph::paint(Graphics& g)
     break;
   case FFModMatrixGraphType::SourceOnOff:
     text = (sourceType == 0 || opType == FFModulationOpType::Off) ? "Source Off" : "Source On";
-    if (sourceType != 0)
+    if (sourceType != 0 && opType != FFModulationOpType::Off)
       for (int i = 0; i < bounds.getWidth(); i++)
         yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
     break;
   case FFModMatrixGraphType::Scale:
     text = opType == FFModulationOpType::Off? "Scale Off": "Scale";
-    for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth(), scaleType));
+    if (opType != FFModulationOpType::Off)
+      for (int i = 0; i < bounds.getWidth(); i++)
+        yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth(), scaleType));
     break;
   case FFModMatrixGraphType::ScaleOn:
     text = opType == FFModulationOpType::Off ? "Scale Off" : "Scale On";
-    for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(GraphGetScaleMinMax(i / (float)bounds.getWidth(), scaleType, scaleMin, scaleMax));
+    if (opType != FFModulationOpType::Off)
+      for (int i = 0; i < bounds.getWidth(); i++)
+        yNormalized.push_back(GraphGetScaleMinMax(i / (float)bounds.getWidth(), scaleType, scaleMin, scaleMax));
     break;
   case FFModMatrixGraphType::Target:
     text = "Target";
