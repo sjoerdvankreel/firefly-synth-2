@@ -116,13 +116,13 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::Source:
     text = "Source";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
+      yNormalized.push_back(GraphGetSourceOffsetRange(i / (float)bounds.getWidth(), sourceOffset, sourceRange));
     break;
   case FFModMatrixGraphType::SourceOnOff:
     text = sourceType == 0? "Source Off": "Source On";
     if(sourceType != 0)
       for (int i = 0; i < bounds.getWidth(); i++)
-        yNormalized.push_back(GraphGetSourceOffsetRange(i / (float)bounds.getWidth(), sourceOffset, sourceRange));
+        yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
     break;
   case FFModMatrixGraphType::Scale:
     text = "Scale";
