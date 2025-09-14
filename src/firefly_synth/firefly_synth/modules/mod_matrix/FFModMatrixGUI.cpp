@@ -163,10 +163,10 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   
   auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, slot } });
   grid->Add(r, c + 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, opType, global ? "G" : "V"));
-  grid->Add(r, c + 1, plugGUI->StoreComponent<FBAutoSizeButton>("+"));
-  grid->Add(r, c + 2, plugGUI->StoreComponent<FBAutoSizeButton>("-"));
-  grid->Add(r, c + 3, plugGUI->StoreComponent<FBAutoSizeButton>("\U00002191"));
-  grid->Add(r, c + 4, plugGUI->StoreComponent<FBAutoSizeButton>("\U00002193"));
+  grid->Add(r, c + 1, plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "+"));
+  grid->Add(r, c + 2, plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "-"));
+  grid->Add(r, c + 3, plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002191"));
+  grid->Add(r, c + 4, plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002193"));
   grid->Add(r, c + 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
 
   std::function<void(int)> sourceOrScaleChanged = [plugGUI, global](int itemResultId) {
