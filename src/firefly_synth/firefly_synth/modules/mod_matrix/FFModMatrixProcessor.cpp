@@ -306,9 +306,9 @@ FFModMatrixProcessor<Global>::ApplyModulation(
 
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       {
-        FBBatch<float> scaleMin = topo.NormalizedToLinearFast((int)FFModMatrixParam::ScaleMin,
+        FBBatch<float> scaleMin = topo.NormalizedToIdentityFast((int)FFModMatrixParam::ScaleMin,
           FFSelectDualProcAccParamNormalized<Global>(scaleMinNorm[i], voice), s);
-        FBBatch<float> scaleMax = topo.NormalizedToLinearFast((int)FFModMatrixParam::ScaleMax,
+        FBBatch<float> scaleMax = topo.NormalizedToIdentityFast((int)FFModMatrixParam::ScaleMax,
           FFSelectDualProcAccParamNormalized<Global>(scaleMaxNorm[i], voice), s);
         scaleMinMaxBuffer.Store(s, scaleMin + (scaleMax - scaleMin) * scaleBuffer->Load(s));
       }
