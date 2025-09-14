@@ -59,18 +59,18 @@ FFModMatrixGraph::AudioParamChanged(
   int index, double /*normalized*/, bool /*changedFromUI*/)
 {
   auto const* param = &_plugGUI->HostContext()->Topo()->audio.params[index];
-  if (param->topoIndices.module.index == (int)FFModuleType::VMatrix &&
-    param->static_.slotCount == FFModMatrixVoiceMaxSlotCount)
+  if (param->topoIndices.module.index == (int)FFModuleType::VMatrix)
   {
-    _trackingParam = param;
+    if(param->static_.slotCount == FFModMatrixVoiceMaxSlotCount)
+      _trackingParam = param;
     repaint();
   }
-  if (param->topoIndices.module.index == (int)FFModuleType::GMatrix &&
-    param->static_.slotCount == FFModMatrixGlobalMaxSlotCount)
+  if (param->topoIndices.module.index == (int)FFModuleType::GMatrix)
   {
-    _trackingParam = param;
+    if(param->static_.slotCount == FFModMatrixGlobalMaxSlotCount)
+      _trackingParam = param;
     repaint();
-  }
+  }  
 }
 
 void
@@ -101,6 +101,10 @@ FFModMatrixGraph::paint(Graphics& g)
     sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
     opType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, slot } });
     prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
+
+    int slotCount = _plugGUI->HostContext()->GetAudioParamDiscrete({ module, { (int)FFModMatrixParam::Slots, 0 } });
+    if (slotCount <= slot)
+      opType = FFModulationOpType::Off;
   }
 
   std::string text = "Off";
