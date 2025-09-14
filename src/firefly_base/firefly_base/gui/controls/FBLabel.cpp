@@ -38,12 +38,23 @@ FBGUIParamLabel::parentHierarchyChanged()
 }
 
 FBParamLabel::
-FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string overrideText):
-FBAutoSizeLabel(overrideText.empty()? param->displayName: overrideText),
+FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param):
+FBAutoSizeLabel(param->displayName),
 FBParamComponent(plugGUI, param) {}
 
 void 
 FBParamLabel::parentHierarchyChanged()
+{
+  ParentHierarchyChanged();
+}
+
+FBParamLinkedLabel::
+FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text):
+FBAutoSizeLabel(text),
+FBParamComponent(plugGUI, param) {}
+
+void 
+FBParamLinkedLabel::parentHierarchyChanged()
 {
   ParentHierarchyChanged();
 }

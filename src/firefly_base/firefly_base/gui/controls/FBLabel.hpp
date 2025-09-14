@@ -35,8 +35,17 @@ class FBParamLabel final:
 public FBAutoSizeLabel,
 public FBParamComponent
 {
-  std::string const _overrideText;
 public:
   void parentHierarchyChanged() override;
-  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string overrideText = {});
+  FBParamLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param);
+};
+
+class FBParamLinkedLabel final:
+public FBAutoSizeLabel,
+public FBParamComponent
+{
+  std::string const _text;
+public:
+  void parentHierarchyChanged() override;
+  FBParamLinkedLabel(FBPlugGUI* plugGUI, FBRuntimeParam const* param, std::string text = {});
 };
