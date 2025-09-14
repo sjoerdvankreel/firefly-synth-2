@@ -161,12 +161,12 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   auto topo = plugGUI->HostContext()->Topo();
   auto moduleType = (int)(global ? FFModuleType::GMatrix : FFModuleType::VMatrix);
   
-  grid->Add(r, c + 0, plugGUI->StoreComponent<FBAutoSizeLabel>(global ? "G" : "V"));
-  grid->Add(r, c + 1, plugGUI->StoreComponent<FBAutoSizeLabel>("+"));
-  grid->Add(r, c + 2, plugGUI->StoreComponent<FBAutoSizeLabel>("-"));
-  grid->Add(r, c + 3, plugGUI->StoreComponent<FBAutoSizeLabel>("\U00002191"));
-  grid->Add(r, c + 4, plugGUI->StoreComponent<FBAutoSizeLabel>("\U00002193"));
   auto opType = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFModMatrixParam::OpType, slot } });
+  grid->Add(r, c + 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, opType, global ? "G" : "V"));
+  grid->Add(r, c + 1, plugGUI->StoreComponent<FBParamLabel>(plugGUI, opType, "+"));
+  grid->Add(r, c + 2, plugGUI->StoreComponent<FBParamLabel>(plugGUI, opType, "-"));
+  grid->Add(r, c + 3, plugGUI->StoreComponent<FBParamLabel>(plugGUI, opType, "\U00002191"));
+  grid->Add(r, c + 4, plugGUI->StoreComponent<FBParamLabel>(plugGUI, opType, "\U00002193"));
   grid->Add(r, c + 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
 
   std::function<void(int)> sourceOrScaleChanged = [plugGUI, global](int itemResultId) {
@@ -219,10 +219,10 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   // + 1 for repeat header
   int rowCount = (FFModMatrixGlobalMaxSlotCount + FFModMatrixVoiceMaxSlotCount + 1) / 2;
-  std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 };
-  std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0 };
   std::vector<int> rowSizes(rowCount + 1, 1);
   std::vector<int> autoSizeColForRow(rowSizes.size(), -1);
+  std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 };
+  std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0 };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, autoSizeRowForCol, autoSizeColForRow, rowSizes, columnSizes);
 
   for (int c = 0; c < 2; c++)
