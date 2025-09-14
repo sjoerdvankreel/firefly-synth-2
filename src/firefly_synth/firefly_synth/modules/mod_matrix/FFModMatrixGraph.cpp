@@ -145,18 +145,18 @@ FFModMatrixGraph::paint(Graphics& g)
       yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
     break;
   case FFModMatrixGraphType::TargetOnOff:
-    text = targetType == 0 ? "Target Off" : "Target On";
-    for (int i = 0; i < bounds.getWidth(); i++)
-    {
-      // todo show all on/off in the graphs
-      float x = i / (float)bounds.getWidth();
-      float target = GraphGetTarget(x);
-      float source = GraphGetSourceOffsetRange(x, sourceOffset, sourceRange);
-      float scaleMinMax = 2;// GraphGetScaleMinMax(x, scaleType, scaleMin);
-      if(opType != FFModulationOpType::Off)
+    text = (opType == FFModulationOpType::Off || targetType == 0 || sourceType == 0) ? "Target Off" : "Target On";
+    if (opType != FFModulationOpType::Off && targetType != 0 && sourceType != 0)
+      for (int i = 0; i < bounds.getWidth(); i++)
+      {
+        float x = i / (float)bounds.getWidth();
+        float target = GraphGetTarget(x);
+        float source = GraphGetSource(x);
+        float scale = scaleType == 0 ? 1.0f : GraphGetScale(x);
+        float scaleMinMax = GraphGetScaleMinMax(scale, scaleMin, scaleMax);
         FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);
-      yNormalized.push_back(target);
-    }
+        yNormalized.push_back(target);
+      }
     break;
   default:
     FB_ASSERT(false);
