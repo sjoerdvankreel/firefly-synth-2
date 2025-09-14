@@ -118,7 +118,7 @@ FFModMatrixGraph::paint(Graphics& g)
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
     break;
-  case FFModMatrixGraphType::SourceLowHigh:
+  case FFModMatrixGraphType::SourceOnOff:
     text = sourceType == 0? "Source Off": "Source On";
     if(sourceType != 0)
       for (int i = 0; i < bounds.getWidth(); i++)
@@ -129,8 +129,8 @@ FFModMatrixGraph::paint(Graphics& g)
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth(), scaleType));
     break;
-  case FFModMatrixGraphType::ScaleMinMax:
-    text = "Min/Max";
+  case FFModMatrixGraphType::ScaleOn:
+    text = "Scale On";
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetScaleMinMax(i / (float)bounds.getWidth(), scaleType, scaleMin, scaleMax));
     break;
@@ -139,8 +139,8 @@ FFModMatrixGraph::paint(Graphics& g)
     for (int i = 0; i < bounds.getWidth(); i++)
       yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
     break;
-  case FFModMatrixGraphType::TargetModulated:
-    text = "Modulated";
+  case FFModMatrixGraphType::TargetOnOff:
+    text = targetType == 0 ? "Target Off" : "Target On";
     for (int i = 0; i < bounds.getWidth(); i++)
     {
       // todo show all on/off in the graphs
@@ -174,12 +174,12 @@ FFModMatrixGraph::paint(Graphics& g)
   {
   case FFModMatrixGraphType::Scale:
   case FFModMatrixGraphType::Target:
-  case FFModMatrixGraphType::SourceLowHigh:
+  case FFModMatrixGraphType::Source:
     g.setColour(Colours::grey);
     break;
-  case FFModMatrixGraphType::Source:
-  case FFModMatrixGraphType::ScaleMinMax:
-  case FFModMatrixGraphType::TargetModulated:
+  case FFModMatrixGraphType::ScaleOn:
+  case FFModMatrixGraphType::SourceOnOff:
+  case FFModMatrixGraphType::TargetOnOff:
     g.setColour(Colours::white);
     break;
   default:
