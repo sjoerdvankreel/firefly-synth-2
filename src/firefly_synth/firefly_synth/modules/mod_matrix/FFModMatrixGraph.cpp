@@ -129,7 +129,7 @@ FFModMatrixGraph::paint(Graphics& g)
         float sourceNorm = GraphGetSource(i / (float)bounds.getWidth());
         float sourceLowHigh = GraphGetSourceLowHigh(sourceNorm, sourceLow, sourceHigh);
         if (sourceLow - sourceHigh == 0.0f)
-          yNormalized.push_back(0.0f);
+          yNormalized.push_back(sourceLowHigh);
         else
           yNormalized.push_back(std::clamp((sourceLowHigh - sourceLow) / (sourceHigh - sourceLow), 0.0f, 1.0f));
       }
