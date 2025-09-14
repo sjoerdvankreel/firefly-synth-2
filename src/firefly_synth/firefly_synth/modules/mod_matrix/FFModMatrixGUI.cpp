@@ -168,11 +168,12 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   auto addButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "+");
   addButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
     plugGUI->HostContext()->UndoState().Snapshot("Add Matrix Row");
-    for(int i = maxSlotCount - 1; i > slot; i--)
+    for(int i = maxSlotCount; i > slot; i--)
       for(int p = 0; p < (int)FFModMatrixParam::Count; p++)
         if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
         {
-          plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i - 1} }, { { (int)moduleType, 0 }, { p, i } });
+          if(i < maxSlotCount)
+            plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i - 1} }, { { (int)moduleType, 0 }, { p, i } });
           plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i - 1} });
         }};
 
