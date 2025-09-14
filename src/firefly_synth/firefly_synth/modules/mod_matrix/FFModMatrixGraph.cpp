@@ -10,18 +10,17 @@
 using namespace juce;
 
 static float
-GraphGetSourceOffsetRange(float x)
+GraphGetSource(float x)
 {
   return FBToUnipolar(std::sin(2.0f * FBPi * x));
 }
 
 static float
-GraphGetSource(float x, float sourceOffset, float sourceRange)
+GraphGetSourceOffsetRange(float x, float sourceOffset, float sourceRange)
 {
-  // TODO share
   float sourceMin = sourceOffset;
   float sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
-  float sourceNorm = GraphGetSourceOffsetRange(x);
+  float sourceNorm = GraphGetSource(x);
   return sourceMin + sourceNorm * (sourceMax - sourceMin);
 }
 
@@ -84,7 +83,9 @@ void
 FFModMatrixGraph::paint(Graphics& g)
 {
   std::string prefix = "";
-  int scaleBy = 0;
+  int scaleType = 0;
+  int sourceType = 0;
+  int targetType = 0;
   float scaleMin = 0.0f;
   float scaleMax = 1.0f;
   float targetAmt = 1.0f;
@@ -95,7 +96,9 @@ FFModMatrixGraph::paint(Graphics& g)
   {
     int slot = _trackingParam->topoIndices.param.slot;
     FBTopoIndices module = _trackingParam->topoIndices.module;
-    scaleBy = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, slot } });
+    scaleType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, slot } });
+    sourceType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Source, slot } });
+    targetType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Target, slot } });
     scaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, slot } });
     scaleMax = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMax, slot } });
     targetAmt = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::TargetAmt, slot } });
@@ -113,22 +116,23 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::Source:
     text = "Source";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth(), sourceOffset, sourceRange));
+      yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
     break;
   case FFModMatrixGraphType::SourceLowHigh:
-    text = "Ofst/Rnge";
-    for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(GraphGetSourceOffsetRange(i / (float)bounds.getWidth()));
+    text = sourceType == 0? "Source Off": "Source On";
+    if(sourceType != 0)
+      for (int i = 0; i < bounds.getWidth(); i++)
+        yNormalized.push_back(GraphGetSourceOffsetRange(i / (float)bounds.getWidth(), sourceOffset, sourceRange));
     break;
   case FFModMatrixGraphType::Scale:
     text = "Scale";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth(), scaleBy));
+      yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth(), scaleType));
     break;
   case FFModMatrixGraphType::ScaleMinMax:
     text = "Min/Max";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(GraphGetScaleMinMax(i / (float)bounds.getWidth(), scaleBy, scaleMin, scaleMax));
+      yNormalized.push_back(GraphGetScaleMinMax(i / (float)bounds.getWidth(), scaleType, scaleMin, scaleMax));
     break;
   case FFModMatrixGraphType::Target:
     text = "Target";
@@ -142,8 +146,8 @@ FFModMatrixGraph::paint(Graphics& g)
       // todo show all on/off in the graphs
       float x = i / (float)bounds.getWidth();
       float target = GraphGetTarget(x);
-      float source = GraphGetSource(x, sourceOffset, sourceRange);
-      float scaleMinMax = GraphGetScaleMinMax(x, scaleBy, scaleMin, scaleMax);
+      float source = GraphGetSourceOffsetRange(x, sourceOffset, sourceRange);
+      float scaleMinMax = GraphGetScaleMinMax(x, scaleType, scaleMin, scaleMax);
       if(opType != FFModulationOpType::Off)
         FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);
       yNormalized.push_back(target);
@@ -158,10 +162,14 @@ FFModMatrixGraph::paint(Graphics& g)
   g.setFont(FBGUIGetFont().withHeight(16.0f));
   g.drawText(prefix + text, bounds, Justification::centred, false);
 
+  if (yNormalized.empty())
+    return;
+
   Path path;
   path.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
   for (int i = 1; i < yNormalized.size(); i++)
     path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
+
   switch (_type)
   {
   case FFModMatrixGraphType::Scale:
