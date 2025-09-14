@@ -176,11 +176,11 @@ FFModMatrixProcessor<Global>::ApplyModulation(
 
   FBAccParamState* targetParamState = nullptr;
   FBSArray<float, FBFixedBlockSamples> scaleOneBuffer = {};
+  FBSArray<float, FBFixedBlockSamples> sourceOutBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteScaleBuffer = {};
   FBSArray<float, FBFixedBlockSamples> onNoteSourceBuffer = {};
   FBSArray<float, FBFixedBlockSamples> scaleMinMaxBuffer = {};
   FBSArray<float, FBFixedBlockSamples> scaledTargetAmtBuffer = {};
-  FBSArray<float, FBFixedBlockSamples> sourceOffsetRangeBuffer = {};
   FBSArray<float, FBFixedBlockSamples> const* scaleBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples> const* sourceBuffer = nullptr;
   FBSArray<float, FBFixedBlockSamples>* plugModulationBuffer = nullptr;
@@ -284,8 +284,10 @@ FFModMatrixProcessor<Global>::ApplyModulation(
           FFSelectDualProcAccParamNormalized<Global>(sourceLowNorm[i], voice), s);
         FBBatch<float> sourceHigh = topo.NormalizedToIdentityFast((int)FFModMatrixParam::SourceHigh,
           FFSelectDualProcAccParamNormalized<Global>(sourceHighNorm[i], voice), s);
-        // TODO
-        sourceOffsetRangeBuffer.Store(s, sourceLow + sourceBuffer->Load(s) * (sourceHigh - sourceLow));
+        FBBatch<float> sourceLowHigh = xsimd::clip(sourceBuffer->Load(s), sourceLow, sourceHigh);
+        FBBoolBatch highMinLowIsZero = (sourceHigh - sourceLow) == FBBatch<float>(0.0f);
+        FBBatch<float> sourceLowHighOut = xsimd::clip((sourceLowHigh - sourceLow) / (sourceHigh - sourceLow), FBBatch<float>(0.0f), FBBatch<float>(1.0f));
+        sourceOutBuffer.Store(s, xsimd::select(highMinLowIsZero, sourceLowHigh, sourceLowHighOut));
       }
         
       if (scale.indices.module.index == -1)
@@ -330,7 +332,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
       scaledTargetAmtBuffer.Mul(scaleMinMaxBuffer);
       targetParamState->CV().CopyTo(*plugModulationBuffer);
 
-      FFApplyModulation(_opType[i], sourceOffsetRangeBuffer, scaledTargetAmtBuffer, *plugModulationBuffer);
+      FFApplyModulation(_opType[i], sourceOutBuffer, scaledTargetAmtBuffer, *plugModulationBuffer);
       targetParamState->ApplyPlugModulation(plugModulationBuffer);
       if (exchangeToGUI != nullptr)
       {
