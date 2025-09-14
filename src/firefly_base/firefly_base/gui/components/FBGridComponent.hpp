@@ -35,10 +35,10 @@ public IFBVerticalAutoSize,
 public IFBHorizontalAutoSize
 {
   bool const _rowColGap;
-  int const _autoSizeCol;
-  int const _autoSizeRow;
   std::vector<int> const _rows;
   std::vector<int> const _cols;
+  std::vector<int> const _autoSizeRowForCol;
+  std::vector<int> const _autoSizeColForRow;
 
   juce::Grid _grid = {};
   std::vector<FBGridSection> _sections = {};
@@ -64,4 +64,5 @@ public:
   FBGridComponent(bool rowColGap, std::vector<int> const& rows, std::vector<int> const& cols);
   FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, int rows, int cols);
   FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols);
+  FBGridComponent(bool rowColGap, std::vector<int> const& autoSizeRowForCol, std::vector<int> const& autoSizeColForRow, std::vector<int> const& rows, std::vector<int> const& cols);
 };

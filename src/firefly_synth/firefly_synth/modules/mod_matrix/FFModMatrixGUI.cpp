@@ -220,8 +220,10 @@ MakeModMatrixSlotsGUI(FFPlugGUI* plugGUI)
   // + 1 for repeat header
   int rowCount = (FFModMatrixGlobalMaxSlotCount + FFModMatrixVoiceMaxSlotCount + 1) / 2;
   std::vector<int> columnSizes = { 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 };
+  std::vector<int> autoSizeRowForCol = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0 };
   std::vector<int> rowSizes(rowCount + 1, 1);
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 1, -1, rowSizes, columnSizes);
+  std::vector<int> autoSizeColForRow(rowSizes.size(), -1);
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, autoSizeRowForCol, autoSizeColForRow, rowSizes, columnSizes);
 
   for (int c = 0; c < 2; c++)
     AddMatrixHeaderRow(plugGUI, grid, 0, c * MatrixControlCount);
