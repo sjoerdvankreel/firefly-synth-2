@@ -16,29 +16,23 @@ GraphGetSource(float x)
 }
 
 static float
-GraphGetSourceOffsetRange(float x, float sourceOffset, float sourceRange)
+GraphGetSourceOffsetRange(float sourceNorm, float sourceOffset, float sourceRange)
 {
   float sourceMin = sourceOffset;
   float sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
-  float sourceNorm = GraphGetSource(x);
   return sourceMin + sourceNorm * (sourceMax - sourceMin);
 }
 
 static float
-GraphGetScale(float x, int scaleBy)
+GraphGetScale(float x)
 {
-  // TODO share
-  if (scaleBy == 0)
-    return 1.0f;
   return FBToUnipolar(std::sin(4.0f * FBPi * x));
 }
 
 static float
-GraphGetScaleMinMax(float x, int scaleBy, float min, float max)
+GraphGetScaleMinMax(float scaleNorm, float scaleMin, float scaleMax)
 {
-  // TODO share
-  float scale = scaleBy == 0 ? 1.0f : FBToUnipolar(std::sin(4.0f * FBPi * x));
-  return min + (max - min) * scale;
+  return scaleMin + (scaleMax - scaleMin) * scaleNorm;
 }
 
 static float
@@ -117,10 +111,13 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::Source:
     text = "Source";
     for (int i = 0; i < bounds.getWidth(); i++)
-      if(sourceType == 0 || opType == FFModulationOpType::Off)
-        yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
+    {
+      float sourceNorm = GraphGetSource(i / (float)bounds.getWidth());
+      if (sourceType == 0 || opType == FFModulationOpType::Off)
+        yNormalized.push_back(sourceNorm);
       else
-        yNormalized.push_back(GraphGetSourceOffsetRange(i / (float)bounds.getWidth(), sourceOffset, sourceRange));
+        yNormalized.push_back(GraphGetSourceOffsetRange(sourceNorm, sourceOffset, sourceRange));
+    }
     break;
   case FFModMatrixGraphType::SourceOnOff:
     text = (sourceType == 0 || opType == FFModulationOpType::Off) ? "Source Off" : "Source On";
@@ -129,16 +126,18 @@ FFModMatrixGraph::paint(Graphics& g)
         yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
     break;
   case FFModMatrixGraphType::Scale:
-    text = opType == FFModulationOpType::Off? "Scale Off": "Scale";
-    if (opType != FFModulationOpType::Off)
-      for (int i = 0; i < bounds.getWidth(); i++)
-        yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth(), scaleType));
+    text = "Scale";
+    for (int i = 0; i < bounds.getWidth(); i++)
+      yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth()));
     break;
   case FFModMatrixGraphType::ScaleOn:
     text = opType == FFModulationOpType::Off ? "Scale Off" : "Scale On";
     if (opType != FFModulationOpType::Off)
       for (int i = 0; i < bounds.getWidth(); i++)
-        yNormalized.push_back(GraphGetScaleMinMax(i / (float)bounds.getWidth(), scaleType, scaleMin, scaleMax));
+      {
+        float scaleNorm = scaleType == 0 ? 1.0f : GraphGetScale(i / (float)bounds.getWidth());
+        yNormalized.push_back(GraphGetScaleMinMax(scaleNorm, scaleMin, scaleMax));
+      }
     break;
   case FFModMatrixGraphType::Target:
     text = "Target";
@@ -153,7 +152,7 @@ FFModMatrixGraph::paint(Graphics& g)
       float x = i / (float)bounds.getWidth();
       float target = GraphGetTarget(x);
       float source = GraphGetSourceOffsetRange(x, sourceOffset, sourceRange);
-      float scaleMinMax = GraphGetScaleMinMax(x, scaleType, scaleMin, scaleMax);
+      float scaleMinMax = 2;// GraphGetScaleMinMax(x, scaleType, scaleMin);
       if(opType != FFModulationOpType::Off)
         FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);
       yNormalized.push_back(target);
