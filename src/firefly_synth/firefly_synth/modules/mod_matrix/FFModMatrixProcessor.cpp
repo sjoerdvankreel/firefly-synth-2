@@ -117,8 +117,8 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
   auto const& scaleMinNorm = params.acc.scaleMin;
   auto const& scaleMaxNorm = params.acc.scaleMax;
   auto const& targetAmtNorm = params.acc.targetAmt;
-  auto const& sourceRangeNorm = params.acc.sourceRange;
-  auto const& sourceOffsetNorm = params.acc.sourceOffset;
+  auto const& sourceLowNorm = params.acc.sourceLow;
+  auto const& sourceHighNorm = params.acc.sourceHigh;
 
   if constexpr (!Global)
     _onNoteWasSnapshotted.fill(false);
@@ -157,10 +157,10 @@ FFModMatrixProcessor<Global>::BeginVoiceOrBlock(
         FFSelectDualProcAccParamNormalized<Global>(scaleMaxNorm[i], voice).CV().Get(0);
       FFSelectDualExchangeState<Global>(exchangeParams.acc.targetAmt[i], voice) =
         FFSelectDualProcAccParamNormalized<Global>(targetAmtNorm[i], voice).CV().Get(0);
-      FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceRange[i], voice) =
-        FFSelectDualProcAccParamNormalized<Global>(sourceRangeNorm[i], voice).CV().Get(0);
-      FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceOffset[i], voice) =
-        FFSelectDualProcAccParamNormalized<Global>(sourceOffsetNorm[i], voice).CV().Get(0);
+      FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceLow[i], voice) =
+        FFSelectDualProcAccParamNormalized<Global>(sourceLowNorm[i], voice).CV().Get(0);
+      FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceHigh[i], voice) =
+        FFSelectDualProcAccParamNormalized<Global>(sourceHighNorm[i], voice).CV().Get(0);
     }
   }
 }
@@ -196,8 +196,8 @@ FFModMatrixProcessor<Global>::ApplyModulation(
   auto const& scaleMinNorm = procParams.acc.scaleMin;
   auto const& scaleMaxNorm = procParams.acc.scaleMax;
   auto const& targetAmtNorm = procParams.acc.targetAmt;
-  auto const& sourceRangeNorm = procParams.acc.sourceRange;
-  auto const& sourceOffsetNorm = procParams.acc.sourceOffset;
+  auto const& sourceLowNorm = procParams.acc.sourceLow;
+  auto const& sourceHighNorm = procParams.acc.sourceHigh;
 
   // static_cast for perf
   auto const& ffTopo = static_cast<FFStaticTopo const&>(*state.topo->static_);
@@ -280,12 +280,12 @@ FFModMatrixProcessor<Global>::ApplyModulation(
 
       for (int s = 0; s < FBFixedBlockSamples; s += FBSIMDFloatCount)
       {
-        FBBatch<float> sourceRange = topo.NormalizedToLinearFast((int)FFModMatrixParam::SourceRange, 
-          FFSelectDualProcAccParamNormalized<Global>(sourceRangeNorm[i], voice), s);
-        FBBatch<float> sourceOffset = topo.NormalizedToLinearFast((int)FFModMatrixParam::SourceOffset,
-          FFSelectDualProcAccParamNormalized<Global>(sourceOffsetNorm[i], voice), s);
-        FBBatch<float> sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
-        sourceOffsetRangeBuffer.Store(s, sourceOffset + sourceBuffer->Load(s) * (sourceMax - sourceOffset));
+        FBBatch<float> sourceLow = topo.NormalizedToIdentityFast((int)FFModMatrixParam::SourceLow, 
+          FFSelectDualProcAccParamNormalized<Global>(sourceLowNorm[i], voice), s);
+        FBBatch<float> sourceHigh = topo.NormalizedToIdentityFast((int)FFModMatrixParam::SourceHigh,
+          FFSelectDualProcAccParamNormalized<Global>(sourceHighNorm[i], voice), s);
+        // TODO
+        sourceOffsetRangeBuffer.Store(s, sourceLow + sourceBuffer->Load(s) * (sourceHigh - sourceLow));
       }
         
       if (scale.indices.module.index == -1)
@@ -341,8 +341,8 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         FFSelectDualExchangeState<Global>(exchangeParams.acc.targetAmt[i], voice) = scaledTargetAmtBuffer.Last();
         FFSelectDualExchangeState<Global>(exchangeParams.acc.scaleMin[i], voice) = FFSelectDualProcAccParamNormalized<Global>(scaleMinNorm[i], voice).Last();
         FFSelectDualExchangeState<Global>(exchangeParams.acc.scaleMax[i], voice) = FFSelectDualProcAccParamNormalized<Global>(scaleMaxNorm[i], voice).Last();
-        FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceRange[i], voice) = FFSelectDualProcAccParamNormalized<Global>(sourceRangeNorm[i], voice).Last();
-        FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceOffset[i], voice) = FFSelectDualProcAccParamNormalized<Global>(sourceOffsetNorm[i], voice).Last();
+        FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceLow[i], voice) = FFSelectDualProcAccParamNormalized<Global>(sourceLowNorm[i], voice).Last();
+        FFSelectDualExchangeState<Global>(exchangeParams.acc.sourceHigh[i], voice) = FFSelectDualProcAccParamNormalized<Global>(sourceHighNorm[i], voice).Last();
       }
     }
   }

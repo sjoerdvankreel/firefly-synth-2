@@ -16,11 +16,9 @@ GraphGetSource(float x)
 }
 
 static float
-GraphGetSourceOffsetRange(float sourceNorm, float sourceOffset, float sourceRange)
+GraphGetSourceLowHigh(float sourceNorm, float sourceLow, float sourceHigh)
 {
-  float sourceMin = sourceOffset;
-  float sourceMax = sourceOffset + (1.0f - sourceOffset) * sourceRange;
-  return sourceMin + sourceNorm * (sourceMax - sourceMin);
+  return sourceLow + sourceNorm * (sourceHigh - sourceLow);
 }
 
 static float
@@ -83,8 +81,8 @@ FFModMatrixGraph::paint(Graphics& g)
   float scaleMin = 0.0f;
   float scaleMax = 1.0f;
   float targetAmt = 1.0f;
-  float sourceRange = 1.0f;
-  float sourceOffset = 0.0f;
+  float sourceLow = 0.0f;
+  float sourceHigh = 1.0f;
   FFModulationOpType opType = FFModulationOpType::UPAdd;
 
   if (_trackingParam != nullptr)
@@ -97,8 +95,8 @@ FFModMatrixGraph::paint(Graphics& g)
     scaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, slot } });
     scaleMax = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMax, slot } });
     targetAmt = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::TargetAmt, slot } });
-    sourceRange = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceRange, slot } });
-    sourceOffset = (float)_plugGUI->HostContext()->GetAudioParamLinear({ module, { (int)FFModMatrixParam::SourceOffset, slot } });
+    sourceLow = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceLow, slot } });
+    sourceHigh = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceHigh, slot } });
     opType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, slot } });
     prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
 
@@ -120,14 +118,21 @@ FFModMatrixGraph::paint(Graphics& g)
       if (sourceType == 0 || opType == FFModulationOpType::Off)
         yNormalized.push_back(sourceNorm);
       else
-        yNormalized.push_back(GraphGetSourceOffsetRange(sourceNorm, sourceOffset, sourceRange));
+        yNormalized.push_back(GraphGetSourceLowHigh(sourceNorm, sourceLow, sourceHigh));
     }
     break;
   case FFModMatrixGraphType::SourceOnOff:
     text = (sourceType == 0 || opType == FFModulationOpType::Off) ? "Source Off" : "Source On";
     if (sourceType != 0 && opType != FFModulationOpType::Off)
       for (int i = 0; i < bounds.getWidth(); i++)
-        yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
+      {
+        float sourceNorm = GraphGetSource(i / (float)bounds.getWidth());
+        float sourceLowHigh = GraphGetSourceLowHigh(sourceNorm, sourceLow, sourceHigh);
+        if (sourceLow - sourceHigh == 0.0f)
+          yNormalized.push_back(0.0f);
+        else
+          yNormalized.push_back(std::clamp((sourceLowHigh - sourceLow) / (sourceHigh - sourceLow), 0.0f, 1.0f));
+      }
     break;
   case FFModMatrixGraphType::Scale:
     text = "Scale";

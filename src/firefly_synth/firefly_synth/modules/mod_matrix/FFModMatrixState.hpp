@@ -59,8 +59,8 @@ class alignas(alignof(TAccurate)) FFModMatrixAccParamState final
   std::array<TAccurate, MaxSlotCount> scaleMin = {};
   std::array<TAccurate, MaxSlotCount> scaleMax = {};
   std::array<TAccurate, MaxSlotCount> targetAmt = {};
-  std::array<TAccurate, MaxSlotCount> sourceRange = {};
-  std::array<TAccurate, MaxSlotCount> sourceOffset = {};
+  std::array<TAccurate, MaxSlotCount> sourceLow = {};
+  std::array<TAccurate, MaxSlotCount> sourceHigh = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFModMatrixAccParamState);
 };
