@@ -1,0 +1,33 @@
+Hey @sjoerd! Hope all's well. Sorry it took a while to get back to you about this. 
+
+I've read your document and I remember the conversations from last time. Indeed in many cases detune(60)+1 != detune(60+1), so there's a choice to be made. 
+
+Now in Surge, the choice made a few years ago was to let the user choose between options 1 and 3 from your document. I have come to think of that choice as being a bit misguided. Things can be simplified a lot. Here's what I mean.
+
+If I set up a sine wave LFO on pitch for a vibrato, that shouldn't follow the tuning. It will make the vibrato range different for 12-edo than 31-edo. Not good. Vibrato is a feature of the patch design, not the tuning.
+If I set up some FM, the ratio between the oscillators should not follow the tuning. It will make the patch sound different depending on the tuning.
+If I set up a pitch envelope to sweep on note starts, it should definitely not follow tuning. It would sound unsteady and weird in unequal tunings, and again the sweep range will change if the tuning has more or less than 12 notes. Etc
+
+See a pattern? The pattern is that most pitch modulations/offsets are actually timbre or performance related, not pitch related. Those should in my opinion not be tuning aware ever. In the detune(key + A) + B method, they belong in the B category. 
+
+Now, about Pitch Bend. As you know, it can belong in either A or B. (user choice is nice here). Here's the thing: I think it might actually be the only modulator you have in Firefly which goes in A. In Surge we also have a step sequencer which benefits from being in A, but last I checked there isn't one in Firefly. So. Here's what I would do:
+
+1: Start over from before you had any microtuning features. Forget about modulations completely for a while. Take all your keytracking things (which as you note would include filter frequencies and so on) and make sure they tune correctly from the keyboard *absent any modulation*. In other words make sure all the important stuff obeys `detune(key)`. 
+
+2: Add in *all* modulations (including pitch bend) after the detuning. That is expand to  `detune(key) + B`. Where B is the sum of all modulations. 
+
+3: Give your pitch bend modulator the option to move into the detune function. Let the user choose if it's A or B in `detune(key + A) + B`. (Name it "pitch bend is in tuned steps" vs. "pitch bend is in semitones".)
+
+4: Ship that and await feedback. (I think it will be good).
+
+By the way. About these sentences:
+HOWEVER these values are still expressed as 12-TET!
+And whats worse, its not even a linear mapping, its a log one 
+
+I would encourage you to not think of these values as being "in 12-TET", and furthermore to not see this as a problem. 
+
+Here's the thing: we need a way to express a frequency in code. And Hz is not a very useful way to do that, because it's not how human musical hearing works! Almost universally we hear the distance between 100 and 200 Hz as being the same as the distance between 200 and 400. Our hearing itself has a log2 mapping! 
+
+Indeed, the choice to divide that mapping into 12 equal parts is arbitrary. But as long as we use float data types that's not really a problem. It's just a unit on the same data, and one that happens to match the majority of musical thinking much better than any linear unit does. 
+
+TL;DL: key + MTS_RetuningInSemitones() is a perfectly good way to express a frequency. 🙂
