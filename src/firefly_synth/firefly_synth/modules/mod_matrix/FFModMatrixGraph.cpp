@@ -92,6 +92,7 @@ FFModMatrixGraph::paint(Graphics& g)
   float sourceRange = 1.0f;
   float sourceOffset = 0.0f;
   FFModulationOpType opType = FFModulationOpType::UPAdd;
+
   if (_trackingParam != nullptr)
   {
     int slot = _trackingParam->topoIndices.param.slot;
@@ -108,7 +109,7 @@ FFModMatrixGraph::paint(Graphics& g)
     prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
   }
 
-  std::string text = {};
+  std::string text = "Off";
   std::vector<float> yNormalized = {};
   auto bounds = getBounds().toFloat().reduced(2.0f);
   switch (_type)
@@ -116,11 +117,14 @@ FFModMatrixGraph::paint(Graphics& g)
   case FFModMatrixGraphType::Source:
     text = "Source";
     for (int i = 0; i < bounds.getWidth(); i++)
-      yNormalized.push_back(GraphGetSourceOffsetRange(i / (float)bounds.getWidth(), sourceOffset, sourceRange));
+      if(sourceType == 0 || opType == FFModulationOpType::Off)
+        yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
+      else
+        yNormalized.push_back(GraphGetSourceOffsetRange(i / (float)bounds.getWidth(), sourceOffset, sourceRange));
     break;
   case FFModMatrixGraphType::SourceOnOff:
-    text = sourceType == 0? "Source Off": "Source On";
-    if(sourceType != 0)
+    text = (sourceType == 0 || opType == FFModulationOpType::Off) ? "Source Off" : "Source On";
+    if (sourceType != 0)
       for (int i = 0; i < bounds.getWidth(); i++)
         yNormalized.push_back(GraphGetSource(i / (float)bounds.getWidth()));
     break;
