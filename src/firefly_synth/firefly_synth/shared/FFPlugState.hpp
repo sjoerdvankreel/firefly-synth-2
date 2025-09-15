@@ -53,13 +53,13 @@ struct FFGlobalExchangeState final
 
 struct FFVoiceExchangeState final
 {
+  std::array<FFEnvExchangeState, FFEnvCount> env = {};
   std::array<FFLFOExchangeState, FFLFOCount> vLFO = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMix = {};
   std::array<FBModuleProcSingleExchangeState, 1> vEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMatrix = {};
   std::array<FBModuleProcSingleExchangeState, 1> osciMod = {};
   std::array<FBModuleProcSingleExchangeState, 1> voiceModule = {};
-  std::array<FBModuleProcSingleExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcSingleExchangeState, FFOsciCount> osci = {};
   std::array<FBModuleProcSingleExchangeState, FFEffectCount> vEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);

@@ -13,6 +13,12 @@
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
+class FFEnvExchangeState final:
+public FBModuleProcSingleExchangeState
+{
+  float portaSectionAmpAttack = {};
+};
+
 class alignas(FBSIMDAlign) FFEnvDSPState final
 {
   friend class FFVoiceProcessor;
