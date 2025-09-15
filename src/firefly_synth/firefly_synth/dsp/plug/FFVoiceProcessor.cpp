@@ -86,7 +86,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
   state.moduleSlot = FFAmpEnvSlot;
   if (_firstRoundThisVoice)
-    voiceDSP.env[FFAmpEnvSlot].processor->BeginVoice(state);
+    voiceDSP.env[FFAmpEnvSlot].processor->BeginVoice(state, false);
   int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state, releaseAt);
   bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
   state.moduleSlot = 0;
@@ -96,7 +96,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   {
     state.moduleSlot = i + FFEnvSlotOffset;
     if(_firstRoundThisVoice)
-      voiceDSP.env[i + FFEnvSlotOffset].processor->BeginVoice(state);
+      voiceDSP.env[i + FFEnvSlotOffset].processor->BeginVoice(state, false);
     voiceDSP.env[i + FFEnvSlotOffset].processor->Process(state, releaseAt);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, i + FFEnvSlotOffset });

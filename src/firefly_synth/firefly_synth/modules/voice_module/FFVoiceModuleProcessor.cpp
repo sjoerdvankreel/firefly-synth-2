@@ -31,18 +31,24 @@ FFVoiceModuleProcessor::BeginVoice(
   float portaSyncNorm = params.block.portaSync[0].Voice()[voice];
   float portaBarsNorm = params.block.portaBars[0].Voice()[voice];
   _voiceStartSnapshotNorm.portaTime[0] = params.voiceStart.portaTime[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
+  _voiceStartSnapshotNorm.portaSectionAmpAttack[0] = params.voiceStart.portaSectionAmpAttack[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
+  _voiceStartSnapshotNorm.portaSectionAmpRelease[0] = params.voiceStart.portaSectionAmpRelease[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
   bool portaSync = topo.NormalizedToBoolFast(FFVoiceModuleParam::PortaSync, portaSyncNorm);
   auto portaType = topo.NormalizedToListFast<FFVoiceModulePortaType>(FFVoiceModuleParam::PortaType, portaTypeNorm);
   auto portaMode = topo.NormalizedToListFast<FFVoiceModulePortaMode>(FFVoiceModuleParam::PortaMode, portaModeNorm);
 
   float portaPitchStart;
+  bool isPortaSection = false;
   if (previousMidiKeyUntuned < 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
     portaPitchStart = (float)state.voice->event.note.keyUntuned;
   else
+  {
+    isPortaSection = true;
     portaPitchStart = previousMidiKeyUntuned;
+  }
 
   if (portaSync)
     _portaPitchSamplesTotal = topo.NormalizedToBarsSamplesFast(
@@ -64,6 +70,18 @@ FFVoiceModuleProcessor::BeginVoice(
   {
     _portaPitchDelta = portaDiffSemis / (float)_portaPitchSamplesTotal;
     _portaPitchOffsetCurrent = (float)portaDiffSemis;
+  }
+
+  procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = 1.0f;
+  procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = 1.0f;
+
+  // These are used as multipliers for stage length in the amp envelope.
+  if (isPortaSection)
+  {
+    procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = topo.NormalizedToIdentityFast(
+      (int)FFVoiceModuleParam::PortaSectionAmpAttack, _voiceStartSnapshotNorm.portaSectionAmpAttack[0]);
+    procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = topo.NormalizedToIdentityFast(
+      (int)FFVoiceModuleParam::PortaSectionAmpRelease, _voiceStartSnapshotNorm.portaSectionAmpRelease[0]);
   }
 }
 

@@ -17,12 +17,12 @@ TODOLIST for alpha-16
 [x] matrix insert item
 [x] matrix test clean/clear new controls
 [x] implement voice target for pitchbend in voice, not osci
+[ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
 
 [ ] make porta lead demo
 [ ] how the heck is the mod menu ordered?
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] do display disabled/impossible items different in the mod matrix
-[ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
 [ ] special param stuff maybe not using params but return struct from virtual?
 [ ] save modulation as actual value not normalized + display that way too
 [ ] bright text when graph on

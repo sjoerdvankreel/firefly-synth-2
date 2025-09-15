@@ -90,7 +90,7 @@ EnvGraphRenderData::DoBeginVoiceOrBlock(
   bool /*exchange*/, int /*exchangeVoice*/)
 { 
   auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState);
+  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, true);
 }
 
 FFEnvProcessor&

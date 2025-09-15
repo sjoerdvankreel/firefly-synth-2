@@ -49,7 +49,7 @@ struct FFOsciStringUniVoiceState final
 
 class FFOsciProcessor final
 {
-  // TODO get rid of this thing everywhere
+  // TODO get rid of this thing everywhere -- or not?
   float _keyUntuned = {};
 
   FFOsciType _type = {};

@@ -11,7 +11,7 @@
 #include <cmath>
 
 void
-FFEnvProcessor::BeginVoice(FBModuleProcState& state)
+FFEnvProcessor::BeginVoice(FBModuleProcState& state, bool graph)
 {
   _smoother = {};
   _finished = false;
@@ -37,6 +37,9 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
   float smoothBarsNorm = params.block.smoothBars[0].Voice()[voice];
   float smoothTimeNorm = params.block.smoothTime[0].Voice()[voice];
 
+  // Shorten attack/release stages if we're in a portamento section.
+  float portaSectionAmpAttack = procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack;
+
   _sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, syncNorm);
   _type = topo.NormalizedToListFast<FFEnvType>(FFEnvParam::Type, typeNorm);
   _releasePoint = topo.NormalizedToDiscreteFast(FFEnvParam::Release, releaseNorm);
@@ -48,9 +51,21 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
     _smoothSamples = topo.NormalizedToBarsSamplesFast(
       FFEnvParam::SmoothBars, smoothBarsNorm, state.input->sampleRate, state.input->bpm);
     for (int i = 0; i < FFEnvStageCount; i++)
-      _stageSamples[i] = topo.NormalizedToBarsSamplesFast(
-        FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
-        state.input->sampleRate, state.input->bpm);
+    {
+      if (state.moduleSlot == FFAmpEnvSlot && i == 0 && !graph)
+      {
+        float stageSamples = topo.NormalizedToBarsFloatSamplesFast(
+          FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
+          state.input->sampleRate, state.input->bpm);
+        _stageSamples[i] = static_cast<int>(std::round(stageSamples * portaSectionAmpAttack));
+      }
+      else
+      {
+        _stageSamples[i] = topo.NormalizedToBarsSamplesFast(
+          FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
+          state.input->sampleRate, state.input->bpm);
+      }
+    }
   }
   else
   {
@@ -59,6 +74,8 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state)
     for (int i = 0; i < FFEnvStageCount; i++)
     {
       _voiceStartSnapshotNorm.stageTime[i] = stageTimeNorm[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
+      if (state.moduleSlot == FFAmpEnvSlot && i == 0 && !graph)
+        _voiceStartSnapshotNorm.stageTime[i] *= portaSectionAmpAttack;
       _stageSamples[i] = topo.NormalizedToLinearTimeSamplesFast(
         FFEnvParam::StageTime, _voiceStartSnapshotNorm.stageTime[i], state.input->sampleRate);
     }
