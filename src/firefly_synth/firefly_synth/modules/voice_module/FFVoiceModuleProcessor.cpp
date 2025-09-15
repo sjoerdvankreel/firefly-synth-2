@@ -140,4 +140,6 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   exchangeParams.acc.fine[0][voice] = fineNormModulated.Last();
   exchangeParams.acc.lfo5ToFine[0][voice] = lfo5ToFine.Last();
   exchangeParams.voiceStart.portaTime[0][voice] = _voiceStartSnapshotNorm.portaTime[0];
+  exchangeParams.voiceStart.portaSectionAmpAttack[0][voice] = _voiceStartSnapshotNorm.portaSectionAmpAttack[0];
+  exchangeParams.voiceStart.portaSectionAmpRelease[0][voice] = _voiceStartSnapshotNorm.portaSectionAmpRelease[0];
 }
