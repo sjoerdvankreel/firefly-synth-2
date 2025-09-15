@@ -206,14 +206,29 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
           plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, 0 } });
           return;
         }
-        double prevOne = plugGUI->HostContext()->GetAudioParamNormalized({ { (int)moduleType, 0 }, { p, slot - 1 } });
         double thisOne = plugGUI->HostContext()->GetAudioParamNormalized({ { (int)moduleType, 0 }, { p, slot } });
-        plugGUI->HostContext()->PerformImmediateAudioParamEdit({ { (int)moduleType, 0 }, { p, slot - 1 } }, thisOne);
+        double prevOne = plugGUI->HostContext()->GetAudioParamNormalized({ { (int)moduleType, 0 }, { p, slot - 1 } });
         plugGUI->HostContext()->PerformImmediateAudioParamEdit({ { (int)moduleType, 0 }, { p, slot } }, prevOne);
+        plugGUI->HostContext()->PerformImmediateAudioParamEdit({ { (int)moduleType, 0 }, { p, slot - 1 } }, thisOne);
       }};
   grid->Add(r, c + 3, upButton);
 
   auto downButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002193");
+  downButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
+    plugGUI->HostContext()->UndoState().Snapshot("Move Matrix Row Down");
+    for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
+      if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
+      {
+        if (slot == maxSlotCount - 1)
+        {
+          plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, slot } });
+          return;
+        }
+        double thisOne = plugGUI->HostContext()->GetAudioParamNormalized({ { (int)moduleType, 0 }, { p, slot } });
+        double nextOne = plugGUI->HostContext()->GetAudioParamNormalized({ { (int)moduleType, 0 }, { p, slot + 1 } });
+        plugGUI->HostContext()->PerformImmediateAudioParamEdit({ { (int)moduleType, 0 }, { p, slot } }, nextOne);
+        plugGUI->HostContext()->PerformImmediateAudioParamEdit({ { (int)moduleType, 0 }, { p, slot + 1 } }, thisOne);
+      }};
   grid->Add(r, c + 4, downButton);
 
   grid->Add(r, c + 5, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, opType));
