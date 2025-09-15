@@ -196,6 +196,21 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   grid->Add(r, c + 2, removeButton);
 
   auto upButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002191");
+  upButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
+    plugGUI->HostContext()->UndoState().Snapshot("Move Matrix Row Up");
+    for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
+      if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
+      {
+        if (slot == 0)
+        {
+          plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, 0 } });
+          return;
+        }
+        double prevOne = plugGUI->HostContext()->GetAudioParamNormalized({ { (int)moduleType, 0 }, { p, slot - 1 } });
+        double thisOne = plugGUI->HostContext()->GetAudioParamNormalized({ { (int)moduleType, 0 }, { p, slot } });
+        plugGUI->HostContext()->PerformImmediateAudioParamEdit({ { (int)moduleType, 0 }, { p, slot - 1 } }, thisOne);
+        plugGUI->HostContext()->PerformImmediateAudioParamEdit({ { (int)moduleType, 0 }, { p, slot } }, prevOne);
+      }};
   grid->Add(r, c + 3, upButton);
 
   auto downButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002193");
