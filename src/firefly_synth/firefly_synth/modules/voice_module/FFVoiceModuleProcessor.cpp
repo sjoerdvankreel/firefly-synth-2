@@ -77,6 +77,9 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::VoiceModule];
   auto& pitchOffsetInSemis = voiceState.voiceModule.pitchOffsetInSemis;
 
+  auto masterPitchBendTarget = procState->dsp.global.master.bendTarget;
+  auto const& masterPitchBendSemis = procState->dsp.global.master.bendAmountInSemis;
+
   auto const& fineNormIn = procParams.acc.fine[0].Voice()[voice];
   auto const& coarseNormIn = procParams.acc.coarse[0].Voice()[voice];
   auto const& lfo5ToFine = procParams.acc.lfo5ToFine[0].Voice()[voice];
@@ -93,7 +96,10 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
   {
     auto coarsePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Coarse, coarseNormModulated.Load(s));
     auto finePlain = topo.NormalizedToLinearFast(FFVoiceModuleParam::Fine, fineNormModulated.Load(s));
-    pitchOffsetInSemis.Store(s, coarsePlain + finePlain);
+    auto pitch = coarsePlain + finePlain;
+    if (masterPitchBendTarget == FFMasterPitchBendTarget::Voice)
+      pitch += masterPitchBendSemis.Load(s);
+    pitchOffsetInSemis.Store(s, pitch);
   }
 
   for (int s = 0; s < FBFixedBlockSamples; s++)
