@@ -181,25 +181,21 @@ AddMatrixSlotRow(FFPlugGUI* plugGUI, FBGridComponent* grid, bool global, int r, 
   auto removeButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "-");
   removeButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
     plugGUI->HostContext()->UndoState().Snapshot("Remove Matrix Row");
-    for (int i = slot; i < maxSlotCount - 1; i++)
+    for (int i = slot; i < maxSlotCount; i++)
       for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
         if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
         {
-          plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } }, { { (int)moduleType, 0 }, { p, i } });
-          plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } });
+          if(i == maxSlotCount - 1)
+            plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i } });
+          else
+          {
+            plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } }, { { (int)moduleType, 0 }, { p, i } });
+            plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } });
+          }
         }};
   grid->Add(r, c + 2, removeButton);
 
   auto upButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002191");
-  removeButton->onClick = [plugGUI, slot, moduleType, maxSlotCount]() {
-    plugGUI->HostContext()->UndoState().Snapshot("Remove Matrix Row");
-    for (int i = slot; i < maxSlotCount - 1; i++)
-      for (int p = 0; p < (int)FFModMatrixParam::Count; p++)
-        if (plugGUI->HostContext()->Topo()->static_->modules[(int)moduleType].params[p].slotCount == maxSlotCount)
-        {
-          plugGUI->HostContext()->CopyAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } }, { { (int)moduleType, 0 }, { p, i } });
-          plugGUI->HostContext()->DefaultAudioParam({ { (int)moduleType, 0 }, { p, i + 1 } });
-        }};
   grid->Add(r, c + 3, upButton);
 
   auto downButton = plugGUI->StoreComponent<FBParamLinkedButton>(plugGUI, opType, "\U00002193");
