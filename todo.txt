@@ -19,6 +19,7 @@ TODOLIST for alpha-16
 [x] implement voice target for pitchbend in voice, not osci
 [ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
 
+[ ] highlight not default
 [ ] make porta lead demo
 [ ] how the heck is the mod menu ordered?
 [ ] 3x on note random as a cheap mod source, uni + normal

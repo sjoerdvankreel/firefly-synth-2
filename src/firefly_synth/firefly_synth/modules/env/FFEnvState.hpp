@@ -17,6 +17,7 @@ class FFEnvExchangeState final:
 public FBModuleProcSingleExchangeState
 {
   float portaSectionAmpAttack = {};
+  float portaSectionAmpRelease = {};
 };
 
 class alignas(FBSIMDAlign) FFEnvDSPState final
