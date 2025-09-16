@@ -11,6 +11,8 @@
 struct FFScalarState;
 struct FBStaticTopo;
 struct FBModuleProcState;
+struct FFEnvExchangeState;
+
 class FBGraphRenderState;
 
 class FFEnvProcessor final
@@ -30,6 +32,8 @@ class FFEnvProcessor final
   float _lastOverall = 0.0f;
   float _lastBeforeRelease = 0.0f;
 
+  float _portaSectionAmpAttackNorm = 1.0f;
+  float _portaSectionAmpReleaseNorm = 1.0f;
   FFEnvVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
   int _smoothPosition = {};
@@ -41,5 +45,5 @@ class FFEnvProcessor final
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
   int Process(FBModuleProcState& state, int releaseAt);
-  void BeginVoice(FBModuleProcState& state, bool graph);
+  void BeginVoice(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP);
 };

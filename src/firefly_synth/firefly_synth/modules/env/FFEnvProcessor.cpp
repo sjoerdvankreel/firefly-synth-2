@@ -11,7 +11,9 @@
 #include <cmath>
 
 void
-FFEnvProcessor::BeginVoice(FBModuleProcState& state, bool graph)
+FFEnvProcessor::BeginVoice( 
+  FBModuleProcState& state, 
+  FFEnvExchangeState const* exchangeFromDSP)
 {
   _smoother = {};
   _finished = false;
@@ -38,7 +40,18 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state, bool graph)
   float smoothTimeNorm = params.block.smoothTime[0].Voice()[voice];
 
   // Shorten attack/release stages if we're in a portamento section.
-  float portaSectionAmpAttack = procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack;
+  _portaSectionAmpAttackNorm = 1.0f;
+  _portaSectionAmpReleaseNorm = 1.0f;
+  if (exchangeFromDSP == nullptr)
+  {
+    _portaSectionAmpAttackNorm = procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack;
+    _portaSectionAmpReleaseNorm = procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease;
+  }
+  else
+  {
+    _portaSectionAmpAttackNorm = exchangeFromDSP->portaSectionAmpAttack;
+    _portaSectionAmpReleaseNorm = exchangeFromDSP->portaSectionAmpRelease;
+  }
 
   _sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, syncNorm);
   _type = topo.NormalizedToListFast<FFEnvType>(FFEnvParam::Type, typeNorm);
@@ -52,19 +65,12 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state, bool graph)
       FFEnvParam::SmoothBars, smoothBarsNorm, state.input->sampleRate, state.input->bpm);
     for (int i = 0; i < FFEnvStageCount; i++)
     {
-      if (state.moduleSlot == FFAmpEnvSlot && i == 0 && !graph)
-      {
-        float stageSamples = topo.NormalizedToBarsFloatSamplesFast(
-          FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
-          state.input->sampleRate, state.input->bpm);
-        _stageSamples[i] = static_cast<int>(std::round(stageSamples * portaSectionAmpAttack));
-      }
-      else
-      {
-        _stageSamples[i] = topo.NormalizedToBarsSamplesFast(
-          FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
-          state.input->sampleRate, state.input->bpm);
-      }
+      float stageSamples = topo.NormalizedToBarsFloatSamplesFast(
+        FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
+        state.input->sampleRate, state.input->bpm);
+      if (state.moduleSlot == FFAmpEnvSlot && i == 0)
+        stageSamples *= _portaSectionAmpAttackNorm;
+      _stageSamples[i] = static_cast<int>(std::round(stageSamples));
     }
   }
   else
@@ -74,10 +80,11 @@ FFEnvProcessor::BeginVoice(FBModuleProcState& state, bool graph)
     for (int i = 0; i < FFEnvStageCount; i++)
     {
       _voiceStartSnapshotNorm.stageTime[i] = stageTimeNorm[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
-      if (state.moduleSlot == FFAmpEnvSlot && i == 0 && !graph)
-        _voiceStartSnapshotNorm.stageTime[i] *= portaSectionAmpAttack;
-      _stageSamples[i] = topo.NormalizedToLinearTimeSamplesFast(
+      float stageSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
         FFEnvParam::StageTime, _voiceStartSnapshotNorm.stageTime[i], state.input->sampleRate);
+      if (state.moduleSlot == FFAmpEnvSlot && i == 0)
+        stageSamples *= _portaSectionAmpAttackNorm;
+      _stageSamples[i] = static_cast<int>(std::round(stageSamples));
     }
   }
 

@@ -13,7 +13,7 @@
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
-class FFEnvExchangeState final:
+struct FFEnvExchangeState final:
 public FBModuleProcSingleExchangeState
 {
   float portaSectionAmpAttack = {};
