@@ -87,10 +87,17 @@ EnvGraphRenderData::DoProcess(
 void 
 EnvGraphRenderData::DoBeginVoiceOrBlock(
   FBGraphRenderState* state, int /*graphIndex*/,
-  bool /*exchange*/, int /*exchangeVoice*/)
+  bool exchange, int exchangeVoice)
 { 
   auto* moduleProcState = state->ModuleProcState();
-  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, true);
+  int moduleSlot = moduleProcState->moduleSlot;
+  FFEnvExchangeState const* exchangeFromDSP = nullptr;
+  int staticModuleIndex = (int)FFModuleType::Env;
+  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ staticModuleIndex, moduleSlot });
+  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+  if (exchange)
+    exchangeFromDSP = &dynamic_cast<FFEnvExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true);
 }
 
 FFEnvProcessor&
@@ -161,6 +168,7 @@ FFEnvRenderGraph(FBModuleGraphComponentData* graphData)
   EnvGraphRenderData renderData = {};
   renderData.graphData = graphData;
   renderData.plotParamsSelector = PlotParams;
+  graphData->skipDrawOnEqualsPrimary = false; // porta subsections
   graphData->drawMarkersSelector = [](int) { return true; };
   renderData.voiceExchangeSelector = [](void const* exchangeState, int voice, int slot, int /*graphIndex*/) {
     return &static_cast<FFExchangeState const*>(exchangeState)->voice[voice].env[slot]; };

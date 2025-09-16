@@ -13,7 +13,8 @@
 void
 FFEnvProcessor::BeginVoice( 
   FBModuleProcState& state, 
-  FFEnvExchangeState const* exchangeFromDSP)
+  FFEnvExchangeState const* exchangeFromDSP,
+  bool graph)
 {
   _smoother = {};
   _finished = false;
@@ -42,12 +43,14 @@ FFEnvProcessor::BeginVoice(
   // Shorten attack/release stages if we're in a portamento section.
   _portaSectionAmpAttackNorm = 1.0f;
   _portaSectionAmpReleaseNorm = 1.0f;
-  if (exchangeFromDSP == nullptr)
+
+  // Nullptr + graph means we're drawing primary.
+  if (!graph)
   {
     _portaSectionAmpAttackNorm = procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack;
     _portaSectionAmpReleaseNorm = procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease;
   }
-  else
+  else if (exchangeFromDSP != nullptr)
   {
     _portaSectionAmpAttackNorm = exchangeFromDSP->portaSectionAmpAttack;
     _portaSectionAmpReleaseNorm = exchangeFromDSP->portaSectionAmpRelease;
@@ -260,6 +263,8 @@ FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
   exchangeDSP.active = true;
   exchangeDSP.lengthSamples = _lengthSamples;
   exchangeDSP.positionSamples = _positionSamples;
+  exchangeDSP.portaSectionAmpAttack = _portaSectionAmpAttackNorm;
+  exchangeDSP.portaSectionAmpRelease = _portaSectionAmpReleaseNorm;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
   for (int i = 0; i < FFEnvStageCount; i++)
