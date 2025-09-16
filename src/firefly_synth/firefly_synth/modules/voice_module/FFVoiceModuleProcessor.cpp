@@ -38,16 +38,45 @@ FFVoiceModuleProcessor::BeginVoice(
   auto portaType = topo.NormalizedToListFast<FFVoiceModulePortaType>(FFVoiceModuleParam::PortaType, portaTypeNorm);
   auto portaMode = topo.NormalizedToListFast<FFVoiceModulePortaMode>(FFVoiceModuleParam::PortaMode, portaModeNorm);
 
+  procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = 1.0f;
+  procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = 1.0f;
+  procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver = false;
+
   float portaPitchStart;
-  bool isPortaSection = false;
+  bool isPortaSectionStart = false;
   if (previousMidiKeyUntuned < 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
     portaPitchStart = (float)state.voice->event.note.keyUntuned;
   else
   {
-    isPortaSection = true;
+    isPortaSectionStart = true;
     portaPitchStart = previousMidiKeyUntuned;
+
+    // Now we need to figure out which voice we took over.
+    // It won't be sample accurate as this is applied at block start,
+    // but at least accurate to within internal block size (currently 16).
+    // Since the takeover mechanism in the envelope is a linear fade out, should be ok.
+    int myChannel = state.voice->event.note.channel;
+    FBVoiceManager const* vManager = state.input->voiceManager;
+    int tookOverThisKey = (int)std::round(previousMidiKeyUntuned * 127.0f);
+    for (int v = 0; v < FBMaxVoices; v++)
+      if (v != voice)
+        if (vManager->IsActive(v))
+        {
+          auto const& thatEventNote = vManager->Voices()[v].event.note;
+          if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
+            procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver = true;
+        }
+  }
+
+  // These are used as multipliers for stage length in the amp envelope.
+  if (isPortaSectionStart)
+  {
+    procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = topo.NormalizedToIdentityFast(
+      (int)FFVoiceModuleParam::PortaSectionAmpAttack, _voiceStartSnapshotNorm.portaSectionAmpAttack[0]);
+    procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = topo.NormalizedToIdentityFast(
+      (int)FFVoiceModuleParam::PortaSectionAmpRelease, _voiceStartSnapshotNorm.portaSectionAmpRelease[0]);
   }
 
   if (portaSync)
@@ -70,18 +99,6 @@ FFVoiceModuleProcessor::BeginVoice(
   {
     _portaPitchDelta = portaDiffSemis / (float)_portaPitchSamplesTotal;
     _portaPitchOffsetCurrent = (float)portaDiffSemis;
-  }
-
-  procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = 1.0f;
-  procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = 1.0f;
-
-  // These are used as multipliers for stage length in the amp envelope.
-  if (isPortaSection)
-  {
-    procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = topo.NormalizedToIdentityFast(
-      (int)FFVoiceModuleParam::PortaSectionAmpAttack, _voiceStartSnapshotNorm.portaSectionAmpAttack[0]);
-    procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = topo.NormalizedToIdentityFast(
-      (int)FFVoiceModuleParam::PortaSectionAmpRelease, _voiceStartSnapshotNorm.portaSectionAmpRelease[0]);
   }
 }
 

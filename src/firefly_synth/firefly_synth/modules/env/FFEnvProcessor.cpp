@@ -41,6 +41,10 @@ FFEnvProcessor::BeginVoice(
   float smoothTimeNorm = params.block.smoothTime[0].Voice()[voice];
 
   // Shorten attack/release stages if we're in a portamento section.
+  // Note we can't apply release multiplier here but only during process.
+  // Reason: can't look into the future - otherVoiceSubSectionTookOver flag
+  // is only set when an other voice actually took over (i.e., we are not the
+  // last subsection in a portamento section).
   _portaSectionAmpAttackNorm = 1.0f;
   _portaSectionAmpReleaseNorm = 1.0f;
 
