@@ -61,7 +61,7 @@ FFOsciProcessor::StringNext(
 }
 
 void 
-FFOsciProcessor::BeginVoiceString(bool graph, FBModuleProcState& state)
+FFOsciProcessor::BeginVoiceString(FBModuleProcState& state, bool graph)
 {
   int voice = state.voice->slot;
   float sampleRate = state.input->sampleRate;

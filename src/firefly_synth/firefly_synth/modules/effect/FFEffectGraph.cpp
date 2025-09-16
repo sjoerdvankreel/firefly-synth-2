@@ -62,7 +62,7 @@ EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
     state->ProcContainer(), moduleProcState->moduleSlot, 
     true, moduleProcState->input->sampleRate);
   GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(
-    true, graphIndex, totalSamples, *moduleProcState);
+    *moduleProcState, true, graphIndex, totalSamples);
 }
 
 template <bool Global>

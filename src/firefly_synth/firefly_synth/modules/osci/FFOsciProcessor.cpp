@@ -65,7 +65,7 @@ FFOsciProcessor::AllocOnDemandBuffers(
 }
 
 void
-FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
+FFOsciProcessor::BeginVoice(FBModuleProcState& state, bool graph)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -136,13 +136,13 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   else if (_type == FFOsciType::FM)
     BeginVoiceFM(state, uniPhaseInit);
   else if (_type == FFOsciType::String)
-    BeginVoiceString(graph, state);
+    BeginVoiceString(state, graph);
   else
     FB_ASSERT(false);
 }
 
 int
-FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
+FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();

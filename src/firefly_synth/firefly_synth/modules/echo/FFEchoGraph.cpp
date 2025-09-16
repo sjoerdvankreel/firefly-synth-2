@@ -87,7 +87,7 @@ EchoGraphRenderData<Global>::DoBeginVoiceOrBlock(
     state->ProcContainer(),
     true, moduleProcState->input->sampleRate);
   GetProcessor(*moduleProcState).BeginVoiceOrBlock(
-    true, graphIndex, totalSamples, *moduleProcState);
+    *moduleProcState, true, graphIndex, totalSamples);
 }
 
 template <bool Global>

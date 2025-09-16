@@ -56,6 +56,7 @@ public:
   int Process(FBModuleProcState& state);
   template <bool Global>
   void BeginVoiceOrBlock(
-    bool graph, int graphIndex, int graphSampleCount, 
-    FFLFOExchangeState const* exchangeState, FBModuleProcState& state);
+    FBModuleProcState& state, 
+    FFLFOExchangeState const* exchangeFromDSP, 
+    bool graph, int graphIndex, int graphSampleCount);
 };

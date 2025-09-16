@@ -148,8 +148,8 @@ FFEchoProcessor<Global>::AllocOnDemandBuffers(
 template <bool Global>
 void
 FFEchoProcessor<Global>::BeginVoiceOrBlock(
-  bool graph, int graphIndex, 
-  int graphSampleCount, FBModuleProcState& state)
+  FBModuleProcState& state, bool graph, 
+  int graphIndex, int graphSampleCount)
 {
   float bpm = state.input->bpm;
   float sampleRate = state.input->sampleRate;

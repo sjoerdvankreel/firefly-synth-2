@@ -6,7 +6,7 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
 void 
-FFOsciModProcessor::BeginVoice(bool graph, FBModuleProcState& state)
+FFOsciModProcessor::BeginVoice(FBModuleProcState& state, bool graph)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();

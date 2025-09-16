@@ -103,7 +103,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
     state.moduleSlot = i;
     if(_firstRoundThisVoice)
-      voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, nullptr, state);
+      voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(state, nullptr, false, -1, -1);
     voiceDSP.vLFO[i].processor->Process<false>(state);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VLFO, i });
@@ -114,15 +114,15 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   
   state.moduleSlot = 0;
   if(_firstRoundThisVoice)
-    voiceDSP.osciMod.processor->BeginVoice(false, state);
+    voiceDSP.osciMod.processor->BeginVoice(state, false);
   voiceDSP.osciMod.processor->Process(state);
 
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
     if(_firstRoundThisVoice)
-      voiceDSP.osci[i].processor->BeginVoice(false, state);
-    voiceDSP.osci[i].processor->Process(false, state);
+      voiceDSP.osci[i].processor->BeginVoice(state, false);
+    voiceDSP.osci[i].processor->Process(state, false);
   }
 
   FB_ASSERT(FFOsciCount == FFEffectCount);
@@ -147,7 +147,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
     state.moduleSlot = i;
     if (_firstRoundThisVoice)
-      voiceDSP.vEffect[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, state);
+      voiceDSP.vEffect[i].processor->BeginVoiceOrBlock<false>(state, false, -1, -1);
     voiceDSP.vEffect[i].processor->Process<false>(state);
   }
 
@@ -179,7 +179,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   {
     state.moduleSlot = 0;
     if(_firstRoundThisVoice)
-      voiceDSP.vEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
+      voiceDSP.vEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
     voiceDSP.output.CopyTo(voiceDSP.vEcho.input);
     int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, ampEnvProcessed);
     voiceFinished = vEchoProcessed != FBFixedBlockSamples;

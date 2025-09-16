@@ -130,15 +130,15 @@ class FFOsciProcessor final
     FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
     FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
 
-  void BeginVoiceString(bool graph, FBModuleProcState& state);
+  void BeginVoiceString(FBModuleProcState& state, bool graph);
   void BeginVoiceFM(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
   void BeginVoiceWave(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
 
 public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
-  int Process(bool graph, FBModuleProcState& state);
-  void BeginVoice(bool graph, FBModuleProcState& state);
+  int Process(FBModuleProcState& state, bool graph);
+  void BeginVoice(FBModuleProcState& state, bool graph);
 
   void AllocOnDemandBuffers(
     FBRuntimeTopo const* topo, FBProcStateContainer* state,

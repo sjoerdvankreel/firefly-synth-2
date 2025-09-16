@@ -51,7 +51,7 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
   auto* moduleProcState = state->ModuleProcState();
   int slot = moduleProcState->moduleSlot;
   moduleProcState->moduleSlot = 0;
-  GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(true, *moduleProcState);
+  GetVoiceDSPState(*moduleProcState).osciMod.processor->BeginVoice(*moduleProcState, true);
   for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
@@ -60,7 +60,7 @@ OsciGraphRenderData::DoBeginVoiceOrBlock(
       state->PlugGUI()->HostContext()->Topo(), 
       state->ProcContainer(), 
       i, true, moduleProcState->input->sampleRate);
-    processor->BeginVoice(true, *moduleProcState);
+    processor->BeginVoice(*moduleProcState, true);
   }
   moduleProcState->moduleSlot = slot;
 }
@@ -78,7 +78,7 @@ OsciGraphRenderData::DoProcess(
   for (int i = 0; i <= graphIndex; i++)
   {
     moduleProcState->moduleSlot = i;
-    int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(true, *moduleProcState);
+    int processed = GetVoiceDSPState(*moduleProcState).osci[i].processor->Process(*moduleProcState, true);
     if (i == graphIndex) result = processed;
   }
   moduleProcState->moduleSlot = slot;
