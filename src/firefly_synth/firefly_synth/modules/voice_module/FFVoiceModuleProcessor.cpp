@@ -52,22 +52,24 @@ FFVoiceModuleProcessor::BeginVoice(
   {
     isPortaSectionStart = true;
     portaPitchStart = previousMidiKeyUntuned;
-
-    // Now we need to figure out which voice we took over.
-    // It won't be sample accurate as this is applied at block start,
-    // but at least accurate to within internal block size (currently 16).
-    // Since the takeover mechanism in the envelope is a linear fade out, should be ok.
-    int myChannel = state.voice->event.note.channel;
-    FBVoiceManager const* vManager = state.input->voiceManager;
-    int tookOverThisKey = (int)std::round(previousMidiKeyUntuned * 127.0f);
-    for (int v = 0; v < FBMaxVoices; v++)
-      if (v != voice)
-        if (vManager->IsActive(v))
-        {
-          auto const& thatEventNote = vManager->Voices()[v].event.note;
-          if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
-            procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver = true;
-        }
+    if (portaMode == FFVoiceModulePortaMode::Section && anyNoteWasOnAlready)
+    {
+      // Now we need to figure out which voice we took over.
+      // It won't be sample accurate as this is applied at block start,
+      // but at least accurate to within internal block size (currently 16).
+      // Since the takeover mechanism in the envelope is a linear fade out, should be ok.
+      int myChannel = state.voice->event.note.channel;
+      FBVoiceManager const* vManager = state.input->voiceManager;
+      int tookOverThisKey = (int)std::round(previousMidiKeyUntuned * 127.0f);
+      for (int v = 0; v < FBMaxVoices; v++)
+        if (v != voice)
+          if (vManager->IsActive(v))
+          {
+            auto const& thatEventNote = vManager->Voices()[v].event.note;
+            if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
+              procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver = true;
+          }
+    }
   }
 
   // These are used as multipliers for stage length in the amp envelope.

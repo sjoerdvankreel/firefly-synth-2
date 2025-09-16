@@ -130,7 +130,9 @@ FFEnvProcessor::BeginVoice(
 }
 
 int
-FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
+FFEnvProcessor::Process(
+  FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, 
+  bool graph, int releaseAt)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -138,6 +140,12 @@ FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
   auto& output = procState->dsp.voice[voice].env[state.moduleSlot].output;
   auto const& stageLevel = procParams.acc.stageLevel;
   auto const& stageSlope = procParams.acc.stageSlope;
+  
+  bool otherVoiceSubSectionTookOver = false;
+  if (!graph)
+    procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver;
+  else if (exchangeFromDSP != nullptr)
+    otherVoiceSubSectionTookOver = exchangeFromDSP->otherVoiceSubSectionTookOver;
 
   if (_type == FFEnvType::Off)
   {
@@ -197,6 +205,21 @@ FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
         float slope = minSlope + stageSlope[stage].Voice()[voice].CV().Get(s) * slopeRange;
         _lastOverall = stageStart + (stageEnd - stageStart) * std::pow(pos, std::log(slope) * invLogHalf);
       }
+
+      // Dealing with portamento subsection release.
+      // The idea is to log fade out everything after release section.
+      // I thought about linear but that requires 2 control parameters:
+      // where to start fade, and how long should it last.
+      // Instead, log fade out gives (1, 0, 0, 0, ...) to (1, 1, 1, 1 ... 0) with linear in between.
+      if (otherVoiceSubSectionTookOver && state.moduleSlot == FFAmpEnvSlot && _released && _positionSamples >= _lengthSamplesUpToRelease)
+      {
+        int totalSamplesAfterRelease = _lengthSamples - _lengthSamplesUpToRelease;
+        int currentSamplesAfterRelease = _positionSamples - _lengthSamplesUpToRelease;
+        float positionPortaAmpRelease = std::clamp(currentSamplesAfterRelease / (float)totalSamplesAfterRelease, 0.0f, 1.0f);
+        float portaAmpReleaseMultiplier = std::pow(positionPortaAmpRelease, std::log(0.001f + (_portaSectionAmpReleaseNorm * 0.999f)) * invLogHalf);
+        _lastOverall *= portaAmpReleaseMultiplier;
+      }
+
       output.Set(s, _smoother.Next(_lastOverall));
 
       bool isReleaseNow = s == releaseAt;
@@ -269,6 +292,7 @@ FFEnvProcessor::Process(FBModuleProcState& state, int releaseAt)
   exchangeDSP.positionSamples = _positionSamples;
   exchangeDSP.portaSectionAmpAttack = _portaSectionAmpAttackNorm;
   exchangeDSP.portaSectionAmpRelease = _portaSectionAmpReleaseNorm;
+  exchangeDSP.otherVoiceSubSectionTookOver = otherVoiceSubSectionTookOver;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
   for (int i = 0; i < FFEnvStageCount; i++)
