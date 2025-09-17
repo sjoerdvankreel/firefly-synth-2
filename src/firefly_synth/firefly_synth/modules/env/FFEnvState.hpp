@@ -13,15 +13,13 @@
 struct FBStaticModule;
 struct FBModuleGraphComponentData;
 
-struct alignas(FBSIMDAlign) FFEnvExchangeState final:
+struct FFEnvExchangeState final:
 public FBModuleProcSingleExchangeState
 {
   float portaSectionAmpAttack = {};
   float portaSectionAmpRelease = {};
-
-  // i dont dare to put not aligned stuff in here anymore because of ARM mac
-  int boolThisVoiceIsSubSectionStart = {};
-  int boolOtherVoiceSubSectionTookOver = {};
+  bool thisVoiceIsSubSectionStart = {};
+  bool otherVoiceSubSectionTookOver = {};
 };
 
 class alignas(FBSIMDAlign) FFEnvDSPState final

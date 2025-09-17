@@ -268,7 +268,7 @@ FFPlugProcessor::ProcessPostVoice(
   }
 
   auto& exchangeDSP = exchangeToGUI->global.gMix[0];
-  exchangeDSP.boolIsActive = 1;
+  exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.global.gMix[0];
   exchangeParams.acc.bal[0] = balNormModulated.Last();
