@@ -399,7 +399,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   auto& exchangeDSP = *FFSelectDualState<Global>(
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gLFO[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vLFO[state.moduleSlot]; });
-  exchangeDSP.boolIsActive = 1;
+  exchangeDSP.active = true;
   exchangeDSP.lengthSamples[FFLFOBlockCount] = 0;
   exchangeDSP.positionSamples[FFLFOBlockCount] = 0;
   for (int i = 0; i < FFLFOBlockCount; i++)

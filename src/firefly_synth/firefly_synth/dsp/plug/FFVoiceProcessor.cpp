@@ -201,7 +201,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].vMix[0];
-  exchangeDSP.boolIsActive = 1;
+  exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
   exchangeParams.acc.bal[0][voice] = balNormModulated.Last();
