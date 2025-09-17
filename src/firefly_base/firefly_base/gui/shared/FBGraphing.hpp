@@ -182,16 +182,16 @@ FBRenderModuleGraph(FBModuleGraphRenderData<Derived>& renderData, int graphIndex
     {
       auto moduleExchange = renderData.globalExchangeSelector(
         exchangeState, moduleProcState->moduleSlot, graphIndex);
-      moduleProcState->anyExchangeActive |= moduleExchange->active;
-      if (moduleExchange->active)
+      moduleProcState->anyExchangeActive |= (moduleExchange->boolIsActive != 0);
+      if (moduleExchange->boolIsActive != 0)
         maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(graphIndex));
     }
     else for (int v = 0; v < FBMaxVoices; v++)
     {
       auto moduleExchange = renderData.voiceExchangeSelector(
         exchangeState, v, moduleProcState->moduleSlot, graphIndex);
-      moduleProcState->anyExchangeActive |= moduleExchange->active;
-      if (moduleExchange->active)
+      moduleProcState->anyExchangeActive |= (moduleExchange->boolIsActive != 0);
+      if (moduleExchange->boolIsActive != 0)
         maxDspSampleCount = std::max(maxDspSampleCount, moduleExchange->LengthSamples(graphIndex));
     }
   }
