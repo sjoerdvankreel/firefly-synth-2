@@ -29,7 +29,6 @@ FBGraphRenderState* state, bool exchange, int exchangeVoice)
 
   auto* moduleProcState = state->ModuleProcState();
   int moduleSlot = moduleProcState->moduleSlot;
-  FFEnvExchangeState const* exchangeFromDSP = nullptr;
   int staticModuleIndex = (int)FFModuleType::Env;
   int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ staticModuleIndex, moduleSlot });
   auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
