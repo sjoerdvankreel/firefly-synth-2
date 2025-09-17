@@ -132,7 +132,7 @@ EnvGraphRenderData::DoProcessIndicators(
   for (int i = 0; i < stageLengthsAudio.size(); i++)
   {
     if (exchangeFromDSP != nullptr &&
-      exchangeFromDSP->thisVoiceIsSubSectionStart &&
+      (exchangeFromDSP->boolThisVoiceIsSubSectionStart != 0) &&
       i == 0 &&
       state->ModuleProcState()->moduleSlot == FFAmpEnvSlot)
       stageLengthsAudio[i] = (int)std::round((float)stageLengthsAudio[i] * exchangeFromDSP->portaSectionAmpAttack);

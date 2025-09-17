@@ -375,7 +375,7 @@ FFEchoProcessor<Global>::Process(
   auto& exchangeDSP = *FFSelectDualState<Global>(
     [exchangeToGUI]() { return &exchangeToGUI->global.gEcho[0]; },
     [exchangeToGUI, voice]() { return &exchangeToGUI->voice[voice].vEcho[0]; });
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEchoPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = *FFSelectDualState<Global>(

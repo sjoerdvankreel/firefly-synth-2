@@ -62,8 +62,8 @@ FFEnvProcessor::BeginVoice(
   {
     _portaSectionAmpAttackNorm = exchangeFromDSP->portaSectionAmpAttack;
     _portaSectionAmpReleaseNorm = exchangeFromDSP->portaSectionAmpRelease;
-    _thisVoiceIsSubSectionStart = exchangeFromDSP->thisVoiceIsSubSectionStart;
-    _otherVoiceSubSectionTookOver = exchangeFromDSP->otherVoiceSubSectionTookOver;
+    _thisVoiceIsSubSectionStart = exchangeFromDSP->boolThisVoiceIsSubSectionStart != 0;
+    _otherVoiceSubSectionTookOver = exchangeFromDSP->boolOtherVoiceSubSectionTookOver != 0;
   }
 
   _sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, syncNorm);
@@ -157,9 +157,9 @@ FFEnvProcessor::Process(
   else if (exchangeFromDSP != nullptr)
   {
     // ugly & debuggable
-    if (exchangeFromDSP->thisVoiceIsSubSectionStart)
+    if (exchangeFromDSP->boolThisVoiceIsSubSectionStart != 0)
       _thisVoiceIsSubSectionStart = true;
-    if (exchangeFromDSP->otherVoiceSubSectionTookOver)
+    if (exchangeFromDSP->boolOtherVoiceSubSectionTookOver != 0)
       _otherVoiceSubSectionTookOver = true;
   }
 
@@ -306,13 +306,13 @@ FFEnvProcessor::Process(
     return processed;
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].env[state.moduleSlot];
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
   exchangeDSP.lengthSamples = _lengthSamples;
   exchangeDSP.positionSamples = _positionSamples;
   exchangeDSP.portaSectionAmpAttack = _portaSectionAmpAttackNorm;
   exchangeDSP.portaSectionAmpRelease = _portaSectionAmpReleaseNorm;
-  exchangeDSP.thisVoiceIsSubSectionStart = _thisVoiceIsSubSectionStart;
-  exchangeDSP.otherVoiceSubSectionTookOver = _otherVoiceSubSectionTookOver;
+  exchangeDSP.boolThisVoiceIsSubSectionStart = _thisVoiceIsSubSectionStart? 1: 0;
+  exchangeDSP.boolOtherVoiceSubSectionTookOver = _otherVoiceSubSectionTookOver ? 1 : 0;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
   for (int i = 0; i < FFEnvStageCount; i++)
