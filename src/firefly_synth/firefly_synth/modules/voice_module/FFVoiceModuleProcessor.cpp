@@ -60,7 +60,7 @@ FFVoiceModuleProcessor::BeginVoice(
       // Since the takeover mechanism in the envelope is a simple fade out, should be ok.
       int myChannel = state.voice->event.note.channel;
       FBVoiceManager const* vManager = state.input->voiceManager;
-      int tookOverThisKey = (int)std::round(previousMidiKeyUntuned * 127.0f);
+      int tookOverThisKey = (int)std::round(previousMidiKeyUntuned);
       for (int v = 0; v < FBMaxVoices; v++)
         if (v != voice)
           if (vManager->IsActive(v))

@@ -18,6 +18,7 @@ TODOLIST for alpha-16
 [x] matrix test clean/clear new controls
 [x] implement voice target for pitchbend in voice, not osci
 [ ] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
+[ ] env repeat paints not good
 [ ] make porta lead demo
 [ ] 3x on note random as a cheap mod source, uni + normal
 [ ] special param stuff maybe not using params but return struct from virtual?
