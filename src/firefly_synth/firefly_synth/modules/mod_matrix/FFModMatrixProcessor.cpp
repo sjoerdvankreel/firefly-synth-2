@@ -285,7 +285,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
         FBBatch<float> sourceHigh = topo.NormalizedToIdentityFast((int)FFModMatrixParam::SourceHigh,
           FFSelectDualProcAccParamNormalized<Global>(sourceHighNorm[i], voice), s);
         FBBatch<float> sourceLowHigh = xsimd::clip(sourceBuffer->Load(s), sourceLow, sourceHigh);
-        FBBoolBatch highMinLowIsZero = (sourceHigh - sourceLow) == FBBatch<float>(0.0f);
+        FBBoolBatch<float> highMinLowIsZero = (sourceHigh - sourceLow) == FBBatch<float>(0.0f);
         FBBatch<float> sourceLowHighOut = xsimd::clip((sourceLowHigh - sourceLow) / (sourceHigh - sourceLow), FBBatch<float>(0.0f), FBBatch<float>(1.0f));
         sourceOutBuffer.Store(s, xsimd::select(highMinLowIsZero, sourceLowHigh, sourceLowHighOut));
       }
