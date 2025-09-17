@@ -1,13 +1,14 @@
 #pragma once
 
+#include <firefly_base/base/shared/FBSIMD.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/voice/FBVoiceManager.hpp>
 
 #include <array>
 
-struct FBModuleProcExchangeStateBase
+struct alignas(FBSIMDAlign) FBModuleProcExchangeStateBase
 {
-  bool active = {};
+  int boolIsActive = 0; // i dont dare to put not aligned stuff in here anymore because of ARM mac
   virtual ~FBModuleProcExchangeStateBase() {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FBModuleProcExchangeStateBase);
 
@@ -16,7 +17,7 @@ struct FBModuleProcExchangeStateBase
   virtual float PositionNormalized(int graphIndex) const = 0;
 };
 
-struct FBModuleProcSingleExchangeState:
+struct alignas(FBSIMDAlign) FBModuleProcSingleExchangeState:
 public FBModuleProcExchangeStateBase
 {
   int lengthSamples = {};
@@ -27,13 +28,13 @@ public FBModuleProcExchangeStateBase
   int LengthSamples(int /*graphIndex*/) const override 
   { return lengthSamples; }
   bool ShouldGraph(int /*graphIndex*/) const override 
-  { return active && positionSamples < lengthSamples; }
+  { return boolIsActive != 0 && positionSamples < lengthSamples; }
   float PositionNormalized(int /*graphIndex*/) const override 
   { return positionSamples / static_cast<float>(lengthSamples); }
 };
 
 template <int N>
-struct FBModuleProcMultiExchangeState:
+struct alignas(FBSIMDAlign) FBModuleProcMultiExchangeState:
 public FBModuleProcExchangeStateBase
 {
   std::array<int, N> lengthSamples = {};
@@ -44,7 +45,7 @@ public FBModuleProcExchangeStateBase
   int LengthSamples(int graphIndex) const override
   { return lengthSamples[graphIndex]; }
   bool ShouldGraph(int graphIndex) const override 
-  { return active && positionSamples[graphIndex] < lengthSamples[graphIndex]; }
+  { return boolIsActive != 0 && positionSamples[graphIndex] < lengthSamples[graphIndex]; }
   float PositionNormalized(int graphIndex) const override 
   { return positionSamples[graphIndex] / static_cast<float>(lengthSamples[graphIndex]); }
 };
