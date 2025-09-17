@@ -177,7 +177,7 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Much like FF1, select add/mul/stack + bipolar add/mul/stack.
 * New Scale parameter which allows the mod amount to be controlled by an additional CV source.
 * Single matrix for audio and cv. Env and LFO are now processed in lock-step, so env can modulate LFO and the other way around.
-* Env/VLFO/GLFO/Master Aux inputs plus MIDI CC, Pitch Bend, Channel Pressure.
+* Env/VLFO/GLFO/Master Aux inputs plus MIDI CC, Pitch Bend, Channel Pressure, On-Note-Random and global last/low/high key/velocity.
 
 ## Echo
 * Combined multitap delay / feedback delay / reverb.
@@ -193,6 +193,15 @@ continuous morphing white to pink to brown noise, looping envelopes, and more to
 * Note: reso filters for the feedback delay are placed INSIDE the feedback loop! So that's feedback-filters themselves inside the feedback path of the delay line.
 These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 1000%. But if you get them to sustain at just the sweet spot, you can get some great results.
 * (F)Re(e)verb with modulatable dry/wet mix, room size, damping, L/R crossover, all-pass filter control and resonant LP/HP filters.
+
+## Master module
+* Modwheel
+* Pitchbend/range/target (off/voice/single osci)
+* Host automation/modulation/midi smoothing control
+
+## Voice control module
+** All-osci coarse/fine + modulators
+** Portamenta with time/tempo sync, constant pitch/constant time, length control, and subsection envelope attack/release control
 
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
