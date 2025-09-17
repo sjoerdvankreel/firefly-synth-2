@@ -18,6 +18,7 @@ public FBModuleProcSingleExchangeState
 {
   float portaSectionAmpAttack = {};
   float portaSectionAmpRelease = {};
+  bool thisVoiceIsSubSectionStart = {};
   bool otherVoiceSubSectionTookOver = {};
 };
 

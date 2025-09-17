@@ -38,22 +38,23 @@ FFVoiceModuleProcessor::BeginVoice(
   auto portaType = topo.NormalizedToListFast<FFVoiceModulePortaType>(FFVoiceModuleParam::PortaType, portaTypeNorm);
   auto portaMode = topo.NormalizedToListFast<FFVoiceModulePortaMode>(FFVoiceModuleParam::PortaMode, portaModeNorm);
 
-  procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = 1.0f;
-  procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = 1.0f;
+  procState->dsp.voice[voice].voiceModule.thisVoiceIsSubSectionStart = false;
   procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver = false;
+  procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = _voiceStartSnapshotNorm.portaSectionAmpAttack[0];
+  procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = _voiceStartSnapshotNorm.portaSectionAmpRelease[0];
 
   float portaPitchStart;
-  bool isPortaSectionStart = false;
   if (previousMidiKeyUntuned < 0.0f
     || portaType == FFVoiceModulePortaType::Off
     || portaMode == FFVoiceModulePortaMode::Section && !anyNoteWasOnAlready)
     portaPitchStart = (float)state.voice->event.note.keyUntuned;
   else
   {
-    isPortaSectionStart = true;
     portaPitchStart = previousMidiKeyUntuned;
     if (portaMode == FFVoiceModulePortaMode::Section && anyNoteWasOnAlready)
     {
+      procState->dsp.voice[voice].voiceModule.thisVoiceIsSubSectionStart = true;
+
       // Now we need to figure out which voice we took over.
       // It won't be sample accurate as this is applied at block start,
       // but at least accurate to within internal block size (currently 16).
@@ -70,15 +71,6 @@ FFVoiceModuleProcessor::BeginVoice(
               procState->dsp.voice[v].voiceModule.otherVoiceSubSectionTookOver = true;
           }
     }
-  }
-
-  // These are used as multipliers for stage length in the amp envelope.
-  if (isPortaSectionStart)
-  {
-    procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack = topo.NormalizedToIdentityFast(
-      (int)FFVoiceModuleParam::PortaSectionAmpAttack, _voiceStartSnapshotNorm.portaSectionAmpAttack[0]);
-    procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease = topo.NormalizedToIdentityFast(
-      (int)FFVoiceModuleParam::PortaSectionAmpRelease, _voiceStartSnapshotNorm.portaSectionAmpRelease[0]);
   }
 
   if (portaSync)

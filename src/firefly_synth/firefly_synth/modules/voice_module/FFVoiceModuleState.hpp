@@ -22,6 +22,7 @@ public:
   FFVoiceModuleDSPState() : processor(std::make_unique<FFVoiceModuleProcessor>()) {}
   float portaSectionAmpAttack = {};
   float portaSectionAmpRelease = {};
+  bool thisVoiceIsSubSectionStart = {};
   bool otherVoiceSubSectionTookOver = {}; // need this to apply release multiplier
   FBSArray<float, FBFixedBlockSamples> pitchOffsetInSemis = {};
 };

@@ -34,6 +34,8 @@ class FFEnvProcessor final
 
   float _portaSectionAmpAttackNorm = 1.0f;
   float _portaSectionAmpReleaseNorm = 1.0f;
+  bool _thisVoiceIsSubSectionStart = false;
+  bool _otherVoiceSubSectionTookOver = false;
   FFEnvVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
   int _smoothPosition = {};

@@ -47,17 +47,23 @@ FFEnvProcessor::BeginVoice(
   // last subsection in a portamento section).
   _portaSectionAmpAttackNorm = 1.0f;
   _portaSectionAmpReleaseNorm = 1.0f;
+  _thisVoiceIsSubSectionStart = false;
+  _otherVoiceSubSectionTookOver = false;
 
   // Nullptr + graph means we're drawing primary.
   if (!graph)
   {
     _portaSectionAmpAttackNorm = procState->dsp.voice[voice].voiceModule.portaSectionAmpAttack;
     _portaSectionAmpReleaseNorm = procState->dsp.voice[voice].voiceModule.portaSectionAmpRelease;
+    _thisVoiceIsSubSectionStart = procState->dsp.voice[voice].voiceModule.thisVoiceIsSubSectionStart;
+    _otherVoiceSubSectionTookOver = procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver;
   }
   else if (exchangeFromDSP != nullptr)
   {
     _portaSectionAmpAttackNorm = exchangeFromDSP->portaSectionAmpAttack;
     _portaSectionAmpReleaseNorm = exchangeFromDSP->portaSectionAmpRelease;
+    _thisVoiceIsSubSectionStart = exchangeFromDSP->thisVoiceIsSubSectionStart;
+    _otherVoiceSubSectionTookOver = exchangeFromDSP->otherVoiceSubSectionTookOver;
   }
 
   _sync = topo.NormalizedToBoolFast(FFEnvParam::Sync, syncNorm);
@@ -75,7 +81,7 @@ FFEnvProcessor::BeginVoice(
       float stageSamples = topo.NormalizedToBarsFloatSamplesFast(
         FFEnvParam::StageBars, stageBarsNorm[i].Voice()[voice],
         state.input->sampleRate, state.input->bpm);
-      if (state.moduleSlot == FFAmpEnvSlot && i == 0)
+      if (state.moduleSlot == FFAmpEnvSlot && i == 0 && _thisVoiceIsSubSectionStart)
         stageSamples *= _portaSectionAmpAttackNorm;
       _stageSamples[i] = static_cast<int>(std::round(stageSamples));
     }
@@ -89,7 +95,7 @@ FFEnvProcessor::BeginVoice(
       _voiceStartSnapshotNorm.stageTime[i] = stageTimeNorm[i].Voice()[voice].CV().Get(state.voice->offsetInBlock);
       float stageSamples = topo.NormalizedToLinearTimeFloatSamplesFast(
         FFEnvParam::StageTime, _voiceStartSnapshotNorm.stageTime[i], state.input->sampleRate);
-      if (state.moduleSlot == FFAmpEnvSlot && i == 0)
+      if (state.moduleSlot == FFAmpEnvSlot && i == 0 && _thisVoiceIsSubSectionStart)
         stageSamples *= _portaSectionAmpAttackNorm;
       _stageSamples[i] = static_cast<int>(std::round(stageSamples));
     }
@@ -141,11 +147,18 @@ FFEnvProcessor::Process(
   auto const& stageLevel = procParams.acc.stageLevel;
   auto const& stageSlope = procParams.acc.stageSlope;
   
-  bool otherVoiceSubSectionTookOver = false;
+  _thisVoiceIsSubSectionStart = false;
+  _otherVoiceSubSectionTookOver = false;
   if (!graph)
-    otherVoiceSubSectionTookOver = procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver;
-  else if (exchangeFromDSP != nullptr && exchangeFromDSP->otherVoiceSubSectionTookOver)
-    otherVoiceSubSectionTookOver = true;
+  {
+    _thisVoiceIsSubSectionStart = procState->dsp.voice[voice].voiceModule.thisVoiceIsSubSectionStart;
+    _otherVoiceSubSectionTookOver = procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver;
+  }
+  else if (exchangeFromDSP != nullptr)
+  {
+    _thisVoiceIsSubSectionStart = exchangeFromDSP->thisVoiceIsSubSectionStart;
+    _otherVoiceSubSectionTookOver = exchangeFromDSP->otherVoiceSubSectionTookOver;
+  }
 
   if (_type == FFEnvType::Off)
   {
@@ -211,7 +224,7 @@ FFEnvProcessor::Process(
       // I thought about linear but that requires 2 control parameters:
       // where to start fade, and how long should it last.
       // Instead, log fade out gives (1, 0, 0, 0, ...) to (1, 1, 1, 1 ... 0) with linear in between.
-      if (otherVoiceSubSectionTookOver && state.moduleSlot == FFAmpEnvSlot && _released && _positionSamples >= _lengthSamplesUpToRelease)
+      if (_otherVoiceSubSectionTookOver && state.moduleSlot == FFAmpEnvSlot && _released && _positionSamples >= _lengthSamplesUpToRelease)
       {
         int totalSamplesAfterRelease = _lengthSamples - _lengthSamplesUpToRelease;
         int currentSamplesAfterRelease = _positionSamples - _lengthSamplesUpToRelease;
@@ -292,7 +305,8 @@ FFEnvProcessor::Process(
   exchangeDSP.positionSamples = _positionSamples;
   exchangeDSP.portaSectionAmpAttack = _portaSectionAmpAttackNorm;
   exchangeDSP.portaSectionAmpRelease = _portaSectionAmpReleaseNorm;
-  exchangeDSP.otherVoiceSubSectionTookOver = otherVoiceSubSectionTookOver;
+  exchangeDSP.thisVoiceIsSubSectionStart = _thisVoiceIsSubSectionStart;
+  exchangeDSP.otherVoiceSubSectionTookOver = _otherVoiceSubSectionTookOver;
 
   auto& exchangeParams = exchangeToGUI->param.voice.env[state.moduleSlot];
   for (int i = 0; i < FFEnvStageCount; i++)
