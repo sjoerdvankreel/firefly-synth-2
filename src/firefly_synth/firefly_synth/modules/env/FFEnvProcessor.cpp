@@ -227,13 +227,16 @@ FFEnvProcessor::Process(
       // I thought about linear but that requires 2 control parameters:
       // where to start fade, and how long should it last.
       // Instead, log fade out gives (1, 0, 0, 0, ...) to (1, 1, 1, 1 ... 0) with linear in between.
-      if (_otherVoiceSubSectionTookOver && state.moduleSlot == FFAmpEnvSlot && _released && _positionSamples >= _lengthSamplesUpToRelease)
+      if (_otherVoiceSubSectionTookOver && 
+        state.moduleSlot == FFAmpEnvSlot && 
+        _positionSamples >= _lengthSamplesUpToRelease &&
+        (_released || graph))
       {
         int totalSamplesAfterRelease = _lengthSamples - _lengthSamplesUpToRelease;
         int currentSamplesAfterRelease = _positionSamples - _lengthSamplesUpToRelease;
         float positionPortaAmpRelease = std::clamp(currentSamplesAfterRelease / (float)totalSamplesAfterRelease, 0.0f, 1.0f);
         float portaAmpReleaseMultiplier = std::pow(positionPortaAmpRelease, std::log(0.001f + (_portaSectionAmpReleaseNorm * 0.999f)) * invLogHalf);
-        _lastOverall *= portaAmpReleaseMultiplier;
+        _lastOverall = portaAmpReleaseMultiplier;
       }
 
       output.Set(s, _smoother.Next(_lastOverall));
