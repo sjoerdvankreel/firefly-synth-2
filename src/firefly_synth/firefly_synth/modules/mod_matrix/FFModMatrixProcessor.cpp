@@ -210,7 +210,7 @@ FFModMatrixProcessor<Global>::ApplyModulation(
     auto& exchangeDSP = *FFSelectDualState<Global>(
       [exchangeToGUI, &state]() { return &exchangeToGUI->global.gMatrix[state.moduleSlot]; },
       [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vMatrix[state.moduleSlot]; });
-    exchangeDSP.active = true;
+    exchangeDSP.boolIsActive = 1;
   }
 
   _modSourceIsReady[currentModule.index][currentModule.slot] = 1;
