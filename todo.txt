@@ -1,5 +1,6 @@
 TODOLIST for alpha-17
 [ ] global unison
+[ ] build without alignment warnings
 
 TODOLIST for alpha-18
 [ ] make a dedicated tuning section with some options
