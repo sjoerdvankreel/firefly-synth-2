@@ -200,8 +200,8 @@ These go out of bounds reasonably fast, so i soft-clip the feedback path at +/- 
 * Host automation/modulation/midi smoothing control
 
 ## Voice control module
-** All-osci coarse/fine + modulators
-** Portamenta with time/tempo sync, constant pitch/constant time, length control, and subsection envelope attack/release control
+* All-osci coarse/fine + modulators
+* Portamenta with time/tempo sync, constant pitch/constant time, length control, and subsection envelope attack/release control
 
 # Build it
 Git clone recursive, build scripts are in /scripts, build_windows|linux|mac.bat|sh Debug|RelWithDebInfo|Release (0|1) (warn as error) (0|1) (enable asan).
