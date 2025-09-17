@@ -67,7 +67,7 @@ FFVoiceModuleProcessor::BeginVoice(
           {
             auto const& thatEventNote = vManager->Voices()[v].event.note;
             if (thatEventNote.channel == myChannel && thatEventNote.keyUntuned == tookOverThisKey)
-              procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver = true;
+              procState->dsp.voice[v].voiceModule.otherVoiceSubSectionTookOver = true;
           }
     }
   }
