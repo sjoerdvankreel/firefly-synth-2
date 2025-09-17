@@ -235,8 +235,8 @@ FFEnvProcessor::Process(
         int totalSamplesAfterRelease = _lengthSamples - _lengthSamplesUpToRelease;
         int currentSamplesAfterRelease = _positionSamples - _lengthSamplesUpToRelease;
         float positionPortaAmpRelease = std::clamp(currentSamplesAfterRelease / (float)totalSamplesAfterRelease, 0.0f, 1.0f);
-        float portaAmpReleaseMultiplier = std::pow(positionPortaAmpRelease, std::log(0.001f + (_portaSectionAmpReleaseNorm * 0.999f)) * invLogHalf);
-        _lastOverall = portaAmpReleaseMultiplier;
+        float portaAmpReleaseMultiplier = std::pow(1.0f - positionPortaAmpRelease, std::log(0.00001f + (_portaSectionAmpReleaseNorm * 0.99999f)) * invLogHalf);
+        _lastOverall *= portaAmpReleaseMultiplier;
       }
 
       output.Set(s, _smoother.Next(_lastOverall));
