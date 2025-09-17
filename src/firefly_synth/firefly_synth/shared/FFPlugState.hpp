@@ -39,7 +39,7 @@ struct FFGUIState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };
 
-struct alignas(FBSIMDAlign) FFGlobalExchangeState final
+struct FFGlobalExchangeState final
 {
   std::array<FFLFOExchangeState, FFLFOCount> gLFO = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMix = {};
@@ -51,7 +51,7 @@ struct alignas(FBSIMDAlign) FFGlobalExchangeState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
 
-struct alignas(FBSIMDAlign) FFVoiceExchangeState final
+struct FFVoiceExchangeState final
 {
   std::array<FFEnvExchangeState, FFEnvCount> env = {};
   std::array<FFLFOExchangeState, FFLFOCount> vLFO = {};
