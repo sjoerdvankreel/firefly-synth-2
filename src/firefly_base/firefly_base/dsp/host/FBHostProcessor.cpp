@@ -124,13 +124,13 @@ FBHostProcessor::ProcessHost(
     if (!static_.voice)
     {
       if (_exchangeState->Modules()[m] != nullptr)
-        _exchangeState->Modules()[m]->Global()->active = false;
+        _exchangeState->Modules()[m]->Global()->boolIsActive = 0;
     }
     else
     {
       if (_exchangeState->Modules()[m] != nullptr)
         for (int v = 0; v < FBMaxVoices; v++)
-        _exchangeState->Modules()[m]->Voice()[v]->active = false;
+        _exchangeState->Modules()[m]->Voice()[v]->boolIsActive = 0;
     }
   }
 

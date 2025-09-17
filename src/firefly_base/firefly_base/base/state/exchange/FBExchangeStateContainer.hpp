@@ -14,7 +14,7 @@
 struct FBRuntimeTopo;
 struct FBRuntimeParam;
 
-struct FBHostExchangeState final
+struct alignas(FBSIMDAlign) FBHostExchangeState final
 {
   float bpm = {};
   float sampleRate = {};
