@@ -214,8 +214,7 @@ FBVST3AudioEffect::connect(IConnectionPoint* other)
       // this stuff totally breaks down on MacOS. The 32 magic number is not AFAIK
       // documented anywhere except being mentioned in the sample code at 
       // https://steinbergmedia.github.io/vst3_dev_portal/pages/Technical+Documentation/Data+Exchange/Index.html.
-      // Also don't try to increase it beyond 32 - took another fun evening.
-      config.alignment = 32;
+      config.alignment = std::max(32, _topo->static_->exchangeStateAlignment);
       return true; };
     _exchangeHandler = std::make_unique<DataExchangeHandler>(this, callback);
     _exchangeHandler->onConnect(other, getHostContext());
