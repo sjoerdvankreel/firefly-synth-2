@@ -143,7 +143,7 @@ struct FFScalarState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
 };
 
-struct alignas(FBSIMDAlign) FFExchangeParamState final
+struct FFExchangeParamState final
 {
   typedef std::array<float, FBMaxVoices> ScalarPerVoice;
   FB_NOCOPY_NOMOVE_DEFCTOR(FFExchangeParamState);
@@ -151,9 +151,7 @@ struct alignas(FBSIMDAlign) FFExchangeParamState final
   FFVoiceParamState<ScalarPerVoice, ScalarPerVoice> voice = {};
 };
 
-// 32 magic number comes from the VST3 SDK, not really documented anywhere
-// i wonder how many times this crap is gonna bite me again
-struct alignas(32) FFExchangeState final
+struct FFExchangeState final
 {
   FBHostExchangeState host = {};
   FFExchangeParamState param = {};
