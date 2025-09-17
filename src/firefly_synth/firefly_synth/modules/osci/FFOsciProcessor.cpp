@@ -288,7 +288,7 @@ FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
   }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
-  exchangeDSP.boolIsActive = 1;
+  exchangeDSP.active = true;
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];

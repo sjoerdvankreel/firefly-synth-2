@@ -143,7 +143,7 @@ FFVoiceModuleProcessor::Process(FBModuleProcState& state)
     return;
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].voiceModule[0];
-  exchangeDSP.boolIsActive = 1;
+  exchangeDSP.active = true;
 
   auto& exchangeParams = exchangeToGUI->param.voice.voiceModule[0];
   exchangeParams.acc.coarse[0][voice] = coarseNormModulated.Last();
