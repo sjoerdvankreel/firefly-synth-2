@@ -20,12 +20,21 @@ TODOLIST for alpha-16
 [x] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
 [x] env repeat paints not good
 [x] 3x on note random as a cheap mod source, uni + normal
-[ ] make porta lead demo
 
 TODOLIST for alpha-17
 [ ] global unison
 
 TODOLIST for alpha-18
+[ ] make a dedicated tuning section with some options
+[ ] need per-instance params for microtuning
+[ ] note filtering
+[ ] tune the filters
+[ ] figure out all places where is used midi note
+[ ] MTS into master: off / note / continuous 
+[ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
+[ ] filters should track the actual pitch when possible (string osci)
+
+TODOLIST for alpha-19
 [ ] highlight not default
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
@@ -35,19 +44,12 @@ TODOLIST for alpha-18
 [ ] show visual clue if knob is being modulated
 [ ] show modulation amount in terms of the mod target unit for matrix and easy access
 
-TODOLIST for alpha-19
-[ ] make a normalize button
-[ ] make a dedicated tuning section with some options
-[ ] need per-instance params for microtuning
-[ ] note filtering
-[ ] make a percussion demo
-[ ] tune the filters
-[ ] figure out all places where is used midi note
-[ ] MTS into master: off / note / continuous 
-[ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
-[ ] figure out bitwig dataexchange on Linux
-[ ] filters should track the actual pitch when possible (string osci)
+TODOLIST for alpha-20
+[ ] theme the gui
 
+figure out bitwig dataexchange on Linux
+make a percussion demo
+make porta lead demo
 make a tune before release
 pre/post VMIX echo or not ? => NOT, bc VMIX will be on global uni subvoice level -- or will it ?
 pck support
