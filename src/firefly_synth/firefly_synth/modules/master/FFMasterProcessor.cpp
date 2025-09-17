@@ -47,7 +47,7 @@ FFMasterProcessor::Process(FBModuleProcState& state)
     return;
 
   auto& exchangeDSP = exchangeToGUI->global.master[0];
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
   
   auto& exchangeParams = exchangeToGUI->param.global.master[0];
   exchangeParams.acc.modWheel[0] = params.acc.modWheel[0].Global().Last();
