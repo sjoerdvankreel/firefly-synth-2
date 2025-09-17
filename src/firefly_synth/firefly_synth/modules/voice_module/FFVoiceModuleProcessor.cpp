@@ -57,7 +57,7 @@ FFVoiceModuleProcessor::BeginVoice(
       // Now we need to figure out which voice we took over.
       // It won't be sample accurate as this is applied at block start,
       // but at least accurate to within internal block size (currently 16).
-      // Since the takeover mechanism in the envelope is a linear fade out, should be ok.
+      // Since the takeover mechanism in the envelope is a simple fade out, should be ok.
       int myChannel = state.voice->event.note.channel;
       FBVoiceManager const* vManager = state.input->voiceManager;
       int tookOverThisKey = (int)std::round(previousMidiKeyUntuned * 127.0f);

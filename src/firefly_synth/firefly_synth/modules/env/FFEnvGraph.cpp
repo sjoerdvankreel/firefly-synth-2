@@ -20,6 +20,22 @@ public FBModuleGraphRenderData<EnvGraphRenderData>
   void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
+static FFEnvExchangeState const*
+GetEnvExchangeState(
+FBGraphRenderState* state, bool exchange, int exchangeVoice)
+{
+  if (!exchange)
+    return nullptr;
+
+  auto* moduleProcState = state->ModuleProcState();
+  int moduleSlot = moduleProcState->moduleSlot;
+  FFEnvExchangeState const* exchangeFromDSP = nullptr;
+  int staticModuleIndex = (int)FFModuleType::Env;
+  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ staticModuleIndex, moduleSlot });
+  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
+  return &dynamic_cast<FFEnvExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+}
+
 static void
 StageLengthAudioSamples(
   FBGraphRenderState const* state, 
@@ -75,36 +91,31 @@ PlotParams(FBModuleGraphComponentData const* data, int /*graphIndex*/)
   return result;
 }
 
-int 
-EnvGraphRenderData::DoProcess(
-  FBGraphRenderState* state, int /*graphIndex*/,
-  bool /*exchange*/, int /*exchangeVoice*/)
-{ 
-  auto* moduleProcState = state->ModuleProcState();
-  return GetProcessor(*moduleProcState).Process(*moduleProcState, -1);
-}
-
-void 
-EnvGraphRenderData::DoBeginVoiceOrBlock(
-  FBGraphRenderState* state, int /*graphIndex*/,
-  bool exchange, int exchangeVoice)
-{ 
-  auto* moduleProcState = state->ModuleProcState();
-  int moduleSlot = moduleProcState->moduleSlot;
-  FFEnvExchangeState const* exchangeFromDSP = nullptr;
-  int staticModuleIndex = (int)FFModuleType::Env;
-  int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ staticModuleIndex, moduleSlot });
-  auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
-  if (exchange)
-    exchangeFromDSP = &dynamic_cast<FFEnvExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
-  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true);
-}
-
 FFEnvProcessor&
 EnvGraphRenderData::GetProcessor(FBModuleProcState& state)
 {
   auto* procState = state.ProcAs<FFProcState>();
   return *procState->dsp.voice[state.voice->slot].env[state.moduleSlot].processor;
+}
+
+void
+EnvGraphRenderData::DoBeginVoiceOrBlock(
+  FBGraphRenderState* state, int /*graphIndex*/,
+  bool exchange, int exchangeVoice)
+{
+  auto* moduleProcState = state->ModuleProcState();
+  auto const* exchangeFromDSP = GetEnvExchangeState(state, exchange, exchangeVoice);
+  GetProcessor(*moduleProcState).BeginVoice(*moduleProcState, exchangeFromDSP, true);
+}
+
+int 
+EnvGraphRenderData::DoProcess(
+  FBGraphRenderState* state, int /*graphIndex*/,
+  bool exchange, int exchangeVoice)
+{ 
+  auto* moduleProcState = state->ModuleProcState();
+  auto const* exchangeFromDSP = GetEnvExchangeState(state, exchange, exchangeVoice);
+  return GetProcessor(*moduleProcState).Process(*moduleProcState, exchangeFromDSP, true, -1);
 }
 
 void

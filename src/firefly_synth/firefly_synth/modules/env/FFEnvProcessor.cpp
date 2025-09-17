@@ -143,7 +143,7 @@ FFEnvProcessor::Process(
   
   bool otherVoiceSubSectionTookOver = false;
   if (!graph)
-    procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver;
+    otherVoiceSubSectionTookOver = procState->dsp.voice[voice].voiceModule.otherVoiceSubSectionTookOver;
   else if (exchangeFromDSP != nullptr)
     otherVoiceSubSectionTookOver = exchangeFromDSP->otherVoiceSubSectionTookOver;
 
