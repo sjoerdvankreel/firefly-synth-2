@@ -70,7 +70,7 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
     return result;
 
   if (paramExchange.IsGlobal())
-    if (moduleExchange->Global()->active)
+    if (moduleExchange->Global()->boolIsActive != 0)
     {
       result.active = true;
       result.minValue = std::min(result.minValue, *paramExchange.Global());
@@ -78,7 +78,7 @@ FBExchangeStateContainer::GetParamActiveState(FBRuntimeParam const* param) const
     }
   if (!paramExchange.IsGlobal())
     for (int v = 0; v < FBMaxVoices; v++)
-      if (moduleExchange->Voice()[v]->active)
+      if (moduleExchange->Voice()[v]->boolIsActive != 0)
       {
         result.active = true;
         result.minValue = std::min(result.minValue, paramExchange.Voice()[v]);
