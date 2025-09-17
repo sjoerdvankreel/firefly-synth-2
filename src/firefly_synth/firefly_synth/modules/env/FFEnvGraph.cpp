@@ -15,7 +15,7 @@ public FBModuleGraphRenderData<EnvGraphRenderData>
   FFEnvProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoProcessIndicators(int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
+  void DoProcessIndicators(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
   void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
@@ -119,15 +119,25 @@ EnvGraphRenderData::DoProcess(
 
 void
 EnvGraphRenderData::DoProcessIndicators(
+  FBGraphRenderState* state, 
   int /*graphIndex*/, bool exchange,
   int exchangeVoice, FBModuleGraphPoints& points)
 {
   int smoothLengthAudio;
   int totalSamplesAudio = 0;
   std::vector<int> stageLengthsAudio;
+  auto const* exchangeFromDSP = GetEnvExchangeState(state, exchange, exchangeVoice);
+
   StageLengthAudioSamples(graphData->renderState, exchange, exchangeVoice, stageLengthsAudio, smoothLengthAudio);
   for (int i = 0; i < stageLengthsAudio.size(); i++)
+  {
+    if (exchangeFromDSP != nullptr &&
+      exchangeFromDSP->thisVoiceIsSubSectionStart &&
+      i == 0 &&
+      state->ModuleProcState()->moduleSlot == FFAmpEnvSlot)
+      stageLengthsAudio[i] = (int)std::round((float)stageLengthsAudio[i] * exchangeFromDSP->portaSectionAmpAttack);
     totalSamplesAudio += stageLengthsAudio[i];
+  }
   totalSamplesAudio += smoothLengthAudio;
   float thisSamplesGUI = static_cast<float>(points.l.size());
 
