@@ -1,26 +1,3 @@
-TODOLIST for alpha-16
-
-[x] perf fix clap exchange
-[x] less matrix slots (break)
-[x] insert/delete env stage
-[x] assert automation timing
-[x] param index/tag tooltip only for debug
-[x] voice start : mark in base, not derive it (for tooltips etc since it is now acc)
-[x] allow modulate env stage lengths on voice start => any per-voice-start-automatable
-[x] "raw source/scale/tgt"->"source/scale/tgt"
-[x] bipolar mod amt ==> into scale/source
-[x] scale out of the matrix?, lo-hi or min-max into it
-[x] waveshaper-like graph source / scale / target
-[x] minmax in the modmatrix 
-[x] refix all behind-the-scenes mod sources and targets
-[x] modmatrix +-up/down
-[x] matrix insert item
-[x] matrix test clean/clear new controls
-[x] implement voice target for pitchbend in voice, not osci
-[x] portamento start/end section multiplier => this needs the per-voice-start-modulation feature
-[x] env repeat paints not good
-[x] 3x on note random as a cheap mod source, uni + normal
-
 TODOLIST for alpha-17
 [ ] global unison
 
