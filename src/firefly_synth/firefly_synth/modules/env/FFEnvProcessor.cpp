@@ -156,8 +156,11 @@ FFEnvProcessor::Process(
   }
   else if (exchangeFromDSP != nullptr)
   {
-    _thisVoiceIsSubSectionStart = exchangeFromDSP->thisVoiceIsSubSectionStart;
-    _otherVoiceSubSectionTookOver = exchangeFromDSP->otherVoiceSubSectionTookOver;
+    // ugly & debuggable
+    if (exchangeFromDSP->thisVoiceIsSubSectionStart)
+      _thisVoiceIsSubSectionStart = true;
+    if (exchangeFromDSP->otherVoiceSubSectionTookOver)
+      _otherVoiceSubSectionTookOver = true;
   }
 
   if (_type == FFEnvType::Off)
