@@ -1,5 +1,6 @@
 TODOLIST for alpha-17
 [ ] global unison
+[ ] invert scale-none no workie
 [ ] build without alignment warnings
 
 TODOLIST for alpha-18
