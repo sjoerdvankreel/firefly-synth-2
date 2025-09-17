@@ -23,13 +23,18 @@ FFVoiceProcessor::GetCurrentVEchoTarget(FBModuleProcState const& state)
 }
 
 void 
-FFVoiceProcessor::BeginVoice(FBModuleProcState state)
+FFVoiceProcessor::BeginVoice(
+  FBModuleProcState state,
+  std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomUni,
+  std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomNorm)
 {
   // We need to handle modules BeginVoice inside process
   // because of the on-voice-start modulation feature.
   // F.e. lfo output can be targeted to env stage length
   // which is handle in env's beginvoice, not process.
   _firstRoundThisVoice = true;
+  _onNoteRandomUni = onNoteRandomUni;
+  _onNoteRandomNorm = onNoteRandomNorm;
 
   // This one actually needs to be here.
   state.moduleSlot = 0;
@@ -60,7 +65,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   // No need to process VNote, values are fixed at BeginVoice.
   state.moduleSlot = 0;
   if (_firstRoundThisVoice)
-    procState->dsp.voice[voice].vNote.processor->BeginVoice(state);
+    procState->dsp.voice[voice].vNote.processor->BeginVoice(state, _onNoteRandomUni, _onNoteRandomNorm);
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VNote, 0 });
 
   // This needs to be before init of the voice-amp, because of the porta section attack.

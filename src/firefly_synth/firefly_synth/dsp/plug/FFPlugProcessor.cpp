@@ -81,9 +81,17 @@ FFPlugProcessor::LeaseVoices(
   for (int n = 0; n < input.noteEvents->size(); n++)
     if ((*input.noteEvents)[n].on)
     {
+      std::array<float, FFVNoteOnNoteRandomCount> onNoteRandomUni;
+      std::array<float, FFVNoteOnNoteRandomCount> onNoteRandomNorm;
+      for (int r = 0; r < FFVNoteOnNoteRandomCount; r++)
+      {
+        onNoteRandomUni[r] = _onNoteRandomUni.NextScalar();
+        onNoteRandomNorm[r] = _onNoteRandomNorm.NextScalar();
+      }
+
       int voice = input.voiceManager->Lease((*input.noteEvents)[n]);
       auto state = MakeModuleVoiceState(input, voice);
-      _procState->dsp.voice[voice].processor.BeginVoice(state);
+      _procState->dsp.voice[voice].processor.BeginVoice(state, onNoteRandomUni, onNoteRandomNorm);
     }
 }
 

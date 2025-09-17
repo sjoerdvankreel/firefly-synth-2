@@ -3,5 +3,7 @@
 #include <memory>
 
 struct FBStaticModule;
-enum class FFVNoteCVOutput { KeyUntuned, Velo, Count };
+inline int constexpr FFVNoteOnNoteRandomCount = 3;
+enum class FFVNoteCVOutput { KeyUntuned, Velo, RandomUni, RandomNorm, Count };
+
 std::unique_ptr<FBStaticModule> FFMakeVNoteTopo();
