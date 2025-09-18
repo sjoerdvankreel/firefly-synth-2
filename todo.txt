@@ -1,18 +1,4 @@
 TODOLIST for alpha-17
-[ ] global unison
-[ ] invert scale-none no workie => cannot do, need bipolar amount
-
-TODOLIST for alpha-18
-[ ] make a dedicated tuning section with some options
-[ ] need per-instance params for microtuning
-[ ] note filtering
-[ ] tune the filters
-[ ] figure out all places where is used midi note
-[ ] MTS into master: off / note / continuous 
-[ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
-[ ] filters should track the actual pitch when possible (string osci)
-
-TODOLIST for alpha-19
 [ ] highlight not default
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
@@ -21,6 +7,20 @@ TODOLIST for alpha-19
 [ ] get the text out of the graphs
 [ ] show visual clue if knob is being modulated
 [ ] show modulation amount in terms of the mod target unit for matrix and easy access
+[ ] invert scale-none no workie => cannot do, need bipolar amount
+
+TODOLIST for alpha-18
+[ ] global unison
+
+TODOLIST for alpha-19
+[ ] make a dedicated tuning section with some options
+[ ] need per-instance params for microtuning
+[ ] note filtering
+[ ] tune the filters
+[ ] figure out all places where is used midi note
+[ ] MTS into master: off / note / continuous 
+[ ] MTS take into account all pitch modulators (eg pitchbend + 1 must be +1 semitones of the retuned scale, also for all coarse/fine, unison, etc etc)
+[ ] filters should track the actual pitch when possible (string osci)
 
 TODOLIST for alpha-20
 [ ] theme the gui
