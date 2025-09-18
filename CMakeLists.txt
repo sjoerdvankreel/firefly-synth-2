@@ -67,7 +67,7 @@ endif ()
 # note: for GCC we can't turn on warnings as errors for the final .SO's because juce produces some,
 # and it's compiled with the dynamic library projects (i tried to factor out juce to separate project, but crash and burn on Linux)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  set (FF_COMPILE_OPTIONS_DYN /W4 /w45038 /w45246 /w45266 /w45233 /analyze:external- /fp:fast /utf-8)
+  set (FF_COMPILE_OPTIONS_DYN /W4 /w45038 /w45246 /w45266 /w45233 /wd4324 /analyze:external- /fp:fast /utf-8)
   if(FB_WARN_AS_ERROR)
     set (FF_COMPILE_OPTIONS_DYN ${FF_COMPILE_OPTIONS_DYN} /WX)
   endif()

@@ -22,8 +22,8 @@ public FBModuleGraphRenderData<EffectGraphRenderData<Global>>
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoReleaseOnDemandBuffers(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoProcessIndicators(int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
   void DoPostProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice, FBModuleGraphPoints& points);
+  void DoProcessIndicators(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
 static FBModuleGraphPlotParams
@@ -62,7 +62,7 @@ EffectGraphRenderData<Global>::DoBeginVoiceOrBlock(
     state->ProcContainer(), moduleProcState->moduleSlot, 
     true, moduleProcState->input->sampleRate);
   GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(
-    true, graphIndex, totalSamples, *moduleProcState);
+    *moduleProcState, true, graphIndex, totalSamples);
 }
 
 template <bool Global>

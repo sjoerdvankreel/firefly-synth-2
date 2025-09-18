@@ -7,6 +7,7 @@
 #include <firefly_base/base/state/proc/FBVoiceBlockParamState.hpp>
 #include <firefly_base/base/state/proc/FBGlobalBlockParamState.hpp>
 
+// Sample accurate per voice also covers at-voice-start parameters.
 enum class FBProcParamType
 {
   VoiceAcc,

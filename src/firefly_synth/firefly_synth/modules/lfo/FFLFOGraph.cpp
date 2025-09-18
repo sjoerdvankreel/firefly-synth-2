@@ -21,9 +21,9 @@ public FBModuleGraphRenderData<LFOGraphRenderData<Global>>
   FFLFOProcessor& GetProcessor(FBModuleProcState& state);
   int DoProcess(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
   void DoBeginVoiceOrBlock(FBGraphRenderState* state, int graphIndex, bool exchange, int exchangeVoice);
-  void DoProcessIndicators(int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
   void DoReleaseOnDemandBuffers(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/) {}
   void DoPostProcess(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
+  void DoProcessIndicators(FBGraphRenderState* /*state*/, int /*graphIndex*/, bool /*exchange*/, int /*exchangeVoice*/, FBModuleGraphPoints& /*points*/) {}
 };
 
 static FBModuleGraphPlotParams
@@ -64,17 +64,17 @@ LFOGraphRenderData<Global>::DoBeginVoiceOrBlock(
 { 
   samplesProcessed[graphIndex] = 0;
   auto* moduleProcState = state->ModuleProcState();
-  FFLFOExchangeState const* exchangeState = nullptr;
+  FFLFOExchangeState const* exchangeFromDSP = nullptr;
   int moduleSlot = moduleProcState->moduleSlot;
   int staticModuleIndex = (int)(Global ? FFModuleType::GLFO : FFModuleType::VLFO);
   int runtimeModuleIndex = moduleProcState->topo->moduleTopoToRuntime.at({ staticModuleIndex, moduleSlot });
   auto const* moduleExchangeState = state->ExchangeContainer()->Modules()[runtimeModuleIndex].get();
   if (exchange)
     if constexpr (Global)
-      exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Global());
+      exchangeFromDSP = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Global());
     else
-      exchangeState = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
-  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(true, graphIndex, totalSamples, exchangeState, *moduleProcState);
+      exchangeFromDSP = &dynamic_cast<FFLFOExchangeState const&>(*moduleExchangeState->Voice()[exchangeVoice]);
+  GetProcessor(*moduleProcState).template BeginVoiceOrBlock<Global>(*moduleProcState, exchangeFromDSP, true, graphIndex, totalSamples);
 }
 
 template <bool Global>

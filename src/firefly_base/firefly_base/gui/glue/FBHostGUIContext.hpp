@@ -57,17 +57,23 @@ public:
 
   FBUndoStateContainer& UndoState() { return _undoState; }
   bool GetGUIParamBool(FBParamTopoIndices const& indices) const;
-  bool GetAudioParamBool(FBParamTopoIndices const& indices) const;
-  double GetAudioParamNormalized(FBParamTopoIndices const& indices) const;
   int GetGUIParamDiscrete(FBParamTopoIndices const& indices) const;
+
+  bool GetAudioParamBool(FBParamTopoIndices const& indices) const;
+  int GetAudioParamDiscrete(FBParamTopoIndices const& indices) const;
+  double GetAudioParamLinear(FBParamTopoIndices const& indices) const;
+  double GetAudioParamIdentity(FBParamTopoIndices const& indices) const;
+  double GetAudioParamNormalized(FBParamTopoIndices const& indices) const;
   template <class T> T GetAudioParamList(FBParamTopoIndices const& indices) const;
 
   void EndAudioParamChange(int index);
   void BeginAudioParamChange(int index);
   void PerformAudioParamEdit(int index, double normalized);
 
+  void DefaultAudioParam(FBParamTopoIndices const& indices);
   void ClearModuleAudioParams(FBTopoIndices const& moduleIndices);
   void CopyModuleAudioParams(FBTopoIndices const& moduleIndices, int toSlot);
+  void CopyAudioParam(FBParamTopoIndices const& from, FBParamTopoIndices const& to);
   void PerformImmediateAudioParamEdit(int index, double normalized);
   void PerformImmediateAudioParamEdit(FBParamTopoIndices const& indices, double normalized);
 };

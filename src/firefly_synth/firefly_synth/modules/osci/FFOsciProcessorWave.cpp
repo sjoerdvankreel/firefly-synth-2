@@ -1024,26 +1024,26 @@ FFOsciProcessor::BeginVoiceWave(
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
-  auto const& waveHSModeNorm = params.block.waveHSMode[0].Voice()[voice];
-  auto const& waveDSFBWNorm = params.block.waveDSFBW[0].Voice()[voice];
-  auto const& waveDSFModeNorm = params.block.waveDSFMode[0].Voice()[voice];
-  auto const& waveDSFOverNorm = params.block.waveDSFOver[0].Voice()[voice];
-  auto const& waveDSFDistanceNorm = params.block.waveDSFDistance[0].Voice()[voice];
+  float waveHSModeNorm = params.block.waveHSMode[0].Voice()[voice];
+  float waveDSFModeNorm = params.block.waveDSFMode[0].Voice()[voice];
+  float waveDSFOverNorm = params.block.waveDSFOver[0].Voice()[voice];
+  float waveDSFDistanceNorm = params.block.waveDSFDistance[0].Voice()[voice];
+  _voiceStartSnapshotNorm.waveDSFBW[0] = params.voiceStart.waveDSFBW[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
   _waveHSMode = topo.NormalizedToListFast<FFOsciWaveHSMode>(FFOsciParam::WaveHSMode, waveHSModeNorm);
-  _waveDSFBWPlain = topo.NormalizedToLog2Fast(FFOsciParam::WaveDSFBW, waveDSFBWNorm);
   _waveDSFMode = topo.NormalizedToListFast<FFOsciWaveDSFMode>(FFOsciParam::WaveDSFMode, waveDSFModeNorm);
+  _waveDSFBWPlain = topo.NormalizedToLog2Fast(FFOsciParam::WaveDSFBW, _voiceStartSnapshotNorm.waveDSFBW[0]);
   _waveDSFOver = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFOver, waveDSFOverNorm));
   _waveDSFDistance = static_cast<float>(topo.NormalizedToDiscreteFast(FFOsciParam::WaveDSFDistance, waveDSFDistanceNorm));
 
   for (int i = 0; i < FFOsciWavePWCount; i++)
   {
-    auto const& wavePWModeNorm = params.block.wavePWMode[i].Voice()[voice];
+    float wavePWModeNorm = params.block.wavePWMode[i].Voice()[voice];
     _wavePWMode[i] = topo.NormalizedToListFast<FFOsciWavePWMode>(FFOsciParam::WavePWMode, wavePWModeNorm);
   }
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
   {
-    auto const& waveBasicModeNorm = params.block.waveBasicMode[i].Voice()[voice];
+    float waveBasicModeNorm = params.block.waveBasicMode[i].Voice()[voice];
     _waveBasicMode[i] = topo.NormalizedToListFast<FFOsciWaveBasicMode>(FFOsciParam::WaveBasicMode, waveBasicModeNorm);
   }
   for (int u = 0; u < _uniCount; u++)
@@ -1203,6 +1203,7 @@ FFOsciProcessor::ProcessWave(
   exchangeParams.acc.waveHSPitch[0][voice] = waveHSPitchNorm.Last();
   exchangeParams.acc.waveDSFGain[0][voice] = waveDSFGainNorm.Last();
   exchangeParams.acc.waveDSFDecay[0][voice] = waveDSFDecayNorm.Last();
+  exchangeParams.voiceStart.waveDSFBW[0][voice] = _voiceStartSnapshotNorm.waveDSFBW[0];
   for (int i = 0; i < FFOsciWaveBasicCount; i++)
   {
     auto const& waveBasicGainNorm = procParams.acc.waveBasicGain[i].Voice()[voice];

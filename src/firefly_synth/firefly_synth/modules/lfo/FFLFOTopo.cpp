@@ -64,7 +64,7 @@ FFMakeLFOTopo(bool global)
   auto selectGlobalModule = [](auto& state) { return &state.global.gLFO; };
 
   auto& type = result->params[(int)FFLFOParam::Type];
-  type.acc = false;
+  type.mode = FBParamMode::Block;
   type.defaultText = "Off";
   type.name = "Type";
   type.slotCount = 1;
@@ -97,7 +97,7 @@ FFMakeLFOTopo(bool global)
   type.globalExchangeAddr = FFSelectExchangeParamAddr(selectGlobalModule, selectType);
 
   auto& sync = result->params[(int)FFLFOParam::Sync];
-  sync.acc = false;
+  sync.mode = FBParamMode::Block;
   sync.display = "Sync";
   sync.name = "Tempo Sync";
   sync.slotCount = 1;
@@ -113,7 +113,7 @@ FFMakeLFOTopo(bool global)
   sync.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& seed = result->params[(int)FFLFOParam::Seed];
-  seed.acc = false;
+  seed.mode = FBParamMode::Block;
   seed.defaultText = "0";
   seed.name = "Seed";
   seed.slotCount = 1;
@@ -129,7 +129,7 @@ FFMakeLFOTopo(bool global)
   seed.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& smoothTime = result->params[(int)FFLFOParam::SmoothTime];
-  smoothTime.acc = false;
+  smoothTime.mode = FBParamMode::Block;
   smoothTime.defaultText = "0";
   smoothTime.display = "Smooth";
   smoothTime.name = "Smooth Time";
@@ -150,7 +150,7 @@ FFMakeLFOTopo(bool global)
   smoothTime.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0; });
 
   auto& smoothBars = result->params[(int)FFLFOParam::SmoothBars];
-  smoothBars.acc = false;
+  smoothBars.mode = FBParamMode::Block;
   smoothBars.defaultText = "Off";
   smoothBars.display = "Smooth";
   smoothBars.name = "Smooth Bars";
@@ -169,7 +169,7 @@ FFMakeLFOTopo(bool global)
   smoothBars.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& opType = result->params[(int)FFLFOParam::OpType];
-  opType.acc = false;
+  opType.mode = FBParamMode::Block;
   opType.name = "Op";
   opType.display = "Op";
   opType.slotCount = FFLFOBlockCount;
@@ -194,7 +194,7 @@ FFMakeLFOTopo(bool global)
   opType.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& min = result->params[(int)FFLFOParam::Min];
-  min.acc = true;
+  min.mode = FBParamMode::Accurate;
   min.defaultText = "0";
   min.name = "Min";
   min.display = "Min";
@@ -212,7 +212,7 @@ FFMakeLFOTopo(bool global)
   min.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& max = result->params[(int)FFLFOParam::Max];
-  max.acc = true;
+  max.mode = FBParamMode::Accurate;
   max.defaultText = "100";
   max.name = "Max";
   max.display = "Max";
@@ -230,7 +230,7 @@ FFMakeLFOTopo(bool global)
   max.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& waveMode = result->params[(int)FFLFOParam::WaveMode];
-  waveMode.acc = false;
+  waveMode.mode = FBParamMode::Block;
   waveMode.defaultText = "Sin";
   waveMode.name = "Wave Mode";
   waveMode.display = "Mode";
@@ -278,7 +278,7 @@ FFMakeLFOTopo(bool global)
   waveMode.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& rateHz = result->params[(int)FFLFOParam::RateHz];
-  rateHz.acc = true;
+  rateHz.mode = FBParamMode::Accurate;
   rateHz.defaultText = "1";
   rateHz.display = "Rate";
   rateHz.name = "Rate Hz";
@@ -300,7 +300,7 @@ FFMakeLFOTopo(bool global)
   rateHz.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] == 0 && vs[2] != 0; });
 
   auto& rateBars = result->params[(int)FFLFOParam::RateBars];
-  rateBars.acc = false;
+  rateBars.mode = FBParamMode::Block;
   rateBars.defaultText = "1/4";
   rateBars.display = "Rate";
   rateBars.name = "Rate Bars";
@@ -320,7 +320,7 @@ FFMakeLFOTopo(bool global)
   rateBars.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::Sync, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& steps = result->params[(int)FFLFOParam::Steps];
-  steps.acc = false;
+  steps.mode = FBParamMode::Block;
   steps.defaultText = "1";
   steps.name = "Steps";
   steps.display = "Steps";
@@ -339,7 +339,7 @@ FFMakeLFOTopo(bool global)
   steps.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& phase = result->params[(int)FFLFOParam::Phase];
-  phase.acc = false;
+  phase.mode = FBParamMode::Block;
   phase.defaultText = "0";
   phase.name = "Phase";
   phase.display = "Phase";
@@ -357,7 +357,7 @@ FFMakeLFOTopo(bool global)
   phase.dependencies.enabled.audio.WhenSimple({ (int)FFLFOParam::Type, (int)FFLFOParam::OpType }, [](auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& skewAXMode = result->params[(int)FFLFOParam::SkewAXMode];
-  skewAXMode.acc = false;
+  skewAXMode.mode = FBParamMode::Block;
   skewAXMode.defaultText = "Off";
   skewAXMode.display = "Skew X";
   skewAXMode.name = "Skew A X Mode";
@@ -379,7 +379,7 @@ FFMakeLFOTopo(bool global)
   skewAXMode.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 } }, [](auto const&, auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& skewAXAmt = result->params[(int)FFLFOParam::SkewAXAmt];
-  skewAXAmt.acc = true;
+  skewAXAmt.mode = FBParamMode::Accurate;
   skewAXAmt.defaultText = "0";
   skewAXAmt.name = "Skew A X Amt";
   skewAXAmt.slotCount = 1;
@@ -395,7 +395,7 @@ FFMakeLFOTopo(bool global)
   skewAXAmt.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 }, { (int)FFLFOParam::SkewAXMode, 0 } }, [](auto const&, auto const& vs) { return vs[0] != 0 && vs[1] != 0 && vs[2] != 0; });
 
   auto& skewAYMode = result->params[(int)FFLFOParam::SkewAYMode];
-  skewAYMode.acc = false;
+  skewAYMode.mode = FBParamMode::Block;
   skewAYMode.defaultText = "Off";
   skewAYMode.display = "Skew Y";
   skewAYMode.name = "Skew A Y Mode";
@@ -415,7 +415,7 @@ FFMakeLFOTopo(bool global)
   skewAYMode.dependencies.enabled.audio.WhenSlots({ { (int)FFLFOParam::Type, 0 }, { (int)FFLFOParam::OpType, 0 } }, [](auto const&, auto const& vs) { return vs[0] != 0 && vs[1] != 0; });
 
   auto& skewAYAmt = result->params[(int)FFLFOParam::SkewAYAmt];
-  skewAYAmt.acc = true;
+  skewAYAmt.mode = FBParamMode::Accurate;
   skewAYAmt.defaultText = "0";
   skewAYAmt.name = "Skew A Y Amt";
   skewAYAmt.slotCount = 1;

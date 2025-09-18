@@ -10,8 +10,8 @@
 
 struct FBStaticTopo;
 
-inline int constexpr FFModMatrixGlobalMaxSlotCount = 19;
-inline int constexpr FFModMatrixVoiceMaxSlotCount = 2 * FFModMatrixGlobalMaxSlotCount;
+inline int constexpr FFModMatrixVoiceMaxSlotCount = 25;
+inline int constexpr FFModMatrixGlobalMaxSlotCount = 12;
 
 template <bool Global>
 struct FFModMatrixTraits
@@ -21,7 +21,11 @@ struct FFModMatrixTraits
 
 struct FFStaticTopo;
 struct FBStaticModule;
-enum class FFModMatrixParam { Slots, OpType, Source, Scale, Target, Amount, Count };
+enum class FFModMatrixParam { 
+  Slots, OpType, 
+  Source, SourceLow, SourceHigh,
+  Scale, ScaleMin, ScaleMax,
+  Target, TargetAmt, Count };
 
 std::unique_ptr<FBStaticModule> FFMakeModMatrixTopo(bool global, FFStaticTopo const* topo);
 std::vector<FFModMatrixSource> FFModMatrixMakeSources(bool global, FBStaticTopo const* topo);

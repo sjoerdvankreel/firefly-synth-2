@@ -50,7 +50,7 @@ FFMakeOsciModTopo()
   auto selectModule = [](auto& state) { return &state.voice.osciMod; };
 
   auto& oversample = result->params[(int)FFOsciModParam::Oversample];
-  oversample.acc = false;
+  oversample.mode = FBParamMode::Block;
   oversample.name = "Oversample";
   oversample.defaultText = "Off";
   oversample.slotCount = 1;
@@ -62,7 +62,7 @@ FFMakeOsciModTopo()
   oversample.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectOversample);
 
   auto& expoFM = result->params[(int)FFOsciModParam::ExpoFM];
-  expoFM.acc = false;
+  expoFM.mode = FBParamMode::Block;
   expoFM.name = "Exp FM";
   expoFM.defaultText = "Off";
   expoFM.slotCount = 1;
@@ -74,7 +74,7 @@ FFMakeOsciModTopo()
   expoFM.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectExpoFM);
 
   auto& amMode = result->params[(int)FFOsciModParam::AMMode];
-  amMode.acc = false;
+  amMode.mode = FBParamMode::Block;
   amMode.name = "AM Mode";
   amMode.defaultText = "Off";
   amMode.slotCount = FFOsciModSlotCount;
@@ -91,7 +91,7 @@ FFMakeOsciModTopo()
   amMode.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectAMMode);
 
   auto& amMix = result->params[(int)FFOsciModParam::AMMix];
-  amMix.acc = true;
+  amMix.mode = FBParamMode::Accurate;
   amMix.defaultText = "1";
   amMix.name = "AM Mix";
   amMix.slotCount = FFOsciModSlotCount;
@@ -106,7 +106,7 @@ FFMakeOsciModTopo()
   amMix.dependencies.enabled.audio.WhenSimple({ (int)FFOsciModParam::AMMode }, [](auto const& vs) { return vs[0] != (int)FFOsciModAMMode::Off; });
 
   auto& fmOn = result->params[(int)FFOsciModParam::FMOn];
-  fmOn.acc = false;
+  fmOn.mode = FBParamMode::Block;
   fmOn.name = "FM On";
   fmOn.defaultText = "Off";
   fmOn.slotCount = FFOsciModSlotCount;
@@ -119,7 +119,7 @@ FFMakeOsciModTopo()
   fmOn.voiceExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectFMOn);
 
   auto& fmIndex = result->params[(int)FFOsciModParam::FMIndex];
-  fmIndex.acc = true;
+  fmIndex.mode = FBParamMode::Accurate;
   fmIndex.defaultText = "0";
   fmIndex.name = "FM Index";
   fmIndex.slotCount = FFOsciModSlotCount;

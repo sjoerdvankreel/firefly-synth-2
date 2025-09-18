@@ -2,6 +2,7 @@
 
 #include <firefly_synth/dsp/shared/FFDelayLine.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
+#include <firefly_synth/modules/echo/FFEchoStateVoiceStart.hpp>
 
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
@@ -67,6 +68,8 @@ class FFEchoProcessor final
   std::array<bool, FFEchoTapCount> _tapOn = {};
   std::array<float, FFEchoTapCount> _tapDelayBarsSamples = {};
 
+  FFEchoVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
+
   bool _graph = {};
   int _graphSampleCount = {};
   int _graphSamplesProcessed = {};
@@ -100,7 +103,7 @@ public:
 
   void FlushDelayLines();
   int Process(FBModuleProcState& state, int ampEnvFinishedAt);
-  void BeginVoiceOrBlock(bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state);
+  void BeginVoiceOrBlock(FBModuleProcState& state, bool graph, int graphIndex, int graphSampleCount);
   void ReleaseOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state);
   void AllocOnDemandBuffers(FBRuntimeTopo const* topo, FBProcStateContainer* state, bool graph, float sampleRate);
 };

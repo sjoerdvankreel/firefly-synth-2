@@ -6,7 +6,7 @@
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
 void 
-FFOsciModProcessor::BeginVoice(bool graph, FBModuleProcState& state)
+FFOsciModProcessor::BeginVoice(FBModuleProcState& state, bool graph)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -57,7 +57,7 @@ FFOsciModProcessor::Process(FBModuleProcState& state)
   if (exchangeToGUI == nullptr)
     return;
   auto& exchangeDSP = exchangeToGUI->voice[voice].osciMod[state.moduleSlot];
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
   auto& exchangeParams = exchangeToGUI->param.voice.osciMod[state.moduleSlot];
   for (int i = 0; i < FFOsciModSlotCount; i++)
   {

@@ -25,5 +25,17 @@ FFMakeVNoteTopo()
   outputVelo.id = "{51E0BEED-59B7-4F23-AC3E-C179756FD8D4}";
   outputVelo.voiceAddr = [](int, int, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vNote.outputVelo; };
 
+  auto& outputRandomUni = result->cvOutputs[(int)FFVNoteCVOutput::RandomUni];
+  outputRandomUni.name = "RndUni";
+  outputRandomUni.slotCount = FFVNoteOnNoteRandomCount;
+  outputRandomUni.id = "{B1FE4CD9-0F3D-4258-A443-804620DE9B56}";
+  outputRandomUni.voiceAddr = [](int, int cvOutputSlot, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vNote.outputRandomUni[cvOutputSlot]; };
+
+  auto& outputRandomNorm = result->cvOutputs[(int)FFVNoteCVOutput::RandomNorm];
+  outputRandomNorm.name = "RndNrm";
+  outputRandomNorm.slotCount = FFVNoteOnNoteRandomCount;
+  outputRandomNorm.id = "{444DC817-385C-43CD-9AF7-5CF5628EE91C}";
+  outputRandomNorm.voiceAddr = [](int, int cvOutputSlot, int voice, void* state) { return &static_cast<FFProcState*>(state)->dsp.voice[voice].vNote.outputRandomNorm[cvOutputSlot]; };
+
   return result;
 }

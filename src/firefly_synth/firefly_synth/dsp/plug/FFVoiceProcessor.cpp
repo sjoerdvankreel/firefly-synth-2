@@ -23,60 +23,24 @@ FFVoiceProcessor::GetCurrentVEchoTarget(FBModuleProcState const& state)
 }
 
 void 
-FFVoiceProcessor::BeginVoice(FBModuleProcState state)
+FFVoiceProcessor::BeginVoice(
+  FBModuleProcState state,
+  std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomUni,
+  std::array<float, FFVNoteOnNoteRandomCount> const& onNoteRandomNorm)
 {
+  // We need to handle modules BeginVoice inside process
+  // because of the on-voice-start modulation feature.
+  // F.e. lfo output can be targeted to env stage length
+  // which is handle in env's beginvoice, not process.
+  _firstRoundThisVoice = true;
+  _onNoteRandomUni = onNoteRandomUni;
+  _onNoteRandomNorm = onNoteRandomNorm;
+
+  // This one actually needs to be here.
+  state.moduleSlot = 0;
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
-
-  state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginVoiceOrBlock(state);
-  procState->dsp.voice[voice].vNote.processor->BeginVoice(state);
-
-  bool anyNoteWasOnAlready = false;
-  float previousMidiKeyUntuned = -1.0f;
-  int voiceStartSamplesInBlock = state.voice->offsetInBlock;
-  if (voiceStartSamplesInBlock == 0)
-  {
-    anyNoteWasOnAlready = state.input->anyNoteWasOnLastSamplePrevRound;
-    previousMidiKeyUntuned = state.input->lastKeyRawLastSamplePrevRound * 127.0f;
-  }
-  else
-  {
-    anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
-    previousMidiKeyUntuned = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(voiceStartSamplesInBlock - 1) * 127.0f;
-  }
-
-  // This needs to be before init of the voice-amp, because of the porta section attack.
-  procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
-
-  state.moduleSlot = FFAmpEnvSlot;
-  procState->dsp.voice[voice].env[FFAmpEnvSlot].processor->BeginVoice(state);
-  for (int i = 0; i < FFLFOCount; i++)
-  {
-    state.moduleSlot = i + FFEnvSlotOffset;
-    procState->dsp.voice[voice].env[i + FFEnvSlotOffset].processor->BeginVoice(state);
-    state.moduleSlot = i;
-    procState->dsp.voice[voice].vLFO[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, nullptr, state);
-  }
-
-  state.moduleSlot = 0;
-  procState->dsp.voice[voice].osciMod.processor->BeginVoice(false, state);
-  for (int i = 0; i < FFOsciCount; i++)
-  {
-    state.moduleSlot = i;
-    procState->dsp.voice[voice].osci[i].processor->BeginVoice(false, state);
-  }
-  for (int i = 0; i < FFEffectCount; i++)
-  {
-    state.moduleSlot = i;
-    procState->dsp.voice[voice].vEffect[i].processor->BeginVoiceOrBlock<false>(false, -1, -1, state);
-  }
-
-  if (GetCurrentVEchoTarget(state) == FFVEchoTarget::AfterMix)
-  {
-    state.moduleSlot = 0;
-    procState->dsp.voice[voice].vEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
-  }
 }
 
 bool 
@@ -98,11 +62,37 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->BeginModulationBlock();
 
-  // No need to process first, values are fixed at BeginVoice.
+  // No need to process VNote, values are fixed at BeginVoice.
+  state.moduleSlot = 0;
+  if (_firstRoundThisVoice)
+    procState->dsp.voice[voice].vNote.processor->BeginVoice(state, _onNoteRandomUni, _onNoteRandomNorm);
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VNote, 0 });
 
+  // This needs to be before init of the voice-amp, because of the porta section attack.
+  if (_firstRoundThisVoice)
+  {
+    bool anyNoteWasOnAlready = false;
+    float previousMidiKeyUntuned = -1.0f;
+    int voiceStartSamplesInBlock = state.voice->offsetInBlock;
+    if (voiceStartSamplesInBlock == 0)
+    {
+      anyNoteWasOnAlready = state.input->anyNoteWasOnLastSamplePrevRound;
+      previousMidiKeyUntuned = state.input->lastKeyRawLastSamplePrevRound * 127.0f;
+    }
+    else
+    {
+      anyNoteWasOnAlready = (*state.input->anyNoteIsOn)[voiceStartSamplesInBlock - 1];
+      previousMidiKeyUntuned = state.input->noteMatrixRaw->entries[(int)FBNoteMatrixEntry::LastKeyUntuned].Get(voiceStartSamplesInBlock - 1) * 127.0f;
+    }
+
+    state.moduleSlot = 0;
+    procState->dsp.voice[voice].voiceModule.processor->BeginVoice(state, previousMidiKeyUntuned, anyNoteWasOnAlready);
+  }
+
   state.moduleSlot = FFAmpEnvSlot;
-  int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state, releaseAt);
+  if (_firstRoundThisVoice)
+    voiceDSP.env[FFAmpEnvSlot].processor->BeginVoice(state, nullptr, false);
+  int ampEnvProcessed = voiceDSP.env[FFAmpEnvSlot].processor->Process(state, nullptr, false, releaseAt);
   bool voiceFinished = ampEnvProcessed != FBFixedBlockSamples;
   state.moduleSlot = 0;
   procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, FFAmpEnvSlot });
@@ -110,10 +100,15 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i + FFEnvSlotOffset;
-    voiceDSP.env[i + FFEnvSlotOffset].processor->Process(state, releaseAt);
+    if(_firstRoundThisVoice)
+      voiceDSP.env[i + FFEnvSlotOffset].processor->BeginVoice(state, nullptr, false);
+    voiceDSP.env[i + FFEnvSlotOffset].processor->Process(state, nullptr, false, releaseAt);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::Env, i + FFEnvSlotOffset });
+
     state.moduleSlot = i;
+    if(_firstRoundThisVoice)
+      voiceDSP.vLFO[i].processor->BeginVoiceOrBlock<false>(state, nullptr, false, -1, -1);
     voiceDSP.vLFO[i].processor->Process<false>(state);
     state.moduleSlot = 0;
     procState->dsp.voice[voice].vMatrix.processor->ApplyModulation(state, { (int)FFModuleType::VLFO, i });
@@ -121,11 +116,18 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
 
   state.moduleSlot = 0;
   voiceDSP.voiceModule.processor->Process(state);
+  
+  state.moduleSlot = 0;
+  if(_firstRoundThisVoice)
+    voiceDSP.osciMod.processor->BeginVoice(state, false);
   voiceDSP.osciMod.processor->Process(state);
+
   for (int i = 0; i < FFOsciCount; i++)
   {
     state.moduleSlot = i;
-    voiceDSP.osci[i].processor->Process(false, state);
+    if(_firstRoundThisVoice)
+      voiceDSP.osci[i].processor->BeginVoice(state, false);
+    voiceDSP.osci[i].processor->Process(state, false);
   }
 
   FB_ASSERT(FFOsciCount == FFEffectCount);
@@ -147,6 +149,10 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
         auto const& vfxToVFXNorm = vMix.acc.VFXToVFX[r].Voice()[voice].CV();
         voiceDSP.vEffect[i].input.AddMul(voiceDSP.vEffect[source].output, vfxToVFXNorm);
       }
+
+    state.moduleSlot = i;
+    if (_firstRoundThisVoice)
+      voiceDSP.vEffect[i].processor->BeginVoiceOrBlock<false>(state, false, -1, -1);
     voiceDSP.vEffect[i].processor->Process<false>(state);
   }
 
@@ -177,11 +183,15 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   if (GetCurrentVEchoTarget(state) == FFVEchoTarget::AfterMix)
   {
     state.moduleSlot = 0;
+    if(_firstRoundThisVoice)
+      voiceDSP.vEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
     voiceDSP.output.CopyTo(voiceDSP.vEcho.input);
     int vEchoProcessed = voiceDSP.vEcho.processor->Process(state, ampEnvProcessed);
     voiceFinished = vEchoProcessed != FBFixedBlockSamples;
     voiceDSP.vEcho.output.CopyTo(voiceDSP.output);
   }
+
+  _firstRoundThisVoice = false;
 
   auto* exchangeToGUI = state.ExchangeToGUIAs<FFExchangeState>();
   if (exchangeToGUI == nullptr)
@@ -191,7 +201,7 @@ FFVoiceProcessor::Process(FBModuleProcState state, int releaseAt)
   }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].vMix[0];
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
 
   auto& exchangeParams = exchangeToGUI->param.voice.vMix[0];
   exchangeParams.acc.bal[0][voice] = balNormModulated.Last();

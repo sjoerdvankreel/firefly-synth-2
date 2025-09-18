@@ -39,7 +39,7 @@ struct FFGUIState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGUIState);
 };
 
-struct FFGlobalExchangeState final
+struct alignas(FBSIMDAlign) FFGlobalExchangeState final
 {
   std::array<FFLFOExchangeState, FFLFOCount> gLFO = {};
   std::array<FBModuleProcSingleExchangeState, 1> gMix = {};
@@ -51,15 +51,15 @@ struct FFGlobalExchangeState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFGlobalExchangeState);
 };
 
-struct FFVoiceExchangeState final
+struct alignas(FBSIMDAlign) FFVoiceExchangeState final
 {
+  std::array<FFEnvExchangeState, FFEnvCount> env = {};
   std::array<FFLFOExchangeState, FFLFOCount> vLFO = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMix = {};
   std::array<FBModuleProcSingleExchangeState, 1> vEcho = {};
   std::array<FBModuleProcSingleExchangeState, 1> vMatrix = {};
   std::array<FBModuleProcSingleExchangeState, 1> osciMod = {};
   std::array<FBModuleProcSingleExchangeState, 1> voiceModule = {};
-  std::array<FBModuleProcSingleExchangeState, FFEnvCount> env = {};
   std::array<FBModuleProcSingleExchangeState, FFOsciCount> osci = {};
   std::array<FBModuleProcSingleExchangeState, FFEffectCount> vEffect = {};
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceExchangeState);
@@ -143,7 +143,7 @@ struct FFScalarState final
   FB_NOCOPY_NOMOVE_DEFCTOR(FFScalarState);
 };
 
-struct FFExchangeParamState final
+struct alignas(FBSIMDAlign) FFExchangeParamState final
 {
   typedef std::array<float, FBMaxVoices> ScalarPerVoice;
   FB_NOCOPY_NOMOVE_DEFCTOR(FFExchangeParamState);
@@ -151,7 +151,9 @@ struct FFExchangeParamState final
   FFVoiceParamState<ScalarPerVoice, ScalarPerVoice> voice = {};
 };
 
-struct FFExchangeState final
+// 32 magic number comes from the VST3 SDK, not really documented anywhere
+// i wonder how many times this crap is gonna bite me again
+struct alignas(32) FFExchangeState final
 {
   FBHostExchangeState host = {};
   FFExchangeParamState param = {};

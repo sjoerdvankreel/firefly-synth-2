@@ -7,11 +7,12 @@ using namespace juce;
 static bool
 IsTweakableParam(FBRuntimeTopo const* topo, int index)
 {
-  if (topo->audio.params[index].static_.output)
-    return false;
-  if (topo->audio.params[index].static_.thisIsNotARealParameter)
-    return false;
-  return true;
+  switch (topo->audio.params[index].static_.mode)
+  {
+  case FBParamMode::Fake: return false;
+  case FBParamMode::Output: return false;
+  default: return true;
+  }
 }
 
 static std::string
@@ -56,8 +57,11 @@ FBLastTweakedLabel::FixedWidth(int /*height*/) const
 }
 
 void 
-FBLastTweakedLabel::AudioParamChangedFromUI(int index, double /*normalized*/)
+FBLastTweakedLabel::AudioParamChanged(int index, double /*normalized*/, bool changedFromUI)
 {
+  if (!changedFromUI)
+    return;
+
   auto const* topo = _plugGUI->HostContext()->Topo();
   if (!IsTweakableParam(topo, index))
     return;
@@ -109,8 +113,10 @@ FBLastTweakedTextBox::FixedWidth(int /*height*/) const
 }
 
 void 
-FBLastTweakedTextBox::AudioParamChangedFromUI(int index, double normalized)
+FBLastTweakedTextBox::AudioParamChanged(int index, double normalized, bool changedFromUI)
 {
+  if (!changedFromUI)
+    return;
   if (index < 0 || !IsTweakableParam(_plugGUI->HostContext()->Topo(), index))
     return;
   _paramIndex = index;

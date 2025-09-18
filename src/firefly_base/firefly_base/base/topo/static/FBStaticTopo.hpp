@@ -150,7 +150,7 @@ struct FBStaticTopo
   std::vector<FBTopoIndices> moduleProcessOrder = {};
 
   int exchangeStateSize = {};
-  int exchangeStateAlignment = {};
+  int exchangeStateAlignment = {}; // TODO drop this
   FBSpecialParamsSelector specialSelector = {};
   FBSpecialGUIParamsSelector specialGUISelector = {};
   FBHostExchangeAddrSelector hostExchangeAddr = {};

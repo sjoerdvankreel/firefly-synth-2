@@ -25,12 +25,25 @@ FBGridComponent(rowColGap, autoSizeRow, autoSizeCol, std::vector<int>(rows, 1), 
 
 FBGridComponent::
 FBGridComponent(bool rowColGap, int autoSizeRow, int autoSizeCol, std::vector<int> const& rows, std::vector<int> const& cols):
+FBGridComponent(rowColGap, std::vector<int>(cols.size(), autoSizeRow), std::vector<int>(rows.size(), autoSizeCol), rows, cols) {}
+
+FBGridComponent::
+FBGridComponent(
+  bool rowColGap, 
+  std::vector<int> const& autoSizeRowForCol, 
+  std::vector<int> const& autoSizeColForRow, 
+  std::vector<int> const& rows, 
+  std::vector<int> const& cols):
 Component(), 
 _rowColGap(rowColGap),
-_autoSizeCol(autoSizeCol),
-_autoSizeRow(autoSizeRow),
 _rows(rows),
-_cols(cols) {}
+_cols(cols),
+_autoSizeRowForCol(autoSizeRowForCol),
+_autoSizeColForRow(autoSizeColForRow)
+{
+  FB_ASSERT(autoSizeRowForCol.size() == cols.size());
+  FB_ASSERT(autoSizeColForRow.size() == rows.size());
+}
 
 void
 FBGridComponent::Add(int row, int col, Component* child)
@@ -108,7 +121,7 @@ FBGridComponent::FixedRowHeight(int row) const
   int result = 0;
   for (int c = 0; c < _cols.size(); c++)
   {
-    if (_autoSizeCol != -1 && _autoSizeCol != c)
+    if (_autoSizeColForRow[row] != -1 && _autoSizeColForRow[row] != c)
       continue;
     auto iter = _cells.find({ row, c });
     if (iter == _cells.end())
@@ -121,8 +134,14 @@ FBGridComponent::FixedRowHeight(int row) const
       if(sizingChild != nullptr)
         fixedCellHeight = std::max(fixedCellHeight, sizingChild->FixedHeight());
     }
-    FB_ASSERT(fixedCellHeight != 0);
     result = std::max(result, fixedCellHeight);
+  }
+  if (result == 0)
+  {
+    if (_rows.size() == 1 && _cols.size() == 1)
+      result = getBounds().getHeight();
+    else
+      FB_ASSERT(false);
   }
   return result;
 }
@@ -143,7 +162,7 @@ FBGridComponent::FixedColWidth(int col, int height) const
 
   for (int r = 0; r < _rows.size(); r++)
   {
-    if (_autoSizeRow != -1 && _autoSizeRow != r)
+    if (_autoSizeRowForCol[col] != -1 && _autoSizeRowForCol[col] != r)
       continue;
     auto iter = _cells.find({ r, col });
     if (iter == _cells.end())

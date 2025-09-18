@@ -18,7 +18,7 @@ class IFBParamListener
 {
 public:
   virtual ~IFBParamListener() {}
-  virtual void AudioParamChangedFromUI(int index, double normalized) = 0;
+  virtual void AudioParamChanged(int index, double normalized, bool changedFromUI) = 0;
 };
 
 class FBPlugGUI:

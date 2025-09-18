@@ -7,6 +7,7 @@
 #include <firefly_synth/dsp/shared/FFPhaseGenerator.hpp>
 #include <firefly_synth/dsp/shared/FFStateVariableFilter.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
+#include <firefly_synth/modules/osci/FFOsciStateVoiceStart.hpp>
 #include <firefly_synth/modules/osci/FFOsciPhaseGenerator.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModTopo.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
@@ -48,7 +49,7 @@ struct FFOsciStringUniVoiceState final
 
 class FFOsciProcessor final
 {
-  // TODO get rid of this thing everywhere
+  // TODO get rid of this thing everywhere -- or not?
   float _keyUntuned = {};
 
   FFOsciType _type = {};
@@ -75,6 +76,8 @@ class FFOsciProcessor final
   FFOsciWaveHSMode _waveHSMode = {};
   std::array<FFOsciWavePWMode, FFOsciWavePWCount> _wavePWMode = {};
   std::array<FFOsciWaveBasicMode, FFOsciWaveBasicCount> _waveBasicMode = {};
+
+  FFOsciVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
 
   bool _graph = {};
   int _stringGraphPosition = {};
@@ -127,15 +130,15 @@ class FFOsciProcessor final
     FBSArray<float, FFOsciFixedBlockOversamples> const& basePitchPlain,
     FBSArray<float, FFOsciFixedBlockOversamples> const& uniDetunePlain);
 
-  void BeginVoiceString(bool graph, FBModuleProcState& state);
+  void BeginVoiceString(FBModuleProcState& state, bool graph);
   void BeginVoiceFM(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
   void BeginVoiceWave(FBModuleProcState& state, FBSArray<float, FFOsciUniMaxCount> const& uniPhaseInit);
 
 public:
   FFOsciProcessor();
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFOsciProcessor);
-  int Process(bool graph, FBModuleProcState& state);
-  void BeginVoice(bool graph, FBModuleProcState& state);
+  int Process(FBModuleProcState& state, bool graph);
+  void BeginVoice(FBModuleProcState& state, bool graph);
 
   void AllocOnDemandBuffers(
     FBRuntimeTopo const* topo, FBProcStateContainer* state,

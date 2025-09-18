@@ -1,0 +1,204 @@
+#include <firefly_synth/shared/FFPlugTopo.hpp>
+#include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixTopo.hpp>
+#include <firefly_synth/modules/mod_matrix/FFModMatrixGraph.hpp>
+
+#include <firefly_base/gui/shared/FBGUI.hpp>
+#include <firefly_base/gui/glue/FBHostGUIContext.hpp>
+#include <firefly_base/dsp/shared/FBDSPUtility.hpp>
+
+using namespace juce;
+
+static float
+GraphGetSource(float x)
+{
+  return FBToUnipolar(std::sin(2.0f * FBPi * x));
+}
+
+static float
+GraphGetSourceLowHigh(float sourceNorm, float sourceLow, float sourceHigh)
+{
+  return sourceLow + sourceNorm * (sourceHigh - sourceLow);
+}
+
+static float
+GraphGetScale(float x)
+{
+  return FBToUnipolar(std::sin(4.0f * FBPi * x));
+}
+
+static float
+GraphGetScaleMinMax(float scaleNorm, float scaleMin, float scaleMax)
+{
+  return scaleMin + (scaleMax - scaleMin) * scaleNorm;
+}
+
+static float
+GraphGetTarget(float x)
+{
+  return x;
+}
+
+FFModMatrixGraph::
+~FFModMatrixGraph()
+{
+  _plugGUI->RemoveParamListener(this);
+}
+
+FFModMatrixGraph::
+FFModMatrixGraph(FFPlugGUI* plugGUI, FFModMatrixGraphType type) :
+_plugGUI(plugGUI), _type(type)
+{
+  _plugGUI->AddParamListener(this);
+}
+
+void 
+FFModMatrixGraph::AudioParamChanged(
+  int index, double /*normalized*/, bool /*changedFromUI*/)
+{
+  auto const* param = &_plugGUI->HostContext()->Topo()->audio.params[index];
+  if (param->topoIndices.module.index == (int)FFModuleType::VMatrix)
+  {
+    if(param->static_.slotCount == FFModMatrixVoiceMaxSlotCount)
+      _trackingParam = param;
+    repaint();
+  }
+  if (param->topoIndices.module.index == (int)FFModuleType::GMatrix)
+  {
+    if(param->static_.slotCount == FFModMatrixGlobalMaxSlotCount)
+      _trackingParam = param;
+    repaint();
+  }  
+}
+
+void
+FFModMatrixGraph::paint(Graphics& g)
+{
+  std::string prefix = "";
+  int scaleType = 0;
+  int sourceType = 0;
+  int targetType = 0;
+  float scaleMin = 0.0f;
+  float scaleMax = 1.0f;
+  float targetAmt = 1.0f;
+  float sourceLow = 0.0f;
+  float sourceHigh = 1.0f;
+  FFModulationOpType opType = FFModulationOpType::UPAdd;
+
+  if (_trackingParam != nullptr)
+  {
+    int slot = _trackingParam->topoIndices.param.slot;
+    FBTopoIndices module = _trackingParam->topoIndices.module;
+    scaleType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Scale, slot } });
+    sourceType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Source, slot } });
+    targetType = _plugGUI->HostContext()->GetAudioParamList<int>({ module, { (int)FFModMatrixParam::Target, slot } });
+    scaleMin = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMin, slot } });
+    scaleMax = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::ScaleMax, slot } });
+    targetAmt = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::TargetAmt, slot } });
+    sourceLow = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceLow, slot } });
+    sourceHigh = (float)_plugGUI->HostContext()->GetAudioParamIdentity({ module, { (int)FFModMatrixParam::SourceHigh, slot } });
+    opType = _plugGUI->HostContext()->GetAudioParamList<FFModulationOpType>({ module, { (int)FFModMatrixParam::OpType, slot } });
+    prefix = ((module.index == (int)FFModuleType::GMatrix) ? std::string("G") : std::string("V")) + std::to_string(slot + 1) + " ";
+
+    int slotCount = _plugGUI->HostContext()->GetAudioParamDiscrete({ module, { (int)FFModMatrixParam::Slots, 0 } });
+    if (slotCount <= slot)
+      opType = FFModulationOpType::Off;
+  }
+
+  std::string text = "Off";
+  std::vector<float> yNormalized = {};
+  auto bounds = getBounds().toFloat().reduced(2.0f);
+  switch (_type)
+  {
+  case FFModMatrixGraphType::Source:
+    text = "Src";
+    for (int i = 0; i < bounds.getWidth(); i++)
+    {
+      float sourceNorm = GraphGetSource(i / (float)bounds.getWidth());
+      if (sourceType == 0 || opType == FFModulationOpType::Off)
+        yNormalized.push_back(sourceNorm);
+      else
+        yNormalized.push_back(GraphGetSourceLowHigh(sourceNorm, sourceLow, sourceHigh));
+    }
+    break;
+  case FFModMatrixGraphType::SourceOnOff:
+    text = (sourceType == 0 || opType == FFModulationOpType::Off) ? "Src Off" : "Src On";
+    if (sourceType != 0 && opType != FFModulationOpType::Off)
+      for (int i = 0; i < bounds.getWidth(); i++)
+      {
+        float sourceNorm = GraphGetSource(i / (float)bounds.getWidth());
+        float sourceLowHigh = GraphGetSourceLowHigh(sourceNorm, sourceLow, sourceHigh);
+        if (sourceHigh - sourceLow == 0.0f)
+          yNormalized.push_back(sourceLowHigh);
+        else
+          yNormalized.push_back(std::clamp((sourceLowHigh - sourceLow) / (sourceHigh - sourceLow), 0.0f, 1.0f));
+      }
+    break;
+  case FFModMatrixGraphType::Scale:
+    text = "Scl";
+    for (int i = 0; i < bounds.getWidth(); i++)
+      yNormalized.push_back(GraphGetScale(i / (float)bounds.getWidth()));
+    break;
+  case FFModMatrixGraphType::ScaleOn:
+    text = opType == FFModulationOpType::Off ? "Scl Off" : "Scl On";
+    if (opType != FFModulationOpType::Off)
+      for (int i = 0; i < bounds.getWidth(); i++)
+      {
+        float scaleNorm = scaleType == 0 ? 1.0f : GraphGetScale(i / (float)bounds.getWidth());
+        yNormalized.push_back(GraphGetScaleMinMax(scaleNorm, scaleMin, scaleMax));
+      }
+    break;
+  case FFModMatrixGraphType::Target:
+    text = "Tgt";
+    for (int i = 0; i < bounds.getWidth(); i++)
+      yNormalized.push_back(GraphGetTarget(i / (float)bounds.getWidth()));
+    break;
+  case FFModMatrixGraphType::TargetOnOff:
+    text = (opType == FFModulationOpType::Off || targetType == 0 || sourceType == 0) ? "Tgt Off" : "Tgt On";
+    if (opType != FFModulationOpType::Off && targetType != 0 && sourceType != 0)
+      for (int i = 0; i < bounds.getWidth(); i++)
+      {
+        float x = i / (float)bounds.getWidth();
+        float target = GraphGetTarget(x);
+        float source = GraphGetSource(x);
+        float scale = scaleType == 0 ? 1.0f : GraphGetScale(x);
+        float scaleMinMax = GraphGetScaleMinMax(scale, scaleMin, scaleMax);
+        FFApplyModulation(opType, source, scaleMinMax * targetAmt, target);
+        yNormalized.push_back(target);
+      }
+    break;
+  default:
+    FB_ASSERT(false);
+    break;
+  }
+
+  g.setColour(Colours::darkgrey);
+  g.setFont(FBGUIGetFont().withHeight(16.0f));
+  g.drawText(prefix + text, bounds, Justification::centred, false);
+
+  if (yNormalized.empty())
+    return;
+
+  Path path;
+  path.startNewSubPath(bounds.getX(), bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[0]));
+  for (int i = 1; i < yNormalized.size(); i++)
+    path.lineTo(bounds.getX() + i, bounds.getY() + bounds.getHeight() * (1.0f - yNormalized[i]));
+
+  switch (_type)
+  {
+  case FFModMatrixGraphType::Scale:
+  case FFModMatrixGraphType::Target:
+  case FFModMatrixGraphType::Source:
+    g.setColour(Colours::grey);
+    break;
+  case FFModMatrixGraphType::ScaleOn:
+  case FFModMatrixGraphType::SourceOnOff:
+  case FFModMatrixGraphType::TargetOnOff:
+    g.setColour(Colours::white);
+    break;
+  default:
+    FB_ASSERT(false);
+    break;
+  }
+  g.strokePath(path, PathStrokeType(1.0f));  
+}

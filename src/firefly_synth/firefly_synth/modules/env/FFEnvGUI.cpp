@@ -66,10 +66,10 @@ MakeEnvSectionStage(FBPlugGUI* plugGUI, int moduleSlot)
     auto upper = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 0, 0 });
     grid->Add(0, 1 + i, upper);
     auto time = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageTime, i } });
-    upper->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, time, std::to_string(i + 1)));
+    upper->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, time, std::to_string(i + 1)));
     upper->Add(0, 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, time, Slider::SliderStyle::LinearHorizontal));
     auto bars = topo->audio.ParamAtTopo({ { (int)FFModuleType::Env, moduleSlot }, { (int)FFEnvParam::StageBars, i } });
-    upper->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, bars, std::to_string(i + 1)));
+    upper->Add(0, 0, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, bars, std::to_string(i + 1)));
     upper->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, bars));
     auto lower = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1 }, std::vector<int> { 1, 1 });
     grid->Add(1, 1 + i, lower);
@@ -104,5 +104,42 @@ FFMakeEnvGUI(FBPlugGUI* plugGUI)
   for (int i = FFEnvSlotOffset; i < FFEnvCount; i++)
     tabs->AddModuleTab(true, false, { (int)FFModuleType::Env, i }, MakeEnvTab(plugGUI, i));
   tabs->ActivateStoredSelectedTab();
+
+  PopupMenu insertMenu;
+  PopupMenu removeMenu;
+  for (int i = 0; i < FFEnvStageCount; i++)
+  {
+    insertMenu.addItem(1000 + i, std::to_string(i + 1));
+    removeMenu.addItem(2000 + i, std::to_string(i + 1));
+  }
+  tabs->extendedMenu.addSubMenu("Remove Stage At", removeMenu);
+  tabs->extendedMenu.addSubMenu("Insert Stage Before", insertMenu);
+  tabs->extendedMenuHandler = [](FBPlugGUI* plugGUI, FBTopoIndices const& indices, int id) {
+
+    std::vector<FFEnvParam> stageParams = { 
+      FFEnvParam::StageTime, FFEnvParam::StageBars, 
+      FFEnvParam::StageLevel, FFEnvParam::StageSlope };
+
+    if (1000 <= id && id < 1000 + FFEnvStageCount)
+    {
+      int stage = id - 1000;
+      plugGUI->HostContext()->UndoState().Snapshot("Insert Stage Before " + std::to_string(stage + 1));
+      for (int i = FFEnvStageCount - 1; i > stage; i--)
+        for (int j = 0; j < stageParams.size(); j++)
+          plugGUI->HostContext()->CopyAudioParam(
+            { indices, { (int)stageParams[j], i - 1 } }, { indices, { (int)stageParams[j], i } });
+    }
+
+    else if (2000 <= id && id < 2000 + FFEnvStageCount)
+    {
+      int stage = id - 2000;
+      plugGUI->HostContext()->UndoState().Snapshot("Remove Stage At " + std::to_string(stage + 1));
+      for (int i = stage; i < FFEnvStageCount - 1; i++)
+        for (int j = 0; j < stageParams.size(); j++)
+          plugGUI->HostContext()->CopyAudioParam(
+            { indices, { (int)stageParams[j], i + 1 } }, { indices, { (int)stageParams[j], i } });
+    }
+  };
+
   return tabs;
 }

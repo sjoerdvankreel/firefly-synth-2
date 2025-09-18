@@ -3,6 +3,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoTopo.hpp>
 #include <firefly_synth/modules/echo/FFEchoProcessor.hpp>
+#include <firefly_synth/modules/echo/FFEchoStateVoiceStart.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/base/shared/FBUtility.hpp>
@@ -12,8 +13,6 @@
 
 struct FBStaticModule;
 
-template <bool Global>
-class FFEchoProcessor;
 template <bool Global>
 struct EchoGraphRenderData;
 
@@ -56,9 +55,7 @@ class alignas(alignof(TBlock)) FFEchoBlockParamState final
   std::array<TBlock, 1> feedbackOn = {};
   std::array<TBlock, 1> vTargetOrGTarget = {};
   std::array<TBlock, 1> feedbackDelayBars = {};
-  std::array<TBlock, 1> voiceFadeTime = {};
   std::array<TBlock, 1> voiceFadeBars = {};
-  std::array<TBlock, 1> voiceExtendTime = {};
   std::array<TBlock, 1> voiceExtendBars = {};
   std::array<TBlock, 1> delaySmoothTime = {};
   std::array<TBlock, 1> delaySmoothBars = {};
@@ -115,6 +112,7 @@ class alignas(alignof(TAccurate)) FFEchoParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeEchoTopo(bool global);
   FFEchoAccParamState<TAccurate> acc = {};
   FFEchoBlockParamState<TBlock> block = {};
+  FFEchoVoiceStartParamState<TAccurate> voiceStart = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEchoParamState);
 };

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <firefly_synth/modules/env/FFEnvTopo.hpp>
+#include <firefly_synth/modules/env/FFEnvStateVoiceStart.hpp>
+
 #include <firefly_base/base/shared/FBUtility.hpp>
 #include <firefly_base/dsp/shared/FBBasicLPFilter.hpp>
 
@@ -9,6 +11,8 @@
 struct FFScalarState;
 struct FBStaticTopo;
 struct FBModuleProcState;
+struct FFEnvExchangeState;
+
 class FBGraphRenderState;
 
 class FFEnvProcessor final
@@ -28,6 +32,12 @@ class FFEnvProcessor final
   float _lastOverall = 0.0f;
   float _lastBeforeRelease = 0.0f;
 
+  float _portaSectionAmpAttackNorm = 1.0f;
+  float _portaSectionAmpReleaseNorm = 1.0f;
+  bool _thisVoiceIsSubSectionStart = false;
+  bool _otherVoiceSubSectionTookOver = false;
+  FFEnvVoiceStartParamState<float> _voiceStartSnapshotNorm = {};
+
   int _smoothPosition = {};
   FBBasicLPFilter _smoother = {};
   std::array<int, (int)FFEnvStageCount> _stageSamples = {};
@@ -36,6 +46,6 @@ class FFEnvProcessor final
 
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFEnvProcessor);
-  void BeginVoice(FBModuleProcState& state);
-  int Process(FBModuleProcState& state, int releaseAt);
+  void BeginVoice(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, bool graph);
+  int Process(FBModuleProcState& state, FFEnvExchangeState const* exchangeFromDSP, bool graph, int releaseAt);
 };

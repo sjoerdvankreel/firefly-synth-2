@@ -51,9 +51,9 @@ FFOsciProcessor::AllocOnDemandBuffers(
 
   auto* procState = state->RawAs<FFProcState>();
   auto const& params = procState->param.voice.osci[moduleSlot];
-  auto const& typeNorm = params.block.type[0].GlobalValue();
-  auto const& uniCountNorm = params.block.uniCount[0].GlobalValue();
   auto const& moduleTopo = topo->static_->modules[(int)FFModuleType::Osci];
+  float typeNorm = params.block.type[0].GlobalValue();
+  float  uniCountNorm = params.block.uniCount[0].GlobalValue();
 
   auto type = moduleTopo.NormalizedToListFast<FFOsciType>(FFOsciParam::Type, typeNorm);
   int uniCount = moduleTopo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm); 
@@ -65,7 +65,7 @@ FFOsciProcessor::AllocOnDemandBuffers(
 }
 
 void
-FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
+FFOsciProcessor::BeginVoice(FBModuleProcState& state, bool graph)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -82,10 +82,10 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   auto const& modTopo = state.topo->static_->modules[(int)FFModuleType::OsciMod];
 
   float uniCountNorm = params.block.uniCount[0].Voice()[voice];
-  float uniOffsetNorm = params.block.uniOffset[0].Voice()[voice];
-  float uniRandomNorm = params.block.uniRandom[0].Voice()[voice];
   float modExpoFMNorm = modParams.block.expoFM[0].Voice()[voice];
   float modOversampleNorm = modParams.block.oversample[0].Voice()[voice];
+  _voiceStartSnapshotNorm.uniOffset[0] = params.voiceStart.uniOffset[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
+  _voiceStartSnapshotNorm.uniRandom[0] = params.voiceStart.uniRandom[0].Voice()[voice].CV().Get(state.voice->offsetInBlock);
 
   _graph = graph;
   _graphPhaseGen = {};
@@ -98,8 +98,8 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   _oversampleTimes = (!graph && oversample) ? FFOsciOversampleTimes : 1;
 
   _uniCount = topo.NormalizedToDiscreteFast(FFOsciParam::UniCount, uniCountNorm);
-  _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, uniOffsetNorm);
-  _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, uniRandomNorm);
+  _uniOffsetPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniOffset, _voiceStartSnapshotNorm.uniOffset[0]);
+  _uniRandomPlain = topo.NormalizedToIdentityFast(FFOsciParam::UniRandom, _voiceStartSnapshotNorm.uniRandom[0]);
 
   FBSArray<float, FFOsciUniMaxCount> uniPhaseInit = {};
   for (int u = 0; u < _uniCount; u++)
@@ -136,13 +136,13 @@ FFOsciProcessor::BeginVoice(bool graph, FBModuleProcState& state)
   else if (_type == FFOsciType::FM)
     BeginVoiceFM(state, uniPhaseInit);
   else if (_type == FFOsciType::String)
-    BeginVoiceString(graph, state);
+    BeginVoiceString(state, graph);
   else
     FB_ASSERT(false);
 }
 
 int
-FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
+FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
 {
   int voice = state.voice->slot;
   auto* procState = state.ProcAs<FFProcState>();
@@ -197,8 +197,7 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
     auto coarse = topo.NormalizedToLinearFast(FFOsciParam::Coarse, coarseNorm, s);
     auto fine = topo.NormalizedToLinearFast(FFOsciParam::Fine, fineNormModulated.Load(s));
     auto pitch = _keyUntuned + coarse + fine + voicePitchOffsetSemis.Load(s);
-    if (masterPitchBendTarget == FFMasterPitchBendTarget::Voice ||
-      masterPitchBendTarget == FFMasterPitchBendTarget::Osc1 && state.moduleSlot == 0 ||
+    if (masterPitchBendTarget == FFMasterPitchBendTarget::Osc1 && state.moduleSlot == 0 ||
       masterPitchBendTarget == FFMasterPitchBendTarget::Osc2 && state.moduleSlot == 1 ||
       masterPitchBendTarget == FFMasterPitchBendTarget::Osc3 && state.moduleSlot == 2 ||
       masterPitchBendTarget == FFMasterPitchBendTarget::Osc4 && state.moduleSlot == 3)
@@ -289,7 +288,7 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   }
 
   auto& exchangeDSP = exchangeToGUI->voice[voice].osci[state.moduleSlot];
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
   exchangeDSP.lengthSamples = FBFreqToSamples(lastBaseFreq, state.input->sampleRate);
 
   auto& exchangeParams = exchangeToGUI->param.voice.osci[state.moduleSlot];
@@ -302,5 +301,7 @@ FFOsciProcessor::Process(bool graph, FBModuleProcState& state)
   exchangeParams.acc.fine[0][voice] = fineNormModulated.Last();
   exchangeParams.acc.envToGain[0][voice] = envToGain.Last();
   exchangeParams.acc.lfoToFine[0][voice] = lfoToFine.Last();
+  exchangeParams.voiceStart.uniOffset[0][voice] = _voiceStartSnapshotNorm.uniOffset[0];
+  exchangeParams.voiceStart.uniRandom[0][voice] = _voiceStartSnapshotNorm.uniRandom[0];
   return FBFixedBlockSamples;
 }

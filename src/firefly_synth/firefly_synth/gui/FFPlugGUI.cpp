@@ -100,7 +100,7 @@ void
 FFPlugGUI::AudioParamNormalizedChangedFromHost(int index, double normalized)
 {
   FBPlugGUI::AudioParamNormalizedChangedFromHost(index, normalized);
-  if (HostContext()->Topo()->audio.params[index].static_.output)
+  if (HostContext()->Topo()->audio.params[index].static_.mode == FBParamMode::Output)
     return;
   if (_graph->TweakedModuleByUI() == HostContext()->Topo()->audio.params[index].runtimeModuleIndex)
     _graph->RequestRerender(_graph->TweakedModuleByUI());
@@ -188,9 +188,9 @@ FFPlugGUI::SetupGUI()
   _outputGUIAndPatch->Add(0, 1, FFMakeGUISettingsGUI(this));
   _outputGUIAndPatch->Add(0, 2, FFMakePatchGUI(this));
 
-  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 5, 4 } });
-  _topModules->Add(0, 0, FFMakeMasterGUI(this));
-  _topModules->Add(0, 1, FFMakeVoiceModuleGUI(this));
+  _topModules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int> { { 1 } }, std::vector<int> { { 4, 5 } });
+  _topModules->Add(0, 0, FFMakeVoiceModuleGUI(this));
+  _topModules->Add(0, 1, FFMakeMasterGUI(this));
 
   _modules = StoreComponent<FBGridComponent>(false, -1, -1, std::vector<int>(7, 1), std::vector<int> { { 1 } });
   _modules->Add(0, 0, _topModules);

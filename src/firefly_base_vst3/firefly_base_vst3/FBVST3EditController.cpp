@@ -54,7 +54,7 @@ MakePlugParamInfo(FBRuntimeParam const& param, int unitId)
   FBVST3CopyToString128(param.static_.unit, result.units);
 
   result.flags = ParameterInfo::kNoFlags;
-  if (param.static_.AutomationTiming() != FBAutomationTiming::Never)
+  if (param.static_.mode == FBParamMode::Accurate || param.static_.mode == FBParamMode::VoiceStart)
     result.flags = ParameterInfo::kCanAutomate;
   else
   {

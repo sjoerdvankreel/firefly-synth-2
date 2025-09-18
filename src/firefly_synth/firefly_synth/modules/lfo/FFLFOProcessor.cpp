@@ -67,8 +67,9 @@ SkewX(FFLFOSkewXMode mode, FBBatch<float> in, FBBatch<float> amt)
 template <bool Global>
 void
 FFLFOProcessor::BeginVoiceOrBlock(
-  bool graph, int graphIndex, int graphSampleCount, 
-  FFLFOExchangeState const* exchangeState, FBModuleProcState& state)
+  FBModuleProcState& state,
+  FFLFOExchangeState const* exchangeFromDSP,
+  bool graph, int graphIndex, int graphSampleCount)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -175,7 +176,7 @@ FFLFOProcessor::BeginVoiceOrBlock(
       _rateHzByBars[i] = topo.NormalizedToBarsFreqFast(FFLFOParam::RateBars,
         FFSelectDualProcBlockParamNormalized<Global>(rateBarsNorm[i], voice), state.input->bpm);
 
-    bool movingGraph = exchangeState != nullptr && (
+    bool movingGraph = exchangeFromDSP != nullptr && (
       graphIndex == FFLFOBlockCount || 
       _waveMode[i] == FFLFOWaveModeFreeUniRandom || 
       _waveMode[i] == FFLFOWaveModeFreeNormRandom ||
@@ -184,11 +185,11 @@ FFLFOProcessor::BeginVoiceOrBlock(
 
     if (movingGraph)
     {
-      _phaseGens[i] = FFTrackingPhaseGenerator(exchangeState->phases[i]);
-      _uniNoiseGens[i].Init(exchangeState->uniNoiseLastDraw[i], 1, false);
-      _normNoiseGens[i].Init(exchangeState->normNoiseLastDraw[i], 1, false);
-      _smoothUniNoiseGens[i].Init(exchangeState->smoothUniNoiseLastDraw[i], 1, false);
-      _smoothNormNoiseGens[i].Init(exchangeState->smoothNormNoiseLastDraw[i], 1, false);
+      _phaseGens[i] = FFTrackingPhaseGenerator(exchangeFromDSP->phases[i]);
+      _uniNoiseGens[i].Init(exchangeFromDSP->uniNoiseLastDraw[i], 1, false);
+      _normNoiseGens[i].Init(exchangeFromDSP->normNoiseLastDraw[i], 1, false);
+      _smoothUniNoiseGens[i].Init(exchangeFromDSP->smoothUniNoiseLastDraw[i], 1, false);
+      _smoothNormNoiseGens[i].Init(exchangeFromDSP->smoothNormNoiseLastDraw[i], 1, false);
     }
     else
     {
@@ -398,7 +399,7 @@ FFLFOProcessor::Process(FBModuleProcState& state)
   auto& exchangeDSP = *FFSelectDualState<Global>(
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gLFO[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vLFO[state.moduleSlot]; });
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
   exchangeDSP.lengthSamples[FFLFOBlockCount] = 0;
   exchangeDSP.positionSamples[FFLFOBlockCount] = 0;
   for (int i = 0; i < FFLFOBlockCount; i++)
@@ -438,5 +439,5 @@ FFLFOProcessor::Process(FBModuleProcState& state)
 
 template int FFLFOProcessor::Process<true>(FBModuleProcState&);
 template int FFLFOProcessor::Process<false>(FBModuleProcState&);
-template void FFLFOProcessor::BeginVoiceOrBlock<true>(bool, int, int, FFLFOExchangeState const*, FBModuleProcState&);
-template void FFLFOProcessor::BeginVoiceOrBlock<false>(bool, int, int, FFLFOExchangeState const*, FBModuleProcState&);
+template void FFLFOProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, FFLFOExchangeState const*, bool, int, int);
+template void FFLFOProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, FFLFOExchangeState const*, bool, int, int);

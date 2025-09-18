@@ -1,28 +1,6 @@
 #include <firefly_base/base/shared/FBLogging.hpp>
 #include <firefly_base/base/topo/static/FBStaticParam.hpp>
 
-FBAutomationTiming
-FBStaticParam::AutomationTiming() const
-{
-  if (acc)
-    return FBAutomationTiming::PerSample;
-  if (!NonRealTime().IsStepped() && IsVoiceBlock())
-    return FBAutomationTiming::AtVoiceStart;
-  return FBAutomationTiming::Never;
-}
-
-std::string
-FBAutomationTimingToString(FBAutomationTiming timing)
-{
-  switch (timing)
-  {
-  case FBAutomationTiming::Never: return "Never";
-  case FBAutomationTiming::PerSample: return "Per Sample";
-  case FBAutomationTiming::AtVoiceStart: return "At Voice Start";
-  default: FB_ASSERT(false); return {};
-  }
-}
-
 std::string
 FBStaticParamBase::GetDefaultText(int moduleIndex, int moduleSlot, int paramSlot) const
 {

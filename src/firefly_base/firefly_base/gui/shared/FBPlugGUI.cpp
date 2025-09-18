@@ -47,7 +47,7 @@ FBPlugGUI::AudioParamNormalizedChangedFromUI(int index, double value)
 {
   AudioParamNormalizedChanged(index);
   for (int i = 0; i < _paramListeners.size(); i++)
-    _paramListeners[i]->AudioParamChangedFromUI(index, value);
+    _paramListeners[i]->AudioParamChanged(index, value, true);
 }
 
 void
@@ -76,6 +76,8 @@ FBPlugGUI::AudioParamNormalizedChangedFromHost(int index, double value)
     control->SetValueNormalizedFromHost(value);
   }
   AudioParamNormalizedChanged(index);
+  for (int i = 0; i < _paramListeners.size(); i++)
+    _paramListeners[i]->AudioParamChanged(index, value, false);
 }
 
 void
@@ -94,7 +96,7 @@ void
 FBPlugGUI::AudioParamNormalizedChanged(int index)
 {
   auto const& paramTopo = HostContext()->Topo()->audio.params[index].static_;
-  if (paramTopo.output || !paramTopo.NonRealTime().IsStepped())
+  if (paramTopo.mode == FBParamMode::Output || !paramTopo.NonRealTime().IsStepped())
     return;
   for (auto target : _audioParamsVisibleDependents[index])
     target->DependenciesChanged(true);
@@ -110,7 +112,7 @@ FBPlugGUI::GetControlCountForAudioParamIndex(int paramIndex) const
   {
     // Allow opt-out of otherwise obligatory minimum of 1 controller for param.
     auto const& paramTopo = HostContext()->Topo()->audio.params[paramIndex];
-    if (paramTopo.static_.thisIsNotARealParameter)
+    if (paramTopo.static_.mode == FBParamMode::Fake)
       return 0;
   }
 #ifndef NDEBUG
@@ -234,8 +236,15 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
 
   std::string result = param.shortName + ": ";
   result += param.NormalizedToTextWithUnit(false, normalized);
-  result += "\r\nParam index: " + std::to_string(index);
-  result += "\r\nParam tag: " + std::to_string(param.tag);
+  result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
+  if (param.static_.mode == FBParamMode::Accurate || param.static_.mode == FBParamMode::VoiceStart)
+    result += "\r\nAutomate: " + FBEditTypeToString(param.static_.NonRealTime().AutomationEditType());
+  else
+    result += "\r\nAutomate: None";
+  if (param.static_.mode == FBParamMode::Accurate)
+    result += "\r\nAutomation: Per-Sample";
+  if (param.static_.mode == FBParamMode::VoiceStart)
+    result += "\r\nAutomation: At Voice Start";
   if (!param.static_.IsVoice())
     result += "\r\nEngine: " + param.NormalizedToTextWithUnit(false, engineMin);
   else
@@ -243,12 +252,10 @@ FBPlugGUI::GetTooltipForAudioParam(int index) const
     result += "\r\nEngine min: " + param.NormalizedToTextWithUnit(false, engineMin);
     result += "\r\nEngine max: " + param.NormalizedToTextWithUnit(false, engineMax);
   }
-  result += "\r\nEdit: " + FBEditTypeToString(param.static_.NonRealTime().GUIEditType());
-  if (param.static_.AutomationTiming() != FBAutomationTiming::Never)
-    result += "\r\nAutomate: " + FBEditTypeToString(param.static_.NonRealTime().AutomationEditType());
-  else
-    result += "\r\nAutomate: None";
-  result += "\r\nAutomation: " + FBAutomationTimingToString(param.static_.AutomationTiming());
+#ifndef NDEBUG
+  result += "\r\nParam index: " + std::to_string(index);
+  result += "\r\nParam tag: " + std::to_string(param.tag);
+#endif
   return result;
 }
 

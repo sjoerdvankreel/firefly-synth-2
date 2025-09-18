@@ -270,7 +270,7 @@ FBCLAPPlugin::PushParamChangeToProcessorBlock(
   int index, double normalized, int pos)
 {
   auto const& static_ = _topo->audio.params[index].static_;
-  if (static_.acc)
+  if (static_.mode == FBParamMode::Accurate || static_.mode == FBParamMode::VoiceStart)
     _input.accAutoByParamThenSample.push_back(MakeAccAutoEvent(index, normalized, pos));
   else
     _input.blockAuto.push_back(MakeBlockAutoEvent(index, normalized));
@@ -361,7 +361,8 @@ FBCLAPPlugin::process(
       case CLAP_EVENT_PARAM_MOD:
         modFromHost = reinterpret_cast<clap_event_param_mod const*>(header);
         if ((iter = _topo->audio.paramTagToIndex.find(modFromHost->param_id)) != _topo->audio.paramTagToIndex.end())
-          if (_topo->audio.params[iter->second].static_.acc)
+          if (_topo->audio.params[iter->second].static_.mode == FBParamMode::Accurate || 
+            _topo->audio.params[iter->second].static_.mode == FBParamMode::VoiceStart)
             _input.accModByParamThenNoteThenSample.push_back(MakeAccModEvent(iter->second, modFromHost));
         break;
       case CLAP_EVENT_PARAM_VALUE:
@@ -420,7 +421,7 @@ FBCLAPPlugin::process(
       _input.audio = FBHostAudioBlock(process->audio_inputs[0].data32, process->frames_count);
 
     _hostProcessor->ProcessHost(_input, _output);
-    _exchangeStateQueue->Enqueue(_dspExchangeState->Raw());
+    _exchangeStateQueue->TryEnqueue(_dspExchangeState->Raw());
 
     for (auto const& op : _output.outputParams)
       _audioToMainEvents.enqueue(FBMakeSyncToMainEvent(op.param, op.normalized));

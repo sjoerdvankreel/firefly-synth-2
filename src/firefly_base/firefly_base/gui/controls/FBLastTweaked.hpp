@@ -20,7 +20,7 @@ public:
 
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  void AudioParamChangedFromUI(int index, double normalized) override;
+  void AudioParamChanged(int index, double normalized, bool changedFromUI) override;
 };
 
 class FBLastTweakedTextBox:
@@ -45,5 +45,5 @@ public:
 
   int FixedHeight() const override;
   int FixedWidth(int height) const override;
-  void AudioParamChangedFromUI(int index, double normalized) override;
+  void AudioParamChanged(int index, double normalized, bool changedFromUI) override;
 };

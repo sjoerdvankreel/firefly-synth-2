@@ -3,6 +3,7 @@
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
+#include <firefly_synth/modules/osci/FFOsciStateVoiceStart.hpp>
 #include <firefly_synth/modules/osci_mod/FFOsciModState.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
@@ -33,12 +34,9 @@ class alignas(alignof(TBlock)) FFOsciBlockParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   std::array<TBlock, 1> type = {};
   std::array<TBlock, 1> uniCount = {};
-  std::array<TBlock, 1> uniOffset = {};
-  std::array<TBlock, 1> uniRandom = {};
   std::array<TBlock, 1> waveHSMode = {};
   std::array<TBlock, FFOsciWavePWCount> wavePWMode = {};
   std::array<TBlock, FFOsciWaveBasicCount> waveBasicMode = {};
-  std::array<TBlock, 1> waveDSFBW = {};
   std::array<TBlock, 1> waveDSFMode = {};
   std::array<TBlock, 1> waveDSFOver = {};
   std::array<TBlock, 1> waveDSFDistance = {};
@@ -103,6 +101,7 @@ class alignas(alignof(TAccurate)) FFOsciParamState final
   friend std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
   FFOsciAccParamState<TAccurate> acc = {};
   FFOsciBlockParamState<TBlock> block = {};
+  FFOsciVoiceStartParamState<TAccurate> voiceStart = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFOsciParamState);
 };

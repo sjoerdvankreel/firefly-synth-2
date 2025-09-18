@@ -1,5 +1,8 @@
 #pragma once
 
+#include <firefly_synth/dsp/shared/FFMarsagliaPRNG.hpp>
+#include <firefly_synth/dsp/shared/FFParkMillerPRNG.hpp>
+
 #include <firefly_base/dsp/plug/FBPlugProcessor.hpp>
 #include <firefly_base/base/state/proc/FBModuleProcState.hpp>
 
@@ -17,6 +20,10 @@ public IFBPlugProcessor
   FBRuntimeTopo const* const _topo;
   FFProcState* const _procState;
   FFExchangeState* const _exchangeState;
+
+  // on note random
+  FFParkMillerPRNG _onNoteRandomUni = {};
+  FFMarsagliaPRNG<false> _onNoteRandomNorm = {};
 
   // connect to manual-click button, sick of dealing with this
   bool _prevFlushDelayToggle = false;

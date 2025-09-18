@@ -60,7 +60,7 @@ FFPlugProcessor::ProcessGEcho(
   auto& globalDSP = _procState->dsp.global;
   state.moduleSlot = 0;
   inout.CopyTo(globalDSP.gEcho.input);
-  globalDSP.gEcho.processor->BeginVoiceOrBlock(false, -1, -1, state);
+  globalDSP.gEcho.processor->BeginVoiceOrBlock(state, false, -1, -1);
   globalDSP.gEcho.processor->Process(state, -1);
   globalDSP.gEcho.output.CopyTo(inout);
 }
@@ -81,9 +81,17 @@ FFPlugProcessor::LeaseVoices(
   for (int n = 0; n < input.noteEvents->size(); n++)
     if ((*input.noteEvents)[n].on)
     {
+      std::array<float, FFVNoteOnNoteRandomCount> onNoteRandomUni;
+      std::array<float, FFVNoteOnNoteRandomCount> onNoteRandomNorm;
+      for (int r = 0; r < FFVNoteOnNoteRandomCount; r++)
+      {
+        onNoteRandomUni[r] = _onNoteRandomUni.NextScalar();
+        onNoteRandomNorm[r] = _onNoteRandomNorm.NextScalar();
+      }
+
       int voice = input.voiceManager->Lease((*input.noteEvents)[n]);
       auto state = MakeModuleVoiceState(input, voice);
-      _procState->dsp.voice[voice].processor.BeginVoice(state);
+      _procState->dsp.voice[voice].processor.BeginVoice(state, onNoteRandomUni, onNoteRandomNorm);
     }
 }
 
@@ -150,7 +158,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   for (int i = 0; i < FFLFOCount; i++)
   {
     state.moduleSlot = i;
-    globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, nullptr, state);
+    globalDSP.gLFO[i].processor->BeginVoiceOrBlock<true>(state, nullptr, false, -1, -1);
     globalDSP.gLFO[i].processor->Process<true>(state);
     ApplyGlobalModulation(input, state, { (int)FFModuleType::GLFO, i });
   }
@@ -208,7 +216,7 @@ FFPlugProcessor::ProcessPostVoice(
       ProcessGEcho(state, globalDSP.gEffect[i].input);
     
     state.moduleSlot = i; // gecho changes it!
-    globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(false, -1, -1, state);
+    globalDSP.gEffect[i].processor->BeginVoiceOrBlock<true>(state, false, -1, -1);
     globalDSP.gEffect[i].processor->Process<true>(state);
 
     if (i == 0 && gEchoTarget == FFGEchoTarget::AfterFX1)
@@ -260,7 +268,7 @@ FFPlugProcessor::ProcessPostVoice(
   }
 
   auto& exchangeDSP = exchangeToGUI->global.gMix[0];
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
 
   auto& exchangeParams = exchangeToGUI->param.global.gMix[0];
   exchangeParams.acc.bal[0] = balNormModulated.Last();

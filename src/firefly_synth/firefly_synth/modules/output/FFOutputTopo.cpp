@@ -16,8 +16,7 @@ FFMakeOutputTopo()
   auto selectModule = [](auto& state) { return &state.global.output; };
 
   auto& voices = result->params[(int)FFOutputParam::Voices];
-  voices.acc = false;
-  voices.output = true;
+  voices.mode = FBParamMode::Output;
   voices.defaultText = "0";
   voices.name = "Voices";
   voices.unit = "%";
@@ -31,8 +30,7 @@ FFMakeOutputTopo()
   voices.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoices);
 
   auto& cpu = result->params[(int)FFOutputParam::Cpu];
-  cpu.acc = false;
-  cpu.output = true;
+  cpu.mode = FBParamMode::Output;
   cpu.defaultText = "0";
   cpu.name = "CPU";
   cpu.unit = "%";
@@ -46,8 +44,7 @@ FFMakeOutputTopo()
   cpu.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCpu);
 
   auto& gain = result->params[(int)FFOutputParam::Gain];
-  gain.acc = false;
-  gain.output = true;
+  gain.mode = FBParamMode::Output;
   gain.defaultText = "0";
   gain.name = "Gain";
   gain.unit = "%";
@@ -61,8 +58,7 @@ FFMakeOutputTopo()
   gain.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectGain);
 
   auto& mtsEspOn = result->params[(int)FFOutputParam::MtsEspOn];
-  mtsEspOn.acc = false;
-  mtsEspOn.output = true;
+  mtsEspOn.mode = FBParamMode::Output;
   mtsEspOn.name = "MTS-ESP";
   mtsEspOn.slotCount = 1;
   mtsEspOn.defaultText = "Off";

@@ -30,10 +30,10 @@ FFOsciProcessor::BeginVoiceFM(
   auto const& params = procState->param.voice.osci[state.moduleSlot];
   auto const& topo = state.topo->static_->modules[(int)FFModuleType::Osci];
 
-  auto const& fmModeNorm = params.block.fmMode[0].Voice()[voice];
-  auto const& fmRatioModeNorm = params.block.fmRatioMode[0].Voice()[voice];
-  auto const& fmRatioRatio12Norm = params.block.fmRatioRatio[0].Voice()[voice];
-  auto const& fmRatioRatio23Norm = params.block.fmRatioRatio[1].Voice()[voice];
+  float fmModeNorm = params.block.fmMode[0].Voice()[voice];
+  float fmRatioModeNorm = params.block.fmRatioMode[0].Voice()[voice];
+  float fmRatioRatio12Norm = params.block.fmRatioRatio[0].Voice()[voice];
+  float fmRatioRatio23Norm = params.block.fmRatioRatio[1].Voice()[voice];
 
   _fmMode = topo.NormalizedToListFast<FFOsciFMMode>(FFOsciParam::FMMode, fmModeNorm);
   _fmRatioMode = topo.NormalizedToListFast<FFOsciFMRatioMode>(FFOsciParam::FMRatioMode, fmRatioModeNorm);

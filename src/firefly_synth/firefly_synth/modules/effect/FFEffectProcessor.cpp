@@ -97,7 +97,7 @@ FFEffectProcessor::AllocOnDemandBuffers(
 template <bool Global>
 void
 FFEffectProcessor::BeginVoiceOrBlock(
-  bool graph, int graphIndex, int graphSampleCount, FBModuleProcState& state)
+  FBModuleProcState& state, bool graph, int graphIndex, int graphSampleCount)
 {
   auto* procState = state.ProcAs<FFProcState>();
   int voice = state.voice == nullptr ? -1 : state.voice->slot;
@@ -456,7 +456,7 @@ FFEffectProcessor::Process(FBModuleProcState& state)
   auto& exchangeDSP = *FFSelectDualState<Global>(
     [exchangeToGUI, &state]() { return &exchangeToGUI->global.gEffect[state.moduleSlot]; },
     [exchangeToGUI, &state, voice]() { return &exchangeToGUI->voice[voice].vEffect[state.moduleSlot]; });
-  exchangeDSP.active = true;
+  exchangeDSP.boolIsActive = 1;
   exchangeDSP.lengthSamples = FBTimeToSamples(FFEffectPlotLengthSeconds, sampleRate);
 
   auto& exchangeParams = *FFSelectDualState<Global>(
@@ -716,7 +716,7 @@ FFEffectProcessor::ProcessFold(
 
 template int FFEffectProcessor::Process<true>(FBModuleProcState&);
 template int FFEffectProcessor::Process<false>(FBModuleProcState&);
-template void FFEffectProcessor::BeginVoiceOrBlock<true>(bool, int, int, FBModuleProcState&);
-template void FFEffectProcessor::BeginVoiceOrBlock<false>(bool, int, int, FBModuleProcState&);
+template void FFEffectProcessor::BeginVoiceOrBlock<true>(FBModuleProcState&, bool, int, int);
+template void FFEffectProcessor::BeginVoiceOrBlock<false>(FBModuleProcState&, bool, int, int);
 template void FFEffectProcessor::AllocOnDemandBuffers<true>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);
 template void FFEffectProcessor::AllocOnDemandBuffers<false>(FBRuntimeTopo const*, FBProcStateContainer*, int, bool, float);

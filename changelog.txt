@@ -1,3 +1,23 @@
+September 17, 2025 - Alpha 16.
+
+- Core
+* Only show parameter tag and index in debug mode.
+* Performance fix: CLAP data exchange (processor to controller for GUI graphs) was slow.
+
+- GUI
+* Envelope: context menu items for insert/remove stage.
+* Matrix: add insert/remove/up/down buttons for each route.
+* Matrix: show a couple graphs to get a feeling for what a modulation route is doing. These are based on static "example" data, not realtime from the engine (that would basically require to calculate the entire synth state to plot it).
+
+- Modules:
+* Matrix: decreased slot count (breaking change).
+* Matrix: add lo/hi controls for source. These are not really modulators but rather "a statement of truth": If you *know* the mod source is always between 40-60% normalized, set those values and the source will be remapped unto 0..1. Use case: MIDI key range 0..127 as a mod source.
+* Matrix: scale is now "always on". Select "None" for a continuous 100% signal.
+* Matrix: scale now has min/max control parameters. Set min > max for an inverted signal.
+* VNote: add 6 new mod sources: 3x on-note-random-uniform, 3x on-note-random-gaussian.
+* Voice module: add (enabled) attack/release section time multipliers on the amp envelope. Use case: play abc-pause-def as portamento sections, shorten attack times of bcef, shorten release times of abde. I use it to fake monophonic mode (which i dont want to re-implement, it's the buggiest thing in FF1) for leads.
+* Allow on-voice-start-modulation of a tiny subset of parameters. These params are really block-based, but they now react (sample accurate) to CLAP modulation and internal modulators both, at voice-sample-start-position. Use case: throw some randomness at voice amp stage 0 (for note delays).
+
 September 08, 2025 - Alpha 15.
 
 - Support Intel Mac.

@@ -15,7 +15,7 @@ struct FBStaticModule;
 template <bool Global>
 struct LFOGraphRenderData;
 
-struct FFLFOExchangeState final:
+struct alignas(FBSIMDAlign) FFLFOExchangeState final:
 public FBModuleProcMultiExchangeState<FFLFOBlockCount + 1>
 {
   std::array<float, FFLFOBlockCount> phases = {};
