@@ -1,4 +1,5 @@
 TODOLIST for alpha-17
+[ ] preset infra
 [ ] highlight not default
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
