@@ -1,7 +1,6 @@
 TODOLIST for alpha-17
 [ ] global unison
-[ ] invert scale-none no workie
-[ ] build without alignment warnings
+[ ] invert scale-none no workie => cannot do, need bipolar amount
 
 TODOLIST for alpha-18
 [ ] make a dedicated tuning section with some options
