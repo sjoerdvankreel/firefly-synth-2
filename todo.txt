@@ -1,5 +1,8 @@
 TODOLIST for alpha-17
 [ ] global unison
+[ ] on note random
+[ ] where goes the echo
+
 
 TODOLIST for alpha-18
 [ ] make a dedicated tuning section with some options

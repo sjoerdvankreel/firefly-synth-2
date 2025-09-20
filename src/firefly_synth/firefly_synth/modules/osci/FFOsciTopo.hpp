@@ -6,7 +6,6 @@
 #include <string>
 
 struct FBStaticModule;
-inline int constexpr FFOsciUniMaxCount = 8;
 std::unique_ptr<FBStaticModule> FFMakeOsciTopo();
 
 enum class FFOsciFMMode { Linear, Exp };
@@ -22,6 +21,7 @@ enum class FFOsciWavePWMode { Off, Sqr, Rect, TriPls, TriSaw, TrapTri, HWSaw };
 enum class FFOsciWaveBasicMode { Off, Sin, Cos, Saw, Tri, Rect, Ramp, SinSqr, 
   SawSqr, SinSaw, BSSin, HWSin, FWSin, AltSin, Trap, SawM1, SqrM1, Parabl, HypTri };
 
+inline int constexpr FFOsciUniMaxCount = 8;
 inline int constexpr FFOsciWavePWCount = 2;
 inline int constexpr FFOsciWaveBasicCount = 2;
 inline int constexpr FFOsciStringMaxPoles = 8;

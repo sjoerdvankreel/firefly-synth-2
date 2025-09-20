@@ -9,7 +9,7 @@
 
 class FBProcStateContainer;
 
-inline int constexpr FBMaxVoices = 32;
+inline int constexpr FBMaxVoices = 64;
 
 enum class FBVoiceState { Free, Active, Returned };
 
