@@ -4,6 +4,7 @@ TODOLIST for alpha-17
 [ ] where goes the echo
 [ ] test with porta 
 [ ] echo controls
+[ ] place echo everywhere
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
