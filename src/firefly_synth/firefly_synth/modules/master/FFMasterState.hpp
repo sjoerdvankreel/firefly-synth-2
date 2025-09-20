@@ -41,6 +41,8 @@ class alignas(alignof(TBlock)) FFMasterBlockParamState final
   std::array<TBlock, 1> hostSmoothTime = {};
   std::array<TBlock, 1> pitchBendRange = {};
   std::array<TBlock, 1> pitchBendTarget = {};
+  std::array<TBlock, FFMasterUniMaxCount> uniEchoFade = {};
+  std::array<TBlock, FFMasterUniMaxCount> uniEchoExtend = {};
   std::array<TBlock, FFMasterUniMaxCount> uniEnvOffset = {};
   std::array<TBlock, FFMasterUniMaxCount> uniEnvStretch = {};
   std::array<TBlock, FFMasterUniMaxCount> uniOscPhaseRand = {};
@@ -78,9 +80,9 @@ class alignas(alignof(TAccurate)) FFMasterAccParamState final
   std::array<TAccurate, FFMasterUniMaxCount> uniEchoFdbkDelay = {};
   std::array<TAccurate, FFMasterUniMaxCount> uniEchoFdbkMix = {};
   std::array<TAccurate, FFMasterUniMaxCount> uniEchoFdbkAmt = {};
-  std::array<TAccurate, FFMasterUniMaxCount> uniReverbMix = {};
-  std::array<TAccurate, FFMasterUniMaxCount> uniReverbSize = {};
-  std::array<TAccurate, FFMasterUniMaxCount> uniReverbDamp = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoReverbMix = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoReverbSize = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoReverbDamp = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
 };
