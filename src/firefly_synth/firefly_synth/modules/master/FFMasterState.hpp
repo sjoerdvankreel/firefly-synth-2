@@ -36,6 +36,7 @@ class alignas(alignof(TBlock)) FFMasterBlockParamState final
 {
   friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
+  std::array<TBlock, 1> uniCount = {};
   std::array<TBlock, 1> tuningMode = {};
   std::array<TBlock, 1> hostSmoothTime = {};
   std::array<TBlock, 1> pitchBendRange = {};
@@ -52,6 +53,10 @@ class alignas(alignof(TAccurate)) FFMasterAccParamState final
   std::array<TAccurate, 1> modWheel = {};
   std::array<TAccurate, 1> pitchBend = {};
   std::array<TAccurate, FFMasterAuxCount> aux = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniOscPan = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniOscGain = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniOscFine = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniOscCoarse = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
 };

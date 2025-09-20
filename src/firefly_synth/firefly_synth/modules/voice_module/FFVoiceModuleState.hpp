@@ -32,7 +32,6 @@ class alignas(alignof(TBlock)) FFVoiceModuleBlockParamState final
 {
   friend class FFVoiceModuleProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeVoiceModuleTopo();
-  std::array<TBlock, 1> uniCount = {};
   std::array<TBlock, 1> portaType = {};
   std::array<TBlock, 1> portaMode = {};
   std::array<TBlock, 1> portaSync = {};
@@ -50,10 +49,6 @@ class alignas(alignof(TAccurate)) FFVoiceModuleAccParamState final
   std::array<TAccurate, 1> coarse = {};
   std::array<TAccurate, 1> lfo5ToFine = {};
   std::array<TAccurate, 1> env5ToCoarse = {};
-  std::array<TAccurate, 1> uniOscPan = {};
-  std::array<TAccurate, 1> uniOscGain = {};
-  std::array<TAccurate, 1> uniOscFine = {};
-  std::array<TAccurate, 1> uniOscCoarse = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFVoiceModuleAccParamState);
 };
