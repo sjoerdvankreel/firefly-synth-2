@@ -16,9 +16,8 @@ enum class FFMasterParam {
   ModWheel, PitchBend, PitchBendRange, PitchBendTarget, 
   UniCount, 
   UniOscGain, UniFirst = UniOscGain, UniOscPan, UniOscCoarse, UniOscFine, UniOscPhaseOffset, UniOscPhaseRand,
-  UniVFXParamA, UniVFXParamB, UniVFXParamC, UniVFXParamD,
-  UniLFORate, UniLFOPhaseOffset, UniLFOPhaseRand, UniLFOMin, UniLFOMax, UniLFOSkewAX, UniLFOSkewAY,
-  UniEnvOffset, UniEnvStretch, 
+  UniLFORate, UniLFOMin, UniLFOMax, UniLFOSkewAX, UniLFOSkewAY, UniLFOPhaseOffset, UniLFOPhaseRand,
+  UniEnvOffset, UniEnvStretch, UniVFXParamA, UniVFXParamB, UniVFXParamC, UniVFXParamD,
   UniEchoTapLevel, UniEchoTapDelay, UniEchoTapBal, UniEchoFdbkDelay, UniEchoFdbkMix, UniEchoFdbkAmt,
   UniReverbMix, UniReverbSize, UniReverbDamp, Count };
 
