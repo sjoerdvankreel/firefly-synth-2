@@ -30,17 +30,18 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
   auto columnSizes = std::vector<int>();
   columnSizes.push_back(0);
   columnSizes.push_back(0);
-  for(int i = 0; i < uniControlCount * 2; i++)
+  for(int i = 0; i < FFMasterUniMaxCount * 2; i++)
     columnSizes.push_back(0);
 
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
   grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice"));
-  grid->Add(0, 1 + uniControlCount / 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice"));
-  for (int i = 0; i < FFMasterUniMaxCount; i++)
+  grid->Add(0, 1 + FFMasterUniMaxCount, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice"));
+  for (int c = 0; c < 2; c++)
   {
-    grid->Add(0, 1 + i, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
-    grid->Add(0, 2 + i * 2, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
+    int guiCol = c * (FFMasterUniMaxCount + 1);
+    for (int i = 0; i < FFMasterUniMaxCount; i++)
+      grid->Add(0, guiCol + i, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
   }
 
   for (int c = 0; c < 2; c++)
@@ -48,7 +49,7 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
     for (int r = 0; r < uniControlCount / 2; r++)
     {
       int guiRow = r + 1;
-      int guiCol = c * (uniControlCount + 1);
+      int guiCol = c * (FFMasterUniMaxCount + 1);
       int paramOffset = c * uniControlCount / 2 + r;
       auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFirst + paramOffset, 0 } });
       grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLabel>(plugGUI, param0));

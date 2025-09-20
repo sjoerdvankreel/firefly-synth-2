@@ -200,7 +200,7 @@ FFMakeMasterTopo()
   uniOscFine.name = "Osc Fine";
   uniOscFine.slotCount = FFMasterUniMaxCount;
   uniOscFine.unit = "Cent";
-  uniOscFine.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
+  uniOscFine.id = "{D32C05E9-BE89-43CB-887F-AF7B1001518F}";
   uniOscFine.type = FBParamType::Linear;
   uniOscFine.Linear().min = -1.0f;
   uniOscFine.Linear().max = 1.0f;
