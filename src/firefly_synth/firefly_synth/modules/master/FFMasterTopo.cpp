@@ -337,6 +337,62 @@ FFMakeMasterTopo()
   uniLFOPhaseRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniLFOPhaseRand);
   uniLFOPhaseRand.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniLFOPhaseRand, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
+  auto& uniVFXParamA = result->params[(int)FFMasterParam::UniVFXParamA];
+  uniVFXParamA.mode = FBParamMode::Accurate;
+  uniVFXParamA.defaultText = "50";
+  uniVFXParamA.name = "VFX Param A";
+  uniVFXParamA.slotCount = FFMasterUniMaxCount;
+  uniVFXParamA.unit = "%";
+  uniVFXParamA.id = "{E383FFF3-6549-44A4-878B-9BE81EB4A69F}";
+  uniVFXParamA.type = FBParamType::Identity;
+  auto selectUniVFXParamA = [](auto& module) { return &module.acc.uniVFXParamA; };
+  uniVFXParamA.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniVFXParamA);
+  uniVFXParamA.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniVFXParamA);
+  uniVFXParamA.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniVFXParamA);
+  uniVFXParamA.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniVFXParamA, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniVFXParamB = result->params[(int)FFMasterParam::UniVFXParamB];
+  uniVFXParamB.mode = FBParamMode::Accurate;
+  uniVFXParamB.defaultText = "50";
+  uniVFXParamB.name = "VFX Param B";
+  uniVFXParamB.slotCount = FFMasterUniMaxCount;
+  uniVFXParamB.unit = "%";
+  uniVFXParamB.id = "{82D2D353-D454-496B-BB0E-F7B23D20D698}";
+  uniVFXParamB.type = FBParamType::Identity;
+  auto selectUniVFXParamB = [](auto& module) { return &module.acc.uniVFXParamB; };
+  uniVFXParamB.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniVFXParamB);
+  uniVFXParamB.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniVFXParamB);
+  uniVFXParamB.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniVFXParamB);
+  uniVFXParamB.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniVFXParamB, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniVFXParamC = result->params[(int)FFMasterParam::UniVFXParamC];
+  uniVFXParamC.mode = FBParamMode::Accurate;
+  uniVFXParamC.defaultText = "50";
+  uniVFXParamC.name = "VFX Param C";
+  uniVFXParamC.slotCount = FFMasterUniMaxCount;
+  uniVFXParamC.unit = "%";
+  uniVFXParamC.id = "{55539EFD-3561-4F1F-BDDC-FF0CEC2AA14B}";
+  uniVFXParamC.type = FBParamType::Identity;
+  auto selectUniVFXParamC = [](auto& module) { return &module.acc.uniVFXParamC; };
+  uniVFXParamC.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniVFXParamC);
+  uniVFXParamC.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniVFXParamC);
+  uniVFXParamC.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniVFXParamC);
+  uniVFXParamC.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniVFXParamC, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniVFXParamD = result->params[(int)FFMasterParam::UniVFXParamD];
+  uniVFXParamD.mode = FBParamMode::Accurate;
+  uniVFXParamD.defaultText = "50";
+  uniVFXParamD.name = "VFX Param D";
+  uniVFXParamD.slotCount = FFMasterUniMaxCount;
+  uniVFXParamD.unit = "%";
+  uniVFXParamD.id = "{9346FF6B-068F-4F36-A4CD-68A652CF1A2C}";
+  uniVFXParamD.type = FBParamType::Identity;
+  auto selectUniVFXParamD = [](auto& module) { return &module.acc.uniVFXParamD; };
+  uniVFXParamD.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniVFXParamD);
+  uniVFXParamD.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniVFXParamD);
+  uniVFXParamD.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniVFXParamD);
+  uniVFXParamD.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniVFXParamD, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
   auto& outputAux = result->cvOutputs[(int)FFMasterCVOutput::Aux];
   outputAux.name = "Aux";
   outputAux.slotCount = FFMasterAuxCount;

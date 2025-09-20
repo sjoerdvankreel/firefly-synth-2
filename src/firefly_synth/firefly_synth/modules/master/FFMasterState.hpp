@@ -66,6 +66,10 @@ class alignas(alignof(TAccurate)) FFMasterAccParamState final
   std::array<TAccurate, FFMasterUniMaxCount> uniLFOMax = {};
   std::array<TAccurate, FFMasterUniMaxCount> uniLFOSkewAX = {};
   std::array<TAccurate, FFMasterUniMaxCount> uniLFOSkewAY = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniVFXParamA = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniVFXParamB = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniVFXParamC = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniVFXParamD = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
 };
