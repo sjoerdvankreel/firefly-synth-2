@@ -239,7 +239,103 @@ FFMakeMasterTopo()
   uniOscPhaseRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOscPhaseRand);
   uniOscPhaseRand.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniOscPhaseRand, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
-  //UniLFORate, UniLFOPhaseOffset, UniLFOPhaseOffsetRand, UniLFOMin, UniLFOMax, UniLFOSkewAX, UniLFOSkewAY,
+  auto& uniLFORate = result->params[(int)FFMasterParam::UniLFORate];
+  uniLFORate.mode = FBParamMode::Accurate;
+  uniLFORate.defaultText = "50";
+  uniLFORate.name = "LFO Rate";
+  uniLFORate.slotCount = FFMasterUniMaxCount;
+  uniLFORate.unit = "%";
+  uniLFORate.id = "{A14D92A7-0952-4DF9-98D6-194B1A763DDF}";
+  uniLFORate.type = FBParamType::Identity;
+  auto selectUniLFORate = [](auto& module) { return &module.acc.uniLFORate; };
+  uniLFORate.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniLFORate);
+  uniLFORate.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniLFORate);
+  uniLFORate.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniLFORate);
+  uniLFORate.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniLFORate, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniLFOMin = result->params[(int)FFMasterParam::UniLFOMin];
+  uniLFOMin.mode = FBParamMode::Accurate;
+  uniLFOMin.defaultText = "50";
+  uniLFOMin.name = "LFO Min";
+  uniLFOMin.slotCount = FFMasterUniMaxCount;
+  uniLFOMin.unit = "%";
+  uniLFOMin.id = "{BC67CD56-29BF-491D-BA5F-43541B6E506D}";
+  uniLFOMin.type = FBParamType::Identity;
+  auto selectUniLFOMin = [](auto& module) { return &module.acc.uniLFOMin; };
+  uniLFOMin.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniLFOMin);
+  uniLFOMin.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniLFOMin);
+  uniLFOMin.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniLFOMin);
+  uniLFOMin.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniLFOMin, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+  
+  auto& uniLFOMax = result->params[(int)FFMasterParam::UniLFOMax];
+  uniLFOMax.mode = FBParamMode::Accurate;
+  uniLFOMax.defaultText = "50";
+  uniLFOMax.name = "LFO Max";
+  uniLFOMax.slotCount = FFMasterUniMaxCount;
+  uniLFOMax.unit = "%";
+  uniLFOMax.id = "{D6A4D1B5-8961-4C5B-96CA-792F73227A0C}";
+  uniLFOMax.type = FBParamType::Identity;
+  auto selectUniLFOMax = [](auto& module) { return &module.acc.uniLFOMax; };
+  uniLFOMax.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniLFOMax);
+  uniLFOMax.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniLFOMax);
+  uniLFOMax.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniLFOMax);
+  uniLFOMax.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniLFOMax, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniLFOSkewAX = result->params[(int)FFMasterParam::UniLFOSkewAX];
+  uniLFOSkewAX.mode = FBParamMode::Accurate;
+  uniLFOSkewAX.defaultText = "50";
+  uniLFOSkewAX.name = "LFO Skew A X";
+  uniLFOSkewAX.slotCount = FFMasterUniMaxCount;
+  uniLFOSkewAX.unit = "%";
+  uniLFOSkewAX.id = "{5FABD18F-6F53-4532-AC77-7FC5882B2CD1}";
+  uniLFOSkewAX.type = FBParamType::Identity;
+  auto selectUniLFOSkewAX = [](auto& module) { return &module.acc.uniLFOSkewAX; };
+  uniLFOSkewAX.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniLFOSkewAX);
+  uniLFOSkewAX.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniLFOSkewAX);
+  uniLFOSkewAX.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniLFOSkewAX);
+  uniLFOSkewAX.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniLFOSkewAX, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniLFOSkewAY = result->params[(int)FFMasterParam::UniLFOSkewAY];
+  uniLFOSkewAY.mode = FBParamMode::Accurate;
+  uniLFOSkewAY.defaultText = "50";
+  uniLFOSkewAY.name = "LFO Skew A Y";
+  uniLFOSkewAY.slotCount = FFMasterUniMaxCount;
+  uniLFOSkewAY.unit = "%";
+  uniLFOSkewAY.id = "{7C900D23-EC5F-483B-82A3-EB27E2DD9E66}";
+  uniLFOSkewAY.type = FBParamType::Identity;
+  auto selectUniLFOSkewAY = [](auto& module) { return &module.acc.uniLFOSkewAY; };
+  uniLFOSkewAY.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniLFOSkewAY);
+  uniLFOSkewAY.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniLFOSkewAY);
+  uniLFOSkewAY.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniLFOSkewAY);
+  uniLFOSkewAY.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniLFOSkewAY, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniLFOPhaseOffset = result->params[(int)FFMasterParam::UniLFOPhaseOffset];
+  uniLFOPhaseOffset.mode = FBParamMode::Block;
+  uniLFOPhaseOffset.defaultText = "0";
+  uniLFOPhaseOffset.name = "Uni LFO Phase";
+  uniLFOPhaseOffset.slotCount = FFMasterUniMaxCount;
+  uniLFOPhaseOffset.unit = "%";
+  uniLFOPhaseOffset.id = "{00A68371-5419-4398-8B42-4AADF0955DAF}";
+  uniLFOPhaseOffset.type = FBParamType::Identity;
+  auto selectUniLFOPhaseOffset = [](auto& module) { return &module.block.uniLFOPhaseOffset; };
+  uniLFOPhaseOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniLFOPhaseOffset);
+  uniLFOPhaseOffset.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniLFOPhaseOffset);
+  uniLFOPhaseOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniLFOPhaseOffset);
+  uniLFOPhaseOffset.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniLFOPhaseOffset, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniLFOPhaseRand = result->params[(int)FFMasterParam::UniLFOPhaseRand];
+  uniLFOPhaseRand.mode = FBParamMode::Block;
+  uniLFOPhaseRand.defaultText = "0";
+  uniLFOPhaseRand.name = "Uni LFO Phase Rnd";
+  uniLFOPhaseRand.slotCount = FFMasterUniMaxCount;
+  uniLFOPhaseRand.unit = "%";
+  uniLFOPhaseRand.id = "{78DD7308-DA56-4A61-8940-6FE8F0632EAD}";
+  uniLFOPhaseRand.type = FBParamType::Identity;
+  auto selectUniLFOPhaseRand = [](auto& module) { return &module.block.uniLFOPhaseRand; };
+  uniLFOPhaseRand.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniLFOPhaseRand);
+  uniLFOPhaseRand.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniLFOPhaseRand);
+  uniLFOPhaseRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniLFOPhaseRand);
+  uniLFOPhaseRand.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniLFOPhaseRand, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
   auto& outputAux = result->cvOutputs[(int)FFMasterCVOutput::Aux];
   outputAux.name = "Aux";

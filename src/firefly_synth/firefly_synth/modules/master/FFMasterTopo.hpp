@@ -16,7 +16,7 @@ enum class FFMasterParam {
   ModWheel, PitchBend, PitchBendRange, PitchBendTarget, 
   UniCount, UniEnvOffset, UniEnvStretch, UniVFXParamA, UniVFXParamB, UniVFXParamC, UniVFXParamD,
   UniOscCoarse, UniOscFine, UniOscGain, UniOscPan, UniOscPhaseOffset, UniOscPhaseRand,
-  UniLFORate, UniLFOPhaseOffset, UniLFOPhaseOffsetRand, UniLFOMin, UniLFOMax, UniLFOSkewAX, UniLFOSkewAY,
+  UniLFORate, UniLFOPhaseOffset, UniLFOPhaseRand, UniLFOMin, UniLFOMax, UniLFOSkewAX, UniLFOSkewAY,
   Count };
 
 std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
