@@ -168,7 +168,8 @@ FFMakeMasterTopo()
   auto& uniOscPan = result->params[(int)FFMasterParam::UniOscPan];
   uniOscPan.mode = FBParamMode::Accurate;
   uniOscPan.defaultText = "50";
-  uniOscPan.name = "Osc Pan";
+  uniOscPan.name = "Uni Osc Pan";
+  uniOscPan.display = "Osc Pan";
   uniOscPan.slotCount = FFMasterUniMaxCount;
   uniOscPan.unit = "%";
   uniOscPan.id = "{9CACBCF5-9D85-431B-986B-E2B50DC3336A}";
@@ -182,7 +183,8 @@ FFMakeMasterTopo()
   auto& uniOscCoarse = result->params[(int)FFMasterParam::UniOscCoarse];
   uniOscCoarse.mode = FBParamMode::Accurate;
   uniOscCoarse.defaultText = "0";
-  uniOscCoarse.name = "Osc Coarse";
+  uniOscCoarse.name = "Uni Osc Coarse";
+  uniOscCoarse.display = "Osc Coarse";
   uniOscCoarse.slotCount = FFMasterUniMaxCount;
   uniOscCoarse.unit = "Semitones";
   uniOscCoarse.id = "{C16C50D5-00C0-4393-87F9-1A7C457F4483}";
@@ -198,7 +200,8 @@ FFMakeMasterTopo()
   auto& uniOscFine = result->params[(int)FFMasterParam::UniOscFine];
   uniOscFine.mode = FBParamMode::Accurate;
   uniOscFine.defaultText = "0";
-  uniOscFine.name = "Osc Fine";
+  uniOscFine.name = "Uni Osc Fine";
+  uniOscFine.display = "Osc Fine";
   uniOscFine.slotCount = FFMasterUniMaxCount;
   uniOscFine.unit = "Cent";
   uniOscFine.id = "{D32C05E9-BE89-43CB-887F-AF7B1001518F}";
@@ -216,6 +219,7 @@ FFMakeMasterTopo()
   uniOscPhaseOffset.mode = FBParamMode::Block;
   uniOscPhaseOffset.defaultText = "0";
   uniOscPhaseOffset.name = "Uni Osc Phase";
+  uniOscPhaseOffset.display = "Osc Phase";
   uniOscPhaseOffset.slotCount = FFMasterUniMaxCount;
   uniOscPhaseOffset.unit = "%";
   uniOscPhaseOffset.id = "{EC98E6C3-0BB3-4E19-A861-5CDDA8C0401F}";
@@ -229,7 +233,8 @@ FFMakeMasterTopo()
   auto& uniOscPhaseRand = result->params[(int)FFMasterParam::UniOscPhaseRand];
   uniOscPhaseRand.mode = FBParamMode::Block;
   uniOscPhaseRand.defaultText = "0";
-  uniOscPhaseRand.name = "Uni Osc Phase Rnd";
+  uniOscPhaseRand.name = "Uni Osc Phs Rnd";
+  uniOscPhaseRand.display = "Osc Phs Rnd";
   uniOscPhaseRand.slotCount = FFMasterUniMaxCount;
   uniOscPhaseRand.unit = "%";
   uniOscPhaseRand.id = "{8A9F0F51-B8CF-4BBE-A35A-3A5A8A1FA0EF}";
@@ -243,7 +248,8 @@ FFMakeMasterTopo()
   auto& uniLFORate = result->params[(int)FFMasterParam::UniLFORate];
   uniLFORate.mode = FBParamMode::Accurate;
   uniLFORate.defaultText = "50";
-  uniLFORate.name = "LFO Rate";
+  uniLFORate.name = "Uni LFO Rate";
+  uniLFORate.display = "LFO Rate";
   uniLFORate.slotCount = FFMasterUniMaxCount;
   uniLFORate.unit = "%";
   uniLFORate.id = "{A14D92A7-0952-4DF9-98D6-194B1A763DDF}";
@@ -257,7 +263,8 @@ FFMakeMasterTopo()
   auto& uniLFOMin = result->params[(int)FFMasterParam::UniLFOMin];
   uniLFOMin.mode = FBParamMode::Accurate;
   uniLFOMin.defaultText = "50";
-  uniLFOMin.name = "LFO Min";
+  uniLFOMin.name = "Uni LFO Min";
+  uniLFOMin.display = "LFO Min";
   uniLFOMin.slotCount = FFMasterUniMaxCount;
   uniLFOMin.unit = "%";
   uniLFOMin.id = "{BC67CD56-29BF-491D-BA5F-43541B6E506D}";
@@ -271,7 +278,8 @@ FFMakeMasterTopo()
   auto& uniLFOMax = result->params[(int)FFMasterParam::UniLFOMax];
   uniLFOMax.mode = FBParamMode::Accurate;
   uniLFOMax.defaultText = "50";
-  uniLFOMax.name = "LFO Max";
+  uniLFOMax.name = "Uni LFO Max";
+  uniLFOMax.display = "LFO Max";
   uniLFOMax.slotCount = FFMasterUniMaxCount;
   uniLFOMax.unit = "%";
   uniLFOMax.id = "{D6A4D1B5-8961-4C5B-96CA-792F73227A0C}";
@@ -285,7 +293,8 @@ FFMakeMasterTopo()
   auto& uniLFOSkewAX = result->params[(int)FFMasterParam::UniLFOSkewAX];
   uniLFOSkewAX.mode = FBParamMode::Accurate;
   uniLFOSkewAX.defaultText = "50";
-  uniLFOSkewAX.name = "LFO Skew A X";
+  uniLFOSkewAX.name = "Uni LFO SkewA X";
+  uniLFOSkewAX.display = "LFO SkewA X";
   uniLFOSkewAX.slotCount = FFMasterUniMaxCount;
   uniLFOSkewAX.unit = "%";
   uniLFOSkewAX.id = "{5FABD18F-6F53-4532-AC77-7FC5882B2CD1}";
@@ -299,7 +308,8 @@ FFMakeMasterTopo()
   auto& uniLFOSkewAY = result->params[(int)FFMasterParam::UniLFOSkewAY];
   uniLFOSkewAY.mode = FBParamMode::Accurate;
   uniLFOSkewAY.defaultText = "50";
-  uniLFOSkewAY.name = "LFO Skew A Y";
+  uniLFOSkewAY.name = "Uni LFO SkewA Y";
+  uniLFOSkewAY.display = "LFO SkewA Y";
   uniLFOSkewAY.slotCount = FFMasterUniMaxCount;
   uniLFOSkewAY.unit = "%";
   uniLFOSkewAY.id = "{7C900D23-EC5F-483B-82A3-EB27E2DD9E66}";
@@ -314,6 +324,7 @@ FFMakeMasterTopo()
   uniLFOPhaseOffset.mode = FBParamMode::Block;
   uniLFOPhaseOffset.defaultText = "0";
   uniLFOPhaseOffset.name = "Uni LFO Phase";
+  uniLFOPhaseOffset.display = "LFO Phs";
   uniLFOPhaseOffset.slotCount = FFMasterUniMaxCount;
   uniLFOPhaseOffset.unit = "%";
   uniLFOPhaseOffset.id = "{00A68371-5419-4398-8B42-4AADF0955DAF}";
@@ -327,7 +338,8 @@ FFMakeMasterTopo()
   auto& uniLFOPhaseRand = result->params[(int)FFMasterParam::UniLFOPhaseRand];
   uniLFOPhaseRand.mode = FBParamMode::Block;
   uniLFOPhaseRand.defaultText = "0";
-  uniLFOPhaseRand.name = "Uni LFO Phase Rnd";
+  uniLFOPhaseRand.name = "Uni LFO Phs Rnd";
+  uniLFOPhaseRand.display = "LFO Phs Rnd";
   uniLFOPhaseRand.slotCount = FFMasterUniMaxCount;
   uniLFOPhaseRand.unit = "%";
   uniLFOPhaseRand.id = "{78DD7308-DA56-4A61-8940-6FE8F0632EAD}";
@@ -341,7 +353,8 @@ FFMakeMasterTopo()
   auto& uniVFXParamA = result->params[(int)FFMasterParam::UniVFXParamA];
   uniVFXParamA.mode = FBParamMode::Accurate;
   uniVFXParamA.defaultText = "50";
-  uniVFXParamA.name = "VFX Param A";
+  uniVFXParamA.name = "Uni VFX Param A";
+  uniVFXParamA.display = "VFX Param A";
   uniVFXParamA.slotCount = FFMasterUniMaxCount;
   uniVFXParamA.unit = "%";
   uniVFXParamA.id = "{E383FFF3-6549-44A4-878B-9BE81EB4A69F}";
@@ -355,7 +368,8 @@ FFMakeMasterTopo()
   auto& uniVFXParamB = result->params[(int)FFMasterParam::UniVFXParamB];
   uniVFXParamB.mode = FBParamMode::Accurate;
   uniVFXParamB.defaultText = "50";
-  uniVFXParamB.name = "VFX Param B";
+  uniVFXParamB.name = "Uni VFX Param B";
+  uniVFXParamB.display = "VFX Param B";
   uniVFXParamB.slotCount = FFMasterUniMaxCount;
   uniVFXParamB.unit = "%";
   uniVFXParamB.id = "{82D2D353-D454-496B-BB0E-F7B23D20D698}";
@@ -369,7 +383,8 @@ FFMakeMasterTopo()
   auto& uniVFXParamC = result->params[(int)FFMasterParam::UniVFXParamC];
   uniVFXParamC.mode = FBParamMode::Accurate;
   uniVFXParamC.defaultText = "50";
-  uniVFXParamC.name = "VFX Param C";
+  uniVFXParamC.name = "Uni VFX Param C";
+  uniVFXParamC.display = "VFX Param C";
   uniVFXParamC.slotCount = FFMasterUniMaxCount;
   uniVFXParamC.unit = "%";
   uniVFXParamC.id = "{55539EFD-3561-4F1F-BDDC-FF0CEC2AA14B}";
@@ -383,7 +398,8 @@ FFMakeMasterTopo()
   auto& uniVFXParamD = result->params[(int)FFMasterParam::UniVFXParamD];
   uniVFXParamD.mode = FBParamMode::Accurate;
   uniVFXParamD.defaultText = "50";
-  uniVFXParamD.name = "VFX Param D";
+  uniVFXParamD.name = "Uni VFX Param D";
+  uniVFXParamD.display = "VFX Param D";
   uniVFXParamD.slotCount = FFMasterUniMaxCount;
   uniVFXParamD.unit = "%";
   uniVFXParamD.id = "{9346FF6B-068F-4F36-A4CD-68A652CF1A2C}";
@@ -397,7 +413,8 @@ FFMakeMasterTopo()
   auto& uniEnvOffset = result->params[(int)FFMasterParam::UniEnvOffset];
   uniEnvOffset.mode = FBParamMode::Block;
   uniEnvOffset.defaultText = "0";
-  uniEnvOffset.name = "Env Offset";
+  uniEnvOffset.name = "Uni Env Offset";
+  uniEnvOffset.display = "Env Offset";
   uniEnvOffset.slotCount = FFMasterUniMaxCount;
   uniEnvOffset.unit = "Sec";
   uniEnvOffset.id = "{AEDA998E-B0B7-4A78-8C52-F6B809AC5352}";
@@ -414,7 +431,8 @@ FFMakeMasterTopo()
   auto& uniEnvStretch = result->params[(int)FFMasterParam::UniEnvStretch];
   uniEnvStretch.mode = FBParamMode::Block;
   uniEnvStretch.defaultText = "100";
-  uniEnvStretch.name = "Env Stretch";
+  uniEnvStretch.name = "Uni Env Stretch";
+  uniEnvStretch.display = "Env Stretch";
   uniEnvStretch.slotCount = FFMasterUniMaxCount;
   uniEnvStretch.unit = "%";
   uniEnvStretch.id = "{6155B06D-D928-4EBF-9A52-99EAA3341D26}";
@@ -431,7 +449,8 @@ FFMakeMasterTopo()
   auto& uniEchoTapLevel = result->params[(int)FFMasterParam::UniEchoTapLevel]; 
   uniEchoTapLevel.mode = FBParamMode::Accurate;
   uniEchoTapLevel.defaultText = "50";
-  uniEchoTapLevel.name = "Echo Tap Level";
+  uniEchoTapLevel.name = "Uni Echo Tap Lvl";
+  uniEchoTapLevel.display = "Echo Tap Lvl";
   uniEchoTapLevel.slotCount = FFMasterUniMaxCount;
   uniEchoTapLevel.unit = "%";
   uniEchoTapLevel.id = "{A480C75C-3429-44A1-BAAF-44341E793F80}";
@@ -445,7 +464,8 @@ FFMakeMasterTopo()
   auto& uniEchoTapDelay = result->params[(int)FFMasterParam::UniEchoTapDelay];
   uniEchoTapDelay.mode = FBParamMode::Accurate;
   uniEchoTapDelay.defaultText = "50";
-  uniEchoTapDelay.name = "Echo Tap Delay";
+  uniEchoTapDelay.name = "Uni Echo Tap Dly";
+  uniEchoTapDelay.display = "Uni Echo Tap Dly";
   uniEchoTapDelay.slotCount = FFMasterUniMaxCount;
   uniEchoTapDelay.unit = "%";
   uniEchoTapDelay.id = "{158E67F4-DD9C-4A2A-93B8-6914B8F9DCED}";
@@ -459,7 +479,8 @@ FFMakeMasterTopo()
   auto& uniEchoTapBal = result->params[(int)FFMasterParam::UniEchoTapBal];
   uniEchoTapBal.mode = FBParamMode::Accurate;
   uniEchoTapBal.defaultText = "50";
-  uniEchoTapBal.name = "Echo Tap Bal";
+  uniEchoTapBal.name = "Uni Echo Tap Bal";
+  uniEchoTapBal.display = "Echo Tap Bal";
   uniEchoTapBal.slotCount = FFMasterUniMaxCount;
   uniEchoTapBal.unit = "%";
   uniEchoTapBal.id = "{1E8EDB12-2E07-47DE-BB0C-39AC596896E0}";
@@ -473,7 +494,8 @@ FFMakeMasterTopo()
   auto& uniEchoFdbkDelay = result->params[(int)FFMasterParam::UniEchoFdbkDelay];
   uniEchoFdbkDelay.mode = FBParamMode::Accurate;
   uniEchoFdbkDelay.defaultText = "50";
-  uniEchoFdbkDelay.name = "Echo Fdbk Dly";
+  uniEchoFdbkDelay.name = "Uni Echo Fdbk Dly";
+  uniEchoFdbkDelay.display = "Echo Fdbk Dly";
   uniEchoFdbkDelay.slotCount = FFMasterUniMaxCount;
   uniEchoFdbkDelay.unit = "%";
   uniEchoFdbkDelay.id = "{6D51D872-4BFD-4F06-B202-BD971DB527FA}";
@@ -487,7 +509,8 @@ FFMakeMasterTopo()
   auto& uniEchoFdbkMix = result->params[(int)FFMasterParam::UniEchoFdbkMix];
   uniEchoFdbkMix.mode = FBParamMode::Accurate;
   uniEchoFdbkMix.defaultText = "50";
-  uniEchoFdbkMix.name = "Echo Fdbk Mix";
+  uniEchoFdbkMix.name = "Uni Echo Fdbk Mix";
+  uniEchoFdbkMix.display = "Echo Fdbk Mix";
   uniEchoFdbkMix.slotCount = FFMasterUniMaxCount;
   uniEchoFdbkMix.unit = "%";
   uniEchoFdbkMix.id = "{41E192B1-909D-41B6-93B5-9343460670A2}";
@@ -501,7 +524,8 @@ FFMakeMasterTopo()
   auto& uniEchoFdbkAmt = result->params[(int)FFMasterParam::UniEchoFdbkAmt];
   uniEchoFdbkAmt.mode = FBParamMode::Accurate;
   uniEchoFdbkAmt.defaultText = "50";
-  uniEchoFdbkAmt.name = "Echo Fdbk Amt";
+  uniEchoFdbkAmt.name = "Uni Echo Fdbk Amt";
+  uniEchoFdbkAmt.display = "Echo Fdbk Amt";
   uniEchoFdbkAmt.slotCount = FFMasterUniMaxCount;
   uniEchoFdbkAmt.unit = "%";
   uniEchoFdbkAmt.id = "{BF96F4F2-74C7-4BA8-8FE5-72320499849E}";
@@ -515,7 +539,8 @@ FFMakeMasterTopo()
   auto& uniReverbMix = result->params[(int)FFMasterParam::UniReverbMix];
   uniReverbMix.mode = FBParamMode::Accurate;
   uniReverbMix.defaultText = "50";
-  uniReverbMix.name = "Echo Rvrb Mix";
+  uniReverbMix.name = "Uni Echo Rvrb Mix";
+  uniReverbMix.display = "Echo Rvrb Mix";
   uniReverbMix.slotCount = FFMasterUniMaxCount;
   uniReverbMix.unit = "%";
   uniReverbMix.id = "{475A0982-1DEE-4636-B532-0D0FCD816DEC}";
@@ -529,7 +554,8 @@ FFMakeMasterTopo()
   auto& uniReverbSize = result->params[(int)FFMasterParam::UniReverbSize];
   uniReverbSize.mode = FBParamMode::Accurate;
   uniReverbSize.defaultText = "50";
-  uniReverbSize.name = "Echo Rvrb Size";
+  uniReverbSize.name = "Uni Echo Rvrb Size";
+  uniReverbSize.display = "Echo Rvrb Size";
   uniReverbSize.slotCount = FFMasterUniMaxCount;
   uniReverbSize.unit = "%";
   uniReverbSize.id = "{8E997A4E-BCF6-4599-9329-377E81F77B5F}";
@@ -543,7 +569,8 @@ FFMakeMasterTopo()
   auto& uniReverbDamp = result->params[(int)FFMasterParam::UniReverbDamp];
   uniReverbDamp.mode = FBParamMode::Accurate;
   uniReverbDamp.defaultText = "50";
-  uniReverbDamp.name = "Echo Rvrb Damp";
+  uniReverbDamp.name = "Uni Echo Rvrb Damp";
+  uniReverbDamp.display = "Echo Rvrb Damp";
   uniReverbDamp.slotCount = FFMasterUniMaxCount;
   uniReverbDamp.unit = "%";
   uniReverbDamp.id = "{6E27DACE-DEA9-4168-8752-6BFB0B09002E}";

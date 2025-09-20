@@ -5,6 +5,7 @@ TODOLIST for alpha-17
 [ ] test with porta 
 [ ] echo controls
 [ ] place echo everywhere
+[ ] echo extend/fade
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
