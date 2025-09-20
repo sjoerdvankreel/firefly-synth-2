@@ -511,9 +511,47 @@ FFMakeMasterTopo()
   uniEchoFdbkAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEchoFdbkAmt);
   uniEchoFdbkAmt.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEchoFdbkAmt, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
+  auto& uniReverbMix = result->params[(int)FFMasterParam::UniReverbMix];
+  uniReverbMix.mode = FBParamMode::Accurate;
+  uniReverbMix.defaultText = "50";
+  uniReverbMix.name = "Echo Rvrb Mix";
+  uniReverbMix.slotCount = FFMasterUniMaxCount;
+  uniReverbMix.unit = "%";
+  uniReverbMix.id = "{475A0982-1DEE-4636-B532-0D0FCD816DEC}";
+  uniReverbMix.type = FBParamType::Identity;
+  auto selectUniReverbMix = [](auto& module) { return &module.acc.uniReverbMix; };
+  uniReverbMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniReverbMix);
+  uniReverbMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniReverbMix);
+  uniReverbMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniReverbMix);
+  uniReverbMix.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniReverbMix, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
-//  , , , , , ,
-  //  UniReverbMix, UniReverbSize, UniReverbDamp, Count };
+  auto& uniReverbSize = result->params[(int)FFMasterParam::UniReverbSize];
+  uniReverbSize.mode = FBParamMode::Accurate;
+  uniReverbSize.defaultText = "50";
+  uniReverbSize.name = "Echo Rvrb Size";
+  uniReverbSize.slotCount = FFMasterUniMaxCount;
+  uniReverbSize.unit = "%";
+  uniReverbSize.id = "{8E997A4E-BCF6-4599-9329-377E81F77B5F}";
+  uniReverbSize.type = FBParamType::Identity;
+  auto selectUniReverbSize = [](auto& module) { return &module.acc.uniReverbSize; };
+  uniReverbSize.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniReverbSize);
+  uniReverbSize.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniReverbSize);
+  uniReverbSize.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniReverbSize);
+  uniReverbSize.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniReverbSize, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniReverbDamp = result->params[(int)FFMasterParam::UniReverbDamp];
+  uniReverbDamp.mode = FBParamMode::Accurate;
+  uniReverbDamp.defaultText = "50";
+  uniReverbDamp.name = "Echo Rvrb Damp";
+  uniReverbDamp.slotCount = FFMasterUniMaxCount;
+  uniReverbDamp.unit = "%";
+  uniReverbDamp.id = "{6E27DACE-DEA9-4168-8752-6BFB0B09002E}";
+  uniReverbDamp.type = FBParamType::Identity;
+  auto selectUniReverbDamp = [](auto& module) { return &module.acc.uniReverbDamp; };
+  uniReverbDamp.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniReverbDamp);
+  uniReverbDamp.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniReverbDamp);
+  uniReverbDamp.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniReverbDamp);
+  uniReverbDamp.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniReverbDamp, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
   auto& outputAux = result->cvOutputs[(int)FFMasterCVOutput::Aux];
   outputAux.name = "Aux";
