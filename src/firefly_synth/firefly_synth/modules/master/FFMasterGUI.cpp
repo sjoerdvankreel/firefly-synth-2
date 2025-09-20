@@ -28,9 +28,11 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
   for (int i = 0; i < uniControlCount / 2; i++)
     rowSizes.push_back(1);
   auto columnSizes = std::vector<int>();
-  columnSizes.push_back(0);
-  columnSizes.push_back(0);
-  for(int i = 0; i < FFMasterUniMaxCount * 2; i++)
+  columnSizes.push_back(1);
+  for(int i = 0; i < FFMasterUniMaxCount; i++)
+    columnSizes.push_back(0);
+  columnSizes.push_back(1);
+  for (int i = 0; i < FFMasterUniMaxCount; i++)
     columnSizes.push_back(0);
 
   auto topo = plugGUI->HostContext()->Topo();
@@ -38,9 +40,11 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
   for (int c = 0; c < 2; c++)
   {
     int guiCol = c * (FFMasterUniMaxCount + 1);
+    grid->Add(0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Param/Voice"));
+    grid->MarkSection({ { 0, guiCol }, { 1, 1 } });
     for (int i = 0; i < FFMasterUniMaxCount; i++)
     {
-      grid->Add(0, guiCol + i + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
+      grid->Add(0, guiCol + i + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true));
       grid->MarkSection({ { 0, guiCol + i + 1 }, { 1, 1 } });
     }
   }
