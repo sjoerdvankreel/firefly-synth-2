@@ -324,7 +324,7 @@ FFMakeMasterTopo()
   uniLFOPhaseOffset.mode = FBParamMode::Block;
   uniLFOPhaseOffset.defaultText = "0";
   uniLFOPhaseOffset.name = "Uni LFO Phase";
-  uniLFOPhaseOffset.display = "LFO Phs";
+  uniLFOPhaseOffset.display = "LFO Phase";
   uniLFOPhaseOffset.slotCount = FFMasterUniMaxCount;
   uniLFOPhaseOffset.unit = "%";
   uniLFOPhaseOffset.id = "{00A68371-5419-4398-8B42-4AADF0955DAF}";
@@ -465,7 +465,7 @@ FFMakeMasterTopo()
   uniEchoTapDelay.mode = FBParamMode::Accurate;
   uniEchoTapDelay.defaultText = "50";
   uniEchoTapDelay.name = "Uni Echo Tap Dly";
-  uniEchoTapDelay.display = "Uni Echo Tap Dly";
+  uniEchoTapDelay.display = "Echo Tap Dly";
   uniEchoTapDelay.slotCount = FFMasterUniMaxCount;
   uniEchoTapDelay.unit = "%";
   uniEchoTapDelay.id = "{158E67F4-DD9C-4A2A-93B8-6914B8F9DCED}";
