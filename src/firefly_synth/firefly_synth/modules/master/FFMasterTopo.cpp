@@ -152,7 +152,7 @@ FFMakeMasterTopo()
 
   auto& uniOscGain = result->params[(int)FFMasterParam::UniOscGain];
   uniOscGain.mode = FBParamMode::Accurate;
-  uniOscGain.defaultText = "100";
+  uniOscGain.defaultText = "50";
   uniOscGain.name = "Osc Gain";
   uniOscGain.slotCount = FFMasterUniMaxCount;
   uniOscGain.unit = "%";
@@ -213,7 +213,7 @@ FFMakeMasterTopo()
   
   auto& uniOscPhaseOffset = result->params[(int)FFMasterParam::UniOscPhaseOffset];
   uniOscPhaseOffset.mode = FBParamMode::Block;
-  uniOscPhaseOffset.defaultText = "50";
+  uniOscPhaseOffset.defaultText = "0";
   uniOscPhaseOffset.name = "Uni Osc Phase";
   uniOscPhaseOffset.slotCount = FFMasterUniMaxCount;
   uniOscPhaseOffset.unit = "%";
@@ -227,7 +227,7 @@ FFMakeMasterTopo()
 
   auto& uniOscPhaseRand = result->params[(int)FFMasterParam::UniOscPhaseRand];
   uniOscPhaseRand.mode = FBParamMode::Block;
-  uniOscPhaseRand.defaultText = "50";
+  uniOscPhaseRand.defaultText = "0";
   uniOscPhaseRand.name = "Uni Osc Phase Rnd";
   uniOscPhaseRand.slotCount = FFMasterUniMaxCount;
   uniOscPhaseRand.unit = "%";
@@ -238,6 +238,8 @@ FFMakeMasterTopo()
   uniOscPhaseRand.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniOscPhaseRand);
   uniOscPhaseRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOscPhaseRand);
   uniOscPhaseRand.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniOscPhaseRand, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  //UniLFORate, UniLFOPhaseOffset, UniLFOPhaseOffsetRand, UniLFOMin, UniLFOMax, UniLFOSkewAX, UniLFOSkewAY,
 
   auto& outputAux = result->cvOutputs[(int)FFMasterCVOutput::Aux];
   outputAux.name = "Aux";

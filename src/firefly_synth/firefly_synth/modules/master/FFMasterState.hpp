@@ -37,12 +37,14 @@ class alignas(alignof(TBlock)) FFMasterBlockParamState final
   friend class FFMasterProcessor;
   friend std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
   std::array<TBlock, 1> uniCount = {};
-  std::array<TBlock, 1> uniOscPhaseRand = {};  
-  std::array<TBlock, 1> uniOscPhaseOffset = {};
   std::array<TBlock, 1> tuningMode = {};
   std::array<TBlock, 1> hostSmoothTime = {};
   std::array<TBlock, 1> pitchBendRange = {};
   std::array<TBlock, 1> pitchBendTarget = {};
+  std::array<TBlock, FFMasterUniMaxCount> uniOscPhaseRand = {};
+  std::array<TBlock, FFMasterUniMaxCount> uniOscPhaseOffset = {};
+  std::array<TBlock, FFMasterUniMaxCount> uniLFOPhaseRand = {};
+  std::array<TBlock, FFMasterUniMaxCount> uniLFOPhaseOffset = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterBlockParamState);
 };
@@ -59,6 +61,11 @@ class alignas(alignof(TAccurate)) FFMasterAccParamState final
   std::array<TAccurate, FFMasterUniMaxCount> uniOscGain = {};
   std::array<TAccurate, FFMasterUniMaxCount> uniOscFine = {};
   std::array<TAccurate, FFMasterUniMaxCount> uniOscCoarse = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniLFORate = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniLFOMin = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniLFOMax = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniLFOSkewAX = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniLFOSkewAY = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
 };
