@@ -153,7 +153,8 @@ FFMakeMasterTopo()
   auto& uniOscGain = result->params[(int)FFMasterParam::UniOscGain];
   uniOscGain.mode = FBParamMode::Accurate;
   uniOscGain.defaultText = "50";
-  uniOscGain.name = "Osc Gain";
+  uniOscGain.name = "Uni Osc Gain";
+  uniOscGain.display = "Osc Gain";
   uniOscGain.slotCount = FFMasterUniMaxCount;
   uniOscGain.unit = "%";
   uniOscGain.id = "{847E5FD5-8DAC-43B1-BA0E-125FD916844C}";

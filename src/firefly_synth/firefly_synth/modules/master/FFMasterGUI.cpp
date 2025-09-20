@@ -23,7 +23,7 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto rowSizes = std::vector<int>();
   rowSizes.push_back(1);
-  int uniControlCount = (int)FFMasterParam::Count - (int)FFMasterParam::UniEnvOffset;
+  int uniControlCount = (int)FFMasterParam::Count - (int)FFMasterParam::UniFirst;
   FB_ASSERT(uniControlCount % 2 == 0);
   for (int i = 0; i < uniControlCount / 2; i++)
     rowSizes.push_back(1);
@@ -57,7 +57,7 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
       int guiCol = c * (FFMasterUniMaxCount + 1);
       int paramOffset = c * uniControlCount / 2 + r;
       auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFirst + paramOffset, 0 } });
-      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, param0, param0->static_.name));
+      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, param0, param0->static_.display));
       grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
       for (int p = 0; p < FFMasterUniMaxCount; p++)
       {
