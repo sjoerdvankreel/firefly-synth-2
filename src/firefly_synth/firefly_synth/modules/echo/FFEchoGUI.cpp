@@ -34,6 +34,8 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     rowSizes.push_back(1);
   auto columnSizes = std::vector<int> { { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 } };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Tap"));
+  grid->MarkSection({ { 0, 0 }, { 1, 1 } });
 
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>("On"));
   auto tapDelayLevel0 = topo->audio.ParamAtTopo({ { (int)moduleType, 0 }, { (int)FFEchoParam::TapLevel, 0 } });
@@ -151,7 +153,10 @@ MakeEchoSectionTaps(
 
   auto tapsEditor = MakeEchoTapsEditor(plugGUI, global);
   auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Taps");
-  showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("VEcho Multi Taps", tapsEditor, 360, 250); };
+  showTapsEditor->onClick = [plugGUI, tapsEditor, global]() { 
+    std::string title = std::string(global ? "G" : "V") + "Echo Multi Taps";
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, tapsEditor, 360, 250);
+  };
   grid->Add(0, 0, showTapsEditor);
   *showTapsEditorOut = showTapsEditor;
 
