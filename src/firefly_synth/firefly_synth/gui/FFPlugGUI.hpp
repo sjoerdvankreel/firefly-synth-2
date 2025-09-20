@@ -23,6 +23,7 @@ public FBPlugGUI
   FBGridComponent* _outputGUIAndPatch = {};
 
   FBContentComponent* _content = {};
+  juce::Label* _overlayCaption = {};
   juce::Component* _overlayComponent = {};
   juce::Component* _overlayContainer = {};
   FBContentComponent* _overlayContent = {};
@@ -47,7 +48,7 @@ public:
   void SwitchGraphToModule(int index, int slot);
   
   void HideOverlayComponent();
-  void ShowOverlayComponent(juce::Component* overlay, int w, int h);
+  void ShowOverlayComponent(std::string const& title, juce::Component* overlay, int w, int h);
 
   void resized() override;
   FBGUIRenderType GetKnobRenderType() const override;

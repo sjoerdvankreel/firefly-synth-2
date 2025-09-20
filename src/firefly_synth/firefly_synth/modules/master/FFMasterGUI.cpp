@@ -126,7 +126,7 @@ MakeMasterSectionGlobalUni(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0 });
   auto globalUniEditor = MakeMasterGlobalUniEditor(plugGUI);
   auto showGlobalUniEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Editor");
-  showGlobalUniEditor->onClick = [plugGUI, globalUniEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(globalUniEditor, 800, 500); };
+  showGlobalUniEditor->onClick = [plugGUI, globalUniEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", globalUniEditor, 800, 500); };
   grid->Add(0, 0, showGlobalUniEditor);
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }

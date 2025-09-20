@@ -146,11 +146,12 @@ FFPlugGUI::HideOverlayComponent()
   _overlayComponent->setVisible(false);
   _overlayContent->SetContent(nullptr);
   _overlayContainer->setVisible(false);
+  _overlayCaption->setText("", dontSendNotification);
   removeChildComponent(_overlayContainer);
 }
 
 void 
-FFPlugGUI::ShowOverlayComponent(Component* overlay, int w, int h)
+FFPlugGUI::ShowOverlayComponent(std::string const& title, Component* overlay, int w, int h)
 {
   if (_overlayComponent != nullptr)
     HideOverlayComponent();
@@ -158,6 +159,7 @@ FFPlugGUI::ShowOverlayComponent(Component* overlay, int w, int h)
   int y = (getHeight() - h) / 2;
   _overlayContent->SetContent(overlay);
   _overlayContainer->setBounds(x, y, w, h);
+  _overlayCaption->setText(title, dontSendNotification);
   addAndMakeVisible(_overlayContainer, 1);
   _overlayContainer->resized();
   _overlayComponent = overlay;
@@ -216,6 +218,7 @@ FFPlugGUI::SetupGUI()
   auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1, 0 } });
   _overlayContent = StoreComponent<FBContentComponent>();
   overlayGrid->Add(0, 0, 1, 2, _overlayContent);
+  overlayGrid->Add(1, 0, _overlayCaption);
   auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
   auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
