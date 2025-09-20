@@ -167,7 +167,7 @@ FFMakeMasterTopo()
   auto& uniOscPan = result->params[(int)FFMasterParam::UniOscPan];
   uniOscPan.mode = FBParamMode::Accurate;
   uniOscPan.defaultText = "50";
-  uniOscPan.name = "Pan";
+  uniOscPan.name = "Osc Pan";
   uniOscPan.slotCount = FFMasterUniMaxCount;
   uniOscPan.unit = "%";
   uniOscPan.id = "{9CACBCF5-9D85-431B-986B-E2B50DC3336A}";
@@ -197,7 +197,7 @@ FFMakeMasterTopo()
   auto& uniOscFine = result->params[(int)FFMasterParam::UniOscFine];
   uniOscFine.mode = FBParamMode::Accurate;
   uniOscFine.defaultText = "0";
-  uniOscFine.name = "Fine";
+  uniOscFine.name = "Osc Fine";
   uniOscFine.slotCount = FFMasterUniMaxCount;
   uniOscFine.unit = "Cent";
   uniOscFine.id = "{0115E347-874D-48E8-87BC-E63EC4B38DFF}";
@@ -211,6 +211,34 @@ FFMakeMasterTopo()
   uniOscFine.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOscFine);
   uniOscFine.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniOscFine, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
   
+  auto& uniOscPhaseOffset = result->params[(int)FFMasterParam::UniOscPhaseOffset];
+  uniOscPhaseOffset.mode = FBParamMode::Block;
+  uniOscPhaseOffset.defaultText = "50";
+  uniOscPhaseOffset.name = "Uni Osc Phase";
+  uniOscPhaseOffset.slotCount = FFMasterUniMaxCount;
+  uniOscPhaseOffset.unit = "%";
+  uniOscPhaseOffset.id = "{EC98E6C3-0BB3-4E19-A861-5CDDA8C0401F}";
+  uniOscPhaseOffset.type = FBParamType::Identity;
+  auto selectUniOscPhaseOffset = [](auto& module) { return &module.block.uniOscPhaseOffset; };
+  uniOscPhaseOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniOscPhaseOffset);
+  uniOscPhaseOffset.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniOscPhaseOffset);
+  uniOscPhaseOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOscPhaseOffset);
+  uniOscPhaseOffset.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniOscPhaseOffset, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniOscPhaseRand = result->params[(int)FFMasterParam::UniOscPhaseRand];
+  uniOscPhaseRand.mode = FBParamMode::Block;
+  uniOscPhaseRand.defaultText = "50";
+  uniOscPhaseRand.name = "Uni Osc Phase Rnd";
+  uniOscPhaseRand.slotCount = FFMasterUniMaxCount;
+  uniOscPhaseRand.unit = "%";
+  uniOscPhaseRand.id = "{8A9F0F51-B8CF-4BBE-A35A-3A5A8A1FA0EF}";
+  uniOscPhaseRand.type = FBParamType::Identity;
+  auto selectUniOscPhaseRand = [](auto& module) { return &module.block.uniOscPhaseRand; };
+  uniOscPhaseRand.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniOscPhaseRand);
+  uniOscPhaseRand.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniOscPhaseRand);
+  uniOscPhaseRand.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniOscPhaseRand);
+  uniOscPhaseRand.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniOscPhaseRand, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
   auto& outputAux = result->cvOutputs[(int)FFMasterCVOutput::Aux];
   outputAux.name = "Aux";
   outputAux.slotCount = FFMasterAuxCount;
