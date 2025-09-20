@@ -35,13 +35,14 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
 
   auto topo = plugGUI->HostContext()->Topo();
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice"));
-  grid->Add(0, 1 + FFMasterUniMaxCount, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice"));
   for (int c = 0; c < 2; c++)
   {
     int guiCol = c * (FFMasterUniMaxCount + 1);
     for (int i = 0; i < FFMasterUniMaxCount; i++)
+    {
       grid->Add(0, guiCol + i + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
+      grid->MarkSection({ { 0, guiCol + i + 1 }, { 1, 1 } });
+    }
   }
 
   for (int c = 0; c < 2; c++)
@@ -52,11 +53,13 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
       int guiCol = c * (FFMasterUniMaxCount + 1);
       int paramOffset = c * uniControlCount / 2 + r;
       auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFirst + paramOffset, 0 } });
-      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLabel>(plugGUI, param0));
+      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, param0, param0->static_.name));
+      grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
       for (int p = 0; p < FFMasterUniMaxCount; p++)
       {
         auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFirst + paramOffset, p } });
         grid->Add(guiRow, guiCol + p + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
+        grid->MarkSection({ { guiRow, guiCol + p + 1 }, { 1, 1 } });
       }
     }
   }
@@ -123,7 +126,7 @@ MakeMasterSectionGlobalUni(FBPlugGUI* plugGUI)
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0 });
   auto globalUniEditor = MakeMasterGlobalUniEditor(plugGUI);
   auto showGlobalUniEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Editor");
-  showGlobalUniEditor->onClick = [plugGUI, globalUniEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(globalUniEditor, 360, 250); };
+  showGlobalUniEditor->onClick = [plugGUI, globalUniEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(globalUniEditor, 800, 500); };
   grid->Add(0, 0, showGlobalUniEditor);
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
