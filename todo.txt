@@ -14,6 +14,7 @@ TODOLIST for alpha-18
 TODOLIST for alpha-19
 [ ] preset infra
 [ ] highlight not default
+[ ] env stage length edit is annoying
 [ ] how the heck is the mod menu ordered?
 [ ] do display disabled/impossible items different in the mod matrix
 [ ] save modulation as actual value not normalized + display that way too
