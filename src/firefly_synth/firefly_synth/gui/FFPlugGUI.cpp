@@ -215,15 +215,15 @@ FFPlugGUI::SetupGUI()
   bool matrixOn = HostContext()->GetGUIParamBool({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
   ToggleMatrix(matrixOn);
 
-  auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 1, 0 } }, std::vector<int> { { 1, 0 } });
-  _overlayContent = StoreComponent<FBContentComponent>();
-  overlayGrid->Add(0, 0, 1, 2, _overlayContent);
+  auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0 } });
   _overlayCaption = StoreComponent<Label>();
-  overlayGrid->Add(1, 0, _overlayCaption);
+  overlayGrid->Add(0, 0, _overlayCaption);
   auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
   auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
-  overlayGrid->Add(1, 1, overlayCloseSection);
+  overlayGrid->Add(0, 1, overlayCloseSection);
+  overlayGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
+  _overlayContent = StoreComponent<FBContentComponent>();
+  overlayGrid->Add(1, 0, 1, 2, _overlayContent);
   _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid, true);
-  overlayGrid->MarkSection({ { 1, 0 }, { 1, 2 } });
 }

@@ -151,7 +151,7 @@ MakeEchoSectionTaps(
 
   auto tapsEditor = MakeEchoTapsEditor(plugGUI, global);
   auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Taps");
-  showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Taps", tapsEditor, 360, 250); };
+  showTapsEditor->onClick = [plugGUI, tapsEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("VEcho Multi Taps", tapsEditor, 360, 250); };
   grid->Add(0, 0, showTapsEditor);
   *showTapsEditorOut = showTapsEditor;
 
