@@ -1,3 +1,4 @@
+#include <firefly_synth/gui/FFPlugGUI.hpp>
 #include <firefly_synth/shared/FFPlugTopo.hpp>
 #include <firefly_synth/modules/master/FFMasterGUI.hpp>
 #include <firefly_synth/modules/master/FFMasterTopo.hpp>
@@ -6,6 +7,7 @@
 #include <firefly_base/gui/shared/FBPlugGUI.hpp>
 #include <firefly_base/gui/glue/FBHostGUIContext.hpp>
 #include <firefly_base/gui/controls/FBLabel.hpp>
+#include <firefly_base/gui/controls/FBButton.hpp>
 #include <firefly_base/gui/controls/FBSlider.hpp>
 #include <firefly_base/gui/controls/FBComboBox.hpp>
 #include <firefly_base/gui/components/FBTabComponent.hpp>
@@ -14,6 +16,51 @@
 #include <firefly_base/base/topo/runtime/FBRuntimeTopo.hpp>
 
 using namespace juce;
+
+static Component* 
+MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto rowSizes = std::vector<int>();
+  rowSizes.push_back(1);
+  int uniControlCount = (int)FFMasterParam::Count - (int)FFMasterParam::UniEnvOffset;
+  FB_ASSERT(uniControlCount % 2 == 0);
+  for (int i = 0; i < uniControlCount / 2; i++)
+    rowSizes.push_back(1);
+  auto columnSizes = std::vector<int>();
+  columnSizes.push_back(0);
+  columnSizes.push_back(0);
+  for(int i = 0; i < uniControlCount * 2; i++)
+    columnSizes.push_back(0);
+
+  auto topo = plugGUI->HostContext()->Topo();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice"));
+  grid->Add(0, 1 + uniControlCount / 2, plugGUI->StoreComponent<FBAutoSizeLabel>("Voice"));
+  for (int i = 0; i < FFMasterUniMaxCount; i++)
+  {
+    grid->Add(0, 1 + i, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
+    grid->Add(0, 2 + i * 2, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
+  }
+
+  for (int c = 0; c < 2; c++)
+  {
+    for (int r = 0; r < uniControlCount / 2; r++)
+    {
+      int guiRow = r + 1;
+      int guiCol = c * (uniControlCount + 1);
+      int paramOffset = c * uniControlCount / 2 + r;
+      auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFirst + paramOffset, 0 } });
+      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLabel>(plugGUI, param0));
+      for (int p = 0; p < FFMasterUniMaxCount; p++)
+      {
+        auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFirst + paramOffset, p } });
+        grid->Add(guiRow, guiCol + p, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
+      }
+    }
+  }
+  return grid;
+}
 
 static Component*
 MakeMasterSectionMain(FBPlugGUI* plugGUI)
@@ -69,12 +116,25 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
 }
 
 static Component*
+MakeMasterSectionGlobalUni(FBPlugGUI* plugGUI)
+{
+  FB_LOG_ENTRY_EXIT();
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1 }, std::vector<int> { 0 });
+  auto globalUniEditor = MakeMasterGlobalUniEditor(plugGUI);
+  auto showGlobalUniEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Editor");
+  showGlobalUniEditor->onClick = [plugGUI, globalUniEditor]() { dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(globalUniEditor, 360, 250); };
+  grid->Add(0, 0, showGlobalUniEditor);
+  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
+}
+
+static Component*
 MakeMasterTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 3, 2 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 3, 2, 0 });
   grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
   grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
+  grid->Add(0, 2, MakeMasterSectionGlobalUni(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 

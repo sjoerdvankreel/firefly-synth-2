@@ -14,7 +14,7 @@ enum class FFMasterTuningMode { Off, NoteOnce, NoteSlide, ModOnce, ModSlide };
 enum class FFMasterParam { 
   Aux, TuningMode, HostSmoothTime, 
   ModWheel, PitchBend, PitchBendRange, PitchBendTarget, 
-  UniCount, UniEnvOffset, UniEnvStretch, UniVFXParamA, UniVFXParamB, UniVFXParamC, UniVFXParamD,
+  UniCount, UniEnvOffset, UniFirst = UniEnvOffset, UniEnvStretch, UniVFXParamA, UniVFXParamB, UniVFXParamC, UniVFXParamD,
   UniOscCoarse, UniOscFine, UniOscGain, UniOscPan, UniOscPhaseOffset, UniOscPhaseRand,
   UniLFORate, UniLFOPhaseOffset, UniLFOPhaseRand, UniLFOMin, UniLFOMax, UniLFOSkewAX, UniLFOSkewAY,
   UniEchoTapLevel, UniEchoTapDelay, UniEchoTapBal, UniEchoFdbkDelay, UniEchoFdbkMix, UniEchoFdbkAmt,
