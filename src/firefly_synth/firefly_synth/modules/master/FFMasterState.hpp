@@ -41,6 +41,8 @@ class alignas(alignof(TBlock)) FFMasterBlockParamState final
   std::array<TBlock, 1> hostSmoothTime = {};
   std::array<TBlock, 1> pitchBendRange = {};
   std::array<TBlock, 1> pitchBendTarget = {};
+  std::array<TBlock, FFMasterUniMaxCount> uniEnvOffset = {};
+  std::array<TBlock, FFMasterUniMaxCount> uniEnvStretch = {};
   std::array<TBlock, FFMasterUniMaxCount> uniOscPhaseRand = {};
   std::array<TBlock, FFMasterUniMaxCount> uniOscPhaseOffset = {};
   std::array<TBlock, FFMasterUniMaxCount> uniLFOPhaseRand = {};

@@ -393,6 +393,23 @@ FFMakeMasterTopo()
   uniVFXParamD.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniVFXParamD);
   uniVFXParamD.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniVFXParamD, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
+  auto& uniEnvOffset = result->params[(int)FFMasterParam::UniEnvOffset];
+  uniEnvOffset.mode = FBParamMode::Block;
+  uniEnvOffset.defaultText = "0";
+  uniEnvOffset.name = "Env Offset";
+  uniEnvOffset.slotCount = FFMasterUniMaxCount;
+  uniEnvOffset.unit = "Sec";
+  uniEnvOffset.id = "{AEDA998E-B0B7-4A78-8C52-F6B809AC5352}";
+  uniEnvOffset.type = FBParamType::Linear;
+  uniEnvOffset.Linear().min = 0.0f;
+  uniEnvOffset.Linear().max = 0.0f;
+  uniEnvOffset.Linear().editSkewFactor = 0.5f;
+  auto selectUniEnvOffset = [](auto& module) { return &module.block.uniEnvOffset; };
+  uniEnvOffset.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniEnvOffset);
+  uniEnvOffset.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectUniEnvOffset);
+  uniEnvOffset.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEnvOffset);
+  uniEnvOffset.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEnvOffset, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
   auto& outputAux = result->cvOutputs[(int)FFMasterCVOutput::Aux];
   outputAux.name = "Aux";
   outputAux.slotCount = FFMasterAuxCount;
