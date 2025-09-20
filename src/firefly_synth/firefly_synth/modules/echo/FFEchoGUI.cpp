@@ -34,7 +34,7 @@ MakeEchoTapsEditor(FBPlugGUI* plugGUI, bool global)
     rowSizes.push_back(1);
   auto columnSizes = std::vector<int> { { 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 } };
   auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
-  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Tap"));
+  grid->Add(0, 0, plugGUI->StoreComponent<FBAutoSizeLabel>("Tap/Param"));
   grid->MarkSection({ { 0, 0 }, { 1, 1 } });
 
   grid->Add(0, 1, plugGUI->StoreComponent<FBAutoSizeLabel>("On"));
