@@ -41,7 +41,7 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
   {
     int guiCol = c * (FFMasterUniMaxCount + 1);
     for (int i = 0; i < FFMasterUniMaxCount; i++)
-      grid->Add(0, guiCol + i, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
+      grid->Add(0, guiCol + i + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1)));
   }
 
   for (int c = 0; c < 2; c++)
