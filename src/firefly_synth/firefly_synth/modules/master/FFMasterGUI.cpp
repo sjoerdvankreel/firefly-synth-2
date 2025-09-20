@@ -56,7 +56,7 @@ MakeMasterGlobalUniEditor(FBPlugGUI* plugGUI)
       for (int p = 0; p < FFMasterUniMaxCount; p++)
       {
         auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFirst + paramOffset, p } });
-        grid->Add(guiRow, guiCol + p, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
+        grid->Add(guiRow, guiCol + p + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
       }
     }
   }
