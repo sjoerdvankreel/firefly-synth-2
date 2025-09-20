@@ -427,6 +427,52 @@ FFMakeMasterTopo()
   uniEnvStretch.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEnvStretch);
   uniEnvStretch.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEnvStretch, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
+  auto& uniEchoTapLevel = result->params[(int)FFMasterParam::UniEchoTapLevel]; 
+  uniEchoTapLevel.mode = FBParamMode::Accurate;
+  uniEchoTapLevel.defaultText = "50";
+  uniEchoTapLevel.name = "Echo Tap Level";
+  uniEchoTapLevel.slotCount = FFMasterUniMaxCount;
+  uniEchoTapLevel.unit = "%";
+  uniEchoTapLevel.id = "{A480C75C-3429-44A1-BAAF-44341E793F80}";
+  uniEchoTapLevel.type = FBParamType::Identity;
+  auto selectUniEchoTapLevel = [](auto& module) { return &module.acc.uniEchoTapLevel; };
+  uniEchoTapLevel.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniEchoTapLevel);
+  uniEchoTapLevel.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniEchoTapLevel);
+  uniEchoTapLevel.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEchoTapLevel);
+  uniEchoTapLevel.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEchoTapLevel, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniEchoTapDelay = result->params[(int)FFMasterParam::UniEchoTapDelay];
+  uniEchoTapDelay.mode = FBParamMode::Accurate;
+  uniEchoTapDelay.defaultText = "50";
+  uniEchoTapDelay.name = "Echo Tap Delay";
+  uniEchoTapDelay.slotCount = FFMasterUniMaxCount;
+  uniEchoTapDelay.unit = "%";
+  uniEchoTapDelay.id = "{158E67F4-DD9C-4A2A-93B8-6914B8F9DCED}";
+  uniEchoTapDelay.type = FBParamType::Identity;
+  auto selectUniEchoTapDelay = [](auto& module) { return &module.acc.uniEchoTapDelay; };
+  uniEchoTapDelay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniEchoTapDelay);
+  uniEchoTapDelay.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniEchoTapDelay);
+  uniEchoTapDelay.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEchoTapDelay);
+  uniEchoTapDelay.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEchoTapDelay, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniEchoTapBal = result->params[(int)FFMasterParam::UniEchoTapBal];
+  uniEchoTapBal.mode = FBParamMode::Accurate;
+  uniEchoTapBal.defaultText = "50";
+  uniEchoTapBal.name = "Echo Tap Bal";
+  uniEchoTapBal.slotCount = FFMasterUniMaxCount;
+  uniEchoTapBal.unit = "%";
+  uniEchoTapBal.id = "{1E8EDB12-2E07-47DE-BB0C-39AC596896E0}";
+  uniEchoTapBal.type = FBParamType::Identity;
+  auto selectUniEchoTapBal = [](auto& module) { return &module.acc.uniEchoTapBal; };
+  uniEchoTapBal.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniEchoTapBal);
+  uniEchoTapBal.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniEchoTapBal);
+  uniEchoTapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEchoTapBal);
+  uniEchoTapBal.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEchoTapBal, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+
+//  , , , UniEchoFdbkDelay, UniEchoFdbkMix, UniEchoFdbkAmt,
+  //  UniReverbMix, UniReverbSize, UniReverbDamp, Count };
+
   auto& outputAux = result->cvOutputs[(int)FFMasterCVOutput::Aux];
   outputAux.name = "Aux";
   outputAux.slotCount = FFMasterAuxCount;

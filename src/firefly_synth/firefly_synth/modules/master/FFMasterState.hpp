@@ -72,6 +72,15 @@ class alignas(alignof(TAccurate)) FFMasterAccParamState final
   std::array<TAccurate, FFMasterUniMaxCount> uniVFXParamB = {};
   std::array<TAccurate, FFMasterUniMaxCount> uniVFXParamC = {};
   std::array<TAccurate, FFMasterUniMaxCount> uniVFXParamD = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoTapLevel = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoTapDelay = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoTapBal = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoFdbkDelay = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoFdbkMix = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniEchoFdbkAmt = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniReverbMix = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniReverbSize = {};
+  std::array<TAccurate, FFMasterUniMaxCount> uniReverbDamp = {};
 public:
   FB_NOCOPY_NOMOVE_DEFCTOR(FFMasterAccParamState);
 };
