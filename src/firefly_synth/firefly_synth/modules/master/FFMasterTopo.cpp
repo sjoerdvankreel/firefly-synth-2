@@ -469,8 +469,50 @@ FFMakeMasterTopo()
   uniEchoTapBal.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEchoTapBal);
   uniEchoTapBal.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEchoTapBal, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
+  auto& uniEchoFdbkDelay = result->params[(int)FFMasterParam::UniEchoFdbkDelay];
+  uniEchoFdbkDelay.mode = FBParamMode::Accurate;
+  uniEchoFdbkDelay.defaultText = "50";
+  uniEchoFdbkDelay.name = "Echo Fdbk Dly";
+  uniEchoFdbkDelay.slotCount = FFMasterUniMaxCount;
+  uniEchoFdbkDelay.unit = "%";
+  uniEchoFdbkDelay.id = "{6D51D872-4BFD-4F06-B202-BD971DB527FA}";
+  uniEchoFdbkDelay.type = FBParamType::Identity;
+  auto selectUniEchoFdbkDelay = [](auto& module) { return &module.acc.uniEchoFdbkDelay; };
+  uniEchoFdbkDelay.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniEchoFdbkDelay);
+  uniEchoFdbkDelay.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniEchoFdbkDelay);
+  uniEchoFdbkDelay.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEchoFdbkDelay);
+  uniEchoFdbkDelay.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEchoFdbkDelay, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
 
-//  , , , UniEchoFdbkDelay, UniEchoFdbkMix, UniEchoFdbkAmt,
+  auto& uniEchoFdbkMix = result->params[(int)FFMasterParam::UniEchoFdbkMix];
+  uniEchoFdbkMix.mode = FBParamMode::Accurate;
+  uniEchoFdbkMix.defaultText = "50";
+  uniEchoFdbkMix.name = "Echo Fdbk Mix";
+  uniEchoFdbkMix.slotCount = FFMasterUniMaxCount;
+  uniEchoFdbkMix.unit = "%";
+  uniEchoFdbkMix.id = "{41E192B1-909D-41B6-93B5-9343460670A2}";
+  uniEchoFdbkMix.type = FBParamType::Identity;
+  auto selectUniEchoFdbkMix = [](auto& module) { return &module.acc.uniEchoFdbkMix; };
+  uniEchoFdbkMix.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniEchoFdbkMix);
+  uniEchoFdbkMix.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniEchoFdbkMix);
+  uniEchoFdbkMix.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEchoFdbkMix);
+  uniEchoFdbkMix.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEchoFdbkMix, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+  auto& uniEchoFdbkAmt = result->params[(int)FFMasterParam::UniEchoFdbkAmt];
+  uniEchoFdbkAmt.mode = FBParamMode::Accurate;
+  uniEchoFdbkAmt.defaultText = "50";
+  uniEchoFdbkAmt.name = "Echo Fdbk Amt";
+  uniEchoFdbkAmt.slotCount = FFMasterUniMaxCount;
+  uniEchoFdbkAmt.unit = "%";
+  uniEchoFdbkAmt.id = "{BF96F4F2-74C7-4BA8-8FE5-72320499849E}";
+  uniEchoFdbkAmt.type = FBParamType::Identity;
+  auto selectUniEchoFdbkAmt = [](auto& module) { return &module.acc.uniEchoFdbkAmt; };
+  uniEchoFdbkAmt.scalarAddr = FFSelectScalarParamAddr(selectModule, selectUniEchoFdbkAmt);
+  uniEchoFdbkAmt.globalAccProcAddr = FFSelectProcParamAddr(selectModule, selectUniEchoFdbkAmt);
+  uniEchoFdbkAmt.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectUniEchoFdbkAmt);
+  uniEchoFdbkAmt.dependencies.enabled.audio.WhenSlots({ { (int)FFMasterParam::UniCount, -1 }, { (int)FFMasterParam::UniEchoFdbkAmt, -1 } }, [](auto const& slots, auto const& vs) { return slots[1] < vs[0] && vs[0] != 1; });
+
+
+//  , , , , , ,
   //  UniReverbMix, UniReverbSize, UniReverbDamp, Count };
 
   auto& outputAux = result->cvOutputs[(int)FFMasterCVOutput::Aux];
