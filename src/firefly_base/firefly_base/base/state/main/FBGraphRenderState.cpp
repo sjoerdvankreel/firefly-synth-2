@@ -150,7 +150,7 @@ FBGraphRenderState::PrepareForRenderPrimaryVoice()
     _primaryVoiceManager->Return(0);
     _primaryVoiceManager->ResetReturnedVoices();
   }
-  _primaryVoiceManager->Lease(MakeNoteC4On());
+  _primaryVoiceManager->Lease(MakeNoteC4On(), -1, 0);
   _input->voiceManager = _primaryVoiceManager.get();
   _moduleState->voice = &_primaryVoiceManager->Voices()[0];
 }
