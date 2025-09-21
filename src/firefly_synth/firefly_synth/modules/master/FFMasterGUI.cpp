@@ -149,6 +149,7 @@ MakeMasterSectionGlobalUni(FBPlugGUI* plugGUI)
       });
     };
   grid->Add(1, 0, 1, 3, showGlobalUniFullEditor);
+  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
 
