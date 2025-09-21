@@ -7,7 +7,7 @@ inline int constexpr FFGlobalUniMaxCount = 8;
 
 enum class FFGlobalUniType { Off, Basic, Full };
 enum class FFGlobalUniParam { 
-  Type, Count, 
+  Type, VoiceCount, 
   FullOscGain, FullFirst = FullOscGain, FullOscPan, FullOscCoarse, FullOscFine, FullOscPhaseOffset, FullOscPhaseRand,
   FullLFORate, FullLFOMin, FullLFOMax, FullLFOSkewAX, FullLFOSkewAY, FullLFOPhaseOffset, FullLFOPhaseRand,
   FullEnvOffset, FullEnvStretch, FullVFXParamA, FullVFXParamB, FullVFXParamC, FullVFXParamD,
