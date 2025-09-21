@@ -22,7 +22,7 @@ enum class FFMasterParam {
   UniFullEchoExtend, UniFullEchoFade,
   UniFullEchoTapLevel, UniFullEchoTapDelay, UniFullEchoTapBal,
   UniFullEchoFdbkDelay, UniFullEchoFdbkMix, UniFullEchoFdbkAmt,
-  UniFullEchoReverbMix, UniFullEchoReverbSize, UniFullEchoReverbDamp,
+  UniFullEchoReverbMix, UniFullEchoReverbSize, UniFullEchoReverbDamp, UniFullLast = UniFullEchoReverbDamp,
   Count };
 
 std::unique_ptr<FBStaticModule> FFMakeMasterTopo();

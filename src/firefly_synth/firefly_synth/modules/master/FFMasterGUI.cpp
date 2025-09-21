@@ -23,7 +23,7 @@ MakeMasterGlobalUniFullEditor(FBPlugGUI* plugGUI)
   FB_LOG_ENTRY_EXIT();
   auto rowSizes = std::vector<int>();
   rowSizes.push_back(1);
-  int uniControlCount = (int)FFMasterParam::Count - (int)FFMasterParam::UniFullFirst;
+  int uniControlCount = (int)FFMasterParam::UniFullLast - (int)FFMasterParam::UniFullFirst + 1;
   FB_ASSERT(uniControlCount % 2 == 0);
   for (int i = 0; i < uniControlCount / 2; i++)
     rowSizes.push_back(1);
@@ -138,8 +138,16 @@ MakeMasterSectionGlobalUni(FBPlugGUI* plugGUI)
 
   auto globalUniFullEditor = MakeMasterGlobalUniFullEditor(plugGUI);
   auto showGlobalUniFullEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Editor");
-  showGlobalUniFullEditor->onClick = [plugGUI, globalUniFullEditor]() { 
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", globalUniFullEditor, 640, 450, [](){}); };
+  showGlobalUniFullEditor->onClick = [plugGUI, globalUniFullEditor]() {
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", globalUniFullEditor, 640, 450, [plugGUI]() {
+      FBTopoIndices moduleIndices = { (int)FFModuleType::Master, 0 };
+      std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
+      plugGUI->HostContext()->UndoState().Snapshot("Init " + name + " Global Unison");
+      for (int p = (int)FFMasterParam::UniFullFirst; p <= (int)FFMasterParam::UniFullLast; p++)
+        for (int s = 0; s < FFMasterUniMaxCount; s++)
+          plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
+      });
+    };
   grid->Add(1, 0, 1, 3, showGlobalUniFullEditor);
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }
