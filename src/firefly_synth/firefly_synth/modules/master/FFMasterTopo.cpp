@@ -153,7 +153,7 @@ FFMakeMasterTopo()
 
   auto& uniCount = result->params[(int)FFMasterParam::UniCount];
   uniCount.mode = FBParamMode::Block;
-  uniCount.defaultText = "1";
+  uniCount.defaultText = "2";
   uniCount.display = "Uni";
   uniCount.name = "Uni Count";
   uniCount.slotCount = 1;
