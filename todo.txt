@@ -11,6 +11,7 @@ TODOLIST for alpha-17
 [ ] basic mode
 [ ] default button for multitaps
 [ ] clap polymod + release as one
+[ ] profile it
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor
