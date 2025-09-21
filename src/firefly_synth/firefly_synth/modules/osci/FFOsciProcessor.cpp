@@ -3,6 +3,7 @@
 #include <firefly_synth/dsp/shared/FFDSPUtility.hpp>
 #include <firefly_synth/modules/osci/FFOsciTopo.hpp>
 #include <firefly_synth/modules/osci/FFOsciProcessor.hpp>
+#include <firefly_synth/modules/master/FFMasterProcessor.hpp>
 
 #include <firefly_base/base/shared/FBSArray.hpp>
 #include <firefly_base/dsp/plug/FBPlugBlock.hpp>
@@ -184,6 +185,7 @@ FFOsciProcessor::Process(FBModuleProcState& state, bool graph)
   {
     FFApplyModulation(FFModulationOpType::UPMul, voiceState.env[state.moduleSlot + FFEnvSlotOffset].output, envToGain.CV(), gainNormModulated);
     FFApplyModulation(FFModulationOpType::BPStack, voiceState.vLFO[state.moduleSlot].outputAll, lfoToFine.CV(), fineNormModulated);
+    procState->dsp.global.master.processor->ApplyGlobalUnison(state, FFMasterParam::UniFullOscFine, FFModulationOpType::BPStack, voice, fineNormModulated);
   }
 
   FBSArray<float, FFOsciFixedBlockOversamples> panPlain;

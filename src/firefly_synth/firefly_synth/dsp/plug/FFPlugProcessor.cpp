@@ -164,6 +164,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   ApplyGlobalModulation(input, state, { (int)FFModuleType::MIDI, 0 });
   globalDSP.gNote.processor->Process(state);
   ApplyGlobalModulation(input, state, { (int)FFModuleType::GNote, 0 });
+  globalDSP.master.processor->BeginBlock(state);
   globalDSP.master.processor->Process(state);
   ApplyGlobalModulation(input, state, { (int)FFModuleType::Master, 0 });
   for (int i = 0; i < FFLFOCount; i++)

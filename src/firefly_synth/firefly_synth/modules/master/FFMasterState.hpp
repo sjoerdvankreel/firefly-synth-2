@@ -14,11 +14,12 @@ struct FBStaticModule;
 
 class alignas(FBSIMDAlign) FFMasterDSPState final
 {
-  friend class FFPlugProcessor;
-  std::unique_ptr<FFMasterProcessor> processor = {};
 public:
   FB_NOCOPY_NOMOVE_NODEFCTOR(FFMasterDSPState);
   FFMasterDSPState() : processor(std::make_unique<FFMasterProcessor>()) {}
+
+  // public because everyone needs global unison
+  std::unique_ptr<FFMasterProcessor> processor = {};
 
   bool mtsEspOn = {};
   MTSClient* mtsClient = {};

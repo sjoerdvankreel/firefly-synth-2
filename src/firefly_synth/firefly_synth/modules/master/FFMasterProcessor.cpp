@@ -14,6 +14,16 @@
 #include <libMTSClient.h>
 #include <xsimd/xsimd.hpp>
 
+void 
+FFMasterProcessor::BeginBlock(FBModuleProcState& state)
+{
+  auto* procState = state.ProcAs<FFProcState>();
+  auto const& params = procState->param.global.master[0];
+  auto const& topo = state.topo->static_->modules[(int)FFModuleType::Master];
+  float uniTypeNorm = params.block.uniType[0].Value();
+  _uniType = topo.NormalizedToListFast<FFMasterUniType>((int)FFMasterParam::UniType, uniTypeNorm);
+}
+
 void
 FFMasterProcessor::Process(FBModuleProcState& state)
 {
