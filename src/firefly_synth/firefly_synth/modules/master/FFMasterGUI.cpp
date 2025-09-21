@@ -17,59 +17,6 @@
 
 using namespace juce;
 
-static Component* 
-MakeMasterGlobalUniFullEditor(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto rowSizes = std::vector<int>();
-  rowSizes.push_back(1);
-  int uniControlCount = (int)FFMasterParam::UniFullLast - (int)FFMasterParam::UniFullFirst + 1;
-  FB_ASSERT(uniControlCount % 2 == 0);
-  for (int i = 0; i < uniControlCount / 2; i++)
-    rowSizes.push_back(1);
-  auto columnSizes = std::vector<int>();
-  columnSizes.push_back(1);
-  for(int i = 0; i < FFMasterUniMaxCount; i++)
-    columnSizes.push_back(0);
-  columnSizes.push_back(1);
-  for (int i = 0; i < FFMasterUniMaxCount; i++)
-    columnSizes.push_back(0);
-
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, rowSizes, columnSizes);
-  for (int c = 0; c < 2; c++)
-  {
-    int guiCol = c * (FFMasterUniMaxCount + 1);
-    grid->Add(0, guiCol, plugGUI->StoreComponent<FBAutoSizeLabel>("Param/Voice"));
-    grid->MarkSection({ { 0, guiCol }, { 1, 1 } });
-    for (int i = 0; i < FFMasterUniMaxCount; i++)
-    {
-      grid->Add(0, guiCol + i + 1, plugGUI->StoreComponent<FBAutoSizeLabel>(std::to_string(i + 1), true));
-      grid->MarkSection({ { 0, guiCol + i + 1 }, { 1, 1 } });
-    }
-  }
-
-  for (int c = 0; c < 2; c++)
-  {
-    for (int r = 0; r < uniControlCount / 2; r++)
-    {
-      int guiRow = r + 1;
-      int guiCol = c * (FFMasterUniMaxCount + 1);
-      int paramOffset = c * uniControlCount / 2 + r;
-      auto param0 = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFullFirst + paramOffset, 0 } });
-      grid->Add(guiRow, guiCol, plugGUI->StoreComponent<FBParamLinkedLabel>(plugGUI, param0, param0->static_.display));
-      grid->MarkSection({ { guiRow, guiCol }, { 1, 1 } });
-      for (int p = 0; p < FFMasterUniMaxCount; p++)
-      {
-        auto param = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniFullFirst + paramOffset, p } });
-        grid->Add(guiRow, guiCol + p + 1, plugGUI->StoreComponent<FBParamSlider>(plugGUI, param, Slider::SliderStyle::RotaryVerticalDrag));
-        grid->MarkSection({ { guiRow, guiCol + p + 1 }, { 1, 1 } });
-      }
-    }
-  }
-  return grid;
-}
-
 static Component*
 MakeMasterSectionMain(FBPlugGUI* plugGUI)
 {
@@ -124,43 +71,12 @@ MakeMasterSectionAux(FBPlugGUI* plugGUI)
 }
 
 static Component*
-MakeMasterSectionGlobalUni(FBPlugGUI* plugGUI)
-{
-  FB_LOG_ENTRY_EXIT();
-  auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
-  
-  auto uniType = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniType, 0 } });
-  grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, uniType));
-  grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, uniType));
-  auto uniCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniCount, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, uniCount, Slider::SliderStyle::RotaryVerticalDrag));
-
-  auto globalUniFullEditor = MakeMasterGlobalUniFullEditor(plugGUI);
-  auto showGlobalUniFullEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Editor");
-  showGlobalUniFullEditor->onClick = [plugGUI, globalUniFullEditor]() {
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", globalUniFullEditor, 640, 450, [plugGUI]() {
-      FBTopoIndices moduleIndices = { (int)FFModuleType::Master, 0 };
-      std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
-      plugGUI->HostContext()->UndoState().Snapshot("Init " + name + " Global Unison");
-      for (int p = (int)FFMasterParam::UniFullFirst; p <= (int)FFMasterParam::UniFullLast; p++)
-        for (int s = 0; s < FFMasterUniMaxCount; s++)
-          plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
-      });
-    };
-  grid->Add(1, 0, 1, 3, showGlobalUniFullEditor);
-  grid->MarkSection({ { 0, 0 }, { 2, 3 } });
-  return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
-}
-
-static Component*
 MakeMasterTab(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 3, 2, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, std::vector<int> { 1 }, std::vector<int> { 3, 2 });
   grid->Add(0, 0, MakeMasterSectionMain(plugGUI));
   grid->Add(0, 1, MakeMasterSectionAux(plugGUI));
-  grid->Add(0, 2, MakeMasterSectionGlobalUni(plugGUI));
   return plugGUI->StoreComponent<FBSectionComponent>(grid);
 }
 
