@@ -6,6 +6,10 @@ TODOLIST for alpha-17
 [ ] echo controls
 [ ] place echo everywhere
 [ ] echo extend/fade
+[ ] decent defaults
+[ ] some clear/init buttons
+[ ] basic mode
+[ ] default button for multitaps
 
 TODOLIST for alpha-17
 [ ] switch the env stage controls for MSEG editor

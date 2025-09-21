@@ -128,13 +128,13 @@ MakeMasterSectionGlobalUni(FBPlugGUI* plugGUI)
 {
   FB_LOG_ENTRY_EXIT();
   auto topo = plugGUI->HostContext()->Topo();
-  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
+  auto grid = plugGUI->StoreComponent<FBGridComponent>(true, 0, -1, std::vector<int> { 1, 1 }, std::vector<int> { 0, 0, 0 });
   
   auto uniType = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniType, 0 } });
   grid->Add(0, 0, plugGUI->StoreComponent<FBParamLabel>(plugGUI, uniType));
   grid->Add(0, 1, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, uniType));
   auto uniCount = topo->audio.ParamAtTopo({ { (int)FFModuleType::Master, 0 }, { (int)FFMasterParam::UniCount, 0 } });
-  grid->Add(0, 2, plugGUI->StoreComponent<FBParamComboBox>(plugGUI, uniCount));
+  grid->Add(0, 2, plugGUI->StoreComponent<FBParamSlider>(plugGUI, uniCount, Slider::SliderStyle::RotaryVerticalDrag));
 
   auto globalUniFullEditor = MakeMasterGlobalUniFullEditor(plugGUI);
   auto showGlobalUniFullEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Editor");

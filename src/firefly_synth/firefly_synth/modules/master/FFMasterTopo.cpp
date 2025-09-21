@@ -137,7 +137,8 @@ FFMakeMasterTopo()
 
   auto& uniType = result->params[(int)FFMasterParam::UniType];
   uniType.mode = FBParamMode::Block;
-  uniType.name = "Global Uni";
+  uniType.name = "Uni Type";
+  uniType.display = "Uni";
   uniType.slotCount = 1;
   uniType.id = "{C5397E08-EB50-4521-9B88-A8D7DFE49208}";
   uniType.defaultText = "Off";
@@ -154,7 +155,6 @@ FFMakeMasterTopo()
   auto& uniCount = result->params[(int)FFMasterParam::UniCount];
   uniCount.mode = FBParamMode::Block;
   uniCount.defaultText = "2";
-  uniCount.display = "Uni";
   uniCount.name = "Uni Count";
   uniCount.slotCount = 1;
   uniCount.id = "{617F995E-38CC-40BE-899E-AEAE37852092}";
