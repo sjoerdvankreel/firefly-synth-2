@@ -40,6 +40,8 @@ FBVoiceManager::InitFromExchange(
     _voices[i].slot = i;
     _voices[i].event = voices[i].event;
     _voices[i].state = voices[i].state;
+    _voices[i].groupId = voices[i].groupId;
+    _voices[i].slotInGroup = voices[i].slotInGroup;
     _voices[i].offsetInBlock = voices[i].offsetInBlock;
     _counter++;
     if (_voices[i].state == FBVoiceState::Active)
@@ -48,7 +50,7 @@ FBVoiceManager::InitFromExchange(
 }
 
 int
-FBVoiceManager::Lease(FBNoteEvent const& event)
+FBVoiceManager::Lease(FBNoteEvent const& event, std::int64_t groupId, int slotInGroup)
 {
   FB_ASSERT(event.on);
 
@@ -77,6 +79,8 @@ FBVoiceManager::Lease(FBNoteEvent const& event)
   _num[slot] = ++_counter;
   _voices[slot].slot = slot;
   _voices[slot].event = event;
+  _voices[slot].groupId = groupId;
+  _voices[slot].slotInGroup = slotInGroup;
   _voices[slot].offsetInBlock = event.pos;
   _voices[slot].state = FBVoiceState::Active;
 

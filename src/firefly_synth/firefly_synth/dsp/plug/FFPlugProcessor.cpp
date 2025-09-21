@@ -89,9 +89,20 @@ FFPlugProcessor::LeaseVoices(
         onNoteRandomNorm[r] = _onNoteRandomNorm.NextScalar();
       }
 
-      int voice = input.voiceManager->Lease((*input.noteEvents)[n]);
-      auto state = MakeModuleVoiceState(input, voice);
-      _procState->dsp.voice[voice].processor.BeginVoice(state, onNoteRandomUni, onNoteRandomNorm);
+      std::int64_t voiceGroupId = _voiceGroupId++;
+      auto const* procState = input.procState->RawAs<FFProcState>();
+      float uniTypeNorm = procState->param.global.master[0].block.uniType[0].Value();
+      float uniCountNorm = procState->param.global.master[0].block.uniCount[0].Value();
+      int uniVoices = _topo->static_->modules[(int)FFModuleType::Master].NormalizedToDiscreteFast((int)FFMasterParam::UniCount, uniCountNorm);
+      auto uniType = _topo->static_->modules[(int)FFModuleType::Master].NormalizedToListFast<FFMasterUniType>((int)FFMasterParam::UniType, uniTypeNorm);
+      uniVoices = uniType == FFMasterUniType::Off ? 1 : uniVoices;
+
+      for (int v = 0; v < uniVoices; v++)
+      {
+        int voice = input.voiceManager->Lease((*input.noteEvents)[n], voiceGroupId, v);
+        auto state = MakeModuleVoiceState(input, voice);
+        _procState->dsp.voice[voice].processor.BeginVoice(state, onNoteRandomUni, onNoteRandomNorm);
+      }
     }
 }
 

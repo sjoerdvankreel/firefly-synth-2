@@ -19,6 +19,10 @@ struct FBVoiceInfo final
   int offsetInBlock = {};
   FBNoteEvent event = {};
   FBVoiceState state = {};
+
+  // support for global unison, handled in the plug
+  int slotInGroup = -1;
+  std::int64_t groupId = -1;
 };
 
 class FBVoiceManager final
@@ -41,7 +45,7 @@ public:
 
   void Return(int slot);
   void ResetReturnedVoices();
-  int Lease(FBNoteEvent const& event);
+  int Lease(FBNoteEvent const& event, std::int64_t groupId, int slotInGroup);
 
   int VoiceCount() const { return _voiceCount; }
   std::vector<FBNote> const& ReturnedVoices() { return _returnedVoices; }

@@ -21,6 +21,9 @@ public IFBPlugProcessor
   FFProcState* const _procState;
   FFExchangeState* const _exchangeState;
 
+  // global uni
+  std::int64_t _voiceGroupId = {};
+
   // on note random
   FFParkMillerPRNG _onNoteRandomUni = {};
   FFMarsagliaPRNG<false> _onNoteRandomNorm = {};
