@@ -34,9 +34,9 @@ enum class FFEchoParam {
   FeedbackOn, FeedbackMix, FeedbackAmount, FeedbackXOver,
   FeedbackDelayTime, FeedbackDelayBars,
   FeedbackLPFreq, FeedbackLPRes, FeedbackHPFreq, FeedbackHPRes,
-  TapsOn, TapsMix, TapOn, TapBalance, 
+  TapsOn, TapsMix, TapOn, TapFirst = TapOn, TapBalance, 
   TapLevel, TapXOver, TapDelayTime, TapDelayBars,
-  TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, Count };
+  TapLPFreq, TapLPRes, TapHPFreq, TapHPRes, TapLast = TapHPRes, Count };
 
 inline int 
 FFEchoGetProcessingOrder(FFEchoOrder order, FFEchoModule module)

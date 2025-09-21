@@ -155,7 +155,15 @@ MakeEchoSectionTaps(
   auto showTapsEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Taps");
   showTapsEditor->onClick = [plugGUI, tapsEditor, global]() { 
     std::string title = std::string(global ? "G" : "V") + "Echo Multi Taps";
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, tapsEditor, 360, 250);
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent(title, tapsEditor, 360, 250, [plugGUI, global]() {
+      auto moduleType = global ? FFModuleType::GEcho : FFModuleType::VEcho;
+      FBTopoIndices moduleIndices = { (int)moduleType, 0 };
+      std::string name = plugGUI->HostContext()->Topo()->ModuleAtTopo(moduleIndices)->name;
+      plugGUI->HostContext()->UndoState().Snapshot("Init " + name + " Taps");
+      for (int p = (int)FFEchoParam::TapFirst; p <= (int)FFEchoParam::TapLast; p++)
+        for(int s = 0; s < FFEchoTapCount; s++)
+          plugGUI->HostContext()->DefaultAudioParam({ { moduleIndices }, { p, s } });
+    });
   };
   grid->Add(0, 0, showTapsEditor);
   *showTapsEditorOut = showTapsEditor;

@@ -6,6 +6,7 @@
 #include <firefly_base/gui/components/FBContentComponent.hpp>
 
 #include <memory>
+#include <functional>
 #include <unordered_map>
 
 class FBHostGUIContext;
@@ -24,6 +25,7 @@ public FBPlugGUI
 
   FBContentComponent* _content = {};
   juce::Label* _overlayCaption = {};
+  std::function<void()> _overlayInit = {};
   juce::Component* _overlayComponent = {};
   juce::Component* _overlayContainer = {};
   FBContentComponent* _overlayContent = {};
@@ -48,7 +50,11 @@ public:
   void SwitchGraphToModule(int index, int slot);
   
   void HideOverlayComponent();
-  void ShowOverlayComponent(std::string const& title, juce::Component* overlay, int w, int h);
+  void ShowOverlayComponent(
+    std::string const& title, 
+    juce::Component* overlay, 
+    int w, int h, 
+    std::function<void()> init);
 
   void resized() override;
   FBGUIRenderType GetKnobRenderType() const override;

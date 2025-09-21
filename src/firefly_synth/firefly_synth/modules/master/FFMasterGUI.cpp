@@ -139,7 +139,7 @@ MakeMasterSectionGlobalUni(FBPlugGUI* plugGUI)
   auto globalUniFullEditor = MakeMasterGlobalUniFullEditor(plugGUI);
   auto showGlobalUniFullEditor = plugGUI->StoreComponent<FBAutoSizeButton>("Editor");
   showGlobalUniFullEditor->onClick = [plugGUI, globalUniFullEditor]() { 
-    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", globalUniFullEditor, 640, 450); };
+    dynamic_cast<FFPlugGUI&>(*plugGUI).ShowOverlayComponent("Global Unison", globalUniFullEditor, 640, 450, [](){}); };
   grid->Add(1, 0, 1, 3, showGlobalUniFullEditor);
   return plugGUI->StoreComponent<FBSubSectionComponent>(grid);
 }

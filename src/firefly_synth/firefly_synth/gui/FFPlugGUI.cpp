@@ -143,6 +143,7 @@ FFPlugGUI::HideOverlayComponent()
 {
   if (_overlayComponent == nullptr)
     return;
+  _overlayInit = {};
   _overlayComponent->setVisible(false);
   _overlayContent->SetContent(nullptr);
   _overlayContainer->setVisible(false);
@@ -151,12 +152,17 @@ FFPlugGUI::HideOverlayComponent()
 }
 
 void 
-FFPlugGUI::ShowOverlayComponent(std::string const& title, Component* overlay, int w, int h)
+FFPlugGUI::ShowOverlayComponent(
+  std::string const& title, 
+  Component* overlay,
+  int w, int h,
+  std::function<void()> init)
 {
   if (_overlayComponent != nullptr)
     HideOverlayComponent();
   int x = (getWidth() - w) / 2;
   int y = (getHeight() - h) / 2;
+  _overlayInit = init;
   _overlayContent->SetContent(overlay);
   _overlayContainer->setBounds(x, y, w, h);
   _overlayCaption->setText(title, dontSendNotification);
@@ -215,15 +221,22 @@ FFPlugGUI::SetupGUI()
   bool matrixOn = HostContext()->GetGUIParamBool({ { (int)FFModuleType::GUISettings, 0 }, { (int)FFGUISettingsGUIParam::ShowMatrix, 0 } });
   ToggleMatrix(matrixOn);
 
-  auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0 } });
+  auto overlayGrid = StoreComponent<FBGridComponent>(true, -1, -1, std::vector<int> { { 0, 1 } }, std::vector<int> { { 1, 0, 0 } });
   _overlayCaption = StoreComponent<Label>();
   overlayGrid->Add(0, 0, _overlayCaption);
+
+  auto overlayInit = StoreComponent<FBAutoSizeButton>("Init");
+  overlayInit->onClick = [this] { _overlayInit(); };
+  auto overlayInitSection = StoreComponent<FBSectionComponent>(overlayInit);
+  overlayGrid->Add(0, 1, overlayInitSection);
+
   auto overlayClose = StoreComponent<FBAutoSizeButton>("Close");
   overlayClose->onClick = [this] { HideOverlayComponent(); };
   auto overlayCloseSection = StoreComponent<FBSectionComponent>(overlayClose);
-  overlayGrid->Add(0, 1, overlayCloseSection);
-  overlayGrid->MarkSection({ { 0, 0 }, { 1, 2 } });
+  overlayGrid->Add(0, 2, overlayCloseSection);
+
+  overlayGrid->MarkSection({ { 0, 0 }, { 1, 3 } });
   _overlayContent = StoreComponent<FBContentComponent>();
-  overlayGrid->Add(1, 0, 1, 2, _overlayContent);
+  overlayGrid->Add(1, 0, 1, 3, _overlayContent);
   _overlayContainer = StoreComponent<FBSubSectionComponent>(overlayGrid, true);
 }
