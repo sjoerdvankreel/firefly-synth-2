@@ -32,20 +32,20 @@ FFMakeGlobalUniTopo()
   type.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectType);
   type.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectType);
 
-  auto& count = result->params[(int)FFGlobalUniParam::VoiceCount];
-  count.mode = FBParamMode::Block;
-  count.defaultText = "2";
-  count.name = "Count";
-  count.slotCount = 1;
-  count.id = "{617F995E-38CC-40BE-899E-AEAE37852092}";
-  count.type = FBParamType::Discrete;
-  count.Discrete().valueCount = FFGlobalUniMaxCount - 1;
-  count.Discrete().valueOffset = 2;
-  auto selectCount = [](auto& module) { return &module.block.count; };
-  count.scalarAddr = FFSelectScalarParamAddr(selectModule, selectCount);
-  count.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectCount);
-  count.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectCount);
-  count.dependencies.enabled.audio.WhenSimple({ (int)FFGlobalUniParam::Type }, [](auto const& vs) { return vs[0] != 0; });
+  auto& voiceCount = result->params[(int)FFGlobalUniParam::VoiceCount];
+  voiceCount.mode = FBParamMode::Block;
+  voiceCount.defaultText = "2";
+  voiceCount.name = "Count";
+  voiceCount.slotCount = 1;
+  voiceCount.id = "{617F995E-38CC-40BE-899E-AEAE37852092}";
+  voiceCount.type = FBParamType::Discrete;
+  voiceCount.Discrete().valueCount = FFGlobalUniMaxCount - 1;
+  voiceCount.Discrete().valueOffset = 2;
+  auto selectVoiceCount = [](auto& module) { return &module.block.voiceCount; };
+  voiceCount.scalarAddr = FFSelectScalarParamAddr(selectModule, selectVoiceCount);
+  voiceCount.globalBlockProcAddr = FFSelectProcParamAddr(selectModule, selectVoiceCount);
+  voiceCount.globalExchangeAddr = FFSelectExchangeParamAddr(selectModule, selectVoiceCount);
+  voiceCount.dependencies.enabled.audio.WhenSimple({ (int)FFGlobalUniParam::Type }, [](auto const& vs) { return vs[0] != 0; });
 
   auto& fullOscGain = result->params[(int)FFGlobalUniParam::FullOscGain];
   fullOscGain.mode = FBParamMode::Accurate;

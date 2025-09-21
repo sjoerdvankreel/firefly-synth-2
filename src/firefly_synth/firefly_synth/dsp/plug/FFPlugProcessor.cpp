@@ -91,13 +91,13 @@ FFPlugProcessor::LeaseVoices(
 
       std::int64_t voiceGroupId = _voiceGroupId++;
       auto const* procState = input.procState->RawAs<FFProcState>();
-      float uniTypeNorm = procState->param.global.master[0].block.uniType[0].Value();
-      float uniCountNorm = procState->param.global.master[0].block.uniCount[0].Value();
-      int uniVoices = _topo->static_->modules[(int)FFModuleType::Master].NormalizedToDiscreteFast((int)FFMasterParam::UniCount, uniCountNorm);
-      auto uniType = _topo->static_->modules[(int)FFModuleType::Master].NormalizedToListFast<FFMasterUniType>((int)FFMasterParam::UniType, uniTypeNorm);
-      uniVoices = uniType == FFMasterUniType::Off ? 1 : uniVoices;
+      float uniTypeNorm = procState->param.global.globalUni[0].block.type[0].Value();
+      float uniVoiceCountNorm = procState->param.global.globalUni[0].block.voiceCount[0].Value();
+      int uniVoiceCount = _topo->static_->modules[(int)FFModuleType::GlobalUni].NormalizedToDiscreteFast((int)FFGlobalUniParam::VoiceCount, uniVoiceCountNorm);
+      auto uniType = _topo->static_->modules[(int)FFModuleType::GlobalUni].NormalizedToListFast<FFGlobalUniType>((int)FFGlobalUniParam::Type, uniTypeNorm);
+      uniVoiceCount = uniType == FFGlobalUniType::Off ? 1 : uniVoiceCount;
 
-      for (int v = 0; v < uniVoices; v++)
+      for (int v = 0; v < uniVoiceCount; v++)
       {
         int voice = input.voiceManager->Lease((*input.noteEvents)[n], voiceGroupId, v);
         auto state = MakeModuleVoiceState(input, voice);
@@ -164,7 +164,6 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
   ApplyGlobalModulation(input, state, { (int)FFModuleType::MIDI, 0 });
   globalDSP.gNote.processor->Process(state);
   ApplyGlobalModulation(input, state, { (int)FFModuleType::GNote, 0 });
-  globalDSP.master.processor->BeginBlock(state);
   globalDSP.master.processor->Process(state);
   ApplyGlobalModulation(input, state, { (int)FFModuleType::Master, 0 });
   for (int i = 0; i < FFLFOCount; i++)
@@ -174,6 +173,7 @@ FFPlugProcessor::ProcessPreVoice(FBPlugInputBlock const& input)
     globalDSP.gLFO[i].processor->Process<true>(state);
     ApplyGlobalModulation(input, state, { (int)FFModuleType::GLFO, i });
   }
+  globalDSP.globalUni.processor->BeginBlock(state);
 }
 
 void

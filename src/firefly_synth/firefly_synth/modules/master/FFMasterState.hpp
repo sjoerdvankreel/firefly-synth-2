@@ -14,6 +14,7 @@ struct FBStaticModule;
 
 class alignas(FBSIMDAlign) FFMasterDSPState final
 {
+  friend class FFPlugProcessor;
   std::unique_ptr<FFMasterProcessor> processor = {};
 
 public:

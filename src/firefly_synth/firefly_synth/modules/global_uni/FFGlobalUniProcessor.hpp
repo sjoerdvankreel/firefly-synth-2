@@ -36,7 +36,7 @@ FFGlobalUniProcessor::Apply(
   int voice, FBSArray<float, 16>& target)
 {
   // todo not everything is normalized/identity
-  FB_ASSERT((int)FFGlobalUniParam::FullFirst <= (int)uniParam && (int)uniParam <= (int)FFGlobalUniParam::FullLast);
+  FB_ASSERT((int)FFGlobalUniParam::FullFirst <= (int)param && (int)param <= (int)FFGlobalUniParam::FullLast);
 
   if (_type == FFGlobalUniType::Off)
     return;
