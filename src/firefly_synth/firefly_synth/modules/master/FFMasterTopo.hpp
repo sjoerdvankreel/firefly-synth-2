@@ -18,7 +18,10 @@ enum class FFMasterParam {
   UniOscGain, UniFirst = UniOscGain, UniOscPan, UniOscCoarse, UniOscFine, UniOscPhaseOffset, UniOscPhaseRand,
   UniLFORate, UniLFOMin, UniLFOMax, UniLFOSkewAX, UniLFOSkewAY, UniLFOPhaseOffset, UniLFOPhaseRand,
   UniEnvOffset, UniEnvStretch, UniVFXParamA, UniVFXParamB, UniVFXParamC, UniVFXParamD,
-  UniEchoExtend, UniEchoFade, UniEchoReverbMix, UniEchoReverbSize, UniEchoReverbDamp,
-  UniEchoTapLevel, UniEchoTapDelay, UniEchoTapBal, UniEchoFdbkDelay, UniEchoFdbkMix, UniEchoFdbkAmt, Count };
+  UniEchoExtend, UniEchoFade, 
+  UniEchoTapLevel, UniEchoTapDelay, UniEchoTapBal, 
+  UniEchoFdbkDelay, UniEchoFdbkMix, UniEchoFdbkAmt, 
+  UniEchoReverbMix, UniEchoReverbSize, UniEchoReverbDamp,
+  Count };
 
 std::unique_ptr<FBStaticModule> FFMakeMasterTopo();
